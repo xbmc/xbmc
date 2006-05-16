@@ -1982,6 +1982,37 @@ void CFileItem::SetCachedVideoThumb()
     SetThumbnailImage(cachedThumb);
 }
 
+// Gets the .tbn filename from a file or folder name.
+// <filename>.ext -> <filename>.tbn
+// <foldername>/ -> <foldername>.tbn
+CStdString CFileItem::GetTBNFile()
+{
+  // special case for zip/rar
+  if (IsRAR() || IsZIP())
+  {
+    // extract the filename portion and find the tbn based on that
+    CURL url(m_strPath);
+    CFileItem item(url.GetFileName());
+    url.SetFileName(item.GetTBNFile());
+    CStdString thumbFile;
+    url.GetURL(thumbFile);
+    return thumbFile;
+  }
+  if (m_bIsFolder)
+  {
+    if (CUtil::HasSlashAtEnd(m_strPath))
+      return m_strPath.Left(m_strPath.size() - 1) + ".tbn";
+    else
+      return m_strPath + ".tbn";
+  }
+  else
+  {
+    CStdString thumbFile;
+    CUtil::ReplaceExtension(m_strPath, ".tbn", thumbFile);
+    return thumbFile;
+  }
+}
+
 CStdString CFileItem::GetUserVideoThumb()
 {
   if (m_bIsShareOrDrive) return "";
@@ -1991,11 +2022,11 @@ CStdString CFileItem::GetUserVideoThumb()
   if (IsStack())
   {
     CStackDirectory dir;
-    CUtil::ReplaceExtension(dir.GetFirstStackedFile(m_strPath), ".tbn", fileThumb);
+    CFileItem item(dir.GetFirstStackedFile(m_strPath));
+    fileThumb = item.GetTBNFile();
   }
   else
-    CUtil::ReplaceExtension(m_strPath, ".tbn", fileThumb);
-  //CStdString fileThumb(CUtil::GetFileThumbnail(m_strPath));
+    fileThumb = GetTBNFile();
   if (CFile::Exists(fileThumb))
     return fileThumb;
   // 2. if a folder, check for folder.jpg
@@ -2060,9 +2091,7 @@ void CFileItem::SetUserProgramThumb()
       path = shortcut.m_strPath;
   }
   // 1.  Try <filename>.tbn
-  CStdString fileThumb;
-  CUtil::ReplaceExtension(m_strPath, ".tbn", fileThumb);
-  //CStdString fileThumb(CUtil::GetFileThumbnail(m_strPath));
+  CStdString fileThumb(GetTBNFile());
   CStdString thumb(GetCachedProgramThumb());
   if (CFile::Exists(fileThumb))
   { // cache
