@@ -1498,9 +1498,6 @@ void CApplication::StartServices()
   if (g_lcd)
   {
     g_lcd->Initialize();
-    CStdString lcdPath;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "LCD.xml", lcdPath);
-    g_lcd->LoadSkin(lcdPath);
   }
 
   if (g_guiSettings.GetBool("System.AutoTemperature"))

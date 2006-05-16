@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-05-2006 fixed: Cleaned up the thumb code (for <folder>.tbn)
+ - 16-05-2006 fixed: LCD wasn't being reinitialized correctly on settings change.
  - 15-05-2006 fixed: volume control with remote now functions under Now Playing window.
  - 15-05-2006 fixed: forgot to make playlist paths
  - 14-05-2006 fixed: settings entry didn't show in file manager context menu.
