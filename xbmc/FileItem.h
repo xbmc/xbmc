@@ -112,7 +112,9 @@ public:
   void FormatLabel2(const CStdString& strMask);
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
-  // Video thumb functions
+
+  // Gets the .tbn file associated with this item
+  CStdString GetTBNFile();
 
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb();
