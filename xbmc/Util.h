@@ -352,7 +352,7 @@ public:
   static float CurrentCpuUsage();
   static bool SupportsFileOperations(const CStdString& strPath);
   static void GetDHCPInfo(CStdString& dns2, CStdString& dhcpserver);
-  
+
 private:
   static bool m_bNetworkUp;
   static HANDLE m_hCurrentCpuUsage;

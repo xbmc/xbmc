@@ -103,6 +103,10 @@ void CGUIWindowVideoTitle::OnDeleteItem(int iItem)
   if (path.IsEmpty()) return;
   m_database.DeleteMovie(path);
 
+  // delete the cached thumb for this item (it will regenerate if it is a user thumb)
+  CStdString thumb(pItem->GetCachedVideoThumb());
+  CFile::Delete(thumb);
+
   Update( m_vecItems.m_strPath );
   m_viewControl.SetSelectedItem(iItem);
   return;
