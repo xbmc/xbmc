@@ -293,7 +293,7 @@ void CGUIWindowVideoInfo::Update()
   }
 
   // Check for resumability
-  CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEOS);
+  CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   CFileItem movie(m_Movie.m_strPath, false);
   if (window && window->GetResumeItemOffset(&movie))
   {
@@ -468,7 +468,7 @@ void CGUIWindowVideoInfo::AddItemsToList(const vector<CStdString> &vecStr)
 void CGUIWindowVideoInfo::Play(bool resume)
 {
   CFileItem movie(m_Movie.m_strPath, false);
-  CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEOS);
+  CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (pWindow)
   {
     // close our dialog
@@ -534,7 +534,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   {
     CFileItem *item = new CFileItem("thumb://IMDb", false);
     item->SetThumbnailImage(thumbFromWeb);
-    item->SetLabel("IMDb Thumb");
+    item->SetLabel(g_localizeStrings.Get(20015)); // TODO: localize 2.0
     items.Add(item);
   }
 
@@ -542,7 +542,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   {
     CFileItem *item = new CFileItem("thumb://Current", false);
     item->SetThumbnailImage(m_movieItem.GetThumbnailImage());
-    item->SetLabel("Current Thumb");
+    item->SetLabel(g_localizeStrings.Get(20016)); // TODO: localize 2.0
     items.Add(item);
   }
 
@@ -555,7 +555,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     pic.DoCreateThumbnail(localThumb, cachedLocalThumb);
     CFileItem *item = new CFileItem("thumb://Local", false);
     item->SetThumbnailImage(cachedLocalThumb);
-    item->SetLabel("Local Thumb");
+    item->SetLabel(g_localizeStrings.Get(20017)); // TODO: localize 2.0
     items.Add(item);
   }
   else
@@ -569,12 +569,13 @@ void CGUIWindowVideoInfo::OnGetThumb()
     }
     CFileItem *item = new CFileItem("thumb://None", false);
     item->SetThumbnailImage("defaultVideoBig.png");
-    item->SetLabel("No Thumb");
+    item->SetLabel(g_localizeStrings.Get(20018)); // TODO: localize 2.0
     items.Add(item);
   }
 
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, "Choose Thumbnail", result))
+  // TODO: localize 2.0
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")

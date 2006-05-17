@@ -1353,7 +1353,7 @@ int CXbmcHttp::xbmcGetGUIStatus()
   CGUIMediaWindow *mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_MUSIC_FILES);
   if (mediaWindow)
     output = closeTag+openTag+"MusicPath:" + mediaWindow->CurrentDirectory().m_strPath;
-  mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_VIDEOS);
+  mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (mediaWindow)
     output += closeTag+openTag+"VideoPath:" + mediaWindow->CurrentDirectory().m_strPath;
   mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_PICTURES);

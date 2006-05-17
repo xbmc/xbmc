@@ -2834,7 +2834,7 @@ void CApplication::Stop()
     //m_gWindowManager.Delete(WINDOW_MUSIC_TOP100);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
-    m_gWindowManager.Delete(WINDOW_VIDEOS);
+    m_gWindowManager.Delete(WINDOW_VIDEO_FILES);
     m_gWindowManager.Delete(WINDOW_VIDEO_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_VIDEO_TITLE);
     m_gWindowManager.Delete(WINDOW_VIDEO_GENRE);

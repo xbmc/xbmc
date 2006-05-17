@@ -375,6 +375,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("networksettings")) wWindowID = WINDOW_SETTINGS_NETWORK;
   else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
   else if (strWindow.Equals("scripts")) wWindowID = WINDOW_SCRIPTS;
+  else if (strWindow.Equals("myvideofiles")) wWindowID = WINDOW_VIDEO_FILES;
   else if (strWindow.Equals("myvideogenres")) wWindowID = WINDOW_VIDEO_GENRE;
   else if (strWindow.Equals("myvideoactors")) wWindowID = WINDOW_VIDEO_ACTOR;
   else if (strWindow.Equals("myvideoyears")) wWindowID = WINDOW_VIDEO_YEAR;
