@@ -98,18 +98,18 @@ void CGUIDialogMediaSource::OnPathBrowse()
   CStdString path;
   bool allowNetworkShares(m_type != "myprograms");
   VECSHARES extraShares;
-  // TODO 2.0: Fix up these strings
+  
   if (m_type == "music")
   { // add the music playlist location
     CShare share1;
     share1.strPath = CUtil::MusicPlaylistsLocation();
-    share1.strName = g_localizeStrings.Get(136);       // Playlists (ideally this would be "Music Playlists")
+    share1.strName = g_localizeStrings.Get(20011);   // TODO: localize 2.0
     extraShares.push_back(share1);
     if (g_guiSettings.GetString("MyMusic.RecordingPath",false) != "")
     {
       CShare share2;
       share2.strPath = g_guiSettings.GetString("MyMusic.RecordingPath");
-      share2.strName = "Recordings"; // TODO: localize 2.0
+      share2.strName = g_localizeStrings.Get(20007); // TODO: localize 2.0
       extraShares.push_back(share2);
     }
     share1.strPath = "soundtrack://";
@@ -135,7 +135,7 @@ void CGUIDialogMediaSource::OnPathBrowse()
   { // add the music playlist location
     CShare share1;
     share1.strPath = CUtil::VideoPlaylistsLocation();
-    share1.strName = g_localizeStrings.Get(136);       // Playlists (ideally this would be "Video Playlists")
+    share1.strName = g_localizeStrings.Get(20012);       // TODO: localize 2.0
     extraShares.push_back(share1);
     
     CShare share2;
@@ -147,7 +147,7 @@ void CGUIDialogMediaSource::OnPathBrowse()
   {
     CShare share1;
     share1.strPath = g_guiSettings.GetString("System.ScreenshotPath");
-    share1.strName = "Screenshots"; // ideally this would be "Screenshots" :D - localize 2.0!
+    share1.strName = g_localizeStrings.Get(20008); // TODO: localize 2.0
     extraShares.push_back(share1);
   }
   if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))

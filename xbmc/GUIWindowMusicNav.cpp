@@ -517,8 +517,8 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     }
   }
 
-  // TODO 2.0: Localize this...
-  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, "Artist Image", strPicture))
+  // TODO: localize 2.0
+  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, g_localizeStrings.Get(20010), strPicture))
   {
     CStdString thumb(pItem->GetCachedArtistThumb());
     CPicture picture;

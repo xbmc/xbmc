@@ -29,7 +29,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_MUSIC_PLAYLIST)
     return new CGUIViewStateWindowMusicPlaylist(items);
 
-  if (windowId==WINDOW_VIDEOS)
+  if (windowId==WINDOW_VIDEO_FILES)
     return new CGUIViewStateWindowVideoFiles(items);
 
   if (windowId==WINDOW_VIDEO_GENRE)
