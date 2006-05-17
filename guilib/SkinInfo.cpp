@@ -246,7 +246,7 @@ int CSkinInfo::GetStartWindow()
   // TODO: Add checking with any <startwindow> blocks to make sure that this window
   //       actually exists
   int windowID = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
-  if (!m_gWindowManager.GetWindow(windowID))
+  if (windowID != WINDOW_MUSIC && windowID != WINDOW_VIDEOS && !m_gWindowManager.GetWindow(windowID))
     return WINDOW_HOME;
   return windowID;
 }
