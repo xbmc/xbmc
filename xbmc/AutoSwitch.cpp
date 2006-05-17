@@ -37,7 +37,7 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
     }
     break;
 
-  case WINDOW_VIDEOS:
+  case WINDOW_VIDEO_FILES:
     {
       iSortMethod = g_guiSettings.GetInt("VideoFiles.AutoSwitchMethod");
       bBigThumbs = g_guiSettings.GetBool("VideoFiles.AutoSwitchUseLargeThumbs");

@@ -106,7 +106,28 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
     }
   }
 
-
+  // TODO: localize 2.0
+  // Hardcoded strings (starting at 20000)
+  m_vecStrings[20000] = "CDDA Rip Folder";
+  m_vecStrings[20001] = "Use external DVD Player";
+  m_vecStrings[20002] = "External DVD Player";
+  m_vecStrings[20003] = "Trainers Folder";
+  m_vecStrings[20004] = "Screenshot Folder";
+  m_vecStrings[20005] = "Recordings Folder";
+  m_vecStrings[20006] = "Playlists Folder";
+  m_vecStrings[20007] = "Recordings";
+  m_vecStrings[20008] = "Screenshots";
+  m_vecStrings[20009] = "Use XBMC";
+  m_vecStrings[20010] = "Artist Image";
+  m_vecStrings[20011] = "Music Playlists";
+  m_vecStrings[20012] = "Video Playlists";
+  m_vecStrings[20013] = "Do you wish to launch the game?";
+  m_vecStrings[20014] = "Sort by: Playlist";
+  m_vecStrings[20015] = "IMDb Thumb";
+  m_vecStrings[20016] = "Current Thumb";
+  m_vecStrings[20017] = "Local Thumb";
+  m_vecStrings[20018] = "No Thumb";
+  m_vecStrings[20019] = "Choose Thumbnail";
   return true;
 }
 
