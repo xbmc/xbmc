@@ -1,1179 +1,1260 @@
-<?xml version="1.0" encoding="Windows-1251" standalone="yes"?>
+п»ї<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Translated by Que (que_@users.sourceforge.net), Based on  Wadimstain's translation !--> 
 <strings>
-<string><id>0</id><value>Программы</value></string>
-<string><id>1</id><value>Фотографии</value></string>
-<string><id>2</id><value>Музыка</value></string>
-<string><id>3</id><value>Видео</value></string>
-<string><id>4</id><value>ТВ Гид</value></string>
-<string><id>5</id><value>Настройки</value></string>
-<string><id>7</id><value>Файлы</value></string>
-<string><id>8</id><value>Погода</value></string>
-<string><id>11</id><value>Понедельник</value></string>
-<string><id>12</id><value>Вторник</value></string>
-<string><id>13</id><value>Среда</value></string>
-<string><id>14</id><value>Четверг</value></string>
-<string><id>15</id><value>Пятница</value></string>
-<string><id>16</id><value>Суббота</value></string>
-<string><id>17</id><value>Воскресенье</value></string>
-<string><id>21</id><value>Январь</value></string>
-<string><id>22</id><value>Февраль</value></string>
-<string><id>23</id><value>Март</value></string>
-<string><id>24</id><value>Апрель</value></string>
-<string><id>25</id><value>Май</value></string>
-<string><id>26</id><value>Июнь</value></string>
-<string><id>27</id><value>Июль</value></string>
-<string><id>28</id><value>Август</value></string>
-<string><id>29</id><value>Сентябрь</value></string>
-<string><id>30</id><value>Октябрь</value></string>
-<string><id>31</id><value>Ноябрь</value></string>
-<string><id>32</id><value>Декабрь</value></string>
-<string><id>98</id><value>Вид: Авто.</value></string>
-<string><id>99</id><value>Вид: Авто. Больш</value></string>
-<string><id>100</id><value>Вид: Иконки</value></string>
-<string><id>101</id><value>Вид: Список</value></string>
-<string><id>102</id><value>Сканировать</value></string>
-<string><id>103</id><value>Сорт.по Назв.</value></string>
-<string><id>104</id><value>Сорт.по Дате</value></string>
-<string><id>105</id><value>Сорт.по Разм.</value></string>
-<string><id>106</id><value>Нет</value></string>
-<string><id>107</id><value>Да</value></string>
-<string><id>108</id><value>Слайдшоу</value></string>
-<string><id>109</id><value>Создать иконку</value></string>
-<string><id>110</id><value>Создать иконки</value></string>
-<string><id>111</id><value>Ярлыки</value></string>
-<string><id>112</id><value>ПАУЗА</value></string>
-<string><id>113</id><value>Файлы: Источник</value></string>
-<string><id>114</id><value>Файлы: Назначение</value></string>
-<string><id>115</id><value>Копировать</value></string>
-<string><id>116</id><value>Переместить</value></string>
-<string><id>117</id><value>Удалить</value></string>
-<string><id>118</id><value>Переименовать</value></string>
-<string><id>119</id><value>Новая папка</value></string>
-<string><id>120</id><value>Подтверждение копирования</value></string>
-<string><id>121</id><value>Подтверждение перемещения</value></string>
-<string><id>122</id><value>Подтверждение удаления</value></string>
-<string><id>123</id><value>Копировать файлы?</value></string>
-<string><id>124</id><value>Переместить файлы?</value></string>
-<string><id>125</id><value>Удалить файлы?</value></string>
-<string><id>126</id><value>Статус</value></string>
-<string><id>127</id><value>объекта(ов)</value></string>
-<string><id>128</id><value>Главные</value></string>
-<string><id>129</id><value>Слайдшоу</value></string>
-<string><id>130</id><value>О системе</value></string>
-<string><id>131</id><value>Экран</value></string>
-<string><id>132</id><value>Альбомы</value></string>
-<string><id>133</id><value>Исполнит.</value></string>
-<string><id>134</id><value>Песни</value></string>
-<string><id>135</id><value>Жанры</value></string>
-<string><id>136</id><value>Плэйлисты</value></string>
-<string><id>137</id><value>Поиск</value></string>
-<string><id>138</id><value>Информация о системе</value></string>
-<string><id>139</id><value>Температура:</value></string>
-<string><id>140</id><value>Температура CPU:</value></string>
-<string><id>141</id><value>Температура GPU:</value></string>
-<string><id>142</id><value>Время:</value></string>
-<string><id>143</id><value>Сейчас:</value></string>
-<string><id>144</id><value>Версия:</value></string>
-<string><id>145</id><value>Сеть:</value></string>
-<string><id>146</id><value>Тип:</value></string>
-<string><id>147</id><value>Static</value></string>
-<string><id>148</id><value>DHCP</value></string>
-<string><id>149</id><value>MAC</value></string>
-<string><id>150</id><value>IP</value></string>
-<string><id>151</id><value>Соединение: </value></string>
-<string><id>152</id><value>Полу-дуплекс</value></string>
-<string><id>153</id><value>Полный дуплекс</value></string>
-<string><id>154</id><value>Диски</value></string>
-<string><id>155</id><value>Диск</value></string>
-<string><id>156</id><value>Свободно</value></string>
-<string><id>157</id><value>Видео</value></string>
-<string><id>158</id><value>Свободно памяти</value></string>
-<string><id>159</id><value>Нет соединения</value></string>
-<string><id>160</id><value>своб.</value></string>
-<string><id>161</id><value>Недоступно</value></string>
-<string><id>162</id><value>Лоток открыт</value></string>
-<string><id>163</id><value>Чтение</value></string>
-<string><id>164</id><value>Нет диска</value></string>
-<string><id>165</id><value>Диск присутствует</value></string>
-<string><id>166</id><value>Оформление (скин)</value></string>
-<string><id>167</id><value>Включить FTP-сервер</value></string>
-<string><id>168</id><value>Включить синхронизацию времени</value></string>
-<string><id>169</id><value>Разрешение экрана</value></string>
-<string><id>170</id><value>Альбом:</value></string>
-<string><id>171</id><value>Исполнитель:</value></string>
-<string><id>172</id><value>Дата выпуска:</value></string>
-<string><id>173</id><value>Рейтинг:</value></string>
-<string><id>174</id><value>Жанр:</value></string>
-<string><id>175</id><value>Настроение:</value></string>
-<string><id>176</id><value>Стили:</value></string>
-<string><id>177</id><value>Обзор:</value></string>
-<string><id>178</id><value>Треки:</value></string>
-<string><id>179</id><value>Песня</value></string>
-<string><id>180</id><value>Длительность</value></string>
-<string><id>181</id><value>Выберите альбом</value></string>
-<string><id>182</id><value>Треки</value></string>
-<string><id>183</id><value>Обзор</value></string>
-<string><id>184</id><value>Обновить</value></string>
-<string><id>185</id><value>Поиск альбома</value></string>
-<string><id>186</id><value>OK</value></string>
-<string><id>187</id><value>Альбомы не найдены!</value></string>
-<string><id>188</id><value>Выбрать все</value></string>
-<string><id>189</id><value>Сканировать инф.</value></string>
-<string><id>190</id><value>Записать</value></string>
-<string><id>191</id><value>Перемешать</value></string>
-<string><id>192</id><value>Очистить</value></string>
-<string><id>193</id><value>Сканировать</value></string>
-<string><id>194</id><value>Поиск...</value></string>
-<string><id>195</id><value>Инф. в IMDB не найдена!</value></string>
-<string><id>196</id><value>Выберите фильм:</value></string>
-<string><id>197</id><value>Запрос инф. в IMDB </value></string>
-<string><id>198</id><value>Загрузка информации о фильме</value></string>
-<string><id>199</id><value>Режиссер:</value></string>
-<string><id>200</id><value>Сценарист:</value></string>
-<string><id>201</id><value>Год:</value></string>
-<string><id>202</id><value>Слоган:</value></string>
-<string><id>203</id><value>Сюжет:</value></string>
-<string><id>204</id><value>Рейтинг:</value></string>
-<string><id>205</id><value>Голосов:</value></string>
-<string><id>206</id><value>Актёры</value></string>
-<string><id>207</id><value>Сюжет</value></string>
-<string><id>208</id><value>Воспр.</value></string>
-<string><id>209</id><value>След.</value></string>
-<string><id>210</id><value>Предыдущ.</value></string>
-<string><id>211</id><value>Поиск приложений</value></string>
-<string><id>212</id><value>приложений найдено</value></string>
-<string><id>213</id><value>Калибровка экрана графического интерфейса...</value></string>
-<string><id>214</id><value>Калибровка видеоэкрана...</value></string>
-<string><id>215</id><value>Сглаживание изображения</value></string>
-<string><id>216</id><value>Степень увеличения</value></string>
-<string><id>217</id><value>Соотн. сторон пикселя</value></string>
-<string><id>218</id><value>DVD-привод</value></string>
-<string><id>219</id><value>Вставьте диск</value></string>
-<string><id>220</id><value>Удаленный ресурс</value></string>
-<string><id>221</id><value>Нет подключения к сети</value></string>
-<string><id>222</id><value>Отмена</value></string>
-<string><id>223</id><value>Авто-переключение 16:9</value></string>
-<string><id>224</id><value>Длительность показа слайда</value></string>
-<string><id>225</id><value>Время перехода от слайда к слайду</value></string>
-<string><id>226</id><value>Включить режим PAL60</value></string>
-<string><id>227</id><value>Использовать CDDB</value></string>
-<string><id>228</id><value>Перемешать плэйлист при загрузке</value></string>
-<string><id>229</id><value>Время до остановки HDD (мин)</value></string>
-<string><id>230</id><value>Фильтры</value></string>
-<string><id>231</id><value>Нет</value></string>
-<string><id>232</id><value>Точка</value></string>
-<string><id>233</id><value>Линейный</value></string>
-<string><id>234</id><value>Анизотропный</value></string>
-<string><id>235</id><value>Шахматный</value></string>
-<string><id>236</id><value>Гаусово-кубич.</value></string>
-<string><id>237</id><value>Уменьшение</value></string>
-<string><id>238</id><value>Увеличение</value></string>
-<string><id>239</id><value>Очищать плейлист после проигрывания </value></string>
-<string><id>240</id><value>Автовоспроизведение VideoDVD</value></string>
-<string><id>241</id><value>Автовоспроизведение VCD/SVCD</value></string>
-<string><id>242</id><value>Автовоспроизведение Audio-CD</value></string>
-<string><id>243</id><value>Автозапуск игры с диска XBOX-игры</value></string>
-<string><id>244</id><value>Автовоспроизведение видеофайлов с CD/DVD</value></string>
-<string><id>245</id><value>Автовоспроизведение аудиофайлов с CD/DVD</value></string>
-<string><id>246</id><value>Автопоказ изображений с CD/DVD-диска</value></string>
-<string><id>247</id><value>Скрипты</value></string>
-<string><id>248</id><value>Язык</value></string>
-<string><id>249</id><value>Музыка</value></string>
-<string><id>250</id><value>Визуализация</value></string>
-<string><id>251</id><value>Выберите директорию назначения</value></string>
-<string><id>252</id><value>- распределять стерео на все каналы</value></string>
-<string><id>253</id><value>Количество каналов</value></string>
-<string><id>254</id><value>- подключен внешний декодер DTS™</value></string>
-<string><id>255</id><value>CDDB</value></string>
-<string><id>256</id><value>Проверка инф. freedb для CDDB</value></string>
-<string><id>257</id><value>Ошибка</value></string>
-<string><id>258</id><value>Использовать теги ID3</value></string>
-<string><id>259</id><value>Открытие</value></string>
-<string><id>260</id><value>Shoutcast</value></string>
-<string><id>261</id><value>Ожидание старта....</value></string>
-<string><id>262</id><value>Информация работы скриптов</value></string>
-<string><id>263</id><value>Включить Web-сервер</value></string>
-<string><id>264</id><value>Запись</value></string>
-<string><id>265</id><value>Остановить запись</value></string>
-<string><id>266</id><value>Сорт.по: Трек</value></string>
-<string><id>267</id><value>Сорт.по: Врем.</value></string>
-<string><id>268</id><value>Сорт.по: Назв.</value></string>
-<string><id>269</id><value>Сорт.по: Испл.</value></string>
-<string><id>270</id><value>Сорт.по: Албм.</value></string>
-<string><id>271</id><value>TОП 100</value></string>
-<string><id>272</id><value>Настройка размеров экрана (левый верхний угол)</value></string>
-<string><id>273</id><value>Настройка размеров экрана (правый нижний угол)</value></string>
-<string><id>274</id><value>Позиция субтитров</value></string>
-<string><id>275</id><value>Регулировка соотношения высоты и ширины</value></string>
-<string><id>276</id><value>Двигайте стрелки для регулировки размеров экрана</value></string>
-<string><id>277</id><value>Двигайте полоску для субтитров</value></string>
-<string><id>278</id><value>Добейтесь квадрата</value></string>
-<string><id>279</id><value>Невозможно загрузить настройки</value></string>
-<string><id>280</id><value>использование стандартных настроек</value></string>
-<string><id>281</id><value>Проверьте .xml-файлы</value></string>
-<string><id>282</id><value>найдено %i значений</value></string>
-<string><id>283</id><value>Результаты поиска</value></string>
-<string><id>284</id><value>Ничего не найдено</value></string>
-<string><id>285</id><value>Фильтр черезстрочности</value></string>
-<string><id>286</id><value>Включить постобработку</value></string>
-<string><id>287</id><value>Субтитры</value></string>
-<string><id>288</id><value>Шрифт</value></string>
-<string><id>289</id><value>- размер</value></string>
-<string><id>290</id><value>Усиление громкости (dB)</value></string>
-<string><id>291</id><value>Видео</value></string>
-<string><id>292</id><value>Звук</value></string>
-<string><id>293</id><value>Субтитры</value></string>
-<string><id>294</id><value>Поставить закладку</value></string>
-<string><id>295</id><value>Цикл закладок</value></string>
-<string><id>296</id><value>Очистить закладки</value></string>
-<string><id>297</id><value>Задержка звука</value></string>
-<string><id>298</id><value>Ползунок</value></string>
-<string><id>300</id><value>1. Язык</value></string>
-<string><id>301</id><value>2. Громкость</value></string>
-<string><id>302</id><value>3. Поток</value></string>
-<string><id>303</id><value>Задержка субтитров</value></string>
-<string><id>304</id><value>Язык</value></string>
-<string><id>305</id><value>Включено</value></string>
-<string><id>306</id><value>Без интерливинга</value></string>
-<string><id>307</id><value>- автоматический постпроцессинг</value></string>
-<string><id>308</id><value>- вертик. Deblocking-фильтр</value></string>
-<string><id>309</id><value>- гориз.  Deblocking-фильтр</value></string>
-<string><id>310</id><value>- Авто яркость/контраст</value></string>
-<string><id>311</id><value>- Подавление отражений</value></string>
-<string><id>312</id><value>(0=авт.)</value></string>
-<string><id>313</id><value>Очистить базу данных</value></string>
-<string><id>314</id><value>Подготовка...</value></string>
-<string><id>315</id><value>Ошибка базы данных</value></string>
-<string><id>316</id><value>Поиск песен...</value></string>
-<string><id>317</id><value>Очистка базы данных выполнена</value></string>
-<string><id>318</id><value>Очистка песен...</value></string>
-<string><id>319</id><value>Ошибка очистки песен</value></string>
-<string><id>320</id><value>Очистка исполнителей...</value></string>
-<string><id>321</id><value>Ошибка очистки исполнителей</value></string>
-<string><id>322</id><value>Очистка жанров...</value></string>
-<string><id>323</id><value>Ошибка очистки жанров</value></string>
-<string><id>324</id><value>Очистка путей...</value></string>
-<string><id>325</id><value>Ошибка очистки путей</value></string>
-<string><id>326</id><value>Очистка альбомов...</value></string>
-<string><id>327</id><value>Ошибка очистки альбомов</value></string>
-<string><id>328</id><value>Запись изменений...</value></string>
-<string><id>329</id><value>Ошибка записи изменений</value></string>
-<string><id>330</id><value>Это займет некоторое время...</value></string>
-<string><id>331</id><value>Сжатие базы данных...</value></string>
-<string><id>332</id><value>Ошибка сжатия базы данных</value></string>
-<string><id>333</id><value>Вы хотите очистить базу данных музыки?</value></string>
-<string><id>334</id><value>Очистка музыкальной базы данных</value></string>
-<string><id>335</id><value>Старт</value></string>
-<string><id>336</id><value>Проигрывать с частотой кадров GUI</value></string>
-<string><id>337</id><value>Формат аудиовыхода</value></string>
-<string><id>338</id><value>Аналоговый</value></string>
-<string><id>339</id><value>Цифровой</value></string>
-<string><id>340</id><value>Различные исполнит.</value></string>
-<string><id>341</id><value>Проигрывание DVD</value></string>
-<string><id>342</id><value>Фильмы</value></string>
-<string><id>343</id><value>Проигрывать с частотой кадров GUI</value></string>
-<string><id>344</id><value>Актеры</value></string>
-<string><id>345</id><value>Год</value></string>
-<string><id>346</id><value>Склеить</value></string>
-<string><id>347</id><value>Разбить</value></string>
-<string><id>348</id><value>Иерархия папок</value></string>
-<string><id>349</id><value>Показывать только Default.xbe</value></string>
-<string><id>350</id><value>Программы</value></string>
-<string><id>351</id><value>отключено</value></string>
-<string><id>352</id><value>Затемнение</value></string>
-<string><id>353</id><value>Чёрный экран</value></string>
-<string><id>354</id><value>Стиль Матрицы</value></string>
-<string><id>355</id><value>Время до появления заставки</value></string>
-<string><id>356</id><value>Тип заставки</value></string>
-<string><id>357</id><value>Время до автовыключения</value></string>
-<string><id>358</id><value>Все альбомы</value></string>
-<string><id>359</id><value>Недавние альбомы</value></string>
-<string><id>360</id><value>Заставка</value></string>
-<string><id>361</id><value>Р. Слайдшоу</value></string>
-<string><id>362</id><value>Уровень затемнения экрана (%)</value></string>
-<string><id>363</id><value>Сорт.по файл</value></string>
-<string><id>364</id><value>- подключен внешний декодер AC3 (Dolby Digital™)</value></string>
-<string><id>365</id><value>Сорт.по: Назв.</value></string>
-<string><id>366</id><value>Сорт.по: Год</value></string>
-<string><id>367</id><value>Сорт.по: Рейт.</value></string>
-<string><id>368</id><value>IMDB</value></string>
-<string><id>369</id><value>Название</value></string>
-<string><id>370</id><value>грозы</value></string>
-<string><id>371</id><value>местами</value></string>
-<string><id>372</id><value>преим.</value></string>
-<string><id>373</id><value>солнечно</value></string>
-<string><id>374</id><value>облачно</value></string>
-<string><id>375</id><value>снег</value></string>
-<string><id>376</id><value>дождь</value></string>
-<string><id>377</id><value>небольшой</value></string>
-<string><id>378</id><value>утром</value></string>
-<string><id>379</id><value>днём</value></string>
-<string><id>380</id><value>снегопад</value></string>
-<string><id>381</id><value>немного</value></string>
-<string><id>382</id><value>местами</value></string>
-<string><id>383</id><value>порывами</value></string>
-<string><id>384</id><value>сильн.</value></string>
-<string><id>385</id><value>ясно</value></string>
-<string><id>386</id><value>безоблачно</value></string>
-<string><id>387</id><value>облачно</value></string>
-<string><id>388</id><value>рано</value></string>
-<string><id>389</id><value>обильно</value></string>
-<string><id>390</id><value>шквал</value></string>
-<string><id>391</id><value>низкий</value></string>
-<string><id>392</id><value>средний</value></string>
-<string><id>393</id><value>высокий</value></string>
-<string><id>394</id><value>туман</value></string>
-<string><id>395</id><value>дымка</value></string>
-<string><id>396</id><value>Выберите местоположение</value></string>
-<string><id>397</id><value>Период обновления</value></string>
-<string><id>398</id><value>Единица измерения температуры</value></string>
-<string><id>399</id><value>Единица измерения скорости ветра</value></string>
-<string><id>400</id><value>Погода</value></string>
-<string><id>401</id><value>Температура</value></string>
-<string><id>402</id><value>По ощущению</value></string>
-<string><id>403</id><value>Уровень УФ</value></string>
-<string><id>404</id><value>Ветер</value></string>
-<string><id>405</id><value>Точка росы</value></string>
-<string><id>406</id><value>Влажность</value></string>
-<string><id>407</id><value>напр.:</value></string>
-<string><id>408</id><value>, скорость до:</value></string>
-<string><id>410</id><value>Подключение к weather.com</value></string>
-<string><id>411</id><value>Получение прогноза для:</value></string>
-<string><id>412</id><value>Невозможно получить прогноз</value></string>
-<string><id>413</id><value>Вручную</value></string>
-<string><id>414</id><value>Нет описания для этого альбома</value></string>
-<string><id>415</id><value>Загрузка иконок...</value></string>
-<string><id>416</id><value>Не доступно</value></string>
-<string><id>417</id><value>Вид: Крупно</value></string>
-<string><id>418</id><value>Видео/Жанры</value></string>
-<string><id>419</id><value>Видео/Актёры</value></string>
-<string><id>420</id><value>Видео/Года</value></string>
-<string><id>421</id><value>Видео/Названия</value></string>
-<string><id>422</id><value>Удалить инф.</value></string>
-<string><id>423</id><value>Удалить CDDB инф.</value></string>
-<string><id>424</id><value>Выбор</value></string>
-<string><id>425</id><value>Инф.об альб. не найдена</value></string>
-<string><id>426</id><value>В CDDB инф. не найдена</value></string>
-<string><id>427</id><value>Диск:</value></string>
-<string><id>428</id><value>Вставьте правильный CD/DVD-диск</value></string>
-<string><id>429</id><value>Вставьте следующий CD/DVD-диск</value></string>
-<string><id>430</id><value>Сорт.по: №DVD</value></string>
-<string><id>431</id><value>Без кэша</value></string>
-<string><id>432</id><value>Удалить фильм из базы данных</value></string>
-<string><id>433</id><value>Вы уверены насчёт удаления</value></string>
-<string><id>434</id><value>фильма?</value></string>
-<string><id>435</id><value>Трек</value></string>
-<string><id>436</id><value>Год:</value></string>
-<string><id>437</id><value>Длительность:</value></string>
-<string><id>438</id><value>Открытие файла</value></string>
-<string><id>439</id><value>Буферизация</value></string>
-<string><id>440</id><value>Жесткий диск</value></string>
-<string><id>441</id><value>UDF</value></string>
-<string><id>442</id><value>LAN</value></string>
-<string><id>443</id><value>Интернет</value></string>
-<string><id>444</id><value>видео</value></string>
-<string><id>445</id><value>аудио</value></string>
-<string><id>446</id><value>DVD</value></string>
-<string><id>447</id><value>Автозапуск</value></string>
-<string><id>448</id><value>LCD-мод</value></string>
-<string><id>449</id><value>Включено</value></string>
-<string><id>450</id><value>Количество знакомест в строке</value></string>
-<string><id>451</id><value>Адрес 1-ой строки</value></string>
-<string><id>452</id><value>Адрес 2-ой строки</value></string>
-<string><id>453</id><value>Адрес 3-ой строки</value></string>
-<string><id>454</id><value>Адрес 4-ой строки</value></string>
-<string><id>455</id><value>Количество строк</value></string>
-<string><id>456</id><value>Режим</value></string>
-<string><id>457</id><value>Сменить вид</value></string>
-<string><id>458</id><value>B/Отметить</value></string>
-<string><id>459</id><value>Субтит.</value></string>
-<string><id>460</id><value>Аудио поток</value></string>
-<string><id>461</id><value>[запущено]</value></string>
-<string><id>462</id><value>Субтитры</value></string>
-<string><id>463</id><value>Яркость подсветки</value></string>
-<string><id>464</id><value>Яркость</value></string>
-<string><id>465</id><value>Контрастность</value></string>
-<string><id>466</id><value>Гамма</value></string>
-<string><id>467</id><value>Тип</value></string>
-<string><id>468</id><value>Измените положение панели</value></string>
-<string><id>469</id><value>Позиция экранного меню (OSD)</value></string>
-<string><id>470</id><value>Создатели</value></string>
-<string><id>471</id><value>МOD-чип</value></string>
-<string><id>472</id><value>Время отображения меню OSD</value></string>
-<string><id>473</id><value>Преобраз. с высок.качеством</value></string>
-<string><id>474</id><value>Выключено</value></string>
-<string><id>475</id><value>Только музыка</value></string>
-<string><id>476</id><value>Музыка и Видео</value></string>
-<string><id>477</id><value>Невозможно загрузить плэйлист</value></string>
-<string><id>478</id><value>Экранное меню (OSD)</value></string>
-<string><id>479</id><value>Позиция экранного меню</value></string>
-<string><id>480</id><value>Оформление</value></string>
-<string><id>481</id><value>Опции аудио</value></string>
-<string><id>482</id><value>Об XBMC</value></string>
-<string><id>483</id><value>Альбом</value></string>
-<string><id>484</id><value>Исполнитель</value></string>
-<string><id>485</id><value>Удалить альбом</value></string>
-<string><id>486</id><value>Повтор</value></string>
-<string><id>487</id><value>Повтор 1 раз</value></string>
-<string><id>488</id><value>Повтор папки</value></string>
-<string><id>489</id><value>Автоматически проигрывать следующий файл</value></string>
-<string><id>490</id><value>Авто-переключение списков и иконок в песнях</value></string>
-<string><id>491</id><value>- использовать большие иконки</value></string>
-<string><id>492</id><value>Масштабировать субтитры</value></string>
-<string><id>493</id><value>Расширенные опции (Только для экспертов!)</value></string>
-<string><id>494</id><value>Выходной аттюнеатор (dB)</value></string>
-<string><id>495</id><value>Пересчитывать разрешение видео до GUI</value></string>
-<string><id>496</id><value>Калибровка</value></string>
-<string><id>497</id><value>Скрывать расширения в названиях файлов</value></string>
-<string><id>498</id><value>Сорт.по: Типу</value></string>
-<string><id>499</id><value>Невозможно соедин. с www.allmusic.com</value></string>
-<string><id>500</id><value>Неудачная загрузка инф. об альбоме</value></string>
-<string><id>501</id><value>Проверка имен альбомов...</value></string>
-<string><id>502</id><value>Открыт</value></string>
-<string><id>503</id><value>Занят</value></string>
-<string><id>504</id><value>Пуст</value></string>
-<string><id>505</id><value>Загрузка информации из файлов...</value></string>
-<string><id>506</id><value>Имя папки в качестве названия</value></string>
-<string><id>507</id><value>Сорт.по: Исп.</value></string>
-<string><id>508</id><value>Не использовать ярлыки или сканирование</value></string>
-<string><id>509</id><value>Кэшировать иконки программ</value></string>
-<string><id>510</id><value>Показывать визуализацию</value></string>
-<string><id>511</id><value>Авто-переключение PAL/NTSC для игр</value></string>
-<string><id>512</id><value>После старта отображать</value></string>
-<string><id>513</id><value>основное окно</value></string>
-<string><id>514</id><value>настройки</value></string>
-<string><id>515</id><value>Жанр</value></string>
-<string><id>516</id><value>Открывать архивы как папки</value></string>
-<string><id>517</id><value>Часто играемые альбомы</value></string>
-<string><id>518</id><value>Запустить</value></string>
-<string><id>519</id><value>Запустить в режиме…</value></string>
-<string><id>520</id><value>Изменить заголовок XBE</value></string>
-<string><id>600</id><value>Риппинг CD</value></string>
-<string><id>601</id><value>среднее</value></string>
-<string><id>602</id><value>стандартное</value></string>
-<string><id>603</id><value>экстремальное</value></string>
-<string><id>604</id><value>постоянный поток</value></string>
-<string><id>605</id><value>Риппинг...</value></string>
-<string><id>606</id><value>Номер трека:</value></string>
-<string><id>607</id><value>В:</value></string>
-<string><id>608</id><value>Рип CD-диска или трека невозможен</value></string>
-<string><id>609</id><value>Не указан CDDARipPath в XboxMediaCenter.xml</value></string>
-<string><id>620</id><value>Риппинг CD</value></string>
-<string><id>621</id><value>Кодировать с помощью</value></string>
-<string><id>622</id><value>Качество</value></string>
-<string><id>623</id><value>Скорость потока (BitRate)</value></string>
-<string><id>624</id><value>Использовать номер трека</value></string>
-<string><id>625</id><value>Все песни </value></string>
-<string><id>629</id><value>Режим просмотра</value></string>
-<string><id>630</id><value>Нормальный</value></string>
-<string><id>631</id><value>Увеличенный</value></string>
-<string><id>632</id><value>Растянутый 4:3</value></string>
-<string><id>633</id><value>Растянутый 14:9</value></string>
-<string><id>634</id><value>Растянутый 16:9</value></string>
-<string><id>635</id><value>Оригинальный размер</value></string>
-<string><id>636</id><value>Особый</value></string>
-<string><id>637</id><value>Replay Gain</value></string>
-<string><id>638</id><value>Режим Replay Gain</value></string>
-<string><id>639</id><value>уровни для треков</value></string>
-<string><id>640</id><value>уровень альбома</value></string>
-<string><id>641</id><value>Уровень для файлов с Replay Gain</value></string>
-<string><id>642</id><value>Уровень для файлов без Replay Gain</value></string>
-<string><id>643</id><value>Избегать искажений на файлах с Rep.Gain</value></string>
-<string><id>644</id><value>Обрезать черные полосы</value></string>
-<string><id>645</id><value>Необходимо кэшировать большой файл. Продолжить?</value></string>
-<string><id>646</id><value>Убрать название</value></string>
-<string><id>700</id><value>Очистка базы данных</value></string>
-<string><id>701</id><value>Удаление старых песен из базы</value></string>
-<string><id>702</id><value>Информация из этой папки уже есть</value></string>
-<string><id>703</id><value>Нажмите 'Да' для обновления всех песен.</value></string>
-<string><id>704</id><value>Нажмите 'Нет' для добавления только новых.</value></string>
-<string><id>705</id><value>Настройка сети</value></string>
-<string><id>706</id><value>адрес HTTP-proxy сервера</value></string>
-<string><id>707</id><value>порт HTTP-proxy сервера</value></string>
-<string><id>708</id><value>Использовать HTTP-proxy</value></string>
-<string><id>709</id><value>XLink Kai XTag</value></string>
-<string><id>710</id><value>XLink Kai Пароль</value></string>
-<string><id>711</id><value>Internet Protocol (IP)</value></string>
-<string><id>712</id><value>Неправильно. Выберите от 1 до 65535.</value></string>
-<string><id>713</id><value>HTTP-Proxy </value></string>
-<string><id>714</id><value>XLink Kai</value></string>
-<string><id>715</id><value>Параметры сети</value></string>
-<string><id>716</id><value>автоматически (DHCP)</value></string>
-<string><id>717</id><value>вручную (Static)</value></string>
-<string><id>718</id><value>как есть (из Dashboard-а)</value></string>
-<string><id>719</id><value>IP-адрес</value></string>
-<string><id>720</id><value>Маска подсети</value></string>
-<string><id>721</id><value>Адрес шлюза</value></string>
-<string><id>722</id><value>Адрес DNS-сервера</value></string>
-<string><id>723</id><value>Записать и перегрузить</value></string>
-<string><id>724</id><value>Неправильный адрес. Введите в виде AAA.BBB.CCC.DDD</value></string>
-<string><id>725</id><value>с числами от 0 до 255.</value></string>
-<string><id>726</id><value>Изменения не сохранены. Продолжить без сохран.?</value></string>
-<string><id>727</id><value>Web сервер</value></string>
-<string><id>728</id><value>FTP сервер</value></string>
-<string><id>729</id><value>Синхронизовать время из Интернета</value></string>
-<string><id>730</id><value>Порт для Web-сервера </value></string>
-<string><id>731</id><value>Адрес сервера времени</value></string>
-<string><id>732</id><value>Сохранить и применить</value></string>
-<string><id>733</id><value>Пароль для доступа к Web-серверу</value></string>
-<string><id>734</id><value>без пароля</value></string>
-<string><id>735</id><value>- набор символов:</value></string>
-<string><id>736</id><value>- стиль:</value></string>
-<string><id>737</id><value>- цвет:</value></string>
-<string><id>738</id><value>нормальный</value></string>
-<string><id>739</id><value>жирный</value></string>
-<string><id>740</id><value>наклонный</value></string>
-<string><id>741</id><value>жирный+наклонный</value></string>
-<string><id>742</id><value>белый</value></string>
-<string><id>743</id><value>желтый</value></string>
-<string><id>744</id><value>Файлы</value></string>
-<string><id>745</id><value>Нет сканированной информации для этого вида</value></string>
-<string><id>746</id><value>Переключитесь в режим списка файлов</value></string>
-<string><id>747</id><value>Ошибка загрузки картинки</value></string>
-<string><id>748</id><value>Редактировать путь</value></string>
-<string><id>749</id><value>Добавить ресурс</value></string>
-<string><id>750</id><value>Уверены?</value></string>
-<string><id>751</id><value>Удалить ресурс</value></string>
-<string><id>752</id><value>Редактировать путь ресурса</value></string>
-<string><id>753</id><value>Редактировать название ресурса</value></string>
-<string><id>754</id><value>Добавить ссылку?</value></string>
-<string><id>755</id><value>Изменить путь программы</value></string>
-<string><id>756</id><value>Изменить название программы</value></string>
-<string><id>757</id><value>Изменить глубину просмотра</value></string>
-<string><id>758</id><value>Удалить ссылку на программу</value></string>
-<string><id>759</id><value>Вид: Больш. лист</value></string>
-<string><id>760</id><value>жёлтый</value></string>
-<string><id>761</id><value>белый</value></string>
-<string><id>762</id><value>синий</value></string>
-<string><id>763</id><value>светло-зелёный</value></string>
-<string><id>764</id><value>желто-зеленый</value></string>
-<string><id>765</id><value>голубой</value></string>
-<string><id>766</id><value>зарезервировано</value></string>
-<string><id>767</id><value>зарезервировано</value></string>
-<string><id>768</id><value>зарезервировано</value></string>
-<string><id>769</id><value>зарезервировано</value></string>
-<string><id>770</id><value>Ошибка %i: ресурс не доступен</value></string>
-<string><id>771</id><value>- соблюдать ограничения файловой системы FATx</value></string>
-<string><id>772</id><value>Аудиовыход</value></string>
-<string><id>773</id><value>Поиск</value></string>
-<string><id>774</id><value>Источник для слайдшоу</value></string>
-<string><id>998</id><value>XLink Kai</value></string>
-<string><id>999</id><value>Сетевая игра</value></string>
-<string><id>1000</id><value>Посмотреть заставку</value></string>
-<string><id>1200</id><value>SMB-ресурс</value></string>
-<string><id>1201</id><value>IP-адрес SMB-ресурса</value></string>
-<string><id>1202</id><value>Рабочая группа для SMB ресурса</value></string>
-<string><id>1203</id><value>Имя пользователя (user name)</value></string>
-<string><id>1204</id><value>Пароль доступа (user password)</value></string>
-<string><id>1205</id><value>Имя ресурса</value></string>
-<string><id>1206</id><value>Добавить к</value></string>
-<string><id>1207</id><value>IP адрес WINS-сервера</value></string>
-<string><id>1208</id><value>Режим установок</value></string>
-<string><id>1209</id><value>Режим доступа к SMB-ресурсам установлен!</value></string>
-<string><id>1210</id><value>Убрать</value></string>
-<string><id>1211</id><value>Музыка</value></string>
-<string><id>1212</id><value>Видео</value></string>
-<string><id>1213</id><value>Фотографии</value></string>
-<string><id>1214</id><value>Файлы</value></string>
-<string><id>1215</id><value>Музыка и Видео</value></string>
-<string><id>1216</id><value>Музыка и Фото</value></string>
-<string><id>1217</id><value>Музыка и Файлы</value></string>
-<string><id>1218</id><value>Видео и Фото</value></string>
-<string><id>1219</id><value>Видео и Файлы</value></string>
-<string><id>1220</id><value>Фото и Файлы</value></string>
-<string><id>1221</id><value>Музыка,Видео и Фото</value></string>
-<string><id>1222</id><value>Муз.,Видео,Фото и Файлы</value></string>
-<string><id>1223</id><value>отключен</value></string>
-<string><id>1224</id><value>для простого пользователя</value></string>
-<string><id>1225</id><value>для опытного пользователя</value></string>
-<string><id>1226</id><value>Файлы,Музыка и Видео</value></string>
-<string><id>1227</id><value>Файлы,Фото и Музыка</value></string>
-<string><id>1228</id><value>Файлы,Фото и Видео</value></string>
-<string><id>1229</id><value>Музыка и Программы</value></string>
-<string><id>1230</id><value>Видео и Программы</value></string>
-<string><id>1231</id><value>Фото и Программы</value></string>
-<string><id>1232</id><value>Музыка,Видео,Фото и Программы</value></string>
-<string><id>1233</id><value>Программы,Видео и Музыка</value></string>
-<string><id>1234</id><value>Программы,Фото и Музыка</value></string>
-<string><id>1235</id><value>Программы,Фото и Видео </value></string>
-<string><id>1245</id><value>Имя пользователя FTP (login name)</value></string>
-<string><id>1246</id><value>Пароль (user password)</value></string>
-<string><id>1247</id><value>Логин и пароль для FTP-сервера установлены!</value></string>
-<string><id>1250</id><value>Связь с Xbox-ами</value></string>
-<string><id>1251</id><value>Автоматически находить XOBX-ы в сети</value></string>
-<string><id>1252</id><value>Название этого XBOX-а</value></string>
-<string><id>1253</id><value>Создавать ссылки в файлменеджере</value></string>
-<string><id>1254</id><value>Разрешить оповещение</value></string>
-<string><id>1255</id><value>Отправлять логин и пароль для FTP</value></string>
-<string><id>1256</id><value>Интервал для команды 'ping'</value></string>
-<string><id>1257</id><value>Подключиться к обнаруженному XBOXу?</value></string>
-<string><id>1396</id><value>гололёд</value></string>
-<string><id>1397</id><value>и</value></string>
-<string><id>1398</id><value>заморозки</value></string>
-<string><id>1399</id><value>позже</value></string>
-<string><id>1400</id><value>местами</value></string>
-<string><id>1401</id><value>грозовой ливень</value></string>
-<string><id>1402</id><value>гром</value></string>
-<string><id>1403</id><value>Солнце</value></string>
-<string><id>1404</id><value>сильный</value></string>
-<string><id>1405</id><value>в</value></string>
-<string><id>1406</id><value> </value></string>
-<string><id>1407</id><value>окрестностях</value></string>
-<string><id>1408</id><value>лёд</value></string>
-<string><id>1409</id><value>кристаллы</value></string>
-<string><id>1410</id><value>штиль</value></string>
-<string><id>2050</id><value>Длительн.:</value></string>
-<string><id>4501</id><value>Тип дисплея</value></string>
-<string><id>10000</id><value>Основной</value></string>
-<string><id>10001</id><value>Программы</value></string>
-<string><id>10002</id><value>Фотографии</value></string>
-<string><id>10003</id><value>Файлы</value></string>
-<string><id>10004</id><value>Настройки</value></string>
-<string><id>10005</id><value>Музыка</value></string>
-<string><id>10006</id><value>Видео</value></string>
-<string><id>10007</id><value>Инф. о системе</value></string>
-<string><id>10008</id><value>Настройки-&gt;Главные</value></string>
-<string><id>10009</id><value>Настройки-&gt;Экран</value></string>
-<string><id>10010</id><value>Настройки-&gt;Экран-&gt;Калибровка экрана</value></string>
-<string><id>10011</id><value>Настройки-&gt;Экран-&gt;Калибровка видеоэкрана</value></string>
-<string><id>10012</id><value>Настройки-&gt;Фотографии</value></string>
-<string><id>10013</id><value>Настройки-&gt;Программы</value></string>
-<string><id>10014</id><value>Настройки-&gt;Погода</value></string>
-<string><id>10015</id><value>Настройки-&gt;Музыка</value></string>
-<string><id>10016</id><value>Настройки-&gt;Система</value></string>
-<string><id>10017</id><value>Настройки-&gt;Видео</value></string>
-<string><id>10018</id><value>Настройки-&gt;Сеть</value></string>
-<string><id>10019</id><value>Настройки-&gt;Интерфейс пользователя</value></string>
-<string><id>10020</id><value>Настройки-&gt;Скрипты</value></string>
-<string><id>10021</id><value>Видео/жанр</value></string>
-<string><id>10022</id><value>Видео/автор</value></string>
-<string><id>10023</id><value>Видео/год</value></string>
-<string><id>10025</id><value>Видео/название</value></string>
-<string><id>10028</id><value>Видео/плэйлист</value></string>
-<string><id>10034</id><value>Настройки-&gt;Профили</value></string>
-<string><id>10100</id><value>Выберите: Да/Нет</value></string>
-<string><id>10101</id><value>Индикатор прогресса</value></string>
-<string><id>10500</id><value>Музыка/плэйлист</value></string>
-<string><id>10501</id><value>Музыка/файлы</value></string>
-<string><id>10502</id><value>Музыка/альбомы</value></string>
-<string><id>10503</id><value>Музыка/артисты</value></string>
-<string><id>10504</id><value>Музыка/жанры</value></string>
-<string><id>10505</id><value>Музыка/top100</value></string>
-<string><id>10506</id><value>Программы</value></string>
-<string><id>10507</id><value>Настройка профиля</value></string>
-<string><id>10508</id><value>Погода</value></string>
-<string><id>10509</id><value>Сетевые Игры</value></string>
-<string><id>10510</id><value>Дополнения</value></string>
-<string><id>10511</id><value>Информация о системе</value></string>
-<string><id>10512</id><value>Музыка - Альбомы</value></string>
-<string><id>10513</id><value>Музыка - Исполнители</value></string>
-<string><id>10514</id><value>Музыка - Жанры</value></string>
-<string><id>10515</id><value>Музыка - Top 100</value></string>
-<string><id>10516</id><value>Музыка - Фонотека</value></string>
-<string><id>10517</id><value>Музыка - Текущий плейлист</value></string>
-<string><id>10518</id><value>Видео - Актёры</value></string>
-<string><id>10519</id><value>Видео - Жанр</value></string>
-<string><id>10520</id><value>Видео - Название</value></string>
-<string><id>10521</id><value>Видео - Год</value></string>
-<string><id>10522</id><value>Видео - Текущий плейлист</value></string>
-<string><id>10523</id><value>Информ. об альбоме</value></string>
-<string><id>10524</id><value>Информация о фильме</value></string>
-<string><id>12000</id><value>Выбор диалога</value></string>
-<string><id>12001</id><value>Музыка/Инф</value></string>
-<string><id>12002</id><value>Диалог OK</value></string>
-<string><id>12003</id><value>Видео/Инф</value></string>
-<string><id>12004</id><value>Мои Скрипты/Инф</value></string>
-<string><id>12005</id><value>Полноэкранное видео</value></string>
-<string><id>12006</id><value>Аудио визуализация</value></string>
-<string><id>12007</id><value>Фотографии/Слайдшоу</value></string>
-<string><id>12008</id><value>Диалог последовательности файлов</value></string>
-<string><id>12009</id><value>Переиндексация…</value></string>
-<string><id>12010</id><value>Обратно в 'Музыку'</value></string>
-<string><id>12011</id><value>Обратно в 'Видео'</value></string>
-<string><id>12310</id><value>0</value></string>
-<string><id>12311</id><value>1</value></string>
-<string><id>12312</id><value>2</value></string>
-<string><id>12313</id><value>3</value></string>
-<string><id>12314</id><value>4</value></string>
-<string><id>12315</id><value>5</value></string>
-<string><id>12316</id><value>6</value></string>
-<string><id>12317</id><value>7</value></string>
-<string><id>12318</id><value>8</value></string>
-<string><id>12319</id><value>9</value></string>
-<string><id>12320</id><value>c</value></string>
-<string><id>12321</id><value>ok</value></string>
-<string><id>12322</id><value>*</value></string>
-<string><id>12324</id><value>Введите МАСТЕР-пароль</value></string>
-<string><id>12325</id><value>Закрыто! Введите код...</value></string>
-<string><id>12326</id><value>Введите пароль</value></string>
-<string><id>12327</id><value>Введите МАСТЕР-Код</value></string>
-<string><id>12328</id><value>Введите код доступа</value></string>
-<string><id>12329</id><value>или выберите 'C' для выхода</value></string>
-<string><id>12330</id><value>Нажмите нужную последовательность кнопок и </value></string>
-<string><id>12331</id><value>затем 'Start', или 'Back' для выхода</value></string>
-<string><id>12332</id><value>Установка защиты</value></string>
-<string><id>12333</id><value>Разблокировка</value></string>
-<string><id>12334</id><value>Сброс защиты</value></string>
-<string><id>12335</id><value>Удалить защиту</value></string>
-<string><id>12336</id><value>Выберите способ ввода:</value></string>
-<string><id>12337</id><value>цифровой пароль</value></string>
-<string><id>12338</id><value>очерёдность кнопок</value></string>
-<string><id>12339</id><value>текстовый пароль</value></string>
-<string><id>12340</id><value>Введите новый пароль</value></string>
-<string><id>12341</id><value>Повторите новый пароль</value></string>
-<string><id>12342</id><value>Неверный пароль,</value></string>
-<string><id>12343</id><value>повторы исчерпаны</value></string>
-<string><id>12344</id><value>Введенные пароли не совпадают.</value></string>
-<string><id>12345</id><value>Доступ закрыт</value></string>
-<string><id>12346</id><value>Количество повторов пароля исчерпано.</value></string>
-<string><id>12347</id><value>XBOX будет выключен.</value></string>
-<string><id>12348</id><value>Заблокировано</value></string>
-<string><id>12349</id><value>Запомнить МАСТЕР-Код до след. включения?</value></string>
-<string><id>12350</id><value>(Открытие любого пункта из настроек</value></string>
-<string><id>12351</id><value>автоматически перезапустит МАСТЕР-Защиту.)</value></string>
-<string><id>12352</id><value>Нажмите комбинацию кнопок МАСТЕР-Кода и потом Start</value></string>
-<string><id>12353</id><value>Включить защиту</value></string>
-<string><id>12354</id><value>Снять защиту папки до след. старта?</value></string>
-<string><id>12355</id><value>автоматически разрешит защиту папки.)</value></string>
-<string><id>12356</id><value>Сменить защиту</value></string>
-<string><id>12357</id><value>Защита ресурсов</value></string>
-<string><id>12358</id><value>Пароль пустой. Повторите еще раз.</value></string>
-<string><id>12360</id><value>Защита</value></string>
-<string><id>12361</id><value>Максимальное число попыток ввода</value></string>
-<string><id>12362</id><value>Выключить XBOX после перебора кол-ва попыток</value></string>
-<string><id>12363</id><value>Защитить изменение/добавление ресурсов</value></string>
-<string><id>12364</id><value>Тип МАСТЕР-Кода:</value></string>
-<string><id>12365</id><value>Ввод нового МАСТЕР-Кода...</value></string>
-<string><id>12366</id><value>Защита изменена. Запомните МАСТЕР-Код:</value></string>
-<string><id>12367</id><value>МАСТЕР-Код не верный!</value></string>
-<string><id>12368</id><value>Введите правильный МАСТЕР-Код!</value></string>
-<string><id>12369</id><value>Защитить запуск XBMC</value></string>
-<string><id>12370</id><value>Режим защиты изменён, но МАСТЕР-Код</value></string>
-<string><id>12371</id><value>не установлен! Введите МАСТЕР-Код!</value></string>
-<string><id>12372</id><value>Защита файлов и настроек:</value></string>
-<string><id>12373</id><value>Настройки и Файлы</value></string>
-<string><id>12374</id><value>Защита меню:</value></string>
-<string><id>12375</id><value>Вкл. режим МАСТЕРа для пользователя</value></string>
-<string><id>12390</id><value>Время работы</value></string>
-<string><id>12391</id><value>минут</value></string>
-<string><id>12392</id><value>часов</value></string>
-<string><id>12393</id><value>дней</value></string>
-<string><id>12394</id><value>Общее вр. работы</value></string>
-<string><id>12600</id><value>Погода</value></string>
-<string><id>12900</id><value>Заставка</value></string>
-<string><id>12901</id><value>Полноэкранная OSD</value></string>
-<string><id>13000</id><value>Система</value></string>
-<string><id>13001</id><value>Остановка HDD-диска</value></string>
-<string><id>13002</id><value>Только видео</value></string>
-<string><id>13003</id><value>- задержка</value></string>
-<string><id>13004</id><value>- минимальная длительность файла</value></string>
-<string><id>13005</id><value>Выключение</value></string>
-<string><id>13006</id><value>Загрузить Dashboard</value></string>
-<string><id>13100</id><value>Уровень уменьшения мерцания</value></string>
-<string><id>13150</id><value>Ключ HDD:</value></string>
-<string><id>13151</id><value>Температура диска:</value></string>
-<string><id>13152</id><value>Модель привода:</value></string>
-<string><id>13153</id><value>Версия микропрограммы:</value></string>
-<string><id>13154</id><value>Модель HDD:</value></string>
-<string><id>13155</id><value>Серийный № HDD:</value></string>
-<string><id>13156</id><value>HDD Firmware:</value></string>
-<string><id>13157</id><value>Пароль HDD:</value></string>
-<string><id>13158</id><value>Защита HDD:</value></string>
-<string><id>13159</id><value>Маска сети:</value></string>
-<string><id>13160</id><value>Шлюз:</value></string>
-<string><id>13161</id><value>DNS:</value></string>
-<string><id>13162</id><value>Инициализация не удалась</value></string>
-<string><id>13163</id><value>Порты геймпадов:</value></string>
-<string><id>13164</id><value>Порт клавиатуры:</value></string>
-<string><id>13165</id><value>Порт мышки:</value></string>
-<string><id>13166</id><value>Порты гарнитур/микрофонов:</value></string>
-<string><id>13167</id><value>Порты карт памяти:</value></string>
-<string><id>13168</id><value>Порт ИК-приёмника:</value></string>
-<string><id>13169</id><value>Пропускать выбор диска</value></string>
-<string><id>13170</id><value>нет</value></string>
-<string><id>13171</id><value>сразу</value></string>
-<string><id>13172</id><value>после %i сек.</value></string>
-<string><id>13200</id><value>Профили</value></string>
-<string><id>13201</id><value>Удалить профиль '%s'?</value></string>
-<string><id>13202</id><value>Сохранить настройки как профиль...</value></string>
-<string><id>13203</id><value>Профиль '%s' загружен</value></string>
-<string><id>13204</id><value>Последний загруженный профиль:</value></string>
-<string><id>13205</id><value>Неизвестно</value></string>
-<string><id>13206</id><value>Перезаписать</value></string>
-<string><id>13207</id><value>Перезаписать профиль '%s'?</value></string>
-<string><id>13208</id><value>Таймер напоминаний</value></string>
-<string><id>13209</id><value>Период таймера напоминаний (в минутах)</value></string>
-<string><id>13210</id><value>Запущен, сработает в %im</value></string>
-<string><id>13211</id><value>НАПОМИНАНИЕ!</value></string>
-<string><id>13212</id><value>Отменено %im%is назад*</value></string>
-<string><id>13250</id><value>Найти субтитры...</value></string>
-<string><id>13270</id><value>Оборудование:</value></string>
-<string><id>13271</id><value>Частота процессора:</value></string>
-<string><id>13274</id><value>XBOX подключен, но DNS не доступен</value></string>
-<string><id>13275</id><value>Диск HDD</value></string>
-<string><id>13276</id><value>Привод DVD</value></string>
-<string><id>13277</id><value>Носители</value></string>
-<string><id>13278</id><value>по-умолчанию</value></string>
-<string><id>13279</id><value>Сеть</value></string>
-<string><id>13280</id><value>Видео</value></string>
-<string><id>13281</id><value>Оборудование</value></string>
-<string><id>13282</id><value>_</value></string>
-<string><id>13283</id><value>Версия ядра:</value></string>
-<string><id>13284</id><value>Частота процессора:</value></string>
-<string><id>13285</id><value>Обнаружен BIOS:</value></string>
-<string><id>13286</id><value>Чип видеокодера:</value></string>
-<string><id>13287</id><value>Разрешение экрана:</value></string>
-<string><id>13288</id><value>Версия XBOX:</value></string>
-<string><id>13289</id><value>Серийный № XBOX:</value></string>
-<string><id>13290</id><value>XBOX изготовлен:</value></string>
-<string><id>13291</id><value>Mod-чип:</value></string>
-<string><id>13292</id><value>A/V кабель:</value></string>
-<string><id>13293</id><value>Регион для видео и XBE:</value></string>
-<string><id>13294</id><value>Зона DVD:</value></string>
-<string><id>13295</id><value>Интернет:</value></string>
-<string><id>13296</id><value>подключен</value></string>
-<string><id>13297</id><value>Xbox не подключен. Проверьте параметры сети</value></string>
-<string><id>13298</id><value>Ключ XBLIVE:</value></string>
-<string><id>13299</id><value>Поддерживать температуру</value></string>
-<string><id>13300</id><value>Скорость вентилятора</value></string>
-<string><id>13301</id><value>Автоматический контроль температуры</value></string>
-<string><id>13302</id><value>Контроль скорости вентилятора</value></string>
-<string><id>13303</id><value>Шрифт оформления</value></string>
-<string><id>13304</id><value>Обратное направление строк</value></string>
-<string><id>13305</id><value>Включить RSS-новости</value></string>
-<string><id>13306</id><value>Скрыть значок перехода на верхний уровень</value></string>
-<string><id>13307</id><value>Формат клонок списка файлов</value>
-</string>
-<string><id>13308</id><value>Хотите перезагрузить Ваш XBOX</value></string>
-<string><id>13309</id><value>вместо перезапуска XBMC?</value></string>
-<string><id>13310</id><value>Эффект увеличения</value></string>
-<string><id>13311</id><value>Эффект скольжения</value></string>
-<string><id>13312</id><value>Уменьшение черных полос</value></string>
-<string><id>13313</id><value>Перезагрузка</value></string>
-<string><id>13314</id><value>Время микширования</value></string>
-<string><id>13315</id><value>Обновить иконки</value></string>
-<string><id>13316</id><value>Иконки рекурсивно</value></string>
-<string><id>13317</id><value>Просмотр слайдшоу</value></string>
-<string><id>13318</id><value>Рекурсивн.слайдшоу</value></string>
-<string><id>13319</id><value>Случайно</value></string>
-<string><id>13320</id><value>Стерео</value></string>
-<string><id>13321</id><value>только Левый</value></string>
-<string><id>13322</id><value>только Правый</value></string>
-<string><id>13323</id><value>Разрешить формат CD+G</value></string>
-<string><id>13324</id><value>Уровень прозрачности фона</value></string>
-<string><id>13325</id><value>Уровень прозрачности текста</value></string>
-<string><id>13326</id><value>Задержка звука относительно изображения</value></string>
-<string><id>13327</id><value>Караоке</value></string>
-<string><id>13328</id><value>%s не найден</value></string>
-<string><id>13329</id><value>Ошибка открытия %s</value></string>
-<string><id>13330</id><value>Не загружается %s</value>
-</string>
-<string><id>13331</id><value>Ошибка: нехватка памяти</value></string>
-<string><id>13332</id><value>Переместить выше</value></string>
-<string><id>13333</id><value>Переместить ниже</value></string>
-<string><id>13334</id><value>Изменить метку</value></string>
-<string><id>13335</id><value>Сделать по-умолчанию</value></string>
-<string><id>13336</id><value>Убрать кнопку</value></string>
-<string><id>13337</id><value>- 2-х канальный PCM без обработки</value></string>
-<string><id>13338</id><value>Кнопка (LED)</value></string>
-<string><id>13339</id><value>Цвет индикатора на панели XBOX</value></string>
-<string><id>13340</id><value>как есть</value></string>
-<string><id>13341</id><value>зелёный</value></string>
-<string><id>13342</id><value>оранжевый</value></string>
-<string><id>13343</id><value>красный</value></string>
-<string><id>13344</id><value>все по циклу</value></string>
-<string><id>13345</id><value>Выключать при проигрывании</value></string>
-<string><id>13346</id><value>Информация о фильме</value></string>
-<string><id>13347</id><value>Добавить в плейлист</value></string>
-<string><id>13348</id><value>Найти в IMDB...</value></string>
-<string><id>13349</id><value>Запрос инф. о всех</value></string>
-<string><id>13350</id><value>Текущий плейлист...</value></string>
-<string><id>13351</id><value>Запрос информации </value></string>
-<string><id>13352</id><value>Сканир.всё в б/данных</value></string>
-<string><id>13353</id><value>Остановить сканирование</value></string>
-<string><id>13354</id><value>Метод вывода на экран</value></string>
-<string><id>13355</id><value>Low Quality Pixel Shader</value></string>
-<string><id>13356</id><value>Hardware Overlays</value></string>
-<string><id>13357</id><value>High Quality Pixel Shader</value></string>
-<string><id>13358</id><value>Вопроизвести</value></string>
-<string><id>13359</id><value>Уст.иконку исполнит.</value></string>
-<string><id>13360</id><value>Создать иконки</value></string>
-<string><id>13361</id><value>Использовать микрофон/гарнитуру</value></string>
-<string><id>13362</id><value>Изменение голоса</value></string>
-<string><id>13363</id><value>- Исп. энергетику спектра</value></string>
-<string><id>13364</id><value>-- уровень эффекта</value></string>
-<string><id>13365</id><value>- Сдвигать высоту тона</value></string>
-<string><id>13366</id><value>-- уровень эффекта</value></string>
-<string><id>13367</id><value>- Использ. эффект шепота</value></string>
-<string><id>13368</id><value>-- уровень эффекта</value></string>
-<string><id>13369</id><value>- Использ. эффект робота</value></string>
-<string><id>13370</id><value>-- уровень эффекта</value></string>
-<string><id>13371</id><value>- Голос 1</value></string>
-<string><id>13372</id><value>- Голос 2</value></string>
-<string><id>13373</id><value>- Голос 3</value></string>
-<string><id>13374</id><value>- Голос 4</value></string>
-<string><id>13375</id><value>Включить устройство</value></string>
-<string><id>13376</id><value>Громкость</value></string>
-<string><id>13377</id><value>Режим просмотра</value></string>
-<string><id>13378</id><value>Яркость</value></string>
-<string><id>13379</id><value>Контрастность</value></string>
-<string><id>13380</id><value>Гамма</value></string>
-<string><id>13381</id><value>Продолжить видео</value></string>
-<string><id>13382</id><value>Маска для голоса 0</value></string>
-<string><id>13383</id><value>Маска для голоса 1</value></string>
-<string><id>13384</id><value>Маска для голоса 2</value></string>
-<string><id>13385</id><value>Маска для голоса 3</value></string>
-<string><id>13386</id><value>Позиционировать по времени</value></string>
-<string><id>13387</id><value>Информация в правой колонке списка</value></string>
-<string><id>13388</id><value>Предустановки</value></string>
-<string><id>13389</id><value>Для этого эффекта&#10;нет предустановок</value></string>
-<string><id>13390</id><value>для этого эффекта&#10;настройки не доступны</value></string>
-<string><id>13391</id><value>Открыть/Загрузить</value></string>
-<string><id>13392</id><value>Включать визуализацию при воспр. музыки</value></string>
-<string><id>13393</id><value>Показать объем</value></string>
-<string><id>13394</id><value>Вычисляется объем занимаемого места</value></string>
-<string><id>13395</id><value>Настройка Видео</value></string>
-<string><id>13396</id><value>Настройка субтитров и звука</value></string>
-<string><id>13397</id><value>Использовать субтитры</value></string>
-<string><id>13398</id><value>Ссылки</value></string>
-<string><id>13399</id><value>Не учитывать "The" при сортировке</value></string>
-<string><id>13400</id><value>Плавный переход от трека к треку</value></string>
-<string><id>13401</id><value>Поиск %s</value></string>
-<string><id>14000</id><value>Объединённо</value></string>
-<string><id>14001</id><value>По-файлово</value></string>
-<string><id>14002</id><value>Объединять: не строго</value></string>
-<string><id>14003</id><value>Загружается файл плей-листа...</value></string>
-<string><id>14004</id><value>Загружается список потоков...</value></string>
-<string><id>14005</id><value>Анализ списка потоков...</value></string>
-<string><id>14006</id><value>Ошибка загрузки списка потоков</value></string>
-<string><id>14007</id><value>Ошибка загрузки файла плей-листа</value></string>
-<string><id>14008</id><value>Разрешить сообщения Kai</value></string>
-<string><id>14009</id><value>Игровая директория</value></string>
-<string><id>14010</id><value>Авто-переключение на вид с иконками</value></string>
-<string><id>14011</id><value>Авто-переключение вида со списка на иконки</value></string>
-<string><id>14012</id><value>- использовать большие иконки</value></string>
-<string><id>14013</id><value>- условие:</value></string>
-<string><id>14014</id><value>- число файлов с иконками больше</value></string>
-<string><id>14015</id><value>минимум 1 иконка, без файлов</value></string>
-<string><id>14016</id><value>минимум 1 иконка и файл</value></string>
-<string><id>14017</id><value>количество иконок</value></string>
-<string><id>14018</id><value>Список файлов</value></string>
-<string><id>14019</id><value>Код области 1</value></string>
-<string><id>14020</id><value>Код области 2</value></string>
-<string><id>14021</id><value>Код области 3</value></string>
-<string><id>14022</id><value>Фонотека</value></string>
-<string><id>14023</id><value>Без ТВ</value></string>
-<string><id>14024</id><value>Введите название города (или US ZIP)</value></string>
-<string><id>14025</id><value>Кэш для A,V и DVD-файлов на HDD</value></string>
-<string><id>14026</id><value>Кэш видеофайлов: - на DVDRom-е</value></string>
-<string><id>14027</id><value>- из локальной сети</value></string>
-<string><id>14028</id><value>- из Интернета</value></string>
-<string><id>14030</id><value>Кэш аудиофайлов: -на DVDRom-е</value></string>
-<string><id>14031</id><value>- из локальной сети</value></string>
-<string><id>14032</id><value>- из Интернета</value></string>
-<string><id>14034</id><value>Кэш файлов DVD-Video: c DVDRom</value></string>
-<string><id>14035</id><value>- из локальной сети</value></string>
-<string><id>14036</id><value>Серверы</value></string>
-<string><id>14037</id><value>Внешний вид</value></string>
-<string><id>14038</id><value>Настройки локальной сети изменены.</value></string>
-<string><id>14039</id><value>Для вступления изменений с силу, требуется</value></string>
-<string><id>14040</id><value>перезагрузка XBMC. Перезагружаем?</value></string>
-<string><id>14041</id><value>Постобработка</value></string>
-<string><id>14042</id><value>IP адрес компьютера с Kai Engine</value></string>
-<string><id>14043</id><value>- Выключать во время проигрывания</value></string>
-<string><id>14044</id><value>%i минут</value></string>
-<string><id>14045</id><value>%i секунд</value></string>
-<string><id>14046</id><value>%i ms</value></string>
-<string><id>14047</id><value>%i %%</value></string>
-<string><id>14048</id><value>%i кб/сек</value></string>
-<string><id>14049</id><value>%i кб</value></string>
-<string><id>14050</id><value>%i.0 dB</value></string>
-<string><id>14051</id><value>12-ти часовой формат часов</value></string>
-<string><id>14052</id><value>Поменять местами день и месяц</value></string>
-<string><id>14053</id><value>Фильтры изобр.</value></string>
-<string><id>14054</id><value>Определять наличие доступа к Интернету</value></string>
-<string><id>14055</id><value>Режим фонового сканирования</value></string>
-<string><id>14056</id><value>Остановить сканирование</value></string>
-<string><id>14057</id><value>Невозможно, пока сканируются файлы</value></string>
-<string><id>14058</id><value>Эффект киноплёнки</value></string>
-<string><id>14059</id><value>Отображать иконки с внешних ресурсов</value></string>
-<string><id>14060</id><value>Кэш неопределённых файлов из И-нета</value></string>
-<string><id>14061</id><value>Автоматически</value></string>
-<string><id>14062</id><value>Введите имя пользователя для</value></string>
-<string><id>14063</id><value>Дата и Время</value></string>
-<string><id>14064</id><value>Установить дату...</value></string>
-<string><id>14065</id><value>Установить время...</value></string>
-<string><id>14066</id><value>Введите время в 24-х часовом формате ЧЧ:ММ</value></string>
-<string><id>14067</id><value>Введите дату в формате ДД/ММ/ГГГГ</value></string>
-<string><id>14068</id><value>Введите IP-адрес</value></string>
-<string><id>14069</id><value>Хотите установить эти значения?</value></string>
-<string><id>14070</id><value>Применить значения...</value></string>
-<string><id>14071</id><value>Разрешить переименование и удаление файлов?</value></string>
-<string><id>14072</id><value>Разрешить XLink Kai</value></string>
-<string><id>14073</id><value>XLink Kai не разрешен.</value></string>
-<string><id>15000</id><value>XLink Kai</value></string>
-<string><id>15001</id><value>Сервис не подключен. Хотите попробовать</value></string>
-<string><id>15002</id><value>переподключиться?</value></string>
-<string><id>15003</id><value>Введите Ваше сообщение</value></string>
-<string><id>15004</id><value>Вы приглашены играть %s.</value></string>
-<string><id>15005</id><value>Дата: %s</value></string>
-<string><id>15006</id><value>Из: %s</value></string>
-<string><id>15007</id><value>Приглашение</value></string>
-<string><id>15008</id><value>Вы приглашены присоединиться %s.</value></string>
-<string><id>15009</id><value>Отключен</value></string>
-<string><id>15010</id><value>Друзья</value></string>
-<string><id>15011</id><value>Вид: Друзья</value></string>
-<string><id>15012</id><value>Присоединиться</value></string>
-<string><id>15013</id><value>Голос</value></string>
-<string><id>15014</id><value>Пригласить</value></string>
-<string><id>15015</id><value>Убрать</value></string>
-<string><id>15016</id><value>Игры</value></string>
-<string><id>15017</id><value>Вид: Игры</value></string>
-<string><id>15018</id><value>Вход</value></string>
-<string><id>15019</id><value>Добавить</value></string>
-<string><id>15020</id><value>Хост</value></string>
-<string><id>15021</id><value>Арены</value></string>
-<string><id>15022</id><value>Вид: Арены</value></string>
-<string><id>15023</id><value>Играть</value></string>
-<string><id>15024</id><value>Добавить</value></string>
-<string><id>15025</id><value>Хост</value></string>
-<string><id>15026</id><value>Чат</value></string>
-<string><id>15027</id><value>Вид: Чат</value></string>
-<string><id>15028</id><value>Клавиатура</value></string>
-<string><id>15029</id><value>Для подключения к Арене требуется пароль.</value></string>
-<string><id>15030</id><value>Сервис отключен</value></string>
-<string><id>15031</id><value>Идентификация в системе XLink Kai</value></string>
-<string><id>15032</id><value>Ваше имя и/или пароль отклонены</value></string>
-<string><id>15033</id><value>orbital-сервером. Проверьте настройки.</value></string>
-<string><id>15034</id><value>только что вошел</value></string>
-<string><id>15035</id><value>инициировал голосовой чат</value></string>
-<string><id>15036</id><value>послал Вам приглашение</value></string>
-<string><id>15037</id><value>XBMC не подтверждает доступность Вашей сети.</value></string>
-<string><id>15038</id><value>Возможно будут проблемы с игрой по сети</value></string>
-<string><id>15039</id><value>XBMC не смог найти игру.</value></string>
-<string><id>15040</id><value>Вставьте диск с игрой или нажмите 'A' для отмены</value></string>
-<string><id>15041</id><value>и запустите игру самостоятельно.</value></string>
-<string><id>15042</id><value>Доступ закрыт</value></string>
-<string><id>15043</id><value>%s присоединился к чату.</value></string>
-<string><id>15044</id><value>%s покинул чат.</value></string>
-<string><id>15045</id><value>Введите своё сообщение.</value></string>
-<string><id>15046</id><value>Текущая Арена</value></string>
-<string><id>15047</id><value>Введите пароль для входа в Арену..</value></string>
-<string><id>15048</id><value>Введите описание Арены..</value></string>
-<string><id>15049</id><value>Хост игры</value></string>
-<string><id>15050</id><value>Хост в частной арене</value></string>
-<string><id>15051</id><value>К-во игроков:</value></string>
-<string><id>15052</id><value>Пароль</value></string>
-<string><id>15053</id><value>Описание</value></string>
-<string><id>15054</id><value>Диалог приглашения</value></string>
-<string><id>15055</id><value>Выбор игры:</value></string>
-<string><id>15056</id><value>Ввод сообщения:</value></string>
-<string><id>15057</id><value>Отправить</value></string>
-<string><id>15058</id><value>Хост</value></string>
-<string><id>15059</id><value>Приглашение принято!</value></string>
-<string><id>15060</id><value>Ввод сообщения</value></string>
-<string><id>15061</id><value>Вы приглашены в игру %s.</value></string>
-<string><id>15062</id><value>Исп.альтернативное размещение mplayer</value></string>
-<string><id>15100</id><value>Фонотека</value></string>
-<string><id>15101</id><value>База Данных</value></string>
-<string><id>15102</id><value>* Все альбомы</value></string>
-<string><id>15103</id><value>* Все артисты</value></string>
-<string><id>15104</id><value>* Все песни</value></string>
-<string><id>15105</id><value>* Все жанры</value></string>
-<string><id>15106</id><value>Запомнить выбранный файл при навигации </value></string>
-<string><id>15107</id><value>Буферизируется...</value></string>
-<string><id>15108</id><value>Звук кнопок</value></string>
-<string><id>15109</id><value>по-умолчанию</value></string>
-<string><id>15110</id><value>Уровень вибрации геймпад-а</value></string>
-<string><id>15111</id><value>Тема</value></string>
-<string><id>15112</id><value>Тема по-умолчанию</value></string>
-<string><id>15200</id><value>AudioScrobbler</value></string>
-<string><id>15201</id><value>Отправлять статистику на AudioScrobbler</value></string>
-<string><id>15202</id><value>Имя пользователя AudioScrobbler</value></string>
-<string><id>15203</id><value>Пароль для AudioScrobbler</value></string>
-<string><id>15204</id><value>Не смог связяться: засыпаю...</value></string>
-<string><id>15205</id><value>Пожалуйста, обновите XBMC</value></string>
-<string><id>15206</id><value>Неверная авторизация.</value></string>
-<string><id>15207</id><value>Подключен</value></string>
-<string><id>15208</id><value>Не подключен</value></string>
-<string><id>15209</id><value>Интервал подключений %i</value></string>
-<string><id>15210</id><value>Кэшируется %i песен</value></string>
-<string><id>15211</id><value>Подключение...</value></string>
-<string><id>15212</id><value>Подключение через %i сек.</value></string>
-<string><id>15213</id><value>Использовать плеер..</value></string>
-<string><id>15214</id><value>Исп. мягкую синхронизацию звука и видео</value></string>
-<string><id>15215</id><value>Скрыть имена файлов в режиме иконок</value></string>
-<string><id>15250</id><value>Учёт в статистике песен с LAST.FM</value></string>
-<string><id>15251</id><value>Подключение к LAST.FM...</value></string>
-<string><id>15252</id><value>Выбор станции...</value></string>
-<string><id>15253</id><value>Поиск похожих исполнителей...</value></string>
-<string><id>15254</id><value>Поиск похожих тэгов...</value></string>
-<string><id>15255</id><value>Ваш профиль (%name%) на LAST.FM</value></string>
-<string><id>15256</id><value>Общий топ тэгов</value></string>
-<string><id>15257</id><value>Топовые исполнители тэга %name%</value></string>
-<string><id>15258</id><value>Топовые альбомы тэга %name%</value></string>
-<string><id>15259</id><value>Топовые треки тэга %name%</value></string>
-<string><id>15260</id><value>Слушать треки тэга %name% на LAST.FM</value></string>
-<string><id>15261</id><value>Исполнители, похожие на %name%</value></string>
-<string><id>15262</id><value>Топ альбомов %name%</value></string>
-<string><id>15263</id><value>Топ трэков %name%</value></string>
-<string><id>15264</id><value>Топ тэгов %name%</value></string>
-<string><id>15265</id><value>Список фэнов %name%</value></string>
-<string><id>15266</id><value>Слушать выбор фэнов %name% на LAST.FM</value></string>
-<string><id>15267</id><value>Слушать похожих испол. %name% на LAST.FM</value></string>
-<string><id>15268</id><value>Топ исполнителей от %name%</value></string>
-<string><id>15269</id><value>Топ альбомов от %name%</value></string>
-<string><id>15270</id><value>Топ треков от %name%</value></string>
-<string><id>15271</id><value>Друзья %name%</value></string>
-<string><id>15272</id><value>Сообщества %name%</value></string>
-<string><id>15273</id><value>Недельный чарт исполнителей %name%</value></string>
-<string><id>15274</id><value>Недельный чарт альбомов %name%</value></string>
-<string><id>15275</id><value>Недельный чарт треков %name%</value></string>
-<string><id>15276</id><value>Слушать выбор сообществ %name% на LAST.FM</value></string>
-<string><id>15277</id><value>Слушать личный выбор %name%'s на LAST.FM</value></string>
-<string><id>15278</id><value>Слушать любимые треки %name% на LAST.FM</value></string>
-<string><id>15279</id><value>Получение списка от LAST.FM...</value></string>
-<string><id>15280</id><value>Не могу принять список от LAST.FM...</value></string>
-<string><id>15281</id><value>Введите имя исполнителя для поиска похожих</value></string>
-<string><id>15282</id><value>Введите имя тэга для поиска похожих</value></string>
-<string><id>15283</id><value>Треки, часто слушаемые %name%</value></string>
-<string><id>15300</id><value>Путь не верен или не найден</value></string>
-<string><id>15301</id><value>Не могу подключиться с серверу</value></string>
-<string><id>15302</id><value>Сервера не найдены</value></string>
-<string><id>15303</id><value>Рабочая группа не найдена</value></string>
-<string><id>15310</id><value>Открытие многоточечного букмарка</value></string>
-<string><id>15311</id><value>Путь:</value></string>
-<string><id>16000</id><value>Основной</value></string>
-<string><id>16001</id><value>Настройка аудиооборудования...</value></string>
-<string><id>16002</id><value>Поиск CDDB</value></string>
-<string><id>16003</id><value>Проигрыватель</value></string>
-<string><id>16004</id><value>Проиграть файл с диска</value></string>
-<string><id>16009</id><value>Введите название фильма</value></string>
-<string><id>16010</id><value>Введите название профиля</value></string>
-<string><id>16011</id><value>Введите название альбома</value></string>
-<string><id>16012</id><value>Введите название плейлиста</value></string>
-<string><id>16013</id><value>Введите новое имя файла</value></string>
-<string><id>16014</id><value>Введите название папки</value></string>
-<string><id>16015</id><value>Введите название директории</value></string>
-<string><id>16016</id><value>Доступны опции: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
-<string><id>16017</id><value>Укажите, что найти</value></string>
-<string><id>16018</id><value>Нет</value></string>
-<string><id>16019</id><value>Автовыбор</value></string>
-<string><id>16020</id><value>Де-интерлейс</value></string>
-<string><id>16021</id><value>Нечетные поля</value></string>
-<string><id>16022</id><value>Четные поля</value></string>
-<string><id>16023</id><value>Управл. черезстрочностью</value></string>
-<string><id>16024</id><value>Отменяется...</value></string>
-<string><id>16025</id><value>Введите название исполнит.</value></string>
-<string><id>16100</id><value>Все Видео</value></string>
-<string><id>16101</id><value>Не смотрен.</value></string>
-<string><id>16102</id><value>Отсмотренн.</value></string>
-<string><id>16103</id><value>отметить просмотренн.</value></string>
-<string><id>16104</id><value>отметить как не смотр.</value></string>
-<string><id>16105</id><value>Изменить название</value></string>
-<string><id>16106</id><value>NTSC-M и NTSC-J</value></string>
-<string><id>16107</id><value>только NTSC-M</value></string>
-<string><id>16108</id><value>только NTSC-J</value></string>
-<string><id>16109</id><value>только PAL-60</value></string>
-<string><id>16110</id><value>Для игр с 60Нz разверткой</value></string>
+	<string><id>0</id><value>РџСЂРѕРіСЂР°РјРјС‹</value></string>
+	<string><id>1</id><value>Р¤РѕС‚РѕРіСЂР°С„РёРё</value></string>
+	<string><id>2</id><value>РњСѓР·С‹РєР°</value></string>
+	<string><id>3</id><value>Р’РёРґРµРѕ</value></string>
+	<string><id>4</id><value>РўР’ Р“РёРґ</value></string>
+	<string><id>5</id><value>РќР°СЃС‚СЂРѕР№РєРё</value></string>
+	<string><id>7</id><value>Р¤Р°Р№Р»С‹</value></string>
+	<string><id>8</id><value>РџРѕРіРѕРґР°</value></string>
+	<string><id>11</id><value>РџРѕРЅРµРґРµР»СЊРЅРёРє</value></string>
+	<string><id>12</id><value>Р’С‚РѕСЂРЅРёРє</value></string>
+	<string><id>13</id><value>РЎСЂРµРґР°</value></string>
+	<string><id>14</id><value>Р§РµС‚РІРµСЂРі</value></string>
+	<string><id>15</id><value>РџСЏС‚РЅРёС†Р°</value></string>
+	<string><id>16</id><value>РЎСѓР±Р±РѕС‚Р°</value></string>
+	<string><id>17</id><value>Р’РѕСЃРєСЂРµСЃРµРЅСЊРµ</value></string>
+	<string><id>21</id><value>РЇРЅРІР°СЂСЊ</value></string>
+	<string><id>22</id><value>Р¤РµРІСЂР°Р»СЊ</value></string>
+	<string><id>23</id><value>РњР°СЂС‚</value></string>
+	<string><id>24</id><value>РђРїСЂРµР»СЊ</value></string>
+	<string><id>25</id><value>РњР°Р№</value></string>
+	<string><id>26</id><value>РСЋРЅСЊ</value></string>
+	<string><id>27</id><value>РСЋР»СЊ</value></string>
+	<string><id>28</id><value>РђРІРіСѓСЃС‚</value></string>
+	<string><id>29</id><value>РЎРµРЅС‚СЏР±СЂСЊ</value></string>
+	<string><id>30</id><value>РћРєС‚СЏР±СЂСЊ</value></string>
+	<string><id>31</id><value>РќРѕСЏР±СЂСЊ</value></string>
+	<string><id>32</id><value>Р”РµРєР°Р±СЂСЊ</value></string>
+	<string><id>98</id><value>Р’РёРґ: РђРІС‚Рѕ.</value></string>
+	<string><id>99</id><value>Р’РёРґ: РђРІС‚Рѕ. Р‘РѕР»СЊС€</value></string>
+	<string><id>100</id><value>Р’РёРґ: РРєРѕРЅРєРё</value></string>
+	<string><id>101</id><value>Р’РёРґ: РЎРїРёСЃРѕРє</value></string>
+	<string><id>102</id><value>РЎРєР°РЅРёСЂРѕРІР°С‚СЊ</value></string>
+	<string><id>103</id><value>РЎРѕСЂС‚.РїРѕ РќР°Р·РІ.</value></string>
+	<string><id>104</id><value>РЎРѕСЂС‚.РїРѕ Р”Р°С‚Рµ</value></string>
+	<string><id>105</id><value>РЎРѕСЂС‚.РїРѕ Р Р°Р·Рј.</value></string>
+	<string><id>106</id><value>РќРµС‚</value></string>
+	<string><id>107</id><value>Р”Р°</value></string>
+	<string><id>108</id><value>РЎР»Р°Р№РґС€РѕСѓ</value></string>
+	<string><id>109</id><value>РЎРѕР·РґР°С‚СЊ РёРєРѕРЅРєСѓ</value></string>
+	<string><id>110</id><value>РЎРѕР·РґР°С‚СЊ РёРєРѕРЅРєРё</value></string>
+	<string><id>111</id><value>РЇСЂР»С‹РєРё</value></string>
+	<string><id>112</id><value>РџРђРЈР—Рђ</value></string>
+	<string><id>113</id><value>Р¤Р°Р№Р»С‹: РСЃС‚РѕС‡РЅРёРє</value></string>
+	<string><id>114</id><value>Р¤Р°Р№Р»С‹: РќР°Р·РЅР°С‡РµРЅРёРµ</value></string>
+	<string><id>115</id><value>РљРѕРїРёСЂРѕРІР°С‚СЊ</value></string>
+	<string><id>116</id><value>РџРµСЂРµРјРµСЃС‚РёС‚СЊ</value></string>
+	<string><id>117</id><value>РЈРґР°Р»РёС‚СЊ</value></string>
+	<string><id>118</id><value>РџРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ</value></string>
+	<string><id>119</id><value>РќРѕРІР°СЏ РїР°РїРєР°</value></string>
+	<string><id>120</id><value>РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РєРѕРїРёСЂРѕРІР°РЅРёСЏ</value></string>
+	<string><id>121</id><value>РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РїРµСЂРµРјРµС‰РµРЅРёСЏ</value></string>
+	<string><id>122</id><value>РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ СѓРґР°Р»РµРЅРёСЏ</value></string>
+	<string><id>123</id><value>РљРѕРїРёСЂРѕРІР°С‚СЊ С„Р°Р№Р»С‹?</value></string>
+	<string><id>124</id><value>РџРµСЂРµРјРµСЃС‚РёС‚СЊ С„Р°Р№Р»С‹?</value></string>
+	<string><id>125</id><value>РЈРґР°Р»РёС‚СЊ С„Р°Р№Р»С‹?</value></string>
+	<string><id>126</id><value>РЎС‚Р°С‚СѓСЃ</value></string>
+	<string><id>127</id><value>РѕР±СЉРµРєС‚Р°(РѕРІ)</value></string>
+	<string><id>128</id><value>Р“Р»Р°РІРЅС‹Рµ</value></string>
+	<string><id>129</id><value>РЎР»Р°Р№РґС€РѕСѓ</value></string>
+	<string><id>130</id><value>Рћ СЃРёСЃС‚РµРјРµ</value></string>
+	<string><id>131</id><value>Р­РєСЂР°РЅ</value></string>
+	<string><id>132</id><value>РђР»СЊР±РѕРјС‹</value></string>
+	<string><id>133</id><value>РСЃРїРѕР»РЅРёС‚.</value></string>
+	<string><id>134</id><value>РџРµСЃРЅРё</value></string>
+	<string><id>135</id><value>Р–Р°РЅСЂС‹</value></string>
+	<string><id>136</id><value>РџР»СЌР№Р»РёСЃС‚С‹</value></string>
+	<string><id>137</id><value>РџРѕРёСЃРє</value></string>
+	<string><id>138</id><value>РРќР¤РћР РњРђР¦РРЇ Рћ РЎРРЎРўР•РњР•</value></string>
+	<string><id>139</id><value>РўРµРјРїРµСЂР°С‚СѓСЂР°:</value></string>
+	<string><id>140</id><value>CPU:</value></string>
+	<string><id>141</id><value>GPU:</value></string>
+	<string><id>142</id><value>Р’СЂРµРјСЏ:</value></string>
+	<string><id>143</id><value>РЎРµР№С‡Р°СЃ:</value></string>
+	<string><id>144</id><value>Р’РµСЂСЃРёСЏ:</value></string>
+	<string><id>145</id><value>РЎРµС‚СЊ:</value></string>
+	<string><id>146</id><value>РўРёРї:</value></string>
+	<string><id>147</id><value>Static</value></string>
+	<string><id>148</id><value>DHCP</value></string>
+	<string><id>149</id><value>MAC</value></string>
+	<string><id>150</id><value>IP</value></string>
+	<string><id>151</id><value>РЎРѕРµРґРёРЅРµРЅРёРµ: </value></string>
+	<string><id>152</id><value>РџРѕР»Сѓ-РґСѓРїР»РµРєСЃ</value></string>
+	<string><id>153</id><value>РџРѕР»РЅС‹Р№ РґСѓРїР»РµРєСЃ</value></string>
+	<string><id>154</id><value>Р”РёСЃРєРё</value></string>
+	<string><id>155</id><value>Р”РёСЃРє</value></string>
+	<string><id>156</id><value>РЎРІРѕР±РѕРґРЅРѕ</value></string>
+	<string><id>157</id><value>Р’РёРґРµРѕ</value></string>
+	<string><id>158</id><value>РЎРІРѕР±РѕРґРЅРѕ РїР°РјСЏС‚Рё</value></string>
+	<string><id>159</id><value>РќРµС‚ СЃРѕРµРґРёРЅРµРЅРёСЏ</value></string>
+	<string><id>160</id><value>СЃРІРѕР±.</value></string>
+	<string><id>161</id><value>РќРµРґРѕСЃС‚СѓРїРЅРѕ</value></string>
+	<string><id>162</id><value>Р›РѕС‚РѕРє РѕС‚РєСЂС‹С‚</value></string>
+	<string><id>163</id><value>Р§С‚РµРЅРёРµ</value></string>
+	<string><id>164</id><value>РќРµС‚ РґРёСЃРєР°</value></string>
+	<string><id>165</id><value>Р”РёСЃРє РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚</value></string>
+	<string><id>166</id><value>РћС„РѕСЂРјР»РµРЅРёРµ (СЃРєРёРЅ)</value></string>
+	<string><id>167</id><value>Р’РєР»СЋС‡РёС‚СЊ FTP-СЃРµСЂРІРµСЂ</value></string>
+	<string><id>168</id><value>Р’РєР»СЋС‡РёС‚СЊ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёСЋ РІСЂРµРјРµРЅРё</value></string>
+	<string><id>169</id><value>Р Р°Р·СЂРµС€РµРЅРёРµ СЌРєСЂР°РЅР°</value></string>
+	<string><id>170</id><value>РђР»СЊР±РѕРј:</value></string>
+	<string><id>171</id><value>РСЃРїРѕР»РЅРёС‚РµР»СЊ:</value></string>
+	<string><id>172</id><value>Р”Р°С‚Р° РІС‹РїСѓСЃРєР°:</value></string>
+	<string><id>173</id><value>Р РµР№С‚РёРЅРі:</value></string>
+	<string><id>174</id><value>Р–Р°РЅСЂ:</value></string>
+	<string><id>175</id><value>РќР°СЃС‚СЂРѕРµРЅРёРµ:</value></string>
+	<string><id>176</id><value>РЎС‚РёР»Рё:</value></string>
+	<string><id>177</id><value>РћР±Р·РѕСЂ:</value></string>
+	<string><id>178</id><value>РўСЂРµРєРё:</value></string>
+	<string><id>179</id><value>РџРµСЃРЅСЏ</value></string>
+	<string><id>180</id><value>Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ</value></string>
+	<string><id>181</id><value>Р’С‹Р±РµСЂРёС‚Рµ Р°Р»СЊР±РѕРј</value></string>
+	<string><id>182</id><value>РўСЂРµРєРё</value></string>
+	<string><id>183</id><value>РћР±Р·РѕСЂ</value></string>
+	<string><id>184</id><value>РћР±РЅРѕРІРёС‚СЊ</value></string>
+	<string><id>185</id><value>РџРѕРёСЃРє Р°Р»СЊР±РѕРјР°</value></string>
+	<string><id>186</id><value>OK</value></string>
+	<string><id>187</id><value>РђР»СЊР±РѕРјС‹ РЅРµ РЅР°Р№РґРµРЅС‹!</value></string>
+	<string><id>188</id><value>Р’С‹Р±СЂР°С‚СЊ РІСЃРµ</value></string>
+	<string><id>189</id><value>РЎРєР°РЅРёСЂРѕРІР°С‚СЊ РёРЅС„.</value></string>
+	<string><id>190</id><value>Р—Р°РїРёСЃР°С‚СЊ</value></string>
+	<string><id>191</id><value>РџРµСЂРµРјРµС€Р°С‚СЊ</value></string>
+	<string><id>192</id><value>РћС‡РёСЃС‚РёС‚СЊ</value></string>
+	<string><id>193</id><value>РЎРєР°РЅРёСЂРѕРІР°С‚СЊ</value></string>
+	<string><id>194</id><value>РџРѕРёСЃРє...</value></string>
+	<string><id>195</id><value>РРЅС„. РІ IMDB РЅРµ РЅР°Р№РґРµРЅР°!</value></string>
+	<string><id>196</id><value>Р’С‹Р±РµСЂРёС‚Рµ С„РёР»СЊРј:</value></string>
+	<string><id>197</id><value>Р—Р°РїСЂРѕСЃ РёРЅС„. РІ IMDB </value></string>
+	<string><id>198</id><value>Р—Р°РіСЂСѓР·РєР° РёРЅС„РѕСЂРјР°С†РёРё Рѕ С„РёР»СЊРјРµ</value></string>
+	<string><id>199</id><value>Р РµР¶РёСЃСЃРµСЂ:</value></string>
+	<string><id>200</id><value>РЎС†РµРЅР°СЂРёСЃС‚:</value></string>
+	<string><id>201</id><value>Р“РѕРґ:</value></string>
+	<string><id>202</id><value>РЎР»РѕРіР°РЅ:</value></string>
+	<string><id>203</id><value>РЎСЋР¶РµС‚:</value></string>
+	<string><id>204</id><value>Р РµР№С‚РёРЅРі:</value></string>
+	<string><id>205</id><value>Р“РѕР»РѕСЃРѕРІ:</value></string>
+	<string><id>206</id><value>РђРєС‚С‘СЂС‹</value></string>
+	<string><id>207</id><value>РЎСЋР¶РµС‚</value></string>
+	<string><id>208</id><value>Р’РѕСЃРїСЂ.</value></string>
+	<string><id>209</id><value>РЎР»РµРґ.</value></string>
+	<string><id>210</id><value>РџСЂРµРґС‹РґСѓС‰.</value></string>
+	<string><id>211</id><value>РџРѕРёСЃРє РїСЂРёР»РѕР¶РµРЅРёР№</value></string>
+	<string><id>212</id><value>РїСЂРёР»РѕР¶РµРЅРёР№ РЅР°Р№РґРµРЅРѕ</value></string>
+	<string><id>213</id><value>РљР°Р»РёР±СЂРѕРІРєР° СЌРєСЂР°РЅР° РіСЂР°С„РёС‡РµСЃРєРѕРіРѕ РёРЅС‚РµСЂС„РµР№СЃР°...</value></string>
+	<string><id>214</id><value>РљР°Р»РёР±СЂРѕРІРєР° РІРёРґРµРѕСЌРєСЂР°РЅР°...</value></string>
+	<string><id>215</id><value>РЎРіР»Р°Р¶РёРІР°РЅРёРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ</value></string>
+	<string><id>216</id><value>РЎС‚РµРїРµРЅСЊ СѓРІРµР»РёС‡РµРЅРёСЏ</value></string>
+	<string><id>217</id><value>РЎРѕРѕС‚РЅ. СЃС‚РѕСЂРѕРЅ РїРёРєСЃРµР»СЏ</value></string>
+	<string><id>218</id><value>DVD-РїСЂРёРІРѕРґ</value></string>
+	<string><id>219</id><value>Р’СЃС‚Р°РІСЊС‚Рµ РґРёСЃРє</value></string>
+	<string><id>220</id><value>РЈРґР°Р»РµРЅРЅС‹Р№ СЂРµСЃСѓСЂСЃ</value></string>
+	<string><id>221</id><value>РќРµС‚ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє СЃРµС‚Рё</value></string>
+	<string><id>222</id><value>РћС‚РјРµРЅР°</value></string>
+	<string><id>223</id><value>РђРІС‚Рѕ-РїРµСЂРµРєР»СЋС‡РµРЅРёРµ 16:9</value></string>
+	<string><id>224</id><value>Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ РїРѕРєР°Р·Р° СЃР»Р°Р№РґР°</value></string>
+	<string><id>225</id><value>Р’СЂРµРјСЏ РїРµСЂРµС…РѕРґР° РѕС‚ СЃР»Р°Р№РґР° Рє СЃР»Р°Р№РґСѓ</value></string>
+	<string><id>226</id><value>Р’РєР»СЋС‡РёС‚СЊ СЂРµР¶РёРј PAL60</value></string>
+	<string><id>227</id><value>РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ CDDB</value></string>
+	<string><id>228</id><value>РџРµСЂРµРјРµС€Р°С‚СЊ РїР»СЌР№Р»РёСЃС‚ РїСЂРё Р·Р°РіСЂСѓР·РєРµ</value></string>
+	<string><id>229</id><value>Р’СЂРµРјСЏ РґРѕ РѕСЃС‚Р°РЅРѕРІРєРё HDD (РјРёРЅ)</value></string>
+	<string><id>230</id><value>Р¤РёР»СЊС‚СЂС‹</value></string>
+	<string><id>231</id><value>РќРµС‚</value></string>
+	<string><id>232</id><value>РўРѕС‡РєР°</value></string>
+	<string><id>233</id><value>Р›РёРЅРµР№РЅС‹Р№</value></string>
+	<string><id>234</id><value>РђРЅРёР·РѕС‚СЂРѕРїРЅС‹Р№</value></string>
+	<string><id>235</id><value>РЁР°С…РјР°С‚РЅС‹Р№</value></string>
+	<string><id>236</id><value>Р“Р°СѓСЃРѕРІРѕ-РєСѓР±РёС‡.</value></string>
+	<string><id>237</id><value>РЈРјРµРЅСЊС€РµРЅРёРµ</value></string>
+	<string><id>238</id><value>РЈРІРµР»РёС‡РµРЅРёРµ</value></string>
+	<string><id>239</id><value>РћС‡РёС‰Р°С‚СЊ РїР»РµР№Р»РёСЃС‚ РїРѕСЃР»Рµ РїСЂРѕРёРіСЂС‹РІР°РЅРёСЏ </value></string>
+	<string><id>240</id><value>РђРІС‚РѕРІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёРµ VideoDVD-РґРёСЃРєР°</value></string>
+	<string><id>241</id><value>РђРІС‚РѕРІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёРµ VCD/SVCD-РґРёСЃРєР°</value></string>
+	<string><id>242</id><value>РђРІС‚РѕРІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёРµ Audio-CD</value></string>
+	<string><id>243</id><value>РђРІС‚РѕР·Р°РїСѓСЃРє РёРіСЂС‹ СЃ РґРёСЃРєР° XBOX-РёРіСЂС‹</value></string>
+	<string><id>244</id><value>РђРІС‚РѕРІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёРµ РІРёРґРµРѕС„Р°Р№Р»РѕРІ СЃ CD/DVD-РґРёСЃРєР°</value></string>
+	<string><id>245</id><value>РђРІС‚РѕРІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёРµ Р°СѓРґРёРѕС„Р°Р№Р»РѕРІ СЃ CD/DVD-РґРёСЃРєР°</value></string>
+	<string><id>246</id><value>РђРІС‚РѕРїРѕРєР°Р· РёР·РѕР±СЂР°Р¶РµРЅРёР№ СЃ CD/DVD-РґРёСЃРєР°</value></string>
+	<string><id>247</id><value>РЎРєСЂРёРїС‚С‹</value></string>
+	<string><id>248</id><value>РЇР·С‹Рє</value></string>
+	<string><id>249</id><value>РњСѓР·С‹РєР°</value></string>
+	<string><id>250</id><value>Р’РёР·СѓР°Р»РёР·Р°С†РёСЏ</value></string>
+	<string><id>251</id><value>Р’С‹Р±РµСЂРёС‚Рµ РґРёСЂРµРєС‚РѕСЂРёСЋ РЅР°Р·РЅР°С‡РµРЅРёСЏ</value></string>
+	<string><id>252</id><value>- Р’С‹РІРѕРґРёС‚СЊ СЃС‚РµСЂРµРѕ РЅР° РІСЃРµ РґРёРЅР°РјРёРєРё</value></string>
+	<string><id>253</id><value>РљРѕР»РёС‡РµСЃС‚РІРѕ РєР°РЅР°Р»РѕРІ</value></string>
+	<string><id>254</id><value>- РІС‹РІРѕРґРёС‚СЊ Р·РІСѓРє РІ С„РѕСЂРјР°С‚Рµ (DTSВ®)</value></string>
+	<string><id>255</id><value>CDDB</value></string>
+	<string><id>256</id><value>РџСЂРѕРІРµСЂРєР° РёРЅС„. freedb РґР»СЏ CDDB</value></string>
+	<string><id>257</id><value>РћС€РёР±РєР°</value></string>
+	<string><id>258</id><value>РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ С‚РµРіРё ID3</value></string>
+	<string><id>259</id><value>РћС‚РєСЂС‹С‚РёРµ</value></string>
+	<string><id>260</id><value>Shoutcast</value></string>
+	<string><id>261</id><value>РћР¶РёРґР°РЅРёРµ СЃС‚Р°СЂС‚Р°....</value></string>
+	<string><id>262</id><value>РРЅС„РѕСЂРјР°С†РёСЏ СЂР°Р±РѕС‚С‹ СЃРєСЂРёРїС‚РѕРІ</value></string>
+	<string><id>263</id><value>Р’РєР»СЋС‡РёС‚СЊ Web-СЃРµСЂРІРµСЂ</value></string>
+	<string><id>264</id><value>Р—Р°РїРёСЃСЊ</value></string>
+	<string><id>265</id><value>РћСЃС‚Р°РЅРѕРІРёС‚СЊ Р·Р°РїРёСЃСЊ</value></string>
+	<string><id>266</id><value>РЎРѕСЂС‚.РїРѕ: РўСЂРµРє</value></string>
+	<string><id>267</id><value>РЎРѕСЂС‚.РїРѕ: Р’СЂРµРј.</value></string>
+	<string><id>268</id><value>РЎРѕСЂС‚.РїРѕ: РќР°Р·РІ.</value></string>
+	<string><id>269</id><value>РЎРѕСЂС‚.РїРѕ: РСЃРїР».</value></string>
+	<string><id>270</id><value>РЎРѕСЂС‚.РїРѕ: РђР»Р±Рј.</value></string>
+	<string><id>271</id><value>TРћРџ 100</value></string>
+	<string><id>272</id><value>РќР°СЃС‚СЂРѕР№РєР° СЂР°Р·РјРµСЂРѕРІ СЌРєСЂР°РЅР° (Р»РµРІС‹Р№ РІРµСЂС…РЅРёР№ СѓРіРѕР»)</value></string>
+	<string><id>273</id><value>РќР°СЃС‚СЂРѕР№РєР° СЂР°Р·РјРµСЂРѕРІ СЌРєСЂР°РЅР° (РїСЂР°РІС‹Р№ РЅРёР¶РЅРёР№ СѓРіРѕР»)</value></string>
+	<string><id>274</id><value>РџРѕР·РёС†РёСЏ СЃСѓР±С‚РёС‚СЂРѕРІ</value></string>
+	<string><id>275</id><value>Р РµРіСѓР»РёСЂРѕРІРєР° СЃРѕРѕС‚РЅРѕС€РµРЅРёСЏ РІС‹СЃРѕС‚С‹ Рё С€РёСЂРёРЅС‹</value></string>
+	<string><id>276</id><value>Р”РІРёРіР°Р№С‚Рµ СЃС‚СЂРµР»РєРё РґР»СЏ СЂРµРіСѓР»РёСЂРѕРІРєРё СЂР°Р·РјРµСЂРѕРІ СЌРєСЂР°РЅР°</value></string>
+	<string><id>277</id><value>Р”РІРёРіР°Р№С‚Рµ РїРѕР»РѕСЃРєСѓ РґР»СЏ СЃСѓР±С‚РёС‚СЂРѕРІ</value></string>
+	<string><id>278</id><value>Р”РѕР±РµР№С‚РµСЃСЊ РєРІР°РґСЂР°С‚Р°</value></string>
+	<string><id>279</id><value>РќРµРІРѕР·РјРѕР¶РЅРѕ Р·Р°РіСЂСѓР·РёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё</value></string>
+	<string><id>280</id><value>РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ СЃС‚Р°РЅРґР°СЂС‚РЅС‹С… РЅР°СЃС‚СЂРѕРµРє</value></string>
+	<string><id>281</id><value>РџСЂРѕРІРµСЂСЊС‚Рµ .xml-С„Р°Р№Р»С‹</value></string>
+	<string><id>282</id><value>РЅР°Р№РґРµРЅРѕ %i Р·РЅР°С‡РµРЅРёР№</value></string>
+	<string><id>283</id><value>Р РµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР°</value></string>
+	<string><id>284</id><value>РќРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ</value></string>
+	<string><id>285</id><value>Р¤РёР»СЊС‚СЂ С‡РµСЂРµР·СЃС‚СЂРѕС‡РЅРѕСЃС‚Рё</value></string>
+	<string><id>286</id><value>Р’РєР»СЋС‡РёС‚СЊ РїРѕСЃС‚РѕР±СЂР°Р±РѕС‚РєСѓ</value></string>
+	<string><id>287</id><value>РЎСѓР±С‚РёС‚СЂС‹</value></string>
+	<string><id>288</id><value>РЁСЂРёС„С‚</value></string>
+	<string><id>289</id><value>- СЂР°Р·РјРµСЂ</value></string>
+	<string><id>290</id><value>РЎР¶Р°С‚РёРµ РґРёРЅР°РјРёС‡РµСЃРєРѕРіРѕ РґРёР°РїР°Р·РѕРЅР°</value></string>
+	<string><id>291</id><value>Р’РёРґРµРѕ</value></string>
+	<string><id>292</id><value>Р—РІСѓРє</value></string>
+	<string><id>293</id><value>РЎСѓР±С‚РёС‚СЂС‹</value></string>
+	<string><id>294</id><value>РџРѕСЃС‚Р°РІРёС‚СЊ Р·Р°РєР»Р°РґРєСѓ</value></string>
+	<string><id>295</id><value>Р¦РёРєР» Р·Р°РєР»Р°РґРѕРє</value></string>
+	<string><id>296</id><value>РћС‡РёСЃС‚РёС‚СЊ Р·Р°РєР»Р°РґРєРё</value></string>
+	<string><id>297</id><value>Р—Р°РґРµСЂР¶РєР° Р·РІСѓРєР°</value></string>
+	<string><id>298</id><value>РџРѕР»Р·СѓРЅРѕРє</value></string>
+	<string><id>300</id><value>1. РЇР·С‹Рє</value></string>
+	<string><id>301</id><value>2. Р“СЂРѕРјРєРѕСЃС‚СЊ</value></string>
+	<string><id>302</id><value>3. РџРѕС‚РѕРє</value></string>
+	<string><id>303</id><value>Р—Р°РґРµСЂР¶РєР° СЃСѓР±С‚РёС‚СЂРѕРІ</value></string>
+	<string><id>304</id><value>РЇР·С‹Рє</value></string>
+	<string><id>305</id><value>Р’РєР»СЋС‡РµРЅРѕ</value></string>
+	<string><id>306</id><value>Р‘РµР· РёРЅС‚РµСЂР»РёРІРёРЅРіР°</value></string>
+	<string><id>307</id><value>- Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ РїРѕСЃС‚РїСЂРѕС†РµСЃСЃРёРЅРі</value></string>
+	<string><id>308</id><value>- РІРµСЂС‚РёРє. Deblocking-С„РёР»СЊС‚СЂ</value></string>
+	<string><id>309</id><value>- РіРѕСЂРёР·.  Deblocking-С„РёР»СЊС‚СЂ</value></string>
+	<string><id>310</id><value>- РђРІС‚Рѕ СЏСЂРєРѕСЃС‚СЊ/РєРѕРЅС‚СЂР°СЃС‚</value></string>
+	<string><id>311</id><value>- РџРѕРґР°РІР»РµРЅРёРµ РѕС‚СЂР°Р¶РµРЅРёР№</value></string>
+	<string><id>312</id><value>(0=Р°РІС‚.)</value></string>
+	<string><id>313</id><value>РћС‡РёСЃС‚РёС‚СЊ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…</value></string>
+	<string><id>314</id><value>РџРѕРґРіРѕС‚РѕРІРєР°...</value></string>
+	<string><id>315</id><value>РћС€РёР±РєР° Р±Р°Р·С‹ РґР°РЅРЅС‹С…</value></string>
+	<string><id>316</id><value>РџРѕРёСЃРє РїРµСЃРµРЅ...</value></string>
+	<string><id>317</id><value>РћС‡РёСЃС‚РєР° Р±Р°Р·С‹ РґР°РЅРЅС‹С… РІС‹РїРѕР»РЅРµРЅР°</value></string>
+	<string><id>318</id><value>РћС‡РёСЃС‚РєР° РїРµСЃРµРЅ...</value></string>
+	<string><id>319</id><value>РћС€РёР±РєР° РѕС‡РёСЃС‚РєРё РїРµСЃРµРЅ</value></string>
+	<string><id>320</id><value>РћС‡РёСЃС‚РєР° РёСЃРїРѕР»РЅРёС‚РµР»РµР№...</value></string>
+	<string><id>321</id><value>РћС€РёР±РєР° РѕС‡РёСЃС‚РєРё РёСЃРїРѕР»РЅРёС‚РµР»РµР№</value></string>
+	<string><id>322</id><value>РћС‡РёСЃС‚РєР° Р¶Р°РЅСЂРѕРІ...</value></string>
+	<string><id>323</id><value>РћС€РёР±РєР° РѕС‡РёСЃС‚РєРё Р¶Р°РЅСЂРѕРІ</value></string>
+	<string><id>324</id><value>РћС‡РёСЃС‚РєР° РїСѓС‚РµР№...</value></string>
+	<string><id>325</id><value>РћС€РёР±РєР° РѕС‡РёСЃС‚РєРё РїСѓС‚РµР№</value></string>
+	<string><id>326</id><value>РћС‡РёСЃС‚РєР° Р°Р»СЊР±РѕРјРѕРІ...</value></string>
+	<string><id>327</id><value>РћС€РёР±РєР° РѕС‡РёСЃС‚РєРё Р°Р»СЊР±РѕРјРѕРІ</value></string>
+	<string><id>328</id><value>Р—Р°РїРёСЃСЊ РёР·РјРµРЅРµРЅРёР№...</value></string>
+	<string><id>329</id><value>РћС€РёР±РєР° Р·Р°РїРёСЃРё РёР·РјРµРЅРµРЅРёР№</value></string>
+	<string><id>330</id><value>Р­С‚Рѕ Р·Р°Р№РјРµС‚ РЅРµРєРѕС‚РѕСЂРѕРµ РІСЂРµРјСЏ...</value></string>
+	<string><id>331</id><value>РЎР¶Р°С‚РёРµ Р±Р°Р·С‹ РґР°РЅРЅС‹С…...</value></string>
+	<string><id>332</id><value>РћС€РёР±РєР° СЃР¶Р°С‚РёСЏ Р±Р°Р·С‹ РґР°РЅРЅС‹С…</value></string>
+	<string><id>333</id><value>Р’С‹ С…РѕС‚РёС‚Рµ РѕС‡РёСЃС‚РёС‚СЊ Р±Р°Р·Сѓ РґР°РЅРЅС‹С… РјСѓР·С‹РєРё?</value></string>
+	<string><id>334</id><value>РћС‡РёСЃС‚РєР° РјСѓР·С‹РєР°Р»СЊРЅРѕР№ Р±Р°Р·С‹ РґР°РЅРЅС‹С…</value></string>
+	<string><id>335</id><value>РЎС‚Р°СЂС‚</value></string>
+	<string><id>336</id><value>РљРѕРЅРІРµСЂС‚РёСЂРѕРІР°С‚СЊ С‡Р°СЃС‚РѕС‚Сѓ РєР°РґСЂРѕРІ</value></string>
+	<string><id>337</id><value>Р¤РѕСЂРјР°С‚ Р°СѓРґРёРѕРІС‹С…РѕРґР°</value></string>
+	<string><id>338</id><value>РђРЅР°Р»РѕРіРѕРІС‹Р№</value></string>
+	<string><id>339</id><value>Р¦РёС„СЂРѕРІРѕР№</value></string>
+	<string><id>340</id><value>Р Р°Р·Р»РёС‡РЅС‹Рµ РёСЃРїРѕР»РЅРёС‚.</value></string>
+	<string><id>341</id><value>РџСЂРѕРёРіСЂС‹РІР°РЅРёРµ DVD</value></string>
+	<string><id>342</id><value>Р¤РёР»СЊРјС‹</value></string>
+	<string><id>343</id><value>РџСЂРѕРёРіСЂС‹РІР°С‚СЊ СЃ С‡Р°СЃС‚РѕС‚РѕР№ РєР°РґСЂРѕРІ GUI</value></string>
+	<string><id>344</id><value>РђРєС‚РµСЂС‹</value></string>
+	<string><id>345</id><value>Р“РѕРґ</value></string>
+	<string><id>346</id><value>РЎРєР»РµРёС‚СЊ</value></string>
+	<string><id>347</id><value>Р Р°Р·Р±РёС‚СЊ</value></string>
+	<string><id>348</id><value>РРµСЂР°СЂС…РёСЏ РїР°РїРѕРє</value></string>
+	<string><id>349</id><value>РџРѕРєР°Р·С‹РІР°С‚СЊ С‚РѕР»СЊРєРѕ Default.xbe</value></string>
+	<string><id>350</id><value>РџСЂРѕРіСЂР°РјРјС‹</value></string>
+	<string><id>351</id><value>РѕС‚РєР»СЋС‡РµРЅРѕ</value></string>
+	<string><id>352</id><value>Р—Р°С‚РµРјРЅРµРЅРёРµ</value></string>
+	<string><id>353</id><value>Р§С‘СЂРЅС‹Р№ СЌРєСЂР°РЅ</value></string>
+	<string><id>354</id><value>РЎС‚РёР»СЊ РњР°С‚СЂРёС†С‹</value></string>
+	<string><id>355</id><value>Р’СЂРµРјСЏ РґРѕ РїРѕСЏРІР»РµРЅРёСЏ Р·Р°СЃС‚Р°РІРєРё</value></string>
+	<string><id>356</id><value>РўРёРї Р·Р°СЃС‚Р°РІРєРё</value></string>
+	<string><id>357</id><value>Р’СЂРµРјСЏ РґРѕ Р°РІС‚РѕРІС‹РєР»СЋС‡РµРЅРёСЏ</value></string>
+	<string><id>358</id><value>Р’СЃРµ Р°Р»СЊР±РѕРјС‹</value></string>
+	<string><id>359</id><value>РќРµРґР°РІРЅРёРµ Р°Р»СЊР±РѕРјС‹</value></string>
+	<string><id>360</id><value>Р—Р°СЃС‚Р°РІРєР°</value></string>
+	<string><id>361</id><value>Р . РЎР»Р°Р№РґС€РѕСѓ</value></string>
+	<string><id>362</id><value>РЈСЂРѕРІРµРЅСЊ Р·Р°С‚РµРјРЅРµРЅРёСЏ СЌРєСЂР°РЅР° (%)</value></string>
+	<string><id>363</id><value>РЎРѕСЂС‚.РїРѕ С„Р°Р№Р»</value></string>
+	<string><id>364</id><value>- РІС‹РІРѕРґРёС‚СЊ РІ С„РѕСЂРјР°С‚Рµ AC3 (Dolby DigitalВ®)</value></string>
+	<string><id>365</id><value>РЎРѕСЂС‚.РїРѕ: РќР°Р·РІ.</value></string>
+	<string><id>366</id><value>РЎРѕСЂС‚.РїРѕ: Р“РѕРґ</value></string>
+	<string><id>367</id><value>РЎРѕСЂС‚.РїРѕ: Р РµР№С‚.</value></string>
+	<string><id>368</id><value>IMDB</value></string>
+	<string><id>369</id><value>РќР°Р·РІР°РЅРёРµ</value></string>
+	<string><id>370</id><value>РіСЂРѕР·С‹</value></string>
+	<string><id>371</id><value>РјРµСЃС‚Р°РјРё</value></string>
+	<string><id>372</id><value>РїСЂРµРёРј.</value></string>
+	<string><id>373</id><value>СЃРѕР»РЅРµС‡РЅРѕ</value></string>
+	<string><id>374</id><value>РѕР±Р»Р°С‡РЅРѕ</value></string>
+	<string><id>375</id><value>СЃРЅРµРі</value></string>
+	<string><id>376</id><value>РґРѕР¶РґСЊ</value></string>
+	<string><id>377</id><value>РЅРµР±РѕР»СЊС€РѕР№</value></string>
+	<string><id>378</id><value>СѓС‚СЂРѕРј</value></string>
+	<string><id>379</id><value>РґРЅС‘Рј</value></string>
+	<string><id>380</id><value>СЃРЅРµРіРѕРїР°Рґ</value></string>
+	<string><id>381</id><value>РЅРµРјРЅРѕРіРѕ</value></string>
+	<string><id>382</id><value>РјРµСЃС‚Р°РјРё</value></string>
+	<string><id>383</id><value>РїРѕСЂС‹РІР°РјРё</value></string>
+	<string><id>384</id><value>СЃРёР»СЊРЅ.</value></string>
+	<string><id>385</id><value>СЏСЃРЅРѕ</value></string>
+	<string><id>386</id><value>Р±РµР·РѕР±Р»Р°С‡РЅРѕ</value></string>
+	<string><id>387</id><value>РѕР±Р»Р°С‡РЅРѕ</value></string>
+	<string><id>388</id><value>СЂР°РЅРѕ</value></string>
+	<string><id>389</id><value>РѕР±РёР»СЊРЅРѕ</value></string>
+	<string><id>390</id><value>С€РєРІР°Р»</value></string>
+	<string><id>391</id><value>РЅРёР·РєРёР№</value></string>
+	<string><id>392</id><value>СЃСЂРµРґРЅРёР№</value></string>
+	<string><id>393</id><value>РІС‹СЃРѕРєРёР№</value></string>
+	<string><id>394</id><value>С‚СѓРјР°РЅ</value></string>
+	<string><id>395</id><value>РґС‹РјРєР°</value></string>
+	<string><id>396</id><value>Р’С‹Р±РµСЂРёС‚Рµ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµ</value></string>
+	<string><id>397</id><value>РџРµСЂРёРѕРґ РѕР±РЅРѕРІР»РµРЅРёСЏ</value></string>
+	<string><id>398</id><value>Р•РґРёРЅРёС†Р° РёР·РјРµСЂРµРЅРёСЏ С‚РµРјРїРµСЂР°С‚СѓСЂС‹</value></string>
+	<string><id>399</id><value>Р•РґРёРЅРёС†Р° РёР·РјРµСЂРµРЅРёСЏ СЃРєРѕСЂРѕСЃС‚Рё РІРµС‚СЂР°</value></string>
+	<string><id>400</id><value>РџРѕРіРѕРґР°</value></string>
+	<string><id>401</id><value>РўРµРјРїРµСЂР°С‚СѓСЂР°</value></string>
+	<string><id>402</id><value>РџРѕ РѕС‰СѓС‰РµРЅРёСЋ</value></string>
+	<string><id>403</id><value>РЈСЂРѕРІРµРЅСЊ РЈР¤</value></string>
+	<string><id>404</id><value>Р’РµС‚РµСЂ</value></string>
+	<string><id>405</id><value>РўРѕС‡РєР° СЂРѕСЃС‹</value></string>
+	<string><id>406</id><value>Р’Р»Р°Р¶РЅРѕСЃС‚СЊ</value></string>
+	<string><id>407</id><value>РЅР°РїСЂ.:</value></string>
+	<string><id>408</id><value>, СЃРєРѕСЂРѕСЃС‚СЊ РґРѕ:</value></string>
+	<string><id>410</id><value>РџРѕРґРєР»СЋС‡РµРЅРёРµ Рє weather.com</value></string>
+	<string><id>411</id><value>РџРѕР»СѓС‡РµРЅРёРµ РїСЂРѕРіРЅРѕР·Р° РґР»СЏ:</value></string>
+	<string><id>412</id><value>РќРµРІРѕР·РјРѕР¶РЅРѕ РїРѕР»СѓС‡РёС‚СЊ РїСЂРѕРіРЅРѕР·</value></string>
+	<string><id>413</id><value>Р’СЂСѓС‡РЅСѓСЋ</value></string>
+	<string><id>414</id><value>РќРµС‚ РѕРїРёСЃР°РЅРёСЏ РґР»СЏ СЌС‚РѕРіРѕ Р°Р»СЊР±РѕРјР°</value></string>
+	<string><id>415</id><value>Р—Р°РіСЂСѓР·РєР° РёРєРѕРЅРѕРє...</value></string>
+	<string><id>416</id><value>РќРµ РґРѕСЃС‚СѓРїРЅРѕ</value></string>
+	<string><id>417</id><value>Р’РёРґ: РљСЂСѓРїРЅРѕ</value></string>
+	<string><id>418</id><value>Р’РёРґРµРѕ/Р–Р°РЅСЂС‹</value></string>
+	<string><id>419</id><value>Р’РёРґРµРѕ/РђРєС‚С‘СЂС‹</value></string>
+	<string><id>420</id><value>Р’РёРґРµРѕ/Р“РѕРґР°</value></string>
+	<string><id>421</id><value>Р’РёРґРµРѕ/РќР°Р·РІР°РЅРёСЏ</value></string>
+	<string><id>422</id><value>РЈРґР°Р»РёС‚СЊ РёРЅС„.</value></string>
+	<string><id>423</id><value>РЈРґР°Р»РёС‚СЊ CDDB РёРЅС„.</value></string>
+	<string><id>424</id><value>Р’С‹Р±РѕСЂ</value></string>
+	<string><id>425</id><value>РРЅС„.РѕР± Р°Р»СЊР±. РЅРµ РЅР°Р№РґРµРЅР°</value></string>
+	<string><id>426</id><value>Р’ CDDB РёРЅС„. РЅРµ РЅР°Р№РґРµРЅР°</value></string>
+	<string><id>427</id><value>Р”РёСЃРє:</value></string>
+	<string><id>428</id><value>Р’СЃС‚Р°РІСЊС‚Рµ РїСЂР°РІРёР»СЊРЅС‹Р№ CD/DVD-РґРёСЃРє</value></string>
+	<string><id>429</id><value>Р’СЃС‚Р°РІСЊС‚Рµ СЃР»РµРґСѓСЋС‰РёР№ CD/DVD-РґРёСЃРє</value></string>
+	<string><id>430</id><value>РЎРѕСЂС‚.РїРѕ: в„–DVD</value></string>
+	<string><id>431</id><value>Р‘РµР· РєСЌС€Р°</value></string>
+	<string><id>432</id><value>РЈРґР°Р»РёС‚СЊ С„РёР»СЊРј РёР· Р±Р°Р·С‹ РґР°РЅРЅС‹С…</value></string>
+	<string><id>433</id><value>Р’С‹ СѓРІРµСЂРµРЅС‹ РЅР°СЃС‡С‘С‚ СѓРґР°Р»РµРЅРёСЏ</value></string>
+	<string><id>434</id><value>С„РёР»СЊРјР°?</value></string>
+	<string><id>435</id><value>РўСЂРµРє</value></string>
+	<string><id>436</id><value>Р“РѕРґ:</value></string>
+	<string><id>437</id><value>Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ:</value></string>
+	<string><id>438</id><value>РћС‚РєСЂС‹С‚РёРµ С„Р°Р№Р»Р°</value></string>
+	<string><id>439</id><value>Р‘СѓС„РµСЂРёР·Р°С†РёСЏ</value></string>
+	<string><id>440</id><value>Р–РµСЃС‚РєРёР№ РґРёСЃРє</value></string>
+	<string><id>441</id><value>UDF</value></string>
+	<string><id>442</id><value>LAN</value></string>
+	<string><id>443</id><value>РРЅС‚РµСЂРЅРµС‚</value></string>
+	<string><id>444</id><value>РІРёРґРµРѕ</value></string>
+	<string><id>445</id><value>Р°СѓРґРёРѕ</value></string>
+	<string><id>446</id><value>DVD</value></string>
+	<string><id>447</id><value>РђРІС‚РѕР·Р°РїСѓСЃРє</value></string>
+	<string><id>448</id><value>LCD-РјРѕРґ</value></string>
+	<string><id>449</id><value>Р’РєР»СЋС‡РµРЅРѕ</value></string>
+	<string><id>450</id><value>РљРѕР»РёС‡РµСЃС‚РІРѕ Р·РЅР°РєРѕРјРµСЃС‚ РІ СЃС‚СЂРѕРєРµ</value></string>
+	<string><id>451</id><value>РђРґСЂРµСЃ 1-РѕР№ СЃС‚СЂРѕРєРё</value></string>
+	<string><id>452</id><value>РђРґСЂРµСЃ 2-РѕР№ СЃС‚СЂРѕРєРё</value></string>
+	<string><id>453</id><value>РђРґСЂРµСЃ 3-РѕР№ СЃС‚СЂРѕРєРё</value></string>
+	<string><id>454</id><value>РђРґСЂРµСЃ 4-РѕР№ СЃС‚СЂРѕРєРё</value></string>
+	<string><id>455</id><value>РљРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє</value></string>
+	<string><id>456</id><value>Р РµР¶РёРј</value></string>
+	<string><id>457</id><value>РЎРјРµРЅРёС‚СЊ РІРёРґ</value></string>
+	<string><id>458</id><value>B/РћС‚РјРµС‚РёС‚СЊ</value></string>
+	<string><id>459</id><value>РЎСѓР±С‚РёС‚.</value></string>
+	<string><id>460</id><value>РђСѓРґРёРѕ РїРѕС‚РѕРє</value></string>
+	<string><id>461</id><value>[Р·Р°РїСѓС‰РµРЅРѕ]</value></string>
+	<string><id>462</id><value>РЎСѓР±С‚РёС‚СЂС‹</value></string>
+	<string><id>463</id><value>РЇСЂРєРѕСЃС‚СЊ РїРѕРґСЃРІРµС‚РєРё</value></string>
+	<string><id>464</id><value>РЇСЂРєРѕСЃС‚СЊ</value></string>
+	<string><id>465</id><value>РљРѕРЅС‚СЂР°СЃС‚РЅРѕСЃС‚СЊ</value></string>
+	<string><id>466</id><value>Р“Р°РјРјР°</value></string>
+	<string><id>467</id><value>РўРёРї</value></string>
+	<string><id>468</id><value>РР·РјРµРЅРёС‚Рµ РїРѕР»РѕР¶РµРЅРёРµ РїР°РЅРµР»Рё</value></string>
+	<string><id>469</id><value>РџРѕР·РёС†РёСЏ СЌРєСЂР°РЅРЅРѕРіРѕ РјРµРЅСЋ (OSD)</value></string>
+	<string><id>470</id><value>РЎРѕР·РґР°С‚РµР»Рё</value></string>
+	<string><id>471</id><value>РњOD-С‡РёРї</value></string>
+	<string><id>472</id><value>Р’СЂРµРјСЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ OSD</value></string>
+	<string><id>473</id><value>РџСЂРµРѕР±СЂР°Р·. СЃ РІС‹СЃРѕРє.РєР°С‡РµСЃС‚РІРѕРј</value></string>
+	<string><id>474</id><value>Р’С‹РєР»СЋС‡РµРЅРѕ</value></string>
+	<string><id>475</id><value>РўРѕР»СЊРєРѕ РјСѓР·С‹РєР°</value></string>
+	<string><id>476</id><value>РњСѓР·С‹РєР° Рё Р’РёРґРµРѕ</value></string>
+	<string><id>477</id><value>РќРµРІРѕР·РјРѕР¶РЅРѕ Р·Р°РіСЂСѓР·РёС‚СЊ РїР»СЌР№Р»РёСЃС‚</value></string>
+	<string><id>478</id><value>Р­РєСЂР°РЅРЅРѕРµ РјРµРЅСЋ (OSD)</value></string>
+	<string><id>479</id><value>РџРѕР·РёС†РёСЏ СЌРєСЂР°РЅРЅРѕРіРѕ РјРµРЅСЋ</value></string>
+	<string><id>480</id><value>РћС„РѕСЂРјР»РµРЅРёРµ</value></string>
+	<string><id>481</id><value>РћРїС†РёРё Р°СѓРґРёРѕ</value></string>
+	<string><id>482</id><value>РћР± XBMC</value></string>
+	<string><id>483</id><value>РђР»СЊР±РѕРј</value></string>
+	<string><id>484</id><value>РСЃРїРѕР»РЅРёС‚РµР»СЊ</value></string>
+	<string><id>485</id><value>РЈРґР°Р»РёС‚СЊ Р°Р»СЊР±РѕРј</value></string>
+	<string><id>486</id><value>РџРѕРІС‚РѕСЂ</value></string>
+	<string><id>487</id><value>РџРѕРІС‚РѕСЂ 1 СЂР°Р·</value></string>
+	<string><id>488</id><value>РџРѕРІС‚РѕСЂ РїР°РїРєРё</value></string>
+	<string><id>489</id><value>РџСЂРѕРёРіСЂС‹РІР°С‚СЊ СЃР»РµРґСѓСЋС‰РёР№ С„Р°Р№Р» Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё</value></string>
+	<string><id>490</id><value>РђРІС‚Рѕ-РїРµСЂРµРєР»СЋС‡РµРЅРёРµ СЃРїРёСЃРєРѕРІ Рё РёРєРѕРЅРѕРє РІ РїРµСЃРЅСЏС…</value></string>
+	<string><id>491</id><value>- РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р±РѕР»СЊС€РёРµ РёРєРѕРЅРєРё</value></string>
+	<string><id>492</id><value>РњР°СЃС€С‚Р°Р±РёСЂРѕРІР°С‚СЊ СЃСѓР±С‚РёС‚СЂС‹</value></string>
+	<string><id>493</id><value>Р Р°СЃС€РёСЂРµРЅРЅС‹Рµ РѕРїС†РёРё (Р”Р»СЏ СЌРєСЃРїРµСЂС‚РѕРІ!)</value></string>
+	<string><id>494</id><value>РћР±С‰РёР№ СѓСЂРѕРІРµРЅСЊ С€СѓРјР° РІ РєРѕРјРЅР°С‚Рµ (dB)</value></string>
+	<string><id>495</id><value>РџРµСЂРµСЃС‡РёС‚С‹РІР°С‚СЊ РІРёРґРµРѕ РґРѕ СЂР°Р·СЂРµС€РµРЅРёСЏ GUI</value></string>
+	<string><id>496</id><value>РљР°Р»РёР±СЂРѕРІРєР°</value></string>
+	<string><id>497</id><value>РЎРєСЂС‹РІР°С‚СЊ С‚РёРї РІ РЅР°Р·РІР°РЅРёСЏС… С„Р°Р№Р»РѕРІ</value></string>
+	<string><id>498</id><value>РЎРѕСЂС‚.РїРѕ: РўРёРїСѓ</value></string>
+	<string><id>499</id><value>РќРµРІРѕР·РјРѕР¶РЅРѕ СЃРѕРµРґРёРЅ. СЃ www.allmusic.com</value></string>
+	<string><id>500</id><value>РќРµСѓРґР°С‡РЅР°СЏ Р·Р°РіСЂСѓР·РєР° РёРЅС„. РѕР± Р°Р»СЊР±РѕРјРµ</value></string>
+	<string><id>501</id><value>РџСЂРѕРІРµСЂРєР° РёРјРµРЅ Р°Р»СЊР±РѕРјРѕРІ...</value></string>
+	<string><id>502</id><value>РћС‚РєСЂС‹С‚</value></string>
+	<string><id>503</id><value>Р—Р°РЅСЏС‚</value></string>
+	<string><id>504</id><value>РџСѓСЃС‚</value></string>
+	<string><id>505</id><value>Р—Р°РіСЂСѓР·РєР° РёРЅС„РѕСЂРјР°С†РёРё РёР· С„Р°Р№Р»РѕРІ...</value></string>
+	<string><id>506</id><value>РРјСЏ РїР°РїРєРё РІ РєР°С‡РµСЃС‚РІРµ РЅР°Р·РІР°РЅРёСЏ</value></string>
+	<string><id>507</id><value>РЎРѕСЂС‚.РїРѕ: РСЃРї.</value></string>
+	<string><id>508</id><value>РќРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЏСЂР»С‹РєРё РёР»Рё СЃРєР°РЅРёСЂРѕРІР°РЅРёРµ</value></string>
+	<string><id>509</id><value>РљСЌС€РёСЂРѕРІР°С‚СЊ РёРєРѕРЅРєРё РїСЂРѕРіСЂР°РјРј</value></string>
+	<string><id>510</id><value>РџРѕРєР°Р·С‹РІР°С‚СЊ РІРёР·СѓР°Р»РёР·Р°С†РёСЋ</value></string>
+	<string><id>511</id><value>РђРІС‚Рѕ-РїРµСЂРµРєР»СЋС‡РµРЅРёРµ PAL/NTSC РґР»СЏ РёРіСЂ</value></string>
+	<string><id>512</id><value>РџРѕСЃР»Рµ СЃС‚Р°СЂС‚Р° РѕС‚РѕР±СЂР°Р¶Р°С‚СЊ РјРµРЅСЋ:</value></string>
+	<string><id>513</id><value>РѕСЃРЅРѕРІРЅРѕРµ РѕРєРЅРѕ</value></string>
+	<string><id>514</id><value>РЅР°СЃС‚СЂРѕР№РєРё</value></string>
+	<string><id>515</id><value>Р–Р°РЅСЂ</value></string>
+	<string><id>516</id><value>РћС‚РѕР±СЂР°Р¶Р°С‚СЊ Р°СЂС…РёРІС‹ СЃ РѕРґРЅРёРј С„Р°Р№Р»РѕРј РїСЂРѕР·СЂР°С‡РЅРѕ</value></string>
+	<string><id>517</id><value>Р§Р°СЃС‚Рѕ РїСЂРѕСЃР»СѓС€РёРІР°РµРјС‹Рµ Р°Р»СЊР±РѕРјС‹</value></string>
+	<string><id>518</id><value>Р—Р°РїСѓСЃС‚РёС‚СЊ</value></string>
+	<string><id>519</id><value>Р—Р°РїСѓСЃС‚РёС‚СЊ РІ СЂРµР¶РёРјРµвЂ¦</value></string>
+	<string><id>520</id><value>РР·РјРµРЅРёС‚СЊ Р·Р°РіРѕР»РѕРІРѕРє XBE</value></string>
+	<string><id>521</id><value>РЎР±РѕСЂРєР°</value></string>
+	<string><id>522</id><value>РЈРґР°Р»РёС‚СЊ СЂРµСЃСѓСЂСЃ</value></string>
+	<string><id>588</id><value>РћС‚РєР»СЋС‡РёС‚СЊ СЂРµР¶РёРј "Р’РµС‡РµСЂРёРЅРєР°"</value></string>
+	<string><id>589</id><value>Р РµР¶РёРј "Р’РµС‡РµСЂРёРЅРєР°"</value></string>
+	<string><id>590</id><value>РЎР»СѓС‡Р°Р№РЅРѕ</value></string>
+	<string><id>591</id><value>Р’С‹РєР»СЋС‡РµРЅРѕ</value></string>
+	<string><id>592</id><value>РћРґРёРЅ</value></string>
+	<string><id>593</id><value>Р’СЃРµ</value></string>
+	<string><id>594</id><value>Р’С‹РєР»СЋС‡РµРЅРѕ</value></string>
+	<string><id>595</id><value>РџРѕРІС‚РѕСЂ: Р’С‹РєР».</value></string>
+	<string><id>596</id><value>РџРѕРІС‚РѕСЂ: РћРґРёРЅ</value></string>
+	<string><id>597</id><value>РџРѕРІС‚РѕСЂ: Р’СЃРµ</value></string>
+	<string><id>600</id><value>Р РёРїРїРёРЅРі CD</value></string>
+	<string><id>601</id><value>РЎСЂРµРґРЅРёР№</value></string>
+	<string><id>602</id><value>РЎС‚Р°РЅРґР°СЂС‚РЅС‹Р№</value></string>
+	<string><id>603</id><value>Р­РєСЃС‚СЂРµРјР°Р»СЊРЅС‹Р№</value></string>
+	<string><id>604</id><value>РџРѕСЃС‚РѕСЏРЅРЅС‹Р№ BitRate</value></string>
+	<string><id>605</id><value>Р РёРїРїРёРЅРі...</value></string>
+	<string><id>606</id><value>РќРѕРјРµСЂ С‚СЂРµРєР°:</value></string>
+	<string><id>607</id><value>Р’:</value></string>
+	<string><id>608</id><value>Р РёРї CD-РґРёСЃРєР° РёР»Рё С‚СЂРµРєР° РЅРµРІРѕР·РјРѕР¶РµРЅ</value></string>
+	<string><id>609</id><value>РќРµ СѓРєР°Р·Р°РЅРѕ Р·РЅР°С‡РµРЅРёРµ (CDDARipPath) РІ XboxMediaCenter.xml</value></string>
+	<string><id>620</id><value>Р РёРїРїРёРЅРі CD</value></string>
+	<string><id>621</id><value>РљРѕРґРёСЂРѕРІР°С‚СЊ СЃ РїРѕРјРѕС‰СЊСЋ</value></string>
+	<string><id>622</id><value>РљР°С‡РµСЃС‚РІРѕ</value></string>
+	<string><id>623</id><value>BitRate</value></string>
+	<string><id>624</id><value>РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РЅРѕРјРµСЂ С‚СЂРµРєР°</value></string>
+	<string><id>625</id><value>Р’СЃРµ РїРµСЃРЅРё </value></string>
+	<string><id>629</id><value>Р РµР¶РёРј РїСЂРѕСЃРјРѕС‚СЂР°</value></string>
+	<string><id>630</id><value>РќРѕСЂРјР°Р»СЊРЅС‹Р№</value></string>
+	<string><id>631</id><value>РЈРІРµР»РёС‡РµРЅРЅС‹Р№</value></string>
+	<string><id>632</id><value>Р Р°СЃС‚СЏРЅСѓС‚С‹Р№ 4:3</value></string>
+	<string><id>633</id><value>Р Р°СЃС‚СЏРЅСѓС‚С‹Р№ 14:9</value></string>
+	<string><id>634</id><value>Р Р°СЃС‚СЏРЅСѓС‚С‹Р№ 16:9</value></string>
+	<string><id>635</id><value>РћСЂРёРіРёРЅР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ</value></string>
+	<string><id>636</id><value>РћСЃРѕР±С‹Р№</value></string>
+	<string><id>637</id><value>Replay Gain</value></string>
+	<string><id>638</id><value>Р РµР¶РёРј Replay Gain</value></string>
+	<string><id>639</id><value>СѓСЂРѕРІРЅРё С‚СЂРµРєР°</value></string>
+	<string><id>640</id><value>СѓСЂРѕРІРЅРё Р°Р»СЊР±РѕРјР°</value></string>
+	<string><id>641</id><value>РЈСЂРѕРІРµРЅСЊ РґР»СЏ С„Р°Р№Р»РѕРІ СЃ Replay Gain</value></string>
+	<string><id>642</id><value>РЈСЂРѕРІРµРЅСЊ РґР»СЏ С„Р°Р№Р»РѕРІ Р±РµР· Replay Gain</value></string>
+	<string><id>643</id><value>РР·Р±РµРіР°С‚СЊ РёСЃРєР°Р¶РµРЅРёР№ РЅР° С„Р°Р№Р»Р°С… СЃ Rep.Gain</value></string>
+	<string><id>644</id><value>РЈРґР°Р»СЏС‚СЊ С‡РµСЂРЅС‹Рµ РїРѕР»РѕСЃС‹</value></string>
+	<string><id>645</id><value>РќРµРѕР±С…РѕРґРёРјРѕ РєСЌС€РёСЂРѕРІР°С‚СЊ Р±РѕР»СЊС€РѕР№ С„Р°Р№Р». РџСЂРѕРґРѕР»Р¶РёС‚СЊ?</value></string>
+	<string><id>646</id><value>РЈР±СЂР°С‚СЊ РЅР°Р·РІР°РЅРёРµ</value></string>
+	<string><id>700</id><value>РћС‡РёСЃС‚РєР° Р±Р°Р·С‹ РґР°РЅРЅС‹С…</value></string>
+	<string><id>701</id><value>РЈРґР°Р»РµРЅРёРµ СЃС‚Р°СЂС‹С… РїРµСЃРµРЅ РёР· Р±Р°Р·С‹</value></string>
+	<string><id>702</id><value>РРЅС„РѕСЂРјР°С†РёСЏ РёР· СЌС‚РѕР№ РїР°РїРєРё СѓР¶Рµ РµСЃС‚СЊ</value></string>
+	<string><id>703</id><value>РќР°Р¶РјРёС‚Рµ 'Р”Р°' РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РІСЃРµС… РїРµСЃРµРЅ.</value></string>
+	<string><id>704</id><value>РќР°Р¶РјРёС‚Рµ 'РќРµС‚' РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ С‚РѕР»СЊРєРѕ РЅРѕРІС‹С….</value></string>
+	<string><id>705</id><value>РќР°СЃС‚СЂРѕР№РєР° СЃРµС‚Рё</value></string>
+	<string><id>706</id><value>Р°РґСЂРµСЃ HTTP-proxy СЃРµСЂРІРµСЂР°</value></string>
+	<string><id>707</id><value>РїРѕСЂС‚ HTTP-proxy СЃРµСЂРІРµСЂР°</value></string>
+	<string><id>708</id><value>РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ HTTP-proxy</value></string>
+	<string><id>709</id><value>XLink Kai XTag</value></string>
+	<string><id>710</id><value>XLink Kai РџР°СЂРѕР»СЊ</value></string>
+	<string><id>711</id><value>Internet Protocol (IP)</value></string>
+	<string><id>712</id><value>РќРµРїСЂР°РІРёР»СЊРЅРѕ. Р’С‹Р±РµСЂРёС‚Рµ РѕС‚ 1 РґРѕ 65535.</value></string>
+	<string><id>713</id><value>HTTP-Proxy </value></string>
+	<string><id>714</id><value>XLink Kai</value></string>
+	<string><id>715</id><value>РџР°СЂР°РјРµС‚СЂС‹ СЃРµС‚Рё</value></string>
+	<string><id>716</id><value>Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё (DHCP)</value></string>
+	<string><id>717</id><value>РІСЂСѓС‡РЅСѓСЋ (Static)</value></string>
+	<string><id>718</id><value>РєР°Рє РµСЃС‚СЊ (РёР· Dashboard-Р°)</value></string>
+	<string><id>719</id><value>IP-Р°РґСЂРµСЃ</value></string>
+	<string><id>720</id><value>РњР°СЃРєР° РїРѕРґСЃРµС‚Рё</value></string>
+	<string><id>721</id><value>РђРґСЂРµСЃ С€Р»СЋР·Р°</value></string>
+	<string><id>722</id><value>РђРґСЂРµСЃ DNS-СЃРµСЂРІРµСЂР°</value></string>
+	<string><id>723</id><value>Р—Р°РїРёСЃР°С‚СЊ Рё РїРµСЂРµРіСЂСѓР·РёС‚СЊ</value></string>
+	<string><id>724</id><value>РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ Р°РґСЂРµСЃ. Р’РІРµРґРёС‚Рµ РІ РІРёРґРµ AAA.BBB.CCC.DDD</value></string>
+	<string><id>725</id><value>СЃ С‡РёСЃР»Р°РјРё РѕС‚ 0 РґРѕ 255.</value></string>
+	<string><id>726</id><value>РР·РјРµРЅРµРЅРёСЏ РЅРµ СЃРѕС…СЂР°РЅРµРЅС‹. РџСЂРѕРґРѕР»Р¶РёС‚СЊ Р±РµР· СЃРѕС…СЂР°РЅ.?</value></string>
+	<string><id>727</id><value>Web СЃРµСЂРІРµСЂ</value></string>
+	<string><id>728</id><value>FTP СЃРµСЂРІРµСЂ</value></string>
+	<string><id>729</id><value>РЎРёРЅС…СЂРѕРЅРёР·РѕРІР°С‚СЊ РІСЂРµРјСЏ РёР· РРЅС‚РµСЂРЅРµС‚Р°</value></string>
+	<string><id>730</id><value>РџРѕСЂС‚ РґР»СЏ Web-СЃРµСЂРІРµСЂР° </value></string>
+	<string><id>731</id><value>РђРґСЂРµСЃ СЃРµСЂРІРµСЂР° РІСЂРµРјРµРЅРё</value></string>
+	<string><id>732</id><value>РЎРѕС…СЂР°РЅРёС‚СЊ Рё РїСЂРёРјРµРЅРёС‚СЊ</value></string>
+	<string><id>733</id><value>РџР°СЂРѕР»СЊ РґР»СЏ РґРѕСЃС‚СѓРїР° Рє Web-СЃРµСЂРІРµСЂСѓ</value></string>
+	<string><id>734</id><value>Р±РµР· РїР°СЂРѕР»СЏ</value></string>
+	<string><id>735</id><value>- РЅР°Р±РѕСЂ СЃРёРјРІРѕР»РѕРІ:</value></string>
+	<string><id>736</id><value>- СЃС‚РёР»СЊ:</value></string>
+	<string><id>737</id><value>- С†РІРµС‚:</value></string>
+	<string><id>738</id><value>РЅРѕСЂРјР°Р»СЊРЅС‹Р№</value></string>
+	<string><id>739</id><value>Р¶РёСЂРЅС‹Р№</value></string>
+	<string><id>740</id><value>РЅР°РєР»РѕРЅРЅС‹Р№</value></string>
+	<string><id>741</id><value>Р¶РёСЂРЅС‹Р№+РЅР°РєР»РѕРЅРЅС‹Р№</value></string>
+	<string><id>742</id><value>Р±РµР»С‹Р№</value></string>
+	<string><id>743</id><value>Р¶РµР»С‚С‹Р№</value></string>
+	<string><id>744</id><value>Р¤Р°Р№Р»С‹</value></string>
+	<string><id>745</id><value>РќРµС‚ СЃРєР°РЅРёСЂРѕРІР°РЅРЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё РґР»СЏ СЌС‚РѕРіРѕ РІРёРґР°</value></string>
+	<string><id>746</id><value>РџРµСЂРµРєР»СЋС‡РёС‚РµСЃСЊ РІ СЂРµР¶РёРј СЃРїРёСЃРєР° С„Р°Р№Р»РѕРІ</value></string>
+	<string><id>747</id><value>РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РєР°СЂС‚РёРЅРєРё</value></string>
+	<string><id>748</id><value>Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РїСѓС‚СЊ</value></string>
+	<string><id>749</id><value>Р”РѕР±Р°РІРёС‚СЊ СЂРµСЃСѓСЂСЃ</value></string>
+	<string><id>750</id><value>РЈРІРµСЂРµРЅС‹?</value></string>
+	<string><id>751</id><value>РЈРґР°Р»РёС‚СЊ СЂРµСЃСѓСЂСЃ</value></string>
+	<string><id>752</id><value>Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РїСѓС‚СЊ СЂРµСЃСѓСЂСЃР°</value></string>
+	<string><id>753</id><value>Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РЅР°Р·РІР°РЅРёРµ СЂРµСЃСѓСЂСЃР°</value></string>
+	<string><id>754</id><value>Р”РѕР±Р°РІРёС‚СЊ СЃСЃС‹Р»РєСѓ?</value></string>
+	<string><id>755</id><value>РР·РјРµРЅРёС‚СЊ РїСѓС‚СЊ РїСЂРѕРіСЂР°РјРјС‹</value></string>
+	<string><id>756</id><value>РР·РјРµРЅРёС‚СЊ РЅР°Р·РІР°РЅРёРµ РїСЂРѕРіСЂР°РјРјС‹</value></string>
+	<string><id>757</id><value>РР·РјРµРЅРёС‚СЊ РіР»СѓР±РёРЅСѓ РїСЂРѕСЃРјРѕС‚СЂР°</value></string>
+	<string><id>758</id><value>РЈРґР°Р»РёС‚СЊ СЃСЃС‹Р»РєСѓ РЅР° РїСЂРѕРіСЂР°РјРјСѓ</value></string>
+	<string><id>759</id><value>Р’РёРґ: Р‘РѕР»СЊС€. Р»РёСЃС‚</value></string>
+	<string><id>760</id><value>Р¶С‘Р»С‚С‹Р№</value></string>
+	<string><id>761</id><value>Р±РµР»С‹Р№</value></string>
+	<string><id>762</id><value>СЃРёРЅРёР№</value></string>
+	<string><id>763</id><value>СЃРІРµС‚Р»Рѕ-Р·РµР»С‘РЅС‹Р№</value></string>
+	<string><id>764</id><value>Р¶РµР»С‚Рѕ-Р·РµР»РµРЅС‹Р№</value></string>
+	<string><id>765</id><value>РіРѕР»СѓР±РѕР№</value></string>
+	<string><id>766</id><value>Р·Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅРѕ</value></string>
+	<string><id>767</id><value>Р·Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅРѕ</value></string>
+	<string><id>768</id><value>Р·Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅРѕ</value></string>
+	<string><id>769</id><value>Р·Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅРѕ</value></string>
+	<string><id>770</id><value>РћС€РёР±РєР° %i: СЂРµСЃСѓСЂСЃ РЅРµ РґРѕСЃС‚СѓРїРµРЅ</value></string>
+	<string><id>771</id><value>- СЃРѕР±Р»СЋРґР°С‚СЊ РѕРіСЂР°РЅРёС‡РµРЅРёСЏ С„Р°Р№Р»РѕРІРѕР№ СЃРёСЃС‚РµРјС‹ FATx</value></string>
+	<string><id>772</id><value>РђСѓРґРёРѕРІС‹С…РѕРґ</value></string>
+	<string><id>773</id><value>РџРѕРёСЃРє</value></string>
+	<string><id>774</id><value>РСЃС‚РѕС‡РЅРёРє РґР»СЏ СЃР»Р°Р№РґС€РѕСѓ</value></string>
+	<string><id>998</id><value>XLink Kai</value></string>
+	<string><id>999</id><value>РЎРµС‚РµРІР°СЏ РёРіСЂР°</value></string>
+	<string><id>1000</id><value>РџРѕСЃРјРѕС‚СЂРµС‚СЊ Р·Р°СЃС‚Р°РІРєСѓ</value></string>
+	<string><id>1001</id><value>РќРµРІРѕР·РјРѕР¶РЅРѕ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ</value></string>
+	<string><id>1002</id><value>XBMC РЅРµ РјРѕР¶РµС‚ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє СЃРµС‚Рё.</value></string>
+	<string><id>1003</id><value>Р’РѕР·РјРѕР¶РЅРѕ, СЃРµС‚СЊ РЅРµ РїРѕРґРєР»СЋС‡РµРЅР°.</value></string>
+	<string><id>1004</id><value>Р”РѕР±Р°РІРёС‚СЊ РІ Р»СЋР±РѕРј СЃР»СѓС‡Р°Рµ?</value></string>
+	<string><id>1005</id><value>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РґР»СЏ СЌС‚РѕРіРѕ СЂРµСЃСѓСЂСЃР°</value></string>
+	<string><id>1006</id><value>IP Р°РґСЂРµСЃ</value></string>
+	<string><id>1007</id><value>Р”РѕР±Р°РІРёС‚СЊ СЃРµС‚РµРІРѕР№ Р°РґСЂРµСЃ</value></string>
+	<string><id>1008</id><value>РџСЂРѕС‚РѕРєРѕР»</value></string>
+	<string><id>1009</id><value>РђРґСЂРµСЃ СЃРµСЂРІРµСЂР°</value></string>
+	<string><id>1010</id><value>РРјСЏ СЃРµСЂРІРµСЂР°</value></string>
+	<string><id>1011</id><value>РџСѓС‚СЊ</value></string>
+	<string><id>1012</id><value>Р Р°СЃС€Р°СЂРµРЅРЅР°СЏ РїР°РїРєР°</value></string>
+	<string><id>1013</id><value>РџРѕСЂС‚</value></string>
+	<string><id>1014</id><value>РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ</value></string>
+	<string><id>1015</id><value>РЎРµС‚РµРІРѕР№ СЃРµСЂРІРµСЂ</value></string>
+	<string><id>1016</id><value>Р’РІРµРґРёС‚Рµ СЃРµС‚РµРІРѕР№ Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР°</value></string>
+	<string><id>1017</id><value>Р’РІРµРґРёС‚Рµ РјР°СЂС€СЂСѓС‚</value></string>
+	<string><id>1018</id><value>Р’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ РїРѕСЂС‚Р°</value></string>
+	<string><id>1019</id><value>Р’РІРµРґРёС‚Рµ РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ</value></string>
+	<string><id>1020</id><value>Р”РѕР±Р°РІРёС‚СЊ РёСЃС‚РѕС‡РЅРёРє %s</value></string>
+	<string><id>1021</id><value>Р’РІРµРґРёС‚Рµ РёР»Рё РЅР°Р№РґРёС‚Рµ РїСѓС‚СЊ Рє РјРµРґРёР°-С„Р°Р№Р»Сѓ.</value></string>
+	<string><id>1022</id><value>Р’РІРµРґРёС‚Рµ РёРјСЏ РґР»СЏ СЌС‚РѕРіРѕ РјРµРґРёР°-СЂРµСЃСѓСЂСЃР°.</value></string>
+	<string><id>1023</id><value>РќР°Р№РґРёС‚Рµ РЅРѕРІС‹Р№ СЂРµСЃСѓСЂСЃ</value></string>
+	<string><id>1024</id><value>РџСЂРѕСЃРјРѕС‚СЂ</value></string>
+	<string><id>1025</id><value>РќРµРјРѕРіСѓ РїРѕР»СѓС‡РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РґРёСЂРµРєС‚РѕСЂРёРё</value></string>
+	<string><id>1026</id><value>Р”РѕР±. Р РµСЃСѓСЂСЃ</value></string>
+	<string><id>1027</id><value>Р РµРґ. Р РµСЃСѓСЂСЃ</value></string>
+	<string><id>1028</id><value>Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РёСЃС‚РѕС‡РЅРёРє %s </value></string>
+	<string><id>1029</id><value>Р’РІРµРґРёС‚Рµ РЅРѕРІСѓСЋ СЌС‚РёРєРµС‚РєСѓ</value></string>
+	<string><id>1030</id><value>РµСЃР»Рё СЂРёСЃСѓРЅРѕРє</value></string>
+	<string><id>1031</id><value>РµСЃР»Рё РїР°РїРєР° СЃ СЂРёСЃСѓРЅРєР°РјРё</value></string>
+	<string><id>1032</id><value>Р”РѕР±Р°РІР»РµРЅРёРµ СЃРµС‚РµРІРѕРіРѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёСЏвЂ¦</value></string>
+	<string><id>1200</id><value>SMB-СЂРµСЃСѓСЂСЃ</value></string>
+	<string><id>1201</id><value>IP-Р°РґСЂРµСЃ SMB-СЂРµСЃСѓСЂСЃР°</value></string>
+	<string><id>1202</id><value>Р Р°Р±РѕС‡Р°СЏ РіСЂСѓРїРїР° РґР»СЏ SMB СЂРµСЃСѓСЂСЃР°</value></string>
+	<string><id>1203</id><value>РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (user name)</value></string>
+	<string><id>1204</id><value>РџР°СЂРѕР»СЊ РґРѕСЃС‚СѓРїР° (user password)</value></string>
+	<string><id>1205</id><value>РРјСЏ СЂРµСЃСѓСЂСЃР°</value></string>
+	<string><id>1206</id><value>Р”РѕР±Р°РІРёС‚СЊ Рє</value></string>
+	<string><id>1207</id><value>IP Р°РґСЂРµСЃ WINS-СЃРµСЂРІРµСЂР°</value></string>
+	<string><id>1208</id><value>Р РµР¶РёРј РґРѕСЃС‚СѓРїР° Рє</value></string>
+	<string><id>1209</id><value>Р РµР¶РёРј РґРѕСЃС‚СѓРїР° Рє SMB-СЂРµСЃСѓСЂСЃР°Рј СѓСЃС‚Р°РЅРѕРІР»РµРЅ!</value></string>
+	<string><id>1210</id><value>РЈР±СЂР°С‚СЊ</value></string>
+	<string><id>1211</id><value>РњСѓР·С‹РєР°</value></string>
+	<string><id>1212</id><value>Р’РёРґРµРѕ</value></string>
+	<string><id>1213</id><value>Р¤РѕС‚РѕРіСЂР°С„РёРё</value></string>
+	<string><id>1214</id><value>Р¤Р°Р№Р»С‹</value></string>
+	<string><id>1215</id><value>РњСѓР·С‹РєР° Рё Р’РёРґРµРѕ</value></string>
+	<string><id>1216</id><value>РњСѓР·С‹РєР° Рё Р¤РѕС‚Рѕ</value></string>
+	<string><id>1217</id><value>РњСѓР·С‹РєР° Рё Р¤Р°Р№Р»С‹</value></string>
+	<string><id>1218</id><value>Р’РёРґРµРѕ Рё Р¤РѕС‚Рѕ</value></string>
+	<string><id>1219</id><value>Р’РёРґРµРѕ Рё Р¤Р°Р№Р»С‹</value></string>
+	<string><id>1220</id><value>Р¤РѕС‚Рѕ Рё Р¤Р°Р№Р»С‹</value></string>
+	<string><id>1221</id><value>РњСѓР·С‹РєР°,Р’РёРґРµРѕ Рё Р¤РѕС‚Рѕ</value></string>
+	<string><id>1222</id><value>РњСѓР·.,Р’РёРґРµРѕ,Р¤РѕС‚Рѕ Рё Р¤Р°Р№Р»С‹</value></string>
+	<string><id>1223</id><value>РѕС‚РєР»СЋС‡РµРЅРѕ</value></string>
+	<string><id>1224</id><value>РѕР±С‹С‡РЅС‹Р№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ</value></string>
+	<string><id>1225</id><value>РѕРїС‹С‚РЅС‹Р№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ</value></string>
+	<string><id>1226</id><value>Р¤Р°Р№Р»С‹,РњСѓР·С‹РєР° Рё Р’РёРґРµРѕ</value></string>
+	<string><id>1227</id><value>Р¤Р°Р№Р»С‹,Р¤РѕС‚Рѕ Рё РњСѓР·С‹РєР°</value></string>
+	<string><id>1228</id><value>Р¤Р°Р№Р»С‹,Р¤РѕС‚Рѕ Рё Р’РёРґРµРѕ</value></string>
+	<string><id>1229</id><value>РњСѓР·С‹РєР° Рё РџСЂРѕРіСЂР°РјРјС‹</value></string>
+	<string><id>1230</id><value>Р’РёРґРµРѕ Рё РџСЂРѕРіСЂР°РјРјС‹</value></string>
+	<string><id>1231</id><value>Р¤РѕС‚Рѕ Рё РџСЂРѕРіСЂР°РјРјС‹</value></string>
+	<string><id>1232</id><value>РњСѓР·С‹РєР°,Р’РёРґРµРѕ,Р¤РѕС‚Рѕ Рё РџСЂРѕРіСЂР°РјРјС‹</value></string>
+	<string><id>1233</id><value>РџСЂРѕРіСЂР°РјРјС‹,Р’РёРґРµРѕ Рё РњСѓР·С‹РєР°</value></string>
+	<string><id>1234</id><value>РџСЂРѕРіСЂР°РјРјС‹,Р¤РѕС‚Рѕ Рё РњСѓР·С‹РєР°</value></string>
+	<string><id>1235</id><value>РџСЂРѕРіСЂР°РјРјС‹,Р¤РѕС‚Рѕ Рё Р’РёРґРµРѕ </value></string>
+	<string><id>1245</id><value>РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ FTP (login name)</value></string>
+	<string><id>1246</id><value>РџР°СЂРѕР»СЊ (user password)</value></string>
+	<string><id>1247</id><value>Р›РѕРіРёРЅ Рё РїР°СЂРѕР»СЊ РґР»СЏ FTP-СЃРµСЂРІРµСЂР° СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹!</value></string>
+	<string><id>1250</id><value>РЎРІСЏР·СЊ СЃ Xbox-Р°РјРё</value></string>
+	<string><id>1251</id><value>РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РЅР°С…РѕРґРёС‚СЊ XOBX-С‹ РІ СЃРµС‚Рё</value></string>
+	<string><id>1252</id><value>РќР°Р·РІР°РЅРёРµ СЌС‚РѕРіРѕ XBOX-Р°</value></string>
+	<string><id>1253</id><value>РЎРѕР·РґР°РІР°С‚СЊ СЃСЃС‹Р»РєРё РІ С„Р°Р№Р»РјРµРЅРµРґР¶РµСЂРµ</value></string>
+	<string><id>1254</id><value>Р Р°Р·СЂРµС€РёС‚СЊ РѕРїРѕРІРµС‰РµРЅРёРµ</value></string>
+	<string><id>1255</id><value>РћС‚РїСЂР°РІР»СЏС‚СЊ Р»РѕРіРёРЅ Рё РїР°СЂРѕР»СЊ РґР»СЏ FTP</value></string>
+	<string><id>1256</id><value>РРЅС‚РµСЂРІР°Р» РґР»СЏ РєРѕРјР°РЅРґС‹ 'ping'</value></string>
+	<string><id>1257</id><value>РЎРѕРµРґРёРЅСЏС‚СЊСЃСЏ СЃ РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РЅР°Р№РґРµРЅС‹Рј Xbox</value></string>
+	<string><id>1396</id><value>РіРѕР»РѕР»С‘Рґ</value></string>
+	<string><id>1397</id><value>Рё</value></string>
+	<string><id>1398</id><value>Р·Р°РјРѕСЂРѕР·РєРё</value></string>
+	<string><id>1399</id><value>РїРѕР·Р¶Рµ</value></string>
+	<string><id>1400</id><value>РјРµСЃС‚Р°РјРё</value></string>
+	<string><id>1401</id><value>РіСЂРѕР·РѕРІРѕР№ Р»РёРІРµРЅСЊ</value></string>
+	<string><id>1402</id><value>РіСЂРѕРј</value></string>
+	<string><id>1403</id><value>РЎРѕР»РЅС†Рµ</value></string>
+	<string><id>1404</id><value>СЃРёР»СЊРЅС‹Р№</value></string>
+	<string><id>1405</id><value>РІ</value></string>
+	<string><id>1406</id><value> </value></string>
+	<string><id>1407</id><value>РѕРєСЂРµСЃС‚РЅРѕСЃС‚СЏС…</value></string>
+	<string><id>1408</id><value>Р»С‘Рґ</value></string>
+	<string><id>1409</id><value>РєСЂРёСЃС‚Р°Р»Р»С‹</value></string>
+	<string><id>1410</id><value>С€С‚РёР»СЊ</value></string>
+	<string><id>2050</id><value>Р”Р»РёС‚РµР»СЊРЅ.:</value></string>
+	<string><id>4501</id><value>РўРёРї Р–РљР</value></string>
+	<string><id>10000</id><value>РћСЃРЅРѕРІРЅРѕР№</value></string>
+	<string><id>10001</id><value>РџСЂРѕРіСЂР°РјРјС‹</value></string>
+	<string><id>10002</id><value>Р¤РѕС‚РѕРіСЂР°С„РёРё</value></string>
+	<string><id>10003</id><value>Р¤Р°Р№Р»С‹</value></string>
+	<string><id>10004</id><value>РќР°СЃС‚СЂРѕР№РєРё</value></string>
+	<string><id>10005</id><value>РњСѓР·С‹РєР°</value></string>
+	<string><id>10006</id><value>Р’РёРґРµРѕ</value></string>
+	<string><id>10007</id><value>РРЅС„. Рѕ СЃРёСЃС‚РµРјРµ</value></string>
+	<string><id>10008</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;Р“Р»Р°РІРЅС‹Рµ</value></string>
+	<string><id>10009</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;Р­РєСЂР°РЅ</value></string>
+	<string><id>10010</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;Р­РєСЂР°РЅ-&gt;РљР°Р»РёР±СЂРѕРІРєР° СЌРєСЂР°РЅР° UI</value></string>
+	<string><id>10011</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;Р­РєСЂР°РЅ-&gt;РљР°Р»РёР±СЂРѕРІРєР° СЌРєСЂР°РЅР° </value></string>
+	<string><id>10012</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;РЎР»Р°Р№РґС€РѕСѓ</value></string>
+	<string><id>10013</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;Р­РєСЂР°РЅ-&gt;Р¤РёР»СЊС‚СЂС‹</value></string>
+	<string><id>10014</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;РњСѓР·С‹РєР°</value></string>
+	<string><id>10015</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;Р­РєСЂР°РЅ-&gt;РЎСѓР±С‚РёС‚СЂС‹</value></string>
+	<string><id>10016</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;Р­РєСЂР°РЅ-&gt;Р—Р°СЃС‚Р°РІРєР°</value></string>
+	<string><id>10017</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;РџСЂРѕРіРЅРѕР· РїРѕРіРѕРґС‹</value></string>
+	<string><id>10018</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;РЎРµС‚СЊ</value></string>
+	<string><id>10019</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;РРЅС‚РµСЂС„РµР№СЃ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ</value></string>
+	<string><id>10020</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;РЎРєСЂРёРїС‚С‹</value></string>
+	<string><id>10021</id><value>Р’РёРґРµРѕ/Р¶Р°РЅСЂ</value></string>
+	<string><id>10022</id><value>Р’РёРґРµРѕ/Р°РІС‚РѕСЂ</value></string>
+	<string><id>10023</id><value>Р’РёРґРµРѕ/РіРѕРґ</value></string>
+	<string><id>10025</id><value>Р’РёРґРµРѕ/РЅР°Р·РІР°РЅРёРµ</value></string>
+	<string><id>10028</id><value>Р’РёРґРµРѕ/РїР»СЌР№Р»РёСЃС‚</value></string>
+	<string><id>10034</id><value>РќР°СЃС‚СЂРѕР№РєРё-&gt;РџСЂРѕС„РёР»Рё</value></string>
+	<string><id>10100</id><value>Р’С‹Р±РµСЂРёС‚Рµ: Р”Р°/РќРµС‚</value></string>
+	<string><id>10101</id><value>РРЅРґРёРєР°С‚РѕСЂ РїСЂРѕРіСЂРµСЃСЃР°</value></string>
+	<string><id>10500</id><value>РњСѓР·С‹РєР°/РїР»СЌР№Р»РёСЃС‚</value></string>
+	<string><id>10501</id><value>РњСѓР·С‹РєР°/С„Р°Р№Р»С‹</value></string>
+	<string><id>10502</id><value>РњСѓР·С‹РєР°/С„РѕРЅРѕС‚РµРєР°</value></string>
+	<string><id>10503</id><value>РњСѓР·С‹РєР°/РўРѕРї100</value></string>
+	<string><id>10504</id><value>РўРѕРї100/РџРµСЃРЅРё</value></string>
+	<string><id>10505</id><value>РўРѕРї100/РђР»СЊР±РѕРјС‹</value></string>
+	<string><id>10506</id><value>РџСЂРѕРіСЂР°РјРјС‹</value></string>
+	<string><id>10507</id><value>РќР°СЃС‚СЂРѕР№РєР° РїСЂРѕС„РёР»СЏ</value></string>
+	<string><id>10508</id><value>РџРѕРіРѕРґР°</value></string>
+	<string><id>10509</id><value>РЎРµС‚РµРІС‹Рµ РРіСЂС‹</value></string>
+	<string><id>10510</id><value>Р”РѕРїРѕР»РЅРµРЅРёСЏ</value></string>
+	<string><id>10511</id><value>РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃРёСЃС‚РµРјРµ</value></string>
+	<string><id>10512</id><value>РњСѓР·С‹РєР° - РђР»СЊР±РѕРјС‹</value></string>
+	<string><id>10513</id><value>РњСѓР·С‹РєР° - РСЃРїРѕР»РЅРёС‚РµР»Рё</value></string>
+	<string><id>10514</id><value>РњСѓР·С‹РєР° - Р–Р°РЅСЂС‹</value></string>
+	<string><id>10515</id><value>РњСѓР·С‹РєР° - Top 100</value></string>
+	<string><id>10516</id><value>РњСѓР·С‹РєР° - РљРѕР»Р»РµРєС†РёСЏ</value></string>
+	<string><id>10517</id><value>РњСѓР·С‹РєР° - РўРµРєСѓС‰РёР№ РїР»РµР№Р»РёСЃС‚</value></string>
+	<string><id>10518</id><value>Р’РёРґРµРѕ - РђРєС‚С‘СЂС‹</value></string>
+	<string><id>10519</id><value>Р’РёРґРµРѕ - Р–Р°РЅСЂ</value></string>
+	<string><id>10520</id><value>Р’РёРґРµРѕ - РќР°Р·РІР°РЅРёРµ</value></string>
+	<string><id>10521</id><value>Р’РёРґРµРѕ - Р“РѕРґ</value></string>
+	<string><id>10522</id><value>Р’РёРґРµРѕ - РўРµРєСѓС‰РёР№ РїР»РµР№Р»РёСЃС‚</value></string>
+	<string><id>10523</id><value>РРЅС„РѕСЂРј. РѕР± Р°Р»СЊР±РѕРјРµ</value></string>
+	<string><id>10524</id><value>РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С„РёР»СЊРјРµ</value></string>
+	<string><id>12000</id><value>Р’С‹Р±РѕСЂ РґРёР°Р»РѕРіР°</value></string>
+	<string><id>12001</id><value>РњСѓР·С‹РєР°/РРЅС„</value></string>
+	<string><id>12002</id><value>Р”РёР°Р»РѕРі OK</value></string>
+	<string><id>12003</id><value>Р’РёРґРµРѕ/РРЅС„</value></string>
+	<string><id>12004</id><value>РњРѕРё РЎРєСЂРёРїС‚С‹/РРЅС„</value></string>
+	<string><id>12005</id><value>РџРѕР»РЅРѕСЌРєСЂР°РЅРЅРѕРµ РІРёРґРµРѕ</value></string>
+	<string><id>12006</id><value>РђСѓРґРёРѕ РІРёР·СѓР°Р»РёР·Р°С†РёСЏ</value></string>
+	<string><id>12007</id><value>Р¤РѕС‚РѕРіСЂР°С„РёРё/РЎР»Р°Р№РґС€РѕСѓ</value></string>
+	<string><id>12008</id><value>Р”РёР°Р»РѕРі РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё С„Р°Р№Р»РѕРІ</value></string>
+	<string><id>12009</id><value>РџРµСЂРµРёРЅРґРµРєСЃР°С†РёСЏвЂ¦</value></string>
+	<string><id>12010</id><value>РћР±СЂР°С‚РЅРѕ РІ 'РњСѓР·С‹РєСѓ'</value></string>
+	<string><id>12011</id><value>РћР±СЂР°С‚РЅРѕ РІ 'Р’РёРґРµРѕ'</value></string>
+	<string><id>12012</id><value>РћР±РЅРѕРІРёС‚СЊ СЃРїРёСЃРѕРє С‚СЂРµР№РЅРµСЂРѕРІ</value></string>
+	<string><id>12013</id><value>РўСЂРµР№РЅРµСЂ</value></string>
+	<string><id>12014</id><value>РўСЂРµР№РЅРµСЂС‹ РЅРµ РЅР°Р№РґРµРЅС‹</value></string>
+	<string><id>12015</id><value>РџР°СЂР°РјРµС‚СЂС‹ С‚СЂРµР№РЅРµСЂР°</value></string>
+	<string><id>12016</id><value>Р’СЃРµ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅРЅС‹Рµ С‚СЂРµР№Р»РµСЂС‹ РїСЂРѕРїР°Р»Рё. РћР±РЅРѕРІРёС‚Рµ СЃРїРёСЃРѕРє</value></string>
+	<string><id>12017</id><value>РџСЂРѕРґРѕР»Р¶Р°С‚СЊ СЃ РјРµСЃС‚Р° РѕСЃС‚Р°РЅРѕРІРєРё Р°РІС‚РѕРјР°С‚РѕРј</value></string>
+	<string><id>12018</id><value>РќРµС‚</value></string>
+	<string><id>12019</id><value>Р”Р°</value></string>
+	<string><id>12020</id><value>РЎРїСЂРѕСЃРёС‚СЊ</value></string>
+	<string><id>12021</id><value>РќР°С‡РёРЅР°С‚СЊ СЃ РЅР°С‡Р°Р»Р°</value></string>
+	<string><id>12022</id><value>РџСЂРѕРґРѕР»Р¶Р°С‚СЊ СЃ РјРµСЃС‚Р° РѕСЃС‚Р°РЅРѕРІРєРё</value></string>
+	<string><id>12310</id><value>0</value></string>
+	<string><id>12311</id><value>1</value></string>
+	<string><id>12312</id><value>2</value></string>
+	<string><id>12313</id><value>3</value></string>
+	<string><id>12314</id><value>4</value></string>
+	<string><id>12315</id><value>5</value></string>
+	<string><id>12316</id><value>6</value></string>
+	<string><id>12317</id><value>7</value></string>
+	<string><id>12318</id><value>8</value></string>
+	<string><id>12319</id><value>9</value></string>
+	<string><id>12320</id><value>c</value></string>
+	<string><id>12321</id><value>ok</value></string>
+	<string><id>12322</id><value>*</value></string>
+	<string><id>12324</id><value>Р’РІРµРґРёС‚Рµ РњРђРЎРўР•Р -РїР°СЂРѕР»СЊ</value></string>
+	<string><id>12325</id><value>Р—Р°РєСЂС‹С‚Рѕ! Р’РІРµРґРёС‚Рµ РєРѕРґ...</value></string>
+	<string><id>12326</id><value>Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ</value></string>
+	<string><id>12327</id><value>Р’РІРµРґРёС‚Рµ РњРђРЎРўР•Р -РљРѕРґ</value></string>
+	<string><id>12328</id><value>Р’РІРµРґРёС‚Рµ РєРѕРґ РґРѕСЃС‚СѓРїР°</value></string>
+	<string><id>12329</id><value>РёР»Рё РІС‹Р±РµСЂРёС‚Рµ 'C' РґР»СЏ РІС‹С…РѕРґР°</value></string>
+	<string><id>12330</id><value>РќР°Р¶РјРёС‚Рµ РЅСѓР¶РЅСѓСЋ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ РєРЅРѕРїРѕРє Рё </value></string>
+	<string><id>12331</id><value>Р·Р°С‚РµРј 'Start', РёР»Рё 'Back' РґР»СЏ РІС‹С…РѕРґР°</value></string>
+	<string><id>12332</id><value>РЈСЃС‚Р°РЅРѕРІРєР° Р·Р°С‰РёС‚С‹</value></string>
+	<string><id>12333</id><value>Р Р°Р·Р±Р»РѕРєРёСЂРѕРІРєР°</value></string>
+	<string><id>12334</id><value>РЎР±СЂРѕСЃ Р·Р°С‰РёС‚С‹</value></string>
+	<string><id>12335</id><value>РЈРґР°Р»РёС‚СЊ Р·Р°С‰РёС‚Сѓ</value></string>
+	<string><id>12336</id><value>Р’С‹Р±РµСЂРёС‚Рµ СЃРїРѕСЃРѕР± РІРІРѕРґР°:</value></string>
+	<string><id>12337</id><value>С†РёС„СЂРѕРІРѕР№ РїР°СЂРѕР»СЊ</value></string>
+	<string><id>12338</id><value>РѕС‡РµСЂС‘РґРЅРѕСЃС‚СЊ РєРЅРѕРїРѕРє</value></string>
+	<string><id>12339</id><value>С‚РµРєСЃС‚РѕРІС‹Р№ РїР°СЂРѕР»СЊ</value></string>
+	<string><id>12340</id><value>Р’РІРµРґРёС‚Рµ РЅРѕРІС‹Р№ РїР°СЂРѕР»СЊ</value></string>
+	<string><id>12341</id><value>РџРѕРІС‚РѕСЂРёС‚Рµ РЅРѕРІС‹Р№ РїР°СЂРѕР»СЊ</value></string>
+	<string><id>12342</id><value>РќРµРІРµСЂРЅС‹Р№ РїР°СЂРѕР»СЊ,</value></string>
+	<string><id>12343</id><value>РїРѕРІС‚РѕСЂС‹ РёСЃС‡РµСЂРїР°РЅС‹</value></string>
+	<string><id>12344</id><value>Р’РІРµРґРµРЅРЅС‹Рµ РїР°СЂРѕР»Рё РЅРµ СЃРѕРІРїР°РґР°СЋС‚.</value></string>
+	<string><id>12345</id><value>Р”РѕСЃС‚СѓРї Р·Р°РєСЂС‹С‚</value></string>
+	<string><id>12346</id><value>РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРІС‚РѕСЂРѕРІ РїР°СЂРѕР»СЏ РёСЃС‡РµСЂРїР°РЅРѕ.</value></string>
+	<string><id>12347</id><value>XBOX Р±СѓРґРµС‚ РІС‹РєР»СЋС‡РµРЅ.</value></string>
+	<string><id>12348</id><value>Р—Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРѕ</value></string>
+	<string><id>12349</id><value>Р—Р°РїРѕРјРЅРёС‚СЊ РњРђРЎРўР•Р -РљРѕРґ РґРѕ СЃР»РµРґ. РІРєР»СЋС‡РµРЅРёСЏ?</value></string>
+	<string><id>12350</id><value>(РћС‚РєСЂС‹С‚РёРµ Р»СЋР±РѕРіРѕ РїСѓРЅРєС‚Р° РёР· РЅР°СЃС‚СЂРѕРµРє</value></string>
+	<string><id>12351</id><value>Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚ РњРђРЎРўР•Р -Р—Р°С‰РёС‚Сѓ.)</value></string>
+	<string><id>12352</id><value>РќР°Р¶РјРёС‚Рµ РєРѕРјР±РёРЅР°С†РёСЋ РєРЅРѕРїРѕРє РњРђРЎРўР•Р -РљРѕРґР° Рё РїРѕС‚РѕРј Start</value></string>
+	<string><id>12353</id><value>Р’РєР»СЋС‡РёС‚СЊ Р·Р°С‰РёС‚Сѓ</value></string>
+	<string><id>12354</id><value>РЎРЅСЏС‚СЊ Р·Р°С‰РёС‚Сѓ РїР°РїРєРё РґРѕ СЃР»РµРґ. СЃС‚Р°СЂС‚Р°?</value></string>
+	<string><id>12355</id><value>Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё СЂР°Р·СЂРµС€РёС‚ Р·Р°С‰РёС‚Сѓ РїР°РїРєРё.)</value></string>
+	<string><id>12356</id><value>РЎРјРµРЅРёС‚СЊ Р·Р°С‰РёС‚Сѓ</value></string>
+	<string><id>12357</id><value>Р—Р°С‰РёС‚Р° СЂРµСЃСѓСЂСЃРѕРІ</value></string>
+	<string><id>12358</id><value>РџР°СЂРѕР»СЊ РїСѓСЃС‚РѕР№. РџРѕРІС‚РѕСЂРёС‚Рµ РµС‰Рµ СЂР°Р·.</value></string>
+	<string><id>12360</id><value>Р—Р°С‰РёС‚Р°</value></string>
+	<string><id>12361</id><value>РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ С‡РёСЃР»Рѕ РїРѕРїС‹С‚РѕРє РІРІРѕРґР°</value></string>
+	<string><id>12362</id><value>Р’С‹РєР»СЋС‡РёС‚СЊ XBOX РїРѕСЃР»Рµ РїРµСЂРµР±РѕСЂР° РєРѕР»-РІР° РїРѕРїС‹С‚РѕРє</value></string>
+	<string><id>12363</id><value>Р—Р°С‰РёС‚РёС‚СЊ РёР·РјРµРЅРµРЅРёРµ/РґРѕР±Р°РІР»РµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ</value></string>
+	<string><id>12364</id><value>РўРёРї РњРђРЎРўР•Р -РљРѕРґР°:</value></string>
+	<string><id>12365</id><value>Р’РІРѕРґ РЅРѕРІРѕРіРѕ РњРђРЎРўР•Р -РљРѕРґР°...</value></string>
+	<string><id>12366</id><value>Р—Р°С‰РёС‚Р° РёР·РјРµРЅРµРЅР°. Р—Р°РїРѕРјРЅРёС‚Рµ РњРђРЎРўР•Р -РљРѕРґ:</value></string>
+	<string><id>12367</id><value>РњРђРЎРўР•Р -РљРѕРґ РЅРµ РІРµСЂРЅС‹Р№!</value></string>
+	<string><id>12368</id><value>Р’РІРµРґРёС‚Рµ РїСЂР°РІРёР»СЊРЅС‹Р№ РњРђРЎРўР•Р -РљРѕРґ!</value></string>
+	<string><id>12369</id><value>Р—Р°С‰РёС‚РёС‚СЊ Р·Р°РїСѓСЃРє XBMC</value></string>
+	<string><id>12370</id><value>Р РµР¶РёРј Р·Р°С‰РёС‚С‹ РёР·РјРµРЅС‘РЅ, РЅРѕ РњРђРЎРўР•Р -РљРѕРґ</value></string>
+	<string><id>12371</id><value>РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ! Р’РІРµРґРёС‚Рµ РњРђРЎРўР•Р -РљРѕРґ!</value></string>
+	<string><id>12372</id><value>Р—Р°С‰РёС‚Р° С„Р°Р№Р»РѕРІ Рё РЅР°СЃС‚СЂРѕРµРє:</value></string>
+	<string><id>12373</id><value>РќР°СЃС‚СЂРѕР№РєРё Рё Р¤Р°Р№Р»С‹</value></string>
+	<string><id>12374</id><value>Р—Р°С‰РёС‚Р° РјРµРЅСЋ:</value></string>
+	<string><id>12375</id><value>Р’РєР». СЂРµР¶РёРј РњРђРЎРўР•Р Р° РґР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ</value></string>
+	<string><id>12376</id><value>РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РґР»СЏ РІСЃРµС… С„РёР»СЊРјРѕРІ</value></string>
+	<string><id>12377</id><value>Р­С‚Рѕ СЃР±СЂРѕСЃРёС‚ РїСЂРµРґС‹РґСѓС‰РёРµ СЃРѕС…СЂР°РЅС‘РЅРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ.</value></string>
+	<string><id>12378</id><value>РџРѕРєР°Р·С‹РІР°С‚СЊ РєР°Р¶РґС‹Р№ РёРјРёРґР¶ РґР»СЏ</value></string>
+	<string><id>12379</id><value>Р­С„С„РµРєС‚С‹ РїР°РЅРѕСЂР°РјРјС‹ Рё СЃРєРѕР»СЊР¶РµРЅРёСЏ</value></string>
+	<string><id>12380</id><value>Р’РѕСЃРїСЂ. РІРёРґРµРѕ NTSC СЃ С‡Р°СЃС‚РѕС‚РѕР№ РєР°РґСЂРѕРІ PAL</value></string>
+	<string><id>12381</id><value>Р’РѕСЃРїСЂ. РІРёРґРµРѕ PAL СЃ С‡Р°СЃС‚РѕС‚РѕР№ РєР°РґСЂРѕРІ NTSC </value></string>
+	<string><id>12382</id><value>Р’РѕСЃРїСЂ. РІРёРґРµРѕ NTSC РІ СЂРµР¶РёРјРµ PAL60</value></string>
+	<string><id>12383</id><value>12-С‚Рё С‡Р°СЃРѕРІРѕР№</value></string>
+	<string><id>12384</id><value>24-С‚Рё С‡Р°СЃРѕРІРѕР№</value></string>
+	<string><id>12385</id><value>Р”РµРЅСЊ/РњРµСЃСЏС†</value></string>
+	<string><id>12386</id><value>РњРµСЃСЏС†/Р”РµРЅСЊ</value></string>
+	<string><id>12387</id><value>РџРµСЂРµСЃРєР°РЅРёСЂРѕРІР°С‚СЊ Р‘Р°Р·Сѓ Р”Р°РЅРЅС‹С…</value></string>
+	<string><id>12390</id><value>Р’СЂРµРјСЏ СЂР°Р±РѕС‚С‹ СЃРёСЃС‚РµРјС‹</value></string>
+	<string><id>12391</id><value>РјРёРЅСѓС‚</value></string>
+	<string><id>12392</id><value>С‡Р°СЃРѕРІ</value></string>
+	<string><id>12393</id><value>РґРЅРµР№</value></string>
+	<string><id>12394</id><value>РћР±С‰РµРµ РІСЂ. СЂР°Р±РѕС‚С‹</value></string>
+	<string><id>12600</id><value>РџРѕРіРѕРґР°</value></string>
+	<string><id>12900</id><value>Р—Р°СЃС‚Р°РІРєР°</value></string>
+	<string><id>12901</id><value>РџРѕР»РЅРѕСЌРєСЂР°РЅРЅР°СЏ OSD</value></string>
+	<string><id>13000</id><value>РЎРёСЃС‚РµРјР°</value></string>
+	<string><id>13001</id><value>РћСЃС‚Р°РЅРѕРІРєР° HDD-РґРёСЃРєР°</value></string>
+	<string><id>13002</id><value>РўРѕР»СЊРєРѕ РІРёРґРµРѕ</value></string>
+	<string><id>13003</id><value>- Р·Р°РґРµСЂР¶РєР°</value></string>
+	<string><id>13004</id><value>- РјРёРЅРёРјР°Р»СЊРЅР°СЏ РґР»РёС‚РµР»СЊРЅРѕСЃС‚СЊ С„Р°Р№Р»Р°</value></string>
+	<string><id>13005</id><value>Р’С‹РєР»СЋС‡РµРЅРёРµ</value></string>
+	<string><id>13006</id><value>Р—Р°РіСЂСѓР·РёС‚СЊ Dashboard</value></string>
+	<string><id>13100</id><value>РЈСЂРѕРІРµРЅСЊ СѓРјРµРЅСЊС€РµРЅРёСЏ РјРµСЂС†Р°РЅРёСЏ</value></string>
+	<string><id>13150</id><value>РљР»СЋС‡ HDD:</value></string>
+	<string><id>13151</id><value>РўРµРјРїРµСЂР°С‚СѓСЂР° РґРёСЃРєР°:</value></string>
+	<string><id>13152</id><value>РњРѕРґРµР»СЊ РїСЂРёРІРѕРґР°:</value></string>
+	<string><id>13153</id><value>Р’РµСЂСЃРёСЏ РјРёРєСЂРѕРїСЂРѕРіСЂР°РјРјС‹:</value></string>
+	<string><id>13154</id><value>РњРѕРґРµР»СЊ HDD:</value></string>
+	<string><id>13155</id><value>РЎРµСЂРёР№РЅС‹Р№ в„– HDD:</value></string>
+	<string><id>13156</id><value>HDD Firmware:</value></string>
+	<string><id>13157</id><value>РџР°СЂРѕР»СЊ HDD:</value></string>
+	<string><id>13158</id><value>Р—Р°С‰РёС‚Р° HDD:</value></string>
+	<string><id>13159</id><value>РњР°СЃРєР° СЃРµС‚Рё:</value></string>
+	<string><id>13160</id><value>РЁР»СЋР·:</value></string>
+	<string><id>13161</id><value>DNS:</value></string>
+	<string><id>13162</id><value>РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РЅРµ СѓРґР°Р»Р°СЃСЊ</value></string>
+	<string><id>13163</id><value>РџРѕСЂС‚С‹ РіРµР№РјРїР°РґРѕРІ:</value></string>
+	<string><id>13164</id><value>РџРѕСЂС‚ РєР»Р°РІРёР°С‚СѓСЂС‹:</value></string>
+	<string><id>13165</id><value>РџРѕСЂС‚ РјС‹С€РєРё:</value></string>
+	<string><id>13166</id><value>РџРѕСЂС‚С‹ РіР°СЂРЅРёС‚СѓСЂ/РјРёРєСЂРѕС„РѕРЅРѕРІ:</value></string>
+	<string><id>13167</id><value>РџРѕСЂС‚С‹ РєР°СЂС‚ РїР°РјСЏС‚Рё:</value></string>
+	<string><id>13168</id><value>РџРѕСЂС‚ РРљ-РїСЂРёС‘РјРЅРёРєР°:</value></string>
+	<string><id>13169</id><value>РџСЂРѕРїСѓСЃРєР°С‚СЊ РІС‹Р±РѕСЂ РґРёСЃРєР°</value></string>
+	<string><id>13170</id><value>РЅРёРєРѕРіРґР°</value></string>
+	<string><id>13171</id><value>СЃСЂР°Р·Сѓ</value></string>
+	<string><id>13172</id><value>РїРѕСЃР»Рµ %i СЃРµРє.</value></string>
+	<string><id>13200</id><value>РџСЂРѕС„РёР»Рё</value></string>
+	<string><id>13201</id><value>РЈРґР°Р»РёС‚СЊ РїСЂРѕС„РёР»СЊ '%s'?</value></string>
+	<string><id>13202</id><value>РЎРѕС…СЂР°РЅРёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё РєР°Рє РїСЂРѕС„РёР»СЊ...</value></string>
+	<string><id>13203</id><value>РџСЂРѕС„РёР»СЊ '%s' Р·Р°РіСЂСѓР¶РµРЅ</value></string>
+	<string><id>13204</id><value>РџРѕСЃР»РµРґРЅРёР№ Р·Р°РіСЂСѓР¶РµРЅРЅС‹Р№ РїСЂРѕС„РёР»СЊ:</value></string>
+	<string><id>13205</id><value>РќРµРёР·РІРµСЃС‚РЅРѕ</value></string>
+	<string><id>13206</id><value>РџРµСЂРµР·Р°РїРёСЃР°С‚СЊ</value></string>
+	<string><id>13207</id><value>РџРµСЂРµР·Р°РїРёСЃР°С‚СЊ РїСЂРѕС„РёР»СЊ '%s'?</value></string>
+	<string><id>13208</id><value>РўР°Р№РјРµСЂ РЅР°РїРѕРјРёРЅР°РЅРёР№</value></string>
+	<string><id>13209</id><value>РџРµСЂРёРѕРґ С‚Р°Р№РјРµСЂР° РЅР°РїРѕРјРёРЅР°РЅРёР№ (РІ РјРёРЅСѓС‚Р°С…)</value></string>
+	<string><id>13210</id><value>Р—Р°РїСѓС‰РµРЅ, СЃСЂР°Р±РѕС‚Р°РµС‚ РІ %im</value></string>
+	<string><id>13211</id><value>РќРђРџРћРњРРќРђРќРР•!</value></string>
+	<string><id>13212</id><value>РћС‚РјРµРЅРµРЅРѕ %im%is РЅР°Р·Р°Рґ***</value></string>
+	<string><id>13249</id><value>РСЃРєР°С‚СЊ СЃСѓР±С‚РёС‚СЂС‹ РІ RAR-Р°СЂС…РёРІР°С…</value></string>
+	<string><id>13250</id><value>РћС‚РєСЂС‹С‚СЊ СЃСѓР±С‚РёС‚СЂС‹...</value></string>
+	<string><id>13251</id><value>РџРµСЂРµРјРµСЃС‚РёС‚СЊ РѕР±СЉРµРєС‚</value></string>
+	<string><id>13252</id><value>РџРµСЂРµРјРµСЃС‚РёС‚СЊ РѕР±СЉРµРєС‚ СЃСЋРґР°</value></string>
+	<string><id>13253</id><value>РћС‚РјРµРЅРёС‚СЊ РїРµСЂРµРјРµС‰РµРЅРёРµ</value></string>
+	<string><id>13270</id><value>РћР±РѕСЂСѓРґРѕРІР°РЅРёРµ:</value></string>
+	<string><id>13271</id><value>Р§Р°СЃС‚РѕС‚Р° РїСЂРѕС†РµСЃСЃРѕСЂР°:</value></string>
+	<string><id>13274</id><value>XBOX РїРѕРґРєР»СЋС‡РµРЅ, РЅРѕ DNS РЅРµ РґРѕСЃС‚СѓРїРµРЅ</value></string>
+	<string><id>13275</id><value>Р”РёСЃРє HDD</value></string>
+	<string><id>13276</id><value>РџСЂРёРІРѕРґ DVD</value></string>
+	<string><id>13277</id><value>РќРѕСЃРёС‚РµР»Рё</value></string>
+	<string><id>13278</id><value>РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ</value></string>
+	<string><id>13279</id><value>РЎРµС‚СЊ</value></string>
+	<string><id>13280</id><value>Р’РёРґРµРѕ</value></string>
+	<string><id>13281</id><value>РћР±РѕСЂСѓРґРѕРІР°РЅРёРµ</value></string>
+	<string><id>13282</id><value>_</value></string>
+	<string><id>13283</id><value>Р’РµСЂСЃРёСЏ СЏРґСЂР°:</value></string>
+	<string><id>13284</id><value>Р§Р°СЃС‚РѕС‚Р° РїСЂРѕС†РµСЃСЃРѕСЂР°:</value></string>
+	<string><id>13285</id><value>РћР±РЅР°СЂСѓР¶РµРЅ BIOS:</value></string>
+	<string><id>13286</id><value>Р§РёРї РІРёРґРµРѕРєРѕРґРµСЂР°:</value></string>
+	<string><id>13287</id><value>Р Р°Р·СЂРµС€РµРЅРёРµ СЌРєСЂР°РЅР°:</value></string>
+	<string><id>13288</id><value>Р’РµСЂСЃРёСЏ XBOX:</value></string>
+	<string><id>13289</id><value>РЎРµСЂРёР№РЅС‹Р№ в„– XBOX:</value></string>
+	<string><id>13290</id><value>XBOX РёР·РіРѕС‚РѕРІР»РµРЅ:</value></string>
+	<string><id>13291</id><value>Mod-С‡РёРї:</value></string>
+	<string><id>13292</id><value>A/V РєР°Р±РµР»СЊ:</value></string>
+	<string><id>13293</id><value>Р РµРіРёРѕРЅ РґР»СЏ РІРёРґРµРѕ Рё XBE:</value></string>
+	<string><id>13294</id><value>Р—РѕРЅР° DVD:</value></string>
+	<string><id>13295</id><value>РРЅС‚РµСЂРЅРµС‚:</value></string>
+	<string><id>13296</id><value>XBOX РїРѕРґРєР»СЋС‡РµРЅ</value></string>
+	<string><id>13297</id><value>XBOX РЅРµ РїРѕРґРєР»СЋС‡РµРЅ. РџСЂРѕРІРµСЂСЊС‚Рµ РїР°СЂР°РјРµС‚СЂС‹ СЃРµС‚Рё</value></string>
+	<string><id>13298</id><value>РљР»СЋС‡ XBLIVE:</value></string>
+	<string><id>13299</id><value>РџРѕРґРґРµСЂР¶РёРІР°С‚СЊ С‚РµРјРїРµСЂР°С‚СѓСЂСѓ</value></string>
+	<string><id>13300</id><value>РЎРєРѕСЂРѕСЃС‚СЊ РІРµРЅС‚РёР»СЏС‚РѕСЂР°</value></string>
+	<string><id>13301</id><value>РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ РєРѕРЅС‚СЂРѕР»СЊ С‚РµРјРїРµСЂР°С‚СѓСЂС‹</value></string>
+	<string><id>13302</id><value>РљРѕРЅС‚СЂРѕР»СЊ СЃРєРѕСЂРѕСЃС‚Рё РІРµРЅС‚РёР»СЏС‚РѕСЂР°</value></string>
+	<string><id>13303</id><value>РЁСЂРёС„С‚ РѕС„РѕСЂРјР»РµРЅРёСЏ</value></string>
+	<string><id>13304</id><value>РћР±СЂР°С‚РЅРѕРµ РЅР°РїСЂР°РІР»РµРЅРёРµ СЃС‚СЂРѕРє</value></string>
+	<string><id>13305</id><value>Р’РєР»СЋС‡РёС‚СЊ RSS-РЅРѕРІРѕСЃС‚Рё</value></string>
+	<string><id>13306</id><value>РЎРєСЂС‹С‚СЊ Р·РЅР°С‡РѕРє РїРµСЂРµС…РѕРґР° РЅР° РІРµСЂС…РЅРёР№ СѓСЂРѕРІРµРЅСЊ</value></string>
+	<string><id>13307</id><value>Р¤РѕСЂРјР°С‚ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРїРёСЃРєР°</value></string>
+	<string><id>13308</id><value>РҐРѕС‚РёС‚Рµ РїРµСЂРµР·Р°РіСЂСѓР·РёС‚СЊ Р’Р°С€ XBOX</value></string>
+	<string><id>13309</id><value>РІРјРµСЃС‚Рѕ РїРµСЂРµР·Р°РїСѓСЃРєР° XBMC?</value></string>
+	<string><id>13310</id><value>Р­С„С„РµРєС‚ СѓРІРµР»РёС‡РµРЅРёСЏ</value></string>
+	<string><id>13311</id><value>Р­С„С„РµРєС‚ СЃРєРѕР»СЊР¶РµРЅРёСЏ</value></string>
+	<string><id>13312</id><value>РЈРјРµРЅСЊС€РµРЅРёРµ С‡РµСЂРЅС‹С… РїРѕР»РѕСЃ</value></string>
+	<string><id>13313</id><value>РџРµСЂРµР·Р°РіСЂСѓР·РєР°</value></string>
+	<string><id>13314</id><value>Р’СЂРµРјСЏ РјРёРєС€РёСЂРѕРІР°РЅРёСЏ</value></string>
+	<string><id>13315</id><value>РћР±РЅРѕРІРёС‚СЊ РёРєРѕРЅРєРё</value></string>
+	<string><id>13316</id><value>РРєРѕРЅРєРё СЂРµРєСѓСЂСЃРёРІРЅРѕ</value></string>
+	<string><id>13317</id><value>РџСЂРѕСЃРјРѕС‚СЂ СЃР»Р°Р№РґС€РѕСѓ</value></string>
+	<string><id>13318</id><value>Р РµРєСѓСЂСЃРёРІРЅ.СЃР»Р°Р№РґС€РѕСѓ</value></string>
+	<string><id>13319</id><value>РЎР»СѓС‡Р°Р№РЅРѕ</value></string>
+	<string><id>13320</id><value>РЎС‚РµСЂРµРѕ</value></string>
+	<string><id>13321</id><value>С‚РѕР»СЊРєРѕ Р›РµРІС‹Р№</value></string>
+	<string><id>13322</id><value>С‚РѕР»СЊРєРѕ РџСЂР°РІС‹Р№</value></string>
+	<string><id>13323</id><value>Р Р°Р·СЂРµС€РёС‚СЊ С„РѕСЂРјР°С‚ CD+G</value></string>
+	<string><id>13324</id><value>РЈСЂРѕРІРµРЅСЊ РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё С„РѕРЅР°</value></string>
+	<string><id>13325</id><value>РЈСЂРѕРІРµРЅСЊ РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё С‚РµРєСЃС‚Р°</value></string>
+	<string><id>13326</id><value>Р—Р°РґРµСЂР¶РєР° Р·РІСѓРєР° РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ</value></string>
+	<string><id>13327</id><value>РљР°СЂР°РѕРєРµ</value></string>
+	<string><id>13328</id><value>%s РЅРµ РЅР°Р№РґРµРЅ</value></string>
+	<string><id>13329</id><value>РћС€РёР±РєР° РѕС‚РєСЂС‹С‚РёСЏ %s</value></string>
+	<string><id>13330</id><value>РќРµ Р·Р°РіСЂСѓР¶Р°РµС‚СЃСЏ %s</value></string>
+	<string><id>13331</id><value>РћС€РёР±РєР°: РЅРµС…РІР°С‚РєР° РїР°РјСЏС‚Рё</value></string>
+	<string><id>13332</id><value>РџРµСЂРµРјРµСЃС‚РёС‚СЊ РІС‹С€Рµ</value></string>
+	<string><id>13333</id><value>РџРµСЂРµРјРµСЃС‚РёС‚СЊ РЅРёР¶Рµ</value></string>
+	<string><id>13334</id><value>РР·РјРµРЅРёС‚СЊ РјРµС‚РєСѓ</value></string>
+	<string><id>13335</id><value>РЎРґРµР»Р°С‚СЊ РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ</value></string>
+	<string><id>13336</id><value>РЈР±СЂР°С‚СЊ РєРЅРѕРїРєСѓ</value></string>
+	<string><id>13337</id><value>- РїСЂРѕРїСѓСЃРєР°С‚СЊ СЃС‚РµСЂРµРѕ PCM</value></string>
+	<string><id>13338</id><value>РљРЅРѕРїРєР° (LED)</value></string>
+	<string><id>13339</id><value>Р¦РІРµС‚ РёРЅРґРёРєР°С‚РѕСЂР° РЅР° РїР°РЅРµР»Рё XBOX</value></string>
+	<string><id>13340</id><value>РєР°Рє РµСЃС‚СЊ</value></string>
+	<string><id>13341</id><value>Р·РµР»С‘РЅС‹Р№</value></string>
+	<string><id>13342</id><value>РѕСЂР°РЅР¶РµРІС‹Р№</value></string>
+	<string><id>13343</id><value>РєСЂР°СЃРЅС‹Р№</value></string>
+	<string><id>13344</id><value>РІСЃРµ РїРѕ С†РёРєР»Сѓ</value></string>
+	<string><id>13345</id><value>Р’С‹РєР»СЋС‡Р°С‚СЊ РїСЂРё РїСЂРѕРёРіСЂС‹РІР°РЅРёРё</value></string>
+	<string><id>13346</id><value>РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С„РёР»СЊРјРµ</value></string>
+	<string><id>13347</id><value>Р”РѕР±Р°РІРёС‚СЊ РІ РїР»РµР№Р»РёСЃС‚</value></string>
+	<string><id>13348</id><value>РќР°Р№С‚Рё РІ IMDB...</value></string>
+	<string><id>13349</id><value>Р—Р°РїСЂРѕСЃ РёРЅС„. Рѕ РІСЃРµС…</value></string>
+	<string><id>13350</id><value>РўРµРєСѓС‰РёР№ РїР»РµР№Р»РёСЃС‚...</value></string>
+	<string><id>13351</id><value>Р—Р°РїСЂРѕСЃ РёРЅС„РѕСЂРјР°С†РёРё </value></string>
+	<string><id>13352</id><value>РЎРєР°РЅРёСЂ.РІСЃС‘ РІ Р±/РґР°РЅРЅС‹С…</value></string>
+	<string><id>13353</id><value>РћСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРєР°РЅРёСЂРѕРІР°РЅРёРµ</value></string>
+	<string><id>13354</id><value>Р РµРЅРґРµСЂ</value></string>
+	<string><id>13355</id><value>РџРёРєСЃ.С€РµР№РґРµСЂ РЅРёР·.РєР°С‡РµСЃС‚РІР°</value></string>
+	<string><id>13356</id><value>РђРїРїР°СЂР°С‚РЅРѕРµ РЅР°Р»РѕР¶РµРЅРёРµ</value></string>
+	<string><id>13357</id><value>РџРёРєСЃ.С€РµР№РґРµСЂ РІС‹СЃ.РєР°С‡РµСЃС‚РІР°</value></string>
+	<string><id>13358</id><value>Р’РѕРїСЂРѕРёР·РІРµСЃС‚Рё</value></string>
+	<string><id>13359</id><value>РЈСЃС‚.РёРєРѕРЅРєСѓ РёСЃРїРѕР»РЅРёС‚.</value></string>
+	<string><id>13360</id><value>РЎРѕР·РґР°С‚СЊ РёРєРѕРЅРєРё</value></string>
+	<string><id>13361</id><value>РџРѕРґРєР»СЋС‡РёС‚СЊ РјРёРєСЂРѕС„РѕРЅ</value></string>
+	<string><id>13362</id><value>РР·РјРµРЅРµРЅРёРµ РіРѕР»РѕСЃР°</value></string>
+	<string><id>13363</id><value>- РСЃРї. СЌРЅРµСЂРіРµС‚РёРєСѓ СЃРїРµРєС‚СЂР°</value></string>
+	<string><id>13364</id><value>-- СѓСЂРѕРІРµРЅСЊ СЌС„С„РµРєС‚Р°</value></string>
+	<string><id>13365</id><value>- РЎРґРІРёРіР°С‚СЊ РІС‹СЃРѕС‚Сѓ С‚РѕРЅР°</value></string>
+	<string><id>13366</id><value>-- СѓСЂРѕРІРµРЅСЊ СЌС„С„РµРєС‚Р°</value></string>
+	<string><id>13367</id><value>- РСЃРїРѕР»СЊР·. СЌС„С„РµРєС‚ С€РµРїРѕС‚Р°</value></string>
+	<string><id>13368</id><value>-- СѓСЂРѕРІРµРЅСЊ СЌС„С„РµРєС‚Р°</value></string>
+	<string><id>13369</id><value>- РСЃРїРѕР»СЊР·. СЌС„С„РµРєС‚ СЂРѕР±РѕС‚Р°</value></string>
+	<string><id>13370</id><value>-- СѓСЂРѕРІРµРЅСЊ СЌС„С„РµРєС‚Р°</value></string>
+	<string><id>13371</id><value>- Р“РѕР»РѕСЃ 1</value></string>
+	<string><id>13372</id><value>- Р“РѕР»РѕСЃ 2</value></string>
+	<string><id>13373</id><value>- Р“РѕР»РѕСЃ 3</value></string>
+	<string><id>13374</id><value>- Р“РѕР»РѕСЃ 4</value></string>
+	<string><id>13375</id><value>Р’РєР»СЋС‡РёС‚СЊ СѓСЃС‚СЂРѕР№СЃС‚РІРѕ</value></string>
+	<string><id>13376</id><value>Р“СЂРѕРјРєРѕСЃС‚СЊ</value></string>
+	<string><id>13377</id><value>Р РµР¶РёРј РїСЂРѕСЃРјРѕС‚СЂР°</value></string>
+	<string><id>13378</id><value>РЇСЂРєРѕСЃС‚СЊ</value></string>
+	<string><id>13379</id><value>РљРѕРЅС‚СЂР°СЃС‚РЅРѕСЃС‚СЊ</value></string>
+	<string><id>13380</id><value>Р“Р°РјРјР°</value></string>
+	<string><id>13381</id><value>РџСЂРѕРґРѕР»Р¶РёС‚СЊ РІРёРґРµРѕ</value></string>
+	<string><id>13382</id><value>РњР°СЃРєР° РґР»СЏ РіРѕР»РѕСЃР° 1</value></string>
+	<string><id>13383</id><value>РњР°СЃРєР° РґР»СЏ РіРѕР»РѕСЃР° 2</value></string>
+	<string><id>13384</id><value>РњР°СЃРєР° РґР»СЏ РіРѕР»РѕСЃР° 3</value></string>
+	<string><id>13385</id><value>РњР°СЃРєР° РґР»СЏ РіРѕР»РѕСЃР° 4</value></string>
+	<string><id>13386</id><value>РџРѕР·РёС†РёРѕРЅРёСЂРѕРІР°С‚СЊ РїРѕ РІСЂРµРјРµРЅРё</value></string>
+	<string><id>13387</id><value>РџСЂР°РІР°СЏ РєРѕР»РѕРЅРєР° РІ СЃРїРёСЃРєРµ</value></string>
+	<string><id>13388</id><value>РџСЂРµРґСѓСЃС‚Р°РЅРѕРІРєРё</value></string>
+	<string><id>13389</id><value>Р”Р»СЏ СЌС‚РѕРіРѕ СЌС„С„РµРєС‚Р°&#10;РЅРµС‚ РїСЂРµРґСѓСЃС‚Р°РЅРѕРІРѕРє</value></string>
+	<string><id>13390</id><value>РґР»СЏ СЌС‚РѕРіРѕ СЌС„С„РµРєС‚Р°&#10;РЅР°СЃС‚СЂРѕР№РєРё РЅРµ РґРѕСЃС‚СѓРїРЅС‹</value></string>
+	<string><id>13391</id><value>РћС‚РєСЂС‹С‚СЊ/Р—Р°РіСЂСѓР·РёС‚СЊ</value></string>
+	<string><id>13392</id><value>Р’РєР»СЋС‡Р°С‚СЊ РІРёР·СѓР°Р»РёР·Р°С†РёСЋ РїСЂРё РІРѕСЃРїСЂ. РјСѓР·С‹РєРё</value></string>
+	<string><id>13393</id><value>РџРѕРєР°Р·Р°С‚СЊ РѕР±СЉРµРј</value></string>
+	<string><id>13394</id><value>Р’С‹С‡РёСЃР»СЏРµС‚СЃСЏ РѕР±СЉРµРј Р·Р°РЅРёРјР°РµРјРѕРіРѕ РјРµСЃС‚Р°</value></string>
+	<string><id>13395</id><value>РќР°СЃС‚СЂРѕР№РєР° Р’РёРґРµРѕ</value></string>
+	<string><id>13396</id><value>РќР°СЃС‚СЂРѕР№РєР° СЃСѓР±С‚РёС‚СЂРѕРІ Рё Р·РІСѓРєР°</value></string>
+	<string><id>13397</id><value>РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃСѓР±С‚РёС‚СЂС‹</value></string>
+	<string><id>13398</id><value>РЎСЃС‹Р»РєРё</value></string>
+	<string><id>13399</id><value>РќРµ СѓС‡РёС‚С‹РІР°С‚СЊ "The" РїСЂРё СЃРѕСЂС‚РёСЂРѕРІРєРµ</value></string>
+	<string><id>13400</id><value>РџР»Р°РІРЅС‹Р№ РїРµСЂРµС…РѕРґ РѕС‚ С‚СЂРµРєР° Рє С‚СЂРµРєСѓ</value></string>
+	<string><id>13401</id><value>РџРѕРёСЃРє %s</value></string>
+	<string><id>13402</id><value>РџРѕРєР°Р·Р°С‚СЊ РїРѕР·РёС†РёСЋ С‚СЂРµРєР°</value></string>
+	<string><id>13403</id><value>РћС‡РёСЃС‚РёС‚СЊ РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ</value></string>
+	<string><id>13404</id><value>РџСЂРѕРґРѕР»Р¶РёС‚СЊ</value></string>
+	<string><id>13405</id><value>РџРѕР»СѓС‡РёС‚СЊ РРєРѕРЅРєСѓ</value></string>
+	<string><id>14000</id><value>РћР±СЉРµРґРёРЅС‘РЅРЅРѕ</value></string>
+	<string><id>14001</id><value>РџРѕ-С„Р°Р№Р»РѕРІРѕ</value></string>
+	<string><id>14002</id><value>РћР±СЉРµРґРёРЅСЏС‚СЊ: РЅРµ СЃС‚СЂРѕРіРѕ</value></string>
+	<string><id>14003</id><value>Р—Р°РіСЂСѓР¶Р°РµС‚СЃСЏ С„Р°Р№Р» РїР»РµР№-Р»РёСЃС‚Р°...</value></string>
+	<string><id>14004</id><value>Р—Р°РіСЂСѓР¶Р°РµС‚СЃСЏ СЃРїРёСЃРѕРє РїРѕС‚РѕРєРѕРІ...</value></string>
+	<string><id>14005</id><value>РђРЅР°Р»РёР· СЃРїРёСЃРєР° РїРѕС‚РѕРєРѕРІ...</value></string>
+	<string><id>14006</id><value>РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё СЃРїРёСЃРєР° РїРѕС‚РѕРєРѕРІ</value></string>
+	<string><id>14007</id><value>РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё С„Р°Р№Р»Р° РїР»РµР№-Р»РёСЃС‚Р°</value></string>
+	<string><id>14008</id><value>Р Р°Р·СЂРµС€РёС‚СЊ СЃРѕРѕР±С‰РµРЅРёСЏ Kai</value></string>
+	<string><id>14009</id><value>РРіСЂРѕРІР°СЏ РґРёСЂРµРєС‚РѕСЂРёСЏ</value></string>
+	<string><id>14010</id><value>РђРІС‚Рѕ-РїРµСЂРµРєР»СЋС‡РµРЅРёРµ РЅР° РІРёРґ СЃ РёРєРѕРЅРєР°РјРё</value></string>
+	<string><id>14011</id><value>РђРІС‚Рѕ-РїРµСЂРµРєР»СЋС‡РµРЅРёРµ РІРёРґР° СЃРѕ СЃРїРёСЃРєР° РЅР° РёРєРѕРЅРєРё</value></string>
+	<string><id>14012</id><value>- РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р±РѕР»СЊС€РёРµ РёРєРѕРЅРєРё</value></string>
+	<string><id>14013</id><value>- СѓСЃР»РѕРІРёРµ:</value></string>
+	<string><id>14014</id><value>- С‡РёСЃР»Рѕ С„Р°Р№Р»РѕРІ СЃ РёРєРѕРЅРєР°РјРё Р±РѕР»СЊС€Рµ</value></string>
+	<string><id>14015</id><value>РјРёРЅРёРјСѓРј 1 РёРєРѕРЅРєР°, Р±РµР· С„Р°Р№Р»РѕРІ</value></string>
+	<string><id>14016</id><value>РјРёРЅРёРјСѓРј 1 РёРєРѕРЅРєР° Рё С„Р°Р№Р»</value></string>
+	<string><id>14017</id><value>РєРѕР»РёС‡РµСЃС‚РІРѕ РёРєРѕРЅРѕРє</value></string>
+	<string><id>14018</id><value>РЎРїРёСЃРѕРє С„Р°Р№Р»РѕРІ</value></string>
+	<string><id>14019</id><value>РљРѕРґ РѕР±Р»Р°СЃС‚Рё 1</value></string>
+	<string><id>14020</id><value>РљРѕРґ РѕР±Р»Р°СЃС‚Рё 2</value></string>
+	<string><id>14021</id><value>РљРѕРґ РѕР±Р»Р°СЃС‚Рё 3</value></string>
+	<string><id>14022</id><value>Р¤РѕРЅРѕС‚РµРєР°</value></string>
+	<string><id>14023</id><value>Р‘РµР· РўР’</value></string>
+	<string><id>14024</id><value>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РіРѕСЂРѕРґР° (РёР»Рё US ZIPcode)</value></string>
+	<string><id>14025</id><value>РљСЌС€ РґР»СЏ A,V Рё DVD-С„Р°Р№Р»РѕРІ РЅР° HDD</value></string>
+	<string><id>14026</id><value>РљСЌС€ РІРёРґРµРѕС„Р°Р№Р»РѕРІ: - РЅР° DVDRom-Рµ</value></string>
+	<string><id>14027</id><value>- РёР· Р»РѕРєР°Р»СЊРЅРѕР№ СЃРµС‚Рё</value></string>
+	<string><id>14028</id><value>- РёР· РРЅС‚РµСЂРЅРµС‚Р°</value></string>
+	<string><id>14030</id><value>РљСЌС€ Р°СѓРґРёРѕС„Р°Р№Р»РѕРІ: -РЅР° DVDRom-Рµ</value></string>
+	<string><id>14031</id><value>- РёР· Р»РѕРєР°Р»СЊРЅРѕР№ СЃРµС‚Рё</value></string>
+	<string><id>14032</id><value>- РёР· РРЅС‚РµСЂРЅРµС‚Р°</value></string>
+	<string><id>14034</id><value>РљСЌС€ С„Р°Р№Р»РѕРІ DVD-Video: c DVDRom</value></string>
+	<string><id>14035</id><value>- РёР· Р»РѕРєР°Р»СЊРЅРѕР№ СЃРµС‚Рё</value></string>
+	<string><id>14036</id><value>РЎРµСЂРІРµСЂС‹</value></string>
+	<string><id>14037</id><value>Р’РЅРµС€РЅРёР№ РІРёРґ</value></string>
+	<string><id>14038</id><value>РќР°СЃС‚СЂРѕР№РєРё Р»РѕРєР°Р»СЊРЅРѕР№ СЃРµС‚Рё РёР·РјРµРЅРµРЅС‹.</value></string>
+	<string><id>14039</id><value>Р”Р»СЏ РІСЃС‚СѓРїР»РµРЅРёСЏ РёР·РјРµРЅРµРЅРёР№ СЃ СЃРёР»Сѓ, С‚СЂРµР±СѓРµС‚СЃСЏ</value></string>
+	<string><id>14040</id><value>РїРµСЂРµР·Р°РіСЂСѓР·РєР° XBMC. РџРµСЂРµР·Р°РіСЂСѓР¶Р°РµРј?</value></string>
+	<string><id>14041</id><value>РџРѕСЃС‚РѕР±СЂР°Р±РѕС‚РєР°</value></string>
+	<string><id>14042</id><value>IP Р°РґСЂРµСЃ РєРѕРјРїСЊСЋС‚РµСЂР° СЃ Kai Engine</value></string>
+	<string><id>14043</id><value>- Р’С‹РєР»СЋС‡Р°С‚СЊ РІРѕ РІСЂРµРјСЏ РїСЂРѕРёРіСЂС‹РІР°РЅРёСЏ</value></string>
+	<string><id>14044</id><value>%i РјРёРЅСѓС‚</value></string>
+	<string><id>14045</id><value>%i СЃРµРєСѓРЅРґ</value></string>
+	<string><id>14046</id><value>%i ms</value></string>
+	<string><id>14047</id><value>%i %%</value></string>
+	<string><id>14048</id><value>%i РєР±/СЃРµРє</value></string>
+	<string><id>14049</id><value>%i РєР±</value></string>
+	<string><id>14050</id><value>%i.0 dB</value></string>
+	<string><id>14051</id><value>Р¤РѕСЂРјР°С‚ С‡Р°СЃРѕРІ</value></string>
+	<string><id>14052</id><value>Р¤РѕСЂРјР°С‚ РґР°С‚С‹</value></string>
+	<string><id>14053</id><value>Р¤РёР»СЊС‚СЂС‹ РёР·РѕР±СЂ.</value></string>
+	<string><id>14054</id><value>РћРїСЂРµРґРµР»СЏС‚СЊ РЅР°Р»РёС‡РёРµ РґРѕСЃС‚СѓРїР° Рє РРЅС‚РµСЂРЅРµС‚Сѓ</value></string>
+	<string><id>14055</id><value>Р РµР¶РёРј С„РѕРЅРѕРІРѕРіРѕ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ</value></string>
+	<string><id>14056</id><value>РћСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРєР°РЅРёСЂРѕРІР°РЅРёРµ</value></string>
+	<string><id>14057</id><value>РќРµРІРѕР·РјРѕР¶РЅРѕ, РїРѕРєР° СЃРєР°РЅРёСЂСѓСЋС‚СЃСЏ С„Р°Р№Р»С‹</value></string>
+	<string><id>14058</id><value>Р­С„С„РµРєС‚ РєРёРЅРѕРїР»С‘РЅРєРё</value></string>
+	<string><id>14059</id><value>РћС‚РѕР±СЂР°Р¶Р°С‚СЊ РёРєРѕРЅРєРё СЃ РІРЅРµС€РЅРёС… СЂРµСЃСѓСЂСЃРѕРІ</value></string>
+	<string><id>14060</id><value>РљСЌС€ РЅРµРѕРїСЂРµРґРµР»С‘РЅРЅС‹С… С„Р°Р№Р»РѕРІ РёР· Р-РЅРµС‚Р°</value></string>
+	<string><id>14061</id><value>РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё</value></string>
+	<string><id>14062</id><value>Р’РІРµРґРёС‚Рµ РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РґР»СЏ</value></string>
+	<string><id>14063</id><value>Р”Р°С‚Р° Рё Р’СЂРµРјСЏ</value></string>
+	<string><id>14064</id><value>РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РґР°С‚Сѓ...</value></string>
+	<string><id>14065</id><value>РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РІСЂРµРјСЏ...</value></string>
+	<string><id>14066</id><value>Р’РІРµРґРёС‚Рµ РІСЂРµРјСЏ РІ 24-С… С‡Р°СЃРѕРІРѕРј С„РѕСЂРјР°С‚Рµ Р§Р§:РњРњ</value></string>
+	<string><id>14067</id><value>Р’РІРµРґРёС‚Рµ РґР°С‚Сѓ РІ С„РѕСЂРјР°С‚Рµ Р”Р”/РњРњ/Р“Р“Р“Р“</value></string>
+	<string><id>14068</id><value>Р’РІРµРґРёС‚Рµ IP-Р°РґСЂРµСЃ</value></string>
+	<string><id>14069</id><value>РҐРѕС‚РёС‚Рµ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ СЌС‚Рё Р·РЅР°С‡РµРЅРёСЏ?</value></string>
+	<string><id>14070</id><value>РџСЂРёРјРµРЅРёС‚СЊ Р·РЅР°С‡РµРЅРёСЏ...</value></string>
+	<string><id>14071</id><value>Р Р°Р·СЂРµС€РёС‚СЊ РїРµСЂРµРёРјРµРЅРѕРІР°РЅРёРµ Рё СѓРґР°Р»РµРЅРёРµ С„Р°Р№Р»РѕРІ</value></string>
+	<string><id>14072</id><value>Р Р°Р·СЂРµС€РёС‚СЊ XLink Kai</value></string>
+	<string><id>14073</id><value>XLink Kai РЅРµ СЂР°Р·СЂРµС€РµРЅ.</value></string>
+	<string><id>15000</id><value>XLink Kai</value></string>
+	<string><id>15001</id><value>РЎРµСЂРІРёСЃ РЅРµ РїРѕРґРєР»СЋС‡РµРЅ. РҐРѕС‚РёС‚Рµ РїРѕРїСЂРѕР±РѕРІР°С‚СЊ</value></string>
+	<string><id>15002</id><value>РїРµСЂРµРїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ?</value></string>
+	<string><id>15003</id><value>Р’РІРµРґРёС‚Рµ Р’Р°С€Рµ СЃРѕРѕР±С‰РµРЅРёРµ</value></string>
+	<string><id>15004</id><value>Р’С‹ РїСЂРёРіР»Р°С€РµРЅС‹ РёРіСЂР°С‚СЊ %s.</value></string>
+	<string><id>15005</id><value>Р”Р°С‚Р°: %s</value></string>
+	<string><id>15006</id><value>РР·: %s</value></string>
+	<string><id>15007</id><value>РџСЂРёРіР»Р°С€РµРЅРёРµ</value></string>
+	<string><id>15008</id><value>Р’С‹ РїСЂРёРіР»Р°С€РµРЅС‹ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ %s.</value></string>
+	<string><id>15009</id><value>РћС‚РєР»СЋС‡РµРЅ</value></string>
+	<string><id>15010</id><value>Р”СЂСѓР·СЊСЏ</value></string>
+	<string><id>15011</id><value>Р’РёРґ: Р”СЂСѓР·СЊСЏ</value></string>
+	<string><id>15012</id><value>РџСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ</value></string>
+	<string><id>15013</id><value>Р“РѕР»РѕСЃ</value></string>
+	<string><id>15014</id><value>РџСЂРёРіР»Р°СЃРёС‚СЊ</value></string>
+	<string><id>15015</id><value>РЈР±СЂР°С‚СЊ</value></string>
+	<string><id>15016</id><value>РРіСЂС‹</value></string>
+	<string><id>15017</id><value>Р’РёРґ: РРіСЂС‹</value></string>
+	<string><id>15018</id><value>Р’С…РѕРґ</value></string>
+	<string><id>15019</id><value>Р”РѕР±Р°РІРёС‚СЊ</value></string>
+	<string><id>15020</id><value>РҐРѕСЃС‚</value></string>
+	<string><id>15021</id><value>РђСЂРµРЅС‹</value></string>
+	<string><id>15022</id><value>Р’РёРґ: РђСЂРµРЅС‹</value></string>
+	<string><id>15023</id><value>РРіСЂР°С‚СЊ</value></string>
+	<string><id>15024</id><value>Р”РѕР±Р°РІРёС‚СЊ</value></string>
+	<string><id>15025</id><value>РҐРѕСЃС‚</value></string>
+	<string><id>15026</id><value>Р§Р°С‚</value></string>
+	<string><id>15027</id><value>Р’РёРґ: Р§Р°С‚</value></string>
+	<string><id>15028</id><value>РљР»Р°РІРёР°С‚СѓСЂР°</value></string>
+	<string><id>15029</id><value>Р”Р»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє РђСЂРµРЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ РїР°СЂРѕР»СЊ.</value></string>
+	<string><id>15030</id><value>РЎРµСЂРІРёСЃ РѕС‚РєР»СЋС‡РµРЅ</value></string>
+	<string><id>15031</id><value>РРґРµРЅС‚РёС„РёРєР°С†РёСЏ РІ СЃРёСЃС‚РµРјРµ XLink Kai</value></string>
+	<string><id>15032</id><value>Р’Р°С€Рµ РёРјСЏ Рё/РёР»Рё РїР°СЂРѕР»СЊ РѕС‚РєР»РѕРЅРµРЅС‹</value></string>
+	<string><id>15033</id><value>orbital-СЃРµСЂРІРµСЂРѕРј. РџСЂРѕРІРµСЂСЊС‚Рµ РЅР°СЃС‚СЂРѕР№РєРё.</value></string>
+	<string><id>15034</id><value>С‚РѕР»СЊРєРѕ С‡С‚Рѕ РІРѕС€РµР»</value></string>
+	<string><id>15035</id><value>РёРЅРёС†РёРёСЂРѕРІР°Р» РіРѕР»РѕСЃРѕРІРѕР№ С‡Р°С‚</value></string>
+	<string><id>15036</id><value>РїРѕСЃР»Р°Р» Р’Р°Рј РїСЂРёРіР»Р°С€РµРЅРёРµ</value></string>
+	<string><id>15037</id><value>XBMC РЅРµ РїРѕРґС‚РІРµСЂР¶РґР°РµС‚ РґРѕСЃС‚СѓРїРЅРѕСЃС‚СЊ Р’Р°С€РµР№ СЃРµС‚Рё.</value></string>
+	<string><id>15038</id><value>Р’РѕР·РјРѕР¶РЅРѕ Р±СѓРґСѓС‚ РїСЂРѕР±Р»РµРјС‹ СЃ РёРіСЂРѕР№ РїРѕ СЃРµС‚Рё</value></string>
+	<string><id>15039</id><value>XBMC РЅРµ СЃРјРѕРі РЅР°Р№С‚Рё РёРіСЂСѓ.</value></string>
+	<string><id>15040</id><value>Р’СЃС‚Р°РІСЊС‚Рµ РґРёСЃРє СЃ РёРіСЂРѕР№ РёР»Рё РЅР°Р¶РјРёС‚Рµ 'A' РґР»СЏ РѕС‚РјРµРЅС‹</value></string>
+	<string><id>15041</id><value>Рё Р·Р°РїСѓСЃС‚РёС‚Рµ РёРіСЂСѓ СЃР°РјРѕСЃС‚РѕСЏС‚РµР»СЊРЅРѕ.</value></string>
+	<string><id>15042</id><value>Р”РѕСЃС‚СѓРї Р·Р°РєСЂС‹С‚</value></string>
+	<string><id>15043</id><value>%s РїСЂРёСЃРѕРµРґРёРЅРёР»СЃСЏ Рє С‡Р°С‚Сѓ.</value></string>
+	<string><id>15044</id><value>%s РїРѕРєРёРЅСѓР» С‡Р°С‚.</value></string>
+	<string><id>15045</id><value>Р’РІРµРґРёС‚Рµ СЃРІРѕС‘ СЃРѕРѕР±С‰РµРЅРёРµ.</value></string>
+	<string><id>15046</id><value>РўРµРєСѓС‰Р°СЏ РђСЂРµРЅР°</value></string>
+	<string><id>15047</id><value>Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ РґР»СЏ РІС…РѕРґР° РІ РђСЂРµРЅСѓ..</value></string>
+	<string><id>15048</id><value>Р’РІРµРґРёС‚Рµ РѕРїРёСЃР°РЅРёРµ РђСЂРµРЅС‹..</value></string>
+	<string><id>15049</id><value>РҐРѕСЃС‚ РёРіСЂС‹</value></string>
+	<string><id>15050</id><value>РҐРѕСЃС‚ РІ С‡Р°СЃС‚РЅРѕР№ Р°СЂРµРЅРµ</value></string>
+	<string><id>15051</id><value>Рљ-РІРѕ РёРіСЂРѕРєРѕРІ:</value></string>
+	<string><id>15052</id><value>РџР°СЂРѕР»СЊ</value></string>
+	<string><id>15053</id><value>РћРїРёСЃР°РЅРёРµ</value></string>
+	<string><id>15054</id><value>Р”РёР°Р»РѕРі РїСЂРёРіР»Р°С€РµРЅРёСЏ</value></string>
+	<string><id>15055</id><value>Р’С‹Р±РѕСЂ РёРіСЂС‹:</value></string>
+	<string><id>15056</id><value>Р’РІРѕРґ СЃРѕРѕР±С‰РµРЅРёСЏ:</value></string>
+	<string><id>15057</id><value>РћС‚РїСЂР°РІРёС‚СЊ</value></string>
+	<string><id>15058</id><value>РҐРѕСЃС‚</value></string>
+	<string><id>15059</id><value>РџСЂРёРіР»Р°С€РµРЅРёРµ РїСЂРёРЅСЏС‚Рѕ!</value></string>
+	<string><id>15060</id><value>Р’РІРѕРґ СЃРѕРѕР±С‰РµРЅРёСЏ</value></string>
+	<string><id>15061</id><value>Р’С‹ РїСЂРёРіР»Р°С€РµРЅС‹ РІ РёРіСЂСѓ %s.</value></string>
+	<string><id>15062</id><value>РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р°Р»СЊС‚РµСЂРЅР°С‚РёРІРЅРѕРµ СЂР°Р·РјРµС‰РµРЅРёРµ mplayer</value></string>
+	<string><id>15100</id><value>Р¤РѕРЅРѕС‚РµРєР°</value></string>
+	<string><id>15101</id><value>Р‘Р°Р·Р° Р”Р°РЅРЅС‹С…</value></string>
+	<string><id>15102</id><value>* Р’СЃРµ Р°Р»СЊР±РѕРјС‹</value></string>
+	<string><id>15103</id><value>* Р’СЃРµ Р°СЂС‚РёСЃС‚С‹</value></string>
+	<string><id>15104</id><value>* Р’СЃРµ РїРµСЃРЅРё</value></string>
+	<string><id>15105</id><value>* Р’СЃРµ Р¶Р°РЅСЂС‹</value></string>
+	<string><id>15106</id><value>Р—Р°РїРѕРјРЅРёС‚СЊ РІС‹Р±СЂР°РЅРЅС‹Р№ С„Р°Р№Р» РїСЂРё РЅР°РІРёРіР°С†РёРё </value></string>
+	<string><id>15107</id><value>Р‘СѓС„РµСЂРёР·РёСЂСѓРµС‚СЃСЏ...</value></string>
+	<string><id>15108</id><value>Р—РІСѓРє РєРЅРѕРїРѕРє</value></string>
+	<string><id>15109</id><value>РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ</value></string>
+	<string><id>15110</id><value>РЈСЂРѕРІРµРЅСЊ РІРёР±СЂР°С†РёРё РіРµР№РјРїР°Рґ-Р°</value></string>
+	<string><id>15111</id><value>Р’Р°СЂРёР°РЅС‚ РѕС„РѕСЂРјР»РµРЅРёСЏ (С‚РµРјР°)</value></string>
+	<string><id>15112</id><value>РўРµРјР° РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ</value></string>
+	<string><id>15200</id><value>LastFM</value></string>
+	<string><id>15201</id><value>РћС‚РїСЂР°РІР»СЏС‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РЅР° LastFM</value></string>
+	<string><id>15202</id><value>РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РґР»СЏ LastFM</value></string>
+	<string><id>15203</id><value>РџР°СЂРѕР»СЊ РґР»СЏ LastFM</value></string>
+	<string><id>15204</id><value>РќРµ СЃРјРѕРі СЃРІСЏР·СЏС‚СЊСЃСЏ: Р·Р°СЃС‹РїР°СЋ...</value></string>
+	<string><id>15205</id><value>РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РѕР±РЅРѕРІРёС‚Рµ XBMC</value></string>
+	<string><id>15206</id><value>РќРµРІРµСЂРЅР°СЏ Р°РІС‚РѕСЂРёР·Р°С†РёСЏ.</value></string>
+	<string><id>15207</id><value>РџРѕРґРєР»СЋС‡РµРЅ</value></string>
+	<string><id>15208</id><value>РќРµ РїРѕРґРєР»СЋС‡РµРЅ</value></string>
+	<string><id>15209</id><value>РРЅС‚РµСЂРІР°Р» РїРѕРґРєР»СЋС‡РµРЅРёР№ %i</value></string>
+	<string><id>15210</id><value>РљСЌС€РёСЂСѓРµС‚СЃСЏ %i РїРµСЃРµРЅ</value></string>
+	<string><id>15211</id><value>РџРѕРґРєР»СЋС‡РµРЅРёРµ...</value></string>
+	<string><id>15212</id><value>РџРѕРґРєР»СЋС‡РµРЅРёРµ С‡РµСЂРµР· %i СЃРµРє.</value></string>
+	<string><id>15213</id><value>РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РїР»РµРµСЂ..</value></string>
+	<string><id>15214</id><value>РњСЏРіРєР°СЏ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёСЋ Р·РІСѓРєР° Рё РІРёРґРµРѕ</value></string>
+	<string><id>15215</id><value>РЎРєСЂС‹С‚СЊ РёРјРµРЅР° С„Р°Р№Р»РѕРІ РІ СЂРµР¶РёРјРµ РёРєРѕРЅРѕРє</value></string>
+	<string><id>15250</id><value>РЈС‡С‘С‚ РІ СЃС‚Р°С‚РёСЃС‚РёРєРµ РїРµСЃРµРЅ СЃ LAST.FM</value></string>
+	<string><id>15251</id><value>РџРѕРґРєР»СЋС‡РµРЅРёРµ Рє LAST.FM...</value></string>
+	<string><id>15252</id><value>Р’С‹Р±РѕСЂ СЃС‚Р°РЅС†РёРё...</value></string>
+	<string><id>15253</id><value>РџРѕРёСЃРє РїРѕС…РѕР¶РёС… РёСЃРїРѕР»РЅРёС‚РµР»РµР№...</value></string>
+	<string><id>15254</id><value>РџРѕРёСЃРє РїРѕС…РѕР¶РёС… С‚СЌРіРѕРІ...</value></string>
+	<string><id>15255</id><value>Р’Р°С€ РїСЂРѕС„РёР»СЊ (%name%) РЅР° LAST.FM</value></string>
+	<string><id>15256</id><value>РћР±С‰РёР№ С‚РѕРї С‚СЌРіРѕРІ</value></string>
+	<string><id>15257</id><value>РўРѕРїРѕРІС‹Рµ РёСЃРїРѕР»РЅРёС‚РµР»Рё С‚СЌРіР° %name%</value></string>
+	<string><id>15258</id><value>РўРѕРїРѕРІС‹Рµ Р°Р»СЊР±РѕРјС‹ С‚СЌРіР° %name%</value></string>
+	<string><id>15259</id><value>РўРѕРїРѕРІС‹Рµ С‚СЂРµРєРё С‚СЌРіР° %name%</value></string>
+	<string><id>15260</id><value>РЎР»СѓС€Р°С‚СЊ С‚СЂРµРєРё С‚СЌРіР° %name% РЅР° LAST.FM</value></string>
+	<string><id>15261</id><value>РСЃРїРѕР»РЅРёС‚РµР»Рё, РїРѕС…РѕР¶РёРµ РЅР° %name%</value></string>
+	<string><id>15262</id><value>РўРѕРї Р°Р»СЊР±РѕРјРѕРІ %name%</value></string>
+	<string><id>15263</id><value>РўРѕРї С‚СЂСЌРєРѕРІ %name%</value></string>
+	<string><id>15264</id><value>РўРѕРї С‚СЌРіРѕРІ %name%</value></string>
+	<string><id>15265</id><value>РЎРїРёСЃРѕРє С„СЌРЅРѕРІ %name%</value></string>
+	<string><id>15266</id><value>РЎР»СѓС€Р°С‚СЊ РІС‹Р±РѕСЂ С„СЌРЅРѕРІ %name% РЅР° LAST.FM</value></string>
+	<string><id>15267</id><value>РЎР»СѓС€Р°С‚СЊ РїРѕС…РѕР¶РёС… РёСЃРїРѕР». %name% РЅР° LAST.FM</value></string>
+	<string><id>15268</id><value>РўРѕРї РёСЃРїРѕР»РЅРёС‚РµР»РµР№ РѕС‚ %name%</value></string>
+	<string><id>15269</id><value>РўРѕРї Р°Р»СЊР±РѕРјРѕРІ РѕС‚ %name%</value></string>
+	<string><id>15270</id><value>РўРѕРї С‚СЂРµРєРѕРІ РѕС‚ %name%</value></string>
+	<string><id>15271</id><value>Р”СЂСѓР·СЊСЏ %name%</value></string>
+	<string><id>15272</id><value>РЎРѕРѕР±С‰РµСЃС‚РІР° %name%</value></string>
+	<string><id>15273</id><value>РќРµРґРµР»СЊРЅС‹Р№ С‡Р°СЂС‚ РёСЃРїРѕР»РЅРёС‚РµР»РµР№ %name%</value></string>
+	<string><id>15274</id><value>РќРµРґРµР»СЊРЅС‹Р№ С‡Р°СЂС‚ Р°Р»СЊР±РѕРјРѕРІ %name%</value></string>
+	<string><id>15275</id><value>РќРµРґРµР»СЊРЅС‹Р№ С‡Р°СЂС‚ С‚СЂРµРєРѕРІ %name%</value></string>
+	<string><id>15276</id><value>РЎР»СѓС€Р°С‚СЊ РІС‹Р±РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІ %name% РЅР° LAST.FM</value></string>
+	<string><id>15277</id><value>РЎР»СѓС€Р°С‚СЊ Р»РёС‡РЅС‹Р№ РІС‹Р±РѕСЂ %name%'s РЅР° LAST.FM</value></string>
+	<string><id>15278</id><value>РЎР»СѓС€Р°С‚СЊ Р»СЋР±РёРјС‹Рµ С‚СЂРµРєРё %name% РЅР° LAST.FM</value></string>
+	<string><id>15279</id><value>РџРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° РѕС‚ LAST.FM...</value></string>
+	<string><id>15280</id><value>РќРµ РјРѕРіСѓ РїСЂРёРЅСЏС‚СЊ СЃРїРёСЃРѕРє РѕС‚ LAST.FM...</value></string>
+	<string><id>15281</id><value>Р’РІРµРґРёС‚Рµ РёРјСЏ РёСЃРїРѕР»РЅРёС‚РµР»СЏ РґР»СЏ РїРѕРёСЃРєР° РїРѕС…РѕР¶РёС…</value></string>
+	<string><id>15282</id><value>Р’РІРµРґРёС‚Рµ РёРјСЏ С‚СЌРіР° РґР»СЏ РїРѕРёСЃРєР° РїРѕС…РѕР¶РёС…</value></string>
+	<string><id>15283</id><value>РўСЂРµРєРё, С‡Р°СЃС‚Рѕ СЃР»СѓС€Р°РµРјС‹Рµ %name%</value></string>
+	<string><id>15300</id><value>РџСѓС‚СЊ РЅРµ РІРµСЂРµРЅ РёР»Рё РЅРµ РЅР°Р№РґРµРЅ</value></string>
+	<string><id>15301</id><value>РќРµ РјРѕРіСѓ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ СЃ СЃРµСЂРІРµСЂСѓ</value></string>
+	<string><id>15302</id><value>РЎРµСЂРІРµСЂР° РЅРµ РЅР°Р№РґРµРЅС‹</value></string>
+	<string><id>15303</id><value>Р Р°Р±РѕС‡Р°СЏ РіСЂСѓРїРїР° РЅРµ РЅР°Р№РґРµРЅР°</value></string>
+	<string><id>15310</id><value>РћС‚РєСЂС‹С‚РёРµ РјРЅРѕРіРѕС‚РѕС‡РµС‡РЅРѕРіРѕ Р±СѓРєРјР°СЂРєР°</value></string>
+	<string><id>15311</id><value>РџСѓС‚СЊ:</value></string>
+	<string><id>16000</id><value>РћСЃРЅРѕРІРЅРѕР№</value></string>
+	<string><id>16001</id><value>РќР°СЃС‚СЂРѕР№РєР° Р°СѓРґРёРѕРѕР±РѕСЂСѓРґРѕРІР°РЅРёСЏ...</value></string>
+	<string><id>16002</id><value>РџРѕРёСЃРє CDDB</value></string>
+	<string><id>16003</id><value>РџСЂРѕРёРіСЂС‹РІР°С‚РµР»СЊ</value></string>
+	<string><id>16004</id><value>РџСЂРѕРёРіСЂР°С‚СЊ С„Р°Р№Р» СЃ РґРёСЃРєР°</value></string>
+	<string><id>16009</id><value>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ С„РёР»СЊРјР°</value></string>
+	<string><id>16010</id><value>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РїСЂРѕС„РёР»СЏ</value></string>
+	<string><id>16011</id><value>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ Р°Р»СЊР±РѕРјР°</value></string>
+	<string><id>16012</id><value>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РїР»РµР№Р»РёСЃС‚Р°</value></string>
+	<string><id>16013</id><value>Р’РІРµРґРёС‚Рµ РЅРѕРІРѕРµ РёРјСЏ С„Р°Р№Р»Р°</value></string>
+	<string><id>16014</id><value>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РїР°РїРєРё</value></string>
+	<string><id>16015</id><value>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РґРёСЂРµРєС‚РѕСЂРёРё</value></string>
+	<string><id>16016</id><value>Р”РѕСЃС‚СѓРїРЅС‹ РѕРїС†РёРё: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
+	<string><id>16017</id><value>РЈРєР°Р¶РёС‚Рµ, С‡С‚Рѕ РЅР°Р№С‚Рё</value></string>
+	<string><id>16018</id><value>РќРµС‚</value></string>
+	<string><id>16019</id><value>РђРІС‚РѕРІС‹Р±РѕСЂ</value></string>
+	<string><id>16020</id><value>Р”Рµ-РёРЅС‚РµСЂР»РµР№СЃ</value></string>
+	<string><id>16021</id><value>РќРµС‡РµС‚РЅС‹Рµ РїРѕР»СЏ</value></string>
+	<string><id>16022</id><value>Р§РµС‚РЅС‹Рµ РїРѕР»СЏ</value></string>
+	<string><id>16023</id><value>РЈРїСЂР°РІР». С‡РµСЂРµР·СЃС‚СЂРѕС‡РЅРѕСЃС‚СЊСЋ</value></string>
+	<string><id>16024</id><value>РћС‚РјРµРЅСЏРµС‚СЃСЏ...</value></string>
+	<string><id>16025</id><value>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РёСЃРїРѕР»РЅРёС‚.</value></string>
+	<string><id>16026</id><value>Р’РѕСЃРїСЂРѕРёР·РІРµРґ. РїР»РµР№-Р»РёСЃС‚Р° РїСЂРµСЂРІР°РЅРѕ</value></string>
+	<string><id>16027</id><value>РЎР»РёС€РєРѕРј РјРЅРѕРіРѕ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅС‹С… РѕС€РёР±РѕС‡РЅС‹С… СЌР»РµРјРµРЅС‚РѕРІ</value></string>
+	<string><id>16030</id><value>Р РµР¶РёРј "РІРµС‡РµСЂРёРЅРєРё" РѕС‚РєР»СЋС‡РµРЅ.</value></string>
+	<string><id>16031</id><value>РќРµС‚ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёС… РїРµСЃРµРЅ РІ Р‘Р°Р·Рµ Р”Р°РЅРЅС‹С….</value></string>
+	<string><id>16032</id><value>РќРµ РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚СЃСЏ Р‘Р°Р·Р° Р”Р°РЅРЅС‹С….</value></string>
+	<string><id>16033</id><value>РќРµ РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ Р‘Р°Р·Р° Р”Р°РЅРЅС‹С….</value></string>
+	<string><id>16034</id><value>РќРµ РјРѕРі РїРѕР»СѓС‡РёС‚СЊ РїРµСЃРЅРё РёР· Р±Р°Р·С‹ РґР°РЅРЅС‹С….</value></string>
+	<string><id>16100</id><value>Р’СЃРµ Р’РёРґРµРѕ</value></string>
+	<string><id>16101</id><value>РќРµ СЃРјРѕС‚СЂРµРЅ.</value></string>
+	<string><id>16102</id><value>РћС‚СЃРјРѕС‚СЂРµРЅРЅ.</value></string>
+	<string><id>16103</id><value>РѕС‚РјРµС‚РёС‚СЊ РїСЂРѕСЃРјРѕС‚СЂРµРЅРЅ.</value></string>
+	<string><id>16104</id><value>РѕС‚РјРµС‚РёС‚СЊ РєР°Рє РЅРµ СЃРјРѕС‚СЂ.</value></string>
+	<string><id>16105</id><value>РР·РјРµРЅРёС‚СЊ РЅР°Р·РІР°РЅРёРµ</value></string>
+	<string><id>16106</id><value>NTSC-M Рё NTSC-J</value></string>
+	<string><id>16107</id><value>С‚РѕР»СЊРєРѕ NTSC-M</value></string>
+	<string><id>16108</id><value>С‚РѕР»СЊРєРѕ NTSC-J</value></string>
+	<string><id>16109</id><value>=РЎРѕРѕС‚РІРµС‚СЃС‚РІРёРµ!C1257</value></string>
+	<string><id>16110</id><value>Р”Р»СЏ РёРіСЂ СЃ 60Рќz СЂР°Р·РІРµСЂС‚РєРѕР№</value></string>
 </strings>
