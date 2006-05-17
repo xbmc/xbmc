@@ -6,7 +6,7 @@
 
 struct WMAInfo
 {
-  CFile fileReader;
+  CFileReader fileReader;
   char buffer[65536];
   DWORD iStartOfBuffer;
 };
