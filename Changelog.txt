@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-05-2006 added: Esperanto language file (Thnx to taiq)
  - 17-05-2006 updated: Spanish language file (Thnx to jose_t)
  - 17-05-2006 updated: Swedish language file (Thnx to blittan)
  - 17-05-2006 updated: Chinese (Traditional) language file (Thnx to omenpica)
