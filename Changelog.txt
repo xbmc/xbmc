@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-05-2006 updated: Spanish language file (Thnx to jose_t)
+ - 17-05-2006 updated: Swedish language file (Thnx to blittan)
+ - 17-05-2006 updated: Chinese (Traditional) language file (Thnx to omenpica)
+ - 17-05-2006 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 17-05-2006 updated: Russian language file (Thnx to que_)
  - 17-05-2006 fixed: only use pap wma codec if applicable.
  - 17-05-2006 fixed: some small issues in file browser (directory history in root, selected item label missed a /).
  - 17-05-2006 fixed: Crash when reloading skins in certain situations.
