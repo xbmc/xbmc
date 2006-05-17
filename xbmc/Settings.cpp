@@ -176,6 +176,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_controllerDeadzone = 0.2f;
   g_advancedSettings.m_displayRemoteCodes = false;
 
+  g_advancedSettings.m_thumbSize = 128;
   xbmcXmlLoaded = false;
 }
 
@@ -1298,6 +1299,7 @@ void CSettings::LoadAdvancedSettings()
 
   GetInteger(pRootElement, "remoterepeat", g_advancedSettings.m_remoteRepeat, 480, 1, INT_MAX);
   GetFloat(pRootElement, "controllerdeadzone", g_advancedSettings.m_controllerDeadzone, 0.2f, 0.0f, 1.0f);
+  GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 128, 64, 512);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
