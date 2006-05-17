@@ -170,13 +170,13 @@ bool CTextureBundle::OpenBundle()
     goto LoadError;
 
   DWORD HeaderSize = pXPRHeader->dwHeaderSize;
-  HeaderSize = (HeaderSize - 1) & ~(ALIGN - 1); // align to sector, but remove the first sector
-  HeaderBuf.Resize(HeaderSize + ALIGN);
+  DWORD AlignedSize = (HeaderSize - 1) & ~(ALIGN - 1); // align to sector, but remove the first sector
+  HeaderBuf.Resize(AlignedSize + ALIGN);
 
   m_Ovl[0].Offset = ALIGN;
-  if (!ReadFile(m_hFile, HeaderBuf + ALIGN, HeaderSize, &n, &m_Ovl[0]) && GetLastError() != ERROR_IO_PENDING)
+  if (!ReadFile(m_hFile, HeaderBuf + ALIGN, AlignedSize, &n, &m_Ovl[0]) && GetLastError() != ERROR_IO_PENDING)
     goto LoadError;
-  if (!GetOverlappedResult(m_hFile, &m_Ovl[0], &n, TRUE) || n < HeaderSize)
+  if (!GetOverlappedResult(m_hFile, &m_Ovl[0], &n, TRUE) || n < AlignedSize)
     goto LoadError;
 
   struct DiskFileHeader_t
@@ -189,7 +189,7 @@ bool CTextureBundle::OpenBundle()
   *FileHeader;
   FileHeader = (DiskFileHeader_t*)(HeaderBuf + sizeof(XPR_HEADER));
 
-  n = (pXPRHeader->dwHeaderSize - sizeof(XPR_HEADER)) / sizeof(DiskFileHeader_t);
+  n = (HeaderSize - sizeof(XPR_HEADER)) / sizeof(DiskFileHeader_t);
   for (unsigned i = 0; i < n; ++i)
   {
     std::pair<CStdString, FileHeader_t> entry;
