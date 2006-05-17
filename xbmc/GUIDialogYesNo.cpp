@@ -42,7 +42,7 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
 
 // \brief Show CGUIDialogYesNo dialog, then wait for user to dismiss it.
 // \return true if user selects Yes, false if user selects No.
-bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int line2)
+bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int line2, int iNoLabel, int iYesLabel)
 {
   CGUIDialogYesNo *dialog = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!dialog) return false;
@@ -50,6 +50,10 @@ bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int lin
   dialog->SetLine(0, line0);
   dialog->SetLine(1, line1);
   dialog->SetLine(2, line2);
+  if (iNoLabel != -1)
+    dialog->SetChoice(0,iNoLabel);
+  if (iYesLabel != -1)
+    dialog->SetChoice(1,iYesLabel);
   dialog->DoModal(m_gWindowManager.GetActiveWindow());
   return (dialog->IsConfirmed()) ? true : false;
 }

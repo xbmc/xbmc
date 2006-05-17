@@ -994,17 +994,8 @@ bool CGUIWindowPrograms::OnClick(int iItem)
       bool bContinue=false;
       if (CKaiClient::GetInstance()->IsEngineConnected())
       {
-        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-        pDialog->SetHeading(714);
-        pDialog->SetLine(0,20020);
-        pDialog->SetLine(1,20021);
-        pDialog->SetLine(2,20022);
-        pDialog->DoModal(m_gWindowManager.GetActiveWindow());
-        if (pDialog->IsConfirmed())
-        {
-          while (CKaiClient::GetInstance()->GetCurrentVector().size() > 1)
-            CKaiClient::GetInstance()->ExitVector();
-        }
+        if (CGUIDialogYesNo::ShowAndGetInput(20023,20020,20021,20022,714,12013))
+          CKaiClient::GetInstance()->EnterVector(CStdString(""),CStdString(""));
         else
           bContinue = true;
       }
