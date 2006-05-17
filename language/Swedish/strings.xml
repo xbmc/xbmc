@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+  <!-- XML languaje file created with XBMCTranslator. Idea and code by Jose_T !-->
+
+
 <strings>
   <string><id>0</id><value>Mina Program</value></string>
   <string><id>1</id><value>Mina Bilder</value></string>
   <string><id>2</id><value>Min Musik</value></string>
   <string><id>3</id><value>Mina Filmer</value></string>
-  <string><id>4</id><value>TV Guide</value></string>
+  <string><id>4</id><value>TV guide</value></string>
   <string><id>5</id><value>Inst&#228;llningar</value></string>
   <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Mina Filer</value></string>
@@ -63,7 +66,7 @@
   <string><id>127</id><value>Objekt</value></string>
   <string><id>128</id><value>Generella</value></string>
   <string><id>129</id><value>Bildspel</value></string>
-  <string><id>130</id><value>Systeminfo</value></string>
+  <string><id>130</id><value>System info</value></string>
   <string><id>131</id><value>Bildsk&#228;rm</value></string>
   <string><id>132</id><value>Album</value></string>
   <string><id>133</id><value>Artister</value></string>
@@ -71,7 +74,7 @@
   <string><id>135</id><value>Genre</value></string>
   <string><id>136</id><value>Spelningslistor</value></string>
   <string><id>137</id><value>S&#246;k</value></string>
-  <string><id>138</id><value>SYSTEMINFORMATION</value></string>
+  <string><id>138</id><value>SYSTEM INFORMATION</value></string>
   <string><id>139</id><value>Temperaturer:</value></string>
   <string><id>140</id><value>CPU:</value></string>
   <string><id>141</id><value>GPU:</value></string>
@@ -218,7 +221,7 @@
   <string><id>282</id><value>hittade %i objekt</value></string>
   <string><id>283</id><value>S&#246;kresultat</value></string>
   <string><id>284</id><value>Inga resultat funna</value></string>
-  <string><id>285</id><value>Deinterlacefilter</value></string>
+  <string><id>285</id><value>Deinterlace filter</value></string>
   <string><id>286</id><value>Efterbehandlingsfilter</value></string>
   <string><id>287</id><value>Undertexter</value></string>
   <string><id>288</id><value>Typsnitt</value></string>
@@ -432,7 +435,7 @@
   <string><id>496</id><value>Kalibrering</value></string>
   <string><id>497</id><value>G&#246;m fil&#228;ndelse f&#246;r media</value></string>
   <string><id>498</id><value>Sortera: Typ</value></string>
-  <string><id>499</id><value>Kunde inte kontakta allmusic.com</value></string>
+  <string><id>499</id><value>Kunde inte kontakta www.allmusic.com</value></string>
   <string><id>500</id><value>Nedladdning av albuminfo misslyckades</value></string>
   <string><id>501</id><value>Letar efter albumnamn...</value></string>
   <string><id>502</id><value>&#214;ppen</value></string>
@@ -653,6 +656,7 @@
   <string><id>1233</id><value>Program &#38; Film &#38; Musik</value></string>
   <string><id>1234</id><value>Program &#38; Bilder &#38; Musik</value></string>
   <string><id>1235</id><value>Program &#38; Bilder &#38; Film</value></string>
+  <string><id>1236</id><value>- Klient timeout</value></string>
 
   <string><id>1245</id><value>FTP Anv&#228;ndarnamn</value></string>
   <string><id>1246</id><value>FTP L&#246;senord</value></string>
@@ -662,7 +666,7 @@
   <string><id>1251</id><value>Autodetektera XBOX</value></string>
   <string><id>1252</id><value>XBOX Smeknamn</value></string>
   <string><id>1253</id><value>Skapa FTP l&#228;nk i Mina Filer</value></string>
-  <string><id>1254</id><value>Popupmeddelande</value></string>
+  <string><id>1254</id><value>Popup meddelande</value></string>
   <string><id>1255</id><value>Skicka FTP anv&#228;ndare och l&#246;senord</value></string>
   <string><id>1256</id><value>Ping intervall (sek)</value></string>
   <string><id>1257</id><value>Vill du ansluta till den autouppt&#228;ckta xboxen?</value></string>
@@ -714,25 +718,25 @@
 
   <string><id>10025</id><value>Mina Filmer/Titel</value></string>
 
-  <string><id>10028</id><value>Mina Filmer/Spellista</value></string>
+  <string><id>10028</id><value>Mina Filmer/spellista</value></string>
 
   <string><id>10034</id><value>Inst&#228;llningar->Profiler</value></string>
 
   <string><id>10100</id><value>Ja/Nej-dialog</value></string>
   <string><id>10101</id><value>F&#246;rloppsdialog</value></string>
 
-  <string><id>10500</id><value>Min Musik/Spellista</value></string>
-  <string><id>10501</id><value>Min Musik/Filer</value></string>
-  <string><id>10502</id><value>Min Musik/Album</value></string>
-  <string><id>10503</id><value>Min Musik/Artister</value></string>
-  <string><id>10504</id><value>Topp 100 l&#229;tar</value></string>
-  <string><id>10505</id><value>Topp 100 album</value></string>
+  <string><id>10500</id><value>Min Musik/spellista</value></string>
+  <string><id>10501</id><value>Min Musik/filer</value></string>
+  <string><id>10502</id><value>Min Musik/album</value></string>
+  <string><id>10503</id><value>Min Musik/artister</value></string>
+  <string><id>10504</id><value>Top 100 l&#229;tar</value></string>
+  <string><id>10505</id><value>Top 100 album</value></string>
   <string><id>10506</id><value>Program</value></string>
   <string><id>10507</id><value>Konfiguration</value></string>
   <string><id>10508</id><value>V&#228;derprognos</value></string>
   <string><id>10509</id><value>N&#228;tverksspel</value></string>
   <string><id>10510</id><value>Till&#228;gg</value></string>
-  <string><id>10511</id><value>Systeminfo</value></string>
+  <string><id>10511</id><value>System info</value></string>
   <string><id>10512</id><value>Min Musik - Album</value></string>
   <string><id>10513</id><value>Min Musik - Artister</value></string>
   <string><id>10514</id><value>Min Musik - Genre</value></string>
@@ -748,7 +752,7 @@
   <string><id>10524</id><value>Filminfo</value></string>
 
   <string><id>12000</id><value>Valdialog</value></string>
-  <string><id>12001</id><value>Min Musik/Info</value></string>
+  <string><id>12001</id><value>Min Musik/info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
   <string><id>12003</id><value>Mina Filmer/Info</value></string>
   <string><id>12004</id><value>Mina Skript/Info</value></string>
@@ -762,7 +766,7 @@
   <string><id>12012</id><value>Uppdatera tr&#228;narlista</value></string>
   <string><id>12013</id><value>Tr&#228;nare</value></string>
   <string><id>12014</id><value>Inga tr&#228;nare hittade</value></string>
-  <string><id>12015</id><value>Tr&#228;nar-inst&#228;llningar</value></string>
+  <string><id>12015</id><value>Tr&#228;nare inst&#228;llningar</value></string>
   <string><id>12016</id><value>Alla registrerade trailers saknas. Uppdatera din lista</value></string>
   <string><id>12017</id><value>&#197;teruppta fr&#229;n sista position</value></string>
   <string><id>12018</id><value>Nej</value></string>
@@ -841,8 +845,8 @@
   <string><id>12377</id><value>Detta kommer att ta bort alla tidigare sparade v&#228;rden</value></string>
   <string><id>12378</id><value>Visa varje bild f&#246;r</value></string>
   <string><id>12379</id><value>Anv&#228;nd Pan och Zoom effekter</value></string>
-  <string><id>12380</id><value>Spela NTSC filmer i PAL</value></string>
-  <string><id>12381</id><value>Spela PAL filmer i NTSC</value></string>
+  <string><id>12380</id><value>Spela NTSC filmer med PAL v&#228;rden</value></string>
+  <string><id>12381</id><value>Spela PAL filmer med NTSC v&#228;rden</value></string>
   <string><id>12382</id><value>Spela NTSC filmer i PAL60</value></string>
   <string><id>12383</id><value>12 timmars klocka</value></string>
   <string><id>12384</id><value>24 timmars klocka</value></string>
@@ -978,7 +982,7 @@
   <string><id>13331</id><value>Fel: f&#246;r lite ledigt minne.</value></string>
   <string><id>13332</id><value>Flytta upp</value></string>
   <string><id>13333</id><value>Flytta ned</value></string>
-  <string><id>13334</id><value>&#196;ndra namn</value></string>
+  <string><id>13334</id><value>&#196;ndra Namn</value></string>
   <string><id>13335</id><value>Ange som standard</value></string>
   <string><id>13336</id><value>Ta bort knapp</value></string>
   <string><id>13337</id><value>- 2-kanalers PCM-genomg&#229;ng</value></string>
@@ -1076,7 +1080,7 @@
   <string><id>14022</id><value>Bibliotek</value></string>
   <string><id>14023</id><value>Ingen TV</value></string>
   <string><id>14024</id><value>Skriv in din n&#228;rmsta storstad</value></string>
-  <string><id>14025</id><value>Video/Audio/DVD cache - H&#229;rddisk</value></string>
+  <string><id>14025</id><value>Video/Audio/DVD Cache - H&#229;rddisk</value></string>
   <string><id>14026</id><value>Video cache - DVDRom</value></string>
   <string><id>14027</id><value>- Lokalt N&#228;tverk</value></string>
   <string><id>14028</id><value>- Internet</value></string>
@@ -1111,7 +1115,7 @@
   <string><id>14057</id><value>Inte m&#246;jligt medan du skannar efter mediainfo</value></string>
   <string><id>14058</id><value>Filmbruseffekt</value></string>
   <string><id>14059</id><value>Leta efter egna miniatyrer p&#229; fj&#228;rrdiskar</value></string>
-  <string><id>14060</id><value>Ok&#228;nd typ cache - Internet</value></string>
+  <string><id>14060</id><value>Ok&#228;nd typ Cache - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Ange anv&#228;ndarnamn f&#246;r</value></string>
   <string><id>14063</id><value>Datum &#38; tid</value></string>
@@ -1172,7 +1176,7 @@
   <string><id>15043</id><value>%s kommer in i chatten.</value></string>
   <string><id>15044</id><value>%s l&#228;mnar chatten.</value></string>
   <string><id>15045</id><value>Ange ditt personliga meddelande.</value></string>
-  <string><id>15046</id><value>Nuvarande arena</value></string>
+  <string><id>15046</id><value>Nuvarande Arena</value></string>
   <string><id>15047</id><value>Ange ett l&#246;senord f&#246;r din arena.</value></string>
   <string><id>15048</id><value>Ange en beskrivning f&#246;r din arena.</value></string>
   <string><id>15049</id><value>Vara v&#228;rd f&#246;r ett spel</value></string>
@@ -1231,14 +1235,14 @@
   <string><id>15257</id><value>Toppartister f&#246;r tag %name%</value></string>
   <string><id>15258</id><value>Toppalbum f&#246;r tag %name%</value></string>
   <string><id>15259</id><value>Toppl&#229;tar f&#246;r tag %name%</value></string>
-  <string><id>15260</id><value>Lyssna till tag %name% Last.fm radio</value></string>
+  <string><id>15260</id><value>Lyssna till tag %name% last.fm radio</value></string>
   <string><id>15261</id><value>Liknande artister som %name%</value></string>
   <string><id>15262</id><value>Topp %name% album</value></string>
   <string><id>15263</id><value>Topp %name% sp&#229;r</value></string>
   <string><id>15264</id><value>Topp %name% taggar</value></string>
   <string><id>15265</id><value>St&#246;rsta fansen av %name%</value></string>
-  <string><id>15266</id><value>Lyssna p&#229; %name% fans Last.fm radio</value></string>
-  <string><id>15267</id><value>Lyssna p&#229; %name% liknande artister Last.fm radio</value></string>
+  <string><id>15266</id><value>Lyssna p&#229; %name% fans last.fm radio</value></string>
+  <string><id>15267</id><value>Lyssna p&#229; %name% liknande artister last.fm radio</value></string>
   <string><id>15268</id><value>Toppartister f&#246;r anv&#228;ndare %name%</value></string>
   <string><id>15269</id><value>Toppalbum f&#246;r anv&#228;ndare %name%</value></string>
   <string><id>15270</id><value>Toppl&#229;tar f&#246;r anv&#228;ndare %name%</value></string>
@@ -1247,11 +1251,11 @@
   <string><id>15273</id><value>Vecko-artister f&#246;r %name%</value></string>
   <string><id>15274</id><value>Vecko-albumlista f&#246;r %name%</value></string>
   <string><id>15275</id><value>Vecko-l&#229;tlista f&#246;r %name%</value></string>
-  <string><id>15276</id><value>Lyssna p&#229; %name%'s grannes Last.fm radio</value></string>
-  <string><id>15277</id><value>Lyssna p&#229; %name%'s personliga Last.fm radio</value></string>
-  <string><id>15278</id><value>Lyssna p&#229; %name%'s &#228;lsklingssp&#229;r Last.fm radio</value></string>
-  <string><id>15279</id><value>H&#228;mtar lista fr&#229;n Last.fm...</value></string>
-  <string><id>15280</id><value>Kan inte h&#228;mta lista fr&#229;n Last.fm...</value></string>
+  <string><id>15276</id><value>Lyssna p&#229; %name%'s grannes last.fm radio</value></string>
+  <string><id>15277</id><value>Lyssna p&#229; %name%'s personliga last.fm radio</value></string>
+  <string><id>15278</id><value>Lyssna p&#229; %name%'s &#228;lsklingssp&#229;r last.fm radio</value></string>
+  <string><id>15279</id><value>H&#228;mtar lista fr&#229;n last.fm...</value></string>
+  <string><id>15280</id><value>Kan inte h&#228;mta lista fr&#229;n last.fm...</value></string>
   <string><id>15281</id><value>Skriv ett artistnamn f&#246;r att hitta besl&#228;ktade</value></string>
   <string><id>15282</id><value>Skriv ett tagnamn f&#246;r att hitta besl&#228;ktade</value></string>
   <string><id>15283</id><value>Nyligen spelade l&#229;tar av %name%</value></string>
@@ -1286,7 +1290,7 @@
   <string><id>16022</id><value>Synka j&#228;mn</value></string>
   <string><id>16023</id><value>Interlaced hantering</value></string>
   <string><id>16024</id><value>Avbryter...</value></string>
-  <string><id>16025</id><value>Skriv in artistnamnet</value></string>
+  <string><id>16025</id><value>Skriv in Artistnamnet</value></string>
   <string><id>16026</id><value>Uppspelning av spellista avbruten</value></string>
   <string><id>16027</id><value>F&#246;r m&#229;nga felaktiga l&#229;tar i f&#246;ljd</value></string>
 
@@ -1301,7 +1305,7 @@
   <string><id>16102</id><value>Sedd</value></string>
   <string><id>16103</id><value>Markera som sedd</value></string>
   <string><id>16104</id><value>Markera som ej sedd</value></string>
-  <string><id>16105</id><value>&#196;ndra titel</value></string>
+  <string><id>16105</id><value>&#196;ndra Titel</value></string>
   <string><id>16106</id><value>Anv&#228;nd NTSC-M &#38; NTSC-J</value></string>
   <string><id>16107</id><value>Anv&#228;nd endast NTSC-M</value></string>
   <string><id>16108</id><value>Anv&#228;nd endast NTSC-J</value></string>
