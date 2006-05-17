@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-05-2006 fixed: [ 1488630 ] Partymode then enqueue causes internal playlist to be added
  - 17-05-2006 fixed: [ 1488829 ] Python ControlTextBox ignores multiple linebreaks
  - 16-05-2006 fixed: Cleaned up the thumb code (for <folder>.tbn)
  - 16-05-2006 fixed: LCD wasn't being reinitialized correctly on settings change.
