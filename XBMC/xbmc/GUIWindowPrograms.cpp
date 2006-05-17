@@ -558,6 +558,7 @@ void CGUIWindowPrograms::LoadDirectory2(const CStdString& strDirectory, int idep
     CIoSupport helper;
     helper.Remount("D:", "Cdrom0");
   }
+  g_charsetConverter.utf8ToStringCharset(strRootDir);
   CStdString strSearchMask = strRootDir;
   strSearchMask += "*.*";
 
@@ -570,7 +571,9 @@ void CGUIWindowPrograms::LoadDirectory2(const CStdString& strDirectory, int idep
     if (wfd.cFileName[0] != 0)
     {
       CFileItem fileName(wfd.cFileName, false);
-      CFileItem file(strRootDir + CStdString(wfd.cFileName), false);
+      CFileItem file(strRootDir + wfd.cFileName, false);
+      g_charsetConverter.stringCharsetToUtf8(fileName.m_strPath);
+      g_charsetConverter.stringCharsetToUtf8(file.m_strPath);
 
       if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
       {
@@ -623,8 +626,9 @@ void CGUIWindowPrograms::LoadDirectory2(const CStdString& strDirectory, int idep
           if (!CUtil::GetXBEDescription(file.m_strPath, strDescription) || (bUseDirectoryName && fileName.IsDefaultXBE()) )
           {
             CUtil::GetDirectoryName(file.m_strPath, strDescription);
-            CUtil::ShortenFileName(strDescription);
-            CUtil::RemoveIllegalChars(strDescription);
+            // why?? Surely if it's a directory name it will be fatx compatible anyway??
+            //CUtil::ShortenFileName(strDescription);
+            //CUtil::RemoveIllegalChars(strDescription);
           }
 
           if (!bFlattenDir || file.IsOnDVD())
@@ -650,7 +654,7 @@ void CGUIWindowPrograms::LoadDirectory2(const CStdString& strDirectory, int idep
         {
           if (!bFlattenDir)
           {
-            CFileItem *pItem = new CFileItem(wfd.cFileName);
+            CFileItem *pItem = new CFileItem(fileName.m_strPath);
             pItem->m_strPath = file.m_strPath;
             pItem->m_bIsFolder = false;
             //pItem->m_dwSize = wfd.nFileSizeLow;
@@ -803,8 +807,9 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
           if (!CUtil::GetXBEDescription(item.m_strPath, strDescription))
           {
             CUtil::GetDirectoryName(item.m_strPath, strDescription);
-            CUtil::ShortenFileName(strDescription);
-            CUtil::RemoveIllegalChars(strDescription);
+            // why?? Surely if it's a directory name it will be fatx compatible anyway??
+            //CUtil::ShortenFileName(strDescription);
+            //CUtil::RemoveIllegalChars(strDescription);
           }
 
           if (item.IsOnDVD())

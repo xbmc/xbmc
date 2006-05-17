@@ -1590,9 +1590,11 @@ void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strF
 bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
   // extract icon from .xbe
+  CStdString localFile;
+  g_charsetConverter.utf8ToStringCharset(strFilePath, localFile);
   CXBE xbeReader;
   ::DeleteFile("T:\\1.xpr");
-  if (!xbeReader.ExtractIcon(strFilePath, "T:\\1.xpr"))
+  if (!xbeReader.ExtractIcon(localFile, "T:\\1.xpr"))
   {
 	  strIcon = "defaultProgramBig.png";
     return true;
