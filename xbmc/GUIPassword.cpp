@@ -449,7 +449,7 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
             iLockHomeMedia == LOCK_PROG_PIC_MU  || iLockHomeMedia == LOCK_MU_VI_PIC_PROG   )
       bCheckPW = true;
       break;
-    case WINDOW_VIDEOS:         // Video
+    case WINDOW_VIDEO_FILES:    // Video
       if (  iLockHomeMedia == LOCK_VIDEO        || iLockHomeMedia == LOCK_MU_VI          || iLockHomeMedia == LOCK_VI_PIC     || 
             iLockHomeMedia == LOCK_VI_PROG      || iLockHomeMedia == LOCK_MU_VI_PIC      || iLockHomeMedia == LOCK_PROG_VI_MU || 
             iLockHomeMedia == LOCK_PROG_PIC_VI  || iLockHomeMedia == LOCK_MU_VI_PIC_PROG   )

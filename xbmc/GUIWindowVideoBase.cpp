@@ -87,11 +87,11 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         m_gWindowManager.SendMessage(msg);
 
         int nSelected = msg.GetParam1();
-        int nNewWindow = WINDOW_VIDEOS;
+        int nNewWindow = WINDOW_VIDEO_FILES;
         switch (nSelected)
         {
         case 0:  // Movies
-          nNewWindow = WINDOW_VIDEOS;
+          nNewWindow = WINDOW_VIDEO_FILES;
           break;
         case 1:  // Genre
           nNewWindow = WINDOW_VIDEO_GENRE;
@@ -149,7 +149,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled
-          else if (GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion"))
+          else if (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion"))
             OnDeleteItem(iItem);
 
           // or be at the video playlists location
@@ -689,7 +689,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   if (!bIsGotoParent)
   {
     // turn off the query info button if we are in playlists view
-    if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEOS))
+    if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES))
       btn_Show_Info = pMenu->AddButton(13346);
     
     // check to see if the Resume Video button is applicable
@@ -699,7 +699,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
     // allow a folder to be ad-hoc queued and played by the default player
-    else if (GetID() == WINDOW_VIDEOS && (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList()))
+    else if (GetID() == WINDOW_VIDEO_FILES && (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList()))
       btn_PlayWith = pMenu->AddButton(208);
 
     // don't show the add to playlist button in playlist window
@@ -714,7 +714,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 
   // hide scan button unless we're in files window
   int btn_Query = 0;
-  if (GetID() == WINDOW_VIDEOS)
+  if (GetID() == WINDOW_VIDEO_FILES)
     btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
 
   int btn_Mark_UnWatched = 0;
@@ -722,7 +722,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Update_Title   = 0;
   //if (GetID() == WINDOW_VIDEO_TITLE || GetID() == WINDOW_VIDEO_GENRE || GetID() == WINDOW_VIDEO_ACTOR || GetID() == WINDOW_VIDEO_YEAR)
   // is the item a database movie?
-  if (GetID() != WINDOW_VIDEOS && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty())
+  if (GetID() != WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty())
   {
     // uses Loaded to hold Watched/UnWatched status
     if (m_vecItems[iItem]->m_musicInfoTag.Loaded())
@@ -754,7 +754,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Rename = 0;
   if (!bIsGotoParent)
   {
-    if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")))
+    if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")))
     {
       btn_Delete = pMenu->AddButton(117);
       btn_Rename = pMenu->AddButton(118);

@@ -238,6 +238,7 @@
 #define WINDOW_VIDEO_GENRE                10021
 #define WINDOW_VIDEO_ACTOR                10022
 #define WINDOW_VIDEO_YEAR                 10023
+#define WINDOW_VIDEO_FILES                10024
 #define WINDOW_VIDEO_TITLE                10025
 #define WINDOW_VIDEO_PLAYLIST             10028
 
