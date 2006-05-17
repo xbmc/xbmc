@@ -62,6 +62,7 @@ public:
   bool IsWindowVisible(DWORD id) const;
   bool IsOverlayAllowed() const;
   void ShowOverlay(bool bOnOff);
+  void GetActiveModelessWindows(vector<DWORD> ids);
 
 private:
   void AddToWindowHistory(DWORD newWindowID);
