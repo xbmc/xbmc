@@ -59,8 +59,8 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
                          positions[i] - positions[i - 1] - sizeS2 );
       }
     }
-    if ( s.GetLength() > 0 )
-      results.push_back(s);
+    //if ( s.GetLength() > 0 )
+    results.push_back(s);
   }
   return numFound;
 }
