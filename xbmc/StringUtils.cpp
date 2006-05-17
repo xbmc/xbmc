@@ -13,7 +13,8 @@
 #include "stdafx.h"
 #include "StringUtils.h"
 
-
+// Splits the string input into pieces delimited by delimiter.
+// if 2 delimiters are in a row, it will include the empty string between them.
 int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results)
 {
   int iPos = 0;
@@ -59,7 +60,6 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
                          positions[i] - positions[i - 1] - sizeS2 );
       }
     }
-    //if ( s.GetLength() > 0 )
     results.push_back(s);
   }
   return numFound;
