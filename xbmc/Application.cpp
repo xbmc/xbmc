@@ -1576,6 +1576,11 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
   StopPlaying();
+
+  // save the current window details
+  int currentWindow = m_gWindowManager.GetActiveWindow();
+  vector<DWORD> currentModelessWindows;
+  m_gWindowManager.GetActiveModelessWindows(currentModelessWindows);
 /*
   if ( IsPlaying() )
   {
@@ -1677,6 +1682,17 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     CGUIWindowBuddies *pKai = (CGUIWindowBuddies *)m_gWindowManager.GetWindow(WINDOW_BUDDIES);
     CKaiClient::GetInstance()->SetObserver(pKai);
     Sleep(3000);  //  The client need some time to "resync"
+  }
+
+  // restore windows
+  if (currentWindow != WINDOW_INVALID)
+  {
+    m_gWindowManager.ActivateWindow(currentWindow);
+    for (unsigned int i = 0; i < currentModelessWindows.size(); i++)
+    {
+      CGUIDialog *dialog = (CGUIDialog *)m_gWindowManager.GetWindow(currentModelessWindows[i]);
+      if (dialog) dialog->Show(m_gWindowManager.GetActiveWindow());
+    }
   }
 }
 

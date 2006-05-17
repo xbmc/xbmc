@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-05-2006 fixed: [ 1489037 ] Changing skin breaks scan to db.
  - 17-05-2006 fixed: Startup window of "My Music" didn't work.
  - 17-05-2006 added: Separated "MyVideos" window (id 6) from "MyVideoFiles" window (now id 24).  Does not require any skin changes.
  - 17-05-2006 fixed: Transparency on embedded xbe thumbnails was replaced with black.
