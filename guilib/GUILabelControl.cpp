@@ -191,9 +191,9 @@ void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth
     // Handle the newline character
     if (letter == L'\n' )
     {
-      if (!multiLine.IsEmpty())
-        multiLine += L"\n";
-      multiLine += line;
+//      if (!multiLine.IsEmpty())
+//        multiLine += L"\n";
+      multiLine += line + L"\n";
       iLastSpace = -1;
       iLastSpaceInLine = -1;
       lpos = 0;
@@ -208,9 +208,9 @@ void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth
         {
           if (iLastSpace > 0 && iLastSpaceInLine > 0)
           {
-            if (!multiLine.IsEmpty())
-              multiLine += "\n";
-            multiLine += line.Left(iLastSpaceInLine);
+//            if (!multiLine.IsEmpty())
+//              multiLine += "\n";
+            multiLine += line.Left(iLastSpaceInLine) + L'\n';
             line.Empty();
             pos = iLastSpace + 1;
             iLastSpaceInLine = -1;
