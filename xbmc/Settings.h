@@ -268,6 +268,8 @@ public:
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
     float m_controllerDeadzone;
+
+    int m_thumbSize;
   };
   struct stSettings
   {
