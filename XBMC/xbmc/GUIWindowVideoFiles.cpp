@@ -27,7 +27,7 @@
 #define CONTROL_BTNPLAYLISTS  13
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
-: CGUIWindowVideoBase(WINDOW_VIDEOS, "MyVideo.xml")
+: CGUIWindowVideoBase(WINDOW_VIDEO_FILES, "MyVideo.xml")
 {
 }
 

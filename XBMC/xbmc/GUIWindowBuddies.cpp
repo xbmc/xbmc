@@ -1537,8 +1537,8 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 {
   if (!m_pKaiClient->IsNetworkReachable())
   {
-    // TODO 2.0: string 518 is "Launch", whereas we are asking a question
-    if (!CGUIDialogYesNo::ShowAndGetInput(15000, 15037, 15038, 518))
+    // TODO: localize 2.0
+    if (!CGUIDialogYesNo::ShowAndGetInput(15000, 15037, 15038, 20013))
       return;
   }
 

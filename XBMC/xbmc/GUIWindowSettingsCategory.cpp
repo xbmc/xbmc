@@ -804,13 +804,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingString *pSettingString = (CSettingString *)pSetting;
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       if (pSettingString->GetData().IsEmpty())
-        pControl->SetLabel2("Use XBMC");        // TODO 2.0: Localize this
-      pControl->SetLabel("External DVD Player");// TODO 2.0: Localize this
-    }
-    else if (strSetting == "MyVideos.UseExternalDVDPlayer")// TODO 2.0: Localize this
-    {
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetLabel("Use external DVD Player");// TODO 2.0: Localize this
+        pControl->SetLabel2(g_localizeStrings.Get(20009));  // TODO: localize 2.0
     }
   }
   // fix first and last navigation
@@ -1631,8 +1625,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CStdString path = pSettingString->GetData();
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
-    // TODO 2.0: Localize this
-    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", "DVD Player", path))
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
   else if (strSetting == "MyPrograms.Dashboard")
@@ -1641,7 +1634,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CStdString path = pSettingString->GetData();
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
-    // TODO 2.0: Localize this
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
