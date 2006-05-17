@@ -26,8 +26,6 @@ bool CGUIDialogMusicScan::OnMessage(CGUIMessage& message)
     {
       CGUIDialog::OnMessage(message);
 
-      m_ScanState = PREPARING;
-
       m_strCurrentDir.Empty();
 
       m_fPercentDone=-1.0F;
@@ -73,6 +71,8 @@ void CGUIDialogMusicScan::OnSetProgress(int currentItem, int itemCount)
 
 void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory, bool bUpdateAll)
 {
+  m_ScanState = PREPARING;
+
   Show(m_gWindowManager.GetActiveWindow());
 
   // save settings
