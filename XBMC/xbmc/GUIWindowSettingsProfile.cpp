@@ -221,7 +221,6 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           )
           {
             g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
-            m_gWindowManager.ActivateWindow(GetID());
           }
           g_application.StartServices();
           SetLastLoaded();

@@ -1185,7 +1185,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 
   int btn_Scan = 0;
   CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (pScanDlg && pScanDlg->IsRunning())
+  if (pScanDlg && pScanDlg->IsScanning())
   {
     // turn off the Scan button if we're not in files view or a internet stream
     if (!m_vecItems.IsInternetStream())
