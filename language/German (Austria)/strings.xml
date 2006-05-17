@@ -249,7 +249,7 @@
   <string><id>310</id><value>Auto Helligkeit/Kontrast</value></string>
   <string><id>311</id><value>Dering</value></string>
   <string><id>312</id><value>(0=auto)</value></string>
-  <string><id>313</id><value>Musik Datenbank reorganisieren</value></string>
+  <string><id>313</id><value>Musik-Datenbank reorganisieren</value></string>
   <string><id>314</id><value>Daten werden eingelesen...</value></string>
   <string><id>315</id><value>Datenbank-Fehler!</value></string>
   <string><id>316</id><value>Durchsuche Musikdateien...</value></string>
@@ -316,7 +316,7 @@
   <string><id>377</id><value>Leichter</value></string>
   <string><id>378</id><value>Vormittags</value></string>
   <string><id>379</id><value>Nachmittags</value></string>
-  <string><id>380</id><value>Schneeschauer</value></string>
+  <string><id>380</id><value>Regenschauer</value></string>
   <string><id>381</id><value>Wenig</value></string>
   <string><id>382</id><value>Vereinzelt</value></string>
   <string><id>383</id><value>Wind</value></string>
@@ -393,7 +393,7 @@
   <string><id>454</id><value>Reihe 4</value></string>
   <string><id>455</id><value>Reihen</value></string>
   <string><id>456</id><value>Modus</value></string>
-  <string><id>457</id><value>Wechseln</value></string>
+  <string><id>457</id><value>Übersicht</value></string>
   <string><id>458</id><value>B/Markierung</value></string>
   <string><id>459</id><value>Untertitel</value></string>
   <string><id>460</id><value>Audiospur</value></string>
@@ -456,7 +456,7 @@
   <string><id>517</id><value>Zuletzt gespielte Alben</value></string>
   <string><id>518</id><value>Ausführen</value></string>
   <string><id>519</id><value>Ausführen in..</value></string>
-  <string><id>520</id><value>XBE-Titel umbenennen</value></string>
+  <string><id>520</id><value>Umbenennen</value></string>
   <string><id>521</id><value>Diverse</value></string>
   <string><id>522</id><value>Quelle entfernen</value></string>
 
@@ -465,16 +465,16 @@
   <string><id>590</id><value>Zufällig</value></string>
   <string><id>591</id><value>Deaktiviert</value></string>
   <string><id>592</id><value>Einzelnes</value></string>
-  <string><id>593</id><value>Alles</value></string> 
+  <string><id>593</id><value>Alle</value></string> 
   <string><id>594</id><value>Deaktiviert</value></string> 
   <string><id>595</id><value>Wdhl: deaktiviert</value></string> 
   <string><id>596</id><value>Wdhl: aktuelles</value></string> 
-  <string><id>597</id><value>Wdhl: alles</value></string> 
+  <string><id>597</id><value>Wdhl: alle</value></string> 
 
   <string><id>600</id><value>CD rippen</value></string>
-  <string><id>601</id><value>Mittlere Qualität</value></string>
-  <string><id>602</id><value>Standard Qualität</value></string>
-  <string><id>603</id><value>Höchste Qualität</value></string>
+  <string><id>601</id><value>mittlere</value></string>
+  <string><id>602</id><value>standard</value></string>
+  <string><id>603</id><value>höchste</value></string>
   <string><id>604</id><value>konstante Bitrate</value></string>
   <string><id>605</id><value>Rippen...</value></string>
   <string><id>606</id><value>Titel</value></string>
@@ -517,8 +517,8 @@
   <string><id>706</id><value>HTTP-Proxy Host</value></string>
   <string><id>707</id><value>HTTP-Proxy Port</value></string>
   <string><id>708</id><value>HTTP-Proxy verwenden</value></string>
-  <string><id>709</id><value>XLink-Kai XTag</value></string>
-  <string><id>710</id><value>XLink-Kai Kennwort</value></string>
+  <string><id>709</id><value>XTag</value></string>
+  <string><id>710</id><value>Kennwort</value></string>
   <string><id>711</id><value>Internet-Protokoll (IP)</value></string>
   <string><id>712</id><value>Ungültiger Port wurde festgelegt. Der Wert muss zwischen 1 und 65535 liegen.</value></string>
   <string><id>713</id><value>HTTP-Proxy</value></string>	
@@ -526,7 +526,7 @@
   <string><id>715</id><value>Zuweisung der IP-Adresse</value></string>	
   <string><id>716</id><value>Automatisch (DHCP)</value></string>	
   <string><id>717</id><value>Manuell (Statisch)</value></string>	
-  <string><id>718</id><value>Standard (Dashboard)</value></string>	
+  <string><id>718</id><value>Dashboard (Standard)</value></string>	
   <string><id>719</id><value>IP-Adresse</value></string>	
   <string><id>720</id><value>Netzmaske</value></string>	
   <string><id>721</id><value>Standard-Gateway</value></string>	
@@ -554,7 +554,7 @@
   <string><id>743</id><value>Gelb</value></string>
   <string><id>744</id><value>Dateien</value></string>		
   <string><id>745</id><value>Keine Informationen in der Datenbank vorhanden!</value></string>		
-  <string><id>746</id><value>Bitte wechseln Sie zu "Dateien-Übersicht".</value></string>
+  <string><id>746</id><value>Bitte zur Übersicht - Dateien wechseln.</value></string>
   <string><id>747</id><value>Nicht genügend Speicher um das Bild zu laden.</value></string>
   <string><id>748</id><value>Pfad ändern</value></string>
   <string><id>749</id><value>Verknüpfung hinzuf.</value></string>
@@ -698,7 +698,7 @@
   <string><id>10004</id><value>Einstellungen</value></string>
   <string><id>10005</id><value>Musik</value></string>
   <string><id>10006</id><value>Videos</value></string>
-  <string><id>10007</id><value>Systeminformation</value></string>
+  <string><id>10007</id><value>Systeminformationen</value></string>
   <string><id>10008</id><value>Einstellungen</value></string>
   <string><id>10009</id><value>Einstellungen-&gt;Bildschirm</value></string>
   <string><id>10010</id><value>Einstellungen-&gt;Allgemein-&gt;GUI-Kalibrierung</value></string>
@@ -837,7 +837,7 @@
   <string><id>12372</id><value>Einstellungen / Dateien sperren</value></string> 
   <string><id>12373</id><value>Einst. &amp; Dateien</value></string> 
   <string><id>12374</id><value>Medien sperren</value></string>
-  <string><id>12375</id><value>Hauptkennwort-Modus</value></string>
+  <string><id>12375</id><value>Hauptkennwort aktivieren</value></string>
   <string><id>12376</id><value>Aktuelle Einstellung als Standard setzen..</value></string> 
   <string><id>12377</id><value>Sämtliche zuvor getroffenen Einstellungen gehen verloren.</value></string> 
   <string><id>12378</id><value>Dauer der Wiedergabe eines Bildes</value></string> 
@@ -866,9 +866,9 @@
   <string><id>13001</id><value>HDD ausschalten während Stream</value></string>
   <string><id>13002</id><value>Video</value></string>
   <string><id>13003</id><value>Verzögerung</value></string>
-  <string><id>13004</id><value>minimale Datendauer</value></string>
-  <string><id>13005</id><value>MediaCenter ausschalten</value></string> 
-  <string><id>13006</id><value>Microsoft Dashboard</value></string> 
+  <string><id>13004</id><value>Mindestdauer der Datei</value></string>
+  <string><id>13005</id><value>XBOX ausschalten</value></string> 
+  <string><id>13006</id><value>Dashboard</value></string> 
 
   <string><id>13100</id><value>Flimmerfilter</value></string>
 
@@ -957,7 +957,7 @@
   <string><id>13310</id><value>Übergang streckend</value></string>
   <string><id>13311</id><value>Übergang gleitend</value></string>
   <string><id>13312</id><value>Ränderreduktion</value></string>
-  <string><id>13313</id><value>MediaCenter neustarten</value></string>
+  <string><id>13313</id><value>XBOX neustarten</value></string>
   <string><id>13314</id><value>Überblendung</value></string>
   <string><id>13315</id><value>Miniaturansicht erst.</value></string>
   <string><id>13316</id><value>rekurs. Miniaturansicht</value></string>
@@ -967,7 +967,7 @@
   <string><id>13320</id><value>Ausgabe Stereo</value></string>
   <string><id>13321</id><value>Ausgabe nur links</value></string>
   <string><id>13322</id><value>Ausgabe nur rechts</value></string>
-  <string><id>13323</id><value>Aktiviere CD+G</value></string>
+  <string><id>13323</id><value>CD+G aktivieren</value></string>
   <string><id>13324</id><value>Hintergrund-Transparenz</value></string>
   <string><id>13325</id><value>Vordergrund-Transparenz</value></string>
   <string><id>13326</id><value>A/V-Verzögerung</value></string>
@@ -995,7 +995,7 @@
   <string><id>13348</id><value>Datei IMDb-Abfrage</value></string>
   <string><id>13349</id><value>Ordner IMDb-Abfrage</value></string>
   <string><id>13350</id><value>Wiedergabeliste</value></string>
-  <string><id>13351</id><value>Album-Information</value></string>
+  <string><id>13351</id><value>Album-Informationen</value></string>
   <string><id>13352</id><value>Datenbank aktualisieren</value></string>
   <string><id>13353</id><value>Suche anhalten</value></string>
   <string><id>13354</id><value>Wiedergabe</value></string> 
@@ -1051,15 +1051,15 @@
   <string><id>13404</id><value>Fortsetzen</value></string>
   <string><id>13405</id><value>Bild abrufen..</value></string>
 
-  <string><id>14000</id><value>Koppeln deakt.</value></string>
-  <string><id>14001</id><value>Koppeln aktiv.</value></string>
+  <string><id>14000</id><value>Koppeln</value></string>
+  <string><id>14001</id><value>Koppeln aktiv</value></string>
 
   <string><id>14003</id><value>Wiedergabeliste wird geladen...</value></string>
   <string><id>14004</id><value>Streams werden heruntergeladen...</value></string>
   <string><id>14005</id><value>Streams werden verarbeitet...</value></string>
   <string><id>14006</id><value>Fehler beim Erhalt der Streams</value></string>
   <string><id>14007</id><value>Fehler beim Erhalt der Wiedergabeliste</value></string>
-  <string><id>14008</id><value>Kai-Benachrichtigung aktivieren</value></string>
+  <string><id>14008</id><value>Benachrichtigung aktivieren</value></string>
   <string><id>14009</id><value>Spieleverzeichnis</value></string>
   <string><id>14010</id><value>Ansichtenänderung</value></string>
   <string><id>14011</id><value>Automatische Ansichtenänderung aktivieren</value></string>
@@ -1123,7 +1123,7 @@
   <string><id>14069</id><value>Änderungen übernehmen?</value></string>
   <string><id>14070</id><value>Änderungen übernehmen..</value></string>
   <string><id>14071</id><value>Löschen und Umbenennen von Dateien ermöglichen</value></string>
-  <string><id>14072</id><value>XLink Kai aktivieren</value></string> 
+  <string><id>14072</id><value>XLink-Kai aktivieren</value></string> 
   <string><id>14073</id><value>XLink Kai ist deaktiviert.</value></string> 
 
   <string><id>15000</id><value>XLink-Kai</value></string>
@@ -1196,7 +1196,7 @@
   <string><id>15103</id><value>* Alle Interpreten</value></string> 
   <string><id>15104</id><value>* Alle Titel</value></string> 
   <string><id>15105</id><value>* Alle Genres</value></string> 
-  <string><id>15106</id><value>Gewählte Datei bei weiterer Navigation merken</value></string>
+  <string><id>15106</id><value>Gewähltes Objekt bei weiterer Navigation merken</value></string>
   <string><id>15107</id><value>Zwischenspeichern...</value></string>
   <string><id>15108</id><value>Navigations-Töne</value></string> 
   <string><id>15109</id><value>Vorgabe des Skins</value></string>
@@ -1301,7 +1301,7 @@
   <string><id>16102</id><value>Abgespielt</value></string> 
   <string><id>16103</id><value>Als abgespielt setzen</value></string> 
   <string><id>16104</id><value>Als unabgespielt setzen</value></string> 
-  <string><id>16105</id><value>Titel umbennenen</value></string> 
+  <string><id>16105</id><value>Umbenennen</value></string> 
   <string><id>16106</id><value>NTSC-M &amp; NTSC-J</value></string> 
   <string><id>16107</id><value>NTSC-M</value></string> 
   <string><id>16108</id><value>NTSC-J</value></string> 
