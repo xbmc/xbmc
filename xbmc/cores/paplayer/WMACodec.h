@@ -7,7 +7,7 @@
 struct WMAInfo
 {
   CFile fileReader;
-  char buffer[16384];
+  char buffer[65536];
   DWORD iStartOfBuffer;
 };
 
@@ -28,7 +28,7 @@ private:
   
   XWmaFileMediaObject* m_pWMA;                         
   WMAInfo m_info;
-  char m_buffer[16384];
+  char m_buffer[2048*2*6]; // max 5.1
   char* m_startOfBuffer; // not allocated
   DWORD m_iDataInBuffer;
 };

@@ -39,6 +39,9 @@ bool WMACodec::Init(const CStdString &strFile, unsigned int filecache)
   HRESULT hr = WmaCreateInMemoryDecoder( WMAStreamCallback, &m_info, 0,
                                   &wfxSourceFormat, (LPXMEDIAOBJECT*)&m_pWMA);
   
+  if (FAILED(hr))
+    return false;
+  
   WMAXMOFileHeader info;
   m_pWMA->GetFileHeader(&info);
   m_Channels = info.dwNumChannels;
@@ -74,7 +77,7 @@ int WMACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   XMEDIAPACKET xmp;
   ZeroMemory( &xmp, sizeof(xmp) );
   xmp.pvBuffer = m_buffer;
-  xmp.dwMaxSize = 2048*2*2;
+  xmp.dwMaxSize = 2048*2*m_Channels;
   xmp.pdwCompletedSize = &iPacketSize;
   BYTE* pStartOfBuffer = pBuffer;
   while (iSizeToGo > 0)
