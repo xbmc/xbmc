@@ -128,6 +128,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20017] = "Local Thumb";
   m_vecStrings[20018] = "No Thumb";
   m_vecStrings[20019] = "Choose Thumbnail";
+  m_vecStrings[20020] = "Use trainer or KAI?";
+  m_vecStrings[20021] = "Yes for trainer";
+  m_vecStrings[20022] = "No for KAI";
   return true;
 }
 
