@@ -32,6 +32,7 @@ bool WMACodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   WAVEFORMATEX wfxSourceFormat;
 
+  m_info.fileReader.Initialize(filecache);
   if (!m_info.fileReader.Open(strFile))
     return false;
   
@@ -50,9 +51,6 @@ bool WMACodec::Init(const CStdString &strFile, unsigned int filecache)
   m_TotalTime = info.dwDuration; // fixme?
   m_iDataPos = 0;
   m_iDataInBuffer = 0;
-
-  if (FAILED(hr))
-    return false;
    
   return true;
 }
