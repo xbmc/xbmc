@@ -4,13 +4,6 @@
 #include "util.h"
 
 
-#define QUALITY 0
-#define MAX_THUMB_WIDTH 128
-#define MAX_THUMB_HEIGHT 128
-
-#define MAX_ALBUM_THUMB_WIDTH 128
-#define MAX_ALBUM_THUMB_HEIGHT 128
-
 CPicture::CPicture(void)
 {
   ZeroMemory(&m_info, sizeof(ImageInfo));
@@ -55,7 +48,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   if (!m_dll.Load()) return false;
 
   memset(&m_info, 0, sizeof(ImageInfo));
-  if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str()))
+  if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
   {
     CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to create thumbfile %s from image %s", strThumbFileName.c_str(), strFileName.c_str());
     return false;
@@ -67,7 +60,7 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 {
   CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
   if (!m_dll.Load()) return false;
-  if (!m_dll.CreateThumbnailFromMemory((BYTE *)pBuffer, nBufSize, strExtension.c_str(), strThumbFileName.c_str()))
+  if (!m_dll.CreateThumbnailFromMemory((BYTE *)pBuffer, nBufSize, strExtension.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
   {
     CLog::Log(LOGERROR, "PICTURE::CreateAlbumThumbnailFromMemory: exception: memfile FileType: %s\n", strExtension.c_str());
     return false;
@@ -158,7 +151,7 @@ void CPicture::CreateFolderThumb(const CStdString *strThumbs, const CStdString &
     }
     szThumbs[i] = strThumbnails[i].c_str();
   }
-  if (!m_dll.CreateFolderThumbnail(szThumbs, folderThumbnail.c_str()))
+  if (!m_dll.CreateFolderThumbnail(szThumbs, folderThumbnail.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
   {
     CLog::Log(LOGERROR, "PICTURE::CreateFolderThumb() failed for folder thumb %s", folderThumbnail.c_str());
   }
