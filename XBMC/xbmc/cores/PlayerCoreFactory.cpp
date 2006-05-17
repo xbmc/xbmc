@@ -6,6 +6,7 @@
 //#include "SidPlayer.h"
 #include "dvdplayer\DVDPlayer.h"
 #include "paplayer\paplayer.h"
+#include "paplayer/wmacodec.h"
 #include "..\GUIDialogContextMenu.h"
 #include "../XBAudioConfig.h"
 #include "../FileSystem/FileCurl.h"
@@ -140,18 +141,30 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
-    if( g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_ANALOG )
+    bool bAdd = true;
+    if (item.IsType(".wma"))
     {
-      vecCores.push_back(EPC_PAPLAYER);
+      WMACodec codec;
+      if (!codec.Init(item.m_strPath,2048))
+        bAdd = false;
+      codec.DeInit();        
     }
-    else if( ( url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled() )
-         ||  ( url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled() ) ) 
+
+    if (bAdd)
     {
-      //NOP
-    }
-    else
-    {
-      vecCores.push_back(EPC_PAPLAYER);
+      if( g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_ANALOG )
+      {
+        vecCores.push_back(EPC_PAPLAYER);
+      }
+      else if( ( url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled() )
+        ||  ( url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled() ) ) 
+      {
+        //NOP
+      }
+      else
+      {
+        vecCores.push_back(EPC_PAPLAYER);
+      }
     }
   }
   
