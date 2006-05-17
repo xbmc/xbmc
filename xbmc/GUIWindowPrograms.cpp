@@ -996,9 +996,9 @@ bool CGUIWindowPrograms::OnClick(int iItem)
       {
         CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
         pDialog->SetHeading(714);
-        pDialog->SetLine(0,"Use trainer or KAI?");
-        pDialog->SetLine(1, "Yes for trainer");
-        pDialog->SetLine(2, "No for KAI");
+        pDialog->SetLine(0,20020);
+        pDialog->SetLine(1,20021);
+        pDialog->SetLine(2,20022);
         pDialog->DoModal(m_gWindowManager.GetActiveWindow());
         if (pDialog->IsConfirmed())
         {

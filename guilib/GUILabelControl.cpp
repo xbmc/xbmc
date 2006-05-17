@@ -257,11 +257,13 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
     return path;
 
   // remove trailing slashes
-  if (nPos == utf16Path.size() - 1)
-  {
-    utf16Path.erase(utf16Path.size() - 1);
-    nPos = utf16Path.find_last_of( cDelim );
-  }
+  if (utf16Path.size() > 3)
+    if (utf16Path.Right(3).Compare(CStdStringW("://")) != 0 && utf16Path.Right(2).Compare(CStdStringW(":\\")) != 0)
+      if (nPos == utf16Path.size() - 1)
+      {
+        utf16Path.erase(utf16Path.size() - 1);
+        nPos = utf16Path.find_last_of( cDelim );
+      }
 
   m_label.font->GetTextExtent( utf16Path.c_str(), &fTextWidth, &fTextHeight);
 
