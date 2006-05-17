@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-05-2006 fixed: Transparency on embedded xbe thumbnails was replaced with black.
  - 17-05-2006 fixed: [ 1488834 ] German Umlaute won't display correct in My Programs folders
  - 17-05-2006 added: Advanced setting <thumbsize> to specify the size XBMC caches thumbs at.
  - 17-05-2006 fixed: [ 1488180 ] PNG transparency error.
