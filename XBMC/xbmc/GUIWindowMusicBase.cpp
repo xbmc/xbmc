@@ -726,7 +726,12 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 
   int iPlaylist = PLAYLIST_MUSIC;
   if (g_partyModeManager.IsEnabled())
+  { // we use the temp playlist to queue, as the partymode manager is the one
+    // that actually does the queueing to the real playlist.
+    // make sure we clear it first though
     iPlaylist = PLAYLIST_MUSIC_TEMP;
+    g_playlistPlayer.ClearPlaylist(iPlaylist);
+  }
 
   CLog::Log(LOGDEBUG, "Adding file %s%s to %smusic playlist", item.m_strPath.c_str(), item.m_bIsFolder ? " (folder) " : "", iPlaylist == PLAYLIST_MUSIC ? "" : "temp ");
   AddItemToPlayList(&item, iPlaylist);
@@ -738,7 +743,6 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   if (g_partyModeManager.IsEnabled())
   {
     g_partyModeManager.AddUserSongs(g_playlistPlayer.GetPlaylist(iPlaylist), false);
-    g_playlistPlayer.ClearPlaylist(iPlaylist);
     return;
   }
 
