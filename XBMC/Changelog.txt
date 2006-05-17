@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-05-2006 fixed: [ 1484760 ] 1080i Arial TTF unicode none english charset error
  - 17-05-2006 changed: cosmetic change to music scanner dialog + kai / trainer dialog.+
  - 17-05-2006 fixed: launching game with kai from my programs with trainer active crashed.
  - 17-05-2006 added: Esperanto language file (Thnx to taiq)
