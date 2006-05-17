@@ -254,7 +254,8 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "CDDARipper.Encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(3, "CDDARipper.Quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(4, "CDDARipper.Bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
-  AddString(5, "CDDARipper.Path", 607, "E:\\Music\\CD-Rips", BUTTON_CONTROL_PATH_INPUT, false, 607);
+  //  TODO: localize 2.0
+  AddString(5, "CDDARipper.Path", 20000, "E:\\Music\\CD-Rips", BUTTON_CONTROL_PATH_INPUT, false, 20000);
 
   AddCategory(3, "MusicPlayer", 16003);
   AddString(1, "MusicPlayer.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -347,9 +348,9 @@ CGUISettings::CGUISettings(void)
   AddSeparator(4, "MyVideos.Sep2");
   AddBool(5, "MyVideos.IgnoreTheWhenSorting", 13399, true);
   AddSeparator(6, "MyVideos.Sep3");
-  // TODO 2.0: Get localized strings for these
-  AddBool(7, "MyVideos.UseExternalDVDPlayer", 0, false);
-  AddString(8, "MyVideos.ExternalDVDPlayer", 0, "",  BUTTON_CONTROL_PATH_INPUT, true, 0);
+  //  TODO: localize 2.0
+  AddBool(7, "MyVideos.UseExternalDVDPlayer", 20001, false);
+  AddString(8, "MyVideos.ExternalDVDPlayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 20002);
   // hidden setting for blackbars
   AddInt(0, "Videos.BlackBarColour", 0, 0, 0, 1, 255, SPIN_CONTROL_INT);
 
@@ -517,10 +518,10 @@ CGUISettings::CGUISettings(void)
   // hidden mode setting
   AddInt(0,   "MasterUser.LockMode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
   //  TODO: localize 2.0
-  AddString(0,"MyPrograms.TrainerPath",12013,"select folder",BUTTON_CONTROL_PATH_INPUT,false);
-  AddString(0,"System.ScreenshotPath",12013,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
-  AddString(0,"MyMusic.RecordingPath",12013,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
-  AddString(0,"System.PlaylistsPath",12013,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+  AddString(0,"MyPrograms.TrainerPath",20003,"select folder",BUTTON_CONTROL_PATH_INPUT,false);
+  AddString(0,"System.ScreenshotPath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
+  AddString(0,"MyMusic.RecordingPath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
+  AddString(0,"System.PlaylistsPath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }
 
 CGUISettings::~CGUISettings(void)
