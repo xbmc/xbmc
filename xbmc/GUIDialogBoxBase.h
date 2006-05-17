@@ -13,6 +13,7 @@ public:
   void SetLine(int iLine, int iString);
   void SetHeading(const string& strLine);
   void SetHeading(int iString);
+  void SetChoice(int iButton, int iString);
 protected:
   virtual void OnInitWindow();
   bool m_bConfirmed;

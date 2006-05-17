@@ -69,6 +69,17 @@ void CGUIDialogBoxBase::SetLine(int iLine, int iString)
   OnMessage(msg);
 }
 
+void CGUIDialogBoxBase::SetChoice(int iButton, int iString) // iButton == 0 for no, 1 for yes
+{
+  Initialize();
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 10+iButton);
+  if (iString)
+    msg.SetLabel(iString);
+  else
+    msg.SetLabel("");
+  OnMessage(msg);
+}
+
 void CGUIDialogBoxBase::OnInitWindow()
 {
   // set focus to default
