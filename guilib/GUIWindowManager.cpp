@@ -637,7 +637,7 @@ void CGUIWindowManager::AddToWindowHistory(DWORD newWindowID)
   }
 } 
 
-void CGUIWindowManager::GetActiveModelessWindows(vector<DWORD> ids)
+void CGUIWindowManager::GetActiveModelessWindows(vector<DWORD> &ids)
 {
   // run through our modeless windows, and construct a vector of them
   // useful for saving and restoring the modeless windows on skin change etc.
