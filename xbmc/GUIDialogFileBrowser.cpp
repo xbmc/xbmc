@@ -202,7 +202,8 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     if (!pItem->IsParentFolder())
     {
       strSelectedItem = pItem->m_strPath;
-      m_history.SetSelectedItem(strSelectedItem, m_Directory.m_strPath);
+      CUtil::RemoveSlashAtEnd(strSelectedItem);
+      m_history.SetSelectedItem(strSelectedItem, m_Directory.m_strPath==""?"empty":m_Directory.m_strPath);
     }
   }
 
@@ -262,12 +263,16 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   if (m_browsingForImages)
     m_viewControl.SetCurrentView(CAutoSwitch::ByFileCount(m_vecItems) ? VIEW_METHOD_ICONS : VIEW_METHOD_LIST);
 
-  strSelectedItem = m_history.GetSelectedItem(m_Directory.m_strPath);
+  CStdString strPath2 = m_Directory.m_strPath;
+  CUtil::RemoveSlashAtEnd(strPath2);
+  strSelectedItem = m_history.GetSelectedItem(strPath2==""?"empty":strPath2);
 
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
-    if (pItem->m_strPath == strSelectedItem)
+    strPath2 = pItem->m_strPath;
+    CUtil::RemoveSlashAtEnd(strPath2);
+    if (strPath2 == strSelectedItem)
     {
       m_viewControl.SetSelectedItem(i);
       break;

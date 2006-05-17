@@ -73,26 +73,26 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives)
 {
   // Local shares
   CShare share;
-  share.strPath = "C:";
+  share.strPath = "C:\\";
   share.strName = "C Drive";
   localDrives.push_back(share);
-  share.strPath = "D:";
+  share.strPath = "D:\\";
   share.strName = "DVD Drive";
   localDrives.push_back(share);
-  share.strPath = "E:";
+  share.strPath = "E:\\";
   share.strName = "E Drive";
   localDrives.push_back(share);
   if (g_advancedSettings.m_useFDrive)
   {
     CShare share;
-    share.strPath = "F:";
+    share.strPath = "F:\\";
     share.strName = "F Drive";
     localDrives.push_back(share);
   }
   if (g_advancedSettings.m_useGDrive)
   {
     CShare share;
-    share.strPath = "G:";
+    share.strPath = "G:\\";
     share.strName = "G Drive";
     localDrives.push_back(share);
   }
