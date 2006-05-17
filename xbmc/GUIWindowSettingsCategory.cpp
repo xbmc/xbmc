@@ -213,9 +213,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       unsigned iCtrlID = GetFocusedControl();
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iCtrlID, 0, 0, NULL);
       g_graphicsContext.SendMessage(msg);
-      int iWindowID = GetID();
       g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
-      m_gWindowManager.ActivateWindow(iWindowID);
       SET_CONTROL_FOCUS(iCtrlID, 0);
       CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, GetID(), iCtrlID, msg.GetParam1(), msg.GetParam2());
       OnMessage(msgSelect);
