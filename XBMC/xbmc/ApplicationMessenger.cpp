@@ -105,26 +105,40 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   switch (pMsg->dwMessage)
   {
     case TMSG_SHUTDOWN:
-      g_application.Stop(); 
-      Sleep(200);
-      CIoSupport::SpindownHarddisk(); // Spindown the Harddisk
-      XKUtils::XBOXPowerOff();
+      {
+        g_application.Stop(); 
+        Sleep(200);
+#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
+        CIoSupport::SpindownHarddisk(); // Spindown the Harddisk
+        XKUtils::XBOXPowerOff();
+#endif
+      }
       break;
 
     case TMSG_DASHBOARD:
-      CUtil::ExecBuiltIn("XBMC.Dashboard()");
+      {
+        CUtil::ExecBuiltIn("XBMC.Dashboard()");
+      }
       break;
 
     case TMSG_RESTART:
-      g_application.Stop();
-      Sleep(200);
-      XKUtils::XBOXPowerCycle();
+      {
+        g_application.Stop();
+        Sleep(200);
+#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
+        XKUtils::XBOXPowerCycle();
+#endif
+      }
       break;
 
     case TMSG_RESET:
-      g_application.Stop();
-      Sleep(200);
-      XKUtils::XBOXReset();
+      {
+        g_application.Stop();
+        Sleep(200);
+#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
+        XKUtils::XBOXReset();
+#endif
+      }
       break;
 
     case TMSG_RESTARTAPP:

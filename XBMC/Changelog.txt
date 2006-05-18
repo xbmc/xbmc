@@ -5,6 +5,17 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 18-05-2006 added: masterlock to AdvancedSettings.xml! Check XBMC Wiki for more informations!
+ - 18-05-2006 removed: Masterlock Max. Retries from GUI ! Default Max. Value is: 3!
+ - 18-05-2006 changed: Masterlock Settings Controll and  GUI conditions Controll
+ - 18-05-2006 added: Master User Modes: Normal User/ Advanced User! Check XBMC Wiki for more informations!
+ - 18-05-2006 fixed: [ 1490023 ] Locked overlay thumb not showing
+ - 18-05-2006 fixed: [ 1478366 ] Master Lock
+ - 18-05-2006 fixed: [ 1478514 ] Couple of problems with MASTERLOCK
+ - 18-05-2006 fixed: [ 1479324 ] Wrong FTP username in settings when not online (a test is required)
+ - 18-05-2006 fixed: [ 1479328 ] Wrong modchip detection message
+
  - 17-05-2006 fixed: [ 1484760 ] 1080i Arial TTF unicode none english charset error
  - 17-05-2006 changed: cosmetic change to music scanner dialog + kai / trainer dialog.+
  - 17-05-2006 fixed: launching game with kai from my programs with trainer active crashed.
@@ -26,6 +37,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 17-05-2006 fixed: [ 1488180 ] PNG transparency error.
  - 17-05-2006 fixed: [ 1488630 ] Partymode then enqueue causes internal playlist to be added
  - 17-05-2006 fixed: [ 1488829 ] Python ControlTextBox ignores multiple linebreaks
+
  - 16-05-2006 fixed: Cleaned up the thumb code (for <folder>.tbn)
  - 16-05-2006 fixed: LCD wasn't being reinitialized correctly on settings change.
  - 15-05-2006 fixed: volume control with remote now functions under Now Playing window.
@@ -38,6 +50,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 13-05-2006 fixed: Keymap.xml - <Remote> Volume now works in VideoPlaylist/MusicPlayList & MyFiles. MoveItemUp(2), MoveItemDown(5). MyFiles : Highlight(1), Copy(4), Move(7).
  - 13-05-2006 fixed: Directorylisting in my music fileview was very  slow because main thread wasn't leaving much cputime for the MusicInfoLoader. + very minor speedimprovement for imdb and allmusic lookups.
  - 13-05-2006 fixed: Scripts window would not show .py files.
+
  - 13-05-2006 changed: libcurl will now follow 2 redirects on connection
  - 13-05-2006 fixed: flv streams would start very slowly in dvd player due to it trying to find all streams before starting to play. 
                      (flv streams distributed with Content-Disposition will still fail used on some of google video's backup servers)

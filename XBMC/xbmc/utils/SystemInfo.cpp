@@ -407,9 +407,14 @@ CStdString SYSINFO::GetModCHIPDetected()
 	}
   else {	CLog::Log(LOGDEBUG, "- Detected TSOP/MOdCHIP: Unknown");	strTemp2 = "Unknown"; }
   
-  if (strTemp1 != strTemp2) strTemp.Format("%s %s",strTemp1.c_str(),strTemp2.c_str());
+  if (strTemp1 != strTemp2) 
+  {
+    CLog::Log(LOGDEBUG, "- Detected TSOP/MOdCHIP: Detection does not match! (%s != %s)",strTemp1.c_str(),strTemp2.c_str());
+    CLog::Log(LOGDEBUG, "- Detected TSOP/ModChip: Using -> %s",strTemp1.c_str());
+    //strTemp.Format("%s %s",strTemp1.c_str(),strTemp2.c_str());
+    strTemp.Format("%s",strTemp1.c_str());
+  }
   else strTemp = strTemp2;
-  
   return strTemp;
 }
 

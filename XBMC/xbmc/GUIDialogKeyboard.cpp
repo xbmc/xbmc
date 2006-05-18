@@ -6,6 +6,7 @@
 #include "Util.h"
 #include "GUIDialogNumeric.h"
 #include "utils/RegExp.h"
+#include "GUIPassword.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
@@ -524,7 +525,7 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
   if (1 > iRetries && strHeading.size())
     strHeadingTemp = strHeading;
   else
-    strHeadingTemp.Format("%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_guiSettings.GetInt("MasterLock.MaxRetries") - iRetries, g_localizeStrings.Get(12343).c_str());
+    strHeadingTemp.Format("%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_passwordManager.iMasterLockMaxRetry - iRetries, g_localizeStrings.Get(12343).c_str());
 
   CStdString strUserInput = "";
   if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true))  //bool hiddenInput = false/true ? TODO: GUI Setting to enable disable this feature y/n?
