@@ -1235,10 +1235,10 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
 
   //##########################################################
-  // Set CDDB protocol-level to 6
-  if ( ! Send("proto 6"))
+  // Set CDDB protocol-level to 5
+  if ( ! Send("proto 5"))
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", "proto 6");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", "proto 5");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
