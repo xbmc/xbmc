@@ -134,6 +134,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20023] = "Conflict";
   m_vecStrings[20024] = "Keep old";
   m_vecStrings[20025] = "Scan all"; 
+  m_vecStrings[20026] = "Region"; 
   return true;
 }
 

@@ -493,14 +493,13 @@ CGUISettings::CGUISettings(void)
 
   // GeminiServer
   AddCategory(7, "XBDateTime", 14063);
-  AddInt(1,   "XBDateTime.TimeFormat", 14051, DATETIME_FORMAT_EU, DATETIME_FORMAT_EU, 1, DATETIME_FORMAT_US, SPIN_CONTROL_TEXT);
-  AddInt(2,   "XBDateTime.DateFormat", 14052, DATETIME_FORMAT_EU, DATETIME_FORMAT_EU, 1, DATETIME_FORMAT_US, SPIN_CONTROL_TEXT);
-  AddSeparator(3, "XBDateTime.Sep1");
-  AddBool(4,   "XBDateTime.TimeServer"       , 168  , false);
-  AddString(5, "XBDateTime.TimeAddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
-  AddSeparator(6, "XBDateTime.Sep2");
-  AddString(7, "XBDateTime.Time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
-  AddString(8, "XBDateTime.Date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+  AddString(1, "XBDateTime.Region", 20026, "", SPIN_CONTROL_TEXT);
+  AddSeparator(2, "XBDateTime.Sep1");
+  AddBool(3,   "XBDateTime.TimeServer"       , 168  , false);
+  AddString(4, "XBDateTime.TimeAddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
+  AddSeparator(5, "XBDateTime.Sep2");
+  AddString(6, "XBDateTime.Time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
+  AddString(7, "XBDateTime.Date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
 
   //GeminiServer
   AddCategory(7, "Masterlock", 12360);

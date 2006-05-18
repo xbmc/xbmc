@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language>
   <charsets>
     <gui unicodefont="true">BIG5</gui>
@@ -9,5 +10,13 @@
     <audio>zh</audio>
     <subtitle>zh</subtitle>
   </dvd>
+
+  <regions>
+    <region>
+      <dateshort>YYYY-M-D</dateshort>
+      <datelong>YYYY'年'M'月'D'日'</datelong>
+      <time symbolAM="上午" symbolPM="下午">h:mm:ss</time>
+    </region>
+  </regions>
 </language>
 
