@@ -12,6 +12,7 @@
 #include "../GUIMediaWindow.h"
 #include "../GUIDialogFileBrowser.h"
 #include "../PartyModeManager.h"
+#include "../SystemTime.h"
 #include "FanController.h"
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
@@ -945,97 +946,16 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 
 CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
 {
-  CStdString text;
-  SYSTEMTIME time;
-  GetLocalTime(&time);
-
-  if (bNumbersOnly)
-  {
-    CStdString strDate;
-    if (g_guiSettings.GetInt("XBDateTime.DateFormat") == DATETIME_FORMAT_EU)
-      text.Format("%d-%d-%d", time.wDay, time.wMonth, time.wYear);
-    else
-      text.Format("%d-%d-%d", time.wMonth, time.wDay, time.wYear);
-  }
-  else
-  {
-    CStdString day;
-    switch (time.wDayOfWeek)
-    {
-    case 1 : day = g_localizeStrings.Get(11); break;
-    case 2 : day = g_localizeStrings.Get(12); break;
-    case 3 : day = g_localizeStrings.Get(13); break;
-    case 4 : day = g_localizeStrings.Get(14); break;
-    case 5 : day = g_localizeStrings.Get(15); break;
-    case 6 : day = g_localizeStrings.Get(16); break;
-    default: day = g_localizeStrings.Get(17); break;
-    }
-
-    CStdString month;
-    switch (time.wMonth)
-    {
-    case 1 : month = g_localizeStrings.Get(21); break;
-    case 2 : month = g_localizeStrings.Get(22); break;
-    case 3 : month = g_localizeStrings.Get(23); break;
-    case 4 : month = g_localizeStrings.Get(24); break;
-    case 5 : month = g_localizeStrings.Get(25); break;
-    case 6 : month = g_localizeStrings.Get(26); break;
-    case 7 : month = g_localizeStrings.Get(27); break;
-    case 8 : month = g_localizeStrings.Get(28); break;
-    case 9 : month = g_localizeStrings.Get(29); break;
-    case 10: month = g_localizeStrings.Get(30); break;
-    case 11: month = g_localizeStrings.Get(31); break;
-    default: month = g_localizeStrings.Get(32); break;
-    }
-
-    if (day.size() && month.size())
-    {
-      if (g_guiSettings.GetInt("XBDateTime.DateFormat") == DATETIME_FORMAT_EU)
-        text.Format("%s, %d %s", day.c_str(), time.wDay, month.c_str());
-      else
-        text.Format("%s, %s %d", day.c_str(), month.c_str(), time.wDay);
-    }
-    else
-      text.Format("no date");
-  }
-  return text;
+  CSystemTime time;
+  time.Now();
+  return time.GetAsLocalizedDate(!bNumbersOnly);
 }
 
 CStdString CGUIInfoManager::GetTime(bool bSeconds)
 {
-  CStdString text;
-  SYSTEMTIME time;
-  GetLocalTime(&time);
-
-  INT iHour = time.wHour;
-
-  if (g_guiSettings.GetInt("XBDateTime.TimeFormat") == DATETIME_FORMAT_US)
-  {
-    if (iHour > 11)
-    {
-      iHour -= (12 * (iHour > 12));
-      if (bSeconds)
-        text.Format("%2d:%02d:%02d PM", iHour, time.wMinute, time.wSecond);
-      else
-        text.Format("%2d:%02d PM", iHour, time.wMinute);
-    }
-    else
-    {
-      iHour += (12 * (iHour < 1));
-      if (bSeconds)
-        text.Format("%2d:%02d:%02d AM", iHour, time.wMinute, time.wSecond);
-      else
-        text.Format("%2d:%02d AM", iHour, time.wMinute);
-    }
-  }
-  else
-  {
-    if (bSeconds)
-      text.Format("%2d:%02d:%02d", iHour, time.wMinute, time.wSecond);
-    else
-      text.Format("%02d:%02d", iHour, time.wMinute);
-  }
-  return text;
+  CSystemTime time;
+  time.Now();
+  return time.GetAsLocalizedTime(bSeconds);
 }
 
 CStdString CGUIInfoManager::GetMusicPartyModeLabel(int item)

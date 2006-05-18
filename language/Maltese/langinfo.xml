@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language>
   <charsets>
     <gui>CP1252</gui>
@@ -9,4 +10,12 @@
     <audio>mt</audio>
     <subtitle>mt</subtitle>
   </dvd>
+
+  <regions>
+    <region>
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D' ta''' MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+    </region>
+  </regions>
 </language>
