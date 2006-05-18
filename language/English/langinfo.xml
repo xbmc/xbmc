@@ -1,3 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
 <!-- Possible values for <charsets>                     -->
 <!-- ==============================                     -->
 <!--                                                    -->
@@ -55,5 +57,19 @@
     <audio>en</audio>
     <subtitle>en</subtitle>
   </dvd>
+
+  <regions>
+    <region name="USA">
+      <dateshort>MM/DD/YYYYY</dateshort>
+      <datelong>DDDD, MMMM D, YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">hh:mm:ss xx</time>
+    </region>
+
+    <region name="Great Britain">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+    </region>
+  </regions>
 </language>
 
