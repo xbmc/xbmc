@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language>
   <charsets>
     <gui>CP1252</gui>
@@ -9,5 +10,13 @@
     <audio>fi</audio>
     <subtitle>fi</subtitle>
   </dvd>
+
+  <regions>
+    <region>
+      <dateshort>D.M.YYYY</dateshort>
+      <datelong>D. MMMM'ta 'YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+    </region>
+  </regions>
 </language>
 
