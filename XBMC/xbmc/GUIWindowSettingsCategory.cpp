@@ -837,28 +837,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
       if (CUtil::GetXBOXNickName(strXboxNickNameOut))
         g_guiSettings.SetString("Autodetect.NickName", strXboxNickNameOut.c_str());
     }
-    else if (strSetting == "XBDateTime.DateFormat")
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(12385), DATETIME_FORMAT_EU );
-      pControl->AddLabel(g_localizeStrings.Get(12386), DATETIME_FORMAT_US );
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting == "XBDateTime.TimeFormat")
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(12384), DATETIME_FORMAT_EU );
-      pControl->AddLabel(g_localizeStrings.Get(12383), DATETIME_FORMAT_US );
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting == "MyVideos.ExternalDVDPlayer")
     {
       CSettingString *pSettingString = (CSettingString *)pSetting;
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       if (pSettingString->GetData().IsEmpty())
         pControl->SetLabel2(g_localizeStrings.Get(20009));  // TODO: localize 2.0
+    }
+    else if (strSetting == "XBDateTime.Region")
+    {
+      FillInRegions(pSetting);
     }
   }
   // fix first and last navigation
@@ -1754,6 +1742,24 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
+  }
+  else if (strSetting == "LED.Colour")
+  { // Alter LED Colour immediately
+    ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
+  }
+  else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
+  { // Update our replaygain settings
+    g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("MusicPlayer.ReplayGainType");
+    g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("MusicPlayer.ReplayGainPreAmp");
+    g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("MusicPlayer.ReplayGainNoGainPreAmp");
+    g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("MusicPlayer.ReplayGainAvoidClipping");
+  }
+  else if (strSetting == "XBDateTime.Region")
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+
+    g_langInfo.SetCurrentRegion(pControl->GetCurrentLabel());
   }
   else if (strSetting == "XBDateTime.TimeServer" || strSetting == "XBDateTime.TimeAddress")
   {
@@ -2984,6 +2990,35 @@ bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
     }
     return true;
 }
+
+void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)
+{
+  CSettingString *pSettingString = (CSettingString*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
+  pControl->Clear();
+
+  int iCurrentRegion=0;
+  CStdStringArray regions;
+  g_langInfo.GetRegionNames(regions);
+  
+  CStdString strCurrentRegion=g_langInfo.GetCurrentRegion();
+
+  sort(regions.begin(), regions.end(), sortstringbyname());
+
+  for (int i = 0; i < (int) regions.size(); ++i)
+  {
+    const CStdString& strRegion = regions[i];
+
+    if (strRegion == strCurrentRegion)
+      iCurrentRegion = i;
+
+    pControl->AddLabel(strRegion, i);
+  }
+
+  pControl->SetValue(iCurrentRegion);
+}
+
 CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &strSetting)
 {
   for (unsigned int i = 0; i < m_vecSettings.size(); i++)
