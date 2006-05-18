@@ -514,9 +514,9 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
         OnRenameItem(iItem);
       }
       else if (btnid == btn_Settings)
-      { // Check Master Lock
-        if (!(g_guiSettings.GetInt("MasterLock.LockSettingsFileManager") & LOCK_MASK_SETTINGS) || g_passwordManager.CheckMasterLock()) 
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES); 
+      { 
+        if (g_passwordManager.bMasterLockSettings && g_passwordManager.IsMasterLockLocked(true)) 
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
         return;
       }
     }

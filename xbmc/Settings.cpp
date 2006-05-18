@@ -8,6 +8,7 @@
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
+#include "GUIPassword.h"
 
 struct CSettings::stSettings g_stSettings;
 struct CSettings::AdvancedSettings g_advancedSettings;
@@ -1123,10 +1124,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_MyProgramsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
     GetInteger(pElement, "sortorder", (int&)g_stSettings.m_MyProgramsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
   }
+
+
   LoadCalibration(pRootElement, strSettingsFile);
-
   g_guiSettings.LoadXML(pRootElement);
-
   LoadSkinSettings(pRootElement);
 
   // Advanced settings
@@ -1210,6 +1211,23 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 10.0f, 1.0f, 100.0f);
+  }
+  
+  // Masterlock Advanced
+  pElement = pRootElement->FirstChildElement("masterlock");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "useadvancedxml", g_advancedSettings.bUseMasterLockAdvancedXml);
+    GetInteger(pElement, "mastermode", g_advancedSettings.iMasterLockMode , 0, 0, 3);
+    GetString(pElement,  "mastercode", g_advancedSettings.strMasterLockCode, "");
+    XMLUtils::GetBoolean(pElement, "masterusermode", g_advancedSettings.bMasterUserMode); //true: Normal / false: advanced
+    GetInteger(pElement, "lockhomemedia", g_advancedSettings.iMasterLockHomeMedia , 0, 0, 15);
+    GetInteger(pElement, "locksettingsfilemanager", g_advancedSettings.iMasterLockSettingsFilemanager , 0, 0, 3);
+    XMLUtils::GetBoolean(pElement, "masteruser", g_advancedSettings.bMasterUser );
+    XMLUtils::GetBoolean(pElement, "protectshares", g_advancedSettings.bMasterLockProtectShares );
+    XMLUtils::GetBoolean(pElement, "startuplock", g_advancedSettings.bMasterLockStartupLock);
+    XMLUtils::GetBoolean(pElement, "enableshutdown", g_advancedSettings.bMasterLockEnableShutdown);
+    GetInteger(pElement, "maxpasswordtries", g_advancedSettings.iMasterLockMaxRetry , 0, 0, 100);
   }
 
   GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NORMAL, LOG_LEVEL_MAX);

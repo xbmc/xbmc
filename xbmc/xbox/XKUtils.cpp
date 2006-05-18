@@ -147,7 +147,9 @@ void XKUtils::XBOXRebootToDash()
 {
 	XLaunchNewImage( NULL, NULL );
 }
-
+//GeminiServer --> !!!!! ATTENTION !!!!!!!
+// USE: g_applicationMessenger.Restart() or .Reset();
+// To Restart or Reset the box !!!
 void XKUtils::XBOXReset()
 {
 	OUTPUT_DEBUG_STRING("XKUtils: Reset...\n");
@@ -161,7 +163,9 @@ void XKUtils::SetXBOXLEDStatus(UCHAR LEDStatus)
 	Sleep(10);
 	HalWriteSMBusValue(SMBDEV_PIC16L, PIC16L_CMD_LED_MODE, 0, 1);
 }
-
+//GeminiServer --> !!!!! ATTENTION !!!!!!!
+// USE: g_applicationMessenger.Shutdown();
+// To Turn off the box !!!
 void XKUtils::XBOXPowerOff()
 {
 	//Console Shutdown...
@@ -169,6 +173,9 @@ void XKUtils::XBOXPowerOff()
 	HalWriteSMBusValue(SMBDEV_PIC16L, PIC16L_CMD_POWER, 0, POWER_SUBCMD_POWER_OFF);
 }
 
+//GeminiServer --> !!!!! ATTENTION !!!!!!!
+// USE: g_applicationMessenger.Restart() or .Reset();
+// To Restart or Reset the box !!!
 void XKUtils::XBOXPowerCycle()
 {
 	//Console Shutdown...
