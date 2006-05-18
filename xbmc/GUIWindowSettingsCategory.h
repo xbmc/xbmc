@@ -32,6 +32,7 @@ protected:
   void FillInVoiceMaskValues(DWORD dwPort, CSetting *pSetting); // Karaoke patch (114097)
   void FillInResolutions(CSetting *pSetting);
   void FillInScreenSavers(CSetting *pSetting);
+  void FillInRegions(CSetting *pSetting);
   bool SetMasterLockMode();
   bool SetUserMode();
   void FillInFTPServerUser(CSetting *pSetting);
