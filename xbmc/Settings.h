@@ -269,13 +269,27 @@ public:
     int m_remoteRepeat;
     float m_controllerDeadzone;
 
+    //Masterlock
+    bool bMasterLockEnableShutdown;
+    bool bMasterLockProtectShares;
+    bool bUseMasterLockAdvancedXml;
+    bool bMasterUserMode;
+    bool bMasterUser;
+    bool bMasterLockStartupLock;      
+    int iMasterLockMaxRetry;
+    int iMasterLockMode;          
+    int iMasterLockSettingsFilemanager;
+    int iMasterLockHomeMedia;
+    CStdString strMasterLockCode;
+    //
     int m_thumbSize;
+
   };
   struct stSettings
   {
 public:
+ 
     char szHomeDir[1024];
-
     CStdString m_pictureExtensions;
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
@@ -406,6 +420,7 @@ public:
 
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
+    int m_iSambaDebugLevel;
 
     int m_iSambaTimeout;
     CStdString m_strSambaWorkgroup;
