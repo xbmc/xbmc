@@ -50,37 +50,34 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      //  first time
-      if (m_vecItems.m_strPath == "?")
+      //  Setup shares we want to have
+      m_shares.clear();
+      //  Musicdb shares
+      CFileItemList items;
+      CDirectory::GetDirectory("musicdb://", items);
+      for (int i=0; i<items.Size(); ++i)
       {
-        //  Setup shares we want to have
-
-        //  Musicdb shares
-        CFileItemList items;
-        CDirectory::GetDirectory("musicdb://", items);
-        for (int i=0; i<items.Size(); ++i)
-        {
-          CFileItem* item=items[i];
-          CShare share;
-          share.strName=item->GetLabel();
-          share.strPath=item->m_strPath;
-          share.m_strThumbnailImage="defaultFolderBig.png";
-          m_shares.push_back(share);
-        }
-
-        //  Playlists share
+        CFileItem* item=items[i];
         CShare share;
-        share.strName=g_localizeStrings.Get(136); // Playlists
-        share.strPath=CUtil::MusicPlaylistsLocation();
+        share.strName=item->GetLabel();
+        share.strPath=item->m_strPath;
         share.m_strThumbnailImage="defaultFolderBig.png";
         m_shares.push_back(share);
-
-        // setup shares and file filters
-        m_rootDir.SetMask(g_stSettings.m_musicExtensions);
-        m_rootDir.SetShares(m_shares);
-
-        m_vecItems.m_strPath = "";
       }
+
+      //  Playlists share
+      CShare share;
+      share.strName=g_localizeStrings.Get(136); // Playlists
+      share.strPath=CUtil::MusicPlaylistsLocation();
+      share.m_strThumbnailImage="defaultFolderBig.png";
+      m_shares.push_back(share);
+
+      // setup shares and file filters
+      m_rootDir.SetMask(g_stSettings.m_musicExtensions);
+      m_rootDir.SetShares(m_shares);
+
+      if (m_vecItems.m_strPath=="?")
+        m_vecItems.m_strPath = "";
 
       // check for valid quickpath parameter
       CStdString strDestination = message.GetStringParam();
