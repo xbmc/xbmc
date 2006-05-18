@@ -146,6 +146,13 @@ public:
   UINT64 m_DAAPSongSize;
   void *m_DAAPArtistPtr;
   CCdgParser m_CdgParser;
+  // GeminiServer MasterLock
+  bool m_bMasterLockPreviouslyEntered;
+  int m_iMasterLockRetriesRemaining;
+  bool m_bMasterLockOverridesLocalPasswords;
+  int m_MasterUserModeCounter;  
+  //
+  
   EPLAYERCORES m_eForcedNextPlayer;
 
   CStdString m_strPlayListFile;

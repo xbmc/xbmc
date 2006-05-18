@@ -831,9 +831,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 		  Update(m_vecItems.m_strPath);
 	  }
     else if (btnid == btn_Settings)
-    { // Check Master Lock
-      if (!(g_guiSettings.GetInt("MasterLock.LockSettingsFileManager") & LOCK_MASK_SETTINGS) || g_passwordManager.CheckMasterLock()) 
-        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS); 
+    { 
+      // Check Master Lock
+      if (g_passwordManager.bMasterLockSettings && g_passwordManager.IsMasterLockLocked(true)) 
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
       return;
     }
     else if (btnid == btn_Delete)

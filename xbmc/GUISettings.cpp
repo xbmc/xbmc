@@ -503,20 +503,23 @@ CGUISettings::CGUISettings(void)
   AddString(8, "XBDateTime.Date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
 
   //GeminiServer
-  AddCategory(7, "MasterLock", 12360);
-  AddString(1,"MasterLock.MasterCode"       , 12365, "", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
-  AddBool(2, "MasterLock.MasterUser"        , 12375, false);
-  AddSeparator(4, "MasterLock.Sep1");
-  AddInt(5,   "MasterLock.MaxRetries"         , 12361, 0, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
-  AddBool(6,  "MasterLock.EnableShutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
-  AddSeparator(7, "MasterLock.Sep2");     // The seperator is cool but this section needs space!
-  AddBool(8,  "MasterLock.ProtectShares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
-  AddBool(9,  "MasterLock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
-  AddSeparator(10, "MasterLock.Sep3");     // The seperator is cool but this section needs space!
-  AddInt(11,   "MasterLock.LockSettingsFileManager"    , 12372, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
-  AddInt(12,   "MasterLock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
-  // hidden mode setting
-  AddInt(0,   "MasterUser.LockMode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
+  AddCategory(7, "Masterlock", 12360);
+  AddString(1, "Masterlock.Mastercode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
+  AddString(2, "Masterlock.UserMode"         , 12375, "0",  BUTTON_CONTROL_STANDARD); //0:Simple User 1:Advanced User
+  AddSeparator(3, "Masterlock.Sep1");
+  AddInt(4, "Masterlock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
+  AddInt(5, "Masterlock.LockSettingsFilemanager"    , 12372, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
+  AddSeparator(6, "Masterlock.Sep2");     
+  AddBool(7, "Masterlock.MasterUser"       , 12388,false); //true: master user can open all shares without cheking the fixed share lock in xml
+  AddBool(8, "Masterlock.Protectshares"    , 12363,false); //prompts for mastercode when editing lock shares with context menu if true
+  AddBool(9, "Masterlock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
+  AddBool(10, "Masterlock.Enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
+  AddSeparator(11, "Masterlock.Sep3");
+  
+  // Gui Hidden Features
+  AddInt(0,   "Masterlock.Mastermode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
+  //AddInt(0,   "Masterlock.Maxretry"         , 12361, 3, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
+  
   //  TODO: localize 2.0
   AddString(0,"MyPrograms.TrainerPath",20003,"select folder",BUTTON_CONTROL_PATH_INPUT,false);
   AddString(0,"System.ScreenshotPath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
