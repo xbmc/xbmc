@@ -47,7 +47,12 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
   {
     CStdString s;
     if ( i == 0 )
-      s = input.Mid( i, positions[i] );
+	{
+		if (i == positions.size())
+			s = input;
+		else
+		s = input.Mid( i, positions[i] );
+	}
     else
     {
       int offset = positions[i - 1] + sizeS2;

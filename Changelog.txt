@@ -7,7 +7,6 @@
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 19-05-2006 fixed: TextBox crashed trying to handle linebreaks.
  - 18-05-2006 added: localization of date and time format via langinfo.xml
- - 18-05-2006 added: localization of date and time format via langinfo.xml
  - 18-05-2006 fixed: music nav, when the language is changed, the shares are displayed in the previous language
  - 18-05-2006 changed: lowered protocol level of cddb to 5 again (none utf8 queries to freedb)
  - 18-05-2006 added: masterlock to AdvancedSettings.xml! Check XBMC Wiki for more informations!
