@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="Windows-1250" standalone="yes"?>
 
-<!-- Tłumaczenie NaPeK(napek@poczta.fm) -->
-<!-- Wszelkie modyfikacje tłumaczenia powinny zawierać informacje -->
-<!-- o autorze tłumaczenia i wprowadzającym modyfikacje -->
+<!-- from forum xbox-scene.pl -->
+<!-- thx to NaPeK for source file -->
 
 <strings>
   <string><id>0</id><value>Gry i Programy</value></string>
-  <string><id>1</id><value>Obrazy</value></string>
+  <string><id>1</id><value>Zdjęcia</value></string>
   <string><id>2</id><value>Muzyka</value></string>
   <string><id>3</id><value>Filmy</value></string>
   <string><id>4</id><value>Przewodnik TV</value></string>
@@ -41,16 +40,16 @@
   <string><id>100</id><value>Widok: Ikony</value></string>
   <string><id>101</id><value>Widok: Lista</value></string>
   <string><id>102</id><value>Skanuj</value></string>
-  <string><id>103</id><value>Sortuj: nazwa</value></string>
-  <string><id>104</id><value>Sortuj: data</value></string>
-  <string><id>105</id><value>Sortuj: rozmiar</value></string>
+  <string><id>103</id><value>Sortuj: Nazwa</value></string>
+  <string><id>104</id><value>Sortuj: Data</value></string>
+  <string><id>105</id><value>Sortuj: Rozmiar</value></string>
   <string><id>106</id><value>Nie</value></string>
   <string><id>107</id><value>Tak</value></string>
   <string><id>108</id><value>Pokaz slajdów</value></string>
-  <string><id>109</id><value>Stwórz miniatury</value></string>
-  <string><id>110</id><value>Tworzenie miniatur</value></string>
+  <string><id>109</id><value>Utwórz miniatury</value></string>
+  <string><id>110</id><value>Tworzenie miniaturek...</value></string>
   <string><id>111</id><value>Skróty</value></string>
-  <string><id>112</id><value>Pauza</value></string>
+  <string><id>112</id><value>PAUZA</value></string>
   <string><id>113</id><value>Pliki : Katalog źródłowy</value></string>
   <string><id>114</id><value>Pliki : Katalog docelowy</value></string>
   <string><id>115</id><value>Kopiuj</value></string>
@@ -58,100 +57,100 @@
   <string><id>117</id><value>Usuń</value></string>
   <string><id>118</id><value>Zmień nazwę</value></string>
   <string><id>119</id><value>Nowy folder</value></string>
-  <string><id>120</id><value>Potwierdź kopiowanie pliku</value></string>
-  <string><id>121</id><value>Potwierdź przenoszenie pliku</value></string>
-  <string><id>122</id><value>Potwierdź kasowanie pliku</value></string>
-  <string><id>123</id><value>Czy skopiować wybrane pliki?</value></string>
-  <string><id>124</id><value>Czy przenieść wybrane pliki?</value></string>
-  <string><id>125</id><value>Czy skasować wybrane pliki?</value></string>
-  <string><id>126</id><value>Status</value></string>
+  <string><id>120</id><value>Czy na pewno chcesz skopiować plik</value></string>
+  <string><id>121</id><value>Czy na pewno chcesz przenieść plik</value></string>
+  <string><id>122</id><value>Czy na pewno chcesz usunąć plik</value></string>
+  <string><id>123</id><value>Skopiować wybrane pliki?</value></string>
+  <string><id>124</id><value>Przenieść wybrane pliki?</value></string>
+  <string><id>125</id><value>Usunąć wybrane pliki?</value></string>
+  <string><id>126</id><value>Polecenie w toku</value></string>
   <string><id>127</id><value>Obiektów</value></string>
   <string><id>128</id><value>Ogólne</value></string>
   <string><id>129</id><value>Pokaz slajdów</value></string>
-  <string><id>130</id><value>Informacje systemowe</value></string>
+  <string><id>130</id><value>Informacje o systemie</value></string>
   <string><id>131</id><value>Ekran</value></string>
   <string><id>132</id><value>Albumy</value></string>
   <string><id>133</id><value>Wykonawcy</value></string>
   <string><id>134</id><value>Utwory</value></string>
   <string><id>135</id><value>Gatunki</value></string>
-  <string><id>136</id><value>Playlisty</value></string>
+  <string><id>136</id><value>Listy odtwarzania</value></string>
   <string><id>137</id><value>Szukaj</value></string>
-  <string><id>138</id><value>Informacje systemowe</value></string>
-  <string><id>139</id><value>Temperatura:</value></string>
-  <string><id>140</id><value>CPU:</value></string>
-  <string><id>141</id><value>GPU:</value></string>
-  <string><id>142</id><value>Czas:</value></string>
+  <string><id>138</id><value>INFORMACJE O SYSTEMIE</value></string>
+  <string><id>139</id><value>Temperatura :</value></string>
+  <string><id>140</id><value>CPU :</value></string>
+  <string><id>141</id><value>GPU :</value></string>
+  <string><id>142</id><value>Czas :</value></string>
   <string><id>143</id><value>Obecny:</value></string>
-  <string><id>144</id><value>Wersja:</value></string>
-  <string><id>145</id><value>Sieć:</value></string>
-  <string><id>146</id><value>Typ:</value></string>
+  <string><id>144</id><value>Build :</value></string>
+  <string><id>145</id><value>Sieć :</value></string>
+  <string><id>146</id><value>Typ :</value></string>
   <string><id>147</id><value>Statyczny</value></string>
-  <string><id>148</id><value>Dynamiczny</value></string>
+  <string><id>148</id><value>DHCP</value></string>
   <string><id>149</id><value>MAC</value></string>
-  <string><id>150</id><value>IP:</value></string>
-  <string><id>151</id><value>Połączenie:</value></string>
-  <string><id>152</id><value>Półduplex</value></string>
-  <string><id>153</id><value>Pełny duplex</value></string>
+  <string><id>150</id><value>IP</value></string>
+  <string><id>151</id><value>Połączenie : </value></string>
+  <string><id>152</id><value>Półdupleks</value></string>
+  <string><id>153</id><value>Pełny dupleks</value></string>
   <string><id>154</id><value>Dyski</value></string>
   <string><id>155</id><value>Dysk</value></string>
-  <string><id>156</id><value>Dostępne</value></string>
+  <string><id>156</id><value>dostępne</value></string>
   <string><id>157</id><value>Ekran</value></string>
   <string><id>158</id><value>Wolnej pamięci</value></string>
   <string><id>159</id><value>Brak połączenia</value></string>
-  <string><id>160</id><value>Dostępne</value></string>
-  <string><id>161</id><value>Niedostępne</value></string>
-  <string><id>162</id><value>Tacka napędu wysunięta</value></string>
+  <string><id>160</id><value>dostępne</value></string>
+  <string><id>161</id><value>Niedostępny</value></string>
+  <string><id>162</id><value>Wysunięta tacka napędu</value></string>
   <string><id>163</id><value>Czytam</value></string>
-  <string><id>164</id><value>Brak płyty w czytniku</value></string>
-  <string><id>165</id><value>Płyta w czytniku</value></string>
-  <string><id>166</id><value>Skórka:</value></string>
-  <string><id>167</id><value>Serwer FTP:</value></string>
-  <string><id>168</id><value>Serwer czasu:</value></string>
-  <string><id>169</id><value>Tryb i format wyświetlania:</value></string>
-  <string><id>170</id><value>Album:</value></string>
+  <string><id>164</id><value>Brak płyty w napędzie</value></string>
+  <string><id>165</id><value>Płyta w napędzie</value></string>
+  <string><id>166</id><value>Karnacja</value></string>
+  <string><id>167</id><value>Włącz serwer FTP</value></string>
+  <string><id>168</id><value>Włącz synchronizowanie czasu z Internetu</value></string>
+  <string><id>169</id><value>Tryb i format wyświetlania</value></string>
+  <string><id>170</id><value>Album :</value></string>
   <string><id>171</id><value>Wykonawca:</value></string>
-  <string><id>172</id><value>Data wydania:</value></string>
-  <string><id>173</id><value>Ocena:</value></string>
-  <string><id>174</id><value>Gatunek:</value></string>
-  <string><id>175</id><value>Tony:</value></string>
-  <string><id>176</id><value>Style:</value></string>
-  <string><id>177</id><value>Przegląd:</value></string>
-  <string><id>178</id><value>Ścieżki:</value></string>
+  <string><id>172</id><value>Data wydania :</value></string>
+  <string><id>173</id><value>Ocena :</value></string>
+  <string><id>174</id><value>Gatunek :</value></string>
+  <string><id>175</id><value>Dźwięk:</value></string>
+  <string><id>176</id><value>Styl :</value></string>
+  <string><id>177</id><value>Przegląd :</value></string>
+  <string><id>178</id><value>Ścieżki :</value></string>
   <string><id>179</id><value>Utwór</value></string>
   <string><id>180</id><value>Czas trwania</value></string>
-  <string><id>181</id><value>Wybierz album</value></string>
+  <string><id>181</id><value>Wybierz</value></string>
   <string><id>182</id><value>Ścieżki</value></string>
   <string><id>183</id><value>Przegląd</value></string>
   <string><id>184</id><value>Odśwież</value></string>
-  <string><id>185</id><value>Wyszukuję albumy</value></string>
+  <string><id>185</id><value>Szukam albumu</value></string>
   <string><id>186</id><value>OK</value></string>
-  <string><id>187</id><value>Nie znaleziono albumów!</value></string>
-  <string><id>188</id><value>Wybierz wszystko</value></string>
+  <string><id>187</id><value>Nie znaleziono albumu!</value></string>
+  <string><id>188</id><value>Zaznacz wszystko</value></string>
   <string><id>189</id><value>Wyszukuje informacje</value></string>
   <string><id>190</id><value>Zapisz</value></string>
   <string><id>191</id><value>Losowo</value></string>
   <string><id>192</id><value>Wyczyść</value></string>
   <string><id>193</id><value>Skanuj</value></string>
   <string><id>194</id><value>Szukam...</value></string>
-  <string><id>195</id><value>Nie odnaleziono informacji w IMDB!</value></string>
-  <string><id>196</id><value>Wybierz film:</value></string>
-  <string><id>197</id><value>Odczytuję informacje z IMDB</value></string>
-  <string><id>198</id><value>Wczytuję...</value></string>
-  <string><id>199</id><value>Reżyser:</value></string>
-  <string><id>200</id><value>Scenariusz:</value></string>
-  <string><id>201</id><value>Rok:</value></string>
-  <string><id>202</id><value>O filmie:</value></string>
-  <string><id>203</id><value>Opis:</value></string>
-  <string><id>204</id><value>Ocena</value>:</string>
-  <string><id>205</id><value>Głosy:</value></string>
-  <string><id>206</id><value>Obsada:</value></string>
+  <string><id>195</id><value>Nie znaleziono informacji w IMDB!</value></string>
+  <string><id>196</id><value>Wybierz film :</value></string>
+  <string><id>197</id><value>Oczekuję na dostęp do IMDB</value></string>
+  <string><id>198</id><value>Wczytuję informacje o filmie...</value></string>
+  <string><id>199</id><value>Reżyseria :</value></string>
+  <string><id>200</id><value>Scenariusz :</value></string>
+  <string><id>201</id><value>Rok :</value></string>
+  <string><id>202</id><value>O filmie :</value></string>
+  <string><id>203</id><value>Krótki opis :</value></string>
+  <string><id>204</id><value>Ocena :</value></string>
+  <string><id>205</id><value>Głosy :</value></string>
+  <string><id>206</id><value>Obsada</value></string>
   <string><id>207</id><value>Opis</value></string>
   <string><id>208</id><value>Odtwarzaj</value></string>
-  <string><id>209</id><value>Dalej</value></string>
-  <string><id>210</id><value>Wróć</value></string>
-  <string><id>211</id><value>Szukam programów</value></string>
-  <string><id>212</id><value>Znaleziono programy</value></string>
-  <string><id>213</id><value>Kalibracja interfejsu</value></string>
+  <string><id>209</id><value>Następny</value></string>
+  <string><id>210</id><value>Poprzedni</value></string>
+  <string><id>211</id><value>Szukam oprogramowania na dysku</value></string>
+  <string><id>212</id><value>programów znaleziono</value></string>
+  <string><id>213</id><value>UI Kalibracja</value></string>
   <string><id>214</id><value>Kalibracja ekranu</value></string>
   <string><id>215</id><value>Wygładź</value></string>
   <string><id>216</id><value>Powiększ</value></string>
@@ -161,119 +160,119 @@
   <string><id>220</id><value>Zdalny dostęp</value></string>
   <string><id>221</id><value>Sieć nie jest podłączona</value></string>
   <string><id>222</id><value>Anuluj</value></string>
-  <string><id>223</id><value>Wybierz najlepszą rozdzielczość dla filmów</value></string>
-  <string><id>224</id><value>Czas wyświetlania slajdu</value></string>
+  <string><id>223</id><value>Automatycznie wybierz najlepszą rozdzielczość</value></string>
+  <string><id>224</id><value>Czas pokazu slajdu</value></string>
   <string><id>225</id><value>Czas trwania przejścia</value></string>
   <string><id>226</id><value>Włącz PAL60</value></string>
   <string><id>227</id><value>Włącz CDDB</value></string>
-  <string><id>228</id><value>Wczytuj playlisty losowo</value></string>
-  <string><id>229</id><value>Wyłącz HDD po upływie (min)</value></string>
+  <string><id>228</id><value>Wczytuj playlistę losowo</value></string>
+  <string><id>229</id><value>Wyłącz HDD po upływie</value></string>
   <string><id>230</id><value>Filtry</value></string>
-  <string><id>231</id><value>Brak</value></string>
+  <string><id>231</id><value>Żaden</value></string>
   <string><id>232</id><value>Punktowy</value></string>
   <string><id>233</id><value>Liniowy</value></string>
-  <string><id>234</id><value>Anizotropowy</value></string>
+  <string><id>234</id><value>Anisotropic</value></string>
   <string><id>235</id><value>Quincunx</value></string>
   <string><id>236</id><value>Gaussian Cubic</value></string>
-  <string><id>237</id><value>Pomniejszenie:</value></string>
-  <string><id>238</id><value>Powiększenie:</value></string>
-  <string><id>239</id><value>Wyczyść playlistę po zakończeniu</value></string>
-  <string><id>240</id><value>Automatycznie odtwarzaj DVD-Video</value></string>
-  <string><id>241</id><value>Automatycznie odtwarzaj VCD/SVCD</value></string>
-  <string><id>242</id><value>Automatycznie odtwarzaj Audio-CD</value></string>
-  <string><id>243</id><value>Automatycznie odtwarzaj Gry</value></string>
-  <string><id>244</id><value>Automatycznie odtwarzaj Filmy</value></string>
-  <string><id>245</id><value>Automatycznie odtwarzaj Muzykę</value></string>
-  <string><id>246</id><value>Automatycznie odtwarzaj Obrazy</value></string>
+  <string><id>237</id><value>Pomniejszenie</value></string>
+  <string><id>238</id><value>Powiększenie</value></string>
+  <string><id>239</id><value>Po zakończeniu wyczyść playlistę</value></string>
+  <string><id>240</id><value>Autoodtwarzanie DVD-Video</value></string>
+  <string><id>241</id><value>Autoodtwarzanie VCD/SVCD</value></string>
+  <string><id>242</id><value>Autoodtwarzanie Audio-CD</value></string>
+  <string><id>243</id><value>Autoodtwarzanie gier XBOX</value></string>
+  <string><id>244</id><value>Autoodtwarzanie filmów</value></string>
+  <string><id>245</id><value>Autoodtwarzanie muzyki</value></string>
+  <string><id>246</id><value>Autoodtwarzanie zdjęć</value></string>
   <string><id>247</id><value>Skrypty</value></string>
   <string><id>248</id><value>Język</value></string>
   <string><id>249</id><value>Muzyka</value></string>
   <string><id>250</id><value>Wizualizacja</value></string>
   <string><id>251</id><value>Wybierz katalog docelowy</value></string>
-  <string><id>252</id><value>- Wyjście na wszystkie głośniki</value></string>
+  <string><id>252</id><value>- Wyjście Stereo na wszystkie głośniki</value></string>
   <string><id>253</id><value>Ilość kanałów</value></string>
   <string><id>254</id><value>- Wyjście DTS</value></string>
   <string><id>255</id><value>CDDB</value></string>
-  <string><id>256</id><value>Odczytuję informacje z CDDB</value></string>
+  <string><id>256</id><value>Oczekuję na dostęp do CDDB</value></string>
   <string><id>257</id><value>Błąd</value></string>
   <string><id>258</id><value>Włącz tagi ID3</value></string>
   <string><id>259</id><value>Otwieram</value></string>
-  <string><id>260</id><value>Rozgłośnia</value></string>
-  <string><id>261</id><value>Czekam na start....</value></string>
+  <string><id>260</id><value>Shoutcast</value></string>
+  <string><id>261</id><value>Oczekuję na rozpoczęcie....</value></string>
   <string><id>262</id><value>Wyjście skryptów</value></string>
-  <string><id>263</id><value>Serwer HTTP:</value></string>
+  <string><id>263</id><value>Włącz serwer HTTP</value></string>
   <string><id>264</id><value>Nagrywaj</value></string>
-  <string><id>265</id><value>Zatrzymaj nagrywanie</value></string>
-  <string><id>266</id><value>Sortuj: utwór</value></string>
-  <string><id>267</id><value>Sortuj: czas</value></string>
-  <string><id>268</id><value>Sortuj: tytuł</value></string>
-  <string><id>269</id><value>Sortuj: artysta</value></string>
-  <string><id>270</id><value>Sortuj: album</value></string>
+  <string><id>265</id><value>Zatrzymaj nagranie</value></string>
+  <string><id>266</id><value>Sortuj: Utwór</value></string>
+  <string><id>267</id><value>Sortuj: Czas</value></string>
+  <string><id>268</id><value>Sortuj: Tytuł</value></string>
+  <string><id>269</id><value>Sortuj: Artysta</value></string>
+  <string><id>270</id><value>Sortuj: Album</value></string>
   <string><id>271</id><value>Top 100</value></string>
-  <string><id>272</id><value>Górny lewy róg ekranu</value></string>
-  <string><id>273</id><value>Dolny prawy róg ekranu</value></string>
+  <string><id>272</id><value>Lewy górny róg ekranu</value></string>
+  <string><id>273</id><value>Prawy dolny róg ekranu</value></string>
   <string><id>274</id><value>Pozycja napisów</value></string>
-  <string><id>275</id><value>Ustawienia Pixel Ratio</value></string>
-  <string><id>276</id><value>Poruszaj strałką, aby zmienić pozycję rogów ekranu</value></string>
-  <string><id>277</id><value>Przesuń linię, aby zmienić pozycję napisów</value></string>
+  <string><id>275</id><value>Ustawienie Pixel Ratio</value></string>
+  <string><id>276</id><value>Poruszaj strzałką, aby zmieniać pozycję rogów ekranu</value></string>
+  <string><id>277</id><value>Przesuń linię, aby zmieniać pozycję napisów</value></string>
   <string><id>278</id><value>Zmień prostokąt w idealny kwadrat</value></string>
   <string><id>279</id><value>Nie mogę wczytać ustawień</value></string>
-  <string><id>280</id><value>Używam standardowych przejść</value></string>
+  <string><id>280</id><value>używam domyślnych przejść</value></string>
   <string><id>281</id><value>Proszę sprawdzić pliki .xml</value></string>
-  <string><id>282</id><value>Znalazłem %i</value></string>
+  <string><id>282</id><value>Znaleziono %</value></string>
   <string><id>283</id><value>Rezultaty wyszukiwania</value></string>
   <string><id>284</id><value>Nie znaleziono</value></string>
   <string><id>285</id><value>Filtr Deinterlace</value></string>
   <string><id>286</id><value>Filtr Postprocessing</value></string>
   <string><id>287</id><value>Napisy</value></string>
   <string><id>288</id><value>Czcionka</value></string>
-  <string><id>289</id><value>- Rozmiar</value></string>
-  <string><id>290</id><value>Wzmocnienie głośności (dB)</value></string>
+  <string><id>289</id><value>Rozmiar</value></string>
+  <string><id>290</id><value>Wzmocnienie dźwięku (dB)</value></string>
   <string><id>291</id><value>Obraz</value></string>
   <string><id>292</id><value>Dźwięk</value></string>
   <string><id>293</id><value>Napisy</value></string>
   <string><id>294</id><value>Utwórz zakładkę</value></string>
-  <string><id>295</id><value>Przewiń zakładki</value></string>
+  <string><id>295</id><value>Przewiń zakładkę</value></string>
   <string><id>296</id><value>Wyczyść zakładki</value></string>
-  <string><id>297</id><value>Opóźnienie AV</value></string>
-  <string><id>298</id><value>Suwak</value></string>
+  <string><id>297</id><value>Opóźnienie</value></string>
+  <string><id>298</id><value>Przewijanie</value></string>
   <string><id>300</id><value>1. Język</value></string>
   <string><id>301</id><value>2. Głośność</value></string>
   <string><id>302</id><value>3. Strumień</value></string>
   <string><id>303</id><value>Opóźnienie</value></string>
   <string><id>304</id><value>Język</value></string>
-  <string><id>305</id><value>Wł/wył</value></string>
+  <string><id>305</id><value>wł / wył</value></string>
   <string><id>306</id><value>Bez przeplotu</value></string>
-  <string><id>307</id><value>- Automatyczne przetwarzanie końcowe</value></string>
-  <string><id>308</id><value>- Pionowa redukcja makrobloków</value></string>
-  <string><id>309</id><value>- Pozioma redukcja makrobloków</value></string>
-  <string><id>310</id><value>- Automatyczna jasność/kontrast</value></string>
-  <string><id>311</id><value>- Usuwaj artefakty</value></string>
-  <string><id>312</id><value>(0=automatycznie)</value></string>
+  <string><id>307</id><value>Auto</value></string>
+  <string><id>308</id><value>Pionowa redukcja makrobloków</value></string>
+  <string><id>309</id><value>Pozioma redukcja makrobloków</value></string>
+  <string><id>310</id><value>Automatycznie jasność/kontrast</value></string>
+  <string><id>311</id><value>Usuwaj artefakty</value></string>
+  <string><id>312</id><value>(0=auto)</value></string>
   <string><id>313</id><value>Reorganizuj bazę danych</value></string>
   <string><id>314</id><value>Przygotowuję...</value></string>
   <string><id>315</id><value>Błąd bazy danych</value></string>
   <string><id>316</id><value>Przeszukuję utwory...</value></string>
   <string><id>317</id><value>Reorganizacja zakończona</value></string>
   <string><id>318</id><value>Oznaczam skasowane utwory</value></string>
-  <string><id>319</id><value>Błąd w trakcie reorganizacji utworów</value></string>
-  <string><id>320</id><value>Wyszukuję artystów.</value></string>
-  <string><id>321</id><value>Błąd w trakcie reorganizacji artystów</value></string>
-  <string><id>322</id><value>Wyszukuję gatunki...</value></string>
-  <string><id>323</id><value>Błąd w trakcie reorganizacji gatunków</value></string>
-  <string><id>324</id><value>Wyszukuję scieżki...</value></string>
-  <string><id>325</id><value>Błąd w trakcie reorganizacji scieżek</value></string>
-  <string><id>326</id><value>Wyszukuję albumy.</value></string>
+  <string><id>319</id><value>Błąd przy reorganizacji utworów</value></string>
+  <string><id>320</id><value>Przeszukuję artystów...</value></string>
+  <string><id>321</id><value>Błąd przy reorganizacji artystów</value></string>
+  <string><id>322</id><value>Przeszukuję gatunki...</value></string>
+  <string><id>323</id><value>Błąd przy reorganizacji gatunków</value></string>
+  <string><id>324</id><value>Przeszukuję ścieżki...</value></string>
+  <string><id>325</id><value>Błąd przy reorganizacji ścieżek</value></string>
+  <string><id>326</id><value>Przeszukuję albumy...</value></string>
   <string><id>327</id><value>Błąd przy reorganizacji albumów</value></string>
   <string><id>328</id><value>Zapisuję zmiany...</value></string>
-  <string><id>329</id><value>Błąd podczas zapisu zmian</value></string>
-  <string><id>330</id><value>To zajmie chwilkę...</value></string>
-  <string><id>331</id><value>Kompresuję bazę danych...</value></string>
-  <string><id>332</id><value>Błąd kompresji bazy danych</value></string>
+  <string><id>329</id><value>Błąd zapisu zmian</value></string>
+  <string><id>330</id><value>Proszę czekać...</value></string>
+  <string><id>331</id><value>Kompresuję baze danych...</value></string>
+  <string><id>332</id><value>Błąd kompresji bazy</value></string>
   <string><id>333</id><value>Czy chcesz zreorganizować bazę danych muzyki?</value></string>
   <string><id>334</id><value>Reorganizuj bazę danych muzyki</value></string>
   <string><id>335</id><value>Uruchom</value></string>
-  <string><id>336</id><value>Ustaw liczbę klatek</value></string>
+  <string><id>336</id><value>Dostosuj liczbę klatek</value></string>
   <string><id>337</id><value>Wyjście dźwięku</value></string>
   <string><id>338</id><value>Analogowe</value></string>
   <string><id>339</id><value>Cyfrowe</value></string>
@@ -283,35 +282,35 @@
   <string><id>343</id><value>Dostosuj liczbę klatek</value></string>
   <string><id>344</id><value>Obsada</value></string>
   <string><id>345</id><value>Rok</value></string>
-  <string><id>346</id><value>Grupuj</value></string>
-  <string><id>347</id><value>Rozgrupuj</value></string>
-  <string><id>348</id><value>Spłaszczona hierarchia katalogów</value></string>
-  <string><id>349</id><value>Pokazuj tylko Default.xbe</value></string>
+  <string><id>346</id><value>Złącz</value></string>
+  <string><id>347</id><value>Rozłącz</value></string>
+  <string><id>348</id><value>Brak hierarchii katalogów</value></string>
+  <string><id>349</id><value>Pokazuj tylko default.xbe</value></string>
   <string><id>350</id><value>Gry i Programy</value></string>
-  <string><id>351</id><value>Wyłącz</value></string>
-  <string><id>352</id><value>Przyćmienie</value></string>
-  <string><id>353</id><value>Czarny</value></string>
-  <string><id>354</id><value>Matrix'owe znaczki</value></string>
-  <string><id>355</id><value>Włącz wygaszacz po upływie (min.):</value></string>
+  <string><id>351</id><value>Wył</value></string>
+  <string><id>352</id><value>Przyciemnienie</value></string>
+  <string><id>353</id><value>Czarny ekran</value></string>
+  <string><id>354</id><value>Matrix</value></string>
+  <string><id>355</id><value>Włącz wygaszacz po upływie:</value></string>
   <string><id>356</id><value>Tryb wygaszacza</value></string>
-  <string><id>357</id><value>Wyłącz konsolę po upływie (min):</value></string>
+  <string><id>357</id><value>Wyłącz konsolę po upływie</value></string>
   <string><id>358</id><value>Wszystkie albumy</value></string>
-  <string><id>359</id><value>Mowe albumy</value></string>
+  <string><id>359</id><value>Nowe albumy</value></string>
   <string><id>360</id><value>Wygaszacz</value></string>
-  <string><id>361</id><value>Pokaz slajdów</value></string>
-  <string><id>362</id><value>Poziom przyciemienia (%)</value></string>
-  <string><id>363</id><value>Sortuj: pliki</value></string>
-  <string><id>364</id><value>Wielokanałowe przejście DD/DTS</value></string>
-  <string><id>365</id><value>Sortuj: nazwa</value></string>
-  <string><id>366</id><value>Sortuj: rok</value></string>
-  <string><id>367</id><value>Sortuj: ocena</value></string>
+  <string><id>361</id><value>z podkatalogami</value></string>
+  <string><id>362</id><value>Poziom przyciemnienia (%)</value></string>
+  <string><id>363</id><value>Sortuj: Plik</value></string>
+  <string><id>364</id><value>- Wyjście AC3</value></string>
+  <string><id>365</id><value>Sortuj: Nazwa</value></string>
+  <string><id>366</id><value>Sortuj: Rok</value></string>
+  <string><id>367</id><value>Sortuj: Ocena</value></string>
   <string><id>368</id><value>IMDB</value></string>
   <string><id>369</id><value>Tytuł</value></string>
-  <string><id>370</id><value>Burze</value></string>
-  <string><id>371</id><value>Częściowo</value></string>
-  <string><id>372</id><value>Częściowe</value></string>
-  <string><id>373</id><value>Rozpogodzenia</value></string>
-  <string><id>374</id><value>Zachmurzenie</value></string>
+  <string><id>370</id><value>Wichura</value></string>
+  <string><id>371</id><value>Cześciowo</value></string>
+  <string><id>372</id><value>Głównie</value></string>
+  <string><id>373</id><value>Słonecznie</value></string>
+  <string><id>374</id><value>Pochmurnie</value></string>
   <string><id>375</id><value>Śnieg</value></string>
   <string><id>376</id><value>Deszcz</value></string>
   <string><id>377</id><value>Pogodnie</value></string>
@@ -322,21 +321,21 @@
   <string><id>382</id><value>Sporadyczne</value></string>
   <string><id>383</id><value>Wiatr</value></string>
   <string><id>384</id><value>Silny</value></string>
-  <string><id>385</id><value>Łagodny</value></string>
+  <string><id>385</id><value>Spokojnie</value></string>
   <string><id>386</id><value>Bezchmurnie</value></string>
   <string><id>387</id><value>Pochmurnie</value></string>
   <string><id>388</id><value>Wcześnie</value></string>
-  <string><id>389</id><value>Przelotny deszcz</value></string>
-  <string><id>390</id><value>Śnieżyce</value></string>
-  <string><id>391</id><value>Niskie</value></string>
-  <string><id>392</id><value>Średnie</value></string>
-  <string><id>393</id><value>Wysokie</value></string>
-  <string><id>394</id><value>Mgła</value></string>
-  <string><id>395</id><value>Zamglenia</value></string>
+  <string><id>389</id><value>drobny</value></string>
+  <string><id>390</id><value>ulewa</value></string>
+  <string><id>391</id><value>niski</value></string>
+  <string><id>392</id><value>średnie</value></string>
+  <string><id>393</id><value>wysokie</value></string>
+  <string><id>394</id><value>mgła</value></string>
+  <string><id>395</id><value>Zamglenie</value></string>
   <string><id>396</id><value>Wybierz miasto</value></string>
-  <string><id>397</id><value>Czas odświerzania</value></string>
-  <string><id>398</id><value>Jednostki temperatury</value></string>
-  <string><id>399</id><value>Jednostki prędkości</value></string>
+  <string><id>397</id><value>Czas odświeżania</value></string>
+  <string><id>398</id><value>Jednostka temperatury</value></string>
+  <string><id>399</id><value>Jednostka prędkości</value></string>
   <string><id>400</id><value>Pogoda</value></string>
   <string><id>401</id><value>Temperatura</value></string>
   <string><id>402</id><value>Odczuwalna</value></string>
@@ -344,39 +343,39 @@
   <string><id>404</id><value>Wiatr</value></string>
   <string><id>405</id><value>Punkt rosy</value></string>
   <string><id>406</id><value>Wilgotność</value></string>
-  <string><id>407</id><value>z</value></string>
+  <string><id>407</id><value>Z</value></string>
   <string><id>408</id><value>na</value></string>
 
-  <string><id>410</id><value>Łączę się z Weather.com</value></string>
+  <string><id>410</id><value>Łączę sie z Weather.com</value></string>
   <string><id>411</id><value>Pobieram pogodę dla:</value></string>
   <string><id>412</id><value>Nie mogę uzyskać danych pogodowych</value></string>
   <string><id>413</id><value>Ręcznie</value></string>
-  <string><id>414</id><value>Brak recenzji albumu</value></string>
-  <string><id>415</id><value>Pobieram miniaturki...</value></string>
+  <string><id>414</id><value>Brak recenzji  tego albumu</value></string>
+  <string><id>415</id><value>Pobieram miniaturki....</value></string>
   <string><id>416</id><value>Nie dostępne</value></string>
   <string><id>417</id><value>Widok: Duże ikony</value></string>
   <string><id>418</id><value>Filmy/Gatunki</value></string>
   <string><id>419</id><value>Filmy/Aktorzy</value></string>
   <string><id>420</id><value>Filmy/Rok</value></string>
   <string><id>421</id><value>Filmy/Tytuł</value></string>
-  <string><id>422</id><value>Kasuj informacje o albumie</value></string>
-  <string><id>423</id><value>Kasuj informacje z CDDB</value></string>
-  <string><id>424</id><value>Wybierz</value></string>
-  <string><id>425</id><value>Nie znalazłem informacji o albumie.</value></string>
-  <string><id>426</id><value>Nie znalazłem informacji CDDB.</value></string>
+  <string><id>422</id><value>Usuń informacje o albumach</value></string>
+  <string><id>423</id><value>Usuń informacje CDDB </value></string>
+  <string><id>424</id><value>Zaznacz</value></string>
+  <string><id>425</id><value>Nie znaleziono informacji o albumie.</value></string>
+  <string><id>426</id><value>Nie znaleziono informacji CDDB.</value></string>
   <string><id>427</id><value>Dysk:</value></string>
-  <string><id>428</id><value>Włóż poprawny CD/DVD</value></string>
-  <string><id>429</id><value>Włóż następujący CD/DVD</value></string>
+  <string><id>428</id><value>Proszę włożyć właściwy CD/DVD</value></string>
+  <string><id>429</id><value>Proszę włożyć nastepujący CD/DVD</value></string>
   <string><id>430</id><value>Sortuj: DVD#</value></string>
-  <string><id>431</id><value>Bez pamięci podręcznej</value></string>
-  <string><id>432</id><value>Skasuj film z bazy danych</value></string>
+  <string><id>431</id><value>Bez cache</value></string>
+  <string><id>432</id><value>Usuń film z bazy danych</value></string>
   <string><id>433</id><value>Jesteś pewny, że chcesz usunąć</value></string>
   <string><id>434</id><value>film?</value></string>
   <string><id>435</id><value>Ścieżka</value></string>
   <string><id>436</id><value>Rok:</value></string>
   <string><id>437</id><value>Czas trwania:</value></string>
   <string><id>438</id><value>Otwieram plik</value></string>
-  <string><id>439</id><value>Bufor</value></string>
+  <string><id>439</id><value>Cache</value></string>
   <string><id>440</id><value>Dysk twardy</value></string>
   <string><id>441</id><value>UDF</value></string>
   <string><id>442</id><value>LAN</value></string>
@@ -385,109 +384,109 @@
   <string><id>445</id><value>dźwięk</value></string>
   <string><id>446</id><value>DVD</value></string>
   <string><id>447</id><value>Autoodtwarzanie</value></string>
-  <string><id>448</id><value>LCD</value></string>
+  <string><id>448</id><value>Wyświetlacz LCD</value></string>
   <string><id>449</id><value>Włączone</value></string>
   <string><id>450</id><value>Kolumn</value></string>
   <string><id>451</id><value>Rząd 1 adres</value></string>
   <string><id>452</id><value>Rząd 2 adres</value></string>
   <string><id>453</id><value>Rząd 3 adres</value></string>
   <string><id>454</id><value>Rząd 4 adres</value></string>
-  <string><id>455</id><value>Rzędów</value></string>
-  <string><id>456</id><value>Tryb:</value></string>
+  <string><id>455</id><value>Ilość rzędów</value></string>
+  <string><id>456</id><value>Tryb wyświetlacza :</value></string>
   <string><id>457</id><value>Przełącz widok</value></string>
   <string><id>458</id><value>Zakładki</value></string>
   <string><id>459</id><value>Napisy</value></string>
   <string><id>460</id><value>Strumień audio</value></string>
   <string><id>461</id><value>[aktywny]</value></string>
   <string><id>462</id><value>Napisy</value></string>
-  <string><id>463</id><value>Podświetlenie</value></string>
+  <string><id>463</id><value>Podświetlanie</value></string>
   <string><id>464</id><value>Jasność</value></string>
   <string><id>465</id><value>Kontrast</value></string>
   <string><id>466</id><value>Gamma</value></string>
   <string><id>467</id><value>Typ</value></string>
-  <string><id>468</id><value>Przesuń suwak aby zmienić pozycję OSD</value></string>
+  <string><id>468</id><value>Przesuń linię, aby zmienić pozycję OSD</value></string>
   <string><id>469</id><value>Pozycja OSD</value></string>
-  <string><id>470</id><value>Podziękowania</value></string>
-  <string><id>471</id><value>Chip</value></string>
-  <string><id>472</id><value>Wyświetlanie OSD</value></string>
-  <string><id>473</id><value>Resamplowanie w wysokiej jakości</value></string>
-  <string><id>474</id><value>Wyłącz</value></string>
-  <string><id>475</id><value>Tylko muzyka</value></string>
-  <string><id>476</id><value>Muzyka i Obraz</value></string>
-  <string><id>477</id><value>Nie mogę załadować playlisty</value></string>
+  <string><id>470</id><value>Autorzy</value></string>
+  <string><id>471</id><value>Modchip</value></string>
+  <string><id>472</id><value>Czas wyświetlania OSD</value></string>
+  <string><id>473</id><value>Wysoka jakość resamplingu</value></string>
+  <string><id>474</id><value>Wył</value></string>
+  <string><id>475</id><value>Muzyka</value></string>
+  <string><id>476</id><value>Muzyka i Filmy</value></string>
+  <string><id>477</id><value>Nie mogę wczytać playlisty</value></string>
   <string><id>478</id><value>OSD</value></string>
-  <string><id>479</id><value>Skóry i język</value></string>
-  <string><id>480</id><value>Wygląd</value></string>
+  <string><id>479</id><value>Karnacje i język</value></string>
+  <string><id>480</id><value>Interfejs</value></string>
   <string><id>481</id><value>Opcje dźwięku</value></string>
   <string><id>482</id><value>O XBMC...</value></string>
   <string><id>483</id><value>Album</value></string>
   <string><id>484</id><value>Wykonawca</value></string>
-  <string><id>485</id><value>Skasuj album</value></string>
+  <string><id>485</id><value>Kasuj Album</value></string>
   <string><id>486</id><value>Powtarzaj</value></string>
   <string><id>487</id><value>Powtórz raz</value></string>
-  <string><id>488</id><value>Powtarzaj katalog playlisty</value></string>
+  <string><id>488</id><value>Powtarzaj folder playlisty</value></string>
   <string><id>489</id><value>Automatycznie odtwarzaj kolejny utwór</value></string>
-  <string><id>490</id><value>Automatycznie przełącz listę i ikony w utworach</value></string>
-  <string><id>491</id><value>Używaj dużych ikon</value></string>
-  <string><id>492</id><value>Powiększ napisy</value></string>
-  <string><id>493</id><value>Zaawansowane opcje</value></string>
-  <string><id>494</id><value>Overall Audio Headroom (dB)</value></string>
-  <string><id>495</id><value>Przesampluj obraz do rozdzielczości interfejsu</value></string>
+  <string><id>490</id><value>Auto przełączanie listy i ikon w utworach</value></string>
+  <string><id>491</id><value>Użyj dużych ikon</value></string>
+  <string><id>492</id><value>Zmień rozmiar napisów</value></string>
+  <string><id>493</id><value>Zaawansowane ustawienia</value></string>
+  <string><id>494</id><value>Rezerwa mocy (dB)</value></string>
+  <string><id>495</id><value>Przeskaluj wideo do rozdzielczości interfejsu</value></string>
   <string><id>496</id><value>Kalibracja</value></string>
   <string><id>497</id><value>Ukryj rozszerzenia plików</value></string>
-  <string><id>498</id><value>Sortuj: typ</value></string>
-  <string><id>499</id><value>Nie mogę połączyć się z www.allmusic.com</value></string>
-  <string><id>500</id><value>Ściąganie informacji o albumie nie powiodło się</value></string>
-  <string><id>501</id><value>Szukam nazw albumów...</value></string>
+  <string><id>498</id><value>Sortuj: Typ</value></string>
+  <string><id>499</id><value>Nie mogę połączyć z www.allmusic.com</value></string>
+  <string><id>500</id><value>Ściąganie informacji albumu nie powiodło się</value></string>
+  <string><id>501</id><value>Szukanie nazw albumu...</value></string>
   <string><id>502</id><value>Otwarty</value></string>
   <string><id>503</id><value>Zajęty</value></string>
   <string><id>504</id><value>Pusty</value></string>
   <string><id>505</id><value>Wczytuję informacje o mediach z plików...</value></string>
-  <string><id>506</id><value>Użyj nazw katalogów dla opisów</value></string>
-  <string><id>507</id><value>Sortuj: ulubione</value></string>
-  <string><id>508</id><value>Nie używaj przycisków Skróty i Skanuj</value></string>
-  <string><id>509</id><value>Buforuj miniaturki programów</value></string>
+  <string><id>506</id><value>Używaj nazwy katalogu jako nazwy programu</value></string> 
+  <string><id>507</id><value>Sortuj: Ulubione</value></string>
+  <string><id>508</id><value>Nie używaj przyciskow Skróty i Skanuj</value></string>
+  <string><id>509</id><value>Cache-uj ikony programów</value></string>
   <string><id>510</id><value>Włącz wizualizacje</value></string>
-  <string><id>511</id><value>Zmień tryb ekranu bazując na regionie gry</value></string>
-  <string><id>512</id><value>Okienko startowe</value></string>
-  <string><id>513</id><value>Okienko domowe</value></string>
-  <string><id>514</id><value>Manualne ustawienia</value></string>
+  <string><id>511</id><value>Tryb wyświetlania w zależności od regionu gry</value></string>
+  <string><id>512</id><value>Okno startowe</value></string>
+  <string><id>513</id><value>Okno domowe</value></string>
+  <string><id>514</id><value>Ustawienia ręczne</value></string>
   <string><id>515</id><value>Gatunek</value></string>
-  <string><id>516</id><value>Obsługa archiwów</value></string>
-  <string><id>517</id><value>Najczęściej odtwarzane albumy</value></string>
+  <string><id>516</id><value>Traktuj archiwa jak katalogi</value></string>
+  <string><id>517</id><value>Ostatnio odtwarzane albumy</value></string>
   <string><id>518</id><value>Uruchom</value></string>
-  <string><id>519</id><value>Uruchom w..</value></string>
+  <string><id>519</id><value>Uruchom w...</value></string>
   <string><id>520</id><value>Edytuj nazwę XBE</value></string>
   <string><id>521</id><value>Kompilacje</value></string>
   <string><id>522</id><value>Usuń źródło</value></string>
 
-  <string><id>588</id><value>Anuluj Tryb Przyjęcia</value></string>
-  <string><id>589</id><value>Tryb Przyjęcia</value></string>
+  <string><id>588</id><value>Wyłącz Party Mode</value></string>
+  <string><id>589</id><value>Party Mode</value></string>
   <string><id>590</id><value>Losowo</value></string>
-  <string><id>591</id><value>Wył.</value></string>
-  <string><id>592</id><value>Raz</value></string>
-  <string><id>593</id><value>Wszystkie</value></string>
-  <string><id>594</id><value>Wył.</value></string>
-  <string><id>595</id><value>Powtarzanie: Wył.</value></string>
-  <string><id>596</id><value>Powtarzanie: Raz</value></string>
-  <string><id>597</id><value>Powtarzanie: Wszystkie</value></string>
+  <string><id>591</id><value>Wyłączone</value></string>
+  <string><id>592</id><value>Jeden</value></string>
+  <string><id>593</id><value>Wszystko</value></string>
+  <string><id>594</id><value>Wyłączone</value></string>
+  <string><id>595</id><value>Powtórz: Wył.</value></string>
+  <string><id>596</id><value>Powtórz: Jeden</value></string>
+  <string><id>597</id><value>Powtórz: Wszystko</value></string>
 
-  <string><id>600</id><value>Zgraj CD</value></string>
+  <string><id>600</id><value>Rippuj CD</value></string>
   <string><id>601</id><value>Średnia</value></string>
   <string><id>602</id><value>Standardowa</value></string>
   <string><id>603</id><value>Najwyższa</value></string>
-  <string><id>604</id><value>Stała szybkość transmisji</value></string>
-  <string><id>605</id><value>Zapisuję...</value></string>
+  <string><id>604</id><value>Stała szybkość transmisji bitów</value></string>
+  <string><id>605</id><value>Ripowanie...</value></string>
   <string><id>606</id><value>Numer utworu:</value></string>
   <string><id>607</id><value>Do:</value></string>
-  <string><id>608</id><value>Nie można zapisać CD lub utworu</value></string>
-  <string><id>609</id><value>CDDARipPath nie jest ustawiony w XboxMediaCenter.xml</value></string>
+  <string><id>608</id><value>Nie mogę zripować CD lub utworu</value></string>
+  <string><id>609</id><value>Ścieżka CDDARipPath nie jest ustawiona w pliku XboxMediaCenter.xml</value></string>
 
-  <string><id>620</id><value>Rippowanie CD</value></string>
-  <string><id>621</id><value>Koder</value></string>
+  <string><id>620</id><value>Ripowanie CD</value></string>
+  <string><id>621</id><value>Encoder</value></string>
   <string><id>622</id><value>Jakość</value></string>
-  <string><id>623</id><value>Szybkość transmisji</value></string>
-  <string><id>624</id><value>Dołącz numer utworu</value></string>
+  <string><id>623</id><value>Szybkość transmisji bitów</value></string>
+  <string><id>624</id><value>Dołączaj numer utworu</value></string>
   <string><id>625</id><value>Wszystkie piosenki</value></string>
 
   <string><id>629</id><value>Tryb wyświetlania</value></string>
@@ -498,16 +497,16 @@
   <string><id>634</id><value>Proporcje 16:9</value></string>
   <string><id>635</id><value>Oryginalny rozmiar</value></string>
   <string><id>636</id><value>Własny</value></string>
-  <string><id>637</id><value>Odtwarzaj ponownie</value></string>
+  <string><id>637</id><value>Wyrównywanie głośności</value></string>
   <string><id>638</id><value>Tryb</value></string>
-  <string><id>639</id><value>Użyj poziomowania ścieżek</value></string>
+  <string><id>639</id><value>Użyj poziomowanie ścieżek</value></string>
   <string><id>640</id><value>Użyj poziomowania albumów</value></string>
-  <string><id>641</id><value>Wzmocnienie poziomu - Pliki odtwarzane ponownie</value></string>
-  <string><id>642</id><value>Wzmocnienie poziomu - Pliki nie odtwarzane ponownie</value></string>
-  <string><id>643</id><value>Unikaj obcinania powtórnie odtwarzanych plików</value></string>
-  <string><id>644</id><value>Przytnij czarne pasy</value></string>
+  <string><id>641</id><value>Wzmocnienie - pliki z wyrówywaną głośnością</value></string>
+  <string><id>642</id><value>Wzmocnienie - pliki bez wyrównywania gł.</value></string>
+  <string><id>643</id><value>Unikaj obcinania plików z wyrównaną głośnością</value></string>
+  <string><id>644</id><value>Przycinaj czarne pasy</value></string>
   <string><id>645</id><value>Muszę buforować duże pliki. Kontynuować?</value></string>
-  <string><id>646</id><value>Usuń tytuł</value></string>
+  <string><id>646</id><value>Usuń Tytuł</value></string>
 
   <string><id>700</id><value>Czyszczenie bazy danych</value></string>
   <string><id>701</id><value>Usuwam stare utwory z bazy danych</value></string>
@@ -515,111 +514,111 @@
   <string><id>703</id><value>Naciśnij TAK, żeby uaktualnić wszystkie piosenki w lokacji.</value></string>
   <string><id>704</id><value>Naciśnij NIE, aby dodać tylko nowe piosenki.</value></string>
   <string><id>705</id><value>Sieć</value></string>
-  <string><id>706</id><value>- Adres serwera proxy:</value></string>
-  <string><id>707</id><value>- Port serwera proxy:</value></string>
-  <string><id>708</id><value>Włącz serwer proxy</value></string>
+  <string><id>706</id><value>- Adres serwera Proxy</value></string>
+  <string><id>707</id><value>- Port serwera Proxy</value></string>
+  <string><id>708</id><value>Włącz serwer Proxy</value></string>
   <string><id>709</id><value>XLink Kai XTag:</value></string>
   <string><id>710</id><value>Hasło XLink Kai:</value></string>
-  <string><id>711</id><value>Ustawienia sieci(IP)</value></string>
-  <string><id>712</id><value>Wybrano nieprawidłowy port. Wartość musi być z przedziału 1 do 65535.</value></string>
-  <string><id>713</id><value>Ustawienia HTTP Proxy</value></string>
-  <string><id>714</id><value>Ustawienia XLink</value></string>
-  <string><id>715</id><value>Przypisanie:</value></string>
-  <string><id>716</id><value>Automatyczne (DHCP)</value></string>
-  <string><id>717</id><value>Ręczne (Statyczny)</value></string>
-  <string><id>718</id><value>Domyślne (DashBoard)</value></string>
-  <string><id>719</id><value>- Adres IP:</value></string>
-  <string><id>720</id><value>- Maska podsieci:</value></string>
-  <string><id>721</id><value>- Domyślna bramka:</value></string>
-  <string><id>722</id><value>- Serwer DNS:</value></string>
-  <string><id>723</id><value>Zapisz ustawienia i zresetuj XBox'a</value></string>
-  <string><id>724</id><value>Wpisano nieprawidłowy adres. Wartość musi być w formacie AAA.BBB.CCC.DDD</value></string>
-  <string><id>725</id><value>gdzie liczby są z przedziału 0 do 255.</value></string>
+  <string><id>711</id><value>Ustawienia sieci (IP)</value></string>
+  <string><id>712</id><value>Wprowadzono nieprawidłowy port. Wartość musi być z przedziału 1 do 65535.</value></string>
+  <string><id>713</id><value>Ustawienia Proxy</value></string>	
+  <string><id>714</id><value>XLink Kai</value></string>
+  <string><id>715</id><value>Przypisanie:</value></string>	
+  <string><id>716</id><value>Automatyczne (DHCP)</value></string>	
+  <string><id>717</id><value>Ręczne (Static)</value></string>	
+  <string><id>718</id><value>Domyślne (Dashboard)</value></string>	
+  <string><id>719</id><value>Adres IP:</value></string>	
+  <string><id>720</id><value>Maska podsieci:</value></string>	
+  <string><id>721</id><value>Brama domyślna:</value></string>	
+  <string><id>722</id><value>Serwer DNS:</value></string>
+  <string><id>723</id><value>Zapisz i zresetuj</value></string>
+  <string><id>724</id><value>Wprowadzono nieprawidłowy adres. Wartość musi być w formacie AAA.BBB.CCC.DDD</value></string>
+  <string><id>725</id><value>z liczbami z przedziału 0 do 255.</value></string>
   <string><id>726</id><value>Zmiany nie zostały zapisane. Kontynuować bez zapisywania?</value></string>
-  <string><id>727</id><value>Serwer WWW</value></string>
-  <string><id>728</id><value>Serwer FTP</value></string>
-  <string><id>729</id><value>Czas z internetu</value></string>
-  <string><id>730</id><value>- Port serwera WWW</value></string>
-  <string><id>731</id><value>- Host serwera czasu</value></string>
-  <string><id>732</id><value>Zapisz i Zastosuj</value></string>
-  <string><id>733</id><value>- Hasło dla serwera WWW</value></string>
+  <string><id>727</id><value>Serwer WWW</value></string>    
+  <string><id>728</id><value>Serwer FTP</value></string>    
+  <string><id>729</id><value>Czas z Internetu</value></string>    
+  <string><id>730</id><value>Port serwera</value></string>
+  <string><id>731</id><value>Adres serwera czasu</value></string>
+  <string><id>732</id><value>Zastosuj i zapisz</value></string>
+  <string><id>733</id><value>- Hasło do serwera Web</value></string>
   <string><id>734</id><value>Bez hasła</value></string>
-  <string><id>735</id><value>- Czcionka:</value></string>
-  <string><id>736</id><value>- Styl:</value></string>
-  <string><id>737</id><value>- Kolor:</value></string>
-  <string><id>738</id><value>Normalna</value></string>
-  <string><id>739</id><value>Pogrubiona</value></string>
-  <string><id>740</id><value>Kursywa</value></string>
-  <string><id>741</id><value>Pogrubiona kursywa</value></string>
-  <string><id>742</id><value>Biały</value></string>
+  <string><id>735</id><value>- Kodowanie</value></string>
+  <string><id>736</id><value>- Styl</value></string>
+  <string><id>737</id><value>- Kolor</value></string>
+  <string><id>738</id><value>Normalna</value></string>	
+  <string><id>739</id><value>Pogrubiona</value></string>	
+  <string><id>740</id><value>Kursywa</value></string>	
+  <string><id>741</id><value>Pogrubiona kursywa</value></string>	
+  <string><id>742</id><value>Biały</value></string>	
   <string><id>743</id><value>Żółty</value></string>
   <string><id>744</id><value>Pliki</value></string>
-  <string><id>745</id><value>Nie znaleziono informacji</value></string>
-  <string><id>746</id><value>Przełącz do widoku plików</value></string>
-  <string><id>747</id><value>Za mało pamięci, żeby wyświetlić obrazek</value></string>
+  <string><id>745</id><value>Nie ma danych dla tego widoku</value></string>		
+  <string><id>746</id><value>Zmień na widok z plikami</value></string>
+  <string><id>747</id><value>Za mało pamięci aby wyświetlić obraz</value></string>
   <string><id>748</id><value>Edytuj ścieżkę</value></string>
   <string><id>749</id><value>Dodaj udział</value></string>
-  <string><id>750</id><value>Jesteś pewny?</value></string>
+  <string><id>750</id><value>Czy jesteś pewny?</value></string>
   <string><id>751</id><value>Usuń udział</value></string>
   <string><id>752</id><value>Edytuj ścieżkę udziału</value></string>
   <string><id>753</id><value>Edytuj nazwę udziału</value></string>
   <string><id>754</id><value>Dodaj link do programu</value></string>
-  <string><id>755</id><value>Edytuj ścieżkę programu</value></string>
+  <string><id>755</id><value>Edytuj ścieżkę do programu</value></string>
   <string><id>756</id><value>Edytuj nazwę programu</value></string>
-  <string><id>757</id><value>Edytuj ścieżkę</value></string>
-  <string><id>758</id><value>Usuń link do programu</value></string>
-  <string><id>759</id><value>Widok: Duża lista</value></string>
+  <string><id>757</id><value>Edytuj głębokość ścieżki</value></string>
+  <string><id>758</id><value>Usuń link do programu</value></string> 
+  <string><id>759</id><value>Widok: Duża Lista</value></string>
   <string><id>760</id><value>Żółty</value></string>
   <string><id>761</id><value>Biały</value></string>
   <string><id>762</id><value>Niebieski</value></string>
-  <string><id>763</id><value>Jasny zielony</value></string>
-  <string><id>764</id><value>Żółto-zielony</value></string>
-  <string><id>765</id><value>Niebiesko-zielony</value></string>
-  <string><id>766</id><value>Zarezerwowany</value></string>
-  <string><id>767</id><value>Zarezerwowany</value></string>
-  <string><id>768</id><value>Zarezerwowany</value></string>
-  <string><id>769</id><value>Zarezerwowany</value></string>
+  <string><id>763</id><value>Jasnozielony</value></string>
+  <string><id>764</id><value>Żółtozielony</value></string>
+  <string><id>765</id><value>Turkusowy</value></string>
+  <string><id>766</id><value>Reserved</value></string>
+  <string><id>767</id><value>Reserved</value></string>
+  <string><id>768</id><value>Reserved</value></string>
+  <string><id>769</id><value>Reserved</value></string>
   <string><id>770</id><value>Błąd %i: udział niedostępny</value></string>
-  <string><id>771</id><value>Sprawdzam ograniczenia FATX serwera FTP</value></string>
+  <string><id>771</id><value>Uwzględniaj ograniczenia systemu plików FATX</value></string>
   <string><id>772</id><value>Sprzęt Audio</value></string>
-  <string><id>773</id><value>Poszukuję</value></string>
-  <string><id>774</id><value>Folder ze slajdami dla wygaszacza</value></string>
+  <string><id>773</id><value>Szukanie</value></string>
+  <string><id>774</id><value>Folder ze zdjęciami dla wygaszacza</value></string>
 
   <string><id>998</id><value>XLink KAI</value></string>
-  <string><id>999</id><value>Rozgrywka Online</value></string>
+  <string><id>999</id><value>Gra sieciowa</value></string>
   <string><id>1000</id><value>Podgląd wygaszacza</value></string>
-  <string><id>1001</id><value>Nie mogę połączyć</value></string>
-  <string><id>1002</id><value>XBMC nie może się połączyć z lokacja sieciową.</value></string>
-  <string><id>1003</id><value>Błąd może występować gdy sieć nie jest podłączona.</value></string>
-  <string><id>1004</id><value>Czy chcesz dodać mimo wszystko?</value></string>
-  <string><id>1005</id><value>Wpisz nazwę dla tego udziału</value></string>
-  <string><id>1006</id><value>Adresy IP</value></string>
-  <string><id>1007</id><value>Dodaj lokację sieciową</value></string>
+  <string><id>1001</id><value>Nie można połączyć</value></string>
+  <string><id>1002</id><value>XBMC nie mógł nawiązać połączenia sieciowego.</value></string>
+  <string><id>1003</id><value>Może to być spowodowane brakiem dostępu do sieci.</value></string>
+  <string><id>1004</id><value>Czy chcesz mimo to kontynuować?</value></string>
+  <string><id>1005</id><value>Wprowadź nazwę dla tego udziału</value></string>
+  <string><id>1006</id><value>Adres IP</value></string>
+  <string><id>1007</id><value>Dodaj miejsce sieciowe</value></string>
   <string><id>1008</id><value>Protokół</value></string>
-  <string><id>1009</id><value>Adresy serwera</value></string>
+  <string><id>1009</id><value>Adres serwera</value></string>
   <string><id>1010</id><value>Nazwa serwera</value></string>
-  <string><id>1011</id><value>Ścieżka</value></string>
-  <string><id>1012</id><value>Udostępniony folder</value></string>
+  <string><id>1011</id><value>Zdalna ścieżka</value></string>
+  <string><id>1012</id><value>Folder współdzielony</value></string>
   <string><id>1013</id><value>Port</value></string>
   <string><id>1014</id><value>Nazwa użytkownika</value></string>
   <string><id>1015</id><value>serwer sieciowy</value></string>
-  <string><id>1016</id><value>Wpisz adresy sieciowe serwera</value></string>
-  <string><id>1017</id><value>Wpisz ścieżkę na serwerze</value></string>
-  <string><id>1018</id><value>Wpisz numer portu</value></string>
-  <string><id>1019</id><value>Wpisz nazwę użytkownika</value></string>
-  <string><id>1020</id><value>Dodaj %s Źródło</value></string>
-  <string><id>1021</id><value>Podaj ścieżkę lub wskaż lokację mediów.</value></string>
-  <string><id>1022</id><value>Wpisz nazwę dla tego źródła mediów.</value></string>
-  <string><id>1023</id><value>Wskaż nowy udział</value></string>
+  <string><id>1016</id><value>Wprowadź adres sieciowy serwera</value></string>
+  <string><id>1017</id><value>Wprowadź ścieżkę do serwera</value></string>
+  <string><id>1018</id><value>Wprowadź numer portu</value></string>
+  <string><id>1019</id><value>Wprowadź nazwę użytkownika</value></string>
+  <string><id>1020</id><value>Dodaj %s źródło</value></string>
+  <string><id>1021</id><value>Wprowadź ścieżkę lub przeglądaj.</value></string>
+  <string><id>1022</id><value>Wprowadź nazwę dla tego udziału.</value></string>
+  <string><id>1023</id><value>Przeglądaj w poszukiwaniu nowych udziałów</value></string>
   <string><id>1024</id><value>Przeglądaj</value></string>
-  <string><id>1025</id><value>Nie mogę uzyskać informacji o kjatalogu.</value></string>
-  <string><id>1026</id><value>Dodaj Źródło</value></string>
-  <string><id>1027</id><value>Edytuj Źródło</value></string>
-  <string><id>1028</id><value>Edytuj %s Źródło</value></string>
-  <string><id>1029</id><value>Wpisz nową nazwę</value></string>
+  <string><id>1025</id><value>Nie można uzyskać informacji o folderze.</value></string>
+  <string><id>1026</id><value>Dodaj źródło</value></string>
+  <string><id>1027</id><value>Edytuj źródło</value></string>
+  <string><id>1028</id><value>Edytuj %s źródło</value></string>
+  <string><id>1029</id><value>Wprowadź nową etykietę</value></string>
   <string><id>1030</id><value>obraz</value></string>
-  <string><id>1031</id><value>folder obrazu</value></string>
-  <string><id>1032</id><value>Dodajh lokację sieciową...</value></string>
+  <string><id>1031</id><value>folder obrazów</value></string>
+  <string><id>1032</id><value>Dodaj miejsce sieciowe...</value></string>
 
   <string><id>1200</id><value>SMB Udział</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
@@ -634,29 +633,30 @@
   <string><id>1210</id><value>Usuń</value></string>
   <string><id>1211</id><value>Muzyka</value></string>
   <string><id>1212</id><value>Filmy</value></string>
-  <string><id>1213</id><value>Obrazy</value></string>
-  <string><id>1214</id><value>Pliki</value></string>
+  <string><id>1213</id><value>Zdjęcia</value></string>
+  <string><id>1214</id><value>Eksplorator</value></string>
   <string><id>1215</id><value>Muzyka &amp; Filmy </value></string>
-  <string><id>1216</id><value>Muzyka &amp; Obrazy</value></string>
-  <string><id>1217</id><value>Muzyka &amp; Pliki</value></string>
-  <string><id>1218</id><value>Filmy &amp; Obrazy</value></string>
-  <string><id>1219</id><value>Filmy &amp; Pliki</value></string>
-  <string><id>1220</id><value>Obrazy &amp; Pliki</value></string>
-  <string><id>1221</id><value>Muzyka &amp; Filmy &amp; Obrazy</value></string>
-  <string><id>1222</id><value>Muzyka &amp; Filmy &amp; Obrazy &amp; Pliki</value></string>
+  <string><id>1216</id><value>Muzyka &amp; Zdjęcia</value></string>
+  <string><id>1217</id><value>Muzyka &amp; Eksplorator</value></string>
+  <string><id>1218</id><value>Filmy &amp; Zdjęcia</value></string>
+  <string><id>1219</id><value>Filmy &amp; Eksplorator</value></string>
+  <string><id>1220</id><value>Zdjęcia &amp; Eksplorator</value></string>
+  <string><id>1221</id><value>Muzyka &amp; Filmy &amp; Zdjęcia</value></string>
+  <string><id>1222</id><value>Muzyka &amp; Filmy &amp; Zdjęcia &amp; Eksplorator</value></string>
   <string><id>1223</id><value>Wyłączone</value></string>
   <string><id>1224</id><value>Normalny użytkownik</value></string>
   <string><id>1225</id><value>Zaawansowany użytkownik</value></string>
-  <string><id>1226</id><value>Pliki &amp; Muzyka &amp; Filmy</value></string>
-  <string><id>1227</id><value>Pliki &amp; Obrazy &amp; Muzyka</value></string>
-  <string><id>1228</id><value>Pliki &amp; Obrazy &amp; Filmy</value></string>
-  <string><id>1229</id><value>Muzyka &amp; Programy</value></string>
-  <string><id>1230</id><value>Filmy &amp; Programy</value></string>
-  <string><id>1231</id><value>Obrazy &amp; Programy</value></string>
-  <string><id>1232</id><value>Muzyka &amp; Filmy &amp; Obrazy &amp; Programy</value></string>
-  <string><id>1233</id><value>Programy &amp; Filmy &amp; Muzyka</value></string>
-  <string><id>1234</id><value>Programy &amp; Obrazy &amp; Muzyka</value></string>
-  <string><id>1235</id><value>Programy &amp; Obrazy &amp; Filmy</value></string>
+  <string><id>1226</id><value>Eksplorator &amp; Muzyka &amp; Filmy</value></string>
+  <string><id>1227</id><value>Eksplorator &amp; Zdjęcia &amp; Muzyka</value></string>
+  <string><id>1228</id><value>Eksplorator &amp; Zdjęcia &amp; Filmy</value></string>
+  <string><id>1229</id><value>Muzyka &amp; Gry i Programy</value></string>
+  <string><id>1230</id><value>Filmy &amp; Gry i Programy</value></string>
+  <string><id>1231</id><value>Zdjęcia &amp; Gry i Programy</value></string>
+  <string><id>1232</id><value>Muzyka &amp; Filmy &amp; Zdjęcia &amp; Gry i Programy</value></string>
+  <string><id>1233</id><value>Gry i Programy &amp; Filmy &amp; Muzyka</value></string>
+  <string><id>1234</id><value>Gry i Programy &amp; Zdjęcia &amp; Muzyka</value></string>
+  <string><id>1235</id><value>Gry i Programy &amp; Zdjęcia &amp; Filmy</value></string>
+  <string><id>1236</id><value>- Maksymalny czas łączenia</value></string>
 
   <string><id>1245</id><value> - FTP Użytkownik</value></string>
   <string><id>1246</id><value> - FTP Hasło</value></string>
@@ -664,12 +664,12 @@
 
   <string><id>1250</id><value>Autodetekcja</value></string>
   <string><id>1251</id><value>Autodetekcja XBox'a</value></string>
-  <string><id>1252</id><value>Ksywa</value></string>
-  <string><id>1253</id><value>Stwórz link do FTP w Moich Plikach</value></string>
+  <string><id>1252</id><value>Nick</value></string>
+  <string><id>1253</id><value>Stwórz link do FTP w Eksploratorze</value></string>
   <string><id>1254</id><value>Wyskakujące informacje</value></string>
   <string><id>1255</id><value>Wyślij użytkownika i hasło do FTP'a</value></string>
   <string><id>1256</id><value>Opoźnienie ping'u</value></string>
-  <string><id>1257</id><value>Czy chcesz się podłączyć do wykrytego XBOX'a ?</value></string>
+  <string><id>1257</id><value>Połączyć z wykrytym Xbox-em?</value></string>
 
   <string><id>1396</id><value>Zamiecie</value></string>
   <string><id>1397</id><value>i</value></string>
@@ -686,19 +686,19 @@
   <string><id>1408</id><value>Kryształki</value></string>
   <string><id>1409</id><value>lodu</value></string>
   <string><id>1410</id><value>Spokojnie</value></string>
+  
+  <string><id>2050</id><value>Czas trwania</value></string>
+  
+  <string><id>4501</id><value>Typ wyświetlacza LCD</value></string>
 
-  <string><id>2050</id><value>Długość:</value></string>
-
-  <string><id>4501</id><value>Typ LCD</value></string>
-
-  <string><id>10000</id><value>Ekran główny</value></string>
-  <string><id>10001</id><value>Gry i Programy</value></string>
-  <string><id>10002</id><value>Obrazy</value></string>
+  <string><id>10000</id><value>Okno domowe</value></string>
+  <string><id>10001</id><value>Gry i programy</value></string>
+  <string><id>10002</id><value>Zdjęcia</value></string>
   <string><id>10003</id><value>Eksplorator</value></string>
   <string><id>10004</id><value>Ustawienia</value></string>
   <string><id>10005</id><value>Muzyka</value></string>
   <string><id>10006</id><value>Filmy</value></string>
-  <string><id>10007</id><value>Informacje systemowe</value></string>
+  <string><id>10007</id><value>Info o systemie</value></string>
   <string><id>10008</id><value>Ustawienia-&gt;Ogólne</value></string>
   <string><id>10009</id><value>Ustawienia-&gt;Ekran</value></string>
   <string><id>10010</id><value>Ustawienia-&gt;Ekran->Kalibracja interfejsu</value></string>
@@ -734,40 +734,40 @@
   <string><id>10511</id><value>Informacje</value></string>
   <string><id>10512</id><value>Muzyka - Albumy</value></string>
   <string><id>10513</id><value>Muzyka - Artysta</value></string>
-  <string><id>10514</id><value>Muzyka - Gatunek</value></string>
+  <string><id>10514</id><value>Muzyka - Gatunki</value></string>
   <string><id>10515</id><value>Muzyka - Top 100</value></string>
-  <string><id>10516</id><value>Muzyka - Biblioteka</value></string>
+  <string><id>10516</id><value>Muzyka - Płytoteka</value></string>
   <string><id>10517</id><value>Muzyka - Playlista</value></string>
-  <string><id>10518</id><value>Filmy - Aktorzy</value></string>
+  <string><id>10518</id><value>Filmy - Aktor</value></string>
   <string><id>10519</id><value>Filmy - Gatunek</value></string>
-  <string><id>10520</id><value>Filmy - Tytuły</value></string>
+  <string><id>10520</id><value>Filmy - Tytuł</value></string>
   <string><id>10521</id><value>Filmy - Rok</value></string>
   <string><id>10522</id><value>Filmy - Playlista</value></string>
-  <string><id>10523</id><value>Informacje o albumie</value></string>
-  <string><id>10524</id><value>Informacje o filmie</value></string>
-  <string><id>12000</id><value>Okno wyboru</value></string>
+  <string><id>10523</id><value>Info o Albumie</value></string>
+  <string><id>10524</id><value>Info o Filmie</value></string>
+  <string><id>12000</id><value>Dialog wyboru</value></string>
   <string><id>12001</id><value>Muzyka/info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
   <string><id>12003</id><value>Filmy/Info</value></string>
   <string><id>12004</id><value>Skrypty/Info</value></string>
   <string><id>12005</id><value>Tryb pełnoekranowy</value></string>
-  <string><id>12006</id><value>Wizualizacja dźwięku</value></string>
-  <string><id>12007</id><value>Obrazy/pokaz slajdów</value></string>
-  <string><id>12008</id><value>Okno grupowania plików</value></string>
-  <string><id>12009</id><value>Przebudowuję index...</value></string>
+  <string><id>12006</id><value>Wizualizacja</value></string>
+  <string><id>12007</id><value>Zdjęcia/slideshow</value></string>
+  <string><id>12008</id><value>Dialog łączenia plików</value></string>
+  <string><id>12009</id><value>Przebudowywanie indeksu...</value></string>
   <string><id>12010</id><value>Wróć do Muzyki</value></string>
   <string><id>12011</id><value>Wróć do Filmów</value></string>
-  <string><id>12012</id><value>Uaktualnij listę trainerów</value></string>
+  <string><id>12012</id><value>Aktualizuj listę trainerów</value></string>
   <string><id>12013</id><value>Trainer</value></string>
   <string><id>12014</id><value>Nie znaleziono trainerów</value></string>
-  <string><id>12015</id><value>Opcje trainera</value></string>
-  <string><id>12016</id><value>Wszystkie zarejestrowane trainery znikły. Uaktualnij swoją listę</value></string>
-  <string><id>12017</id><value>Wznawiaj od ostatniej pozycji</value></string>
+  <string><id>12015</id><value>Ustawienia trainera</value></string>
+  <string><id>12016</id><value>Brakuje wszystkich trailerów. Zaktualizuj listę</value></string>
+  <string><id>12017</id><value>Automatycznie rozpoczynaj od ostatniego miejsca</value></string>
   <string><id>12018</id><value>Nie</value></string>
   <string><id>12019</id><value>Tak</value></string>
   <string><id>12020</id><value>Zapytaj</value></string>
   <string><id>12021</id><value>Zacznij od początku</value></string>
-  <string><id>12022</id><value>Wznów od ostatniej pozycji</value></string>
+  <string><id>12022</id><value>Rozpocznij od ostatniego miejsca</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -782,38 +782,38 @@
   <string><id>12320</id><value>c</value></string>
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
-  <string><id>12324</id><value>Blokada XBMC</value></string>
+  <string><id>12324</id><value>Wprowadź główne hasło</value></string>
   <string><id>12325</id><value>Dostęp zablokowany</value></string>
-  <string><id>12326</id><value>Wpisz hasło</value></string>
-  <string><id>12327</id><value>Wpisz hasło i wciśnij Enter,</value></string>
-  <string><id>12328</id><value>Wpisz hasło odblokowujące i wciśnij Enter,</value></string> 
-  <string><id>12329</id><value>lub C aby anulować</value></string>
-  <string><id>12330</id><value>Wciśnij kombinację przycisków na padzie i </value></string>
-  <string><id>12331</id><value>Start lub Back aby anulować</value></string>
-  <string><id>12332</id><value>Załóż blokadę</value></string>
-  <string><id>12333</id><value>Odbezpiecz</value></string>
+  <string><id>12326</id><value>Podaj hasło</value></string>
+  <string><id>12327</id><value>Wprowadź główne hasło i naciśnij Enter,</value></string>
+  <string><id>12328</id><value>Wprowadź hasło i naciśnij Enter,</value></string> 
+  <string><id>12329</id><value>albo naciśnij C aby anulować</value></string>
+  <string><id>12330</id><value>Wprowadź kombinacje przycisków na padzie XBOX-a</value></string>
+  <string><id>12331</id><value>i naciśnij Start, lub Back aby anulować</value></string>
+  <string><id>12332</id><value>Załóż hasło</value></string>
+  <string><id>12333</id><value>Zdejmij hasło</value></string>
   <string><id>12334</id><value>Wyzeruj limit prób</value></string>
-  <string><id>12335</id><value>Usuń zabezpieczenie</value></string>
-  <string><id>12336</id><value>Wybierz typ zabezpieczenia:</value></string>
+  <string><id>12335</id><value>Usuń hasło</value></string>
+  <string><id>12336</id><value>Wybierz rodzaj wprowadzania hasła:</value></string>
   <string><id>12337</id><value>Hasło numeryczne</value></string>
-  <string><id>12338</id><value>Kombinacja przycisków</value></string>
-  <string><id>12339</id><value>Hasło tekstowe</value></string>
-  <string><id>12340</id><value>Wpisz nowe hasło</value></string>
-  <string><id>12341</id><value>Powtórz nowe hasło</value></string>
-  <string><id>12342</id><value>Hasło niepoprawne,</value></string>
-  <string><id>12343</id><value>pozostało prób </value></string>
-  <string><id>12344</id><value>Wpisane hasło nie pasuje.</value></string>
-  <string><id>12345</id><value>Dostęp zabroniony</value></string>
-  <string><id>12346</id><value>Limit powtórzeń wyczerpany.</value></string>
-  <string><id>12347</id><value>XBox zostanie wyłączony.</value></string>
+  <string><id>12338</id><value>Kombinacja przycisków na padzie</value></string>
+  <string><id>12339</id><value>Hasło w trybie tekstowym</value></string>
+  <string><id>12340</id><value>Wprowadź nowe hasło</value></string>
+  <string><id>12341</id><value>Potwierdź nowe hasło</value></string>
+  <string><id>12342</id><value>Nieprawidłowe hasło,</value></string>
+  <string><id>12343</id><value>zostało prób </value></string>
+  <string><id>12344</id><value>Wprowadzone hasło nie jest prawidłowe.</value></string>
+  <string><id>12345</id><value>Odmowa dostępu</value></string>
+  <string><id>12346</id><value>Limit prób wpisania hasła został wyczerpany.</value></string>
+  <string><id>12347</id><value>Niestety XBOX się teraz wyłączy.</value></string>
   <string><id>12348</id><value>Zablokowany</value></string>
   <string><id>12349</id><value>Zapamiętać hasło do ponownego uruchomienia?</value></string>
   <string><id>12350</id><value>(Otwarcie pozycji w ustawieniach</value></string>
   <string><id>12351</id><value>automatycznie włączy hasło.)</value></string>
-  <string><id>12352</id><value>Wcisnij kombinację przycisków</value></string>
+  <string><id>12352</id><value>Wybierz kombinację przycisków</value></string>
   <string><id>12353</id><value>i reaktywuj hasło</value></string>
-  <string><id>12354</id><value>Ignorować zabezpieczenia folderow do nastepnego uruchomienia?</value></string>
-  <string><id>12355</id><value>automatycznie włącz zabezpieczenia filderów.)</value></string>
+  <string><id>12354</id><value>Ignorować zabezpieczenia folderów do następnego uruchomienia?</value></string>
+  <string><id>12355</id><value>automatycznie włącz zabezpieczenia folderów.)</value></string>
   <string><id>12356</id><value>Zmień blokadę</value></string>
   <string><id>12357</id><value>Dziel blokadę</value></string>
   <string><id>12358</id><value>Hasło było puste. Spróbuj ponownie.</value></string>
@@ -833,59 +833,58 @@
   <string><id>12373</id><value>Zablokuj ustawienia</value></string>
   <string><id>12374</id><value>Zablokuj media</value></string>
   <string><id>12375</id><value>Tryb administratora</value></string>
-  <string><id>12376</id><value>Ustaw jako domyślne dla wszystkich filmów</value></string>
-  <string><id>12377</id><value>Zapisane wcześniej wartości zostaną usunięte</value></string>
-  <string><id>12378</id><value>Pokazuj każdy obraz dla</value></string>
-  <string><id>12379</id><value>Użyj efektów Pan i Zoom</value></string>
-  <string><id>12380</id><value>Odtwarzaj filmy NTSC w częstotliwościach PAL</value></string>
-  <string><id>12381</id><value>Odtwarzaj filmy PAL w częstotliwościach NTSC</value></string>
-  <string><id>12382</id><value>Odtwarzaj filmy NTSC w PAL60</value></string>
-  <string><id>12383</id><value>12'sto godzinny zegar</value></string>
-  <string><id>12384</id><value>24'ro godzinny zegar</value></string>
+  <string><id>12376</id><value>Ustaw jako domyślny dla wszystkich filmów</value></string>
+  <string><id>12377</id><value>Wszystkie wcześniejsze ustawienia zostaną zmnienione</value></string>
+  <string><id>12378</id><value>Pokaż obraz dla</value></string>
+  <string><id>12379</id><value>Używaj efetu zbliżania i przesuwania</value></string>
+  <string><id>12380</id><value>Odtwarzaj filmy NTSC jako PAL</value></string>
+  <string><id>12381</id><value>Odtwarzaj filmy PAL jako NTSC</value></string>
+  <string><id>12382</id><value>Odtwarzaj filmy NTSC jako PAL60</value></string>
+  <string><id>12383</id><value>12 godzinny</value></string>
+  <string><id>12384</id><value>24 godzinny</value></string>
   <string><id>12385</id><value>Dzień/Miesiąc</value></string>
   <string><id>12386</id><value>Miesiąc/Dzień</value></string>
-  <string><id>12387</id><value>Przeskanuj bazę danych</value></string>
+  <string><id>12387</id><value>Zaktualizuj bibiotekę</value></string>
 
   <string><id>12390</id><value>System pracuje</value></string>
   <string><id>12391</id><value>Minut</value></string>
   <string><id>12392</id><value>Godzin</value></string>
   <string><id>12393</id><value>Dni</value></string>
-  <string><id>12394</id><value>Całkowity czas pracy</value></string>
-  
+  <string><id>12394</id><value>Od początku</value></string>
+
   <string><id>12600</id><value>Pogoda</value></string>
-
-  <string><id>12900</id><value>Wygaszacz</value></string>
-  <string><id>12901</id><value>Pełnoekranowe OSD</value></string>
-
+  
+  <string><id>12900</id><value>Wygaszacz ekranu</value></string>
+  <string><id>12901</id><value>OSD w trybie pełnoekranowym</value></string>
   <string><id>13000</id><value>System</value></string>
-  <string><id>13001</id><value>Natychmiastowe wyłączenie HDD</value></string>
+  <string><id>13001</id><value>Bezpośrednie wyłączenie HDD</value></string>
   <string><id>13002</id><value>Tylko filmy</value></string>
   <string><id>13003</id><value>- Opóźnienie</value></string>
-  <string><id>13004</id><value>- Minimalny czas trwania</value></string>
+  <string><id>13004</id><value>- Minimalny czas trwania pliku</value></string>
   <string><id>13005</id><value>Wyłącz</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
-
-  <string><id>13100</id><value>Migotanie</value></string>
- <string><id>13150</id><value>HDD Key:</value></string>
-  <string><id>13151</id><value>HDD Temp:</value></string>
+  
+  <string><id>13100</id><value>Filtr migotania</value></string>
+  <string><id>13150</id><value>HDD Klucz:</value></string>
+  <string><id>13151</id><value>HDD Temperatura:</value></string>
   <string><id>13152</id><value>DVD Model:</value></string>
   <string><id>13153</id><value>DVD Firmware:</value></string>
   <string><id>13154</id><value>HDD Model:</value></string>
-  <string><id>13155</id><value>HDD Serial:</value></string>
+  <string><id>13155</id><value>HDD Nr seryjny:</value></string>
   <string><id>13156</id><value>HDD Firmware:</value></string>
   <string><id>13157</id><value>HDD Hasło:</value></string>
   <string><id>13158</id><value>HDD Stan blokady:</value></string>
   <string><id>13159</id><value>Maska podsieci:</value></string>
-  <string><id>13160</id><value>Bramka:</value></string>
+  <string><id>13160</id><value>Brama:</value></string>
   <string><id>13161</id><value>DNS:</value></string>
-  <string><id>13162</id><value>Nie można zainicjować</value></string>
-  <string><id>13163</id><value>GamePady na Porcie:</value></string>
-  <string><id>13164</id><value>Klawiatura na Porcie:</value></string>
-  <string><id>13165</id><value>Myszka na Porcie:</value></string>
-  <string><id>13166</id><value>Mikrofon na Porcie:</value></string>
-  <string><id>13167</id><value>MemoryStick na Porcie:</value></string>
-  <string><id>13168</id><value>Pilot na Porcie:</value></string>
-  <string><id>13169</id><value>Omijaj wybór CD</value></string>
+  <string><id>13162</id><value>Inicjalizacja nie udała się</value></string>
+  <string><id>13163</id><value>GamePady - porty:</value></string>
+  <string><id>13164</id><value>Klawiatura - port:</value></string>
+  <string><id>13165</id><value>Mysz - port:</value></string>
+  <string><id>13166</id><value>Słuchawki/Mikrofon - port:</value></string>
+  <string><id>13167</id><value>Karta pamięci - port:</value></string>
+  <string><id>13168</id><value>Czujnik IR - port:</value></string>
+  <string><id>13169</id><value>Omiń wybór CD</value></string>
   <string><id>13170</id><value>Nigdy</value></string>
   <string><id>13171</id><value>Natychmiast</value></string>
   <string><id>13172</id><value>Po %i sekundach</value></string>
@@ -894,249 +893,249 @@
   <string><id>13201</id><value>Usuń profil '%s'?</value></string>
   <string><id>13202</id><value>Zapisz bieżące ustawienia jako profil...</value></string>
   <string><id>13203</id><value>Profil '%s' załadowany pomyślnie</value></string>
-  <string><id>13204</id><value>Ostatnio załadowany profil:</value></string>
+  <string><id>13204</id><value>Ostatni załadowany profil:</value></string>
   <string><id>13205</id><value>Nieznany</value></string>
-  <string><id>13206</id><value>Nadpisz</value></string>
-  <string><id>13207</id><value>Nadpisz profil '%s'?</value></string>
-  <string><id>13208</id><value>Budzik</value></string>
-  <string><id>13209</id><value>Przerwa budzika (w minutach)</value></string>
-  <string><id>13210</id><value>Uruchomiony, alarm za %im</value></string>
+  <string><id>13206</id><value>Zastąp</value></string>
+  <string><id>13207</id><value>Zastąp profil '%s'?</value></string>
+  <string><id>13208</id><value>Alarm</value></string>
+  <string><id>13209</id><value>Interwał alarmu (w minutach)</value></string>
+  <string><id>13210</id><value>Rozpoczęto, alarm za %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
-  <string><id>13212</id><value>Anulowano pozostało minut %im%</value></string>
+  <string><id>13212</id><value>Anulowano na %im%is do końca</value></string>
 
 
-  <string><id>13249</id><value>Przeglądaj Rar'y w poszukiwaniu napisów</value></string>
-  <string><id>13250</id><value>Przeglądaj napisy...</value></string>
+  <string><id>13249</id><value>Szukaj napisów w RAR-ach</value></string>
+  <string><id>13250</id><value>Przeglądaj w poszukiwaniu napisów...</value></string>
   <string><id>13251</id><value>Przenieś</value></string>
-  <string><id>13252</id><value>Przenieś tu</value></string>
-  <string><id>13253</id><value>Anuluj przenoszenie</value></string>
+  <string><id>13252</id><value>Przenieś tutaj</value></string>
+  <string><id>13253</id><value>Anuluj przeniesienie</value></string>
 
   <string><id>13270</id><value>Sprzęt:</value></string>
   <string><id>13271</id><value>Prędkość CPU:</value></string>
-  <string><id>13274</id><value>Xbox jest podłączony ale nie ma dostępnych DNS'ów.</value></string>
+  <string><id>13274</id><value>Xbox jest połączony, ale nie ma dostępu do DNS.</value></string>
   <string><id>13275</id><value>Dysk twardy</value></string>
   <string><id>13276</id><value>DVD-ROM</value></string>
-  <string><id>13277</id><value>Pamięć</value></string>
-  <string><id>13278</id><value>Domyślnie</value></string>
+  <string><id>13277</id><value>Miejsce</value></string>
+  <string><id>13278</id><value>Domyślne</value></string>
   <string><id>13279</id><value>Sieć</value></string>
-  <string><id>13280</id><value>Obraz</value></string>
+  <string><id>13280</id><value>Wideo</value></string>
   <string><id>13281</id><value>Sprzęt</value></string>
   <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>Wersja Kernel'a:</value></string>
+  <string><id>13283</id><value>Wersja jądra:</value></string>
   <string><id>13284</id><value>Prędkość CPU:</value></string>
   <string><id>13285</id><value>Wykryty BIOS:</value></string>
-  <string><id>13286</id><value>Enkoder Video:</value></string>
+  <string><id>13286</id><value>Koder Wideo:</value></string>
   <string><id>13287</id><value>Rozdzielczość ekranu:</value></string>
-  <string><id>13288</id><value>Xbox wersja:</value></string>
-  <string><id>13289</id><value>Xbox numer seryjny:</value></string>
-  <string><id>13290</id><value>XBOX producent:</value></string>
+  <string><id>13288</id><value>Wersja Xboksa:</value></string>
+  <string><id>13289</id><value>Nr seryjny Xboksa:</value></string>
+  <string><id>13290</id><value>Producent Xboksa:</value></string>
   <string><id>13291</id><value>ModChip:</value></string>
   <string><id>13292</id><value>Kabel A/V:</value></string>
-  <string><id>13293</id><value>Region Video &amp; XBE:</value></string>
-  <string><id>13294</id><value>DVD Region:</value></string>
+  <string><id>13293</id><value>Region Wideo & XBE:</value></string>
+  <string><id>13294</id><value>Region DVD:</value></string>
   <string><id>13295</id><value>Internet:</value></string>
-  <string><id>13296</id><value>Xbox jest podłączony</value></string>
-  <string><id>13297</id><value>Xbox nie jest podłączony. Sprawdź ustawienia sieciowe.</value></string>
+  <string><id>13296</id><value>Xbox jest połączony</value></string>
+  <string><id>13297</id><value>Xbox nie jest połączony. Sprawdź ustawienia sieci.</value></string>
   <string><id>13298</id><value>Klucz XBLIVE:</value></string>
   <string><id>13299</id><value>Temperatura</value></string>
-  <string><id>13300</id><value>Prędkość wiatraka:</value></string>
+  <string><id>13300</id><value>Obroty wentylatora:</value></string>
   <string><id>13301</id><value>Kontrola temperatury</value></string>
-  <string><id>13302</id><value>Kontrola obrotów wiatraka</value></string>
-  <string><id>13303</id><value>Czcionka skóry</value></string>
+  <string><id>13302</id><value>Kontrola obrotów wentylatora</value></string>
+  <string><id>13303</id><value>Czcionka</value></string>
   <string><id>13304</id><value>Odwróć znaki</value></string>
   <string><id>13305</id><value>Włącz wiadomości RSS</value></string>
   <string><id>13306</id><value>Ukryj symbol (..) folderu nadrzędnego</value></string>
-  <string><id>13307</id><value>Szablon nazywania ścieżek</value></string>
-  <string><id>13308</id><value>Czy chcesz wykonać pełny reset</value></string>
-  <string><id>13309</id><value>zamiast zwykłego resetu?</value></string>
+  <string><id>13307</id><value>Szablon wyświetlania nazwy</value></string>
+  <string><id>13308</id><value>Czy chcesz wykonać restart konsoli</value></string>
+  <string><id>13309</id><value>zamiast ponownego uruchomienia XBMC?</value></string>
   <string><id>13310</id><value>Efekt powiększenia</value></string>
   <string><id>13311</id><value>Efekt unoszenia</value></string>
   <string><id>13312</id><value>Redukcja czarnego paska</value></string>
-  <string><id>13313</id><value>Reset/Restart</value></string>
-  <string><id>13314</id><value>Przenikanie</value></string>
-  <string><id>13315</id><value>Utwórz miniaturki</value></string>
-  <string><id>13316</id><value>Rekurencyjne miniaturki</value></string>
-  <string><id>13317</id><value>Pokaz slajdów</value></string>
-  <string><id>13318</id><value>Rekurencyjny pokaz slajdów</value></string>
-  <string><id>13319</id><value>Losowo</value></string>
+  <string><id>13313</id><value>Restart</value></string>
+  <string><id>13314</id><value>Nakładanie utworów</value></string>
+  <string><id>13315</id><value>Utwórz miniatury</value></string>
+  <string><id>13316</id><value>Odśwież miniatury</value></string>
+  <string><id>13317</id><value>Rozpocznij pokaz</value></string>
+  <string><id>13318</id><value>.. z podkatalogami</value></string>
+  <string><id>13319</id><value>Wybieraj losowo</value></string>
   <string><id>13320</id><value>Stereo</value></string>
-  <string><id>13321</id><value>Tylko lewy</value></string>
+  <string><id>13321</id><value>Tylko Lewy</value></string>
   <string><id>13322</id><value>Tylko prawy</value></string>
   <string><id>13323</id><value>Włącz CD+G</value></string>
-  <string><id>13324</id><value>Przeźroczystość tła</value></string>
-  <string><id>13325</id><value>Przeźroczystość napisów</value></string>
+  <string><id>13324</id><value>Przezroczystość tła</value></string>
+  <string><id>13325</id><value>Przezroczystość napisów</value></string>
   <string><id>13326</id><value>Opóźnienie A/V</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
   <string><id>13328</id><value>%s nie znaleziono.</value></string>
-  <string><id>13329</id><value>Błąd otwierania %s</value></string>
-  <string><id>13330</id><value>Nie mogę załadować %s</value></string>
-  <string><id>13331</id><value>Błąd: za mało pamięci.</value></string>
-  <string><id>13332</id><value>Przesuń w góre</value></string>
-  <string><id>13333</id><value>Przesuń w dół</value></string>
-  <string><id>13334</id><value>Edytuj nazwę</value></string>
+  <string><id>13329</id><value>Błąd otwarcia %s</value></string>
+  <string><id>13330</id><value>Wczytanie nie powiodło się %s</value></string>
+  <string><id>13331</id><value>Błąd: brak pamięci.</value></string>
+  <string><id>13332</id><value>Przesuń do góry</value></string>
+  <string><id>13333</id><value>Przesuń na dół</value></string>
+  <string><id>13334</id><value>Zmień opis</value></string>
   <string><id>13335</id><value>Ustaw jako domyślny</value></string>
   <string><id>13336</id><value>Usuń przycisk</value></string>
-  <string><id>13337</id><value>Przejście PCM dwu kanałowe</value></string>
-  <string><id>13338</id><value>Dioda LED</value></string>
-  <string><id>13339</id><value>Kolor diody LED</value></string>
-  <string><id>13340</id><value>Pozostaw niezmieniony</value></string>
+  <string><id>13337</id><value>Dwukanałowe przejście PCM</value></string>
+  <string><id>13338</id><value>Dioda na panelu</value></string>
+  <string><id>13339</id><value>Kolor diody</value></string>
+  <string><id>13340</id><value>Zostaw jak jest</value></string>
   <string><id>13341</id><value>Zielona</value></string>
   <string><id>13342</id><value>Pomarańczowa</value></string>
   <string><id>13343</id><value>Czerwona</value></string>
-  <string><id>13344</id><value>Wszystkie po kolei</value></string>
+  <string><id>13344</id><value>Mrugająca</value></string>
   <string><id>13345</id><value>Wyłącz diodę podczas odtwarzania</value></string>
-  <string><id>13346</id><value>Informacja o filmie</value></string>
-  <string><id>13347</id><value>Element kolejki</value></string>
-  <string><id>13348</id><value>Wyszukuj w IMDb...</value></string>
-  <string><id>13349</id><value>Pobierz informacje dla wszystkich plików</value></string>
-  <string><id>13350</id><value>Odtwarzam...</value></string>
+  <string><id>13346</id><value>Informacje o filmie</value></string>
+  <string><id>13347</id><value>Dodaj do listy odtwarzania</value></string>
+  <string><id>13348</id><value>Szukaj w IMDb...</value></string>
+  <string><id>13349</id><value>Info do wszystkich plików</value></string>
+  <string><id>13350</id><value>Teraz odtwarzane</value></string>
   <string><id>13351</id><value>Informacje o albumie</value></string>
-  <string><id>13352</id><value>Skanuj folder do bazy danych</value></string>
-  <string><id>13353</id><value>Przerwij skanowanie</value></string>
-  <string><id>13354</id><value>Sposób renderowania</value></string>
-  <string><id>13355</id><value>Niskiej jakości cieniowanie pixeli</value></string>
-  <string><id>13356</id><value>Sprzętowe nakładki</value></string>
-  <string><id>13357</id><value>Wysokiej jakości cieniowanie pixeli</value></string>
+  <string><id>13352</id><value>Dodaj do biblioteki</value></string>
+  <string><id>13353</id><value>Zatrzymaj</value></string>
+  <string><id>13354</id><value>Metody Renderowania</value></string>
+  <string><id>13355</id><value>Low Quality Pixel Shader</value></string>
+  <string><id>13356</id><value>Hardware Overlays</value></string>
+  <string><id>13357</id><value>High Quality Pixel Shader</value></string>
   <string><id>13358</id><value>Odtwarzaj</value></string>
-  <string><id>13359</id><value>Ustaw miniaturkę dla artysty</value></string>
-  <string><id>13360</id><value>Generuj miniaturki</value></string>
+  <string><id>13359</id><value>Ustaw ikonę artysty</value></string>
+  <string><id>13360</id><value>Twórz ikony</value></string>
   <string><id>13361</id><value>Włącz głos</value></string>
-  <string><id>13362</id><value>Maska głosu</value></string>
+  <string><id>13362</id><value>Maskowanie głosu</value></string>
   <string><id>13363</id><value>- Włącz wagę widma energii</value></string>
   <string><id>13364</id><value>-- Wartość wagi widma energii</value></string>
-  <string><id>13365</id><value>- Włącz podziałkę skalowania</value></string>
-  <string><id>13366</id><value>-- Włącz wartość skalowania</value></string>
+  <string><id>13365</id><value>- Włącz wysokość skalowania dźwięku</value></string>
+  <string><id>13366</id><value>-- Wartość wysokości skalowania dźwięku</value></string>
   <string><id>13367</id><value>- Włącz współczynnik szeptu</value></string>
   <string><id>13368</id><value>-- Wartość współczynnika szeptu</value></string>
-  <string><id>13369</id><value>- Włącz współczynnik Robotic</value></string>
-  <string><id>13370</id><value>-- Wartośćwspółczynnika Robotic</value></string>
-  <string><id>13371</id><value>- Port 0 Głos</value></string>
-  <string><id>13372</id><value>- Port 1 Głos</value></string>
-  <string><id>13373</id><value>- Port 2 Głos</value></string>
-  <string><id>13374</id><value>- Port 3 Głos</value></string>
+  <string><id>13369</id><value>- Włącz współczynnik robotyka</value></string>
+  <string><id>13370</id><value>-- Wartość współczynnika robotyka</value></string>
+  <string><id>13371</id><value>- Port 0 głos</value></string>
+  <string><id>13372</id><value>- Port 1 głos</value></string>
+  <string><id>13373</id><value>- Port 2 głos</value></string>
+  <string><id>13374</id><value>- Port 3 głos</value></string>
   <string><id>13375</id><value>Włącz urządzenie</value></string>
   <string><id>13376</id><value>Głośność(%)</value></string>
-  <string><id>13377</id><value>Domyślny tryb wyświetlania</value></string>
-  <string><id>13378</id><value>Domyślna jasność</value></string>
-  <string><id>13379</id><value>Domyślny kontrast</value></string>
-  <string><id>13380</id><value>Domyślna gamma</value></string>
-  <string><id>13381</id><value>Przywróć Video</value></string>
-  <string><id>13382</id><value>Maskowanie głosu - Port 0</value></string>
-  <string><id>13383</id><value>Maskowanie głosu - Port 1</value></string>
-  <string><id>13384</id><value>Maskowanie głosu - Port 2</value></string>
-  <string><id>13385</id><value>Maskowanie głosu - Port 3</value></string>
-  <string><id>13386</id><value>Użyj poszukiwania bazującego na czasie</value></string>
-  <string><id>13387</id><value>Prawa szablonu nazywania ścieżek</value></string>
-  <string><id>13388</id><value>Ustawienia</value></string>
-  <string><id>13389</id><value>Nie ma dostępnych ustawień &#10;dla tej wizualizacji</value></string>
+  <string><id>13377</id><value>Tryb wyświetlania</value></string>
+  <string><id>13378</id><value>Jasność</value></string>
+  <string><id>13379</id><value>Kontrast</value></string>
+  <string><id>13380</id><value>Gamma</value></string>
+  <string><id>13381</id><value>Wznów odtwarzanie</value></string>
+  <string><id>13382</id><value>Maskowanie głosu - port 0</value></string>
+  <string><id>13383</id><value>Maskowanie głosu - port 1</value></string>
+  <string><id>13384</id><value>Maskowanie głosu - port 2</value></string>
+  <string><id>13385</id><value>Maskowanie głosu - port 3</value></string>
+  <string><id>13386</id><value>Przewijanie oparte na czasie</value></string>
+  <string><id>13387</id><value>Szablon wyświetlania prawej kolumny</value></string>
+  <string><id>13388</id><value>Efekty</value></string>
+  <string><id>13389</id><value>Nie ma dostępnych efektów &#10;dla tej wizualizacji</value></string>
   <string><id>13390</id><value>Nie ma dostępnych opcji &#10;dla tej wizualizacji</value></string>
-  <string><id>13391</id><value>Wysuń/Załaduj</value></string>
-  <string><id>13392</id><value>Używaj wizualizacji gdy odtwarza audio</value></string>
-  <string><id>13393</id><value>Oblicz rozmiar</value></string>
-  <string><id>13394</id><value>Obliczam rozmiar folderu</value></string>
+  <string><id>13391</id><value>Wysuń/Wsuń</value></string>
+  <string><id>13392</id><value>Wizualizacja gdy odtwarzasz muzykę</value></string>
+  <string><id>13393</id><value>Oblicz wielkość</value></string>
+  <string><id>13394</id><value>Oblicz wielkość folderu</value></string>
   <string><id>13395</id><value>Ustawienia obrazu</value></string>
   <string><id>13396</id><value>Ustawienia dźwięku i napisów</value></string>
   <string><id>13397</id><value>Włącz napisy</value></string>
   <string><id>13398</id><value>Zakładki</value></string>
-  <string><id>13399</id><value>Ignoruj "The" kiedy sortujesz</value></string>
+  <string><id>13399</id><value>Sortuj pomijając "The" w nazwie</value></string>
   <string><id>13400</id><value>Przenikanie utworów</value></string>
-  <string><id>13401</id><value>Przeglądaj %s</value></string>
-  <string><id>13402</id><value>Pokaż pozycję ścieżki</value></string>
-  <string><id>13403</id><value>Wyczyść domyślne</value></string>
-  <string><id>13404</id><value>Przywróć</value></string>
-  <string><id>13405</id><value>Pobierz miniatórkę</value></string>
+  <string><id>13401</id><value>Przeglądaj w poszukiwaniu %s</value></string>
+  <string><id>13402</id><value>Pokaż pozycję utworu</value></string>
+  <string><id>13403</id><value>Przywróć domyślne</value></string>
+  <string><id>13404</id><value>Wznów</value></string>
+  <string><id>13405</id><value>Pobierz ikonę</value></string>
 
-  <string><id>14000</id><value>Kaskadowanie wył.</value></string>
-  <string><id>14001</id><value>Kaskadowanie proste</value></string>
-  <string><id>14002</id><value>Kaskadowanie rozmyte</value></string>
-  <string><id>14003</id><value>Ściągam plik playlisty...</value></string>
-  <string><id>14004</id><value>Ściągam listę streamów...</value></string>
-  <string><id>14005</id><value>Przetwarzam listę streamów...</value></string>
-  <string><id>14006</id><value>Ściąganie listy streamów się nie powiodło</value></string>
-  <string><id>14007</id><value>Ściąganie playlisty się nie powiodło</value></string>
-  <string><id>14008</id><value>Włącz zawiadomienia w Kai</value></string>
+  <string><id>14000</id><value>Złącz części</value></string>
+  <string><id>14001</id><value>Złącz : tak</value></string>
+  <string><id>14002</id><value>Łącz: płynnie</value></string>
+  <string><id>14003</id><value>Pobieranie pliku play listy...</value></string>
+  <string><id>14004</id><value>Pobieranie listy strumieni...</value></string>
+  <string><id>14005</id><value>Przetwarzanie listy strumieni...</value></string>
+  <string><id>14006</id><value>Nie można pobrać listy strumieni</value></string>
+  <string><id>14007</id><value>Nie można pobrać pliku playlisty</value></string>
+  <string><id>14008</id><value>Włącz powiadamianie Kai</value></string>
   <string><id>14009</id><value>Katalog z grami</value></string>
   <string><id>14010</id><value>Opcje automatycznego przełączania</value></string>
-  <string><id>14011</id><value>Włączyć automatyczne przełączanie?</value></string>
-  <string><id>14012</id><value>- Użyj dużych ikon</value></string>
-  <string><id>14013</id><value>- Metoda:</value></string>
-  <string><id>14014</id><value>- Procent:</value></string>
-  <string><id>14015</id><value>Miniatury jeśli nie ma plików</value></string>
-  <string><id>14016</id><value>Lista jeśli nie ma folderów</value></string>
-  <string><id>14017</id><value>Procent miniatur</value></string>
-  <string><id>14018</id><value>Widok</value></string>
-  <string><id>14019</id><value>Miasto 1</value></string>
-  <string><id>14020</id><value>Miasto 2</value></string>
-  <string><id>14021</id><value>Miasto 3</value></string>
-  <string><id>14022</id><value>Zasoby</value></string>
+  <string><id>14011</id><value>Automatyczne przełączanie widoku</value></string>
+  <string><id>14012</id><value>- Pokaż duże ikony</value></string>
+  <string><id>14013</id><value>- Metoda</value></string>
+  <string><id>14014</id><value>- Procent</value></string>
+  <string><id>14015</id><value>Miniaturki jeżeli nie ma plików</value></string>
+  <string><id>14016</id><value>Lista jeżeli nie ma katalogów</value></string>
+  <string><id>14017</id><value>Procentowo miniaturki</value></string>
+  <string><id>14018</id><value>Opcje widoku</value></string>
+  <string><id>14019</id><value>Ustaw miasto 1</value></string>
+  <string><id>14020</id><value>Ustaw miasto 2</value></string>
+  <string><id>14021</id><value>Ustaw miasto 3</value></string>
+  <string><id>14022</id><value>Płytoteka</value></string>
   <string><id>14023</id><value>Bez TV</value></string>
-  <string><id>14024</id><value>Podaj nazwę miasta lub kod pocztowy (USA)</value></string>
-  <string><id>14025</id><value>Bufor Video/Audio/DVD - Dysk twardy</value></string>
-  <string><id>14026</id><value>Bufor Video - DVDRom</value></string>
-  <string><id>14027</id><value>- Sieć lokalna</value></string>
-  <string><id>14028</id><value>- Internet</value></string>
-  <string><id>14030</id><value>Bufor Audio - DVDRom</value></string>
-  <string><id>14031</id><value>- Sieć lokalna</value></string>
-  <string><id>14032</id><value>- Internet</value></string>
-  <string><id>14034</id><value>Bufor DVD - DVDRom</value></string>
-  <string><id>14035</id><value>- Sieć lokalna</value></string>
+  <string><id>14024</id><value>Wpisz nazwę lub kod miasta</value></string>
+  <string><id>14025</id><value>Wideo/Audio/DVD  z twardego dysku</value></string>
+  <string><id>14026</id><value>Wideo z - napędu DVD</value></string>
+  <string><id>14027</id><value> - sieci lokalnej</value></string>
+  <string><id>14028</id><value> - internetu</value></string>
+  <string><id>14030</id><value>Audio z - napędu DVD</value></string>
+  <string><id>14031</id><value> - sieci lokalnej</value></string>
+  <string><id>14032</id><value> - internetu</value></string>
+  <string><id>14034</id><value>DVD z - napędu DVD</value></string>
+  <string><id>14035</id><value> - sieci lokalnej</value></string>
   <string><id>14036</id><value>Serwery</value></string>
   <string><id>14037</id><value>Wygląd</value></string>
-  <string><id>14038</id><value>Ustawienia sieciowe zmienione</value></string>
-  <string><id>14039</id><value>XBMC wymaga restartu aby zmienić twoje</value></string>
-  <string><id>14040</id><value>ustawienia sieciowe.  Czy chcesz teraz zrestartować?</value></string>
+  <string><id>14038</id><value>Zmieniono ustawienia sieci</value></string>
+  <string><id>14039</id><value>Wprowadzone zmiany wymagją ponownego uruchomienia.</value></string>
+  <string><id>14040</id><value>Chcesz teraz ponownie uruchomić XBMC?</value></string>
   <string><id>14041</id><value>Przetwarzanie</value></string>
-  <string><id>14042</id><value>Adresy IP</value></string>
-  <string><id>14043</id><value>- Wyłącz kiedy odtwarza</value></string>
-  <string><id>14044</id><value>%i minut</value></string>
-  <string><id>14045</id><value>%i sekund</value></string>
+  <string><id>14042</id><value>Adres IP silnika</value></string>
+  <string><id>14043</id><value>- Wyłącz w trakcie odtwarzania</value></string>
+  <string><id>14044</id><value>%i min</value></string>
+  <string><id>14045</id><value>%i s</value></string>
   <string><id>14046</id><value>%i ms</value></string>
   <string><id>14047</id><value>%i %%</value></string>
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Pokazuj 12'sto godzinny zegar</value></string>
-  <string><id>14052</id><value>Zamień dni i miesiące na ekranie głównym</value></string>
-  <string><id>14053</id><value>Filtry interfejsu</value></string>
-  <string><id>14054</id><value>Wł/wył wyszukiwanie połączenia z internetem</value></string>
-  <string><id>14055</id><value>Użyj skanowania w tle</value></string>
+  <string><id>14051</id><value>Zegar w formacie</value></string>
+  <string><id>14052</id><value>Data w formacie </value></string>
+  <string><id>14053</id><value>Filtry GUI</value></string>
+  <string><id>14054</id><value>Szukaj połączenia z Internetem</value></string>
+  <string><id>14055</id><value>Skanuj w tle</value></string>
   <string><id>14056</id><value>Zatrzymaj skanowanie</value></string>
-  <string><id>14057</id><value>Niemożliwe, dopóki wyszukuję informacje o mediach</value></string>
+  <string><id>14057</id><value>Nie możliwe podczas zbierania info o mediach</value></string>
   <string><id>14058</id><value>Efekt ziarnistości</value></string>
-  <string><id>14059</id><value>Szukaj miniatur w udziałach sieciowych</value></string>
-  <string><id>14060</id><value>Nieznany typ bufora</value></string>
-  <string><id>14061</id><value>Automatycznie</value></string>
-  <string><id>14062</id><value>Wpisz nazwę użytkownika dla</value></string>
-  <string><id>14063</id><value>Data &amp; Czas</value></string>
-  <string><id>14064</id><value>Ustaw rok</value></string>
-  <string><id>14065</id><value>Ustaw miesiąc</value></string>
-  <string><id>14066</id><value>Ustaw dzień</value></string>
-  <string><id>14067</id><value>Ustaw godzinę</value></string>
-  <string><id>14068</id><value>Ustaw minuty</value></string>
-  <string><id>14069</id><value>Czy chcesz by zmiany obowiązywały od teraz?</value></string>
-  <string><id>14070</id><value>Wprowadź zmiany</value></string>
-  <string><id>14071</id><value>Zezwól na kasowanie plików</value></string>
+  <string><id>14059</id><value>Szukaj miniaturek w udziałach sieciowych</value></string>
+  <string><id>14060</id><value>Nieznany - Internet</value></string>
+  <string><id>14061</id><value>Auto</value></string>
+  <string><id>14062</id><value>Podaj użytkownika dla</value></string> 
+  <string><id>14063</id><value>Data i Czas</value></string>
+  <string><id>14064</id><value>Ustaw datę</value></string>
+  <string><id>14065</id><value>Ustaw godzinę</value></string>
+  <string><id>14066</id><value>Wprowadź godzinę (HH:MM)</value></string>
+  <string><id>14067</id><value>Wprowadź datę (DD/MM/RRRR)</value></string>
+  <string><id>14068</id><value>Wprowadź adres IP</value></string>
+  <string><id>14069</id><value>Chcesz zapisać swoje ustawienia?</value></string>
+  <string><id>14070</id><value>Zastosuj i zapisz</value></string>
+  <string><id>14071</id><value>Zezwalaj na zmianę nazwy i kasowanie plików</value></string>
   <string><id>14072</id><value>Włącz XLink Kai</value></string>
   <string><id>14073</id><value>XLink Kai nie jest włączony.</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Serwis nie jest podłączony, czy chcesz się</value></string>
-  <string><id>15002</id><value>podłączyć za pomocą XBMC?</value></string>
+  <string><id>15002</id><value>ponownie połączyć za pomocą XBMC?</value></string>
   <string><id>15003</id><value>Wpisz swoją wiadomość.</value></string>
   <string><id>15004</id><value>Zostałeś zaproszony do gry %s.</value></string>
   <string><id>15005</id><value>Data: %s</value></string>
   <string><id>15006</id><value>Z: %s</value></string>
   <string><id>15007</id><value>Zaproszenie</value></string>
   <string><id>15008</id><value>Zostałeś zaproszony do dołączenia do %s.</value></string>
-  <string><id>15009</id><value>Odłączony</value></string>
-  <string><id>15010</id><value>Przyjaciele</value></string>
-  <string><id>15011</id><value>Widok: Przyjaciele</value></string>
+  <string><id>15009</id><value>Rozłączony</value></string>
+  <string><id>15010</id><value>Znajomi</value></string>
+  <string><id>15011</id><value>Widok: Znajomi</value></string>
   <string><id>15012</id><value>Dołącz</value></string>
   <string><id>15013</id><value>Głos</value></string>
   <string><id>15014</id><value>Zaproś</value></string>
   <string><id>15015</id><value>Usuń</value></string>
   <string><id>15016</id><value>Gry</value></string>
-  <string><id>15017</id><value>Widok: Gry</value></string>
+  <string><id>15017</id><value>Widok: gry</value></string>
   <string><id>15018</id><value>Wprowadź</value></string>
   <string><id>15019</id><value>Dodaj</value></string>
   <string><id>15020</id><value>Host</value></string>
@@ -1145,10 +1144,10 @@
   <string><id>15023</id><value>Graj</value></string>
   <string><id>15024</id><value>Dodaj</value></string>
   <string><id>15025</id><value>Host</value></string>
-  <string><id>15026</id><value>Czat</value></string>
-  <string><id>15027</id><value>Widok: Czaty</value></string>
+  <string><id>15026</id><value>Chat</value></string>
+  <string><id>15027</id><value>Widok: Chat</value></string>
   <string><id>15028</id><value>Klawiatura</value></string>
-  <string><id>15029</id><value>Aby dołączyć do tej areny wymagane jest hasło.</value></string>
+  <string><id>15029</id><value>Dostęp do tej areny wymaga hasła.</value></string>
   <string><id>15030</id><value>Serwis odłączony</value></string>
   <string><id>15031</id><value>XLink Kai uwierzytelnianie</value></string>
   <string><id>15032</id><value>Login i hasło zostały odrzucone przez</value></string>
@@ -1156,14 +1155,14 @@
   <string><id>15034</id><value>właśnie się zalogował</value></string>
   <string><id>15035</id><value>zainicjował rozmowę głosową</value></string>
   <string><id>15036</id><value>wysłał ci zaproszenie</value></string>
-  <string><id>15037</id><value>XBMC nie może uzyskać dotępu do sieci.</value></string>
-  <string><id>15038</id><value>Mogą wystąpić trudności przy dołączaniu i hostowaniu gry.</value></string>
+  <string><id>15037</id><value>XBMC nie może uzyskać dostępu do sieci.</value></string>
+  <string><id>15038</id><value>Mogą wystąpić trudności przy dołączaniu czy hostowaniu gry.</value></string>
   <string><id>15039</id><value>Xbox Media Center nie może zlokalizować gry automatycznie.</value></string>
   <string><id>15040</id><value>Włóż dysk z grą lub wciśnij 'A' aby anulować</value></string>
   <string><id>15041</id><value>i uruchomić grę ręcznie.</value></string>
   <string><id>15042</id><value>Odmowa dostępu</value></string>
-  <string><id>15043</id><value>%s dołącza do czata.</value></string>
-  <string><id>15044</id><value>%s opuszcza czat.</value></string>
+  <string><id>15043</id><value>%s dołącza do chata.</value></string>
+  <string><id>15044</id><value>%s opuszcza chat.</value></string>
   <string><id>15045</id><value>Wpisz swoją prywatną wiadomość.</value></string>
   <string><id>15046</id><value>Obecna Arena</value></string>
   <string><id>15047</id><value>Podaj hasło dla swojej areny.</value></string>
@@ -1173,7 +1172,7 @@
   <string><id>15051</id><value>Limit graczy</value></string>
   <string><id>15052</id><value>Hasło</value></string>
   <string><id>15053</id><value>Opis</value></string>
-  <string><id>15054</id><value>Okienko zaproszenia</value></string>
+  <string><id>15054</id><value>Okno zaproszenia</value></string>
   <string><id>15055</id><value>Wybierz grę:</value></string>
   <string><id>15056</id><value>Wpisz wiadomość:</value></string>
   <string><id>15057</id><value>Wyślij</value></string>
@@ -1181,87 +1180,87 @@
   <string><id>15059</id><value>Zaproszenie zaakceptowane!</value></string>
   <string><id>15060</id><value>Wiadomość</value></string>
   <string><id>15061</id><value>Zostałeś zaproszony do gry %s.</value></string>
-  <string><id>15062</id><value>Użyj alternatywnej wersji MPlayer'a</value></string>
-
-  <string><id>15100</id><value>Biblioteka</value></string>
+  <string><id>15062</id><value>Używaj starego mplayera</value></string>
+  
+  <string><id>15100</id><value>Płytoteka</value></string>
   <string><id>15101</id><value>Baza danych</value></string>
   <string><id>15102</id><value>* Wszystkie albumy</value></string>
   <string><id>15103</id><value>* Wszyscy artyści</value></string>
   <string><id>15104</id><value>* Wszystkie piosenki</value></string>
   <string><id>15105</id><value>* Wszystkie gatunki</value></string>
-  <string><id>15106</id><value>Zapamiętaj wybrany plik</value></string>
-  <string><id>15107</id><value>Buforuję...</value></string>
-  <string><id>15108</id><value>Dźwięki nawigacyjne</value></string>
-  <string><id>15109</id><value>Domyślna skóra</value></string>
-  <string><id>15110</id><value>Wibracje kontrolera</value></string>
-  <string><id>15111</id><value>Temat skóry</value></string>
-  <string><id>15112</id><value>Domyślny temat</value></string>
+  <string><id>15106</id><value>Zapamiętuj wybrany plik w dalszej nawigacji</value></string>
+  <string><id>15107</id><value>Buforowanie...</value></string>
+  <string><id>15108</id><value>Dźwięki nawigacji</value></string>
+  <string><id>15109</id><value>Domyślne</value></string>
+  <string><id>15110</id><value>Wibracje podczas nawigacji</value></string>
+  <string><id>15111</id><value>Motyw karnacji</value></string>
+  <string><id>15112</id><value>Domyślny</value></string>
 
-  <string><id>15200</id><value>AudioScrobbler</value></string>
-  <string><id>15201</id><value>Przesyłanie informacji o utworze do AudioScrobbler</value></string>
-  <string><id>15202</id><value>AudioScrobbler Użytkownik</value></string>
-  <string><id>15203</id><value>AudioScrobbler Hasło</value></string>
-  <string><id>15204</id><value>Nie mogę potwierdzić: zasypiam...</value></string>
+  <string><id>15200</id><value>LastFM</value></string>
+  <string><id>15201</id><value>Loguj utwory do mojego profilu LastFM</value></string>
+  <string><id>15202</id><value>Użytkownik</value></string>
+  <string><id>15203</id><value>Hasło</value></string>
+  <string><id>15204</id><value>Nie można nawiązać połączenia...</value></string>
   <string><id>15205</id><value>Proszę uaktualnić XBMC</value></string>
   <string><id>15206</id><value>Przesyłanie przerwane: błąd autoryzacji.</value></string>
   <string><id>15207</id><value>Połączony</value></string>
   <string><id>15208</id><value>Nie połączony</value></string>
-  <string><id>15209</id><value>Interwał przesyłania %i</value></string>
+  <string><id>15209</id><value>Opóźnienie między powtórzeniami %i</value></string>
   <string><id>15210</id><value>%i utworów w buforze</value></string>
   <string><id>15211</id><value>Przesyłam...</value></string>
   <string><id>15212</id><value>Przesłano w %i sekund</value></string>
-  <string><id>15213</id><value>Odtwarzaj używając...</value></string>
-  <string><id>15214</id><value>Używaj łagodnej synchronizacji A/V</value></string>
-  <string><id>15215</id><value>Ukryj nazwy plików w widoku miniatór</value></string>
+  <string><id>15213</id><value>Użyj do odtwarzania...</value></string>
+  <string><id>15214</id><value>Użyj płynniejszej synchronizacji A/V</value></string>
+  <string><id>15215</id><value>Ukrywaj nazwy plików w widoku miniatur</value></string>
 
-  <string><id>15250</id><value>Peześlij ostatnie radio .fm do AudioScrobbler'a</value></string>
-  <string><id>15251</id><value>Łączę się z ostatnim .fm...</value></string>
-  <string><id>15252</id><value>Wybieram stację...</value></string>
-  <string><id>15253</id><value>Wyszukaj podobnych artystów...</value></string>
-  <string><id>15254</id><value>Wyszukaj podobne znaczniki...</value></string>
+  <string><id>15250</id><value>Loguj utwory gdy słucham radia</value></string>
+  <string><id>15251</id><value>Łączenie z Last.fm...</value></string>
+  <string><id>15252</id><value>Wybór stacji...</value></string>
+  <string><id>15253</id><value>Szukaj podobnych artystów...</value></string>
+  <string><id>15254</id><value>Szukaj podobnych grup...</value></string>
   <string><id>15255</id><value>Twój profil (%name%)</value></string>
-  <string><id>15256</id><value>Najlepsze znaczniki</value></string>
-  <string><id>15257</id><value>Top artyści dla znacznika %name%</value></string>
-  <string><id>15258</id><value>Top albumy dla znacznika %name%</value></string>
-  <string><id>15259</id><value>Top ścieżki dla znacznika %name%</value></string>
-  <string><id>15260</id><value>Słuchasz znacznika %name% radia last.fm</value></string>
-  <string><id>15261</id><value>Podobni artyści jak w %name%</value></string>
-  <string><id>15262</id><value>Najlepsze %name% albumy</value></string>
-  <string><id>15263</id><value>Najlepsze %name% ścieżki</value></string>
-  <string><id>15264</id><value>Najlepsze %name% znaczniki</value></string>
+  <string><id>15256</id><value>Najpopularniejsze grupy</value></string>
+  <string><id>15257</id><value>Najpopularniejsi artyści w grupie %name%</value></string>
+  <string><id>15258</id><value>Najpopularniejsze albumy w grupie %name%</value></string>
+  <string><id>15259</id><value>Najpopularniejsze ścieżki w grupie %name%</value></string>
+  <string><id>15260</id><value>Słuchaj grupy %name% w last.fm radio</value></string>
+  <string><id>15261</id><value>Artyści podobni do %name%</value></string>
+  <string><id>15262</id><value>Najpopularniejsze albumy %name%</value></string>
+  <string><id>15263</id><value>Najpopularniejsze ścieżki %name%</value></string>
+  <string><id>15264</id><value>Najpopularniejsze grupy %name%</value></string>
   <string><id>15265</id><value>Najwięksi fani %name%</value></string>
-  <string><id>15266</id><value>Słuchasz %name% fanów last.fm radio</value></string>
-  <string><id>15267</id><value>Słuchasz %name% podobnych artystów last.fm radio</value></string>
-  <string><id>15268</id><value>Najlepsi artyści dla użytkownika %name%</value></string>
-  <string><id>15269</id><value>Najlepsze albumy dla użytkownika %name%</value></string>
-  <string><id>15270</id><value>Najlepsze ścieżki dla użytkownika %name%</value></string>
-  <string><id>15271</id><value>Przyjaciele użytkownika %name%</value></string>
-  <string><id>15272</id><value>Sąsiedztwo użytkownika %name%</value></string>
-  <string><id>15273</id><value>Tygodniowy wykaz artystów dla  %name%</value></string>
+  <string><id>15266</id><value>Słuchaj radia fanów %name% w last.fm</value></string>
+  <string><id>15267</id><value>Słuchaj radia podobnych artystów %name% w last.fm</value></string>
+  <string><id>15268</id><value>Najpopularniejsi artyści dla %name%</value></string>
+  <string><id>15269</id><value>Najpopularniejsze albumy dla %name%</value></string>
+  <string><id>15270</id><value>Najpopularniejsze ścieżki dla %name%</value></string>
+  <string><id>15271</id><value>Znajomi użytkownika %name%</value></string>
+  <string><id>15272</id><value>Sąsiedzi użytkownika %name%</value></string>
+  <string><id>15273</id><value>Tygodniowy wykaz artystów dla %name%</value></string>
   <string><id>15274</id><value>Tygodniowy wykaz albumów dla %name%</value></string>
   <string><id>15275</id><value>Tygodniowy wykaz ścieżek dla %name%</value></string>
-  <string><id>15276</id><value>Słuchaj %name% neighbours last.fm radio</value></string>
-  <string><id>15277</id><value>Słuchaj %name% personal last.fm radio</value></string>
-  <string><id>15278</id><value>Słuchaj %name% loved tracks last.fm radio</value></string>
-  <string><id>15279</id><value>Odbieram listę z last.fm...</value></string>
-  <string><id>15280</id><value>Nie mogę odebraćlisty z last.fm...</value></string>
+  <string><id>15276</id><value>Słuchaj last.fm radio sąsiadów %name%</value></string>
+  <string><id>15277</id><value>Słuchaj osobiste last.fm radio użytkownika %name%</value></string>
+  <string><id>15278</id><value>Słuchaj ulubionych utworów %name% przez last.fm radio</value></string>
+  <string><id>15279</id><value>Pobieranie listy z last.fm...</value></string>
+  <string><id>15280</id><value>Nie można pobrać listy z last.fm...</value></string>
   <string><id>15281</id><value>Wpisz nazwę artysty aby wyszukać pokrewnych</value></string>
-  <string><id>15282</id><value>Wpisz nazwę znacznika aby wyszukać podobne</value></string>
-  <string><id>15283</id><value>Najczęściej słuchane ścieżki przez %name%</value></string>
-
+  <string><id>15282</id><value>Wpisz nazwę grupy aby znaleźć podobne</value></string>
+  <string><id>15283</id><value>Ostatnio słuchane ścieżki użytkownika %name%</value></string>
+   
   <string><id>15300</id><value>Niepoprawna ścieżka</value></string>
   <string><id>15301</id><value>Nie mogę połączyć się z serwerem</value></string>
-  <string><id>15302</id><value>Nie znaleziono serwerów</value></string>
+  <string><id>15302</id><value>Nie znaleziono żadnego serwera</value></string>
   <string><id>15303</id><value>Grupa robocza nie została odnaleziona</value></string>
 
-  <string><id>15310</id><value>Otwieram wielo-ścieżkową zakładkę</value></string>
+  <string><id>15310</id><value>Otwieranie wieloscieżkowej zakładki</value></string>
   <string><id>15311</id><value>Ścieżka:</value></string>
 
   <string><id>16000</id><value>Ogólne</value></string>
   <string><id>16001</id><value>Konfiguracja sprzętu audio...</value></string>
   <string><id>16002</id><value>Przeszukuję CDDB</value></string>
   <string><id>16003</id><value>Odtwarzacz</value></string>
-  <string><id>16004</id><value>Odtwarzaj media z dysku</value></string>
+  <string><id>16004</id><value>Odtwarzaj z płyty</value></string>
   
   <string><id>16009</id><value>Wpisz nazwę filmu</value></string>
   <string><id>16010</id><value>Wpisz nazwę profilu</value></string>
@@ -1271,34 +1270,34 @@
   <string><id>16014</id><value>Wpisz nazwę folderu</value></string>
   <string><id>16015</id><value>Wpisz katalog</value></string>
   <string><id>16016</id><value>Dostępne opcje: %A, %T, %N, %B, %D, %G, %Y, %F</value></string>
-  <string><id>16017</id><value>Wpisz poszukiwany ciąg</value></string>
-  <string><id>16018</id><value>Żaden</value></string>
-  <string><id>16019</id><value>Automatyczny wybór</value></string>
-  <string><id>16020</id><value>Bez przeplotu</value></string>
-  <string><id>16021</id><value>Synchronizuj niepażyste</value></string>
+  <string><id>16017</id><value>Wprowadź tekst do wyszukania</value></string>
+  <string><id>16018</id><value>Brak</value></string>
+  <string><id>16019</id><value>Auto</value></string>
+  <string><id>16020</id><value>Usuń przeplot</value></string>
+  <string><id>16021</id><value>Synchronizuj nieparzyste</value></string>
   <string><id>16022</id><value>Synchronizuj parzyste</value></string>
   <string><id>16023</id><value>Obsługa przeplotu</value></string>
-  <string><id>16024</id><value>Anuluję...</value></string>
+  <string><id>16024</id><value>Anulowanie...</value></string>
   <string><id>16025</id><value>Wpisz nazwę artysty</value></string>
   <string><id>16026</id><value>Odtwarzanie playlisty przerwane</value></string>
-  <string><id>16027</id><value>Za dużo kolejnych błędnych pozycji</value></string>
+  <string><id>16027</id><value>Zbyt wiele błędów</value></string>
 
-  <string><id>16030</id><value>Przerwano Party Mode.</value></string>
-  <string><id>16031</id><value>W bazie danych nie ma zgodnych piosenek.</value></string>
-  <string><id>16032</id><value>Nie można zainicjować bazy danych.</value></string>
+  <string><id>16030</id><value>Party Mode wyłączony.</value></string>
+  <string><id>16031</id><value>Nie ma utworów spełniających twoje kryteria.</value></string>
+  <string><id>16032</id><value>Nie można zainicjalizować bazy danych.</value></string>
   <string><id>16033</id><value>Nie można otworzyć bazy danych.</value></string>
-  <string><id>16034</id><value>Nie mogę dostać się do piosenek z bazy danych.</value></string>
+  <string><id>16034</id><value>Nie można pobrać piosenek z bazy danych.</value></string>
 
   <string><id>16100</id><value>Wszystkie filmy</value></string>
-  <string><id>16101</id><value>Nieoglądane</value></string>
+  <string><id>16101</id><value>Nie oglądane</value></string>
   <string><id>16102</id><value>Oglądane</value></string>
-  <string><id>16103</id><value>Oznacz jako Oglądane</value></string>
-  <string><id>16104</id><value>Oznacz jako Nieoglądane</value></string>
-  <string><id>16105</id><value>Edytuj nazwę</value></string>
-  <string><id>16106</id><value>Używaj NTSC-M &amp; NTSC-J</value></string>
-  <string><id>16107</id><value>Używaj tylko NTSC-M</value></string>
-  <string><id>16108</id><value>Używaj tylko NTSC-J</value></string>
-  <string><id>16109</id><value>Używaj tylko PAL-60</value></string>
-  <string><id>16110</id><value>Dla gier 60hz</value></string>
+  <string><id>16103</id><value>Oznacz jako oglądane</value></string>
+  <string><id>16104</id><value>Oznacz jako nie oglądane</value></string>
+  <string><id>16105</id><value>Edytuj tytuł</value></string>
+  <string><id>16106</id><value>Użyj NTSC-M & NTSC-J</value></string>
+  <string><id>16107</id><value>Użyj tylko NTSC-M</value></string>
+  <string><id>16108</id><value>Użyj tylko NTSC-J</value></string>
+  <string><id>16109</id><value>Użyj tylko PAL-60</value></string>
+  <string><id>16110</id><value>Dla gier 60Hz</value></string>
 
 </strings>
