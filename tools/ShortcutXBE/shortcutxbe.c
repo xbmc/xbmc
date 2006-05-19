@@ -108,9 +108,11 @@ void ErrorHandler()
     XLaunchXBE("C:\\evoxdash.xbe");
  
     /* nothing found, try to launch standard dash */
+    debuglog("Attempting to launch standard dash (c:\\xboxdash.xbe)");
+    XLaunchXBE("C:\\xboxdash.xbe");
     debuglog("Attempting to launch standard dash (c:\\default.xbe)");
     XLaunchXBE("C:\\default.xbe");
-    debuglog("Attempting to launch standard dash (c:\\msdash.xbe)");
+        debuglog("Attempting to launch standard dash (c:\\msdash.xbe)");
     XLaunchXBE("C:\\msdash.xbe");
     debuglog("All failed :( - trying to reboot");
     XReboot();
