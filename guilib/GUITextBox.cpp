@@ -263,7 +263,7 @@ void CGUITextBox::SetText(const string &strText)
 
   // convert to line by lines
   CStdStringArray lines;
-  StringUtils::SplitString(text, "\n", lines);
+  StringUtils::SplitString(text, "\\n", lines);
   for (unsigned int i = 0; i < lines.size(); i++)
   {
     CGUIListItem item(lines[i]);
