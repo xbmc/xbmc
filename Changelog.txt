@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-05-2006 updated: French language file
  - 19-05-2006 updated: Chinese (Traditional) language file (Thnx to dog099)
  - 19-05-2006 updated: Chinese (Simple) language file (Thnx to omenpica)
  - 19-05-2006 updated: Polish language file (Thnx to smuto and the Polish Community Forum)
