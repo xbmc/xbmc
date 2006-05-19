@@ -1040,10 +1040,10 @@
   <string><id>13402</id><value>Montrer la position de la piste</value></string>
   <string><id>13403</id><value>Effacer l'entrée par défaut</value></string>
   <string><id>13404</id><value>Reprendre</value></string>
-  <string><id>13405</id><value>Image IMDb</value></string> 
+  <string><id>13405</id><value>Vignette</value></string> 
   
-  <string><id>14000</id><value>Empiler: désactivé</value></string>
-  <string><id>14001</id><value>Empiler: activé</value></string>
+  <string><id>14000</id><value>Empiler</value></string>
+  <string><id>14001</id><value>Désempiler</value></string>
   <string><id>14002</id><value>Empiler: brouillé</value></string>
   <string><id>14003</id><value>Téléchargement de la liste de lecture...</value></string>
   <string><id>14004</id><value>Téléchargement de la liste des flux...</value></string>
