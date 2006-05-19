@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-05-2006 fixed: [ 1491374 ] Time/Date Setting Problem
  - 19-05-2006 fixed: TextBox crashed trying to handle linebreaks.
  - 18-05-2006 added: localization of date and time format via langinfo.xml
  - 18-05-2006 fixed: music nav, when the language is changed, the shares are displayed in the previous language
