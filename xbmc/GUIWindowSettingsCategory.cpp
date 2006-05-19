@@ -1759,7 +1759,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 
-    g_langInfo.SetCurrentRegion(pControl->GetCurrentLabel());
+    const CStdString& strRegion=pControl->GetCurrentLabel();
+    g_langInfo.SetCurrentRegion(strRegion);
+    g_guiSettings.SetString("XBDateTime.Region", strRegion);
   }
   else if (strSetting == "XBDateTime.TimeServer" || strSetting == "XBDateTime.TimeAddress")
   {
