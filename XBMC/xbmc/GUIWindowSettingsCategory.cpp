@@ -593,21 +593,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       // GeminiServer Skin Theme
       FillInSkinThemes(pSetting);
     }
-    else if (strSetting == "LookAndFeel.StartUpWindow")
-    {
-      // items in a spin control must be sequential. you cant skip values.
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(513),  0	);  // XBMC Home
-      pControl->AddLabel(g_localizeStrings.Get(0),    1	);  // My Programs
-      pControl->AddLabel(g_localizeStrings.Get(1),    2	);  // My Pictures
-      pControl->AddLabel(g_localizeStrings.Get(2),    5 );  // My Music
-      pControl->AddLabel(g_localizeStrings.Get(3),    6 );  // My Video
-      pControl->AddLabel(g_localizeStrings.Get(7),    3 );  // My Files
-      pControl->AddLabel(g_localizeStrings.Get(5),    4 );  // Settings
-      pControl->AddLabel(g_localizeStrings.Get(714),2700 ); // Xlink Kai
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting == "ScreenSaver.Mode")
     {
       FillInScreenSavers(pSetting);
