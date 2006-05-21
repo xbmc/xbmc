@@ -20,6 +20,7 @@ protected:
   virtual bool Update(const CStdString& strDirectory);
   virtual bool OnPlayMedia(int iItem);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual void OnWindowLoaded();
   void SetOverlayIcons();
 
   void OnScan(CFileItemList& items, int& iTotalAppsFound) ;

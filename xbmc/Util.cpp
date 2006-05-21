@@ -1030,14 +1030,8 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
   if (strncmp(szPath1, "Q:", 2) == 0)
   { // mayaswell support the virtual drive as well...
     CStdString strPath;
-    if (strlen(g_stSettings.szHomeDir) > 1)
-    { // home dir is defined
-      strPath = g_stSettings.szHomeDir;
-    }
-    else
-    { // home dir is xbe dir
-      GetHomePath(strPath);
-    }
+    // home dir is xbe dir
+    GetHomePath(strPath);
     if (!HasSlashAtEnd(strPath))
       strPath += "\\";
     if (szPath1[2] == '\\')

@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-05-2006 removed: <home> tag from XBoxMediaCenter.xml
+
+******************************************************************************
+* YOU MUST NOW USE A SHORTCUT XBE (SEE THE INCLUDED ONE) TO RUN XBMC AS DASH *
+******************************************************************************
+
  - 21-05-2006 changed: removed duplicated samba options in xboxmediacenter.xml and moved samba clienttimeout and doscodepage to AdvancedSettings.xml
  - 21-05-2006 changed: rewrote network init and retrieval of current ip/subnet...
  - 21-05-2006 changed: Initial commit of new My Programs system (more in line with the other categories.)  Test via specifying <newmyprograms>true</newmyprograms> in AdvancedSettings.xml
