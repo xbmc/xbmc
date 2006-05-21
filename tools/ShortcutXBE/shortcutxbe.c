@@ -83,37 +83,48 @@ void debuglog(const char* format, ...)
 }
 
 
-void ErrorHandler()
+void ErrorHandler(char *xbepath)
 {
-    /* attempt a few common default locations for XBMC */
-    debuglog("Attempting to launch XBMC from E:\\XBMC");
-    XLaunchXBE("E:\\XBMC\\default.xbe");
-    debuglog("Attempting to launch XBMC from E:\\Apps\\XBMC");
-    XLaunchXBE("E:\\Apps\\XBMC\\default.xbe");
-    debuglog("Attempting to launch XBMC from F:\\XBMC");
-    XLaunchXBE("F:\\XBMC\\default.xbe");
-    debuglog("Attempting to launch XBMC from F:\\Apps\\XBMC");
-    XLaunchXBE("F:\\Apps\\XBMC\\default.xbe");
-
     /* attempting to find something to launch wich hopefully have ftp */
-    debuglog("Attempting to launch backup FTP server (c:\\avalaunch.xbe)");
-    XLaunchXBE("C:\\avalaunch.xbe");
-    debuglog("Attempting to launch backup FTP server (c:\\unleashx.xbe)");
-    XLaunchXBE("C:\\unleashx.xbe");
-    debuglog("Attempting to launch backup FTP server (c:\\xbmc.xbe)");
-    XLaunchXBE("C:\\xbmc.xbe");
+    if (xbepath && 0 != strcmpi("C:\\avalaunch.xbe", xbepath))
+    {
+      debuglog("Attempting to launch backup FTP server (c:\\avalaunch.xbe)");
+      XLaunchXBE("C:\\avalaunch.xbe");
+    }
+    if (xbepath && 0 != strcmpi("C:\\unleashx.xbe", xbepath))
+    {
+      debuglog("Attempting to launch backup FTP server (C:\\unleashx.xbe)");
+      XLaunchXBE("C:\\unleashx.xbe");
+    }
+    if (xbepath && 0 != strcmpi("C:\\xbmc.xbe", xbepath))
+    {
+      debuglog("Attempting to launch backup FTP server (C:\\xbmc.xbe)");
+      XLaunchXBE("C:\\xbmc.xbe");
+    }
     
     /* evox fails on debug bios oddly enough */
-    debuglog("Attempting to launch backup FTP server (c:\\evoxdash.xbe)");
-    XLaunchXBE("C:\\evoxdash.xbe");
+    if (xbepath && 0 != strcmpi("C:\\evoxdash.xbe", xbepath))
+    {
+      debuglog("Attempting to launch backup FTP server (C:\\evoxdash.xbe)");
+      XLaunchXBE("C:\\evoxdash.xbe");
+    }
  
     /* nothing found, try to launch standard dash */
-    debuglog("Attempting to launch standard dash (c:\\xboxdash.xbe)");
-    XLaunchXBE("C:\\xboxdash.xbe");
-    debuglog("Attempting to launch standard dash (c:\\default.xbe)");
-    XLaunchXBE("C:\\default.xbe");
-        debuglog("Attempting to launch standard dash (c:\\msdash.xbe)");
-    XLaunchXBE("C:\\msdash.xbe");
+    if (xbepath && 0 != strcmpi("C:\\xboxdash.xbe", xbepath))
+    {
+      debuglog("Attempting to launch backup FTP server (C:\\xboxdash.xbe)");
+      XLaunchXBE("C:\\xboxdash.xbe");
+    }
+    if (xbepath && 0 != strcmpi("C:\\default.xbe", xbepath))
+    {
+      debuglog("Attempting to launch backup FTP server (C:\\default.xbe)");
+      XLaunchXBE("C:\\default.xbe");
+    }
+    if (xbepath && 0 != strcmpi("C:\\msdash.xbe", xbepath))
+    {
+      debuglog("Attempting to launch backup FTP server (C:\\msdash.xbe)");
+      XLaunchXBE("C:\\msdash.xbe");
+    }
     debuglog("All failed :( - trying to reboot");
     XReboot();
 }
@@ -169,6 +180,7 @@ int LaunchShortcut(char* filename)
 void XBoxStartup()
 {
   char devicepath[MAX_PATH];
+  char xbepath[MAX_PATH];
   char shortcut[MAX_PATH];
   char *temp;
   #ifdef _MSC_VER
@@ -186,13 +198,16 @@ void XBoxStartup()
   if( temp == NULL )
   {    
     debuglog("ERROR - Can't find launching xbe");
-    ErrorHandler();
+    ErrorHandler(NULL);
   }
 
-  /* move to shortcut buffer */
-  strcpy(shortcut, "D:");
-  strcat(shortcut, temp);
+  /* move to xbepath buffer */
+  strcpy(xbepath, "D:");
+  strcat(xbepath, temp);
 
+  /* setup the shortcut path */
+  strcpy(shortcut, xbepath);
+  
   /* let the device path only include path and not filename */
   *temp = '\0';
 
@@ -201,7 +216,7 @@ void XBoxStartup()
   if( temp == NULL )
   {
     debuglog("ERROR - Can't find launching xbe's extension part");
-    ErrorHandler();
+    ErrorHandler(NULL);
   }
   
   /* switch extension */
@@ -221,5 +236,5 @@ void XBoxStartup()
 
   /* if launchshortcut returns, something went wrong */  
   debuglog("ERROR - Can't launch cutfile");
-  ErrorHandler();
+  ErrorHandler(xbepath);
 }
