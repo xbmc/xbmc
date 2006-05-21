@@ -433,8 +433,6 @@ CGUISettings::CGUISettings(void)
   AddString(2, "Smb.Password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "Smb.Winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "Smb.Workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
-  AddString(5, "Smb.DosCodepage", 735,    "", SPIN_CONTROL_TEXT);
-  AddInt(6, "Smb.ClientTimeOut",1236, 10, 0, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddSeparator(7, "Smb.Sep1");
   AddInt(8, "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddString(9, "Smb.Ip",          1201,   "192.168.0.106",  BUTTON_CONTROL_IP_INPUT);
