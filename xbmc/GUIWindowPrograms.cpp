@@ -53,117 +53,164 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      int iLastControl = m_iLastControl;
       m_iRegionSet = 0;
-      CGUIWindow::OnMessage(message);
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // remove shortcuts
       if (g_guiSettings.GetBool("MyPrograms.NoShortcuts") && g_stSettings.m_szShortcutDirectory[0] && g_settings.m_vecMyProgramsBookmarks[0].strName.Equals("shortcuts"))
         g_settings.m_vecMyProgramsBookmarks.erase(g_settings.m_vecMyProgramsBookmarks.begin());
 
-      // check for a passed destination path
-      CStdString strDestination = message.GetStringParam();
-      if (!strDestination.IsEmpty())
+      if (g_advancedSettings.m_newMyPrograms)
       {
-        message.SetStringParam("");
-        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
-      }
-      // otherwise, is this the first time accessing this window?
-      else if (m_vecItems.m_strPath == "?")
-      {
-        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
-        CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
-      }
-      // make controls 100-110 invisible...
-      for (int i = 100; i < 110; i++)
-      {
-        SET_CONTROL_HIDDEN(i);
-      }
-
-      m_rootDir.SetShares(g_settings.m_vecMyProgramsBookmarks);
-      
-      if (g_guiSettings.GetBool("MyPrograms.NoShortcuts"))    // let's hide Scan button
-      {
-        SET_CONTROL_HIDDEN(CONTROL_BTNSCAN);
-      }
-      else
-      {
-        SET_CONTROL_VISIBLE(CONTROL_BTNSCAN);
-      }
-
-
-      int iStartID = 100;
-
-      // create bookmark buttons
-
-      for (int i = 0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
-      {
-        CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
-
-        SET_CONTROL_VISIBLE(i + iStartID);
-
-        if (CUtil::IsDVD(share.strPath))
+        // check for a passed destination path
+        CStdString strDestination = message.GetStringParam();
+        if (!strDestination.IsEmpty())
         {
-          CStdString strName = share.strName.substr(0,share.strName.rfind("(")-1);
-          SET_CONTROL_LABEL(i + iStartID, strName);
+          message.SetStringParam("");
+          CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+          // reset directory path, as we have effectively cleared it here
+          m_history.ClearPathHistory();
         }
-        else
-          SET_CONTROL_LABEL(i + iStartID, share.strName);
-      }
-
-      m_database.Open();
-      // try to open the destination path
-      if (!strDestination.IsEmpty())
-      {
-        // default parameters if the jump fails
-        m_vecItems.m_strPath = "";
-        m_shareDirectory = "";
-        m_iDepth = 1;
-        m_strBookmarkName = "default";
-        m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
-
-        bool bIsBookmarkName = false;
-        int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyProgramsBookmarks, bIsBookmarkName);
-        if (iIndex > -1)
+        // is this the first time accessing this window?
+        // a quickpath overrides the a default parameter
+        if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
         {
-          // set current directory to matching share
-          if (bIsBookmarkName)
+          m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultVideos;
+          CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
+        }
+
+        m_database.Open();
+        // try to open the destination path
+        if (!strDestination.IsEmpty())
+        {
+          // open playlists location
+          if (strDestination.Equals("$PLAYLISTS"))
           {
-            m_vecItems.m_strPath = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
-            m_history.SetSelectedItem(m_vecItems.m_strPath,"empty");
+            m_vecItems.m_strPath = CUtil::VideoPlaylistsLocation();
+            CLog::Log(LOGINFO, "  Success! Opening destination path: %s", m_vecItems.m_strPath.c_str());
           }
           else
-            m_vecItems.m_strPath = strDestination;
-          CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
-          m_shareDirectory = m_vecItems.m_strPath;
-          m_iDepth = g_settings.m_vecMyProgramsBookmarks[iIndex].m_iDepthSize;
-          m_strBookmarkName = g_settings.m_vecMyProgramsBookmarks[iIndex].strName;
-          CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
-        }
-        else
-        {
-          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
-        }
-      }
+          {
+            // default parameters if the jump fails
+            m_vecItems.m_strPath = "";
 
-      m_vecPaths.clear();
-      m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
-      Update(m_vecItems.m_strPath);
+            bool bIsBookmarkName = false;
+            int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyVideoShares, bIsBookmarkName);
+            if (iIndex > -1)
+            {
+              // set current directory to matching share
+              if (bIsBookmarkName)
+                m_vecItems.m_strPath = g_settings.m_vecMyVideoShares[iIndex].strPath;
+              else
+                m_vecItems.m_strPath = strDestination;
+              CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+              CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+            }
+            else
+            {
+              CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+            }
+          }
 
-      if (iLastControl > -1)
-      {
-        SET_CONTROL_FOCUS(iLastControl, 0);
+          // need file filters or GetDirectory in SetHistoryPath fails
+          m_rootDir.SetMask(".xbe|.cut");
+          m_rootDir.SetShares(g_settings.m_vecMyProgramsBookmarks);
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        m_rootDir.SetMask(".xbe|.cut");
+        m_rootDir.SetShares(g_settings.m_vecMyProgramsBookmarks);
       }
       else
       {
-        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+        // check for a passed destination path
+        CStdString strDestination = message.GetStringParam();
+        if (!strDestination.IsEmpty())
+        {
+          message.SetStringParam("");
+          CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+        }
+        // otherwise, is this the first time accessing this window?
+        else if (m_vecItems.m_strPath == "?")
+        {
+          m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
+          CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
+        }
+        // make controls 100-110 invisible...
+        for (int i = 100; i < 110; i++)
+        {
+          SET_CONTROL_HIDDEN(i);
+        }
+
+        m_rootDir.SetShares(g_settings.m_vecMyProgramsBookmarks);
+        
+        if (g_guiSettings.GetBool("MyPrograms.NoShortcuts"))    // let's hide Scan button
+        {
+          SET_CONTROL_HIDDEN(CONTROL_BTNSCAN);
+        }
+        else
+        {
+          SET_CONTROL_VISIBLE(CONTROL_BTNSCAN);
+        }
+
+
+        int iStartID = 100;
+
+        // create bookmark buttons
+
+        for (int i = 0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
+        {
+          CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
+
+          SET_CONTROL_VISIBLE(i + iStartID);
+
+          if (CUtil::IsDVD(share.strPath))
+          {
+            CStdString strName = share.strName.substr(0,share.strName.rfind("(")-1);
+            SET_CONTROL_LABEL(i + iStartID, strName);
+          }
+          else
+            SET_CONTROL_LABEL(i + iStartID, share.strName);
+        }
+
+        m_database.Open();
+        // try to open the destination path
+        if (!strDestination.IsEmpty())
+        {
+          // default parameters if the jump fails
+          m_vecItems.m_strPath = "";
+          m_shareDirectory = "";
+          m_iDepth = 1;
+          m_strBookmarkName = "default";
+          m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
+
+          bool bIsBookmarkName = false;
+          int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyProgramsBookmarks, bIsBookmarkName);
+          if (iIndex > -1)
+          {
+            // set current directory to matching share
+            if (bIsBookmarkName)
+            {
+              m_vecItems.m_strPath = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
+              m_history.SetSelectedItem(m_vecItems.m_strPath,"empty");
+            }
+            else
+              m_vecItems.m_strPath = strDestination;
+            CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+            m_shareDirectory = m_vecItems.m_strPath;
+            m_iDepth = g_settings.m_vecMyProgramsBookmarks[iIndex].m_iDepthSize;
+            m_strBookmarkName = g_settings.m_vecMyProgramsBookmarks[iIndex].strName;
+            CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+          }
+        }
+
+        m_vecPaths.clear();
+        m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
       }
-
-      if (m_iSelectedItem > -1)
-        m_viewControl.SetSelectedItem(m_iSelectedItem);
-
-      return true;
+      return CGUIMediaWindow::OnMessage(message);
     }
     break;
 
@@ -679,8 +726,17 @@ void CGUIWindowPrograms::LoadDirectory2(const CStdString& strDirectory, int idep
 
 bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
-  if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
+  if (g_advancedSettings.m_newMyPrograms)
+  {
+    if (m_thumbLoader.IsLoading())
+      m_thumbLoader.StopThread();
+
+    if (!CGUIMediaWindow::Update(strDirectory))
+      return false;
+
+    m_thumbLoader.Load(m_vecItems);
+    return true;
+  }
   bool bFlattenDir = g_guiSettings.GetBool("MyPrograms.Flatten");
   bool bOnlyDefaultXBE = g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
   bool bParentPath(false);
@@ -918,6 +974,9 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 bool CGUIWindowPrograms::OnClick(int iItem)
 {
+  if (g_advancedSettings.m_newMyPrograms)
+    return CGUIMediaWindow::OnClick(iItem);
+
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
   CFileItem* pItem = m_vecItems[iItem];
   
@@ -1027,6 +1086,66 @@ bool CGUIWindowPrograms::OnClick(int iItem)
       CUtil::RunXBE(szPath,NULL,F_VIDEO(iRegion));
   }
 
+  return true;
+}
+
+bool CGUIWindowPrograms::OnPlayMedia(int iItem)
+{
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
+  CFileItem* pItem = m_vecItems[iItem];
+
+  if (pItem->m_bIsFolder) return false;
+
+  // launch xbe...
+  char szPath[1024];
+  char szParameters[1024];
+  if (g_guiSettings.GetBool("MyPrograms.Flatten"))
+    m_database.IncTimesPlayed(pItem->m_strPath);
+
+  int iRegion = m_iRegionSet?m_iRegionSet:GetRegion(iItem);
+  
+  DWORD dwTitleId;
+  if (!pItem->IsOnDVD())
+    dwTitleId = m_database.GetTitleId(pItem->m_strPath);
+  else
+    dwTitleId = CUtil::GetXbeID(pItem->m_strPath);
+  CStdString strTrainer = m_database.GetActiveTrainer(dwTitleId);
+  if (strTrainer != "")
+  {
+    bool bContinue=false;
+    if (CKaiClient::GetInstance()->IsEngineConnected())
+    {
+      if (CGUIDialogYesNo::ShowAndGetInput(20023,20020,20021,20022,714,12013))
+        CKaiClient::GetInstance()->EnterVector(CStdString(""),CStdString(""));
+      else
+        bContinue = true;
+    }
+    if (!bContinue)
+    {
+      CTrainer trainer;
+      if (trainer.Load(strTrainer))
+      {
+        m_database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+        CUtil::InstallTrainer(trainer);
+      }
+    }
+  }
+
+  m_database.Close();
+  memset(szParameters, 0, sizeof(szParameters));
+
+  strcpy(szPath, pItem->m_strPath.c_str());
+
+  if (pItem->IsShortCut())
+  {
+    CUtil::RunShortcut(pItem->m_strPath.c_str());
+    return false;
+  }
+  
+  if (strlen(szParameters))
+    CUtil::RunXBE(szPath, szParameters,F_VIDEO(iRegion));
+  else
+    CUtil::RunXBE(szPath,NULL,F_VIDEO(iRegion));
   return true;
 }
 
@@ -1328,4 +1447,56 @@ void CGUIWindowPrograms::SetOverlayIcons()
       }
     }
   }
+}
+
+bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+{
+  if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
+    return false;
+
+  if (items.IsVirtualDirectoryRoot())
+    return true;
+
+  // flatten any folders
+  m_database.BeginTransaction();
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItem *item = items[i];
+    if (item->m_bIsFolder && !item->IsParentFolder())
+    { // folder item - let's check for a default.xbe file, and flatten if we have one
+      CStdString defaultXBE;
+      CUtil::AddFileToFolder(item->m_strPath, "default.xbe", defaultXBE);
+      if (CFile::Exists(defaultXBE))
+      { // yes, format the item up
+        item->m_strPath = defaultXBE;
+        item->m_bIsFolder = false;
+      }
+    }
+    if (item->IsXBE())
+    { // add to database if not already there
+      DWORD dwTitleID = m_database.GetProgramInfo(item);
+      if (!dwTitleID)
+      {
+        CStdString description;
+        if (CUtil::GetXBEDescription(item->m_strPath, description))
+          item->SetLabel(description);
+        dwTitleID = CUtil::GetXbeID(item->m_strPath);
+        m_database.AddProgramInfo(item, dwTitleID);
+      }
+
+      // SetOverlayIcons()
+      if (m_database.ItemHasTrainer(dwTitleID))
+      {
+        if (m_database.GetActiveTrainer(dwTitleID) != "")
+          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_TRAINED);
+        else
+          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_HAS_TRAINER);
+      }
+    }
+  }
+  m_database.CommitTransaction();
+
+  // set the cached thumbs
+  items.SetCachedProgramThumbs();
+  return true;
 }
