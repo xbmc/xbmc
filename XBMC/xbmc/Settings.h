@@ -286,6 +286,8 @@ public:
     bool m_newMyPrograms;
     int m_thumbSize;
 
+    int m_sambaclienttimeout;
+    CStdString m_sambadoscodepage;
   };
   struct stSettings
   {
@@ -422,16 +424,6 @@ public:
 
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
-    int m_iSambaDebugLevel;
-
-    int m_iSambaTimeout;
-    CStdString m_strSambaWorkgroup;
-    CStdString m_strSambaIPAdress;
-    CStdString m_strSambaShareName;
-    CStdString m_strSambaDefaultUserName;
-    CStdString m_strSambaDefaultPassword;
-    CStdString m_strSambaWinsServer;
-    CStdString m_strSambaDosCodepage;
 
     int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
     int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.

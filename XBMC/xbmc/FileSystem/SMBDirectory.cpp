@@ -199,7 +199,7 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
   else if( urlIn.GetUserName().IsEmpty() )
   { 
     //No username specified, try to authenticate using default password or anonomously
-    if( g_stSettings.m_strSambaDefaultUserName.length() > 0 )
+    if( g_guiSettings.GetString("Smb.Username").length() > 0 )
       iTryAutomatic = 2;
     else
       iTryAutomatic = 1;
@@ -218,8 +218,8 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
       //Try using default username/password if available
       if ( iTryAutomatic == 2 )
       {
-        urlIn.SetUserName(g_stSettings.m_strSambaDefaultUserName);
-        urlIn.SetPassword(g_stSettings.m_strSambaDefaultPassword);
+        urlIn.SetUserName(g_guiSettings.GetString("Smb.Username"));
+        urlIn.SetPassword(g_guiSettings.GetString("Smb.Password"));
       }
       
       //Try anonomously
