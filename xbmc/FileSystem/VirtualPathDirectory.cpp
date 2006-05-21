@@ -23,22 +23,28 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
   if (!GetMatchingShare(strPath, share))
     return false;
 
-  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (dlgProgress)
-  {
-    dlgProgress->SetHeading(15310);
-    dlgProgress->SetLine(0, 15311);
-    dlgProgress->SetLine(1, "");
-    dlgProgress->SetLine(2, "");
-    dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
-    dlgProgress->ShowProgressBar(true);
-    dlgProgress->SetProgressMax((int)share.vecPaths.size()*2);
-    dlgProgress->Progress();
-  }
-
+  DWORD progressTime = timeGetTime() + 3000L;   // 3 seconds before showing progress bar
+  CGUIDialogProgress* dlgProgress = NULL;
+  
   int iFailures = 0;
   for (int i = 0; i < (int)share.vecPaths.size(); ++i)
   {
+    // show the progress dialog if we have passed our time limit
+    if (timeGetTime() > progressTime && !dlgProgress)
+    {
+      dlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (dlgProgress)
+      {
+        dlgProgress->SetHeading(15310);
+        dlgProgress->SetLine(0, 15311);
+        dlgProgress->SetLine(1, "");
+        dlgProgress->SetLine(2, "");
+        dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+        dlgProgress->ShowProgressBar(true);
+        dlgProgress->SetProgressMax((int)share.vecPaths.size()*2);
+        dlgProgress->Progress();
+      }
+    }
     if (dlgProgress)
     {
       CURL url(share.vecPaths[i]);
@@ -136,7 +142,7 @@ bool CVirtualPathDirectory::GetShares(const CStdString& strType, VECSHARES& vecS
 
   // not valid for myprograms or files
   if (strType == "myprograms")
-    return false;
+    pShares = &g_settings.m_vecMyProgramsBookmarks;
   else if (strType == "files")
     return false;
   else if (strType == "music")
