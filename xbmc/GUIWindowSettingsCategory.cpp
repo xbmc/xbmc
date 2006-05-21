@@ -530,32 +530,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInCharSets(pSetting);
     }
-    else if (strSetting == "Smb.DosCodepage")
-    {
-      CSettingString *pSettingString = (CSettingString*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
-      pControl->Clear();
-      pControl->AddLabel("Default", 0);
-      pControl->AddLabel("DOS Latin US (CP437)", 437);
-      pControl->AddLabel("DOS Latin-1 (CP850)", 850);
-      pControl->AddLabel("DOS Latin-2 (CP852)", 852);
-      pControl->AddLabel("DOS Cyrillic (CP855)", 855);
-      pControl->AddLabel("DOS Cyrillic Russian (CP866)", 866);
-      pControl->AddLabel("DOS Greek (CP737)", 737);
-      pControl->AddLabel("DOS Baltic (CP775)", 775);
-      pControl->AddLabel("DOS Turkish (CP857)", 857);
-      pControl->AddLabel("DOS Portuguese (CP860)", 860);
-      pControl->AddLabel("DOS Icelandic (CP861)", 861);
-      pControl->AddLabel("DOS Hebrew (CP862)", 862);
-      pControl->AddLabel("DOS Arabic (CP864)", 864);
-      pControl->AddLabel("DOS Nordic (CP865)", 865);
-      pControl->AddLabel("DOS Greek2 (CP869)", 869);
-
-      int codepage = 0;
-      sscanf(g_stSettings.m_strSambaDosCodepage.c_str(), "CP%d", &codepage);
-      pControl->SetValue(codepage);
-    }
     else if (strSetting == "LookAndFeel.Font")
     {
       FillInSkinFonts(pSetting);
@@ -665,15 +639,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(640), REPLAY_GAIN_ALBUM);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Smb.Ip")
-	  {	// GeminiServer
-      g_guiSettings.SetString("Smb.Ip",         g_stSettings.m_strSambaIPAdress);
-      g_guiSettings.SetString("Smb.Workgroup",  g_stSettings.m_strSambaWorkgroup);
-      g_guiSettings.SetString("Smb.Username",   g_stSettings.m_strSambaDefaultUserName);
-      g_guiSettings.SetString("Smb.Password",   g_stSettings.m_strSambaDefaultPassword);
-      g_guiSettings.SetString("Smb.ShareName",  g_stSettings.m_strSambaShareName);
-      g_guiSettings.SetString("Smb.Winsserver", g_stSettings.m_strSambaWinsServer);
-	  }
     else if (strSetting == "Smb.ShareGroup")
 	  {	// GeminiServer
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1790,8 +1755,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     strSmbIp.Format("smb://%s/",g_guiSettings.GetString("Smb.Ip"));
     
     // We need the previos smb share name to remove them
-    CStdString strSmbShareName;
-    strSmbShareName = g_stSettings.m_strSambaShareName;
+    CStdString strSmbShareName = g_guiSettings.GetString("Smb.ShareName");
     
     //Delete all Previos Share neames before add. new/changed one!
     //!! If there are a share , with the same name but non SMB, this will be alo deleted!
@@ -1804,38 +1768,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (g_guiSettings.GetString("Smb.Ip")        == "") g_guiSettings.SetString("Smb.Ip", "192.168.0.5");
     if (g_guiSettings.GetString("Smb.Workgroup") == "") g_guiSettings.SetString("Smb.Workgroup", "WORKGROUP");
     if (g_guiSettings.GetString("Smb.ShareName") == "") g_guiSettings.SetString("Smb.ShareName", "WORKGROUP (SMB) Network");        
-    
-    //Set/Update
-    g_stSettings.m_strSambaIPAdress = g_guiSettings.GetString("Smb.Ip");
-    g_stSettings.m_strSambaWorkgroup = g_guiSettings.GetString("Smb.Workgroup");
-    g_stSettings.m_strSambaDefaultUserName = g_guiSettings.GetString("Smb.Username");
-    g_stSettings.m_strSambaDefaultPassword = g_guiSettings.GetString("Smb.Password");
-    g_stSettings.m_strSambaShareName = g_guiSettings.GetString("Smb.ShareName");   
-    g_stSettings.m_iSambaTimeout = g_guiSettings.GetInt("Smb.ClientTimeOut");   
-
-    if( g_stSettings.m_strSambaWinsServer != g_guiSettings.GetString("Smb.Winsserver") )
-    {
-      g_stSettings.m_strSambaWinsServer = g_guiSettings.GetString("Smb.Winsserver");
-      needrestart = true;
-    }
-
-    if( g_stSettings.m_strSambaDosCodepage != g_guiSettings.GetString("Smb.DosCodepage") )
-    {
-      g_stSettings.m_strSambaDosCodepage = g_guiSettings.GetString("Smb.DosCodepage");
-      needrestart = true;
-    }
-
-    g_settings.UpDateXbmcXML("samba", "winsserver",       g_guiSettings.GetString("Smb.Winsserver"));
-    g_settings.UpDateXbmcXML("samba", "smbip",            g_guiSettings.GetString("Smb.Ip"));
-    g_settings.UpDateXbmcXML("samba", "workgroup",        g_guiSettings.GetString("Smb.Workgroup"));
-    g_settings.UpDateXbmcXML("samba", "defaultusername",  g_guiSettings.GetString("Smb.Username"));
-    g_settings.UpDateXbmcXML("samba", "defaultpassword",  g_guiSettings.GetString("Smb.Password"));
-    g_settings.UpDateXbmcXML("samba", "smbsharename",     g_guiSettings.GetString("Smb.ShareName"));
-    g_settings.UpDateXbmcXML("samba", "doscodepage",      g_guiSettings.GetString("Smb.DosCodepage"));
-    
-    CStdString striValue; striValue.Format("%d", g_guiSettings.GetInt("Smb.ClientTimeOut"));
-    g_settings.UpDateXbmcXML("samba", "clienttimeout",    striValue.c_str());
-    
+        
     //g_settings.UpDateXbmcXML("CDDBIpAddress", "194.97.4.18"); //This is a Test ;
 
     // if the SMB settings is disabled set also the Share group to 0
@@ -1983,15 +1916,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       dlg->DoModal( m_gWindowManager.GetActiveWindow() );
       //if (dlg->IsConfirmed()) //Do nothing!
     }
-  }
-  else if (strSetting == "Smb.DosCodepage")
-  {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    CStdString newCharset="";
-    if (pControl->GetValue()!=0)
-      newCharset.Format("CP%d", pControl->GetValue());
-    pSettingString->SetData(newCharset);
   }
   else if (strSetting == "Masterlock.Mastercode")
   {
