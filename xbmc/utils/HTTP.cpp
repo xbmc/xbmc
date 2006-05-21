@@ -10,6 +10,7 @@
 #endif
 
 #include "../util.h"
+#include "../xbox/network.h"
 
 
 //////////////////////////////////////////////////////////////////////
@@ -376,7 +377,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
 //------------------------------------------------------------------------------------------------------------------
 bool CHTTP::Connect()
 {
-  if (!CUtil::IsNetworkUp())
+  if (!g_network.IsAvailable())
     return false;
 
   sockaddr_in service;
