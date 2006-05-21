@@ -41,7 +41,6 @@ CSettings::CSettings(void)
   strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "");
   strcpy(g_stSettings.szOnlineArenaPassword, "");
   strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
-  strcpy(g_stSettings.szHomeDir, "");
 
   strcpy( g_stSettings.m_szDefaultPrograms, "");
   strcpy( g_stSettings.m_szDefaultMusic, "");
@@ -200,37 +199,6 @@ void CSettings::Save() const
   }
 }
 
-bool CSettings::QuickXMLLoad(const CStdString &strElement, bool forceToQ /* = false */)
-{
-  if (!LoadXml(forceToQ))
-    return false;
-
-  CStdString strValue;
-  TiXmlElement* pRootElement = xbmcXml.RootElement();
-  if (pRootElement) strValue = pRootElement->Value();
-  if ( strValue != "xboxmediacenter")
-  {
-    CloseXml();
-    return false;
-  }
-  bool ret(false);
-/*  if (strElement == "logpath" )
-  {
-    GetString(pRootElement, strElement.c_str(), g_stSettings.m_logFolder, "");
-    if (!g_stSettings.m_logFolder.IsEmpty())
-      ret = true;
-  }
-  else*/
-  if (strElement == "home")
-  {
-    GetString(pRootElement, strElement.c_str(), g_stSettings.szHomeDir, "");
-    if (strlen(g_stSettings.szHomeDir) > 1)
-      ret = true;
-  }
-  CloseXml();
-  return ret;
-}
-
 bool CSettings::Reset()
 {
   CLog::Log(LOGINFO, "Resetting settings");
@@ -283,12 +251,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     m_vecIcons.push_back(icon);
     pFileType = pFileType->NextSibling();
   }*/
-
-  GetString(pRootElement, "home", g_stSettings.szHomeDir, "");
-  while ( CUtil::HasSlashAtEnd(g_stSettings.szHomeDir) )
-  {
-    g_stSettings.szHomeDir[strlen(g_stSettings.szHomeDir) - 1] = 0;
-  }
 
   LoadUserFolderLayout(pRootElement);
 
