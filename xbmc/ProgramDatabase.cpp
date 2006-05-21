@@ -150,16 +150,21 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
 
 int CProgramDatabase::GetRegion(const CStdString& strFilenameAndPath)
 {
-  CStdString strPath;
-  CUtil::GetDirectory(strFilenameAndPath, strPath);
-  strPath.Replace("\\", "/");
-
   if (NULL == m_pDB.get()) return 0;
   if (NULL == m_pDS.get()) return 0;
 
   try
   {
-    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    CStdString strSQL;
+    if (g_advancedSettings.m_newMyPrograms)
+      strSQL=FormatSQL("select * from files where files.strFileName like '%s'", strFilenameAndPath.c_str());
+    else
+    {
+      CStdString strPath;
+      CUtil::GetDirectory(strFilenameAndPath, strPath);
+      strPath.Replace("\\", "/");
+      strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    }
     if (!m_pDS->query(strSQL.c_str())) 
       return 0;
 
@@ -183,16 +188,21 @@ int CProgramDatabase::GetRegion(const CStdString& strFilenameAndPath)
 
 DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
 {
-  CStdString strPath;
-  CUtil::GetDirectory(strFilenameAndPath, strPath);
-  strPath.Replace("\\", "/");
-
   if (NULL == m_pDB.get()) return 0;
   if (NULL == m_pDS.get()) return 0;
 
   try
   {
-    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    CStdString strSQL;
+    if (g_advancedSettings.m_newMyPrograms)
+      strSQL=FormatSQL("select * from files where files.strFileName like '%s'", strFilenameAndPath.c_str());
+    else
+    {
+      CStdString strPath;
+      CUtil::GetDirectory(strFilenameAndPath, strPath);
+      strPath.Replace("\\", "/");
+      strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    }
     if (!m_pDS->query(strSQL.c_str())) 
       return 0;
 
@@ -217,14 +227,19 @@ bool CProgramDatabase::SetRegion(const CStdString& strFileName, int iRegion)
 {
   try
   {
-    CStdString strPath;
-    CUtil::GetDirectory(strFileName, strPath);
-    strPath.Replace("\\", "/");
-
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    CStdString strSQL;
+    if (g_advancedSettings.m_newMyPrograms)
+      strSQL=FormatSQL("select * from files where files.strFileName like '%s'", strFileName.c_str());
+    else
+    {
+      CStdString strPath;
+      CUtil::GetDirectory(strFileName, strPath);
+      strPath.Replace("\\", "/");
+      strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    }
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -255,14 +270,19 @@ bool CProgramDatabase::SetTitleId(const CStdString& strFileName, DWORD dwTitleId
 {
   try
   {
-    CStdString strPath;
-    CUtil::GetDirectory(strFileName, strPath);
-    strPath.Replace("\\", "/");
-
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    CStdString strSQL;
+    if (g_advancedSettings.m_newMyPrograms)
+      strSQL=FormatSQL("select * from files where files.strFileName like '%s'", strFileName.c_str());
+    else
+    {
+      CStdString strPath;
+      CUtil::GetDirectory(strFileName, strPath);
+      strPath.Replace("\\", "/");
+      strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    }
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -797,6 +817,60 @@ long CProgramDatabase::GetProgram(long lPathId)
   return -1;
 }
 
+DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
+{
+  DWORD titleID = 0;
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select xbedescription,iTimesPlayed,lastAccessed,titleId from files where strFileName like '%s'", item->m_strPath.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+    { // get info
+      item->SetLabel(m_pDS->fv("xbedescription").get_asString());
+      item->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asLong();
+      item->m_strTitle = item->GetLabel();  // is this needed?
+      item->m_stTime = TimeStampToLocalTime(_atoi64(m_pDS->fv("lastAccessed").get_asString().c_str()));
+      titleID = m_pDS->fv("titleId").get_asLong();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CProgramDatabase::GetProgramInfo(%s) failed", item->m_strPath.c_str());
+  }
+  return titleID;
+}
+
+bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    int iRegion = -1;
+    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    {
+      CXBE xbe;
+      iRegion = xbe.ExtractGameRegion(item->m_strPath);
+      if (iRegion < 1 || iRegion > 7)
+        iRegion = 0;
+    }
+    GetLocalTime(&item->m_stTime);
+    unsigned __int64 lastAccessed = LocalTimeToTimeStamp(item->m_stTime);
+    CStdString strSQL=FormatSQL("insert into files (idFile, idPath, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion) values(NULL, 0, '%s', %u, '%s', %i, %I64u, %i)", item->m_strPath.c_str(), titleID, item->GetLabel().c_str(), 0, lastAccessed, iRegion);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CProgramDatabase::AddProgramInfo(%s) failed", item->m_strPath.c_str());
+  }
+  return false;
+}
+
 //********************************************************************************************************************************
 long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, DWORD titleId, const CStdString& strDescription, const CStdString& strBookmark)
 {
@@ -1019,14 +1093,19 @@ bool CProgramDatabase::IncTimesPlayed(const CStdString& strFileName)
 {
   try
   {
-    CStdString strPath;
-    CUtil::GetDirectory(strFileName, strPath);
-    strPath.Replace("\\", "/");
-
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    CStdString strSQL;
+    if (g_advancedSettings.m_newMyPrograms)
+      strSQL=FormatSQL("select * from files where files.strFileName like '%s'", strFileName.c_str());
+    else
+    {
+      CStdString strPath;
+      CUtil::GetDirectory(strFileName, strPath);
+      strPath.Replace("\\", "/");
+      strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    }
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1058,14 +1137,19 @@ bool CProgramDatabase::SetDescription(const CStdString& strFileName, const CStdS
 {
   try
   {
-    CStdString strPath;
-    CUtil::GetDirectory(strFileName, strPath);
-    strPath.Replace("\\", "/");
-
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    CStdString strSQL;
+    if (g_advancedSettings.m_newMyPrograms)
+      strSQL=FormatSQL("select * from files where files.strFileName like '%s'", strFileName.c_str());
+    else
+    {
+      CStdString strPath;
+      CUtil::GetDirectory(strFileName, strPath);
+      strPath.Replace("\\", "/");
+      strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    }
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
