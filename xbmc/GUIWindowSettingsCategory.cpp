@@ -27,6 +27,7 @@
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
 #include "MediaManager.h"
+#include "xbox/network.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -968,10 +969,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         if (g_guiSettings.GetInt("Network.Assignment") != NETWORK_STATIC) 
         {
           //We are in non Static Mode! Setting the Received IP Information
-          if(strSetting == "Network.IPAddress")pControl->SetLabel2(g_guiSettings.GetString("Network.IPAddress").c_str());
-          else if(strSetting == "Network.Subnet")pControl->SetLabel2(g_guiSettings.GetString("Network.Subnet").c_str());
-          else if(strSetting == "Network.Gateway")pControl->SetLabel2(g_guiSettings.GetString("Network.Gateway").c_str());
-          else if(strSetting == "Network.DNS")pControl->SetLabel2(g_guiSettings.GetString("Network.DNS").c_str());
+          if(strSetting == "Network.IPAddress")pControl->SetLabel2(g_network.m_networkinfo.ip);
+          else if(strSetting == "Network.Subnet")pControl->SetLabel2(g_network.m_networkinfo.subnet);
+          else if(strSetting == "Network.Gateway")pControl->SetLabel2(g_network.m_networkinfo.gateway);
+          else if(strSetting == "Network.DNS")pControl->SetLabel2(g_network.m_networkinfo.DNS1);
         }
         pControl->SetEnabled(g_guiSettings.GetInt("Network.Assignment") == NETWORK_STATIC);
       }
