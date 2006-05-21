@@ -149,10 +149,8 @@
  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
 #endif
 
-#define NUM_HOME_PATHS 4
 #define MAX_FFWD_SPEED 5
 
-static char szHomePaths[][13] = { "E:\\Apps\\XBMC", "E:\\XBMC", "F:\\Apps\\XBMC", "F:\\XBMC" };
 CStdString g_LoadErrorStr;
 
 extern "C"
@@ -612,32 +610,6 @@ HRESULT CApplication::Create()
   strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder);
   strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder);
 
-/*  if (g_settings.QuickXMLLoad("logpath", true))
-  {
-    CStdString strLogPath = g_stSettings.m_logFolder;
-    if (!strLogPath.IsEmpty())
-    {
-      //ensure there's a '\' on the end
-      if (!CUtil::HasSlashAtEnd(strLogPath))
-        strLogPath += "\\";
-          
-      // proper parameter checking, make sure its an HD path
-      if (CUtil::IsHD(strLogPath))
-      {
-        //We need to mount before we can start the log File!
-        helper.Remap("C:,Harddisk0\\Partition2");
-        helper.Remap("E:,Harddisk0\\Partition1");
-        if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive) helper.Remap("F:,Harddisk0\\Partition6");
-        if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive) helper.Remap("G:,Harddisk0\\Partition7");
-        helper.Remap("X:,Harddisk0\\Partition3");
-        helper.Remap("Y:,Harddisk0\\Partition4");
-        helper.Remap("Z:,Harddisk0\\Partition5");
-        
-        strLogFile.Format("%sxbmc.log", strLogPath.c_str());
-        strLogFileOld.Format("%sxbmc.old.log", strLogPath.c_str());
-      }
-    }
-  }*/
   ::DeleteFile(strLogFileOld.c_str());
   ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
   
@@ -841,96 +813,14 @@ HRESULT CApplication::Create()
   
   CLog::Log(LOGINFO, "Drives are mapped");
 
-  bool bHomePathChanged = false;
-  // check settings to see if another home dir is defined.
-  // if there is, we check if it's a xbmc dir and map to it Q:
   CStdString strHomePath = "Q:";
-  if (strlen(g_stSettings.szHomeDir) > 1)
-  {
-     CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-     CLog::Log(LOGNOTICE, "New Home Path! Q is mapped to: %s", szDevicePath);
-     CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-    // home dir is defined in xboxmediacenter.xml
-    strHomePath = g_stSettings.szHomeDir;
-  }
-
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
   CStdString keymapPath;
   CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
-  if (!access(strHomePath + "\\skin", 0) && !access(keymapPath.c_str(), 0))
+  if (access(strHomePath + "\\skin", 0) || access(keymapPath.c_str(), 0))
   {
-    // only remap if the new path is different than the original one
-    if (strHomePath != "Q:" && !strHomePath.Equals(strExecutablePath, false))
-    {
-      helper.GetPartition(strHomePath, szDevicePath);
-      strcat(szDevicePath, &strHomePath.c_str()[2]);
-
-      CLog::Close();
-      helper.Unmount("Q:");
-      helper.Mount("Q:", szDevicePath);
-      
-      ::DeleteFile(strLogFileOld.c_str());
-      ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
-
-      CLog::Close();
-      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-      CLog::Log(LOGNOTICE, "New Home Path! Q is mapped to: %s", szDevicePath);
-      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-      bHomePathChanged = true;
-    }
-  }
-  else
-  {
-    CLog::Log(LOGNOTICE, "skinpath %s does not exist (or no keymap.xml).  It could be that the <home> tag is wrong.  Trying default homepaths.", (strHomePath + "\\skin").c_str());
-    // failed - lets try defaults:
-    // E:\apps\xbmc
-    // E:\xbmc
-    // F:\apps\xbmc
-    // F:\xbmc
-    bool bFoundHomePath = false;
-    for (int i = 0; i < NUM_HOME_PATHS; i++)
-    {
-      strHomePath = szHomePaths[i];
-      CStdString keymapPath;
-      CUtil::AddFileToFolder(strHomePath, "UserData\\Keymap.xml", keymapPath);
-      if (!access(strHomePath + "\\skin", 0) && !access(keymapPath.c_str(), 0))
-      {
-        bFoundHomePath = true;
-        break;
-      }
-    }
-    if (bFoundHomePath)
-    {
-      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-      CLog::Log(LOGNOTICE, "Home Path! Q is mapped to: %s", szDevicePath);
-      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-      helper.GetPartition(strHomePath, szDevicePath);
-      strcat(szDevicePath, &strHomePath.c_str()[2]);
-      strcpy(g_stSettings.szHomeDir, strHomePath.c_str());
-      CLog::Close();
-      helper.Unmount("Q:");
-      helper.Mount("Q:", szDevicePath);
-      
-      ::DeleteFile(strLogFileOld.c_str());
-      ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
-
-      CLog::Close();
-      bHomePathChanged = true;
-    }
-    else
-    {
-      g_LoadErrorStr = "Invalid or missing <home> tag in xml - no skins found, or no keymap.xml found";
-      FatalErrorHandler(true, false, true);
-    }
-  }
-
-  if (bHomePathChanged)
-  { //new start of log in different location
-    CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-    CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter from alternate homepath.  Built on %s", __DATE__);
-    CLog::Log(LOGNOTICE, "Home Path Q is mapped to: %s (%s)", strHomePath.c_str(), szDevicePath );
-    CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
-    CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+    g_LoadErrorStr = "Unable to find skins or Keymap.xml.  Make sure you have UserData/Keymap.xml and Skins/ folder";
+    FatalErrorHandler(true, false, true);
   }
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))

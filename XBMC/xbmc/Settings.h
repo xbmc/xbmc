@@ -188,7 +188,6 @@ public:
   virtual ~CSettings(void);
 
   bool Load(bool& bXboxMediacenter, bool& bSettings);
-  bool QuickXMLLoad(const CStdString &strElement, bool forceToQ = false);
   void Save() const;
   bool Reset();
 
@@ -292,8 +291,6 @@ public:
   struct stSettings
   {
 public:
- 
-    char szHomeDir[1024];
     CStdString m_pictureExtensions;
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;

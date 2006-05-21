@@ -37,7 +37,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     if (!fd)
     {
       CStdString LogFile;
-      if (g_settings.QuickXMLLoad("logpath"))
+/*      if (g_settings.QuickXMLLoad("logpath"))
       {
         CStdString strLogPath = g_stSettings.m_logFolder;        
         if (!strLogPath.IsEmpty() && CUtil::IsHD(strLogPath))
@@ -50,7 +50,9 @@ void CLog::Log(int loglevel, const char *format, ... )
         }
       }
 
-      if( LogFile.length() == 0 )
+      if( LogFile.length() == 0 )*/
+
+      // TODO 2.0: Move this to TDATA if running from DVD
         LogFile = "Q:\\xbmc.log";
 
       fd = _fsopen(LogFile, "a+", _SH_DENYWR);
