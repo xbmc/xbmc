@@ -95,13 +95,6 @@ CSettings::CSettings(void)
   g_stSettings.m_ScriptsViewMethod = VIEW_METHOD_LIST;
   g_stSettings.m_ScriptsSortOrder = SORT_ORDER_ASC;
 
-  g_stSettings.m_iSambaTimeout = 0;
-  g_stSettings.m_strSambaWorkgroup = "WORKGROUP";
-  g_stSettings.m_strSambaIPAdress = "192.168.0.5";
-  g_stSettings.m_strSambaShareName = "WORKGROUP (SMB) Network";
-  g_stSettings.m_strSambaWinsServer = "";
-  g_stSettings.m_strSambaDosCodepage = "CP850";
-
   g_stSettings.m_nVolumeLevel = 0;
   g_stSettings.m_dynamicRangeCompressionLevel = 0;
   g_stSettings.m_iPreMuteVolumeLevel = 0;
@@ -180,6 +173,9 @@ CSettings::CSettings(void)
   g_advancedSettings.m_thumbSize = 128;
 
   g_advancedSettings.m_newMyPrograms = false;
+
+  g_advancedSettings.m_sambadoscodepage = "";
+  g_advancedSettings.m_sambaclienttimeout = 10;
 
   xbmcXmlLoaded = false;
 }
@@ -287,22 +283,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     m_vecIcons.push_back(icon);
     pFileType = pFileType->NextSibling();
   }*/
-
-  TiXmlElement* pSambaElement = pRootElement->FirstChildElement("samba");
-  if (pSambaElement)
-  {
-    GetString(pSambaElement, "workgroup", g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
-    GetString(pSambaElement, "smbip", g_stSettings.m_strSambaIPAdress, "192.168.0.5");
-    GetString(pSambaElement, "smbsharename", g_stSettings.m_strSambaShareName, "WORKGROUP (SMB) Network");
-    
-    
-    GetString(pSambaElement, "winsserver", g_stSettings.m_strSambaWinsServer, "");
-    GetInteger(pSambaElement, "clienttimeout", g_stSettings.m_iSambaTimeout, 10, 0, 100);
-    GetString(pSambaElement, "defaultusername", g_stSettings.m_strSambaDefaultUserName, "");
-    GetString(pSambaElement, "defaultpassword", g_stSettings.m_strSambaDefaultPassword, "");
-    GetString(pSambaElement, "doscodepage", g_stSettings.m_strSambaDosCodepage, "");
-
-  }
 
   GetString(pRootElement, "home", g_stSettings.szHomeDir, "");
   while ( CUtil::HasSlashAtEnd(g_stSettings.szHomeDir) )
@@ -1231,6 +1211,13 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "startuplock", g_advancedSettings.bMasterLockStartupLock);
     XMLUtils::GetBoolean(pElement, "enableshutdown", g_advancedSettings.bMasterLockEnableShutdown);
     GetInteger(pElement, "maxpasswordtries", g_advancedSettings.iMasterLockMaxRetry , 0, 0, 100);
+  }
+
+  pElement = pRootElement->FirstChildElement("samba");
+  if (pElement)
+  {
+    GetString(pElement,  "doscodepage",   g_advancedSettings.m_sambadoscodepage,   "");
+    GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 10, 5, 100);
   }
 
   GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NORMAL, LOG_LEVEL_MAX);
