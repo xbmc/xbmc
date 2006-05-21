@@ -37,6 +37,11 @@ public:
   bool HasTrainer(const CStdString& strTrainerPath);
   bool ItemHasTrainer(unsigned int iTitleId);
   void DeleteProgram(const CStdString& strPath);
+
+  // new functions
+  DWORD GetProgramInfo(CFileItem *item);
+  bool AddProgramInfo(CFileItem *item, unsigned int titleID);
+
 protected:
   static const unsigned __int64 Date_1601 = 0x0701CE1722770000i64;
 
