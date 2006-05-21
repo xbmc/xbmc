@@ -159,7 +159,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_DELETE_ITEM)
         {
           // is delete allowed?
-          if (g_guiSettings.GetBool("Pictures.AllowFileDeletion"))
+          if (g_guiSettings.GetBool("FileLists.AllowFileDeletion"))
             OnDeleteItem(iItem);
           else
             return false;
@@ -468,7 +468,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       btn_Thumbs = pMenu->AddButton(13315);         // Create Thumbnails
     
     int btn_Delete = 0, btn_Rename = 0;             // Delete and Rename
-    if (g_guiSettings.GetBool("Pictures.AllowFileDeletion"))
+    if (g_guiSettings.GetBool("FileLists.AllowFileDeletion"))
     {
       btn_Delete = pMenu->AddButton(117);           // Delete
       btn_Rename = pMenu->AddButton(118);           // Rename

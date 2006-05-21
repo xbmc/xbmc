@@ -593,7 +593,7 @@ void CGUIWindowVideoFiles::GetStackedDirectory(const CStdString &strPath, CFileI
   g_stSettings.m_iMyVideoStack = STACK_SIMPLE;
 
   /*bool bUnroll = m_guiState->UnrollArchives();
-  g_guiSettings.SetBool("VideoFiles.UnrollArchives",true);*/
+  g_guiSettings.SetBool("FileLists.UnrollArchives",true);*/
 
   //sort list ascending by filename before stacking...
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -601,7 +601,7 @@ void CGUIWindowVideoFiles::GetStackedDirectory(const CStdString &strPath, CFileI
 
   // restore stack
   g_stSettings.m_iMyVideoStack = iStack;
-  //g_guiSettings.SetBool("VideoFiles.UnrollArchives",bUnroll);
+  //g_guiSettings.SetBool("VideoFiles.FileLists",bUnroll);
 }
 
 void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
