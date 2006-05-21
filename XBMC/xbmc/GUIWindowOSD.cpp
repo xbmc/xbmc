@@ -17,24 +17,8 @@ void CGUIWindowOSD::OnWindowLoaded()
   m_bRelativeCoords = true;
 }
 
-void CGUIWindowOSD::Render()
-{
-  if ( g_guiSettings.GetInt("MyVideos.OSDTimeout") &&
-      !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS) &&
-      !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS) &&
-      !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS) )
-  {
-    if ( (timeGetTime() - m_dwOSDTimeOut) > (DWORD)(g_guiSettings.GetInt("MyVideos.OSDTimeout") * 1000))
-    {
-      Close();
-    }
-  }
-  CGUIDialog::Render();  // render our controls to the screen
-}
-
 bool CGUIWindowOSD::OnAction(const CAction &action)
 {
-  m_dwOSDTimeOut = timeGetTime();
   // ACTION_SHOW_OSD should take the OSD away too!
   if (action.wID == ACTION_SHOW_OSD)
   {
@@ -76,8 +60,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       // position correctly
       int iResolution = g_graphicsContext.GetVideoResolution();
       SetPosition(0, g_settings.m_ResInfo[iResolution].iOSDYOffset);
-
-      m_dwOSDTimeOut = timeGetTime();
       return true;
     }
     break;

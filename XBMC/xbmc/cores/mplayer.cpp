@@ -1958,9 +1958,13 @@ bool CMPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
 
       CStdStringA S = sub->text[i];
       CStdStringW W;
-      if (g_charsetConverter.isValidUtf8(S))
-        g_charsetConverter.utf8ToUTF16(S, W, false); // mplayer does flipping of hebrew/arabic for use
-      else
+      // "Detecting" UTF-8 like this doesn't work too well, as we
+      // can have a different charset that passes the UTF8 test.
+      // Ideally we'd have mplayer tell us what the encoding is (or
+      // at least tell is if we had utf8 or not)
+      //if (g_charsetConverter.isValidUtf8(S))
+      //  g_charsetConverter.utf8ToUTF16(S, W, false); // mplayer does flipping of hebrew/arabic for use
+      //else
         g_charsetConverter.subtitleCharsetToUTF16(S, W);
       strSubtitle += W;
     }
