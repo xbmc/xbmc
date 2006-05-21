@@ -10,7 +10,7 @@ CStdString CGUIViewStateWindowVideo::GetLockType()
 
 bool CGUIViewStateWindowVideo::UnrollArchives()
 {
-  return g_guiSettings.GetBool("VideoFiles.UnrollArchives");
+  return g_guiSettings.GetBool("FileLists.UnrollArchives");
 }
 
 CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
@@ -34,7 +34,7 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
     // when stacking is enabled, filenames are already cleaned so use the existing label
     if (g_stSettings.m_iMyVideoStack != STACK_NONE)
       strFileMask = "%L"; 
-    if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
+    if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
       AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS(strFileMask, "%I", "%F", ""));  // FileName, Size | Foldername, empty
     else
       AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS(strFileMask, "%I", "%F", ""));  // FileName, Size | Foldername, empty
@@ -77,7 +77,7 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
 
 CGUIViewStateWindowVideoTitle::CGUIViewStateWindowVideoTitle(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
-  if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
+  if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
     AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
   else
     AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
@@ -118,7 +118,7 @@ CGUIViewStateWindowVideoGenre::CGUIViewStateWindowVideoGenre(const CFileItemList
   }
   else
   {
-    if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
+    if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
       AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
     else
       AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
@@ -168,7 +168,7 @@ CGUIViewStateWindowVideoActor::CGUIViewStateWindowVideoActor(const CFileItemList
   }
   else
   {
-    if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
+    if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
       AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
     else
       AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
@@ -218,7 +218,7 @@ CGUIViewStateWindowVideoYear::CGUIViewStateWindowVideoYear(const CFileItemList& 
   }
   else
   {
-    if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
+    if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
       AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
     else
       AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
