@@ -84,11 +84,12 @@ CreditLine_t Credits[] =
     { 50, 85, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"GeminiServer" },
     //  crossfade 3.5, on 45, fadeout 16
     { 50, 35, 7620, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"jwnmulder" },
-    { 50, 45, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"monkeyhappy" },
-    { 50, 55, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Tslayer" },
-    { 50, 65, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"yuvalt" },
-    { 50, 75, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Charly" },
-    { 50, 85, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Guybrush" },
+    { 50, 43, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"monkeyhappy" },
+    { 50, 51, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Tslayer" },
+    { 50, 59, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"yuvalt" },
+    { 50, 67, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Charly" },
+    { 50, 75, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Guybrush" },
+    { 50, 83, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Nad" },
 
     // Project management flash 0.5, on 63, crossfade 3.5
     { 50, 18, 7740, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 36, L"Project Management" },
@@ -310,6 +311,11 @@ CreditLine_t Credits[] =
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"cvs access and in that something else" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"to do instead of sleeping at nights." },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanx a bunch!" },
+
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Nad" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"To my Mum who passed away April 2006 -" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"we miss you." },
+
 
     // can duplicate the lines below as many times as required for more credits
     // {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"" },
