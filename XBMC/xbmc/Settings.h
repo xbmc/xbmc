@@ -282,6 +282,8 @@ public:
     int iMasterLockHomeMedia;
     CStdString strMasterLockCode;
     //
+
+    bool m_newMyPrograms;
     int m_thumbSize;
 
   };

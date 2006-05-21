@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-05-2006 changed: Initial commit of new My Programs system (more in line with the other categories.)  Test via specifying <newmyprograms>true</newmyprograms> in AdvancedSettings.xml
  - 21-05-2006 fixed: [ 1492281 ] Some video thumbnails aren't loading
  - 21-05-2006 changed: Moved "Allow file operations", "Unroll RAR Archives" and "Ignore The When Sorting" to the global File Lists settings (under Appearance).  Removed the Video OSD timeout setting, the Low quality renderer option and the "Enlarge VobSubs" option.
  - 21-05-2006 fixed: AM/PM switched in time display
