@@ -7,6 +7,7 @@
 #include "../GUIPassword.h"
 #include "SMBDirectory.h"
 #include "../util.h"
+#include "../xbox/network.h"
 
 void xb_smbc_log(const char* msg)
 {
@@ -37,10 +38,7 @@ void CSMB::Init()
 {
   if (!m_context)
   {
-    CStdString strIPAddress = g_guiSettings.GetString("Network.IPAddress");
-    CStdString strSubnet = g_guiSettings.GetString("Network.Subnet");
-
-    set_xbox_interface((char*)strIPAddress.c_str(), (char*)strSubnet.c_str());
+    set_xbox_interface(g_network.m_networkinfo.ip, g_network.m_networkinfo.subnet);
     // set log function
     set_log_callback(xb_smbc_log);
 
