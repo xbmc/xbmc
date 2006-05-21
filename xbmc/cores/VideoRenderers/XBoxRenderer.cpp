@@ -238,7 +238,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   }
 
   // scale to fit screen
-  float EnlargeFactor = g_guiSettings.GetInt("Subtitles.EnlargePercentage") / 100.0f;
+  float EnlargeFactor = 1.0f; //g_guiSettings.GetInt("Subtitles.EnlargePercentage") / 100.0f;
 
   const RECT& rv = g_graphicsContext.GetViewWindow();
   float xscale = EnlargeFactor * (float)(rv.right - rv.left) / (float)((g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left)) * ((float)m_iNormalDestWidth / (float)m_iOSDTextureWidth);

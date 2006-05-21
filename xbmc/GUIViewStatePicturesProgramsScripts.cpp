@@ -64,7 +64,7 @@ CStdString CGUIViewStateWindowPictures::GetLockType()
 
 bool CGUIViewStateWindowPictures::UnrollArchives()
 {
-  return g_guiSettings.GetBool("Pictures.UnrollArchives");
+  return g_guiSettings.GetBool("FileLists.UnrollArchives");
 }
 
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
