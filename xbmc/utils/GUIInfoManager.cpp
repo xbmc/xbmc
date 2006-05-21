@@ -19,6 +19,7 @@
 #include "KaiClient.h"
 #include "Weather.h"
 #include <stack>
+#include "../xbox/network.h"
 
 // stuff for current song
 #include "../filesystem/CDDADirectory.h"
@@ -27,7 +28,6 @@
 
 #include "GUILabelControl.h"  // for CInfoPortion
 
-extern char g_szTitleIP[32];
 CGUIInfoManager g_infoManager;
 
 void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
@@ -551,7 +551,7 @@ string CGUIInfoManager::GetLabel(int info)
   case NETWORK_IP_ADDRESS:
     {
       CStdString ip;
-      ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), g_szTitleIP);
+      ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), g_network.m_networkinfo.ip);
       return ip;
     }
     break;

@@ -42,6 +42,7 @@
 #include "FileSystem/DllLibCurl.h"
 #include "audiocontext.h"
 #include "GUIFontTTF.h"
+#include "xbox/network.h"
 
 // Windows includes
 #include "GUIStandardWindow.h"
@@ -347,142 +348,115 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   if (HaveGamepad)
     FEH_TextOut(pFont, (Pal ? 16 : 12) | 0x18000, L"Press any button to reboot");
 
-  // Boot up the network for FTP
   bool NetworkUp = false;
-  IN_ADDR ip_addr;
-  ip_addr.S_un.S_addr = 0;
 
+  // Boot up the network for FTP
   if (InitNetwork)
   {
-    bool TriedDash = false;
-    bool ForceDHCP = false;
-    bool ForceStatic = false;
+    std::vector<int> netorder;
     if (m_bXboxMediacenterLoaded)
     {
       if (g_guiSettings.GetInt("Network.Assignment") == NETWORK_DHCP)
       {
-        TriedDash = true;
-        ForceDHCP = true;
+        netorder.push_back(NETWORK_DHCP);
+        netorder.push_back(NETWORK_STATIC);
       }
       else if (g_guiSettings.GetInt("Network.Assignment") == NETWORK_STATIC)
       {
-        ForceStatic = true;
-        TriedDash = true;
-      }
-    }
-
-    for (;;)
-    {
-      if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
-      {
-        FEH_TextOut(pFont, iLine, L"Network cable unplugged");
+        netorder.push_back(NETWORK_STATIC);
+        netorder.push_back(NETWORK_DHCP);
       }
       else
       {
-        int err = 1;
-        if (!TriedDash)
-        {
-          if (!m_bXboxMediacenterLoaded)
-            TriedDash = true;
-          FEH_TextOut(pFont, iLine, L"Init network using dash settings...");
-          XNetStartupParams xnsp;
-          memset(&xnsp, 0, sizeof(xnsp));
-          xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
-
-          // Bypass security so that we may connect to 'untrusted' hosts
-          xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
-          // create more memory for networking
-          xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
-          xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
-          xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
-          xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
-          xnsp.cfgSockMaxSockets = 64; // default = 64
-          xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
-          xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
-          err = XNetStartup(&xnsp);
-        }
-
-        if (err && TriedDash)
-        {
-          if (!ForceStatic)
-          {
-            FEH_TextOut(pFont, iLine, L"Init network using DHCP...");
-            network_info ni;
-            memset(&ni, 0, sizeof(ni));
-            ni.DHCP = true;
-            int iCount = 0;
-            while ((err = CUtil::SetUpNetwork(iCount == 0, ni)) == 1 && iCount < 100)
-            {
-              Sleep(50);
-              ++iCount;
-
-              if (HaveGamepad && AnyButtonDown())
-                g_applicationMessenger.Restart();
-            }
-          }
-
-          if ((err || ForceStatic) && !ForceDHCP)
-          {
-            XNetCleanup();
-
-            FEH_TextOut(pFont, iLine, L"Init network using static ip...");
-            network_info ni;
-            memset(&ni, 0, sizeof(ni));
-            if (ForceStatic)
-            {
-              strcpy(ni.ip, g_guiSettings.GetString("Network.IPAddress"));
-              strcpy(ni.subnet, g_guiSettings.GetString("Network.Subnet"));
-              strcpy(ni.gateway, g_guiSettings.GetString("Network.Gateway"));
-              strcpy(ni.DNS1, g_guiSettings.GetString("Network.DNS"));
-            }
-            else
-            {
-              strcpy(ni.ip, "192.168.0.42");
-              strcpy(ni.subnet, "255.255.255.0");
-              strcpy(ni.gateway, "192.168.0.1");
-              strcpy(ni.DNS1, "192.168.0.1");
-            }
-            int iCount = 0;
-            while ((err = CUtil::SetUpNetwork(iCount == 0, ni)) == 1 && iCount < 100)
-            {
-              Sleep(50);
-              ++iCount;
-
-              if (HaveGamepad && AnyButtonDown())
-                g_applicationMessenger.Restart();
-            }
-          }
-        }
-
-        if (!err)
-        {
-          XNADDR xna;
-          DWORD dwState;
-          do
-          {
-            dwState = XNetGetTitleXnAddr(&xna);
-            Sleep(50);
-
-            if (HaveGamepad && AnyButtonDown())
-              g_applicationMessenger.Restart();
-          }
-          while (dwState == XNET_GET_XNADDR_PENDING);
-          ip_addr = xna.ina;
-
-          if (ip_addr.S_un.S_addr)
-          {
-            WSADATA WsaData;
-            err = WSAStartup( MAKEWORD(2, 2), &WsaData );
-            if (err)
-              FEH_TextOut(pFont, iLine, L"Winsock init error: %d", err);
-            else
-              NetworkUp = true;
-          }
-        }
+        netorder.push_back(NETWORK_DASH);
+        netorder.push_back(NETWORK_DHCP);
+        netorder.push_back(NETWORK_STATIC);
       }
-      if (!NetworkUp)
+    }
+    else
+    {
+      netorder.push_back(NETWORK_DASH);
+      netorder.push_back(NETWORK_DHCP);
+      netorder.push_back(NETWORK_STATIC);
+    }
+
+    while(1)
+    {
+      std::vector<int>::iterator it;
+      for( it = netorder.begin();it != netorder.end(); it++)
       {
         XNetCleanup();
+
+        if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
+        {
+          FEH_TextOut(pFont, iLine, L"Network cable unplugged");
+          break;
+        }
+        
+        switch( (*it) )
+        {
+          case NETWORK_DASH:
+            FEH_TextOut(pFont, iLine, L"Init network using dash settings...");
+            g_network.Initialize(NETWORK_DASH, "","","","");
+            break;
+          case NETWORK_DHCP:
+            FEH_TextOut(pFont, iLine, L"Init network using DHCP...");
+            g_network.Initialize(NETWORK_DHCP, "","","","");
+            break;
+          default:
+            FEH_TextOut(pFont, iLine, L"Init network using static ip...");
+            if( m_bXboxMediacenterLoaded )
+            {
+              g_network.Initialize(NETWORK_STATIC, 
+                    g_guiSettings.GetString("Network.IPAddress").c_str(), 
+                    g_guiSettings.GetString("Network.Subnet").c_str(), 
+                    g_guiSettings.GetString("Network.Gateway").c_str(),
+                    g_guiSettings.GetString("Network.DNS").c_str() );
+            }
+            else
+            {
+              g_network.Initialize(NETWORK_STATIC, 
+                    "192.168.0.42", 
+                    "255.255.255.0", 
+                    "192.168.0.1",
+                    "192.168.0.1" );
+            }
+            break;
+        }
+
+        int count = 0;
+        DWORD dwState = XNET_GET_XNADDR_PENDING;
+
+        while(dwState == XNET_GET_XNADDR_PENDING)
+        {
+          dwState = g_network.UpdateState();
+
+          if( dwState != XNET_GET_XNADDR_PENDING )
+            break;
+
+          if (HaveGamepad && AnyButtonDown())
+            g_applicationMessenger.Restart();
+
+
+          Sleep(50);
+          ++count;
+        }
+
+        if( dwState != XNET_GET_XNADDR_PENDING && dwState != XNET_GET_XNADDR_NONE )
+        {
+          /* yay, we got network */
+          NetworkUp = true;
+          break;
+        }
+        /* increment line before next attempt */
+        ++iLine;
+      }      
+
+      /* break out of the continous loop if we have network*/
+      if( NetworkUp )
+        break;
+      else
+      {
         int n = 10;
         while (n)
         {
@@ -496,31 +470,14 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
           }
         }
       }
-      else
-        break;
     }
+  }
+
+  if( NetworkUp )
+  {
+    FEH_TextOut(pFont, iLine++, L"IP Address: %S", g_network.m_networkinfo.ip);
     ++iLine;
   }
-  else
-  {
-    NetworkUp = true;
-    XNADDR xna;
-    DWORD dwState;
-    do
-    {
-      dwState = XNetGetTitleXnAddr(&xna);
-      Sleep(50);
-
-      if (HaveGamepad && AnyButtonDown())
-        g_applicationMessenger.Restart();
-    }
-    while (dwState == XNET_GET_XNADDR_PENDING);
-    ip_addr = xna.ina;
-  }
-  char addr[32];
-  XNetInAddrToString(ip_addr, addr, 32);
-  FEH_TextOut(pFont, iLine++, L"IP Address: %S", addr);
-  ++iLine;
 
   if (NetworkUp)
   {
@@ -1152,28 +1109,27 @@ HRESULT CApplication::Initialize()
     g_guiSettings.SetBool("Servers.WebServer", false);
     g_guiSettings.SetBool("XBDateTime.TimeServer", false);
   }
-  CStdString strAssignment;
-  if (g_guiSettings.GetInt("Network.Assignment") == NETWORK_DASH)
-    strAssignment = "dash";
-  else if (g_guiSettings.GetInt("Network.Assignment") == NETWORK_DHCP)
-    strAssignment = "dhcp";
-  else //if (g_guiSettings.GetInt("Network.Assignment")==NETWORK_STATIC)
-    strAssignment = "static";
-  CLog::Log(LOGNOTICE, "initialize assignment:[%s] network ip:[%s] netmask:[%s] gateway:[%s] nameserver:[%s]",
-            strAssignment.c_str(),
-            g_guiSettings.GetString("Network.IPAddress").c_str(),
-            g_guiSettings.GetString("Network.Subnet").c_str(),
-            g_guiSettings.GetString("Network.Gateway").c_str(),
-            g_guiSettings.GetString("Network.DNS").c_str());
+  
+  /* setup netowork based on our settings */
+  /* network will start it's init procedure */
+  g_network.Initialize(g_guiSettings.GetInt("Network.Assignment"),
+          g_guiSettings.GetString("Network.IPAddress").c_str(),
+          g_guiSettings.GetString("Network.Subnet").c_str(),
+          g_guiSettings.GetString("Network.Gateway").c_str(),
+          g_guiSettings.GetString("Network.DNS").c_str());
 
-  if ( !CUtil::InitializeNetwork(g_guiSettings.GetInt("Network.Assignment"),
-                                 g_guiSettings.GetString("Network.IPAddress").c_str(),
-                                 g_guiSettings.GetString("Network.Subnet").c_str(),
-                                 g_guiSettings.GetString("Network.Gateway").c_str(),
-                                 g_guiSettings.GetString("Network.DNS").c_str()))
+  /* now attempt to get all settings for the network as soon as it is */
+  /* available. this could be done further down, to keep network */
+  /* from stalling startup */
+  if( g_network.IsEthernetConnected() )
   {
-    CLog::Log(LOGERROR, "initialize network failed");
+    if( g_network.WaitForSetup( 5000 ) )
+      CLog::Log(LOGINFO, __FUNCTION__" - network fully setup");
+    else
+      CLog::Log(LOGERROR, __FUNCTION__" - network init timed out");
   }
+  else
+    CLog::Log(LOGINFO, __FUNCTION__" - network not connected");
 
   StartServices();
 
@@ -1341,14 +1297,12 @@ void CApplication::PrintXBEToLCD(const char* xbePath)
 
 void CApplication::StartWebServer()
 {
-  if (g_guiSettings.GetBool("Servers.WebServer") && CUtil::IsNetworkUp())
+  if (g_guiSettings.GetBool("Servers.WebServer") && g_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "start webserver");
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
-    CStdString ipadres;
-    CUtil::GetTitleIP(ipadres);
-    m_pWebServer->Start(ipadres.c_str(), atoi(g_guiSettings.GetString("Servers.WebServerPort")), "Q:\\web");
+    m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("Servers.WebServerPort")), "Q:\\web");
   }
 }
 
@@ -1366,7 +1320,7 @@ void CApplication::StopWebServer()
 
 void CApplication::StartFtpServer()
 {
-  if ( g_guiSettings.GetBool("Servers.FTPServer") && CUtil::IsNetworkUp())
+  if ( g_guiSettings.GetBool("Servers.FTPServer") && g_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
@@ -1405,7 +1359,7 @@ void CApplication::StopFtpServer()
 
 void CApplication::StartTimeServer()
 {
-  if (g_guiSettings.GetBool("XBDateTime.TimeServer") && CUtil::IsNetworkUp())
+  if (g_guiSettings.GetBool("XBDateTime.TimeServer") && g_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "start timeserver thread");
     m_sntpClient.Create();

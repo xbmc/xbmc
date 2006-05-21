@@ -2134,6 +2134,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\xbox\MediaPacketQueue.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\xbox\Network.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\Network.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\xbox\VoiceCommunicator.cpp">
 			</File>
 			<File

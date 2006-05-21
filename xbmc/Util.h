@@ -6,15 +6,6 @@
 
 class CTrainer;
 
-struct network_info
-{
-  char ip[32];
-  char gateway[32];
-  char subnet[32];
-  char DNS1[32];
-  char DNS2[32];
-  char DHCP;
-};
 
 // for 'cherry' patching
 typedef enum
@@ -227,9 +218,6 @@ public:
   static void LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo=VIDEO_NULL, F_COUNTRY ForceCountry=COUNTRY_NULL, CUSTOM_LAUNCH_DATA* pData=NULL); 
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
   static void GetHomePath(CStdString& strPath);
-  static bool InitializeNetwork(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer);
-  static bool IsEthernetConnected();
-  static void GetTitleIP(CStdString& ip);
   static void ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime);
   static __int64 CompareSystemTime(const SYSTEMTIME *a, const SYSTEMTIME *b);
   static void ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile);
@@ -299,7 +287,6 @@ public:
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
   static void ThumbCacheClear();
   static void PlayDVD();
-  static DWORD SetUpNetwork( bool resetmode, struct network_info& networkinfo );
   static CStdString GetNextFilename(const char* fn_template, int max);
   static void TakeScreenshot();
   static void TakeScreenshot(const char* fn, bool flash);
@@ -310,7 +297,6 @@ public:
   static void RestoreBrightnessContrastGamma();
   static void InitGamma();
   static void ClearCache();
-  static bool IsNetworkUp() { return m_bNetworkUp; }
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
@@ -351,7 +337,6 @@ public:
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
   static float CurrentCpuUsage();
   static bool SupportsFileOperations(const CStdString& strPath);
-  static void GetDHCPInfo(CStdString& dns2, CStdString& dhcpserver);
 
 private:
   static bool m_bNetworkUp;
