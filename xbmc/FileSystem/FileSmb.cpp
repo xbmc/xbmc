@@ -43,7 +43,7 @@ void CSMB::Init()
     set_log_callback(xb_smbc_log);
 
     // set workgroup for samba, after smbc_init it can be freed();
-    xb_setSambaWorkgroup((char*)g_stSettings.m_strSambaWorkgroup.c_str());
+    xb_setSambaWorkgroup((char*)g_guiSettings.GetString("Smb.Workgroup").c_str());
 
     // setup our context
     m_context = smbc_new_context();
@@ -51,7 +51,7 @@ void CSMB::Init()
     m_context->callbacks.auth_fn = xb_smbc_auth;
 
     /* set connection timeout. since samba always tries two ports, divide this by two the correct value */
-    m_context->timeout = g_stSettings.m_iSambaTimeout / 2 * 1000;    
+    m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;    
 
     // initialize samba and do some hacking into the settings
     if (smbc_init_context(m_context))
@@ -60,17 +60,18 @@ void CSMB::Init()
       smbc_set_context(m_context);
 
       // if a wins-server is set, we have to change name resolve order to
-      if (g_stSettings.m_strSambaWinsServer.length() > 1)
+      if ( g_guiSettings.GetString("Smb.Winsserver").length() > 0 && !g_guiSettings.GetString("Smb.Winsserver").Equals("0.0.0.0") )
       {
-        lp_do_parameter( -1, "wins server", g_stSettings.m_strSambaWinsServer.c_str());
+        lp_do_parameter( -1, "wins server", g_guiSettings.GetString("Smb.Winsserver").c_str());
         lp_do_parameter( -1, "name resolve order", "bcast wins");
       }
-      else lp_do_parameter( -1, "name resolve order", "bcast");
+      else 
+        lp_do_parameter( -1, "name resolve order", "bcast");
             
-      if (g_stSettings.m_strSambaDosCodepage.length() > 1 && !g_stSettings.m_strSambaDosCodepage.Equals("DEFAULT"))
-      {
-        lp_do_parameter( -1, "dos charset", g_stSettings.m_strSambaDosCodepage.c_str());
-      }      
+      if (g_advancedSettings.m_sambadoscodepage.length() > 0)
+        lp_do_parameter( -1, "dos charset", g_advancedSettings.m_sambadoscodepage.c_str());
+      else
+        lp_do_parameter( -1, "dos charset", "CP850");
     }
     else
     {
