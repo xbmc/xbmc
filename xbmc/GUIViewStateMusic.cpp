@@ -14,7 +14,7 @@ int CGUIViewStateWindowMusic::GetPlaylist()
 
 bool CGUIViewStateWindowMusic::UnrollArchives()
 {
-  return g_guiSettings.GetBool("MusicFiles.UnrollArchives");
+  return g_guiSettings.GetBool("FileLists.UnrollArchives");
 }
 
 bool CGUIViewStateWindowMusic::AutoPlayNextItem()
@@ -79,7 +79,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_ARTIST:
     {
-      if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+      if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
       {
         AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 103, LABEL_MASKS("%F", "", "%A", ""));  // Filename, empty | Artist, empty
         SetSortMethod(SORT_METHOD_ARTIST_IGNORE_THE);
@@ -101,11 +101,11 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM:
     {
-      if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+      if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
         AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE, 270, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
       else
         AddSortMethod(SORT_METHOD_ALBUM, 270, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
-      if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+      if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
         AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 269, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
       else
         AddSortMethod(SORT_METHOD_ARTIST, 269, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
@@ -192,15 +192,15 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   case NODE_TYPE_SONG:
     {
       AddSortMethod(SORT_METHOD_TRACKNUM, 266, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
-      if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+      if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
         AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 268, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
       else
         AddSortMethod(SORT_METHOD_TITLE, 268, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
-      if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+      if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
         AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE, 270, LABEL_MASKS("%B - %T - %A", "%D"));  // Album, Titel, Artist, Duration| empty, empty
       else
         AddSortMethod(SORT_METHOD_ALBUM, 270, LABEL_MASKS("%B - %T - %A", "%D"));  // Album, Titel, Artist, Duration| empty, empty
-      if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+      if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
         AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 269, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
       else
         AddSortMethod(SORT_METHOD_ARTIST, 269, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
@@ -330,15 +330,15 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
   // TODO: localize 2.0
   AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 20014, LABEL_MASKS(strTrackLeft, strTrackRight));
   AddSortMethod(SORT_METHOD_TRACKNUM, 266, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
-  if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+  if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
     AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 268, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
   else
     AddSortMethod(SORT_METHOD_TITLE, 268, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
-  if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+  if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
     AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE, 270, LABEL_MASKS("%B - %T - %A", "%D"));  // Album, Titel, Artist, Duration| empty, empty
   else
     AddSortMethod(SORT_METHOD_ALBUM, 270, LABEL_MASKS("%B - %T - %A", "%D"));  // Album, Titel, Artist, Duration| empty, empty
-  if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+  if (g_guiSettings.GetBool("FileLists.IgnoreTheWhenSorting"))
     AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 269, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
   else
     AddSortMethod(SORT_METHOD_ARTIST, 269, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty

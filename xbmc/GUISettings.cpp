@@ -163,8 +163,6 @@ CGUISettings::CGUISettings(void)
   AddBool(1, "Pictures.UseAutoSwitching", 14011, false);
   AddBool(2, "Pictures.AutoSwitchUseLargeThumbs", 14012, false);
   AddBool(3, "Pictures.HideFilenamesInThumbPanel",15215,false);
-  AddBool(4, "Pictures.AllowFileDeletion", 14071, false);
-  AddBool(5, "Pictures.UnrollArchives", 516, false);
 
   AddCategory(0, "Slideshow", 108);
   AddInt(1, "Slideshow.StayTime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -216,7 +214,6 @@ CGUISettings::CGUISettings(void)
   AddCategory(3, "MyMusic", 16000);
   AddString(1, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
   AddSeparator(2, "MyMusic.Sep1");
-  AddBool(3, "MyMusic.IgnoreTheWhenSorting", 13399, true);
   AddString(4, "MyMusic.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(5, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
   AddSeparator(6, "MyMusic.Sep2");
@@ -239,8 +236,6 @@ CGUISettings::CGUISettings(void)
   AddBool(9, "MusicFiles.AutoSwitchUseLargeThumbs", 14012, false);
   AddInt(10, "MusicFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddInt(11, "MusicFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddBool(12, "MusicFiles.AllowFileDeletion", 14071, false);
-  AddBool(13, "MusicFiles.UnrollArchives", 516, false);
 
   AddCategory(3, "MusicPlaylist", 136);
   AddBool(1, "MusicPlaylist.ClearPlaylistsOnEnd",239,false);
@@ -344,10 +339,6 @@ CGUISettings::CGUISettings(void)
   AddCategory(5, "MyVideos", 16000);
   AddString(1, "MyVideos.Calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "MyVideos.Sep1");
-  AddInt(3, "MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddSeparator(4, "MyVideos.Sep2");
-  AddBool(5, "MyVideos.IgnoreTheWhenSorting", 13399, true);
-  AddSeparator(6, "MyVideos.Sep3");
   //  TODO: localize 2.0
   AddBool(7, "MyVideos.UseExternalDVDPlayer", 20001, false);
   AddString(8, "MyVideos.ExternalDVDPlayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 20002);
@@ -359,14 +350,11 @@ CGUISettings::CGUISettings(void)
   AddBool(2, "VideoFiles.AutoSwitchUseLargeThumbs", 14012, false);
   AddInt(3, "VideoFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddInt(4, "VideoFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddSeparator(5, "VideoFiles.Sep1");
-  AddBool(7, "VideoFiles.AllowFileDeletion", 14071, false);
-  AddBool(8,"VideoFiles.UnrollArchives",516, false);
 
   AddCategory(5, "VideoPlayer", 16003);
   AddString(1, "VideoPlayer.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "VideoPlayer.Sep1");
-  AddInt(6, "VideoPlayer.RenderMethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
+  AddInt(6, "VideoPlayer.RenderMethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_OVERLAYS, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
   AddInt(8, "VideoPlayer.DisplayResolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddInt(9, "VideoPlayer.FrameRateConversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
   AddSeparator(10, "VideoPlayer.Sep3");
@@ -383,7 +371,7 @@ CGUISettings::CGUISettings(void)
   AddString(5, "Subtitles.CharSet", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddBool(6, "Subtitles.FlipBiDiCharSet", 13304, false);
   AddSeparator(7, "Subtitles.Sep1");
-  AddInt(8, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  //AddInt(8, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddBool(9, "Subtitles.SearchRars", 13249, false);
 
   AddCategory(5, "PostProcessing", 14041);
@@ -476,6 +464,9 @@ CGUISettings::CGUISettings(void)
   AddCategory(7, "FileLists", 14018);
   AddBool(1, "FileLists.HideExtensions", 497, false);
   AddBool(2, "FileLists.HideParentDirItems", 13306, false);
+  AddBool(3, "FileLists.IgnoreTheWhenSorting", 13399, true);
+  AddBool(4, "FileLists.AllowFileDeletion", 14071, false);
+  AddBool(5, "FileLists.UnrollArchives",516, false);
 
   AddCategory(7, "ScreenSaver", 360);
   AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);
@@ -834,7 +825,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.bAvoidClipping = GetBool("MusicPlayer.ReplayGainAvoidClipping");
 
   // Master User mode is always off initially
-  SetBool("MasterLock.MasterUser", false);
+  SetBool("Masterlock.MasterUser", false);
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool hideSetting /* = false */)
