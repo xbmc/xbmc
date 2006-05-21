@@ -178,6 +178,9 @@ CSettings::CSettings(void)
   g_advancedSettings.m_displayRemoteCodes = false;
 
   g_advancedSettings.m_thumbSize = 128;
+
+  g_advancedSettings.m_newMyPrograms = false;
+
   xbmcXmlLoaded = false;
 }
 
@@ -584,7 +587,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
       else
       {
         // if my programs, make a comma seperated path
-        if (category.Equals("myprograms"))
+        if (!g_advancedSettings.m_newMyPrograms && category.Equals("myprograms"))
         {
           for (int j = 0; j < (int)share.vecPaths.size(); ++j)
             strPath += share.vecPaths[j] + ",";
@@ -1318,6 +1321,8 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "remoterepeat", g_advancedSettings.m_remoteRepeat, 480, 1, INT_MAX);
   GetFloat(pRootElement, "controllerdeadzone", g_advancedSettings.m_controllerDeadzone, 0.2f, 0.0f, 1.0f);
   GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 128, 64, 512);
+
+  XMLUtils::GetBoolean(pRootElement, "newmyprograms", g_advancedSettings.m_newMyPrograms);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
