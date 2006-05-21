@@ -8,6 +8,7 @@
 #include "GUIDialogContextMenu.h"
 #include "MediaManager.h"
 #include "AutoSwitch.h"
+#include "xbox/network.h"
 
 #define CONTROL_LIST          450
 #define CONTROL_THUMBS        451
@@ -359,7 +360,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( CStdString& strPath, int iDriv
   else if ( iDriveType == SHARE_TYPE_REMOTE )
   {
     // TODO: Handle not connected to a remote share
-    if ( !CUtil::IsEthernetConnected() )
+    if ( !g_network.IsEthernetConnected() )
     {
       CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
       return false;

@@ -1405,11 +1405,11 @@ typedef struct
   DWORD Data_0c;
   DWORD Data_10;            // Check Block End
 
-  DWORD V1_IP;              // 0x14
-  DWORD V1_Subnetmask;      // 0x18
-  DWORD V1_Defaultgateway;  // 0x1c
-  DWORD V1_DNS1;            // 0x20
-  DWORD V1_DNS2;            // 0x24
+  IN_ADDR V1_IP;              // 0x14
+  IN_ADDR V1_Subnetmask;      // 0x18
+  IN_ADDR V1_Defaultgateway;  // 0x1c
+  IN_ADDR V1_DNS1;            // 0x20
+  IN_ADDR V1_DNS2;            // 0x24
 
   DWORD Data_28;            // Check Block Start
   DWORD Data_2c;
@@ -1422,19 +1422,54 @@ typedef struct
   DWORD Flag;    // 0x40
   DWORD Data_44;
 
-  DWORD V2_IP;              // 0x48
-  DWORD V2_Subnetmask;      // 0x4c
-  DWORD V2_Defaultgateway;  // 0x50
-  DWORD V2_DNS1;            // 0x54
-  DWORD V2_DNS2;            // 0x58
+  IN_ADDR V2_IP;              // 0x48
+  IN_ADDR V2_Subnetmask;      // 0x4c
+  IN_ADDR V2_Defaultgateway;  // 0x50
+  IN_ADDR V2_DNS1;            // 0x54
+  IN_ADDR V2_DNS2;            // 0x58
 
-  DWORD Data_xx[0x200 - 0x5c];
+  unsigned char Data_5c[0x160 - 0x5c];
 
+  IN_ADDR DHCP_IP;            // 0x160
+  IN_ADDR DHCP_Subnetmask;    // 0x164
+  IN_ADDR DHCP_Defaultgateway;// 0x168
+  IN_ADDR DHCP_Server;        // 0x16C
+
+  DWORD Data_170;           // not sure what this is
+  DWORD Data_174;
+  DWORD Data_178;
+
+  IN_ADDR DHCP_DNS1;          // 0x17C
+  IN_ADDR DHCP_DNS2;          // 0x180
+  
+  unsigned char Data_184[0x200 - 0x184];
 }
 TXNetConfigParams, *PTXNetConfigParams;
 
+/* by the looks of the data returned for this */
+/* structure, we don't actually get the additional */
+/* dhcp info, like leasetime and dhcp server */
+/* they are available in the config params */
+/* after a reboot if we really need them*/
+typedef struct XNetConfigStatus
+{
+  DWORD data_00;
 
-
+  IN_ADDR ip;       // 0x04
+  IN_ADDR subnet;   // 0x08
+  IN_ADDR gateway;  // 0x0c
+  
+  DWORD data_10;    /* probably additional gateway */
+  DWORD data_14;
+  DWORD data_18;
+  
+  IN_ADDR dns1;     // 0x1c
+  IN_ADDR dns2;     // 0x20
+  
+  DWORD data_24[5];
+  WORD data_38; // is is possible this should be one byte less
+}
+TXNetConfigStatus, *PTXNetConfigStatus;
 
 
 extern "C"
@@ -1447,8 +1482,11 @@ extern "C"
   // Thanks and credit go to Team Evox
   extern VOID WINAPI HalReturnToFirmware(DWORD);
 
-  extern INT WINAPI XNetLoadConfigParams(LPBYTE);
-  extern INT WINAPI XNetSaveConfigParams(LPBYTE);
+  extern INT WINAPI XNetLoadConfigParams(PTXNetConfigParams params);
+  extern INT WINAPI XNetSaveConfigParams(const PTXNetConfigParams params);
+  extern INT WINAPI XNetConfig(const PTXNetConfigParams params, DWORD data);
+
+  extern INT WINAPI XNetGetConfigStatus(PTXNetConfigStatus status);
 
   extern INT WINAPI XWriteTitleInfoNoReboot(LPVOID, LPVOID, DWORD, DWORD, LPVOID);
 	extern INT WINAPI XWriteTitleInfoAndRebootA(LPVOID,LPVOID,DWORD,DWORD,LPVOID);

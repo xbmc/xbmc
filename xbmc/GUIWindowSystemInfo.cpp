@@ -21,12 +21,11 @@ BUG: The XBE Region detection Is wrong! Need to Decyrpt the EEPROM! Port!
 #include "xbox/xkeeprom.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/SystemInfo.h"
-#include "Util.h"
+#include "xbox/network.h"
 
 #define DEBUG_KEYBOARD
 #define DEBUG_MOUSE
 
-extern char g_szTitleIP[32];
 CStdString strMplayerVersion;
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 #define     XDEVICE_TYPE_IR_REMOTE  (&XDEVICE_TYPE_IR_REMOTE_TABLE)
@@ -920,46 +919,20 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
   CStdString strlblDNS2    = "DNS2:";
   CStdString strlblDHCPServer = "DHCP-Server:";
     
+  CStdString strItem1, strItem2, strItem3, strItem4;
 
-  if ( !CUtil::InitializeNetwork(g_guiSettings.GetInt("Network.Assignment"),
-                                 g_guiSettings.GetString("Network.IPAddress").c_str(),
-                                 g_guiSettings.GetString("Network.Subnet").c_str(),
-                                 g_guiSettings.GetString("Network.Gateway").c_str(),
-                                 g_guiSettings.GetString("Network.DNS").c_str()))
-  {
-    CLog::Log(LOGERROR, "Network: Initialize network failed");
+  ip.Format("%s: %s",pszIP, g_network.m_networkinfo.ip);  // IP
+  strItem1.Format("%s %s", strlblSubnet.c_str(), g_network.m_networkinfo.subnet); // Subnetmask
+  strItem2.Format("%s %s", strlblGateway.c_str(), g_network.m_networkinfo.gateway); //Gateway (Router IP)
+  strItem3.Format("%s %s", strlblDHCPServer.c_str(), g_network.m_networkinfo.dhcpserver); // DHCP-Server IP
+  strItem4.Format("%s1: %s %s2: %s", strlblDNS.c_str(), g_network.m_networkinfo.DNS1, strlblDNS.c_str(), g_network.m_networkinfo.DNS2 ); // DNS1 / DNS2
+  
+  SET_CONTROL_LABEL(i_lblp2,ip);
+  SET_CONTROL_LABEL(i_lblp4,strItem1);
+  SET_CONTROL_LABEL(i_lblp5,strItem2);
+  SET_CONTROL_LABEL(i_lblp6,strItem3);
+  SET_CONTROL_LABEL(i_lblp7,strItem4);
 
-    CStdString strp2, strp4, strp5, strp6;
-    strp2.Format("%s %s",pszIP,g_localizeStrings.Get(13162).c_str());//"Initialize failed"
-    strp4.Format("%s %s",strlblSubnet.c_str(),g_localizeStrings.Get(13162).c_str());
-    strp5.Format("%s %s",strlblGateway.c_str(),g_localizeStrings.Get(13162).c_str());
-    strp6.Format("%s %s",strlblDNS.c_str(),g_localizeStrings.Get(13162).c_str());
-
-    SET_CONTROL_LABEL(i_lblp2,strp2);
-    SET_CONTROL_LABEL(i_lblp4,strp4);
-    SET_CONTROL_LABEL(i_lblp5,strp5);
-    SET_CONTROL_LABEL(i_lblp6,strp6);
-  }
-  else
-  {
-    CStdString strItem1, strItem2, strItem3, strItem4;
-    CStdString dns2, dhcpserver;
-    CUtil::GetDHCPInfo(dns2, dhcpserver);
-
-    //17.05.2005 Todo: Complete Rewriting the Network Section in XBMC is needed to get all Network-Settings right!
-    // Set IP Adress
-    ip.Format("%s: %s",pszIP,g_szTitleIP);  // IP
-    strItem1.Format("%s %s", strlblSubnet.c_str(), g_guiSettings.GetString("Network.Subnet").c_str()); // Subnetmask
-    strItem2.Format("%s %s", strlblGateway.c_str(), g_guiSettings.GetString("Network.Gateway").c_str()); //Gateway (Router IP)
-    strItem3.Format("%s %s", strlblDHCPServer.c_str(), dhcpserver.c_str()); // DHCP-Server IP
-    strItem4.Format("%s1: %s %s2: %s", strlblDNS.c_str(), g_guiSettings.GetString("Network.DNS").c_str(), strlblDNS.c_str(), dns2.c_str() ); // DNS1 / DNS2
-    
-    SET_CONTROL_LABEL(i_lblp2,ip);
-    SET_CONTROL_LABEL(i_lblp4,strItem1);
-    SET_CONTROL_LABEL(i_lblp5,strItem2);
-    SET_CONTROL_LABEL(i_lblp6,strItem3);
-    SET_CONTROL_LABEL(i_lblp7,strItem4);
-  }
   return true;
 }
 
