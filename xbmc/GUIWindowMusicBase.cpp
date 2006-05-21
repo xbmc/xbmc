@@ -179,7 +179,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled
-          else if (GetID() == WINDOW_MUSIC_FILES && g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
+          else if (GetID() == WINDOW_MUSIC_FILES && g_guiSettings.GetBool("FileLists.AllowFileDeletion"))
             OnDeleteItem(iItem);
 
           else
@@ -1221,7 +1221,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   int btn_Rename = 0; // Rename
   if (!bIsGotoParent)
   {
-    if (m_vecItems.m_strPath.Equals(g_guiSettings.GetString("System.PlaylistsPath")) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
+    if (m_vecItems.m_strPath.Equals(g_guiSettings.GetString("System.PlaylistsPath")) || g_guiSettings.GetBool("FileLists.AllowFileDeletion"))
     {
       btn_Delete = pMenu->AddButton(117);
       btn_Rename = pMenu->AddButton(118);
