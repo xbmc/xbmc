@@ -18,6 +18,8 @@ protected:
   virtual void GoParentFolder();
   virtual bool OnClick(int iItem);
   virtual bool Update(const CStdString& strDirectory);
+  virtual bool OnPlayMedia(int iItem);
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   void SetOverlayIcons();
 
   void OnScan(CFileItemList& items, int& iTotalAppsFound) ;
