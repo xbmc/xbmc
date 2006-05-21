@@ -122,6 +122,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         return CGUIMediaWindow::OnMessage(message);
       }
 
+      int iLastControl = m_iLastControl;
       CGUIWindow::OnMessage(message);
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
@@ -211,8 +212,21 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       m_vecPaths.clear();
       m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
 
-      // TODO: Restore original behaviour here
-      return CGUIMediaWindow::OnMessage(message);
+      Update(m_vecItems.m_strPath); 	 
+	  	 
+      if (iLastControl > -1) 	 
+      { 	 
+        SET_CONTROL_FOCUS(iLastControl, 0); 	 
+      } 	 
+      else 	 
+      { 	 
+        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+      }
+
+      if (m_iSelectedItem > -1) 	 
+        m_viewControl.SetSelectedItem(m_iSelectedItem); 	 
+
+      return true;
     }
     break;
 
