@@ -119,97 +119,99 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         }
         m_rootDir.SetMask(".xbe|.cut");
         m_rootDir.SetShares(g_settings.m_vecMyProgramsBookmarks);
+        return CGUIMediaWindow::OnMessage(message);
+      }
+
+      CGUIWindow::OnMessage(message);
+      // check for a passed destination path
+      CStdString strDestination = message.GetStringParam();
+      if (!strDestination.IsEmpty())
+      {
+        message.SetStringParam("");
+        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+      }
+      // otherwise, is this the first time accessing this window?
+      else if (m_vecItems.m_strPath == "?")
+      {
+        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
+        CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
+      }
+      // make controls 100-110 invisible...
+      for (int i = 100; i < 110; i++)
+      {
+        SET_CONTROL_HIDDEN(i);
+      }
+
+      m_rootDir.SetShares(g_settings.m_vecMyProgramsBookmarks);
+      
+      if (g_guiSettings.GetBool("MyPrograms.NoShortcuts"))    // let's hide Scan button
+      {
+        SET_CONTROL_HIDDEN(CONTROL_BTNSCAN);
       }
       else
       {
-        // check for a passed destination path
-        CStdString strDestination = message.GetStringParam();
-        if (!strDestination.IsEmpty())
-        {
-          message.SetStringParam("");
-          CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
-        }
-        // otherwise, is this the first time accessing this window?
-        else if (m_vecItems.m_strPath == "?")
-        {
-          m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
-          CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
-        }
-        // make controls 100-110 invisible...
-        for (int i = 100; i < 110; i++)
-        {
-          SET_CONTROL_HIDDEN(i);
-        }
+        SET_CONTROL_VISIBLE(CONTROL_BTNSCAN);
+      }
 
-        m_rootDir.SetShares(g_settings.m_vecMyProgramsBookmarks);
-        
-        if (g_guiSettings.GetBool("MyPrograms.NoShortcuts"))    // let's hide Scan button
+
+      int iStartID = 100;
+
+      // create bookmark buttons
+
+      for (int i = 0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
+      {
+        CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
+
+        SET_CONTROL_VISIBLE(i + iStartID);
+
+        if (CUtil::IsDVD(share.strPath))
         {
-          SET_CONTROL_HIDDEN(CONTROL_BTNSCAN);
+          CStdString strName = share.strName.substr(0,share.strName.rfind("(")-1);
+          SET_CONTROL_LABEL(i + iStartID, strName);
+        }
+        else
+          SET_CONTROL_LABEL(i + iStartID, share.strName);
+      }
+
+      m_database.Open();
+      // try to open the destination path
+      if (!strDestination.IsEmpty())
+      {
+        // default parameters if the jump fails
+        m_vecItems.m_strPath = "";
+        m_shareDirectory = "";
+        m_iDepth = 1;
+        m_strBookmarkName = "default";
+        m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
+
+        bool bIsBookmarkName = false;
+        int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyProgramsBookmarks, bIsBookmarkName);
+        if (iIndex > -1)
+        {
+          // set current directory to matching share
+          if (bIsBookmarkName)
+          {
+            m_vecItems.m_strPath = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
+            m_history.SetSelectedItem(m_vecItems.m_strPath,"empty");
+          }
+          else
+            m_vecItems.m_strPath = strDestination;
+          CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+          m_shareDirectory = m_vecItems.m_strPath;
+          m_iDepth = g_settings.m_vecMyProgramsBookmarks[iIndex].m_iDepthSize;
+          m_strBookmarkName = g_settings.m_vecMyProgramsBookmarks[iIndex].strName;
+          CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
         }
         else
         {
-          SET_CONTROL_VISIBLE(CONTROL_BTNSCAN);
+          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
         }
-
-
-        int iStartID = 100;
-
-        // create bookmark buttons
-
-        for (int i = 0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
-        {
-          CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
-
-          SET_CONTROL_VISIBLE(i + iStartID);
-
-          if (CUtil::IsDVD(share.strPath))
-          {
-            CStdString strName = share.strName.substr(0,share.strName.rfind("(")-1);
-            SET_CONTROL_LABEL(i + iStartID, strName);
-          }
-          else
-            SET_CONTROL_LABEL(i + iStartID, share.strName);
-        }
-
-        m_database.Open();
-        // try to open the destination path
-        if (!strDestination.IsEmpty())
-        {
-          // default parameters if the jump fails
-          m_vecItems.m_strPath = "";
-          m_shareDirectory = "";
-          m_iDepth = 1;
-          m_strBookmarkName = "default";
-          m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
-
-          bool bIsBookmarkName = false;
-          int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyProgramsBookmarks, bIsBookmarkName);
-          if (iIndex > -1)
-          {
-            // set current directory to matching share
-            if (bIsBookmarkName)
-            {
-              m_vecItems.m_strPath = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
-              m_history.SetSelectedItem(m_vecItems.m_strPath,"empty");
-            }
-            else
-              m_vecItems.m_strPath = strDestination;
-            CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
-            m_shareDirectory = m_vecItems.m_strPath;
-            m_iDepth = g_settings.m_vecMyProgramsBookmarks[iIndex].m_iDepthSize;
-            m_strBookmarkName = g_settings.m_vecMyProgramsBookmarks[iIndex].strName;
-            CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
-          }
-          else
-          {
-            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
-          }
-        }
-
-        m_vecPaths.clear();
-        m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
       }
+
+      m_vecPaths.clear();
+      m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
+
+      // TODO: Restore original behaviour here
       return CGUIMediaWindow::OnMessage(message);
     }
     break;
@@ -1499,4 +1501,16 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
   // set the cached thumbs
   items.SetCachedProgramThumbs();
   return true;
+}
+
+void CGUIWindowPrograms::OnWindowLoaded()
+{
+  CGUIMediaWindow::OnWindowLoaded();
+  if (g_advancedSettings.m_newMyPrograms)
+  {
+    for (int i = 100; i < 110; i++)
+    {
+      SET_CONTROL_HIDDEN(i);
+    }
+  }
 }
