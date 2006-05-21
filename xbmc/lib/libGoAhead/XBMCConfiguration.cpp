@@ -28,16 +28,7 @@ int CXbmcConfiguration::Load()
 {
 	if (!xbmcCfgLoaded)
 	{
-		// note, we don't use 'Q:\\' here since 'Q:\\' is always mapped to our xbmc home dir
-		// and when using xbmc as dash our configfile has to be loaded from 'c:\\'
-		CStdString strPath;
-		char szXBEFileName[1024];
-		CIoSupport helper;
-		helper.GetXbePath(szXBEFileName);
-		strrchr(szXBEFileName,'\\')[0] = 0;
-		strPath.Format("%s\\%s", szXBEFileName, "XboxMediaCenter.xml");
-
-		if (!xbmcCfg.LoadFile(strPath)) return -1;
+    if (!xbmcCfg.LoadFile("Q:\\XBoxMediaCenter.xml")) return -1;
 		xbmcCfgLoaded = true;
 	}
 	return 0;
@@ -402,18 +393,11 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 	CStdString strPath(filename);
 	if (strPath.find(":\\") == -1)
 	{
-		// only filename specified, this means whe have to lookup the directory where
-		// our executable is in and add the filename to it
-		// note, we don't use 'Q:\\' here since 'Q:\\' is always mapped to our xbmc home dir
-		// and when using xbmc as dash our configfile has to be saved to 'c:\\'
-		char szXBEFileName[1024];
-		CIoSupport helper;
-		helper.GetXbePath(szXBEFileName);
-		strrchr(szXBEFileName,'\\')[0] = 0;
-		strPath.Format("%s\\%s", szXBEFileName, filename);
+		// only filename specified, so use Q:\\ as base.
+    strPath.Format("Q:\\%s", filename);
 	}
 
-	if (!xbmcCfg.SaveFile(strPath))
+  if (!xbmcCfg.SaveFile(strPath))
 	{
     eid!=-1 ? websError(wp, 500, T("Could not save to file\n")):
               response="<li>Error:Could not save to file";
@@ -559,7 +543,6 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int
  */
 bool CXbmcConfiguration::IsValidOption(char* option)
 {
-	if (!strcmp("home", option)) return true;
 	if (!strcmp("subtitles", option)) return true;
 	if (!strcmp("thumbnails", option)) return true;
 	if (!strcmp("shortcuts", option)) return true;
