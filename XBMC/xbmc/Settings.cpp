@@ -1102,13 +1102,13 @@ void CSettings::LoadAdvancedSettings()
     return;
   }
 
-  TiXmlElement *pElement = pRootElement->FirstChildElement("AudioSettings");
+  TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 0, 12);
   }
 
-  pElement = pRootElement->FirstChildElement("VideoSettings");
+  pElement = pRootElement->FirstChildElement("video");
   if (pElement)
   {
     GetFloat(pElement, "subsdelayrange", g_advancedSettings.m_videoSubsDelayRange, 10, 10, 600);
@@ -1129,7 +1129,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -10, -100, 0);
   }
 
-  pElement = pRootElement->FirstChildElement("SlideShowEffects");
+  pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
   {
     GetFloat(pElement, "panamount", g_advancedSettings.m_slideshowPanAmount, 2.5f, 0.0f, 20.0f);
@@ -1137,7 +1137,7 @@ void CSettings::LoadAdvancedSettings()
     GetFloat(pElement, "blackbarcompensation", g_advancedSettings.m_slideshowBlackBarCompensation, 20.0f, 0.0f, 50.0f);
   }
 
-  pElement = pRootElement->FirstChildElement("LCDSettings");
+  pElement = pRootElement->FirstChildElement("lcd");
   if (pElement)
   {
     GetInteger(pElement, "rows", g_advancedSettings.m_lcdRows, 4, 1, 4);
@@ -1147,16 +1147,13 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "address3", g_advancedSettings.m_lcdAddress3, 0x14, 0, 0x100);
     GetInteger(pElement, "address4", g_advancedSettings.m_lcdAddress4, 0x54, 0, 0x100);
   }
-  pElement = pRootElement->FirstChildElement("NetworkSettings");
+  pElement = pRootElement->FirstChildElement("network");
   if (pElement)
   {
     GetInteger(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 30, 1, 240);
   }
-  pElement = pRootElement->FirstChildElement("PlaybackSettings");
-  if (pElement)
-  {
-    GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 10.0f, 1.0f, 100.0f);
-  }
+
+  GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 10.0f, 1.0f, 100.0f);
   
   // Masterlock Advanced
   pElement = pRootElement->FirstChildElement("masterlock");
