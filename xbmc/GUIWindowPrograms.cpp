@@ -1473,6 +1473,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   // flatten any folders
   m_database.BeginTransaction();
+  CStdString shortcutPath;
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItem *item = items[i];
@@ -1484,6 +1485,16 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       { // yes, format the item up
         item->m_strPath = defaultXBE;
         item->m_bIsFolder = false;
+      }
+    }
+    else if (item->IsShortCut())
+    { // resolve the shortcut to set it's description etc.
+      // and save the old shortcut path (so we can reassign it later)
+      CShortcut cut;
+      if (cut.Create(item->m_strPath))
+      {
+        shortcutPath = item->m_strPath;
+        item->m_strPath = cut.m_strPath;
       }
     }
     if (item->IsXBE())
@@ -1507,6 +1518,8 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
           item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_HAS_TRAINER);
       }
     }
+    if (!shortcutPath.IsEmpty())
+      item->m_strPath = shortcutPath;
   }
   m_database.CommitTransaction();
 
