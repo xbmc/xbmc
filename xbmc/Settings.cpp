@@ -1153,7 +1153,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 30, 1, 240);
   }
 
-  GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 10.0f, 1.0f, 100.0f);
+  GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 10.0f, 1.0f, 100.0f);
   
   // Masterlock Advanced
   pElement = pRootElement->FirstChildElement("masterlock");
