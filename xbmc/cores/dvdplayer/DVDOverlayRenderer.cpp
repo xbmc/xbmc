@@ -77,13 +77,13 @@ void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverl
         {
           if (i_y > btn_y_start && i_y < btn_y_end)
           {            
-            if (i_x < btn_x_start && i_x + rp_len >btn_x_start) // starts outside
+            if (i_x < btn_x_start && i_x + rp_len >= btn_x_start) // starts outside
               pixels_to_draw = btn_x_start - i_x;
-            else if( i_x > btn_x_start && i_x < btn_x_end ) // starts inside
+            else if( i_x >= btn_x_start && i_x <= btn_x_end ) // starts inside
             {
               p_color = pOverlay->highlight_color[i_color];
               p_alpha = pOverlay->highlight_alpha[i_color];              
-              pixels_to_draw = btn_x_end - i_x; // don't draw part that is outside
+              pixels_to_draw = btn_x_end - i_x + 1; // don't draw part that is outside
             }
           }
           /* make sure we are not requested to draw to far */
