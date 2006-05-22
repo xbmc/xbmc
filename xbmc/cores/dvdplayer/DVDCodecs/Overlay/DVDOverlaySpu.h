@@ -53,6 +53,11 @@ public:
   int crop_i_x_start;
   int crop_i_y_start;
   
+  // provided by the navigator engine
+  // should be used on the highlighted areas
+  int highlight_color[4][3];
+  int highlight_alpha[4];
+
   bool CanDisplayWithAlphas(int a[4])
   {
     return(

@@ -71,14 +71,19 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   }
 
   // get default language settings
-  const char* language_menu     = g_langInfo.GetDVDMenuLanguage().c_str();
-  const char* language_audio    = g_langInfo.GetDVDAudioLanguage().c_str();
-  const char* language_subtitle = g_langInfo.GetDVDSubtitleLanguage().c_str();
+  char language_menu[3];
+  strncpy(language_menu, g_langInfo.GetDVDMenuLanguage().c_str(), sizeof(language_menu));
+
+  char language_audio[3];
+  strncpy(language_audio, g_langInfo.GetDVDAudioLanguage().c_str(), sizeof(language_audio));
+
+  char language_subtitle[3];
+  strncpy(language_subtitle, g_langInfo.GetDVDSubtitleLanguage().c_str(), sizeof(language_subtitle));
   
   // set language settings in case they are not set in xbmc's configuration
-  if (!language_menu || language_menu[0] == '\0') language_menu = "en";
-  if (!language_audio || language_audio[0] == '\0') language_audio = "en";
-  if (!language_subtitle || language_subtitle[0] == '\0') language_subtitle = "en";
+  if (language_menu[0] == '\0') strcpy(language_menu, "en");
+  if (language_audio[0] == '\0') strcpy(language_audio, "en");
+  if (language_subtitle[0] == '\0') strcpy(language_subtitle, "en");
   
   // set default language settings
   if (m_dll.dvdnav_menu_language_select(m_dvdnav, (char*)language_menu) != DVDNAV_STATUS_OK)
@@ -820,22 +825,16 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
 
   if (m_dll.dvdnav_get_button_info(m_dvdnav, alpha, color) == 0)
   {
-    int* a = alpha[iButtonType];
-    
-    // check if libdvdnav provided us correct alpha values
-    if (!pOverlayPicture->bHasAlpha && pOverlayPicture->CanDisplayWithAlphas(a))
-    {
-      pOverlayPicture->alpha[0] = alpha[iButtonType][0];
-      pOverlayPicture->alpha[1] = alpha[iButtonType][1];
-      pOverlayPicture->alpha[2] = alpha[iButtonType][2];
-      pOverlayPicture->alpha[3] = alpha[iButtonType][3];
-    }
+    pOverlayPicture->highlight_alpha[0] = alpha[iButtonType][0];
+    pOverlayPicture->highlight_alpha[1] = alpha[iButtonType][1];
+    pOverlayPicture->highlight_alpha[2] = alpha[iButtonType][2];
+    pOverlayPicture->highlight_alpha[3] = alpha[iButtonType][3];
     
     if (pSPU->m_bHasClut)
     {
       for (int i = 0; i < 4; i++)
         for (int j = 0; j < 3; j++)
-          pOverlayPicture->color[i][j] = pSPU->m_clut[color[iButtonType][i]][j];
+          pOverlayPicture->highlight_color[i][j] = pSPU->m_clut[color[iButtonType][i]][j];
     }
   }
   
