@@ -469,8 +469,9 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
       SetArtistImage(iItem);
     }
     else if (btn == btn_Settings)  // Settings
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+    { // Check Master Lock
+      if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
+        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
       return;
     }
   }

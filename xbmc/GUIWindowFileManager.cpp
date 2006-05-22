@@ -1208,7 +1208,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     }
     if (btnid == btn_Settings)
     {
-      if (g_passwordManager.bMasterLockSettings && g_passwordManager.CheckMasterLock(false))
+      if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
         m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU); 
     }
 

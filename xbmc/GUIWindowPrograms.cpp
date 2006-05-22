@@ -488,8 +488,8 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     }
     if (btnid == btn_Settings)
     { 
-      if (g_passwordManager.bMasterLockSettings && g_passwordManager.IsMasterLockLocked(true)) 
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+      if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
+        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
     }
     else if (btnid == btn_Launch)
     {
