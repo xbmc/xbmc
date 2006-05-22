@@ -833,8 +833,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Settings)
     { 
       // Check Master Lock
-      if (g_passwordManager.bMasterLockSettings && g_passwordManager.IsMasterLockLocked(true)) 
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
+      if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
+        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
       return;
     }
     else if (btnid == btn_Delete)

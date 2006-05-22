@@ -1311,8 +1311,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     // Settings
     else if (btnid == btn_Settings)
     { // Check Master Lock
-      if (g_passwordManager.bMasterLockSettings && g_passwordManager.IsMasterLockLocked(true)) 
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+      if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
+        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
       return;
     }
   }
