@@ -1926,7 +1926,8 @@ void CFileItemList::SetCachedVideoThumbs()
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
     CFileItem* pItem = m_items[i];
-    pItem->SetCachedVideoThumb();
+    if (!pItem->IsParentFolder())
+      pItem->SetCachedVideoThumb();
   }
 }
 
@@ -1936,7 +1937,8 @@ void CFileItemList::SetCachedProgramThumbs()
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
     CFileItem* pItem = m_items[i];
-    pItem->SetCachedProgramThumb();
+    if (!pItem->IsParentFolder())
+      pItem->SetCachedProgramThumb();
   }
 }
 
@@ -2017,12 +2019,13 @@ CStdString CFileItem::GetUserVideoThumb()
 {
   if (m_bIsShareOrDrive) return "";
   if (IsInternetStream()) return "";
+  if (IsParentFolder()) return "";
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb;
   if (IsStack())
   {
     CStackDirectory dir;
-    CFileItem item(dir.GetFirstStackedFile(m_strPath));
+    CFileItem item(dir.GetFirstStackedFile(m_strPath), false);
     fileThumb = item.GetTBNFile();
   }
   else
@@ -2051,6 +2054,8 @@ void CFileItem::SetVideoThumb()
 
 void CFileItem::SetUserVideoThumb()
 {
+  if (m_bIsShareOrDrive) return;
+  if (IsParentFolder()) return;
   // caches as the local thumb 
   CStdString thumb(GetUserVideoThumb());
   if (!thumb.IsEmpty())
@@ -2082,6 +2087,7 @@ void CFileItem::SetCachedProgramThumb()
 void CFileItem::SetUserProgramThumb()
 {
   if (m_bIsShareOrDrive) return;
+  if (IsParentFolder()) return;
 
   CStdString path(m_strPath);
   if (IsShortCut())
@@ -2102,7 +2108,7 @@ void CFileItem::SetUserProgramThumb()
   else if (IsXBE())
   {
     // 2. cache the xbe image
-    if (CUtil::GetXBEIcon(m_strPath, thumb))
+    if (CUtil::CacheXBEIcon(m_strPath, thumb))
       SetThumbnailImage(thumb);
   }
   else if (m_bIsFolder)
@@ -2125,6 +2131,8 @@ void CFileItemList::SetProgramThumbs()
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItem *pItem = m_items[i];
+    if (pItem->IsParentFolder())
+      continue;
     pItem->SetCachedProgramThumb();
     if (!pItem->HasThumbnail())
       pItem->SetUserProgramThumb();
