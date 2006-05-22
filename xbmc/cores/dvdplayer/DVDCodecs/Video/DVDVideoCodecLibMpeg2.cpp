@@ -339,7 +339,8 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
             //based on what libdvdnav gives us.
             unsigned int pixel_x = m_pInfo->sequence->pixel_width;
             unsigned int pixel_y = m_pInfo->sequence->pixel_height;
-            //GuessAspect(m_pInfo->sequence, &pixel_x, &pixel_y);
+            
+            GuessAspect(m_pInfo->sequence, &pixel_x, &pixel_y);
 
             // modify our displaywidth to suit
             float fPixelAR = (float)pixel_x / pixel_y;
