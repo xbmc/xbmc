@@ -213,7 +213,9 @@ void CDVDPlayerVideo::Process()
       CDVDMsgGeneralSetClock* pMsgGeneralSetClock = (CDVDMsgGeneralSetClock*)pMsg;
 
       //DVDPlayer asked us to sync playback clock
-      if( pMsgGeneralSetClock->GetDts() != DVD_NOPTS_VALUE )
+      if( pMsgGeneralSetClock->GetPts() != DVD_NOPTS_VALUE )
+        pts = pMsgGeneralSetClock->GetPts();      
+      else if( pMsgGeneralSetClock->GetDts() != DVD_NOPTS_VALUE )
         pts = pMsgGeneralSetClock->GetDts();
 
       __int64 delay = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
@@ -234,7 +236,9 @@ void CDVDPlayerVideo::Process()
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
       
       //DVDPlayer asked us to sync playback clock
-      if( pMsgGeneralResync->GetDts() != DVD_NOPTS_VALUE )
+      if( pMsgGeneralResync->GetPts() != DVD_NOPTS_VALUE )
+        pts = pMsgGeneralResync->GetPts();      
+      else if( pMsgGeneralResync->GetDts() != DVD_NOPTS_VALUE )
         pts = pMsgGeneralResync->GetDts();
 
       pMsgGeneralResync->Release();
@@ -520,10 +524,19 @@ void CDVDPlayerVideo::SetSpeed(int speed)
 
 void CDVDPlayerVideo::Flush()
 { 
-  m_messageQueue.Flush();
-  //m_packetQueue.Put(NULL, (void*)DVDPACKET_MESSAGE_FLUSH);
+  /* when we flush, make sure we lock crit section */
+  /* to make sure everything is rendered */
+  /* maybe we also should drop the image that we are holding */
 
+  EnterCriticalSection(&m_critCodecSection);
+  m_messageQueue.Flush();
+
+  /* flush codec, new data coming is not related */
+  if (m_pVideoCodec)
+    m_pVideoCodec->Reset();
+  
   m_iCurrentPts = DVD_NOPTS_VALUE;
+  LeaveCriticalSection(&m_critCodecSection);
 }
 
 void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, __int64 pts)
