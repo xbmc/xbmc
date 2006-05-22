@@ -515,7 +515,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       }
       else if (btnid == btn_Settings)
       { 
-        if (g_passwordManager.bMasterLockSettings && g_passwordManager.IsMasterLockLocked(true)) 
+        if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
           m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
         return;
       }
