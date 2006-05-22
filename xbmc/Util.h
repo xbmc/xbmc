@@ -249,7 +249,7 @@ public:
   static void GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strFileName, CStdString& strThumb, bool bTempDir = false);
   static void GetAlbumInfo(const CStdString& strFileName, CStdString& strAlbumThumb);
   static void GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbumThumb);
-  static bool GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon);
+  static bool CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon);
   static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
   static bool SetXBEDescription(const CStdString& strFileName, const CStdString& strDescription);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
