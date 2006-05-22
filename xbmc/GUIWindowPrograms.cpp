@@ -1267,14 +1267,7 @@ void CGUIWindowPrograms::DeleteThumbs(CFileItemList& items)
     {
       if (pItem->IsXBE() )
       {
-        CStdString strThumb;
-        CUtil::GetXBEIcon(pItem->m_strPath, strThumb);
-        CStdString strName = pItem->m_strPath;
-        CUtil::ReplaceExtension(pItem->m_strPath, ".tbn", strName);
-        if (strName != strThumb)
-        {
-          ::DeleteFile(strThumb.c_str());
-        }
+        ::DeleteFile(pItem->GetCachedProgramThumb().c_str());
       }
     }
   }
@@ -1283,6 +1276,11 @@ void CGUIWindowPrograms::DeleteThumbs(CFileItemList& items)
 /// \brief Call to go to parent folder
 void CGUIWindowPrograms::GoParentFolder()
 {
+  if (g_advancedSettings.m_newMyPrograms)
+  {
+    CGUIMediaWindow::GoParentFolder();
+    return;
+  }
    // get selected item
   int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
