@@ -467,47 +467,47 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
 
   DebugLog("ParseRLE: valid subtitle, size: %ix%i, position: %i,%i",
            pSPU->width, pSPU->height, pSPU->x, pSPU->y );
-  
-  // check alpha values, for non forced spu's we use a default value
-  // forced spu's (menu overlays) retrieve their alpha information from InputStreamNavigator::GetCurrentButtonInfo
-  if (!pSPU->bHasAlpha && !pSPU->bForced)
+
+  // forced spu's (menu overlays) retrieve their alpha/color information from InputStreamNavigator::GetCurrentButtonInfo
+  // also they may contain completely covering data wich is supposed to be hidden normally
+  // since whole spu is drawn, if this is done for forced, that may be displayed
+  // so we must trust what is given
+  if( !pSPU->bForced )
   {
-    CLog::Log(LOGINFO, __FUNCTION__" - ignoring blank alpha palette, using default");
-    
-    pSPU->bHasAlpha = true;
-    pSPU->alpha[0] = 0x00; // back ground
-    pSPU->alpha[1] = 0x0f;
-    pSPU->alpha[2] = 0x0f;
-    pSPU->alpha[3] = 0x0f;
-  }
-  
-  // check alpha values
-  // the array stats represents the nr of pixels for each color channel
-  // thus if there are no pixels to display, we assume the alphas are incorrect.
-  // only do this if there are pixels to display at all, as we may get empty packets somehow
-  if (!pSPU->CanDisplayWithAlphas(pSPU->alpha) && pSPU->bHasAlpha)
-  {
-    CLog::Log(LOGINFO, __FUNCTION__" - no  matching color and alpha found, resetting alpha");
-    pSPU->bHasAlpha = false;
-     
-    // set some alpha values, since pSPUInfo->bHasAlpha is false, those will be set correctly with the information
-    // from libdvdnav
-    pSPU->alpha[0] = 0x00; // back ground
-    pSPU->alpha[1] = 0x0f;
-    pSPU->alpha[2] = 0x0f;
-    pSPU->alpha[3] = 0x0f;
-  }
-  
-  // Handle color if no palette was found.  for xbmc we do this only for subtitles
-  // spu overlays are identified as non menu overlays (thus subtitles) if :
-  //    - there is no color information
-  //    - the start time is > than 0 ???? is this still correct ????
-  //    - the overlay is not forced
-  //
-  // and we only set it if there is a valid i_border color
-  if ((!pSPU->bHasColor && pSPU->iPTSStartTime > 0LL) && !pSPU->bForced)
-  {
-    FindSubtitleColor(i_border, stats, pSPU);
+    // Handle color if no palette was found.
+    // we only set it if there is a valid i_border color
+    if (!pSPU->bHasColor)
+    {
+      CLog::Log(LOGINFO, __FUNCTION__" - no color palett found, using default");
+      FindSubtitleColor(i_border, stats, pSPU);
+    }
+
+    // check alpha values, for non forced spu's we use a default value
+    if (pSPU->bHasAlpha)
+    {
+      // check alpha values
+      // the array stats represents the nr of pixels for each color channel
+      // thus if there are no pixels to display, we assume the alphas are incorrect.
+      if (!pSPU->CanDisplayWithAlphas(pSPU->alpha))
+      {
+        CLog::Log(LOGINFO, __FUNCTION__" - no  matching color and alpha found, resetting alpha");
+         
+        pSPU->alpha[0] = 0x00; // back ground
+        pSPU->alpha[1] = 0x0f;
+        pSPU->alpha[2] = 0x0f;
+        pSPU->alpha[3] = 0x0f;
+      }
+    }
+    else
+    {
+      CLog::Log(LOGINFO, __FUNCTION__" - ignoring blank alpha palette, using default");
+      
+      pSPU->alpha[0] = 0x00; // back ground
+      pSPU->alpha[1] = 0x0f;
+      pSPU->alpha[2] = 0x0f;
+      pSPU->alpha[3] = 0x0f;
+    }
+
   }
 
   return pSPU;
