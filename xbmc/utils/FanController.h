@@ -1,6 +1,7 @@
 #pragma once
 
 #include "thread.h"
+#include "../Temperature.h"
 
 class CFanController : public CThread
 {
@@ -11,8 +12,8 @@ public:
 
   int GetFanSpeed();
   void SetFanSpeed(const int fanspeed, const bool force = true);
-  float GetGPUTemp();
-  float GetCPUTemp();
+  const CTemperature& GetGPUTemp();
+  const CTemperature& GetCPUTemp();
   void SetTargetTemperature(int targetTemperature);
   void RestoreStartupSpeed();
 
@@ -35,12 +36,12 @@ private:
   int tooColdLoopCount;
   bool inCustomMode;
   bool bIs16Box;
-  float cpuTemp;
+  CTemperature cpuTemp;
   float cpuFrac;
   int   cpuTempCount;
-  float cpuLastTemp;
-  float gpuTemp;
-  float gpuLastTemp;
+  CTemperature cpuLastTemp;
+  CTemperature gpuTemp;
+  CTemperature gpuLastTemp;
 
   SensorType sensor;
 
