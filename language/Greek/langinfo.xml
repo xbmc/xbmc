@@ -16,6 +16,8 @@
       <dateshort>D/M/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="πμ" symbolPM="μμ">h:mm:ss xx</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
     </region>
   </regions>
 </language>

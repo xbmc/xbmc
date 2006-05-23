@@ -202,12 +202,9 @@ CGUISettings::CGUISettings(void)
   AddCategory(2, "Weather", 16000);
   AddInt(1, "Weather.RefreshTime", 397, 30, 15, 15, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddSeparator(2, "Weather.Sep1");
-  AddInt(3, "Weather.TemperatureUnits", 398, 0, 0, 1, 1, SPIN_CONTROL_TEXT);
-  AddInt(4, "Weather.SpeedUnits", 399, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddSeparator(5, "Weather.Sep2");
-  AddString(6, "Weather.AreaCode1", 14019, "GMXX0154", BUTTON_CONTROL_STANDARD);
-  AddString(7, "Weather.AreaCode2", 14020, "UKXX0085", BUTTON_CONTROL_STANDARD);
-  AddString(8, "Weather.AreaCode3", 14021, "CAXX0343", BUTTON_CONTROL_STANDARD);
+  AddString(3, "Weather.AreaCode1", 14019, "GMXX0154", BUTTON_CONTROL_STANDARD);
+  AddString(4, "Weather.AreaCode2", 14020, "UKXX0085", BUTTON_CONTROL_STANDARD);
+  AddString(5, "Weather.AreaCode3", 14021, "CAXX0343", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);

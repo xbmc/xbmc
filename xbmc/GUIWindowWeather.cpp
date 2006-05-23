@@ -5,13 +5,6 @@
 #include "Utils/Weather.h"
 
 
-#define SPEED_KMH 0
-#define SPEED_MPH 1
-#define SPEED_MPS 2
-
-#define DEGREES_C 0
-#define DEGREES_F 1
-
 #define CONTROL_BTNREFRESH  2
 #define CONTROL_SELECTLOCATION 3
 #define CONTROL_LABELUPDATED 11
