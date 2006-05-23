@@ -3,6 +3,10 @@
 
 CLangInfo g_langInfo;
 
+#define TEMP_UNIT_STRINGS 20027
+
+#define SPEED_UNIT_STRINGS 20035
+
 CLangInfo::CLangInfo()
 {
   Clear();
@@ -95,6 +99,14 @@ bool CLangInfo::Load(const CStdString& strFileName)
 
       m_regions.insert(PAIR_REGIONS(region.strName, region));
 
+      const TiXmlNode *pTempUnit=pRegion->FirstChild("tempunit");
+      if (pTempUnit && !pTempUnit->NoChildren())
+        SetTempUnit(pTempUnit->FirstChild()->Value());
+
+      const TiXmlNode *pSpeedUnit=pRegion->FirstChild("speedunit");
+      if (pSpeedUnit && !pSpeedUnit->NoChildren())
+        SetSpeedUnit(pSpeedUnit->FirstChild()->Value());
+
       pRegion=pRegion->NextSiblingElement("region");
     }
 
@@ -114,6 +126,15 @@ void CLangInfo::Clear()
   m_forceUnicodeFont=false;
   m_regions.clear();
   m_currentRegion=NULL;
+
+  m_strGuiCharSet="CP1252";
+  m_strSubtitleCharSet="CP1252";
+  m_strDVDMenuLanguage="en";
+  m_strDVDAudioLanguage="en";
+  m_strDVDSubtitleLanguage="en";
+
+  m_tempUnit=TEMP_UNIT_CELSIUS;
+  m_speedUnit=SPEED_UNIT_KMH;
 }
 
 CStdString CLangInfo::GetGuiCharSet() const
@@ -121,11 +142,7 @@ CStdString CLangInfo::GetGuiCharSet() const
   CStdString strCharSet;
   strCharSet=g_guiSettings.GetString("LookAndFeel.CharSet");
   if (strCharSet=="DEFAULT")
-  {
     strCharSet=m_strGuiCharSet;
-    if (strCharSet.IsEmpty())
-      strCharSet="CP1252";
-  }
 
   return strCharSet;
 }
@@ -134,11 +151,7 @@ CStdString CLangInfo::GetSubtitleCharSet() const
 {
   CStdString strCharSet=g_guiSettings.GetString("Subtitles.CharSet");
   if (strCharSet=="DEFAULT")
-  {
     strCharSet=m_strSubtitleCharSet;
-    if (strCharSet.IsEmpty())
-      strCharSet="CP1252";
-  }
 
   return strCharSet;
 }
@@ -146,19 +159,19 @@ CStdString CLangInfo::GetSubtitleCharSet() const
 // two character codes as defined in ISO639
 CStdString CLangInfo::GetDVDMenuLanguage() const
 {
-  return (!m_strDVDMenuLanguage.IsEmpty() ? m_strDVDMenuLanguage : "en");
+  return m_strDVDMenuLanguage;
 }
 
 // two character codes as defined in ISO639
 CStdString CLangInfo::GetDVDAudioLanguage() const
 {
-  return (!m_strDVDAudioLanguage.IsEmpty() ? m_strDVDAudioLanguage : "en");
+  return m_strDVDAudioLanguage;
 }
 
 // two character codes as defined in ISO639
 CStdString CLangInfo::GetDVDSubtitleLanguage() const
 {
-  return (!m_strDVDSubtitleLanguage.IsEmpty() ? m_strDVDSubtitleLanguage : "en");
+  return m_strDVDSubtitleLanguage;
 }
 
 // Returns the format string for the date of the current language
@@ -209,4 +222,46 @@ void CLangInfo::SetCurrentRegion(const CStdString& strName)
 CStdString CLangInfo::GetCurrentRegion()
 {
   return (m_currentRegion ? m_currentRegion->strName : "");
+}
+
+// Returns the temperature unit string for the current language
+const CStdString& CLangInfo::GetTempUnitString()
+{
+  return g_localizeStrings.Get(TEMP_UNIT_STRINGS+m_tempUnit);
+}
+
+void CLangInfo::SetTempUnit(const CStdString& strUnit)
+{
+  if (strUnit.Equals("F"))
+    m_tempUnit=TEMP_UNIT_FAHRENHEIT;
+  else if (strUnit.Equals("K"))
+    m_tempUnit=TEMP_UNIT_KELVIN;
+  else if (strUnit.Equals("C"))
+    m_tempUnit=TEMP_UNIT_CELSIUS;
+  else if (strUnit.Equals("Re"))
+    m_tempUnit=TEMP_UNIT_REAUMUR;
+  else if (strUnit.Equals("Ra"))
+    m_tempUnit=TEMP_UNIT_RANKINE;
+  else if (strUnit.Equals("Ro"))
+    m_tempUnit=TEMP_UNIT_ROMER;
+  else if (strUnit.Equals("De"))
+    m_tempUnit=TEMP_UNIT_DELISLE;
+  else if (strUnit.Equals("N"))
+    m_tempUnit=TEMP_UNIT_NEWTON;
+}
+
+// Returns the speed unit string for the current language
+const CStdString& CLangInfo::GetSpeedUnitString()
+{
+  return g_localizeStrings.Get(SPEED_UNIT_STRINGS+m_speedUnit);
+}
+
+void CLangInfo::SetSpeedUnit(const CStdString& strUnit)
+{
+  if (strUnit.Equals("kmh"))
+    m_speedUnit=SPEED_UNIT_KMH;
+  else if (strUnit.Equals("mph"))
+    m_speedUnit=SPEED_UNIT_MPH;
+  else if (strUnit.Equals("mps"))
+    m_speedUnit=SPEED_UNIT_MPS;
 }

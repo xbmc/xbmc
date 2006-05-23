@@ -3,63 +3,74 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "XMLUtils.h"
 
+// can be removed after hardcoded strings are in strings.xml
+CStdString ToUTF8(const CStdString& strEncoding, const CStdString& str)
+{
+  if (strEncoding.IsEmpty())
+    return str;
+
+  CStdString ret;
+  g_charsetConverter.stringCharsetToUtf8(strEncoding, str, ret);
+  return ret;
+}
 
 CLocalizeStrings g_localizeStrings;
 extern CStdString g_LoadErrorStr;
 
 CLocalizeStrings::CLocalizeStrings(void)
-{}
+{
+
+}
 
 CLocalizeStrings::~CLocalizeStrings(void)
-{}
+{
 
+}
 
 bool CLocalizeStrings::Load(const CStdString& strFileName)
 {
   m_vecStrings.erase(m_vecStrings.begin(), m_vecStrings.end());
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.LoadFile(strFileName.c_str()))
   {
-    TiXmlDocument xmlDoc;
-    if (!xmlDoc.LoadFile(strFileName.c_str()))
-    {
-      CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
-      g_LoadErrorStr.Format("%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-      return false;
-    }
-    
-    CStdString strEncoding;
-    XMLUtils::GetEncoding(&xmlDoc, strEncoding);
+    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    g_LoadErrorStr.Format("%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return false;
+  }
+  
+  CStdString strEncoding;
+  XMLUtils::GetEncoding(&xmlDoc, strEncoding);
 
-    TiXmlElement* pRootElement = xmlDoc.RootElement();
-    CStdString strValue = pRootElement->Value();
-    if (strValue != CStdString("strings"))
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  CStdString strValue = pRootElement->Value();
+  if (strValue != CStdString("strings"))
+  {
+    CLog::Log(LOGERROR, "%s Doesn't contain <strings>", strFileName.c_str());
+    g_LoadErrorStr.Format("%s\nDoesnt start with <strings>", strFileName.c_str());
+    return false;
+  }
+  const TiXmlNode *pChild = pRootElement->FirstChild();
+  while (pChild)
+  {
+    CStdString strValue = pChild->Value();
+    if (strValue == "string")
     {
-      CLog::Log(LOGERROR, "%s Doesn't contain <strings>", strFileName.c_str());
-      g_LoadErrorStr.Format("%s\nDoesnt start with <strings>", strFileName.c_str());
-      return false;
-    }
-    const TiXmlNode *pChild = pRootElement->FirstChild();
-    while (pChild)
-    {
-      CStdString strValue = pChild->Value();
-      if (strValue == "string")
+      const TiXmlNode *pChildID = pChild->FirstChild("id");
+      const TiXmlNode *pChildText = pChild->FirstChild("value");
+      DWORD dwID = atoi(pChildID->FirstChild()->Value());
+      CStdString utf8String;
+      if (!pChildText->NoChildren())
       {
-        const TiXmlNode *pChildID = pChild->FirstChild("id");
-        const TiXmlNode *pChildText = pChild->FirstChild("value");
-        DWORD dwID = atoi(pChildID->FirstChild()->Value());
-        CStdString utf8String;
-        if (!pChildText->NoChildren())
-        {
-          if (strEncoding.IsEmpty()) // Is language file utf8?
-            utf8String=pChildText->FirstChild()->Value();
-          else
-            g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
-        }
-
-        if (!utf8String.IsEmpty())
-          m_vecStrings[dwID] = utf8String;
+        if (strEncoding.IsEmpty()) // Is language file utf8?
+          utf8String=pChildText->FirstChild()->Value();
+        else
+          g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
       }
-      pChild = pChild->NextSibling();
+
+      if (!utf8String.IsEmpty())
+        m_vecStrings[dwID] = utf8String;
     }
+    pChild = pChild->NextSibling();
   }
 
   if (!strFileName.Equals("Q:\\language\\english\\strings.xml"))
@@ -135,12 +146,24 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20024] = "Scan new";
   m_vecStrings[20025] = "Scan all"; 
   m_vecStrings[20026] = "Region"; 
+  m_vecStrings[20027] = ToUTF8(strEncoding, "°F");
+  m_vecStrings[20028] = ToUTF8(strEncoding, "K");
+  m_vecStrings[20029] = ToUTF8(strEncoding, "°C");
+  m_vecStrings[20030] = ToUTF8(strEncoding, "°Ré");
+  m_vecStrings[20031] = ToUTF8(strEncoding, "°Ra"); 
+  m_vecStrings[20032] = ToUTF8(strEncoding, "°Rø"); 
+  m_vecStrings[20033] = ToUTF8(strEncoding, "°De"); 
+  m_vecStrings[20034] = ToUTF8(strEncoding, "°N");
+  m_vecStrings[20035] = ToUTF8(strEncoding, "km/h");
+  m_vecStrings[20036] = ToUTF8(strEncoding, "mph");
+  m_vecStrings[20037] = ToUTF8(strEncoding, "m/s");
+  
   return true;
 }
 
-static string szEmptyString = "";
+static CStdString szEmptyString = "";
 
-const string& CLocalizeStrings::Get(DWORD dwCode) const
+const CStdString& CLocalizeStrings::Get(DWORD dwCode) const
 {
   ivecStrings i;
   i = m_vecStrings.find(dwCode);

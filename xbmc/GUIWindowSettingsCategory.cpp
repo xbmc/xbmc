@@ -359,26 +359,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Weather.TemperatureUnits")
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      CStdString weather;
-      weather.Format("%c%cC", 0xC2, 0xB0);
-      pControl->AddLabel(weather, 0);
-      weather.Format("%c%cF", 0xC2, 0xB0);
-      pControl->AddLabel(weather, 1);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting == "Weather.SpeedUnits")
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel("km/h", 0);
-      pControl->AddLabel("mph", 1);
-      pControl->AddLabel("m/s", 2);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting == "MyMusic.Visualisation")
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
@@ -452,12 +432,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       for (int i = pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i++)
       {
-        CStdString strLabel;
-        if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /* DEGREES_F */)
-          strLabel.Format("%2.0f%c%cF", ((9.0 / 5.0) * (float)i) + 32.0, 0xC2,0xB0);
-        else
-          strLabel.Format("%i%c%cC", i, 0xC2,0xB0);
-        pControl->AddLabel(strLabel, i);
+        CTemperature temp=CTemperature::CreateFromCelsius(i);
+        pControl->AddLabel(temp.ToString(), i);
       }
       pControl->SetValue(pSettingInt->GetData());
     }
