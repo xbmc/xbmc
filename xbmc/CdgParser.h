@@ -164,8 +164,10 @@ public:
   void FreeVoice();
   void ProcessVoice();
   // ... Karaoke patch (114097)
+  inline bool IsRunning() { return m_bIsRunning; }
 
 protected:
+  bool m_bIsRunning;
   CCdgLoader* m_pLoader;
   CCdgReader* m_pReader;
   CCdgRenderer* m_pRenderer;
