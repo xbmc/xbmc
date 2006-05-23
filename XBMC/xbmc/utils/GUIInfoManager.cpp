@@ -42,8 +42,6 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_lastSysHeatInfoTime = 0;
   m_lastMusicBitrateTime = 0;
   m_fanSpeed = 0;
-  m_gpuTemp = 0;
-  m_cpuTemp = 0;
   m_AfterSeekTimeout = 0;
   m_playerSeeking = false;
   m_performingSeek = false;
@@ -1468,31 +1466,20 @@ string CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
 
   if (strInfo == "cpu")
   {
-    if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format("%s %2.2f%c%cF", g_localizeStrings.Get(140).c_str(), ((9.0 / 5.0) * m_cpuTemp) + 32.0, 0xC2, 0xB0); // 0xC2B0=Degree sign in utf8
-    else
-      text.Format("%s %2.2f%c%cC", g_localizeStrings.Get(140).c_str(), m_cpuTemp, 0xC2, 0xB0);
+    text.Format("%s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.ToString());
   }
   else if (strInfo == "lcdcpu")
   {
-    if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format("%3.0f%c%cF", ((9.0 / 5.0) * m_cpuTemp) + 32.0, 0xC2,0xB0);
-    else
-      text.Format("%2.0f%c%cC", m_cpuTemp, 0xC2,0xB0);
+    text=m_cpuTemp.ToString();
   }
   else if (strInfo == "gpu")
   {
-    if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format("%s %2.2f%c%cF", g_localizeStrings.Get(141).c_str(), ((9.0 / 5.0) * m_gpuTemp) + 32.0, 0xC2, 0xB0);
-    else
-      text.Format("%s %2.2f%c%cC", g_localizeStrings.Get(141).c_str(), m_gpuTemp, 0xC2, 0xB0);
+    text=m_gpuTemp.ToString();
+    text.Format("%s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.ToString());
   }
   else if (strInfo == "lcdgpu")
   {
-    if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format("%3.0f%c%cF", ((9.0 / 5.0) * m_gpuTemp) + 32.0, 0xC2,0xB0);
-    else
-      text.Format("%2.0f%c%cC", m_gpuTemp, 0xC2,0xB0);
+    text=m_gpuTemp.ToString();
   }
   else if (strInfo == "fan")
   {

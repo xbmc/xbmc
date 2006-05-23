@@ -748,18 +748,11 @@ bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
   int iSmartREQ = 17; // SmartRequest HDD Temperature
   hddsmarttemp = SYSINFO::Instance()->GetSmartValues(iSmartREQ);
 
-  if (hddsmarttemp>0)
-  {
-    if(g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      strItemhdd.Format("%s %2.2f%c%cF", lblhdd.c_str(), ((9.0 / 5.0) * hddsmarttemp) + 32.0, 0xC2,0xB0); 
-    else
-      strItemhdd.Format("%s %d.00%c%cC", lblhdd.c_str(),hddsmarttemp, 0xC2,0xB0); 
+  CTemperature temp=CTemperature::CreateFromCelsius(hddsmarttemp);
+  if (hddsmarttemp<=0)
+    temp.SetState(CTemperature::invalid);
 
-    return true;
-  }
-
-  CStdString strUnknown=g_localizeStrings.Get(13205);
-  strItemhdd.Format("%s %s", lblhdd.c_str(), strUnknown.c_str()); 
+  strItemhdd.Format("%s %s", lblhdd.c_str(), temp.ToString().c_str()); 
   return true;
 }
 

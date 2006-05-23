@@ -11,6 +11,7 @@
 #include "../FileItem.h"
 #include "../videodatabase.h"
 #include "../StringUtils.h"
+#include "../Temperature.h"
 
 #define PLAYER_HAS_MEDIA              1
 #define PLAYER_HAS_AUDIO              2
@@ -325,8 +326,8 @@ protected:
   // fan stuff
   DWORD m_lastSysHeatInfoTime;
   int m_fanSpeed;
-  float m_gpuTemp;
-  float m_cpuTemp;
+  CTemperature m_gpuTemp;
+  CTemperature m_cpuTemp;
 
   //Fullscreen OSD Stuff
   DWORD m_AfterSeekTimeout;

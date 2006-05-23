@@ -18,11 +18,11 @@ public:
   CLocalizeStrings(void);
   virtual ~CLocalizeStrings(void);
   bool Load(const CStdString& strFileName);
-  const string& Get(DWORD dwCode) const;
+  const CStdString& Get(DWORD dwCode) const;
   void Clear();
 protected:
-  map<DWORD, string> m_vecStrings;
-  typedef map<DWORD, string>::const_iterator ivecStrings;
+  map<DWORD, CStdString> m_vecStrings;
+  typedef map<DWORD, CStdString>::const_iterator ivecStrings;
 };
 
 /*!

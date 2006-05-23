@@ -16,6 +16,8 @@
       <dateshort>YYYY-MM-DD</dateshort>
       <datelong>YYYY'년' M'월' D'일' DDDD</datelong>
       <time symbolAM="오전" symbolPM="오후">xx h:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
     </region>
   </regions>
 </language>
