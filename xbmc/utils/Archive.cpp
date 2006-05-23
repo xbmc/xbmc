@@ -50,6 +50,18 @@ CArchive& CArchive::operator<<(float f)
   return *this;
 }
 
+CArchive& CArchive::operator<<(double d)
+{
+  int size = sizeof(double);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &d, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
 CArchive& CArchive::operator<<(int i)
 {
   int size = sizeof(int);
@@ -168,6 +180,13 @@ CArchive& CArchive::operator<<(ISerializable& obj)
 CArchive& CArchive::operator>>(float& f)
 {
   m_pFile->Read((void*)&f, sizeof(float));
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(double& d)
+{
+  m_pFile->Read((void*)&d, sizeof(double));
 
   return *this;
 }

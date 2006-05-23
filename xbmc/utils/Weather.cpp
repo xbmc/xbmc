@@ -4,14 +4,10 @@
 #include "../FileSystem/ZipManager.h"
 #include "../FileSystem/RarManager.h"
 #include "HTTP.h"
+#include "xmlutils.h"
+#include "../temperature.h"
+#include "../systemtime.h"
 
-
-#define SPEED_KMH 0
-#define SPEED_MPH 1
-#define SPEED_MPS 2
-
-#define DEGREES_C 0
-#define DEGREES_F 1
 
 #define CONTROL_BTNREFRESH  2
 #define CONTROL_SELECTLOCATION 3
@@ -40,8 +36,6 @@
 #define CONTROL_LABELD0LOW  33
 #define CONTROL_LABELD0GEN  34
 #define CONTROL_IMAGED0IMG  35
-
-#define DEGREE_CHARACTER  0xC2,0xB0 // 0xC2B0=Degree sign in utf8
 
 #define PARTNER_ID    "1004124588"   //weather.com partner id
 #define PARTNER_KEY    "079f24145f208494"  //weather.com partner key
@@ -89,16 +83,10 @@ void CBackgroundWeatherLoader::GetInformation()
   CHTTP httpUtil;
   CStdString strURL;
 
-  char c_units; //convert from temp units to metric/standard
-  if (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_F) //we'll convert the speed later depending on what thats set to
-    c_units = 's';
-  else
-    c_units = 'm';
-
   CStdString strSetting;
   strSetting.Format("Weather.AreaCode%i", callback->GetArea() + 1);
-  strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=%c&dayf=4&prod=xoap&par=%s&key=%s",
-                g_guiSettings.GetString(strSetting), c_units, PARTNER_ID, PARTNER_KEY);
+  strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=m&dayf=4&prod=xoap&par=%s&key=%s",
+                g_guiSettings.GetString(strSetting), PARTNER_ID, PARTNER_KEY);
   CStdString strWeatherFile = "Z:\\curWeather.xml";
   if (httpUtil.Download(strURL, strWeatherFile))
   {
@@ -237,36 +225,30 @@ void CWeather::LocalizeOverview(char *szStr)
   strcpy(szStr, loc);           //copy loc over the original input string
 }
 
+// input param must be kmh
 int CWeather::ConvertSpeed(int curSpeed)
 {
-  //we might not need to convert at all
-  if ((g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_C && g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_KMH) ||
-      (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_F && g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPH) )
-    return curSpeed;
+  switch (g_langInfo.GetSpeedUnit())
+  {
+  case CLangInfo::SPEED_UNIT_KMH:
+    break;
+  case CLangInfo::SPEED_UNIT_MPH:
+    curSpeed=(int)(curSpeed / (8.0 / 5.0));
+    break;
+  case CLangInfo::SPEED_UNIT_MPS:
+    curSpeed=(int)(curSpeed * (1000.0 / 3600.0) + 0.5);
+    break;
+  default:
+    assert(false);
+  }
 
-  //got through that so if temp is C, speed must be MPH or m/s
-  if (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_C)
-  {
-    if (g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPS)
-      return (int)(curSpeed * (1000.0 / 3600.0) + 0.5);  //m/s
-    else
-      return (int)(curSpeed / (8.0 / 5.0));  //mph
-  }
-  else
-  {
-    if (g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPS)
-      return (int)(curSpeed * (8.0 / 5.0) * (1000.0 / 3600.0) + 0.5);  //m/s
-    else
-      return (int)(curSpeed * (8.0 / 5.0));  //kph
-  }
+  return curSpeed;
 }
 
 bool CWeather::LoadWeather(const CStdString &strWeatherFile)
 {
   int iTmpInt;
   char iTmpStr[256];
-  char szUnitTemp[2];
-  char szUnitSpeed[5];
   SYSTEMTIME time;
 
   GetLocalTime(&time); //used when deciding what weather to grab for today
@@ -299,19 +281,6 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
     return false;
   }
 
-  // units (C or F and mph or km/h or m/s)
-  if (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_C)
-    strcpy(szUnitTemp, "C");
-  else
-    strcpy(szUnitTemp, "F");
-
-  if (g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPH)
-    strcpy(szUnitSpeed, "mph");
-  else if (g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_KMH)
-    strcpy(szUnitSpeed, "km/h");
-  else
-    strcpy(szUnitSpeed, "m/s");
-
   // location
   TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
   if (pElement)
@@ -323,7 +292,16 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
   pElement = pRootElement->FirstChildElement("cc");
   if (pElement)
   {
-    GetString(pElement, "lsup", m_szLastUpdateTime, "");
+    // Use the local date/time the file is parsed...
+    CSystemTime time;
+    time.Now();
+    CStdString strDateTime=time.GetAsLocalizedDate();
+    strDateTime+=" ";
+    strDateTime+=time.GetAsLocalizedTime();
+    strcpy(m_szLastUpdateTime, strDateTime.c_str());
+
+    // ...and not the date/time from weather.com
+    //GetString(pElement, "lsup", m_szLastUpdateTime, "");
 
     GetString(pElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
     if (strcmp(iTmpStr, "N/A") == 0)
@@ -337,9 +315,11 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
     LocalizeOverview(m_szCurrentConditions);
 
     GetInteger(pElement, "tmp", iTmpInt);    //current temp
-    sprintf(m_szCurrentTemperature, "%i%c%c%s", iTmpInt, DEGREE_CHARACTER, szUnitTemp);
+    CTemperature temp=CTemperature::CreateFromCelsius(iTmpInt);
+    sprintf(m_szCurrentTemperature, "%s", temp.ToString().c_str());
     GetInteger(pElement, "flik", iTmpInt);    //current 'Feels Like'
-    sprintf(m_szCurrentFeelsLike, "%i%c%c%s", iTmpInt, DEGREE_CHARACTER, szUnitTemp);
+    CTemperature tempFlik=CTemperature::CreateFromCelsius(iTmpInt);
+    sprintf(m_szCurrentFeelsLike, "%s", tempFlik.ToString().c_str());
 
     TiXmlElement *pNestElement = pElement->FirstChildElement("wind"); //current wind
     if (pNestElement)
@@ -353,6 +333,10 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
       CStdString szWindFrom = g_localizeStrings.Get(407);
       CStdString szWindAt = g_localizeStrings.Get(408);
       CStdString szCalm = g_localizeStrings.Get(1410);
+
+      // get speed unit
+      char szUnitSpeed[5];
+      strcpy(szUnitSpeed, g_langInfo.GetSpeedUnitString().c_str());
 
       if (strcmp(iTmpStr,"CALM") == 0)
         sprintf(m_szCurrentWind, "%s", szCalm.c_str());
@@ -375,8 +359,8 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
     }
 
     GetInteger(pElement, "dewp", iTmpInt);    //current dew point
-    sprintf(m_szCurrentDewPoint, "%i%c%c%s", iTmpInt, DEGREE_CHARACTER, szUnitTemp);
-
+    CTemperature dewPoint=CTemperature::CreateFromCelsius(iTmpInt);
+    sprintf(m_szCurrentDewPoint, "%s", dewPoint.ToString().c_str());
   }
   //future forcast
   pElement = pRootElement->FirstChildElement("dayf");
@@ -394,13 +378,19 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
         if (strcmp(iTmpStr, "N/A") == 0)
           strcpy(m_dfForcast[i].m_szHigh, "");
         else
-          sprintf(m_dfForcast[i].m_szHigh, "%s%c%c%s", iTmpStr, DEGREE_CHARACTER, szUnitTemp);
+        {
+          CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
+          sprintf(m_dfForcast[i].m_szHigh, "%s", temp.ToString().c_str());
+        }
 
         GetString(pOneDayElement, "low", iTmpStr, "");
         if (strcmp(iTmpStr, "N/A") == 0)
           strcpy(m_dfForcast[i].m_szHigh, "");
         else
-          sprintf(m_dfForcast[i].m_szLow, "%s%c%c%s", iTmpStr, DEGREE_CHARACTER, szUnitTemp);
+        {
+          CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
+          sprintf(m_dfForcast[i].m_szLow, "%s", temp.ToString().c_str());
+        }
 
         TiXmlElement *pDayTimeElement = pOneDayElement->FirstChildElement("part"); //grab the first day/night part (should be day)
         if (i == 0 && (time.wHour < 7 || time.wHour >= 19)) //weather.com works on a 7am to 7pm basis so grab night if its late in the day
@@ -458,6 +448,10 @@ void CWeather::LoadLocalizedToken()
   {
     return ;
   }
+
+  CStdString strEncoding;
+  XMLUtils::GetEncoding(&xmlDoc, strEncoding);
+
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if (strValue != CStdString("strings")) return ;
@@ -476,7 +470,11 @@ void CWeather::LoadLocalizedToken()
             (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2) )
         {
           CStdString utf8Label;
-          g_charsetConverter.stringCharsetToUtf8(pChildText->FirstChild()->Value(), utf8Label);
+          if (strEncoding.IsEmpty()) // Is language file utf8?
+            utf8Label=pChildText->FirstChild()->Value();
+          else
+            g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8Label);
+
           if (!utf8Label.IsEmpty())
             m_localizedTokens.insert(std::pair<string, DWORD>(utf8Label, dwID));
         }

@@ -43,7 +43,6 @@ CFanController::CFanController()
   unsigned long iDummy;
   bIs16Box = (HalReadSMBusValue(XCALIBUR_ADDRESS, 0, 0, (LPBYTE)&iDummy) == 0);
   cpuTempCount = 0;
-  cpuTemp = 0;
 }
 
 
@@ -158,7 +157,7 @@ void CFanController::SetFanSpeed(const int fanspeed, const bool force)
   inCustomMode = true;
 }
 
-float CFanController::GetGPUTemp()
+const CTemperature& CFanController::GetGPUTemp()
 {
   if (m_ThreadHandle == NULL)
   {
@@ -172,7 +171,7 @@ void CFanController::GetGPUTempInternal()
   unsigned long temp;
   HalReadSMBusValue(PIC_ADDRESS, GPU_TEMP, 0, (LPBYTE)&temp);
 
-  gpuTemp = (float)temp;
+  gpuTemp = CTemperature::CreateFromCelsius((double)temp);
   // The XBOX v1.6 shows the temp to high! Let's recalc it! It will only do ~minus 10 degress
   if (bIs16Box)
   {
@@ -181,7 +180,7 @@ void CFanController::GetGPUTempInternal()
 
 }
 
-float CFanController::GetCPUTemp()
+const CTemperature& CFanController::GetCPUTemp()
 {
   if (m_ThreadHandle == NULL)
   {
@@ -212,7 +211,7 @@ void CFanController::GetCPUTempInternal()
     while ((_inp(0xc000) & 8));
     cpudec = _inpw(0xc006);
 
-    cpuTemp = (float)cpu + (float)cpudec / 256.0f;
+    cpuTemp = CTemperature::CreateFromCelsius((float)cpu + (float)cpudec / 256.0f);
   }
   else
   { // if its a 1.6 then we get the CPU temperature from the xcalibur
@@ -238,7 +237,7 @@ void CFanController::GetCPUTempInternal()
 
       if (cpuTempCount == 9) // if we have taken 10 samples then commit the new temperature
       {
-        cpuTemp = cpuFrac;
+        cpuTemp = CTemperature::CreateFromCelsius(cpuFrac);
         cpuTempCount = 0;
         cpuFrac = 0;
       }
@@ -250,17 +249,17 @@ void CFanController::GetCPUTempInternal()
 
     /* the first time we read the temp sensor we set the temperature right away */
     if (cpuTemp == 0)
-      cpuTemp = (float)cpu + (float)cpudec / 256;
+      cpuTemp = CTemperature::CreateFromCelsius((float)cpu + (float)cpudec / 256);
   }
 }
 
 
 void CFanController::CalcSpeed(int targetTemp)
 {
-  float temp;
-  float tempOld;
-  float targetTempFloor;
-  float targetTempCeiling;
+  CTemperature temp;
+  CTemperature tempOld;
+  CTemperature targetTempFloor;
+  CTemperature targetTempCeiling;
 
   if (sensor == ST_GPU)
   {
@@ -272,8 +271,8 @@ void CFanController::CalcSpeed(int targetTemp)
     temp = cpuTemp;
     tempOld = cpuLastTemp;
   }
-  targetTempFloor = (float)targetTemp - 0.75f;
-  targetTempCeiling = (float)targetTemp + 0.75f;
+  targetTempFloor = CTemperature::CreateFromCelsius((float)targetTemp - 0.75f);
+  targetTempCeiling = CTemperature::CreateFromCelsius((float)targetTemp + 0.75f);
 
   if ((temp >= targetTempFloor) && (temp <= targetTempCeiling))
   {
