@@ -264,6 +264,7 @@ void CCdgReader::Process()
   CStdString strExt;
   CUtil::GetExtension(m_pLoader->GetFileName(),strExt);
   strExt = m_pLoader->GetFileName().substr(0,m_pLoader->GetFileName().size()-strExt.size());
+
   while (!CThread::m_bStop)
   {
     CSingleLock lock (m_CritSection);
@@ -273,7 +274,13 @@ void CCdgReader::Process()
     if (g_application.GetCurrentSong()->GetURL().substr(0,strExt.size()) != strExt)
     {
       Sleep(15);
-      fDiff = -0.4f;
+      if (CThread::m_bStop)
+        return;
+      
+      CUtil::GetExtension(m_pLoader->GetFileName(),strExt);
+      strExt = m_pLoader->GetFileName().substr(0,m_pLoader->GetFileName().size()-strExt.size());
+
+      fDiff = 0.f;
     }
     else
     {
@@ -481,6 +488,7 @@ CCdgParser::CCdgParser()
   m_pReader = NULL;
   m_pLoader = NULL;
   m_pRenderer = NULL;
+  m_bIsRunning = false;
 }
 CCdgParser::~CCdgParser()
 {
@@ -528,6 +536,7 @@ bool CCdgParser::Start(CStdString strSongPath)
     StartVoice(&VoiceConfig);
   }
   // ... Karaoke patch (114097)
+  m_bIsRunning = true;
   return true;
 }
 
@@ -543,6 +552,7 @@ void CCdgParser::Stop()
   StopReader();
   StopLoader();
   StopVoice();
+  m_bIsRunning = false;
 }
 
 void CCdgParser::Free()
