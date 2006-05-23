@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-05-2006 fixed: [ 1493130 ] XBMC crashes at the end of Apple Lossless files.
  - 23-05-2006 fixed: karaoke should now start on next song.
  - 22-05-2006 fixed: dvdplayer wouldn't set language based on xbmc language settings as it should
  - 22-05-2006 fixed: inverted dvd highlights. spu used for background and selected is totaly transparent
