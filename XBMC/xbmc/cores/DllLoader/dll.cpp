@@ -38,7 +38,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
 
   // ws2_32.dll hack
   // for libraries linked in visual.net with ws2_32.lib
-  if (strlen(file) > 2 && file[1] != ':' && strstr(file, ".dll") == NULL)
+  if (strlen(file) > 2 && file[1] != ':' && strstr(file, ".dll") == NULL && strstr(file,".qts") == NULL)
   {
     strcpy(file, libname);
     strcat(file, ".dll");
