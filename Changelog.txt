@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-05-2006 fixed: [ 1492671 ] .mov no sound with mplayer, CVS now
  - 23-05-2006 added: localization of temperature and speed unit via langinfo.xml
  - 23-05-2006 fixed: [ 1493130 ] XBMC crashes at the end of Apple Lossless files.
  - 23-05-2006 fixed: karaoke should now start on next song.
