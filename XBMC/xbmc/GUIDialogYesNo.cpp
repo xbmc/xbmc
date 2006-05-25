@@ -54,6 +54,6 @@ bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int lin
     dialog->SetChoice(0,iNoLabel);
   if (iYesLabel != -1)
     dialog->SetChoice(1,iYesLabel);
-  dialog->DoModal(m_gWindowManager.GetActiveWindow());
+  dialog->DoModal();
   return (dialog->IsConfirmed()) ? true : false;
 }

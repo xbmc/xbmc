@@ -132,7 +132,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   pDlgProgress->SetLine(0, strLine0);
   pDlgProgress->SetLine(1, strLine1);
   pDlgProgress->SetLine(2, "");
-  pDlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+  pDlgProgress->StartModal();
   pDlgProgress->ShowProgressBar(true);
 
   // show progress dialog
@@ -171,7 +171,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
       pDlgOK->SetLine(0, CStdString(strFilename) + " to");
       pDlgOK->SetLine(1, strFile);
       pDlgOK->SetLine(2, "");
-      pDlgOK->DoModal(m_gWindowManager.GetActiveWindow());
+      pDlgOK->DoModal();
       g_graphicsContext.Unlock();
       CFile::Delete(strFilename);
       return false;

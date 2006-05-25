@@ -245,7 +245,7 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   else
     pDialog->SetLine( 2, atoi(dlgLine2.c_str()) );
 
-  pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+  pDialog->DoModal();
 
   if (bGetUserInput)
   {

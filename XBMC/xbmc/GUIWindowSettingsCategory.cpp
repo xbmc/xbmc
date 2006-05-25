@@ -1875,7 +1875,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       dlg->SetLine( 0, g_localizeStrings.Get(14039) );
       dlg->SetLine( 1, g_localizeStrings.Get(14040));
       dlg->SetLine( 2, "");
-      dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+      dlg->DoModal();
 
       if (dlg->IsConfirmed())
       {
@@ -1890,7 +1890,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       dlg->SetLine( 0, g_localizeStrings.Get(1209) );
       dlg->SetLine( 1, g_guiSettings.GetString("Smb.ShareName"));
       dlg->SetLine( 2, strSmbIp);
-      dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+      dlg->DoModal();
       //if (dlg->IsConfirmed()) //Do nothing!
     }
   }
@@ -2742,7 +2742,7 @@ bool CGUIWindowSettingsCategory::SetMasterLockMode()
     menu->AddButton(12338);
     menu->AddButton(12339);
     menu->SetPosition((g_graphicsContext.GetWidth() - menu->GetWidth()) / 2, (g_graphicsContext.GetHeight() - menu->GetHeight()) / 2);
-    menu->DoModal(GetID());
+    menu->DoModal();
 
     CStdString newPassword;
     int iLockMode = -1;
@@ -2808,7 +2808,7 @@ bool CGUIWindowSettingsCategory::SetUserMode()
     menu->AddButton(1224); // Normal User   ->False
     menu->AddButton(1225); // Advanced User ->TRUE
     menu->SetPosition((g_graphicsContext.GetWidth() - menu->GetWidth()) / 2, (g_graphicsContext.GetHeight() - menu->GetHeight()) / 2);
-    menu->DoModal(GetID());
+    menu->DoModal();
 
     CStdString newUserMode;
     int iLockMode = -1;

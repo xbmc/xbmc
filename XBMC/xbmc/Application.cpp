@@ -1138,7 +1138,7 @@ HRESULT CApplication::Initialize()
       dialog->SetLine(0, "Error while loading settings");
       dialog->SetLine(1, test);
       dialog->SetLine(2, "");;
-      dialog->DoModal(m_gWindowManager.GetActiveWindow());
+      dialog->DoModal();
     }
   }
 
@@ -1550,7 +1550,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     for (unsigned int i = 0; i < currentModelessWindows.size(); i++)
     {
       CGUIDialog *dialog = (CGUIDialog *)m_gWindowManager.GetWindow(currentModelessWindows[i]);
-      if (dialog) dialog->Show(m_gWindowManager.GetActiveWindow());
+      if (dialog) dialog->Show();
     }
   }
 }
@@ -1756,13 +1756,13 @@ void CApplication::Render()
     if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
     {
       // then show video overlay window
-      m_guiVideoOverlay.Show(m_gWindowManager.GetActiveWindow());
+      m_guiVideoOverlay.Show();
       m_guiMusicOverlay.Close(true);
     }
     else if ( IsPlayingAudio() )
     {
       // audio show audio overlay window
-      m_guiMusicOverlay.Show(m_gWindowManager.GetActiveWindow());
+      m_guiMusicOverlay.Show();
       m_guiVideoOverlay.Close(true);
     }
     else
@@ -2170,7 +2170,7 @@ bool CApplication::OnKey(CKey& key)
     SetHardwareVolume(volume);
 
     // show visual feedback of volume change...
-    m_guiDialogVolumeBar.Show(m_gWindowManager.GetActiveWindow());
+    m_guiDialogVolumeBar.Show();
     m_guiDialogVolumeBar.OnAction(action);
     return true;
   }
@@ -2241,7 +2241,7 @@ void CApplication::FrameMove()
   {
     if (!m_guiDialogKaiToast.IsRunning())
     {
-      m_guiDialogKaiToast.Show(m_gWindowManager.GetActiveWindow());
+      m_guiDialogKaiToast.Show();
     }
   }
 
@@ -4020,7 +4020,7 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
   {
     g_stSettings.m_bMute = true;
     if (!m_guiDialogMuteBug.IsRunning())
-      m_guiDialogMuteBug.Show(m_gWindowManager.GetActiveWindow());
+      m_guiDialogMuteBug.Show();
   }
   else if(g_stSettings.m_bMute && hardwareVolume > VOLUME_MINIMUM)
   {
