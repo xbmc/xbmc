@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-05-2006 fixed: Infinite loop if the progress dialog was started by the player while in fullscreen before rendering was allowed.
  - 25-05-2006 fixed: DoModal() and Show() on dialogs had to be called with the parent window, even though the information was never used.
  - 25-05-2006 fixed: last.fm directory was broken.
  - 25-05-2006 fixed: forgot to enable subtitles after user browsed for one.

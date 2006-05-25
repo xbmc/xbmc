@@ -38,7 +38,15 @@ void CGUIDialogProgress::StartModal()
   ShowProgressBar(false);
 
   while (m_bRunning && IsAnimating(ANIM_TYPE_WINDOW_OPEN))
+  {
     Progress();
+    // we should have rendered at least once by now - if we haven't, then
+    // we must be running from fullscreen video or similar where the
+    // calling thread handles rendering (ie not main app thread) but
+    // is waiting on this routine before rendering begins
+    if (!m_hasRendered)
+      break;
+  }
 }
 
 void CGUIDialogProgress::Progress()
