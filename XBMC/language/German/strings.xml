@@ -62,9 +62,9 @@
   <string><id>120</id><value>Kopieren bestätigen</value></string>
   <string><id>121</id><value>Verschieben bestätigen</value></string>
   <string><id>122</id><value>Löschen bestätigen</value></string>
-  <string><id>123</id><value>Dateien wirklich kopieren?</value></string>
-  <string><id>124</id><value>Dateien wirklich verschieben?</value></string>
-  <string><id>125</id><value>Dateien wirklich löschen?</value></string>
+  <string><id>123</id><value>Möchten Sie die Datei(en) wirklich kopieren?</value></string>
+  <string><id>124</id><value>Möchten Sie die Datei(en) wirklich verschieben?</value></string>
+  <string><id>125</id><value>Möchten Sie die Datei(en) wirklich löschen?</value></string>
   <string><id>126</id><value>Status</value></string>
   <string><id>127</id><value>Objekte</value></string>
   <string><id>128</id><value>Allgemein</value></string>
@@ -120,7 +120,7 @@
   <string><id>178</id><value>Titel:</value></string>
   <string><id>179</id><value>Titel</value></string>
   <string><id>180</id><value>Dauer</value></string>
-  <string><id>181</id><value>Album wählen</value></string>
+  <string><id>181</id><value>Album auswählen:</value></string>
   <string><id>182</id><value>Titel</value></string>
   <string><id>183</id><value>Bewertung</value></string>
   <string><id>184</id><value>Aktualisieren</value></string>
@@ -135,7 +135,7 @@
   <string><id>193</id><value>Durchsuchen</value></string>
   <string><id>194</id><value>Durchsuche...</value></string>
   <string><id>195</id><value>Es wurde kein IMDB-Eintrag gefunden!</value></string>
-  <string><id>196</id><value>Video wählen:</value></string>
+  <string><id>196</id><value>Video auswählen:</value></string>
   <string><id>197</id><value>IMDB-Info abfragen</value></string>
   <string><id>198</id><value>Lade Videoinformationen</value></string>
   <string><id>199</id><value>Regisseur:</value></string>
@@ -158,7 +158,7 @@
   <string><id>216</id><value>Vergrößerung</value></string>
   <string><id>217</id><value>Bild-Verhältnis</value></string>
   <string><id>218</id><value>DVD-Laufwerk</value></string>
-  <string><id>219</id><value>Bitte legen Sie einen Datenträger ein</value></string>
+  <string><id>219</id><value>Bitte legen Sie einen Datenträger ein.</value></string>
   <string><id>220</id><value>Freigabe</value></string>
   <string><id>221</id><value>Netzwerk ist nicht verbunden</value></string>
   <string><id>222</id><value>Abbruch</value></string>
@@ -222,8 +222,8 @@
   <string><id>280</id><value>Standardeinstellungen verwenden</value></string>
   <string><id>281</id><value>Bitte überprüfen Sie die .xml-Dateien!</value></string>
   <string><id>282</id><value>%i Einträge gefunden</value></string>
-  <string><id>283</id><value>Resultat der Suche</value></string>
-  <string><id>284</id><value>Suche lieferte keine Ergebnisse</value></string>
+  <string><id>283</id><value>Suchergebnisse</value></string>
+  <string><id>284</id><value>Die Suche lieferte keine Ergebnisse</value></string>
   <string><id>285</id><value>Deinterlace Filter</value></string>
   <string><id>286</id><value>Post-Processing Filter</value></string>
   <string><id>287</id><value>Untertitel</value></string>
@@ -306,7 +306,7 @@
   <string><id>365</id><value>Nach Namen</value></string>
   <string><id>366</id><value>Nach Jahr</value></string>
   <string><id>367</id><value>Nach Quote</value></string>
-  <string><id>368</id><value>IMDB</value></string>
+  <string><id>368</id><value>IMDB-Suche</value></string>
   <string><id>369</id><value>Titel</value></string>
   <string><id>370</id><value>Gewitter</value></string>
   <string><id>371</id><value>teilweise</value></string>
@@ -366,13 +366,13 @@
   <string><id>425</id><value>Keine Albuminformationen gefunden</value></string>
   <string><id>426</id><value>Keine CDDB-Info gefunden</value></string>
   <string><id>427</id><value>Datenträger:</value></string>
-  <string><id>428</id><value>Bitte legen Sie den korrekten Datenträger ein</value></string>
-  <string><id>429</id><value>Bitte legen Sie folgenden Datenträger ein</value></string>
+  <string><id>428</id><value>Bitte legen Sie den korrekten Datenträger ein.</value></string>
+  <string><id>429</id><value>Bitte legen Sie folgenden Datenträger ein:</value></string>
   <string><id>430</id><value>Nach DVD#</value></string>
   <string><id>431</id><value>Keinen Cache verwenden</value></string>
-  <string><id>432</id><value>Lösche Film aus der Datenbank</value></string>
-  <string><id>433</id><value>Soll der Film gelöscht </value></string>
-  <string><id>434</id><value>werden?</value></string>
+  <string><id>432</id><value>Entferne Film aus der Datenbank</value></string>
+  <string><id>433</id><value>Möchten Sie den Film wirklich aus der Datenbank</value></string>
+  <string><id>434</id><value>entfernen?</value></string>
   <string><id>435</id><value>Titel</value></string>
   <string><id>436</id><value>Jahr:</value></string>
   <string><id>437</id><value>Dauer:</value></string>
@@ -447,7 +447,7 @@
   <string><id>506</id><value>Ordnernamen als Beschreibung verwenden</value></string>
   <string><id>507</id><value>Nach Gebrauch</value></string>
   <string><id>508</id><value>Verknüpfungen und Durchsuchen deaktivieren</value></string>
-  <string><id>509</id><value>Programm-Thumbnails speichern</value></string>
+  <string><id>509</id><value>Programm-Thumbnails zwischenspeichern</value></string>
   <string><id>510</id><value>Visualisierung verwenden</value></string>
   <string><id>511</id><value>Video-Modus auf Basis der Spiele-Region wechseln</value></string>
   <string><id>512</id><value>Start Fenster</value></string>
@@ -513,7 +513,7 @@
   <string><id>700</id><value>Datenbank aufräumen</value></string>
   <string><id>701</id><value>Alte Musikdaten aus der Datenbank löschen</value></string>
   <string><id>702</id><value>Dieser Pfad wurde bereits durchsucht.</value></string>
-  <string><id>703</id><value>Wählen Sie 'Ja' um alle Titel noch einmal einzulesen.</value></string>
+  <string><id>703</id><value>Wählen Sie 'Ja' um alle Titel erneut einzulesen.</value></string>
   <string><id>704</id><value>Wählen Sie 'Nein' um nur neue Titel hinzuzufügen.</value></string>
   <string><id>705</id><value>Netzwerk</value></string>
   <string><id>706</id><value>HTTP-Proxy-Host</value></string>
@@ -541,7 +541,7 @@
   <string><id>728</id><value>FTP-Server</value></string>
   <string><id>729</id><value>Internet-Zeit</value></string>
   <string><id>730</id><value>Web-Server-Port</value></string>
-  <string><id>731</id><value>Zeit-Server IP-Adresse</value></string>
+  <string><id>731</id><value>IP-Adresse des Zeit-Servers</value></string>
   <string><id>732</id><value>Speichern &amp; Übernehmen</value></string>
   <string><id>733</id><value>Web-Server-Passwort</value></string>
   <string><id>734</id><value>Kein Passwort</value></string>
@@ -555,7 +555,7 @@
   <string><id>742</id><value>Weiß</value></string>
   <string><id>743</id><value>Gelb</value></string>
   <string><id>744</id><value>Dateien</value></string>
-  <string><id>745</id><value>Keine Informationen für diese Ansicht.</value></string>
+  <string><id>745</id><value>Keine Informationen für diese Ansicht verfügbar.</value></string>
   <string><id>746</id><value>Bitte wechseln Sie wieder zur Ansicht "Dateien".</value></string>
   <string><id>747</id><value>Nicht genügend Speicher um das Bild zu laden!</value></string>
   <string><id>748</id><value>Pfad bearbeiten</value></string>
@@ -581,7 +581,7 @@
   <string><id>768</id><value>Reserviert</value></string>
   <string><id>769</id><value>Reserviert</value></string>
   <string><id>770</id><value>Fehler %i: Freigabe ist nicht verfügbar</value></string>
-  <string><id>771</id><value>FatX-Limitierung im FTP-Server aufheben</value></string>
+  <string><id>771</id><value>FatX-Limitierung im FTP-Server umgehen</value></string>
   <string><id>772</id><value>Audio-Hardware</value></string>
   <string><id>773</id><value>Positionieren</value></string>
   <string><id>774</id><value>Diaschau-Ordner</value></string>
@@ -658,7 +658,6 @@
   <string><id>1233</id><value>Programme / Videos / Musik</value></string>
   <string><id>1234</id><value>Programme / Bilder / Musik</value></string>
   <string><id>1235</id><value>Programme / Bilder / Videos</value></string>
-  <string><id>1236</id><value>Timeout</value></string>
 
   <string><id>1245</id><value>FTP-Benutzername</value></string>
   <string><id>1246</id><value>FTP-Passwort</value></string>
@@ -790,8 +789,8 @@
   <string><id>12327</id><value>Bitte geben Sie das Master-Passwort ein</value></string>
   <string><id>12328</id><value>Bitte geben Sie das Passwort zum Entsperren ein</value></string> 
   <string><id>12329</id><value>oder mit C abbrechen</value></string>
-  <string><id>12330</id><value>Gamepad Tastenkombination eingeben und</value></string>
-  <string><id>12331</id><value>'Start' oder 'Back' drücken um abzubrechen.</value></string>
+  <string><id>12330</id><value>Geben Sie bitte die Gamepad Tastenkombination ein</value></string>
+  <string><id>12331</id><value>und drücken Sie 'Start' oder 'Back' um abzubrechen.</value></string>
   <string><id>12332</id><value>Sperren</value></string>
   <string><id>12333</id><value>Entsperren</value></string>
   <string><id>12334</id><value>Sperre zurücksetzen</value></string>
@@ -821,7 +820,7 @@
   <string><id>12358</id><value>Kein Passwort eingegeben. Bitte noch einmal versuchen.</value></string>
   <string><id>12360</id><value>Master-Sperre</value></string>
   <string><id>12361</id><value>Maximale Eingabeversuche des Passwortes</value></string>
-  <string><id>12362</id><value>Nach maximaler Anzahl XBOX ausschalten</value></string>
+  <string><id>12362</id><value>Nach maximaler Anzahl Fehlversuchen XBOX ausschalten</value></string>
   <string><id>12363</id><value>Freigaben sperren</value></string>
   <string><id>12364</id><value>Master-Sperr-Modus</value></string>
   <string><id>12365</id><value>Master-Passwort</value></string>
@@ -1041,16 +1040,14 @@
   <string><id>13397</id><value>Untertitel aktivieren</value></string>
   <string><id>13398</id><value>Lesezeichen</value></string>
   <string><id>13399</id><value>"The" bei der Sortierung ignorieren</value></string>
-  <string><id>13400</id><value>Crossfade bei Titeln desselben Albums</value></string>
+  <string><id>13400</id><value>Crossfade bei Titel desselben Albums</value></string>
   <string><id>13401</id><value>Nach %s durchsuchen</value></string>
   <string><id>13402</id><value>Titel-Position anzeigen</value></string>
   <string><id>13403</id><value>Standard entfernen</value></string>
   <string><id>13404</id><value>Fortsetzen</value></string>
   <string><id>13405</id><value>Cover Download</value></string>
 
-  <string><id>14000</id><value>Stapeln: Aus</value></string>
-  <string><id>14001</id><value>Stapeln: An</value></string>
-  <string><id>14002</id><value>Stapeln: Fuzzy</value></string>
+  <string><id>14000</id><value>Videos Stapeln</value></string>
   <string><id>14003</id><value>Playlist wird heruntergeladen...</value></string>
   <string><id>14004</id><value>Liste mit Streams wird heruntergeladen...</value></string>
   <string><id>14005</id><value>Liste mit Streams wird verarbeitet...</value></string>
@@ -1105,10 +1102,10 @@
   <string><id>14056</id><value>Stop</value></string>
   <string><id>14057</id><value>Nicht möglich während des Durchsuchens</value></string>
   <string><id>14058</id><value>Filmkörnungseffekt</value></string>
-  <string><id>14059</id><value>Thumbnails von Netzwerk-Freigaben speichern</value></string>
+  <string><id>14059</id><value>Thumbnails von Netzwerk-Freigaben zwischenspeichern</value></string>
   <string><id>14060</id><value>Unbekannter Typ - Internet</value></string>
   <string><id>14061</id><value>Automatisch</value></string>
-  <string><id>14062</id><value>Bitte Benutzernamen für</value></string>
+  <string><id>14062</id><value>Bitte Benutzernamen eingeben für</value></string>
   <string><id>14063</id><value>Datum &amp; Uhrzeit</value></string>
   <string><id>14064</id><value>Datum ändern</value></string>
   <string><id>14065</id><value>Uhrzeit ändern</value></string>
@@ -1161,8 +1158,8 @@
   <string><id>15037</id><value>XBMC konnte das XLink-Kai Netzwerk nicht erreichen!</value></string>
   <string><id>15038</id><value>Sie könnten Probleme haben über XLink-Kai zu spielen.</value></string>
   <string><id>15039</id><value>XBMC konnte das Spiel nicht automatisch finden.</value></string>
-  <string><id>15040</id><value>Bitte legen Sie die DVD in die XBOX ein oder drücken Sie</value></string>
-  <string><id>15041</id><value>Abbruch und das Spiel manuell zu starten.</value></string>
+  <string><id>15040</id><value>Bitte legen Sie die DVD in die XBOX ein oder wählen Sie</value></string>
+  <string><id>15041</id><value>'Abbruch' um das Spiel manuell zu starten.</value></string>
   <string><id>15042</id><value>Zugriff verweigert</value></string>
   <string><id>15043</id><value>%s ist dem Chat beigetreten.</value></string>
   <string><id>15044</id><value>%s hat den Chat verlassen.</value></string>
@@ -1213,7 +1210,7 @@
   <string><id>15211</id><value>Übermittlung...</value></string>
   <string><id>15212</id><value>Übermittlung in %i sek</value></string>
   <string><id>15213</id><value>Abspielen mit...</value></string>
-  <string><id>15214</id><value>Weiche A/V-Synchronisation verwenden</value></string>
+  <string><id>15214</id><value>Weiche Audio/Video-Synchronisation verwenden</value></string>
   <string><id>15215</id><value>Keine Dateinamen in der Symbolansicht anzeigen</value></string>
 
   <string><id>15250</id><value>Last.fm Radio an Last.fm übermitteln</value></string>
@@ -1247,14 +1244,14 @@
   <string><id>15278</id><value>Last.fm Radio mit den Lieblingstiteln von %name% anhören</value></string>
   <string><id>15279</id><value>Liste von Last.fm wird übertragen...</value></string>
   <string><id>15280</id><value>Liste kann nicht von Last.fm übertragen werden...</value></string>
-  <string><id>15281</id><value>Bitte geben Sie einen Interpreten ein, um ähnliche zu finden</value></string>
-  <string><id>15282</id><value>Bitte geben Sie einen Tagnamen ein, um ähnliche zu finden</value></string>
+  <string><id>15281</id><value>Bitte geben Sie einen zu suchenden Interpreten ein</value></string>
+  <string><id>15282</id><value>Bitte geben Sie einen zu suchenden Tagnamen ein</value></string>
   <string><id>15283</id><value>Kürzlich gehörte Titel von %name%</value></string>
    
-  <string><id>15300</id><value>Der Pfad wurde nicht gefunden oder ist ungültig</value></string>
-  <string><id>15301</id><value>Keine Verbindung zum Netzwerkserver</value></string>
-  <string><id>15302</id><value>Es wurden keine Server gefunden</value></string>
-  <string><id>15303</id><value>Es konnten keine Arbeitsgruppen gefunden werden</value></string>
+  <string><id>15300</id><value>Der Pfad wurde nicht gefunden oder ist ungültig.</value></string>
+  <string><id>15301</id><value>Keine Verbindung zum Netzwerkserver.</value></string>
+  <string><id>15302</id><value>Es wurden keine Server gefunden.</value></string>
+  <string><id>15303</id><value>Es konnten keine Arbeitsgruppen gefunden werden.</value></string>
 
   <string><id>15310</id><value>Multi-Pfad-Freigabe wird geöffnet...</value></string>
   <string><id>15311</id><value>Pfad:</value></string>
