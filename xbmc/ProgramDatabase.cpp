@@ -78,7 +78,7 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
         dialog->SetLine(0, "");
         dialog->SetLine(1, "");
         dialog->SetLine(2, "");
-        dialog->StartModal(m_gWindowManager.GetActiveWindow());
+        dialog->StartModal();
         dialog->SetLine(1, "Adding table entries");
         dialog->Progress();
       }
@@ -116,7 +116,7 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
         dialog->SetLine(0, "");
         dialog->SetLine(1, "Adding table entries");
         dialog->SetLine(2, "");;
-        dialog->StartModal(m_gWindowManager.GetActiveWindow());
+        dialog->StartModal();
         dialog->Progress();
       }
       BeginTransaction();

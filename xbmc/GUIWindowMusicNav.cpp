@@ -427,7 +427,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
-  pMenu->DoModal(GetID());
+  pMenu->DoModal();
 
   int btn = pMenu->GetButton();
   if (btn > 0)

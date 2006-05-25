@@ -9,8 +9,6 @@
 CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
     : CGUIWindow(dwID, xmlFile)
 {
-  m_dwParentWindowID = 0;
-  m_pParentWindow = NULL;
   m_bModal = true;
   m_bRunning = false;
   m_dialogClosing = false;
@@ -84,7 +82,6 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
           m_gWindowManager.RemoveModeless( GetID() );
         }
 
-        m_pParentWindow = NULL;
         m_bRunning = false;
         m_dialogClosing = false;
       }
@@ -128,21 +125,12 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
   OnMessage(msg);
 }
 
-void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
+void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */)
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
   CSingleLock lock(g_graphicsContext);
 
-  m_dwParentWindowID = dwParentId;
-  m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
-
-  if (!m_pParentWindow)
-  {
-    m_dwParentWindowID = 0;
-    return ;
-  }
-  
   m_dialogClosing = false;
   m_bModal = true;
   // set running before it's added to the window manager, else the auto-show code
@@ -168,22 +156,13 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
   }
 }
 
-void CGUIDialog::Show(DWORD dwParentId)
+void CGUIDialog::Show()
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
   CSingleLock lock(g_graphicsContext);
 
   if (m_bRunning && !m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
-
-  m_dwParentWindowID = dwParentId;
-  m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
-
-  if (!m_pParentWindow)
-  {
-    m_dwParentWindowID = 0;
-    return ;
-  }
 
   m_bModal = false;
   

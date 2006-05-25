@@ -93,7 +93,7 @@ int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
   }
   return m_iNumButtons;
 }
-void CGUIDialogContextMenu::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
+void CGUIDialogContextMenu::DoModal(int iWindowID /*= WINDOW_INVALID */)
 {
   // update the navigation of the first and last buttons
   CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE + 1);
@@ -108,8 +108,9 @@ void CGUIDialogContextMenu::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_I
   // check the default control has focus...
   while (m_dwDefaultFocusControlID <= (DWORD)(BUTTON_TEMPLATE + m_iNumButtons) && !(GetControl(m_dwDefaultFocusControlID)->CanFocus()))
     m_dwDefaultFocusControlID++;
-  CGUIDialog::DoModal(dwParentId);
+  CGUIDialog::DoModal();
 }
+
 int CGUIDialogContextMenu::GetButton()
 {
   return m_iClickedButton;
@@ -252,7 +253,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 
     // set the correct position
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
-    pMenu->DoModal(m_gWindowManager.GetActiveWindow());
+    pMenu->DoModal();
     
     int btn = pMenu->GetButton();
     if (btn > 0)
@@ -350,7 +351,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 
             // set the correct position
             pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
-            pMenu->DoModal(m_gWindowManager.GetActiveWindow());
+            pMenu->DoModal();
 
             itoa(pMenu->GetButton(), strLockMode, 10);
             switch (pMenu->GetButton())

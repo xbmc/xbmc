@@ -235,7 +235,7 @@ bool CIMDB::LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails)
   pDlgProgress->SetLine(0, "");
   pDlgProgress->SetLine(1, movieDetails.m_strTitle);
   pDlgProgress->SetLine(2, "");
-  pDlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+  pDlgProgress->StartModal();
   pDlgProgress->Progress();
   CIMDBUrl url;
   url.m_strTitle = movieDetails.m_strTitle;

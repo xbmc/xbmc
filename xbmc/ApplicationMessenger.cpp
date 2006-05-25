@@ -318,7 +318,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         CGUIDialog* pDialog = (CGUIDialog*)m_gWindowManager.GetWindow(pMsg->dwParam1);
         if (!pDialog) return ;
-        pDialog->DoModal(pMsg->dwParam2);
+        pDialog->DoModal();
       }
       break;
 

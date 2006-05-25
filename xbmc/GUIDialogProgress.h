@@ -9,7 +9,7 @@ public:
   CGUIDialogProgress(void);
   virtual ~CGUIDialogProgress(void);
 
-  void StartModal(DWORD dwParentId);
+  void StartModal();
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   void Progress();

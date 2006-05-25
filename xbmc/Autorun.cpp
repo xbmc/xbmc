@@ -78,7 +78,7 @@ void CAutorun::ExecuteXBE(const CStdString &xbeFile)
         pDialog->SetLine(0,"Use trainer or KAI?");
         pDialog->SetLine(1, "Yes for trainer");
         pDialog->SetLine(2, "No for KAI");
-        pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+        pDialog->DoModal();
         if (pDialog->IsConfirmed())
         {
           while (CKaiClient::GetInstance()->GetCurrentVector().size() > 1)
