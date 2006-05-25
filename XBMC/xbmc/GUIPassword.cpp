@@ -308,7 +308,7 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
       CStdString strLabel,strLabel1;
       strLabel1 = g_localizeStrings.Get(12343);
       int iLeft = g_application.m_iMasterLockRetriesRemaining-i;
-      strLabel.Format("%i %s %s",iLeft,strLabel1.c_str(), "before shutdown!");
+      strLabel.Format("%i %s",iLeft,strLabel1.c_str());
       
       // PopUp OK and Display: MasterLock mode has changed but no no Mastercode has been set!
       CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
