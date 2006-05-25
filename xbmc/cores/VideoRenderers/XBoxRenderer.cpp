@@ -238,9 +238,13 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   }
 
   // scale to fit screen
-  float EnlargeFactor = 1.0f; //g_guiSettings.GetInt("Subtitles.EnlargePercentage") / 100.0f;
-
   const RECT& rv = g_graphicsContext.GetViewWindow();
+
+  // Vobsubs are defined to be 720 wide.
+  // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
+  //       as it'll want to render within the pixel width it is outputting.
+  float EnlargeFactor = (float)g_settings.m_ResInfo[res].iWidth / 720.0f; //g_guiSettings.GetInt("Subtitles.EnlargePercentage") / 100.0f;
+
   float xscale = EnlargeFactor * (float)(rv.right - rv.left) / (float)((g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left)) * ((float)m_iNormalDestWidth / (float)m_iOSDTextureWidth);
   float yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio;
   osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w * xscale) / 2.0f;
