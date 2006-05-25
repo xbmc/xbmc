@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 25-05-2006 updated: German language file
  - 24-05-2006 fixed: folder.jpg didn't work in Programs or Scripts.
  - 24-05-2006 fixed: [ 1492671 ] .mov no sound with mplayer, CVS now
  - 23-05-2006 added: localization of temperature and speed unit via langinfo.xml
