@@ -348,7 +348,7 @@ void CGUIWindowSettingsScreenCalibration::Render()
   if (m_iControl == CONTROL_OSD)
   {
     CGUIDialog *pOSD = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
-    if (pOSD) pOSD->Show(GetID());
+    if (pOSD) pOSD->Show();
   }
   CGUIWindow::Render();
 

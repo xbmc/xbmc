@@ -531,7 +531,7 @@ bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& item
     m_dlgProgress->SetLine(0, "");
     m_dlgProgress->SetLine(1, "");
     m_dlgProgress->SetLine(2, strStrippedPath );
-    m_dlgProgress->StartModal(GetID());
+    m_dlgProgress->StartModal();
   }
 
   OnRetrieveVideoInfo(items);

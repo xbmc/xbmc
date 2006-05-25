@@ -39,7 +39,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
         dlgProgress->SetLine(0, 15311);
         dlgProgress->SetLine(1, "");
         dlgProgress->SetLine(2, "");
-        dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+        dlgProgress->StartModal();
         dlgProgress->ShowProgressBar(true);
         dlgProgress->SetProgressMax((int)share.vecPaths.size()*2);
         dlgProgress->Progress();

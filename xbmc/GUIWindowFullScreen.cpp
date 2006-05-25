@@ -201,7 +201,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SHOW_OSD:  // Show the OSD
     {
       CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
-      if (pOSD) pOSD->DoModal(m_gWindowManager.GetActiveWindow());
+      if (pOSD) pOSD->DoModal();
       return true;
     }
     break;

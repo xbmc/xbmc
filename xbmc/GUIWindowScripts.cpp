@@ -136,7 +136,7 @@ bool CGUIWindowScripts::OnPlayMedia(int iItem)
 void CGUIWindowScripts::OnInfo()
 {
   CGUIWindowScriptsInfo* pDlgInfo = (CGUIWindowScriptsInfo*)m_gWindowManager.GetWindow(WINDOW_SCRIPTS_INFO);
-  if (pDlgInfo) pDlgInfo->DoModal(GetID());
+  if (pDlgInfo) pDlgInfo->DoModal();
 }
 
 void CGUIWindowScripts::Render()

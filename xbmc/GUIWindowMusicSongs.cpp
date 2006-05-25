@@ -324,7 +324,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
         m_dlgProgress->SetLine(0, 505);
         m_dlgProgress->SetLine(1, "");
         m_dlgProgress->SetLine(2, strStrippedPath );
-        m_dlgProgress->StartModal(GetID());
+        m_dlgProgress->StartModal();
         m_dlgProgress->ShowProgressBar(true);
         bProgressVisible = true;
       }

@@ -186,7 +186,7 @@ namespace PYXBMC
 		for (int i = 1; i < 4; i++)
 			pDialog->SetLine(i,utf8Line[i]);
 
-		pDialog->StartModal(m_gWindowManager.GetActiveWindow());
+		pDialog->StartModal();
 		g_graphicsContext.Unlock();
 
 		Py_INCREF(Py_None);

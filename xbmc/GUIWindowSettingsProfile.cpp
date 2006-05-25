@@ -59,7 +59,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
-  pMenu->DoModal(GetID());
+  pMenu->DoModal();
   switch (pMenu->GetButton())
   {
   case 1:  // Overwrite
@@ -104,7 +104,7 @@ void CGUIWindowSettingsProfile::DoDelete(int iItem)
         dlgYesNo->SetLine(0, message);
         dlgYesNo->SetLine(1, "");
         dlgYesNo->SetLine(2, "");
-        dlgYesNo->DoModal(GetID());
+        dlgYesNo->DoModal();
 
         if (dlgYesNo->IsConfirmed())
         {
@@ -129,7 +129,7 @@ void CGUIWindowSettingsProfile::DoOverwrite(int iItem)
     dlgYesNo->SetLine(0, message);
     dlgYesNo->SetLine(1, "");
     dlgYesNo->SetLine(2, "");
-    dlgYesNo->DoModal(GetID());
+    dlgYesNo->DoModal();
 
     if (dlgYesNo->IsConfirmed())
     {
@@ -234,7 +234,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             dlgOK->SetLine(0, message);
             dlgOK->SetLine(1, "");
             dlgOK->SetLine(2, "");
-            dlgOK->DoModal(GetID());
+            dlgOK->DoModal();
           }
           return true;
         }

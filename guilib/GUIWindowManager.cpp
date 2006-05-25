@@ -289,7 +289,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   else if (pNewWindow->IsDialog())
   { // if we have a dialog, we do a DoModal() rather than activate the window
     if (!((CGUIDialog *)pNewWindow)->IsRunning())
-      ((CGUIDialog *)pNewWindow)->DoModal(GetActiveWindow(), iWindowID);
+      ((CGUIDialog *)pNewWindow)->DoModal(iWindowID);
     return;
   }
 
@@ -396,7 +396,7 @@ void CGUIWindowManager::UpdateModelessVisibility()
     if (pWindow && pWindow->IsDialog() && pWindow->GetVisibleCondition())
     {
       if (g_infoManager.GetBool(pWindow->GetVisibleCondition(), GetActiveWindow()))
-        ((CGUIDialog *)pWindow)->Show(GetActiveWindow());
+        ((CGUIDialog *)pWindow)->Show();
       else
         ((CGUIDialog *)pWindow)->Close();
     }
