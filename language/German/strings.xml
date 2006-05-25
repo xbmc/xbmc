@@ -834,8 +834,8 @@
   <string><id>12373</id><value>Einstellungen/Dateien</value></string>
   <string><id>12374</id><value>Medien sperren</value></string>
   <string><id>12375</id><value>Master-User-Modus</value></string>
-  <string><id>12376</id><value>Als Standard für alle Filme setzen</value></string>
-  <string><id>12377</id><value>Dieser Vorgang wird alle vorherigen Werte zurücksetzen.</value></string>
+  <string><id>12376</id><value>Einstellungen als Standard für alle Filme setzen</value></string>
+  <string><id>12377</id><value>Alle vorherigen Werte werden damit überschrieben.</value></string>
   <string><id>12378</id><value>Anzeigedauer eines Bildes</value></string>
   <string><id>12379</id><value>Schwenk- und Zoom-Effekte verwenden</value></string>
   <string><id>12380</id><value>NTSC-Videos nach PAL</value></string>
@@ -975,7 +975,7 @@
   <string><id>13332</id><value>Nach oben</value></string>
   <string><id>13333</id><value>Nach unten</value></string>
   <string><id>13334</id><value>Beschriftung ändern</value></string>
-  <string><id>13335</id><value>Als Standard setzen</value></string>
+  <string><id>13335</id><value>Einstellungen als Standard setzen</value></string>
   <string><id>13336</id><value>Schaltfläche entfernen</value></string>
   <string><id>13337</id><value>- Stereo PCM durchreichen</value></string>
   <string><id>13338</id><value>Front-LED</value></string>
