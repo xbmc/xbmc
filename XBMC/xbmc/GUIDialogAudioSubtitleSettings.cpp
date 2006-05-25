@@ -274,6 +274,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
         CUtil::GetExtension(strPath,strExt);
         if (CFile::Cache(strPath,"z:\\subtitle.browsed"+strExt))
         {
+          g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
+          g_application.m_pPlayer->SetSubtitleVisible(true);
           g_application.m_pPlayer->AddSubtitle("z:\\subtitle.browsed"+strExt);
           g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
         }
