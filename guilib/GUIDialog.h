@@ -21,8 +21,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
 
-  void DoModal(DWORD dwParentId, int iWindowID = WINDOW_INVALID); // modal
-  void Show(DWORD dwParentId); // modeless
+  void DoModal(int iWindowID = WINDOW_INVALID); // modal
+  void Show(); // modeless
 
   virtual void Close(bool forceClose = false);
   virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
@@ -32,8 +32,6 @@ public:
 protected:
   virtual bool RenderAnimation(DWORD time);
 
-  DWORD m_dwParentWindowID;
-  CGUIWindow* m_pParentWindow;
   bool m_bRunning;
   bool m_bModal;
   bool m_dialogClosing;

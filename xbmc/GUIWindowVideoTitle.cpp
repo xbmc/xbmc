@@ -94,7 +94,7 @@ void CGUIWindowVideoTitle::OnDeleteItem(int iItem)
   pDialog->SetLine(0, 433);
   pDialog->SetLine(1, 434);
   pDialog->SetLine(2, "");;
-  pDialog->DoModal(GetID());
+  pDialog->DoModal();
   if (!pDialog->IsConfirmed()) return;
 
   CStdString path;

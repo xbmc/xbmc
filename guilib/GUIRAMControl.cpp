@@ -307,7 +307,7 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
     if (dlg)
     {
       dlg->SetNumberOfFiles(movies.size());
-      dlg->DoModal(m_dwParentID);
+      dlg->DoModal();
       iSelectedFile = dlg->GetSelectedFile();
       if (iSelectedFile < 1)
       {

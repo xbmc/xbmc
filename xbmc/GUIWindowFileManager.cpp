@@ -1161,7 +1161,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     pMenu->EnableButton(btn_Size, item >=0 && m_vecItems[list][item]->m_bIsFolder && !m_vecItems[list][item]->IsParentFolder());
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
-    pMenu->DoModal(GetID());
+    pMenu->DoModal();
     int btnid = pMenu->GetButton();
     if (btnid == btn_SelectAll)
     {
@@ -1187,7 +1187,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
         progress->SetHeading(13394);
         for (int i=0; i < 3; i++)
           progress->SetLine(i, "");
-        progress->StartModal(GetID());
+        progress->StartModal();
       }
 
       //  Calculate folder size for each selected item
@@ -1275,7 +1275,7 @@ bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
     pDialog->SetLine(0, 125);
     pDialog->SetLine(1, CUtil::GetFileName(pItem->m_strPath));
     pDialog->SetLine(2, "");
-    pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+    pDialog->DoModal();
     if (!pDialog->IsConfirmed()) return false;
   }
 
@@ -1408,7 +1408,7 @@ void CGUIWindowFileManager::ResetProgressBar(bool showProgress /*= true */)
     m_dlgProgress->SetLine(0, 0);
     m_dlgProgress->SetLine(1, 0);
     m_dlgProgress->SetLine(2, 0);
-    m_dlgProgress->StartModal(GetID());
+    m_dlgProgress->StartModal();
     m_dlgProgress->SetPercentage(0);
     m_dlgProgress->ShowProgressBar(showProgress);
   }

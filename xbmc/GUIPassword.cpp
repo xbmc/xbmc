@@ -317,7 +317,7 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
       dlg->SetLine( 0, g_localizeStrings.Get(12367) );
       dlg->SetLine( 1, g_localizeStrings.Get(12368) );
       dlg->SetLine( 2, strLabel);
-      dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+      dlg->DoModal();
     }
     else i=g_application.m_iMasterLockRetriesRemaining;
   }
@@ -486,7 +486,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
       dialog->SetLine(0, 12345);
       dialog->SetLine(1, dlgLine1);
       dialog->SetLine(2, 0);
-      dialog->DoModal(m_gWindowManager.GetActiveWindow());
+      dialog->DoModal();
     }
   }
   else g_application.m_iMasterLockRetriesRemaining = g_passwordManager.iMasterLockMaxRetry; // user entered correct mastercode, reset retries to max allowed
@@ -684,7 +684,7 @@ bool CGUIPassword::CheckMasterLock(bool bDisalogYesNo)
         dlg->SetLine( 0, g_localizeStrings.Get(12366));
         dlg->SetLine( 1, strMasterLockCode.c_str());
         dlg->SetLine( 2, "");
-        dlg->DoModal( m_gWindowManager.GetActiveWindow());
+        dlg->DoModal();
       }
       // MasterUser is should be True, save the settings now
       if(!bResetSettings)

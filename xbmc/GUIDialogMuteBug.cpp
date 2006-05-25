@@ -35,7 +35,7 @@ bool CGUIDialogMuteBug::OnMessage(CGUIMessage& message)
     {
       // this is handled in g_application
       // non-active modeless window can not get messages
-      //Show(m_gWindowManager.GetActiveWindow());
+      //Show();
       return true;
     }
     break;

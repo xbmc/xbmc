@@ -2441,7 +2441,7 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
   pDlgProgress->SetLine(1, 318);
   pDlgProgress->SetLine(2, 330);
   pDlgProgress->SetPercentage(0);
-  pDlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+  pDlgProgress->StartModal();
   pDlgProgress->ShowProgressBar(true);
 
   if (!CleanupSongs())
@@ -2565,7 +2565,7 @@ void CMusicDatabase::DeleteAlbumInfo()
       CMusicDatabase::CAlbumCache& album = vecAlbums[i];
       pDlg->Add(album.strAlbum + " - " + album.strArtist);
     }
-    pDlg->DoModal(m_gWindowManager.GetActiveWindow());
+    pDlg->DoModal();
 
     // and wait till user selects one
     int iSelectedAlbum = pDlg->GetSelectedLabel();
@@ -2625,7 +2625,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     pDialogProgress->SetLine(1, 256);
     pDialogProgress->SetLine(2, "");
     pDialogProgress->ShowProgressBar(false);
-    pDialogProgress->StartModal(m_gWindowManager.GetActiveWindow());
+    pDialogProgress->StartModal();
     while (pDialogProgress->IsAnimating(ANIM_TYPE_WINDOW_OPEN))
       pDialogProgress->Progress();
 
@@ -2655,7 +2655,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
           pDlgSelect->Add(strTitle);
           i++;
         }
-        pDlgSelect->DoModal(m_gWindowManager.GetActiveWindow());
+        pDlgSelect->DoModal();
 
         // Has the user selected a match...
         int iSelectedCD = pDlgSelect->GetSelectedLabel();
@@ -2690,7 +2690,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
           pDialogOK->SetLine(0, 257); //ERROR
           pDialogOK->SetLine(1, strErrorText.c_str() );
           pDialogOK->SetLine(2, "");
-          pDialogOK->DoModal(m_gWindowManager.GetActiveWindow() );
+          pDialogOK->DoModal();
         }
       }
     } // if ( !cddb.queryCDinfo( pCdInfo ) )
@@ -2756,7 +2756,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     while (FindNextFile(hFind, &wfd));
 
     pDlg->Sort();
-    pDlg->DoModal(m_gWindowManager.GetActiveWindow());
+    pDlg->DoModal();
 
     // and wait till user selects one
     int iSelectedAlbum = pDlg->GetSelectedLabel();
@@ -3288,7 +3288,7 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
         dialog->SetLine(0, "");
         dialog->SetLine(1, "");
         dialog->SetLine(2, "");
-        dialog->StartModal(m_gWindowManager.GetActiveWindow());
+        dialog->StartModal();
         dialog->SetLine(1, "Creating newly formatted tables");
         dialog->Progress();
       }
@@ -3437,7 +3437,7 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
         dialog->SetLine(0, "");
         dialog->SetLine(1, "");
         dialog->SetLine(2, "This may take a couple of minutes...");
-        dialog->StartModal(m_gWindowManager.GetActiveWindow());
+        dialog->StartModal();
 
         //  Let the progress dialog fade in, hopefully ;)
         DWORD dwTicks=GetTickCount();

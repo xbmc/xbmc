@@ -39,6 +39,6 @@ void CGUIDialogOK::ShowAndGetInput(int heading, int line0, int line1, int line2)
   dialog->SetLine( 0, line0 );
   dialog->SetLine( 1, line1 );
   dialog->SetLine( 2, line2 );
-  dialog->DoModal(m_gWindowManager.GetActiveWindow());
+  dialog->DoModal();
   return ;
 }

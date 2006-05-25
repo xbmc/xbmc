@@ -238,7 +238,7 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, in
 
   // Display menu
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
-  pMenu->DoModal(m_gWindowManager.GetActiveWindow());
+  pMenu->DoModal();
 
   //Check what player we selected
   int btnid = pMenu->GetButton();
