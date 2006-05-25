@@ -146,7 +146,7 @@ bool CGUIDialogTrainerSettings::ShowForTitle(unsigned int iTitleId, CProgramData
   if (!dialog) return false;
   dialog->m_iTitleId = iTitleId;
   dialog->m_database = database;
-  dialog->DoModal(m_gWindowManager.GetActiveWindow());
+  dialog->DoModal();
   if (database->GetActiveTrainer(iTitleId) != strTrainer)
     return true;
 

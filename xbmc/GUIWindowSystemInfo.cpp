@@ -135,7 +135,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       pDlgProgress.SetLine(2, "Please Wait");
       pDlgProgress.SetPercentage(0);
       pDlgProgress.Progress();
-      pDlgProgress.StartModal(GetID());
+      pDlgProgress.StartModal();
       pDlgProgress.ShowProgressBar(true);
 
       // Get Values from EEPROM 
@@ -177,7 +177,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.SetLine(2, "Please Wait");
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
-        pDlgProgress.StartModal(GetID());
+        pDlgProgress.StartModal();
         pDlgProgress.ShowProgressBar(true);
 
         //Label 2-6; HDD Values
@@ -220,7 +220,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.SetLine(2, "Please Wait");
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
-        pDlgProgress.StartModal(GetID());
+        pDlgProgress.StartModal();
         pDlgProgress.ShowProgressBar(true);
 
         //Label 2-3: DVD-ROM Values
@@ -263,7 +263,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.SetLine(2, "Please Wait");
         pDlgProgress.SetPercentage(40);
         pDlgProgress.Progress();
-        pDlgProgress.StartModal(GetID());
+        pDlgProgress.StartModal();
         pDlgProgress.ShowProgressBar(true);
 
         pDlgProgress.SetLine(1, "Detecting Network");
@@ -337,7 +337,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.SetLine(2, "Please Wait");
         pDlgProgress.SetPercentage(0);
         pDlgProgress.Progress();
-        pDlgProgress.StartModal(GetID());
+        pDlgProgress.StartModal();
         pDlgProgress.ShowProgressBar(true);
 
         // Label 2: XBOX Version

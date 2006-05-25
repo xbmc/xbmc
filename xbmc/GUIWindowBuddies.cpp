@@ -413,7 +413,7 @@ void CGUIWindowBuddies::OnClickInviteButton(CGUIMessage& aMessage)
   {
     CGUIDialogInvite & dialog = *((CGUIDialogInvite*)m_gWindowManager.GetWindow(WINDOW_DIALOG_INVITE));
     dialog.SetGames(&m_games);
-    dialog.DoModal(GetID());
+    dialog.DoModal();
     dialog.Close();
 
     if (dialog.IsConfirmed())
@@ -470,7 +470,7 @@ void CGUIWindowBuddies::OnClickHostButton(CGUIMessage& aMessage)
 {
   CGUIDialogHost& dialog = *((CGUIDialogHost*)m_gWindowManager.GetWindow(WINDOW_DIALOG_HOST));
 
-  dialog.DoModal(GetID());
+  dialog.DoModal();
   dialog.Close();
 
   if (dialog.IsOK())
@@ -547,7 +547,7 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
         pDialog->SetLine(1, strFrom);
         pDialog->SetLine(2, g_localizeStrings.Get(15059)); // Invite accepted!
 
-        pDialog->DoModal(GetID());
+        pDialog->DoModal();
       }
       else
       {
@@ -586,7 +586,7 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
 
         pDialog->SetLine(2, strMsg);
 
-        pDialog->DoModal(GetID());
+        pDialog->DoModal();
 
         if (pDialog->IsConfirmed())
         {
@@ -1612,7 +1612,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 
     // process the dialog
     if (!dialog.IsRunning())
-      dialog.StartModal(GetID());
+      dialog.StartModal();
     dialog.Progress();
     if (dialog.IsCanceled())
       break;

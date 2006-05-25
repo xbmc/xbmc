@@ -456,7 +456,7 @@ bool CGUIDialogNumeric::ShowAndGetTime(SYSTEMTIME &time, const CStdString &headi
   if (!pDialog) return false;
   pDialog->SetMode(INPUT_TIME, (void *)&time);
   pDialog->SetHeading(heading);
-  pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+  pDialog->DoModal();
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
     return false;
   pDialog->GetOutput(&time);
@@ -469,7 +469,7 @@ bool CGUIDialogNumeric::ShowAndGetDate(SYSTEMTIME &date, const CStdString &headi
   if (!pDialog) return false;
   pDialog->SetMode(INPUT_DATE, (void *)&date);
   pDialog->SetHeading(heading);
-  pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+  pDialog->DoModal();
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
     return false;
   pDialog->GetOutput(&date);
@@ -482,7 +482,7 @@ bool CGUIDialogNumeric::ShowAndGetIPAddress(CStdString &IPAddress, const CStdStr
   if (!pDialog || !IPAddress) return false;
   pDialog->SetMode(INPUT_IP_ADDRESS, (void *)&IPAddress);
   pDialog->SetHeading(heading);
-  pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+  pDialog->DoModal();
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
     return false;
   pDialog->GetOutput(&IPAddress);
@@ -496,7 +496,7 @@ bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString 
   pDialog->SetHeading( strHeading );
 
   pDialog->SetMode(INPUT_NUMBER, (void *)&strInput);
-  pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+  pDialog->DoModal();
 
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
     return false;
@@ -571,7 +571,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   if (!bVerifyInput)
     strInput = strToVerify;
   pDialog->SetMode(INPUT_PASSWORD, (void *)&strInput);
-  pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+  pDialog->DoModal();
 
   pDialog->GetOutput(&strInput);
 

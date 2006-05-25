@@ -65,7 +65,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
   dialog->Initialize();
   dialog->SetPathAndName("", "");
   dialog->SetTypeOfMedia(type);
-  dialog->DoModal(m_gWindowManager.GetActiveWindow());
+  dialog->DoModal();
   if (dialog->IsConfirmed())
   { // yay, add this share
     g_settings.AddBookmark(type, dialog->m_name, dialog->m_path);
@@ -81,7 +81,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
   dialog->Initialize();
   dialog->SetPathAndName(path, name);
   dialog->SetTypeOfMedia(type, true);
-  dialog->DoModal(m_gWindowManager.GetActiveWindow());
+  dialog->DoModal();
   if (dialog->IsConfirmed())
   { // yay, add this share
     g_settings.UpdateBookmark(type, name, "path", dialog->m_path);

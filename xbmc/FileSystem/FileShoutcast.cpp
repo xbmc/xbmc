@@ -203,7 +203,7 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
     dlgProgress->SetLine(1, strUrl);
     dlgProgress->SetLine(2, "");
     if (!dlgProgress->IsRunning())
-      dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+      dlgProgress->StartModal();
     dlgProgress->Progress();
   }
 

@@ -412,7 +412,7 @@ void CFileZip::StartProgressBar()
 {
   if (!m_dlgProgress)
     m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  m_dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+  m_dlgProgress->StartModal();
   m_dlgProgress->SetPercentage(0);
   m_dlgProgress->SetHeading(773);
   m_dlgProgress->SetLine(0,"");

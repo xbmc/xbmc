@@ -412,7 +412,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const CS
   browser->m_vecItems.Clear();
   browser->m_vecItems.Append(items);
   browser->SetHeading(heading);
-  browser->DoModal(m_gWindowManager.GetActiveWindow());
+  browser->DoModal();
   if (browser->IsConfirmed())
   {
     result = browser->m_selectedPath;
@@ -475,7 +475,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &
   browser->m_rootDir.SetMask(strMask);
   browser->m_selectedPath = path;
   browser->m_addNetworkShareEnabled = false;
-  browser->DoModal(m_gWindowManager.GetActiveWindow());
+  browser->DoModal();
   if (browser->IsConfirmed())
   {
     path = browser->m_selectedPath;
@@ -528,7 +528,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
   browser->m_browsingForFolders = true;
   browser->m_addNetworkShareEnabled = allowNetworkShares;
   browser->m_selectedPath = "";
-  browser->DoModal(m_gWindowManager.GetActiveWindow());
+  browser->DoModal();
   if (browser->IsConfirmed())
   {
     path = browser->m_selectedPath;
@@ -573,7 +573,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
   m_browsingForFolders = true;
   m_addNetworkShareEnabled = true;
   m_selectedPath = "";
-  DoModal(m_gWindowManager.GetActiveWindow());
+  DoModal();
 }
 
 bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
@@ -596,7 +596,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   int btn_Remove = pMenu->AddButton(522);
 
   pMenu->SetPosition(iPosX, iPosY);
-  pMenu->DoModal(GetID());
+  pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
   if (btnid == btn_Edit)
@@ -621,7 +621,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
       m_browsingForFolders = true;
       m_addNetworkShareEnabled = true;
       m_selectedPath = newPath;
-      DoModal(m_gWindowManager.GetActiveWindow());    
+      DoModal();    
     }
   }
   if (btnid == btn_Remove)

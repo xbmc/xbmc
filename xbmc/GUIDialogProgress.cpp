@@ -19,17 +19,10 @@ CGUIDialogProgress::~CGUIDialogProgress(void)
 
 }
 
-void CGUIDialogProgress::StartModal(DWORD dwParentId)
+void CGUIDialogProgress::StartModal()
 {
   CLog::DebugLog("DialogProgress::StartModal called %s", m_bRunning ? "(already running)!" : "");
   m_bCanceled = false;
-  m_dwParentWindowID = dwParentId;
-  m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
-  if (!m_pParentWindow)
-  {
-    m_dwParentWindowID = 0;
-    return ;
-  }
 
   // set running before it's routed, else the auto-show code
   // could show it as well if we are in a different thread from
