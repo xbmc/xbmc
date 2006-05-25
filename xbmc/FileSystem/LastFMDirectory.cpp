@@ -363,6 +363,7 @@ bool CLastFMDirectory::SearchSimilarArtists(CFileItemList &items)
   CUtil::URLEncode(m_encodedobjname);
   CUtil::UrlDecode(m_objname);
 
+  AddEntry(15267, "lastfm://artist/%name%/similarartists", "", false, items);
   return ParseArtistList(BuildURLFromInfo(), items);
 }
 
@@ -382,7 +383,7 @@ bool CLastFMDirectory::SearchSimilarTags(CFileItemList &items)
 
 bool CLastFMDirectory::GetArtistInfo(CFileItemList &items)
 {
-  if (m_objname == "?" && m_objrequest == "similar")
+  if (m_objname == "*" && m_objrequest == "similar")
     return SearchSimilarArtists(items);
 
   if (m_objrequest == "similar")
@@ -456,7 +457,7 @@ bool CLastFMDirectory::GetUserInfo(CFileItemList &items)
 
 bool CLastFMDirectory::GetTagInfo(CFileItemList &items)
 {
-  if (m_objname == "?" && m_objrequest== "search")
+  if (m_objname == "*" && m_objrequest== "search")
     return SearchSimilarTags(items);
 
   if (m_objrequest == "topartists")
@@ -527,8 +528,8 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     m_Error = GetArtistInfo(items);
   else if (m_objtype == "")
   {
-    AddEntry(15253, "lastfm://xbmc/artist/?/similar/", "", true, items);
-    AddEntry(15254, "lastfm://xbmc/tag/?/search/", "", true, items);
+    AddEntry(15253, "lastfm://xbmc/artist/*/similar/", "", true, items);
+    AddEntry(15254, "lastfm://xbmc/tag/*/search/", "", true, items);
     AddEntry(15256, "lastfm://xbmc/tag/xbmc/toptags/", "", true, items);
     if (g_guiSettings.GetString("MyMusic.AudioScrobblerUserName") != "")
     {

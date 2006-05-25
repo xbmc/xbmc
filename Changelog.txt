@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-05-2006 fixed: last.fm directory was broken.
  - 25-05-2006 fixed: forgot to enable subtitles after user browsed for one.
  - 25-05-2006 fixed: Black button for MyVideo playlist was not mapped correctly
  - 25-05-2006 updated: German language file
