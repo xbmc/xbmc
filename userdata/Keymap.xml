@@ -592,7 +592,7 @@
   </MyVideoTitles>
 
 
-  <MyVideos>
+  <MyVideoFiles>
     <gamepad>
       <Y>Queue</Y>
       <black>Playlist</black>
@@ -610,7 +610,7 @@
       <space>Playlist</space>
       <q>Queue</q>
     </keyboard>
-  </MyVideos>
+  </MyVideoFiles>
 
 
   <MyVideoPlaylist>
