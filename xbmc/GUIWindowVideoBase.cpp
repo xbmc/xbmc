@@ -282,7 +282,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
     CIMDBMovie movieDetails;
     m_database.GetMovieInfo(item->m_strPath, movieDetails);
     pDlgInfo->SetMovie(movieDetails, item);
-    pDlgInfo->DoModal(GetID());
+    pDlgInfo->DoModal();
     item->SetThumbnailImage(pDlgInfo->GetThumbnail());
     if ( !pDlgInfo->NeedRefresh() ) return ;
 
@@ -333,7 +333,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
       pDlgProgress->SetLine(0, movieName);
       pDlgProgress->SetLine(1, "");
       pDlgProgress->SetLine(2, "");
-      pDlgProgress->StartModal(GetID());
+      pDlgProgress->StartModal();
       pDlgProgress->Progress();
 
       // 4b. do the websearch
@@ -350,7 +350,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
             pDlgSelect->Add(movielist[i].m_strTitle);
           pDlgSelect->EnableButton(true);
           pDlgSelect->SetButtonLabel(413); // manual
-          pDlgSelect->DoModal(GetID());
+          pDlgSelect->DoModal();
 
           // and wait till user selects one
           int iSelectedMovie = pDlgSelect->GetSelectedLabel();
@@ -384,7 +384,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
       pDlgProgress->SetLine(0, movieName);
       pDlgProgress->SetLine(1, url.m_strTitle);
       pDlgProgress->SetLine(2, "");
-      pDlgProgress->StartModal(GetID());
+      pDlgProgress->StartModal();
       pDlgProgress->Progress();
 
       // get the movie info
@@ -402,7 +402,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
           m_database.SetMovieInfo(item->m_strPath, movieDetails);
 
         pDlgInfo->SetMovie(movieDetails, item);
-        pDlgInfo->DoModal(GetID());
+        pDlgInfo->DoModal();
         item->SetThumbnailImage(pDlgInfo->GetThumbnail());
         needsRefresh = pDlgInfo->NeedRefresh();
       }
@@ -421,7 +421,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
           pDlgOK->SetLine(1, "");
           pDlgOK->SetLine(2, "");
           pDlgOK->SetLine(3, "");
-          pDlgOK->DoModal(GetID());
+          pDlgOK->DoModal();
         }
         return;
       }
@@ -506,7 +506,7 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
     pDlgOK->SetLine( 0, 429 );
     pDlgOK->SetLine( 1, movieDetails.m_strDVDLabel );
     pDlgOK->SetLine( 2, "" );
-    pDlgOK->DoModal( GetID() );
+    pDlgOK->DoModal();
     if (!pDlgOK->IsConfirmed())
     {
       break;
@@ -775,7 +775,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
-  pMenu->DoModal(GetID());
+  pMenu->DoModal();
   
   int btnid = pMenu->GetButton();
   if (btnid>0)
@@ -915,7 +915,7 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
       if (dlg)
       {
         dlg->SetNumberOfFiles(movies.size());
-        dlg->DoModal(GetID());
+        dlg->DoModal();
         selectedFile = dlg->GetSelectedFile();
         if (selectedFile < 1) return ;
       }

@@ -380,7 +380,7 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
     m_dlgProgress->SetLine(0, strSearch);
     m_dlgProgress->SetLine(1, "");
     m_dlgProgress->SetLine(2, "");
-    m_dlgProgress->StartModal(GetID());
+    m_dlgProgress->StartModal();
     m_dlgProgress->Progress();
   }
   CFileItemList items;
@@ -399,7 +399,7 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
       pDlgSelect->Add(pItem->GetLabel());
     }
 
-    pDlgSelect->DoModal(GetID());
+    pDlgSelect->DoModal();
 
     int iItem = pDlgSelect->GetSelectedLabel();
     if (iItem < 0)

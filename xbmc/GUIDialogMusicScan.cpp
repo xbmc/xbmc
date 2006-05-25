@@ -73,7 +73,7 @@ void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory, bool bUp
 {
   m_ScanState = PREPARING;
 
-  Show(m_gWindowManager.GetActiveWindow());
+  Show();
 
   // save settings
   g_application.SaveMusicScanSettings();

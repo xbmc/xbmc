@@ -245,7 +245,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           m_dlgProgress->SetLine(0, "");
           m_dlgProgress->SetLine(1, "");
           m_dlgProgress->SetLine(2, "");
-          m_dlgProgress->StartModal(GetID());
+          m_dlgProgress->StartModal();
           m_dlgProgress->Progress();
         }
 
@@ -447,7 +447,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
 
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
-    pMenu->DoModal(GetID());
+    pMenu->DoModal();
 
     int btnid = pMenu->GetButton();
     if (!btnid)
@@ -523,7 +523,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       btn_PAL60 = pMenu->AddButton(strPAL60);
       
       pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
-      pMenu->DoModal(GetID());
+      pMenu->DoModal();
       int btnid = pMenu->GetButton();
       
       if (btnid == btn_NTSCM)
@@ -557,7 +557,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       m_dlgProgress->SetLine(0, "Validating programs");
       m_dlgProgress->SetLine(1, "");
       m_dlgProgress->SetLine(2, "");
-      m_dlgProgress->StartModal(GetID());
+      m_dlgProgress->StartModal();
       m_dlgProgress->SetHeading(12387);
       m_dlgProgress->SetPercentage(0);
       m_dlgProgress->ShowProgressBar(true);
@@ -1344,7 +1344,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
   m_dlgProgress->SetLine(0,"Validating existing trainers");
   m_dlgProgress->SetLine(1,"");
   m_dlgProgress->SetLine(2,"");
-  m_dlgProgress->StartModal(GetID());
+  m_dlgProgress->StartModal();
   m_dlgProgress->SetHeading(12012);
   m_dlgProgress->ShowProgressBar(true);
   m_dlgProgress->Progress();

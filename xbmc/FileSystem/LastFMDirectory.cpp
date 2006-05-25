@@ -39,7 +39,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
     m_dlgProgress->SetLine(0, 15279);
     m_dlgProgress->SetLine(1, m_objrequest);
     m_dlgProgress->SetLine(2, m_objname);
-    m_dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+    m_dlgProgress->StartModal();
     m_dlgProgress->Progress();
   }
 

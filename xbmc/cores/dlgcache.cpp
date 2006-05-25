@@ -55,7 +55,7 @@ void CDlgCache::OpenDialog()
   m_pDlg->SetLine(0, m_strLinePrev);
   m_pDlg->SetLine(1, "");
   m_pDlg->SetLine(2, "");
-  m_pDlg->StartModal( m_gWindowManager.GetActiveWindow());
+  m_pDlg->StartModal();
   m_strLinePrev = "";
 
   bSentCancel = false;

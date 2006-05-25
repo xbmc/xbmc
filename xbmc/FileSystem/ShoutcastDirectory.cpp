@@ -185,7 +185,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     }
     else if( GetTickCount() > dwTimeStamp )
     {
-      dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+      dlgProgress->StartModal();
       dlgProgress->Progress();
       dialogopen = true;
     }

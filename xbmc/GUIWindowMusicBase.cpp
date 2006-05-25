@@ -220,7 +220,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     m_dlgProgress->SetLine(0, 501);
     m_dlgProgress->SetLine(1, "");
     m_dlgProgress->SetLine(2, "");
-    m_dlgProgress->StartModal(GetID());
+    m_dlgProgress->StartModal();
     m_dlgProgress->Progress();
   }
 
@@ -348,7 +348,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
           pDlg->Add(strTemp);
         }
         //pDlg->Sort();
-        pDlg->DoModal(GetID());
+        pDlg->DoModal();
 
         // and wait till user selects one
         int iSelectedAlbum = pDlg->GetSelectedLabel();
@@ -433,7 +433,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
           pDlg->Add(strAlbum);
         }
         //pDlg->Sort();
-        pDlg->DoModal(GetID());
+        pDlg->DoModal();
 
         // and wait till user selects one
         int iSelectedAlbum = pDlg->GetSelectedLabel();
@@ -517,7 +517,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
     if (pDlgAlbumInfo)
     {
       pDlgAlbumInfo->SetAlbum(album);
-      pDlgAlbumInfo->DoModal(GetID());
+      pDlgAlbumInfo->DoModal();
 
       if (!pDlgAlbumInfo->NeedRefresh()) return ;
       bRefresh = true;
@@ -609,7 +609,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
         }
 
         pDlgAlbumInfo->SetAlbum(album);
-        pDlgAlbumInfo->DoModal(GetID());
+        pDlgAlbumInfo->DoModal();
 
         // Save directory thumb
         if (bSaveDirThumb)
@@ -854,7 +854,7 @@ void CGUIWindowMusicBase::OnSearch()
     m_dlgProgress->SetLine(0, strSearch);
     m_dlgProgress->SetLine(1, "");
     m_dlgProgress->SetLine(2, "");
-    m_dlgProgress->StartModal(GetID());
+    m_dlgProgress->StartModal();
     m_dlgProgress->Progress();
   }
   CFileItemList items;
@@ -873,7 +873,7 @@ void CGUIWindowMusicBase::OnSearch()
       pDlgSelect->Add(pItem->GetLabel());
     }
 
-    pDlgSelect->DoModal(GetID());
+    pDlgSelect->DoModal();
 
     int iItem = pDlgSelect->GetSelectedLabel();
     if (iItem < 0)
@@ -980,7 +980,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
     m_dlgProgress->SetLine(0, strAlbum);
     m_dlgProgress->SetLine(1, strArtist);
     m_dlgProgress->SetLine(2, "");
-    m_dlgProgress->StartModal(GetID());
+    m_dlgProgress->StartModal();
   }
 
   try
@@ -1055,7 +1055,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
             {
               // sort by relevance
               pDlg->Sort(false);
-              pDlg->DoModal(GetID());
+              pDlg->DoModal();
             }
 
             // and wait till user selects one
@@ -1240,7 +1240,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
-  pMenu->DoModal(GetID());
+  pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
   if (btnid > 0)
@@ -1338,7 +1338,7 @@ void CGUIWindowMusicBase::OnRipCD()
       pDlgOK->SetLine(0, "Can't rip CD or Track while playing from CD"); //
       pDlgOK->SetLine(1, ""); //
       pDlgOK->SetLine(2, "");
-      pDlgOK->DoModal(GetID());
+      pDlgOK->DoModal();
     }
   }
 }
