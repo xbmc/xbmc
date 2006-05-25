@@ -2119,7 +2119,7 @@ void CFileItem::SetUserProgramThumb()
     if (CFile::Exists(folderThumb))
     {
       CPicture pic;
-      if (pic.DoCreateThumbnail(fileThumb, thumb))
+      if (pic.DoCreateThumbnail(folderThumb, thumb))
         SetThumbnailImage(thumb);
     }
   }
