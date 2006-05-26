@@ -81,6 +81,11 @@ void CGUIConsoleControl::Render()
 
   CStdStringW strText;
 
+  // queue up our new lines
+  for (unsigned int line = 0; line < m_queuedLines.size(); line++)
+    WriteString(m_queuedLines[line].text, m_queuedLines[line].colour);
+  m_queuedLines.clear();
+
   for (int nLine = 0; nLine < m_nMaxLines; nLine++)
   {
     INT nIndex = (m_dwLineCounter + nLine) % m_nMaxLines;
@@ -116,11 +121,15 @@ void CGUIConsoleControl::Clear()
   {
     m_lines[nIndex].text.clear();
   }
+  m_queuedLines.clear();
 }
 
 void CGUIConsoleControl::Write(CStdString& aString, INT nPaletteIndex)
 {
-  WriteString(aString, GetPenColor(nPaletteIndex) );
+  Line line;
+  line.text = aString;
+  line.colour = GetPenColor(nPaletteIndex);
+  m_queuedLines.push_back(line);
 }
 
 void CGUIConsoleControl::WriteString(CStdString& aString, DWORD aColour)
