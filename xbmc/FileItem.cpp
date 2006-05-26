@@ -1956,6 +1956,7 @@ CStdString CFileItem::GetCachedPictureThumb()
 
 void CFileItem::SetCachedPictureThumb()
 {
+  if (IsParentFolder()) return;
   CStdString cachedThumb(GetCachedPictureThumb());
   if (CFile::Exists(cachedThumb))
     SetThumbnailImage(cachedThumb);
