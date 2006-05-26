@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-05-2006 fixed: Python AR in images wasn't working.
  - 26-05-2006 fixed: Parent folder items in My Pictures would sometimes show with their thumb.
  - 26-05-2006 fixed: Filesize parameter didn't return from files played via the httpapi.
  - 26-05-2006 fixed: [ 1490939 ] Playlist filenames are run through the fatx conversion while in UTF8.
