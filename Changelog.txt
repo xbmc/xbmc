@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-05-2006 fixed: Parent folder items in My Pictures would sometimes show with their thumb.
+ - 26-05-2006 fixed: Filesize parameter didn't return from files played via the httpapi.
  - 26-05-2006 fixed: [ 1490939 ] Playlist filenames are run through the fatx conversion while in UTF8.
  - 25-05-2006 fixed: Infinite loop if the progress dialog was started by the player while in fullscreen before rendering was allowed.
  - 25-05-2006 fixed: DoModal() and Show() on dialogs had to be called with the parent window, even though the information was never used.
