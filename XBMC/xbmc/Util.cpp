@@ -469,8 +469,12 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
       iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\') + 1;
       strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
     }
-    if (g_guiSettings.GetBool("Servers.FTPAutoFatX") && (CUtil::IsHD(strFilename)))
-      CUtil::GetFatXQualifiedPath(strFilename);
+
+    // This routine is only called from the playlist loaders,
+    // where the filepath is in UTF-8 anyway, so we don't need
+    // to do checking for FatX characters.
+    //if (g_guiSettings.GetBool("Servers.FTPAutoFatX") && (CUtil::IsHD(strFilename)))
+    //  CUtil::GetFatXQualifiedPath(strFilename);
   }
   else //Base is remote
   {
