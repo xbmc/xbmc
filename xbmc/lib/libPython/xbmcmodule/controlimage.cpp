@@ -46,7 +46,7 @@ namespace PYXBMC
 				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
 				pControl->strFileName, pControl->strColorKey);
 
-    if (pControl->pGUIControl && pControl->aspectRatio >= CGUIImage::ASPECT_RATIO_KEEP && pControl->aspectRatio <= CGUIImage::ASPECT_RATIO_STRETCH)
+    if (pControl->pGUIControl && pControl->aspectRatio >= CGUIImage::ASPECT_RATIO_STRETCH && pControl->aspectRatio <= CGUIImage::ASPECT_RATIO_KEEP)
       ((CGUIImage *)pControl->pGUIControl)->SetAspectRatio((CGUIImage::GUIIMAGE_ASPECT_RATIO)pControl->aspectRatio);
 		return pControl->pGUIControl;
 	}
