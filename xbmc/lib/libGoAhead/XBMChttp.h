@@ -32,7 +32,7 @@ public:
   CXbmcHttp();
   ~CXbmcHttp();
 
-  int xbmcCommand(CStdString parameter);
+  int xbmcCommand(const CStdString &parameter);
   int xbmcAddToPlayList(int numParas, CStdString paras[]);
   int xbmcPlayerPlayFile(int numParas, CStdString paras[]); 
   int xbmcClearPlayList(int numParas, CStdString paras[]); 
