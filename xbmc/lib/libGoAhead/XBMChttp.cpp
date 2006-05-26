@@ -147,7 +147,7 @@ void decodeblock( unsigned char in[4], unsigned char out[3] )
 **
 ** decode a base64 encoded stream discarding padding, line breaks and noise
 */
-bool decodeBase64ToFile( CStdString inString, CStdString outfilename )
+bool decodeBase64ToFile( const CStdString &inString, const CStdString &outfilename )
 {
   unsigned char in[4], out[3], v;
   bool ret=true;
@@ -195,12 +195,12 @@ bool decodeBase64ToFile( CStdString inString, CStdString outfilename )
   return ret;
 }
 
-__int64 fileSize(CStdString filename)
+__int64 fileSize(const CStdString &filename)
 {
-  if (CFile::Exists(filename.c_str()))
+  if (CFile::Exists(filename))
   {
     __stat64 s64;
-    if (CFile::Stat(filename.c_str(), &s64) == 0)
+    if (CFile::Stat(filename, &s64) == 0)
       return s64.st_size;
     else
       return -1;
@@ -211,7 +211,7 @@ __int64 fileSize(CStdString filename)
 
 
 
-int splitParameter(CStdString parameter, CStdString& command, CStdString paras[], CStdString sep)
+int splitParameter(const CStdString &parameter, CStdString& command, CStdString paras[], const CStdString &sep)
 //returns -1 if no command else the number of parameters
 //assumption: sep.length()==1
 {
@@ -279,7 +279,7 @@ int splitParameter(CStdString parameter, CStdString& command, CStdString paras[]
   }
 }
 
-bool playableFile(CStdString filename)
+bool playableFile(const CStdString &filename)
 {
   CURL url(filename);
 
@@ -291,7 +291,7 @@ bool playableFile(CStdString filename)
       || CFile::Exists(filename) ;
 }
 
-int SetResponse(CStdString response)
+int SetResponse(const CStdString &response)
 {
   if (response.length()>=closeTag.length())
   {
@@ -305,7 +305,7 @@ int SetResponse(CStdString response)
   return g_applicationMessenger.SetResponse(response);
 }
 
-CStdString flushResult(int eid, webs_t wp, CStdString output)
+CStdString flushResult(int eid, webs_t wp, const CStdString &output)
 {
   if (output!="")
     if (eid==NO_EID && wp!=NULL)
@@ -2351,7 +2351,7 @@ int CXbmcHttp::xbmcHelp()
 
 
 
-int CXbmcHttp::xbmcCommand(CStdString parameter)
+int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 {
   int numParas, retVal;
   CStdString command, paras[MAX_PARAS];
