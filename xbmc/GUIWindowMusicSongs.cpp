@@ -187,7 +187,7 @@ void CGUIWindowMusicSongs::OnScan()
   if (strPaths.length() > 2)
   { // yes, we have, we should prompt the user to ask if they want
     // to do a full scan, or just add new items...
-    if (CGUIDialogYesNo::ShowAndGetInput(189, 702, 703, 704,20024,20025))
+    if (CGUIDialogYesNo::ShowAndGetInput(189, 702, 0, 0,20024,20025))
       bUpdateAll = true;
   }
 
