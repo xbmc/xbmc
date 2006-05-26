@@ -56,6 +56,7 @@ protected:
 
   typedef vector<Line> LINEVECTOR;
   LINEVECTOR m_lines;
+  LINEVECTOR m_queuedLines;
 
   typedef vector<D3DCOLOR> PALETTE;
   PALETTE m_palette;
