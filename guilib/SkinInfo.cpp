@@ -104,6 +104,8 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
           pGrandChild = pGrandChild->NextSibling("name");
         }
       }
+      // now load the startupwindow information
+      LoadStartupWindows(pRootElement->FirstChildElement("startupwindows"));
     }
   }
   // Load the skin includes
@@ -246,7 +248,46 @@ int CSkinInfo::GetStartWindow()
   // TODO: Add checking with any <startwindow> blocks to make sure that this window
   //       actually exists
   int windowID = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
-  if (windowID != WINDOW_MUSIC && windowID != WINDOW_VIDEOS && !m_gWindowManager.GetWindow(windowID))
-    return WINDOW_HOME;
-  return windowID;
+  assert(m_startupWindows.size());
+  for (vector<CStartupWindow>::iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); it++)
+  {
+    if (windowID == (*it).m_id)
+      return windowID;
+  }
+  // return our first one
+  return m_startupWindows[0].m_id;
+}
+
+bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
+{
+  m_startupWindows.clear();
+  if (startup)
+  { // yay, run through and grab the startup windows
+    const TiXmlElement *window = startup->FirstChildElement("window");
+    while (window && window->FirstChild())
+    {
+      int id;
+      window->Attribute("id", &id);
+      CStdString name = window->FirstChild()->Value();
+      m_startupWindows.push_back(CStartupWindow(id + WINDOW_HOME, name));
+      window = window->NextSiblingElement("window");
+    }
+  }
+
+  // ok, now see if we have any startup windows
+  if (!m_startupWindows.size())
+  { // nope - add the default ones
+    m_startupWindows.push_back(CStartupWindow(WINDOW_HOME, "513"));
+    m_startupWindows.push_back(CStartupWindow(WINDOW_PROGRAMS, "0"));
+    m_startupWindows.push_back(CStartupWindow(WINDOW_PICTURES, "1"));
+    m_startupWindows.push_back(CStartupWindow(WINDOW_MUSIC, "2"));
+    m_startupWindows.push_back(CStartupWindow(WINDOW_VIDEOS, "3"));
+    m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
+    m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5"));
+    m_startupWindows.push_back(CStartupWindow(WINDOW_BUDDIES, "714"));
+    m_onlyAnimateToHome = true;
+  }
+  else
+    m_onlyAnimateToHome = false;
+  return true;
 }
