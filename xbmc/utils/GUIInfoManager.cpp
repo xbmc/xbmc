@@ -12,7 +12,6 @@
 #include "../GUIMediaWindow.h"
 #include "../GUIDialogFileBrowser.h"
 #include "../PartyModeManager.h"
-#include "../SystemTime.h"
 #include "FanController.h"
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
@@ -944,15 +943,13 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 
 CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
 {
-  CSystemTime time;
-  time.Now();
+  CDateTime time=CDateTime::GetCurrentDateTime();
   return time.GetAsLocalizedDate(!bNumbersOnly);
 }
 
 CStdString CGUIInfoManager::GetTime(bool bSeconds)
 {
-  CSystemTime time;
-  time.Now();
+  CDateTime time=CDateTime::GetCurrentDateTime();
   return time.GetAsLocalizedTime(bSeconds);
 }
 

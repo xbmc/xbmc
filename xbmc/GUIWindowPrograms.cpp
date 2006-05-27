@@ -646,7 +646,7 @@ void CGUIWindowPrograms::LoadDirectory2(const CStdString& strDirectory, int idep
           pItem->m_strPath = file.m_strPath;
           pItem->m_bIsFolder = true;
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
-          FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+          pItem->m_dateTime=localTime;
           m_vecItems.Add(pItem);
         }
         else
@@ -703,7 +703,7 @@ void CGUIWindowPrograms::LoadDirectory2(const CStdString& strDirectory, int idep
             //pItem->m_dwSize = wfd.nFileSizeLow;
 
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
-            FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+            pItem->m_dateTime=localTime;
             m_vecItems.Add(pItem);
           }
           else
@@ -723,7 +723,7 @@ void CGUIWindowPrograms::LoadDirectory2(const CStdString& strDirectory, int idep
             //pItem->m_dwSize = wfd.nFileSizeLow;
 
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
-            FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+            pItem->m_dateTime=localTime;
             m_vecItems.Add(pItem);
           }
 
@@ -894,7 +894,7 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
             pItem->m_strTitle=strDescription;
             GetFileAttributesEx(pItem->m_strPath, GetFileExInfoStandard, &FileAttributeData);
             FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime, &localTime);
-            FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+            pItem->m_dateTime=localTime;
             pItem->m_dwSize = FileAttributeData.nFileSizeLow;
             m_vecItems.Add(pItem);
           }

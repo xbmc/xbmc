@@ -27,7 +27,6 @@ public:
   static int FindNumber(const CStdString& strInput, const CStdString &strFind);
   static int AlphaNumericCompare(const char *left, const char *right);
   static long TimeStringToSeconds(const CStdString &timeString);
-  static CStdString SystemTimeToString(const SYSTEMTIME &dateTime);
   static void RemoveCRLF(CStdString& strLine);
   static void SecondsToTimeString( long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS = false);
   static bool IsNaturalNumber(const CStdString& str);

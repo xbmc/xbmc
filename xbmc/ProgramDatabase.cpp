@@ -341,7 +341,7 @@ long CProgramDatabase::GetFile(const CStdString& strFilenameAndPath, CFileItemLi
         pItem->m_bIsFolder = false;
         GetFileAttributesEx(pItem->m_strPath, GetFileExInfoStandard, &FileAttributeData);
         FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime, &localTime);
-        FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+        pItem->m_dateTime=localTime;
         pItem->m_dwSize = FileAttributeData.nFileSizeLow;
         programs.Add(pItem);
         m_pDS->close();
@@ -832,7 +832,7 @@ DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
       item->SetLabel(m_pDS->fv("xbedescription").get_asString());
       item->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asLong();
       item->m_strTitle = item->GetLabel();  // is this needed?
-      item->m_stTime = TimeStampToLocalTime(_atoi64(m_pDS->fv("lastAccessed").get_asString().c_str()));
+      item->m_dateTime = TimeStampToLocalTime(_atoi64(m_pDS->fv("lastAccessed").get_asString().c_str()));
       titleID = m_pDS->fv("titleId").get_asLong();
     }
     m_pDS->close();
@@ -859,8 +859,10 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
       if (iRegion < 1 || iRegion > 7)
         iRegion = 0;
     }
-    GetLocalTime(&item->m_stTime);
-    unsigned __int64 lastAccessed = LocalTimeToTimeStamp(item->m_stTime);
+    FILETIME time;
+    item->m_dateTime=CDateTime::GetCurrentDateTime();
+    item->m_dateTime.GetAsTimeStamp(time);
+    unsigned __int64 lastAccessed = ((ULARGE_INTEGER*)&time)->QuadPart;
     CStdString strSQL=FormatSQL("insert into files (idFile, idPath, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion) values(NULL, 0, '%s', %u, '%s', %i, %I64u, %i)", item->m_strPath.c_str(), titleID, item->GetLabel().c_str(), 0, lastAccessed, iRegion);
     m_pDS->exec(strSQL.c_str());
   }
@@ -976,7 +978,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, CFileItemL
       pItem->m_strTitle=m_pDS->fv("files.xbedescription").get_asString();
       CStdString timestampstr = m_pDS->fv("lastAccessed").get_asString();
       unsigned __int64 timestamp = _atoi64(timestampstr.c_str());
-      pItem->m_stTime=TimeStampToLocalTime(timestamp);
+      pItem->m_dateTime=TimeStampToLocalTime(timestamp);
       programs.Add(pItem);
       m_pDS->next();
     }
@@ -1029,7 +1031,7 @@ void CProgramDatabase::GetProgramsByPath(const CStdString& strPath1, CFileItemLi
         pItem->m_strTitle=m_pDS->fv("files.xbedescription").get_asString();
         CStdString timestampstr = m_pDS->fv("lastAccessed").get_asString();
         unsigned __int64 timestamp = _atoi64(timestampstr.c_str());
-        pItem->m_stTime=TimeStampToLocalTime(timestamp);
+        pItem->m_dateTime=TimeStampToLocalTime(timestamp);
         programs.Add(pItem);
       }
       m_pDS->next();

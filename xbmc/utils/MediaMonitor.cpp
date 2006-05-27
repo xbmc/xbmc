@@ -480,11 +480,11 @@ void CMediaMonitor::Scan(DIRECTORY::IDirectory& directory, CStdString& aPath, MO
       {
         Movie aMovie;
         aMovie.strFilepath = pItem->m_strPath;
-        aMovie.dwDate = (( (pItem->m_stTime.wYear) << 16 ) |
-                         ( (pItem->m_stTime.wMonth & 0x00FF) << 8 ) |
-                         (pItem->m_stTime.wDay & 0x00FF) );
-        aMovie.wTime = (( (pItem->m_stTime.wHour & 0x00FF) << 8 ) |
-                        (pItem->m_stTime.wMinute & 0x00FF) );
+        aMovie.dwDate = (( (pItem->m_dateTime.GetYear()) << 16 ) |
+                         ( (pItem->m_dateTime.GetMonth() & 0x00FF) << 8 ) |
+                         (pItem->m_dateTime.GetDay() & 0x00FF) );
+        aMovie.wTime = (( (pItem->m_dateTime.GetHour() & 0x00FF) << 8 ) |
+                        (pItem->m_dateTime.GetMinute() & 0x00FF) );
 
         movies.push_back(aMovie);
 
