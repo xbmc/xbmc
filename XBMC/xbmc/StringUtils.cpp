@@ -172,15 +172,6 @@ void StringUtils::SecondsToTimeString(long lSeconds, CStdString& strHMS, bool bM
     strHMS.Format("%i:%02.2i", mm, ss);
 }
 
-CStdString StringUtils::SystemTimeToString(const SYSTEMTIME &dateTime)
-{
-  CStdString time;
-  time.Format("%04.2i-%02.2i-%02.2i %02.2i:%02.2i:%02.2i", 
-          dateTime.wYear, dateTime.wMonth, dateTime.wDay,
-          dateTime.wHour, dateTime.wMinute, dateTime.wSecond);
-  return time;
-}
-
 bool StringUtils::IsNaturalNumber(const CStdString& str)
 {
   if (0 == (int)str.size())
