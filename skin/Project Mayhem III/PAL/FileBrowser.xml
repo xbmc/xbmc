@@ -90,7 +90,7 @@
       <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
       <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <onleft>450</onleft>
-      <onright>413</onright>
+      <onright>414</onright>
       <onup>413</onup>
       <ondown>414</ondown>
     </control>
@@ -109,7 +109,7 @@
       <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
       <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <onleft>450</onleft>
-      <onright>414</onright>
+      <onright>413</onright>
       <onup>413</onup>
       <ondown>414</ondown>
     </control>
