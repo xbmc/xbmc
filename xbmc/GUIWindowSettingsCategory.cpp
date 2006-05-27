@@ -669,21 +669,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       for (unsigned int i = 1; i <= 9; i++)  pControl->AddLabel(cLbl[i], i);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "LookAndFeel.StartUpWindow")
-    {
-      // items in a spin control must be sequential. you cant skip values.
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(513),  WINDOW_HOME	);  // XBMC Home
-      pControl->AddLabel(g_localizeStrings.Get(0),    WINDOW_PROGRAMS	);  // My Programs
-      pControl->AddLabel(g_localizeStrings.Get(1),    WINDOW_PICTURES	);  // My Pictures
-      pControl->AddLabel(g_localizeStrings.Get(2),    WINDOW_MUSIC );  // My Music
-      pControl->AddLabel(g_localizeStrings.Get(3),    WINDOW_VIDEOS );  // My Video
-      pControl->AddLabel(g_localizeStrings.Get(7),    WINDOW_FILES );  // My Files
-      pControl->AddLabel(g_localizeStrings.Get(5),    WINDOW_SETTINGS_MENU );  // Settings
-      pControl->AddLabel(g_localizeStrings.Get(714),  WINDOW_BUDDIES ); // Xlink Kai
-      pControl->SetValue(pSettingInt->GetData());
-    }
     */
     else if (strSetting == "LookAndFeel.StartUpWindow")
     {
