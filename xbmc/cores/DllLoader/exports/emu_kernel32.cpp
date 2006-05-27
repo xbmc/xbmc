@@ -641,7 +641,7 @@ extern "C" BOOL WINAPI dllIsProcessorFeaturePresent(DWORD ProcessorFeature)
     result = true;
     break;
   case PF_PAE_ENABLED:
-    result = true;
+    result = false;
     break;
   case PF_RDTSC_INSTRUCTION_AVAILABLE:
     result = true;
@@ -650,7 +650,7 @@ extern "C" BOOL WINAPI dllIsProcessorFeaturePresent(DWORD ProcessorFeature)
     result = true;
     break;
   case 10: //PF_XMMI64_INSTRUCTIONS_AVAILABLE
-    result = true;
+    result = false;
     break;
   }
 
@@ -817,6 +817,92 @@ extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine,
   not_implement("kernel32.dll fake function SetConsoleCtrlHandler called\n");  //warning
   SetLastError(ERROR_INVALID_FUNCTION);
   return 0;
+}
+
+typedef struct _SFlsSlot
+{
+  BOOL bInUse; 
+  PVOID	pData;
+}
+SFlsSlot, *LPSFlsSlot;
+
+#define FLS_NUM_SLOTS 5
+SFlsSlot flsSlots[FLS_NUM_SLOTS] = { false, NULL };
+
+extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback)
+{
+  DWORD i;
+#ifdef API_DEBUG
+  CLog::Log(LOGDEBUG, "FlsAlloc(0x%x)\n", lpCallback);
+#endif
+  for (i = 0; i < FLS_NUM_SLOTS; i++) {
+    if (!flsSlots[i].bInUse) {
+      flsSlots[i].bInUse = true;
+      flsSlots[i].pData = NULL;
+      return i;
+    }
+  }
+  SetLastError(ERROR_INVALID_PARAMETER); // should be FLS_OUT_OF_INDEXES
+  CLog::Log(LOGERROR, " - Out of fls slots");
+  return ERROR_INVALID_PARAMETER; // "
+}
+
+static LPSFlsSlot FlsGetSlot(DWORD dwFlsIndex)
+{
+  if (dwFlsIndex >= FLS_NUM_SLOTS) {
+    SetLastError(ERROR_INVALID_PARAMETER);
+    return NULL;
+  }
+  if (!flsSlots[dwFlsIndex].bInUse) {
+    SetLastError(ERROR_INVALID_PARAMETER); // actually ERROR_NO_MEMORY would be correct
+    return NULL;
+  }
+  return &(flsSlots[dwFlsIndex]);
+}
+
+extern "C" BOOL WINAPI dllFlsSetValue(DWORD dwFlsIndex, PVOID lpFlsData)
+{
+#ifdef API_DEBUG
+  CLog::Log(LOGDEBUG, "FlsSetValue(%d, 0x%x) => 0x%x\n", dwFlsIndex, lpFlsData);
+#endif
+  LPSFlsSlot slot = FlsGetSlot(dwFlsIndex);
+  if (slot == NULL)
+    return false;
+  slot->pData = lpFlsData;
+  return true;
+}
+
+extern "C" PVOID WINAPI dllFlsGetValue(DWORD dwFlsIndex)
+{
+#ifdef API_DEBUG
+  CLog::Log(LOGDEBUG, "FlsGetValue(%d)\n", dwFlsIndex);
+#endif
+  LPSFlsSlot slot = FlsGetSlot(dwFlsIndex);
+  return (slot == NULL) ? NULL : slot->pData;
+}
+
+extern "C" BOOL WINAPI dllFlsFree(DWORD dwFlsIndex)
+{
+#ifdef API_DEBUG
+  CLog::Log(LOGDEBUG, "FlsFree(%d)\n", dwFlsIndex);
+#endif
+  LPSFlsSlot slot = FlsGetSlot(dwFlsIndex);
+  if (slot == NULL)
+    return false;
+  slot->bInUse = false;
+  slot->pData = NULL;
+  return true;
+}
+
+
+extern "C" PVOID WINAPI dllEncodePointer(PVOID ptr)
+{
+  return ptr;
+}
+
+extern "C" PVOID WINAPI dllDecodePointer(PVOID ptr)
+{
+  return ptr;
 }
 
 /*

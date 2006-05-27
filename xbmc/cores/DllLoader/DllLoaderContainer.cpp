@@ -14,6 +14,7 @@ DllLoaderContainer g_dlls;
 
 void export_reg();
 void export_ole32();
+void export_oleaut32();
 void export_xbp();
 void export_winmm();
 void export_user32();
@@ -44,6 +45,7 @@ DllLoaderContainer::DllLoaderContainer() :
     wininet("wininet.dll", false, true),
     advapi32("advapi32.dll", false, true),
     ole32("ole32.dll", false, true),
+    oleaut32("oleaut32.dll", false, true),
     xbp("xbp.dll", false, true),
     winmm("winmm.dll", false, true),
     msdmo("msdmo.dll", false, true),
@@ -69,6 +71,7 @@ DllLoaderContainer::DllLoaderContainer() :
   RegisterDll(&wininet); // nothing is exported in this dll, is this one really needed?
   RegisterDll(&advapi32); export_reg();
   RegisterDll(&ole32); export_ole32();
+  RegisterDll(&oleaut32); export_oleaut32();
   RegisterDll(&xbp); export_xbp();
   RegisterDll(&winmm); export_winmm();
   RegisterDll(&msdmo); export_msdmo();

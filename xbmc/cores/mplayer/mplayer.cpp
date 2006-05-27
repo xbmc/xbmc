@@ -74,6 +74,7 @@ subtitle* (__cdecl* pGetCurrentSubtitle)();
 int (__cdecl* pIsTextSubLoaded)();
 void (__cdecl* pSlaveCommand)(const char* s);
 int (__cdecl* pGetCacheLevel)();
+IUnknown* (__cdecl* pMemAllocatorCreate)() = NULL;
 
 extern "C"
 {
@@ -432,6 +433,14 @@ extern "C"
       return -1;
   }
 
+  IUnknown* mplayer_MemAllocatorCreate()
+  {
+    if(pMemAllocatorCreate)
+      return pMemAllocatorCreate();
+    else
+      return NULL;
+  }
+
   void mplayer_load_dll(DllLoader& dll)
   {
     dll.ResolveExport("audio_out_format_bits", (void**)&pAudioOutFormatBits);
@@ -497,6 +506,9 @@ extern "C"
     dll.ResolveExport("mplayer_isTextSubLoaded", (void**) &pIsTextSubLoaded);
     dll.ResolveExport("mplayer_SlaveCommand", (void**) &pSlaveCommand);
     dll.ResolveExport("mplayer_GetCacheLevel", (void**) &pGetCacheLevel);
+    
+    /* currently not exported from current mplayer.dll, but can be enabled as soon as it's updated */
+    //dll.ResolveExport("MemAllocatorCreate", (void**) &pMemAllocatorCreate);
 
     pSetVideoFunctions(&video_functions);
     pSetAudioFunctions(&audio_functions);
