@@ -131,14 +131,47 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
   return 1;
 }
 
+extern unsigned long create_dummy_function(const char* strDllName, const char* strFunctionName);
+extern void tracker_dll_data_track(DllLoader* pDll, unsigned long addr);
+
 extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
 {
-  void* address = NULL;
-  
+  void* address = NULL;  
   DllLoader* dll = (DllLoader*)hModule;
-  dll->ResolveExport(function, &address);
 
-  CLog::Log(LOGDEBUG, "%s!GetProcAddress(0x%x, '%s') => 0x%x", dll->GetName(), hModule, function, address);
+  WORD high = (WORD)(((DWORD)function >> 16) & MAXWORD);
+  WORD low = (WORD)((DWORD)function & MAXWORD);
+
+  /* how can somebody get the stupid idea to create such a stupid function */
+  /* where you never know if the given pointer is a pointer or a value */
+  if( high == 0 && low < 1000)
+  {
+    Export* exp = dll->GetExportByOrdinal(low);
+    if( exp )
+    {
+      CLog::Log(LOGDEBUG, "%s!GetProcAddress(0x%x, %d) => 0x%x", dll->GetName(), hModule, low, address);
+      address = (void*)exp->function;
+    }
+    else
+    {
+      address = (void*)create_dummy_function(dll->GetName(), "");
+      tracker_dll_data_track(dll, (unsigned long)address);
+      CLog::Log(LOGDEBUG, __FUNCTION__" - created dummy function %s!%d", dll->GetName(), low);
+    }
+  }
+  else
+  {
+    dll->ResolveExport(function, &address);
+    if( address == NULL )
+    {
+      address = (void*)create_dummy_function(dll->GetName(), function);
+      tracker_dll_data_track(dll, (unsigned long)address);
+      CLog::Log(LOGDEBUG, __FUNCTION__" - created dummy function %s!%s", dll->GetName(), function);
+    }
+    else
+      CLog::Log(LOGDEBUG, "%s!GetProcAddress(0x%x, '%s') => 0x%x", dll->GetName(), hModule, function, address);
+  }
+  
   return (FARPROC)address;
 }
 
@@ -151,22 +184,26 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
   The name is compared (case independently)
   If this parameter is NULL, GetModuleHandle returns a handle to the file used to create the calling process (.exe file).
   */
+
+  if( lpModuleName == NULL ) return NULL;
+
   char* strModuleName = new char[strlen(lpModuleName) + 5];
   strcpy(strModuleName, lpModuleName);
 
   if (strrchr(strModuleName, '.') == 0) strcat(strModuleName, ".dll");
 
-  CLog::Log(LOGDEBUG, "GetModuleHandleA(%s) .. looking up", lpModuleName);
+  //CLog::Log(LOGDEBUG, "GetModuleHandleA(%s) .. looking up", lpModuleName);
 
   HMODULE h = g_dlls.GetModuleAddress(strModuleName);
   if (h)
   {
-    CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') => 0x%x", lpModuleName, h);
+    //CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') => 0x%x", lpModuleName, h);
     return h;
   }
  
   delete []strModuleName;
 
+  CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') failed", lpModuleName);
   return NULL;
 }
 

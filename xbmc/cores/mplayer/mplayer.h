@@ -100,6 +100,8 @@ extern "C"
   void mplayer_SlaveCommand(const char* s, ... );
   int mplayer_GetCacheLevel();
 
+  IUnknown* mplayer_MemAllocatorCreate();
+
 #ifdef __cplusplus
 };
 #endif
