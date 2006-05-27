@@ -168,6 +168,7 @@ void CRGBRenderer::Render()
       m_pD3DDevice->SetTextureStageState( i, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
     }
 
+    m_pD3DDevice->SetRenderState( D3DRS_SWATHWIDTH, 15 );
     m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
