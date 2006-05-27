@@ -14,6 +14,8 @@ protected:
   virtual void OnInitWindow();
 
   void UpdateButtons();
+  void UpdateLocations();
+
   void Refresh();
 
   unsigned int m_iCurWeather;
