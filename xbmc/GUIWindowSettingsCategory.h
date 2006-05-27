@@ -36,6 +36,7 @@ protected:
   bool SetMasterLockMode();
   bool SetUserMode();
   void FillInFTPServerUser(CSetting *pSetting);
+  void FillInStartupWindow(CSetting *pSetting);
   bool SetFTPServerUserPass();
 
   void FillInSkinThemes(CSetting *pSetting);
