@@ -136,7 +136,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
     ft.dwLowDateTime = (DWORD)(ll & 0xFFFFFFFF);
     ft.dwHighDateTime = (DWORD)(ll >> 32);
     
-    FileTimeToSystemTime(&ft, &pItem->m_stTime);
+    pItem->m_dateTime=ft;
   }
 
   // icons? would probably take too long to retrieve them all

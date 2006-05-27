@@ -27,10 +27,10 @@ public:
   const CTemperature& operator -=(const CTemperature& right);
   const CTemperature& operator *=(const CTemperature& right);
   const CTemperature& operator /=(const CTemperature& right);
-  CTemperature operator +(const CTemperature& right);
-  CTemperature operator -(const CTemperature& right);
-  CTemperature operator *(const CTemperature& right);
-  CTemperature operator /(const CTemperature& right);
+  CTemperature operator +(const CTemperature& right) const;
+  CTemperature operator -(const CTemperature& right) const;
+  CTemperature operator *(const CTemperature& right) const;
+  CTemperature operator /(const CTemperature& right) const;
 
   bool operator >(double right) const;
   bool operator >=(double right) const;
@@ -43,10 +43,10 @@ public:
   const CTemperature& operator -=(double right);
   const CTemperature& operator *=(double right);
   const CTemperature& operator /=(double right);
-  CTemperature operator +(double right);
-  CTemperature operator -(double right);
-  CTemperature operator *(double right);
-  CTemperature operator /(double right);
+  CTemperature operator +(double right) const;
+  CTemperature operator -(double right) const;
+  CTemperature operator *(double right) const;
+  CTemperature operator /(double right) const;
 
   CTemperature& operator ++();
   CTemperature& operator --();

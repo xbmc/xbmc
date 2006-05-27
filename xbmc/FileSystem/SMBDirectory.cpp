@@ -123,7 +123,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->m_strPath += dirEnt->name;
         if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
         pItem->m_bIsFolder = true;
-        FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+        pItem->m_dateTime=localTime;
         vecCacheItems.Add(pItem);
         items.Add(new CFileItem(*pItem));
       }
@@ -133,7 +133,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->m_strPath = strRoot + dirEnt->name;
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
-        FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+        pItem->m_dateTime=localTime;
 
         vecCacheItems.Add(pItem);
         if (IsAllowed(dirEnt->name)) items.Add(new CFileItem(*pItem));
