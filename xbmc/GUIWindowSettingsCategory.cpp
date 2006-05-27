@@ -669,7 +669,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       for (unsigned int i = 1; i <= 9; i++)  pControl->AddLabel(cLbl[i], i);
       pControl->SetValue(pSettingInt->GetData());
     }
-    */
     else if (strSetting == "LookAndFeel.StartUpWindow")
     {
       // items in a spin control must be sequential. you cant skip values.
@@ -684,6 +683,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(5),    WINDOW_SETTINGS_MENU );  // Settings
       pControl->AddLabel(g_localizeStrings.Get(714),  WINDOW_BUDDIES ); // Xlink Kai
       pControl->SetValue(pSettingInt->GetData());
+    }
+    */
+    else if (strSetting == "LookAndFeel.StartUpWindow")
+    {
+      FillInStartupWindow(pSetting);
     }
     else if (strSetting == "LookAndFeel.Rumble")
     {
@@ -3008,6 +3012,46 @@ void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
   }
   // Set the Choosen Theme 
   pControl->SetValue(iCurrentTheme);
+}
+
+void CGUIWindowSettingsCategory::FillInStartupWindow(CSetting *pSetting)
+{
+  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  const vector<CSkinInfo::CStartupWindow> &startupWindows = g_SkinInfo.GetStartupWindows();
+  
+  // TODO: How should we localize this?
+  // In the long run there is no way to do it really without the skin having some
+  // translation information built in to it, which isn't really feasible.
+
+  // Alternatively we could lookup the strings in the english strings file to get
+  // their id and then get the string from that
+
+  // easier would be to have the skinner use the "name" as the label number.
+
+  // eg <window id="0">513</window>
+
+  bool currentSettingFound(false);
+  for (vector<CSkinInfo::CStartupWindow>::const_iterator it = startupWindows.begin(); it != startupWindows.end(); it++)
+  {
+    CStdString windowName((*it).m_name);
+    if (StringUtils::IsNaturalNumber(windowName))
+      windowName = g_localizeStrings.Get(atoi(windowName.c_str()));
+    int windowID((*it).m_id);
+    pControl->AddLabel(windowName, windowID);
+    if (pSettingInt->GetData() == windowID)
+      currentSettingFound = true;
+  }
+
+  // ok, now check whether our current option is one of these
+  // and set it's value
+  if (!currentSettingFound)
+  { // nope - set it to the "default" option - the first one
+    pSettingInt->SetData(startupWindows[0].m_id);
+  }
+  pControl->SetValue(pSettingInt->GetData());
 }
 
 void CGUIWindowSettingsCategory::OnInitWindow()
