@@ -809,6 +809,7 @@ void CGUIWindowFileManager::OnRename(int iList)
     if (pItem->IsSelected())
     {
       strFile = pItem->m_strPath;
+      CUtil::RemoveSlashAtEnd(strFile);
       break;
     }
   }
