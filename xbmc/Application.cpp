@@ -1099,23 +1099,21 @@ HRESULT CApplication::Initialize()
 
   SAFE_DELETE(m_splash);
 
-  // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
-  // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode! 
-  int startWindow = g_SkinInfo.GetStartWindow();
-  if (startWindow != WINDOW_HOME)
+  RESOLUTION res = INVALID;
+  CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
+  int startWindow = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
+  // test for a startup window, and activate that instead of home
+  if (CFile::Exists(startupPath) && !g_SkinInfo.OnlyAnimateToHome())
   {
-    m_gWindowManager.ActivateWindow(WINDOW_HOME);                       
-    m_gWindowManager.ActivateWindow(startWindow);
+    m_gWindowManager.ActivateWindow(WINDOW_STARTUP);
   }
   else
   {
-    // test for a startup window, and activate that instead of home
-    RESOLUTION res = INVALID;
-    CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
-    if (CFile::Exists(startupPath))
-      m_gWindowManager.ActivateWindow(WINDOW_STARTUP);
-    else
-      m_gWindowManager.ActivateWindow(WINDOW_HOME);
+    // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
+    // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode!
+    m_gWindowManager.ActivateWindow(WINDOW_HOME);
+    if (startWindow != WINDOW_HOME)
+      m_gWindowManager.ActivateWindow(startWindow);
   }
 
   CLog::Log(LOGINFO, "removing tempfiles");
