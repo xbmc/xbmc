@@ -1777,8 +1777,8 @@ void CApplication::Render()
 
   // draw GUI
   g_graphicsContext.Clear();
-  //SWATHWIDTH of 2 improves fillrates (performance investigator)
-  m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 2);
+  //SWATHWIDTH of 4 improves fillrates (performance investigator)
+  m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 4);
   m_gWindowManager.Render();
 
   {
