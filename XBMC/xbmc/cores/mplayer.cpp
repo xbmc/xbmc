@@ -1107,7 +1107,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
       m_dlgCache = NULL;
     }
 
-
     m_bIsPlaying = true;
     if ( ThreadHandle() == NULL)
     {

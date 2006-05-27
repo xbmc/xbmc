@@ -20,6 +20,7 @@ public:
   DllLoader ws2_32;
   DllLoader wsock32;
   DllLoader ole32;
+  DllLoader oleaut32;
   DllLoader xbp; // exports for python dll
   DllLoader winmm;
   DllLoader msdmo;
