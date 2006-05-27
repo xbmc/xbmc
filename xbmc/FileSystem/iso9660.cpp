@@ -15,6 +15,8 @@ ISO9660
   -4 bytes of header information 
   -2336 bytes of user data. 
  
+ ISO9660 specs:
+ http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf
  
  
 */

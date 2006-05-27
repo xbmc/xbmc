@@ -19,7 +19,6 @@ void UxTimeToFileTime(time_t ut, LPFILETIME pft)
 }
 bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  FILETIME ft;
   struct ftpparse lp;
 	CStdString scPath=strPath;
   CFileItemList vecCacheItems;
@@ -62,8 +61,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 						pItem->m_strPath = scPath + tbuf;
 						pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
 						pItem->m_dwSize = lp.size;
-						UxTimeToFileTime(lp.mtime, &ft);
-						FileTimeToSystemTime(&ft,&pItem->m_stTime);
+            pItem->m_dateTime=lp.mtime;
 						if ((!pItem->m_bIsFolder) && (IsAllowed(tbuf)))
 						{
 							vecCacheItems.Add(pItem);

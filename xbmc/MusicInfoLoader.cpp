@@ -74,7 +74,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
     pItem->SetThumbnailImage(song->strThumb);
     m_songsFromDb++;
   }
-  else if ((mapItem=m_mapFileItems[pItem->m_strPath])!=NULL && CUtil::CompareSystemTime(&mapItem->m_stTime, &pItem->m_stTime) == 0)
+  else if ((mapItem=m_mapFileItems[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime)
   { // Query map if we previously cached the file on HD
     pItem->m_musicInfoTag = mapItem->m_musicInfoTag;
     pItem->SetThumbnailImage(mapItem->GetThumbnailImage());

@@ -66,7 +66,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
             g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
             pItem->m_bIsFolder = true;
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
-            FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+            pItem->m_dateTime=localTime;
 
             vecCacheItems.Add(pItem);
             items.Add(new CFileItem(*pItem));
@@ -84,7 +84,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           pItem->m_bIsFolder = false;
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
-          FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+          pItem->m_dateTime=localTime;
           if ( IsAllowed( wfd.cFileName) )
           {
             vecCacheItems.Add(pItem);
