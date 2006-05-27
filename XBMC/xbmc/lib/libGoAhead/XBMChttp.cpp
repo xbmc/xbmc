@@ -400,11 +400,18 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   if (!pShares)
     return SetResponse(openTag+"Error");
 
+  // TODO: Why are we insisting the passed path has anything to do with
+  //       the shares in question??
+  //       Surely we should just grab the directory regardless??
+
   // special locations
   bool bSpecial = false;
+  CURL url(strLocation);
+  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip")
+    bSpecial = true;
   if (strType.Equals("music"))
   {
-    if (strLocation.Left(10).Equals("musicdb://"))
+    if (url.GetProtocol() == "musicdb")
       bSpecial = true;
     else if (strLocation.Equals("$playlists"))
     {
