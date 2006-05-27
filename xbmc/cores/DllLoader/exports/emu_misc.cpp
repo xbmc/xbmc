@@ -2,7 +2,7 @@
 
 #include "..\..\..\stdafx.h"
 #include <stdio.h>
-#include <xobjbase.h>
+//#include <xobjbase.h>
 
 #include "emu_misc.h"
 #include "emu_dummy.h"
