@@ -91,40 +91,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WEATHER_FETCHED:
     {
-      CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
-      g_graphicsContext.SendMessage(msg);
-      CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
-
-      for (int i = 0; i < MAX_LOCATION; i++)
-      {
-        char *szLocation = g_weatherManager.GetLocation(i);
-        if (!szLocation) continue;
-        CStdString strLabel(szLocation);
-        if (strlen(szLocation) > 1) //got the location string yet?
-        {
-          int iPos = strLabel.ReverseFind(", ");
-          if (iPos) 
-          {
-            CStdString strLabel2(strLabel);
-            strLabel = strLabel2.substr(0,iPos);
-          }
-          msg2.SetParam1(i);
-          msg2.SetLabel(strLabel);
-          g_graphicsContext.SendMessage(msg2);
-        }
-        else
-        {
-          strLabel.Format("AreaCode %i", i + 1);
-
-          msg2.SetLabel(strLabel);
-          msg2.SetParam1(i);
-          g_graphicsContext.SendMessage(msg2);
-        }
-        if (i==m_iCurWeather)
-          SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
-      }
-
-      CONTROL_SELECT_ITEM(CONTROL_SELECTLOCATION, m_iCurWeather);
+      UpdateLocations();
     }
     break;
   }
@@ -136,6 +103,12 @@ void CGUIWindowWeather::OnInitWindow()
 {
   // call UpdateButtons() so that we start with our initial stuff already present
   UpdateButtons();
+  UpdateLocations();
+  CGUIWindow::OnInitWindow();
+}
+
+void CGUIWindowWeather::UpdateLocations()
+{
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
   g_graphicsContext.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
@@ -153,7 +126,7 @@ void CGUIWindowWeather::OnInitWindow()
         CStdString strLabel2(strLabel);
         strLabel = strLabel2.substr(0,iPos);
       }
-
+      msg2.SetParam1(i);
       msg2.SetLabel(strLabel);
       g_graphicsContext.SendMessage(msg2);
     }
@@ -161,7 +134,8 @@ void CGUIWindowWeather::OnInitWindow()
     {
       strLabel.Format("AreaCode %i", i + 1);
 
-      msg2.SetLabel(strLabel);  
+      msg2.SetLabel(strLabel);
+      msg2.SetParam1(i);
       g_graphicsContext.SendMessage(msg2);
     }
     if (i==m_iCurWeather)
@@ -169,7 +143,6 @@ void CGUIWindowWeather::OnInitWindow()
   }
 
   CONTROL_SELECT_ITEM(CONTROL_SELECTLOCATION, m_iCurWeather);
-  CGUIWindow::OnInitWindow();
 }
 
 void CGUIWindowWeather::UpdateButtons()
