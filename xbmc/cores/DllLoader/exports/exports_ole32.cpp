@@ -15,3 +15,7 @@ void export_ole32()
   //Exp2Dll* ole32_exp3 = new Exp2Dll("ole32.dll", "CoCreateInstance", (unsigned long)CoCreateInstance);
 }
 
+void export_oleaut32()
+{
+
+}
