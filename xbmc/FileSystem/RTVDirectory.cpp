@@ -231,7 +231,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if ( bIsFolder || IsAllowed( szPath) )
         {
           CFileItem* pItem = new CFileItem(szName);
-          memcpy(&pItem->m_stTime, &dtDateTime, sizeof(dtDateTime));
+          pItem->m_dateTime=dtDateTime;
           pItem->m_strPath = strRoot + szPath;
           // Hack to show duration of show in minutes as KB in XMBC because
           // it doesn't currently permit showing duration in minutes.

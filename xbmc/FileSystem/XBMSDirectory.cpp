@@ -192,7 +192,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
       fileTime.dwHighDateTime = (DWORD)(ll >> 32);
 
       FileTimeToLocalFileTime(&fileTime, &localTime);
-      FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+      pItem->m_dateTime=localTime;
 
     }
 

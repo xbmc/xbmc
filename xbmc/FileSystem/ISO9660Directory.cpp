@@ -62,8 +62,9 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
           pItem->m_strPath = strRoot;
           pItem->m_strPath += wfd.cFileName;
           pItem->m_bIsFolder = true;
-          FileTimeToSystemTime(&wfd.ftLastWriteTime, &pItem->m_stTime);
-
+          FILETIME localTime;
+          FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
+          pItem->m_dateTime=localTime;
           items.Add(pItem);
         }
       }
@@ -76,7 +77,9 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
           pItem->m_strPath += wfd.cFileName;
           pItem->m_bIsFolder = false;
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
-          FileTimeToSystemTime(&wfd.ftLastWriteTime, &pItem->m_stTime);
+          FILETIME localTime;
+          FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
+          pItem->m_dateTime=localTime;
           items.Add(pItem);
         }
       }
