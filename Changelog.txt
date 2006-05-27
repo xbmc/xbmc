@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-05-2006 fixed: [ 1479058 ] Renaming files/folders on samba shares
  - 27-05-2006 fixed: Invalid temperature assert on boot when temperature control enabled.
  - 27-05-2006 fixed: [ 1493877 ] Problem with weather localisation in swedish
  - 26-05-2006 changed: Skinners can now specify their startup windows and startup.xml will run on all of them.  (Based on patch [ 1482104 ], thanks to lossol93)
