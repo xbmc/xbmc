@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-05-2006 fixed: [ 1493877 ] Problem with weather localisation in swedish
  - 26-05-2006 changed: Skinners can now specify their startup windows and startup.xml will run on all of them.  (Based on patch [ 1482104 ], thanks to lossol93)
  - 26-05-2006 fixed: Python AR in images wasn't working.
  - 26-05-2006 fixed: Parent folder items in My Pictures would sometimes show with their thumb.
