@@ -6,7 +6,6 @@
 #include "HTTP.h"
 #include "xmlutils.h"
 #include "../temperature.h"
-#include "../systemtime.h"
 
 
 #define CONTROL_BTNREFRESH  2
@@ -293,11 +292,8 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
   if (pElement)
   {
     // Use the local date/time the file is parsed...
-    CSystemTime time;
-    time.Now();
-    CStdString strDateTime=time.GetAsLocalizedDate();
-    strDateTime+=" ";
-    strDateTime+=time.GetAsLocalizedTime();
+    CDateTime time=CDateTime::GetCurrentDateTime();
+    CStdString strDateTime=time.GetAsLocalizedDateTime(false, false);
     strcpy(m_szLastUpdateTime, strDateTime.c_str());
 
     // ...and not the date/time from weather.com

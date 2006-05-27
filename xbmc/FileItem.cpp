@@ -116,7 +116,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bIsParentFolder = item.m_bIsParentFolder;
   m_iDriveType = item.m_iDriveType;
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
-  memcpy(&m_stTime, &item.m_stTime, sizeof(SYSTEMTIME));
+  m_dateTime = item.m_dateTime;
   m_dwSize = item.m_dwSize;
   m_musicInfoTag = item.m_musicInfoTag;
   m_lStartOffset = item.m_lStartOffset;
@@ -151,7 +151,7 @@ void CFileItem::Reset()
   m_bIsFolder = false;
   m_bIsParentFolder=false;
   m_bIsShareOrDrive = false;
-  memset(&m_stTime, 0, sizeof(m_stTime));
+  m_dateTime.Reset();
   m_iDriveType = SHARE_TYPE_UNKNOWN;
   m_lStartOffset = 0;
   m_lEndOffset = 0;
@@ -180,7 +180,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_strPath;
     ar << m_bIsShareOrDrive;
     ar << m_iDriveType;
-    ar << m_stTime;
+    ar << m_dateTime;
     ar << m_dwSize;
     ar << m_fRating;
     ar << m_strDVDLabel;
@@ -212,7 +212,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_strPath;
     ar >> m_bIsShareOrDrive;
     ar >> m_iDriveType;
-    ar >> m_stTime;
+    ar >> m_dateTime;
     ar >> m_dwSize;
     ar >> m_fRating;
     ar >> m_strDVDLabel;
@@ -1082,9 +1082,9 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
       str=StringUtils::SizeToString(m_dwSize);
       bDoneSomething = true;
     }
-    else if (strMask[iPos2 + 1] == 'J' && m_stTime.wYear > 0)
+    else if (strMask[iPos2 + 1] == 'J' && m_dateTime.IsValid())
     { // date
-      str = StringUtils::SystemTimeToString(m_stTime);
+      str = m_dateTime.GetAsLocalizedDateTime();
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'R')
@@ -1094,7 +1094,7 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'Q')
     { // movie Year
-      str.Format("%i", m_stTime.wYear);
+      str=m_musicInfoTag.GetYear();
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'C')

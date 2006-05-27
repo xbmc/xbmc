@@ -1,7 +1,6 @@
 #include "SmartPlaylist.h"
 #include "utils/log.h"
 #include "StringUtils.h"
-#include "SystemTime.h"
 #include "FileSystem/SmartPlaylistDirectory.h"
 #include "utils/CharsetConverter.h"
 #include "XMLUtils.h"
@@ -48,10 +47,11 @@ void CSmartPlaylistRule::TranslateStrings(const char *field, const char *oper, c
   { 
     if (m_operator == OPERATOR_IN_THE_LAST || m_operator == OPERATOR_NOT_IN_THE_LAST)
     { // translate time period
-      CSystemTime sysTime;
-      sysTime.Now();
-      sysTime.SubtractDays(CSystemTime::PeriodToDays(m_parameter));
-      m_parameter = sysTime.GetDate();
+      CDateTime date=CDateTime::GetCurrentDateTime();
+      CDateTimeSpan span;
+      span.SetFromPeriod(m_parameter);
+      date-=span;
+      m_parameter = date.GetAsDBDate();
       m_operator = (m_operator == OPERATOR_IN_THE_LAST) ? OPERATOR_GREATER_THAN : OPERATOR_LESS_THAN;
     }
   }
