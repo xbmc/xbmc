@@ -5,6 +5,17 @@
 class CSkinInfo
 {
 public:
+  class CStartupWindow
+  {
+  public:
+    CStartupWindow(int id, const CStdString &name)
+    {
+      m_id = id; m_name = name;
+    };
+    int m_id;
+    CStdString m_name;
+  };
+
   CSkinInfo();
   ~CSkinInfo();
 
@@ -24,9 +35,13 @@ public:
 
   double GetEffectsSlowdown() const { return m_effectsSlowDown; };
 
+  const vector<CStartupWindow> &GetStartupWindows() { return m_startupWindows; };
+
+  bool OnlyAnimateToHome() { return m_onlyAnimateToHome; };
 
 protected:
   void LoadIncludes();
+  bool LoadStartupWindows(const TiXmlElement *startup);
 
   wchar_t credits[6][50];  // credits info
   int m_iNumCreditLines;  // number of credit lines
@@ -37,6 +52,9 @@ protected:
 
   double m_effectsSlowDown;
   CGUIIncludes m_includes;
+
+  vector<CStartupWindow> m_startupWindows;
+  bool m_onlyAnimateToHome;
 };
 
 extern CSkinInfo g_SkinInfo;
