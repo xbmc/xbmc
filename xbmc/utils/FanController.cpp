@@ -79,9 +79,12 @@ void CFanController::Process()
       sensor = ST_GPU;
     }
 
-    CalcSpeed(targetTemp);
+    if (cpuLastTemp.IsValid())
+    {
+      CalcSpeed(targetTemp);
 
-    SetFanSpeed(calculatedFanSpeed, false);
+      SetFanSpeed(calculatedFanSpeed, false);
+    }
 
     cpuLastTemp = cpuTemp;
     gpuLastTemp = gpuTemp;
