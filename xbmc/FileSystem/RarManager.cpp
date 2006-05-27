@@ -264,7 +264,7 @@ bool CRarManager::IsFileInRar(bool& bResult, const CStdString& strRarPath, const
 	bResult = false;
 	CFileItemList ItemList;
 	
-  if (!GetFilesInRar(ItemList,strRarPath))	
+  if (!GetFilesInRar(ItemList,strRarPath,false))	
     return false;
 	
   int it;
