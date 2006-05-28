@@ -28,7 +28,6 @@ protected:
   virtual void OnScan() {};
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
-  virtual void OnRenameItem(int iItem);
 
   bool OnClick(int iItem);
   void OnResumeItem(int iItem);

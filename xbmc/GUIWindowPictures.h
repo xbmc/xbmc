@@ -30,8 +30,6 @@ protected:
   void OnSlideShowRecursive();
   void AddDir(CGUIWindowSlideShow *pSlideShow, const CStdString& strPath);
   virtual void OnItemLoaded(CFileItem* pItem);
-  void OnDeleteItem(int iItem);
-  virtual void OnRenameItem(int iItem);
   virtual void LoadPlayList(const CStdString& strPlayList);
 
   CGUIDialogProgress* m_dlgProgress;
