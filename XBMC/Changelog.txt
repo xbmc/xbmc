@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-05-2006 added: [ 1496220 ] <previouswindow> tag to window skin files, allowing the skinner to force the previous window, thanks to lossol93.
  - 28-05-2006 added: [ 1496246 ] xbmc.getInfoLabel(int) & xbmc.getInfoImage(int) to python, thanks to Nuka1195.
  - 28-05-2006 fixed: If no screenshot folder is defined, the screenshot is taken before prompting for the screenshot folder.
  - 28-05-2006 fixed: Filebrowser can now have more than one instance.

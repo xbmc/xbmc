@@ -120,6 +120,7 @@ public:
   DWORD GetIDRange() const { return m_dwIDRange; };
   DWORD GetWidth() { return m_dwWidth; };
   DWORD GetHeight() { return m_dwHeight; };
+  DWORD GetPreviousWindow() { return m_previousWindow; };
   int GetPosX() { return m_iPosX; };
   int GetPosY() { return m_iPosY; };
   const CGUIControl* GetControl(int iControl) const;
@@ -220,6 +221,7 @@ protected:
   bool m_saveLastControl;
   int m_lastControlID;
   vector<CControlState> m_controlStates;
+  DWORD m_previousWindow;
 };
 
 #endif
