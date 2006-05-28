@@ -221,8 +221,8 @@ void XBoxStartup()
   
   /* switch extension */
   temp[1] = 'c';
-  temp[2] = 'u';
-  temp[3] = 't';
+  temp[2] = 'f';
+  temp[3] = 'g';
 
   debuglog("INFO - Mounting D: to %s", devicepath);
 
