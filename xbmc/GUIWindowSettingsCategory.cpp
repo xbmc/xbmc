@@ -616,36 +616,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(640), REPLAY_GAIN_ALBUM);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Smb.ShareGroup")
-	  {	// GeminiServer
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(1211), SMB_SHARE_MUSIC	        );       
-      pControl->AddLabel(g_localizeStrings.Get(1212), SMB_SHARE_VIDEO	        );    
-      pControl->AddLabel(g_localizeStrings.Get(1213), SMB_SHARE_PICTURES	    );    
-      pControl->AddLabel(g_localizeStrings.Get(1214), SMB_SHARE_FILES         );    
-      pControl->AddLabel(g_localizeStrings.Get(1215), SMB_SHARE_MU_VI         );    
-      pControl->AddLabel(g_localizeStrings.Get(1216), SMB_SHARE_MU_PIC        );    
-      pControl->AddLabel(g_localizeStrings.Get(1217), SMB_SHARE_MU_FIL        );    
-      pControl->AddLabel(g_localizeStrings.Get(1218), SMB_SHARE_VI_PIC        );    
-      pControl->AddLabel(g_localizeStrings.Get(1219), SMB_SHARE_VI_FIL        );    
-      pControl->AddLabel(g_localizeStrings.Get(1220), SMB_SHARE_PIC_FIL       );    
-      pControl->AddLabel(g_localizeStrings.Get(1221), SMB_SHARE_MU_VI_PIC     );    
-      pControl->AddLabel(g_localizeStrings.Get(1226), SMB_SHARE_FIL_VI_MU     );   
-      pControl->AddLabel(g_localizeStrings.Get(1227), SMB_SHARE_FIL_PIC_MU    );   
-      pControl->AddLabel(g_localizeStrings.Get(1228), SMB_SHARE_FIL_PIC_VI    );   
-      pControl->AddLabel(g_localizeStrings.Get(1222), SMB_SHARE_MU_VI_PIC_FIL );
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting == "Smb.SimpAdvance")
-	  {	// GeminiServer
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(1223), 0 );    //Disabled User
-      pControl->AddLabel(g_localizeStrings.Get(1224), 1 );    //Normal User
-      pControl->AddLabel(g_localizeStrings.Get(1225), 2 );    //Advanced User
-      pControl->SetValue(pSettingInt->GetData());
-    }
     /*else if (strSetting == "Masterlock.Mastermode")
     {
       //GeminiServer
@@ -1060,24 +1030,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
       pSettingString->SetData(time);
       pSettingControl->Update();
-    }
-    else if (strSetting == "Smb.Ip")
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      bool bState;
-      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 0) bState = false; //Disable
-      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 1) bState = true;  //Normal User
-      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 2) bState = true;  //Advanced User
-      if (pControl) pControl->SetEnabled(bState);
-    }
-    else if (strSetting == "Smb.ShareName" || strSetting == "Smb.ShareGroup")
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      bool bState;
-      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 0) bState = false; //Disable
-      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 1) bState = false; //Normal User
-      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 2) bState = true;  //Advanced User
-      if (pControl) pControl->SetEnabled(bState);
     }
     else if (strSetting == "Masterlock.MasterUser" || strSetting == "Masterlock.Enableshutdown" || strSetting == "Masterlock.Protectshares" || strSetting == "Masterlock.StartupLock" || strSetting =="Masterlock.LockSettingsFilemanager" || strSetting =="Masterlock.LockHomeMedia")
     {
@@ -1707,180 +1659,25 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 			CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
     }
   }
-  else if (strSetting == "Smb.Winsserver")
+  else if (strSetting == "Smb.Winsserver" || strSetting == "Smb.Workgroup" )
   {
     if (g_guiSettings.GetString("Smb.Winsserver") == "0.0.0.0") 
       g_guiSettings.SetString("Smb.Winsserver", "");
-  }
-  else if (strSetting == "Smb.SetSmb" || strSetting == "Smb.SimpAdvance")
-  {
-    bool needrestart = false;
 
-    //Let's get the ip and set the correct url string smb://IP !
-    CStdString strSmbIp;
-    strSmbIp.Format("smb://%s/",g_guiSettings.GetString("Smb.Ip"));
-    
-    // We need the previos smb share name to remove them
-    CStdString strSmbShareName = g_guiSettings.GetString("Smb.ShareName");
-    
-    //Delete all Previos Share neames before add. new/changed one!
-    //!! If there are a share , with the same name but non SMB, this will be alo deleted!
-    g_settings.DeleteBookmark("music",    strSmbShareName, strSmbIp);
-    g_settings.DeleteBookmark("video",    strSmbShareName, strSmbIp);
-    g_settings.DeleteBookmark("pictures", strSmbShareName, strSmbIp);
-    g_settings.DeleteBookmark("files",    strSmbShareName, strSmbIp);
+    /* okey we really don't need to restarat, only deinit samba, but that could be damn hard if something is playing*/
+    //TODO - General way of handling setting changes that require restart
 
-    //Set Default if all is Empty
-    if (g_guiSettings.GetString("Smb.Ip")        == "") g_guiSettings.SetString("Smb.Ip", "192.168.0.5");
-    if (g_guiSettings.GetString("Smb.Workgroup") == "") g_guiSettings.SetString("Smb.Workgroup", "WORKGROUP");
-    if (g_guiSettings.GetString("Smb.ShareName") == "") g_guiSettings.SetString("Smb.ShareName", "WORKGROUP (SMB) Network");        
-        
-    //g_settings.UpDateXbmcXML("CDDBIpAddress", "194.97.4.18"); //This is a Test ;
+    CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!dlg) return ;
+    dlg->SetHeading( g_localizeStrings.Get(14038) );
+    dlg->SetLine( 0, g_localizeStrings.Get(14039) );
+    dlg->SetLine( 1, g_localizeStrings.Get(14040));
+    dlg->SetLine( 2, "");
+    dlg->DoModal();
 
-    // if the SMB settings is disabled set also the Share group to 0
-    if(g_guiSettings.GetInt("Smb.SimpAdvance")!= 0)
+    if (dlg->IsConfirmed())
     {
-      //if the user mode is //Normal User, Set the SMB share to all Modes!
-      if (g_guiSettings.GetInt("Smb.SimpAdvance") == 1) g_guiSettings.SetInt("Smb.ShareGroup",SMB_SHARE_MU_VI_PIC_FIL);
-
-      switch (g_guiSettings.GetInt("Smb.ShareGroup"))
-      {
-        case SMB_SHARE_MUSIC:
-          //Musikc
-            if (!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-            { g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp); }
-          break;
-        case SMB_SHARE_VIDEO:
-          //Video
-            if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-            {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
-          break;
-        case SMB_SHARE_PICTURES:
-          //Pictures
-            if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-            {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
-
-          break;
-        case SMB_SHARE_FILES:
-          //Files
-          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
-          break;
-        case SMB_SHARE_MU_VI:
-          //Musik&Video
-          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          break;
-        case SMB_SHARE_MU_PIC:
-          //Musik&Pictures
-          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
-          break;
-        case SMB_SHARE_MU_FIL:
-          //Musik&Files
-          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
-          break;
-        case SMB_SHARE_VI_PIC:
-          //Video&Pic
-          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
-          break;
-        case SMB_SHARE_VI_FIL:
-          //Video&Files
-          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
-          break;
-        case SMB_SHARE_PIC_FIL:
-          //Picture&Files
-          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
-          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
-          break;
-        case SMB_SHARE_MU_VI_PIC:
-          //Musik&Video&Picture
-          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
-          break;
-        case SMB_SHARE_FIL_VI_MU:
-          //Files&Video&Music
-          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
-          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          break;
-        case SMB_SHARE_FIL_PIC_MU:
-          //Files&Pictures&Music
-          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
-          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
-          break;
-        case SMB_SHARE_FIL_PIC_VI:
-          //Files&Pictures&VIdeo
-          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
-          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
-          break;
-        case SMB_SHARE_MU_VI_PIC_FIL:
-          //Musik&Video&Picture&File
-          if(!g_settings.UpdateBookmark("music",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("music",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("video",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("video",    g_guiSettings.GetString("Smb.ShareName"),strSmbIp);}
-          if(!g_settings.UpdateBookmark("pictures", g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("pictures",    g_guiSettings.GetString("Smb.ShareName"), strSmbIp);}
-          if(!g_settings.UpdateBookmark("files",    g_guiSettings.GetString("Smb.ShareName"), "path", strSmbIp))
-          {g_settings.AddBookmark("files",    g_guiSettings.GetString("Smb.ShareName"),  strSmbIp);}
-          break;
-      }
-    }
-    if( needrestart )
-    {
-      /* okey we really don't need to restarat, only deinit samba, but that could be damn hard if something is playing*/
-      CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-      if (!dlg) return ;
-      dlg->SetHeading( g_localizeStrings.Get(14038) );
-      dlg->SetLine( 0, g_localizeStrings.Get(14039) );
-      dlg->SetLine( 1, g_localizeStrings.Get(14040));
-      dlg->SetLine( 2, "");
-      dlg->DoModal();
-
-      if (dlg->IsConfirmed())
-      {
-        g_applicationMessenger.RestartApp();
-      }
-    }
-    if (strSetting == "Smb.SetSmb")
-    {
-      CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (!dlg) return ;
-      dlg->SetHeading( g_localizeStrings.Get(1200) );
-      dlg->SetLine( 0, g_localizeStrings.Get(1209) );
-      dlg->SetLine( 1, g_guiSettings.GetString("Smb.ShareName"));
-      dlg->SetLine( 2, strSmbIp);
-      dlg->DoModal();
-      //if (dlg->IsConfirmed()) //Do nothing!
+      g_applicationMessenger.RestartApp();
     }
   }
   else if (strSetting == "Masterlock.Mastercode")
