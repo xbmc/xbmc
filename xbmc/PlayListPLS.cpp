@@ -225,6 +225,13 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
   {
     return LoadPLSInfo(strURL, strContentType, true);
   }
+  
+  CLog::Log(LOGWARNING, __FUNCTION__" - Unknown playlist contenttype %s", strContentType.c_str());
+  if (strContentType.Left(5) == "text/" && g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL)
+  {
+    httpUtil.Get(strURL, strData);
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Sample %s\n%s", strURL.c_str(), strData.c_str());    
+  }
 
   // Unknown type
   return false;
