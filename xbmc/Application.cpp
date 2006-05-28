@@ -1212,7 +1212,7 @@ void CApplication::StartFtpServer()
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
     {
-      m_pFileZilla = new CXBFileZilla("Q:\\");
+      m_pFileZilla = new CXBFileZilla("Q:\\System\\");
       m_pFileZilla->Start();
     }
     CLog::Log(LOGNOTICE, "XBFileZilla: Started");
