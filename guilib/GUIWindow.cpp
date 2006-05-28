@@ -32,6 +32,7 @@
 #include "GUIMultiImage.h"
 #include "SkinInfo.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "../xbmc/ButtonTranslator.h"
 
 CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
@@ -57,6 +58,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_renderOrder = 0;
   m_dynamicResourceAlloc = true;
   m_hasRendered = false;
+  m_previousWindow = WINDOW_INVALID;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -410,6 +412,10 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
       // then make this window act like a dialog
       if (!IsDialog() && strcmpi(pChild->FirstChild()->Value(), "dialog") == 0)
         m_isDialog = true;
+    }
+    else if (strValue == "previouswindow" && pChild->FirstChild())
+    {
+      m_previousWindow = g_buttonTranslator.TranslateWindowString(pChild->FirstChild()->Value());
     }
     else if (strValue == "defaultcontrol" && pChild->FirstChild())
     {
