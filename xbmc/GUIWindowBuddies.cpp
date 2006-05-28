@@ -771,6 +771,25 @@ bool CGUIWindowBuddies::OnAction(const CAction &action)
       case State::Arenas:
         {
           m_pKaiClient->ExitVector();
+          Enter(CArenaItem(m_pKaiClient->GetCurrentVector()));
+          CStdString strGame;
+          CArenaItem::GetTier(CArenaItem::Game, CKaiClient::GetInstance()->GetCurrentVector(), strGame);
+          if (!strGame.IsEmpty() && GetArenaSelection())
+          {
+            if (GetArenaSelection()->m_bIsPersonal)
+            {
+              CONTROL_ENABLE(CONTROL_BTNPLAY);
+            }
+            else
+            {
+              CONTROL_DISABLE(CONTROL_BTNPLAY);
+            }
+          }
+          else
+          {
+            CONTROL_DISABLE(CONTROL_BTNPLAY);
+          }
+
           break;
         }
       }
@@ -1222,7 +1241,23 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
       SET_CONTROL_LABEL(CONTROL_BTNPLAY, g_localizeStrings.Get(15023)); // Play
       SET_CONTROL_LABEL(CONTROL_BTNADD, g_localizeStrings.Get(15024)); // Add
       SET_CONTROL_LABEL(CONTROL_BTNHOST, g_localizeStrings.Get(15025)); // Host
-      CONTROL_ENABLE(CONTROL_BTNPLAY);
+      CStdString strGame;
+      CArenaItem::GetTier(CArenaItem::Game, CKaiClient::GetInstance()->GetCurrentVector(), strGame);
+      if (!strGame.IsEmpty() && GetArenaSelection())  
+      {
+        if (GetArenaSelection()->m_bIsPersonal)
+        {
+          CONTROL_ENABLE(CONTROL_BTNPLAY);
+        }
+        else
+        {
+          CONTROL_DISABLE(CONTROL_BTNPLAY);
+        }
+      }
+      else
+      {
+        CONTROL_DISABLE(CONTROL_BTNPLAY);
+      }
       CONTROL_DISABLE(CONTROL_BTNADD);
       CONTROL_ENABLE(CONTROL_BTNHOST);
 
