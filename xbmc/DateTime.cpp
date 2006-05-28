@@ -588,7 +588,7 @@ void CDateTime::Serialize(CArchive& ar)
 void CDateTime::Reset()
 {
   SetDateTime(1601, 1, 1, 0, 0, 0);
-  SetValid(true);
+  SetValid(false);
 }
 
 void CDateTime::SetValid(bool yesNo)
@@ -844,13 +844,13 @@ CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
       if (pos>-1)
       {
         // Get length of the hour mask, eg. HH
-        partLength=strFormat.Mid(i, pos-i).GetLength();
+        partLength=pos-i;
         i=pos-1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=strFormat.Mid(i, length-i).GetLength();
+        partLength=length-i;
         i=length;
       }
 
@@ -880,13 +880,13 @@ CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
       if (pos>-1)
       {
         // Get length of the minute mask, eg. mm
-        partLength=strFormat.Mid(i, pos-i).GetLength();
+        partLength=pos-i;
         i=pos-1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=strFormat.Mid(i, length-i).GetLength();
+        partLength=length-i;
         i=length;
       }
 
@@ -907,13 +907,13 @@ CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
       if (pos>-1)
       {
         // Get length of the seconds mask, eg. ss
-        partLength=strFormat.Mid(i, pos-i).GetLength();
+        partLength=pos-i;
         i=pos-1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=strFormat.Mid(i, length-i).GetLength();
+        partLength=length-i;
         i=length;
       }
 
@@ -939,13 +939,13 @@ CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
       if (pos>-1)
       {
         // Get length of the meridiem mask
-        partLength=strFormat.Mid(i, pos-i).GetLength();
+        partLength=pos-i;
         i=pos-1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=strFormat.Mid(i, length-i).GetLength();
+        partLength=length-i;
         i=length;
       }
 
@@ -1004,13 +1004,13 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
       if (pos>-1)
       {
         // Get length of the day mask, eg. DDDD
-        partLength=strFormat.Mid(i, pos-i).GetLength();
+        partLength=pos-i;
         i=pos-1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=strFormat.Mid(i, length-i).GetLength();
+        partLength=length-i;
         i=length;
       }
 
@@ -1043,13 +1043,13 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
       if (pos>-1)
       {
         // Get length of the month mask, eg. MMMM
-        partLength=strFormat.Mid(i, pos-i).GetLength();
+        partLength=pos-i;
         i=pos-1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=strFormat.Mid(i, length-i).GetLength();
+        partLength=length-i;
         i=length;
       }
 
@@ -1087,13 +1087,13 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
       if (pos>-1)
       {
         // Get length of the year mask, eg. YYYY
-        partLength=strFormat.Mid(i, pos-i).GetLength();
+        partLength=pos-i;
         i=pos-1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=strFormat.Mid(i, length-i).GetLength();
+        partLength=length-i;
         i=length;
       }
 
@@ -1109,8 +1109,6 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
       strOut+=c;
   }
 
-  if (strOut.IsEmpty())
-    strOut="No Date";
   return strOut;
 }
 
