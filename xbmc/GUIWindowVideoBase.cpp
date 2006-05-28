@@ -960,15 +960,6 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   m_viewControl.SetSelectedItem(iItem);
 }
 
-void CGUIWindowVideoBase::OnRenameItem(int iItem)
-{
-  if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
-  if (!CGUIWindowFileManager::RenameFile(m_vecItems[iItem]->m_strPath))
-    return;
-  Update(m_vecItems.m_strPath);
-  m_viewControl.SetSelectedItem(iItem);
-}
-
 void CGUIWindowVideoBase::MarkUnWatched(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;

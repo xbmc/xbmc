@@ -15,7 +15,6 @@
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
-#include "GUIWindowFileManager.h"
 #include "GUIDialogMediaSource.h"
 #include "PartyModeManager.h"
 #include "utils/GUIInfoManager.h"
@@ -1423,26 +1422,6 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   {
     OnClick(iItem);
   }
-}
-
-void CGUIWindowMusicBase::OnDeleteItem(int iItem)
-{
-  if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
-  if (!CGUIWindowFileManager::DeleteItem(m_vecItems[iItem]))
-    return;
-
-  Update(m_vecItems.m_strPath);
-  m_viewControl.SetSelectedItem(iItem);
-}
-
-void CGUIWindowMusicBase::OnRenameItem(int iItem)
-{
-  if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
-  if (!CGUIWindowFileManager::RenameFile(m_vecItems[iItem]->m_strPath))
-    return;
-
-  Update(m_vecItems.m_strPath);
-  m_viewControl.SetSelectedItem(iItem);
 }
 
 void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
