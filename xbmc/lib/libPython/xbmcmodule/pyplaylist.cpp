@@ -218,6 +218,16 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(unshuffle__doc__,
+		"unshuffle() -- unshuffle the playlist.\n");
+
+	PyObject* PlayList_UnShuffle(PlayList *self, PyObject *args)
+	{
+		self->pPlayList->UnShuffle();
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	PyDoc_STRVAR(size__doc__,
 		"size() -- returns the total number of PlayListItems in this playlist.\n");
 
@@ -303,6 +313,7 @@ namespace PYXBMC
 		{"clear", (PyCFunction)PlayList_Clear, METH_VARARGS, clear__doc__},
 		{"size", (PyCFunction)PlayList_Size, METH_VARARGS, size__doc__},
 		{"shuffle", (PyCFunction)PlayList_Shuffle, METH_VARARGS, shuffle__doc__},
+		{"unshuffle", (PyCFunction)PlayList_UnShuffle, METH_VARARGS, unshuffle__doc__},
 		{"getposition", (PyCFunction)PlayList_GetPosition, METH_VARARGS, getposition__doc__},
 		{NULL, NULL, 0, NULL}
 	};
