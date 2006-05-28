@@ -1212,6 +1212,10 @@ void CApplication::StartFtpServer()
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
     {
+      // if user didn't upgrade properly...
+      // TODO 2.0: This can be removed in a few weeks probably
+      if (!CFile::Exists("Q:\\System\\FileZilla Server.xml") && CFile::Exists("Q:\\FileZilla Server.xml"))
+        CFile::Cache("Q:\\FileZilla Server.xml", "Q:\\System\\FileZilla Server.xml");
       m_pFileZilla = new CXBFileZilla("Q:\\System\\");
       m_pFileZilla->Start();
     }
