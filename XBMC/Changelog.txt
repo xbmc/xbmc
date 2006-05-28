@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-05-2006 fixed: Seekbar could stay on screen after a video calibration of the OSD.
  - 28-05-2006 changed: more logging on shoutcast directory failure, will log recived data if loglevel is in debug.
  - 28-05-2006 fixed: play button was enabled without an arena in kai window.
  - 28-05-2006 fixed: Rename smb folders from videos/music/pictures context menus.
