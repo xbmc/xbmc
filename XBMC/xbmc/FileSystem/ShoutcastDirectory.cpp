@@ -200,23 +200,30 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   /* parse returned xml */
   TiXmlDocument doc;
   doc.Parse(data.c_str());
-  
-  /* TODO: clear string data here */
-
 
   TiXmlElement *root = doc.RootElement();
   if(root == NULL)
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Unable to parse xml");
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str());
+
     dlgProgress->Close();
     return false;
   }
+
+  /* clear data to keep memusage down, not needed anymore */
+  data.Empty();
 
   bool result;
   if( strcmp(root->Value(), "genrelist") == 0 )
     result = ParseGenres(root, items, url);
   else if( strcmp(root->Value(), "stationlist") == 0 )
     result = ParseStations(root, items, url);
+  else
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Invalid root xml element for shoutcast");
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str);
+  }
 
   CFileItemList vecCacheItems;  
   g_directoryCache.ClearDirectory(strRoot);
