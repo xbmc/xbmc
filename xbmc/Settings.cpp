@@ -3,7 +3,6 @@
 #include "application.h"
 #include "util.h"
 #include "GUIWindowMusicBase.h"
-#include "GUIDialogFileBrowser.h"
 #include "utils/FanController.h"
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
