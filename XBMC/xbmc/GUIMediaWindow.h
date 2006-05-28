@@ -43,6 +43,8 @@ protected:
   virtual void LoadPlayList(const CStdString& strFileName) {}
   virtual bool OnPlayMedia(int iItem);
   void UpdateFileList();
+  virtual void OnDeleteItem(int iItem);
+  void OnRenameItem(int iItem);
 
 protected:
   CVirtualDirectory m_rootDir;
