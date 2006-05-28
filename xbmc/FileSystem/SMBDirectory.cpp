@@ -106,19 +106,14 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->m_strPath = strRoot;
 
         // needed for network / workgroup browsing
-        // skip if root has already a valid domain and type is not a server
-        if ((strRoot.find(';') == -1) &&
-            (dirEnt->smbc_type == SMBC_SERVER))
-          /*&& (strRoot.find('@') == -1))*/ //Removed to allow browsing even if a user is specified
+        // skip if root if we are given a server
+        if (dirEnt->smbc_type == SMBC_SERVER)
         {
-          // length > 6, which means a workgroup name is specified and we need to
-          // remove it. Domain without user is not allowed
-          int strLength = strRoot.length();
-          if (strLength > 6)
-          {
-            if (CUtil::HasSlashAtEnd(strRoot))
-              pItem->m_strPath = "smb://";
-          }
+          /* create url with same options, user, pass.. but no filename or host*/
+          CURL rooturl(strRoot);
+          rooturl.SetFileName("");
+          rooturl.SetHostName("");
+          pItem->m_strPath = smb.URLEncode(rooturl);
         }
         pItem->m_strPath += dirEnt->name;
         if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
@@ -172,22 +167,8 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
   CStdString strPath;
   CStdString strShare = urlIn.GetShareName();	// it's only the server\share we're interested in authenticating
 
-  int iTryAutomatic = 0;
   IMAPPASSWORDS it = g_passwordManager.m_mapSMBPasswordCache.find(strShare);
-
-  if( strShare.IsEmpty() ) 
-  { 
-    //Reset username/password
-    //this is cause when we navigate backwords usernames and passwords
-    //will be kept, and can cause problems
-    urlIn.SetUserName("");
-    urlIn.SetPassword("");
-
-    //Only allow automatic authentication on workgroups/computers
-    if( !urlIn.GetHostName().IsEmpty() )
-      iTryAutomatic = 2;
-  }
-  else if(it != g_passwordManager.m_mapSMBPasswordCache.end())
+  if(it != g_passwordManager.m_mapSMBPasswordCache.end())
   {
     // if share found in cache use it to supply username and password
     CURL url(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
@@ -196,43 +177,22 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
     urlIn.SetPassword(strPassword);
     urlIn.SetUserName(strUserName);
   }
-  else if( urlIn.GetUserName().IsEmpty() )
+  else if( urlIn.GetUserName().IsEmpty() && !urlIn.GetHostName().IsEmpty() )
   { 
     //No username specified, try to authenticate using default password or anonomously
-    if( g_guiSettings.GetString("Smb.Username").length() > 0 )
-      iTryAutomatic = 2;
-    else
-      iTryAutomatic = 1;
+    //libsmbclient will fallback to anon by itself
+    urlIn.SetUserName(g_guiSettings.GetString("Smb.Username"));
+    urlIn.SetPassword(g_guiSettings.GetString("Smb.Password"));
   }
-
   
-  urlIn.GetURL(strPath);
+  /* samba has a stricter url encoding, than our own.. CURL can decode it properly */
+  /* however doesn't always encode it correctly (spaces for example) */
+  strPath = smb.URLEncode(urlIn);
 
   // for a finite number of attempts use the following instead of the while loop:
   // for(int i = 0; i < 3, fd < 0; i++)
   while (fd < 0)
-  {
-    
-    if(iTryAutomatic)
-    { 
-      //Try using default username/password if available
-      if ( iTryAutomatic == 2 )
-      {
-        urlIn.SetUserName(g_guiSettings.GetString("Smb.Username"));
-        urlIn.SetPassword(g_guiSettings.GetString("Smb.Password"));
-      }
-      
-      //Try anonomously
-      if( iTryAutomatic == 1 )
-      {
-        urlIn.SetUserName("");
-        urlIn.SetPassword("");
-      }
-
-      urlIn.GetURL(strPath);
-      iTryAutomatic--;
-    }
-
+  {    
     // remove the / or \ at the end. the samba library does not strip them off
     // don't do this for smb:// !!
     CStdString s = strPath;
@@ -243,7 +203,8 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
       s.erase(len - 1, 1);
     }
     
-    { CSingleLock lock(smb);
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Using authentication url %s", s.c_str());
+    { CSingleLock lock(smb);      
       fd = smbc_opendir(s.c_str());
     }
     
@@ -264,17 +225,15 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
       // if the error is access denied, prompt for a valid user name and password
       if (nt_error == NT_STATUS_ACCESS_DENIED)
       {
-        //if there is more automatic tries left, just continue
-        if( iTryAutomatic ) 
-          continue;
-
         if (m_allowPrompting)
         {
           g_passwordManager.SetSMBShare(strPath);
           g_passwordManager.GetSMBShareUserPassword();  // Do this bit via a threadmessage?
           if (g_passwordManager.IsCanceled())
           	break;
-          strPath = g_passwordManager.GetSMBShare();
+
+          /* must do this as our urlencoding for spaces is invalid for samba */
+          strPath = smb.URLEncode( CURL( g_passwordManager.GetSMBShare() ) );
         }
         else
           break;
