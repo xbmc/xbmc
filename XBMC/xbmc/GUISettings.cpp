@@ -415,7 +415,6 @@ CGUISettings::CGUISettings(void)
   AddString(7,"Servers.WebServerPort",    730, "80", BUTTON_CONTROL_INPUT, false, 730);
   AddString(8,"Servers.WebServerPassword",733, "", BUTTON_CONTROL_HIDDEN_INPUT, true, 733);
 
-  //GeminiServer
   AddCategory(6,"Autodetect",           1250  );
   AddBool(1,    "Autodetect.OnOff",     1251, true);
   AddString(2,  "Autodetect.NickName",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
@@ -424,19 +423,11 @@ CGUISettings::CGUISettings(void)
   AddBool(6,    "Autodetect.SendUserPw",1255, true);
   AddBool(7,    "Autodetect.CreateLink",1253, false);
   
-  //GeminiServer
   AddCategory(6, "Smb", 1200);  
   AddString(1, "Smb.Username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
   AddString(2, "Smb.Password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "Smb.Winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "Smb.Workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
-  AddSeparator(7, "Smb.Sep1");
-  AddInt(8, "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddString(9, "Smb.Ip",          1201,   "192.168.0.106",  BUTTON_CONTROL_IP_INPUT);
-  AddString(10, "Smb.ShareName",   1205,   "WORKGROUP (SMB) Network", BUTTON_CONTROL_INPUT, false, 1205);
-  AddInt(11, "Smb.ShareGroup",  1206,   SMB_SHARE_MU_VI_PIC_FIL, SMB_SHARE_MUSIC, 1, SMB_SHARE_MU_VI_PIC_FIL, SPIN_CONTROL_TEXT);
-  AddSeparator(12, "Smb.Sep2");
-  AddString(13,"Smb.SetSmb",      14070,  "", BUTTON_CONTROL_STANDARD);
 
   // appearance settings
   AddGroup(7, 480);
