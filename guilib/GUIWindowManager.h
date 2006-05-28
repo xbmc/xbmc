@@ -13,6 +13,8 @@
 #include "IWindowManagerCallback.h"
 #include "IMsgTargetCallback.h"
 
+#define WINDOW_ID_MASK 0xffff
+
 /*!
  \ingroup winman
  \brief 
@@ -25,6 +27,7 @@ public:
   virtual bool SendMessage(CGUIMessage& message);
   void Initialize();
   void Add(CGUIWindow* pWindow);
+  void AddUniqueInstance(CGUIWindow *window);
   void AddCustomWindow(CGUIWindow* pWindow);
   void AddModeless(CGUIWindow* pWindow);
   void Remove(DWORD dwID);

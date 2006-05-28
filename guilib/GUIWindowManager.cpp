@@ -104,6 +104,16 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
   return handled;
 }
 
+void CGUIWindowManager::AddUniqueInstance(CGUIWindow *window)
+{
+  // increment our instance (upper word of windowID)
+  // until we get a window we don't have
+  DWORD instance = 0;
+  while (GetWindow(window->GetID()))
+    window->SetID(window->GetID() + (++instance << 16));
+  Add(window);
+}
+
 void CGUIWindowManager::Add(CGUIWindow* pWindow)
 {
   if (!pWindow)
@@ -558,18 +568,20 @@ int CGUIWindowManager::GetActiveWindow() const
 
 bool CGUIWindowManager::IsWindowActive(DWORD dwID, bool ignoreClosing /* = true */) const
 {
-  if (GetActiveWindow() == dwID) return true;
+  // mask out multiple instances of the same window
+  dwID &= WINDOW_ID_MASK;
+  if ((GetActiveWindow() & WINDOW_ID_MASK) == dwID) return true;
   // run through the modal + modeless windows
   for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
   {
     CGUIWindow *pWindow = m_vecModalWindows[i];
-    if (pWindow->GetID() == dwID && (!ignoreClosing || !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
+    if ((pWindow->GetID() & WINDOW_ID_MASK) == dwID && (!ignoreClosing || !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
       return true;
   }
   for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
   {
     CGUIWindow *pWindow = m_vecModelessWindows[i];
-    if (pWindow->GetID() == dwID && (!ignoreClosing || !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
+    if ((pWindow->GetID() & WINDOW_ID_MASK) == dwID && (!ignoreClosing || !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
       return true;
   }
   return false; // window isn't active

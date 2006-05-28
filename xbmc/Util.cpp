@@ -2543,10 +2543,25 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 void CUtil::TakeScreenshot()
 {
   char fn[1024];
-  CStdString strDir = g_guiSettings.GetString("System.ScreenshotPath");
+  static bool savingScreenshots = false;
+  static vector<CStdString> screenShots;
+
+  bool promptUser = false;
+  // check to see if we have a screenshot folder yet
+  CStdString strDir = g_guiSettings.GetString("System.ScreenshotPath", false);
+  if (strDir.IsEmpty())
+  {
+    strDir = "Z:\\";
+    if (!savingScreenshots)
+    {
+      promptUser = true;
+      savingScreenshots = true;
+      screenShots.clear();
+    }
+  }
   CUtil::RemoveSlashAtEnd(strDir);
 
-  if (strlen(strDir.c_str()))
+  if (!strDir.IsEmpty())
   {
     sprintf(fn, "%s\\screenshot%%03d.bmp", strDir.c_str());
     strcpy(fn, CUtil::GetNextFilename(fn, 999).c_str());
@@ -2554,12 +2569,31 @@ void CUtil::TakeScreenshot()
     if (strlen(fn))
     {
       TakeScreenshot(fn, true);
+      if (savingScreenshots)
+        screenShots.push_back(fn);
+      if (promptUser)
+      { // grab the real directory
+        CStdString newDir = g_guiSettings.GetString("System.ScreenshotPath");
+        if (!newDir.IsEmpty())
+        {
+          for (unsigned int i = 0; i < screenShots.size(); i++)
+          {
+            char dest[1024];
+            sprintf(dest, "%s\\screenshot%%03d.bmp", newDir.c_str());
+            strcpy(dest, CUtil::GetNextFilename(dest, 999).c_str());
+            CFile::Cache(screenShots[i], dest);
+          }
+          screenShots.clear();
+        }
+        savingScreenshots = false;
+      }
     }
     else
     {
       CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
     }
   }
+
 }
 
 void CUtil::ClearCache()
@@ -3510,7 +3544,7 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
     else if (strSpecial.Left(10).Equals("$SHORTCUTS"))
       CUtil::AddFileToFolder(g_stSettings.m_szShortcutDirectory, strSpecial.Mid(10), strReturn);
     else if (strSpecial.Left(11).Equals("$RECORDINGS"))
-      CUtil::AddFileToFolder(g_guiSettings.GetString("MyMusic.RecordingPath"), strSpecial.Mid(11), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("MyMusic.RecordingPath",false), strSpecial.Mid(11), strReturn);
     else if (strSpecial.Left(12).Equals("$SCREENSHOTS"))
       CUtil::AddFileToFolder(g_guiSettings.GetString("System.ScreenshotPath",false), strSpecial.Mid(12), strReturn);
     else if (strSpecial.Left(10).Equals("$PLAYLISTS"))
