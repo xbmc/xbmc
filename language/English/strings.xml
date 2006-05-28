@@ -617,15 +617,10 @@
   <string><id>1032</id><value>Add Network Location...</value></string>
 
   <string><id>1200</id><value>SMB Client</value></string>
-  <string><id>1201</id><value>Share IP</value></string>
   <string><id>1202</id><value>Workgroup</value></string>
   <string><id>1203</id><value>Default Username</value></string>
   <string><id>1204</id><value>Default Password</value></string>
-  <string><id>1205</id><value>Share Name</value></string>
-  <string><id>1206</id><value>Share Group</value></string>
   <string><id>1207</id><value>WINS-Server</value></string>
-  <string><id>1208</id><value>Automatic Bookmarks</value></string>
-  <string><id>1209</id><value>The SMB Client Settings was set succesfully!</value></string>
   <string><id>1210</id><value>Remove</value></string>
   <string><id>1211</id><value>Music</value></string>
   <string><id>1212</id><value>Video</value></string>
@@ -652,7 +647,6 @@
   <string><id>1233</id><value>Programs &amp; Video &amp; Music</value></string>
   <string><id>1234</id><value>Programs &amp; Pictures &amp; Music</value></string>
   <string><id>1235</id><value>Programs &amp; Pictures &amp; Video</value></string>
-  <string><id>1236</id><value>- Client Timeout</value></string>
 
   <string><id>1245</id><value>FTP User Name</value></string>
   <string><id>1246</id><value>FTP User Password</value></string>
