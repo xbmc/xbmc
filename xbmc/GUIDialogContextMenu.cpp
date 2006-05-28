@@ -460,7 +460,6 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
             m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
           else if (strType == "files")
             m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU);
-          return true;
         }
       }
     }

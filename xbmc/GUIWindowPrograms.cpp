@@ -391,7 +391,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     // and do the popup menu
     if (CGUIDialogContextMenu::BookmarksMenu("myprograms", m_vecItems[iItem], iPosX, iPosY))
     {
-	    m_history.SetSelectedItem(m_vecItems[iItem]->m_strPath,"empty");
+      m_rootDir.SetShares(g_settings.m_vecMyProgramsBookmarks);
 	    Update("");
       return true;
     }

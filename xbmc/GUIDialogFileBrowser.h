@@ -21,7 +21,7 @@ public:
   void SetHeading(const CStdString &heading);
 
   static bool ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly=false);
-  static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path);
+  static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false);
   static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares, VECSHARES* additionalShare = NULL);
   static bool ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path);
   static bool ShowAndGetImage(const CFileItemList &items, const CStdString &heading, CStdString &path);
@@ -30,6 +30,8 @@ public:
 
   virtual void OnItemLoaded(CFileItem *item) {};
   const CFileItem *GetCurrentListItem() const;
+
+  virtual bool IsMediaWindow() { return true; };
 protected:
   void GoParentFolder();
   void OnClick(int iItem);

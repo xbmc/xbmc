@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-05-2006 fixed: If no screenshot folder is defined, the screenshot is taken before prompting for the screenshot folder.
+ - 28-05-2006 fixed: Filebrowser can now have more than one instance.
  - 27-05-2006 added: localized date/time in directory listings
  - 27-05-2006 fixed: [ 1479058 ] Renaming files/folders on samba shares
  - 27-05-2006 fixed: Invalid temperature assert on boot when temperature control enabled.
