@@ -701,7 +701,10 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
       if (bPrompt)
       {
         if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(result->GetLabel()),strData,false))
+        {
           result->SetData(strData);
+          g_settings.Save();
+        }
         else 
           return __strEmpty__;
       }
@@ -714,9 +717,12 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
       if (bPrompt)
       {
         if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(result->GetLabel()),strData,true))
-        result->SetData(strData);
-      else
-        return __strEmpty__;
+        {
+          result->SetData(strData);
+          g_settings.Save();
+        }
+        else
+          return __strEmpty__;
       }
       else
         return __strEmpty__;
