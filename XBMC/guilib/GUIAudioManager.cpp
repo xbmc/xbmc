@@ -284,7 +284,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 // Events: SOUND_INIT, SOUND_DEINIT
 void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
 {
-  windowSoundMap::iterator it=m_windowSoundMap.find((WORD)dwID);
+  windowSoundMap::iterator it=m_windowSoundMap.find((WORD)(dwID & 0xffff));
   if (it==m_windowSoundMap.end())
     return;
 
