@@ -51,9 +51,6 @@ protected:
   virtual void PlayItem(int iItem);
   virtual bool OnPlayMedia(int iItem);
 
-  void OnDeleteItem(int iItem);
-  virtual void OnRenameItem(int iItem);
-
   void RetrieveMusicInfo();
   void OnInfo(int iItem);
   void OnQueueItem(int iItem);

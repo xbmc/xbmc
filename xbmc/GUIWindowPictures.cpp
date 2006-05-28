@@ -8,7 +8,6 @@
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
 #include "GUIDialogContextMenu.h"
-#include "GUIWindowFileManager.h"
 #include "GUIDialogMediaSource.h"
 #include "PlayListFactory.h"
 
@@ -571,25 +570,6 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     pItem->SetCachedPictureThumb();
     pItem->FillInDefaultIcon();
   }
-}
-
-
-void CGUIWindowPictures::OnDeleteItem(int iItem)
-{
-  if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
-  if (!CGUIWindowFileManager::DeleteItem(m_vecItems[iItem]))
-    return;
-  Update(m_vecItems.m_strPath);
-  m_viewControl.SetSelectedItem(iItem);
-}
-
-void CGUIWindowPictures::OnRenameItem(int iItem)
-{
-  if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
-  if (!CGUIWindowFileManager::RenameFile(m_vecItems[iItem]->m_strPath))
-    return;
-  Update(m_vecItems.m_strPath);
-  m_viewControl.SetSelectedItem(iItem);
 }
 
 void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)

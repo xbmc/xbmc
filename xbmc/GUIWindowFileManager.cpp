@@ -809,7 +809,6 @@ void CGUIWindowFileManager::OnRename(int iList)
     if (pItem->IsSelected())
     {
       strFile = pItem->m_strPath;
-      CUtil::RemoveSlashAtEnd(strFile);
       break;
     }
   }
@@ -833,18 +832,20 @@ void CGUIWindowFileManager::OnSelectAll(int iList)
 
 bool CGUIWindowFileManager::RenameFile(const CStdString &strFile)
 {
-  CStdString strFileName = CUtil::GetFileName(strFile);
-  CStdString strPath = strFile.Left(strFile.size() - strFileName.size());
+  CStdString strFileAndPath(strFile);
+  CUtil::RemoveSlashAtEnd(strFileAndPath);
+  CStdString strFileName = CUtil::GetFileName(strFileAndPath);
+  CStdString strPath = strFile.Left(strFileAndPath.size() - strFileName.size());
   if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
   {
     strPath += strFileName;
     
     CStdString strLog;
-    strLog.Format("FileManager: rename %s->%s\n", strFile.c_str(), strPath.c_str());
+    strLog.Format("FileManager: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
     OutputDebugString(strLog.c_str());
     CLog::Log(LOGINFO,"%s",strLog.c_str());
 
-    CFile::Rename(strFile.c_str(), strPath.c_str());
+    CFile::Rename(strFileAndPath.c_str(), strPath.c_str());
     return true;
   }
   return false;
