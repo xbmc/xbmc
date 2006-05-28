@@ -58,7 +58,6 @@
 #define SYSTEM_GPU_TEMPERATURE      113
 #define SYSTEM_FAN_SPEED            114
 #define SYSTEM_FREE_SPACE_C         115
-#define SYSTEM_FREE_SPACE_C         115
 /* 
 #define SYSTEM_FREE_SPACE_D         116 //116 is reserved for space on D
 */

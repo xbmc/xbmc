@@ -98,7 +98,6 @@
 #include "GUIDialogVideoSettings.h"
 #include "GUIDialogAudioSubtitleSettings.h"
 #include "GUIDialogVideoBookmarks.h"
-#include "GUIDialogFileBrowser.h"
 #include "GUIDialogTrainerSettings.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUIDialogMediaSource.h"
@@ -1066,7 +1065,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogVideoSettings);             // window id = 123
   m_gWindowManager.Add(new CGUIDialogAudioSubtitleSettings);     // window id = 124
   m_gWindowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
-  m_gWindowManager.Add(new CGUIDialogFileBrowser);      // window id = 126
+  // Don't add the filebrowser dialog - it's created and added when it's needed
   m_gWindowManager.Add(new CGUIDialogTrainerSettings);  // window id = 127
   m_gWindowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
   m_gWindowManager.Add(new CGUIDialogMediaSource);   // window id = 129
@@ -1918,11 +1917,11 @@ bool CApplication::OnKey(CKey& key)
   }
 
   // get the current active window
-  int iWin = m_gWindowManager.GetActiveWindow();
+  int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
   // change this if we have a dialog up
   if (m_gWindowManager.IsRouted())
   {
-    iWin = m_gWindowManager.GetTopMostRoutedWindowID();
+    iWin = m_gWindowManager.GetTopMostRoutedWindowID() & WINDOW_ID_MASK;
   }
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {

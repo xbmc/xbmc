@@ -404,33 +404,31 @@ void CGUIDialogFileBrowser::OnWindowUnload()
 bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const CStdString &heading, CStdString &result)
 {
   CStdString mask = ".png|.jpg|.bmp|.gif";
-  CGUIDialogFileBrowser *browser = (CGUIDialogFileBrowser *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILE_BROWSER);
+  CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
+  m_gWindowManager.AddUniqueInstance(browser);
+
   browser->m_browsingForImages = true;
   browser->m_singleList = true;
   browser->m_vecItems.Clear();
   browser->m_vecItems.Append(items);
   browser->SetHeading(heading);
   browser->DoModal();
-  if (browser->IsConfirmed())
+  bool confirmed(browser->IsConfirmed());
+  if (confirmed)
   {
     result = browser->m_selectedPath;
-    return true;
   }
-  return false;
+
+  m_gWindowManager.Remove(browser->GetID());
+  delete browser;
+  return confirmed;
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path)
 {
-  CStdString mask = ".png|.jpg|.bmp|.gif";
-  CGUIDialogFileBrowser *browser = (CGUIDialogFileBrowser *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILE_BROWSER);
-  if (!browser)
-    return false;
-  browser->m_browsingForImages = true;
-  bool success = ShowAndGetFile(shares, mask, heading, path);
-  browser->m_browsingForImages = false;
-  return success;
+  return ShowAndGetFile(shares, ".png|.jpg|.bmp|.gif", heading, path, true); // true for use thumbs
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly)
@@ -451,13 +449,16 @@ bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdStr
   return ShowAndGetFile(shares, "/", heading, path);
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path)
+bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs /* = false */)
 {
-  CGUIDialogFileBrowser *browser = (CGUIDialogFileBrowser *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILE_BROWSER);
+  CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
+  m_gWindowManager.AddUniqueInstance(browser);
+
   CStdString browseHeading;
   browseHeading.Format(g_localizeStrings.Get(13401).c_str(), heading.c_str());
+  browser->m_browsingForImages = useThumbs;
   browser->SetHeading(browseHeading);
   browser->SetShares(shares);
   CStdString strMask = mask;
@@ -476,12 +477,12 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &
   browser->m_selectedPath = path;
   browser->m_addNetworkShareEnabled = false;
   browser->DoModal();
-  if (browser->IsConfirmed())
-  {
+  bool confirmed(browser->IsConfirmed());
+  if (confirmed)
     path = browser->m_selectedPath;
-    return true;
-  }
-  return false;
+  m_gWindowManager.Remove(browser->GetID());
+  delete browser;
+  return confirmed;
 }
 
 void CGUIDialogFileBrowser::SetHeading(const CStdString &heading)
@@ -503,8 +504,17 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
   //     d) Return to 1.
   // 4.  Allow user to browse the local and network locations for their share.
   // 5.  On OK, return to the Add share dialog.
-  CGUIDialogFileBrowser *browser = (CGUIDialogFileBrowser *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILE_BROWSER);
+
+  // Create a new filebrowser window
+  CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser) return false;
+
+  // Add it to our window manager
+  int instance = 0;
+  while (m_gWindowManager.GetWindow(WINDOW_DIALOG_FILE_BROWSER + (instance << 16)))
+    instance++;
+  browser->SetID(WINDOW_DIALOG_FILE_BROWSER + (instance << 16));
+  m_gWindowManager.Add(browser);
 
   browser->SetHeading(g_localizeStrings.Get(1023));
 
@@ -529,12 +539,13 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
   browser->m_addNetworkShareEnabled = allowNetworkShares;
   browser->m_selectedPath = "";
   browser->DoModal();
-  if (browser->IsConfirmed())
-  {
+  bool confirmed = browser->IsConfirmed();
+  if (confirmed)
     path = browser->m_selectedPath;
-    return true;
-  }
-  return false;
+
+  m_gWindowManager.Remove(browser->GetID());
+  delete browser;
+  return confirmed;
 }
 
 void CGUIDialogFileBrowser::SetShares(VECSHARES &shares)
@@ -546,9 +557,9 @@ void CGUIDialogFileBrowser::SetShares(VECSHARES &shares)
 void CGUIDialogFileBrowser::OnAddNetworkLocation()
 {
   // Close the current dialog as it will be reused by this method
-  VECSHARES shares = m_shares;
-  Close();
+//  Close();
 
+  VECSHARES shares = m_shares;
   // ok, fire up the network location dialog
   CStdString path;
   if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(path))
@@ -566,14 +577,14 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
       g_mediaManager.AddNetworkLocation(path);
     }
   }
-
+/*
   // re-open our dialog
   SetShares(shares);
   m_rootDir.SetMask("/");
   m_browsingForFolders = true;
   m_addNetworkShareEnabled = true;
   m_selectedPath = "";
-  DoModal();
+  DoModal();*/
 }
 
 bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
