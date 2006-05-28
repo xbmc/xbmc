@@ -70,7 +70,7 @@ void CGUIProgressControl::Render()
       m_guiMid.SetHeight((int)(fScaleY * m_guiMid.GetTextureHeight()));
       m_guiMid.SetWidth((int)(fScaleX * fWidth));
       m_guiMid.Render();
-      iXPos += (int)(fWidth * fScaleY);
+      iXPos += (int)(fWidth * fScaleX);
     }
 
     iOffset = abs((int)(fScaleY * 0.5f * (m_guiRight.GetTextureHeight() - m_guiBackground.GetTextureHeight())));
