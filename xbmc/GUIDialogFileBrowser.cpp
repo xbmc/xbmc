@@ -510,11 +510,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
   if (!browser) return false;
 
   // Add it to our window manager
-  int instance = 0;
-  while (m_gWindowManager.GetWindow(WINDOW_DIALOG_FILE_BROWSER + (instance << 16)))
-    instance++;
-  browser->SetID(WINDOW_DIALOG_FILE_BROWSER + (instance << 16));
-  m_gWindowManager.Add(browser);
+  m_gWindowManager.AddUniqueInstance(browser);
 
   browser->SetHeading(g_localizeStrings.Get(1023));
 
