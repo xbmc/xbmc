@@ -8,6 +8,7 @@
 #include "infotagvideo.h"
 #include "infotagmusic.h"
 #include "..\..\libgoahead\xbmchttp.h"
+#include "..\..\..\utils\GUIInfoManager.h"
 
 // include for constants
 #include "pyutil.h"
@@ -290,6 +291,28 @@ namespace PYXBMC
 		return PyInt_FromLong((long)(cputemp + cpudec / 1000.0f));
 	}
 
+	PyDoc_STRVAR(getInfoLabel__doc__,
+		"getInfoLabel(int Label) -- Returns an InfoLabel.\n");
+
+	PyObject* XBMC_GetInfoLabel(PyObject *self, PyObject *args)
+	{
+		int iString;
+    if (!PyArg_ParseTuple(args, "i", &iString))	return NULL;
+
+    return Py_BuildValue("s", g_infoManager.GetLabel(iString).c_str());
+  }
+
+	PyDoc_STRVAR(getInfoImage__doc__,
+		"getInfoImage(int Image) -- Returns the path to the InfoImage's thumbnail.\n");
+
+	PyObject* XBMC_GetInfoImage(PyObject *self, PyObject *args)
+	{
+		int iString;
+    if (!PyArg_ParseTuple(args, "i", &iString))	return NULL;
+
+    return Py_BuildValue("s", g_infoManager.GetImage(iString).c_str());
+  }
+
 	// define c functions to be used in python here
 	PyMethodDef xbmcMethods[] = {
 		{"output", (PyCFunction)XBMC_Output, METH_VARARGS, output__doc__},
@@ -311,6 +334,8 @@ namespace PYXBMC
 		{"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
 
     {"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
+		{"getInfoLabel", (PyCFunction)XBMC_GetInfoLabel, METH_VARARGS, getInfoLabel__doc__},
+		{"getInfoImage", (PyCFunction)XBMC_GetInfoImage, METH_VARARGS, getInfoImage__doc__},
 
 		{NULL, NULL, 0, NULL}
 	};
