@@ -96,6 +96,9 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
     {
       CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
       g_settings.Save();
+      // make sure our OSD is closed
+      CGUIDialog *dialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+      if (dialog) dialog->Close();
       g_graphicsContext.SetCalibrating(false);
       m_gWindowManager.ShowOverlay(true);
       // reset our screen resolution to what it was initially
@@ -177,7 +180,8 @@ void CGUIWindowSettingsScreenCalibration::EnableControl(int iControl)
     SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
     SET_CONTROL_VISIBLE(CONTROL_OSD);
     SET_CONTROL_FOCUS(CONTROL_OSD, 0);
-    // show the OSD dialog is handled in Render()
+    CGUIDialog *dialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+    if (dialog) dialog->Show();
   }
   else
   {
@@ -343,13 +347,7 @@ void CGUIWindowSettingsScreenCalibration::Render()
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, "");
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, "");
   }
-  // show the OSD if necessary (need to do this every frame, as otherwise
-  // it will time out.
-  if (m_iControl == CONTROL_OSD)
-  {
-    CGUIDialog *pOSD = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
-    if (pOSD) pOSD->Show();
-  }
+
   CGUIWindow::Render();
 
   // render the subtitles
