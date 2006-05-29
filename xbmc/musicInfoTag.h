@@ -16,8 +16,6 @@ public:
   virtual ~CMusicInfoTag();
   const CMusicInfoTag& operator =(const CMusicInfoTag& tag);
   bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const;
-  bool Load(const CStdString& strFileName);
-  void Save(const CStdString& strFileName);
   bool Loaded() const;
   const CStdString& GetTitle() const;
   const CStdString& GetURL() const;

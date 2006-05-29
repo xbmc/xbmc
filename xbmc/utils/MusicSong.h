@@ -13,8 +13,6 @@ public:
   int GetTrack() const;
   int GetDuration() const;
   bool Parse(const CStdString& strHTML);
-  void Save(FILE* fd);
-  void Load(FILE* fd);
 protected:
   int m_iTrack;
   CStdString m_strSongName;

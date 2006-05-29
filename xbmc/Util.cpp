@@ -1134,21 +1134,6 @@ void CUtil::GetHomePath(CStdString& strPath)
   strPath = szXBEFileName;
 }
 
-void CUtil::ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime)
-{
-  __int64 l64Result = ((__int64)sec + SECS_BETWEEN_EPOCHS) + SECS_TO_100NS + (nsec / 100);
-  ftTime.dwLowDateTime = (DWORD)l64Result;
-  ftTime.dwHighDateTime = (DWORD)(l64Result >> 32);
-}
-
-__int64 CUtil::CompareSystemTime(const SYSTEMTIME *a, const SYSTEMTIME *b)
-{
-  ULARGE_INTEGER ula, ulb;
-  SystemTimeToFileTime(a, (FILETIME*) &ula);
-  SystemTimeToFileTime(b, (FILETIME*) &ulb);
-  return ulb.QuadPart -ula.QuadPart;
-}
-
 void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile)
 {
   CURL url(strFile);
@@ -1362,85 +1347,6 @@ void CUtil::URLEncode(CStdString& strURLData)
     }
   }
   strURLData = strResult;
-}
-
-void CUtil::SaveString(const CStdString &strTxt, FILE *fd)
-{
-  int iSize = strTxt.size();
-  fwrite(&iSize, 1, sizeof(int), fd);
-  if (iSize > 0)
-  {
-    fwrite(&strTxt.c_str()[0], 1, iSize, fd);
-  }
-}
-int CUtil::LoadString(CStdString &strTxt, byte* pBuffer)
-{
-  strTxt = "";
-  int iSize;
-  int iCount = sizeof(int);
-  memcpy(&iSize, pBuffer, sizeof(int));
-  if (iSize == 0) return iCount;
-  char *szTmp = new char [iSize + 2];
-  memcpy(szTmp , &pBuffer[iCount], iSize);
-  szTmp[iSize] = 0;
-  iCount += iSize;
-  strTxt = szTmp;
-  delete [] szTmp;
-  return iCount;
-}
-bool CUtil::LoadString(string &strTxt, FILE *fd)
-{
-  strTxt = "";
-  int iSize;
-  int iRead = fread(&iSize, 1, sizeof(int), fd);
-  if (iRead != sizeof(int) ) return false;
-  if (feof(fd)) return false;
-  if (iSize == 0) return true;
-  if (iSize > 0 && iSize < 16384)
-  {
-    char *szTmp = new char [iSize + 2];
-    iRead = fread(szTmp, 1, iSize, fd);
-    if (iRead != iSize)
-    {
-      delete [] szTmp;
-      return false;
-    }
-    szTmp[iSize] = 0;
-    strTxt = szTmp;
-    delete [] szTmp;
-    return true;
-  }
-  return false;
-}
-
-void CUtil::SaveInt(int iValue, FILE *fd)
-{
-  fwrite(&iValue, 1, sizeof(int), fd);
-}
-
-int CUtil::LoadInt( FILE *fd)
-{
-  int iValue;
-  fread(&iValue, 1, sizeof(int), fd);
-  return iValue;
-}
-
-void CUtil::LoadDateTime(SYSTEMTIME& dateTime, FILE *fd)
-{
-  fread(&dateTime, 1, sizeof(dateTime), fd);
-}
-
-void CUtil::SaveDateTime(SYSTEMTIME& dateTime, FILE *fd)
-{
-  fwrite(&dateTime, 1, sizeof(dateTime), fd);
-}
-
-
-void CUtil::GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheName)
-{
-  Crc32 crc;
-  crc.Compute(strFileName);
-  strSongCacheName.Format("%s\\songinfo\\%x.si", g_settings.GetDatabaseFolder().c_str(), crc);
 }
 
 void CUtil::GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
