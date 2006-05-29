@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-05-2006 changed: Updated xbmc.getInfoLabel and xbmc.getInfoImage to take in string arguments, thanks to Nuka1195.
  - 29-05-2006 fixed: Radiobutton couldn't be used with Skin.SetBool() as it didn't have a reliable way to set the on/off state.  Now has a <selected> tag for this purpose.
  - 29-05-2006 fixed: Various mouse control issues.
  - 29-05-2006 removed: automatic generation of samba bookmarks from settings ( has been replaced with the bookmark the wizard )
