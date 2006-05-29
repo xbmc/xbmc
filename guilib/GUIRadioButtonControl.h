@@ -36,10 +36,14 @@ public:
   virtual CStdString GetDescription() const;
   void SetRadioDimensions(int posX, int posY, DWORD width, DWORD height);
   void GetRadioDimensions(int &posX, int &posY, DWORD &width, DWORD &height);
+  int GetToggleSelect() const { return m_toggleSelect; };
+  void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
+
 protected:
   virtual void Update();
   CGUIImage m_imgRadioFocus;
   CGUIImage m_imgRadioNoFocus;
   int m_radioPosX;
   int m_radioPosY;
+  int m_toggleSelect;
 };

@@ -420,6 +420,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureNoFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureNoFocusName();
       labelInfo = ((CGUIRadioButtonControl*)pReference)->GetLabelInfo();
       ((CGUIRadioButtonControl*)pReference)->GetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
+      iToggleSelect = ((CGUIRadioButtonControl*)pReference)->GetToggleSelect();
     }
     else if (strType == "spincontrol")
     {
@@ -719,6 +720,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetPath(pControlNode, "alttexturenofocus", strTextureAltNoFocus);
   CStdString strToggleSelect;
   XMLUtils::GetString(pControlNode, "usealttexture", strToggleSelect);
+  iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
+  XMLUtils::GetString(pControlNode, "selected", strToggleSelect);
   iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
   XMLUtils::GetDWORD(pControlNode, "bitmaps", dwItems);
 
@@ -1061,6 +1064,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetLabel(strLabel);
     pControl->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
+    pControl->SetToggleSelect(iToggleSelect);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
