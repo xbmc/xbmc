@@ -91,7 +91,10 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
         if (iItem < 0) break;
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+        {
           OnClick(iItem);
+          return true;
+        }
       }
       else if (message.GetSenderId() == CONTROL_OK)
       {
@@ -123,10 +126,12 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
           m_bConfirmed = true;
           Close();
         }
+        return true;
       }
       else if (message.GetSenderId() == CONTROL_CANCEL)
       {
         Close();
+        return true;
       }
     }
     break;
@@ -157,7 +162,6 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
           { // Disc has changed and we are inside a DVD Drive share, get out of here :)
             Update("");
           }
-
           return true;
         }
         else if (message.GetParam1()==GUI_MSG_DVDDRIVE_CHANGED_CD)
@@ -168,7 +172,6 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
             Update(m_Directory.m_strPath);
             m_viewControl.SetSelectedItem(iItem);
           }
-
           return true;
         }
       }
