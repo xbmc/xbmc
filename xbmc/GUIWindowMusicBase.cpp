@@ -1203,7 +1203,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   
   // enable Rip CD Audio button if we have an audio disc
   int btn_Rip  = 0;
-  if (CDetectDVDMedia::IsDiscInDrive())
+  if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA())
   {
     // GeminiServer those cd's can also include Audio Tracks: CDExtra and MixedMode!
     CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo(); 
@@ -1213,7 +1213,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 
   // enable CDDB lookup if the current dir is CDDA
   int btn_CDDB   = 0; // CDDB lookup
-  if (CUtil::IsCDDA(m_vecItems.m_strPath))
+  if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA())
     btn_CDDB = pMenu->AddButton(16002);
 
   int btn_Delete = 0; // Delete
