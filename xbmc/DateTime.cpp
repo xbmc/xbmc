@@ -571,17 +571,24 @@ void CDateTime::Serialize(CArchive& ar)
 {
   if (ar.IsStoring())
   {
-    SYSTEMTIME st;
-    GetAsSystemTime(st);
-    ar<<st;
     ar<<(int)m_state;
+    if (m_state==valid)
+    {
+      SYSTEMTIME st;
+      GetAsSystemTime(st);
+      ar<<st;
+    }
   }
   else
   {
-    SYSTEMTIME st;
-    ar>>st;
-    ToFileTime(st, m_time);
+    Reset();
     ar>>(int&)m_state;
+    if (m_state==valid)
+    {
+      SYSTEMTIME st;
+      ar>>st;
+      ToFileTime(st, m_time);
+    }
   }
 }
 
