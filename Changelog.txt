@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-05-2006 fixed: Startup windows based on the old system weren't working when the startup window was set to Home.
  - 29-05-2006 added: [ 1479495 ] httpapi: optional boolean para to GetThumbFilename, if true returns temp store filename otherwise returns permanent filename (default: false)
  - 29-05-2006 fixed: httpapi: GetCurrentlyPlaying now includes File Size field
  - 29-05-2006 fixed: no switch to thumb control after album lookup

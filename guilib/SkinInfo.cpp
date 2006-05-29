@@ -16,6 +16,7 @@ CSkinInfo::CSkinInfo()
   m_strBaseDir = "";
   m_iNumCreditLines = 0;
   m_effectsSlowDown = 1.0;
+  m_onlyAnimateToHome = true;
 }
 
 CSkinInfo::~CSkinInfo()

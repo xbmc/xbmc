@@ -1102,7 +1102,7 @@ HRESULT CApplication::Initialize()
   CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
   int startWindow = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
   // test for a startup window, and activate that instead of home
-  if (CFile::Exists(startupPath) && !g_SkinInfo.OnlyAnimateToHome())
+  if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
   {
     m_gWindowManager.ActivateWindow(WINDOW_STARTUP);
   }
