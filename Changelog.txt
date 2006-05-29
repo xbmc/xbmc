@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-05-2006 updated: Norwegian language file (Thnx to vnm)
+ - 29-05-2006 updated: Swedish language file (Thnx to blittan)
+ - 29-05-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
+ - 29-05-2006 updated: Polish language file (Thnx to napek)
+ - 29-05-2005 updated: Hungarian language file (Thnx to bali001)
  - 29-05-2006 fixed: highlighted playing item in filelists could be wrong
  - 29-05-2006 fixed: Crash when 2 different file browsers are on screen.
  - 29-05-2006 fixed: [ 1496037 ] USA/English Weather Units are incorrect
