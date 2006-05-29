@@ -800,13 +800,13 @@ CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
   ASSERT(IsValid());
 
   CStdString strOut;
-  CStdString strFormat=g_langInfo.GetTimeFormat();
+  const CStdString& strFormat=g_langInfo.GetTimeFormat();
 
   SYSTEMTIME dateTime;
   GetAsSystemTime(dateTime);
 
   // Prefetch meridiem symbol
-  CStdString strMeridiem=g_langInfo.GetMeridiemSymbol(dateTime.wHour > 11 ? CLangInfo::MERIDIEM_SYMBOL_PM : CLangInfo::MERIDIEM_SYMBOL_AM);
+  const CStdString& strMeridiem=g_langInfo.GetMeridiemSymbol(dateTime.wHour > 11 ? CLangInfo::MERIDIEM_SYMBOL_PM : CLangInfo::MERIDIEM_SYMBOL_AM);
 
   int length=strFormat.GetLength();
   for (int i=0; i<length; ++i)
@@ -964,7 +964,7 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
 
   CStdString strOut;
 
-  CStdString strFormat=g_langInfo.GetDateFormat(longDate);
+  const CStdString& strFormat=g_langInfo.GetDateFormat(longDate);
 
   SYSTEMTIME dateTime;
   GetAsSystemTime(dateTime);
