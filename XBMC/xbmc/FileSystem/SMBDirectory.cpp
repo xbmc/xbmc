@@ -16,11 +16,6 @@
 #include "localizeStrings.h"
 #include "../GUIPassword.h"
 
-#define NT_STATUS_CONNECTION_REFUSED long(0xC0000000 | 0x0236)
-#define NT_STATUS_INVALID_HANDLE long(0xC0000000 | 0x0008)
-#define NT_STATUS_ACCESS_DENIED long(0xC0000000 | 0x0022)
-#define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
-
 CSMBDirectory::CSMBDirectory(void)
 {
 } 
@@ -44,13 +39,14 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CURL url(strPath);
 
   //Separate roots for the authentication and the containing items to allow browsing to work correctly
-  CStdString strRoot = strPath, strAuth = smb.URLEncode(url);
-  if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
-  if (!CUtil::HasSlashAtEnd(strAuth)) strAuth += "/";
-
-  int fd = OpenDir(strAuth);
+  CStdString strRoot = strPath;
+  CStdString strAuth;
+  int fd = OpenDir(url, strAuth);
   if (fd < 0)
     return false;
+
+  if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
+  if (!CUtil::HasSlashAtEnd(strAuth)) strAuth += "/";
 
   struct smbc_dirent* dirEnt;
   CStdString strFile;
@@ -146,23 +142,26 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   return true;
 }
 
-int CSMBDirectory::Open(const CStdString& strPath)
+int CSMBDirectory::Open(const CURL &url)
 {
   smb.Init();
-  CStdString strAuth = strPath;
-
-  return OpenDir(strAuth);
+  CStdString strAuth;  
+  return OpenDir(url, strAuth);
 }
 
 /// \brief Checks authentication against SAMBA share and prompts for username and password if needed
 /// \param strAuth The SMB style path
 /// \return SMB file descriptor
-int CSMBDirectory::OpenDir(CStdString& strAuth)
+int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 {
   int fd = -1;
   int nt_error;
   
-  CURL urlIn(strAuth);
+  /* make a writeable copy */
+  CURL urlIn(url);
+
+  /* set original url */
+  strAuth = smb.URLEncode(urlIn);
 
   CStdString strPath;
   CStdString strShare = urlIn.GetShareName();	// it's only the server\share we're interested in authenticating
@@ -185,14 +184,14 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
     urlIn.SetPassword(g_guiSettings.GetString("Smb.Password"));
   }
   
-  /* samba has a stricter url encoding, than our own.. CURL can decode it properly */
-  /* however doesn't always encode it correctly (spaces for example) */
-  strPath = smb.URLEncode(urlIn);
-
   // for a finite number of attempts use the following instead of the while loop:
   // for(int i = 0; i < 3, fd < 0; i++)
   while (fd < 0)
   {    
+    /* samba has a stricter url encoding, than our own.. CURL can decode it properly */
+    /* however doesn't always encode it correctly (spaces for example) */
+    strPath = smb.URLEncode(urlIn);
+  
     // remove the / or \ at the end. the samba library does not strip them off
     // don't do this for smb:// !!
     CStdString s = strPath;
@@ -233,7 +232,11 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
           	break;
 
           /* must do this as our urlencoding for spaces is invalid for samba */
-          strPath = smb.URLEncode( CURL( g_passwordManager.GetSMBShare() ) );
+          /* and doing double url encoding will fail */
+          /* curl doesn't decode / encode filename yet */
+          CURL urlnew( g_passwordManager.GetSMBShare() );
+          urlIn.SetUserName(urlnew.GetUserName());
+          urlIn.SetPassword(urlnew.GetPassWord());
         }
         else
           break;
@@ -272,7 +275,7 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
   {
     g_passwordManager.m_mapSMBPasswordCache[strShare] = strPath;
     strAuth = strPath;
-  }
+  }  
 
   return fd;
 }
