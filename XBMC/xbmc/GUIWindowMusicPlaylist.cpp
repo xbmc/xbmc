@@ -519,12 +519,8 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
     int iPlaylist=m_guiState->GetPlaylist();
     if (iPlaylist!=PLAYLIST_NONE)
     {
-      CStdString strPlayListDirectory = m_vecItems.m_strPath;
-      if (CUtil::HasSlashAtEnd(strPlayListDirectory))
-        strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
-
       if (m_guiState.get())
-        m_guiState->SetPlaylistDirectory(strPlayListDirectory);
+        m_guiState->SetPlaylistDirectory(m_vecItems.m_strPath);
 
       g_playlistPlayer.SetCurrentPlaylist( iPlaylist );
       g_playlistPlayer.Reset();

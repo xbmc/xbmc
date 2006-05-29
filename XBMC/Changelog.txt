@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-05-2006 fixed: highlighted playing item in filelists could be wrong
  - 29-05-2006 fixed: Crash when 2 different file browsers are on screen.
  - 29-05-2006 fixed: [ 1496037 ] USA/English Weather Units are incorrect
  - 29-05-2006 changed: Updated xbmc.getInfoLabel and xbmc.getInfoImage to take in string arguments, thanks to Nuka1195.
