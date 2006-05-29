@@ -1068,6 +1068,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    pControl->SetClickActions(clickActions);
+    pControl->SetFocusAction(focusAction);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
