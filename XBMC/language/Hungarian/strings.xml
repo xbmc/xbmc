@@ -523,7 +523,7 @@
   <string><id>712</id><value>Helytelen port. Az értéknek 1 és 65535 között kell lennie.</value></string>
   <string><id>713</id><value>HTTP Proxy</value></string>
   <string><id>714</id><value>XLink Kai</value></string>
-  <string><id>715</id><value>Beosztás</value></string>
+  <string><id>715</id><value>Beállítás módja</value></string>
   <string><id>716</id><value>Automatikus (DHCP)</value></string>
   <string><id>717</id><value>Manuális (Statikus)</value></string>
   <string><id>718</id><value>Alap (Dashboard)</value></string>
@@ -620,16 +620,16 @@
   <string><id>1031</id><value>Egy (kép)könyvtár</value></string>
   <string><id>1032</id><value>Hálózati hely hozzáadása</value></string>
 
-  <string><id>1200</id><value>SMB Megosztás</value></string>
-  <string><id>1201</id><value>SMB IP</value></string>
-  <string><id>1202</id><value>SMB Munkacsoport</value></string>
-  <string><id>1203</id><value>SMB Felhasználónév</value></string>
-  <string><id>1204</id><value>SMB Jelszó</value></string>
-  <string><id>1205</id><value>SMB Megosztás-név</value></string>
-  <string><id>1206</id><value>SMB Csoport</value></string>
-  <string><id>1207</id><value>SMB WINS-szerver</value></string>
-  <string><id>1208</id><value>Beállítások módja</value></string>
-  <string><id>1209</id><value>Az SMB-megosztás beállítása sikeresen megtörtént!</value></string>
+  <string><id>1200</id><value>SMB kliens</value></string>
+  <string><id>1201</id><value>Megosztás IP címe</value></string>
+  <string><id>1202</id><value>Munkacsoport</value></string>
+  <string><id>1203</id><value>Felhasználónév</value></string>
+  <string><id>1204</id><value>Jelszó</value></string>
+  <string><id>1205</id><value>Megosztás-név</value></string>
+  <string><id>1206</id><value>Csoport</value></string>
+  <string><id>1207</id><value>WINS-szerver</value></string>
+  <string><id>1208</id><value>Automatikus könyvjelzõ</value></string>
+  <string><id>1209</id><value>Az SMB-kliens beállítása sikeresen megtörtént!</value></string>
   <string><id>1210</id><value>Eltávolítás</value></string>
   <string><id>1211</id><value>Zene</value></string>
   <string><id>1212</id><value>Videó</value></string>
@@ -656,6 +656,7 @@
   <string><id>1233</id><value>Programok & Videó & Zene</value></string>
   <string><id>1234</id><value>Programok & Képek & Zene</value></string>
   <string><id>1235</id><value>Programok & Képek & Video</value></string>
+  <string><id>1236</id><value>Kliens idõtúllépés</value></string>
 
   <string><id>1245</id><value>FTP Felhasználónév</value></string>
   <string><id>1246</id><value>FTP Jelszó</value></string>
@@ -854,6 +855,7 @@
   <string><id>12385</id><value>Nap/Hónap</value></string>
   <string><id>12386</id><value>Hónap/Nap</value></string>
   <string><id>12387</id><value>Adatbázis ellenõrzése</value></string>
+  <string><id>12388</id><value>Mester felhasználó</value></string>
 
   <string><id>12390</id><value>Üzemidõ</value></string>
   <string><id>12391</id><value>perc</value></string>
@@ -1109,8 +1111,8 @@ nincsenek beállítások</value></string>
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>12 óra 24 helyett</value></string>
-  <string><id>14052</id><value>Hónap és nap felcserélése a fõképernyõn</value></string>
+  <string><id>14051</id><value>Idöformátum(12/24)</value></string>
+  <string><id>14052</id><value>Dátumformátum(N-H/H-N)</value></string>
   <string><id>14053</id><value>GUI Szûrõk</value></string>
   <string><id>14054</id><value>Internetes névfeloldás engedélyezése</value></string>
   <string><id>14055</id><value>Beolvasás a háttérben</value></string>
@@ -1122,12 +1124,12 @@ nincsenek beállítások</value></string>
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Add meg a felhasználónevet a következõhöz:</value></string>
   <string><id>14063</id><value>Dátum és Idõ</value></string>
-  <string><id>14064</id><value>Év beállítása</value></string>
-  <string><id>14065</id><value>Hónap beállítása</value></string>
-  <string><id>14066</id><value>Nap beállítása</value></string>
-  <string><id>14067</id><value>Óra beállítása</value></string>
-  <string><id>14068</id><value>Perc beállítása</value></string>
-  <string><id>14069</id><value>Szeretnéd most érvényesíteni ezeket a változásokat?</value></string>
+  <string><id>14064</id><value>Dátum beállítása</value></string>
+  <string><id>14065</id><value>Idõ beállítása</value></string>
+  <string><id>14066</id><value>Idõ beállítása</value></string>
+  <string><id>14067</id><value>Dátum beállítása</value></string>
+  <string><id>14068</id><value>IP cím beállítása</value></string>
+  <string><id>14069</id><value>Érvényesítsük ezeket a változásokat?</value></string>
   <string><id>14070</id><value>Változtatások alkalmazása most</value></string>
   <string><id>14071</id><value>Fájltörlés engedélyezése</value></string>
   <string><id>14072</id><value>XLink Kai engedélyezése</value></string>
@@ -1215,7 +1217,7 @@ nincsenek beállítások</value></string>
   <string><id>15201</id><value>Zene információk elküldése az LastFM-nek</value></string>
   <string><id>15202</id><value>LastFM felhasználónév</value></string>
   <string><id>15203</id><value>LastFM Jelszó</value></string>
-  <string><id>15204</id><value>Kapcsolatfelvétel sikertelen: ennyi...</value></string>
+  <string><id>15204</id><value>Kapcsolatfelvétel sikertelen!</value></string>
   <string><id>15205</id><value>Kérlek frissítsd az XBMC-t</value></string>
   <string><id>15206</id><value>Küldés sikertelen: rossz felhasználó/jelszó.</value></string>
   <string><id>15207</id><value>Csatlakoztatva</value></string>

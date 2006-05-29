@@ -1,5 +1,5 @@
-<!-- Translation date: 03/16/2006 -->
-<!-- Based on 2006-03-12 build -->
+<!-- Translation date: 05/22/2006 -->
+<!-- Based on 2006-05-21 build -->
 <!-- Translation by MVBM (T1000) -->
 <!-- Language: Portuguese Brazil (pt_BR )-->
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
@@ -788,7 +788,7 @@
   <string><id>12327</id><value>Entre com o Código Mestre</value></string>
   <string><id>12328</id><value>Entre com o Código de Desbloqueio</value></string>
   <string><id>12329</id><value>ou Pressione C para cancelar</value></string>
-  <string><id>12330</id><value>Entre com o Código de Comandos do Controle do XBOX e </value></string>
+  <string><id>12330</id><value>Entre com a combinação de botões do Controle e</value></string>
   <string><id>12331</id><value>Pressione Start, ou Back para cancelar</value></string>
   <string><id>12332</id><value>Configurar Bloqueio</value></string>
   <string><id>12333</id><value>Desbloquear</value></string>
@@ -796,7 +796,7 @@
   <string><id>12335</id><value>Remover Bloqueio</value></string>
   <string><id>12336</id><value>Selecione o Tipo de Trava a ser Utilizada:</value></string>
   <string><id>12337</id><value>Senha Numérica</value></string>
-  <string><id>12338</id><value>Comando de Botões do Controle</value></string>
+  <string><id>12338</id><value>Combo de Botões do Controle</value></string>
   <string><id>12339</id><value>Senha com Texto</value></string>
   <string><id>12340</id><value>Entre com a Nova Senha</value></string>
   <string><id>12341</id><value>Redigite a Nova Senha</value></string>
@@ -845,6 +845,7 @@
   <string><id>12385</id><value>Dia/Mês</value></string>
   <string><id>12386</id><value>Mês/Dia</value></string>
   <string><id>12387</id><value>Examinar Base de dados</value></string>
+  <string><id>12388</id><value>Usuário Mestre</value></string>
 
   <string><id>12390</id><value>Uptime do Sistema</value></string>
   <string><id>12391</id><value>Minutos</value></string>
@@ -903,6 +904,7 @@
   <string><id>13210</id><value>Iniciar alarme em %im</value></string>
   <string><id>13211</id><value>Alarme!</value></string>
   <string><id>13212</id><value>Cancelar com %im%is restantes</value></string>
+
 
   <string><id>13249</id><value>Procurar por subtítulos em Rar</value></string>  
   <string><id>13250</id><value>Procurando por subtítulos...</value></string>
@@ -1081,7 +1083,7 @@
   <string><id>14035</id><value>- Rede Local</value></string>
   <string><id>14036</id><value>Servidores</value></string>
   <string><id>14037</id><value>Aparência e Tato</value></string>
-  <string><id>14038</id><value>As Configurações de rede foram modificadas</value></string>
+  <string><id>14038</id><value>Configurações de rede modificadas</value></string>
   <string><id>14039</id><value>O XBMC precisa reiniciar para aplicar as suas</value></string>
   <string><id>14040</id><value>configurações de rede.  Deseja reiniciar agora?</value></string>
   <string><id>14041</id><value>Pós Processar</value></string>
