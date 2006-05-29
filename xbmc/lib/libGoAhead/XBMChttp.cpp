@@ -1188,15 +1188,11 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
     tmp.Format("%i",(int)g_application.GetPercentage());
     output+=closeTag+openTag+"Percentage:"+tmp;
     // file size
-    //if (fileItem.m_dwSize)
-    //{
-    //  tmp.Format("%I64d",fileItem.m_dwSize);
-    //  output+=closeTag+openTag+"File size:"+tmp;
-    //}
-    __int64 filesize=fileSize(fileItem.m_strPath);
-    if (filesize)
+    if (!fileItem.m_dwSize)
+      fileItem.m_dwSize = fileSize(fileItem.m_strPath);
+    if (fileItem.m_dwSize)
     {
-      tmp.Format("%I64d",filesize);
+      tmp.Format("%I64d",fileItem.m_dwSize);
       output+=closeTag+openTag+"File size:"+tmp;
     }
   }

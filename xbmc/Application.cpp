@@ -3967,7 +3967,7 @@ const CStdString& CApplication::CurrentFile()
   return m_itemCurrentFile.m_strPath;
 }
 
-const CFileItem& CApplication::CurrentFileItem()
+CFileItem& CApplication::CurrentFileItem()
 {
   return m_itemCurrentFile;
 }
