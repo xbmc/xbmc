@@ -4,6 +4,7 @@
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePicturesProgramsScripts.h"
 #include "playlistplayer.h"
+#include "util.h"
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
 
@@ -236,7 +237,22 @@ const CStdString& CGUIViewState::GetPlaylistDirectory()
 void CGUIViewState::SetPlaylistDirectory(const CStdString& strDirectory)
 {
   m_strPlaylistDirectory=strDirectory;
+  if (CUtil::HasSlashAtEnd(m_strPlaylistDirectory))
+    CUtil::RemoveSlashAtEnd(m_strPlaylistDirectory);
 }
+
+bool CGUIViewState::IsCurrentPlaylistDirectory(const CStdString& strDirectory)
+{
+  if (g_playlistPlayer.GetCurrentPlaylist()!=GetPlaylist())
+    return false;
+
+  CStdString strDir=strDirectory;
+  if (CUtil::HasSlashAtEnd(strDir))
+    CUtil::RemoveSlashAtEnd(strDir);
+
+  return (m_strPlaylistDirectory==strDir);
+}
+
 
 bool CGUIViewState::UnrollArchives()
 {
