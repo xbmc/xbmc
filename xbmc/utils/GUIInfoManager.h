@@ -180,6 +180,7 @@
 
 #define XLINK_KAI_USERNAME          701
 
+#define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996
 #define WINDOW_PREVIOUS             9997
