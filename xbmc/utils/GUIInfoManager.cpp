@@ -309,6 +309,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       ret = winID;
   }
   else if (strTest.Equals("window.ismedia")) return WINDOW_IS_MEDIA;
+  else if (strTest.Left(17).Equals("window.istopmost("))
+  {
+    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(17, strTest.GetLength() - 18).c_str());
+    if (winID != WINDOW_INVALID)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
+  }
   else if (strTest.Left(17).Equals("window.isvisible("))
   {
     int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(17, strTest.GetLength() - 18).c_str());
@@ -890,6 +896,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       break;
     case WINDOW_IS_VISIBLE:
       bReturn = m_gWindowManager.IsWindowVisible(info.m_data1);
+      break;
+    case WINDOW_IS_TOPMOST:
+      bReturn = m_gWindowManager.IsWindowTopMost(info.m_data1);
       break;
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
