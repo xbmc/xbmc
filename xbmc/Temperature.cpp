@@ -462,7 +462,7 @@ CStdString CTemperature::ToString() const
   }
 
   CStdString str;
-  str.Format("%2.0f%s", value, g_langInfo.GetTempUnitString());
+  str.Format("%2.0f%s", value, g_langInfo.GetTempUnitString().c_str());
 
   return str;
 }
