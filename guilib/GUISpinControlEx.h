@@ -42,6 +42,7 @@ public:
   virtual int GetYPosition() const { return m_buttonControl.GetYPosition();};
   virtual CStdString GetDescription() const;
 
+  virtual bool HitTest(int iPosX, int iPosY) const { return m_buttonControl.HitTest(iPosX, iPosY); };
   void SettingsCategorySetSpinTextColor(D3DCOLOR color);
 protected:
   CGUIButtonControl m_buttonControl;

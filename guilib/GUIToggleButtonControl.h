@@ -41,6 +41,5 @@ protected:
   virtual void Update();
   CGUIButtonControl m_selectButton;
   int m_toggleSelect;
-  CStdString m_strExecuteAction;
 };
 #endif
