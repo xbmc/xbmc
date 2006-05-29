@@ -13,8 +13,6 @@ public:
   CMusicAlbumInfo(const CStdString& strAlbumInfo, const CStdString& strAlbumURL);
   CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strAlbumInfo, const CStdString& strAlbumURL);
   virtual ~CMusicAlbumInfo(void);
-  void Save(CStdString& strFileName);
-  bool Load(CStdString& strFileName);
   bool Loaded() const;
   void SetLoaded(bool bOnOff);
   void Set(CAlbum& album);

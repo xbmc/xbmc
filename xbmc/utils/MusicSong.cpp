@@ -1,7 +1,7 @@
 
 #include "../stdafx.h"
 #include ".\musicsong.h"
-#include "../util.h"
+
 using namespace MUSIC_GRABBER;
 
 
@@ -39,17 +39,4 @@ int CMusicSong::GetDuration() const
 bool CMusicSong::Parse(const CStdString& strHTML)
 {
   return false;
-}
-
-void CMusicSong::Save(FILE* fd)
-{
-  CUtil::SaveString(m_strSongName, fd);
-  CUtil::SaveInt(m_iTrack, fd);
-  CUtil::SaveInt(m_iDuration, fd);
-}
-void CMusicSong::Load(FILE* fd)
-{
-  CUtil::LoadString(m_strSongName, fd);
-  m_iTrack = CUtil::LoadInt(fd);
-  m_iDuration = CUtil::LoadInt(fd);
 }
