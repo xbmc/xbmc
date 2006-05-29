@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-05-2006 fixed: no switch to thumb control after album lookup
  - 29-05-2006 changed: context menu entry "Rip CD" is only shown inside the cdda directory listing
  - 29-05-2006 updated: Norwegian language file (Thnx to vnm)
  - 29-05-2006 updated: Swedish language file (Thnx to blittan)
