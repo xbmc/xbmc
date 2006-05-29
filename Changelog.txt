@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-05-2006 fixed: Various mouse control issues.
  - 29-05-2006 removed: automatic generation of samba bookmarks from settings ( has been replaced with the bookmark the wizard )
  - 29-05-2006 fixed: spaces in samba usernames/passwords where not working.
  - 28-05-2006 fixed: Seekbar could stay on screen after a video calibration of the OSD.

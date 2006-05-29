@@ -48,6 +48,8 @@ public:
   virtual int GetXPosition() const { return m_buttonControl.GetXPosition();};
   virtual int GetYPosition() const { return m_buttonControl.GetYPosition();};
   virtual CStdString GetDescription() const;
+  virtual bool HitTest(int iPosX, int iPosY) { return m_buttonControl.HitTest(iPosX, iPosY); };
+
 protected:
   virtual void Update() ;
   CGUIButtonControl m_buttonControl;
