@@ -679,6 +679,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
       }
 
       //  Do we have to autoswitch to the thumb control?
+      m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
       UpdateButtons();
     }
   }
