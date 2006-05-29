@@ -171,6 +171,10 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         else
         {
           g_partyModeManager.Enable();
+
+          // Playlist directory is the root of the playlist window
+          if (m_guiState.get()) m_guiState->SetPlaylistDirectory("");
+
           return true;
         }
         UpdateButtons();
