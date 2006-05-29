@@ -20,6 +20,11 @@
 #include "IFile.h"
 #include "../lib/libsmb/xbLibSmb.h"
 
+#define NT_STATUS_CONNECTION_REFUSED long(0xC0000000 | 0x0236)
+#define NT_STATUS_INVALID_HANDLE long(0xC0000000 | 0x0008)
+#define NT_STATUS_ACCESS_DENIED long(0xC0000000 | 0x0022)
+#define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
+
 class CSMB : public CCriticalSection
 {
 public:
@@ -48,7 +53,7 @@ class CFileSMB : public IFile
 {
 public:
   CFileSMB();
-  int OpenFile(CStdString& strAuth);
+  int OpenFile(const CURL &url, CStdString& strAuth);
   virtual ~CFileSMB();
   virtual void Close();
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
