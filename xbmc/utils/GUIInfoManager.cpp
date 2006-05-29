@@ -1289,15 +1289,6 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
   if (item.IsLastFM()) return; //last.fm handles it's own songinfo
   ResetCurrentItem();
 
-  // get the size information if we don't have it already
-  // TODO: This is currently only used for the httpapi - is it really necessary
-  //       information, or could we just check for it if asked?
-  if (!item.m_dwSize)
-  { // stat the item
-    __stat64 s64;
-    if (CFile::Stat(item.m_strPath, &s64) == 0)
-      item.m_dwSize = s64.st_size;
-  }
   if (item.IsAudio())
     SetCurrentSong(item);
   else
