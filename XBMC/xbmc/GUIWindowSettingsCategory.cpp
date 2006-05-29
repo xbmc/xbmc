@@ -120,7 +120,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     }
     break;
   case GUI_MSG_SETFOCUS:
-    {
+    {/*
       CBaseSettingControl *pSkinControl = GetSetting("LookAndFeel.Skin");
       CBaseSettingControl *pLanguageControl = GetSetting("LookAndFeel.Language");
       if (g_application.m_dwSkinTime && ((pSkinControl && pSkinControl->GetID() == message.GetControlId()) || (pLanguageControl && pLanguageControl->GetID() == message.GetControlId())))
@@ -130,13 +130,13 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         // Reset spin controls to the current selected skin & language
         if (pSkinControl) FillInSkins(pSkinControl->GetSetting());
         if (pLanguageControl) FillInLanguages(pLanguageControl->GetSetting());
-      }
+      }*/
       unsigned int iControl = message.GetControlId();
       unsigned int iSender = message.GetSenderId();
       // if both the sender and the control are within out category range, then we have a change of
       // category.
-      if (iControl >= CONTROL_START_BUTTONS && iControl < CONTROL_START_BUTTONS + m_vecSections.size() &&
-          iSender >= CONTROL_START_BUTTONS && iSender < CONTROL_START_BUTTONS + m_vecSections.size())
+      if (iControl >= CONTROL_START_BUTTONS && iControl < CONTROL_START_BUTTONS + m_vecSections.size())// &&
+//          iSender >= CONTROL_START_BUTTONS && iSender < CONTROL_START_BUTTONS + m_vecSections.size())
       {
         // change the setting...
         if (iControl - CONTROL_START_BUTTONS != m_iSection)
