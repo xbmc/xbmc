@@ -15,9 +15,9 @@ public:
   virtual bool Exists(const char* strPath);
   virtual bool Remove(const char* strPath);
 
-  int Open(const CStdString& strPath);
+  int Open(const CURL &url);
 
 private:
-  int OpenDir(CStdString& strAuth);
+  int OpenDir(const CURL &url, CStdString& strAuth);
 };
 }
