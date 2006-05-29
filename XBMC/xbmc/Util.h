@@ -218,8 +218,6 @@ public:
   static void LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo=VIDEO_NULL, F_COUNTRY ForceCountry=COUNTRY_NULL, CUSTOM_LAUNCH_DATA* pData=NULL); 
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
   static void GetHomePath(CStdString& strPath);
-  static void ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime);
-  static __int64 CompareSystemTime(const SYSTEMTIME *a, const SYSTEMTIME *b);
   static void ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile);
   static void GetExtension(const CStdString& strFile, CStdString& strExtension);
   static bool HasSlashAtEnd(const CStdString& strFile);
@@ -237,18 +235,8 @@ public:
   static int GetDVDIfoTitle(const CStdString& strPathFile);
   static void UrlDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
-  static bool LoadString(string &strTxt, FILE *fd);
-  static int LoadString(CStdString &strTxt, byte* pBuffer);
-  static void SaveString(const CStdString &strTxt, FILE *fd);
-  static void SaveInt(int iValue, FILE *fd);
-  static int LoadInt( FILE *fd);
-  static void LoadDateTime(SYSTEMTIME& dateTime, FILE *fd);
-  static void SaveDateTime(SYSTEMTIME& dateTime, FILE *fd);
-  static void GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheName);
   static void GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strAlbumThumb, bool bTempDir = false);
   static void GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strFileName, CStdString& strThumb, bool bTempDir = false);
-  static void GetAlbumInfo(const CStdString& strFileName, CStdString& strAlbumThumb);
-  static void GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbumThumb);
   static bool CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon);
   static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
   static bool SetXBEDescription(const CStdString& strFileName, const CStdString& strDescription);
@@ -339,6 +327,5 @@ public:
   static bool SupportsFileOperations(const CStdString& strPath);
 
 private:
-  static bool m_bNetworkUp;
   static HANDLE m_hCurrentCpuUsage;
 };
