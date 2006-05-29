@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-05-2006 added: [ 1479495 ] httpapi: optional boolean para to GetThumbFilename, if true returns temp store filename otherwise returns permanent filename (default: false)
+ - 29-05-2006 fixed: httpapi: GetCurrentlyPlaying now includes File Size field
  - 29-05-2006 fixed: no switch to thumb control after album lookup
  - 29-05-2006 changed: context menu entry "Rip CD" is only shown inside the cdda directory listing
  - 29-05-2006 updated: Norwegian language file (Thnx to vnm)
