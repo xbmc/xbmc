@@ -713,7 +713,8 @@ void CGUIWindow::OnMouseAction()
       pControl->SetFocus(false);
   }
   // and find which one is under the pointer
-  for (ivecControls i = m_vecControls.begin(); i != m_vecControls.end(); ++i)
+  // go through in reverse order to make sure we start with the ones on top
+  for (vector<CGUIControl *>::reverse_iterator i = m_vecControls.rbegin(); i != m_vecControls.rend(); ++i)
   {
     CGUIControl *pControl = *i;
     if (pControl->CanFocus() && pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
@@ -750,34 +751,34 @@ bool CGUIWindow::OnMouse()
 
 bool CGUIWindow::HandleMouse(CGUIControl *pControl)
 {
-  bool bHandled = false;
   // Issue the MouseOver event to highlight the item, and perform any pointer changes
-  pControl->OnMouseOver();
+  bool focused = pControl->OnMouseOver();
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // Left click
-    bHandled = pControl->OnMouseClick(MOUSE_LEFT_BUTTON);
+    return pControl->OnMouseClick(MOUSE_LEFT_BUTTON);
   }
-  if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+  else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // Right click
-    bHandled = pControl->OnMouseClick(MOUSE_RIGHT_BUTTON);
+    return pControl->OnMouseClick(MOUSE_RIGHT_BUTTON);
   }
-  if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
+  else if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
   { // Middle click
-    bHandled = pControl->OnMouseClick(MOUSE_MIDDLE_BUTTON);
+    return pControl->OnMouseClick(MOUSE_MIDDLE_BUTTON);
   }
-  if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
+  else if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
   { // Left double click
-    bHandled = pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON);
+    return pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON);
   }
-  if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && (g_Mouse.cMickeyX || g_Mouse.cMickeyY))
+  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && (g_Mouse.cMickeyX || g_Mouse.cMickeyY))
   { // Mouse Drag
-    bHandled = pControl->OnMouseDrag();
+    return pControl->OnMouseDrag();
   }
-  if (g_Mouse.cWheel)
+  else if (g_Mouse.cWheel)
   { // Mouse wheel
-    bHandled = pControl->OnMouseWheel();
+    return pControl->OnMouseWheel();
   }
-  return bHandled;
+  // no mouse stuff done other than movement - return indicating whether we've focused or not
+  return focused;
 }
 
 DWORD CGUIWindow::GetID(void) const
@@ -892,7 +893,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 //      CLog::DebugLog("set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
       if ( message.GetControlId() )
       {
-        int iOldControlGroup = -1;
+        int iOldControlGroup = -2;  // -1 is the default control group
         int iOldControlId = -1;
         ivecControls i;
         for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
@@ -943,7 +944,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
             m_vecGroups[iOldControlGroup].m_lastControl = iOldControlId;
 
           //  if the control group changes...
-          if (pFocusedControl->GetGroup() > -1 && pFocusedControl->GetGroup() != iOldControlGroup)
+          if (pFocusedControl->GetGroup() > -1 && pFocusedControl->GetGroup() != iOldControlGroup && iOldControlGroup != -2)
           {
             //  ...get the last focused control of the new group...
             int iLastFocusedControl = m_vecGroups[pFocusedControl->GetGroup()].m_lastControl;
