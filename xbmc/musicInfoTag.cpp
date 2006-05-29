@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "musicInfoTag.h"
-#include "util.h"
 #include "musicdatabase.h"
 
 
@@ -233,43 +232,6 @@ void CMusicInfoTag::SetMusicBrainzAlbumArtistID(const CStdString& strAlbumArtist
 void CMusicInfoTag::SetMusicBrainzTRMID(const CStdString& strTRMID)
 {
   m_strMusicBrainzTRMID=strTRMID;
-}
-
-bool CMusicInfoTag::Load(const CStdString& strFileName)
-{
-  FILE* fd = fopen(strFileName.c_str(), "rb");
-  if (fd)
-  {
-    CUtil::LoadString(m_strURL, fd);
-    CUtil::LoadString(m_strTitle, fd);
-    CUtil::LoadString(m_strArtist, fd);
-    CUtil::LoadString(m_strAlbum, fd);
-    CUtil::LoadString(m_strGenre, fd);
-    m_iDuration = CUtil::LoadInt(fd);
-    m_iTrack = CUtil::LoadInt(fd);
-    CUtil::LoadDateTime(m_dwReleaseDate, fd);
-    SetLoaded(true);
-    fclose(fd);
-    return true;
-  }
-  return false;
-}
-
-void CMusicInfoTag::Save(const CStdString& strFileName)
-{
-  FILE* fd = fopen(strFileName.c_str(), "wb+");
-  if (fd)
-  {
-    CUtil::SaveString(m_strURL, fd);
-    CUtil::SaveString(m_strTitle, fd);
-    CUtil::SaveString(m_strArtist, fd);
-    CUtil::SaveString(m_strAlbum, fd);
-    CUtil::SaveString(m_strGenre, fd);
-    CUtil::SaveInt(m_iDuration, fd);
-    CUtil::SaveInt(m_iTrack, fd);
-    CUtil::SaveDateTime(m_dwReleaseDate, fd);
-    fclose(fd);
-  }
 }
 
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
