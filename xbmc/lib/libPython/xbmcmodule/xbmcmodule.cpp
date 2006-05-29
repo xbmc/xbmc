@@ -292,25 +292,27 @@ namespace PYXBMC
 	}
 
 	PyDoc_STRVAR(getInfoLabel__doc__,
-		"getInfoLabel(int Label) -- Returns an InfoLabel.\n");
+		"getInfoLabel(str InfoTag) -- Returns an InfoLabel.\n");
 
 	PyObject* XBMC_GetInfoLabel(PyObject *self, PyObject *args)
 	{
-		int iString;
-    if (!PyArg_ParseTuple(args, "i", &iString))	return NULL;
+		char *cLine;
+		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
 
-    return Py_BuildValue("s", g_infoManager.GetLabel(iString).c_str());
+    int ret = g_infoManager.TranslateString(cLine);
+    return Py_BuildValue("s", g_infoManager.GetLabel(ret).c_str());
   }
 
 	PyDoc_STRVAR(getInfoImage__doc__,
-		"getInfoImage(int Image) -- Returns the path to the InfoImage's thumbnail.\n");
+		"getInfoImage(str InfoTag) -- Returns the path to the InfoImage's thumbnail.\n");
 
 	PyObject* XBMC_GetInfoImage(PyObject *self, PyObject *args)
 	{
-		int iString;
-    if (!PyArg_ParseTuple(args, "i", &iString))	return NULL;
+		char *cLine;
+		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
 
-    return Py_BuildValue("s", g_infoManager.GetImage(iString).c_str());
+    int ret = g_infoManager.TranslateString(cLine);
+    return Py_BuildValue("s", g_infoManager.GetImage(ret).c_str());
   }
 
 	// define c functions to be used in python here
