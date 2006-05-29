@@ -1,5 +1,6 @@
 #include "include.h"
 #include "GUIRadioButtonControl.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
@@ -13,6 +14,7 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControl
 {
   m_radioPosX = 0;
   m_radioPosY = 0;
+  m_toggleSelect = 0;
   ControlType = GUICONTROL_RADIO;
 }
 
@@ -24,6 +26,10 @@ void CGUIRadioButtonControl::Render()
 {
   if (!IsVisible()) return;
   CGUIButtonControl::Render();
+
+  // ask our infoManager whether we are selected or not...
+  if (m_toggleSelect)
+    m_bSelected = !g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
 
   if ( IsSelected() && !IsDisabled() )
   {
