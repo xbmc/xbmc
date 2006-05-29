@@ -1132,7 +1132,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
     return SetResponse(output);
   }
 
-  const CFileItem &fileItem = g_application.CurrentFileItem();
+  CFileItem &fileItem = g_application.CurrentFileItem();
   if (fileItem.m_strPath.IsEmpty())
   {
     output=openTag+"Filename:[Nothing Playing]";
