@@ -11,24 +11,26 @@ public:
   CStdString GetGuiCharSet() const;
   CStdString GetSubtitleCharSet() const;
 
-  CStdString GetDVDMenuLanguage() const;
-  CStdString GetDVDAudioLanguage() const;
-  CStdString GetDVDSubtitleLanguage() const;
+  const CStdString& GetDVDMenuLanguage() const;
+  const CStdString& GetDVDAudioLanguage() const;
+  const CStdString& GetDVDSubtitleLanguage() const;
 
   bool ForceUnicodeFont() { return m_forceUnicodeFont; }
 
-  CStdString GetDateFormat(bool bLongDate=false) const;
+  const CStdString& GetDateFormat(bool bLongDate=false) const;
   
-  typedef enum {
+  typedef enum _MERIDIEM_SYMBOL
+  {
     MERIDIEM_SYMBOL_PM=0,
     MERIDIEM_SYMBOL_AM,
     MERIDIEM_SYMBOL_MAX
   } MERIDIEM_SYMBOL;
 
-  CStdString GetTimeFormat() const;
-  CStdString GetMeridiemSymbol(MERIDIEM_SYMBOL symbol) const;
+  const CStdString& GetTimeFormat() const;
+  const CStdString& GetMeridiemSymbol(MERIDIEM_SYMBOL symbol) const;
 
-  typedef enum {
+  typedef enum _TEMP_UNIT
+  {
     TEMP_UNIT_FAHRENHEIT=0,
     TEMP_UNIT_KELVIN,
     TEMP_UNIT_CELSIUS,
@@ -40,7 +42,8 @@ public:
   } TEMP_UNIT;
 
   const CStdString& GetTempUnitString();
-  CLangInfo::TEMP_UNIT GetTempUnit() { return m_tempUnit; }
+  CLangInfo::TEMP_UNIT GetTempUnit();
+  
 
   typedef enum _SPEED_UNIT
   {
@@ -50,16 +53,14 @@ public:
   } SPEED_UNIT;
 
   const CStdString& GetSpeedUnitString();
-  CLangInfo::SPEED_UNIT GetSpeedUnit() { return m_speedUnit; }
+  CLangInfo::SPEED_UNIT GetSpeedUnit();
 
   void GetRegionNames(CStdStringArray& array);
   void SetCurrentRegion(const CStdString& strName);
-  CStdString GetCurrentRegion();
+  const CStdString& GetCurrentRegion();
 
 protected:
   void Clear();
-  void SetTempUnit(const CStdString& strUnit);
-  void SetSpeedUnit(const CStdString& strUnit);
 
 protected:
   CStdString m_strGuiCharSet;
@@ -69,23 +70,28 @@ protected:
   CStdString m_strDVDSubtitleLanguage;
   bool m_forceUnicodeFont;
 
-  typedef struct _REGION
+  class CRegion
   {
-    CStdString strName;
-    CStdString strDateFormatLong;
-    CStdString strDateFormatShort;
-    CStdString strTimeFormat;
-    CStdString strMeridiemSymbols[MERIDIEM_SYMBOL_MAX];
-  } REGION, *LPREGION;
+  public:
+    CRegion();
+    virtual ~CRegion();
+    void SetTempUnit(const CStdString& strUnit);
+    void SetSpeedUnit(const CStdString& strUnit);
+    CStdString m_strName;
+    CStdString m_strDateFormatLong;
+    CStdString m_strDateFormatShort;
+    CStdString m_strTimeFormat;
+    CStdString m_strMeridiemSymbols[MERIDIEM_SYMBOL_MAX];
+    TEMP_UNIT m_tempUnit;
+    SPEED_UNIT m_speedUnit;
+  };
 
-  typedef map<CStdString, REGION> MAPREGIONS;
-  typedef map<CStdString, REGION>::iterator ITMAPREGIONS;
-  typedef pair<CStdString, REGION> PAIR_REGIONS;
+  typedef map<CStdString, CRegion> MAPREGIONS;
+  typedef map<CStdString, CRegion>::iterator ITMAPREGIONS;
+  typedef pair<CStdString, CRegion> PAIR_REGIONS;
   MAPREGIONS m_regions;
-  LPREGION m_currentRegion;
-
-  TEMP_UNIT m_tempUnit;
-  SPEED_UNIT m_speedUnit;
+  CRegion* m_currentRegion; // points to the current region
+  CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
 };
 
 
