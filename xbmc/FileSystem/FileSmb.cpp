@@ -202,7 +202,6 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
       return false;
   }
   m_url = url;
-  CStdString strFileName = smb.URLEncode(url);
 
   CSingleLock lock(smb);
 
@@ -210,7 +209,8 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   // when opening smb://server xbms will try to find folder.jpg in all shares
   // listed, which will create lot's of open sessions.
 
-  m_fd = OpenFile(strFileName);
+  CStdString strFileName;
+  m_fd = OpenFile(url, strFileName);
 
   if (m_fd == -1)
   {
@@ -270,10 +270,13 @@ int CFileSMB::OpenFile(CStdString& strAuth)
 }
 */
 
-int CFileSMB::OpenFile(CStdString& strAuth)
+int CFileSMB::OpenFile(const CURL &url, CStdString& strAuth)
 {
   int fd = -1;
-  
+
+  /* original auth name */
+  strAuth = smb.URLEncode(url);
+
   CStdString strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
 
   { CSingleLock lock(smb);
@@ -281,20 +284,22 @@ int CFileSMB::OpenFile(CStdString& strAuth)
   }
 
   // file open failed, try to open the directory to force authentication
-  if (fd < 0)
+  if (fd < 0 && map_nt_error_from_unix(errno) == NT_STATUS_ACCESS_DENIED)
   {
-    // 012345
-    // smb://
-    int iPos = strAuth.ReverseFind('/');
-    if (iPos > 4)
+    CURL urlshare(url);
+    CStdString strShare = urlshare.GetShareName();
+    
+    int iPos = strShare.Find('/');
+    if (iPos != -1)
     {
-      strPath = strAuth.Left(iPos + 1);
+      urlshare.SetHostName(strShare.Left(iPos));
+      urlshare.SetFileName(strShare.Mid(iPos+1));
 
       CSMBDirectory smbDir;
       // TODO: Currently we always allow prompting on files.  This may need to
       // change in the future as background scanners are more prolific.
       smbDir.SetAllowPrompting(true);
-      fd = smbDir.Open(strPath);
+      fd = smbDir.Open(urlshare);
 
       // directory open worked, try opening the file again
       if (fd >= 0)
@@ -305,7 +310,7 @@ int CFileSMB::OpenFile(CStdString& strAuth)
         smbc_closedir(fd);
 
         // set up new filehandle (as CFileSMB::Open does)
-        strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
+        strPath = g_passwordManager.GetSMBAuthFilename(strPath);
         fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
       }
     }
