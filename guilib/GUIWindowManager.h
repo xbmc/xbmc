@@ -63,10 +63,11 @@ public:
   void UpdateModelessVisibility();
   bool IsWindowActive(DWORD dwID, bool ignoreClosing = true) const;
   bool IsWindowVisible(DWORD id) const;
+  bool IsWindowTopMost(DWORD id) const;
   bool IsOverlayAllowed() const;
   void ShowOverlay(bool bOnOff);
   void GetActiveModelessWindows(vector<DWORD> &ids);
-
+ 
 private:
   void AddToWindowHistory(DWORD newWindowID);
   map<DWORD, CGUIWindow *> m_mapWindows;
