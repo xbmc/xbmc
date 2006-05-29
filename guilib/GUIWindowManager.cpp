@@ -664,3 +664,16 @@ void CGUIWindowManager::GetActiveModelessWindows(vector<DWORD> &ids)
     ids.push_back(m_vecModelessWindows[i]->GetID());
 }
 
+bool CGUIWindowManager::IsWindowTopMost(DWORD id) const
+{
+  // find the window with the lowest render order
+  vector<CGUIDialog *> renderList;
+  for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
+    renderList.push_back((CGUIDialog *)m_vecModalWindows[i]);
+  for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
+    renderList.push_back((CGUIDialog *)m_vecModelessWindows[i]);
+  stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
+
+  // return the last window in the list
+  return ((*renderList.rbegin())->GetID() & WINDOW_ID_MASK) == id;
+}
