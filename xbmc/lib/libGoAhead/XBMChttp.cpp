@@ -1188,9 +1188,15 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
     tmp.Format("%i",(int)g_application.GetPercentage());
     output+=closeTag+openTag+"Percentage:"+tmp;
     // file size
-    if (fileItem.m_dwSize)
+    //if (fileItem.m_dwSize)
+    //{
+    //  tmp.Format("%I64d",fileItem.m_dwSize);
+    //  output+=closeTag+openTag+"File size:"+tmp;
+    //}
+    __int64 filesize=fileSize(fileItem.m_strPath);
+    if (filesize)
     {
-      tmp.Format("%I64d",fileItem.m_dwSize);
+      tmp.Format("%I64d",filesize);
       output+=closeTag+openTag+"File size:"+tmp;
     }
   }
@@ -1488,7 +1494,10 @@ int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
 
   if (numParas>1)
   {
-    CUtil::GetAlbumThumb(paras[0],paras[1],thumbFilename,false);
+    bool tempFolder = false;
+    if (numParas>2)
+      tempFolder=paras[2].ToLower()=="true";
+    CUtil::GetAlbumThumb(paras[0], paras[1], thumbFilename, tempFolder);
     return SetResponse(openTag+thumbFilename ) ;
   }
   else
