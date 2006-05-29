@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 
-<!-- Based on English XML v1.316. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.318. Last updated by vnmartinsen  !-->
 
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
@@ -844,6 +844,7 @@
   <string><id>12385</id><value>Dag/Måned</value></string>
   <string><id>12386</id><value>Måned/Dag</value></string>
   <string><id>12387</id><value>Skann database på nytt</value></string>
+  <string><id>12388</id><value>Masterbruker</value></string>
   
   <string><id>12390</id><value>Systemets oppetid</value></string>
   <string><id>12391</id><value>Minutter</value></string>
@@ -1112,7 +1113,7 @@
   <string><id>14066</id><value>Skriv inn tiden i 24-timers HH:MM-format</value></string>
   <string><id>14067</id><value>Skriv inn datoen i DD/MM/ÅÅÅÅ-format</value></string>
   <string><id>14068</id><value>Skriv inn IP-adressen</value></string>
-  <string><id>14069</id><value>Vil du lagre disse innstillingene nå?</value></string> 	 
+  <string><id>14069</id><value>Bruk disse innstillingene nå?</value></string> 	 
   <string><id>14070</id><value>Lagre innstillinger nå</value></string> 	 
   <string><id>14071</id><value>Tillat sletting av filer og endring av filnavn</value></string>
   <string><id>14072</id><value>Skru på XLink Kai</value></string>
