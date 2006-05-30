@@ -244,15 +244,16 @@ CURL::~CURL()
 
 CURL& CURL::operator= (const CURL& source)
 {
-  m_iPort = source.m_iPort;
-  m_strHostName = source.m_strHostName;
-  m_strDomain = source.m_strDomain;
-  m_strUserName = source.m_strUserName;
-  m_strPassword = source.m_strPassword;
-  m_strFileName = source.m_strFileName;
-  m_strProtocol = source.m_strProtocol;
-  m_strFileType = source.m_strFileType;
-  m_strOptions  = source.m_strOptions;
+  m_iPort        = source.m_iPort;
+  m_strHostName  = source.m_strHostName;
+  m_strDomain    = source.m_strDomain;
+  m_strShareName = source.m_strShareName;
+  m_strUserName  = source.m_strUserName;
+  m_strPassword  = source.m_strPassword;
+  m_strFileName  = source.m_strFileName;
+  m_strProtocol  = source.m_strProtocol;
+  m_strFileType  = source.m_strFileType;
+  m_strOptions   = source.m_strOptions;
   return *this;
 }
 
