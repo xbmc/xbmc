@@ -255,42 +255,43 @@ void CAnimation::Animate(unsigned int time, bool hasRendered)
 
 #define DEGREE_TO_RADIAN 0.01745329f
 
-TransformMatrix CAnimation::RenderAnimation()
+void CAnimation::RenderAnimation(TransformMatrix &matrix)
 {
   // If we have finished an animation, reset the animation state
   // We do this here (rather than in Animate()) as we need the
   // currentProcess information in the UpdateStates() function of the
   // window and control classes.
-  if (currentState == ANIM_STATE_APPLIED)
-    currentProcess = ANIM_PROCESS_NONE;
+
   // Now do the real animation
-  if (currentProcess != ANIM_PROCESS_NONE || currentState == ANIM_STATE_APPLIED)
+  if (currentProcess != ANIM_PROCESS_NONE)
   {
     float offset = amount * (acceleration * amount + 1.0f - acceleration);
     if (effect == EFFECT_TYPE_FADE)
-      return TransformMatrix::CreateFader(((float)(endAlpha - startAlpha) * amount + startAlpha) * 0.01f);
+      m_matrix.SetFader(((float)(endAlpha - startAlpha) * amount + startAlpha) * 0.01f);
     else if (effect == EFFECT_TYPE_SLIDE)
     {
-      return TransformMatrix::CreateTranslation((endX - startX)*offset + startX, (endY - startY)*offset + startY);
+      m_matrix.SetTranslation((endX - startX)*offset + startX, (endY - startY)*offset + startY);
     }
     else if (effect == EFFECT_TYPE_ROTATE)
     {
-      TransformMatrix translation1 = TransformMatrix::CreateTranslation(-centerX, -centerY);
-      TransformMatrix rotation = TransformMatrix::CreateRotation(((endX - startX)*offset + startX) * DEGREE_TO_RADIAN);
-      TransformMatrix translation2 = TransformMatrix::CreateTranslation(centerX, centerY);
-      return translation2 * rotation * translation1;
+      m_matrix.SetTranslation(centerX, centerY);
+      m_matrix *= TransformMatrix::CreateRotation(((endX - startX)*offset + startX) * DEGREE_TO_RADIAN);
+      m_matrix *= TransformMatrix::CreateTranslation(-centerX, -centerY);
     }
     else if (effect == EFFECT_TYPE_ZOOM)
     {
       float scaleX = ((endX - startX)*offset + startX) * 0.01f;
       float scaleY = ((endY - startY)*offset + startY) * 0.01f;
-      TransformMatrix translation1 = TransformMatrix::CreateTranslation(-centerX, -centerY);
-      TransformMatrix scaler = TransformMatrix::CreateScaler(scaleX, scaleY);
-      TransformMatrix translation2 = TransformMatrix::CreateTranslation(centerX, centerY);
-      return translation2 * scaler * translation1;
+      m_matrix.SetTranslation(centerX, centerY);
+      m_matrix *= TransformMatrix::CreateScaler(scaleX, scaleY);
+      m_matrix *= TransformMatrix::CreateTranslation(-centerX, -centerY);
     }
   }
-  return TransformMatrix();
+  if (currentState == ANIM_STATE_APPLIED)
+    currentProcess = ANIM_PROCESS_NONE;
+
+  if (currentState != ANIM_STATE_NONE)
+    matrix *= m_matrix;
 }
 
 void CAnimation::ResetAnimation()
