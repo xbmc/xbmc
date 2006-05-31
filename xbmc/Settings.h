@@ -282,7 +282,6 @@ public:
     CStdString strMasterLockCode;
     //
 
-    bool m_newMyPrograms;
     int m_thumbSize;
 
     int m_sambaclienttimeout;
@@ -297,8 +296,6 @@ public:
 
     CStdString m_userDataFolder;
     CStdString m_logFolder;
-
-    char m_szShortcutDirectory[256];
 
     char m_szDefaultPrograms[128];
     char m_szDefaultMusic[128];

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-05-2006 changed: New my programs system is now the default.  Removed old code.
  - 31-05-2006 changed: Cleaned up the animation code a little.
  - 30-05-2006 fixed: Url sharename was not cloned (causing smb errors)
  - 29-05-2006 fixed: Startup windows based on the old system weren't working when the startup window was set to Home.
