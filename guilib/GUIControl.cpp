@@ -614,7 +614,7 @@ void CGUIControl::Animate(DWORD currentTime)
     // Update the control states (such as visibility)
     UpdateStates(anim.type, anim.currentProcess, anim.currentState);
     // and render the animation effect
-    transform *= anim.RenderAnimation();
+    anim.RenderAnimation(transform);
 /*
     // debug stuff
     if (anim.currentProcess != ANIM_PROCESS_NONE)
