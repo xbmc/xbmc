@@ -178,7 +178,7 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "MyPrograms.NTSCMode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
   AddString(3, "MyPrograms.Dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
   //  TODO: localize 2.0
-  AddString(4, "MyPrograms.TrainerPath", 20003, "select folder",B UTTON_CONTROL_PATH_INPUT, false, 20003);
+  AddString(4, "MyPrograms.TrainerPath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 20003);
 
   AddCategory(1,"ProgramFiles",744);
   AddBool(1, "ProgramFiles.UseAutoSwitching", 14011, false);
@@ -196,11 +196,9 @@ CGUISettings::CGUISettings(void)
   // My Weather settings
   AddGroup(2, 8);
   AddCategory(2, "Weather", 16000);
-  AddInt(1, "Weather.RefreshTime", 397, 30, 15, 15, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddSeparator(2, "Weather.Sep1");
-  AddString(3, "Weather.AreaCode1", 14019, "GMXX0154", BUTTON_CONTROL_STANDARD);
-  AddString(4, "Weather.AreaCode2", 14020, "UKXX0085", BUTTON_CONTROL_STANDARD);
-  AddString(5, "Weather.AreaCode3", 14021, "CAXX0343", BUTTON_CONTROL_STANDARD);
+  AddString(1, "Weather.AreaCode1", 14019, "GMXX0154", BUTTON_CONTROL_STANDARD);
+  AddString(2, "Weather.AreaCode2", 14020, "UKXX0085", BUTTON_CONTROL_STANDARD);
+  AddString(3, "Weather.AreaCode3", 14021, "CAXX0343", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
@@ -259,16 +257,12 @@ CGUISettings::CGUISettings(void)
   
   AddCategory(3, "Karaoke", 13327);
   AddBool(1, "Karaoke.Enabled", 13323, false);
-  AddInt(2, "Karaoke.BackgroundAlpha", 13324, 0, 0, 5, 255, SPIN_CONTROL_INT);
-  AddInt(3, "Karaoke.ForegroundAlpha", 13325, 255, 0, 5, 255, SPIN_CONTROL_INT);
-  AddFloat(4, "Karaoke.SyncDelay", 13326, -0.8f, -3.0f, 0.1f, 3.0f, SPIN_CONTROL_FLOAT);
-  AddSeparator(5, "Karaoke.Sep1");
-  AddBool(6, "Karaoke.VoiceEnabled", 13361, false);
-  AddString(7, "Karaoke.Port0VoiceMask", 13382, "None", SPIN_CONTROL_TEXT);
-  AddString(8, "Karaoke.Port1VoiceMask", 13383, "None", SPIN_CONTROL_TEXT);
-  AddString(9, "Karaoke.Port2VoiceMask", 13384, "None", SPIN_CONTROL_TEXT);
-  AddString(10, "Karaoke.Port3VoiceMask", 13385, "None", SPIN_CONTROL_TEXT);
-  AddInt(11, "Karaoke.Volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
+  AddBool(2, "Karaoke.VoiceEnabled", 13361, false);
+  AddInt(3, "Karaoke.Volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
+  AddString(4, "Karaoke.Port0VoiceMask", 13382, "None", SPIN_CONTROL_TEXT);
+  AddString(5, "Karaoke.Port1VoiceMask", 13383, "None", SPIN_CONTROL_TEXT);
+  AddString(6, "Karaoke.Port2VoiceMask", 13384, "None", SPIN_CONTROL_TEXT);
+  AddString(7, "Karaoke.Port3VoiceMask", 13385, "None", SPIN_CONTROL_TEXT);
 
   // System settings
   AddGroup(4, 13000);
