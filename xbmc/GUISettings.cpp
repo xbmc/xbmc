@@ -178,8 +178,7 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "MyPrograms.NTSCMode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
   AddString(3, "MyPrograms.Dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
   //  TODO: localize 2.0
-  // What will this do if it's available from the GUI?
-  AddString(0,"MyPrograms.TrainerPath",20003,"select folder",BUTTON_CONTROL_PATH_INPUT,false);
+  AddString(4, "MyPrograms.TrainerPath", 20003, "select folder",B UTTON_CONTROL_PATH_INPUT, false, 20003);
 
   AddCategory(1,"ProgramFiles",744);
   AddBool(1, "ProgramFiles.UseAutoSwitching", 14011, false);
