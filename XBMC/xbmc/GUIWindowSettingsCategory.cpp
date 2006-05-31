@@ -329,7 +329,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     CSetting *pSetting = settings[i];
     AddSetting(pSetting, iPosX, iPosY, iGapY, iWidth, iControlID);
     CStdString strSetting = pSetting->GetSetting();
-    if (strSetting == "Pictures.AutoSwitchMethod" || strSetting == "ProgramFiles.AutoSwitchMethod" || strSetting == "MusicFiles.AutoSwitchMethod" || strSetting == "VideoFiles.AutoSwitchMethod")
+    if (strSetting.Equals("Pictures.AutoSwitchMethod") || strSetting.Equals("ProgramFiles.AutoSwitchMethod") || strSetting.Equals("MusicFiles.AutoSwitchMethod") || strSetting.Equals("VideoFiles.AutoSwitchMethod"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -339,7 +339,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "MyPrograms.NTSCMode")
+    else if (strSetting.Equals("MyPrograms.NTSCMode"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -349,27 +349,27 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "MyMusic.Visualisation")
+    else if (strSetting.Equals("MyMusic.Visualisation"))
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
     }
-    else if (strSetting == "Karaoke.Port0VoiceMask")
+    else if (strSetting.Equals("Karaoke.Port0VoiceMask"))
     {
       FillInVoiceMasks(0, pSetting);
     }
-    else if (strSetting == "Karaoke.Port1VoiceMask")
+    else if (strSetting.Equals("Karaoke.Port1VoiceMask"))
     {
       FillInVoiceMasks(1, pSetting);
     }
-    else if (strSetting == "Karaoke.Port2VoiceMask")
+    else if (strSetting.Equals("Karaoke.Port2VoiceMask"))
     {
       FillInVoiceMasks(2, pSetting);
     }
-    else if (strSetting == "Karaoke.Port3VoiceMask")
+    else if (strSetting.Equals("Karaoke.Port3VoiceMask"))
     {
       FillInVoiceMasks(3, pSetting);
     }
-    else if (strSetting == "AudioOutput.Mode")
+    else if (strSetting.Equals("AudioOutput.Mode"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -378,7 +378,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(339), AUDIO_DIGITAL);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "CDDARipper.Encoder")
+    else if (strSetting.Equals("CDDARipper.Encoder"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -387,7 +387,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("Wav", CDDARIP_ENCODER_WAV);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "CDDARipper.Quality")
+    else if (strSetting.Equals("CDDARipper.Quality"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -397,7 +397,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(603), CDDARIP_QUALITY_EXTREME);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "LCD.Type")
+    else if (strSetting.Equals("LCD.Type"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -407,7 +407,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("VFD", LCD_TYPE_VFD);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "LCD.ModChip")
+    else if (strSetting.Equals("LCD.ModChip"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -416,7 +416,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("Xecuter3", MODCHIP_XECUTER3);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "System.TargetTemperature")
+    else if (strSetting.Equals("System.TargetTemperature"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -427,7 +427,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "System.FanSpeed")
+    else if (strSetting.Equals("System.FanSpeed"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -440,7 +440,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(int(pSettingInt->GetData()));
     }
-    else if (strSetting == "System.RemotePlayHDSpinDown")
+    else if (strSetting.Equals("System.RemotePlayHDSpinDown"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -450,7 +450,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(476), SPIN_DOWN_BOTH);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Servers.WebServerPassword")
+    else if (strSetting.Equals("Servers.WebServerPassword"))
     { // get password from the webserver if it's running (and update our settings)
       if (g_application.m_pWebServer)
       {
@@ -458,7 +458,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
         g_settings.Save();
       }
     }
-    else if (strSetting == "Network.Assignment")
+    else if (strSetting.Equals("Network.Assignment"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -467,7 +467,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Subtitles.Style")
+    else if (strSetting.Equals("Subtitles.Style"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -477,7 +477,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(741), XFONT_BOLDITALICS);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Subtitles.Color")
+    else if (strSetting.Equals("Subtitles.Color"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -485,35 +485,35 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(760 + i), i);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Subtitles.Height")
+    else if (strSetting.Equals("Subtitles.Height"))
     {
       FillInSubtitleHeights(pSetting);
     }
-    else if (strSetting == "Subtitles.Font")
+    else if (strSetting.Equals("Subtitles.Font"))
     {
       FillInSubtitleFonts(pSetting);
     }
-    else if (strSetting == "Subtitles.CharSet" || strSetting == "LookAndFeel.CharSet")
+    else if (strSetting.Equals("Subtitles.CharSet") || strSetting.Equals("LookAndFeel.CharSet"))
     {
       FillInCharSets(pSetting);
     }
-    else if (strSetting == "LookAndFeel.Font")
+    else if (strSetting.Equals("LookAndFeel.Font"))
     {
       FillInSkinFonts(pSetting);
     }
-    else if (strSetting == "LookAndFeel.Skin")
+    else if (strSetting.Equals("LookAndFeel.Skin"))
     {
       FillInSkins(pSetting);
     }
-    else if (strSetting == "LookAndFeel.SoundSkin")
+    else if (strSetting.Equals("LookAndFeel.SoundSkin"))
     {
       FillInSoundSkins(pSetting);
     }
-    else if (strSetting == "LookAndFeel.Language")
+    else if (strSetting.Equals("LookAndFeel.Language"))
     {
       FillInLanguages(pSetting);
     }
-    else if (strSetting == "LookAndFeel.Rumble")
+    else if (strSetting.Equals("LookAndFeel.Rumble"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -525,24 +525,24 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("0.9",     9 ); pControl->AddLabel("1.0",     10 );
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "LookAndFeel.Resolution")
+    else if (strSetting.Equals("LookAndFeel.Resolution"))
     {
       FillInResolutions(pSetting);
     }
-    else if (strSetting == "LookAndFeel.SkinTheme")
+    else if (strSetting.Equals("LookAndFeel.SkinTheme"))
     {
       // GeminiServer Skin Theme
       FillInSkinThemes(pSetting);
     }
-    else if (strSetting == "ScreenSaver.Mode")
+    else if (strSetting.Equals("ScreenSaver.Mode"))
     {
       FillInScreenSavers(pSetting);
     }
-    else if (strSetting == "VideoPlayer.DisplayResolution")
+    else if (strSetting.Equals("VideoPlayer.DisplayResolution"))
     {
       FillInResolutions(pSetting);
     }
-    else if (strSetting == "VideoPlayer.BypassCDSelection")
+    else if (strSetting.Equals("VideoPlayer.BypassCDSelection"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -556,7 +556,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "VideoPlayer.FrameRateConversions")
+    else if (strSetting.Equals("VideoPlayer.FrameRateConversions"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -566,7 +566,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(12382), FRAME_RATE_USE_PAL60); // "Play NTSC videos in PAL60"
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "LED.Colour")
+    else if (strSetting.Equals("LED.Colour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -578,7 +578,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(351), LED_COLOUR_OFF);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "LED.DisableOnPlayback")
+    else if (strSetting.Equals("LED.DisableOnPlayback"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -588,7 +588,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(476), LED_PLAYBACK_VIDEO_MUSIC); // Video & Music
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "VideoPlayer.RenderMethod")
+    else if (strSetting.Equals("VideoPlayer.RenderMethod"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -597,7 +597,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_HQ_RGB_SHADER);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "MusicPlayer.ReplayGainType")
+    else if (strSetting.Equals("MusicPlayer.ReplayGainType"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -606,7 +606,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(640), REPLAY_GAIN_ALBUM);
       pControl->SetValue(pSettingInt->GetData());
     }
-    /*else if (strSetting == "Masterlock.Mastermode")
+    /*else if (strSetting.Equals("Masterlock.Mastermode"))
     {
       //GeminiServer
       
@@ -620,7 +620,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
       
     }
-    else if (strSetting == "Masterlock.Maxretry")
+    else if (strSetting.Equals("Masterlock.Maxretry"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -630,11 +630,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
     */
-    else if (strSetting == "LookAndFeel.StartUpWindow")
+    else if (strSetting.Equals("LookAndFeel.StartUpWindow"))
     {
       FillInStartupWindow(pSetting);
     }
-    else if (strSetting == "LookAndFeel.Rumble")
+    else if (strSetting.Equals("LookAndFeel.Rumble"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -646,7 +646,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("0.9",     9 ); pControl->AddLabel("1.0",     10 );
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "MasterLock.LockSettingsFileManager")
+    else if (strSetting.Equals("MasterLock.LockSettingsFileManager"))
 
     {
       g_guiSettings.SetBool("Masterlock.Enableshutdown", g_passwordManager.bMasterLockEnableShutdown);
@@ -654,7 +654,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       //g_guiSettings.SetInt("Masterlock.Maxretry", g_passwordManager.iMasterLockMaxRetry);
       g_guiSettings.SetString("Masterlock.Mastercode", g_passwordManager.strMasterLockCode);
     }
-    else if (strSetting == "Masterlock.LockSettingsFilemanager")
+    else if (strSetting.Equals("Masterlock.LockSettingsFilemanager"))
     {
       int iTmpState;
       bool bLFState = g_passwordManager.bMasterLockFilemanager;
@@ -676,7 +676,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(12373) , 3 );  // 3 Settings and Filemanager
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Masterlock.LockHomeMedia")
+    else if (strSetting.Equals("Masterlock.LockHomeMedia"))
     {
       g_guiSettings.SetInt("Masterlock.LockHomeMedia", g_passwordManager.iMasterLockHomeMedia);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -699,12 +699,12 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(1232)  , LOCK_MU_VI_PIC_PROG);  // 15 Musik & Video & Pictures & Programs
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Servers.FTPServerUser")
+    else if (strSetting.Equals("Servers.FTPServerUser"))
     {
       //GeminiServer
       FillInFTPServerUser(pSetting);
     }
-    else if (strSetting == "Autodetect.NickName")
+    else if (strSetting.Equals("Autodetect.NickName"))
     {
       //GeminiServer
       //CStdString strXboxNickNameIn = g_guiSettings.GetString("Autodetect.NickName");
@@ -713,14 +713,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
       if (CUtil::GetXBOXNickName(strXboxNickNameOut))
         g_guiSettings.SetString("Autodetect.NickName", strXboxNickNameOut.c_str());
     }
-    else if (strSetting == "MyVideos.ExternalDVDPlayer")
+    else if (strSetting.Equals("MyVideos.ExternalDVDPlayer"))
     {
       CSettingString *pSettingString = (CSettingString *)pSetting;
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       if (pSettingString->GetData().IsEmpty())
         pControl->SetLabel2(g_localizeStrings.Get(20009));  // TODO: localize 2.0
     }
-    else if (strSetting == "XBDateTime.Region")
+    else if (strSetting.Equals("XBDateTime.Region"))
     {
       FillInRegions(pSetting);
     }
@@ -754,52 +754,52 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CBaseSettingControl *pSettingControl = m_vecSettings[i];
     pSettingControl->Update();
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-    if (strSetting == "Pictures.AutoSwitchUseLargeThumbs")
+    if (strSetting.Equals("Pictures.AutoSwitchUseLargeThumbs"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Pictures.UseAutoSwitching"));
     }
-    else if (strSetting == "ProgramFiles.AutoSwitchUseLargeThumbs" || strSetting == "ProgramFiles.AutoSwitchMethod")
+    else if (strSetting.Equals("ProgramFiles.AutoSwitchUseLargeThumbs") || strSetting.Equals("ProgramFiles.AutoSwitchMethod"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("ProgramFiles.UseAutoSwitching"));
     }
-    else if (strSetting == "ProgramFiles.AutoSwitchPercentage")
+    else if (strSetting.Equals("ProgramFiles.AutoSwitchPercentage"))
     { // set visibility based on our other setting...
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("ProgramFiles.UseAutoSwitching") && g_guiSettings.GetInt("ProgramFiles.AutoSwitchMethod") == 2);
     }
-    else if (strSetting == "MyPrograms.NTSCMode")
+    else if (strSetting.Equals("MyPrograms.NTSCMode"))
     { // set visibility based on our other setting...
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyPrograms.GameAutoRegion"));
     }
-    else if (strSetting == "XLinkKai.EnableNotifications" || strSetting == "XLinkKai.UserName" || strSetting == "XLinkKai.Password" || strSetting == "XLinkKai.Server")
+    else if (strSetting.Equals("XLinkKai.EnableNotifications") || strSetting.Equals("XLinkKai.UserName") || strSetting.Equals("XLinkKai.Password") || strSetting.Equals("XLinkKai.Server"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("XLinkKai.Enabled"));
     }
-    else if (strSetting == "MusicFiles.AutoSwitchUseLargeThumbs" || strSetting == "MusicFiles.AutoSwitchMethod")
+    else if (strSetting.Equals("MusicFiles.AutoSwitchUseLargeThumbs") || strSetting.Equals("MusicFiles.AutoSwitchMethod"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicFiles.UseAutoSwitching"));
     }
-    else if (strSetting == "MusicFiles.AutoSwitchPercentage")
+    else if (strSetting.Equals("MusicFiles.AutoSwitchPercentage"))
     { // set visibility based on our other setting...
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MusicFiles.UseAutoSwitching") && g_guiSettings.GetInt("MusicFiles.AutoSwitchMethod") == 2);
     }
-    else if (strSetting == "VideoFiles.AutoSwitchUseLargeThumbs" || strSetting == "VideoFiles.AutoSwitchMethod")
+    else if (strSetting.Equals("VideoFiles.AutoSwitchUseLargeThumbs") || strSetting.Equals("VideoFiles.AutoSwitchMethod"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VideoFiles.UseAutoSwitching"));
     }
-    else if (strSetting == "VideoFiles.AutoSwitchPercentage")
+    else if (strSetting.Equals("VideoFiles.AutoSwitchPercentage"))
     { // set visibility based on our other setting...
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VideoFiles.UseAutoSwitching") && g_guiSettings.GetInt("VideoFiles.AutoSwitchMethod") == 2);
     }
-    else if (strSetting == "MusicPlaylist.ClearPlaylistsOnEnd")
+    else if (strSetting.Equals("MusicPlaylist.ClearPlaylistsOnEnd"))
     { // disable repeat and repeat one if clear playlists is enabled
       if (g_guiSettings.GetBool("MusicPlaylist.ClearPlaylistsOnEnd"))
       {
@@ -809,64 +809,64 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         g_settings.Save();
       }
     } 
-    else if (strSetting == "CDDARipper.Quality")
+    else if (strSetting.Equals("CDDARipper.Quality"))
     { // only visible if we are doing non-WAV ripping
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("CDDARipper.Encoder") != CDDARIP_ENCODER_WAV);
     }
-    else if (strSetting == "CDDARipper.Bitrate")
+    else if (strSetting.Equals("CDDARipper.Bitrate"))
     { // only visible if we are ripping to CBR
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("CDDARipper.Encoder") != CDDARIP_ENCODER_WAV) &&
                                            (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_CBR));
     }
-    else if (strSetting == "MusicPlayer.OutputToAllSpeakers" || strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
+    else if (strSetting.Equals("MusicPlayer.OutputToAllSpeakers") || strSetting.Equals("AudioOutput.AC3PassThrough") || strSetting.Equals("AudioOutput.DTSPassThrough"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL);
     }
-    else if (strSetting == "MusicPlayer.CrossFadeAlbumTracks")
+    else if (strSetting.Equals("MusicPlayer.CrossFadeAlbumTracks"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("MusicPlayer.CrossFade") > 0);
     }
-    else if (strSetting.Left(12) == "Karaoke.Port" || strSetting == "Karaoke.Volume")
+    else if (strSetting.Left(12).Equals("Karaoke.Port") || strSetting.Equals("Karaoke.Volume"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Karaoke.VoiceEnabled"));
     }
-    else if (strSetting == "System.FanSpeed")
+    else if (strSetting.Equals("System.FanSpeed"))
     { // only visible if we have fancontrolspeed enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("System.FanSpeedControl"));
     }
-    else if (strSetting == "System.TargetTemperature")
+    else if (strSetting.Equals("System.TargetTemperature"))
     { // only visible if we have autotemperature enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("System.AutoTemperature"));
     }
-    else if (strSetting == "System.RemotePlayHDSpinDownDelay")
+    else if (strSetting.Equals("System.RemotePlayHDSpinDownDelay"))
     { // only visible if we have spin down enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("System.RemotePlayHDSpinDown") != SPIN_DOWN_NONE);
     }
-    else if (strSetting == "System.RemotePlayHDSpinDownMinDuration")
+    else if (strSetting.Equals("System.RemotePlayHDSpinDownMinDuration"))
     { // only visible if we have spin down enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("System.RemotePlayHDSpinDown") != SPIN_DOWN_NONE);
     }
-    else if (strSetting == "System.ShutDownWhilePlaying")
+    else if (strSetting.Equals("System.ShutDownWhilePlaying"))
     { // only visible if we have shutdown enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("System.ShutDownTime") != 0);
     }
-    else if (strSetting == "Servers.FTPServerUser" || strSetting == "Servers.FTPServerPassword" || strSetting == "Servers.FTPAutoFatX")
+    else if (strSetting.Equals("Servers.FTPServerUser") || strSetting.Equals("Servers.FTPServerPassword") || strSetting.Equals("Servers.FTPAutoFatX"))
     {
       //GeminiServer
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("Servers.FTPServer"));
     }
-    else if (strSetting == "Servers.WebServerPassword")
+    else if (strSetting.Equals("Servers.WebServerPassword"))
     { // Fill in a blank pass if we don't have it
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (((CSettingString *)pSettingControl->GetSetting())->GetData().size() == 0 && pControl)
@@ -875,12 +875,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(g_guiSettings.GetBool("Servers.WebServer"));
       }
     }
-    else if (strSetting == "Servers.WebServerPort")
+    else if (strSetting.Equals("Servers.WebServerPort"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Servers.WebServer"));
     }
-    else if (strSetting == "Network.IPAddress" || strSetting == "Network.Subnet" || strSetting == "Network.Gateway" || strSetting == "Network.DNS")
+    else if (strSetting.Equals("Network.IPAddress") || strSetting.Equals("Network.Subnet") || strSetting.Equals("Network.Gateway") || strSetting.Equals("Network.DNS"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl)
@@ -888,98 +888,98 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         if (g_guiSettings.GetInt("Network.Assignment") != NETWORK_STATIC) 
         {
           //We are in non Static Mode! Setting the Received IP Information
-          if(strSetting == "Network.IPAddress")pControl->SetLabel2(g_network.m_networkinfo.ip);
-          else if(strSetting == "Network.Subnet")pControl->SetLabel2(g_network.m_networkinfo.subnet);
-          else if(strSetting == "Network.Gateway")pControl->SetLabel2(g_network.m_networkinfo.gateway);
-          else if(strSetting == "Network.DNS")pControl->SetLabel2(g_network.m_networkinfo.DNS1);
+          if(strSetting.Equals("Network.IPAddress"))pControl->SetLabel2(g_network.m_networkinfo.ip);
+          else if(strSetting.Equals("Network.Subnet"))pControl->SetLabel2(g_network.m_networkinfo.subnet);
+          else if(strSetting.Equals("Network.Gateway"))pControl->SetLabel2(g_network.m_networkinfo.gateway);
+          else if(strSetting.Equals("Network.DNS"))pControl->SetLabel2(g_network.m_networkinfo.DNS1);
         }
         pControl->SetEnabled(g_guiSettings.GetInt("Network.Assignment") == NETWORK_STATIC);
       }
     }
-    else if (strSetting == "Network.HTTPProxyServer" || strSetting == "Network.HTTPProxyPort")
+    else if (strSetting.Equals("Network.HTTPProxyServer") || strSetting.Equals("Network.HTTPProxyPort"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Network.UseHTTPProxy"));
     }
-    else if (strSetting == "PostProcessing.VerticalDeBlockLevel")
+    else if (strSetting.Equals("PostProcessing.VerticalDeBlockLevel"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("PostProcessing.VerticalDeBlocking") &&
                            g_guiSettings.GetBool("PostProcessing.Enable") &&
                            !g_guiSettings.GetBool("PostProcessing.Auto"));
     }
-    else if (strSetting == "PostProcessing.HorizontalDeBlockLevel")
+    else if (strSetting.Equals("PostProcessing.HorizontalDeBlockLevel"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("PostProcessing.HorizontalDeBlocking") &&
                            g_guiSettings.GetBool("PostProcessing.Enable") &&
                            !g_guiSettings.GetBool("PostProcessing.Auto"));
     }
-    else if (strSetting == "PostProcessing.VerticalDeBlocking" || strSetting == "PostProcessing.HorizontalDeBlocking" || strSetting == "PostProcessing.AutoBrightnessContrastLevels" || strSetting == "PostProcessing.DeRing")
+    else if (strSetting.Equals("PostProcessing.VerticalDeBlocking") || strSetting.Equals("PostProcessing.HorizontalDeBlocking") || strSetting.Equals("PostProcessing.AutoBrightnessContrastLevels") || strSetting.Equals("PostProcessing.DeRing"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("PostProcessing.Enable") &&
                            !g_guiSettings.GetBool("PostProcessing.Auto"));
     }
-    else if (strSetting == "PostProcessing.Auto")
+    else if (strSetting.Equals("PostProcessing.Auto"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("PostProcessing.Enable"));
     }
-    else if (strSetting == "VideoPlayer.InvertFieldSync")
+    else if (strSetting.Equals("VideoPlayer.InvertFieldSync"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("VideoPlayer.FieldSync"));
     }
-    else if (strSetting == "Subtitles.Color" || strSetting == "Subtitles.Style" || strSetting == "Subtitles.CharSet")
+    else if (strSetting.Equals("Subtitles.Color") || strSetting.Equals("Subtitles.Style") || strSetting.Equals("Subtitles.CharSet"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(CUtil::IsUsingTTFSubtitles());
     }
-    else if (strSetting == "Subtitles.FlipBiDiCharSet")
+    else if (strSetting.Equals("Subtitles.FlipBiDiCharSet"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       CStdString strCharset=g_langInfo.GetSubtitleCharSet();
       pControl->SetEnabled( /*CUtil::IsUsingTTFSubtitles() &&*/ g_charsetConverter.isBidiCharset(strCharset) > 0);
     }
-    else if (strSetting == "LookAndFeel.CharSet")
+    else if (strSetting.Equals("LookAndFeel.CharSet"))
     { // TODO: Determine whether we are using a TTF font or not.
       //   CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       //   if (pControl) pControl->SetEnabled(g_guiSettings.GetString("LookAndFeel.Font").Right(4) == ".ttf");
     }
-    else if (strSetting == "ScreenSaver.DimLevel")
+    else if (strSetting.Equals("ScreenSaver.DimLevel"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "Dim");
     }
-    else if (strSetting == "ScreenSaver.SlideShowPath")
+    else if (strSetting.Equals("ScreenSaver.SlideShowPath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "SlideShow");
     }
-    else if (strSetting == "ScreenSaver.SlideShowShuffle")
+    else if (strSetting.Equals("ScreenSaver.SlideShowShuffle"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "SlideShow");
     }
-    else if (strSetting == "ScreenSaver.Preview")
+    else if (strSetting.Equals("ScreenSaver.Preview"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") != "None");
     }
-    else if (strSetting.Left(16) == "Weather.AreaCode")
+    else if (strSetting.Left(16).Equals("Weather.AreaCode"))
     {
       CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetLabel2(pSetting->GetData());
     }
-    else if (strSetting == "LED.DisableOnPlayback")
+    else if (strSetting.Equals("LED.DisableOnPlayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       int iColour = g_guiSettings.GetInt("LED.Colour");
       pControl->SetEnabled(iColour != LED_COLOUR_NO_CHANGE && iColour != LED_COLOUR_OFF);
     }
-    else if (strSetting == "MyMusic.TrackFormat")
+    else if (strSetting.Equals("MyMusic.TrackFormat"))
     {
       if (m_strOldTrackFormat != g_guiSettings.GetString("MyMusic.TrackFormat"))
       {
@@ -987,7 +987,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         m_strOldTrackFormat = g_guiSettings.GetString("MyMusic.TrackFormat");
       }
     }
-    else if (strSetting == "MyMusic.TrackFormatRight")
+    else if (strSetting.Equals("MyMusic.TrackFormatRight"))
     {
       if (m_strOldTrackFormatRight != g_guiSettings.GetString("MyMusic.TrackFormatRight"))
       {
@@ -995,19 +995,19 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         m_strOldTrackFormatRight = g_guiSettings.GetString("MyMusic.TrackFormatRight");
       }
     }
-	  else if (strSetting == "XBDateTime.TimeAddress")
+	  else if (strSetting.Equals("XBDateTime.TimeAddress"))
     {
 		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 		  if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("XBDateTime.TimeServer"));
     }
-	  else if (strSetting == "XBDateTime.Time" || strSetting == "XBDateTime.Date")
+	  else if (strSetting.Equals("XBDateTime.Time") || strSetting.Equals("XBDateTime.Date"))
 	  {
 		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 		  if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("XBDateTime.TimeServer")); 
 		  SYSTEMTIME curTime;
 		  GetLocalTime(&curTime);
       CStdString time;
-      if (strSetting == "XBDateTime.Time")
+      if (strSetting.Equals("XBDateTime.Time"))
         time = g_infoManager.GetTime(false);  // false for no seconds
       else
         time = g_infoManager.GetDate();
@@ -1015,7 +1015,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       pSettingString->SetData(time);
       pSettingControl->Update();
     }
-    else if (strSetting == "Masterlock.MasterUser" || strSetting == "Masterlock.Enableshutdown" || strSetting == "Masterlock.Protectshares" || strSetting == "Masterlock.StartupLock" || strSetting =="Masterlock.LockSettingsFilemanager" || strSetting =="Masterlock.LockHomeMedia")
+    else if (strSetting.Equals("Masterlock.MasterUser") || strSetting.Equals("Masterlock.Enableshutdown") || strSetting.Equals("Masterlock.Protectshares") || strSetting.Equals("Masterlock.StartupLock") || strSetting.Equals("Masterlock.LockSettingsFilemanager") || strSetting.Equals("Masterlock.LockHomeMedia"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if(g_advancedSettings.bUseMasterLockAdvancedXml)
@@ -1031,7 +1031,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           bState = false;
         if (pControl) 
           pControl->SetEnabled(bState);
-        if (strSetting == "Masterlock.MasterUser")
+        if (strSetting.Equals("Masterlock.MasterUser"))
         {
           if (!g_passwordManager.bMasterUser && g_application.m_bMasterLockOverridesLocalPasswords)
           {
@@ -1041,7 +1041,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         }
       }
     }
-    else if (strSetting == "Masterlock.Mastercode")
+    else if (strSetting.Equals("Masterlock.Mastercode"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if(g_advancedSettings.bUseMasterLockAdvancedXml)
@@ -1071,7 +1071,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         }
       }
     }
-    else if (strSetting == "Masterlock.UserMode")
+    else if (strSetting.Equals("Masterlock.UserMode"))
     {
       //Enable/Disable Item
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1103,18 +1103,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         }
       }
     }
-    else if (strSetting == "Autodetect.NickName" || strSetting == "Autodetect.CreateLink" || strSetting == "Autodetect.PopUpInfo" || strSetting == "Autodetect.SendUserPw")
+    else if (strSetting.Equals("Autodetect.NickName") || strSetting.Equals("Autodetect.CreateLink") || strSetting.Equals("Autodetect.PopUpInfo") || strSetting.Equals("Autodetect.SendUserPw"))
     {
       //GeminiServer
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 		  if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Autodetect.OnOff"));
     }
-    else if (strSetting == "MyVideos.ExternalDVDPlayer")
+    else if (strSetting.Equals("MyVideos.ExternalDVDPlayer"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 		  if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyVideos.UseExternalDVDPlayer"));
     }
-    else if (strSetting == "MyPrograms.TrainerPath")
+    else if (strSetting.Equals("MyPrograms.TrainerPath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
@@ -1129,14 +1129,14 @@ void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
   {
     CBaseSettingControl *pSettingControl = m_vecSettings[i];
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-	  if (strSetting == "XBDateTime.Time" || strSetting == "XBDateTime.Date")
+	  if (strSetting.Equals("XBDateTime.Time") || strSetting.Equals("XBDateTime.Date"))
 	  {
 		  CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 		  if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("XBDateTime.TimeServer")); 
 		  SYSTEMTIME curTime;
 		  GetLocalTime(&curTime);
       CStdString time;
-      if (strSetting == "XBDateTime.Time")
+      if (strSetting.Equals("XBDateTime.Time"))
         time = g_infoManager.GetTime(false);  // false for no seconds
       else
         time = g_infoManager.GetDate();  // false as we want numbers
@@ -1150,7 +1150,7 @@ void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 {
   CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-  if (strSetting.Left(16) == "Weather.AreaCode")
+  if (strSetting.Left(16).Equals("Weather.AreaCode"))
   {
     CStdString strSearch;
     if (CGUIDialogKeyboard::ShowAndGetInput(strSearch, g_localizeStrings.Get(14024), false))
@@ -1163,7 +1163,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   pSettingControl->OnClick(); // call the control to do it's thing
   // ok, now check the various special things we need to do
-  if (strSetting == "MyPrograms.UseDirectoryName")
+  if (strSetting.Equals("MyPrograms.UseDirectoryName"))
   { // delete the program database.
     // TODO: Should this actually be done here??
     CStdString programDatabase = g_settings.GetDatabaseFolder();
@@ -1171,7 +1171,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CFile::Exists(programDatabase))
       ::DeleteFile(programDatabase.c_str());
   }
-  else if (strSetting == "MyMusic.Visualisation")
+  else if (strSetting.Equals("MyMusic.Visualisation"))
   { // new visualisation choosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1180,49 +1180,49 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       pSettingString->SetData(pControl->GetCurrentLabel() + ".vis");
   }
-  else if (strSetting == "MusicFiles.Repeat")
+  else if (strSetting.Equals("MusicFiles.Repeat"))
   {
     g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MusicFiles.Repeat"));
   }
-  else if (strSetting == "Karaoke.Port0VoiceMask")
+  else if (strSetting.Equals("Karaoke.Port0VoiceMask"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("Karaoke.Port0VoiceMask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(0, g_guiSettings.GetSetting("Karaoke.Port0VoiceMask"));
   }
-  else if (strSetting == "Karaoke.Port1VoiceMask")
+  else if (strSetting.Equals("Karaoke.Port1VoiceMask"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("Karaoke.Port1VoiceMask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(1, g_guiSettings.GetSetting("Karaoke.Port1VoiceMask"));
   }
-  else if (strSetting == "Karaoke.Port2VoiceMask")
+  else if (strSetting.Equals("Karaoke.Port2VoiceMask"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("Karaoke.Port2VoiceMask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(2, g_guiSettings.GetSetting("Karaoke.Port2VoiceMask"));
   }
-  else if (strSetting == "Karaoke.Port2VoiceMask")
+  else if (strSetting.Equals("Karaoke.Port2VoiceMask"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("Karaoke.Port3VoiceMask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(3, g_guiSettings.GetSetting("Karaoke.Port3VoiceMask"));
   }
-  else if (strSetting == "MyMusic.CleanupMusicLibrary")
+  else if (strSetting.Equals("MyMusic.CleanupMusicLibrary"))
   {
     CMusicDatabase musicdatabase;
     musicdatabase.Clean();
     CUtil::DeleteDatabaseDirectoryCache();
   }
-  else if (strSetting == "MusicPlayer.JumpToAudioHardware" || strSetting == "VideoPlayer.JumpToAudioHardware")
+  else if (strSetting.Equals("MusicPlayer.JumpToAudioHardware") || strSetting.Equals("VideoPlayer.JumpToAudioHardware"))
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, 5);
   }
-  else if (strSetting == "MyMusic.UseAudioScrobbler" || strSetting == "MyMusic.AudioScrobblerUserName" || strSetting == "MyMusic.AudioScrobblerPassword")
+  else if (strSetting.Equals("MyMusic.UseAudioScrobbler") || strSetting.Equals("MyMusic.AudioScrobblerUserName") || strSetting.Equals("MyMusic.AudioScrobblerPassword"))
   {
     if (g_guiSettings.GetBool("MyMusic.UseAudioScrobbler"))
     {
@@ -1236,7 +1236,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       CScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting == "MusicPlayer.OutputToAllSpeakers")
+  else if (strSetting.Equals("MusicPlayer.OutputToAllSpeakers"))
   {
     CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
 
@@ -1252,29 +1252,29 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("MusicPlayer.ReplayGainNoGainPreAmp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("MusicPlayer.ReplayGainAvoidClipping");
   }
-  else if (strSetting == "CDDARipper.Path")
+  else if (strSetting.Equals("CDDARipper.Path"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString strPath = pSettingString->GetData();
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(607),strPath,true))
       pSettingString->SetData(strPath);
   }
-  else if (strSetting == "XLinkKai.Enabled")
+  else if (strSetting.Equals("XLinkKai.Enabled"))
   {
     if (g_guiSettings.GetBool("XLinkKai.Enabled"))
       g_application.StartKai();
     else
       g_application.StopKai();
   }
-  else if (strSetting == "LCD.Type")
+  else if (strSetting.Equals("LCD.Type"))
   {
     g_lcd->Initialize();
   }
-  else if (strSetting == "LCD.BackLight")
+  else if (strSetting.Equals("LCD.BackLight"))
   {
     g_lcd->SetBackLight(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
-  else if (strSetting == "LCD.ModChip")
+  else if (strSetting.Equals("LCD.ModChip"))
   {
     g_lcd->Stop();
     CLCDFactory factory;
@@ -1282,16 +1282,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_lcd = factory.Create();
     g_lcd->Initialize();
   }
-  else if (strSetting == "LCD.Contrast")
+  else if (strSetting.Equals("LCD.Contrast"))
   {
     g_lcd->SetContrast(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
-  else if (strSetting == "System.TargetTemperature")
+  else if (strSetting.Equals("System.TargetTemperature"))
   {
     CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
     CFanController::Instance()->SetTargetTemperature(pSetting->GetData());
   }
-  else if (strSetting == "System.FanSpeed")
+  else if (strSetting.Equals("System.FanSpeed"))
   {
     CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
@@ -1301,7 +1301,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.SetInt("System.FanSpeed", iSpeed);
     CFanController::Instance()->SetFanSpeed(iSpeed);
   }
-  else if (strSetting == "System.AutoTemperature")
+  else if (strSetting.Equals("System.AutoTemperature"))
   {
     CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
     if (pSetting->GetData())
@@ -1312,7 +1312,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       CFanController::Instance()->Stop();
   }
-  else if (strSetting == "System.FanSpeedControl")
+  else if (strSetting.Equals("System.FanSpeedControl"))
   {
     CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
     if (pSetting->GetData())
@@ -1324,31 +1324,31 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       CFanController::Instance()->RestoreStartupSpeed();
   }
-  else if (strSetting == "Autodetect.NickName" )
+  else if (strSetting.Equals("Autodetect.NickName") )
   {
     CStdString strXboxNickNameIn = g_guiSettings.GetString("Autodetect.NickName");
     CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameIn);
   }
-  else if (strSetting == "Servers.FTPServer")
+  else if (strSetting.Equals("Servers.FTPServer"))
   {
     g_application.StopFtpServer();
     if (g_guiSettings.GetBool("Servers.FTPServer"))
       g_application.StartFtpServer();
     
   }
-  else if (strSetting == "Servers.FTPServerPassword")
+  else if (strSetting.Equals("Servers.FTPServerPassword"))
   {
    SetFTPServerUserPass(); 
   }
-  else if (strSetting == "Servers.FTPServerUser")
+  else if (strSetting.Equals("Servers.FTPServerUser"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("Servers.FTPServerUser", pControl->GetCurrentLabel());
   }
 
-  else if (strSetting == "Servers.WebServer" || strSetting == "Servers.WebServerPort" || strSetting == "Servers.WebServerPassword")
+  else if (strSetting.Equals("Servers.WebServer") || strSetting.Equals("Servers.WebServerPort") || strSetting.Equals("Servers.WebServerPassword"))
   {
-    if (strSetting == "Servers.WebServerPort")
+    if (strSetting.Equals("Servers.WebServerPort"))
     {
       CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
       // check that it's a valid port
@@ -1365,7 +1365,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.m_pWebServer->SetPassword((char_t*)strPassword.c_str());
     }
   }
-  else if (strSetting == "Network.HTTPProxyPort")
+  else if (strSetting.Equals("Network.HTTPProxyPort"))
   {
     CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
     // check that it's a valid port
@@ -1373,11 +1373,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (port <= 0 || port > 65535)
       pSetting->SetData("8080");
   }
-  else if (strSetting == "MyVideos.Calibrate")
+  else if (strSetting.Equals("MyVideos.Calibrate"))
   { // activate the video calibration screen
     m_gWindowManager.ActivateWindow(WINDOW_MOVIE_CALIBRATION);
   }
-  else if (strSetting == "MyVideos.ExternalDVDPlayer")
+  else if (strSetting.Equals("MyVideos.ExternalDVDPlayer"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
@@ -1387,7 +1387,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", "DVD Player", path))
       pSettingString->SetData(path);
   }
-  else if (strSetting == "Subtitles.Height")
+  else if (strSetting.Equals("Subtitles.Height"))
   {
     if (!CUtil::IsUsingTTFSubtitles())
     {
@@ -1395,14 +1395,14 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       ((CSettingInt *)pSettingControl->GetSetting())->FromString(pControl->GetCurrentLabel());
     }
   }
-  else if (strSetting == "Subtitles.Font")
+  else if (strSetting.Equals("Subtitles.Font"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     pSettingString->SetData(pControl->GetCurrentLabel());
     FillInSubtitleHeights(g_guiSettings.GetSetting("Subtitles.Height"));
   }
-  else if (strSetting == "Subtitles.CharSet")
+  else if (strSetting.Equals("Subtitles.CharSet"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1415,7 +1415,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_charsetConverter.reset();
     }
   }
-  else if (strSetting == "LookAndFeel.CharSet")
+  else if (strSetting.Equals("LookAndFeel.CharSet"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1428,7 +1428,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_charsetConverter.reset();
     }
   }
-  else if (strSetting == "LookAndFeel.Font")
+  else if (strSetting.Equals("LookAndFeel.Font"))
   { // new font choosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1444,7 +1444,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.CancelDelayLoadSkin();
     }
   }
-  else if (strSetting == "LookAndFeel.Skin")
+  else if (strSetting.Equals("LookAndFeel.Skin"))
   { // new skin choosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1473,7 +1473,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().disabledColor);
     }
   }
-  else if (strSetting == "LookAndFeel.SoundSkin")
+  else if (strSetting.Equals("LookAndFeel.SoundSkin"))
   { // new sound skin choosen...
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     if (pControl->GetValue()==0)
@@ -1485,11 +1485,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 
     g_audioManager.Load();
   }
-  else if (strSetting == "LookAndFeel.GUICentering")
+  else if (strSetting.Equals("LookAndFeel.GUICentering"))
   { // activate the video calibration screen
     m_gWindowManager.ActivateWindow(WINDOW_UI_CALIBRATION);
   }
-  else if (strSetting == "LookAndFeel.Resolution")
+  else if (strSetting.Equals("LookAndFeel.Resolution"))
   { // new resolution choosen... - update if necessary
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
@@ -1508,11 +1508,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.CancelDelayLoadSkin();
     }
   }
-  else if (strSetting == "LED.Colour")
+  else if (strSetting.Equals("LED.Colour"))
   { // Alter LED Colour immediately
     ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
-  else if (strSetting == "LookAndFeel.Language")
+  else if (strSetting.Equals("LookAndFeel.Language"))
   { // new language choosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1528,7 +1528,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.CancelDelayLoadSkin();
     }
   }
-  else if (strSetting == "LookAndFeel.SkinTheme")
+  else if (strSetting.Equals("LookAndFeel.SkinTheme"))
   { //a new Theme was chosen
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1551,7 +1551,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.CancelDelayLoadSkin();
     }
   }
-  else if (strSetting == "VideoPlayer.DisplayResolution")
+  else if (strSetting.Equals("VideoPlayer.DisplayResolution"))
   {
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
@@ -1559,11 +1559,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_graphicsContext.SendMessage(msg);
     pSettingInt->SetData(msg.GetParam1());
   }
-  else if (strSetting == "UIFilters.Flicker" || strSetting == "UIFilters.Soften")
+  else if (strSetting.Equals("UIFilters.Flicker") || strSetting.Equals("UIFilters.Soften"))
   { // reset display
     g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
   }
-  else if (strSetting == "ScreenSaver.Mode")
+  else if (strSetting.Equals("ScreenSaver.Mode"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1581,18 +1581,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
     pSettingString->SetData(strScreenSaver);
   }
-  else if (strSetting == "ScreenSaver.Preview")
+  else if (strSetting.Equals("ScreenSaver.Preview"))
   {
     g_application.ActivateScreenSaver();
   }
-  else if (strSetting == "ScreenSaver.SlideShowPath")
+  else if (strSetting.Equals("ScreenSaver.SlideShowPath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyPictureShares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-  else if (strSetting == "MyPrograms.Dashboard")
+  else if (strSetting.Equals("MyPrograms.Dashboard"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
@@ -1601,7 +1601,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-  else if (strSetting == "MyPrograms.TrainerPath")
+  else if (strSetting.Equals("MyPrograms.TrainerPath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
@@ -1611,7 +1611,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       // TODO: Should we ask to rescan the trainers here?
     }
   }
-  else if (strSetting == "LED.Colour")
+  else if (strSetting.Equals("LED.Colour"))
   { // Alter LED Colour immediately
     ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
@@ -1622,7 +1622,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("MusicPlayer.ReplayGainNoGainPreAmp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("MusicPlayer.ReplayGainAvoidClipping");
   }
-  else if (strSetting == "XBDateTime.Region")
+  else if (strSetting.Equals("XBDateTime.Region"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1631,13 +1631,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_langInfo.SetCurrentRegion(strRegion);
     g_guiSettings.SetString("XBDateTime.Region", strRegion);
   }
-  else if (strSetting == "XBDateTime.TimeServer" || strSetting == "XBDateTime.TimeAddress")
+  else if (strSetting.Equals("XBDateTime.TimeServer") || strSetting.Equals("XBDateTime.TimeAddress"))
   {
     g_application.StopTimeServer();
     if (g_guiSettings.GetBool("XBDateTime.TimeServer"))
       g_application.StartTimeServer();
   }
-  else if (strSetting == "XBDateTime.Time")
+  else if (strSetting.Equals("XBDateTime.Time"))
   {
     SYSTEMTIME curTime;
     GetLocalTime(&curTime);
@@ -1648,7 +1648,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 			CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
     }
   }
-  else if (strSetting == "XBDateTime.Date")
+  else if (strSetting.Equals("XBDateTime.Date"))
   {
     SYSTEMTIME curDate;
     GetLocalTime(&curDate);
@@ -1659,7 +1659,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 			CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
     }
   }
-  else if (strSetting == "Smb.Winsserver" || strSetting == "Smb.Workgroup" )
+  else if (strSetting.Equals("Smb.Winsserver") || strSetting.Equals("Smb.Workgroup") )
   {
     if (g_guiSettings.GetString("Smb.Winsserver") == "0.0.0.0") 
       g_guiSettings.SetString("Smb.Winsserver", "");
@@ -1680,7 +1680,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_applicationMessenger.RestartApp();
     }
   }
-  else if (strSetting == "Masterlock.Mastercode")
+  else if (strSetting.Equals("Masterlock.Mastercode"))
   {
     // Prompt user for mastercode if the mastercode was set before or by xml
     if (g_passwordManager.CheckMasterLockCode()) 
@@ -1693,7 +1693,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       }
     }
   }
-  else if (strSetting == "Masterlock.UserMode")
+  else if (strSetting.Equals("Masterlock.UserMode"))
   {
     if (g_passwordManager.CheckMasterLockCode()) 
     {
