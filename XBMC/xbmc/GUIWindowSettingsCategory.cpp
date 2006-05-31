@@ -1120,6 +1120,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 		  if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyVideos.UseExternalDVDPlayer"));
     }
+    else if (strSetting == "MyPrograms.TrainerPath")
+    {
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
+      if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
+        pControl->SetLabel2("");
+    }
   }
 }
 
@@ -1600,6 +1606,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
+  }
+  else if (strSetting == "MyPrograms.TrainerPath")
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CStdString path = pSettingString->GetData();
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
+    {
+      pSettingString->SetData(path);
+      // TODO: Should we ask to rescan the trainers here?
+    }
   }
   else if (strSetting == "LED.Colour")
   { // Alter LED Colour immediately
