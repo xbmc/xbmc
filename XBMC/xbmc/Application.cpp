@@ -932,13 +932,9 @@ HRESULT CApplication::Initialize()
   CLog::Log(LOGINFO, "creating subdirectories");
 
   CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
-  CLog::Log(LOGINFO, "  shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
   CLog::Log(LOGINFO, "  recording folder:%s", g_guiSettings.GetString("MyMusic.RecordingPath",false).c_str());
   CLog::Log(LOGINFO, "  screenshots folder:%s", g_guiSettings.GetString("System.ScreenshotPath",false).c_str());
 	
-  if (!g_guiSettings.GetBool("MyPrograms.NoShortcuts"))
-    CreateDirectory(g_stSettings.m_szShortcutDirectory, NULL);
-  
   // UserData folder layout:
   // UserData/
   //   Database/

@@ -13,7 +13,6 @@ class CProgramDatabase : public CDatabase
 public:
   CProgramDatabase(void);
   virtual ~CProgramDatabase(void);
-  long AddProgram(const CStdString& strFilenameAndPath, DWORD titleId, const CStdString& strDescription, const CStdString& strBookmark);
   bool AddTrainer(int iTitleId, const CStdString& strText);
   bool RemoveTrainer(const CStdString& strText);
   bool GetTrainers(unsigned int iTitleId, std::vector<CStdString>& vecTrainers);
@@ -22,39 +21,24 @@ public:
   bool GetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data, int numOptions);
   void SetTrainerActive(const CStdString& strTrainerPath, unsigned int iTitleId, bool bActive);
   CStdString GetActiveTrainer(unsigned int iTitleId);
-  long GetFile(const CStdString& strFilenameAndPath, CFileItemList& programs);
-  void GetProgramsByBookmark(CStdString& strBookmark, CFileItemList& programs, int iDepth, bool bOnlyDefaultXBE);
-  void GetPathsByBookmark(const CStdString& strBookmark, vector <CStdString>& vecPaths);
-  void GetProgramsByPath(const CStdString& strPath, CFileItemList& programs, int idepth, bool bOnlyDefaultXBE);
-  bool GetXBEPathByTitleId(const DWORD titleId, CStdString& strPathAndFilename);
-  bool IncTimesPlayed(const CStdString& strFileName1);
-  bool SetDescription(const CStdString& strFileName1, const CStdString& strDescription);
-  int GetRegion(const CStdString& strFilenameAndPath);
-  DWORD GetTitleId(const CStdString& strFilenameAndPath);
-  bool SetTitleId(const CStdString& strFilenameAndPath, DWORD dwTitleId);
-  bool SetRegion(const CStdString& strFilenameAndPath, int iRegion=-1);
-  bool EntryExists(const CStdString& strPath, const CStdString& strBookmark);
   bool HasTrainer(const CStdString& strTrainerPath);
   bool ItemHasTrainer(unsigned int iTitleId);
-  void DeleteProgram(const CStdString& strPath);
 
-  // new functions
+  int GetRegion(const CStdString& strFilenameAndPath);
+  bool SetRegion(const CStdString& strFilenameAndPath, int iRegion=-1);
+
+  DWORD GetTitleId(const CStdString& strFilenameAndPath);
+  bool SetTitleId(const CStdString& strFilenameAndPath, DWORD dwTitleId);
+  bool IncTimesPlayed(const CStdString& strFileName1);
+  bool SetDescription(const CStdString& strFileName1, const CStdString& strDescription);
+  bool GetXBEPathByTitleId(const DWORD titleId, CStdString& strPathAndFilename);
+
   DWORD GetProgramInfo(CFileItem *item);
   bool AddProgramInfo(CFileItem *item, unsigned int titleID);
 
 protected:
-  static const unsigned __int64 Date_1601 = 0x0701CE1722770000i64;
-
-  long AddPath(const CStdString& strPath);
-  long AddFile(long lPathId, const CStdString& strFileName, DWORD titleId , const CStdString& strDescription, int iRegion);
-
-  long AddBookMark(const CStdString& strBookmark);
-  long GetProgram(long lPathId);
-  long GetPath(const CStdString& strPath);
-
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(float fVersion);
-  void DeleteFile(long lFileId);
-  unsigned __int64 LocalTimeToTimeStamp( const SYSTEMTIME & localTime );
-  SYSTEMTIME TimeStampToLocalTime( unsigned __int64 timeStamp );
+
+  FILETIME TimeStampToLocalTime( unsigned __int64 timeStamp );
 };

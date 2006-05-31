@@ -170,8 +170,6 @@ CSettings::CSettings(void)
 
   g_advancedSettings.m_thumbSize = 128;
 
-  g_advancedSettings.m_newMyPrograms = false;
-
   g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_sambaclienttimeout = 10;
 
@@ -255,21 +253,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   LoadRSSFeeds();
 
-  CStdString strDir;
-
-  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szShortcutDirectory);
-  strcpy( g_stSettings.m_szShortcutDirectory, strDir.c_str() );
-  
-  if (g_stSettings.m_szShortcutDirectory[0])
-  {
-    CShare share;
-    share.strPath = g_stSettings.m_szShortcutDirectory;
-    share.strName = "shortcuts";
-    m_vecMyProgramsBookmarks.push_back(share);
-  }
-
-
-  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szAlternateSubtitleDirectory);
+  CStdString strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szAlternateSubtitleDirectory);
   strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
 
   // parse my programs bookmarks...
@@ -527,16 +511,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
       // multiple valid paths?
       else
       {
-        // if my programs, make a comma seperated path
-        if (!g_advancedSettings.m_newMyPrograms && category.Equals("myprograms"))
-        {
-          for (int j = 0; j < (int)share.vecPaths.size(); ++j)
-            strPath += share.vecPaths[j] + ",";
-          strPath.Delete(strPath.size()-1);
-        }
-        // otherwise make a virtualpath path
-        else
-          strPath.Format("virtualpath://%s/%s", category.c_str(), strName.c_str());
+        strPath.Format("virtualpath://%s/%s", category.c_str(), strName.c_str());
       }
     }
 
@@ -1266,8 +1241,6 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "remoterepeat", g_advancedSettings.m_remoteRepeat, 480, 1, INT_MAX);
   GetFloat(pRootElement, "controllerdeadzone", g_advancedSettings.m_controllerDeadzone, 0.2f, 0.0f, 1.0f);
   GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 128, 64, 512);
-
-  XMLUtils::GetBoolean(pRootElement, "newmyprograms", g_advancedSettings.m_newMyPrograms);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
@@ -2253,7 +2226,6 @@ void CSettings::ResetSkinSettings()
 void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
 {
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
-  GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory, "");
 
   // check them all
   if (g_guiSettings.GetString("System.PlaylistsPath") == "set default")
@@ -2281,10 +2253,6 @@ void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
   if (g_stSettings.m_szAlternateSubtitleDirectory[0] == 0)
   {
     strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "Q:\\subtitles");
-  }
-  if (g_stSettings.m_szShortcutDirectory[0] == 0 && !g_guiSettings.GetBool("MyPrograms.NoShortcuts"))
-  {
-    strcpy(g_stSettings.m_szShortcutDirectory, "Q:\\shortcuts");
   }
 }
 
