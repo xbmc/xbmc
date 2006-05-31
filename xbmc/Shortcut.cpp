@@ -74,15 +74,9 @@ bool CShortcut::Create(const CStdString& szPath)
 
 bool CShortcut::Save(const CStdString& strFileName)
 {
-  if (g_stSettings.m_szShortcutDirectory[0] == 0) return false;
-
   // Make shortcut filename fatx compatible
-  CStdString strShort = strFileName;
-  CUtil::ShortenFileName(strShort);
-  CUtil::RemoveIllegalChars(strShort);
-
-  CStdString strTotalPath;
-  strTotalPath.Format("%s\\%s.cut", g_stSettings.m_szShortcutDirectory, strShort.c_str());
+  CStdString strTotalPath(strFileName);
+  CUtil::GetFatXQualifiedPath(strTotalPath);
 
   // Remove old file
   ::DeleteFile(strTotalPath.c_str());

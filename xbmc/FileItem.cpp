@@ -2080,8 +2080,10 @@ CStdString CFileItem::GetCachedProgramThumb()
 
 void CFileItem::SetCachedProgramThumb()
 {
+  // don't set any thumb for programs on DVD, as they're bound to be named the
+  // same (D:\default.xbe).
   CStdString thumb(GetCachedProgramThumb());
-  if (CFile::Exists(thumb))
+  if (!IsOnDVD() && CFile::Exists(thumb))
     SetThumbnailImage(thumb);
 }
 
