@@ -118,6 +118,7 @@ CSettings::CSettings(void)
 
   // Advanced settings
   g_advancedSettings.m_audioHeadRoom = 0;
+  g_advancedSettings.m_karaokeSyncDelay = 0.0f;
 
   g_advancedSettings.m_videoSubsDelayRange = 10;
   g_advancedSettings.m_videoAudioDelayRange = 10;
@@ -1080,6 +1081,7 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 0, 12);
+    GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelay, 0.0f, -3.0f, 3.0f);
   }
 
   pElement = pRootElement->FirstChildElement("video");

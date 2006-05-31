@@ -830,12 +830,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("MusicPlayer.CrossFade") > 0);
     }
-    else if (strSetting == "Karaoke.BackgroundAlpha" || strSetting == "Karaoke.ForegroundAlpha"
-          || strSetting == "Karaoke.SyncDelay")
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Karaoke.Enabled"));
-    }
     else if (strSetting.Left(12) == "Karaoke.Port" || strSetting == "Karaoke.Volume")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());

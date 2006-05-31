@@ -618,6 +618,6 @@ const char *CWeather::TranslateInfo(DWORD dwInfo)
 }
 
 DWORD CWeather::TimeToNextRefreshInMs()
-{
-  return g_guiSettings.GetInt("Weather.RefreshTime") * 60000;
+{ // 30 minutes
+  return 30 * 60 * 1000;
 }
