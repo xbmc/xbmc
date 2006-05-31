@@ -291,12 +291,12 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
   }
 
   // My Programs
-  for (i = 0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
+  for (i = 0; i < (int)g_settings.m_vecMyProgramsShares.size(); ++i)
   {
-    if ( g_settings.m_vecMyProgramsBookmarks[i].m_iDriveType == SHARE_TYPE_DVD )
+    if ( g_settings.m_vecMyProgramsShares[i].m_iDriveType == SHARE_TYPE_DVD )
     {
-      g_settings.m_vecMyProgramsBookmarks[i].strPath = strNewUrl;
-      g_settings.m_vecMyProgramsBookmarks[i].strStatus = strDescription;
+      g_settings.m_vecMyProgramsShares[i].strPath = strNewUrl;
+      g_settings.m_vecMyProgramsShares[i].strStatus = strDescription;
     }
   }
 }
