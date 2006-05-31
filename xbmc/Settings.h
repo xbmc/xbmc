@@ -224,6 +224,7 @@ public:
 public:
 
     int m_audioHeadRoom;
+    float m_karaokeSyncDelay;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
