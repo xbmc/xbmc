@@ -1593,7 +1593,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
     CProgramDatabase db;
     if (db.Open())
     {
-      foundPath = db.GetXBEPathByTitleId(dwTitleId, strGamePath);
+      foundPath = db.GetXBEPathByTitleId(dwTitleId, strGamePath) && CFile::Exists(strGamePath);
       db.Close();
     }
 
