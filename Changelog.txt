@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-05-2006 fixed: folder.jpg should now work in My Pictures.
  - 31-05-2006 fixed: Add Network location didn't update the mediasources list.
  - 31-05-2006 changed: Cleaned up a few unnecessary settings.
  - 31-05-2006 fixed: [ 1496367 ] playselected pos in playlist.
