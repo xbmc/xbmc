@@ -174,15 +174,12 @@ CGUISettings::CGUISettings(void)
   // Programs settings
   AddGroup(1, 0);
   AddCategory(1, "MyPrograms", 16000);
-  AddBool(1, "MyPrograms.Flatten", 348, true);
-  AddBool(2, "MyPrograms.DefaultXBEOnly", 349, true);
-  AddBool(3, "MyPrograms.UseDirectoryName", 506, false);
-  AddBool(4, "MyPrograms.NoShortcuts", 508, true);
-  AddBool(5, "MyPrograms.CacheProgramThumbs", 509, true);
-  AddSeparator(6,"MyPrograms.Sep1");
-  AddBool(7, "MyPrograms.GameAutoRegion",511,false);
-  AddInt(8, "MyPrograms.NTSCMode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
-  AddString(9, "MyPrograms.Dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
+  AddBool(1, "MyPrograms.GameAutoRegion",511,false);
+  AddInt(2, "MyPrograms.NTSCMode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
+  AddString(3, "MyPrograms.Dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
+  //  TODO: localize 2.0
+  // What will this do if it's available from the GUI?
+  AddString(4,"MyPrograms.TrainerPath",20003,"select folder",BUTTON_CONTROL_PATH_INPUT,false);
 
   AddCategory(1,"ProgramFiles",744);
   AddBool(1, "ProgramFiles.UseAutoSwitching", 14011, false);
@@ -497,7 +494,6 @@ CGUISettings::CGUISettings(void)
   //AddInt(0,   "Masterlock.Maxretry"         , 12361, 3, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
   
   //  TODO: localize 2.0
-  AddString(0,"MyPrograms.TrainerPath",20003,"select folder",BUTTON_CONTROL_PATH_INPUT,false);
   AddString(0,"System.ScreenshotPath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
   AddString(0,"MyMusic.RecordingPath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
   AddString(0,"System.PlaylistsPath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
