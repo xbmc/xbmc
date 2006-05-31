@@ -17,7 +17,6 @@ public:
 
 protected:
   bool GetTypeAndBookmark(const CStdString& strPath, CStdString& strType, CStdString& strBookmark);
-  bool GetShares(const CStdString& strType, VECSHARES& vecShares);
   bool GetMatchingShare(const CStdString &strPath, CShare& share);
 };
 }

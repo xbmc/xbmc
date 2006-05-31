@@ -258,7 +258,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   // parse my programs bookmarks...
   CStdString strDefault;
-  GetShares(pRootElement, "myprograms", m_vecMyProgramsBookmarks, strDefault);
+  GetShares(pRootElement, "myprograms", m_vecMyProgramsShares, strDefault);
   if (strDefault.size())
     strcpy( g_stSettings.m_szDefaultPrograms, strDefault.c_str());
 
@@ -328,7 +328,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
 VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
 {
   if (type == "myprograms")
-    return &g_settings.m_vecMyProgramsBookmarks;
+    return &g_settings.m_vecMyProgramsShares;
   else if (type == "files")
     return &g_settings.m_vecMyFilesShares;
   else if (type == "music")
@@ -2111,7 +2111,7 @@ bool CSettings::SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &
 
 void CSettings::Clear()
 {
-  m_vecMyProgramsBookmarks.clear();
+  m_vecMyProgramsShares.clear();
   m_vecMyPictureShares.clear();
   m_vecMyFilesShares.clear();
   m_vecMyMusicShares.clear();
