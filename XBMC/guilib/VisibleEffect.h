@@ -9,7 +9,7 @@ enum ANIMATION_STATE { ANIM_STATE_NONE = 0, ANIM_STATE_DELAYED, ANIM_STATE_IN_PR
 class TiXmlElement;
 enum RESOLUTION;
 
-#include "TransformMatrix.h"  // needed for the TransformMatrix return type
+#include "TransformMatrix.h"  // needed for the TransformMatrix member
 
 enum ANIMATION_TYPE
 {
@@ -31,7 +31,7 @@ public:
   void CreateReverse(const CAnimation &anim);
   void Animate(unsigned int time, bool hasRendered);
   void ResetAnimation();
-  TransformMatrix RenderAnimation();
+  void RenderAnimation(TransformMatrix &matrix);
 
   ANIMATION_TYPE type;
   EFFECT_TYPE effect;
@@ -64,4 +64,5 @@ private:
   unsigned int delay;
 
   bool reversible;    // whether the animation is reversible or not
+  TransformMatrix m_matrix;
 };

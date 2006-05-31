@@ -674,6 +674,9 @@ bool CGUIWindowManager::IsWindowTopMost(DWORD id) const
     renderList.push_back((CGUIDialog *)m_vecModelessWindows[i]);
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
 
+  if (!renderList.size())
+    return false;
+
   // return the last window in the list
   return ((*renderList.rbegin())->GetID() & WINDOW_ID_MASK) == id;
 }
