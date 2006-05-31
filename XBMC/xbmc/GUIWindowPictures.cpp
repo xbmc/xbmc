@@ -526,45 +526,56 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 {
   if (pItem->m_bIsFolder && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && !pItem->IsParentFolder())
-  { // generate the thumb folder if necessary
-    // we load the directory, grab 4 random thumb files (if available) and then generate
-    // the thumb.
-
-    CFileItemList items;
-    CDirectory::GetDirectory(pItem->m_strPath, items, g_stSettings.m_pictureExtensions, false, false);
-
-    // create the folder thumb by choosing 4 random thumbs within the folder and putting
-    // them into one thumb.
-    // count the number of images
-    for (int i=0; i < items.Size();)
+  {
+    // first check for a folder.jpg
+    CStdString thumb;
+    CUtil::AddFileToFolder(pItem->m_strPath, "folder.jpg", thumb);
+    if (CFile::Exists(thumb))
     {
-      if (!items[i]->IsPicture() || items[i]->IsZIP() || items[i]->IsRAR())
-        items.Remove(i);
-      else
-        i++;
-    }
-
-    if (items.IsEmpty())
-      return; // no images in this folder
-
-    // randomize them
-    items.Randomize();
-
-    if (items.Size() < 4)
-    { // less than 4 items, so just grab a single random thumb
-      CStdString folderThumb(pItem->GetCachedPictureThumb());
       CPicture pic;
-      pic.DoCreateThumbnail(items[0]->m_strPath, folderThumb);
+      pic.DoCreateThumbnail(thumb, pItem->GetCachedPictureThumb());
     }
     else
     {
-      // ok, now we've got the files to get the thumbs from, lets create it...
-      // we basically load the 4 thumbs, resample to 62x62 pixels, and add them
-      CStdString strFiles[4];
-      for (int thumb = 0; thumb < 4; thumb++)
-        strFiles[thumb] = items[thumb]->m_strPath;
-      CPicture pic;
-      pic.CreateFolderThumb(strFiles, pItem->GetCachedPictureThumb());
+      // we load the directory, grab 4 random thumb files (if available) and then generate
+      // the thumb.
+
+      CFileItemList items;
+      CDirectory::GetDirectory(pItem->m_strPath, items, g_stSettings.m_pictureExtensions, false, false);
+
+      // create the folder thumb by choosing 4 random thumbs within the folder and putting
+      // them into one thumb.
+      // count the number of images
+      for (int i=0; i < items.Size();)
+      {
+        if (!items[i]->IsPicture() || items[i]->IsZIP() || items[i]->IsRAR())
+          items.Remove(i);
+        else
+          i++;
+      }
+
+      if (items.IsEmpty())
+        return; // no images in this folder
+
+      // randomize them
+      items.Randomize();
+
+      if (items.Size() < 4)
+      { // less than 4 items, so just grab a single random thumb
+        CStdString folderThumb(pItem->GetCachedPictureThumb());
+        CPicture pic;
+        pic.DoCreateThumbnail(items[0]->m_strPath, folderThumb);
+      }
+      else
+      {
+        // ok, now we've got the files to get the thumbs from, lets create it...
+        // we basically load the 4 thumbs, resample to 62x62 pixels, and add them
+        CStdString strFiles[4];
+        for (int thumb = 0; thumb < 4; thumb++)
+          strFiles[thumb] = items[thumb]->m_strPath;
+        CPicture pic;
+        pic.CreateFolderThumb(strFiles, pItem->GetCachedPictureThumb());
+      }
     }
     // refill in the icon to get it to update
     pItem->SetCachedPictureThumb();
