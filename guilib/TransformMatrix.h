@@ -18,13 +18,25 @@ public:
     scaler.m[0][0] = scaleX;
     scaler.m[1][1] = scaleY;
     return scaler;
-  }
+  };
+  void SetScaler(float scaleX, float scaleY)
+  {
+    m[0][0] = scaleX; m[0][1] = m[0][2] = 0;
+    m[1][1] = scaleY; m[1][0] = m[1][2] = 0;
+    alpha = 1.0f;
+  };
   static TransformMatrix CreateTranslation(float transX, float transY)
   {
     TransformMatrix translation;
     translation.m[0][2] = transX;
     translation.m[1][2] = transY;
     return translation;
+  }
+  void SetTranslation(float transX, float transY)
+  {
+    m[0][0] = 1.0f; m[0][1] = 0.0f; m[0][2] = transX;
+    m[1][0] = 0.0f; m[1][1] = 1.0f; m[1][2] = transY;
+    alpha = 1.0f;
   }
   static TransformMatrix CreateRotation(float angle)
   {
@@ -35,13 +47,24 @@ public:
     rotation.m[1][1] = rotation.m[0][0];
     return rotation;
   }
+  void SetRotation(float angle)
+  {
+    m[0][0] = cos(angle); m[0][1] = -sin(angle); m[0][2] = 0.0f;
+    m[1][0] = -m[0][1];   m[1][1] = m[0][0];     m[1][2] = 0.0f;
+    alpha = 1.0f;
+  }
   static TransformMatrix CreateFader(float a)
   {
     TransformMatrix fader;
     fader.alpha = a;
     return fader;
   }
-
+  void SetFader(float a)
+  {
+    m[0][0] = 1.0f; m[0][1] = 0.0f; m[0][2] = 0.0f;
+    m[1][0] = 0.0f; m[1][1] = 1.0f; m[1][2] = 0.0f;
+    alpha = a;
+  }
   // assignment operator
   const TransformMatrix &operator =(const TransformMatrix &right)
   {

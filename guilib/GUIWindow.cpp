@@ -1308,11 +1308,11 @@ bool CGUIWindow::RenderAnimation(DWORD time)
   // show animation
   m_showAnimation.Animate(time, true);
   UpdateStates(m_showAnimation.type, m_showAnimation.currentProcess, m_showAnimation.currentState);
-  transform *= m_showAnimation.RenderAnimation();
+  m_showAnimation.RenderAnimation(transform);
   // close animation
   m_closeAnimation.Animate(time, true);
   UpdateStates(m_closeAnimation.type, m_closeAnimation.currentProcess, m_closeAnimation.currentState);
-  transform *= m_closeAnimation.RenderAnimation();
+  m_closeAnimation.RenderAnimation(transform);
   g_graphicsContext.SetWindowTransform(transform);
   return true;
 }
