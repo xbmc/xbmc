@@ -438,7 +438,7 @@ public:
   CStdString m_szMyVideoCleanSeparatorsString;
   CStdStringArray m_szMyVideoCleanTokensArray;
 
-  VECSHARES m_vecMyProgramsBookmarks;
+  VECSHARES m_vecMyProgramsShares;
   VECSHARES m_vecMyPictureShares;
   VECSHARES m_vecMyFilesShares;
   VECSHARES m_vecMyMusicShares;

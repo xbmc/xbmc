@@ -119,8 +119,7 @@ bool CVirtualPathDirectory::GetTypeAndBookmark(const CStdString& strPath, CStdSt
 {
   // format: virtualpath://type/bookmarkname
   CStdString strTemp = strPath;
-  if (CUtil::HasSlashAtEnd(strTemp))
-    strTemp.Delete(strTemp.size() - 1);
+  CUtil::RemoveSlashAtEnd(strTemp);
   CStdString strTest = "virtualpath://";
   if (strTemp.Left(strTest.length()).Equals(strTest))
   {
@@ -136,45 +135,26 @@ bool CVirtualPathDirectory::GetTypeAndBookmark(const CStdString& strPath, CStdSt
   return false;
 }
 
-bool CVirtualPathDirectory::GetShares(const CStdString& strType, VECSHARES& vecShares)
-{
-  VECSHARES *pShares = NULL;
-
-  // not valid for myprograms or files
-  if (strType == "myprograms")
-    pShares = &g_settings.m_vecMyProgramsBookmarks;
-  else if (strType == "files")
-    return false;
-  else if (strType == "music")
-    pShares = &g_settings.m_vecMyMusicShares;
-  else if (strType == "video")
-    pShares = &g_settings.m_vecMyVideoShares;
-  else if (strType == "pictures")
-    pShares = &g_settings.m_vecMyPictureShares;
-
-  if (!pShares) return false;
-  
-  vecShares = *pShares;
-  return true;
-}
-
 bool CVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& share)
 {
   CStdString strType, strBookmark;
   if (!GetTypeAndBookmark(strPath, strType, strBookmark))
     return false;
 
-  VECSHARES vecShares;
-  if (!GetShares(strType, vecShares))
+  // no support for "files" operation
+  if (strType == "files")
+    return false;
+  VECSHARES *vecShares = g_settings.GetSharesFromType(strType);
+  if (!vecShares)
     return false;
 
   bool bIsBookmarkName = false;
-  int iIndex = CUtil::GetMatchingShare(strBookmark, vecShares, bIsBookmarkName);
+  int iIndex = CUtil::GetMatchingShare(strBookmark, *vecShares, bIsBookmarkName);
   if (!bIsBookmarkName)
     return false;
   if (iIndex < 0)
     return false;
 
-  share = vecShares[iIndex];
+  share = (*vecShares)[iIndex];
   return true;
 }
