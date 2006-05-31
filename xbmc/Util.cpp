@@ -1564,20 +1564,9 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
   return dwReturn;
 }
 
-void CUtil::CreateShortcuts(CFileItemList &items)
-{
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    CFileItem* pItem = items[i];
-    CreateShortcut(pItem);
-
-  }
-}
-
 void CUtil::CreateShortcut(CFileItem* pItem)
 {
-  bool bOnlyDefaultXBE = g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
-  if ( bOnlyDefaultXBE ? pItem->IsDefaultXBE() : pItem->IsXBE() )
+  if ( pItem->IsXBE() )
   {
     // xbe
     pItem->SetIconImage("defaultProgram.png");
@@ -3446,9 +3435,6 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
       CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), strSpecial.Mid(9), strReturn);
     else if (strSpecial.Left(11).Equals("$THUMBNAILS"))
       CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), strSpecial.Mid(11), strReturn);
-
-    else if (strSpecial.Left(10).Equals("$SHORTCUTS"))
-      CUtil::AddFileToFolder(g_stSettings.m_szShortcutDirectory, strSpecial.Mid(10), strReturn);
     else if (strSpecial.Left(11).Equals("$RECORDINGS"))
       CUtil::AddFileToFolder(g_guiSettings.GetString("MyMusic.RecordingPath",false), strSpecial.Mid(11), strReturn);
     else if (strSpecial.Left(12).Equals("$SCREENSHOTS"))
