@@ -555,10 +555,6 @@ void CGUIDialogFileBrowser::SetShares(VECSHARES &shares)
 
 void CGUIDialogFileBrowser::OnAddNetworkLocation()
 {
-  // Close the current dialog as it will be reused by this method
-//  Close();
-
-  VECSHARES shares = m_shares;
   // ok, fire up the network location dialog
   CStdString path;
   if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(path))
@@ -571,19 +567,13 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
       share.strPath = path;
       CURL url(path);
       url.GetURLWithoutUserDetails(share.strName);
-      shares.push_back(share);
+      m_shares.push_back(share);
       // add to our location manager...
       g_mediaManager.AddNetworkLocation(path);
     }
   }
-/*
-  // re-open our dialog
-  SetShares(shares);
-  m_rootDir.SetMask("/");
-  m_browsingForFolders = true;
-  m_addNetworkShareEnabled = true;
-  m_selectedPath = "";
-  DoModal();*/
+  m_rootDir.SetShares(m_shares);
+  Update(m_vecItems.m_strPath);
 }
 
 bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
