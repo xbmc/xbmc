@@ -693,7 +693,7 @@ void SetCurrentMediaItem(CFileItem& newItem)
     tag.SetSong(song);
     musicdatabase.Close();
   }
-  if (!bFound && g_guiSettings.GetBool("MusicFiles.UseTags"))
+  if (!bFound && g_guiSettings.GetBool("musicfiles.usetags"))
   {
     //  ...no, try to load the tag of the file.
     CMusicInfoTagLoaderFactory factory;
@@ -839,7 +839,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   if (
     (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP) &&
     !playlistItem.IsShoutCast() &&
-    g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad")
+    g_guiSettings.GetBool("musicplaylist.shuffleplaylistsonload")
     )
   {
     g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
@@ -961,7 +961,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     tag.SetLoaded(true);
   }
   else
-    if (g_guiSettings.GetBool("MusicFiles.UseTags"))
+    if (g_guiSettings.GetBool("musicfiles.usetags"))
     {
       // get correct tag parser
       CMusicInfoTagLoaderFactory factory;

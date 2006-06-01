@@ -32,7 +32,7 @@ void CAutorun::ExecuteAutorun()
 
   g_application.ResetScreenSaverWindow();  // turn off the screensaver if it's active
 
-  if ( g_guiSettings.GetBool("Autorun.CDDA") && pInfo->IsAudio( 1 ) )
+  if ( g_guiSettings.GetBool("autorun.cdda") && pInfo->IsAudio( 1 ) )
   {
     RunCdda();
   }
@@ -53,7 +53,7 @@ void CAutorun::ExecuteAutorun()
 void CAutorun::ExecuteXBE(const CStdString &xbeFile)
 {
   int iRegion;
-  if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+  if (g_guiSettings.GetBool("myprograms.gameautoregion"))
   {
     CXBE xbe;
     iRegion = xbe.ExtractGameRegion(xbeFile);
@@ -106,13 +106,13 @@ void CAutorun::RunXboxCd()
 {
   if ( CFile::Exists("D:\\default.xbe") )
   {
-    if (!g_guiSettings.GetBool("Autorun.Xbox"))
+    if (!g_guiSettings.GetBool("autorun.xbox"))
       return;
     ExecuteXBE("D:\\default.xbe");
     return;
   }
   
-  if ( !g_guiSettings.GetBool("Autorun.DVD") && !g_guiSettings.GetBool("Autorun.VCD") && !g_guiSettings.GetBool("Autorun.Video") && !g_guiSettings.GetBool("Autorun.Music") && !g_guiSettings.GetBool("Autorun.Pictures") )
+  if ( !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") )
     return ;
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
@@ -162,7 +162,7 @@ void CAutorun::RunCdda()
 
 void CAutorun::RunISOMedia()
 {
-  if ( !g_guiSettings.GetBool("Autorun.DVD") && !g_guiSettings.GetBool("Autorun.VCD") && !g_guiSettings.GetBool("Autorun.Video") && !g_guiSettings.GetBool("Autorun.Music") && !g_guiSettings.GetBool("Autorun.Pictures") )
+  if ( !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") )
     return ;
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
@@ -201,7 +201,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       {
         if (bRoot && pItem->m_strPath.Find( "VIDEO_TS" ) != -1 )
         {
-          if ( g_guiSettings.GetBool("Autorun.DVD") )
+          if ( g_guiSettings.GetBool("autorun.dvd") )
           {
             CUtil::PlayDVD();
             bPlaying = true;
@@ -210,7 +210,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         }
         else if (bRoot && pItem->m_strPath.Find("MPEGAV") != -1 )
         {
-          if ( g_guiSettings.GetBool("Autorun.VCD") )
+          if ( g_guiSettings.GetBool("autorun.vcd") )
           {
             CFileItemList items;
             CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
@@ -235,7 +235,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         }
         else if (bRoot && pItem->m_strPath.Find("MPEG2") != -1 )
         {
-          if ( g_guiSettings.GetBool("Autorun.VCD") )
+          if ( g_guiSettings.GetBool("autorun.vcd") )
           {
             CFileItemList items;
             CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
@@ -260,7 +260,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         }
         else if (bRoot && pItem->m_strPath.Find("PICTURES") != -1 )
         {
-          if (g_guiSettings.GetBool("Autorun.Pictures"))
+          if (g_guiSettings.GetBool("autorun.pictures"))
           {
             bPlaying = true;
             CStdString strExec;
@@ -273,7 +273,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
   }
   // check video first
-  if (!nAddedToPlaylist && !bPlaying && g_guiSettings.GetBool("Autorun.Video"))
+  if (!nAddedToPlaylist && !bPlaying && g_guiSettings.GetBool("autorun.video"))
   {
     // stack video files
     CFileItemList tempItems;
@@ -308,7 +308,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
   }
   // then music
-  if (!bPlaying && g_guiSettings.GetBool("Autorun.Music"))
+  if (!bPlaying && g_guiSettings.GetBool("autorun.music"))
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
@@ -325,7 +325,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
   }
   // and finally pictures
-  if (!nAddedToPlaylist && !bPlaying && g_guiSettings.GetBool("Autorun.Pictures"))
+  if (!nAddedToPlaylist && !bPlaying && g_guiSettings.GetBool("autorun.pictures"))
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {

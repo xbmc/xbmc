@@ -487,7 +487,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
   if (pItem->IsXBE())
   {
     int iRegion;
-    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    if (g_guiSettings.GetBool("myprograms.gameautoregion"))
     {
       CXBE xbe;
       iRegion = xbe.ExtractGameRegion(pItem->m_strPath);
@@ -938,7 +938,7 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
   CStdString strPath(m_strParentPath[iList]), strOldPath(m_Directory[iList].m_strPath);
   Update(iList, strPath);
 
-  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
+  if (!g_guiSettings.GetBool("lookandfeel.fulldirectoryhistory"))
     m_history[iList].RemoveSelectedItem(strOldPath); //Delete current path
 }
 
@@ -1017,7 +1017,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
     if ( bParentExists )
     {
       // yes
-      if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
+      if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
       {
         CFileItem *pItem = new CFileItem("..");
         pItem->m_strPath = strParentPath;
@@ -1032,7 +1032,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
   {
     // yes, this is the root of a share
     // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
+    if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = "";
@@ -1351,7 +1351,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
   if (!g_infoManager.HasAutodetectedXbox())
     m_rootDir.RemoveShareName(strFTPTMP);
   //--------------------------------
-  if (g_guiSettings.GetBool("Autodetect.OnOff"))
+  if (g_guiSettings.GetBool("autodetect.onoff"))
   {
     if (g_infoManager.HasAutodetectedXbox() && !strDestination.IsEmpty()) // XBOX Autodetection: add a dummy share
     {

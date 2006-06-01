@@ -171,7 +171,7 @@ int CXBE::FilterRegion(int iRegion, bool bForceAllModes)
     iPreferred = 4;
   int iNTSCMode = 0;
   if (!bForceAllModes)
-    iNTSCMode = g_guiSettings.GetInt("MyPrograms.NTSCMode");
+    iNTSCMode = g_guiSettings.GetInt("myprograms.ntscmode");
 
   if (iRegion == 0)
     iRegion = iVideoMode;
