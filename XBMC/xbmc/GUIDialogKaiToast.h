@@ -5,6 +5,9 @@
 
 class CGUIImage;
 
+#define TOAST_DISPLAY_TIME   5000L  // default 5 seconds
+#define TOAST_MESSAGE_TIME   1000L  // minimal message time 1 second
+
 class CGUIDialogKaiToast: public CGUIDialog
 {
 public:
@@ -16,10 +19,11 @@ public:
     CStdString caption;
     CStdString description;
     CStdString imagefile;
+    unsigned int displayTime;
   };
 
   void QueueNotification(const CStdString& aCaption, const CStdString& aDescription);
-  void QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription);
+  void QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME);
   bool DoWork();
 
   virtual bool OnMessage(CGUIMessage& message);
@@ -29,12 +33,10 @@ public:
 protected:
 
   DWORD m_dwTimer;
-  CGUIImage* m_pIcon;
 
-  INT m_iIconPosX;
-  INT m_iIconPosY;
-  DWORD m_dwIconWidth;
-  DWORD m_dwIconHeight;
+  DWORD m_toastDisplayTime;
+
+  CStdString m_defaultIcon;
 
   typedef std::queue<Notification> TOASTQUEUE;
   TOASTQUEUE m_notifications;
