@@ -53,7 +53,10 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   }
 
   // init encoder
-  if (!m_pEncoder->Init(strFile.c_str(), 2, 44100, 16))
+  CStdString strFile2=strFile;
+  if (CUtil::IsHD(strFile))
+    CUtil::GetFatXQualifiedPath(strFile2);
+  if (!m_pEncoder->Init(strFile2.c_str(), 2, 44100, 16))
   {
     m_cdReader.DeInit();
     delete m_pEncoder;
