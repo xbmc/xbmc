@@ -1,3 +1,5 @@
+2006-06-01 fixed:	navigation in dialogmediasource
+
 2006-05-27 fixed:	Unable to select Cancel on Filebrowser if Ok was greyed out.
 
 2006-05-08 added:	KAI connection indicator to the KAI button in My Programs
