@@ -369,7 +369,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       //  from HDD all the time.
       if (
         !g_application.CurrentFileItem().IsHD() &&
-        (g_guiSettings.GetInt("System.RemotePlayHDSpinDown") || g_guiSettings.GetInt("System.HDSpinDownTime"))
+        (g_guiSettings.GetInt("system.remoteplayhdspindown") || g_guiSettings.GetInt("system.hdspindowntime"))
       )
       {
         g_audioManager.Enable(false);
@@ -402,8 +402,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         }
 
         CStdString fontPath = "Q:\\Media\\Fonts\\";
-        fontPath += g_guiSettings.GetString("Subtitles.Font");
-        m_subtitleFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("Subtitles.Color")], 0, g_guiSettings.GetInt("Subtitles.Height"), g_guiSettings.GetInt("Subtitles.Style"));
+        fontPath += g_guiSettings.GetString("subtitles.font");
+        m_subtitleFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"));
         if (!m_subtitleFont)
           CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
       }
@@ -601,13 +601,13 @@ void CGUIWindowFullScreen::RenderFullScreen()
     {
       CStdString strStatus;
       strStatus.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
-      if (g_guiSettings.GetBool("Filters.Soften"))
+      if (g_guiSettings.GetBool("filters.soften"))
         strStatus += "  |  Soften";
       else
         strStatus += "  |  No Soften";
 
       CStdString strFilter;
-      strFilter.Format("  |  Flicker Filter: %i", g_guiSettings.GetInt("Filters.Flicker"));
+      strFilter.Format("  |  Flicker Filter: %i", g_guiSettings.GetInt("filters.flicker"));
       strStatus += strFilter;
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);

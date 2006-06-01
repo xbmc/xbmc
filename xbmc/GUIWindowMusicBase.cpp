@@ -178,7 +178,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled
-          else if (GetID() == WINDOW_MUSIC_FILES && g_guiSettings.GetBool("FileLists.AllowFileDeletion"))
+          else if (GetID() == WINDOW_MUSIC_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion"))
             OnDeleteItem(iItem);
 
           else
@@ -971,7 +971,7 @@ void CGUIWindowMusicBase::OnSearchItemFound(const CFileItem* pSelItem)
 bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album)
 {
   // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("Network.EnableInternet")) return false;
+  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
 
   // show dialog box indicating we're searching the album
   if (m_dlgProgress)
@@ -1221,7 +1221,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   int btn_Rename = 0; // Rename
   if (!bIsGotoParent)
   {
-    if (m_vecItems.m_strPath.Equals(g_guiSettings.GetString("System.PlaylistsPath")) || g_guiSettings.GetBool("FileLists.AllowFileDeletion"))
+    if (m_vecItems.m_strPath.Equals(g_guiSettings.GetString("system.playlistspath")) || g_guiSettings.GetBool("filelists.allowfiledeletion"))
     {
       btn_Delete = pMenu->AddButton(117);
       btn_Rename = pMenu->AddButton(118);
@@ -1404,7 +1404,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
     // shuffle playlist if folder is daap playlist folder
     // and shuffle playlist on load is enabled
-    if (bIsDAAPplaylist && g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad"))
+    if (bIsDAAPplaylist && g_guiSettings.GetBool("musicplaylist.shuffleplaylistsonload"))
       g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
 
     // activate the playlist window if its not activated yet

@@ -82,7 +82,7 @@ void CGUIRAMControl::Render()
 {
   if (!IsVisible()) return;
 
-  if (g_guiSettings.GetBool("Network.EnableInternet"))
+  if (g_guiSettings.GetBool("network.enableinternet"))
   {
     if (m_pMonitor == NULL)
     {

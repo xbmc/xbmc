@@ -149,7 +149,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled
-          else if (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("FileLists.AllowFileDeletion"))
+          else if (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion"))
             OnDeleteItem(iItem);
 
           // or be at the video playlists location
@@ -207,7 +207,7 @@ void CGUIWindowVideoBase::UpdateButtons()
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
   // disable scan and manual imdb controls if internet lookups are disabled
-  if (g_guiSettings.GetBool("Network.EnableInternet"))
+  if (g_guiSettings.GetBool("network.enableinternet"))
   {
     CONTROL_ENABLE(CONTROL_BTNSCAN);
     CONTROL_ENABLE(CONTROL_IMDB);
@@ -287,13 +287,13 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
     if ( !pDlgInfo->NeedRefresh() ) return ;
 
     // quietly return if Internet lookups are disabled
-    if (!g_guiSettings.GetBool("Network.EnableInternet")) return ;
+    if (!g_guiSettings.GetBool("network.enableinternet")) return ;
 
     m_database.DeleteMovieInfo(item->m_strPath);
   }
 
   // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("Network.EnableInternet")) return ;
+  if (!g_guiSettings.GetBool("network.enableinternet")) return ;
 
   CIMDBUrl url;
   CIMDBMovie movieDetails;
@@ -638,7 +638,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  if (g_guiSettings.GetBool("VideoPlayer.AutoResume"))
+  if (g_guiSettings.GetBool("videoplayer.autoresume"))
     OnResumeItem(iItem);
   else
     return CGUIMediaWindow::OnClick(iItem);
@@ -754,7 +754,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Rename = 0;
   if (!bIsGotoParent)
   {
-    if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("FileLists.AllowFileDeletion")))
+    if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion")))
     {
       btn_Delete = pMenu->AddButton(117);
       btn_Rename = pMenu->AddButton(118);
@@ -901,7 +901,7 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   // 0 = never
   // 1 = immediately
   // 2-37 = 5-180 seconds
-  if (item->IsStack() && g_guiSettings.GetInt("VideoPlayer.BypassCDSelection") != 1)
+  if (item->IsStack() && g_guiSettings.GetInt("videoplayer.bypasscdselection") != 1)
   {
     // TODO: Once the players are capable of playing a stack, we should remove
     // this code in favour of just using the resume feature.

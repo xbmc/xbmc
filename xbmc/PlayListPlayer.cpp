@@ -375,7 +375,7 @@ void CPlayListPlayer::ClearPlaylist(int iPlayList)
     m_iOptions &= ~iRepeatOne;
 
     // restore repeat for music temp
-    if (iPlayList == PLAYLIST_MUSIC_TEMP && g_guiSettings.GetBool("MusicFiles.Repeat"))
+    if (iPlayList == PLAYLIST_MUSIC_TEMP && g_guiSettings.GetBool("musicfiles.repeat"))
       m_iOptions |= iRepeatAll;
   }
 

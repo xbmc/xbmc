@@ -31,9 +31,9 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         OnMessage(msg);
         CStdString strLabel = msg.GetLabel();
         if (msg.GetParam1() == 0)
-          g_guiSettings.SetString("MyMusic.Visualisation", "None");
+          g_guiSettings.SetString("mymusic.visualisation", "None");
         else
-          g_guiSettings.SetString("MyMusic.Visualisation", strLabel + ".vis");
+          g_guiSettings.SetString("mymusic.visualisation", strLabel + ".vis");
         // hide the control and reset focus
         SET_CONTROL_HIDDEN(CONTROL_VIS_CHOOSER);
         SET_CONTROL_FOCUS(CONTROL_VIS_BUTTON, 0);
@@ -78,7 +78,7 @@ void CGUIDialogMusicOSD::Render()
 
 void CGUIDialogMusicOSD::OnInitWindow()
 {
-  CSetting *pSetting = g_guiSettings.GetSetting("MyMusic.Visualisation");
+  CSetting *pSetting = g_guiSettings.GetSetting("mymusic.visualisation");
   CGUIWindowSettingsCategory::FillInVisualisations(pSetting, CONTROL_VIS_CHOOSER);
 
   ResetControlStates();

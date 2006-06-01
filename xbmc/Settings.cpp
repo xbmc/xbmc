@@ -134,6 +134,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_videoPercentSeekBackward = -2;
   g_advancedSettings.m_videoPercentSeekForwardBig = 10;
   g_advancedSettings.m_videoPercentSeekBackwardBig = -10;
+  g_advancedSettings.m_videoBlackBarColour = 0;
 
   g_advancedSettings.m_slideshowPanAmount = 2.5f;
   g_advancedSettings.m_slideshowZoomAmount = 5.0f;
@@ -1073,7 +1074,7 @@ void CSettings::LoadAdvancedSettings()
   TiXmlElement *pRootElement = advancedXML.RootElement();
   if (!pRootElement || strcmpi(pRootElement->Value(),"advancedsettings") != 0)
   {
-    CLog::Log(LOGERROR, "Error loading %s, no <AdvancedSettings> node", advancedSettingsXML.c_str());
+    CLog::Log(LOGERROR, "Error loading %s, no <advancedsettings> node", advancedSettingsXML.c_str());
     return;
   }
 
@@ -1103,6 +1104,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_videoPercentSeekBackward, -2, -100, 0);
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 10, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -10, -100, 0);
+    GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 0, 255);
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");
@@ -2143,7 +2145,7 @@ CStdString CSettings::GetSkinString(const char *setting) const
 void CSettings::SetSkinString(const char *setting, const CStdString &label)
 {
   CStdString settingName;
-  settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), setting);
+  settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
   std::map<CStdString, CStdString>::iterator it = m_skinStrings.find(settingName);
   if (it != m_skinStrings.end())
   {
@@ -2158,7 +2160,7 @@ void CSettings::SetSkinString(const char *setting, const CStdString &label)
 void CSettings::ResetSkinSetting(const char *setting)
 {
   CStdString settingName;
-  settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), setting);
+  settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
   std::map<CStdString, CStdString>::iterator it = m_skinStrings.find(settingName);
   if (it != m_skinStrings.end())
   {
@@ -2189,7 +2191,7 @@ bool CSettings::GetSkinSetting(const char *setting) const
 void CSettings::SetSkinSetting(const char *setting, bool set)
 {
   CStdString settingName;
-  settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), setting);
+  settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
   std::map<CStdString, bool>::iterator it = m_skinSettings.find(settingName);
   if (it != m_skinSettings.end())
   {
@@ -2203,7 +2205,7 @@ void CSettings::SetSkinSetting(const char *setting, bool set)
 
 void CSettings::ResetSkinSettings()
 {
-  CStdString currentSkin = g_guiSettings.GetString("LookAndFeel.Skin") + ".";
+  CStdString currentSkin = g_guiSettings.GetString("lookandfeel.skin") + ".";
   // clear all the settings and strings from this skin.
   std::map<CStdString, bool>::iterator it = m_skinSettings.begin();
   while (it != m_skinSettings.end())
@@ -2230,12 +2232,12 @@ void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
 
   // check them all
-  if (g_guiSettings.GetString("System.PlaylistsPath") == "set default")
+  if (g_guiSettings.GetString("system.playlistspath") == "set default")
   {
     CStdString strDir;
     CUtil::AddFileToFolder(GetUserDataFolder(), "playlists", strDir);
     CUtil::AddSlashAtEnd(strDir);
-    g_guiSettings.SetString("System.PlaylistsPath",strDir.c_str());
+    g_guiSettings.SetString("system.playlistspath",strDir.c_str());
     CDirectory::Create(strDir);
     CStdString strDir2;
     CUtil::AddFileToFolder(strDir,"music",strDir2);
@@ -2246,9 +2248,9 @@ void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
   else
   {
     CStdString strDir2;
-    CUtil::AddFileToFolder(g_guiSettings.GetString("System.PlaylistsPath"),"music",strDir2);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"music",strDir2);
     CDirectory::Create(strDir2);
-    CUtil::AddFileToFolder(g_guiSettings.GetString("System.PlaylistsPath"),"video",strDir2);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"video",strDir2);
     CDirectory::Create(strDir2);
   }
 

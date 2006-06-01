@@ -332,7 +332,7 @@ void CGUIWindowVideoInfo::Render()
 void CGUIWindowVideoInfo::Refresh()
 {
   // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("Network.EnableInternet"))
+  if (!g_guiSettings.GetBool("network.enableinternet"))
   {
     Update();
     return ;

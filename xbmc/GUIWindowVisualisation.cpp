@@ -137,7 +137,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       g_infoManager.SetShowInfo(true);  // always show the info initially.
       CGUIWindow::OnMessage(message);
       m_tag = g_infoManager.GetCurrentSongTag();
-      if (g_guiSettings.GetBool("Karaoke.Enabled"))
+      if (g_guiSettings.GetBool("karaoke.enabled"))
         g_application.m_CdgParser.AllocGraphics();
       if (g_stSettings.m_bMyMusicSongThumbInVis)
       { // always on

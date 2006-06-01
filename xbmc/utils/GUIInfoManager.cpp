@@ -290,13 +290,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (strTest.Left(12).Equals("skin.string("))
     {
       CStdString settingName;
-      settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), strTest.Mid(12, strTest.GetLength() - 13).c_str());
+      settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), strTest.Mid(12, strTest.GetLength() - 13).c_str());
       ret = SKIN_HAS_SETTING_START + ConditionalStringParameter(settingName);
     }
     if (strTest.Left(16).Equals("skin.hassetting("))
     {
       CStdString settingName;
-      settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), strTest.Mid(16, strTest.GetLength() - 17).c_str());
+      settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), strTest.Mid(16, strTest.GetLength() - 17).c_str());
       ret = SKIN_HAS_SETTING_START + ConditionalStringParameter(settingName);
     }
     else if (strTest.Left(14).Equals("skin.hastheme("))
@@ -533,7 +533,7 @@ string CGUIInfoManager::GetLabel(int info)
     strLabel = CDetectDVDMedia::GetDVDLabel();
     break;
   case XLINK_KAI_USERNAME:
-    strLabel = g_guiSettings.GetString("XLinkKai.UserName");
+    strLabel = g_guiSettings.GetString("xlinkkai.username");
     break;
   case LCD_PLAY_ICON:
     {
@@ -582,7 +582,7 @@ string CGUIInfoManager::GetLabel(int info)
     break;
   case VISUALISATION_NAME:
     {
-      strLabel = g_guiSettings.GetString("MyMusic.Visualisation");
+      strLabel = g_guiSettings.GetString("mymusic.visualisation");
       if (strLabel != "None" && strLabel.size() > 4)
       { // make it look pretty
         strLabel = strLabel.Left(strLabel.size() - 4);
@@ -683,7 +683,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   else if (condition == PLAYER_MUTED)
     bReturn = g_stSettings.m_bMute;
   else if (condition == SYSTEM_KAI_CONNECTED)
-    bReturn = g_guiSettings.GetBool("XLinkKai.Enabled") && CKaiClient::GetInstance()->IsEngineConnected();
+    bReturn = g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
   else if (condition == SYSTEM_MEDIA_DVD)
   {
     // we must: 1.  Check tray state.
@@ -704,7 +704,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   { // Note that the code used here could probably be extended to general
     // settings conditions (parameter would need to store both the setting name and
     // the and the comparison string)
-    CStdString theme = g_guiSettings.GetString("LookAndFeel.SkinTheme");
+    CStdString theme = g_guiSettings.GetString("lookandfeel.skintheme");
     theme.ToLower();
     CUtil::RemoveExtension(theme);
     bReturn = theme.Equals(m_stringParameters[condition - SKIN_HAS_THEME_START]);
@@ -798,10 +798,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
       bReturn = g_partyModeManager.IsEnabled();
     break;
     case AUDIOSCROBBLER_ENABLED:
-      bReturn = g_guiSettings.GetBool("MyMusic.UseAudioScrobbler");
+      bReturn = g_guiSettings.GetBool("mymusic.uselastfm");
     break;
     case VIDEOPLAYER_USING_OVERLAYS:
-      bReturn = (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_OVERLAYS);
+      bReturn = (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_OVERLAYS);
     break;
     case VIDEOPLAYER_ISFULLSCREEN:
       bReturn = m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;
@@ -833,7 +833,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
       }
     break;
     case VISUALISATION_ENABLED:
-      bReturn = g_guiSettings.GetString("MyMusic.Visualisation") != "None";
+      bReturn = g_guiSettings.GetString("mymusic.visualisation") != "None";
     break;
     }
   }

@@ -531,9 +531,9 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     AddEntry(15253, "lastfm://xbmc/artist/*/similar/", "", true, items);
     AddEntry(15254, "lastfm://xbmc/tag/*/search/", "", true, items);
     AddEntry(15256, "lastfm://xbmc/tag/xbmc/toptags/", "", true, items);
-    if (g_guiSettings.GetString("MyMusic.AudioScrobblerUserName") != "")
+    if (g_guiSettings.GetString("mymusic.lastfmusername") != "")
     {
-      m_encodedobjname = m_objname = g_guiSettings.GetString("MyMusic.AudioScrobblerUserName");
+      m_encodedobjname = m_objname = g_guiSettings.GetString("mymusic.lastfmusername");
       CUtil::UrlDecode(m_encodedobjname);
       AddEntry(15255, "lastfm://xbmc/user/%name%/", "", true, items);
     }
