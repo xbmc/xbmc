@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-06-2006 added: hidden gui setting videfiles.hidedirectorynames due to wide public demand =). set to true using advancedsettings.xml
  - 01-06-2006 changed: order of icon and time in xbmc.notification. syntax is now xbmc.notification(header,message,time,icon).
  - 01-06-2006 fixed: cdda ripper didn't apply fatx filtering to file names properly.
  - 01-06-2006 updated: French language file

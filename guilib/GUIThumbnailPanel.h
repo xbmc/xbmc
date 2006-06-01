@@ -102,6 +102,7 @@ public:
   virtual CStdString GetDescription() const;
 
   void HideFileNameLabel(bool bOnOff) { m_bHideFileNameLabel=bOnOff; }
+  void HideDirectoryNameLabel(bool bOnOff) { m_bHideDirectoryNameLabel=bOnOff; }
   void SetPageControlVisible(bool visible) { m_pageControlVisible = visible; }
   void SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio) { m_aspectRatio = ratio; };
   CGUIImage::GUIIMAGE_ASPECT_RATIO GetAspectRatio() const { return m_aspectRatio; };
@@ -166,6 +167,7 @@ protected:
   int m_iThumbHeightBig;
 
   bool m_bHideFileNameLabel;
+  bool m_bHideDirectoryNameLabel;
   bool m_pageControlVisible;
   bool m_usingBigIcons;
   CGUIImage::GUIIMAGE_ASPECT_RATIO m_aspectRatio;
