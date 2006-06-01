@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-06-2006 changed: xbmc.notification now takes an optional icon as param.
  - 31-05-2006 fixed: folder.jpg should now work in My Pictures.
  - 31-05-2006 fixed: Add Network location didn't update the mediasources list.
  - 31-05-2006 changed: Cleaned up a few unnecessary settings.
