@@ -53,7 +53,7 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
       ResetTimer();
       return true;
     }
-    break;
+    break;  
 
   case GUI_MSG_WINDOW_DEINIT:
     {
@@ -84,6 +84,16 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CSt
 void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription)
 {
   EnterCriticalSection(&m_critical);
+  
+  CGUIImage* pIcon = (CGUIImage*) GetControl(POPUP_ICON);
+
+  if (pIcon)
+  {
+    m_iIconPosX = pIcon->GetXPosition();
+    m_iIconPosY = pIcon->GetYPosition();
+    m_dwIconWidth = pIcon->GetWidth();
+    m_dwIconHeight = pIcon->GetHeight();
+  }
 
   Notification toast;
   toast.imagefile = aImageFile;
@@ -118,7 +128,7 @@ bool CGUIDialogKaiToast::DoWork()
       m_pIcon = NULL;
     }
 
-    if (toast.imagefile.size()>0)
+    if (toast.imagefile.size()>0 && m_dwIconWidth && m_dwIconHeight)
     {
       m_pIcon = new CGUIImage(0, 0, 0, 0, m_dwIconWidth, m_dwIconHeight, toast.imagefile);
       m_pIcon->AllocResources();
@@ -151,7 +161,8 @@ void CGUIDialogKaiToast::Render()
     {
       SET_CONTROL_HIDDEN(POPUP_ICON);
       CGUIDialog::Render();
-      m_pIcon->Render(m_iIconPosX + m_iPosX, m_iIconPosY + m_iPosY, m_dwIconWidth, m_dwIconHeight);
+      if (m_pIcon)
+        m_pIcon->Render(m_iIconPosX+10, m_iIconPosY, m_dwIconWidth, m_dwIconHeight);
     }
     else
     {
