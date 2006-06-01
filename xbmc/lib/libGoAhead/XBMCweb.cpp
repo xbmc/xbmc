@@ -982,7 +982,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
     musicdatabase.Close();
   }
 
-  if (!bFound && g_guiSettings.GetBool("MusicFiles.UseTags"))
+  if (!bFound && g_guiSettings.GetBool("musicfiles.usetags"))
   {
     //	...no, try to load the tag of the file.
     CMusicInfoTagLoaderFactory factory;

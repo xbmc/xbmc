@@ -23,15 +23,15 @@ bool CGUIPassword::GetSettings()
   //       --> Then Same conditions for CheckMasterLock()!
   if (!g_advancedSettings.bUseMasterLockAdvancedXml)
   {
-    iMasterLockMode                 = g_guiSettings.GetInt("Masterlock.Mastermode");
-    strMasterLockCode               = g_guiSettings.GetString("Masterlock.Mastercode");
-    bMasterNormalUserMode           = g_guiSettings.GetString("Masterlock.UserMode").Equals("0"); //true 0:Normal false 1:Advanced 
-    iMasterLockHomeMedia            = g_guiSettings.GetInt("Masterlock.LockHomeMedia");
-    iMasterLockSetFile              = g_guiSettings.GetInt("Masterlock.LockSettingsFilemanager"); 
-    bMasterLockEnableShutdown       = g_guiSettings.GetBool("Masterlock.Enableshutdown");
-    bMasterLockProtectShares        = g_guiSettings.GetBool("Masterlock.Protectshares");
-    bMasterUser                     = g_guiSettings.GetBool("Masterlock.MasterUser");
-    bMasterLockStartupLock          = g_guiSettings.GetBool("Masterlock.StartupLock");
+    iMasterLockMode                 = g_guiSettings.GetInt("masterlock.mastermode");
+    strMasterLockCode               = g_guiSettings.GetString("masterlock.mastercode");
+    bMasterNormalUserMode           = g_guiSettings.GetString("masterlock.usermode").Equals("0"); //true 0:Normal false 1:Advanced 
+    iMasterLockHomeMedia            = g_guiSettings.GetInt("masterlock.lockhomemedia");
+    iMasterLockSetFile              = g_guiSettings.GetInt("masterlock.locksettingsfilemanager"); 
+    bMasterLockEnableShutdown       = g_guiSettings.GetBool("masterlock.enableshutdown");
+    bMasterLockProtectShares        = g_guiSettings.GetBool("masterlock.protectshares");
+    bMasterUser                     = g_guiSettings.GetBool("masterlock.masteruser");
+    bMasterLockStartupLock          = g_guiSettings.GetBool("masterlock.startuplock");
     iMasterLockMaxRetry             = 3; //default value 3!
   }
   else
@@ -622,39 +622,39 @@ bool CGUIPassword::CheckMasterLock(bool bDisalogYesNo)
 {
   bool bResetSettings=false;
   bool bCheckAndSafe=false;
-  if (bMasterLockEnableShutdown != g_guiSettings.GetBool("Masterlock.Enableshutdown"))
+  if (bMasterLockEnableShutdown != g_guiSettings.GetBool("masterlock.enableshutdown"))
   {    
     bCheckAndSafe=true;
   }
-  else if (bMasterLockProtectShares != g_guiSettings.GetBool("Masterlock.Protectshares"))
+  else if (bMasterLockProtectShares != g_guiSettings.GetBool("masterlock.protectshares"))
   {    
     bCheckAndSafe=true;
   }
-  else if (iMasterLockMode != g_guiSettings.GetInt("Masterlock.Mastermode"))
+  else if (iMasterLockMode != g_guiSettings.GetInt("masterlock.mastermode"))
   {    
     bCheckAndSafe=true;
   }
-  else if (strMasterLockCode != g_guiSettings.GetString("Masterlock.Mastercode"))
+  else if (strMasterLockCode != g_guiSettings.GetString("masterlock.mastercode"))
   {    
     bCheckAndSafe=true;
   }
-  else if (bMasterLockStartupLock != g_guiSettings.GetBool("Masterlock.StartupLock"))
+  else if (bMasterLockStartupLock != g_guiSettings.GetBool("masterlock.startuplock"))
   {    
     bCheckAndSafe=true;
   }
-  else if (iMasterLockHomeMedia != g_guiSettings.GetInt("Masterlock.LockHomeMedia"))
+  else if (iMasterLockHomeMedia != g_guiSettings.GetInt("masterlock.lockhomemedia"))
   {    
     bCheckAndSafe=true;
   }
-  else if (iMasterLockSetFile != g_guiSettings.GetInt("Masterlock.LockSettingsFilemanager"))
+  else if (iMasterLockSetFile != g_guiSettings.GetInt("masterlock.locksettingsfilemanager"))
   {    
     bCheckAndSafe=true;
   }
-  else if (bMasterNormalUserMode != g_guiSettings.GetString("Masterlock.UserMode").Equals("0"))
+  else if (bMasterNormalUserMode != g_guiSettings.GetString("masterlock.usermode").Equals("0"))
   {    
     bCheckAndSafe=true;
   }
-  else if (bMasterUser != g_guiSettings.GetBool("Masterlock.MasterUser"))
+  else if (bMasterUser != g_guiSettings.GetBool("masterlock.masteruser"))
   {    
     bCheckAndSafe=true;
   }
@@ -669,13 +669,13 @@ bool CGUIPassword::CheckMasterLock(bool bDisalogYesNo)
   {
     if(CheckMasterLockCode())
     {
-      if(iMasterLockMode != g_guiSettings.GetInt("Masterlock.Mastermode") && ( strMasterLockCode == g_guiSettings.GetString("Masterlock.Mastercode") || g_guiSettings.GetString("Masterlock.Mastercode").IsEmpty() ))
+      if(iMasterLockMode != g_guiSettings.GetInt("masterlock.mastermode") && ( strMasterLockCode == g_guiSettings.GetString("masterlock.mastercode") || g_guiSettings.GetString("masterlock.mastercode").IsEmpty() ))
       {
         // PopUp OK! and Display: MasterLock mode has changed but NO! Mastercode has been set!
         CGUIDialogOK::ShowAndGetInput(12360, 12370, 12371, 0);
         bResetSettings = true;
       }
-      else if(iMasterLockMode != g_guiSettings.GetInt("Masterlock.Mastermode") && strMasterLockCode != g_guiSettings.GetString("Masterlock.Mastercode") && g_guiSettings.GetInt("Masterlock.Mastermode")!= LOCK_MODE_EVERYONE )
+      else if(iMasterLockMode != g_guiSettings.GetInt("masterlock.mastermode") && strMasterLockCode != g_guiSettings.GetString("masterlock.mastercode") && g_guiSettings.GetInt("masterlock.mastermode")!= LOCK_MODE_EVERYONE )
       {
         // PopUp OK and Display: MasterCode has changed! The new MasterCode is...!
         CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
@@ -700,16 +700,16 @@ bool CGUIPassword::CheckMasterLock(bool bDisalogYesNo)
   if(bResetSettings)
   {
     // Resetting the changes
-      g_guiSettings.SetBool("Masterlock.Enableshutdown",bMasterLockEnableShutdown);
-      g_guiSettings.SetBool("Masterlock.Protectshares",bMasterLockProtectShares);
-      g_guiSettings.SetBool("Masterlock.MasterUser",bMasterUser);
-      g_guiSettings.SetInt("Masterlock.Mastermode",iMasterLockMode);
-      g_guiSettings.SetString("Masterlock.Mastercode",strMasterLockCode.c_str());
-      g_guiSettings.SetBool("Masterlock.StartupLock",bMasterLockStartupLock);
-      g_guiSettings.SetInt("Masterlock.LockHomeMedia",iMasterLockHomeMedia);
-      g_guiSettings.SetInt("Masterlock.LockSettingsFilemanager",iMasterLockSetFile); 
-      if(bMasterNormalUserMode)g_guiSettings.SetString("Masterlock.UserMode","0");
-      if(!bMasterNormalUserMode)g_guiSettings.SetString("Masterlock.UserMode","1");
+      g_guiSettings.SetBool("masterlock.enableshutdown",bMasterLockEnableShutdown);
+      g_guiSettings.SetBool("masterlock.protectshares",bMasterLockProtectShares);
+      g_guiSettings.SetBool("masterlock.masteruser",bMasterUser);
+      g_guiSettings.SetInt("masterlock.mastermode",iMasterLockMode);
+      g_guiSettings.SetString("masterlock.mastercode",strMasterLockCode.c_str());
+      g_guiSettings.SetBool("masterlock.startuplock",bMasterLockStartupLock);
+      g_guiSettings.SetInt("masterlock.lockhomemedia",iMasterLockHomeMedia);
+      g_guiSettings.SetInt("masterlock.locksettingsfilemanager",iMasterLockSetFile); 
+      if(bMasterNormalUserMode)g_guiSettings.SetString("masterlock.usermode","0");
+      if(!bMasterNormalUserMode)g_guiSettings.SetString("masterlock.usermode","1");
     //
   }
   return false;

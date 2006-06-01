@@ -22,28 +22,28 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
   bool bBigThumbs = false;
   int iPercent = 0;
   int iCurrentWindow = m_gWindowManager.GetActiveWindow();
-  bool bHideParentFolderItems = g_guiSettings.GetBool("FileLists.HideParentDirItems");
+  bool bHideParentFolderItems = g_guiSettings.GetBool("filelists.hideparentdiritems");
 
   switch (iCurrentWindow)
   {
   case WINDOW_MUSIC_FILES:
     {
-      iSortMethod = g_guiSettings.GetInt("MusicFiles.AutoSwitchMethod");
-      bBigThumbs = g_guiSettings.GetBool("MusicFiles.AutoSwitchUseLargeThumbs");
+      iSortMethod = g_guiSettings.GetInt("musicfiles.autoswitchmethod");
+      bBigThumbs = g_guiSettings.GetBool("musicfiles.autoswitchuselargethumbs");
       if ( iSortMethod == METHOD_BYTHUMBPERCENT )
       {
-        iPercent = g_guiSettings.GetInt("MusicFiles.AutoSwitchPercentage");
+        iPercent = g_guiSettings.GetInt("musicfiles.autoswitchpercentage");
       }
     }
     break;
 
   case WINDOW_VIDEO_FILES:
     {
-      iSortMethod = g_guiSettings.GetInt("VideoFiles.AutoSwitchMethod");
-      bBigThumbs = g_guiSettings.GetBool("VideoFiles.AutoSwitchUseLargeThumbs");
+      iSortMethod = g_guiSettings.GetInt("videofiles.autoswitchmethod");
+      bBigThumbs = g_guiSettings.GetBool("videofiles.autoswitchuselargethumbs");
       if ( iSortMethod == METHOD_BYTHUMBPERCENT )
       {
-        iPercent = g_guiSettings.GetInt("VideoFiles.AutoSwitchPercentage");
+        iPercent = g_guiSettings.GetInt("videofiles.autoswitchpercentage");
       }
     }
     break;
@@ -51,17 +51,17 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
   case WINDOW_PICTURES:
     {
       iSortMethod = METHOD_BYFILECOUNT;
-      bBigThumbs = g_guiSettings.GetBool("Pictures.AutoSwitchUseLargeThumbs");
+      bBigThumbs = g_guiSettings.GetBool("pictures.autoswitchuselargethumbs");
     }
     break;
 
   case WINDOW_PROGRAMS:
     {
-      iSortMethod = g_guiSettings.GetInt("ProgramFiles.AutoSwitchMethod");
-      bBigThumbs = g_guiSettings.GetBool("ProgramFiles.AutoSwitchUseLargeThumbs");
+      iSortMethod = g_guiSettings.GetInt("programfiles.autoswitchmethod");
+      bBigThumbs = g_guiSettings.GetBool("programfiles.autoswitchuselargethumbs");
       if ( iSortMethod == METHOD_BYTHUMBPERCENT )
       {
-        iPercent = g_guiSettings.GetInt("ProgramFiles.AutoSwitchPercentage");
+        iPercent = g_guiSettings.GetInt("programfiles.autoswitchpercentage");
       }
     }
     break;

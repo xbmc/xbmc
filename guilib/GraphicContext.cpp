@@ -356,8 +356,8 @@ void CGraphicContext::SetScreenFilters(bool useFullScreenFilters)
   {
     // These are only valid here and nowhere else
     // set soften on/off
-    m_pd3dDevice->SetSoftDisplayFilter(useFullScreenFilters ? g_guiSettings.GetBool("Filters.Soften") : g_guiSettings.GetBool("UIFilters.Soften"));
-    m_pd3dDevice->SetFlickerFilter(useFullScreenFilters ? g_guiSettings.GetInt("Filters.Flicker") : g_guiSettings.GetInt("UIFilters.Flicker"));
+    m_pd3dDevice->SetSoftDisplayFilter(useFullScreenFilters ? g_guiSettings.GetBool("filters.soften") : g_guiSettings.GetBool("uifilters.soften"));
+    m_pd3dDevice->SetFlickerFilter(useFullScreenFilters ? g_guiSettings.GetInt("filters.flicker") : g_guiSettings.GetInt("uifilters.flicker"));
   }
   Unlock();
 }

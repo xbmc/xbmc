@@ -79,7 +79,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
     pItem->m_musicInfoTag = mapItem->m_musicInfoTag;
     pItem->SetThumbnailImage(mapItem->GetThumbnailImage());
   }
-  else if (g_guiSettings.GetBool("MusicFiles.UseTags"))
+  else if (g_guiSettings.GetBool("musicfiles.usetags"))
   { // Nothing found, load tag from file
     // get correct tag parser
     CMusicInfoTagLoaderFactory factory;

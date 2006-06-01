@@ -379,7 +379,7 @@ void CGUIDialogFileBrowser::GoParentFolder()
   CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
   Update(strPath);
 
-  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
+  if (!g_guiSettings.GetBool("lookandfeel.fulldirectoryhistory"))
     m_history.RemoveSelectedItem(strOldPath); //Delete current path
 }
 

@@ -353,12 +353,12 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     std::vector<int> netorder;
     if (m_bXboxMediacenterLoaded)
     {
-      if (g_guiSettings.GetInt("Network.Assignment") == NETWORK_DHCP)
+      if (g_guiSettings.GetInt("network.assignment") == NETWORK_DHCP)
       {
         netorder.push_back(NETWORK_DHCP);
         netorder.push_back(NETWORK_STATIC);
       }
-      else if (g_guiSettings.GetInt("Network.Assignment") == NETWORK_STATIC)
+      else if (g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC)
       {
         netorder.push_back(NETWORK_STATIC);
         netorder.push_back(NETWORK_DHCP);
@@ -405,10 +405,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
             if( m_bXboxMediacenterLoaded )
             {
               g_network.Initialize(NETWORK_STATIC, 
-                    g_guiSettings.GetString("Network.IPAddress").c_str(), 
-                    g_guiSettings.GetString("Network.Subnet").c_str(), 
-                    g_guiSettings.GetString("Network.Gateway").c_str(),
-                    g_guiSettings.GetString("Network.DNS").c_str() );
+                    g_guiSettings.GetString("network.ipaddress").c_str(), 
+                    g_guiSettings.GetString("network.subnet").c_str(), 
+                    g_guiSettings.GetString("network.gateway").c_str(),
+                    g_guiSettings.GetString("network.dns").c_str() );
             }
             else
             {
@@ -732,7 +732,7 @@ HRESULT CApplication::Create()
     bNeedReboot = true;
 
 // now check if we are switching video modes. if, are we in the wrong mode according to eeprom?
-  if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+  if (g_guiSettings.GetBool("myprograms.gameautoregion"))
   {
     // should use xkeeprom.h :/
     EEPROMDATA EEPROM;
@@ -862,7 +862,7 @@ HRESULT CApplication::Create()
 
   // Load the langinfo to have user charset <-> utf-8 conversion
   CStdString strLangInfoPath;
-  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("LookAndFeel.Language"));
+  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("lookandfeel.language"));
 
   CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
@@ -871,7 +871,7 @@ HRESULT CApplication::Create()
   m_splash->Start();
 
   CStdString strLanguagePath;
-  strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
+  strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("lookandfeel.language"));
 
   CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath ))
@@ -886,8 +886,8 @@ HRESULT CApplication::Create()
 
   // check the skin file for testing purposes
   CStdString strSkinBase = "Q:\\skin\\";
-  CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("LookAndFeel.Skin");
-  CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("LookAndFeel.Skin").c_str());
+  CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
+  CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
   if (!g_SkinInfo.Check(strSkinPath))
   {
     // reset to the default skin (Project Mayhem III)
@@ -932,8 +932,8 @@ HRESULT CApplication::Initialize()
   CLog::Log(LOGINFO, "creating subdirectories");
 
   CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
-  CLog::Log(LOGINFO, "  recording folder:%s", g_guiSettings.GetString("MyMusic.RecordingPath",false).c_str());
-  CLog::Log(LOGINFO, "  screenshots folder:%s", g_guiSettings.GetString("System.ScreenshotPath",false).c_str());
+  CLog::Log(LOGINFO, "  recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
+  CLog::Log(LOGINFO, "  screenshots folder:%s", g_guiSettings.GetString("system.screenshotpath",false).c_str());
 	
   // UserData folder layout:
   // UserData/
@@ -986,22 +986,22 @@ HRESULT CApplication::Initialize()
   if (!m_bXboxMediacenterLoaded)
   {
     CLog::Log(LOGINFO, "using default network settings");
-    g_guiSettings.SetString("Network.IPAddress", "192.168.0.100");
-    g_guiSettings.SetString("Network.Subnet", "255.255.255.0");
-    g_guiSettings.SetString("Network.Gateway", "192.168.0.1");
-    g_guiSettings.SetString("Network.DNS", "192.168.0.1");
-    g_guiSettings.SetBool("Servers.FTPServer", true);
-    g_guiSettings.SetBool("Servers.WebServer", false);
-    g_guiSettings.SetBool("XBDateTime.TimeServer", false);
+    g_guiSettings.SetString("network.ipaddress", "192.168.0.100");
+    g_guiSettings.SetString("network.subnet", "255.255.255.0");
+    g_guiSettings.SetString("network.gateway", "192.168.0.1");
+    g_guiSettings.SetString("network.dns", "192.168.0.1");
+    g_guiSettings.SetBool("servers.ftpserver", true);
+    g_guiSettings.SetBool("servers.webserver", false);
+    g_guiSettings.SetBool("xbdatetime.timeserver", false);
   }
   
   /* setup netowork based on our settings */
   /* network will start it's init procedure */
-  g_network.Initialize(g_guiSettings.GetInt("Network.Assignment"),
-          g_guiSettings.GetString("Network.IPAddress").c_str(),
-          g_guiSettings.GetString("Network.Subnet").c_str(),
-          g_guiSettings.GetString("Network.Gateway").c_str(),
-          g_guiSettings.GetString("Network.DNS").c_str());
+  g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
+          g_guiSettings.GetString("network.ipaddress").c_str(),
+          g_guiSettings.GetString("network.subnet").c_str(),
+          g_guiSettings.GetString("network.gateway").c_str(),
+          g_guiSettings.GetString("network.dns").c_str());
 
   /* now attempt to get all settings for the network as soon as it is */
   /* available. this could be done further down, to keep network */
@@ -1020,8 +1020,8 @@ HRESULT CApplication::Initialize()
 
   m_gWindowManager.Add(new CGUIWindowHome);                     // window id = 0
 
-  CLog::Log(LOGNOTICE, "load default skin:[%s]", g_guiSettings.GetString("LookAndFeel.Skin").c_str());
-  LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
+  CLog::Log(LOGNOTICE, "load default skin:[%s]", g_guiSettings.GetString("lookandfeel.skin").c_str());
+  LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
 
   m_gWindowManager.Add(new CGUIWindowPrograms);                 // window id = 1
   m_gWindowManager.Add(new CGUIWindowPictures);                 // window id = 2
@@ -1096,7 +1096,7 @@ HRESULT CApplication::Initialize()
 
   RESOLUTION res = INVALID;
   CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
-  int startWindow = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
+  int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
   // test for a startup window, and activate that instead of home
   if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
   {
@@ -1180,12 +1180,12 @@ void CApplication::PrintXBEToLCD(const char* xbePath)
 
 void CApplication::StartWebServer()
 {
-  if (g_guiSettings.GetBool("Servers.WebServer") && g_network.IsAvailable() )
+  if (g_guiSettings.GetBool("servers.webserver") && g_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "start webserver");
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
-    m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("Servers.WebServerPort")), "Q:\\web");
+    m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web");
   }
 }
 
@@ -1203,7 +1203,7 @@ void CApplication::StopWebServer()
 
 void CApplication::StartFtpServer()
 {
-  if ( g_guiSettings.GetBool("Servers.FTPServer") && g_network.IsAvailable() )
+  if ( g_guiSettings.GetBool("servers.ftpserver") && g_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
@@ -1246,7 +1246,7 @@ void CApplication::StopFtpServer()
 
 void CApplication::StartTimeServer()
 {
-  if (g_guiSettings.GetBool("XBDateTime.TimeServer") && g_network.IsAvailable() )
+  if (g_guiSettings.GetBool("xbdatetime.timeserver") && g_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "start timeserver thread");
     m_sntpClient.Create();
@@ -1261,7 +1261,7 @@ void CApplication::StopTimeServer()
 
 void CApplication::StartKai()
 {
-  if (g_guiSettings.GetBool("XLinkKai.Enabled"))
+  if (g_guiSettings.GetBool("xlinkkai.enabled"))
   {
     CGUIWindowBuddies *pKai = (CGUIWindowBuddies*)m_gWindowManager.GetWindow(WINDOW_BUDDIES);
     if (pKai)
@@ -1284,21 +1284,21 @@ void CApplication::StopKai()
 
 void CApplication::StartLEDControl(bool switchoff)
 {
-  if (g_guiSettings.GetInt("LED.Colour") != LED_COLOUR_NO_CHANGE)
+  if (g_guiSettings.GetInt("led.colour") != LED_COLOUR_NO_CHANGE)
     CLog::Log(LOGNOTICE, "Start LED Control");
-  if (switchoff == true && g_guiSettings.GetInt("LED.Colour") != LED_COLOUR_NO_CHANGE)
+  if (switchoff == true && g_guiSettings.GetInt("led.colour") != LED_COLOUR_NO_CHANGE)
   {
-    if ( IsPlayingVideo() && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO)
+    if ( IsPlayingVideo() && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
     {
       CLog::Log(LOGNOTICE, "LED Control: Playing Video LED is switched OFF!");
       ILED::CLEDControl(LED_COLOUR_OFF);
     }
-    if ( IsPlayingAudio() && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_MUSIC)
+    if ( IsPlayingAudio() && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_MUSIC)
     {
       CLog::Log(LOGNOTICE, "LED Control: Playing Music LED is switched OFF!");
       ILED::CLEDControl(LED_COLOUR_OFF);
     }
-    if ( (IsPlayingVideo() || IsPlayingAudio()) && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO_MUSIC)
+    if ( (IsPlayingVideo() || IsPlayingAudio()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
     {
       CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
       ILED::CLEDControl(LED_COLOUR_OFF);
@@ -1306,7 +1306,7 @@ void CApplication::StartLEDControl(bool switchoff)
   }
   else if (switchoff == false)
   {
-    ILED::CLEDControl(g_guiSettings.GetInt("LED.Colour"));
+    ILED::CLEDControl(g_guiSettings.GetInt("led.colour"));
   }
   // and dim our LCD as required as well
   DimLCDOnPlayback(switchoff);
@@ -1314,16 +1314,16 @@ void CApplication::StartLEDControl(bool switchoff)
 
 void CApplication::DimLCDOnPlayback(bool dim)
 {
-  if (g_lcd && g_guiSettings.GetInt("LCD.Type") != LCD_TYPE_NONE)
+  if (g_lcd && g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
   {
     CLog::Log(LOGNOTICE, "Dim LCD On Playback");
-    if (IsPlayingVideo() && dim == true && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO)
+    if (IsPlayingVideo() && dim == true && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
     {
       g_lcd->SetBackLight(0);
     }
-    else if (dim == false && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO)
+    else if (dim == false && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
     {
-      g_lcd->SetBackLight(g_guiSettings.GetInt("LCD.BackLight"));
+      g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
     }
   }
 }
@@ -1344,7 +1344,7 @@ void CApplication::StartServices()
   CLog::Log(LOGNOTICE, "initializing playlistplayer");
   g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
   g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
-  g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MusicFiles.Repeat"));
+  g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("musicfiles.repeat"));
   g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
   g_playlistPlayer.ShufflePlay(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
   g_playlistPlayer.Repeat(PLAYLIST_VIDEO_TEMP, false);
@@ -1356,15 +1356,15 @@ void CApplication::StartServices()
     g_lcd->Initialize();
   }
 
-  if (g_guiSettings.GetBool("System.AutoTemperature"))
+  if (g_guiSettings.GetBool("system.autotemperature"))
   {
     CLog::Log(LOGNOTICE, "start fancontroller");
-    CFanController::Instance()->Start(g_guiSettings.GetInt("System.TargetTemperature"));
+    CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"));
   }
-  else if (g_guiSettings.GetBool("System.FanSpeedControl"))
+  else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
   {
     CLog::Log(LOGNOTICE, "setting fanspeed");
-    CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("System.FanSpeed"));
+    CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
   }
 }
 void CApplication::CheckDate()
@@ -1455,7 +1455,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   //  disconnect from the engine when the skin is
   //  changed
   bool bKaiConnected = false;
-  if (!m_bInitializing && g_guiSettings.GetBool("XLinkKai.Enabled"))
+  if (!m_bInitializing && g_guiSettings.GetBool("xlinkkai.enabled"))
   {
     bKaiConnected = CKaiClient::GetInstance()->IsEngineConnected();
     if (bKaiConnected)
@@ -1473,20 +1473,20 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
   g_graphicsContext.SetMediaDir(strSkinPath);
-  if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("LookAndFeel.Font")))
+  if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font")))
   {
     CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
     CStdString strFontSet;
     if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
     {
       CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
-      g_guiSettings.SetString("LookAndFeel.Font", strFontSet);
+      g_guiSettings.SetString("lookandfeel.font", strFontSet);
       g_settings.Save();
     }
     else
-      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("LookAndFeel.Language").c_str());
+      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("lookandfeel.language").c_str());
   }
-  g_fontManager.LoadFonts(g_guiSettings.GetString("LookAndFeel.Font"));
+  g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
 
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
@@ -1957,15 +1957,6 @@ bool CApplication::OnKey(CKey& key)
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
 
-  // Rumble the controller
-  if( g_guiSettings.GetInt("LookAndFeel.Rumble") > 0 && !key.IsAnalogButton() && !key.IsIRRemote() && action.wID)
-  {
-    // GeminiServer: Rumble Controller Max Values 1.0!
-    FLOAT fRumlePower = FLOAT(g_guiSettings.GetInt("LookAndFeel.Rumble")/10.0f);
-    SetControllerRumble(fRumlePower,fRumlePower,0); // Rumble ON!
-    SetControllerRumble(0.0f,0.0f,100);  // Rumble OFF!
-  }
-
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
   { // Switch to fullscreen mode if we can
@@ -2185,7 +2176,7 @@ bool CApplication::OnKey(CKey& key)
 void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon/*=NULL*/)
 {
   // queue toast notification
-  if (g_guiSettings.GetBool("XLinkKai.EnableNotifications"))
+  if (g_guiSettings.GetBool("xlinkkai.enablenotifications"))
   {
     if (aIcon==NULL)
       m_guiDialogKaiToast.QueueNotification(aCaption, aDescription);
@@ -2198,7 +2189,7 @@ void CApplication::UpdateLCD()
 {
   static lTickCount = 0;
 
-  if (g_guiSettings.GetInt("LCD.Type") == LCD_TYPE_NONE)
+  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
     return ;
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
@@ -2228,7 +2219,7 @@ void CApplication::FrameMove()
   /* never set a frametime less than 2 fps to avoid problems when debuggin and on breaks */
   if( frameTime > 0.5 ) frameTime = 0.5;
 
-  if (g_guiSettings.GetBool("XLinkKai.Enabled"))
+  if (g_guiSettings.GetBool("xlinkkai.enabled"))
   {
     CKaiClient::GetInstance()->DoWork();
   }
@@ -2996,9 +2987,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
 
     // Enable Karaoke voice as necessary
-//    if (g_guiSettings.GetBool("Karaoke.VoiceEnabled"))
+//    if (g_guiSettings.GetBool("karaoke.voiceenabled"))
   //  {
-    if (item.IsAudio() && !item.IsInternetStream() && g_guiSettings.GetBool("Karaoke.Enabled") && !m_CdgParser.IsRunning())
+    if (item.IsAudio() && !item.IsInternetStream() && g_guiSettings.GetBool("karaoke.enabled") && !m_CdgParser.IsRunning())
     {
       if (item.IsMusicDb())
         m_CdgParser.Start(item.m_musicInfoTag.GetURL());
@@ -3214,7 +3205,7 @@ bool CApplication::ResetScreenSaverWindow()
       m_gWindowManager.PreviousWindow();
       return true;
     }
-    else if (iWin == WINDOW_VISUALISATION && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
+    else if (iWin == WINDOW_VISUALISATION && g_guiSettings.GetBool("screensaver.usemusicvisinstead"))
     {
       // we can just continue as usual from vis mode
       return false;
@@ -3223,10 +3214,10 @@ bool CApplication::ResetScreenSaverWindow()
     }
     // Fade to dim or black screensaver is active --> fade in
     float fFadeLevel = 1.0f;
-    CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
+    CStdString strScreenSaver = g_guiSettings.GetString("screensaver.mode");
     if (strScreenSaver == "Dim")
     {
-      fFadeLevel = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100;
+      fFadeLevel = (float)g_guiSettings.GetInt("screensaver.dimlevel") / 100;
     }
     else if (strScreenSaver == "Fade")
     {
@@ -3301,7 +3292,7 @@ void CApplication::CheckScreenSaver()
     if (!m_bScreenSave)
     {
       // no, then check the timer if screensaver should pop up
-      if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("ScreenSaver.Time")*60*1000L) )
+      if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("screensaver.time")*60*1000L) )
       {
         //yes, show the screensaver
         ActivateScreenSaver();
@@ -3320,13 +3311,13 @@ void CApplication::ActivateScreenSaver()
   m_dwSaverTick = timeGetTime();  // Save the current time for the shutdown timeout
 
   // Get Screensaver Mode
-  CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
+  CStdString strScreenSaver = g_guiSettings.GetString("screensaver.mode");
 
   // set to Dim in the case of a dialog on screen or playing video
   if (m_gWindowManager.IsRouted() || IsPlayingVideo())
     strScreenSaver = "Dim";
   // Check if we are Playing Audio and Vis instead Screensaver!
-  else if (IsPlayingAudio() && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
+  else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead"))
   { // activate the visualisation
     m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
     return;
@@ -3336,12 +3327,12 @@ void CApplication::ActivateScreenSaver()
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
-    g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.SlideShowPath"), true);
+    g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
     return;
   }
   else if (strScreenSaver == "Dim")
   {
-    fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
+    fFadeLevel = (FLOAT) g_guiSettings.GetInt("screensaver.dimlevel") / 100; // 0.07f;
   }
   else if (strScreenSaver == "Black")
   {
@@ -3373,7 +3364,7 @@ void CApplication::CheckShutdown()
   // counted from when the screensaver activates.
   if (!m_bInactive)
   {
-    if (g_guiSettings.GetBool("System.ShutDownWhilePlaying")) // shutdown if active
+    if (g_guiSettings.GetBool("system.shutdownwhileplaying")) // shutdown if active
     {
       m_bInactive = true;
     }
@@ -3401,10 +3392,10 @@ void CApplication::CheckShutdown()
   }
   else
   {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("System.ShutDownTime")*60*1000L) )
+    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("system.shutdowntime")*60*1000L) )
     {
       bool bShutDown = false;
-      if (g_guiSettings.GetBool("System.ShutDownWhilePlaying")) // shutdown if active
+      if (g_guiSettings.GetBool("system.shutdownwhileplaying")) // shutdown if active
       {
         bShutDown = true;
       }
@@ -3460,7 +3451,7 @@ bool CApplication::MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown)
 
 void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
 {
-  int iSpinDown = g_guiSettings.GetInt("System.RemotePlayHDSpinDown");
+  int iSpinDown = g_guiSettings.GetInt("system.remoteplayhdspindown");
   if (iSpinDown == SPIN_DOWN_NONE)
     return ;
   if (m_gWindowManager.IsRouted())
@@ -3491,7 +3482,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
       ) &&
       (
         (iDuration <= 0) ||
-        (iDuration > g_guiSettings.GetInt("System.RemotePlayHDSpinDownMinDuration")*60)
+        (iDuration > g_guiSettings.GetInt("system.remoteplayhdspindownminduration")*60)
       )
     )
     {
@@ -3519,7 +3510,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
   {
     // check the elapsed time
     DWORD dwTimeSpan = timeGetTime() - m_dwSpinDownTime;
-    if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("System.RemotePlayHDSpinDownDelay")*1000UL)) )
+    if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("system.remoteplayhdspindowndelay")*1000UL)) )
     {
       // time has elapsed, spin it down
       CIoSupport::SpindownHarddisk();
@@ -3533,8 +3524,8 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
       // and we're within 10 seconds (or 0.5*spindown time) of the end.  This should
       // make returning to the GUI a bit snappier + speed up stacked item changes.
       int iMinSpinUp = 10;
-      if (iMinSpinUp > g_guiSettings.GetInt("System.RemotePlayHDSpinDownDelay")*0.5f)
-        iMinSpinUp = (int)(g_guiSettings.GetInt("System.RemotePlayHDSpinDownDelay")*0.5f);
+      if (iMinSpinUp > g_guiSettings.GetInt("system.remoteplayhdspindowndelay")*0.5f)
+        iMinSpinUp = (int)(g_guiSettings.GetInt("system.remoteplayhdspindowndelay")*0.5f);
       if (g_infoManager.GetPlayTimeRemaining() == iMinSpinUp)
       { // spin back up
         CIoSupport::SpindownHarddisk(false);
@@ -3545,7 +3536,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
 
 void CApplication::CheckHDSpindown()
 {
-  if (!g_guiSettings.GetInt("System.HDSpinDownTime"))
+  if (!g_guiSettings.GetInt("system.hdspindowntime"))
     return ;
   if (m_gWindowManager.IsRouted())
     return ;
@@ -3569,7 +3560,7 @@ void CApplication::CheckHDSpindown()
   {
     // yes, then check the elapsed time
     DWORD dwTimeSpan = timeGetTime() - m_dwSpinDownTime;
-    if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("System.HDSpinDownTime")*60UL*1000UL)) )
+    if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("system.hdspindowntime")*60UL*1000UL)) )
     {
       // time has elapsed, spin it down
       CIoSupport::SpindownHarddisk();
@@ -3729,7 +3720,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // reset the audio playlist on finish
-      if (!IsPlayingAudio() && (g_guiSettings.GetBool("MusicPlaylist.ClearPlaylistsOnEnd")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)) 
+      if (!IsPlayingAudio() && (g_guiSettings.GetBool("musicplaylist.clearplaylistsonend")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)) 
       {
         g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
         g_playlistPlayer.Reset();
@@ -3795,7 +3786,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         else if (item.IsXBE())
         { // an XBE
           int iRegion;
-          if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+          if (g_guiSettings.GetBool("myprograms.gameautoregion"))
           {
             CXBE xbe;
             iRegion = xbe.ExtractGameRegion(item.m_strPath);
@@ -3852,11 +3843,11 @@ void CApplication::Process()
     CheckHDSpindown();
 
   // check if we need to activate the screensaver (if enabled)
-  if (g_guiSettings.GetString("ScreenSaver.Mode") != "None")
+  if (g_guiSettings.GetString("screensaver.mode") != "None")
     CheckScreenSaver();
 
   // check if we need to shutdown (if enabled)
-  if (g_guiSettings.GetInt("System.ShutDownTime"))
+  if (g_guiSettings.GetInt("system.shutdowntime"))
     CheckShutdown();
 
   // process messages, even if a movie is playing
@@ -4245,18 +4236,18 @@ void CApplication::SaveMusicScanSettings()
 {
   CLog::Log(LOGINFO,"Music scan has started ... enabling Tag Reading, and Remote Thumbs");
   g_stSettings.m_bMyMusicIsScanning = true;
-  g_stSettings.m_bMyMusicOldUseTags = g_guiSettings.GetBool("MusicFiles.UseTags");
-  g_stSettings.m_bMyMusicOldFindThumbs = g_guiSettings.GetBool("MusicFiles.FindRemoteThumbs");
+  g_stSettings.m_bMyMusicOldUseTags = g_guiSettings.GetBool("musicfiles.usetags");
+  g_stSettings.m_bMyMusicOldFindThumbs = g_guiSettings.GetBool("musicfiles.findremotethumbs");
   g_settings.Save();
   
-  g_guiSettings.SetBool("MusicFiles.UseTags", true);
-  g_guiSettings.SetBool("MusicFiles.FindRemoteThumbs", true);
+  g_guiSettings.SetBool("musicfiles.usetags", true);
+  g_guiSettings.SetBool("musicfiles.findremotethumbs", true);
 }
 
 void CApplication::RestoreMusicScanSettings()
 {
-  g_guiSettings.SetBool("MusicFiles.UseTags", g_stSettings.m_bMyMusicOldUseTags);
-  g_guiSettings.SetBool("MusicFiles.FindRemoteThumbs", g_stSettings.m_bMyMusicOldFindThumbs);
+  g_guiSettings.SetBool("musicfiles.usetags", g_stSettings.m_bMyMusicOldUseTags);
+  g_guiSettings.SetBool("musicfiles.findremotethumbs", g_stSettings.m_bMyMusicOldFindThumbs);
   g_stSettings.m_bMyMusicIsScanning = false;
   g_settings.Save();
 }
@@ -4386,7 +4377,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
   if (
     (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP) &&
     !item.IsShoutCast() &&
-    g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad")
+    g_guiSettings.GetBool("musicplaylist.shuffleplaylistsonload")
     )
   {
     g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();

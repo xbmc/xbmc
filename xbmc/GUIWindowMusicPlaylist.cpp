@@ -462,7 +462,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     }
 
     // disable repeat options if clear on end is enabled
-    if (g_guiSettings.GetBool("MusicPlaylist.ClearPlaylistsOnEnd"))
+    if (g_guiSettings.GetBool("musicplaylist.clearplaylistsonend"))
     {
       g_playlistPlayer.Repeat(PLAYLIST_MUSIC, false);
       g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, false);
@@ -557,8 +557,8 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (pItem->m_musicInfoTag.Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
-    pItem->FormatLabel(g_guiSettings.GetString("MusicPlaylist.TrackFormat"));
-    pItem->FormatLabel2(g_guiSettings.GetString("MusicPlaylist.TrackFormatRight"));
+    pItem->FormatLabel(g_guiSettings.GetString("musicplaylist.trackformat"));
+    pItem->FormatLabel2(g_guiSettings.GetString("musicplaylist.trackformatright"));
 
     /* this works funny. the labels keep changing?
     // add position to label

@@ -563,7 +563,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     if (NULL == m_pDS.get()) return false;
 
     int iRegion = -1;
-    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    if (g_guiSettings.GetBool("myprograms.gameautoregion"))
     {
       CXBE xbe;
       iRegion = xbe.ExtractGameRegion(item->m_strPath);

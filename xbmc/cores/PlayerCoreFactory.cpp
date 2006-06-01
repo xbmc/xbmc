@@ -152,7 +152,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
     if (bAdd)
     {
-      if( g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_ANALOG )
+      if( g_guiSettings.GetInt("audiooutput.mode") == AUDIO_ANALOG )
       {
         vecCores.push_back(EPC_PAPLAYER);
       }

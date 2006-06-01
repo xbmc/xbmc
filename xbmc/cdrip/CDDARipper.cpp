@@ -24,7 +24,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
 {
   m_cdReader.Init(strTrackFile);
 
-  switch (g_guiSettings.GetInt("CDDARipper.Encoder"))
+  switch (g_guiSettings.GetInt("cddaripper.encoder"))
   {
   case CDDARIP_ENCODER_WAV:
     m_pEncoder = new CEncoderWav();
@@ -190,7 +190,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 {
   int iTrack = 0;
   CStdString strFile;
-  CStdString strDirectory = g_guiSettings.GetString("CDDARipper.Path");
+  CStdString strDirectory = g_guiSettings.GetString("cddaripper.path");
   if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
   CFileItem ripPath(strDirectory, true);
   bool bIsFATX = !ripPath.IsSmb();
@@ -220,12 +220,12 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   CUtil::CreateDirectoryEx(strDirectory);
 
   // if title is set we use it, and modify it if needed
-  char* cExt = GetExtension(g_guiSettings.GetInt("CDDARipper.Encoder"));
+  char* cExt = GetExtension(g_guiSettings.GetInt("cddaripper.encoder"));
   if (pItem->m_musicInfoTag.GetTitle().size() > 0)
   {
     CStdString track;
     // do we want to include the track number in the file name?
-    if (g_guiSettings.GetBool("CDDARipper.UseTrackNumber"))
+    if (g_guiSettings.GetBool("cddaripper.usetracknumber"))
       track.Format("%02i %s", iTrack, pItem->m_musicInfoTag.GetTitle().c_str());
     else
       track = pItem->m_musicInfoTag.GetTitle();
@@ -243,7 +243,7 @@ bool CCDDARipper::RipCD()
   int iTrack = 0;
   bool bResult = true;
   CStdString strFile;
-  CStdString strDirectory = g_guiSettings.GetString("CDDARipper.Path");
+  CStdString strDirectory = g_guiSettings.GetString("cddaripper.path");
   if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
   CFileItem ripPath(strDirectory, true);
   bool bIsFATX = !ripPath.IsSmb();
@@ -332,7 +332,7 @@ bool CCDDARipper::RipCD()
   // rip all tracks one by one, if one fails we quit and return false
   for (int i = 0; i < vecItems.Size() && bResult == true; i++)
   {
-    char* cExt = GetExtension(g_guiSettings.GetInt("CDDARipper.Encoder"));
+    char* cExt = GetExtension(g_guiSettings.GetInt("cddaripper.encoder"));
     // get track number from "cdda://local/01.cdda"
     iTrack = atoi(vecItems[i]->m_strPath.substr(13, vecItems[i]->m_strPath.size() - 13 - 5).c_str());
     // if title is set we use it, and modify it if needed
@@ -345,7 +345,7 @@ bool CCDDARipper::RipCD()
         track=vecItems[i]->m_musicInfoTag.GetTitle();
 
       // do we want to include the track number in the file name?
-      if (g_guiSettings.GetBool("CDDARipper.UseTrackNumber") && !track.IsEmpty())
+      if (g_guiSettings.GetBool("cddaripper.usetracknumber") && !track.IsEmpty())
       {
         CStdString strTitle=track;
         track.Format("%02i %s", iTrack, strTitle.c_str());
