@@ -28,9 +28,6 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIDialog::OnMessage(message);
-      CGUIImage *image = (CGUIImage *)GetControl(POPUP_ICON);
-      if (image)
-        m_defaultIcon = image->GetFileName();
       ResetTimer();
       return true;
     }
@@ -44,6 +41,13 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+void CGUIDialogKaiToast::OnWindowLoaded()
+{
+  CGUIImage *image = (CGUIImage *)GetControl(POPUP_ICON);
+  if (image)
+    m_defaultIcon = image->GetFileName();
+}
+
 void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CStdString& aDescription)
 {
   QueueNotification("", aCaption, aDescription);
@@ -52,6 +56,9 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CSt
 void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/)
 {
   EnterCriticalSection(&m_critical);
+
+  if (!Initialize())
+    return;
 
   Notification toast;
   toast.imagefile = aImageFile;
