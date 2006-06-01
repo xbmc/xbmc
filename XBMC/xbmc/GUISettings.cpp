@@ -335,6 +335,9 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "videofiles.autoswitchmethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddInt(4, "videofiles.autoswitchpercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
+  // hidden settings
+  AddBool(0,"videofiles.hidedirectorynames",0,false);
+
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
