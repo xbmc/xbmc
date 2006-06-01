@@ -1881,7 +1881,6 @@ int CMPlayer::GetCacheSize(bool bFileOnHD, bool bFileOnISO, bool bFileOnUDF, boo
   }
   if (bFileOnInternet)
   {
-    //  if ( bIsDVD  ) return g_guiSettings.GetInt("CacheDVD.Internet");
     if ( bIsVideo) return g_guiSettings.GetInt("cachevideo.internet");
     if ( bIsAudio) return g_guiSettings.GetInt("cacheaudio.internet");
     //File is on internet however we don't know what type.
