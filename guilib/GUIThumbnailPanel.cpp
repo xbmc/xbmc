@@ -64,6 +64,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
   m_iThumbXPos = 8;
   m_iThumbYPos = 8;
   m_bHideFileNameLabel = false;
+  m_bHideDirectoryNameLabel = false;
   m_pageControlVisible = true;   // show the spin control by default
   m_usingBigIcons = false;
   m_upDown.SetShowRange(true); // show the range by default
@@ -164,6 +165,8 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
     // hide filenames in thumbnail panel
     if (m_bHideFileNameLabel && !pItem->m_bIsFolder)
         return;
+    if (m_bHideDirectoryNameLabel && pItem->m_bIsFolder)
+      return;
 
     CStdStringW strItemLabelUnicode;
     g_charsetConverter.utf8ToUTF16(pItem->GetLabel().c_str(), strItemLabelUnicode);
