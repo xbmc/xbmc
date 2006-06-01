@@ -119,7 +119,7 @@ void CGUIVisualisationControl::LoadVisualisation()
 
   CVisualisationFactory factory;
   CStdString strVisz;
-  m_currentVis = g_guiSettings.GetString("MyMusic.Visualisation");
+  m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
   if (m_currentVis.Equals("None"))
     return;
   CLog::Log(LOGDEBUG, "LoadVisualisation() started");
@@ -171,7 +171,7 @@ void CGUIVisualisationControl::Render()
       LoadVisualisation();
     }
     CGUIControl::Render();
-    if (g_guiSettings.GetBool("Karaoke.Enabled"))
+    if (g_guiSettings.GetBool("karaoke.enabled"))
       g_application.m_CdgParser.Render();
 
     return;
@@ -184,11 +184,11 @@ void CGUIVisualisationControl::Render()
       CGUIControl::Render();
       return;
     }
-    else if (!m_currentVis.Equals(g_guiSettings.GetString("MyMusic.Visualisation")))
+    else if (!m_currentVis.Equals(g_guiSettings.GetString("mymusic.visualisation")))
     { // vis changed - reload
       LoadVisualisation();
 
-      if (g_guiSettings.GetBool("Karaoke.Enabled"))
+      if (g_guiSettings.GetBool("karaoke.enabled"))
         g_application.m_CdgParser.Render();
       CGUIControl::Render();
       return;
@@ -213,7 +213,7 @@ void CGUIVisualisationControl::Render()
       g_graphicsContext.RestoreViewPort();
     }
   }
-  if (g_guiSettings.GetBool("Karaoke.Enabled"))
+  if (g_guiSettings.GetBool("karaoke.enabled"))
     g_application.m_CdgParser.Render();
 
   CGUIControl::Render();

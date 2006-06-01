@@ -59,7 +59,7 @@ void CFanController::OnExit()
 
 void CFanController::Process()
 {
-  if (!g_guiSettings.GetBool("System.AutoTemperature")) return ;
+  if (!g_guiSettings.GetBool("system.autotemperature")) return ;
   int interval = 500;
   tooHotLoopCount = 0;
   tooColdLoopCount = 0;

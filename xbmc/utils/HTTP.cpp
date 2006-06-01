@@ -90,11 +90,11 @@ CHTTP::CHTTP()
     : m_socket(INVALID_SOCKET)
 {
   m_strProxyServer = "";
-  m_bProxyEnabled = g_guiSettings.GetBool("Network.UseHTTPProxy");
+  m_bProxyEnabled = g_guiSettings.GetBool("network.usehttpproxy");
   if (m_bProxyEnabled)
   {
-    m_strProxyServer = g_guiSettings.GetString("Network.HTTPProxyServer").c_str();
-    m_iProxyPort = atoi(g_guiSettings.GetString("Network.HTTPProxyPort").c_str());
+    m_strProxyServer = g_guiSettings.GetString("network.httpproxyserver").c_str();
+    m_iProxyPort = atoi(g_guiSettings.GetString("network.httpproxyport").c_str());
   }
   m_strCookie = "";
   hEvent = WSA_INVALID_EVENT;

@@ -254,7 +254,7 @@ void CGUIWindowBuddies::OnWindowLoaded()
 
 void CGUIWindowBuddies::OnInitWindow()
 {
-  SET_CONTROL_LABEL( CONTROL_LABELUSERNAME, g_guiSettings.GetString("XLinkKai.UserName"));
+  SET_CONTROL_LABEL( CONTROL_LABELUSERNAME, g_guiSettings.GetString("xlinkkai.username"));
   SET_CONTROL_LABEL( CONTROL_LABELUPDATED, "");
   SET_CONTROL_LABEL( CONTROL_LABELBUDDYNAME, "");
   SET_CONTROL_LABEL( CONTROL_LABELBUDDYSTAT, "");
@@ -317,7 +317,7 @@ void CGUIWindowBuddies::OnInitWindow()
 
       if (m_pMe == NULL)
       {
-        CStdString strXtag = g_guiSettings.GetString("XLinkKai.UserName");
+        CStdString strXtag = g_guiSettings.GetString("xlinkkai.username");
         m_pMe = new CBuddyItem(strXtag);
 
         if (!m_pMe->m_pAvatar)
@@ -1607,7 +1607,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
     if (foundPath && !strGamePath.IsEmpty())
     {
       int iRegion;
-      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+      if (g_guiSettings.GetBool("myprograms.gameautoregion"))
       {
         iRegion = db.GetRegion(strGamePath);
         if (iRegion == -1)

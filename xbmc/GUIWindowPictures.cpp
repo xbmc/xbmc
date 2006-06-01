@@ -123,7 +123,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
       CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
       if (pControl)
-        pControl->HideFileNameLabel(g_guiSettings.GetBool("Pictures.HideFilenamesInThumbPanel"));
+        pControl->HideFileNameLabel(g_guiSettings.GetBool("pictures.hidefilenamesinthumbpanel"));
       
       return true;
     }
@@ -142,7 +142,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_SHUFFLE)
       {
-        g_guiSettings.ToggleBool("Slideshow.Shuffle");
+        g_guiSettings.ToggleBool("slideshow.shuffle");
         g_settings.Save();
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -158,7 +158,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_DELETE_ITEM)
         {
           // is delete allowed?
-          if (g_guiSettings.GetBool("FileLists.AllowFileDeletion"))
+          if (g_guiSettings.GetBool("filelists.allowfiledeletion"))
             OnDeleteItem(iItem);
           else
             return false;
@@ -175,7 +175,7 @@ void CGUIWindowPictures::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 
   // Update the shuffle button
-  if (g_guiSettings.GetBool("Slideshow.Shuffle"))
+  if (g_guiSettings.GetBool("slideshow.shuffle"))
   {
     CGUIMessage msg2(GUI_MSG_SELECTED, GetID(), CONTROL_SHUFFLE, 0, 0, NULL);
     g_graphicsContext.SendMessage(msg2);
@@ -467,7 +467,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       btn_Thumbs = pMenu->AddButton(13315);         // Create Thumbnails
     
     int btn_Delete = 0, btn_Rename = 0;             // Delete and Rename
-    if (g_guiSettings.GetBool("FileLists.AllowFileDeletion"))
+    if (g_guiSettings.GetBool("filelists.allowfiledeletion"))
     {
       btn_Delete = pMenu->AddButton(117);           // Delete
       btn_Rename = pMenu->AddButton(118);           // Rename
