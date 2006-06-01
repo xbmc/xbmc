@@ -559,7 +559,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetScreenFilters(true);
 
       // shuffle
-      if (g_guiSettings.GetBool("Slideshow.Shuffle") && m_bSlideShow)
+      if (g_guiSettings.GetBool("slideshow.shuffle") && m_bSlideShow)
         Shuffle();
 
       // turn off slideshow if we only have 1 image
@@ -657,7 +657,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
     else
     {
       if (m_bSlideShow)
-        m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate, g_guiSettings.GetBool("Slideshow.DisplayEffects") ? CSlideShowPic::EFFECT_RANDOM : CSlideShowPic::EFFECT_NONE);
+        m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate, g_guiSettings.GetBool("slideshow.displayeffects") ? CSlideShowPic::EFFECT_RANDOM : CSlideShowPic::EFFECT_NONE);
       else
         m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate, CSlideShowPic::EFFECT_NO_TIMEOUT);
       m_Image[iPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);

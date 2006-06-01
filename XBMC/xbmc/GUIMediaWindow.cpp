@@ -721,7 +721,7 @@ void CGUIMediaWindow::GoParentFolder()
   CStdString strOldPath(m_vecItems.m_strPath);
   Update(strParent);
 
-  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
+  if (!g_guiSettings.GetBool("lookandfeel.fulldirectoryhistory"))
     m_history.RemoveSelectedItem(strOldPath); //Delete current path
 
 }

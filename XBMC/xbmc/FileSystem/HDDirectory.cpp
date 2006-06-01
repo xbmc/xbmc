@@ -109,7 +109,7 @@ bool CHDDirectory::Create(const char* strPath)
   g_charsetConverter.utf8ToStringCharset(strPath1);
   if (!CUtil::HasSlashAtEnd(strPath1))
     strPath1 += '\\';
-  if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
+  if (g_guiSettings.GetBool("servers.ftpautofatx"))
     CUtil::GetFatXQualifiedPath(strPath1);
   CLog::Log(LOGDEBUG,"fatxq: %s",strPath1.c_str());
   return ::CreateDirectory(strPath1.c_str(), NULL) ? true : false;

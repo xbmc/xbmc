@@ -56,7 +56,7 @@ void CGUIRSSControl::Render()
   if (!IsVisible()) return;
 
   // only render the control if they are enabled and the network is available
-  if (g_guiSettings.GetBool("Network.EnableRSSFeeds") && g_guiSettings.GetBool("Network.EnableInternet"))
+  if (g_guiSettings.GetBool("network.enablerssfeeds") && g_guiSettings.GetBool("network.enableinternet"))
   {
     // Create RSS background/worker thread if needed
     if (m_pReader == NULL && !g_rssManager.GetReader(GetID(), GetParentID(), this, m_pReader))

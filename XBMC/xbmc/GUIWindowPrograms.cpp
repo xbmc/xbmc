@@ -176,7 +176,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     if (m_vecItems[iItem]->IsXBE() || m_vecItems[iItem]->IsShortCut())
     {
       CStdString strLaunch = g_localizeStrings.Get(518); // Launch
-      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+      if (g_guiSettings.GetBool("myprograms.gameautoregion"))
       {
         int iRegion = GetRegion(iItem);
         if (iRegion == VIDEO_NTSCM)
@@ -190,7 +190,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       }
       btn_Launch = pMenu->AddButton(strLaunch); // launch
 
-      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+      if (g_guiSettings.GetBool("myprograms.gameautoregion"))
         btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
 
       btn_Rename = pMenu->AddButton(520); // edit xbe title
@@ -393,7 +393,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 
 int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
 {
-  if (!g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+  if (!g_guiSettings.GetBool("myprograms.gameautoregion"))
     return 0;
 
   int iRegion;
@@ -410,7 +410,7 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
   }
   if (iRegion == -1)
   {
-    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    if (g_guiSettings.GetBool("myprograms.gameautoregion"))
     {
       CXBE xbe;
       iRegion = xbe.ExtractGameRegion(m_vecItems[iItem]->m_strPath);
@@ -466,9 +466,9 @@ void CGUIWindowPrograms::PopulateTrainersList()
   }
   if (!bBreak)
   {
-    CLog::Log(LOGDEBUG,"trainerpath %s",g_guiSettings.GetString("MyPrograms.TrainerPath").c_str());
-    directory.GetDirectory(g_guiSettings.GetString("MyPrograms.TrainerPath").c_str(),trainers,".xbtf|.etm");
-    directory.GetDirectory(g_guiSettings.GetString("MyPrograms.TrainerPath").c_str(),archives,".rar",false); // TODO: ZIP SUPPORT
+    CLog::Log(LOGDEBUG,"trainerpath %s",g_guiSettings.GetString("myprograms.trainerpath").c_str());
+    directory.GetDirectory(g_guiSettings.GetString("myprograms.trainerpath").c_str(),trainers,".xbtf|.etm");
+    directory.GetDirectory(g_guiSettings.GetString("myprograms.trainerpath").c_str(),archives,".rar",false); // TODO: ZIP SUPPORT
     for( int i=0;i<archives.Size();++i)
     {
       if (stricmp(CUtil::GetExtension(archives[i]->m_strPath),".rar") == 0)

@@ -58,7 +58,7 @@ CX3LCD::~CX3LCD()
 void CX3LCD::Initialize()
 {
 	StopThread();
-	if (g_guiSettings.GetInt("LCD.Type") == LCD_TYPE_NONE) 
+	if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) 
 	{
     CLog::Log(LOGINFO, "lcd not used");
     return;
@@ -75,7 +75,7 @@ void CX3LCD::SetContrast(int iContrast) { }
 //*************************************************************************************************************
 void CX3LCD::Stop()
 {
-	if (g_guiSettings.GetInt("LCD.Type") == LCD_TYPE_NONE) 
+	if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) 
 		return;
 	StopThread();
 }
@@ -83,7 +83,7 @@ void CX3LCD::Stop()
 //*************************************************************************************************************
 void CX3LCD::SetLine(int iLine, const CStdString& strLine)
 {
-	if (g_guiSettings.GetInt("LCD.Type") == LCD_TYPE_NONE) 
+	if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE) 
 		return;
 	if (iLine < 0 || iLine >= (int)m_iRows) 
 		return;
@@ -380,7 +380,7 @@ void CX3LCD::Process()
 	m_iRow2adr = g_advancedSettings.m_lcdAddress2;
 	m_iRow3adr = g_advancedSettings.m_lcdAddress3;
 	m_iRow4adr = g_advancedSettings.m_lcdAddress4;
-	m_iBackLight= g_guiSettings.GetInt("LCD.BackLight");
+	m_iBackLight= g_guiSettings.GetInt("lcd.backlight");
 	if (m_iRows >= MAX_ROWS) 
 		m_iRows = MAX_ROWS - 1;
 

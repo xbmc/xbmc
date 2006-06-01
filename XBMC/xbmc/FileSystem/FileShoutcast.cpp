@@ -181,11 +181,11 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
   m_opt.proxyurl[0] = '\0';
 
   // Use a proxy, if the GUI was configured as such
-  bool bProxyEnabled = g_guiSettings.GetBool("Network.UseHTTPProxy");
+  bool bProxyEnabled = g_guiSettings.GetBool("network.usehttpproxy");
   if (bProxyEnabled)
   {
-    const CStdString &strProxyServer = g_guiSettings.GetString("Network.HTTPProxyServer");
-    const CStdString &strProxyPort = g_guiSettings.GetString("Network.HTTPProxyPort");
+    const CStdString &strProxyServer = g_guiSettings.GetString("network.httpproxyserver");
+    const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
 	  // Should we check for valid strings here?
 	  _snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
   }

@@ -74,7 +74,7 @@ CWeather g_weatherManager;
 
 void CBackgroundWeatherLoader::GetInformation()
 {
-  if (!g_guiSettings.GetBool("Network.EnableInternet"))
+  if (!g_guiSettings.GetBool("network.enableinternet"))
     return;
   CWeather *callback = (CWeather *)m_callback;
   // Download our weather
@@ -83,7 +83,7 @@ void CBackgroundWeatherLoader::GetInformation()
   CStdString strURL;
 
   CStdString strSetting;
-  strSetting.Format("Weather.AreaCode%i", callback->GetArea() + 1);
+  strSetting.Format("weather.areacode%i", callback->GetArea() + 1);
   strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=m&dayf=4&prod=xoap&par=%s&key=%s",
                 g_guiSettings.GetString(strSetting), PARTNER_ID, PARTNER_KEY);
   CStdString strWeatherFile = "Z:\\curWeather.xml";

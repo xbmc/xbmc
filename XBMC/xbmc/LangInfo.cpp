@@ -154,7 +154,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    const CStdString& strName=g_guiSettings.GetString("XBDateTime.Region");
+    const CStdString& strName=g_guiSettings.GetString("xbdatetime.region");
     SetCurrentRegion(strName);
   }
   return true;
@@ -178,7 +178,7 @@ void CLangInfo::Clear()
 CStdString CLangInfo::GetGuiCharSet() const
 {
   CStdString strCharSet;
-  strCharSet=g_guiSettings.GetString("LookAndFeel.CharSet");
+  strCharSet=g_guiSettings.GetString("lookandfeel.charset");
   if (strCharSet=="DEFAULT")
     strCharSet=m_strGuiCharSet;
 
@@ -187,7 +187,7 @@ CStdString CLangInfo::GetGuiCharSet() const
 
 CStdString CLangInfo::GetSubtitleCharSet() const
 {
-  CStdString strCharSet=g_guiSettings.GetString("Subtitles.CharSet");
+  CStdString strCharSet=g_guiSettings.GetString("subtitles.charset");
   if (strCharSet=="DEFAULT")
     strCharSet=m_strSubtitleCharSet;
 

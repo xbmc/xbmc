@@ -532,7 +532,7 @@ void CFileItem::FillInDefaultIcon()
           strFolder.Delete(strFolder.size() - 1);
 
         // skip playlists found in the playlist subfolders
-        CStdString strPlaylistFolder = g_guiSettings.GetString("System.PlaylistsPath");
+        CStdString strPlaylistFolder = g_guiSettings.GetString("system.playlistspath");
         CUtil::AddSlashAtEnd(strPlaylistFolder);
         if (!strFolder.Left(strPlaylistFolder.size()).Equals(strPlaylistFolder))
         {
@@ -794,7 +794,7 @@ void CFileItem::SetMusicThumb()
 
     // no pre-cached thumbs so check for remote thumbs
     bool bTryRemote = true;
-    if (IsRemote() && !IsOnDVD() && !g_guiSettings.GetBool("MusicFiles.FindRemoteThumbs"))
+    if (IsRemote() && !IsOnDVD() && !g_guiSettings.GetBool("musicfiles.findremotethumbs"))
     {
       bTryRemote = false;
     }
@@ -849,7 +849,7 @@ void CFileItem::SetMusicThumb()
   if (m_bIsFolder)
   {
     bool bTryRemote = true;
-    if (IsRemote() && !IsOnDVD() && !g_guiSettings.GetBool("MusicFiles.FindRemoteThumbs"))
+    if (IsRemote() && !IsOnDVD() && !g_guiSettings.GetBool("musicfiles.findremotethumbs"))
     {
       bTryRemote = false;
     }
@@ -985,7 +985,7 @@ void CFileItem::FormatLabel(const CStdString& strMask)
     const CStdString& strLabel=ParseFormat(strMask);
     if (!strLabel.IsEmpty())
       SetLabel(strLabel);
-    else if (!m_bIsFolder && g_guiSettings.GetBool("FileLists.HideExtensions"))
+    else if (!m_bIsFolder && g_guiSettings.GetBool("filelists.hideextensions"))
       RemoveExtension();
   }
   else

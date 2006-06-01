@@ -27,7 +27,7 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
     AddViewAsControl(VIEW_METHOD_LIST, 101);
     AddViewAsControl(VIEW_METHOD_ICONS, 100);
     AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-    if (g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
+    if (g_guiSettings.GetBool("pictures.useautoswitching"))
     {
       SetViewAsControl(CAutoSwitch::GetView(items));
     }
@@ -64,7 +64,7 @@ CStdString CGUIViewStateWindowPictures::GetLockType()
 
 bool CGUIViewStateWindowPictures::UnrollArchives()
 {
-  return g_guiSettings.GetBool("FileLists.UnrollArchives");
+  return g_guiSettings.GetBool("filelists.unrollarchives");
 }
 
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
@@ -77,7 +77,7 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
   AddViewAsControl(VIEW_METHOD_LIST, 101);
   AddViewAsControl(VIEW_METHOD_ICONS, 100);
   AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-  if (g_guiSettings.GetBool("ProgramFiles.UseAutoSwitching"))
+  if (g_guiSettings.GetBool("programfiles.useautoswitching"))
   {
     SetViewAsControl(CAutoSwitch::GetView(items));
   }

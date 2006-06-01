@@ -409,7 +409,7 @@ void CComboRenderer::CheckScreenSaver()
   // Called from CMPlayer::Process() (mplayer.cpp) when in 'pause' mode
   D3DLOCKED_RECT lr;
 
-  float fAmount = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100.0f;
+  float fAmount = (float)g_guiSettings.GetInt("screensaver.dimlevel") / 100.0f;
 
   if (g_application.m_bScreenSave && !m_bHasDimView)
   {

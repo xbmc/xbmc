@@ -74,17 +74,17 @@ unsigned int CXBoxRenderManager::PreInit()
   m_bPauseDrawing = false;
   if (!m_pRenderer)
   { // no renderer
-    if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_OVERLAYS)
+    if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_OVERLAYS)
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected Overlay-Renderer");
       m_pRenderer = new CComboRenderer(g_graphicsContext.Get3DDevice());
     }
-    else if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_HQ_RGB_SHADER)
+    else if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_HQ_RGB_SHADER)
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected RGB-Renderer");
       m_pRenderer = new CRGBRenderer(g_graphicsContext.Get3DDevice());
     }
-    else // if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_LQ_RGB_SHADER)
+    else // if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_LQ_RGB_SHADER)
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected LQShader-Renderer");
       m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());

@@ -524,7 +524,7 @@ bool CCdgParser::Start(CStdString strSongPath)
     m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
 
   // Karaoke patch (114097) ...
-  if ( g_guiSettings.GetBool("Karaoke.VoiceEnabled") )
+  if ( g_guiSettings.GetBool("karaoke.voiceenabled") )
   {
     CDG_VOICE_MANAGER_CONFIG VoiceConfig;
     VoiceConfig.dwVoicePacketTime = 20;       // 20ms (can't be lower than this)

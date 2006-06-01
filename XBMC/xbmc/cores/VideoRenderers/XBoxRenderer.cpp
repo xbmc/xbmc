@@ -575,7 +575,7 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
 
   // Work out if the framerate suits PAL50 or PAL60
   bool bPal60 = false;
-  if (bUsingPAL && g_guiSettings.GetInt("VideoPlayer.FrameRateConversions") == FRAME_RATE_USE_PAL60 && g_videoConfig.HasPAL60())
+  if (bUsingPAL && g_guiSettings.GetInt("videoplayer.framerateconversions") == FRAME_RATE_USE_PAL60 && g_videoConfig.HasPAL60())
   {
     // yes we're in PAL
     // yes PAL60 is allowed
@@ -592,7 +592,7 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
   // If the display resolution was specified by the user then use it, unless
   // it's a PAL setting, whereby we use the above setting to autoswitch to PAL60
   // if appropriate
-  RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("VideoPlayer.DisplayResolution");
+  RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
   if ( DisplayRes != AUTORES )
   {
     if (bPal60)
@@ -1047,7 +1047,7 @@ unsigned int CXBoxRenderer::PreInit()
   m_NumYV12Buffers = 0;
   m_iYV12DecodeBuffer = 0;
   // setup the background colour
-  m_clearColour = (g_guiSettings.GetInt("Videos.BlackBarColour") & 0xff) * 0x010101;
+  m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
   // low memory pixel shader
   if (!m_hLowMemShader)
   {

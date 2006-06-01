@@ -180,8 +180,8 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
   { 
     //No username specified, try to authenticate using default password or anonomously
     //libsmbclient will fallback to anon by itself
-    urlIn.SetUserName(g_guiSettings.GetString("Smb.Username"));
-    urlIn.SetPassword(g_guiSettings.GetString("Smb.Password"));
+    urlIn.SetUserName(g_guiSettings.GetString("smb.username"));
+    urlIn.SetPassword(g_guiSettings.GetString("smb.password"));
   }
   
   // for a finite number of attempts use the following instead of the while loop:

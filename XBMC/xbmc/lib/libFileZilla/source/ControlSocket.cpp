@@ -1498,7 +1498,7 @@ void CControlSocket::ParseCommand()
 					str = str.Left(str.rfind("\\"));
 					continue;
 					}
-					if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
+					if (g_guiSettings.GetBool("servers.ftpautofatx"))
 					{
 					if (piece.size() > 42)
 					  piece = piece.Left(42);
@@ -1607,7 +1607,7 @@ void CControlSocket::ParseCommand()
 				CStdString result;
 				int error = m_pOwner->m_pPermissions->GetFileName(m_status.user, args, m_CurrentDir, FOP_CREATENEW, result);
 #if defined(_XBOX)
-				if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
+				if (g_guiSettings.GetBool("servers.ftpautofatx"))
 					CUtil::GetFatXQualifiedPath(result);
 #endif
 				if (error)
@@ -1631,7 +1631,7 @@ void CControlSocket::ParseCommand()
 				CStdString result;
 				int error = m_pOwner->m_pPermissions->GetDirName(m_status.user, args, m_CurrentDir, DOP_CREATE, result);
 #if defined(_XBOX)
-				if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
+				if (g_guiSettings.GetBool("servers.ftpautofatx"))
 					CUtil::GetFatXQualifiedPath(result);
 #endif       
 				if (error)
