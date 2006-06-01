@@ -4,13 +4,6 @@
 #include "application.h"
 #include "GUIAudioManager.h"
 
-
-// May need to change this so that it is "modeless" rather than Modal,
-// though it works reasonably well as is...
-
-#define TOAST_DISPLAY_TIME   5000L
-#define TOAST_MESSAGE_TIME   TOAST_DISPLAY_TIME-1000L
-
 #define POPUP_ICON     400
 #define POPUP_CAPTION_TEXT   401
 #define POPUP_NOTIFICATION_BUTTON 402
@@ -18,11 +11,7 @@
 CGUIDialogKaiToast::CGUIDialogKaiToast(void)
 : CGUIDialog(WINDOW_DIALOG_KAI_TOAST, "DialogKaiToast.xml")
 {
-  m_pIcon = NULL;
-  m_iIconPosX = 0;
-  m_iIconPosY = 0;
-  m_dwIconWidth = 0;
-  m_dwIconHeight = 0;
+  m_defaultIcon = "";
   m_loadOnDemand = false;
   InitializeCriticalSection(&m_critical);
 }
@@ -39,17 +28,9 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIDialog::OnMessage(message);
-
-      CGUIImage* pIcon = (CGUIImage*) GetControl(POPUP_ICON);
-
-      if (pIcon)
-      {
-        m_iIconPosX = pIcon->GetXPosition();
-        m_iIconPosY = pIcon->GetYPosition();
-        m_dwIconWidth = pIcon->GetWidth();
-        m_dwIconHeight = pIcon->GetHeight();
-      }
-
+      CGUIImage *image = (CGUIImage *)GetControl(POPUP_ICON);
+      if (image)
+        m_defaultIcon = image->GetFileName();
       ResetTimer();
       return true;
     }
@@ -57,12 +38,6 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      if (m_pIcon)
-      {
-        m_pIcon->FreeResources();
-        delete m_pIcon;
-        m_pIcon = NULL;
-      }
     }
     break;
   }
@@ -71,34 +46,19 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
 
 void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CStdString& aDescription)
 {
-  EnterCriticalSection(&m_critical);
-
-  Notification toast;
-  toast.caption = aCaption;
-  toast.description = aDescription;
-  m_notifications.push(toast);
-
-  LeaveCriticalSection(&m_critical);
+  QueueNotification("", aCaption, aDescription);
 }
 
-void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription)
+void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/)
 {
   EnterCriticalSection(&m_critical);
-  
-  CGUIImage* pIcon = (CGUIImage*) GetControl(POPUP_ICON);
-
-  if (pIcon)
-  {
-    m_iIconPosX = pIcon->GetXPosition();
-    m_iIconPosY = pIcon->GetYPosition();
-    m_dwIconWidth = pIcon->GetWidth();
-    m_dwIconHeight = pIcon->GetHeight();
-  }
 
   Notification toast;
   toast.imagefile = aImageFile;
   toast.caption = aCaption;
   toast.description = aDescription;
+  toast.displayTime = displayTime > TOAST_MESSAGE_TIME + 500 ? displayTime : TOAST_MESSAGE_TIME + 500;
+
   m_notifications.push(toast);
 
   LeaveCriticalSection(&m_critical);
@@ -113,6 +73,9 @@ bool CGUIDialogKaiToast::DoWork()
   if (bPending && timeGetTime() - m_dwTimer > TOAST_MESSAGE_TIME)
   {
     Notification toast = m_notifications.front();
+
+    m_toastDisplayTime = toast.displayTime;
+
     m_notifications.pop();
 
     g_graphicsContext.Lock();
@@ -121,17 +84,13 @@ bool CGUIDialogKaiToast::DoWork()
 
     SET_CONTROL_LABEL(POPUP_NOTIFICATION_BUTTON, toast.description);
 
-    if (m_pIcon)
+    CGUIImage *image = (CGUIImage *)GetControl(POPUP_ICON);
+    if (image)
     {
-      m_pIcon->FreeResources();
-      delete m_pIcon;
-      m_pIcon = NULL;
-    }
-
-    if (toast.imagefile.size()>0 && m_dwIconWidth && m_dwIconHeight)
-    {
-      m_pIcon = new CGUIImage(0, 0, 0, 0, m_dwIconWidth, m_dwIconHeight, toast.imagefile);
-      m_pIcon->AllocResources();
+      if (!toast.imagefile.IsEmpty())
+        image->SetFileName(toast.imagefile);
+      else
+        image->SetFileName(m_defaultIcon);
     }
 
     g_graphicsContext.Unlock();
@@ -155,29 +114,13 @@ void CGUIDialogKaiToast::ResetTimer()
 
 void CGUIDialogKaiToast::Render()
 {
-  if (m_bRunning)
-  {
-    if (m_pIcon)
-    {
-      SET_CONTROL_HIDDEN(POPUP_ICON);
-      CGUIDialog::Render();
-      if (m_pIcon)
-        m_pIcon->Render(m_iIconPosX+10, m_iIconPosY, m_dwIconWidth, m_dwIconHeight);
-    }
-    else
-    {
-      SET_CONTROL_VISIBLE(POPUP_ICON);
-      CGUIDialog::Render();
-    }
+  CGUIDialog::Render();
 
-    //  Fading does not count as display time
-    if (IsAnimating(ANIM_TYPE_WINDOW_OPEN))
-      ResetTimer();
+  //  Fading does not count as display time
+  if (IsAnimating(ANIM_TYPE_WINDOW_OPEN))
+    ResetTimer();
 
-    // now check if we should exit
-    if (timeGetTime() - m_dwTimer > TOAST_DISPLAY_TIME)
-    {
-      Close();
-    }
-  }
+  // now check if we should exit
+  if (timeGetTime() - m_dwTimer > m_toastDisplayTime)
+    Close();
 }
