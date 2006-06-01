@@ -19,6 +19,7 @@
 #include "FileSystem/StackDirectory.h"
 
 #define CONTROL_LIST              50
+#define CONTROL_THUMBS            51
 
 #define CONTROL_PLAY_DVD          6
 #define CONTROL_STACK             7
@@ -110,7 +111,13 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         SetHistoryForPath(m_vecItems.m_strPath);
       }
 
-      return CGUIWindowVideoBase::OnMessage(message);
+      if (!CGUIWindowVideoBase::OnMessage(message))
+        return false;
+
+      CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
+      if (pControl)
+        pControl->HideDirectoryNameLabel(g_guiSettings.GetBool("videofiles.hidedirectorynames"));
+      return true;
     }
     break;
 
