@@ -848,7 +848,7 @@ cleanup:
       }
       ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(igk_main_toy));
 
-      if (g_guiSettings.GetInt("LCD.Mode") > 0 && g_guiSettings.GetInt("lcd.type") == MODCHIP_SMARTXX)
+      if (g_guiSettings.GetInt("lcd.type") > 0 && g_guiSettings.GetInt("lcd.type") == MODCHIP_SMARTXX)
       {
         memcpy(ourmemaddr, lcd_toy_xx, sizeof(lcd_toy_xx));
         _asm

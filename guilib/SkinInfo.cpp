@@ -246,8 +246,6 @@ void CSkinInfo::ResolveIncludes(TiXmlElement *node)
 
 int CSkinInfo::GetStartWindow()
 {
-  // TODO: Add checking with any <startwindow> blocks to make sure that this window
-  //       actually exists
   int windowID = g_guiSettings.GetInt("lookandfeel.startupwindow");
   assert(m_startupWindows.size());
   for (vector<CStartupWindow>::iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); it++)
