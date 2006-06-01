@@ -148,7 +148,7 @@ void CGUIWindowWeather::UpdateLocations()
 void CGUIWindowWeather::UpdateButtons()
 {
   // disable refresh button if internet lookups are disabled
-  if (g_guiSettings.GetBool("Network.EnableInternet"))
+  if (g_guiSettings.GetBool("network.enableinternet"))
   {
     CONTROL_ENABLE(CONTROL_BTNREFRESH);
   }
@@ -201,7 +201,7 @@ void CGUIWindowWeather::Render()
 void CGUIWindowWeather::Refresh()
 {
   // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("Network.EnableInternet")) return ;
+  if (!g_guiSettings.GetBool("network.enableinternet")) return ;
 
   g_weatherManager.SetArea(m_iCurWeather);
   g_weatherManager.Refresh();

@@ -240,6 +240,7 @@ public:
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
+    int m_videoBlackBarColour;
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;

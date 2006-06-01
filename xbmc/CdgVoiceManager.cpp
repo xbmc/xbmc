@@ -190,14 +190,14 @@ void CCdgChatter::Shutdown()
 void CCdgChatter::LoadSettings()
 {
   // Get the Max volume
-  CStdString strSetting = "Karaoke.Volume";
+  CStdString strSetting = "karaoke.volume";
   int iPercent = g_guiSettings.GetInt(strSetting);
   if (iPercent < 0) iPercent = 0;
   if (iPercent > 100) iPercent = 100;
   float fHardwareVolume = ((float)iPercent) / 100.0f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM;
   m_lVolume = (long)fHardwareVolume;
   //Load the voice mask
-  strSetting.Format("Karaoke.Port%iVoiceMask", m_dwPort);
+  strSetting.Format("karaoke.port%ivoicemask", m_dwPort);
   strSetting = g_guiSettings.GetString(strSetting);
   if (strSetting.CompareNoCase("None") == 0)
   {

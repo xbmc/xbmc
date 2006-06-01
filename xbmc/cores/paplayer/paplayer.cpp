@@ -70,7 +70,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   if (m_currentlyCrossFading) CloseFileInternal(false); //user seems to be in a hurry
 
-  m_crossFading = g_guiSettings.GetInt("MusicPlayer.CrossFade");
+  m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade");
   //no crossfading for cdda, cd-reading goes mad and no crossfading for last.fm doesn't like two connections
   if (file.IsCDDA() || file.IsLastFM()) m_crossFading = 0;
   if (m_crossFading && IsPlaying())
@@ -100,7 +100,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
   if (!m_decoder[m_currentDecoder].Create(file, iStartTime, m_crossFading))
     return false;
-  if (g_guiSettings.GetBool("Karaoke.Enabled") && !g_application.m_CdgParser.IsRunning())
+  if (g_guiSettings.GetBool("karaoke.enabled") && !g_application.m_CdgParser.IsRunning())
     g_application.m_CdgParser.Start(file.m_strPath);
   m_iSpeed = 1;
   m_bPaused = false;
@@ -141,14 +141,14 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
 void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
 {
-  if (m_crossFading = g_guiSettings.GetInt("MusicPlayer.CrossFade"))
+  if (m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade"))
   {
     if (
       m_crossFading &&
       (
         file.IsCDDA() ||
         (
-          !g_guiSettings.GetBool("MusicPlayer.CrossFadeAlbumTracks") &&
+          !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
           (m_currentFile.m_musicInfoTag.GetAlbum() != "") &&
           (m_currentFile.m_musicInfoTag.GetAlbum() == file.m_musicInfoTag.GetAlbum()) &&
           (m_currentFile.m_musicInfoTag.GetTrackNumber() == file.m_musicInfoTag.GetTrackNumber() - 1)
@@ -314,7 +314,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   DSMIXBINVOLUMEPAIR dsmbvp8[8];
   int iMixBinCount;
 
-  if ((channels == 2) && (g_guiSettings.GetBool("MusicPlayer.OutputToAllSpeakers")))
+  if ((channels == 2) && (g_guiSettings.GetBool("musicplayer.outputtoallspeakers")))
     g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STEREOALL, channels);
   else
     g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STANDARD, channels);
@@ -511,7 +511,7 @@ bool PAPlayer::ProcessPAP()
           m_decoder[m_currentDecoder].Start();
           m_currentStream = 1 - m_currentStream;
           CLog::Log(LOGDEBUG, "Starting Crossfade - resuming stream %i", m_currentStream);
-          if (g_guiSettings.GetBool("Karaoke.Enabled") && !g_application.m_CdgParser.IsRunning())
+          if (g_guiSettings.GetBool("karaoke.enabled") && !g_application.m_CdgParser.IsRunning())
             g_application.m_CdgParser.Start(m_nextFile.m_strPath);
           m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
           m_callback.OnPlayBackStarted();

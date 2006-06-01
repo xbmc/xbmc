@@ -199,7 +199,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             return true;
           }
           //load profile
-          CStdString strPrevSkin = g_guiSettings.GetString("LookAndFeel.Skin");
+          CStdString strPrevSkin = g_guiSettings.GetString("lookandfeel.skin");
           int iPrevResolution = g_guiSettings.m_LookAndFeelResolution;
           CSettings::stSettings prevSettings = g_stSettings;
           g_application.StopPlaying();
@@ -207,20 +207,20 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           g_settings.LoadProfile(iItem);
           //reload stuff
           CStdString strLangInfoPath;
-          strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("LookAndFeel.Language"));
+          strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("lookandfeel.language"));
           g_langInfo.Load(strLangInfoPath);
           g_charsetConverter.reset();
           CStdString strLanguagePath;
-          strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
+          strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("lookandfeel.language"));
           g_localizeStrings.Load(strLanguagePath);
           g_graphicsContext.SetD3DParameters(&g_application.m_d3dpp);
           g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
           if (
             (iPrevResolution != g_guiSettings.m_LookAndFeelResolution) ||
-            (strcmpi(strPrevSkin.c_str(), g_guiSettings.GetString("LookAndFeel.Skin").c_str()))
+            (strcmpi(strPrevSkin.c_str(), g_guiSettings.GetString("lookandfeel.skin").c_str()))
           )
           {
-            g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
+            g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
           }
           g_application.StartServices();
           SetLastLoaded();

@@ -21,7 +21,7 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
     {
       // skip if set to immediately
       // just pick first file and close
-      if (g_guiSettings.GetInt("VideoPlayer.BypassCDSelection") == 1)
+      if (g_guiSettings.GetInt("videoplayer.bypasscdselection") == 1)
       {
         m_iSelectedFile = 1;
         Close();
@@ -97,7 +97,7 @@ void CGUIDialogFileStacking::Render()
   CGUIDialog::Render();
 
   // now check timer, 5-180 seconds
-  int iTimerSetting = g_guiSettings.GetInt("VideoPlayer.BypassCDSelection");
+  int iTimerSetting = g_guiSettings.GetInt("videoplayer.bypasscdselection");
   if (iTimerSetting > 1)
   {
     iTimerSetting--;

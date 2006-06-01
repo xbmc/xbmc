@@ -216,12 +216,12 @@ SORT_METHOD CGUIViewState::SetNextSortMethod()
 
 bool CGUIViewState::HideExtensions()
 {
-  return g_guiSettings.GetBool("FileLists.HideExtensions");
+  return g_guiSettings.GetBool("filelists.hideextensions");
 }
 
 bool CGUIViewState::HideParentDirItems()
 {
-  return g_guiSettings.GetBool("FileLists.HideParentDirItems");
+  return g_guiSettings.GetBool("filelists.hideparentdiritems");
 }
 
 int CGUIViewState::GetPlaylist()

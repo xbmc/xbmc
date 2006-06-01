@@ -330,13 +330,13 @@ bool CGUIAudioManager::Load()
   m_actionSoundMap.clear();
   m_windowSoundMap.clear();
 
-  if (g_guiSettings.GetString("LookAndFeel.SoundSkin")=="OFF")
+  if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     return true;
 
-  if (g_guiSettings.GetString("LookAndFeel.SoundSkin")=="SKINDEFAULT")
-    m_strMediaDir="Q:\\skin\\"+g_guiSettings.GetString("LookAndFeel.Skin")+"\\sounds";
+  if (g_guiSettings.GetString("lookandfeel.soundskin")=="SKINDEFAULT")
+    m_strMediaDir="Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds";
   else
-    m_strMediaDir="Q:\\sounds\\"+g_guiSettings.GetString("LookAndFeel.SoundSkin");
+    m_strMediaDir="Q:\\sounds\\"+g_guiSettings.GetString("lookandfeel.soundskin");
     
   CStdString strSoundsXml=m_strMediaDir+"\\sounds.xml";
 

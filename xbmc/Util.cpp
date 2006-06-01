@@ -111,7 +111,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
   // use above to get the filename
   CStdString strFilename = GetFileName(strFileNameAndPath);
   // now remove the extension if needed
-  if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+  if (g_guiSettings.GetBool("filelists.hideextensions"))
   {
     RemoveExtension(strFilename);
     return strFilename;
@@ -221,7 +221,7 @@ void CUtil::CleanFileName(CStdString& strFileName)
 {
   bool result = false;
 
-  if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+  if (g_guiSettings.GetBool("filelists.hideextensions"))
   {
     RemoveExtension(strFileName);
   }
@@ -338,7 +338,7 @@ void CUtil::CleanFileName(CStdString& strFileName)
   //CLog::Log(LOGNOTICE, "CleanFileName : 7 : " + strFileName);
 
   int extPos = (int)strFileName.size();
-  if (!g_guiSettings.GetBool("FileLists.HideExtensions"))
+  if (!g_guiSettings.GetBool("filelists.hideextensions"))
   {
     CStdString strFileNameTemp = strFileName;
     RemoveExtension(strFileNameTemp);
@@ -473,7 +473,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
     // This routine is only called from the playlist loaders,
     // where the filepath is in UTF-8 anyway, so we don't need
     // to do checking for FatX characters.
-    //if (g_guiSettings.GetBool("Servers.FTPAutoFatX") && (CUtil::IsHD(strFilename)))
+    //if (g_guiSettings.GetBool("servers.ftpautofatx") && (CUtil::IsHD(strFilename)))
     //  CUtil::GetFatXQualifiedPath(strFilename);
   }
   else //Base is remote
@@ -848,7 +848,7 @@ cleanup:
       }
       ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(igk_main_toy));
 
-      if (g_guiSettings.GetInt("LCD.Mode") > 0 && g_guiSettings.GetInt("LCD.Type") == MODCHIP_SMARTXX)
+      if (g_guiSettings.GetInt("LCD.Mode") > 0 && g_guiSettings.GetInt("lcd.type") == MODCHIP_SMARTXX)
       {
         memcpy(ourmemaddr, lcd_toy_xx, sizeof(lcd_toy_xx));
         _asm
@@ -1009,7 +1009,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
       strcpy(data.szFilename,shortcut.m_strCustomGame.c_str());
       CIoSupport support;
       support.GetPartition("C:",data.szRemap_D_As);
-      strcpy(data.szLaunchXBEOnExit,CUtil::GetFileName(g_guiSettings.GetString("MyPrograms.Dashboard")).c_str());
+      strcpy(data.szLaunchXBEOnExit,CUtil::GetFileName(g_guiSettings.GetString("myprograms.dashboard")).c_str());
       data.executionType = 0;
       data.magic = GetXbeID(szPath);
     }
@@ -1964,7 +1964,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
         Split(items[j]->m_strPath, strPath, strItem);
 
         // is this a rar-file .. 
-        if (CUtil::IsRAR(strItem) && g_guiSettings.GetBool("Subtitles.SearchRars"))
+        if (CUtil::IsRAR(strItem) && g_guiSettings.GetBool("subtitles.searchrars"))
         {
           CStdString strRar, strItemWithPath;
           CUtil::AddFileToFolder(strLookInPaths[step],strFileNameNoExt+".rar",strRar);
@@ -2082,8 +2082,8 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
 
 void CUtil::PrepareSubtitleFonts()
 {
-  if (g_guiSettings.GetString("Subtitles.Font").size() == 0) return ;
-  if (g_guiSettings.GetInt("Subtitles.Height") == 0) return ;
+  if (g_guiSettings.GetString("subtitles.font").size() == 0) return ;
+  if (g_guiSettings.GetInt("subtitles.height") == 0) return ;
 
   CStdString strPath, strHomePath, strSearchMask;
   //  if(!g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
@@ -2093,7 +2093,7 @@ void CUtil::PrepareSubtitleFonts()
 
   strPath.Format("%s\\mplayer\\font\\%s\\%i\\",
                  strHomePath.c_str(),
-                 g_guiSettings.GetString("Subtitles.Font").c_str(), g_guiSettings.GetInt("Subtitles.Height"));
+                 g_guiSettings.GetString("subtitles.font").c_str(), g_guiSettings.GetInt("subtitles.height"));
 
   strSearchMask = strPath + "*.*";
   WIN32_FIND_DATA wfd;
@@ -2263,9 +2263,9 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD()
 {
-  if (g_guiSettings.GetBool("MyVideos.UseExternalDVDPlayer") && !g_guiSettings.GetString("MyVideos.ExternalDVDPlayer").IsEmpty())
+  if (g_guiSettings.GetBool("myvideos.useexternaldvdplayer") && !g_guiSettings.GetString("myvideos.externaldvdplayer").IsEmpty())
   {
-    RunXBE(g_guiSettings.GetString("MyVideos.ExternalDVDPlayer").c_str());
+    RunXBE(g_guiSettings.GetString("myvideos.externaldvdplayer").c_str());
   }
   else
   {
@@ -2443,7 +2443,7 @@ void CUtil::TakeScreenshot()
 
   bool promptUser = false;
   // check to see if we have a screenshot folder yet
-  CStdString strDir = g_guiSettings.GetString("System.ScreenshotPath", false);
+  CStdString strDir = g_guiSettings.GetString("system.screenshotpath", false);
   if (strDir.IsEmpty())
   {
     strDir = "Z:\\";
@@ -2468,7 +2468,7 @@ void CUtil::TakeScreenshot()
         screenShots.push_back(fn);
       if (promptUser)
       { // grab the real directory
-        CStdString newDir = g_guiSettings.GetString("System.ScreenshotPath");
+        CStdString newDir = g_guiSettings.GetString("system.screenshotpath");
         if (!newDir.IsEmpty())
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)
@@ -2705,7 +2705,7 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
 
 bool CUtil::IsUsingTTFSubtitles()
 {  
-  return CUtil::GetExtension(g_guiSettings.GetString("Subtitles.Font")).Equals(".ttf");
+  return CUtil::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
 }
 
 typedef struct
@@ -2817,7 +2817,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("dashboard"))
   {
-    RunXBE(g_guiSettings.GetString("MyPrograms.Dashboard").c_str());
+    RunXBE(g_guiSettings.GetString("myprograms.dashboard").c_str());
   }
   else if (execute.Equals("restartapp"))
   {
@@ -2866,7 +2866,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (strPath.Equals("autodetection"))
     {
       //GeminiServer: Open the AutoDetect XBOX FTP in filemanager
-      if (g_guiSettings.GetBool("Autodetect.OnOff"))
+      if (g_guiSettings.GetBool("autodetect.onoff"))
       {
         //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
         CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
@@ -2947,7 +2947,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       else if (item.IsXBE())
       {
         int iRegion;
-        if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+        if (g_guiSettings.GetBool("myprograms.gameautoregion"))
         {
           CXBE xbe;
           iRegion = xbe.ExtractGameRegion(parameter);
@@ -2998,7 +2998,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIWindow* pWindow=m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     DWORD dwFocusedControlID=pWindow->GetFocusedControl();
 
-    g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
+    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
 
     CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), dwFocusedControlID, 0);
     pWindow->OnMessage(msg);
@@ -3234,7 +3234,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("skin.togglesetting"))
   {
-    g_settings.SetSkinSetting(parameter.c_str(), !g_settings.GetSkinSetting(g_guiSettings.GetString("LookAndFeel.Skin") + "." + parameter));
+    g_settings.SetSkinSetting(parameter.c_str(), !g_settings.GetSkinSetting(g_guiSettings.GetString("lookandfeel.skin") + "." + parameter));
     g_settings.Save();
   }
   else if (execute.Equals("skin.setbool"))
@@ -3264,7 +3264,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       return 0;
     }
     CStdString settingName;
-    settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), parameter);
+    settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), parameter);
     CStdString value = g_settings.GetSkinString(settingName);
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
@@ -3438,27 +3438,27 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
     else if (strSpecial.Left(11).Equals("$THUMBNAILS"))
       CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), strSpecial.Mid(11), strReturn);
     else if (strSpecial.Left(11).Equals("$RECORDINGS"))
-      CUtil::AddFileToFolder(g_guiSettings.GetString("MyMusic.RecordingPath",false), strSpecial.Mid(11), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), strSpecial.Mid(11), strReturn);
     else if (strSpecial.Left(12).Equals("$SCREENSHOTS"))
-      CUtil::AddFileToFolder(g_guiSettings.GetString("System.ScreenshotPath",false), strSpecial.Mid(12), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("system.screenshotpath",false), strSpecial.Mid(12), strReturn);
     else if (strSpecial.Left(10).Equals("$PLAYLISTS"))
-      CUtil::AddFileToFolder(g_guiSettings.GetString("System.PlaylistsPath",false), strSpecial.Mid(10), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath",false), strSpecial.Mid(10), strReturn);
     else if (strSpecial.Left(15).Equals("$MUSICPLAYLISTS"))
     {
-      if (g_guiSettings.GetString("System.PlaylistsPath",false) == "")
+      if (g_guiSettings.GetString("system.playlistspath",false) == "")
         strReturn = "";
       else
         CUtil::AddFileToFolder(MusicPlaylistsLocation(), strSpecial.Mid(15), strReturn);
     }
     else if (strSpecial.Left(15).Equals("$VIDEOPLAYLISTS"))
     {
-      if (g_guiSettings.GetString("System.PlaylistsPath",false) == "")
+      if (g_guiSettings.GetString("system.playlistspath",false) == "")
         strReturn = "";
       else
         CUtil::AddFileToFolder(VideoPlaylistsLocation(), strSpecial.Mid(15), strReturn);
     }
     else if (strSpecial.Left(7).Equals("$CDRIPS"))
-      CUtil::AddFileToFolder(g_guiSettings.GetString("CDDARipper.Path"), strSpecial.Mid(7), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), strSpecial.Mid(7), strReturn);
   }
   /*
   if (strReturn.IsEmpty())
@@ -3470,14 +3470,14 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
 CStdString CUtil::MusicPlaylistsLocation()
 {
   CStdString strReturn;
-  CUtil::AddFileToFolder(g_guiSettings.GetString("System.PlaylistsPath"), "music", strReturn);
+  CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "music", strReturn);
   return strReturn;
 }
 
 CStdString CUtil::VideoPlaylistsLocation()
 {
   CStdString strReturn;
-  CUtil::AddFileToFolder(g_guiSettings.GetString("System.PlaylistsPath"), "video", strReturn);
+  CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "video", strReturn);
   return strReturn;
 }
 
@@ -3718,7 +3718,7 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 	life = select( 0,&readfds, NULL, NULL, &timeout );
   if (life == 0 ) // Do we have a Ping able xbox ? 0:no 1:yes
   {
-    if (!g_guiSettings.GetBool("Autodetect.CreateLink"))
+    if (!g_guiSettings.GetBool("autodetect.createlink"))
     { strNewClientIP =""; strNewClientInfo =""; } // To prevent to create more then one Same Share! todo: Until we have a vec list
     g_infoManager.SetAutodetectedXbox(false);
   }
@@ -3761,7 +3761,7 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 }
 bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
 {
-  if (g_guiSettings.GetBool("Autodetect.OnOff"))
+  if (g_guiSettings.GetBool("autodetect.onoff"))
   {
     static DWORD pingTimer = 0;
     if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
@@ -3769,11 +3769,11 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
     pingTimer = timeGetTime();
 
     CStdString strLabel      = g_localizeStrings.Get(1251); // lbl Xbox Autodetection
-    CStdString strNickName   = g_guiSettings.GetString("Autodetect.NickName");
-    CStdString strSysFtpName = g_guiSettings.GetString("Servers.FTPServerUser");
-    CStdString strSysFtpPw   = g_guiSettings.GetString("Servers.FTPServerPassword");
+    CStdString strNickName   = g_guiSettings.GetString("autodetect.nickname");
+    CStdString strSysFtpName = g_guiSettings.GetString("servers.ftpserveruser");
+    CStdString strSysFtpPw   = g_guiSettings.GetString("servers.ftpserverpassword");
 
-    if(!g_guiSettings.GetBool("Autodetect.SendUserPw")) //Send anon login names!
+    if(!g_guiSettings.GetBool("autodetect.senduserpw")) //Send anon login names!
     {
       strSysFtpName = "anonymous"; strSysFtpPw = "anonymous";
     }
@@ -3798,20 +3798,20 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
         strtemplbl.Format("%s %s",strNickName, strNewClientIP);
         g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);
         
-        if (g_guiSettings.GetBool("Autodetect.CreateLink")) //Check if this XBOX is allread in the FileManager List! If Not add it!
+        if (g_guiSettings.GetBool("autodetect.createlink")) //Check if this XBOX is allread in the FileManager List! If Not add it!
         {
           if(!g_settings.UpdateBookmark("files", strNickName, "path", strFTPPath) ) // Add a FTP link to MyFiles! //Todo: If there is a same Name ask to overwrite it!
             g_settings.AddBookmark("files",    strNickName,  strFTPPath);
         }
         CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", strLabel.c_str(), strNickName.c_str(), strFTPPath.c_str());
         
-        if (g_guiSettings.GetBool("Autodetect.PopUpInfo")) //PopUP Ask window to connect to the detected XBOX via Filemanger!
+        if (g_guiSettings.GetBool("autodetect.popupinfo")) //PopUP Ask window to connect to the detected XBOX via Filemanger!
         {
           if (CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
           {
             g_infoManager.SetAutodetectedXbox(true);
             strcpy( g_stSettings.m_szDefaultFiles, strNickName.c_str());
-            if (g_guiSettings.GetBool("Autodetect.CreateLink"))
+            if (g_guiSettings.GetBool("autodetect.createlink"))
               m_gWindowManager.ActivateWindow(WINDOW_FILES, strNickName);  //Open FileManager with the created ShareName
             else
               m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath);  // Open FileManager with the SharePath! [a TMP Share session will be created]
