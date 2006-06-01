@@ -2738,7 +2738,7 @@ const BUILT_IN commands[] = {
   "AlarmClock", "Prompt for a length of time and start an alarm clock",
   "CancelAlarm","Cancels an alarm",
   "Action", "Executes an action for the active window (same as in keymap)",
-  "Notification", "Shows a notification on screen, specify header, then message, and an optional icon.",
+  "Notification", "Shows a notification on screen, specify header, then message, and an optional icon, and optional time in milliseconds.",
   "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!",
   "Skin.ToggleSetting"," Toggles a skin setting on or off",
   "Skin.SetString"," Prompts and sets skin string",
@@ -3005,6 +3005,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("playercontrol"))
   {
+    g_application.ResetScreenSaver();
+    g_application.ResetScreenSaverWindow();
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
@@ -3219,7 +3221,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     StringUtils::SplitString(strParameterCaseIntact,",",params);
     if (params.size() < 2)
       return -1;
-    if (params.size() == 3)
+    if (params.size() == 4)
+      g_application.m_guiDialogKaiToast.QueueNotification(params[2],params[0],params[1],atoi(params[3].c_str()));
+    else if (params.size() == 3)
       g_application.m_guiDialogKaiToast.QueueNotification(params[2],params[0],params[1]);
     else
       g_application.m_guiDialogKaiToast.QueueNotification(params[0],params[1]);

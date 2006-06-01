@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-06-2006 changed: xbmc.notification now takes an optional time to display (in ms) as a parameter.
  - 01-06-2006 changed: All gui settings to lower case only.
  - 01-06-2006 changed: xbmc.notification now takes an optional icon as param.
  - 31-05-2006 fixed: folder.jpg should now work in My Pictures.
