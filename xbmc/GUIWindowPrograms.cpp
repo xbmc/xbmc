@@ -60,53 +60,45 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       // a quickpath overrides the a default parameter
       if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
       {
-        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultVideos;
+        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
+
 
       m_database.Open();
       // try to open the destination path
       if (!strDestination.IsEmpty())
       {
-        // open playlists location
-        if (strDestination.Equals("$PLAYLISTS"))
+        // default parameters if the jump fails
+        m_vecItems.m_strPath = "";
+
+        bool bIsBookmarkName = false;
+        int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyProgramsShares, bIsBookmarkName);
+        if (iIndex > -1)
         {
-          m_vecItems.m_strPath = CUtil::VideoPlaylistsLocation();
-          CLog::Log(LOGINFO, "  Success! Opening destination path: %s", m_vecItems.m_strPath.c_str());
+          // set current directory to matching share
+          if (bIsBookmarkName)
+            m_vecItems.m_strPath = g_settings.m_vecMyProgramsShares[iIndex].strPath;
+          else
+            m_vecItems.m_strPath = strDestination;
+          CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+          CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
         }
         else
         {
-          // default parameters if the jump fails
-          m_vecItems.m_strPath = "";
-
-          bool bIsBookmarkName = false;
-          int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyVideoShares, bIsBookmarkName);
-          if (iIndex > -1)
-          {
-            // set current directory to matching share
-            if (bIsBookmarkName)
-              m_vecItems.m_strPath = g_settings.m_vecMyVideoShares[iIndex].strPath;
-            else
-              m_vecItems.m_strPath = strDestination;
-            CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
-            CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
-          }
-          else
-          {
-            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
-          }
+          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
         }
-
-        // need file filters or GetDirectory in SetHistoryPath fails
-        m_rootDir.SetMask(".xbe|.cut");
-        m_rootDir.SetShares(g_settings.m_vecMyProgramsShares);
-        SetHistoryForPath(m_vecItems.m_strPath);
       }
+
+      // need file filters or GetDirectory in SetHistoryPath fails
+      m_rootDir.SetMask(".xbe|.cut");
+      m_rootDir.SetShares(g_settings.m_vecMyProgramsShares);
+      SetHistoryForPath(m_vecItems.m_strPath);
       m_rootDir.SetMask(".xbe|.cut");
       m_rootDir.SetShares(g_settings.m_vecMyProgramsShares);
       return CGUIMediaWindow::OnMessage(message);
     }
-    break;
+  break;
 
   case GUI_MSG_CLICKED:
     {
@@ -249,8 +241,12 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     }
     if (btnid == btn_Settings)
     { 
-      if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
-        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+      //if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
+      if (!g_passwordManager.bMasterUser && g_guiSettings.GetBool("Masterlock.LockSettings"))
+        if (!g_passwordManager.CheckMasterLock(false))
+          return false;
+      
+      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
     }
     else if (btnid == btn_Launch)
     {
