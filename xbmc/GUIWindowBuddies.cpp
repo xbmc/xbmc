@@ -789,6 +789,14 @@ bool CGUIWindowBuddies::OnAction(const CAction &action)
           {
             CONTROL_DISABLE(CONTROL_BTNPLAY);
           }
+          if (strGame.IsEmpty() || CKaiClient::GetInstance()->IsHosting())
+          {
+            CONTROL_DISABLE(CONTROL_BTNHOST);
+          }
+          else
+          {
+            CONTROL_ENABLE(CONTROL_BTNHOST);
+          }
 
           break;
         }
@@ -1259,7 +1267,14 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
         CONTROL_DISABLE(CONTROL_BTNPLAY);
       }
       CONTROL_DISABLE(CONTROL_BTNADD);
-      CONTROL_ENABLE(CONTROL_BTNHOST);
+      if (strGame.IsEmpty() || CKaiClient::GetInstance()->IsHosting())
+      {
+        CONTROL_DISABLE(CONTROL_BTNHOST);
+      }
+      else
+      {
+        CONTROL_ENABLE(CONTROL_BTNHOST);
+      }
 
       SelectTab(CONTROL_KAI_TAB_ARENA);
 

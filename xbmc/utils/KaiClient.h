@@ -86,6 +86,7 @@ public:
 
   bool IsEngineConnected();
   bool IsNetworkReachable();
+  inline BOOL IsHosting() const {return m_bHosting;}
   void DoWork();
 
   // Public so that CVoiceManager can get to them
