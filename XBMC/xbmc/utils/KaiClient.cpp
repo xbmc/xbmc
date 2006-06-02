@@ -201,6 +201,7 @@ void CKaiClient::EnterVector(CStdString& aVector, CStdString& aPassword)
     CStdString strVectorMessage;
     strVectorMessage.Format("KAI_CLIENT_VECTOR;%s;%s;", aVector, aPassword);
     Send(server_addr, strVectorMessage);
+    client_vector = aVector;
   }
 }
 
