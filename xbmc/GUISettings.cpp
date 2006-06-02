@@ -470,8 +470,8 @@ CGUISettings::CGUISettings(void)
   AddString(1, "masterlock.mastercode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
   AddString(2, "masterlock.usermode"         , 12375, "0",  BUTTON_CONTROL_STANDARD); //0:Simple User 1:Advanced User
   AddSeparator(3, "masterlock.sep1");
-  AddInt(4, "masterlock.lockhomemedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
-  AddInt(5, "masterlock.locksettingsfilemanager"    , 12372, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
+  AddInt(4, "masterlock.homemedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // homemedia, for lock the Video/Music/Programs/Pictures
+  AddInt(5, "masterlock.settingsfilemanager"    , 12372, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
   AddSeparator(6, "masterlock.sep2");     
   AddBool(7, "masterlock.masteruser"       , 12388,false); //true: master user can open all shares without cheking the fixed share lock in xml
   AddBool(8, "masterlock.protectshares"    , 12363,false); //prompts for mastercode when editing lock shares with context menu if true

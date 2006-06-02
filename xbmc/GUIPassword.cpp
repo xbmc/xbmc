@@ -26,8 +26,8 @@ bool CGUIPassword::GetSettings()
     iMasterLockMode                 = g_guiSettings.GetInt("masterlock.mastermode");
     strMasterLockCode               = g_guiSettings.GetString("masterlock.mastercode");
     bMasterNormalUserMode           = g_guiSettings.GetString("masterlock.usermode").Equals("0"); //true 0:Normal false 1:Advanced 
-    iMasterLockHomeMedia            = g_guiSettings.GetInt("masterlock.lockhomemedia");
-    iMasterLockSetFile              = g_guiSettings.GetInt("masterlock.locksettingsfilemanager"); 
+    iMasterLockHomeMedia            = g_guiSettings.GetInt("masterlock.homemedia");
+    iMasterLockSetFile              = g_guiSettings.GetInt("masterlock.settingsfilemanager"); 
     bMasterLockEnableShutdown       = g_guiSettings.GetBool("masterlock.enableshutdown");
     bMasterLockProtectShares        = g_guiSettings.GetBool("masterlock.protectshares");
     bMasterUser                     = g_guiSettings.GetBool("masterlock.masteruser");
@@ -642,11 +642,11 @@ bool CGUIPassword::CheckMasterLock(bool bDisalogYesNo)
   {    
     bCheckAndSafe=true;
   }
-  else if (iMasterLockHomeMedia != g_guiSettings.GetInt("masterlock.lockhomemedia"))
+  else if (iMasterLockHomeMedia != g_guiSettings.GetInt("masterlock.homemedia"))
   {    
     bCheckAndSafe=true;
   }
-  else if (iMasterLockSetFile != g_guiSettings.GetInt("masterlock.locksettingsfilemanager"))
+  else if (iMasterLockSetFile != g_guiSettings.GetInt("masterlock.settingsfilemanager"))
   {    
     bCheckAndSafe=true;
   }
@@ -706,8 +706,8 @@ bool CGUIPassword::CheckMasterLock(bool bDisalogYesNo)
       g_guiSettings.SetInt("masterlock.mastermode",iMasterLockMode);
       g_guiSettings.SetString("masterlock.mastercode",strMasterLockCode.c_str());
       g_guiSettings.SetBool("masterlock.startuplock",bMasterLockStartupLock);
-      g_guiSettings.SetInt("masterlock.lockhomemedia",iMasterLockHomeMedia);
-      g_guiSettings.SetInt("masterlock.locksettingsfilemanager",iMasterLockSetFile); 
+      g_guiSettings.SetInt("masterlock.homemedia",iMasterLockHomeMedia);
+      g_guiSettings.SetInt("masterlock.settingsfilemanager",iMasterLockSetFile); 
       if(bMasterNormalUserMode)g_guiSettings.SetString("masterlock.usermode","0");
       if(!bMasterNormalUserMode)g_guiSettings.SetString("masterlock.usermode","1");
     //

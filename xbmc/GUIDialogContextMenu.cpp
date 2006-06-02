@@ -447,21 +447,20 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 		    return true;
       }
       else if (btn == btn_Settings)
-      { // Settings context - depends on where we are
-        if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
-        {
-          if (strType == "video")
-            m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS); 
-          else if (strType == "music")
-            m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
-          else if (strType == "myprograms")
-            m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
-          else if (strType == "pictures")
-            m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
-          else if (strType == "files")
-            m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU);
-          return true;
-        }
+      { 
+        if (g_passwordManager.bMasterLockSettings) if(!g_passwordManager.CheckMasterLockCode()) return false;
+
+        if (strType == "video")
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS); 
+        else if (strType == "music")
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+        else if (strType == "myprograms")
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+        else if (strType == "pictures")
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
+        else if (strType == "files")
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU);
+        return true;
       }
     }
   }
