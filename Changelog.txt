@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-06-2006 changed: Cleaned up audioscrobbler loglevels.
  - 03-06-2006 fixed: Shoutcast directory and internetstreams in playlists was broken.
  - 03-06-2006 fixed: [ 1489324 ] itunes music share doesn't properly display.
  - 03-06-2006 changed: Cleaned up the playlist player state code.

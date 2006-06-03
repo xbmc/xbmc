@@ -459,43 +459,43 @@ int CScrobbler::SaveCache(const CStdString& strCache, int iNumEntries)
 
 void CScrobbler::StatusUpdate(ScrobbleStatus status, const CStdString& strText)
 {
-  if(status == S_SUBMIT_INTERVAL || status == S_DEBUG)
+  switch (status)
   {
-    CLog::Log(LOGDEBUG, "AudioScrobbler: %s", strText.c_str());
-  }
-  else if(S_HANDSHAKE_ERROR == status || S_SUBMIT_BAD_PASSWORD == status || 
-        S_SUBMIT_FAILED == status   || S_HANDSHAKE_INVALID_RESPONSE == status ||
-      S_SUBMIT_INVALID_RESPONSE == status || S_SUBMIT_BAD_PASSWORD == status ||
-      S_HANDSHAKE_BAD_USERNAME  == status || S_CONNECT_ERROR == status )
-
-  {
-    // these are the bad ones just log
-    CLog::Log(LOGINFO, "AudioScrobbler: %s", strText.c_str());
-  }
-  else if(S_HANDHAKE_NOTREADY == status)
-  {
-    CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
-    if(!m_bConnectionWarningDone)
-    {
-      m_bConnectionWarningDone=true;
-      CStdString strMsg=g_localizeStrings.Get(15204); // Unable to handshake: sleeping...
-      StatusUpdate(strMsg);
-    }
-  }
-  else if(S_HANDSHAKE_OLD_CLIENT == status)
-  {
-    CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
-    if(!m_bUpdateWarningDone)
-    {
-      m_bUpdateWarningDone=true;
-      CStdString strMsg=g_localizeStrings.Get(15205); // Please update xbmc
-      StatusUpdate(strMsg);
-    }
-
-  }
-  else
-  {
-    CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
+    case S_HANDSHAKE_ERROR:
+    case S_SUBMIT_FAILED:
+    case S_HANDSHAKE_INVALID_RESPONSE:
+    case S_SUBMIT_INVALID_RESPONSE:
+    case S_HANDSHAKE_BAD_USERNAME:
+    case S_SUBMIT_BAD_PASSWORD:
+    case S_CONNECT_ERROR:
+    case S_SUBMIT_BADAUTH:
+      // these are the bad ones just log
+      CLog::Log(LOGERROR, "AudioScrobbler: %s", strText.c_str());
+      break;
+    case S_HANDSHAKE_SUCCESS:
+      CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
+      break;
+    case S_HANDHAKE_NOTREADY:
+      CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
+      if(!m_bConnectionWarningDone)
+      {
+        m_bConnectionWarningDone=true;
+        CStdString strMsg=g_localizeStrings.Get(15204); // Unable to handshake: sleeping...
+        StatusUpdate(strMsg);
+      }
+      break;
+    case S_HANDSHAKE_OLD_CLIENT:
+      CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
+      if(!m_bUpdateWarningDone)
+      {
+        m_bUpdateWarningDone=true;
+        CStdString strMsg=g_localizeStrings.Get(15205); // Please update xbmc
+        StatusUpdate(strMsg);
+      }
+      break;
+    default:
+      CLog::Log(LOGDEBUG, "AudioScrobbler: %s", strText.c_str());
+      break;
   }
 }
 
