@@ -20,7 +20,8 @@ namespace PYXBMC
 	{
 		static char *keywords[] = {	
 			"x", "y", "width", "height", "label", "font", "textColor", 
-			"disabledColor", "alignment", "hasPath", NULL };
+			"disabledColor", "alignment", "hasPath", "angle", NULL };
+
 		ControlLabel *self;
 		char *cFont = NULL;
 		char *cTextColor = NULL;
@@ -36,11 +37,12 @@ namespace PYXBMC
 		self->dwDisabledColor = 0x60ffffff;
         self->dwAlign = XBFONT_LEFT;
         self->bHasPath = false;
+        self->iAngle = 0;
 
 		if (!PyArg_ParseTupleAndKeywords(
             args,
             kwds,
-            "llll|Ossslb",
+            "llll|Ossslbi",
             keywords,
             &self->dwPosX,
             &self->dwPosY,
@@ -51,7 +53,8 @@ namespace PYXBMC
             &cTextColor,
             &cDisabledColor,
             &self->dwAlign,
-            &self->bHasPath))
+            &self->bHasPath,
+            &self->iAngle))
         {
             Py_DECREF( self );
             return NULL;
@@ -93,7 +96,8 @@ namespace PYXBMC
       pControl->dwHeight,
       pControl->strText,
       label,
-      pControl->bHasPath );
+      pControl->bHasPath,
+      pControl->iAngle );
     return pControl->pGUIControl;
   }
 
@@ -130,7 +134,7 @@ namespace PYXBMC
 		"ControlLabel class.\n"
 		"\n"
 		"ControlLabel(x, y, width, height, label, font, textColor, \n"
-        "             disabledColor, alignment, hasPath )\n"
+        "             disabledColor, alignment, hasPath, angle )\n"
 		"\n"
         "x             : integer x coordinate of control\n"
         "y             : integer y coordinate of control\n"
@@ -141,7 +145,8 @@ namespace PYXBMC
 		"textColor     : hexString (e.g., '0xFFFF3300') (opt)\n"
 		"disabledColor : hexString (e.g., '0xFFFF3300') (opt)\n"
 		"alignment     : alignment of text - see xbfont.h (opt)\n"
-        "hasPath       : flag indicating label stores a path (opt)" );
+		"hasPath       : flag indicating label stores a path (opt)\n"
+		"angle         : integer angle of control (opt)" );
 // Restore code and data sections to normal.
 #pragma code_seg()
 #pragma data_seg()

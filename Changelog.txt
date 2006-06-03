@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-06-2006 changed: Updated Python ControlLabel to accept angle parameter, thanks to Nuka1195.
  - 02-06-2006 fixed: [ 1472413 ] Xlink: Hosting twice should not be possible
  - 02-06-2006 fixed: my programs used my videos shares for startup parameter determination.
  - 02-06-2006 fixed: Lock Settings in context menu was broken
