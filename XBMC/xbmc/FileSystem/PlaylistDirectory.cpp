@@ -21,7 +21,7 @@ namespace DIRECTORY
     if ( NULL != pPlayList.get())
     {
       // load it
-      if (!pPlayList->Load(strPath))
+      if (!pPlayList->Load(strPath, false))
         return false; //hmmm unable to load playlist?
 
       CPlayList playlist = *pPlayList;
@@ -44,7 +44,7 @@ namespace DIRECTORY
     if ( NULL != pPlayList.get())
     {
       // load it
-      if (!pPlayList->Load(strPath))
+      if (!pPlayList->Load(strPath, false))
         return false; //hmmm unable to load playlist?
 
       return (pPlayList->size() > 1);
