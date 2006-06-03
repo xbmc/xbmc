@@ -35,7 +35,7 @@ void CGUIDialogButtonMenu::Render()
     // get the active window, and put it's label into the label control
     int iControl = GetFocusedControl();
     const CGUIControl *pControl = GetControl(iControl);
-    if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+    if (pControl && (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON || pControl->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON))
     {
       CGUIButtonControl *pButton = (CGUIButtonControl *)pControl;
       pLabel->SetLabel(pButton->GetLabel());
