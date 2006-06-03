@@ -594,6 +594,11 @@ bool CGUIMediaWindow::OnClick(int iItem)
   {
     m_iSelectedItem = m_viewControl.GetSelectedItem();
 
+    if (pItem->IsInternetStream())
+    {
+      CFileItem item = (CFileItem)*pItem;
+      return g_application.PlayMedia(item, m_guiState->GetPlaylist());
+    }
     if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
     {
       CStdString strPath=pItem->m_strPath;
