@@ -3101,53 +3101,54 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
 
       // reverse the current setting
-      g_playlistPlayer.ShufflePlay(iPlaylist, !(g_playlistPlayer.ShuffledPlay(iPlaylist)));
+      g_playlistPlayer.SetShuffle(iPlaylist, !(g_playlistPlayer.IsShuffled(iPlaylist)));
 
       // save settings for now playing windows
       switch (iPlaylist)
       {
       case PLAYLIST_MUSIC:
-        g_stSettings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.ShuffledPlay(iPlaylist);
+        g_stSettings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
         g_settings.Save();
         break;
       case PLAYLIST_VIDEO:
-        g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.ShuffledPlay(iPlaylist);
+        g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
         g_settings.Save();
       }
 
       // send message
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_RANDOM, 0, 0, iPlaylist, g_playlistPlayer.ShuffledPlay(iPlaylist));
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_RANDOM, 0, 0, iPlaylist, g_playlistPlayer.IsShuffled(iPlaylist));
       m_gWindowManager.SendThreadMessage(msg);
 
     }
-    else if (parameter.Equals("repeat"))
+    else if (parameter.Left(6).Equals("repeat"))
     {
       // get current playlist
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+      PLAYLIST::REPEAT_STATE state = g_playlistPlayer.GetRepeat(iPlaylist);
 
-      // increment repeat state
-      g_playlistPlayer.Repeat(iPlaylist);
+      if (parameter.Equals("repeatall") || state == PLAYLIST::REPEAT_NONE)
+        state = PLAYLIST::REPEAT_ALL;
+      else if (parameter.Equals("repeatone") || state == PLAYLIST::REPEAT_ALL)
+        state = PLAYLIST::REPEAT_ONE;
+      else
+        state = PLAYLIST::REPEAT_NONE;
+
+      g_playlistPlayer.SetRepeat(iPlaylist, state);
 
       // save settings for now playing windows
       switch (iPlaylist)
       {
       case PLAYLIST_MUSIC:
-        g_stSettings.m_bMyMusicPlaylistRepeat = g_playlistPlayer.Repeated(iPlaylist);
+        g_stSettings.m_bMyMusicPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
         g_settings.Save();
         break;
       case PLAYLIST_VIDEO:
-        g_stSettings.m_bMyVideoPlaylistRepeat = g_playlistPlayer.Repeated(iPlaylist);
+        g_stSettings.m_bMyVideoPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
         g_settings.Save();
       }
 
-      int iState = 0; // disabled
-      if (g_playlistPlayer.Repeated(iPlaylist))
-        iState = 1; // repeat all
-      else if (g_playlistPlayer.RepeatedOne(iPlaylist))
-        iState = 2; // repeat one
-
       // send messages so now playing window can get updated
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, iState);
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, (int)state);
       m_gWindowManager.SendThreadMessage(msg);
     }
   }

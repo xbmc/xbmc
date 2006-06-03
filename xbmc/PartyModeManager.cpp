@@ -73,9 +73,8 @@ bool CPartyModeManager::Enable()
 
   // setup the playlist
   g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-  g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, false);
-  g_playlistPlayer.Repeat(PLAYLIST_MUSIC, false);
-  g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, false);
+  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
+  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
 
   // add initial songs
   if (!AddRandomSongs())
