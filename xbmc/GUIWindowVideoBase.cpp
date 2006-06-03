@@ -1078,7 +1078,7 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
     g_playlistPlayer.Play();
   }
-  else if (pItem->IsPlayList())
+  else if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
   {
     LoadPlayList(pItem->m_strPath, PLAYLIST_VIDEO_TEMP);
   }
