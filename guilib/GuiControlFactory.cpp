@@ -866,7 +866,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       }
     }
   }
-  XMLUtils::GetString(pControlNode, "altlabel", altLabel);
+  if (XMLUtils::GetString(pControlNode, "altlabel", altLabel))
+  {
+    if (StringUtils::IsNaturalNumber(altLabel))
+      altLabel = g_localizeStrings.Get(atoi(altLabel.c_str()));
+    else
+    { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+      g_charsetConverter.stringCharsetToUtf8(altLabel);
+    }
+  }
 
   XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
   XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
