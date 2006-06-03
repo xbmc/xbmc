@@ -88,8 +88,10 @@ void CLog::Log(int loglevel, const char *format, ... )
       strData.TrimRight("\r");
     }
 
+#ifdef _DEBUG
     OutputDebugString(strData.c_str());
     OutputDebugString("\n");
+#endif
 
     /* fixup newline alignment, number of spaces should equal prefix length */
     strData.Replace("\n", "\n                             ");
@@ -122,6 +124,7 @@ void CLog::Log(int loglevel, const char *format, ... )
 
 void CLog::DebugLog(const char *format, ... )
 {
+#ifdef _DEBUG
   CSingleLock waitLock(critSec);
 
   CStdString strData;
@@ -135,6 +138,7 @@ void CLog::DebugLog(const char *format, ... )
   OutputDebugString(strData.c_str());
   if( strData.Right(1) != "\n" )
     OutputDebugString("\n");
+#endif
 }
 
 void CLog::DebugLogMemory()

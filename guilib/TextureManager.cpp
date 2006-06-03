@@ -485,8 +485,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   else
     strPath = strTextureName;
 
+#ifdef _DEBUG
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
+#endif
 
   bool bPacked;
   CStdString strPackedPath;
@@ -599,12 +601,14 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       pPal->Release();
     }
 
+#ifdef _DEBUG
     LARGE_INTEGER end, freq;
     QueryPerformanceCounter(&end);
     QueryPerformanceFrequency(&freq);
     char temp[200];
     sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : (bundle >= 0) ? " (bundled)" : "");
     OutputDebugString(temp);
+#endif
 
     m_vecTextures.push_back(pMap);
     return pMap->size();
@@ -658,12 +662,14 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
     }
   }
 
+#ifdef _DEBUG
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
   char temp[200];
   sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : (bundle >= 0) ? " (bundled)" : "");
   OutputDebugString(temp);
+#endif
 
   CTextureMap* pMap = new CTextureMap(strTextureName);
   CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height, bPacked || bundle >= 0, 100, pPal);
