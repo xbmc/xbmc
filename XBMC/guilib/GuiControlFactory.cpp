@@ -326,6 +326,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   DWORD radioHeight = 0;
   int radioPosX = 0;
   int radioPosY = 0;
+
+  CStdString altLabel;
   /////////////////////////////////////////////////////////////////////////////
   // Read default properties from reference controls
   //
@@ -400,6 +402,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureNoFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureNoFocusName();
       labelInfo = ((CGUIToggleButtonControl*)pReference)->GetLabelInfo();
       strLabel = ((CGUIToggleButtonControl*)pReference)->GetLabel();
+      altLabel = ((CGUIToggleButtonControl*)pReference)->GetAltLabel();
       clickActions = ((CGUIToggleButtonControl*)pReference)->GetClickActions();
       focusAction = ((CGUIToggleButtonControl*)pReference)->GetFocusAction();
       iToggleSelect = ((CGUIToggleButtonControl*)pReference)->GetToggleSelect();
@@ -864,6 +867,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       }
     }
   }
+  XMLUtils::GetString(pControlNode, "altlabel", altLabel);
 
   XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
   XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
@@ -1030,6 +1034,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureAltFocus, strTextureAltNoFocus, labelInfo);
 
     pControl->SetLabel(strLabel);
+    pControl->SetAltLabel(altLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetClickActions(clickActions);
