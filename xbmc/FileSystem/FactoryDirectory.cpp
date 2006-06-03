@@ -35,20 +35,21 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     return pDir;
 
   CStdString strProtocol = url.GetProtocol();
+  if (strProtocol.size() == 0) return new CHDDirectory();
   if (strProtocol == "iso9660") return new CISO9660Directory();
-  else if (strProtocol == "smb") return new CSMBDirectory();
-  else if (strProtocol == "xbms") return new CXBMSDirectory();
-  else if (strProtocol == "cdda") return new CCDDADirectory();
-  else if (strProtocol == "rtv") return new CRTVDirectory();
-  else if (strProtocol == "soundtrack") return new CSndtrkDirectory();
-  else if (strProtocol == "daap") return new CDAAPDirectory();
-  else if (strProtocol == "shout") return new CShoutcastDirectory();
-  else if (strProtocol == "lastfm") return new CLastFMDirectory();
-  else if (strProtocol == "zip") return new CZipDirectory();
-  else if (strProtocol == "rar") return new CRarDirectory();
-  else if (strProtocol == "ftp") return new CFTPDirectory();
-  else if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
-  else if (strProtocol == "stack") return new CStackDirectory();
-  else if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
-  else return new CHDDirectory();
+  if (strProtocol == "smb") return new CSMBDirectory();
+  if (strProtocol == "xbms") return new CXBMSDirectory();
+  if (strProtocol == "cdda") return new CCDDADirectory();
+  if (strProtocol == "rtv") return new CRTVDirectory();
+  if (strProtocol == "soundtrack") return new CSndtrkDirectory();
+  if (strProtocol == "daap") return new CDAAPDirectory();
+  if (strProtocol == "shout") return new CShoutcastDirectory();
+  if (strProtocol == "lastfm") return new CLastFMDirectory();
+  if (strProtocol == "zip") return new CZipDirectory();
+  if (strProtocol == "rar") return new CRarDirectory();
+  if (strProtocol == "ftp") return new CFTPDirectory();
+  if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
+  if (strProtocol == "stack") return new CStackDirectory();
+  if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
+  return new CHDDirectory();
 }
