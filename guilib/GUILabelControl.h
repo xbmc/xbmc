@@ -36,7 +36,7 @@ class CGUILabelControl :
       public CGUIControl
 {
 public:
-  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const string& strLabel, const CLabelInfo& labelInfo, bool bHasPath, int iAngle);
+  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const string& strLabel, const CLabelInfo& labelInfo, bool bHasPath);
   virtual ~CGUILabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
