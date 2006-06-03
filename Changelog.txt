@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-06-2006 changed: Playlists now act like folders in all views.  Revert to the old behaviour using <playlistasfolders> in advancedsettings.xml
  - 03-06-2006 fixed: No alternate label was available for the togglebutton.  Use <altlabel>.
  - 03-06-2006 changed: Moved ReadString() to CFile (removes duplicate code).
  - 03-06-2006 fixed: Window.IsActive could reset to true at the end of a long control-based windowclose animation.

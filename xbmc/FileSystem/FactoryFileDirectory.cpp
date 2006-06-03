@@ -8,6 +8,7 @@
 #include "nsffiledirectory.h"
 #include "sidfiledirectory.h"
 #include "SmartPlaylistDirectory.h"
+#include "PlaylistDirectory.h"
 #include "../SmartPlaylist.h"
 
 CFactoryFileDirectory::CFactoryFileDirectory(void)
@@ -142,6 +143,20 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     IFileDirectory* pDir=new CSmartPlaylistDirectory;
     return pDir; // treat as directory
   }
-
+  if (g_advancedSettings.m_playlistAsFolders)
+  if (strExtension == ".m3u" || strExtension == ".b4s" || strExtension == ".pls" ||
+      strExtension == ".strm" || strExtension == ".wpl")
+  { // Playlist file
+    IFileDirectory *pDir = new CPlaylistDirectory;
+    CFileItemList items;
+    if (pDir->GetDirectory(strPath, items))
+    {
+      if (items.Size() == 1)
+        *pItem = *items[0];
+      else if (items.Size())
+        return pDir;
+    }
+    return NULL;
+  }
   return NULL;
 }

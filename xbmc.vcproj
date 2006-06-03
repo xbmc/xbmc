@@ -1940,6 +1940,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\OGGFileDirectory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\PlaylistDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\PlaylistDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\RarDirectory.cpp">
 			</File>
 			<File
