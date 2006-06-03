@@ -753,7 +753,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
+    if (g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC))
       g_playlistPlayer.Play();
     else
       g_playlistPlayer.Play(iOldSize);  //  Start playlist with the first new song added
