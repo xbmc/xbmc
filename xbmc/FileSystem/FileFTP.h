@@ -16,7 +16,6 @@ namespace XFILE
 	    virtual bool Exists(const CURL& url);
       virtual bool Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary=true);
 	    virtual bool Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport);
-      virtual bool ReadString(char *szLine, int iLineLength);
 	    virtual __int64	Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
       virtual __int64 GetPosition();
 	    virtual __int64	GetLength();

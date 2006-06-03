@@ -26,7 +26,7 @@ public:
 
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize) = 0;
   virtual int Write(const void* lpBuf, __int64 uiBufSize) { return -1;};
-  virtual bool ReadString(char *szLine, int iLineLength) = 0;
+  //virtual bool ReadString(char *szLine, int iLineLength) = 0;
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET) = 0;
   virtual void Close() = 0;
   virtual __int64 GetPosition() = 0;
