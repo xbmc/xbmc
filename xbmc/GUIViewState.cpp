@@ -18,6 +18,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.GetProtocol()=="musicdb")
     return new CGUIViewStateMusicDatabase(items);
 
+  if (items.IsPlayList())
+    return new CGUIViewStateMusicPlaylist(items);
+
   if (items.IsSmartPlayList())
     return new CGUIViewStateMusicSmartPlaylist(items);
 

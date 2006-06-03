@@ -204,8 +204,8 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
     if (m_bStop)
       break;
-
-    if (pItem->m_bIsFolder && !pItem->IsParentFolder())
+    // if we have a directory item (non-playlist) we then recurse into that folder
+    if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList())
     {
       // get the item's thumb (this will cache the album thumb)
       pItem->SetMusicThumb();

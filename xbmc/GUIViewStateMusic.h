@@ -31,6 +31,15 @@ protected:
   virtual void SaveViewState();
 };
 
+class CGUIViewStateMusicPlaylist : public CGUIViewStateWindowMusic
+{
+public:
+  CGUIViewStateMusicPlaylist(const CFileItemList& items);
+
+protected:
+  virtual void SaveViewState();
+};
+
 class CGUIViewStateWindowMusicNav : public CGUIViewStateWindowMusic
 {
 public:
