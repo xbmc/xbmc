@@ -134,7 +134,7 @@ void CDirectoryCache::InitCache(set<CStdString>& dirs)
   {
     CStdString& strDir = *it;
     CFileItemList items;
-    CDirectory::GetDirectory(strDir, items);
+    CDirectory::GetDirectory(strDir, items, "", false);
     items.Clear();
   }
 }
