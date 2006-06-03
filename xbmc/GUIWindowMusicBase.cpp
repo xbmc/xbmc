@@ -796,7 +796,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
         queuedItems.Add(new CFileItem(*pItem));
       }
     }
-    if (pItem->IsPlayList())
+    if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
     {
       CPlayListFactory factory;
       auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath));
@@ -1414,7 +1414,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     // play!
     g_playlistPlayer.Play();
   }
-  else if (pItem->IsPlayList())
+  else if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
   {
     LoadPlayList(pItem->m_strPath);
   }

@@ -455,6 +455,8 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   // UpdateButtons();
 }
 
+// TODO 2.0: Can this be removed, or should we run without the "special" file directories while
+// in filemanager view.
 void CGUIWindowFileManager::OnStart(CFileItem *pItem)
 {
   // start playlists from file manager
