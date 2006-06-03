@@ -28,6 +28,7 @@ public:
   virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
   virtual bool IsRunning() const { return m_bRunning; }
   virtual bool IsDialog() const { return true;};
+  virtual bool IsAnimating(ANIMATION_TYPE animType);
 
 protected:
   virtual bool RenderAnimation(DWORD time);
