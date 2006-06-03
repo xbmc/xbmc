@@ -80,7 +80,9 @@ namespace PYXBMC
 		DWORD dwDisabledColor;
 		DWORD dwAlign;
         bool bHasPath;
+        int iAngle;
 	} ControlLabel;
+
 
 	typedef struct {
     PyObject_HEAD_XBMC_CONTROL

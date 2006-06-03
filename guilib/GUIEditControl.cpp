@@ -6,7 +6,7 @@
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
                                  int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
                                  const CLabelInfo& labelInfo, const string& strLabel)
-    : CGUILabelControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strLabel, labelInfo, false)
+    : CGUILabelControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strLabel, labelInfo, false, 0)
 {
   ControlType = GUICONTROL_EDIT;
   m_pObserver = NULL;
