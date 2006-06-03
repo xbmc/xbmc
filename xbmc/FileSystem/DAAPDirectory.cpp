@@ -28,6 +28,7 @@
 #define REQUEST42 "daap://%s/databases/%i/items/%i.%s?session-id=%i&revision-id=%i"
 #define REQUEST45 "daap://%s/databases/%i/items/%i.%s?session-id=%i"
 
+const char unknownArtistAlbum[] = "Unknown";
 
 CDAAPDirectory::CDAAPDirectory(void)
 {
@@ -83,7 +84,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     //Store the first database
     g_DaapClient.m_iDatabase = m_thisHost->databases[0].id;
 
-	m_currentSongItems = m_thisHost->dbitems[0].items;
+	  m_currentSongItems = m_thisHost->dbitems[0].items;
     m_currentSongItemCount = m_thisHost->dbitems[0].nItems;
 
     // Get the songs from the database if we haven't already
@@ -260,11 +261,14 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       for (c = 0; c < m_currentSongItemCount; c++)
       {
         // mt-daapd will sometimes give us null artist and album names
-	    if (m_currentSongItems[c].songartist && m_currentSongItems[c].songalbum)
-		{
-	      // if this song is for the current artist & album add it to the file list
-          if (m_currentSongItems[c].songartist == m_selectedArtist &&
-              m_currentSongItems[c].songalbum == m_selectedAlbum)
+	      if (m_currentSongItems[c].songartist && m_currentSongItems[c].songalbum)
+  		  {
+          char *artist = m_currentSongItems[c].songartist;
+          char *album = m_currentSongItems[c].songalbum;
+          if (!strlen(artist)) artist = (char *)unknownArtistAlbum;
+          if (!strlen(album)) album = (char *)unknownArtistAlbum;
+          // if this song is for the current artist & album add it to the file list
+          if (artist == m_selectedArtist && album == m_selectedAlbum)
           {
             CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", m_currentSongItems[c].itemname);
             CFileItem* pItem = new CFileItem(m_currentSongItems[c].itemname);
@@ -357,6 +361,11 @@ void CDAAPDirectory::AddToArtistAlbum(char *artist_s, char *album_s)
   // mt-daapd will sometimes give us null artist and album names
   if (!artist_s || !album_s) return;
 
+  // check for empty strings
+  if (strlen(artist_s) == 0)
+    artist_s = (char *)unknownArtistAlbum;
+  if (strlen(album_s) == 0)
+    album_s = (char *)unknownArtistAlbum;
   artistPTR *cur_artist = m_artisthead;
   albumPTR *cur_album = NULL;
   while (cur_artist)
