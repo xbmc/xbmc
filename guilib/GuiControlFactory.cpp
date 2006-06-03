@@ -266,7 +266,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   CStdString strImage, strImageFocus;
   int iTextureWidth = 80;
   bool bHasPath = false;
-  int iAngle = 0;
   vector<CStdString> clickActions;
   CStdString focusAction = "";
   CStdString strTitle = "";
@@ -922,7 +921,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     CGUILabelControl* pControl = new CGUILabelControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strLabel, labelInfo, bHasPath, iAngle);
+      strLabel, labelInfo, bHasPath);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
