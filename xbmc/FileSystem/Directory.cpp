@@ -36,7 +36,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       for (int i=0; i< items.Size(); ++i)
       {
         CFileItem* pItem=items[i];
-        if (!pItem->m_bIsFolder)
+        if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
         {
           auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem,strMask));
           if (pDirectory.get())
