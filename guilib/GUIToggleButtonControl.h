@@ -32,6 +32,9 @@ public:
   virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   void SetLabel(const string& strLabel);
+  void SetAltLabel(const string& label);
+  const string& GetAltLabel() const { return m_selectButton.GetLabel(); };
+  virtual const string& GetLabel() const;
   const CStdString& GetTextureAltFocusName() const { return m_selectButton.GetTextureFocusName(); };
   const CStdString& GetTextureAltNoFocusName() const { return m_selectButton.GetTextureNoFocusName(); };
   int GetToggleSelect() const { return m_toggleSelect; };
