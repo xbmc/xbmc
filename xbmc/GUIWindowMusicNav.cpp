@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GUIWindowMusicNav.h"
-#include "PlayListFactory.h"
 #include "util.h"
 #include "PlayListM3U.h"
 #include "application.h"
@@ -12,6 +11,7 @@
 #include "Picture.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "PartyModeManager.h"
+#include "PlaylistFactory.h"
 
 using namespace MUSICDATABASEDIRECTORY;
 
