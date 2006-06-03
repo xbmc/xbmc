@@ -119,3 +119,17 @@ void CGUIToggleButtonControl::SetLabel(const string &strLabel)
   CGUIButtonControl::SetLabel(strLabel);
   m_selectButton.SetLabel(strLabel);
 }
+
+void CGUIToggleButtonControl::SetAltLabel(const string &label)
+{
+  if (label.size())
+    m_selectButton.SetLabel(label);
+}
+
+const string& CGUIToggleButtonControl::GetLabel() const
+{
+  if (m_bSelected)
+    return m_selectButton.GetLabel();
+  return CGUIButtonControl::GetLabel();
+}
+
