@@ -3126,9 +3126,15 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
       PLAYLIST::REPEAT_STATE state = g_playlistPlayer.GetRepeat(iPlaylist);
 
-      if (parameter.Equals("repeatall") || state == PLAYLIST::REPEAT_NONE)
+      if (parameter.Equals("repeatall"))
         state = PLAYLIST::REPEAT_ALL;
-      else if (parameter.Equals("repeatone") || state == PLAYLIST::REPEAT_ALL)
+      else if (parameter.Equals("repeatone"))
+        state = PLAYLIST::REPEAT_ONE;
+      else if (parameter.Equals("repeatoff"))
+        state = PLAYLIST::REPEAT_NONE;
+      else if (state == PLAYLIST::REPEAT_NONE)
+        state = PLAYLIST::REPEAT_ALL;
+      else if (state == PLAYLIST::REPEAT_ALL)
         state = PLAYLIST::REPEAT_ONE;
       else
         state = PLAYLIST::REPEAT_NONE;
