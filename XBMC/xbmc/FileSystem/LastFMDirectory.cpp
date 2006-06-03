@@ -3,7 +3,6 @@
 #include "lastfmdirectory.h"
 #include "directorycache.h"
 #include "../util.h"
-#include "../PlayListFactory.h"
 #include "../musicdatabase.h"
 
 

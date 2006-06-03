@@ -3,7 +3,6 @@
 #include "shoutcastdirectory.h"
 #include "directorycache.h"
 #include "../util.h"
-#include "../PlayListFactory.h"
 #include "FileCurl.h"
 #include "../utils/HttpHeader.h"
 

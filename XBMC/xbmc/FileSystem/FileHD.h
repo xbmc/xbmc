@@ -27,7 +27,6 @@ public:
   virtual int Stat(const CURL& url, struct __stat64* buffer);
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
   virtual int Write(const void* lpBuf, __int64 uiBufSize);
-  virtual bool ReadString(char *szLine, int iLineLength);
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
   virtual void Flush();

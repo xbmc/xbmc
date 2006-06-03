@@ -57,7 +57,6 @@ public:
   virtual ~CFileSMB();
   virtual void Close();
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
-  virtual bool ReadString(char *szLine, int iLineLength);
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
   virtual bool Open(const CURL& url, bool bBinary = true);
   virtual bool Exists(const CURL& url);

@@ -132,56 +132,6 @@ __int64 CFileISO::GetPosition()
   return m_isoReader.GetFilePosition(m_hFile);
 }
 
-
-//*********************************************************************************************
-bool CFileISO::ReadString(char *szLine, int iLineLength)
-{
-  if (!m_bOpened) return false;
-  int iBytesRead = 0;
-  __int64 iPrevFilePos = GetPosition();
-  strcpy(szLine, "");
-  while (1)
-  {
-    char chKar;
-    int iRead = Read((unsigned char*) & chKar, 1);
-    if (iRead <= 0)
-    {
-      return false;
-    }
-
-    szLine[iBytesRead] = chKar;
-
-    if ('\n' == szLine[iBytesRead])
-    {
-      szLine[iBytesRead] = 0;
-      m_cache.PeakBinary(&chKar, 1);
-      if (chKar == '\r')
-      {
-        Read((unsigned char*)&chKar, 1);
-      }
-      return true;
-    }
-
-    if ('\r' == szLine[iBytesRead])
-    {
-      szLine[iBytesRead] = 0;
-      m_cache.PeakBinary(&chKar, 1);
-      if (chKar == '\n')
-      {
-        Read((unsigned char*)&chKar, 1);
-      }
-      return true;
-    }
-    iBytesRead++;
-    if (iBytesRead >= iLineLength)
-    {
-      Seek(iPrevFilePos);
-      return false;
-    }
-  }
-  return false;
-}
-
 bool CFileISO::Exists(const CURL& url)
 {
   string strFName = "\\";
