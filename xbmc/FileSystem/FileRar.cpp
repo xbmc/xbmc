@@ -436,17 +436,6 @@ __int64 CFileRar::GetPosition()
   return m_iFilePosition;
 }
 
-
-//*********************************************************************************************
-bool CFileRar::ReadString(char *szLine, int iLineLength)
-{
-	if (m_bUseFile)
-    return m_File.ReadString(szLine,iLineLength);
-    
-  return 0;
-}
-
-
 int CFileRar::Write(const void* lpBuf, __int64 uiBufSize)
 {
   return -1;

@@ -17,7 +17,6 @@ public:
   virtual bool Exists(const CURL& url) { return true;};
   virtual int Stat(const CURL& url, struct __stat64* buffer) { errno = ENOENT; return -1; };
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
-  virtual bool ReadString(char *szLine, int iLineLength);
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
   virtual bool CanSeek();

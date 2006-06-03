@@ -30,7 +30,7 @@ namespace XFILE
 	    virtual ~CFileCurl();
 	    virtual bool Open(const CURL& url, bool bBinary = true);
 	    virtual bool Exists(const CURL& url);
-      virtual bool ReadString(char *szLine, int iLineLength);
+      //virtual bool ReadString(char *szLine, int iLineLength);
 	    virtual __int64	Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
       virtual __int64 GetPosition();
 	    virtual __int64	GetLength();
