@@ -810,13 +810,13 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
       bReturn = g_application.m_pPlayer->HasMenu();
     break;
     case PLAYLIST_ISRANDOM:
-      bReturn = g_playlistPlayer.ShuffledPlay(g_playlistPlayer.GetCurrentPlaylist());
+      bReturn = g_playlistPlayer.IsShuffled(g_playlistPlayer.GetCurrentPlaylist());
     break;
     case PLAYLIST_ISREPEAT:
-      bReturn = g_playlistPlayer.Repeated(g_playlistPlayer.GetCurrentPlaylist());
+      bReturn = g_playlistPlayer.GetRepeat(g_playlistPlayer.GetCurrentPlaylist()) == PLAYLIST::REPEAT_ALL;
     break;
     case PLAYLIST_ISREPEATONE:
-      bReturn = g_playlistPlayer.RepeatedOne(g_playlistPlayer.GetCurrentPlaylist());
+      bReturn = g_playlistPlayer.GetRepeat(g_playlistPlayer.GetCurrentPlaylist()) == PLAYLIST::REPEAT_ONE;
     break;
     case PLAYER_HASDURATION:
       bReturn = g_application.GetTotalTime() > 0;
@@ -1030,16 +1030,17 @@ CStdString CGUIInfoManager::GetPlaylistLabel(int item)
     }
   case PLAYLIST_RANDOM:
     {
-      if (g_playlistPlayer.ShuffledPlay(iPlaylist))
+      if (g_playlistPlayer.IsShuffled(iPlaylist))
         return g_localizeStrings.Get(590); // 590: Random
       else
         return g_localizeStrings.Get(591); // 591: Off
     }
   case PLAYLIST_REPEAT:
     {
-      if (g_playlistPlayer.RepeatedOne(iPlaylist))
+      PLAYLIST::REPEAT_STATE state = g_playlistPlayer.GetRepeat(iPlaylist);
+      if (state == PLAYLIST::REPEAT_ONE)
         return g_localizeStrings.Get(592); // 592: One
-      else if (g_playlistPlayer.Repeated(iPlaylist))
+      else if (state == PLAYLIST::REPEAT_ALL)
         return g_localizeStrings.Get(593); // 593: All
       else
         return g_localizeStrings.Get(594); // 594: Off

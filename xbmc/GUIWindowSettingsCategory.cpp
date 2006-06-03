@@ -752,8 +752,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     { // disable repeat and repeat one if clear playlists is enabled
       if (g_guiSettings.GetBool("musicplaylist.clearplaylistsonend"))
       {
-        g_playlistPlayer.Repeat(PLAYLIST_MUSIC, false);
-        g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, false);
+        g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
         g_stSettings.m_bMyMusicPlaylistRepeat = false;
         g_settings.Save();
       }
@@ -1131,7 +1130,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("musicfiles.repeat"))
   {
-    g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("musicfiles.repeat"));
+    g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("musicfiles.repeat") ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
   }
   else if (strSetting.Equals("karaoke.port0voicemask"))
   {
