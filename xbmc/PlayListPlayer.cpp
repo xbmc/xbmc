@@ -5,20 +5,6 @@
 #include "util.h"
 #include "PartyModeManager.h"
 
-
-#define PLAYLIST_MUSIC_REPEAT      0x001
-#define PLAYLIST_MUSIC_REPEAT_ONE    0x002
-#define PLAYLIST_MUSIC_TEMP_REPEAT   0x004
-#define PLAYLIST_MUSIC_TEMP_REPEAT_ONE 0x008
-#define PLAYLIST_VIDEO_REPEAT      0x010
-#define PLAYLIST_VIDEO_REPEAT_ONE    0x020
-#define PLAYLIST_VIDEO_TEMP_REPEAT   0x040
-#define PLAYLIST_VIDEO_TEMP_REPEAT_ONE 0x080
-#define PLAYLIST_MUSIC_SHUFFLE     0x100
-#define PLAYLIST_MUSIC_TEMP_SHUFFLE   0x200
-#define PLAYLIST_VIDEO_SHUFFLE     0x400
-#define PLAYLIST_VIDEO_TEMP_SHUFFLE   0x800
-
 using namespace PLAYLIST;
 
 CPlayListPlayer g_playlistPlayer;
@@ -29,7 +15,11 @@ CPlayListPlayer::CPlayListPlayer(void)
   m_bChanged = false;
   m_bPlayedFirstFile = false;
   m_iCurrentPlayList = PLAYLIST_NONE;
-  m_iOptions = 0;
+  for (int i = 0; i < 4; i++)
+  {
+    m_repeatState[i] = REPEAT_NONE;
+    m_shuffleState[i] = false;
+  }
   m_iFailedSongs = 0;
 }
 
@@ -99,7 +89,7 @@ int CPlayListPlayer::GetNextSong()
   }
 
   // if random, get the next random song
-  if (ShuffledPlay(m_iCurrentPlayList) && playlist.size() > 1)
+  if (IsShuffled(m_iCurrentPlayList) && playlist.size() > 1)
   {
     while (iSong == m_iCurrentSong)
       iSong = NextShuffleItem();
@@ -159,7 +149,7 @@ void CPlayListPlayer::PlayPrevious()
   if (playlist.size() <= 0) return ;
   int iSong = m_iCurrentSong;
 
-  if (ShuffledPlay(m_iCurrentPlayList))
+  if (IsShuffled(m_iCurrentPlayList))
   {
     while (iSong == m_iCurrentSong)
       iSong = PreviousShuffleItem();
@@ -186,7 +176,7 @@ void CPlayListPlayer::Play()
   if (playlist.size() <= 0) return;
 
   int iSong = 0;
-  if (ShuffledPlay(m_iCurrentPlayList))
+  if (IsShuffled(m_iCurrentPlayList))
     iSong = NextShuffleItem();
 
   Play(iSong);
@@ -346,37 +336,12 @@ void CPlayListPlayer::ClearPlaylist(int iPlayList)
   // if clearing temp playlists, then reset options
   if (iPlayList == PLAYLIST_MUSIC_TEMP || iPlayList == PLAYLIST_VIDEO_TEMP)
   {
-    int iShuffle   = -1;
-    int iRepeatAll = -1;
-    int iRepeatOne = -1;
-
-    switch (iPlayList)
-    {
-    case PLAYLIST_MUSIC_TEMP:
-      iShuffle = PLAYLIST_MUSIC_TEMP_SHUFFLE;
-      iRepeatAll = PLAYLIST_MUSIC_TEMP_REPEAT;
-      iRepeatOne = PLAYLIST_MUSIC_TEMP_REPEAT_ONE;
-      break;
-    case PLAYLIST_VIDEO_TEMP:
-      iShuffle = PLAYLIST_VIDEO_TEMP_SHUFFLE;
-      iRepeatAll = PLAYLIST_VIDEO_TEMP_REPEAT;
-      iRepeatOne = PLAYLIST_VIDEO_TEMP_REPEAT_ONE;
-      break;
-    default:
-      break;
-    }
+    m_shuffleState[iPlayList] = false;
+    m_repeatState[iPlayList] = REPEAT_NONE;
     
-    if ((iShuffle < 0) || (iRepeatAll < 0) || (iRepeatOne < 0))
-      return;
-
-    // disable all options
-    m_iOptions &= ~iShuffle;
-    m_iOptions &= ~iRepeatAll;
-    m_iOptions &= ~iRepeatOne;
-
     // restore repeat for music temp
     if (iPlayList == PLAYLIST_MUSIC_TEMP && g_guiSettings.GetBool("musicfiles.repeat"))
-      m_iOptions |= iRepeatAll;
+      m_repeatState[iPlayList] = REPEAT_ALL;
   }
 
   // its likely that the playlist changed
@@ -446,274 +411,50 @@ bool CPlayListPlayer::HasPlayedFirstFile()
   return m_bPlayedFirstFile;
 }
 
-/// \brief Repeat a playlist: cycles off -> all -> one -> off
-/// \param iPlaylist Playlist to increment repeat type
-void CPlayListPlayer::Repeat(int iPlaylist)
-{
-  int iRepeatAll = -1;
-  int iRepeatOne = -1;
-
-  switch (iPlaylist)
-  {
-  case PLAYLIST_MUSIC:
-    iRepeatAll = PLAYLIST_MUSIC_REPEAT;
-    iRepeatOne = PLAYLIST_MUSIC_REPEAT_ONE;
-    break;
-  case PLAYLIST_MUSIC_TEMP:
-    iRepeatAll = PLAYLIST_MUSIC_TEMP_REPEAT;
-    iRepeatOne = PLAYLIST_MUSIC_TEMP_REPEAT_ONE;
-    break;
-  case PLAYLIST_VIDEO:
-    iRepeatAll = PLAYLIST_VIDEO_REPEAT;
-    iRepeatOne = PLAYLIST_VIDEO_REPEAT_ONE;
-    break;
-  case PLAYLIST_VIDEO_TEMP:
-    iRepeatAll = PLAYLIST_VIDEO_TEMP_REPEAT;
-    iRepeatOne = PLAYLIST_VIDEO_TEMP_REPEAT_ONE;
-    break;
-  default:
-    break;
-  }
-
-  if ((iRepeatAll < 0) || (iRepeatOne < 0))
-    return;
-
-  // disable repeat in party mode
-  if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
-  {
-    m_iOptions &= ~iRepeatAll;
-    m_iOptions &= ~iRepeatOne;
-    return;
-  }
-
-  // currently repeat all, so go to repeat one
-  if (Repeated(iPlaylist))
-  {
-    m_iOptions &= ~iRepeatAll;
-    m_iOptions |= iRepeatOne;
-  }
-  // currently repeat one, so go to off
-  else if (RepeatedOne(iPlaylist))
-  {
-    m_iOptions &= ~iRepeatAll;
-    m_iOptions &= ~iRepeatOne;
-  }
-  // currently off, so go to repeat all
-  else
-  {
-    m_iOptions |= iRepeatAll;
-    m_iOptions &= ~iRepeatOne;
-  }
-}
-
-/// \brief Repeat a playlist
-/// \param iPlaylist Playlist to Repeat
-/// \param bYesNo To Enable Repeat one set \e true
-void CPlayListPlayer::Repeat(int iPlaylist, bool bYesNo)
-{
-  int iOption = -1;
-  switch (iPlaylist)
-  {
-  case PLAYLIST_MUSIC:
-    iOption = PLAYLIST_MUSIC_REPEAT;
-    break;
-  case PLAYLIST_MUSIC_TEMP:
-    iOption = PLAYLIST_MUSIC_TEMP_REPEAT;
-    break;
-  case PLAYLIST_VIDEO:
-    iOption = PLAYLIST_VIDEO_REPEAT;
-    break;
-  case PLAYLIST_VIDEO_TEMP:
-    iOption = PLAYLIST_VIDEO_TEMP_REPEAT;
-    break;
-  default:
-    break;
-  }
-
-  if (iOption < 0)
-    return ;
-
-  // disable repeat in party mode
-  if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
-  {
-    m_iOptions &= ~iOption;
-    return;
-  }
-
-  if (bYesNo)
-    m_iOptions |= iOption;
-  else
-    m_iOptions &= ~iOption;
-}
-
 /// \brief Returns \e true if iPlaylist is repeated
 /// \param iPlaylist Playlist to be asked
 bool CPlayListPlayer::Repeated(int iPlaylist)
 {
-  switch (iPlaylist)
-  {
-  case PLAYLIST_MUSIC:
-    if ((m_iOptions & PLAYLIST_MUSIC_REPEAT))
-      return true;
-    break;
-  case PLAYLIST_MUSIC_TEMP:
-    if ((m_iOptions & PLAYLIST_MUSIC_TEMP_REPEAT))
-      return true;
-    break;
-  case PLAYLIST_VIDEO:
-    if ((m_iOptions & PLAYLIST_VIDEO_REPEAT))
-      return true;
-    break;
-  case PLAYLIST_VIDEO_TEMP:
-    if ((m_iOptions & PLAYLIST_VIDEO_TEMP_REPEAT))
-      return true;
-    break;
-  default:
-    break;
-  }
-
+  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO_TEMP)
+    return (m_repeatState[iPlaylist] == REPEAT_ALL);
   return false;
-}
-
-/// \brief Repeat one song in a playlist
-/// \param iPlaylist Playlist to Repeat
-/// \param bYesNo To Enable Repeat one set \e true
-void CPlayListPlayer::RepeatOne(int iPlaylist, bool bYesNo)
-{
-  int iOption = -1;
-  switch (iPlaylist)
-  {
-  case PLAYLIST_MUSIC:
-    iOption = PLAYLIST_MUSIC_REPEAT_ONE;
-    break;
-  case PLAYLIST_MUSIC_TEMP:
-    iOption = PLAYLIST_MUSIC_TEMP_REPEAT_ONE;
-    break;
-  case PLAYLIST_VIDEO:
-    iOption = PLAYLIST_VIDEO_REPEAT_ONE;
-    break;
-  case PLAYLIST_VIDEO_TEMP:
-    iOption = PLAYLIST_VIDEO_TEMP_REPEAT_ONE;
-    break;
-  default:
-    break;
-  }
-
-  if (iOption < 0)
-    return ;
-
-  // disable repeatone in party mode
-  if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
-  {
-    m_iOptions &= ~iOption;
-    return;
-  }
-
-  if (bYesNo)
-    m_iOptions |= iOption;
-  else
-    m_iOptions &= ~iOption;
 }
 
 /// \brief Returns \e true if iPlaylist repeats one song
 /// \param iPlaylist Playlist to be asked
 bool CPlayListPlayer::RepeatedOne(int iPlaylist)
 {
-  switch (iPlaylist)
-  {
-  case PLAYLIST_MUSIC:
-    if ((m_iOptions & PLAYLIST_MUSIC_REPEAT_ONE))
-      return true;
-    break;
-  case PLAYLIST_MUSIC_TEMP:
-    if ((m_iOptions & PLAYLIST_MUSIC_TEMP_REPEAT_ONE))
-      return true;
-    break;
-  case PLAYLIST_VIDEO:
-    if ((m_iOptions & PLAYLIST_VIDEO_REPEAT_ONE))
-      return true;
-    break;
-  case PLAYLIST_VIDEO_TEMP:
-    if ((m_iOptions & PLAYLIST_VIDEO_TEMP_REPEAT_ONE))
-      return true;
-    break;
-  default:
-    break;
-  }
-
+  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO_TEMP)
+    return (m_repeatState[iPlaylist] == REPEAT_ONE);
   return false;
 }
 
 /// \brief Shuffle play the current playlist
 /// \param bYesNo To Enable shuffle play, set to \e true
-void CPlayListPlayer::ShufflePlay(int iPlaylist, bool bYesNo)
+void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
 {
-  int iOption = -1;
-  switch (iPlaylist)
-  {
-  case PLAYLIST_MUSIC:
-    iOption = PLAYLIST_MUSIC_SHUFFLE;
-    break;
-  case PLAYLIST_MUSIC_TEMP:
-    iOption = PLAYLIST_MUSIC_TEMP_SHUFFLE;
-    break;
-  case PLAYLIST_VIDEO:
-    iOption = PLAYLIST_VIDEO_SHUFFLE;
-    break;
-  case PLAYLIST_VIDEO_TEMP:
-    iOption = PLAYLIST_VIDEO_TEMP_SHUFFLE;
-    break;
-  default:
-    break;
-  }
-
-  if (iOption < 0)
-    return ;
+  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO_TEMP)
+    return;
 
   // disable shuffle in party mode
   if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
   {
-    m_iOptions &= ~iOption;
+    m_shuffleState[iPlaylist] = false;
     return;
   }
 
-  bool bTest = ShuffledPlay(iPlaylist);
+  bool bTest = IsShuffled(iPlaylist);
 
-  if (bYesNo)
-    m_iOptions |= iOption;
-  else
-    m_iOptions &= ~iOption;
+  m_shuffleState[iPlaylist] = bYesNo;
 
   if (bTest != bYesNo)
     GetPlaylist(iPlaylist).ClearPlayed();
 }
 
-/// \brief Shuffle play the current playlist
-/// \param bYesNo To Enable shuffle play, set to \e true
-bool CPlayListPlayer::ShuffledPlay(int iPlaylist)
+bool CPlayListPlayer::IsShuffled(int iPlaylist)
 {
-  switch (iPlaylist)
-  {
-  case PLAYLIST_MUSIC:
-    if ((m_iOptions & PLAYLIST_MUSIC_SHUFFLE))
-      return true;
-    break;
-  case PLAYLIST_MUSIC_TEMP:
-    if ((m_iOptions & PLAYLIST_MUSIC_TEMP_SHUFFLE))
-      return true;
-    break;
-  case PLAYLIST_VIDEO:
-    if ((m_iOptions & PLAYLIST_VIDEO_SHUFFLE))
-      return true;
-    break;
-  case PLAYLIST_VIDEO_TEMP:
-    if ((m_iOptions & PLAYLIST_VIDEO_TEMP_SHUFFLE))
-      return true;
-    break;
-  default:
-    break;
-  }
-
+  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO_TEMP)
+    return m_shuffleState[iPlaylist];
   return false;
 }
 
@@ -830,4 +571,23 @@ int CPlayListPlayer::PreviousShuffleItem()
   //CLog::Log(LOGDEBUG,"CPlayListPlayer::PreviousShuffleItem(), return = %i",iRandom);
 
   return iRandom;
+}
+
+void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
+{
+  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO_TEMP)
+    return;
+
+  // disable repeat in party mode
+  if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
+    state = REPEAT_NONE;
+
+  m_repeatState[iPlaylist] = state;
+}
+
+REPEAT_STATE CPlayListPlayer::GetRepeat(int iPlaylist)
+{
+  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO_TEMP)
+    return m_repeatState[iPlaylist];
+  return REPEAT_NONE;
 }

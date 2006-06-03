@@ -17,8 +17,11 @@ namespace PLAYLIST
  \ingroup windows 
  \brief Manages playlist playing.
  */
+enum REPEAT_STATE { REPEAT_NONE = 0, REPEAT_ONE, REPEAT_ALL };
+
 class CPlayListPlayer : public IMsgTargetCallback
 {
+
 public:
   CPlayListPlayer(void);
   virtual ~CPlayListPlayer(void);
@@ -37,15 +40,17 @@ public:
   int RemoveDVDItems();
   void Reset();
   void ClearPlaylist(int iPlayList);
-  void Repeat(int iPlaylist);
-  void Repeat(int iPlaylist, bool bYesNo);
-  bool Repeated(int iPlaylist);
-  void RepeatOne(int iPlaylist, bool bYesNo);
-  bool RepeatedOne(int iPlaylist);
-  void ShufflePlay(int iPlaylist, bool bYesNo);
-  bool ShuffledPlay(int iPlaylist);
+  void SetShuffle(int iPlaylist, bool bYesNo);
+  bool IsShuffled(int iPlaylist);
   bool HasPlayedFirstFile();
+  
+  void SetRepeat(int iPlaylist, REPEAT_STATE state);
+  REPEAT_STATE GetRepeat(int iPlaylist);
+
 protected:
+  bool Repeated(int iPlaylist);
+  bool RepeatedOne(int iPlaylist);
+
   int NextShuffleItem();
   int PreviousShuffleItem();
   bool m_bChanged;
@@ -57,7 +62,8 @@ protected:
   CPlayList m_PlaylistVideo;
   CPlayList m_PlaylistVideoTemp;
   CPlayList m_PlaylistEmpty;
-  int m_iOptions;
+  REPEAT_STATE m_repeatState[4];
+  bool m_shuffleState[4];
   int m_iFailedSongs;
 };
 
