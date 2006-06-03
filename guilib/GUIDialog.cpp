@@ -225,6 +225,16 @@ void CGUIDialog::Render()
   // Check to see if we should close at this point
   // We check after the controls have finished rendering, as we may have to close due to
   // the controls rendering after the window has finished it's animation
-  if (m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+  // we call the base class instead of this class so that we can find the change
+  if (m_dialogClosing && !CGUIWindow::IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+  {
     Close(true);
+  }
+}
+
+bool CGUIDialog::IsAnimating(ANIMATION_TYPE animType)
+{
+  if (animType == ANIM_TYPE_WINDOW_CLOSE)
+    return m_dialogClosing;
+  return CGUIWindow::IsAnimating(animType);
 }

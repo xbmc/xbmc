@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-06-2006 fixed: Window.IsActive could reset to true at the end of a long control-based windowclose animation.
  - 02-06-2006 changed: Updated Python ControlLabel to accept angle parameter, thanks to Nuka1195.
  - 02-06-2006 fixed: [ 1472413 ] Xlink: Hosting twice should not be possible
  - 02-06-2006 fixed: my programs used my videos shares for startup parameter determination.
