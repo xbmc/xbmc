@@ -118,9 +118,9 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
       if (iControl == CONTROL_BTNRANDOMIZE)
       {
-        g_stSettings.m_bMyMusicPlaylistShuffle = !g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC);
+        g_stSettings.m_bMyMusicPlaylistShuffle = !g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
         g_settings.Save();
-        g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
+        g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
         UpdateButtons();
       }
       else if (iControl == CONTROL_BTNSHUFFLE)
@@ -160,10 +160,16 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNREPEAT)
       {
         // increment repeat state
-        g_playlistPlayer.Repeat(PLAYLIST_MUSIC);
+        PLAYLIST::REPEAT_STATE state = g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC);
+        if (state == PLAYLIST::REPEAT_NONE)
+          g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_ALL);
+        else if (state == PLAYLIST::REPEAT_ALL)
+          g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_ONE);
+        else
+          g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
 
         // save settings
-        g_stSettings.m_bMyMusicPlaylistRepeat = g_playlistPlayer.Repeated(PLAYLIST_MUSIC);
+        g_stSettings.m_bMyMusicPlaylistRepeat = g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ALL;
         g_settings.Save();
 
         UpdateButtons();
@@ -464,8 +470,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     // disable repeat options if clear on end is enabled
     if (g_guiSettings.GetBool("musicplaylist.clearplaylistsonend"))
     {
-      g_playlistPlayer.Repeat(PLAYLIST_MUSIC, false);
-      g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, false);
+      g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
       CONTROL_DISABLE(CONTROL_BTNREPEAT);
     }
   }
@@ -487,15 +492,11 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).IsShuffled())
     CONTROL_SELECT(CONTROL_BTNSHUFFLE);
-  if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
+  if (g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC))
     CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
 
   // update repeat button
-  int iRepeat = 595; // Repeat Off
-  if (g_playlistPlayer.RepeatedOne(PLAYLIST_MUSIC))
-    iRepeat = 596; // Repeat One
-  else if (g_playlistPlayer.Repeated(PLAYLIST_MUSIC))
-    iRepeat = 597; // Repeat All
+  int iRepeat = 595 + g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC);
   SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
 
   // Update object count label

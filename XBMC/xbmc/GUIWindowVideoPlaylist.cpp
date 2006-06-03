@@ -85,9 +85,9 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTNRANDOMIZE)
       {
-        g_stSettings.m_bMyVideoPlaylistShuffle = !g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO);
+        g_stSettings.m_bMyVideoPlaylistShuffle = !g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO);
         g_settings.Save();
-        g_playlistPlayer.ShufflePlay(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
+        g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
         UpdateButtons();
       }
       else if (iControl == CONTROL_BTNSHUFFLE)
@@ -123,10 +123,16 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNREPEAT)
       {
         // increment repeat state
-        g_playlistPlayer.Repeat(PLAYLIST_VIDEO);
+        PLAYLIST::REPEAT_STATE state = g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO);
+        if (state == PLAYLIST::REPEAT_NONE)
+          g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, PLAYLIST::REPEAT_ALL);
+        else if (state == PLAYLIST::REPEAT_ALL)
+          g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, PLAYLIST::REPEAT_ONE);
+        else
+          g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, PLAYLIST::REPEAT_NONE);
 
         // save settings
-        g_stSettings.m_bMyVideoPlaylistRepeat = g_playlistPlayer.Repeated(PLAYLIST_VIDEO);
+        g_stSettings.m_bMyVideoPlaylistRepeat = g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO) == PLAYLIST::REPEAT_ALL;
         g_settings.Save();
 
         UpdateButtons();
@@ -265,15 +271,11 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).IsShuffled())
     CONTROL_SELECT(CONTROL_BTNSHUFFLE);
-  if (g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO))
+  if (g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO))
     CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
 
   // update repeat button
-  int iRepeat = 595; // Repeat Off
-  if (g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO))
-    iRepeat = 596; // Repeat One
-  else if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
-    iRepeat = 597; // Repeat All
+  int iRepeat = 595 + g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO);
   SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
 }
 
