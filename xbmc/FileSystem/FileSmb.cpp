@@ -370,63 +370,6 @@ unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
   return (unsigned int)bytesRead;
 }
 
-bool CFileSMB::ReadString(char *szLine, int iLineLength)
-{
-  if (m_fd == -1) return false;
-  __int64 iFilePos = GetPosition();
-
-  CSingleLock lock(smb);
-
-  int iBytesRead = smbc_read(m_fd, (unsigned char*)szLine, iLineLength - 1);
-
-  if (iBytesRead <= 0)
-  {
-    return false;
-  }
-
-  szLine[iBytesRead] = 0;
-
-  for (int i = 0; i < iBytesRead; i++)
-  {
-    if ('\n' == szLine[i])
-    {
-      if ('\r' == szLine[i + 1])
-      {
-        szLine[i + 2] = 0;
-        Seek(iFilePos + i + 2, SEEK_SET);
-      }
-      else
-      {
-        // end of line
-        szLine[i + 1] = 0;
-        Seek(iFilePos + i + 1, SEEK_SET);
-      }
-      break;
-    }
-    else if ('\r' == szLine[i])
-    {
-      if ('\n' == szLine[i + 1])
-      {
-        szLine[i + 2] = 0;
-        Seek(iFilePos + i + 2, SEEK_SET);
-      }
-      else
-      {
-        // end of line
-        szLine[i + 1] = 0;
-        Seek(iFilePos + i + 1, SEEK_SET);
-      }
-      break;
-    }
-  }
-  if (iBytesRead > 0)
-  {
-    return true;
-  }
-  return false;
-
-}
-
 __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 {
   if (m_fd == -1) return -1;

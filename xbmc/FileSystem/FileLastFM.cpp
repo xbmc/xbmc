@@ -356,11 +356,6 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
   return read;
 }
 
-bool CFileLastFM::ReadString(char *szLine, int iLineLength)
-{
-  return false;
-}
-
 __int64 CFileLastFM::Seek(__int64 iFilePosition, int iWhence)
 {
   return 0;
