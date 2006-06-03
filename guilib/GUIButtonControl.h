@@ -45,7 +45,7 @@ public:
   const CStdString& GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
   const CStdString& GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
-  const string& GetLabel() const { return m_strLabel; };
+  virtual const string& GetLabel() const { return m_strLabel; };
   DWORD GetHyperLink() const { return m_lHyperLinkWindowID;};
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void Flicker(bool bFlicker = TRUE);
