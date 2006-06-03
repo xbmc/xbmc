@@ -365,7 +365,51 @@ bool CFile::ReadString(char *szLine, int iLineLength)
 {
   try
   {
-    if (m_pFile) return m_pFile->ReadString(szLine, iLineLength);
+    if (m_pFile)
+    {
+      __int64 iFilePos = GetPosition();
+
+      int iBytesRead = m_pFile->Read( (unsigned char*)szLine, iLineLength - 1);
+      if (iBytesRead <= 0)
+        return false;
+
+      szLine[iBytesRead] = 0;
+
+      for (int i = 0; i < iBytesRead; i++)
+      {
+        if ('\n' == szLine[i])
+        {
+          if ('\r' == szLine[i + 1])
+          {
+            szLine[i + 1] = 0;
+            m_pFile->Seek(iFilePos + i + 2, SEEK_SET);
+          }
+          else
+          {
+            // end of line
+            szLine[i + 1] = 0;
+            m_pFile->Seek(iFilePos + i + 1, SEEK_SET);
+          }
+          break;
+        }
+        else if ('\r' == szLine[i])
+        {
+          if ('\n' == szLine[i + 1])
+          {
+            szLine[i + 1] = 0;
+            m_pFile->Seek(iFilePos + i + 2, SEEK_SET);
+          }
+          else
+          {
+            // end of line
+            szLine[i + 1] = 0;
+            m_pFile->Seek(iFilePos + i + 1, SEEK_SET);
+          }
+          break;
+        }
+      }
+      return true;
+    }
     return false;
   }
   catch(...)

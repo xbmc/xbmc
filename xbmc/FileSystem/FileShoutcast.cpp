@@ -335,11 +335,6 @@ void CFileShoutcast::outputTimeoutMessage(const char* message)
   Sleep(1500);
 }
 
-bool CFileShoutcast::ReadString(char *szLine, int iLineLength)
-{
-  return false;
-}
-
 __int64 CFileShoutcast::Seek(__int64 iFilePosition, int iWhence)
 {
   return 0;

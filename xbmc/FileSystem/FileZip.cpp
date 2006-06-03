@@ -307,7 +307,7 @@ void CFileZip::Close()
     inflateEnd(&m_ZStream);
   mFile.Close();
 }
-
+/* CHANGED: JM - moved to CFile
 bool CFileZip::ReadString(char* szLine, int iLineLength)
 {
   if (!m_szStringBuffer)
@@ -376,7 +376,7 @@ bool CFileZip::ReadString(char* szLine, int iLineLength)
   }
   szLine[0] = '\0';
   return !bEof;
-}
+}*/
 
 bool CFileZip::FillBuffer()
 {

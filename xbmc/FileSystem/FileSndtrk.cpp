@@ -135,66 +135,6 @@ __int64 CFileSndtrk::GetPosition()
 }
 
 
-//*********************************************************************************************
-bool CFileSndtrk::ReadString(char *szLine, int iLineLength)
-{
-  szLine[0] = 0;
-  if (!m_hFile.isValid()) return false;
-  __int64 iFilePos = GetPosition();
-
-  int iBytesRead = Read( (unsigned char*)szLine, iLineLength - 1);
-  if (iBytesRead <= 0)
-  {
-    return false;
-  }
-
-  szLine[iBytesRead] = 0;
-
-  for (int i = 0; i < iBytesRead; i++)
-  {
-    if ('\n' == szLine[i])
-    {
-      if ('\r' == szLine[i + 1])
-      {
-        szLine[i + 1] = 0;
-
-        Seek(iFilePos + i + 2, SEEK_SET);
-      }
-      else
-      {
-        // end of line
-        szLine[i + 1] = 0;
-
-        Seek(iFilePos + i + 1, SEEK_SET);
-      }
-      break;
-    }
-    else if ('\r' == szLine[i])
-    {
-      if ('\n' == szLine[i + 1])
-      {
-        szLine[i + 1] = 0;
-
-        Seek(iFilePos + i + 2, SEEK_SET);
-      }
-      else
-      {
-        // end of line
-        szLine[i + 1] = 0;
-        Seek(iFilePos + i + 1, SEEK_SET);
-
-      }
-      break;
-    }
-  }
-  if (iBytesRead > 0)
-  {
-    return true;
-  }
-  return false;
-}
-
-
 int CFileSndtrk::Write(const void* lpBuf, __int64 uiBufSize)
 {
   if (!m_hFile.isValid()) return -1;
