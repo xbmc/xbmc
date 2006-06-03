@@ -284,6 +284,7 @@ public:
     CStdString strMasterLockCode;
     //
 
+    bool m_playlistAsFolders;
     int m_thumbSize;
 
     int m_sambaclienttimeout;
