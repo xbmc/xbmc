@@ -1,7 +1,6 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicSongs.h"
-#include "PlayListFactory.h"
 #include "Util.h"
 #include "Application.h"
 #include "CUEDocument.h"
