@@ -340,7 +340,6 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   return true;
 }
-/* CHANGED: JM - moved to CFile
 bool CFileCurl::ReadString(char *szLine, int iLineLength)
 {
   unsigned int want = (unsigned int)iLineLength;
@@ -354,7 +353,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
     return false;
   }
 
-  /* ensure only available data is considered 
+  // ensure only available data is considered 
   want = min(m_buffer.GetMaxReadSize(), want);
 
   char* pLine = szLine;
@@ -369,7 +368,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
   pLine[0] = 0;
   m_filePos += (pLine - szLine);
   return (bool)((pLine - szLine) > 0);
-}*/
+}
 
 bool CFileCurl::Exists(const CURL& url)
 {
