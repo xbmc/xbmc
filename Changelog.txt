@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-06-2006 fixed: Shoutcast wouldn't play from shoutcast directory (ReadString problem).
+ - 04-06-2006 changed: Moved ReadString() to IFile so it can be overridden in derived classes again, restored CFileCurl::ReadString().
  - 04-06-2006 fixed: Excessive harddisk usage due to constant texture allocation/deallocation in UI calibration screen.
  - 03-06-2006 changed: Cleaned up audioscrobbler loglevels.
  - 03-06-2006 fixed: Shoutcast directory and internetstreams in playlists was broken.
