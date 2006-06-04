@@ -11,7 +11,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void ResetControls();
-
+  virtual void OnWindowLoaded();
 protected:
   int m_control;
 };
