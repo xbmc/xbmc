@@ -943,15 +943,15 @@ bool CDVDInputStreamNavigator::PlayPart(int iTitle, int iPart)
 void CDVDInputStreamNavigator::EnableSubtitleStream(bool bEnable)
 {
   int iCurrentStream = GetActiveSubtitleStream();
-  if (bEnable)
-  {
-    SetActiveSubtitleStream(iCurrentStream);
-  }
-  else
-  {
-    // hide subtitles
-    SetActiveSubtitleStream(iCurrentStream, false);
-  }
+  
+  /* if nothing is selected */
+  /* we have to force first stream */
+  /* otherwise the set function will */
+  /* set dvdregs in a very odd way */
+  if (iCurrentStream < 0)
+    iCurrentStream = 0;
+
+  SetActiveSubtitleStream(iCurrentStream, bEnable);
 }
 
 bool CDVDInputStreamNavigator::GetNavigatorState(std::string &xmlstate)
