@@ -48,6 +48,8 @@ bool CGUIWindowSettingsUICalibration::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      // reset our dynamic allocation so the window is free'd
+      DynamicResourceAlloc(true);
     }
     break;
 
@@ -142,4 +144,11 @@ void CGUIWindowSettingsUICalibration::ResetControls()
     pControl->SetLocation(g_settings.m_ResInfo[res].GUIOverscan.right,
                           g_settings.m_ResInfo[res].GUIOverscan.bottom, false);
   }
+}
+
+void CGUIWindowSettingsUICalibration::OnWindowLoaded()
+{ // turn off dynamic resource allocation and allocate our resources just once
+  // as we constantly show/hide each control
+  DynamicResourceAlloc(false);
+  AllocResources();
 }
