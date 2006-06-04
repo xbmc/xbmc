@@ -26,7 +26,52 @@ public:
 
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize) = 0;
   virtual int Write(const void* lpBuf, __int64 uiBufSize) { return -1;};
-  //virtual bool ReadString(char *szLine, int iLineLength) = 0;
+  virtual bool ReadString(char *szLine, int iLineLength)
+  {
+    if (!CanSeek()) return false;
+
+    __int64 iFilePos = GetPosition();
+    int iBytesRead = Read( (unsigned char*)szLine, iLineLength - 1);
+    if (iBytesRead <= 0)
+      return false;
+
+    szLine[iBytesRead] = 0;
+
+    for (int i = 0; i < iBytesRead; i++)
+    {
+      if ('\n' == szLine[i])
+      {
+        if ('\r' == szLine[i + 1])
+        {
+          szLine[i + 1] = 0;
+          Seek(iFilePos + i + 2, SEEK_SET);
+        }
+        else
+        {
+          // end of line
+          szLine[i + 1] = 0;
+          Seek(iFilePos + i + 1, SEEK_SET);
+        }
+        break;
+      }
+      else if ('\r' == szLine[i])
+      {
+        if ('\n' == szLine[i + 1])
+        {
+          szLine[i + 1] = 0;
+          Seek(iFilePos + i + 2, SEEK_SET);
+        }
+        else
+        {
+          // end of line
+          szLine[i + 1] = 0;
+          Seek(iFilePos + i + 1, SEEK_SET);
+        }
+        break;
+      }
+    }
+    return true;
+  }
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET) = 0;
   virtual void Close() = 0;
   virtual __int64 GetPosition() = 0;
