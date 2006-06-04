@@ -4362,9 +4362,11 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
 
   CFileItem item(playlist[0]);
 
+  /*
   // just 1 item? then play it
   if (playlist.size() == 1)
     return g_application.PlayFile(item);
+  */
 
   // add each item of the playlist to the playlistplayer
   for (int i = 0; i < (int)playlist.size(); ++i)
