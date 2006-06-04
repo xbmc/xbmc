@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-06-2006 fixed: dvd's with odd initial active subtitle would not respond to disable/enable subtitle before having switched to a different language. (dvdshrink issue)
  - 04-06-2006 fixed: Shoutcast wouldn't play from shoutcast directory (ReadString problem).
  - 04-06-2006 changed: Moved ReadString() to IFile so it can be overridden in derived classes again, restored CFileCurl::ReadString().
  - 04-06-2006 fixed: Excessive harddisk usage due to constant texture allocation/deallocation in UI calibration screen.
