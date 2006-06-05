@@ -30,6 +30,7 @@
 #include "MediaManager.h"
 #include <xbdm.h>
 #include "xbox/network.h"
+#include "GUIPassword.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -480,6 +481,8 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   {
     if (plItemUrl.IsLocal()) //Filename is local
     {
+      if (strFilename[1] == ':') // already fully qualified
+        return;
       if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
 
       {
@@ -848,7 +851,7 @@ cleanup:
       }
       ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(igk_main_toy));
 
-      if (g_guiSettings.GetInt("lcd.type") > 0 && g_guiSettings.GetInt("lcd.type") == MODCHIP_SMARTXX)
+      if (g_guiSettings.GetInt("lcd.mode") > 0 && g_guiSettings.GetInt("lcd.type") == MODCHIP_SMARTXX)
       {
         memcpy(ourmemaddr, lcd_toy_xx, sizeof(lcd_toy_xx));
         _asm
@@ -2073,7 +2076,7 @@ void CUtil::PrepareSubtitleFonts()
 
   strPath.Format("%s\\mplayer\\font\\%s\\%i\\",
                  strHomePath.c_str(),
-                 g_guiSettings.GetString("subtitles.font").c_str(), g_guiSettings.GetInt("subtitles.height"));
+                 g_guiSettings.GetString("Subtitles.Font").c_str(), g_guiSettings.GetInt("Subtitles.Height"));
 
   strSearchMask = strPath + "*.*";
   WIN32_FIND_DATA wfd;
@@ -2703,6 +2706,7 @@ const BUILT_IN commands[] = {
   "RestartApp", "Restart XBMC",
   "Credits", "Run XBMCs Credits",
   "Reset", "Reset the xbox (warm reboot)",
+  "Mastermode","Control master mode",
   "ActivateWindow", "Activate the specified window",
   "ReplaceWindow", "Replaces the current window with the new one",
   "TakeScreenshot", "Takes a Screenshot",
@@ -2802,6 +2806,21 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("restartapp"))
   {
     g_applicationMessenger.RestartApp();
+  }
+  else if (execute.Equals("mastermode"))
+  {
+    if (g_passwordManager.bMasterUser)
+    {
+      g_passwordManager.bMasterUser = false;
+      g_passwordManager.LockBookmarks();
+      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
+    }
+    else if (g_passwordManager.IsMasterLockUnlocked(true))
+    {
+      g_passwordManager.UnlockBookmarks();
+      g_passwordManager.bMasterUser = true;
+      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
+    }
   }
   else if (execute.Equals("takescreenshot"))
   {
@@ -3764,7 +3783,7 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
     CStdString strSysFtpName = g_guiSettings.GetString("servers.ftpserveruser");
     CStdString strSysFtpPw   = g_guiSettings.GetString("servers.ftpserverpassword");
 
-    if(!g_guiSettings.GetBool("autodetect.senduserpw")) //Send anon login names!
+    if(!g_guiSettings.GetBool("Autodetect.senduserpw")) //Send anon login names!
     {
       strSysFtpName = "anonymous"; strSysFtpPw = "anonymous";
     }

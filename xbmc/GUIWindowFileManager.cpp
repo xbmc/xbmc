@@ -1155,7 +1155,10 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     int btn_Move = pMenu->AddButton(116); // Move
     int btn_NewFolder = pMenu->AddButton(119); // New Folder
     int btn_Size = pMenu->AddButton(13393); // Calculate Size
-    int btn_Settings = pMenu->AddButton(5);
+    int btn_Settings = -2;
+    if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)    
+      btn_Settings = pMenu->AddButton(5);         // Settings
+
     pMenu->EnableButton(btn_SelectAll, item >= 0);
     pMenu->EnableButton(btn_Rename, item >= 0 && CanRename(list) && !m_vecItems[list][item]->IsParentFolder());
     pMenu->EnableButton(btn_Delete, item >= 0 && CanDelete(list) && showEntry);
@@ -1212,8 +1215,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     }
     if (btnid == btn_Settings)
     {
-      if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
-        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU); 
+      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU); 
     }
 
     if (bDeselect && item >= 0)

@@ -3,6 +3,7 @@
 #include "../../stdafx.h"
 #include "python\python.h" 
 #include "..\..\cores\dllloader\dllloadercontainer.h"
+#include "../../GUIPassword.h"
 
 #include "XBPython.h"
 #include "XBPythonDll.h"
@@ -293,6 +294,11 @@ int XBPython::evalFile(const char *src)
 {
 	// return if file doesn't exist
 	if(access(src, 0) == -1) return -1;
+  
+  // check if locked
+  if (g_guiSettings.GetBool("masterlock.lockprograms") && g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE)
+    if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return -1;
 
 	Initialize();
 

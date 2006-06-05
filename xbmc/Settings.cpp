@@ -178,6 +178,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_playlistAsFolders = true;
 
   xbmcXmlLoaded = false;
+  bTransaction = false;
 }
 
 CSettings::~CSettings(void)
@@ -524,8 +525,9 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
     share.m_iBufferSize = 0;
     share.m_iDepthSize = 1;
     share.m_iLockMode = LOCK_MODE_EVERYONE;
-    share.m_strLockCode = "";
+    share.m_strLockCode = "0";
     share.m_iBadPwdCount = 0;
+    share.m_iHasLock = 0;
 
     CLog::Log(LOGDEBUG,"      Adding bookmark:");
     CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
@@ -572,11 +574,13 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
     if (pLockMode)
     {
       share.m_iLockMode = atoi( pLockMode->FirstChild()->Value() );
+      share.m_iHasLock = 2;
     }
 
     if (pLockCode)
     {
-      share.m_strLockCode = pLockCode->FirstChild()->Value();
+      if (pLockCode->FirstChild())
+        share.m_strLockCode = pLockCode->FirstChild()->Value();
     }
 
     if (pBadPwdCount)
@@ -1124,23 +1128,6 @@ void CSettings::LoadAdvancedSettings()
 
   GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 10.0f, 1.0f, 100.0f);
   
-  // Masterlock Advanced
-  pElement = pRootElement->FirstChildElement("masterlock");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "useadvancedxml", g_advancedSettings.bUseMasterLockAdvancedXml);
-    GetInteger(pElement, "mastermode", g_advancedSettings.iMasterLockMode , 0, 0, 3);
-    GetString(pElement,  "mastercode", g_advancedSettings.strMasterLockCode, "");
-    XMLUtils::GetBoolean(pElement, "masterusermode", g_advancedSettings.bMasterUserMode); //true: Normal / false: advanced
-    GetInteger(pElement, "lockhomemedia", g_advancedSettings.iMasterLockHomeMedia , 0, 0, 15);
-    GetInteger(pElement, "locksettingsfilemanager", g_advancedSettings.iMasterLockSettingsFilemanager , 0, 0, 3);
-    XMLUtils::GetBoolean(pElement, "masteruser", g_advancedSettings.bMasterUser );
-    XMLUtils::GetBoolean(pElement, "protectshares", g_advancedSettings.bMasterLockProtectShares );
-    XMLUtils::GetBoolean(pElement, "startuplock", g_advancedSettings.bMasterLockStartupLock);
-    XMLUtils::GetBoolean(pElement, "enableshutdown", g_advancedSettings.bMasterLockEnableShutdown);
-    GetInteger(pElement, "maxpasswordtries", g_advancedSettings.iMasterLockMaxRetry , 0, 0, 100);
-  }
-
   pElement = pRootElement->FirstChildElement("samba");
   if (pElement)
   {
@@ -1595,6 +1582,23 @@ void CSettings::CloseXml()
   xbmcXml.Clear();
 }
 
+void CSettings::BeginBookmarkTransaction()
+{
+  bTransaction = true;
+  bChangedDuringTransaction = false;
+}
+
+bool CSettings::CommitBookmarkTransaction()
+{
+  bool bResult=true;
+  if (bChangedDuringTransaction)
+    bResult = xbmcXml.SaveFile();
+  if (bResult)
+    bTransaction = false;
+
+  return bResult;
+}
+
 bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
 {
   bool breturn(false);
@@ -1608,6 +1612,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
   if (strUpdateElement.Equals("path") && CUtil::IsVirtualPath(strUpdateText))
     return false;
 
+  CShare* pShare;
   for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
   {
     if ((*it).strName == strOldName)
@@ -1627,12 +1632,14 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
         (*it).m_iBadPwdCount = atoi(strUpdateText);
       else
         return false;
+      pShare = &(*it);
       break;
     }
   }
 
   // Update our XML file as well
   TiXmlElement *pRootElement = xbmcXml.RootElement();
+  
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
 
@@ -1662,6 +1669,18 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
             eElement.InsertEndChild(xmlText);
             pIt->ToElement()->InsertEndChild(eElement);
           }
+          if (pShare->m_iHasLock == 0) // remove lock entries
+          {
+            TiXmlNode* pChild2 = pIt->FirstChild("lockmode");
+            if (pChild2)
+              pIt->RemoveChild(pChild2);
+            pChild2 = pIt->FirstChild("lockcode");
+            if (pChild2)
+              pIt->RemoveChild(pChild2);
+            pChild2 = pIt->FirstChild("badpwdcount");
+            if (pChild2)
+              pIt->RemoveChild(pChild2);
+          }
           break;
         }
       }
@@ -1669,6 +1688,13 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
     }
     if (!foundXML)
       CLog::Log(LOGERROR, "Unable to find bookmark with name %s to update the %s", strOldName.c_str(), strUpdateElement.c_str());
+
+    if (bTransaction)
+    {
+      bChangedDuringTransaction = true;
+      return true;
+    }
+
     return xbmcXml.SaveFile();
   }
   return false;
@@ -1849,7 +1875,7 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
     share.m_iDriveType = SHARE_TYPE_UNKNOWN;
   // Initialize the lock settings to unlocked state
   share.m_iLockMode = 0;
-  share.m_strLockCode = "";
+  share.m_strLockCode = "0";
   share.m_iBadPwdCount = 0;
 
   pShares->push_back(share);
@@ -1885,60 +1911,6 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
     pNode->ToElement()->InsertEndChild(bookmark);
   }
   return xbmcXml.SaveFile();
-}
-
-bool CSettings::SetBookmarkLocks(const CStdString &strType, bool bEngageLocks)
-{
-  if (!LoadXml()) return false;
-
-  VECSHARES *pShares = GetSharesFromType(strType);
-  if (!pShares) return false;
-
-  for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
-  {
-    if ((*it).m_iLockMode < 0 && bEngageLocks)
-      (*it).m_iLockMode = (*it).m_iLockMode * -1;
-    else if ((*it).m_iLockMode > 0 && !bEngageLocks)
-      (*it).m_iLockMode = (*it).m_iLockMode * -1;
-  }
-  // Return bookmark of
-  TiXmlElement *pRootElement = xbmcXml.RootElement();
-  TiXmlNode *pNode = NULL;
-  TiXmlNode *pIt = NULL;
-
-  pNode = pRootElement->FirstChild(strType);
-  bool bXmlChanged = false;
-
-  // if valid bookmark, find child at pos (id)
-  if (pNode)
-  {
-    pIt = pNode->FirstChild("bookmark");
-    while (pIt)
-    {
-      TiXmlNode *pChild = pIt->FirstChild("lockmode");
-      if (pChild)
-      {
-        CStdString strLockModeValue = pChild->FirstChild()->Value();
-        if (strLockModeValue.Mid(0, 1) == "-" && bEngageLocks)
-        {
-          strLockModeValue = strLockModeValue.Mid(1, strlen(strLockModeValue) - 1);
-          pIt->FirstChild("lockmode")->FirstChild()->SetValue(strLockModeValue);
-          bXmlChanged = true;
-        }
-        else if (strLockModeValue.Mid(0, 1) != "-" && !bEngageLocks)
-        {
-          strLockModeValue = "-" + strLockModeValue;
-          pIt->FirstChild("lockmode")->FirstChild()->SetValue(strLockModeValue);
-          bXmlChanged = true;
-        }
-      }
-      pIt = pIt->NextSibling("bookmark");
-    }
-  }
-  if (bXmlChanged)
-    return xbmcXml.SaveFile();
-  else
-    return true;
 }
 
 void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)

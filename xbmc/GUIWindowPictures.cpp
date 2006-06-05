@@ -478,8 +478,9 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
         pMenu->EnableButton(btn_Rename, false);
       }
     }
-    
-    int btn_Settings = pMenu->AddButton(5);         // Settings
+    int btn_Settings = -2;
+    if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)
+      btn_Settings = pMenu->AddButton(5);         // Settings
 
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -514,8 +515,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       }
       else if (btnid == btn_Settings)
       { 
-        if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
+        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
         return;
       }
     }

@@ -84,8 +84,10 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
   dialog->DoModal();
   if (dialog->IsConfirmed())
   { // yay, add this share
+    g_settings.BeginBookmarkTransaction();
     g_settings.UpdateBookmark(type, name, "path", dialog->m_path);
     g_settings.UpdateBookmark(type, name, "name", dialog->m_name);
+    g_settings.CommitBookmarkTransaction();
     return true;
   }
   return false;

@@ -237,7 +237,7 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
   //  TODO: localize 2.0
-  AddString(5, "cddaripper.path", 20000, "E:\\Music\\CD-Rips", BUTTON_CONTROL_PATH_INPUT, false, 20000);
+  AddString(5, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -317,6 +317,24 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "audiooutput.ac3passthrough", 364, true);
   AddBool(5, "audiooutput.dtspassthrough", 254, true);
 
+  AddCategory(4, "masterlock", 12360);
+  AddString(1, "masterlock.lockcode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
+  AddSeparator(2, "masterlock.sep1");
+  AddBool(3,"masterlock.lockmusic",20038,false);
+  AddBool(4,"masterlock.lockvideo",20039,false);
+  AddBool(5,"masterlock.lockpictures",20040,false);
+  AddBool(6,"masterlock.lockprograms",20041,false);
+  AddBool(7,"masterlock.lockfiles",20042,true);
+  AddBool(8,"masterlock.lockSettings",20043,true);
+  AddSeparator(9, "masterlock.sep2");
+  AddBool(10, "masterlock.sharelocks"    , 20044,false); 
+  AddBool(11, "masterlock.startuplock"      , 12369,false);
+  AddBool(12, "masterlock.enableshutdown"   , 12362,false);
+  
+  // hidden masterlock settings
+  AddInt(0,"masterlock.lockmode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
+  AddInt(0,"masterlock.maxretries"       , 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT); 
+  
   // video settings
   AddGroup(5, 3);
   AddCategory(5, "myvideos", 16000);
@@ -329,8 +347,10 @@ CGUISettings::CGUISettings(void)
   AddCategory(5, "videofiles", 744);
   AddBool(1, "videofiles.useautoswitching", 14011, false);
   AddBool(2, "videofiles.autoswitchuselargethumbs", 14012, false);
-
-  // hidden settings
+  AddInt(3, "videofiles.autoswitchmethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(4, "videofiles.autoswitchpercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  
+  // hidden videofiles settings
   AddBool(0,"videofiles.hidedirectorynames",0,false);
 
   AddCategory(5, "videoplayer", 16003);
@@ -341,7 +361,7 @@ CGUISettings::CGUISettings(void)
   AddInt(9, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
   AddSeparator(10, "videoplayer.sep3");
   //  TODO: localize 2.0
-  AddBool(12, "videoplayer.treatstackasfile", 20040, true);
+  AddBool(12, "videoplayer.treatstackasfile", 20051, true);
   AddSeparator(13,"videoplayer.sep4");
   AddBool(14,"videoplayer.autoresume",12017, false);
 
@@ -461,22 +481,6 @@ CGUISettings::CGUISettings(void)
   AddString(6, "xbdatetime.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
   AddString(7, "xbdatetime.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
 
-  //GeminiServer
-  AddCategory(7, "masterlock", 12360);
-  AddString(1, "masterlock.mastercode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
-  AddString(2, "masterlock.usermode"         , 12375, "0",  BUTTON_CONTROL_STANDARD); //0:Simple User 1:Advanced User
-  AddSeparator(3, "masterlock.sep1");
-  AddInt(4, "masterlock.homemedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // homemedia, for lock the Video/Music/Programs/Pictures
-  AddInt(5, "masterlock.settingsfilemanager"    , 12372, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
-  AddSeparator(6, "masterlock.sep2");     
-  AddBool(7, "masterlock.masteruser"       , 12388,false); //true: master user can open all shares without cheking the fixed share lock in xml
-  AddBool(8, "masterlock.protectshares"    , 12363,false); //prompts for mastercode when editing lock shares with context menu if true
-  AddBool(9, "masterlock.startuplock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
-  AddBool(10, "masterlock.enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
-  
-  // Gui Hidden Features
-  AddInt(0,   "masterlock.mastermode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
-
   //  TODO: localize 2.0
   AddString(0,"system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
   AddString(0,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
@@ -498,7 +502,7 @@ void CGUISettings::AddCategory(DWORD dwGroupID, const char *strSetting, DWORD dw
   for (unsigned int i = 0; i < settingsGroups.size(); i++)
   {
     if (settingsGroups[i]->GetGroupID() == dwGroupID)
-      settingsGroups[i]->AddCategory(strSetting, dwLabelID);
+      settingsGroups[i]->AddCategory(CStdString(strSetting).ToLower(), dwLabelID);
   }
 }
 
@@ -515,21 +519,21 @@ CSettingsGroup *CGUISettings::GetGroup(DWORD dwGroupID)
 
 void CGUISettings::AddSeparator(int iOrder, const char *strSetting)
 {
-  CSettingSeparator *pSetting = new CSettingSeparator(iOrder, strSetting);
+  CSettingSeparator *pSetting = new CSettingSeparator(iOrder, CStdString(strSetting).ToLower());
   if (!pSetting) return;
-  settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
 void CGUISettings::AddBool(int iOrder, const char *strSetting, int iLabel, bool bData, int iControlType)
 {
-  CSettingBool* pSetting = new CSettingBool(iOrder, strSetting, iLabel, bData, iControlType);
+  CSettingBool* pSetting = new CSettingBool(iOrder, CStdString(strSetting).ToLower(), iLabel, bData, iControlType);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 bool CGUISettings::GetBool(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(strSetting);
+  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   { // old category
     return ((CSettingBool*)(*it).second)->GetData();
@@ -543,7 +547,7 @@ bool CGUISettings::GetBool(const char *strSetting) const
 void CGUISettings::SetBool(const char *strSetting, bool bSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(strSetting);
+  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   { // old category
     ((CSettingBool*)(*it).second)->SetData(bSetting);
@@ -556,7 +560,7 @@ void CGUISettings::SetBool(const char *strSetting, bool bSetting)
 void CGUISettings::ToggleBool(const char *strSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(strSetting);
+  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   { // old category
     ((CSettingBool*)(*it).second)->SetData(!((CSettingBool *)(*it).second)->GetData());
@@ -568,15 +572,15 @@ void CGUISettings::ToggleBool(const char *strSetting)
 
 void CGUISettings::AddFloat(int iOrder, const char *strSetting, int iLabel, float fData, float fMin, float fStep, float fMax, int iControlType)
 {
-  CSettingFloat* pSetting = new CSettingFloat(iOrder, strSetting, iLabel, fData, fMin, fStep, fMax, iControlType);
+  CSettingFloat* pSetting = new CSettingFloat(iOrder, CStdString(strSetting).ToLower(), iLabel, fData, fMin, fStep, fMax, iControlType);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
 float CGUISettings::GetFloat(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(strSetting);
+  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     return ((CSettingFloat *)(*it).second)->GetData();
@@ -590,7 +594,7 @@ float CGUISettings::GetFloat(const char *strSetting) const
 void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(strSetting);
+  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     ((CSettingFloat *)(*it).second)->SetData(fSetting);
@@ -601,31 +605,70 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
   CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
+void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
+{
+  mapIter it = settingsMap.find("masterlock.lockmode");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.lockcode");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.lockmusic");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.lockvideo");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.lockpictures");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.lockprograms");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.lockfiles");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.locksettings");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.sharelocks");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.enableshutdown");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.maxretries");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  // don't load startup lock - safety
+}
+
+
 void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat)
 {
-  CSettingInt* pSetting = new CSettingInt(iOrder, strSetting, iLabel, iData, iMin, iStep, iMax, iControlType, strFormat);
+  CSettingInt* pSetting = new CSettingInt(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, iMin, iStep, iMax, iControlType, strFormat);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
 void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat, int iLabelMin/*=-1*/)
 {
-  CSettingInt* pSetting = new CSettingInt(iOrder, strSetting, iLabel, iData, iMin, iStep, iMax, iControlType, iFormat, iLabelMin);
+  CSettingInt* pSetting = new CSettingInt(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, iMin, iStep, iMax, iControlType, iFormat, iLabelMin);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
 void CGUISettings::AddHex(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat)
 {
-  CSettingHex* pSetting = new CSettingHex(iOrder, strSetting, iLabel, iData, iMin, iStep, iMax, iControlType, strFormat);
+  CSettingHex* pSetting = new CSettingHex(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, iMin, iStep, iMax, iControlType, strFormat);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
 int CGUISettings::GetInt(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(strSetting);
+  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     return ((CSettingInt *)(*it).second)->GetData();
@@ -639,7 +682,7 @@ int CGUISettings::GetInt(const char *strSetting) const
 void CGUISettings::SetInt(const char *strSetting, int iSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(strSetting);
+  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
@@ -653,15 +696,15 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
 
 void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
 {
-  CSettingString* pSetting = new CSettingString(iOrder, strSetting, iLabel, strData, iControlType, bAllowEmpty, iHeadingString);
+  CSettingString* pSetting = new CSettingString(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, iControlType, bAllowEmpty, iHeadingString);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
 const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(strSetting);
+  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     CSettingString* result = ((CSettingString *)(*it).second);
@@ -709,7 +752,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
 void CGUISettings::SetString(const char *strSetting, const char *strData)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(strSetting);
+  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     ((CSettingString *)(*it).second)->SetData(strData);
@@ -723,7 +766,7 @@ void CGUISettings::SetString(const char *strSetting, const char *strData)
 CSetting *CGUISettings::GetSetting(const char *strSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(strSetting);
+  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
     return (*it).second;
   else
@@ -741,16 +784,6 @@ void CGUISettings::GetSettingsGroup(const char *strGroup, vecSettings &settings)
   }
   // now order them...
   sort(settings.begin(), settings.end(), sortsettings());
-}
-
-void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
-{
-  mapIter it = settingsMap.find("MasterUser.LockMode");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("MasterLofck.MasterCode");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
 }
 
 void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = false */)
@@ -794,9 +827,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
-
-  // Master User mode is always off initially
-  SetBool("masterlock.masteruser", false);
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool hideSetting /* = false */)
