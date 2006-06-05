@@ -1402,10 +1402,13 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
     g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
 
+    // Don't shuffle on load anymore - any shuffling can be performed by the normal playlist
+    // controls
+    /*
     // shuffle playlist if folder is daap playlist folder
     // and shuffle playlist on load is enabled
     if (bIsDAAPplaylist && g_guiSettings.GetBool("musicplaylist.shuffleplaylistsonload"))
-      g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
+      g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();*/
 
     // activate the playlist window if its not activated yet
     if (bIsDAAPplaylist && GetID() == m_gWindowManager.GetActiveWindow())

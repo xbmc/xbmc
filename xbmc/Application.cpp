@@ -4374,6 +4374,9 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlist[i]);
   }
 
+  /*
+    No need for this anymore - shuffle on and off can be performed at any time
+
   // music option: shuffle playlist on load
   // dont do this if the first item is a stream
   if (
@@ -4383,7 +4386,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     )
   {
     g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
-  }
+  }*/
 
   // if we have a playlist 
   if (g_playlistPlayer.GetPlaylist(iPlaylist).size())

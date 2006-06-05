@@ -157,7 +157,10 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20035] = ToUTF8(strEncoding, "km/h");
   m_vecStrings[20036] = ToUTF8(strEncoding, "mph");
   m_vecStrings[20037] = ToUTF8(strEncoding, "m/s");
-  
+  m_vecStrings[20038] = "Best Available";
+  m_vecStrings[20039] = "Autoswitch between 16x9 and 4x3";
+  m_vecStrings[20040] = "Treat stacked files as single file";
+
   // new strings for weather localization
   m_vecStrings[1411] = "with";
   m_vecStrings[1412] = "windy";

@@ -183,8 +183,6 @@ CGUISettings::CGUISettings(void)
   AddCategory(1,"programfiles",744);
   AddBool(1, "programfiles.useautoswitching", 14011, false);
   AddBool(2, "programfiles.autoswitchuselargethumbs", 14012, false);
-  AddInt(3, "programfiles.autoswitchmethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(4, "programfiles.autoswitchpercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(1, "xlinkkai", 714);
   AddBool(1, "xlinkkai.enabled", 14072, false);
@@ -230,12 +228,11 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3, "musicplaylist", 136);
   AddBool(1, "musicplaylist.clearplaylistsonend",239,false);
-  AddBool(2, "musicplaylist.shuffleplaylistsonload", 228, false);
   AddString(3, "musicplaylist.trackformat", 13307, "%A - %T", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(4, "musicplaylist.trackformatright", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
 
   AddCategory(3, "cddaripper", 620);
-  AddBool(1, "cddaripper.usetracknumber", 624, true);
+  AddString(1, "cddaripper.trackformat", 13307, "%N. %T - %A", BUTTON_CONTROL_INPUT, false, 16016);
   AddInt(2, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(3, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
@@ -332,8 +329,6 @@ CGUISettings::CGUISettings(void)
   AddCategory(5, "videofiles", 744);
   AddBool(1, "videofiles.useautoswitching", 14011, false);
   AddBool(2, "videofiles.autoswitchuselargethumbs", 14012, false);
-  AddInt(3, "videofiles.autoswitchmethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(4, "videofiles.autoswitchpercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   // hidden settings
   AddBool(0,"videofiles.hidedirectorynames",0,false);
@@ -345,7 +340,8 @@ CGUISettings::CGUISettings(void)
   AddInt(8, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddInt(9, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
   AddSeparator(10, "videoplayer.sep3");
-  AddInt(12, "videoplayer.bypasscdselection", 13169, 0, 0, 1, 37, SPIN_CONTROL_TEXT);
+  //  TODO: localize 2.0
+  AddBool(12, "videoplayer.treatstackasfile", 20040, true);
   AddSeparator(13,"videoplayer.sep4");
   AddBool(14,"videoplayer.autoresume",12017, false);
 
