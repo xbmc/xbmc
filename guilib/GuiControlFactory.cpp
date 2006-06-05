@@ -699,9 +699,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   labelInfo2.selectedColor = labelInfo.selectedColor;
   XMLUtils::GetHex(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
   XMLUtils::GetHex(pControlNode, "textcolor2", labelInfo2.textColor);
+  labelInfo2.font = labelInfo.font;
   if (XMLUtils::GetString(pControlNode, "font2", strFont))
     labelInfo2.font = g_fontManager.GetFont(strFont);
-  if (!labelInfo2.font) labelInfo2.font = labelInfo.font;
 
   GetMultipleString(pControlNode, "onclick", clickActions);
   XMLUtils::GetString(pControlNode, "onfocus", focusAction);
