@@ -160,7 +160,7 @@
   <string><id>224</id><value>Speed</value></string>
   <string><id>225</id><value>Transition Time</value></string>
   <string><id>226</id><value>Enable PAL60</value></string>
-  <string><id>227</id><value>Enable CDDB</value></string>
+  <string><id>227</id><value>Lookup audio CDs on freedb</value></string>
   <string><id>228</id><value>Shuffle Playlist on Load</value></string>
   <string><id>229</id><value>HD Spindown Time</value></string>
   <string><id>230</id><value>Video Filters</value></string>
@@ -191,7 +191,7 @@
   <string><id>255</id><value>CDDB</value></string>
   <string><id>256</id><value>Querying freedb for CDDB info</value></string>
   <string><id>257</id><value>Error</value></string>
-  <string><id>258</id><value>Enable ID3 Tags</value></string>
+  <string><id>258</id><value>Enable tag reading</value></string>
   <string><id>259</id><value>Opening</value></string>
   <string><id>260</id><value>Shoutcast</value></string>
   <string><id>261</id><value>Waiting for start....</value></string>
@@ -1188,10 +1188,10 @@
   <string><id>15111</id><value>Skin Theme</value></string>
   <string><id>15112</id><value>Default Theme</value></string>
 
-  <string><id>15200</id><value>LastFM</value></string>
-  <string><id>15201</id><value>Submit Songs to LastFM</value></string>
-  <string><id>15202</id><value>LastFM Username</value></string>
-  <string><id>15203</id><value>LastFM Password</value></string>
+  <string><id>15200</id><value>Last.FM</value></string>
+  <string><id>15201</id><value>Submit songs to Last.FM</value></string>
+  <string><id>15202</id><value>Last.FM Username</value></string>
+  <string><id>15203</id><value>Last.FM Password</value></string>
   <string><id>15204</id><value>Unable to handshake: sleeping...</value></string>
   <string><id>15205</id><value>Please Update XBMC</value></string>
   <string><id>15206</id><value>Submission failed: bad authorization.</value></string>
@@ -1205,8 +1205,8 @@
   <string><id>15214</id><value>Use Smoothed A/V Syncronization</value></string>
   <string><id>15215</id><value>Hide File Names in Thumbs View</value></string>
 
-  <string><id>15250</id><value>Submit Last.fm Radio to LastFM</value></string>
-  <string><id>15251</id><value>Connecting to Last.fm...</value></string>
+  <string><id>15250</id><value>Submit Last.FM Radio to Last.FM</value></string>
+  <string><id>15251</id><value>Connecting to Last.FM...</value></string>
   <string><id>15252</id><value>Selecting station...</value></string>
   <string><id>15253</id><value>Search similar artists...</value></string>
   <string><id>15254</id><value>Search similar tags...</value></string>
