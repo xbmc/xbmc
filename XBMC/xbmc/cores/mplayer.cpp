@@ -1272,6 +1272,9 @@ void CMPlayer::Process()
       }
       catch (...)
       {
+        // TODO: Check for the out of memory condition.
+        // We should add detection for out of memory here.
+
         char module[100];
         mplayer_get_current_module(module, sizeof(module));
         CLog::Log(LOGERROR, "mplayer generated exception in %s", module);
