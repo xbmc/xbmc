@@ -181,16 +181,12 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             {
               CProfile profile;
               profile.setName(strProfileName);
-              CStdString str = "";
               int i = 0;
-              str.Format("T:\\profile%i.xml", i);
-              while (CFile::Exists(str))
+              while (CFile::Exists(g_settings.GetProfilesFile(i)))
               {
                 i++;
-                str.Format("T:\\profile%i.xml", i);
               }
-              str.Format("profile%i.xml", i);
-              profile.setFileName(str);
+              profile.setFileName(g_settings.GetProfilesFile(i));
               g_settings.m_vecProfiles.push_back(profile);
               g_settings.SaveSettingsToProfile(iItem);
               g_settings.Save();

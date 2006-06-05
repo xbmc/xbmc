@@ -656,8 +656,21 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
       // Check if we will be exceeded the max allowed width
       if ( m_fCursorX + fOffset + fWidth + fEllipsesPixelWidth + m_fSlantFactor > fAlignedOriginX + fMaxPixelWidth )
       {
-        // Yup. Let's draw the ellipses, then bail
+        // Yup. Let's draw the ellipses, then go to the next line
         DrawText( m_fCursorX, m_fCursorY, angle, dwColor, L"..." );
+        while (cchText--)
+        {
+          WCHAR letter = *strText++;
+          // Handle the newline character
+          if ( letter == L'\n' )
+          {
+            numLines++;
+            bStartingNewLine = TRUE;
+            continue;
+          }
+        }
+        if (bStartingNewLine)
+          continue;
         End();
         return S_OK;
       }

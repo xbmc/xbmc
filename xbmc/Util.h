@@ -254,7 +254,7 @@ public:
   static void ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl );
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
-  static void DeleteTDATA();
+  static void DeleteGUISettings();
 
   static void RemoveIllegalChars( CStdString& strText);
   static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback = NULL);

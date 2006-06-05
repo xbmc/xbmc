@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-06-2006 changed: TDATA\0face008\settings.xml moved to UserData\guisettings.xml.
  - 05-06-2006 fixed: RealMedia video playback. Reverted dll.cpp in Dllloader to revision 1.42.
  - 04-06-2006 changed: single item playlists are treated as playlists (not files) when playlistasfolder is false.
  - 04-06-2006 fixed: dvd's with odd initial active subtitle would not respond to disable/enable subtitle before having switched to a different language. (dvdshrink issue)
