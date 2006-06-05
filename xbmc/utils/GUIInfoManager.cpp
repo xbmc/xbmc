@@ -12,6 +12,7 @@
 #include "../GUIMediaWindow.h"
 #include "../GUIDialogFileBrowser.h"
 #include "../PartyModeManager.h"
+#include "../GUIPassword.h"
 #include "FanController.h"
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
@@ -166,6 +167,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.currentcontrol")) ret = SYSTEM_CURRENT_CONTROL;
     else if (strTest.Equals("system.xboxnickname")) ret = SYSTEM_XBOX_NICKNAME;
     else if (strTest.Equals("system.dvdlabel")) ret = SYSTEM_DVD_LABEL;
+    else if (strTest.Equals("system.haslocks")) ret = SYSTEM_HASLOCKS;
+    else if (strTest.Equals("system.ismaster")) ret = SYSTEM_ISMASTER;
 
     else if (strTest.Left(16).Equals("system.idletime("))
     {
@@ -715,6 +718,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   {
     return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow);
   }
+  else if (condition == SYSTEM_HASLOCKS)  
+    bReturn = g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE;
+    else if (condition == SYSTEM_ISMASTER)
+      bReturn = g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (g_application.IsPlaying())
   {
     switch (condition)

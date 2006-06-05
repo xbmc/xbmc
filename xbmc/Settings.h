@@ -27,6 +27,7 @@
 #define LOCK_MODE_QWERTY              3
 #define LOCK_MODE_SAMBA               4
 #define LOCK_MODE_EEPROM_PARENTAL     5
+#define LOCK_MODE_FOLLOWS_MASTER      6
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
@@ -95,6 +96,7 @@ public:
 
     return false;
   }
+
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
@@ -140,6 +142,7 @@ public:
   */
   int m_iLockMode;
   CStdString m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
+  int m_iHasLock;
   int m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked
 
   CStdString m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
@@ -200,11 +203,12 @@ public:
   VECSHARES *GetSharesFromType(const CStdString &type);
   CStdString GetDefaultShareFromType(const CStdString &type);
 
+  void BeginBookmarkTransaction();
   bool UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
+  bool CommitBookmarkTransaction();
   bool DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath);
   bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
   bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath, const int iDepth);
-  bool SetBookmarkLocks(const CStdString& strType, bool bEngageLocks);
 
   bool LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
   bool SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
@@ -269,20 +273,6 @@ public:
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
     float m_controllerDeadzone;
-
-    //Masterlock
-    bool bMasterLockEnableShutdown;
-    bool bMasterLockProtectShares;
-    bool bUseMasterLockAdvancedXml;
-    bool bMasterUserMode;
-    bool bMasterUser;
-    bool bMasterLockStartupLock;      
-    int iMasterLockMaxRetry;
-    int iMasterLockMode;          
-    int iMasterLockSettingsFilemanager;
-    int iMasterLockHomeMedia;
-    CStdString strMasterLockCode;
-    //
 
     bool m_playlistAsFolders;
     int m_thumbSize;
@@ -510,6 +500,8 @@ protected:
 
   TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
   bool xbmcXmlLoaded;
+  bool bTransaction;
+  bool bChangedDuringTransaction;
 };
 
 extern class CSettings g_settings;

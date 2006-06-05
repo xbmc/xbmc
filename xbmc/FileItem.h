@@ -163,6 +163,7 @@ public:
   long m_lEndOffset;
   int m_iLockMode;
   CStdString m_strLockCode;
+  int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
 private:
   bool m_bIsParentFolder;

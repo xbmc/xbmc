@@ -194,7 +194,10 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       }
     }
     int btn_ScanTrainers = pMenu->AddButton(12012);
-    int btn_Settings = pMenu->AddButton(5); // Settings
+
+    int btn_Settings = -2;
+    if (g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings"))
+      btn_Settings = pMenu->AddButton(5);         // Settings
 
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -240,14 +243,8 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
 //      UpdateButtons();
     }
     if (btnid == btn_Settings)
-    { 
-      //if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
-      if (!g_passwordManager.bMasterUser && g_guiSettings.GetBool("Masterlock.LockSettings"))
-        if (!g_passwordManager.CheckMasterLock(false))
-          return false;
-      
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
-    }
+
     else if (btnid == btn_Launch)
     {
       OnClick(iItem);

@@ -144,7 +144,6 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
     CShare& share = m_vecShares->at(i);
-
     CFileItem* pItem = new CFileItem(share);
     CStdString strPathUpper = pItem->m_strPath;
     strPathUpper.ToUpper();
@@ -170,8 +169,10 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     }
 
     pItem->SetIconImage(strIcon);
-    if (share.m_iLockMode > 0)
+    if (share.m_iHasLock == 2 && g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE)
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_LOCKED);
+    else
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
 
     items.Add(pItem);
   }
