@@ -633,6 +633,7 @@ extern "C"
           return pszString;
         }
       }
+      else return NULL; //eof
     }
     else if (!IS_STD_STREAM(stream))
     {
