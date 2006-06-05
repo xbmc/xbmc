@@ -7,6 +7,8 @@
 #include "GUIDialogNumeric.h"
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
+#include "lib/libscrobbler/md5.h"
+#include "xbox/xkgeneral.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
@@ -498,7 +500,14 @@ bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword, const
   // check the password
   if (checkInput == userInput)
   {
-    newPassword = checkInput;
+    md5_state_t md5state;
+    unsigned char md5pword[16];
+    char md5pword2[64];
+    md5_init(&md5state);
+    md5_append(&md5state, (unsigned const char *)userInput.c_str(), (int)userInput.size());
+    md5_close(&md5state, md5pword);
+    XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
+    newPassword = md5pword2;
     return true;
   }
   CGUIDialogOK::ShowAndGetInput(12341, 12344, 0, 0);
@@ -525,7 +534,7 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
   if (1 > iRetries && strHeading.size())
     strHeadingTemp = strHeading;
   else
-    strHeadingTemp.Format("%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_passwordManager.iMasterLockMaxRetry - iRetries, g_localizeStrings.Get(12343).c_str());
+    strHeadingTemp.Format("%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_guiSettings.GetInt("masterlock.maxretries") - iRetries, g_localizeStrings.Get(12343).c_str());
 
   CStdString strUserInput = "";
   if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true))  //bool hiddenInput = false/true ? TODO: GUI Setting to enable disable this feature y/n?
@@ -533,7 +542,17 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
 
   if (!strPassword.IsEmpty())
   {
-	  if (strUserInput == strPassword)
+    if (strPassword == strUserInput)
+      return 0;
+
+    md5_state_t md5state;
+    unsigned char md5pword[16];
+    char md5pword2[64];
+    md5_init(&md5state);
+    md5_append(&md5state, (unsigned const char *)strUserInput.c_str(), (int)strUserInput.size());
+    md5_close(&md5state, md5pword);
+    XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
+    if (strPassword == md5pword2)
 		  return 0;		// user entered correct password
 	  else return 1;	// user must have entered an incorrect password
   }
@@ -541,7 +560,15 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
   {
 	  if (!strUserInput.IsEmpty())
 	  {
-		  strPassword = strUserInput;
+      md5_state_t md5state;
+      unsigned char md5pword[16];
+      char md5pword2[64];
+      md5_init(&md5state);
+      md5_append(&md5state, (unsigned const char *)strUserInput.c_str(), (int)strUserInput.size());
+      md5_close(&md5state, md5pword);
+      XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
+
+      strPassword = md5pword2;
 		  return 0; // user entered correct password
 	  }
 	  else return 1;

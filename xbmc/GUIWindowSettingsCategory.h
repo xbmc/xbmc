@@ -33,8 +33,6 @@ protected:
   void FillInResolutions(CSetting *pSetting, bool playbackSetting);
   void FillInScreenSavers(CSetting *pSetting);
   void FillInRegions(CSetting *pSetting);
-  bool SetMasterLockMode();
-  bool SetUserMode();
   void FillInFTPServerUser(CSetting *pSetting);
   void FillInStartupWindow(CSetting *pSetting);
   bool SetFTPServerUserPass();

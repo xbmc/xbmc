@@ -809,7 +809,7 @@
   <string><id>12358</id><value>Password entry was blank. Try again.</value></string>
   <string><id>12360</id><value>Master Lock</value></string>
   <string><id>12361</id><value>Max Retry</value></string>
-  <string><id>12362</id><value>Enable Shutdown</value></string>
+  <string><id>12362</id><value>Shutdown xbox if master lock retries exceeded</value></string>
   <string><id>12363</id><value>Protect Shares</value></string>
   <string><id>12364</id><value>Master Mode</value></string>
   <string><id>12365</id><value>Master Code</value></string>
