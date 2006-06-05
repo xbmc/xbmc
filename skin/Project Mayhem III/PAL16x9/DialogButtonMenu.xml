@@ -11,7 +11,6 @@
   <controls>
     <control>
       <type>image</type>
-      <id>0</id>
       <posx>-185</posx>
       <posy>-230</posy>
       <width>720</width>
@@ -25,7 +24,6 @@
       <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
       <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>image</type>
-      <id>0</id>
       <posx>-245</posx>
       <posy>5</posy>
       <width>805</width>
@@ -33,21 +31,22 @@
       <texture>sub-background.png</texture>
     </control>
 
+    <controlgroup>
     <control>
       <description>Dashboard button</description>
       <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
       <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3110</id>
-      <posx>30</posx>
+      <posx>0</posx>
       <posy>10</posy>
       <width>60</width>
-      <height>80</height>
+      <height>79</height>
       <texturefocus>sub-exit-focus.gif</texturefocus>
       <texturenofocus>sub-exit-nofocus.png</texturenofocus>
       <onclick>XBMC.Dashboard()</onclick>
       <pulseonselect>no</pulseonselect>
-      <onleft>3114</onleft>
+      <onleft>3116</onleft>
       <onright>3111</onright>
       <onup>3110</onup>
       <ondown>3110</ondown>
@@ -56,15 +55,15 @@
     </control>
 
     <control>
-      <description>eject button</description>
+      <description>Eject button</description>
       <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
       <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3111</id>
-      <posx>90</posx>
+      <posx>60</posx>
       <posy>10</posy>
       <width>60</width>
-      <height>80</height>
+      <height>79</height>
       <texturefocus>sub-eject-focus.gif</texturefocus>
       <texturenofocus>sub-eject-nofocus.png</texturenofocus>
       <onclick>XBMC.EjectTray()</onclick>
@@ -83,10 +82,10 @@
       <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3112</id>
-      <posx>150</posx>
+      <posx>120</posx>
       <posy>10</posy>
       <width>60</width>
-      <height>80</height>
+      <height>79</height>
       <texturefocus>sub-shutdown-focus.gif</texturefocus>
       <texturenofocus>sub-shutdown-nofocus.png</texturenofocus>
       <onclick>XBMC.ShutDown()</onclick>
@@ -94,7 +93,7 @@
       <onleft>3111</onleft>
       <onright>3113</onright>
       <onup>3115</onup>
-      <ondown>3116</ondown>
+      <ondown>3115</ondown>
       <font>-</font>
       <label>13005</label>
     </control>
@@ -105,10 +104,10 @@
       <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3113</id>
-      <posx>210</posx>
+      <posx>180</posx>
       <posy>10</posy>
       <width>60</width>
-      <height>80</height>
+      <height>79</height>
       <texturefocus>sub-info-focus.gif</texturefocus>
       <texturenofocus>sub-info-nofocus.png</texturenofocus>
       <onclick>XBMC.ActivateWindow(7)</onclick>
@@ -122,21 +121,21 @@
     </control>
 
     <control>
-      <description>reboot button</description>
+      <description>Reboot button</description>
       <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
       <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3114</id>
-      <posx>270</posx>
+      <posx>240</posx>
       <posy>10</posy>
       <width>60</width>
-      <height>80</height>
+      <height>79</height>
       <texturefocus>sub-reboot-focus.gif</texturefocus>
       <texturenofocus>sub-reboot-nofocus.png</texturenofocus>
       <onclick>XBMC.Reset()</onclick>
       <pulseonselect>no</pulseonselect>
       <onleft>3113</onleft>
-      <onright>3110</onright>
+      <onright>3116</onright>
       <onup>3114</onup>
       <ondown>3114</ondown>
       <font>-</font>
@@ -144,49 +143,55 @@
     </control>
 
     <control>
-      <description>reload skin button</description>
+      <description>Reload xbmc button</description>
       <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
       <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3115</id>
-      <posx>150</posx>
+      <posx>120</posx>
       <posy>10</posy>
       <width>60</width>
-      <height>80</height>
-      <texturefocus>sub-shutdown-focus.gif</texturefocus>
-      <texturenofocus>-</texturenofocus>
-      <onclick>XBMC.ReloadSkin()</onclick>
-      <pulseonselect>no</pulseonselect>
-      <onleft>3115</onleft>
-      <onright>3115</onright>
-      <onup>3112</onup>
-      <ondown>3112</ondown>
-      <font>-</font>
-      <label>Reload Skin</label>
-    </control>
-
-    <control>
-      <description>reload skin button</description>
-      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
-      <type>button</type>
-      <id>3116</id>
-      <posx>150</posx>
-      <posy>10</posy>
-      <width>60</width>
-      <height>80</height>
+      <height>79</height>
       <texturefocus>sub-shutdown-focus.gif</texturefocus>
       <texturenofocus>-</texturenofocus>
       <onclick>XBMC.RestartApp()</onclick>
       <pulseonselect>no</pulseonselect>
-      <onleft>3116</onleft>
-      <onright>3116</onright>
+      <onleft>3111</onleft>
+      <onright>3113</onright>
       <onup>3112</onup>
       <ondown>3112</ondown>
       <font>-</font>
       <label>Restart XBMC</label>
     </control>
 
+    <control>
+      <description>Enter master mode / Leave master mode</description>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+      <visible>System.HasLocks</visible>
+      <type>togglebutton</type>
+      <id>3116</id>
+      <posx>300</posx>
+      <posy>10</posy>
+      <width>60</width>
+      <height>79</height>
+      <label>20046</label>
+      <altlabel>20045</altlabel>
+      <texturefocus>sub-master-focus.gif</texturefocus>
+      <texturenofocus>sub-master-nofocus.png</texturenofocus>
+      <usealttexture>System.IsMaster</usealttexture>
+      <alttexturefocus>sub-nomaster-focus.gif</alttexturefocus>
+      <alttexturenofocus>sub-nomaster-nofocus.png</alttexturenofocus>
+      <onclick>xbmc.mastermode</onclick>
+      <pulseonselect>no</pulseonselect>
+      <onleft>3114</onleft>
+      <onright>3110</onright>
+      <onup>3116</onup>
+      <ondown>3116</ondown>
+      <font>-</font>
+    </control>
+    </controlgroup>
+     
     <control>
       <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
       <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
