@@ -1746,37 +1746,17 @@ void CUtil::RemoveTempFiles()
   while (FindNextFile(hFind, &wfd));
 }
 
-void CUtil::DeleteTDATA()
+void CUtil::DeleteGUISettings()
 {
   // Load in master code first to ensure it's setting isn't reset
   TiXmlDocument doc;
-  if (doc.LoadFile("T:\\settings.xml"))
+  if (doc.LoadFile(g_settings.GetSettingsFile()))
   {
     g_guiSettings.LoadMasterLock(doc.RootElement());
   }
   // delete T:\\settings.xml only
-  CLog::Log(LOGINFO, "  DeleteFile(T:\\settings.xml)");
-  ::DeleteFile("T:\\settings.xml");
-  /*
-  WIN32_FIND_DATA wfd;
-  CStdString strTDATADir;
-  strTDATADir = "T:\\*.*";
-  memset(&wfd, 0, sizeof(wfd));
-
-  CAutoPtrFind hFind( FindFirstFile(strTDATADir.c_str(), &wfd));
-  if (!hFind.isValid())
-    return ;
-  do
-  {
-    if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-    {
-      string strFile = "T:\\";
-      strFile += wfd.cFileName;
-      CLog::Log(LOGINFO, "  DeleteFile(%s)", strFile.c_str());
-      DeleteFile(strFile.c_str());
-    }
-  }
-  while (FindNextFile(hFind, &wfd));*/
+  CLog::Log(LOGINFO, "  DeleteFile(%s)", g_settings.GetSettingsFile().c_str());
+  ::DeleteFile(g_settings.GetSettingsFile().c_str());
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)
