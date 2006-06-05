@@ -36,31 +36,15 @@ void CLog::Log(int loglevel, const char *format, ... )
     CSingleLock waitLock(critSec);
     if (!fd)
     {
+      // g_stSettings.m_logFolder is initialized in the CSettings constructor to Q:\\
+      // and if we are running from DVD, it's changed to T:\\ in CApplication::Create()
       CStdString LogFile;
-/*      if (g_settings.QuickXMLLoad("logpath"))
-      {
-        CStdString strLogPath = g_stSettings.m_logFolder;        
-        if (!strLogPath.IsEmpty() && CUtil::IsHD(strLogPath))
-        {
-          if( !CUtil::HasSlashAtEnd(strLogPath) )
-            strLogPath += "\\";
-          // check for existence
-          if (CDirectory::Exists(strLogPath) || CreateDirectory(strLogPath.c_str(), NULL) )
-            LogFile.Format("%sxbmc.log", strLogPath.c_str());
-        }
-      }
-
-      if( LogFile.length() == 0 )*/
-
-      // TODO 2.0: Move this to TDATA if running from DVD
-        LogFile = "Q:\\xbmc.log";
-
+      CUtil::AddFileToFolder(g_stSettings.m_logFolder, "xbmc.log", LogFile);
       fd = _fsopen(LogFile, "a+", _SH_DENYWR);
     }
       
     if (!fd)
       return ;
-
 
     SYSTEMTIME time;
     GetLocalTime(&time);

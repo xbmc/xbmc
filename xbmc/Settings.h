@@ -466,6 +466,9 @@ public:
   CStdString GetPicturesThumbFolder() const;
   CStdString GetProgramsThumbFolder() const;
   CStdString GetXLinkKaiThumbFolder() const;
+
+  CStdString GetSettingsFile() const;
+  CStdString GetProfilesFile(int number) const;
   
 protected:
   void GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
@@ -491,7 +494,7 @@ protected:
   bool LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile);
   bool SaveProfiles(TiXmlNode* pRootElement) const;
 
-  bool LoadXml(bool forceToQ = false);
+  bool LoadXml();
   void CloseXml();
 
   // skin activated settings

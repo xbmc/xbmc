@@ -194,28 +194,28 @@ void CSettings::Save() const
     //for every screen when the application is stopping.
     return ;
   }
-  if (!SaveSettings("T:\\settings.xml", true))
+  if (!SaveSettings(GetSettingsFile(), true))
   {
-    CLog::Log(LOGERROR, "Unable to save settings to T:\\settings.xml");
+    CLog::Log(LOGERROR, "Unable to save settings to %s", GetSettingsFile().c_str());
   }
 }
 
 bool CSettings::Reset()
 {
   CLog::Log(LOGINFO, "Resetting settings");
-  CFile::Delete("T:\\settings.xml");
+  CFile::Delete(GetSettingsFile());
   Save();
-  return LoadSettings("T:\\settings.xml", true);
+  return LoadSettings(GetSettingsFile(), true);
 }
 
 bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 {
   // load settings file...
   bXboxMediacenter = bSettings = false;
-  CLog::Log(LOGNOTICE, "loading T:\\settings.xml");
-  if (!LoadSettings("T:\\settings.xml", true))
+  CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
+  if (!LoadSettings(GetSettingsFile(), true))
   {
-    CLog::Log(LOGERROR, "Unable to load T:\\settings.xml, creating new T:\\settings.xml with default values");
+    CLog::Log(LOGERROR, "Unable to load %s, creating new %s with default values", GetSettingsFile().c_str(), GetSettingsFile().c_str());
     Save();
     if (!(bSettings = Reset()))
       return false;
@@ -716,17 +716,6 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
   if (!pRootElement)
   {
     g_LoadErrorStr.Format("%s Doesn't contain <calibration>", strSettingsFile.c_str());
-    //be nice, try to load from "old" calibration.xml file
-    if (CFile::Exists("T:\\calibration.xml"))
-    {
-      TiXmlDocument xmlDoc;
-      if (!xmlDoc.LoadFile("T:\\calibration.xml"))
-      {
-        return false;
-      }
-      TiXmlElement *pOldConfigRootElement = xmlDoc.RootElement();
-      return LoadCalibration(pOldConfigRootElement, "T:\\calibration.xml");
-    }
     return false;
   }
   const TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
@@ -836,7 +825,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     {
       //no profiles yet, make one based on the default settings
       CProfile profile;
-      profile.setFileName("profile0.xml");
+      profile.setFileName(GetProfilesFile(0));
       profile.setName("Default settings");
       m_vecProfiles.push_back(profile);
       SaveSettingsToProfile(0);
@@ -1177,6 +1166,7 @@ void CSettings::LoadAdvancedSettings()
     g_stSettings.m_videoExtensions += "|" + extraExtensions;
 
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
+  CLog::Log(LOGERROR, "displayremotecodes is %s", g_advancedSettings.m_displayRemoteCodes ? "true" : "false");
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
@@ -1489,7 +1479,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 bool CSettings::LoadProfile(int index)
 {
   CProfile& profile = m_vecProfiles.at(index);
-  if (LoadSettings("T:\\" + profile.getFileName(), false))
+  if (LoadSettings(GetProfilesFile(index), false))
   {
     m_iLastLoadedProfileIndex = index;
     Save();
@@ -1505,7 +1495,7 @@ void CSettings::DeleteProfile(int index)
     if (iProfile == &g_settings.m_vecProfiles.at(index))
     {
       if (index == m_iLastLoadedProfileIndex) {m_iLastLoadedProfileIndex = -1;}
-      ::DeleteFile("T:\\" + iProfile->getFileName());
+      ::DeleteFile(iProfile->getFileName());
       m_vecProfiles.erase(iProfile);
       Save();
       break;
@@ -1516,7 +1506,7 @@ void CSettings::DeleteProfile(int index)
 bool CSettings::SaveSettingsToProfile(int index)
 {
   CProfile& profile = m_vecProfiles.at(index);
-  return SaveSettings("T:\\" + profile.getFileName(), false);
+  return SaveSettings(profile.getFileName(), false);
 }
 
 
@@ -1585,25 +1575,12 @@ bool CSettings::SaveProfiles(TiXmlNode* pRootElement) const
   return true;
 }
 
-bool CSettings::LoadXml(bool forceToQ /* = false */)
+bool CSettings::LoadXml()
 {
   // load xml file - we use the xbe path in case we were loaded as dash
   if (!xbmcXmlLoaded)
   {
-    CStdString strPath;
-    if (forceToQ)
-    {
-      strPath = "Q:\\XBoxMediaCenter.xml";
-    }
-    else
-    {
-      char szXBEFileName[1024];
-      CIoSupport helper;
-      helper.GetXbePath(szXBEFileName);
-      strrchr(szXBEFileName, '\\')[0] = 0;
-      strPath.Format("%s\\%s", szXBEFileName, "XboxMediaCenter.xml");
-    }
-    if ( !xbmcXml.LoadFile( strPath.c_str() ) )
+    if ( !xbmcXml.LoadFile( "Q:\\XBoxMediaCenter.xml" ) )
     {
       return false;
     }
@@ -2017,8 +1994,8 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
 
 bool CSettings::LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders)
 { // load xml file...
-  CStdString strXMLFile = "T:\\";
-  strXMLFile += strFolderXML;
+  CStdString strXMLFile;
+  CUtil::AddFileToFolder(GetUserDataFolder(), strFolderXML, strXMLFile);
 
   TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
@@ -2410,4 +2387,20 @@ void CSettings::LoadRSSFeeds()
 
     pSet = pSet->NextSiblingElement("set");
   }
+}
+
+CStdString CSettings::GetSettingsFile() const
+{
+  CStdString settings;
+  CUtil::AddFileToFolder(GetUserDataFolder(), "guisettings.xml", settings);
+  return settings;
+}
+
+CStdString CSettings::GetProfilesFile(int number) const
+{
+  CStdString settings;
+  CStdString profile;
+  profile.Format("guiprofile%i.xml", number);
+  CUtil::AddFileToFolder(GetUserDataFolder(), profile, settings);
+  return settings;
 }
