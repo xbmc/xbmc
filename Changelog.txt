@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-06-2006 fixed: [ 1500816 ] Playlist Thumbs
  - 05-06-2006 fixed: Incorrect fgets failed errorlog on eof.
  - 05-06-2006 changed: Settings cleanup (simplified programs + video auto-switching, removed some that are no longer necessary)
  - 05-06-2006 changed: Use Track number changed to Track Format in Rip CD settings.
