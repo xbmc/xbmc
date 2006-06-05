@@ -89,6 +89,7 @@ CFileItem::CFileItem(const CShare& share)
     m_strLabel.Format("%s (%s)", share.strName.c_str(), share.strStatus.c_str());
   m_iLockMode = share.m_iLockMode;
   m_strLockCode = share.m_strLockCode;
+  m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
   m_idepth = share.m_iDepthSize;
@@ -128,6 +129,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_idepth = item.m_idepth;
   m_iLockMode = item.m_iLockMode;
   m_strLockCode = item.m_strLockCode;
+  m_iHasLock = item.m_iHasLock;
   m_iBadPwdCount = item.m_iBadPwdCount;
   m_bCanQueue=item.m_bCanQueue;
   return *this;
@@ -160,6 +162,7 @@ void CFileItem::Reset()
   m_iLockMode = LOCK_MODE_EVERYONE;
   m_strLockCode = "";
   m_iBadPwdCount = 0;
+  m_iHasLock = 0;
   m_bCanQueue=true;
 }
 

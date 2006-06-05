@@ -83,6 +83,8 @@
 #define SYSTEM_CURRENT_CONTROL      136
 #define SYSTEM_XBOX_NICKNAME        137
 #define SYSTEM_DVD_LABEL            138
+#define SYSTEM_HASLOCKS             140
+#define SYSTEM_ISMASTER             141
 
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161

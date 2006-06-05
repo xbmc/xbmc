@@ -770,8 +770,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       btn_Delete = pMenu->AddButton(646);
   }
 
-  // GeminiServer Todo: Set a MasterLock Option to Enable or disable Settings incontext menu!
-  int btn_Settings      = pMenu->AddButton(5);      // Settings
+  int btn_Settings = -2;
+  if (g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE || !g_guiSettings.GetBool("masterlock.locksettings") || g_passwordManager.bMasterUser)
+    btn_Settings      = pMenu->AddButton(5);      // Settings
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -832,9 +833,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 	  }
     else if (btnid == btn_Settings)
     { 
-      // Check Master Lock
-      if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
-        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
+      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
       return;
     }
     else if (btnid == btn_Delete)
