@@ -85,27 +85,6 @@
 #define SMB_SHARE_FIL_PIC_VI    13 // Musik & Picture & Video
 #define SMB_SHARE_MU_VI_PIC_FIL 14 // Musik & Video & Pictures & Files
 
-// GeminiServer: Add. Lock Home Media 
-#define LOCK_DISABLED           0 // Disabled
-#define LOCK_MUSIC              1 // Musik
-#define LOCK_VIDEO              2 // Video
-#define LOCK_PICTURES           3 // Pictures
-#define LOCK_PROGRAMS           4 // Programs
-#define LOCK_MU_VI              5 // Musik & Video
-#define LOCK_MU_PIC             6 // Musik & Picture
-#define LOCK_MU_PROG            7 // Musik & Programs
-#define LOCK_VI_PIC             8 // Video & Pcitures
-#define LOCK_VI_PROG            9 // Video & Programs
-#define LOCK_PIC_PROG           10 // Picture & Programs
-#define LOCK_MU_VI_PIC          11 // Musik & Video & Pictures
-#define LOCK_PROG_VI_MU         12 // Programs & Video & Musik
-#define LOCK_PROG_PIC_MU        13 // Programs & Pictures & Musik
-#define LOCK_PROG_PIC_VI        14 // Musik & Picture & Video
-#define LOCK_MU_VI_PIC_PROG     15 // Musik & Video & Pictures & Programs
-
-#define LOCK_MASK_SETTINGS      1
-#define LOCK_MASK_FILE_MANAGER  2
-
 #define FRAME_RATE_LEAVE_AS_IS  0
 #define FRAME_RATE_CONVERT      1
 #define FRAME_RATE_USE_PAL60    2

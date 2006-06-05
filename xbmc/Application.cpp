@@ -177,12 +177,6 @@ CApplication::CApplication(void)
   m_DAAPSong = NULL;
   m_DAAPPtr = NULL;
   m_DAAPArtistPtr = NULL;
-  // GeminiServer MasterLock
-  m_iMasterLockRetriesRemaining = 0;
-  m_bMasterLockPreviouslyEntered = false;
-  m_bMasterLockOverridesLocalPasswords = false;
-  m_MasterUserModeCounter = 2;
-
 
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
@@ -908,18 +902,6 @@ HRESULT CApplication::Create()
 
   g_actionManager.SetScriptActionCallback(&g_pythonParser);
 
-  g_settings.SetBookmarkLocks("myprograms", true);
-  g_settings.SetBookmarkLocks("pictures", true);
-  g_settings.SetBookmarkLocks("files", true);
-  g_settings.SetBookmarkLocks("music", true);
-  g_settings.SetBookmarkLocks("video", true);
-
-  //Masterlock init
-  g_passwordManager.GetSettings();
-  m_iMasterLockRetriesRemaining = g_passwordManager.iMasterLockMaxRetry;
-  if (g_passwordManager.iMasterLockMode == LOCK_MODE_EVERYONE)
-    m_bMasterLockOverridesLocalPasswords = true; // masterlock is disabled, so disable all share locks too
-
   // show recovery console on fatal error instead of freezing
   CLog::Log(LOGINFO, "install unhandled exception filter");
   SetUnhandledExceptionFilter(UnhandledExceptionFilter);
@@ -1114,11 +1096,9 @@ HRESULT CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
-  //GeminiServer: Check StartUpLock MasterCode
-  //if (g_passwordManager.bMasterLockStartupLock)  g_passwordManager.CheckStartUpLock();
-  if(g_passwordManager.bMasterLockStartupLock == 1)  g_passwordManager.CheckStartUpLock();
+  if (g_guiSettings.GetBool("masterlock.startuplock")) 
+  	g_passwordManager.CheckStartUpLock();
 
-  
   if (!m_bAllSettingsLoaded)
   {
     CLog::Log(LOGWARNING, "settings not correct, show dialog");

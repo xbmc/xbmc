@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GUIDialogAudioSubtitleSettings.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIPassword.h"
 #include "util.h"
 #include "application.h"
 #include "VideoDatabase.h"
@@ -287,6 +288,10 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)
   {
+    if (g_guiSettings.GetBool("masterlock.locksettings") && g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE)
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return;
+
     // prompt user if they are sure
     if (CGUIDialogYesNo::ShowAndGetInput(12376, 750, 0, 12377))
     { // reset the settings

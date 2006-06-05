@@ -227,8 +227,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
         if (m_allowPrompting)
         {
           g_passwordManager.SetSMBShare(strPath);
-          g_passwordManager.GetSMBShareUserPassword();  // Do this bit via a threadmessage?
-          if (g_passwordManager.IsCanceled())
+          if (!g_passwordManager.GetSMBShareUserPassword())  // Do this bit via a threadmessage?
           	break;
 
           /* must do this as our urlencoding for spaces is invalid for samba */

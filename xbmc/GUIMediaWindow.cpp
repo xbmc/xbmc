@@ -577,8 +577,9 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if ( pItem->m_bIsShareOrDrive )
     {
       const CStdString& strLockType=m_guiState->GetLockType();
-      if (!strLockType.IsEmpty() && !g_passwordManager.IsItemUnlocked(pItem, strLockType))
-          return true;
+      if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE)
+        if (!strLockType.IsEmpty() && !g_passwordManager.IsItemUnlocked(pItem, strLockType))
+            return true;
 
       if (!HaveDiscOrConnection(pItem->m_strPath, pItem->m_iDriveType))
         return true;
