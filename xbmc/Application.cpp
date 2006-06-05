@@ -691,7 +691,7 @@ HRESULT CApplication::Create()
       bAnyAnalogKey = m_DefaultGamepad.bPressedAnalogButtons[0] || m_DefaultGamepad.bPressedAnalogButtons[1] || m_DefaultGamepad.bPressedAnalogButtons[2] || m_DefaultGamepad.bPressedAnalogButtons[3] || m_DefaultGamepad.bPressedAnalogButtons[4] || m_DefaultGamepad.bPressedAnalogButtons[5] || m_DefaultGamepad.bPressedAnalogButtons[6] || m_DefaultGamepad.bPressedAnalogButtons[7];
     }
     if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
-      CUtil::DeleteTDATA();
+      CUtil::DeleteGUISettings();
     m_pd3dDevice->Release();
   }
 
@@ -2651,7 +2651,7 @@ void CApplication::Stop()
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
 
     // Update the settings information (volume, uptime etc. need saving)
-    if (CFile::Exists("T:\\settings.xml"))
+    if (CFile::Exists(g_settings.GetSettingsFile()))
     {
       CLog::Log(LOGNOTICE, "Saving settings");
       g_settings.Save();
