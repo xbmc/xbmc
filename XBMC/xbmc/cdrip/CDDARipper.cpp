@@ -192,7 +192,6 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
 bool CCDDARipper::RipTrack(CFileItem* pItem)
 {
   int iTrack = 0;
-  CStdString strFile;
   CStdString strDirectory = g_guiSettings.GetString("cddaripper.path");
   if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
   CFileItem ripPath(strDirectory, true);
@@ -209,9 +208,6 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
     return false;
   }
 
-  // get track number from "cdda://local/01.cdda"
-  iTrack = atoi(pItem->m_strPath.substr(13, pItem->m_strPath.size() - 13 - 5).c_str());
-
   // if album name is set, then we use this as the directory to place the new file in.
   if (pItem->m_musicInfoTag.GetAlbum().size() > 0)
   {
@@ -222,21 +218,8 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   // Create directory if it doesn't exist
   CUtil::CreateDirectoryEx(strDirectory);
 
-  // if title is set we use it, and modify it if needed
-  char* cExt = GetExtension(g_guiSettings.GetInt("cddaripper.encoder"));
-  if (pItem->m_musicInfoTag.GetTitle().size() > 0)
-  {
-    CStdString track;
-    // do we want to include the track number in the file name?
-    if (g_guiSettings.GetBool("cddaripper.usetracknumber"))
-      track.Format("%02i %s", iTrack, pItem->m_musicInfoTag.GetTitle().c_str());
-    else
-      track = pItem->m_musicInfoTag.GetTitle();
-
-    strFile = strDirectory + CUtil::MakeLegalFileName((track + cExt).c_str(), true, bIsFATX);
-  }
-  else
-    strFile.Format("%s%s%02i%s", strDirectory.c_str(), "Track-", iTrack, cExt);
+  CStdString strFile;
+  CUtil::AddFileToFolder(strDirectory, GetTrackName(pItem, bIsFATX), strFile);
 
   return Rip(pItem->m_strPath, strFile.c_str(), pItem->m_musicInfoTag);
 }
@@ -335,32 +318,10 @@ bool CCDDARipper::RipCD()
   // rip all tracks one by one, if one fails we quit and return false
   for (int i = 0; i < vecItems.Size() && bResult == true; i++)
   {
-    char* cExt = GetExtension(g_guiSettings.GetInt("cddaripper.encoder"));
-    // get track number from "cdda://local/01.cdda"
-    iTrack = atoi(vecItems[i]->m_strPath.substr(13, vecItems[i]->m_strPath.size() - 13 - 5).c_str());
-    // if title is set we use it, and modify it if needed
-    CStdString track;
-    if (vecItems[i]->m_musicInfoTag.GetTitle().size() > 0)
-    {
-      if (bIsFATX)
-        track=CUtil::MakeLegalFileName(vecItems[i]->m_musicInfoTag.GetTitle().c_str(), true, bIsFATX);
-      else
-        track=vecItems[i]->m_musicInfoTag.GetTitle();
-
-      // do we want to include the track number in the file name?
-      if (g_guiSettings.GetBool("cddaripper.usetracknumber") && !track.IsEmpty())
-      {
-        CStdString strTitle=track;
-        track.Format("%02i %s", iTrack, strTitle.c_str());
-      }
-    }
-
-    // No legal fatx filename or no title in tag
-    if (track.IsEmpty())
-      track.Format("%s%02i", "Track", iTrack);
+    CStdString track(GetTrackName(vecItems[i], bIsFATX));
 
     // construct filename
-    strFile=strDirectory+track+cExt;
+    CUtil::AddFileToFolder(strDirectory, track, strFile);
 
     DWORD dwTick = timeGetTime();
 
@@ -381,4 +342,25 @@ char* CCDDARipper::GetExtension(int iEncoder)
   if (iEncoder == CDDARIP_ENCODER_WAV) return ".wav";
   if (iEncoder == CDDARIP_ENCODER_VORBIS) return ".ogg";
   return ".mp3";
+}
+
+CStdString CCDDARipper::GetTrackName(CFileItem *item, bool isFatX)
+{
+  // get track number from "cdda://local/01.cdda"
+  int trackNumber = atoi(item->m_strPath.substr(13, item->m_strPath.size() - 13 - 5).c_str());
+
+  // Format up our ripped file label
+  CFileItem destItem(*item);
+  destItem.SetLabel("");
+  destItem.FormatLabel(g_guiSettings.GetString("cddaripper.trackformat"));
+
+  // grab the label to use it as our ripped filename
+  CStdString track = destItem.GetLabel();
+  if (track.IsEmpty())
+    track.Format("%s%02i", "Track-", trackNumber);
+  track += GetExtension(g_guiSettings.GetInt("cddaripper.encoder"));
+
+  // make sure the filename is legal
+  track = CUtil::MakeLegalFileName(track.c_str(), true, isFatX);
+  return track;
 }
