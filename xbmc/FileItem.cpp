@@ -874,7 +874,8 @@ void CFileItem::SetMusicThumb()
       }
 
       // folder.tbn file
-      CStdString strFolderTbn = strPath + ".tbn";
+      CStdString strFolderTbn;
+      CUtil::ReplaceExtension(strPath, ".tbn", strFolderTbn);
       if (CUtil::ThumbExists(strFolderTbn, true))
       {
         // found, save a thumb for this folder
@@ -2001,12 +2002,9 @@ CStdString CFileItem::GetTBNFile()
     url.GetURL(thumbFile);
     return thumbFile;
   }
-  if (m_bIsFolder)
+  if (m_bIsFolder && CUtil::HasSlashAtEnd(m_strPath))
   {
-    if (CUtil::HasSlashAtEnd(m_strPath))
-      return m_strPath.Left(m_strPath.size() - 1) + ".tbn";
-    else
-      return m_strPath + ".tbn";
+    return m_strPath.Left(m_strPath.size() - 1) + ".tbn";
   }
   else
   {
