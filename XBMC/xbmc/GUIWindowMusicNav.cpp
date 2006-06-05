@@ -426,8 +426,10 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   if (dir.IsArtistDir(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
     btn_Thumb = pMenu->AddButton(13359);
 
-  // always visible
-  int btn_Settings = pMenu->AddButton(5);     // Settings...
+  // almost always visible
+  int btn_Settings = -2;
+  if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)
+    btn_Settings = pMenu->AddButton(5);     // Settings...
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -473,9 +475,8 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
       SetArtistImage(iItem);
     }
     else if (btn == btn_Settings)  // Settings
-    { // Check Master Lock
-      if (!g_passwordManager.bMasterLockSettings || g_passwordManager.CheckMasterLock(false))
-        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
       return;
     }
   }

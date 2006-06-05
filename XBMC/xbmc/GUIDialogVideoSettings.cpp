@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GUIDialogVideoSettings.h"
+#include "GUIPassword.h"
 #include "util.h"
 #include "application.h"
 #include "cores/VideoRenderers/RenderManager.h"
@@ -105,6 +106,9 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   else if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {
     // launch calibration window
+    if (g_guiSettings.GetBool("masterlock.locksettings") && g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE)
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return;
     m_gWindowManager.ActivateWindow(WINDOW_MOVIE_CALIBRATION);
   }
   else if (setting.id == VIDEO_SETTINGS_FORCE_INDEX)
@@ -114,6 +118,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == VIDEO_SETTINGS_MAKE_DEFAULT)
   {
+    if (g_guiSettings.GetBool("masterlock.locksettings") && g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE)
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return;
+
     // prompt user if they are sure
     if (CGUIDialogYesNo::ShowAndGetInput(12376, 750, 0, 12377))
     { // reset the settings

@@ -157,9 +157,23 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20035] = ToUTF8(strEncoding, "km/h");
   m_vecStrings[20036] = ToUTF8(strEncoding, "mph");
   m_vecStrings[20037] = ToUTF8(strEncoding, "m/s");
-  m_vecStrings[20038] = "Best Available";
-  m_vecStrings[20039] = "Autoswitch between 16x9 and 4x3";
-  m_vecStrings[20040] = "Treat stacked files as single file";
+  m_vecStrings[20038] = "Lock music";
+  m_vecStrings[20039] = "Lock videos";
+  m_vecStrings[20040] = "Lock pictures";
+  m_vecStrings[20041] = "Lock programs and scripts";
+  m_vecStrings[20042] = "Lock files";
+  m_vecStrings[20043] = "Lock settings";
+  m_vecStrings[20044] = "Use individual locks per share";
+  m_vecStrings[20045] = "Enter master mode";
+  m_vecStrings[20046] = "Leave master mode";
+  m_vecStrings[20047] = "Are your sure you want to change share locks mode?";
+  m_vecStrings[20048] = "This will remove all current share locks.";
+  m_vecStrings[20049] = "Best Available";
+  m_vecStrings[20050] = "Autoswitch between 16x9 and 4x3";
+  m_vecStrings[20051] = "Treat stacked files as single file";
+  m_vecStrings[20052] = "Caution";
+  m_vecStrings[20053] = "Left master mode";
+  m_vecStrings[20054] = "Entered master mode";
 
   // new strings for weather localization
   m_vecStrings[1411] = "with";
