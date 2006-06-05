@@ -834,6 +834,9 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
     g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
   }
 
+  /* We don't shuffle playlist on load any more
+       - shuffling is handled globally by the playlist player
+
   // music option: shuffle playlist on load
   // dont do this if the first item is a stream
   if (
@@ -843,7 +846,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
     )
   {
     g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
-  }
+  }*/
 
   if (autoStart)
     if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )

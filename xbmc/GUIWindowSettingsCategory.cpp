@@ -515,7 +515,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("lookandfeel.resolution"))
     {
-      FillInResolutions(pSetting);
+      FillInResolutions(pSetting, false);
     }
     else if (strSetting.Equals("lookandfeel.skintheme"))
     {
@@ -528,21 +528,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("videoplayer.displayresolution"))
     {
-      FillInResolutions(pSetting);
-    }
-    else if (strSetting.Equals("videoplayer.bypasscdselection"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13170), 0); // "Never" = disabled
-      pControl->AddLabel(g_localizeStrings.Get(13171), 1); // "Immediatly" = skip it completely
-      for (int i = 2; i <= 37; i++)
-      {
-        CStdString strText;
-        strText.Format((CStdString)g_localizeStrings.Get(13172), (i-1)*5); 
-        pControl->AddLabel(strText, i); // "After 5-180 secs"
-      }
-      pControl->SetValue(pSettingInt->GetData());
+      FillInResolutions(pSetting, true);
     }
     else if (strSetting.Equals("videoplayer.framerateconversions"))
     {
@@ -708,15 +694,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pictures.useautoswitching"));
     }
-    else if (strSetting.Equals("programfiles.autoswitchuselargethumbs") || strSetting.Equals("programfiles.autoswitchmethod"))
+    else if (strSetting.Equals("programfiles.autoswitchuselargethumbs"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("programfiles.useautoswitching"));
-    }
-    else if (strSetting.Equals("programfiles.autoswitchpercentage"))
-    { // set visibility based on our other setting...
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("programfiles.useautoswitching") && g_guiSettings.GetInt("programfiles.autoswitchmethod") == 2);
     }
     else if (strSetting.Equals("myprograms.ntscmode"))
     { // set visibility based on our other setting...
@@ -738,15 +719,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musicfiles.useautoswitching") && g_guiSettings.GetInt("musicfiles.autoswitchmethod") == 2);
     }
-    else if (strSetting.Equals("videofiles.autoswitchuselargethumbs") || strSetting.Equals("videofiles.autoswitchmethod"))
+    else if (strSetting.Equals("videofiles.autoswitchuselargethumbs"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videofiles.useautoswitching"));
-    }
-    else if (strSetting.Equals("videofiles.autoswitchpercentage"))
-    { // set visibility based on our other setting...
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videofiles.useautoswitching") && g_guiSettings.GetInt("videofiles.autoswitchmethod") == 2);
     }
     else if (strSetting.Equals("musicplaylist.clearplaylistsonend"))
     { // disable repeat and repeat one if clear playlists is enabled
@@ -2331,7 +2307,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
   xmlDoc.Clear();
 }
 
-void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
+void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool playbackSetting)
 {
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
@@ -2344,7 +2320,18 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
     RESOLUTION res = *it;
     if (res == AUTORES)
     {
-      pControl->AddLabel(g_localizeStrings.Get(14061), res);
+      if (playbackSetting)
+      {
+        //  TODO: localize 2.0
+        if (g_videoConfig.Has1080i() || g_videoConfig.Has720p())
+          pControl->AddLabel(g_localizeStrings.Get(20038) , res); // Best Available
+        else if (g_videoConfig.HasWidescreen())
+          pControl->AddLabel(g_localizeStrings.Get(20039) , res); // Autoswitch between 16x9 and 4x3
+        else
+          continue;   // don't have a choice of resolution (other than 480p vs NTSC, which isn't a choice)
+      }
+      else  // "Auto"
+        pControl->AddLabel(g_localizeStrings.Get(14061), res);
     }
     else
     {

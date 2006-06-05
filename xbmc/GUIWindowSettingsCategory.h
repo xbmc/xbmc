@@ -30,7 +30,7 @@ protected:
   void FillInLanguages(CSetting *pSetting);
   void FillInVoiceMasks(DWORD dwPort, CSetting *pSetting);   // Karaoke patch (114097)
   void FillInVoiceMaskValues(DWORD dwPort, CSetting *pSetting); // Karaoke patch (114097)
-  void FillInResolutions(CSetting *pSetting);
+  void FillInResolutions(CSetting *pSetting, bool playbackSetting);
   void FillInScreenSavers(CSetting *pSetting);
   void FillInRegions(CSetting *pSetting);
   bool SetMasterLockMode();
