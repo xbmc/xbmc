@@ -54,6 +54,28 @@ namespace PYXBMC
 		return Py_BuildValue("i", self->iControlId);
 	}
 
+	// setEnabled() Method
+  PyDoc_STRVAR(setEnabled__doc__,
+		"setEnabled(enabled) -- Set's the control's enabled/disabled state.\n"
+		"\n"
+    "enabled        : bool - True=enabled / False=disabled.\n"
+		"\n"
+		"example:\n"
+		"  - self.button.setEnabled(False)\n");
+
+  PyObject* Control_SetEnabled(Control* self, PyObject* args)
+	{
+		bool enabled;
+		if (!PyArg_ParseTuple(args, "b", &enabled)) return NULL;
+
+		PyGUILock();
+		if (self->pGUIControl) 	self->pGUIControl->SetEnabled(enabled);
+		PyGUIUnlock();
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	PyDoc_STRVAR(setVisible__doc__,
 		"setVisible(bool) -- Hide's or Show's this control.\n");
 
@@ -301,6 +323,7 @@ namespace PYXBMC
 
 	PyMethodDef Control_methods[] = {
 		{"getId", (PyCFunction)Control_GetId, METH_VARARGS, getId__doc__},
+		{"setEnabled", (PyCFunction)Control_SetEnabled, METH_VARARGS, setEnabled__doc__},
 		{"setVisible", (PyCFunction)Control_SetVisible, METH_VARARGS, setVisible__doc__},
 		{"setPosition", (PyCFunction)Control_SetPosition, METH_VARARGS, setPosition__doc__},
 		{"setWidth", (PyCFunction)Control_SetWidth, METH_VARARGS, setWidth__doc__},
