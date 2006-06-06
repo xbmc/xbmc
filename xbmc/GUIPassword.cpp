@@ -157,6 +157,8 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
   // prompt user for mastercode if the mastercode was set b4 or by xml
   int iVerifyPasswordResult = -1;
   CStdString strHeader = g_localizeStrings.Get(12324);
+  if (iMasterLockRetriesLeft == -1)
+    iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
   if (g_passwordManager.iMasterLockRetriesLeft == 0) g_passwordManager.iMasterLockRetriesLeft = 1;
   CStdString strPassword = g_guiSettings.GetString("masterlock.lockcode");
   for (int i=1; i <= g_passwordManager.iMasterLockRetriesLeft; i++)
