@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language>
   <charsets>
     <gui unicodefont="true">CP1254</gui>
@@ -12,9 +12,9 @@
   </dvd>
 
   <regions>
-    <region>
+      <region  name="Turkiye">
       <dateshort>DD.MM.YYYY</dateshort>
-      <datelong>DD MMMM YYYY DDDD</datelong>
+      <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
