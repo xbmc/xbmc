@@ -117,6 +117,7 @@ namespace PYXBMC
         DWORD dwTextXOffset;
         DWORD dwTextYOffset;
         DWORD dwAlign;
+        int iAngle;
 	} ControlButton;
 
 	typedef struct {

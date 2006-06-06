@@ -25,7 +25,7 @@ namespace PYXBMC
 			"x", "y", "width", "height", "label",
             "focusTexture", "noFocusTexture", 
 			"textXOffset", "textYOffset", "alignment",
-            "font", "textColor", "disabledColor", NULL };
+            "font", "textColor", "disabledColor", "angle", NULL };
 		ControlButton *self;
         char* cFont = NULL;
 		char* cTextureFocus = NULL;
@@ -45,11 +45,12 @@ namespace PYXBMC
 		self->strFont = "font13";		
 		self->dwTextColor = 0xffffffff;
 		self->dwDisabledColor = 0x60ffffff;
+    self->iAngle = 0;
 
 		if (!PyArg_ParseTupleAndKeywords(
             args,
             kwds,
-            "llll|Osslllsss",
+            "llllO|sslllsssl",
             keywords,
             &self->dwPosX,
             &self->dwPosY,
@@ -63,7 +64,8 @@ namespace PYXBMC
             &self->dwAlign,
             &cFont,
             &cTextColor,
-            &cDisabledColor ))
+            &cDisabledColor, 
+            &self->iAngle))
         {
             Py_DECREF( self );
             return NULL;
@@ -105,6 +107,7 @@ namespace PYXBMC
     label.align = pControl->dwAlign;
     label.offsetX = pControl->dwTextXOffset;
     label.offsetY = pControl->dwTextYOffset;
+    label.angle = CAngle(-pControl->iAngle);
     pControl->pGUIControl = new CGUIButtonControl(
       pControl->iParentId,
       pControl->iControlId,
@@ -209,26 +212,34 @@ namespace PYXBMC
 		{NULL, NULL, 0, NULL}
 	};
 
+	// ControlButton class
 	PyDoc_STRVAR(controlButton__doc__,
 		"ControlButton class.\n"
 		"\n"
-		"ControlButton(\n"
-    "    x, y, width, height, label, focusTexture, noFocusTexture, \n"
-    "    textXOffset, textYOffset, alignment, font, textColor, disabledColor)\n"
+		"ControlButton(x, y, width, height, label[, focusTexture, noFocusTexture, \n"
+    "              textXOffset, textYOffset, alignment, font, textColor, disabledColor, angle])\n"
 		"\n"
-    "x              : integer x coordinate of control\n"
-    "y              : integer y coordinate of control\n"
-    "width          : integer width of control\n"
-    "height         : integer height of control\n"
-		"label          : string or unicode string (opt)\n"
-		"focusTexture   : filename for focus texture (opt)\n"
-		"noFocusTexture : filename for no focus texture (opt)\n"
-		"textXOffset    : integer x offset of label (opt)\n"
-		"textYOffset    : integer y offset of label (opt)\n"
-		"alignment      : integer alignment of label - see xbfont.h (opt)\n"
-		"font           : font used for label text e.g. 'font13' (opt)\n"
-		"textColor      : color of button text e.g. '0xFFFFFFFF' (opt)\n"
-		"disabledColor  : color of disabled button text e.g. '0xFFFFFFFF' (opt)\n");
+    "x              : integer - x coordinate of control.\n"
+    "y              : integer - y coordinate of control.\n"
+    "width          : integer - width of control.\n"
+    "height         : integer - height of control.\n"
+		"label          : string or unicode - text string.\n"
+    "focusTexture   : [opt] string - filename for focus texture.\n"
+		"noFocusTexture : [opt] string - filename for no focus texture.\n"
+		"textXOffset    : [opt] integer - x offset of label.\n"
+		"textYOffset    : [opt] integer - y offset of label.\n"
+		"alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n"
+    "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
+    "textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')\n"
+    "disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n"
+    "angle          : [opt] integer - angle of control. (+ rotates CCW, - rotates CW)"
+		"\n"
+		"*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       After you create the control, you need to add it to the window with addControl().\n"
+		"\n"
+		"example:\n"
+		"  - self.button = xbmcgui.ControlButton(100, 250, 200, 50, 'Status', font='font14')\n");
 
 // Restore code and data sections to normal.
 #pragma code_seg()

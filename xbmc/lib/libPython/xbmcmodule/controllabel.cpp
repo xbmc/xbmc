@@ -87,7 +87,7 @@ namespace PYXBMC
     label.textColor = pControl->dwTextColor;
     label.disabledColor = pControl->dwDisabledColor;
     label.align = pControl->dwAlign;
-    label.angle = CAngle(pControl->iAngle);
+    label.angle = CAngle(-pControl->iAngle);
     pControl->pGUIControl = new CGUILabelControl(
       pControl->iParentId,
       pControl->iControlId,
