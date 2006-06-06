@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 06-06-2006 updated: Turkish language file (Thnx to necipfazil)
  - 05-06-2006 added: [ 1501051 ] setEnabled() method, angle to button in python, thanks to Nuka1195
  - 05-06-2006 changed: redid master lock. thanks to smokehead for skin work!
  - 05-06-2006 fixed: [ 1500816 ] Playlist Thumbs
