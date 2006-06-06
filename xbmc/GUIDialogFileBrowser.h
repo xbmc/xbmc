@@ -31,7 +31,7 @@ public:
   virtual void OnItemLoaded(CFileItem *item) {};
   const CFileItem *GetCurrentListItem() const;
 
-  virtual bool IsMediaWindow() { return true; };
+  virtual bool IsMediaWindow() const { return true; };
 protected:
   void GoParentFolder();
   void OnClick(int iItem);
