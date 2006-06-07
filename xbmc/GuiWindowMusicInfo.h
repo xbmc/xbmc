@@ -18,7 +18,11 @@ protected:
   void Refresh();
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
-  CMusicAlbumInfo* m_pAlbum;
+  bool DownloadThumbnail(const CStdString &thumbFile);
+  void OnGetThumb();
+
+  CMusicAlbumInfo m_album;
   bool m_bViewReview;
   bool m_bRefresh;
+  CFileItem m_albumItem;
 };
