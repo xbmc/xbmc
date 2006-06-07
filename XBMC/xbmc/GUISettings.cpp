@@ -223,8 +223,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "musicfiles.sep2");
   AddBool(8, "musicfiles.useautoswitching", 14011, false);
   AddBool(9, "musicfiles.autoswitchuselargethumbs", 14012, false);
-  AddInt(10, "musicfiles.autoswitchmethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(11, "musicfiles.autoswitchpercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(3, "musicplaylist", 136);
   AddBool(1, "musicplaylist.clearplaylistsonend",239,false);
