@@ -307,7 +307,7 @@ bool CFileItem::IsInternetStream() const
     return false;
 
   if (strProtocol == "shout" || strProtocol == "mms" ||
-      strProtocol == "http" || strProtocol == "ftp" ||
+      strProtocol == "http" || /*strProtocol == "ftp" ||*/
       strProtocol == "rtsp" || strProtocol == "rtp" ||
       strProtocol == "udp"  || strProtocol == "lastfm" ||
       strProtocol == "https")
