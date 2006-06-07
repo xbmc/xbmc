@@ -7,6 +7,7 @@
 #define METHOD_BYFILES   1
 #define METHOD_BYTHUMBPERCENT 2
 #define METHOD_BYFILECOUNT 3
+#define METHOD_BYFOLDERTHUMBS 4
 
 CAutoSwitch::CAutoSwitch(void)
 {}
@@ -28,12 +29,9 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
   {
   case WINDOW_MUSIC_FILES:
     {
-      iSortMethod = g_guiSettings.GetInt("musicfiles.autoswitchmethod");
+      iSortMethod = METHOD_BYFOLDERTHUMBS;
       bBigThumbs = g_guiSettings.GetBool("musicfiles.autoswitchuselargethumbs");
-      if ( iSortMethod == METHOD_BYTHUMBPERCENT )
-      {
-        iPercent = g_guiSettings.GetInt("musicfiles.autoswitchpercentage");
-      }
+      iPercent = 50;
     }
     break;
 
@@ -80,6 +78,9 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
     break;
   case METHOD_BYFILECOUNT:
     bThumbs = ByFileCount(vecItems);
+    break;
+  case METHOD_BYFOLDERTHUMBS:
+    bThumbs = ByFolderThumbPercentage(bHideParentFolderItems, iPercent, vecItems);
     break;
   }
 
@@ -186,4 +187,32 @@ bool CAutoSwitch::ByFileCount(const CFileItemList& vecItems)
   if (vecItems.Size() == 0) return false;
   float fPercent = (float)vecItems.GetFileCount() / vecItems.Size();
   return (fPercent > 0.25);
+}
+
+// returns true if:
+// 1. Have more than 75% folders and
+// 2. Have more than percent folders with thumbs
+bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, const CFileItemList &vecItems)
+{
+  int numItems = vecItems.Size();
+  if (hideParentDirItems)
+    numItems--;
+  if (numItems <= 0) return false;
+
+  int fileCount = vecItems.GetFileCount();
+  if (fileCount > 0.25f * numItems) return false;
+
+  int numThumbs = 0;
+  for (int i = 0; i < vecItems.Size(); i++)
+  {
+    const CFileItem* item = vecItems[i];
+    if (item->m_bIsFolder && item->HasThumbnail())
+    {
+      numThumbs++;
+      if (numThumbs >= 0.01f * percent * (numItems - fileCount))
+        return true;
+    }
+  }
+
+  return false;
 }
