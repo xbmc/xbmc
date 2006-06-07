@@ -181,13 +181,13 @@ void CDirectoryCache::InitThumbCache()
   if (g_directoryCache.m_thumbDirs.size() == 0)
   {
     // thumbnails directories
-    g_directoryCache.m_thumbDirs.insert(g_settings.GetThumbnailsFolder());
+/*    g_directoryCache.m_thumbDirs.insert(g_settings.GetThumbnailsFolder());
     for (unsigned int hex=0; hex < 16; hex++)
     {
       CStdString strHex;
       strHex.Format("\\%x",hex);
       g_directoryCache.m_thumbDirs.insert(g_settings.GetThumbnailsFolder() + strHex);
-    }
+    }*/
   }
 
   InitCache(g_directoryCache.m_thumbDirs);
@@ -223,7 +223,6 @@ void CDirectoryCache::InitMusicThumbCache()
   {
     // music thumbnails directories
     g_directoryCache.m_musicThumbDirs.insert(g_settings.GetMusicThumbFolder());
-    g_directoryCache.m_musicThumbDirs.insert(g_settings.GetMusicTempThumbFolder());
   }
 
   InitCache(g_directoryCache.m_musicThumbDirs);

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-06-2006 changed: Updated the music thumbs system to be more inline with the current system.  Will require rescanning your music in to get thumbs in the library views.
+ - 07-06-2006 added: Support for avalaunch_icon.jpg for My Programs.
  - 07-06-2006 fixed: Initial focus of controls didn't take into account whether they were hidden.
  - 06-06-2006 updated: French language file
  - 06-06-2006 fixed: Startup lock was unfunctional.
