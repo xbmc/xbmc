@@ -104,6 +104,9 @@ CControlSocket::~CControlSocket()
 	}
 	t_connectiondata *conndata=new t_connectiondata;
 	t_connop *op = new t_connop;
+  memset(conndata, 0, sizeof(t_connectiondata));
+  memset(op, 0, sizeof(t_connop));
+
 	op->data = conndata;
 	op->op = USERCONTROL_CONNOP_REMOVE;
 	conndata->userid = m_userid;
@@ -589,6 +592,10 @@ void CControlSocket::ParseCommand()
 				m_pOwner->DecIpCount(m_status.ip);
 				t_connectiondata *conndata = new t_connectiondata;
 				t_connop *op = new t_connop;
+
+        memset(conndata, 0, sizeof(t_connectiondata));
+        memset(op, 0, sizeof(t_connop));
+
 				op->data = conndata;
 				op->op = USERCONTROL_CONNOP_MODIFY;
 				conndata->userid = m_userid;
@@ -727,6 +734,10 @@ void CControlSocket::ParseCommand()
 
 				t_connectiondata *conndata = new t_connectiondata;
 				t_connop *op = new t_connop;
+
+        memset(conndata, 0, sizeof(t_connectiondata));
+        memset(op, 0, sizeof(t_connop));
+
 				op->data = conndata;
 				op->op = USERCONTROL_CONNOP_MODIFY;
 				conndata->userid = m_userid;
@@ -2866,6 +2877,10 @@ BOOL CControlSocket::DoUserLogin(char* sendme)
 
 		t_connectiondata *conndata=new t_connectiondata;
 		t_connop *op=new t_connop;
+
+    memset(conndata, 0, sizeof(t_connectiondata));
+    memset(op, 0, sizeof(t_connop));
+
 		op->data=conndata;
 		op->op=USERCONTROL_CONNOP_MODIFY;
 		conndata->userid=m_userid;
