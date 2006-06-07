@@ -146,7 +146,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   }
   if (g_advancedSettings.m_playlistAsFolders)
   if (strExtension == ".m3u" || strExtension == ".b4s" || strExtension == ".pls" ||
-      strExtension == ".strm" || strExtension == ".wpl")
+      strExtension == ".wpl")
   { // Playlist file
     IFileDirectory *pDir = new CPlaylistDirectory;
     CFileItemList items;

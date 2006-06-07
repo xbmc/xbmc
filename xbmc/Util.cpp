@@ -4104,7 +4104,7 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
   return false;
 }
 
-CStdString CUtil::GetCachedAlbumThumb(const CStdString& path, const CStdString& album)
+CStdString CUtil::GetCachedAlbumThumb(const CStdString& album, const CStdString& path)
 {
   if (album.IsEmpty())
     return GetCachedMusicThumb("unknown"+path);
