@@ -1403,6 +1403,10 @@ void CGUIWindow::RestoreControlStates()
       OnMessage(message);
     }
   }
+  // set our initial control visibility before focusing the default control
+  // note that we then set it again after this to make sure any controls
+  // that depend on the focused control are active.
+  SetControlVisibility();
   if (m_saveLastControl)
   {
     // set focus to our saved control
