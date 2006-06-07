@@ -384,44 +384,32 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
         AddExtraArtists(vecArtists, 0, album.idAlbum, true);
       }
 
-      CStdString strTempCoverArt;
-      CStdString strCoverArt;
-      CUtil::GetAlbumThumb(album.strAlbum, album.strPath, strTempCoverArt, true);
+      CStdString albumCoverArt(CUtil::GetCachedAlbumThumb(album.strAlbum, album.strPath));
       // Was the album art of this album read during scan?
-      if (CUtil::ThumbCached(strTempCoverArt))
+      if (CUtil::ThumbCached(albumCoverArt))
       {
         // Yes.
         VECALBUMS albums;
         GetAlbumsByPath(album.strPath, albums);
-        CUtil::GetAlbumFolderThumb(album.strPath, strCoverArt);
+        CStdString folderCoverArt(CUtil::GetCachedMusicThumb(album.strPath));
         // Do we have more then one album in this directory...
         if (albums.size() == 1)
         {
-          // ...no, copy as permanent directory thumb
-          if (::CopyFile(strTempCoverArt, strCoverArt, false))
-            CUtil::ThumbCacheAdd(strCoverArt, true);
+          // ...no, copy as directory thumb as well
+          if (::CopyFile(albumCoverArt, folderCoverArt, false))
+            CUtil::ThumbCacheAdd(folderCoverArt, true);
         }
-        else if (CUtil::ThumbCached(strCoverArt))
+        else if (CUtil::ThumbCached(folderCoverArt))
         {
           // ...yes, we have more then one album in this directory
           // and have saved a thumb for this directory from another album
           // so delete the directory thumb.
-          if (CUtil::ThumbExists(strCoverArt))
+          if (CUtil::ThumbExists(folderCoverArt))
           {
-            if (::DeleteFile(strCoverArt))
-              CUtil::ThumbCacheAdd(strCoverArt, false);
+            if (::DeleteFile(folderCoverArt))
+              CUtil::ThumbCacheAdd(folderCoverArt, false);
           }
         }
-
-        // And move as permanent thumb for files and directory, where
-        // album and path is known
-        CUtil::GetAlbumThumb(album.strAlbum, album.strPath, strCoverArt);
-        ::MoveFileEx(strTempCoverArt, strCoverArt, MOVEFILE_REPLACE_EXISTING);
-
-        // Update database entry in thumb table
-        strSQL=FormatSQL("UPDATE thumb SET strThumb='%s' where strThumb='%s'", strCoverArt.c_str(), strTempCoverArt.c_str());
-        m_pDS->exec(strSQL.c_str());
-
       }
     }
     m_albumCache.erase(m_albumCache.begin(), m_albumCache.end());
@@ -2118,12 +2106,11 @@ bool CMusicDatabase::CleanupAlbumsFromPaths(const CStdString &strPathIds)
       strAlbumIds += m_pDS->fv("album.idAlbum").get_asString() + ",";
       // delete the thumb
       
-      CStdString strThumb;
-      CUtil::GetAlbumThumb(m_pDS->fv("album.strAlbum").get_asString(), m_pDS->fv("path.strPath").get_asString(), strThumb);
+      CStdString strThumb(CUtil::GetCachedAlbumThumb(m_pDS->fv("album.strAlbum").get_asString(), m_pDS->fv("path.strPath").get_asString()));
       ::DeleteFile(strThumb);
 
       // delete directory thumb
-      CUtil::GetAlbumFolderThumb(m_pDS->fv("path.strPath").get_asString(), strThumb);
+      strThumb = CUtil::GetCachedMusicThumb(m_pDS->fv("path.strPath").get_asString());
       ::DeleteFile(strThumb);
       m_pDS->next();
     }
@@ -2270,8 +2257,7 @@ bool CMusicDatabase::CleanupAlbums()
     {
       strAlbumIds += m_pDS->fv("album.idAlbum").get_asString() + ",";
       // delete the thumb for this file, if it has been cached
-      CStdString strThumb;
-      CUtil::GetAlbumThumb(m_pDS->fv("album.strAlbum").get_asString(), m_pDS->fv("path.strPath").get_asString(), strThumb);
+      CStdString strThumb(CUtil::GetCachedAlbumThumb(m_pDS->fv("album.strAlbum").get_asString(), m_pDS->fv("path.strPath").get_asString()));
       ::DeleteFile(strThumb);
       m_pDS->next();
     }

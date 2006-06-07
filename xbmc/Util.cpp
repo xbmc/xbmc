@@ -1352,31 +1352,6 @@ void CUtil::URLEncode(CStdString& strURLData)
   strURLData = strResult;
 }
 
-void CUtil::GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
-{
-  Crc32 crc;
-  crc.ComputeFromLowerCase(strFileName);
-  if (bTempDir)
-    strThumb.Format("%s\\%x.tbn", g_settings.GetMusicTempThumbFolder().c_str(), crc);
-  else
-    strThumb.Format("%s\\%x.tbn", g_settings.GetMusicThumbFolder().c_str(), crc);
-}
-
-void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
-{
-  CStdString str;
-  if (strAlbumName.IsEmpty())
-  {
-    str = "unknown" + strFileName;
-  }
-  else
-  {
-    str = strAlbumName + strFileName;
-  }
-  GetAlbumFolderThumb(str, strThumb, bTempDir);
-}
-
-
 bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon)
 {
   // extract icon from .xbe
@@ -2477,8 +2452,7 @@ void CUtil::TakeScreenshot()
 void CUtil::ClearCache()
 {
   g_directoryCache.ClearDirectory(g_settings.GetMusicThumbFolder());
-  g_directoryCache.ClearDirectory(g_settings.GetMusicTempThumbFolder());
-
+/*
   g_directoryCache.ClearDirectory(g_settings.GetThumbnailsFolder());
 
   for (unsigned int hex=0; hex < 16; hex++)
@@ -2486,7 +2460,7 @@ void CUtil::ClearCache()
     CStdString strHex;
     strHex.Format("\\%x",hex);
     g_directoryCache.ClearDirectory(g_settings.GetThumbnailsFolder() + strHex);
-  }
+  }*/
 }
 
 void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
@@ -4128,4 +4102,22 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     return SupportsFileOperations(dir.GetFirstStackedFile(strPath));
   }
   return false;
+}
+
+CStdString CUtil::GetCachedAlbumThumb(const CStdString& path, const CStdString& album)
+{
+  if (album.IsEmpty())
+    return GetCachedMusicThumb("unknown"+path);
+  return GetCachedMusicThumb(album+path);
+}
+
+CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
+{
+  Crc32 crc;
+  CStdString noSlashPath(path);
+  RemoveSlashAtEnd(noSlashPath);
+  crc.ComputeFromLowerCase(noSlashPath);
+  CStdString thumb;
+  thumb.Format("%s\\%x.tbn", g_settings.GetMusicThumbFolder().c_str(), crc);
+  return thumb;
 }
