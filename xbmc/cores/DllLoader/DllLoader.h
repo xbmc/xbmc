@@ -41,6 +41,8 @@ public:
   int Parse();
   int ResolveImports();
   int ResolveExport(const char*, void**);
+  int ResolveExport(unsigned long ordinal, void**);
+
   char* GetName(); // eg "mplayer.dll"
   char* GetFileName(); // "Q:\system\mplayer\players\mplayer.dll"
   char* GetPath(); // "Q:\system\mplayer\players\"
