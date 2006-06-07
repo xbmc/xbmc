@@ -330,17 +330,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     CSetting *pSetting = settings[i];
     AddSetting(pSetting, iPosX, iPosY, iGapY, iWidth, iControlID);
     CStdString strSetting = pSetting->GetSetting();
-    if (strSetting.Equals("Pictures.AutoSwitchMethod") || strSetting.Equals("programfiles.autoswitchmethod") || strSetting.Equals("musicfiles.autoswitchmethod") || strSetting.Equals("videofiles.autoswitchmethod"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      for (int i = pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i++)
-      {
-        pControl->AddLabel(g_localizeStrings.Get(14015 + i), i);
-      }
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("myprograms.ntscmode"))
+    if (strSetting.Equals("myprograms.ntscmode"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -676,15 +666,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE);
     }
-    else if (strSetting.Equals("musicfiles.autoswitchuselargethumbs") || strSetting.Equals("musicfiles.autoswitchmethod"))
+    else if (strSetting.Equals("musicfiles.autoswitchuselargethumbs"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musicfiles.useautoswitching"));
-    }
-    else if (strSetting.Equals("musicfiles.autoswitchpercentage"))
-    { // set visibility based on our other setting...
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musicfiles.useautoswitching") && g_guiSettings.GetInt("musicfiles.autoswitchmethod") == 2);
     }
     else if (strSetting.Equals("videofiles.autoswitchuselargethumbs"))
     {
