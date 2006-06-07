@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-06-2006 fixed: Get Thumb option wasn't enabled for Album Information.
  - 07-06-2006 fixed: .strm files were treated as folders like playlists.
  - 07-06-2006 changed: Updated the music thumbs system to be more inline with the current system.  Will require rescanning your music in to get thumbs in the library views.
  - 07-06-2006 added: Support for avalaunch_icon.jpg for My Programs.
