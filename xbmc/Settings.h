@@ -275,6 +275,7 @@ public:
     float m_controllerDeadzone;
 
     bool m_playlistAsFolders;
+
     int m_thumbSize;
 
     int m_sambaclienttimeout;
@@ -449,7 +450,6 @@ public:
   CStdString GetIMDbFolder() const;
   CStdString GetThumbnailsFolder() const;
   CStdString GetMusicThumbFolder() const;
-  CStdString GetMusicTempThumbFolder() const;
   CStdString GetMusicArtistThumbFolder() const;
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;

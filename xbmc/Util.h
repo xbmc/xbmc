@@ -235,8 +235,6 @@ public:
   static int GetDVDIfoTitle(const CStdString& strPathFile);
   static void UrlDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
-  static void GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strAlbumThumb, bool bTempDir = false);
-  static void GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strFileName, CStdString& strThumb, bool bTempDir = false);
   static bool CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon);
   static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
   static bool SetXBEDescription(const CStdString& strFileName, const CStdString& strDescription);
@@ -325,6 +323,9 @@ public:
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
   static float CurrentCpuUsage();
   static bool SupportsFileOperations(const CStdString& strPath);
+
+  static CStdString GetCachedMusicThumb(const CStdString &path);
+  static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &path);
 
 private:
   static HANDLE m_hCurrentCpuUsage;

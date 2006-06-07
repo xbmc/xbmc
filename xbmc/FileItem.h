@@ -114,9 +114,6 @@ public:
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
 
-  // Gets the .tbn file associated with this item
-  CStdString GetTBNFile();
-
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb();
   CStdString GetCachedPictureThumb();
@@ -131,12 +128,16 @@ public:
   void SetCachedPictureThumb();
   void SetCachedArtistThumb();
   void SetCachedProgramThumb();
+  void SetCachedMusicThumb();
 
-  // Gets the user video thumb, if it exists
+  // Gets the user thumb, if it exists
   CStdString GetUserVideoThumb();
-  // Caches the user video thumb and assigns it to the item
+  CStdString GetUserMusicThumb();
+
+  // Caches the user thumb and assigns it to the item
   void SetUserVideoThumb();
   void SetUserProgramThumb();
+  void SetUserMusicThumb();
 
   /* returns the content type of this item if known. will lookup for http streams */  
   const CStdString& GetContentType() const; 
@@ -146,6 +147,11 @@ public:
 
 private:
   CStdString ParseFormat(const CStdString& strMask);
+
+  // Gets the .tbn file associated with this item
+  CStdString GetTBNFile();
+  // Gets the previously cached thumb file (with existence checks)
+  CStdString GetPreviouslyCachedMusicThumb();
 
 public:
   CStdString m_strPath;            ///< complete path to item
@@ -257,6 +263,7 @@ public:
 
   void SetCachedVideoThumbs();
   void SetCachedProgramThumbs();
+  void SetCachedMusicThumbs();
   void SetProgramThumbs();
 
 private:

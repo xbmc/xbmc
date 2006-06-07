@@ -28,14 +28,6 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, 
   return m_info.texture;
 }
 
-bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum)
-{
-  CStdString strThumbnail;
-  CUtil::GetAlbumFolderThumb(strAlbum, strThumbnail, true);
-  // TODO: Do we need to check existence here?
-  return DoCreateThumbnail(strFileName, strThumbnail, true);
-}
-
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
 {
   // don't create the thumb if it already exists
@@ -56,7 +48,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   return true;
 }
 
-bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
+bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
 {
   CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
   if (!m_dll.Load()) return false;

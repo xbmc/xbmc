@@ -27,6 +27,7 @@ CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
 {
   m_vecItems.m_strPath="?";
 
+  m_thumbLoader.SetObserver(this);
   // Remove old HD cache every time XBMC is loaded
   DeleteDirectoryCache();
 }
@@ -39,6 +40,10 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  case GUI_MSG_WINDOW_DEINIT:
+    if (m_thumbLoader.IsLoading())
+      m_thumbLoader.StopThread();
+    break;
   case GUI_MSG_WINDOW_INIT:
     {
       // removed the start window check from files view
@@ -215,7 +220,7 @@ void CGUIWindowMusicSongs::OnPrepareFileItems(CFileItemList &items)
 {
   RetrieveMusicInfo();
 
-  items.SetMusicThumbs();
+  items.SetCachedMusicThumbs();
 }
 
 void CGUIWindowMusicSongs::UpdateButtons()
@@ -463,4 +468,16 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
     return;
 
   CGUIWindowMusicBase::PlayItem(iItem);
+}
+
+bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
+{
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
+  if (!CGUIMediaWindow::Update(strDirectory))
+    return false;
+
+  m_thumbLoader.Load(m_vecItems);
+  return true;
 }

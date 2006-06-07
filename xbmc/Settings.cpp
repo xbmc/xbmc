@@ -2253,13 +2253,6 @@ CStdString CSettings::GetMusicThumbFolder() const
   return folder;
 }
 
-CStdString CSettings::GetMusicTempThumbFolder() const
-{
-  CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music\\Temp", folder);
-  return folder;
-}
-
 CStdString CSettings::GetMusicArtistThumbFolder() const
 {
   CStdString folder;

@@ -130,14 +130,10 @@ bool CID3Tag::Parse()
   {
     CStdString strPath;
     CUtil::GetDirectory(tag.GetURL(), strPath);
-    CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt, true);
+    strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), strPath);
   }
   else
-  {
-    CStdString strPath;
-    CUtil::ReplaceExtension(tag.GetURL(), ".tbn", strPath);
-    CUtil::GetAlbumFolderThumb(strPath, strCoverArt, true);
-  }
+    strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
   if (bFound)
   {
     if (!CUtil::ThumbExists(strCoverArt))
@@ -154,7 +150,7 @@ bool CID3Tag::Parse()
       if (pPic != NULL && nBufSize > 0)
       {
         CPicture pic;
-        if (pic.CreateAlbumThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
+        if (pic.CreateThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
         {
           CUtil::ThumbCacheAdd(strCoverArt, true);
         }
