@@ -454,14 +454,10 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
       {
         CStdString strPath;
         CUtil::GetDirectory(tag.GetURL(), strPath);
-        CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt, true);
+        strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), strPath);
       }
       else
-      {
-        CStdString strPath;
-        CUtil::ReplaceExtension(tag.GetURL(), ".tbn", strPath);
-        CUtil::GetAlbumFolderThumb(strPath, strCoverArt, true);
-      }
+        strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
       if (!CUtil::ThumbExists(strCoverArt))
       {
         int nPos = strExtension.Find('/');
@@ -471,7 +467,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
         if (picture.pbData != NULL && picture.dwDataLen > 0)
         {
           CPicture pic;
-          if (pic.CreateAlbumThumbnailFromMemory(picture.pbData, picture.dwDataLen, strExtension, strCoverArt))
+          if (pic.CreateThumbnailFromMemory(picture.pbData, picture.dwDataLen, strExtension, strCoverArt))
           {
             CUtil::ThumbCacheAdd(strCoverArt, true);
           }

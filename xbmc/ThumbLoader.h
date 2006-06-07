@@ -17,3 +17,11 @@ public:
   virtual ~CProgramThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
 };
+
+class CMusicThumbLoader : public CBackgroundInfoLoader
+{
+public:
+  CMusicThumbLoader();
+  virtual ~CMusicThumbLoader();
+  virtual bool LoadItem(CFileItem* pItem);
+};

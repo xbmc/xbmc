@@ -169,9 +169,8 @@ void CGUIWindowMusicInfo::Refresh()
     return ;
   }
 
-  CStdString strThumb;
   CStdString strImage = m_pAlbum->GetImageURL();
-  CUtil::GetAlbumThumb(m_pAlbum->GetTitle(), m_pAlbum->GetAlbumPath(), strThumb);
+  CStdString strThumb(CUtil::GetCachedAlbumThumb(m_pAlbum->GetTitle(), m_pAlbum->GetAlbumPath()));
   if (!CFile::Exists(strThumb) && !strImage.IsEmpty() )
   {
     // Download image and save as
