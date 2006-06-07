@@ -12,7 +12,6 @@
 #include "FileCDDA.h"
 #include "FileZip.h"
 #include "FileRar.h"
-#include "FileFTP.h"
 #include "FileCurl.h"
 #include "FileMusicDatabase.h"
 #include "FileLastFM.h"
@@ -39,6 +38,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   strProtocol.MakeLower();
 
   if (strProtocol.Equals("http") || strProtocol.Equals("https")) return new CFileCurl();
+  else if (strProtocol == "ftp") return new CFileCurl();
   else if (strProtocol == "iso9660") return new CFileISO();
   else if (strProtocol == "smb") return new CFileSMB();
   else if (strProtocol == "xbms") return new CFileXBMSP();
@@ -50,9 +50,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "cdda") return new CFileCDDA();
   else if (strProtocol == "zip") return new CFileZip();
   else if (strProtocol == "rar") return new CFileRar();
-  else if (strProtocol == "ftp") return new CFileFTP();
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
   else if (strProtocol == "file") return new CFileHD();
-//  else if (strProtocol == "ftp") return new CFileCurl();
+  
   else return new CFileHD();
 }
