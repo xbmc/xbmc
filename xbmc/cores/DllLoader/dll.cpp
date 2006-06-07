@@ -3,8 +3,14 @@
 #include "dll.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
+#include "dll_tracker.h"
+#include "dll_util.h"
 
 #define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs"
+#define HIGH_WORD(a) ((WORD)(((DWORD)(a) >> 16) & MAXWORD))
+#define LOW_WORD(a) ((WORD)(((DWORD)(a)) & MAXWORD))
+
+//#define API_DEBUG
 
 char* getpath(char *buf, const char *full)
 {
@@ -133,12 +139,54 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 
 extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
 {
-  void* address = NULL;
+  unsigned loc;
+  __asm mov eax, [ebp + 4];
+  __asm mov loc, eax;
   
+  void* address = NULL;
   DllLoader* dll = (DllLoader*)hModule;
-  dll->ResolveExport(function, &address);
 
-  CLog::Log(LOGDEBUG, "%s!GetProcAddress(0x%x, '%s') => 0x%x", dll->GetName(), hModule, function, address);
+  /* how can somebody get the stupid idea to create such a stupid function */
+  /* where you never know if the given pointer is a pointer or a value */
+  if( HIGH_WORD(function) == 0 && LOW_WORD(function) < 1000)
+  {
+    if( dll->ResolveExport(LOW_WORD(function), &address) )
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), %d) => 0x%x", hModule, dll->GetName(), LOW_WORD(function), address);
+    }
+    else if( dll->IsSystemDll() )
+    {
+      char ordinal[5];
+      sprintf(ordinal, "%d", LOW_WORD(function));
+      address = (void*)create_dummy_function(dll->GetName(), ordinal);
+
+      /* add to tracklist if we are tracking this source dll */
+      DllTrackInfo* track = tracker_get_dlltrackinfo(loc);
+      if( track )
+        tracker_dll_data_track(track->pDll, (unsigned long)address);
+
+      CLog::Log(LOGDEBUG, __FUNCTION__" - created dummy function %s!%s", dll->GetName(), ordinal);
+    }
+  }
+  else
+  {
+    if( dll->ResolveExport(function, &address) )
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), '%s') => 0x%x", hModule, dll->GetName(), function, address);
+    }
+    else if( dll->IsSystemDll() )
+    {
+      address = (void*)create_dummy_function(dll->GetName(), function);
+
+      /* add to tracklist if we are tracking this source dll */
+      DllTrackInfo* track = tracker_get_dlltrackinfo(loc);
+      if( track )
+        tracker_dll_data_track(track->pDll, (unsigned long)address);
+
+      CLog::Log(LOGDEBUG, __FUNCTION__" - created dummy function %s!%s", dll->GetName(), function);
+    }
+  }
+  
   return (FARPROC)address;
 }
 
@@ -151,22 +199,27 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
   The name is compared (case independently)
   If this parameter is NULL, GetModuleHandle returns a handle to the file used to create the calling process (.exe file).
   */
+
+  if( lpModuleName == NULL ) 
+    return NULL;
+
   char* strModuleName = new char[strlen(lpModuleName) + 5];
   strcpy(strModuleName, lpModuleName);
 
   if (strrchr(strModuleName, '.') == 0) strcat(strModuleName, ".dll");
 
-  CLog::Log(LOGDEBUG, "GetModuleHandleA(%s) .. looking up", lpModuleName);
+  //CLog::Log(LOGDEBUG, "GetModuleHandleA(%s) .. looking up", lpModuleName);
 
   HMODULE h = g_dlls.GetModuleAddress(strModuleName);
   if (h)
   {
-    CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') => 0x%x", lpModuleName, h);
+    //CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') => 0x%x", lpModuleName, h);
     return h;
   }
  
   delete []strModuleName;
 
+  CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') failed", lpModuleName);
   return NULL;
 }
 

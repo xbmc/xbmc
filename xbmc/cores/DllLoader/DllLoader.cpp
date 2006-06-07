@@ -513,6 +513,28 @@ int DllLoader::ResolveExport(const char *sName, void **pAddr)
   return 0;
 }
 
+int DllLoader::ResolveExport(unsigned long ordinal, void **pAddr)
+{
+  Export* pExport=GetExportByOrdinal(ordinal);
+
+  if (pExport)
+  {
+    if (m_bTrack && pExport->track_function)
+      *pAddr=(void*)pExport->track_function;
+    else
+      *pAddr=(void*)pExport->function;
+
+    return 1;
+  }
+  
+  char* sDllName = strrchr(m_sFileName, '\\');
+  if (sDllName) sDllName += 1;
+  else sDllName = m_sFileName;
+  
+  CLog::Log(LOGWARNING, "Unable to resolve: %s %d", sDllName, ordinal);
+  return 0;
+}
+
 Export* DllLoader::GetExportByOrdinal(unsigned long ordinal)
 {
   ExportList* it = m_pExports;
