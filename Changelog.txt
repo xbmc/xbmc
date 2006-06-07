@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-06-2006 fixed: Initial focus of controls didn't take into account whether they were hidden.
  - 06-06-2006 updated: French language file
  - 06-06-2006 fixed: Startup lock was unfunctional.
  - 06-06-2006 fixed: ListItem.* didn't work in FileBrowser dialog.
