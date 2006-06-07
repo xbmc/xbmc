@@ -204,6 +204,10 @@ void CServerThread::AddNewSocket(SOCKET sockethandle)
 
 	t_connectiondata *conndata = new t_connectiondata;
 	t_connop *op = new t_connop;
+
+  memset(conndata, 0, sizeof(t_connectiondata));
+  memset(op, 0, sizeof(t_connop));
+
 	op->data = conndata;
 	op->op = USERCONTROL_CONNOP_ADD;
 	conndata->userid = userid;
