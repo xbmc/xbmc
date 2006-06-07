@@ -584,16 +584,12 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
       CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
       if (pDlgAlbumInfo)
       {
-        // TODO: check for previous thumb here, and abort thumb saving
+        pDlgAlbumInfo->SetAlbum(album);
+        pDlgAlbumInfo->DoModal();
 
         CStdString strThumb(CUtil::GetCachedAlbumThumb(album.GetTitle(), album.GetAlbumPath()));
-
-        CHTTP http;
-        http.Download(album.GetImageURL(), strThumb);
-
         if (bSaveDb && CFile::Exists(strThumb))
           m_musicdatabase.SaveAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
-
         // Update current playing song...
         if (g_application.IsPlayingAudio())
         {
@@ -605,10 +601,6 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
           if (strSongFolder.Equals(strPath) && tag.GetAlbum().Equals(strAlbum))
             g_infoManager.SetCurrentAlbumThumb(strThumb);
         }
-
-        pDlgAlbumInfo->SetAlbum(album);
-        pDlgAlbumInfo->DoModal();
-
         // Save directory thumb
         if (bSaveDirThumb)
         {
