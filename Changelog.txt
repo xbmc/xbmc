@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-06-2006 fixed: [ 1500349 ] .cdda files showing in every section
  - 07-06-2006 changed: restored dllloader fixes that previously broke realmedia
  - 07-06-2006 changed: Simplified the auto thumb switching for My Music in line with the other views.
  - 07-06-2006 fixed: Get Thumb option wasn't enabled for Album Information.

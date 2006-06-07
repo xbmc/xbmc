@@ -19,6 +19,10 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 {
   // Reads the tracks from an audio cd
 
+  // This class can only provide .cdda files
+  if (!IsAllowed(".cdda"))
+    return true;
+
   if (!CDetectDVDMedia::IsDiscInDrive())
     return false;
 
