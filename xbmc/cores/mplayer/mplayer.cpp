@@ -508,7 +508,9 @@ extern "C"
     dll.ResolveExport("mplayer_GetCacheLevel", (void**) &pGetCacheLevel);
     
     /* currently not exported from current mplayer.dll, but can be enabled as soon as it's updated */
-    //dll.ResolveExport("MemAllocatorCreate", (void**) &pMemAllocatorCreate);
+    #ifdef _DEBUG
+    dll.ResolveExport("MemAllocatorCreate", (void**) &pMemAllocatorCreate);
+    #endif
 
     pSetVideoFunctions(&video_functions);
     pSetAudioFunctions(&audio_functions);
