@@ -1005,24 +1005,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     if (pItem->HasThumbnail())
       output += closeTag+openTag+"Thumb:" + pItem->GetThumbnailImage() ;
     else {
-      //There isn't a thumbnail but let's still return the appropriate filename if one did exist
-      CStdString strThumb, strPath, strFileName;
-      if (!pItem->m_bIsFolder)
-        CUtil::Split(pItem->m_strPath, strPath, strFileName);
-      else
-      {
-        strPath=pItem->m_strPath;
-        if (CUtil::HasSlashAtEnd(strPath))
-          strPath.Delete(strPath.size()-1);
-      }
-      CStdString strAlbum;
-      if (pItem->m_musicInfoTag.Loaded())
-        strAlbum=pItem->m_musicInfoTag.GetAlbum();
-      if (!pItem->m_bIsFolder)
-      {
-        CUtil::GetAlbumThumb(strAlbum, strPath, strThumb);
-        output += closeTag+openTag+"Thumb:[None] " + strThumb ;
-      }
+      output += closeTag+openTag+"Thumb:[None]";
     }
     delete pItem;
     return SetResponse(output);
@@ -1493,10 +1476,7 @@ int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
 
   if (numParas>1)
   {
-    bool tempFolder = false;
-    if (numParas>2)
-      tempFolder=paras[2].ToLower()=="true";
-    CUtil::GetAlbumThumb(paras[0], paras[1], thumbFilename, tempFolder);
+    thumbFilename = CUtil::GetCachedAlbumThumb(paras[0], paras[1]);
     return SetResponse(openTag+thumbFilename ) ;
   }
   else

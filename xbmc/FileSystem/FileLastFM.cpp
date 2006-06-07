@@ -453,7 +453,7 @@ bool CFileLastFM::RetreiveMetaData()
     {
       Crc32 crc;
       crc.ComputeFromLowerCase(coverUrl);
-      cachedFile.Format("%s\\%08x.tbn", g_settings.GetMusicTempThumbFolder().c_str(), crc);
+      cachedFile.Format("%s\\%08x.tbn", g_settings.GetMusicThumbFolder().c_str(), crc);
       if (!CFile::Exists(cachedFile))
       {
         http.Download(coverUrl, cachedFile);

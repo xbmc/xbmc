@@ -170,7 +170,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
       foundThumb = true;
 
       CPicture pic;
-      if ( !pic.CreateAlbumThumbnailFromMemory( ( const BYTE* )pMetaData, metaSize, "", TEMP_MP4_THUMB_FILE ) )
+      if ( !pic.CreateThumbnailFromMemory( ( const BYTE* )pMetaData, metaSize, "", TEMP_MP4_THUMB_FILE ) )
       {
         CLog::Log(LOGERROR, "Tag loader mp4: Unable to create album art for %s (size=%d)", tag.GetURL().c_str(), metaSize );
       }
@@ -325,14 +325,10 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
       {
         CStdString strPath;
         CUtil::GetDirectory(tag.GetURL(), strPath);
-        CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt, true);
+        strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), strPath);
       }
       else
-      {
-        CStdString strPath;
-        CUtil::ReplaceExtension(tag.GetURL(), ".tbn", strPath);
-        CUtil::GetAlbumFolderThumb(strPath, strCoverArt, true);
-      }
+        strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
       if (CFile::Cache(TEMP_MP4_THUMB_FILE, strCoverArt.c_str()))
       {
         CUtil::ThumbCacheAdd( strCoverArt, true );

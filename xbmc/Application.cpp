@@ -936,7 +936,6 @@ HRESULT CApplication::Initialize()
   // Thumbnails/
   CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetMusicTempThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetMusicArtistThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);

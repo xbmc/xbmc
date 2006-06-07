@@ -427,7 +427,7 @@ CGUISettings::CGUISettings(void)
   AddBool(6,    "autodetect.senduserpw",1255, true);
   AddBool(7,    "autodetect.createlink",1253, false);
   
-  AddCategory(6, "smb", 1200);  
+  AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "smb.winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
