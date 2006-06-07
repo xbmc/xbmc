@@ -282,7 +282,7 @@
       <onup>3112</onup>
       <ondown>3112</ondown>
       <font>-</font>
-      <label>Restart XBMC</label>
+      <label>$LOCALIZE[13313] XBMC</label>
     </control>
 
     <control>
