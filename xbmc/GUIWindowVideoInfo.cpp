@@ -354,7 +354,7 @@ void CGUIWindowVideoInfo::Refresh()
 
     if (!CFile::Exists(thumbImage) )
     {
-      thumbImage = "";
+      thumbImage.Empty();
     }
 
     m_movieItem.SetThumbnailImage(thumbImage);
