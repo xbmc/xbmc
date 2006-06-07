@@ -586,8 +586,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
       {
         // TODO: check for previous thumb here, and abort thumb saving
 
-        CStdString strThumb;
-        CUtil::GetAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
+        CStdString strThumb(CUtil::GetCachedAlbumThumb(album.GetTitle(), album.GetAlbumPath()));
 
         CHTTP http;
         http.Download(album.GetImageURL(), strThumb);
@@ -623,8 +622,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
             {
               // ...also save a copy as directory thumb,
               // if the album isn't located on an audio cd
-              CStdString strFolderThumb;
-              CUtil::GetAlbumFolderThumb(album.GetAlbumPath(), strFolderThumb);
+              CStdString strFolderThumb(CUtil::GetCachedMusicThumb(album.GetAlbumPath()));
               ::CopyFile(strThumb, strFolderThumb, false);
             }
           }
@@ -668,14 +666,10 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
       else
       {
         // Refresh all items
-        for (int i = 0; i < m_vecItems.Size(); ++i)
-        {
-          CFileItem* pItem = m_vecItems[i];
-          pItem->FreeIcons();
-        }
-
-        m_vecItems.SetMusicThumbs();
-        m_vecItems.FillInDefaultIcons();
+        Update(m_vecItems.m_strPath);
+        if (m_dlgProgress)
+          m_dlgProgress->Close();
+        return;
       }
 
       //  Do we have to autoswitch to the thumb control?
