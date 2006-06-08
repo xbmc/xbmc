@@ -88,7 +88,7 @@ public:
   void CheckScreenSaver();   // CB: SCREENSAVER PATCH
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
-  void ActivateScreenSaver();
+  void ActivateScreenSaver(bool forceType = false);
   void CheckShutdown();
   CMusicInfoTag* GetCurrentSong();
   CIMDBMovie* GetCurrentMovie();

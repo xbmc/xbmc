@@ -3280,7 +3280,10 @@ void CApplication::CheckScreenSaver()
   }
 }
 
-void CApplication::ActivateScreenSaver()
+// activate the screensaver.
+// if forceType is true, we ignore the various conditions that can alter
+// the type of screensaver displayed
+void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 {
   D3DGAMMARAMP Ramp;
   FLOAT fFadeLevel;
@@ -3292,14 +3295,17 @@ void CApplication::ActivateScreenSaver()
   // Get Screensaver Mode
   CStdString strScreenSaver = g_guiSettings.GetString("screensaver.mode");
 
-  // set to Dim in the case of a dialog on screen or playing video
-  if (m_gWindowManager.IsRouted() || IsPlayingVideo())
-    strScreenSaver = "Dim";
-  // Check if we are Playing Audio and Vis instead Screensaver!
-  else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead"))
-  { // activate the visualisation
-    m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
-    return;
+  if (!forceType)
+  {
+    // set to Dim in the case of a dialog on screen or playing video
+    if (m_gWindowManager.IsRouted() || IsPlayingVideo())
+      strScreenSaver = "Dim";
+    // Check if we are Playing Audio and Vis instead Screensaver!
+    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead"))
+    { // activate the visualisation
+      m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+      return;
+    }
   }
   // Picture slideshow
   if (strScreenSaver == "SlideShow")
