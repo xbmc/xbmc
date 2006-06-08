@@ -1539,16 +1539,8 @@ void CMPlayer::GetAudioInfo( CStdString& strAudioInfo)
   }
   mplayer_GetAudioInfo(strFourCC, strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
   float fSampleRate = ((float)lSampleRate) / 1000.0f;
-  if (bVBR)
-  {
-    strAudioInfo.Format("audio:(%s) VBR br:%i sr:%02.2f khz chns:%i",
-                        strAudioCodec, lBitRate, fSampleRate, iChannels);
-  }
-  else
-  {
-    strAudioInfo.Format("audio:(%s) CBR br:%i sr:%02.2f khz chns:%i",
-                        strAudioCodec, lBitRate, fSampleRate, iChannels);
-  }
+  strAudioInfo.Format("audio:(%s) br:%i sr:%02.2f khz chns:%i",
+                      strAudioCodec, lBitRate, fSampleRate, iChannels);
 }
 
 void CMPlayer::GetVideoInfo( CStdString& strVideoInfo)
