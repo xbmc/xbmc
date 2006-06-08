@@ -3784,8 +3784,16 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
         
         if (g_guiSettings.GetBool("autodetect.createlink")) //Check if this XBOX is allread in the FileManager List! If Not add it!
         {
+          // Why on earth are we adding these to the XML file??
           if(!g_settings.UpdateBookmark("files", strNickName, "path", strFTPPath) ) // Add a FTP link to MyFiles! //Todo: If there is a same Name ask to overwrite it!
-            g_settings.AddBookmark("files",    strNickName,  strFTPPath);
+          {
+            CShare share;
+            share.strName = strNickName;
+            share.strPath = strFTPPath;
+            VECSHARES *shares = g_settings.GetSharesFromType("files");
+            if (shares)
+              shares->push_back(share);
+          }
         }
         CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", strLabel.c_str(), strNickName.c_str(), strFTPPath.c_str());
         

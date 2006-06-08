@@ -82,7 +82,7 @@ typedef std::vector<CFolderView*> VECFOLDERVIEWS;
 class CShare
 {
 public:
-  CShare() { m_iBufferSize=0; m_iDepthSize=0; m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; };
+  CShare() { m_iBufferSize=0; m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; };
   virtual ~CShare() {};
   bool isWritable()
   {
@@ -96,13 +96,13 @@ public:
 
     return false;
   }
+  void FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths);
 
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
   CStdString strEntryPoint; ///< entry point of shares, used with archives
   int m_iBufferSize;   ///< Cachesize of the share
-  int m_iDepthSize;    ///< Depth for My Programs
 
   /*!
   \brief The type of the share.
@@ -207,8 +207,8 @@ public:
   bool UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
   bool CommitBookmarkTransaction();
   bool DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath);
-  bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
-  bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath, const int iDepth);
+  bool UpdateShare(const CStdString &type, const CStdString &oldName, const CShare &share);
+  bool AddShare(const CStdString &type, const CShare &share);
 
   bool LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
   bool SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
