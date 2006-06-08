@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-06-2006 fixed: [ 1453640 ] AAC In MP4 Incorrect CBR Detection, by removing the text.
  - 08-06-2006 fixed: ftpserver would sometimes crash when user disconnected
  - 08-06-2006 changed: replaced our own ftp client with a client based on curl
  - 08-06-2006 updated: libcurl.dll to precompiled binary curl-7.15.3-win32-nossl-sspi from curl.haxx.se
