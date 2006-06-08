@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-06-2006 fixed: Screensaver preview did not show the correct screensaver if music or video was playing.
  - 08-06-2006 fixed: Delete on playlists/smart playlists could delete all their files as well.
  - 08-06-2006 changed: Cleaned up some more settings (postprocessing to xml only, use auto sync removed (use mplayer.conf), and subtitles default to arial.ttf.
  - 08-06-2006 changed: Add/Edit Source dialog can now handle multiple paths.  Skinners should update at their leisure (old skins will mean the multipath editing will only affect the first path).
