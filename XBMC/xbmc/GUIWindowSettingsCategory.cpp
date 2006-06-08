@@ -1377,7 +1377,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("screensaver.preview"))
   {
-    g_application.ActivateScreenSaver();
+    g_application.ActivateScreenSaver(true);
   }
   else if (strSetting.Equals("screensaver.slideshowpath"))
   {
