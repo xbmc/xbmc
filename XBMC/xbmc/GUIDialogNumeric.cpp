@@ -35,17 +35,15 @@ CGUIDialogNumeric::~CGUIDialogNumeric(void)
 bool CGUIDialogNumeric::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
-  {
-    m_bConfirmed = false;
-    m_bCanceled = true;
-    Close();
-  }
+    OnCancel();
   else if (action.wID == ACTION_NEXT_ITEM)
     OnNext();
   else if (action.wID == ACTION_PREV_ITEM)
     OnPrevious();
   else if (action.wID == ACTION_BACKSPACE)
     OnBackSpace();
+  else if (action.wID == ACTION_ENTER)
+    OnOK();
   else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
     OnNumber(action.wID - REMOTE_0);
   else
@@ -93,8 +91,7 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_ENTER)
       {
-        m_bConfirmed = true;
-        Close();
+        OnOK();
         return true;
       }
     }
@@ -646,4 +643,18 @@ void CGUIDialogNumeric::VerifyDate(bool checkYear)
         m_datetime.wDay = 28;
     }
   }
+}
+
+void CGUIDialogNumeric::OnOK()
+{
+  m_bConfirmed = true;
+  m_bCanceled = false;
+  Close();
+}
+
+void CGUIDialogNumeric::OnCancel()
+{
+  m_bConfirmed = false;
+  m_bCanceled = true;
+  Close();
 }
