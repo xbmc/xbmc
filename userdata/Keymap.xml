@@ -735,6 +735,7 @@
   <NumericInput>
     <gamepad>
       <B>BackSpace</B>
+      <start>Enter</start>
       <lefttrigger>SkipPrevious</lefttrigger>
       <righttrigger>SkipNext</righttrigger>
     </gamepad>
