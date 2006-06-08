@@ -603,7 +603,7 @@
   <string><id>1018</id><value>Enter the port number</value></string>
   <string><id>1019</id><value>Enter the username</value></string>
   <string><id>1020</id><value>Add %s Source</value></string>
-  <string><id>1021</id><value>Enter the path or browse for the media location.</value></string>
+  <string><id>1021</id><value>Enter the paths or browse for the media locations.</value></string>
   <string><id>1022</id><value>Enter a name for this Media Source.</value></string>
   <string><id>1023</id><value>Browse for new share</value></string>
   <string><id>1024</id><value>Browse</value></string>
