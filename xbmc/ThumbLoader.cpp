@@ -46,9 +46,9 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive) return true;
   if (!pItem->HasThumbnail())
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - loading %s", pItem->m_strPath);
+    CLog::Log(LOGDEBUG, __FUNCTION__" - loading %s", pItem->m_strPath.c_str());
     pItem->SetUserMusicThumb();
-    CLog::Log(LOGDEBUG, __FUNCTION__" - done loading %s", pItem->m_strPath);
+    CLog::Log(LOGDEBUG, __FUNCTION__" - done loading %s", pItem->m_strPath.c_str());
   }
   return true;
 }
