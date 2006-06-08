@@ -3814,8 +3814,8 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
 }
 bool CUtil::IsFTP(const CStdString& strFile)
 {
-  CURL url(strFile);
-  if (url.GetProtocol() == "ftp") return true;
+  if( strFile.Left(6).Equals("ftp://") ) return true;
+  else if( strFile.Left(7).Equals("ftpx://") ) return true;
   else return false;
 }
 
