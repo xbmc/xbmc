@@ -921,8 +921,9 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     }
 
     //Enable smoothing of audio clock to create smoother playback.
-    if( g_guiSettings.GetBool("filters.useautosync") )
-      options.SetAutoSync(30);
+    //This is now done in mplayer.conf
+    //if( g_guiSettings.GetBool("filters.useautosync") )
+    //  options.SetAutoSync(30);
 
     if( g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_DEINTERLACE )
       options.SetDeinterlace(true);

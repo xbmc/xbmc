@@ -345,8 +345,6 @@ CGUISettings::CGUISettings(void)
   AddCategory(5, "videofiles", 744);
   AddBool(1, "videofiles.useautoswitching", 14011, false);
   AddBool(2, "videofiles.autoswitchuselargethumbs", 14012, false);
-  AddInt(3, "videofiles.autoswitchmethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(4, "videofiles.autoswitchpercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   
   // hidden videofiles settings
   AddBool(0,"videofiles.hidedirectorynames",0,false);
@@ -364,7 +362,7 @@ CGUISettings::CGUISettings(void)
   AddBool(14,"videoplayer.autoresume",12017, false);
 
   AddCategory(5, "subtitles", 287);
-  AddString(1, "subtitles.font", 288, "arial-iso-8859-1", SPIN_CONTROL_TEXT);
+  AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(2, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(3, "subtitles.style", 736, XFONT_BOLD, XFONT_NORMAL, 1, XFONT_BOLDITALICS, SPIN_CONTROL_TEXT);
   AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
@@ -373,7 +371,8 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "subtitles.sep1");
   AddBool(9, "subtitles.searchrars", 13249, false);
 
-  AddCategory(5, "postprocessing", 14041);
+  // JM: Don't add the category - makes them hidden in the GUI
+  //AddCategory(5, "postprocessing", 14041);
   AddBool(2, "postprocessing.enable", 286, false);
   AddBool(3, "postprocessing.auto", 307, true); // only has effect if PostProcessing.Enable is on.
   AddBool(4, "postprocessing.verticaldeblocking", 308, false);
@@ -386,8 +385,8 @@ CGUISettings::CGUISettings(void)
   AddCategory(5, "filters", 230);
   AddInt(1, "filters.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
   AddBool(2, "filters.soften", 215, false);
-  AddSeparator(3, "filters.sep1");
-  AddBool(7, "filters.useautosync", 15214, false);
+  //AddSeparator(3, "filters.sep1");
+  //AddBool(7, "filters.useautosync", 15214, false);
 
   // network settings
   AddGroup(6, 705);
@@ -446,7 +445,6 @@ CGUISettings::CGUISettings(void)
   AddInt(11, "lookandfeel.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddString(12, "lookandfeel.guicalibration",213,"", BUTTON_CONTROL_STANDARD);
   AddSeparator(13, "lookandfeel.sep3");
-  AddBool(14, "lookandfeel.fulldirectoryhistory", 15106, true);
   
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideextensions", 497, false);
@@ -454,6 +452,7 @@ CGUISettings::CGUISettings(void)
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);
   AddBool(4, "filelists.allowfiledeletion", 14071, false);
   AddBool(5, "filelists.unrollarchives",516, false);
+  AddBool(6, "filelists.fulldirectoryhistory", 15106, true);
 
   AddCategory(7, "screensaver", 360);
   AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
