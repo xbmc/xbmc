@@ -1847,7 +1847,8 @@ CStdString CFileItem::GetUserMusicThumb()
   if (IsInternetStream()) return "";
   if (IsParentFolder()) return "";
   if (IsMusicDb()) return "";
-  if (CUtil::IsInRAR(m_strPath) || CUtil::IsInZIP(m_strPath)) return "";
+  CURL url(m_strPath);
+  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
   // we first check for <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
   if (CFile::Exists(fileThumb))
