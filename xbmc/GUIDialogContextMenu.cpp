@@ -191,9 +191,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     CStdString strDefault = GetDefaultShareNameByType(strType);
     
     // add the needed buttons
-    int btn_EditPath = 0;
-    if (!CUtil::IsVirtualPath(item->m_strPath))
-      btn_EditPath = pMenu->AddButton(1027); // Edit Source
+    int btn_EditPath = pMenu->AddButton(1027); // Edit Source
     int btn_AddShare = pMenu->AddButton(1026); // Add Source
     int btn_Delete = pMenu->AddButton(522); // Remove Source
 
@@ -262,7 +260,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
         
-        return CGUIDialogMediaSource::ShowAndEditMediaSource(strType, share->strName, share->strPath);
+        return CGUIDialogMediaSource::ShowAndEditMediaSource(strType, *share);
       }
       else if (btn == btn_Delete)
       {

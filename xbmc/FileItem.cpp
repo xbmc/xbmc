@@ -92,7 +92,6 @@ CFileItem::CFileItem(const CShare& share)
   m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
-  m_idepth = share.m_iDepthSize;
   m_strThumbnailImage = share.m_strThumbnailImage;
   SetLabelPreformated(true);
 }
