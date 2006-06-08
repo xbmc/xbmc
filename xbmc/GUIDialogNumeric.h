@@ -34,6 +34,8 @@ protected:
   void OnNext();
   void OnPrevious();
   void OnBackSpace();
+  void OnOK();
+  void OnCancel();
 
   bool m_bConfirmed;
   bool m_bCanceled;
