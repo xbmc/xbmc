@@ -47,7 +47,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "lastfm") return new CLastFMDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") return new CRarDirectory();
-  if (strProtocol == "ftp") return new CFTPDirectory();
+  if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFTPDirectory();
   if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
   if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();

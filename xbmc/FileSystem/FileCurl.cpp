@@ -291,6 +291,14 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   m_overflowSize = 0;
 
   url.GetURL(m_url);
+
+  /* our obscure protocols have to be changed */
+  if( m_url.Left(7).Equals("ftpx://") )
+    m_url.replace(0,7, "ftp://");
+  else if( m_url.Left(8).Equals("shout://") )
+    m_url.replace(0,8,"http://");
+
+
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", this, m_url.c_str());  
   
   if( m_easyHandle == NULL )
@@ -344,7 +352,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
 {
   unsigned int want = (unsigned int)iLineLength;
 
-  if(!FillBuffer(want,1))
+  if(!FillBuffer(want,10))
     return false;
 
   if (!m_stillRunning && !m_buffer.GetMaxReadSize() && m_filePos != m_fileSize)
@@ -456,6 +464,12 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     return 0;
   }
   url.GetURL(m_url);
+  
+  /* our obscure protocol names must be replaced */
+  if( m_url.Left(7).Equals("ftpx://") )
+    m_url.replace(0,7, "ftp://");
+  else if( m_url.Left(8).Equals("shout://") )
+    m_url.replace(0,8,"http://");
 
   if( m_easyHandle == NULL )
     m_easyHandle = g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName());
@@ -525,7 +539,7 @@ unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
 //  CLog::Log(LOGDEBUG, "FileCurl::Read(%p) %i bytes", this, uiBufSize);
   unsigned int want = (unsigned int)uiBufSize;
 
-  if(!FillBuffer(want,1))
+  if(!FillBuffer(want,10))
     return -1;
 
   if (!m_stillRunning && !m_buffer.GetMaxReadSize() && m_filePos != m_fileSize)
@@ -565,11 +579,20 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
   struct timeval timeout;
   timeout.tv_sec = 0;
   timeout.tv_usec = 200000; //timeout between calls to perform, doesn't timeout FillBuffer
-    
+  
+  // fill timeout
+  DWORD timestamp = GetTickCount() + waittime * 1000;
+
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
-  while (m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0)
+  while (m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0 )
   {
+    if( GetTickCount() > timestamp )
+    {
+      CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for data");
+      return false;
+    }
+
     CURLMcode result = g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning);
     if( !m_stillRunning ) break;
 
