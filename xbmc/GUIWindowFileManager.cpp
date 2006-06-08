@@ -5,6 +5,7 @@
 #include "xbox/xbeheader.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/ZipManager.h"
+#include "FileSystem/FactoryFileDirectory.h"
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIListControl.h"
@@ -701,6 +702,10 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 
 bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPath, const CStdString& strDestFile)
 {
+  // check whether this folder is a filedirectory - if so, we don't process it's contents
+  CFileItem item(strPath, false);
+  if (CFactoryFileDirectory::Create(strPath, &item))
+    return true;
   CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
   //m_rootDir.GetDirectory(strPath, items);
@@ -940,7 +945,7 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
   CStdString strPath(m_strParentPath[iList]), strOldPath(m_Directory[iList].m_strPath);
   Update(iList, strPath);
 
-  if (!g_guiSettings.GetBool("lookandfeel.fulldirectoryhistory"))
+  if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
     m_history[iList].RemoveSelectedItem(strOldPath); //Delete current path
 }
 

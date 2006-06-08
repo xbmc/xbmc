@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-06-2006 changed: Cleaned up some more settings (postprocessing to xml only, use auto sync removed (use mplayer.conf), and subtitles default to arial.ttf.
  - 08-06-2006 changed: Add/Edit Source dialog can now handle multiple paths.  Skinners should update at their leisure (old skins will mean the multipath editing will only affect the first path).
  - 08-06-2006 fixed: [ 1453640 ] AAC In MP4 Incorrect CBR Detection, by removing the text.
  - 08-06-2006 fixed: ftpserver would sometimes crash when user disconnected
