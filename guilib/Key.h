@@ -206,6 +206,7 @@
 #define ACTION_VIS_RATE_PRESET_MINUS  133
 
 #define ACTION_SHOW_VIDEOMENU         134
+#define ACTION_ENTER                  135
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999

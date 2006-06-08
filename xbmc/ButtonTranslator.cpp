@@ -330,6 +330,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("decreaserating")) wAction = ACTION_VIS_RATE_PRESET_MINUS;
 
   else if (strAction.Equals("showvideomenu")) wAction = ACTION_SHOW_VIDEOMENU;
+  else if (strAction.Equals("enter")) wAction = ACTION_ENTER;
 
   else
     CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
