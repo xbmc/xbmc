@@ -95,35 +95,6 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_WINDOW_INIT:
-    {
-      int iLastControl = m_iLastControl;
-
-      //m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
-      if (!CGUIWindow::OnMessage(message))
-        return false;
-
-      Update(m_vecItems.m_strPath);
-
-      if (iLastControl > -1)
-      {
-        SET_CONTROL_FOCUS(iLastControl, 0);
-      }
-      else
-      {
-        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
-      }
-
-      if (m_iSelectedItem > -1)
-      {
-        m_viewControl.SetSelectedItem(m_iSelectedItem);
-      }
-
-      return true;
-    }
-    break;
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -166,8 +137,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
       {
-        if (m_viewControl.SetFocused())
-          return true;
+        m_viewControl.SetFocused();
+        return true;
       }
     }
     break;
@@ -916,4 +887,14 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
     return;
   Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
+}
+
+void CGUIMediaWindow::OnInitWindow()
+{
+  Update(m_vecItems.m_strPath);
+
+  if (m_iSelectedItem > -1)
+    m_viewControl.SetSelectedItem(m_iSelectedItem);
+
+  CGUIWindow::OnInitWindow();
 }
