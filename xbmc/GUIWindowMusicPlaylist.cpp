@@ -558,8 +558,14 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (pItem->m_musicInfoTag.Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
-    pItem->FormatLabel(g_guiSettings.GetString("musicplaylist.trackformat"));
-    pItem->FormatLabel2(g_guiSettings.GetString("musicplaylist.trackformatright"));
+    CStdString strTrackLeft=g_guiSettings.GetString("mymusic.nowplayingtrackformat");
+    if (strTrackLeft.IsEmpty())
+      strTrackLeft = g_guiSettings.GetString("mymusic.trackformat");
+    CStdString strTrackRight=g_guiSettings.GetString("mymusic.nowplayingtrackformatright");
+    if (strTrackRight.IsEmpty())
+      strTrackRight = g_guiSettings.GetString("mymusic.trackformatright");
+    pItem->FormatLabel(strTrackLeft);
+    pItem->FormatLabel2(strTrackRight);
 
     /* this works funny. the labels keep changing?
     // add position to label
