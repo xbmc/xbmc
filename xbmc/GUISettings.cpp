@@ -169,7 +169,7 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "slideshow.transistiontime", 225, 2500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
   AddBool(3, "slideshow.displayeffects", 12379, true);
   AddSeparator(6, "slideshow.sep1");
-  AddBool(7, "slideshow.shuffle", 13319, false);
+  AddBool(0, "slideshow.shuffle", 13319, false);
 
   // Programs settings
   AddGroup(1, 0);
