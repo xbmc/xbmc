@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-06-2006 fixed: Thumbloader would attempt to open .rar and .zip in Music and Videos.
  - 09-06-2006 fixed: System.HasAlarm(name) only worked in lowercase, and was only checked on window load.
  - 09-06-2006 fixed: Initial control visibility for the list/thumb controls wasn't set correctly for Media window WindowOpen animations.
  - 09-06-2006 changed: Removed playlist track format from GUI - it just uses the music track format unless you specify otherwise using advancedsettings.xml.
