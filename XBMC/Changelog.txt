@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-06-2006 fixed: Watched status is preserved across views, rather than being separate.
+ - 09-06-2006 fixed: Recursive slideshow is only enabled if there are subfolders
  - 09-06-2006 fixed: Thumbloader would attempt to open .rar and .zip in Music and Videos.
  - 09-06-2006 fixed: System.HasAlarm(name) only worked in lowercase, and was only checked on window load.
  - 09-06-2006 fixed: Initial control visibility for the list/thumb controls wasn't set correctly for Media window WindowOpen animations.
