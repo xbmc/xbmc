@@ -33,8 +33,12 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   NODE_TYPE NodeType=dir.GetDirectoryChildType(items.m_strPath);
   NODE_TYPE ParentNodeType=dir.GetDirectoryType(items.m_strPath);
 
-  CStdString strTrackLeft=g_guiSettings.GetString("mymusic.trackformat");
-  CStdString strTrackRight=g_guiSettings.GetString("mymusic.trackformatright");
+  CStdString strTrackLeft=g_guiSettings.GetString("mymusic.librarytrackformat");
+  if (strTrackLeft.IsEmpty())
+    strTrackLeft = g_guiSettings.GetString("mymusic.trackformat");
+  CStdString strTrackRight=g_guiSettings.GetString("mymusic.librarytrackformatright");
+  if (strTrackRight.IsEmpty())
+    strTrackRight = g_guiSettings.GetString("mymusic.trackformatright");
 
   switch (NodeType)
   {
@@ -506,8 +510,12 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
-  CStdString strTrackLeft=g_guiSettings.GetString("musicplaylist.trackformat");
-  CStdString strTrackRight=g_guiSettings.GetString("musicplaylist.trackformatright");
+  CStdString strTrackLeft=g_guiSettings.GetString("mymusic.nowplayingtrackformat");
+  if (strTrackLeft.IsEmpty())
+    strTrackLeft = g_guiSettings.GetString("mymusic.trackformat");
+  CStdString strTrackRight=g_guiSettings.GetString("mymusic.nowplayingtrackformatright");
+  if (strTrackRight.IsEmpty())
+    strTrackRight = g_guiSettings.GetString("mymusic.trackformatright");
 
   AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS(strTrackLeft, strTrackRight, "%F", ""));  // Userdefined, Userdefined | FolderName, empty
   SetSortMethod(SORT_METHOD_NONE);
