@@ -179,7 +179,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         ret = SYSTEM_IDLE_TIME_START + time;
     }
     else if (strTest.Left(16).Equals("system.hasalarm("))
-      ret = SYSTEM_NO_SUCH_ALARM+g_alarmClock.hasAlarm(strTest.Mid(16,strTest.size()-17));
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
   }
   else if (strCategory.Equals("xlinkkai"))
   {
@@ -677,10 +677,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     bReturn = (pWindow && pWindow->IsMediaWindow());
   }
-  else if (condition == SYSTEM_HAS_ALARM)
-    bReturn = true;
-  else if (condition == SYSTEM_NO_SUCH_ALARM)
-    bReturn = false;
   else if (condition == SYSTEM_AUTODETECTION)
     bReturn = HasAutodetectedXbox();
   else if (condition == PLAYER_MUTED)
@@ -906,6 +902,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       break;
     case WINDOW_IS_TOPMOST:
       bReturn = m_gWindowManager.IsWindowTopMost(info.m_data1);
+      break;
+    case SYSTEM_HAS_ALARM:
+      bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.m_data1]);
       break;
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
