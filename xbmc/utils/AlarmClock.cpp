@@ -11,7 +11,10 @@ CAlarmClock::~CAlarmClock()
 }
 void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdString& strCommand)
 {
-  stop(strName);
+  // make lower case so that lookups are case-insensitive
+  CStdString lowerName(strName);
+  lowerName.ToLower();
+  stop(lowerName);
   SAlarmClockEvent event;
   event.m_fSecs = n_secs;
   event.m_strCommand = strCommand;
@@ -27,12 +30,14 @@ void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdStrin
   strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60);
   g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
   event.watch.StartZero();
-  m_event.insert(std::make_pair<CStdString,SAlarmClockEvent>(strName,event));
-  CLog::Log(LOGDEBUG,"started alarm with name: %s",strName.c_str());
+  m_event.insert(std::make_pair<CStdString,SAlarmClockEvent>(lowerName,event));
+  CLog::Log(LOGDEBUG,"started alarm with name: %s",lowerName.c_str());
 }
 void CAlarmClock::stop(const CStdString& strName)
 {
-  std::map<CStdString,SAlarmClockEvent>::iterator iter = m_event.find(strName);
+  CStdString lowerName(strName);
+  lowerName.ToLower();          // lookup as lowercase only
+  std::map<CStdString,SAlarmClockEvent>::iterator iter = m_event.find(lowerName);
 
   if (iter == m_event.end())
     return;
