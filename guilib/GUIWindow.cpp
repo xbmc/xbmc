@@ -1351,6 +1351,7 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
   {
     if (m_vecGroups[i].m_id == groupID)
     {
+      int test = m_vecGroups[i].m_lastControl;
       return (m_vecGroups[i].m_lastControl == controlID);
     }
   }
@@ -1392,6 +1393,7 @@ void CGUIWindow::RestoreControlStates()
       {
         if (m_vecGroups[i].m_id == (*it).m_id)
         {
+          int test = (*it).m_data;
           m_vecGroups[i].m_lastControl = (*it).m_data;
           break;
         }

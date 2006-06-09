@@ -17,6 +17,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
+  virtual void OnInitWindow();
   const CFileItem *GetCurrentListItem() const;
   const CFileItem &CurrentDirectory() const { return m_vecItems;};
 
