@@ -22,13 +22,6 @@ CMusicInfoScanner::~CMusicInfoScanner()
 {
 }
 
-void OutputDebugMem(const char *comment)
-{
-  MEMORYSTATUS stat;
-  GlobalMemoryStatus(&stat);
-  CLog::Log(LOGDEBUG, "Mem: %d, %s", stat.dwAvailPhys, comment);
-}
-
 void CMusicInfoScanner::Process()
 {
   try
@@ -53,7 +46,7 @@ void CMusicInfoScanner::Process()
     CUtil::ThumbCacheClear();
     g_directoryCache.ClearMusicThumbCache();
 
-    OutputDebugMem("Starting scan");
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Starting scan");
     m_musicDatabase.BeginTransaction();
 
     bool bOKtoScan = true;
@@ -92,7 +85,6 @@ void CMusicInfoScanner::Process()
       // result in unexpected behaviour.
       m_bCanInterrupt = false;
 
-      OutputDebugMem("Loaded filecount reader, starting scan");
       bool bCommit = false;
       if (bOKtoScan)
         bCommit = DoScan(m_strStartDir);
@@ -118,17 +110,13 @@ void CMusicInfoScanner::Process()
     else
       m_musicDatabase.RollbackTransaction();
 
-    OutputDebugMem("Finished, emptying database cache");
     m_musicDatabase.EmptyCache();
 
-    OutputDebugMem("Finished, emptying thumb cache");
     CUtil::ThumbCacheClear();
-    OutputDebugMem("Finished, emptying music thumb cache");
     g_directoryCache.ClearMusicThumbCache();
-    OutputDebugMem("Finished, closing database");
 
     m_musicDatabase.Close();
-    OutputDebugMem("Finished");
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Finished scan");
 
     dwTick = timeGetTime() - dwTick;
     CStdString strTmp, strTmp1;
@@ -178,9 +166,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   if (m_pObserver)
     m_pObserver->OnDirectoryChanged(strDirectory);
 
-  CStdString format;
-  format.Format("Scanning dir: %s", strDirectory.c_str());
-  OutputDebugMem(format.c_str());
+  CLog::Log(LOGDEBUG, __FUNCTION__" - Scanning dir: %s", strDirectory.c_str());
   // load subfolder
   CFileItemList items;
   CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions);
@@ -195,8 +181,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
     if (m_pObserver)
       m_pObserver->OnDirectoryScanned(strDirectory);
   }
-  format.Format("Finished scanning dir: %s", strDirectory.c_str());
-  OutputDebugMem(format.c_str());
+  CLog::Log(LOGDEBUG, __FUNCTION__" - Finished dir: %s", strDirectory.c_str());
 
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -318,6 +303,7 @@ int CMusicInfoScanner::CountFiles(const CStdString& strPath)
   int count=0;
   // load subfolder
   CFileItemList items;
+  CLog::Log(LOGDEBUG, __FUNCTION__" - processing dir: %s", strPath.c_str());
   CDirectory::GetDirectory(strPath, items, g_stSettings.m_musicExtensions, false);
   for (int i=0; i<items.Size(); ++i)
   {
@@ -331,6 +317,6 @@ int CMusicInfoScanner::CountFiles(const CStdString& strPath)
     else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
-
+  CLog::Log(LOGDEBUG, __FUNCTION__" - finished processing dir: %s", strPath.c_str());
   return count;
 }
