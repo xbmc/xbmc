@@ -23,6 +23,9 @@ public:
 
   inline bool hasAlarm(const CStdString& strName)
   {
+    // note: strName should be lower case only here
+    //       No point checking it at the moment due to it only being called
+    //       from GUIInfoManager (which is always lowercase)
     CLog::Log(LOGDEBUG,"checking for %s",strName.c_str());
     return (m_event.find(strName) != m_event.end());
   }
