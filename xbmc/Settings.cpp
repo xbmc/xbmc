@@ -920,6 +920,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
       g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
+    GetInteger(pElement, "watchmode", g_stSettings.m_iMyVideoWatchMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
+
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     { // playlist
@@ -946,7 +948,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
       GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyVideoGenreRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoGenreSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
       GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyVideoGenreRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "showmode", g_stSettings.m_iMyVideoGenreShowMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
     }
     pChild = pElement->FirstChildElement("actor");
     if (pChild)
@@ -957,7 +958,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
       GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyVideoActorRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoActorSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
       GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyVideoActorRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "showmode", g_stSettings.m_iMyVideoActorShowMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
     }
     pChild = pElement->FirstChildElement("year");
     if (pChild)
@@ -968,7 +968,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
       GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyVideoYearRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoYearSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
       GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyVideoYearRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "showmode", g_stSettings.m_iMyVideoYearShowMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
     }
     pChild = pElement->FirstChildElement("title");
     if (pChild)
@@ -976,7 +975,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
       GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyVideoTitleViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST,  VIEW_METHOD_MAX-1);
       GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyVideoTitleSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoTitleSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "showmode", g_stSettings.m_iMyVideoTitleShowMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
     }
   }
   // myscripts settings
@@ -1331,6 +1329,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
+  
+  SetInteger(pNode, "watchmode", g_stSettings.m_iMyVideoWatchMode);
 
   { // playlist window
     TiXmlElement childNode("playlist");
@@ -1361,7 +1361,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     SetInteger(pChild, "sortmethodroot", g_stSettings.m_MyVideoGenreRootSortMethod);
     SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoGenreSortOrder);
     SetInteger(pChild, "sortorderroot", g_stSettings.m_MyVideoGenreRootSortOrder);
-    SetInteger(pChild, "showmode", g_stSettings.m_iMyVideoGenreShowMode);
   }
   { // actors window
     TiXmlElement childNode("actor");
@@ -1373,7 +1372,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     SetInteger(pChild, "sortmethodroot", g_stSettings.m_MyVideoActorRootSortMethod);
     SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoActorSortOrder);
     SetInteger(pChild, "sortorderroot", g_stSettings.m_MyVideoActorRootSortOrder);
-    SetInteger(pChild, "showmode", g_stSettings.m_iMyVideoActorShowMode);
   }
   { // year window
     TiXmlElement childNode("year");
@@ -1385,7 +1383,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     SetInteger(pChild, "sortmethodroot", g_stSettings.m_MyVideoYearRootSortMethod);
     SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoYearSortOrder);
     SetInteger(pChild, "sortorderroot", g_stSettings.m_MyVideoYearRootSortOrder);
-    SetInteger(pChild, "showmode", g_stSettings.m_iMyVideoYearShowMode);
   }
   { // title window
     TiXmlElement childNode("title");
@@ -1394,7 +1391,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     SetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoTitleViewMethod);
     SetInteger(pChild, "sortmethod", g_stSettings.m_MyVideoTitleSortMethod);
     SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoTitleSortOrder);
-    SetInteger(pChild, "showmode", g_stSettings.m_iMyVideoTitleShowMode);
   }
 
   // myscripts settings

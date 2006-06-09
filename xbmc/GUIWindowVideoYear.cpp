@@ -39,7 +39,6 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      m_iShowMode = g_stSettings.m_iMyVideoYearShowMode;
     }
     break;
   case GUI_MSG_CLICKED:
@@ -47,9 +46,9 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTNSHOWMODE)
 	    {
-        m_iShowMode++;
-		    if (m_iShowMode > VIDEO_SHOW_WATCHED) m_iShowMode = VIDEO_SHOW_ALL;
-		    g_stSettings.m_iMyVideoYearShowMode = m_iShowMode;
+        g_stSettings.m_iMyVideoWatchMode++;
+		    if (g_stSettings.m_iMyVideoWatchMode > VIDEO_SHOW_WATCHED)
+          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
         g_settings.Save();
 		    Update(m_vecItems.m_strPath);
         return true;
