@@ -359,10 +359,7 @@ public:
     float m_fZoomAmount;      // current zoom amount
     float m_fPixelRatio;      // current pixel ratio
 
-    int m_iMyVideoTitleShowMode;
-    int m_iMyVideoGenreShowMode;
-    int m_iMyVideoActorShowMode;
-    int m_iMyVideoYearShowMode;
+    int m_iMyVideoWatchMode;
 
     VIEW_METHOD m_MyVideoViewMethod;
     VIEW_METHOD m_MyVideoRootViewMethod;
