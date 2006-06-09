@@ -1624,6 +1624,7 @@ void CFileItemList::Stack()
       {
         vector<int> stack;
         stack.push_back(i);
+        __int64 size = item->m_dwSize;
         for (int j = i + 1; j < Size(); ++j)
         {
           CFileItem *item2 = Get(j);
@@ -1640,6 +1641,7 @@ void CFileItemList::Stack()
             {
               //CLog::Log(LOGDEBUG,"  adding item: [%03i] %s", j, Get(j)->GetLabel().c_str());
               stack.push_back(j);
+              size += item2->m_dwSize;
             }
           }
         }
@@ -1661,6 +1663,7 @@ void CFileItemList::Stack()
           // the label is converted from utf8, but the filename is not)
           CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber);
           item->SetLabel(fileTitle);
+          item->m_dwSize = size;
           //CLog::Log(LOGDEBUG,"  ** finalized stack: %s", fileTitle.c_str());
         }
       }
