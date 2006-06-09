@@ -192,15 +192,16 @@ void CGUIViewControl::SetSelectedItem(const CStdString &itemPath)
   SetSelectedItem(item);
 }
 
-void CGUIViewControl::SetFocused()
+bool CGUIViewControl::SetFocused()
 {
   map_iter it = m_vecViews.find(m_currentView);
   if (it == m_vecViews.end())
-    return; // no valid current view!
+    return false; // no valid current view!
 
   CGUIControl *pView = (*it).second;
   CGUIMessage msg(GUI_MSG_SETFOCUS, m_parentWindow, pView->GetID(), 0);
   g_graphicsContext.SendMessage(msg);
+  return true;
 }
 
 bool CGUIViewControl::HasControl(int viewControlID)
