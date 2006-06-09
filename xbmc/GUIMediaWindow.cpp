@@ -166,8 +166,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
       {
-        m_viewControl.SetFocused();
-        return true;
+        if (m_viewControl.SetFocused())
+          return true;
       }
     }
     break;

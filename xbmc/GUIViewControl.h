@@ -23,7 +23,7 @@ public:
   void SetSelectedItem(const CStdString &itemPath);
 
   int GetSelectedItem() const;
-  void SetFocused();
+  bool SetFocused();
 
   bool HasControl(int controlID);
   bool HasViewMode(VIEW_METHOD viewMode);
