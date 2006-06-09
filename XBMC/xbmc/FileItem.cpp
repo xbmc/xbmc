@@ -1852,6 +1852,7 @@ CStdString CFileItem::GetUserMusicThumb()
   if (IsMusicDb()) return "";
   CURL url(m_strPath);
   if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
+
   // we first check for <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
   if (CFile::Exists(fileThumb))
@@ -1946,6 +1947,9 @@ CStdString CFileItem::GetUserVideoThumb()
   if (m_bIsShareOrDrive) return "";
   if (IsInternetStream()) return "";
   if (IsParentFolder()) return "";
+  CURL url(m_strPath);
+  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
+
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb;
   if (IsStack())
@@ -1982,6 +1986,7 @@ void CFileItem::SetUserVideoThumb()
 {
   if (m_bIsShareOrDrive) return;
   if (IsParentFolder()) return;
+
   // caches as the local thumb 
   CStdString thumb(GetUserVideoThumb());
   if (!thumb.IsEmpty())

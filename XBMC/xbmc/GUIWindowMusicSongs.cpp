@@ -472,11 +472,9 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
 
 bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__" - stopping thumb loader");
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" - retrieving next folder");
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
 
