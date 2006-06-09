@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-06-2006 changed: Removed playlist track format from GUI - it just uses the music track format unless you specify otherwise using advancedsettings.xml.
+ - 09-06-2006 fixed: stack file size.
  - 08-06-2006 added: Support for START to select Done in Numeric dialog.
  - 08-06-2006 fixed: Screensaver preview did not show the correct screensaver if music or video was playing.
  - 08-06-2006 fixed: Delete on playlists/smart playlists could delete all their files as well.
