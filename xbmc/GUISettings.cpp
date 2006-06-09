@@ -465,7 +465,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(5, "screensaver.sep1");
   AddInt(6, "screensaver.dimlevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddString(7, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 774); // GeminiServer: PictureSlideShow
-  AddBool(8, "screensaver.slideshowshuffle", 191, false);
+  AddBool(8, "screensaver.slideshowshuffle", 13319, false);
 
   AddCategory(7, "uifilters", 14053);
   AddInt(1, "uifilters.flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
