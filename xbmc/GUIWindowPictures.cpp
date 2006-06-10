@@ -196,7 +196,7 @@ void CGUIWindowPictures::UpdateButtons()
   {
     CONTROL_ENABLE(CONTROL_BTNSLIDESHOW);
   }
-  if (m_guiState.get() && m_guiState->HideParentDirItems())
+  if (m_guiState.get() && !m_guiState->HideParentDirItems())
     nFolders--;
   if (m_vecItems.Size() == 0 || nFolders == 0)
   {

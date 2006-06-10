@@ -13,10 +13,6 @@
 #include "GUIThumbnailPanel.h"
 #include "GUIPassword.h"
 
-#define CONTROL_PLAY_DVD          6
-#define CONTROL_STACK             7
-#define CONTROL_IMDB              9
-#define CONTROL_BTNSHOWMODE       10
 #define LABEL_TITLE              100
 
 /*  REMOVED: There was a method here for sort by DVD label, but as this
@@ -33,34 +29,6 @@ CGUIWindowVideoTitle::CGUIWindowVideoTitle()
 //****************************************************************************************************************************
 CGUIWindowVideoTitle::~CGUIWindowVideoTitle()
 {
-}
-
-//****************************************************************************************************************************
-bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
-{
-  switch ( message.GetMessage() )
-  {
-  case GUI_MSG_WINDOW_INIT:
-    {
-    }
-    break;
-  case GUI_MSG_CLICKED:
-    {
-      int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNSHOWMODE)
-	    {
-        g_stSettings.m_iMyVideoWatchMode++;
-		    if (g_stSettings.m_iMyVideoWatchMode > VIDEO_SHOW_WATCHED)
-          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
-        g_settings.Save();
-		    Update(m_vecItems.m_strPath);
-        return true;
-      }
-      else
-        return CGUIWindowVideoBase::OnMessage(message);
-    }
-  }
-  return CGUIWindowVideoBase::OnMessage(message);
 }
 
 bool CGUIWindowVideoTitle::GetDirectory(const CStdString &strDirectory, CFileItemList &items)

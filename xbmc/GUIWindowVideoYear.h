@@ -6,7 +6,6 @@ class CGUIWindowVideoYear : public CGUIWindowVideoBase
 public:
   CGUIWindowVideoYear(void);
   virtual ~CGUIWindowVideoYear(void);
-  virtual bool OnMessage(CGUIMessage& message);
 
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
