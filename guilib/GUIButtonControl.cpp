@@ -4,6 +4,7 @@
 #include "GUIDialog.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "GUIFontManager.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 
 CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CLabelInfo& labelInfo)
@@ -70,7 +71,9 @@ void CGUIButtonControl::Render()
   bool bRenderText = (m_dwFlickerCounter > 0) ? (m_dwFrameCounter % 60 > 30) : true;
   m_dwFlickerCounter = (m_dwFlickerCounter > 0) ? (m_dwFlickerCounter - 1) : 0;
 
-  if (m_strLabel.size() > 0 && bRenderText && m_label.font)
+  CStdString renderLabel(g_infoManager.GetMultiLabel(m_multiInfo));
+
+  if (renderLabel.size() > 0 && bRenderText && m_label.font)
   {
     float fPosX = (float)m_iPosX + m_label.offsetX;
     float fPosY = (float)m_iPosY + m_label.offsetY;
@@ -85,7 +88,7 @@ void CGUIButtonControl::Render()
       fPosY = (float)m_iPosY + m_dwHeight / 2;
 
     CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToUTF16(m_strLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToUTF16(renderLabel, strLabelUnicode);
 
     m_label.font->Begin();
     if (IsDisabled())
@@ -171,6 +174,7 @@ void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
 void CGUIButtonControl::SetLabel(const string &label)
 {
   m_strLabel = label;
+  g_infoManager.ParseLabel(label, m_multiInfo);
 }
 
 void CGUIButtonControl::SetLabel2(const string &label2)
@@ -238,7 +242,7 @@ void CGUIButtonControl::Flicker(bool bFlicker)
 
 CStdString CGUIButtonControl::GetDescription() const
 {
-  CStdString strLabel = GetLabel();
+  CStdString strLabel(g_infoManager.GetMultiLabel(m_multiInfo));
   return strLabel;
 }
 
