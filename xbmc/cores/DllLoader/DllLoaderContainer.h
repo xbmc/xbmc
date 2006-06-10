@@ -34,6 +34,7 @@ public:
   DllLoader msvcrt;
   DllLoader msvcr71;
   DllLoader pncrt;
+  DllLoader iconvx;
   
   void Clear();
   HMODULE GetModuleAddress(const char* sName);
