@@ -33,6 +33,7 @@ void export_comctl32();
 void export_msvcrt();
 void export_msvcr71();
 void export_pncrt();
+void export_iconvx();
 
 DllLoaderContainer::DllLoaderContainer() :
     kernel32("kernel32.dll", false, true),
@@ -56,7 +57,8 @@ DllLoaderContainer::DllLoaderContainer() :
     comdlg32("comdlg32.dll", false, true),
     gdi32("gdi32.dll", false, true),
     comctl32("comctl32.dll", false, true),
-    pncrt("pncrt.dll", false, true)
+    pncrt("pncrt.dll", false, true),
+    iconvx("libiconv.a", false, true)
 {
   m_iNrOfDlls = 0;
   m_bTrack = true;
@@ -83,6 +85,7 @@ DllLoaderContainer::DllLoaderContainer() :
   RegisterDll(&gdi32); export_gdi32();
   RegisterDll(&comctl32); export_comctl32();
   RegisterDll(&pncrt); export_pncrt();
+  RegisterDll(&iconvx); export_iconvx();
 }
   
 void DllLoaderContainer::Clear()
