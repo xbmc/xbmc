@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIImage.h"
+#include "GUILabelControl.h"  // for CInfoPortion
 
 /*!
  \ingroup controls
@@ -68,6 +69,7 @@ protected:
 
   string m_strLabel;
   string m_strLabel2;
+  vector<CInfoPortion>  m_multiInfo;
   CLabelInfo m_label;
 
   long m_lHyperLinkWindowID;
