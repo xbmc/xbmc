@@ -1141,13 +1141,67 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
 
   CStdString extraExtensions;
-  if (XMLUtils::GetString(pRootElement, "pictureextensions", extraExtensions))
-    g_stSettings.m_pictureExtensions += "|" + extraExtensions;
-  if (XMLUtils::GetString(pRootElement, "musicextensions", extraExtensions))
-    g_stSettings.m_musicExtensions += "|" + extraExtensions;
-  if (XMLUtils::GetString(pRootElement, "videoextensions", extraExtensions))
-    g_stSettings.m_videoExtensions += "|" + extraExtensions;
-
+  TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
+  if (pExts)
+  {
+    GetString(pExts,"add",extraExtensions,"");
+    if (extraExtensions != "")
+      g_stSettings.m_pictureExtensions += "|" + extraExtensions;
+    GetString(pExts,"remove",extraExtensions,"");
+    if (extraExtensions != "")
+    {
+      CStdStringArray exts;
+      StringUtils::SplitString(extraExtensions,"|",exts);
+      for (unsigned int i=0;i<exts.size();++i)
+      {
+        int iPos = g_stSettings.m_pictureExtensions.Find(exts[i]);
+        if (iPos == -1)
+          continue;
+        g_stSettings.m_pictureExtensions.erase(iPos,exts[i].size()+1);
+      }
+    }    
+  }
+  pExts = pRootElement->FirstChildElement("musicextensions");
+  if (pExts)
+  {
+    GetString(pExts,"add",extraExtensions,"");
+    if (extraExtensions != "")
+      g_stSettings.m_musicExtensions += "|" + extraExtensions;
+    GetString(pExts,"remove",extraExtensions,"");
+    if (extraExtensions != "")
+    {
+      CStdStringArray exts;
+      StringUtils::SplitString(extraExtensions,"|",exts);
+      for (unsigned int i=0;i<exts.size();++i)
+      {
+        int iPos = g_stSettings.m_musicExtensions.Find(exts[i]);
+        if (iPos == -1)
+          continue;
+        g_stSettings.m_musicExtensions.erase(iPos,exts[i].size()+1);
+      }
+    }    
+  }
+  pExts = pRootElement->FirstChildElement("videoextensions");
+  if (pExts)
+  {
+    GetString(pExts,"add",extraExtensions,"");
+    if (extraExtensions != "")
+      g_stSettings.m_videoExtensions += "|" + extraExtensions;
+    GetString(pExts,"remove",extraExtensions,"");
+    if (extraExtensions != "")
+    {
+      CStdStringArray exts;
+      StringUtils::SplitString(extraExtensions,"|",exts);
+      for (unsigned int i=0;i<exts.size();++i)
+      {
+        int iPos = g_stSettings.m_videoExtensions.Find(exts[i]);
+        if (iPos == -1)
+          continue;
+        g_stSettings.m_videoExtensions.erase(iPos,exts[i].size()+1);
+      }
+    }    
+  }
+  
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
   CLog::Log(LOGERROR, "displayremotecodes is %s", g_advancedSettings.m_displayRemoteCodes ? "true" : "false");
 
