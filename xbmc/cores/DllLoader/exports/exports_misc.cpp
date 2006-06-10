@@ -113,3 +113,14 @@ void export_comctl32()
   g_dlls.comctl32.AddExport("CreateUpDownControl", 16, (unsigned long)dllCreateUpDownControl);
   g_dlls.comctl32.AddExport("InitCommonControls", 17, (unsigned long)dllCreateUpDownControl);
 }
+
+void export_iconvx()
+{
+  //g_dlls.iconvx.AddExport("_libiconv_version", (unsigned long)&_libiconv_version);  // seems to be missing in our version
+  g_dlls.iconvx.AddExport("libiconv", (unsigned long)libiconv);
+  g_dlls.iconvx.AddExport("libiconv_close", (unsigned long)libiconv_close);
+  g_dlls.iconvx.AddExport("libiconv_open", (unsigned long)libiconv_open);
+  g_dlls.iconvx.AddExport("libiconv_set_relocation_prefix", (unsigned long)libiconv_set_relocation_prefix);
+  g_dlls.iconvx.AddExport("libiconvctl", (unsigned long)libiconvctl);
+  g_dlls.iconvx.AddExport("libiconvlist", (unsigned long)libiconvlist);
+}
