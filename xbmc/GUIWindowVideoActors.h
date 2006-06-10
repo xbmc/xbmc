@@ -6,7 +6,6 @@ class CGUIWindowVideoActors : public CGUIWindowVideoBase
 public:
   CGUIWindowVideoActors(void);
   virtual ~CGUIWindowVideoActors(void);
-  virtual bool OnMessage(CGUIMessage& message);
 
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
