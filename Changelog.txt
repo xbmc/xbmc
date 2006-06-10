@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-06-2006 changed: you can now also remove extensions using advancedsettings.xml (see manual).
  - 10-06-2006 changed: moved region setting from date & time to appearance
  - 10-06-2006 fixed: Initial control focus didn't observe the controlgroup's previous focus.
  - 10-06-2006 fixed: <label> in button controls didn't accept $INFO[] labels.
