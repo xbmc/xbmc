@@ -55,7 +55,5 @@ protected:
   CVideoDatabase m_database;
   bool m_bDisplayEmptyDatabaseMessage;
 
-  int m_iShowMode;
-
   CVideoThumbLoader m_thumbLoader;
 };
