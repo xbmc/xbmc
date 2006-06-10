@@ -42,7 +42,6 @@ CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
 {
   m_bDisplayEmptyDatabaseMessage = false;
-  m_iShowMode = VIDEO_SHOW_ALL;
   m_thumbLoader.SetObserver(this);
 }
 
@@ -116,6 +115,15 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           g_graphicsContext.SendMessage(msg2);
         }
 
+        return true;
+      }
+      else if (iControl == CONTROL_BTNSHOWMODE)
+	    {
+        g_stSettings.m_iMyVideoWatchMode++;
+		    if (g_stSettings.m_iMyVideoWatchMode > VIDEO_SHOW_WATCHED)
+          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+        g_settings.Save();
+		    Update(m_vecItems.m_strPath);
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -218,7 +226,7 @@ void CGUIWindowVideoBase::UpdateButtons()
     CONTROL_DISABLE(CONTROL_IMDB);
   }
 
-  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + m_iShowMode));
+  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + g_stSettings.m_iMyVideoWatchMode));
   CGUIMediaWindow::UpdateButtons();
 }
 
@@ -731,16 +739,16 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
 
     /*
-	  if (m_iShowMode == VIDEO_SHOW_ALL)
+	  if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
 	  {
       btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
       btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
 	  }
-	  else if (m_iShowMode == VIDEO_SHOW_UNWATCHED)
+	  else if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
 	  {
       btn_Mark_Watched = pMenu->AddButton(16103); //Mark as Watched
 	  }
-    else if (m_iShowMode == VIDEO_SHOW_WATCHED)
+    else if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_WATCHED)
     {
       btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
     }
@@ -1155,9 +1163,9 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
     CIMDBMovie movie = movies[i];
     // add the appropiate movies to m_vecItems based on the showmode
     if (
-      (m_iShowMode == VIDEO_SHOW_ALL) ||
-      (m_iShowMode == VIDEO_SHOW_WATCHED && movie.m_bWatched == true) ||
-      (m_iShowMode == VIDEO_SHOW_UNWATCHED && movie.m_bWatched == false)
+      (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL) ||
+      (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_WATCHED && movie.m_bWatched == true) ||
+      (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED && movie.m_bWatched == false)
       )
     {
       // mark watched movies when showing all
