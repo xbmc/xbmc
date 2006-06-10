@@ -15,7 +15,7 @@ public:
   const CStdString& GetDVDAudioLanguage() const;
   const CStdString& GetDVDSubtitleLanguage() const;
 
-  bool ForceUnicodeFont() { return m_forceUnicodeFont; }
+  bool ForceUnicodeFont() { return m_currentRegion->m_forceUnicodeFont; }
 
   const CStdString& GetDateFormat(bool bLongDate=false) const;
   
@@ -60,23 +60,25 @@ public:
   const CStdString& GetCurrentRegion();
 
 protected:
-  void Clear();
+  void SetDefaults();
 
 protected:
-  CStdString m_strGuiCharSet;
-  CStdString m_strSubtitleCharSet;
-  CStdString m_strDVDMenuLanguage;
-  CStdString m_strDVDAudioLanguage;
-  CStdString m_strDVDSubtitleLanguage;
-  bool m_forceUnicodeFont;
 
   class CRegion
   {
   public:
+    CRegion(const CRegion& region);
     CRegion();
     virtual ~CRegion();
+    void SetDefaults();
     void SetTempUnit(const CStdString& strUnit);
     void SetSpeedUnit(const CStdString& strUnit);
+    CStdString m_strGuiCharSet;
+    CStdString m_strSubtitleCharSet;
+    CStdString m_strDVDMenuLanguage;
+    CStdString m_strDVDAudioLanguage;
+    CStdString m_strDVDSubtitleLanguage;
+    bool m_forceUnicodeFont;
     CStdString m_strName;
     CStdString m_strDateFormatLong;
     CStdString m_strDateFormatShort;
