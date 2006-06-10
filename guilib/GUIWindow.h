@@ -165,6 +165,7 @@ protected:
   virtual void SaveControlStates();
   virtual void RestoreControlStates();
   void AddControlGroup(int id);
+  CGUIControl *GetFirstFocusableControl(int id);
 
   struct stReferenceControl
   {

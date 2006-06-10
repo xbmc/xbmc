@@ -899,7 +899,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
         {
           CGUIControl* pControl = *i;
-          if (pControl->HasFocus() )
+          if (pControl->HasFocus())
           {
             CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), pControl->GetID(), message.GetControlId());
             pControl->OnMessage(msgLostFocus);
@@ -908,21 +908,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
           }
         }
 
-        // find the control to focus.  We do this as follows:
-        // 1.  First find a control that matches the id and is focusable.
-        // 2.  Else just use the first control that matches the id.
-        CGUIControl* pFocusedControl = NULL;
-        for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
-        {
-          CGUIControl* pControl = *i;
-          if (pControl->GetID() == message.GetControlId() && pControl->CanFocus())
-          {
-            pFocusedControl = pControl;
-            break;
-          }
-        }
-        if (!pFocusedControl)
-          pFocusedControl = (CGUIControl *)GetControl(message.GetControlId());
+        // find the first focusable control
+        CGUIControl* pFocusedControl = GetFirstFocusableControl(message.GetControlId());
 
         //  Handle control group changes
         if (pFocusedControl)
@@ -1409,16 +1396,20 @@ void CGUIWindow::RestoreControlStates()
   // note that we then set it again after this to make sure any controls
   // that depend on the focused control are active.
   SetControlVisibility();
-  if (m_saveLastControl)
+  int focusControl = (m_saveLastControl && m_lastControlID) ? m_lastControlID : m_dwDefaultFocusControlID;
+  // check whether it has a control group, and focus the last control in that group if we can
+  CGUIControl *control = GetFirstFocusableControl(focusControl);
+  if (control && control->GetGroup() > -1)
   {
-    // set focus to our saved control
-    int focusControl = m_lastControlID ? m_lastControlID : m_dwDefaultFocusControlID;
-    SET_CONTROL_FOCUS(focusControl, 0);
+    int lastID = m_vecGroups[control->GetGroup()].m_lastControl;
+    if (lastID > -1)
+    {
+      const CGUIControl *lastControl = GetControl(lastID);
+      if (lastControl && lastControl->CanFocus())
+        focusControl = lastID;
+    }
   }
-  else
-  { // set the default control focus
-    SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
-  }
+  SET_CONTROL_FOCUS(focusControl, 0);
 }
 
 void CGUIWindow::ResetControlStates()
@@ -1439,4 +1430,24 @@ void CGUIWindow::AddControlGroup(int id)
     id++;
   }
   m_vecGroups.push_back(CControlGroup(id));
+}
+
+// find the first focusable control.  We do this as follows:
+// 1.  First find a control that matches the id and is focusable.
+// 2.  Else just use the first control that matches the id.
+CGUIControl *CGUIWindow::GetFirstFocusableControl(int id)
+{
+  CGUIControl* pFocusedControl = NULL;
+  for (ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
+  {
+    CGUIControl* pControl = *i;
+    if (pControl->GetID() == id && pControl->CanFocus())
+    {
+      pFocusedControl = pControl;
+      break;
+    }
+  }
+  if (!pFocusedControl)
+    pFocusedControl = (CGUIControl *)GetControl(id);
+  return pFocusedControl;
 }
