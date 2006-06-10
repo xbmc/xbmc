@@ -81,10 +81,10 @@ namespace PYXBMC
     }
 		self->strTextureFocus = cTextureFocus ?
             cTextureFocus :
-            PyGetDefaultImage("button", "texturefocus", "check-box.png");		
+            PyGetDefaultImage("checkmark", "texturefocus", "check-box.png");		
 		self->strTextureNoFocus = cTextureNoFocus ?
             cTextureNoFocus :
-            PyGetDefaultImage("button", "texturenofocus", "check-boxNF.png");
+            PyGetDefaultImage("checkmark", "texturenofocus", "check-boxNF.png");
 
 		return (PyObject*)self;
 	}
