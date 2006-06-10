@@ -250,7 +250,7 @@ void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &
 {
   m_label.font = g_fontManager.GetFont(strFont);
   m_label.textColor = dwTextColor;
-  m_strLabel = strText;
+  SetLabel(strText);
 }
 
 void CGUIButtonControl::PythonSetDisabledColor(DWORD dwDisabledColor)
