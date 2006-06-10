@@ -7,18 +7,51 @@ CLangInfo g_langInfo;
 
 #define SPEED_UNIT_STRINGS 20035
 
+CLangInfo::CRegion::CRegion(const CRegion& region)
+{
+  m_strName=region.m_strName;
+  m_forceUnicodeFont=region.m_forceUnicodeFont;
+  m_strGuiCharSet=region.m_strGuiCharSet;
+  m_strSubtitleCharSet=region.m_strSubtitleCharSet;
+  m_strDVDMenuLanguage=region.m_strDVDMenuLanguage;
+  m_strDVDAudioLanguage=region.m_strDVDAudioLanguage;
+  m_strDVDSubtitleLanguage=region.m_strDVDSubtitleLanguage;
+
+  m_strDateFormatShort=region.m_strDateFormatShort;
+  m_strDateFormatLong=region.m_strDateFormatLong;
+  m_strTimeFormat=region.m_strTimeFormat;
+  m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM]=region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM];
+  m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM]=region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM];
+  m_strTimeFormat=region.m_strTimeFormat;
+  m_tempUnit=region.m_tempUnit;
+  m_speedUnit=region.m_speedUnit;
+}
+
 CLangInfo::CRegion::CRegion()
 {
-  m_strDateFormatShort="DD/MM/YYYY";
-  m_strDateFormatLong="DDDD, D MMMM YYYY";
-  m_strTimeFormat="HH:mm:ss";
-  m_tempUnit=TEMP_UNIT_CELSIUS;
-  m_speedUnit=SPEED_UNIT_KMH;
+  SetDefaults();
 }
 
 CLangInfo::CRegion::~CRegion()
 {
 
+}
+
+void CLangInfo::CRegion::SetDefaults()
+{
+  m_strName="N/A";
+  m_forceUnicodeFont=false;
+  m_strGuiCharSet="CP1252";
+  m_strSubtitleCharSet="CP1252";
+  m_strDVDMenuLanguage="en";
+  m_strDVDAudioLanguage="en";
+  m_strDVDSubtitleLanguage="en";
+
+  m_strDateFormatShort="DD/MM/YYYY";
+  m_strDateFormatLong="DDDD, D MMMM YYYY";
+  m_strTimeFormat="HH:mm:ss";
+  m_tempUnit=TEMP_UNIT_CELSIUS;
+  m_speedUnit=SPEED_UNIT_KMH;
 }
 
 void CLangInfo::CRegion::SetTempUnit(const CStdString& strUnit)
@@ -53,7 +86,7 @@ void CLangInfo::CRegion::SetSpeedUnit(const CStdString& strUnit)
 
 CLangInfo::CLangInfo()
 {
-  Clear();
+  SetDefaults();
 }
 
 CLangInfo::~CLangInfo()
@@ -62,7 +95,7 @@ CLangInfo::~CLangInfo()
 
 bool CLangInfo::Load(const CStdString& strFileName)
 {
-  Clear();
+  SetDefaults();
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strFileName.c_str()))
@@ -88,14 +121,14 @@ bool CLangInfo::Load(const CStdString& strFileName)
       CStdString strForceUnicodeFont = ((TiXmlElement*) pGui)->Attribute("unicodefont");
 
       if (strForceUnicodeFont.Equals("true"))
-        m_forceUnicodeFont=true;
+        m_defaultRegion.m_forceUnicodeFont=true;
 
-      m_strGuiCharSet=pGui->FirstChild()->Value();
+      m_defaultRegion.m_strGuiCharSet=pGui->FirstChild()->Value();
     }
 
     const TiXmlNode *pSubtitle = pCharSets->FirstChild("subtitle");
     if (pSubtitle && !pSubtitle->NoChildren())
-      m_strSubtitleCharSet=pSubtitle->FirstChild()->Value();
+      m_defaultRegion.m_strSubtitleCharSet=pSubtitle->FirstChild()->Value();
   }
 
   const TiXmlNode *pDVD = pRootElement->FirstChild("dvd");
@@ -103,15 +136,15 @@ bool CLangInfo::Load(const CStdString& strFileName)
   {
     const TiXmlNode *pMenu = pDVD->FirstChild("menu");
     if (pMenu && !pMenu->NoChildren())
-      m_strDVDMenuLanguage=pMenu->FirstChild()->Value();
+      m_defaultRegion.m_strDVDMenuLanguage=pMenu->FirstChild()->Value();
 
     const TiXmlNode *pAudio = pDVD->FirstChild("audio");
     if (pAudio && !pAudio->NoChildren())
-      m_strDVDAudioLanguage=pAudio->FirstChild()->Value();
+      m_defaultRegion.m_strDVDAudioLanguage=pAudio->FirstChild()->Value();
 
     const TiXmlNode *pSubtitle = pDVD->FirstChild("subtitle");
     if (pSubtitle && !pSubtitle->NoChildren())
-      m_strDVDSubtitleLanguage=pSubtitle->FirstChild()->Value();
+      m_defaultRegion.m_strDVDSubtitleLanguage=pSubtitle->FirstChild()->Value();
   }
 
   const TiXmlNode *pRegions = pRootElement->FirstChild("regions");
@@ -120,7 +153,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
     const TiXmlElement *pRegion=pRegions->FirstChildElement("region");
     while (pRegion)
     {
-      CRegion region;
+      CRegion region(m_defaultRegion);
       region.m_strName=pRegion->Attribute("name");
       if (region.m_strName.IsEmpty())
         region.m_strName="N/A";
@@ -154,22 +187,18 @@ bool CLangInfo::Load(const CStdString& strFileName)
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    const CStdString& strName=g_guiSettings.GetString("xbdatetime.region");
+    const CStdString& strName=g_guiSettings.GetString("lookandfeel.region");
     SetCurrentRegion(strName);
   }
   return true;
 }
 
-void CLangInfo::Clear()
+void CLangInfo::SetDefaults()
 {
-  m_forceUnicodeFont=false;
   m_regions.clear();
 
-  m_strGuiCharSet="CP1252";
-  m_strSubtitleCharSet="CP1252";
-  m_strDVDMenuLanguage="en";
-  m_strDVDAudioLanguage="en";
-  m_strDVDSubtitleLanguage="en";
+  //Reset default region
+  m_defaultRegion.SetDefaults();
 
   // Set the default region, we may be unable to load langinfo.xml
   m_currentRegion=&m_defaultRegion;
@@ -180,7 +209,7 @@ CStdString CLangInfo::GetGuiCharSet() const
   CStdString strCharSet;
   strCharSet=g_guiSettings.GetString("lookandfeel.charset");
   if (strCharSet=="DEFAULT")
-    strCharSet=m_strGuiCharSet;
+    strCharSet=m_currentRegion->m_strGuiCharSet;
 
   return strCharSet;
 }
@@ -189,7 +218,7 @@ CStdString CLangInfo::GetSubtitleCharSet() const
 {
   CStdString strCharSet=g_guiSettings.GetString("subtitles.charset");
   if (strCharSet=="DEFAULT")
-    strCharSet=m_strSubtitleCharSet;
+    strCharSet=m_currentRegion->m_strSubtitleCharSet;
 
   return strCharSet;
 }
@@ -197,19 +226,19 @@ CStdString CLangInfo::GetSubtitleCharSet() const
 // two character codes as defined in ISO639
 const CStdString& CLangInfo::GetDVDMenuLanguage() const
 {
-  return m_strDVDMenuLanguage;
+  return m_currentRegion->m_strDVDMenuLanguage;
 }
 
 // two character codes as defined in ISO639
 const CStdString& CLangInfo::GetDVDAudioLanguage() const
 {
-  return m_strDVDAudioLanguage;
+  return m_currentRegion->m_strDVDAudioLanguage;
 }
 
 // two character codes as defined in ISO639
 const CStdString& CLangInfo::GetDVDSubtitleLanguage() const
 {
-  return m_strDVDSubtitleLanguage;
+  return m_currentRegion->m_strDVDSubtitleLanguage;
 }
 
 // Returns the format string for the date of the current language

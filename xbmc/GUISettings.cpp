@@ -443,11 +443,12 @@ CGUISettings::CGUISettings(void)
   AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddSeparator(7, "lookandfeel.sep1");
   AddString(8, "lookandfeel.language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(9, "lookandfeel.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-  AddSeparator(10, "lookandfeel.sep2");
-  AddInt(11, "lookandfeel.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
-  AddString(12, "lookandfeel.guicalibration",213,"", BUTTON_CONTROL_STANDARD);
-  AddSeparator(13, "lookandfeel.sep3");
+  AddString(9, "lookandfeel.region", 20026, "", SPIN_CONTROL_TEXT);
+  AddString(10, "lookandfeel.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+  AddSeparator(11, "lookandfeel.sep2");
+  AddInt(12, "lookandfeel.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddString(13, "lookandfeel.guicalibration",213,"", BUTTON_CONTROL_STANDARD);
+  AddSeparator(14, "lookandfeel.sep3");
   
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideextensions", 497, false);
@@ -473,13 +474,11 @@ CGUISettings::CGUISettings(void)
 
   // GeminiServer
   AddCategory(7, "xbdatetime", 14063);
-  AddString(1, "xbdatetime.region", 20026, "", SPIN_CONTROL_TEXT);
-  AddSeparator(2, "xbdatetime.sep1");
-  AddBool(3,   "xbdatetime.timeserver"       , 168  , false);
-  AddString(4, "xbdatetime.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
-  AddSeparator(5, "xbdatetime.sep2");
-  AddString(6, "xbdatetime.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
-  AddString(7, "xbdatetime.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+  AddString(1, "xbdatetime.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
+  AddString(2, "xbdatetime.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+  AddSeparator(3, "xbdatetime.sep1");
+  AddBool(4,   "xbdatetime.timeserver"       , 168  , false);
+  AddString(5, "xbdatetime.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
 
   //  TODO: localize 2.0
   AddString(0,"system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
