@@ -3,10 +3,12 @@
 #include "GUIButtonControl.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
+#include "GUIDialogFileBrowser.h"
 #include "application.h"
 #include "GUIPassword.h"
 #include "util.h"
 #include "GUIDialogMediaSource.h"
+#include "MediaManager.h"
 
 #define BACKGROUND_IMAGE 999
 #define BACKGROUND_BOTTOM 998
@@ -200,6 +202,11 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     if (!strDefault.IsEmpty())
       btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
 
+    int btn_setThumb = pMenu->AddButton(20019);
+    int btn_RemoveThumb = 0;
+    if (share->m_strThumbnailImage != "")
+      btn_RemoveThumb = pMenu->AddButton(20057);
+
     // GeminiServer: DVD Drive Context menu stuff
     int btn_PlayDisc = 0;
     int btn_Eject = 0;
@@ -301,6 +308,30 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           return false;
         // remove share default
         ClearDefault(strType);
+        return true;
+      }
+      else if (btn == btn_setThumb)
+      {
+        CStdString strThumb;
+        VECSHARES shares;
+        g_mediaManager.GetLocalDrives(shares);
+
+        if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(20056),strThumb))
+        {
+          g_settings.UpdateBookmark(strType,share->strName,"thumbnail",strThumb);
+          
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
+          m_gWindowManager.SendThreadMessage(msg);        
+          return true;
+        }
+
+        return false;
+      }
+      else if (btn == btn_RemoveThumb)
+      {
+        g_settings.UpdateBookmark(strType,share->strName,"thumbnail","");
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
+        m_gWindowManager.SendThreadMessage(msg);        
         return true;
       }
       else if (btn == btn_PlayDisc)

@@ -591,7 +591,8 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
 
     if (pThumbnailNode)
     {
-      share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
+      if (pThumbnailNode->FirstChild())
+        share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
     }
 
     return true;
@@ -1708,6 +1709,8 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
         (*it).m_strLockCode = strUpdateText;
       else if ("badpwdcount" == strUpdateElement)
         (*it).m_iBadPwdCount = atoi(strUpdateText);
+      else if ("thumbnail" == strUpdateElement)
+        (*it).m_strThumbnailImage = strUpdateText;
       else
         return false;
       pShare = &(*it);
@@ -1759,6 +1762,12 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
             if (pChild2)
               pIt->RemoveChild(pChild2);
           }
+          if (pShare->m_strThumbnailImage == "")
+          {
+            TiXmlNode* pChild2 = pIt->FirstChild("thumbnail");
+            if (pChild2)
+              pIt->RemoveChild(pChild2);
+          } 
           break;
         }
       }
