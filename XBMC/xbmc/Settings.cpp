@@ -567,6 +567,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
     else
       CLog::Log(LOGDEBUG,"        Path: %s", share.strPath.c_str());
 
+    share.m_iBadPwdCount = 0;
     if (pCacheNode)
     {
       share.m_iBufferSize = atoi( pCacheNode->FirstChild()->Value() );
@@ -586,7 +587,8 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
 
     if (pBadPwdCount)
     {
-      share.m_iBadPwdCount = atoi( pBadPwdCount->FirstChild()->Value() );
+      if (pBadPwdCount->FirstChild())
+        share.m_iBadPwdCount = atoi( pBadPwdCount->FirstChild()->Value() );
     }
 
     if (pThumbnailNode)
@@ -1647,7 +1649,7 @@ bool CSettings::CommitBookmarkTransaction()
   return bResult;
 }
 
-bool CSettings::UpdateShare(const CStdString &type, const CStdString &oldName, const CShare &share)
+bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share)
 {
   if (!LoadXml()) return false;
   VECSHARES *pShares = GetSharesFromType(type);
@@ -1655,7 +1657,7 @@ bool CSettings::UpdateShare(const CStdString &type, const CStdString &oldName, c
   if (!pShares) return false;
 
   // update our current share list
-  CShare* pShare;
+  CShare* pShare=NULL;
   for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
   {
     if ((*it).strName == oldName)
