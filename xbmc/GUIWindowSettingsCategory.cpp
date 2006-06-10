@@ -607,7 +607,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       if (pSettingString->GetData().IsEmpty())
         pControl->SetLabel2(g_localizeStrings.Get(20009));  // TODO: localize 2.0
     }
-    else if (strSetting.Equals("xbdatetime.region"))
+    else if (strSetting.Equals("lookandfeel.region"))
     {
       FillInRegions(pSetting);
     }
@@ -1416,14 +1416,14 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-  else if (strSetting.Equals("xbdatetime.region"))
+  else if (strSetting.Equals("lookandfeel.region"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 
     const CStdString& strRegion=pControl->GetCurrentLabel();
     g_langInfo.SetCurrentRegion(strRegion);
-    g_guiSettings.SetString("xbdatetime.region", strRegion);
+    g_guiSettings.SetString("lookandfeel.region", strRegion);
   }
   else if (strSetting.Equals("xbdatetime.timeserver") || strSetting.Equals("xbdatetime.timeaddress"))
   {
