@@ -175,6 +175,8 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20053] = "Left master mode";
   m_vecStrings[20054] = "Entered master mode";
   m_vecStrings[20055] = "Allmusic.com Thumb";
+  m_vecStrings[20056] = "Source Thumbnail";
+  m_vecStrings[20057] = "Remove Thumbnail";
 
   // new strings for weather localization
   m_vecStrings[1411] = "with";
