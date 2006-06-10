@@ -99,6 +99,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
 
 bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CShare &share)
 {
+  CStdString strOldName = share.strName;
   CGUIDialogMediaSource *dialog = (CGUIDialogMediaSource *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE);
   if (!dialog) return false;
   dialog->Initialize();
@@ -111,7 +112,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
     g_settings.BeginBookmarkTransaction();
     CShare newShare;
     newShare.FromNameAndPaths(type, dialog->m_name, dialog->GetPaths());
-    g_settings.UpdateShare(type, share.strName, newShare);
+    g_settings.UpdateShare(type, strOldName, newShare);
     g_settings.CommitBookmarkTransaction();
   }
   dialog->m_paths.Clear();
