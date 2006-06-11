@@ -86,7 +86,8 @@ namespace XFILE
       unsigned int    m_bufferSize;
 
       int             m_stillRunning; /* Is background url fetch still in progress */
-      
+      DWORD           m_threadid;
+
       struct XCURL::curl_slist* m_curlAliasList;
       struct XCURL::curl_slist* m_curlHeaderList;
       IHttpHeaderCallback* m_pHeaderCallback;
