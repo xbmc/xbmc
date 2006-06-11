@@ -36,6 +36,8 @@ public:
 
   CStdString& GetFontName();
 
+  void DrawOutlineText(float x, float y, DWORD color, DWORD outlineColor, int outlineWidth, const WCHAR *text, DWORD flags = 0L, float maxWidth = 0.0f);
+
   void DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor,
                  const WCHAR* strText, DWORD dwFlags = 0L,
                  FLOAT fMaxPixelWidth = 0.0f);
