@@ -61,11 +61,6 @@ ifneq ($(FREETYPE_LIB),)
 	OBJECTS += $(LIB_PATH)/libfreetype.a
 endif
 
-ifneq ($(ARCH_LIB),)
-	NAMES += ICONV
-	OBJECTS += $(LIB_PATH)/libiconv.a
-endif
-
 ifneq ($(LIVE_LIBS),)
 	NAMES += LIVE
 	OBJECTS += live/liveMedia/libliveMedia.a
@@ -84,6 +79,17 @@ ifeq ($(PNG),yes)
 	NAMES += PNG
 	OBJECTS += $(LIB_PATH)/libpng.a
 endif
+
+ifneq ($(ENCA_LIB),)
+	NAMES += ENCA
+	OBJECTS += $(LIB_PATH)/libenca.a	
+endif
+
+ifeq ($(HAVE_ICONV),yes)
+	NAMES += ICONVX
+	OBJECTS += $(LIB_PATH)/iconv.lib
+endif
+
 
 # targets
 all:	dll

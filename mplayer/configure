@@ -2224,6 +2224,8 @@ EOF
     _iconv=yes
     _ld_iconv='-liconv'
   fi
+elif test "$_iconv" = yes ; then
+  _ld_iconv='-liconv'
 fi
 if test "$_iconv" = yes ; then
   _def_iconv='#define USE_ICONV 1'

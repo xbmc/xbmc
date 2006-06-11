@@ -1345,7 +1345,7 @@ void* guess_cp(FILE *fd, char *preferred_language, char *fallback)
 
     if (!detected_sub_cp) {
 	detected_sub_cp = strdup(fallback);
-	mp_msg(MSGT_SUBREADER, MSGL_INFO, "ENCA detection failed: fallback to %s\n", fallback);
+	mp_msg(MSGT_SUBREADER, MSGL_INFO, "ENCA detection failed (%s): fallback to %s\n", preferred_language, fallback);
     }
 
     return detected_sub_cp;
