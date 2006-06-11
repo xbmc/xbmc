@@ -304,6 +304,12 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-noidx");
   }
 
+  /* try to autodetect any multicharacter charset */
+  /* then fallback to user specified charset */
+  m_vecOptions.push_back("-subcp");
+  strTmp.Format("enca:__:%s", g_langInfo.GetSubtitleCharSet().c_str());
+  m_vecOptions.push_back(strTmp);
+
   //MOVED TO mplayer.conf
   //Enable mplayer's internal highly accurate sleeping.
   //m_vecOptions.push_back("-softsleep");
@@ -1962,14 +1968,10 @@ bool CMPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
 
       CStdStringA S = sub->text[i];
       CStdStringW W;
-      // "Detecting" UTF-8 like this doesn't work too well, as we
-      // can have a different charset that passes the UTF8 test.
-      // Ideally we'd have mplayer tell us what the encoding is (or
-      // at least tell is if we had utf8 or not)
-      //if (g_charsetConverter.isValidUtf8(S))
-      //  g_charsetConverter.utf8ToUTF16(S, W, false); // mplayer does flipping of hebrew/arabic for use
-      //else
-        g_charsetConverter.subtitleCharsetToUTF16(S, W);
+      // mplayer now internally tries to detect charset
+      // and converts it to utf8 before adding it to
+      // the subtitle structure
+      g_charsetConverter.utf8ToUTF16(S, W, false); // mplayer does flipping of hebrew/arabic for use
       strSubtitle += W;
     }
     
