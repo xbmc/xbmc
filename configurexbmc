@@ -32,7 +32,6 @@ chmod +x configure && ./configure \
 --disable-vidix \
 --disable-inet6 \
 --disable-termcap \
---disable-iconv \
 --disable-freetype \
 --disable-edl \
 --disable-x264 \
@@ -40,6 +39,8 @@ chmod +x configure && ./configure \
 --disable-win32waveout \
 --disable-mad \
 --disable-xvid \
+--enable-iconv \
+--enable-enca \
 --enable-libdts \
 --enable-largefiles \
 --enable-winsock2 \
