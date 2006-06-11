@@ -711,7 +711,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   }
   else if (condition == SYSTEM_TRAYOPEN)
   {
-	bReturn = CDetectDVDMedia::DriveReady() !=DRIVE_OPEN;
+	bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
   }
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
