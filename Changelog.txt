@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-06-2006 added: better subtitle charset detection. mplayer now tries to detect any multicharacter charsets, then fallbacks to user specified
  - 11-06-2006 added: builtin command, xbmc.KaiConnection.     Change kai connection status (connect/disconnect).
  - 11-06-2006 added: System.kaienabled conditional visibility tag.
  - 11-06-2006 added: System.dvdready and System.trayopen conditional visibility tag.

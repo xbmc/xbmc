@@ -58,7 +58,7 @@ DllLoaderContainer::DllLoaderContainer() :
     gdi32("gdi32.dll", false, true),
     comctl32("comctl32.dll", false, true),
     pncrt("pncrt.dll", false, true),
-    iconvx("libiconv.a", false, true)
+    iconvx("iconv.dll", false, true)
 {
   m_iNrOfDlls = 0;
   m_bTrack = true;
