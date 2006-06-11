@@ -357,6 +357,13 @@ void CDetectDVDMedia::WaitMediaReady()
 }
 
 // Static function
+// Returns status of the DVD Drive
+int CDetectDVDMedia::DriveReady()
+{
+  return m_DriveState;
+}
+
+// Static function
 // Whether a disc is in drive
 bool CDetectDVDMedia::IsDiscInDrive()
 {

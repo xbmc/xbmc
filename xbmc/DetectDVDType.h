@@ -26,7 +26,7 @@ public:
 
   static void WaitMediaReady();
   static bool IsDiscInDrive();
-
+  static int DriveReady();
   static CCdInfo* GetCdInfo();
   static CEvent m_evAutorun;
 
@@ -35,6 +35,7 @@ public:
 protected:
   void UpdateDvdrom();
   DWORD GetTrayState();
+  
 
   void DetectMediaType();
   void SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel );
