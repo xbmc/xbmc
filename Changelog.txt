@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-06-2006 fixed: Added additional late check for X+Y button combo for debugging.
+ - 12-06-2006 changed: Added black border around freemem and remote code info for better readability.
+ - 12-06-2006 fixed: Start button mapped in virtual keyboard to Done now as well.
  - 12-06-2006 changed: my programs now displays folder size. plus added sort by size.
  - 12-06-2006 fixed: edit media source failed if you changed source name.
  - 11-06-2006 fixed: [ 1504128 ] Behaviour of masterlock.
