@@ -167,6 +167,7 @@ protected:
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   float NavigationIdleTime();
+  void CheckForDebugButtonCombo();
 
   void InitBasicD3D();
   bool m_bXboxMediacenterLoaded;
