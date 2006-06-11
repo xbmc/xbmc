@@ -30,6 +30,7 @@
 #include "MediaManager.h"
 #include <xbdm.h>
 #include "xbox/network.h"
+#include "utils/KaiClient.h"
 #include "GUIPassword.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
@@ -2695,6 +2696,7 @@ const BUILT_IN commands[] = {
   "EjectTray", "Close or open the DVD tray",
   "AlarmClock", "Prompt for a length of time and start an alarm clock",
   "CancelAlarm","Cancels an alarm",
+  "KaiConnection","Change kai connection status (connect/disconnect)",
   "Action", "Executes an action for the active window (same as in keymap)",
   "Notification", "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.",
   "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!",
@@ -3211,6 +3213,28 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("cancelalarm"))
   {
     g_alarmClock.stop(parameter);
+  }
+  else if (execute.Equals("kaiconnection"))
+  {
+    if (CKaiClient::GetInstance())	
+	{
+      if (!CKaiClient::GetInstance()->IsEngineConnected())
+	  {
+        while (!CKaiClient::GetInstance()->IsEngineConnected())
+		{
+          CKaiClient::GetInstance()->Reattach();
+          Sleep(3000);
+        }
+      }
+      else
+      {
+        CKaiClient::GetInstance()->Detach();
+      }
+	}
+    else
+    {
+      CGUIDialogOK::ShowAndGetInput(15000, 0, 14073, 0);
+    }
   }
   else if (execute.Equals("playdvd"))
   {
