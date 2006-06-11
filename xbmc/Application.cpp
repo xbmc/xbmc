@@ -703,12 +703,8 @@ HRESULT CApplication::Create()
   }
 
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
-  if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_X] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y])
-  {
-    g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
-    CLog::Log(LOGINFO, "Key combination detected for full debug logging (X+Y)");
-  }
-  
+  CheckForDebugButtonCombo();
+
   bool bNeedReboot = false;
   char temp[1024];
   helper.GetXbePath(temp);
@@ -1132,6 +1128,9 @@ HRESULT CApplication::Initialize()
   StartKai();
 
   m_bInitializing = false;
+
+  // final check for debugging combo
+  CheckForDebugButtonCombo();
   return S_OK;
 }
 
@@ -1820,15 +1819,14 @@ void CApplication::Render()
         if (pFont)
         {
 #ifdef _DEBUG
-          pFont->DrawText( 60, 60, 0xffffffff, 0, wszText);
+          pFont->DrawOutlineText( 0.08f * g_graphicsContext.GetWidth(), 0.12f * g_graphicsContext.GetHeight(), 0xffffffff, 0xff000000, 2, wszText);
 #else
 
           if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
-            pFont->DrawText( 60, 60, 0xffffffff, 0, wszText);
+            pFont->DrawOutlineText( 0.08f * g_graphicsContext.GetWidth(), 0.12f * g_graphicsContext.GetHeight(), 0xffffffff, 0xff000000, 2, wszText);
           else
-            pFont->DrawText( 60, 40, 0xffffffff, 0, wszText);
+            pFont->DrawOutlineText( 0.08f * g_graphicsContext.GetWidth(), 0.08f * g_graphicsContext.GetHeight(), 0xffffffff, 0xff000000, 2, wszText);
 #endif
-
         }
         iShowRemoteCode--;
       }
@@ -1853,7 +1851,6 @@ void CApplication::RenderMemoryStatus()
     // reset the window scaling and fade status
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
 
-    // in debug mode, show freememory
     CStdStringW wszText;
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
@@ -1862,7 +1859,9 @@ void CApplication::RenderMemoryStatus()
     CGUIFont* pFont = g_fontManager.GetFont("font13");
     if (pFont)
     {
-      pFont->DrawText( 0.08f * g_graphicsContext.GetWidth(), 0.08f * g_graphicsContext.GetHeight(), 0xffffffff, 0, wszText);
+      float x = 0.08f * g_graphicsContext.GetWidth();
+      float y = 0.08f * g_graphicsContext.GetHeight();
+      pFont->DrawOutlineText(x, y, 0xffffffff, 0xff000000, 2, wszText);
     }
   }
 }
@@ -4406,3 +4405,14 @@ bool CApplication::SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMo
   }
   return true;
 }
+
+void CApplication::CheckForDebugButtonCombo()
+{
+  ReadInput();
+  if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_X] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y])
+  {
+    g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
+    CLog::Log(LOGINFO, "Key combination detected for full debug logging (X+Y)");
+  }
+}
+
