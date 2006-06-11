@@ -243,3 +243,21 @@ SHORT CGUIFont::RemapGlyph(SHORT letter)
   else if (letter == 0x201c || letter == 0x201d) return 0x0022;
   return 0; // no decent character map
 }
+
+void CGUIFont::DrawOutlineText(float x, float y, DWORD color, DWORD outlineColor, int outlineWidth, const WCHAR *text, DWORD flags /*= 0L*/, float maxWidth /*= 0.0f*/)
+{
+  Begin();
+  for (int i = 1; i < outlineWidth; i++)
+  {
+    int ymax = (int)(sqrt((float)outlineWidth*outlineWidth - i*i) + 0.5f);
+    for (int j = 1; j < ymax; j++)
+    {
+      DrawText(x - i, y + j, outlineColor, 0, text, flags, maxWidth);
+      DrawText(x - i, y - j, outlineColor, 0, text, flags, maxWidth);
+      DrawText(x + i, y + j, outlineColor, 0, text, flags, maxWidth);
+      DrawText(x + i, y - j, outlineColor, 0, text, flags, maxWidth);
+    }
+  }
+  DrawText(x, y, color, 0, text, flags, maxWidth);
+  End();
+}
