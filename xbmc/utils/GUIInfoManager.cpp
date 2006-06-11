@@ -158,6 +158,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
     else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
     else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
+	else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
+	else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
     else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
     else if (strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
@@ -694,6 +696,26 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
       bReturn = CDetectDVDMedia::IsDiscInDrive();
     else 
       bReturn = false;
+  }
+  else if (condition == SYSTEM_DVDREADY)
+  {
+    // we must: 1.  Check tray state.
+    //          2.  Check that we actually have a disc in the drive (detection
+    //              of disk type takes a while from a separate thread).
+    //CIoSupport TrayIO;
+	//m_DriveState = DRIVE_NOT_READY;
+
+	if (CDetectDVDMedia::DriveReady() == DRIVE_NOT_READY)
+		bReturn = false;
+	else
+		bReturn = true;
+  }
+  else if (condition == SYSTEM_TRAYOPEN)
+  {
+	if (CDetectDVDMedia::DriveReady() == DRIVE_OPEN)
+		bReturn = true;
+	else
+		bReturn = false;
   }
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
@@ -1870,3 +1892,4 @@ void CGUIInfoManager::ParseLabel(const CStdString &strLabel, vector<CInfoPortion
   if (!work.IsEmpty())
     multiInfo.push_back(CInfoPortion(0, work, ""));
 }
+
