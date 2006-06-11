@@ -72,6 +72,8 @@
 #define SYSTEM_ALWAYS_TRUE          125   // useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
 #define SYSTEM_ALWAYS_FALSE         126   // used for <visible fade="10">false</visible>, to fade out a control (ie not particularly useful!)
 #define SYSTEM_MEDIA_DVD            127
+#define SYSTEM_DVDREADY             128
+#define SYSTEM_TRAYREADY            128
 #define SYSTEM_HAS_ALARM            129
 #define SYSTEM_AUTODETECTION        130
 #define SYSTEM_FREE_MEMORY          131
@@ -84,6 +86,7 @@
 #define SYSTEM_DVD_LABEL            138
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
+#define SYSTEM_TRAYOPEN	            142
 
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161
@@ -370,3 +373,4 @@ protected:
  */
 extern CGUIInfoManager g_infoManager;
 #endif
+
