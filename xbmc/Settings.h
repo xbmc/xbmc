@@ -207,7 +207,7 @@ public:
   bool UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
   bool CommitBookmarkTransaction();
   bool DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath);
-  bool UpdateShare(const CStdString &type, const CStdString &oldName, const CShare &share);
+  bool UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share);
   bool AddShare(const CStdString &type, const CShare &share);
 
   bool LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
