@@ -736,14 +736,17 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
   CStdString strFile = file.m_strPath;
 
-#if _DEBUG 
-  // not working well with seeking.. curl locks up for some reason. think it's the thread handover
-  // so disabled for release builds for now
 
   /* use our own protocol for ftp to avoid using mplayer's builtin */
+  // not working well with seeking.. curl locks up for some reason. think it's the thread handover
+  // so disabled for release builds for now
   if( strFile.Left(6).Equals("ftp://") )
+  {
     strFile.replace(0, 6, "ftpx://");
-#endif
+    strFile += "?stream";
+  }
+
+
 
   CURL url(strFile);
   if ( file.IsHD() ) bFileOnHD = true;

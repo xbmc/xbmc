@@ -17,6 +17,7 @@ namespace XCURL
     virtual void easy_reset(CURL_HANDLE * handle)=0;
     //virtual CURLcode easy_getinfo(CURL_HANDLE *curl, CURLINFO info, ... )=0;
     virtual void easy_cleanup(CURL_HANDLE * handle )=0;
+    virtual CURL_HANDLE *easy_duphandle(CURL_HANDLE *handle )=0;
     virtual CURLM * multi_init(void)=0;
     virtual CURLMcode multi_add_handle(CURLM *multi_handle, CURL_HANDLE *easy_handle)=0;
     virtual CURLMcode multi_perform(CURLM *multi_handle, int *running_handles)=0;
@@ -38,6 +39,7 @@ namespace XCURL
     DEFINE_METHOD1(void, easy_reset, (CURL_HANDLE * p1 ))
     DEFINE_METHOD_FP(CURLcode, easy_getinfo, (CURL_HANDLE *p1, CURLINFO p2, ... ))
     DEFINE_METHOD1(void, easy_cleanup, (CURL_HANDLE * p1))
+    DEFINE_METHOD1(CURL_HANDLE *, easy_duphandle, (CURL_HANDLE * p1))
     DEFINE_METHOD0(CURLM *, multi_init)
     DEFINE_METHOD2(CURLMcode, multi_add_handle, (CURLM *p1, CURL_HANDLE *p2))
     DEFINE_METHOD2(CURLMcode, multi_perform, (CURLM *p1, int *p2))
@@ -55,6 +57,7 @@ namespace XCURL
       RESOLVE_METHOD_RENAME(curl_easy_reset, easy_reset)
       RESOLVE_METHOD_RENAME_FP(curl_easy_getinfo, easy_getinfo)
       RESOLVE_METHOD_RENAME(curl_easy_cleanup, easy_cleanup)
+      RESOLVE_METHOD_RENAME(curl_easy_duphandle, easy_duphandle)
       RESOLVE_METHOD_RENAME(curl_multi_init, multi_init)
       RESOLVE_METHOD_RENAME(curl_multi_add_handle, multi_add_handle)
       RESOLVE_METHOD_RENAME(curl_multi_perform, multi_perform)
@@ -73,7 +76,7 @@ namespace XCURL
     /* extend interface with buffered functions */
     CURL_HANDLE* easy_aquire(const char *protocol, const char *hostname);
     void easy_release(CURL_HANDLE* easy_handle);
-
+    CURL_HANDLE* easy_duphandle(CURL_HANDLE* easy_handle);
     void CheckIdle();
 
     /* overloaded load and unload with reference counter */
