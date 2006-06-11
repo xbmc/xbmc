@@ -73,7 +73,6 @@
 #define SYSTEM_ALWAYS_FALSE         126   // used for <visible fade="10">false</visible>, to fade out a control (ie not particularly useful!)
 #define SYSTEM_MEDIA_DVD            127
 #define SYSTEM_DVDREADY             128
-#define SYSTEM_TRAYREADY            128
 #define SYSTEM_HAS_ALARM            129
 #define SYSTEM_AUTODETECTION        130
 #define SYSTEM_FREE_MEMORY          131
