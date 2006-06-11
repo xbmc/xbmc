@@ -642,6 +642,7 @@
 
   <VirtualKeyboard>
     <gamepad>
+      <start>Enter</start>
       <B>BackSpace</B>
       <Y>Shift</Y>
       <X>Symbols</X>
