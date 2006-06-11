@@ -38,6 +38,7 @@ protected:
   int GetCursorPos() const;
   void OnSymbols();
   void OnIPAddress();
+  void OnOK();
 
 private:
 
