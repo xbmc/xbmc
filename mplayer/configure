@@ -6605,6 +6605,7 @@ STATIC_LIB = $_ld_static
 ENCA_LIB = $_ld_enca
 HAVE_PTHREADS = $_pthreads
 MATH_LIB = $_ld_lm
+HAVE_ICONV = $_iconv
 
 X11_INC = $_inc_x11
 X11DIR = $_ld_x11
