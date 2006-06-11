@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-06-2006 changed: my programs now displays folder size. plus added sort by size.
  - 12-06-2006 fixed: edit media source failed if you changed source name.
  - 11-06-2006 fixed: [ 1504128 ] Behaviour of masterlock.
  - 11-06-2006 changed: you can now also remove extensions using advancedsettings.xml (see manual).
