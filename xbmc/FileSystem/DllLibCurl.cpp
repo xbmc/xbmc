@@ -127,3 +127,22 @@ void DllLibCurlGlobal::easy_release(XCURL::CURL_HANDLE* easy_handle)
 		}
 	}
 }
+
+CURL_HANDLE* DllLibCurlGlobal::easy_duphandle(CURL_HANDLE* easy_handle)
+{
+  CSingleLock lock(m_critSection);
+  
+	VEC_CURLSESSIONS::iterator it;
+	for(it = m_sessions.begin(); it != m_sessions.end(); it++)
+	{
+		if( it->m_session == easy_handle )
+		{
+      SSession session = *it;
+      session.m_session = DllLibCurl::easy_duphandle(easy_handle);
+      Load();
+      m_sessions.push_back(session);
+      return session.m_session;
+		}
+	}
+  return DllLibCurl::easy_duphandle(easy_handle);
+}

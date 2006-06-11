@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-06-2006 changed: mplayer now uses xbmc ftp filesystem. seeking is disabled for now due to lockups in curl. (works when using dvdplayer or mplayer without cache)
  - 11-06-2006 added: better subtitle charset detection. mplayer now tries to detect any multicharacter charsets, then fallbacks to user specified
  - 11-06-2006 added: builtin command, xbmc.KaiConnection.     Change kai connection status (connect/disconnect).
  - 11-06-2006 added: System.kaienabled conditional visibility tag.
