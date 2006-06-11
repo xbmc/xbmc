@@ -78,6 +78,11 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     Backspace();
     return true;
   }
+  else if (action.wID == ACTION_ENTER)
+  {
+    OnOK();
+    return true;
+  }
   else if (action.wID == ACTION_CURSOR_LEFT)
   {
     MoveCursor( -1);
@@ -155,8 +160,7 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
       {
       case CTL_BUTTON_DONE:
         {
-          m_bIsConfirmed = true;
-          Close();
+          OnOK();
           break;
         }
       case CTL_BUTTON_CANCEL:
@@ -658,4 +662,10 @@ void CGUIDialogKeyboard::SetControlLabel(int id, const CStdString &label)
     if (m_vecControls[i]->GetID() == id)
       m_vecControls[i]->OnMessage(message);
   }
+}
+
+void CGUIDialogKeyboard::OnOK()
+{
+  m_bIsConfirmed = true;
+  Close();
 }
