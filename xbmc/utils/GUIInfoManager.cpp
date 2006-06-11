@@ -157,6 +157,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
     else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
     else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
+	else if (strTest.Equals("system.kaienabled")) ret = SYSTEM_KAI_ENABLED;
     else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
 	else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
 	else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
@@ -685,6 +686,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     bReturn = g_stSettings.m_bMute;
   else if (condition == SYSTEM_KAI_CONNECTED)
     bReturn = g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
+  else if (condition == SYSTEM_KAI_ENABLED)
+    bReturn = g_guiSettings.GetBool("xlinkkai.enabled");
   else if (condition == SYSTEM_MEDIA_DVD)
   {
     // we must: 1.  Check tray state.
@@ -704,18 +707,11 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     //              of disk type takes a while from a separate thread).
     //CIoSupport TrayIO;
 	//m_DriveState = DRIVE_NOT_READY;
-
-	if (CDetectDVDMedia::DriveReady() == DRIVE_NOT_READY)
-		bReturn = false;
-	else
-		bReturn = true;
+	bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   }
   else if (condition == SYSTEM_TRAYOPEN)
   {
-	if (CDetectDVDMedia::DriveReady() == DRIVE_OPEN)
-		bReturn = true;
-	else
-		bReturn = false;
+	bReturn = CDetectDVDMedia::DriveReady() !=DRIVE_OPEN;
   }
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
