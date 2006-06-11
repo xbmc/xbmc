@@ -3,8 +3,9 @@
 #include "utils/fstrcmp.h"
 #include "util.h"
 #include "xbox/xbeheader.h"
+#include "GUIWindowFileManager.h"
 
-#define PROGRAM_DATABASE_VERSION 0.8f
+#define PROGRAM_DATABASE_VERSION 0.81f
 
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)
@@ -141,6 +142,38 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
       m_pDS->exec("DROP TABLE bookmark");
       CLog::Log(LOGINFO, "dropping path table");
       m_pDS->exec("DROP TABLE path");
+    }
+    if (fVersion < 0.81f)
+    { // Version 0.8 to 0.81 update - add size field
+      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (dialog)
+      {
+        dialog->SetHeading("Updating old database version");
+        dialog->SetLine(0, "");
+        dialog->SetLine(1, "Adding table entries");
+        dialog->SetLine(2, "");;
+        dialog->StartModal();
+        dialog->Progress();
+      }
+      BeginTransaction();
+      CLog::Log(LOGINFO, "Creating temporary files table");
+      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
+      CLog::Log(LOGINFO, "Copying files into temporary files table");
+      m_pDS->exec("INSERT INTO tempfiles SELECT idFile,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed,iRegion FROM files");
+      CLog::Log(LOGINFO, "Destroying old files table");
+      m_pDS->exec("DROP TABLE files");
+      CLog::Log(LOGINFO, "Creating new files table");
+      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer, iSize integer)\n");
+      CLog::Log(LOGINFO, "Copying files into new files table");
+      m_pDS->exec("INSERT INTO files(idFile,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed,iRegion) SELECT * FROM tempfiles");
+      CLog::Log(LOGINFO, "Deleting temporary files table");
+      m_pDS->exec("DROP TABLE tempfiles");
+
+      CStdString strSQL=FormatSQL("update files set iSize=%i",-1);
+      m_pDS->exec(strSQL.c_str());
+      
+      CommitTransaction();
+      if (dialog) dialog->Close();
     }
   }
   catch (...)
@@ -536,7 +569,7 @@ DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = FormatSQL("select xbedescription,iTimesPlayed,lastAccessed,titleId from files where strFileName like '%s'", item->m_strPath.c_str());
+    CStdString strSQL = FormatSQL("select xbedescription,iTimesPlayed,lastAccessed,titleId,iSize from files where strFileName like '%s'", item->m_strPath.c_str());
     m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
     { // get info
@@ -544,7 +577,16 @@ DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
       item->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asLong();
       item->m_strTitle = item->GetLabel();  // is this needed?
       item->m_dateTime = TimeStampToLocalTime(_atoi64(m_pDS->fv("lastAccessed").get_asString().c_str()));
+      item->m_dwSize = _atoi64(m_pDS->fv("iSize").get_asString().c_str());
       titleID = m_pDS->fv("titleId").get_asLong();
+      if (item->m_dwSize == -1)
+      {
+        CStdString strPath;
+        CUtil::GetDirectory(item->m_strPath,strPath);
+        __int64 iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
+        CStdString strSQL=FormatSQL("update files set iSize=%I64 where strFileName=%s",iSize,item->m_strPath);
+        m_pDS->exec(strSQL.c_str());
+      }
     }
     m_pDS->close();
   }
@@ -574,14 +616,17 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     item->m_dateTime=CDateTime::GetCurrentDateTime();
     item->m_dateTime.GetAsTimeStamp(time);
     unsigned __int64 lastAccessed = ((ULARGE_INTEGER*)&time)->QuadPart;
-    CStdString strSQL=FormatSQL("insert into files (idFile, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion) values(NULL, '%s', %u, '%s', %i, %I64u, %i)", item->m_strPath.c_str(), titleID, item->GetLabel().c_str(), 0, lastAccessed, iRegion);
+    CStdString strPath;
+    CUtil::GetDirectory(item->m_strPath,strPath);
+    __int64 iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
+    CStdString strSQL=FormatSQL("insert into files (idFile, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion, iSize) values(NULL, '%s', %u, '%s', %i, %I64u, %i, %I64u)", item->m_strPath.c_str(), titleID, item->GetLabel().c_str(), 0, lastAccessed, iRegion, iSize);
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "CProgramDatabase::AddProgramInfo(%s) failed", item->m_strPath.c_str());
   }
-  return false;
+  return true;
 }
 
 FILETIME CProgramDatabase::TimeStampToLocalTime( unsigned __int64 timeStamp )

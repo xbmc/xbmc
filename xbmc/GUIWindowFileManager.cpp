@@ -1258,7 +1258,9 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
   // start by calculating the size of the files in this folder...
   __int64 totalSize = 0;
   CFileItemList items;
-  m_rootDir.GetDirectory(strDirectory, items, false);
+  CVirtualDirectory rootDir;
+  rootDir.SetShares(g_settings.m_vecMyFilesShares);
+  rootDir.GetDirectory(strDirectory, items, false);
   for (int i=0; i < items.Size(); i++)
   {
     if (items[i]->m_bIsFolder && !items[i]->IsParentFolder()) // folder
