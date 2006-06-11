@@ -156,6 +156,7 @@ CFileCurl::CFileCurl()
   m_overflowSize = 0;
   m_pHeaderCallback = NULL;
   m_bufferSize = BUFFER_SIZE;
+  m_threadid = 0;
 }
 
 //Has to be called before Open()
@@ -290,19 +291,28 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   m_overflowBuffer = 0;
   m_overflowSize = 0;
 
-  url.GetURL(m_url);
+  CURL url2(url);
+  bool isstream = false;
+  if( url2.GetProtocol().Equals("ftpx") )
+    url2.SetProtocol("ftp");
+  else if( url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") )
+    url2.SetProtocol("http");
+  
+  if( url2.GetProtocol().Equals("ftp") )
+  {
+    if( url2.GetOptions().Equals("stream") )
+      isstream = true;
 
-  /* our obscure protocols have to be changed */
-  if( m_url.Left(7).Equals("ftpx://") )
-    m_url.replace(0,7, "ftp://");
-  else if( m_url.Left(8).Equals("shout://") )
-    m_url.replace(0,8,"http://");
+    /* ditch options as it's not supported on ftp */
+    url2.SetOptions("");
+  }
 
+  url2.GetURL(m_url);
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", this, m_url.c_str());  
   
   if( m_easyHandle == NULL )
-    m_easyHandle = g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName());
+    m_easyHandle = g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName());
 
 
   if( m_contentencoding.length() == 0 && bBinary)
@@ -316,6 +326,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   m_multiHandle = g_curlInterface.multi_init();
 
+  m_threadid = GetCurrentThreadId();
   g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
 
   m_stillRunning = 1;
@@ -333,9 +344,12 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
     return false;
   }
   
-  double length;
-  if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
-    m_fileSize = (__int64)length;
+  if( !isstream )
+  {
+    double length;
+    if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
+      m_fileSize = (__int64)length;
+  }
 
   /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
   if( m_httpheader.GetContentType().IsEmpty() )
@@ -465,14 +479,18 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   }
   url.GetURL(m_url);
   
-  /* our obscure protocol names must be replaced */
-  if( m_url.Left(7).Equals("ftpx://") )
-    m_url.replace(0,7, "ftp://");
-  else if( m_url.Left(8).Equals("shout://") )
-    m_url.replace(0,8,"http://");
+  CURL url2(url);
+  if( url2.GetProtocol().Equals("ftpx") )
+    url2.SetProtocol("ftp");
+  else if( url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") )
+    url2.SetProtocol("http");
+  
+  /* ditch options as it's not supported on ftp */
+  if( url2.GetProtocol().Equals("ftp") )
+    url2.SetOptions("");
 
   if( m_easyHandle == NULL )
-    m_easyHandle = g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName());
+    m_easyHandle = g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName());
 
   SetCommonOptions(); 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
@@ -564,8 +582,7 @@ unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
 
 /* use to attempt to fill the read buffer up to requested number of bytes */
 bool CFileCurl::FillBuffer(unsigned int want, int waittime)
-{
-  //TODO implement some fillbuffer timeout
+{  
   int maxfd;  
   fd_set fdread;
   fd_set fdwrite;
