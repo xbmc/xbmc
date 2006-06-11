@@ -81,7 +81,7 @@ public:
   void Host();
   void Host(CStdString& aPassword, CStdString& aDescription, int aPlayerLimit);
   void Reattach();
-
+  void Detach();
   CStdString GetCurrentVector();
 
   bool IsEngineConnected();
@@ -98,7 +98,6 @@ protected:
 
   void Discover();
   void Attach(SOCKADDR_IN& aAddress);
-  void Detach();
   void TakeOver();
   void Query();
   void Login(LPCSTR aUsername, LPCSTR aPassword);
