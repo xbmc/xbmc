@@ -24,13 +24,13 @@ public:
   static bool RenameFile(const CStdString &strFile);
 
   void ResetProgressBar(bool showProgress = true);
+  static __int64 CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
 protected:
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
   void SetInitialPath(const CStdString &path);
   void GoParentFolder(int iList);
   void UpdateControl(int iList);
-  __int64 CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
   bool Update(int iList, const CStdString &strDirectory); //???
   void OnStart(CFileItem *pItem);
   bool SelectItem(int iList, int &item);
