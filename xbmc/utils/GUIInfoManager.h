@@ -86,6 +86,7 @@
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
 #define SYSTEM_TRAYOPEN	            142
+#define SYSTEM_KAI_ENABLED          143
 
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161
