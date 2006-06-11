@@ -505,12 +505,8 @@ extern "C"
     dll.ResolveExport("mplayer_getCurrentSubtitle", (void**) &pGetCurrentSubtitle);
     dll.ResolveExport("mplayer_isTextSubLoaded", (void**) &pIsTextSubLoaded);
     dll.ResolveExport("mplayer_SlaveCommand", (void**) &pSlaveCommand);
-    dll.ResolveExport("mplayer_GetCacheLevel", (void**) &pGetCacheLevel);
-    
-    /* currently not exported from current mplayer.dll, but can be enabled as soon as it's updated */
-    #ifdef _DEBUG
+    dll.ResolveExport("mplayer_GetCacheLevel", (void**) &pGetCacheLevel);    
     dll.ResolveExport("MemAllocatorCreate", (void**) &pMemAllocatorCreate);
-    #endif
 
     pSetVideoFunctions(&video_functions);
     pSetAudioFunctions(&audio_functions);
