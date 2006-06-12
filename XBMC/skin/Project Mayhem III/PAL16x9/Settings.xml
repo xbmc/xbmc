@@ -108,34 +108,19 @@
 
       <control>
         <description>enable animations</description>
-        <type>button</type>
+        <type>radiobutton</type>
         <id>14</id>
         <posx>50</posx>
         <posy>231</posy>
         <label>Animate Skin</label>
         <onclick>Skin.ToggleSetting(animated)</onclick>
+        <selected>Skin.HasSetting(animated)</selected>
         <onleft>8</onleft>
         <onright>6</onright>
         <onup>13</onup>
         <ondown>11</ondown>
         <visible>yes</visible>
-        <include>buttonpanelslide</include>
       </control>
-
-   <control>
-      <description>contentpanel slice</description>
-      <type>image</type>
-      <id>0</id>
-      <posx>173</posx>
-      <posy>240</posy>
-      <width>16</width>
-      <height>16</height>
-      <texture>radiobutton-focus.png</texture>
-      <include>buttonpanelslide</include>
-      <visible>!Skin.HasSetting(animated)</visible>
-    </control>
-
-
 
     </controlgroup>
 
