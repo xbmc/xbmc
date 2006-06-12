@@ -123,7 +123,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
       CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
       if (pControl)
-        pControl->HideFileNameLabel(g_guiSettings.GetBool("pictures.hidefilenamesinthumbpanel"));
+        pControl->SetLabelState(g_guiSettings.GetBool("pictures.hidefilenamesinthumbpanel") ? CGUIThumbnailPanel::HIDE_FILES : CGUIThumbnailPanel::SHOW_ALL);
       
       return true;
     }
