@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-06-2006 fixed: problems with programdatabase upgrade code.
  - 12-06-2006 changed: <hidelabels> is now part of the thumbnailpanel control in the skin.
  - 12-06-2006 fixed: Label wrapping of the last word before a carriage return.
  - 12-06-2006 fixed: .strm files failed to play.
