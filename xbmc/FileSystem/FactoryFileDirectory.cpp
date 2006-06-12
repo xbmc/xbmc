@@ -148,13 +148,14 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   if (strExtension == ".m3u" || strExtension == ".b4s" || strExtension == ".pls" ||
       strExtension == ".wpl")
   { // Playlist file
+    // currently we only return the directory if it contains
+    // more than one file.  Reason is that .pls and .m3u may be used
+    // for links to http streams etc. 
     IFileDirectory *pDir = new CPlaylistDirectory;
     CFileItemList items;
     if (pDir->GetDirectory(strPath, items))
     {
-      if (items.Size() == 1)
-        *pItem = *items[0];
-      else if (items.Size())
+      if (items.Size() > 1)
         return pDir;
     }
     return NULL;
