@@ -314,6 +314,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   bool randomized = false;
   bool loop = true;
   bool wrapMultiLine = false;
+  CGUIThumbnailPanel::LABEL_STATE labelState = CGUIThumbnailPanel::SHOW_ALL;
 
   CLabelInfo labelInfo;
   CLabelInfo labelInfo2;
@@ -565,6 +566,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       aspectRatio = ((CGUIThumbnailPanel*)pReference)->GetAspectRatio();
       ((CGUIThumbnailPanel*)pReference)->GetThumbDimensions(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
       ((CGUIThumbnailPanel*)pReference)->GetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig, iThumbWidthBig, iThumbHeightBig);
+      labelState = ((CGUIThumbnailPanel*)pReference)->GetLabelState();
     }
     else if (strType == "selectbutton")
     {
@@ -793,6 +795,19 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   }
 
   XMLUtils::GetBoolean(pControlNode, "reverse", bReverse);
+
+  CStdString hideLabels;
+  if (XMLUtils::GetString(pControlNode, "hidelabels", hideLabels))
+  {
+    if (hideLabels.Equals("all"))
+      labelState = CGUIThumbnailPanel::HIDE_ALL;
+    else if (hideLabels.Equals("files"))
+      labelState = CGUIThumbnailPanel::HIDE_FILES;
+    else if (hideLabels.Equals("folders"))
+      labelState = CGUIThumbnailPanel::HIDE_FOLDERS;
+    else
+      labelState = CGUIThumbnailPanel::SHOW_ALL;
+  }
 
   GetPath(pControlNode, "texturebg", strTextureBg);
   GetPath(pControlNode, "lefttexture", strLeft);
@@ -1269,7 +1284,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetThumbAlign(dwThumbAlign);
     pControl->SetAspectRatio(aspectRatio);
     pControl->SetPulseOnSelect(bPulse);
-
+    pControl->SetLabelState(labelState);
     return pControl;
   }
   else if (strType == "selectbutton")

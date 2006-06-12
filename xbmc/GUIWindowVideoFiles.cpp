@@ -115,8 +115,8 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         return false;
 
       CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-      if (pControl)
-        pControl->HideDirectoryNameLabel(g_guiSettings.GetBool("videofiles.hidedirectorynames"));
+      if (pControl && g_guiSettings.GetBool("videofiles.hidedirectorynames"))
+        pControl->SetLabelState(CGUIThumbnailPanel::HIDE_FOLDERS);
       return true;
     }
     break;
