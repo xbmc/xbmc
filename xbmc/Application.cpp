@@ -3747,7 +3747,13 @@ bool CApplication::OnMessage(CGUIMessage& message)
     }
     break;
   case GUI_MSG_EXECUTE:
-    { // user has asked for something to be executed
+    { 
+      // see if it is a user set string
+      int iInfoLabel = g_infoManager.TranslateString(message.GetStringParam().c_str());
+      if (iInfoLabel >= SKIN_HAS_SETTING_START && iInfoLabel <= SKIN_HAS_SETTING_END)
+        message.SetStringParam(g_infoManager.GetLabel(iInfoLabel));
+
+      // user has asked for something to be executed
       if (CUtil::IsBuiltIn(message.GetStringParam()))
         CUtil::ExecBuiltIn(message.GetStringParam());
       else
