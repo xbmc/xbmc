@@ -1,3 +1,5 @@
+2006-06-12 changed:	animate skin button changed to a radiobutton (cleans up the code), thanks to Smokehead.
+
 2006-06-07 changed:	dialogbuttonmenu alignment when no locks are available.
 
 2006-06-05 added:       masterlock in dialogsubmenu
