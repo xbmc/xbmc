@@ -584,7 +584,7 @@ DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
         CStdString strPath;
         CUtil::GetDirectory(item->m_strPath,strPath);
         __int64 iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
-        CStdString strSQL=FormatSQL("update files set iSize=%I64 where strFileName=%s",iSize,item->m_strPath);
+        CStdString strSQL=FormatSQL("update files set iSize=%I64u where strFileName like '%s'",iSize,item->m_strPath.c_str());
         m_pDS->exec(strSQL.c_str());
       }
     }
