@@ -571,7 +571,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       CFileItem item = (CFileItem)*pItem;
       return g_application.PlayMedia(item, m_guiState->GetPlaylist());
     }
-    if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
+    if (pItem->IsPlayList())
     {
       CStdString strPath=pItem->m_strPath;
       LoadPlayList(pItem->m_strPath);
