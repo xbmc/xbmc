@@ -179,8 +179,6 @@ void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth
   // Convert to utf16 so that each character is a single word.
   CStdStringW utf16Text;
   g_charsetConverter.utf8ToUTF16(text, utf16Text);
-  int lpos = 0;
-  int iLastSpace = -1;
   int iLastSpaceInLine = -1;
   CStdStringW multiLine, line;
   while (pos < utf16Text.size())
@@ -191,10 +189,17 @@ void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth
     // Handle the newline character
     if (letter == L'\n' )
     {
-      multiLine += line + L"\n";
-      iLastSpace = -1;
+      float width = font->GetTextWidth(line.c_str());
+      if (width > maxWidth && iLastSpaceInLine > 0)
+      {
+        multiLine += line.Left(iLastSpaceInLine) + L'\n';
+        line = line.Mid(iLastSpaceInLine + 1);
+        if (!line.IsEmpty())
+          multiLine += line + L"\n";
+      }
+      else
+        multiLine += line + L"\n";
       iLastSpaceInLine = -1;
-      lpos = 0;
       line.Empty();
     }
     else
@@ -204,20 +209,18 @@ void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth
         float width = font->GetTextWidth(line.c_str());
         if (width > maxWidth)
         {
-          if (iLastSpace > 0 && iLastSpaceInLine > 0)
+          if (iLastSpaceInLine > 0)
           {
             multiLine += line.Left(iLastSpaceInLine) + L'\n';
-            line.Empty();
             pos = iLastSpace + 1;
+            line.Empty();
             iLastSpaceInLine = -1;
-            iLastSpace = -1;
             continue;
           }
         }
         // only add spaces if we're not empty
         if (!line.IsEmpty())
         {
-          iLastSpace = pos;
           iLastSpaceInLine = line.size();
           line += letter;
         }
