@@ -19,6 +19,8 @@ class CGUIThumbnailPanel :
       public CGUIControl
 {
 public:
+  enum LABEL_STATE { SHOW_ALL = 0, HIDE_FILES, HIDE_FOLDERS, HIDE_ALL };
+
   CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
                      const CStdString& strImageIcon,
                      const CStdString& strImageIconFocus,
@@ -101,8 +103,9 @@ public:
   void GetOffsetFromPage();
   virtual CStdString GetDescription() const;
 
-  void HideFileNameLabel(bool bOnOff) { m_bHideFileNameLabel=bOnOff; }
-  void HideDirectoryNameLabel(bool bOnOff) { m_bHideDirectoryNameLabel=bOnOff; }
+  void SetLabelState(LABEL_STATE state) { m_labelState = state; };
+  LABEL_STATE GetLabelState() const { return m_labelState; };
+
   void SetPageControlVisible(bool visible) { m_pageControlVisible = visible; }
   void SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio) { m_aspectRatio = ratio; };
   CGUIImage::GUIIMAGE_ASPECT_RATIO GetAspectRatio() const { return m_aspectRatio; };
@@ -166,8 +169,7 @@ protected:
   int m_iThumbWidthBig;
   int m_iThumbHeightBig;
 
-  bool m_bHideFileNameLabel;
-  bool m_bHideDirectoryNameLabel;
+  LABEL_STATE m_labelState;
   bool m_pageControlVisible;
   bool m_usingBigIcons;
   CGUIImage::GUIIMAGE_ASPECT_RATIO m_aspectRatio;
