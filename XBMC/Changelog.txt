@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-06-2006 removed: Settings options for hiding file or directory labels in thumbpanel - it's a skin property now.
  - 13-06-2006 fixed: [ 1505303 ] global subs off, issue when enabling vobsubs.
  - 13-06-2006 fixed: vobsubs stored as .idx + .rar should now work.
  - 12-06-2006 added: [ 1504525 ] <onclick> tags fillable using SkinSetting strings, thanks to Nuka1195.
