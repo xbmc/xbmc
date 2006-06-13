@@ -1913,7 +1913,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     {
       CFileItemList items;
 
-      CDirectory::GetDirectory(strLookInPaths[step], items,"",false);
+      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar",false);
       int fnl = strFileNameNoExt.size();
 
       CStdString strFileNameNoExtNoCase(strFileNameNoExt);
@@ -1928,7 +1928,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           CStdString strRar, strItemWithPath;
           CUtil::AddFileToFolder(strLookInPaths[step],strFileNameNoExt+".rar",strRar);
           CUtil::AddFileToFolder(strLookInPaths[step],strItem,strItemWithPath);
-          if (step != (strMovie.substr(0,6)=="rar://"?1:0) || strItemWithPath == strRar)
+          
+          if (step != (strMovie.substr(0,6)=="rar://"?1:0) || (strFileNameNoExtNoCase+".rar").Equals(strItem))
             CacheRarSubtitles( vecExtensionsCached, items[j]->m_strPath, strFileNameNoExtNoCase);
         }
         else
