@@ -262,11 +262,13 @@ void CGUIWindowMusicInfo::OnGetThumb()
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
     CPicture pic;
-    pic.DoCreateThumbnail(localThumb, cachedLocalThumb);
-    CFileItem *item = new CFileItem("thumb://Local", false);
-    item->SetThumbnailImage(cachedLocalThumb);
-    item->SetLabel(g_localizeStrings.Get(20017)); // TODO: localize 2.0
-    items.Add(item);
+    if (pic.DoCreateThumbnail(localThumb, cachedLocalThumb))
+    {
+      CFileItem *item = new CFileItem("thumb://Local", false);
+      item->SetThumbnailImage(cachedLocalThumb);
+      item->SetLabel(g_localizeStrings.Get(20017)); // TODO: localize 2.0
+      items.Add(item);
+    }
   }
   else
   { // no local thumb exists, so we are just using the allmusic.com thumb or cached thumb
