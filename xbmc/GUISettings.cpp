@@ -162,7 +162,6 @@ CGUISettings::CGUISettings(void)
   AddCategory(0, "pictures", 16000);
   AddBool(1, "pictures.useautoswitching", 14011, false);
   AddBool(2, "pictures.autoswitchuselargethumbs", 14012, false);
-  AddBool(3, "pictures.hidefilenamesinthumbpanel",15215,false);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -349,9 +348,6 @@ CGUISettings::CGUISettings(void)
   AddBool(1, "videofiles.useautoswitching", 14011, false);
   AddBool(2, "videofiles.autoswitchuselargethumbs", 14012, false);
   
-  // hidden videofiles settings
-  AddBool(0,"videofiles.hidedirectorynames",0,false);
-
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");

@@ -4,7 +4,6 @@
 #include "Util.h"
 #include "Picture.h"
 #include "application.h"
-#include "GUIThumbnailPanel.h"
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
 #include "GUIDialogContextMenu.h"
@@ -121,10 +120,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       if (!CGUIMediaWindow::OnMessage(message))
         return false;
 
-      CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-      if (pControl)
-        pControl->SetLabelState(g_guiSettings.GetBool("pictures.hidefilenamesinthumbpanel") ? CGUIThumbnailPanel::HIDE_FILES : CGUIThumbnailPanel::SHOW_ALL);
-      
       return true;
     }
     break;
