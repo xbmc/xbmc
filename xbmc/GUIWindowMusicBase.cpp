@@ -518,7 +518,15 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
       pDlgAlbumInfo->SetAlbum(album);
       pDlgAlbumInfo->DoModal();
 
-      if (!pDlgAlbumInfo->NeedRefresh()) return ;
+      if (!pDlgAlbumInfo->NeedRefresh())
+      {
+        if (pDlgAlbumInfo->HasUpdatedThumb())
+        {
+          UpdateThumb(album, bSaveDb, bSaveDirThumb);
+          Update(m_vecItems.m_strPath);
+        }
+        return;
+      }
       bRefresh = true;
     }
   }
@@ -587,38 +595,9 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
         pDlgAlbumInfo->SetAlbum(album);
         pDlgAlbumInfo->DoModal();
 
-        CStdString strThumb(CUtil::GetCachedAlbumThumb(album.GetTitle(), album.GetAlbumPath()));
-        if (bSaveDb && CFile::Exists(strThumb))
-          m_musicdatabase.SaveAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
-        // Update current playing song...
-        if (g_application.IsPlayingAudio())
-        {
-          CStdString strSongFolder;
-          const CMusicInfoTag& tag=g_infoManager.GetCurrentSongTag();
-          CUtil::GetDirectory(tag.GetURL(), strSongFolder);
+        if (pDlgAlbumInfo->HasUpdatedThumb())
+          UpdateThumb(album, bSaveDb, bSaveDirThumb);
 
-          // ...if it's matching
-          if (strSongFolder.Equals(strPath) && tag.GetAlbum().Equals(strAlbum))
-            g_infoManager.SetCurrentAlbumThumb(strThumb);
-        }
-        // Save directory thumb
-        if (bSaveDirThumb)
-        {
-          // Was the download of the album art
-          // from allmusic.com successfull...
-          if (CFile::Exists(strThumb))
-          {
-            // ...yes...
-            CFileItem item(album.GetAlbumPath(), true);
-            if (!item.IsCDDA())
-            {
-              // ...also save a copy as directory thumb,
-              // if the album isn't located on an audio cd
-              CStdString strFolderThumb(CUtil::GetCachedMusicThumb(album.GetAlbumPath()));
-              ::CopyFile(strThumb, strFolderThumb, false);
-            }
-          }
-        }
         if (pDlgAlbumInfo->NeedRefresh())
         {
           ShowAlbumInfo(strAlbum, strArtist, strPath, bSaveDb, bSaveDirThumb, true);
@@ -1473,4 +1452,40 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
     return true;
   }
   return CGUIMediaWindow::OnPlayMedia(iItem);
+}
+
+void CGUIWindowMusicBase::UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb, bool bSaveDirThumb)
+{
+  CStdString strThumb(CUtil::GetCachedAlbumThumb(album.GetTitle(), album.GetAlbumPath()));
+  if (bSaveDb && CFile::Exists(strThumb))
+    m_musicdatabase.SaveAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
+  // Update current playing song...
+  if (g_application.IsPlayingAudio())
+  {
+    CStdString strSongFolder;
+    const CMusicInfoTag& tag=g_infoManager.GetCurrentSongTag();
+    CUtil::GetDirectory(tag.GetURL(), strSongFolder);
+
+    // ...if it's matching
+    if (strSongFolder.Equals(album.GetAlbumPath()) && tag.GetAlbum().Equals(album.GetTitle()))
+      g_infoManager.SetCurrentAlbumThumb(strThumb);
+  }
+  // Save directory thumb
+  if (bSaveDirThumb)
+  {
+    // Was the download of the album art
+    // from allmusic.com successfull...
+    if (CFile::Exists(strThumb))
+    {
+      // ...yes...
+      CFileItem item(album.GetAlbumPath(), true);
+      if (!item.IsCDDA())
+      {
+        // ...also save a copy as directory thumb,
+        // if the album isn't located on an audio cd
+        CStdString strFolderThumb(CUtil::GetCachedMusicThumb(album.GetAlbumPath()));
+        ::CopyFile(strThumb, strFolderThumb, false);
+      }
+    }
+  }
 }
