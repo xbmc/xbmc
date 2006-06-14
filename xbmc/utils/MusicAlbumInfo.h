@@ -33,7 +33,7 @@ public:
   bool Load(CHTTP& http);
   bool Parse(const CStdString& strHTML, CHTTP& http);
   void SetAlbumPath(const CStdString& strAlbumPath);
-  const CStdString& GetAlbumPath();
+  const CStdString& GetAlbumPath() const;
   void SetSongs(vector<CMusicSong> songs);
 protected:
   CStdString m_strArtist;

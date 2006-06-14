@@ -57,6 +57,7 @@ protected:
   bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album);
   void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
   void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
+  void UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb, bool bSaveDirThumb);
   void OnManualAlbumInfo();
   void OnRipCD();
   void OnSearch();

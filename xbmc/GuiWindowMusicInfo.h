@@ -13,6 +13,7 @@ public:
   virtual void Render();
   void SetAlbum(CMusicAlbumInfo& album);
   bool NeedRefresh() const;
+  bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
 protected:
   virtual void OnInitWindow();
   void Refresh();
@@ -24,5 +25,6 @@ protected:
   CMusicAlbumInfo m_album;
   bool m_bViewReview;
   bool m_bRefresh;
+  bool m_hasUpdatedThumb;
   CFileItem m_albumItem;
 };
