@@ -83,6 +83,7 @@ void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
   m_albumItem.m_musicInfoTag.SetAlbum(album.GetTitle());
   m_albumItem.m_musicInfoTag.SetLoaded(true);
   m_albumItem.SetMusicThumb();
+  m_hasUpdatedThumb = false;
 }
 
 void CGUIWindowMusicInfo::Update()
@@ -190,6 +191,7 @@ void CGUIWindowMusicInfo::Refresh()
   if (!CFile::Exists(thumbImage))
   {
     DownloadThumbnail(thumbImage);
+    m_hasUpdatedThumb = true;
   }
 
   if (!CFile::Exists(thumbImage) )
@@ -287,7 +289,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   CStdString result;
   // TODO: localize 2.0
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_localizeStrings.Get(20019), result))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyMusicShares, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")
@@ -302,12 +304,15 @@ void CGUIWindowMusicInfo::OnGetThumb()
     CFile::Delete(cachedThumb);
     cachedThumb.Empty();
   }
-  else if (result == "thumb://IMDb")
+  else if (result == "thumb://allmusic.com")
     CFile::Cache(thumbFromWeb, cachedThumb);
-  else // if (result == "thumb://Local")
+  else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
+  else if (CFile::Exists(result))
+    CFile::Cache(result, cachedThumb);
 
   m_albumItem.SetThumbnailImage(cachedThumb);
+  m_hasUpdatedThumb = true;
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)

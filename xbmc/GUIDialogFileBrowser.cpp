@@ -190,7 +190,8 @@ void CGUIDialogFileBrowser::ClearFileItems()
 
 void CGUIDialogFileBrowser::OnSort()
 {
-  m_vecItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  if (!m_singleList)
+    m_vecItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 }
 
 void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
@@ -404,7 +405,7 @@ void CGUIDialogFileBrowser::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const CStdString &heading, CStdString &result)
+bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSHARES &shares, const CStdString &heading, CStdString &result)
 {
   CStdString mask = ".png|.jpg|.bmp|.gif";
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
@@ -416,12 +417,24 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const CS
   browser->m_singleList = true;
   browser->m_vecItems.Clear();
   browser->m_vecItems.Append(items);
+  if (true)
+  {
+    CFileItem *item = new CFileItem("image://Browse", false);
+    item->SetLabel("Browse...");
+    browser->m_vecItems.Add(item);
+  }
   browser->SetHeading(heading);
   browser->DoModal();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
   {
     result = browser->m_selectedPath;
+    if (result == "image://Browse")
+    { // "Browse for thumb"
+      m_gWindowManager.Remove(browser->GetID());
+      delete browser;
+      return ShowAndGetImage(shares, heading, result);
+    }
   }
 
   m_gWindowManager.Remove(browser->GetID());
