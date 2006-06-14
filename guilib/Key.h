@@ -230,11 +230,6 @@
 #define WINDOW_SETTINGS_NETWORK           10018
 #define WINDOW_SETTINGS_APPEARANCE        10019
 
-#define WINDOW_SETTINGS_FILTER            10024
-#define WINDOW_SETTINGS_SCREENSAVER       10026
-#define WINDOW_SETTINGS_OSD               10027
-#define WINDOW_SETTINGS_SUBTITLES         10008
-
 #define WINDOW_SCRIPTS                    10020
 #define WINDOW_VIDEO_GENRE                10021
 #define WINDOW_VIDEO_ACTOR                10022
