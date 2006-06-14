@@ -24,7 +24,7 @@ public:
   static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false);
   static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares, VECSHARES* additionalShare = NULL);
   static bool ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path);
-  static bool ShowAndGetImage(const CFileItemList &items, const CStdString &heading, CStdString &path);
+  static bool ShowAndGetImage(const CFileItemList &items, VECSHARES &shares, const CStdString &heading, CStdString &path);
 
   void SetShares(VECSHARES &shares);
 

@@ -460,7 +460,7 @@ void CMusicAlbumInfo::SetAlbumPath(const CStdString& strAlbumPath)
   m_strAlbumPath = strAlbumPath;
 }
 
-const CStdString& CMusicAlbumInfo::GetAlbumPath()
+const CStdString& CMusicAlbumInfo::GetAlbumPath() const
 {
   return m_strAlbumPath;
 }

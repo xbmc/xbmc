@@ -575,7 +575,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
 
   CStdString result;
   // TODO: localize 2.0
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_localizeStrings.Get(20019), result))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")
@@ -592,8 +592,10 @@ void CGUIWindowVideoInfo::OnGetThumb()
   }
   else if (result == "thumb://IMDb")
     CFile::Cache(thumbFromWeb, cachedThumb);
-  else // if (result == "thumb://Local")
+  else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
+  else if (CFile::Exists(result))
+    CFile::Cache(result, cachedThumb);
 
   m_movieItem.SetThumbnailImage(cachedThumb);
 
