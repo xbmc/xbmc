@@ -3,6 +3,7 @@
 #include "..\python\python.h"
 #include "pyutil.h"
 #include "..\..\..\application.h"
+#include "..\xbmc\GUIDialogFileBrowser.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
 
@@ -74,6 +75,45 @@ namespace PYXBMC
 		g_applicationMessenger.SendMessage(tMsg, true);
 
 		return Py_BuildValue("b", pDialog->IsConfirmed());
+	}
+
+	PyDoc_STRVAR(browse__doc__,
+		"browse(type,heading, shares[, extra]) -- Show a dialog 'Browse'.\n"
+		"\n"
+		"type     : interger value\n"
+		"heading  : string or unicode string\n"
+		"shares   : string or unicode string\n"
+		"extra    : (optional) string value\n"
+		"returns String to the location when user pressed 'OK'");
+
+	PyObject* Dialog_Browse(PyObject *self, PyObject *args)
+	{
+		int browsetype = 0;
+		CStdString value;
+		PyObject* unicodeLine[3];
+		string utf8Line[3];
+		for (int i = 0; i < 3; i++) unicodeLine[i] = NULL;
+		if (!PyArg_ParseTuple(args, "iOO|O", &browsetype , &unicodeLine[0], &unicodeLine[1], &unicodeLine[2]))	return NULL;
+		for (int i = 0; i < 3; i++)
+		{
+		if (unicodeLine[i] && !PyGetUnicodeString(utf8Line[i], unicodeLine[i], i+1))
+	        return NULL;
+		}
+		VECSHARES *shares = g_settings.GetSharesFromType(utf8Line[1]);
+		if (!shares) return NULL;
+
+  		if (browsetype == 0)
+			CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value) ;
+		else if (browsetype == 1)
+			if (utf8Line[1].size())
+				CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2],utf8Line[0], value,true) ;
+			else
+				CGUIDialogFileBrowser::ShowAndGetFile(*shares, "",utf8Line[0], value,false) ;			
+		else if (browsetype == 2)
+			CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value) ;
+		else
+			CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value);
+		return Py_BuildValue("s", value.c_str());
 	}
 
 	PyDoc_STRVAR(yesno__doc__,
@@ -280,6 +320,7 @@ namespace PYXBMC
 		{"yesno", (PyCFunction)Dialog_YesNo, METH_VARARGS, yesno__doc__},
 		{"select", (PyCFunction)Dialog_Select, METH_VARARGS, select__doc__},
 		{"ok", (PyCFunction)Dialog_OK, METH_VARARGS, ok__doc__},
+		{"browse", (PyCFunction)Dialog_Browse, METH_VARARGS, browse__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
