@@ -1,0 +1,94 @@
+<window>
+  <id>101</id>
+  <defaultcontrol>10</defaultcontrol>
+  <animation effect="fade" time="200">WindowOpen</animation>
+    <animation effect="fade" time="200">WindowClose</animation>
+      <controls>
+        <control>
+          <type>image</type>
+          <id>0</id>
+          <posx>165</posx>
+          <posy>205</posy>
+          <width>390</width>
+          <height>190</height>
+          <texture>dialog-panel.png</texture>
+        </control>
+
+        <control>
+          <description>dialog Heading</description>
+          <type>label</type>
+          <id>1</id>
+          <posx>190</posx>
+          <posy>218</posy>
+          <label>-</label>
+          <font>special13</font>
+          <textcolor>DDced8da</textcolor>
+        </control>
+
+        <control>
+          <description>dialog line 1</description>
+          <type>label</type>
+          <id>2</id>
+          <posx>190</posx>
+          <posy>260</posy>
+          <haspath>yes</haspath>
+          <label>-</label>
+          <font>font10</font>
+        </control>
+
+        <control>
+          <description>dialog line 2</description>
+          <type>label</type>
+          <id>3</id>
+          <posx>190</posx>
+          <posy>280</posy>
+          <haspath>yes</haspath>
+          <label>-</label>
+          <font>font10</font>
+        </control>
+
+        <control>
+          <description>dialog line 3</description>
+          <type>label</type>
+          <id>4</id>
+          <posx>190</posx>
+          <posy>300</posy>
+          <haspath>yes</haspath>
+          <label>-</label>
+          <font>font10</font>
+        </control>
+
+        <control>
+          <description>progress control</description>
+          <type>progress</type>
+          <id>20</id>
+          <posx>190</posx>
+          <posy>346</posy>
+          <width>261</width>
+          <height>13</height>
+          <texturebg>progress_back2.png</texturebg>
+        </control>
+
+        <control>
+          <description>Cancel button</description>
+          <type>button</type>
+          <id>10</id>
+          <posx>463</posx>
+          <posy>335</posy>
+          <width>77</width>
+          <height>32</height>
+          <label>222</label>
+          <font>font10</font>
+          <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+          <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+          <onleft>10</onleft>
+          <align>center</align>
+          <onright>10</onright>
+          <onup>10</onup>
+          <ondown>10</ondown>
+        </control>
+
+      </controls>
+
+    </window>
+
