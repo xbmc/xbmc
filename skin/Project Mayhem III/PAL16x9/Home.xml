@@ -382,9 +382,9 @@
       <type>image</type>
       <id>0</id>
       <posx>77</posx>
-      <posy>430</posy>
+      <posy>429</posy>
       <width>15</width>
-      <height>16</height>
+      <height>17</height>
       <texture>homebutton-small.png</texture>
       <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
@@ -395,10 +395,10 @@
     <control>
       <type>image</type>
       <id>0</id>
-      <posx>192</posx>
-      <posy>430</posy>
+      <posx>191</posx>
+      <posy>429</posy>
       <width>15</width>
-      <height>16</height>
+      <height>17</height>
       <texture>homebutton-small.png</texture>
       <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
@@ -411,7 +411,7 @@
 	      <type>button</type>
 	      <id>9</id>
 	      <posx>80</posx>
-	      <posy>434</posy>
+	      <posy>432</posy>
 	      <width>9</width>
 	      <height>8</height>
 	      <label>5</label>
@@ -434,8 +434,8 @@
 	      <description>My Files normal push button</description>
 	      <type>button</type>
 	      <id>6</id>
-	      <posx>195</posx>
-	      <posy>434</posy>
+	      <posx>194</posx>
+	      <posy>432</posy>
 	      <width>9</width>
 	      <height>8</height>
 	      <label>7</label>
@@ -458,10 +458,10 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posx>0</posx>
-      <posy>0</posy>
-      <width>720</width>
-      <height>576</height>
+      <posx>37</posx>
+      <posy>207</posy>
+      <width>307</width>
+      <height>236</height>
       <texture>home_buttons.png</texture>
       <include>homebuttonanimation</include>
     </control>
@@ -473,7 +473,7 @@
         <posx>91</posx>
         <posy>231</posy>
         <width>14</width>
-        <height>13</height>
+        <height>12</height>
         <label>0</label>
         <font>special13</font>
         <onclick>ActivateWindow(MyPrograms)</onclick>
@@ -492,9 +492,9 @@
         <type>button</type>
         <id>4</id>
         <posx>91</posx>
-        <posy>271</posy>
+        <posy>270</posy>
         <width>14</width>
-        <height>13</height>
+        <height>12</height>
         <label>1</label>
         <onclick>ActivateWindow(MyPictures)</onclick>
         <font>special13</font>
@@ -513,9 +513,9 @@
         <type>button</type>
         <id>5</id>
         <posx>91</posx>
-        <posy>310</posy>
+        <posy>309</posy>
         <width>14</width>
-        <height>13</height>
+        <height>12</height>
         <label>3</label>
         <font>special13</font>
         <onclick>ActivateWindow(MyVideos)</onclick>
@@ -534,9 +534,9 @@
         <type>button</type>
         <id>3</id>
         <posx>91</posx>
-        <posy>349</posy>
+        <posy>348</posy>
         <width>14</width>
-        <height>13</height>
+        <height>12</height>
         <label>2</label>
         <onclick>ActivateWindow(MyMusic)</onclick>
         <font>special13</font>
@@ -555,9 +555,9 @@
         <type>button</type>
         <id>7</id>
         <posx>91</posx>
-        <posy>386</posy>
+        <posy>387</posy>
         <width>14</width>
-        <height>13</height>
+        <height>12</height>
         <label>8</label>
         <font>special13</font>
         <onclick>ActivateWindow(Weather)</onclick>
