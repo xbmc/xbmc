@@ -1,0 +1,25 @@
+<window>
+  <id>113</id>
+  <defaultcontrol>901</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>535</posx>
+    <posy>40</posy>
+  </coordinates>
+
+  <controls>
+    <control>
+      <description>Mute Image</description>
+      <type>image</type>
+      <id>901</id>
+      <posx>80</posx>
+      <posy>16</posy>
+      <width>30</width>
+      <height>40</height>
+      <texture>mute.png</texture>
+    </control>
+
+  </controls>
+
+</window>
+
