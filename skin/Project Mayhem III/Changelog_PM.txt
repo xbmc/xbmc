@@ -1,3 +1,6 @@
+2006-06-15 fixed:	various alignment issues (720p is now the reference resolution to look most perfect)
+2006-06-15 fixed:	general xml cleanup
+
 2006-06-14 changed:	home screen backgrounds
 
 2006-06-12 changed:	animate skin button changed to a radiobutton (cleans up the code), thanks to Smokehead.
