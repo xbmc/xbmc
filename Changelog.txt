@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-06-2006 fixed: trouble with startup lock.
  - 14-06-2006 added: Dialog().browse  to Python. Lets the user navigate with the FileManager.
  - 14-06-2006 fixed: GetThumb in Album and Movie information screens allows browsing to find thumb.
  - 13-06-2006 removed: Settings options for hiding file or directory labels in thumbpanel - it's a skin property now.
