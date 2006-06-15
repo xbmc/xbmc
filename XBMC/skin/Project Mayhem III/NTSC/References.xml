@@ -80,7 +80,7 @@
     <type>togglebutton</type>
     <id>4</id>
     <posx>185</posx>
-    <posy>137</posy>
+    <posy>140</posy>
     <width>10</width>
     <height>12</height>
     <texturefocus>scroll-up-focus.gif</texturefocus>

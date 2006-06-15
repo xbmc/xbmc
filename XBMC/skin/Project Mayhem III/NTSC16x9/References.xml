@@ -80,7 +80,7 @@
     <type>togglebutton</type>
     <id>4</id>
     <posx>185</posx>
-    <posy>137</posy>
+    <posy>140</posy>
     <width>10</width>
     <height>12</height>
     <texturefocus>scroll-up-focus.gif</texturefocus>
@@ -202,7 +202,7 @@
     <texturedownfocus>scroll-down-focus.png</texturedownfocus>
     <itemwidth>90</itemwidth>
     <itemheight>108</itemheight>
-    <texturewidth>74</texturewidth>
+    <texturewidth>75</texturewidth>
     <textureheight>88</textureheight>
     <thumbwidth>80</thumbwidth>
     <thumbheight>80</thumbheight>
@@ -214,7 +214,7 @@
     <selectedcolor>ffffffff</selectedcolor>
     <include>textcolorwhite</include>
     <include>controldefaults</include>
-    <texturewidthbig>116</texturewidthbig>
+    <texturewidthbig>117</texturewidthbig>
     <textureheightbig>140</textureheightbig>
     <itemwidthbig>152</itemwidthbig>
     <itemheightbig>164</itemheightbig>
