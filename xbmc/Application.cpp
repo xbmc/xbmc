@@ -1091,7 +1091,7 @@ HRESULT CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
-  if (g_guiSettings.GetBool("masterlock.startuplock")) 
+  if (g_guiSettings.GetBool("masterlock.startuplock") && g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE ) 
   	g_passwordManager.CheckStartUpLock();
 
   if (!m_bAllSettingsLoaded)
