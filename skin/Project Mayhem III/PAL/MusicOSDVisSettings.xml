@@ -1,0 +1,137 @@
+<window>
+  <id>121</id>
+  <defaultcontrol>2</defaultcontrol>
+  <animation effect="fade" time="200">WindowOpen</animation>
+    <animation effect="fade" time="200">WindowClose</animation>
+      <coordinates>
+        <system>1</system>
+        <posx>232</posx>
+        <posy>140</posy>
+      </coordinates>
+
+      <controls>
+        <control>
+          <description>background image</description>
+          <type>image</type>
+          <id>1</id>
+          <posx>-25</posx>
+          <posy>-11</posy>
+          <width>446</width>
+          <height>405</height>
+          <texture>dialog-panel2.png</texture>
+          <colordiffuse>AAFFFFFF</colordiffuse>
+        </control>
+
+        <control>
+          <description>Settings Label</description>
+          <type>label</type>
+          <id>2</id>
+          <posx>0</posx>
+          <posy>2</posy>
+          <width>420</width>
+          <align>left</align>
+          <font>special13</font>
+          <textcolor>DDced8da</textcolor>
+        </control>
+
+        <control>
+          <description>No Settings Label</description>
+          <type>label</type>
+          <id>3</id>
+          <posx>0</posx>
+          <posy>170</posy>
+          <width>408</width>
+          <align>center</align>
+          <label>13390</label>
+          <font>font12</font>
+        </control>
+
+        <control>
+          <description>Next page button</description>
+          <type>spincontrol</type>
+          <id>60</id>
+          <posx>371</posx>
+          <posy>8</posy>
+          <subtype>int</subtype>
+          <font>font12</font>
+          <onleft>60</onleft>
+          <onright>60</onright>
+          <ondown>2</ondown>
+        </control>
+
+        <control>
+          <description>control area</description>
+          <type>image</type>
+          <id>5</id>
+          <posx>-1</posx>
+          <posy>40</posy>
+          <width>408</width>
+          <height>325</height>
+          <texture>-</texture>
+        </control>
+
+        <control>
+          <description>control gap</description>
+          <type>image</type>
+          <id>6</id>
+          <width>350</width>
+          <height>31</height>
+          <texture>-</texture>
+        </control>
+
+        <control>
+          <description>Default Button</description>
+          <type>button</type>
+          <id>7</id>
+          <posx>530</posx>
+          <posy>150</posy>
+          <height>29</height>
+          <font>font12</font>
+          <textoffsetx>12</textoffsetx>
+          <aligny>center</aligny>
+          <texturefocus>list-focus.png</texturefocus>
+          <texturenofocus>-</texturenofocus>
+        </control>
+
+        <control>
+          <description>Default RadioButton</description>
+          <type>radiobutton</type>
+          <id>8</id>
+          <posx>530</posx>
+          <posy>150</posy>
+          <height>31</height>
+          <font>font12</font>
+          <texturefocus>list-focus.png</texturefocus>
+          <texturenofocus>-</texturenofocus>
+          <textoffsetx>12</textoffsetx>
+          <aligny>center</aligny>
+          <textureradiofocus>settings-check-box.png</textureradiofocus>
+          <textureradionofocus>settings-check-boxNF.png</textureradionofocus>
+        </control>
+
+        <control>
+          <description>Default SpinControlex</description>
+          <type>spincontrolex</type>
+          <id>9</id>
+          <posx>530</posx>
+          <posy>150</posy>
+          <height>31</height>
+          <width>300</width>
+          <texturefocus>list-focus.png</texturefocus>
+          <texturenofocus>-</texturenofocus>
+          <textureup>scroll-up.png</textureup>
+          <texturedown>scroll-down.png</texturedown>
+          <textureupfocus>scroll-up-focus.png</textureupfocus>
+          <texturedownfocus>scroll-down-focus.png</texturedownfocus>
+          <font>font12</font>
+          <include>textcolorwhite</include>
+          <disabledcolor>60d0d0d0</disabledcolor>
+          <textoffsetx>12</textoffsetx>
+          <aligny>center</aligny>
+          <reverse>yes</reverse>
+        </control>
+
+      </controls>
+
+    </window>
+

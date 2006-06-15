@@ -1,0 +1,200 @@
+<window>
+  <id>28</id>
+  <defaultcontrol>50</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-videos.png</texture>
+    </control>
+
+    <control>
+      <description>xbox media center label</description>
+      <type>label</type>
+      <id>1</id>
+      <posx>200</posx>
+      <posy>63</posy>
+      <align>right</align>
+      <label>xbox media center</label>
+      <font>special12</font>
+    </control>
+
+    <control>
+      <description>description label</description>
+      <type>label</type>
+      <id>1</id>
+      <posx>207</posx>
+      <posy>63</posy>
+      <align>left</align>
+      <label>10522</label>
+      <font>special13</font>
+    </control>
+
+    <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>160</posx>
+      <posy>108</posy>
+      <width>64</width>
+      <height>468</height>
+      <texture>contentpanel_left.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>224</posx>
+      <posy>108</posy>
+      <width>500</width>
+      <height>468</height>
+      <texture>contentpanel.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>number of files text label</description>
+      <type>label</type>
+      <id>12</id>
+      <posx>545</posx>
+      <posy>526</posy>
+      <align>right</align>
+      <label>-</label>
+      <font>font10</font>
+      <include>contentpanelslide</include>
+    </control>
+
+    <controlgroup>
+      <control>
+        <description>View As Icons button</description>
+        <type>button</type>
+        <id>2</id>
+        <posx>50</posx>
+        <posy>120</posy>
+        <label>100</label>
+        <font>font13</font>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>22</onup>
+        <ondown>20</ondown>
+        <include>buttonpanelslide</include>
+      </control>
+
+      <control>
+        <description>Shuffle button</description>
+        <type>radiobutton</type>
+        <id>20</id>
+        <posx>50</posx>
+        <posy>157</posy>
+        <label>191</label>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>2</onup>
+        <ondown>28</ondown>
+        <include>buttonpanelslide</include>
+      </control>
+
+      <control>
+        <description>Randomize button</description>
+        <type>radiobutton</type>
+        <id>28</id>
+        <posx>50</posx>
+        <posy>194</posy>
+        <label>13319</label>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>20</onup>
+        <ondown>26</ondown>
+        <include>buttonpanelslide</include>
+      </control>
+
+      <control>
+        <description>Repeat button</description>
+        <type>button</type>
+        <id>26</id>
+        <posx>50</posx>
+        <posy>231</posy>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>28</onup>
+        <ondown>21</ondown>
+        <include>buttonpanelslide</include>
+      </control>
+
+      <control>
+        <description>Save button</description>
+        <type>button</type>
+        <id>21</id>
+        <posx>50</posx>
+        <posy>268</posy>
+        <label>190</label>
+        <font>font13</font>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>26</onup>
+        <ondown>22</ondown>
+        <include>buttonpanelslide</include>
+      </control>
+
+      <control>
+        <description>Clear button</description>
+        <type>button</type>
+        <id>22</id>
+        <posx>50</posx>
+        <posy>305</posy>
+        <label>192</label>
+        <font>font13</font>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>21</onup>
+        <ondown>2</ondown>
+        <include>buttonpanelslide</include>
+      </control>
+
+    </controlgroup>
+
+    <control>
+      <description>listcontrol</description>
+      <type>listcontrol</type>
+      <id>50</id>
+      <onleft>2</onleft>
+      <onright>50</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>thumbnailpanel</description>
+      <type>thumbnailpanel</type>
+      <id>51</id>
+      <onleft>2</onleft>
+      <onright>51</onright>
+      <onup>51</onup>
+      <ondown>51</ondown>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>bg preview</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>720</width>
+      <height>576</height>
+      <include>windowswitchtransition</include>
+    </control>
+
+  </controls>
+
+</window>
+
