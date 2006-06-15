@@ -376,33 +376,32 @@
     </control>
 
     <controlgroup id="1">
-
     <control>
       <type>image</type>
       <id>0</id>
       <posx>77</posx>
-      <posy>420</posy>
+      <posy>425</posy>
       <width>15</width>
-      <height>16</height>
+      <height>17</height>
       <texture>homebutton-small.png</texture>
       <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
-      <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
-      <animation effect="slide" time="200" end="-600,0" acceleration="1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-      <animation effect="slide" time="500" start="-600,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+        <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
+        <animation effect="slide" time="200" end="-600,0" acceleration="1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+        <animation effect="slide" time="500" start="-600,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
     </control>
 
     <control>
       <type>image</type>
       <id>0</id>
-      <posx>192</posx>
-      <posy>420</posy>
+      <posx>191</posx>
+      <posy>425</posy>
       <width>15</width>
-      <height>16</height>
+      <height>17</height>
       <texture>homebutton-small.png</texture>
       <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
-      <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
-      <animation effect="slide" time="200" end="-600,0" acceleration="1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-      <animation effect="slide" time="500" start="-600,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+        <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
+        <animation effect="slide" time="200" end="-600,0" acceleration="1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+        <animation effect="slide" time="500" start="-600,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
     </control>
 
       <control>
@@ -410,12 +409,12 @@
 	      <type>button</type>
 	      <id>9</id>
 	      <posx>80</posx>
-	      <posy>424</posy>
+	      <posy>428</posy>
 	      <width>9</width>
 	      <height>8</height>
 	      <label>5</label>
 	      <font>font10</font>
-	      <onclick>ActivateWindow(Settings)</onclick>
+	      <onclick>ActivateWindow(4)</onclick>
 	      <onleft>98</onleft>
 	      <onright>6</onright>
 	      <onup>7</onup>
@@ -423,8 +422,6 @@
 	      <texturefocus>home-focus.gif</texturefocus>
 	      <texturenofocus>-</texturenofocus>
 	      <textoffsetx>20</textoffsetx>
-	      <textoffsety>-5</textoffsety>
-	      <aligny>top</aligny>
         <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
         <animation effect="slide" time="200" end="-600,0" acceleration="1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
@@ -435,8 +432,8 @@
 	      <description>My Files normal push button</description>
 	      <type>button</type>
 	      <id>6</id>
-	      <posx>195</posx>
-	      <posy>424</posy>
+	      <posx>194</posx>
+	      <posy>428</posy>
 	      <width>9</width>
 	      <height>8</height>
 	      <label>7</label>
@@ -449,8 +446,6 @@
 	      <texturefocus>home-focus.gif</texturefocus>
 	      <texturenofocus>-</texturenofocus>
 	      <textoffsetx>20</textoffsetx>
-	      <textoffsety>-5</textoffsety>
-	      <aligny>top</aligny>
         <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
         <animation effect="slide" time="200" end="-600,0" acceleration="1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
@@ -461,10 +456,10 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posx>0</posx>
-      <posy>-10</posy>
-      <width>720</width>
-      <height>576</height>
+      <posx>37</posx>
+      <posy>200</posy>
+      <width>307</width>
+      <height>236</height>
       <texture>home_buttons.png</texture>
       <include>homebuttonanimation</include>
     </control>
@@ -474,9 +469,9 @@
         <type>button</type>
         <id>2</id>
         <posx>91</posx>
-        <posy>221</posy>
+        <posy>224</posy>
         <width>14</width>
-        <height>13</height>
+        <height>12</height>
         <label>0</label>
         <font>special13</font>
         <onclick>ActivateWindow(MyPrograms)</onclick>
@@ -487,7 +482,7 @@
         <texturefocus>home-focus.gif</texturefocus>
         <texturenofocus>-</texturenofocus>
         <textoffsetx>30</textoffsetx>
-      <include>homebuttonanimation</include>
+        <include>homebuttonanimation</include>
       </control>
 
       <control>
@@ -495,9 +490,9 @@
         <type>button</type>
         <id>4</id>
         <posx>91</posx>
-        <posy>261</posy>
+        <posy>264</posy>
         <width>14</width>
-        <height>13</height>
+        <height>12</height>
         <label>1</label>
         <onclick>ActivateWindow(MyPictures)</onclick>
         <font>special13</font>
@@ -508,7 +503,7 @@
         <texturefocus>home-focus.gif</texturefocus>
         <texturenofocus>-</texturenofocus>
         <textoffsetx>30</textoffsetx>
-      <include>homebuttonanimation</include>
+        <include>homebuttonanimation</include>
       </control>
 
       <control>
@@ -516,9 +511,9 @@
         <type>button</type>
         <id>5</id>
         <posx>91</posx>
-        <posy>300</posy>
+        <posy>302</posy>
         <width>14</width>
-        <height>13</height>
+        <height>12</height>
         <label>3</label>
         <font>special13</font>
         <onclick>ActivateWindow(MyVideos)</onclick>
@@ -529,7 +524,7 @@
         <texturefocus>home-focus.gif</texturefocus>
         <texturenofocus>-</texturenofocus>
         <textoffsetx>30</textoffsetx>
-      <include>homebuttonanimation</include>
+        <include>homebuttonanimation</include>
       </control>
 
       <control>
@@ -537,9 +532,9 @@
         <type>button</type>
         <id>3</id>
         <posx>91</posx>
-        <posy>339</posy>
+        <posy>341</posy>
         <width>14</width>
-        <height>13</height>
+        <height>12</height>
         <label>2</label>
         <onclick>ActivateWindow(MyMusic)</onclick>
         <font>special13</font>
@@ -550,28 +545,28 @@
         <texturefocus>home-focus.gif</texturefocus>
         <texturenofocus>-</texturenofocus>
         <textoffsetx>30</textoffsetx>
-      <include>homebuttonanimation</include>
+        <include>homebuttonanimation</include>
       </control>
 
       <control>
-	<description>My Weather normal push button</description>
-	<type>button</type>
-	<id>7</id>
-	<posx>91</posx>
-	<posy>376</posy>
-	<width>14</width>
-	<height>13</height>
-	<label>8</label>
-	<font>special13</font>
-	<onclick>ActivateWindow(Weather)</onclick>
-	<onleft>98</onleft>
-	<onright>96</onright>
-	<onup>3</onup>
-	<ondown>9</ondown>
-	<texturefocus>home-focus.gif</texturefocus>
-	<texturenofocus>-</texturenofocus>
-	<textoffsetx>30</textoffsetx>
-      <include>homebuttonanimation</include>
+        <description>My Weather normal push button</description>
+        <type>button</type>
+        <id>7</id>
+        <posx>91</posx>
+        <posy>380</posy>
+        <width>14</width>
+        <height>12</height>
+        <label>8</label>
+        <font>special13</font>
+        <onclick>ActivateWindow(Weather)</onclick>
+        <onleft>98</onleft>
+        <onright>96</onright>
+        <onup>3</onup>
+        <ondown>9</ondown>
+        <texturefocus>home-focus.gif</texturefocus>
+        <texturenofocus>-</texturenofocus>
+        <textoffsetx>30</textoffsetx>
+        <include>homebuttonanimation</include>
       </control>
 
     </controlgroup>
