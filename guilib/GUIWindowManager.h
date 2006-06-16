@@ -67,9 +67,10 @@ public:
   bool IsOverlayAllowed() const;
   void ShowOverlay(bool bOnOff);
   void GetActiveModelessWindows(vector<DWORD> &ids);
- 
+
 private:
   void AddToWindowHistory(DWORD newWindowID);
+  void ClearWindowHistory();
   map<DWORD, CGUIWindow *> m_mapWindows;
   vector <CGUIWindow*> m_vecModelessWindows;
   vector <CGUIWindow*> m_vecModalWindows;
