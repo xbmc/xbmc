@@ -382,7 +382,7 @@
       <posx>77</posx>
       <posy>425</posy>
       <width>15</width>
-      <height>17</height>
+      <height>15</height>
       <texture>homebutton-small.png</texture>
       <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
@@ -411,7 +411,7 @@
 	      <posx>80</posx>
 	      <posy>428</posy>
 	      <width>9</width>
-	      <height>8</height>
+	      <height>7</height>
 	      <label>5</label>
 	      <font>font10</font>
 	      <onclick>ActivateWindow(4)</onclick>
@@ -435,7 +435,7 @@
 	      <posx>194</posx>
 	      <posy>428</posy>
 	      <width>9</width>
-	      <height>8</height>
+	      <height>7</height>
 	      <label>7</label>
 	      <onclick>ActivateWindow(MyFiles)</onclick>
 	      <font>font10</font>
