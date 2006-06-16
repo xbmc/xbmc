@@ -456,6 +456,8 @@ void CGUISpinControl::SetValue(int iValue)
   }
   else
     m_iValue = iValue;
+  if (m_iValue < 0 || m_iValue >= (int)m_vecValues.size())
+    m_iValue = 0;
 }
 
 void CGUISpinControl::SetFloatValue(float fValue)
