@@ -25,6 +25,7 @@
     <remote>
       <three>VolumeUp</three>
       <six>VolumeDown</six>
+      <eight>XBMC.ActivateWindow(PlayerControls)</eight>
       <nine>Mute</nine>
       <play>Play</play>
       <pause>Pause</pause>
