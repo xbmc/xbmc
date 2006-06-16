@@ -61,9 +61,9 @@
           <type>button</type>
           <id>210</id>
           <posx>81</posx>
-          <posy>409</posy>
+          <posy>408</posy>
           <width>38</width>
-          <height>50</height>
+          <height>51</height>
           <texturefocus>osd_button_skip_minusFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <label>-</label>
@@ -80,9 +80,9 @@
           <type>togglebutton</type>
           <id>211</id>
           <posx>112</posx>
-          <posy>404</posy>
+          <posy>403</posy>
           <width>34</width>
-          <height>48</height>
+          <height>49</height>
           <texturefocus>osd_button_rewFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <usealttexture>Player.Rewinding</usealttexture>
@@ -124,9 +124,9 @@
           <type>togglebutton</type>
           <id>214</id>
           <posx>179</posx>
-          <posy>387</posy>
+          <posy>385</posy>
           <width>32</width>
-          <height>46</height>
+          <height>49</height>
           <texturefocus>osd_button_ffFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <usealttexture>Player.Forwarding</usealttexture>
@@ -147,7 +147,7 @@
           <id>215</id>
           <posx>202</posx>
           <posy>380</posy>
-          <width>33</width>
+          <width>34</width>
           <height>46</height>
           <texturefocus>osd_button_skip_plusSELFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
@@ -167,7 +167,7 @@
           <posx>130</posx>
           <posy>318</posy>
           <width>38</width>
-          <height>43</height>
+          <height>44</height>
           <texturefocus>osd_button_playlistFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <onclick>XBMC.ActivateWindow(500)</onclick>
@@ -186,7 +186,7 @@
           <posx>135</posx>
           <posy>353</posy>
           <width>40</width>
-          <height>40</height>
+          <height>41</height>
           <texturefocus>osd_button_visFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <label>-</label>
@@ -202,9 +202,9 @@
           <type>button</type>
           <id>220</id>
           <posx>151</posx>
-          <posy>445</posy>
+          <posy>443</posy>
           <width>41</width>
-          <height>42</height>
+          <height>44</height>
           <texturefocus>osd_button_presetsFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <label>-</label>
@@ -221,9 +221,9 @@
           <type>button</type>
           <id>219</id>
           <posx>156</posx>
-          <posy>479</posy>
+          <posy>477</posy>
           <width>43</width>
-          <height>48</height>
+          <height>51</height>
           <texturefocus>osd_button_vizsettingsFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <label>-</label>

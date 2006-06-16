@@ -1,4 +1,7 @@
-2006-06-15 fixed:	various alignment issues (720p is now the reference resolution to look most perfect)
+
+2006-06-15 added:	switchable bookmark buttons for every main category screen
+2006-06-15 fixed:	various alignment issues to match HD standard -- all resolutions are better now --
+			(all OSDs, Sort Asc/Desc buttons, home buttons, thumbnailpanels, etc)
 2006-06-15 fixed:	general xml cleanup
 
 2006-06-14 changed:	home screen backgrounds
