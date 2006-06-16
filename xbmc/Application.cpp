@@ -1931,6 +1931,7 @@ bool CApplication::OnKey(CKey& key)
     else
       g_buttonTranslator.GetAction(iWin, key, action);
   }
+  CLog::Log(LOGDEBUG, __FUNCTION__": %i pressed, action is %i", key.GetButtonCode(), action.wID);
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
