@@ -213,9 +213,7 @@ void CGUIWindowManager::PreviousWindow()
   if (!pNewWindow)
   {
     CLog::Log(LOGERROR, "Unable to activate the previous window");
- //   ClearWindowHistory();
-    while (m_windowHistory.size())
-      m_windowHistory.pop();
+    ClearWindowHistory();
     ActivateWindow(WINDOW_HOME);
     return;
   }
@@ -679,4 +677,10 @@ bool CGUIWindowManager::IsWindowTopMost(DWORD id) const
 
   // return the last window in the list
   return ((*renderList.rbegin())->GetID() & WINDOW_ID_MASK) == id;
+}
+
+void CGUIWindowManager::ClearWindowHistory()
+{
+  while (m_windowHistory.size())
+    m_windowHistory.pop();
 }
