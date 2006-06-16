@@ -8,7 +8,7 @@
           <description>DVD menu button</description>
           <type>button</type>
           <id>208</id>
-          <posx>55</posx>
+          <posx>35</posx>
           <posy>339</posy>
           <width>128</width>
           <height>128</height>
@@ -28,7 +28,7 @@
           <description>DVD menu button 2</description>
           <type>button</type>
           <id>209</id>
-          <posx>55</posx>
+          <posx>35</posx>
           <posy>339</posy>
           <width>128</width>
           <height>128</height>
@@ -48,7 +48,7 @@
           <description>Panel</description>
           <type>image</type>
           <id>1</id>
-          <posx>80</posx>
+          <posx>60</posx>
           <posy>330</posy>
           <height>223</height>
           <width>180</width>
@@ -60,7 +60,7 @@
           <description>Skip Bwd</description>
           <type>button</type>
           <id>210</id>
-          <posx>101</posx>
+          <posx>81</posx>
           <posy>424</posy>
           <width>38</width>
           <height>45</height>
@@ -79,10 +79,10 @@
           <description>Rewind</description>
           <type>togglebutton</type>
           <id>211</id>
-          <posx>131</posx>
+          <posx>112</posx>
           <posy>420</posy>
-          <width>34</width>
-          <height>42</height>
+          <width>33</width>
+          <height>43</height>
           <texturefocus>osd_button_rewFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <usealttexture>Player.Rewinding</usealttexture>
@@ -101,7 +101,7 @@
           <description>Stop</description>
           <type>button</type>
           <id>212</id>
-          <posx>142</posx>
+          <posx>122</posx>
           <posy>435</posy>
           <width>31</width>
           <height>36</height>
@@ -119,7 +119,7 @@
           <description>Play</description>
           <type>togglebutton</type>
           <id>213</id>
-          <posx>156</posx>
+          <posx>136</posx>
           <posy>404</posy>
           <width>52</width>
           <height>58</height>
@@ -141,10 +141,10 @@
           <description>Fast Forward</description>
           <type>togglebutton</type>
           <id>214</id>
-          <posx>199</posx>
-          <posy>405</posy>
+          <posx>179</posx>
+          <posy>404</posy>
           <width>32</width>
-          <height>42</height>
+          <height>43</height>
           <texturefocus>osd_button_ffFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <usealttexture>Player.Forwarding</usealttexture>
@@ -163,10 +163,10 @@
           <description>Skip Fwd</description>
           <type>button</type>
           <id>215</id>
-          <posx>222</posx>
+          <posx>202</posx>
           <posy>400</posy>
           <width>33</width>
-          <height>40</height>
+          <height>41</height>
           <texturefocus>osd_button_skip_plusSELFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <onclick>XBMC.PlayerControl(Next)</onclick>
@@ -182,7 +182,7 @@
           <description>Mute</description>
           <type>togglebutton</type>
           <id>216</id>
-          <posx>93</posx>
+          <posx>73</posx>
           <posy>406</posy>
           <width>30</width>
           <height>34</height>
@@ -202,7 +202,7 @@
           <description>playlist buton</description>
           <type>button</type>
           <id>918</id>
-          <posx>150</posx>
+          <posx>130</posx>
           <posy>346</posy>
           <width>38</width>
           <height>38</height>
@@ -221,10 +221,10 @@
           <description>Audio Menu</description>
           <type>togglebutton</type>
           <id>921</id>
-          <posx>156</posx>
-          <posy>376</posy>
-          <width>39</width>
-          <height>36</height>
+          <posx>135</posx>
+          <posy>377</posy>
+          <width>40</width>
+          <height>35</height>
           <texturefocus>osd_button_audioFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <usealttexture>Window.IsActive(124) | Window.IsActive(123)</usealttexture>
@@ -243,10 +243,10 @@
           <description>Video Menu</description>
           <type>togglebutton</type>
           <id>920</id>
-          <posx>171</posx>
-          <posy>456</posy>
+          <posx>151</posx>
+          <posy>455</posy>
           <width>41</width>
-          <height>37</height>
+          <height>38</height>
           <texturefocus>osd_button_videoFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <usealttexture>Window.IsActive(123)</usealttexture>
@@ -265,10 +265,10 @@
           <description>Bookmarks Menu</description>
           <type>togglebutton</type>
           <id>919</id>
-          <posx>176</posx>
-          <posy>486</posy>
+          <posx>156</posx>
+          <posy>485</posy>
           <width>43</width>
-          <height>43</height>
+          <height>44</height>
           <texturefocus>osd_button_bookmarkFO.png</texturefocus>
           <texturenofocus>-</texturenofocus>
           <usealttexture>Window.IsActive(125)</usealttexture>
