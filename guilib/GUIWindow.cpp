@@ -396,6 +396,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_visibleCondition = 0;
+  m_previousWindow = WINDOW_INVALID;
   m_showAnimation.Reset();
   m_closeAnimation.Reset();
 
