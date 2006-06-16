@@ -180,7 +180,7 @@
         <posx>50</posx>
         <posy>342</posy>
         <label>TV Shows</label>
-        <onclick>XBMC.ActivateWindow(MyVideos,TV SHows)</onclick>
+        <onclick>XBMC.ActivateWindow(MyVideos,TV Shows)</onclick>
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>32</onup>
