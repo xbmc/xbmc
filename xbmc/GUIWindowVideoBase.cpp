@@ -778,9 +778,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       btn_Delete = pMenu->AddButton(646);
   }
 
-  int btn_Settings = -2;
-  if (g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE || !g_guiSettings.GetBool("masterlock.locksettings") || g_passwordManager.bMasterUser)
-    btn_Settings      = pMenu->AddButton(5);      // Settings
+  //int btn_Settings = -2;
+  //if (g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE || !g_guiSettings.GetBool("masterlock.locksettings") || g_passwordManager.bMasterUser)
+  int btn_Settings      = pMenu->AddButton(5);      // Settings
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
