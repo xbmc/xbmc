@@ -182,7 +182,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_videoPercentSeekBackward = -2;
   g_advancedSettings.m_videoPercentSeekForwardBig = 10;
   g_advancedSettings.m_videoPercentSeekBackwardBig = -10;
-  g_advancedSettings.m_videoBlackBarColour = 0;
+  g_advancedSettings.m_videoBlackBarColour = 1;
 
   g_advancedSettings.m_slideshowPanAmount = 2.5f;
   g_advancedSettings.m_slideshowZoomAmount = 5.0f;
@@ -1097,7 +1097,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_videoPercentSeekBackward, -2, -100, 0);
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 10, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -10, -100, 0);
-    GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 0, 255);
+    GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 1, 0, 255);
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");
