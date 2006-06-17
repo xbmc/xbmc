@@ -3264,13 +3264,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setpath"))
   {
     // break the parameter up if necessary
-    CStdStringArray params;
-    StringUtils::SplitString(strParameterCaseIntact,",",params);
-    if (params.size() == 2)
-    { // form string,value
-      g_settings.SetSkinString(params[0].ToLower(), params[1]);
+    // only search for the first "," and use that to break the string up
+    int pos = strParameterCaseIntact.Find(",");
+    if (pos >= 0)
+    {
+      g_settings.SetSkinString(strParameterCaseIntact.Left(pos).ToLower(), strParameterCaseIntact.Mid(pos+1));
       g_settings.Save();
-      return 0;
     }
     CStdString settingName;
     settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), parameter);
