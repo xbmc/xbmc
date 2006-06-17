@@ -195,9 +195,9 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     }
     int btn_ScanTrainers = pMenu->AddButton(12012);
 
-    int btn_Settings = -2;
-    if (g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings"))
-      btn_Settings = pMenu->AddButton(5);         // Settings
+    //int btn_Settings = -2;
+    //if (g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings"))
+    int btn_Settings = pMenu->AddButton(5);         // Settings
 
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
