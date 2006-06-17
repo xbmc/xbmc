@@ -1,4 +1,6 @@
 
+2005-06-17 changed:     reverted trainer overlays
+
 2006-06-15 added:	switchable bookmark buttons for every main category screen
 2006-06-15 fixed:	various alignment issues to match HD standard -- all resolutions are better now --
 			(all OSDs, Sort Asc/Desc buttons, home buttons, thumbnailpanels, etc)
