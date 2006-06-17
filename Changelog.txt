@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-06-2006 added: Master lock check on settings subcategories (does not affect settings window).
+ - 17-06-2006 changed: Re-enabled settings item on context menus.
+ - 17-06-2006 changed: Return to current window on bad passcode entry.
  - 16-06-2006 fixed: <previouswindow> tag wasn't initialized (meant you were stuck in Settings after changing from Mc360 -> PM3)
  - 16-06-2006 fixed: Spincontrols could show ?0? when the value was out of range - defaults back to the first value now.
  - 16-06-2006 fixed: Changed the default colour to use for HW overlays to 010101 (fixes transparency issues with OSDs)
