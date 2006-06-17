@@ -1,5 +1,6 @@
+2006-06-17 fixed:	HDTV font sizes (not yet finished - waiting for a custom made font)
 
-2005-06-17 changed:     reverted trainer overlays
+2006-06-17 changed:     reverted trainer overlays
 
 2006-06-15 added:	switchable bookmark buttons for every main category screen
 2006-06-15 fixed:	various alignment issues to match HD standard -- all resolutions are better now --

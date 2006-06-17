@@ -7,7 +7,7 @@
 
     <font>
       <name>font13</name>
-      <filename>common-720pfont14.xpr</filename>
+      <filename>common-font18.xpr</filename>
     </font>
 
     <font>
@@ -52,12 +52,15 @@
 
     <font>
       <name>special12</name>
-      <filename>special-normal-pal.xpr</filename>
+      <filename>Arial.ttf</filename>
+      <size>29</size>
     </font>
 
     <font>
       <name>special13</name>
-      <filename>special-bold-pal.xpr</filename>
+      <filename>Arial.ttf</filename>
+      <size>29</size>
+      <style>bold</style>
     </font>
 
     <font>
@@ -71,19 +74,19 @@
     <font>
       <name>font18</name>
       <filename>Arial.ttf</filename>
-      <size>20</size>
+      <size>25</size>
     </font>
 
     <font>
       <name>font13</name>
       <filename>Arial.ttf</filename>
-      <size>19</size>
+      <size>25</size>
     </font>
 
     <font>
       <name>font14</name>
       <filename>Arial.ttf</filename>
-      <size>19</size>
+      <size>25</size>
     </font>
 
     <font>
@@ -94,7 +97,7 @@
     <font>
       <name>font04</name>
       <filename>Arial.ttf</filename>
-      <size>19</size>
+      <size>25</size>
     </font>
 
     <font>
@@ -106,13 +109,15 @@
     <font>
       <name>font10</name>
       <filename>Arial.ttf</filename>
-      <size>16</size>
+      <size>21</size>
+      <style>bold</style>
     </font>
 
     <font>
       <name>font12</name>
       <filename>Arial.ttf</filename>
-      <size>16</size>
+      <size>21</size>
+      <style>bold</style>
     </font>
 
     <font>
@@ -129,13 +134,13 @@
     <font>
       <name>special12</name>
       <filename>Arial.ttf</filename>
-      <size>19</size>
+      <size>29</size>
     </font>
 
     <font>
       <name>special13</name>
       <filename>Arial.ttf</filename>
-      <size>20</size>
+      <size>29</size>
       <style>bold</style>
     </font>
 
