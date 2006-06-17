@@ -449,15 +449,13 @@ void CGUISpinControl::SetValue(int iValue)
 {  
   if (m_iType == SPIN_CONTROL_TYPE_TEXT)
   {
-    m_iValue = -1;
+    m_iValue = 0;
     for (unsigned int i = 0; i < m_vecValues.size(); i++)
       if (iValue == m_vecValues[i])
         m_iValue = i;
   }
   else
     m_iValue = iValue;
-  if (m_iValue < 0 || m_iValue >= (int)m_vecValues.size())
-    m_iValue = 0;
 }
 
 void CGUISpinControl::SetFloatValue(float fValue)
