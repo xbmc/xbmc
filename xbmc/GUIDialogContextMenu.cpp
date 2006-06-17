@@ -251,9 +251,9 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           btn_ResetLock = pMenu->AddButton(12334);
       }
     }
-    int btn_Settings = -2;
-    if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)
-      btn_Settings = pMenu->AddButton(5);         // Settings
+    //int btn_Settings = -2;
+    //if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)
+    int btn_Settings = pMenu->AddButton(5);         // Settings
 
     // set the correct position
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
