@@ -80,7 +80,7 @@
       <posx>660</posx>
       <posy>55</posy>
       <label>3</label>
-      <font>font14</font>
+      <font>font13</font>
     </control>
 
     <controlgroup>
@@ -208,7 +208,7 @@
       <texturedownfocus>scroll-down-focus.gif</texturedownfocus>
       <texturefocus>blue-rectangle.png</texturefocus>
       <texturenofocus>blue-rectangleNF.png</texturenofocus>
-      <font>font14</font>
+      <font>special13</font>
       <font2>font13</font2>
       <include>listselectedcolor</include>
       <include>textcolorlightgrey</include>

@@ -1,13 +1,24 @@
 <fonts>
   <fontset id="Default" unicode="false">
+
     <font>
-      <name>font13</name>
-      <filename>common-font14.xpr</filename>
+      <name>font101</name>
+      <filename>common-font10-720p.xpr</filename>
     </font>
 
     <font>
-      <name>font14</name>
-      <filename>common-font14.xpr</filename>
+      <name>font10</name>
+      <filename>common-font10-720p.xpr</filename>
+    </font>
+
+    <font>
+      <name>font12</name>
+      <filename>common-font12-720p.xpr</filename>
+    </font>
+
+    <font>
+      <name>font13</name>
+      <filename>common-font13-720p.xpr</filename>
     </font>
 
     <font>
@@ -16,81 +27,23 @@
     </font>
 
     <font>
-      <name>font04</name>
-      <filename>common-font14.xpr</filename>
-    </font>
-
-    <font>
-      <name>font10</name>
-      <filename>common-font12.xpr</filename>
-    </font>
-
-    <font>
-      <name>font12</name>
-      <filename>common-font13.xpr</filename>
-    </font>
-
-    <font>
-      <name>fontKB</name>
-      <filename>common-font14.xpr</filename>
-    </font>
-
-    <font>
-      <name>font101</name>
-      <filename>common-font13.xpr</filename>
-    </font>
-
-    <font>
       <name>special12</name>
-      <filename>special-normal-pal.xpr</filename>
+      <filename>special-normal-720p.xpr</filename>
     </font>
 
     <font>
       <name>special13</name>
-      <filename>special-bold-pal.xpr</filename>
-    </font>
-
-    <font>
-      <name>fontBL</name>
-      <filename>common-font13.xpr</filename>
+      <filename>special-bold-720p.xpr</filename>
     </font>
 
   </fontset>
 
   <fontset id="Arial TTF" unicode="true">
+
     <font>
-      <name>font18</name>
+      <name>font101</name>
       <filename>Arial.ttf</filename>
       <size>20</size>
-    </font>
-
-    <font>
-      <name>font13</name>
-      <filename>Arial.ttf</filename>
-      <size>19</size>
-    </font>
-
-    <font>
-      <name>font14</name>
-      <filename>Arial.ttf</filename>
-      <size>19</size>
-    </font>
-
-    <font>
-      <name>matrix8</name>
-      <filename>matrix8.xpr</filename>
-    </font>
-
-    <font>
-      <name>font04</name>
-      <filename>Arial.ttf</filename>
-      <size>19</size>
-    </font>
-
-    <font>
-      <name>font15</name>
-      <filename>Arial.ttf</filename>
-      <size>19</size>
     </font>
 
     <font>
@@ -108,16 +61,14 @@
     </font>
 
     <font>
-      <name>fontKB</name>
+      <name>font13</name>
       <filename>Arial.ttf</filename>
-      <style>bold</style>
-      <size>16</size>
+      <size>19</size>
     </font>
 
     <font>
-      <name>font101</name>
-      <filename>Arial.ttf</filename>
-      <size>20</size>
+      <name>matrix8</name>
+      <filename>matrix8.xpr</filename>
     </font>
 
     <font>
@@ -131,12 +82,6 @@
       <filename>Arial.ttf</filename>
       <size>21</size>
       <style>bold</style>
-    </font>
-
-    <font>
-      <name>fontBL</name>
-      <filename>Arial.ttf</filename>
-      <size>16</size>
     </font>
 
   </fontset>
