@@ -88,7 +88,7 @@
                     <type>image</type>
                     <id>1</id>
                     <posx>-10</posx>
-                    <posy>455</posy>
+                    <posy>435</posy>
                     <width>740</width>
                     <height>100</height>
                     <visible>Player.ShowInfo</visible>
@@ -101,7 +101,7 @@
                       <type>image</type>
                       <id>1</id>
                       <posx>75</posx>
-                      <posy>455</posy>
+                      <posy>435</posy>
                       <width>100</width>
                       <height>100</height>
                       <info>MusicPlayer.Cover</info>
@@ -116,7 +116,7 @@
                         <id>1</id>
                         <width>445</width>
                         <posx>180</posx>
-                        <posy>458</posy>
+                        <posy>438</posy>
                         <info>MusicPlayer.Artist</info>
                         <visible>Player.ShowInfo</visible>
                         <animation effect="fade" time="1000">VisibleChange</animation>
@@ -130,7 +130,7 @@
                           <id>1</id>
                           <width>430</width>
                           <posx>180</posx>
-                          <posy>479</posy>
+                          <posy>459</posy>
                           <info>MusicPlayer.Title</info>
                           <visible>Player.ShowInfo</visible>
                           <animation effect="fade" time="1000">VisibleChange</animation>
@@ -144,7 +144,7 @@
                             <id>1</id>
                             <width>430</width>
                             <posx>180</posx>
-                            <posy>507</posy>
+                            <posy>487</posy>
                             <info>MusicPlayer.Album</info>
                             <visible>Player.ShowInfo</visible>
                             <animation effect="fade" time="1000">VisibleChange</animation>
@@ -158,7 +158,7 @@
                               <id>1</id>
                               <width>430</width>
                               <posx>180</posx>
-                              <posy>528</posy>
+                              <posy>508</posy>
                               <label>$INFO[musicplayer.Time]$INFO[musicplayer.Duration, / ]</label>
                               <visible>Player.ShowInfo</visible>
                               <animation effect="fade" time="1000">VisibleChange</animation>
@@ -172,7 +172,7 @@
                                 <id>1</id>
                                 <width>200</width>
                                 <posx>660</posx>
-                                <posy>528</posy>
+                                <posy>508</posy>
                                 <label>$INFO[musicplayer.Playlistposition,$LOCALIZE[435] ]$INFO[musicplayer.Playlistlength, / ]</label>
                                 <visible>Player.ShowInfo</visible>
                                 <animation effect="fade" time="1000">VisibleChange</animation>
