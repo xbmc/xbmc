@@ -1,0 +1,94 @@
+<window>
+
+ <id>34</id>
+ <defaultcontrol>2</defaultcontrol>
+ <allowoverlay>yes</allowoverlay>
+
+ <controls>
+
+  <control>
+   <description>background image</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>0</posx>
+   <posy>0</posy>
+   <width>720</width>
+   <height>576</height>
+   <texture>background-settings.png</texture>
+   <colorkey>0</colorkey>
+  </control>
+
+  <control>
+   <description>xbox media center label</description>
+   <type>label</type>
+   <id>1</id>
+   <posx>200</posx>
+   <posy>63</posy>
+   <align>right</align>
+   <label>xbox media center</label>
+   <font>special12</font>
+  </control>
+
+  <control>
+   <description>description label</description>
+   <type>label</type>
+   <id>1</id>
+   <posx>207</posx>
+   <posy>63</posy>
+   <align>left</align>
+   <label>10507</label>
+   <font>special13</font>
+  </control>
+
+  <control>
+   <description>contentpanel slice</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>160</posx>
+   <posy>108</posy>
+   <width>64</width>
+   <height>468</height>
+   <texture>contentpanel_left.png</texture>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>contentpanel slice</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>224</posx>
+   <posy>108</posy>
+   <width>500</width>
+   <height>468</height>
+   <texture>contentpanel.png</texture>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Last loaded</description>
+   <type>fadelabel</type>
+   <id>3</id>
+   <posx>300</posx>
+   <posy>526</posy>
+   <width>250</width>
+   <align>right</align>
+   <label>-</label>
+   <font>font10</font>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>listcontrol</description>
+   <type>listcontrol</type>
+   <id>2</id>
+   <onleft>2</onleft>
+   <onright>2</onright>
+   <onup>2</onup>
+   <ondown>2</ondown>
+   <include>contentpanelslide</include>
+  </control>
+
+ </controls>
+
+</window>
+
