@@ -3270,6 +3270,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       g_settings.SetSkinString(strParameterCaseIntact.Left(pos).ToLower(), strParameterCaseIntact.Mid(pos+1));
       g_settings.Save();
+      return 0;
     }
     CStdString settingName;
     settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), parameter);
