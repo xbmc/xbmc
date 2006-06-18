@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-06-2006 fixed: linksys wrtsl54gs folder listings would only list root of shares after samba update (dfs flag set in list request caused server to mad)
  - 18-06-2006 fixed: Username/pass could be shown in the name section after browsing for a new media source via Add/Edit source dialog.
  - 18-06-2006 fixed: Rotate and Zoom animations center coords were not scaled correctly
  - 18-06-2006 fixed: httpapi SendKey no longer requires the web server to be running
