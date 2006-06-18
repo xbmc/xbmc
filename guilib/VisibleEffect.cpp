@@ -137,6 +137,8 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
       const char *comma = strstr(centerPos, ",");
       if (comma)
         centerY = (float)atof(comma + 1);
+      g_graphicsContext.ScaleXCoord(centerX, res);
+      g_graphicsContext.ScaleYCoord(centerY, res);
     }
   }
   else // if (effect == EFFECT_TYPE_ZOOM)
@@ -168,6 +170,8 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
       const char *comma = strstr(centerPos, ",");
       if (comma)
         centerY = (float)atof(comma + 1);
+      g_graphicsContext.ScaleXCoord(centerX, res);
+      g_graphicsContext.ScaleYCoord(centerY, res);
     }
   }
 }
