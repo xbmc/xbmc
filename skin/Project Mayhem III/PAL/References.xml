@@ -245,7 +245,7 @@
     <align>right</align>
     <width>18</width>
     <height>16</height>
-    <font>font14</font>
+    <font>font13</font>
     <reverse>yes</reverse>
     <include>textcolorwhite</include>
     <disabledcolor>60ffffff</disabledcolor>
