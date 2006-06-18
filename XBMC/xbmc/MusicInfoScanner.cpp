@@ -235,6 +235,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     {
       m_currentItem++;
       // is tag for this file already loaded?
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Reading tag for: %s", pItem->m_strPath.c_str());
       bool bNewFile = false;
       CMusicInfoTag& tag = pItem->m_musicInfoTag;
       if (!tag.Loaded() )
@@ -284,6 +285,11 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         song.strThumb = pItem->GetThumbnailImage();
         m_musicDatabase.AddSong(song, false);
         iFilesAdded++;
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Tag loaded for: %s", pItem->m_strPath.c_str());
+      }
+      else if (bNewFile)
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" - No tag found for: %s", pItem->m_strPath.c_str());
       }
     } //if (!pItem->m_bIsFolder)
   }
