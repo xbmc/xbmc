@@ -167,6 +167,7 @@ CApplication::CApplication(void)
   m_dwSpinDownTime = timeGetTime();
   m_pWebServer = NULL;
   m_pFileZilla = NULL;
+  pXbmcHttp = NULL;
   m_pPlayer = NULL;
   XSetProcessQuantumLength(5); //default=20msec
   XSetFileCacheSize (256*1024); //default=64kb
@@ -2528,10 +2529,11 @@ bool CApplication::ProcessMouse()
 
 bool CApplication::ProcessHTTPApiButtons()
 {
-  if (m_pWebServer && pXbmcHttp)
+  //if (m_pWebServer && pXbmcHttp)
+  if (pXbmcHttp)
   {
     // copy key from webserver, and reset it in case we're called again before
-    // via whatever happens in OnKey()
+    // whatever happens in OnKey()
     CKey keyHttp(pXbmcHttp->GetKey());
     pXbmcHttp->ResetKey();
     if (keyHttp.GetButtonCode() != KEY_INVALID)
