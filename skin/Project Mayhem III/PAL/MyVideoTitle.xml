@@ -1,0 +1,252 @@
+<window>
+
+ <id>25</id>
+ <defaultcontrol>50</defaultcontrol>
+ <allowoverlay>yes</allowoverlay>
+
+ <controls>
+
+  <control>
+   <description>background image</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>0</posx>
+   <posy>0</posy>
+   <width>720</width>
+   <height>576</height>
+   <texture>background-videos.png</texture>
+  </control>
+
+  <control>
+   <description>xbox media center label</description>
+   <type>label</type>
+   <id>1</id>
+   <posx>200</posx>
+   <posy>63</posy>
+   <align>right</align>
+   <label>xbox media center</label>
+   <font>special12</font>
+  </control>
+
+  <control>
+   <description>description label</description>
+   <type>label</type>
+   <id>1</id>
+   <posx>207</posx>
+   <posy>63</posy>
+   <align>left</align>
+   <label>10520</label>
+   <font>special13</font>
+  </control>
+
+  <control>
+   <description>contentpanel slice</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>160</posx>
+   <posy>108</posy>
+   <width>64</width>
+   <height>468</height>
+   <texture>contentpanel_left.png</texture>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>contentpanel slice</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>224</posx>
+   <posy>108</posy>
+   <width>500</width>
+   <height>468</height>
+   <texture>contentpanel.png</texture>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>number of files text label</description>
+   <type>label</type>
+   <id>12</id>
+   <posx>545</posx>
+   <posy>526</posy>
+   <align>right</align>
+   <label>-</label>
+   <font>font10</font>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>genre text label</description>
+   <type>label</type>
+   <id>100</id>
+   <align>right</align>
+   <posx>660</posx>
+   <posy>55</posy>
+   <label>3</label>
+   <font>font13</font>
+  </control>
+
+  <controlgroup>
+
+   <control>
+    <description>View As Icons button</description>
+    <type>button</type>
+    <id>2</id>
+    <posx>50</posx>
+    <posy>120</posy>
+    <label>100</label>
+    <onleft>50</onleft>
+    <onright>50</onright>
+    <onup>9</onup>
+    <ondown>3</ondown>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Sort by button</description>
+    <type>button</type>
+    <id>3</id>
+    <posx>50</posx>
+    <posy>157</posy>
+    <label>103</label>
+    <onleft>50</onleft>
+    <onright>4</onright>
+    <onup>2</onup>
+    <ondown>5</ondown>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Sort asc</description>
+    <type>togglebutton</type>
+    <id>4</id>
+    <label>-</label>
+    <onleft>3</onleft>
+    <onright>50</onright>
+    <onup>2</onup>
+    <ondown>2</ondown>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Movies</description>
+    <type>selectbutton</type>
+    <id>5</id>
+    <posx>50</posx>
+    <posy>194</posy>
+    <label>457</label>
+    <onleft>50</onleft>
+    <onright>50</onright>
+    <onup>3</onup>
+    <ondown>10</ondown>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Show Button</description>
+    <type>button</type>
+    <id>10</id>
+    <posx>50</posx>
+    <posy>231</posy>
+    <label>-</label>
+    <onleft>50</onleft>
+    <onright>50</onright>
+    <onup>5</onup>
+    <ondown>9</ondown>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>IMDB</description>
+    <type>button</type>
+    <id>9</id>
+    <posx>50</posx>
+    <posy>268</posy>
+    <label>368</label>
+    <onleft>50</onleft>
+    <onright>50</onright>
+    <onup>10</onup>
+    <ondown>2</ondown>
+    <include>buttonpanelslide</include>
+   </control>
+
+  </controlgroup>
+
+  <control>
+   <description>listcontrol</description>
+   <type>listcontrol</type>
+   <id>50</id>
+   <onleft>2</onleft>
+   <onright>50</onright>
+   <onup>2</onup>
+   <ondown>2</ondown>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>pics thumbnailpanel</description>
+   <type>thumbnailpanel</type>
+   <id>51</id>
+   <onleft>2</onleft>
+   <onright>51</onright>
+   <onup>51</onup>
+   <ondown>51</ondown>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>big listcontrol</description>
+   <type>listcontrol</type>
+   <id>52</id>
+   <posy>121</posy>
+   <height>430</height>
+   <spinwidth>16</spinwidth>
+   <spinheight>16</spinheight>
+   <spincolor>ffffffff</spincolor>
+   <spinfont>font10</spinfont>
+   <spinposx>419</spinposx>
+   <spinposy>406</spinposy>
+   <textureup>scroll-up.png</textureup>
+   <texturedown>scroll-down.png</texturedown>
+   <textureupfocus>scroll-up-focus.gif</textureupfocus>
+   <texturedownfocus>scroll-down-focus.gif</texturedownfocus>
+   <texturefocus>blue-rectangle.png</texturefocus>
+   <texturenofocus>blue-rectangleNF.png</texturenofocus>
+   <font>special13</font>
+   <font2>font13</font2>
+   <include>listselectedcolor</include>
+   <include>textcolorlightgrey</include>
+   <selectedcolor2>FFFFffff</selectedcolor2>
+   <textcolor2>d0ffffff</textcolor2>
+   <suffix>|</suffix>
+   <textxoff>10</textxoff>
+   <textyoff>10</textyoff>
+   <textxoff2>435</textxoff2>
+   <textyoff2>94</textyoff2>
+   <aligny>top</aligny>
+   <itemwidth>70</itemwidth>
+   <itemheight>110</itemheight>
+   <spacebetweenitems>10</spacebetweenitems>
+   <textureheight>120</textureheight>
+   <onleft>2</onleft>
+   <onright>52</onright>
+   <onup>2</onup>
+   <ondown>2</ondown>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>bg preview</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>0</posx>
+   <posy>0</posy>
+   <width>720</width>
+   <height>576</height>
+   <include>windowswitchtransition</include>
+  </control>
+
+ </controls>
+
+</window>
+

@@ -1,0 +1,394 @@
+<window>
+
+ <id>7</id>
+ <defaultcontrol>95</defaultcontrol>
+ <allowoverlay>yes</allowoverlay>
+
+ <controls>
+
+  <control>
+   <description>background image</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>0</posx>
+   <posy>0</posy>
+   <width>720</width>
+   <height>576</height>
+   <texture>background-settings.png</texture>
+   <colorkey>0</colorkey>
+  </control>
+
+  <control>
+   <description>xbox media center label</description>
+   <type>label</type>
+   <id>1</id>
+   <posx>200</posx>
+   <posy>63</posy>
+   <align>right</align>
+   <label>xbox media center</label>
+   <font>special12</font>
+   <include>textcolorwhite</include>
+  </control>
+
+  <control>
+   <description>description label</description>
+   <type>label</type>
+   <id>1</id>
+   <posx>207</posx>
+   <posy>63</posy>
+   <align>left</align>
+   <label>130</label>
+   <font>special13</font>
+   <include>textcolorwhite</include>
+  </control>
+
+  <control>
+   <description>contentpanel slice</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>160</posx>
+   <posy>108</posy>
+   <width>64</width>
+   <height>468</height>
+   <texture>contentpanel_left.png</texture>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>contentpanel slice</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>224</posx>
+   <posy>108</posy>
+   <width>500</width>
+   <height>468</height>
+   <texture>contentpanel.png</texture>
+   <include>contentpanelslide</include>
+  </control>
+
+  <controlgroup>
+
+   <control>
+    <description>Section Label</description>
+    <type>label</type>
+    <id>40</id>
+    <posx>220</posx>
+    <posy>120</posy>
+    <font>font13</font>
+    <label>139</label>
+    <include>contentpanelslide</include>
+   </control>
+
+   <control>
+    <description>Button Default Values</description>
+    <type>button</type>
+    <id>95</id>
+    <posx>50</posx>
+    <posy>120</posy>
+    <label>13278</label>
+    <font>font13</font>
+    <onleft>95</onleft>
+    <onright>95</onright>
+    <onup>98</onup>
+    <ondown>94</ondown>
+    <align>Left</align>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Button Storage</description>
+    <type>button</type>
+    <id>94</id>
+    <posx>50</posx>
+    <posy>157</posy>
+    <label>13277</label>
+    <font>font13</font>
+    <onleft>94</onleft>
+    <onright>94</onright>
+    <onup>95</onup>
+    <ondown>92</ondown>
+    <align>Left</align>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Button HDD</description>
+    <type>button</type>
+    <id>92</id>
+    <posx>50</posx>
+    <posy>194</posy>
+    <label>13275</label>
+    <font>font13</font>
+    <onleft>92</onleft>
+    <onright>92</onright>
+    <onup>94</onup>
+    <ondown>93</ondown>
+    <align>Left</align>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Button DVD</description>
+    <type>button</type>
+    <id>93</id>
+    <posx>50</posx>
+    <posy>231</posy>
+    <label>13276</label>
+    <font>font13</font>
+    <onleft>93</onleft>
+    <onright>93</onright>
+    <onup>92</onup>
+    <ondown>96</ondown>
+    <align>Left</align>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Button Network</description>
+    <type>button</type>
+    <id>96</id>
+    <posx>50</posx>
+    <posy>268</posy>
+    <label>13279</label>
+    <font>font13</font>
+    <onleft>96</onleft>
+    <onright>96</onright>
+    <onup>93</onup>
+    <ondown>97</ondown>
+    <align>Left</align>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Button VIDEO</description>
+    <type>button</type>
+    <id>97</id>
+    <posx>50</posx>
+    <posy>305</posy>
+    <label>13280</label>
+    <font>font13</font>
+    <onleft>97</onleft>
+    <onright>97</onright>
+    <onup>96</onup>
+    <ondown>98</ondown>
+    <align>Left</align>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Button XBOX Hardware</description>
+    <type>button</type>
+    <id>98</id>
+    <posx>50</posx>
+    <posy>342</posy>
+    <label>13281</label>
+    <font>font13</font>
+    <onleft>98</onleft>
+    <onright>98</onright>
+    <onup>97</onup>
+    <ondown>95</ondown>
+    <align>Left</align>
+    <include>buttonpanelslide</include>
+   </control>
+
+  </controlgroup>
+
+  <control>
+   <description>Label 2</description>
+   <type>label</type>
+   <id>2</id>
+   <posx>220</posx>
+   <posy>150</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Label 3</description>
+   <type>label</type>
+   <id>3</id>
+   <posx>220</posx>
+   <posy>180</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Label 4</description>
+   <type>label</type>
+   <id>4</id>
+   <posx>220</posx>
+   <posy>210</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Label 5</description>
+   <type>label</type>
+   <id>5</id>
+   <posx>220</posx>
+   <posy>240</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Label 6</description>
+   <type>label</type>
+   <id>6</id>
+   <posx>220</posx>
+   <posy>270</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Label 7</description>
+   <type>label</type>
+   <id>7</id>
+   <posx>220</posx>
+   <posy>300</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Label 8</description>
+   <type>label</type>
+   <id>8</id>
+   <posx>220</posx>
+   <posy>330</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Label 9</description>
+   <type>label</type>
+   <id>9</id>
+   <posx>220</posx>
+   <posy>360</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Label 10</description>
+   <type>label</type>
+   <id>10</id>
+   <posx>220</posx>
+   <posy>390</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Label 11</description>
+   <type>label</type>
+   <id>11</id>
+   <posx>220</posx>
+   <posy>405</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <!-- control>
+   <description>Label 12</description>
+   <type>label</type>
+   <id>12</id>
+   <posx>220</posx>
+   <posy>425</posy>
+   <label>13282</label>
+   <font>font13</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control -->
+
+  <!-- Add fav values here! -->
+  
+  <!-- control>
+   <description>TEST Label</description>
+   <type>label</type>
+   <id>1</id>
+   <posx>220</posx>
+   <posy>426</posy>
+   <label>-</label>
+   <info>Network.IPAddress</info>
+   <align>left</align>
+   <font>font12</font>
+   <include>contentpanelslide</include>
+  </control -->
+
+  <control>
+   <description>Current Time</description>
+   <type>label</type>
+   <id>50</id>
+   <posx>220</posx>
+   <posy>443</posy>
+   <label>143</label>
+   <font>font12</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <!-- control>
+   <description>XBMC Version</description>
+   <type>label</type>
+   <id>51</id>
+   <posx>220</posx>
+   <posy>422</posy>
+   <label>144</label>
+   <font>font12</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control -->
+
+  <control>
+   <description>XBMC XBE BUILD Version</description>
+   <type>label</type>
+   <id>52</id>
+   <posx>220</posx>
+   <posy>465</posy>
+   <label>144</label>
+   <font>font12</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>Mplayer DLL Version</description>
+   <type>label</type>
+   <id>53</id>
+   <posx>220</posx>
+   <posy>485</posy>
+   <label>144</label>
+   <font>font12</font>
+   <include>textcolorgrey</include>
+   <include>contentpanelslide</include>
+  </control>
+
+ </controls>
+
+</window>
+
