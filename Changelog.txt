@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-06-2006 fixed: Username/pass could be shown in the name section after browsing for a new media source via Add/Edit source dialog.
+ - 18-06-2006 fixed: Rotate and Zoom animations center coords were not scaled correctly
  - 18-06-2006 fixed: httpapi SendKey no longer requires the web server to be running
  - 17-06-2006 added: Master lock check on settings subcategories (does not affect settings window).
  - 17-06-2006 changed: Re-enabled settings item on context menus.
