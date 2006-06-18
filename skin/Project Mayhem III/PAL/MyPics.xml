@@ -83,7 +83,7 @@
         <font>font13</font>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>9</onup>
+        <onup>32</onup>
         <ondown>3</ondown>
         <include>buttonpanelslide</include>
       </control>
@@ -156,7 +156,39 @@
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>7</onup>
+        <ondown>31</ondown>
+        <include>buttonpanelslide</include>
+      </control>
+
+      <control>
+        <description>Bookmark button 1</description>
+        <type>button</type>
+        <id>31</id>
+        <posx>50</posx>
+        <posy>305</posy>
+        <label>Local</label>
+        <onclick>XBMC.ActivateWindow(MyPictures,Local)</onclick>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>9</onup>
+        <ondown>32</ondown>
+        <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+        <include>buttonpanelslide</include>
+      </control>
+
+      <control>
+        <description>Bookmark button 2</description>
+        <type>button</type>
+        <id>32</id>
+        <posx>50</posx>
+        <posy>342</posy>
+        <label>Network</label>
+        <onclick>XBMC.ActivateWindow(MyPictures,Network)</onclick>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>31</onup>
         <ondown>2</ondown>
+        <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
         <include>buttonpanelslide</include>
       </control>
 

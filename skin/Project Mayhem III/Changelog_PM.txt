@@ -1,3 +1,4 @@
+2006-06-18 added:	missing bookkmark buttons in My Pictures
 2006-06-18 changed:	moved the media infos up 20px during slideshow and fullscreen viz
 2006-06-18 fixed:	the custom fonts arrived (thanks font guru ;) 720p and 1080i fully supported now
 
