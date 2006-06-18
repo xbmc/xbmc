@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-06-2006 fixed: httpapi SendKey no longer requires the web server to be running
  - 17-06-2006 added: Master lock check on settings subcategories (does not affect settings window).
  - 17-06-2006 changed: Re-enabled settings item on context menus.
  - 17-06-2006 changed: Return to current window on bad passcode entry.
