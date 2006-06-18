@@ -1,3 +1,4 @@
+2006-06-18 changed:	moved the media infos up 20px during slideshow and fullscreen viz
 2006-06-18 fixed:	the custom fonts arrived (thanks font guru ;) 720p and 1080i fully supported now
 
 2006-06-17 fixed:	HDTV font sizes (not yet finished - waiting for a custom made font)
