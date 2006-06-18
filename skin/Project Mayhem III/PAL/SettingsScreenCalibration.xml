@@ -83,7 +83,7 @@
       <posx>55</posx>
       <posy>260</posy>
       <label>-</label>
-      <font>font14</font>
+      <font>font13</font>
     </control>
 
     <control>
@@ -93,7 +93,7 @@
       <posx>55</posx>
       <posy>280</posy>
       <label>-</label>
-      <font>font14</font>
+      <font>font13</font>
     </control>
 
   </controls>
