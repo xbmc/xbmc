@@ -184,7 +184,8 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     m_paths[item]->m_strPath = path;
     if (m_name.IsEmpty())
     {
-      m_name = path;
+      CURL url(path);
+      url.GetURLWithoutUserDetails(m_name);
       CUtil::RemoveSlashAtEnd(m_name);
       m_name = CUtil::GetTitleFromPath(m_name);
     }
