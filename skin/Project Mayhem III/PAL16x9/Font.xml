@@ -1,23 +1,9 @@
 <fonts>
   <fontset id="Default" unicode="false">
-    <font>
-      <name>font13</name>
-      <filename>common-font13.xpr</filename>
-    </font>
 
     <font>
-      <name>font14</name>
-      <filename>common-font14.xpr</filename>
-    </font>
-
-    <font>
-      <name>matrix8</name>
-      <filename>matrix8.xpr</filename>
-    </font>
-
-    <font>
-      <name>font04</name>
-      <filename>common-font14.xpr</filename>
+      <name>font101</name>
+      <filename>common-font10.xpr</filename>
     </font>
 
     <font>
@@ -31,13 +17,13 @@
     </font>
 
     <font>
-      <name>fontKB</name>
+      <name>font13</name>
       <filename>common-font13.xpr</filename>
     </font>
 
     <font>
-      <name>font101</name>
-      <filename>common-font10.xpr</filename>
+      <name>matrix8</name>
+      <filename>matrix8.xpr</filename>
     </font>
 
     <font>
@@ -50,37 +36,14 @@
       <filename>special-bold-pal.xpr</filename>
     </font>
 
-    <font>
-      <name>fontBL</name>
-      <filename>common-font12.xpr</filename>
-    </font>
-
   </fontset>
 
   <fontset id="Arial TTF" unicode="true">
-    <font>
-      <name>font13</name>
-      <filename>Arial.ttf</filename>
-      <size>15</size>
-      <style>bold</style>
-    </font>
 
     <font>
-      <name>font14</name>
+      <name>font101</name>
       <filename>Arial.ttf</filename>
-      <size>17</size>
-      <style>bold</style>
-    </font>
-
-    <font>
-      <name>matrix8</name>
-      <filename>matrix8.xpr</filename>
-    </font>
-
-    <font>
-      <name>font04</name>
-      <filename>Arial.ttf</filename>
-      <size>17</size>
+      <size>14</size>
       <style>bold</style>
     </font>
 
@@ -99,15 +62,15 @@
     </font>
 
     <font>
-      <name>fontKB</name>
-      <filename>common-font13.xpr</filename>
+      <name>font13</name>
+      <filename>Arial.ttf</filename>
+      <size>15</size>
+      <style>bold</style>
     </font>
 
     <font>
-      <name>font101</name>
-      <filename>Arial.ttf</filename>
-      <size>14</size>
-      <style>bold</style>
+      <name>matrix8</name>
+      <filename>matrix8.xpr</filename>
     </font>
 
     <font>
@@ -120,13 +83,6 @@
       <name>special13</name>
       <filename>Arial.ttf</filename>
       <size>16</size>
-      <style>bold</style>
-    </font>
-
-    <font>
-      <name>fontBL</name>
-      <filename>Arial.ttf</filename>
-      <size>14</size>
       <style>bold</style>
     </font>
 

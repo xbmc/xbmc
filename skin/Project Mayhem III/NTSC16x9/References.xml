@@ -69,7 +69,7 @@
     <texturenofocus>button-powerdownNF.png</texturenofocus>
     <label>-</label>
     <bitmaps>2</bitmaps>
-    <font>font14</font>
+    <font>font13</font>
     <include>textcolorwhite</include>
     <include>controldefaults</include>
     <disabledcolor>60FFFFFF</disabledcolor>
