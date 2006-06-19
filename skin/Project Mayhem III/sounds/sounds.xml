@@ -65,10 +65,6 @@
       <name>screenshot</name>
       <file>shutter.wav</file>
     </action>
-    <action>
-      <name>startup</name>
-      <file>start.wav</file>
-    </action>
   </actions>
 
   <windows>
@@ -76,6 +72,10 @@
       <name>infodialog</name>
       <activate>notify.wav</activate>
       <deactivate>out.wav</deactivate>
+    </window>
+    <window>
+      <name>startup</name>
+      <activate>start.wav</activate>
     </window>
   </windows>
 </sounds>
