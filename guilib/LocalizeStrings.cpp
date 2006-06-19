@@ -77,7 +77,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
         if (strEncoding.IsEmpty()) // Is language file utf8?
           utf8String=pChild->FirstChild()->Value();
         else
-          g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
+          g_charsetConverter.stringCharsetToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8String);
 
         m_vecStrings[dwID] = utf8String;
       }
