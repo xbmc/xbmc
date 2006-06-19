@@ -1,0 +1,351 @@
+<window>
+
+ <id>55</id>
+ <defaultcontrol>1109</defaultcontrol>
+ <type>buttonMenu</type>
+
+ <controls>
+
+  <control>
+   <type>image</type>
+   <id>0</id>
+   <posx>510</posx>
+   <posy>85</posy>
+   <width>160</width>
+   <height>440</height>
+   <texture>subpanel.png</texture>
+  </control>
+
+  <control>
+   <description>SubMenu button</description>
+   <visible>no</visible>
+   <type>button</type>
+   <onclick>q:\scripts\-.py</onclick>
+   <id>1123</id>
+   <label>-</label>
+   <posx>530</posx>
+   <posy>180</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1123</onleft>
+   <onright>1123</onright>
+   <onup>1109</onup>
+   <ondown>1122</ondown>
+   <align>center</align>
+   <textoffsety>-1</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>SubMenu button</description>
+   <visible>no</visible>
+   <type>button</type>
+   <onclick>q:\scripts\-.py</onclick>
+   <id>1122</id>
+   <label>-</label>
+   <posx>530</posx>
+   <posy>200</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1122</onleft>
+   <onright>1122</onright>
+   <onup>1123</onup>
+   <ondown>1121</ondown>
+   <align>center</align>
+   <textoffsety>-1</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>SubMenu button</description>
+   <visible>no</visible>
+   <type>button</type>
+   <onclick>q:\scripts\-.py</onclick>
+   <id>1121</id>
+   <label>-</label>
+   <posx>530</posx>
+   <posy>220</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1121</onleft>
+   <onright>1121</onright>
+   <onup>1122</onup>
+   <ondown>1120</ondown>
+   <align>center</align>
+   <textoffsety>-1</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>SubMenu button</description>
+   <visible>no</visible>
+   <type>button</type>
+   <onclick>q:\scripts\-.py</onclick>
+   <id>1120</id>
+   <label>-</label>
+   <posx>530</posx>
+   <posy>240</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1120</onleft>
+   <onright>1120</onright>
+   <onup>1121</onup>
+   <ondown>1119</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>SubMenu button</description>
+   <visible>no</visible>
+   <type>button</type>
+   <onclick>q:\scripts\-.py</onclick>
+   <id>1119</id>
+   <label>-</label>
+   <posx>530</posx>
+   <posy>260</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1119</onleft>
+   <onright>1119</onright>
+   <onup>1120</onup>
+   <ondown>1118</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>SubMenu button</description>
+   <visible>no</visible>
+   <type>button</type>
+   <onclick>q:\scripts\-.py</onclick>
+   <id>1118</id>
+   <label>-</label>
+   <posx>530</posx>
+   <posy>280</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1118</onleft>
+   <onright>1118</onright>
+   <onup>1119</onup>
+   <ondown>1117</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>SubMenu button</description>
+   <visible>no</visible>
+   <type>button</type>
+   <onclick>q:\scripts\-.py</onclick>
+   <id>1117</id>
+   <label>-</label>
+   <posx>530</posx>
+   <posy>300</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1117</onleft>
+   <onright>1117</onright>
+   <onup>1118</onup>
+   <ondown>1116</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>SubMenu button</description>
+   <visible>yes</visible>
+   <type>button</type>
+   <onclick>XBMC.ActivateWindow(17)</onclick>
+   <id>1116</id>
+   <label>3</label>
+   <posx>530</posx>
+   <posy>320</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1116</onleft>
+   <onright>1116</onright>
+   <onup>1117</onup>
+   <ondown>1115</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>SubMenu button</description>
+   <visible>yes</visible>
+   <type>button</type>
+   <onclick>XBMC.ActivateWindow(15)</onclick>
+   <id>1115</id>
+   <label>2</label>
+   <posx>530</posx>
+   <posy>340</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1115</onleft>
+   <onright>1115</onright>
+   <onup>1116</onup>
+   <ondown>1114</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>SubMenu button</description>
+   <visible>yes</visible>
+   <type>button</type>
+   <onclick>XBMC.ActivateWindow(12)</onclick>
+   <id>1114</id>
+   <label>1</label>
+   <posx>530</posx>
+   <posy>360</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1114</onleft>
+   <onright>1114</onright>
+   <onup>1115</onup>
+   <ondown>1113</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>Profiles button</description>
+   <visible>yes</visible>
+   <type>button</type>
+   <onclick>XBMC.ActivateWindow(13)</onclick>
+   <id>1113</id>
+   <label>0</label>
+   <posx>530</posx>
+   <posy>380</posy>
+   <width>110</width>
+   <height>20</height>
+   <label>13200</label>
+   <font>font101</font>
+   <onleft>1113</onleft>
+   <onright>1113</onright>
+   <onup>1114</onup>
+   <ondown>1112</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>scripts button</description>
+   <visible>yes</visible>
+   <type>button</type>
+   <onclick>XBMC.ActivateWindow(14)</onclick>
+   <id>1112</id>
+   <label>8</label>
+   <posx>530</posx>
+   <posy>400</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1112</onleft>
+   <onright>1112</onright>
+   <onup>1113</onup>
+   <ondown>1111</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>Scripts button</description>
+   <visible>yes</visible>
+   <type>button</type>
+   <onclick>XBMC.ActivateWindow(18)</onclick>
+   <id>1111</id>
+   <label>705</label>
+   <posx>530</posx>
+   <posy>420</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1111</onleft>
+   <onright>1111</onright>
+   <onup>1112</onup>
+   <ondown>1110</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>Shutdown button</description>
+   <visible>yes</visible>
+   <type>button</type>
+   <onclick>XBMC.ActivateWindow(16)</onclick>
+   <id>1110</id>
+   <label>13000</label>
+   <posx>530</posx>
+   <posy>440</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1112</onleft>
+   <onright>1112</onright>
+   <onup>1111</onup>
+   <ondown>1109</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>Credits button</description>
+   <visible>yes</visible>
+   <type>button</type>
+   <onclick>XBMC.ActivateWindow(19)</onclick>
+   <id>1109</id>
+   <label>480</label>
+   <posx>530</posx>
+   <posy>460</posy>
+   <width>110</width>
+   <height>20</height>
+   <font>font101</font>
+   <onleft>1109</onleft>
+   <onright>1109</onright>
+   <onup>1110</onup>
+   <ondown>1123</ondown>
+   <align>center</align>
+   <textoffsety>0</textoffsety>
+   <texturenofocus>-</texturenofocus>
+  </control>
+
+  <control>
+   <description>Label control</description>
+   <type>label</type>
+   <id>3100</id>
+   <posx>519</posx>
+   <posy>143</posy>
+   <width>322</width>
+   <height>20</height>
+   <align>center</align>
+   <font>font10</font>
+   <visible>no</visible>
+  </control>
+
+ </controls>
+
+</window>
+
