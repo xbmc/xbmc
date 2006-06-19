@@ -177,6 +177,8 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20055] = "Allmusic.com Thumb";
   m_vecStrings[20056] = "Source Thumbnail";
   m_vecStrings[20057] = "Remove Thumbnail";
+  m_vecStrings[20058] = "Enter the new value";
+  m_vecStrings[20059] = "Query Info For All Albums";
 
   // new strings for weather localization
   m_vecStrings[1411] = "with";

@@ -3285,7 +3285,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
 	if (execute.Equals("skin.setnumeric"))
     {
-      if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(1033)))
+      if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(20058)))
         g_settings.SetSkinString(parameter, value);
     }
     else if (execute.Equals("skin.setimage"))
