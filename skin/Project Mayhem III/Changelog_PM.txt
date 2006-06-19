@@ -1,3 +1,4 @@
+2006-06-20 changed:	custom*.xml naming
 2006-06-20 changed:	shutdown menu wont animate any more if skin animations are OFF (makes sense for 1080i)
 
 2006-06-18 added:	missing bookkmark buttons in My Pictures
