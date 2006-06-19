@@ -65,6 +65,10 @@
       <name>screenshot</name>
       <file>shutter.wav</file>
     </action>
+    <action>
+      <name>startup</name>
+      <file>start.wav</file>
+    </action>
   </actions>
 
   <windows>
