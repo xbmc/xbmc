@@ -126,6 +126,12 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
     }
     break;
 
+   case GUI_MSG_REFRESH_THUMBS:
+     {
+       Update(m_vecItems.m_strPath);
+     }
+     break;
+
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -205,7 +211,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIWindowMusicInfo
 /// \param iItem Item in list/thumb control
-void CGUIWindowMusicBase::OnInfo(int iItem)
+void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem;
@@ -213,7 +219,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
 
   // show dialog box indicating we're searching the album name
-  if (m_dlgProgress)
+  if (m_dlgProgress && bShowInfo)
   {
     m_dlgProgress->SetHeading(185);
     m_dlgProgress->SetLine(0, 501);
@@ -221,6 +227,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     m_dlgProgress->SetLine(2, "");
     m_dlgProgress->StartModal();
     m_dlgProgress->Progress();
+    if (m_dlgProgress->IsCanceled()) return ;
   }
 
   CStdString strPath;
@@ -331,6 +338,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     {
       // More then one album is found in this directory
       // let the user choose
+      if (!bShowInfo) return;
       CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
       if (pDlg)
       {
@@ -353,7 +361,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
         int iSelectedAlbum = pDlg->GetSelectedLabel();
         if (iSelectedAlbum < 0)
         {
-          if (m_dlgProgress) m_dlgProgress->Close();
+          if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
           return ;
         }
 
@@ -392,7 +400,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     // use the item label, we may find something?
     if (setAlbums.size() == 0)
     {
-      if (m_dlgProgress) m_dlgProgress->Close();
+      if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
       strAlbumName = pItem->GetLabel();
       bSaveDirThumb = true;
     }
@@ -409,6 +417,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     // many albums, let the user choose
     else if (setAlbums.size() > 1)
     {
+      if (!bShowInfo) return;
       // convert set into vector for display
       VECALBUMS albums;
       set<CAlbum>::iterator it;
@@ -438,7 +447,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
         int iSelectedAlbum = pDlg->GetSelectedLabel();
         if (iSelectedAlbum < 0)
         {
-          if (m_dlgProgress) m_dlgProgress->Close();
+          if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
           return ;
         }
         strAlbumName = albums[iSelectedAlbum].strAlbum;
@@ -469,9 +478,9 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     }
   }
 
-  if (m_dlgProgress) m_dlgProgress->Close();
-
-  ShowAlbumInfo(strAlbumName, strArtistName, strPath, bSaveDb, bSaveDirThumb, false);
+  if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
+  
+  ShowAlbumInfo(strAlbumName, strArtistName, strPath, bSaveDb, bSaveDirThumb, false, bShowInfo);
 }
 
 void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh)
@@ -487,11 +496,10 @@ void CGUIWindowMusicBase::OnManualAlbumInfo()
 
   CStdString strNewArtist = "";
   if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return;
-
   ShowAlbumInfo(strNewAlbum,strNewArtist,"",false,false,true);
 }
 
-void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh)
+void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh, bool bShowInfo)
 {
   bool bUpdate = false;
   // check cache
@@ -499,6 +507,9 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
   VECSONGS songs;
   if (!bRefresh && m_musicdatabase.GetAlbumInfo(strAlbum, strPath, albuminfo, songs))
   {
+    if (!bShowInfo)
+      return;
+
     vector<CMusicSong> vecSongs;
     for (int i = 0; i < (int)songs.size(); i++)
     {
@@ -515,20 +526,28 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
     CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
     if (pDlgAlbumInfo)
     {
-      pDlgAlbumInfo->SetAlbum(album);
-      pDlgAlbumInfo->DoModal();
-
-      if (!pDlgAlbumInfo->NeedRefresh())
-      {
-        if (pDlgAlbumInfo->HasUpdatedThumb())
+        if (bShowInfo)
         {
-          UpdateThumb(album, bSaveDb, bSaveDirThumb);
-          Update(m_vecItems.m_strPath);
+          pDlgAlbumInfo->SetAlbum(album);
+          pDlgAlbumInfo->DoModal();
         }
-        return;
+        else if (!bShowInfo)
+        {
+          pDlgAlbumInfo->SetAlbum(album);
+          pDlgAlbumInfo->RefreshThumb();
+        }
+
+        if (!pDlgAlbumInfo->NeedRefresh())
+        {
+          if (pDlgAlbumInfo->HasUpdatedThumb())
+          {
+            UpdateThumb(album, bSaveDb, bSaveDirThumb);
+            Update(m_vecItems.m_strPath);
+          }
+          return;
+        }        
+        bRefresh = true;
       }
-      bRefresh = true;
-    }
   }
 
   // If we are scanning for music info in the background,
@@ -542,7 +561,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   // find album info
   CMusicAlbumInfo album;
-  if (FindAlbumInfo(strAlbum, strArtist, album))
+  if (FindAlbumInfo(strAlbum, strArtist, album, bShowInfo))
   {
     // download the album info
     bool bLoaded = album.Loaded();
@@ -585,15 +604,23 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
         else
           m_musicdatabase.AddAlbumInfo(albuminfo, songs);
       }
-      if (m_dlgProgress)
+      if (m_dlgProgress && bShowInfo)
         m_dlgProgress->Close();
 
       // ok, show album info
-      CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
+     CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
       if (pDlgAlbumInfo)
       {
-        pDlgAlbumInfo->SetAlbum(album);
-        pDlgAlbumInfo->DoModal();
+        if (bShowInfo)
+        {
+          pDlgAlbumInfo->SetAlbum(album);
+          pDlgAlbumInfo->DoModal();
+        }
+        else if (!bShowInfo)
+        {
+          pDlgAlbumInfo->SetAlbum(album);
+          pDlgAlbumInfo->RefreshThumb();
+        }
 
         if (pDlgAlbumInfo->HasUpdatedThumb())
           UpdateThumb(album, bSaveDb, bSaveDirThumb);
@@ -638,7 +665,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
       {
         // Refresh all items
         Update(m_vecItems.m_strPath);
-        if (m_dlgProgress)
+        if (m_dlgProgress && bShowInfo)
           m_dlgProgress->Close();
         return;
       }
@@ -649,7 +676,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
     }
   }
 
-  if (m_dlgProgress)
+  if (m_dlgProgress && bShowInfo)
     m_dlgProgress->Close();
 
 }
@@ -933,13 +960,13 @@ void CGUIWindowMusicBase::OnSearchItemFound(const CFileItem* pSelItem)
   m_viewControl.SetFocused();
 }
 
-bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album)
+bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, bool bShowInfo)
 {
   // quietly return if Internet lookups are disabled
   if (!g_guiSettings.GetBool("network.enableinternet")) return false;
 
   // show dialog box indicating we're searching the album
-  if (m_dlgProgress)
+  if (m_dlgProgress && bShowInfo)
   {
     m_dlgProgress->SetHeading(185);
     m_dlgProgress->SetLine(0, strAlbum);
@@ -950,12 +977,13 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   try
   {
+    Sleep(250);
     CMusicInfoScraper scraper;
     scraper.FindAlbuminfo(strAlbum, strArtist);
 
     while (!scraper.Completed())
     {
-      if (m_dlgProgress)
+      if (m_dlgProgress && bShowInfo)
       {
         if (m_dlgProgress->IsCanceled())
           scraper.Cancel();
@@ -984,22 +1012,27 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
             pDlg->EnableButton(true);
             pDlg->SetButtonLabel(413); // manual
 
-            int iBest = -1;
-            for (int i = 0; i < iAlbumCount; ++i)
-            {
-              CMusicAlbumInfo& info = scraper.GetAlbum(i);
-              double fRelevance = CUtil::AlbumRelevance(info.GetTitle(), strAlbum, info.GetArtist(), strArtist);
-
-              // are there any items with 100% relevance?
-              if (fRelevance == 1.0f && iBest > -2)
+              int iBest = -1;
+              double fBest=0.f;
+              for (int i = 0; i < iAlbumCount; ++i)
               {
-                // there was no best item so make this best item
-                if (iBest == -1)
-                  iBest = i;
-                // there was another item with 100% relevance so the user has to choose
-                else
-                  iBest = -2;
-              }
+                CMusicAlbumInfo& info = scraper.GetAlbum(i);
+                double fRelevance = CUtil::AlbumRelevance(info.GetTitle(), strAlbum, info.GetArtist(), strArtist);
+
+                // are there any items with 100% relevance? or between 85% & 100% with query all?
+                if (fRelevance >= (!bShowInfo?0.85f:1.0f) && iBest > -2)
+                //if (fRelevance == 1.0f && iBest > -2)
+                {
+                  // there was no best item so make this best item
+                  if (iBest == -1 || (!bShowInfo && fBest <= fRelevance))
+                  {
+                    fBest = fRelevance;
+                    iBest = i;
+                  }
+                  // there was another item with 100% relevance so the user has to choose
+                  else
+                    iBest = -2;
+                }
 
               // set the label to [relevance]  album - artist
               CStdString strTemp;
@@ -1019,6 +1052,8 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
             else
             {
               // sort by relevance
+              if (!bShowInfo)
+                return false;
               pDlg->Sort(false);
               pDlg->DoModal();
             }
@@ -1078,7 +1113,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
       }
     }
     
-    if (!scraper.IsCanceled())
+    if (!scraper.IsCanceled() && bShowInfo)
     { // unable 2 connect to www.allmusic.com
       CGUIDialogOK::ShowAndGetInput(185, 0, 499, 0);
     }
@@ -1120,7 +1155,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   int btn_Queue          = 0; // Queue Item  
   int btn_PlayWith      = 0; // Play using alternate player
   int btn_Info              = 0; // Music Information
-  int btn_NowPlaying  = 0;  // Now Playing...
+  int btn_InfoAll          = 0; // Query Information for all albums
+  int btn_NowPlaying  = 0; // Now Playing...
   
   VECPLAYERCORES vecCores;
   CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
@@ -1142,6 +1178,9 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 
     if (!m_vecItems[iItem]->IsPlayList())
       btn_Info = pMenu->AddButton(13351);
+
+    if (!m_vecItems[iItem]->IsPlayList())
+      btn_InfoAll = pMenu->AddButton(20059);
   }
   
   // if party mode is enabled, put Now Playing at the top of the context menu
@@ -1216,6 +1255,28 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     if (btnid == btn_Info) 
     {
       OnInfo(iItem);
+    }
+    else if (btnid == btn_InfoAll) 
+    {
+      if (m_dlgProgress)
+      {
+        m_dlgProgress->SetHeading("Fetching album info");
+        m_dlgProgress->StartModal();
+      }
+      for (int i = 0; i < (int)m_vecItems.Size(); ++i) 
+      {
+        CStdString strLine;
+        strLine.Format("Fetching info for album %i / %i",i+1,m_vecItems.Size());
+        m_dlgProgress->SetLine(0,strLine);
+        m_dlgProgress->SetLine(1,m_vecItems[i]->GetLabel());
+        m_dlgProgress->Progress();
+        OnInfo(i,false);
+        CGUIMessage msg(GUI_MSG_REFRESH_THUMBS,0,0);
+        g_graphicsContext.SendMessage(msg);
+        if (m_dlgProgress->IsCanceled())
+          break;
+      }
+      m_dlgProgress->Close();
     }
     // Play Item
     else if (btnid == btn_PlayWith)
