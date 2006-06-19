@@ -379,10 +379,10 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   // load our menu
   pMenu->Initialize();
   // add the needed buttons
-  int btn_NowPlaying  = 0;  // Now Playing...
-  int btn_Info        = 0;  // Music Information
-  int btn_PlayWith    = 0;  // Play using alternate player
   int btn_Queue       = 0;  // Queue Item
+  int btn_PlayWith    = 0;  // Play using alternate player
+  int btn_Info        = 0;  // Music Information
+  int btn_NowPlaying  = 0;  // Now Playing...
   
   // directory tests
   CMusicDatabaseDirectory dir;
@@ -391,17 +391,13 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   VECPLAYERCORES vecCores;
   CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
 
-  // if party mode is enabled, put Now Playing at the top of the context menu
-  if (g_partyModeManager.IsEnabled())
-    btn_NowPlaying = pMenu->AddButton(13350);
-
   // turn off info/queue/play/set artist thumb if the current item is goto parent ..
   bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
   if (!bIsGotoParent && dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT)
   { 
-    // enable music info button
-    if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
-      btn_Info = pMenu->AddButton(13351);
+  // allow queue for anything but root
+  if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList() || m_vecItems[iItem]->IsAudio())
+    btn_Queue = pMenu->AddButton(13347);
 
     if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
@@ -409,16 +405,14 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     else if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList())
       btn_PlayWith = pMenu->AddButton(208);
     
-    // allow queue for anything but root
-    btn_Queue = pMenu->AddButton(13347);
+    // enable music info button
+    if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
+      btn_Info = pMenu->AddButton(13351);
   }
 
   // if the Now Playing item is still not in the list, add it here
   if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
     btn_NowPlaying = pMenu->AddButton(13350);
-
-  // always visible
-  int btn_Search = pMenu->AddButton(137);     // Search...
 
   // turn off set artist image if not at artist listing.
   // (uses file browser to pick an image)
@@ -465,10 +459,6 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
       return;
-    }
-    else if (btn == btn_Search)  // Search
-    {
-      OnSearch();
     }
     else if (btn == btn_Thumb)  // Set Artist Image
     {

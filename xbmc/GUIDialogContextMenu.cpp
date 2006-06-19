@@ -194,18 +194,19 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     
     // add the needed buttons
     int btn_EditPath = pMenu->AddButton(1027); // Edit Source
-    int btn_AddShare = pMenu->AddButton(1026); // Add Source
-    int btn_Delete = pMenu->AddButton(522); // Remove Source
-
     int btn_Default = pMenu->AddButton(13335); // Set as Default
     int btn_ClearDefault = 0;
-    if (!strDefault.IsEmpty())
-      btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
+    int btn_Delete = pMenu->AddButton(522); // Remove Source
 
     int btn_setThumb = pMenu->AddButton(20019);
     int btn_RemoveThumb = 0;
     if (share->m_strThumbnailImage != "")
       btn_RemoveThumb = pMenu->AddButton(20057);
+
+    if (!strDefault.IsEmpty())
+      btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
+
+    int btn_AddShare = pMenu->AddButton(1026); // Add Source
 
     // GeminiServer: DVD Drive Context menu stuff
     int btn_PlayDisc = 0;
