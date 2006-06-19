@@ -20,12 +20,12 @@
    <height>576</height>
    <texture>black.png</texture>
    <animation effect="fade" time="2000" delay="300"> WindowOpen</animation>
-   <animation effect="fade" time="700" delay="300"> WindowClose</animation>
+   <animation effect="fade" time="700" delay="300" condition="!Skin.HasSetting(animated)"> WindowClose</animation>
   </control>
 
   <control>
-   <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-   <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+   <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+   <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
    <type>image</type>
    <posx>-245</posx>
    <posy>5</posy>
@@ -38,8 +38,8 @@
 
    <control>
     <description>Dashboard button 1</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>System.HasLocks</visible>
     <type>button</type>
     <id>3110</id>
@@ -61,8 +61,8 @@
 
    <control>
     <description>Dashboard button 2</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>!System.HasLocks</visible>
     <type>button</type>
     <id>3110</id>
@@ -84,8 +84,8 @@
 
    <control>
     <description>Eject button 1</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>System.HasLocks</visible>
     <type>button</type>
     <id>3111</id>
@@ -107,8 +107,8 @@
 
    <control>
     <description>Eject button 2</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>!System.HasLocks</visible>
     <type>button</type>
     <id>3111</id>
@@ -130,8 +130,8 @@
 
    <control>
     <description>Shutdown button 1</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>System.HasLocks</visible>
     <type>button</type>
     <id>3112</id>
@@ -153,8 +153,8 @@
 
    <control>
     <description>Shutdown button 2</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>!System.HasLocks</visible>
     <type>button</type>
     <id>3112</id>
@@ -176,8 +176,8 @@
 
    <control>
     <description>System Info button 1</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>System.HasLocks</visible>
     <type>button</type>
     <id>3113</id>
@@ -199,8 +199,8 @@
 
    <control>
     <description>System Info button 2</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>!System.HasLocks</visible>
     <type>button</type>
     <id>3113</id>
@@ -222,8 +222,8 @@
 
    <control>
     <description>Reboot button 1</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>System.HasLocks</visible>
     <type>button</type>
     <id>3114</id>
@@ -245,8 +245,8 @@
 
    <control>
     <description>Reboot button 2</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>!System.HasLocks</visible>
     <type>button</type>
     <id>3114</id>
@@ -268,8 +268,8 @@
 
    <control>
     <description>Restart XBMC button 1</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>System.HasLocks</visible>
     <type>button</type>
     <id>3115</id>
@@ -291,8 +291,8 @@
 
    <control>
     <description>Restart XBMC button 2</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>!System.HasLocks</visible>
     <type>button</type>
     <id>3115</id>
@@ -314,8 +314,8 @@
 
    <control>
     <description>Enter master mode / Leave master mode</description>
-    <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-    <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <visible>System.HasLocks</visible>
     <type>togglebutton</type>
     <id>3116</id>
@@ -342,8 +342,8 @@
   </controlgroup>
 
   <control>
-   <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-   <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+   <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+   <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
    <type>image</type>
    <id>0</id>
    <posx>-245</posx>
@@ -355,8 +355,8 @@
 
   <control>
    <description>Label control</description>
-   <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
-   <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
+   <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+   <animation effect="slide" time="700" end="0,-600" acceleration="2" condition="!Skin.HasSetting(animated)">WindowClose</animation>
    <type>label</type>
    <id>3100</id>
    <posx>19</posx>
