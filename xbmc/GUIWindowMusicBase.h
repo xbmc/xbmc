@@ -52,12 +52,14 @@ protected:
   virtual bool OnPlayMedia(int iItem);
 
   void RetrieveMusicInfo();
-  void OnInfo(int iItem);
+  void OnInfo(int iItem, bool bShowInfo = true);
   void OnQueueItem(int iItem);
-  bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album);
+  bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, bool bShowInfo = true);
+
   void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
-  void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
+  void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh, bool bShowInfo = true);
   void UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb, bool bSaveDirThumb);
+
   void OnManualAlbumInfo();
   void OnRipCD();
   void OnSearch();
