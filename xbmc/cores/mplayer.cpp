@@ -119,6 +119,7 @@ CMPlayer::Options::Options()
 
   m_bLimitedHWAC3 = false;
   m_bDeinterlace = false;
+  m_forceUtf8 = false;
 }
 void CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -304,11 +305,21 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-noidx");
   }
 
-  /* try to autodetect any multicharacter charset */
-  /* then fallback to user specified charset */
-  m_vecOptions.push_back("-subcp");
-  strTmp.Format("enca:__:%s", g_langInfo.GetSubtitleCharSet().c_str());
-  m_vecOptions.push_back(strTmp);
+  if (m_forceUtf8)
+  {
+    // force utf8 as default charset
+    m_vecOptions.push_back("-utf8");
+    CLog::Log(LOGINFO, "Forcing utf8 charset for subtitle. Setting -utf8");
+  }
+  else
+  {
+    /* try to autodetect any multicharacter charset */
+    /* then fallback to user specified charset */
+    m_vecOptions.push_back("-subcp");
+    strTmp.Format("enca:__:%s", g_langInfo.GetSubtitleCharSet().c_str());
+    m_vecOptions.push_back(strTmp);
+    CLog::Log(LOGINFO, "Using -subcp %s to detect the subtitle charset", strTmp.c_str());
+  }
 
   //MOVED TO mplayer.conf
   //Enable mplayer's internal highly accurate sleeping.
@@ -906,6 +917,11 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
         options.SetNoIdx(true);
         CLog::Log(LOGINFO, "Trying to play a large avi file. Setting -noidx");
       }
+    }
+    else if (strExtension == ".mkv")
+    {
+      // mkv files only have utf8 encoded subtitles
+      options.SetForceUtf8(true);
     }
 
     if (file.IsRAR())
