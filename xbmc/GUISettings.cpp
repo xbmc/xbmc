@@ -468,13 +468,12 @@ CGUISettings::CGUISettings(void)
   AddInt(1, "uifilters.flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
   AddBool(2, "uifilters.soften", 215, false);
 
-  // GeminiServer
   AddCategory(7, "xbdatetime", 14063);
-  AddString(1, "xbdatetime.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
-  AddString(2, "xbdatetime.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+  AddBool(1,   "xbdatetime.timeserver"       , 168  , false);
+  AddString(2, "xbdatetime.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
   AddSeparator(3, "xbdatetime.sep1");
-  AddBool(4,   "xbdatetime.timeserver"       , 168  , false);
-  AddString(5, "xbdatetime.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
+  AddString(4, "xbdatetime.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
+  AddString(5, "xbdatetime.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
 
   //  TODO: localize 2.0
   AddString(0,"system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
