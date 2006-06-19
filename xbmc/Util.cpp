@@ -2703,6 +2703,7 @@ const BUILT_IN commands[] = {
   "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!",
   "Skin.ToggleSetting"," Toggles a skin setting on or off",
   "Skin.SetString"," Prompts and sets skin string",
+  "Skin.SetNumeric"," Prompts and sets numeric input",
   "Skin.SetPath"," Prompts and sets a skin path",
   "Skin.SetImage"," Prompts and sets a skin image",
   "Skin.SetBool"," Sets a skin setting on",
@@ -3261,7 +3262,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_settings.ResetSkinSettings();
     g_settings.Save();
   }
-  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setpath"))
+  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric"))
   {
     // break the parameter up if necessary
     // only search for the first "," and use that to break the string up
@@ -3280,6 +3281,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (execute.Equals("skin.setstring"))
     {
       if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
+        g_settings.SetSkinString(parameter, value);
+    }
+	if (execute.Equals("skin.setnumeric"))
+    {
+      if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(1033)))
         g_settings.SetSkinString(parameter, value);
     }
     else if (execute.Equals("skin.setimage"))
