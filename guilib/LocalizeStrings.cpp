@@ -49,28 +49,40 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
     g_LoadErrorStr.Format("%s\nDoesnt start with <strings>", strFileName.c_str());
     return false;
   }
-  const TiXmlNode *pChild = pRootElement->FirstChild();
+  const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
   while (pChild)
   {
-    CStdString strValue = pChild->Value();
-    if (strValue == "string")
-    {
-      const TiXmlNode *pChildID = pChild->FirstChild("id");
-      const TiXmlNode *pChildText = pChild->FirstChild("value");
+    const TiXmlNode *pChildID = pChild->FirstChild("id");
+    const TiXmlNode *pChildText = pChild->FirstChild("value");
+    if (pChildID && !pChildID->NoChildren() &&
+        pChildText && !pChildText->NoChildren())
+    { // Load old style language file with nodes for id and value
       DWORD dwID = atoi(pChildID->FirstChild()->Value());
+
       CStdString utf8String;
-      if (!pChildText->NoChildren())
+      if (strEncoding.IsEmpty()) // Is language file utf8?
+        utf8String=pChildText->FirstChild()->Value();
+      else
+        g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
+
+      m_vecStrings[dwID] = utf8String;
+    }
+    else
+    { // Load new style language file with id as attribute
+      const char* attrId=pChild->Attribute("id");
+      if (attrId && !pChild->NoChildren())
       {
+        DWORD dwID = atoi(attrId);
+        CStdString utf8String;
         if (strEncoding.IsEmpty()) // Is language file utf8?
-          utf8String=pChildText->FirstChild()->Value();
+          utf8String=pChild->FirstChild()->Value();
         else
           g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
-      }
 
-      if (!utf8String.IsEmpty())
         m_vecStrings[dwID] = utf8String;
+      }
     }
-    pChild = pChild->NextSibling();
+    pChild = pChild->NextSiblingElement("string");
   }
 
   if (!strFileName.Equals("Q:\\language\\english\\strings.xml"))
@@ -89,32 +101,51 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
     TiXmlElement* pRootElement = xmlDoc.RootElement();
     CStdString strValue = pRootElement->Value();
     if (strValue != CStdString("strings")) return false;
-    const TiXmlNode *pChild = pRootElement->FirstChild();
+
+    const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
     while (pChild)
     {
-      CStdString strValue = pChild->Value();
-      if (strValue == "string")
-      {
-        const TiXmlNode *pChildID = pChild->FirstChild("id");
-        const TiXmlNode *pChildText = pChild->FirstChild("value");
-        if (pChildID->FirstChild() && pChildText->FirstChild())
+      const TiXmlNode *pChildID = pChild->FirstChild("id");
+      const TiXmlNode *pChildText = pChild->FirstChild("value");
+      if (pChildID && !pChildID->NoChildren() &&
+          pChildText && !pChildText->NoChildren())
+      { // Load old style language file with nodes for id and value
+        DWORD dwID = atoi(pChildID->FirstChild()->Value());
+
+        ivecStrings i = m_vecStrings.find(dwID);
+        if (i == m_vecStrings.end())
         {
-          DWORD dwID = atoi(pChildID->FirstChild()->Value());
-          ivecStrings i;
-          i = m_vecStrings.find(dwID);
+          CStdString utf8String;
+          if (strEncoding.IsEmpty()) // Is language file utf8?
+            utf8String=pChildText->FirstChild()->Value();
+          else
+            g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
+
+          m_vecStrings[dwID] = utf8String;
+        }
+      }
+      else
+      { // Load new style language file with id as attribute
+        const char* attrId=pChild->Attribute("id");
+        if (attrId && !pChild->NoChildren())
+        {
+          DWORD dwID = atoi(attrId);
+          ivecStrings i = m_vecStrings.find(dwID);
           if (i == m_vecStrings.end())
           {
             CStdString utf8String;
             if (strEncoding.IsEmpty()) // Is language file utf8?
-              utf8String=pChildText->FirstChild()->Value();
+              utf8String=pChild->FirstChild()->Value();
             else
-              g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
+              g_charsetConverter.stringCharsetToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8String);
+
             m_vecStrings[dwID] = utf8String;
           }
         }
       }
-      pChild = pChild->NextSibling();
+      pChild = pChild->NextSiblingElement("string");
     }
+
   }
 
   // TODO: localize 2.0
