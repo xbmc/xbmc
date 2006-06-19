@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-06-2006 added: Tool to translate language files, sources in Tools/Translator
  - 19-06-2006 updated: english language to new format
  - 19-06-2006 added: support for a new format of language files (old format can still be read)
                        new format: <string id="123">String</string>
