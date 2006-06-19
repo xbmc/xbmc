@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-06-2006 added: support for a new format of language files (old format can still be read)
+                       new format: <string id="123">String</string>
  - 19-06-2006 added: "Query Info For All Albums" to My Music accessible via the context menu.
  - 19-06-2006 changed: Reorganised context menus.
  - 19-06-2006 changed: Apologies to translators, i added a new string to 'English/strings.xml' - i have made the relevant changes and the strings are now located in LocalizeStrings as they should be.
