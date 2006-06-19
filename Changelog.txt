@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-06-2006 changed: Reorganised context menus.
  - 19-06-2006 changed: Apologies to translators, i added a new string to 'English/strings.xml' - i have made the relevant changes and the strings are now located in LocalizeStrings as they should be.
  - 19-06-2006 added: Skin.SetNumeric() built in function.
  - 19-06-2006 fixed: linksys wrtsl54gs folder listings would only list root of shares after samba update (dfs flag set in list request caused server to mad)
