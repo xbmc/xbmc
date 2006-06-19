@@ -1117,10 +1117,10 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   pMenu->Initialize();
   bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
 
+  int btn_Queue          = 0; // Queue Item  
+  int btn_PlayWith      = 0; // Play using alternate player
+  int btn_Info              = 0; // Music Information
   int btn_NowPlaying  = 0;  // Now Playing...
-  int btn_Info        = 0; // Music Information
-  int btn_PlayWith    = 0; // Play using alternate player
-  int btn_Queue       = 0; // Queue Item
   
   VECPLAYERCORES vecCores;
   CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
@@ -1132,8 +1132,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   // turn off info/play/queue if the current item is goto parent ..
   if (!bIsGotoParent)
   {
-    if (!m_vecItems[iItem]->IsPlayList())
-      btn_Info = pMenu->AddButton(13351);
+    btn_Queue = pMenu->AddButton(13347);
 
     if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
@@ -1141,7 +1140,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     else if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList())
       btn_PlayWith = pMenu->AddButton(208);
 
-    btn_Queue = pMenu->AddButton(13347);
+    if (!m_vecItems[iItem]->IsPlayList())
+      btn_Info = pMenu->AddButton(13351);
   }
   
   // if party mode is enabled, put Now Playing at the top of the context menu
