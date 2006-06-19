@@ -43,7 +43,9 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
       m_bRefresh = false;
-      Refresh();
+      if (g_guiSettings.GetBool("network.enableinternet"))
+        RefreshThumb();
+      Update();
       return true;
     }
     break;
@@ -175,15 +177,8 @@ void CGUIWindowMusicInfo::Render()
 }
 
 
-void CGUIWindowMusicInfo::Refresh()
+void CGUIWindowMusicInfo::RefreshThumb()
 {
-  // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet"))
-  {
-    Update();
-    return ;
-  }
-
   CStdString thumbImage = m_albumItem.GetThumbnailImage();
   if (!m_albumItem.HasThumbnail())
     thumbImage = CUtil::GetCachedAlbumThumb(m_album.GetTitle(), m_album.GetAlbumPath());
@@ -195,12 +190,9 @@ void CGUIWindowMusicInfo::Refresh()
   }
 
   if (!CFile::Exists(thumbImage) )
-  {
     thumbImage.Empty();
-  }
 
   m_albumItem.SetThumbnailImage(thumbImage);
-  Update();
 }
 
 bool CGUIWindowMusicInfo::NeedRefresh() const

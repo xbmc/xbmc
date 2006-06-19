@@ -14,9 +14,9 @@ public:
   void SetAlbum(CMusicAlbumInfo& album);
   bool NeedRefresh() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
+  void RefreshThumb();
 protected:
   virtual void OnInitWindow();
-  void Refresh();
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
   bool DownloadThumbnail(const CStdString &thumbFile);
