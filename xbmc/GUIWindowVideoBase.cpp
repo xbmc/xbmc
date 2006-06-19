@@ -685,10 +685,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   pMenu->Initialize();
   bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
 
-  int btn_Show_Info     = 0; // Show Video Information
-  int btn_Resume        = 0; // Resume Video
-  int btn_PlayWith      = 0; // Play
   int btn_Queue         = 0; // Add to Playlist
+  int btn_PlayWith      = 0; // Play
+  int btn_Resume        = 0; // Resume Video
+  int btn_Show_Info     = 0; // Show Video Information
 
   // check what players we have
   VECPLAYERCORES vecCores;
@@ -696,29 +696,24 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 
   if (!bIsGotoParent)
   {
-    // turn off the query info button if we are in playlists view
-    if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES))
-      btn_Show_Info = pMenu->AddButton(13346);
-    
-    // check to see if the Resume Video button is applicable
-    if (GetResumeItemOffset(m_vecItems[iItem]) > 0)               
-      btn_Resume = pMenu->AddButton(13381);     // Resume Video
-
+    // don't show the add to playlist button in playlist window
+    if (GetID() != WINDOW_VIDEO_PLAYLIST)
+      btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
+  
     if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
     // allow a folder to be ad-hoc queued and played by the default player
     else if (GetID() == WINDOW_VIDEO_FILES && (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList()))
       btn_PlayWith = pMenu->AddButton(208);
 
-    // don't show the add to playlist button in playlist window
-    if (GetID() != WINDOW_VIDEO_PLAYLIST)
-      btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
-  }
+    // check to see if the Resume Video button is applicable
+    if (GetResumeItemOffset(m_vecItems[iItem]) > 0)               
+      btn_Resume = pMenu->AddButton(13381);     // Resume Video
 
-  // turn off the now playing button if playlist is empty or if we are in playlist window
-  int btn_Now_Playing = 0;                          
-  if (GetID() != WINDOW_VIDEO_PLAYLIST && g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
-    btn_Now_Playing = pMenu->AddButton(13350);    // Now Playing...
+    // turn off the query info button if we are in playlists view
+    if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES))
+      btn_Show_Info = pMenu->AddButton(13346);
+  }
 
   // hide scan button unless we're in files window
   int btn_Query = 0;
@@ -756,6 +751,11 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 
     btn_Update_Title = pMenu->AddButton(16105); //Edit Title
   }
+
+  // turn off the now playing button if playlist is empty or if we are in playlist window
+  int btn_Now_Playing = 0;                          
+  if (GetID() != WINDOW_VIDEO_PLAYLIST && g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
+    btn_Now_Playing = pMenu->AddButton(13350);    // Now Playing...
   
   // hide delete button unless enabled, or in title window
   int btn_Delete = 0;
