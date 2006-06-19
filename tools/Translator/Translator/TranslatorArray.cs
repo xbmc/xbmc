@@ -179,7 +179,7 @@ namespace TeamXBMC.TranslatorCore
 
 			DateTime time=DateTime.Now;
 			comments.Add("Date of translation: "+time.GetDateTimeFormats(System.Globalization.CultureInfo.InvariantCulture)[0]);
-			comments.Add("$Revision$");
+			comments.Add("$"+"Revision"+"$");
 			if (versionOriginal>0.0)
 				comments.Add("Based on english strings version "+versionOriginal.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
