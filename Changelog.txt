@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-06-2006 changed: "Query Info For All Albums" minor code cleanup and increased relevance % for better accuracy.
  - 20-06-2006 fixed: some language files contained &amp;gt; it should have been &gt; (>)
  - 20-06-2006 updated: Polish language file (Thnx to napek)
  - 20-06-2006 fixed: Typo in swedish strings.xml (Thanks Pike)
