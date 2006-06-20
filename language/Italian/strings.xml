@@ -157,7 +157,7 @@
   <string id="224">Velocità</string>
   <string id="225">Tempo di Transizione</string>
   <string id="226">Attiva PAL60</string>
-  <string id="227">Attiva CDDB</string>
+  <string id="227">Cerca i CD audio su freedb</string>
   <string id="228">Playlist Casuale all'Avvio</string>
   <string id="229">Auto-Spegnimento HD</string>
   <string id="230">Filtri Video</string>
@@ -188,7 +188,7 @@
   <string id="255">CDDB</string>
   <string id="256">Richiesta informazioni CDDB a freedb.org</string>
   <string id="257">Errore</string>
-  <string id="258">Abilita ID3 Tags</string>
+  <string id="258">Abilita lettura etichetta</string>
   <string id="259">Carico</string>
   <string id="260">Shoutcast</string>
   <string id="261">Aspetta un momento...</string>
@@ -593,7 +593,7 @@
   <string id="1018">Inserire il numero della porta</string>
   <string id="1019">Inserire il nome utente</string>
   <string id="1020">Aggiungi %s Sorgente</string>
-  <string id="1021">Inserire il percorso o esplora la locazione dei media.</string>
+  <string id="1021">Inserire i percorsi o esplora le locazioni dei media.</string>
   <string id="1022">Inserire nome per questa Sorgente.</string>
   <string id="1023">Ricerca nuove condivisioni</string>
   <string id="1024">Esplora</string>
@@ -606,15 +606,10 @@
   <string id="1031">una cartella immagini</string>
   <string id="1032">Aggiungi Locazione di Rete...</string>
   <string id="1200">SMB Client</string>
-  <string id="1201">IP Condivisione</string>
   <string id="1202">Workgroup</string>
   <string id="1203">Default Username</string>
   <string id="1204">Default Password</string>
-  <string id="1205">Nome Condivisione</string>
-  <string id="1206">Gruppo Condivisione</string>
   <string id="1207">WINS-Server</string>
-  <string id="1208">Preferenze Automatiche</string>
-  <string id="1209">Impostazioni SMB salvate con successo!</string>
   <string id="1210">Rimuovi</string>
   <string id="1211">Musica</string>
   <string id="1212">Video</string>
@@ -641,7 +636,6 @@
   <string id="1233">Programmi, Video e Musica</string>
   <string id="1234">Programmi, Immagini e Musica</string>
   <string id="1235">Programmi, Immagini e Video</string>
-  <string id="1236">- Client Timeout</string>
   <string id="1245">FTP User Name</string>
   <string id="1246">FTP User Password</string>
   <string id="1247">FTP Server User Password salvata con successo!</string>
@@ -797,7 +791,7 @@
   <string id="12358">Password inserita è vuota. Riprova.</string>
   <string id="12360">Master Lock</string>
   <string id="12361">Max Tentativi</string>
-  <string id="12362">Abilita Spegnimento</string>
+  <string id="12362">Spegni xbox ad esaurimento tentativi</string>
   <string id="12363">Proteggi Condivisioni</string>
   <string id="12364">Master Mode</string>
   <string id="12365">Master Code</string>
@@ -823,6 +817,7 @@
   <string id="12385">Giorno/Mese</string>
   <string id="12386">Mese/Giorno</string>
   <string id="12387">Riscansiona il database</string>
+  <string id="12388">Master User</string>
   <string id="12390">Tempo di Vita del Sistema</string>
   <string id="12391">Minuti</string>
   <string id="12392">Ore</string>
@@ -1164,10 +1159,10 @@
   <string id="15110">Vibrazione Gamepad</string>
   <string id="15111">Tema della Skin</string>
   <string id="15112">Tema di Default</string>
-  <string id="15200">AudioScrobbler</string>
-  <string id="15201">Invia Canzoni a AudioScrobbler</string>
-  <string id="15202">AudioScrobbler Username</string>
-  <string id="15203">AudioScrobbler Password</string>
+  <string id="15200">Last.FM</string>
+  <string id="15201">Invia Canzoni a Last.FM</string>
+  <string id="15202">Last.FM Username</string>
+  <string id="15203">LAst.FM Password</string>
   <string id="15204">Inoperabile: disattivo...</string>
   <string id="15205">Pregasi Aggiornare XBMC</string>
   <string id="15206">Invio Fallito: non autorizzato.</string>
@@ -1180,8 +1175,8 @@
   <string id="15213">Play con...</string>
   <string id="15214">Perfeziona Sincronizzazione A/V</string>
   <string id="15215">Nascondi Nomi dei Files in Vista Icone</string>
-  <string id="15250">Invia Last.fm Radio ad AudioScrobbler</string>
-  <string id="15251">Connessione a Last.fm...</string>
+  <string id="15250">Invia Radio Last.FM a Last.FM</string>
+  <string id="15251">Connessione a Last.FM...</string>
   <string id="15252">Selezione stazione...</string>
   <string id="15253">Ricerca artisti simili...</string>
   <string id="15254">Ricerca tags simili...</string>
