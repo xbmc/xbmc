@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- Based on English XML v1.318. Last updated by vnmartinsen  !-->
 <!--$Revision$-->
 <strings>
   <string id="0">Mine Programmer</string>
@@ -158,7 +157,7 @@
   <string id="224">Hastighet</string>
   <string id="225">Tid mellom overgang</string>
   <string id="226">Bruk PAL60</string>
-  <string id="227">Bruk CDDB</string>
+  <string id="227">Finn CD-informasjon på freedb</string>
   <string id="228">Bland spillelisten ved lasting</string>
   <string id="229">Slå av harddisk etter (min)</string>
   <string id="230">Filter</string>
@@ -189,7 +188,7 @@
   <string id="255">CDDB</string>
   <string id="256">Spør freedb etter CDDB informasjon</string>
   <string id="257">Feil</string>
-  <string id="258">Bruke ID3 informasjon</string>
+  <string id="258">Les tag-informasjon</string>
   <string id="259">Åpner</string>
   <string id="260">Internett radio</string>
   <string id="261">Venter på oppstart....</string>
@@ -441,7 +440,7 @@
   <string id="509">Cache programikoner</string>
   <string id="510">Skru på visualisering</string>
   <string id="511">Bytt videoformat basert på spillregion</string>
-  <string id="512">Starbilde</string>
+  <string id="512">Startbilde</string>
   <string id="513">Hovedmeny</string>
   <string id="514">Manuelle innstillinger</string>
   <string id="515">Sjanger</string>
@@ -594,7 +593,7 @@
   <string id="1018">Skriv inn pornummeret</string>
   <string id="1019">Skriv inn brukernavn</string>
   <string id="1020">Legg til %s kilde</string>
-  <string id="1021">Legg til banen eller lett etter media.</string>
+  <string id="1021">Skriv inn banene eller lett etter mediamappene.</string>
   <string id="1022">Skriv inn et navn for denne media-kilden.</string>
   <string id="1023">Bla etter ny mappe</string>
   <string id="1024">Bla</string>
@@ -607,15 +606,10 @@
   <string id="1031">en bildemappe</string>
   <string id="1032">Legg til nettverkssted...</string>
   <string id="1200">SMB-klient</string>
-  <string id="1201">SMB IP</string>
   <string id="1202">Arbeidsgruppe</string>
   <string id="1203">Standard brukernavn</string>
   <string id="1204">Standard passord</string>
-  <string id="1205">SMB navn</string>
-  <string id="1206">SMB gruppe</string>
   <string id="1207">WINS-server</string>
-  <string id="1208">Automatiske bokmerker</string>
-  <string id="1209">SMB-klientinstillinger ble lagret!</string>
   <string id="1210">Fjern</string>
   <string id="1211">Musikk</string>
   <string id="1212">Video</string>
@@ -642,7 +636,6 @@
   <string id="1233">Programmer &amp; Video &amp; Musikk</string>
   <string id="1234">Programmer &amp; Bilder &amp; Musikk</string>
   <string id="1235">Programmer &amp; Bilder &amp; Video</string>
-  <string id="1236">- Tidsavbrudd for klient</string>
   <string id="1245">FTP brukernavn</string>
   <string id="1246">FTP passord</string>
   <string id="1247">FTP-servers brukerpassord ble endret</string>
@@ -673,12 +666,12 @@
   <string id="2050">Spilletid:</string>
   <string id="4501">LCD-type</string>
   <string id="10000">Forside</string>
-  <string id="10001">Programmer</string>
-  <string id="10002">Bilder</string>
-  <string id="10003">Filer</string>
+  <string id="10001">Mine programmer</string>
+  <string id="10002">Mine bilder</string>
+  <string id="10003">Mine filer</string>
   <string id="10004">Innstillinger</string>
-  <string id="10005">Musikk</string>
-  <string id="10006">Filmer</string>
+  <string id="10005">Min musikk</string>
+  <string id="10006">Mine filmer</string>
   <string id="10007">Systeminformasjon</string>
   <string id="10008">Innstillinger-&amp;gt;Generelt</string>
   <string id="10009">Innstillinger-&amp;gt;Skjerm</string>
@@ -707,7 +700,7 @@
   <string id="10503">Min musikk/Topp 100</string>
   <string id="10504">Topp 100 sanger</string>
   <string id="10505">Topp 100 albumer</string>
-  <string id="10506">Programmer</string>
+  <string id="10506">Mine programmer</string>
   <string id="10507">Konfigurasjon</string>
   <string id="10508">Værmelding</string>
   <string id="10509">Spilling over nettverk</string>
@@ -799,7 +792,7 @@
   <string id="12358">Blankt passord. Prøv igjen.</string>
   <string id="12360">Masterlås</string>
   <string id="12361">Maks forsøk</string>
-  <string id="12362">Aktiver avslutting</string>
+  <string id="12362">Skru av hvis masterlåsen forsøkes for mange ganger</string>
   <string id="12363">Beskytt mapper</string>
   <string id="12364">Mastermodus</string>
   <string id="12365">Masterkode</string>
@@ -1165,10 +1158,10 @@
   <string id="15110">Kontrollvibrasjon</string>
   <string id="15111">Skinets tema</string>
   <string id="15112">Standard tema</string>
-  <string id="15200">AudioScrobbler</string>
-  <string id="15201">Send sanger til AudioScrobbler</string>
-  <string id="15202">AudioScrobbler brukernavn</string>
-  <string id="15203">AudioScrobbler passord</string>
+  <string id="15200">Last.FM</string>
+  <string id="15201">Send sanger til Last.FM</string>
+  <string id="15202">Last.FM brukernavn</string>
+  <string id="15203">Last.FM passord</string>
   <string id="15204">Kunne ikke koble til: i dvale...</string>
   <string id="15205">Vennligst oppdater XBMC</string>
   <string id="15206">Sending feilet: feil ved autorisasjon.</string>
@@ -1181,8 +1174,8 @@
   <string id="15213">Spill med...</string>
   <string id="15214">Bruk utjevnet A/V-synkronisering</string>
   <string id="15215">Skjul finavn i miniatyrvisning</string>
-  <string id="15250">Send inn Last.fm Radio til AudioScrobbler</string>
-  <string id="15251">Kobler til Last.fm...</string>
+  <string id="15250">Send inn Last.fm Radio til Last.FM</string>
+  <string id="15251">Kobler til Last.FM...</string>
   <string id="15252">Velger stasjon...</string>
   <string id="15253">Søk etter liknende artister...</string>
   <string id="15254">Søk etter liknende tag'er...</string>

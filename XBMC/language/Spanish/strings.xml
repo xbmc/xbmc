@@ -147,7 +147,7 @@
   <string id="214">Calibrar Video</string>
   <string id="215">Suavizar</string>
   <string id="216">Aumentar</string>
-  <string id="217">Pixel Ratio</string>
+  <string id="217">Rel. Aspecto</string>
   <string id="218">Unidad DVD</string>
   <string id="219">Por favor, inserte disco</string>
   <string id="220">Recurso compartido remoto</string>
@@ -823,6 +823,7 @@
   <string id="12385">Día/Mes</string>
   <string id="12386">Mes/Día</string>
   <string id="12387">Re-escanear base de datos</string>
+  <string id="12388">Usuario Maestro</string>
   <string id="12390">Activo desde</string>
   <string id="12391">Minutos</string>
   <string id="12392">Horas</string>
@@ -1016,8 +1017,8 @@ para esta visualización</string>
   <string id="13403">Borrar por Defecto</string>
   <string id="13404">Continuar</string>
   <string id="13405">Obtener Miniatura</string>
-  <string id="14000">Agrupar: No</string>
-  <string id="14001">Agrupar: Si</string>
+  <string id="14000">Agrupar</string>
+  <string id="14001">No Agrupar</string>
   <string id="14002">Agrupar: Complejo</string>
   <string id="14003">Descargando archivo de listas de reproducción...</string>
   <string id="14004">Descargando lista de reproducciones instantáneas...</string>
