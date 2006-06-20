@@ -72,8 +72,8 @@
   <string id="139">Temperature:</string>
   <string id="140">CPU:</string>
   <string id="141">GPU:</string>
-  <string id="142">Orologio:</string>
-  <string id="143">Orario</string>
+  <string id="142">Orario:</string>
+  <string id="143">Attuale:</string>
   <string id="144">Versione:</string>
   <string id="145">Rete:</string>
   <string id="146">Tipo:</string>
@@ -699,7 +699,7 @@
   <string id="10503">Musica/Artisti</string>
   <string id="10504">Top 100 Canzoni</string>
   <string id="10505">Top 100 Albums</string>
-  <string id="10506">Applicazioni</string>
+  <string id="10506">Programmi</string>
   <string id="10507">Configurazione</string>
   <string id="10508">Previsioni Meteo</string>
   <string id="10509">Gioco Online</string>
@@ -1210,7 +1210,7 @@
   <string id="15282">Inserire il nome di un etichetta per trovarne di simili</string>
   <string id="15283">Traccce recentemente ascoltate da %name%</string>
   <string id="15300">Percorso non trovato o invalido</string>
-  <string id="15301">Non è stato possibile connetersi al server</string>
+  <string id="15301">Non è stato possibile connettersi al server</string>
   <string id="15302">Nessun server trovato</string>
   <string id="15303">Nessun Workgroup trovato</string>
   <string id="15310">Apertura  bookmark multipercorso</string>
