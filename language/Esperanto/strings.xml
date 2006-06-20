@@ -1,1300 +1,1257 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--$Revision$-->
 <strings>
-  <string><id>0</id><value>Mia Softvaroj</value></string>
-  <string><id>1</id><value>Mia Bildoj</value></string>
-  <string><id>2</id><value>Mia Mizuko</value></string>
-  <string><id>3</id><value>Mia Filmoj</value></string>
-  <string><id>4</id><value>Televido Gvido</value></string>
-  <string><id>5</id><value>Preferoj</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
-  <string><id>7</id><value>Mia Vicoj</value></string>
-  <string><id>8</id><value>Veterprognozo</value></string>
-
-  <string><id>11</id><value>Lundo</value></string>
-  <string><id>12</id><value>Mardo</value></string>
-  <string><id>13</id><value>Merkredo</value></string>
-  <string><id>14</id><value>Ĵaŭdo</value></string>
-  <string><id>15</id><value>Vendredo</value></string>
-  <string><id>16</id><value>Sabato</value></string>
-  <string><id>17</id><value>Dimanĉo</value></string>
-
-  <string><id>21</id><value>Januaro</value></string>
-  <string><id>22</id><value>Februaro</value></string>
-  <string><id>23</id><value>Marto</value></string>
-  <string><id>24</id><value>Aprilo</value></string>
-  <string><id>25</id><value>Majo</value></string>
-  <string><id>26</id><value>Junio</value></string>
-  <string><id>27</id><value>Julio</value></string>
-  <string><id>28</id><value>Aŭgusto</value></string>
-  <string><id>29</id><value>Septembro</value></string>
-  <string><id>30</id><value>Oktobro</value></string>
-  <string><id>31</id><value>Novembro</value></string>
-  <string><id>32</id><value>Decembro</value></string>
-
-  <string><id>98</id><value>Vido: Auto</value></string>
-  <string><id>99</id><value>Vido: Auto Big</value></string>
-  <string><id>100</id><value>Vido: Icons</value></string>
-  <string><id>101</id><value>Vido: List</value></string>
-  <string><id>102</id><value>Skani</value></string>
-  <string><id>103</id><value>ordigi je: Nomo</value></string>
-  <string><id>104</id><value>ordigi je: Dati</value></string>
-  <string><id>105</id><value>ordigi je: amplekso</value></string>
-  <string><id>106</id><value>Ne</value></string>
-  <string><id>107</id><value>Jes</value></string>
-  <string><id>108</id><value>SlideShow</value></string>
-  <string><id>109</id><value>Verki Thumbs</value></string>
-  <string><id>110</id><value>Verki Thumbnails</value></string>
-  <string><id>111</id><value>Shortcuts</value></string>
-  <string><id>112</id><value>Paŭzis</value></string>
-  <string><id>113</id><value>Mia vicos : Fonto</value></string>
-  <string><id>114</id><value>Mia vicos : Destination</value></string>
-  <string><id>115</id><value>Kopii</value></string>
-  <string><id>116</id><value>Movi</value></string>
-  <string><id>117</id><value>Forviŝi</value></string>
-  <string><id>118</id><value>Rebapti</value></string>
-  <string><id>119</id><value>Nova Dosiero</value></string>
-  <string><id>120</id><value>Confirm vico kopii</value></string>
-  <string><id>121</id><value>Confirm vico movi</value></string>
-  <string><id>122</id><value>Confirm vico forviŝi</value></string>
-  <string><id>123</id><value>Kopii lase vicos?</value></string>
-  <string><id>124</id><value>Movi lase vicos?</value></string>
-  <string><id>125</id><value>Forviŝi lase vicos?</value></string>
-  <string><id>126</id><value>Kondiĉo</value></string>
-  <string><id>127</id><value>Objects</value></string>
-  <string><id>128</id><value>Generalo</value></string>
-  <string><id>129</id><value>Slideshow</value></string>
-  <string><id>130</id><value>Sistemo Informaĵo</value></string>
-  <string><id>131</id><value>Ekrano</value></string>
-  <string><id>132</id><value>Albumos</value></string>
-  <string><id>133</id><value>Muzikisto</value></string>
-  <string><id>134</id><value>Kantoj</value></string>
-  <string><id>135</id><value>Gxenroj</value></string>
-  <string><id>136</id><value>Kantoj-listo</value></string>
-  <string><id>137</id><value>Traserĉi</value></string>
-  <string><id>138</id><value>SISTEMO informaĵo</value></string>
-  <string><id>139</id><value>Temperaturoj:</value></string>
-  <string><id>140</id><value>CPU:</value></string>
-  <string><id>141</id><value>GPU:</value></string>
-  <string><id>142</id><value>Tempo:</value></string>
-  <string><id>143</id><value>Current:</value></string>
-  <string><id>144</id><value>Eldono:</value></string>
-  <string><id>145</id><value>Reto:</value></string>
-  <string><id>146</id><value>Type:</value></string>
-  <string><id>147</id><value>Static</value></string>
-  <string><id>148</id><value>DHCP</value></string>
-  <string><id>149</id><value>MAC</value></string>
-  <string><id>150</id><value>IP</value></string>
-  <string><id>151</id><value>Link: </value></string>
-  <string><id>152</id><value>Half duplex</value></string>
-  <string><id>153</id><value>Full duplex</value></string>
-  <string><id>154</id><value>Diskmemoro</value></string>
-  <string><id>155</id><value>Ingo</value></string>
-  <string><id>156</id><value>Havebla</value></string>
-  <string><id>157</id><value>Filmoj</value></string>
-  <string><id>158</id><value>Havebla labormemoro</value></string>
-  <string><id>159</id><value>No link</value></string>
-  <string><id>160</id><value>Havebla</value></string>
-  <string><id>161</id><value>Malhavebla</value></string>
-  <string><id>162</id><value>KD-ingo malfermi</value></string>
-  <string><id>163</id><value>Sxakis KD</value></string>
-  <string><id>164</id><value>Ne KD</value></string>
-  <string><id>165</id><value>KD Present</value></string>
-  <string><id>166</id><value>Skin</value></string>
-  <string><id>167</id><value>Enable FTP Server</value></string>
-  <string><id>168</id><value>Enable Internet Time Synchronization</value></string>
-  <string><id>169</id><value>Distingivo</value></string>
-  <string><id>170</id><value>Albumo:</value></string>
-  <string><id>171</id><value>Artist:</value></string>
-  <string><id>172</id><value>Dati of Ellasi:</value></string>
-  <string><id>173</id><value>Rating:</value></string>
-  <string><id>174</id><value>Gxenro:</value></string>
-  <string><id>175</id><value>Tones:</value></string>
-  <string><id>176</id><value>Styles:</value></string>
-  <string><id>177</id><value>ReVido:</value></string>
-  <string><id>178</id><value>Kantoj:</value></string>
-  <string><id>179</id><value>Kanto</value></string>
-  <string><id>180</id><value>Tempo grando</value></string>
-  <string><id>181</id><value>Elekti albumo</value></string>
-  <string><id>182</id><value>Tracks</value></string>
-  <string><id>183</id><value>ReVido</value></string>
-  <string><id>184</id><value>Refresh</value></string>
-  <string><id>185</id><value>Searching albumo</value></string>
-  <string><id>186</id><value>OK</value></string>
-  <string><id>187</id><value>No albumos found!</value></string>
-  <string><id>188</id><value>Elekti cxio</value></string>
-  <string><id>189</id><value>Scanning media info</value></string>
-  <string><id>190</id><value>Save</value></string>
-  <string><id>191</id><value>Shuffle</value></string>
-  <string><id>192</id><value>Clear</value></string>
-  <string><id>193</id><value>Scan</value></string>
-  <string><id>194</id><value>Trasercxis...</value></string>
-  <string><id>195</id><value>No IMDB info found!</value></string>
-  <string><id>196</id><value>Elekti movie:</value></string>
-  <string><id>197</id><value>Querying IMDB info</value></string>
-  <string><id>198</id><value>Loading Filmo details</value></string>
-  <string><id>199</id><value>Filmo-artisto:</value></string>
-  <string><id>200</id><value>Verkisto:</value></string>
-  <string><id>201</id><value>Jaro:</value></string>
-  <string><id>202</id><value>Tagline:</value></string>
-  <string><id>203</id><value>Malgranda-komploti:</value></string>
-  <string><id>204</id><value>Rating:</value></string>
-  <string><id>205</id><value>Voxcoj:</value></string>
-  <string><id>206</id><value>Aktoroj	</value></string>
-  <string><id>207</id><value>Komploti</value></string>
-  <string><id>208</id><value>Iniciati</value></string>
-  <string><id>209</id><value>Sekvonta</value></string>
-  <string><id>210</id><value>Antaŭa</value></string>
-  <string><id>211</id><value>Searching for applications</value></string>
-  <string><id>212</id><value>Applications found</value></string>
-  <string><id>213</id><value>Calibrate uzulinterfaco...</value></string>
-  <string><id>214</id><value>Filmoj Calibration...</value></string>
-  <string><id>215</id><value>Mildigi</value></string>
-  <string><id>216</id><value>Zoom Amount</value></string>
-  <string><id>217</id><value>Pixel Ratio</value></string>
-  <string><id>218</id><value>KD-ingo</value></string>
-  <string><id>219</id><value>Plaĉi insert KD</value></string>
-  <string><id>220</id><value>Remote Share</value></string>
-  <string><id>221</id><value>Network is not connected</value></string>
-  <string><id>222</id><value>Renonci</value></string>
-  <string><id>223</id><value>Auto Wideekrano Switching</value></string>
-  <string><id>224</id><value>Rapideco</value></string>
-  <string><id>225</id><value>Transition Time</value></string>
-  <string><id>226</id><value>Enable PAL60</value></string>
-  <string><id>227</id><value>Enable CDDB</value></string>
-  <string><id>228</id><value>Shuffle Playlist on Load</value></string>
-  <string><id>229</id><value>HD Spindown Time</value></string>
-  <string><id>230</id><value>Filmoj Filters</value></string>
-  <string><id>231</id><value>Neniu</value></string>
-  <string><id>232</id><value>Point</value></string>
-  <string><id>233</id><value>Rekta</value></string>
-  <string><id>234</id><value>Anisotropic</value></string>
-  <string><id>235</id><value>Quincunx</value></string>
-  <string><id>236</id><value>Gaussian Cubic</value></string>
-  <string><id>237</id><value>Minification</value></string>
-  <string><id>238</id><value>Magnification</value></string>
-  <string><id>239</id><value>Clear playlist on finish</value></string>
-  <string><id>240</id><value>Autorun DVD-Filmoj</value></string>
-  <string><id>241</id><value>Autorun VCD/SVCD</value></string>
-  <string><id>242</id><value>Autorun Audio-CD</value></string>
-  <string><id>243</id><value>Autorun XBOX Games</value></string>
-  <string><id>244</id><value>Autorun Filmoj</value></string>
-  <string><id>245</id><value>Autorun Muziko</value></string>
-  <string><id>246</id><value>Autorun Bildoj</value></string>
-  <string><id>247</id><value>Scripts</value></string>
-  <string><id>248</id><value>Lingvo</value></string>
-  <string><id>249</id><value>Muziko</value></string>
-  <string><id>250</id><value>Visualisation</value></string>
-  <string><id>251</id><value>Elekti destination directory</value></string>
-  <string><id>252</id><value>Output Stereo to ĉiom Speakers</value></string>
-  <string><id>253</id><value>Number of channels</value></string>
-  <string><id>254</id><value>- DTS Capable Receiver</value></string>
-  <string><id>255</id><value>CDDB</value></string>
-  <string><id>256</id><value>Querying freedb for CDDB info</value></string>
-  <string><id>257</id><value>Eraro</value></string>
-  <string><id>258</id><value>Enable ID3 Tags</value></string>
-  <string><id>259</id><value>Opening</value></string>
-  <string><id>260</id><value>Shoutcast</value></string>
-  <string><id>261</id><value>Waiting for start....</value></string>
-  <string><id>262</id><value>Scripts Output</value></string>
-  <string><id>263</id><value>Enable Web Server</value></string>
-  <string><id>264</id><value>Registri</value></string>
-  <string><id>265</id><value>Registri Rec.</value></string>
-  <string><id>266</id><value>ordigi je: Track</value></string>
-  <string><id>267</id><value>ordigi je: Time</value></string>
-  <string><id>268</id><value>ordigi je: Title</value></string>
-  <string><id>269</id><value>ordigi je: Artist</value></string>
-  <string><id>270</id><value>ordigi je: Albumo</value></string>
-  <string><id>271</id><value>Top 100</value></string>
-  <string><id>272</id><value>Top Left Overscan Compensation</value></string>
-  <string><id>273</id><value>Bottom Right Overscan Compensation</value></string>
-  <string><id>274</id><value>Subtitles Position</value></string>
-  <string><id>275</id><value>Pixel Ratio Adjustment</value></string>
-  <string><id>276</id><value>Movi la arrow to change la amount of overscan</value></string>
-  <string><id>277</id><value>Movi la bar to change la subtitles position</value></string>
-  <string><id>278</id><value>Change la rectangle so that it is perfectly square</value></string>
-  <string><id>279</id><value>Unable to load Preferoj</value></string>
-  <string><id>280</id><value>Using default fĉiombacks</value></string>
-  <string><id>281</id><value>Plaĉi check la .xml vicos</value></string>
-  <string><id>282</id><value>found %i items</value></string>
-  <string><id>283</id><value>Search Results</value></string>
-  <string><id>284</id><value>No results found</value></string>
-  <string><id>285</id><value>Deinterlace Filter</value></string>
-  <string><id>286</id><value>Postprocessing Filter</value></string>
-  <string><id>287</id><value>Subtitles</value></string>
-  <string><id>288</id><value>Tiparo</value></string>
-  <string><id>289</id><value>- amplekso</value></string>
-  <string><id>290</id><value>Dynamic Range Compression</value></string>
-  <string><id>291</id><value>Filmoj</value></string>
-  <string><id>292</id><value>Soni</value></string>
-  <string><id>293</id><value>Subtitles</value></string>
-  <string><id>294</id><value>Verki bookmark</value></string>
-  <string><id>295</id><value>Cycle bookmarks</value></string>
-  <string><id>296</id><value>Clear bookmarks</value></string>
-  <string><id>297</id><value>Soni malfruiĝo</value></string>
-  <string><id>298</id><value>Slider</value></string>
-  <string><id>300</id><value>1. Lingvo</value></string>
-  <string><id>301</id><value>2. Soni-granda</value></string>
-  <string><id>302</id><value>3. Stream</value></string>
-  <string><id>303</id><value>malfruiĝo</value></string>
-  <string><id>304</id><value>Language</value></string>
-  <string><id>305</id><value>Enabled</value></string>
-  <string><id>306</id><value>Non-Interleaved</value></string>
-  <string><id>307</id><value>- Aŭtomate Postprocessing</value></string>
-  <string><id>308</id><value>- Vertical Deblocking Filter</value></string>
-  <string><id>309</id><value>- Horizontal Deblocking Filter</value></string>
-  <string><id>310</id><value>- Auto Brightness/Contrast</value></string>
-  <string><id>311</id><value>- Dering</value></string>
-  <string><id>312</id><value>(0=auto)</value></string>
-  <string><id>313</id><value>Cleaning datinbanko</value></string>
-  <string><id>314</id><value>Preparing...</value></string>
-  <string><id>315</id><value>Datinbanko eraro</value></string>
-  <string><id>316</id><value>Searching kantoj...</value></string>
-  <string><id>317</id><value>Cleaning datinbanko successful</value></string>
-  <string><id>318</id><value>Cleaning kantoj...</value></string>
-  <string><id>319</id><value>Eraro cleaning kantoj</value></string>
-  <string><id>320</id><value>Cleaning artists...</value></string>
-  <string><id>321</id><value>Eraro cleaning artists</value></string>
-  <string><id>322</id><value>Cleaning Gxenroj...</value></string>
-  <string><id>323</id><value>Eraro cleaning Gxenroj</value></string>
-  <string><id>324</id><value>Cleaning paths...</value></string>
-  <string><id>325</id><value>Eraro cleaning paths</value></string>
-  <string><id>326</id><value>Cleaning albumos...</value></string>
-  <string><id>327</id><value>Eraro cleaning albumos</value></string>
-  <string><id>328</id><value>Writing changes...</value></string>
-  <string><id>329</id><value>Eraro writing changes</value></string>
-  <string><id>330</id><value>This may take some time...</value></string>
-  <string><id>331</id><value>Compressing datinbanko...</value></string>
-  <string><id>332</id><value>Eraro compressing datinbanko</value></string>
-  <string><id>333</id><value>Do you want to clean la muziko library?</value></string>
-  <string><id>334</id><value>Clean Muziko Library...</value></string>
-  <string><id>335</id><value>Iniciati</value></string>
-  <string><id>336</id><value>Framerate Conversion</value></string>
-  <string><id>337</id><value>Audio Output</value></string>
-  <string><id>338</id><value>Analog</value></string>
-  <string><id>339</id><value>Diĝita</value></string>
-  <string><id>340</id><value>Various Artists</value></string>
-  <string><id>341</id><value>Play Disc</value></string>
-  <string><id>342</id><value>Filmoj</value></string>
-  <string><id>343</id><value>Adjust Framerate</value></string>
-  <string><id>344</id><value>Aktoro</value></string>
-  <string><id>345</id><value>Jaro</value></string>
-  <string><id>346</id><value>Stack</value></string>
-  <string><id>347</id><value>Unstack</value></string>
-  <string><id>348</id><value>Flatten Directory Hierarchy</value></string>
-  <string><id>349</id><value>Show only Default.xbe</value></string>
-  <string><id>350</id><value>Softvaro</value></string>
-  <string><id>351</id><value>Off</value></string>
-  <string><id>352</id><value>Dim</value></string>
-  <string><id>353</id><value>Black</value></string>
-  <string><id>354</id><value>Matrix Trails</value></string>
-  <string><id>355</id><value>ekranosaver Idle Timeout</value></string>
-  <string><id>356</id><value>ekranosaver Mode</value></string>
-  <string><id>357</id><value>Shutdown Idle Timeout</value></string>
-  <string><id>358</id><value>ĉiom albumos</value></string>
-  <string><id>359</id><value>Recently Added Albumos</value></string>
-  <string><id>360</id><value>ekranosaver</value></string>
-  <string><id>361</id><value>R. SlideShow</value></string>
-  <string><id>362</id><value>ekranosaver Fade Level</value></string>
-  <string><id>363</id><value>ordigi je: vico</value></string>
-  <string><id>364</id><value>- AC3 Capable Receiver</value></string>
-  <string><id>365</id><value>ordigi je: Nomo</value></string>
-  <string><id>366</id><value>ordigi je: Year</value></string>
-  <string><id>367</id><value>ordigi je: Rating</value></string>
-  <string><id>368</id><value>IMDB</value></string>
-  <string><id>369</id><value>Nomo</value></string>
-  <string><id>370</id><value>Fulmotondro</value></string>
-  <string><id>371</id><value>Parte</value></string>
-  <string><id>372</id><value>Plejparte</value></string>
-  <string><id>373</id><value>Suna</value></string>
-  <string><id>374</id><value>Nuba-cxielo</value></string>
-  <string><id>375</id><value>Negxi negxi cxie</value></string>
-  <string><id>376</id><value>Pluvo</value></string>
-  <string><id>377</id><value>KROTALOJ</value></string>
-  <string><id>378</id><value>AM</value></string>
-  <string><id>379</id><value>PM</value></string>
-  <string><id>380</id><value>Showers</value></string>
-  <string><id>381</id><value>Few</value></string>
-  <string><id>382</id><value>Scattered</value></string>
-  <string><id>383</id><value>Vovento</value></string>
-  <string><id>384</id><value>Intensa</value></string>
-  <string><id>385</id><value>Fair</value></string>
-  <string><id>386</id><value>Clear</value></string>
-  <string><id>387</id><value>Clouds</value></string>
-  <string><id>388</id><value>Frua</value></string>
-  <string><id>389</id><value>Shower</value></string>
-  <string><id>390</id><value>Flurries</value></string>
-  <string><id>391</id><value>Malnobla</value></string>
-  <string><id>392</id><value>Mezgrada</value></string>
-  <string><id>393</id><value>Nobla</value></string>
-  <string><id>394</id><value>Nebulo</value></string>
-  <string><id>395</id><value>Haze</value></string>
-  <string><id>396</id><value>Elekti Location</value></string>
-  <string><id>397</id><value>Refresh Time</value></string>
-  <string><id>398</id><value>Temperature Units</value></string>
-  <string><id>399</id><value>Tempo Units</value></string>
-  <string><id>400</id><value>Wealar</value></string>
-  <string><id>401</id><value>Temp</value></string>
-  <string><id>402</id><value>Feels Like</value></string>
-  <string><id>403</id><value>UV Index</value></string>
-  <string><id>404</id><value>Wind</value></string>
-  <string><id>405</id><value>Dew Point</value></string>
-  <string><id>406</id><value>Humideco</value></string>
-  <string><id>407</id><value>From</value></string>
-  <string><id>408</id><value>at</value></string>
-
-  <string><id>410</id><value>Accessing Wealar.com</value></string>
-  <string><id>411</id><value>Getting Wealar For:</value></string>
-  <string><id>412</id><value>Unable to get wealar data</value></string>
-  <string><id>413</id><value>Manual</value></string>
-  <string><id>414</id><value>Ne review for this albumo</value></string>
-  <string><id>415</id><value>Downloading thumbnail...</value></string>
-  <string><id>416</id><value>Not available</value></string>
-  <string><id>417</id><value>Vido: Big Icons</value></string>
-  <string><id>418</id><value>Mia Filmoj/Gxenroj</value></string>
-  <string><id>419</id><value>Mia Filmoj/Aktoroj</value></string>
-  <string><id>420</id><value>Mia Filmoj/Jaroj</value></string>
-  <string><id>421</id><value>Mia Filmoj/Title</value></string>
-  <string><id>422</id><value>Forviŝi Albumoinfo</value></string>
-  <string><id>423</id><value>Forviŝi CDDB Info</value></string>
-  <string><id>424</id><value>Elekti</value></string>
-  <string><id>425</id><value>No albumoinfo found.</value></string>
-  <string><id>426</id><value>No CDDB info found.</value></string>
-  <string><id>427</id><value>KD-ingo:</value></string>
-  <string><id>428</id><value>Insert correct KD-ingo</value></string>
-  <string><id>429</id><value>Plaĉi insert la following KD</value></string>
-  <string><id>430</id><value>ordigi je: KD#</value></string>
-  <string><id>431</id><value>No Cache</value></string>
-  <string><id>432</id><value>Forviŝi movie from datinbanko</value></string>
-  <string><id>433</id><value>Are vi sure about removing</value></string>
-  <string><id>434</id><value>la filmo?</value></string>
-  <string><id>435</id><value>Track</value></string>
-  <string><id>436</id><value>Jaro:</value></string>
-  <string><id>437</id><value>Tempo-amplekso:</value></string>
-  <string><id>438</id><value>Opening vico</value></string>
-  <string><id>439</id><value>Cache</value></string>
-  <string><id>440</id><value>Durdisko</value></string>
-  <string><id>441</id><value>UDF</value></string>
-  <string><id>442</id><value>LAN</value></string>
-  <string><id>443</id><value>Interreto</value></string>
-  <string><id>444</id><value>Filmo</value></string>
-  <string><id>445</id><value>Soni</value></string>
-  <string><id>446</id><value>KD</value></string>
-  <string><id>447</id><value>Autorun</value></string>
-  <string><id>448</id><value>LCD</value></string>
-  <string><id>449</id><value>Enabled</value></string>
-  <string><id>450</id><value>Columns</value></string>
-  <string><id>451</id><value>Row 1 Address</value></string>
-  <string><id>452</id><value>Row 2 Address</value></string>
-  <string><id>453</id><value>Row 3 Address</value></string>
-  <string><id>454</id><value>Row 4 Address</value></string>
-  <string><id>455</id><value>Rows</value></string>
-  <string><id>456</id><value>Mode</value></string>
-  <string><id>457</id><value>Switch Vido</value></string>
-  <string><id>458</id><value>B/Mark</value></string>
-  <string><id>459</id><value>Subs</value></string>
-  <string><id>460</id><value>Soni Stream</value></string>
-  <string><id>461</id><value>[active]</value></string>
-  <string><id>462</id><value>Subtitle</value></string>
-  <string><id>463</id><value>Backlight</value></string>
-  <string><id>464</id><value>Brightness</value></string>
-  <string><id>465</id><value>Contrast</value></string>
-  <string><id>466</id><value>Gamma</value></string>
-  <string><id>467</id><value>Type</value></string>
-  <string><id>468</id><value>Movi la bar to change la osd position</value></string>
-  <string><id>469</id><value>OSD Position</value></string>
-  <string><id>470</id><value>CrEditiis</value></string>
-  <string><id>471</id><value>Modchip</value></string>
-  <string><id>472</id><value>Filmoj OSD Timeout</value></string>
-  <string><id>473</id><value>High Quality Resampling</value></string>
-  <string><id>474</id><value>Off</value></string>
-  <string><id>475</id><value>Muziko Only</value></string>
-  <string><id>476</id><value>Muziko &amp; Filmoj</value></string>
-  <string><id>477</id><value>Unable to load playlist</value></string>
-  <string><id>478</id><value>OSD</value></string>
-  <string><id>479</id><value>Skin and Language</value></string>
-  <string><id>480</id><value>Appearance</value></string>
-  <string><id>481</id><value>Audio Options</value></string>
-  <string><id>482</id><value>About XBMC</value></string>
-  <string><id>483</id><value>Albumo</value></string>
-  <string><id>484</id><value>Artisto</value></string>
-  <string><id>485</id><value>Forviŝi albumo</value></string>
-  <string><id>486</id><value>Repeat</value></string>
-  <string><id>487</id><value>Repeat One</value></string>
-  <string><id>488</id><value>Repeat Folders</value></string>
-  <string><id>489</id><value>Auto Play Next Item</value></string>
-  <string><id>490</id><value>Auto switch list and icons in kantoj</value></string>
-  <string><id>491</id><value>- Use big icons</value></string>
-  <string><id>492</id><value>Reamplekso Vobsubs</value></string>
-  <string><id>493</id><value>Advanced Options (Experts Only!)</value></string>
-  <string><id>494</id><value>Overĉiom Audio Headroom</value></string>
-  <string><id>495</id><value>Upsample Filmoj to GUI Resolution</value></string>
-  <string><id>496</id><value>Calibration</value></string>
-  <string><id>497</id><value>Hide Media Extensions</value></string>
-  <string><id>498</id><value>ordigi je: Type</value></string>
-  <string><id>499</id><value>Unable to connect to www.ĉiommuziko.com</value></string>
-  <string><id>500</id><value>Downloading albumo info failed</value></string>
-  <string><id>501</id><value>Looking for albumo nomoj...</value></string>
-  <string><id>502</id><value>Open</value></string>
-  <string><id>503</id><value>Busy</value></string>
-  <string><id>504</id><value>Empty</value></string>
-  <string><id>505</id><value>Loading media info from vicos...</value></string>
-  <string><id>506</id><value>Use Directory Nomoj for Description</value></string>
-  <string><id>507</id><value>ordigi je: Usage</value></string>
-  <string><id>508</id><value>Do not use Shortcuts or Scan</value></string>
-  <string><id>509</id><value>Cache Program Thumbnails</value></string>
-  <string><id>510</id><value>Enable Visualisations</value></string>
-  <string><id>511</id><value>Enable filmoj mode switching</value></string>
-  <string><id>512</id><value>Startup Window</value></string>
-  <string><id>513</id><value>Home Window</value></string>
-  <string><id>514</id><value>Manual Preferoj</value></string>
-  <string><id>515</id><value>Gxenro</value></string>
-  <string><id>516</id><value>Make archives with one vico transparent</value></string>
-  <string><id>517</id><value>Recently Played Albumos</value></string>
-  <string><id>518</id><value>Launch</value></string>
-  <string><id>519</id><value>Launch in..</value></string>
-  <string><id>520</id><value>Editii XBE title</value></string>
-  <string><id>521</id><value>Compilations</value></string>
-  <string><id>522</id><value>ReMovi Source</value></string>
-
-  <string><id>588</id><value>Cancel Party Mode</value></string>
-  <string><id>589</id><value>Party Mode</value></string>
-  <string><id>590</id><value>Random</value></string>
-  <string><id>591</id><value>Off</value></string>
-  <string><id>592</id><value>One</value></string>
-  <string><id>593</id><value>ĉiom</value></string>
-  <string><id>594</id><value>Off</value></string>
-  <string><id>595</id><value>Repeat: Off</value></string>
-  <string><id>596</id><value>Repeat: One</value></string>
-  <string><id>597</id><value>Repeat: ĉiom</value></string>
-
-  <string><id>600</id><value>Rip CD Audio</value></string>
-  <string><id>601</id><value>Medium</value></string>
-  <string><id>602</id><value>Standard</value></string>
-  <string><id>603</id><value>Extreme</value></string>
-  <string><id>604</id><value>Constant Bit Rate</value></string>
-  <string><id>605</id><value>Ripping...</value></string>
-  <string><id>606</id><value>Track Number:</value></string>
-  <string><id>607</id><value>To:</value></string>
-  <string><id>608</id><value>Could not rip CD or Track</value></string>
-  <string><id>609</id><value>CDDARipPath is not set in XboxMediaCtajpi.xml</value></string>
-
-  <string><id>620</id><value>CD Ripping</value></string>
-  <string><id>621</id><value>Encoder</value></string>
-  <string><id>622</id><value>Quality</value></string>
-  <string><id>623</id><value>Bit Rate</value></string>
-  <string><id>624</id><value>Include Track Number</value></string>
-  <string><id>625</id><value>ĉiom kantoj of</value></string>
-
-  <string><id>629</id><value>Vido Mode</value></string>
-  <string><id>630</id><value>Normal</value></string>
-  <string><id>631</id><value>Zoom</value></string>
-  <string><id>632</id><value>Stretch 4:3</value></string>
-  <string><id>633</id><value>Stretch 14:9</value></string>
-  <string><id>634</id><value>Stretch 16:9</value></string>
-  <string><id>635</id><value>Original amplekso</value></string>
-  <string><id>636</id><value>Custom</value></string>
-  <string><id>637</id><value>Replay Gain</value></string>
-  <string><id>638</id><value>Replay Gain Mode</value></string>
-  <string><id>639</id><value>Use Track Levels</value></string>
-  <string><id>640</id><value>Use Albumo Levels</value></string>
-  <string><id>641</id><value>PreAmp Level - Replay Gained vicos</value></string>
-  <string><id>642</id><value>PreAmp Level - Non Replay Gained vicos</value></string>
-  <string><id>643</id><value>Avoid Clipping on Replay Gained vicos</value></string>
-  <string><id>644</id><value>Crop Black Bars</value></string>
-  <string><id>645</id><value>Need to cache a big vico. Continue?</value></string>
-  <string><id>646</id><value>ReMovi Title</value></string>
-  
-  <string><id>700</id><value>Cleaning up Library</value></string>
-  <string><id>701</id><value>Removing old kantoj from la Library</value></string>
-  <string><id>702</id><value>This path has been scanned before</value></string>
-  <string><id>703</id><value>Press Yes to updati ĉiom kantoj in this path</value></string>
-  <string><id>704</id><value>Press No to just add new kantoj</value></string>
-  <string><id>705</id><value>Network</value></string>
-  <string><id>706</id><value>HTTP Proxy Host</value></string>
-  <string><id>707</id><value>HTTP Proxy Port</value></string>
-  <string><id>708</id><value>Enable HTTP Proxy</value></string>
-  <string><id>709</id><value>XLink Kai XTag</value></string>
-  <string><id>710</id><value>XLink Kai pasvorto</value></string>
-  <string><id>711</id><value>Internet Protocol (IP)</value></string>
-  <string><id>712</id><value>Invalid port specified. Value must be between 1 and 65535.</value></string>
-  <string><id>713</id><value>HTTP Proxy</value></string>
-  <string><id>714</id><value>XLink Kai</value></string>
-  <string><id>715</id><value>Assignment</value></string>
-  <string><id>716</id><value>Aŭtomate (DHCP)</value></string>
-  <string><id>717</id><value>Manual (Static)</value></string>
-  <string><id>718</id><value>Default (Dashboard)</value></string>
-  <string><id>719</id><value>- IP Address</value></string>
-  <string><id>720</id><value>- Netmpeti</value></string>
-  <string><id>721</id><value>- Default Gateway</value></string>
-  <string><id>722</id><value>- DNS Server</value></string>
-  <string><id>723</id><value>Save &amp; Restart</value></string>
-  <string><id>724</id><value>Invalid address specified. Value must be AAA.BBB.CCC.DDD</value></string>
-  <string><id>725</id><value>with numbers between 0 and 255.</value></string>
-  <string><id>726</id><value>Changes not saved. Continue without saving?</value></string>
-  <string><id>727</id><value>Web Server</value></string>
-  <string><id>728</id><value>FTP Server</value></string>
-  <string><id>729</id><value>Internet Time</value></string>
-  <string><id>730</id><value>Web Server Port</value></string>
-  <string><id>731</id><value>Time Server Host</value></string>
-  <string><id>732</id><value>Save &amp; Apply</value></string>
-  <string><id>733</id><value>Web Server pasvorto</value></string>
-  <string><id>734</id><value>No Pass</value></string>
-  <string><id>735</id><value>- Charset</value></string>
-  <string><id>736</id><value>- Style</value></string>
-  <string><id>737</id><value>- Color</value></string>
-  <string><id>738</id><value>Normal</value></string>
-  <string><id>739</id><value>Bold</value></string>
-  <string><id>740</id><value>Italics</value></string>
-  <string><id>741</id><value>Bold Italics</value></string>
-  <string><id>742</id><value>White</value></string>
-  <string><id>743</id><value>flava</value></string>
-  <string><id>744</id><value>vicos</value></string>
-  <string><id>745</id><value>No scanned informaĵo for this Vido</value></string>
-  <string><id>746</id><value>Switch to la vicos Vido</value></string>
-  <string><id>747</id><value>Eraro loading image</value></string>
-  <string><id>748</id><value>Editii Path</value></string>
-  <string><id>749</id><value>Add Share</value></string>
-  <string><id>750</id><value>Are vi sure?</value></string>
-  <string><id>751</id><value>Removing Share</value></string>
-  <string><id>752</id><value>Editii Share Path</value></string>
-  <string><id>753</id><value>Editii Share Nomo</value></string>
-  <string><id>754</id><value>Add Program Link</value></string>
-  <string><id>755</id><value>Editii Program Path</value></string>
-  <string><id>756</id><value>Editii Program Nomo</value></string>
-  <string><id>757</id><value>Editii Path Depth</value></string>
-  <string><id>758</id><value>Removing Program Link</value></string>  
-  <string><id>759</id><value>Vido: Big List</value></string>
-  <string><id>760</id><value>flava</value></string>
-  <string><id>761</id><value>Blanka</value></string>
-  <string><id>762</id><value>Blue</value></string>
-  <string><id>763</id><value>Bright Verda</value></string>
-  <string><id>764</id><value>flava Verda</value></string>
-  <string><id>765</id><value>Cyan</value></string>
-  <string><id>766</id><value>Reserved</value></string>
-  <string><id>767</id><value>Reserved</value></string>
-  <string><id>768</id><value>Reserved</value></string>
-  <string><id>769</id><value>Reserved</value></string>
-  <string><id>770</id><value>Eraro %i: share not available</value></string>
-  <string><id>771</id><value>- Auto Fatx Limiter</value></string>
-  <string><id>772</id><value>Audio Hardware</value></string>
-  <string><id>773</id><value>Seeking</value></string>
-  <string><id>774</id><value>Slideshow Folder</value></string>
-
-  <string><id>998</id><value>XLink Kai</value></string>
-  <string><id>999</id><value>Interreto-gaming</value></string>
-  <string><id>1000</id><value>ekranosaver PreVido</value></string>
-  <string><id>1001</id><value>Unable to connect</value></string>
-  <string><id>1002</id><value>XBMC was unable to connect to la network location.</value></string>
-  <string><id>1003</id><value>This could be due to la network not being connected.</value></string>
-  <string><id>1004</id><value>Would you like to add it anyway?</value></string>
-  <string><id>1005</id><value>tajpi a nomo for this share</value></string>
-  <string><id>1006</id><value>IP Address</value></string>
-  <string><id>1007</id><value>Add Network Location</value></string>
-  <string><id>1008</id><value>Protocol</value></string>
-  <string><id>1009</id><value>Server Address</value></string>
-  <string><id>1010</id><value>Server Nomo</value></string>
-  <string><id>1011</id><value>Remote Path</value></string>
-  <string><id>1012</id><value>Shared Folder</value></string>
-  <string><id>1013</id><value>Port</value></string>
-  <string><id>1014</id><value>Uzulonomo</value></string>
-  <string><id>1015</id><value>network server</value></string>
-  <string><id>1016</id><value>tajpi la network address of la server</value></string>
-  <string><id>1017</id><value>tajpi la path on la server</value></string>
-  <string><id>1018</id><value>tajpi la port number</value></string>
-  <string><id>1019</id><value>tajpi la uzulonomo</value></string>
-  <string><id>1020</id><value>Add %s Source</value></string>
-  <string><id>1021</id><value>tajpi la path or foliumilo for la media location.</value></string>
-  <string><id>1022</id><value>tajpi a nomo for this Media Source.</value></string>
-  <string><id>1023</id><value>Foliumilo for new share</value></string>
-  <string><id>1024</id><value>Foliumilo</value></string>
-  <string><id>1025</id><value>Could not retrieve directory informaĵo.</value></string>
-  <string><id>1026</id><value>Add Source</value></string>
-  <string><id>1027</id><value>Editii Source</value></string>
-  <string><id>1028</id><value>Editii %s Source</value></string>
-  <string><id>1029</id><value>tajpi la new label</value></string>
-  <string><id>1030</id><value>an image</value></string>
-  <string><id>1031</id><value>an image folder</value></string>
-  <string><id>1032</id><value>Add Network Location...</value></string>
-
-  <string><id>1200</id><value>SMB Client</value></string>
-  <string><id>1201</id><value>Share IP</value></string>
-  <string><id>1202</id><value>Workgroup</value></string>
-  <string><id>1203</id><value>Default Uzulonomo</value></string>
-  <string><id>1204</id><value>Default Pasvorto</value></string>
-  <string><id>1205</id><value>Share Nomo</value></string>
-  <string><id>1206</id><value>Share Grupo</value></string>
-  <string><id>1207</id><value>WINS-Server</value></string>
-  <string><id>1208</id><value>Aŭtomate Bookmarks</value></string>
-  <string><id>1209</id><value>La SMB Client preferoj sxangxas sukcese!</value></string>
-  <string><id>1210</id><value>ReMovi</value></string>
-  <string><id>1211</id><value>Muziko</value></string>
-  <string><id>1212</id><value>Filmoj</value></string>
-  <string><id>1213</id><value>Bildoj</value></string>
-  <string><id>1214</id><value>vicos</value></string>
-  <string><id>1215</id><value>Muziko &amp; Filmoj </value></string>
-  <string><id>1216</id><value>Muziko &amp; Bildoj</value></string>
-  <string><id>1217</id><value>Muziko &amp; vicos</value></string>
-  <string><id>1218</id><value>Filmoj &amp; Bildoj</value></string>
-  <string><id>1219</id><value>Filmoj &amp; vicos</value></string>
-  <string><id>1220</id><value>Bildoj &amp; vicos</value></string>
-  <string><id>1221</id><value>Muziko &amp; Filmoj &amp; Bildoj</value></string>
-  <string><id>1222</id><value>Muziko &amp; Filmoj &amp; Bildoj &amp; vicos</value></string>
-  <string><id>1223</id><value>Disabled</value></string>
-  <string><id>1224</id><value>Normal Uzulo</value></string>
-  <string><id>1225</id><value>Advanced Uzulo</value></string>
-  <string><id>1226</id><value>vicos &amp; Muziko &amp; Filmoj</value></string>
-  <string><id>1227</id><value>vicos &amp; Bildoj &amp; Muziko</value></string>
-  <string><id>1228</id><value>vicos &amp; Bildoj &amp; Filmoj</value></string>
-  <string><id>1229</id><value>Muziko &amp; Programs</value></string>
-  <string><id>1230</id><value>Filmoj &amp; Programs</value></string>
-  <string><id>1231</id><value>Bildoj &amp; Programs</value></string>
-  <string><id>1232</id><value>Muziko &amp; Filmoj &amp; Bildoj &amp; Programs</value></string>
-  <string><id>1233</id><value>Programs &amp; Filmoj &amp; Muziko</value></string>
-  <string><id>1234</id><value>Programs &amp; Bildoj &amp; Muziko</value></string>
-  <string><id>1235</id><value>Programs &amp; Bildoj &amp; Filmoj</value></string>
-  <string><id>1236</id><value>- Client Timeout</value></string>
-
-  <string><id>1245</id><value>FTP Uzulo Nomo</value></string>
-  <string><id>1246</id><value>FTP Uzulo Pasvorto</value></string>
-  <string><id>1247</id><value>FTP Server Uzulo pasvorto has been set sucessfully</value></string>
-
-  <string><id>1250</id><value>Auxtomata-detection</value></string>
-  <string><id>1251</id><value>XBOX Auxtomata-detection</value></string>
-  <string><id>1252</id><value>Kromnomo</value></string>
-  <string><id>1253</id><value>Verki FTP Link in mia vicos</value></string>
-  <string><id>1254</id><value>Peti to Connect</value></string>
-  <string><id>1255</id><value>Send FTP Uzulo and pasvorto</value></string>
-  <string><id>1256</id><value>Ping Interval</value></string>
-  <string><id>1257</id><value>Would vi like to connect to la Autodetected Xbox?</value></string>
-
-  <string><id>1396</id><value>Drifting</value></string>
-  <string><id>1397</id><value>kaj</value></string>
-  <string><id>1398</id><value>Frostos</value></string>
-  <string><id>1399</id><value>Late</value></string>
-  <string><id>1400</id><value>Sola</value></string>
-  <string><id>1401</id><value>T-Showers</value></string>
-  <string><id>1402</id><value>Tondri</value></string>
-  <string><id>1403</id><value>Sunbrilo</value></string>
-  <string><id>1404</id><value>Peza</value></string>
-  <string><id>1405</id><value>en</value></string>
-  <string><id>1406</id><value>la</value></string>
-  <string><id>1407</id><value>Apudaĵo</value></string>
-  <string><id>1408</id><value>Glacio</value></string>
-  <string><id>1409</id><value>Kristaloj</value></string>
-  <string><id>1410</id><value>Kvieto</value></string>
-
-  <string><id>2050</id><value>Runtime:</value></string>
-
-  <string><id>4501</id><value>LCD Type</value></string>
-
-  <string><id>10000</id><value>Hejmo</value></string>
-  <string><id>10001</id><value>Mia Programs</value></string>
-  <string><id>10002</id><value>Mia Bildoj</value></string>
-  <string><id>10003</id><value>Mia vicos</value></string>
-  <string><id>10004</id><value>Preferoj</value></string>
-  <string><id>10005</id><value>Mia Muziko</value></string>
-  <string><id>10006</id><value>Mia Filmoj</value></string>
-  <string><id>10007</id><value>Sistemo informaĵo</value></string>
-  <string><id>10008</id><value>Preferoj-&gt;Generalo</value></string>
-  <string><id>10009</id><value>Preferoj-&gt;ekrano</value></string>
-  <string><id>10010</id><value>Preferoj-&gt;Appearance-&gt;GUI Calibration</value></string>
-  <string><id>10011</id><value>Preferoj-&gt;Mia Filmoj-&gt;ekrano Calibration</value></string>
-  <string><id>10012</id><value>Preferoj-&gt;Mia Bildoj</value></string>
-  <string><id>10013</id><value>Preferoj-&gt;Mia Programs</value></string>
-  <string><id>10014</id><value>Preferoj-&gt;Wealar</value></string>
-  <string><id>10015</id><value>Preferoj-&gt;Mia Muziko</value></string>
-  <string><id>10016</id><value>Preferoj-&gt;System</value></string>
-  <string><id>10017</id><value>Preferoj-&gt;Mia Filmoj</value></string>
-  <string><id>10018</id><value>Preferoj-&gt;Network</value></string>
-  <string><id>10019</id><value>Preferoj-&gt;Appearance</value></string>
-  <string><id>10020</id><value>Scripts</value></string>
-  <string><id>10021</id><value>Mia Filmoj/Gxenroj</value></string>
-  <string><id>10022</id><value>Mia Filmoj/Akotoroj</value></string>
-  <string><id>10023</id><value>Mia Filmoj/Jaroj</value></string>
-  <string><id>10025</id><value>Mia Filmoj/Nomoj</value></string>
-  <string><id>10028</id><value>Mia Filmoj/Kanto-listoj</value></string>
-  <string><id>10034</id><value>Preferoj-&gt;Provicos</value></string>
-  <string><id>10100</id><value>Jes/ne dialog</value></string>
-  <string><id>10101</id><value>Progress dialog</value></string>
-  <string><id>10500</id><value>Mia Muziko/Playlist</value></string>
-  <string><id>10501</id><value>Mia Muziko/vicos</value></string>
-  <string><id>10502</id><value>Mia Muziko/Library</value></string>
-  <string><id>10503</id><value>Mia Muziko/Popola 100</value></string>
-  <string><id>10504</id><value>Pli-popola 100 kantoj</value></string>
-  <string><id>10505</id><value>Pli-popa 100 Albumos</value></string>
-  <string><id>10506</id><value>Applications</value></string>
-  <string><id>10507</id><value>Preferoj</value></string>
-  <string><id>10508</id><value>Wealar Forecast</value></string>
-  <string><id>10509</id><value>Reto Gaming</value></string>
-  <string><id>10510</id><value>Extensions</value></string>
-  <string><id>10511</id><value>Sistemo Info</value></string>
-  <string><id>10512</id><value>Mia Muziko - Albumos</value></string>
-  <string><id>10513</id><value>Mia Muziko - Artistoj</value></string>
-  <string><id>10514</id><value>Mia Muziko - Gxenroj</value></string>
-  <string><id>10515</id><value>Mia Muziko - Top 100</value></string>
-  <string><id>10516</id><value>Mia Muziko - Library</value></string>
-  <string><id>10517</id><value>Mia Muziko - Now Playing</value></string>
-  <string><id>10518</id><value>Mia Filmoj - Aktoroj</value></string>
-  <string><id>10519</id><value>Mia Filmoj - Gxenroj</value></string>
-  <string><id>10520</id><value>Mia Filmoj - Nomo</value></string>
-  <string><id>10521</id><value>Mia Filmoj - Jaro</value></string>
-  <string><id>10522</id><value>Mia Filmoj - Now Playing</value></string>
-  <string><id>10523</id><value>Albumo Info</value></string>
-  <string><id>10524</id><value>Filmo Info</value></string>
-  <string><id>12000</id><value>Elekti dialog</value></string>
-  <string><id>12001</id><value>Mia Muziko/info</value></string>
-  <string><id>12002</id><value>Dialog OK</value></string>
-  <string><id>12003</id><value>Mia Filmoj/Info</value></string>
-  <string><id>12004</id><value>Mia Scripts/Info</value></string>
-  <string><id>12005</id><value>Fullekrano filmoj</value></string>
-  <string><id>12006</id><value>Soni visualisation</value></string>
-  <string><id>12007</id><value>Mia Bildo/slideshow</value></string>
-  <string><id>12008</id><value>Vicostacking dialog</value></string>
-  <string><id>12009</id><value>Rebuild index...</value></string>
-  <string><id>12010</id><value>Return to Mia Muziko</value></string>
-  <string><id>12011</id><value>Return to Mia Filmoj</value></string>
-  <string><id>12012</id><value>Updati trainer list</value></string>
-  <string><id>12013</id><value>Trainer</value></string>
-  <string><id>12014</id><value>No trainers found</value></string>
-  <string><id>12015</id><value>Trainer Preferoj</value></string>
-  <string><id>12016</id><value>ĉiom registered trailers are missing. Updati your list</value></string>
-  <string><id>12017</id><value>Auto resume from last position</value></string>
-  <string><id>12018</id><value>Ne</value></string>
-  <string><id>12019</id><value>Jes ja</value></string>
-  <string><id>12020</id><value>Peti</value></string>
-  <string><id>12021</id><value>Start from beginning</value></string>
-  <string><id>12022</id><value>Resume from last position</value></string>
-
-  <string><id>12310</id><value>0</value></string>
-  <string><id>12311</id><value>1</value></string>
-  <string><id>12312</id><value>2</value></string>
-  <string><id>12313</id><value>3</value></string>
-  <string><id>12314</id><value>4</value></string>
-  <string><id>12315</id><value>5</value></string>
-  <string><id>12316</id><value>6</value></string>
-  <string><id>12317</id><value>7</value></string>
-  <string><id>12318</id><value>8</value></string>
-  <string><id>12319</id><value>9</value></string>
-  <string><id>12320</id><value>c</value></string>
-  <string><id>12321</id><value>ok</value></string>
-  <string><id>12322</id><value>*</value></string>
-  <string><id>12324</id><value>XBMC Master Lock</value></string>
-  <string><id>12325</id><value>Locked! tajpi Code...</value></string>
-  <string><id>12326</id><value>tajpi pasvorto</value></string>
-  <string><id>12327</id><value>tajpi Master Code</value></string>
-  <string><id>12328</id><value>tajpi Malŝlosi Code</value></string> 
-  <string><id>12329</id><value>or press C to cancel</value></string>
-  <string><id>12330</id><value>tajpi Gamepad button combo and press Start</value></string>
-  <string><id>12331</id><value>press Start, or Back to cancel</value></string>
-  <string><id>12332</id><value>Set Lock</value></string>
-  <string><id>12333</id><value>Malŝlosi</value></string>
-  <string><id>12334</id><value>Reset Lock</value></string>
-  <string><id>12335</id><value>ReMovi Lock</value></string>
-  <string><id>12336</id><value>Elekti type of lock to use:</value></string>
-  <string><id>12337</id><value>Numeric pasvorto</value></string>
-  <string><id>12338</id><value>Gamepad button combo</value></string>
-  <string><id>12339</id><value>Full-text pasvorto</value></string>
-  <string><id>12340</id><value>tajpi new pasvorto</value></string>
-  <string><id>12341</id><value>Re-tajpi new pasvorto</value></string>
-  <string><id>12342</id><value>malĝusta pasvorto,</value></string>
-  <string><id>12343</id><value>retries left </value></string>
-  <string><id>12344</id><value>pasvortos tajpied did not match.</value></string>
-  <string><id>12345</id><value>Access Denied</value></string>
-  <string><id>12346</id><value>pasvorto retry limit exceeded.</value></string>
-  <string><id>12347</id><value>La XBOX will now shut off.</value></string>
-  <string><id>12348</id><value>Item Locked</value></string>
-  <string><id>12349</id><value>Remember Master Code until next boot?</value></string>
-  <string><id>12350</id><value>(Opening any item in Preferoj will</value></string>
-  <string><id>12351</id><value>aŭtomateĉiomy re-enable Master Lock.)</value></string>
-  <string><id>12352</id><value>tajpi Master Code button combo and press Start</value></string>
-  <string><id>12353</id><value>Reactivate Lock</value></string>
-  <string><id>12354</id><value>Override folder locks until next boot?</value></string>
-  <string><id>12355</id><value>Aŭtomateĉiomy re-enable folder locks.)</value></string>
-  <string><id>12356</id><value>Change Lock</value></string>
-  <string><id>12357</id><value>Share Lock</value></string>
-  <string><id>12358</id><value>pasvorto entry was blank. Try again.</value></string>
-  <string><id>12360</id><value>Master Lock</value></string>
-  <string><id>12361</id><value>Max Retry</value></string>
-  <string><id>12362</id><value>Enable Shutdown</value></string>
-  <string><id>12363</id><value>Protect Shares</value></string>
-  <string><id>12364</id><value>Master Mode</value></string>
-  <string><id>12365</id><value>Master Code</value></string>
-  <string><id>12366</id><value>Master Lock is changed. Master Code is now set to:</value></string>
-  <string><id>12367</id><value>Master Code is not Valid!</value></string>
-  <string><id>12368</id><value>Plaĉi tajpi a Valid Master Code!</value></string>
-  <string><id>12369</id><value>XBMC Startup Lock</value></string>
-  <string><id>12370</id><value>Master Lock Mode changed, la Master Code wasn't set!</value></string>
-  <string><id>12371</id><value>Plaĉi Set a new Master Code!</value></string>
-  <string><id>12372</id><value>Lock Preferoj &amp; Mia vicos</value></string>
-  <string><id>12373</id><value>Preferoj &amp;  Mia vicos</value></string>
-  <string><id>12374</id><value>Lock Media</value></string>
-  <string><id>12375</id><value>Master Uzulo Mode</value></string>
-  <string><id>12376</id><value>Set as default for ĉiom Movies</value></string>
-  <string><id>12377</id><value>This will reset any previously saved values</value></string>
-  <string><id>12378</id><value>Show each image for</value></string>
-  <string><id>12379</id><value>Use Pan and Zoom effects</value></string>
-  <string><id>12380</id><value>Play NTSC filmoj at PAL rates</value></string>
-  <string><id>12381</id><value>Play PAL filmoj at NTSC rates</value></string>
-  <string><id>12382</id><value>Play NTSC filmoj in PAL60</value></string>
-  <string><id>12383</id><value>12 hour clock</value></string>
-  <string><id>12384</id><value>24 hour clock</value></string>
-  <string><id>12385</id><value>Day/Month</value></string>
-  <string><id>12386</id><value>Month/Day</value></string>
-  <string><id>12387</id><value>Rescan datinbanko</value></string>
-
-  <string><id>12390</id><value>System Uptime</value></string>
-  <string><id>12391</id><value>Minutes</value></string>
-  <string><id>12392</id><value>Hours</value></string>
-  <string><id>12393</id><value>Days</value></string>
-  <string><id>12394</id><value>Total Uptime</value></string>
-  
-  <string><id>12600</id><value>Mia Wealar</value></string>
-
-  <string><id>12900</id><value>ekranosaver</value></string>
-  <string><id>12901</id><value>Fullekrano OSD</value></string>
-
-  <string><id>13000</id><value>System</value></string>
-  <string><id>13001</id><value>Immediate HD Spindown</value></string>
-  <string><id>13002</id><value>Filmoj Only</value></string>
-  <string><id>13003</id><value>- malfruiĝo</value></string>
-  <string><id>13004</id><value>- Minimum vico Duration</value></string>
-  <string><id>13005</id><value>Shutdown</value></string>
-  <string><id>13006</id><value>Dashboard</value></string>
-
-  <string><id>13100</id><value>Flicker Filter</value></string>
-  <string><id>13150</id><value>Durdisko Key:</value></string>
-  <string><id>13151</id><value>Durdisko Temp:</value></string>
-  <string><id>13152</id><value>DVD Model:</value></string>
-  <string><id>13153</id><value>DVD Firmware:</value></string>
-  <string><id>13154</id><value>Durdisko Model:</value></string>
-  <string><id>13155</id><value>Durdisko Serial:</value></string>
-  <string><id>13156</id><value>Durdisko Firmware:</value></string>
-  <string><id>13157</id><value>Durdisko pasvorto:</value></string>
-  <string><id>13158</id><value>Durdisko Lock State:</value></string>
-  <string><id>13159</id><value>Subnet mpeti:</value></string>
-  <string><id>13160</id><value>Gateway:</value></string>
-  <string><id>13161</id><value>DNS</value></string>
-  <string><id>13162</id><value>Initialize failed</value></string>
-  <string><id>13163</id><value>GamePads On Port:</value></string>
-  <string><id>13164</id><value>Keyboard On Port:</value></string>
-  <string><id>13165</id><value>Mouse On Port:</value></string>
-  <string><id>13166</id><value>Head/MicroPhone On Port:</value></string>
-  <string><id>13167</id><value>MemoryStick On Port:</value></string>
-  <string><id>13168</id><value>IR-Remote On Port:</value></string>
-  <string><id>13169</id><value>Bypass CD Elektiion</value></string>
-  <string><id>13170</id><value>Never</value></string>
-  <string><id>13171</id><value>Immediately</value></string>
-  <string><id>13172</id><value>After %i secs</value></string>
-
-  <string><id>13200</id><value>Provicos</value></string>
-  <string><id>13201</id><value>Forviŝi provico '%s'?</value></string>
-  <string><id>13202</id><value>Save current Preferoj as provico...</value></string>
-  <string><id>13203</id><value>Provico '%s' loaded successfully</value></string>
-  <string><id>13204</id><value>Last loaded provico:</value></string>
-  <string><id>13205</id><value>Unknown</value></string>
-  <string><id>13206</id><value>Overwrite</value></string>
-  <string><id>13207</id><value>Overwrite provico '%s'?</value></string>
-  <string><id>13208</id><value>Alarm clock</value></string>
-  <string><id>13209</id><value>Alarm clock interval (in minutes)</value></string>
-  <string><id>13210</id><value>Started, alarm in %im</value></string>
-  <string><id>13211</id><value>Alarm!</value></string>
-  <string><id>13212</id><value>Canceled with %im%is left</value></string>
-
-
-  <string><id>13249</id><value>Search for Subtitles in RARs</value></string>
-  <string><id>13250</id><value>Foliumilo for subtitle...</value></string>
-  <string><id>13251</id><value>Movi Item</value></string>
-  <string><id>13252</id><value>Movi Item Here</value></string>
-  <string><id>13253</id><value>Cancel Movi</value></string>
-
-  <string><id>13270</id><value>Hardware:</value></string>
-  <string><id>13271</id><value>CPU Speed:</value></string>
-  <string><id>13274</id><value>Xbox is Connected, but no DNS is available.</value></string>
-  <string><id>13275</id><value>Hard Disk</value></string>
-  <string><id>13276</id><value>DVD-ROM</value></string>
-  <string><id>13277</id><value>Storage</value></string>
-  <string><id>13278</id><value>Default</value></string>
-  <string><id>13279</id><value>Network</value></string>
-  <string><id>13280</id><value>Filmoj</value></string>
-  <string><id>13281</id><value>Hardware</value></string>
-  <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>Kernel Version:</value></string>
-  <string><id>13284</id><value>CPU Speed:</value></string>
-  <string><id>13285</id><value>Detected BIOS:</value></string>
-  <string><id>13286</id><value>Filmoj Encoder:</value></string>
-  <string><id>13287</id><value>ekrano Resolution:</value></string>
-  <string><id>13288</id><value>Xbox Version:</value></string>
-  <string><id>13289</id><value>Xbox Serial Number:</value></string>
-  <string><id>13290</id><value>XBOX Manufacturer:</value></string>
-  <string><id>13291</id><value>ModChip:</value></string>
-  <string><id>13292</id><value>A/V Cable:</value></string>
-  <string><id>13293</id><value>Filmoj &amp; XBE Region:</value></string>
-  <string><id>13294</id><value>DVD Region:</value></string>
-  <string><id>13295</id><value>Internet:</value></string>
-  <string><id>13296</id><value>Xbox is Connected</value></string>
-  <string><id>13297</id><value>Xbox is not Connected. Check Network Preferoj.</value></string>
-  <string><id>13298</id><value>XBLIVE Key:</value></string>
-  <string><id>13299</id><value>Target Temperature</value></string>
-  <string><id>13300</id><value>Fan Speed</value></string>
-  <string><id>13301</id><value>Auto Temperature Control</value></string>
-  <string><id>13302</id><value>Fan Speed Override</value></string>
-  <string><id>13303</id><value>Skin Fonts</value></string>
-  <string><id>13304</id><value>Enable Flipping Bi-Directional Strings</value></string>
-  <string><id>13305</id><value>Enable RSS Feeds</value></string>
-  <string><id>13306</id><value>Hide Parent Folder Items</value></string>
-  <string><id>13307</id><value>Track Naming Template</value></string>
-  <string><id>13308</id><value>Do you wish to reboot your xbox</value></string>
-  <string><id>13309</id><value>instead of just XBMC?</value></string>
-  <string><id>13310</id><value>Zoom Effect</value></string>
-  <string><id>13311</id><value>Float Effect</value></string>
-  <string><id>13312</id><value>Black Bar Reduction</value></string>
-  <string><id>13313</id><value>Restart</value></string>
-  <string><id>13314</id><value>Crossfade</value></string>
-  <string><id>13315</id><value>Regenerate Thumbnails</value></string>
-  <string><id>13316</id><value>Recursive Thumbnails</value></string>
-  <string><id>13317</id><value>Vido Slideshow</value></string>
-  <string><id>13318</id><value>Recursive Slideshow</value></string>
-  <string><id>13319</id><value>Randomize</value></string>
-  <string><id>13320</id><value>Stereo</value></string>
-  <string><id>13321</id><value>Left Only</value></string>
-  <string><id>13322</id><value>Right Only</value></string>
-  <string><id>13323</id><value>Enable CD+G</value></string>
-  <string><id>13324</id><value>Background Transparency</value></string>
-  <string><id>13325</id><value>Foreground Transparency</value></string>
-  <string><id>13326</id><value>A/V malfruiĝo</value></string>
-  <string><id>13327</id><value>Karaoke</value></string>
-  <string><id>13328</id><value>%s not found</value></string>
-  <string><id>13329</id><value>Eraro opening %s</value></string>
-  <string><id>13330</id><value>Unable to load %s</value></string>
-  <string><id>13331</id><value>Eraro: out of memory</value></string>
-  <string><id>13332</id><value>Movi Up</value></string>
-  <string><id>13333</id><value>Movi Down</value></string>
-  <string><id>13334</id><value>Editii Label</value></string>
-  <string><id>13335</id><value>Make Default</value></string>
-  <string><id>13336</id><value>ReMovi Button</value></string>
-  <string><id>13337</id><value>- 2 Channel PCM Passthrough</value></string>
-  <string><id>13338</id><value>Front LED</value></string>
-  <string><id>13339</id><value>Front LED Colour</value></string>
-  <string><id>13340</id><value>Leave As Is</value></string>
-  <string><id>13341</id><value>Verda</value></string>
-  <string><id>13342</id><value>Orangxa</value></string>
-  <string><id>13343</id><value>Rugxo</value></string>
-  <string><id>13344</id><value>Cycle</value></string>
-  <string><id>13345</id><value>Switch LED off on Playback</value></string>
-  <string><id>13346</id><value>Filmoj info</value></string>
-  <string><id>13347</id><value>Queue Item</value></string>
-  <string><id>13348</id><value>Skani IMDb...</value></string>
-  <string><id>13349</id><value>Query Info For ĉiom vicos</value></string>
-  <string><id>13350</id><value>Now Playing...</value></string>
-  <string><id>13351</id><value>Albumo informaĵo</value></string>
-  <string><id>13352</id><value>Scan ĉiom to Datinbanko</value></string>
-  <string><id>13353</id><value>Stop Scanning</value></string>
-  <string><id>13354</id><value>Render Method</value></string>
-  <string><id>13355</id><value>Low Quality Pixel Shader</value></string>
-  <string><id>13356</id><value>Hardware Overlays</value></string>
-  <string><id>13357</id><value>High Quality Pixel Shader</value></string>
-  <string><id>13358</id><value>Play Item</value></string>
-  <string><id>13359</id><value>Set Artist Thumb</value></string>
-  <string><id>13360</id><value>Generate Thumbs</value></string>
-  <string><id>13361</id><value>Enable Voice</value></string>
-  <string><id>13362</id><value>Voice Mpeti</value></string>
-  <string><id>13363</id><value>- Enable Spectrum Energy Weight</value></string>
-  <string><id>13364</id><value>-- Spectrum Energy Weight Value</value></string>
-  <string><id>13365</id><value>- Enable Pitch Scaling</value></string>
-  <string><id>13366</id><value>-- Pitch Scaling Value</value></string>
-  <string><id>13367</id><value>- Enable Whisper Factor</value></string>
-  <string><id>13368</id><value>-- Whisper Factor Value</value></string>
-  <string><id>13369</id><value>- Enable Robotic Factor</value></string>
-  <string><id>13370</id><value>-- Robotic Factor Value</value></string>
-  <string><id>13371</id><value>- Port 1 Voice</value></string>
-  <string><id>13372</id><value>- Port 2 Voice</value></string>
-  <string><id>13373</id><value>- Port 3 Voice</value></string>
-  <string><id>13374</id><value>- Port 4 Voice</value></string>
-  <string><id>13375</id><value>Enable Device</value></string>
-  <string><id>13376</id><value>Volume</value></string>
-  <string><id>13377</id><value>Default Vido Mode</value></string>
-  <string><id>13378</id><value>Default Brightness</value></string>
-  <string><id>13379</id><value>Default Contrast</value></string>
-  <string><id>13380</id><value>Default Gamma</value></string>
-  <string><id>13381</id><value>Resume Filmoj</value></string>
-  <string><id>13382</id><value>Voice Mpeti - Port 1</value></string>
-  <string><id>13383</id><value>Voice Mpeti - Port 2</value></string>
-  <string><id>13384</id><value>Voice Mpeti - Port 3</value></string>
-  <string><id>13385</id><value>Voice Mpeti - Port 4</value></string>
-  <string><id>13386</id><value>Use Time Based Seeking</value></string>
-  <string><id>13387</id><value>Track Naming Template Right</value></string>
-  <string><id>13388</id><value>Presets</value></string>
-  <string><id>13389</id><value>Lare are no presets available&#10;for this visualisation</value></string>
-  <string><id>13390</id><value>Lare are no Preferoj available&#10;for this visualisation</value></string>
-  <string><id>13391</id><value>Eject/Load</value></string>
-  <string><id>13392</id><value>Use Visualisation if playing audio</value></string>
-  <string><id>13393</id><value>Calculate amplekso</value></string>
-  <string><id>13394</id><value>Calculating folder amplekso</value></string>
-  <string><id>13395</id><value>Filmoj Preferoj</value></string>
-  <string><id>13396</id><value>Audio and Subtitle Preferoj</value></string>
-  <string><id>13397</id><value>Enable Subtitles</value></string>
-  <string><id>13398</id><value>Bookmarks</value></string>
-  <string><id>13399</id><value>Ignore "La" when sorting</value></string>
-  <string><id>13400</id><value>Crossfade albumotracks</value></string>
-  <string><id>13401</id><value>Foliumilo for %s</value></string>
-  <string><id>13402</id><value>Show track position</value></string>
-  <string><id>13403</id><value>Clear Default</value></string>
-  <string><id>13404</id><value>Resume</value></string>
-  <string><id>13405</id><value>Get Thumb</value></string>
-
-  <string><id>14000</id><value>Stack</value></string>
-  <string><id>14001</id><value>Unstack</value></string>
-  <string><id>14002</id><value>Stacking: Fuzzy</value></string>
-  <string><id>14003</id><value>Downloading playlist vico...</value></string>
-  <string><id>14004</id><value>Downloading streams list...</value></string>
-  <string><id>14005</id><value>Parsing streams list...</value></string>
-  <string><id>14006</id><value>Downloading streams list failed</value></string>
-  <string><id>14007</id><value>Downloading playlist vico failed</value></string>
-  <string><id>14008</id><value>Enable Kai Notifications</value></string>
-  <string><id>14009</id><value>Games Directory</value></string>
-  <string><id>14010</id><value>Autoswitch to Thumbs based on</value></string>
-  <string><id>14011</id><value>Enable Autoswitching to Thumbs Vido</value></string>
-  <string><id>14012</id><value>- Use Large Icons</value></string>
-  <string><id>14013</id><value>- Switch Based on</value></string>
-  <string><id>14014</id><value>- Percentage</value></string>
-  <string><id>14015</id><value>No vicos and at least one Thumb</value></string>
-  <string><id>14016</id><value>At least one vico and Thumb</value></string>
-  <string><id>14017</id><value>Percentage of Thumbs</value></string>
-  <string><id>14018</id><value>Vido Options</value></string>
-  <string><id>14019</id><value>Change Area Code 1</value></string>
-  <string><id>14020</id><value>Change Area Code 2</value></string>
-  <string><id>14021</id><value>Change Area Code 3</value></string>
-  <string><id>14022</id><value>Library</value></string>
-  <string><id>14023</id><value>No TV</value></string>
-  <string><id>14024</id><value>tajpi la nearest large town or US ZIP code</value></string>
-  <string><id>14025</id><value>Filmoj/Audio/DVD Cache - Harddisk</value></string>
-  <string><id>14026</id><value>Filmoj Cache - DVDRom</value></string>
-  <string><id>14027</id><value>- Local Network</value></string>
-  <string><id>14028</id><value>- Internet</value></string>
-  <string><id>14030</id><value>Audio Cache - DVDRom</value></string>
-  <string><id>14031</id><value>- Local Network</value></string>
-  <string><id>14032</id><value>- Internet</value></string>
-  <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
-  <string><id>14035</id><value>- Local Network</value></string>
-  <string><id>14036</id><value>Servers</value></string>
-  <string><id>14037</id><value>Look and Feel</value></string>
-  <string><id>14038</id><value>Network Preferoj changed</value></string>
-  <string><id>14039</id><value>XBMC requires to restart to change your</value></string>
-  <string><id>14040</id><value>network setup.  Would you like to restart now?</value></string>
-  <string><id>14041</id><value>Post Processing</value></string>
-  <string><id>14042</id><value>Engine IP Address</value></string>
-  <string><id>14043</id><value>- Shutdown while playing</value></string>
-  <string><id>14044</id><value>%i mins</value></string>
-  <string><id>14045</id><value>%i secs</value></string>
-  <string><id>14046</id><value>%i ms</value></string>
-  <string><id>14047</id><value>%i %%</value></string>
-  <string><id>14048</id><value>%i kbps</value></string>
-  <string><id>14049</id><value>%i kb</value></string>
-  <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Time Format</value></string>
-  <string><id>14052</id><value>Dati Format</value></string>
-  <string><id>14053</id><value>GUI Filters</value></string>
-  <string><id>14054</id><value>Enable Internet Lookups</value></string>
-  <string><id>14055</id><value>Use Background Scanning</value></string>
-  <string><id>14056</id><value>Stop Scan</value></string>
-  <string><id>14057</id><value>Not possible while scanning for media info</value></string>
-  <string><id>14058</id><value>Film Grain Effect</value></string>
-  <string><id>14059</id><value>Look for custom thumbnails on remote shares</value></string>
-  <string><id>14060</id><value>Unknown type Cache - Internet</value></string>
-  <string><id>14061</id><value>Auto</value></string>
-  <string><id>14062</id><value>tajpi uzulonomo for</value></string>
-  <string><id>14063</id><value>Dati &amp; Time</value></string>
-  <string><id>14064</id><value>Set Dati</value></string>
-  <string><id>14065</id><value>Set Time</value></string>
-  <string><id>14066</id><value>tajpi la Time in 24 hour HH:MM format</value></string>
-  <string><id>14067</id><value>tajpi la Dati in DD/MM/YYYY format</value></string>
-  <string><id>14068</id><value>tajpi la IP address</value></string>
-  <string><id>14069</id><value>Apply lase Preferoj now?</value></string> 	 
-  <string><id>14070</id><value>Apply Changes Now</value></string> 	 
-  <string><id>14071</id><value>ĉiomow vico Renaming and Deletion</value></string>
-  <string><id>14072</id><value>Enable XLink Kai</value></string>
-  <string><id>14073</id><value>XLink Kai is not enabled.</value></string>
-
-  <string><id>15000</id><value>XLink Kai</value></string>
-  <string><id>15001</id><value>La service is not connected, would you like to attempt</value></string>
-  <string><id>15002</id><value>reconnecting it with Xbox Media Ctajpi?</value></string>
-  <string><id>15003</id><value>tajpi your message</value></string>
-  <string><id>15004</id><value>You've been invited to play %s.</value></string>
-  <string><id>15005</id><value>Dati: %s</value></string>
-  <string><id>15006</id><value>From: %s</value></string>
-  <string><id>15007</id><value>Invitation</value></string>
-  <string><id>15008</id><value>You've been invited to join %s.</value></string>
-  <string><id>15009</id><value>Offline</value></string>
-  <string><id>15010</id><value>Amikoj</value></string>
-  <string><id>15011</id><value>Vido: Friends</value></string>
-  <string><id>15012</id><value>Join</value></string>
-  <string><id>15013</id><value>Voice</value></string>
-  <string><id>15014</id><value>Invite</value></string>
-  <string><id>15015</id><value>ReMovi</value></string>
-  <string><id>15016</id><value>Games</value></string>
-  <string><id>15017</id><value>Vido: Games</value></string>
-  <string><id>15018</id><value>tajpi</value></string>
-  <string><id>15019</id><value>Add</value></string>
-  <string><id>15020</id><value>Host</value></string>
-  <string><id>15021</id><value>Arenas</value></string>
-  <string><id>15022</id><value>Vido: Arenas</value></string>
-  <string><id>15023</id><value>Play</value></string>
-  <string><id>15024</id><value>Add</value></string>
-  <string><id>15025</id><value>Host</value></string>
-  <string><id>15026</id><value>Chat</value></string>
-  <string><id>15027</id><value>Vido: Chat</value></string>
-  <string><id>15028</id><value>Keyboard</value></string>
-  <string><id>15029</id><value>A pasvorto is required to join this arena.</value></string>
-  <string><id>15030</id><value>Service has disconnected</value></string>
-  <string><id>15031</id><value>XLink Kai Aulantication</value></string>
-  <string><id>15032</id><value>Your uzulonomo and/or pasvorto was rejected by la</value></string>
-  <string><id>15033</id><value>orbital server. Plaĉi check your configuration.</value></string>
-  <string><id>15034</id><value>has just signed in</value></string>
-  <string><id>15035</id><value>has initiated voice chat</value></string>
-  <string><id>15036</id><value>has sent you an invitation</value></string>
-  <string><id>15037</id><value>XBMC is unable to confirm your network is reachable.</value></string>
-  <string><id>15038</id><value>You may experience difficulties joining or hosting games.</value></string>
-  <string><id>15039</id><value>Xbox Media Ctajpi unable to locate game aŭtomateĉiomy.</value></string>
-  <string><id>15040</id><value>Insert la game disk into your XBOX or press 'A' to cancel</value></string>
-  <string><id>15041</id><value>and launch la game manuĉiomy.</value></string>
-  <string><id>15042</id><value>Access Denied</value></string>
-  <string><id>15043</id><value>%s joins chat.</value></string>
-  <string><id>15044</id><value>%s leaves chat.</value></string>
-  <string><id>15045</id><value>tajpi your personal message.</value></string>
-  <string><id>15046</id><value>Current Arena</value></string>
-  <string><id>15047</id><value>tajpi a pasvorto for via arena.</value></string>
-  <string><id>15048</id><value>tajpi a description for via arena.</value></string>
-  <string><id>15049</id><value>Host Game</value></string>
-  <string><id>15050</id><value>Host in a private arena</value></string>
-  <string><id>15051</id><value>Player Limit</value></string>
-  <string><id>15052</id><value>pasvorto</value></string>
-  <string><id>15053</id><value>Description</value></string>
-  <string><id>15054</id><value>Invite Dialog</value></string>
-  <string><id>15055</id><value>Choose game:</value></string>
-  <string><id>15056</id><value>tajpi message:</value></string>
-  <string><id>15057</id><value>Send</value></string>
-  <string><id>15058</id><value>Host</value></string>
-  <string><id>15059</id><value>Invite accepted!</value></string>
-  <string><id>15060</id><value>Message Here</value></string>
-  <string><id>15061</id><value>Vi estas invited to play %s.</value></string>
-  <string><id>15062</id><value>Use alternate mplayer location</value></string>
-
-  <string><id>15100</id><value>Library</value></string>
-  <string><id>15101</id><value>Datinbanko</value></string>
-  <string><id>15102</id><value>* ĉiom Albumos</value></string>
-  <string><id>15103</id><value>* ĉiom Artists</value></string>
-  <string><id>15104</id><value>* ĉiom kantoj</value></string>
-  <string><id>15105</id><value>* ĉiom Gxenroj</value></string>
-  <string><id>15106</id><value>Remember elektied vico on forward navigation</value></string>
-  <string><id>15107</id><value>Buffering...</value></string>
-  <string><id>15108</id><value>Navigation Sounds</value></string>
-  <string><id>15109</id><value>Skin Default</value></string>
-  <string><id>15110</id><value>Controller Rumble</value></string>
-  <string><id>15111</id><value>Skin Lame</value></string>
-  <string><id>15112</id><value>Default Lame</value></string>
-
-  <string><id>15200</id><value>LastFM</value></string>
-  <string><id>15201</id><value>Submit kantoj to LastFM</value></string>
-  <string><id>15202</id><value>LastFM Uzulonomo</value></string>
-  <string><id>15203</id><value>LastFM pasvorto</value></string>
-  <string><id>15204</id><value>Unable to handshake: sleeping...</value></string>
-  <string><id>15205</id><value>Plaĉi Updati XBMC</value></string>
-  <string><id>15206</id><value>Submission failed: bad authorization.</value></string>
-  <string><id>15207</id><value>Connected</value></string>
-  <string><id>15208</id><value>Not Connected</value></string>
-  <string><id>15209</id><value>Submit Interval %i</value></string>
-  <string><id>15210</id><value>Cached %i kantoj</value></string>
-  <string><id>15211</id><value>Submitting...</value></string>
-  <string><id>15212</id><value>Submitting in %i secs</value></string>
-  <string><id>15213</id><value>Play Using...</value></string>
-  <string><id>15214</id><value>Use Smoolad A/V Syncronization</value></string>
-  <string><id>15215</id><value>Hide vico nomoj in Thumbs Vido</value></string>
-
-  <string><id>15250</id><value>Submit Last.fm Radio to LastFM</value></string>
-  <string><id>15251</id><value>Connecting to Last.fm...</value></string>
-  <string><id>15252</id><value>Elektiing station...</value></string>
-  <string><id>15253</id><value>Search similar artists...</value></string>
-  <string><id>15254</id><value>Search similar tags...</value></string>
-  <string><id>15255</id><value>Via logxas (%nomo%)</value></string>
-  <string><id>15256</id><value>Overĉiom top tags</value></string>
-  <string><id>15257</id><value>Top artists for tag %nomo%</value></string>
-  <string><id>15258</id><value>Top albumos for tag %nomo%</value></string>
-  <string><id>15259</id><value>Top tracks for tag %nomo%</value></string>
-  <string><id>15260</id><value>aŭskulti to tag %nomo% last.fm radio</value></string>
-  <string><id>15261</id><value>Similar artists as %nomo%</value></string>
-  <string><id>15262</id><value>Top %nomo% albumos</value></string>
-  <string><id>15263</id><value>Top %nomo% tracks</value></string>
-  <string><id>15264</id><value>Top %nomo% tags</value></string>
-  <string><id>15265</id><value>Pligranda fans of %nomo%</value></string>
-  <string><id>15266</id><value>aŭskulti to %nomo% fans last.fm radio</value></string>
-  <string><id>15267</id><value>aŭskulti to %nomo% similar artists last.fm radio</value></string>
-  <string><id>15268</id><value>Top artists for uzulo %nomo%</value></string>
-  <string><id>15269</id><value>Top albumos for uzulo %nomo%</value></string>
-  <string><id>15270</id><value>Top tracks for uzulo %nomo%</value></string>
-  <string><id>15271</id><value>Amikoj of uzulo %nomo%</value></string>
-  <string><id>15272</id><value>Najboroj of uzulo %nomo%</value></string>
-  <string><id>15273</id><value>Weekly artist chart for %nomo%</value></string>
-  <string><id>15274</id><value>Weekly albumo chart for %nomo%</value></string>
-  <string><id>15275</id><value>Weekly track chart for %nomo%</value></string>
-  <string><id>15276</id><value>aŭskulti to %nomo% naboroja last.fm radio</value></string>
-  <string><id>15277</id><value>aŭskulti to %nomo% personal last.fm radio</value></string>
-  <string><id>15278</id><value>aŭskulti to %nomo% amas kanto last.fm radio</value></string>
-  <string><id>15279</id><value>Retrieving list from last.fm...</value></string>
-  <string><id>15280</id><value>Can't retrieve list from last.fm...</value></string>
-  <string><id>15281</id><value>tajpi la artisto nomo to find related ones</value></string>
-  <string><id>15282</id><value>tajpi a tag nomo to find similar ones</value></string>
-  <string><id>15283</id><value>Kanto lastatempe aŭskultas by %nomo%</value></string>
-   
-  <string><id>15300</id><value>Path not found or invalid</value></string>
-  <string><id>15301</id><value>Could not connect to network server</value></string>
-  <string><id>15302</id><value>No servers found</value></string>
-  <string><id>15303</id><value>Workgroup not found</value></string>
-
-  <string><id>15310</id><value>Opening multi-path bookmark</value></string>
-  <string><id>15311</id><value>Path:</value></string>
-
-  <string><id>16000</id><value>Generalo</value></string>
-  <string><id>16001</id><value>Configure soni Hardware...</value></string>
-  <string><id>16002</id><value>CDDB lookup</value></string>
-  <string><id>16003</id><value>Player</value></string>
-  <string><id>16004</id><value>Play media from KD</value></string>
-  
-  <string><id>16009</id><value>Tajpi la Filmo Nomo</value></string>
-  <string><id>16010</id><value>Tajpi la Provico Nomo</value></string>
-  <string><id>16011</id><value>Tajpi la Albumo Nomo</value></string>
-  <string><id>16012</id><value>Tajpi la Playlist Nomo</value></string>
-  <string><id>16013</id><value>Tajpi new viconomo</value></string>
-  <string><id>16014</id><value>Tajpi folder nomo</value></string>
-  <string><id>16015</id><value>Tajpi directory</value></string>
-  <string><id>16016</id><value>Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
-  <string><id>16017</id><value>Tajpi Search String</value></string>
-  <string><id>16018</id><value>None</value></string>
-  <string><id>16019</id><value>Auto Elekti</value></string>
-  <string><id>16020</id><value>DeInterlace</value></string>
-  <string><id>16021</id><value>Sync Odd</value></string>
-  <string><id>16022</id><value>Sync Even</value></string>
-  <string><id>16023</id><value>Interlaced Handling</value></string>
-  <string><id>16024</id><value>Canceling...</value></string>
-  <string><id>16025</id><value>tajpi la Artist Nomo</value></string>
-  <string><id>16026</id><value>Playlist playback aborted</value></string>
-  <string><id>16027</id><value>Too many consecutive failed items</value></string>
-
-  <string><id>16030</id><value>Festo Mode mode aborted.</value></string>
-  <string><id>16031</id><value>Ne matching kantoj in la datinbanko.</value></string>
-  <string><id>16032</id><value>Could not initialise datinbanko.</value></string>
-  <string><id>16033</id><value>Could not open datinbanko.</value></string>
-  <string><id>16034</id><value>Could not get kantoj from datinbanko.</value></string>
-
-  <string><id>16100</id><value>ĉiom Filmoj</value></string>
-  <string><id>16101</id><value>UnWatched</value></string>
-  <string><id>16102</id><value>Watched</value></string>
-  <string><id>16103</id><value>Mark as vidas</value></string>
-  <string><id>16104</id><value>Mark as malvidas</value></string>
-  <string><id>16105</id><value>Editi Nomo</value></string>
-  <string><id>16106</id><value>Use NTSC-M &amp; NTSC-J</value></string>
-  <string><id>16107</id><value>Use only NTSC-M</value></string>
-  <string><id>16108</id><value>Use only NTSC-J</value></string>
-  <string><id>16109</id><value>Use only PAL-60</value></string>
-  <string><id>16110</id><value>For 60hz Games</value></string>
-
+  <string id="0">Mia Softvaroj</string>
+  <string id="1">Mia Bildoj</string>
+  <string id="2">Mia Mizuko</string>
+  <string id="3">Mia Filmoj</string>
+  <string id="4">Televido Gvido</string>
+  <string id="5">Preferoj</string>
+  <string id="7">Mia Vicoj</string>
+  <string id="8">Veterprognozo</string>
+  <string id="11">Lundo</string>
+  <string id="12">Mardo</string>
+  <string id="13">Merkredo</string>
+  <string id="14">Ĵaŭdo</string>
+  <string id="15">Vendredo</string>
+  <string id="16">Sabato</string>
+  <string id="17">Dimanĉo</string>
+  <string id="21">Januaro</string>
+  <string id="22">Februaro</string>
+  <string id="23">Marto</string>
+  <string id="24">Aprilo</string>
+  <string id="25">Majo</string>
+  <string id="26">Junio</string>
+  <string id="27">Julio</string>
+  <string id="28">Aŭgusto</string>
+  <string id="29">Septembro</string>
+  <string id="30">Oktobro</string>
+  <string id="31">Novembro</string>
+  <string id="32">Decembro</string>
+  <string id="98">Vido: Auto</string>
+  <string id="99">Vido: Auto Big</string>
+  <string id="100">Vido: Icons</string>
+  <string id="101">Vido: List</string>
+  <string id="102">Skani</string>
+  <string id="103">ordigi je: Nomo</string>
+  <string id="104">ordigi je: Dati</string>
+  <string id="105">ordigi je: amplekso</string>
+  <string id="106">Ne</string>
+  <string id="107">Jes</string>
+  <string id="108">SlideShow</string>
+  <string id="109">Verki Thumbs</string>
+  <string id="110">Verki Thumbnails</string>
+  <string id="111">Shortcuts</string>
+  <string id="112">Paŭzis</string>
+  <string id="113">Mia vicos : Fonto</string>
+  <string id="114">Mia vicos : Destination</string>
+  <string id="115">Kopii</string>
+  <string id="116">Movi</string>
+  <string id="117">Forviŝi</string>
+  <string id="118">Rebapti</string>
+  <string id="119">Nova Dosiero</string>
+  <string id="120">Confirm vico kopii</string>
+  <string id="121">Confirm vico movi</string>
+  <string id="122">Confirm vico forviŝi</string>
+  <string id="123">Kopii lase vicos?</string>
+  <string id="124">Movi lase vicos?</string>
+  <string id="125">Forviŝi lase vicos?</string>
+  <string id="126">Kondiĉo</string>
+  <string id="127">Objects</string>
+  <string id="128">Generalo</string>
+  <string id="129">Slideshow</string>
+  <string id="130">Sistemo Informaĵo</string>
+  <string id="131">Ekrano</string>
+  <string id="132">Albumos</string>
+  <string id="133">Muzikisto</string>
+  <string id="134">Kantoj</string>
+  <string id="135">Gxenroj</string>
+  <string id="136">Kantoj-listo</string>
+  <string id="137">Traserĉi</string>
+  <string id="138">SISTEMO informaĵo</string>
+  <string id="139">Temperaturoj:</string>
+  <string id="140">CPU:</string>
+  <string id="141">GPU:</string>
+  <string id="142">Tempo:</string>
+  <string id="143">Current:</string>
+  <string id="144">Eldono:</string>
+  <string id="145">Reto:</string>
+  <string id="146">Type:</string>
+  <string id="147">Static</string>
+  <string id="148">DHCP</string>
+  <string id="149">MAC</string>
+  <string id="150">IP</string>
+  <string id="151">Link: </string>
+  <string id="152">Half duplex</string>
+  <string id="153">Full duplex</string>
+  <string id="154">Diskmemoro</string>
+  <string id="155">Ingo</string>
+  <string id="156">Havebla</string>
+  <string id="157">Filmoj</string>
+  <string id="158">Havebla labormemoro</string>
+  <string id="159">No link</string>
+  <string id="160">Havebla</string>
+  <string id="161">Malhavebla</string>
+  <string id="162">KD-ingo malfermi</string>
+  <string id="163">Sxakis KD</string>
+  <string id="164">Ne KD</string>
+  <string id="165">KD Present</string>
+  <string id="166">Skin</string>
+  <string id="167">Enable FTP Server</string>
+  <string id="168">Enable Internet Time Synchronization</string>
+  <string id="169">Distingivo</string>
+  <string id="170">Albumo:</string>
+  <string id="171">Artist:</string>
+  <string id="172">Dati of Ellasi:</string>
+  <string id="173">Rating:</string>
+  <string id="174">Gxenro:</string>
+  <string id="175">Tones:</string>
+  <string id="176">Styles:</string>
+  <string id="177">ReVido:</string>
+  <string id="178">Kantoj:</string>
+  <string id="179">Kanto</string>
+  <string id="180">Tempo grando</string>
+  <string id="181">Elekti albumo</string>
+  <string id="182">Tracks</string>
+  <string id="183">ReVido</string>
+  <string id="184">Refresh</string>
+  <string id="185">Searching albumo</string>
+  <string id="186">OK</string>
+  <string id="187">No albumos found!</string>
+  <string id="188">Elekti cxio</string>
+  <string id="189">Scanning media info</string>
+  <string id="190">Save</string>
+  <string id="191">Shuffle</string>
+  <string id="192">Clear</string>
+  <string id="193">Scan</string>
+  <string id="194">Trasercxis...</string>
+  <string id="195">No IMDB info found!</string>
+  <string id="196">Elekti movie:</string>
+  <string id="197">Querying IMDB info</string>
+  <string id="198">Loading Filmo details</string>
+  <string id="199">Filmo-artisto:</string>
+  <string id="200">Verkisto:</string>
+  <string id="201">Jaro:</string>
+  <string id="202">Tagline:</string>
+  <string id="203">Malgranda-komploti:</string>
+  <string id="204">Rating:</string>
+  <string id="205">Voxcoj:</string>
+  <string id="206">Aktoroj	</string>
+  <string id="207">Komploti</string>
+  <string id="208">Iniciati</string>
+  <string id="209">Sekvonta</string>
+  <string id="210">Antaŭa</string>
+  <string id="211">Searching for applications</string>
+  <string id="212">Applications found</string>
+  <string id="213">Calibrate uzulinterfaco...</string>
+  <string id="214">Filmoj Calibration...</string>
+  <string id="215">Mildigi</string>
+  <string id="216">Zoom Amount</string>
+  <string id="217">Pixel Ratio</string>
+  <string id="218">KD-ingo</string>
+  <string id="219">Plaĉi insert KD</string>
+  <string id="220">Remote Share</string>
+  <string id="221">Network is not connected</string>
+  <string id="222">Renonci</string>
+  <string id="223">Auto Wideekrano Switching</string>
+  <string id="224">Rapideco</string>
+  <string id="225">Transition Time</string>
+  <string id="226">Enable PAL60</string>
+  <string id="227">Enable CDDB</string>
+  <string id="228">Shuffle Playlist on Load</string>
+  <string id="229">HD Spindown Time</string>
+  <string id="230">Filmoj Filters</string>
+  <string id="231">Neniu</string>
+  <string id="232">Point</string>
+  <string id="233">Rekta</string>
+  <string id="234">Anisotropic</string>
+  <string id="235">Quincunx</string>
+  <string id="236">Gaussian Cubic</string>
+  <string id="237">Minification</string>
+  <string id="238">Magnification</string>
+  <string id="239">Clear playlist on finish</string>
+  <string id="240">Autorun DVD-Filmoj</string>
+  <string id="241">Autorun VCD/SVCD</string>
+  <string id="242">Autorun Audio-CD</string>
+  <string id="243">Autorun XBOX Games</string>
+  <string id="244">Autorun Filmoj</string>
+  <string id="245">Autorun Muziko</string>
+  <string id="246">Autorun Bildoj</string>
+  <string id="247">Scripts</string>
+  <string id="248">Lingvo</string>
+  <string id="249">Muziko</string>
+  <string id="250">Visualisation</string>
+  <string id="251">Elekti destination directory</string>
+  <string id="252">Output Stereo to ĉiom Speakers</string>
+  <string id="253">Number of channels</string>
+  <string id="254">- DTS Capable Receiver</string>
+  <string id="255">CDDB</string>
+  <string id="256">Querying freedb for CDDB info</string>
+  <string id="257">Eraro</string>
+  <string id="258">Enable ID3 Tags</string>
+  <string id="259">Opening</string>
+  <string id="260">Shoutcast</string>
+  <string id="261">Waiting for start....</string>
+  <string id="262">Scripts Output</string>
+  <string id="263">Enable Web Server</string>
+  <string id="264">Registri</string>
+  <string id="265">Registri Rec.</string>
+  <string id="266">ordigi je: Track</string>
+  <string id="267">ordigi je: Time</string>
+  <string id="268">ordigi je: Title</string>
+  <string id="269">ordigi je: Artist</string>
+  <string id="270">ordigi je: Albumo</string>
+  <string id="271">Top 100</string>
+  <string id="272">Top Left Overscan Compensation</string>
+  <string id="273">Bottom Right Overscan Compensation</string>
+  <string id="274">Subtitles Position</string>
+  <string id="275">Pixel Ratio Adjustment</string>
+  <string id="276">Movi la arrow to change la amount of overscan</string>
+  <string id="277">Movi la bar to change la subtitles position</string>
+  <string id="278">Change la rectangle so that it is perfectly square</string>
+  <string id="279">Unable to load Preferoj</string>
+  <string id="280">Using default fĉiombacks</string>
+  <string id="281">Plaĉi check la .xml vicos</string>
+  <string id="282">found %i items</string>
+  <string id="283">Search Results</string>
+  <string id="284">No results found</string>
+  <string id="285">Deinterlace Filter</string>
+  <string id="286">Postprocessing Filter</string>
+  <string id="287">Subtitles</string>
+  <string id="288">Tiparo</string>
+  <string id="289">- amplekso</string>
+  <string id="290">Dynamic Range Compression</string>
+  <string id="291">Filmoj</string>
+  <string id="292">Soni</string>
+  <string id="293">Subtitles</string>
+  <string id="294">Verki bookmark</string>
+  <string id="295">Cycle bookmarks</string>
+  <string id="296">Clear bookmarks</string>
+  <string id="297">Soni malfruiĝo</string>
+  <string id="298">Slider</string>
+  <string id="300">1. Lingvo</string>
+  <string id="301">2. Soni-granda</string>
+  <string id="302">3. Stream</string>
+  <string id="303">malfruiĝo</string>
+  <string id="304">Language</string>
+  <string id="305">Enabled</string>
+  <string id="306">Non-Interleaved</string>
+  <string id="307">- Aŭtomate Postprocessing</string>
+  <string id="308">- Vertical Deblocking Filter</string>
+  <string id="309">- Horizontal Deblocking Filter</string>
+  <string id="310">- Auto Brightness/Contrast</string>
+  <string id="311">- Dering</string>
+  <string id="312">(0=auto)</string>
+  <string id="313">Cleaning datinbanko</string>
+  <string id="314">Preparing...</string>
+  <string id="315">Datinbanko eraro</string>
+  <string id="316">Searching kantoj...</string>
+  <string id="317">Cleaning datinbanko successful</string>
+  <string id="318">Cleaning kantoj...</string>
+  <string id="319">Eraro cleaning kantoj</string>
+  <string id="320">Cleaning artists...</string>
+  <string id="321">Eraro cleaning artists</string>
+  <string id="322">Cleaning Gxenroj...</string>
+  <string id="323">Eraro cleaning Gxenroj</string>
+  <string id="324">Cleaning paths...</string>
+  <string id="325">Eraro cleaning paths</string>
+  <string id="326">Cleaning albumos...</string>
+  <string id="327">Eraro cleaning albumos</string>
+  <string id="328">Writing changes...</string>
+  <string id="329">Eraro writing changes</string>
+  <string id="330">This may take some time...</string>
+  <string id="331">Compressing datinbanko...</string>
+  <string id="332">Eraro compressing datinbanko</string>
+  <string id="333">Do you want to clean la muziko library?</string>
+  <string id="334">Clean Muziko Library...</string>
+  <string id="335">Iniciati</string>
+  <string id="336">Framerate Conversion</string>
+  <string id="337">Audio Output</string>
+  <string id="338">Analog</string>
+  <string id="339">Diĝita</string>
+  <string id="340">Various Artists</string>
+  <string id="341">Play Disc</string>
+  <string id="342">Filmoj</string>
+  <string id="343">Adjust Framerate</string>
+  <string id="344">Aktoro</string>
+  <string id="345">Jaro</string>
+  <string id="346">Stack</string>
+  <string id="347">Unstack</string>
+  <string id="348">Flatten Directory Hierarchy</string>
+  <string id="349">Show only Default.xbe</string>
+  <string id="350">Softvaro</string>
+  <string id="351">Off</string>
+  <string id="352">Dim</string>
+  <string id="353">Black</string>
+  <string id="354">Matrix Trails</string>
+  <string id="355">ekranosaver Idle Timeout</string>
+  <string id="356">ekranosaver Mode</string>
+  <string id="357">Shutdown Idle Timeout</string>
+  <string id="358">ĉiom albumos</string>
+  <string id="359">Recently Added Albumos</string>
+  <string id="360">ekranosaver</string>
+  <string id="361">R. SlideShow</string>
+  <string id="362">ekranosaver Fade Level</string>
+  <string id="363">ordigi je: vico</string>
+  <string id="364">- AC3 Capable Receiver</string>
+  <string id="365">ordigi je: Nomo</string>
+  <string id="366">ordigi je: Year</string>
+  <string id="367">ordigi je: Rating</string>
+  <string id="368">IMDB</string>
+  <string id="369">Nomo</string>
+  <string id="370">Fulmotondro</string>
+  <string id="371">Parte</string>
+  <string id="372">Plejparte</string>
+  <string id="373">Suna</string>
+  <string id="374">Nuba-cxielo</string>
+  <string id="375">Negxi negxi cxie</string>
+  <string id="376">Pluvo</string>
+  <string id="377">KROTALOJ</string>
+  <string id="378">AM</string>
+  <string id="379">PM</string>
+  <string id="380">Showers</string>
+  <string id="381">Few</string>
+  <string id="382">Scattered</string>
+  <string id="383">Vovento</string>
+  <string id="384">Intensa</string>
+  <string id="385">Fair</string>
+  <string id="386">Clear</string>
+  <string id="387">Clouds</string>
+  <string id="388">Frua</string>
+  <string id="389">Shower</string>
+  <string id="390">Flurries</string>
+  <string id="391">Malnobla</string>
+  <string id="392">Mezgrada</string>
+  <string id="393">Nobla</string>
+  <string id="394">Nebulo</string>
+  <string id="395">Haze</string>
+  <string id="396">Elekti Location</string>
+  <string id="397">Refresh Time</string>
+  <string id="398">Temperature Units</string>
+  <string id="399">Tempo Units</string>
+  <string id="400">Wealar</string>
+  <string id="401">Temp</string>
+  <string id="402">Feels Like</string>
+  <string id="403">UV Index</string>
+  <string id="404">Wind</string>
+  <string id="405">Dew Point</string>
+  <string id="406">Humideco</string>
+  <string id="407">From</string>
+  <string id="408">at</string>
+  <string id="410">Accessing Wealar.com</string>
+  <string id="411">Getting Wealar For:</string>
+  <string id="412">Unable to get wealar data</string>
+  <string id="413">Manual</string>
+  <string id="414">Ne review for this albumo</string>
+  <string id="415">Downloading thumbnail...</string>
+  <string id="416">Not available</string>
+  <string id="417">Vido: Big Icons</string>
+  <string id="418">Mia Filmoj/Gxenroj</string>
+  <string id="419">Mia Filmoj/Aktoroj</string>
+  <string id="420">Mia Filmoj/Jaroj</string>
+  <string id="421">Mia Filmoj/Title</string>
+  <string id="422">Forviŝi Albumoinfo</string>
+  <string id="423">Forviŝi CDDB Info</string>
+  <string id="424">Elekti</string>
+  <string id="425">No albumoinfo found.</string>
+  <string id="426">No CDDB info found.</string>
+  <string id="427">KD-ingo:</string>
+  <string id="428">Insert correct KD-ingo</string>
+  <string id="429">Plaĉi insert la following KD</string>
+  <string id="430">ordigi je: KD#</string>
+  <string id="431">No Cache</string>
+  <string id="432">Forviŝi movie from datinbanko</string>
+  <string id="433">Are vi sure about removing</string>
+  <string id="434">la filmo?</string>
+  <string id="435">Track</string>
+  <string id="436">Jaro:</string>
+  <string id="437">Tempo-amplekso:</string>
+  <string id="438">Opening vico</string>
+  <string id="439">Cache</string>
+  <string id="440">Durdisko</string>
+  <string id="441">UDF</string>
+  <string id="442">LAN</string>
+  <string id="443">Interreto</string>
+  <string id="444">Filmo</string>
+  <string id="445">Soni</string>
+  <string id="446">KD</string>
+  <string id="447">Autorun</string>
+  <string id="448">LCD</string>
+  <string id="449">Enabled</string>
+  <string id="450">Columns</string>
+  <string id="451">Row 1 Address</string>
+  <string id="452">Row 2 Address</string>
+  <string id="453">Row 3 Address</string>
+  <string id="454">Row 4 Address</string>
+  <string id="455">Rows</string>
+  <string id="456">Mode</string>
+  <string id="457">Switch Vido</string>
+  <string id="458">B/Mark</string>
+  <string id="459">Subs</string>
+  <string id="460">Soni Stream</string>
+  <string id="461">[active]</string>
+  <string id="462">Subtitle</string>
+  <string id="463">Backlight</string>
+  <string id="464">Brightness</string>
+  <string id="465">Contrast</string>
+  <string id="466">Gamma</string>
+  <string id="467">Type</string>
+  <string id="468">Movi la bar to change la osd position</string>
+  <string id="469">OSD Position</string>
+  <string id="470">CrEditiis</string>
+  <string id="471">Modchip</string>
+  <string id="472">Filmoj OSD Timeout</string>
+  <string id="473">High Quality Resampling</string>
+  <string id="474">Off</string>
+  <string id="475">Muziko Only</string>
+  <string id="476">Muziko &amp; Filmoj</string>
+  <string id="477">Unable to load playlist</string>
+  <string id="478">OSD</string>
+  <string id="479">Skin and Language</string>
+  <string id="480">Appearance</string>
+  <string id="481">Audio Options</string>
+  <string id="482">About XBMC</string>
+  <string id="483">Albumo</string>
+  <string id="484">Artisto</string>
+  <string id="485">Forviŝi albumo</string>
+  <string id="486">Repeat</string>
+  <string id="487">Repeat One</string>
+  <string id="488">Repeat Folders</string>
+  <string id="489">Auto Play Next Item</string>
+  <string id="490">Auto switch list and icons in kantoj</string>
+  <string id="491">- Use big icons</string>
+  <string id="492">Reamplekso Vobsubs</string>
+  <string id="493">Advanced Options (Experts Only!)</string>
+  <string id="494">Overĉiom Audio Headroom</string>
+  <string id="495">Upsample Filmoj to GUI Resolution</string>
+  <string id="496">Calibration</string>
+  <string id="497">Hide Media Extensions</string>
+  <string id="498">ordigi je: Type</string>
+  <string id="499">Unable to connect to www.ĉiommuziko.com</string>
+  <string id="500">Downloading albumo info failed</string>
+  <string id="501">Looking for albumo nomoj...</string>
+  <string id="502">Open</string>
+  <string id="503">Busy</string>
+  <string id="504">Empty</string>
+  <string id="505">Loading media info from vicos...</string>
+  <string id="506">Use Directory Nomoj for Description</string>
+  <string id="507">ordigi je: Usage</string>
+  <string id="508">Do not use Shortcuts or Scan</string>
+  <string id="509">Cache Program Thumbnails</string>
+  <string id="510">Enable Visualisations</string>
+  <string id="511">Enable filmoj mode switching</string>
+  <string id="512">Startup Window</string>
+  <string id="513">Home Window</string>
+  <string id="514">Manual Preferoj</string>
+  <string id="515">Gxenro</string>
+  <string id="516">Make archives with one vico transparent</string>
+  <string id="517">Recently Played Albumos</string>
+  <string id="518">Launch</string>
+  <string id="519">Launch in..</string>
+  <string id="520">Editii XBE title</string>
+  <string id="521">Compilations</string>
+  <string id="522">ReMovi Source</string>
+  <string id="588">Cancel Party Mode</string>
+  <string id="589">Party Mode</string>
+  <string id="590">Random</string>
+  <string id="591">Off</string>
+  <string id="592">One</string>
+  <string id="593">ĉiom</string>
+  <string id="594">Off</string>
+  <string id="595">Repeat: Off</string>
+  <string id="596">Repeat: One</string>
+  <string id="597">Repeat: ĉiom</string>
+  <string id="600">Rip CD Audio</string>
+  <string id="601">Medium</string>
+  <string id="602">Standard</string>
+  <string id="603">Extreme</string>
+  <string id="604">Constant Bit Rate</string>
+  <string id="605">Ripping...</string>
+  <string id="606">Track Number:</string>
+  <string id="607">To:</string>
+  <string id="608">Could not rip CD or Track</string>
+  <string id="609">CDDARipPath is not set in XboxMediaCtajpi.xml</string>
+  <string id="620">CD Ripping</string>
+  <string id="621">Encoder</string>
+  <string id="622">Quality</string>
+  <string id="623">Bit Rate</string>
+  <string id="624">Include Track Number</string>
+  <string id="625">ĉiom kantoj of</string>
+  <string id="629">Vido Mode</string>
+  <string id="630">Normal</string>
+  <string id="631">Zoom</string>
+  <string id="632">Stretch 4:3</string>
+  <string id="633">Stretch 14:9</string>
+  <string id="634">Stretch 16:9</string>
+  <string id="635">Original amplekso</string>
+  <string id="636">Custom</string>
+  <string id="637">Replay Gain</string>
+  <string id="638">Replay Gain Mode</string>
+  <string id="639">Use Track Levels</string>
+  <string id="640">Use Albumo Levels</string>
+  <string id="641">PreAmp Level - Replay Gained vicos</string>
+  <string id="642">PreAmp Level - Non Replay Gained vicos</string>
+  <string id="643">Avoid Clipping on Replay Gained vicos</string>
+  <string id="644">Crop Black Bars</string>
+  <string id="645">Need to cache a big vico. Continue?</string>
+  <string id="646">ReMovi Title</string>
+  <string id="700">Cleaning up Library</string>
+  <string id="701">Removing old kantoj from la Library</string>
+  <string id="702">This path has been scanned before</string>
+  <string id="703">Press Yes to updati ĉiom kantoj in this path</string>
+  <string id="704">Press No to just add new kantoj</string>
+  <string id="705">Network</string>
+  <string id="706">HTTP Proxy Host</string>
+  <string id="707">HTTP Proxy Port</string>
+  <string id="708">Enable HTTP Proxy</string>
+  <string id="709">XLink Kai XTag</string>
+  <string id="710">XLink Kai pasvorto</string>
+  <string id="711">Internet Protocol (IP)</string>
+  <string id="712">Invalid port specified. Value must be between 1 and 65535.</string>
+  <string id="713">HTTP Proxy</string>
+  <string id="714">XLink Kai</string>
+  <string id="715">Assignment</string>
+  <string id="716">Aŭtomate (DHCP)</string>
+  <string id="717">Manual (Static)</string>
+  <string id="718">Default (Dashboard)</string>
+  <string id="719">- IP Address</string>
+  <string id="720">- Netmpeti</string>
+  <string id="721">- Default Gateway</string>
+  <string id="722">- DNS Server</string>
+  <string id="723">Save &amp; Restart</string>
+  <string id="724">Invalid address specified. Value must be AAA.BBB.CCC.DDD</string>
+  <string id="725">with numbers between 0 and 255.</string>
+  <string id="726">Changes not saved. Continue without saving?</string>
+  <string id="727">Web Server</string>
+  <string id="728">FTP Server</string>
+  <string id="729">Internet Time</string>
+  <string id="730">Web Server Port</string>
+  <string id="731">Time Server Host</string>
+  <string id="732">Save &amp; Apply</string>
+  <string id="733">Web Server pasvorto</string>
+  <string id="734">No Pass</string>
+  <string id="735">- Charset</string>
+  <string id="736">- Style</string>
+  <string id="737">- Color</string>
+  <string id="738">Normal</string>
+  <string id="739">Bold</string>
+  <string id="740">Italics</string>
+  <string id="741">Bold Italics</string>
+  <string id="742">White</string>
+  <string id="743">flava</string>
+  <string id="744">vicos</string>
+  <string id="745">No scanned informaĵo for this Vido</string>
+  <string id="746">Switch to la vicos Vido</string>
+  <string id="747">Eraro loading image</string>
+  <string id="748">Editii Path</string>
+  <string id="749">Add Share</string>
+  <string id="750">Are vi sure?</string>
+  <string id="751">Removing Share</string>
+  <string id="752">Editii Share Path</string>
+  <string id="753">Editii Share Nomo</string>
+  <string id="754">Add Program Link</string>
+  <string id="755">Editii Program Path</string>
+  <string id="756">Editii Program Nomo</string>
+  <string id="757">Editii Path Depth</string>
+  <string id="758">Removing Program Link</string>
+  <string id="759">Vido: Big List</string>
+  <string id="760">flava</string>
+  <string id="761">Blanka</string>
+  <string id="762">Blue</string>
+  <string id="763">Bright Verda</string>
+  <string id="764">flava Verda</string>
+  <string id="765">Cyan</string>
+  <string id="766">Reserved</string>
+  <string id="767">Reserved</string>
+  <string id="768">Reserved</string>
+  <string id="769">Reserved</string>
+  <string id="770">Eraro %i: share not available</string>
+  <string id="771">- Auto Fatx Limiter</string>
+  <string id="772">Audio Hardware</string>
+  <string id="773">Seeking</string>
+  <string id="774">Slideshow Folder</string>
+  <string id="998">XLink Kai</string>
+  <string id="999">Interreto-gaming</string>
+  <string id="1000">ekranosaver PreVido</string>
+  <string id="1001">Unable to connect</string>
+  <string id="1002">XBMC was unable to connect to la network location.</string>
+  <string id="1003">This could be due to la network not being connected.</string>
+  <string id="1004">Would you like to add it anyway?</string>
+  <string id="1005">tajpi a nomo for this share</string>
+  <string id="1006">IP Address</string>
+  <string id="1007">Add Network Location</string>
+  <string id="1008">Protocol</string>
+  <string id="1009">Server Address</string>
+  <string id="1010">Server Nomo</string>
+  <string id="1011">Remote Path</string>
+  <string id="1012">Shared Folder</string>
+  <string id="1013">Port</string>
+  <string id="1014">Uzulonomo</string>
+  <string id="1015">network server</string>
+  <string id="1016">tajpi la network address of la server</string>
+  <string id="1017">tajpi la path on la server</string>
+  <string id="1018">tajpi la port number</string>
+  <string id="1019">tajpi la uzulonomo</string>
+  <string id="1020">Add %s Source</string>
+  <string id="1021">tajpi la path or foliumilo for la media location.</string>
+  <string id="1022">tajpi a nomo for this Media Source.</string>
+  <string id="1023">Foliumilo for new share</string>
+  <string id="1024">Foliumilo</string>
+  <string id="1025">Could not retrieve directory informaĵo.</string>
+  <string id="1026">Add Source</string>
+  <string id="1027">Editii Source</string>
+  <string id="1028">Editii %s Source</string>
+  <string id="1029">tajpi la new label</string>
+  <string id="1030">an image</string>
+  <string id="1031">an image folder</string>
+  <string id="1032">Add Network Location...</string>
+  <string id="1200">SMB Client</string>
+  <string id="1202">Workgroup</string>
+  <string id="1203">Default Uzulonomo</string>
+  <string id="1204">Default Pasvorto</string>
+  <string id="1207">WINS-Server</string>
+  <string id="1210">ReMovi</string>
+  <string id="1211">Muziko</string>
+  <string id="1212">Filmoj</string>
+  <string id="1213">Bildoj</string>
+  <string id="1214">vicos</string>
+  <string id="1215">Muziko &amp; Filmoj </string>
+  <string id="1216">Muziko &amp; Bildoj</string>
+  <string id="1217">Muziko &amp; vicos</string>
+  <string id="1218">Filmoj &amp; Bildoj</string>
+  <string id="1219">Filmoj &amp; vicos</string>
+  <string id="1220">Bildoj &amp; vicos</string>
+  <string id="1221">Muziko &amp; Filmoj &amp; Bildoj</string>
+  <string id="1222">Muziko &amp; Filmoj &amp; Bildoj &amp; vicos</string>
+  <string id="1223">Disabled</string>
+  <string id="1224">Normal Uzulo</string>
+  <string id="1225">Advanced Uzulo</string>
+  <string id="1226">vicos &amp; Muziko &amp; Filmoj</string>
+  <string id="1227">vicos &amp; Bildoj &amp; Muziko</string>
+  <string id="1228">vicos &amp; Bildoj &amp; Filmoj</string>
+  <string id="1229">Muziko &amp; Programs</string>
+  <string id="1230">Filmoj &amp; Programs</string>
+  <string id="1231">Bildoj &amp; Programs</string>
+  <string id="1232">Muziko &amp; Filmoj &amp; Bildoj &amp; Programs</string>
+  <string id="1233">Programs &amp; Filmoj &amp; Muziko</string>
+  <string id="1234">Programs &amp; Bildoj &amp; Muziko</string>
+  <string id="1235">Programs &amp; Bildoj &amp; Filmoj</string>
+  <string id="1245">FTP Uzulo Nomo</string>
+  <string id="1246">FTP Uzulo Pasvorto</string>
+  <string id="1247">FTP Server Uzulo pasvorto has been set sucessfully</string>
+  <string id="1250">Auxtomata-detection</string>
+  <string id="1251">XBOX Auxtomata-detection</string>
+  <string id="1252">Kromnomo</string>
+  <string id="1253">Verki FTP Link in mia vicos</string>
+  <string id="1254">Peti to Connect</string>
+  <string id="1255">Send FTP Uzulo and pasvorto</string>
+  <string id="1256">Ping Interval</string>
+  <string id="1257">Would vi like to connect to la Autodetected Xbox?</string>
+  <string id="1396">Drifting</string>
+  <string id="1397">kaj</string>
+  <string id="1398">Frostos</string>
+  <string id="1399">Late</string>
+  <string id="1400">Sola</string>
+  <string id="1401">T-Showers</string>
+  <string id="1402">Tondri</string>
+  <string id="1403">Sunbrilo</string>
+  <string id="1404">Peza</string>
+  <string id="1405">en</string>
+  <string id="1406">la</string>
+  <string id="1407">Apudaĵo</string>
+  <string id="1408">Glacio</string>
+  <string id="1409">Kristaloj</string>
+  <string id="1410">Kvieto</string>
+  <string id="2050">Runtime:</string>
+  <string id="4501">LCD Type</string>
+  <string id="10000">Hejmo</string>
+  <string id="10001">Mia Programs</string>
+  <string id="10002">Mia Bildoj</string>
+  <string id="10003">Mia vicos</string>
+  <string id="10004">Preferoj</string>
+  <string id="10005">Mia Muziko</string>
+  <string id="10006">Mia Filmoj</string>
+  <string id="10007">Sistemo informaĵo</string>
+  <string id="10008">Preferoj-&gt;Generalo</string>
+  <string id="10009">Preferoj-&gt;ekrano</string>
+  <string id="10010">Preferoj-&gt;Appearance-&gt;GUI Calibration</string>
+  <string id="10011">Preferoj-&gt;Mia Filmoj-&gt;ekrano Calibration</string>
+  <string id="10012">Preferoj-&gt;Mia Bildoj</string>
+  <string id="10013">Preferoj-&gt;Mia Programs</string>
+  <string id="10014">Preferoj-&gt;Wealar</string>
+  <string id="10015">Preferoj-&gt;Mia Muziko</string>
+  <string id="10016">Preferoj-&gt;System</string>
+  <string id="10017">Preferoj-&gt;Mia Filmoj</string>
+  <string id="10018">Preferoj-&gt;Network</string>
+  <string id="10019">Preferoj-&gt;Appearance</string>
+  <string id="10020">Scripts</string>
+  <string id="10021">Mia Filmoj/Gxenroj</string>
+  <string id="10022">Mia Filmoj/Akotoroj</string>
+  <string id="10023">Mia Filmoj/Jaroj</string>
+  <string id="10025">Mia Filmoj/Nomoj</string>
+  <string id="10028">Mia Filmoj/Kanto-listoj</string>
+  <string id="10034">Preferoj-&gt;Provicos</string>
+  <string id="10100">Jes/ne dialog</string>
+  <string id="10101">Progress dialog</string>
+  <string id="10500">Mia Muziko/Playlist</string>
+  <string id="10501">Mia Muziko/vicos</string>
+  <string id="10502">Mia Muziko/Library</string>
+  <string id="10503">Mia Muziko/Popola 100</string>
+  <string id="10504">Pli-popola 100 kantoj</string>
+  <string id="10505">Pli-popa 100 Albumos</string>
+  <string id="10506">Applications</string>
+  <string id="10507">Preferoj</string>
+  <string id="10508">Wealar Forecast</string>
+  <string id="10509">Reto Gaming</string>
+  <string id="10510">Extensions</string>
+  <string id="10511">Sistemo Info</string>
+  <string id="10512">Mia Muziko - Albumos</string>
+  <string id="10513">Mia Muziko - Artistoj</string>
+  <string id="10514">Mia Muziko - Gxenroj</string>
+  <string id="10515">Mia Muziko - Top 100</string>
+  <string id="10516">Mia Muziko - Library</string>
+  <string id="10517">Mia Muziko - Now Playing</string>
+  <string id="10518">Mia Filmoj - Aktoroj</string>
+  <string id="10519">Mia Filmoj - Gxenroj</string>
+  <string id="10520">Mia Filmoj - Nomo</string>
+  <string id="10521">Mia Filmoj - Jaro</string>
+  <string id="10522">Mia Filmoj - Now Playing</string>
+  <string id="10523">Albumo Info</string>
+  <string id="10524">Filmo Info</string>
+  <string id="12000">Elekti dialog</string>
+  <string id="12001">Mia Muziko/info</string>
+  <string id="12002">Dialog OK</string>
+  <string id="12003">Mia Filmoj/Info</string>
+  <string id="12004">Mia Scripts/Info</string>
+  <string id="12005">Fullekrano filmoj</string>
+  <string id="12006">Soni visualisation</string>
+  <string id="12007">Mia Bildo/slideshow</string>
+  <string id="12008">Vicostacking dialog</string>
+  <string id="12009">Rebuild index...</string>
+  <string id="12010">Return to Mia Muziko</string>
+  <string id="12011">Return to Mia Filmoj</string>
+  <string id="12012">Updati trainer list</string>
+  <string id="12013">Trainer</string>
+  <string id="12014">No trainers found</string>
+  <string id="12015">Trainer Preferoj</string>
+  <string id="12016">ĉiom registered trailers are missing. Updati your list</string>
+  <string id="12017">Auto resume from last position</string>
+  <string id="12018">Ne</string>
+  <string id="12019">Jes ja</string>
+  <string id="12020">Peti</string>
+  <string id="12021">Start from beginning</string>
+  <string id="12022">Resume from last position</string>
+  <string id="12310">0</string>
+  <string id="12311">1</string>
+  <string id="12312">2</string>
+  <string id="12313">3</string>
+  <string id="12314">4</string>
+  <string id="12315">5</string>
+  <string id="12316">6</string>
+  <string id="12317">7</string>
+  <string id="12318">8</string>
+  <string id="12319">9</string>
+  <string id="12320">c</string>
+  <string id="12321">ok</string>
+  <string id="12322">*</string>
+  <string id="12324">XBMC Master Lock</string>
+  <string id="12325">Locked! tajpi Code...</string>
+  <string id="12326">tajpi pasvorto</string>
+  <string id="12327">tajpi Master Code</string>
+  <string id="12328">tajpi Malŝlosi Code</string>
+  <string id="12329">or press C to cancel</string>
+  <string id="12330">tajpi Gamepad button combo and press Start</string>
+  <string id="12331">press Start, or Back to cancel</string>
+  <string id="12332">Set Lock</string>
+  <string id="12333">Malŝlosi</string>
+  <string id="12334">Reset Lock</string>
+  <string id="12335">ReMovi Lock</string>
+  <string id="12336">Elekti type of lock to use:</string>
+  <string id="12337">Numeric pasvorto</string>
+  <string id="12338">Gamepad button combo</string>
+  <string id="12339">Full-text pasvorto</string>
+  <string id="12340">tajpi new pasvorto</string>
+  <string id="12341">Re-tajpi new pasvorto</string>
+  <string id="12342">malĝusta pasvorto,</string>
+  <string id="12343">retries left </string>
+  <string id="12344">pasvortos tajpied did not match.</string>
+  <string id="12345">Access Denied</string>
+  <string id="12346">pasvorto retry limit exceeded.</string>
+  <string id="12347">La XBOX will now shut off.</string>
+  <string id="12348">Item Locked</string>
+  <string id="12349">Remember Master Code until next boot?</string>
+  <string id="12350">(Opening any item in Preferoj will</string>
+  <string id="12351">aŭtomateĉiomy re-enable Master Lock.)</string>
+  <string id="12352">tajpi Master Code button combo and press Start</string>
+  <string id="12353">Reactivate Lock</string>
+  <string id="12354">Override folder locks until next boot?</string>
+  <string id="12355">Aŭtomateĉiomy re-enable folder locks.)</string>
+  <string id="12356">Change Lock</string>
+  <string id="12357">Share Lock</string>
+  <string id="12358">pasvorto entry was blank. Try again.</string>
+  <string id="12360">Master Lock</string>
+  <string id="12361">Max Retry</string>
+  <string id="12362">Enable Shutdown</string>
+  <string id="12363">Protect Shares</string>
+  <string id="12364">Master Mode</string>
+  <string id="12365">Master Code</string>
+  <string id="12366">Master Lock is changed. Master Code is now set to:</string>
+  <string id="12367">Master Code is not Valid!</string>
+  <string id="12368">Plaĉi tajpi a Valid Master Code!</string>
+  <string id="12369">XBMC Startup Lock</string>
+  <string id="12370">Master Lock Mode changed, la Master Code wasn't set!</string>
+  <string id="12371">Plaĉi Set a new Master Code!</string>
+  <string id="12372">Lock Preferoj &amp; Mia vicos</string>
+  <string id="12373">Preferoj &amp;  Mia vicos</string>
+  <string id="12374">Lock Media</string>
+  <string id="12375">Master Uzulo Mode</string>
+  <string id="12376">Set as default for ĉiom Movies</string>
+  <string id="12377">This will reset any previously saved values</string>
+  <string id="12378">Show each image for</string>
+  <string id="12379">Use Pan and Zoom effects</string>
+  <string id="12380">Play NTSC filmoj at PAL rates</string>
+  <string id="12381">Play PAL filmoj at NTSC rates</string>
+  <string id="12382">Play NTSC filmoj in PAL60</string>
+  <string id="12383">12 hour clock</string>
+  <string id="12384">24 hour clock</string>
+  <string id="12385">Day/Month</string>
+  <string id="12386">Month/Day</string>
+  <string id="12387">Rescan datinbanko</string>
+  <string id="12390">System Uptime</string>
+  <string id="12391">Minutes</string>
+  <string id="12392">Hours</string>
+  <string id="12393">Days</string>
+  <string id="12394">Total Uptime</string>
+  <string id="12600">Mia Wealar</string>
+  <string id="12900">ekranosaver</string>
+  <string id="12901">Fullekrano OSD</string>
+  <string id="13000">System</string>
+  <string id="13001">Immediate HD Spindown</string>
+  <string id="13002">Filmoj Only</string>
+  <string id="13003">- malfruiĝo</string>
+  <string id="13004">- Minimum vico Duration</string>
+  <string id="13005">Shutdown</string>
+  <string id="13006">Dashboard</string>
+  <string id="13100">Flicker Filter</string>
+  <string id="13150">Durdisko Key:</string>
+  <string id="13151">Durdisko Temp:</string>
+  <string id="13152">DVD Model:</string>
+  <string id="13153">DVD Firmware:</string>
+  <string id="13154">Durdisko Model:</string>
+  <string id="13155">Durdisko Serial:</string>
+  <string id="13156">Durdisko Firmware:</string>
+  <string id="13157">Durdisko pasvorto:</string>
+  <string id="13158">Durdisko Lock State:</string>
+  <string id="13159">Subnet mpeti:</string>
+  <string id="13160">Gateway:</string>
+  <string id="13161">DNS</string>
+  <string id="13162">Initialize failed</string>
+  <string id="13163">GamePads On Port:</string>
+  <string id="13164">Keyboard On Port:</string>
+  <string id="13165">Mouse On Port:</string>
+  <string id="13166">Head/MicroPhone On Port:</string>
+  <string id="13167">MemoryStick On Port:</string>
+  <string id="13168">IR-Remote On Port:</string>
+  <string id="13169">Bypass CD Elektiion</string>
+  <string id="13170">Never</string>
+  <string id="13171">Immediately</string>
+  <string id="13172">After %i secs</string>
+  <string id="13200">Provicos</string>
+  <string id="13201">Forviŝi provico '%s'?</string>
+  <string id="13202">Save current Preferoj as provico...</string>
+  <string id="13203">Provico '%s' loaded successfully</string>
+  <string id="13204">Last loaded provico:</string>
+  <string id="13205">Unknown</string>
+  <string id="13206">Overwrite</string>
+  <string id="13207">Overwrite provico '%s'?</string>
+  <string id="13208">Alarm clock</string>
+  <string id="13209">Alarm clock interval (in minutes)</string>
+  <string id="13210">Started, alarm in %im</string>
+  <string id="13211">Alarm!</string>
+  <string id="13212">Canceled with %im%is left</string>
+  <string id="13249">Search for Subtitles in RARs</string>
+  <string id="13250">Foliumilo for subtitle...</string>
+  <string id="13251">Movi Item</string>
+  <string id="13252">Movi Item Here</string>
+  <string id="13253">Cancel Movi</string>
+  <string id="13270">Hardware:</string>
+  <string id="13271">CPU Speed:</string>
+  <string id="13274">Xbox is Connected, but no DNS is available.</string>
+  <string id="13275">Hard Disk</string>
+  <string id="13276">DVD-ROM</string>
+  <string id="13277">Storage</string>
+  <string id="13278">Default</string>
+  <string id="13279">Network</string>
+  <string id="13280">Filmoj</string>
+  <string id="13281">Hardware</string>
+  <string id="13282">_</string>
+  <string id="13283">Kernel Version:</string>
+  <string id="13284">CPU Speed:</string>
+  <string id="13285">Detected BIOS:</string>
+  <string id="13286">Filmoj Encoder:</string>
+  <string id="13287">ekrano Resolution:</string>
+  <string id="13288">Xbox Version:</string>
+  <string id="13289">Xbox Serial Number:</string>
+  <string id="13290">XBOX Manufacturer:</string>
+  <string id="13291">ModChip:</string>
+  <string id="13292">A/V Cable:</string>
+  <string id="13293">Filmoj &amp; XBE Region:</string>
+  <string id="13294">DVD Region:</string>
+  <string id="13295">Internet:</string>
+  <string id="13296">Xbox is Connected</string>
+  <string id="13297">Xbox is not Connected. Check Network Preferoj.</string>
+  <string id="13298">XBLIVE Key:</string>
+  <string id="13299">Target Temperature</string>
+  <string id="13300">Fan Speed</string>
+  <string id="13301">Auto Temperature Control</string>
+  <string id="13302">Fan Speed Override</string>
+  <string id="13303">Skin Fonts</string>
+  <string id="13304">Enable Flipping Bi-Directional Strings</string>
+  <string id="13305">Enable RSS Feeds</string>
+  <string id="13306">Hide Parent Folder Items</string>
+  <string id="13307">Track Naming Template</string>
+  <string id="13308">Do you wish to reboot your xbox</string>
+  <string id="13309">instead of just XBMC?</string>
+  <string id="13310">Zoom Effect</string>
+  <string id="13311">Float Effect</string>
+  <string id="13312">Black Bar Reduction</string>
+  <string id="13313">Restart</string>
+  <string id="13314">Crossfade</string>
+  <string id="13315">Regenerate Thumbnails</string>
+  <string id="13316">Recursive Thumbnails</string>
+  <string id="13317">Vido Slideshow</string>
+  <string id="13318">Recursive Slideshow</string>
+  <string id="13319">Randomize</string>
+  <string id="13320">Stereo</string>
+  <string id="13321">Left Only</string>
+  <string id="13322">Right Only</string>
+  <string id="13323">Enable CD+G</string>
+  <string id="13324">Background Transparency</string>
+  <string id="13325">Foreground Transparency</string>
+  <string id="13326">A/V malfruiĝo</string>
+  <string id="13327">Karaoke</string>
+  <string id="13328">%s not found</string>
+  <string id="13329">Eraro opening %s</string>
+  <string id="13330">Unable to load %s</string>
+  <string id="13331">Eraro: out of memory</string>
+  <string id="13332">Movi Up</string>
+  <string id="13333">Movi Down</string>
+  <string id="13334">Editii Label</string>
+  <string id="13335">Make Default</string>
+  <string id="13336">ReMovi Button</string>
+  <string id="13337">- 2 Channel PCM Passthrough</string>
+  <string id="13338">Front LED</string>
+  <string id="13339">Front LED Colour</string>
+  <string id="13340">Leave As Is</string>
+  <string id="13341">Verda</string>
+  <string id="13342">Orangxa</string>
+  <string id="13343">Rugxo</string>
+  <string id="13344">Cycle</string>
+  <string id="13345">Switch LED off on Playback</string>
+  <string id="13346">Filmoj info</string>
+  <string id="13347">Queue Item</string>
+  <string id="13348">Skani IMDb...</string>
+  <string id="13349">Query Info For ĉiom vicos</string>
+  <string id="13350">Now Playing...</string>
+  <string id="13351">Albumo informaĵo</string>
+  <string id="13352">Scan ĉiom to Datinbanko</string>
+  <string id="13353">Stop Scanning</string>
+  <string id="13354">Render Method</string>
+  <string id="13355">Low Quality Pixel Shader</string>
+  <string id="13356">Hardware Overlays</string>
+  <string id="13357">High Quality Pixel Shader</string>
+  <string id="13358">Play Item</string>
+  <string id="13359">Set Artist Thumb</string>
+  <string id="13360">Generate Thumbs</string>
+  <string id="13361">Enable Voice</string>
+  <string id="13362">Voice Mpeti</string>
+  <string id="13363">- Enable Spectrum Energy Weight</string>
+  <string id="13364">-- Spectrum Energy Weight Value</string>
+  <string id="13365">- Enable Pitch Scaling</string>
+  <string id="13366">-- Pitch Scaling Value</string>
+  <string id="13367">- Enable Whisper Factor</string>
+  <string id="13368">-- Whisper Factor Value</string>
+  <string id="13369">- Enable Robotic Factor</string>
+  <string id="13370">-- Robotic Factor Value</string>
+  <string id="13371">- Port 1 Voice</string>
+  <string id="13372">- Port 2 Voice</string>
+  <string id="13373">- Port 3 Voice</string>
+  <string id="13374">- Port 4 Voice</string>
+  <string id="13375">Enable Device</string>
+  <string id="13376">Volume</string>
+  <string id="13377">Default Vido Mode</string>
+  <string id="13378">Default Brightness</string>
+  <string id="13379">Default Contrast</string>
+  <string id="13380">Default Gamma</string>
+  <string id="13381">Resume Filmoj</string>
+  <string id="13382">Voice Mpeti - Port 1</string>
+  <string id="13383">Voice Mpeti - Port 2</string>
+  <string id="13384">Voice Mpeti - Port 3</string>
+  <string id="13385">Voice Mpeti - Port 4</string>
+  <string id="13386">Use Time Based Seeking</string>
+  <string id="13387">Track Naming Template Right</string>
+  <string id="13388">Presets</string>
+  <string id="13389">Lare are no presets available
+for this visualisation</string>
+  <string id="13390">Lare are no Preferoj available
+for this visualisation</string>
+  <string id="13391">Eject/Load</string>
+  <string id="13392">Use Visualisation if playing audio</string>
+  <string id="13393">Calculate amplekso</string>
+  <string id="13394">Calculating folder amplekso</string>
+  <string id="13395">Filmoj Preferoj</string>
+  <string id="13396">Audio and Subtitle Preferoj</string>
+  <string id="13397">Enable Subtitles</string>
+  <string id="13398">Bookmarks</string>
+  <string id="13399">Ignore "La" when sorting</string>
+  <string id="13400">Crossfade albumotracks</string>
+  <string id="13401">Foliumilo for %s</string>
+  <string id="13402">Show track position</string>
+  <string id="13403">Clear Default</string>
+  <string id="13404">Resume</string>
+  <string id="13405">Get Thumb</string>
+  <string id="14000">Stack</string>
+  <string id="14001">Unstack</string>
+  <string id="14002">Stacking: Fuzzy</string>
+  <string id="14003">Downloading playlist vico...</string>
+  <string id="14004">Downloading streams list...</string>
+  <string id="14005">Parsing streams list...</string>
+  <string id="14006">Downloading streams list failed</string>
+  <string id="14007">Downloading playlist vico failed</string>
+  <string id="14008">Enable Kai Notifications</string>
+  <string id="14009">Games Directory</string>
+  <string id="14010">Autoswitch to Thumbs based on</string>
+  <string id="14011">Enable Autoswitching to Thumbs Vido</string>
+  <string id="14012">- Use Large Icons</string>
+  <string id="14013">- Switch Based on</string>
+  <string id="14014">- Percentage</string>
+  <string id="14015">No vicos and at least one Thumb</string>
+  <string id="14016">At least one vico and Thumb</string>
+  <string id="14017">Percentage of Thumbs</string>
+  <string id="14018">Vido Options</string>
+  <string id="14019">Change Area Code 1</string>
+  <string id="14020">Change Area Code 2</string>
+  <string id="14021">Change Area Code 3</string>
+  <string id="14022">Library</string>
+  <string id="14023">No TV</string>
+  <string id="14024">tajpi la nearest large town or US ZIP code</string>
+  <string id="14025">Filmoj/Audio/DVD Cache - Harddisk</string>
+  <string id="14026">Filmoj Cache - DVDRom</string>
+  <string id="14027">- Local Network</string>
+  <string id="14028">- Internet</string>
+  <string id="14030">Audio Cache - DVDRom</string>
+  <string id="14031">- Local Network</string>
+  <string id="14032">- Internet</string>
+  <string id="14034">DVD Cache - DVDRom</string>
+  <string id="14035">- Local Network</string>
+  <string id="14036">Servers</string>
+  <string id="14037">Look and Feel</string>
+  <string id="14038">Network Preferoj changed</string>
+  <string id="14039">XBMC requires to restart to change your</string>
+  <string id="14040">network setup.  Would you like to restart now?</string>
+  <string id="14041">Post Processing</string>
+  <string id="14042">Engine IP Address</string>
+  <string id="14043">- Shutdown while playing</string>
+  <string id="14044">%i mins</string>
+  <string id="14045">%i secs</string>
+  <string id="14046">%i ms</string>
+  <string id="14047">%i %%</string>
+  <string id="14048">%i kbps</string>
+  <string id="14049">%i kb</string>
+  <string id="14050">%i.0 dB</string>
+  <string id="14051">Time Format</string>
+  <string id="14052">Dati Format</string>
+  <string id="14053">GUI Filters</string>
+  <string id="14054">Enable Internet Lookups</string>
+  <string id="14055">Use Background Scanning</string>
+  <string id="14056">Stop Scan</string>
+  <string id="14057">Not possible while scanning for media info</string>
+  <string id="14058">Film Grain Effect</string>
+  <string id="14059">Look for custom thumbnails on remote shares</string>
+  <string id="14060">Unknown type Cache - Internet</string>
+  <string id="14061">Auto</string>
+  <string id="14062">tajpi uzulonomo for</string>
+  <string id="14063">Dati &amp; Time</string>
+  <string id="14064">Set Dati</string>
+  <string id="14065">Set Time</string>
+  <string id="14066">tajpi la Time in 24 hour HH:MM format</string>
+  <string id="14067">tajpi la Dati in DD/MM/YYYY format</string>
+  <string id="14068">tajpi la IP address</string>
+  <string id="14069">Apply lase Preferoj now?</string>
+  <string id="14070">Apply Changes Now</string>
+  <string id="14071">ĉiomow vico Renaming and Deletion</string>
+  <string id="14072">Enable XLink Kai</string>
+  <string id="14073">XLink Kai is not enabled.</string>
+  <string id="15000">XLink Kai</string>
+  <string id="15001">La service is not connected, would you like to attempt</string>
+  <string id="15002">reconnecting it with Xbox Media Ctajpi?</string>
+  <string id="15003">tajpi your message</string>
+  <string id="15004">You've been invited to play %s.</string>
+  <string id="15005">Dati: %s</string>
+  <string id="15006">From: %s</string>
+  <string id="15007">Invitation</string>
+  <string id="15008">You've been invited to join %s.</string>
+  <string id="15009">Offline</string>
+  <string id="15010">Amikoj</string>
+  <string id="15011">Vido: Friends</string>
+  <string id="15012">Join</string>
+  <string id="15013">Voice</string>
+  <string id="15014">Invite</string>
+  <string id="15015">ReMovi</string>
+  <string id="15016">Games</string>
+  <string id="15017">Vido: Games</string>
+  <string id="15018">tajpi</string>
+  <string id="15019">Add</string>
+  <string id="15020">Host</string>
+  <string id="15021">Arenas</string>
+  <string id="15022">Vido: Arenas</string>
+  <string id="15023">Play</string>
+  <string id="15024">Add</string>
+  <string id="15025">Host</string>
+  <string id="15026">Chat</string>
+  <string id="15027">Vido: Chat</string>
+  <string id="15028">Keyboard</string>
+  <string id="15029">A pasvorto is required to join this arena.</string>
+  <string id="15030">Service has disconnected</string>
+  <string id="15031">XLink Kai Aulantication</string>
+  <string id="15032">Your uzulonomo and/or pasvorto was rejected by la</string>
+  <string id="15033">orbital server. Plaĉi check your configuration.</string>
+  <string id="15034">has just signed in</string>
+  <string id="15035">has initiated voice chat</string>
+  <string id="15036">has sent you an invitation</string>
+  <string id="15037">XBMC is unable to confirm your network is reachable.</string>
+  <string id="15038">You may experience difficulties joining or hosting games.</string>
+  <string id="15039">Xbox Media Ctajpi unable to locate game aŭtomateĉiomy.</string>
+  <string id="15040">Insert la game disk into your XBOX or press 'A' to cancel</string>
+  <string id="15041">and launch la game manuĉiomy.</string>
+  <string id="15042">Access Denied</string>
+  <string id="15043">%s joins chat.</string>
+  <string id="15044">%s leaves chat.</string>
+  <string id="15045">tajpi your personal message.</string>
+  <string id="15046">Current Arena</string>
+  <string id="15047">tajpi a pasvorto for via arena.</string>
+  <string id="15048">tajpi a description for via arena.</string>
+  <string id="15049">Host Game</string>
+  <string id="15050">Host in a private arena</string>
+  <string id="15051">Player Limit</string>
+  <string id="15052">pasvorto</string>
+  <string id="15053">Description</string>
+  <string id="15054">Invite Dialog</string>
+  <string id="15055">Choose game:</string>
+  <string id="15056">tajpi message:</string>
+  <string id="15057">Send</string>
+  <string id="15058">Host</string>
+  <string id="15059">Invite accepted!</string>
+  <string id="15060">Message Here</string>
+  <string id="15061">Vi estas invited to play %s.</string>
+  <string id="15062">Use alternate mplayer location</string>
+  <string id="15100">Library</string>
+  <string id="15101">Datinbanko</string>
+  <string id="15102">* ĉiom Albumos</string>
+  <string id="15103">* ĉiom Artists</string>
+  <string id="15104">* ĉiom kantoj</string>
+  <string id="15105">* ĉiom Gxenroj</string>
+  <string id="15106">Remember elektied vico on forward navigation</string>
+  <string id="15107">Buffering...</string>
+  <string id="15108">Navigation Sounds</string>
+  <string id="15109">Skin Default</string>
+  <string id="15110">Controller Rumble</string>
+  <string id="15111">Skin Lame</string>
+  <string id="15112">Default Lame</string>
+  <string id="15200">LastFM</string>
+  <string id="15201">Submit kantoj to LastFM</string>
+  <string id="15202">LastFM Uzulonomo</string>
+  <string id="15203">LastFM pasvorto</string>
+  <string id="15204">Unable to handshake: sleeping...</string>
+  <string id="15205">Plaĉi Updati XBMC</string>
+  <string id="15206">Submission failed: bad authorization.</string>
+  <string id="15207">Connected</string>
+  <string id="15208">Not Connected</string>
+  <string id="15209">Submit Interval %i</string>
+  <string id="15210">Cached %i kantoj</string>
+  <string id="15211">Submitting...</string>
+  <string id="15212">Submitting in %i secs</string>
+  <string id="15213">Play Using...</string>
+  <string id="15214">Use Smoolad A/V Syncronization</string>
+  <string id="15215">Hide vico nomoj in Thumbs Vido</string>
+  <string id="15250">Submit Last.fm Radio to LastFM</string>
+  <string id="15251">Connecting to Last.fm...</string>
+  <string id="15252">Elektiing station...</string>
+  <string id="15253">Search similar artists...</string>
+  <string id="15254">Search similar tags...</string>
+  <string id="15255">Via logxas (%nomo%)</string>
+  <string id="15256">Overĉiom top tags</string>
+  <string id="15257">Top artists for tag %nomo%</string>
+  <string id="15258">Top albumos for tag %nomo%</string>
+  <string id="15259">Top tracks for tag %nomo%</string>
+  <string id="15260">aŭskulti to tag %nomo% last.fm radio</string>
+  <string id="15261">Similar artists as %nomo%</string>
+  <string id="15262">Top %nomo% albumos</string>
+  <string id="15263">Top %nomo% tracks</string>
+  <string id="15264">Top %nomo% tags</string>
+  <string id="15265">Pligranda fans of %nomo%</string>
+  <string id="15266">aŭskulti to %nomo% fans last.fm radio</string>
+  <string id="15267">aŭskulti to %nomo% similar artists last.fm radio</string>
+  <string id="15268">Top artists for uzulo %nomo%</string>
+  <string id="15269">Top albumos for uzulo %nomo%</string>
+  <string id="15270">Top tracks for uzulo %nomo%</string>
+  <string id="15271">Amikoj of uzulo %nomo%</string>
+  <string id="15272">Najboroj of uzulo %nomo%</string>
+  <string id="15273">Weekly artist chart for %nomo%</string>
+  <string id="15274">Weekly albumo chart for %nomo%</string>
+  <string id="15275">Weekly track chart for %nomo%</string>
+  <string id="15276">aŭskulti to %nomo% naboroja last.fm radio</string>
+  <string id="15277">aŭskulti to %nomo% personal last.fm radio</string>
+  <string id="15278">aŭskulti to %nomo% amas kanto last.fm radio</string>
+  <string id="15279">Retrieving list from last.fm...</string>
+  <string id="15280">Can't retrieve list from last.fm...</string>
+  <string id="15281">tajpi la artisto nomo to find related ones</string>
+  <string id="15282">tajpi a tag nomo to find similar ones</string>
+  <string id="15283">Kanto lastatempe aŭskultas by %nomo%</string>
+  <string id="15300">Path not found or invalid</string>
+  <string id="15301">Could not connect to network server</string>
+  <string id="15302">No servers found</string>
+  <string id="15303">Workgroup not found</string>
+  <string id="15310">Opening multi-path bookmark</string>
+  <string id="15311">Path:</string>
+  <string id="16000">Generalo</string>
+  <string id="16001">Configure soni Hardware...</string>
+  <string id="16002">CDDB lookup</string>
+  <string id="16003">Player</string>
+  <string id="16004">Play media from KD</string>
+  <string id="16009">Tajpi la Filmo Nomo</string>
+  <string id="16010">Tajpi la Provico Nomo</string>
+  <string id="16011">Tajpi la Albumo Nomo</string>
+  <string id="16012">Tajpi la Playlist Nomo</string>
+  <string id="16013">Tajpi new viconomo</string>
+  <string id="16014">Tajpi folder nomo</string>
+  <string id="16015">Tajpi directory</string>
+  <string id="16016">Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
+  <string id="16017">Tajpi Search String</string>
+  <string id="16018">None</string>
+  <string id="16019">Auto Elekti</string>
+  <string id="16020">DeInterlace</string>
+  <string id="16021">Sync Odd</string>
+  <string id="16022">Sync Even</string>
+  <string id="16023">Interlaced Handling</string>
+  <string id="16024">Canceling...</string>
+  <string id="16025">tajpi la Artist Nomo</string>
+  <string id="16026">Playlist playback aborted</string>
+  <string id="16027">Too many consecutive failed items</string>
+  <string id="16030">Festo Mode mode aborted.</string>
+  <string id="16031">Ne matching kantoj in la datinbanko.</string>
+  <string id="16032">Could not initialise datinbanko.</string>
+  <string id="16033">Could not open datinbanko.</string>
+  <string id="16034">Could not get kantoj from datinbanko.</string>
+  <string id="16100">ĉiom Filmoj</string>
+  <string id="16101">UnWatched</string>
+  <string id="16102">Watched</string>
+  <string id="16103">Mark as vidas</string>
+  <string id="16104">Mark as malvidas</string>
+  <string id="16105">Editi Nomo</string>
+  <string id="16106">Use NTSC-M &amp; NTSC-J</string>
+  <string id="16107">Use only NTSC-M</string>
+  <string id="16108">Use only NTSC-J</string>
+  <string id="16109">Use only PAL-60</string>
+  <string id="16110">For 60hz Games</string>
 </strings>

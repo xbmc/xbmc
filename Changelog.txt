@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-06-2006 changed: updated all language files to the new format and to utf-8 encoding
  - 19-06-2006 fixed: [ 1507612 ] Date & Time will not re-allow entry after set in skin
  - 19-06-2006 changed: forcing mplayer to use utf8 encoding for mkv subtitles
  - 19-06-2006 added: Tool to translate language files, sources in Tools/Translator
