@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language>
   <charsets>
-    <gui unicodefont="true">GBK</gui>
-    <subtitle>GBK</subtitle>
+    <gui unicodefont="true">CP936</gui>
+    <subtitle>CP936</subtitle>
   </charsets>
 
   <dvd>

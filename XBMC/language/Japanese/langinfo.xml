@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language>
   <charsets>
-    <gui unicodefont="true">SHIFT_JIS</gui>
-    <subtitle>SHIFT_JIS</subtitle>
+    <gui unicodefont="true">CP932</gui>
+    <subtitle>CP932</subtitle>
   </charsets>
 
   <dvd>
