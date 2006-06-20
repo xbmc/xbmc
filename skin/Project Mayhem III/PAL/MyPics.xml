@@ -170,7 +170,7 @@
     <posx>50</posx>
     <posy>305</posy>
     <label>Local</label>
-    <onclick>XBMC.ActivateWindow(MyPictures,Local)</onclick>
+    <onclick>XBMC.ActivateWindow(MyPictures,Pictures)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>9</onup>
@@ -186,7 +186,7 @@
     <posx>50</posx>
     <posy>342</posy>
     <label>Network</label>
-    <onclick>XBMC.ActivateWindow(MyPictures,Network)</onclick>
+    <onclick>XBMC.ActivateWindow(MyPictures,WORKGROUP (SMB) Network)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>31</onup>
