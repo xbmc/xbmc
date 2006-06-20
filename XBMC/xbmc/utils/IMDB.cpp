@@ -98,6 +98,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   movieDetails.m_strPlot = strLocNotAvail;
   movieDetails.m_strPictureURL = "";
   movieDetails.m_strRuntime = strLocNotAvail;
+  movieDetails.m_strMPAARating = strLocNotAvail;
   movieDetails.m_iYear = 0;
   movieDetails.m_fRating = 0.0;
   movieDetails.m_strVotes = strLocNotAvail;
@@ -176,6 +177,7 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
   movieDetails.m_strPictureURL = "";
   movieDetails.m_strVotes = strLocNotAvail;
   movieDetails.m_strCast = strLocNotAvail;
+  movieDetails.m_strMPAARating = strLocNotAvail;
   movieDetails.m_iTop250 = 0;
 
   TiXmlNode *details = doc.FirstChild( "details" );
@@ -202,6 +204,7 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
   XMLUtils::GetString(details, "credits", movieDetails.m_strWritingCredits);
   XMLUtils::GetString(details, "director", movieDetails.m_strDirector);
   XMLUtils::GetString(details, "plot", movieDetails.m_strPlot);
+  XMLUtils::GetString(details, "mpaa", movieDetails.m_strMPAARating);
 
   // convert to utf8
   g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTitle);
@@ -274,6 +277,7 @@ void CIMDBMovie::Reset()
   m_strPath = "";
   m_strDVDLabel = "";
   m_strIMDBNumber = "";
+  m_strMPAARating = "";
   m_iTop250 = 0;
   m_iYear = 0;
   m_fRating = 0.0f;
