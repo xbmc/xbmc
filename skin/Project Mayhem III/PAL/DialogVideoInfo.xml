@@ -79,7 +79,7 @@
    <type>label</type>
    <id>1</id>
    <posx>365</posx>
-   <posy>160</posy>
+   <posy>153</posy>
    <width>90</width>
    <label>199</label>
    <font>font12</font>
@@ -90,7 +90,7 @@
    <type>label</type>
    <id>1</id>
    <posx>365</posx>
-   <posy>180</posy>
+   <posy>173</posy>
    <width>90</width>
    <label>200</label>
    <font>font12</font>
@@ -101,7 +101,7 @@
    <type>label</type>
    <id>1</id>
    <posx>365</posx>
-   <posy>200</posy>
+   <posy>193</posy>
    <width>90</width>
    <label>174</label>
    <font>font12</font>
@@ -112,7 +112,7 @@
    <type>label</type>
    <id>1</id>
    <posx>365</posx>
-   <posy>220</posy>
+   <posy>213</posy>
    <width>90</width>
    <label>201</label>
    <font>font12</font>
@@ -123,7 +123,7 @@
    <type>label</type>
    <id>1</id>
    <posx>365</posx>
-   <posy>240</posy>
+   <posy>233</posy>
    <width>90</width>
    <label>202</label>
    <font>font12</font>
@@ -134,7 +134,7 @@
    <type>label</type>
    <id>1</id>
    <posx>365</posx>
-   <posy>260</posy>
+   <posy>253</posy>
    <width>90</width>
    <label>203</label>
    <font>font12</font>
@@ -145,7 +145,7 @@
    <type>label</type>
    <id>1</id>
    <posx>365</posx>
-   <posy>280</posy>
+   <posy>273</posy>
    <width>90</width>
    <label>204</label>
    <font>font12</font>
@@ -156,9 +156,20 @@
    <type>label</type>
    <id>1</id>
    <posx>365</posx>
-   <posy>300</posy>
+   <posy>293</posy>
    <width>90</width>
    <label>2050</label>
+   <font>font12</font>
+  </control>
+
+  <control>
+   <description>MPPA Rating txt</description>
+   <type>label</type>
+   <id>1</id>
+   <posx>365</posx>
+   <posy>313</posy>
+   <width>90</width>
+   <label>20060</label>
    <font>font12</font>
   </control>
 
@@ -167,7 +178,7 @@
    <type>fadelabel</type>
    <id>21</id>
    <posx>465</posx>
-   <posy>160</posy>
+   <posy>153</posy>
    <width>190</width>
    <label>-</label>
    <font>font12</font>
@@ -178,7 +189,7 @@
    <type>fadelabel</type>
    <id>22</id>
    <posx>465</posx>
-   <posy>180</posy>
+   <posy>173</posy>
    <width>190</width>
    <label>-</label>
    <font>font12</font>
@@ -189,7 +200,7 @@
    <type>fadelabel</type>
    <id>23</id>
    <posx>465</posx>
-   <posy>200</posy>
+   <posy>193</posy>
    <width>190</width>
    <label>-</label>
    <font>font12</font>
@@ -200,7 +211,7 @@
    <type>fadelabel</type>
    <id>24</id>
    <posx>465</posx>
-   <posy>220</posy>
+   <posy>213</posy>
    <width>190</width>
    <label>-</label>
    <font>font12</font>
@@ -211,7 +222,7 @@
    <type>fadelabel</type>
    <id>25</id>
    <posx>465</posx>
-   <posy>240</posy>
+   <posy>233</posy>
    <width>190</width>
    <label>-</label>
    <font>font12</font>
@@ -222,7 +233,7 @@
    <type>fadelabel</type>
    <id>26</id>
    <posx>465</posx>
-   <posy>260</posy>
+   <posy>253</posy>
    <width>190</width>
    <label>-</label>
    <font>font12</font>
@@ -233,7 +244,7 @@
    <type>fadelabel</type>
    <id>30</id>
    <posx>465</posx>
-   <posy>280</posy>
+   <posy>273</posy>
    <width>190</width>
    <label>-</label>
    <font>font12</font>
@@ -244,7 +255,18 @@
    <type>fadelabel</type>
    <id>31</id>
    <posx>465</posx>
-   <posy>300</posy>
+   <posy>293</posy>
+   <width>190</width>
+   <label>-</label>
+   <font>font12</font>
+  </control>
+
+  <control>
+   <description>MPPA Rating value</description>
+   <type>fadelabel</type>
+   <id>32</id>
+   <posx>465</posx>
+   <posy>313</posy>
    <width>190</width>
    <label>-</label>
    <font>font12</font>

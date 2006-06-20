@@ -210,6 +210,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20057] = "Remove Thumbnail";
   m_vecStrings[20058] = "Enter the new value";
   m_vecStrings[20059] = "Query Info For All Albums";
+  m_vecStrings[20060] = "MPAA Rating:";
 
   // new strings for weather localization
   m_vecStrings[1411] = "with";
