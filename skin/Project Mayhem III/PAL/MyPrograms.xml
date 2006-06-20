@@ -164,8 +164,8 @@
     <id>31</id>
     <posx>50</posx>
     <posy>231</posy>
-    <label>My Games</label>
-    <onclick>XBMC.ActivateWindow(MyPrograms,My Games)</onclick>
+    <label>Games</label>
+    <onclick>XBMC.ActivateWindow(MyPrograms,Games)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>99</onup>
@@ -180,8 +180,8 @@
     <id>32</id>
     <posx>50</posx>
     <posy>268</posy>
-    <label>My Emulators</label>
-    <onclick>XBMC.ActivateWindow(MyPrograms,My Emulators)</onclick>
+    <label>Emulators</label>
+    <onclick>XBMC.ActivateWindow(MyPrograms,Emulators)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>31</onup>
@@ -196,8 +196,8 @@
     <id>33</id>
     <posx>50</posx>
     <posy>305</posy>
-    <label>My Utilities</label>
-    <onclick>XBMC.ActivateWindow(MyPrograms,My Utilities)</onclick>
+    <label>Programs</label>
+    <onclick>XBMC.ActivateWindow(MyPrograms,Programs)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>32</onup>
@@ -212,8 +212,8 @@
     <id>34</id>
     <posx>50</posx>
     <posy>342</posy>
-    <label>My Dashboards</label>
-    <onclick>XBMC.ActivateWindow(MyPrograms,My Dashboards)</onclick>
+    <label>DVD</label>
+    <onclick>XBMC.ActivateWindow(MyPrograms,DVD-Game)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>33</onup>
