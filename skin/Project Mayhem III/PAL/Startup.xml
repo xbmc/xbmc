@@ -1,0 +1,20 @@
+<window>
+
+ <defaultcontrol alwyays="true">10</defaultcontrol>
+ <allowoverlay>no</allowoverlay>
+
+ <controls>
+
+  <control>
+   <description>trigger</description>
+   <type>button</type>
+   <id>10</id>
+   <onfocus>ReplaceWindow(Home)</onfocus>
+   <texturenofocus>-</texturenofocus>
+   <texturefocus>-</texturefocus>
+  </control>
+
+ </controls>
+
+</window>
+
