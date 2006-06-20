@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-06-2006 updated: Finnish language file (Thnx to jutski)
+ - 20-06-2006 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 20-06-2006 updated: Italian language file (Thnx to kotix)
+ - 20-06-2006 updated: Norwegian language file (Thnx to vnm)
+ - 20-06-2006 updated: Turkish language file (Thnx to necipfazil)
+ - 20-06-2006 updated: Spanish language file (Thnx to jose_t)
+ - 20-06-2006 updated: Polish language file (Thnx to smuto and the Polish Community Forum)
  - 20-06-2006 added: MPPA Rating to video information dialog.
  - 19-06-2006 changed: updated all language files to the new format and to utf-8 encoding
  - 19-06-2006 fixed: [ 1507612 ] Date & Time will not re-allow entry after set in skin
