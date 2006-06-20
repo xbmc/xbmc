@@ -1,3 +1,5 @@
+2006-06-21 removed:	startup fade effect - it was annoying
+
 2006-06-20 fixed:	startup sound
 2006-06-20 changed:	custom*.xml naming
 2006-06-20 changed:	shutdown menu wont animate any more if skin animations are OFF (makes sense for 1080i)
