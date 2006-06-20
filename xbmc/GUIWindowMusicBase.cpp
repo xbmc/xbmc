@@ -531,7 +531,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
           pDlgAlbumInfo->SetAlbum(album);
           pDlgAlbumInfo->DoModal();
         }
-        else if (!bShowInfo)
+        else
         {
           pDlgAlbumInfo->SetAlbum(album);
           pDlgAlbumInfo->RefreshThumb();
@@ -616,7 +616,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
           pDlgAlbumInfo->SetAlbum(album);
           pDlgAlbumInfo->DoModal();
         }
-        else if (!bShowInfo)
+        else
         {
           pDlgAlbumInfo->SetAlbum(album);
           pDlgAlbumInfo->RefreshThumb();
@@ -977,7 +977,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   try
   {
-    Sleep(250);
+    Sleep(1);
     CMusicInfoScraper scraper;
     scraper.FindAlbuminfo(strAlbum, strArtist);
 
@@ -1019,8 +1019,8 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
                 CMusicAlbumInfo& info = scraper.GetAlbum(i);
                 double fRelevance = CUtil::AlbumRelevance(info.GetTitle(), strAlbum, info.GetArtist(), strArtist);
 
-                // are there any items with 100% relevance? or between 85% & 100% with query all?
-                if (fRelevance >= (!bShowInfo?0.85f:1.0f) && iBest > -2)
+                // are there any items with 100% relevance? or between 95% & 100% with query all?
+                if (fRelevance >= (!bShowInfo?0.95f:1.0f) && iBest > -2)
                 //if (fRelevance == 1.0f && iBest > -2)
                 {
                   // there was no best item so make this best item
