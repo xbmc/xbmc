@@ -24,6 +24,8 @@
 #define CONTROL_CAST     29
 #define CONTROL_RATING_AND_VOTES  30
 #define CONTROL_RUNTIME    31
+#define CONTROL_MPAARATING    32
+#define CONTROL_TITLE_AND_YEAR    33
 
 #define CONTROL_IMAGE    3
 #define CONTROL_TEXTAREA    4
@@ -234,6 +236,16 @@ void CGUIWindowVideoInfo::Update()
   {
     strTmp = m_Movie.m_strPlotOutline; strTmp.Trim();
     CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PLOTOUTLINE);
+    msg1.SetLabel( strTmp );
+    OnMessage(msg1);
+  }
+  {
+    CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_MPAARATING); 
+    OnMessage(msg1);
+  }
+  {
+    strTmp = m_Movie.m_strMPAARating; strTmp.Trim();
+    CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_MPAARATING); 
     msg1.SetLabel( strTmp );
     OnMessage(msg1);
   }
