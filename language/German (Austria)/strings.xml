@@ -1,6 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- German (AUSTRIA) language for XBMC -->
-<!--     Translation done by CEOMR      -->
 <!--$Revision$-->
 <strings>
   <string id="0">Anwendungen</string>
@@ -159,7 +157,7 @@
   <string id="224">Abfolgezeit</string>
   <string id="225">Übergangszeit</string>
   <string id="226">PAL 60 aktivieren</string>
-  <string id="227">CDDB-Abfrage aktivieren</string>
+  <string id="227">freedb-Abfrage aktivieren</string>
   <string id="228">Zufälliges Abspielen der Wiedergabeliste</string>
   <string id="229">HDD ausschalten nach</string>
   <string id="230">Video-Filter</string>
@@ -441,7 +439,7 @@
   <string id="508">Verknüpfungen und Durchsuchen deaktivieren</string>
   <string id="509">Miniaturansichten zwischenspeichern</string>
   <string id="510">Visualisierungen aktivieren</string>
-  <string id="511">Video-Modus-Änderung ermöglichen</string>
+  <string id="511">Änderung des Ausgabeformats ermöglichen</string>
   <string id="512">Startfenster</string>
   <string id="513">Standard</string>
   <string id="514">Manuelle-Einstellung</string>
@@ -607,6 +605,7 @@
   <string id="1030">Neues Bild</string>
   <string id="1031">Neuen Bilderordner</string>
   <string id="1032">Netzwerkressource hinzufügen..</string>
+  <string id="1033">Neuen Wert eingeben</string>
   <string id="1200">SMB Freigabe</string>
   <string id="1202">SMB Arbeitsgruppe</string>
   <string id="1203">SMB Benutzername</string>
@@ -675,24 +674,24 @@
   <string id="10006">Videos</string>
   <string id="10007">Systeminformationen</string>
   <string id="10008">Einstellungen</string>
-  <string id="10009">Einstellungen-&gt;Bildschirm</string>
-  <string id="10010">Einstellungen-&gt;Allgemein-&gt;GUI-Kalibrierung</string>
-  <string id="10011">Einstellungen-&gt;Videos-&gt;Bild-Kalibrierung</string>
-  <string id="10012">Einstellungen-&gt;Bilder</string>
-  <string id="10013">Einstellungen-&gt;Anwendungen</string>
-  <string id="10014">Einstellungen-&gt;Wetter</string>
-  <string id="10015">Einstellungen-&gt;Musik</string>
-  <string id="10016">Einstellungen-&gt;System</string>
-  <string id="10017">Einstellungen-&gt;Videos</string>
-  <string id="10018">Einstellungen-&gt;Netzwerk</string>
-  <string id="10019">Einstellungen-&gt;Allgemein</string>
+  <string id="10009">Einstellungen-&amp;gt;Bildschirm</string>
+  <string id="10010">Einstellungen-&amp;gt;Allgemein-&amp;gt;GUI-Kalibrierung</string>
+  <string id="10011">Einstellungen-&amp;gt;Videos-&amp;gt;Bild-Kalibrierung</string>
+  <string id="10012">Einstellungen-&amp;gt;Bilder</string>
+  <string id="10013">Einstellungen-&amp;gt;Anwendungen</string>
+  <string id="10014">Einstellungen-&amp;gt;Wetter</string>
+  <string id="10015">Einstellungen-&amp;gt;Musik</string>
+  <string id="10016">Einstellungen-&amp;gt;System</string>
+  <string id="10017">Einstellungen-&amp;gt;Videos</string>
+  <string id="10018">Einstellungen-&amp;gt;Netzwerk</string>
+  <string id="10019">Einstellungen-&amp;gt;Allgemein</string>
   <string id="10020">Skripte</string>
   <string id="10021">Videos/Genre</string>
   <string id="10022">Videos/Interpret</string>
   <string id="10023">Videos/Jahr</string>
   <string id="10025">Videos/Titel</string>
   <string id="10028">Videos/Wiedergabeliste</string>
-  <string id="10034">Einstellungen-&gt;Profile</string>
+  <string id="10034">Einstellungen-&amp;gt;Profile</string>
   <string id="10100">Auswahlmenü</string>
   <string id="10101">Statusleiste</string>
   <string id="10500">Musik/Wiedergabeliste</string>
@@ -818,6 +817,7 @@
   <string id="12385">Tag.Monat</string>
   <string id="12386">Monat.Tag</string>
   <string id="12387">Datenbank aktualisieren</string>
+  <string id="12388">Hauptbenutzer</string>
   <string id="12390">Betriebszeit</string>
   <string id="12391">Minuten</string>
   <string id="12392">Stunden</string>
@@ -992,10 +992,8 @@
   <string id="13386">Zeitbezogene Positionssuche verwenden</string>
   <string id="13387">rechte Spalte [Dauer]</string>
   <string id="13388">Vorauswahl</string>
-  <string id="13389">Keine Vorauswahl für diese Visualisierung
-vorhanden</string>
-  <string id="13390">Keine Einstellmöglichkeiten für diese Visualisierung
-vorhanden</string>
+  <string id="13389">Keine Vorauswahl für diese Visualisierung&amp;#10;vorhanden</string>
+  <string id="13390">Keine Einstellmöglichkeiten für diese Visualisierung&amp;#10;vorhanden</string>
   <string id="13391">Laufwerk Öffnen/Schließen</string>
   <string id="13392">Bei Musikwiedergabe -&gt; Visualisierung verwenden</string>
   <string id="13393">Ordnergröße berechnen</string>
@@ -1158,8 +1156,8 @@ vorhanden</string>
   <string id="15110">Vibrationseffekt</string>
   <string id="15111">Oberflächenschema</string>
   <string id="15112">Standard</string>
-  <string id="15200">LastFM</string>
-  <string id="15201">Titel Infos an LastFM senden</string>
+  <string id="15200">Last.FM</string>
+  <string id="15201">Titel-Infos an Last.FM senden</string>
   <string id="15202">Benutzername</string>
   <string id="15203">Kennwort</string>
   <string id="15204">Verbindungsfehler...</string>
@@ -1174,8 +1172,8 @@ vorhanden</string>
   <string id="15213">Wiedergabe mit..</string>
   <string id="15214">Ausgeglichene A/V-Synchronisation verwenden</string>
   <string id="15215">Dateiname verbergen bei Symbolansicht</string>
-  <string id="15250">Last.fm Radio an AudioScrobbler senden</string>
-  <string id="15251">Last.fm verbinden...</string>
+  <string id="15250">Last.FM Radio an Last.FM senden</string>
+  <string id="15251">Mit Last.FM verbinden...</string>
   <string id="15252">Station wählen...</string>
   <string id="15253">Suche nach ähnlichen Interpreten...</string>
   <string id="15254">Suche nach ähnlichen Attributen...</string>
@@ -1254,4 +1252,22 @@ vorhanden</string>
   <string id="16108">NTSC-J</string>
   <string id="16109">PAL-60</string>
   <string id="16110">60hz</string>
+  <string id="19999">Internet</string>
+  <string id="20000">Wechseln zu..</string>
+  <string id="20001">Favoriten</string>
+  <string id="20002">Zu Favoriten hinzuf.</string>
+  <string id="20003">Neuer Ordner</string>
+  <string id="20004">Löschen</string>
+  <string id="20005">Verlauf</string>
+  <string id="20006">Verlauf löschen</string>
+  <string id="20007">Favorit benennen..</string>
+  <string id="20008">Favorit URL eingeben..</string>
+  <string id="20009">Bearbeiten</string>
+  <string id="20010">Löschen</string>
+  <string id="20011">Verschieben</string>
+  <string id="20012">An diese Stelle</string>
+  <string id="20013">Verschieben abbrechen</string>
+  <string id="20014">Möchten sie diesen</string>
+  <string id="20015">Eintrag wirklich löschen?</string>
+  <string id="20016">Ordner wirklich löschen?</string>
 </strings>
