@@ -1,7 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- T³umaczenie NaPeK(napek@poczta.fm) -->
-<!-- Wszelkie modyfikacje t³umaczenia powinny zawieraæ informacje -->
-<!-- o autorze t³umaczenia i wprowadzaj¹cym modyfikacje -->
 <!--$Revision$-->
 <strings>
   <string id="0">Gry i Programy</string>
@@ -676,25 +673,25 @@
   <string id="10005">Muzyka</string>
   <string id="10006">Filmy</string>
   <string id="10007">Info o systemie</string>
-  <string id="10008">Ustawienia-&amp;gt;Ogólne</string>
-  <string id="10009">Ustawienia-&amp;gt;Ekran</string>
-  <string id="10010">Ustawienia-&amp;gt;Ekran-&gt;Kalibracja interfejsu</string>
-  <string id="10011">Ustawienia-&amp;gt;Ekran-&gt;Kalibracja ekranu</string>
-  <string id="10012">Ustawienia-&amp;gt;Pokaz slajdów</string>
-  <string id="10013">Ustawienia-&amp;gt;Ekran-&gt;Filtry</string>
-  <string id="10014">Ustawienia-&amp;gt;Muzyka</string>
-  <string id="10015">Ustawienia-&amp;gt;Ekran-&gt;Napisy</string>
-  <string id="10016">Ustawienia-&amp;gt;Ekran-&gt;Wygaszacz</string>
-  <string id="10017">Ustawienia-&amp;gt;Pogoda</string>
-  <string id="10018">Ustawienia-&amp;gt;Sieć</string>
-  <string id="10019">Ustawienia-&amp;gt;Wygląd</string>
-  <string id="10020">Ustawienia-&amp;gt;Skrypty</string>
+  <string id="10008">Ustawienia-&gt;Ogólne</string>
+  <string id="10009">Ustawienia-&gt;Ekran</string>
+  <string id="10010">Ustawienia-&gt;Ekran-&gt;Kalibracja interfejsu</string>
+  <string id="10011">Ustawienia-&gt;Ekran-&gt;Kalibracja ekranu</string>
+  <string id="10012">Ustawienia-&gt;Pokaz slajdów</string>
+  <string id="10013">Ustawienia-&gt;Ekran-&gt;Filtry</string>
+  <string id="10014">Ustawienia-&gt;Muzyka</string>
+  <string id="10015">Ustawienia-&gt;Ekran-&gt;Napisy</string>
+  <string id="10016">Ustawienia-&gt;Ekran-&gt;Wygaszacz</string>
+  <string id="10017">Ustawienia-&gt;Pogoda</string>
+  <string id="10018">Ustawienia-&gt;Sieć</string>
+  <string id="10019">Ustawienia-&gt;Wygląd</string>
+  <string id="10020">Ustawienia-&gt;Skrypty</string>
   <string id="10021">Filmy/gatunek</string>
   <string id="10022">Filmy/aktor</string>
   <string id="10023">Filmy/rok</string>
   <string id="10025">Filmy/tytuł</string>
   <string id="10028">Filmy/playlista</string>
-  <string id="10034">Ustawienia-&amp;gt;Profil</string>
+  <string id="10034">Ustawienia-&gt;Profil</string>
   <string id="10100">Tak/nie dialog</string>
   <string id="10101">Okienko postępu</string>
   <string id="10500">Muzyka/playlista</string>
@@ -900,7 +897,7 @@
   <string id="13290">Producent Xboksa:</string>
   <string id="13291">ModChip:</string>
   <string id="13292">Kabel A/V:</string>
-  <string id="13293">Region Wideo &amp; XBE:</string>
+  <string id="13293">Region Wideo i XBE:</string>
   <string id="13294">Region DVD:</string>
   <string id="13295">Internet:</string>
   <string id="13296">Xbox jest połączony</string>
@@ -1254,7 +1251,7 @@ dla tej wizualizacji</string>
   <string id="16103">Oznacz jako oglądane</string>
   <string id="16104">Oznacz jako nieoglądane</string>
   <string id="16105">Edytuj tytuł</string>
-  <string id="16106">Użyj NTSC-M &amp; NTSC-J</string>
+  <string id="16106">Użyj NTSC-M i NTSC-J</string>
   <string id="16107">Użyj tylko NTSC-M</string>
   <string id="16108">Użyj tylko NTSC-J</string>
   <string id="16109">Użyj tylko PAL-60</string>

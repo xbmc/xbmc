@@ -1,8 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- Turkish XBMC language resource  -->
-<!-- Translation by NFA -->
-<!-- Contact: necipfazil2041@yahoo.com -->
-<!-- Last edited on 02.05.2006 -->
 <!--$Revision$-->
 <strings>
   <string id="0">Proğramlarım</string>
@@ -682,25 +678,25 @@
   <string id="10005">Müziklerim</string>
   <string id="10006">Videolarım</string>
   <string id="10007">Sistem Bilgisi</string>
-  <string id="10008">Ayarlar-&gt;Genel</string>
-  <string id="10009">Ayarlar-&gt;Ekran</string>
-  <string id="10010">Ayarlar-&gt;Görünüm-&gt;Ekran Kalibrasyonu</string>
-  <string id="10011">Ayarlar-&gt;Videolarım-&gt;Resim Kalibrasyonu</string>
-  <string id="10012">Ayarlar-&gt;Resimlerim</string>
-  <string id="10013">Ayarlar-&gt;Proğramlarım</string>
-  <string id="10014">Ayarlar-&gt;Hava Durumu</string>
-  <string id="10015">Ayarlar-&gt;Müziklerim</string>
-  <string id="10016">Ayarlar-&gt;Sistem</string>
-  <string id="10017">Ayarlar-&gt;Videolarım</string>
-  <string id="10018">Ayarlar-&gt;Ağ Bağlantısı</string>
-  <string id="10019">Ayarlar-&gt;Görünüm</string>
+  <string id="10008">Ayarlar-&amp;gt;Genel</string>
+  <string id="10009">Ayarlar-&amp;gt;Ekran</string>
+  <string id="10010">Ayarlar-&amp;gt;Görünüm-&amp;gt;Ekran Kalibrasyonu</string>
+  <string id="10011">Ayarlar-&amp;gt;Videolarım-&amp;gt;Resim Kalibrasyonu</string>
+  <string id="10012">Ayarlar-&amp;gt;Resimlerim</string>
+  <string id="10013">Ayarlar-&amp;gt;Proğramlarım</string>
+  <string id="10014">Ayarlar-&amp;gt;Hava Durumu</string>
+  <string id="10015">Ayarlar-&amp;gt;Müziklerim</string>
+  <string id="10016">Ayarlar-&amp;gt;Sistem</string>
+  <string id="10017">Ayarlar-&amp;gt;Videolarım</string>
+  <string id="10018">Ayarlar-&amp;gt;Ağ Bağlantısı</string>
+  <string id="10019">Ayarlar-&amp;gt;Görünüm</string>
   <string id="10020">Scriptler</string>
   <string id="10021">Videolarım/Türüler</string>
   <string id="10022">Videolarım/Sanatçılar</string>
   <string id="10023">Videolarım/Yıllar</string>
   <string id="10025">Videolarım/Başlıklar</string>
   <string id="10028">Videolarım/Çalma Listesi</string>
-  <string id="10034">Ayarlar-&gt;Profiller</string>
+  <string id="10034">Ayarlar-&amp;gt;Profiller</string>
   <string id="10100">Evet/Hayır Diyoloğu</string>
   <string id="10101">İşlem Diyaloğu</string>
   <string id="10500">Müziklerim/Çalma Listesi</string>
@@ -1002,10 +998,8 @@
   <string id="13386">Zamana Göre Ara</string>
   <string id="13387">Doğru Şarkı İsim Kalıbı</string>
   <string id="13388">Hazır Gelenler</string>
-  <string id="13389">
- Bu görsel efekt için hazır gelen hiçbir şey yok</string>
-  <string id="13390">
- Bu görsel efekt için hiçbir ayar yok</string>
+  <string id="13389">&amp;#10; Bu görsel efekt için hazır gelen hiçbir şey yok</string>
+  <string id="13390">&amp;#10; Bu görsel efekt için hiçbir ayar yok</string>
   <string id="13391">Çıkar/Kapat</string>
   <string id="13392">Eğer Müzik Çalıyorsa Görsel Efekti Kullan</string>
   <string id="13393">Boyutu Hesapla</string>
