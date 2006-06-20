@@ -1,1299 +1,1257 @@
-<?xml version="1.0" encoding="BIG5" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--$Revision$-->
 <strings>
-  <string><id>0</id><value>�ڪ��{��</value></string>
-  <string><id>1</id><value>�ڪ��Ϥ�</value></string>
-  <string><id>2</id><value>�ڪ�����</value></string>
-  <string><id>3</id><value>�ڪ��v��</value></string>
-  <string><id>4</id><value>�q���W�D</value></string>
-  <string><id>5</id><value>�t�γ]�w</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
-  <string><id>7</id><value>�ɮ��`��</value></string>
-  <string><id>8</id><value>��H�w��</value></string>
-  
-  <string><id>11</id><value>�P���@</value></string>
-  <string><id>12</id><value>�P���G</value></string>
-  <string><id>13</id><value>�P���T</value></string>
-  <string><id>14</id><value>�P���|</value></string>
-  <string><id>15</id><value>�P����</value></string>
-  <string><id>16</id><value>�P����</value></string>
-  <string><id>17</id><value>�P����</value></string>
-  
-  <string><id>21</id><value>1��</value></string>
-  <string><id>22</id><value>2��</value></string>
-  <string><id>23</id><value>3��</value></string>
-  <string><id>24</id><value>4��</value></string>
-  <string><id>25</id><value>5��</value></string>
-  <string><id>26</id><value>6��</value></string>
-  <string><id>27</id><value>7��</value></string>
-  <string><id>28</id><value>8��</value></string>
-  <string><id>29</id><value>9��</value></string>
-  <string><id>30</id><value>10��</value></string>
-  <string><id>31</id><value>11��</value></string>
-  <string><id>32</id><value>12��</value></string>
-  
-  <string><id>98</id><value>��ܡG�۰�</value></string>
-  <string><id>99</id><value>��ܡG�۰ʤj�ϥ�</value></string>
-  <string><id>100</id><value>��ܡG�ϥ�</value></string>
-  <string><id>101</id><value>��ܡG�C��</value></string>
-  <string><id>102</id><value>�j�M</value></string>
-  <string><id>103</id><value>�ƧǡG�W��</value></string>
-  <string><id>104</id><value>�ƧǡG���</value></string>
-  <string><id>105</id><value>�ƧǡG�j�p</value></string>
-  <string><id>106</id><value>�_</value></string>
-  <string><id>107</id><value>�O</value></string>
-  <string><id>108</id><value>����Ϥ�</value></string>
-  <string><id>109</id><value>�إ߬�ï</value></string>
-  <string><id>110</id><value>�إ߹ϥ�</value></string>
-  <string><id>111</id><value>���|</value></string>
-  <string><id>112</id><value>�Ȱ�</value></string>
-  <string><id>113</id><value>�ɮ��`�ޡG�ӷ�</value></string>
-  <string><id>114</id><value>�ɮ��`�ޡG�ؼ�</value></string>
-  <string><id>115</id><value>�ƻs</value></string>
-  <string><id>116</id><value>����</value></string>
-  <string><id>117</id><value>�R��</value></string>
-  <string><id>118</id><value>���s�R�W</value></string>
-  <string><id>119</id><value>�s��Ƨ�</value></string>
-  <string><id>120</id><value>�T�{�ɮ׽ƻs</value></string>
-  <string><id>121</id><value>�T�{�ɮײ���</value></string>
-  <string><id>122</id><value>�T�{�ɮקR��</value></string>
-  <string><id>123</id><value>�ƻs�o���ɮסH</value></string>
-  <string><id>124</id><value>���ʳo���ɮסH</value></string>
-  <string><id>125</id><value>�R���o���ɮסH</value></string>
-  <string><id>126</id><value>���A</value></string>
-  <string><id>127</id><value>����</value></string>
-  <string><id>128</id><value>�@��]�w</value></string>
-  <string><id>129</id><value>����Ϥ�</value></string>
-  <string><id>130</id><value>�t�θ�T</value></string>
-  <string><id>131</id><value>�ù�</value></string>
-  <string><id>132</id><value>�M��</value></string>
-  <string><id>133</id><value>���H</value></string>
-  <string><id>134</id><value>�q��</value></string>
-  <string><id>135</id><value>���O</value></string>
-  <string><id>136</id><value>����C��</value></string>
-  <string><id>137</id><value>�j�M</value></string>
-  <string><id>138</id><value>�t�θ�T</value></string>
-  <string><id>139</id><value>�ūסG</value></string>
-  <string><id>140</id><value>�����B�z���G</value></string>
-  <string><id>141</id><value>�ϧγB�z���G</value></string>
-  <string><id>142</id><value>�ɶ��G</value></string>
-  <string><id>143</id><value>�ثe�G</value></string>
-  <string><id>144</id><value>�����G</value></string>
-  <string><id>145</id><value>�����G</value></string>
-  <string><id>146</id><value>�����G</value></string>
-  <string><id>147</id><value>���(�R�A���t)</value></string>
-  <string><id>148</id><value>�۰�(�ʺA���t)</value></string>
-  <string><id>149</id><value>���d��}(MAC)</value></string>
-  <string><id>150</id><value>IP ��}</value></string>
-  <string><id>151</id><value>�s�u�G</value></string>
-  <string><id>152</id><value>�b���u</value></string>
-  <string><id>153</id><value>�����u</value></string>
-  <string><id>154</id><value>�x�s�C��</value></string>
-  <string><id>155</id><value>�˸m</value></string>
-  <string><id>156</id><value>�i��</value></string>
-  <string><id>157</id><value>�v��</value></string>
-  <string><id>158</id><value>�i�ΰO����</value></string>
-  <string><id>159</id><value>���s�u</value></string>
-  <string><id>160</id><value>�i��</value></string>
-  <string><id>161</id><value>�S��</value></string>
-  <string><id>162</id><value>���L�}��</value></string>
-  <string><id>163</id><value>Ū����</value></string>
-  <string><id>164</id><value>�L���Ф�</value></string>
-  <string><id>165</id><value>���Ф���</value></string>
-  <string><id>166</id><value>�ୱ</value></string>
-  <string><id>167</id><value>FTP ���A��</value></string>
-  <string><id>168</id><value>�۰ʻP�����ɶ��P�B</value></string>
-  <string><id>169</id><value>�ѪR��</value></string>
-  <string><id>170</id><value>�M��G</value></string>
-  <string><id>171</id><value>���H�G</value></string>
-  <string><id>172</id><value>����G</value></string>
-  <string><id>173</id><value>���šG</value></string>
-  <string><id>174</id><value>���O�G</value></string>
-  <string><id>175</id><value>���աG</value></string>
-  <string><id>176</id><value>�榡�G</value></string>
-  <string><id>177</id><value>���סG</value></string>
-  <string><id>178</id><value>���y�G</value></string>
-  <string><id>179</id><value>�q��</value></string>
-  <string><id>180</id><value>����ɶ�</value></string>
-  <string><id>181</id><value>��ܱM��</value></string>
-  <string><id>182</id><value>���y</value></string>
-  <string><id>183</id><value>����</value></string>
-  <string><id>184</id><value>���s��z</value></string>
-  <string><id>185</id><value>�j�M�M��</value></string>
-  <string><id>186</id><value>�T�w</value></string>
-  <string><id>187</id><value>�䤣��M��I</value></string>
-  <string><id>188</id><value>����</value></string>
-  <string><id>189</id><value>�j�M�C���T</value></string>
-  <string><id>190</id><value>�x�s</value></string>
-  <string><id>191</id><value>�H��</value></string>
-  <string><id>192</id><value>�M��</value></string>
-  <string><id>193</id><value>�j�M</value></string>
-  <string><id>194</id><value>�j�M���K</value></string>
-  <string><id>195</id><value>�䤣�� IMDb ��T</value></string>
-  <string><id>196</id><value>��ܼv���G</value></string>
-  <string><id>197</id><value>Ū�� IMDb ��T</value></string>
-  <string><id>198</id><value>Ū���v���ԲӸ��</value></string>
-  <string><id>199</id><value>�ɺt�G</value></string>
-  <string><id>200</id><value>�s�@�G</value></string>
-  <string><id>201</id><value>�~���G</value></string>
-  <string><id>202</id><value>���D�G</value></string>
-  <string><id>203</id><value>�j���G</value></string>
-  <string><id>204</id><value>�����G</value></string>
-  <string><id>205</id><value>�o���G</value></string>
-  <string><id>206</id><value>�t����</value></string>
-  <string><id>207</id><value>�@��²��</value></string>
-  <string><id>208</id><value>����</value></string>
-  <string><id>209</id><value>�V��</value></string>
-  <string><id>210</id><value>�V�e</value></string>
-  <string><id>211</id><value>�j�M���ε{��</value></string>
-  <string><id>212</id><value>������ε{��</value></string>
-  <string><id>213</id><value>�ɭ��ե�</value></string>
-  <string><id>214</id><value>�ù��ե�</value></string>
-  <string><id>215</id><value>�X��</value></string>
-  <string><id>216</id><value>�Y��</value></string>
-  <string><id>217</id><value>���i</value></string>
-  <string><id>218</id><value>���о�</value></string>
-  <string><id>219</id><value>�Щ�J����</value></string>
-  <string><id>220</id><value>���ݦ@��</value></string>
-  <string><id>221</id><value>�������s�u</value></string>
-  <string><id>222</id><value>����</value></string>
-  <string><id>223</id><value>�e�ù��۰��ഫ</value></string>
-  <string><id>224</id><value>�t��</value></string>
-  <string><id>225</id><value>�S���ഫ�ɶ�</value></string>
-  <string><id>226</id><value>�ҥ� PAL60</value></string>
-  <string><id>227</id><value>�ҥ� CDDB</value></string>
-  <string><id>228</id><value>�H������C��</value></string>
-  <string><id>229</id><value>�w�Ьٹq�Ҧ�(��)</value></string>
-  <string><id>230</id><value>�o��</value></string>
-  <string><id>231</id><value>�L</value></string>
-  <string><id>232</id><value>�I</value></string>
-  <string><id>233</id><value>����</value></string>
-  <string><id>234</id><value>�D�����</value></string>
-  <string><id>235</id><value>����h������</value></string>
-  <string><id>236</id><value>�T���U��</value></string>
-  <string><id>237</id><value>�Y�p</value></string>
-  <string><id>238</id><value>��j</value></string>
-  <string><id>239</id><value>���񧹦���M���C��</value></string>
-  <string><id>240</id><value>�۰ʼ��� DVD �v��</value></string>
-  <string><id>241</id><value>�۰ʼ��� VCD �v��</value></string>
-  <string><id>242</id><value>�۰ʼ��� CD  ����</value></string>
-  <string><id>243</id><value>�۰ʼ��� �C������</value></string>
-  <string><id>244</id><value>�۰ʼ��� �v���ɮ�</value></string>
-  <string><id>245</id><value>�۰ʼ��� �����ɮ�</value></string>
-  <string><id>246</id><value>�۰ʼ��� �Ϥ��ɮ�</value></string>
-  <string><id>247</id><value>�}���{��</value></string>
-  <string><id>248</id><value>�y��</value></string>
-  <string><id>249</id><value>����</value></string>
-  <string><id>250</id><value>��ı�ĪG</value></string>
-  <string><id>251</id><value>��ܥت��ؿ�</value></string>
-  <string><id>252</id><value>���n�D�ɿ�X��Ҧ���z</value></string>
-  <string><id>253</id><value>�W�D</value></string>
-  <string><id>254</id><value>- DTS �Ʀ쭵��</value></string>
-  <string><id>255</id><value>CDDB</value></string>
-  <string><id>256</id><value>�q CDDB Ū����T</value></string>
-  <string><id>257</id><value>���~</value></string>
-  <string><id>258</id><value>�ҥ� ID3 ����</value></string>
-  <string><id>259</id><value>�}�l</value></string>
-  <string><id>260</id><value>���|</value></string>
-  <string><id>261</id><value>�ǳƶ}�l�K</value></string>
-  <string><id>262</id><value>�}����X</value></string>
-  <string><id>263</id><value>HTTP ���A��</value></string>
-  <string><id>264</id><value>����</value></string>
-  <string><id>265</id><value>��������C</value></string>
-  <string><id>266</id><value>�ƧǡG���y</value></string>
-  <string><id>267</id><value>�ƧǡG�ɶ�</value></string>
-  <string><id>268</id><value>�ƧǡG���D</value></string>
-  <string><id>269</id><value>�ƧǡG���H</value></string>
-  <string><id>270</id><value>�ƧǡG�M��</value></string>
-  <string><id>271</id><value>�Ʀ�e 100</value></string>
-  <string><id>272</id><value>���W����m</value></string>
-  <string><id>273</id><value>�k�U����m</value></string>
-  <string><id>274</id><value>�r����m</value></string>
-  <string><id>275</id><value>�e����ҽվ�</value></string>
-  <string><id>276</id><value>�]�w������m</value></string>
-  <string><id>277</id><value>���ܦr����m</value></string>
-  <string><id>278</id><value>�վ㦨�����</value></string>
-  <string><id>279</id><value>�L�kŪ���]�w</value></string>
-  <string><id>280</id><value>�^�_���w�]��</value></string>
-  <string><id>281</id><value>���ˬd .xml �ɮ�</value></string>
-  <string><id>282</id><value>��� %i ��</value></string>
-  <string><id>283</id><value>�j�M���G</value></string>
-  <string><id>284</id><value>�L���G</value></string>
-  <string><id>285</id><value>�ϥ���o��</value></string>
-  <string><id>286</id><value>��m�o��</value></string>
-  <string><id>287</id><value>�r��</value></string>
-  <string><id>288</id><value>�r��</value></string>
-  <string><id>289</id><value>- �j�p</value></string>
-  <string><id>290</id><value>�Y�u�j�p�n�t�Z</value></string>
-  <string><id>291</id><value>�v��</value></string>
-  <string><id>292</id><value>�n��</value></string>
-  <string><id>293</id><value>�r��</value></string>
-  <string><id>294</id><value>�إ߮���</value></string>
-  <string><id>295</id><value>���Ю���</value></string>
-  <string><id>296</id><value>�M������</value></string>
-  <string><id>297</id><value>�n������</value></string>
-  <string><id>298</id><value>�j�M�C</value></string>
-  <string><id>300</id><value>1.�y��</value></string>
-  <string><id>301</id><value>2.���q</value></string>
-  <string><id>302</id><value>3.��y</value></string>
-  <string><id>303</id><value>�r������</value></string>
-  <string><id>304</id><value>�y��</value></string>
-  <string><id>305</id><value>�ҥ�</value></string>
-  <string><id>306</id><value>�D������y</value></string>
-  <string><id>307</id><value>- �۰ʦ�m�u��</value></string>
-  <string><id>308</id><value>- ��������o��</value></string>
-  <string><id>309</id><value>- ��������o��</value></string>
-  <string><id>310</id><value>- �۰ʫG��/���</value></string>
-  <string><id>311</id><value>- �������T</value></string>
-  <string><id>312</id><value>(0=�۰�)</value></string>
-  <string><id>313</id><value>�M����Ʈw</value></string>
-  <string><id>314</id><value>�ǳƤ��K</value></string>
-  <string><id>315</id><value>��Ʈw���~�I</value></string>
-  <string><id>316</id><value>�j�M�q���K</value></string>
-  <string><id>317</id><value>�M����Ʈw���\�I</value></string>
-  <string><id>318</id><value>�M���q���K</value></string>
-  <string><id>319</id><value>�M���q�����~</value></string>
-  <string><id>320</id><value>�M�����H�K</value></string>
-  <string><id>321</id><value>�M�����H���~�I</value></string>
-  <string><id>322</id><value>�M�����O�K</value></string>
-  <string><id>323</id><value>�M�����O���~�I</value></string>
-  <string><id>324</id><value>�M�����|�K</value></string>
-  <string><id>325</id><value>�M�����|���~�I</value></string>
-  <string><id>326</id><value>�M���M��K</value></string>
-  <string><id>327</id><value>�M���M����~�I</value></string>
-  <string><id>328</id><value>�g�J���K</value></string>
-  <string><id>329</id><value>�g�J���~�I</value></string>
-  <string><id>330</id><value>�o�ݭn�@�Ǯɶ��K</value></string>
-  <string><id>331</id><value>���Y��Ʈw�K</value></string>
-  <string><id>332</id><value>���Y��Ʈw���~�I</value></string>
-  <string><id>333</id><value>�A�Q�n�M���ڪ����֮w�H</value></string>
-  <string><id>334</id><value>�M�����֮w�K</value></string>
-  <string><id>335</id><value>�}�l</value></string>
-  <string><id>336</id><value>�վ�e����s�W�v</value></string>
-  <string><id>337</id><value>�n����X</value></string>
-  <string><id>338</id><value>����</value></string>
-  <string><id>339</id><value>�Ʀ�</value></string>
-  <string><id>340</id><value>�h�ˤƪ����H</value></string>
-  <string><id>341</id><value>���� DVD �v��</value></string>
-  <string><id>342</id><value>�v��</value></string>
-  <string><id>343</id><value>�վ�e���W�v</value></string>
-  <string><id>344</id><value>�t��</value></string>
-  <string><id>345</id><value>�~��</value></string>
-  <string><id>346</id><value>���|</value></string>
-  <string><id>347</id><value>�����|</value></string>
-  <string><id>348</id><value>�i�}�ؿ�</value></string>
-  <string><id>349</id><value>�u��ܹw�]��������</value></string>
-  <string><id>350</id><value>�{��</value></string>
-  <string><id>351</id><value>����</value></string>
-  <string><id>352</id><value>���t</value></string>
-  <string><id>353</id><value>����</value></string>
-  <string><id>354</id><value>������r</value></string>
-  <string><id>355</id><value>�Ұʿù��O�@�ɶ�</value></string>
-  <string><id>356</id><value>�ù��O�@�Ҧ�</value></string>
-  <string><id>357</id><value>�Ұʦ۰������ɶ�</value></string>
-  <string><id>358</id><value>�����M��</value></string>
-  <string><id>359</id><value>�s���M��</value></string>
-  <string><id>360</id><value>�ù��O�@</value></string>
-  <string><id>361</id><value>�j�M�ü���</value></string>
-  <string><id>362</id><value>�ù��O�@���G��</value></string>
-  <string><id>363</id><value>�ƧǡG�ɮ�</value></string>
-  <string><id>364</id><value>- AC3 �Ʀ쭵��</value></string>
-  <string><id>365</id><value>�ƧǡG�W��</value></string>
-  <string><id>366</id><value>�ƧǡG�~��</value></string>
-  <string><id>367</id><value>�ƧǡG����</value></string>
-  <string><id>368</id><value>IMDb</value></string>
-  <string><id>369</id><value>���D</value></string>
-  <string><id>370</id><value>�p�B</value></string>
-  <string><id>371</id><value>����</value></string>
-  <string><id>372</id><value>�j����</value></string>
-  <string><id>373</id><value>����</value></string>
-  <string><id>374</id><value>��</value></string>
-  <string><id>375</id><value>��</value></string>
-  <string><id>376</id><value>�B</value></string>
-  <string><id>377</id><value>��</value></string>
-  <string><id>378</id><value>�W��</value></string>
-  <string><id>379</id><value>�U��</value></string>
-  <string><id>380</id><value>�}�B</value></string>
-  <string><id>381</id><value>�ּ�</value></string>
-  <string><id>382</id><value>������</value></string>
-  <string><id>383</id><value>��</value></string>
-  <string><id>384</id><value>�j�P</value></string>
-  <string><id>385</id><value>�സ</value></string>
-  <string><id>386</id><value>��</value></string>
-  <string><id>387</id><value>��</value></string>
-  <string><id>388</id><value>����</value></string>
-  <string><id>389</id><value>�}�B</value></string>
-  <string><id>390</id><value>�Ƴ�</value></string>
-  <string><id>391</id><value>�C</value></string>
-  <string><id>392</id><value>��</value></string>
-  <string><id>393</id><value>��</value></string>
-  <string><id>394</id><value>��</value></string>
-  <string><id>395</id><value>ŵ</value></string>
-  <string><id>396</id><value>��ܦ�m</value></string>
-  <string><id>397</id><value>��s�ɶ�</value></string>
-  <string><id>398</id><value>�ū׳��</value></string>
-  <string><id>399</id><value>�t�׳��</value></string>
-  <string><id>400</id><value>�Ѯ�</value></string>
-  <string><id>401</id><value>�ū�</value></string>
-  <string><id>402</id><value>��P�ū�</value></string>
-  <string><id>403</id><value>���~�u</value></string>
-  <string><id>404</id><value>��</value></string>
-  <string><id>405</id><value>�S�I</value></string>
-  <string><id>406</id><value>���</value></string>
-  <string><id>407</id><value>���V</value></string>
-  <string><id>408</id><value>���t</value></string>
-  
-  <string><id>410</id><value>�e�� Weather.com</value></string>
-  <string><id>411</id><value>���o�Ѯ��ơG</value></string>
-  <string><id>412</id><value>�L�k���o�Ѯ���</value></string>
-  <string><id>413</id><value>��ʬd��</value></string>
-  <string><id>414</id><value>���M��L����</value></string>
-  <string><id>415</id><value>�U���ϥܡK</value></string>
-  <string><id>416</id><value>�L�k�ϥ�</value></string>
-  <string><id>417</id><value>��ܡG�j�ϥ�</value></string>
-  <string><id>418</id><value>�ڪ��v��/���O</value></string>
-  <string><id>419</id><value>�ڪ��v��/�t��</value></string>
-  <string><id>420</id><value>�ڪ��v��/�~��</value></string>
-  <string><id>421</id><value>�ڪ��v��/���D</value></string>
-  <string><id>422</id><value>�R���M���T</value></string>
-  <string><id>423</id><value>�R�� CDDB ��T</value></string>
-  <string><id>424</id><value>���</value></string>
-  <string><id>425</id><value>�L�M���T�C</value></string>
-  <string><id>426</id><value>�L CDDB ��T�I</value></string>
-  <string><id>427</id><value>���СG</value></string>
-  <string><id>428</id><value>�Щ�J���T������</value></string>
-  <string><id>429</id><value>�Щ�J����</value></string>
-  <string><id>430</id><value>�ƧǡGDVD#</value></string>
-  <string><id>431</id><value>�L�w�İ�</value></string>
-  <string><id>432</id><value>�q��Ʈw���R���v��</value></string>
-  <string><id>433</id><value>�A�T�w�R��</value></string>
-  <string><id>434</id><value>�v���H</value></string>
-  <string><id>435</id><value>���y</value></string>
-  <string><id>436</id><value>�~���G</value></string>
-  <string><id>437</id><value>����ɶ��G</value></string>
-  <string><id>438</id><value>���}�ɮ�</value></string>
-  <string><id>439</id><value>�w�İ�</value></string>
-  <string><id>440</id><value>�w��</value></string>
-  <string><id>441</id><value>UDF</value></string>
-  <string><id>442</id><value>����</value></string>
-  <string><id>443</id><value>���ں���</value></string>
-  <string><id>444</id><value>�v��</value></string>
-  <string><id>445</id><value>�n��</value></string>
-  <string><id>446</id><value>DVD</value></string>
-  <string><id>447</id><value>�۰ʼ���</value></string>
-  <string><id>448</id><value>�G���ù�</value></string>
-  <string><id>449</id><value>�ҥ�</value></string>
-  <string><id>450</id><value>�C</value></string>
-  <string><id>451</id><value>�� 1 �C��}</value></string>
-  <string><id>452</id><value>�� 2 �C��}</value></string>
-  <string><id>453</id><value>�� 3 �C��}</value></string>
-  <string><id>454</id><value>�� 4 �C��}</value></string>
-  <string><id>455</id><value>��</value></string>
-  <string><id>456</id><value>�Ҧ�</value></string>
-  <string><id>457</id><value>������</value></string>
-  <string><id>458</id><value>���маO</value></string>
-  <string><id>459</id><value>�r��</value></string>
-  <string><id>460</id><value>�n�D</value></string>
-  <string><id>461</id><value>[�ҥ�]</value></string>
-  <string><id>462</id><value>�r��</value></string>
-  <string><id>463</id><value>�I��</value></string>
-  <string><id>464</id><value>�G��</value></string>
-  <string><id>465</id><value>���</value></string>
-  <string><id>466</id><value>������</value></string>
-  <string><id>467</id><value>����</value></string>
-  <string><id>468</id><value>���ܼ���u���m</value></string>
-  <string><id>469</id><value>����u���m</value></string>
-  <string><id>470</id><value>�����</value></string>
-  <string><id>471</id><value>�������</value></string>
-  <string><id>472</id><value>����u����ܮɶ�</value></string>
-  <string><id>473</id><value>���~�����</value></string>
-  <string><id>474</id><value>��</value></string>
-  <string><id>475</id><value>�u������</value></string>
-  <string><id>476</id><value>����&amp;�v��</value></string>
-  <string><id>477</id><value>�L�kŪ������C��</value></string>
-  <string><id>478</id><value>����u��</value></string>
-  <string><id>479</id><value>�ୱ�M�y��</value></string>
-  <string><id>480</id><value>�~�[�M�D�D</value></string>
-  <string><id>481</id><value>���ֳ]�w</value></string>
-  <string><id>482</id><value>���� XBMC</value></string>
-  <string><id>483</id><value>�M��</value></string>
-  <string><id>484</id><value>���H</value></string>
-  <string><id>485</id><value>�R���M��</value></string>
-  <string><id>486</id><value>���Ƽ���</value></string>
-  <string><id>487</id><value>�歺���Ƽ���</value></string>
-  <string><id>488</id><value>�������Ƽ���</value></string>
-  <string><id>489</id><value>�۰ʼ���U�Ӷ���</value></string>
-  <string><id>490</id><value>�۰ʿ�ܺq�����C���M�ϥ�</value></string>
-  <string><id>491</id><value>- �ϥΤj�ϥ�</value></string>
-  <string><id>492</id><value>Vobsubs �r�����</value></string>
-  <string><id>493</id><value>�i���ﶵ(�M�a�A�ΡI)</value></string>
-  <string><id>494</id><value>�`���q</value></string>
-  <string><id>495</id><value>�H�ୱ���ѪR�׼���v��</value></string>
-  <string><id>496</id><value>�ե�</value></string>
-  <string><id>497</id><value>���ôC����ɦW</value></string>
-  <string><id>498</id><value>�ƧǡG����</value></string>
-  <string><id>499</id><value>�L�k�s�u�� www.allmusic.com</value></string>
-  <string><id>500</id><value>�U���M���T����</value></string>
-  <string><id>501</id><value>�j�M�M��W�١K</value></string>
-  <string><id>502</id><value>���L�}��</value></string>
-  <string><id>503</id><value>Ū����</value></string>
-  <string><id>504</id><value>�S������</value></string>
-  <string><id>505</id><value>Ū���C���T�K</value></string>
-  <string><id>506</id><value>�ϥΥؿ��W�٧@�y�z</value></string>
-  <string><id>507</id><value>�ƧǡG����</value></string>
-  <string><id>508</id><value>���ϥα��|�ηj�M</value></string>
-  <string><id>509</id><value>�֨��{�����ϥ�</value></string>
-  <string><id>510</id><value>�ҥε�ı�ĪG</value></string>
-  <string><id>511</id><value>�ҥμv���Ҧ��۰ʤ���</value></string>
-  <string><id>512</id><value>�Ұʬɭ�</value></string>
-  <string><id>513</id><value>�D�ɭ�</value></string>
-  <string><id>514</id><value>�]�w�ɭ�</value></string>
-  <string><id>515</id><value>���O</value></string>
-  <string><id>516</id><value>�ϥγz�q���ɮ׺޲z</value></string>
-  <string><id>517</id><value>�̪񼽩񪺱M��</value></string>
-  <string><id>518</id><value>����</value></string> 
-  <string><id>519</id><value>����覡</value></string>
-  <string><id>520</id><value>�s����D</value></string>
-  <string><id>521</id><value>�s��</value></string>
-  <string><id>522</id><value>�R���ؿ�</value></string>
-  
-  <string><id>588</id><value>��������Ҧ�</value></string>
-  <string><id>589</id><value>����Ҧ�</value></string>
-  <string><id>590</id><value>�H��</value></string>
-  <string><id>591</id><value>����</value></string>
-  <string><id>592</id><value>�歺</value></string>
-  <string><id>593</id><value>����</value></string>
-  <string><id>594</id><value>��</value></string>
-  <string><id>595</id><value>���ơG����</value></string>
-  <string><id>596</id><value>���ơG�歺</value></string>
-  <string><id>597</id><value>���ơG����</value></string>
-  
-  <string><id>600</id><value>�^������ CD</value></string>
-  <string><id>601</id><value>����</value></string>
-  <string><id>602</id><value>�з�</value></string>
-  <string><id>603</id><value>�̰�</value></string>
-  <string><id>604</id><value>���w�W�v</value></string>
-  <string><id>605</id><value>�^�����K</value></string>
-  <string><id>606</id><value>���y���X�G</value></string>
-  <string><id>607</id><value>�x�s��G</value></string>
-  <string><id>608</id><value>�L�k�^�� CD �έ��y</value></string>
-  <string><id>609</id><value>CD �^�����|�b XboxMediaCenter.xml �����]�w</value></string>
-  
-  <string><id>620</id><value>CD �^��</value></string>
-  <string><id>621</id><value>�s�X</value></string>
-  <string><id>622</id><value>�~��</value></string>
-  <string><id>623</id><value>�W�v</value></string>
-  <string><id>624</id><value>�]�A���y���X</value></string>
-  <string><id>625</id><value>�Ҧ��q��</value></string>
-  
-  <string><id>629</id><value>��ܼҦ�</value></string>
-  <string><id>630</id><value>�з�</value></string>
-  <string><id>631</id><value>�񺡿ù�</value></string>
-  <string><id>632</id><value>4:3 �e��</value></string>
-  <string><id>633</id><value>14:9 �e��</value></string>
-  <string><id>634</id><value>16:9 �e��</value></string>
-  <string><id>635</id><value>��l�j�p</value></string>
-  <string><id>636</id><value>�ۭq</value></string>
-  <string><id>637</id><value>���м���</value></string>
-  <string><id>638</id><value>���м���Ҧ�</value></string>
-  <string><id>639</id><value>�̦��ح��м���</value></string>
-  <string><id>640</id><value>�̱M�譫�м���</value></string>
-  <string><id>641</id><value>���q - ���м����ɮ�</value></string>
-  <string><id>642</id><value>���q - �����м����ɮ�</value></string>
-  <string><id>643</id><value>���м���ɩ������i���u</value></string>
-  <string><id>644</id><value>�װŶ���</value></string>
-  <string><id>645</id><value>�ݭn�w�Ĥ@�Ӥj�ɮסA�O�_�~��H</value></string>
-  <string><id>646</id><value>�R�����D</value></string>
-
-  <string><id>700</id><value>�M�����֮w</value></string>
-  <string><id>701</id><value>�M�����֮w�������ɮ�</value></string>
-  <string><id>702</id><value>�ثe���|���g�j�M�L</value></string>
-  <string><id>703</id><value>�� Yes ��s�ثe���|�Ҧ��q��</value></string>
-  <string><id>704</id><value>�� No �u�s�W�s�q</value></string>
-  <string><id>705</id><value>����</value></string>
-  <string><id>706</id><value>HTTP �N�z���A����}</value></string>
-  <string><id>707</id><value>HTTP �N�z���A����</value></string>
-  <string><id>708</id><value>�ҥ� HTTP �N�z���A��</value></string>
-  <string><id>709</id><value>XLink Kai �b��</value></string>
-  <string><id>710</id><value>XLink Kai �K�X</value></string>
-  <string><id>711</id><value>������}(IP)</value></string>
-  <string><id>712</id><value>�L�İ𸹡I �����b 1 �� 65535 �����C</value></string>
-  <string><id>713</id><value>HTTP �N�z���A��</value></string>
-  <string><id>714</id><value>XLink Kai</value></string>
-  <string><id>715</id><value>IP �]�w</value></string>
-  <string><id>716</id><value>�۰�(�ʺA���t)</value></string>
-  <string><id>717</id><value>���(�R�A���t)</value></string>
-  <string><id>718</id><value>�w�](��t�t��)</value></string>
-  <string><id>719</id><value>- IP ��}</value></string>
-  <string><id>720</id><value>- �l�����B�n</value></string>
-  <string><id>721</id><value>- �w�]�h�D</value></string>
-  <string><id>722</id><value>- DNS ���A��</value></string>
-  <string><id>723</id><value>�x�s&amp;���s�}��</value></string>
-  <string><id>724</id><value>�L�Ħ�}�I ���Į榡�� AAA.BBB.CCC.DDD</value></string>
-  <string><id>725</id><value>�����b 0 �� 255 �����C</value></string>
-  <string><id>726</id><value>���ܥ��x�s�C ���x�s�N���}�ܡH</value></string>
-  <string><id>727</id><value>Web ���A��</value></string>
-  <string><id>728</id><value>FTP ���A��</value></string>
-  <string><id>729</id><value>�����ɶ�</value></string>
-  <string><id>730</id><value>Web ���A����</value></string>
-  <string><id>731</id><value>�ɶ����A���D��</value></string>
-  <string><id>732</id><value>�x�s&amp;�ҥ�</value></string>
-  <string><id>733</id><value>Web ���A���K�X</value></string>
-  <string><id>734</id><value>�L�K�X</value></string>
-  <string><id>735</id><value>- �s�X</value></string>
-  <string><id>736</id><value>- �ĪG</value></string>
-  <string><id>737</id><value>- �C��</value></string>
-  <string><id>738</id><value>�з�</value></string>
-  <string><id>739</id><value>����</value></string>
-  <string><id>740</id><value>����</value></string>
-  <string><id>741</id><value>�ʱ���</value></string>
-  <string><id>742</id><value>�զ�</value></string>
-  <string><id>743</id><value>����</value></string>
-  <string><id>744</id><value>�ɮ�</value></string>
-  <string><id>745</id><value>�ثe�ϥܵL�w�j�M��T</value></string>
-  <string><id>746</id><value>�������ɮ׹ϥ�</value></string>
-  <string><id>747</id><value>�ϥܸ��J���~</value></string>
-  <string><id>748</id><value>�s����|</value></string>
-  <string><id>749</id><value>�s�W�@��</value></string>
-  <string><id>750</id><value>�T�w�H</value></string>
-  <string><id>751</id><value>�����@��</value></string>
-  <string><id>752</id><value>�s��@�ɸ��|</value></string>
-  <string><id>753</id><value>�s��@�ɦW��</value></string>
-  <string><id>754</id><value>�s�W�{���s��</value></string>
-  <string><id>755</id><value>�s��{�����|</value></string>
-  <string><id>756</id><value>�s��{���W��</value></string>
-  <string><id>757</id><value>�s����|�`��</value></string>
-  <string><id>758</id><value>�����{���s��</value></string>
-  <string><id>759</id><value>��ܡG�j�C��</value></string>
-  <string><id>760</id><value>����</value></string>
-  <string><id>761</id><value>�զ�</value></string>
-  <string><id>762</id><value>�Ŧ�</value></string>
-  <string><id>763</id><value>�G��</value></string>
-  <string><id>764</id><value>�A��</value></string>
-  <string><id>765</id><value>�C��</value></string>
-  <string><id>766</id><value>�O�d</value></string>
-  <string><id>767</id><value>�O�d</value></string>
-  <string><id>768</id><value>�O�d</value></string>
-  <string><id>769</id><value>�O�d</value></string>
-  <string><id>770</id><value>���~ %i�G�L�k�@��</value></string>
-  <string><id>771</id><value>- FTP ���A�����w�u�@�b FATX �榡</value></string>
-  <string><id>772</id><value>���ĵw��</value></string>
-  <string><id>773</id><value>�j�M��</value></string>
-  <string><id>774</id><value>�Ϥ���Ƨ�</value></string>
-  
-  <string><id>998</id><value>XLink Kai</value></string>
-  <string><id>999</id><value>�u�W�C��</value></string>
-  <string><id>1000</id><value>�ù��O�@�w��</value></string>
-  <string><id>1001</id><value>�L�k�s�u</value></string>
-  <string><id>1002</id><value>XBMC �L�k�s�u������I</value></string>
-  <string><id>1003</id><value>�o�i��O�ѩ�����S���s�u�C</value></string>
-  <string><id>1004</id><value>�i�H�Ψ�L�覡�ӷs�W���ܡH</value></string>
-  <string><id>1005</id><value>��J�@�ɦW��</value></string>
-  <string><id>1006</id><value>IP ��}</value></string>
-  <string><id>1007</id><value>�s�W������m</value></string>
-  <string><id>1008</id><value>��w</value></string>
-  <string><id>1009</id><value>���A����}</value></string>
-  <string><id>1010</id><value>���A���W��</value></string>
-  <string><id>1011</id><value>���ݸ��|</value></string>
-  <string><id>1012</id><value>�@�ɸ�Ƨ�</value></string>
-  <string><id>1013</id><value>��</value></string>
-  <string><id>1014</id><value>�b��</value></string>
-  <string><id>1015</id><value>�������A��</value></string>
-  <string><id>1016</id><value>��J���A��������}</value></string>
-  <string><id>1017</id><value>��J���A�����ݸ��|</value></string>
-  <string><id>1018</id><value>��J��</value></string>
-  <string><id>1019</id><value>��J�b��</value></string>
-  <string><id>1020</id><value>�s�W %s �ؿ�</value></string>
-  <string><id>1021</id><value>��J�ο�ܥؿ��C</value></string>
-  <string><id>1022</id><value>���ӥؿ��R�W�C</value></string>
-  <string><id>1023</id><value>�s���ؿ�</value></string>
-  <string><id>1024</id><value>�s��</value></string>
-  <string><id>1025</id><value>�L�k��o�ؿ���T�C</value></string>
-  <string><id>1026</id><value>�s�W�ؿ�</value></string>
-  <string><id>1027</id><value>�s��ؿ�</value></string>
-  <string><id>1028</id><value>�s�� %s �ؿ�</value></string>
-  <string><id>1029</id><value>��J�s����</value></string>
-  <string><id>1030</id><value>�ϥ�</value></string>
-  <string><id>1031</id><value>�ϥܸ�Ƨ�</value></string>
-  <string><id>1032</id><value>�s�W������m�K</value></string>  
-  
-  <string><id>1200</id><value>SMB �@�ɳ]�w</value></string>
-  <string><id>1201</id><value>SMB IP ��}</value></string>
-  <string><id>1202</id><value>SMB �u�@�s��</value></string>
-  <string><id>1203</id><value>SMB �b��</value></string>
-  <string><id>1204</id><value>SMB �K�X</value></string>
-  <string><id>1205</id><value>SMB �@�ɦW</value></string>
-  <string><id>1206</id><value>SMB �@�ɸs��</value></string>
-  <string><id>1207</id><value>SMB WINS ���A��</value></string>
-  <string><id>1208</id><value>�]�w�Ҧ�</value></string>
-  <string><id>1209</id><value>SMB �@�ɳ]�w���\�I</value></string>
-  <string><id>1210</id><value>�R��</value></string>
-  <string><id>1211</id><value>����</value></string>
-  <string><id>1212</id><value>�v��</value></string>
-  <string><id>1213</id><value>�Ϥ�</value></string>
-  <string><id>1214</id><value>�ɮ�</value></string>
-  <string><id>1215</id><value>����&amp;�v�� </value></string>
-  <string><id>1216</id><value>����&amp;�Ϥ�</value></string>
-  <string><id>1217</id><value>����&amp;�ɮ�</value></string>
-  <string><id>1218</id><value>�v��&amp;�Ϥ�</value></string>
-  <string><id>1219</id><value>�v��&amp;�ɮ�</value></string>
-  <string><id>1220</id><value>�Ϥ�&amp;�ɮ�</value></string>
-  <string><id>1221</id><value>����&amp;�v��&amp;�Ϥ�</value></string>
-  <string><id>1222</id><value>����&amp;�v��&amp;�Ϥ�&amp;�ɮ�</value></string>
-  <string><id>1223</id><value>�T��</value></string>
-  <string><id>1224</id><value>�@��ϥΪ�</value></string>
-  <string><id>1225</id><value>�i���ϥΪ�</value></string>
-  <string><id>1226</id><value>�ɮ�&amp;����&amp;�v��</value></string>
-  <string><id>1227</id><value>�ɮ�&amp;�Ϥ�&amp;����</value></string>
-  <string><id>1228</id><value>�ɮ�&amp;�Ϥ�&amp;�v��</value></string>
-  <string><id>1229</id><value>����&amp;�{��</value></string>
-  <string><id>1230</id><value>�v��&amp;�{��</value></string>
-  <string><id>1231</id><value>�Ϥ�&amp;�{��</value></string>
-  <string><id>1232</id><value>����&amp;�v��&amp;�Ϥ�&amp;�{��</value></string>
-  <string><id>1233</id><value>�{��&amp;�v��&amp;����</value></string>
-  <string><id>1234</id><value>�{��&amp;�Ϥ�&amp;����</value></string>
-  <string><id>1235</id><value>�{��&amp;�Ϥ�&amp;�v��</value></string>
-
-  <string><id>1245</id><value>FTP �b��</value></string>
-  <string><id>1246</id><value>FTP �K�X</value></string>
-  <string><id>1247</id><value>FTP ���A���b���M�K�X�]�w���\�I</value></string>
-
-  <string><id>1250</id><value>�۰ʰ���</value></string>
-  <string><id>1251</id><value>XBOX �۰ʰ���</value></string>
-  <string><id>1252</id><value>�ʺ�</value></string>
-  <string><id>1253</id><value>�b�ɮ��`�ޤ��إ� FTP �s�u</value></string>
-  <string><id>1254</id><value>�߰ݳs�u</value></string>
-  <string><id>1255</id><value>�o�e FTP �b���M�K�X</value></string>
-  <string><id>1256</id><value>�s�u�~��</value></string>
-  <string><id>1257</id><value>�O�_�s�u��۰ʰ����쪺 XBOX�H</value></string>
-  
-  <string><id>1396</id><value>����</value></string>
-  <string><id>1397</id><value>�M</value></string>
-  <string><id>1398</id><value>�B�I</value></string>
-  <string><id>1399</id><value>�¶�</value></string>
-  <string><id>1400</id><value>����</value></string>
-  <string><id>1401</id><value>�p�B</value></string>
-  <string><id>1402</id><value>�p</value></string>
-  <string><id>1403</id><value>����</value></string>
-  <string><id>1404</id><value>��</value></string>
-  <string><id>1405</id><value>�b</value></string>
-  <string><id>1406</id><value>�o</value></string>
-  <string><id>1407</id><value>�ϰ��</value></string>
-  <string><id>1408</id><value>�B</value></string>
-  <string><id>1409</id><value>�B��</value></string>
-  <string><id>1410</id><value>�L��</value></string>
-  
-  <string><id>2050</id><value>�����G</value></string>
-  
-  <string><id>4501</id><value>�G���ù�����</value></string>
-
-  <string><id>10000</id><value>����</value></string>
-  <string><id>10001</id><value>�ڪ��{��</value></string>
-  <string><id>10002</id><value>�ڪ��Ϥ�</value></string>
-  <string><id>10003</id><value>�ɮ��`��</value></string>
-  <string><id>10004</id><value>�t�γ]�w</value></string>
-  <string><id>10005</id><value>�ڪ�����</value></string>
-  <string><id>10006</id><value>�ڪ��v��</value></string>
-  <string><id>10007</id><value>�t�θ�T</value></string>
-  <string><id>10008</id><value>�]�w-&gt;�@��</value></string>
-  <string><id>10009</id><value>�]�w-&gt;�ù�</value></string>
-  <string><id>10010</id><value>�]�w-&gt;�~�[�M�D�D-&gt;�ɭ��ե�</value></string>
-  <string><id>10011</id><value>�]�w-&gt;�ڪ��v��-&gt;�ù��ե�</value></string>
-  <string><id>10012</id><value>�]�w-&gt;�ڪ��Ϥ�</value></string>
-  <string><id>10013</id><value>�]�w-&gt;�ڪ��{��</value></string>
-  <string><id>10014</id><value>�]�w-&gt;��H�w��</value></string>
-  <string><id>10015</id><value>�]�w-&gt;�ڪ�����</value></string>
-  <string><id>10016</id><value>�]�w-&gt;�t�γ]�w</value></string>
-  <string><id>10017</id><value>�]�w-&gt;�ڪ��v��</value></string>
-  <string><id>10018</id><value>�]�w-&gt;�����]�w</value></string>
-  <string><id>10019</id><value>�]�w-&gt;�~�[�M�D�D</value></string>
-  <string><id>10020</id><value>�}���{��</value></string>
-  <string><id>10021</id><value>�ڪ��v��/���O</value></string>
-  <string><id>10022</id><value>�ڪ��v��/�t��</value></string>
-  <string><id>10023</id><value>�ڪ��v��/�~��</value></string>
-  <string><id>10025</id><value>�ڪ��v��/���D</value></string>
-  <string><id>10028</id><value>�ڪ��v��/����C��</value></string>
-  <string><id>10034</id><value>�]�w-&gt;�ϥΪ̳]�w��</value></string>
-  <string><id>10100</id><value>�T�{</value></string>
-  <string><id>10101</id><value>�i��</value></string>
-  <string><id>10500</id><value>�ڪ�����/����C��</value></string>
-  <string><id>10501</id><value>�ڪ�����/�ɮ�</value></string>
-  <string><id>10502</id><value>�ڪ�����/���֮w</value></string>
-  <string><id>10503</id><value>�ڪ�����/�Ʀ�e 100</value></string>
-  <string><id>10504</id><value>�Ʀ�e 100 �q��</value></string>
-  <string><id>10505</id><value>�Ʀ�e 100 �M��</value></string>   
-  <string><id>10506</id><value>�ڪ��{��</value></string>
-  <string><id>10507</id><value>�t�γ]�w</value></string>
-  <string><id>10508</id><value>��H�w��</value></string>
-  <string><id>10509</id><value>�����C��</value></string>
-  <string><id>10510</id><value>�X�R�\��</value></string>
-  <string><id>10511</id><value>�t�θ�T</value></string>
-  <string><id>10512</id><value>�ڪ����� - �M��</value></string>
-  <string><id>10513</id><value>�ڪ����� - ���H</value></string>
-  <string><id>10514</id><value>�ڪ����� - ���O</value></string>
-  <string><id>10515</id><value>�ڪ����� - �Ʀ�e 100</value></string>
-  <string><id>10516</id><value>�ڪ����� - ���</value></string>
-  <string><id>10517</id><value>�ڪ����� - ����C��</value></string>
-  <string><id>10518</id><value>�ڪ��v�� - �t��</value></string>
-  <string><id>10519</id><value>�ڪ��v�� - ����</value></string>
-  <string><id>10520</id><value>�ڪ��v�� - ���D</value></string>
-  <string><id>10521</id><value>�ڪ��v�� - �~��</value></string>
-  <string><id>10522</id><value>�ڪ��v�� - ����C��</value></string>
-  <string><id>10523</id><value>�M���T</value></string>
-  <string><id>10524</id><value>�v����T</value></string>
-  <string><id>12000</id><value>���</value></string>
-  <string><id>12001</id><value>�ڪ�����/��T</value></string>
-  <string><id>12002</id><value>�T�{</value></string>
-  <string><id>12003</id><value>�ڪ��v��/��T</value></string>
-  <string><id>12004</id><value>�ڪ��}��/��T</value></string>
-  <string><id>12005</id><value>���ù��v��</value></string>
-  <string><id>12006</id><value>���ֵ�ı�ĪG</value></string>
-  <string><id>12007</id><value>�ڪ��Ϥ�</value></string>
-  <string><id>12008</id><value>�ɮװ��|</value></string>
-  <string><id>12009</id><value>���إؿ��K</value></string>
-  <string><id>12010</id><value>��^�ڪ�����</value></string>
-  <string><id>12011</id><value>��^�ڪ��v��</value></string>
-  <string><id>12012</id><value>��s������ؿ�</value></string>
-  <string><id>12013</id><value>�����</value></string>
-  <string><id>12014</id><value>�䤣������</value></string>
-  <string><id>12015</id><value>������]�w</value></string>
-  <string><id>12016</id><value>�Ҧ�������������򥢡A�Ч�s������ؿ��I</value></string>
-  <string><id>12017</id><value>�۰ʱq�W�����_�B����</value></string>
-  <string><id>12018</id><value>�_</value></string>
-  <string><id>12019</id><value>�O</value></string>
-  <string><id>12020</id><value>�߰�</value></string>
-  <string><id>12021</id><value>�q�Y�}�l����</value></string>
-  <string><id>12022</id><value>�q�W�����_�B����</value></string>
-  
-  <string><id>12310</id><value>0</value></string>
-  <string><id>12311</id><value>1</value></string>
-  <string><id>12312</id><value>2</value></string>
-  <string><id>12313</id><value>3</value></string>
-  <string><id>12314</id><value>4</value></string>
-  <string><id>12315</id><value>5</value></string>
-  <string><id>12316</id><value>6</value></string>
-  <string><id>12317</id><value>7</value></string>
-  <string><id>12318</id><value>8</value></string>
-  <string><id>12319</id><value>9</value></string>
-  <string><id>12320</id><value>c</value></string>
-  <string><id>12321</id><value>ok</value></string>
-  <string><id>12322</id><value>*</value></string>
-  <string><id>12324</id><value>XBMC �޲z����w</value></string>
-  <string><id>12325</id><value>�w��w�I��J�K�X�K</value></string>
-  <string><id>12326</id><value>��J�K�X</value></string>
-  <string><id>12327</id><value>��J�޲z���K�X</value></string>
-  <string><id>12328</id><value>��J����K�X</value></string> 
-  <string><id>12329</id><value>�Ϋ� C ����</value></string>
-  <string><id>12330</id><value>�̧ǿ�J XBOX ������</value></string>
-  <string><id>12331</id><value>�� Start �T�{�A�Ϋ� Back ����</value></string>
-  <string><id>12332</id><value>�]�w��w</value></string>
-  <string><id>12333</id><value>�Ѱ���w</value></string>
-  <string><id>12334</id><value>���]��w</value></string>
-  <string><id>12335</id><value>�R����w</value></string>
-  <string><id>12336</id><value>�����w�����G</value></string>
-  <string><id>12337</id><value>�Ʀr�K�X</value></string>
-  <string><id>12338</id><value>������</value></string>
-  <string><id>12339</id><value>��r�K�X</value></string>
-  <string><id>12340</id><value>��J�s�K�X</value></string>
-  <string><id>12341</id><value>�T�{�s�K�X</value></string>
-  <string><id>12342</id><value>�K�X�����T�A</value></string>
-  <string><id>12343</id><value>���զ��� </value></string>
-  <string><id>12344</id><value>��J�K�X�����T�I</value></string>
-  <string><id>12345</id><value>�ڵ�Ū��</value></string>
-  <string><id>12346</id><value>�w�F�K�X���զ��ƭ���I</value></string>
-  <string><id>12347</id><value>XBOX �N�n�ߨ������I</value></string>
-  <string><id>12348</id><value>���سQ��w</value></string>
-  <string><id>12349</id><value>�O���޲z���K�X����U���}���H</value></string>
-  <string><id>12350</id><value>(�ק�t�γ]�w�̪����󶵥�</value></string>
-  <string><id>12351</id><value>�N�۰ʱҥΥD����w�\��I)</value></string>
-  <string><id>12352</id><value>��J�޲z���K�X�ë� Start �T�w</value></string>
-  <string><id>12353</id><value>���s�W��</value></string>
-  <string><id>12354</id><value>�Ѱ���Ƨ��ꪽ��U���}���H</value></string>
-  <string><id>12355</id><value>�۰ʹ��Ƨ��W��C)</value></string>
-  <string><id>12356</id><value>�����w</value></string>
-  <string><id>12357</id><value>�@����w</value></string>
-  <string><id>12358</id><value>�K�X����ťաA�Э��աI</value></string>
-  <string><id>12360</id><value>�D����w</value></string>
-  <string><id>12361</id><value>�̦h���զ���</value></string>
-  <string><id>12362</id><value>���\����</value></string>
-  <string><id>12363</id><value>�@�ɫO�@</value></string>
-  <string><id>12364</id><value>�K�X�覡</value></string>
-  <string><id>12365</id><value>�޲z���K�X</value></string>
-  <string><id>12366</id><value>�K�X�覡���ܡC�s���޲z���K�X���G</value></string>
-  <string><id>12367</id><value>�޲z���K�X���~�I</value></string>
-  <string><id>12368</id><value>�п�J���T���޲z���K�X�I</value></string>
-  <string><id>12369</id><value>XBMC �ҥ���w</value></string>
-  <string><id>12370</id><value>�K�X�覡���ܡA���S���]�w�޲z���K�X�I</value></string>
-  <string><id>12371</id><value>�г]�w�@�ӷs���޲z���K�X�I</value></string>
-  <string><id>12372</id><value>��w�t�γ]�w&amp;�ɮ��`��</value></string>
-  <string><id>12373</id><value>�t�γ]�w&amp;�ɮ��`��</value></string>
-  <string><id>12374</id><value>��w�C���ɮ�</value></string>
-  <string><id>12375</id><value>�޲z���Ҧ�</value></string>
-  <string><id>12376</id><value>�]�w���v�����w�]��</value></string>
-  <string><id>12377</id><value>�N���]���e���]�w</value></string>
-  <string><id>12378</id><value>��ܦU�ӹϤ�</value></string>
-  <string><id>12379</id><value>�ϥβ��ʩM�Y��S��</value></string>
-  <string><id>12380</id><value>�b PAL �Ҧ����� NTSC �v��</value></string>
-  <string><id>12381</id><value>�b NTSC �Ҧ����� PAL �v��</value></string>
-  <string><id>12382</id><value>�H PAL60 �Ҧ����� NTSC �v��</value></string>
-  <string><id>12383</id><value>12�p�ɨ�</value></string>
-  <string><id>12384</id><value>24�p�ɨ�</value></string>
-  <string><id>12385</id><value>��/��</value></string>
-  <string><id>12386</id><value>��/��</value></string>
-  <string><id>12387</id><value>���s�j�M���</value></string>
-  
-  <string><id>12390</id><value>�t�αҰʮɶ�</value></string>
-  <string><id>12391</id><value>����</value></string>
-  <string><id>12392</id><value>�p��</value></string>
-  <string><id>12393</id><value>��</value></string>
-  <string><id>12394</id><value>�`�B�@�ɶ�</value></string>
-  
-  <string><id>12600</id><value>��H�w��</value></string>
-  
-  <string><id>12900</id><value>�ù��O�@</value></string>
-  <string><id>12901</id><value>���ù��e���վ�</value></string>
-  
-  <string><id>13000</id><value>�t��</value></string>
-  <string><id>13001</id><value>�ߧY�����w��</value></string>
-  <string><id>13002</id><value>�u���v��</value></string>
-  <string><id>13003</id><value>- ����</value></string>
-  <string><id>13004</id><value>- �̤p�C���ɮת���</value></string>
-  <string><id>13005</id><value>����</value></string>
-  <string><id>13006</id><value>��t�t��</value></string>
-  
-  <string><id>13100</id><value>�{�{�L�o</value></string>
-  <string><id>13150</id><value>�w�Ъ��_�G</value></string>
-  <string><id>13151</id><value>�w�зūסG</value></string>
-  <string><id>13152</id><value>DVD �����G</value></string>
-  <string><id>13153</id><value>DVD �b��G</value></string>
-  <string><id>13154</id><value>�w�Ы����G</value></string>
-  <string><id>13155</id><value>�w�ЧǸ��G</value></string>
-  <string><id>13156</id><value>�w�аb��G</value></string>
-  <string><id>13157</id><value>�w�бK�X�G</value></string>
-  <string><id>13158</id><value>�w���ꪬ�A�G</value></string>
-  <string><id>13159</id><value>�l�����B�n�G</value></string>
-  <string><id>13160</id><value>�h�D��}�G</value></string>
-  <string><id>13161</id><value>DNS ��}�G</value></string>
-  <string><id>13162</id><value>�L�kŪ����T</value></string>
-  <string><id>13163</id><value>�n��b�𸹡G</value></string>
-  <string><id>13164</id><value>��L�b�𸹡G</value></string>
-  <string><id>13165</id><value>�ƹ��b�𸹡G</value></string>
-  <string><id>13166</id><value>�ճ��b�𸹡G</value></string>
-  <string><id>13167</id><value>�O�Хd�b�𸹡G</value></string>
-  <string><id>13168</id><value>�������b�𸹡G</value></string>
-  <string><id>13169</id><value>���� CD ���</value></string>
-  <string><id>13170</id><value>�q��</value></string>
-  <string><id>13171</id><value>�ߧY</value></string>
-  <string><id>13172</id><value>�j %i ������</value></string>
-  
-  <string><id>13200</id><value>�w�]��</value></string>
-  <string><id>13201</id><value>�R���w�]�� '%s'�H</value></string>
-  <string><id>13202</id><value>�N�ثe�]�w�s���w�]�ɡK</value></string>
-  <string><id>13203</id><value>�w�]�� '%s' ���J���\</value></string>
-  <string><id>13204</id><value>�̪���J���w�]�ɡG</value></string>
-  <string><id>13205</id><value>����</value></string>
-  <string><id>13206</id><value>�л\</value></string>
-  <string><id>13207</id><value>�л\�w�]�� '%s'�H</value></string>  
-  <string><id>13208</id><value>�x�a</value></string>
-  <string><id>13209</id><value>�x�a���j(����)</value></string>
-  <string><id>13210</id><value>�x�a�ҰʡA%i �����˼ƭp�ɡC</value></string>
-  <string><id>13211</id><value>�T�a�I</value></string>
-  <string><id>13212</id><value>�x�a�����A�ѤU %i �� %i ���C</value></string>
-  
-  
-  <string><id>13249</id><value>��� RAR �ɮ׸̪��r��</value></string>
-  <string><id>13250</id><value>��ܦr���K</value></string>
-  <string><id>13251</id><value>���ʸӶ���</value></string>
-  <string><id>13252</id><value>�N���ز��ʦܦ�</value></string>
-  <string><id>13253</id><value>��������</value></string>
-  
-  <string><id>13270</id><value>�w��G</value></string>
-  <string><id>13271</id><value>�����B�z���t�סG</value></string>
-  <string><id>13274</id><value>XBOX �w�s�u�A���O�S���]�w DNS�I</value></string>
-  <string><id>13275</id><value>�w��</value></string>
-  <string><id>13276</id><value>���о�</value></string>
-  <string><id>13277</id><value>�x�s�]��</value></string>
-  <string><id>13278</id><value>�򥻸�T</value></string>
-  <string><id>13279</id><value>����</value></string>
-  <string><id>13280</id><value>���</value></string>
-  <string><id>13281</id><value>�w��</value></string>
-  <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>�֤ߪ����G</value></string>
-  <string><id>13284</id><value>�����B�z���t�סG</value></string>
-  <string><id>13285</id><value>BIOS �����G</value></string>
-  <string><id>13286</id><value>��ܴ����G</value></string>
-  <string><id>13287</id><value>�ù��ѪR�סG</value></string>
-  <string><id>13288</id><value>XBOX �����G</value></string>
-  <string><id>13289</id><value>XBOX �Ǹ��G</value></string>
-  <string><id>13290</id><value>XBOX �s�y�ӡG</value></string>
-  <string><id>13291</id><value>��������G</value></string>
-  <string><id>13292</id><value>�v���ݤl�G</value></string>
-  <string><id>13293</id><value>�v��&amp;�C���ϽX�G</value></string>
-  <string><id>13294</id><value>DVD �ϽX�G</value></string>
-  <string><id>13295</id><value>���ں����G</value></string>
-  <string><id>13296</id><value>XBOX �w�s�u�I</value></string>
-  <string><id>13297</id><value>XBOX �L�k�s�u�I ���ˬd�����]�w�I</value></string>
-  <string><id>13298</id><value>XBLIVE ���_�G</value></string>
-  <string><id>13299</id><value>�ؼзū�</value></string>
-  <string><id>13300</id><value>������t</value></string>
-  <string><id>13301</id><value>�۰ʱ���</value></string>
-  <string><id>13302</id><value>���w������t</value></string>
-  <string><id>13303</id><value>�ୱ�r��</value></string>
-  <string><id>13304</id><value>�ҥ��ഫ���V�r��</value></string>
-  <string><id>13305</id><value>�ҥ� RSS �s�D���</value></string>
-  <string><id>13306</id><value>���äW�h�ؿ�����</value></string>
-  <string><id>13307</id><value>���y�R�W�Ѽ�</value></string>
-  <string><id>13308</id><value>�A�n�N XBOX ���}��</value></string>
-  <string><id>13309</id><value>�H���s�Ұ� XBMC �ܡH</value></string>
-  <string><id>13310</id><value>��j�ĪG</value></string>
-  <string><id>13311</id><value>�B�ʮĪG</value></string>
-  <string><id>13312</id><value>�Y�p����</value></string>
-  <string><id>13313</id><value>���s�}��</value></string>
-  <string><id>13314</id><value>�H�J�H�X</value></string>
-  <string><id>13315</id><value>�إ߹ϥ�</value></string>
-  <string><id>13316</id><value>���йϥ�</value></string>
-  <string><id>13317</id><value>�[�ݹϤ�</value></string>
-  <string><id>13318</id><value>���йϤ�</value></string>
-  <string><id>13319</id><value>�H��</value></string>
-  <string><id>13320</id><value>�����n</value></string>
-  <string><id>13321</id><value>���n�D</value></string>
-  <string><id>13322</id><value>�k�n�D</value></string>
-  <string><id>13323</id><value>�ҥ� CD+G</value></string>
-  <string><id>13324</id><value>�I���z����</value></string>
-  <string><id>13325</id><value>�e���z����</value></string>
-  <string><id>13326</id><value>�v������</value></string>
-  <string><id>13327</id><value>�d�� OK</value></string>
-  <string><id>13328</id><value>%s �䤣��C</value></string>
-  <string><id>13329</id><value>���} %s �o�Ϳ��~</value></string>
-  <string><id>13330</id><value>�L�k���J %s </value></string>
-  <string><id>13331</id><value>���~�G�O���餣���C</value></string>
-  <string><id>13332</id><value>�W��</value></string>
-  <string><id>13333</id><value>�U��</value></string>
-  <string><id>13334</id><value>�s�����</value></string>
-  <string><id>13335</id><value>�]���w�]��</value></string>
-  <string><id>13336</id><value>�R������</value></string>
-  <string><id>13337</id><value>- ���n�D PCM �L�o</value></string>
-  <string><id>13338</id><value>���A��ܿO</value></string>
-  <string><id>13339</id><value>��ܿO�C��</value></string>
-  <string><id>13340</id><value>�w�]</value></string>
-  <string><id>13341</id><value>���</value></string>
-  <string><id>13342</id><value>����</value></string>
-  <string><id>13343</id><value>����</value></string>
-  <string><id>13344</id><value>�`��</value></string>
-  <string><id>13345</id><value>�������������ܿO</value></string>
-  <string><id>13346</id><value>�v����T</value></string>
-  <string><id>13347</id><value>�[�J����C��</value></string>
-  <string><id>13348</id><value>�j�M IMDb ��T�K</value></string>
-  <string><id>13349</id><value>�j�M�Ҧ��ɮ׸�T</value></string>
-  <string><id>13350</id><value>�����ܼ���C���K</value></string>
-  <string><id>13351</id><value>�M���T</value></string>
-  <string><id>13352</id><value>�j�M��ƨ��Ʈw</value></string>
-  <string><id>13353</id><value>����j�M</value></string>
-  <string><id>13354</id><value>���v�覡</value></string>
-  <string><id>13355</id><value>�C�~�蹳���ۦ⾹</value></string>
-  <string><id>13356</id><value>�w�魫�|</value></string>
-  <string><id>13357</id><value>���~�蹳���ۦ⾹</value></string>
-  <string><id>13358</id><value>���񶵥�</value></string>
-  <string><id>13359</id><value>�]�w���H�ϥ�</value></string>
-  <string><id>13360</id><value>�إ߹ϥ�</value></string>
-  <string><id>13361</id><value>�ҥλy��</value></string>
-  <string><id>13362</id><value>�y���S��</value></string>
-  <string><id>13363</id><value>- �ҥΧC�H�ĪG</value></string>
-  <string><id>13364</id><value>-- �C�H���ĪG�ƭ�</value></string>
-  <string><id>13365</id><value>- �ҥΰ����ĪG</value></string>
-  <string><id>13366</id><value>-- �����ĪG�ƭ�</value></string>
-  <string><id>13367</id><value>- �ҥή����ܮĪG</value></string>
-  <string><id>13368</id><value>-- �����ܮĪG�ƭ�</value></string>
-  <string><id>13369</id><value>- �ҥξ���H�ĪG</value></string>
-  <string><id>13370</id><value>-- ����H�ĪG�ƭ�</value></string>
-  <string><id>13371</id><value>- �� 1 ��y��</value></string>
-  <string><id>13372</id><value>- �� 2 ��y��</value></string>
-  <string><id>13373</id><value>- �� 3 ��y��</value></string>
-  <string><id>13374</id><value>- �� 4 ��y��</value></string>
-  <string><id>13375</id><value>�Ұʸ˸m</value></string>
-  <string><id>13376</id><value>���q</value></string>
-  <string><id>13377</id><value>�w�]��ܼҦ�</value></string>
-  <string><id>13378</id><value>�w�]�G��</value></string>
-  <string><id>13379</id><value>�w�]���</value></string>
-  <string><id>13380</id><value>�w�]������</value></string>
-  <string><id>13381</id><value>���򼽩񥻤�</value></string>
-  <string><id>13382</id><value>�y���S�� - �� 1 ��</value></string>
-  <string><id>13383</id><value>�y���S�� - �� 2 ��</value></string>
-  <string><id>13384</id><value>�y���S�� - �� 3 ��</value></string>
-  <string><id>13385</id><value>�y���S�� - �� 4 ��</value></string>
-  <string><id>13386</id><value>�ϥήɶ��j�M</value></string>
-  <string><id>13387</id><value>���y�R�W�榡</value></string>
-  <string><id>13388</id><value>�w�]</value></string>
-  <string><id>13389</id><value>�S���w�]&#10;�ӵ�ı�ĪG</value></string>
-  <string><id>13390</id><value>�S���]�w&#10;�ӵ�ı�ĪG</value></string>
-  <string><id>13391</id><value>���L�}/��</value></string>
-  <string><id>13392</id><value>���񭵼֮ɨϥε�ı�ĪG</value></string>
-  <string><id>13393</id><value>�p��j�p</value></string>
-  <string><id>13394</id><value>�p���Ƨ��j�p</value></string>
-  <string><id>13395</id><value>�v���]�w</value></string>
-  <string><id>13396</id><value>�n���M�r���]�w</value></string>
-  <string><id>13397</id><value>�ҥΦr��</value></string>
-  <string><id>13398</id><value>����</value></string>
-  <string><id>13399</id><value>�ƧǮɩ��� The �r��</value></string>
-  <string><id>13400</id><value>�M�譵�y�H�J�H�X</value></string>
-  <string><id>13401</id><value>�s�� %s</value></string>
-  <string><id>13402</id><value>��ܭ��y��m</value></string>
-  <string><id>13403</id><value>�M���w�]��</value></string>
-  <string><id>13404</id><value>��_</value></string>
-  <string><id>13405</id><value>���o�ϥ�</value></string>
-
-  <string><id>14000</id><value>���|�}��</value></string>
-  <string><id>14001</id><value>���|����</value></string>
-  <string><id>14002</id><value>���|�G���z</value></string>
-  <string><id>14003</id><value>�U������C���ɮסK</value></string>
-  <string><id>14004</id><value>�U����y�C��C���K</value></string>
-  <string><id>14005</id><value>���R��y�C��C���K</value></string>
-  <string><id>14006</id><value>�U����y�C��C������</value></string>
-  <string><id>14007</id><value>�U������C���ɮץ���</value></string>
-  <string><id>14008</id><value>�ҥ� Kai �����q�i</value></string>
-  <string><id>14009</id><value>�C���ؿ�</value></string>
-  <string><id>14010</id><value>�۰ʤ������ϥܱ���</value></string>
-  <string><id>14011</id><value>�ҥΦ۰ʤ������ϥ�</value></string>
-  <string><id>14012</id><value>- �ϥΤj�ϥ�</value></string>
-  <string><id>14013</id><value>- ����</value></string>
-  <string><id>14014</id><value>- ���</value></string>
-  <string><id>14015</id><value>�S���ɮץB�̤֦��@�ӹϥ�</value></string>
-  <string><id>14016</id><value>�̤֦��@���ɮשM�ϥ�</value></string>
-  <string><id>14017</id><value>�ϥܩҥe���</value></string>
-  <string><id>14018</id><value>�s���]�w</value></string>
-  <string><id>14019</id><value>���ܰϽX 1</value></string>
-  <string><id>14020</id><value>���ܰϽX 2</value></string>
-  <string><id>14021</id><value>���ܰϽX 3</value></string>
-  <string><id>14022</id><value>��Ʈw</value></string>
-  <string><id>14023</id><value>�L�q��</value></string>
-  <string><id>14024</id><value>��J�̪񪺫����ά���l�F�s�X</value></string>
-  <string><id>14025</id><value>�v��/����/���нw�İ� - �w��</value></string>
-  <string><id>14026</id><value>�v���w�İ� - ���о�</value></string>
-  <string><id>14027</id><value>�v���w�İ� - �ϰ����</value></string>
-  <string><id>14028</id><value>�v���w�İ� - ���ں���</value></string>
-  <string><id>14030</id><value>���ֽw�İ� - ���о�</value></string>
-  <string><id>14031</id><value>���ֽw�İ� - �ϰ����</value></string>
-  <string><id>14032</id><value>���ֽw�İ� - ���ں���</value></string>
-  <string><id>14034</id><value>���нw�İ� - ���о�</value></string>
-  <string><id>14035</id><value>���нw�İ� - �ϰ����</value></string>
-  <string><id>14036</id><value>���A��</value></string>
-  <string><id>14037</id><value>��ı�ĪG</value></string>
-  <string><id>14038</id><value>�����]�w�w����</value></string>
-  <string><id>14039</id><value>XBMC �ݭn���s�}���H���ܺ����]�w�C</value></string>
-  <string><id>14040</id><value>�A�n���s�}���ܡH</value></string>
-  <string><id>14041</id><value>��m�B�z</value></string>
-  <string><id>14042</id><value>���� XLink Kai �� IP ��}</value></string>
-  <string><id>14043</id><value>- ���������</value></string>
-  <string><id>14044</id><value>%i ��</value></string>
-  <string><id>14045</id><value>%i ��</value></string>
-  <string><id>14046</id><value>%i �@��</value></string>
-  <string><id>14047</id><value>%i %%</value></string>
-  <string><id>14048</id><value>%i kbps</value></string>
-  <string><id>14049</id><value>%i kb</value></string>
-  <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>�ɶ���ܳ]�w</value></string>
-  <string><id>14052</id><value>�����ܳ]�w</value></string>
-  <string><id>14053</id><value>�e���o��</value></string>
-  <string><id>14054</id><value>�ҥκ�����T�j�M</value></string>
-  <string><id>14055</id><value>�ϥέI���j�M</value></string>
-  <string><id>14056</id><value>����j�M</value></string>
-  <string><id>14057</id><value>�L�k�j�M�C���T</value></string>
-  <string><id>14058</id><value>���������o��</value></string>
-  <string><id>14059</id><value>��ܻ��ݤ��ɪ��ϥ�</value></string>
-  <string><id>14060</id><value>���������w�İ� - ���ں���</value></string>
-  <string><id>14061</id><value>�۰�</value></string>
-  <string><id>14062</id><value>��J�b��</value></string>
-  <string><id>14063</id><value>����ɶ�</value></string>
-  <string><id>14064</id><value>�]�w���</value></string>
-  <string><id>14065</id><value>�]�w�ɶ�</value></string>
-  <string><id>14066</id><value>�]�w�ɶ�(��:��)</value></string>
-  <string><id>14067</id><value>�]�w���(��/��/�~)</value></string>
-  <string><id>14068</id><value>��J IP ��}</value></string>
-  <string><id>14069</id><value>�T�w�n�]�w�o�ǰѼƶܡH</value></string>
-  <string><id>14070</id><value>�ҥγ]�w</value></string>
-  <string><id>14071</id><value>���\���s�R�W�M�R���ɮ�</value></string>
-  <string><id>14072</id><value>�ҥ� XLink Kai</value></string>
-  <string><id>14073</id><value>XLink Kai �S���Q�ҥΡI</value></string>
-
-  <string><id>15000</id><value>XLink Kai</value></string>
-  <string><id>15001</id><value>�ثe�èS���s�u����� XLink Kai ���q���A</value></string>
-  <string><id>15002</id><value>���ˬd�]�w�L�~��A���ճs�u�C</value></string>
-  <string><id>15003</id><value>��J�A���T���C</value></string>
-  <string><id>15004</id><value>�A�Q�ܽЪ� %s�C</value></string>
-  <string><id>15005</id><value>����G%s</value></string>
-  <string><id>15006</id><value>�ӦۡG%s</value></string>
-  <string><id>15007</id><value>�ܽ�</value></string>
-  <string><id>15008</id><value>�A�Q�ܽХ[�J %s�C</value></string>
-  <string><id>15009</id><value>���u</value></string>
-  <string><id>15010</id><value>�n��</value></string>
-  <string><id>15011</id><value>��ܡG�n��</value></string>
-  <string><id>15012</id><value>�[�J�C��</value></string>
-  <string><id>15013</id><value>�y�����</value></string>
-  <string><id>15014</id><value>�ܽ�</value></string>
-  <string><id>15015</id><value>�R��</value></string>
-  <string><id>15016</id><value>�C��</value></string>
-  <string><id>15017</id><value>��ܡG�C��</value></string>
-  <string><id>15018</id><value>�i�J</value></string>
-  <string><id>15019</id><value>�s�W���n��</value></string>
-  <string><id>15020</id><value>�D���C��</value></string>
-  <string><id>15021</id><value>�C����</value></string>
-  <string><id>15022</id><value>��ܡG�C����</value></string>
-  <string><id>15023</id><value>�}�l�C��</value></string>
-  <string><id>15024</id><value>�s�W���n��</value></string>
-  <string><id>15025</id><value>�D���C��</value></string>
-  <string><id>15026</id><value>��ѫ�</value></string>
-  <string><id>15027</id><value>��ܡG��ѫ�</value></string>
-  <string><id>15028</id><value>��L</value></string>
-  <string><id>15029</id><value>�[�J�o�ӹC���Ƕ��n�K�X�C</value></string>
-  <string><id>15030</id><value>�C���v�g���_</value></string>
-  <string><id>15031</id><value>XLink Kai �{��</value></string>
-  <string><id>15032</id><value>�A���b���αK�X�����T�A</value></string>
-  <string><id>15033</id><value>���ˬd�]�w�L�~��A���աC</value></string>
-  <string><id>15034</id><value>�n�J</value></string>
-  <string><id>15035</id><value>�ҥλy�����</value></string>
-  <string><id>15036</id><value>�o�e�@�ʧA���ܽШ�</value></string>
-  <string><id>15037</id><value>XBMC �L�k�T�w�A�������O�_����s�u�C</value></string>
-  <string><id>15038</id><value>�A�N�|�����[�J�ΥD���C���C</value></string>
-  <string><id>15039</id><value>XBMC �L�k���C���۰ʰ���C</value></string>
-  <string><id>15040</id><value>��J�C�����ЩΫ� A �����A</value></string>
-  <string><id>15041</id><value>�ðѦҹC�����������C</value></string>
-  <string><id>15042</id><value>�s���Q��</value></string>
-  <string><id>15043</id><value>%s �[�J��ѫǡC</value></string>
-  <string><id>15044</id><value>%s ���}��ѫǡC</value></string>
-  <string><id>15045</id><value>��J�A���T���C</value></string>
-  <string><id>15046</id><value>�ثe���C����</value></string>
-  <string><id>15047</id><value>��J�C���ǱK�X�C</value></string>
-  <string><id>15048</id><value>��J�C����²���C</value></string>
-  <string><id>15049</id><value>�D���C��</value></string>
-  <string><id>15050</id><value>�D���p�H�C����</value></string>
-  <string><id>15051</id><value>���a����</value></string>
-  <string><id>15052</id><value>�K�X</value></string>
-  <string><id>15053</id><value>²��</value></string>
-  <string><id>15054</id><value>�ܽШ�</value></string>
-  <string><id>15055</id><value>��ܹC���G</value></string>
-  <string><id>15056</id><value>��J�T���G</value></string>
-  <string><id>15057</id><value>�o�e</value></string>
-  <string><id>15058</id><value>�D���C��</value></string>
-  <string><id>15059</id><value>�����ܽСI</value></string>
-  <string><id>15060</id><value>�T��</value></string>
-  <string><id>15061</id><value>�ܽЪ��a %s�C</value></string>
-  <string><id>15062</id><value>�ϥδ��N�� mplayer</value></string> 
-  
-  <string><id>15100</id><value>�s��</value></string>
-  <string><id>15101</id><value>��Ʈw</value></string>
-  <string><id>15102</id><value>* �Ҧ��M��</value></string>
-  <string><id>15103</id><value>* �Ҧ����H</value></string>
-  <string><id>15104</id><value>* �Ҧ��q��</value></string>
-  <string><id>15105</id><value>* �Ҧ����O</value></string>
-  <string><id>15106</id><value>�V�e�s���ɰO����ܪ��ɮ�</value></string>
-  <string><id>15107</id><value>�Ȧs���K</value></string>
-  <string><id>15108</id><value>���䭵��</value></string>
-  <string><id>15109</id><value>�ୱ�w�]</value></string>
-  <string><id>15110</id><value>�n�쮶��</value></string>
-  <string><id>15111</id><value>�G���D�D</value></string>
-  <string><id>15112</id><value>�w�]�D�D</value></string>
-  
-  <string><id>15200</id><value>LastFM</value></string>
-  <string><id>15201</id><value>�W�Ǻq����T�� LastFM</value></string>
-  <string><id>15202</id><value>LastFM �b��</value></string>
-  <string><id>15203</id><value>LastFM �K�X</value></string>
-  <string><id>15204</id><value>�L�k�s�u�G�𮧤��K</value></string>
-  <string><id>15205</id><value>�Ч�s XBMC</value></string>
-  <string><id>15206</id><value>�W�ǥ��ѡG�L�k�q�L�{�ҡC</value></string>
-  <string><id>15207</id><value>�s�u</value></string>
-  <string><id>15208</id><value>�L�k�s�u</value></string>
-  <string><id>15209</id><value>�W�Ƕi�� %i</value></string>
-  <string><id>15210</id><value>�w�W�� %i ���q��</value></string>
-  <string><id>15211</id><value>�W�Ǥ��K</value></string>
-  <string><id>15212</id><value>�W�ǳѾl %i ��</value></string>
-  <string><id>15213</id><value>����覡�K</value></string>
-  <string><id>15214</id><value>�ϥΥ��ƪ��v���P�B</value></string>
-  <string><id>15215</id><value>��ܹϥܮ������ɮצW��</value></string>
-  
-  <string><id>15250</id><value>�W�� Last.fm �q�x�� LastFM</value></string>
-  <string><id>15251</id><value>�s�u�� Last.fm�K</value></string>
-  <string><id>15252</id><value>��ܹq�x�K</value></string> 
-  <string><id>15253</id><value>�M��P�������H�K</value></string>
-  <string><id>15254</id><value>�M��P�������ҡK</value></string>
-  <string><id>15255</id><value>%name% ���]�w</value></string>
-  <string><id>15256</id><value>�Ҧ��Ʀ�</value></string>
-  <string><id>15257</id><value>%name% ���H�Ʀ�</value></string>
-  <string><id>15258</id><value>%name% �M��Ʀ�</value></string>
-  <string><id>15259</id><value>%name% �q���Ʀ�</value></string>
-  <string><id>15260</id><value>��ť %name% last.fm �q�x</value></string>
-  <string><id>15261</id><value>%name% �P�������H</value></string>
-  <string><id>15262</id><value>%name% �M��Ʀ�</value></string>
-  <string><id>15263</id><value>%name% �q���Ʀ�</value></string>
-  <string><id>15264</id><value>%name% ���ұƦ�</value></string>
-  <string><id>15265</id><value>%name% �g���q�g</value></string>
-  <string><id>15266</id><value>��ť %name% �q�g last.fm �q�x</value></string>
-  <string><id>15267</id><value>��ť %name% �P�������H last.fm �q�x</value></string>  
-  <string><id>15268</id><value>%name% ���H�Ʀ�</value></string>
-  <string><id>15269</id><value>%name% �M��Ʀ�</value></string>
-  <string><id>15270</id><value>%name% �q���Ʀ�</value></string>
-  <string><id>15271</id><value>%name% �n��</value></string>
-  <string><id>15272</id><value>%name% �P�n</value></string>
-  <string><id>15273</id><value>%name% ���H�g�Ʀ�</value></string>
-  <string><id>15274</id><value>%name% �M��g�Ʀ�</value></string>
-  <string><id>15275</id><value>%name% �q���g�Ʀ�</value></string>
-  <string><id>15276</id><value>��ť %name% ���P�n last.fm �q�x</value></string>
-  <string><id>15277</id><value>��ť %name% ���ӤH last.fm �q�x</value></string>
-  <string><id>15278</id><value>��ť %name% ���̷R�q��</value></string>
-  <string><id>15279</id><value>�q last.fm ����ؿ��K</value></string>
-  <string><id>15280</id><value>�L�k�q last.fm ����ؿ��K</value></string>
-  <string><id>15281</id><value>��J���H�W�ٴM�������T</value></string>
-  <string><id>15282</id><value>��J���ҦW�ٴM�������T</value></string>
-  <string><id>15283</id><value>%name% �̪�ť�L���q��</value></string>
-  
-  <string><id>15300</id><value>���|���~�εL�ġI</value></string>
-  <string><id>15301</id><value>�L�k�s�u��������A���I</value></string>
-  <string><id>15302</id><value>�䤣����A���I</value></string>
-  <string><id>15303</id><value>�䤣��u�@�s�աI</value></string>
-  
-  <string><id>15310</id><value>���}�h�Ӯ��Ҹ��|</value></string>
-  <string><id>15311</id><value>���|�G</value></string>
-  
-  <string><id>16000</id><value>�@��]�w</value></string>
-  <string><id>16001</id><value>�]�w���ĵw��</value></string>
-  <string><id>16002</id><value>CDDB �d��</value></string>
-  <string><id>16003</id><value>����]�w</value></string>
-  <string><id>16004</id><value>�������</value></string>
-  
-  <string><id>16009</id><value>��J�v���W��</value></string>
-  <string><id>16010</id><value>��J�]�w�ɦW��</value></string>
-  <string><id>16011</id><value>��J�M��W��</value></string>
-  <string><id>16012</id><value>��J����C���W��</value></string>
-  <string><id>16013</id><value>��J�s�ɮצW��</value></string>
-  <string><id>16014</id><value>��J��Ƨ��W��</value></string>
-  <string><id>16015</id><value>��J�ؿ��W��</value></string>
-  <string><id>16016</id><value>�i�οﶵ�G%A, %T, %N, %B, %D, %G, %Y, %F</value></string>
-  <string><id>16017</id><value>��J�j�M�r��</value></string>
-  <string><id>16018</id><value>����</value></string>
-  <string><id>16019</id><value>�۰ʿ��</value></string>
-  <string><id>16020</id><value>�D������y</value></string>
-  <string><id>16021</id><value>���ƽu�P�B</value></string>
-  <string><id>16022</id><value>�_�ƽu�P�B</value></string>
-  <string><id>16023</id><value>��������y</value></string>
-  <string><id>16024</id><value>�������K</value></string>
-  <string><id>16025</id><value>��J���H�W��</value></string>
-  <string><id>16026</id><value>�������м���C��</value></string>
-  <string><id>16027</id><value>�Ӧh�s��ʿ��~</value></string>
-  
-  <string><id>16030</id><value>��������Ҧ��I</value></string>
-  <string><id>16031</id><value>��Ʈw�q���ɮפ��šI</value></string>
-  <string><id>16032</id><value>�L�k���ظ�Ʈw�I</value></string>
-  <string><id>16033</id><value>�L�k���}��Ʈw�I</value></string>
-  <string><id>16034</id><value>�L�k�q��Ʈw���o�q���ɮסI</value></string>
-  
-  <string><id>16100</id><value>�Ҧ��v��</value></string>
-  <string><id>16101</id><value>���ݹL��</value></string>
-  <string><id>16102</id><value>�w�ݹL��</value></string>
-  <string><id>16103</id><value>�аO���w�ݹL</value></string>
-  <string><id>16104</id><value>�аO�����ݹL</value></string>
-  <string><id>16105</id><value>�s����D</value></string>
-  <string><id>16106</id><value>�ϥ� NTSC-M &amp; NTSC-J �Ҧ�</value></string>
-  <string><id>16107</id><value>�ϥ� NTSC-M �Ҧ�</value></string>
-  <string><id>16108</id><value>�ϥ� NTSC-J �Ҧ�</value></string>
-  <string><id>16109</id><value>�ϥ� PAL-60 �Ҧ�</value></string>
-  <string><id>16110</id><value>60hz �C���]�w</value></string>
-  
+  <string id="0">我的程式</string>
+  <string id="1">我的圖片</string>
+  <string id="2">我的音樂</string>
+  <string id="3">我的影片</string>
+  <string id="4">電視頻道</string>
+  <string id="5">系統設定</string>
+  <string id="7">檔案總管</string>
+  <string id="8">氣象預報</string>
+  <string id="11">星期一</string>
+  <string id="12">星期二</string>
+  <string id="13">星期三</string>
+  <string id="14">星期四</string>
+  <string id="15">星期五</string>
+  <string id="16">星期六</string>
+  <string id="17">星期日</string>
+  <string id="21">1月</string>
+  <string id="22">2月</string>
+  <string id="23">3月</string>
+  <string id="24">4月</string>
+  <string id="25">5月</string>
+  <string id="26">6月</string>
+  <string id="27">7月</string>
+  <string id="28">8月</string>
+  <string id="29">9月</string>
+  <string id="30">10月</string>
+  <string id="31">11月</string>
+  <string id="32">12月</string>
+  <string id="98">顯示：自動</string>
+  <string id="99">顯示：自動大圖示</string>
+  <string id="100">顯示：圖示</string>
+  <string id="101">顯示：列表</string>
+  <string id="102">搜尋</string>
+  <string id="103">排序：名稱</string>
+  <string id="104">排序：日期</string>
+  <string id="105">排序：大小</string>
+  <string id="106">否</string>
+  <string id="107">是</string>
+  <string id="108">播放圖片</string>
+  <string id="109">建立相簿</string>
+  <string id="110">建立圖示</string>
+  <string id="111">捷徑</string>
+  <string id="112">暫停</string>
+  <string id="113">檔案總管：來源</string>
+  <string id="114">檔案總管：目標</string>
+  <string id="115">複製</string>
+  <string id="116">移動</string>
+  <string id="117">刪除</string>
+  <string id="118">重新命名</string>
+  <string id="119">新資料夾</string>
+  <string id="120">確認檔案複製</string>
+  <string id="121">確認檔案移動</string>
+  <string id="122">確認檔案刪除</string>
+  <string id="123">複製這些檔案？</string>
+  <string id="124">移動這些檔案？</string>
+  <string id="125">刪除這些檔案？</string>
+  <string id="126">狀態</string>
+  <string id="127">項目</string>
+  <string id="128">一般設定</string>
+  <string id="129">播放圖片</string>
+  <string id="130">系統資訊</string>
+  <string id="131">螢幕</string>
+  <string id="132">專輯</string>
+  <string id="133">藝人</string>
+  <string id="134">歌曲</string>
+  <string id="135">類別</string>
+  <string id="136">播放列表</string>
+  <string id="137">搜尋</string>
+  <string id="138">系統資訊</string>
+  <string id="139">溫度：</string>
+  <string id="140">中央處理器：</string>
+  <string id="141">圖形處理器：</string>
+  <string id="142">時間：</string>
+  <string id="143">目前：</string>
+  <string id="144">版本：</string>
+  <string id="145">網路：</string>
+  <string id="146">類型：</string>
+  <string id="147">手動(靜態分配)</string>
+  <string id="148">自動(動態分配)</string>
+  <string id="149">網卡位址(MAC)</string>
+  <string id="150">IP 位址</string>
+  <string id="151">連線：</string>
+  <string id="152">半雙工</string>
+  <string id="153">全雙工</string>
+  <string id="154">儲存媒體</string>
+  <string id="155">裝置</string>
+  <string id="156">可用</string>
+  <string id="157">影片</string>
+  <string id="158">可用記憶體</string>
+  <string id="159">未連線</string>
+  <string id="160">可用</string>
+  <string id="161">沒有</string>
+  <string id="162">托盤開啟</string>
+  <string id="163">讀取中</string>
+  <string id="164">無光碟片</string>
+  <string id="165">光碟介紹</string>
+  <string id="166">桌面</string>
+  <string id="167">FTP 伺服器</string>
+  <string id="168">自動與網路時間同步</string>
+  <string id="169">解析度</string>
+  <string id="170">專輯：</string>
+  <string id="171">藝人：</string>
+  <string id="172">日期：</string>
+  <string id="173">等級：</string>
+  <string id="174">類別：</string>
+  <string id="175">音調：</string>
+  <string id="176">格式：</string>
+  <string id="177">評論：</string>
+  <string id="178">音軌：</string>
+  <string id="179">歌曲</string>
+  <string id="180">持續時間</string>
+  <string id="181">選擇專輯</string>
+  <string id="182">音軌</string>
+  <string id="183">評論</string>
+  <string id="184">重新整理</string>
+  <string id="185">搜尋專輯</string>
+  <string id="186">確定</string>
+  <string id="187">找不到專輯！</string>
+  <string id="188">全選</string>
+  <string id="189">搜尋媒體資訊</string>
+  <string id="190">儲存</string>
+  <string id="191">隨機</string>
+  <string id="192">清除</string>
+  <string id="193">搜尋</string>
+  <string id="194">搜尋中…</string>
+  <string id="195">找不到 IMDb 資訊</string>
+  <string id="196">選擇影片：</string>
+  <string id="197">讀取 IMDb 資訊</string>
+  <string id="198">讀取影片詳細資料</string>
+  <string id="199">導演：</string>
+  <string id="200">編劇：</string>
+  <string id="201">年份：</string>
+  <string id="202">標題：</string>
+  <string id="203">大綱：</string>
+  <string id="204">評價：</string>
+  <string id="205">得票：</string>
+  <string id="206">演員表</string>
+  <string id="207">劇情簡介</string>
+  <string id="208">播放</string>
+  <string id="209">向後</string>
+  <string id="210">向前</string>
+  <string id="211">搜尋應用程式</string>
+  <string id="212">找到應用程式</string>
+  <string id="213">界面校正</string>
+  <string id="214">螢幕校正</string>
+  <string id="215">柔化</string>
+  <string id="216">縮放</string>
+  <string id="217">延展</string>
+  <string id="218">光碟機</string>
+  <string id="219">請放入光碟</string>
+  <string id="220">遠端共享</string>
+  <string id="221">網路未連線</string>
+  <string id="222">取消</string>
+  <string id="223">寬螢幕自動轉換</string>
+  <string id="224">速度</string>
+  <string id="225">特效轉換時間</string>
+  <string id="226">啟用 PAL60</string>
+  <string id="227">啟用 CDDB</string>
+  <string id="228">隨機播放列表</string>
+  <string id="229">硬碟省電模式(分)</string>
+  <string id="230">濾鏡</string>
+  <string id="231">無</string>
+  <string id="232">點</string>
+  <string id="233">條紋</string>
+  <string id="234">非等方性</string>
+  <string id="235">梅花多重取樣</string>
+  <string id="236">三維銳化</string>
+  <string id="237">縮小</string>
+  <string id="238">放大</string>
+  <string id="239">播放完成後清除列表</string>
+  <string id="240">自動播放 DVD 影片</string>
+  <string id="241">自動播放 VCD 影片</string>
+  <string id="242">自動播放 CD  音樂</string>
+  <string id="243">自動播放 遊戲光碟</string>
+  <string id="244">自動播放 影片檔案</string>
+  <string id="245">自動播放 音樂檔案</string>
+  <string id="246">自動播放 圖片檔案</string>
+  <string id="247">腳本程式</string>
+  <string id="248">語言</string>
+  <string id="249">音樂</string>
+  <string id="250">視覺效果</string>
+  <string id="251">選擇目的目錄</string>
+  <string id="252">雙聲道時輸出到所有喇叭</string>
+  <string id="253">頻道</string>
+  <string id="254">- DTS 數位音效</string>
+  <string id="255">CDDB</string>
+  <string id="256">從 CDDB 讀取資訊</string>
+  <string id="257">錯誤</string>
+  <string id="258">啟用 ID3 標籤</string>
+  <string id="259">開始</string>
+  <string id="260">捷徑</string>
+  <string id="261">準備開始…</string>
+  <string id="262">腳本輸出</string>
+  <string id="263">HTTP 伺服器</string>
+  <string id="264">錄音</string>
+  <string id="265">停止錄音。</string>
+  <string id="266">排序：音軌</string>
+  <string id="267">排序：時間</string>
+  <string id="268">排序：標題</string>
+  <string id="269">排序：藝人</string>
+  <string id="270">排序：專輯</string>
+  <string id="271">排行前 100</string>
+  <string id="272">左上角位置</string>
+  <string id="273">右下角位置</string>
+  <string id="274">字幕位置</string>
+  <string id="275">畫面比例調整</string>
+  <string id="276">設定角落位置</string>
+  <string id="277">改變字幕位置</string>
+  <string id="278">調整成正方形</string>
+  <string id="279">無法讀取設定</string>
+  <string id="280">回復為預設值</string>
+  <string id="281">請檢查 .xml 檔案</string>
+  <string id="282">找到 %i 條</string>
+  <string id="283">搜尋結果</string>
+  <string id="284">無結果</string>
+  <string id="285">反交錯濾鏡</string>
+  <string id="286">色彩濾鏡</string>
+  <string id="287">字幕</string>
+  <string id="288">字型</string>
+  <string id="289">- 大小</string>
+  <string id="290">縮短大小聲差距</string>
+  <string id="291">影片</string>
+  <string id="292">聲音</string>
+  <string id="293">字幕</string>
+  <string id="294">建立書籤</string>
+  <string id="295">重覆書籤</string>
+  <string id="296">清除書籤</string>
+  <string id="297">聲音延遲</string>
+  <string id="298">搜尋列</string>
+  <string id="300">1.語言</string>
+  <string id="301">2.音量</string>
+  <string id="302">3.串流</string>
+  <string id="303">字幕延遲</string>
+  <string id="304">語言</string>
+  <string id="305">啟用</string>
+  <string id="306">非交錯掃描</string>
+  <string id="307">- 自動色彩優化</string>
+  <string id="308">- 垂直方塊濾鏡</string>
+  <string id="309">- 水平方塊濾鏡</string>
+  <string id="310">- 自動亮度/對比</string>
+  <string id="311">- 消除雜訊</string>
+  <string id="312">(0=自動)</string>
+  <string id="313">清除資料庫</string>
+  <string id="314">準備中…</string>
+  <string id="315">資料庫錯誤！</string>
+  <string id="316">搜尋歌曲…</string>
+  <string id="317">清除資料庫成功！</string>
+  <string id="318">清除歌曲…</string>
+  <string id="319">清除歌曲錯誤</string>
+  <string id="320">清除藝人…</string>
+  <string id="321">清除藝人錯誤！</string>
+  <string id="322">清除類別…</string>
+  <string id="323">清除類別錯誤！</string>
+  <string id="324">清除路徑…</string>
+  <string id="325">清除路徑錯誤！</string>
+  <string id="326">清除專輯…</string>
+  <string id="327">清除專輯錯誤！</string>
+  <string id="328">寫入中…</string>
+  <string id="329">寫入錯誤！</string>
+  <string id="330">這需要一些時間…</string>
+  <string id="331">壓縮資料庫…</string>
+  <string id="332">壓縮資料庫錯誤！</string>
+  <string id="333">你想要清除我的音樂庫？</string>
+  <string id="334">清除音樂庫…</string>
+  <string id="335">開始</string>
+  <string id="336">調整畫面更新頻率</string>
+  <string id="337">聲音輸出</string>
+  <string id="338">類比</string>
+  <string id="339">數位</string>
+  <string id="340">多樣化的藝人</string>
+  <string id="341">播放 DVD 影片</string>
+  <string id="342">影片</string>
+  <string id="343">調整畫面頻率</string>
+  <string id="344">演員</string>
+  <string id="345">年份</string>
+  <string id="346">堆疊</string>
+  <string id="347">不堆疊</string>
+  <string id="348">展開目錄</string>
+  <string id="349">只顯示預設的執行檔</string>
+  <string id="350">程式</string>
+  <string id="351">關閉</string>
+  <string id="352">陰暗</string>
+  <string id="353">全黑</string>
+  <string id="354">掉落文字</string>
+  <string id="355">啟動螢幕保護時間</string>
+  <string id="356">螢幕保護模式</string>
+  <string id="357">啟動自動關機時間</string>
+  <string id="358">全部專輯</string>
+  <string id="359">新的專輯</string>
+  <string id="360">螢幕保護</string>
+  <string id="361">搜尋並播放</string>
+  <string id="362">螢幕保護的亮度</string>
+  <string id="363">排序：檔案</string>
+  <string id="364">- AC3 數位音效</string>
+  <string id="365">排序：名稱</string>
+  <string id="366">排序：年份</string>
+  <string id="367">排序：評價</string>
+  <string id="368">IMDb</string>
+  <string id="369">標題</string>
+  <string id="370">雷雨</string>
+  <string id="371">局部</string>
+  <string id="372">大部分</string>
+  <string id="373">晴朗</string>
+  <string id="374">陰</string>
+  <string id="375">雪</string>
+  <string id="376">雨</string>
+  <string id="377">細</string>
+  <string id="378">上午</string>
+  <string id="379">下午</string>
+  <string id="380">陣雨</string>
+  <string id="381">少數</string>
+  <string id="382">間歇性</string>
+  <string id="383">風</string>
+  <string id="384">強烈</string>
+  <string id="385">轉晴</string>
+  <string id="386">晴</string>
+  <string id="387">雲</string>
+  <string id="388">提早</string>
+  <string id="389">陣雨</string>
+  <string id="390">飄雪</string>
+  <string id="391">低</string>
+  <string id="392">中</string>
+  <string id="393">高</string>
+  <string id="394">霧</string>
+  <string id="395">霾</string>
+  <string id="396">選擇位置</string>
+  <string id="397">更新時間</string>
+  <string id="398">溫度單位</string>
+  <string id="399">速度單位</string>
+  <string id="400">天氣</string>
+  <string id="401">溫度</string>
+  <string id="402">體感溫度</string>
+  <string id="403">紫外線</string>
+  <string id="404">風</string>
+  <string id="405">露點</string>
+  <string id="406">濕度</string>
+  <string id="407">風向</string>
+  <string id="408">風速</string>
+  <string id="410">前往 Weather.com</string>
+  <string id="411">取得天氣資料：</string>
+  <string id="412">無法取得天氣資料</string>
+  <string id="413">手動查詢</string>
+  <string id="414">此專輯無評論</string>
+  <string id="415">下載圖示…</string>
+  <string id="416">無法使用</string>
+  <string id="417">顯示：大圖示</string>
+  <string id="418">我的影片/類別</string>
+  <string id="419">我的影片/演員</string>
+  <string id="420">我的影片/年份</string>
+  <string id="421">我的影片/標題</string>
+  <string id="422">刪除專輯資訊</string>
+  <string id="423">刪除 CDDB 資訊</string>
+  <string id="424">選擇</string>
+  <string id="425">無專輯資訊。</string>
+  <string id="426">無 CDDB 資訊！</string>
+  <string id="427">光碟：</string>
+  <string id="428">請放入正確的光碟</string>
+  <string id="429">請放入光碟</string>
+  <string id="430">排序：DVD#</string>
+  <string id="431">無緩衝區</string>
+  <string id="432">從資料庫中刪除影片</string>
+  <string id="433">你確定刪除</string>
+  <string id="434">影片？</string>
+  <string id="435">音軌</string>
+  <string id="436">年份：</string>
+  <string id="437">持續時間：</string>
+  <string id="438">打開檔案</string>
+  <string id="439">緩衝區</string>
+  <string id="440">硬碟</string>
+  <string id="441">UDF</string>
+  <string id="442">網路</string>
+  <string id="443">網際網路</string>
+  <string id="444">影片</string>
+  <string id="445">聲音</string>
+  <string id="446">DVD</string>
+  <string id="447">自動播放</string>
+  <string id="448">液晶螢幕</string>
+  <string id="449">啟用</string>
+  <string id="450">列</string>
+  <string id="451">第 1 列位址</string>
+  <string id="452">第 2 列位址</string>
+  <string id="453">第 3 列位址</string>
+  <string id="454">第 4 列位址</string>
+  <string id="455">行</string>
+  <string id="456">模式</string>
+  <string id="457">選擇顯示</string>
+  <string id="458">重覆標記</string>
+  <string id="459">字幕</string>
+  <string id="460">聲道</string>
+  <string id="461">[啟用]</string>
+  <string id="462">字幕</string>
+  <string id="463">背光</string>
+  <string id="464">亮度</string>
+  <string id="465">對比</string>
+  <string id="466">伽瑪值</string>
+  <string id="467">類型</string>
+  <string id="468">改變播放工具位置</string>
+  <string id="469">播放工具位置</string>
+  <string id="470">改機者</string>
+  <string id="471">改機晶片</string>
+  <string id="472">播放工具顯示時間</string>
+  <string id="473">高品質取樣</string>
+  <string id="474">關</string>
+  <string id="475">只有音樂</string>
+  <string id="476">音樂&amp;影片</string>
+  <string id="477">無法讀取播放列表</string>
+  <string id="478">播放工具</string>
+  <string id="479">桌面和語言</string>
+  <string id="480">外觀和主題</string>
+  <string id="481">音樂設定</string>
+  <string id="482">關於 XBMC</string>
+  <string id="483">專輯</string>
+  <string id="484">藝人</string>
+  <string id="485">刪除專輯</string>
+  <string id="486">重複播放</string>
+  <string id="487">單首重複播放</string>
+  <string id="488">全部重複播放</string>
+  <string id="489">自動播放下個項目</string>
+  <string id="490">自動選擇歌曲的列表和圖示</string>
+  <string id="491">- 使用大圖示</string>
+  <string id="492">Vobsubs 字幕比例</string>
+  <string id="493">進階選項(專家適用！)</string>
+  <string id="494">總音量</string>
+  <string id="495">以桌面的解析度播放影片</string>
+  <string id="496">校正</string>
+  <string id="497">隱藏媒體副檔名</string>
+  <string id="498">排序：類型</string>
+  <string id="499">無法連線到 www.allmusic.com</string>
+  <string id="500">下載專輯資訊失敗</string>
+  <string id="501">搜尋專輯名稱…</string>
+  <string id="502">托盤開啟</string>
+  <string id="503">讀取中</string>
+  <string id="504">沒有光碟</string>
+  <string id="505">讀取媒體資訊…</string>
+  <string id="506">使用目錄名稱作描述</string>
+  <string id="507">排序：次數</string>
+  <string id="508">不使用捷徑及搜尋</string>
+  <string id="509">快取程式的圖示</string>
+  <string id="510">啟用視覺效果</string>
+  <string id="511">啟用影片模式自動切換</string>
+  <string id="512">啟動界面</string>
+  <string id="513">主界面</string>
+  <string id="514">設定界面</string>
+  <string id="515">類別</string>
+  <string id="516">使用透通式檔案管理</string>
+  <string id="517">最近播放的專輯</string>
+  <string id="518">執行</string>
+  <string id="519">執行方式</string>
+  <string id="520">編輯標題</string>
+  <string id="521">編輯</string>
+  <string id="522">刪除目錄</string>
+  <string id="588">取消派對模式</string>
+  <string id="589">派對模式</string>
+  <string id="590">隨機</string>
+  <string id="591">關閉</string>
+  <string id="592">單首</string>
+  <string id="593">全部</string>
+  <string id="594">關</string>
+  <string id="595">重複：關閉</string>
+  <string id="596">重複：單首</string>
+  <string id="597">重複：全部</string>
+  <string id="600">擷取音樂 CD</string>
+  <string id="601">中等</string>
+  <string id="602">標準</string>
+  <string id="603">最高</string>
+  <string id="604">指定頻率</string>
+  <string id="605">擷取中…</string>
+  <string id="606">音軌號碼：</string>
+  <string id="607">儲存到：</string>
+  <string id="608">無法擷取 CD 或音軌</string>
+  <string id="609">CD 擷取路徑在 XboxMediaCenter.xml 中未設定</string>
+  <string id="620">CD 擷取</string>
+  <string id="621">編碼</string>
+  <string id="622">品質</string>
+  <string id="623">頻率</string>
+  <string id="624">包括音軌號碼</string>
+  <string id="625">所有歌曲</string>
+  <string id="629">顯示模式</string>
+  <string id="630">標準</string>
+  <string id="631">填滿螢幕</string>
+  <string id="632">4:3 畫面</string>
+  <string id="633">14:9 畫面</string>
+  <string id="634">16:9 畫面</string>
+  <string id="635">原始大小</string>
+  <string id="636">自訂</string>
+  <string id="637">重覆播放</string>
+  <string id="638">重覆播放模式</string>
+  <string id="639">依曲目重覆播放</string>
+  <string id="640">依專輯重覆播放</string>
+  <string id="641">音量 - 重覆播放的檔案</string>
+  <string id="642">音量 - 不重覆播放的檔案</string>
+  <string id="643">重覆播放時忽略消波失真</string>
+  <string id="644">修剪黑邊</string>
+  <string id="645">需要緩衝一個大檔案，是否繼續？</string>
+  <string id="646">刪除標題</string>
+  <string id="700">清除音樂庫</string>
+  <string id="701">清除音樂庫中的舊檔案</string>
+  <string id="702">目前路徑曾經搜尋過</string>
+  <string id="703">按 Yes 更新目前路徑所有歌曲</string>
+  <string id="704">按 No 只新增新歌</string>
+  <string id="705">網路</string>
+  <string id="706">HTTP 代理伺服器位址</string>
+  <string id="707">HTTP 代理伺服器埠號</string>
+  <string id="708">啟用 HTTP 代理伺服器</string>
+  <string id="709">XLink Kai 帳號</string>
+  <string id="710">XLink Kai 密碼</string>
+  <string id="711">網路位址(IP)</string>
+  <string id="712">無效埠號！ 必須在 1 至 65535 之間。</string>
+  <string id="713">HTTP 代理伺服器</string>
+  <string id="714">XLink Kai</string>
+  <string id="715">IP 設定</string>
+  <string id="716">自動(動態分配)</string>
+  <string id="717">手動(靜態分配)</string>
+  <string id="718">預設(原廠系統)</string>
+  <string id="719">- IP 位址</string>
+  <string id="720">- 子網路遮罩</string>
+  <string id="721">- 預設閘道</string>
+  <string id="722">- DNS 伺服器</string>
+  <string id="723">儲存&amp;重新開機</string>
+  <string id="724">無效位址！ 有效格式為 AAA.BBB.CCC.DDD</string>
+  <string id="725">必須在 0 至 255 之間。</string>
+  <string id="726">改變未儲存。 不儲存就離開嗎？</string>
+  <string id="727">Web 伺服器</string>
+  <string id="728">FTP 伺服器</string>
+  <string id="729">網路時間</string>
+  <string id="730">Web 伺服器埠號</string>
+  <string id="731">時間伺服器主機</string>
+  <string id="732">儲存&amp;啟用</string>
+  <string id="733">Web 伺服器密碼</string>
+  <string id="734">無密碼</string>
+  <string id="735">- 編碼</string>
+  <string id="736">- 效果</string>
+  <string id="737">- 顏色</string>
+  <string id="738">標準</string>
+  <string id="739">粗體</string>
+  <string id="740">斜體</string>
+  <string id="741">粗斜體</string>
+  <string id="742">白色</string>
+  <string id="743">黃色</string>
+  <string id="744">檔案</string>
+  <string id="745">目前圖示無已搜尋資訊</string>
+  <string id="746">切換到檔案圖示</string>
+  <string id="747">圖示載入錯誤</string>
+  <string id="748">編輯路徑</string>
+  <string id="749">新增共享</string>
+  <string id="750">確定？</string>
+  <string id="751">移除共享</string>
+  <string id="752">編輯共享路徑</string>
+  <string id="753">編輯共享名稱</string>
+  <string id="754">新增程式連結</string>
+  <string id="755">編輯程式路徑</string>
+  <string id="756">編輯程式名稱</string>
+  <string id="757">編輯路徑深度</string>
+  <string id="758">移除程式連結</string>
+  <string id="759">顯示：大列表</string>
+  <string id="760">黃色</string>
+  <string id="761">白色</string>
+  <string id="762">藍色</string>
+  <string id="763">亮綠</string>
+  <string id="764">翠綠</string>
+  <string id="765">青色</string>
+  <string id="766">保留</string>
+  <string id="767">保留</string>
+  <string id="768">保留</string>
+  <string id="769">保留</string>
+  <string id="770">錯誤 %i：無法共享</string>
+  <string id="771">- FTP 伺服器限定工作在 FATX 格式</string>
+  <string id="772">音效硬體</string>
+  <string id="773">搜尋中</string>
+  <string id="774">圖片資料夾</string>
+  <string id="998">XLink Kai</string>
+  <string id="999">線上遊戲</string>
+  <string id="1000">螢幕保護預覽</string>
+  <string id="1001">無法連線</string>
+  <string id="1002">XBMC 無法連線到網路！</string>
+  <string id="1003">這可能是由於網路沒有連線。</string>
+  <string id="1004">可以用其他方式來新增它嗎？</string>
+  <string id="1005">輸入共享名稱</string>
+  <string id="1006">IP 位址</string>
+  <string id="1007">新增網路位置</string>
+  <string id="1008">協定</string>
+  <string id="1009">伺服器位址</string>
+  <string id="1010">伺服器名稱</string>
+  <string id="1011">遠端路徑</string>
+  <string id="1012">共享資料夾</string>
+  <string id="1013">埠號</string>
+  <string id="1014">帳號</string>
+  <string id="1015">網路伺服器</string>
+  <string id="1016">輸入伺服器網路位址</string>
+  <string id="1017">輸入伺服器遠端路徑</string>
+  <string id="1018">輸入埠號</string>
+  <string id="1019">輸入帳號</string>
+  <string id="1020">新增 %s 目錄</string>
+  <string id="1021">輸入或選擇目錄。</string>
+  <string id="1022">為該目錄命名。</string>
+  <string id="1023">瀏覽目錄</string>
+  <string id="1024">瀏覽</string>
+  <string id="1025">無法獲得目錄資訊。</string>
+  <string id="1026">新增目錄</string>
+  <string id="1027">編輯目錄</string>
+  <string id="1028">編輯 %s 目錄</string>
+  <string id="1029">輸入新標籤</string>
+  <string id="1030">圖示</string>
+  <string id="1031">圖示資料夾</string>
+  <string id="1032">新增網路位置…</string>
+  <string id="1200">SMB 共享設定</string>
+  <string id="1202">SMB 工作群組</string>
+  <string id="1203">SMB 帳號</string>
+  <string id="1204">SMB 密碼</string>
+  <string id="1207">SMB WINS 伺服器</string>
+  <string id="1210">刪除</string>
+  <string id="1211">音樂</string>
+  <string id="1212">影片</string>
+  <string id="1213">圖片</string>
+  <string id="1214">檔案</string>
+  <string id="1215">音樂&amp;影片 </string>
+  <string id="1216">音樂&amp;圖片</string>
+  <string id="1217">音樂&amp;檔案</string>
+  <string id="1218">影片&amp;圖片</string>
+  <string id="1219">影片&amp;檔案</string>
+  <string id="1220">圖片&amp;檔案</string>
+  <string id="1221">音樂&amp;影片&amp;圖片</string>
+  <string id="1222">音樂&amp;影片&amp;圖片&amp;檔案</string>
+  <string id="1223">禁用</string>
+  <string id="1224">一般使用者</string>
+  <string id="1225">進階使用者</string>
+  <string id="1226">檔案&amp;音樂&amp;影片</string>
+  <string id="1227">檔案&amp;圖片&amp;音樂</string>
+  <string id="1228">檔案&amp;圖片&amp;影片</string>
+  <string id="1229">音樂&amp;程式</string>
+  <string id="1230">影片&amp;程式</string>
+  <string id="1231">圖片&amp;程式</string>
+  <string id="1232">音樂&amp;影片&amp;圖片&amp;程式</string>
+  <string id="1233">程式&amp;影片&amp;音樂</string>
+  <string id="1234">程式&amp;圖片&amp;音樂</string>
+  <string id="1235">程式&amp;圖片&amp;影片</string>
+  <string id="1245">FTP 帳號</string>
+  <string id="1246">FTP 密碼</string>
+  <string id="1247">FTP 伺服器帳號和密碼設定成功！</string>
+  <string id="1250">自動偵測</string>
+  <string id="1251">XBOX 自動偵測</string>
+  <string id="1252">暱稱</string>
+  <string id="1253">在檔案總管中建立 FTP 連線</string>
+  <string id="1254">詢問連線</string>
+  <string id="1255">發送 FTP 帳號和密碼</string>
+  <string id="1256">連線品質</string>
+  <string id="1257">是否連線到自動偵測到的 XBOX？</string>
+  <string id="1396">移動</string>
+  <string id="1397">和</string>
+  <string id="1398">冰點</string>
+  <string id="1399">睌間</string>
+  <string id="1400">局部</string>
+  <string id="1401">雷雨</string>
+  <string id="1402">雷</string>
+  <string id="1403">陽光</string>
+  <string id="1404">暴</string>
+  <string id="1405">在</string>
+  <string id="1406">這</string>
+  <string id="1407">區域性</string>
+  <string id="1408">冰</string>
+  <string id="1409">冰霜</string>
+  <string id="1410">無風</string>
+  <string id="2050">片長：</string>
+  <string id="4501">液晶螢幕類型</string>
+  <string id="10000">首頁</string>
+  <string id="10001">我的程式</string>
+  <string id="10002">我的圖片</string>
+  <string id="10003">檔案總管</string>
+  <string id="10004">系統設定</string>
+  <string id="10005">我的音樂</string>
+  <string id="10006">我的影片</string>
+  <string id="10007">系統資訊</string>
+  <string id="10008">設定-&gt;一般</string>
+  <string id="10009">設定-&gt;螢幕</string>
+  <string id="10010">設定-&gt;外觀和主題-&gt;界面校正</string>
+  <string id="10011">設定-&gt;我的影片-&gt;螢幕校正</string>
+  <string id="10012">設定-&gt;我的圖片</string>
+  <string id="10013">設定-&gt;我的程式</string>
+  <string id="10014">設定-&gt;氣象預報</string>
+  <string id="10015">設定-&gt;我的音樂</string>
+  <string id="10016">設定-&gt;系統設定</string>
+  <string id="10017">設定-&gt;我的影片</string>
+  <string id="10018">設定-&gt;網路設定</string>
+  <string id="10019">設定-&gt;外觀和主題</string>
+  <string id="10020">腳本程式</string>
+  <string id="10021">我的影片/類別</string>
+  <string id="10022">我的影片/演員</string>
+  <string id="10023">我的影片/年份</string>
+  <string id="10025">我的影片/標題</string>
+  <string id="10028">我的影片/播放列表</string>
+  <string id="10034">設定-&gt;使用者設定檔</string>
+  <string id="10100">確認</string>
+  <string id="10101">進度</string>
+  <string id="10500">我的音樂/播放列表</string>
+  <string id="10501">我的音樂/檔案</string>
+  <string id="10502">我的音樂/音樂庫</string>
+  <string id="10503">我的音樂/排行前 100</string>
+  <string id="10504">排行前 100 歌曲</string>
+  <string id="10505">排行前 100 專輯</string>
+  <string id="10506">我的程式</string>
+  <string id="10507">系統設定</string>
+  <string id="10508">氣象預報</string>
+  <string id="10509">網路遊戲</string>
+  <string id="10510">擴充功能</string>
+  <string id="10511">系統資訊</string>
+  <string id="10512">我的音樂 - 專輯</string>
+  <string id="10513">我的音樂 - 藝人</string>
+  <string id="10514">我的音樂 - 類別</string>
+  <string id="10515">我的音樂 - 排行前 100</string>
+  <string id="10516">我的音樂 - 資料</string>
+  <string id="10517">我的音樂 - 播放列表</string>
+  <string id="10518">我的影片 - 演員</string>
+  <string id="10519">我的影片 - 類型</string>
+  <string id="10520">我的影片 - 標題</string>
+  <string id="10521">我的影片 - 年份</string>
+  <string id="10522">我的影片 - 播放列表</string>
+  <string id="10523">專輯資訊</string>
+  <string id="10524">影片資訊</string>
+  <string id="12000">選擇</string>
+  <string id="12001">我的音樂/資訊</string>
+  <string id="12002">確認</string>
+  <string id="12003">我的影片/資訊</string>
+  <string id="12004">我的腳本/資訊</string>
+  <string id="12005">全螢幕影片</string>
+  <string id="12006">音樂視覺效果</string>
+  <string id="12007">我的圖片</string>
+  <string id="12008">檔案堆疊</string>
+  <string id="12009">重建目錄…</string>
+  <string id="12010">返回我的音樂</string>
+  <string id="12011">返回我的影片</string>
+  <string id="12012">更新金手指目錄</string>
+  <string id="12013">金手指</string>
+  <string id="12014">找不到金手指</string>
+  <string id="12015">金手指設定</string>
+  <string id="12016">所有金手指的紀錄遺失，請更新金手指目錄！</string>
+  <string id="12017">自動從上次中斷處播放</string>
+  <string id="12018">否</string>
+  <string id="12019">是</string>
+  <string id="12020">詢問</string>
+  <string id="12021">從頭開始播放</string>
+  <string id="12022">從上次中斷處播放</string>
+  <string id="12310">0</string>
+  <string id="12311">1</string>
+  <string id="12312">2</string>
+  <string id="12313">3</string>
+  <string id="12314">4</string>
+  <string id="12315">5</string>
+  <string id="12316">6</string>
+  <string id="12317">7</string>
+  <string id="12318">8</string>
+  <string id="12319">9</string>
+  <string id="12320">c</string>
+  <string id="12321">ok</string>
+  <string id="12322">*</string>
+  <string id="12324">XBMC 管理員鎖定</string>
+  <string id="12325">已鎖定！輸入密碼…</string>
+  <string id="12326">輸入密碼</string>
+  <string id="12327">輸入管理員密碼</string>
+  <string id="12328">輸入解鎖密碼</string>
+  <string id="12329">或按 C 取消</string>
+  <string id="12330">依序輸入 XBOX 手把按鍵</string>
+  <string id="12331">按 Start 確認，或按 Back 取消</string>
+  <string id="12332">設定鎖定</string>
+  <string id="12333">解除鎖定</string>
+  <string id="12334">重設鎖定</string>
+  <string id="12335">刪除鎖定</string>
+  <string id="12336">選擇鎖定類型：</string>
+  <string id="12337">數字密碼</string>
+  <string id="12338">手把按鍵</string>
+  <string id="12339">文字密碼</string>
+  <string id="12340">輸入新密碼</string>
+  <string id="12341">確認新密碼</string>
+  <string id="12342">密碼不正確，</string>
+  <string id="12343">重試次數 </string>
+  <string id="12344">輸入密碼不正確！</string>
+  <string id="12345">拒絕讀取</string>
+  <string id="12346">已達密碼重試次數限制！</string>
+  <string id="12347">XBOX 將要立刻關閉！</string>
+  <string id="12348">項目被鎖定</string>
+  <string id="12349">記住管理員密碼直到下次開機？</string>
+  <string id="12350">(修改系統設定裡的任何項目</string>
+  <string id="12351">將自動啟用主機鎖定功能！)</string>
+  <string id="12352">輸入管理員密碼並按 Start 確定</string>
+  <string id="12353">重新上鎖</string>
+  <string id="12354">解除資料夾鎖直到下次開機？</string>
+  <string id="12355">自動對資料夾上鎖。)</string>
+  <string id="12356">更改鎖定</string>
+  <string id="12357">共享鎖定</string>
+  <string id="12358">密碼不能空白，請重試！</string>
+  <string id="12360">主機鎖定</string>
+  <string id="12361">最多重試次數</string>
+  <string id="12362">允許關機</string>
+  <string id="12363">共享保護</string>
+  <string id="12364">密碼方式</string>
+  <string id="12365">管理員密碼</string>
+  <string id="12366">密碼方式改變。新的管理員密碼為：</string>
+  <string id="12367">管理員密碼錯誤！</string>
+  <string id="12368">請輸入正確的管理員密碼！</string>
+  <string id="12369">XBMC 啟用鎖定</string>
+  <string id="12370">密碼方式改變，但沒有設定管理員密碼！</string>
+  <string id="12371">請設定一個新的管理員密碼！</string>
+  <string id="12372">鎖定系統設定&amp;檔案總管</string>
+  <string id="12373">系統設定&amp;檔案總管</string>
+  <string id="12374">鎖定媒體檔案</string>
+  <string id="12375">管理員模式</string>
+  <string id="12376">設定為影片的預設值</string>
+  <string id="12377">將重設之前的設定</string>
+  <string id="12378">顯示各個圖片</string>
+  <string id="12379">使用移動和縮放特效</string>
+  <string id="12380">在 PAL 模式播放 NTSC 影片</string>
+  <string id="12381">在 NTSC 模式播放 PAL 影片</string>
+  <string id="12382">以 PAL60 模式播放 NTSC 影片</string>
+  <string id="12383">12小時制</string>
+  <string id="12384">24小時制</string>
+  <string id="12385">日/月</string>
+  <string id="12386">月/日</string>
+  <string id="12387">重新搜尋資料</string>
+  <string id="12390">系統啟動時間</string>
+  <string id="12391">分鐘</string>
+  <string id="12392">小時</string>
+  <string id="12393">天</string>
+  <string id="12394">總運作時間</string>
+  <string id="12600">氣象預報</string>
+  <string id="12900">螢幕保護</string>
+  <string id="12901">全螢幕畫面調整</string>
+  <string id="13000">系統</string>
+  <string id="13001">立即關閉硬碟</string>
+  <string id="13002">只有影片</string>
+  <string id="13003">- 延遲</string>
+  <string id="13004">- 最小媒體檔案長度</string>
+  <string id="13005">關機</string>
+  <string id="13006">原廠系統</string>
+  <string id="13100">閃爍過濾</string>
+  <string id="13150">硬碟金鑰：</string>
+  <string id="13151">硬碟溫度：</string>
+  <string id="13152">DVD 型號：</string>
+  <string id="13153">DVD 軔體：</string>
+  <string id="13154">硬碟型號：</string>
+  <string id="13155">硬碟序號：</string>
+  <string id="13156">硬碟軔體：</string>
+  <string id="13157">硬碟密碼：</string>
+  <string id="13158">硬碟鎖狀態：</string>
+  <string id="13159">子網路遮罩：</string>
+  <string id="13160">閘道位址：</string>
+  <string id="13161">DNS 位址：</string>
+  <string id="13162">無法讀取資訊</string>
+  <string id="13163">搖桿在埠號：</string>
+  <string id="13164">鍵盤在埠號：</string>
+  <string id="13165">滑鼠在埠號：</string>
+  <string id="13166">耳麥在埠號：</string>
+  <string id="13167">記憶卡在埠號：</string>
+  <string id="13168">遙控器在埠號：</string>
+  <string id="13169">忽略 CD 選擇</string>
+  <string id="13170">從不</string>
+  <string id="13171">立即</string>
+  <string id="13172">隔 %i 秒之後</string>
+  <string id="13200">預設檔</string>
+  <string id="13201">刪除預設檔 '%s'？</string>
+  <string id="13202">將目前設定存為預設檔…</string>
+  <string id="13203">預設檔 '%s' 載入成功</string>
+  <string id="13204">最近載入的預設檔：</string>
+  <string id="13205">未知</string>
+  <string id="13206">覆蓋</string>
+  <string id="13207">覆蓋預設檔 '%s'？</string>
+  <string id="13208">鬧鈴</string>
+  <string id="13209">鬧鈴間隔(分鐘)</string>
+  <string id="13210">鬧鈴啟動，%i 分鐘倒數計時。</string>
+  <string id="13211">響鈴！</string>
+  <string id="13212">鬧鈴取消，剩下 %i 分 %i 秒。</string>
+  <string id="13249">選擇 RAR 檔案裡的字幕</string>
+  <string id="13250">選擇字幕…</string>
+  <string id="13251">移動該項目</string>
+  <string id="13252">將項目移動至此</string>
+  <string id="13253">取消移動</string>
+  <string id="13270">硬體：</string>
+  <string id="13271">中央處理器速度：</string>
+  <string id="13274">XBOX 已連線，但是沒有設定 DNS！</string>
+  <string id="13275">硬碟</string>
+  <string id="13276">光碟機</string>
+  <string id="13277">儲存設備</string>
+  <string id="13278">基本資訊</string>
+  <string id="13279">網路</string>
+  <string id="13280">顯示</string>
+  <string id="13281">硬體</string>
+  <string id="13282">_</string>
+  <string id="13283">核心版本：</string>
+  <string id="13284">中央處理器速度：</string>
+  <string id="13285">BIOS 型號：</string>
+  <string id="13286">顯示晶片：</string>
+  <string id="13287">螢幕解析度：</string>
+  <string id="13288">XBOX 版本：</string>
+  <string id="13289">XBOX 序號：</string>
+  <string id="13290">XBOX 製造商：</string>
+  <string id="13291">改機晶片：</string>
+  <string id="13292">影音端子：</string>
+  <string id="13293">影片&amp;遊戲區碼：</string>
+  <string id="13294">DVD 區碼：</string>
+  <string id="13295">網際網路：</string>
+  <string id="13296">XBOX 已連線！</string>
+  <string id="13297">XBOX 無法連線！ 請檢查網路設定！</string>
+  <string id="13298">XBLIVE 金鑰：</string>
+  <string id="13299">目標溫度</string>
+  <string id="13300">風扇轉速</string>
+  <string id="13301">自動控溫</string>
+  <string id="13302">指定風扇轉速</string>
+  <string id="13303">桌面字型</string>
+  <string id="13304">啟用轉換雙向字串</string>
+  <string id="13305">啟用 RSS 新聞顯示</string>
+  <string id="13306">隱藏上層目錄項目</string>
+  <string id="13307">音軌命名參數</string>
+  <string id="13308">你要將 XBOX 重開機</string>
+  <string id="13309">以重新啟動 XBMC 嗎？</string>
+  <string id="13310">放大效果</string>
+  <string id="13311">浮動效果</string>
+  <string id="13312">縮小黑邊</string>
+  <string id="13313">重新開機</string>
+  <string id="13314">淡入淡出</string>
+  <string id="13315">建立圖示</string>
+  <string id="13316">重覆圖示</string>
+  <string id="13317">觀看圖片</string>
+  <string id="13318">重覆圖片</string>
+  <string id="13319">隨機</string>
+  <string id="13320">立體聲</string>
+  <string id="13321">左聲道</string>
+  <string id="13322">右聲道</string>
+  <string id="13323">啟用 CD+G</string>
+  <string id="13324">背景透明度</string>
+  <string id="13325">前景透明度</string>
+  <string id="13326">影音延遲</string>
+  <string id="13327">卡拉 OK</string>
+  <string id="13328">%s 找不到。</string>
+  <string id="13329">打開 %s 發生錯誤</string>
+  <string id="13330">無法載入 %s </string>
+  <string id="13331">錯誤：記憶體不足。</string>
+  <string id="13332">上移</string>
+  <string id="13333">下移</string>
+  <string id="13334">編輯標籤</string>
+  <string id="13335">設為預設值</string>
+  <string id="13336">刪除按鍵</string>
+  <string id="13337">- 雙聲道 PCM 過濾</string>
+  <string id="13338">狀態顯示燈</string>
+  <string id="13339">顯示燈顏色</string>
+  <string id="13340">預設</string>
+  <string id="13341">綠色</string>
+  <string id="13342">橙色</string>
+  <string id="13343">紅色</string>
+  <string id="13344">循環</string>
+  <string id="13345">當播放時關閉顯示燈</string>
+  <string id="13346">影片資訊</string>
+  <string id="13347">加入播放列表</string>
+  <string id="13348">搜尋 IMDb 資訊…</string>
+  <string id="13349">搜尋所有檔案資訊</string>
+  <string id="13350">切換至播放列表…</string>
+  <string id="13351">專輯資訊</string>
+  <string id="13352">搜尋資料到資料庫</string>
+  <string id="13353">停止搜尋</string>
+  <string id="13354">補償方式</string>
+  <string id="13355">低品質像素著色器</string>
+  <string id="13356">硬體重疊</string>
+  <string id="13357">高品質像素著色器</string>
+  <string id="13358">播放項目</string>
+  <string id="13359">設定藝人圖示</string>
+  <string id="13360">建立圖示</string>
+  <string id="13361">啟用語音</string>
+  <string id="13362">語音特效</string>
+  <string id="13363">- 啟用低沈效果</string>
+  <string id="13364">-- 低沈音效果數值</string>
+  <string id="13365">- 啟用高音效果</string>
+  <string id="13366">-- 高音效果數值</string>
+  <string id="13367">- 啟用悄悄話效果</string>
+  <string id="13368">-- 悄悄話效果數值</string>
+  <string id="13369">- 啟用機械人效果</string>
+  <string id="13370">-- 機械人效果數值</string>
+  <string id="13371">- 第 1 埠語音</string>
+  <string id="13372">- 第 2 埠語音</string>
+  <string id="13373">- 第 3 埠語音</string>
+  <string id="13374">- 第 4 埠語音</string>
+  <string id="13375">啟動裝置</string>
+  <string id="13376">音量</string>
+  <string id="13377">預設顯示模式</string>
+  <string id="13378">預設亮度</string>
+  <string id="13379">預設對比</string>
+  <string id="13380">預設伽瑪值</string>
+  <string id="13381">接續播放本片</string>
+  <string id="13382">語音特效 - 第 1 埠</string>
+  <string id="13383">語音特效 - 第 2 埠</string>
+  <string id="13384">語音特效 - 第 3 埠</string>
+  <string id="13385">語音特效 - 第 4 埠</string>
+  <string id="13386">使用時間搜尋</string>
+  <string id="13387">音軌命名格式</string>
+  <string id="13388">預設</string>
+  <string id="13389">沒有預設
+該視覺效果</string>
+  <string id="13390">沒有設定
+該視覺效果</string>
+  <string id="13391">托盤開/關</string>
+  <string id="13392">撥放音樂時使用視覺效果</string>
+  <string id="13393">計算大小</string>
+  <string id="13394">計算資料夾大小</string>
+  <string id="13395">影片設定</string>
+  <string id="13396">聲音和字幕設定</string>
+  <string id="13397">啟用字幕</string>
+  <string id="13398">書籤</string>
+  <string id="13399">排序時忽略 The 字串</string>
+  <string id="13400">專輯音軌淡入淡出</string>
+  <string id="13401">瀏覽 %s</string>
+  <string id="13402">顯示音軌位置</string>
+  <string id="13403">清除預設值</string>
+  <string id="13404">恢復</string>
+  <string id="13405">取得圖示</string>
+  <string id="14000">堆疊開啟</string>
+  <string id="14001">堆疊關閉</string>
+  <string id="14002">堆疊：智慧</string>
+  <string id="14003">下載播放列表檔案…</string>
+  <string id="14004">下載串流媒體列表…</string>
+  <string id="14005">分析串流媒體列表…</string>
+  <string id="14006">下載串流媒體列表失敗</string>
+  <string id="14007">下載播放列表檔案失敗</string>
+  <string id="14008">啟用 Kai 消息通告</string>
+  <string id="14009">遊戲目錄</string>
+  <string id="14010">自動切換為圖示條件</string>
+  <string id="14011">啟用自動切換為圖示</string>
+  <string id="14012">- 使用大圖示</string>
+  <string id="14013">- 條件</string>
+  <string id="14014">- 比例</string>
+  <string id="14015">沒有檔案且最少有一個圖示</string>
+  <string id="14016">最少有一個檔案和圖示</string>
+  <string id="14017">圖示所占比例</string>
+  <string id="14018">瀏覽設定</string>
+  <string id="14019">改變區碼 1</string>
+  <string id="14020">改變區碼 2</string>
+  <string id="14021">改變區碼 3</string>
+  <string id="14022">資料庫</string>
+  <string id="14023">無電視</string>
+  <string id="14024">輸入最近的城市或美國郵政編碼</string>
+  <string id="14025">影片/音樂/光碟緩衝區 - 硬碟</string>
+  <string id="14026">影片緩衝區 - 光碟機</string>
+  <string id="14027">影片緩衝區 - 區域網路</string>
+  <string id="14028">影片緩衝區 - 網際網路</string>
+  <string id="14030">音樂緩衝區 - 光碟機</string>
+  <string id="14031">音樂緩衝區 - 區域網路</string>
+  <string id="14032">音樂緩衝區 - 網際網路</string>
+  <string id="14034">光碟緩衝區 - 光碟機</string>
+  <string id="14035">光碟緩衝區 - 區域網路</string>
+  <string id="14036">伺服器</string>
+  <string id="14037">視覺效果</string>
+  <string id="14038">網路設定已改變</string>
+  <string id="14039">XBMC 需要重新開機以改變網路設定。</string>
+  <string id="14040">你要重新開機嗎？</string>
+  <string id="14041">色彩處理</string>
+  <string id="14042">執行 XLink Kai 的 IP 位址</string>
+  <string id="14043">- 執行時關閉</string>
+  <string id="14044">%i 分</string>
+  <string id="14045">%i 秒</string>
+  <string id="14046">%i 毫秒</string>
+  <string id="14047">%i %%</string>
+  <string id="14048">%i kbps</string>
+  <string id="14049">%i kb</string>
+  <string id="14050">%i.0 dB</string>
+  <string id="14051">時間顯示設定</string>
+  <string id="14052">日期顯示設定</string>
+  <string id="14053">畫面濾鏡</string>
+  <string id="14054">啟用網路資訊搜尋</string>
+  <string id="14055">使用背景搜尋</string>
+  <string id="14056">停止搜尋</string>
+  <string id="14057">無法搜尋媒體資訊</string>
+  <string id="14058">膠片顆粒濾鏡</string>
+  <string id="14059">顯示遠端分享的圖示</string>
+  <string id="14060">未知類型緩衝區 - 網際網路</string>
+  <string id="14061">自動</string>
+  <string id="14062">輸入帳號</string>
+  <string id="14063">日期時間</string>
+  <string id="14064">設定日期</string>
+  <string id="14065">設定時間</string>
+  <string id="14066">設定時間(時:分)</string>
+  <string id="14067">設定日期(日/月/年)</string>
+  <string id="14068">輸入 IP 位址</string>
+  <string id="14069">確定要設定這些參數嗎？</string>
+  <string id="14070">啟用設定</string>
+  <string id="14071">允許重新命名和刪除檔案</string>
+  <string id="14072">啟用 XLink Kai</string>
+  <string id="14073">XLink Kai 沒有被啟用！</string>
+  <string id="15000">XLink Kai</string>
+  <string id="15001">目前並沒有連線到執行 XLink Kai 的電腦，</string>
+  <string id="15002">請檢查設定無誤後再嘗試連線。</string>
+  <string id="15003">輸入你的訊息。</string>
+  <string id="15004">你被邀請玩 %s。</string>
+  <string id="15005">日期：%s</string>
+  <string id="15006">來自：%s</string>
+  <string id="15007">邀請</string>
+  <string id="15008">你被邀請加入 %s。</string>
+  <string id="15009">離線</string>
+  <string id="15010">好友</string>
+  <string id="15011">顯示：好友</string>
+  <string id="15012">加入遊戲</string>
+  <string id="15013">語音交談</string>
+  <string id="15014">邀請</string>
+  <string id="15015">刪除</string>
+  <string id="15016">遊戲</string>
+  <string id="15017">顯示：遊戲</string>
+  <string id="15018">進入</string>
+  <string id="15019">新增為好友</string>
+  <string id="15020">主持遊戲</string>
+  <string id="15021">遊戲室</string>
+  <string id="15022">顯示：遊戲室</string>
+  <string id="15023">開始遊戲</string>
+  <string id="15024">新增為好友</string>
+  <string id="15025">主持遊戲</string>
+  <string id="15026">聊天室</string>
+  <string id="15027">顯示：聊天室</string>
+  <string id="15028">鍵盤</string>
+  <string id="15029">加入這個遊戲室須要密碼。</string>
+  <string id="15030">遊戲己經中斷</string>
+  <string id="15031">XLink Kai 認證</string>
+  <string id="15032">你的帳號或密碼不正確，</string>
+  <string id="15033">請檢查設定無誤後再嘗試。</string>
+  <string id="15034">登入</string>
+  <string id="15035">啟用語音聊天</string>
+  <string id="15036">發送一封你的邀請函</string>
+  <string id="15037">XBMC 無法確定你的網路是否能夠連線。</string>
+  <string id="15038">你將會很難加入或主持遊戲。</string>
+  <string id="15039">XBMC 無法讓遊戲自動執行。</string>
+  <string id="15040">放入遊戲光碟或按 A 取消，</string>
+  <string id="15041">並參考遊戲相關說明。</string>
+  <string id="15042">存取被拒</string>
+  <string id="15043">%s 加入聊天室。</string>
+  <string id="15044">%s 離開聊天室。</string>
+  <string id="15045">輸入你的訊息。</string>
+  <string id="15046">目前的遊戲室</string>
+  <string id="15047">輸入遊戲室密碼。</string>
+  <string id="15048">輸入遊戲室簡介。</string>
+  <string id="15049">主持遊戲</string>
+  <string id="15050">主持私人遊戲室</string>
+  <string id="15051">玩家限制</string>
+  <string id="15052">密碼</string>
+  <string id="15053">簡介</string>
+  <string id="15054">邀請函</string>
+  <string id="15055">選擇遊戲：</string>
+  <string id="15056">輸入訊息：</string>
+  <string id="15057">發送</string>
+  <string id="15058">主持遊戲</string>
+  <string id="15059">接受邀請！</string>
+  <string id="15060">訊息</string>
+  <string id="15061">邀請玩家 %s。</string>
+  <string id="15062">使用替代的 mplayer</string>
+  <string id="15100">瀏覽</string>
+  <string id="15101">資料庫</string>
+  <string id="15102">* 所有專輯</string>
+  <string id="15103">* 所有藝人</string>
+  <string id="15104">* 所有歌曲</string>
+  <string id="15105">* 所有類別</string>
+  <string id="15106">向前瀏覽時記住選擇的檔案</string>
+  <string id="15107">暫存中…</string>
+  <string id="15108">按鍵音效</string>
+  <string id="15109">桌面預設</string>
+  <string id="15110">搖桿振動</string>
+  <string id="15111">佈景主題</string>
+  <string id="15112">預設主題</string>
+  <string id="15200">LastFM</string>
+  <string id="15201">上傳歌曲資訊到 LastFM</string>
+  <string id="15202">LastFM 帳號</string>
+  <string id="15203">LastFM 密碼</string>
+  <string id="15204">無法連線：休息中…</string>
+  <string id="15205">請更新 XBMC</string>
+  <string id="15206">上傳失敗：無法通過認證。</string>
+  <string id="15207">連線</string>
+  <string id="15208">無法連線</string>
+  <string id="15209">上傳進度 %i</string>
+  <string id="15210">已上傳 %i 首歌曲</string>
+  <string id="15211">上傳中…</string>
+  <string id="15212">上傳剩餘 %i 秒</string>
+  <string id="15213">播放方式…</string>
+  <string id="15214">使用平滑的影音同步</string>
+  <string id="15215">顯示圖示時隱藏檔案名稱</string>
+  <string id="15250">上傳 Last.fm 電台到 LastFM</string>
+  <string id="15251">連線到 Last.fm…</string>
+  <string id="15252">選擇電台…</string>
+  <string id="15253">尋找同類型藝人…</string>
+  <string id="15254">尋找同類型標籤…</string>
+  <string id="15255">%name% 的設定</string>
+  <string id="15256">所有排行</string>
+  <string id="15257">%name% 藝人排行</string>
+  <string id="15258">%name% 專輯排行</string>
+  <string id="15259">%name% 歌曲排行</string>
+  <string id="15260">收聽 %name% last.fm 電台</string>
+  <string id="15261">%name% 同類型藝人</string>
+  <string id="15262">%name% 專輯排行</string>
+  <string id="15263">%name% 歌曲排行</string>
+  <string id="15264">%name% 標籤排行</string>
+  <string id="15265">%name% 狂熱歌迷</string>
+  <string id="15266">收聽 %name% 歌迷 last.fm 電台</string>
+  <string id="15267">收聽 %name% 同類型藝人 last.fm 電台</string>
+  <string id="15268">%name% 藝人排行</string>
+  <string id="15269">%name% 專輯排行</string>
+  <string id="15270">%name% 歌曲排行</string>
+  <string id="15271">%name% 好友</string>
+  <string id="15272">%name% 同好</string>
+  <string id="15273">%name% 藝人週排行</string>
+  <string id="15274">%name% 專輯週排行</string>
+  <string id="15275">%name% 歌曲週排行</string>
+  <string id="15276">收聽 %name% 的同好 last.fm 電台</string>
+  <string id="15277">收聽 %name% 的個人 last.fm 電台</string>
+  <string id="15278">收聽 %name% 的最愛歌曲</string>
+  <string id="15279">從 last.fm 獲取目錄…</string>
+  <string id="15280">無法從 last.fm 獲取目錄…</string>
+  <string id="15281">輸入藝人名稱尋找相關資訊</string>
+  <string id="15282">輸入標籤名稱尋找相關資訊</string>
+  <string id="15283">%name% 最近聽過的歌曲</string>
+  <string id="15300">路徑錯誤或無效！</string>
+  <string id="15301">無法連線到網路伺服器！</string>
+  <string id="15302">找不到伺服器！</string>
+  <string id="15303">找不到工作群組！</string>
+  <string id="15310">打開多個書籤路徑</string>
+  <string id="15311">路徑：</string>
+  <string id="16000">一般設定</string>
+  <string id="16001">設定音效硬體</string>
+  <string id="16002">CDDB 查詢</string>
+  <string id="16003">播放設定</string>
+  <string id="16004">播放光碟</string>
+  <string id="16009">輸入影片名稱</string>
+  <string id="16010">輸入設定檔名稱</string>
+  <string id="16011">輸入專輯名稱</string>
+  <string id="16012">輸入播放列表名稱</string>
+  <string id="16013">輸入新檔案名稱</string>
+  <string id="16014">輸入資料夾名稱</string>
+  <string id="16015">輸入目錄名稱</string>
+  <string id="16016">可用選項：%A, %T, %N, %B, %D, %G, %Y, %F</string>
+  <string id="16017">輸入搜尋字串</string>
+  <string id="16018">關閉</string>
+  <string id="16019">自動選擇</string>
+  <string id="16020">非交錯掃描</string>
+  <string id="16021">偶數線同步</string>
+  <string id="16022">奇數線同步</string>
+  <string id="16023">交錯式掃描</string>
+  <string id="16024">取消中…</string>
+  <string id="16025">輸入藝人名稱</string>
+  <string id="16026">取消重覆播放列表</string>
+  <string id="16027">太多連續性錯誤</string>
+  <string id="16030">取消派對模式！</string>
+  <string id="16031">資料庫歌曲檔案不符！</string>
+  <string id="16032">無法重建資料庫！</string>
+  <string id="16033">無法打開資料庫！</string>
+  <string id="16034">無法從資料庫取得歌曲檔案！</string>
+  <string id="16100">所有影片</string>
+  <string id="16101">未看過的</string>
+  <string id="16102">已看過的</string>
+  <string id="16103">標記成已看過</string>
+  <string id="16104">標記成未看過</string>
+  <string id="16105">編輯標題</string>
+  <string id="16106">使用 NTSC-M &amp; NTSC-J 模式</string>
+  <string id="16107">使用 NTSC-M 模式</string>
+  <string id="16108">使用 NTSC-J 模式</string>
+  <string id="16109">使用 PAL-60 模式</string>
+  <string id="16110">60hz 遊戲設定</string>
 </strings>

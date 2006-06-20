@@ -1,851 +1,840 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--$Revision$-->
 <strings>
-  <string><id>0</id><value>Programmi</value></string>
-  <string><id>1</id><value>Ritratti</value></string>
-  <string><id>2</id><value>Muzika</value></string>
-  <string><id>3</id><value>Filmati</value></string>
-  <string><id>4</id><value>Il-Gwida</value></string>
-  <string><id>5</id><value>Settings</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
-  <string><id>7</id><value>Fajls</value></string>
-  <string><id>8</id><value>It-Temp</value></string>
-  <string><id>11</id><value>It-Tnejn</value></string>
-  <string><id>12</id><value>It-Tlieta</value></string>
-  <string><id>13</id><value>L-Erbgha</value></string>
-  <string><id>14</id><value>Il-Hamis</value></string>
-  <string><id>15</id><value>Il-Gimgha</value></string>
-  <string><id>16</id><value>Is-Sibt</value></string>
-  <string><id>17</id><value>Il-Hadd</value></string>
-  <string><id>21</id><value>Jannar</value></string>
-  <string><id>22</id><value>Frar</value></string>
-  <string><id>23</id><value>Marzu</value></string>
-  <string><id>24</id><value>April</value></string>
-  <string><id>25</id><value>Mejju</value></string>
-  <string><id>26</id><value>Gunju</value></string>
-  <string><id>27</id><value>Lulju</value></string>
-  <string><id>28</id><value>Awwissu</value></string>
-  <string><id>29</id><value>Settembru</value></string>
-  <string><id>30</id><value>Ottubru</value></string>
-  <string><id>31</id><value>Novembru</value></string>
-  <string><id>32</id><value>Dicembru</value></string>
-  <string><id>100</id><value>Uri: Icons</value></string>
-  <string><id>101</id><value>Uri: Lista</value></string>
-  <string><id>102</id><value>Scan</value></string>
-  <string><id>103</id><value>Ordni: Isem</value></string>
-  <string><id>104</id><value>Ordni: Data</value></string>
-  <string><id>105</id><value>Ordni: Kobor</value></string>
-  <string><id>106</id><value>Le</value></string>
-  <string><id>107</id><value>Iva</value></string>
-  <string><id>108</id><value>SlideShow</value></string>
-  <string><id>109</id><value>Ohloq Kopja Zghira</value></string>
-  <string><id>110</id><value>Ohloq Kopja Zghira</value></string>
-  <string><id>111</id><value>Shortcuts</value></string>
-  <string><id>112</id><value>PAWSA</value></string>
-  <string><id>113</id><value>Fajls : Sors</value></string>
-  <string><id>114</id><value>Fajls : Destinazzjoni</value></string>
-  <string><id>115</id><value>Ikkopja</value></string>
-  <string><id>116</id><value>Mexxi</value></string>
-  <string><id>117</id><value>Hassar</value></string>
-  <string><id>118</id><value>Semmi</value></string>
-  <string><id>119</id><value>Kannestru gdid</value></string>
-  <string><id>120</id><value>Tikkonferma li Tikkopja</value></string>
-  <string><id>121</id><value>Tikkonferma li Tmexxi</value></string>
-  <string><id>122</id><value>Tikkonferma li Thassar</value></string>
-  <string><id>123</id><value>Tikkopja dawn il-fajls?</value></string>
-  <string><id>124</id><value>Tmexxi dawn il-fajls?</value></string>
-  <string><id>125</id><value>Thassar dawn il-fajls?</value></string>
-  <string><id>126</id><value>Stat</value></string>
-  <string><id>127</id><value>Oggetti</value></string>
-  <string><id>128</id><value>Generali</value></string>
-  <string><id>129</id><value>Slideshow</value></string>
-  <string><id>130</id><value>Is-Sistema</value></string>
-  <string><id>131</id><value>Screen</value></string>
-  <string><id>132</id><value>Albums</value></string>
-  <string><id>133</id><value>Artisti</value></string>
-  <string><id>134</id><value>Diski</value></string>
-  <string><id>135</id><value>Generu</value></string>
-  <string><id>136</id><value>Playlists</value></string>
-  <string><id>137</id><value>Fittex</value></string>
-  <string><id>138</id><value>Is-Sistema</value></string>
-  <string><id>139</id><value>Temperaturi:</value></string>
-  <string><id>140</id><value>CPU:</value></string>
-  <string><id>141</id><value>GPU:</value></string>
-  <string><id>142</id><value>Hin:</value></string>
-  <string><id>143</id><value>Bhalissa:</value></string>
-  <string><id>144</id><value>Verzjoni:</value></string>
-  <string><id>145</id><value>Network:</value></string>
-  <string><id>146</id><value>Tip:</value></string>
-  <string><id>147</id><value>Statiku</value></string>
-  <string><id>148</id><value>DHCP</value></string>
-  <string><id>149</id><value>MAC</value></string>
-  <string><id>150</id><value>IP:</value></string>
-  <string><id>151</id><value>Link:</value></string>
-  <string><id>152</id><value>Half duplex</value></string>
-  <string><id>153</id><value>Full duplex</value></string>
-  <string><id>154</id><value>Spazju</value></string>
-  <string><id>155</id><value>Diska</value></string>
-  <string><id>156</id><value>Vojt</value></string>
-  <string><id>157</id><value>Stampa</value></string>
-  <string><id>158</id><value>Memorja Vojta</value></string>
-  <string><id>159</id><value>No link</value></string>
-  <string><id>160</id><value>Vojta</value></string>
-  <string><id>161</id><value>Unavailable</value></string>
-  <string><id>162</id><value>Tray Miftuh</value></string>
-  <string><id>163</id><value>Jaqra</value></string>
-  <string><id>164</id><value>Bla Diska</value></string>
-  <string><id>165</id><value>Diska Gewwa</value></string>
-  <string><id>166</id><value>Qoxra:</value></string>
-  <string><id>167</id><value>FTP server:</value></string>
-  <string><id>168</id><value>Issinkronizza l-Hin:</value></string>
-  <string><id>169</id><value>Resolution:</value></string>
-  <string><id>170</id><value>Album:</value></string>
-  <string><id>171</id><value>Artist:</value></string>
-  <string><id>172</id><value>Data tal-Hrug:</value></string>
-  <string><id>173</id><value>Rating:</value></string>
-  <string><id>174</id><value>Generu:</value></string>
-  <string><id>175</id><value>Tones:</value></string>
-  <string><id>176</id><value>Stil:</value></string>
-  <string><id>177</id><value>Erga Uri:</value></string>
-  <string><id>178</id><value>Treks:</value></string>
-  <string><id>179</id><value>Diska</value></string>
-  <string><id>180</id><value>Duration</value></string>
-  <string><id>181</id><value>Ghazel album</value></string>
-  <string><id>182</id><value>Tracks</value></string>
-  <string><id>183</id><value>Review</value></string>
-  <string><id>184</id><value>Refresh</value></string>
-  <string><id>185</id><value>Tfittxija ghall-album</value></string>
-  <string><id>186</id><value>OK</value></string>
-  <string><id>187</id><value>Ma Nstab l-ebda album!</value></string>
-  <string><id>188</id><value>Ghazel Kollox</value></string>
-  <string><id>189</id><value>Scanning media info</value></string>
-  <string><id>190</id><value>Save</value></string>
-  <string><id>191</id><value>Hawwad</value></string>
-  <string><id>192</id><value>Clear</value></string>
-  <string><id>193</id><value>Scan</value></string>
-  <string><id>194</id><value>Tfittxija ghal...</value></string>
-  <string><id>195</id><value>No IMDB info found!</value></string>
-  <string><id>196</id><value>Ghazel filmat:</value></string>
-  <string><id>197</id><value>Tfittxija ghall-informazzjoni mill-IMDB</value></string>
-  <string><id>198</id><value>Dettalja tal-movie qed jinqraw</value></string>
-  <string><id>199</id><value>Direttur:</value></string>
-  <string><id>200</id><value>Skrittur:</value></string>
-  <string><id>201</id><value>Sena:</value></string>
-  <string><id>202</id><value>Tagline:</value></string>
-  <string><id>203</id><value>Fil-Qosor:</value></string>
-  <string><id>204</id><value>Rati:</value></string>
-  <string><id>205</id><value>Voti:</value></string>
-  <string><id>206</id><value>Kast</value></string>
-  <string><id>207</id><value>Plot</value></string>
-  <string><id>208</id><value>Ara</value></string>
-  <string><id>209</id><value>Li Jmiss</value></string>
-  <string><id>210</id><value>Ta' Qabel</value></string>
-  <string><id>211</id><value>Tfittxija ghal for applications</value></string>
-  <string><id>212</id><value>programmi li nstabu</value></string>
-  <string><id>213</id><value>UI Calibration</value></string>
-  <string><id>214</id><value>Screen Calibration</value></string>
-  <string><id>215</id><value>Soften</value></string>
-  <string><id>216</id><value>Lenti</value></string>
-  <string><id>217</id><value>Gebbed</value></string>
-  <string><id>218</id><value>DVD Diska</value></string>
-  <string><id>219</id><value>Dahhal diska</value></string>
-  <string><id>220</id><value>Remote Share</value></string>
-  <string><id>221</id><value>Network mhux imqabbad</value></string>
-  <string><id>222</id><value>Cancel</value></string>
-  <string><id>223</id><value>Auto widescreen switching</value></string>
-  <string><id>224</id><value>Velocita'</value></string>
-  <string><id>225</id><value>Hin Transitorju</value></string>
-  <string><id>226</id><value>Uza PAL60</value></string>
-  <string><id>227</id><value>Uza CDDB</value></string>
-  <string><id>228</id><value>Hawwad Playlist meta taqra</value></string>
-  <string><id>229</id><value>HD Spindown time (mins)</value></string>
-  <string><id>230</id><value>Filters</value></string>
-  <string><id>231</id><value>Xejn</value></string>
-  <string><id>232</id><value>Point</value></string>
-  <string><id>233</id><value>Linear</value></string>
-  <string><id>234</id><value>Anisotropic</value></string>
-  <string><id>235</id><value>Quincunx</value></string>
-  <string><id>236</id><value>Gaussian Cubic</value></string>
-  <string><id>237</id><value>Minification:</value></string>
-  <string><id>238</id><value>Magnification:</value></string>
-  <string><id>240</id><value>Autorun DVD-Video</value></string>
-  <string><id>241</id><value>Autorun VCD/SVCD</value></string>
-  <string><id>242</id><value>Autorun Audio-CD</value></string>
-  <string><id>243</id><value>Autorun Loghob tal-XBOX</value></string>
-  <string><id>244</id><value>Autorun Filmati</value></string>
-  <string><id>245</id><value>Autorun Muzika</value></string>
-  <string><id>246</id><value>Autorun Stampi</value></string>
-  <string><id>247</id><value>Scripts</value></string>
-  <string><id>248</id><value>Lingwa</value></string>
-  <string><id>249</id><value>Muzika</value></string>
-  <string><id>250</id><value>Vizwalizzazzjoni</value></string>
-  <string><id>251</id><value>Ghazel destinazzjoni</value></string>
-  <string><id>252</id><value>Output Speakers kollha</value></string>
-  <string><id>253</id><value>Numru ta channels</value></string>
-  <string><id>254</id><value>DD Stereo Passthrough</value></string>
-  <string><id>255</id><value>CDDB</value></string>
-  <string><id>256</id><value>Querying freedb for CDDB info</value></string>
-  <string><id>257</id><value>Problema</value></string>
-  <string><id>258</id><value>Uza ID3 tags</value></string>
-  <string><id>259</id><value>Opening</value></string>
-  <string><id>260</id><value>Shoutcast</value></string>
-  <string><id>261</id><value>stennija ghall-bidu....</value></string>
-  <string><id>262</id><value>Scripts Output</value></string>
-  <string><id>263</id><value>HTTP server:</value></string>
-  <string><id>264</id><value>Irrekordja</value></string>
-  <string><id>265</id><value>Ieqaf Rek.</value></string>
-  <string><id>266</id><value>Ordni: Trek</value></string>
-  <string><id>267</id><value>Ordni: Hin</value></string>
-  <string><id>268</id><value>Ordni: Title</value></string>
-  <string><id>269</id><value>Ordni: Artist</value></string>
-  <string><id>270</id><value>Ordni: Album</value></string>
-  <string><id>271</id><value>Top 100</value></string>
-  <string><id>272</id><value>Top Left Overscan Compensation</value></string>
-  <string><id>273</id><value>Bottom Right Overscan Compensation</value></string>
-  <string><id>274</id><value>Pozizzjoni tas-Sottotitolis</value></string>
-  <string><id>275</id><value>Pixel Ratio Adjustment</value></string>
-  <string><id>276</id><value>Move the arrow to change the amount of overscan</value></string>
-  <string><id>277</id><value>Move the bar to change the Sottotitolis position</value></string>
-  <string><id>278</id><value>Change the rectangle so that it is perfectly square</value></string>
-  <string><id>279</id><value>Unable to load settings</value></string>
-  <string><id>280</id><value>using default fallbacks</value></string>
-  <string><id>281</id><value>Iccekkja l-xml fajls</value></string>
-  <string><id>282</id><value>instabu %i oggetti</value></string>
-  <string><id>283</id><value>Rizultati tat-tfittxija</value></string>
-  <string><id>284</id><value>Ma nstabux rizultati</value></string>
-  <string><id>285</id><value>Deinterlace filter</value></string>
-  <string><id>286</id><value>Postprocessing filter</value></string>
-  <string><id>287</id><value>SRT Sottotitolis</value></string>
-  <string><id>288</id><value>Font</value></string>
-  <string><id>289</id><value>Kobor</value></string>
-  <string><id>290</id><value>Amplifikazzjoni (dB)</value></string>
-  <string><id>291</id><value>Video</value></string>
-  <string><id>292</id><value>Awdjo</value></string>
-  <string><id>293</id><value>Sottotitolis</value></string>
-  <string><id>294</id><value>Ohloq bookmark</value></string>
-  <string><id>295</id><value>Cycle bookmarks</value></string>
-  <string><id>296</id><value>Hassar bookmarks</value></string>
-  <string><id>297</id><value>AVDelay</value></string>
-  <string><id>298</id><value>Slider</value></string>
-  <string><id>300</id><value>1. Lingwa</value></string>
-  <string><id>301</id><value>2. Volum</value></string>
-  <string><id>302</id><value>3. Stream</value></string>
-  <string><id>303</id><value>Ittardja</value></string>
-  <string><id>304</id><value>Lingwa</value></string>
-  <string><id>305</id><value>Jintuza</value></string>
-  <string><id>306</id><value>Non-Interleaved</value></string>
-  <string><id>307</id><value>Auto</value></string>
-  <string><id>308</id><value>vertical deblocking filter</value></string>
-  <string><id>309</id><value>horizontal deblocking filter</value></string>
-  <string><id>310</id><value>Auto brightness/contrast</value></string>
-  <string><id>311</id><value>Dering</value></string>
-  <string><id>312</id><value>(0=awto)</value></string>
-  <string><id>313</id><value>Erga Organizza d-database</value></string>
-  <string><id>314</id><value>Preparing...</value></string>
-  <string><id>315</id><value>Database error</value></string>
-  <string><id>316</id><value>Tfittxija ghal diski...</value></string>
-  <string><id>317</id><value>Organizzar lesta tajjeb</value></string>
-  <string><id>318</id><value>Markar tad-diski mhassara</value></string>
-  <string><id>319</id><value>Problema fl-organizzar tad-diski</value></string>
-  <string><id>320</id><value>Tfittxija ghall-artisti...</value></string>
-  <string><id>321</id><value>Problema fl-organizzar tal-artisti</value></string>
-  <string><id>322</id><value>Tfittxija ghall-generu...</value></string>
-  <string><id>323</id><value>Problema fl-organizzar tal-generu</value></string>
-  <string><id>324</id><value>Tfittxija ghal pathes...</value></string>
-  <string><id>325</id><value>Error reorganizing pathes</value></string>
-  <string><id>326</id><value>Tfittxija ghal albums...</value></string>
-  <string><id>327</id><value>Problema fl-organizzar tal-albums</value></string>
-  <string><id>328</id><value>Tibdiliet qed jigu rrekordjati...</value></string>
-  <string><id>329</id><value>Problema biex it-tibdiliet jigu rrekordjati</value></string>
-  <string><id>330</id><value>Dan il-process jista jdum...</value></string>
-  <string><id>331</id><value>Database qed tigi kkompressata...</value></string>
-  <string><id>332</id><value>Problema biex id-database tigi kkompressata</value></string>
-  <string><id>333</id><value>Trid torganizza database tal-muzika?</value></string>
-  <string><id>334</id><value>Organizza database tal-muzika</value></string>
-  <string><id>335</id><value>Ibda</value></string>
-  <string><id>336</id><value>Adjust Framerate</value></string>
-  <string><id>337</id><value>Output Awdjo:</value></string>
-  <string><id>338</id><value>Analog</value></string>
-  <string><id>339</id><value>Digitali</value></string>
-  <string><id>340</id><value>Artisti Varji</value></string>
-  <string><id>341</id><value>Ara DVD</value></string>
-  <string><id>342</id><value>Filmati</value></string>
-  <string><id>343</id><value>Rranga Framerate</value></string>
-  <string><id>344</id><value>Atturi</value></string>
-  <string><id>345</id><value>Sena</value></string>
-  <string><id>346</id><value>Stack</value></string>
-  <string><id>347</id><value>Unstack</value></string>
-  <string><id>348</id><value>Flatten Directory Hierarchy</value></string>
-  <string><id>349</id><value>Uri Default.xbe biss</value></string>
-  <string><id>350</id><value>Programmi</value></string>
-  <string><id>351</id><value>Mitfi</value></string>
-  <string><id>352</id><value>Baxx</value></string>
-  <string><id>353</id><value>Iswed</value></string>
-  <string><id>354</id><value>Matrix Trails</value></string>
-  <string><id>355</id><value>Screensaver Idle Timeout</value></string>
-  <string><id>356</id><value>Screensaver Mode</value></string>
-  <string><id>357</id><value>Shutdown Idle Timeout</value></string>
-  <string><id>358</id><value>L-albums kollha</value></string>
-  <string><id>359</id><value>L-albums ricenti</value></string>
-  <string><id>360</id><value>Screensaver</value></string>
-  <string><id>361</id><value>R. SlideShow</value></string>
-  <string><id>362</id><value>Screensaver Fade Level (%)</value></string>
-  <string><id>363</id><value>Ordni: File</value></string>
-  <string><id>364</id><value>DD/DTS Multichannel Passthrough</value></string>
-  <string><id>365</id><value>Ordni: Isem</value></string>
-  <string><id>366</id><value>Ordni: Sena</value></string>
-  <string><id>367</id><value>Ordni: Rating</value></string>
-  <string><id>368</id><value>IMDB</value></string>
-  <string><id>369</id><value>Titlu</value></string>
-  <string><id>370</id><value>Tempesti</value></string>
-  <string><id>371</id><value>Kemxejn</value></string>
-  <string><id>372</id><value>L-bicca l-kbira</value></string>
-  <string><id>373</id><value>Xemxi</value></string>
-  <string><id>374</id><value>Msahhab</value></string>
-  <string><id>375</id><value>Snow</value></string>
-  <string><id>376</id><value>Xita</value></string>
-  <string><id>377</id><value>Hafif</value></string>
-  <string><id>378</id><value>AM</value></string>
-  <string><id>379</id><value>PM</value></string>
-  <string><id>380</id><value>Rxiex</value></string>
-  <string><id>381</id><value>Ftit</value></string>
-  <string><id>382</id><value>Scattered</value></string>
-  <string><id>383</id><value>Rih</value></string>
-  <string><id>384</id><value>Qawwi</value></string>
-  <string><id>385</id><value>Hafif</value></string>
-  <string><id>386</id><value>Car</value></string>
-  <string><id>387</id><value>Shab</value></string>
-  <string><id>388</id><value>N/A</value></string>
-  <string><id>389</id><value>N/A</value></string>
-  <string><id>390</id><value>N/A</value></string>
-  <string><id>391</id><value>N/A</value></string>
-  <string><id>392</id><value>N/A</value></string>
-  <string><id>393</id><value>N/A</value></string>
-  <string><id>394</id><value>N/A</value></string>
-  <string><id>395</id><value>N/A</value></string>
-  <string><id>396</id><value>Ghazel Lokalita'</value></string>
-  <string><id>397</id><value>Refresh Time</value></string>
-  <string><id>398</id><value>Kejl tat-Temperatur</value></string>
-  <string><id>399</id><value>Kejl tal-Velocita'</value></string>
-  <string><id>400</id><value>It-Temp</value></string>
-  <string><id>401</id><value>Temp</value></string>
-  <string><id>402</id><value>Thossok</value></string>
-  <string><id>403</id><value>UV Index</value></string>
-  <string><id>404</id><value>Rih</value></string>
-  <string><id>405</id><value>Dew Point</value></string>
-  <string><id>406</id><value>Umdita'</value></string>
-  <string><id>407</id><value>Minn</value></string>
-  <string><id>408</id><value>Forza</value></string>
-  <string><id>410</id><value>Access ghall-weather.com</value></string>
-  <string><id>411</id><value>Tfittxija ghat-Temp ta':</value></string>
-  <string><id>412</id><value>Problemi biex jinkiseb it-Temp</value></string>
-  <string><id>413</id><value>Manwali</value></string>
-  <string><id>414</id><value>No review for this album</value></string>
-  <string><id>415</id><value>Downloading thumbnail...</value></string>
-  <string><id>416</id><value>Not available</value></string>
-  <string><id>417</id><value>Uri: Big Icons</value></string>
-  <string><id>418</id><value>Filmati/Genres</value></string>
-  <string><id>419</id><value>Filmati/Actors</value></string>
-  <string><id>420</id><value>Filmati/Years</value></string>
-  <string><id>421</id><value>Filmati/Title</value></string>
-  <string><id>422</id><value>Hassar informazzjoni dwar albums</value></string>
-  <string><id>423</id><value>Hassar informazzjoni min CDDB</value></string>
-  <string><id>424</id><value>Ghazel</value></string>
-  <string><id>425</id><value>No albuminfo found.</value></string>
-  <string><id>426</id><value>No CDDB info found.</value></string>
-  <string><id>427</id><value>Disc:</value></string>
-  <string><id>428</id><value>Insert correct CD/DVD</value></string>
-  <string><id>429</id><value>Please insert the following CD/DVD</value></string>
-  <string><id>430</id><value>Ordni: DVD#</value></string>
-  <string><id>431</id><value>No Cache</value></string>
-  <string><id>432</id><value>Hassar movie from database</value></string>
-  <string><id>433</id><value>Are you sure to remove</value></string>
-  <string><id>434</id><value>the movie?</value></string>
-  <string><id>435</id><value>Track</value></string>
-  <string><id>436</id><value>Year:</value></string>
-  <string><id>437</id><value>Duration:</value></string>
-  <string><id>438</id><value>Opening file</value></string>
-  <string><id>439</id><value>Cache</value></string>
-  <string><id>440</id><value>Harddisk</value></string>
-  <string><id>441</id><value>UDF</value></string>
-  <string><id>442</id><value>LAN</value></string>
-  <string><id>443</id><value>Internet</value></string>
-  <string><id>444</id><value>video</value></string>
-  <string><id>445</id><value>audio</value></string>
-  <string><id>446</id><value>DVD</value></string>
-  <string><id>447</id><value>Autorun</value></string>
-  <string><id>448</id><value>LCD</value></string>
-  <string><id>449</id><value>Jintuza</value></string>
-  <string><id>450</id><value>Columns</value></string>
-  <string><id>451</id><value>Row 1 adress:</value></string>
-  <string><id>452</id><value>Row 2 adress:</value></string>
-  <string><id>453</id><value>Row 3 adress:</value></string>
-  <string><id>454</id><value>Row 4 adress:</value></string>
-  <string><id>455</id><value>Rows:</value></string>
-  <string><id>456</id><value>Mode:</value></string>
-  <string><id>457</id><value>Uri Differenti</value></string>
-  <string><id>458</id><value>B/Mark</value></string>
-  <string><id>459</id><value>Subs</value></string>
-  <string><id>460</id><value>Audio Stream</value></string>
-  <string><id>461</id><value>[active]</value></string>
-  <string><id>462</id><value>Sottotitoli</value></string>
-  <string><id>463</id><value>Backlight</value></string>
-  <string><id>464</id><value>Brightness</value></string>
-  <string><id>465</id><value>Contrast</value></string>
-  <string><id>466</id><value>Gamma</value></string>
-  <string><id>467</id><value>Type</value></string>
-  <string><id>468</id><value>Move the bar to change the osd position</value></string>
-  <string><id>469</id><value>OSD Position</value></string>
-  <string><id>470</id><value>Credits</value></string>
-  <string><id>471</id><value>Modchip</value></string>
-  <string><id>472</id><value>OSD Timeout</value></string>
-  <string><id>473</id><value>High Quality Resampling</value></string>
-  <string><id>474</id><value>Off</value></string>
-  <string><id>475</id><value>Music Only</value></string>
-  <string><id>476</id><value>Music &amp; Video</value></string>
-  <string><id>477</id><value>Unable to load playlist</value></string>
-  <string><id>478</id><value>OSD</value></string>
-  <string><id>479</id><value>Skin and Language</value></string>
-  <string><id>480</id><value>User Interface</value></string>
-  <string><id>481</id><value>Audio Options</value></string>
-  <string><id>482</id><value>Dwar XBMC</value></string>
-  <string><id>483</id><value>Album</value></string>
-  <string><id>484</id><value>Artist</value></string>
-  <string><id>485</id><value>Hassar album</value></string>
-  <string><id>486</id><value>Irrepeti</value></string>
-  <string><id>487</id><value>Irrepeti Wahda</value></string>
-  <string><id>488</id><value>Irrepeti Kannestru playlist</value></string>
-  <string><id>489</id><value>Uza playlist in songs</value></string>
-  <string><id>490</id><value>Qlib awtomatiku bejn lista u icons waqt muzika</value></string>
-  <string><id>491</id><value>Uza big icons</value></string>
-  <string><id>492</id><value>Kabbar Sottotitolis</value></string>
-  <string><id>493</id><value>Advanced Options (Experts Biss!)</value></string>
-  <string><id>494</id><value>Overall Audio Headroom (dB)</value></string>
-  <string><id>495</id><value>Upsample videos to GUI resolution</value></string>
-  <string><id>496</id><value>Calibration</value></string>
-  <string><id>497</id><value>Ahbi Media Extensions</value></string>
-  <string><id>498</id><value>Issortja: Bit-Tip</value></string>
-  <string><id>10000</id><value>Home</value></string>
-  <string><id>10001</id><value>Programmi</value></string>
-  <string><id>10002</id><value>Stampi</value></string>
-  <string><id>10003</id><value>Fajls</value></string>
-  <string><id>10004</id><value>Settings</value></string>
-  <string><id>10005</id><value>Muzika</value></string>
-  <string><id>10006</id><value>Filmati</value></string>
-  <string><id>10007</id><value>Informazzjoni tas-Sistema</value></string>
-  <string><id>10008</id><value>Settings-&gt;Generali</value></string>
-  <string><id>10009</id><value>Settings-&gt;Screen</value></string>
-  <string><id>10010</id><value>Settings-&gt;Screen-&gt;UI Calibration</value></string>
-  <string><id>10011</id><value>Settings-&gt;Screen-&gt;Screen Calibration</value></string>
-  <string><id>10012</id><value>Settings-&gt;SlideShow</value></string>
-  <string><id>10013</id><value>Settings-&gt;Screen-&gt;Filters</value></string>
-  <string><id>10014</id><value>Settings-&gt;Muzika</value></string>
-  <string><id>10015</id><value>Settings-&gt;Screen-&gt;Sottotitolis</value></string>
-  <string><id>10016</id><value>Settings-&gt;Screen-&gt;Screensaver</value></string>
-  <string><id>10017</id><value>Settings-&gt;Temp</value></string>
-  <string><id>10020</id><value>Settings-&gt;Scripts</value></string>
-  <string><id>10021</id><value>Filmati/genre</value></string>
-  <string><id>10022</id><value>Filmati/actor</value></string>
-  <string><id>10023</id><value>Filmati/year</value></string>
-  <string><id>10024</id><value>Settings-&gt;Programs</value></string>
-  <string><id>10025</id><value>Filmati/title</value></string>
-  <string><id>10026</id><value>Settings-&gt;General-&gt;Cache</value></string>
-  <string><id>10027</id><value>Settings-&gt;General-&gt;Autorun</value></string>
-  <string><id>10028</id><value>Filmati/playlist</value></string>
-  <string><id>10029</id><value>Settings-&gt;General-&gt;LCD</value></string>
-  <string><id>10100</id><value>Yes/no dialog</value></string>
-  <string><id>10101</id><value>Progress dialog</value></string>
-  <string><id>10500</id><value>My Music/playlist</value></string>
-  <string><id>10501</id><value>My Music/fajls</value></string>
-  <string><id>10502</id><value>My Music/albums</value></string>
-  <string><id>10503</id><value>My Music/artists</value></string>
-  <string><id>10504</id><value>My Music/genres</value></string>
-  <string><id>10505</id><value>Muzika/top100</value></string>
-  <string><id>11000</id><value>tastiera</value></string>
-  <string><id>12000</id><value>Ghazel dialog</value></string>
-  <string><id>12001</id><value>Diski/info</value></string>
-  <string><id>12002</id><value>Dialog OK</value></string>
-  <string><id>12003</id><value>Filmati/Info</value></string>
-  <string><id>12004</id><value>Programmi/Info</value></string>
-  <string><id>12005</id><value>Stampa Shiha</value></string>
-  <string><id>12006</id><value>Vizwalizazzjoni</value></string>
-  <string><id>12007</id><value>Ritratti/slideshow</value></string>
-  <string><id>12008</id><value>Filestacking dialog</value></string>
-  <string><id>12600</id><value>It-temp</value></string>
-  <string><id>12900</id><value>Skrinsejver</value></string>
-  <string><id>12901</id><value>OSD Shih</value></string>
-  <string><id>13000</id><value>Sistema</value></string>
-  <string><id>13001</id><value>Spindown tal-HD immedjataa</value></string>
-  <string><id>13002</id><value>Video Biss</value></string>
-  <string><id>13003</id><value>- Stennija</value></string>
-  <string><id>13004</id><value>- L-anqas zmien tal-fajl</value></string>
-  <string><id>13100</id><value>Filter Teptip</value></string>
-  <string><id>13200</id><value>Profil</value></string>
-  <string><id>13201</id><value>Hassar profil '%s'?</value></string>
-  <string><id>13202</id><value>Issevja settings bhala profil...</value></string>
-  <string><id>13203</id><value>Profil '%s' imtella tajjeb</value></string>
-  <string><id>13204</id><value>L-ahhar Profil uzat:</value></string>
-  <string><id>13205</id><value>Ma nafx</value></string>
-  <string><id>13300</id><value>Fanspeed:</value></string>
-  <string><id>13301</id><value>Auto temperature control</value></string>
-  <string><id>13302</id><value>Fanspeed control</value></string>
-  <string><id>13303</id><value>Skin Fonts</value></string>
-  <string><id>13304</id><value>Enable Flipping Bi-Directional Strings</value></string>
-  <string><id>13305</id><value>Enable RSS Feeds</value></string>
-
-  <string><id>13306</id><value>Ahbi Kannestri Predeccessuri</value></string>
-  <string><id>13307</id><value>Track Naming Template</value></string>
-  <string><id>13308</id><value>Tixtieq tirributja l-xbox</value></string>
-  <string><id>13309</id><value>minflok l-XBMC biss?</value></string>
-  <string><id>13310</id><value>Zoom Effect</value></string>
-  <string><id>13311</id><value>Float Effect</value></string>
-  <string><id>13312</id><value>Black Bar Reduction</value></string>
-  <string><id>13313</id><value>Restart</value></string>
-  <string><id>13314</id><value>Crossfade</value></string>
-  <string><id>13315</id><value>Regenerate Thumbnails</value></string>
-  <string><id>13316</id><value>Recursive Thumbnails</value></string>
-  <string><id>13317</id><value>View Slideshow</value></string>
-  <string><id>13318</id><value>Recursive Slideshow</value></string>
-  <string><id>13319</id><value>Randomize</value></string>
-  <string><id>13320</id><value>Stereo</value></string>
-  <string><id>13321</id><value>Xellug biss</value></string>
-  <string><id>13322</id><value>Lemin biss</value></string>
-  <string><id>13323</id><value>Enable CD+G</value></string>
-  <string><id>13324</id><value>Background Transparenti</value></string>
-  <string><id>13325</id><value>Foreground Transparenti</value></string>
-  <string><id>13326</id><value>A/V delay</value></string>
-  <string><id>13327</id><value>Karaoke</value></string>
-  <string><id>13328</id><value>%s ma nstabx</value></string>
-  <string><id>13329</id><value>Ma stajtx niftah %s</value></string>
-  <string><id>13330</id><value>Ma stajtx ntella %s</value></string>
-  <string><id>13331</id><value>Problema: spiccat il-memorja</value></string>
-  <string><id>13332</id><value>Tella l'fuq</value></string>
-  <string><id>13333</id><value>Nizzel l'isfel</value></string>
-  <string><id>13334</id><value>Biddel l-Label</value></string>
-  <string><id>13335</id><value>Uza dejjem</value></string>
-  <string><id>13336</id><value>Nehhi l-Buttona</value></string>
-  <string><id>13337</id><value>- 2 Channel PCM Passthrough</value></string>
-  <string><id>13338</id><value>LED ta' Quddiem</value></string>
-  <string><id>13339</id><value>Kulur tal-LED ta' Quddiem</value></string>
-  <string><id>13340</id><value>Halli kif inhu</value></string>
-  <string><id>13341</id><value>Ahdar</value></string>
-  <string><id>13342</id><value>Orangjo</value></string>
-  <string><id>13343</id><value>Ahmar</value></string>
-  <string><id>13344</id><value>Cycle</value></string>
-  <string><id>13345</id><value>Itfi LED waqt Filmat</value></string>
-  <string><id>13346</id><value>Informazzjoni tal-Filmat</value></string>
-  <string><id>13347</id><value>Itfa fil-Queue</value></string>
-  <string><id>13348</id><value>Fittex IMDb...</value></string>
-  <string><id>13349</id><value>Query Info For All Files</value></string>
-  <string><id>13350</id><value>Indoqq nhalissa...</value></string>
-  <string><id>13351</id><value>Informazzjoni dwar l-album</value></string>
-  <string><id>13352</id><value>Fittex fid-Database kollha</value></string>
-  <string><id>13353</id><value>Ieqaf Fittex</value></string>
-  <string><id>13354</id><value>Render Method</value></string>
-  <string><id>13355</id><value>Pixel Shader - Kwalita Baxxa</value></string>
-  <string><id>13356</id><value>Hardware Overlays</value></string>
-  <string><id>13357</id><value>Pixel Shader - Kwalita Gholja</value></string>
-  <string><id>13358</id><value>Doqq din</value></string>
-  <string><id>13359</id><value>Set Artist Thumb</value></string>
-  <string><id>13360</id><value>Generate Thumbs</value></string>
-  <string><id>13361</id><value>Attiva l-Vuci</value></string>
-  <string><id>13362</id><value>Voice Mask</value></string>
-  <string><id>13363</id><value>- Enable Spectrum Energy Weight</value></string>
-  <string><id>13364</id><value>-- Spectrum Energy Weight Value</value></string>
-  <string><id>13365</id><value>- Enable Pitch Scaling</value></string>
-  <string><id>13366</id><value>-- Pitch Scaling Value</value></string>
-  <string><id>13367</id><value>- Enable Whisper Factor</value></string>
-  <string><id>13368</id><value>-- Whisper Factor Value</value></string>
-  <string><id>13369</id><value>- Enable Robotic Factor</value></string>
-  <string><id>13370</id><value>-- Robotic Factor Value</value></string>
-  <string><id>13371</id><value>- Port 1 Voice</value></string>
-  <string><id>13372</id><value>- Port 2 Voice</value></string>
-  <string><id>13373</id><value>- Port 3 Voice</value></string>
-  <string><id>13374</id><value>- Port 4 Voice</value></string>
-  <string><id>13375</id><value>Attiva l-apparat</value></string>
-  <string><id>13376</id><value>Volum</value></string>
-  <string><id>13377</id><value>Default View Mode</value></string>
-  <string><id>13378</id><value>Default Brightness</value></string>
-  <string><id>13379</id><value>Default Contrast</value></string>
-  <string><id>13380</id><value>Default Gamma</value></string>
-  <string><id>13381</id><value>Resume Video</value></string>
-  <string><id>13382</id><value>Voice Mask - Port 1</value></string>
-  <string><id>13383</id><value>Voice Mask - Port 2</value></string>
-  <string><id>13384</id><value>Voice Mask - Port 3</value></string>
-  <string><id>13385</id><value>Voice Mask - Port 4</value></string>
-  <string><id>13386</id><value>Use Time Based Seeking</value></string>
-  <string><id>13387</id><value>Track Naming Template Right</value></string>
-  <string><id>13388</id><value>Presets</value></string>
-  <string><id>13389</id><value>There are no presets available&#10;for this visualisation</value></string>
-  <string><id>13390</id><value>There are no settings available&#10;for this visualisation</value></string>
-  <string><id>13391</id><value>Eject/Load</value></string>
-  <string><id>13392</id><value>Use Visualisation if playing audio</value></string>
-  <string><id>13393</id><value>Ikkalkula l-kobor</value></string>
-  <string><id>13394</id><value>Ikkalkula l-kobor tal-Kannestru</value></string>
-  <string><id>13395</id><value>Video Settings</value></string>
-  <string><id>13396</id><value>Audio and Sottotitoli Settings</value></string>
-  <string><id>13397</id><value>Attiva Sottotitoli</value></string>
-  <string><id>13398</id><value>Bookmarks</value></string>
-  <string><id>13399</id><value>Ignore "The" when sorting</value></string>
-  <string><id>13400</id><value>Crossfade albumtracks</value></string>
-  <string><id>13401</id><value>Browse for %s</value></string>
-  <string><id>13402</id><value>Show track position</value></string>
-  <string><id>13403</id><value>Clear Default</value></string>
-  <string><id>13404</id><value>Resume</value></string>
-  <string><id>13405</id><value>Get Thumb</value></string>
-
-  <string><id>14000</id><value>Stack</value></string>
-  <string><id>14001</id><value>Unstack</value></string>
-  <string><id>14002</id><value>Stacking: Fuzzy</value></string>
-  <string><id>14003</id><value>Downloading playlist file...</value></string>
-  <string><id>14004</id><value>Downloading streams list...</value></string>
-  <string><id>14005</id><value>Parsing streams list...</value></string>
-  <string><id>14006</id><value>Downloading streams list failed</value></string>
-  <string><id>14007</id><value>Downloading playlist file failed</value></string>
-  <string><id>14008</id><value>Enable Kai Notifications</value></string>
-  <string><id>14009</id><value>Games Directory</value></string>
-  <string><id>14010</id><value>Autoswitch to Thumbs based on</value></string>
-  <string><id>14011</id><value>Enable Autoswitching to Thumbs View</value></string>
-  <string><id>14012</id><value>- Use Large Icons</value></string>
-  <string><id>14013</id><value>- Switch Based on</value></string>
-  <string><id>14014</id><value>- Percentage</value></string>
-  <string><id>14015</id><value>No Files and at least one Thumb</value></string>
-  <string><id>14016</id><value>At least one File and Thumb</value></string>
-  <string><id>14017</id><value>Percentage of Thumbs</value></string>
-  <string><id>14018</id><value>View Options</value></string>
-  <string><id>14019</id><value>Change Area Code 1</value></string>
-  <string><id>14020</id><value>Change Area Code 2</value></string>
-  <string><id>14021</id><value>Change Area Code 3</value></string>
-  <string><id>14022</id><value>Library</value></string>
-  <string><id>14023</id><value>No TV</value></string>
-  <string><id>14024</id><value>Enter the nearest large town or US ZIP code</value></string>
-  <string><id>14025</id><value>Video/Audio/DVD Cache - Harddisk</value></string>
-  <string><id>14026</id><value>Video Cache - DVDRom</value></string>
-  <string><id>14027</id><value>- Local Network</value></string>
-  <string><id>14028</id><value>- Internet</value></string>
-  <string><id>14030</id><value>Audio Cache - DVDRom</value></string>
-  <string><id>14031</id><value>- Local Network</value></string>
-  <string><id>14032</id><value>- Internet</value></string>
-  <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
-  <string><id>14035</id><value>- Local Network</value></string>
-  <string><id>14036</id><value>Servers</value></string>
-  <string><id>14037</id><value>Look and Feel</value></string>
-  <string><id>14038</id><value>Network settings changed</value></string>
-  <string><id>14039</id><value>XBMC requires to restart to change your</value></string>
-  <string><id>14040</id><value>network setup.  Would you like to restart now?</value></string>
-  <string><id>14041</id><value>Post Processing</value></string>
-  <string><id>14042</id><value>Engine IP Address</value></string>
-  <string><id>14043</id><value>- Shutdown while playing</value></string>
-  <string><id>14044</id><value>%i min</value></string>
-  <string><id>14045</id><value>%i sek</value></string>
-  <string><id>14046</id><value>%i ms</value></string>
-  <string><id>14047</id><value>%i %%</value></string>
-  <string><id>14048</id><value>%i kbps</value></string>
-  <string><id>14049</id><value>%i kb</value></string>
-  <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Format tal-Hin</value></string>
-  <string><id>14052</id><value>Format tad-Data</value></string>
-  <string><id>14053</id><value>GUI Filters</value></string>
-  <string><id>14054</id><value>Enable Internet Lookups</value></string>
-  <string><id>14055</id><value>Use Background Scanning</value></string>
-  <string><id>14056</id><value>Ieqaf Fittex</value></string>
-  <string><id>14057</id><value>Not possible while scanning for media info</value></string>
-  <string><id>14058</id><value>Film Grain Effect</value></string>
-  <string><id>14059</id><value>Look for custom thumbnails on remote shares</value></string>
-  <string><id>14060</id><value>Unknown type Cache - Internet</value></string>
-  <string><id>14061</id><value>Auto</value></string>
-  <string><id>14062</id><value>Dahhal username ghal</value></string>
-  <string><id>14063</id><value>Data &amp; Hin</value></string>
-  <string><id>14064</id><value>Irranga id-Data</value></string>
-  <string><id>14065</id><value>Irranga il-Hin</value></string>
-  <string><id>14066</id><value>Enter the Time in 24 hour HH:MM format</value></string>
-  <string><id>14067</id><value>Enter the Date in DD/MM/YYYY format</value></string>
-  <string><id>14068</id><value>Enter the IP address</value></string>
-  <string><id>14069</id><value>Trid tapplika dawn it-tibdiliet?</value></string> 	 
-  <string><id>14070</id><value>Applika tibdiliet issa</value></string> 	 
-  <string><id>14071</id><value>Allow File Renaming and Deletion</value></string>
-  <string><id>14072</id><value>Attiva XLink Kai</value></string>
-  <string><id>14073</id><value>XLink Kai mhux attivat.</value></string>
-
-  <string><id>15000</id><value>XLink Kai</value></string>
-  <string><id>15001</id><value>The service is not connected, would you like to attempt</value></string>
-  <string><id>15002</id><value>reconnecting it with Xbox Media Center?</value></string>
-  <string><id>15003</id><value>Enter your message</value></string>
-  <string><id>15004</id><value>You've been invited to play %s.</value></string>
-  <string><id>15005</id><value>Data: %s</value></string>
-  <string><id>15006</id><value>Minn: %s</value></string>
-  <string><id>15007</id><value>Invit</value></string>
-  <string><id>15008</id><value>Gejt mistieden tinghaqad ma %s.</value></string>
-  <string><id>15009</id><value>Offline</value></string>
-  <string><id>15010</id><value>Hbieb</value></string>
-  <string><id>15011</id><value>View: Friends</value></string>
-  <string><id>15012</id><value>Inghaqad</value></string>
-  <string><id>15013</id><value>Vuci</value></string>
-  <string><id>15014</id><value>Invit</value></string>
-  <string><id>15015</id><value>Nehhi</value></string>
-  <string><id>15016</id><value>Loghob</value></string>
-  <string><id>15017</id><value>View: Games</value></string>
-  <string><id>15018</id><value>Idhol</value></string>
-  <string><id>15019</id><value>Zid</value></string>
-  <string><id>15020</id><value>Host</value></string>
-  <string><id>15021</id><value>Arenas</value></string>
-  <string><id>15022</id><value>View: Arenas</value></string>
-  <string><id>15023</id><value>Ilghab</value></string>
-  <string><id>15024</id><value>Zid</value></string>
-  <string><id>15025</id><value>Host</value></string>
-  <string><id>15026</id><value>Tkellem</value></string>
-  <string><id>15027</id><value>View: Diskursata</value></string>
-  <string><id>15028</id><value>Tastiera</value></string>
-  <string><id>15029</id><value>A password is required to join this arena.</value></string>
-  <string><id>15030</id><value>Service has disconnected</value></string>
-  <string><id>15031</id><value>XLink Kai Authentication</value></string>
-  <string><id>15032</id><value>Your username and/or password was rejected by the</value></string>
-  <string><id>15033</id><value>orbital server. Please check your configuration.</value></string>
-  <string><id>15034</id><value>ghadu kemm dahal</value></string>
-  <string><id>15035</id><value>attiva diskursata</value></string>
-  <string><id>15036</id><value>bghatlek invit</value></string>
-  <string><id>15037</id><value>XBMC is unable to confirm your network is reachable.</value></string>
-  <string><id>15038</id><value>You may experience difficulties joining or hosting games.</value></string>
-  <string><id>15039</id><value>Xbox Media Center unable to locate game automatically.</value></string>
-  <string><id>15040</id><value>Insert the game disk into your XBOX or press 'A' to cancel</value></string>
-  <string><id>15041</id><value>and launch the game manually.</value></string>
-  <string><id>15042</id><value>Access mwaqqaf</value></string>
-  <string><id>15043</id><value>%s jidhol fil-parlata.</value></string>
-  <string><id>15044</id><value>%s ihalli l-parlata.</value></string>
-  <string><id>15045</id><value>Ikter messagg personali.</value></string>
-  <string><id>15046</id><value>Current Arena</value></string>
-  <string><id>15047</id><value>Dahhal password ghall-arena tieghek.</value></string>
-  <string><id>15048</id><value>Dahhal deskrizzjoni tal-arena tieghek.</value></string>
-  <string><id>15049</id><value>Servi Loghba</value></string>
-  <string><id>15050</id><value>Servi go Arena Privata</value></string>
-  <string><id>15051</id><value>Limitu ta' gukaturi</value></string>
-  <string><id>15052</id><value>Password</value></string>
-  <string><id>15053</id><value>Deskrizzjoni</value></string>
-  <string><id>15054</id><value>Invite Dialog</value></string>
-  <string><id>15055</id><value>Ghazel loghba:</value></string>
-  <string><id>15056</id><value>Dahhal Messagg:</value></string>
-  <string><id>15057</id><value>Ibghat</value></string>
-  <string><id>15058</id><value>Servi</value></string>
-  <string><id>15059</id><value>Invit accettat!</value></string>
-  <string><id>15060</id><value>Messagg</value></string>
-  <string><id>15061</id><value>Gejt mistieden tilghab go %s.</value></string>
-  <string><id>15062</id><value>Use alternate mplayer location</value></string>
-
-  <string><id>15100</id><value>Library</value></string>
-  <string><id>15101</id><value>Database</value></string>
-  <string><id>15102</id><value>* Albums Kollha</value></string>
-  <string><id>15103</id><value>* Artisti Kollha</value></string>
-  <string><id>15104</id><value>* Diski Kollha</value></string>
-  <string><id>15105</id><value>* Generi kollha</value></string>
-  <string><id>15106</id><value>Remember selected file on forward navigation</value></string>
-  <string><id>15107</id><value>Buffering...</value></string>
-  <string><id>15108</id><value>Navigation Sounds</value></string>
-  <string><id>15109</id><value>Skin Default</value></string>
-  <string><id>15110</id><value>Controller Rumble</value></string>
-  <string><id>15111</id><value>Skin Theme</value></string>
-  <string><id>15112</id><value>Default Theme</value></string>
-
-  <string><id>15200</id><value>LastFM</value></string>
-  <string><id>15201</id><value>Submit Songs to LastFM</value></string>
-  <string><id>15202</id><value>LastFM Username</value></string>
-  <string><id>15203</id><value>LastFM Password</value></string>
-  <string><id>15204</id><value>Unable to handshake: sleeping...</value></string>
-  <string><id>15205</id><value>Please Update XBMC</value></string>
-  <string><id>15206</id><value>Submission failed: bad authorization.</value></string>
-  <string><id>15207</id><value>Connected</value></string>
-  <string><id>15208</id><value>Not Connected</value></string>
-  <string><id>15209</id><value>Submit Interval %i</value></string>
-  <string><id>15210</id><value>Cached %i Songs</value></string>
-  <string><id>15211</id><value>Submitting...</value></string>
-  <string><id>15212</id><value>Submitting in %i secs</value></string>
-  <string><id>15213</id><value>Play Using...</value></string>
-  <string><id>15214</id><value>Use Smoothed A/V Syncronization</value></string>
-  <string><id>15215</id><value>Hide File Names in Thumbs View</value></string>
-
-  <string><id>15250</id><value>Submit Last.fm Radio to LastFM</value></string>
-  <string><id>15251</id><value>Connecting to Last.fm...</value></string>
-  <string><id>15252</id><value>Selecting station...</value></string>
-  <string><id>15253</id><value>Search similar artists...</value></string>
-  <string><id>15254</id><value>Search similar tags...</value></string>
-  <string><id>15255</id><value>Your profile (%name%)</value></string>
-  <string><id>15256</id><value>Overall top tags</value></string>
-  <string><id>15257</id><value>Top artists for tag %name%</value></string>
-  <string><id>15258</id><value>Top albums for tag %name%</value></string>
-  <string><id>15259</id><value>Top tracks for tag %name%</value></string>
-  <string><id>15260</id><value>Listen to tag %name% last.fm radio</value></string>
-  <string><id>15261</id><value>Similar artists as %name%</value></string>
-  <string><id>15262</id><value>Top %name% albums</value></string>
-  <string><id>15263</id><value>Top %name% tracks</value></string>
-  <string><id>15264</id><value>Top %name% tags</value></string>
-  <string><id>15265</id><value>Biggest fans of %name%</value></string>
-  <string><id>15266</id><value>Listen to %name% fans last.fm radio</value></string>
-  <string><id>15267</id><value>Listen to %name% similar artists last.fm radio</value></string>
-  <string><id>15268</id><value>Top artists for user %name%</value></string>
-  <string><id>15269</id><value>Top albums for user %name%</value></string>
-  <string><id>15270</id><value>Top tracks for user %name%</value></string>
-  <string><id>15271</id><value>Friends of user %name%</value></string>
-  <string><id>15272</id><value>Neighbours of user %name%</value></string>
-  <string><id>15273</id><value>Weekly artist chart for %name%</value></string>
-  <string><id>15274</id><value>Weekly album chart for %name%</value></string>
-  <string><id>15275</id><value>Weekly track chart for %name%</value></string>
-  <string><id>15276</id><value>Listen to %name%'s neighbours last.fm radio</value></string>
-  <string><id>15277</id><value>Listen to %name%'s personal last.fm radio</value></string>
-  <string><id>15278</id><value>Listen to %name%'s loved tracks last.fm radio</value></string>
-  <string><id>15279</id><value>Retrieving list from last.fm...</value></string>
-  <string><id>15280</id><value>Can't retrieve list from last.fm...</value></string>
-  <string><id>15281</id><value>Enter an artist name to find related ones</value></string>
-  <string><id>15282</id><value>Enter a tag name to find similar ones</value></string>
-  <string><id>15283</id><value>Tracks recently listened by %name%</value></string>
-   
-  <string><id>15300</id><value>Path not found or invalid</value></string>
-  <string><id>15301</id><value>Could not connect to network server</value></string>
-  <string><id>15302</id><value>Ma nstab l-ebda server</value></string>
-  <string><id>15303</id><value>Workgroup ma nstabx</value></string>
-
-  <string><id>15310</id><value>Opening multi-path bookmark</value></string>
-  <string><id>15311</id><value>Path:</value></string>
-
-  <string><id>16000</id><value>Generali</value></string>
-  <string><id>16001</id><value>Configure Audio Hardware...</value></string>
-  <string><id>16002</id><value>CDDB lookup</value></string>
-  <string><id>16003</id><value>Player</value></string>
-  <string><id>16004</id><value>Play media from disc</value></string>
-  
-  <string><id>16009</id><value>Dahhal l-isem tal-Filmat</value></string>
-  <string><id>16010</id><value>Dahhal l-isem tal-Profil</value></string>
-  <string><id>16011</id><value>Dahhal l-isem tal-album</value></string>
-  <string><id>16012</id><value>Enter the Playlist Name</value></string>
-  <string><id>16013</id><value>Dahhal isem gdid tal-fajl</value></string>
-  <string><id>16014</id><value>Dahal l-isem tal-Kannestru</value></string>
-  <string><id>16015</id><value>Enter directory</value></string>
-  <string><id>16016</id><value>Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
-  <string><id>16017</id><value>Enter Search String</value></string>
-  <string><id>16018</id><value>Xejn</value></string>
-  <string><id>16019</id><value>Ghazel Awtomatikament</value></string>
-  <string><id>16020</id><value>DeInterlace</value></string>
-  <string><id>16021</id><value>Sync Bil-Fart</value></string>
-  <string><id>16022</id><value>Sync Biz-zewg</value></string>
-  <string><id>16023</id><value>Interlaced Handling</value></string>
-  <string><id>16024</id><value>Qed nikkancella...</value></string>
-  <string><id>16025</id><value>Dahhal l-isem tal-Artist</value></string>
-  <string><id>16026</id><value>Playlist playback aborted</value></string>
-  <string><id>16027</id><value>Too many consecutive failed items</value></string>
-
-  <string><id>16030</id><value>Hrigt minn Party Mode.</value></string>
-  <string><id>16031</id><value>Tfittxija fid-database bla rizultat.</value></string>
-  <string><id>16032</id><value>Ma stajtx ntella d-database.</value></string>
-  <string><id>16033</id><value>Ma stajtx niftah id-database.</value></string>
-  <string><id>16034</id><value>Ma stajtx ingib id-diska mid-database.</value></string>
-
-  <string><id>16100</id><value>Filmati Kollha</value></string>
-  <string><id>16101</id><value>Ma Rajtx</value></string>
-  <string><id>16102</id><value>Rajt</value></string>
-  <string><id>16103</id><value>Immarka li rajt</value></string>
-  <string><id>16104</id><value>Immarka li ma rajtx</value></string>
-  <string><id>16105</id><value>Biddel it-Titlu</value></string>
-  <string><id>16106</id><value>Use NTSC-M &amp; NTSC-J</value></string>
-  <string><id>16107</id><value>Uza NTSC-M biss</value></string>
-  <string><id>16108</id><value>Uza NTSC-J biss</value></string>
-  <string><id>16109</id><value>Uza PAL-60 biss</value></string>
-  <string><id>16110</id><value>Ghal Loghob 60hz Biss</value></string>
-
+  <string id="0">Programmi</string>
+  <string id="1">Ritratti</string>
+  <string id="2">Muzika</string>
+  <string id="3">Filmati</string>
+  <string id="4">Il-Gwida</string>
+  <string id="5">Settings</string>
+  <string id="7">Fajls</string>
+  <string id="8">It-Temp</string>
+  <string id="11">It-Tnejn</string>
+  <string id="12">It-Tlieta</string>
+  <string id="13">L-Erbgha</string>
+  <string id="14">Il-Hamis</string>
+  <string id="15">Il-Gimgha</string>
+  <string id="16">Is-Sibt</string>
+  <string id="17">Il-Hadd</string>
+  <string id="21">Jannar</string>
+  <string id="22">Frar</string>
+  <string id="23">Marzu</string>
+  <string id="24">April</string>
+  <string id="25">Mejju</string>
+  <string id="26">Gunju</string>
+  <string id="27">Lulju</string>
+  <string id="28">Awwissu</string>
+  <string id="29">Settembru</string>
+  <string id="30">Ottubru</string>
+  <string id="31">Novembru</string>
+  <string id="32">Dicembru</string>
+  <string id="100">Uri: Icons</string>
+  <string id="101">Uri: Lista</string>
+  <string id="102">Scan</string>
+  <string id="103">Ordni: Isem</string>
+  <string id="104">Ordni: Data</string>
+  <string id="105">Ordni: Kobor</string>
+  <string id="106">Le</string>
+  <string id="107">Iva</string>
+  <string id="108">SlideShow</string>
+  <string id="109">Ohloq Kopja Zghira</string>
+  <string id="110">Ohloq Kopja Zghira</string>
+  <string id="111">Shortcuts</string>
+  <string id="112">PAWSA</string>
+  <string id="113">Fajls : Sors</string>
+  <string id="114">Fajls : Destinazzjoni</string>
+  <string id="115">Ikkopja</string>
+  <string id="116">Mexxi</string>
+  <string id="117">Hassar</string>
+  <string id="118">Semmi</string>
+  <string id="119">Kannestru gdid</string>
+  <string id="120">Tikkonferma li Tikkopja</string>
+  <string id="121">Tikkonferma li Tmexxi</string>
+  <string id="122">Tikkonferma li Thassar</string>
+  <string id="123">Tikkopja dawn il-fajls?</string>
+  <string id="124">Tmexxi dawn il-fajls?</string>
+  <string id="125">Thassar dawn il-fajls?</string>
+  <string id="126">Stat</string>
+  <string id="127">Oggetti</string>
+  <string id="128">Generali</string>
+  <string id="129">Slideshow</string>
+  <string id="130">Is-Sistema</string>
+  <string id="131">Screen</string>
+  <string id="132">Albums</string>
+  <string id="133">Artisti</string>
+  <string id="134">Diski</string>
+  <string id="135">Generu</string>
+  <string id="136">Playlists</string>
+  <string id="137">Fittex</string>
+  <string id="138">Is-Sistema</string>
+  <string id="139">Temperaturi:</string>
+  <string id="140">CPU:</string>
+  <string id="141">GPU:</string>
+  <string id="142">Hin:</string>
+  <string id="143">Bhalissa:</string>
+  <string id="144">Verzjoni:</string>
+  <string id="145">Network:</string>
+  <string id="146">Tip:</string>
+  <string id="147">Statiku</string>
+  <string id="148">DHCP</string>
+  <string id="149">MAC</string>
+  <string id="150">IP:</string>
+  <string id="151">Link:</string>
+  <string id="152">Half duplex</string>
+  <string id="153">Full duplex</string>
+  <string id="154">Spazju</string>
+  <string id="155">Diska</string>
+  <string id="156">Vojt</string>
+  <string id="157">Stampa</string>
+  <string id="158">Memorja Vojta</string>
+  <string id="159">No link</string>
+  <string id="160">Vojta</string>
+  <string id="161">Unavailable</string>
+  <string id="162">Tray Miftuh</string>
+  <string id="163">Jaqra</string>
+  <string id="164">Bla Diska</string>
+  <string id="165">Diska Gewwa</string>
+  <string id="166">Qoxra:</string>
+  <string id="167">FTP server:</string>
+  <string id="168">Issinkronizza l-Hin:</string>
+  <string id="169">Resolution:</string>
+  <string id="170">Album:</string>
+  <string id="171">Artist:</string>
+  <string id="172">Data tal-Hrug:</string>
+  <string id="173">Rating:</string>
+  <string id="174">Generu:</string>
+  <string id="175">Tones:</string>
+  <string id="176">Stil:</string>
+  <string id="177">Erga Uri:</string>
+  <string id="178">Treks:</string>
+  <string id="179">Diska</string>
+  <string id="180">Duration</string>
+  <string id="181">Ghazel album</string>
+  <string id="182">Tracks</string>
+  <string id="183">Review</string>
+  <string id="184">Refresh</string>
+  <string id="185">Tfittxija ghall-album</string>
+  <string id="186">OK</string>
+  <string id="187">Ma Nstab l-ebda album!</string>
+  <string id="188">Ghazel Kollox</string>
+  <string id="189">Scanning media info</string>
+  <string id="190">Save</string>
+  <string id="191">Hawwad</string>
+  <string id="192">Clear</string>
+  <string id="193">Scan</string>
+  <string id="194">Tfittxija ghal...</string>
+  <string id="195">No IMDB info found!</string>
+  <string id="196">Ghazel filmat:</string>
+  <string id="197">Tfittxija ghall-informazzjoni mill-IMDB</string>
+  <string id="198">Dettalja tal-movie qed jinqraw</string>
+  <string id="199">Direttur:</string>
+  <string id="200">Skrittur:</string>
+  <string id="201">Sena:</string>
+  <string id="202">Tagline:</string>
+  <string id="203">Fil-Qosor:</string>
+  <string id="204">Rati:</string>
+  <string id="205">Voti:</string>
+  <string id="206">Kast</string>
+  <string id="207">Plot</string>
+  <string id="208">Ara</string>
+  <string id="209">Li Jmiss</string>
+  <string id="210">Ta' Qabel</string>
+  <string id="211">Tfittxija ghal for applications</string>
+  <string id="212">programmi li nstabu</string>
+  <string id="213">UI Calibration</string>
+  <string id="214">Screen Calibration</string>
+  <string id="215">Soften</string>
+  <string id="216">Lenti</string>
+  <string id="217">Gebbed</string>
+  <string id="218">DVD Diska</string>
+  <string id="219">Dahhal diska</string>
+  <string id="220">Remote Share</string>
+  <string id="221">Network mhux imqabbad</string>
+  <string id="222">Cancel</string>
+  <string id="223">Auto widescreen switching</string>
+  <string id="224">Velocita'</string>
+  <string id="225">Hin Transitorju</string>
+  <string id="226">Uza PAL60</string>
+  <string id="227">Uza CDDB</string>
+  <string id="228">Hawwad Playlist meta taqra</string>
+  <string id="229">HD Spindown time (mins)</string>
+  <string id="230">Filters</string>
+  <string id="231">Xejn</string>
+  <string id="232">Point</string>
+  <string id="233">Linear</string>
+  <string id="234">Anisotropic</string>
+  <string id="235">Quincunx</string>
+  <string id="236">Gaussian Cubic</string>
+  <string id="237">Minification:</string>
+  <string id="238">Magnification:</string>
+  <string id="240">Autorun DVD-Video</string>
+  <string id="241">Autorun VCD/SVCD</string>
+  <string id="242">Autorun Audio-CD</string>
+  <string id="243">Autorun Loghob tal-XBOX</string>
+  <string id="244">Autorun Filmati</string>
+  <string id="245">Autorun Muzika</string>
+  <string id="246">Autorun Stampi</string>
+  <string id="247">Scripts</string>
+  <string id="248">Lingwa</string>
+  <string id="249">Muzika</string>
+  <string id="250">Vizwalizzazzjoni</string>
+  <string id="251">Ghazel destinazzjoni</string>
+  <string id="252">Output Speakers kollha</string>
+  <string id="253">Numru ta channels</string>
+  <string id="254">DD Stereo Passthrough</string>
+  <string id="255">CDDB</string>
+  <string id="256">Querying freedb for CDDB info</string>
+  <string id="257">Problema</string>
+  <string id="258">Uza ID3 tags</string>
+  <string id="259">Opening</string>
+  <string id="260">Shoutcast</string>
+  <string id="261">stennija ghall-bidu....</string>
+  <string id="262">Scripts Output</string>
+  <string id="263">HTTP server:</string>
+  <string id="264">Irrekordja</string>
+  <string id="265">Ieqaf Rek.</string>
+  <string id="266">Ordni: Trek</string>
+  <string id="267">Ordni: Hin</string>
+  <string id="268">Ordni: Title</string>
+  <string id="269">Ordni: Artist</string>
+  <string id="270">Ordni: Album</string>
+  <string id="271">Top 100</string>
+  <string id="272">Top Left Overscan Compensation</string>
+  <string id="273">Bottom Right Overscan Compensation</string>
+  <string id="274">Pozizzjoni tas-Sottotitolis</string>
+  <string id="275">Pixel Ratio Adjustment</string>
+  <string id="276">Move the arrow to change the amount of overscan</string>
+  <string id="277">Move the bar to change the Sottotitolis position</string>
+  <string id="278">Change the rectangle so that it is perfectly square</string>
+  <string id="279">Unable to load settings</string>
+  <string id="280">using default fallbacks</string>
+  <string id="281">Iccekkja l-xml fajls</string>
+  <string id="282">instabu %i oggetti</string>
+  <string id="283">Rizultati tat-tfittxija</string>
+  <string id="284">Ma nstabux rizultati</string>
+  <string id="285">Deinterlace filter</string>
+  <string id="286">Postprocessing filter</string>
+  <string id="287">SRT Sottotitolis</string>
+  <string id="288">Font</string>
+  <string id="289">Kobor</string>
+  <string id="290">Amplifikazzjoni (dB)</string>
+  <string id="291">Video</string>
+  <string id="292">Awdjo</string>
+  <string id="293">Sottotitolis</string>
+  <string id="294">Ohloq bookmark</string>
+  <string id="295">Cycle bookmarks</string>
+  <string id="296">Hassar bookmarks</string>
+  <string id="297">AVDelay</string>
+  <string id="298">Slider</string>
+  <string id="300">1. Lingwa</string>
+  <string id="301">2. Volum</string>
+  <string id="302">3. Stream</string>
+  <string id="303">Ittardja</string>
+  <string id="304">Lingwa</string>
+  <string id="305">Jintuza</string>
+  <string id="306">Non-Interleaved</string>
+  <string id="307">Auto</string>
+  <string id="308">vertical deblocking filter</string>
+  <string id="309">horizontal deblocking filter</string>
+  <string id="310">Auto brightness/contrast</string>
+  <string id="311">Dering</string>
+  <string id="312">(0=awto)</string>
+  <string id="313">Erga Organizza d-database</string>
+  <string id="314">Preparing...</string>
+  <string id="315">Database error</string>
+  <string id="316">Tfittxija ghal diski...</string>
+  <string id="317">Organizzar lesta tajjeb</string>
+  <string id="318">Markar tad-diski mhassara</string>
+  <string id="319">Problema fl-organizzar tad-diski</string>
+  <string id="320">Tfittxija ghall-artisti...</string>
+  <string id="321">Problema fl-organizzar tal-artisti</string>
+  <string id="322">Tfittxija ghall-generu...</string>
+  <string id="323">Problema fl-organizzar tal-generu</string>
+  <string id="324">Tfittxija ghal pathes...</string>
+  <string id="325">Error reorganizing pathes</string>
+  <string id="326">Tfittxija ghal albums...</string>
+  <string id="327">Problema fl-organizzar tal-albums</string>
+  <string id="328">Tibdiliet qed jigu rrekordjati...</string>
+  <string id="329">Problema biex it-tibdiliet jigu rrekordjati</string>
+  <string id="330">Dan il-process jista jdum...</string>
+  <string id="331">Database qed tigi kkompressata...</string>
+  <string id="332">Problema biex id-database tigi kkompressata</string>
+  <string id="333">Trid torganizza database tal-muzika?</string>
+  <string id="334">Organizza database tal-muzika</string>
+  <string id="335">Ibda</string>
+  <string id="336">Adjust Framerate</string>
+  <string id="337">Output Awdjo:</string>
+  <string id="338">Analog</string>
+  <string id="339">Digitali</string>
+  <string id="340">Artisti Varji</string>
+  <string id="341">Ara DVD</string>
+  <string id="342">Filmati</string>
+  <string id="343">Rranga Framerate</string>
+  <string id="344">Atturi</string>
+  <string id="345">Sena</string>
+  <string id="346">Stack</string>
+  <string id="347">Unstack</string>
+  <string id="348">Flatten Directory Hierarchy</string>
+  <string id="349">Uri Default.xbe biss</string>
+  <string id="350">Programmi</string>
+  <string id="351">Mitfi</string>
+  <string id="352">Baxx</string>
+  <string id="353">Iswed</string>
+  <string id="354">Matrix Trails</string>
+  <string id="355">Screensaver Idle Timeout</string>
+  <string id="356">Screensaver Mode</string>
+  <string id="357">Shutdown Idle Timeout</string>
+  <string id="358">L-albums kollha</string>
+  <string id="359">L-albums ricenti</string>
+  <string id="360">Screensaver</string>
+  <string id="361">R. SlideShow</string>
+  <string id="362">Screensaver Fade Level (%)</string>
+  <string id="363">Ordni: File</string>
+  <string id="364">DD/DTS Multichannel Passthrough</string>
+  <string id="365">Ordni: Isem</string>
+  <string id="366">Ordni: Sena</string>
+  <string id="367">Ordni: Rating</string>
+  <string id="368">IMDB</string>
+  <string id="369">Titlu</string>
+  <string id="370">Tempesti</string>
+  <string id="371">Kemxejn</string>
+  <string id="372">L-bicca l-kbira</string>
+  <string id="373">Xemxi</string>
+  <string id="374">Msahhab</string>
+  <string id="375">Snow</string>
+  <string id="376">Xita</string>
+  <string id="377">Hafif</string>
+  <string id="378">AM</string>
+  <string id="379">PM</string>
+  <string id="380">Rxiex</string>
+  <string id="381">Ftit</string>
+  <string id="382">Scattered</string>
+  <string id="383">Rih</string>
+  <string id="384">Qawwi</string>
+  <string id="385">Hafif</string>
+  <string id="386">Car</string>
+  <string id="387">Shab</string>
+  <string id="388">N/A</string>
+  <string id="389">N/A</string>
+  <string id="390">N/A</string>
+  <string id="391">N/A</string>
+  <string id="392">N/A</string>
+  <string id="393">N/A</string>
+  <string id="394">N/A</string>
+  <string id="395">N/A</string>
+  <string id="396">Ghazel Lokalita'</string>
+  <string id="397">Refresh Time</string>
+  <string id="398">Kejl tat-Temperatur</string>
+  <string id="399">Kejl tal-Velocita'</string>
+  <string id="400">It-Temp</string>
+  <string id="401">Temp</string>
+  <string id="402">Thossok</string>
+  <string id="403">UV Index</string>
+  <string id="404">Rih</string>
+  <string id="405">Dew Point</string>
+  <string id="406">Umdita'</string>
+  <string id="407">Minn</string>
+  <string id="408">Forza</string>
+  <string id="410">Access ghall-weather.com</string>
+  <string id="411">Tfittxija ghat-Temp ta':</string>
+  <string id="412">Problemi biex jinkiseb it-Temp</string>
+  <string id="413">Manwali</string>
+  <string id="414">No review for this album</string>
+  <string id="415">Downloading thumbnail...</string>
+  <string id="416">Not available</string>
+  <string id="417">Uri: Big Icons</string>
+  <string id="418">Filmati/Genres</string>
+  <string id="419">Filmati/Actors</string>
+  <string id="420">Filmati/Years</string>
+  <string id="421">Filmati/Title</string>
+  <string id="422">Hassar informazzjoni dwar albums</string>
+  <string id="423">Hassar informazzjoni min CDDB</string>
+  <string id="424">Ghazel</string>
+  <string id="425">No albuminfo found.</string>
+  <string id="426">No CDDB info found.</string>
+  <string id="427">Disc:</string>
+  <string id="428">Insert correct CD/DVD</string>
+  <string id="429">Please insert the following CD/DVD</string>
+  <string id="430">Ordni: DVD#</string>
+  <string id="431">No Cache</string>
+  <string id="432">Hassar movie from database</string>
+  <string id="433">Are you sure to remove</string>
+  <string id="434">the movie?</string>
+  <string id="435">Track</string>
+  <string id="436">Year:</string>
+  <string id="437">Duration:</string>
+  <string id="438">Opening file</string>
+  <string id="439">Cache</string>
+  <string id="440">Harddisk</string>
+  <string id="441">UDF</string>
+  <string id="442">LAN</string>
+  <string id="443">Internet</string>
+  <string id="444">video</string>
+  <string id="445">audio</string>
+  <string id="446">DVD</string>
+  <string id="447">Autorun</string>
+  <string id="448">LCD</string>
+  <string id="449">Jintuza</string>
+  <string id="450">Columns</string>
+  <string id="451">Row 1 adress:</string>
+  <string id="452">Row 2 adress:</string>
+  <string id="453">Row 3 adress:</string>
+  <string id="454">Row 4 adress:</string>
+  <string id="455">Rows:</string>
+  <string id="456">Mode:</string>
+  <string id="457">Uri Differenti</string>
+  <string id="458">B/Mark</string>
+  <string id="459">Subs</string>
+  <string id="460">Audio Stream</string>
+  <string id="461">[active]</string>
+  <string id="462">Sottotitoli</string>
+  <string id="463">Backlight</string>
+  <string id="464">Brightness</string>
+  <string id="465">Contrast</string>
+  <string id="466">Gamma</string>
+  <string id="467">Type</string>
+  <string id="468">Move the bar to change the osd position</string>
+  <string id="469">OSD Position</string>
+  <string id="470">Credits</string>
+  <string id="471">Modchip</string>
+  <string id="472">OSD Timeout</string>
+  <string id="473">High Quality Resampling</string>
+  <string id="474">Off</string>
+  <string id="475">Music Only</string>
+  <string id="476">Music &amp; Video</string>
+  <string id="477">Unable to load playlist</string>
+  <string id="478">OSD</string>
+  <string id="479">Skin and Language</string>
+  <string id="480">User Interface</string>
+  <string id="481">Audio Options</string>
+  <string id="482">Dwar XBMC</string>
+  <string id="483">Album</string>
+  <string id="484">Artist</string>
+  <string id="485">Hassar album</string>
+  <string id="486">Irrepeti</string>
+  <string id="487">Irrepeti Wahda</string>
+  <string id="488">Irrepeti Kannestru playlist</string>
+  <string id="489">Uza playlist in songs</string>
+  <string id="490">Qlib awtomatiku bejn lista u icons waqt muzika</string>
+  <string id="491">Uza big icons</string>
+  <string id="492">Kabbar Sottotitolis</string>
+  <string id="493">Advanced Options (Experts Biss!)</string>
+  <string id="494">Overall Audio Headroom (dB)</string>
+  <string id="495">Upsample videos to GUI resolution</string>
+  <string id="496">Calibration</string>
+  <string id="497">Ahbi Media Extensions</string>
+  <string id="498">Issortja: Bit-Tip</string>
+  <string id="10000">Home</string>
+  <string id="10001">Programmi</string>
+  <string id="10002">Stampi</string>
+  <string id="10003">Fajls</string>
+  <string id="10004">Settings</string>
+  <string id="10005">Muzika</string>
+  <string id="10006">Filmati</string>
+  <string id="10007">Informazzjoni tas-Sistema</string>
+  <string id="10008">Settings-&gt;Generali</string>
+  <string id="10009">Settings-&gt;Screen</string>
+  <string id="10010">Settings-&gt;Screen-&gt;UI Calibration</string>
+  <string id="10011">Settings-&gt;Screen-&gt;Screen Calibration</string>
+  <string id="10012">Settings-&gt;SlideShow</string>
+  <string id="10013">Settings-&gt;Screen-&gt;Filters</string>
+  <string id="10014">Settings-&gt;Muzika</string>
+  <string id="10015">Settings-&gt;Screen-&gt;Sottotitolis</string>
+  <string id="10016">Settings-&gt;Screen-&gt;Screensaver</string>
+  <string id="10017">Settings-&gt;Temp</string>
+  <string id="10020">Settings-&gt;Scripts</string>
+  <string id="10021">Filmati/genre</string>
+  <string id="10022">Filmati/actor</string>
+  <string id="10023">Filmati/year</string>
+  <string id="10024">Settings-&gt;Programs</string>
+  <string id="10025">Filmati/title</string>
+  <string id="10026">Settings-&gt;General-&gt;Cache</string>
+  <string id="10027">Settings-&gt;General-&gt;Autorun</string>
+  <string id="10028">Filmati/playlist</string>
+  <string id="10029">Settings-&gt;General-&gt;LCD</string>
+  <string id="10100">Yes/no dialog</string>
+  <string id="10101">Progress dialog</string>
+  <string id="10500">My Music/playlist</string>
+  <string id="10501">My Music/fajls</string>
+  <string id="10502">My Music/albums</string>
+  <string id="10503">My Music/artists</string>
+  <string id="10504">My Music/genres</string>
+  <string id="10505">Muzika/top100</string>
+  <string id="11000">tastiera</string>
+  <string id="12000">Ghazel dialog</string>
+  <string id="12001">Diski/info</string>
+  <string id="12002">Dialog OK</string>
+  <string id="12003">Filmati/Info</string>
+  <string id="12004">Programmi/Info</string>
+  <string id="12005">Stampa Shiha</string>
+  <string id="12006">Vizwalizazzjoni</string>
+  <string id="12007">Ritratti/slideshow</string>
+  <string id="12008">Filestacking dialog</string>
+  <string id="12600">It-temp</string>
+  <string id="12900">Skrinsejver</string>
+  <string id="12901">OSD Shih</string>
+  <string id="13000">Sistema</string>
+  <string id="13001">Spindown tal-HD immedjataa</string>
+  <string id="13002">Video Biss</string>
+  <string id="13003">- Stennija</string>
+  <string id="13004">- L-anqas zmien tal-fajl</string>
+  <string id="13100">Filter Teptip</string>
+  <string id="13200">Profil</string>
+  <string id="13201">Hassar profil '%s'?</string>
+  <string id="13202">Issevja settings bhala profil...</string>
+  <string id="13203">Profil '%s' imtella tajjeb</string>
+  <string id="13204">L-ahhar Profil uzat:</string>
+  <string id="13205">Ma nafx</string>
+  <string id="13300">Fanspeed:</string>
+  <string id="13301">Auto temperature control</string>
+  <string id="13302">Fanspeed control</string>
+  <string id="13303">Skin Fonts</string>
+  <string id="13304">Enable Flipping Bi-Directional Strings</string>
+  <string id="13305">Enable RSS Feeds</string>
+  <string id="13306">Ahbi Kannestri Predeccessuri</string>
+  <string id="13307">Track Naming Template</string>
+  <string id="13308">Tixtieq tirributja l-xbox</string>
+  <string id="13309">minflok l-XBMC biss?</string>
+  <string id="13310">Zoom Effect</string>
+  <string id="13311">Float Effect</string>
+  <string id="13312">Black Bar Reduction</string>
+  <string id="13313">Restart</string>
+  <string id="13314">Crossfade</string>
+  <string id="13315">Regenerate Thumbnails</string>
+  <string id="13316">Recursive Thumbnails</string>
+  <string id="13317">View Slideshow</string>
+  <string id="13318">Recursive Slideshow</string>
+  <string id="13319">Randomize</string>
+  <string id="13320">Stereo</string>
+  <string id="13321">Xellug biss</string>
+  <string id="13322">Lemin biss</string>
+  <string id="13323">Enable CD+G</string>
+  <string id="13324">Background Transparenti</string>
+  <string id="13325">Foreground Transparenti</string>
+  <string id="13326">A/V delay</string>
+  <string id="13327">Karaoke</string>
+  <string id="13328">%s ma nstabx</string>
+  <string id="13329">Ma stajtx niftah %s</string>
+  <string id="13330">Ma stajtx ntella %s</string>
+  <string id="13331">Problema: spiccat il-memorja</string>
+  <string id="13332">Tella l'fuq</string>
+  <string id="13333">Nizzel l'isfel</string>
+  <string id="13334">Biddel l-Label</string>
+  <string id="13335">Uza dejjem</string>
+  <string id="13336">Nehhi l-Buttona</string>
+  <string id="13337">- 2 Channel PCM Passthrough</string>
+  <string id="13338">LED ta' Quddiem</string>
+  <string id="13339">Kulur tal-LED ta' Quddiem</string>
+  <string id="13340">Halli kif inhu</string>
+  <string id="13341">Ahdar</string>
+  <string id="13342">Orangjo</string>
+  <string id="13343">Ahmar</string>
+  <string id="13344">Cycle</string>
+  <string id="13345">Itfi LED waqt Filmat</string>
+  <string id="13346">Informazzjoni tal-Filmat</string>
+  <string id="13347">Itfa fil-Queue</string>
+  <string id="13348">Fittex IMDb...</string>
+  <string id="13349">Query Info For All Files</string>
+  <string id="13350">Indoqq nhalissa...</string>
+  <string id="13351">Informazzjoni dwar l-album</string>
+  <string id="13352">Fittex fid-Database kollha</string>
+  <string id="13353">Ieqaf Fittex</string>
+  <string id="13354">Render Method</string>
+  <string id="13355">Pixel Shader - Kwalita Baxxa</string>
+  <string id="13356">Hardware Overlays</string>
+  <string id="13357">Pixel Shader - Kwalita Gholja</string>
+  <string id="13358">Doqq din</string>
+  <string id="13359">Set Artist Thumb</string>
+  <string id="13360">Generate Thumbs</string>
+  <string id="13361">Attiva l-Vuci</string>
+  <string id="13362">Voice Mask</string>
+  <string id="13363">- Enable Spectrum Energy Weight</string>
+  <string id="13364">-- Spectrum Energy Weight Value</string>
+  <string id="13365">- Enable Pitch Scaling</string>
+  <string id="13366">-- Pitch Scaling Value</string>
+  <string id="13367">- Enable Whisper Factor</string>
+  <string id="13368">-- Whisper Factor Value</string>
+  <string id="13369">- Enable Robotic Factor</string>
+  <string id="13370">-- Robotic Factor Value</string>
+  <string id="13371">- Port 1 Voice</string>
+  <string id="13372">- Port 2 Voice</string>
+  <string id="13373">- Port 3 Voice</string>
+  <string id="13374">- Port 4 Voice</string>
+  <string id="13375">Attiva l-apparat</string>
+  <string id="13376">Volum</string>
+  <string id="13377">Default View Mode</string>
+  <string id="13378">Default Brightness</string>
+  <string id="13379">Default Contrast</string>
+  <string id="13380">Default Gamma</string>
+  <string id="13381">Resume Video</string>
+  <string id="13382">Voice Mask - Port 1</string>
+  <string id="13383">Voice Mask - Port 2</string>
+  <string id="13384">Voice Mask - Port 3</string>
+  <string id="13385">Voice Mask - Port 4</string>
+  <string id="13386">Use Time Based Seeking</string>
+  <string id="13387">Track Naming Template Right</string>
+  <string id="13388">Presets</string>
+  <string id="13389">There are no presets available
+for this visualisation</string>
+  <string id="13390">There are no settings available
+for this visualisation</string>
+  <string id="13391">Eject/Load</string>
+  <string id="13392">Use Visualisation if playing audio</string>
+  <string id="13393">Ikkalkula l-kobor</string>
+  <string id="13394">Ikkalkula l-kobor tal-Kannestru</string>
+  <string id="13395">Video Settings</string>
+  <string id="13396">Audio and Sottotitoli Settings</string>
+  <string id="13397">Attiva Sottotitoli</string>
+  <string id="13398">Bookmarks</string>
+  <string id="13399">Ignore "The" when sorting</string>
+  <string id="13400">Crossfade albumtracks</string>
+  <string id="13401">Browse for %s</string>
+  <string id="13402">Show track position</string>
+  <string id="13403">Clear Default</string>
+  <string id="13404">Resume</string>
+  <string id="13405">Get Thumb</string>
+  <string id="14000">Stack</string>
+  <string id="14001">Unstack</string>
+  <string id="14002">Stacking: Fuzzy</string>
+  <string id="14003">Downloading playlist file...</string>
+  <string id="14004">Downloading streams list...</string>
+  <string id="14005">Parsing streams list...</string>
+  <string id="14006">Downloading streams list failed</string>
+  <string id="14007">Downloading playlist file failed</string>
+  <string id="14008">Enable Kai Notifications</string>
+  <string id="14009">Games Directory</string>
+  <string id="14010">Autoswitch to Thumbs based on</string>
+  <string id="14011">Enable Autoswitching to Thumbs View</string>
+  <string id="14012">- Use Large Icons</string>
+  <string id="14013">- Switch Based on</string>
+  <string id="14014">- Percentage</string>
+  <string id="14015">No Files and at least one Thumb</string>
+  <string id="14016">At least one File and Thumb</string>
+  <string id="14017">Percentage of Thumbs</string>
+  <string id="14018">View Options</string>
+  <string id="14019">Change Area Code 1</string>
+  <string id="14020">Change Area Code 2</string>
+  <string id="14021">Change Area Code 3</string>
+  <string id="14022">Library</string>
+  <string id="14023">No TV</string>
+  <string id="14024">Enter the nearest large town or US ZIP code</string>
+  <string id="14025">Video/Audio/DVD Cache - Harddisk</string>
+  <string id="14026">Video Cache - DVDRom</string>
+  <string id="14027">- Local Network</string>
+  <string id="14028">- Internet</string>
+  <string id="14030">Audio Cache - DVDRom</string>
+  <string id="14031">- Local Network</string>
+  <string id="14032">- Internet</string>
+  <string id="14034">DVD Cache - DVDRom</string>
+  <string id="14035">- Local Network</string>
+  <string id="14036">Servers</string>
+  <string id="14037">Look and Feel</string>
+  <string id="14038">Network settings changed</string>
+  <string id="14039">XBMC requires to restart to change your</string>
+  <string id="14040">network setup.  Would you like to restart now?</string>
+  <string id="14041">Post Processing</string>
+  <string id="14042">Engine IP Address</string>
+  <string id="14043">- Shutdown while playing</string>
+  <string id="14044">%i min</string>
+  <string id="14045">%i sek</string>
+  <string id="14046">%i ms</string>
+  <string id="14047">%i %%</string>
+  <string id="14048">%i kbps</string>
+  <string id="14049">%i kb</string>
+  <string id="14050">%i.0 dB</string>
+  <string id="14051">Format tal-Hin</string>
+  <string id="14052">Format tad-Data</string>
+  <string id="14053">GUI Filters</string>
+  <string id="14054">Enable Internet Lookups</string>
+  <string id="14055">Use Background Scanning</string>
+  <string id="14056">Ieqaf Fittex</string>
+  <string id="14057">Not possible while scanning for media info</string>
+  <string id="14058">Film Grain Effect</string>
+  <string id="14059">Look for custom thumbnails on remote shares</string>
+  <string id="14060">Unknown type Cache - Internet</string>
+  <string id="14061">Auto</string>
+  <string id="14062">Dahhal username ghal</string>
+  <string id="14063">Data &amp; Hin</string>
+  <string id="14064">Irranga id-Data</string>
+  <string id="14065">Irranga il-Hin</string>
+  <string id="14066">Enter the Time in 24 hour HH:MM format</string>
+  <string id="14067">Enter the Date in DD/MM/YYYY format</string>
+  <string id="14068">Enter the IP address</string>
+  <string id="14069">Trid tapplika dawn it-tibdiliet?</string>
+  <string id="14070">Applika tibdiliet issa</string>
+  <string id="14071">Allow File Renaming and Deletion</string>
+  <string id="14072">Attiva XLink Kai</string>
+  <string id="14073">XLink Kai mhux attivat.</string>
+  <string id="15000">XLink Kai</string>
+  <string id="15001">The service is not connected, would you like to attempt</string>
+  <string id="15002">reconnecting it with Xbox Media Center?</string>
+  <string id="15003">Enter your message</string>
+  <string id="15004">You've been invited to play %s.</string>
+  <string id="15005">Data: %s</string>
+  <string id="15006">Minn: %s</string>
+  <string id="15007">Invit</string>
+  <string id="15008">Gejt mistieden tinghaqad ma %s.</string>
+  <string id="15009">Offline</string>
+  <string id="15010">Hbieb</string>
+  <string id="15011">View: Friends</string>
+  <string id="15012">Inghaqad</string>
+  <string id="15013">Vuci</string>
+  <string id="15014">Invit</string>
+  <string id="15015">Nehhi</string>
+  <string id="15016">Loghob</string>
+  <string id="15017">View: Games</string>
+  <string id="15018">Idhol</string>
+  <string id="15019">Zid</string>
+  <string id="15020">Host</string>
+  <string id="15021">Arenas</string>
+  <string id="15022">View: Arenas</string>
+  <string id="15023">Ilghab</string>
+  <string id="15024">Zid</string>
+  <string id="15025">Host</string>
+  <string id="15026">Tkellem</string>
+  <string id="15027">View: Diskursata</string>
+  <string id="15028">Tastiera</string>
+  <string id="15029">A password is required to join this arena.</string>
+  <string id="15030">Service has disconnected</string>
+  <string id="15031">XLink Kai Authentication</string>
+  <string id="15032">Your username and/or password was rejected by the</string>
+  <string id="15033">orbital server. Please check your configuration.</string>
+  <string id="15034">ghadu kemm dahal</string>
+  <string id="15035">attiva diskursata</string>
+  <string id="15036">bghatlek invit</string>
+  <string id="15037">XBMC is unable to confirm your network is reachable.</string>
+  <string id="15038">You may experience difficulties joining or hosting games.</string>
+  <string id="15039">Xbox Media Center unable to locate game automatically.</string>
+  <string id="15040">Insert the game disk into your XBOX or press 'A' to cancel</string>
+  <string id="15041">and launch the game manually.</string>
+  <string id="15042">Access mwaqqaf</string>
+  <string id="15043">%s jidhol fil-parlata.</string>
+  <string id="15044">%s ihalli l-parlata.</string>
+  <string id="15045">Ikter messagg personali.</string>
+  <string id="15046">Current Arena</string>
+  <string id="15047">Dahhal password ghall-arena tieghek.</string>
+  <string id="15048">Dahhal deskrizzjoni tal-arena tieghek.</string>
+  <string id="15049">Servi Loghba</string>
+  <string id="15050">Servi go Arena Privata</string>
+  <string id="15051">Limitu ta' gukaturi</string>
+  <string id="15052">Password</string>
+  <string id="15053">Deskrizzjoni</string>
+  <string id="15054">Invite Dialog</string>
+  <string id="15055">Ghazel loghba:</string>
+  <string id="15056">Dahhal Messagg:</string>
+  <string id="15057">Ibghat</string>
+  <string id="15058">Servi</string>
+  <string id="15059">Invit accettat!</string>
+  <string id="15060">Messagg</string>
+  <string id="15061">Gejt mistieden tilghab go %s.</string>
+  <string id="15062">Use alternate mplayer location</string>
+  <string id="15100">Library</string>
+  <string id="15101">Database</string>
+  <string id="15102">* Albums Kollha</string>
+  <string id="15103">* Artisti Kollha</string>
+  <string id="15104">* Diski Kollha</string>
+  <string id="15105">* Generi kollha</string>
+  <string id="15106">Remember selected file on forward navigation</string>
+  <string id="15107">Buffering...</string>
+  <string id="15108">Navigation Sounds</string>
+  <string id="15109">Skin Default</string>
+  <string id="15110">Controller Rumble</string>
+  <string id="15111">Skin Theme</string>
+  <string id="15112">Default Theme</string>
+  <string id="15200">LastFM</string>
+  <string id="15201">Submit Songs to LastFM</string>
+  <string id="15202">LastFM Username</string>
+  <string id="15203">LastFM Password</string>
+  <string id="15204">Unable to handshake: sleeping...</string>
+  <string id="15205">Please Update XBMC</string>
+  <string id="15206">Submission failed: bad authorization.</string>
+  <string id="15207">Connected</string>
+  <string id="15208">Not Connected</string>
+  <string id="15209">Submit Interval %i</string>
+  <string id="15210">Cached %i Songs</string>
+  <string id="15211">Submitting...</string>
+  <string id="15212">Submitting in %i secs</string>
+  <string id="15213">Play Using...</string>
+  <string id="15214">Use Smoothed A/V Syncronization</string>
+  <string id="15215">Hide File Names in Thumbs View</string>
+  <string id="15250">Submit Last.fm Radio to LastFM</string>
+  <string id="15251">Connecting to Last.fm...</string>
+  <string id="15252">Selecting station...</string>
+  <string id="15253">Search similar artists...</string>
+  <string id="15254">Search similar tags...</string>
+  <string id="15255">Your profile (%name%)</string>
+  <string id="15256">Overall top tags</string>
+  <string id="15257">Top artists for tag %name%</string>
+  <string id="15258">Top albums for tag %name%</string>
+  <string id="15259">Top tracks for tag %name%</string>
+  <string id="15260">Listen to tag %name% last.fm radio</string>
+  <string id="15261">Similar artists as %name%</string>
+  <string id="15262">Top %name% albums</string>
+  <string id="15263">Top %name% tracks</string>
+  <string id="15264">Top %name% tags</string>
+  <string id="15265">Biggest fans of %name%</string>
+  <string id="15266">Listen to %name% fans last.fm radio</string>
+  <string id="15267">Listen to %name% similar artists last.fm radio</string>
+  <string id="15268">Top artists for user %name%</string>
+  <string id="15269">Top albums for user %name%</string>
+  <string id="15270">Top tracks for user %name%</string>
+  <string id="15271">Friends of user %name%</string>
+  <string id="15272">Neighbours of user %name%</string>
+  <string id="15273">Weekly artist chart for %name%</string>
+  <string id="15274">Weekly album chart for %name%</string>
+  <string id="15275">Weekly track chart for %name%</string>
+  <string id="15276">Listen to %name%'s neighbours last.fm radio</string>
+  <string id="15277">Listen to %name%'s personal last.fm radio</string>
+  <string id="15278">Listen to %name%'s loved tracks last.fm radio</string>
+  <string id="15279">Retrieving list from last.fm...</string>
+  <string id="15280">Can't retrieve list from last.fm...</string>
+  <string id="15281">Enter an artist name to find related ones</string>
+  <string id="15282">Enter a tag name to find similar ones</string>
+  <string id="15283">Tracks recently listened by %name%</string>
+  <string id="15300">Path not found or invalid</string>
+  <string id="15301">Could not connect to network server</string>
+  <string id="15302">Ma nstab l-ebda server</string>
+  <string id="15303">Workgroup ma nstabx</string>
+  <string id="15310">Opening multi-path bookmark</string>
+  <string id="15311">Path:</string>
+  <string id="16000">Generali</string>
+  <string id="16001">Configure Audio Hardware...</string>
+  <string id="16002">CDDB lookup</string>
+  <string id="16003">Player</string>
+  <string id="16004">Play media from disc</string>
+  <string id="16009">Dahhal l-isem tal-Filmat</string>
+  <string id="16010">Dahhal l-isem tal-Profil</string>
+  <string id="16011">Dahhal l-isem tal-album</string>
+  <string id="16012">Enter the Playlist Name</string>
+  <string id="16013">Dahhal isem gdid tal-fajl</string>
+  <string id="16014">Dahal l-isem tal-Kannestru</string>
+  <string id="16015">Enter directory</string>
+  <string id="16016">Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
+  <string id="16017">Enter Search String</string>
+  <string id="16018">Xejn</string>
+  <string id="16019">Ghazel Awtomatikament</string>
+  <string id="16020">DeInterlace</string>
+  <string id="16021">Sync Bil-Fart</string>
+  <string id="16022">Sync Biz-zewg</string>
+  <string id="16023">Interlaced Handling</string>
+  <string id="16024">Qed nikkancella...</string>
+  <string id="16025">Dahhal l-isem tal-Artist</string>
+  <string id="16026">Playlist playback aborted</string>
+  <string id="16027">Too many consecutive failed items</string>
+  <string id="16030">Hrigt minn Party Mode.</string>
+  <string id="16031">Tfittxija fid-database bla rizultat.</string>
+  <string id="16032">Ma stajtx ntella d-database.</string>
+  <string id="16033">Ma stajtx niftah id-database.</string>
+  <string id="16034">Ma stajtx ingib id-diska mid-database.</string>
+  <string id="16100">Filmati Kollha</string>
+  <string id="16101">Ma Rajtx</string>
+  <string id="16102">Rajt</string>
+  <string id="16103">Immarka li rajt</string>
+  <string id="16104">Immarka li ma rajtx</string>
+  <string id="16105">Biddel it-Titlu</string>
+  <string id="16106">Use NTSC-M &amp; NTSC-J</string>
+  <string id="16107">Uza NTSC-M biss</string>
+  <string id="16108">Uza NTSC-J biss</string>
+  <string id="16109">Uza PAL-60 biss</string>
+  <string id="16110">Ghal Loghob 60hz Biss</string>
 </strings>

@@ -1,271 +1,269 @@
-<?xml version="1.0" encoding="ISO-8859-2" standalone="yes"?>
-
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Czech language for XBMC -->
 <!-- Based on 2003-12-31 build -->
 <!-- Translation done by Johny52 -->
 <!-- Vsechny pripominky k prekladu posilejte na johny52@seznam.cz -->
-
+<!--$Revision$-->
 <strings>
-  <string><id>0</id><value>Programy</value></string>
-  <string><id>1</id><value>Obrazky</value></string>
-  <string><id>2</id><value>Hudba</value></string>
-  <string><id>3</id><value>Video</value></string>
-  <string><id>4</id><value>TV Pruvodce</value></string>
-  <string><id>5</id><value>Nastaveni</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
-  <string><id>7</id><value>Soubory</value></string>
-  <string><id>11</id><value>Pondeli</value></string>
-  <string><id>12</id><value>Utery</value></string>
-  <string><id>13</id><value>Streda</value></string>
-  <string><id>14</id><value>Ctvrtek</value></string>
-  <string><id>15</id><value>Patek</value></string>
-  <string><id>16</id><value>Sobota</value></string>
-  <string><id>17</id><value>Nedele</value></string>
-  <string><id>21</id><value>Ledna</value></string>
-  <string><id>22</id><value>Unora</value></string>
-  <string><id>23</id><value>Brezna</value></string>
-  <string><id>24</id><value>Dubna</value></string>
-  <string><id>25</id><value>Kvetna</value></string>
-  <string><id>26</id><value>Cervna</value></string>
-  <string><id>27</id><value>Cervence</value></string>
-  <string><id>28</id><value>Srpna</value></string>
-  <string><id>29</id><value>Zari</value></string>
-  <string><id>30</id><value>Rijna</value></string>
-  <string><id>31</id><value>Listopadu</value></string>
-  <string><id>32</id><value>Prosince</value></string>
-  <string><id>100</id><value>Ikony</value></string>
-  <string><id>101</id><value>Seznam</value></string>
-  <string><id>102</id><value>Prohledat</value></string>
-  <string><id>103</id><value>Podle nazvu</value></string>
-  <string><id>104</id><value>Podle data</value></string>
-  <string><id>105</id><value>Podle velikosti</value></string>
-  <string><id>106</id><value>Ne</value></string>
-  <string><id>107</id><value>Ano</value></string>
-  <string><id>108</id><value>Prezentace</value></string>
-  <string><id>109</id><value>Vytvorit miniatury</value></string>
-  <string><id>110</id><value>Vytvorit miniatury</value></string>
-  <string><id>111</id><value>Zastupci</value></string>
-  <string><id>112</id><value>PAUZA</value></string>
-  <string><id>113</id><value>Soubory: Zdroj</value></string>
-  <string><id>114</id><value>Soubory: Cil</value></string>
-  <string><id>115</id><value>Kopirovat</value></string>
-  <string><id>116</id><value>Presunout</value></string>
-  <string><id>117</id><value>Odstranit</value></string>
-  <string><id>118</id><value>Prejmenovat</value></string>
-  <string><id>119</id><value>Nova slozka</value></string>
-  <string><id>120</id><value>Potvrdit kopirovani</value></string>
-  <string><id>121</id><value>Potvrdit presunuti</value></string>
-  <string><id>122</id><value>Potvrdit odstraneni</value></string>
-  <string><id>123</id><value>Opravdu chce tyto soubory zkopirovat?</value></string>
-  <string><id>124</id><value>Opravdu chce tyto soubory presunout?</value></string>
-  <string><id>125</id><value>Opravdu chce tyto soubory odstranit?</value></string>
-  <string><id>126</id><value>Prubeh</value></string>
-  <string><id>127</id><value>objekt(u)</value></string>
-  <string><id>128</id><value>Hlavni</value></string>
-  <string><id>129</id><value>Prezentace</value></string>
-  <string><id>130</id><value>System</value></string>
-  <string><id>131</id><value>Zobrazeni</value></string>
-  <string><id>132</id><value>Alba</value></string>
-  <string><id>133</id><value>Autori</value></string>
-  <string><id>134</id><value>Zobrazit skladby</value></string>
-  <string><id>135</id><value>Zanry</value></string>
-  <string><id>136</id><value>Playlisty</value></string>
-  <string><id>137</id><value>Hledat</value></string>
-  <string><id>138</id><value>INFORMACE O SYSTEMU</value></string>
-  <string><id>139</id><value>Teplota:</value></string>
-  <string><id>140</id><value>CPU:</value></string>
-  <string><id>141</id><value>GPU:</value></string>
-  <string><id>142</id><value>Cas:</value></string>
-  <string><id>143</id><value>Aktualne:</value></string>
-  <string><id>144</id><value>Sestaveni:</value></string>
-  <string><id>145</id><value>Sit:</value></string>
-  <string><id>146</id><value>Typ:</value></string>
-  <string><id>147</id><value>Staticka</value></string>
-  <string><id>148</id><value>DHCP</value></string>
-  <string><id>149</id><value>MAC</value></string>
-  <string><id>150</id><value>IP adresa:</value></string>
-  <string><id>151</id><value>Pripojeni:</value></string>
-  <string><id>152</id><value>Polovicni duplex</value></string>
-  <string><id>153</id><value>Plny duplex</value></string>
-  <string><id>154</id><value>Ulozny prostor</value></string>
-  <string><id>155</id><value>Disk</value></string>
-  <string><id>156</id><value> volnych</value></string>
-  <string><id>157</id><value>Video</value></string>
-  <string><id>158</id><value>Volna operacni pamet</value></string>
-  <string><id>159</id><value>Nepripojeno</value></string>
-  <string><id>160</id><value> volnych</value></string>
-  <string><id>161</id><value>Nedostupny</value></string>
-  <string><id>162</id><value>Vysunout disk</value></string>
-  <string><id>163</id><value>Nacitani</value></string>
-  <string><id>164</id><value>Neni vlozen zadny disk</value></string>
-  <string><id>165</id><value>Indikace disku</value></string>
-  <string><id>166</id><value>Vzhled:</value></string>
-  <string><id>167</id><value>FTP server:</value></string>
-  <string><id>168</id><value>Casovy server:</value></string>
-  <string><id>169</id><value>Tel. norma:</value></string>
-  <string><id>170</id><value>Album:</value></string>
-  <string><id>171</id><value>Autor:</value></string>
-  <string><id>172</id><value>Datum vydani:</value></string>
-  <string><id>173</id><value>Hodnoceni:</value></string>
-  <string><id>174</id><value>Zanr:</value></string>
-  <string><id>175</id><value>Tony:</value></string>
-  <string><id>176</id><value>Styly:</value></string>
-  <string><id>177</id><value>Recenze:</value></string>
-  <string><id>178</id><value>Stopy:</value></string>
-  <string><id>179</id><value>Skladba</value></string>
-  <string><id>180</id><value>Delka</value></string>
-  <string><id>181</id><value>Vyberte album</value></string>
-  <string><id>182</id><value>Stopy</value></string>
-  <string><id>183</id><value>Recenze</value></string>
-  <string><id>184</id><value>Obnovit</value></string>
-  <string><id>185</id><value>Hledam alba...</value></string>
-  <string><id>186</id><value>OK</value></string>
-  <string><id>187</id><value>Zadna alba nebyla nalezena!</value></string>
-  <string><id>188</id><value>Vybrat vse</value></string>
-  <string><id>189</id><value>Ziskavani informaci o mediu</value></string>
-  <string><id>190</id><value>Ulozit</value></string>
-  <string><id>191</id><value>Nahodne</value></string>
-  <string><id>192</id><value>Vymazat</value></string>
-  <string><id>193</id><value>Prohledat</value></string>
-  <string><id>194</id><value>Hledam...</value></string>
-  <string><id>195</id><value> IMDB informace nenalezeny!</value></string>
-  <string><id>196</id><value>Vyberte film:</value></string>
-  <string><id>197</id><value>Stahuji IMDB informace</value></string>
-  <string><id>198</id><value>Nacitani informaci o filmu</value></string>
-  <string><id>199</id><value>Reziser</value></string>
-  <string><id>200</id><value>Autori</value></string>
-  <string><id>201</id><value>Rok</value></string>
-  <string><id>202</id><value>Tag line</value></string>
-  <string><id>203</id><value>Plot outline</value></string>
-  <string><id>204</id><value>Hodnoceni</value></string>
-  <string><id>205</id><value>Hodnoceni</value></string>
-  <string><id>206</id><value>Obsazeni</value></string>
-  <string><id>207</id><value>Plot</value></string>
-  <string><id>208</id><value>Prehrat</value></string>
-  <string><id>209</id><value>Dalsi</value></string>
-  <string><id>210</id><value>Predchozi</value></string>
-  <string><id>211</id><value>Hledam programy...</value></string>
-  <string><id>212</id><value> programu nalezeno</value></string>
-  <string><id>213</id><value>Kalibrace UI</value></string>
-  <string><id>214</id><value>Kalibrace obrazu</value></string>
-  <string><id>215</id><value>Zmekceni</value></string>
-  <string><id>216</id><value>Priblizeni</value></string>
-  <string><id>217</id><value>Roztahnuti</value></string>
-  <string><id>218</id><value>Jednotka DVD</value></string>
-  <string><id>219</id><value>Vlozte prosim disk</value></string>
-  <string><id>220</id><value>Vzalene sdileni</value></string>
-  <string><id>221</id><value>Sit neni pripojena</value></string>
-  <string><id>222</id><value>Zrusit</value></string>
-  <string><id>223</id><value>Zobrazovat video v nejlepsim rozliseni</value></string>
-  <string><id>224</id><value>Prodleva</value></string>
-  <string><id>225</id><value>Delka prechodu</value></string>
-  <string><id>226</id><value>Zapnout PAL60</value></string>
-  <string><id>227</id><value>Pripojovat se k CDDB</value></string>
-  <string><id>228</id><value>Po nacteni playlistu prehravat skladby nahodne</value></string>
-  <string><id>229</id><value>Uspavat HDD (minut)</value></string>
-  <string><id>230</id><value>Filtry</value></string>
-  <string><id>231</id><value>Zadny</value></string>
-  <string><id>232</id><value>Point</value></string>
-  <string><id>233</id><value>Linearni</value></string>
-  <string><id>234</id><value>Anisotropni</value></string>
-  <string><id>235</id><value>Quincunx</value></string>
-  <string><id>236</id><value>Gaussian Cubic</value></string>
-  <string><id>237</id><value>Zmenseni:</value></string>
-  <string><id>238</id><value>Zvetseni:</value></string>
-  <string><id>240</id><value>Automaticky spoustet DVD-Video</value></string>
-  <string><id>241</id><value>Automaticky spoustet VCD/SVCD</value></string>
-  <string><id>242</id><value>Automaticky spoustet Hudebni CD</value></string>
-  <string><id>243</id><value>Automaticky spoustet XBOX hry</value></string>
-  <string><id>244</id><value>Automaticky spoustet Video</value></string>
-  <string><id>245</id><value>Automaticky spoustet Hudbu</value></string>
-  <string><id>246</id><value>Automaticky spoustet Obrazky</value></string>
-  <string><id>247</id><value>Skripty</value></string>
-  <string><id>248</id><value>Jazyk</value></string>
-  <string><id>249</id><value>Hudba</value></string>
-  <string><id>250</id><value>Vizualizace</value></string>
-  <string><id>251</id><value>Vyberte cilovy adresar</value></string>
-  <string><id>252</id><value>Vystup do vsech reproduktoru</value></string>
-  <string><id>253</id><value>Pocet kanalu</value></string>
-  <string><id>254</id><value>AC3 PassTru</value></string>
-  <string><id>255</id><value>CDDB</value></string>
-  <string><id>256</id><value>Ziskavani CDDB informaci z freedb...</value></string>
-  <string><id>257</id><value>Chyba</value></string>
-  <string><id>258</id><value>Zobrazovat ID3 popisky</value></string>
-  <string><id>259</id><value>Oteviram...</value></string>
-  <string><id>260</id><value>Shoutcast</value></string>
-  <string><id>261</id><value>Cekam na spusteni....</value></string>
-  <string><id>262</id><value>Vystup skriptu</value></string>
-  <string><id>263</id><value>HTTP server:</value></string>
-  <string><id>264</id><value>Nahrat</value></string>
-  <string><id>265</id><value>Zastavit nahr.</value></string>
-  <string><id>266</id><value>Podle stopy</value></string>
-  <string><id>267</id><value>Podle casu</value></string>
-  <string><id>268</id><value>Podle nazvu</value></string>
-  <string><id>269</id><value>Podle autora</value></string>
-  <string><id>270</id><value>Podle alba</value></string>
-  <string><id>271</id><value>100 nej</value></string>
-  <string><id>272</id><value>Nastavte levy horni okraj</value></string>
-  <string><id>273</id><value>Nastavte pravy dolni okraj</value></string>
-  <string><id>274</id><value>Umisteni titulku</value></string>
-  <string><id>275</id><value>Prizpusobeni pomeru obrazovych bodu</value></string>
-  <string><id>276</id><value>Posunutim sipky nastavite viditelne okraje obrazu</value></string>
-  <string><id>277</id><value>Posunutim primky nastavite pozici titulku</value></string>
-  <string><id>278</id><value>Nastavte strany tak, aby vznikl ctverec</value></string>
-  <string><id>279</id><value>Nastaveni nelze nacist</value></string>
-  <string><id>280</id><value>program nacte vychozi nastaveni</value></string>
-  <string><id>281</id><value>Zkontrolujte prosim .xml soubory</value></string>
-  <string><id>282</id><value>nalezeno %i polozek</value></string>
-  <string><id>283</id><value>Vysledky hledani</value></string>
-  <string><id>284</id><value>Zadne vysledky nebyly nalezeny</value></string>
-  <string><id>285</id><value>Deinterlace filter</value></string>
-  <string><id>286</id><value>Postprocessing filter</value></string>
-  <string><id>287</id><value>Titulky</value></string>
-  <string><id>288</id><value>Pismo</value></string>
-  <string><id>289</id><value>Velikost</value></string>
-  <string><id>290</id><value>Zvysit hlasitost (dB)</value></string>
-  <string><id>291</id><value>Video</value></string>
-  <string><id>292</id><value>Zvuk</value></string>
-  <string><id>293</id><value>Titulky</value></string>
-  <string><id>294</id><value>1. Vytvorit zalozku</value></string>
-  <string><id>295</id><value>2. Prepnout (Cycle) zalozky</value></string>
-  <string><id>296</id><value>3. Vymazat zalozky</value></string>
-  <string><id>297</id><value>4. Zpozdeni A/V</value></string>
-  <string><id>298</id><value>5. Pretaceni</value></string>
-  <string><id>300</id><value>1. Jazyk</value></string>
-  <string><id>301</id><value>2. Hlasitost</value></string>
-  <string><id>302</id><value>3. Stopy</value></string>
-  <string><id>303</id><value>1. Zpozdeni</value></string>
-  <string><id>304</id><value>2. Jazyk</value></string>
-  <string><id>305</id><value>3. Zobrazovat titulky</value></string>
-  <string><id>306</id><value>6. Non-Interleaved</value></string>
-  <string><id>307</id><value>Nasledujici filtry pouzivat automaticky:</value></string>
-  <string><id>308</id><value>Filtr odstranujici vertikalni bloky</value></string>
-  <string><id>309</id><value>Filtr odstranujici horizontalni bloky</value></string>
-  <string><id>310</id><value>Automaticky prizpusobit jas/kontrast</value></string>
-  <string><id>311</id><value>Dering</value></string>
-  <string><id>312</id><value>(0=auto)</value></string>
-  <string><id>313</id><value>Reorganizovat databazi</value></string>
-  <string><id>314</id><value>Priprava...</value></string>
-  <string><id>315</id><value>Chyba v databazi</value></string>
-  <string><id>316</id><value>Hledam skladby...</value></string>
-  <string><id>317</id><value>Reorganizace probehla uspesne</value></string>
-  <string><id>318</id><value>Oznacovani odstranenych skladeb</value></string>
-  <string><id>319</id><value>Chyba pri reorganizaci skladeb</value></string>
-  <string><id>320</id><value>Hledam autory...</value></string>
-  <string><id>321</id><value>Chyba pri reorganizaci autoru</value></string>
-  <string><id>322</id><value>Hledam zanry...</value></string>
-  <string><id>323</id><value>Chyba pri reorganizaci zanru</value></string>
-  <string><id>324</id><value>Hledam cesty...</value></string>
-  <string><id>325</id><value>Chyba pri reorganizaci cest</value></string>
-  <string><id>326</id><value>Hledam alba...</value></string>
-  <string><id>327</id><value>Chyba pri reorganizaci alb</value></string>
-  <string><id>328</id><value>Ukladam zmeny...</value></string>
-  <string><id>329</id><value>Chyba pri ukladani zmen</value></string>
-  <string><id>330</id><value>Tento proces muze chvili trvat...</value></string>
-  <string><id>331</id><value>Komprimace databaze...</value></string>
-  <string><id>332</id><value>Chyba pri komprimaci databaze</value></string>
-  <string><id>333</id><value>Chcete reorganizovat databazi hudby?</value></string>
-  <string><id>334</id><value>Reorganizovat databazi hudby</value></string>
-  <string><id>335</id><value>Spustit</value></string>
-  <string><id>336</id><value>Prizp. framerate</value></string>
+  <string id="0">Programy</string>
+  <string id="1">Obrazky</string>
+  <string id="2">Hudba</string>
+  <string id="3">Video</string>
+  <string id="4">TV Pruvodce</string>
+  <string id="5">Nastaveni</string>
+  <string id="7">Soubory</string>
+  <string id="11">Pondeli</string>
+  <string id="12">Utery</string>
+  <string id="13">Streda</string>
+  <string id="14">Ctvrtek</string>
+  <string id="15">Patek</string>
+  <string id="16">Sobota</string>
+  <string id="17">Nedele</string>
+  <string id="21">Ledna</string>
+  <string id="22">Unora</string>
+  <string id="23">Brezna</string>
+  <string id="24">Dubna</string>
+  <string id="25">Kvetna</string>
+  <string id="26">Cervna</string>
+  <string id="27">Cervence</string>
+  <string id="28">Srpna</string>
+  <string id="29">Zari</string>
+  <string id="30">Rijna</string>
+  <string id="31">Listopadu</string>
+  <string id="32">Prosince</string>
+  <string id="100">Ikony</string>
+  <string id="101">Seznam</string>
+  <string id="102">Prohledat</string>
+  <string id="103">Podle nazvu</string>
+  <string id="104">Podle data</string>
+  <string id="105">Podle velikosti</string>
+  <string id="106">Ne</string>
+  <string id="107">Ano</string>
+  <string id="108">Prezentace</string>
+  <string id="109">Vytvorit miniatury</string>
+  <string id="110">Vytvorit miniatury</string>
+  <string id="111">Zastupci</string>
+  <string id="112">PAUZA</string>
+  <string id="113">Soubory: Zdroj</string>
+  <string id="114">Soubory: Cil</string>
+  <string id="115">Kopirovat</string>
+  <string id="116">Presunout</string>
+  <string id="117">Odstranit</string>
+  <string id="118">Prejmenovat</string>
+  <string id="119">Nova slozka</string>
+  <string id="120">Potvrdit kopirovani</string>
+  <string id="121">Potvrdit presunuti</string>
+  <string id="122">Potvrdit odstraneni</string>
+  <string id="123">Opravdu chce tyto soubory zkopirovat?</string>
+  <string id="124">Opravdu chce tyto soubory presunout?</string>
+  <string id="125">Opravdu chce tyto soubory odstranit?</string>
+  <string id="126">Prubeh</string>
+  <string id="127">objekt(u)</string>
+  <string id="128">Hlavni</string>
+  <string id="129">Prezentace</string>
+  <string id="130">System</string>
+  <string id="131">Zobrazeni</string>
+  <string id="132">Alba</string>
+  <string id="133">Autori</string>
+  <string id="134">Zobrazit skladby</string>
+  <string id="135">Zanry</string>
+  <string id="136">Playlisty</string>
+  <string id="137">Hledat</string>
+  <string id="138">INFORMACE O SYSTEMU</string>
+  <string id="139">Teplota:</string>
+  <string id="140">CPU:</string>
+  <string id="141">GPU:</string>
+  <string id="142">Cas:</string>
+  <string id="143">Aktualne:</string>
+  <string id="144">Sestaveni:</string>
+  <string id="145">Sit:</string>
+  <string id="146">Typ:</string>
+  <string id="147">Staticka</string>
+  <string id="148">DHCP</string>
+  <string id="149">MAC</string>
+  <string id="150">IP adresa:</string>
+  <string id="151">Pripojeni:</string>
+  <string id="152">Polovicni duplex</string>
+  <string id="153">Plny duplex</string>
+  <string id="154">Ulozny prostor</string>
+  <string id="155">Disk</string>
+  <string id="156"> volnych</string>
+  <string id="157">Video</string>
+  <string id="158">Volna operacni pamet</string>
+  <string id="159">Nepripojeno</string>
+  <string id="160"> volnych</string>
+  <string id="161">Nedostupny</string>
+  <string id="162">Vysunout disk</string>
+  <string id="163">Nacitani</string>
+  <string id="164">Neni vlozen zadny disk</string>
+  <string id="165">Indikace disku</string>
+  <string id="166">Vzhled:</string>
+  <string id="167">FTP server:</string>
+  <string id="168">Casovy server:</string>
+  <string id="169">Tel. norma:</string>
+  <string id="170">Album:</string>
+  <string id="171">Autor:</string>
+  <string id="172">Datum vydani:</string>
+  <string id="173">Hodnoceni:</string>
+  <string id="174">Zanr:</string>
+  <string id="175">Tony:</string>
+  <string id="176">Styly:</string>
+  <string id="177">Recenze:</string>
+  <string id="178">Stopy:</string>
+  <string id="179">Skladba</string>
+  <string id="180">Delka</string>
+  <string id="181">Vyberte album</string>
+  <string id="182">Stopy</string>
+  <string id="183">Recenze</string>
+  <string id="184">Obnovit</string>
+  <string id="185">Hledam alba...</string>
+  <string id="186">OK</string>
+  <string id="187">Zadna alba nebyla nalezena!</string>
+  <string id="188">Vybrat vse</string>
+  <string id="189">Ziskavani informaci o mediu</string>
+  <string id="190">Ulozit</string>
+  <string id="191">Nahodne</string>
+  <string id="192">Vymazat</string>
+  <string id="193">Prohledat</string>
+  <string id="194">Hledam...</string>
+  <string id="195"> IMDB informace nenalezeny!</string>
+  <string id="196">Vyberte film:</string>
+  <string id="197">Stahuji IMDB informace</string>
+  <string id="198">Nacitani informaci o filmu</string>
+  <string id="199">Reziser</string>
+  <string id="200">Autori</string>
+  <string id="201">Rok</string>
+  <string id="202">Tag line</string>
+  <string id="203">Plot outline</string>
+  <string id="204">Hodnoceni</string>
+  <string id="205">Hodnoceni</string>
+  <string id="206">Obsazeni</string>
+  <string id="207">Plot</string>
+  <string id="208">Prehrat</string>
+  <string id="209">Dalsi</string>
+  <string id="210">Predchozi</string>
+  <string id="211">Hledam programy...</string>
+  <string id="212"> programu nalezeno</string>
+  <string id="213">Kalibrace UI</string>
+  <string id="214">Kalibrace obrazu</string>
+  <string id="215">Zmekceni</string>
+  <string id="216">Priblizeni</string>
+  <string id="217">Roztahnuti</string>
+  <string id="218">Jednotka DVD</string>
+  <string id="219">Vlozte prosim disk</string>
+  <string id="220">Vzalene sdileni</string>
+  <string id="221">Sit neni pripojena</string>
+  <string id="222">Zrusit</string>
+  <string id="223">Zobrazovat video v nejlepsim rozliseni</string>
+  <string id="224">Prodleva</string>
+  <string id="225">Delka prechodu</string>
+  <string id="226">Zapnout PAL60</string>
+  <string id="227">Pripojovat se k CDDB</string>
+  <string id="228">Po nacteni playlistu prehravat skladby nahodne</string>
+  <string id="229">Uspavat HDD (minut)</string>
+  <string id="230">Filtry</string>
+  <string id="231">Zadny</string>
+  <string id="232">Point</string>
+  <string id="233">Linearni</string>
+  <string id="234">Anisotropni</string>
+  <string id="235">Quincunx</string>
+  <string id="236">Gaussian Cubic</string>
+  <string id="237">Zmenseni:</string>
+  <string id="238">Zvetseni:</string>
+  <string id="240">Automaticky spoustet DVD-Video</string>
+  <string id="241">Automaticky spoustet VCD/SVCD</string>
+  <string id="242">Automaticky spoustet Hudebni CD</string>
+  <string id="243">Automaticky spoustet XBOX hry</string>
+  <string id="244">Automaticky spoustet Video</string>
+  <string id="245">Automaticky spoustet Hudbu</string>
+  <string id="246">Automaticky spoustet Obrazky</string>
+  <string id="247">Skripty</string>
+  <string id="248">Jazyk</string>
+  <string id="249">Hudba</string>
+  <string id="250">Vizualizace</string>
+  <string id="251">Vyberte cilovy adresar</string>
+  <string id="252">Vystup do vsech reproduktoru</string>
+  <string id="253">Pocet kanalu</string>
+  <string id="254">AC3 PassTru</string>
+  <string id="255">CDDB</string>
+  <string id="256">Ziskavani CDDB informaci z freedb...</string>
+  <string id="257">Chyba</string>
+  <string id="258">Zobrazovat ID3 popisky</string>
+  <string id="259">Oteviram...</string>
+  <string id="260">Shoutcast</string>
+  <string id="261">Cekam na spusteni....</string>
+  <string id="262">Vystup skriptu</string>
+  <string id="263">HTTP server:</string>
+  <string id="264">Nahrat</string>
+  <string id="265">Zastavit nahr.</string>
+  <string id="266">Podle stopy</string>
+  <string id="267">Podle casu</string>
+  <string id="268">Podle nazvu</string>
+  <string id="269">Podle autora</string>
+  <string id="270">Podle alba</string>
+  <string id="271">100 nej</string>
+  <string id="272">Nastavte levy horni okraj</string>
+  <string id="273">Nastavte pravy dolni okraj</string>
+  <string id="274">Umisteni titulku</string>
+  <string id="275">Prizpusobeni pomeru obrazovych bodu</string>
+  <string id="276">Posunutim sipky nastavite viditelne okraje obrazu</string>
+  <string id="277">Posunutim primky nastavite pozici titulku</string>
+  <string id="278">Nastavte strany tak, aby vznikl ctverec</string>
+  <string id="279">Nastaveni nelze nacist</string>
+  <string id="280">program nacte vychozi nastaveni</string>
+  <string id="281">Zkontrolujte prosim .xml soubory</string>
+  <string id="282">nalezeno %i polozek</string>
+  <string id="283">Vysledky hledani</string>
+  <string id="284">Zadne vysledky nebyly nalezeny</string>
+  <string id="285">Deinterlace filter</string>
+  <string id="286">Postprocessing filter</string>
+  <string id="287">Titulky</string>
+  <string id="288">Pismo</string>
+  <string id="289">Velikost</string>
+  <string id="290">Zvysit hlasitost (dB)</string>
+  <string id="291">Video</string>
+  <string id="292">Zvuk</string>
+  <string id="293">Titulky</string>
+  <string id="294">1. Vytvorit zalozku</string>
+  <string id="295">2. Prepnout (Cycle) zalozky</string>
+  <string id="296">3. Vymazat zalozky</string>
+  <string id="297">4. Zpozdeni A/V</string>
+  <string id="298">5. Pretaceni</string>
+  <string id="300">1. Jazyk</string>
+  <string id="301">2. Hlasitost</string>
+  <string id="302">3. Stopy</string>
+  <string id="303">1. Zpozdeni</string>
+  <string id="304">2. Jazyk</string>
+  <string id="305">3. Zobrazovat titulky</string>
+  <string id="306">6. Non-Interleaved</string>
+  <string id="307">Nasledujici filtry pouzivat automaticky:</string>
+  <string id="308">Filtr odstranujici vertikalni bloky</string>
+  <string id="309">Filtr odstranujici horizontalni bloky</string>
+  <string id="310">Automaticky prizpusobit jas/kontrast</string>
+  <string id="311">Dering</string>
+  <string id="312">(0=auto)</string>
+  <string id="313">Reorganizovat databazi</string>
+  <string id="314">Priprava...</string>
+  <string id="315">Chyba v databazi</string>
+  <string id="316">Hledam skladby...</string>
+  <string id="317">Reorganizace probehla uspesne</string>
+  <string id="318">Oznacovani odstranenych skladeb</string>
+  <string id="319">Chyba pri reorganizaci skladeb</string>
+  <string id="320">Hledam autory...</string>
+  <string id="321">Chyba pri reorganizaci autoru</string>
+  <string id="322">Hledam zanry...</string>
+  <string id="323">Chyba pri reorganizaci zanru</string>
+  <string id="324">Hledam cesty...</string>
+  <string id="325">Chyba pri reorganizaci cest</string>
+  <string id="326">Hledam alba...</string>
+  <string id="327">Chyba pri reorganizaci alb</string>
+  <string id="328">Ukladam zmeny...</string>
+  <string id="329">Chyba pri ukladani zmen</string>
+  <string id="330">Tento proces muze chvili trvat...</string>
+  <string id="331">Komprimace databaze...</string>
+  <string id="332">Chyba pri komprimaci databaze</string>
+  <string id="333">Chcete reorganizovat databazi hudby?</string>
+  <string id="334">Reorganizovat databazi hudby</string>
+  <string id="335">Spustit</string>
+  <string id="336">Prizp. framerate</string>
 </strings>

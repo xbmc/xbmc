@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language>
   <charsets>
-    <gui unicodefont="true">BIG5</gui>
-    <subtitle>BIG5</subtitle>
+    <gui unicodefont="true">CP950</gui>
+    <subtitle>CP950</subtitle>
   </charsets>
 
   <dvd>
