@@ -1,1305 +1,1262 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
-
-<!-- Indonesian language for XBMC -->
-<!-- Translation by djoens -->
-
-
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-  <string><id>0</id><value>Program</value></string>
-  <string><id>1</id><value>Gambar</value></string>
-  <string><id>2</id><value>Musik</value></string>
-  <string><id>3</id><value>Video</value></string>
-  <string><id>4</id><value>Panduan TV</value></string>
-  <string><id>5</id><value>Setelan</value></string>
-  <string><id>6</id><value>Xbox Media Center CVS</value></string>
-  <string><id>7</id><value>File</value></string>
-  <string><id>8</id><value>Cuaca</value></string>
-
-  <string><id>11</id><value>Senin</value></string>
-  <string><id>12</id><value>Selasa</value></string>
-  <string><id>13</id><value>Rabu</value></string>
-  <string><id>14</id><value>Kamis</value></string>
-  <string><id>15</id><value>Jumat</value></string>
-  <string><id>16</id><value>Sabtu</value></string>
-  <string><id>17</id><value>Minggu</value></string>
-
-  <string><id>21</id><value>Januari</value></string>
-  <string><id>22</id><value>Februari</value></string>
-  <string><id>23</id><value>Maret</value></string>
-  <string><id>24</id><value>April</value></string>
-  <string><id>25</id><value>Mei</value></string>
-  <string><id>26</id><value>Juni</value></string>
-  <string><id>27</id><value>Juli</value></string>
-  <string><id>28</id><value>Agustus</value></string>
-  <string><id>29</id><value>September</value></string>
-  <string><id>30</id><value>Oktober</value></string>
-  <string><id>31</id><value>Nopember</value></string>
-  <string><id>32</id><value>Desember</value></string>
-
-  <string><id>98</id><value>Lihat: Otomatis</value></string>
-  <string><id>99</id><value>Lihat Otomatis Besar</value></string>
-  <string><id>100</id><value>Lihat Ikon</value></string>
-  <string><id>101</id><value>Lihat Daftar</value></string>
-  <string><id>102</id><value>Scan</value></string>
-  <string><id>103</id><value>Sortir : Nama</value></string>
-  <string><id>104</id><value>Sortir : Tanggal</value></string>
-  <string><id>105</id><value>Sortir : Ukuran</value></string>
-  <string><id>106</id><value>Tidak</value></string>
-  <string><id>107</id><value>Ya</value></string>
-  <string><id>108</id><value>SlideShow</value></string>
-  <string><id>109</id><value>Buat Thumb</value></string>
-  <string><id>110</id><value>Buat Thumbnail</value></string>
-  <string><id>111</id><value>Jalan Pintas</value></string>
-  <string><id>112</id><value>Berhenti</value></string>
-  <string><id>113</id><value>File : Sumber</value></string>
-  <string><id>114</id><value>File : Tujuan</value></string>
-  <string><id>115</id><value>Salin</value></string>
-  <string><id>116</id><value>Pindah</value></string>
-  <string><id>117</id><value>Hapus</value></string>
-  <string><id>118</id><value>Ganti Nama</value></string>
-  <string><id>119</id><value>Folder Baru</value></string>
-  <string><id>120</id><value>Konfirmasi salin file</value></string>
-  <string><id>121</id><value>Konfirmasi pindah file</value></string>
-  <string><id>122</id><value>Konfirmasi hapus file</value></string>
-  <string><id>123</id><value>Salin file ini?</value></string>
-  <string><id>124</id><value>Pindahkan file ini?</value></string>
-  <string><id>125</id><value>Hapus file ini?</value></string>
-  <string><id>126</id><value>Status</value></string>
-  <string><id>127</id><value>Objek</value></string>
-  <string><id>128</id><value>Umum</value></string>
-  <string><id>129</id><value>Slideshow</value></string>
-  <string><id>130</id><value>Informasi Sistem</value></string>
-  <string><id>131</id><value>Layar</value></string>
-  <string><id>132</id><value>Album</value></string>
-  <string><id>133</id><value>Artis</value></string>
-  <string><id>134</id><value>Lagu</value></string>
-  <string><id>135</id><value>Aliran</value></string>
-  <string><id>136</id><value>Daftar Main</value></string>
-  <string><id>137</id><value>Cari</value></string>
-  <string><id>138</id><value>INFORMASI SISTEM</value></string>
-  <string><id>139</id><value>Suhu:</value></string>
-  <string><id>140</id><value>CPU:</value></string>
-  <string><id>141</id><value>GPU:</value></string>
-  <string><id>142</id><value>Waktu</value></string>
-  <string><id>143</id><value>Saat ini:</value></string>
-  <string><id>144</id><value>Build:</value></string>
-  <string><id>145</id><value>Jaringan:</value></string>
-  <string><id>146</id><value>Tipe:</value></string>
-  <string><id>147</id><value>Statik</value></string>
-  <string><id>148</id><value>DHCP</value></string>
-  <string><id>149</id><value>MAC</value></string>
-  <string><id>150</id><value>IP</value></string>
-  <string><id>151</id><value>Link: </value></string>
-  <string><id>152</id><value>Setengah duplex</value></string>
-  <string><id>153</id><value>Duplex Penuh</value></string>
-  <string><id>154</id><value>Penyimpanan</value></string>
-  <string><id>155</id><value>Drive</value></string>
-  <string><id>156</id><value>Bebas</value></string>
-  <string><id>157</id><value>Video</value></string>
-  <string><id>158</id><value>Memori Bebas</value></string>
-  <string><id>159</id><value>Tidak ada link</value></string>
-  <string><id>160</id><value>Bebas</value></string>
-  <string><id>161</id><value>Tidak tersedia</value></string>
-  <string><id>162</id><value>DVD Rom Terbuka</value></string>
-  <string><id>163</id><value>Baca</value></string>
-  <string><id>164</id><value>Tidak ada disk</value></string>
-  <string><id>165</id><value>Disk Saat Ini</value></string>
-  <string><id>166</id><value>Kulit</value></string>
-  <string><id>167</id><value>Aktifkan Server FTP</value></string>
-  <string><id>168</id><value>Aktifkan Sinkronisasi Waktu Internet</value></string>
-  <string><id>169</id><value>Resolusi</value></string>
-  <string><id>170</id><value>Album:</value></string>
-  <string><id>171</id><value>Artis:</value></string>
-  <string><id>172</id><value>Tanggal terbit:</value></string>
-  <string><id>173</id><value>Rating:</value></string>
-  <string><id>174</id><value>Aliran:</value></string>
-  <string><id>175</id><value>Nada:</value></string>
-  <string><id>176</id><value>Gaya:</value></string>
-  <string><id>177</id><value>Tinjauan:</value></string>
-  <string><id>178</id><value>Trek:</value></string>
-  <string><id>179</id><value>Lagu</value></string>
-  <string><id>180</id><value>Durasi</value></string>
-  <string><id>181</id><value>Pilih album</value></string>
-  <string><id>182</id><value>Trek</value></string>
-  <string><id>183</id><value>Tinjauan</value></string>
-  <string><id>184</id><value>Segarkan</value></string>
-  <string><id>185</id><value>Pencarian album</value></string>
-  <string><id>186</id><value>OK</value></string>
-  <string><id>187</id><value>Album tidak ditemukan!</value></string>
-  <string><id>188</id><value>Pilih Semua</value></string>
-  <string><id>189</id><value>Memindai informasi media</value></string>
-  <string><id>190</id><value>Simpan</value></string>
-  <string><id>191</id><value>Kocokan</value></string>
-  <string><id>192</id><value>Kosongkan</value></string>
-  <string><id>193</id><value>Pindai</value></string>
-  <string><id>194</id><value>Pencarian...</value></string>
-  <string><id>195</id><value>Informasi IMDB idak ditemukan!</value></string>
-  <string><id>196</id><value>Pilih film:</value></string>
-  <string><id>197</id><value>Meminta info IMDB</value></string>
-  <string><id>198</id><value>Mengakses detil Film</value></string>
-  <string><id>199</id><value>Sutradara:</value></string>
-  <string><id>200</id><value>Penulis:</value></string>
-  <string><id>201</id><value>Tahun:</value></string>
-  <string><id>202</id><value>Tagline:</value></string>
-  <string><id>203</id><value>Alur Cerita:</value></string>
-  <string><id>204</id><value>Nilai:</value></string>
-  <string><id>2050</id><value>Durasi:</value></string>
-  <string><id>205</id><value>Pemilihan:</value></string>
-  <string><id>206</id><value>Para Pelaku</value></string>
-  <string><id>207</id><value>Alur</value></string>
-  <string><id>208</id><value>Mainkan</value></string>
-  <string><id>209</id><value>Berikut</value></string>
-  <string><id>210</id><value>Sebelumnya</value></string>
-  <string><id>211</id><value>Pencarian aplikasi</value></string>
-  <string><id>212</id><value>Aplikasi ditemukan</value></string>
-  <string><id>213</id><value>Tengahkan Antarmuka pengguna...</value></string>
-  <string><id>214</id><value>Kalibrasi Video...</value></string>
-  <string><id>215</id><value>Lebih Lembut</value></string>
-  <string><id>216</id><value>Jumlah Zoom</value></string>
-  <string><id>217</id><value>Rasio Piksel</value></string>
-  <string><id>218</id><value>Drive DVD</value></string>
-  <string><id>219</id><value>Harap memasukan disk</value></string>
-  <string><id>220</id><value>Remote Share</value></string>
-  <string><id>221</id><value>Jaringan tidak tersambung</value></string>
-  <string><id>222</id><value>Batal</value></string>
-  <string><id>223</id><value>Tombol Otomatis Layar Lebar</value></string>
-  <string><id>224</id><value>Kecepatan</value></string>
-  <string><id>225</id><value>Waktu Transisi</value></string>
-  <string><id>226</id><value>Aktifkan PAL60</value></string>
-  <string><id>227</id><value>Aktifkan CDDB</value></string>
-  <string><id>228</id><value>Kocok Daftar Main saat Memuat</value></string>
-  <string><id>229</id><value>HD Spindown Time</value></string>
-  <string><id>230</id><value>Filter Video</value></string>
-  <string><id>231</id><value>Tidak ada</value></string>
-  <string><id>232</id><value>Point</value></string>
-  <string><id>233</id><value>Linear</value></string>
-  <string><id>234</id><value>Anisotropic</value></string>
-  <string><id>235</id><value>Quincunx</value></string>
-  <string><id>236</id><value>Gaussian Cubic</value></string>
-  <string><id>237</id><value>Minification</value></string>
-  <string><id>238</id><value>Magnification</value></string>
-  <string><id>239</id><value>Kosongkan Daftar Main saat selesai</value></string>
-  <string><id>240</id><value>DVD-Video Mainkan Secara Otomatis</value></string>
-  <string><id>241</id><value>VCD/SVCD Mainkan Secara Otomatis</value></string>
-  <string><id>242</id><value>CD-Audio Mainkan Secara Otomatis</value></string>
-  <string><id>243</id><value>Permainan XBOX Mainkan Secara Otomatis</value></string>
-  <string><id>244</id><value>Video Mainkan Secara Otomatis</value></string>
-  <string><id>245</id><value>Musik Mainkan Secara Otomatis</value></string>
-  <string><id>246</id><value>Gambar Mainkan Secara Otomatis</value></string>
-  <string><id>247</id><value>Skrip</value></string>
-  <string><id>248</id><value>Bahasa</value></string>
-  <string><id>249</id><value>Musik</value></string>
-  <string><id>250</id><value>Visualisasi</value></string>
-  <string><id>251</id><value>Pilih direktori tujuan</value></string>
-  <string><id>252</id><value>Keluaran Stereo ke semua Speaker</value></string>
-  <string><id>253</id><value>Jumlah saluran</value></string>
-  <string><id>254</id><value>- Penerima berkemampuan DTS</value></string>
-  <string><id>255</id><value>CDDB</value></string>
-  <string><id>256</id><value>Meminta freedb untuk info CDDB</value></string>
-  <string><id>257</id><value>Kesalahan</value></string>
-  <string><id>258</id><value>Aktifkan Tag ID3</value></string>
-  <string><id>259</id><value>Membuka</value></string>
-  <string><id>260</id><value>Shoutcast</value></string>
-  <string><id>261</id><value>Menunggu utk memulai....</value></string>
-  <string><id>262</id><value>Keluaran Skrip</value></string>
-  <string><id>263</id><value>Aktifkan Web Server</value></string>
-  <string><id>264</id><value>Rekam</value></string>
-  <string><id>265</id><value>Hentikan Rek.</value></string>
-  <string><id>266</id><value>Sortir : Trek</value></string>
-  <string><id>267</id><value>Sortir : Waktu</value></string>
-  <string><id>268</id><value>Sortir : Nama</value></string>
-  <string><id>269</id><value>Sortir : Artis</value></string>
-  <string><id>270</id><value>Sortir : Album</value></string>
-  <string><id>271</id><value>Top 100</value></string>
-  <string><id>272</id><value>Top Left Overscan Compensation</value></string>
-  <string><id>273</id><value>Bottom Right Overscan Compensation</value></string>
-  <string><id>274</id><value>Posisi Terjemahan</value></string>
-  <string><id>275</id><value>Penyetelan Rasio Piksel</value></string>
-  <string><id>276</id><value>Pindahkan tanda panah untuk mengganti jumlah overscan</value></string>
-  <string><id>277</id><value>Pindahkan bar untuk mengganti posisi teks bawah pada film</value></string>
-  <string><id>278</id><value>Ganti persegi panjang sehingga menjadi persegi yang sempurna</value></string>
-  <string><id>279</id><value>Tidak dapat memuat setelan</value></string>
-  <string><id>280</id><value>Menggunakan Standar fallbacks</value></string>
-  <string><id>281</id><value>Harap periksa file .xml</value></string>
-  <string><id>282</id><value>ditemukan %i item</value></string>
-  <string><id>283</id><value>Hasil Pencarian</value></string>
-  <string><id>284</id><value>Tidak ditemukan</value></string>
-  <string><id>285</id><value>Filter Deinterlace</value></string>
-  <string><id>286</id><value>Filter Postprocessing</value></string>
-  <string><id>287</id><value>Teks Film</value></string>
-  <string><id>288</id><value>Huruf</value></string>
-  <string><id>289</id><value>- Ukuran</value></string>
-  <string><id>290</id><value>Volume Pengerasan</value></string>
-  <string><id>291</id><value>Video</value></string>
-  <string><id>292</id><value>Audio</value></string>
-  <string><id>293</id><value>Teks Film</value></string>
-  <string><id>294</id><value>Buat bookmark</value></string>
-  <string><id>295</id><value>Putaran bookmark</value></string>
-  <string><id>296</id><value>Kosongkan bookmark</value></string>
-  <string><id>297</id><value>AVDelay</value></string>
-  <string><id>298</id><value>Slider</value></string>
-  <string><id>300</id><value>1. Bahasa</value></string>
-  <string><id>301</id><value>2. Volume</value></string>
-  <string><id>302</id><value>3. Stream</value></string>
-  <string><id>303</id><value>Penundaan</value></string>
-  <string><id>304</id><value>Bahasa</value></string>
-  <string><id>305</id><value>Aktifkan</value></string>
-  <string><id>306</id><value>Non-Interleaved</value></string>
-  <string><id>307</id><value>- Otomatis Postprocessing</value></string>
-  <string><id>308</id><value>- Vertikal Deblocking Filter</value></string>
-  <string><id>309</id><value>- Horizontal Deblocking Filter</value></string>
-  <string><id>310</id><value>- Kecerahan/Kontras Otomatis</value></string>
-  <string><id>311</id><value>- Dering</value></string>
-  <string><id>312</id><value>(0=otomatis)</value></string>
-  <string><id>313</id><value>Membersihkan database</value></string>
-  <string><id>314</id><value>Persiapan...</value></string>
-  <string><id>315</id><value>Database error</value></string>
-  <string><id>316</id><value>Pencarian lagu...</value></string>
-  <string><id>317</id><value>Pembersihan database berhasil</value></string>
-  <string><id>318</id><value>Pembersihan lagu...</value></string>
-  <string><id>319</id><value>Kesalahan membersihkan lagu</value></string>
-  <string><id>320</id><value>Pembersihan artis...</value></string>
-  <string><id>321</id><value>Kesalahan membersihkan artis</value></string>
-  <string><id>322</id><value>Pembersihan aliran...</value></string>
-  <string><id>323</id><value>Kesalahan membersihkan aliran</value></string>
-  <string><id>324</id><value>Pembersihan path...</value></string>
-  <string><id>325</id><value>Kesalahan membersihkan path</value></string>
-  <string><id>326</id><value>Pembersihan album...</value></string>
-  <string><id>327</id><value>Kesalahan membersihkan album</value></string>
-  <string><id>328</id><value>Menulis perubahan...</value></string>
-  <string><id>329</id><value>Kesalahan menulis perubahan</value></string>
-  <string><id>330</id><value>Mungkin ini akan menghabiskan beberapa saat...</value></string>
-  <string><id>331</id><value>Mengkompres database...</value></string>
-  <string><id>332</id><value>Kesalahan mengkompres database</value></string>
-  <string><id>333</id><value>Anda ingin membersihkan pustaka musik?</value></string>
-  <string><id>334</id><value>Membersihkan Pustaka Musik...</value></string>
-  <string><id>335</id><value>Mulai</value></string>
-  <string><id>336</id><value>Atur Framerate</value></string>
-  <string><id>337</id><value>Keluaran Audio</value></string>
-  <string><id>338</id><value>Analog</value></string>
-  <string><id>339</id><value>Digital</value></string>
-  <string><id>340</id><value>Berbagai Artis</value></string>
-  <string><id>341</id><value>Mainkan DVD</value></string>
-  <string><id>342</id><value>Film</value></string>
-  <string><id>343</id><value>Atur Framerate</value></string>
-  <string><id>344</id><value>Aktor</value></string>
-  <string><id>345</id><value>Tahun</value></string>
-  <string><id>346</id><value>Stack</value></string>
-  <string><id>347</id><value>Unstack</value></string>
-  <string><id>348</id><value>Hierarki Direktori Rata</value></string>
-  <string><id>349</id><value>Tampilkan hanya Default.xbe</value></string>
-  <string><id>350</id><value>Program</value></string>
-  <string><id>351</id><value>Mati</value></string>
-  <string><id>352</id><value>Dim</value></string>
-  <string><id>353</id><value>Black</value></string>
-  <string><id>354</id><value>Matrix Trails</value></string>
-  <string><id>355</id><value>Waktu Tunggu Screensaver</value></string>
-  <string><id>356</id><value>Mode Screensaver</value></string>
-  <string><id>357</id><value>Waktu Tunggu Mematikan</value></string>
-  <string><id>358</id><value>Semua album</value></string>
-  <string><id>359</id><value>Album Terkini</value></string>
-  <string><id>360</id><value>Screensaver</value></string>
-  <string><id>361</id><value>SlideShow B.ulang</value></string>
-  <string><id>362</id><value>Tingkat Pudar Screensaver</value></string>
-  <string><id>363</id><value>Sortir : File</value></string>
-  <string><id>364</id><value>- Penerima berkemampuan AC3</value></string>
-  <string><id>365</id><value>Sortir : Judul</value></string>
-  <string><id>366</id><value>Sortir : Tahun</value></string>
-  <string><id>367</id><value>Sortir : Nilai</value></string>
-  <string><id>368</id><value>IMDB</value></string>
-  <string><id>369</id><value>Judul</value></string>
-  <string><id>370</id><value>Badai</value></string>
-  <string><id>371</id><value>Sebagian</value></string>
-  <string><id>372</id><value>Kebanyakan</value></string>
-  <string><id>373</id><value>Cerah</value></string>
-  <string><id>374</id><value>Mendung</value></string>
-  <string><id>375</id><value>Salju</value></string>
-  <string><id>376</id><value>Hujan</value></string>
-  <string><id>377</id><value>Ringan</value></string>
-  <string><id>378</id><value>AM</value></string>
-  <string><id>379</id><value>PM</value></string>
-  <string><id>380</id><value>Gerimis</value></string>
-  <string><id>381</id><value>Sedikit</value></string>
-  <string><id>382</id><value>Tersebar</value></string>
-  <string><id>383</id><value>Angin</value></string>
-  <string><id>384</id><value>Kuat</value></string>
-  <string><id>385</id><value>Cukup</value></string>
-  <string><id>386</id><value>Cerah</value></string>
-  <string><id>387</id><value>Berawan</value></string>
-  <string><id>388</id><value>Early</value></string>
-  <string><id>389</id><value>Gerimis</value></string>
-  <string><id>390</id><value>Curah Hujan</value></string>
-  <string><id>391</id><value>Rendah</value></string>
-  <string><id>392</id><value>Menengah</value></string>
-  <string><id>393</id><value>Tinggi</value></string>
-  <string><id>394</id><value>Kabut</value></string>
-  <string><id>395</id><value>Kabur</value></string>
-  <string><id>396</id><value>Pilih Lokasi</value></string>
-  <string><id>397</id><value>Waktu Penyegaran</value></string>
-  <string><id>398</id><value>Unit Suhu</value></string>
-  <string><id>399</id><value>Unit Kecepatan</value></string>
-  <string><id>400</id><value>Cuaca</value></string>
-  <string><id>401</id><value>Suhu</value></string>
-  <string><id>402</id><value>Terasa Seperti</value></string>
-  <string><id>403</id><value>Indeks UV</value></string>
-  <string><id>404</id><value>Angin</value></string>
-  <string><id>405</id><value>Titik Embun</value></string>
-  <string><id>406</id><value>Kelembaban</value></string>
-  <string><id>407</id><value>Dari</value></string>
-  <string><id>408</id><value>di</value></string>
-
-  <string><id>410</id><value>Mengakses Weather.com</value></string>
-  <string><id>411</id><value>Mendapatkan Cuaca Untuk:</value></string>
-  <string><id>412</id><value>Tidak bisa mendapatkan data cuaca</value></string>
-  <string><id>413</id><value>Manual</value></string>
-  <string><id>414</id><value>Tidak ada review album ini</value></string>
-  <string><id>415</id><value>Mengunduh thumbnail...</value></string>
-  <string><id>416</id><value>Tidak tersedia</value></string>
-  <string><id>417</id><value>Lihat: Ikon Besar</value></string>
-  <string><id>418</id><value>Video/Aliran</value></string>
-  <string><id>419</id><value>Video/Aktor</value></string>
-  <string><id>420</id><value>Video/Tahun</value></string>
-  <string><id>421</id><value>Video/Judul</value></string>
-  <string><id>422</id><value>Hapus informasi Album</value></string>
-  <string><id>423</id><value>Hapus informasi CDDB</value></string>
-  <string><id>424</id><value>Pilih</value></string>
-  <string><id>425</id><value>Info album tidak ditemukan.</value></string>
-  <string><id>426</id><value>Info CDDB tidak ditemukan.</value></string>
-  <string><id>427</id><value>Disk:</value></string>
-  <string><id>428</id><value>Masukkan CD/DVD yg tepat</value></string>
-  <string><id>429</id><value>Harap memasukan CD/DVD berikut</value></string>
-  <string><id>430</id><value>Sortir : DVD#</value></string>
-  <string><id>431</id><value>Tanpa Cache</value></string>
-  <string><id>432</id><value>Hapus film dari database</value></string>
-  <string><id>433</id><value>Anda yakin tetang menghapus</value></string>
-  <string><id>434</id><value>film?</value></string>
-  <string><id>435</id><value>Trek</value></string>
-  <string><id>436</id><value>Tahun</value></string>
-  <string><id>437</id><value>Durasi</value></string>
-  <string><id>438</id><value>Buka File</value></string>
-  <string><id>439</id><value>Cache</value></string>
-  <string><id>440</id><value>Harddisk</value></string>
-  <string><id>441</id><value>UDF</value></string>
-  <string><id>442</id><value>LAN</value></string>
-  <string><id>443</id><value>Internet</value></string>
-  <string><id>444</id><value>Video</value></string>
-  <string><id>445</id><value>Audio</value></string>
-  <string><id>446</id><value>DVD</value></string>
-  <string><id>447</id><value>Otomatis Mainkan</value></string>
-  <string><id>448</id><value>LCD</value></string>
-  <string><id>449</id><value>Aktifkan</value></string>
-  <string><id>450</id><value>Kolom</value></string>
-  <string><id>451</id><value>Baris 1 Alamat</value></string>
-  <string><id>452</id><value>Baris 2 Alamat</value></string>
-  <string><id>453</id><value>Baris 3 Alamat</value></string>
-  <string><id>454</id><value>Baris 4 Alamat</value></string>
-  <string><id>455</id><value>Baris</value></string>
-  <string><id>456</id><value>Mode</value></string>
-  <string><id>457</id><value>Ganti Tampilan</value></string>
-  <string><id>458</id><value>B/Mark</value></string>
-  <string><id>459</id><value>Subs</value></string>
-  <string><id>460</id><value>Audio Stream</value></string>
-  <string><id>461</id><value>[aktif]</value></string>
-  <string><id>462</id><value>Teks Film</value></string>
-  <string><id>463</id><value>Backlight</value></string>
-  <string><id>464</id><value>Kecerahan</value></string>
-  <string><id>465</id><value>Kontras</value></string>
-  <string><id>466</id><value>Gamma</value></string>
-  <string><id>467</id><value>Tipe</value></string>
-  <string><id>468</id><value>Pindahkan bar untuk mengganti posisi osd</value></string>
-  <string><id>469</id><value>Posisi OSD</value></string>
-  <string><id>470</id><value>Kredit</value></string>
-  <string><id>471</id><value>Modchip</value></string>
-  <string><id>472</id><value>Video OSD Timeout</value></string>
-  <string><id>473</id><value>High Quality Resampling</value></string>
-  <string><id>474</id><value>Matikan</value></string>
-  <string><id>475</id><value>Hanya Musik</value></string>
-  <string><id>476</id><value>Musik &amp; Video</value></string>
-  <string><id>477</id><value>Tidak dapat memuat Daftar Main</value></string>
-  <string><id>478</id><value>OSD</value></string>
-  <string><id>479</id><value>Kulit dan Bahasa</value></string>
-  <string><id>480</id><value>Penampilan</value></string>
-  <string><id>481</id><value>Pilihan Audio</value></string>
-  <string><id>482</id><value>Tentang XBMC</value></string>
-  <string><id>483</id><value>Album</value></string>
-  <string><id>484</id><value>Artis</value></string>
-  <string><id>485</id><value>Hapus album</value></string>
-  <string><id>486</id><value>Berulang</value></string>
-  <string><id>487</id><value>Ulang sekali</value></string>
-  <string><id>488</id><value>Folder Berulang</value></string>
-  <string><id>489</id><value>Mainkan Sendiri Item Berikutnya</value></string>
-  <string><id>490</id><value>Ganti daftar dan ikon sendiri dalam lagu</value></string>
-  <string><id>491</id><value>- Gunakan ikon besar</value></string>
-  <string><id>492</id><value>Ukur ulang Vobsubs</value></string>
-  <string><id>493</id><value>Pilihan Lebih Lanjut (Hanya Pengguna Ahli!)</value></string>
-  <string><id>494</id><value>Keseluruhan Audio Headroom</value></string>
-  <string><id>495</id><value>Upsample Video ke Resolusi GUI</value></string>
-  <string><id>496</id><value>Kalibrasi</value></string>
-  <string><id>497</id><value>Sembunyikan Ekstensi Media</value></string>
-  <string><id>498</id><value>Sortir : Tipe</value></string>
-  <string><id>499</id><value>Tidak dapat tersambung ke www.allmusic.com</value></string>
-  <string><id>500</id><value>Mengunduh info album gagal</value></string>
-  <string><id>501</id><value>Mencari nama album...</value></string>
-  <string><id>502</id><value>Buka</value></string>
-  <string><id>503</id><value>Sibuk</value></string>
-  <string><id>504</id><value>Kosong</value></string>
-  <string><id>505</id><value>Memuat informasi media dari file...</value></string>
-  <string><id>506</id><value>Gunakan Nama Direktori untuk Deskripsi</value></string>
-  <string><id>507</id><value>Sortir : Pemakaian</value></string>
-  <string><id>508</id><value>Jangan gunakan JalanPintas atau Scan</value></string>
-  <string><id>509</id><value>Cache Program Thumbnail</value></string>
-  <string><id>510</id><value>Aktifkan Visualisasi</value></string>
-  <string><id>511</id><value>Aktifkan tombol mode video</value></string>
-  <string><id>512</id><value>Window Pembuka</value></string>
-  <string><id>513</id><value>Home Window</value></string>
-  <string><id>514</id><value>Setelan Manual</value></string>
-  <string><id>515</id><value>Aliran</value></string>
-  <string><id>516</id><value>Buat arsip dengan satu file transparan</value></string>
-  <string><id>517</id><value>Album Yang Baru Saja Dimainkan</value></string>
-  <string><id>518</id><value>Jalankan</value></string>
-  <string><id>519</id><value>Jalankan dalam..</value></string>
-  <string><id>520</id><value>Edit nama XBE</value></string>
-  <string><id>521</id><value>Kompilasi</value></string>
-  <string><id>522</id><value>Hapus Sumber</value></string>
-
-  <string><id>588</id><value>Batalkan Mode Party</value></string>
-  <string><id>589</id><value>Mode Party</value></string>
-  <string><id>590</id><value>Acak</value></string>
-  <string><id>591</id><value>Matikan</value></string>
-  <string><id>592</id><value>Satu</value></string>
-  <string><id>593</id><value>Semua</value></string>
-  <string><id>594</id><value>Matikan</value></string>
-  <string><id>595</id><value>Ulang: Tidak</value></string>
-  <string><id>596</id><value>Ulang: Satu</value></string>
-  <string><id>597</id><value>Ulang: Semua</value></string>
-
-  <string><id>600</id><value>Salin CD Audio</value></string>
-  <string><id>601</id><value>Medium</value></string>
-  <string><id>602</id><value>Standar</value></string>
-  <string><id>603</id><value>Ekstrim</value></string>
-  <string><id>604</id><value>Constant Bit Rate</value></string>
-  <string><id>605</id><value>Penyalinan...</value></string>
-  <string><id>606</id><value>Nomor Trek:</value></string>
-  <string><id>607</id><value>Ke</value></string>
-  <string><id>608</id><value>Tidak dapat menyalin CD or Trek</value></string>
-  <string><id>609</id><value>CDDARipPath tidak diatur di XboxMediaCenter.xml</value></string>
-
-  <string><id>620</id><value>Ripping CD</value></string>
-  <string><id>621</id><value>Enkoder</value></string>
-  <string><id>622</id><value>Kualitas</value></string>
-  <string><id>623</id><value>Bit Rate</value></string>
-  <string><id>624</id><value>Termasuk Nomor Trek</value></string>
-  <string><id>625</id><value>Semua lagu dari</value></string>
-
-  <string><id>629</id><value>Mode Melihat</value></string>
-  <string><id>630</id><value>Normal</value></string>
-  <string><id>631</id><value>Zoom</value></string>
-  <string><id>632</id><value>Rentangkan 4:3</value></string>
-  <string><id>633</id><value>Rentangkan 14:9</value></string>
-  <string><id>634</id><value>Rentangkan 16:9</value></string>
-  <string><id>635</id><value>Ukuran Asli</value></string>
-  <string><id>636</id><value>Kustom</value></string>
-  <string><id>637</id><value>Replay Gain</value></string>
-  <string><id>638</id><value>Replay Gain Mode</value></string>
-  <string><id>639</id><value>Gunakan Level Trek</value></string>
-  <string><id>640</id><value>Gunakan Level Album</value></string>
-  <string><id>641</id><value>PreAmp Level - Replay Gained Files</value></string>
-  <string><id>642</id><value>PreAmp Level - Non Replay Gained Files</value></string>
-  <string><id>643</id><value>Avoid Clipping on Replay Gained Files</value></string>
-  <string><id>644</id><value>Potong Bar Hitam</value></string>
-  <string><id>645</id><value>Memerlukan meng-cache file besar. Lanjutkan?</value></string>
-  <string><id>646</id><value>Hapus Nama</value></string>
-  
-  <string><id>700</id><value>Bersihkan Pustaka</value></string>
-  <string><id>701</id><value>Menghapus lagu lama dari Pustaka</value></string>
-  <string><id>702</id><value>path ini telah di-scan sebelumnya</value></string>
-  <string><id>703</id><value>Tekan Ya untuk menmperbaharui semua lagu dalam folder ini</value></string>
-  <string><id>704</id><value>Tekan Tiadk untuk hanya menambah lagu baru</value></string>
-  <string><id>705</id><value>Jaringan</value></string>
-  <string><id>706</id><value>Host Proxy HTTP</value></string>
-  <string><id>707</id><value>Port Proxy HTTP</value></string>
-  <string><id>708</id><value>Aktifkan HTTP Proxy</value></string>
-  <string><id>709</id><value>XTag XLink Kai</value></string>
-  <string><id>710</id><value>Password XLink Kai</value></string>
-  <string><id>711</id><value>Internet Protokol (IP)</value></string>
-  <string><id>712</id><value>Port tidak valid. Nilai harus di antara 1 dan 65535.</value></string>
-  <string><id>713</id><value>Proxy HTTP</value></string>
-  <string><id>714</id><value>XLink Kai</value></string>
-  <string><id>715</id><value>Penetapan</value></string>
-  <string><id>716</id><value>Otomatis (DHCP)</value></string>
-  <string><id>717</id><value>Manual (Statik)</value></string>
-  <string><id>718</id><value>Standar (Dashboard)</value></string>
-  <string><id>719</id><value>- Alamat IP</value></string>
-  <string><id>720</id><value>- Netmask</value></string>
-  <string><id>721</id><value>- Gateway Standar</value></string>
-  <string><id>722</id><value>- Server DNS</value></string>
-  <string><id>723</id><value>Simpan &amp; Memulai Kembali</value></string>
-  <string><id>724</id><value>Alamat tidak valid. Nilai harus AAA.BBB.CCC.DDD</value></string>
-  <string><id>725</id><value>dengan nomor antara 0 dan 255.</value></string>
-  <string><id>726</id><value>Perubahan tidak disimpan. Lanjutkan tanpa menyimpan?</value></string>
-  <string><id>727</id><value>Server Web</value></string>
-  <string><id>728</id><value>Server FTP</value></string>
-  <string><id>729</id><value>Waktu Internet</value></string>
-  <string><id>730</id><value>Port Server Web</value></string>
-  <string><id>731</id><value>Waktu Host Server </value></string>
-  <string><id>732</id><value>Simpan &amp; Pakai</value></string>
-  <string><id>733</id><value>Password Server Web </value></string>
-  <string><id>734</id><value>Tanpa Pass</value></string>
-  <string><id>735</id><value>- Karakterset</value></string>
-  <string><id>736</id><value>- Gaya</value></string>
-  <string><id>737</id><value>- Warna</value></string>
-  <string><id>738</id><value>Normal</value></string>
-  <string><id>739</id><value>Tebal</value></string>
-  <string><id>740</id><value>Miring</value></string>
-  <string><id>741</id><value>Tebal Miring</value></string>
-  <string><id>742</id><value>Putih</value></string>
-  <string><id>743</id><value>Kuning</value></string>
-  <string><id>744</id><value>File</value></string>
-  <string><id>745</id><value>Tidak ada informasi untuk hasil scan ini</value></string>
-  <string><id>746</id><value>Ganti ke tampilan File</value></string>
-  <string><id>747</id><value>Kesalahan memuat gambar</value></string>
-  <string><id>748</id><value>Edit Path</value></string>
-  <string><id>749</id><value>Tambah Share</value></string>
-  <string><id>750</id><value>Anda yakin?</value></string>
-  <string><id>751</id><value>Menghapus Share</value></string>
-  <string><id>752</id><value>Edit Share Path</value></string>
-  <string><id>753</id><value>Edit Share Name</value></string>
-  <string><id>754</id><value>Tambah Link Program</value></string>
-  <string><id>755</id><value>Edit Path Program</value></string>
-  <string><id>756</id><value>Edit Nama Program</value></string>
-  <string><id>757</id><value>Edit Kedalaman Path</value></string>
-  <string><id>758</id><value>Hapus Link Program</value></string>  
-  <string><id>759</id><value>Lihat: Daftar Besar</value></string>
-  <string><id>760</id><value>Kuning</value></string>
-  <string><id>761</id><value>Putih</value></string>
-  <string><id>762</id><value>Biru</value></string>
-  <string><id>763</id><value>Hijau Terang</value></string>
-  <string><id>764</id><value>Kuning Hijau</value></string>
-  <string><id>765</id><value>Cyan</value></string>
-  <string><id>766</id><value>Dipesan</value></string>
-  <string><id>767</id><value>Dipesan</value></string>
-  <string><id>768</id><value>Dipesan</value></string>
-  <string><id>769</id><value>Dipesan</value></string>
-  <string><id>770</id><value>Kesalahan %i: share tidak tersedia</value></string>
-  <string><id>771</id><value>-  Pembatas Fatx Otomatis</value></string>
-  <string><id>772</id><value>Audio</value></string>
-  <string><id>773</id><value>Mencari</value></string>
-  <string><id>774</id><value>Folder Slideshow</value></string>
-
-  <string><id>998</id><value>XLink Kai</value></string>
-  <string><id>999</id><value>Permainan Online</value></string>
-  <string><id>1000</id><value>Preview Screensaver</value></string>
-  <string><id>1001</id><value>Tidak bisa tersambung</value></string>
-  <string><id>1002</id><value>XBMC tidak dapat tersambung ke lokasi jaringan.</value></string>
-  <string><id>1003</id><value>Kemungkinan jaringan tidak tersambung.</value></string>
-  <string><id>1004</id><value>Anda ingin menambahkan begitu saja?</value></string>
-  <string><id>1005</id><value>Masukan nama untuk share ini</value></string>
-  <string><id>1006</id><value>Alamat IP</value></string>
-  <string><id>1007</id><value>Tambah Lokasi Jaringan</value></string>
-  <string><id>1008</id><value>Protokol</value></string>
-  <string><id>1009</id><value>Alamat Server</value></string>
-  <string><id>1010</id><value>Nama Server</value></string>
-  <string><id>1011</id><value>Path Remote</value></string>
-  <string><id>1012</id><value>Folder Yang Shared</value></string>
-  <string><id>1013</id><value>Port</value></string>
-  <string><id>1014</id><value>NamaPengguna</value></string>
-  <string><id>1015</id><value>server jaringan</value></string>
-  <string><id>1016</id><value>Masukkan alamat jaringan dari server</value></string>
-  <string><id>1017</id><value>Masukkan path pada server</value></string>
-  <string><id>1018</id><value>Masukkan nomor port</value></string>
-  <string><id>1019</id><value>Masukkan namapengguna</value></string>
-  <string><id>1020</id><value>Tambah %s Sumber</value></string>
-  <string><id>1021</id><value>Masukkan path atau jelajah lokasi media.</value></string>
-  <string><id>1022</id><value>Masukkan nama Sumber Media ini.</value></string>
-  <string><id>1023</id><value>Jelajah share baru</value></string>
-  <string><id>1024</id><value>Jelajah</value></string>
-  <string><id>1025</id><value>Tidak bisa mengambil informasi direktori.</value></string>
-  <string><id>1026</id><value>Tambah Sumber</value></string>
-  <string><id>1027</id><value>Edit Sumber</value></string>
-  <string><id>1028</id><value>Edit %s Sumber</value></string>
-  <string><id>1029</id><value>Masukkan label baru</value></string>
-  <string><id>1030</id><value>sebuah image</value></string>
-  <string><id>1031</id><value>sebuah folder image</value></string>
-  <string><id>1032</id><value>Tambah Lokasi Jaringan...</value></string>
-
-  <string><id>1200</id><value>Klien SMB</value></string>
-  <string><id>1201</id><value>IP Share</value></string>
-  <string><id>1202</id><value>Workgroup</value></string>
-  <string><id>1203</id><value>NamaPengguna Standar</value></string>
-  <string><id>1204</id><value>Password Standar</value></string>
-  <string><id>1205</id><value>Nama Share</value></string>
-  <string><id>1206</id><value>Grup Share</value></string>
-  <string><id>1207</id><value>WINS-Server</value></string>
-  <string><id>1208</id><value>Otomatis Bookmark</value></string>
-  <string><id>1209</id><value>Setelan Klien SMB berhasil dipasang!</value></string>
-  <string><id>1210</id><value>Hapus</value></string>
-  <string><id>1211</id><value>Musik</value></string>
-  <string><id>1212</id><value>Video</value></string>
-  <string><id>1213</id><value>Gambar</value></string>
-  <string><id>1214</id><value>File</value></string>
-  <string><id>1215</id><value>Musik &amp; Video </value></string>
-  <string><id>1216</id><value>Musik &amp; Gambar</value></string>
-  <string><id>1217</id><value>Musik &amp; File</value></string>
-  <string><id>1218</id><value>Video &amp; Gambar</value></string>
-  <string><id>1219</id><value>Video &amp; File</value></string>
-  <string><id>1220</id><value>Gambar &amp; File</value></string>
-  <string><id>1221</id><value>Musik &amp; Video &amp; Gambar</value></string>
-  <string><id>1222</id><value>Musik &amp; Video &amp; Gambar &amp; File</value></string>
-  <string><id>1223</id><value>Non Aktif</value></string>
-  <string><id>1224</id><value>Pengguna Normal</value></string>
-  <string><id>1225</id><value>Pengguna Ahli</value></string>
-  <string><id>1226</id><value>File &amp; Musik &amp; Video</value></string>
-  <string><id>1227</id><value>File &amp; Gambar &amp; Musik</value></string>
-  <string><id>1228</id><value>File &amp; Gambar &amp; Video</value></string>
-  <string><id>1229</id><value>Musik &amp; Program</value></string>
-  <string><id>1230</id><value>Video &amp; Program</value></string>
-  <string><id>1231</id><value>Gambar &amp; Program</value></string>
-  <string><id>1232</id><value>Musik &amp; Video &amp; Gambar &amp; Program</value></string>
-  <string><id>1233</id><value>Program &amp; Video &amp; Musik</value></string>
-  <string><id>1234</id><value>Program &amp; Gambar &amp; Musik</value></string>
-  <string><id>1235</id><value>Program &amp; Gambar &amp; Video</value></string>
-
-  <string><id>1245</id><value>Nama Pengguna FTP</value></string>
-  <string><id>1246</id><value>Password FTP</value></string>
-  <string><id>1247</id><value>Password Pengguna Server FTP telah berhasil diganti</value></string>
-
-  <string><id>1250</id><value>Otodeteksi</value></string>
-  <string><id>1251</id><value>Otodeteksi XBOX</value></string>
-  <string><id>1252</id><value>Nama panggilan</value></string>
-  <string><id>1253</id><value>Buat Link FTP pada File</value></string>
-  <string><id>1254</id><value>Minta utk Tersambungkan</value></string>
-  <string><id>1255</id><value>Kirim Pengguna dan Password FTP</value></string>
-  <string><id>1256</id><value>Jeda Ping</value></string>
-  <string><id>1257</id><value>Apakah Anda ingin tersambung ke Otodeteksi Xbox?</value></string>
-
-  <string><id>1396</id><value>Drifting</value></string>
-  <string><id>1397</id><value>dan</value></string>
-  <string><id>1398</id><value>Freezing</value></string>
-  <string><id>1399</id><value>Late</value></string>
-  <string><id>1400</id><value>Isolated</value></string>
-  <string><id>1401</id><value>T-Showers</value></string>
-  <string><id>1402</id><value>Thunder</value></string>
-  <string><id>1403</id><value>Sun</value></string>
-  <string><id>1404</id><value>Heavy</value></string>
-  <string><id>1405</id><value>dalam</value></string>
-  <string><id>1406</id><value>the</value></string>
-  <string><id>1407</id><value>Vicinity</value></string>
-  <string><id>1408</id><value>Ice</value></string>
-  <string><id>1409</id><value>Crystals</value></string>
-  <string><id>1410</id><value>Calm</value></string>
-
-  <string><id>2050</id><value>Runtime:</value></string>
-
-  <string><id>4501</id><value>Jenis LCD</value></string>
-
-  <string><id>10000</id><value>Depan</value></string>
-  <string><id>10001</id><value>Program</value></string>
-  <string><id>10002</id><value>Foto</value></string>
-  <string><id>10003</id><value>File</value></string>
-  <string><id>10004</id><value>Setelan</value></string>
-  <string><id>10005</id><value>Musik</value></string>
-  <string><id>10006</id><value>Video</value></string>
-  <string><id>10007</id><value>Informasi Sistem</value></string>
-  <string><id>10008</id><value>Setelan-&gt;Umum</value></string>
-  <string><id>10009</id><value>Setelan-&gt;Layar</value></string>
-  <string><id>10010</id><value>Setelan-&gt;Penampilan-&gt;Kalibrasi GUI</value></string>
-  <string><id>10011</id><value>Setelan-&gt;Video-&gt;Kalibrasi Layar</value></string>
-  <string><id>10012</id><value>Setelan-&gt;Foto</value></string>
-  <string><id>10013</id><value>Setelan-&gt;Program</value></string>
-  <string><id>10014</id><value>Setelan-&gt;Cuaca</value></string>
-  <string><id>10015</id><value>Setelan-&gt;Musik</value></string>
-  <string><id>10016</id><value>Setelan-&gt;Sistem</value></string>
-  <string><id>10017</id><value>Setelan-&gt;Video</value></string>
-  <string><id>10018</id><value>Setelan-&gt;Jaringan</value></string>
-  <string><id>10019</id><value>Setelan-&gt;Penampilan</value></string>
-  <string><id>10020</id><value>Skrip</value></string>
-  <string><id>10021</id><value>Video/Aliran</value></string>
-  <string><id>10022</id><value>Video/Aktor</value></string>
-  <string><id>10023</id><value>Video/Tahun</value></string>
-  <string><id>10025</id><value>Video/Judul</value></string>
-  <string><id>10028</id><value>Video/Daftar Main</value></string>
-  <string><id>10034</id><value>Setelan-&gt;Profil</value></string>
-  <string><id>10100</id><value>Dialog Ya/tidak</value></string>
-  <string><id>10101</id><value>Dialog Kemajuan</value></string>
-  <string><id>10500</id><value>Musik/Daftar Main</value></string>
-  <string><id>10501</id><value>Musik/File</value></string>
-  <string><id>10502</id><value>Musik/Pustaka</value></string>
-  <string><id>10503</id><value>Musik/Top 100</value></string>
-  <string><id>10504</id><value>Top 100 Lagu</value></string>
-  <string><id>10505</id><value>Top 100 Album</value></string>
-  <string><id>10506</id><value>Aplikasi</value></string>
-  <string><id>10507</id><value>Konfigurasi</value></string>
-  <string><id>10508</id><value>Ramalan Cuaca</value></string>
-  <string><id>10509</id><value>Permainan Jaringan</value></string>
-  <string><id>10510</id><value>Ekstensi</value></string>
-  <string><id>10511</id><value>Informasi Sistem</value></string>
-  <string><id>10512</id><value>Musik - Album</value></string>
-  <string><id>10513</id><value>Musik - Artis</value></string>
-  <string><id>10514</id><value>Musik - Aliran</value></string>
-  <string><id>10515</id><value>Musik - Top 100</value></string>
-  <string><id>10516</id><value>Musik - Pustaka</value></string>
-  <string><id>10517</id><value>Musik - Sedang Dimainkan</value></string>
-  <string><id>10518</id><value>Video - Aktor</value></string>
-  <string><id>10519</id><value>Video - Aliran</value></string>
-  <string><id>10520</id><value>Video - Judul</value></string>
-  <string><id>10521</id><value>Video - Tahun</value></string>
-  <string><id>10522</id><value>Video - Sedang Dimainkan</value></string>
-  <string><id>10523</id><value>Info Album</value></string>
-  <string><id>10524</id><value>Info Film</value></string>
-  <string><id>12000</id><value>Pilih dialog</value></string>
-  <string><id>12001</id><value>Musik/info</value></string>
-  <string><id>12002</id><value>Dialog OK</value></string>
-  <string><id>12003</id><value>Video/Info</value></string>
-  <string><id>12004</id><value>Skrip/Info</value></string>
-  <string><id>12005</id><value>Video Tampilan Penuh</value></string>
-  <string><id>12006</id><value>Visualisasi Audio</value></string>
-  <string><id>12007</id><value>Foto/slideshow</value></string>
-  <string><id>12008</id><value>Filestacking dialog</value></string>
-  <string><id>12009</id><value>Membangun kembali indeks...</value></string>
-  <string><id>12010</id><value>Kembali ke Musik</value></string>
-  <string><id>12011</id><value>Kembali ke Video</value></string>
-  <string><id>12012</id><value>Perbaharui daftar trainer</value></string>
-  <string><id>12013</id><value>Trainer</value></string>
-  <string><id>12014</id><value>Trainer tidak ditemukan</value></string>
-  <string><id>12015</id><value>Setelan Trainer</value></string>
-  <string><id>12016</id><value>Semua trailer terdaftar telah hilang. Perbaharui daftar anda</value></string>
-  <string><id>12017</id><value>Resume otomatis dari posisi terakhir</value></string>
-  <string><id>12018</id><value>Tidak</value></string>
-  <string><id>12019</id><value>Ya</value></string>
-  <string><id>12020</id><value>Meminta</value></string>
-  <string><id>12021</id><value>Memulai dari awal</value></string>
-  <string><id>12022</id><value>Resume dari posisi akhir</value></string>
-
-  <string><id>12310</id><value>0</value></string>
-  <string><id>12311</id><value>1</value></string>
-  <string><id>12312</id><value>2</value></string>
-  <string><id>12313</id><value>3</value></string>
-  <string><id>12314</id><value>4</value></string>
-  <string><id>12315</id><value>5</value></string>
-  <string><id>12316</id><value>6</value></string>
-  <string><id>12317</id><value>7</value></string>
-  <string><id>12318</id><value>8</value></string>
-  <string><id>12319</id><value>9</value></string>
-  <string><id>12320</id><value>c</value></string>
-  <string><id>12321</id><value>ok</value></string>
-  <string><id>12322</id><value>*</value></string>
-  <string><id>12324</id><value>Kunci Master XBMC</value></string>
-  <string><id>12325</id><value>Dikunci Masukkan Kode...</value></string>
-  <string><id>12326</id><value>Masukkan password</value></string>
-  <string><id>12327</id><value>Masukkan Kode Master</value></string>
-  <string><id>12328</id><value>Masukkan Kode Pembuka</value></string> 
-  <string><id>12329</id><value>atau tekan C untuk membatalkan</value></string>
-  <string><id>12330</id><value>Masukkan tombol kombo Gamepad dan tekan Start</value></string>
-  <string><id>12331</id><value>tekan Start, atau Back utk membatalkan</value></string>
-  <string><id>12332</id><value>Pasang Kunci</value></string>
-  <string><id>12333</id><value>Buka Kunci</value></string>
-  <string><id>12334</id><value>Reset Kunci</value></string>
-  <string><id>12335</id><value>Hapus Kunci</value></string>
-  <string><id>12336</id><value>Pilih jenis penguncian yg akan digunakan:</value></string>
-  <string><id>12337</id><value>Password Numerik</value></string>
-  <string><id>12338</id><value>Tombol Gamepad Kombo</value></string>
-  <string><id>12339</id><value>Password Teks</value></string>
-  <string><id>12340</id><value>Masukkan password baru</value></string>
-  <string><id>12341</id><value>Masukkan lagi password baru</value></string>
-  <string><id>12342</id><value>Password salah,</value></string>
-  <string><id>12343</id><value>sisa percobaan </value></string>
-  <string><id>12344</id><value>Password yg dimasukkan tidak sesuai.</value></string>
-  <string><id>12345</id><value>Akses Ditolak</value></string>
-  <string><id>12346</id><value>Batas memasukan Password telah lewat.</value></string>
-  <string><id>12347</id><value>XBOX akan dimatikan sekarang.</value></string>
-  <string><id>12348</id><value>Item Terkunci</value></string>
-  <string><id>12349</id><value>Mengingat Kode Master sampai boot berikutnya?</value></string>
-  <string><id>12350</id><value>(Membuka item pada Setelan akan</value></string>
-  <string><id>12351</id><value>otomatis mengaktifkan kembali Kunci Master.)</value></string>
-  <string><id>12352</id><value>Masukkan Kode Master tombol kombo dan tekan Start</value></string>
-  <string><id>12353</id><value>Pengangtifan Kunci</value></string>
-  <string><id>12354</id><value>Abaikan penguncian folder sampai boot berikutnya?</value></string>
-  <string><id>12355</id><value>Otomatis pengaktifan kembali folder terkunci.)</value></string>
-  <string><id>12356</id><value>Ganti Kunci</value></string>
-  <string><id>12357</id><value>Share Kunci</value></string>
-  <string><id>12358</id><value>Masukkan Password kosong. Coba lagi.</value></string>
-  <string><id>12360</id><value>Kunci Master</value></string>
-  <string><id>12361</id><value>Maksimal Percobaan</value></string>
-  <string><id>12362</id><value>Aktifkan Shutdown</value></string>
-  <string><id>12363</id><value>Lindungi Share</value></string>
-  <string><id>12364</id><value>Mode Master</value></string>
-  <string><id>12365</id><value>Kode Master</value></string>
-  <string><id>12366</id><value>Kunci Master berubah. Kunci Master sekarang dipasang ke:</value></string>
-  <string><id>12367</id><value>Kunci Master tidak Valid!</value></string>
-  <string><id>12368</id><value>Harap masukkan Kode Master yang Valid!</value></string>
-  <string><id>12369</id><value>Kunci XBMC Saat Mulai</value></string>
-  <string><id>12370</id><value>Mode Master Kunci telah berubah, Kode Master belum dipasang!</value></string>
-  <string><id>12371</id><value>Harap Pasang Kode Master yg baru!</value></string>
-  <string><id>12372</id><value>Kunci Setelan &amp; File</value></string>
-  <string><id>12373</id><value>Setelan &amp;  File</value></string>
-  <string><id>12374</id><value>Kunci Media</value></string>
-  <string><id>12375</id><value>Mode Pegguna Master</value></string>
-  <string><id>12376</id><value>Pasangkan sebagai standar untuk semua Film</value></string>
-  <string><id>12377</id><value>Ini akan mengubah nilai yang telah disimpan sebelumnya</value></string>
-  <string><id>12378</id><value>Tampilkan setiap gambar untuk</value></string>
-  <string><id>12379</id><value>Gunakan efek Pan dan Zoom</value></string>
-  <string><id>12380</id><value>Mainkan video NTSC pada nilai PAL</value></string>
-  <string><id>12381</id><value>Mainkan video PAL  pada nilai NTSC</value></string>
-  <string><id>12382</id><value>Mainkan video NTSC dlm PAL60</value></string>
-  <string><id>12383</id><value>12 jam</value></string>
-  <string><id>12384</id><value>24 jam</value></string>
-  <string><id>12385</id><value>Hari/Bulan</value></string>
-  <string><id>12386</id><value>Bulan/Hari</value></string>
-  <string><id>12387</id><value>Pindai Ulang Database</value></string>
-
-  <string><id>12390</id><value>Sistem Berjalan</value></string>
-  <string><id>12391</id><value>Menit</value></string>
-  <string><id>12392</id><value>Jam</value></string>
-  <string><id>12393</id><value>Hari</value></string>
-  <string><id>12394</id><value>Total Sistem Berjalan</value></string>
-  
-  <string><id>12600</id><value>Cuaca</value></string>
-
-  <string><id>12900</id><value>Screensaver</value></string>
-  <string><id>12901</id><value>Tampilan Penuh OSD</value></string>
-
-  <string><id>13000</id><value>Sistem</value></string>
-  <string><id>13001</id><value>HD Spindown Seketika</value></string>
-  <string><id>13002</id><value>Hanya Video</value></string>
-  <string><id>13003</id><value>- Penundaan</value></string>
-  <string><id>13004</id><value>- Minimum Lamanya File</value></string>
-  <string><id>13005</id><value>Matikan</value></string>
-  <string><id>13006</id><value>Dashboard</value></string>
-
-  <string><id>13100</id><value>Filter Kedipan</value></string>
-  <string><id>13150</id><value>Kunci HDD:</value></string>
-  <string><id>13151</id><value>Suhu HDD:</value></string>
-  <string><id>13152</id><value>Model DVD:</value></string>
-  <string><id>13153</id><value>Firmware DVD:</value></string>
-  <string><id>13154</id><value>Model HDD:</value></string>
-  <string><id>13155</id><value>Seri HDD:</value></string>
-  <string><id>13156</id><value>Firmware HDD:</value></string>
-  <string><id>13157</id><value>Password HDD:</value></string>
-  <string><id>13158</id><value>Status Penguncian HDD:</value></string>
-  <string><id>13159</id><value>Subnet mask:</value></string>
-  <string><id>13160</id><value>Gateway:</value></string>
-  <string><id>13161</id><value>DNS</value></string>
-  <string><id>13162</id><value>Gagal Inisialisasi</value></string>
-  <string><id>13163</id><value>GamePad pada Port:</value></string>
-  <string><id>13164</id><value>Keyboard pada Port:</value></string>
-  <string><id>13165</id><value>Mouse pada Port:</value></string>
-  <string><id>13166</id><value>Head/MicroPhone pada Port:</value></string>
-  <string><id>13167</id><value>MemoryStick pada Port:</value></string>
-  <string><id>13168</id><value>IR-Remote pada Port:</value></string>
-  <string><id>13169</id><value>Abaikan Pemilihan CD</value></string>
-  <string><id>13170</id><value>Tidak Pernah</value></string>
-  <string><id>13171</id><value>Segera</value></string>
-  <string><id>13172</id><value>Setelah %i detik</value></string>
-
-  <string><id>13200</id><value>Profil</value></string>
-  <string><id>13201</id><value>Hapus profil '%s'?</value></string>
-  <string><id>13202</id><value>Simpan setelan sekarang sebagai profil...</value></string>
-  <string><id>13203</id><value>Profil '%s' berhasil dimuat</value></string>
-  <string><id>13204</id><value>Profil  terakhir dipasang:</value></string>
-  <string><id>13205</id><value>Tidak Diketahui</value></string>
-  <string><id>13206</id><value>Timpa</value></string>
-  <string><id>13207</id><value>Timpa profil '%s'?</value></string>
-  <string><id>13208</id><value>Jam Alarm</value></string>
-  <string><id>13209</id><value>Jeda jam Alarm (dlm menit)</value></string>
-  <string><id>13210</id><value>Dimulai, alarm pada %im</value></string>
-  <string><id>13211</id><value>Alarm!</value></string>
-  <string><id>13212</id><value>Dibatalkan dengan %im%is</value></string>
-
-
-  <string><id>13249</id><value>Cari Teks Film dalam RARs</value></string>
-  <string><id>13250</id><value>Melihat-lihat teks film...</value></string>
-  <string><id>13251</id><value>Pindahkan Item</value></string>
-  <string><id>13252</id><value>Pindahkan Item Ke Sini</value></string>
-  <string><id>13253</id><value>Batalkan Pemindahan</value></string>
-
-  <string><id>13270</id><value>Perangkat Keras</value></string>
-  <string><id>13271</id><value>Kecepatan CPU:</value></string>
-  <string><id>13274</id><value>Xbox Tersambung, tetapi tidak tersedia DNS.</value></string>
-  <string><id>13275</id><value>Hard Disk</value></string>
-  <string><id>13276</id><value>DVD-ROM</value></string>
-  <string><id>13277</id><value>Penyimpanan</value></string>
-  <string><id>13278</id><value>Standar</value></string>
-  <string><id>13279</id><value>Jaringan</value></string>
-  <string><id>13280</id><value>Video</value></string>
-  <string><id>13281</id><value>Perangkat Keras</value></string>
-  <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>Versi Kernel:</value></string>
-  <string><id>13284</id><value>Kecepatan CPU:</value></string>
-  <string><id>13285</id><value>BIOS Terdeteksi:</value></string>
-  <string><id>13286</id><value>Enkoder Video:</value></string>
-  <string><id>13287</id><value>Resolusi Layar:</value></string>
-  <string><id>13288</id><value>Versi Xbox:</value></string>
-  <string><id>13289</id><value>Nomor Seri Xbox:</value></string>
-  <string><id>13290</id><value>Pabrikan XBOX:</value></string>
-  <string><id>13291</id><value>ModChip:</value></string>
-  <string><id>13292</id><value>Kabel A/V:</value></string>
-  <string><id>13293</id><value>Video &amp; Regional XBE:</value></string>
-  <string><id>13294</id><value>Region DVD:</value></string>
-  <string><id>13295</id><value>Internet:</value></string>
-  <string><id>13296</id><value>Xbox sedang Tersambung</value></string>
-  <string><id>13297</id><value>Xbox tidak Tersambung. Periksa setelan Jaringan.</value></string>
-  <string><id>13298</id><value>Kunci XBLIVE:</value></string>
-  <string><id>13299</id><value>Target Suhu</value></string>
-  <string><id>13300</id><value>Kecepatan Kipas</value></string>
-  <string><id>13301</id><value>Kontrol Suhu Otomatis</value></string>
-  <string><id>13302</id><value>Mengesampingkan Kecepatan Kipas</value></string>
-  <string><id>13303</id><value>Huruf Kulit</value></string>
-  <string><id>13304</id><value>Aktifkan Flipping Bi-Directional Strings</value></string>
-  <string><id>13305</id><value>Aktifkan RSS Feeds</value></string>
-  <string><id>13306</id><value>Sembunyikan Induk Item Folder</value></string>
-  <string><id>13307</id><value>Template Penamaan Folder</value></string>
-  <string><id>13308</id><value>Anda yakin ingin mem-boot xbox</value></string>
-  <string><id>13309</id><value>daripada hanya XBMC?</value></string>
-  <string><id>13310</id><value>Efek Zoom</value></string>
-  <string><id>13311</id><value>Efek Float</value></string>
-  <string><id>13312</id><value>Pengurangan Bar Hitam</value></string>
-  <string><id>13313</id><value>Memulai Lagi</value></string>
-  <string><id>13314</id><value>Crossfade</value></string>
-  <string><id>13315</id><value>Buat Ulang Thumbnail</value></string>
-  <string><id>13316</id><value>Thumbnail Berulang</value></string>
-  <string><id>13317</id><value>Lihat Slideshow</value></string>
-  <string><id>13318</id><value>Slideshow Berulang</value></string>
-  <string><id>13319</id><value>Acak</value></string>
-  <string><id>13320</id><value>Stereo</value></string>
-  <string><id>13321</id><value>Hanya Kiri</value></string>
-  <string><id>13322</id><value>Hanya Kanan</value></string>
-  <string><id>13323</id><value>Aktifkan CD+G</value></string>
-  <string><id>13324</id><value>Latar Belakang Transparan</value></string>
-  <string><id>13325</id><value>Latar Depan Transparan</value></string>
-  <string><id>13326</id><value>penundaan A/V</value></string>
-  <string><id>13327</id><value>Karaoke</value></string>
-  <string><id>13328</id><value>%s tidak ditemukan</value></string>
-  <string><id>13329</id><value>Kesalahan membuka %s</value></string>
-  <string><id>13330</id><value>Tidak dapat memuat %s</value></string>
-  <string><id>13331</id><value>Kesalahan: memori yg diperlukan terlalu besar</value></string>
-  <string><id>13332</id><value>Pindah Atas</value></string>
-  <string><id>13333</id><value>Pindah Bawah</value></string>
-  <string><id>13334</id><value>Edit Label</value></string>
-  <string><id>13335</id><value>Buat Standar</value></string>
-  <string><id>13336</id><value>Hapus Tombol</value></string>
-  <string><id>13337</id><value>- 2 Saluran Melalui PCM</value></string>
-  <string><id>13338</id><value>LED Muka</value></string>
-  <string><id>13339</id><value>Warna LED Muka</value></string>
-  <string><id>13340</id><value>Biarkan Seadanya</value></string>
-  <string><id>13341</id><value>Hijau</value></string>
-  <string><id>13342</id><value>Oranye</value></string>
-  <string><id>13343</id><value>Merah</value></string>
-  <string><id>13344</id><value>Putaran</value></string>
-  <string><id>13345</id><value>Matikan LED saat Memainkan</value></string>
-  <string><id>13346</id><value>Informasi Film</value></string>
-  <string><id>13347</id><value>Hal Antrian</value></string>
-  <string><id>13348</id><value>Cari IMDb...</value></string>
-  <string><id>13349</id><value>Cari Info Utk Semua File</value></string>
-  <string><id>13350</id><value>Sedang Memainkan...</value></string>
-  <string><id>13351</id><value>Informasi Album</value></string>
-  <string><id>13352</id><value>Pindai Seluruh Database</value></string>
-  <string><id>13353</id><value>Hentikan Scan</value></string>
-  <string><id>13354</id><value>Metode Render</value></string>
-  <string><id>13355</id><value>Pixel Shader Kualitas Rendah</value></string>
-  <string><id>13356</id><value>Lapisan Perangkat Keras</value></string>
-  <string><id>13357</id><value>Pixel Shader Kualitas Tinggi</value></string>
-  <string><id>13358</id><value>Mainkan Item</value></string>
-  <string><id>13359</id><value>Pasang Thumb Artis</value></string>
-  <string><id>13360</id><value>Buat Thumb</value></string>
-  <string><id>13361</id><value>Aktifkan Suara</value></string>
-  <string><id>13362</id><value>Penutup Suara</value></string>
-  <string><id>13363</id><value>- Aktifkan Bobot Energi Spektrum</value></string>
-  <string><id>13364</id><value>-- Nilai Bobot Energi Spektrum</value></string>
-  <string><id>13365</id><value>- Aktifkan Pitch Scaling</value></string>
-  <string><id>13366</id><value>-- Nilai Pitch Scaling</value></string>
-  <string><id>13367</id><value>- Aktifkan Faktor Bisikan</value></string>
-  <string><id>13368</id><value>-- Nilai Faktor Bisikan</value></string>
-  <string><id>13369</id><value>- Aktifkan Faktor Robotik</value></string>
-  <string><id>13370</id><value>-- Nilai Faktor Robotik</value></string>
-  <string><id>13371</id><value>- Port 1 Suara</value></string>
-  <string><id>13372</id><value>- Port 2 Suara</value></string>
-  <string><id>13373</id><value>- Port 3 Suara</value></string>
-  <string><id>13374</id><value>- Port 4 Suara</value></string>
-  <string><id>13375</id><value>Aktifkan Perangkat</value></string>
-  <string><id>13376</id><value>Volume</value></string>
-  <string><id>13377</id><value>Mode Tampilan Standar</value></string>
-  <string><id>13378</id><value>Kecerahan Standar</value></string>
-  <string><id>13379</id><value>Kontras Standar</value></string>
-  <string><id>13380</id><value>Gamma Standar</value></string>
-  <string><id>13381</id><value>Lanjutkan Lagi Video</value></string>
-  <string><id>13382</id><value>Voice Mask - Port 1</value></string>
-  <string><id>13383</id><value>Voice Mask - Port 2</value></string>
-  <string><id>13384</id><value>Voice Mask - Port 3</value></string>
-  <string><id>13385</id><value>Voice Mask - Port 4</value></string>
-  <string><id>13386</id><value>Gunakan Pencarian Berdasar Waktu</value></string>
-  <string><id>13387</id><value>Template Penamaan Trek Kanan</value></string>
-  <string><id>13388</id><value>Presets</value></string>
-  <string><id>13389</id><value>Tidak tersedia preset &#10;utk visualisasi ini</value></string>
-  <string><id>13390</id><value>Tidak tersedia setelan &#10;utk visualisasi ini</value></string>
-  <string><id>13391</id><value>Keluarkan/Pasangkan</value></string>
-  <string><id>13392</id><value>Gunakan Visualisasi jika memainkan audio</value></string>
-  <string><id>13393</id><value>Hitung Ukuran</value></string>
-  <string><id>13394</id><value>Menghitung ukuran isi folder</value></string>
-  <string><id>13395</id><value>Setelan Video</value></string>
-  <string><id>13396</id><value>Audio dan Setelan Teks Film</value></string>
-  <string><id>13397</id><value>Aktifkan Teks Film</value></string>
-  <string><id>13398</id><value>Bookmark</value></string>
-  <string><id>13399</id><value>Abaikan "The" saat penyortiran</value></string>
-  <string><id>13400</id><value>Crossfade trek album</value></string>
-  <string><id>13401</id><value>Melihat-lihat untuk %s</value></string>
-  <string><id>13402</id><value>Tampilkan posisi trek</value></string>
-  <string><id>13403</id><value>Kosongkan Default</value></string>
-  <string><id>13404</id><value>Lanjutkan</value></string>
-  <string><id>13405</id><value>Dapatkan Thumb</value></string>
-
-  <string><id>14000</id><value>Stack</value></string>
-  <string><id>14001</id><value>Unstack</value></string>
-  <string><id>14002</id><value>Stacking: Fuzzy</value></string>
-  <string><id>14003</id><value>Mengunduh file Daftar Main...</value></string>
-  <string><id>14004</id><value>Mengunduh daftar stream...</value></string>
-  <string><id>14005</id><value>Parsing daftar stream...</value></string>
-  <string><id>14006</id><value>Mengunduh daftar stream gagal</value></string>
-  <string><id>14007</id><value>Mengunduh file Daftar Main gagal</value></string>
-  <string><id>14008</id><value>Aktifkan Notifikasi Kai</value></string>
-  <string><id>14009</id><value>Direktori Permainan</value></string>
-  <string><id>14010</id><value>Otomatis Pindah ke Thumbs</value></string>
-  <string><id>14011</id><value>Aktifkan Autoswitching ke Tampilan Thumbs</value></string>
-  <string><id>14012</id><value>- Gunakan Ikon Besar</value></string>
-  <string><id>14013</id><value>- Penggantian Berdasar</value></string>
-  <string><id>14014</id><value>- Persentase</value></string>
-  <string><id>14015</id><value>Tak ada File dan satu Thumb</value></string>
-  <string><id>14016</id><value>Sedikitnya satu File dan Thumb</value></string>
-  <string><id>14017</id><value>Persentase Thumb</value></string>
-  <string><id>14018</id><value>Lihat Pilihan</value></string>
-  <string><id>14019</id><value>Ganti Kode Wilayah 1</value></string>
-  <string><id>14020</id><value>Ganti Kode Wilayah 2</value></string>
-  <string><id>14021</id><value>Ganti Kode Wilayah 3</value></string>
-  <string><id>14022</id><value>Pustaka</value></string>
-  <string><id>14023</id><value>Tidak ada TV</value></string>
-  <string><id>14024</id><value>Masukkan kota besar terdekat atau kode ZIP US</value></string>
-  <string><id>14025</id><value>Video/Audio/DVD Cache - Harddisk</value></string>
-  <string><id>14026</id><value>Video Cache - DVDRom</value></string>
-  <string><id>14027</id><value>- Jaringan Lokal</value></string>
-  <string><id>14028</id><value>- Internet</value></string>
-  <string><id>14030</id><value>Audio Cache - DVDRom</value></string>
-  <string><id>14031</id><value>- Jaringan Lokal</value></string>
-  <string><id>14032</id><value>- Internet</value></string>
-  <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
-  <string><id>14035</id><value>- Jaringan Lokal</value></string>
-  <string><id>14036</id><value>Server</value></string>
-  <string><id>14037</id><value>Lihat dan Rasakan</value></string>
-  <string><id>14038</id><value>Setelan Jaringan berubah</value></string>
-  <string><id>14039</id><value>XBMC harus dimulai ulang untuk mengganti</value></string>
-  <string><id>14040</id><value>pemasangan setelan jaringan. Anda mau lakukan sekarang?</value></string>
-  <string><id>14041</id><value>Post Processing</value></string>
-  <string><id>14042</id><value>Alamat Mesin IP</value></string>
-  <string><id>14043</id><value>- Matikan saat memainkan</value></string>
-  <string><id>14044</id><value>%i mnt</value></string>
-  <string><id>14045</id><value>%i det</value></string>
-  <string><id>14046</id><value>%i mdet</value></string>
-  <string><id>14047</id><value>%i %%</value></string>
-  <string><id>14048</id><value>%i kbps</value></string>
-  <string><id>14049</id><value>%i kb</value></string>
-  <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Format Waktu</value></string>
-  <string><id>14052</id><value>Format Tanggal</value></string>
-  <string><id>14053</id><value>Filter GUI</value></string>
-  <string><id>14054</id><value>Aktifkan Internet Lookup</value></string>
-  <string><id>14055</id><value>Gunakan Scanning Latar</value></string>
-  <string><id>14056</id><value>Hentikan Scan</value></string>
-  <string><id>14057</id><value>Tidak memungkinkan saat men-scan info media</value></string>
-  <string><id>14058</id><value>Efek Film Grain</value></string>
-  <string><id>14059</id><value>Mencari custom thumbnails pada remote shares</value></string>
-  <string><id>14060</id><value>Tipe Cache Tidak Diketahui- Internet</value></string>
-  <string><id>14061</id><value>Auto</value></string>
-  <string><id>14062</id><value>Masukkan namapengguna utk</value></string>
-  <string><id>14063</id><value>Tanggal &amp; Jam</value></string>
-  <string><id>14064</id><value>Pasang Tanggal</value></string>
-  <string><id>14065</id><value>Pasang Waktu</value></string>
-  <string><id>14066</id><value>Masukkan Waktu dalam format 24 jam HH:MM</value></string>
-  <string><id>14067</id><value>Masukkan Tanggal dalam format DD/MM/YYYY</value></string>
-  <string><id>14068</id><value>Masukkan Alamat IP</value></string>
-  <string><id>14069</id><value>Anda ingin memasang setelan ini sekarang?</value></string> 	 
-  <string><id>14070</id><value>Pasang Perubahan Sekarang</value></string> 	 
-  <string><id>14071</id><value>Mengijinkan Perubahan Nama File dan Penghapusan</value></string>
-  <string><id>14072</id><value>Aktifkan XLink Kai</value></string>
-  <string><id>14073</id><value>XLink Kai tidak aktif.</value></string>
-
-  <string><id>15000</id><value>XLink Kai</value></string>
-  <string><id>15001</id><value>Servis tidak tersambung, anda mau mencobanya</value></string>
-  <string><id>15002</id><value>menyambungkan dengan Xbox Media Center?</value></string>
-  <string><id>15003</id><value>Masukkan pesan anda</value></string>
-  <string><id>15004</id><value>Anda diundang untuk main %s.</value></string>
-  <string><id>15005</id><value>Tanggal: %s</value></string>
-  <string><id>15006</id><value>Dari: %s</value></string>
-  <string><id>15007</id><value>Undangan</value></string>
-  <string><id>15008</id><value>Anda telah diundang untuk bergabung %s.</value></string>
-  <string><id>15009</id><value>Offline</value></string>
-  <string><id>15010</id><value>Teman</value></string>
-  <string><id>15011</id><value>Lihat: Teman</value></string>
-  <string><id>15012</id><value>Gabung</value></string>
-  <string><id>15013</id><value>Suara</value></string>
-  <string><id>15014</id><value>Undang</value></string>
-  <string><id>15015</id><value>Hapus</value></string>
-  <string><id>15016</id><value>Permainan</value></string>
-  <string><id>15017</id><value>Lihat: Permainan</value></string>
-  <string><id>15018</id><value>Masuk</value></string>
-  <string><id>15019</id><value>Tambah</value></string>
-  <string><id>15020</id><value>Host</value></string>
-  <string><id>15021</id><value>Arena</value></string>
-  <string><id>15022</id><value>Lihat: Arena</value></string>
-  <string><id>15023</id><value>Mainkan</value></string>
-  <string><id>15024</id><value>Tambah</value></string>
-  <string><id>15025</id><value>Host</value></string>
-  <string><id>15026</id><value>Ngobrol</value></string>
-  <string><id>15027</id><value>Lihat: Ngobrol</value></string>
-  <string><id>15028</id><value>Keyboard</value></string>
-  <string><id>15029</id><value>Password dibutuhkan utk bergabung dengan arena ini.</value></string>
-  <string><id>15030</id><value>Servis diputus</value></string>
-  <string><id>15031</id><value>Otentifikasi XLink Kai</value></string>
-  <string><id>15032</id><value>Nama Anda dan/atau password ditolak oleh</value></string>
-  <string><id>15033</id><value>server orbital. Periksa kembali konfigurasi Anda.</value></string>
-  <string><id>15034</id><value>baru saja masuk</value></string>
-  <string><id>15035</id><value>telah memulai obrolan suara </value></string>
-  <string><id>15036</id><value>telah mengirim Anda undangan</value></string>
-  <string><id>15037</id><value>XBMC tidak mampu mengkonfirmasi jaringan Anda telah tersambungkan.</value></string>
-  <string><id>15038</id><value>Anda mungkin mengalami kesulitan bergabung atau hosting permainan.</value></string>
-  <string><id>15039</id><value>Xbox Media Center tidak dapat menemukan permainan secara otomatis.</value></string>
-  <string><id>15040</id><value>Masukkan disk permainan ke dalam XBOX atau tekan 'A' utk membatalkan</value></string>
-  <string><id>15041</id><value>dan jalankan permainan secara manual.</value></string>
-  <string><id>15042</id><value>Akses Ditolak</value></string>
-  <string><id>15043</id><value>%s gabung chat.</value></string>
-  <string><id>15044</id><value>%s keluar chat.</value></string>
-  <string><id>15045</id><value>Masukkan pesan pribadi Anda.</value></string>
-  <string><id>15046</id><value>Arena Saat ini</value></string>
-  <string><id>15047</id><value>Masukkan password utk arena Anda.</value></string>
-  <string><id>15048</id><value>Masukkan deskripsi utk arena Anda.</value></string>
-  <string><id>15049</id><value>Host Permainan</value></string>
-  <string><id>15050</id><value>Host adalah arena pribadi</value></string>
-  <string><id>15051</id><value>Batasan Pemain</value></string>
-  <string><id>15052</id><value>Password</value></string>
-  <string><id>15053</id><value>Deskripsi</value></string>
-  <string><id>15054</id><value>Dialog Undangan</value></string>
-  <string><id>15055</id><value>Pilih permainan:</value></string>
-  <string><id>15056</id><value>Masukkan pesan</value></string>
-  <string><id>15057</id><value>Kirim</value></string>
-  <string><id>15058</id><value>Host</value></string>
-  <string><id>15059</id><value>Undangan Diterima!</value></string>
-  <string><id>15060</id><value>Pesan Disini</value></string>
-  <string><id>15061</id><value>Anda diundang untuk main %s.</value></string>
-  <string><id>15062</id><value>Gunakan lokasi alternatif mplayer</value></string>
-
-  <string><id>15100</id><value>Pustaka</value></string>
-  <string><id>15101</id><value>Database</value></string>
-  <string><id>15102</id><value>* Semua Album</value></string>
-  <string><id>15103</id><value>* Semua Artis</value></string>
-  <string><id>15104</id><value>* Semua Lagu</value></string>
-  <string><id>15105</id><value>* Semua Aliran</value></string>
-  <string><id>15106</id><value>Mengingat file terpilih saat navigasi maju</value></string>
-  <string><id>15107</id><value>Buffering...</value></string>
-  <string><id>15108</id><value>Navigasi Suara</value></string>
-  <string><id>15109</id><value>Kulit Standar</value></string>
-  <string><id>15110</id><value>Controller Bergemuruh</value></string>
-  <string><id>15111</id><value>Tema Kulit</value></string>
-  <string><id>15112</id><value>Kulit Standar</value></string>
-
-  <string><id>15200</id><value>LastFM</value></string>
-  <string><id>15201</id><value>Ajukan Lagu ke LastFM</value></string>
-  <string><id>15202</id><value>NamaPengguna LastFM</value></string>
-  <string><id>15203</id><value>Password LastFM</value></string>
-  <string><id>15204</id><value>Tidak bisa tersambung: sleeping...</value></string>
-  <string><id>15205</id><value>Harap Memperbaharui XBMC</value></string>
-  <string><id>15206</id><value>Pengajuan gagal: kesalahan otorisasi.</value></string>
-  <string><id>15207</id><value>Tersambung</value></string>
-  <string><id>15208</id><value>Tidak Tersambung</value></string>
-  <string><id>15209</id><value>Psang Jeda %i</value></string>
-  <string><id>15210</id><value>Cached %i Lagu</value></string>
-  <string><id>15211</id><value>Pengajuan...</value></string>
-  <string><id>15212</id><value>Pengajuan dalam %i detik</value></string>
-  <string><id>15213</id><value>Mainkan Menggunakan...</value></string>
-  <string><id>15214</id><value>Gunakan Sinkronisasi A/V halus</value></string>
-  <string><id>15215</id><value>Sembunyikan Nama File pada Tampilan Thumb</value></string>
-
-  <string><id>15250</id><value>Ajukan Last.fm Radio ke LastFM</value></string>
-  <string><id>15251</id><value>Menyambungkan diri ke Last.fm...</value></string>
-  <string><id>15252</id><value>Pilih stasiun...</value></string>
-  <string><id>15253</id><value>Cari artis serupa...</value></string>
-  <string><id>15254</id><value>Cari tag serupa...</value></string>
-  <string><id>15255</id><value>Profil Anda (%name%)</value></string>
-  <string><id>15256</id><value>Keseluruhan top tag</value></string>
-  <string><id>15257</id><value>Top artis utk tag %name%</value></string>
-  <string><id>15258</id><value>Top album utk tag %name%</value></string>
-  <string><id>15259</id><value>Top trek utk tag %name%</value></string>
-  <string><id>15260</id><value>Mendengarkan tag %name% last.fm radio</value></string>
-  <string><id>15261</id><value>Artis serupa %name%</value></string>
-  <string><id>15262</id><value>Top %name% album</value></string>
-  <string><id>15263</id><value>Top %name% trek</value></string>
-  <string><id>15264</id><value>Top %name% tag</value></string>
-  <string><id>15265</id><value>Biggest fans of %name%</value></string>
-  <string><id>15266</id><value>Mendengarkan fan %name% last.fm radio</value></string>
-  <string><id>15267</id><value>Mendengarkan %name% artis serupa last.fm radio</value></string>
-  <string><id>15268</id><value>Top artis utk pengguna %name%</value></string>
-  <string><id>15269</id><value>Top album utk pengguna %name%</value></string>
-  <string><id>15270</id><value>Top trek utk pengguna %name%</value></string>
-  <string><id>15271</id><value>Teman pengguna %name%</value></string>
-  <string><id>15272</id><value>Tetangga pengguna %name%</value></string>
-  <string><id>15273</id><value>Tangga artis mingguan %name%</value></string>
-  <string><id>15274</id><value>Tangga album mingguan %name%</value></string>
-  <string><id>15275</id><value>Tangga trek mingguan %name%</value></string>
-  <string><id>15276</id><value>Mendengarkan %name%'s neighbours last.fm radio</value></string>
-  <string><id>15277</id><value>Mendengarkan %name%'s personal last.fm radio</value></string>
-  <string><id>15278</id><value>Mendengarkan %name%'s loved tracks last.fm radio</value></string>
-  <string><id>15279</id><value>Mendapatkan daftar dari last.fm...</value></string>
-  <string><id>15280</id><value>Tidak bisa mendapatkan daftar dari last.fm...</value></string>
-  <string><id>15281</id><value>Masukkan nama artis untuk menemukan yang mirip</value></string>
-  <string><id>15282</id><value>Masukkan nama tag untuk menemukan yang mirip</value></string>
-  <string><id>15283</id><value>Trek baru saja didengarkan oleh %name%</value></string>
-   
-  <string><id>15300</id><value>Path tidak ditemukan atau tidak valid</value></string>
-  <string><id>15301</id><value>Tidak bisa tersambung ke jaringan server</value></string>
-  <string><id>15302</id><value>Server tidak ditemukan</value></string>
-  <string><id>15303</id><value>Workgroup tidak ditemukan</value></string>
-
-  <string><id>15310</id><value>Membuka bookmark multi-path</value></string>
-  <string><id>15311</id><value>Path:</value></string>
-
-  <string><id>16000</id><value>Umum</value></string>
-  <string><id>16001</id><value>Mengatur konfigurasi Perangkat Keras Audio...</value></string>
-  <string><id>16002</id><value>CDDB lookup</value></string>
-  <string><id>16003</id><value>Player</value></string>
-  <string><id>16004</id><value>Mainkan media dari disk</value></string>
-  
-  <string><id>16009</id><value>Masukkan Judul Film</value></string>
-  <string><id>16010</id><value>Masukkan Nama Profil</value></string>
-  <string><id>16011</id><value>Masukkan Nama Album</value></string>
-  <string><id>16012</id><value>Masukkan Nama Daftar Main</value></string>
-  <string><id>16013</id><value>Masukkan namafile baru</value></string>
-  <string><id>16014</id><value>Masukkan nama folder</value></string>
-  <string><id>16015</id><value>Masukkan direktori</value></string>
-  <string><id>16016</id><value>Pilihan yg tersedia: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
-  <string><id>16017</id><value>Masukkan Pencarian</value></string>
-  <string><id>16018</id><value>Tidak Ada</value></string>
-  <string><id>16019</id><value>Memilih Sendiri</value></string>
-  <string><id>16020</id><value>DeInterlace</value></string>
-  <string><id>16021</id><value>Sinkronisasi Ganjil</value></string>
-  <string><id>16022</id><value>Sinkronisasi Genap</value></string>
-  <string><id>16023</id><value>Penanganan Interlaced</value></string>
-  <string><id>16024</id><value>Pembatalan...</value></string>
-  <string><id>16025</id><value>Masukkan Nama Artis</value></string>
-  <string><id>16026</id><value>Memainkan Daftar Main dibatalkan</value></string>
-  <string><id>16027</id><value>Terlalu banyak berturutan menggagalkan item</value></string>
-
-  <string><id>16030</id><value>Mode Party dibatalkan.</value></string>
-  <string><id>16031</id><value>Tidak ada lagu yang sesuai di database.</value></string>
-  <string><id>16032</id><value>Tidak bisa meng-inisilisasi database.</value></string>
-  <string><id>16033</id><value>Tidak bisa membuka database.</value></string>
-  <string><id>16034</id><value>Tidak bisa memperoleh lagu dari database.</value></string>
-
-  <string><id>16100</id><value>Semua Video</value></string>
-  <string><id>16101</id><value>Belum Ditonton</value></string>
-  <string><id>16102</id><value>Telah Ditonton</value></string>
-  <string><id>16103</id><value>Tandai Telah Ditonton</value></string>
-  <string><id>16104</id><value>Tandai Belum Ditonton</value></string>
-  <string><id>16105</id><value>Edit Judul</value></string>
-  <string><id>16106</id><value>Gunakan NTSC-M &amp; NTSC-J</value></string>
-  <string><id>16107</id><value>Gunakan hanya NTSC-M</value></string>
-  <string><id>16108</id><value>Gunakan hanya NTSC-J</value></string>
-  <string><id>16109</id><value>Gunakan hanya PAL-60</value></string>
-  <string><id>16110</id><value>Untuk Permainan 60hz</value></string>
-
+  <string id="0">Program</string>
+  <string id="1">Gambar</string>
+  <string id="2">Musik</string>
+  <string id="3">Video</string>
+  <string id="4">Panduan TV</string>
+  <string id="5">Setelan</string>
+  <string id="6">Xbox Media Center CVS</string>
+  <string id="7">File</string>
+  <string id="8">Cuaca</string>
+  <string id="11">Senin</string>
+  <string id="12">Selasa</string>
+  <string id="13">Rabu</string>
+  <string id="14">Kamis</string>
+  <string id="15">Jumat</string>
+  <string id="16">Sabtu</string>
+  <string id="17">Minggu</string>
+  <string id="21">Januari</string>
+  <string id="22">Februari</string>
+  <string id="23">Maret</string>
+  <string id="24">April</string>
+  <string id="25">Mei</string>
+  <string id="26">Juni</string>
+  <string id="27">Juli</string>
+  <string id="28">Agustus</string>
+  <string id="29">September</string>
+  <string id="30">Oktober</string>
+  <string id="31">Nopember</string>
+  <string id="32">Desember</string>
+  <string id="98">Lihat: Otomatis</string>
+  <string id="99">Lihat Otomatis Besar</string>
+  <string id="100">Lihat Ikon</string>
+  <string id="101">Lihat Daftar</string>
+  <string id="102">Scan</string>
+  <string id="103">Sortir : Nama</string>
+  <string id="104">Sortir : Tanggal</string>
+  <string id="105">Sortir : Ukuran</string>
+  <string id="106">Tidak</string>
+  <string id="107">Ya</string>
+  <string id="108">SlideShow</string>
+  <string id="109">Buat Thumb</string>
+  <string id="110">Buat Thumbnail</string>
+  <string id="111">Jalan Pintas</string>
+  <string id="112">Berhenti</string>
+  <string id="113">File : Sumber</string>
+  <string id="114">File : Tujuan</string>
+  <string id="115">Salin</string>
+  <string id="116">Pindah</string>
+  <string id="117">Hapus</string>
+  <string id="118">Ganti Nama</string>
+  <string id="119">Folder Baru</string>
+  <string id="120">Konfirmasi salin file</string>
+  <string id="121">Konfirmasi pindah file</string>
+  <string id="122">Konfirmasi hapus file</string>
+  <string id="123">Salin file ini?</string>
+  <string id="124">Pindahkan file ini?</string>
+  <string id="125">Hapus file ini?</string>
+  <string id="126">Status</string>
+  <string id="127">Objek</string>
+  <string id="128">Umum</string>
+  <string id="129">Slideshow</string>
+  <string id="130">Informasi Sistem</string>
+  <string id="131">Layar</string>
+  <string id="132">Album</string>
+  <string id="133">Artis</string>
+  <string id="134">Lagu</string>
+  <string id="135">Aliran</string>
+  <string id="136">Daftar Main</string>
+  <string id="137">Cari</string>
+  <string id="138">INFORMASI SISTEM</string>
+  <string id="139">Suhu:</string>
+  <string id="140">CPU:</string>
+  <string id="141">GPU:</string>
+  <string id="142">Waktu</string>
+  <string id="143">Saat ini:</string>
+  <string id="144">Build:</string>
+  <string id="145">Jaringan:</string>
+  <string id="146">Tipe:</string>
+  <string id="147">Statik</string>
+  <string id="148">DHCP</string>
+  <string id="149">MAC</string>
+  <string id="150">IP</string>
+  <string id="151">Link: </string>
+  <string id="152">Setengah duplex</string>
+  <string id="153">Duplex Penuh</string>
+  <string id="154">Penyimpanan</string>
+  <string id="155">Drive</string>
+  <string id="156">Bebas</string>
+  <string id="157">Video</string>
+  <string id="158">Memori Bebas</string>
+  <string id="159">Tidak ada link</string>
+  <string id="160">Bebas</string>
+  <string id="161">Tidak tersedia</string>
+  <string id="162">DVD Rom Terbuka</string>
+  <string id="163">Baca</string>
+  <string id="164">Tidak ada disk</string>
+  <string id="165">Disk Saat Ini</string>
+  <string id="166">Kulit</string>
+  <string id="167">Aktifkan Server FTP</string>
+  <string id="168">Aktifkan Sinkronisasi Waktu Internet</string>
+  <string id="169">Resolusi</string>
+  <string id="170">Album:</string>
+  <string id="171">Artis:</string>
+  <string id="172">Tanggal terbit:</string>
+  <string id="173">Rating:</string>
+  <string id="174">Aliran:</string>
+  <string id="175">Nada:</string>
+  <string id="176">Gaya:</string>
+  <string id="177">Tinjauan:</string>
+  <string id="178">Trek:</string>
+  <string id="179">Lagu</string>
+  <string id="180">Durasi</string>
+  <string id="181">Pilih album</string>
+  <string id="182">Trek</string>
+  <string id="183">Tinjauan</string>
+  <string id="184">Segarkan</string>
+  <string id="185">Pencarian album</string>
+  <string id="186">OK</string>
+  <string id="187">Album tidak ditemukan!</string>
+  <string id="188">Pilih Semua</string>
+  <string id="189">Memindai informasi media</string>
+  <string id="190">Simpan</string>
+  <string id="191">Kocokan</string>
+  <string id="192">Kosongkan</string>
+  <string id="193">Pindai</string>
+  <string id="194">Pencarian...</string>
+  <string id="195">Informasi IMDB idak ditemukan!</string>
+  <string id="196">Pilih film:</string>
+  <string id="197">Meminta info IMDB</string>
+  <string id="198">Mengakses detil Film</string>
+  <string id="199">Sutradara:</string>
+  <string id="200">Penulis:</string>
+  <string id="201">Tahun:</string>
+  <string id="202">Tagline:</string>
+  <string id="203">Alur Cerita:</string>
+  <string id="204">Nilai:</string>
+  <string id="205">Pemilihan:</string>
+  <string id="206">Para Pelaku</string>
+  <string id="207">Alur</string>
+  <string id="208">Mainkan</string>
+  <string id="209">Berikut</string>
+  <string id="210">Sebelumnya</string>
+  <string id="211">Pencarian aplikasi</string>
+  <string id="212">Aplikasi ditemukan</string>
+  <string id="213">Tengahkan Antarmuka pengguna...</string>
+  <string id="214">Kalibrasi Video...</string>
+  <string id="215">Lebih Lembut</string>
+  <string id="216">Jumlah Zoom</string>
+  <string id="217">Rasio Piksel</string>
+  <string id="218">Drive DVD</string>
+  <string id="219">Harap memasukan disk</string>
+  <string id="220">Remote Share</string>
+  <string id="221">Jaringan tidak tersambung</string>
+  <string id="222">Batal</string>
+  <string id="223">Tombol Otomatis Layar Lebar</string>
+  <string id="224">Kecepatan</string>
+  <string id="225">Waktu Transisi</string>
+  <string id="226">Aktifkan PAL60</string>
+  <string id="227">Aktifkan CDDB</string>
+  <string id="228">Kocok Daftar Main saat Memuat</string>
+  <string id="229">HD Spindown Time</string>
+  <string id="230">Filter Video</string>
+  <string id="231">Tidak ada</string>
+  <string id="232">Point</string>
+  <string id="233">Linear</string>
+  <string id="234">Anisotropic</string>
+  <string id="235">Quincunx</string>
+  <string id="236">Gaussian Cubic</string>
+  <string id="237">Minification</string>
+  <string id="238">Magnification</string>
+  <string id="239">Kosongkan Daftar Main saat selesai</string>
+  <string id="240">DVD-Video Mainkan Secara Otomatis</string>
+  <string id="241">VCD/SVCD Mainkan Secara Otomatis</string>
+  <string id="242">CD-Audio Mainkan Secara Otomatis</string>
+  <string id="243">Permainan XBOX Mainkan Secara Otomatis</string>
+  <string id="244">Video Mainkan Secara Otomatis</string>
+  <string id="245">Musik Mainkan Secara Otomatis</string>
+  <string id="246">Gambar Mainkan Secara Otomatis</string>
+  <string id="247">Skrip</string>
+  <string id="248">Bahasa</string>
+  <string id="249">Musik</string>
+  <string id="250">Visualisasi</string>
+  <string id="251">Pilih direktori tujuan</string>
+  <string id="252">Keluaran Stereo ke semua Speaker</string>
+  <string id="253">Jumlah saluran</string>
+  <string id="254">- Penerima berkemampuan DTS</string>
+  <string id="255">CDDB</string>
+  <string id="256">Meminta freedb untuk info CDDB</string>
+  <string id="257">Kesalahan</string>
+  <string id="258">Aktifkan Tag ID3</string>
+  <string id="259">Membuka</string>
+  <string id="260">Shoutcast</string>
+  <string id="261">Menunggu utk memulai....</string>
+  <string id="262">Keluaran Skrip</string>
+  <string id="263">Aktifkan Web Server</string>
+  <string id="264">Rekam</string>
+  <string id="265">Hentikan Rek.</string>
+  <string id="266">Sortir : Trek</string>
+  <string id="267">Sortir : Waktu</string>
+  <string id="268">Sortir : Nama</string>
+  <string id="269">Sortir : Artis</string>
+  <string id="270">Sortir : Album</string>
+  <string id="271">Top 100</string>
+  <string id="272">Top Left Overscan Compensation</string>
+  <string id="273">Bottom Right Overscan Compensation</string>
+  <string id="274">Posisi Terjemahan</string>
+  <string id="275">Penyetelan Rasio Piksel</string>
+  <string id="276">Pindahkan tanda panah untuk mengganti jumlah overscan</string>
+  <string id="277">Pindahkan bar untuk mengganti posisi teks bawah pada film</string>
+  <string id="278">Ganti persegi panjang sehingga menjadi persegi yang sempurna</string>
+  <string id="279">Tidak dapat memuat setelan</string>
+  <string id="280">Menggunakan Standar fallbacks</string>
+  <string id="281">Harap periksa file .xml</string>
+  <string id="282">ditemukan %i item</string>
+  <string id="283">Hasil Pencarian</string>
+  <string id="284">Tidak ditemukan</string>
+  <string id="285">Filter Deinterlace</string>
+  <string id="286">Filter Postprocessing</string>
+  <string id="287">Teks Film</string>
+  <string id="288">Huruf</string>
+  <string id="289">- Ukuran</string>
+  <string id="290">Volume Pengerasan</string>
+  <string id="291">Video</string>
+  <string id="292">Audio</string>
+  <string id="293">Teks Film</string>
+  <string id="294">Buat bookmark</string>
+  <string id="295">Putaran bookmark</string>
+  <string id="296">Kosongkan bookmark</string>
+  <string id="297">AVDelay</string>
+  <string id="298">Slider</string>
+  <string id="300">1. Bahasa</string>
+  <string id="301">2. Volume</string>
+  <string id="302">3. Stream</string>
+  <string id="303">Penundaan</string>
+  <string id="304">Bahasa</string>
+  <string id="305">Aktifkan</string>
+  <string id="306">Non-Interleaved</string>
+  <string id="307">- Otomatis Postprocessing</string>
+  <string id="308">- Vertikal Deblocking Filter</string>
+  <string id="309">- Horizontal Deblocking Filter</string>
+  <string id="310">- Kecerahan/Kontras Otomatis</string>
+  <string id="311">- Dering</string>
+  <string id="312">(0=otomatis)</string>
+  <string id="313">Membersihkan database</string>
+  <string id="314">Persiapan...</string>
+  <string id="315">Database error</string>
+  <string id="316">Pencarian lagu...</string>
+  <string id="317">Pembersihan database berhasil</string>
+  <string id="318">Pembersihan lagu...</string>
+  <string id="319">Kesalahan membersihkan lagu</string>
+  <string id="320">Pembersihan artis...</string>
+  <string id="321">Kesalahan membersihkan artis</string>
+  <string id="322">Pembersihan aliran...</string>
+  <string id="323">Kesalahan membersihkan aliran</string>
+  <string id="324">Pembersihan path...</string>
+  <string id="325">Kesalahan membersihkan path</string>
+  <string id="326">Pembersihan album...</string>
+  <string id="327">Kesalahan membersihkan album</string>
+  <string id="328">Menulis perubahan...</string>
+  <string id="329">Kesalahan menulis perubahan</string>
+  <string id="330">Mungkin ini akan menghabiskan beberapa saat...</string>
+  <string id="331">Mengkompres database...</string>
+  <string id="332">Kesalahan mengkompres database</string>
+  <string id="333">Anda ingin membersihkan pustaka musik?</string>
+  <string id="334">Membersihkan Pustaka Musik...</string>
+  <string id="335">Mulai</string>
+  <string id="336">Atur Framerate</string>
+  <string id="337">Keluaran Audio</string>
+  <string id="338">Analog</string>
+  <string id="339">Digital</string>
+  <string id="340">Berbagai Artis</string>
+  <string id="341">Mainkan DVD</string>
+  <string id="342">Film</string>
+  <string id="343">Atur Framerate</string>
+  <string id="344">Aktor</string>
+  <string id="345">Tahun</string>
+  <string id="346">Stack</string>
+  <string id="347">Unstack</string>
+  <string id="348">Hierarki Direktori Rata</string>
+  <string id="349">Tampilkan hanya Default.xbe</string>
+  <string id="350">Program</string>
+  <string id="351">Mati</string>
+  <string id="352">Dim</string>
+  <string id="353">Black</string>
+  <string id="354">Matrix Trails</string>
+  <string id="355">Waktu Tunggu Screensaver</string>
+  <string id="356">Mode Screensaver</string>
+  <string id="357">Waktu Tunggu Mematikan</string>
+  <string id="358">Semua album</string>
+  <string id="359">Album Terkini</string>
+  <string id="360">Screensaver</string>
+  <string id="361">SlideShow B.ulang</string>
+  <string id="362">Tingkat Pudar Screensaver</string>
+  <string id="363">Sortir : File</string>
+  <string id="364">- Penerima berkemampuan AC3</string>
+  <string id="365">Sortir : Judul</string>
+  <string id="366">Sortir : Tahun</string>
+  <string id="367">Sortir : Nilai</string>
+  <string id="368">IMDB</string>
+  <string id="369">Judul</string>
+  <string id="370">Badai</string>
+  <string id="371">Sebagian</string>
+  <string id="372">Kebanyakan</string>
+  <string id="373">Cerah</string>
+  <string id="374">Mendung</string>
+  <string id="375">Salju</string>
+  <string id="376">Hujan</string>
+  <string id="377">Ringan</string>
+  <string id="378">AM</string>
+  <string id="379">PM</string>
+  <string id="380">Gerimis</string>
+  <string id="381">Sedikit</string>
+  <string id="382">Tersebar</string>
+  <string id="383">Angin</string>
+  <string id="384">Kuat</string>
+  <string id="385">Cukup</string>
+  <string id="386">Cerah</string>
+  <string id="387">Berawan</string>
+  <string id="388">Early</string>
+  <string id="389">Gerimis</string>
+  <string id="390">Curah Hujan</string>
+  <string id="391">Rendah</string>
+  <string id="392">Menengah</string>
+  <string id="393">Tinggi</string>
+  <string id="394">Kabut</string>
+  <string id="395">Kabur</string>
+  <string id="396">Pilih Lokasi</string>
+  <string id="397">Waktu Penyegaran</string>
+  <string id="398">Unit Suhu</string>
+  <string id="399">Unit Kecepatan</string>
+  <string id="400">Cuaca</string>
+  <string id="401">Suhu</string>
+  <string id="402">Terasa Seperti</string>
+  <string id="403">Indeks UV</string>
+  <string id="404">Angin</string>
+  <string id="405">Titik Embun</string>
+  <string id="406">Kelembaban</string>
+  <string id="407">Dari</string>
+  <string id="408">di</string>
+  <string id="410">Mengakses Weather.com</string>
+  <string id="411">Mendapatkan Cuaca Untuk:</string>
+  <string id="412">Tidak bisa mendapatkan data cuaca</string>
+  <string id="413">Manual</string>
+  <string id="414">Tidak ada review album ini</string>
+  <string id="415">Mengunduh thumbnail...</string>
+  <string id="416">Tidak tersedia</string>
+  <string id="417">Lihat: Ikon Besar</string>
+  <string id="418">Video/Aliran</string>
+  <string id="419">Video/Aktor</string>
+  <string id="420">Video/Tahun</string>
+  <string id="421">Video/Judul</string>
+  <string id="422">Hapus informasi Album</string>
+  <string id="423">Hapus informasi CDDB</string>
+  <string id="424">Pilih</string>
+  <string id="425">Info album tidak ditemukan.</string>
+  <string id="426">Info CDDB tidak ditemukan.</string>
+  <string id="427">Disk:</string>
+  <string id="428">Masukkan CD/DVD yg tepat</string>
+  <string id="429">Harap memasukan CD/DVD berikut</string>
+  <string id="430">Sortir : DVD#</string>
+  <string id="431">Tanpa Cache</string>
+  <string id="432">Hapus film dari database</string>
+  <string id="433">Anda yakin tetang menghapus</string>
+  <string id="434">film?</string>
+  <string id="435">Trek</string>
+  <string id="436">Tahun</string>
+  <string id="437">Durasi</string>
+  <string id="438">Buka File</string>
+  <string id="439">Cache</string>
+  <string id="440">Harddisk</string>
+  <string id="441">UDF</string>
+  <string id="442">LAN</string>
+  <string id="443">Internet</string>
+  <string id="444">Video</string>
+  <string id="445">Audio</string>
+  <string id="446">DVD</string>
+  <string id="447">Otomatis Mainkan</string>
+  <string id="448">LCD</string>
+  <string id="449">Aktifkan</string>
+  <string id="450">Kolom</string>
+  <string id="451">Baris 1 Alamat</string>
+  <string id="452">Baris 2 Alamat</string>
+  <string id="453">Baris 3 Alamat</string>
+  <string id="454">Baris 4 Alamat</string>
+  <string id="455">Baris</string>
+  <string id="456">Mode</string>
+  <string id="457">Ganti Tampilan</string>
+  <string id="458">B/Mark</string>
+  <string id="459">Subs</string>
+  <string id="460">Audio Stream</string>
+  <string id="461">[aktif]</string>
+  <string id="462">Teks Film</string>
+  <string id="463">Backlight</string>
+  <string id="464">Kecerahan</string>
+  <string id="465">Kontras</string>
+  <string id="466">Gamma</string>
+  <string id="467">Tipe</string>
+  <string id="468">Pindahkan bar untuk mengganti posisi osd</string>
+  <string id="469">Posisi OSD</string>
+  <string id="470">Kredit</string>
+  <string id="471">Modchip</string>
+  <string id="472">Video OSD Timeout</string>
+  <string id="473">High Quality Resampling</string>
+  <string id="474">Matikan</string>
+  <string id="475">Hanya Musik</string>
+  <string id="476">Musik &amp; Video</string>
+  <string id="477">Tidak dapat memuat Daftar Main</string>
+  <string id="478">OSD</string>
+  <string id="479">Kulit dan Bahasa</string>
+  <string id="480">Penampilan</string>
+  <string id="481">Pilihan Audio</string>
+  <string id="482">Tentang XBMC</string>
+  <string id="483">Album</string>
+  <string id="484">Artis</string>
+  <string id="485">Hapus album</string>
+  <string id="486">Berulang</string>
+  <string id="487">Ulang sekali</string>
+  <string id="488">Folder Berulang</string>
+  <string id="489">Mainkan Sendiri Item Berikutnya</string>
+  <string id="490">Ganti daftar dan ikon sendiri dalam lagu</string>
+  <string id="491">- Gunakan ikon besar</string>
+  <string id="492">Ukur ulang Vobsubs</string>
+  <string id="493">Pilihan Lebih Lanjut (Hanya Pengguna Ahli!)</string>
+  <string id="494">Keseluruhan Audio Headroom</string>
+  <string id="495">Upsample Video ke Resolusi GUI</string>
+  <string id="496">Kalibrasi</string>
+  <string id="497">Sembunyikan Ekstensi Media</string>
+  <string id="498">Sortir : Tipe</string>
+  <string id="499">Tidak dapat tersambung ke www.allmusic.com</string>
+  <string id="500">Mengunduh info album gagal</string>
+  <string id="501">Mencari nama album...</string>
+  <string id="502">Buka</string>
+  <string id="503">Sibuk</string>
+  <string id="504">Kosong</string>
+  <string id="505">Memuat informasi media dari file...</string>
+  <string id="506">Gunakan Nama Direktori untuk Deskripsi</string>
+  <string id="507">Sortir : Pemakaian</string>
+  <string id="508">Jangan gunakan JalanPintas atau Scan</string>
+  <string id="509">Cache Program Thumbnail</string>
+  <string id="510">Aktifkan Visualisasi</string>
+  <string id="511">Aktifkan tombol mode video</string>
+  <string id="512">Window Pembuka</string>
+  <string id="513">Home Window</string>
+  <string id="514">Setelan Manual</string>
+  <string id="515">Aliran</string>
+  <string id="516">Buat arsip dengan satu file transparan</string>
+  <string id="517">Album Yang Baru Saja Dimainkan</string>
+  <string id="518">Jalankan</string>
+  <string id="519">Jalankan dalam..</string>
+  <string id="520">Edit nama XBE</string>
+  <string id="521">Kompilasi</string>
+  <string id="522">Hapus Sumber</string>
+  <string id="588">Batalkan Mode Party</string>
+  <string id="589">Mode Party</string>
+  <string id="590">Acak</string>
+  <string id="591">Matikan</string>
+  <string id="592">Satu</string>
+  <string id="593">Semua</string>
+  <string id="594">Matikan</string>
+  <string id="595">Ulang: Tidak</string>
+  <string id="596">Ulang: Satu</string>
+  <string id="597">Ulang: Semua</string>
+  <string id="600">Salin CD Audio</string>
+  <string id="601">Medium</string>
+  <string id="602">Standar</string>
+  <string id="603">Ekstrim</string>
+  <string id="604">Constant Bit Rate</string>
+  <string id="605">Penyalinan...</string>
+  <string id="606">Nomor Trek:</string>
+  <string id="607">Ke</string>
+  <string id="608">Tidak dapat menyalin CD or Trek</string>
+  <string id="609">CDDARipPath tidak diatur di XboxMediaCenter.xml</string>
+  <string id="620">Ripping CD</string>
+  <string id="621">Enkoder</string>
+  <string id="622">Kualitas</string>
+  <string id="623">Bit Rate</string>
+  <string id="624">Termasuk Nomor Trek</string>
+  <string id="625">Semua lagu dari</string>
+  <string id="629">Mode Melihat</string>
+  <string id="630">Normal</string>
+  <string id="631">Zoom</string>
+  <string id="632">Rentangkan 4:3</string>
+  <string id="633">Rentangkan 14:9</string>
+  <string id="634">Rentangkan 16:9</string>
+  <string id="635">Ukuran Asli</string>
+  <string id="636">Kustom</string>
+  <string id="637">Replay Gain</string>
+  <string id="638">Replay Gain Mode</string>
+  <string id="639">Gunakan Level Trek</string>
+  <string id="640">Gunakan Level Album</string>
+  <string id="641">PreAmp Level - Replay Gained Files</string>
+  <string id="642">PreAmp Level - Non Replay Gained Files</string>
+  <string id="643">Avoid Clipping on Replay Gained Files</string>
+  <string id="644">Potong Bar Hitam</string>
+  <string id="645">Memerlukan meng-cache file besar. Lanjutkan?</string>
+  <string id="646">Hapus Nama</string>
+  <string id="700">Bersihkan Pustaka</string>
+  <string id="701">Menghapus lagu lama dari Pustaka</string>
+  <string id="702">path ini telah di-scan sebelumnya</string>
+  <string id="703">Tekan Ya untuk menmperbaharui semua lagu dalam folder ini</string>
+  <string id="704">Tekan Tiadk untuk hanya menambah lagu baru</string>
+  <string id="705">Jaringan</string>
+  <string id="706">Host Proxy HTTP</string>
+  <string id="707">Port Proxy HTTP</string>
+  <string id="708">Aktifkan HTTP Proxy</string>
+  <string id="709">XTag XLink Kai</string>
+  <string id="710">Password XLink Kai</string>
+  <string id="711">Internet Protokol (IP)</string>
+  <string id="712">Port tidak valid. Nilai harus di antara 1 dan 65535.</string>
+  <string id="713">Proxy HTTP</string>
+  <string id="714">XLink Kai</string>
+  <string id="715">Penetapan</string>
+  <string id="716">Otomatis (DHCP)</string>
+  <string id="717">Manual (Statik)</string>
+  <string id="718">Standar (Dashboard)</string>
+  <string id="719">- Alamat IP</string>
+  <string id="720">- Netmask</string>
+  <string id="721">- Gateway Standar</string>
+  <string id="722">- Server DNS</string>
+  <string id="723">Simpan &amp; Memulai Kembali</string>
+  <string id="724">Alamat tidak valid. Nilai harus AAA.BBB.CCC.DDD</string>
+  <string id="725">dengan nomor antara 0 dan 255.</string>
+  <string id="726">Perubahan tidak disimpan. Lanjutkan tanpa menyimpan?</string>
+  <string id="727">Server Web</string>
+  <string id="728">Server FTP</string>
+  <string id="729">Waktu Internet</string>
+  <string id="730">Port Server Web</string>
+  <string id="731">Waktu Host Server </string>
+  <string id="732">Simpan &amp; Pakai</string>
+  <string id="733">Password Server Web </string>
+  <string id="734">Tanpa Pass</string>
+  <string id="735">- Karakterset</string>
+  <string id="736">- Gaya</string>
+  <string id="737">- Warna</string>
+  <string id="738">Normal</string>
+  <string id="739">Tebal</string>
+  <string id="740">Miring</string>
+  <string id="741">Tebal Miring</string>
+  <string id="742">Putih</string>
+  <string id="743">Kuning</string>
+  <string id="744">File</string>
+  <string id="745">Tidak ada informasi untuk hasil scan ini</string>
+  <string id="746">Ganti ke tampilan File</string>
+  <string id="747">Kesalahan memuat gambar</string>
+  <string id="748">Edit Path</string>
+  <string id="749">Tambah Share</string>
+  <string id="750">Anda yakin?</string>
+  <string id="751">Menghapus Share</string>
+  <string id="752">Edit Share Path</string>
+  <string id="753">Edit Share Name</string>
+  <string id="754">Tambah Link Program</string>
+  <string id="755">Edit Path Program</string>
+  <string id="756">Edit Nama Program</string>
+  <string id="757">Edit Kedalaman Path</string>
+  <string id="758">Hapus Link Program</string>
+  <string id="759">Lihat: Daftar Besar</string>
+  <string id="760">Kuning</string>
+  <string id="761">Putih</string>
+  <string id="762">Biru</string>
+  <string id="763">Hijau Terang</string>
+  <string id="764">Kuning Hijau</string>
+  <string id="765">Cyan</string>
+  <string id="766">Dipesan</string>
+  <string id="767">Dipesan</string>
+  <string id="768">Dipesan</string>
+  <string id="769">Dipesan</string>
+  <string id="770">Kesalahan %i: share tidak tersedia</string>
+  <string id="771">-  Pembatas Fatx Otomatis</string>
+  <string id="772">Audio</string>
+  <string id="773">Mencari</string>
+  <string id="774">Folder Slideshow</string>
+  <string id="998">XLink Kai</string>
+  <string id="999">Permainan Online</string>
+  <string id="1000">Preview Screensaver</string>
+  <string id="1001">Tidak bisa tersambung</string>
+  <string id="1002">XBMC tidak dapat tersambung ke lokasi jaringan.</string>
+  <string id="1003">Kemungkinan jaringan tidak tersambung.</string>
+  <string id="1004">Anda ingin menambahkan begitu saja?</string>
+  <string id="1005">Masukan nama untuk share ini</string>
+  <string id="1006">Alamat IP</string>
+  <string id="1007">Tambah Lokasi Jaringan</string>
+  <string id="1008">Protokol</string>
+  <string id="1009">Alamat Server</string>
+  <string id="1010">Nama Server</string>
+  <string id="1011">Path Remote</string>
+  <string id="1012">Folder Yang Shared</string>
+  <string id="1013">Port</string>
+  <string id="1014">NamaPengguna</string>
+  <string id="1015">server jaringan</string>
+  <string id="1016">Masukkan alamat jaringan dari server</string>
+  <string id="1017">Masukkan path pada server</string>
+  <string id="1018">Masukkan nomor port</string>
+  <string id="1019">Masukkan namapengguna</string>
+  <string id="1020">Tambah %s Sumber</string>
+  <string id="1021">Masukkan path atau jelajah lokasi media.</string>
+  <string id="1022">Masukkan nama Sumber Media ini.</string>
+  <string id="1023">Jelajah share baru</string>
+  <string id="1024">Jelajah</string>
+  <string id="1025">Tidak bisa mengambil informasi direktori.</string>
+  <string id="1026">Tambah Sumber</string>
+  <string id="1027">Edit Sumber</string>
+  <string id="1028">Edit %s Sumber</string>
+  <string id="1029">Masukkan label baru</string>
+  <string id="1030">sebuah image</string>
+  <string id="1031">sebuah folder image</string>
+  <string id="1032">Tambah Lokasi Jaringan...</string>
+  <string id="1200">Klien SMB</string>
+  <string id="1201">IP Share</string>
+  <string id="1202">Workgroup</string>
+  <string id="1203">NamaPengguna Standar</string>
+  <string id="1204">Password Standar</string>
+  <string id="1205">Nama Share</string>
+  <string id="1206">Grup Share</string>
+  <string id="1207">WINS-Server</string>
+  <string id="1208">Otomatis Bookmark</string>
+  <string id="1209">Setelan Klien SMB berhasil dipasang!</string>
+  <string id="1210">Hapus</string>
+  <string id="1211">Musik</string>
+  <string id="1212">Video</string>
+  <string id="1213">Gambar</string>
+  <string id="1214">File</string>
+  <string id="1215">Musik &amp; Video </string>
+  <string id="1216">Musik &amp; Gambar</string>
+  <string id="1217">Musik &amp; File</string>
+  <string id="1218">Video &amp; Gambar</string>
+  <string id="1219">Video &amp; File</string>
+  <string id="1220">Gambar &amp; File</string>
+  <string id="1221">Musik &amp; Video &amp; Gambar</string>
+  <string id="1222">Musik &amp; Video &amp; Gambar &amp; File</string>
+  <string id="1223">Non Aktif</string>
+  <string id="1224">Pengguna Normal</string>
+  <string id="1225">Pengguna Ahli</string>
+  <string id="1226">File &amp; Musik &amp; Video</string>
+  <string id="1227">File &amp; Gambar &amp; Musik</string>
+  <string id="1228">File &amp; Gambar &amp; Video</string>
+  <string id="1229">Musik &amp; Program</string>
+  <string id="1230">Video &amp; Program</string>
+  <string id="1231">Gambar &amp; Program</string>
+  <string id="1232">Musik &amp; Video &amp; Gambar &amp; Program</string>
+  <string id="1233">Program &amp; Video &amp; Musik</string>
+  <string id="1234">Program &amp; Gambar &amp; Musik</string>
+  <string id="1235">Program &amp; Gambar &amp; Video</string>
+  <string id="1245">Nama Pengguna FTP</string>
+  <string id="1246">Password FTP</string>
+  <string id="1247">Password Pengguna Server FTP telah berhasil diganti</string>
+  <string id="1250">Otodeteksi</string>
+  <string id="1251">Otodeteksi XBOX</string>
+  <string id="1252">Nama panggilan</string>
+  <string id="1253">Buat Link FTP pada File</string>
+  <string id="1254">Minta utk Tersambungkan</string>
+  <string id="1255">Kirim Pengguna dan Password FTP</string>
+  <string id="1256">Jeda Ping</string>
+  <string id="1257">Apakah Anda ingin tersambung ke Otodeteksi Xbox?</string>
+  <string id="1396">Drifting</string>
+  <string id="1397">dan</string>
+  <string id="1398">Freezing</string>
+  <string id="1399">Late</string>
+  <string id="1400">Isolated</string>
+  <string id="1401">T-Showers</string>
+  <string id="1402">Thunder</string>
+  <string id="1403">Sun</string>
+  <string id="1404">Heavy</string>
+  <string id="1405">dalam</string>
+  <string id="1406">the</string>
+  <string id="1407">Vicinity</string>
+  <string id="1408">Ice</string>
+  <string id="1409">Crystals</string>
+  <string id="1410">Calm</string>
+  <string id="2050">Durasi:</string>
+  <string id="4501">Jenis LCD</string>
+  <string id="10000">Depan</string>
+  <string id="10001">Program</string>
+  <string id="10002">Foto</string>
+  <string id="10003">File</string>
+  <string id="10004">Setelan</string>
+  <string id="10005">Musik</string>
+  <string id="10006">Video</string>
+  <string id="10007">Informasi Sistem</string>
+  <string id="10008">Setelan-&gt;Umum</string>
+  <string id="10009">Setelan-&gt;Layar</string>
+  <string id="10010">Setelan-&gt;Penampilan-&gt;Kalibrasi GUI</string>
+  <string id="10011">Setelan-&gt;Video-&gt;Kalibrasi Layar</string>
+  <string id="10012">Setelan-&gt;Foto</string>
+  <string id="10013">Setelan-&gt;Program</string>
+  <string id="10014">Setelan-&gt;Cuaca</string>
+  <string id="10015">Setelan-&gt;Musik</string>
+  <string id="10016">Setelan-&gt;Sistem</string>
+  <string id="10017">Setelan-&gt;Video</string>
+  <string id="10018">Setelan-&gt;Jaringan</string>
+  <string id="10019">Setelan-&gt;Penampilan</string>
+  <string id="10020">Skrip</string>
+  <string id="10021">Video/Aliran</string>
+  <string id="10022">Video/Aktor</string>
+  <string id="10023">Video/Tahun</string>
+  <string id="10025">Video/Judul</string>
+  <string id="10028">Video/Daftar Main</string>
+  <string id="10034">Setelan-&gt;Profil</string>
+  <string id="10100">Dialog Ya/tidak</string>
+  <string id="10101">Dialog Kemajuan</string>
+  <string id="10500">Musik/Daftar Main</string>
+  <string id="10501">Musik/File</string>
+  <string id="10502">Musik/Pustaka</string>
+  <string id="10503">Musik/Top 100</string>
+  <string id="10504">Top 100 Lagu</string>
+  <string id="10505">Top 100 Album</string>
+  <string id="10506">Aplikasi</string>
+  <string id="10507">Konfigurasi</string>
+  <string id="10508">Ramalan Cuaca</string>
+  <string id="10509">Permainan Jaringan</string>
+  <string id="10510">Ekstensi</string>
+  <string id="10511">Informasi Sistem</string>
+  <string id="10512">Musik - Album</string>
+  <string id="10513">Musik - Artis</string>
+  <string id="10514">Musik - Aliran</string>
+  <string id="10515">Musik - Top 100</string>
+  <string id="10516">Musik - Pustaka</string>
+  <string id="10517">Musik - Sedang Dimainkan</string>
+  <string id="10518">Video - Aktor</string>
+  <string id="10519">Video - Aliran</string>
+  <string id="10520">Video - Judul</string>
+  <string id="10521">Video - Tahun</string>
+  <string id="10522">Video - Sedang Dimainkan</string>
+  <string id="10523">Info Album</string>
+  <string id="10524">Info Film</string>
+  <string id="12000">Pilih dialog</string>
+  <string id="12001">Musik/info</string>
+  <string id="12002">Dialog OK</string>
+  <string id="12003">Video/Info</string>
+  <string id="12004">Skrip/Info</string>
+  <string id="12005">Video Tampilan Penuh</string>
+  <string id="12006">Visualisasi Audio</string>
+  <string id="12007">Foto/slideshow</string>
+  <string id="12008">Filestacking dialog</string>
+  <string id="12009">Membangun kembali indeks...</string>
+  <string id="12010">Kembali ke Musik</string>
+  <string id="12011">Kembali ke Video</string>
+  <string id="12012">Perbaharui daftar trainer</string>
+  <string id="12013">Trainer</string>
+  <string id="12014">Trainer tidak ditemukan</string>
+  <string id="12015">Setelan Trainer</string>
+  <string id="12016">Semua trailer terdaftar telah hilang. Perbaharui daftar anda</string>
+  <string id="12017">Resume otomatis dari posisi terakhir</string>
+  <string id="12018">Tidak</string>
+  <string id="12019">Ya</string>
+  <string id="12020">Meminta</string>
+  <string id="12021">Memulai dari awal</string>
+  <string id="12022">Resume dari posisi akhir</string>
+  <string id="12310">0</string>
+  <string id="12311">1</string>
+  <string id="12312">2</string>
+  <string id="12313">3</string>
+  <string id="12314">4</string>
+  <string id="12315">5</string>
+  <string id="12316">6</string>
+  <string id="12317">7</string>
+  <string id="12318">8</string>
+  <string id="12319">9</string>
+  <string id="12320">c</string>
+  <string id="12321">ok</string>
+  <string id="12322">*</string>
+  <string id="12324">Kunci Master XBMC</string>
+  <string id="12325">Dikunci Masukkan Kode...</string>
+  <string id="12326">Masukkan password</string>
+  <string id="12327">Masukkan Kode Master</string>
+  <string id="12328">Masukkan Kode Pembuka</string>
+  <string id="12329">atau tekan C untuk membatalkan</string>
+  <string id="12330">Masukkan tombol kombo Gamepad dan tekan Start</string>
+  <string id="12331">tekan Start, atau Back utk membatalkan</string>
+  <string id="12332">Pasang Kunci</string>
+  <string id="12333">Buka Kunci</string>
+  <string id="12334">Reset Kunci</string>
+  <string id="12335">Hapus Kunci</string>
+  <string id="12336">Pilih jenis penguncian yg akan digunakan:</string>
+  <string id="12337">Password Numerik</string>
+  <string id="12338">Tombol Gamepad Kombo</string>
+  <string id="12339">Password Teks</string>
+  <string id="12340">Masukkan password baru</string>
+  <string id="12341">Masukkan lagi password baru</string>
+  <string id="12342">Password salah,</string>
+  <string id="12343">sisa percobaan </string>
+  <string id="12344">Password yg dimasukkan tidak sesuai.</string>
+  <string id="12345">Akses Ditolak</string>
+  <string id="12346">Batas memasukan Password telah lewat.</string>
+  <string id="12347">XBOX akan dimatikan sekarang.</string>
+  <string id="12348">Item Terkunci</string>
+  <string id="12349">Mengingat Kode Master sampai boot berikutnya?</string>
+  <string id="12350">(Membuka item pada Setelan akan</string>
+  <string id="12351">otomatis mengaktifkan kembali Kunci Master.)</string>
+  <string id="12352">Masukkan Kode Master tombol kombo dan tekan Start</string>
+  <string id="12353">Pengangtifan Kunci</string>
+  <string id="12354">Abaikan penguncian folder sampai boot berikutnya?</string>
+  <string id="12355">Otomatis pengaktifan kembali folder terkunci.)</string>
+  <string id="12356">Ganti Kunci</string>
+  <string id="12357">Share Kunci</string>
+  <string id="12358">Masukkan Password kosong. Coba lagi.</string>
+  <string id="12360">Kunci Master</string>
+  <string id="12361">Maksimal Percobaan</string>
+  <string id="12362">Aktifkan Shutdown</string>
+  <string id="12363">Lindungi Share</string>
+  <string id="12364">Mode Master</string>
+  <string id="12365">Kode Master</string>
+  <string id="12366">Kunci Master berubah. Kunci Master sekarang dipasang ke:</string>
+  <string id="12367">Kunci Master tidak Valid!</string>
+  <string id="12368">Harap masukkan Kode Master yang Valid!</string>
+  <string id="12369">Kunci XBMC Saat Mulai</string>
+  <string id="12370">Mode Master Kunci telah berubah, Kode Master belum dipasang!</string>
+  <string id="12371">Harap Pasang Kode Master yg baru!</string>
+  <string id="12372">Kunci Setelan &amp; File</string>
+  <string id="12373">Setelan &amp;  File</string>
+  <string id="12374">Kunci Media</string>
+  <string id="12375">Mode Pegguna Master</string>
+  <string id="12376">Pasangkan sebagai standar untuk semua Film</string>
+  <string id="12377">Ini akan mengubah nilai yang telah disimpan sebelumnya</string>
+  <string id="12378">Tampilkan setiap gambar untuk</string>
+  <string id="12379">Gunakan efek Pan dan Zoom</string>
+  <string id="12380">Mainkan video NTSC pada nilai PAL</string>
+  <string id="12381">Mainkan video PAL  pada nilai NTSC</string>
+  <string id="12382">Mainkan video NTSC dlm PAL60</string>
+  <string id="12383">12 jam</string>
+  <string id="12384">24 jam</string>
+  <string id="12385">Hari/Bulan</string>
+  <string id="12386">Bulan/Hari</string>
+  <string id="12387">Pindai Ulang Database</string>
+  <string id="12390">Sistem Berjalan</string>
+  <string id="12391">Menit</string>
+  <string id="12392">Jam</string>
+  <string id="12393">Hari</string>
+  <string id="12394">Total Sistem Berjalan</string>
+  <string id="12600">Cuaca</string>
+  <string id="12900">Screensaver</string>
+  <string id="12901">Tampilan Penuh OSD</string>
+  <string id="13000">Sistem</string>
+  <string id="13001">HD Spindown Seketika</string>
+  <string id="13002">Hanya Video</string>
+  <string id="13003">- Penundaan</string>
+  <string id="13004">- Minimum Lamanya File</string>
+  <string id="13005">Matikan</string>
+  <string id="13006">Dashboard</string>
+  <string id="13100">Filter Kedipan</string>
+  <string id="13150">Kunci HDD:</string>
+  <string id="13151">Suhu HDD:</string>
+  <string id="13152">Model DVD:</string>
+  <string id="13153">Firmware DVD:</string>
+  <string id="13154">Model HDD:</string>
+  <string id="13155">Seri HDD:</string>
+  <string id="13156">Firmware HDD:</string>
+  <string id="13157">Password HDD:</string>
+  <string id="13158">Status Penguncian HDD:</string>
+  <string id="13159">Subnet mask:</string>
+  <string id="13160">Gateway:</string>
+  <string id="13161">DNS</string>
+  <string id="13162">Gagal Inisialisasi</string>
+  <string id="13163">GamePad pada Port:</string>
+  <string id="13164">Keyboard pada Port:</string>
+  <string id="13165">Mouse pada Port:</string>
+  <string id="13166">Head/MicroPhone pada Port:</string>
+  <string id="13167">MemoryStick pada Port:</string>
+  <string id="13168">IR-Remote pada Port:</string>
+  <string id="13169">Abaikan Pemilihan CD</string>
+  <string id="13170">Tidak Pernah</string>
+  <string id="13171">Segera</string>
+  <string id="13172">Setelah %i detik</string>
+  <string id="13200">Profil</string>
+  <string id="13201">Hapus profil '%s'?</string>
+  <string id="13202">Simpan setelan sekarang sebagai profil...</string>
+  <string id="13203">Profil '%s' berhasil dimuat</string>
+  <string id="13204">Profil  terakhir dipasang:</string>
+  <string id="13205">Tidak Diketahui</string>
+  <string id="13206">Timpa</string>
+  <string id="13207">Timpa profil '%s'?</string>
+  <string id="13208">Jam Alarm</string>
+  <string id="13209">Jeda jam Alarm (dlm menit)</string>
+  <string id="13210">Dimulai, alarm pada %im</string>
+  <string id="13211">Alarm!</string>
+  <string id="13212">Dibatalkan dengan %im%is</string>
+  <string id="13249">Cari Teks Film dalam RARs</string>
+  <string id="13250">Melihat-lihat teks film...</string>
+  <string id="13251">Pindahkan Item</string>
+  <string id="13252">Pindahkan Item Ke Sini</string>
+  <string id="13253">Batalkan Pemindahan</string>
+  <string id="13270">Perangkat Keras</string>
+  <string id="13271">Kecepatan CPU:</string>
+  <string id="13274">Xbox Tersambung, tetapi tidak tersedia DNS.</string>
+  <string id="13275">Hard Disk</string>
+  <string id="13276">DVD-ROM</string>
+  <string id="13277">Penyimpanan</string>
+  <string id="13278">Standar</string>
+  <string id="13279">Jaringan</string>
+  <string id="13280">Video</string>
+  <string id="13281">Perangkat Keras</string>
+  <string id="13282">_</string>
+  <string id="13283">Versi Kernel:</string>
+  <string id="13284">Kecepatan CPU:</string>
+  <string id="13285">BIOS Terdeteksi:</string>
+  <string id="13286">Enkoder Video:</string>
+  <string id="13287">Resolusi Layar:</string>
+  <string id="13288">Versi Xbox:</string>
+  <string id="13289">Nomor Seri Xbox:</string>
+  <string id="13290">Pabrikan XBOX:</string>
+  <string id="13291">ModChip:</string>
+  <string id="13292">Kabel A/V:</string>
+  <string id="13293">Video &amp; Regional XBE:</string>
+  <string id="13294">Region DVD:</string>
+  <string id="13295">Internet:</string>
+  <string id="13296">Xbox sedang Tersambung</string>
+  <string id="13297">Xbox tidak Tersambung. Periksa setelan Jaringan.</string>
+  <string id="13298">Kunci XBLIVE:</string>
+  <string id="13299">Target Suhu</string>
+  <string id="13300">Kecepatan Kipas</string>
+  <string id="13301">Kontrol Suhu Otomatis</string>
+  <string id="13302">Mengesampingkan Kecepatan Kipas</string>
+  <string id="13303">Huruf Kulit</string>
+  <string id="13304">Aktifkan Flipping Bi-Directional Strings</string>
+  <string id="13305">Aktifkan RSS Feeds</string>
+  <string id="13306">Sembunyikan Induk Item Folder</string>
+  <string id="13307">Template Penamaan Folder</string>
+  <string id="13308">Anda yakin ingin mem-boot xbox</string>
+  <string id="13309">daripada hanya XBMC?</string>
+  <string id="13310">Efek Zoom</string>
+  <string id="13311">Efek Float</string>
+  <string id="13312">Pengurangan Bar Hitam</string>
+  <string id="13313">Memulai Lagi</string>
+  <string id="13314">Crossfade</string>
+  <string id="13315">Buat Ulang Thumbnail</string>
+  <string id="13316">Thumbnail Berulang</string>
+  <string id="13317">Lihat Slideshow</string>
+  <string id="13318">Slideshow Berulang</string>
+  <string id="13319">Acak</string>
+  <string id="13320">Stereo</string>
+  <string id="13321">Hanya Kiri</string>
+  <string id="13322">Hanya Kanan</string>
+  <string id="13323">Aktifkan CD+G</string>
+  <string id="13324">Latar Belakang Transparan</string>
+  <string id="13325">Latar Depan Transparan</string>
+  <string id="13326">penundaan A/V</string>
+  <string id="13327">Karaoke</string>
+  <string id="13328">%s tidak ditemukan</string>
+  <string id="13329">Kesalahan membuka %s</string>
+  <string id="13330">Tidak dapat memuat %s</string>
+  <string id="13331">Kesalahan: memori yg diperlukan terlalu besar</string>
+  <string id="13332">Pindah Atas</string>
+  <string id="13333">Pindah Bawah</string>
+  <string id="13334">Edit Label</string>
+  <string id="13335">Buat Standar</string>
+  <string id="13336">Hapus Tombol</string>
+  <string id="13337">- 2 Saluran Melalui PCM</string>
+  <string id="13338">LED Muka</string>
+  <string id="13339">Warna LED Muka</string>
+  <string id="13340">Biarkan Seadanya</string>
+  <string id="13341">Hijau</string>
+  <string id="13342">Oranye</string>
+  <string id="13343">Merah</string>
+  <string id="13344">Putaran</string>
+  <string id="13345">Matikan LED saat Memainkan</string>
+  <string id="13346">Informasi Film</string>
+  <string id="13347">Hal Antrian</string>
+  <string id="13348">Cari IMDb...</string>
+  <string id="13349">Cari Info Utk Semua File</string>
+  <string id="13350">Sedang Memainkan...</string>
+  <string id="13351">Informasi Album</string>
+  <string id="13352">Pindai Seluruh Database</string>
+  <string id="13353">Hentikan Scan</string>
+  <string id="13354">Metode Render</string>
+  <string id="13355">Pixel Shader Kualitas Rendah</string>
+  <string id="13356">Lapisan Perangkat Keras</string>
+  <string id="13357">Pixel Shader Kualitas Tinggi</string>
+  <string id="13358">Mainkan Item</string>
+  <string id="13359">Pasang Thumb Artis</string>
+  <string id="13360">Buat Thumb</string>
+  <string id="13361">Aktifkan Suara</string>
+  <string id="13362">Penutup Suara</string>
+  <string id="13363">- Aktifkan Bobot Energi Spektrum</string>
+  <string id="13364">-- Nilai Bobot Energi Spektrum</string>
+  <string id="13365">- Aktifkan Pitch Scaling</string>
+  <string id="13366">-- Nilai Pitch Scaling</string>
+  <string id="13367">- Aktifkan Faktor Bisikan</string>
+  <string id="13368">-- Nilai Faktor Bisikan</string>
+  <string id="13369">- Aktifkan Faktor Robotik</string>
+  <string id="13370">-- Nilai Faktor Robotik</string>
+  <string id="13371">- Port 1 Suara</string>
+  <string id="13372">- Port 2 Suara</string>
+  <string id="13373">- Port 3 Suara</string>
+  <string id="13374">- Port 4 Suara</string>
+  <string id="13375">Aktifkan Perangkat</string>
+  <string id="13376">Volume</string>
+  <string id="13377">Mode Tampilan Standar</string>
+  <string id="13378">Kecerahan Standar</string>
+  <string id="13379">Kontras Standar</string>
+  <string id="13380">Gamma Standar</string>
+  <string id="13381">Lanjutkan Lagi Video</string>
+  <string id="13382">Voice Mask - Port 1</string>
+  <string id="13383">Voice Mask - Port 2</string>
+  <string id="13384">Voice Mask - Port 3</string>
+  <string id="13385">Voice Mask - Port 4</string>
+  <string id="13386">Gunakan Pencarian Berdasar Waktu</string>
+  <string id="13387">Template Penamaan Trek Kanan</string>
+  <string id="13388">Presets</string>
+  <string id="13389">Tidak tersedia preset 
+utk visualisasi ini</string>
+  <string id="13390">Tidak tersedia setelan 
+utk visualisasi ini</string>
+  <string id="13391">Keluarkan/Pasangkan</string>
+  <string id="13392">Gunakan Visualisasi jika memainkan audio</string>
+  <string id="13393">Hitung Ukuran</string>
+  <string id="13394">Menghitung ukuran isi folder</string>
+  <string id="13395">Setelan Video</string>
+  <string id="13396">Audio dan Setelan Teks Film</string>
+  <string id="13397">Aktifkan Teks Film</string>
+  <string id="13398">Bookmark</string>
+  <string id="13399">Abaikan "The" saat penyortiran</string>
+  <string id="13400">Crossfade trek album</string>
+  <string id="13401">Melihat-lihat untuk %s</string>
+  <string id="13402">Tampilkan posisi trek</string>
+  <string id="13403">Kosongkan Default</string>
+  <string id="13404">Lanjutkan</string>
+  <string id="13405">Dapatkan Thumb</string>
+  <string id="14000">Stack</string>
+  <string id="14001">Unstack</string>
+  <string id="14002">Stacking: Fuzzy</string>
+  <string id="14003">Mengunduh file Daftar Main...</string>
+  <string id="14004">Mengunduh daftar stream...</string>
+  <string id="14005">Parsing daftar stream...</string>
+  <string id="14006">Mengunduh daftar stream gagal</string>
+  <string id="14007">Mengunduh file Daftar Main gagal</string>
+  <string id="14008">Aktifkan Notifikasi Kai</string>
+  <string id="14009">Direktori Permainan</string>
+  <string id="14010">Otomatis Pindah ke Thumbs</string>
+  <string id="14011">Aktifkan Autoswitching ke Tampilan Thumbs</string>
+  <string id="14012">- Gunakan Ikon Besar</string>
+  <string id="14013">- Penggantian Berdasar</string>
+  <string id="14014">- Persentase</string>
+  <string id="14015">Tak ada File dan satu Thumb</string>
+  <string id="14016">Sedikitnya satu File dan Thumb</string>
+  <string id="14017">Persentase Thumb</string>
+  <string id="14018">Lihat Pilihan</string>
+  <string id="14019">Ganti Kode Wilayah 1</string>
+  <string id="14020">Ganti Kode Wilayah 2</string>
+  <string id="14021">Ganti Kode Wilayah 3</string>
+  <string id="14022">Pustaka</string>
+  <string id="14023">Tidak ada TV</string>
+  <string id="14024">Masukkan kota besar terdekat atau kode ZIP US</string>
+  <string id="14025">Video/Audio/DVD Cache - Harddisk</string>
+  <string id="14026">Video Cache - DVDRom</string>
+  <string id="14027">- Jaringan Lokal</string>
+  <string id="14028">- Internet</string>
+  <string id="14030">Audio Cache - DVDRom</string>
+  <string id="14031">- Jaringan Lokal</string>
+  <string id="14032">- Internet</string>
+  <string id="14034">DVD Cache - DVDRom</string>
+  <string id="14035">- Jaringan Lokal</string>
+  <string id="14036">Server</string>
+  <string id="14037">Lihat dan Rasakan</string>
+  <string id="14038">Setelan Jaringan berubah</string>
+  <string id="14039">XBMC harus dimulai ulang untuk mengganti</string>
+  <string id="14040">pemasangan setelan jaringan. Anda mau lakukan sekarang?</string>
+  <string id="14041">Post Processing</string>
+  <string id="14042">Alamat Mesin IP</string>
+  <string id="14043">- Matikan saat memainkan</string>
+  <string id="14044">%i mnt</string>
+  <string id="14045">%i det</string>
+  <string id="14046">%i mdet</string>
+  <string id="14047">%i %%</string>
+  <string id="14048">%i kbps</string>
+  <string id="14049">%i kb</string>
+  <string id="14050">%i.0 dB</string>
+  <string id="14051">Format Waktu</string>
+  <string id="14052">Format Tanggal</string>
+  <string id="14053">Filter GUI</string>
+  <string id="14054">Aktifkan Internet Lookup</string>
+  <string id="14055">Gunakan Scanning Latar</string>
+  <string id="14056">Hentikan Scan</string>
+  <string id="14057">Tidak memungkinkan saat men-scan info media</string>
+  <string id="14058">Efek Film Grain</string>
+  <string id="14059">Mencari custom thumbnails pada remote shares</string>
+  <string id="14060">Tipe Cache Tidak Diketahui- Internet</string>
+  <string id="14061">Auto</string>
+  <string id="14062">Masukkan namapengguna utk</string>
+  <string id="14063">Tanggal &amp; Jam</string>
+  <string id="14064">Pasang Tanggal</string>
+  <string id="14065">Pasang Waktu</string>
+  <string id="14066">Masukkan Waktu dalam format 24 jam HH:MM</string>
+  <string id="14067">Masukkan Tanggal dalam format DD/MM/YYYY</string>
+  <string id="14068">Masukkan Alamat IP</string>
+  <string id="14069">Anda ingin memasang setelan ini sekarang?</string>
+  <string id="14070">Pasang Perubahan Sekarang</string>
+  <string id="14071">Mengijinkan Perubahan Nama File dan Penghapusan</string>
+  <string id="14072">Aktifkan XLink Kai</string>
+  <string id="14073">XLink Kai tidak aktif.</string>
+  <string id="15000">XLink Kai</string>
+  <string id="15001">Servis tidak tersambung, anda mau mencobanya</string>
+  <string id="15002">menyambungkan dengan Xbox Media Center?</string>
+  <string id="15003">Masukkan pesan anda</string>
+  <string id="15004">Anda diundang untuk main %s.</string>
+  <string id="15005">Tanggal: %s</string>
+  <string id="15006">Dari: %s</string>
+  <string id="15007">Undangan</string>
+  <string id="15008">Anda telah diundang untuk bergabung %s.</string>
+  <string id="15009">Offline</string>
+  <string id="15010">Teman</string>
+  <string id="15011">Lihat: Teman</string>
+  <string id="15012">Gabung</string>
+  <string id="15013">Suara</string>
+  <string id="15014">Undang</string>
+  <string id="15015">Hapus</string>
+  <string id="15016">Permainan</string>
+  <string id="15017">Lihat: Permainan</string>
+  <string id="15018">Masuk</string>
+  <string id="15019">Tambah</string>
+  <string id="15020">Host</string>
+  <string id="15021">Arena</string>
+  <string id="15022">Lihat: Arena</string>
+  <string id="15023">Mainkan</string>
+  <string id="15024">Tambah</string>
+  <string id="15025">Host</string>
+  <string id="15026">Ngobrol</string>
+  <string id="15027">Lihat: Ngobrol</string>
+  <string id="15028">Keyboard</string>
+  <string id="15029">Password dibutuhkan utk bergabung dengan arena ini.</string>
+  <string id="15030">Servis diputus</string>
+  <string id="15031">Otentifikasi XLink Kai</string>
+  <string id="15032">Nama Anda dan/atau password ditolak oleh</string>
+  <string id="15033">server orbital. Periksa kembali konfigurasi Anda.</string>
+  <string id="15034">baru saja masuk</string>
+  <string id="15035">telah memulai obrolan suara </string>
+  <string id="15036">telah mengirim Anda undangan</string>
+  <string id="15037">XBMC tidak mampu mengkonfirmasi jaringan Anda telah tersambungkan.</string>
+  <string id="15038">Anda mungkin mengalami kesulitan bergabung atau hosting permainan.</string>
+  <string id="15039">Xbox Media Center tidak dapat menemukan permainan secara otomatis.</string>
+  <string id="15040">Masukkan disk permainan ke dalam XBOX atau tekan 'A' utk membatalkan</string>
+  <string id="15041">dan jalankan permainan secara manual.</string>
+  <string id="15042">Akses Ditolak</string>
+  <string id="15043">%s gabung chat.</string>
+  <string id="15044">%s keluar chat.</string>
+  <string id="15045">Masukkan pesan pribadi Anda.</string>
+  <string id="15046">Arena Saat ini</string>
+  <string id="15047">Masukkan password utk arena Anda.</string>
+  <string id="15048">Masukkan deskripsi utk arena Anda.</string>
+  <string id="15049">Host Permainan</string>
+  <string id="15050">Host adalah arena pribadi</string>
+  <string id="15051">Batasan Pemain</string>
+  <string id="15052">Password</string>
+  <string id="15053">Deskripsi</string>
+  <string id="15054">Dialog Undangan</string>
+  <string id="15055">Pilih permainan:</string>
+  <string id="15056">Masukkan pesan</string>
+  <string id="15057">Kirim</string>
+  <string id="15058">Host</string>
+  <string id="15059">Undangan Diterima!</string>
+  <string id="15060">Pesan Disini</string>
+  <string id="15061">Anda diundang untuk main %s.</string>
+  <string id="15062">Gunakan lokasi alternatif mplayer</string>
+  <string id="15100">Pustaka</string>
+  <string id="15101">Database</string>
+  <string id="15102">* Semua Album</string>
+  <string id="15103">* Semua Artis</string>
+  <string id="15104">* Semua Lagu</string>
+  <string id="15105">* Semua Aliran</string>
+  <string id="15106">Mengingat file terpilih saat navigasi maju</string>
+  <string id="15107">Buffering...</string>
+  <string id="15108">Navigasi Suara</string>
+  <string id="15109">Kulit Standar</string>
+  <string id="15110">Controller Bergemuruh</string>
+  <string id="15111">Tema Kulit</string>
+  <string id="15112">Kulit Standar</string>
+  <string id="15200">LastFM</string>
+  <string id="15201">Ajukan Lagu ke LastFM</string>
+  <string id="15202">NamaPengguna LastFM</string>
+  <string id="15203">Password LastFM</string>
+  <string id="15204">Tidak bisa tersambung: sleeping...</string>
+  <string id="15205">Harap Memperbaharui XBMC</string>
+  <string id="15206">Pengajuan gagal: kesalahan otorisasi.</string>
+  <string id="15207">Tersambung</string>
+  <string id="15208">Tidak Tersambung</string>
+  <string id="15209">Psang Jeda %i</string>
+  <string id="15210">Cached %i Lagu</string>
+  <string id="15211">Pengajuan...</string>
+  <string id="15212">Pengajuan dalam %i detik</string>
+  <string id="15213">Mainkan Menggunakan...</string>
+  <string id="15214">Gunakan Sinkronisasi A/V halus</string>
+  <string id="15215">Sembunyikan Nama File pada Tampilan Thumb</string>
+  <string id="15250">Ajukan Last.fm Radio ke LastFM</string>
+  <string id="15251">Menyambungkan diri ke Last.fm...</string>
+  <string id="15252">Pilih stasiun...</string>
+  <string id="15253">Cari artis serupa...</string>
+  <string id="15254">Cari tag serupa...</string>
+  <string id="15255">Profil Anda (%name%)</string>
+  <string id="15256">Keseluruhan top tag</string>
+  <string id="15257">Top artis utk tag %name%</string>
+  <string id="15258">Top album utk tag %name%</string>
+  <string id="15259">Top trek utk tag %name%</string>
+  <string id="15260">Mendengarkan tag %name% last.fm radio</string>
+  <string id="15261">Artis serupa %name%</string>
+  <string id="15262">Top %name% album</string>
+  <string id="15263">Top %name% trek</string>
+  <string id="15264">Top %name% tag</string>
+  <string id="15265">Biggest fans of %name%</string>
+  <string id="15266">Mendengarkan fan %name% last.fm radio</string>
+  <string id="15267">Mendengarkan %name% artis serupa last.fm radio</string>
+  <string id="15268">Top artis utk pengguna %name%</string>
+  <string id="15269">Top album utk pengguna %name%</string>
+  <string id="15270">Top trek utk pengguna %name%</string>
+  <string id="15271">Teman pengguna %name%</string>
+  <string id="15272">Tetangga pengguna %name%</string>
+  <string id="15273">Tangga artis mingguan %name%</string>
+  <string id="15274">Tangga album mingguan %name%</string>
+  <string id="15275">Tangga trek mingguan %name%</string>
+  <string id="15276">Mendengarkan %name%'s neighbours last.fm radio</string>
+  <string id="15277">Mendengarkan %name%'s personal last.fm radio</string>
+  <string id="15278">Mendengarkan %name%'s loved tracks last.fm radio</string>
+  <string id="15279">Mendapatkan daftar dari last.fm...</string>
+  <string id="15280">Tidak bisa mendapatkan daftar dari last.fm...</string>
+  <string id="15281">Masukkan nama artis untuk menemukan yang mirip</string>
+  <string id="15282">Masukkan nama tag untuk menemukan yang mirip</string>
+  <string id="15283">Trek baru saja didengarkan oleh %name%</string>
+  <string id="15300">Path tidak ditemukan atau tidak valid</string>
+  <string id="15301">Tidak bisa tersambung ke jaringan server</string>
+  <string id="15302">Server tidak ditemukan</string>
+  <string id="15303">Workgroup tidak ditemukan</string>
+  <string id="15310">Membuka bookmark multi-path</string>
+  <string id="15311">Path:</string>
+  <string id="16000">Umum</string>
+  <string id="16001">Mengatur konfigurasi Perangkat Keras Audio...</string>
+  <string id="16002">CDDB lookup</string>
+  <string id="16003">Player</string>
+  <string id="16004">Mainkan media dari disk</string>
+  <string id="16009">Masukkan Judul Film</string>
+  <string id="16010">Masukkan Nama Profil</string>
+  <string id="16011">Masukkan Nama Album</string>
+  <string id="16012">Masukkan Nama Daftar Main</string>
+  <string id="16013">Masukkan namafile baru</string>
+  <string id="16014">Masukkan nama folder</string>
+  <string id="16015">Masukkan direktori</string>
+  <string id="16016">Pilihan yg tersedia: %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
+  <string id="16017">Masukkan Pencarian</string>
+  <string id="16018">Tidak Ada</string>
+  <string id="16019">Memilih Sendiri</string>
+  <string id="16020">DeInterlace</string>
+  <string id="16021">Sinkronisasi Ganjil</string>
+  <string id="16022">Sinkronisasi Genap</string>
+  <string id="16023">Penanganan Interlaced</string>
+  <string id="16024">Pembatalan...</string>
+  <string id="16025">Masukkan Nama Artis</string>
+  <string id="16026">Memainkan Daftar Main dibatalkan</string>
+  <string id="16027">Terlalu banyak berturutan menggagalkan item</string>
+  <string id="16030">Mode Party dibatalkan.</string>
+  <string id="16031">Tidak ada lagu yang sesuai di database.</string>
+  <string id="16032">Tidak bisa meng-inisilisasi database.</string>
+  <string id="16033">Tidak bisa membuka database.</string>
+  <string id="16034">Tidak bisa memperoleh lagu dari database.</string>
+  <string id="16100">Semua Video</string>
+  <string id="16101">Belum Ditonton</string>
+  <string id="16102">Telah Ditonton</string>
+  <string id="16103">Tandai Telah Ditonton</string>
+  <string id="16104">Tandai Belum Ditonton</string>
+  <string id="16105">Edit Judul</string>
+  <string id="16106">Gunakan NTSC-M &amp; NTSC-J</string>
+  <string id="16107">Gunakan hanya NTSC-M</string>
+  <string id="16108">Gunakan hanya NTSC-J</string>
+  <string id="16109">Gunakan hanya PAL-60</string>
+  <string id="16110">Untuk Permainan 60hz</string>
 </strings>

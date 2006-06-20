@@ -1,1300 +1,1257 @@
-<?xml version="1.0" encoding="GBK" standalone="yes"?>
+ï»¿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--$Revision$-->
 <strings>
-  <string><id>0</id><value>ÎÒµÄ³ÌÐò</value></string>
-  <string><id>1</id><value>ÎÒµÄÍ¼Æ¬</value></string>
-  <string><id>2</id><value>ÎÒµÄÒôÀÖ</value></string>
-  <string><id>3</id><value>ÎÒµÄÊÓÆµ</value></string>
-  <string><id>4</id><value>µçÊÓµ¼ÓÎ</value></string>
-  <string><id>5</id><value>ÏµÍ³ÉèÖÃ</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
-  <string><id>7</id><value>ÎÒµÄÎÄ¼þ</value></string>
-  <string><id>8</id><value>ÌìÆøÔ¤±¨</value></string>
- 
-  <string><id>11</id><value>ÐÇÆÚÒ»</value></string>
-  <string><id>12</id><value>ÐÇÆÚ¶þ</value></string>
-  <string><id>13</id><value>ÐÇÆÚÈý</value></string>
-  <string><id>14</id><value>ÐÇÆÚËÄ</value></string>
-  <string><id>15</id><value>ÐÇÆÚÎå</value></string>
-  <string><id>16</id><value>ÐÇÆÚÁù</value></string>
-  <string><id>17</id><value>ÐÇÆÚÈÕ</value></string>
-  
-  <string><id>21</id><value>Ò»ÔÂ</value></string>
-  <string><id>22</id><value>¶þÔÂ</value></string>
-  <string><id>23</id><value>ÈýÔÂ</value></string>
-  <string><id>24</id><value>ËÄÔÂ</value></string>
-  <string><id>25</id><value>ÎåÔÂ</value></string>
-  <string><id>26</id><value>ÁùÔÂ</value></string>
-  <string><id>27</id><value>ÆßÔÂ</value></string>
-  <string><id>28</id><value>°ËÔÂ</value></string>
-  <string><id>29</id><value>¾ÅÔÂ</value></string>
-  <string><id>30</id><value>Ê®ÔÂ</value></string>
-  <string><id>31</id><value>Ê®Ò»ÔÂ</value></string>
-  <string><id>32</id><value>Ê®¶þÔÂ</value></string>
-
-  <string><id>98</id><value>ÏÔÊ¾£º×Ô¶¯</value></string>
-  <string><id>99</id><value>ÏÔÊ¾£º×Ô¶¯´óÍ¼±ê</value></string>
-  <string><id>100</id><value>ÏÔÊ¾£ºÍ¼±ê</value></string>
-  <string><id>101</id><value>ÏÔÊ¾£ºÁÐ±í</value></string>
-  <string><id>102</id><value>É¨Ãé</value></string>
-  <string><id>103</id><value>ÅÅÐò£ºÃû×Ö</value></string>
-  <string><id>104</id><value>ÅÅÐò£ºÈÕÆÚ</value></string>
-  <string><id>105</id><value>ÅÅÐò£º´óÐ¡</value></string>
-  <string><id>106</id><value>·ñ</value></string>
-  <string><id>107</id><value>ÊÇ</value></string>
-  <string><id>108</id><value>²¥·ÅÍ¼Æ¬</value></string>
-  <string><id>109</id><value>´´½¨Ïñ²á</value></string>
-  <string><id>110</id><value>´´½¨ËõÂÔÍ¼</value></string>
-  <string><id>111</id><value>¿ì½Ý</value></string>
-  <string><id>112</id><value>ÔÝÍ£</value></string>
-  <string><id>113</id><value>ÎÒµÄÎÄ¼þ£ºÔ´</value></string>
-  <string><id>114</id><value>ÎÒµÄÎÄ¼þ£ºÄ¿±ê</value></string>
-  <string><id>115</id><value>¸´ÖÆ</value></string>
-  <string><id>116</id><value>ÒÆ¶¯</value></string>
-  <string><id>117</id><value>É¾³ý</value></string>
-  <string><id>118</id><value>ÖØÃüÃû</value></string>
-  <string><id>119</id><value>ÐÂÎÄ¼þ¼Ð</value></string>
-  <string><id>120</id><value>È·ÈÏÎÄ¼þ¸´ÖÆ</value></string>
-  <string><id>121</id><value>È·ÈÏÎÄ¼þÒÆ¶¯</value></string>
-  <string><id>122</id><value>È·ÈÏÎÄ¼þÉ¾³ý</value></string>
-  <string><id>123</id><value>¸´ÖÆÕâÐ©ÎÄ¼þ£¿</value></string>
-  <string><id>124</id><value>ÒÆ¶¯ÕâÐ©ÎÄ¼þ£¿</value></string>
-  <string><id>125</id><value>É¾³ýÕâÐ©ÎÄ¼þ£¿</value></string>
-  <string><id>126</id><value>×´Ì¬</value></string>
-  <string><id>127</id><value>¶ÔÏñ</value></string>
-  <string><id>128</id><value>Ò»°ãÉèÖÃ</value></string>
-  <string><id>129</id><value>²¥·ÅÍ¼Æ¬</value></string>
-  <string><id>130</id><value>ÏµÍ³ÐÅÏ¢</value></string>
-  <string><id>131</id><value>ÆÁÄ»</value></string>
-  <string><id>132</id><value>×¨¼­</value></string>
-  <string><id>133</id><value>ÒÕÊõ¼Ò</value></string>
-  <string><id>134</id><value>¸èÇú</value></string>
-  <string><id>135</id><value>Á÷ÅÉ</value></string>
-  <string><id>136</id><value>²¥·ÅÁÐ±í</value></string>
-  <string><id>137</id><value>²éÕÒ</value></string>
-  <string><id>138</id><value>ÏµÍ³ÐÅÏ¢</value></string>
-  <string><id>139</id><value>ÎÂ¶È£º</value></string>
-  <string><id>140</id><value>ÖÐÑë´¦ÀíÆ÷£º</value></string>
-  <string><id>141</id><value>Í¼ÐÎ´¦ÀíÆ÷£º</value></string>
-  <string><id>142</id><value>Ê±¼ä£º</value></string>
-  <string><id>143</id><value>µ±Ç°£º</value></string>
-  <string><id>144</id><value>°æ±¾£º</value></string>
-  <string><id>145</id><value>ÍøÂç£º</value></string>
-  <string><id>146</id><value>ÀàÐÍ£º</value></string>
-  <string><id>147</id><value>ÊÖ¶¯(¾²Ì¬·ÖÅä)</value></string>
-  <string><id>148</id><value>×Ô¶¯(¶¯Ì¬·ÖÅä)</value></string>
-  <string><id>149</id><value>Íø¿¨µØÖ·(MAC)</value></string>
-  <string><id>150</id><value>IPµØÖ·</value></string>
-  <string><id>151</id><value>Á¬½Ó£º</value></string>
-  <string><id>152</id><value>°ëË«¹¤</value></string>
-  <string><id>153</id><value>È«Ë«¹¤</value></string>
-  <string><id>154</id><value>´æ´¢Æ÷</value></string>
-  <string><id>155</id><value>Çý¶¯Æ÷</value></string>
-  <string><id>156</id><value>¿ÕÏÐ</value></string>
-  <string><id>157</id><value>ÊÓÆµ</value></string>
-  <string><id>158</id><value>¿ÕÏÐÄÚ´æ</value></string>
-  <string><id>159</id><value>ÎÞÁ¬½Ó</value></string>
-  <string><id>160</id><value>¿ÕÏÐ</value></string>
-  <string><id>161</id><value>ÎÞÐ§µÄ</value></string>
-  <string><id>162</id><value>¹âÇý¿ªÆô</value></string>
-  <string><id>163</id><value>¶ÁÈ¡ÖÐ</value></string>
-  <string><id>164</id><value>ÎÞÅÌ</value></string>
-  <string><id>165</id><value>¹âÅÌ½éÉÜ</value></string>
-  <string><id>166</id><value>Æ¤·ô</value></string>
-  <string><id>167</id><value>FTP·þÎñÆ÷</value></string>
-  <string><id>168</id><value>×Ô¶¯ÓëÊ±¼ä·þÎñÆ÷Í¬²½</value></string>
-  <string><id>169</id><value>·Ö±æÂÊ</value></string>
-  <string><id>170</id><value>×¨¼­£º</value></string>
-  <string><id>171</id><value>ÒÕÊõ¼Ò£º</value></string>
-  <string><id>172</id><value>°æ±¾Ê±¼ä£º</value></string>
-  <string><id>173</id><value>µÈ¼¶£º</value></string>
-  <string><id>174</id><value>Á÷ÅÉ£º</value></string>
-  <string><id>175</id><value>Òôµ÷£º</value></string>
-  <string><id>176</id><value>¸ñÊ½£º</value></string>
-  <string><id>177</id><value>ÆÀÂÛ£º</value></string>
-  <string><id>178</id><value>Òô¹ì£º</value></string>
-  <string><id>179</id><value>¸èÇú</value></string>
-  <string><id>180</id><value>³ÖÐøÊ±¼ä</value></string>
-  <string><id>181</id><value>Ñ¡Ôñ×¨¼­</value></string>
-  <string><id>182</id><value>Òô¹ì</value></string>
-  <string><id>183</id><value>»Ø¹Ë</value></string>
-  <string><id>184</id><value>Ë¢ÐÂ</value></string>
-  <string><id>185</id><value>²éÕÒ×¨¼­</value></string>
-  <string><id>186</id><value>È·¶¨</value></string>
-  <string><id>187</id><value>Ã»ÓÐÕÒµ½×¨¼­£¡</value></string>
-  <string><id>188</id><value>È«²¿Ñ¡Ôñ</value></string>
-  <string><id>189</id><value>²éÕÒÃ½ÌåÐÅÏ¢</value></string>
-  <string><id>190</id><value>±£´æ</value></string>
-  <string><id>191</id><value>´òÂÒ´ÎÐò</value></string>
-  <string><id>192</id><value>Çå³ý</value></string>
-  <string><id>193</id><value>²éÕÒ</value></string>
-  <string><id>194</id><value>²éÕÒ¡­</value></string>
-  <string><id>195</id><value>Ã»ÓÐ·¢ÏÖIMDbÐÅÏ¢£¡</value></string>
-  <string><id>196</id><value>Ñ¡ÔñÓ°Æ¬£º</value></string>
-  <string><id>197</id><value>¶ÁÈ¡IMDbÐÅÏ¢</value></string>
-  <string><id>198</id><value>¶ÁÈ¡Ó°Æ¬ÏêÏ¸×ÊÁÏ</value></string>
-  <string><id>199</id><value>µ¼ÑÝ£º</value></string>
-  <string><id>200</id><value>±à¾ç£º</value></string>
-  <string><id>201</id><value>Äê£º</value></string>
-  <string><id>202</id><value>±êÓï£º</value></string>
-  <string><id>203</id><value>¾çÇé´ó¸Ù£º</value></string>
-  <string><id>204</id><value>ÆÀ·Ö£º</value></string>
-  <string><id>205</id><value>µÃÆ±£º</value></string>
-  <string><id>206</id><value>ÑÝÔ±±í</value></string>
-  <string><id>207</id><value>¾çÇé¼ò½é</value></string>
-  <string><id>208</id><value>²¥·Å</value></string>
-  <string><id>209</id><value>Ïòºó</value></string>
-  <string><id>210</id><value>ÏòÇ°</value></string>
-  <string><id>211</id><value>²éÕÒÓ¦ÓÃÈí¼þ</value></string>
-  <string><id>212</id><value>ÕÒµ½Ó¦ÓÃÈí¼þ</value></string>
-  <string><id>213</id><value>½çÃæÐ£×¼</value></string>
-  <string><id>214</id><value>ÆÁÄ»Ð£×¼</value></string>
-  <string><id>215</id><value>Èá»¯</value></string>
-  <string><id>216</id><value>Ëõ·Å</value></string>
-  <string><id>217</id><value>ÑÓÉì</value></string>
-  <string><id>218</id><value>DVDÇý¶¯Æ÷</value></string>
-  <string><id>219</id><value>Çë·ÅÈë¹âÅÌ</value></string>
-  <string><id>220</id><value>Ô¶³Ì¹²Ïí</value></string>
-  <string><id>221</id><value>ÍøÂçÎ´Á¬½Ó</value></string>
-  <string><id>222</id><value>È¡Ïû</value></string>
-  <string><id>223</id><value>×Ô¶¯¿íÆÁ×ª»»</value></string>
-  <string><id>224</id><value>ËÙ¶È</value></string>
-  <string><id>225</id><value>ÌØÐ§¹ý¶ÉÊ±¼ä</value></string>
-  <string><id>226</id><value>¿ªÆô PAL60</value></string>
-  <string><id>227</id><value>¿ªÆô CDDB</value></string>
-  <string><id>228</id><value>Ëæ»ú²¥·ÅÁÐ±í</value></string>
-  <string><id>229</id><value>¹Ø±ÕÓ²ÅÌ ¿ÕÏÐÊ±¼ä(·Ö)</value></string>
-  <string><id>230</id><value>ÂË¾µ</value></string>
-  <string><id>231</id><value>ÎÞ</value></string>
-  <string><id>232</id><value>µã</value></string>
-  <string><id>233</id><value>ÌõÎÆ</value></string>
-  <string><id>234</id><value>·ÇµÈ·½ÐÔ</value></string>
-  <string><id>235</id><value>Ã·»¨¶àÖØÈ¡Ñù</value></string>
-  <string><id>236</id><value>ÈýÎ¬Èñ»¯</value></string>
-  <string><id>237</id><value>ËõÐ¡</value></string>
-  <string><id>238</id><value>·Å´ó</value></string>
-  <string><id>239</id><value>²¥·ÅÍê³ÉºóÇå³ýÁÐ±í</value></string>
-  <string><id>240</id><value>×Ô¶¯ÔËÐÐ DVD-ÊÓÆµ</value></string>
-  <string><id>241</id><value>×Ô¶¯ÔËÐÐ VCD/SVCD</value></string>
-  <string><id>242</id><value>×Ô¶¯ÔËÐÐ Audio-CD</value></string>
-  <string><id>243</id><value>×Ô¶¯ÔËÐÐ ÓÎÏ·¹âÅÌ</value></string>
-  <string><id>244</id><value>×Ô¶¯ÔËÐÐ ÊÓÆµÎÄ¼þ</value></string>
-  <string><id>245</id><value>×Ô¶¯ÔËÐÐ ÒôÀÖÎÄ¼þ</value></string>
-  <string><id>246</id><value>×Ô¶¯ÔËÐÐ Í¼Æ¬ÎÄ¼þ</value></string>
-  <string><id>247</id><value>½Å±¾</value></string>
-  <string><id>248</id><value>ÓïÑÔ</value></string>
-  <string><id>249</id><value>ÒôÀÖ</value></string>
-  <string><id>250</id><value>ÊÓ¾õÐ§¹û</value></string>
-  <string><id>251</id><value>Ñ¡ÔñÄ¿µÄÄ¿Â¼</value></string>
-  <string><id>252</id><value>Á¢ÌåÉùÊä³öµ½ËùÓÐÑïÉùÆ÷</value></string>
-  <string><id>253</id><value>ÆµµÀ</value></string>
-  <string><id>254</id><value>- DDÁ¢ÌåÊýÂëÒôÐ§</value></string>
-  <string><id>255</id><value>CDDB</value></string>
-  <string><id>256</id><value>´Ó CDDB ¶ÁÈ¡ÐÅÏ¢</value></string>
-  <string><id>257</id><value>´íÎó</value></string>
-  <string><id>258</id><value>¿ªÆôID3±êÇ©</value></string>
-  <string><id>259</id><value>¿ªÊ¼</value></string>
-  <string><id>260</id><value>¿ì½Ý</value></string>
-  <string><id>261</id><value>µÈ´ý¿ªÊ¼¡­</value></string>
-  <string><id>262</id><value>½Å±¾Êä³ö</value></string>
-  <string><id>263</id><value>HTTP·þÎñÆ÷</value></string>
-  <string><id>264</id><value>Â¼Òô</value></string>
-  <string><id>265</id><value>Í£Ö¹Â¼Òô</value></string>
-  <string><id>266</id><value>ÅÅÐò£ºÒô¹ì</value></string>
-  <string><id>267</id><value>ÅÅÐò£ºÊ±¼ä</value></string>
-  <string><id>268</id><value>ÅÅÐò£º×Ô¶¯ÔËÐÐ</value></string>
-  <string><id>269</id><value>ÅÅÐò£ºÒÕÊõ¼Ò</value></string>
-  <string><id>270</id><value>ÅÅÐò£º×¨¼­</value></string>
-  <string><id>271</id><value>ÅÅÐÐÇ° 100</value></string>
-  <string><id>272</id><value>×óÉÏ²¿±ß¿ò²¹³¥</value></string>
-  <string><id>273</id><value>ÓÒÏÂ²¿±ß¿ò²¹³¥</value></string>
-  <string><id>274</id><value>×ÖÄ»Î»ÖÃ</value></string>
-  <string><id>275</id><value>ÏñËØ±ÈÖµµ÷Õû</value></string>
-  <string><id>276</id><value>ÒÆ¶¯¼ýÍ·¸Ä±ä±ß¿ò</value></string>
-  <string><id>277</id><value>ÒÆ¶¯ÏßÌõ¸Ä±ä×ÖÄ»µÄÎ»ÖÃ</value></string>
-  <string><id>278</id><value>±ä¶¯·½¿éÊ¹ÆäÍêÃÀ</value></string>
-  <string><id>279</id><value>²»ÄÜ¶ÁÈ¡ÉèÖÃ</value></string>
-  <string><id>280</id><value>Ê¹ÓÃÄ¬ÈÏfallbacks</value></string>
-  <string><id>281</id><value>Çë¼ì²é .xml ÎÄ¼þ</value></string>
-  <string><id>282</id><value>ÕÒµ½%iÌõ</value></string>
-  <string><id>283</id><value>²éÕÒ½á¹û</value></string>
-  <string><id>284</id><value>ÎÞ½á¹û</value></string>
-  <string><id>285</id><value>·´½»´íÂË¾µ</value></string>
-  <string><id>286</id><value>ºóÆÚÂË¾µ</value></string>
-  <string><id>287</id><value>×ÖÄ»</value></string>
-  <string><id>288</id><value>×ÖÌå</value></string>
-  <string><id>289</id><value>- ³ß´ç</value></string>
-  <string><id>290</id><value>¶¯Ì¬Ñ¹Ëõ</value></string>
-  <string><id>291</id><value>ÊÓÆµ</value></string>
-  <string><id>292</id><value>ÒôÆµ</value></string>
-  <string><id>293</id><value>×ÖÄ»</value></string>
-  <string><id>294</id><value>´´½¨ÊéÇ©</value></string>
-  <string><id>295</id><value>ÖØ¸²ÊéÇ©</value></string>
-  <string><id>296</id><value>Çå³ýÊéÇ©</value></string>
-  <string><id>297</id><value>ÉùÒôÑÓ³Ù</value></string>
-  <string><id>298</id><value>»¬¶¯Æ÷</value></string>
-  <string><id>300</id><value>1.ÓïÑÔ</value></string>
-  <string><id>301</id><value>2.ÒôÁ¿</value></string>
-  <string><id>302</id><value>3.Á÷</value></string>
-  <string><id>303</id><value>ÑÓ³Ù</value></string>
-  <string><id>304</id><value>ÓïÑÔ</value></string>
-  <string><id>305</id><value>¿ªÆô</value></string>
-  <string><id>306</id><value>·Ç¸ôÐÐÉ¨Ãé</value></string>
-  <string><id>307</id><value>- ×Ô¶¯ºó´¦Àí</value></string>
-  <string><id>308</id><value>- ´¹Ö±·Ö¿éÂË¾µ</value></string>
-  <string><id>309</id><value>- Ë®Æ½·Ö¿éÂË¾µ</value></string>
-  <string><id>310</id><value>- ×Ô¶¯ÁÁ¶È/¶Ô±È¶È</value></string>
-  <string><id>311</id><value>- Ïû³ýè¦´Ã</value></string>
-  <string><id>312</id><value>(0=×Ô¶¯)</value></string>
-  <string><id>313</id><value>Çå³ýÊý¾Ý¿â</value></string>
-  <string><id>314</id><value>×¼±¸¡­</value></string>
-  <string><id>315</id><value>Êý¾Ý¿â´íÎó£¡</value></string>
-  <string><id>316</id><value>Çå³ý¸èÇú¡­</value></string>
-  <string><id>317</id><value>³É¹¦Çå³ýÊý¾Ý¿â£¡</value></string>
-  <string><id>318</id><value>Çå³ý¸èÇú¡­</value></string>
-  <string><id>319</id><value>Çå³ý¸èÇú´íÎó£¡</value></string>
-  <string><id>320</id><value>Çå³ýÒÕÊõ¼Ò¡­</value></string>
-  <string><id>321</id><value>Çå³ýÒÕÊõ¼Ò´íÎó£¡</value></string>
-  <string><id>322</id><value>Çå³ýÁ÷ÅÉ¡­</value></string>
-  <string><id>323</id><value>Çå³ýÁ÷ÅÉ´íÎó£¡</value></string>
-  <string><id>324</id><value>Çå³ýÂ·¾¶¡­</value></string>
-  <string><id>325</id><value>Çå³ýÂ·¾¶´íÎó£¡</value></string>
-  <string><id>326</id><value>Çå³ý×¨¼­¡­</value></string>
-  <string><id>327</id><value>Çå³ý×¨¼­´íÎó£¡</value></string>
-  <string><id>328</id><value>Ð´Èë¡­</value></string>
-  <string><id>329</id><value>Ð´Èë´íÎó£¡</value></string>
-  <string><id>330</id><value>ÕâÐèÒªÒ»Ð©Ê±¼ä¡­</value></string>
-  <string><id>331</id><value>Ñ¹ËõÊý¾Ý¿âÖÐ¡­</value></string>
-  <string><id>332</id><value>Ñ¹ËõÊý¾Ý¿â´íÎó£¡</value></string>
-  <string><id>333</id><value>ÄãÏëÒªÇå³ýÎÒµÄÒôÀÖ¿â£¿</value></string>
-  <string><id>334</id><value>Çå³ýÒôÀÖ¿âÊý¾Ý¡­</value></string>
-  <string><id>335</id><value>¿ªÊ¼</value></string>
-  <string><id>336</id><value>Ð£ÕýèåÊý</value></string>
-  <string><id>337</id><value>ÒôÆµÊä³ö</value></string>
-  <string><id>338</id><value>Ä£Äâ</value></string>
-  <string><id>339</id><value>ÊýÂë</value></string>
-  <string><id>340</id><value>¶àÑùµÄÒÕÊõ¼Ò</value></string>
-  <string><id>341</id><value>²¥·ÅDVD</value></string>
-  <string><id>342</id><value>Ó°Æ¬</value></string>
-  <string><id>343</id><value>Ð£ÕýèåÊý</value></string>
-  <string><id>344</id><value>ÑÝÔ±</value></string>
-  <string><id>345</id><value>Äê</value></string>
-  <string><id>346</id><value>¶ÑÕ»</value></string>
-  <string><id>347</id><value>·Ç¶ÑÕ»</value></string>
-  <string><id>348</id><value>Õ¹¿ªÄ¿Â¼²ã¼¶</value></string>
-  <string><id>349</id><value>Ö»ÏÔÊ¾Default.xbe</value></string>
-  <string><id>350</id><value>³ÌÐò</value></string>
-  <string><id>351</id><value>¹Ø</value></string>
-  <string><id>352</id><value>»è°µ</value></string>
-  <string><id>353</id><value>ºÚ</value></string>
-  <string><id>354</id><value>º§¿ÍÈÎÎñ</value></string>
-  <string><id>355</id><value>ÆÁ±£¿ÕÏÐÊ±¼ä</value></string>
-  <string><id>356</id><value>ÆÁÄ»±£»¤Ä£Ê½</value></string>
-  <string><id>357</id><value>¹Ø»ú¿ÕÏÐÊ±¼ä</value></string>
-  <string><id>358</id><value>È«²¿×¨¼­</value></string>
-  <string><id>359</id><value>ÐÂµÄ×¨¼­</value></string>
-  <string><id>360</id><value>ÆÁÄ»±£»¤</value></string>
-  <string><id>361</id><value>»ÃµÆÆ¬[Ñ­»·]</value></string>
-  <string><id>362</id><value>ÆÁÄ»±£»¤Ë¥¼õ¼¶±ð(%)</value></string>
-  <string><id>363</id><value>ÅÅÐò£ºÎÄ¼þ</value></string>
-  <string><id>364</id><value>- AC3/DTSÊýÂëÒôÐ§</value></string>
-  <string><id>365</id><value>ÅÅÐò£ºÃû×Ö</value></string>
-  <string><id>366</id><value>ÅÅÐò£ºÄê</value></string>
-  <string><id>367</id><value>ÅÅÐò£ºÆÀ·Ö</value></string>
-  <string><id>368</id><value>IMDb</value></string>
-  <string><id>369</id><value>±êÌâ</value></string>
-  <string><id>370</id><value>±©·çÓê</value></string>
-  <string><id>371</id><value>¾Ö²¿</value></string>
-  <string><id>372</id><value>´ó²¿·Ö</value></string>
-  <string><id>373</id><value>ÇçÀÊ</value></string>
-  <string><id>374</id><value>Òõ</value></string>
-  <string><id>375</id><value>Ñ©</value></string>
-  <string><id>376</id><value>Óê</value></string>
-  <string><id>377</id><value>ÇáÎ¢</value></string>
-  <string><id>378</id><value>ÉÏÎç</value></string>
-  <string><id>379</id><value>ÏÂÎç</value></string>
-  <string><id>380</id><value>ÕóÓê</value></string>
-  <string><id>381</id><value>ÉÙÊý</value></string>
-  <string><id>382</id><value>·ÖÉ¢µÄ</value></string>
-  <string><id>383</id><value>·ç</value></string>
-  <string><id>384</id><value>Ç¿ÁÒ</value></string>
-  <string><id>385</id><value>×ªÇç</value></string>
-  <string><id>386</id><value>Çç</value></string>
-  <string><id>387</id><value>ÔÆ</value></string>
-  <string><id>388</id><value>ÌáÔç</value></string>
-  <string><id>389</id><value>ÕóÓê</value></string>
-  <string><id>390</id><value>Æ®Ñ©</value></string>
-  <string><id>391</id><value>µÍ</value></string>
-  <string><id>392</id><value>ÖÐ</value></string>
-  <string><id>393</id><value>¸ß</value></string>
-  <string><id>394</id><value>Îí</value></string>
-  <string><id>395</id><value>ö²</value></string>
-  <string><id>396</id><value>Ñ¡ÔñÎ»ÖÃ</value></string>
-  <string><id>397</id><value>Ë¢ÐÂÊ±¼ä</value></string>
-  <string><id>398</id><value>ÎÂ¶Èµ¥Î»</value></string>
-  <string><id>399</id><value>ËÙ¶Èµ¥Î»</value></string>
-  <string><id>400</id><value>ÌìÆø</value></string>
-  <string><id>401</id><value>ÎÂ¶È</value></string>
-  <string><id>402</id><value>Ìå¸ÐÎÂ¶È</value></string>
-  <string><id>403</id><value>×ÏÍâÏß</value></string>
-  <string><id>404</id><value>·ç</value></string>
-  <string><id>405</id><value>Â¶µã</value></string>
-  <string><id>406</id><value>Êª¶È</value></string>
-  <string><id>407</id><value>·çÏò</value></string>
-  <string><id>408</id><value>·çËÙ</value></string>
-  
-  <string><id>410</id><value>·ÃÎÊWeather.com</value></string>
-  <string><id>411</id><value>È¡µÃÌìÆøÊý¾Ý£º</value></string>
-  <string><id>412</id><value>²»ÄÜ»ñµÃÌìÆøÊý¾Ý</value></string>
-  <string><id>413</id><value>Ö¸ÄÏ</value></string>
-  <string><id>414</id><value>´Ë×¨¼­ÎÞÆÀÂÛ</value></string>
-  <string><id>415</id><value>ÏÂÔØËõÂÔÍ¼¡­</value></string>
-  <string><id>416</id><value>²»¿ÉÓÃ</value></string>
-  <string><id>417</id><value>ÏÔÊ¾£º´óÍ¼±ê</value></string>
-  <string><id>418</id><value>ÎÒµÄÊÓÆµ/Á÷ÅÉ</value></string>
-  <string><id>419</id><value>ÎÒµÄÊÓÆµ/ÑÝÔ±</value></string>
-  <string><id>420</id><value>ÎÒµÄÊÓÆµ/Äê</value></string>
-  <string><id>421</id><value>ÎÒµÄÊÓÆµ/×Ô¶¯ÔËÐÐ</value></string>
-  <string><id>422</id><value>É¾³ý×¨¼­ÐÅÏ¢</value></string>
-  <string><id>423</id><value>É¾³ý CDDB ÐÅÏ¢</value></string>
-  <string><id>424</id><value>Ñ¡Ôñ</value></string>
-  <string><id>425</id><value>ÕÒ²»µ½×¨¼­ÐÅÏ¢¡£</value></string>
-  <string><id>426</id><value>ÕÒ²»µ½ CDDB ÐÅÏ¢£¡</value></string>
-  <string><id>427</id><value>¹âÅÌ£º</value></string>
-  <string><id>428</id><value>Çë·ÅÈëÕýÈ·µÄ CD/DVD</value></string>
-  <string><id>429</id><value>Çë·ÅÈë CD/DVD</value></string>
-  <string><id>430</id><value>ÅÅÐò£ºDVD#</value></string>
-  <string><id>431</id><value>ÎÞ»º´æ</value></string>
-  <string><id>432</id><value>´ÓÊý¾Ý¿âÖÐÉ¾³ýÓ°Æ¬</value></string>
-  <string><id>433</id><value>ÄãÈ·¶¨É¾³ý</value></string>
-  <string><id>434</id><value>Ó°Æ¬£¿</value></string>
-  <string><id>435</id><value>¹ì</value></string>
-  <string><id>436</id><value>Äê£º</value></string>
-  <string><id>437</id><value>³ÖÐøÊ±¼ä£º</value></string>
-  <string><id>438</id><value>´ò¿ªÎÄ¼þ</value></string>
-  <string><id>439</id><value>»º´æ</value></string>
-  <string><id>440</id><value>Ó²ÅÌ</value></string>
-  <string><id>441</id><value>UDF</value></string>
-  <string><id>442</id><value>ÍøÂç</value></string>
-  <string><id>443</id><value>»¥ÁªÍø</value></string>
-  <string><id>444</id><value>ÊÓÆµ</value></string>
-  <string><id>445</id><value>ÒôÆµ</value></string>
-  <string><id>446</id><value>DVD</value></string>
-  <string><id>447</id><value>×Ô¶¯ÔËÐÐ</value></string>
-  <string><id>448</id><value>Òº¾§ÆÁÉèÖÃ</value></string>
-  <string><id>449</id><value>¿ªÆô</value></string>
-  <string><id>450</id><value>Öù</value></string>
-  <string><id>451</id><value>µÚ 1 ÁÐÎ»Ö·</value></string>
-  <string><id>452</id><value>µÚ 2 ÁÐÎ»Ö·</value></string>
-  <string><id>453</id><value>µÚ 3 ÁÐÎ»Ö·</value></string>
-  <string><id>454</id><value>µÚ 4 ÁÐÎ»Ö·</value></string>
-  <string><id>455</id><value>ÐÐ</value></string>
-  <string><id>456</id><value>Ä£Ê½</value></string>
-  <string><id>457</id><value>Ñ¡ÔñÏÔÊ¾</value></string>
-  <string><id>458</id><value>ÖØ¸²±ê¼Ç</value></string>
-  <string><id>459</id><value>×ÖÄ»</value></string>
-  <string><id>460</id><value>ÒôÆµÁ÷</value></string>
-  <string><id>461</id><value>[ÆôÓÃ]</value></string>
-  <string><id>462</id><value>×ÖÄ»</value></string>
-  <string><id>463</id><value>±³¹â</value></string>
-  <string><id>464</id><value>ÁÁ¶È</value></string>
-  <string><id>465</id><value>¶Ô±È¶È</value></string>
-  <string><id>466</id><value>Ù¤Âë</value></string>
-  <string><id>467</id><value>ÀàÐÍ</value></string>
-  <string><id>468</id><value>ÒÆ¶¯ÏßÌõ¸Ä±ä²¥·Å¹¤¾ßÌõÎ»ÖÃ</value></string>
-  <string><id>469</id><value>²¥·Å¹¤¾ßÎ»ÖÃ</value></string>
-  <string><id>470</id><value>¸Ä»úÕß</value></string>
-  <string><id>471</id><value>¸Ä»úÐ¾Æ¬</value></string>
-  <string><id>472</id><value>ÊÓÆµ²¥·Å¹¤¾ßÌõ ³¬Ê±</value></string>
-  <string><id>473</id><value>¸ßÖÊÁ¿È¡Ñù</value></string>
-  <string><id>474</id><value>¹Ø</value></string>
-  <string><id>475</id><value>Ö»ÓÐÒôÀÖ</value></string>
-  <string><id>476</id><value>ÒôÀÖ&amp;ÊÓÆµ</value></string>
-  <string><id>477</id><value>²»ÄÜ¶ÁÈ¡²¥·ÅÁÐ±í</value></string>
-  <string><id>478</id><value>²¥·Å¹¤¾ßÌõ</value></string>
-  <string><id>479</id><value>Æ¤·ôºÍÓïÑÔ</value></string>
-  <string><id>480</id><value>ÓÃ»§½çÃæ</value></string>
-  <string><id>481</id><value>ÒôÆµÉèÖÃ</value></string>
-  <string><id>482</id><value>¹ØÓÚXBMC</value></string>
-  <string><id>483</id><value>×¨¼­</value></string>
-  <string><id>484</id><value>ÒÕÊõ¼Ò</value></string>
-  <string><id>485</id><value>É¾³ý×¨¼­</value></string>
-  <string><id>486</id><value>ÖØ¸´</value></string>
-  <string><id>487</id><value>ÖØ¸´µ¥Ê×</value></string>
-  <string><id>488</id><value>ÖØ¸´Ä¿Â¼²¥·ÅÁÐ±í</value></string>
-  <string><id>489</id><value>×Ô¶¯²¥·ÅÏÂ¸öÏîÄ¿</value></string>
-  <string><id>490</id><value>×Ô¶¯Ñ¡Ôñ¸èÇúµÄÁÐ±íºÍÍ¼±í</value></string>
-  <string><id>491</id><value>- Ê¹ÓÃ´óÍ¼±ê</value></string>
-  <string><id>492</id><value>Vobsubs×ÖÄ»±ÈÀý</value></string>
-  <string><id>493</id><value>¸ß¼¶Ñ¡Ïî(ÊÊºÏ×¨¼Ò£¡)</value></string>
-  <string><id>494</id><value>×ÜÌåÒôÁ¿</value></string>
-  <string><id>495</id><value>ÒÔ×ÀÃæµÄ½âÎö¶È²¥·ÅÓ°Æ¬</value></string>
-  <string><id>496</id><value>Ð£×¼</value></string>
-  <string><id>497</id><value>Òþ²ØÃ½ÌåÀ©Õ¹Ãû</value></string>
-  <string><id>498</id><value>ÅÅÐò£ºÀàÐÍ</value></string>
-  <string><id>499</id><value>²»ÄÜÁ¬½Óµ½ www.allmusic.com</value></string>
-  <string><id>500</id><value>ÏÂÔØ×¨¼­ÐÅÏ¢Ê§°Ü¡­</value></string>
-  <string><id>501</id><value>Ñ°ÕÒ×¨¼­Ãû¡­</value></string>
-  <string><id>502</id><value>¿ªÆô</value></string>
-  <string><id>503</id><value>Ã¦</value></string>
-  <string><id>504</id><value>¿Õ</value></string>
-  <string><id>505</id><value>¶ÁÈ¡Ã½ÌåÐÅÏ¢¡­</value></string>
-  <string><id>506</id><value>Ê¹ÓÃÄ¿Â¼Ãû³Æ×÷ÃèÊö</value></string>
-  <string><id>507</id><value>ÅÅÐò£ºÊ¹ÓÃÊý</value></string>
-  <string><id>508</id><value>²»Ê¹ÓÃ½Ý¾¶¼°É¨Ãé</value></string>
-  <string><id>509</id><value>»º´æ³ÌÐòÍ¼±ê</value></string>
-  <string><id>510</id><value>¿ªÆô¿ÉÊÓ»¯Ð§¹û</value></string>
-  <string><id>511</id><value>ÆôÓÃÊÓÆµÄ£Ê½×Ô¶¯ÇÐ»»¹¦ÄÜ</value></string>
-  <string><id>512</id><value>Æô¶¯½çÃæ</value></string>
-  <string><id>513</id><value>Ö÷½çÃæ</value></string>
-  <string><id>514</id><value>ÉèÖÃ½çÃæ</value></string>
-  <string><id>515</id><value>Á÷ÅÉ</value></string>
-  <string><id>516</id><value>ÎÄµµ¹ÜÀí</value></string>
-  <string><id>517</id><value>×î½ü²¥·ÅµÄ×¨¼­</value></string>
-  <string><id>518</id><value>ÔËÐÐ</value></string> 
-  <string><id>519</id><value>ÔËÐÐ·½Ê½</value></string> 
-  <string><id>520</id><value>±à¼­Èí¼þ±êÌâ</value></string>
-  <string><id>521</id><value>ºÏ¼­</value></string>
-  <string><id>522</id><value>ÒÆ³ýÔ´</value></string>
-
-  <string><id>588</id><value>È¡ÏûÎè»áÄ£Ê½</value></string>
-  <string><id>589</id><value>Îè»áÄ£Ê½</value></string>
-  <string><id>590</id><value>Ëæ»ú</value></string> 
-  <string><id>591</id><value>¹Ø</value></string> 
-  <string><id>592</id><value>µ¥Ê×</value></string> 
-  <string><id>593</id><value>È«²¿</value></string> 
-  <string><id>594</id><value>¹Ø</value></string> 
-  <string><id>595</id><value>ÖØ¸´£º¹Ø±Õ</value></string> 
-  <string><id>596</id><value>ÖØ¸´£ºµ¥Ê×</value></string> 
-  <string><id>597</id><value>ÖØ¸´£ºËùÓÐ</value></string> 
-
-  <string><id>600</id><value>Ñ¹ËõÒôÀÖCD</value></string>
-  <string><id>601</id><value>ÖÐµÈ</value></string>
-  <string><id>602</id><value>±ê×¼</value></string>
-  <string><id>603</id><value>¼«ºÃ</value></string>
-  <string><id>604</id><value>¹Ì¶¨ÂëÂÊ</value></string>
-  <string><id>605</id><value>Ñ¹Ëõ¡­</value></string>
-  <string><id>606</id><value>Òô¹ìÐòºÅ£º</value></string>
-  <string><id>607</id><value>µ½£º</value></string>
-  <string><id>608</id><value>²»ÄÜÑ¹ËõCD»òÒô¹ì</value></string>
-  <string><id>609</id><value>CDÑ¹ËõÂ·¾¶Ã»ÓÐÉèÖÃÔÚXboxMediaCenter.xml</value></string>
-  
-  <string><id>620</id><value>Ñ¹ËõÒôÀÖCD</value></string>
-  <string><id>621</id><value>±àÂëÆ÷</value></string>
-  <string><id>622</id><value>ÖÊÁ¿</value></string>
-  <string><id>623</id><value>ÂëÂÊ</value></string>
-  <string><id>624</id><value>°üÀ¨Òô¹ìÐòºÅ</value></string>
-  <string><id>625</id><value>ËùÓÐ¸èÇú</value></string>
-  
-  <string><id>629</id><value>ÏÔÊ¾Ä£Ê½</value></string>
-  <string><id>630</id><value>±ê×¼</value></string>
-  <string><id>631</id><value>·ÅËõÒÔÌîÂúÆÁÄ»</value></string>
-  <string><id>632</id><value>À­ÉìÎª 4:3</value></string>
-  <string><id>633</id><value>À­ÉìÎª 14:9</value></string>
-  <string><id>634</id><value>À­ÉìÎª 16:9</value></string>
-  <string><id>635</id><value>Ô­Ê¼³ß´ç</value></string>
-  <string><id>636</id><value>¶¨ÖÆ</value></string>
-  <string><id>637</id><value>»Ø·ÅÔöÒæ</value></string>
-  <string><id>638</id><value>»Ø·ÅÔöÒæÄ£Ê½</value></string>
-  <string><id>639</id><value>Ê¹ÓÃÒô¹ìÔöÒæµÈ¼¶</value></string>
-  <string><id>640</id><value>Ê¹ÓÃ×¨¼­ÔöÒæµÈ¼¶</value></string>
-  <string><id>641</id><value>Ç°¼¶·Å´óÆ÷ÒôÁ¿ - ÖØ¸´²¥·ÅµÄÎÄ¼þ</value></string>
-  <string><id>642</id><value>Ç°¼¶·Å´óÆ÷ÒôÁ¿ - ²»ÖØ¸´²¥·ÅµÄÎÄ¼þ</value></string>
-  <string><id>643</id><value>²¥·ÅÔöÒæÊ±ºöÂÔÏû²¨Ê§Õæ</value></string>
-  <string><id>644</id><value>ÐÞ¼ôºÚ±ß</value></string>
-  <string><id>645</id><value>ÐèÒª»º´æÒ»¸ö´óÎÄ¼þ£¬ÊÇ·ñ¼ÌÐø£¿</value></string>
-  <string><id>646</id><value>ÒÆ³ý±êÌâ</value></string>
-
-  <string><id>700</id><value>Çå³ýÒôÀÖ¿â</value></string>
-  <string><id>701</id><value>Çå³ýÒôÀÖ¿âÖÐµÄ¾ÉÎÄ¼þ</value></string>
-  <string><id>702</id><value>Ä¿Ç°Â·¾¶Ôø±»É¨Ãé¹ý¡£</value></string>
-  <string><id>703</id><value>°´ Yes ¸üÐÂÄ¿Ç°Â·¾¶ËùÓÐ¸èÇú¡£</value></string>
-  <string><id>704</id><value>°´ No Ö»ÔöÐÂ¸è¡£</value></string>
-  <string><id>705</id><value>ÍøÂç</value></string>
-  <string><id>706</id><value>HTTP´úÀí·þÎñÆ÷µØÖ·</value></string>
-  <string><id>707</id><value>HTTP´úÀí·þÎñÆ÷¶Ë¿Ú</value></string>
-  <string><id>708</id><value>ÆôÓÃHTTP´úÀí·þÎñÆ÷</value></string>
-  <string><id>709</id><value>XLink Kai ÕËºÅ</value></string>
-  <string><id>710</id><value>XLink Kai ÃÜÂë</value></string>
-  <string><id>711</id><value>ÍøÂçµØÖ·(IP)</value></string>
-  <string><id>712</id><value>ÎÞÐ§¶Ë¿Ú£¡±ØÐëÔÚ 1 ÖÁ 65535 Ö®¼ä¡£</value></string>
-  <string><id>713</id><value>HTTP´úÀí</value></string>
-  <string><id>714</id><value>XLink Kai</value></string>
-  <string><id>715</id><value>IPÉèÖÃ</value></string>
-  <string><id>716</id><value>×Ô¶¯(¶¯Ì¬·ÖÅä)</value></string>
-  <string><id>717</id><value>ÊÖ¶¯(¾²Ì¬·ÖÅä)</value></string>
-  <string><id>718</id><value>Ä¬ÈÏ(Dashboard)</value></string>
-  <string><id>719</id><value>- IP  µØÖ·</value></string>
-  <string><id>720</id><value>- ×ÓÍøÑÚÂë</value></string>
-  <string><id>721</id><value>- Ä¬ÈÏÍø¹Ø</value></string>
-  <string><id>722</id><value>- DNS·þÎñÆ÷</value></string>
-  <string><id>723</id><value>±£´æ&amp;ÖØÆô</value></string>
-  <string><id>724</id><value>ÎÞÐ§µØÖ·£¡ÕýÈ·¸ñÊ½Îª£ºAAA.BBB.CCC.DDD</value></string>
-  <string><id>725</id><value>´Ó0µ½255Ö®¼ä</value></string>
-  <string><id>726</id><value>¸Ä±äÎ´±£´æ£¬¼ÌÐø²»±£´æÂð£¿</value></string>
-  <string><id>727</id><value>Web·þÎñÆ÷</value></string>
-  <string><id>728</id><value>FTP·þÎñÆ÷</value></string>
-  <string><id>729</id><value>»¥ÁªÍøÊ±¼ä</value></string>
-  <string><id>730</id><value>Web·þÎñÆ÷¶Ë¿Ú</value></string>
-  <string><id>731</id><value>ÍøÂçÐ£Ê±·þÎñÆ÷µØÖ·</value></string>
-  <string><id>732</id><value>±£´æ&amp;Ó¦ÓÃ</value></string>
-  <string><id>733</id><value>Web·þÎñÆ÷ÃÜÂë</value></string>
-  <string><id>734</id><value>ÎÞÃÜÂë</value></string>
-  <string><id>735</id><value>- ×Ö·û¼¯</value></string>
-  <string><id>736</id><value>- ×ÖÐÎ</value></string>
-  <string><id>737</id><value>- ÑÕÉ«</value></string>
-  <string><id>738</id><value>³£¹æ</value></string>
-  <string><id>739</id><value>´ÖÌå</value></string>
-  <string><id>740</id><value>Ð±Ìå</value></string>
-  <string><id>741</id><value>´ÖÐ±Ìå</value></string>
-  <string><id>742</id><value>°×É«</value></string>
-  <string><id>743</id><value>»ÆÉ«</value></string>
-  <string><id>744</id><value>ÎÄ¼þ</value></string>
-  <string><id>745</id><value>Ä¿Ç°Í¼Ê¾ÎÞ¼ºËÑÑ°×ÊÑ¶</value></string>
-  <string><id>746</id><value>ÇÐ»»µ½ÎÄ¼þÍ¼Ê¾</value></string>
-  <string><id>747</id><value>Í¼ÏñÔØÈë´íÎó</value></string>
-  <string><id>748</id><value>±à¼­Â·¾¶</value></string>
-  <string><id>749</id><value>Ìí¼Ó¹²Ïí</value></string>
-  <string><id>750</id><value>È·¶¨Âð£¿</value></string>
-  <string><id>751</id><value>ÒÆ³ý¹²Ïí</value></string>
-  <string><id>752</id><value>±à¼­¹²ÏíÂ·¾¶</value></string>
-  <string><id>753</id><value>±à¼­¹²ÏíÃû³Æ</value></string>
-  <string><id>754</id><value>ÐÂÔö³ÌÐòÁ¬½Ó</value></string>
-  <string><id>755</id><value>±à¼­³ÌÐòÂ·¾¶</value></string>
-  <string><id>756</id><value>±à¼­³ÌÐòÃû³Æ</value></string>
-  <string><id>757</id><value>±à¼­Â·¾¶Éî¶È</value></string>
-  <string><id>758</id><value>É¾³ý³ÌÐòÁ¬½Ó</value></string>  
-  <string><id>759</id><value>ÏÔÊ¾£º´óÁÐ±í</value></string>
-  <string><id>760</id><value>»ÆÉ«</value></string>
-  <string><id>761</id><value>°×É«</value></string>
-  <string><id>762</id><value>À¶É«</value></string>
-  <string><id>763</id><value>ÁÁÂÌ</value></string>
-  <string><id>764</id><value>´äÂÌ</value></string>
-  <string><id>765</id><value>ÇàÉ«</value></string>
-  <string><id>766</id><value>±£Áô</value></string>
-  <string><id>767</id><value>±£Áô</value></string>
-  <string><id>768</id><value>±£Áô</value></string>
-  <string><id>769</id><value>±£Áô</value></string>
-  <string><id>770</id><value>´íÎó%i£º²»ÄÜ¹²Ïí</value></string>
-  <string><id>771</id><value>FTP ·þÎñÆ÷ÏÞ¶¨¹¤×÷ÔÚFATX¸ñÊ½</value></string>
-  <string><id>772</id><value>ÒôÆµÓ²¼þ</value></string>
-  <string><id>773</id><value>ËÑË÷ÖÐ</value></string>
-  <string><id>774</id><value>»ÃµÆÆ¬ÎÄ¼þ¼Ð</value></string>
- 
-  <string><id>998</id><value>XLink KAI</value></string>
-  <string><id>999</id><value>ÔÚÏßÓÎÏ·</value></string>
-  <string><id>1000</id><value>ÆÁÄ»±£»¤Ô¤ÀÀ</value></string>
-  <string><id>1001</id><value>ÎÞ·¨Á¬½Ó</value></string> 
-  <string><id>1002</id><value>XBMCÎÞ·¨Á¬½Óµ½¸ÃÍøÉÏÁÚ¾Ó£¡</value></string> 
-  <string><id>1003</id><value>Õâ¿ÉÄÜÊÇÓÉÓÚÍøÂçÃ»ÓÐÁ¬½Ó¡£</value></string> 
-  <string><id>1004</id><value>¿ÉÒÔÓÃÆäËû·½Ê½À´Ìí¼ÓËüÂð£¿</value></string> 
-  <string><id>1005</id><value>¹²ÏíÃû</value></string> 
-  <string><id>1006</id><value>IPµØÖ·</value></string> 
-  <string><id>1007</id><value>Ìí¼ÓÍøÉÏÁÚ¾Ó</value></string> 
-  <string><id>1008</id><value>Ð­Òé</value></string> 
-  <string><id>1009</id><value>·þÎñÆ÷µØÖ·</value></string> 
-  <string><id>1010</id><value>·þÎñÆ÷Ãû³Æ</value></string> 
-  <string><id>1011</id><value>Ô¶³ÌÂ·¾¶</value></string> 
-  <string><id>1012</id><value>¹²ÏíÎÄ¼þ¼Ð</value></string> 
-  <string><id>1013</id><value>¶Ë¿Ú</value></string> 
-  <string><id>1014</id><value>ÕËºÅ</value></string> 
-  <string><id>1015</id><value>ÍøÂç·þÎñÆ÷</value></string> 
-  <string><id>1016</id><value>ÊäÈë¸Ã·þÎñÆ÷µÄÍøÂçµØÖ·</value></string> 
-  <string><id>1017</id><value>ÊäÈë·þÎñÆ÷Ô¶³ÌÂ·¾¶</value></string> 
-  <string><id>1018</id><value>ÊäÈë¶Ë¿ÚºÅ</value></string> 
-  <string><id>1019</id><value>ÊäÈëÕËºÅ</value></string> 
-  <string><id>1020</id><value>Ìí¼Ó%sÄ¿Â¼</value></string> 
-  <string><id>1021</id><value>ÊäÈë»òÑ¡ÔñÄ¿Â¼¡£</value></string> 
-  <string><id>1022</id><value>Îª¸ÃÄ¿Â¼ÃüÃû¡£</value></string> 
-  <string><id>1023</id><value>ä¯ÀÀÄ¿Â¼</value></string> 
-  <string><id>1024</id><value>ä¯ÀÀ</value></string> 
-  <string><id>1025</id><value>ÎÞ·¨»ñµÃÄ¿Â¼ÐÅÏ¢¡£</value></string> 
-  <string><id>1026</id><value>Ìí¼ÓÄ¿Â¼</value></string> 
-  <string><id>1027</id><value>±à¼­Ä¿Â¼</value></string> 
-  <string><id>1028</id><value>±à¼­%sÄ¿Â¼</value></string> 
-  <string><id>1029</id><value>ÊäÈëÐÂµÄ±êÇ©</value></string>
-  <string><id>1030</id><value>¾µÏñ</value></string>
-  <string><id>1031</id><value>¾µÏñÄ¿Â¼</value></string>
-  <string><id>1032</id><value>Ìí¼ÓÒ»¸öÍøÉÏÁÚ¾Ó</value></string>
-    
-  <string><id>1200</id><value>SMB ¹²ÏíÉèÖÃ</value></string>
-  <string><id>1201</id><value>SMB IPµØÖ·</value></string>
-  <string><id>1202</id><value>SMB ¹¤×÷×é</value></string>
-  <string><id>1203</id><value>SMB ÕËºÅ</value></string>
-  <string><id>1204</id><value>SMB ÃÜÂë</value></string>
-  <string><id>1205</id><value>SMB ¹²ÏíÃû</value></string>
-  <string><id>1206</id><value>SMB ¹²ÏíÈº</value></string>
-  <string><id>1207</id><value>SMB WINS-·þÎñÆ÷</value></string>
-  <string><id>1208</id><value>ÉèÖÃÄ£Ê½</value></string>
-  <string><id>1209</id><value>SMB ¹²ÏíÉèÖÃ³É¹¦£¡</value></string>
-  <string><id>1210</id><value>É¾³ý</value></string>
-  <string><id>1211</id><value>ÒôÀÖ</value></string>
-  <string><id>1212</id><value>ÊÓÆµ</value></string>
-  <string><id>1213</id><value>Í¼Æ¬</value></string>
-  <string><id>1214</id><value>ÎÄ¼þ</value></string>
-  <string><id>1215</id><value>ÒôÀÖ&amp;ÊÓÆµ </value></string>
-  <string><id>1216</id><value>ÒôÀÖ&amp;Í¼Æ¬</value></string>
-  <string><id>1217</id><value>ÒôÀÖ&amp;ÎÄ¼þ</value></string>
-  <string><id>1218</id><value>ÊÓÆµ&amp;Í¼Æ¬</value></string>
-  <string><id>1219</id><value>ÊÓÆµ&amp;ÎÄ¼þ</value></string>
-  <string><id>1220</id><value>Í¼Æ¬&amp;ÎÄ¼þ</value></string>
-  <string><id>1221</id><value>ÒôÀÖ&amp;ÊÓÆµ&amp;Í¼Æ¬</value></string>
-  <string><id>1222</id><value>ÒôÀÖ&amp;ÊÓÆµ&amp;Í¼Æ¬&amp;ÎÄ¼þ</value></string>
-  <string><id>1223</id><value>½ûÓÃ</value></string>
-  <string><id>1224</id><value>ÆÕÍ¨ÓÃ»§</value></string>
-  <string><id>1225</id><value>¸ß¼¶ÓÃ»§</value></string>
-  <string><id>1226</id><value>ÎÄ¼þ&amp;ÒôÀÖ&amp;ÊÓÆµ</value></string>
-  <string><id>1227</id><value>ÎÄ¼þ&amp;Í¼Æ¬&amp;ÒôÀÖ</value></string>
-  <string><id>1228</id><value>ÎÄ¼þ&amp;Í¼Æ¬&amp;ÊÓÆµ</value></string>
-  <string><id>1229</id><value>ÒôÀÖ&amp;³ÌÐò</value></string>
-  <string><id>1230</id><value>ÊÓÆµ&amp;³ÌÐò</value></string>
-  <string><id>1231</id><value>Í¼Æ¬&amp;³ÌÐò</value></string>
-  <string><id>1232</id><value>ÒôÀÖ&amp;ÊÓÆµ &amp;Í¼Æ¬&amp;³ÌÐò</value></string>
-  <string><id>1233</id><value>³ÌÐò&amp;ÊÓÆµ &amp;ÒôÀÖ</value></string>
-  <string><id>1234</id><value>³ÌÐò&amp;Í¼Æ¬ &amp;ÒôÀÖ</value></string>
-  <string><id>1235</id><value>³ÌÐò&amp;Í¼Æ¬ &amp;ÊÓÆµ</value></string>
-  <string><id>1236</id><value>- ¹²Ïí¶ËÁ¬ÏßÓâÊ±</value></string>
-
-  <string><id>1245</id><value>FTP ÕËºÅ</value></string>
-  <string><id>1246</id><value>FTP ÃÜÂë</value></string>
-  <string><id>1247</id><value>FTP ·þÎñÆ÷ÕËºÅºÍÃÜÂëÉèÖÃ³É¹¦£¡</value></string>
-
-  <string><id>1250</id><value>×Ô¶¯¼ì²â</value></string>
-  <string><id>1251</id><value>XBOX ×Ô¶¯¼ì²â</value></string>
-  <string><id>1252</id><value>êÇ³Æ</value></string>
-  <string><id>1253</id><value>ÔÚÎÒµÄÎÄ¼þÖÐ½¨Á¢FTPÁ¬½Ó</value></string>
-  <string><id>1254</id><value>È·ÈÏÁ¬½Ó</value></string>
-  <string><id>1255</id><value>·¢ËÍ FTP ÕËºÅºÍÃÜÂë</value></string>
-  <string><id>1256</id><value>Ping¼ä¸ô</value></string>
-  <string><id>1257</id><value>ÊÇ·ñÁ¬½Óµ½×Ô¶¯·¢ÏÖµÄXBOX£¿</value></string>
-
-  <string><id>1396</id><value>Æ¯Á÷</value></string>
-  <string><id>1397</id><value>ºÍ</value></string>
-  <string><id>1398</id><value>½á±ù</value></string>
-  <string><id>1399</id><value>Íí¼ä</value></string>
-  <string><id>1400</id><value>¾Ö²¿</value></string>
-  <string><id>1401</id><value>À×Óê</value></string>
-  <string><id>1402</id><value>À×</value></string>
-  <string><id>1403</id><value>Òõ³Á</value></string>
-  <string><id>1404</id><value>±©</value></string>
-  <string><id>1405</id><value>ÔÚ</value></string>
-  <string><id>1406</id><value>Õâ</value></string>
-  <string><id>1407</id><value>ÇøÓòÐÔ</value></string>
-  <string><id>1408</id><value>±ù</value></string>
-  <string><id>1409</id><value>Çå³º</value></string>
-  <string><id>1410</id><value>ÎÞ·ç</value></string>
-
-  <string><id>2050</id><value>ÔËÐÐÊ±¼ä£º</value></string>
-
-  <string><id>4501</id><value>LCDÀàÐÍ</value></string>
-
-  <string><id>10000</id><value>Ê×Ò³</value></string>
-  <string><id>10001</id><value>ÎÒµÄ³ÌÐò</value></string>
-  <string><id>10002</id><value>ÎÒµÄÍ¼Æ¬</value></string>
-  <string><id>10003</id><value>ÎÒµÄÎÄ¼þ</value></string>
-  <string><id>10004</id><value>ÉèÖÃ</value></string>
-  <string><id>10005</id><value>ÎÒµÄÒôÀÖ</value></string>
-  <string><id>10006</id><value>ÎÒµÄÊÓÆµ</value></string>
-  <string><id>10007</id><value>ÏµÍ³ÐÅÏ¢</value></string>
-  <string><id>10008</id><value>ÉèÖÃ-&gt;Ò»°ã</value></string>
-  <string><id>10009</id><value>ÉèÖÃ-&gt;ÆÁÄ»</value></string>
-  <string><id>10010</id><value>ÉèÖÃ-&gt;ÓÃ»§½çÃæ-&gt;½çÃæ Ð£×¼</value></string>
-  <string><id>10011</id><value>ÉèÖÃ-&gt;ÎÒµÄÊÓÆµ-&gt;ÆÁÄ» Ð£×¼</value></string>
-  <string><id>10012</id><value>ÉèÖÃ-&gt;ÎÒµÄÍ¼Æ¬</value></string>
-  <string><id>10013</id><value>ÉèÖÃ-&gt;ÎÒµÄ³ÌÐò</value></string>
-  <string><id>10014</id><value>ÉèÖÃ-&gt;ÌìÆøÔ¤±¨</value></string>
-  <string><id>10015</id><value>ÉèÖÃ-&gt;ÎÒµÄÒôÀÖ</value></string>
-  <string><id>10016</id><value>ÉèÖÃ-&gt;ÏµÍ³ÉèÖÃ</value></string>
-  <string><id>10017</id><value>ÉèÖÃ-&gt;ÎÒµÄÊÓÆµ</value></string>
-  <string><id>10018</id><value>ÉèÖÃ-&gt;ÍøÂçÉèÖÃ</value></string>
-  <string><id>10019</id><value>ÉèÖÃ-&gt;ÓÃ»§½çÃæ</value></string>
-  <string><id>10020</id><value>½Å±¾</value></string>
-  <string><id>10021</id><value>ÎÒµÄÊÓÆµ/Á÷ÅÉ</value></string>
-  <string><id>10022</id><value>ÎÒµÄÊÓÆµ/ÑÝÔ±</value></string>
-  <string><id>10023</id><value>ÎÒµÄÊÓÆµ/Äê</value></string>
-  <string><id>10025</id><value>ÎÒµÄÊÓÆµ/±êÌâ</value></string>
-  <string><id>10028</id><value>ÎÒµÄÊÓÆµ/²¥·ÅÁÐ±í</value></string>
-  <string><id>10034</id><value>ÉèÖÃ-&gt;ÓÃ»§ÉèÖÃ</value></string>
-  <string><id>10100</id><value>ÊÇ/·ñ</value></string>
-  <string><id>10101</id><value>½ø³Ì</value></string>
-  <string><id>10500</id><value>ÎÒµÄÒôÀÖ/²¥·ÅÁÐ±í</value></string>
-  <string><id>10501</id><value>ÎÒµÄÒôÀÖ/ÎÄ¼þ</value></string>
-  <string><id>10502</id><value>ÎÒµÄÒôÀÖ/ÒôÀÖ¿â</value></string>
-  <string><id>10503</id><value>ÎÒµÄÒôÀÖ/ÅÅÐÐÇ° 100</value></string>
-  <string><id>10504</id><value>ÅÅÐÐÇ° 100 ¸èÇú</value></string> 
-  <string><id>10505</id><value>ÅÅÐÐÇ° 100 ×¨¼­</value></string> 
-  <string><id>10506</id><value>ÎÒµÄ³ÌÐò</value></string>
-  <string><id>10507</id><value>ÏµÍ³ÉèÖÃ</value></string>
-  <string><id>10508</id><value>ÌìÆøÔ¤±¨</value></string>
-  <string><id>10509</id><value>ÍøÂçÓÎÏ·</value></string>
-  <string><id>10510</id><value>¹¦ÄÜÀ©Õ¹</value></string>
-  <string><id>10511</id><value>ÏµÍ³ÐÅÏ¢</value></string>
-  <string><id>10512</id><value>ÎÒµÄÒôÀÖ - ×¨¼­</value></string>
-  <string><id>10513</id><value>ÎÒµÄÒôÀÖ - ÒÕÊõ¼Ò</value></string>
-  <string><id>10514</id><value>ÎÒµÄÒôÀÖ - Á÷ÅÉ</value></string>
-  <string><id>10515</id><value>ÎÒµÄÒôÀÖ - ÅÅÐÐÇ° 100</value></string>
-  <string><id>10516</id><value>ÎÒµÄÒôÀÖ - ×ÊÁÏ</value></string>
-  <string><id>10517</id><value>ÎÒµÄÒôÀÖ - ÕýÔÚ²¥·ÅµÄ...</value></string>
-  <string><id>10518</id><value>ÎÒµÄÊÓÆµ - ÑÝÔ±</value></string>
-  <string><id>10519</id><value>ÎÒµÄÊÓÆµ - Á÷ÅÉ</value></string>
-  <string><id>10520</id><value>ÎÒµÄÊÓÆµ - ±êÌâ</value></string>
-  <string><id>10521</id><value>ÎÒµÄÊÓÆµ - Äê·Ý</value></string>
-  <string><id>10522</id><value>ÎÒµÄÊÓÆµ - ²¥·ÅÁÐ±í</value></string>
-  <string><id>10523</id><value>×¨¼­ÐÅÏ¢</value></string>
-  <string><id>10524</id><value>Ó°Æ¬ÐÅÏ¢</value></string>
-  <string><id>12000</id><value>Ñ¡Ôñ¶Ô»°¿ò</value></string>
-  <string><id>12001</id><value>ÎÒµÄÒôÀÖ/ÐÅÏ¢</value></string>
-  <string><id>12002</id><value>È·ÈÏ¶Ô»°¿ò</value></string>
-  <string><id>12003</id><value>ÎÒµÄÊÓÆµ/ÐÅÏ¢</value></string>
-  <string><id>12004</id><value>ÎÒµÄ½Å±¾/ÐÅÏ¢</value></string>
-  <string><id>12005</id><value>È«ÆÁÊÓÆµ</value></string>
-  <string><id>12006</id><value>ÒôÆµ¿ÉÊÓ»¯Ð§¹û</value></string>
-  <string><id>12007</id><value>ÎÒµÄÍ¼Æ¬/»ÃµÆÆ¬</value></string>
-  <string><id>12008</id><value>ÎÄ¼þ¶ÑÕ»</value></string>
-  <string><id>12009</id><value>ÖØÐÂÉú³É¼ìË÷¡­</value></string>
-  <string><id>12010</id><value>·µ»Øµ½ÎÒµÄÒôÀÖ</value></string> 
-  <string><id>12011</id><value>·µ»Øµ½ÎÒµÄÊÓÆµ</value></string> 
-  <string><id>12012</id><value>¸üÐÂ½ðÊÖÖ¸ÁÐ±í</value></string> 
-  <string><id>12013</id><value>½ðÊÖÖ¸</value></string> 
-  <string><id>12014</id><value>Ã»ÓÐÕÒµ½½ðÊÖÖ¸</value></string> 
-  <string><id>12015</id><value>½ðÊÖÖ¸ÉèÖÃ</value></string> 
-  <string><id>12016</id><value>ËùÓÐ½ðÊÖÖ¸ÐÅÏ¢¶ªÊ§£¬Çë¸üÐÂ½ðÊÖÖ¸ÁÐ±í¡£</value></string> 
-  <string><id>12017</id><value>×Ô¶¯´ÓÉÏ´ÎÖÐ¶Ï´¦²¥·Å</value></string>
-  <string><id>12018</id><value>·ñ</value></string>
-  <string><id>12019</id><value>ÊÇ</value></string>
-  <string><id>12020</id><value>Ñ¯ÎÊ</value></string>
-  <string><id>12021</id><value>´ÓÍ·¿ªÊ¼²¥·Å</value></string>
-  <string><id>12022</id><value>´ÓÉÏ´ÎÖÐ¶Ï´¦²¥·Å</value></string>
-
-  <string><id>12310</id><value>0</value></string>
-  <string><id>12311</id><value>1</value></string>
-  <string><id>12312</id><value>2</value></string>
-  <string><id>12313</id><value>3</value></string>
-  <string><id>12314</id><value>4</value></string>
-  <string><id>12315</id><value>5</value></string>
-  <string><id>12316</id><value>6</value></string>
-  <string><id>12317</id><value>7</value></string>
-  <string><id>12318</id><value>8</value></string>
-  <string><id>12319</id><value>9</value></string>
-  <string><id>12320</id><value>c</value></string>
-  <string><id>12321</id><value>ok</value></string>
-  <string><id>12322</id><value>*</value></string>
-  <string><id>12324</id><value>XBMC¹ÜÀíÔ±Ëø¶¨</value></string>
-  <string><id>12325</id><value>ÒÑËø¶¨£¡ÊäÈëÃÜÂë¡­</value></string>
-  <string><id>12326</id><value>ÊäÈëÃÜÂë</value></string>
-  <string><id>12327</id><value>ÊäÈë¹ÜÀíÔ±ÃÜÂë</value></string>
-  <string><id>12328</id><value>ÊäÈë½âËøÃÜÂë</value></string> 
-  <string><id>12329</id><value>»ò°´ C È¡Ïû</value></string>
-  <string><id>12330</id><value>ÊäÈëXBOXÊÖ±ú°´¼üË³Ðò</value></string>
-  <string><id>12331</id><value>°´StartÈ·ÈÏ, »ò°´BackÈ¡Ïû</value></string>
-  <string><id>12332</id><value>ÉèÖÃËø¶¨</value></string>
-  <string><id>12333</id><value>½â³ýËø¶¨</value></string>
-  <string><id>12334</id><value>ÖØÐÂËø¶¨</value></string>
-  <string><id>12335</id><value>ÒÆ³ýËø¶¨</value></string>
-  <string><id>12336</id><value>Ñ¡ÔñËø¶¨ÀàÐÍ£º</value></string>
-  <string><id>12337</id><value>Êý×ÖÃÜÂë</value></string>
-  <string><id>12338</id><value>ÊÖ±ú°´¼üË³Ðò</value></string>
-  <string><id>12339</id><value>ÎÄ×ÖÃÜÂë</value></string>
-  <string><id>12340</id><value>ÊäÈëÐÂÃÜÂë</value></string>
-  <string><id>12341</id><value>È·ÈÏÐÂÃÜÂë</value></string>
-  <string><id>12342</id><value>ÃÜÂë²»ÕýÈ·,</value></string>
-  <string><id>12343</id><value>ÖØÊÔ´ÎÊý </value></string>
-  <string><id>12344</id><value>ÊäÈëÃÜÂë²»ÕýÈ·£¡</value></string>
-  <string><id>12345</id><value>¾Ü¾ø¶ÁÈ¡</value></string>
-  <string><id>12346</id><value>ÒÑ´ïÃÜÂëÖØÊÔ´ÎÊýÏÞÖÆ£¡</value></string>
-  <string><id>12347</id><value>XBOX½«Òª×Ô¶¯¹Ø±Õ£¡</value></string>
-  <string><id>12348</id><value>¾Ü¾ø·ÃÎÊ</value></string>
-  <string><id>12349</id><value>¼Ç×¡¹ÜÀíÔ±ÃÜÂëÖ±µ½ÏÂ´Î¿ª»ú£¿</value></string>
-  <string><id>12350</id><value>(ÐÞ¸ÄÏµÍ³ÅäÖÃÀïµÄÈÎºÎÏîÄ¿</value></string>
-  <string><id>12351</id><value>½«×Ô¶¯ÆôÓÃÖ÷»úËø¶¨¹¦ÄÜ£¡)</value></string>
-  <string><id>12352</id><value>ÊäÈë¹ÜÀíÔ±ÃÜÂë²¢°´StartÈ·¶¨</value></string>
-  <string><id>12353</id><value>ÖØÐÂÉÏËø</value></string>
-  <string><id>12354</id><value>½â³ýÎÄ¼þ¼ÐËøÖ±µ½ÏÂ´Î¿ª»ú£¿</value></string>
-  <string><id>12355</id><value>×Ô¶¯¶ÔÎÄ¼þ¼ÐÉÏËø¡£)</value></string>
-  <string><id>12356</id><value>¸ü¸ÄËø¶¨</value></string>
-  <string><id>12357</id><value>¹²ÏíËø¶¨</value></string>
-  <string><id>12358</id><value>ÃÜÂë²»ÄÜÎª¿Õ£¬ÇëÖØÊÔ£¡</value></string>
-  <string><id>12360</id><value>Ö÷»úËø¶¨</value></string>
-  <string><id>12361</id><value>×î¶àÖØÊÔ´ÎÊý</value></string>
-  <string><id>12362</id><value>ÔÊÐí¹Ø»ú</value></string>
-  <string><id>12363</id><value>¹²Ïí±£»¤</value></string>
-  <string><id>12364</id><value>ÃÜÂë·½Ê½</value></string>
-  <string><id>12365</id><value>¹ÜÀíÔ±ÃÜÂë</value></string>
-  <string><id>12366</id><value>ÃÜÂë·½Ê½¸Ä±ä¡£ÐÂµÄ¹ÜÀíÔ±ÃÜÂëÎª£º</value></string>
-  <string><id>12367</id><value>¹ÜÀíÔ±ÃÜÂë´íÎó£¡</value></string>
-  <string><id>12368</id><value>ÇëÊäÈëÕýÈ·µÄ¹ÜÀíÔ±ÃÜÂë£¡</value></string>
-  <string><id>12369</id><value>XBMC Æô¶¯Ëø¶¨</value></string>
-  <string><id>12370</id><value>ÃÜÂë·½Ê½¸Ä±ä£¬µ«Ã»ÓÐÉèÖÃ¹ÜÀíÔ±ÃÜÂë£¡</value></string>
-  <string><id>12371</id><value>ÇëÉèÖÃÒ»¸öÐÂµÄ¹ÜÀíÔ±ÃÜÂë£¡</value></string>
-  <string><id>12372</id><value>Ëø¶¨ÉèÖÃ&amp;ÎÒµÄÎÄ¼þ</value></string>
-  <string><id>12373</id><value>ÉèÖÃ&amp;ÎÒµÄÎÄ¼þ</value></string>
-  <string><id>12374</id><value>Ëø¶¨Ã½ÌåÎÄ¼þ</value></string>
-  <string><id>12375</id><value>¹ÜÀíÔ±Ä£Ê½</value></string>
-  <string><id>12376</id><value>×öÎªËùÓÐÊÓÆµµÄÄ¬ÈÏÉèÖÃ</value></string> 
-  <string><id>12377</id><value>½«Òª³õÊ¼»¯ËùÓÐÅäÖÃ</value></string> 
-  <string><id>12378</id><value>Í¼Æ¬ÏÔÊ¾Ê±¼ä</value></string> 
-  <string><id>12379</id><value>Ê¹ÓÃÒÆ¶¯ºÍËõ·ÅÌØÐ§</value></string> 
-  <string><id>12380</id><value>ÔÚPALÖÆÊ½²¥·ÅNTSCÊÓÆµ</value></string> 
-  <string><id>12381</id><value>ÔÚNTSCÖÆÊ½²¥·ÅPALÊÓÆµ</value></string> 
-  <string><id>12382</id><value>ÒÔPAL60ÖÆÊ½²¥·ÅNTSCÊÓÆµ</value></string> 
-  <string><id>12383</id><value>12Ð¡Ê±ÖÆ</value></string> 
-  <string><id>12384</id><value>24Ð¡Ê±ÖÆ</value></string> 
-  <string><id>12385</id><value>ÈÕ/ÔÂ</value></string> 
-  <string><id>12386</id><value>ÔÂ/ÈÕ</value></string> 
-  <string><id>12387</id><value>ÖØÐÂÉú³ÉÊý¾Ý¿â</value></string>
-
-  <string><id>12390</id><value>ÏµÍ³Æô¶¯Ê±¼ä</value></string>
-  <string><id>12391</id><value>·ÖÖÓ</value></string>
-  <string><id>12392</id><value>Ð¡Ê±</value></string>
-  <string><id>12393</id><value>Ìì</value></string>
-  <string><id>12394</id><value>ÀÛ¼Æ¿ª»úÊ±¼ä</value></string>
-  
-  <string><id>12600</id><value>ÎÒµÄÌìÆø</value></string>
-
-  <string><id>12900</id><value>ÆÁÄ»±£»¤</value></string>
-  <string><id>12901</id><value>È«ÆÁ OSD</value></string>
-
-  <string><id>13000</id><value>ÏµÍ³</value></string>
-  <string><id>13001</id><value>Á¢¼´¹Ø±ÕÓ²ÅÌ</value></string>
-  <string><id>13002</id><value>Ö»ÓÐÊÓÆµ</value></string>
-  <string><id>13003</id><value>- ÑÓ³Ù</value></string>
-  <string><id>13004</id><value>- ×îÐ¡Ó°ÒôÎÄ¼þÊ±³¤</value></string>
-  <string><id>13005</id><value>¹Ø»ú</value></string>
-  <string><id>13006</id><value>Dashboard</value></string>
-
-  <string><id>13100</id><value>ÉÁË¸¹ýÂË</value></string>
-  <string><id>13150</id><value>Ó²ÅÌÔ¿³×£º</value></string>
-  <string><id>13151</id><value>Ó²ÅÌÎÂ¶È£º</value></string>
-  <string><id>13152</id><value>DVD ÐÍºÅ£º</value></string>
-  <string><id>13153</id><value>DVD ¹Ì¼þ°æ±¾£º</value></string>
-  <string><id>13154</id><value>Ó²ÅÌÐÍºÅ£º</value></string>
-  <string><id>13155</id><value>Ó²ÅÌÐòÁÐºÅ£º</value></string>
-  <string><id>13156</id><value>Ó²ÅÌ¹Ì¼þ°æ±¾£º</value></string>
-  <string><id>13157</id><value>Ó²ÅÌÃÜÂë£º</value></string>
-  <string><id>13158</id><value>Ó²ÅÌËø×´Ì¬£º</value></string>
-  <string><id>13159</id><value>×ÓÍøÑÚÂë£º</value></string>
-  <string><id>13160</id><value>Íø¹ØµØÖ·£º</value></string>
-  <string><id>13161</id><value>DNS·þÎñÆ÷µØÖ·£º</value></string>
-  <string><id>13162</id><value>ÎÞ·¨¶ÁÈ¡ÐÅÏ¢</value></string>
-  <string><id>13163</id><value>ÓÎÏ·¸ËÔÚ¶Ë¿Ú£º</value></string>
-  <string><id>13164</id><value>¼üÅÌÔÚ¶Ë¿Ú£º</value></string>
-  <string><id>13165</id><value>Êó±êÔÚ¶Ë¿Ú£º</value></string>
-  <string><id>13166</id><value>¶úÂóÔÚ¶Ë¿Ú£º</value></string>
-  <string><id>13167</id><value>¼ÇÒä¿¨ÔÚ¶Ë¿Ú£º</value></string>
-  <string><id>13168</id><value>Ò£¿ØÆ÷ÔÚ¶Ë¿Ú£º</value></string>
-  <string><id>13169</id><value>ºöÂÔCDÑ¡ÔñÆ÷</value></string> 
-  <string><id>13170</id><value>´Ó²»</value></string> 
-  <string><id>13171</id><value>Á¢¼´</value></string> 
-  <string><id>13172</id><value>¸ô%iÃëÒÔºó</value></string> 
-
-  <string><id>13200</id><value>Ô¤´æÉèÖÃ</value></string>
-  <string><id>13201</id><value>É¾³ýÔ¤´æÉèÖÃ'%s'£¿</value></string>
-  <string><id>13202</id><value>±£´æµ±Ç°ÉèÖÃÎªÔ¤´æÉèÖÃ¡­</value></string>
-  <string><id>13203</id><value>Ô¤´æÉèÖÃ'%s'ÔØÈë³É¹¦</value></string>
-  <string><id>13204</id><value>×î½üÔØÈëµÄÔ¤´æÉèÖÃ£º</value></string>
-  <string><id>13205</id><value>Î´Öª</value></string>
-  <string><id>13206</id><value>¸²¸Ç</value></string>
-  <string><id>13207</id><value>¸²¸ÇÅäÖÃÎÄ¼þ'%s'£¿</value></string>
-  <string><id>13208</id><value>ÄÖÁå</value></string>
-  <string><id>13209</id><value>ÄÖÁå¼ä¸ô(·ÖÖÓ)</value></string>
-  <string><id>13210</id><value>ÄÖÁåÆô¶¯£¬%i·ÖÖÓµ¹¼ÆÊ±¡£</value></string>
-  <string><id>13211</id><value>ÏìÁå£¡</value></string>
-  <string><id>13212</id><value>ÄÖÁåÈ¡Ïû£¬Ê£Óà%i·Ö%iÃë¡£</value></string>
-
-
-  <string><id>13249</id><value>Ñ¡ÔñRARÎÄ¼þÖÐµÄ×ÖÄ»</value></string>
-  <string><id>13250</id><value>Ñ¡Ôñ×ÖÄ»¡­</value></string>
-  <string><id>13251</id><value>ÒÆ¶¯¸ÃÏîÄ¿</value></string> 
-  <string><id>13252</id><value>½«ÏîÄ¿ÒÆ¶¯ÖÁ´Ë</value></string> 
-  <string><id>13253</id><value>È¡ÏûÒÆ¶¯</value></string> 
-
-  <string><id>13270</id><value>Ó²¼þ£º</value></string>
-  <string><id>13271</id><value>ÖÐÑë´¦ÀíÆ÷ËÙ¶È£º</value></string>
-  <string><id>13274</id><value>XboxÒÑ¾­ÁªÍø£¬µ«ÊÇÃ»ÓÐÉèÖÃDNS£¡</value></string>
-  <string><id>13275</id><value>Ó²ÅÌ</value></string>
-  <string><id>13276</id><value>DVD-ROM</value></string>
-  <string><id>13277</id><value>´æ´¢Æ÷</value></string>
-  <string><id>13278</id><value>Ä¬ÈÏ</value></string>
-  <string><id>13279</id><value>ÍøÂç</value></string>
-  <string><id>13280</id><value>ÊÓÆµ</value></string>
-  <string><id>13281</id><value>Ó²¼þ</value></string>
-  <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>ºËÐÄ°æ±¾£º</value></string>
-  <string><id>13284</id><value>ÖÐÑë´¦ÀíÆ÷ËÙ¶È£º</value></string>
-  <string><id>13285</id><value>BIOS ÐÍºÅ£º</value></string>
-  <string><id>13286</id><value>ÊÓÆµÐ¾Æ¬£º</value></string>
-  <string><id>13287</id><value>ÆÁÄ»·Ö±æÂÊ£º</value></string>
-  <string><id>13288</id><value>Xbox °æ±¾£º</value></string>
-  <string><id>13289</id><value>Xbox ÐòÁÐºÅ£º</value></string>
-  <string><id>13290</id><value>XBOX Éú²úÉÌ£º</value></string>
-  <string><id>13291</id><value>¸Ä»úÐ¾Æ¬£º</value></string>
-  <string><id>13292</id><value>A/V Ïß£º</value></string>
-  <string><id>13293</id><value>ÊÓÆµ&amp;XBE ÇøÓò£º</value></string>
-  <string><id>13294</id><value>DVD ÇøÓò£º</value></string>
-  <string><id>13295</id><value>»¥ÁªÍø£º</value></string>
-  <string><id>13296</id><value>XboxÒÑÁ¬½Ó£¡</value></string>
-  <string><id>13297</id><value>XboxÎÞ·¨Á¬½Ó£¡Çë¼ì²éÍøÂçÉèÖÃ£¡</value></string>
-  <string><id>13298</id><value>XBLIVE Ô¿³×£º</value></string>
-  <string><id>13299</id><value>Ä¿±êÎÂ¶È</value></string>
-  <string><id>13300</id><value>·çÉÈ×ªËÙ</value></string>
-  <string><id>13301</id><value>×Ô¶¯ÎÂ¶È¿ØÖÆ</value></string>
-  <string><id>13302</id><value>ÊÖ¶¯¿ØÖÆ·çÉÈ×ªËÙ</value></string>
-  <string><id>13303</id><value>Æ¤·ô×ÖÌå</value></string>
-  <string><id>13304</id><value>¿ªÆô×ª»»Ë«Ïò×Ö´®</value></string>
-  <string><id>13305</id><value>ÆôÓÃ¾ÛºÏÐÂÎÅRSSÏÔÊ¾</value></string>
-  <string><id>13306</id><value>Òþ²ØÉÏ²ãÄ¿Â¼Í¼±ê</value></string>
-  <string><id>13307</id><value>Òô¹ìÃüÃûÄ£°å</value></string>
-  <string><id>13308</id><value>ÄãÏëÖØÐÂÆô¶¯XBOXÂð</value></string>
-  <string><id>13309</id><value>ÒÔÖØÐÂÆô¶¯XBMCÂð£¿</value></string>
-  <string><id>13310</id><value>·ÅËõÐ§¹û</value></string>
-  <string><id>13311</id><value>Æ¯¸¡Ð§¹û</value></string>
-  <string><id>13312</id><value>ËõÐ¡ºÚ±ß</value></string>
-  <string><id>13313</id><value>ÖØÆô</value></string>
-  <string><id>13314</id><value>Æ½»¬×ª»»</value></string>
-  <string><id>13315</id><value>´´½¨ËõÂÔÍ¼</value></string>
-  <string><id>13316</id><value>Ñ­»·ËõÂÔÍ¼</value></string>
-  <string><id>13317</id><value>¹Û¿´»ÃµÆÆ¬</value></string>
-  <string><id>13318</id><value>Ñ­»·»ÃµÆÆ¬</value></string>
-  <string><id>13319</id><value>Ëæ»ú²¥·Å</value></string>
-  <string><id>13320</id><value>Á¢ÌåÉù</value></string>
-  <string><id>13321</id><value>×óÉùµÀ</value></string>
-  <string><id>13322</id><value>ÓÒÉùµÀ</value></string>
-  <string><id>13323</id><value>¿ªÆô CD+G</value></string>
-  <string><id>13324</id><value>±³¾°Í¸Ã÷¶È</value></string>
-  <string><id>13325</id><value>Ç°¾°Í¸Ã÷¶È</value></string>
-  <string><id>13326</id><value>Ó°ÒôÑÓ³Ù</value></string>
-  <string><id>13327</id><value>¿¨À­OK</value></string>
-  <string><id>13328</id><value>%sÎ´ÕÒµ½</value></string>
-  <string><id>13329</id><value>´ò¿ª%sÊ±·¢Éú´íÎó</value></string>
-  <string><id>13330</id><value>ÎÞ·¨ÔØÈë%s</value></string>
-  <string><id>13331</id><value>´íÎó£ºÄÚ´æ²»×ã£¡</value></string>
-  <string><id>13332</id><value>ÉÏÒÆ</value></string>
-  <string><id>13333</id><value>ÏÂÒÆ</value></string>
-  <string><id>13334</id><value>±à¼­±êÇ©</value></string>
-  <string><id>13335</id><value>ÉèÎªÄ¬ÈÏ</value></string>
-  <string><id>13336</id><value>É¾³ý°´¼ü</value></string>
-  <string><id>13337</id><value>- Á½ÉùµÀPCM¹ýÂË</value></string>
-  <string><id>13338</id><value>Ç°LED</value></string>
-  <string><id>13339</id><value>Ç°LEDÑÕÉ«</value></string>
-  <string><id>13340</id><value>Ä¬ÈÏ</value></string>
-  <string><id>13341</id><value>ÂÌÉ«</value></string>
-  <string><id>13342</id><value>³ÈÉ«</value></string>
-  <string><id>13343</id><value>ºìÉ«</value></string>
-  <string><id>13344</id><value>Ñ­»·</value></string>
-  <string><id>13345</id><value>µ±²¥·ÅÊ±¹Ø±ÕLED</value></string>
-  <string><id>13346</id><value>Ó°Æ¬ÐÅÏ¢</value></string>
-  <string><id>13347</id><value>¼ÓÈëµ±Ç°²¥·ÅÁÐ±í</value></string>
-  <string><id>13348</id><value>²éÑ¯IMDbÐÅÏ¢¡­</value></string>
-  <string><id>13349</id><value>²éÑ¯ËùÓÐÎÄ¼þÐÅÏ¢</value></string>
-  <string><id>13350</id><value>ÕýÔÚ²¥·ÅµÄÁÐ±í</value></string>
-  <string><id>13351</id><value>×¨¼­ÐÅÏ¢</value></string>
-  <string><id>13352</id><value>É¨ÃéÎÄ¼þ¼ÐÐÅÏ¢</value></string>
-  <string><id>13353</id><value>Í£Ö¹ËÑÑ°</value></string>
-  <string><id>13354</id><value>²¹³¥·½Ê½</value></string>
-  <string><id>13355</id><value>µÍÆ·ÖÊÏñËØ×ÅÉ«Æ÷</value></string>
-  <string><id>13356</id><value>Ó²¼þÖØµþ</value></string>
-  <string><id>13357</id><value>¸ßÆ·ÖÊÏñËØ×ÅÉ«Æ÷</value></string>
-  <string><id>13358</id><value>²¥·ÅÏîÄ¿</value></string>
-  <string><id>13359</id><value>ÉèÖÃÒÕÊõ¼ÒÍ¼Ê¾</value></string>
-  <string><id>13360</id><value>½¨Á¢Í¼Ê¾</value></string>
-  <string><id>13361</id><value>¿ªÆôÓïÒô</value></string>
-  <string><id>13362</id><value>ÓïÒôÌØÐ§</value></string>
-  <string><id>13363</id><value>- ¿ªÆôµÍ³ÁÐ§¹û</value></string>
-  <string><id>13364</id><value>-- µÍ³ÁÐ§¹ûÊýÖµ</value></string>
-  <string><id>13365</id><value>- ¿ªÆô¸ßÒôÐ§¹û</value></string>
-  <string><id>13366</id><value>-- ¸ßÒôÐ§¹ûÊýÖµ</value></string>
-  <string><id>13367</id><value>- ¿ªÆôÇÄÇÄ»°Ð§¹û</value></string>
-  <string><id>13368</id><value>-- ÇÄÇÄ»°Ð§¹ûÊýÖµ</value></string>
-  <string><id>13369</id><value>- ¿ªÆô»úÐµÈËÐ§¹û</value></string>
-  <string><id>13370</id><value>-- »úÐµÈËÐ§¹ûÊýÖµ</value></string>
-  <string><id>13371</id><value>- ÓïÒô¶Ë¿Ú 1</value></string>
-  <string><id>13372</id><value>- ÓïÒô¶Ë¿Ú 2</value></string>
-  <string><id>13373</id><value>- ÓïÒô¶Ë¿Ú 3</value></string>
-  <string><id>13374</id><value>- ÓïÒô¶Ë¿Ú 4</value></string>
-  <string><id>13375</id><value>ÆôÓÃ×°ÖÃ</value></string>
-  <string><id>13376</id><value>ÒôÁ¿</value></string>
-  <string><id>13377</id><value>Ä¬ÈÏÏÔÊ¾·½Ê½</value></string>
-  <string><id>13378</id><value>Ä¬ÈÏÁÁ¶ÈÊýÖµ</value></string>
-  <string><id>13379</id><value>Ä¬ÈÏ¶Ô±È¶ÈÊýÖµ</value></string>
-  <string><id>13380</id><value>Ä¬ÈÏÙ¤ÂëÊýÖµ</value></string>
-  <string><id>13381</id><value>´ÓÊéÇ©´¦¿ªÊ¼²¥·Å</value></string>
-  <string><id>13382</id><value>ÓïÒôÌØÐ§ - ¶Ë¿Ú 1</value></string>
-  <string><id>13383</id><value>ÓïÒôÌØÐ§ - ¶Ë¿Ú 2</value></string>
-  <string><id>13384</id><value>ÓïÒôÌØÐ§ - ¶Ë¿Ú 3</value></string>
-  <string><id>13385</id><value>ÓïÒôÌØÐ§ - ¶Ë¿Ú 4</value></string>
-  <string><id>13386</id><value>Ê¹ÓÃÊ±¼äËÑÑ°</value></string>
-  <string><id>13387</id><value>Òô¹ìÃüÃûÄ£°å</value></string>
-  <string><id>13388</id><value>Ô¤Éè</value></string>
-  <string><id>13389</id><value>Ã»ÓÐÔ¤Éè&#10;¸ÃÊÓ¾õÐ§¹û</value></string>
-  <string><id>13390</id><value>Ã»ÓÐÉè¶¨&#10;¸ÃÊÓ¾õÐ§¹û</value></string>
-  <string><id>13391</id><value>µ¯³ö/ÔØÈë</value></string>
-  <string><id>13392</id><value>ÔÚ²¥·ÅÒôÀÖÊ±×Ô¶¯ÆôÓÃ¿ÉÊÓ»¯Ð§¹û</value></string>
-  <string><id>13393</id><value>¼ÆËã´óÐ¡</value></string> 
-  <string><id>13394</id><value>¼ÆËãÎÄ¼þ¼Ð´óÐ¡</value></string> 
-  <string><id>13395</id><value>ÊÓÆµÉèÖÃ</value></string>
-  <string><id>13396</id><value>ÉùÒôºÍ×ÖÄ»ÉèÖÃ</value></string> 
-  <string><id>13397</id><value>ÆôÓÃ×ÖÄ»</value></string> 
-  <string><id>13398</id><value>ÊéÇ©</value></string>
-  <string><id>13399</id><value>ÅÅÐòÊ±ºöÂÔ The ¿ªÍ·Ãû³Æ</value></string>
-  <string><id>13400</id><value>×¨¼­Òô¹ìÆ½»¬×ª»»</value></string>
-  <string><id>13401</id><value>ä¯ÀÀ%s</value></string>
-  <string><id>13402</id><value>ÏÔÊ¾Òô¹ìÎ»ÖÃ</value></string>
-  <string><id>13403</id><value>Çå³ýÎªÈ±Ê¡Öµ</value></string>
-  <string><id>13404</id><value>»Ö¸´</value></string>
-  <string><id>13405</id><value>È¡µÃËõÂÔÍ¼</value></string>
-
-  <string><id>14000</id><value>¶ÑÕ»¿ªÆô</value></string>
-  <string><id>14001</id><value>¶ÑÕ»¹Ø±Õ</value></string>
-  <string><id>14002</id><value>¶ÑÕ»£ºÖÇ»Û</value></string>
-  <string><id>14003</id><value>ÏÂÔØ²¥·ÅÁÐ±íÎÄ¼þ¡­</value></string>
-  <string><id>14004</id><value>ÏÂÔØÁ÷Ã½ÌåÁÐ±í¡­</value></string>
-  <string><id>14005</id><value>·ÖÎöÁ÷Ã½ÌåÁÐ±í¡­</value></string>
-  <string><id>14006</id><value>ÏÂÔØÁ÷Ã½ÌåÁÐ±íÊ§°Ü</value></string>
-  <string><id>14007</id><value>ÏÂÔØ²¥·ÅÁÐ±íÎÄ¼þÊ§°Ü</value></string>
-  <string><id>14008</id><value>ÆôÓÃ Kai Í¨¸æ</value></string>
-  <string><id>14009</id><value>ÓÎÏ·Ä¿Â¼</value></string>
-  <string><id>14010</id><value>×Ô¶¯ÇÐ»»ÎªÍ¼±êÏÔÊ¾Ìõ¼þ</value></string>
-  <string><id>14011</id><value>ÔÊÐí×Ô¶¯ÇÐ»»ÎªÍ¼±êÏÔÊ¾</value></string>
-  <string><id>14012</id><value>- Ê¹ÓÃ´óÍ¼±ê</value></string>
-  <string><id>14013</id><value>- Ìõ¼þ</value></string>
-  <string><id>14014</id><value>- ±ÈÀý</value></string>
-  <string><id>14015</id><value>Ã»ÓÐÎÄ¼þÇÒÖÁÉÙÓÐÒ»¸öÍ¼±ê</value></string>
-  <string><id>14016</id><value>ÖÁÉÙÓÐÒ»¸öÎÄ¼þºÍÒ»¸öÍ¼±ê</value></string>
-  <string><id>14017</id><value>Í¼±êËùÕ¼±ÈÀý</value></string>
-  <string><id>14018</id><value>ä¯ÀÀÉèÖÃ</value></string>
-  <string><id>14019</id><value>¸Ä±äÇøÂë 1</value></string>
-  <string><id>14020</id><value>¸Ä±äÇøÂë 2</value></string>
-  <string><id>14021</id><value>¸Ä±äÇøÂë 3</value></string>
-  <string><id>14022</id><value>Êý¾Ý¿â</value></string>
-  <string><id>14023</id><value>ÎÞµçÊÓ</value></string>
-  <string><id>14024</id><value>ÊäÈë×î½üµÄ³ÇÊÐ»òÃÀ¹úÓÊ±à</value></string>
-  <string><id>14025</id><value>ÊÓÆµ/ÒôÆµ/DVD»º´æ - Ó²ÅÌ</value></string>
-  <string><id>14026</id><value>ÊÓÆµ»º´æ - DVDÇý¶¯Æ÷</value></string>
-  <string><id>14027</id><value>ÊÓÆµ»º´æ - ¾ÖÓòÍø</value></string>
-  <string><id>14028</id><value>ÊÓÆµ»º´æ - »¥ÁªÍø</value></string>
-  <string><id>14030</id><value>ÒôÆµ»º´æ - DVDÇý¶¯Æ÷</value></string>
-  <string><id>14031</id><value>ÒôÆµ»º´æ - ¾ÖÓòÍø</value></string>
-  <string><id>14032</id><value>ÒôÆµ»º´æ - »¥ÁªÍø</value></string>
-  <string><id>14034</id><value>DVD »º´æ - DVDÇý¶¯Æ÷</value></string>
-  <string><id>14035</id><value>DVD »º´æ - ¾ÖÓòÍø</value></string>
-  <string><id>14036</id><value>·þÎñ</value></string>
-  <string><id>14037</id><value>Íâ¹ÛÉèÖÃ</value></string>
-  <string><id>14038</id><value>ÍøÂçÉèÖÃÒÑ¸Ä±ä</value></string>
-  <string><id>14039</id><value>XBMCÐèÒªÖØÆô¸Ä±äÄãµÄÍøÂçÉèÖÃ¡£</value></string>
-  <string><id>14040</id><value>ÄãÏëÏÖÔÚ¾ÍÖØÆôÂð£¿</value></string>
-  <string><id>14041</id><value>ºó´¦Àí</value></string>
-  <string><id>14042</id><value>Ö´ÐÐXLink KaiµÄIPµØÖ·</value></string>
-  <string><id>14043</id><value>- ²¥·ÅÊ±¹Ø»ú</value></string>
-  <string><id>14044</id><value>%i·Ö</value></string>
-  <string><id>14045</id><value>%iÃë</value></string>
-  <string><id>14046</id><value>%iºÁÃë</value></string>
-  <string><id>14047</id><value>%i%%</value></string>
-  <string><id>14048</id><value>%ikbps</value></string>
-  <string><id>14049</id><value>%ikb</value></string>
-  <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Ê±¼äÏÔÊ¾¸ñÊ½</value></string>
-  <string><id>14052</id><value>ÈÕÆÚÏÔÊ¾¸ñÊ½</value></string>
-  <string><id>14053</id><value>½çÃæÂË¾µ</value></string>
-  <string><id>14054</id><value>ÆôÓÃ»¥ÁªÍøÐÅÏ¢²éÑ¯</value></string>
-  <string><id>14055</id><value>Ê¹ÓÃºóÌ¨ËÑÑ°</value></string>
-  <string><id>14056</id><value>Í£Ö¹ËÑÑ°</value></string>
-  <string><id>14057</id><value>ÎÞ·¨ËÑÑ°Ã½ÌåÐÅÏ¢</value></string>
-  <string><id>14058</id><value>µçÓ°½ºÆ¬Ð§¹û</value></string>
-  <string><id>14059</id><value>Ô¶³Ì¹²ÏíÊ±ËÑÑ°¶¨ÖÆµÄËõÂÔÍ¼</value></string>
-  <string><id>14060</id><value>Î´ÖªÀàÐÍÎÄ¼þ»º³å - »¥ÁªÍø</value></string>
-  <string><id>14061</id><value>×Ô¶¯</value></string>
-  <string><id>14062</id><value>ÊäÈëÓÃ»§Ãû</value></string>
-  <string><id>14063</id><value>ÈÕÆÚºÍÊ±¼ä</value></string>
-  <string><id>14064</id><value>ÉèÖÃÈÕÆÚ</value></string>
-  <string><id>14065</id><value>ÉèÖÃÊ±¼ä</value></string>
-  <string><id>14066</id><value>ÉèÖÃÊ±¼ä(Ê±:·Ö)</value></string>
-  <string><id>14067</id><value>ÉèÖÃÈÕÆÚ(ÈÕ/ÔÂ/Äê)</value></string>
-  <string><id>14068</id><value>ÊäÈëIPµØÖ·</value></string>
-  <string><id>14069</id><value>È·¶¨ÒªÉè¶¨ÕâÐ©²ÎÊýÂð£¿</value></string>
-  <string><id>14070</id><value>Ó¦ÓÃÉèÖÃ</value></string>
-  <string><id>14071</id><value>ÔÊÐíÖØÃüÃûºÍÉ¾³ýÎÄ¼þ</value></string> 
-  <string><id>14072</id><value>ÆôÓÃXLink Kai</value></string>
-  <string><id>14073</id><value>XLink Kai Ã»ÓÐ±»ÆôÓÃ£¡</value></string>
-
-  <string><id>15000</id><value>XLink Kai</value></string>
-  <string><id>15001</id><value>Ä¿Ç°²¢Ã»ÓÐÁ¬Ïßµ½ÔËÐÐXLink KaiµÄµçÄÔ</value></string>
-  <string><id>15002</id><value>ÇëÈ·¶¨Éè¶¨ÎÞÎóºóÔÙ³¢ÊÔÁ¬Ïß£¿</value></string>
-  <string><id>15003</id><value>ÊäÈëÄãµÄÑ¶Ï¢</value></string>
-  <string><id>15004</id><value>Äã±»ÑûÇëÍæ%s¡£</value></string>
-  <string><id>15005</id><value>ÈÕÆÚ£º%s</value></string>
-  <string><id>15006</id><value>À´×Ô£º%s</value></string>
-  <string><id>15007</id><value>ÑûÇë</value></string>
-  <string><id>15008</id><value>Äã±»ÑûÇë¼ÓÈë%s¡£</value></string>
-  <string><id>15009</id><value>ÀëÏß</value></string>
-  <string><id>15010</id><value>ºÃÓÑ</value></string>
-  <string><id>15011</id><value>ÏÔÊ¾£ººÃÓÑ</value></string>
-  <string><id>15012</id><value>¼ÓÈëÓÎÏ·</value></string>
-  <string><id>15013</id><value>ÓïÒô½»Ì¸</value></string>
-  <string><id>15014</id><value>ÑûÇë</value></string>
-  <string><id>15015</id><value>É¾³ý</value></string>
-  <string><id>15016</id><value>ÓÎÏ·</value></string>
-  <string><id>15017</id><value>ÏÔÊ¾£ºÓÎÏ·</value></string>
-  <string><id>15018</id><value>½øÈë</value></string>
-  <string><id>15019</id><value>Ìí¼ÓÎªºÃÓÑ</value></string>
-  <string><id>15020</id><value>½¨Á¢ÓÎÏ·</value></string>
-  <string><id>15021</id><value>ÓÎÏ·ÊÒ</value></string>
-  <string><id>15022</id><value>ÏÔÊ¾£ºÓÎÏ·ÊÒ</value></string>
-  <string><id>15023</id><value>¿ªÊ¼ÓÎÏ·</value></string>
-  <string><id>15024</id><value>Ìí¼ÓÎªºÃÓÑ</value></string>
-  <string><id>15025</id><value>½¨Á¢ÓÎÏ·</value></string>
-  <string><id>15026</id><value>ÁÄÌìÊÒ</value></string>
-  <string><id>15027</id><value>ÏÔÊ¾£ºÁÄÌìÊÒ</value></string>
-  <string><id>15028</id><value>¼üÅÌ</value></string>
-  <string><id>15029</id><value>¼ÓÈëÕâ¸öÓÎÏ·ÊÒÐëÒªÃÜÂë£¡</value></string>
-  <string><id>15030</id><value>ÓÎÏ·ÒÑÖÐ¶Ï</value></string>
-  <string><id>15031</id><value>XLink Kai ÈÏÖ¤</value></string>
-  <string><id>15032</id><value>Ãû³Æ»òÃÜÂë²»ÕýÈ·</value></string>
-  <string><id>15033</id><value>Çë¼ì²éÉè¶¨ÎÞÎóºóÔÙ³¢ÊÔ¡£</value></string>
-  <string><id>15034</id><value>µÇÈë</value></string>
-  <string><id>15035</id><value>Æô¶¯ÓïÒôÁÄÌì</value></string>
-  <string><id>15036</id><value>·¢ËÍÒ»·âÄãµÄÑûÇëº¯</value></string>
-  <string><id>15037</id><value>XBMC ÎÞ·¨È·¶¨ÄãµÄÍøÂçÊÇ·ñÄÜ¹»Á¬½Ó£¡</value></string>
-  <string><id>15038</id><value>Äã½«»áºÜÄÑ¼ÓÈë»ò½¨Á¢ÓÎÏ·¡£</value></string>
-  <string><id>15039</id><value>XBMC ÎÞ·¨½«ÓÎÏ·×Ô¶¯Ö´ÐÐ£¡</value></string>
-  <string><id>15040</id><value>·ÅÈëÓÎÏ·µúÆ¬»ò°´ A È¡Ïû</value></string>
-  <string><id>15041</id><value>ºÍ¿ªÆôÓÎÏ·ÊÖ²á¡£</value></string>
-  <string><id>15042</id><value>´æÈ¡±»¾Ü</value></string>
-  <string><id>15043</id><value>%s¼ÓÈëÁÄÌìÊÒ¡£</value></string>
-  <string><id>15044</id><value>%sÀë¿ªÁÄÌìÊÒ¡£</value></string>
-  <string><id>15045</id><value>ÊäÈëÄãµÄÑ¶Ï¢¡£</value></string>
-  <string><id>15046</id><value>Ä¿Ç°ÓÎÏ·ÊÒ</value></string>
-  <string><id>15047</id><value>ÊäÈëÓÎÏ·³¡ÃÜÂë¡£</value></string>
-  <string><id>15048</id><value>ÊäÈëÓÎÏ·³¡ËµÃ÷¡£</value></string>
-  <string><id>15049</id><value>½¨Á¢ÓÎÏ·</value></string>
-  <string><id>15050</id><value>½¨Á¢¸öÈËÓÎÏ·ÊÒ</value></string>
-  <string><id>15051</id><value>Íæ¼ÒÏÞÖÆ</value></string>
-  <string><id>15052</id><value>ÃÜÂë</value></string>
-  <string><id>15053</id><value>¼ò½é</value></string>
-  <string><id>15054</id><value>ÑûÇëº¯</value></string>
-  <string><id>15055</id><value>Ñ¡ÔñÓÎÏ·£º</value></string>
-  <string><id>15056</id><value>ÊäÈëÑ¶Ï¢£º</value></string>
-  <string><id>15057</id><value>·¢ËÍ</value></string>
-  <string><id>15058</id><value>½¨Á¢ÓÎÏ·</value></string>
-  <string><id>15059</id><value>½ÓÊÜÑûÇë£¡</value></string>
-  <string><id>15060</id><value>Ñ¶Ï¢</value></string>
-  <string><id>15061</id><value>ÑûÇëÍæ¼Ò %s¡£</value></string>
-  <string><id>15062</id><value>Ê¹ÓÃÌæ´úµÄ mplayer</value></string>
- 
-  <string><id>15100</id><value>ä¯ÀÀ</value></string>
-  <string><id>15101</id><value>Êý¾Ý¿â</value></string>
-  <string><id>15102</id><value>* ËùÓÐ×¨¼­</value></string>
-  <string><id>15103</id><value>* ËùÓÐÒÕÈË</value></string>
-  <string><id>15104</id><value>* ËùÓÐ¸èÇú</value></string>
-  <string><id>15105</id><value>* ËùÓÐÁ÷ÅÉ</value></string>
-  <string><id>15106</id><value>ÏòÇ°ä¯ÀÀÊ±¼Ç×¡Ñ¡ÔñµÄÎÄ¼þ</value></string>
-  <string><id>15107</id><value>»º³åÖÐ¡­</value></string>
-  <string><id>15108</id><value>µ¼º½ÒôÐ§</value></string>
-  <string><id>15109</id><value>Ö÷ÌâÔ¤Éè</value></string>
-  <string><id>15110</id><value>ÊÖ±úÕñ¶¯</value></string>
-  <string><id>15111</id><value>Æ¤·ôÖ÷Ìâ</value></string> 
-  <string><id>15112</id><value>È±Ê¡Ö÷Ìâ</value></string> 
-
-  <string><id>15200</id><value>LastFM</value></string>
-  <string><id>15201</id><value>½«¸èÇúÌá½»µ½ LastFM</value></string>
-  <string><id>15202</id><value>LastFM ÓÃ»§Ãû</value></string>
-  <string><id>15203</id><value>LastFM ÃÜÂë</value></string>
-  <string><id>15204</id><value>ÎÞ·¨Á¬½Ó£ºÐÝÃßÖÐ¡­</value></string>
-  <string><id>15205</id><value>ÇëÉý¼¶XBMC</value></string>
-  <string><id>15206</id><value>ÉÏ´«Ê§°Ü£ºÎÞ·¨Í¨¹ýÈÏÖ¤¡£</value></string>
-  <string><id>15207</id><value>Á¬½Ó</value></string>
-  <string><id>15208</id><value>ÎÞ·¨Á¬½Ó</value></string>
-  <string><id>15209</id><value>ÉÏ´«½ø¶È%i</value></string>
-  <string><id>15210</id><value>ÒÑÉÏ´«%iÊ×¸èÇú</value></string>
-  <string><id>15211</id><value>ÉÏ´«ÖÐ¡­</value></string>
-  <string><id>15212</id><value>ÉÏ´«Ê£Óà%iÃë</value></string>
-  <string><id>15213</id><value>´ò¿ª·½Ê½</value></string>
-  <string><id>15214</id><value>Ê¹ÓÃÆ½»¬µÄÓ°ÒôÍ¬²½</value></string>
-  <string><id>15215</id><value>ËõÂÔÍ¼ÏÔÊ¾Ê±Òþ²ØÎÄ¼þÃû</value></string>
-
-  <string><id>15250</id><value>Ìá½» Last.fm µçÌ¨µ½LastFM</value></string>
-  <string><id>15251</id><value>Á¬½Óµ½ Last.fm¡­</value></string>
-  <string><id>15252</id><value>Ñ¡ÔñµçÌ¨¡­</value></string>
-  <string><id>15253</id><value>Ñ°ÕÒÏàËÆµÄÒÕÊõ¼Ò¡­</value></string>
-  <string><id>15254</id><value>Ñ°ÕÒÏàËÆµÄ±ê¼Ç¡­</value></string>
-  <string><id>15255</id><value>%name% µÄÉèÖÃ</value></string>
-  <string><id>15256</id><value>ËùÓÐÅÅÐÐ</value></string>
-  <string><id>15257</id><value>%name% ÒÕÊõ¼ÒÅÅÐÐ</value></string>
-  <string><id>15258</id><value>%name% ×¨¼­ÅÅÐÐ</value></string>
-  <string><id>15259</id><value>%name% ¸èÇúÅÅÐÐ</value></string>
-  <string><id>15260</id><value>ÊÕÌý %name% last.fm µçÌ¨</value></string>
-  <string><id>15261</id><value>%name% Í¬ÀàÐÍÒÕÊõ¼Ò</value></string>
-  <string><id>15262</id><value>%name% ×¨¼­ÅÅÐÐ</value></string>
-  <string><id>15263</id><value>%name% ¸èÇúÅÅÐÐ</value></string>
-  <string><id>15264</id><value>%name% ±ê¼ÇÅÅÐÐ</value></string>
-  <string><id>15265</id><value>%name% ×î°®¸èÃÔ</value></string>
-  <string><id>15266</id><value>ÊÕÌý %name% ¸èÃÔ last.fm µçÌ¨</value></string>
-  <string><id>15267</id><value>ÊÕÌý %name% Í¬ÀàÐÍÒÕÊõ¼Ò last.fm µçÌ¨</value></string>  
-  <string><id>15268</id><value>%name% ÒÕÊõ¼ÒÅÅÐÐ</value></string>
-  <string><id>15269</id><value>%name% ×¨¼­ÅÅÐÐ</value></string>
-  <string><id>15270</id><value>%name% ¸èÇúÅÅÐÐ</value></string>
-  <string><id>15271</id><value>%name% ºÃÓÑ</value></string>
-  <string><id>15272</id><value>%name% Í¬ºÃ</value></string>
-  <string><id>15273</id><value>%name% ÒÕÊõ¼ÒÖÜÅÅÐÐ</value></string>
-  <string><id>15274</id><value>%name% ×¨¼­ÖÜÅÅÐÐ</value></string>
-  <string><id>15275</id><value>%name% ¸èÇúÖÜÅÅÐÐ</value></string>
-  <string><id>15276</id><value>ÊÕÌý %name% µÄÍ¬ºÃ last.fm µçÌ¨</value></string>
-  <string><id>15277</id><value>ÊÕÌý %name% µÄ¸öÈË last.fm µçÌ¨</value></string>
-  <string><id>15278</id><value>ÊÕÌý %name% µÄ×î°®¸èÇú</value></string>
-  <string><id>15279</id><value>ÕýÔÚ´Ólast.fm»ñÈ¡ÁÐ±í</value></string>
-  <string><id>15280</id><value>²»ÄÜ´Ólast.fm»ñÈ¡ÁÐ±í¡­</value></string>
-  <string><id>15281</id><value>ÊäÈëÒÕÊõ¼ÒÃû×ÖÀ´Ñ°ÕÒÏà¹Ø×ÊÁÏ</value></string>
-  <string><id>15282</id><value>ÊäÈë±ê¼ÇÀ´Ñ°ÕÒÆäËûÏàËÆµÄ</value></string>
-  <string><id>15283</id><value>%name% ×î½üÌý¹ýµÄÒô¹ì</value></string>
-
-  <string><id>15300</id><value>Â·¾¶´íÎó»òÎÞ·¨ÕÒµ½£¡</value></string>
-  <string><id>15301</id><value>ÎÞ·¨Á¬½Ó·þÎñÆ÷£¡</value></string>
-  <string><id>15302</id><value>Ã»ÓÐ·þÎñÆ÷ÕÒµ½£¡</value></string>
-  <string><id>15303</id><value>Ã»ÓÐÕÒµ½¹¤×÷×é£¡</value></string>
-
-  <string><id>15310</id><value>´ò¿ª¶à¸öÊéÇ©Â·¾¶</value></string>
-  <string><id>15311</id><value>Â·¾¶£º</value></string>
-
-  <string><id>16000</id><value>Í¨ÓÃ</value></string>
-  <string><id>16001</id><value>ÅäÖÃÒôÆµÓ²¼þ¡­</value></string>
-  <string><id>16002</id><value>CDDB ²éÑ¯</value></string>
-  <string><id>16003</id><value>¸ß¼¶ÉèÖÃ</value></string>
-  <string><id>16004</id><value>²¥·ÅµúÆ¬</value></string>
- 
-  <string><id>16009</id><value>ÊäÈëÓ°Æ¬Ãû³Æ</value></string>
-  <string><id>16010</id><value>ÊäÈëÅäÖÃÃû³Æ</value></string>
-  <string><id>16011</id><value>ÊäÈë×¨¼­Ãû³Æ</value></string>
-  <string><id>16012</id><value>ÊäÈë²¥·ÅÁÐ±íÃû³Æ</value></string>
-  <string><id>16013</id><value>ÊäÈëÐÂµÄÎÄ¼þÃû</value></string>
-  <string><id>16014</id><value>ÊäÈëÎÄ¼þ¼ÐÃû³Æ</value></string>
-  <string><id>16015</id><value>ÊäÈëÄ¿Â¼</value></string>
-  <string><id>16016</id><value>¿ÉÊ¹ÓÃÑ¡Ïî£º%A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
-  <string><id>16017</id><value>ÊäÈë²éÑ¯×Ö·û´®</value></string>
-  <string><id>16018</id><value>¹Ø±Õ</value></string> 
-  <string><id>16019</id><value>×Ô¶¯Ñ¡Ôñ</value></string> 
-  <string><id>16020</id><value>È¥½»´í</value></string> 
-  <string><id>16021</id><value>ÆæÍ¬²½</value></string> 
-  <string><id>16022</id><value>Å¼Í¬²½</value></string> 
-  <string><id>16023</id><value>½»´íÉèÖÃ</value></string> 
-  <string><id>16024</id><value>È¡ÏûÖÐ¡­</value></string>
-  <string><id>16025</id><value>ÊäÈëÒÕÊõ¼ÒÃû×Ö</value></string>
-  <string><id>16026</id><value>²¥·ÅÁÐ±í»Ø·ÅÈ¡Ïû¡£</value></string> 
-  <string><id>16027</id><value>Ì«¶àÁ¬ÐøÐÔ´íÎó</value></string> 
-
-  <string><id>16030</id><value>Îè»áÄ£Ê½È¡Ïû£¡</value></string>
-  <string><id>16031</id><value>Êý¾Ý¿âÖÐÃ»ÓÐ·ûºÏÌõ¼þµÄ¸èÇú£¡</value></string>
-  <string><id>16032</id><value>ÎÞ·¨³õÊ¼»¯Êý¾Ý¿â£¡</value></string>
-  <string><id>16033</id><value>ÎÞ·¨´ò¿ªÊý¾Ý¿â£¡</value></string>
-  <string><id>16034</id><value>ÎÞ·¨´ÓÊý¾Ý¿â»ñÈ¡¸èÇúÎÄ¼þ£¡</value></string>
-
-  <string><id>16100</id><value>ËùÓÐÊÓÆµÎÄ¼þ</value></string>
-  <string><id>16101</id><value>Î´¹Û¿´µÄ</value></string>
-  <string><id>16102</id><value>ÒÑ¹Û¿´µÄ</value></string>
-  <string><id>16103</id><value>±ê¼Ç³ÉÒÑ¿´µÄ</value></string>
-  <string><id>16104</id><value>±ê¼Ç³ÉÎ´¿´µÄ</value></string>
-  <string><id>16105</id><value>±à¼­±êÌâ</value></string>
-  <string><id>16106</id><value>Ê¹ÓÃ NTSC-M &amp; NTSC-JÖÆÊ½</value></string>
-  <string><id>16107</id><value>Ê¹ÓÃ NTSC-MÖÆÊ½</value></string>
-  <string><id>16108</id><value>Ê¹ÓÃ NTSC-JÖÆÊ½</value></string>
-  <string><id>16109</id><value>Ê¹ÓÃ PAL-60ÖÆÊ½</value></string>
-  <string><id>16110</id><value>60hz ÓÎÏ·ÉèÖÃ</value></string>
-
+  <string id="0">æˆ‘çš„ç¨‹åº</string>
+  <string id="1">æˆ‘çš„å›¾ç‰‡</string>
+  <string id="2">æˆ‘çš„éŸ³ä¹</string>
+  <string id="3">æˆ‘çš„è§†é¢‘</string>
+  <string id="4">ç”µè§†å¯¼æ¸¸</string>
+  <string id="5">ç³»ç»Ÿè®¾ç½®</string>
+  <string id="7">æˆ‘çš„æ–‡ä»¶</string>
+  <string id="8">å¤©æ°”é¢„æŠ¥</string>
+  <string id="11">æ˜ŸæœŸä¸€</string>
+  <string id="12">æ˜ŸæœŸäºŒ</string>
+  <string id="13">æ˜ŸæœŸä¸‰</string>
+  <string id="14">æ˜ŸæœŸå››</string>
+  <string id="15">æ˜ŸæœŸäº”</string>
+  <string id="16">æ˜ŸæœŸå…­</string>
+  <string id="17">æ˜ŸæœŸæ—¥</string>
+  <string id="21">ä¸€æœˆ</string>
+  <string id="22">äºŒæœˆ</string>
+  <string id="23">ä¸‰æœˆ</string>
+  <string id="24">å››æœˆ</string>
+  <string id="25">äº”æœˆ</string>
+  <string id="26">å…­æœˆ</string>
+  <string id="27">ä¸ƒæœˆ</string>
+  <string id="28">å…«æœˆ</string>
+  <string id="29">ä¹æœˆ</string>
+  <string id="30">åæœˆ</string>
+  <string id="31">åä¸€æœˆ</string>
+  <string id="32">åäºŒæœˆ</string>
+  <string id="98">æ˜¾ç¤ºï¼šè‡ªåŠ¨</string>
+  <string id="99">æ˜¾ç¤ºï¼šè‡ªåŠ¨å¤§å›¾æ ‡</string>
+  <string id="100">æ˜¾ç¤ºï¼šå›¾æ ‡</string>
+  <string id="101">æ˜¾ç¤ºï¼šåˆ—è¡¨</string>
+  <string id="102">æ‰«çž„</string>
+  <string id="103">æŽ’åºï¼šåå­—</string>
+  <string id="104">æŽ’åºï¼šæ—¥æœŸ</string>
+  <string id="105">æŽ’åºï¼šå¤§å°</string>
+  <string id="106">å¦</string>
+  <string id="107">æ˜¯</string>
+  <string id="108">æ’­æ”¾å›¾ç‰‡</string>
+  <string id="109">åˆ›å»ºåƒå†Œ</string>
+  <string id="110">åˆ›å»ºç¼©ç•¥å›¾</string>
+  <string id="111">å¿«æ·</string>
+  <string id="112">æš‚åœ</string>
+  <string id="113">æˆ‘çš„æ–‡ä»¶ï¼šæº</string>
+  <string id="114">æˆ‘çš„æ–‡ä»¶ï¼šç›®æ ‡</string>
+  <string id="115">å¤åˆ¶</string>
+  <string id="116">ç§»åŠ¨</string>
+  <string id="117">åˆ é™¤</string>
+  <string id="118">é‡å‘½å</string>
+  <string id="119">æ–°æ–‡ä»¶å¤¹</string>
+  <string id="120">ç¡®è®¤æ–‡ä»¶å¤åˆ¶</string>
+  <string id="121">ç¡®è®¤æ–‡ä»¶ç§»åŠ¨</string>
+  <string id="122">ç¡®è®¤æ–‡ä»¶åˆ é™¤</string>
+  <string id="123">å¤åˆ¶è¿™äº›æ–‡ä»¶ï¼Ÿ</string>
+  <string id="124">ç§»åŠ¨è¿™äº›æ–‡ä»¶ï¼Ÿ</string>
+  <string id="125">åˆ é™¤è¿™äº›æ–‡ä»¶ï¼Ÿ</string>
+  <string id="126">çŠ¶æ€</string>
+  <string id="127">å¯¹åƒ</string>
+  <string id="128">ä¸€èˆ¬è®¾ç½®</string>
+  <string id="129">æ’­æ”¾å›¾ç‰‡</string>
+  <string id="130">ç³»ç»Ÿä¿¡æ¯</string>
+  <string id="131">å±å¹•</string>
+  <string id="132">ä¸“è¾‘</string>
+  <string id="133">è‰ºæœ¯å®¶</string>
+  <string id="134">æ­Œæ›²</string>
+  <string id="135">æµæ´¾</string>
+  <string id="136">æ’­æ”¾åˆ—è¡¨</string>
+  <string id="137">æŸ¥æ‰¾</string>
+  <string id="138">ç³»ç»Ÿä¿¡æ¯</string>
+  <string id="139">æ¸©åº¦ï¼š</string>
+  <string id="140">ä¸­å¤®å¤„ç†å™¨ï¼š</string>
+  <string id="141">å›¾å½¢å¤„ç†å™¨ï¼š</string>
+  <string id="142">æ—¶é—´ï¼š</string>
+  <string id="143">å½“å‰ï¼š</string>
+  <string id="144">ç‰ˆæœ¬ï¼š</string>
+  <string id="145">ç½‘ç»œï¼š</string>
+  <string id="146">ç±»åž‹ï¼š</string>
+  <string id="147">æ‰‹åŠ¨(é™æ€åˆ†é…)</string>
+  <string id="148">è‡ªåŠ¨(åŠ¨æ€åˆ†é…)</string>
+  <string id="149">ç½‘å¡åœ°å€(MAC)</string>
+  <string id="150">IPåœ°å€</string>
+  <string id="151">è¿žæŽ¥ï¼š</string>
+  <string id="152">åŠåŒå·¥</string>
+  <string id="153">å…¨åŒå·¥</string>
+  <string id="154">å­˜å‚¨å™¨</string>
+  <string id="155">é©±åŠ¨å™¨</string>
+  <string id="156">ç©ºé—²</string>
+  <string id="157">è§†é¢‘</string>
+  <string id="158">ç©ºé—²å†…å­˜</string>
+  <string id="159">æ— è¿žæŽ¥</string>
+  <string id="160">ç©ºé—²</string>
+  <string id="161">æ— æ•ˆçš„</string>
+  <string id="162">å…‰é©±å¼€å¯</string>
+  <string id="163">è¯»å–ä¸­</string>
+  <string id="164">æ— ç›˜</string>
+  <string id="165">å…‰ç›˜ä»‹ç»</string>
+  <string id="166">çš®è‚¤</string>
+  <string id="167">FTPæœåŠ¡å™¨</string>
+  <string id="168">è‡ªåŠ¨ä¸Žæ—¶é—´æœåŠ¡å™¨åŒæ­¥</string>
+  <string id="169">åˆ†è¾¨çŽ‡</string>
+  <string id="170">ä¸“è¾‘ï¼š</string>
+  <string id="171">è‰ºæœ¯å®¶ï¼š</string>
+  <string id="172">ç‰ˆæœ¬æ—¶é—´ï¼š</string>
+  <string id="173">ç­‰çº§ï¼š</string>
+  <string id="174">æµæ´¾ï¼š</string>
+  <string id="175">éŸ³è°ƒï¼š</string>
+  <string id="176">æ ¼å¼ï¼š</string>
+  <string id="177">è¯„è®ºï¼š</string>
+  <string id="178">éŸ³è½¨ï¼š</string>
+  <string id="179">æ­Œæ›²</string>
+  <string id="180">æŒç»­æ—¶é—´</string>
+  <string id="181">é€‰æ‹©ä¸“è¾‘</string>
+  <string id="182">éŸ³è½¨</string>
+  <string id="183">å›žé¡¾</string>
+  <string id="184">åˆ·æ–°</string>
+  <string id="185">æŸ¥æ‰¾ä¸“è¾‘</string>
+  <string id="186">ç¡®å®š</string>
+  <string id="187">æ²¡æœ‰æ‰¾åˆ°ä¸“è¾‘ï¼</string>
+  <string id="188">å…¨éƒ¨é€‰æ‹©</string>
+  <string id="189">æŸ¥æ‰¾åª’ä½“ä¿¡æ¯</string>
+  <string id="190">ä¿å­˜</string>
+  <string id="191">æ‰“ä¹±æ¬¡åº</string>
+  <string id="192">æ¸…é™¤</string>
+  <string id="193">æŸ¥æ‰¾</string>
+  <string id="194">æŸ¥æ‰¾â€¦</string>
+  <string id="195">æ²¡æœ‰å‘çŽ°IMDbä¿¡æ¯ï¼</string>
+  <string id="196">é€‰æ‹©å½±ç‰‡ï¼š</string>
+  <string id="197">è¯»å–IMDbä¿¡æ¯</string>
+  <string id="198">è¯»å–å½±ç‰‡è¯¦ç»†èµ„æ–™</string>
+  <string id="199">å¯¼æ¼”ï¼š</string>
+  <string id="200">ç¼–å‰§ï¼š</string>
+  <string id="201">å¹´ï¼š</string>
+  <string id="202">æ ‡è¯­ï¼š</string>
+  <string id="203">å‰§æƒ…å¤§çº²ï¼š</string>
+  <string id="204">è¯„åˆ†ï¼š</string>
+  <string id="205">å¾—ç¥¨ï¼š</string>
+  <string id="206">æ¼”å‘˜è¡¨</string>
+  <string id="207">å‰§æƒ…ç®€ä»‹</string>
+  <string id="208">æ’­æ”¾</string>
+  <string id="209">å‘åŽ</string>
+  <string id="210">å‘å‰</string>
+  <string id="211">æŸ¥æ‰¾åº”ç”¨è½¯ä»¶</string>
+  <string id="212">æ‰¾åˆ°åº”ç”¨è½¯ä»¶</string>
+  <string id="213">ç•Œé¢æ ¡å‡†</string>
+  <string id="214">å±å¹•æ ¡å‡†</string>
+  <string id="215">æŸ”åŒ–</string>
+  <string id="216">ç¼©æ”¾</string>
+  <string id="217">å»¶ä¼¸</string>
+  <string id="218">DVDé©±åŠ¨å™¨</string>
+  <string id="219">è¯·æ”¾å…¥å…‰ç›˜</string>
+  <string id="220">è¿œç¨‹å…±äº«</string>
+  <string id="221">ç½‘ç»œæœªè¿žæŽ¥</string>
+  <string id="222">å–æ¶ˆ</string>
+  <string id="223">è‡ªåŠ¨å®½å±è½¬æ¢</string>
+  <string id="224">é€Ÿåº¦</string>
+  <string id="225">ç‰¹æ•ˆè¿‡æ¸¡æ—¶é—´</string>
+  <string id="226">å¼€å¯ PAL60</string>
+  <string id="227">å¼€å¯ CDDB</string>
+  <string id="228">éšæœºæ’­æ”¾åˆ—è¡¨</string>
+  <string id="229">å…³é—­ç¡¬ç›˜ ç©ºé—²æ—¶é—´(åˆ†)</string>
+  <string id="230">æ»¤é•œ</string>
+  <string id="231">æ— </string>
+  <string id="232">ç‚¹</string>
+  <string id="233">æ¡çº¹</string>
+  <string id="234">éžç­‰æ–¹æ€§</string>
+  <string id="235">æ¢…èŠ±å¤šé‡å–æ ·</string>
+  <string id="236">ä¸‰ç»´é”åŒ–</string>
+  <string id="237">ç¼©å°</string>
+  <string id="238">æ”¾å¤§</string>
+  <string id="239">æ’­æ”¾å®ŒæˆåŽæ¸…é™¤åˆ—è¡¨</string>
+  <string id="240">è‡ªåŠ¨è¿è¡Œ DVD-è§†é¢‘</string>
+  <string id="241">è‡ªåŠ¨è¿è¡Œ VCD/SVCD</string>
+  <string id="242">è‡ªåŠ¨è¿è¡Œ Audio-CD</string>
+  <string id="243">è‡ªåŠ¨è¿è¡Œ æ¸¸æˆå…‰ç›˜</string>
+  <string id="244">è‡ªåŠ¨è¿è¡Œ è§†é¢‘æ–‡ä»¶</string>
+  <string id="245">è‡ªåŠ¨è¿è¡Œ éŸ³ä¹æ–‡ä»¶</string>
+  <string id="246">è‡ªåŠ¨è¿è¡Œ å›¾ç‰‡æ–‡ä»¶</string>
+  <string id="247">è„šæœ¬</string>
+  <string id="248">è¯­è¨€</string>
+  <string id="249">éŸ³ä¹</string>
+  <string id="250">è§†è§‰æ•ˆæžœ</string>
+  <string id="251">é€‰æ‹©ç›®çš„ç›®å½•</string>
+  <string id="252">ç«‹ä½“å£°è¾“å‡ºåˆ°æ‰€æœ‰æ‰¬å£°å™¨</string>
+  <string id="253">é¢‘é“</string>
+  <string id="254">- DDç«‹ä½“æ•°ç éŸ³æ•ˆ</string>
+  <string id="255">CDDB</string>
+  <string id="256">ä»Ž CDDB è¯»å–ä¿¡æ¯</string>
+  <string id="257">é”™è¯¯</string>
+  <string id="258">å¼€å¯ID3æ ‡ç­¾</string>
+  <string id="259">å¼€å§‹</string>
+  <string id="260">å¿«æ·</string>
+  <string id="261">ç­‰å¾…å¼€å§‹â€¦</string>
+  <string id="262">è„šæœ¬è¾“å‡º</string>
+  <string id="263">HTTPæœåŠ¡å™¨</string>
+  <string id="264">å½•éŸ³</string>
+  <string id="265">åœæ­¢å½•éŸ³</string>
+  <string id="266">æŽ’åºï¼šéŸ³è½¨</string>
+  <string id="267">æŽ’åºï¼šæ—¶é—´</string>
+  <string id="268">æŽ’åºï¼šè‡ªåŠ¨è¿è¡Œ</string>
+  <string id="269">æŽ’åºï¼šè‰ºæœ¯å®¶</string>
+  <string id="270">æŽ’åºï¼šä¸“è¾‘</string>
+  <string id="271">æŽ’è¡Œå‰ 100</string>
+  <string id="272">å·¦ä¸Šéƒ¨è¾¹æ¡†è¡¥å¿</string>
+  <string id="273">å³ä¸‹éƒ¨è¾¹æ¡†è¡¥å¿</string>
+  <string id="274">å­—å¹•ä½ç½®</string>
+  <string id="275">åƒç´ æ¯”å€¼è°ƒæ•´</string>
+  <string id="276">ç§»åŠ¨ç®­å¤´æ”¹å˜è¾¹æ¡†</string>
+  <string id="277">ç§»åŠ¨çº¿æ¡æ”¹å˜å­—å¹•çš„ä½ç½®</string>
+  <string id="278">å˜åŠ¨æ–¹å—ä½¿å…¶å®Œç¾Ž</string>
+  <string id="279">ä¸èƒ½è¯»å–è®¾ç½®</string>
+  <string id="280">ä½¿ç”¨é»˜è®¤fallbacks</string>
+  <string id="281">è¯·æ£€æŸ¥ .xml æ–‡ä»¶</string>
+  <string id="282">æ‰¾åˆ°%iæ¡</string>
+  <string id="283">æŸ¥æ‰¾ç»“æžœ</string>
+  <string id="284">æ— ç»“æžœ</string>
+  <string id="285">åäº¤é”™æ»¤é•œ</string>
+  <string id="286">åŽæœŸæ»¤é•œ</string>
+  <string id="287">å­—å¹•</string>
+  <string id="288">å­—ä½“</string>
+  <string id="289">- å°ºå¯¸</string>
+  <string id="290">åŠ¨æ€åŽ‹ç¼©</string>
+  <string id="291">è§†é¢‘</string>
+  <string id="292">éŸ³é¢‘</string>
+  <string id="293">å­—å¹•</string>
+  <string id="294">åˆ›å»ºä¹¦ç­¾</string>
+  <string id="295">é‡è¦†ä¹¦ç­¾</string>
+  <string id="296">æ¸…é™¤ä¹¦ç­¾</string>
+  <string id="297">å£°éŸ³å»¶è¿Ÿ</string>
+  <string id="298">æ»‘åŠ¨å™¨</string>
+  <string id="300">1.è¯­è¨€</string>
+  <string id="301">2.éŸ³é‡</string>
+  <string id="302">3.æµ</string>
+  <string id="303">å»¶è¿Ÿ</string>
+  <string id="304">è¯­è¨€</string>
+  <string id="305">å¼€å¯</string>
+  <string id="306">éžéš”è¡Œæ‰«çž„</string>
+  <string id="307">- è‡ªåŠ¨åŽå¤„ç†</string>
+  <string id="308">- åž‚ç›´åˆ†å—æ»¤é•œ</string>
+  <string id="309">- æ°´å¹³åˆ†å—æ»¤é•œ</string>
+  <string id="310">- è‡ªåŠ¨äº®åº¦/å¯¹æ¯”åº¦</string>
+  <string id="311">- æ¶ˆé™¤ç‘•ç–µ</string>
+  <string id="312">(0=è‡ªåŠ¨)</string>
+  <string id="313">æ¸…é™¤æ•°æ®åº“</string>
+  <string id="314">å‡†å¤‡â€¦</string>
+  <string id="315">æ•°æ®åº“é”™è¯¯ï¼</string>
+  <string id="316">æ¸…é™¤æ­Œæ›²â€¦</string>
+  <string id="317">æˆåŠŸæ¸…é™¤æ•°æ®åº“ï¼</string>
+  <string id="318">æ¸…é™¤æ­Œæ›²â€¦</string>
+  <string id="319">æ¸…é™¤æ­Œæ›²é”™è¯¯ï¼</string>
+  <string id="320">æ¸…é™¤è‰ºæœ¯å®¶â€¦</string>
+  <string id="321">æ¸…é™¤è‰ºæœ¯å®¶é”™è¯¯ï¼</string>
+  <string id="322">æ¸…é™¤æµæ´¾â€¦</string>
+  <string id="323">æ¸…é™¤æµæ´¾é”™è¯¯ï¼</string>
+  <string id="324">æ¸…é™¤è·¯å¾„â€¦</string>
+  <string id="325">æ¸…é™¤è·¯å¾„é”™è¯¯ï¼</string>
+  <string id="326">æ¸…é™¤ä¸“è¾‘â€¦</string>
+  <string id="327">æ¸…é™¤ä¸“è¾‘é”™è¯¯ï¼</string>
+  <string id="328">å†™å…¥â€¦</string>
+  <string id="329">å†™å…¥é”™è¯¯ï¼</string>
+  <string id="330">è¿™éœ€è¦ä¸€äº›æ—¶é—´â€¦</string>
+  <string id="331">åŽ‹ç¼©æ•°æ®åº“ä¸­â€¦</string>
+  <string id="332">åŽ‹ç¼©æ•°æ®åº“é”™è¯¯ï¼</string>
+  <string id="333">ä½ æƒ³è¦æ¸…é™¤æˆ‘çš„éŸ³ä¹åº“ï¼Ÿ</string>
+  <string id="334">æ¸…é™¤éŸ³ä¹åº“æ•°æ®â€¦</string>
+  <string id="335">å¼€å§‹</string>
+  <string id="336">æ ¡æ­£æ¡¢æ•°</string>
+  <string id="337">éŸ³é¢‘è¾“å‡º</string>
+  <string id="338">æ¨¡æ‹Ÿ</string>
+  <string id="339">æ•°ç </string>
+  <string id="340">å¤šæ ·çš„è‰ºæœ¯å®¶</string>
+  <string id="341">æ’­æ”¾DVD</string>
+  <string id="342">å½±ç‰‡</string>
+  <string id="343">æ ¡æ­£æ¡¢æ•°</string>
+  <string id="344">æ¼”å‘˜</string>
+  <string id="345">å¹´</string>
+  <string id="346">å †æ ˆ</string>
+  <string id="347">éžå †æ ˆ</string>
+  <string id="348">å±•å¼€ç›®å½•å±‚çº§</string>
+  <string id="349">åªæ˜¾ç¤ºDefault.xbe</string>
+  <string id="350">ç¨‹åº</string>
+  <string id="351">å…³</string>
+  <string id="352">æ˜æš—</string>
+  <string id="353">é»‘</string>
+  <string id="354">éª‡å®¢ä»»åŠ¡</string>
+  <string id="355">å±ä¿ç©ºé—²æ—¶é—´</string>
+  <string id="356">å±å¹•ä¿æŠ¤æ¨¡å¼</string>
+  <string id="357">å…³æœºç©ºé—²æ—¶é—´</string>
+  <string id="358">å…¨éƒ¨ä¸“è¾‘</string>
+  <string id="359">æ–°çš„ä¸“è¾‘</string>
+  <string id="360">å±å¹•ä¿æŠ¤</string>
+  <string id="361">å¹»ç¯ç‰‡[å¾ªçŽ¯]</string>
+  <string id="362">å±å¹•ä¿æŠ¤è¡°å‡çº§åˆ«(%)</string>
+  <string id="363">æŽ’åºï¼šæ–‡ä»¶</string>
+  <string id="364">- AC3/DTSæ•°ç éŸ³æ•ˆ</string>
+  <string id="365">æŽ’åºï¼šåå­—</string>
+  <string id="366">æŽ’åºï¼šå¹´</string>
+  <string id="367">æŽ’åºï¼šè¯„åˆ†</string>
+  <string id="368">IMDb</string>
+  <string id="369">æ ‡é¢˜</string>
+  <string id="370">æš´é£Žé›¨</string>
+  <string id="371">å±€éƒ¨</string>
+  <string id="372">å¤§éƒ¨åˆ†</string>
+  <string id="373">æ™´æœ—</string>
+  <string id="374">é˜´</string>
+  <string id="375">é›ª</string>
+  <string id="376">é›¨</string>
+  <string id="377">è½»å¾®</string>
+  <string id="378">ä¸Šåˆ</string>
+  <string id="379">ä¸‹åˆ</string>
+  <string id="380">é˜µé›¨</string>
+  <string id="381">å°‘æ•°</string>
+  <string id="382">åˆ†æ•£çš„</string>
+  <string id="383">é£Ž</string>
+  <string id="384">å¼ºçƒˆ</string>
+  <string id="385">è½¬æ™´</string>
+  <string id="386">æ™´</string>
+  <string id="387">äº‘</string>
+  <string id="388">ææ—©</string>
+  <string id="389">é˜µé›¨</string>
+  <string id="390">é£˜é›ª</string>
+  <string id="391">ä½Ž</string>
+  <string id="392">ä¸­</string>
+  <string id="393">é«˜</string>
+  <string id="394">é›¾</string>
+  <string id="395">éœ¾</string>
+  <string id="396">é€‰æ‹©ä½ç½®</string>
+  <string id="397">åˆ·æ–°æ—¶é—´</string>
+  <string id="398">æ¸©åº¦å•ä½</string>
+  <string id="399">é€Ÿåº¦å•ä½</string>
+  <string id="400">å¤©æ°”</string>
+  <string id="401">æ¸©åº¦</string>
+  <string id="402">ä½“æ„Ÿæ¸©åº¦</string>
+  <string id="403">ç´«å¤–çº¿</string>
+  <string id="404">é£Ž</string>
+  <string id="405">éœ²ç‚¹</string>
+  <string id="406">æ¹¿åº¦</string>
+  <string id="407">é£Žå‘</string>
+  <string id="408">é£Žé€Ÿ</string>
+  <string id="410">è®¿é—®Weather.com</string>
+  <string id="411">å–å¾—å¤©æ°”æ•°æ®ï¼š</string>
+  <string id="412">ä¸èƒ½èŽ·å¾—å¤©æ°”æ•°æ®</string>
+  <string id="413">æŒ‡å—</string>
+  <string id="414">æ­¤ä¸“è¾‘æ— è¯„è®º</string>
+  <string id="415">ä¸‹è½½ç¼©ç•¥å›¾â€¦</string>
+  <string id="416">ä¸å¯ç”¨</string>
+  <string id="417">æ˜¾ç¤ºï¼šå¤§å›¾æ ‡</string>
+  <string id="418">æˆ‘çš„è§†é¢‘/æµæ´¾</string>
+  <string id="419">æˆ‘çš„è§†é¢‘/æ¼”å‘˜</string>
+  <string id="420">æˆ‘çš„è§†é¢‘/å¹´</string>
+  <string id="421">æˆ‘çš„è§†é¢‘/è‡ªåŠ¨è¿è¡Œ</string>
+  <string id="422">åˆ é™¤ä¸“è¾‘ä¿¡æ¯</string>
+  <string id="423">åˆ é™¤ CDDB ä¿¡æ¯</string>
+  <string id="424">é€‰æ‹©</string>
+  <string id="425">æ‰¾ä¸åˆ°ä¸“è¾‘ä¿¡æ¯ã€‚</string>
+  <string id="426">æ‰¾ä¸åˆ° CDDB ä¿¡æ¯ï¼</string>
+  <string id="427">å…‰ç›˜ï¼š</string>
+  <string id="428">è¯·æ”¾å…¥æ­£ç¡®çš„ CD/DVD</string>
+  <string id="429">è¯·æ”¾å…¥ CD/DVD</string>
+  <string id="430">æŽ’åºï¼šDVD#</string>
+  <string id="431">æ— ç¼“å­˜</string>
+  <string id="432">ä»Žæ•°æ®åº“ä¸­åˆ é™¤å½±ç‰‡</string>
+  <string id="433">ä½ ç¡®å®šåˆ é™¤</string>
+  <string id="434">å½±ç‰‡ï¼Ÿ</string>
+  <string id="435">è½¨</string>
+  <string id="436">å¹´ï¼š</string>
+  <string id="437">æŒç»­æ—¶é—´ï¼š</string>
+  <string id="438">æ‰“å¼€æ–‡ä»¶</string>
+  <string id="439">ç¼“å­˜</string>
+  <string id="440">ç¡¬ç›˜</string>
+  <string id="441">UDF</string>
+  <string id="442">ç½‘ç»œ</string>
+  <string id="443">äº’è”ç½‘</string>
+  <string id="444">è§†é¢‘</string>
+  <string id="445">éŸ³é¢‘</string>
+  <string id="446">DVD</string>
+  <string id="447">è‡ªåŠ¨è¿è¡Œ</string>
+  <string id="448">æ¶²æ™¶å±è®¾ç½®</string>
+  <string id="449">å¼€å¯</string>
+  <string id="450">æŸ±</string>
+  <string id="451">ç¬¬ 1 åˆ—ä½å€</string>
+  <string id="452">ç¬¬ 2 åˆ—ä½å€</string>
+  <string id="453">ç¬¬ 3 åˆ—ä½å€</string>
+  <string id="454">ç¬¬ 4 åˆ—ä½å€</string>
+  <string id="455">è¡Œ</string>
+  <string id="456">æ¨¡å¼</string>
+  <string id="457">é€‰æ‹©æ˜¾ç¤º</string>
+  <string id="458">é‡è¦†æ ‡è®°</string>
+  <string id="459">å­—å¹•</string>
+  <string id="460">éŸ³é¢‘æµ</string>
+  <string id="461">[å¯ç”¨]</string>
+  <string id="462">å­—å¹•</string>
+  <string id="463">èƒŒå…‰</string>
+  <string id="464">äº®åº¦</string>
+  <string id="465">å¯¹æ¯”åº¦</string>
+  <string id="466">ä¼½ç </string>
+  <string id="467">ç±»åž‹</string>
+  <string id="468">ç§»åŠ¨çº¿æ¡æ”¹å˜æ’­æ”¾å·¥å…·æ¡ä½ç½®</string>
+  <string id="469">æ’­æ”¾å·¥å…·ä½ç½®</string>
+  <string id="470">æ”¹æœºè€…</string>
+  <string id="471">æ”¹æœºèŠ¯ç‰‡</string>
+  <string id="472">è§†é¢‘æ’­æ”¾å·¥å…·æ¡ è¶…æ—¶</string>
+  <string id="473">é«˜è´¨é‡å–æ ·</string>
+  <string id="474">å…³</string>
+  <string id="475">åªæœ‰éŸ³ä¹</string>
+  <string id="476">éŸ³ä¹&amp;è§†é¢‘</string>
+  <string id="477">ä¸èƒ½è¯»å–æ’­æ”¾åˆ—è¡¨</string>
+  <string id="478">æ’­æ”¾å·¥å…·æ¡</string>
+  <string id="479">çš®è‚¤å’Œè¯­è¨€</string>
+  <string id="480">ç”¨æˆ·ç•Œé¢</string>
+  <string id="481">éŸ³é¢‘è®¾ç½®</string>
+  <string id="482">å…³äºŽXBMC</string>
+  <string id="483">ä¸“è¾‘</string>
+  <string id="484">è‰ºæœ¯å®¶</string>
+  <string id="485">åˆ é™¤ä¸“è¾‘</string>
+  <string id="486">é‡å¤</string>
+  <string id="487">é‡å¤å•é¦–</string>
+  <string id="488">é‡å¤ç›®å½•æ’­æ”¾åˆ—è¡¨</string>
+  <string id="489">è‡ªåŠ¨æ’­æ”¾ä¸‹ä¸ªé¡¹ç›®</string>
+  <string id="490">è‡ªåŠ¨é€‰æ‹©æ­Œæ›²çš„åˆ—è¡¨å’Œå›¾è¡¨</string>
+  <string id="491">- ä½¿ç”¨å¤§å›¾æ ‡</string>
+  <string id="492">Vobsubså­—å¹•æ¯”ä¾‹</string>
+  <string id="493">é«˜çº§é€‰é¡¹(é€‚åˆä¸“å®¶ï¼)</string>
+  <string id="494">æ€»ä½“éŸ³é‡</string>
+  <string id="495">ä»¥æ¡Œé¢çš„è§£æžåº¦æ’­æ”¾å½±ç‰‡</string>
+  <string id="496">æ ¡å‡†</string>
+  <string id="497">éšè—åª’ä½“æ‰©å±•å</string>
+  <string id="498">æŽ’åºï¼šç±»åž‹</string>
+  <string id="499">ä¸èƒ½è¿žæŽ¥åˆ° www.allmusic.com</string>
+  <string id="500">ä¸‹è½½ä¸“è¾‘ä¿¡æ¯å¤±è´¥â€¦</string>
+  <string id="501">å¯»æ‰¾ä¸“è¾‘åâ€¦</string>
+  <string id="502">å¼€å¯</string>
+  <string id="503">å¿™</string>
+  <string id="504">ç©º</string>
+  <string id="505">è¯»å–åª’ä½“ä¿¡æ¯â€¦</string>
+  <string id="506">ä½¿ç”¨ç›®å½•åç§°ä½œæè¿°</string>
+  <string id="507">æŽ’åºï¼šä½¿ç”¨æ•°</string>
+  <string id="508">ä¸ä½¿ç”¨æ·å¾„åŠæ‰«çž„</string>
+  <string id="509">ç¼“å­˜ç¨‹åºå›¾æ ‡</string>
+  <string id="510">å¼€å¯å¯è§†åŒ–æ•ˆæžœ</string>
+  <string id="511">å¯ç”¨è§†é¢‘æ¨¡å¼è‡ªåŠ¨åˆ‡æ¢åŠŸèƒ½</string>
+  <string id="512">å¯åŠ¨ç•Œé¢</string>
+  <string id="513">ä¸»ç•Œé¢</string>
+  <string id="514">è®¾ç½®ç•Œé¢</string>
+  <string id="515">æµæ´¾</string>
+  <string id="516">æ–‡æ¡£ç®¡ç†</string>
+  <string id="517">æœ€è¿‘æ’­æ”¾çš„ä¸“è¾‘</string>
+  <string id="518">è¿è¡Œ</string>
+  <string id="519">è¿è¡Œæ–¹å¼</string>
+  <string id="520">ç¼–è¾‘è½¯ä»¶æ ‡é¢˜</string>
+  <string id="521">åˆè¾‘</string>
+  <string id="522">ç§»é™¤æº</string>
+  <string id="588">å–æ¶ˆèˆžä¼šæ¨¡å¼</string>
+  <string id="589">èˆžä¼šæ¨¡å¼</string>
+  <string id="590">éšæœº</string>
+  <string id="591">å…³</string>
+  <string id="592">å•é¦–</string>
+  <string id="593">å…¨éƒ¨</string>
+  <string id="594">å…³</string>
+  <string id="595">é‡å¤ï¼šå…³é—­</string>
+  <string id="596">é‡å¤ï¼šå•é¦–</string>
+  <string id="597">é‡å¤ï¼šæ‰€æœ‰</string>
+  <string id="600">åŽ‹ç¼©éŸ³ä¹CD</string>
+  <string id="601">ä¸­ç­‰</string>
+  <string id="602">æ ‡å‡†</string>
+  <string id="603">æžå¥½</string>
+  <string id="604">å›ºå®šç çŽ‡</string>
+  <string id="605">åŽ‹ç¼©â€¦</string>
+  <string id="606">éŸ³è½¨åºå·ï¼š</string>
+  <string id="607">åˆ°ï¼š</string>
+  <string id="608">ä¸èƒ½åŽ‹ç¼©CDæˆ–éŸ³è½¨</string>
+  <string id="609">CDåŽ‹ç¼©è·¯å¾„æ²¡æœ‰è®¾ç½®åœ¨XboxMediaCenter.xml</string>
+  <string id="620">åŽ‹ç¼©éŸ³ä¹CD</string>
+  <string id="621">ç¼–ç å™¨</string>
+  <string id="622">è´¨é‡</string>
+  <string id="623">ç çŽ‡</string>
+  <string id="624">åŒ…æ‹¬éŸ³è½¨åºå·</string>
+  <string id="625">æ‰€æœ‰æ­Œæ›²</string>
+  <string id="629">æ˜¾ç¤ºæ¨¡å¼</string>
+  <string id="630">æ ‡å‡†</string>
+  <string id="631">æ”¾ç¼©ä»¥å¡«æ»¡å±å¹•</string>
+  <string id="632">æ‹‰ä¼¸ä¸º 4:3</string>
+  <string id="633">æ‹‰ä¼¸ä¸º 14:9</string>
+  <string id="634">æ‹‰ä¼¸ä¸º 16:9</string>
+  <string id="635">åŽŸå§‹å°ºå¯¸</string>
+  <string id="636">å®šåˆ¶</string>
+  <string id="637">å›žæ”¾å¢žç›Š</string>
+  <string id="638">å›žæ”¾å¢žç›Šæ¨¡å¼</string>
+  <string id="639">ä½¿ç”¨éŸ³è½¨å¢žç›Šç­‰çº§</string>
+  <string id="640">ä½¿ç”¨ä¸“è¾‘å¢žç›Šç­‰çº§</string>
+  <string id="641">å‰çº§æ”¾å¤§å™¨éŸ³é‡ - é‡å¤æ’­æ”¾çš„æ–‡ä»¶</string>
+  <string id="642">å‰çº§æ”¾å¤§å™¨éŸ³é‡ - ä¸é‡å¤æ’­æ”¾çš„æ–‡ä»¶</string>
+  <string id="643">æ’­æ”¾å¢žç›Šæ—¶å¿½ç•¥æ¶ˆæ³¢å¤±çœŸ</string>
+  <string id="644">ä¿®å‰ªé»‘è¾¹</string>
+  <string id="645">éœ€è¦ç¼“å­˜ä¸€ä¸ªå¤§æ–‡ä»¶ï¼Œæ˜¯å¦ç»§ç»­ï¼Ÿ</string>
+  <string id="646">ç§»é™¤æ ‡é¢˜</string>
+  <string id="700">æ¸…é™¤éŸ³ä¹åº“</string>
+  <string id="701">æ¸…é™¤éŸ³ä¹åº“ä¸­çš„æ—§æ–‡ä»¶</string>
+  <string id="702">ç›®å‰è·¯å¾„æ›¾è¢«æ‰«çž„è¿‡ã€‚</string>
+  <string id="703">æŒ‰ Yes æ›´æ–°ç›®å‰è·¯å¾„æ‰€æœ‰æ­Œæ›²ã€‚</string>
+  <string id="704">æŒ‰ No åªå¢žæ–°æ­Œã€‚</string>
+  <string id="705">ç½‘ç»œ</string>
+  <string id="706">HTTPä»£ç†æœåŠ¡å™¨åœ°å€</string>
+  <string id="707">HTTPä»£ç†æœåŠ¡å™¨ç«¯å£</string>
+  <string id="708">å¯ç”¨HTTPä»£ç†æœåŠ¡å™¨</string>
+  <string id="709">XLink Kai è´¦å·</string>
+  <string id="710">XLink Kai å¯†ç </string>
+  <string id="711">ç½‘ç»œåœ°å€(IP)</string>
+  <string id="712">æ— æ•ˆç«¯å£ï¼å¿…é¡»åœ¨ 1 è‡³ 65535 ä¹‹é—´ã€‚</string>
+  <string id="713">HTTPä»£ç†</string>
+  <string id="714">XLink Kai</string>
+  <string id="715">IPè®¾ç½®</string>
+  <string id="716">è‡ªåŠ¨(åŠ¨æ€åˆ†é…)</string>
+  <string id="717">æ‰‹åŠ¨(é™æ€åˆ†é…)</string>
+  <string id="718">é»˜è®¤(Dashboard)</string>
+  <string id="719">- IP  åœ°å€</string>
+  <string id="720">- å­ç½‘æŽ©ç </string>
+  <string id="721">- é»˜è®¤ç½‘å…³</string>
+  <string id="722">- DNSæœåŠ¡å™¨</string>
+  <string id="723">ä¿å­˜&amp;é‡å¯</string>
+  <string id="724">æ— æ•ˆåœ°å€ï¼æ­£ç¡®æ ¼å¼ä¸ºï¼šAAA.BBB.CCC.DDD</string>
+  <string id="725">ä»Ž0åˆ°255ä¹‹é—´</string>
+  <string id="726">æ”¹å˜æœªä¿å­˜ï¼Œç»§ç»­ä¸ä¿å­˜å—ï¼Ÿ</string>
+  <string id="727">WebæœåŠ¡å™¨</string>
+  <string id="728">FTPæœåŠ¡å™¨</string>
+  <string id="729">äº’è”ç½‘æ—¶é—´</string>
+  <string id="730">WebæœåŠ¡å™¨ç«¯å£</string>
+  <string id="731">ç½‘ç»œæ ¡æ—¶æœåŠ¡å™¨åœ°å€</string>
+  <string id="732">ä¿å­˜&amp;åº”ç”¨</string>
+  <string id="733">WebæœåŠ¡å™¨å¯†ç </string>
+  <string id="734">æ— å¯†ç </string>
+  <string id="735">- å­—ç¬¦é›†</string>
+  <string id="736">- å­—å½¢</string>
+  <string id="737">- é¢œè‰²</string>
+  <string id="738">å¸¸è§„</string>
+  <string id="739">ç²—ä½“</string>
+  <string id="740">æ–œä½“</string>
+  <string id="741">ç²—æ–œä½“</string>
+  <string id="742">ç™½è‰²</string>
+  <string id="743">é»„è‰²</string>
+  <string id="744">æ–‡ä»¶</string>
+  <string id="745">ç›®å‰å›¾ç¤ºæ— å·±æœå¯»èµ„è®¯</string>
+  <string id="746">åˆ‡æ¢åˆ°æ–‡ä»¶å›¾ç¤º</string>
+  <string id="747">å›¾åƒè½½å…¥é”™è¯¯</string>
+  <string id="748">ç¼–è¾‘è·¯å¾„</string>
+  <string id="749">æ·»åŠ å…±äº«</string>
+  <string id="750">ç¡®å®šå—ï¼Ÿ</string>
+  <string id="751">ç§»é™¤å…±äº«</string>
+  <string id="752">ç¼–è¾‘å…±äº«è·¯å¾„</string>
+  <string id="753">ç¼–è¾‘å…±äº«åç§°</string>
+  <string id="754">æ–°å¢žç¨‹åºè¿žæŽ¥</string>
+  <string id="755">ç¼–è¾‘ç¨‹åºè·¯å¾„</string>
+  <string id="756">ç¼–è¾‘ç¨‹åºåç§°</string>
+  <string id="757">ç¼–è¾‘è·¯å¾„æ·±åº¦</string>
+  <string id="758">åˆ é™¤ç¨‹åºè¿žæŽ¥</string>
+  <string id="759">æ˜¾ç¤ºï¼šå¤§åˆ—è¡¨</string>
+  <string id="760">é»„è‰²</string>
+  <string id="761">ç™½è‰²</string>
+  <string id="762">è“è‰²</string>
+  <string id="763">äº®ç»¿</string>
+  <string id="764">ç¿ ç»¿</string>
+  <string id="765">é’è‰²</string>
+  <string id="766">ä¿ç•™</string>
+  <string id="767">ä¿ç•™</string>
+  <string id="768">ä¿ç•™</string>
+  <string id="769">ä¿ç•™</string>
+  <string id="770">é”™è¯¯%iï¼šä¸èƒ½å…±äº«</string>
+  <string id="771">FTP æœåŠ¡å™¨é™å®šå·¥ä½œåœ¨FATXæ ¼å¼</string>
+  <string id="772">éŸ³é¢‘ç¡¬ä»¶</string>
+  <string id="773">æœç´¢ä¸­</string>
+  <string id="774">å¹»ç¯ç‰‡æ–‡ä»¶å¤¹</string>
+  <string id="998">XLink KAI</string>
+  <string id="999">åœ¨çº¿æ¸¸æˆ</string>
+  <string id="1000">å±å¹•ä¿æŠ¤é¢„è§ˆ</string>
+  <string id="1001">æ— æ³•è¿žæŽ¥</string>
+  <string id="1002">XBMCæ— æ³•è¿žæŽ¥åˆ°è¯¥ç½‘ä¸Šé‚»å±…ï¼</string>
+  <string id="1003">è¿™å¯èƒ½æ˜¯ç”±äºŽç½‘ç»œæ²¡æœ‰è¿žæŽ¥ã€‚</string>
+  <string id="1004">å¯ä»¥ç”¨å…¶ä»–æ–¹å¼æ¥æ·»åŠ å®ƒå—ï¼Ÿ</string>
+  <string id="1005">å…±äº«å</string>
+  <string id="1006">IPåœ°å€</string>
+  <string id="1007">æ·»åŠ ç½‘ä¸Šé‚»å±…</string>
+  <string id="1008">åè®®</string>
+  <string id="1009">æœåŠ¡å™¨åœ°å€</string>
+  <string id="1010">æœåŠ¡å™¨åç§°</string>
+  <string id="1011">è¿œç¨‹è·¯å¾„</string>
+  <string id="1012">å…±äº«æ–‡ä»¶å¤¹</string>
+  <string id="1013">ç«¯å£</string>
+  <string id="1014">è´¦å·</string>
+  <string id="1015">ç½‘ç»œæœåŠ¡å™¨</string>
+  <string id="1016">è¾“å…¥è¯¥æœåŠ¡å™¨çš„ç½‘ç»œåœ°å€</string>
+  <string id="1017">è¾“å…¥æœåŠ¡å™¨è¿œç¨‹è·¯å¾„</string>
+  <string id="1018">è¾“å…¥ç«¯å£å·</string>
+  <string id="1019">è¾“å…¥è´¦å·</string>
+  <string id="1020">æ·»åŠ %sç›®å½•</string>
+  <string id="1021">è¾“å…¥æˆ–é€‰æ‹©ç›®å½•ã€‚</string>
+  <string id="1022">ä¸ºè¯¥ç›®å½•å‘½åã€‚</string>
+  <string id="1023">æµè§ˆç›®å½•</string>
+  <string id="1024">æµè§ˆ</string>
+  <string id="1025">æ— æ³•èŽ·å¾—ç›®å½•ä¿¡æ¯ã€‚</string>
+  <string id="1026">æ·»åŠ ç›®å½•</string>
+  <string id="1027">ç¼–è¾‘ç›®å½•</string>
+  <string id="1028">ç¼–è¾‘%sç›®å½•</string>
+  <string id="1029">è¾“å…¥æ–°çš„æ ‡ç­¾</string>
+  <string id="1030">é•œåƒ</string>
+  <string id="1031">é•œåƒç›®å½•</string>
+  <string id="1032">æ·»åŠ ä¸€ä¸ªç½‘ä¸Šé‚»å±…</string>
+  <string id="1200">SMB å…±äº«è®¾ç½®</string>
+  <string id="1202">SMB å·¥ä½œç»„</string>
+  <string id="1203">SMB è´¦å·</string>
+  <string id="1204">SMB å¯†ç </string>
+  <string id="1207">SMB WINS-æœåŠ¡å™¨</string>
+  <string id="1210">åˆ é™¤</string>
+  <string id="1211">éŸ³ä¹</string>
+  <string id="1212">è§†é¢‘</string>
+  <string id="1213">å›¾ç‰‡</string>
+  <string id="1214">æ–‡ä»¶</string>
+  <string id="1215">éŸ³ä¹&amp;è§†é¢‘ </string>
+  <string id="1216">éŸ³ä¹&amp;å›¾ç‰‡</string>
+  <string id="1217">éŸ³ä¹&amp;æ–‡ä»¶</string>
+  <string id="1218">è§†é¢‘&amp;å›¾ç‰‡</string>
+  <string id="1219">è§†é¢‘&amp;æ–‡ä»¶</string>
+  <string id="1220">å›¾ç‰‡&amp;æ–‡ä»¶</string>
+  <string id="1221">éŸ³ä¹&amp;è§†é¢‘&amp;å›¾ç‰‡</string>
+  <string id="1222">éŸ³ä¹&amp;è§†é¢‘&amp;å›¾ç‰‡&amp;æ–‡ä»¶</string>
+  <string id="1223">ç¦ç”¨</string>
+  <string id="1224">æ™®é€šç”¨æˆ·</string>
+  <string id="1225">é«˜çº§ç”¨æˆ·</string>
+  <string id="1226">æ–‡ä»¶&amp;éŸ³ä¹&amp;è§†é¢‘</string>
+  <string id="1227">æ–‡ä»¶&amp;å›¾ç‰‡&amp;éŸ³ä¹</string>
+  <string id="1228">æ–‡ä»¶&amp;å›¾ç‰‡&amp;è§†é¢‘</string>
+  <string id="1229">éŸ³ä¹&amp;ç¨‹åº</string>
+  <string id="1230">è§†é¢‘&amp;ç¨‹åº</string>
+  <string id="1231">å›¾ç‰‡&amp;ç¨‹åº</string>
+  <string id="1232">éŸ³ä¹&amp;è§†é¢‘ &amp;å›¾ç‰‡&amp;ç¨‹åº</string>
+  <string id="1233">ç¨‹åº&amp;è§†é¢‘ &amp;éŸ³ä¹</string>
+  <string id="1234">ç¨‹åº&amp;å›¾ç‰‡ &amp;éŸ³ä¹</string>
+  <string id="1235">ç¨‹åº&amp;å›¾ç‰‡ &amp;è§†é¢‘</string>
+  <string id="1245">FTP è´¦å·</string>
+  <string id="1246">FTP å¯†ç </string>
+  <string id="1247">FTP æœåŠ¡å™¨è´¦å·å’Œå¯†ç è®¾ç½®æˆåŠŸï¼</string>
+  <string id="1250">è‡ªåŠ¨æ£€æµ‹</string>
+  <string id="1251">XBOX è‡ªåŠ¨æ£€æµ‹</string>
+  <string id="1252">æ˜µç§°</string>
+  <string id="1253">åœ¨æˆ‘çš„æ–‡ä»¶ä¸­å»ºç«‹FTPè¿žæŽ¥</string>
+  <string id="1254">ç¡®è®¤è¿žæŽ¥</string>
+  <string id="1255">å‘é€ FTP è´¦å·å’Œå¯†ç </string>
+  <string id="1256">Pingé—´éš”</string>
+  <string id="1257">æ˜¯å¦è¿žæŽ¥åˆ°è‡ªåŠ¨å‘çŽ°çš„XBOXï¼Ÿ</string>
+  <string id="1396">æ¼‚æµ</string>
+  <string id="1397">å’Œ</string>
+  <string id="1398">ç»“å†°</string>
+  <string id="1399">æ™šé—´</string>
+  <string id="1400">å±€éƒ¨</string>
+  <string id="1401">é›·é›¨</string>
+  <string id="1402">é›·</string>
+  <string id="1403">é˜´æ²‰</string>
+  <string id="1404">æš´</string>
+  <string id="1405">åœ¨</string>
+  <string id="1406">è¿™</string>
+  <string id="1407">åŒºåŸŸæ€§</string>
+  <string id="1408">å†°</string>
+  <string id="1409">æ¸…æ¾ˆ</string>
+  <string id="1410">æ— é£Ž</string>
+  <string id="2050">è¿è¡Œæ—¶é—´ï¼š</string>
+  <string id="4501">LCDç±»åž‹</string>
+  <string id="10000">é¦–é¡µ</string>
+  <string id="10001">æˆ‘çš„ç¨‹åº</string>
+  <string id="10002">æˆ‘çš„å›¾ç‰‡</string>
+  <string id="10003">æˆ‘çš„æ–‡ä»¶</string>
+  <string id="10004">è®¾ç½®</string>
+  <string id="10005">æˆ‘çš„éŸ³ä¹</string>
+  <string id="10006">æˆ‘çš„è§†é¢‘</string>
+  <string id="10007">ç³»ç»Ÿä¿¡æ¯</string>
+  <string id="10008">è®¾ç½®-&gt;ä¸€èˆ¬</string>
+  <string id="10009">è®¾ç½®-&gt;å±å¹•</string>
+  <string id="10010">è®¾ç½®-&gt;ç”¨æˆ·ç•Œé¢-&gt;ç•Œé¢ æ ¡å‡†</string>
+  <string id="10011">è®¾ç½®-&gt;æˆ‘çš„è§†é¢‘-&gt;å±å¹• æ ¡å‡†</string>
+  <string id="10012">è®¾ç½®-&gt;æˆ‘çš„å›¾ç‰‡</string>
+  <string id="10013">è®¾ç½®-&gt;æˆ‘çš„ç¨‹åº</string>
+  <string id="10014">è®¾ç½®-&gt;å¤©æ°”é¢„æŠ¥</string>
+  <string id="10015">è®¾ç½®-&gt;æˆ‘çš„éŸ³ä¹</string>
+  <string id="10016">è®¾ç½®-&gt;ç³»ç»Ÿè®¾ç½®</string>
+  <string id="10017">è®¾ç½®-&gt;æˆ‘çš„è§†é¢‘</string>
+  <string id="10018">è®¾ç½®-&gt;ç½‘ç»œè®¾ç½®</string>
+  <string id="10019">è®¾ç½®-&gt;ç”¨æˆ·ç•Œé¢</string>
+  <string id="10020">è„šæœ¬</string>
+  <string id="10021">æˆ‘çš„è§†é¢‘/æµæ´¾</string>
+  <string id="10022">æˆ‘çš„è§†é¢‘/æ¼”å‘˜</string>
+  <string id="10023">æˆ‘çš„è§†é¢‘/å¹´</string>
+  <string id="10025">æˆ‘çš„è§†é¢‘/æ ‡é¢˜</string>
+  <string id="10028">æˆ‘çš„è§†é¢‘/æ’­æ”¾åˆ—è¡¨</string>
+  <string id="10034">è®¾ç½®-&gt;ç”¨æˆ·è®¾ç½®</string>
+  <string id="10100">æ˜¯/å¦</string>
+  <string id="10101">è¿›ç¨‹</string>
+  <string id="10500">æˆ‘çš„éŸ³ä¹/æ’­æ”¾åˆ—è¡¨</string>
+  <string id="10501">æˆ‘çš„éŸ³ä¹/æ–‡ä»¶</string>
+  <string id="10502">æˆ‘çš„éŸ³ä¹/éŸ³ä¹åº“</string>
+  <string id="10503">æˆ‘çš„éŸ³ä¹/æŽ’è¡Œå‰ 100</string>
+  <string id="10504">æŽ’è¡Œå‰ 100 æ­Œæ›²</string>
+  <string id="10505">æŽ’è¡Œå‰ 100 ä¸“è¾‘</string>
+  <string id="10506">æˆ‘çš„ç¨‹åº</string>
+  <string id="10507">ç³»ç»Ÿè®¾ç½®</string>
+  <string id="10508">å¤©æ°”é¢„æŠ¥</string>
+  <string id="10509">ç½‘ç»œæ¸¸æˆ</string>
+  <string id="10510">åŠŸèƒ½æ‰©å±•</string>
+  <string id="10511">ç³»ç»Ÿä¿¡æ¯</string>
+  <string id="10512">æˆ‘çš„éŸ³ä¹ - ä¸“è¾‘</string>
+  <string id="10513">æˆ‘çš„éŸ³ä¹ - è‰ºæœ¯å®¶</string>
+  <string id="10514">æˆ‘çš„éŸ³ä¹ - æµæ´¾</string>
+  <string id="10515">æˆ‘çš„éŸ³ä¹ - æŽ’è¡Œå‰ 100</string>
+  <string id="10516">æˆ‘çš„éŸ³ä¹ - èµ„æ–™</string>
+  <string id="10517">æˆ‘çš„éŸ³ä¹ - æ­£åœ¨æ’­æ”¾çš„...</string>
+  <string id="10518">æˆ‘çš„è§†é¢‘ - æ¼”å‘˜</string>
+  <string id="10519">æˆ‘çš„è§†é¢‘ - æµæ´¾</string>
+  <string id="10520">æˆ‘çš„è§†é¢‘ - æ ‡é¢˜</string>
+  <string id="10521">æˆ‘çš„è§†é¢‘ - å¹´ä»½</string>
+  <string id="10522">æˆ‘çš„è§†é¢‘ - æ’­æ”¾åˆ—è¡¨</string>
+  <string id="10523">ä¸“è¾‘ä¿¡æ¯</string>
+  <string id="10524">å½±ç‰‡ä¿¡æ¯</string>
+  <string id="12000">é€‰æ‹©å¯¹è¯æ¡†</string>
+  <string id="12001">æˆ‘çš„éŸ³ä¹/ä¿¡æ¯</string>
+  <string id="12002">ç¡®è®¤å¯¹è¯æ¡†</string>
+  <string id="12003">æˆ‘çš„è§†é¢‘/ä¿¡æ¯</string>
+  <string id="12004">æˆ‘çš„è„šæœ¬/ä¿¡æ¯</string>
+  <string id="12005">å…¨å±è§†é¢‘</string>
+  <string id="12006">éŸ³é¢‘å¯è§†åŒ–æ•ˆæžœ</string>
+  <string id="12007">æˆ‘çš„å›¾ç‰‡/å¹»ç¯ç‰‡</string>
+  <string id="12008">æ–‡ä»¶å †æ ˆ</string>
+  <string id="12009">é‡æ–°ç”Ÿæˆæ£€ç´¢â€¦</string>
+  <string id="12010">è¿”å›žåˆ°æˆ‘çš„éŸ³ä¹</string>
+  <string id="12011">è¿”å›žåˆ°æˆ‘çš„è§†é¢‘</string>
+  <string id="12012">æ›´æ–°é‡‘æ‰‹æŒ‡åˆ—è¡¨</string>
+  <string id="12013">é‡‘æ‰‹æŒ‡</string>
+  <string id="12014">æ²¡æœ‰æ‰¾åˆ°é‡‘æ‰‹æŒ‡</string>
+  <string id="12015">é‡‘æ‰‹æŒ‡è®¾ç½®</string>
+  <string id="12016">æ‰€æœ‰é‡‘æ‰‹æŒ‡ä¿¡æ¯ä¸¢å¤±ï¼Œè¯·æ›´æ–°é‡‘æ‰‹æŒ‡åˆ—è¡¨ã€‚</string>
+  <string id="12017">è‡ªåŠ¨ä»Žä¸Šæ¬¡ä¸­æ–­å¤„æ’­æ”¾</string>
+  <string id="12018">å¦</string>
+  <string id="12019">æ˜¯</string>
+  <string id="12020">è¯¢é—®</string>
+  <string id="12021">ä»Žå¤´å¼€å§‹æ’­æ”¾</string>
+  <string id="12022">ä»Žä¸Šæ¬¡ä¸­æ–­å¤„æ’­æ”¾</string>
+  <string id="12310">0</string>
+  <string id="12311">1</string>
+  <string id="12312">2</string>
+  <string id="12313">3</string>
+  <string id="12314">4</string>
+  <string id="12315">5</string>
+  <string id="12316">6</string>
+  <string id="12317">7</string>
+  <string id="12318">8</string>
+  <string id="12319">9</string>
+  <string id="12320">c</string>
+  <string id="12321">ok</string>
+  <string id="12322">*</string>
+  <string id="12324">XBMCç®¡ç†å‘˜é”å®š</string>
+  <string id="12325">å·²é”å®šï¼è¾“å…¥å¯†ç â€¦</string>
+  <string id="12326">è¾“å…¥å¯†ç </string>
+  <string id="12327">è¾“å…¥ç®¡ç†å‘˜å¯†ç </string>
+  <string id="12328">è¾“å…¥è§£é”å¯†ç </string>
+  <string id="12329">æˆ–æŒ‰ C å–æ¶ˆ</string>
+  <string id="12330">è¾“å…¥XBOXæ‰‹æŸ„æŒ‰é”®é¡ºåº</string>
+  <string id="12331">æŒ‰Startç¡®è®¤, æˆ–æŒ‰Backå–æ¶ˆ</string>
+  <string id="12332">è®¾ç½®é”å®š</string>
+  <string id="12333">è§£é™¤é”å®š</string>
+  <string id="12334">é‡æ–°é”å®š</string>
+  <string id="12335">ç§»é™¤é”å®š</string>
+  <string id="12336">é€‰æ‹©é”å®šç±»åž‹ï¼š</string>
+  <string id="12337">æ•°å­—å¯†ç </string>
+  <string id="12338">æ‰‹æŸ„æŒ‰é”®é¡ºåº</string>
+  <string id="12339">æ–‡å­—å¯†ç </string>
+  <string id="12340">è¾“å…¥æ–°å¯†ç </string>
+  <string id="12341">ç¡®è®¤æ–°å¯†ç </string>
+  <string id="12342">å¯†ç ä¸æ­£ç¡®,</string>
+  <string id="12343">é‡è¯•æ¬¡æ•° </string>
+  <string id="12344">è¾“å…¥å¯†ç ä¸æ­£ç¡®ï¼</string>
+  <string id="12345">æ‹’ç»è¯»å–</string>
+  <string id="12346">å·²è¾¾å¯†ç é‡è¯•æ¬¡æ•°é™åˆ¶ï¼</string>
+  <string id="12347">XBOXå°†è¦è‡ªåŠ¨å…³é—­ï¼</string>
+  <string id="12348">æ‹’ç»è®¿é—®</string>
+  <string id="12349">è®°ä½ç®¡ç†å‘˜å¯†ç ç›´åˆ°ä¸‹æ¬¡å¼€æœºï¼Ÿ</string>
+  <string id="12350">(ä¿®æ”¹ç³»ç»Ÿé…ç½®é‡Œçš„ä»»ä½•é¡¹ç›®</string>
+  <string id="12351">å°†è‡ªåŠ¨å¯ç”¨ä¸»æœºé”å®šåŠŸèƒ½ï¼)</string>
+  <string id="12352">è¾“å…¥ç®¡ç†å‘˜å¯†ç å¹¶æŒ‰Startç¡®å®š</string>
+  <string id="12353">é‡æ–°ä¸Šé”</string>
+  <string id="12354">è§£é™¤æ–‡ä»¶å¤¹é”ç›´åˆ°ä¸‹æ¬¡å¼€æœºï¼Ÿ</string>
+  <string id="12355">è‡ªåŠ¨å¯¹æ–‡ä»¶å¤¹ä¸Šé”ã€‚)</string>
+  <string id="12356">æ›´æ”¹é”å®š</string>
+  <string id="12357">å…±äº«é”å®š</string>
+  <string id="12358">å¯†ç ä¸èƒ½ä¸ºç©ºï¼Œè¯·é‡è¯•ï¼</string>
+  <string id="12360">ä¸»æœºé”å®š</string>
+  <string id="12361">æœ€å¤šé‡è¯•æ¬¡æ•°</string>
+  <string id="12362">å…è®¸å…³æœº</string>
+  <string id="12363">å…±äº«ä¿æŠ¤</string>
+  <string id="12364">å¯†ç æ–¹å¼</string>
+  <string id="12365">ç®¡ç†å‘˜å¯†ç </string>
+  <string id="12366">å¯†ç æ–¹å¼æ”¹å˜ã€‚æ–°çš„ç®¡ç†å‘˜å¯†ç ä¸ºï¼š</string>
+  <string id="12367">ç®¡ç†å‘˜å¯†ç é”™è¯¯ï¼</string>
+  <string id="12368">è¯·è¾“å…¥æ­£ç¡®çš„ç®¡ç†å‘˜å¯†ç ï¼</string>
+  <string id="12369">XBMC å¯åŠ¨é”å®š</string>
+  <string id="12370">å¯†ç æ–¹å¼æ”¹å˜ï¼Œä½†æ²¡æœ‰è®¾ç½®ç®¡ç†å‘˜å¯†ç ï¼</string>
+  <string id="12371">è¯·è®¾ç½®ä¸€ä¸ªæ–°çš„ç®¡ç†å‘˜å¯†ç ï¼</string>
+  <string id="12372">é”å®šè®¾ç½®&amp;æˆ‘çš„æ–‡ä»¶</string>
+  <string id="12373">è®¾ç½®&amp;æˆ‘çš„æ–‡ä»¶</string>
+  <string id="12374">é”å®šåª’ä½“æ–‡ä»¶</string>
+  <string id="12375">ç®¡ç†å‘˜æ¨¡å¼</string>
+  <string id="12376">åšä¸ºæ‰€æœ‰è§†é¢‘çš„é»˜è®¤è®¾ç½®</string>
+  <string id="12377">å°†è¦åˆå§‹åŒ–æ‰€æœ‰é…ç½®</string>
+  <string id="12378">å›¾ç‰‡æ˜¾ç¤ºæ—¶é—´</string>
+  <string id="12379">ä½¿ç”¨ç§»åŠ¨å’Œç¼©æ”¾ç‰¹æ•ˆ</string>
+  <string id="12380">åœ¨PALåˆ¶å¼æ’­æ”¾NTSCè§†é¢‘</string>
+  <string id="12381">åœ¨NTSCåˆ¶å¼æ’­æ”¾PALè§†é¢‘</string>
+  <string id="12382">ä»¥PAL60åˆ¶å¼æ’­æ”¾NTSCè§†é¢‘</string>
+  <string id="12383">12å°æ—¶åˆ¶</string>
+  <string id="12384">24å°æ—¶åˆ¶</string>
+  <string id="12385">æ—¥/æœˆ</string>
+  <string id="12386">æœˆ/æ—¥</string>
+  <string id="12387">é‡æ–°ç”Ÿæˆæ•°æ®åº“</string>
+  <string id="12390">ç³»ç»Ÿå¯åŠ¨æ—¶é—´</string>
+  <string id="12391">åˆ†é’Ÿ</string>
+  <string id="12392">å°æ—¶</string>
+  <string id="12393">å¤©</string>
+  <string id="12394">ç´¯è®¡å¼€æœºæ—¶é—´</string>
+  <string id="12600">æˆ‘çš„å¤©æ°”</string>
+  <string id="12900">å±å¹•ä¿æŠ¤</string>
+  <string id="12901">å…¨å± OSD</string>
+  <string id="13000">ç³»ç»Ÿ</string>
+  <string id="13001">ç«‹å³å…³é—­ç¡¬ç›˜</string>
+  <string id="13002">åªæœ‰è§†é¢‘</string>
+  <string id="13003">- å»¶è¿Ÿ</string>
+  <string id="13004">- æœ€å°å½±éŸ³æ–‡ä»¶æ—¶é•¿</string>
+  <string id="13005">å…³æœº</string>
+  <string id="13006">Dashboard</string>
+  <string id="13100">é—ªçƒè¿‡æ»¤</string>
+  <string id="13150">ç¡¬ç›˜é’¥åŒ™ï¼š</string>
+  <string id="13151">ç¡¬ç›˜æ¸©åº¦ï¼š</string>
+  <string id="13152">DVD åž‹å·ï¼š</string>
+  <string id="13153">DVD å›ºä»¶ç‰ˆæœ¬ï¼š</string>
+  <string id="13154">ç¡¬ç›˜åž‹å·ï¼š</string>
+  <string id="13155">ç¡¬ç›˜åºåˆ—å·ï¼š</string>
+  <string id="13156">ç¡¬ç›˜å›ºä»¶ç‰ˆæœ¬ï¼š</string>
+  <string id="13157">ç¡¬ç›˜å¯†ç ï¼š</string>
+  <string id="13158">ç¡¬ç›˜é”çŠ¶æ€ï¼š</string>
+  <string id="13159">å­ç½‘æŽ©ç ï¼š</string>
+  <string id="13160">ç½‘å…³åœ°å€ï¼š</string>
+  <string id="13161">DNSæœåŠ¡å™¨åœ°å€ï¼š</string>
+  <string id="13162">æ— æ³•è¯»å–ä¿¡æ¯</string>
+  <string id="13163">æ¸¸æˆæ†åœ¨ç«¯å£ï¼š</string>
+  <string id="13164">é”®ç›˜åœ¨ç«¯å£ï¼š</string>
+  <string id="13165">é¼ æ ‡åœ¨ç«¯å£ï¼š</string>
+  <string id="13166">è€³éº¦åœ¨ç«¯å£ï¼š</string>
+  <string id="13167">è®°å¿†å¡åœ¨ç«¯å£ï¼š</string>
+  <string id="13168">é¥æŽ§å™¨åœ¨ç«¯å£ï¼š</string>
+  <string id="13169">å¿½ç•¥CDé€‰æ‹©å™¨</string>
+  <string id="13170">ä»Žä¸</string>
+  <string id="13171">ç«‹å³</string>
+  <string id="13172">éš”%iç§’ä»¥åŽ</string>
+  <string id="13200">é¢„å­˜è®¾ç½®</string>
+  <string id="13201">åˆ é™¤é¢„å­˜è®¾ç½®'%s'ï¼Ÿ</string>
+  <string id="13202">ä¿å­˜å½“å‰è®¾ç½®ä¸ºé¢„å­˜è®¾ç½®â€¦</string>
+  <string id="13203">é¢„å­˜è®¾ç½®'%s'è½½å…¥æˆåŠŸ</string>
+  <string id="13204">æœ€è¿‘è½½å…¥çš„é¢„å­˜è®¾ç½®ï¼š</string>
+  <string id="13205">æœªçŸ¥</string>
+  <string id="13206">è¦†ç›–</string>
+  <string id="13207">è¦†ç›–é…ç½®æ–‡ä»¶'%s'ï¼Ÿ</string>
+  <string id="13208">é—¹é“ƒ</string>
+  <string id="13209">é—¹é“ƒé—´éš”(åˆ†é’Ÿ)</string>
+  <string id="13210">é—¹é“ƒå¯åŠ¨ï¼Œ%iåˆ†é’Ÿå€’è®¡æ—¶ã€‚</string>
+  <string id="13211">å“é“ƒï¼</string>
+  <string id="13212">é—¹é“ƒå–æ¶ˆï¼Œå‰©ä½™%iåˆ†%iç§’ã€‚</string>
+  <string id="13249">é€‰æ‹©RARæ–‡ä»¶ä¸­çš„å­—å¹•</string>
+  <string id="13250">é€‰æ‹©å­—å¹•â€¦</string>
+  <string id="13251">ç§»åŠ¨è¯¥é¡¹ç›®</string>
+  <string id="13252">å°†é¡¹ç›®ç§»åŠ¨è‡³æ­¤</string>
+  <string id="13253">å–æ¶ˆç§»åŠ¨</string>
+  <string id="13270">ç¡¬ä»¶ï¼š</string>
+  <string id="13271">ä¸­å¤®å¤„ç†å™¨é€Ÿåº¦ï¼š</string>
+  <string id="13274">Xboxå·²ç»è”ç½‘ï¼Œä½†æ˜¯æ²¡æœ‰è®¾ç½®DNSï¼</string>
+  <string id="13275">ç¡¬ç›˜</string>
+  <string id="13276">DVD-ROM</string>
+  <string id="13277">å­˜å‚¨å™¨</string>
+  <string id="13278">é»˜è®¤</string>
+  <string id="13279">ç½‘ç»œ</string>
+  <string id="13280">è§†é¢‘</string>
+  <string id="13281">ç¡¬ä»¶</string>
+  <string id="13282">_</string>
+  <string id="13283">æ ¸å¿ƒç‰ˆæœ¬ï¼š</string>
+  <string id="13284">ä¸­å¤®å¤„ç†å™¨é€Ÿåº¦ï¼š</string>
+  <string id="13285">BIOS åž‹å·ï¼š</string>
+  <string id="13286">è§†é¢‘èŠ¯ç‰‡ï¼š</string>
+  <string id="13287">å±å¹•åˆ†è¾¨çŽ‡ï¼š</string>
+  <string id="13288">Xbox ç‰ˆæœ¬ï¼š</string>
+  <string id="13289">Xbox åºåˆ—å·ï¼š</string>
+  <string id="13290">XBOX ç”Ÿäº§å•†ï¼š</string>
+  <string id="13291">æ”¹æœºèŠ¯ç‰‡ï¼š</string>
+  <string id="13292">A/V çº¿ï¼š</string>
+  <string id="13293">è§†é¢‘&amp;XBE åŒºåŸŸï¼š</string>
+  <string id="13294">DVD åŒºåŸŸï¼š</string>
+  <string id="13295">äº’è”ç½‘ï¼š</string>
+  <string id="13296">Xboxå·²è¿žæŽ¥ï¼</string>
+  <string id="13297">Xboxæ— æ³•è¿žæŽ¥ï¼è¯·æ£€æŸ¥ç½‘ç»œè®¾ç½®ï¼</string>
+  <string id="13298">XBLIVE é’¥åŒ™ï¼š</string>
+  <string id="13299">ç›®æ ‡æ¸©åº¦</string>
+  <string id="13300">é£Žæ‰‡è½¬é€Ÿ</string>
+  <string id="13301">è‡ªåŠ¨æ¸©åº¦æŽ§åˆ¶</string>
+  <string id="13302">æ‰‹åŠ¨æŽ§åˆ¶é£Žæ‰‡è½¬é€Ÿ</string>
+  <string id="13303">çš®è‚¤å­—ä½“</string>
+  <string id="13304">å¼€å¯è½¬æ¢åŒå‘å­—ä¸²</string>
+  <string id="13305">å¯ç”¨èšåˆæ–°é—»RSSæ˜¾ç¤º</string>
+  <string id="13306">éšè—ä¸Šå±‚ç›®å½•å›¾æ ‡</string>
+  <string id="13307">éŸ³è½¨å‘½åæ¨¡æ¿</string>
+  <string id="13308">ä½ æƒ³é‡æ–°å¯åŠ¨XBOXå—</string>
+  <string id="13309">ä»¥é‡æ–°å¯åŠ¨XBMCå—ï¼Ÿ</string>
+  <string id="13310">æ”¾ç¼©æ•ˆæžœ</string>
+  <string id="13311">æ¼‚æµ®æ•ˆæžœ</string>
+  <string id="13312">ç¼©å°é»‘è¾¹</string>
+  <string id="13313">é‡å¯</string>
+  <string id="13314">å¹³æ»‘è½¬æ¢</string>
+  <string id="13315">åˆ›å»ºç¼©ç•¥å›¾</string>
+  <string id="13316">å¾ªçŽ¯ç¼©ç•¥å›¾</string>
+  <string id="13317">è§‚çœ‹å¹»ç¯ç‰‡</string>
+  <string id="13318">å¾ªçŽ¯å¹»ç¯ç‰‡</string>
+  <string id="13319">éšæœºæ’­æ”¾</string>
+  <string id="13320">ç«‹ä½“å£°</string>
+  <string id="13321">å·¦å£°é“</string>
+  <string id="13322">å³å£°é“</string>
+  <string id="13323">å¼€å¯ CD+G</string>
+  <string id="13324">èƒŒæ™¯é€æ˜Žåº¦</string>
+  <string id="13325">å‰æ™¯é€æ˜Žåº¦</string>
+  <string id="13326">å½±éŸ³å»¶è¿Ÿ</string>
+  <string id="13327">å¡æ‹‰OK</string>
+  <string id="13328">%sæœªæ‰¾åˆ°</string>
+  <string id="13329">æ‰“å¼€%sæ—¶å‘ç”Ÿé”™è¯¯</string>
+  <string id="13330">æ— æ³•è½½å…¥%s</string>
+  <string id="13331">é”™è¯¯ï¼šå†…å­˜ä¸è¶³ï¼</string>
+  <string id="13332">ä¸Šç§»</string>
+  <string id="13333">ä¸‹ç§»</string>
+  <string id="13334">ç¼–è¾‘æ ‡ç­¾</string>
+  <string id="13335">è®¾ä¸ºé»˜è®¤</string>
+  <string id="13336">åˆ é™¤æŒ‰é”®</string>
+  <string id="13337">- ä¸¤å£°é“PCMè¿‡æ»¤</string>
+  <string id="13338">å‰LED</string>
+  <string id="13339">å‰LEDé¢œè‰²</string>
+  <string id="13340">é»˜è®¤</string>
+  <string id="13341">ç»¿è‰²</string>
+  <string id="13342">æ©™è‰²</string>
+  <string id="13343">çº¢è‰²</string>
+  <string id="13344">å¾ªçŽ¯</string>
+  <string id="13345">å½“æ’­æ”¾æ—¶å…³é—­LED</string>
+  <string id="13346">å½±ç‰‡ä¿¡æ¯</string>
+  <string id="13347">åŠ å…¥å½“å‰æ’­æ”¾åˆ—è¡¨</string>
+  <string id="13348">æŸ¥è¯¢IMDbä¿¡æ¯â€¦</string>
+  <string id="13349">æŸ¥è¯¢æ‰€æœ‰æ–‡ä»¶ä¿¡æ¯</string>
+  <string id="13350">æ­£åœ¨æ’­æ”¾çš„åˆ—è¡¨</string>
+  <string id="13351">ä¸“è¾‘ä¿¡æ¯</string>
+  <string id="13352">æ‰«çž„æ–‡ä»¶å¤¹ä¿¡æ¯</string>
+  <string id="13353">åœæ­¢æœå¯»</string>
+  <string id="13354">è¡¥å¿æ–¹å¼</string>
+  <string id="13355">ä½Žå“è´¨åƒç´ ç€è‰²å™¨</string>
+  <string id="13356">ç¡¬ä»¶é‡å </string>
+  <string id="13357">é«˜å“è´¨åƒç´ ç€è‰²å™¨</string>
+  <string id="13358">æ’­æ”¾é¡¹ç›®</string>
+  <string id="13359">è®¾ç½®è‰ºæœ¯å®¶å›¾ç¤º</string>
+  <string id="13360">å»ºç«‹å›¾ç¤º</string>
+  <string id="13361">å¼€å¯è¯­éŸ³</string>
+  <string id="13362">è¯­éŸ³ç‰¹æ•ˆ</string>
+  <string id="13363">- å¼€å¯ä½Žæ²‰æ•ˆæžœ</string>
+  <string id="13364">-- ä½Žæ²‰æ•ˆæžœæ•°å€¼</string>
+  <string id="13365">- å¼€å¯é«˜éŸ³æ•ˆæžœ</string>
+  <string id="13366">-- é«˜éŸ³æ•ˆæžœæ•°å€¼</string>
+  <string id="13367">- å¼€å¯æ‚„æ‚„è¯æ•ˆæžœ</string>
+  <string id="13368">-- æ‚„æ‚„è¯æ•ˆæžœæ•°å€¼</string>
+  <string id="13369">- å¼€å¯æœºæ¢°äººæ•ˆæžœ</string>
+  <string id="13370">-- æœºæ¢°äººæ•ˆæžœæ•°å€¼</string>
+  <string id="13371">- è¯­éŸ³ç«¯å£ 1</string>
+  <string id="13372">- è¯­éŸ³ç«¯å£ 2</string>
+  <string id="13373">- è¯­éŸ³ç«¯å£ 3</string>
+  <string id="13374">- è¯­éŸ³ç«¯å£ 4</string>
+  <string id="13375">å¯ç”¨è£…ç½®</string>
+  <string id="13376">éŸ³é‡</string>
+  <string id="13377">é»˜è®¤æ˜¾ç¤ºæ–¹å¼</string>
+  <string id="13378">é»˜è®¤äº®åº¦æ•°å€¼</string>
+  <string id="13379">é»˜è®¤å¯¹æ¯”åº¦æ•°å€¼</string>
+  <string id="13380">é»˜è®¤ä¼½ç æ•°å€¼</string>
+  <string id="13381">ä»Žä¹¦ç­¾å¤„å¼€å§‹æ’­æ”¾</string>
+  <string id="13382">è¯­éŸ³ç‰¹æ•ˆ - ç«¯å£ 1</string>
+  <string id="13383">è¯­éŸ³ç‰¹æ•ˆ - ç«¯å£ 2</string>
+  <string id="13384">è¯­éŸ³ç‰¹æ•ˆ - ç«¯å£ 3</string>
+  <string id="13385">è¯­éŸ³ç‰¹æ•ˆ - ç«¯å£ 4</string>
+  <string id="13386">ä½¿ç”¨æ—¶é—´æœå¯»</string>
+  <string id="13387">éŸ³è½¨å‘½åæ¨¡æ¿</string>
+  <string id="13388">é¢„è®¾</string>
+  <string id="13389">æ²¡æœ‰é¢„è®¾
+è¯¥è§†è§‰æ•ˆæžœ</string>
+  <string id="13390">æ²¡æœ‰è®¾å®š
+è¯¥è§†è§‰æ•ˆæžœ</string>
+  <string id="13391">å¼¹å‡º/è½½å…¥</string>
+  <string id="13392">åœ¨æ’­æ”¾éŸ³ä¹æ—¶è‡ªåŠ¨å¯ç”¨å¯è§†åŒ–æ•ˆæžœ</string>
+  <string id="13393">è®¡ç®—å¤§å°</string>
+  <string id="13394">è®¡ç®—æ–‡ä»¶å¤¹å¤§å°</string>
+  <string id="13395">è§†é¢‘è®¾ç½®</string>
+  <string id="13396">å£°éŸ³å’Œå­—å¹•è®¾ç½®</string>
+  <string id="13397">å¯ç”¨å­—å¹•</string>
+  <string id="13398">ä¹¦ç­¾</string>
+  <string id="13399">æŽ’åºæ—¶å¿½ç•¥ The å¼€å¤´åç§°</string>
+  <string id="13400">ä¸“è¾‘éŸ³è½¨å¹³æ»‘è½¬æ¢</string>
+  <string id="13401">æµè§ˆ%s</string>
+  <string id="13402">æ˜¾ç¤ºéŸ³è½¨ä½ç½®</string>
+  <string id="13403">æ¸…é™¤ä¸ºç¼ºçœå€¼</string>
+  <string id="13404">æ¢å¤</string>
+  <string id="13405">å–å¾—ç¼©ç•¥å›¾</string>
+  <string id="14000">å †æ ˆå¼€å¯</string>
+  <string id="14001">å †æ ˆå…³é—­</string>
+  <string id="14002">å †æ ˆï¼šæ™ºæ…§</string>
+  <string id="14003">ä¸‹è½½æ’­æ”¾åˆ—è¡¨æ–‡ä»¶â€¦</string>
+  <string id="14004">ä¸‹è½½æµåª’ä½“åˆ—è¡¨â€¦</string>
+  <string id="14005">åˆ†æžæµåª’ä½“åˆ—è¡¨â€¦</string>
+  <string id="14006">ä¸‹è½½æµåª’ä½“åˆ—è¡¨å¤±è´¥</string>
+  <string id="14007">ä¸‹è½½æ’­æ”¾åˆ—è¡¨æ–‡ä»¶å¤±è´¥</string>
+  <string id="14008">å¯ç”¨ Kai é€šå‘Š</string>
+  <string id="14009">æ¸¸æˆç›®å½•</string>
+  <string id="14010">è‡ªåŠ¨åˆ‡æ¢ä¸ºå›¾æ ‡æ˜¾ç¤ºæ¡ä»¶</string>
+  <string id="14011">å…è®¸è‡ªåŠ¨åˆ‡æ¢ä¸ºå›¾æ ‡æ˜¾ç¤º</string>
+  <string id="14012">- ä½¿ç”¨å¤§å›¾æ ‡</string>
+  <string id="14013">- æ¡ä»¶</string>
+  <string id="14014">- æ¯”ä¾‹</string>
+  <string id="14015">æ²¡æœ‰æ–‡ä»¶ä¸”è‡³å°‘æœ‰ä¸€ä¸ªå›¾æ ‡</string>
+  <string id="14016">è‡³å°‘æœ‰ä¸€ä¸ªæ–‡ä»¶å’Œä¸€ä¸ªå›¾æ ‡</string>
+  <string id="14017">å›¾æ ‡æ‰€å æ¯”ä¾‹</string>
+  <string id="14018">æµè§ˆè®¾ç½®</string>
+  <string id="14019">æ”¹å˜åŒºç  1</string>
+  <string id="14020">æ”¹å˜åŒºç  2</string>
+  <string id="14021">æ”¹å˜åŒºç  3</string>
+  <string id="14022">æ•°æ®åº“</string>
+  <string id="14023">æ— ç”µè§†</string>
+  <string id="14024">è¾“å…¥æœ€è¿‘çš„åŸŽå¸‚æˆ–ç¾Žå›½é‚®ç¼–</string>
+  <string id="14025">è§†é¢‘/éŸ³é¢‘/DVDç¼“å­˜ - ç¡¬ç›˜</string>
+  <string id="14026">è§†é¢‘ç¼“å­˜ - DVDé©±åŠ¨å™¨</string>
+  <string id="14027">è§†é¢‘ç¼“å­˜ - å±€åŸŸç½‘</string>
+  <string id="14028">è§†é¢‘ç¼“å­˜ - äº’è”ç½‘</string>
+  <string id="14030">éŸ³é¢‘ç¼“å­˜ - DVDé©±åŠ¨å™¨</string>
+  <string id="14031">éŸ³é¢‘ç¼“å­˜ - å±€åŸŸç½‘</string>
+  <string id="14032">éŸ³é¢‘ç¼“å­˜ - äº’è”ç½‘</string>
+  <string id="14034">DVD ç¼“å­˜ - DVDé©±åŠ¨å™¨</string>
+  <string id="14035">DVD ç¼“å­˜ - å±€åŸŸç½‘</string>
+  <string id="14036">æœåŠ¡</string>
+  <string id="14037">å¤–è§‚è®¾ç½®</string>
+  <string id="14038">ç½‘ç»œè®¾ç½®å·²æ”¹å˜</string>
+  <string id="14039">XBMCéœ€è¦é‡å¯æ”¹å˜ä½ çš„ç½‘ç»œè®¾ç½®ã€‚</string>
+  <string id="14040">ä½ æƒ³çŽ°åœ¨å°±é‡å¯å—ï¼Ÿ</string>
+  <string id="14041">åŽå¤„ç†</string>
+  <string id="14042">æ‰§è¡ŒXLink Kaiçš„IPåœ°å€</string>
+  <string id="14043">- æ’­æ”¾æ—¶å…³æœº</string>
+  <string id="14044">%iåˆ†</string>
+  <string id="14045">%iç§’</string>
+  <string id="14046">%iæ¯«ç§’</string>
+  <string id="14047">%i%%</string>
+  <string id="14048">%ikbps</string>
+  <string id="14049">%ikb</string>
+  <string id="14050">%i.0 dB</string>
+  <string id="14051">æ—¶é—´æ˜¾ç¤ºæ ¼å¼</string>
+  <string id="14052">æ—¥æœŸæ˜¾ç¤ºæ ¼å¼</string>
+  <string id="14053">ç•Œé¢æ»¤é•œ</string>
+  <string id="14054">å¯ç”¨äº’è”ç½‘ä¿¡æ¯æŸ¥è¯¢</string>
+  <string id="14055">ä½¿ç”¨åŽå°æœå¯»</string>
+  <string id="14056">åœæ­¢æœå¯»</string>
+  <string id="14057">æ— æ³•æœå¯»åª’ä½“ä¿¡æ¯</string>
+  <string id="14058">ç”µå½±èƒ¶ç‰‡æ•ˆæžœ</string>
+  <string id="14059">è¿œç¨‹å…±äº«æ—¶æœå¯»å®šåˆ¶çš„ç¼©ç•¥å›¾</string>
+  <string id="14060">æœªçŸ¥ç±»åž‹æ–‡ä»¶ç¼“å†² - äº’è”ç½‘</string>
+  <string id="14061">è‡ªåŠ¨</string>
+  <string id="14062">è¾“å…¥ç”¨æˆ·å</string>
+  <string id="14063">æ—¥æœŸå’Œæ—¶é—´</string>
+  <string id="14064">è®¾ç½®æ—¥æœŸ</string>
+  <string id="14065">è®¾ç½®æ—¶é—´</string>
+  <string id="14066">è®¾ç½®æ—¶é—´(æ—¶:åˆ†)</string>
+  <string id="14067">è®¾ç½®æ—¥æœŸ(æ—¥/æœˆ/å¹´)</string>
+  <string id="14068">è¾“å…¥IPåœ°å€</string>
+  <string id="14069">ç¡®å®šè¦è®¾å®šè¿™äº›å‚æ•°å—ï¼Ÿ</string>
+  <string id="14070">åº”ç”¨è®¾ç½®</string>
+  <string id="14071">å…è®¸é‡å‘½åå’Œåˆ é™¤æ–‡ä»¶</string>
+  <string id="14072">å¯ç”¨XLink Kai</string>
+  <string id="14073">XLink Kai æ²¡æœ‰è¢«å¯ç”¨ï¼</string>
+  <string id="15000">XLink Kai</string>
+  <string id="15001">ç›®å‰å¹¶æ²¡æœ‰è¿žçº¿åˆ°è¿è¡ŒXLink Kaiçš„ç”µè„‘</string>
+  <string id="15002">è¯·ç¡®å®šè®¾å®šæ— è¯¯åŽå†å°è¯•è¿žçº¿ï¼Ÿ</string>
+  <string id="15003">è¾“å…¥ä½ çš„è®¯æ¯</string>
+  <string id="15004">ä½ è¢«é‚€è¯·çŽ©%sã€‚</string>
+  <string id="15005">æ—¥æœŸï¼š%s</string>
+  <string id="15006">æ¥è‡ªï¼š%s</string>
+  <string id="15007">é‚€è¯·</string>
+  <string id="15008">ä½ è¢«é‚€è¯·åŠ å…¥%sã€‚</string>
+  <string id="15009">ç¦»çº¿</string>
+  <string id="15010">å¥½å‹</string>
+  <string id="15011">æ˜¾ç¤ºï¼šå¥½å‹</string>
+  <string id="15012">åŠ å…¥æ¸¸æˆ</string>
+  <string id="15013">è¯­éŸ³äº¤è°ˆ</string>
+  <string id="15014">é‚€è¯·</string>
+  <string id="15015">åˆ é™¤</string>
+  <string id="15016">æ¸¸æˆ</string>
+  <string id="15017">æ˜¾ç¤ºï¼šæ¸¸æˆ</string>
+  <string id="15018">è¿›å…¥</string>
+  <string id="15019">æ·»åŠ ä¸ºå¥½å‹</string>
+  <string id="15020">å»ºç«‹æ¸¸æˆ</string>
+  <string id="15021">æ¸¸æˆå®¤</string>
+  <string id="15022">æ˜¾ç¤ºï¼šæ¸¸æˆå®¤</string>
+  <string id="15023">å¼€å§‹æ¸¸æˆ</string>
+  <string id="15024">æ·»åŠ ä¸ºå¥½å‹</string>
+  <string id="15025">å»ºç«‹æ¸¸æˆ</string>
+  <string id="15026">èŠå¤©å®¤</string>
+  <string id="15027">æ˜¾ç¤ºï¼šèŠå¤©å®¤</string>
+  <string id="15028">é”®ç›˜</string>
+  <string id="15029">åŠ å…¥è¿™ä¸ªæ¸¸æˆå®¤é¡»è¦å¯†ç ï¼</string>
+  <string id="15030">æ¸¸æˆå·²ä¸­æ–­</string>
+  <string id="15031">XLink Kai è®¤è¯</string>
+  <string id="15032">åç§°æˆ–å¯†ç ä¸æ­£ç¡®</string>
+  <string id="15033">è¯·æ£€æŸ¥è®¾å®šæ— è¯¯åŽå†å°è¯•ã€‚</string>
+  <string id="15034">ç™»å…¥</string>
+  <string id="15035">å¯åŠ¨è¯­éŸ³èŠå¤©</string>
+  <string id="15036">å‘é€ä¸€å°ä½ çš„é‚€è¯·å‡½</string>
+  <string id="15037">XBMC æ— æ³•ç¡®å®šä½ çš„ç½‘ç»œæ˜¯å¦èƒ½å¤Ÿè¿žæŽ¥ï¼</string>
+  <string id="15038">ä½ å°†ä¼šå¾ˆéš¾åŠ å…¥æˆ–å»ºç«‹æ¸¸æˆã€‚</string>
+  <string id="15039">XBMC æ— æ³•å°†æ¸¸æˆè‡ªåŠ¨æ‰§è¡Œï¼</string>
+  <string id="15040">æ”¾å…¥æ¸¸æˆç¢Ÿç‰‡æˆ–æŒ‰ A å–æ¶ˆ</string>
+  <string id="15041">å’Œå¼€å¯æ¸¸æˆæ‰‹å†Œã€‚</string>
+  <string id="15042">å­˜å–è¢«æ‹’</string>
+  <string id="15043">%såŠ å…¥èŠå¤©å®¤ã€‚</string>
+  <string id="15044">%sç¦»å¼€èŠå¤©å®¤ã€‚</string>
+  <string id="15045">è¾“å…¥ä½ çš„è®¯æ¯ã€‚</string>
+  <string id="15046">ç›®å‰æ¸¸æˆå®¤</string>
+  <string id="15047">è¾“å…¥æ¸¸æˆåœºå¯†ç ã€‚</string>
+  <string id="15048">è¾“å…¥æ¸¸æˆåœºè¯´æ˜Žã€‚</string>
+  <string id="15049">å»ºç«‹æ¸¸æˆ</string>
+  <string id="15050">å»ºç«‹ä¸ªäººæ¸¸æˆå®¤</string>
+  <string id="15051">çŽ©å®¶é™åˆ¶</string>
+  <string id="15052">å¯†ç </string>
+  <string id="15053">ç®€ä»‹</string>
+  <string id="15054">é‚€è¯·å‡½</string>
+  <string id="15055">é€‰æ‹©æ¸¸æˆï¼š</string>
+  <string id="15056">è¾“å…¥è®¯æ¯ï¼š</string>
+  <string id="15057">å‘é€</string>
+  <string id="15058">å»ºç«‹æ¸¸æˆ</string>
+  <string id="15059">æŽ¥å—é‚€è¯·ï¼</string>
+  <string id="15060">è®¯æ¯</string>
+  <string id="15061">é‚€è¯·çŽ©å®¶ %sã€‚</string>
+  <string id="15062">ä½¿ç”¨æ›¿ä»£çš„ mplayer</string>
+  <string id="15100">æµè§ˆ</string>
+  <string id="15101">æ•°æ®åº“</string>
+  <string id="15102">* æ‰€æœ‰ä¸“è¾‘</string>
+  <string id="15103">* æ‰€æœ‰è‰ºäºº</string>
+  <string id="15104">* æ‰€æœ‰æ­Œæ›²</string>
+  <string id="15105">* æ‰€æœ‰æµæ´¾</string>
+  <string id="15106">å‘å‰æµè§ˆæ—¶è®°ä½é€‰æ‹©çš„æ–‡ä»¶</string>
+  <string id="15107">ç¼“å†²ä¸­â€¦</string>
+  <string id="15108">å¯¼èˆªéŸ³æ•ˆ</string>
+  <string id="15109">ä¸»é¢˜é¢„è®¾</string>
+  <string id="15110">æ‰‹æŸ„æŒ¯åŠ¨</string>
+  <string id="15111">çš®è‚¤ä¸»é¢˜</string>
+  <string id="15112">ç¼ºçœä¸»é¢˜</string>
+  <string id="15200">LastFM</string>
+  <string id="15201">å°†æ­Œæ›²æäº¤åˆ° LastFM</string>
+  <string id="15202">LastFM ç”¨æˆ·å</string>
+  <string id="15203">LastFM å¯†ç </string>
+  <string id="15204">æ— æ³•è¿žæŽ¥ï¼šä¼‘çœ ä¸­â€¦</string>
+  <string id="15205">è¯·å‡çº§XBMC</string>
+  <string id="15206">ä¸Šä¼ å¤±è´¥ï¼šæ— æ³•é€šè¿‡è®¤è¯ã€‚</string>
+  <string id="15207">è¿žæŽ¥</string>
+  <string id="15208">æ— æ³•è¿žæŽ¥</string>
+  <string id="15209">ä¸Šä¼ è¿›åº¦%i</string>
+  <string id="15210">å·²ä¸Šä¼ %ié¦–æ­Œæ›²</string>
+  <string id="15211">ä¸Šä¼ ä¸­â€¦</string>
+  <string id="15212">ä¸Šä¼ å‰©ä½™%iç§’</string>
+  <string id="15213">æ‰“å¼€æ–¹å¼</string>
+  <string id="15214">ä½¿ç”¨å¹³æ»‘çš„å½±éŸ³åŒæ­¥</string>
+  <string id="15215">ç¼©ç•¥å›¾æ˜¾ç¤ºæ—¶éšè—æ–‡ä»¶å</string>
+  <string id="15250">æäº¤ Last.fm ç”µå°åˆ°LastFM</string>
+  <string id="15251">è¿žæŽ¥åˆ° Last.fmâ€¦</string>
+  <string id="15252">é€‰æ‹©ç”µå°â€¦</string>
+  <string id="15253">å¯»æ‰¾ç›¸ä¼¼çš„è‰ºæœ¯å®¶â€¦</string>
+  <string id="15254">å¯»æ‰¾ç›¸ä¼¼çš„æ ‡è®°â€¦</string>
+  <string id="15255">%name% çš„è®¾ç½®</string>
+  <string id="15256">æ‰€æœ‰æŽ’è¡Œ</string>
+  <string id="15257">%name% è‰ºæœ¯å®¶æŽ’è¡Œ</string>
+  <string id="15258">%name% ä¸“è¾‘æŽ’è¡Œ</string>
+  <string id="15259">%name% æ­Œæ›²æŽ’è¡Œ</string>
+  <string id="15260">æ”¶å¬ %name% last.fm ç”µå°</string>
+  <string id="15261">%name% åŒç±»åž‹è‰ºæœ¯å®¶</string>
+  <string id="15262">%name% ä¸“è¾‘æŽ’è¡Œ</string>
+  <string id="15263">%name% æ­Œæ›²æŽ’è¡Œ</string>
+  <string id="15264">%name% æ ‡è®°æŽ’è¡Œ</string>
+  <string id="15265">%name% æœ€çˆ±æ­Œè¿·</string>
+  <string id="15266">æ”¶å¬ %name% æ­Œè¿· last.fm ç”µå°</string>
+  <string id="15267">æ”¶å¬ %name% åŒç±»åž‹è‰ºæœ¯å®¶ last.fm ç”µå°</string>
+  <string id="15268">%name% è‰ºæœ¯å®¶æŽ’è¡Œ</string>
+  <string id="15269">%name% ä¸“è¾‘æŽ’è¡Œ</string>
+  <string id="15270">%name% æ­Œæ›²æŽ’è¡Œ</string>
+  <string id="15271">%name% å¥½å‹</string>
+  <string id="15272">%name% åŒå¥½</string>
+  <string id="15273">%name% è‰ºæœ¯å®¶å‘¨æŽ’è¡Œ</string>
+  <string id="15274">%name% ä¸“è¾‘å‘¨æŽ’è¡Œ</string>
+  <string id="15275">%name% æ­Œæ›²å‘¨æŽ’è¡Œ</string>
+  <string id="15276">æ”¶å¬ %name% çš„åŒå¥½ last.fm ç”µå°</string>
+  <string id="15277">æ”¶å¬ %name% çš„ä¸ªäºº last.fm ç”µå°</string>
+  <string id="15278">æ”¶å¬ %name% çš„æœ€çˆ±æ­Œæ›²</string>
+  <string id="15279">æ­£åœ¨ä»Žlast.fmèŽ·å–åˆ—è¡¨</string>
+  <string id="15280">ä¸èƒ½ä»Žlast.fmèŽ·å–åˆ—è¡¨â€¦</string>
+  <string id="15281">è¾“å…¥è‰ºæœ¯å®¶åå­—æ¥å¯»æ‰¾ç›¸å…³èµ„æ–™</string>
+  <string id="15282">è¾“å…¥æ ‡è®°æ¥å¯»æ‰¾å…¶ä»–ç›¸ä¼¼çš„</string>
+  <string id="15283">%name% æœ€è¿‘å¬è¿‡çš„éŸ³è½¨</string>
+  <string id="15300">è·¯å¾„é”™è¯¯æˆ–æ— æ³•æ‰¾åˆ°ï¼</string>
+  <string id="15301">æ— æ³•è¿žæŽ¥æœåŠ¡å™¨ï¼</string>
+  <string id="15302">æ²¡æœ‰æœåŠ¡å™¨æ‰¾åˆ°ï¼</string>
+  <string id="15303">æ²¡æœ‰æ‰¾åˆ°å·¥ä½œç»„ï¼</string>
+  <string id="15310">æ‰“å¼€å¤šä¸ªä¹¦ç­¾è·¯å¾„</string>
+  <string id="15311">è·¯å¾„ï¼š</string>
+  <string id="16000">é€šç”¨</string>
+  <string id="16001">é…ç½®éŸ³é¢‘ç¡¬ä»¶â€¦</string>
+  <string id="16002">CDDB æŸ¥è¯¢</string>
+  <string id="16003">é«˜çº§è®¾ç½®</string>
+  <string id="16004">æ’­æ”¾ç¢Ÿç‰‡</string>
+  <string id="16009">è¾“å…¥å½±ç‰‡åç§°</string>
+  <string id="16010">è¾“å…¥é…ç½®åç§°</string>
+  <string id="16011">è¾“å…¥ä¸“è¾‘åç§°</string>
+  <string id="16012">è¾“å…¥æ’­æ”¾åˆ—è¡¨åç§°</string>
+  <string id="16013">è¾“å…¥æ–°çš„æ–‡ä»¶å</string>
+  <string id="16014">è¾“å…¥æ–‡ä»¶å¤¹åç§°</string>
+  <string id="16015">è¾“å…¥ç›®å½•</string>
+  <string id="16016">å¯ä½¿ç”¨é€‰é¡¹ï¼š%A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
+  <string id="16017">è¾“å…¥æŸ¥è¯¢å­—ç¬¦ä¸²</string>
+  <string id="16018">å…³é—­</string>
+  <string id="16019">è‡ªåŠ¨é€‰æ‹©</string>
+  <string id="16020">åŽ»äº¤é”™</string>
+  <string id="16021">å¥‡åŒæ­¥</string>
+  <string id="16022">å¶åŒæ­¥</string>
+  <string id="16023">äº¤é”™è®¾ç½®</string>
+  <string id="16024">å–æ¶ˆä¸­â€¦</string>
+  <string id="16025">è¾“å…¥è‰ºæœ¯å®¶åå­—</string>
+  <string id="16026">æ’­æ”¾åˆ—è¡¨å›žæ”¾å–æ¶ˆã€‚</string>
+  <string id="16027">å¤ªå¤šè¿žç»­æ€§é”™è¯¯</string>
+  <string id="16030">èˆžä¼šæ¨¡å¼å–æ¶ˆï¼</string>
+  <string id="16031">æ•°æ®åº“ä¸­æ²¡æœ‰ç¬¦åˆæ¡ä»¶çš„æ­Œæ›²ï¼</string>
+  <string id="16032">æ— æ³•åˆå§‹åŒ–æ•°æ®åº“ï¼</string>
+  <string id="16033">æ— æ³•æ‰“å¼€æ•°æ®åº“ï¼</string>
+  <string id="16034">æ— æ³•ä»Žæ•°æ®åº“èŽ·å–æ­Œæ›²æ–‡ä»¶ï¼</string>
+  <string id="16100">æ‰€æœ‰è§†é¢‘æ–‡ä»¶</string>
+  <string id="16101">æœªè§‚çœ‹çš„</string>
+  <string id="16102">å·²è§‚çœ‹çš„</string>
+  <string id="16103">æ ‡è®°æˆå·²çœ‹çš„</string>
+  <string id="16104">æ ‡è®°æˆæœªçœ‹çš„</string>
+  <string id="16105">ç¼–è¾‘æ ‡é¢˜</string>
+  <string id="16106">ä½¿ç”¨ NTSC-M &amp; NTSC-Jåˆ¶å¼</string>
+  <string id="16107">ä½¿ç”¨ NTSC-Måˆ¶å¼</string>
+  <string id="16108">ä½¿ç”¨ NTSC-Jåˆ¶å¼</string>
+  <string id="16109">ä½¿ç”¨ PAL-60åˆ¶å¼</string>
+  <string id="16110">60hz æ¸¸æˆè®¾ç½®</string>
 </strings>
