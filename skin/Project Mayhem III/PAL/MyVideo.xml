@@ -152,7 +152,7 @@
     <posx>50</posx>
     <posy>268</posy>
     <label>Local</label>
-    <onclick>XBMC.ActivateWindow(MyVideos,Local)</onclick>
+    <onclick>XBMC.ActivateWindow(MyVideos,Videos)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>7</onup>
@@ -168,7 +168,7 @@
     <posx>50</posx>
     <posy>305</posy>
     <label>Network</label>
-    <onclick>XBMC.ActivateWindow(MyVideos,Network)</onclick>
+    <onclick>XBMC.ActivateWindow(MyVideos,WORKGROUP (SMB) Network)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>31</onup>
@@ -183,8 +183,8 @@
     <id>33</id>
     <posx>50</posx>
     <posy>342</posy>
-    <label>TV Shows</label>
-    <onclick>XBMC.ActivateWindow(MyVideos,TV Shows)</onclick>
+    <label>Playlists</label>
+    <onclick>XBMC.ActivateWindow(MyVideos,Playlists)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>32</onup>
