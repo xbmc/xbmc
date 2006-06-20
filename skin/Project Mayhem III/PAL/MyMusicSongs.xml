@@ -141,7 +141,7 @@
     <posx>50</posx>
     <posy>231</posy>
     <label>Local</label>
-    <onclick>XBMC.ActivateWindow(MyMusic,Local)</onclick>
+    <onclick>XBMC.ActivateWindow(MyMusic,Music)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>5</onup>
@@ -157,7 +157,7 @@
     <posx>50</posx>
     <posy>268</posy>
     <label>Network</label>
-    <onclick>XBMC.ActivateWindow(MyMusic,Network)</onclick>
+    <onclick>XBMC.ActivateWindow(MyMusic,WORKGROUP (SMB) Network)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>31</onup>
@@ -172,8 +172,8 @@
     <id>33</id>
     <posx>50</posx>
     <posy>305</posy>
-    <label>Recordings</label>
-    <onclick>XBMC.ActivateWindow(MyMusic,Recordings)</onclick>
+    <label>Shoutcast</label>
+    <onclick>XBMC.ActivateWindow(MyMusic,SHOUTcast - Directory)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>32</onup>
