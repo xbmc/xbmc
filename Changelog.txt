@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-06-2006 changed: Modified xboxmediacenter.xml and myprograms.xml/myvideos.xml to work with a default XBMC setup
+                       ie using the name tags from an untouched xboxmediacenter.xml for the bookmarks in the
+                       left hand side of My Videos/My Programs
  - 20-06-2006 updated: Finnish language file (Thnx to jutski)
  - 20-06-2006 updated: German (Austrian) language file (Thnx to CEOMR)
  - 20-06-2006 updated: Italian language file (Thnx to kotix)
