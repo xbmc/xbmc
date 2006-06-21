@@ -118,7 +118,7 @@ namespace PYXBMC
         DWORD dwTextYOffset;
         DWORD dwAlign;
         int iAngle;
-	} ControlButton;
+  } ControlButton;
 
 	typedef struct {
     PyObject_HEAD_XBMC_CONTROL
