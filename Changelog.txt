@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-06-2006 fixed: My music - autoswitch to thumb didn't work with one folder and parent folder items hidden.
  - 21-06-2006 fixed: Network and local buttons in My Pictures now work in 16x9 too
  - 21-06-2006 changed: Some minor fixes/changes to the swedish strings.xml langinfo.xml
  - 21-06-2006 fixed: temp and speed units do not display properly
