@@ -22,7 +22,7 @@ CPartyModeManager::CPartyModeManager(void)
 CPartyModeManager::~CPartyModeManager(void)
 {
 }
-
+//#define NEW_PARTY_MODE_METHOD 1
 bool CPartyModeManager::Enable()
 {
   // Filter using our PartyMode xml file
@@ -37,21 +37,31 @@ bool CPartyModeManager::Enable()
 
   ClearState();
   CMusicDatabase musicdatabase;
+  DWORD time = timeGetTime();
+#ifdef NEW_PARTY_MODE_METHOD
+  vector<long> songIDs;
+#endif
   if (musicdatabase.Open())
   {
+#ifdef NEW_PARTY_MODE_METHOD
+    m_iMatchingSongs = (int)musicdatabase.GetSongIDs(m_strCurrentFilter, songIDs);
+#else
     m_iMatchingSongs = musicdatabase.GetSongsCount(m_strCurrentFilter);
+#endif
     if (m_iMatchingSongs < 1)
     {
       musicdatabase.Close();
       OnError(16031, (CStdString)"Party mode found no matching songs. Aborting.");
       return false;
     }
+#ifndef NEW_PARTY_MODE_METHOD
     if (!musicdatabase.InitialisePartyMode())
     {
       musicdatabase.Close();
       OnError(16032, (CStdString)"Party mode could not initialise database. Aborting.");
       return false;
     }
+#endif
   }
   else
   {
@@ -77,9 +87,14 @@ bool CPartyModeManager::Enable()
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
 
   // add initial songs
+#ifdef NEW_PARTY_MODE_METHOD
+  if (!AddInitialSongs(songIDs))
+    return false;
+#else
   if (!AddRandomSongs())
     return false;
-
+#endif
+  CLog::Log(LOGDEBUG, __FUNCTION__" time for song fetch: %i", timeGetTime() - time);
   // start playing
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
   Play(0);
@@ -343,3 +358,70 @@ void CPartyModeManager::UpdateStats()
   }
   musicdatabase.Close();
 }
+
+bool CPartyModeManager::AddInitialSongs(vector<long> &songIDs)
+{
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+  int iMissingSongs = QUEUE_DEPTH - playlist.size();
+  if (iMissingSongs > 0)
+  {
+    // generate iMissingSongs random ids from songIDs
+    if (iMissingSongs > (int)songIDs.size())
+      return false; // can't do it if we have less songs than we need
+
+    // TODO: rand() only generates between 0 and 32767
+    // so we'll need to modify this in future
+    srand(timeGetTime());
+    vector<long> chosenSongIDs;
+    for (int i = 0; i < iMissingSongs; i++)
+    {
+      int num = rand() % songIDs.size();
+      chosenSongIDs.push_back(songIDs[num]);
+      songIDs.erase(songIDs.begin() + num);
+    }
+    // construct the where clause
+    CStdString sqlWhere = "where songview.idsong in (";
+    for (vector<long>::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
+    {
+      CStdString song;
+      song.Format("%i,", *it);
+      sqlWhere += song;
+    }
+    // replace the last comma with closing bracket
+    sqlWhere[sqlWhere.size() - 1] = ')';
+
+    // add songs to fill queue
+    CMusicDatabase musicdatabase;
+    if (musicdatabase.Open())
+    {
+      CFileItemList items;
+      musicdatabase.BeginTransaction();
+      if (musicdatabase.GetSongsByWhere(sqlWhere, items))
+      {
+        musicdatabase.InitialisePartyMode();
+        for (int i = 0; i < items.Size(); i++)
+        {
+          Add(items[i]);
+          // TODO: Allow "relaxed restrictions" later?
+          musicdatabase.UpdatePartyMode(chosenSongIDs[i], false);
+        }
+      }
+      else
+      {
+        musicdatabase.CommitTransaction();
+        musicdatabase.Close();
+        OnError(16034, (CStdString)"Cannot get songs from database. Aborting.");
+        return false;
+      }
+      musicdatabase.CommitTransaction();
+    }
+    else
+    {
+      OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
+      return false;
+    }
+    musicdatabase.Close();
+  }
+  return true;
+}
+
