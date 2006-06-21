@@ -1858,7 +1858,7 @@ CStdString CFileItem::GetUserMusicThumb()
   if (CFile::Exists(fileThumb))
     return fileThumb;
   // if a folder, check for folder.jpg
-  if (m_bIsFolder)
+  if (m_bIsFolder && (!IsRemote() || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
     CStdString folderThumb;
     CUtil::AddFileToFolder(m_strPath, "folder.jpg", folderThumb);
