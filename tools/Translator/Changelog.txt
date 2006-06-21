@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-06-2006 added: now more then one region can specified in the language settings
  - 21-06-2006 added: ability to add newline chars when editing a string
  - 21-06-2006 fixed: corrected parsing of newline chars
  - 21-06-2006 added: throwing an exception if file is not a language file
