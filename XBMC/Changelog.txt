@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-06-2006 changed: switched to async exception handling to allow logging/handling of win32 exceptions. (potentially slower due to less compiler optimizations)
  - 21-06-2006 fixed: [ 1505563 ] Paplayer plays at very slow rate
  - 21-06-2006 fixed: restored &#10; (newline chars) in english language
  - 21-06-2006 fixed: weather isn't localized anymore

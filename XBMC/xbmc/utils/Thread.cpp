@@ -21,6 +21,7 @@
 #include "../stdafx.h"
 #include "Thread.h"
 #include <process.h>
+#include "win32exception.h"
 
 
 //////////////////////////////////////////////////////////////////////
@@ -85,11 +86,34 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   CThread* pThread = (CThread*)(data);
   bool bDelete( pThread->IsAutoDelete() );
   
-  __try 
+  /* install win32 exception translator */
+  win32_exception::install_handler();
+
+  try 
   {
     pThread->OnStartup();
   }
-  __except (EXCEPTION_EXECUTE_HANDLER)
+  catch (const access_violation &e) 
+  {
+    e.writelog(__FUNCTION__);
+    if( bDelete )
+    {
+      delete pThread;
+      _endthreadex(123);
+      return 0;
+    }
+  }
+  catch (const win32_exception &e) 
+  {
+    e.writelog(__FUNCTION__);
+    if( bDelete )
+    {
+      delete pThread;
+      _endthreadex(123);
+      return 0;
+    }
+  }
+  catch(...)
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread startup, aborting");
     if( bDelete )
@@ -98,23 +122,38 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
       _endthreadex(123);
       return 0;
     }
-
   }
 
-  __try 
+  try
   {
     pThread->Process();
   }
-  __except (EXCEPTION_EXECUTE_HANDLER) 
+  catch (const access_violation &e) 
+  {
+    e.writelog(__FUNCTION__);
+  }
+  catch (const win32_exception &e) 
+  {
+    e.writelog(__FUNCTION__);
+  }
+  catch(...)
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread process, attemping cleanup in OnExit"); 
   }
 
-  __try
+  try
   {
     pThread->OnExit();
   }
-  __except (EXCEPTION_EXECUTE_HANDLER)
+  catch (const access_violation &e) 
+  {
+    e.writelog(__FUNCTION__);
+  }
+  catch (const win32_exception &e) 
+  {
+    e.writelog(__FUNCTION__);
+  }
+  catch(...)
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread exit"); 
   }
@@ -191,7 +230,6 @@ bool CThread::SetPriority(const int iPriority)
   }
 }
 
-#ifdef _XBOX
 void CThread::SetName( LPCTSTR szThreadName )
 {
   THREADNAME_INFO info; 
@@ -199,19 +237,14 @@ void CThread::SetName( LPCTSTR szThreadName )
   info.szName = szThreadName; 
   info.dwThreadID = m_dwThreadId; 
   info.dwFlags = 0; 
-  __try 
+  try 
   { 
     RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info); 
   } 
-  __except (EXCEPTION_CONTINUE_EXECUTION) 
+  catch(...)
   { 
   }  
 }
-#else
-void CThread::SetName( LPCTSTR szThreadName )
-{
-}
-#endif
 
 bool CThread::WaitForThreadExit(DWORD dwmsTimeOut)
 // Waits for thread to exit, timeout in given number of msec.
