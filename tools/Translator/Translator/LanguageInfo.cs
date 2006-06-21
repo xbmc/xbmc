@@ -40,29 +40,29 @@ namespace TeamXBMC.TranslatorCore
 				tempUnit=element.SelectSingleNode("tempunit").InnerText;
 			}
 
-			public void Save(ref XmlDocument doc, ref XmlElement element)
+			public void Save(ref XmlElement element)
 			{
 				if (name!="(default)")
 					element.SetAttribute("name", name);
-				XmlElement dateShortElement=doc.CreateElement("dateshort");
+				XmlElement dateShortElement=element.OwnerDocument.CreateElement("dateshort");
 				dateShortElement.InnerText=dateShort;
 				element.AppendChild(dateShortElement);
 				
-				XmlElement dateLongElement=doc.CreateElement("datelong");
+				XmlElement dateLongElement=element.OwnerDocument.CreateElement("datelong");
 				dateLongElement.InnerText=dateLong;
 				element.AppendChild(dateLongElement);
 
-				XmlElement timeElement=doc.CreateElement("time");
+				XmlElement timeElement=element.OwnerDocument.CreateElement("time");
 				timeElement.InnerText=time;
 				timeElement.SetAttribute("symbolAM", symbolAM);
 				timeElement.SetAttribute("symbolPM", symbolPM);
 				element.AppendChild(timeElement);
 
-				XmlElement tempUnitElement=doc.CreateElement("tempunit");
+				XmlElement tempUnitElement=element.OwnerDocument.CreateElement("tempunit");
 				tempUnitElement.InnerText=tempUnit;
 				element.AppendChild(tempUnitElement);
 
-				XmlElement speedUnitElement=doc.CreateElement("speedunit");
+				XmlElement speedUnitElement=element.OwnerDocument.CreateElement("speedunit");
 				speedUnitElement.InnerText=speedUnit;
 				element.AppendChild(speedUnitElement);
 
@@ -210,7 +210,7 @@ namespace TeamXBMC.TranslatorCore
 				{
 					XmlElement regionNode=doc.CreateElement("region");
 					regionsNode.AppendChild(regionNode);
-					region.Save(ref doc, ref regionNode);
+					region.Save(ref regionNode);
 				}
 
 				writer=new XmlTextWriter(filename, System.Text.Encoding.UTF8);
