@@ -1,6 +1,6 @@
 <window>
 
- <defaultcontrol alwyays="true">10</defaultcontrol>
+ <defaultcontrol always="true">10</defaultcontrol>
  <allowoverlay>no</allowoverlay>
 
  <controls>
