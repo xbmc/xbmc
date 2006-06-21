@@ -3544,6 +3544,37 @@ long CMusicDatabase::AddThumb(const CStdString& strThumb1)
   return -1;
 }
 
+unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<long> &songIDs)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+
+    CStdString strSQL = "select idsong from songview " + strWhere;
+    if (!m_pDS->query(strSQL.c_str())) return 0;
+    songIDs.clear();
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return 0;
+    }
+    songIDs.reserve(m_pDS->num_rows());
+    while (!m_pDS->eof())
+    {
+      songIDs.push_back(m_pDS->fv(song_idSong).get_asLong());
+      m_pDS->next();
+    }    // cleanup
+    m_pDS->close();
+    return songIDs.size();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::GetSongIDs(%s) failed", strWhere.c_str());
+  }
+  return 0;
+}
+
 int CMusicDatabase::GetSongsCount()
 {
   return GetSongsCount((CStdString)"");
@@ -4065,6 +4096,7 @@ bool CMusicDatabase::PartyModeGetRandomSongs(CFileItemList& items, int iNumSongs
     strWhereTemp += strHistory;
   }
 
+  BeginTransaction();
   for (int i = 0; i < iNumSongs; i++)
   {
     CFileItem* pItem = new CFileItem;
@@ -4089,6 +4121,7 @@ bool CMusicDatabase::PartyModeGetRandomSongs(CFileItemList& items, int iNumSongs
     items.Clear();
     return false;
   }
+  CommitTransaction();
   return true;
 }
 
