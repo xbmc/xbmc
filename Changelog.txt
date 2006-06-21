@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-06-2006 updated: ControlImage and ControlTextbox to accept keyword arguments. (matches other controls)
+ - 21-06-2006 updated: some of the python documentation with examples
  - 20-06-2006 changed: "Query Info For All Albums" minor code cleanup and increased relevance % for better accuracy.
  - 20-06-2006 fixed: some language files contained &amp;gt; it should have been &gt; (>)
  - 20-06-2006 updated: Polish language file (Thnx to napek)

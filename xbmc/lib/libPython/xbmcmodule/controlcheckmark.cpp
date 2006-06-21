@@ -48,7 +48,7 @@ namespace PYXBMC
 		if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llll|Osslllsss:ControlCheckMark",
+      "llllO|sslllsss:ControlCheckMark",
       keywords,
       &self->dwPosX,
       &self->dwPosY,
@@ -121,10 +121,14 @@ namespace PYXBMC
     return pControl->pGUIControl;
   }
 
+  // setDisabledColor() Method
 	PyDoc_STRVAR(setDisabledColor__doc__,
-		"setDisabledColor(string hexcolor) -- .\n"
+		"setDisabledColor(disabledColor) -- Set's this controls disabled color.\n"
 		"\n"
-		"hexcolor     : hexString (example, '0xFFFF3300')");
+    "disabledColor  : hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')\n"
+		"\n"
+		"example:\n"
+		"  - self.checkmark.setDisabledColor('0xFFFF3300')\n");
 
 	PyObject* ControlCheckMark_SetDisabledColor(
         ControlCheckMark *self,
@@ -151,13 +155,17 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // setLabel() Method
 	PyDoc_STRVAR(setLabel__doc__,
-		"setLabel(label, font, textColor, disabledColor) -- Set's text for this button.\n"
+		"setLabel(label[, font, textColor, disabledColor]) -- Set's this controls text attributes.\n"
 		"\n"
-		"label     : string or unicode string\n"
-		"font          : name of font (opt)\n"
-		"textColor     : label text color (opt)\n"
-		"disabledColor : disabled text color (opt)\n" );
+		"label          : string or unicode - text string.\n"
+    "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
+    "textColor      : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')\n"
+    "disabledColor  : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')\n"
+		"\n"
+		"example:\n"
+		"  - self.checkmark.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300')\n");
 
 	PyObject* ControlCheckMark_SetLabel(ControlCheckMark *self, PyObject *args)
 	{
@@ -203,8 +211,12 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // getSelected() Method
 	PyDoc_STRVAR(getSelected__doc__,
-		"getSelected() -- Returns the selected value for the check mark.\n" );
+		"getSelected() -- Returns the selected status for this checkmark as a bool.\n"
+		"\n"
+		"example:\n"
+		"  - selected = self.checkmark.getSelected()\n");
 
 	PyObject* ControlCheckMark_GetSelected( ControlCheckMark *self )
 	{
@@ -220,10 +232,14 @@ namespace PYXBMC
 		return Py_BuildValue("b", isSelected);
 	}
 
+  // setSelected() Method
 	PyDoc_STRVAR(setSelected__doc__,
-		"setSelected(bool isOn) -- Sets the check mark on or off.\n"
+		"setSelected(isOn) -- Sets this checkmark status to on or off.\n"
 		"\n"
-        "isOn   : True if selected, False if not selected" );
+    "isOn           : bool - True=selected (on) / False=not selected (off)"
+		"\n"
+		"example:\n"
+		"  - self.checkmark.setSelected(True)\n");
 
 	PyObject* ControlCheckMark_SetSelected(
         ControlCheckMark *self,
@@ -254,25 +270,34 @@ namespace PYXBMC
 		{NULL, NULL, 0, NULL}
 	};
 
-	PyDoc_STRVAR(controlCheckMark__doc__,
+	// ControlCheckMark class
+  PyDoc_STRVAR(controlCheckMark__doc__,
 		"ControlCheckMark class.\n"
 		"\n"
-		"ControlCheckMark(x, y, width, height, label, focusTexture, noFocusTexture,\n" 
-        "                 checkWidth, checkHeight, alignment, font, textColor, disabledColor )\n"
+		"ControlCheckMark(x, y, width, height, label[, focusTexture, noFocusTexture,\n" 
+    "                 checkWidth, checkHeight, alignment, font, textColor, disabledColor])\n"
 		"\n"
-		"x				: integer x coordinate of control\n"
-		"y              : integer y coordinate of control\n"
-		"width          : integer width of control\n"
-		"height         : integer height of control\n"
-		"label			: string or unicode string (opt)\n"
-		"focusTexture   : filename for focus texture (opt)\n"
-		"noFocusTexture : filename for no focus texture (opt)\n"
-		"checkWidth		: width of checkmark (opt)\n"
-		"checkHeight	: height of checkmark (opt)\n"
-		"alignment		: alignment of checkmark label (opt)\n"
-		"font           : name of font e.g. 'font13' (opt)\n"
-		"textColor      : color of text e.g. '0xffffffff' (opt)\n"
-		"disabledColor  : disabled color of text e.g. '0xffffffff' (opt)\n" );
+    "x              : integer - x coordinate of control.\n"
+    "y              : integer - y coordinate of control.\n"
+    "width          : integer - width of control.\n"
+    "height         : integer - height of control.\n"
+		"label          : string or unicode - text string.\n"
+    "focusTexture   : [opt] string - filename for focus texture.\n"
+		"noFocusTexture : [opt] string - filename for no focus texture.\n"
+		"checkWidth     : [opt] integer - width of checkmark.\n"
+		"checkHeight    : [opt] integer - height of checkmark.\n"
+		"alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n"
+    "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
+    "textColor      : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')\n"
+    "disabledColor  : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')\n"
+		"\n"
+		"*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       After you create the control, you need to add it to the window with addControl().\n"
+    "\n"
+		"example:\n"
+		"  - self.checkmark = xbmcgui.ControlCheckMark(100, 250, 200, 50, 'Status', font='font14')\n");
+
 
 // Restore code and data sections to normal.
 #pragma code_seg()

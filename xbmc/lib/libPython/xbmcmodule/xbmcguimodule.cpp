@@ -17,31 +17,43 @@ extern "C" {
 
 namespace PYXBMC
 {
-	PyDoc_STRVAR(lock__doc__,
-		"lock() -- Lock the gui until unlock is called.\n"
+	// lock() method
+  PyDoc_STRVAR(lock__doc__,
+    "lock() -- Lock the gui until xbmcgui.unlock() is called.\n"
 		"\n"
-		"This will improve performance when doing a lot of gui manipulation at once.\n"
-		"Note, the main program (xbmc itself) will freeze until unlock is called");
+		"*Note, This will improve performance when doing a lot of gui manipulation at once.\n"
+    "       The main program (xbmc itself) will freeze until xbmcgui.unlock() is called.\n"
+		"\n"
+		"example:\n"
+		"  - xbmcgui.lock()\n");
 
-	PyObject* XBMCGUI_Lock(PyObject *self, PyObject *args)
+  PyObject* XBMCGUI_Lock(PyObject *self, PyObject *args)
 	{
 		PyGUILock();
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
 
+  // unlock() method
 	PyDoc_STRVAR(unlock__doc__,
-		"unlock() -- Unlock the gui.\n");
+		"unlock() -- Unlock the gui from a lock() call.\n"
+		"\n"
+		"example:\n"
+		"  - xbmcgui.unlock()\n");
 
-	PyObject* XBMCGUI_Unlock(PyObject *self, PyObject *args)
+  PyObject* XBMCGUI_Unlock(PyObject *self, PyObject *args)
 	{
 		PyGUIUnlock();
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
 
-	PyDoc_STRVAR(getCurrentWindowId__doc__,
-		"getCurrentWindowId() -- returns the id for the current 'active' window.\n");
+  // getCurrentWindowId() method
+  PyDoc_STRVAR(getCurrentWindowId__doc__,
+		"getCurrentWindowId() -- Returns the id for the current 'active' window as an integer.\n"
+		"\n"
+		"example:\n"
+		"  - wid = xbmcgui.getCurrentWindowId()\n");
 
 	PyObject* XBMCGUI_GetCurrentWindowId(PyObject *self, PyObject *args)
 	{
@@ -60,8 +72,8 @@ namespace PYXBMC
 	};
 
 	PyDoc_STRVAR(xbmcgui_module_documentation,
-			"XBMC GUI Module"
-			"\n"
+		//	"XBMC GUI Module"
+		//	"\n"
 			"");
   
 	PyMODINIT_FUNC

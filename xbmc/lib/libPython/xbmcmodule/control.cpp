@@ -45,9 +45,13 @@ namespace PYXBMC
 		if(((Control*)obj1)->iControlId > ((Control*)obj2)->iControlId) return 1;
 		return 0;
 	}
-
+  
+  // getId() Method
 	PyDoc_STRVAR(getId__doc__,
-		"getId() -- Get the control's current id.\n");
+		"getId() -- Returns the control's current id as an integer.\n"
+		"\n"
+		"example:\n"
+		"  - id = self.button.getId()\n");
 
 	PyObject* Control_GetId(Control* self, PyObject* args)
 	{
@@ -76,8 +80,14 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	PyDoc_STRVAR(setVisible__doc__,
-		"setVisible(bool) -- Hide's or Show's this control.\n");
+	// setVisible() Method
+  PyDoc_STRVAR(setVisible__doc__,
+		"setVisible(visible) -- Set's the control's visible/hidden state.\n"
+		"\n"
+    "visible        : bool - True=visible / False=hidden.\n"
+		"\n"
+		"example:\n"
+		"  - self.button.setVisible(False)\n");
 
 	PyObject* Control_SetVisible(Control* self, PyObject* args)
 	{
@@ -92,10 +102,19 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // setPosition() Method
 	PyDoc_STRVAR(setPosition__doc__,
-		"setPosition(int x, int y) -- Set's the position of this control.\n");
+		"setPosition(x, y) -- Set's the controls position.\n"
+		"\n"
+    "x              : integer - x coordinate of control.\n"
+    "y              : integer - y coordinate of control.\n"
+		"\n"
+    "*Note, You may use negative integers. (e.g sliding a control into view)\n"
+		"\n"
+		"example:\n"
+		"  - self.button.setPosition(100, 250)\n");
 
-	PyObject* Control_SetPosition(Control* self, PyObject* args)
+  PyObject* Control_SetPosition(Control* self, PyObject* args)
 	{
 		if (!PyArg_ParseTuple(args, "ll", &self->dwPosX, &self->dwPosY)) return NULL;
 
@@ -107,10 +126,16 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // setWidth() Method
 	PyDoc_STRVAR(setWidth__doc__,
-		"setWidth(int width) -- Set's the width of this control.\n");
+		"setWidth(width) -- Set's the controls width.\n"
+		"\n"
+    "width          : integer - width of control.\n"
+		"\n"
+		"example:\n"
+		"  - self.image.setWidth(100)\n");
 
-	PyObject* Control_SetWidth(Control* self, PyObject* args)
+  PyObject* Control_SetWidth(Control* self, PyObject* args)
 	{
 		if (!PyArg_ParseTuple(args, "l", &self->dwWidth)) return NULL;
 
@@ -122,10 +147,16 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // setHeight() Method
 	PyDoc_STRVAR(setHeight__doc__,
-		"setHeight(int height) -- Set's the height of this control.\n");
+		"setHeight(height) -- Set's the controls height.\n"
+		"\n"
+    "height         : integer - height of control.\n"
+		"\n"
+		"example:\n"
+		"  - self.image.setHeight(100)\n");
 
-	PyObject* Control_SetHeight(Control* self, PyObject* args)
+  PyObject* Control_SetHeight(Control* self, PyObject* args)
 	{
 		if (!PyArg_ParseTuple(args, "l", &self->dwHeight)) return NULL;
 
@@ -137,13 +168,23 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // setNavigation() Method
 	PyDoc_STRVAR(setNavigation__doc__,
-		"setNavigation( Control up, Control down, Control left, Control right) -- Set's navigation.\n"
+		"setNavigation(up, down, left, right) -- Set's the controls navigation.\n"
 		"\n"
-		"Throws: TypeError, if one of the supplied arguments is not a Control type\n"
-		"        ReferenceError, if one of the controls is not added to a window\n"
+    "up             : control object - control to navigate to on up.\n"
+    "down           : control object - control to navigate to on down.\n"
+    "left           : control object - control to navigate to on left.\n"
+    "right          : control object - control to navigate to on right.\n"
 		"\n"
-		"Same as controlUp(), controlDown(), controlLeft(), controlRight().");
+		"*Note, Same as controlUp(), controlDown(), controlLeft(), controlRight().\n"
+    "       Set to self to disable navigation for that direction.\n"
+		"\n"
+		"Throws: TypeError, if one of the supplied arguments is not a control type.\n"
+		"        ReferenceError, if one of the controls is not added to a window.\n"
+		"\n"
+		"example:\n"
+		"  - self.button.setNavigation(self.button1, self.button2, self.button3, self.button4)\n");
 
 	PyObject* Control_SetNavigation(Control* self, PyObject* args)
 	{
@@ -181,14 +222,19 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // controlUp() Method
 	PyDoc_STRVAR(controlUp__doc__,
-		"controlUp( Control ) -- Set onUp control.\n"
+		"controlUp(control) -- Set's the controls up navigation.\n"
 		"\n"
-		"Throws: TypeError, if the supplied argument is not a Control type\n"
-		"        ReferenceError, if the control is not added to a window\n"
+    "control        : control object - control to navigate to on up.\n"
+    "\n"
+		"*Note, You can also use setNavigation(). Set to self to disable navigation.\n"
 		"\n"
-		"When this control is active and the user presses up, the supplied Control\n"
-		"will recieve focus.");
+		"Throws: TypeError, if one of the supplied arguments is not a control type.\n"
+		"        ReferenceError, if one of the controls is not added to a window.\n"
+		"\n"
+		"example:\n"
+		"  - self.button.controlUp(self.button1)\n");
 
 	PyObject* Control_ControlUp(Control* self, PyObject* args)
 	{
@@ -216,14 +262,19 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // controlDown() Method
 	PyDoc_STRVAR(controlDown__doc__,
-		"controlDown( Control ) -- Set onDown control.\n"
+		"controlDown(control) -- Set's the controls down navigation.\n"
 		"\n"
-		"Throws: TypeError, if the supplied argument is not a Control type\n"
-		"        ReferenceError, if the control is not added to a window\n"
+    "control        : control object - control to navigate to on down.\n"
 		"\n"
-		"When this control is active and the user presses down, the supplied Control\n"
-		"will recieve focus.");
+		"*Note, You can also use setNavigation(). Set to self to disable navigation.\n"
+		"\n"
+		"Throws: TypeError, if one of the supplied arguments is not a control type.\n"
+		"        ReferenceError, if one of the controls is not added to a window.\n"
+		"\n"
+		"example:\n"
+		"  - self.button.controlDown(self.button1)\n");
 
 	PyObject* Control_ControlDown(Control* self, PyObject* args)
 	{
@@ -251,14 +302,19 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // controlLeft() Method
 	PyDoc_STRVAR(controlLeft__doc__,
-		"controlLeft( Control ) -- Set onLeft control.\n"
+		"controlLeft(control) -- Set's the controls left navigation.\n"
 		"\n"
-		"Throws: TypeError, if the supplied argument is not a Control type\n"
-		"        ReferenceError, if the control is not added to a window\n"
+    "control        : control object - control to navigate to on left.\n"
 		"\n"
-		"When this control is active and the user presses left, the supplied Control\n"
-		"will recieve focus.");
+		"*Note, You can also use setNavigation(). Set to self to disable navigation.\n"
+		"\n"
+		"Throws: TypeError, if one of the supplied arguments is not a control type.\n"
+		"        ReferenceError, if one of the controls is not added to a window.\n"
+		"\n"
+		"example:\n"
+		"  - self.button.controlLeft(self.button1)\n");
 
 	PyObject* Control_ControlLeft(Control* self, PyObject* args)
 	{
@@ -286,14 +342,19 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // controlRight() Method
 	PyDoc_STRVAR(controlRight__doc__,
-		"controlRight( Control ) -- Set onRight control.\n"
+		"controlRight(control) -- Set's the controls right navigation.\n"
 		"\n"
-		"Throws: TypeError, if the supplied argument is not a Control type\n"
-		"        ReferenceError, if the control is not added to a window\n"
+    "control        : control object - control to navigate to on right.\n"
 		"\n"
-		"When this control is active and the user presses right, the supplied Control\n"
-		"will recieve focus.");
+		"*Note, You can also use setNavigation(). Set to self to disable navigation.\n"
+		"\n"
+		"Throws: TypeError, if one of the supplied arguments is not a control type.\n"
+		"        ReferenceError, if one of the controls is not added to a window.\n"
+		"\n"
+		"example:\n"
+		"  - self.button.controlRight(self.button1)\n");
 
 	PyObject* Control_ControlRight(Control* self, PyObject* args)
 	{
