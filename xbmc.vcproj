@@ -19,11 +19,13 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="0"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"
 				MinimalRebuild="TRUE"
+				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="TRUE"
 				RuntimeLibrary="1"
@@ -78,7 +80,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Oy-"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				FavorSizeOrSpeed="2"
@@ -87,6 +89,7 @@
 				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;HAVE_MSWINDOWS"
 				StringPooling="FALSE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
@@ -139,7 +142,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Oy-"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				OmitFramePointers="FALSE"
@@ -147,6 +150,7 @@
 				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;HAVE_MSWINDOWS"
 				StringPooling="FALSE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
@@ -200,6 +204,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
@@ -212,6 +217,7 @@
 				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"
 				StringPooling="FALSE"
 				MinimalRebuild="FALSE"
+				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="0"
 				SmallerTypeCheck="FALSE"
 				RuntimeLibrary="0"
@@ -273,12 +279,14 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			WholeProgramOptimization="TRUE">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG"
 				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
@@ -327,11 +335,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="0"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"
 				MinimalRebuild="TRUE"
+				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="TRUE"
 				RuntimeLibrary="1"
@@ -910,6 +920,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\Weather.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\Win32Exception.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\Win32Exception.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\XBApplicationEx.cpp">

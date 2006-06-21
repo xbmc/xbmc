@@ -19,11 +19,13 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="0"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_DEBUG;_XBOX;_LIB"
 				MinimalRebuild="TRUE"
+				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="TRUE"
 				RuntimeLibrary="1"
@@ -57,7 +59,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Oy-"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				OmitFramePointers="FALSE"
@@ -65,6 +67,7 @@
 				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;_LIB"
 				StringPooling="FALSE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
@@ -94,7 +97,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Oy-"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				OmitFramePointers="FALSE"
@@ -102,6 +105,7 @@
 				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB"
 				StringPooling="FALSE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
@@ -132,6 +136,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="0"
@@ -143,6 +148,7 @@
 				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
 				StringPooling="FALSE"
 				MinimalRebuild="FALSE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
@@ -175,11 +181,13 @@
 			WholeProgramOptimization="TRUE">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;_LIB"
 				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
