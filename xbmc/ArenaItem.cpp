@@ -162,7 +162,15 @@ void CArenaItem::OnPaint(CGUIItem::RenderContext* pContext)
 
       // no need for charset conversions here - just rendering numbers
       CStdStringW strInfoUnicode = strInfo;
-      RenderText((FLOAT)iPosX, (FLOAT)iPosY + 2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strInfoUnicode.c_str(), pDC->m_label);
+      float fPosX = (float)iPosX;
+      float fPosY = (float)iPosY + 2;
+      if (pDC->m_pButton->GetLabelInfo().align & XBFONT_CENTER_Y)
+      {
+        float fTextHeight, fTextWidth;
+        pDC->m_label.font->GetTextExtent( strInfoUnicode.c_str(), &fTextWidth, &fTextHeight);
+        fPosY = (float)iPosY + ((float)pDC->m_pButton->GetHeight() - fTextHeight) / 2;
+      }
+      RenderText(fPosX, fPosY, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strInfoUnicode.c_str(), pDC->m_label);
     }
   }
 }
