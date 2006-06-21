@@ -938,13 +938,15 @@ namespace TeamXBMC.Translator
 				return;
 			}
 
-			saveFileDialog1.InitialDirectory=Settings.Instance.LanguageFolder;
+			saveFileDialog1.InitialDirectory=openFileDialog1.FileName.Substring(0, openFileDialog1.FileName.LastIndexOf(@"\"));
 			if (saveFileDialog1.ShowDialog()==DialogResult.Cancel)
 				return;
 
 			try
 			{
-				strings.Save(saveFileDialog1.FileName);
+				string[] comment=new string[1];
+				comment[0]="$"+"Revision"+"$";
+				strings.Save(saveFileDialog1.FileName, comment);
 			}
 			catch(TranslatorException ex)
 			{
