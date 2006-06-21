@@ -18,6 +18,7 @@ namespace TeamXBMC.Translator
 		private System.Windows.Forms.TextBox textBoxOriginal;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOk;
+		private System.Windows.Forms.Button buttonNewline;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -58,6 +59,7 @@ namespace TeamXBMC.Translator
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.buttonNewline = new System.Windows.Forms.Button();
 			this.textBoxTranslated = new System.Windows.Forms.TextBox();
 			this.textBoxOriginal = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
@@ -69,27 +71,38 @@ namespace TeamXBMC.Translator
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.buttonNewline);
 			this.groupBox1.Controls.Add(this.textBoxTranslated);
 			this.groupBox1.Controls.Add(this.textBoxOriginal);
 			this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.groupBox1.Location = new System.Drawing.Point(8, 8);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(392, 144);
+			this.groupBox1.Size = new System.Drawing.Size(392, 152);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Selection";
 			// 
+			// buttonNewline
+			// 
+			this.buttonNewline.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.buttonNewline.Location = new System.Drawing.Point(352, 48);
+			this.buttonNewline.Name = "buttonNewline";
+			this.buttonNewline.Size = new System.Drawing.Size(24, 23);
+			this.buttonNewline.TabIndex = 6;
+			this.buttonNewline.Text = "¶";
+			this.buttonNewline.Click += new System.EventHandler(this.buttonNewline_Click);
+			// 
 			// textBoxTranslated
 			// 
-			this.textBoxTranslated.Location = new System.Drawing.Point(16, 40);
+			this.textBoxTranslated.Location = new System.Drawing.Point(16, 48);
 			this.textBoxTranslated.Name = "textBoxTranslated";
-			this.textBoxTranslated.Size = new System.Drawing.Size(360, 20);
+			this.textBoxTranslated.Size = new System.Drawing.Size(328, 20);
 			this.textBoxTranslated.TabIndex = 3;
 			this.textBoxTranslated.Text = "";
 			// 
 			// textBoxOriginal
 			// 
-			this.textBoxOriginal.Location = new System.Drawing.Point(16, 96);
+			this.textBoxOriginal.Location = new System.Drawing.Point(16, 112);
 			this.textBoxOriginal.Name = "textBoxOriginal";
 			this.textBoxOriginal.ReadOnly = true;
 			this.textBoxOriginal.Size = new System.Drawing.Size(360, 20);
@@ -101,14 +114,14 @@ namespace TeamXBMC.Translator
 			this.label2.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.label2.Location = new System.Drawing.Point(24, 32);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(360, 16);
+			this.label2.Size = new System.Drawing.Size(352, 16);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "&Translated:";
 			// 
 			// label1
 			// 
 			this.label1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.label1.Location = new System.Drawing.Point(24, 88);
+			this.label1.Location = new System.Drawing.Point(24, 96);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(360, 16);
 			this.label1.TabIndex = 4;
@@ -118,7 +131,7 @@ namespace TeamXBMC.Translator
 			// 
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.buttonCancel.Location = new System.Drawing.Point(328, 160);
+			this.buttonCancel.Location = new System.Drawing.Point(328, 168);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.TabIndex = 7;
 			this.buttonCancel.Text = "Cancel";
@@ -127,7 +140,7 @@ namespace TeamXBMC.Translator
 			// 
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.buttonOk.Location = new System.Drawing.Point(240, 160);
+			this.buttonOk.Location = new System.Drawing.Point(240, 168);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.TabIndex = 6;
 			this.buttonOk.Text = "OK";
@@ -137,7 +150,7 @@ namespace TeamXBMC.Translator
 			this.AcceptButton = this.buttonOk;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(410, 192);
+			this.ClientSize = new System.Drawing.Size(410, 200);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.label1);
@@ -167,6 +180,36 @@ namespace TeamXBMC.Translator
 		{
 			label1.Text=TranslationManager.Instance.LanguageOriginal;
 			label2.Text=TranslationManager.Instance.LanguageTranslated;
+		}
+
+		#endregion
+
+		#region Control Events
+
+		private void buttonNewline_Click(object sender, System.EventArgs e)
+		{
+			if (textBoxTranslated.SelectionStart>=0)
+			{
+				int start=textBoxTranslated.SelectionStart;
+				int length=textBoxTranslated.SelectionLength;
+
+				if (length==0)
+				{ // caret at a position but no text marked,
+					// just insert the ¶
+					textBoxTranslated.Text=textBoxTranslated.Text.Insert(start, "¶");
+				}
+				else
+				{ // caret at a position with text marked,
+					// replace the marked text with ¶
+					textBoxTranslated.Text=textBoxTranslated.Text.Remove(start, length);
+					textBoxTranslated.Text=textBoxTranslated.Text.Insert(start, "¶");
+				}
+
+				// Update caret position to where we inserted the newline
+				textBoxTranslated.Focus(); // Needs focus to move the caret
+				textBoxTranslated.SelectionStart=start+1;
+				textBoxTranslated.SelectionLength=0;
+			}
 		}
 
 		#endregion
