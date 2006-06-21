@@ -344,8 +344,6 @@ void CGUIControl::SetPosition(int iPosX, int iPosY)
 void CGUIControl::SetAlpha(DWORD dwAlpha)
 {
   m_dwAlpha = dwAlpha;
-  D3DCOLOR colour = (dwAlpha << 24) | 0xFFFFFF;
-  return SetColourDiffuse(colour);
 }
 
 void CGUIControl::SetColourDiffuse(D3DCOLOR colour)

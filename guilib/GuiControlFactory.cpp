@@ -1187,6 +1187,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     CGUIMultiImage* pControl = new CGUIMultiImage(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, texturePath, timePerImage, fadeTime, randomized, loop);
     pControl->SetNavigation(up, down, left, right);
+    pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetAspectRatio(aspectRatio);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
