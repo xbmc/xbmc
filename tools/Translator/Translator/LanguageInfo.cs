@@ -292,5 +292,65 @@ namespace TeamXBMC.TranslatorCore
 		{
 			get { return (Region[])regions.ToArray(typeof(Region)); }
 		}
+
+		/// <summary>
+		/// Removes a region from the language info by name
+		/// </summary>
+		public void RemoveRegion(string regionName)
+		{
+			Region toDelete=null;
+			foreach (Region region in regions)
+			{
+				if (region.name==regionName)
+				{
+					// Region to remove is found
+					toDelete=region;
+					break;
+				}
+			}
+
+			// remove it
+			if (toDelete!=null)
+				regions.Remove(toDelete);
+		}
+
+		/// <summary>
+		/// Removes a region to the language info.
+		/// The name if the new region is returned.
+		/// </summary>
+		public string AddRegion()
+		{
+			int i=1;
+			string newName="";
+			bool found=false;
+			while (!found)
+			{
+				// Try next name
+				newName="Region"+i.ToString();
+				i++;
+				// Does the new region name already exist
+				bool exists=false;
+				foreach (Region region in regions)
+				{
+					if (region.name==newName)
+					{
+						exists=true;
+						break;
+					}
+				}
+
+				if (!exists)
+				{ // none existing name found 
+					// add a region with this name
+					found=true;
+					Region region=new Region();
+					region.name=newName;
+					regions.Add(region);
+					break;
+				}
+			}
+
+			return newName;
+		}
 	}
 }

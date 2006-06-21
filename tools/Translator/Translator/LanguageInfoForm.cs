@@ -19,7 +19,6 @@ namespace TeamXBMC.Translator
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage3;
-		private System.Windows.Forms.ListBox listBoxRegions;
 		private System.Windows.Forms.Button buttonRemove;
 		private System.Windows.Forms.Button buttonAdd;
 		private System.Windows.Forms.TabControl tabControl1;
@@ -49,6 +48,8 @@ namespace TeamXBMC.Translator
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.CheckBox checkBoxUnicodeFont;
+		private System.Windows.Forms.ColumnHeader columnHeaderRegion;
+		private System.Windows.Forms.ListView listViewRegions;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -115,9 +116,10 @@ namespace TeamXBMC.Translator
 			this.label4 = new System.Windows.Forms.Label();
 			this.comboBoxDvdMenu = new System.Windows.Forms.ComboBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.listViewRegions = new System.Windows.Forms.ListView();
+			this.columnHeaderRegion = new System.Windows.Forms.ColumnHeader();
 			this.label9 = new System.Windows.Forms.Label();
 			this.buttonProperties = new System.Windows.Forms.Button();
-			this.listBoxRegions = new System.Windows.Forms.ListBox();
 			this.buttonRemove = new System.Windows.Forms.Button();
 			this.buttonAdd = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -403,9 +405,9 @@ namespace TeamXBMC.Translator
 			// tabPage3
 			// 
 			this.tabPage3.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.tabPage3.Controls.Add(this.listViewRegions);
 			this.tabPage3.Controls.Add(this.label9);
 			this.tabPage3.Controls.Add(this.buttonProperties);
-			this.tabPage3.Controls.Add(this.listBoxRegions);
 			this.tabPage3.Controls.Add(this.buttonRemove);
 			this.tabPage3.Controls.Add(this.buttonAdd);
 			this.tabPage3.ForeColor = System.Drawing.SystemColors.WindowText;
@@ -415,12 +417,35 @@ namespace TeamXBMC.Translator
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Regions";
 			// 
+			// listViewRegions
+			// 
+			this.listViewRegions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+																																											this.columnHeaderRegion});
+			this.listViewRegions.FullRowSelect = true;
+			this.listViewRegions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.listViewRegions.HideSelection = false;
+			this.listViewRegions.LabelEdit = true;
+			this.listViewRegions.Location = new System.Drawing.Point(24, 64);
+			this.listViewRegions.MultiSelect = false;
+			this.listViewRegions.Name = "listViewRegions";
+			this.listViewRegions.Size = new System.Drawing.Size(160, 184);
+			this.listViewRegions.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listViewRegions.TabIndex = 1;
+			this.listViewRegions.View = System.Windows.Forms.View.Details;
+			this.listViewRegions.DoubleClick += new System.EventHandler(this.listViewRegions_DoubleClick);
+			this.listViewRegions.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.listViewRegions_AfterLabelEdit);
+			// 
+			// columnHeaderRegion
+			// 
+			this.columnHeaderRegion.Text = "Region";
+			this.columnHeaderRegion.Width = 139;
+			// 
 			// label9
 			// 
 			this.label9.Location = new System.Drawing.Point(24, 8);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(248, 48);
-			this.label9.TabIndex = 1;
+			this.label9.TabIndex = 0;
 			this.label9.Text = "If the language can be used in more then one location, but date and time format d" +
 				"iffers, an addition region can be specified.";
 			// 
@@ -430,35 +455,25 @@ namespace TeamXBMC.Translator
 			this.buttonProperties.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.buttonProperties.Location = new System.Drawing.Point(192, 128);
 			this.buttonProperties.Name = "buttonProperties";
-			this.buttonProperties.TabIndex = 5;
+			this.buttonProperties.TabIndex = 4;
 			this.buttonProperties.Text = "Properties";
 			this.buttonProperties.Click += new System.EventHandler(this.buttonProperties_Click);
 			// 
-			// listBoxRegions
-			// 
-			this.listBoxRegions.Location = new System.Drawing.Point(24, 64);
-			this.listBoxRegions.Name = "listBoxRegions";
-			this.listBoxRegions.Size = new System.Drawing.Size(160, 173);
-			this.listBoxRegions.TabIndex = 2;
-			this.listBoxRegions.DoubleClick += new System.EventHandler(this.listBoxRegions_DoubleClick);
-			// 
 			// buttonRemove
 			// 
-			this.buttonRemove.Enabled = false;
 			this.buttonRemove.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.buttonRemove.Location = new System.Drawing.Point(192, 96);
 			this.buttonRemove.Name = "buttonRemove";
-			this.buttonRemove.TabIndex = 4;
+			this.buttonRemove.TabIndex = 3;
 			this.buttonRemove.Text = "Remove";
 			this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
 			// 
 			// buttonAdd
 			// 
-			this.buttonAdd.Enabled = false;
 			this.buttonAdd.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.buttonAdd.Location = new System.Drawing.Point(192, 64);
 			this.buttonAdd.Name = "buttonAdd";
-			this.buttonAdd.TabIndex = 3;
+			this.buttonAdd.TabIndex = 2;
 			this.buttonAdd.Text = "Add...";
 			this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
 			// 
@@ -553,10 +568,11 @@ namespace TeamXBMC.Translator
 			// Fill listbox with region form langinfo
 			foreach (LanguageInfo.Region region in languageInfo.Regions)
 			{
-				listBoxRegions.Items.Add(region.name);
+				listViewRegions.Items.Add(region.name);
 			}
 
-			listBoxRegions.SelectedIndex=0;
+			if (listViewRegions.Items.Count>0)
+				listViewRegions.Items[0].Selected=true;
 		}
 
 		#endregion
@@ -597,21 +613,67 @@ namespace TeamXBMC.Translator
 			comboBoxDvdSubtitle.SelectedItem=culture.TwoLetterISOLanguageName;
 		}
 
+		/// <summary>
+		/// Remove a region to the listView
+		/// </summary>
 		private void buttonAdd_Click(object sender, System.EventArgs e)
 		{
-		
+			if (listViewRegions.SelectedItems.Count>0)
+			{
+				string newRegion=languageInfo.AddRegion();
+				listViewRegions.Items.Add(newRegion);
+
+				// Find the new item
+				foreach (ListViewItem item in listViewRegions.Items)
+				{
+					if (item.Text==newRegion)
+					{ // and select it
+						item.Selected=true;
+						break;
+					}
+				}
+			}
 		}
 
+		/// <summary>
+		/// Remove a region from the listView
+		/// </summary>
 		private void buttonRemove_Click(object sender, System.EventArgs e)
 		{
-		
+			if (listViewRegions.SelectedItems.Count>0)
+			{
+				string regionName=listViewRegions.SelectedItems[0].Text;
+				languageInfo.RemoveRegion(regionName);
+
+				int lastPos=listViewRegions.SelectedIndices[0];
+				listViewRegions.Items.RemoveAt(lastPos);
+
+				if (listViewRegions.Items.Count>0)
+				{
+					// new selected item out of range?
+					if (lastPos>listViewRegions.Items.Count-1)
+						lastPos--;
+
+					listViewRegions.Items[lastPos].Selected=true;
+				}
+			}
+
+			if (listViewRegions.Items.Count==0)
+			{	// no regions left, add a default region
+				string newRegion=languageInfo.AddRegion();
+				listViewRegions.Items.Add(newRegion);
+				listViewRegions.Items[0].Selected=true;
+			}
 		}
 
+		/// <summary>
+		/// Shows a form to edit the selected region
+		/// </summary>
 		private void buttonProperties_Click(object sender, System.EventArgs e)
 		{
 			foreach (LanguageInfo.Region region in languageInfo.Regions)
 			{
-				if (region.name==(string)listBoxRegions.SelectedItem)
+				if (region.name==listViewRegions.SelectedItems[0].Text)
 				{
 					RegionForm form=new RegionForm();
 					form.RegionInfo=region;
@@ -624,11 +686,11 @@ namespace TeamXBMC.Translator
 		/// <summary>
 		/// Shows a form to edit the selected region
 		/// </summary>
-		private void listBoxRegions_DoubleClick(object sender, System.EventArgs e)
+		private void listViewRegions_DoubleClick(object sender, System.EventArgs e)
 		{
 			foreach (LanguageInfo.Region region in languageInfo.Regions)
 			{
-				if (region.name==(string)listBoxRegions.SelectedItem)
+				if (region.name==listViewRegions.SelectedItems[0].Text)
 				{
 					RegionForm form=new RegionForm();
 					form.RegionInfo=region;
@@ -636,6 +698,41 @@ namespace TeamXBMC.Translator
 					return;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Changes the name of a region
+		/// </summary>
+		private void listViewRegions_AfterLabelEdit(object sender, LabelEditEventArgs e)
+		{
+			if (e.Label==null) // user pressed esc key
+			{
+				e.CancelEdit=true;
+				return;
+			}
+
+			// Does the new name exist
+			foreach (LanguageInfo.Region region in languageInfo.Regions)
+			{
+				if (region.name==e.Label)
+				{
+					e.CancelEdit=true;
+					return;
+				}
+			}
+
+			// Find the item the user renames and set the new region name
+			foreach (LanguageInfo.Region region in languageInfo.Regions)
+			{
+				if (region.name==listViewRegions.Items[e.Item].Text)
+				{
+					region.name=e.Label;
+					return;
+				}
+			}
+
+			// Region not found 
+			e.CancelEdit=true;
 		}
 
 		#endregion
