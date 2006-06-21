@@ -451,7 +451,7 @@ void CWeather::LoadLocalizedToken()
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if (strValue != CStdString("strings")) return ;
-  const TiXmlNode *pChild = pRootElement->FirstChild();
+  const TiXmlElement *pChild = pRootElement->FirstChildElement();
   while (pChild)
   {
     CStdString strValue = pChild->Value();
@@ -475,8 +475,28 @@ void CWeather::LoadLocalizedToken()
             m_localizedTokens.insert(std::pair<string, DWORD>(utf8Label, dwID));
         }
       }
+      else
+      { // Load new style language file with id as attribute
+        const char* attrId=pChild->Attribute("id");
+        if (attrId && !pChild->NoChildren())
+        {
+          DWORD dwID = atoi(attrId);
+          if ( (LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID) ||
+              (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2) )
+          {
+            CStdString utf8Label;
+            if (strEncoding.IsEmpty()) // Is language file utf8?
+              utf8Label=pChild->FirstChild()->Value();
+            else
+              g_charsetConverter.stringCharsetToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8Label);
+
+            if (!utf8Label.IsEmpty())
+              m_localizedTokens.insert(std::pair<string, DWORD>(utf8Label, dwID));
+          }
+        }
+      }
     }
-    pChild = pChild->NextSibling();
+    pChild = pChild->NextSiblingElement();
   }
 }
 
