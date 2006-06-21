@@ -188,11 +188,11 @@
   <string id="255">CDDB</string>
   <string id="256">Frågar freedb för CDDB-info</string>
   <string id="257">Fel</string>
-  <string id="258">Aktivera ID3-tags</string>
+  <string id="258">Aktivera ID3-taggar</string>
   <string id="259">Öppnar</string>
   <string id="260">Shoutcast</string>
   <string id="261">Väntar på start...</string>
-  <string id="262">Skriptutdata</string>
+  <string id="262">Skript utdata</string>
   <string id="263">Aktivera webbserver</string>
   <string id="264">Spela in</string>
   <string id="265">Avsluta insp.</string>
@@ -399,7 +399,7 @@
   <string id="468">Flytta stapeln för att ändra OSD-position</string>
   <string id="469">OSD-position</string>
   <string id="470">Om XBMC</string>
-  <string id="471">Mod-chip</string>
+  <string id="471">Modchip</string>
   <string id="472">Video OSD timeout</string>
   <string id="473">Högkvalitativ resampling</string>
   <string id="474">Av</string>
@@ -567,7 +567,7 @@
   <string id="769">Reserverad</string>
   <string id="770">Fel %i: utdelningen ej tillgänglig</string>
   <string id="771">- Automatisk FATX begränsare</string>
-  <string id="772">A/V Receiver</string>
+  <string id="772">A/V Förstärkare</string>
   <string id="773">Söker</string>
   <string id="774">Mapp för bildspel-skärmsläckare</string>
   <string id="998">XLink Kai</string>
@@ -853,7 +853,7 @@
   <string id="13165">Mus på port:</string>
   <string id="13166">Headset/Mic på port:</string>
   <string id="13167">Minneskort på port:</string>
-  <string id="13168">Fjärrkont. på port:</string>
+  <string id="13168">Fjärrkontroll på port:</string>
   <string id="13169">Kringå CD val</string>
   <string id="13170">Aldrig</string>
   <string id="13171">Omedelbart</string>
@@ -1119,7 +1119,7 @@
   <string id="15034">loggade precis på</string>
   <string id="15035">har startat en röstchatt</string>
   <string id="15036">har skickat dig en inbjudan</string>
-  <string id="15037">XBMC kunde inte bekräfta att ditt nätverk är nåbart.</string>
+  <string id="15037">XBMC kunde inte bekräfta att ditt nätverk är tillgängligt.</string>
   <string id="15038">Du kan komma att ha problem att gå med i spel eller att stå som värd.</string>
   <string id="15039">Xbox Media Center kunde inte hitta spelet automatiskt.</string>
   <string id="15040">Sätt i spelskivan eller tryck 'A' för att avbryta</string>
@@ -1215,7 +1215,7 @@
   <string id="15310">Öppnar multi-sökvägsbokmärke</string>
   <string id="15311">Sökväg:</string>
   <string id="16000">Allmänt</string>
-  <string id="16001">A/V Receiver inställningar...</string>
+  <string id="16001">Inställningar för A/V förstärkare</string>
   <string id="16002">CDDB sök</string>
   <string id="16003">Uppspelning</string>
   <string id="16004">Spela media från skiva</string>
