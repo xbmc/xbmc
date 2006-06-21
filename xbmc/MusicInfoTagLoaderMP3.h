@@ -103,7 +103,7 @@ public:
 protected:
   virtual int ReadDuration(const CStdString& strFileName);
   bool ReadLAMETagInfo(BYTE *p);
-  bool IsMp3FrameHeader(unsigned long head);
+  int IsMp3FrameHeader(unsigned long head);
 
 private:
   CVBRMP3SeekHelper m_seekInfo;
