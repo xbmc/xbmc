@@ -95,7 +95,6 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
       return true;
     }
 
-    CStdString strEncoding;
     XMLUtils::GetEncoding(&xmlDoc, strEncoding);
 
     TiXmlElement* pRootElement = xmlDoc.RootElement();
