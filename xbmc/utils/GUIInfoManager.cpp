@@ -358,7 +358,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int controlPos = strTest.Find(".hasfocus(");
     if (controlPos > 0)
       controlID = atoi(strTest.Mid(controlPos + 10).c_str());
-    if (groupID && controlID)
+    if (groupID)
     {
       return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GROUP_HAS_FOCUS : CONTROL_GROUP_HAS_FOCUS, groupID, controlID));
     }

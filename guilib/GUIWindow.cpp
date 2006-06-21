@@ -1331,7 +1331,8 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
   int groupNo = control ? control->GetGroup() : -1;
   if (groupNo > -1 && m_vecGroups[groupNo].m_id == groupID)
   { // currently focused within the group requested
-    return controlID == focusedControl;
+    // if controlID == 0, then return true (just want to know if we are in the group)
+    return controlID ? controlID == focusedControl : true;
   }
   // not in the group requested - check whether the last control
   // in the requested group was the one we want
