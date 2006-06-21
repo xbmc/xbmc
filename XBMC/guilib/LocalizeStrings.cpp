@@ -211,6 +211,21 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20059] = "Query Info For All Albums";
   m_vecStrings[20060] = "MPAA Rating:";
 
+  m_vecStrings[20077] = "Skin Settings";
+  m_vecStrings[20078] = "- no link set -";
+  m_vecStrings[20079] = "Enable Animations";
+  m_vecStrings[20080] = "Disable RSS during Music";
+  m_vecStrings[20081] = "Enable Bookmarks";
+  m_vecStrings[20082] = "Show XLink Kai info";
+  m_vecStrings[20083] = "Show Music Info";
+  m_vecStrings[20084] = "Show Weather Info";
+  m_vecStrings[20085] = "Show System Info";
+  m_vecStrings[20086] = "Show Available Disc Space C: E: F:";
+  m_vecStrings[20087] = "Show Available Disc Space E: F: G:";
+  m_vecStrings[20088] = "Weather Info";
+  m_vecStrings[20089] = "Drive Space Free";
+  m_vecStrings[20090] = "Enter the name of an existing Share";
+
   // new strings for weather localization
   m_vecStrings[1411] = "with";
   m_vecStrings[1412] = "windy";
