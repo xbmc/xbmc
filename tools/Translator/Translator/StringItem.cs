@@ -87,6 +87,14 @@ namespace TeamXBMC.TranslatorCore
 				id=Convert.ToInt32(element.SelectSingleNode("id").InnerText);
 				text=element.SelectSingleNode("value").InnerText;
 			}
+
+			// Replace \n and \r with the visible newline char ¶ to make it editable
+			if (Text.IndexOf("\r\n")>-1)
+				text=text.Replace("\r\n", "¶");
+			else if (Text.IndexOf("\n")>-1)
+				text=text.Replace("\n", "¶");
+			else if (Text.IndexOf("\r")>-1)
+				text=text.Replace("\r", "¶");
 		}
 
 		/// <summary>
@@ -96,6 +104,10 @@ namespace TeamXBMC.TranslatorCore
 		{
 			element.SetAttribute("id", Id.ToString());
 			element.InnerText=Text;
+
+			// Replace the visible newline char ¶ with \n for saving
+			if (element.InnerText.IndexOf("¶")>-1)
+				element.InnerText=element.InnerText.Replace("¶", "\n");
 		}
 
 		#endregion

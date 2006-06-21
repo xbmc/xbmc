@@ -1,0 +1,12 @@
+*************************************************************************************************************
+*************************************************************************************************************
+                                     Translator CHANGELOG
+************************************************************************************************************* 
+*************************************************************************************************************
+
+added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-06-2006 added: ability to add newline chars when editing a string
+ - 21-06-2006 fixed: corrected parsing of newline chars
+ - 21-06-2006 added: throwing an exception if file is not a language file
+ - 21-06-2006 added: Revision comment is added to each file when converting from old to new format
+ - 21-06-2006 changed: removed unneeded parameter from the Region.Save() function
