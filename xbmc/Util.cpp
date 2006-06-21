@@ -3283,7 +3283,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
         g_settings.SetSkinString(parameter, value);
     }
-	if (execute.Equals("skin.setnumeric"))
+    else if (execute.Equals("skin.setnumeric"))
     {
       if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(20058)))
         g_settings.SetSkinString(parameter, value);
