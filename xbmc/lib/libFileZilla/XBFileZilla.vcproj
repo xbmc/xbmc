@@ -20,6 +20,7 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="0"
@@ -30,6 +31,7 @@
 				AdditionalIncludeDirectories=".,$(XDK)\samples\xbox\common\include,source,modified"
 				PreprocessorDefinitions="WIN32;_XBOX;NDEBUG;NOLAYERS"
 				StringPooling="FALSE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
@@ -65,12 +67,15 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="0"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories=".,$(XDK)\samples\xbox\common\include,source,modified"
 				PreprocessorDefinitions="WIN32;_XBOX;_DEBUG;NOLAYERS"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="TRUE"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/XBFileZilla.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -103,7 +108,7 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Oy-"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="0"
@@ -114,6 +119,7 @@
 				AdditionalIncludeDirectories=".,$(XDK)\samples\xbox\common\include,source,modified"
 				PreprocessorDefinitions="WIN32;_XBOX;NDEBUG;NOLAYERS;PROFILE"
 				StringPooling="FALSE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
@@ -149,7 +155,7 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Oy-"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="0"
@@ -160,6 +166,7 @@
 				AdditionalIncludeDirectories=".,$(XDK)\samples\xbox\common\include,source,modified"
 				PreprocessorDefinitions="WIN32;_XBOX;NDEBUG;NOLAYERS;PROFILE"
 				StringPooling="FALSE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"

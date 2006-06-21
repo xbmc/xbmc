@@ -43,6 +43,7 @@
 #include "audiocontext.h"
 #include "GUIFontTTF.h"
 #include "xbox/network.h"
+#include "utils/win32exception.h"
 
 // Windows includes
 #include "GUIStandardWindow.h"
@@ -577,6 +578,10 @@ HRESULT CApplication::Create()
   _controlfp(_PC_24, _MCW_PC);
 
   init_emu_environ();
+
+  /* install win32 exception translator, win32 exceptions
+   * can now be caught using c++ try catch */
+  win32_exception::install_handler();
   
   CIoSupport helper;
   CStdString strExecutablePath;
