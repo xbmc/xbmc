@@ -26,6 +26,7 @@ public:
 private:
   void Process();
   bool AddRandomSongs(int iSongs = 0);
+  bool AddInitialSongs(vector<long> &songIDs);
   void Add(CFileItem *pItem);
   bool ReapSongs();
   bool MovePlaying();
