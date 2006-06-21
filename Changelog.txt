@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-06-2006 changed: ControlGroup(id).HasFocus() returns true if the current control is in that controlgroup.
+ - 21-06-2006 fixed: Alignment of right items in listcontrolex
+ - 21-06-2006 changed: <onclick> based on Skin variables should use the same format as the <label> tag - $INFO[Skin.String(blah)]
  - 21-06-2006 updated: ControlImage and ControlTextbox to accept keyword arguments. (matches other controls)
  - 21-06-2006 updated: some of the python documentation with examples
  - 20-06-2006 changed: "Query Info For All Albums" minor code cleanup and increased relevance % for better accuracy.
