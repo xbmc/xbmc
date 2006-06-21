@@ -74,6 +74,14 @@
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
     </region>
+
+    <region name="Canada">
+      <dateshort>MM/DD/YYYYY</dateshort>
+      <datelong>DDDD, MMMM D, YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
   </regions>
 </language>
 
