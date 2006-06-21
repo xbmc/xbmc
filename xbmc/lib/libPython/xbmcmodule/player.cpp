@@ -180,6 +180,8 @@ namespace PYXBMC
     g_playlistPlayer.SetCurrentSong(iItem);
 
 		g_applicationMessenger.PlayListPlayerPlay(iItem);
+    //g_playlistPlayer.Play(iItem);
+    //CLog::Log(LOGNOTICE, "Current Song After Play: %i", g_playlistPlayer.GetCurrentSong());
 
 		Py_INCREF(Py_None);
 		return Py_None;

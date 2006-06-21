@@ -26,7 +26,7 @@ namespace PYXBMC
 		char *cFont = NULL;
 		char *cTextColor = NULL;
 		char *cDisabledColor = NULL;
-		PyObject* pObjectText = NULL;
+		PyObject* pObjectText;
 		
 		self = (ControlLabel*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
@@ -34,7 +34,7 @@ namespace PYXBMC
 		// set up default values in case they are not supplied
         self->strFont = "font13";
         self->dwTextColor = 0xffffffff;
-		self->dwDisabledColor = 0x60ffffff;
+		    self->dwDisabledColor = 0x60ffffff;
         self->dwAlign = XBFONT_LEFT;
         self->bHasPath = false;
         self->iAngle = 0;
@@ -42,13 +42,13 @@ namespace PYXBMC
 		if (!PyArg_ParseTupleAndKeywords(
             args,
             kwds,
-            "llll|Ossslbi",
+            "llllO|ssslbl",
             keywords,
             &self->dwPosX,
             &self->dwPosY,
             &self->dwWidth,
             &self->dwHeight,
-			&pObjectText,
+			      &pObjectText,
             &cFont,
             &cTextColor,
             &cDisabledColor,
@@ -101,10 +101,14 @@ namespace PYXBMC
     return pControl->pGUIControl;
   }
 
+  // setLabel() Method
 	PyDoc_STRVAR(setLabel__doc__,
-		"setLabel(string label) -- Set's text for this label.\n"
+		"setLabel(label) -- Set's text for this label.\n"
 		"\n"
-		"label     : string or unicode string");
+		"label          : string or unicode - text string.\n"
+		"\n"
+		"example:\n"
+		"  - self.label.setLabel('Status')\n");
 
 	PyObject* ControlLabel_SetLabel(ControlLabel *self, PyObject *args)
 	{
@@ -130,24 +134,33 @@ namespace PYXBMC
 		{NULL, NULL, 0, NULL}
 	};
 
+  // ControlLabel class
 	PyDoc_STRVAR(controlLabel__doc__,
 		"ControlLabel class.\n"
 		"\n"
-		"ControlLabel(x, y, width, height, label, font, textColor, \n"
-        "             disabledColor, alignment, hasPath, angle )\n"
+		"ControlLabel(x, y, width, height, label[, font, textColor, \n"
+    "             disabledColor, alignment, hasPath, angle])\n"
 		"\n"
-        "x             : integer x coordinate of control\n"
-        "y             : integer y coordinate of control\n"
-        "width         : integer width of control\n"
-        "height        : integer height of control\n"
-		"label         : string or unicode string (opt)\n"
-		"font          : string fontname (e.g., 'font13' / 'font14') (opt)\n"
-		"textColor     : hexString (e.g., '0xFFFF3300') (opt)\n"
-		"disabledColor : hexString (e.g., '0xFFFF3300') (opt)\n"
-		"alignment     : alignment of text - see xbfont.h (opt)\n"
-		"hasPath       : flag indicating label stores a path (opt)\n"
-		"angle         : integer angle of control (opt)" );
-// Restore code and data sections to normal.
+    "x              : integer - x coordinate of control.\n"
+    "y              : integer - y coordinate of control.\n"
+    "width          : integer - width of control.\n"
+    "height         : integer - height of control.\n"
+		"label          : string or unicode - text string.\n"
+    "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
+    "textColor      : [opt] hexstring - color of enabled label's label. (e.g. '0xFFFFFFFF')\n"
+    "disabledColor  : [opt] hexstring - color of disabled label's label. (e.g. '0xFFFF3300')\n"
+		"alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n"
+    "hasPath        : [opt] bool - True=stores a path / False=no path.\n"
+    "angle          : [opt] integer - angle of control. (+ rotates CCW, - rotates CW)"
+    "\n"
+		"*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       After you create the control, you need to add it to the window with addControl().\n"
+		"\n"
+		"example:\n"
+		"  - self.label = xbmcgui.ControlLabel(100, 250, 125, 75, 'Status', angle=45)\n");
+  
+  // Restore code and data sections to normal.
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()

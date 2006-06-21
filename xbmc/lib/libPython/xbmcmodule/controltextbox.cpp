@@ -20,6 +20,8 @@ namespace PYXBMC
 
 	PyObject* ControlTextBox_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
+		static char *keywords[] = {	
+			"x", "y", "width", "height", "font", "textColor", NULL };
 		ControlTextBox *self;
 		char *cFont = NULL;
 		char *cTextColor = NULL;
@@ -30,8 +32,24 @@ namespace PYXBMC
 		self->pControlSpin = (ControlSpin*)ControlSpin_New();
 		if (!self->pControlSpin) return NULL;
 
-		if (!PyArg_ParseTuple(args, "llll|ss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-			&cFont, &cTextColor)) return NULL;
+		//if (!PyArg_ParseTuple(args, "llll|ss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
+			//&cFont, &cTextColor)) return NULL;
+		// parse arguments to constructor
+		if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "llll|ss",
+      keywords,
+      &self->dwPosX,
+      &self->dwPosY,
+      &self->dwWidth,
+      &self->dwHeight,
+      &cFont,
+      &cTextColor))
+		{
+			Py_DECREF( self );
+			return NULL;
+		}
 
 		// set default values if needed
 		self->strFont = cFont ? cFont : "font13";
@@ -79,10 +97,15 @@ namespace PYXBMC
     return pControl->pGUIControl;
   }
 
+  // SetText() Method
 	PyDoc_STRVAR(setText__doc__,
-		"SetText(string text) -- Set's the text for this textbox.\n"
+		"SetText(text) -- Set's the text for this textbox.\n"
 		"\n"
-		"label     : string or unicode string");
+		"text           : string or unicode - text string.\n"
+		"\n"
+		"example:\n"
+		"  - self.textbox.SetText('This is a line of text that can wrap.')");
+
 
 	PyObject* ControlTextBox_SetText(ControlTextBox *self, PyObject *args)
 	{
@@ -105,8 +128,12 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // reset() Method
 	PyDoc_STRVAR(reset__doc__,
-		"reset() -- Clear's the text box.\n");
+		"reset() -- Clear's this textbox.\n"
+		"\n"
+		"example:\n"
+		"  - self.textbox.reset()\n");
 
 	PyObject* ControlTextBox_Reset(ControlTextBox *self, PyObject *args)
 	{
@@ -123,14 +150,18 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // getSpinControl() Method
 	PyDoc_STRVAR(getSpinControl__doc__,
-		"getSpinControl() -- returns the associated ControlSpin."
+		"getSpinControl() -- Returns the associated ControlSpin."
 		"\n"
 		"- Not working completely yet -\n"
 		"After adding this textbox to a window it is not possible to change\n"
-		"the settings of this spin control.");
+		"the settings of this spin control."
+		"\n"
+		"example:\n"
+		"  - id = self.textbox.getSpinControl()\n");
 
-	PyObject* ControlTextBox_GetSpinControl(ControlTextBox *self, PyObject *args)
+  PyObject* ControlTextBox_GetSpinControl(ControlTextBox *self, PyObject *args)
 	{
 		Py_INCREF(self->pControlSpin);
 		return (PyObject*)self->pControlSpin;
@@ -146,10 +177,21 @@ namespace PYXBMC
 	PyDoc_STRVAR(controlTextBox__doc__,
 		"ControlTextBox class.\n"
 		"\n"
-		"ControlTextBox(int x, int y, int width, int height[, font, textColor])\n"
+		"ControlTextBox(x, y, width, height[, font, textColor])\n"
 		"\n"
-		"font      : string fontname (example, 'font13' / 'font14')\n"
-		"textColor : hexString (example, '0xFFFF3300')");
+    "x              : integer - x coordinate of control.\n"
+    "y              : integer - y coordinate of control.\n"
+    "width          : integer - width of control.\n"
+    "height         : integer - height of control.\n"
+    "font           : [opt] string - font used for text. (e.g. 'font13')\n"
+    "textColor      : [opt] hexstring - color of textbox's text. (e.g. '0xFFFFFFFF')\n"
+    "\n"
+		"*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       After you create the control, you need to add it to the window with addControl().\n"
+		"\n"
+		"example:\n"
+		"  - self.textbox = xbmcgui.ControlTextBox(100, 250, 300, 300, textColor='0xFFFFFFFF')\n");
 
 // Restore code and data sections to normal.
 #pragma code_seg()

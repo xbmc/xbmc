@@ -214,7 +214,7 @@ namespace PYXBMC
 	PyObject* PlayList_Shuffle(PlayList *self, PyObject *args)
 	{
 		self->pPlayList->Shuffle();
-		Py_INCREF(Py_None);
+    Py_INCREF(Py_None);
 		return Py_None;
 	}
 
