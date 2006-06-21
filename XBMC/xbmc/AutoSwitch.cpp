@@ -195,7 +195,7 @@ bool CAutoSwitch::ByFileCount(const CFileItemList& vecItems)
 bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, const CFileItemList &vecItems)
 {
   int numItems = vecItems.Size();
-  if (hideParentDirItems)
+  if (!hideParentDirItems)
     numItems--;
   if (numItems <= 0) return false;
 
