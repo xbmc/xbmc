@@ -78,7 +78,7 @@ protected:
   int m_iRenderWidth;
   int m_iRenderHeight;
   bool m_bWasVisible;
-  DWORD m_dwAlpha[4];
+  DWORD m_cornerAlpha[4];
   bool m_bDynamicResourceAlloc;
 
   // for when we are changing textures
