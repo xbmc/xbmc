@@ -142,39 +142,66 @@ bool CMusicInfoTagLoaderMP3::ReadSeekAndReplayGainInfo(const CStdString &strFile
   return duration>0 ? true : false;
 }
 
-/* check if 'head' is a valid mp3 frame header */
-bool CMusicInfoTagLoaderMP3::IsMp3FrameHeader(unsigned long head)
+/* check if 'head' is a valid mp3 frame header and return the framesize if it is (0 otherwise) */
+int CMusicInfoTagLoaderMP3::IsMp3FrameHeader(unsigned long head)
 {
+  const long freqs[9] = { 44100, 48000, 32000,
+			 22050, 24000, 16000 ,
+			 11025 , 12000 , 8000 };
+  
+ const int tabsel_123[2][3][16] = {
+  { {128,32,64,96,128,160,192,224,256,288,320,352,384,416,448,},
+    {128,32,48,56, 64, 80, 96,112,128,160,192,224,256,320,384,},
+    {128,32,40,48, 56, 64, 80, 96,112,128,160,192,224,256,320,} },
+
+  { {128,32,48,56,64,80,96,112,128,144,160,176,192,224,256,},
+    {128,8,16,24,32,40,48,56,64,80,96,112,128,144,160,},
+    {128,8,16,24,32,40,48,56,64,80,96,112,128,144,160,} }
+};
+
+
   if ((head & SYNC_MASK) != (unsigned long)SYNC_MASK) /* bad sync? */
-    return false;
+    return 0;
   if ((head & VERSION_MASK) == (1 << 19)) /* bad version? */
-    return false;
+    return 0;
   if (!(head & LAYER_MASK)) /* no layer? */
-    return false;
+    return 0;
   if ((head & BITRATE_MASK) == BITRATE_MASK) /* bad bitrate? */
-    return false;
+    return 0;
   if (!(head & BITRATE_MASK)) /* no bitrate? */
-    return false;
+    return 0;
   if ((head & SAMPLERATE_MASK) == SAMPLERATE_MASK) /* bad sample rate? */
-    return false;
+    return 0;
   if (((head >> 19) & 1) == 1 &&
       ((head >> 17) & 3) == 3 &&
       ((head >> 16) & 1) == 1)
-    return false;
+    return 0;
   if ((head & 0xffff0000) == 0xfffe0000)
-    return false;
+    return 0;
 
-  return true;
+  int srate = 0;
+	if(!((head >> 20) &  1)) 
+		srate			= 6 + ((head>>10)&0x3);		
+	else 
+		srate			= ((head>>10)&0x3) + ((1-((head >> 19) &  1)) * 3);
+
+ 	int framesize = tabsel_123[1 - ((head >> 19) &  1)][(4-((head>>17)&3))-1][((head>>12)&0xf)]*144000/(freqs[srate]<<(1 - ((head >> 19) &  1)))+((head>>9)&0x1);
+	return framesize;
 }
+
+//TODO: merge duplicate, but slitely different implemented) code and consts in IsMp3FrameHeader(above) and ReadDuration (below).
 
 // Inspired by http://rockbox.haxx.se/ and http://www.xs4all.nl/~rwvtveer/scilla
 int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
 {
+#define SCANSIZE  8192
+#define CHECKNUMFRAMES 5
+
   int nDuration = 0;
   int nPrependedBytes = 0;
   unsigned char* xing;
   unsigned char* vbri;
-  unsigned char buffer[8193];
+  unsigned char buffer[SCANSIZE + 1];
 
   CFile file;
   if (!file.Open(strFileName))
@@ -222,12 +249,56 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
 
   // Skip ID3V2 tag when reading mp3 data
   file.Seek(id3v2Size, SEEK_SET);
-  file.Read(buffer, 8192);
+  file.Read(buffer, SCANSIZE);
 
+  //*** find the first frame in the buffer, we do this by checking if the calculated framesize leads to the next frame a couple of times.
+  //the first frame that leads to a valid next frame a couple of times is where we should start decoding.
+  int firstValidFrameLocation = 0;
+  for(int i = 0; i < SCANSIZE; i++)
+  {
+    int j = i;
+    int framesize = 1;
+    int numFramesCheck = 0;
+
+    for (numFramesCheck = 0; (numFramesCheck < CHECKNUMFRAMES) && framesize; numFramesCheck++)
+    {
+      unsigned long mpegheader = (unsigned long)(
+        ( (buffer[j] & 255) << 24) |
+        ( (buffer[j + 1] & 255) << 16) |
+        ( (buffer[j + 2] & 255) << 8) |
+        ( (buffer[j + 3] & 255) )
+      );
+      framesize = IsMp3FrameHeader(mpegheader);
+
+      j += framesize;
+
+      if ((j + 4) >= SCANSIZE)
+      {
+        //no valid frame found in buffer
+	      firstValidFrameLocation = -1;
+        break;
+      }
+    }
+
+    if (numFramesCheck == CHECKNUMFRAMES)
+    { //found it
+      firstValidFrameLocation = i;
+      break;
+    }
+  }
+
+  if (firstValidFrameLocation != -1)
+  {
+    firstFrameOffset += firstValidFrameLocation;
+    nMp3DataSize -= firstValidFrameLocation;
+  }
+  //*** done finding first valid frame
+
+  //find lame/xing info
   int frequency = 0, bitrate = 0, bittable = 0;
   int frame_count = 0;
   double tpf = 0.0, bpf = 0.0;
-  for (int i = 0; i < 8192; i++)
+  for (int i = 0; i < SCANSIZE; i++)
   {
     unsigned long mpegheader = (unsigned long)(
                                  ( (buffer[i] & 255) << 24) |
@@ -267,11 +338,14 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
       //should we do something with this?
     }*/
 
-    if (IsMp3FrameHeader(mpegheader))
+    if (
+      (i == firstValidFrameLocation) || 
+      (
+        (firstValidFrameLocation == -1) && 
+        (IsMp3FrameHeader(mpegheader))
+      )
+    )
     {
-      firstFrameOffset += i;
-      nMp3DataSize -= i;
-
       // skip mpeg header
       i += 4;
       int version = 0;
