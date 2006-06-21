@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-06-2006 fixed: restored &#10; (newline chars) in english language
  - 21-06-2006 fixed: weather isn't localized anymore
  - 21-06-2006 fixed: "Look for custom thumbnails on remote shares" setting was ignored.
  - 21-06-2006 fixed: My music - autoswitch to thumb didn't work with one folder and parent folder items hidden.
