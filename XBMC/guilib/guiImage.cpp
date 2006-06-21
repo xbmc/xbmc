@@ -26,7 +26,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
   m_iImageHeight = 0;
   m_bWasVisible = m_visible;
   for (int i = 0; i < 4; i++)
-    m_dwAlpha[i] = 0xFF;
+    m_cornerAlpha[i] = 0xFF;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_texturesAllocated = false;
@@ -53,7 +53,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
   for (int i = 0; i < 4; i++)
-    m_dwAlpha[i] = left.m_dwAlpha[i];
+    m_cornerAlpha[i] = left.m_cornerAlpha[i];
   m_pPalette = NULL;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
@@ -165,30 +165,36 @@ void CGUIImage::Render()
     p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
     p3DDevice->SetVertexShader( FVF_VERTEX );
 
+#define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
+
+    // set the base colour based on our alpha level and diffuse color
+    D3DCOLOR baseColor = m_colDiffuse;
+    if (m_dwAlpha != 0xFF) baseColor = MIX_ALPHA(m_dwAlpha, m_colDiffuse);
+
     // Render the image
     p3DDevice->Begin(D3DPT_QUADLIST);
 
     p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, 0.0f);
-    D3DCOLOR color = m_colDiffuse;
-    if (m_dwAlpha[0] != 0xFF) color = (m_dwAlpha[0] << 24) | (m_colDiffuse & 0x00FFFFFF);
+    D3DCOLOR color = baseColor;
+    if (m_cornerAlpha[0] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[0],baseColor);
     p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
     p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, 0, 0 );
 
     p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, 0.0f);
-    color = m_colDiffuse;
-    if (m_dwAlpha[1] != 0xFF) color = (m_dwAlpha[1] << 24) | (m_colDiffuse & 0x00FFFFFF);
+    color = baseColor;
+    if (m_cornerAlpha[1] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[1],baseColor);
     p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
     p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, 0, 0 );
 
     p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, m_fV);
-    color = m_colDiffuse;
-    if (m_dwAlpha[2] != 0xFF) color = (m_dwAlpha[2] << 24) | (m_colDiffuse & 0x00FFFFFF);
+    color = baseColor;
+    if (m_cornerAlpha[2] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[2],baseColor);
     p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
     p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, 0, 0 );
 
     p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, m_fV);
-    color = m_colDiffuse;
-    if (m_dwAlpha[3] != 0xFF) color = (m_dwAlpha[3] << 24) | (m_colDiffuse & 0x00FFFFFF);
+    color = baseColor;
+    if (m_cornerAlpha[3] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[3],baseColor);
     p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
     p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, 0, 0 );
 
@@ -512,16 +518,16 @@ void CGUIImage::SetFileName(const CStdString& strFileName)
 void CGUIImage::SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom)
 {
   if (
-    m_dwAlpha[0] != dwLeftTop ||
-    m_dwAlpha[1] != dwRightTop ||
-    m_dwAlpha[2] != dwLeftBottom ||
-    m_dwAlpha[3] != dwRightBottom
+    m_cornerAlpha[0] != dwLeftTop ||
+    m_cornerAlpha[1] != dwRightTop ||
+    m_cornerAlpha[2] != dwLeftBottom ||
+    m_cornerAlpha[3] != dwRightBottom
   )
   {
-    m_dwAlpha[0] = dwLeftTop;
-    m_dwAlpha[1] = dwRightTop;
-    m_dwAlpha[2] = dwLeftBottom;
-    m_dwAlpha[3] = dwRightBottom;
+    m_cornerAlpha[0] = dwLeftTop;
+    m_cornerAlpha[1] = dwRightTop;
+    m_cornerAlpha[2] = dwLeftBottom;
+    m_cornerAlpha[3] = dwRightBottom;
     Update();
   }
 }
