@@ -280,8 +280,6 @@ const CDateTime& CDateTime::operator =(const tm& right)
 
 bool CDateTime::operator >(const CDateTime& right) const
 {
-  ASSERT(right.IsValid());
-
   return operator >(right.m_time);
 }
 
@@ -292,8 +290,6 @@ bool CDateTime::operator >=(const CDateTime& right) const
 
 bool CDateTime::operator <(const CDateTime& right) const
 {
-  ASSERT(right.IsValid());
-
   return operator <(right.m_time);
 }
 
@@ -304,8 +300,6 @@ bool CDateTime::operator <=(const CDateTime& right) const
 
 bool CDateTime::operator ==(const CDateTime& right) const
 {
-  ASSERT(right.IsValid());
-
   return operator ==(right.m_time);
 }
 
@@ -316,8 +310,6 @@ bool CDateTime::operator !=(const CDateTime& right) const
 
 bool CDateTime::operator >(const FILETIME& right) const
 {
-  ASSERT(IsValid());
-
   return CompareFileTime(&m_time, &right)>0;
 }
 
@@ -328,8 +320,6 @@ bool CDateTime::operator >=(const FILETIME& right) const
 
 bool CDateTime::operator <(const FILETIME& right) const
 {
-  ASSERT(IsValid());
-
   return CompareFileTime(&m_time, &right)<0;
 }
 
@@ -340,8 +330,6 @@ bool CDateTime::operator <=(const FILETIME& right) const
 
 bool CDateTime::operator ==(const FILETIME& right) const
 {
-  ASSERT(IsValid());
-
   return CompareFileTime(&m_time, &right)==0;
 }
 
@@ -469,8 +457,6 @@ bool CDateTime::operator !=(const tm& right) const
 
 CDateTime CDateTime::operator +(const CDateTimeSpan& right) const
 {
-  ASSERT(IsValid());
-
   CDateTime left(*this);
   
   ULARGE_INTEGER timeLeft;
@@ -488,8 +474,6 @@ CDateTime CDateTime::operator +(const CDateTimeSpan& right) const
 
 CDateTime CDateTime::operator -(const CDateTimeSpan& right) const
 {
-  ASSERT(IsValid());
-
   CDateTime left(*this);
   
   ULARGE_INTEGER timeLeft;
@@ -507,8 +491,6 @@ CDateTime CDateTime::operator -(const CDateTimeSpan& right) const
 
 const CDateTime& CDateTime::operator +=(const CDateTimeSpan& right)
 {
-  ASSERT(IsValid());
-
   ULARGE_INTEGER timeThis;
   ToULargeInt(timeThis);
 
@@ -524,8 +506,6 @@ const CDateTime& CDateTime::operator +=(const CDateTimeSpan& right)
 
 const CDateTime& CDateTime::operator -=(const CDateTimeSpan& right)
 {
-  ASSERT(IsValid());
-
   ULARGE_INTEGER timeThis;
   ToULargeInt(timeThis);
 
@@ -541,9 +521,6 @@ const CDateTime& CDateTime::operator -=(const CDateTimeSpan& right)
 
 CDateTimeSpan CDateTime::operator -(const CDateTime& right) const
 {
-  ASSERT(IsValid());
-  ASSERT(right.IsValid());
-
   CDateTimeSpan left;
   
   ULARGE_INTEGER timeLeft;
@@ -653,8 +630,6 @@ void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 
 int CDateTime::GetDay() const
 {
-  ASSERT(IsValid());
-
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
@@ -663,8 +638,6 @@ int CDateTime::GetDay() const
 
 int CDateTime::GetMonth() const
 {
-  ASSERT(IsValid());
-
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
@@ -673,8 +646,6 @@ int CDateTime::GetMonth() const
 
 int CDateTime::GetYear() const
 {
-  ASSERT(IsValid());
-
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
@@ -683,8 +654,6 @@ int CDateTime::GetYear() const
 
 int CDateTime::GetHour() const
 {
-  ASSERT(IsValid());
-
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
@@ -693,8 +662,6 @@ int CDateTime::GetHour() const
 
 int CDateTime::GetMinute() const
 {
-  ASSERT(IsValid());
-
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
@@ -703,8 +670,6 @@ int CDateTime::GetMinute() const
 
 int CDateTime::GetSecond() const
 {
-  ASSERT(IsValid());
-
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
@@ -713,8 +678,6 @@ int CDateTime::GetSecond() const
 
 int CDateTime::GetDayOfWeek() const
 {
-  ASSERT(IsValid());
-
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
@@ -749,15 +712,11 @@ void CDateTime::SetTime(int hour, int minute, int second)
 
 void CDateTime::GetAsSystemTime(SYSTEMTIME& time) const
 {
-  ASSERT(IsValid());
-
   FileTimeToSystemTime(&m_time, &time);
 }
 
 void CDateTime::GetAsTime(time_t& time) const
 {
-  ASSERT(IsValid());
-
   ULARGE_INTEGER filetime;
   ToULargeInt(filetime);
 
@@ -766,8 +725,6 @@ void CDateTime::GetAsTime(time_t& time) const
 
 void CDateTime::GetAsTm(tm& time) const
 {
-  ASSERT(IsValid());
-
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
@@ -784,15 +741,11 @@ void CDateTime::GetAsTm(tm& time) const
 
 void CDateTime::GetAsTimeStamp(FILETIME& time) const
 {
-  ASSERT(IsValid());
-
   ::LocalFileTimeToFileTime(&m_time, &time);
 }
 
 CStdString CDateTime::GetAsDBDate() const
 {
-  ASSERT(IsValid());
-
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
@@ -804,8 +757,6 @@ CStdString CDateTime::GetAsDBDate() const
 
 CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
 {
-  ASSERT(IsValid());
-
   CStdString strOut;
   const CStdString& strFormat=g_langInfo.GetTimeFormat();
 
@@ -967,8 +918,6 @@ CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
 
 CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
 {
-  ASSERT(IsValid());
-
   CStdString strOut;
 
   const CStdString& strFormat=g_langInfo.GetDateFormat(longDate);
