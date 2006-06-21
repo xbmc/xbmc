@@ -142,12 +142,15 @@ public:
   int PartyModeGetRandomSongCount(bool bUnique, bool bRelaxed = false, bool bOnlyRelaxed = false);
   int GetSongsCount();
   int GetSongsCount(const CStdString& strWhere);
+  unsigned int GetSongIDs(const CStdString& strWhere, vector<long> &songIDs);
+
   bool GetPathFromAlbumId(long idAlbum, CStdString& strPath);
   bool GetPathFromSongId(long idSong, CStdString& strPath);
   bool SaveAlbumThumb(const CStdString& strAlbum, const CStdString& strPath, const CStdString& strThumb);
   bool RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items);
   bool GetAlbumsByArtistId(long idArtist, VECALBUMS& albums);
   bool InitialisePartyMode();
+  bool UpdatePartyMode(long lSongId, bool bRelaxRestrictions);
 
   bool GetGenreById(long idGenre, CStdString& strGenre);
   bool GetArtistById(long idArtist, CStdString& strArtist);
@@ -191,7 +194,6 @@ private:
   bool CleanupGenres();
   bool CleanupAlbumsFromPaths(const CStdString &strPathIds);
   virtual bool UpdateOldVersion(float fVersion);
-  bool UpdatePartyMode(long lSongId, bool bRelaxRestrictions);
 
   // Fields should be ordered as they 
   // appear in the songview
