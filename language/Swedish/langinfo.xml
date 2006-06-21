@@ -12,7 +12,7 @@
   </dvd>
 
   <regions>
-    <region>
+    <region name="Sweden">
       <dateshort>D.M.YYYY</dateshort>
       <datelong>'den 'D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
@@ -20,4 +20,5 @@
       <speedunit>kmh</speedunit>
     </region>
   </regions>
+
 </language>
