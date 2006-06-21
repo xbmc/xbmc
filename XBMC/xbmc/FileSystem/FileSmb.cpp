@@ -121,7 +121,9 @@ CStdString CSMB::URLEncode(const CURL &url)
     flat += ";";
   }
 
-  if(url.GetUserName().length() > 0 || url.GetPassWord().length() > 0)
+  /* samba messes up of password is set but no username is set. don't know why yet */
+  /* probably the url parser that goes crazy */
+  if(url.GetUserName().length() > 0 /* || url.GetPassWord().length() > 0 */)
   {
     flat += URLEncode(url.GetUserName());
     flat += ":";
