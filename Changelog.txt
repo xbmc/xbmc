@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-06-2006 fixed: Network and local buttons in My Pictures now work in 16x9 too
+ - 21-06-2006 changed: Some minor fixes/changes to the swedish strings.xml langinfo.xml
  - 21-06-2006 fixed: temp and speed units do not display properly
  - 21-06-2006 added: Canadian region to the english language (Thanks to Midvalley)
  - 21-06-2006 fixed: <colordiffuse> didn't work for multiimage.
