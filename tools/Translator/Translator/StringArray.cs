@@ -57,18 +57,22 @@ namespace TeamXBMC.TranslatorCore
 
 				XmlNodeList list=doc.DocumentElement.SelectNodes("/strings/string");
 
-				if (list!=null)
-				{
-					foreach (XmlNode node in list)
-					{
-						StringItem item=new StringItem();
-						item.LoadFromXml((XmlElement)node);
+				if (list.Count==0)
+					throw new TranslatorException(filename+" is not a language file.");
 
-						Add(item);
-					}
+				foreach (XmlNode node in list)
+				{
+					StringItem item=new StringItem();
+					item.LoadFromXml((XmlElement)node);
+
+					Add(item);
 				}
 
 				strings.Sort();
+			}
+			catch (TranslatorException e)
+			{
+				throw e;
 			}
 			catch(Exception e)
 			{
