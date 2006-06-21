@@ -28,13 +28,20 @@ namespace PYXBMC
 /*****************************************************************
  * start of xbmc methods
  *****************************************************************/
-
+  
+  // output() method
 	PyDoc_STRVAR(output__doc__,
-		"output(string) -- Write a string to xbmc's log file and the debug window.\n"
+		"output(text) -- Write a string to XBMC's log file and the debug window.\n"
 		"\n"
-		"Strings are written to the log with log level 1 (NOTICE)");
+    "text           : string - text to output.\n"
+		"\n"
+    "*Note, Text is written to the log only when <loglevel>1</loglevel> (DEBUG)\n"
+    "       or higher is set in AdvancedSettings.xml.\n"
+		"\n"
+		"example:\n"
+		"  - xbmc.output('This is a test string.')\n");
 
-	PyObject* XBMC_Output(PyObject *self, PyObject *args)
+  PyObject* XBMC_Output(PyObject *self, PyObject *args)
 	{
 		char *s_line;
 		if (!PyArg_ParseTuple(args, "s:xb_output", &s_line))	return NULL;
@@ -49,10 +56,16 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	PyDoc_STRVAR(log__doc__,
-		"log(string) -- Write a string to xbmc's log file with log level 6.\n");
+	// log() method
+  PyDoc_STRVAR(log__doc__,
+		"log(text) -- Write a string to XBMC's log file.\n"
+		"\n"
+    "text           : string - text to write to log.\n"
+		"\n"
+		"example:\n"
+		"  - xbmc.log('This is a test string.')\n");
 
-	PyObject* XBMC_Log(PyObject *self, PyObject *args)
+  PyObject* XBMC_Log(PyObject *self, PyObject *args)
 	{
 		char *s_line;
 		if (!PyArg_ParseTuple(args, "s", &s_line))	return NULL;
@@ -63,10 +76,14 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // shutdown() method
 	PyDoc_STRVAR(shutdown__doc__,
-		"shutdown() -- Shutdown the xbox.\n");
+		"shutdown() -- Shutdown the xbox.\n"
+		"\n"
+		"example:\n"
+		"  - xbmc.shutdown()\n");
 
-	PyObject* XBMC_Shutdown(PyObject *self, PyObject *args)
+  PyObject* XBMC_Shutdown(PyObject *self, PyObject *args)
 	{
 		ThreadMessage tMsg = {TMSG_SHUTDOWN};
 		g_applicationMessenger.SendMessage(tMsg);
@@ -75,10 +92,14 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // dashboard() method
 	PyDoc_STRVAR(dashboard__doc__,
-		"dashboard() -- Boot to dashboard.\n");
+		"dashboard() -- Boot to dashboard as set in My Pograms/General.\n"
+		"\n"
+		"example:\n"
+		"  - xbmc.dashboard()\n");
 
-	PyObject* XBMC_Dashboard(PyObject *self, PyObject *args)
+  PyObject* XBMC_Dashboard(PyObject *self, PyObject *args)
 	{
 		ThreadMessage tMsg = {TMSG_DASHBOARD};
 		g_applicationMessenger.SendMessage(tMsg);
@@ -87,8 +108,12 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	PyDoc_STRVAR(restart__doc__,
-		"restart() -- Restart Xbox.\n");
+	// restart() method
+  PyDoc_STRVAR(restart__doc__,
+		"restart() -- Restart the xbox.\n"
+		"\n"
+		"example:\n"
+		"  - xbmc.restart()\n");
 
 	PyObject* XBMC_Restart(PyObject *self, PyObject *args)
 	{
@@ -99,11 +124,14 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	PyDoc_STRVAR(executeScript__doc__,
-		"executescript(string) -- Execute a python script.\n"
+	// executescript() method
+  PyDoc_STRVAR(executeScript__doc__,
+		"executescript(script) -- Execute a python script.\n"
+		"\n"
+    "script         : string - script filename to execute.\n"
 		"\n"
 		"example:\n"
-		"  - executescript('q:\\scripts\\update.py')\n");
+		"  - xbmc.executescript('q:\\\\scripts\\\\update.py')\n");
 
 	PyObject* XBMC_ExecuteScript(PyObject *self, PyObject *args)
 	{
@@ -118,13 +146,18 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // executebuiltin() method
 	PyDoc_STRVAR(executeBuiltIn__doc__,
-		"executebuiltin(string) -- Execute a built in XBMC function.\n"
+		"executebuiltin(function) -- Execute a built in XBMC function.\n"
+		"\n"
+    "function       : string - builtin function to execute.\n"
+		"\n"
+    "List of functions - http://manual.xboxmediacenter.de/wakka.php?wakka=BuiltInFunctions \n"
 		"\n"
 		"example:\n"
-    "  - executebuiltin('XBMC.RunXBE(C:\avalaunch.xbe)')\n");
-
-	PyObject* XBMC_ExecuteBuiltIn(PyObject *self, PyObject *args)
+    "  - xbmc.executebuiltin('XBMC.RunXBE(c:\\\\avalaunch.xbe)')\n");
+  
+  PyObject* XBMC_ExecuteBuiltIn(PyObject *self, PyObject *args)
 	{
 		char *cLine;
 		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
@@ -137,13 +170,18 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	PyDoc_STRVAR(executeHttpApi__doc__,
-		"executehttpapi(string) -- Execute an HTTP API.\n"
+	// executehttpapi() method
+  PyDoc_STRVAR(executeHttpApi__doc__,
+		"executehttpapi(httpcommand) -- Execute an HTTP API command.\n"
 		"\n"
-		"example:\n"
-    "  - executehttpapi('SetPlaySpeed(2)')\n");
+    "httpcommand    : string - http command to execute.\n"
+		"\n"
+		"List of commands - http://manual.xboxmediacenter.de/wakka.php?wakka=WebServerCommands \n"
+		"\n"
+    "example:\n"
+    "  - response = xbmc.executehttpapi('TakeScreenShot(q:\\\\test.jpg,0,false,200,-1,90)')\n");
 
-	PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
+ 	PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
 	{
 		char *cLine;
     CStdString ret;
@@ -159,14 +197,21 @@ namespace PYXBMC
 		return PyString_FromString(ret.c_str());
 	}
 
+  // sleep() method
   PyDoc_STRVAR(sleep__doc__,
-		"sleep(int time) -- Sleeps for 'time' msec.\n"
+		"sleep(time) -- Sleeps for 'time' msec.\n"
 		"\n"
-		"Throws: PyExc_TypeError, if time is not a  integer\n"
-		"This is usefull you have for example a Player class that is waiting for onPlayBackEnded()\n"
-		"calls");
+    "time           : integer - number of msec to sleep.\n"
+		"\n"
+		"*Note, This is useful if you have for example a Player class that is waiting\n"
+    "       for onPlayBackEnded() calls.\n"
+		"\n"
+		"Throws: PyExc_TypeError, if time is not an integer.\n"
+		"\n"
+		"example:\n"
+    "  - xbmc.sleep(2000) # sleeps for 2 seconds\n");
 
-	PyObject* XBMC_Sleep(PyObject *self, PyObject *args)
+  PyObject* XBMC_Sleep(PyObject *self, PyObject *args)
 	{
 		PyObject *pObject;
 		if (!PyArg_ParseTuple(args, "O", &pObject))	return NULL;
@@ -177,26 +222,33 @@ namespace PYXBMC
 		}
 
 		long i = PyInt_AsLong(pObject);
-		while(i != 0)
-		{
+		//while(i != 0)
+		//{
 			Py_BEGIN_ALLOW_THREADS
-			Sleep(500);
+			Sleep(i);//(500);
 			Py_END_ALLOW_THREADS
 
 			Py_MakePendingCalls();
-			i = PyInt_AsLong(pObject);
-		}
+			//i = PyInt_AsLong(pObject);
+		//}
 
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
 
+  // getLocalizedString() method
 	PyDoc_STRVAR(getLocalizedString__doc__,
-		"getLocalizedString(int id) -- Returns a Localized 'unicode string'.\n"
+		"getLocalizedString(id) -- Returns a localized 'unicode string'.\n"
 		"\n"
-		"See the xml language files in /language/ which id you need for a string\n");
+    "id             : integer - id# for string you want to localize.\n"
+		"\n"
+    "*Note, See strings.xml in \\language\\{yourlanguage}\\ for which id\n"
+    "       you need for a string.\n"
+		"\n"
+		"example:\n"
+		"  - locstr = xbmc.getLocalizedString(6)\n");
 
-	PyObject* XBMC_GetLocalizedString(PyObject *self, PyObject *args)
+  PyObject* XBMC_GetLocalizedString(PyObject *self, PyObject *args)
 	{
 		int iString;
 		if (!PyArg_ParseTuple(args, "i", &iString))	return NULL;
@@ -205,30 +257,41 @@ namespace PYXBMC
     g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(iString), unicodeLabel);
 		return Py_BuildValue("u", unicodeLabel.c_str());
 	}
-
-	PyDoc_STRVAR(getSkinDir__doc__,
-		"getSkinDir() -- Returns the active skin directory.\n"
+  
+  // getSkinDir() method
+  PyDoc_STRVAR(getSkinDir__doc__,
+		"getSkinDir() -- Returns the active skin directory as a string.\n"
 		"\n"
-		"Note, this is not the full path like 'q:\\skins\\MediaCenter', \n"
-		"but only 'MediaCenter'\n");
+		"*Note, This is not the full path like 'q:\\skins\\MediaCenter', but only 'MediaCenter'.\n"
+		"\n"
+		"example:\n"
+		"  - skindir = xbmc.getSkinDir()\n");
 
-	PyObject* XBMC_GetSkinDir(PyObject *self, PyObject *args)
+  PyObject* XBMC_GetSkinDir(PyObject *self, PyObject *args)
 	{
 		return PyString_FromString(g_guiSettings.GetString("lookandfeel.skin"));
 	}
 
-	PyDoc_STRVAR(getLanguage__doc__,
-		"getLanguage() -- Returns the active language as string.\n");
+  // getLanguage() method
+  PyDoc_STRVAR(getLanguage__doc__,
+		"getLanguage() -- Returns the active language as a string.\n"
+		"\n"
+		"example:\n"
+		"  - language = xbmc.getLanguage()\n");
 
 	PyObject* XBMC_GetLanguage(PyObject *self, PyObject *args)
 	{
 		return PyString_FromString(g_guiSettings.GetString("lookandfeel.language"));
 	}
 
+  // getIPAddress() method
 	PyDoc_STRVAR(getIPAddress__doc__,
-		"getIPAddress() -- Returns the current ip adres as string.\n");
+		"getIPAddress() -- Returns the current ip address as a string.\n"
+		"\n"
+		"example:\n"
+		"  - ip = xbmc.getIPAddress()\n");
 
-	PyObject* XBMC_GetIPAddress(PyObject *self, PyObject *args)
+  PyObject* XBMC_GetIPAddress(PyObject *self, PyObject *args)
 	{
 		char cTitleIP[32];
 		XNADDR xna;
@@ -237,24 +300,31 @@ namespace PYXBMC
 		return PyString_FromString(cTitleIP);
 	}
 
+  // getDVDState() method
 	PyDoc_STRVAR(getDVDState__doc__,
-		"getDVDState() -- Returns the dvd state.\n"
+		"getDVDState() -- Returns the dvd state as an integer.\n"
 		"\n"
 		"return values are:\n"
-		"\n"
+		"   1 : xbmc.DRIVE_NOT_READY\n"
 		"  16 : xbmc.TRAY_OPEN\n"
-		"  1  : xbmc.DRIVE_NOT_READY\n"
 		"  64 : xbmc.TRAY_CLOSED_NO_MEDIA\n"
-		"  96 : xbmc.TRAY_CLOSED_MEDIA_PRESENT");
+		"  96 : xbmc.TRAY_CLOSED_MEDIA_PRESENT\n"
+		"\n"
+		"example:\n"
+		"  - dvdstate = xbmc.getDVDState()\n");
 
-	PyObject* XBMC_GetDVDState(PyObject *self, PyObject *args)
+  PyObject* XBMC_GetDVDState(PyObject *self, PyObject *args)
 	{
 		CIoSupport io;
 		return PyInt_FromLong(io.GetTrayState());
 	}
 
-	PyDoc_STRVAR(getFreeMem__doc__,
-		"getFreeMem() -- Returns free memory as a string.\n");
+	// getFreeMem() method
+  PyDoc_STRVAR(getFreeMem__doc__,
+		"getFreeMem() -- Returns the amount of free memory in MB as an integer.\n"
+		"\n"
+		"example:\n"
+		"  - freemem = xbmc.getFreeMem()\n");
 
 	PyObject* XBMC_GetFreeMem(PyObject *self, PyObject *args)
 	{
@@ -263,10 +333,15 @@ namespace PYXBMC
 		return PyInt_FromLong( stat.dwAvailPhys  / ( 1024 * 1024 ) );
 	}
 
-	PyDoc_STRVAR(getCpuTemp__doc__,
-		"getCpuTemp() -- Returns the current cpu tempature.\n");
+	// getCpuTemp() method
+  // ## Doesn't work right, use getInfoLabel('System.CPUTemperature') instead.
+  /*PyDoc_STRVAR(getCpuTemp__doc__,
+		"getCpuTemp() -- Returns the current cpu temperature as an integer.\n"
+		"\n"
+		"example:\n"
+		"  - cputemp = xbmc.getCpuTemp()\n");
 
-	PyObject* XBMC_GetCpuTemp(PyObject *self, PyObject *args)
+  PyObject* XBMC_GetCpuTemp(PyObject *self, PyObject *args)
 	{
 		unsigned short cputemp;
 		unsigned short cpudec;
@@ -289,10 +364,18 @@ namespace PYXBMC
 		if (cpudec<100)	cpudec = cpudec *10; 
 
 		return PyInt_FromLong((long)(cputemp + cpudec / 1000.0f));
-	}
+	}*/
 
-	PyDoc_STRVAR(getInfoLabel__doc__,
-		"getInfoLabel(str InfoTag) -- Returns an InfoLabel.\n");
+	// getInfolabel() method
+  PyDoc_STRVAR(getInfoLabel__doc__,
+		"getInfoLabel(infotag) -- Returns an InfoLabel as a string.\n"
+		"\n"
+    "infotag        : string - infoTag for value you want returned.\n"
+		"\n"
+    "List of InfoTags - http://manual.xboxmediacenter.de/wakka.php?wakka=InfoLabels \n"
+		"\n"
+		"example:\n"
+		"  - label = xbmc.getInfoLabel('Weather.Conditions')\n");
 
 	PyObject* XBMC_GetInfoLabel(PyObject *self, PyObject *args)
 	{
@@ -303,10 +386,19 @@ namespace PYXBMC
     return Py_BuildValue("s", g_infoManager.GetLabel(ret).c_str());
   }
 
+	// getInfoImage() method
 	PyDoc_STRVAR(getInfoImage__doc__,
-		"getInfoImage(str InfoTag) -- Returns the path to the InfoImage's thumbnail.\n");
+		"getInfoImage(infotag) -- Returns a filename including path to the InfoImage's\n"
+    "                         thumbnail as a string.\n"
+		"\n"
+    "infotag        : string - infotag for value you want returned.\n"
+		"\n"
+    "List of InfoTags - http://manual.xboxmediacenter.de/wakka.php?wakka=InfoLabels \n"
+		"\n"
+		"example:\n"
+		"  - filename = xbmc.getInfoImage('Weather.Conditions')\n");
 
-	PyObject* XBMC_GetInfoImage(PyObject *self, PyObject *args)
+  PyObject* XBMC_GetInfoImage(PyObject *self, PyObject *args)
 	{
 		char *cLine;
 		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
@@ -333,7 +425,7 @@ namespace PYXBMC
 		{"getIPAddress", (PyCFunction)XBMC_GetIPAddress, METH_VARARGS, getIPAddress__doc__},
 		{"getDVDState", (PyCFunction)XBMC_GetDVDState, METH_VARARGS, getDVDState__doc__},
 		{"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},		
-		{"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
+		//{"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
 
     {"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
 		{"getInfoLabel", (PyCFunction)XBMC_GetInfoLabel, METH_VARARGS, getInfoLabel__doc__},

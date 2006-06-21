@@ -41,8 +41,12 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
-	PyDoc_STRVAR(doModal__doc__,
-		"doModal() -- Show keyboard and wait for user action.");
+	// doModal() Method
+  PyDoc_STRVAR(doModal__doc__,
+		"doModal() -- Show keyboard and wait for user action.\n"
+		"\n"
+		"example:\n"
+		"  - kb.doModal()");
 
 	PyObject* Keyboard_DoModal(Keyboard *self, PyObject *args)
 	{
@@ -66,10 +70,16 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	PyDoc_STRVAR(setDefault__doc__,
-		"setDefault(string default) -- Set new text that is displayed as default.");
+	// setDefault() Method
+  PyDoc_STRVAR(setDefault__doc__,
+		"setDefault(default) -- Set the default text entry.\n"
+		"\n"
+    "default        : string - default text entry.\n"
+		"\n"
+		"example:\n"
+		"  - kb.setDefault('password')");
 
-	PyObject* Keyboard_SetDefault(Keyboard *self, PyObject *args)
+  PyObject* Keyboard_SetDefault(Keyboard *self, PyObject *args)
 	{
 		PyObject *line = NULL;
 		if (!PyArg_ParseTuple(args, "|O", &line))	return NULL;
@@ -91,8 +101,14 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	PyDoc_STRVAR(setHeading__doc__,
-		"setHeading(string heading) -- Set new text that is displayed as heading.");
+	// setHeading() Method
+  PyDoc_STRVAR(setHeading__doc__,
+		"setHeading(heading) -- Set the keyboard heading.\n"
+		"\n"
+		"heading        : string - keyboard heading.\n"
+		"\n"
+		"example:\n"
+		"  - kb.setHeading('Enter password')");
 
 	PyObject* Keyboard_SetHeading(Keyboard *self, PyObject *args)
 	{
@@ -116,13 +132,17 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	PyDoc_STRVAR(getText__doc__,
-		"getText() -- Returns the user input.\n"
+	// getText() Method
+  PyDoc_STRVAR(getText__doc__,
+		"getText() -- Returns the user input as a string.\n"
 		"\n"
-		"This will only succeed if the user entered some text or if there is a default\n"
-		"text set for this Keyboard.");
+		"*Note, This will always return the text entry even if you cancel the keyboard.\n"
+    "       Use the isConfirmed() method to check if user cancelled the keyboard.\n"
+		"\n"
+		"example:\n"
+    "  - text = kb.getText()");
 
-	PyObject* Keyboard_GetText(Keyboard *self, PyObject *args)
+  PyObject* Keyboard_GetText(Keyboard *self, PyObject *args)
 	{
 		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 		if(!pKeyboard)
@@ -134,8 +154,12 @@ namespace PYXBMC
 		return Py_BuildValue("s", pKeyboard->GetText().c_str());
 	}
 
-	PyDoc_STRVAR(isConfirmed__doc__,
-		"isConfirmed() -- Returns False if the user cancelled the input.");
+	// isConfirmed() Method
+  PyDoc_STRVAR(isConfirmed__doc__,
+		"isConfirmed() -- Returns False if the user cancelled the input.\n"
+		"\n"
+		"example:\n"
+    "  - if (kb.isConfirmed()):");
 
 	PyObject* Keyboard_IsConfirmed(Keyboard *self, PyObject *args)
 	{
@@ -161,8 +185,19 @@ namespace PYXBMC
 	PyDoc_STRVAR(keyboard__doc__,
 		"Keyboard class.\n"
 		"\n"
-    "Keyboard([string default, string heading]) -- Creates a new Keyboard object with default text\n"
-		"                              and heading if supplied.");
+    "Keyboard([default, heading]) -- Creates a new Keyboard object with default text\n"
+		"                                and heading if supplied.\n"
+		"\n"
+    "default        : [opt] string - default text entry.\n"
+		"heading        : [opt] string - keyboard heading.\n"
+		"\n"
+		"example:\n"
+		"  - kb = xbmc.Keyboard('default', 'heading')\n"
+    "  - kb.setDefault('password') # optional\n"
+    "  - kb.setHeading('Enter password') # optional\n"
+		"  - kb.doModal()\n"
+    "  - if (kb.isConfirmed()):\n"
+    "  -   text = kb.getText()");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
