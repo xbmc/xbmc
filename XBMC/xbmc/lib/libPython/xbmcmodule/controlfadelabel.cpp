@@ -89,12 +89,16 @@ namespace PYXBMC
     return pControl->pGUIControl;
   }
 
+  // addLabel() Method
 	PyDoc_STRVAR(addLabel__doc__,
-		"addLabel(string label) -- Add a label to this control for scrolling.\n"
+		"addLabel(label) -- Add a label to this control for scrolling.\n"
 		"\n"
-		"label     : string or unicode string");
+		"label          : string or unicode - text string.\n"
+		"\n"
+		"example:\n"
+		"  - self.fadelabel.addLabel('This is a line of text that can scroll.')");
 
-	PyObject* ControlFadeLabel_AddLabel(ControlFadeLabel *self, PyObject *args)
+  PyObject* ControlFadeLabel_AddLabel(ControlFadeLabel *self, PyObject *args)
 	{
 		PyObject *pObjectText;
 		string strText;
@@ -114,8 +118,12 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // reset() Method
 	PyDoc_STRVAR(reset__doc__,
-		"reset() -- Reset's the fade label.\n");
+		"reset() -- Clears this fadelabel.\n"
+		"\n"
+		"example:\n"
+		"  - self.fadelabel.reset()\n");
 
 	PyObject* ControlFadeLabel_Reset(ControlFadeLabel *self, PyObject *args)
 	{
@@ -137,19 +145,27 @@ namespace PYXBMC
 		{NULL, NULL, 0, NULL}
 	};
 
+  // ControlFadeLabel class
 	PyDoc_STRVAR(controlFadeLabel__doc__,
 		"ControlFadeLabel class.\n"
 		"Control that scroll's lables"
 		"\n"
-		"ControlFadeLabel(x, y, width, height, font, textColor, alignment)\n"
+    "ControlFadeLabel(x, y, width, height[, font, textColor, alignment])\n"
 		"\n"
-        "x         : x coordinate of control\n"
-        "y         : y coordinate of control\n"
-        "width     : width of control\n"
-        "height    : height of control\n"
-		"font      : string fontname (example, 'font13' / 'font14') (opt)\n"
-		"textColor : hexString e.g. '0xFFFF3300' (opt)\n"
-        "alignment : alignment of text - see xbfont.h (opt)\n" );
+    "x              : integer - x coordinate of control.\n"
+    "y              : integer - y coordinate of control.\n"
+    "width          : integer - width of control.\n"
+    "height         : integer - height of control.\n"
+    "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
+    "textColor      : [opt] hexstring - color of fadelabel's labels. (e.g. '0xFFFFFFFF')\n"
+		"alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n"
+		"\n"
+		"*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       After you create the control, you need to add it to the window with addControl().\n"
+		"\n"
+		"example:\n"
+		"  - self.fadelabel = xbmcgui.ControlFadeLabel(100, 250, 200, 50, textColor='0xFFFFFFFF')\n");
 
 // Restore code and data sections to normal.
 #pragma code_seg()

@@ -17,15 +17,34 @@ namespace PYXBMC
 {
 	PyObject* ControlImage_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
-		ControlImage *self;
+		static char *keywords[] = {	
+			"x", "y", "width", "height", "filename", "colorKey", "aspectRatio", NULL };
+    ControlImage *self;
 		char *cImage = NULL;
 		char *cColorKey = NULL;
 		
 		self = (ControlImage*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
 		
-		if (!PyArg_ParseTuple(args, "lllls|sl", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-			&cImage, &cColorKey, &self->aspectRatio)) return NULL;
+		//if (!PyArg_ParseTuple(args, "lllls|sl", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
+		//	&cImage, &cColorKey, &self->aspectRatio)) return NULL;
+		// parse arguments to constructor
+		if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "lllls|sl",
+      keywords,
+      &self->dwPosX,
+      &self->dwPosY,
+      &self->dwWidth,
+      &self->dwHeight,
+      &cImage,
+      &cColorKey,
+      &self->aspectRatio ))
+		{
+			Py_DECREF( self );
+			return NULL;
+		}
 
 		// check if filename exists
 		self->strFileName = cImage;
@@ -55,14 +74,26 @@ namespace PYXBMC
 		{NULL, NULL, 0, NULL}
 	};
 
+  // ControlImage class
 	PyDoc_STRVAR(controlImage__doc__,
 		"ControlImage class.\n"
 		"\n"
-		"ControlImage(int x, int y, int width, int height[, filename, ColorKey, AspectRatio])\n"
+		"ControlImage(x, y, width, height, filename[, colorKey, aspectRatio])\n"
 		"\n"
-		"filename  : image filename\n"
-		"ColorKey  : hexString (example, '0xFFFF3300')\n"
-    "AspectRatio : int (values 0 = scale down (black bars), 1 = scale up (crops), 2 = stretch (default)");
+    "x              : integer - x coordinate of control.\n"
+    "y              : integer - y coordinate of control.\n"
+    "width          : integer - width of control.\n"
+    "height         : integer - height of control.\n"
+		"filename       : string - image filename.\n"
+    "colorKey       : [opt] hexString - (example, '0xFFFF3300')\n"
+    "aspectRatio    : [opt] integer - (values 0 = stretch (default), 1 = scale up (crops), 2 = scale down (black bars)"
+		"\n"
+		"*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       After you create the control, you need to add it to the window with addControl().\n"
+		"\n"
+		"example:\n"
+		"  - self.image = xbmcgui.ControlImage(100, 250, 125, 75, aspectRatio=2)\n");
 
 // Restore code and data sections to normal.
 #pragma code_seg()

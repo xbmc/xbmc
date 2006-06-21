@@ -278,7 +278,7 @@ namespace PYXBMC
 
 		PyGUILock();
 
-		// if it's a idalog, we have to close it a bit different
+		// if it's a dialog, we have to close it a bit different
 		if (WindowDialog_Check(self))	((CGUIPythonWindowDialog*)self->pWindow)->Close();
 		// close the window by activating the parent one
 		else m_gWindowManager.ActivateWindow(self->iOldWindowId);
@@ -683,8 +683,8 @@ namespace PYXBMC
 		"Window(self[, int windowId) -- Create a new Window to draw on.\n"
 		"                               Specify an id to use an existing window.\n"
 		"\n"
-		"Throws: ValueError, if supplied window Id does not exist\n"
-		"        Exception, if more then 200 windows are created\n"
+		"Throws: ValueError, if supplied window Id does not exist.\n"
+		"        Exception, if more then 200 windows are created.\n"
 		"\n"
 		"Deleting this window will activate the old window that was active\n"
 		"and resets (not delete) all controls that are associated with this window.");

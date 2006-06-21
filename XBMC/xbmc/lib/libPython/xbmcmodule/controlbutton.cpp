@@ -27,11 +27,11 @@ namespace PYXBMC
 			"textXOffset", "textYOffset", "alignment",
             "font", "textColor", "disabledColor", "angle", NULL };
 		ControlButton *self;
-        char* cFont = NULL;
-		char* cTextureFocus = NULL;
+    char* cFont = NULL;
+    char* cTextureFocus = NULL;
 		char* cTextureNoFocus = NULL;
-        char* cTextColor = NULL;
-        char* cDisabledColor = NULL;
+    char* cTextColor = NULL;
+    char* cDisabledColor = NULL;
 
 		PyObject* pObjectText;
 		
@@ -39,9 +39,9 @@ namespace PYXBMC
 		if (!self) return NULL;
 		
 		// set up default values in case they are not supplied
-        self->dwTextXOffset = CONTROL_TEXT_OFFSET_X;
-        self->dwTextYOffset = CONTROL_TEXT_OFFSET_Y;
-        self->dwAlign = (XBFONT_LEFT | XBFONT_CENTER_Y);
+    self->dwTextXOffset = CONTROL_TEXT_OFFSET_X;
+    self->dwTextYOffset = CONTROL_TEXT_OFFSET_Y;
+    self->dwAlign = (XBFONT_LEFT | XBFONT_CENTER_Y);
 		self->strFont = "font13";		
 		self->dwTextColor = 0xffffffff;
 		self->dwDisabledColor = 0x60ffffff;
@@ -70,7 +70,9 @@ namespace PYXBMC
             Py_DECREF( self );
             return NULL;
         }
-		if (!PyGetUnicodeString(self->strText, pObjectText, 5))
+		
+    
+    if (!PyGetUnicodeString(self->strText, pObjectText, 5))
         {
             Py_DECREF( self );
             return NULL;
@@ -127,10 +129,14 @@ namespace PYXBMC
     return pControl->pGUIControl;
   }
 
-	PyDoc_STRVAR(setDisabledColor__doc__,
-		"setDisabledColor(string hexcolor) -- .\n"
+  // setDisabledColor() Method
+  PyDoc_STRVAR(setDisabledColor__doc__,
+		"setDisabledColor(disabledColor) -- Set's this buttons disabled color.\n"
 		"\n"
-		"hexcolor     : hexString (example, '0xFFFF3300')");
+    "disabledColor  : hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n"
+		"\n"
+		"example:\n"
+		"  - self.button.setDisabledColor('0xFFFF3300')\n");
 
 	PyObject* ControlButton_SetDisabledColor(ControlButton *self, PyObject *args)
 	{
@@ -153,15 +159,17 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+  // setLabel() Method
 	PyDoc_STRVAR(setLabel__doc__,
-		"setLabel(label, font, textColor, disabledColor)\n"
+		"setLabel(label[, font, textColor, disabledColor]) -- Set's this buttons text attributes.\n"
 		"\n"
-        "Method to set the text for this button.\n"
+		"label          : string or unicode - text string.\n"
+    "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
+    "textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')\n"
+    "disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n"
 		"\n"
-		"label         : string or unicode string\n"
-        "font          : name of font for button text (opt)\n"
-        "textColor     : color of text (opt)\n"
-        "disabledColor : disabled color of text (opt)\n" );
+		"example:\n"
+		"  - self.button.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300')\n");
 
 	PyObject* ControlButton_SetLabel(ControlButton *self, PyObject *args)
 	{
@@ -209,11 +217,11 @@ namespace PYXBMC
 	PyMethodDef ControlButton_methods[] = {
 		{"setLabel", (PyCFunction)ControlButton_SetLabel, METH_VARARGS, setLabel__doc__},
 		{"setDisabledColor", (PyCFunction)ControlButton_SetDisabledColor, METH_VARARGS, setDisabledColor__doc__},
-		{NULL, NULL, 0, NULL}
+    {NULL, NULL, 0, NULL}
 	};
 
 	// ControlButton class
-	PyDoc_STRVAR(controlButton__doc__,
+  PyDoc_STRVAR(controlButton__doc__,
 		"ControlButton class.\n"
 		"\n"
 		"ControlButton(x, y, width, height, label[, focusTexture, noFocusTexture, \n"
@@ -241,7 +249,7 @@ namespace PYXBMC
 		"example:\n"
 		"  - self.button = xbmcgui.ControlButton(100, 250, 200, 50, 'Status', font='font14')\n");
 
-// Restore code and data sections to normal.
+  // Restore code and data sections to normal.
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
