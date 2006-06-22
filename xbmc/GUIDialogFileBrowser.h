@@ -41,6 +41,7 @@ protected:
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
   bool OnPopupMenu(int iItem);
   void OnAddNetworkLocation();
+  CGUIControl *GetFirstFocusableControl(int id);
 
   VECSHARES m_shares;
   CVirtualDirectory m_rootDir;
