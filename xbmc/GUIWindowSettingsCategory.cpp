@@ -121,27 +121,29 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_SETFOCUS:
     {
-      unsigned int iControl = message.GetControlId();
-      unsigned int iSender = message.GetSenderId();
-      // if both the sender and the control are within out category range, or the sender is the window
-      // then we have a change of category.
-      if (iControl >= CONTROL_START_BUTTONS && iControl < CONTROL_START_BUTTONS + m_vecSections.size() &&
-          ((iSender >= CONTROL_START_BUTTONS && iSender < CONTROL_START_BUTTONS + m_vecSections.size()) || iSender == GetID()))
+      if (CGUIWindow::OnMessage(message))
       {
-        // change the setting...
-        if (iControl - CONTROL_START_BUTTONS != m_iSection)
+        // check if our focused control is one of our category buttons
+        unsigned int focusedControl = GetFocusedControl();
+        if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < CONTROL_START_BUTTONS + m_vecSections.size())
         {
-          if (m_vecSections[iControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
+          // if we have a new category button
+          if (focusedControl - CONTROL_START_BUTTONS != m_iSection)
           {
-            if (!g_passwordManager.IsMasterLockUnlocked(true))
-              return false;
-          }
-          m_iSection = iControl - CONTROL_START_BUTTONS;
-          CheckNetworkSettings();
+            if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
+            {
+              if (!g_passwordManager.IsMasterLockUnlocked(true))
+                return false;
+            }
+            m_iSection = focusedControl - CONTROL_START_BUTTONS;
+            CheckNetworkSettings();
 
-          CreateSettings();
+            CreateSettings();
+          }
         }
+        return true;
       }
+      return false;
     }
     break;
   case GUI_MSG_LOAD_SKIN:
@@ -847,7 +849,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetLabel2(pSetting->GetData());
+      pControl->SetLabel2(g_weatherManager.GetAreaCity(pSetting->GetData()));
     }
     else if (strSetting.Equals("led.disableonplayback"))
     {
