@@ -75,8 +75,27 @@
    <font>font13</font>
    <onleft>3</onleft>
    <onright>3</onright>
-   <onup>3</onup>
-   <ondown>3</ondown>
+   <onup>4</onup>
+   <ondown>4</ondown>
+   <align>center</align>
+   <include>buttonpanelslide</include>
+  </control>
+
+  <control>
+   <description>Settings Button</description>
+   <type>button</type>
+   <id>4</id>
+   <posx>60</posx>
+   <posy>160</posy>
+   <width>135</width>
+   <height>35</height>
+   <label>5</label>
+   <font>font13</font>
+   <onleft>3</onleft>
+   <onright>3</onright>
+   <onup>2</onup>
+   <ondown>2</ondown>
+   <onclick>ActivateWindow(MyWeatherSettings)</onclick>
    <align>center</align>
    <include>buttonpanelslide</include>
   </control>
@@ -86,7 +105,7 @@
    <type>image</type>
    <id>101</id>
    <posx>85</posx>
-   <posy>190</posy>
+   <posy>210</posy>
    <texture>TWClogo_64px.png</texture>
    <include>buttonpanelslide</include>
   </control>
