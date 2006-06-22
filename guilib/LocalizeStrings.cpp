@@ -211,6 +211,10 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20059] = "Query Info For All Albums";
   m_vecStrings[20060] = "MPAA Rating:";
 
+  m_vecStrings[20069] = "Could not create folder";
+  m_vecStrings[20072] = "Make sure that the selected folder is writable";
+  m_vecStrings[20073] = "and that the new folder name is valid.";
+
   m_vecStrings[20077] = "Skin Settings";
   m_vecStrings[20078] = "- no link set -";
   m_vecStrings[20079] = "Enable Animations";
