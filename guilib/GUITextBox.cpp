@@ -193,38 +193,18 @@ void CGUITextBox::DynamicResourceAlloc(bool bOnOff)
 
 void CGUITextBox::OnRight()
 {
-  m_upDown.OnRight();
-  if (!m_upDown.HasFocus())
-  {
+  if (!m_upDown.IsFocusedOnUp())
+    m_upDown.OnRight();
+  else
     CGUIControl::OnRight();
-  }
 }
 
 void CGUITextBox::OnLeft()
 {
-  m_upDown.OnLeft();
-  if (!m_upDown.HasFocus())
-  {
+  if (m_upDown.IsFocusedOnUp())
+    m_upDown.OnLeft();
+  else
     CGUIControl::OnLeft();
-  }
-}
-
-void CGUITextBox::OnUp()
-{
-  m_upDown.OnUp();
-  if (!m_upDown.HasFocus())
-  {
-    CGUIControl::OnUp();
-  }
-}
-
-void CGUITextBox::OnDown()
-{
-  m_upDown.OnDown();
-  if (!m_upDown.HasFocus())
-  {
-    CGUIControl::OnDown();
-  }
 }
 
 void CGUITextBox::OnPageUp()
