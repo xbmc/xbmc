@@ -67,17 +67,13 @@
    <description>Refresh Button</description>
    <type>button</type>
    <id>2</id>
-   <posx>60</posx>
+   <posx>50</posx>
    <posy>120</posy>
-   <width>135</width>
-   <height>35</height>
    <label>184</label>
-   <font>font13</font>
    <onleft>3</onleft>
    <onright>3</onright>
    <onup>4</onup>
    <ondown>4</ondown>
-   <align>center</align>
    <include>buttonpanelslide</include>
   </control>
 
@@ -85,18 +81,14 @@
    <description>Settings Button</description>
    <type>button</type>
    <id>4</id>
-   <posx>60</posx>
-   <posy>160</posy>
-   <width>135</width>
-   <height>35</height>
+   <posx>50</posx>
+   <posy>157</posy>
    <label>5</label>
-   <font>font13</font>
    <onleft>3</onleft>
    <onright>3</onright>
    <onup>2</onup>
    <ondown>2</ondown>
    <onclick>ActivateWindow(MyWeatherSettings)</onclick>
-   <align>center</align>
    <include>buttonpanelslide</include>
   </control>
 
