@@ -46,6 +46,9 @@
 
 #define GUI_MSG_REFRESH_THUMBS 22 // message is sent to all windows to refresh all thumbs
 
+#define GUI_MSG_MOVE          23 // message is sent to the window from the base control class when it's
+                                 // been asked to move.  dwParam1 contains direction.
+
 #define GUI_MSG_USER         1000
 
 /*!

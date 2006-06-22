@@ -666,3 +666,10 @@ const CFileItem *CGUIDialogFileBrowser::GetCurrentListItem() const
   if (iItem < 0) return NULL;
   return m_vecItems[iItem];
 }
+
+CGUIControl *CGUIDialogFileBrowser::GetFirstFocusableControl(int id)
+{
+  if (m_viewControl.HasControl(id))
+    id = m_viewControl.GetCurrentControl();
+  return CGUIWindow::GetFirstFocusableControl(id);
+}
