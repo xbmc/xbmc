@@ -104,12 +104,12 @@ public:
 
   void OnMouseAction();
   virtual bool OnMouse();
+  bool OnMove(int fromControl, int moveAction);
   bool HandleMouse(CGUIControl *pControl);
   virtual bool OnMessage(CGUIMessage& message);
   void Add(CGUIControl* pControl);
   void Insert(CGUIControl *control, const CGUIControl *insertPoint);
   void Remove(DWORD dwId);
-  int GetFocusControl();
   bool ControlGroupHasFocus(int groupID, int controlID);
   void SelectNextControl();
   void SelectPreviousControl();
@@ -165,7 +165,7 @@ protected:
   virtual void SaveControlStates();
   virtual void RestoreControlStates();
   void AddControlGroup(int id);
-  CGUIControl *GetFirstFocusableControl(int id);
+  virtual CGUIControl *GetFirstFocusableControl(int id);
 
   struct stReferenceControl
   {

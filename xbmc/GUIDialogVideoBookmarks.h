@@ -17,6 +17,7 @@ protected:
   void AddBookmark();
   void Clear();
   void Update();
+  CGUIControl *GetFirstFocusableControl(int id);
 
   CFileItemList m_vecItems;
   CGUIViewControl m_viewControl;

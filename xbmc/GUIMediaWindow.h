@@ -22,6 +22,7 @@ public:
   const CFileItem &CurrentDirectory() const { return m_vecItems;};
 
 protected:
+  CGUIControl *GetFirstFocusableControl(int id);
   virtual void GoParentFolder();
   virtual bool OnClick(int iItem);
   virtual void FormatItemLabels();
