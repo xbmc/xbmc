@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MusicInfoTagLoaderSPC.h"
+#include "cores/paplayer/spc/types.h"
 
 using namespace MUSIC_INFO;
 
