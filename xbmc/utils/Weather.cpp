@@ -84,8 +84,9 @@ void CBackgroundWeatherLoader::GetInformation()
 
   CStdString strSetting;
   strSetting.Format("weather.areacode%i", callback->GetArea() + 1);
+  CStdString areaCode(callback->GetAreaCode(g_guiSettings.GetString(strSetting)));
   strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=m&dayf=4&prod=xoap&par=%s&key=%s",
-                g_guiSettings.GetString(strSetting), PARTNER_ID, PARTNER_KEY);
+                areaCode.c_str(), PARTNER_ID, PARTNER_KEY);
   CStdString strWeatherFile = "Z:\\curWeather.xml";
   if (httpUtil.Download(strURL, strWeatherFile))
   {
@@ -108,10 +109,7 @@ void CBackgroundWeatherLoader::GetInformation()
 CWeather::CWeather(void) : CInfoLoader("weather")
 {
   m_bImagesOkay = false;
-  for (int i = 0; i < MAX_LOCATION; i++)
-  {
-    strcpy(m_szLocation[i], "");
-  }
+
   // empty all our strings etc.
   strcpy(m_szLastUpdateTime, "");
   //strcpy(m_szCurrentIcon, "Q:\\weather\\128x128\\na.png");
@@ -603,9 +601,10 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
   //copy the selected code into the settings
   if (pDlgSelect->GetSelectedLabel() >= 0)
   {
-    CStdString areacode;
-    areacode = pDlgSelect->GetSelectedLabelText();
-    strResult = areacode.substr(0, areacode.Find("-") - 1);
+    strResult = pDlgSelect->GetSelectedLabelText();
+//    CStdString areacode;
+//    areacode = pDlgSelect->GetSelectedLabelText();
+//    strResult = areacode.substr(0, areacode.Find("-") - 1);
   }
 
   if (pDlgProgress) pDlgProgress->Close();
@@ -640,4 +639,33 @@ const char *CWeather::TranslateInfo(DWORD dwInfo)
 DWORD CWeather::TimeToNextRefreshInMs()
 { // 30 minutes
   return 30 * 60 * 1000;
+}
+
+CStdString CWeather::GetAreaCity(const CStdString &codeAndCity) const
+{
+  CStdString areaCode(codeAndCity);
+  int pos = areaCode.Find(" - ");
+  if (pos >= 0)
+    areaCode = areaCode.Mid(pos + 3);
+  return areaCode;
+}
+
+CStdString CWeather::GetAreaCode(const CStdString &codeAndCity) const
+{
+  CStdString areaCode(codeAndCity);
+  int pos = areaCode.Find(" - ");
+  if (pos >= 0)
+    areaCode = areaCode.Left(pos);
+  return areaCode;
+}
+
+char *CWeather::GetLocation(int iLocation)
+{
+  if (strlen(m_szLocation[iLocation]) == 0)
+  {
+    CStdString setting;
+    setting.Format("weather.areacode%i", iLocation + 1);
+    strcpy(m_szLocation[iLocation], GetAreaCity(g_guiSettings.GetString(setting)).c_str());
+  }
+  return m_szLocation[iLocation];
 }
