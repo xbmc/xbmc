@@ -193,9 +193,9 @@ CGUISettings::CGUISettings(void)
   // My Weather settings
   AddGroup(2, 8);
   AddCategory(2, "weather", 16000);
-  AddString(1, "weather.areacode1", 14019, "GMXX0154", BUTTON_CONTROL_STANDARD);
-  AddString(2, "weather.areacode2", 14020, "UKXX0085", BUTTON_CONTROL_STANDARD);
-  AddString(3, "weather.areacode3", 14021, "CAXX0343", BUTTON_CONTROL_STANDARD);
+  AddString(1, "weather.areacode1", 14019, "GMXX0154 - Aachen, Germany", BUTTON_CONTROL_STANDARD);
+  AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
+  AddString(3, "weather.areacode3", 14021, "CAXX0343 - Ontario, Canada", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
