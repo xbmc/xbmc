@@ -1,3 +1,5 @@
+2006-06-22 added:	Settings button to Weather screen
+
 2006-06-21 removed:	startup fade effect - it was annoying
 
 2006-06-20 fixed:	startup sound
