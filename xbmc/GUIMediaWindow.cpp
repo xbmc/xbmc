@@ -898,3 +898,10 @@ void CGUIMediaWindow::OnInitWindow()
 
   CGUIWindow::OnInitWindow();
 }
+
+CGUIControl *CGUIMediaWindow::GetFirstFocusableControl(int id)
+{
+  if (m_viewControl.HasControl(id))
+    id = m_viewControl.GetCurrentControl();
+  return CGUIWindow::GetFirstFocusableControl(id);
+}
