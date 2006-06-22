@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IMusicInfoTagLoader.h"
-#include "cores/paplayer/dllsnes9xapu.h"
 
 using namespace MUSIC_INFO;
 
