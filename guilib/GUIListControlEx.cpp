@@ -345,20 +345,27 @@ void CGUIListControlEx::OnRight()
       CGUIControl::OnRight();
     }
   }
-  else
+  else if (!m_upDown.IsFocusedOnUp())
     m_upDown.OnRight();
-  if (!m_upDown.HasFocus())
+  else
+  { // focus on our list and do the base move right
+    m_upDown.SetFocus(false);
     m_iSelect = CONTROL_LIST;
+    CGUIControl::OnRight();
+  }
 }
 
 void CGUIListControlEx::OnLeft()
 {
   if (m_iSelect == CONTROL_LIST)
     CGUIControl::OnLeft();
-  else
+  else if (m_upDown.IsFocusedOnUp())
     m_upDown.OnLeft();
-  if (!m_upDown.HasFocus())
+  else
+  {
     m_iSelect = CONTROL_LIST;
+    m_upDown.SetFocus(false);
+  }
 }
 
 void CGUIListControlEx::OnUp()
@@ -383,12 +390,9 @@ void CGUIListControlEx::OnUp()
     }
   }
   else
-  {
-    m_upDown.OnUp();
-    if (!m_upDown.HasFocus())
-    {
-      m_iSelect = CONTROL_LIST;
-    }
+  { // focus the list again
+    m_upDown.SetFocus(false);
+    m_iSelect = CONTROL_LIST;
   }
 }
 
@@ -437,11 +441,9 @@ void CGUIListControlEx::OnDown()
   }
   else
   {
-    m_upDown.OnRight();
-    if (!m_upDown.HasFocus())
-    {
-      CGUIControl::OnRight();
-    }
+    // move down off our control
+    m_upDown.SetFocus(false);
+    CGUIControl::OnDown();
   }
 }
 
