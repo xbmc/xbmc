@@ -854,3 +854,8 @@ CStdString CGUISpinControl::GetDescription() const
   strLabel.Format("%i/%i", 1 + GetValue(), GetMaximum());
   return strLabel;
 }
+
+bool CGUISpinControl::IsFocusedOnUp() const
+{
+  return (m_iSelect == SPIN_BUTTON_UP);
+}

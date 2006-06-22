@@ -96,6 +96,7 @@ public:
   void SetNonProportional(bool bOnOff);
   void Clear();
   virtual CStdString GetDescription() const;
+  bool IsFocusedOnUp() const;
 
 protected:
   void PageUp();
