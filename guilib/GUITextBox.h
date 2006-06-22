@@ -30,8 +30,6 @@ public:
   virtual bool OnAction(const CAction &action) ;
   virtual void OnRight();
   virtual void OnLeft();
-  virtual void OnDown();
-  virtual void OnUp();
   virtual bool OnMessage(CGUIMessage& message);
 
   virtual void PreAllocResources();

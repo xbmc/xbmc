@@ -583,13 +583,13 @@ void CGUIThumbnailPanel::OnRight()
     else
       CGUIControl::OnRight();
   }
-  else
-  {
+  else if (!m_upDown.IsFocusedOnUp())
     m_upDown.OnRight();
-    if (!m_upDown.HasFocus())
-    {
-      m_iSelect = CONTROL_LIST;
-    }
+  else
+  { // focus on our list and do the base move right
+    m_upDown.SetFocus(false);
+    m_iSelect = CONTROL_LIST;
+    CGUIControl::OnRight();
   }
 }
 
@@ -604,13 +604,12 @@ void CGUIThumbnailPanel::OnLeft()
     }
     CGUIControl::OnLeft();
   }
+  else if (m_upDown.IsFocusedOnUp())
+    m_upDown.OnLeft();
   else
   {
-    m_upDown.OnLeft();
-    if (!m_upDown.HasFocus())
-    {
-      m_iSelect = CONTROL_LIST;
-    }
+    m_iSelect = CONTROL_LIST;
+    m_upDown.SetFocus(false);
   }
 }
 
@@ -637,12 +636,9 @@ void CGUIThumbnailPanel::OnUp()
     }
   }
   else
-  {
-    m_upDown.OnUp();
-    if (!m_upDown.HasFocus())
-    {
-      m_iSelect = CONTROL_LIST;
-    }
+  { // focus the list again
+    m_upDown.SetFocus(false);
+    m_iSelect = CONTROL_LIST;
   }
 }
 
@@ -668,11 +664,9 @@ void CGUIThumbnailPanel::OnDown()
   }
   else
   {
-    m_upDown.OnDown();
-    if (!m_upDown.HasFocus())
-    {
-      CGUIControl::OnDown();
-    }
+    // move down off our control
+    m_upDown.SetFocus(false);
+    CGUIControl::OnDown();
   }
 }
 
