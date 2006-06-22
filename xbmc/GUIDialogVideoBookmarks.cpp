@@ -207,3 +207,10 @@ void CGUIDialogVideoBookmarks::OnWindowUnload()
   CGUIDialog::OnWindowUnload();
   m_viewControl.Reset();
 }
+
+CGUIControl *CGUIDialogVideoBookmarks::GetFirstFocusableControl(int id)
+{
+  if (m_viewControl.HasControl(id))
+    id = m_viewControl.GetCurrentControl();
+  return CGUIWindow::GetFirstFocusableControl(id);
+}

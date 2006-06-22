@@ -888,7 +888,12 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       }
       break;
     }
-
+  case GUI_MSG_MOVE:
+    {
+      if (HasID(message.GetSenderId()))
+        return OnMove(message.GetControlId(), message.GetParam1());
+      break;
+    }
   case GUI_MSG_SETFOCUS:
     {
 //      CLog::DebugLog("set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
@@ -911,6 +916,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
         // find the first focusable control
         CGUIControl* pFocusedControl = GetFirstFocusableControl(message.GetControlId());
+        if (!pFocusedControl) pFocusedControl = (CGUIControl *)GetControl(message.GetControlId());
 
         //  Handle control group changes
         if (pFocusedControl)
@@ -1098,19 +1104,9 @@ void CGUIWindow::Remove(DWORD dwId)
   }
 }
 
-int CGUIWindow::GetFocusControl()
-{
-  for (int i = 0; i < (int)m_vecControls.size(); ++i)
-  {
-    CGUIControl* pControl = m_vecControls[i];
-    if (pControl->HasFocus()) return i;
-  }
-  return -1;
-}
-
 void CGUIWindow::SelectPreviousControl()
 {
-  int i = GetFocusControl();
+  int i = GetFocusedControl();
   while (1)
   {
     if ( i < 0 || i >= (int)m_vecControls.size() )
@@ -1126,7 +1122,7 @@ void CGUIWindow::SelectPreviousControl()
 
 void CGUIWindow::SelectNextControl()
 {
-  int i = GetFocusControl() + 1;
+  int i = GetFocusedControl() + 1;
   while (1)
   {
     if ( i < 0 || i >= (int)m_vecControls.size() )
@@ -1401,6 +1397,7 @@ void CGUIWindow::RestoreControlStates()
   int focusControl = (m_saveLastControl && m_lastControlID) ? m_lastControlID : m_dwDefaultFocusControlID;
   // check whether it has a control group, and focus the last control in that group if we can
   CGUIControl *control = GetFirstFocusableControl(focusControl);
+  if (!control) control = (CGUIControl *)GetControl(focusControl);
   if (control && control->GetGroup() > -1)
   {
     int lastID = m_vecGroups[control->GetGroup()].m_lastControl;
@@ -1434,22 +1431,51 @@ void CGUIWindow::AddControlGroup(int id)
   m_vecGroups.push_back(CControlGroup(id));
 }
 
-// find the first focusable control.  We do this as follows:
-// 1.  First find a control that matches the id and is focusable.
-// 2.  Else just use the first control that matches the id.
+// find the first focusable control with this id.
+// if no focusable control exists with this id, return NULL
 CGUIControl *CGUIWindow::GetFirstFocusableControl(int id)
 {
-  CGUIControl* pFocusedControl = NULL;
   for (ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
     if (pControl->GetID() == id && pControl->CanFocus())
     {
-      pFocusedControl = pControl;
+      return pControl;
       break;
     }
   }
-  if (!pFocusedControl)
-    pFocusedControl = (CGUIControl *)GetControl(id);
-  return pFocusedControl;
+  return NULL;
+}
+
+bool CGUIWindow::OnMove(int fromControl, int moveAction)
+{
+  const CGUIControl *control = GetFirstFocusableControl(fromControl);
+  if (!control) control = GetControl(fromControl);
+  if (!control)
+  { // no current control??
+    CLog::Log(LOGERROR, "Unable to find control %i in window %i", fromControl, GetID());
+    return false;
+  }
+  vector<int> moveHistory;
+  int nextControl = fromControl;
+  while (control)
+  { // grab the next control direction
+    moveHistory.push_back(nextControl);
+    nextControl = control->GetNextControl(moveAction);
+    // check our history - if the nextControl is in it, we can't focus it
+    for (unsigned int i = 0; i < moveHistory.size(); i++)
+    {
+      if (nextControl == moveHistory[i])
+        return false; // no control to focus so do nothing
+    }
+    control = GetFirstFocusableControl(nextControl);
+    if (control)
+      break;  // found a focusable control
+    control = GetControl(nextControl); // grab the next control and try again
+  }
+  if (!control)
+    return false;   // no control to focus
+  // if we get here we have our new control so focus it (and unfocus the current control)
+  SET_CONTROL_FOCUS(nextControl, 0);
+  return true;
 }
