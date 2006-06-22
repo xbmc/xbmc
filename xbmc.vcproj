@@ -2970,9 +2970,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\DllSidplay2.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\paplayer\DllSnes9xApu.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\cores\paplayer\DllVorbisfile.h">
 				</File>
 				<File
