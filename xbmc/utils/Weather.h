@@ -39,7 +39,7 @@ public:
   static bool GetSearchResults(const CStdString &strSearch, CStdString &strResult);
   bool LoadWeather(const CStdString& strWeatherFile); //parse strWeatherFile
 
-  char *GetLocation(int iLocation) { return m_szLocation[iLocation]; };
+  char *GetLocation(int iLocation);
   char *GetLastUpdateTime() { return m_szLastUpdateTime; };
   char *GetCurrentConditions() { return m_szCurrentConditions; };
   char *GetCurrentTemperature() { return m_szCurrentTemperature; };
@@ -51,6 +51,9 @@ public:
   
   void SetArea(int iArea) { m_iCurWeather = iArea; };
   int GetArea() const { return m_iCurWeather; };
+  CStdString GetAreaCode(const CStdString &codeAndCity) const;
+  CStdString GetAreaCity(const CStdString &codeAndCity) const;
+
   day_forcast m_dfForcast[NUM_DAYS];
   bool m_bImagesOkay;
 protected:
