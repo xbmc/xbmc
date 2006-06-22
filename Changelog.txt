@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-06-2006 added: create folder in filebrowser when browsing for writable folders.
  - 22-06-2006 fixed: jitter in spc codec. also updated dll to v3.0.
  - 22-06-2006 fixed: Nicer display of weather setting codes.
  - 22-06-2006 fixed: Navigation when no controls are visible could cause infinite loops.
