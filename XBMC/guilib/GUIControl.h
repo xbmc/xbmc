@@ -108,6 +108,7 @@ public:
   DWORD GetControlIdDown() const { return m_dwControlDown;};
   DWORD GetControlIdLeft() const { return m_dwControlLeft;};
   DWORD GetControlIdRight() const { return m_dwControlRight;};
+  DWORD GetNextControl(int direction) const;
   void SetFocus(bool bOnOff);
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
