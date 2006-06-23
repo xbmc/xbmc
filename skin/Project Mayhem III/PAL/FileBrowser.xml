@@ -82,9 +82,9 @@
     <description>OK button</description>
     <type>button</type>
     <id>413</id>
-    <posx>413</posx>
+    <posx>400</posx>
     <posy>70</posy>
-    <width>77</width>
+    <width>90</width>
     <height>32</height>
     <align>center</align>
     <label>186</label>
@@ -101,9 +101,9 @@
     <description>Cancel button</description>
     <type>button</type>
     <id>414</id>
-    <posx>413</posx>
+    <posx>400</posx>
     <posy>105</posy>
-    <width>77</width>
+    <width>90</width>
     <height>32</height>
     <align>center</align>
     <label>222</label>
@@ -113,26 +113,26 @@
     <onleft>450</onleft>
     <onright>413</onright>
     <onup>413</onup>
-    <ondown>414</ondown>
+    <ondown>415</ondown>
    </control>
    <control>
-	  <description>Create folder button</description>
-	  <type>button</type>
-	  <id>415</id>
-	  <posx>400</posx>
-	  <posy>140</posy>
-	  <width>90</width>
-	  <height>32</height>
-	  <align>center</align>
-	  <label>119</label>
-	  <font>font10</font>
-	  <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-	  <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-	  <onleft>450</onleft>
-	  <onright>413</onright>
-	  <onup>414</onup>
-	  <ondown>415</ondown>
-	</control>
+     <description>Create folder button</description>
+     <type>button</type>
+     <id>415</id>
+     <posx>400</posx>
+     <posy>140</posy>
+     <width>90</width>
+     <height>32</height>
+     <align>center</align>
+     <label>119</label>
+     <font>font10</font>
+     <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+     <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+     <onleft>450</onleft>
+     <onright>413</onright>
+     <onup>414</onup>
+     <ondown>415</ondown>
+  </control>
 
   </controlgroup>
 
