@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-06-2006 fixed: Don't re-activate a window on Back if <previouswindow> points to ourselves.
  - 22-06-2006 fixed: Navigation off page up/down buttons.
  - 22-06-2006 added: create folder in filebrowser when browsing for writable folders.
  - 22-06-2006 fixed: jitter in spc codec. also updated dll to v3.0.
