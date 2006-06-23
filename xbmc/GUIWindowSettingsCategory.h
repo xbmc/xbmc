@@ -49,7 +49,7 @@ protected:
   void AddSetting(CSetting *pSetting, int iPosX, int &iPosY, int iGap, int iWidth, int &iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
-  void JumpToSection(DWORD dwWindowId, int iSection);
+  void JumpToSection(DWORD dwWindowId, const CStdString &section);
   void JumpToPreviousSection();
 
   vector<CBaseSettingControl *> m_vecSettings;
