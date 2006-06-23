@@ -153,99 +153,90 @@ void CGUIListControl::Render()
     }
   }
 
-  //--------------------------------------------------------
-  //Batch together all textrendering for m_pFont
-  iPosY = m_iPosY;
   if (m_label.font)
   {
-    m_label.font->Begin();
+    // calculate all our positions and sizes
+    vector<CListText> labels;
+    vector<CListText> labels2;
+    iPosY = m_iPosY;
     for (int i = 0; i < m_iItemsPerPage; i++)
     {
-      int iPosX = m_iPosX;
       if (i + m_iOffset < (int)m_vecItems.size() )
       {
-        CGUIListItem *pItem = m_vecItems[i + m_iOffset];
-        CStdString strLabel2 = pItem->GetLabel2();
-        iPosX += m_iImageWidth + m_label.offsetX + 10;
+        CListText label; CListText label2;
+        CGUIListItem *item = m_vecItems[i + m_iOffset];
+        g_charsetConverter.utf8ToUTF16(item->GetLabel(), label.text);
+        g_charsetConverter.utf8ToUTF16(item->GetLabel2(), label2.text);
 
-        DWORD dwColor = m_label.textColor;
-        if (pItem->IsSelected())
+        // calculate the position and size of our left label
+        label.x = (float)m_iPosX + m_iImageWidth + m_label.offsetX + 10;
+        label.y = (float)iPosY + m_label.offsetY;
+        m_label.font->GetTextExtent(label.text.c_str(), &label.width, &label.height);
+        if (m_label.align & XBFONT_CENTER_Y)
+          label.y = (float)iPosY + (m_iItemHeight - label.height) * 0.5f;
+        label.selected = item->IsSelected();
+        label.highlighted = (i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
+
+        // calculate the position and size of our right label
+        if (!m_label2.offsetX)
+          label2.x = (float)m_iPosX + m_dwWidth - 16;
+        else
+          label2.x = (float)m_iPosX + m_label2.offsetX;
+        label2.y = (float)iPosY + m_label2.offsetY;
+        if ( label2.text.size() > 0 && m_label2.font )
         {
-          dwColor = m_label.selectedColor;
+          m_label2.font->GetTextExtent(label2.text.c_str(), &label2.width, &label2.height);
+          if (m_label.align & XBFONT_CENTER_Y)
+            label2.y = (float)iPosY + (m_iItemHeight - label2.height) * 0.5f;
         }
+        label2.selected = item->IsSelected();
+        label2.highlighted = (i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
+        label.maxwidth = (float)m_dwWidth - m_iImageWidth - m_label.offsetX - 20;
+        label2.maxwidth = (float)label2.x - m_iPosX - m_iImageWidth - 20;
 
-        bool bSelected(i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
-
-        DWORD dMaxWidth = (m_dwWidth - m_iImageWidth - m_label.offsetX - 20);
-        if ( strLabel2.size() > 0 && m_label2.font)
-        {
-          CStdStringW labelUnicode2;
-          g_charsetConverter.utf8ToUTF16(strLabel2, labelUnicode2);
-          if ( m_label.offsetY == m_label2.offsetY )
-          {
-            float fTextHeight = 0;
-            float fTextWidth = 0;
-            m_label2.font->GetTextExtent( labelUnicode2.c_str(), &fTextWidth, &fTextHeight);
-            dMaxWidth -= (DWORD)(fTextWidth + 20);
+        // check whether they are going to overlap or not
+        if (label.x + label.width > label2.x - label2.width)
+        { // overlap horizontally
+          if ((label.y <= label2.y && label2.y <= label.y + label.height) ||
+              (label2.y <= label.y && label.y <= label2.y + label2.height))
+          { // overlap vertically
+            // the labels overlap - we specify that:
+            // 1.  The right label should take no more than half way
+            // 2.  Both labels should be truncated if necessary
+            float totalWidth = label2.x - label.x;
+            float maxLabel2Width = max(totalWidth * 0.5f - 10, totalWidth - label.width - 5);
+            if (label2.width > maxLabel2Width)
+              label2.maxwidth = maxLabel2Width;
+            label.maxwidth = totalWidth - min(label2.width, label2.maxwidth) - 5;
           }
         }
-
-        CStdStringW labelUnicode;
-        g_charsetConverter.utf8ToUTF16(pItem->GetLabel(), labelUnicode);
-        float fPosY = (float)iPosY + m_label.offsetY;
-        if (m_label.align & XBFONT_CENTER_Y)
-        {
-          float fTextHeight = 0;
-          float fTextWidth = 0;
-          m_label.font->GetTextExtent( labelUnicode.c_str(), &fTextWidth, &fTextHeight);
-          fPosY = (float)iPosY + (m_iItemHeight - fTextHeight) / 2;
-        }
-        RenderText((float)iPosX, fPosY, (float)dMaxWidth, dwColor, (WCHAR*)labelUnicode.c_str(), bSelected);
+        // move label2 from being right aligned to normal alignment for rendering
+        label2.x -= min(label2.width, label2.maxwidth);
+        labels.push_back(label);
+        labels2.push_back(label2);
         iPosY += m_iItemHeight + m_iSpaceBetweenItems;
       }
+    }
+
+    //--------------------------------------------------------
+    //Batch together all textrendering for m_label.font
+    m_label.font->Begin();
+    for (vector<CListText>::iterator it = labels.begin(); it != labels.end(); it++)
+    {
+      RenderText(*it, m_label, m_scrollInfo);
     }
     m_label.font->End();
-  }
-  //------------------------------------------
-  //Batch together all textrendering for m_pFont2
-  iPosY = m_iPosY;
-  if (m_label2.font)
-  {
-    m_label2.font->Begin();
-    for (int i = 0; i < m_iItemsPerPage; i++)
+    //--------------------------------------------------------
+    //Batch together all textrendering for m_label2.font
+    if (m_label2.font)
     {
-      int iPosX = m_iPosX;
-      if (i + m_iOffset < (int)m_vecItems.size())
+      m_label2.font->Begin();
+      for (vector<CListText>::iterator it = labels2.begin(); it != labels2.end(); it++)
       {
-        CGUIListItem *pItem = m_vecItems[i + m_iOffset];
-        CStdString strLabel2 = pItem->GetLabel2();
-
-        iPosX += m_iImageWidth + m_label.offsetX + 10;
-        if (strLabel2.size() > 0 && m_label2.font)
-        {
-          CStdStringW labelUnicode2;
-          g_charsetConverter.utf8ToUTF16(strLabel2, labelUnicode2);
-          DWORD dwColor = m_label2.textColor;
-          if (pItem->IsSelected())
-          {
-            dwColor = m_label2.selectedColor;
-          }
-          if (!m_label2.offsetX)
-            iPosX = m_iPosX + m_dwWidth - 16;
-          else
-            iPosX = m_iPosX + m_label2.offsetX;
-
-          float fPosY = (float)iPosY + m_label2.offsetY;
-          if (m_label.align & XBFONT_CENTER_Y)
-          {
-            fPosY = (float)iPosY + m_iItemHeight * 0.5f;
-          }
-          m_label2.font->DrawText((float)iPosX, fPosY, dwColor, m_label2.shadowColor, labelUnicode2.c_str(), (m_label.align & XBFONT_CENTER_Y) | XBFONT_RIGHT);
-        }
-        iPosY += m_iItemHeight + m_iSpaceBetweenItems;
+        RenderText(*it, m_label2, m_scrollInfo2);
       }
+      m_label2.font->End();
     }
-    m_label2.font->End();
   }
 
   if (m_bUpDownVisible && m_upDown.GetMaximum() > 1)
@@ -257,45 +248,43 @@ void CGUIListControl::Render()
   CGUIControl::Render();
 }
 
-void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll )
+void CGUIListControl::RenderText(const CListText &text, const CLabelInfo &label, CScrollInfo &scroll)
 {
-  if (!m_label.font)
-    return ;
+  if (!label.font)
+    return;
 
   static int iLastItem = -1;
 
-  float fTextHeight = 0;
-  float fTextWidth = 0;
-  m_label.font->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
-
-  if (!bScroll)
+  DWORD color = text.selected ? label.selectedColor : label.textColor;
+  if (!text.highlighted)
   {
-    m_label.font->DrawTextWidth(fPosX, fPosY, dwTextColor, m_label.shadowColor, wszText, fMaxWidth);
+    label.font->DrawTextWidth(text.x, text.y, color, label.shadowColor, text.text, text.maxwidth);
     return ;
   }
   else
   {
-    if (fTextWidth <= fMaxWidth)
+    if (text.width <= text.maxwidth)
     { // don't need to scroll
-      m_label.font->DrawTextWidth(fPosX, fPosY, dwTextColor, m_label.shadowColor, wszText, fMaxWidth);
-      m_scrollInfo.Reset();
+      label.font->DrawTextWidth(text.x, text.y, color, label.shadowColor, text.text, text.width);
+      scroll.Reset();
       return ;
     }
     // scroll
-    CStdStringW scrollString = wszText;
+    CStdStringW scrollString(text.text);
     scrollString += L" ";
     scrollString += m_strSuffix;
     int iItem = m_iCursorY + m_iOffset;
-    m_label.font->End(); // need to deinit the font before setting viewport
+    label.font->End(); // need to deinit the font before setting viewport
     if (iLastItem != iItem)
     {
-      m_scrollInfo.Reset();
+      scroll.Reset();
       iLastItem = iItem;
     }
-    m_label.font->DrawScrollingText(fPosX, fPosY, &dwTextColor, 1, m_label.shadowColor, scrollString, fMaxWidth, m_scrollInfo);
-    m_label.font->Begin(); // resume fontbatching
+    label.font->DrawScrollingText(text.x, text.y, &color, 1, label.shadowColor, scrollString, text.maxwidth, scroll);
+    label.font->Begin(); // resume fontbatching
   }
 }
+
 
 bool CGUIListControl::OnAction(const CAction &action)
 {
