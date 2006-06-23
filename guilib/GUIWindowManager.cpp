@@ -197,11 +197,15 @@ void CGUIWindowManager::PreviousWindow()
   if (!pCurrentWindow || m_windowHistory.size() < 2)
     return;     // no windows or window history yet
 
+  // check to see whether our current window has a <previouswindow> tag
   if (pCurrentWindow->GetPreviousWindow() != WINDOW_INVALID)
   {
     // TODO: we may need to test here for the
     //       whether our history should be changed
-    ActivateWindow(pCurrentWindow->GetPreviousWindow());
+
+    // don't reactivate the previouswindow if it is ourselves.
+    if (currentWindow != pCurrentWindow->GetPreviousWindow())
+      ActivateWindow(pCurrentWindow->GetPreviousWindow());
     return;
   }
   // get the previous window in our stack
