@@ -80,10 +80,23 @@ public:
   virtual CStdString GetDescription() const;
 
 protected:
+  class CListText {
+  public:
+    CListText() { x = y = width = maxwidth = height = 0.0f; selected = highlighted = false; };
+    CStdStringW text;
+    float x;
+    float y;
+    float width;
+    float maxwidth;
+    float height;
+    bool selected;
+    bool highlighted;
+  };
 
-  void RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
+  void RenderText(const CListText &text, const CLabelInfo &label, CScrollInfo &scroll);
   void Scroll(int iAmount);
   int GetPage();
+
   int m_iSpaceBetweenItems;
   int m_iOffset;
   float m_fSmoothScrollOffset;
@@ -104,5 +117,6 @@ protected:
   vector<CGUIListItem*> m_vecItems;
   typedef vector<CGUIListItem*> ::iterator ivecItems;
   CScrollInfo m_scrollInfo;
+  CScrollInfo m_scrollInfo2;
 };
 #endif
