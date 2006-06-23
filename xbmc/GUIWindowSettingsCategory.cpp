@@ -1016,7 +1016,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("musicplayer.jumptoaudiohardware") || strSetting.Equals("videoplayer.jumptoaudiohardware"))
   {
-    JumpToSection(WINDOW_SETTINGS_SYSTEM, 5);
+    JumpToSection(WINDOW_SETTINGS_SYSTEM, "audiooutput");
   }
   else if (strSetting.Equals("mymusic.uselastfm") || strSetting.Equals("mymusic.lastfmusername") || strSetting.Equals("mymusic.lastfmpassword"))
   {
@@ -2413,13 +2413,27 @@ CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &st
   return NULL;
 }
 
-void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, int iSection)
+void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, const CStdString &section)
 {
+  // grab our section
+  CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(dwWindowId - WINDOW_SETTINGS_MYPICTURES);
+  if (!pSettingsGroup) return;
+  // get the categories we need
+  vecSettingsCategory categories;
+  pSettingsGroup->GetCategories(categories);
+  // iterate through them and check for the required section
+  int iSection = -1;
+  for (unsigned int i = 0; i < categories.size(); i++)
+    if (categories[i]->m_strCategory.Equals(section))
+      iSection = i;
+  if (iSection == -1) return;
+
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
   OnMessage(msg);
   m_iSectionBeforeJump=m_iSection;
   m_iControlBeforeJump=m_lastControlID;
   m_iWindowBeforeJump=m_dwWindowId+m_iScreen;
+
   m_iSection=iSection;
   m_lastControlID=CONTROL_START_CONTROL;
   CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, dwWindowId);
