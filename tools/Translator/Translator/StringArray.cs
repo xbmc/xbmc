@@ -70,10 +70,6 @@ namespace TeamXBMC.TranslatorCore
 
 				strings.Sort();
 			}
-			catch (TranslatorException e)
-			{
-				throw e;
-			}
 			catch(Exception e)
 			{
 				throw new TranslatorException("Error loading "+filename, e);
@@ -152,8 +148,17 @@ namespace TeamXBMC.TranslatorCore
 		/// </summary>
 		public void Add(StringItem item)
 		{
+			try
+			{
+				stringsMap.Add(item.Id, item);
+			}
+			catch (ArgumentException e)
+			{
+				throw new TranslatorException("The string with the id " + item.Id.ToString() + " appears more then once in this file.", e);
+			}
+
 			strings.Add(item);
-			stringsMap.Add(item.Id, item);
+
 		}
 
 		/// <summary>
