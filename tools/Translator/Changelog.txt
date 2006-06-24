@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-06-2006 added: better error message for files with duplicate string id's
+ - 24-06-2006 added: Tools/Validate to check if a language file is well formed
  - 21-06-2006 added: now more then one region can specified in the language settings
  - 21-06-2006 added: ability to add newline chars when editing a string
  - 21-06-2006 fixed: corrected parsing of newline chars

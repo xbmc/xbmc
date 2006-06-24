@@ -46,14 +46,15 @@ namespace TeamXBMC.Translator
 		private System.Windows.Forms.MenuItem menuItemFindNext;
 		private System.Windows.Forms.MenuItem menuItemLanguageInfo;
 		private System.Windows.Forms.MenuItem menuItem6;
-		private System.Windows.Forms.MenuItem menuItem5;
 		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 		private System.Windows.Forms.MenuItem menuItemConvert;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog1;
 		private System.Windows.Forms.MenuItem menuItemUserName;
 		private System.Windows.Forms.MenuItem menuItemNew;
 		private System.Windows.Forms.MenuItem menuItem7;
-		private System.Windows.Forms.MenuItem menuItem9;
+		private System.Windows.Forms.MenuItem menuItemOptions;
+		private System.Windows.Forms.MenuItem menuItemTools;
+		private System.Windows.Forms.MenuItem menuItemValidate;
 		private FindForm findForm=new FindForm();
 
 		public MainForm()
@@ -110,6 +111,7 @@ namespace TeamXBMC.Translator
 			this.mainMenu1 = new System.Windows.Forms.MainMenu();
 			this.menuItemFile = new System.Windows.Forms.MenuItem();
 			this.menuItemNew = new System.Windows.Forms.MenuItem();
+			this.menuItem7 = new System.Windows.Forms.MenuItem();
 			this.menuItemOpen = new System.Windows.Forms.MenuItem();
 			this.menuItem2 = new System.Windows.Forms.MenuItem();
 			this.menuItemSave = new System.Windows.Forms.MenuItem();
@@ -122,16 +124,16 @@ namespace TeamXBMC.Translator
 			this.menuItemFindNext = new System.Windows.Forms.MenuItem();
 			this.menuItem6 = new System.Windows.Forms.MenuItem();
 			this.menuItemLanguageInfo = new System.Windows.Forms.MenuItem();
+			this.menuItemOptions = new System.Windows.Forms.MenuItem();
 			this.menuItemUserName = new System.Windows.Forms.MenuItem();
-			this.menuItem5 = new System.Windows.Forms.MenuItem();
+			this.menuItemTools = new System.Windows.Forms.MenuItem();
 			this.menuItemConvert = new System.Windows.Forms.MenuItem();
 			this.menuItem1 = new System.Windows.Forms.MenuItem();
 			this.menuItemAbout = new System.Windows.Forms.MenuItem();
 			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-			this.menuItem7 = new System.Windows.Forms.MenuItem();
-			this.menuItem9 = new System.Windows.Forms.MenuItem();
+			this.menuItemValidate = new System.Windows.Forms.MenuItem();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -293,8 +295,8 @@ namespace TeamXBMC.Translator
 			this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 																																							this.menuItemFile,
 																																							this.menuItemEdit,
-																																							this.menuItem9,
-																																							this.menuItem5,
+																																							this.menuItemOptions,
+																																							this.menuItemTools,
 																																							this.menuItem1});
 			// 
 			// menuItemFile
@@ -318,6 +320,11 @@ namespace TeamXBMC.Translator
 			this.menuItemNew.Shortcut = System.Windows.Forms.Shortcut.CtrlN;
 			this.menuItemNew.Text = "&New Language...";
 			this.menuItemNew.Click += new System.EventHandler(this.menuItemNew_Click);
+			// 
+			// menuItem7
+			// 
+			this.menuItem7.Index = 1;
+			this.menuItem7.Text = "-";
 			// 
 			// menuItemOpen
 			// 
@@ -397,22 +404,30 @@ namespace TeamXBMC.Translator
 			this.menuItemLanguageInfo.Text = "Language &Settings...";
 			this.menuItemLanguageInfo.Click += new System.EventHandler(this.menuItemLanguageInfo_Click);
 			// 
+			// menuItemOptions
+			// 
+			this.menuItemOptions.Index = 2;
+			this.menuItemOptions.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+																																										this.menuItemUserName});
+			this.menuItemOptions.Text = "&Options";
+			// 
 			// menuItemUserName
 			// 
 			this.menuItemUserName.Index = 0;
 			this.menuItemUserName.Text = "&Translator Name...";
 			this.menuItemUserName.Click += new System.EventHandler(this.menuItemUserName_Click);
 			// 
-			// menuItem5
+			// menuItemTools
 			// 
-			this.menuItem5.Index = 3;
-			this.menuItem5.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																																							this.menuItemConvert});
-			this.menuItem5.Text = "&Tools";
+			this.menuItemTools.Index = 3;
+			this.menuItemTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+																																									this.menuItemValidate,
+																																									this.menuItemConvert});
+			this.menuItemTools.Text = "&Tools";
 			// 
 			// menuItemConvert
 			// 
-			this.menuItemConvert.Index = 0;
+			this.menuItemConvert.Index = 1;
 			this.menuItemConvert.Text = "&Convert...";
 			this.menuItemConvert.Click += new System.EventHandler(this.menuItemConvert_Click);
 			// 
@@ -442,17 +457,11 @@ namespace TeamXBMC.Translator
 			this.saveFileDialog1.Filter = "Language File|strings.xml|All Files|*.*";
 			this.saveFileDialog1.Title = "Save converted file as";
 			// 
-			// menuItem7
+			// menuItemValidate
 			// 
-			this.menuItem7.Index = 1;
-			this.menuItem7.Text = "-";
-			// 
-			// menuItem9
-			// 
-			this.menuItem9.Index = 2;
-			this.menuItem9.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																																							this.menuItemUserName});
-			this.menuItem9.Text = "&Options";
+			this.menuItemValidate.Index = 0;
+			this.menuItemValidate.Text = "&Validate...";
+			this.menuItemValidate.Click += new System.EventHandler(this.menuItemValidateFile_Click);
 			// 
 			// MainForm
 			// 
@@ -520,7 +529,7 @@ namespace TeamXBMC.Translator
 			catch (TranslatorException e)
 			{
 				Settings.Instance.Language=""; // Failed to load language, remove the current one
-				ShowMessageBox(BuildErrorMessageText(e));
+				ShowMessageBox(BuildErrorMessageText(e), MessageBoxIcon.Error);
 				return false;
 			}
 
@@ -571,9 +580,9 @@ namespace TeamXBMC.Translator
 		/// <summary>
 		/// Shows a predefined error message box
 		/// </summary>
-		private void ShowMessageBox(string message)
+		private void ShowMessageBox(string message, MessageBoxIcon icon)
 		{
-			MessageBox.Show(message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			MessageBox.Show(message, Application.ProductName, MessageBoxButtons.OK, icon);
 		}
 
 		/// <summary>
@@ -700,7 +709,7 @@ namespace TeamXBMC.Translator
 			}
 			catch (TranslatorException ex)
 			{
-				ShowMessageBox(BuildErrorMessageText(ex));
+				ShowMessageBox(BuildErrorMessageText(ex), MessageBoxIcon.Error);
 				return;
 			}
 
@@ -740,7 +749,7 @@ namespace TeamXBMC.Translator
 				if (!File.Exists(Settings.Instance.FilenameOriginal))
 				{
 					Settings.Instance.LanguageFolder="";
-					ShowMessageBox("The english language folder was not found in this directory.\nPlease choose another folder.");
+					ShowMessageBox("The english language folder was not found in this directory.\nPlease choose another folder.", MessageBoxIcon.Error);
 					return ShowFolderBrowser();
 				}
 
@@ -761,7 +770,7 @@ namespace TeamXBMC.Translator
 			}
 			catch (TranslatorException ex)
 			{
-				ShowMessageBox(BuildErrorMessageText(ex));
+				ShowMessageBox(BuildErrorMessageText(ex), MessageBoxIcon.Error);
 			}
 		}
 
@@ -798,7 +807,7 @@ namespace TeamXBMC.Translator
 			}
 			catch(TranslatorException ex)
 			{
-				ShowMessageBox(BuildErrorMessageText(ex));
+				ShowMessageBox(BuildErrorMessageText(ex), MessageBoxIcon.Error);
 			}
 		}
 
@@ -837,10 +846,7 @@ namespace TeamXBMC.Translator
 			if (listView.SelectedIndices.Count>0)
 				startIndex=listView.SelectedIndices[0]+1;
 
-			string findText=findForm.TextFind;
-
-			if (!findForm.MatchCase)
-				findText=findText.ToLower();
+			string findText=findForm.MatchCase ? findForm.TextFind : findForm.TextFind.ToLower();
 
 			bool found=false;
 			for (int i=startIndex; findForm.SearchDown ? i<listView.Items.Count : i>=0; i+=findForm.SearchDown ? 1 : -1)
@@ -848,10 +854,7 @@ namespace TeamXBMC.Translator
 				ListViewItem item=listView.Items[i];
 				foreach (ListViewItem.ListViewSubItem subItem in item.SubItems)
 				{
-					string text=subItem.Text;
-
-					if (!findForm.MatchCase)
-						text=text.ToLower();
+					string text=findForm.MatchCase ? subItem.Text : subItem.Text.ToLower();
 
 					int pos=text.IndexOf(findText);
 					if (pos>-1)
@@ -895,7 +898,7 @@ namespace TeamXBMC.Translator
 
 			if (!found)
 			{
-				MessageBox.Show("\""+findForm.TextFind+"\" was not found.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+				ShowMessageBox("\""+findForm.TextFind+"\" was not found.", MessageBoxIcon.Information);
 			}
 
 		}
@@ -918,6 +921,30 @@ namespace TeamXBMC.Translator
 		#region Menu Item Handler Tools
 
 		/// <summary>
+		/// Checks if a language file is valid
+		/// </summary>
+		private void menuItemValidateFile_Click(object sender, System.EventArgs e)
+		{
+			openFileDialog1.InitialDirectory=Settings.Instance.LanguageFolder;
+			if (openFileDialog1.ShowDialog()==DialogResult.Cancel)
+				return;
+
+			StringArray strings=new StringArray();
+
+			try
+			{
+				strings.Load(openFileDialog1.FileName);
+			}
+			catch(TranslatorException ex)
+			{
+				ShowMessageBox(BuildErrorMessageText(ex), MessageBoxIcon.Error);
+				return;
+			}
+
+			ShowMessageBox("The file " + openFileDialog1.FileName + " is valid.", MessageBoxIcon.Information);
+		}
+
+		/// <summary>
 		/// Converts a language file to the new format
 		/// </summary>
 		private void menuItemConvert_Click(object sender, System.EventArgs e)
@@ -934,7 +961,7 @@ namespace TeamXBMC.Translator
 			}
 			catch(TranslatorException ex)
 			{
-				ShowMessageBox(BuildErrorMessageText(ex));
+				ShowMessageBox(BuildErrorMessageText(ex), MessageBoxIcon.Error);
 				return;
 			}
 
@@ -950,7 +977,7 @@ namespace TeamXBMC.Translator
 			}
 			catch(TranslatorException ex)
 			{
-				ShowMessageBox(BuildErrorMessageText(ex));
+				ShowMessageBox(BuildErrorMessageText(ex), MessageBoxIcon.Error);
 				return;
 			}
 
