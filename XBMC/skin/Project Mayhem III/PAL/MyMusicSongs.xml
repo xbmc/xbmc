@@ -87,7 +87,7 @@
     <font>font13</font>
     <onleft>50</onleft>
     <onright>50</onright>
-    <onup>33</onup>
+    <onup>34</onup>
     <ondown>3</ondown>
     <include>buttonpanelslide</include>
    </control>
@@ -140,14 +140,29 @@
     <id>31</id>
     <posx>50</posx>
     <posy>231</posy>
-    <label>Local</label>
-    <onclick>XBMC.ActivateWindow(MyMusic,Music)</onclick>
+    <label>$INFO[Skin.String(Musicbookmark1)]</label>
+    <onclick>ActivateWindow(MyMusic,$INFO[Skin.String(Musicbookmark1)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>5</onup>
     <ondown>32</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(MusicBM1)</visible>
     <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Music Bookmark 1 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>231</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(MusicBookmark1)] + Skin.HasSetting(MusicBM1)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
    <control>
@@ -156,14 +171,29 @@
     <id>32</id>
     <posx>50</posx>
     <posy>268</posy>
-    <label>Network</label>
-    <onclick>XBMC.ActivateWindow(MyMusic,WORKGROUP (SMB) Network)</onclick>
+    <label>$INFO[Skin.String(Musicbookmark2)]</label>
+    <onclick>ActivateWindow(MyMusic,$INFO[Skin.String(Musicbookmark2)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>31</onup>
     <ondown>33</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(MusicBM2)</visible>
     <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Music Bookmark 2 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>268</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(MusicBookmark2)] + Skin.HasSetting(MusicBM2)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
    <control>
@@ -172,14 +202,60 @@
     <id>33</id>
     <posx>50</posx>
     <posy>305</posy>
-    <label>Shoutcast</label>
-    <onclick>XBMC.ActivateWindow(MyMusic,SHOUTcast - Directory)</onclick>
+    <label>$INFO[Skin.String(Musicbookmark3)]</label>
+    <onclick>ActivateWindow(MyMusic,$INFO[Skin.String(Musicbookmark3)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>32</onup>
-    <ondown>2</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <ondown>34</ondown>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(MusicBM3)</visible>
     <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Music Bookmark 3 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>305</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(MusicBookmark3)] + Skin.HasSetting(MusicBM3)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
+   </control>
+
+   <control>
+    <description>Bookmark button 4</description>
+    <type>button</type>
+    <id>34</id>
+    <posx>50</posx>
+    <posy>342</posy>
+    <label>$INFO[Skin.String(Musicbookmark4)]</label>
+    <onclick>ActivateWindow(MyMusic,$INFO[Skin.String(Musicbookmark4)])</onclick>
+    <onleft>50</onleft>
+    <onright>50</onright>
+    <onup>33</onup>
+    <ondown>2</ondown>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(MusicBM4)</visible>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Music Bookmark 4 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>342</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(MusicBookmark4)] + Skin.HasSetting(MusicBM4)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
   </controlgroup>
