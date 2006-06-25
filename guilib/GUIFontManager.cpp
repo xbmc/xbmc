@@ -23,7 +23,7 @@ GUIFontManager::~GUIFontManager(void)
 CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor)
 {
   //check if font already exists
-  CGUIFont* pFont = GetFont(strFontName);
+  CGUIFont* pFont = GetFont(strFontName, false);
   if (pFont)
     return pFont;
 
@@ -75,7 +75,7 @@ CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdStrin
 CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle)
 {
   //check if font already exists
-  CGUIFont* pFont = GetFont(strFontName);
+  CGUIFont* pFont = GetFont(strFontName, false);
   if (pFont)
     return pFont;
 
@@ -164,7 +164,7 @@ CGUIFontBase* GUIFontManager::GetFontFile(const CStdString& strFileName)
   return NULL;
 }
 
-CGUIFont* GUIFontManager::GetFont(const CStdString& strFontName)
+CGUIFont* GUIFontManager::GetFont(const CStdString& strFontName, bool fallback /*= true*/)
 {
   for (int i = 0; i < (int)m_vecFonts.size(); ++i)
   {
@@ -173,7 +173,7 @@ CGUIFont* GUIFontManager::GetFont(const CStdString& strFontName)
       return pFont;
   }
   // fall back to "font13" if we have none
-  if (!strFontName.IsEmpty() && !strFontName.Equals("-") && !strFontName.Equals("font13"))
+  if (fallback && !strFontName.IsEmpty() && !strFontName.Equals("-") && !strFontName.Equals("font13"))
     return GetFont("font13");
   return NULL;
 }
