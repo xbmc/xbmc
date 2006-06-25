@@ -171,14 +171,19 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
 
 void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth)
 {
+  CStdStringW utf16Text;
+  g_charsetConverter.utf8ToUTF16(text, utf16Text);
+  WrapText(utf16Text, font, maxWidth);
+  g_charsetConverter.utf16toUTF8(utf16Text, text);
+}
+
+void CGUILabelControl::WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth)
+{
   // run through and force line breaks at spaces as and when necessary
   if (!font)
     return;
   unsigned int pos = 0;
-  text += "\n";
-  // Convert to utf16 so that each character is a single word.
-  CStdStringW utf16Text;
-  g_charsetConverter.utf8ToUTF16(text, utf16Text);
+  utf16Text += L"\n";
   int iLastSpaceInLine = -1;
   int iLastSpace = -1;
   CStdStringW multiLine, line;
@@ -234,8 +239,7 @@ void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth
     }
     pos++;
   }
-  // convert back to utf8
-  g_charsetConverter.utf16toUTF8(multiLine, text);
+  utf16Text = multiLine;
 }
 
 CStdString CGUILabelControl::ShortenPath(const CStdString &path)
