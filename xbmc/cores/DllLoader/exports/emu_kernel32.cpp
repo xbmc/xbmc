@@ -2,6 +2,7 @@
 #include "emu_kernel32.h"
 #include "emu_dummy.h"
 #include "..\..\..\xbox\iosupport.h"
+#include <process.h>
 
 vector<string> m_vecAtoms;
 
@@ -86,7 +87,7 @@ typedef struct tagTHREADNAME_INFO
 } THREADNAME_INFO;
 #endif
 
-DWORD WINAPI dllThreadWrapper(LPVOID lpThreadParameter)
+unsigned int __stdcall dllThreadWrapper(LPVOID lpThreadParameter)
 {
   SThreadWrapper *param = (SThreadWrapper*)lpThreadParameter;
   DWORD result;
@@ -139,7 +140,7 @@ extern "C" HANDLE WINAPI dllCreateThread(
   param->lpParameter = lpParameter;
   param->lpDLL = tracker_getdllname(loc);
 
-  return CreateThread(lpThreadAttributes, dwStackSize, dllThreadWrapper, param, dwCreationFlags, lpThreadId);
+  return (HANDLE)_beginthreadex(lpThreadAttributes, dwStackSize, dllThreadWrapper, param, dwCreationFlags, (unsigned int *)lpThreadId);
 }
 
 
@@ -823,11 +824,12 @@ typedef struct _SFlsSlot
 {
   BOOL bInUse; 
   PVOID	pData;
+  PFLS_CALLBACK_FUNCTION pCallback;
 }
 SFlsSlot, *LPSFlsSlot;
 
 #define FLS_NUM_SLOTS 5
-SFlsSlot flsSlots[FLS_NUM_SLOTS] = { false, NULL };
+SFlsSlot flsSlots[FLS_NUM_SLOTS] = { false, NULL, NULL };
 
 extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback)
 {
@@ -839,6 +841,7 @@ extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback)
     if (!flsSlots[i].bInUse) {
       flsSlots[i].bInUse = true;
       flsSlots[i].pData = NULL;
+      flsSlots[i].pCallback = lpCallback;
       return i;
     }
   }
@@ -889,8 +892,13 @@ extern "C" BOOL WINAPI dllFlsFree(DWORD dwFlsIndex)
   LPSFlsSlot slot = FlsGetSlot(dwFlsIndex);
   if (slot == NULL)
     return false;
+
+  if( slot->pCallback )
+    slot->pCallback(slot->pData);
+
   slot->bInUse = false;
-  slot->pData = NULL;
+  slot->pData = NULL;  
+
   return true;
 }
 
