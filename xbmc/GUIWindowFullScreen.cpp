@@ -695,14 +695,23 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
     if (g_application.m_pPlayer && g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
     {
 
-      int m_iResolution = g_graphicsContext.GetVideoResolution();
+      int res = g_graphicsContext.GetVideoResolution();
 
       float w;
       float h;
       m_subtitleFont->GetTextExtent(subtitleText.c_str(), &w, &h);
 
-      float x = (float) (g_settings.m_ResInfo[m_iResolution].iWidth) / 2;
-      float y = (float) g_settings.m_ResInfo[m_iResolution].iSubtitles - h;
+      float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
+      if (maxWidth < w)
+      {
+        CStdString utf8Sub;
+        g_charsetConverter.utf16toUTF8(subtitleText, utf8Sub);
+        CGUILabelControl::WrapText(utf8Sub, m_subtitleFont, maxWidth);
+        g_charsetConverter.utf8ToUTF16(utf8Sub, subtitleText);
+        m_subtitleFont->GetTextExtent(subtitleText.c_str(), &w, &h);
+      }
+      float x = (float) (g_settings.m_ResInfo[res].iWidth) / 2;
+      float y = (float) g_settings.m_ResInfo[res].iSubtitles - h;
 
       float outlinewidth = 3;
 

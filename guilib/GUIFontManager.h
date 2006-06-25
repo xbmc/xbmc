@@ -25,7 +25,7 @@ public:
   void LoadFonts(const CStdString& strFontSet);
   CGUIFont* LoadXPR(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor);
   CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle);
-  CGUIFont* GetFont(const CStdString& strFontName);
+  CGUIFont* GetFont(const CStdString& strFontName, bool fallback = true);
   void Clear();
   void FreeFontFile(CGUIFontBase *pFont);
 
