@@ -151,14 +151,29 @@
     <id>31</id>
     <posx>50</posx>
     <posy>268</posy>
-    <label>Local</label>
-    <onclick>XBMC.ActivateWindow(MyVideos,Videos)</onclick>
+    <label>$INFO[Skin.String(videobookmark1)]</label>
+    <onclick>ActivateWindow(MyVideos,$INFO[Skin.String(videobookmark1)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>7</onup>
     <ondown>32</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(VideoBM1)</visible>
     <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Video Bookmark 1 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>268</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(VideoBookmark1)] + Skin.HasSetting(VideoBM1)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
    <control>
@@ -167,14 +182,29 @@
     <id>32</id>
     <posx>50</posx>
     <posy>305</posy>
-    <label>Network</label>
-    <onclick>XBMC.ActivateWindow(MyVideos,WORKGROUP (SMB) Network)</onclick>
+    <label>$INFO[Skin.String(videobookmark2)]</label>
+    <onclick>ActivateWindow(MyVideos,$INFO[Skin.String(videobookmark2)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>31</onup>
     <ondown>33</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(VideoBM2)</visible>
     <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Video Bookmark 2 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>305</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(VideoBookmark2)] + Skin.HasSetting(VideoBM2)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
    <control>
@@ -183,14 +213,29 @@
     <id>33</id>
     <posx>50</posx>
     <posy>342</posy>
-    <label>Playlists</label>
-    <onclick>XBMC.ActivateWindow(MyVideos,Playlists)</onclick>
+    <label>$INFO[Skin.String(videobookmark3)]</label>
+    <onclick>ActivateWindow(MyVideos,$INFO[Skin.String(videobookmark3)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>32</onup>
     <ondown>2</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(VideoBM3)</visible>
     <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Video Bookmark 3 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>342</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(VideoBookmark3)] + Skin.HasSetting(VideoBM3)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
   </controlgroup>

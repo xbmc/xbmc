@@ -164,14 +164,29 @@
     <id>31</id>
     <posx>50</posx>
     <posy>231</posy>
-    <label>Games</label>
-    <onclick>XBMC.ActivateWindow(MyPrograms,Games)</onclick>
+    <label>$INFO[Skin.String(Programsbookmark1)]</label>
+    <onclick>ActivateWindow(MyPrograms,$INFO[Skin.String(Programsbookmark1)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
-    <onup>99</onup>
+    <onup>5</onup>
     <ondown>32</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(ProgramsBM1)</visible>
     <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Programs Bookmark 1 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>231</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(ProgramsBookmark1)] + Skin.HasSetting(ProgramsBM1)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
    <control>
@@ -180,14 +195,29 @@
     <id>32</id>
     <posx>50</posx>
     <posy>268</posy>
-    <label>Emulators</label>
-    <onclick>XBMC.ActivateWindow(MyPrograms,Emulators)</onclick>
+    <label>$INFO[Skin.String(Programsbookmark2)]</label>
+    <onclick>ActivateWindow(MyPrograms,$INFO[Skin.String(Programsbookmark2)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>31</onup>
     <ondown>33</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(ProgramsBM2)</visible>
     <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Programs Bookmark 2 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>268</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(ProgramsBookmark2)] + Skin.HasSetting(ProgramsBM2)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
    <control>
@@ -196,15 +226,30 @@
     <id>33</id>
     <posx>50</posx>
     <posy>305</posy>
-    <label>Programs</label>
-    <onclick>XBMC.ActivateWindow(MyPrograms,Programs)</onclick>
+    <label>$INFO[Skin.String(Programsbookmark3)]</label>
+    <onclick>ActivateWindow(MyPrograms,$INFO[Skin.String(Programsbookmark3)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>32</onup>
     <ondown>34</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(ProgramsBM3)</visible>
     <include>buttonpanelslide</include>
-  </control>
+   </control>
+
+   <control>
+    <description>Programs Bookmark 3 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>305</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(ProgramsBookmark3)] + Skin.HasSetting(ProgramsBM3)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
+   </control>
 
    <control>
     <description>Bookmark button 4</description>
@@ -212,30 +257,29 @@
     <id>34</id>
     <posx>50</posx>
     <posy>342</posy>
-    <label>DVD</label>
-    <onclick>XBMC.ActivateWindow(MyPrograms,DVD-Game)</onclick>
+    <label>$INFO[Skin.String(Programsbookmark4)]</label>
+    <onclick>ActivateWindow(MyPrograms,$INFO[Skin.String(Programsbookmark4)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>33</onup>
-    <ondown>35</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <ondown>2</ondown>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(ProgramsBM4)</visible>
     <include>buttonpanelslide</include>
    </control>
 
    <control>
-    <description>Bookmark button 5</description>
+    <description>Programs Bookmark 4 String NOT SET label</description>
     <type>button</type>
-    <id>35</id>
+    <id>0</id>
     <posx>50</posx>
-    <posy>379</posy>
-    <label>My Utilities</label>
-    <onclick>XBMC.ActivateWindow(MyPrograms,Apps)</onclick>
-    <onleft>50</onleft>
-    <onright>50</onright>
-    <onup>34</onup>
-    <ondown>2</ondown>
-    <visible>no</visible>
+    <posy>342</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(ProgramsBookmark4)] + Skin.HasSetting(ProgramsBM4)</visible>
     <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
    <control>

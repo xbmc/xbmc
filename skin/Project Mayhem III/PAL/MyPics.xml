@@ -76,6 +76,7 @@
   </control>
 
   <controlgroup>
+
    <control>
     <description>View As Icons button</description>
     <type>button</type>
@@ -169,14 +170,29 @@
     <id>31</id>
     <posx>50</posx>
     <posy>305</posy>
-    <label>Local</label>
-    <onclick>XBMC.ActivateWindow(MyPictures,Pictures)</onclick>
+    <label>$INFO[Skin.String(Picturesbookmark1)]</label>
+    <onclick>ActivateWindow(MyPictures,$INFO[Skin.String(Picturesbookmark1)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>9</onup>
     <ondown>32</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(PicturesBM1)</visible>
     <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Pictures Bookmark 1 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>305</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(PicturesBookmark1)] + Skin.HasSetting(PicturesBM1)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
    <control>
@@ -185,14 +201,29 @@
     <id>32</id>
     <posx>50</posx>
     <posy>342</posy>
-    <label>Network</label>
-    <onclick>XBMC.ActivateWindow(MyPictures,WORKGROUP (SMB) Network)</onclick>
+    <label>$INFO[Skin.String(Picturesbookmark2)]</label>
+    <onclick>ActivateWindow(MyPictures,$INFO[Skin.String(Picturesbookmark2)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>31</onup>
     <ondown>2</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
+    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(PicturesBM2)</visible>
     <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Pictures Bookmark 2 String NOT SET label</description>
+    <type>button</type>
+    <id>0</id>
+    <posx>50</posx>
+    <posy>342</posy>
+    <width>150</width>
+    <label>20078</label>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(PicturesBookmark2)] + Skin.HasSetting(PicturesBM2)</visible>
+    <include>buttonpanelslide</include>
+    <include>textcolorgrey</include>
    </control>
 
   </controlgroup>
@@ -212,6 +243,22 @@
    <description>pics thumbnailpanel</description>
    <type>thumbnailpanel</type>
    <id>51</id>
+   <itemwidth>112</itemwidth>
+   <itemheight>132</itemheight>
+   <texturewidth>100</texturewidth>
+   <textureheight>110</textureheight>
+   <thumbwidth>90</thumbwidth>
+   <thumbheight>90</thumbheight>
+   <thumbposx>5</thumbposx>
+   <thumbposy>10</thumbposy>
+   <texturewidthbig>137</texturewidthbig>
+   <textureheightbig>152</textureheightbig>
+   <itemwidthbig>148</itemwidthbig>
+   <itemheightbig>198</itemheightbig>
+   <thumbwidthbig>121</thumbwidthbig>
+   <thumbheightbig>121</thumbheightbig>
+   <thumbposxbig>8</thumbposxbig>
+   <thumbposybig>16</thumbposybig>
    <onleft>2</onleft>
    <onright>51</onright>
    <onup>51</onup>

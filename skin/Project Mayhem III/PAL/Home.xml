@@ -6,7 +6,7 @@
 
  <controls>
 
- <!-- backgrounds -->
+<!-- backgrounds -->
 
   <control>
    <type>multiimage</type>
@@ -15,7 +15,7 @@
    <posy>105</posy>
    <width>538</width>
    <height>362</height>
-   <imagepath>4x3home-myprograms</imagepath>
+   <imagepath>16x9home-myprograms</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
    <visible>!Player.HasMedia + ControlGroup(1).HasFocus(2) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(2)</visible>
@@ -43,7 +43,7 @@
    <posy>105</posy>
    <width>538</width>
    <height>362</height>
-   <imagepath>4x3home-mymusic</imagepath>
+   <imagepath>16x9home-mymusic</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
    <visible>!Player.HasMedia + ControlGroup(1).HasFocus(3) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(3)</visible>
@@ -57,7 +57,7 @@
    <posy>105</posy>
    <width>538</width>
    <height>362</height>
-   <imagepath>4x3home-mypictures</imagepath>
+   <imagepath>16x9home-mypictures</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
    <visible>!Player.HasMedia + ControlGroup(1).HasFocus(4) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(4)</visible>
@@ -99,7 +99,7 @@
    <posy>105</posy>
    <width>538</width>
    <height>362</height>
-   <imagepath>4x3home-settings</imagepath>
+   <imagepath>16x9home-settings</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
    <visible>!Player.HasMedia + ControlGroup(1).HasFocus(9) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(9)</visible>
@@ -107,6 +107,7 @@
   </control>
 
   <control>
+   <description>Visualisation Preview</description>
    <type>visualisation</type>
    <posx>182</posx>
    <posy>105</posy>
@@ -121,12 +122,12 @@
    <id>1</id>
    <posx>180</posx>
    <posy>60</posy>
-   <width>540</width>
+   <width>580</width>
    <height>455</height>
    <visible>!Skin.HasSetting(HomeViewToggle)</visible>
   </control>
 
- <!-- main background overlay with scanlines and logo-->
+<!-- background overlay with scanlines and logo -->
 
   <control>
    <description>background image</description>
@@ -136,7 +137,7 @@
    <posy>0</posy>
    <width>720</width>
    <height>576</height>
-   <texture>4x3home2.png</texture>
+   <texture>16x9home2.png</texture>
   </control>
 
   <control>
@@ -144,15 +145,15 @@
    <type>image</type>
    <id>1</id>
    <posx>64</posx>
-   <posy>47</posy>
-   <width>250</width>
-   <height>132</height>
+   <posy>31</posy>
+   <width>265</width>
+   <height>167</height>
    <texture>logo.png</texture>
    <animation effect="slide" time="500" start="0,-300" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
    <animation effect="slide" time="500" start="0,0" end="0,-300" acceleration="1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
   </control>
 
- <!-- idle time media infos (music) -->
+<!-- idle time media info (music) -->
 
   <control>
    <description>image</description>
@@ -160,7 +161,7 @@
    <id>1</id>
    <posx>105</posx>
    <posy>338</posy>
-   <width>90</width>
+   <width>75</width>
    <height>99</height>
    <info>MusicPlayer.Cover</info>
    <visible>System.IdleTime(64)</visible>
@@ -174,7 +175,7 @@
    <type>label</type>
    <id>1</id>
    <width>430</width>
-   <posx>210</posx>
+   <posx>195</posx>
    <posy>340</posy>
    <info>MusicPlayer.Artist</info>
    <align>left</align>
@@ -190,7 +191,7 @@
    <type>label</type>
    <id>1</id>
    <width>430</width>
-   <posx>210</posx>
+   <posx>195</posx>
    <posy>365</posy>
    <info>MusicPlayer.Title</info>
    <align>left</align>
@@ -206,7 +207,7 @@
    <type>label</type>
    <id>1</id>
    <width>430</width>
-   <posx>210</posx>
+   <posx>195</posx>
    <posy>393</posy>
    <info>MusicPlayer.Album</info>
    <align>left</align>
@@ -221,7 +222,8 @@
    <description>Time label</description>
    <type>label</type>
    <id>1</id>
-   <posx>210</posx>
+   <width>255</width>
+   <posx>195</posx>
    <posy>415</posy>
    <info>MusicPlayer.Time</info>
    <align>left</align>
@@ -232,7 +234,7 @@
    <animation effect="fade" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
   </control>
 
- <!-- media infos (video) -->
+<!-- media info (video) -->
 
   <control>
    <description>video gradient</description>
@@ -309,7 +311,7 @@
    <include>homevideoinfo</include>
   </control>
 
- <!-- media infos (music) -->
+<!-- media info (music) -->
 
   <control>
    <description>music gradient</description>
@@ -327,13 +329,12 @@
    <description>cover image</description>
    <type>image</type>
    <id>1</id>
-   <posx>555</posx>
+   <posx>566</posx>
    <posy>338</posy>
-   <width>90</width>
+   <width>75</width>
    <height>99</height>
    <info>MusicPlayer.Cover</info>
    <include>homemediainfo</include>
-   <aspectratio>keep</aspectratio>
   </control>
 
   <control>
@@ -341,7 +342,7 @@
    <type>label</type>
    <id>1</id>
    <width>255</width>
-   <posx>540</posx>
+   <posx>555</posx>
    <posy>340</posy>
    <info>MusicPlayer.Artist</info>
    <align>right</align>
@@ -354,7 +355,7 @@
    <type>label</type>
    <id>1</id>
    <width>255</width>
-   <posx>540</posx>
+   <posx>555</posx>
    <posy>365</posy>
    <info>MusicPlayer.Title</info>
    <align>right</align>
@@ -367,7 +368,7 @@
    <type>label</type>
    <id>1</id>
    <width>255</width>
-   <posx>540</posx>
+   <posx>555</posx>
    <posy>393</posy>
    <info>MusicPlayer.Album</info>
    <align>right</align>
@@ -379,7 +380,8 @@
    <description>Time label</description>
    <type>label</type>
    <id>1</id>
-   <posx>540</posx>
+   <width>255</width>
+   <posx>555</posx>
    <posy>415</posy>
    <info>MusicPlayer.Time</info>
    <align>right</align>
@@ -387,7 +389,7 @@
    <include>homemediainfo</include>
   </control>
 
- <!-- main buttons -->
+<!-- main buttons -->
 
   <controlgroup id="1">
 
@@ -395,13 +397,13 @@
     <type>image</type>
     <id>0</id>
     <posx>77</posx>
-    <posy>425</posy>
+    <posy>429</posy>
     <width>15</width>
-    <height>15</height>
+    <height>17</height>
     <texture>homebutton-small.png</texture>
     <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
     <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
-    <animation effect="slide" time="200" end="-600,0" acceleration="1.3" delay="0"condition="!Skin.HasSetting(animated)">WindowClose</animation>
+    <animation effect="slide" time="200" end="-600,0" acceleration="1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <animation effect="slide" time="500" start="-600,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
    </control>
 
@@ -409,7 +411,7 @@
     <type>image</type>
     <id>0</id>
     <posx>191</posx>
-    <posy>425</posy>
+    <posy>429</posy>
     <width>15</width>
     <height>17</height>
     <texture>homebutton-small.png</texture>
@@ -424,9 +426,9 @@
     <type>button</type>
     <id>9</id>
     <posx>80</posx>
-    <posy>428</posy>
+    <posy>432</posy>
     <width>9</width>
-    <height>7</height>
+    <height>8</height>
     <label>5</label>
     <font>font10</font>
     <onclick>ActivateWindow(4)</onclick>
@@ -448,9 +450,9 @@
     <type>button</type>
     <id>6</id>
     <posx>194</posx>
-    <posy>428</posy>
+    <posy>432</posy>
     <width>9</width>
-    <height>7</height>
+    <height>8</height>
     <label>7</label>
     <onclick>ActivateWindow(MyFiles)</onclick>
     <font>font10</font>
@@ -472,7 +474,7 @@
     <type>image</type>
     <id>1</id>
     <posx>37</posx>
-    <posy>200</posy>
+    <posy>207</posy>
     <width>307</width>
     <height>236</height>
     <texture>home_buttons.png</texture>
@@ -484,7 +486,7 @@
     <type>button</type>
     <id>2</id>
     <posx>91</posx>
-    <posy>224</posy>
+    <posy>231</posy>
     <width>14</width>
     <height>12</height>
     <label>0</label>
@@ -505,7 +507,7 @@
     <type>button</type>
     <id>4</id>
     <posx>91</posx>
-    <posy>264</posy>
+    <posy>270</posy>
     <width>14</width>
     <height>12</height>
     <label>1</label>
@@ -526,7 +528,7 @@
     <type>button</type>
     <id>5</id>
     <posx>91</posx>
-    <posy>302</posy>
+    <posy>309</posy>
     <width>14</width>
     <height>12</height>
     <label>3</label>
@@ -547,7 +549,7 @@
     <type>button</type>
     <id>3</id>
     <posx>91</posx>
-    <posy>341</posy>
+    <posy>348</posy>
     <width>14</width>
     <height>12</height>
     <label>2</label>
@@ -568,7 +570,7 @@
     <type>button</type>
     <id>7</id>
     <posx>91</posx>
-    <posy>380</posy>
+    <posy>387</posy>
     <width>14</width>
     <height>12</height>
     <label>8</label>
@@ -583,10 +585,9 @@
     <textoffsetx>30</textoffsetx>
     <include>homebuttonanimation</include>
    </control>
-
   </controlgroup>
 
- <!-- labels -->
+<!-- labels -->
 
   <control>
    <description>date label</description>
@@ -649,27 +650,27 @@
    <titlecolor>ffD2FF00</titlecolor>
    <headlinecolor>DDced8da</headlinecolor>
    <textcolor>ffD2FF00</textcolor>
-   <visible>!Player.HasVideo</visible>
+   <visible>[!Player.HasVideo +Player.HasAudio + !Skin.HasSetting(NoAudioRSS)] | [!Player.HasVideo +!Player.HasAudio + Skin.HasSetting(NoAudioRSS)]</visible>
    <include>homemisc</include>
   </control>
 
- <!-- sub-buttons -->
+<!-- sub buttons -->
 
   <control>
    <description>dvd-rom launch button</description>
    <type>button</type>
    <id>95</id>
-   <posx>511</posx>
-   <posy>503</posy>
-   <width>35</width>
-   <height>35</height>
+   <posx>525</posx>
+   <posy>501</posy>
+   <width>30</width>
+   <height>37</height>
    <label>-</label>
    <texturefocus>home-dvd-l.gif</texturefocus>
    <texturenofocus>home-dvd-l.png</texturenofocus>
    <font>font12</font>
    <textoffsetx>26</textoffsetx>
-   <visible>System.hasmediadvd + System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
-   <animation effect="fade" time="1000">VisibleChange</animation>
+   <visible>System.HasMediaDVD + System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
+   <include>homemisc</include>
    <onclick>XBMC.PlayDVD()</onclick>
    <onleft>96</onleft>
    <onright>97</onright>
@@ -681,16 +682,16 @@
    <description>dvd-rom launch button 2</description>
    <type>button</type>
    <id>96</id>
-   <posx>544</posx>
-   <posy>503</posy>
-   <width>35</width>
-   <height>35</height>
+   <posx>555</posx>
+   <posy>501</posy>
+   <width>30</width>
+   <height>37</height>
    <label>-</label>
    <texturefocus>home-dvd-r.gif</texturefocus>
    <texturenofocus>home-dvd-r.png</texturenofocus>
    <font>font12</font>
    <textoffsetx>26</textoffsetx>
-   <visible>System.hasmediadvd + !System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
+   <visible>System.HasMediaDVD + !System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
    <include>homemisc</include>
    <onclick>XBMC.PlayDVD()</onclick>
    <onleft>2</onleft>
@@ -703,14 +704,14 @@
    <description>xlink kai conditional button</description>
    <type>button</type>
    <id>97</id>
-   <posx>544</posx>
-   <posy>503</posy>
-   <width>35</width>
-   <height>35</height>
+   <posx>555</posx>
+   <posy>501</posy>
+   <width>30</width>
+   <height>37</height>
    <label>-</label>
    <texturefocus>home-kai.gif</texturefocus>
    <texturenofocus>home-kai.png</texturenofocus>
-   <onclick>ActivateWindow(XlinkKai)</onclick>
+   <onclick>ActivateWindow(XLinkKai)</onclick>
    <onleft>95</onleft>
    <onright>100</onright>
    <onup>2</onup>
@@ -723,10 +724,10 @@
    <description>submenu button</description>
    <type>button</type>
    <id>100</id>
-   <posx>577</posx>
-   <posy>503</posy>
-   <width>35</width>
-   <height>35</height>
+   <posx>585</posx>
+   <posy>501</posy>
+   <width>30</width>
+   <height>37</height>
    <onclick>ActivateWindow(SubMenu)</onclick>
    <texturefocus>home-sub.gif</texturefocus>
    <texturenofocus>home-sub.png</texturenofocus>
@@ -740,13 +741,13 @@
   </control>
 
   <control>
-   <description>submenu button</description>
+   <description>shutdown button</description>
    <type>button</type>
    <id>98</id>
-   <posx>610</posx>
-   <posy>503</posy>
-   <width>35</width>
-   <height>35</height>
+   <posx>615</posx>
+   <posy>501</posy>
+   <width>30</width>
+   <height>37</height>
    <onclick>ActivateWindow(ShutdownMenu)</onclick>
    <texturefocus>home-power.gif</texturefocus>
    <texturenofocus>home-power.png</texturenofocus>
