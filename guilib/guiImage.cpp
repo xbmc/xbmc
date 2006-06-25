@@ -9,8 +9,8 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
   m_colDiffuse = 0xFFFFFFFF;
-
   m_strFileName = strTexture;
+  m_textureFileName = strTexture;
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
   m_dwColorKey = dwColorKey;
@@ -38,6 +38,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
 {
   m_colDiffuse = left.m_colDiffuse;
   m_strFileName = left.m_strFileName;
+  m_textureFileName = left.m_textureFileName;
   m_dwColorKey = left.m_dwColorKey;
   m_aspectRatio = left.m_aspectRatio;
   m_iRenderWidth = left.m_iRenderWidth;
@@ -93,8 +94,10 @@ void CGUIImage::Render()
   if (m_Info)
   {
     CStdString strImage = g_infoManager.GetImage(m_Info, m_dwParentID);
-    if (strImage != m_strFileName)
+    if (strImage != m_strFileName && !strImage.IsEmpty())
       SetFileName(strImage);
+    else if (strImage.IsEmpty() && m_strFileName != m_textureFileName)
+      SetFileName(m_textureFileName);
   }
 
   if (m_bDynamicResourceAlloc && !bVisible && IsAllocated())
