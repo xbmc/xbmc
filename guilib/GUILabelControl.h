@@ -57,6 +57,8 @@ public:
   void SetWrapMultiLine(bool wrapMultiLine) { m_wrapMultiLine = wrapMultiLine; };
   bool GetWrapMultiLine() const { return m_wrapMultiLine; };
   static void WrapText(CStdString &text, CGUIFont *font, float maxWidth);
+  static void WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth);
+
 protected:
   CStdString ShortenPath(const CStdString &path);
 
