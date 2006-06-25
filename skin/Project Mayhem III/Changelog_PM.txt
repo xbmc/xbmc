@@ -1,3 +1,5 @@
+2006-06-25 removed:	<texture> tag from default image controls in References.xml
+
 2006-06-22 added: 	create folder button in filebrowser.
 2006-06-22 changed: 	Settings & Refresh buttons look more consistent with other windows now.
 2006-06-22 added:	Settings button to Weather screen
