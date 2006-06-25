@@ -63,6 +63,7 @@ protected:
 
   DWORD m_dwColorKey;
   CStdString m_strFileName;
+  CStdString m_textureFileName;
   int m_iTextureWidth;
   int m_iTextureHeight;
   int m_iImageWidth;
