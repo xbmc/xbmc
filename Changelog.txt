@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-06-2006 fixed: text strings where ending part was truncated and that ended with a newline character, could crash font renderer
  - 23-06-2006 fixed: Better handling of overlapping strings in the listcontrol.
  - 23-06-2006 fixed: Jump to section from a settings category could hit the wrong section if sections had been removed from the GUI via AdvancedSettings.xml
  - 23-06-2006 fixed: Don't re-activate a window on Back if <previouswindow> points to ourselves.
