@@ -1,3 +1,7 @@
+2006-06-25 added:	Setting to hide the RSS in the homescreen when music is playing
+2006-06-25 added:	Bookmarks section in skin settings - to customize the bookmark buttons
+2006-06-25 changed:	skin animations switch moved to skin settings
+2006-06-25 added:	skin settings screen (its found in the settings overview left panel)
 2006-06-25 removed:	<texture> tag from default image controls in References.xml
 
 2006-06-22 added: 	create folder button in filebrowser.
