@@ -5,8 +5,8 @@
  <allowoverlay>yes</allowoverlay>
 
  <controls>
- 
- <control>
+
+  <control>
    <description>background image</description>
    <type>image</type>
    <id>1</id>
@@ -119,12 +119,12 @@
    <font>font10</font>
    <posx>245</posx>
    <posy>155</posy>
-   <width>75</width>
-   <height>110</height>
+   <width>80</width>
+   <height>80</height>
    <texturefocus>settings-videos-focus.png</texturefocus>
    <texturenofocus>settings-videos-nofocus.png</texturenofocus>
    <aligny>top</aligny>
-   <textoffsety>117</textoffsety>
+   <textoffsety>100</textoffsety>
    <label>3</label>
    <align>center</align>
    <onclick>ActivateWindow(MyVideosSettings)</onclick>
@@ -142,12 +142,12 @@
    <font>font10</font>
    <posx>345</posx>
    <posy>155</posy>
-   <width>75</width>
-   <height>110</height>
+   <width>80</width>
+   <height>80</height>
    <texturefocus>settings-music-focus.png</texturefocus>
    <texturenofocus>settings-music-nofocus.png</texturenofocus>
    <aligny>top</aligny>
-   <textoffsety>117</textoffsety>
+   <textoffsety>100</textoffsety>
    <label>2</label>
    <align>center</align>
    <onclick>ActivateWindow(MyMusicSettings)</onclick>
@@ -165,12 +165,12 @@
    <font>font10</font>
    <posx>445</posx>
    <posy>155</posy>
-   <width>75</width>
-   <height>110</height>
+   <width>80</width>
+   <height>80</height>
    <texturefocus>settings-pictures-focus.png</texturefocus>
    <texturenofocus>settings-pictures-nofocus.png</texturenofocus>
    <aligny>top</aligny>
-   <textoffsety>117</textoffsety>
+   <textoffsety>100</textoffsety>
    <label>1</label>
    <align>center</align>
    <onclick>ActivateWindow(MyPicturesSettings)</onclick>
@@ -188,12 +188,12 @@
    <font>font10</font>
    <posx>545</posx>
    <posy>155</posy>
-   <width>75</width>
-   <height>110</height>
+   <width>80</width>
+   <height>80</height>
    <texturefocus>settings-programs-focus.png</texturefocus>
    <texturenofocus>settings-programs-nofocus.png</texturenofocus>
    <aligny>top</aligny>
-   <textoffsety>117</textoffsety>
+   <textoffsety>100</textoffsety>
    <label>0</label>
    <align>center</align>
    <onclick>ActivateWindow(MyProgramsSettings)</onclick>
@@ -211,12 +211,12 @@
    <font>font10</font>
    <posx>245</posx>
    <posy>325</posy>
-   <width>75</width>
-   <height>110</height>
+   <width>80</width>
+   <height>80</height>
    <texturefocus>settings-weather-focus.png</texturefocus>
    <texturenofocus>settings-weather-nofocus.png</texturenofocus>
    <aligny>top</aligny>
-   <textoffsety>117</textoffsety>
+   <textoffsety>100</textoffsety>
    <label>8</label>
    <align>center</align>
    <onclick>ActivateWindow(MyWeatherSettings)</onclick>
@@ -234,12 +234,12 @@
    <font>font10</font>
    <posx>345</posx>
    <posy>325</posy>
-   <width>75</width>
-   <height>110</height>
+   <width>80</width>
+   <height>80</height>
    <texturefocus>settings-network-focus.png</texturefocus>
    <texturenofocus>settings-network-nofocus.png</texturenofocus>
    <aligny>top</aligny>
-   <textoffsety>117</textoffsety>
+   <textoffsety>100</textoffsety>
    <label>705</label>
    <align>center</align>
    <onclick>ActivateWindow(NetworkSettings)</onclick>
@@ -257,12 +257,12 @@
    <font>font10</font>
    <posx>445</posx>
    <posy>325</posy>
-   <width>75</width>
-   <height>110</height>
+   <width>80</width>
+   <height>80</height>
    <texturefocus>settings-system-focus.png</texturefocus>
    <texturenofocus>settings-system-nofocus.png</texturenofocus>
    <aligny>top</aligny>
-   <textoffsety>117</textoffsety>
+   <textoffsety>100</textoffsety>
    <label>13000</label>
    <align>center</align>
    <onclick>ActivateWindow(SystemSettings)</onclick>
@@ -280,12 +280,12 @@
    <font>font10</font>
    <posx>545</posx>
    <posy>325</posy>
-   <width>75</width>
-   <height>110</height>
+   <width>80</width>
+   <height>80</height>
    <texturefocus>settings-appearance-focus.png</texturefocus>
    <texturenofocus>settings-appearance-nofocus.png</texturenofocus>
    <aligny>top</aligny>
-   <textoffsety>117</textoffsety>
+   <textoffsety>100</textoffsety>
    <label>480</label>
    <align>center</align>
    <onclick>ActivateWindow(AppearanceSettings)</onclick>
