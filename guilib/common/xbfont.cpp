@@ -602,8 +602,9 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
   FLOAT fAlignedOriginX;
   int numLines = 0;
 
-  while ( cchText-- )
+  while ( cchText > 0 )
   {
+    cchText--;
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
@@ -658,8 +659,9 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
       {
         // Yup. Let's draw the ellipses, then go to the next line
         DrawText( m_fCursorX, m_fCursorY, angle, dwColor, L"..." );
-        while (cchText--)
+        while (cchText > 0)
         {
+          cchText--;
           WCHAR letter = *strText++;
           // Handle the newline character
           if ( letter == L'\n' )
