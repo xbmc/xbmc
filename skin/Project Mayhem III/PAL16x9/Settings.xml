@@ -75,7 +75,7 @@
     <onclick>XBMC.ActivateWindow(34)</onclick>
     <onleft>8</onleft>
     <onright>6</onright>
-    <onup>15</onup>
+    <onup>13</onup>
     <ondown>112</ondown>
     <include>buttonpanelslide</include>
    </control>
@@ -96,76 +96,18 @@
    </control>
 
    <control>
-    <description>skin reload</description>
+    <description>skin settings</description>
     <type>button</type>
     <id>13</id>
     <posx>50</posx>
     <posy>194</posy>
-    <label>Reload Skin</label>
-    <onclick>XBMC.ReloadSkin()</onclick>
+    <label>20077</label>
+    <onclick>XBMC.ActivateWindow(56)</onclick>
     <onleft>8</onleft>
     <onright>6</onright>
-    <onup>112</onup>
+    <onup>11</onup>
     <ondown>14</ondown>
     <include>buttonpanelslide</include>
-   </control>
-
-   <control>
-    <description>enable animations</description>
-    <type>button</type>
-    <id>14</id>
-    <posx>50</posx>
-    <posy>231</posy>
-    <label>Animate Skin</label>
-    <onclick>Skin.ToggleSetting(animated)</onclick>
-    <onleft>8</onleft>
-    <onright>6</onright>
-    <onup>13</onup>
-    <ondown>15</ondown>
-    <visible>yes</visible>
-    <include>buttonpanelslide</include>
-   </control>
-
-   <control>
-    <description>radiobutton status</description>
-    <type>image</type>
-    <id>0</id>
-    <posx>173</posx>
-    <posy>240</posy>
-    <width>16</width>
-    <height>16</height>
-    <texture>radiobutton-focus.png</texture>
-    <include>buttonpanelslide</include>
-    <visible>!Skin.HasSetting(animated)</visible>
-   </control>
-
-   <control>
-    <description>enable bookmark buttos</description>
-    <type>button</type>
-    <id>15</id>
-    <posx>50</posx>
-    <posy>268</posy>
-    <label>Bookmarks</label>
-    <onclick>Skin.ToggleSetting(bookmarkbuttons)</onclick>
-    <onleft>8</onleft>
-    <onright>6</onright>
-    <onup>14</onup>
-    <ondown>11</ondown>
-    <visible>yes</visible>
-    <include>buttonpanelslide</include>
-   </control>
-
-   <control>
-    <description>radiobutton status</description>
-    <type>image</type>
-    <id>0</id>
-    <posx>173</posx>
-    <posy>277</posy>
-    <width>16</width>
-    <height>16</height>
-    <texture>radiobutton-focus.png</texture>
-    <include>buttonpanelslide</include>
-    <visible>!Skin.HasSetting(bookmarkbuttons)</visible>
    </control>
 
   </controlgroup>
