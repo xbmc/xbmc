@@ -2,6 +2,7 @@
 #include "GUIViewStateMusic.h"
 #include "AutoSwitch.h"
 #include "playlistplayer.h"
+#include "util.h"
 
 #include "filesystem/musicdatabasedirectory.h"
 
@@ -25,6 +26,11 @@ bool CGUIViewStateWindowMusic::AutoPlayNextItem()
 CStdString CGUIViewStateWindowMusic::GetLockType()
 {
   return "music";
+}
+
+CStdString CGUIViewStateWindowMusic::GetExtensions()
+{
+  return g_stSettings.m_musicExtensions;
 }
 
 CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
@@ -448,6 +454,35 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
   g_settings.Save();
 }
 
+VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
+{
+  //  Setup shares we want to have
+  m_shares.clear();
+  //  Musicdb shares
+  CFileItemList items;
+  CDirectory::GetDirectory("musicdb://", items);
+  for (int i=0; i<items.Size(); ++i)
+  {
+    CFileItem* item=items[i];
+    CShare share;
+    share.strName=item->GetLabel();
+    share.strPath=item->m_strPath;
+    share.m_strThumbnailImage="defaultFolderBig.png";
+    share.m_iDriveType = SHARE_TYPE_LOCAL;
+    m_shares.push_back(share);
+  }
+
+  //  Playlists share
+  CShare share;
+  share.strName=g_localizeStrings.Get(136); // Playlists
+  share.strPath=CUtil::MusicPlaylistsLocation();
+  share.m_strThumbnailImage="defaultFolderBig.png";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  m_shares.push_back(share);
+
+  return CGUIViewStateWindowMusic::GetShares();
+}
+
 CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
   if (items.IsVirtualDirectoryRoot())
@@ -508,6 +543,11 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
   g_settings.Save();
 }
 
+VECSHARES& CGUIViewStateWindowMusicSongs::GetShares()
+{
+  return g_settings.m_vecMyMusicShares;
+}
+
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
   CStdString strTrackLeft=g_guiSettings.GetString("mymusic.nowplayingtrackformat");
@@ -543,4 +583,23 @@ int CGUIViewStateWindowMusicPlaylist::GetPlaylist()
 bool CGUIViewStateWindowMusicPlaylist::AutoPlayNextItem()
 {
   return false;
+}
+
+bool CGUIViewStateWindowMusicPlaylist::HideParentDirItems()
+{
+  return true;
+}
+
+VECSHARES& CGUIViewStateWindowMusicPlaylist::GetShares()
+{
+  m_shares.clear();
+  //  Playlist share
+  CShare share;
+  share.strName;
+  share.strPath="playlistmusic://";
+  share.m_strThumbnailImage="defaultFolderBig.png";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  m_shares.push_back(share);
+
+  return CGUIViewStateWindowMusic::GetShares();
 }

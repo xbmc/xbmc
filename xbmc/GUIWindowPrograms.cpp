@@ -90,12 +90,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         }
       }
 
-      // need file filters or GetDirectory in SetHistoryPath fails
-      m_rootDir.SetMask(".xbe|.cut");
-      m_rootDir.SetShares(g_settings.m_vecMyProgramsShares);
       SetHistoryForPath(m_vecItems.m_strPath);
-      m_rootDir.SetMask(".xbe|.cut");
-      m_rootDir.SetShares(g_settings.m_vecMyProgramsShares);
+
       return CGUIMediaWindow::OnMessage(message);
     }
   break;

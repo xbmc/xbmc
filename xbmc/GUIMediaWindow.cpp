@@ -47,6 +47,16 @@ void CGUIMediaWindow::OnWindowLoaded()
   m_viewControl.AddView(VIEW_METHOD_LARGE_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.AddView(VIEW_METHOD_LARGE_LIST, GetControl(CONTROL_BIG_LIST));
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
+
+  // Setup shares and filemasks for this window
+  CFileItemList items;
+  CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
+  if (viewState)
+  {
+    m_rootDir.SetMask(viewState->GetExtensions());
+    m_rootDir.SetShares(viewState->GetShares());
+    delete viewState;
+  }
 }
 
 void CGUIMediaWindow::OnWindowUnload()

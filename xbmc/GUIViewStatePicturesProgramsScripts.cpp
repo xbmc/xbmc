@@ -67,6 +67,16 @@ bool CGUIViewStateWindowPictures::UnrollArchives()
   return g_guiSettings.GetBool("filelists.unrollarchives");
 }
 
+CStdString CGUIViewStateWindowPictures::GetExtensions()
+{
+  return g_stSettings.m_pictureExtensions;
+}
+
+VECSHARES& CGUIViewStateWindowPictures::GetShares()
+{
+  return g_settings.m_vecMyPictureShares;
+}
+
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
   AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%I", "%F", ""));  // Titel, Size | Foldername, empty
@@ -103,6 +113,16 @@ CStdString CGUIViewStateWindowPrograms::GetLockType()
   return "myprograms";
 }
 
+CStdString CGUIViewStateWindowPrograms::GetExtensions()
+{
+  return ".xbe|.cut";
+}
+
+VECSHARES& CGUIViewStateWindowPrograms::GetShares()
+{
+  return g_settings.m_vecMyProgramsShares;
+}
+
 CGUIViewStateWindowScripts::CGUIViewStateWindowScripts(const CFileItemList& items) : CGUIViewState(items)
 {
   AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%F", ""));  // Filename, Size | Foldername, empty
@@ -125,3 +145,22 @@ void CGUIViewStateWindowScripts::SaveViewState()
   g_stSettings.m_ScriptsSortOrder=GetSortOrder();
   g_settings.Save();
 }
+
+CStdString CGUIViewStateWindowScripts::GetExtensions()
+{
+  return ".py";
+}
+
+VECSHARES& CGUIViewStateWindowScripts::GetShares()
+{
+  m_shares.clear();
+
+  CShare share;
+  share.strName = "Q Drive";
+  share.strPath = "Q:\\scripts";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  m_shares.push_back(share);
+
+  return CGUIViewState::GetShares();
+}
+
