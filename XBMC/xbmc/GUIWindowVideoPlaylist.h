@@ -17,7 +17,6 @@ protected:
   virtual void OnPopupMenu(int iItem);
   void OnMove(int iItem, int iAction);
 
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   void ClearPlayList();
   void RemovePlayListItem(int iItem);
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
@@ -27,4 +26,5 @@ protected:
   void SavePlayList();
 
   int iPos;
+  VECSHARES m_shares;
 };

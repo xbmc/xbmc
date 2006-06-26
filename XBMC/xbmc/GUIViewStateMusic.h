@@ -11,6 +11,7 @@ protected:
   virtual bool UnrollArchives();
   virtual bool AutoPlayNextItem();
   virtual CStdString GetLockType();
+  virtual CStdString GetExtensions();
 };
 
 class CGUIViewStateMusicDatabase : public CGUIViewStateWindowMusic
@@ -47,6 +48,7 @@ public:
 
 protected:
   virtual void SaveViewState();
+  virtual VECSHARES& GetShares();
 };
 
 class CGUIViewStateWindowMusicSongs : public CGUIViewStateWindowMusic
@@ -56,6 +58,7 @@ public:
 
 protected:
   virtual void SaveViewState();
+  virtual VECSHARES& GetShares();
 };
 
 class CGUIViewStateWindowMusicPlaylist : public CGUIViewStateWindowMusic
@@ -67,4 +70,6 @@ protected:
   virtual void SaveViewState();
   virtual int GetPlaylist();
   virtual bool AutoPlayNextItem();
+  virtual bool HideParentDirItems();
+  virtual VECSHARES& GetShares();
 };

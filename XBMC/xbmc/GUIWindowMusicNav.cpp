@@ -50,32 +50,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      //  Setup shares we want to have
-      m_shares.clear();
-      //  Musicdb shares
-      CFileItemList items;
-      CDirectory::GetDirectory("musicdb://", items);
-      for (int i=0; i<items.Size(); ++i)
-      {
-        CFileItem* item=items[i];
-        CShare share;
-        share.strName=item->GetLabel();
-        share.strPath=item->m_strPath;
-        share.m_strThumbnailImage="defaultFolderBig.png";
-        m_shares.push_back(share);
-      }
-
-      //  Playlists share
-      CShare share;
-      share.strName=g_localizeStrings.Get(136); // Playlists
-      share.strPath=CUtil::MusicPlaylistsLocation();
-      share.m_strThumbnailImage="defaultFolderBig.png";
-      m_shares.push_back(share);
-
-      // setup shares and file filters
-      m_rootDir.SetMask(g_stSettings.m_musicExtensions);
-      m_rootDir.SetShares(m_shares);
-
       if (m_vecItems.m_strPath=="?")
         m_vecItems.m_strPath = "";
 
@@ -173,7 +147,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           g_partyModeManager.Enable();
 
           // Playlist directory is the root of the playlist window
-          if (m_guiState.get()) m_guiState->SetPlaylistDirectory("");
+          if (m_guiState.get()) m_guiState->SetPlaylistDirectory("playlistmusic://");
 
           return true;
         }

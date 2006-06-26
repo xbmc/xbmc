@@ -1,5 +1,7 @@
 #pragma once
 
+#include "settings.h"
+
 typedef enum {
   VIEW_METHOD_NONE=-1,
   VIEW_METHOD_LIST,
@@ -52,6 +54,8 @@ public:
   virtual bool UnrollArchives();
   virtual bool AutoPlayNextItem();
   virtual CStdString GetLockType();
+  virtual CStdString GetExtensions();
+  virtual VECSHARES& GetShares();
 
 protected:
   CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
@@ -63,6 +67,8 @@ protected:
   void SetSortMethod(SORT_METHOD sortMethod);
   void SetSortOrder(SORT_ORDER sortOrder) { m_sortOrder=sortOrder; }
   const CFileItemList& m_items;
+
+  static VECSHARES m_shares;
 
 private:
   typedef struct _VIEW

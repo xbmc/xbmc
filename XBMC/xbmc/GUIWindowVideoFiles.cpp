@@ -104,9 +104,6 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           }
         }
 
-        // need file filters or GetDirectory in SetHistoryPath fails
-        m_rootDir.SetMask(g_stSettings.m_videoExtensions);
-        m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
         SetHistoryForPath(m_vecItems.m_strPath);
       }
 
@@ -624,7 +621,7 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
   if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_VIDEO))
   {
     if (m_guiState.get())
-      m_guiState->SetPlaylistDirectory("");
+      m_guiState->SetPlaylistDirectory("playlistvideo://");
     // activate the playlist window if its not activated yet
     if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
     {
@@ -656,7 +653,6 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
     // and do the popup menu
     if (CGUIDialogContextMenu::BookmarksMenu("video", m_vecItems[iItem], iPosX, iPosY))
     {
-      m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
       Update(m_vecItems.m_strPath);
       return ;
     }
