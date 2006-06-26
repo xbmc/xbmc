@@ -65,9 +65,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
       
-      m_rootDir.SetMask(g_stSettings.m_pictureExtensions);
-      m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
-
       for (unsigned int i=0;i<m_rootDir.GetNumberOfShares();++i)
       {
         const CShare& share = m_rootDir[i];
@@ -433,7 +430,6 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     // and do the popup menu
     if (CGUIDialogContextMenu::BookmarksMenu("pictures", m_vecItems[iItem], iPosX, iPosY))
     {
-      m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
       Update(m_vecItems.m_strPath);
       return ;
     }

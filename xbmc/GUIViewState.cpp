@@ -7,6 +7,7 @@
 #include "util.h"
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
+VECSHARES CGUIViewState::m_shares;
 
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
@@ -270,6 +271,16 @@ bool CGUIViewState::AutoPlayNextItem()
 CStdString CGUIViewState::GetLockType()
 {
   return "";
+}
+
+CStdString CGUIViewState::GetExtensions()
+{
+  return "";
+}
+
+VECSHARES& CGUIViewState::GetShares()
+{
+  return m_shares;
 }
 
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)

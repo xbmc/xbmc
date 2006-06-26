@@ -1,54 +1,39 @@
 #include "../stdafx.h"
-#include "PlaylistDirectory.h"
-#include "../utils/log.h"
-#include "../PlaylistFactory.h"
-#include "../Util.h"
+#include "playlistdirectory.h"
+#include "../playlistplayer.h"
 
-namespace DIRECTORY
+
+CPlaylistDirectory::CPlaylistDirectory()
 {
-  CPlaylistDirectory::CPlaylistDirectory()
-  {
-  }
 
-  CPlaylistDirectory::~CPlaylistDirectory()
-  {
-  }
+}
 
-  bool CPlaylistDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
-  {
-    CPlayListFactory factory;
-    auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
-    if ( NULL != pPlayList.get())
-    {
-      // load it
-      if (!pPlayList->Load(strPath, false))
-        return false; //hmmm unable to load playlist?
+CPlaylistDirectory::~CPlaylistDirectory()
+{
 
-      CPlayList playlist = *pPlayList;
-      // convert playlist items to songs
-      for (int i = 0; i < (int)playlist.size(); ++i)
-      {
-        CFileItem *item = new CFileItem(playlist[i]);
-        item->m_iprogramCount = i;  // hack for playlist order
-        item->m_musicInfoTag.SetDuration(playlist[i].GetDuration());
-        items.Add(item);
-      }
-    }
-    return true;
-  }
+}
 
-  bool CPlaylistDirectory::ContainsFiles(const CStdString& strPath)
-  {
-    CPlayListFactory factory;
-    auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
-    if ( NULL != pPlayList.get())
-    {
-      // load it
-      if (!pPlayList->Load(strPath, false))
-        return false; //hmmm unable to load playlist?
+bool CPlaylistDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+{
+  CURL url(strPath);
 
-      return (pPlayList->size() > 1);
-    }
+  int playlistTyp=PLAYLIST_NONE;
+  if (url.GetProtocol()=="playlistmusic")
+    playlistTyp=PLAYLIST_MUSIC;
+  else if (url.GetProtocol()=="playlistvideo")
+    playlistTyp=PLAYLIST_VIDEO;
+
+  if (playlistTyp==PLAYLIST_NONE)
     return false;
+
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(playlistTyp);
+  items.Reserve(playlist.size());
+
+  for (int i = 0; i < playlist.size(); ++i)
+  {
+    CFileItem* item = new CFileItem(playlist[i]);
+    items.Add(item);
   }
+
+  return true;
 }
