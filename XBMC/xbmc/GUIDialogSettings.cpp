@@ -205,6 +205,17 @@ void CGUIDialogSettings::UpdateSetting(unsigned int num)
     CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(controlID);
     if (pControl && setting.data) pControl->SetIntValue(*(int *)setting.data);
   }
+  else if (setting.type == SettingInfo::BUTTON)
+      SET_CONTROL_LABEL(controlID,setting.name);
+  
+  if (setting.enabled)
+  {
+    CONTROL_ENABLE(controlID);
+  }
+  else
+  {
+    CONTROL_DISABLE(controlID);
+  }
 }
 
 void CGUIDialogSettings::OnClick(int iID)
@@ -330,12 +341,13 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
   pControl->AllocResources();
 }
 
-void CGUIDialogSettings::AddButton(unsigned int id, int label)
+void CGUIDialogSettings::AddButton(unsigned int id, int label,bool bOn)
 {
   SettingInfo setting;
   setting.id = id;
   setting.name = g_localizeStrings.Get(label);
   setting.type = SettingInfo::BUTTON;
+  setting.enabled  = bOn;
   setting.data = NULL;
   m_settings.push_back(setting);
 }

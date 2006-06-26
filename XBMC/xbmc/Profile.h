@@ -1,4 +1,5 @@
 #pragma once
+#include "GUIPassword.h"
 
 class CProfile
 {
@@ -7,11 +8,54 @@ public:
   ~CProfile(void);
 
   const CStdString& getName() const { return _name;}
-  const CStdString& getFileName() const { return _fileName;}
+  const CStdString& getDirectory() const { return _directory;}
+  const CStdString& getThumb() const { return _thumb;}
+  const CStdString& getLockCode() const { return _strLockCode;}
+  int getLockMode() const { return _iLockMode; }
+
+  bool hasDatabases() const { return _bDatabases; }
+  bool canWriteDatabases() const { if (!g_passwordManager.bMasterUser) return _bCanWrite; else return true; }
+  bool hasSources() const { return _bSources; }
+  bool canWriteSources() const { if (!g_passwordManager.bMasterUser) return _bCanWriteSources; else return true; }
+  bool settingsLocked() const { return _bLockSettings; }
+  bool musicLocked() const { return _bLockMusic; }
+  bool videoLocked() const { return _bLockVideo; }
+  bool picturesLocked() const { return _bLockPictures; }
+  bool filesLocked() const { return _bLockFiles; }
+  bool programsLocked() const { return _bLockPrograms; }
 
   void setName(const CStdString& name) {_name = name;}
-  void setFileName(const CStdString& filename) {_fileName = filename;}
-private:
-  CStdString _fileName;
+  void setDirectory(const CStdString& directory) {_directory = directory;}
+  void setLockMode(int iLockMode) { _iLockMode = iLockMode;}
+  void setLockCode(const CStdString& strLockCode) { _strLockCode = strLockCode; }
+  void setThumb(const CStdString& thumb) {_thumb = thumb;}
+  void setDatabases(bool bHas) { _bDatabases = bHas; }
+  void setWriteDatabases(bool bCan) { _bCanWrite = bCan; }
+  void setSources(bool bHas) { _bSources = bHas; }
+  void setWriteSources(bool bCan) { _bCanWriteSources = bCan; }
+  
+  void setSettingsLocked(bool bLocked) { _bLockSettings = bLocked; }
+  void setFilesLocked(bool bLocked) { _bLockFiles = bLocked; }
+  void setMusicLocked(bool bLocked) { _bLockMusic = bLocked; }
+  void setVideoLocked(bool bLocked) { _bLockVideo = bLocked; }
+  void setPicturesLocked(bool bLocked) { _bLockPictures = bLocked; }
+  void setProgramsLocked(bool bLocked) { _bLockPrograms = bLocked; }
+
+  CStdString _directory;
   CStdString _name;
+  CStdString _thumb;
+  bool _bDatabases;
+  bool _bCanWrite;
+  bool _bSources;
+  bool _bCanWriteSources;
+
+  // lock stuff
+  int _iLockMode;
+  CStdString _strLockCode;
+  bool _bLockSettings;
+  bool _bLockMusic;
+  bool _bLockVideo;
+  bool _bLockFiles;
+  bool _bLockPictures;
+  bool _bLockPrograms;
 };

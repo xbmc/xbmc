@@ -162,7 +162,6 @@ CGUISettings::CGUISettings(void)
   AddCategory(0, "pictures", 16000);
   AddBool(1, "pictures.useautoswitching", 14011, false);
   AddBool(2, "pictures.autoswitchuselargethumbs", 14012, false);
-
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddInt(2, "slideshow.transistiontime", 225, 2500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
@@ -318,21 +317,12 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "audiooutput.dtspassthrough", 254, true);
 
   AddCategory(4, "masterlock", 12360);
-  AddString(1, "masterlock.lockcode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
+  AddString(1, "masterlock.lockcode"       , 12365, "-", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "masterlock.sep1");
-  AddBool(3,"masterlock.lockmusic",20038,false);
-  AddBool(4,"masterlock.lockvideo",20039,false);
-  AddBool(5,"masterlock.lockpictures",20040,false);
-  AddBool(6,"masterlock.lockprograms",20041,false);
-  AddBool(7,"masterlock.lockfiles",20042,true);
-  AddBool(8,"masterlock.lockSettings",20043,true);
-  AddSeparator(9, "masterlock.sep2");
-  AddBool(10, "masterlock.sharelocks"    , 20044,false); 
-  AddBool(11, "masterlock.startuplock"      , 12369,false);
-  AddBool(12, "masterlock.enableshutdown"   , 12362,false);
+  AddBool(4, "masterlock.startuplock"      , 20076,false);
+  AddBool(5, "masterlock.enableshutdown"   , 12362,false);
   
   // hidden masterlock settings
-  AddInt(0,"masterlock.lockmode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
   AddInt(0,"masterlock.maxretries"       , 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT); 
   
   // video settings
@@ -391,9 +381,9 @@ CGUISettings::CGUISettings(void)
   AddGroup(6, 705);
   AddCategory(6, "network", 705);
   AddInt(1, "network.assignment", 715, NETWORK_DASH, NETWORK_DASH, 1, NETWORK_STATIC, SPIN_CONTROL_TEXT);
-  AddString(2, "network.ipaddress", 719, "192.168.0.3", BUTTON_CONTROL_IP_INPUT);
+  AddString(2, "network.ipaddress", 719, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddString(3, "network.subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(4, "network.gateway", 721, "192.168.0.1", BUTTON_CONTROL_IP_INPUT);
+  AddString(4, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddString(5, "network.dns", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddSeparator(6, "network.sep1");
   AddBool(7, "network.usehttpproxy", 708, false);
@@ -476,10 +466,10 @@ CGUISettings::CGUISettings(void)
   AddString(5, "xbdatetime.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
 
   //  TODO: localize 2.0
-  AddString(0,"system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
-  AddString(0,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
-  AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
-}
+    AddString(0,"system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
+    AddString(0,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
+    AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+  }
 
 CGUISettings::~CGUISettings(void)
 {}
@@ -601,34 +591,7 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 
 void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
 {
-  mapIter it = settingsMap.find("masterlock.lockmode");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.lockcode");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.lockmusic");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.lockvideo");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.lockpictures");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.lockprograms");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.lockfiles");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.locksettings");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.sharelocks");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.enableshutdown");
+  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.enableshutdown");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
   it = settingsMap.find("masterlock.maxretries");

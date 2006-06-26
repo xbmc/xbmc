@@ -201,7 +201,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   if (strDirectory.size() < 3)
   {
     // no rip path has been set, show error
-    CLog::Log(LOGERROR, "Error: CDDARipPath has not been set in XboxMediaCenter.xml");
+    CLog::Log(LOGERROR, "Error: CDDARipPath has not been set");
     g_graphicsContext.Lock();
     CGUIDialogOK::ShowAndGetInput(257, 608, 609, 0);
     g_graphicsContext.Unlock();
@@ -245,7 +245,7 @@ bool CCDDARipper::RipCD()
   if (strDirectory.size() < 3)
   {
     // no rip path has been set, show error
-    CLog::Log(LOGERROR, "Error: CDDARipPath has not been set in XboxMediaCenter.xml");
+    CLog::Log(LOGERROR, "Error: CDDARipPath has not been set");
     g_graphicsContext.Lock();
     CGUIDialogOK::ShowAndGetInput(257, 608, 609, 0);
     g_graphicsContext.Unlock();

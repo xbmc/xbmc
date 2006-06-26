@@ -129,7 +129,7 @@ CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
 void ILCD::Initialize()
 {
   CStdString lcdPath;
-  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "LCD.xml", lcdPath);
+  lcdPath = g_settings.GetUserDataItem("lcd.xml");
   LoadSkin(lcdPath);
 }
 

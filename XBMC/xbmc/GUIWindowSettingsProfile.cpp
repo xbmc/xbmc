@@ -5,9 +5,11 @@
 #include "util.h"
 #include "application.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIDialogProfileSettings.h"
 
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
+#define CONTROL_LOGINSCREEN 4
 
 CGUIWindowSettingsProfile::CGUIWindowSettingsProfile(void)
     : CGUIWindow(WINDOW_SETTINGS_PROFILES, "SettingsProfile.xml")
@@ -52,78 +54,40 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   if (!pMenu) return ;
   // load our menu
   pMenu->Initialize();
-  // add the needed buttons
-  pMenu->AddButton(13206); // Overwrite
-  pMenu->AddButton(118); // Rename
-  pMenu->AddButton(117); // Delete
+  if (iItem == (int)g_settings.m_vecProfiles.size())
+    return;
+
+  // add the needed buttons  
+  int btnEdit = pMenu->AddButton(20067); // edit
+  int btnDelete=0;
+  if (iItem > 0)
+    btnDelete = pMenu->AddButton(117); // Delete
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal();
-  switch (pMenu->GetButton())
+  int iButton = pMenu->GetButton();
+  if (iButton == btnEdit)
+    CGUIDialogProfileSettings::ShowForProfile(iItem);
+  if (iButton == btnDelete)
   {
-  case 1:  // Overwrite
-    DoOverwrite(iItem);
-    break;
-  case 2:  // Rename
-    DoRename(iItem);
-    break;
-  case 3:  // Delete
     DoDelete(iItem);
-    break;
+    iItem--;
   }
-}
 
-void CGUIWindowSettingsProfile::DoRename(int iItem)
-{
-  if (iItem < (int)g_settings.m_vecProfiles.size())  // do nothing when <new profile> is selected
-  {
-    CStdString strProfileName;
-    if (CGUIDialogKeyboard::ShowAndGetInput(strProfileName, g_localizeStrings.Get(16010), false))
-    {
-      CProfile& profile = g_settings.m_vecProfiles.at(iItem);
-      profile.setName(strProfileName);
-      g_settings.Save();
-      LoadList();
-    }
-  }
+  LoadList();
+  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
+  m_gWindowManager.SendMessage(msg);
+
 }
 
 void CGUIWindowSettingsProfile::DoDelete(int iItem)
-{
-  if (iItem < (int)g_settings.m_vecProfiles.size())  // do nothing when <new profile> is selected
-  {
-    {
-      CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-      if (dlgYesNo)
-      {
-        CStdString message;
-        CStdString str = g_localizeStrings.Get(13201);
-        message.Format(str.c_str(), g_settings.m_vecProfiles.at(iItem).getName());
-        dlgYesNo->SetHeading(13200);
-        dlgYesNo->SetLine(0, message);
-        dlgYesNo->SetLine(1, "");
-        dlgYesNo->SetLine(2, "");
-        dlgYesNo->DoModal();
-
-        if (dlgYesNo->IsConfirmed())
-        {
-          //delete profile
-          g_settings.DeleteProfile(iItem);
-          LoadList();
-        }
-      }
-    }
-  }
-}
-
-void CGUIWindowSettingsProfile::DoOverwrite(int iItem)
 {
   CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (dlgYesNo)
   {
     CStdString message;
-    CStdString str = g_localizeStrings.Get(13207);
+    CStdString str = g_localizeStrings.Get(13201);
     message.Format(str.c_str(), g_settings.m_vecProfiles.at(iItem).getName());
     dlgYesNo->SetHeading(13200);
     dlgYesNo->SetLine(0, message);
@@ -133,7 +97,9 @@ void CGUIWindowSettingsProfile::DoOverwrite(int iItem)
 
     if (dlgYesNo->IsConfirmed())
     {
-      g_settings.SaveSettingsToProfile(iItem);
+      //delete profile
+      g_settings.DeleteProfile(iItem);
+      LoadList();
     }
   }
 }
@@ -173,67 +139,25 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             }
             return true;
           }
-          else if (iItem > (int)g_settings.m_vecProfiles.size() - 1)
+          else if (iItem < (int)g_settings.m_vecProfiles.size())
           {
-            //new profile
-            CStdString strProfileName;
-            if (CGUIDialogKeyboard::ShowAndGetInput(strProfileName, g_localizeStrings.Get(16010), false))
-            {
-              CProfile profile;
-              profile.setName(strProfileName);
-              int i = 0;
-              while (CFile::Exists(g_settings.GetProfilesFile(i)))
-              {
-                i++;
-              }
-              profile.setFileName(g_settings.GetProfilesFile(i));
-              g_settings.m_vecProfiles.push_back(profile);
-              g_settings.SaveSettingsToProfile(iItem);
-              g_settings.Save();
-              LoadList();
-            }
+            g_settings.LoadProfile(iItem);
+            g_settings.Save();
             return true;
           }
-          //load profile
-          CStdString strPrevSkin = g_guiSettings.GetString("lookandfeel.skin");
-          int iPrevResolution = g_guiSettings.m_LookAndFeelResolution;
-          CSettings::stSettings prevSettings = g_stSettings;
-          g_application.StopPlaying();
-          g_application.StopServices();
-          g_settings.LoadProfile(iItem);
-          //reload stuff
-          CStdString strLangInfoPath;
-          strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("lookandfeel.language"));
-          g_langInfo.Load(strLangInfoPath);
-          g_charsetConverter.reset();
-          CStdString strLanguagePath;
-          strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("lookandfeel.language"));
-          g_localizeStrings.Load(strLanguagePath);
-          g_graphicsContext.SetD3DParameters(&g_application.m_d3dpp);
-          g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
-          if (
-            (iPrevResolution != g_guiSettings.m_LookAndFeelResolution) ||
-            (strcmpi(strPrevSkin.c_str(), g_guiSettings.GetString("lookandfeel.skin").c_str()))
-          )
+          else if (iItem > (int)g_settings.m_vecProfiles.size() - 1)
           {
-            g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+            CDirectory::Create(g_settings.GetUserDataFolder()+"\\profiles");
+            if (CGUIDialogProfileSettings::ShowForProfile(g_settings.m_vecProfiles.size()))
+              LoadList();
+            return true;
           }
-          g_application.StartServices();
-          SetLastLoaded();
-          CGUIDialogOK* dlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-          if (dlgOK)
-          {
-            CStdString message;
-            CStdString str = g_localizeStrings.Get(13203);
-            message.Format(str.c_str(), g_settings.m_vecProfiles.at(iItem).getName());
-            dlgOK->SetHeading(13200);
-            dlgOK->SetLine(0, message);
-            dlgOK->SetLine(1, "");
-            dlgOK->SetLine(2, "");
-            dlgOK->DoModal();
-          }
-          return true;
         }
+      }
+      else if (iControl == CONTROL_LOGINSCREEN)
+      {
+        g_settings.bUseLoginScreen = !g_settings.bUseLoginScreen;
+        g_settings.SaveProfiles("q:\\system\\profiles.xml");
       }
     }
     break;
@@ -255,10 +179,19 @@ void CGUIWindowSettingsProfile::LoadList()
     m_vecListItems.push_back(item);
   }
   {
-    CGUIListItem* item = new CGUIListItem(g_localizeStrings.Get(13202));
+    CGUIListItem* item = new CGUIListItem(g_localizeStrings.Get(20058));
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, (void*)item);
     g_graphicsContext.SendMessage(msg);
     m_vecListItems.push_back(item);
+  }
+
+  if (g_settings.bUseLoginScreen)
+  {
+    CONTROL_SELECT(CONTROL_LOGINSCREEN);
+  }
+  else
+  {
+    CONTROL_DESELECT(CONTROL_LOGINSCREEN);
   }
 
   SetLastLoaded();
