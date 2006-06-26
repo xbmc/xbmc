@@ -288,7 +288,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)
   {
-    if (g_guiSettings.GetBool("masterlock.locksettings") && g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE)
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 

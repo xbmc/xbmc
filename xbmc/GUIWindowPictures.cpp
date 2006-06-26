@@ -472,7 +472,6 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       }
     }
     //int btn_Settings = -2;
-    //if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)
     int btn_Settings = pMenu->AddButton(5);         // Settings
 
     // position it correctly

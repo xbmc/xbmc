@@ -35,7 +35,7 @@ void CAutorun::ExecuteAutorun()
 
   if ( g_guiSettings.GetBool("autorun.cdda") && pInfo->IsAudio( 1 ) )
   {
-    if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockmusic"))
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked())
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return ;
 
@@ -113,7 +113,7 @@ void CAutorun::RunXboxCd()
   {
     if (!g_guiSettings.GetBool("autorun.xbox"))
       return;
-    if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockprograms"))
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked())
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 
@@ -212,7 +212,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         {
           if ( g_guiSettings.GetBool("autorun.dvd") )
           {
-            if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockvideo"))
+            if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked())
               if (!g_passwordManager.IsMasterLockUnlocked(true))
                 return false;
 
@@ -227,7 +227,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           {
             if ( g_guiSettings.GetBool("autorun.dvd") )
             {
-              if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockvideo"))
+              if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked())
                 if (!g_passwordManager.IsMasterLockUnlocked(true))
                   return false;
 
@@ -258,7 +258,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             {
               if ( g_guiSettings.GetBool("autorun.dvd") )
               {
-                if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockvideo"))
+                if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked())
                   if (!g_passwordManager.IsMasterLockUnlocked(true))
                     return false;
                 CFileItemList items;
@@ -288,7 +288,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
               {
                 if ( g_guiSettings.GetBool("autorun.dvd") )
                 {
-                  if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockpictures"))
+                  if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].picturesLocked())
                     if (!g_passwordManager.IsMasterLockUnlocked(true))
                       return false;
                   bPlaying = true;
@@ -313,7 +313,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             CFileItem *pItem = tempItems[i];
             if (!pItem->m_bIsFolder && pItem->IsVideo())
             {
-              if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockvideo") && !bPlaying)
+              if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked() && !bPlaying)
                 if (!g_passwordManager.IsMasterLockUnlocked(true))
                   return false;
 
@@ -348,7 +348,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             CFileItem *pItem = vecItems[i];
             if (!pItem->m_bIsFolder && pItem->IsAudio())
             {
-              if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockmusic") && !bPlaying)
+              if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked() && !bPlaying)
                 if (!g_passwordManager.IsMasterLockUnlocked(true))
                   return false;
 
@@ -370,7 +370,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             CFileItem *pItem = vecItems[i];
             if (!pItem->m_bIsFolder && pItem->IsPicture())
             {
-              if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockpictures") && !bPlaying)
+              if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].picturesLocked() && !bPlaying)
                 if (!g_passwordManager.IsMasterLockUnlocked(true))
                   return false;
 
@@ -446,7 +446,7 @@ bool CAutorun::PlayDisc()
     return false ;
   if ( pInfo->IsAudio( 1 ) )
   {
-    if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockmusic"))
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked())
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
@@ -479,7 +479,7 @@ bool CAutorun::PlayDisc()
       CLog::Log(LOGDEBUG, "Playdisc called on an UDFX/UDF/ISOUDFn or Unknown disk, attempting to run XBE");
       if ( CFile::Exists("D:\\default.xbe") )
       {
-        if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockprograms"))
+        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked())
           if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;
 
@@ -528,7 +528,7 @@ bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nA
       {
         if (bRoot && pItem->m_strPath.Find( "VIDEO_TS" ) != -1 )
         {
-          if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockvideo"))
+          if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked())
             if (!g_passwordManager.IsMasterLockUnlocked(true))
               return false;
 
@@ -546,7 +546,7 @@ bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nA
             items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
             for (int i=0; i<items.Size(); ++i)
             {
-              if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockvideo") && !bPlaying)
+              if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked() && !bPlaying)
                 if (!g_passwordManager.IsMasterLockUnlocked(true))
                   return false;
 
@@ -573,7 +573,7 @@ bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nA
             items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
             for (int i=0; i<items.Size(); ++i)
             {
-              if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockvideo") && !bPlaying)
+              if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked() && !bPlaying)
                 if (!g_passwordManager.IsMasterLockUnlocked(true))
                   return false;
 
@@ -608,7 +608,7 @@ bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nA
       CFileItem *pItem = vecItems[i];
       if (!pItem->m_bIsFolder && pItem->IsVideo())
       {
-        if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockvideo") && !bPlaying)
+        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked() && !bPlaying)
           if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;
 
@@ -626,7 +626,7 @@ bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nA
       CFileItem *pItem = vecItems[i];
       if (!pItem->m_bIsFolder && pItem->IsAudio())
       {
-        if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockmusic") && !bPlaying)
+        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked() && !bPlaying)
           if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;
 
@@ -648,7 +648,7 @@ bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nA
       CFileItem *pItem = vecItems[i];
       if (!pItem->m_bIsFolder && pItem->IsPicture())
       {
-        if (g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_guiSettings.GetBool("masterlock.lockpictures") && !bPlaying)
+        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].picturesLocked() && !bPlaying)
           if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;
 

@@ -16,6 +16,7 @@
 #define CONTROL_LABEL_PATH    412
 #define CONTROL_OK            413
 #define CONTROL_CANCEL        414
+#define CONTROL_NEWFOLDER     415
 
 CGUIDialogFileBrowser::CGUIDialogFileBrowser()
     : CGUIDialog(WINDOW_DIALOG_FILE_BROWSER, "FileBrowser.xml")
@@ -119,7 +120,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
             Close();
           }
           else
-            CGUIDialogOK::ShowAndGetInput(257,0,0,0);
+            CGUIDialogOK::ShowAndGetInput(257,20072,0,0);
         }
         else
         {
@@ -132,6 +133,19 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       {
         Close();
         return true;
+      }
+      else if (message.GetSenderId() == CONTROL_NEWFOLDER)
+      {
+        CStdString strInput;
+        if (CGUIDialogKeyboard::ShowAndGetInput(strInput,g_localizeStrings.Get(119),false))
+        {
+          CStdString strPath;
+          CUtil::AddFileToFolder(m_vecItems.m_strPath,strInput,strPath);
+          if (CDirectory::Create(strPath))
+            Update(m_vecItems.m_strPath);
+          else
+            CGUIDialogOK::ShowAndGetInput(20069,20072,20073,0);
+        }
       }
     }
     break;
@@ -317,6 +331,14 @@ void CGUIDialogFileBrowser::Render()
     else
     {
       CONTROL_ENABLE(CONTROL_OK);
+    }
+    if (m_browsingForFolders == 2)
+    {
+      CONTROL_ENABLE(CONTROL_NEWFOLDER);
+    }
+    else
+    {
+      CONTROL_DISABLE(CONTROL_NEWFOLDER);
     }
   }
   CGUIDialog::Render();

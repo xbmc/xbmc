@@ -397,7 +397,6 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
 
   // almost always visible
   //int btn_Settings = -2;
-  //if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)
   int btn_Settings = pMenu->AddButton(5);     // Settings...
 
   // if the Now Playing item is still not in the list, add it here

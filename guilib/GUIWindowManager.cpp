@@ -310,6 +310,9 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
     return;
   }
 
+  if (iWindowID == WINDOW_SETTINGS_PROFILES && !g_advancedSettings.m_profilesupport)
+    return;
+
   g_infoManager.SetNextWindow(iWindowID);
   // deactivate any window
   int currentWindow = GetActiveWindow();
