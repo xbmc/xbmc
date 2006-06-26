@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-06-2006 updated: Dutch language file (Thnx to nightspirit)
+ - 26-06-2006 updated: Chinese (Simple) language file (Thnx to omenpica)
+ - 26-06-2006 updated: Russian language file (Thnx to que_)
+ - 26-06-2006 updated: Norwegian language file (Thnx to vnm)
  - 26-06-2006 changed: cddb info is displayed even if tag reading is disabled
  - 26-06-2006 fixed: if cddb is disabled, the content of a cd is listed, then cddb is enabled, the info from cddb is not displayed
  - 26-06-2006 changed: moved playlist window content into a directory class

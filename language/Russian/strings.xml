@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- Translated by Que (que_@users.sourceforge.net), Based on  Wadimstain's translation !--> 
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: Que-->
+<!--Email: que_@users.sourceforge.net-->
+<!--Date of translation: 06/23/2006-->
 <!--$Revision$-->
+<!--Based on english strings version 1.326-->
 <strings>
   <string id="0">Программы</string>
   <string id="1">Фотографии</string>
@@ -158,7 +162,7 @@
   <string id="224">Длительность показа слайда</string>
   <string id="225">Время перехода от слайда к слайду</string>
   <string id="226">Включить режим PAL60</string>
-  <string id="227">Использовать CDDB</string>
+  <string id="227">Искать инф. об аудиоCD на freedb</string>
   <string id="228">Перемешать плэйлист при загрузке</string>
   <string id="229">Время до остановки HDD (мин)</string>
   <string id="230">Фильтры</string>
@@ -189,7 +193,7 @@
   <string id="255">CDDB</string>
   <string id="256">Проверка инф. freedb для CDDB</string>
   <string id="257">Ошибка</string>
-  <string id="258">Использовать теги ID3</string>
+  <string id="258">Читать теги</string>
   <string id="259">Открытие</string>
   <string id="260">Shoutcast</string>
   <string id="261">Ожидание старта....</string>
@@ -594,7 +598,7 @@
   <string id="1018">Введите номер порта</string>
   <string id="1019">Введите имя пользователя</string>
   <string id="1020">Добавить источник %s</string>
-  <string id="1021">Введите или найдите путь к медиа-файлу.</string>
+  <string id="1021">Введите или укажите пути к медиа-файлам.</string>
   <string id="1022">Введите имя для этого медиа-ресурса.</string>
   <string id="1023">Найдите новый ресурс</string>
   <string id="1024">Просмотр</string>
@@ -606,16 +610,11 @@
   <string id="1030">если рисунок</string>
   <string id="1031">если папка с рисунками</string>
   <string id="1032">Добавление сетевого расположения…</string>
-  <string id="1200">SMB-ресурс</string>
-  <string id="1201">IP-адрес SMB-ресурса</string>
-  <string id="1202">Рабочая группа для SMB ресурса</string>
+  <string id="1200">SMB-клиент</string>
+  <string id="1202">Рабочая группа</string>
   <string id="1203">Имя пользователя (user name)</string>
   <string id="1204">Пароль доступа (user password)</string>
-  <string id="1205">Имя ресурса</string>
-  <string id="1206">Добавить к</string>
-  <string id="1207">IP адрес WINS-сервера</string>
-  <string id="1208">Режим доступа к</string>
-  <string id="1209">Режим доступа к SMB-ресурсам установлен!</string>
+  <string id="1207">WINS-сервер</string>
   <string id="1210">Убрать</string>
   <string id="1211">Музыка</string>
   <string id="1212">Видео</string>
@@ -742,7 +741,7 @@
   <string id="12014">Трейнеры не найдены</string>
   <string id="12015">Параметры трейнера</string>
   <string id="12016">Все зарегистрированные трейлеры пропали. Обновите список</string>
-  <string id="12017">Продолжать с места остановки автоматом</string>
+  <string id="12017">Воспроизводить с места остановки</string>
   <string id="12018">Нет</string>
   <string id="12019">Да</string>
   <string id="12020">Спросить</string>
@@ -824,6 +823,7 @@
   <string id="12385">День/Месяц</string>
   <string id="12386">Месяц/День</string>
   <string id="12387">Пересканировать Базу Данных</string>
+  <string id="12388">Пользователь-'Мастер'</string>
   <string id="12390">Время работы системы</string>
   <string id="12391">минут</string>
   <string id="12392">часов</string>
@@ -1041,7 +1041,7 @@
   <string id="14021">Код области 3</string>
   <string id="14022">Фонотека</string>
   <string id="14023">Без ТВ</string>
-  <string id="14024">Введите название города (или US ZIPcode)</string>
+  <string id="14024">Введите ближайший большой город </string>
   <string id="14025">Кэш для A,V и DVD-файлов на HDD</string>
   <string id="14026">Кэш видеофайлов: - на DVDRom-е</string>
   <string id="14027">- из локальной сети</string>
@@ -1126,7 +1126,7 @@
   <string id="15034">только что вошел</string>
   <string id="15035">инициировал голосовой чат</string>
   <string id="15036">послал Вам приглашение</string>
-  <string id="15037">XBMC не подтверждает доступность Вашей сети.</string>
+  <string id="15037">XBMC не подтверждает доступность вашей сети.</string>
   <string id="15038">Возможно будут проблемы с игрой по сети</string>
   <string id="15039">XBMC не смог найти игру.</string>
   <string id="15040">Вставьте диск с игрой или нажмите 'A' для отмены</string>
@@ -1165,10 +1165,10 @@
   <string id="15110">Уровень вибрации геймпад-а</string>
   <string id="15111">Вариант оформления (тема)</string>
   <string id="15112">Тема по-умолчанию</string>
-  <string id="15200">LastFM</string>
-  <string id="15201">Отправлять статистику на LastFM</string>
-  <string id="15202">Имя пользователя для LastFM</string>
-  <string id="15203">Пароль для LastFM</string>
+  <string id="15200">Last.FM</string>
+  <string id="15201">Отправлять статистику на Last.FM</string>
+  <string id="15202">Имя пользователя для Last.FM</string>
+  <string id="15203">Пароль для Last.FM</string>
   <string id="15204">Не смог связяться: засыпаю...</string>
   <string id="15205">Пожалуйста, обновите XBMC</string>
   <string id="15206">Неверная авторизация.</string>
@@ -1181,24 +1181,24 @@
   <string id="15213">Использовать плеер..</string>
   <string id="15214">Мягкая синхронизацию звука и видео</string>
   <string id="15215">Скрыть имена файлов в режиме иконок</string>
-  <string id="15250">Учёт в статистике песен с LAST.FM</string>
-  <string id="15251">Подключение к LAST.FM...</string>
+  <string id="15250">Учёт в статистике песен с Last.FM</string>
+  <string id="15251">Подключение к Last.FM...</string>
   <string id="15252">Выбор станции...</string>
   <string id="15253">Поиск похожих исполнителей...</string>
   <string id="15254">Поиск похожих тэгов...</string>
-  <string id="15255">Ваш профиль (%name%) на LAST.FM</string>
+  <string id="15255">Ваш профиль (%name%) на Last.FM</string>
   <string id="15256">Общий топ тэгов</string>
   <string id="15257">Топовые исполнители тэга %name%</string>
   <string id="15258">Топовые альбомы тэга %name%</string>
   <string id="15259">Топовые треки тэга %name%</string>
-  <string id="15260">Слушать треки тэга %name% на LAST.FM</string>
+  <string id="15260">Слушать треки тэга %name% на Last.FM</string>
   <string id="15261">Исполнители, похожие на %name%</string>
   <string id="15262">Топ альбомов %name%</string>
   <string id="15263">Топ трэков %name%</string>
   <string id="15264">Топ тэгов %name%</string>
   <string id="15265">Список фэнов %name%</string>
-  <string id="15266">Слушать выбор фэнов %name% на LAST.FM</string>
-  <string id="15267">Слушать похожих испол. %name% на LAST.FM</string>
+  <string id="15266">Слушать выбор фэнов %name% на Last.FM</string>
+  <string id="15267">Слушать похожих испол. %name% на Last.FM</string>
   <string id="15268">Топ исполнителей от %name%</string>
   <string id="15269">Топ альбомов от %name%</string>
   <string id="15270">Топ треков от %name%</string>
@@ -1207,13 +1207,13 @@
   <string id="15273">Недельный чарт исполнителей %name%</string>
   <string id="15274">Недельный чарт альбомов %name%</string>
   <string id="15275">Недельный чарт треков %name%</string>
-  <string id="15276">Слушать выбор сообществ %name% на LAST.FM</string>
-  <string id="15277">Слушать личный выбор %name%'s на LAST.FM</string>
-  <string id="15278">Слушать любимые треки %name% на LAST.FM</string>
-  <string id="15279">Получение списка от LAST.FM...</string>
-  <string id="15280">Не могу принять список от LAST.FM...</string>
+  <string id="15276">Слушать выбор сообществ %name% на Last.FM</string>
+  <string id="15277">Слушать личный выбор %name%'s на Last.FM</string>
+  <string id="15278">Слушать любимые треки %name% на Last.FM</string>
+  <string id="15279">Получение списка от Last.FM...</string>
+  <string id="15280">Не могу принять список от Last.FM...</string>
   <string id="15281">Введите имя исполнителя для поиска похожих</string>
-  <string id="15282">Введите имя тэга для поиска похожих</string>
+  <string id="15282">Введите название для поиска похожих</string>
   <string id="15283">Треки, часто слушаемые %name%</string>
   <string id="15300">Путь не верен или не найден</string>
   <string id="15301">Не могу подключиться с серверу</string>
@@ -1244,12 +1244,12 @@
   <string id="16024">Отменяется...</string>
   <string id="16025">Введите название исполнит.</string>
   <string id="16026">Воспроизвед. плей-листа прервано</string>
-  <string id="16027">Слишком много последовательных ошибочных элементов</string>
+  <string id="16027">Слишком много последовательных ошибок</string>
   <string id="16030">Режим "вечеринки" отключен.</string>
   <string id="16031">Нет соответствующих песен в Базе Данных.</string>
   <string id="16032">Не инициализируется База Данных.</string>
   <string id="16033">Не открывается База Данных.</string>
-  <string id="16034">Не мог получить песни из базы данных.</string>
+  <string id="16034">Не мог получить песни из База Данных.</string>
   <string id="16100">Все Видео</string>
   <string id="16101">Не смотрен.</string>
   <string id="16102">Отсмотренн.</string>
@@ -1259,6 +1259,6 @@
   <string id="16106">NTSC-M и NTSC-J</string>
   <string id="16107">только NTSC-M</string>
   <string id="16108">только NTSC-J</string>
-  <string id="16109">=Соответствие!C1257</string>
+  <string id="16109">только PAL-60</string>
   <string id="16110">Для игр с 60Нz разверткой</string>
 </strings>
