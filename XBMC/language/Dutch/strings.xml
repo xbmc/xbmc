@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: NiGhTsPiRiT-->
+<!--Email: spam@nightspirit.nl-->
+<!--Date of translation: 06/21/2006-->
 <!--$Revision$-->
+<!--Based on english strings version 1.326-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -817,6 +822,7 @@
   <string id="12385">Dad/Maand</string>
   <string id="12386">Maand/Dag</string>
   <string id="12387">Database opnieuw scannen</string>
+  <string id="12388">Hoofdgebruiker</string>
   <string id="12390">Systeem uptime</string>
   <string id="12391">minuten</string>
   <string id="12392">uur</string>
@@ -877,7 +883,7 @@
   <string id="13270">Hardware:</string>
   <string id="13271">CPU Snelheid:</string>
   <string id="13274">Xbox is verbonden, maar geen DNS is beschikbaar.</string>
-  <string id="13275">Hard Disk</string>
+  <string id="13275">Harde Schijf</string>
   <string id="13276">DVD-ROM</string>
   <string id="13277">Opslag</string>
   <string id="13278">Standaard</string>
@@ -892,7 +898,7 @@
   <string id="13287">Scherm Resolutie:</string>
   <string id="13288">Xbox Versie:</string>
   <string id="13289">Xbox Serie Nummer:</string>
-  <string id="13290">XBOX Fabrikant:</string>
+  <string id="13290">Xbox Fabrikant:</string>
   <string id="13291">ModChip:</string>
   <string id="13292">A/V Kabel:</string>
   <string id="13293">Video &amp; XBE Regio:</string>
@@ -911,7 +917,7 @@
   <string id="13306">Hoofdmap verbergen</string>
   <string id="13307">Tracks weergeven als</string>
   <string id="13308">Wilt u de Xbox opnieuw opstarten</string>
-  <string id="13309">In plaats van alleen XBMC herstarten?</string>
+  <string id="13309">in plaats van alleen XBMC herstarten?</string>
   <string id="13310">Zoom effect</string>
   <string id="13311">Zweef effect</string>
   <string id="13312">Rand reductie</string>
@@ -1077,7 +1083,7 @@
   <string id="14068">Geef het IP adres</string>
   <string id="14069">Wil je de volgende instellingen nu toepassen?</string>
   <string id="14070">Instellingen toepassen</string>
-  <string id="14071">Sta bestanden verwijderen toe</string>
+  <string id="14071">Sta bestanden hernoemen en verwijderen toe</string>
   <string id="14072">XLink Kai inschakelen</string>
   <string id="14073">XLink Kai is niet ingeschakeld</string>
   <string id="15000">XLink Kai</string>
@@ -1137,7 +1143,7 @@
   <string id="15054">Uitnodig venster</string>
   <string id="15055">Kies een spel:</string>
   <string id="15056">Type je bericht:</string>
-  <string id="15057">Sturen</string>
+  <string id="15057">Versturen</string>
   <string id="15058">Host</string>
   <string id="15059">Uitnodiging geaccepteerd!</string>
   <string id="15060">Bericht hier</string>
@@ -1156,7 +1162,7 @@
   <string id="15110">Controller vibratie</string>
   <string id="15111">Thema</string>
   <string id="15112">Standaard thema</string>
-  <string id="15200">LastFM</string>
+  <string id="15200">Last.FM</string>
   <string id="15201">Trackinformatie aan LastFM toevoegen</string>
   <string id="15202">LastFM gebruikersnaam</string>
   <string id="15203">LastFM wachtwoord</string>
@@ -1166,7 +1172,7 @@
   <string id="15207">Verbonden</string>
   <string id="15208">Niet verbonden</string>
   <string id="15209">Verzend interval %i</string>
-  <string id="15210">%i nummer gecached</string>
+  <string id="15210">%i nummers gecached</string>
   <string id="15211">Verzenden...</string>
   <string id="15212">Verzenden over %i sec.</string>
   <string id="15213">Speelt af met...</string>
@@ -1235,7 +1241,7 @@
   <string id="16024">Bezig met annuleren...</string>
   <string id="16025">Geef de artiest op</string>
   <string id="16026">Playlist afspelen afgebroken</string>
-  <string id="16027">Teveel consecutive failed items</string>
+  <string id="16027">Teveel opeenvolgende ontbroken punten</string>
   <string id="16030">Party Mode afgebroken.</string>
   <string id="16031">Geen overeenkomstige nummers in database.</string>
   <string id="16032">Kon database niet initialeren.</string>
