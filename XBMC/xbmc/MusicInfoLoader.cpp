@@ -79,8 +79,9 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
     pItem->m_musicInfoTag = mapItem->m_musicInfoTag;
     pItem->SetThumbnailImage(mapItem->GetThumbnailImage());
   }
-  else if (g_guiSettings.GetBool("musicfiles.usetags"))
-  { // Nothing found, load tag from file
+  else if (g_guiSettings.GetBool("musicfiles.usetags") || pItem->IsCDDA())
+  { // Nothing found, load tag from file,
+    // always try to load cddb info
     // get correct tag parser
     CMusicInfoTagLoaderFactory factory;
     auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
