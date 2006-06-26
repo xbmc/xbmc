@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 25-06-2006 fixed: some dll loader cleanup and additions, attempt 2
+ - 25-06-2006 fixed: some dll loader cleanup and additions, attempt 2 (python was broken since the 24th after previous version of this)
  - 25-06-2006 fixed: Subtitles should now word-wrap (based on calibration values) when TTF fonts are used.
  - 25-06-2006 added: Font fallback to "font13" if a requested font isn't available.
  - 25-06-2006 fixed: image controls with both <info> and <texture> tags fall back to the <texture> tag when no info is present.
