@@ -356,7 +356,8 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   int btn_Queue       = 0;  // Queue Item
   int btn_PlayWith    = 0;  // Play using alternate player
   int btn_Info        = 0;  // Music Information
-  int btn_NowPlaying  = 0;  // Now Playing...
+  int btn_InfoAll          = 0; // Query Information for all albums
+  int btn_NowPlaying  = 0;  // Now Playing... very bottom of context accessible
   
   // directory tests
   CMusicDatabaseDirectory dir;
@@ -379,14 +380,14 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     else if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList())
       btn_PlayWith = pMenu->AddButton(208);
     
-    // enable music info button
-    if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
+    // enable music info button only in album view
+    if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath) && m_vecItems[iItem]->m_bIsFolder)
       btn_Info = pMenu->AddButton(13351);
-  }
 
-  // if the Now Playing item is still not in the list, add it here
-  if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
-    btn_NowPlaying = pMenu->AddButton(13350);
+    // enable query all albums button only in album view
+    if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath) && m_vecItems[iItem]->m_bIsFolder)
+      btn_InfoAll = pMenu->AddButton(20059);
+  }
 
   // turn off set artist image if not at artist listing.
   // (uses file browser to pick an image)
@@ -399,6 +400,10 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   //if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)
   int btn_Settings = pMenu->AddButton(5);     // Settings...
 
+  // if the Now Playing item is still not in the list, add it here
+  if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
+    btn_NowPlaying = pMenu->AddButton(13350);
+
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal();
@@ -409,6 +414,10 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     if (btn == btn_Info) // Music Information
     {
       OnInfo(iItem);
+    }
+    else if (btn == btn_InfoAll) // Music Information
+    {
+      OnInfoAll(iItem);
     }
     else if (btn == btn_PlayWith)
     {
