@@ -175,6 +175,7 @@ namespace TeamXBMC.Translator
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Find";
 			this.Load += new System.EventHandler(this.FindForm_Load);
+			this.Activated += new EventHandler(FindForm_Activated);
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -193,6 +194,10 @@ namespace TeamXBMC.Translator
 			if (searchDown) radioButtonDown.Checked=true;
 			else radioButtonUp.Checked=true;
 			textBoxFind.Text=textFind;
+		}
+
+		private void FindForm_Activated(object sender, EventArgs e)
+		{
 			textBoxFind.Focus();
 		}
 
