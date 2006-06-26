@@ -15,12 +15,9 @@ public:
   void MoveItem(int iStart, int iDest);
 
 protected:
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual void GoParentFolder() {};
   virtual void UpdateButtons();
-  virtual void SortItems(CFileItemList& items) {};
-  virtual void OnRetrieveMusicInfo(CFileItemList& items) {};
   virtual void OnItemLoaded(CFileItem* pItem);
-  virtual void ClearFileItems();
   virtual bool Update(const CStdString& strDirectory);
   virtual void OnPopupMenu(int iItem);
   void OnMove(int iItem, int iAction);
@@ -32,7 +29,7 @@ protected:
   
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
 
-  CStdString m_strPrevPath;
   CMusicInfoLoader m_tagloader;
   int iPos;
+  VECSHARES m_shares;
 };

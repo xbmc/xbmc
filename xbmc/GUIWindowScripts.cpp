@@ -39,19 +39,8 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      m_shares.erase(m_shares.begin(), m_shares.end());
-      if (m_vecItems.m_strPath == "?") m_vecItems.m_strPath = "Q:\\scripts"; //g_stSettings.m_szDefaultScripts;
-
-      m_rootDir.SetMask(".py");
-
-      CShare share;
-      share.strName = "Q Drive";
-      share.strPath = "Q:\\scripts";
-      share.m_iBufferSize = 0;
-      share.m_iDriveType = SHARE_TYPE_LOCAL;
-      m_shares.push_back(share);
-
-      m_rootDir.SetShares(m_shares);
+      if (m_vecItems.m_strPath == "?")
+        m_vecItems.m_strPath = "Q:\\scripts"; //g_stSettings.m_szDefaultScripts;
 
       return CGUIMediaWindow::OnMessage(message);
     }

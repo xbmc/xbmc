@@ -61,9 +61,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_rootDir.SetMask(g_stSettings.m_videoExtensions);
-      m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
-
       m_database.Open();
 
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -1045,7 +1042,7 @@ void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayL
   if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, iPlayList))
   {
     if (m_guiState.get())
-      m_guiState->SetPlaylistDirectory("");
+      m_guiState->SetPlaylistDirectory("playlistvideo://");
   }
 }
 
