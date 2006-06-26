@@ -1,3 +1,7 @@
+2006-06-26 changed:	trainer icons retouched
+2006-06-26 fixed:	listcontrol in the filebrowser was too wide
+2006-06-26 changed:	all new filemanager
+
 2006-06-25 added:	various infos to the homescreen - can be hidden in skin settings (Special Thanks to Jezz_X for the idea and for help with the code)
 2006-06-25 added:	Setting to hide the RSS in the homescreen when music is playing
 2006-06-25 added:	Bookmarks section in skin settings - to customize the bookmark buttons
