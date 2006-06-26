@@ -20,7 +20,8 @@ bool CButtonTranslator::Load()
 
   // Load the config file
   CStdString keymapPath;
-  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
+  //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
+  keymapPath = g_settings.GetUserDataItem("keymap.xml");
   CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
   if (!xmlDoc.LoadFile(keymapPath))
   {
@@ -406,6 +407,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("osdaudiosettings")) wWindowID = WINDOW_DIALOG_AUDIO_OSD_SETTINGS;
   else if (strWindow.Equals("videobookmarks")) wWindowID = WINDOW_DIALOG_VIDEO_BOOKMARKS;
   else if (strWindow.Equals("trainersettings")) wWindowID = WINDOW_DIALOG_TRAINER_SETTINGS;
+  else if (strWindow.Equals("profilesettings")) wWindowID = WINDOW_DIALOG_TRAINER_SETTINGS;
   else if (strWindow.Equals("networksetup")) wWindowID = WINDOW_DIALOG_NETWORK_SETUP;
   else if (strWindow.Equals("mediasource")) wWindowID = WINDOW_DIALOG_MEDIA_SOURCE;
   else if (strWindow.Equals("mymusicplaylist")) wWindowID = WINDOW_MUSIC_PLAYLIST;

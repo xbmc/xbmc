@@ -47,7 +47,7 @@ protected:
 
   void AddSetting(SettingInfo &setting, int iPosX, int iPosY, int iWidth, int iControlID);
 
-  void AddButton(unsigned int it, int label);
+  void AddButton(unsigned int it, int label, bool bOn=true);
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max);

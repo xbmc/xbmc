@@ -7,8 +7,10 @@
 #include "FileItem.h"
 #include "GUIWindowMusicPlayList.h"
 #include "SmartPlaylist.h"
+#include "GUIDialogProgress.h"
 
 #define QUEUE_DEPTH       10
+#define NEW_PARTY_MODE_METHOD
 
 CPartyModeManager g_partyModeManager;
 
@@ -28,7 +30,12 @@ bool CPartyModeManager::Enable()
   // Filter using our PartyMode xml file
   CSmartPlaylist playlist;
   CStdString partyModePath;
-  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "PartyMode.xml", partyModePath);
+
+  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  pDialog->SetHeading("Party party");
+  pDialog->SetLine(0,"Filtering songs");
+  pDialog->StartModal();
+  partyModePath = g_settings.GetUserDataItem("partymode.xml");
   if (playlist.Load(partyModePath))
     m_strCurrentFilter = playlist.GetWhereClause();
   else
@@ -50,6 +57,7 @@ bool CPartyModeManager::Enable()
 #endif
     if (m_iMatchingSongs < 1)
     {
+      pDialog->Close();
       musicdatabase.Close();
       OnError(16031, (CStdString)"Party mode found no matching songs. Aborting.");
       return false;
@@ -57,6 +65,7 @@ bool CPartyModeManager::Enable()
 #ifndef NEW_PARTY_MODE_METHOD
     if (!musicdatabase.InitialisePartyMode())
     {
+      pDialog->Close();
       musicdatabase.Close();
       OnError(16032, (CStdString)"Party mode could not initialise database. Aborting.");
       return false;
@@ -65,6 +74,7 @@ bool CPartyModeManager::Enable()
   }
   else
   {
+    pDialog->Close();
     OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
     return false;
   }
@@ -86,6 +96,8 @@ bool CPartyModeManager::Enable()
   g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
 
+  pDialog->SetLine(0,"Adding songs");
+  pDialog->Progress();
   // add initial songs
 #ifdef NEW_PARTY_MODE_METHOD
   if (!AddInitialSongs(songIDs))
@@ -99,6 +111,7 @@ bool CPartyModeManager::Enable()
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
   Play(0);
 
+  pDialog->Close();
   // open now playing window
   if (m_gWindowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);

@@ -1,6 +1,8 @@
 #pragma once
-#include "StdString.h"
 #include "FileItem.h"
+
+class CShare;
+typedef std::vector<CShare> VECSHARES;
 
 typedef map<CStdString, CStdString> MAPPASSWORDS;
 typedef map<CStdString, CStdString>::iterator IMAPPASSWORDS;
@@ -12,7 +14,10 @@ public:
   virtual ~CGUIPassword(void);
   bool IsItemUnlocked(CFileItem* pItem, const CStdString &strType);
   bool IsItemUnlocked(CShare* pItem, const CStdString &strType);
+  bool CheckLock(int btnType, const CStdString& strPassword, int iHeading);
+  bool IsProfileLockUnlocked();
   bool IsMasterLockUnlocked(bool bPromptUser);
+  
   void UpdateMasterLockRetryCount(bool bResetCount);
   bool GetSMBShareUserPassword();
   void SetSMBShare(const CStdString &strShare);
