@@ -294,11 +294,16 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
     // quietly return if Internet lookups are disabled
     if (!g_guiSettings.GetBool("network.enableinternet")) return ;
 
+    if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+      return;
+
     m_database.DeleteMovieInfo(item->m_strPath);
   }
 
   // quietly return if Internet lookups are disabled
   if (!g_guiSettings.GetBool("network.enableinternet")) return ;
+  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+    return;
 
   CIMDBUrl url;
   CIMDBMovie movieDetails;
@@ -403,7 +408,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
         OutputDebugString("show info\n");
 
         // Add to the database if applicable
-        if (item->m_strPath)
+        if (item->m_strPath && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
           m_database.SetMovieInfo(item->m_strPath, movieDetails);
 
         pDlgInfo->SetMovie(movieDetails, item);
@@ -708,13 +713,13 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       btn_Resume = pMenu->AddButton(13381);     // Resume Video
 
     // turn off the query info button if we are in playlists view
-    if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES))
+    if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES) && !(GetID() == WINDOW_VIDEO_FILES && !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases()))
       btn_Show_Info = pMenu->AddButton(13346);
   }
 
   // hide scan button unless we're in files window
   int btn_Query = 0;
-  if (GetID() == WINDOW_VIDEO_FILES)
+  if (GetID() == WINDOW_VIDEO_FILES && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
     btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
 
   int btn_Mark_UnWatched = 0;
@@ -722,7 +727,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Update_Title   = 0;
   //if (GetID() == WINDOW_VIDEO_TITLE || GetID() == WINDOW_VIDEO_GENRE || GetID() == WINDOW_VIDEO_ACTOR || GetID() == WINDOW_VIDEO_YEAR)
   // is the item a database movie?
-  if (GetID() != WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty())
+  if (GetID() != WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty() && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
   {
     // uses Loaded to hold Watched/UnWatched status
     if (m_vecItems[iItem]->m_musicInfoTag.Loaded())
@@ -746,7 +751,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     }
     */
 
-    btn_Update_Title = pMenu->AddButton(16105); //Edit Title
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+      btn_Update_Title = pMenu->AddButton(16105); //Edit Title
   }
 
   // turn off the now playing button if playlist is empty or if we are in playlist window
@@ -761,22 +767,24 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   {
     if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion")))
     {
-      btn_Delete = pMenu->AddButton(117);
-      btn_Rename = pMenu->AddButton(118);
-
-      // disable these functions if not supported by the protocol
-      if (!CUtil::SupportsFileOperations(m_vecItems[iItem]->m_strPath))
+      if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.IsMasterLockUnlocked(false))
       {
-        pMenu->EnableButton(btn_Delete, false);
-        pMenu->EnableButton(btn_Rename, false);
+        btn_Delete = pMenu->AddButton(117);
+        btn_Rename = pMenu->AddButton(118);
+
+        // disable these functions if not supported by the protocol
+        if (!CUtil::SupportsFileOperations(m_vecItems[iItem]->m_strPath))
+        {
+          pMenu->EnableButton(btn_Delete, false);
+          pMenu->EnableButton(btn_Rename, false);
+        }
       }
     }
-    if (GetID() == WINDOW_VIDEO_TITLE)
+    if (GetID() == WINDOW_VIDEO_TITLE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
       btn_Delete = pMenu->AddButton(646);
   }
 
   //int btn_Settings = -2;
-  //if (g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE || !g_guiSettings.GetBool("masterlock.locksettings") || g_passwordManager.bMasterUser)
   int btn_Settings      = pMenu->AddButton(5);      // Settings
 
   // position it correctly

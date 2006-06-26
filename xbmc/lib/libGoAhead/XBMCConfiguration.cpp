@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "..\..\settings.h"
 #include "XBMCConfiguration.h"
 #include "..\..\xbox\iosupport.h"
 #include "..\..\util.h"
@@ -28,7 +29,7 @@ int CXbmcConfiguration::Load()
 {
 	if (!xbmcCfgLoaded)
 	{
-    if (!xbmcCfg.LoadFile("Q:\\XBoxMediaCenter.xml")) return -1;
+    if (!xbmcCfg.LoadFile(g_settings.GetSourcesFile())) return -1;
 		xbmcCfgLoaded = true;
 	}
 	return 0;

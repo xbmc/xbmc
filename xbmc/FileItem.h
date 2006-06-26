@@ -119,6 +119,7 @@ public:
   CStdString GetCachedPictureThumb();
   CStdString GetCachedArtistThumb();
   CStdString GetCachedProgramThumb();
+  CStdString GetCachedProfileThumb();
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
