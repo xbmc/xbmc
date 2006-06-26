@@ -48,10 +48,10 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetPrivateProfileIntA", (unsigned long) dllGetPrivateProfileIntA);
   g_dlls.kernel32.AddExport("WaitForMultipleObjects", (unsigned long) dllWaitForMultipleObjects);
   g_dlls.kernel32.AddExport("SetEvent", (unsigned long) SetEvent);
-  g_dlls.kernel32.AddExport("TlsAlloc", (unsigned long) dllTlsAlloc);
-  g_dlls.kernel32.AddExport("TlsFree", (unsigned long) dllTlsFree);
-  g_dlls.kernel32.AddExport("TlsGetValue", (unsigned long) dllTlsGetValue);
-  g_dlls.kernel32.AddExport("TlsSetValue", (unsigned long) dllTlsSetValue);
+  g_dlls.kernel32.AddExport("TlsAlloc", (unsigned long) TlsAlloc);
+  g_dlls.kernel32.AddExport("TlsFree", (unsigned long) TlsFree);
+  g_dlls.kernel32.AddExport("TlsGetValue", (unsigned long) TlsGetValue);
+  g_dlls.kernel32.AddExport("TlsSetValue", (unsigned long) TlsSetValue);
   g_dlls.kernel32.AddExport("HeapFree", (unsigned long) HeapFree); //test
   g_dlls.kernel32.AddExport("HeapAlloc", (unsigned long) HeapAlloc); //test
   g_dlls.kernel32.AddExport("LocalFree", (unsigned long) LocalFree); //test

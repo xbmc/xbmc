@@ -7,7 +7,7 @@
 #include "../../xbox/undocumented.h"
 #include "XbDm.h"
 #include <io.h>
-#include "../../utils/win32exception.h"
+
 
 #define DLL_PROCESS_DETACH   0
 #define DLL_PROCESS_ATTACH   1
@@ -131,7 +131,7 @@ LPVOID GetXbdmBaseAddress()
 #endif
 
 //  Entry point of a dll (DllMain)
-typedef BOOL APIENTRY EntryFunc(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
+typedef BOOL WINAPI EntryFunc(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
 
 // is it really needed?
 void* fs_seg = NULL;
@@ -761,26 +761,11 @@ bool DllLoader::Load()
 #endif
 
   EntryFunc* initdll = (EntryFunc *)EntryAddress;
-
-  /* since we are handing execution over to unknown code, safeguard here */
-  try 
-  {
-    (*initdll)((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
+  (*initdll)((HINSTANCE) this, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
 
 #ifdef LOGALL
-    CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_ATTACH called - Dll: %s", sName);
+  CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_ATTACH called - Dll: %s", sName);
 #endif
-  }
-  catch(win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-    return false;
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception during DLL_PROCESS_ATTACH");
-    return false;
-  }
 
   return true;
 }
