@@ -298,7 +298,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
 
 void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 {
-  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() || !g_guiSettings.GetBool("musicfiles.usetags"))
+  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() || (!g_guiSettings.GetBool("musicfiles.usetags") && !items.IsCDDA()))
     return;
 
   // Start the music info loader thread
