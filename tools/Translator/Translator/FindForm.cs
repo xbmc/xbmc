@@ -193,6 +193,7 @@ namespace TeamXBMC.Translator
 			if (searchDown) radioButtonDown.Checked=true;
 			else radioButtonUp.Checked=true;
 			textBoxFind.Text=textFind;
+			textBoxFind.Focus();
 		}
 
 		#endregion
