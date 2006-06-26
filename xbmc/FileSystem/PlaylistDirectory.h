@@ -1,18 +1,16 @@
 #pragma once
 
-#include "ifiledirectory.h"
+#include "idirectory.h"
 
 using namespace DIRECTORY;
 
-namespace DIRECTORY 
+namespace DIRECTORY
 {
-  class CPlaylistDirectory : public IFileDirectory
+  class CPlaylistDirectory : public IDirectory
   {
   public:
-    CPlaylistDirectory();
-    ~CPlaylistDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-    virtual bool ContainsFiles(const CStdString& strPath);
-    virtual bool Remove(const char *strPath) { return CFile::Delete(strPath); };
+    CPlaylistDirectory(void);
+    virtual ~CPlaylistDirectory(void);
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   };
-}
+};

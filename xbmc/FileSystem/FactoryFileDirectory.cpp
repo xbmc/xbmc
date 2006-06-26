@@ -8,7 +8,7 @@
 #include "nsffiledirectory.h"
 #include "sidfiledirectory.h"
 #include "SmartPlaylistDirectory.h"
-#include "PlaylistDirectory.h"
+#include "PlaylistFileDirectory.h"
 #include "../SmartPlaylist.h"
 
 CFactoryFileDirectory::CFactoryFileDirectory(void)
@@ -151,7 +151,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     // currently we only return the directory if it contains
     // more than one file.  Reason is that .pls and .m3u may be used
     // for links to http streams etc. 
-    IFileDirectory *pDir = new CPlaylistDirectory;
+    IFileDirectory *pDir = new CPlaylistFileDirectory;
     CFileItemList items;
     if (pDir->GetDirectory(strPath, items))
     {

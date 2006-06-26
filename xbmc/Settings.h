@@ -9,7 +9,6 @@
 #include "../xbmc/StringUtils.h"
 #include "GUISettings.h"
 #include "fileitem.h"
-#include "GUIViewState.h" // for the VIEW_METHOD enum type
 
 #include <vector>
 
@@ -183,6 +182,8 @@ struct VOICE_MASK {
   float robotic;
   float whisper;
 };
+
+#include "GUIViewState.h" // for the VIEW_METHOD enum type
 
 class CSettings
 {

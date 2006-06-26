@@ -13,6 +13,11 @@ bool CGUIViewStateWindowVideo::UnrollArchives()
   return g_guiSettings.GetBool("filelists.unrollarchives");
 }
 
+CStdString CGUIViewStateWindowVideo::GetExtensions()
+{
+  return g_stSettings.m_videoExtensions;
+}
+
 CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (items.IsVirtualDirectoryRoot())
@@ -73,6 +78,11 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
     g_stSettings.m_MyVideoSortOrder=GetSortOrder();
   }
   g_settings.Save();
+}
+
+VECSHARES& CGUIViewStateWindowVideoFiles::GetShares()
+{
+  return g_settings.m_vecMyVideoShares;
 }
 
 CGUIViewStateWindowVideoTitle::CGUIViewStateWindowVideoTitle(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
@@ -279,4 +289,23 @@ int CGUIViewStateWindowVideoPlaylist::GetPlaylist()
 bool CGUIViewStateWindowVideoPlaylist::HideExtensions()
 {
   return true;
+}
+
+bool CGUIViewStateWindowVideoPlaylist::HideParentDirItems()
+{
+  return true;
+}
+
+VECSHARES& CGUIViewStateWindowVideoPlaylist::GetShares()
+{
+  m_shares.clear();
+  //  Playlist share
+  CShare share;
+  share.strName;
+  share.strPath="playlistvideo://";
+  share.m_strThumbnailImage="defaultFolderBig.png";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  m_shares.push_back(share);
+
+  return CGUIViewStateWindowVideo::GetShares();
 }
