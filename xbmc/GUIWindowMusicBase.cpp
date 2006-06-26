@@ -209,6 +209,57 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
+void CGUIWindowMusicBase::OnInfoAll(int iItem)
+{
+  if (m_dlgProgress)
+  {
+    m_dlgProgress->SetHeading(20097);
+    m_dlgProgress->StartModal();
+  }
+  // Update object count
+  int numAlbums = m_vecItems.Size();
+  int iSkipped = 0;
+  if (numAlbums)
+  {
+    // check for parent dir
+    // check for "all" items
+    // they should always be the first two items
+    for (int i = 0; i <= (numAlbums>=2 ? 1 : 0); i++)
+    {
+      CFileItem* pItem = m_vecItems[i];
+      if (
+        pItem->IsParentFolder() || /* parent folder */
+        pItem->GetLabel().Equals(g_localizeStrings.Get(15102)) ||  /* all albums  */
+        pItem->GetLabel().Equals(g_localizeStrings.Get(15103)) ||  /* all artists */
+        pItem->GetLabel().Equals(g_localizeStrings.Get(15104)) ||  /* all songs   */
+        pItem->GetLabel().Equals(g_localizeStrings.Get(15105))     /* all genres  */
+        )
+      {
+        numAlbums--;
+        iSkipped++;
+      }
+    }
+
+    for (int i = 0; i < (int)numAlbums; i++) 
+    {
+      CStdString strLine;
+      strLine.Format("%s (%i of %i)", g_localizeStrings.Get(20098).c_str(), i + 1, numAlbums);
+      m_dlgProgress->SetLine(0, strLine);
+      m_dlgProgress->SetLine(1, m_vecItems[i + iSkipped]->GetLabel());
+      // m_dlgProgress->SetLine(1, m_vecItems[i]->GetLabel());
+      m_dlgProgress->SetLine(2, "");
+      m_dlgProgress->Progress();
+      // OnInfo(i,false);
+      OnInfo(i + iSkipped, false);
+      CGUIMessage msg(GUI_MSG_REFRESH_THUMBS,0,0);
+      g_graphicsContext.SendMessage(msg);
+      if (m_dlgProgress->IsCanceled())
+        break;
+    }
+  }
+  m_dlgProgress->Close();
+}
+
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIWindowMusicInfo
 /// \param iItem Item in list/thumb control
 void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
@@ -1156,15 +1207,11 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   int btn_PlayWith      = 0; // Play using alternate player
   int btn_Info              = 0; // Music Information
   int btn_InfoAll          = 0; // Query Information for all albums
-  int btn_NowPlaying  = 0; // Now Playing...
+  int btn_NowPlaying  = 0; // Now Playing... very bottom of context accessible
   
   VECPLAYERCORES vecCores;
   CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
   
-  // if party mode is enabled, put Now Playing at the top of the context menu
-  if (g_partyModeManager.IsEnabled())
-    btn_NowPlaying = pMenu->AddButton(13350);
-
   // turn off info/play/queue if the current item is goto parent ..
   if (!bIsGotoParent)
   {
@@ -1183,10 +1230,6 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
       btn_InfoAll = pMenu->AddButton(20059);
   }
   
-  // if party mode is enabled, put Now Playing at the top of the context menu
-  if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
-    btn_NowPlaying = pMenu->AddButton(13350);
-
   int btn_Scan = 0;
   CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (pScanDlg && pScanDlg->IsScanning())
@@ -1244,39 +1287,25 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   //if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)
   int btn_Settings = pMenu->AddButton(5);    // Settings...
 
+  if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
+    btn_NowPlaying = pMenu->AddButton(13350);
+
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
-  if (btnid > 0)
+if (btnid > 0)
   {
     // Music Information
     if (btnid == btn_Info) 
     {
       OnInfo(iItem);
     }
-    else if (btnid == btn_InfoAll) 
+    // Music Information Query All
+    else if (btnid == btn_InfoAll)
     {
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetHeading("Fetching album info");
-        m_dlgProgress->StartModal();
-      }
-      for (int i = 0; i < (int)m_vecItems.Size(); ++i) 
-      {
-        CStdString strLine;
-        strLine.Format("Fetching info for album %i / %i",i+1,m_vecItems.Size());
-        m_dlgProgress->SetLine(0,strLine);
-        m_dlgProgress->SetLine(1,m_vecItems[i]->GetLabel());
-        m_dlgProgress->Progress();
-        OnInfo(i,false);
-        CGUIMessage msg(GUI_MSG_REFRESH_THUMBS,0,0);
-        g_graphicsContext.SendMessage(msg);
-        if (m_dlgProgress->IsCanceled())
-          break;
-      }
-      m_dlgProgress->Close();
+      OnInfoAll(iItem);
     }
     // Play Item
     else if (btnid == btn_PlayWith)
@@ -1362,7 +1391,7 @@ void CGUIWindowMusicBase::OnRipCD()
     {
       CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
       pDlgOK->SetHeading(257); // Error
-      pDlgOK->SetLine(0, "Can't rip CD or Track while playing from CD"); //
+      pDlgOK->SetLine(0, g_localizeStrings.Get(20099)); //
       pDlgOK->SetLine(1, ""); //
       pDlgOK->SetLine(2, "");
       pDlgOK->DoModal();
