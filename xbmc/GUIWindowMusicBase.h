@@ -53,6 +53,7 @@ protected:
 
   void RetrieveMusicInfo();
   void OnInfo(int iItem, bool bShowInfo = true);
+  void OnInfoAll(int iItem);
   void OnQueueItem(int iItem);
   bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, bool bShowInfo = true);
 
