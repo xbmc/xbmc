@@ -4,7 +4,7 @@
 #define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
 
-#include "Profile.h"
+class CProfile;
 #include "settings/VideoSettings.h"
 #include "../xbmc/StringUtils.h"
 #include "GUISettings.h"
@@ -26,7 +26,6 @@
 #define LOCK_MODE_QWERTY              3
 #define LOCK_MODE_SAMBA               4
 #define LOCK_MODE_EEPROM_PARENTAL     5
-#define LOCK_MODE_FOLLOWS_MASTER      6
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
@@ -270,6 +269,7 @@ public:
     bool m_usePCDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
+    bool m_profilesupport;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
@@ -289,7 +289,6 @@ public:
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
 
-    CStdString m_userDataFolder;
     CStdString m_logFolder;
 
     char m_szDefaultPrograms[128];
@@ -439,9 +438,12 @@ public:
   //VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;
   int m_iLastLoadedProfileIndex;
+  bool bUseLoginScreen;
   RESOLUTION_INFO m_ResInfo[10];
 
   // utility functions for user data folders
+  CStdString GetUserDataItem(const CStdString& strFile) const;
+  CStdString GetProfileUserDataFolder() const;
   CStdString GetUserDataFolder() const;
   CStdString GetDatabaseFolder() const;
   CStdString GetCDDBFolder() const;
@@ -454,9 +456,16 @@ public:
   CStdString GetPicturesThumbFolder() const;
   CStdString GetProgramsThumbFolder() const;
   CStdString GetXLinkKaiThumbFolder() const;
+  CStdString GetProfilesThumbFolder() const;
+  CStdString GetSourcesFile() const;
 
   CStdString GetSettingsFile() const;
-  CStdString GetProfilesFile(int number) const;
+
+  bool LoadProfiles(const CStdString& strSettingsFile);
+  bool SaveProfiles(const CStdString& strSettingsFile) const;
+
+  bool SaveSettings(const CStdString& strSettingsFile) const;
+  TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
   
 protected:
   void GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
@@ -476,11 +485,8 @@ protected:
   bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);
   bool SaveCalibration(TiXmlNode* pRootNode) const;
 
-  bool LoadSettings(const CStdString& strSettingsFile, const bool loadprofiles);
-  bool SaveSettings(const CStdString& strSettingsFile, const bool saveprofiles) const;
-
-  bool LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile);
-  bool SaveProfiles(TiXmlNode* pRootElement) const;
+  bool LoadSettings(const CStdString& strSettingsFile);
+//  bool SaveSettings(const CStdString& strSettingsFile) const;
 
   bool LoadXml();
   void CloseXml();
@@ -496,7 +502,7 @@ protected:
 
   void LoadRSSFeeds();
 
-  TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
+  //TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
   bool xbmcXmlLoaded;
   bool bTransaction;
   bool bChangedDuringTransaction;

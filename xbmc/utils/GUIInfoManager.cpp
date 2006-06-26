@@ -181,8 +181,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (time > 0)
         ret = SYSTEM_IDLE_TIME_START + time;
     }
-    else if (strTest.Left(16).Equals("system.hasalarm("))
+      else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
+      //else if (strTest.Left(16).Equals("system.alarmpos("))
+  else if (strTest.Equals("system.alarmpos"))
+    ret = SYSTEM_ALARM_POS;
+
   }
   else if (strCategory.Equals("xlinkkai"))
   {
@@ -307,6 +311,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (strTest.Left(14).Equals("skin.hastheme("))
       ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
+    else if (strTest.Left(18).Equals("skin.comparestring("))
+    {
+      CStdString settingName;
+      settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), strTest.Mid(18, strTest.GetLength() - 19).c_str());
+      ret = SKIN_STRING_EQUALS_START+ConditionalStringParameter(settingName);
+      m_strSkinStringCompareTo = strTest.substr(strTest.Find(','));
+    }
   }
   else if (strTest.Left(16).Equals("window.isactive("))
   {
@@ -538,6 +549,18 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_DVD_LABEL:
     strLabel = CDetectDVDMedia::GetDVDLabel();
     break;
+  case SYSTEM_ALARM_POS:
+    if (g_alarmClock.GetRemaining("shutdowntimer") == 0.f)
+      strLabel = "";
+    else
+    {
+      double fTime = g_alarmClock.GetRemaining("shutdowntimer");
+      if (fTime > 60.f)
+        strLabel.Format("%2.0fm",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+      else
+        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+    }
+    break;
   case XLINK_KAI_USERNAME:
     strLabel = g_guiSettings.GetString("xlinkkai.username");
     break;
@@ -726,6 +749,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     CUtil::RemoveExtension(theme);
     bReturn = theme.Equals(m_stringParameters[condition - SKIN_HAS_THEME_START]);
   }
+  else if (condition >= SKIN_STRING_EQUALS_START && condition <= SKIN_STRING_EQUALS_END)
+    bReturn = m_strSkinStringCompareTo.Equals(m_stringParameters[condition - SKIN_STRING_EQUALS_START]);
   else if (condition >= SKIN_HAS_SETTING_START && condition <= SKIN_HAS_SETTING_END)
     bReturn = g_settings.GetSkinSetting(m_stringParameters[condition - SKIN_HAS_SETTING_START].c_str());
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
@@ -733,9 +758,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow);
   }
   else if (condition == SYSTEM_HASLOCKS)  
-    bReturn = g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE;
+    bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE;
     else if (condition == SYSTEM_ISMASTER)
-      bReturn = g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+      bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (g_application.IsPlaying())
   {
     switch (condition)

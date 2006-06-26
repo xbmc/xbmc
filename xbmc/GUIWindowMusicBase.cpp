@@ -332,10 +332,12 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     if (m_musicdatabase.GetAlbumsByPath(strPath, albums))
     {
       if (albums.size() == 1)
-        bSaveDirThumb = true;
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+          bSaveDirThumb = true;
     }
 
-    bSaveDb=true;
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+      bSaveDb=true;
   }
   else if (pItem->m_musicInfoTag.Loaded())
   {
@@ -347,9 +349,11 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     if (m_musicdatabase.GetAlbumsByPath(strPath, albums))
     {
       if (albums.size() == 1)
-        bSaveDirThumb = true;
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+          bSaveDirThumb = true;
 
-      bSaveDb = true;
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        bSaveDb = true;
     }
     else if (!pItem->m_bIsFolder) // handle files
     {
@@ -371,7 +375,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       {
         //CStdString strAlbum = *albums.begin();
         //strLabel = strAlbum;
-        bSaveDirThumb = true;
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+          bSaveDirThumb = true;
       }
     }
   }
@@ -383,7 +388,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       CAlbum& album = albums[0];
       strAlbumName = album.strAlbum;
       strArtistName = album.strArtist;
-      bSaveDirThumb = true;
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        bSaveDirThumb = true;
     }
     else
     {
@@ -422,7 +428,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       }
     }
 
-    bSaveDb = true;
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+      bSaveDb = true;
   }
   else if (pItem->m_bIsFolder)
   {
@@ -453,7 +460,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     {
       if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
       strAlbumName = pItem->GetLabel();
-      bSaveDirThumb = true;
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        bSaveDirThumb = true;
     }
 
     // one album, get the album and artist
@@ -462,7 +470,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       CAlbum album = *setAlbums.begin();
       strAlbumName = album.strAlbum;
       strArtistName = album.strArtist;
-      bSaveDirThumb = true;
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        bSaveDirThumb = true;
     }
 
     // many albums, let the user choose
@@ -609,6 +618,9 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
     return;
   }
+
+  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+    return;
 
   // find album info
   CMusicAlbumInfo album;
@@ -1226,7 +1238,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     if (!m_vecItems[iItem]->IsPlayList())
       btn_Info = pMenu->AddButton(13351);
 
-    if (!m_vecItems[iItem]->IsPlayList())
+    if (!m_vecItems[iItem]->IsPlayList() && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
       btn_InfoAll = pMenu->AddButton(20059);
   }
   
@@ -1240,7 +1252,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   }
   else
   {
-    if (!m_vecItems.IsInternetStream())
+    if (!m_vecItems.IsInternetStream() && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
       btn_Scan = pMenu->AddButton(13352);         // Scan Folder to Database
   }
 
@@ -1261,7 +1273,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 
   // enable CDDB lookup if the current dir is CDDA
   int btn_CDDB   = 0; // CDDB lookup
-  if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA())
+  if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA() && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
     btn_CDDB = pMenu->AddButton(16002);
 
   int btn_Delete = 0; // Delete
@@ -1284,7 +1296,6 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 
   // GeminiServer Todo: Set a MasterLock Option to Enable or disable Settings incontext menu!
   //int btn_Settings = -2;
-  //if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)
   int btn_Settings = pMenu->AddButton(5);    // Settings...
 
   if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)

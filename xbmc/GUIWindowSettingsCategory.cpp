@@ -286,23 +286,27 @@ void CGUIWindowSettingsCategory::SetupControls()
   // get the categories we need
   pSettingsGroup->GetCategories(m_vecSections);
   // run through and create our buttons...
+  int j=0;
   for (unsigned int i = 0; i < m_vecSections.size(); i++)
   {
+    if (m_vecSections[i]->m_dwLabelID == 12360 && g_settings.m_iLastLoadedProfileIndex != 0)
+      continue;
     CGUIButtonControl *pButton = new CGUIButtonControl(*m_pOriginalSettingsButton);
     pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_dwLabelID));
-    pButton->SetID(CONTROL_START_BUTTONS + i);
+    pButton->SetID(CONTROL_START_BUTTONS + j);
     pButton->SetGroup(CONTROL_GROUP_BUTTONS);
-    pButton->SetPosition(pButtonArea->GetXPosition(), pButtonArea->GetYPosition() + i*pControlGap->GetHeight());
-    pButton->SetNavigation(CONTROL_START_BUTTONS + (int)i - 1, CONTROL_START_BUTTONS + i + 1, CONTROL_START_CONTROL, CONTROL_START_CONTROL);
+    pButton->SetPosition(pButtonArea->GetXPosition(), pButtonArea->GetYPosition() + j*pControlGap->GetHeight());
+    pButton->SetNavigation(CONTROL_START_BUTTONS + (int)j - 1, CONTROL_START_BUTTONS + j + 1, CONTROL_START_CONTROL, CONTROL_START_CONTROL);
     pButton->SetVisible(true);
     pButton->AllocResources();
     Insert(pButton, m_pOriginalSettingsButton);
+    j++;
   }
   // update the first and last buttons...
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS);
-  pControl->SetNavigation(CONTROL_START_BUTTONS + (int)m_vecSections.size() - 1, pControl->GetControlIdDown(),
+  pControl->SetNavigation(CONTROL_START_BUTTONS + (int)j - 1, pControl->GetControlIdDown(),
                           pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS + (int)m_vecSections.size() - 1);
+  pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS + (int)j - 1);
   pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_START_BUTTONS,
                           pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   if (m_iSection < 0 || m_iSection >= (int)m_vecSections.size())
@@ -577,17 +581,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInStartupWindow(pSetting);
     }
-    else if (strSetting.Equals("masterlock.lockmode"))
-    {
-      //GeminiServer      
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(1223), LOCK_MODE_EVERYONE );    //Disabled
-      pControl->AddLabel(g_localizeStrings.Get(12337), LOCK_MODE_NUMERIC );    //Numeric
-      pControl->AddLabel(g_localizeStrings.Get(12338), LOCK_MODE_GAMEPAD );    //Gamepad
-      pControl->AddLabel(g_localizeStrings.Get(12339), LOCK_MODE_QWERTY );    //Text
-      pControl->SetValue(pSettingInt->GetData());      
-    }
     else if (strSetting.Equals("servers.ftpserveruser"))
     {
       //GeminiServer
@@ -663,10 +656,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("xlinkkai.enabled"));
     }
-    else if (strSetting.Equals("masterlock.lockfiles") || strSetting.Equals("masterlock.lockmusic") || strSetting.Equals("masterlock.lockvideo") || strSetting.Equals("masterlock.lockpictures") || strSetting.Equals("masterlock.lockprograms") || strSetting.Equals("masterlock.locksettings") || strSetting.Equals("masterlock.sharelocks") || strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.enableshutdown"))
+    else if (strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.enableshutdown"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE);
+      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE);
     }
     else if (strSetting.Equals("musicfiles.autoswitchuselargethumbs"))
     {
@@ -766,10 +759,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         if (g_guiSettings.GetInt("network.assignment") != NETWORK_STATIC) 
         {
           //We are in non Static Mode! Setting the Received IP Information
-          if(strSetting.Equals("network.ipaddress"))pControl->SetLabel2(g_network.m_networkinfo.ip);
-          else if(strSetting.Equals("network.subnet"))pControl->SetLabel2(g_network.m_networkinfo.subnet);
-          else if(strSetting.Equals("network.gateway"))pControl->SetLabel2(g_network.m_networkinfo.gateway);
-          else if(strSetting.Equals("network.dns"))pControl->SetLabel2(g_network.m_networkinfo.DNS1);
+          if(strSetting.Equals("network.ipaddress")) 
+            pControl->SetLabel2(g_network.m_networkinfo.ip);
+          else if(strSetting.Equals("network.subnet")) 
+            pControl->SetLabel2(g_network.m_networkinfo.subnet);
+          else if(strSetting.Equals("network.gateway")) 
+            pControl->SetLabel2(g_network.m_networkinfo.gateway);
+          else if(strSetting.Equals("network.dns")) 
+            pControl->SetLabel2(g_network.m_networkinfo.DNS1);
         }
         pControl->SetEnabled(g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC);
       }
@@ -1161,6 +1158,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.m_pWebServer->SetPassword((char_t*)strPassword.c_str());
     }
   }
+  else if (strSetting.Equals("network.ipaddress"))
+  {
+    if (g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC) 
+    {
+      CStdString strDefault = g_guiSettings.GetString("network.ipaddress").Left(g_guiSettings.GetString("network.ipaddress").ReverseFind("."))+".1";
+      if (g_guiSettings.GetString("network.gateway").Equals("0.0.0.0"))
+        g_guiSettings.SetString("network.gateway",strDefault);
+      if (g_guiSettings.GetString("network.dns").Equals("0.0.0.0"))
+        g_guiSettings.SetString("network.dns",strDefault);
+
+    }
+  }
   else if (strSetting.Equals("network.httpproxyport"))
   {
     CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
@@ -1476,24 +1485,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_applicationMessenger.RestartApp();
     }
   }
-  else if (strSetting.Equals("masterlock.sharelocks"))
-  {
-    if (CGUIDialogYesNo::ShowAndGetInput(20044,20047,20048,20022))
-      g_passwordManager.RemoveBookmarkLocks();
-    else
-      g_guiSettings.SetBool("masterlock.sharelocks",!g_guiSettings.GetBool("masterlock.sharelocks"));
-  }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
-    // Prompt user for mastercode if the mastercode was set before or by xml
-    if (g_passwordManager.IsMasterLockUnlocked(true)) 
+    // Now Prompt User to enter the old and then the new MasterCode!
+    if(g_passwordManager.SetMasterLockMode())
     {
-      // Now Prompt User to enter the old and then the new MasterCode!
-      if(g_passwordManager.SetMasterLockMode())
-      {
-        // We asked for the master password and saved the new one!
-        // Nothing todo here
-      }
+      // We asked for the master password and saved the new one!
+      // Nothing todo here
     }
   }
   UpdateSettings();

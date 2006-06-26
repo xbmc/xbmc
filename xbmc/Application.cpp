@@ -104,7 +104,8 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowOSD.h"
 #include "GUIWindowScriptsInfo.h"
-
+#include "GUIDialogProfileSettings.h"
+#include "GUIDialogLockSettings.h"
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
 
@@ -600,7 +601,7 @@ HRESULT CApplication::Create()
   if (CUtil::IsDVD(strExecutablePath))
   {
     // TODO: Should we copy over any UserData folder from the DVD?
-    g_stSettings.m_userDataFolder = "T:\\";
+    g_settings.m_vecProfiles[0].setDirectory("T:\\");
     g_stSettings.m_logFolder = "T:\\";
   }
 
@@ -693,6 +694,18 @@ HRESULT CApplication::Create()
     if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
       CUtil::DeleteGUISettings();
     m_pd3dDevice->Release();
+  }
+
+  CLog::Log(LOGNOTICE,"load profiles...");
+  g_settings.m_vecProfiles.clear();
+  g_settings.LoadProfiles("q:\\system\\profiles.xml");
+  if (g_settings.m_vecProfiles.size() == 0)
+  {
+    //no profiles yet, make one based on the default settings
+    CProfile profile;
+    profile.setDirectory("q:\\userdata");
+    profile.setName("Default user");
+    g_settings.m_vecProfiles.push_back(profile);
   }
 
   CLog::Log(LOGNOTICE, "load settings...");
@@ -811,7 +824,9 @@ HRESULT CApplication::Create()
   CStdString strHomePath = "Q:";
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
   CStdString keymapPath;
-  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
+  
+  keymapPath = g_settings.GetUserDataItem("keymap.xml");
+  //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
   if (access(strHomePath + "\\skin", 0) || access(keymapPath.c_str(), 0))
   {
     g_LoadErrorStr = "Unable to find skins or Keymap.xml.  Make sure you have UserData/Keymap.xml and Skins/ folder";
@@ -915,7 +930,8 @@ HRESULT CApplication::Initialize()
 {
   CLog::Log(LOGINFO, "creating subdirectories");
 
-  CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
+  //CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
+  CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "  recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
   CLog::Log(LOGINFO, "  screenshots folder:%s", g_guiSettings.GetString("system.screenshotpath",false).c_str());
 	
@@ -931,6 +947,7 @@ HRESULT CApplication::Initialize()
   //     XLinkKai/
 
   CreateDirectory(g_settings.GetUserDataFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetProfileUserDataFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetDatabaseFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetIMDbFolder().c_str(), NULL);
@@ -944,6 +961,7 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
   CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
@@ -959,9 +977,6 @@ HRESULT CApplication::Initialize()
   CreateDirectory("Q:\\language", NULL);
   CreateDirectory("Q:\\visualisations", NULL);
   CreateDirectory("Q:\\sounds", NULL);
-
-  CLog::Log(LOGINFO, "  subtitle folder:%s", g_stSettings.m_szAlternateSubtitleDirectory);
-  CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory, NULL);
 
   InitMemoryUnits();
 
@@ -1048,6 +1063,17 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogTrainerSettings);  // window id = 127
   m_gWindowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
   m_gWindowManager.Add(new CGUIDialogMediaSource);   // window id = 129
+  m_gWindowManager.Add(new CGUIDialogProfileSettings); // window id = 130
+
+  CGUIDialogLockSettings* pDialog = NULL;
+  CStdString strPath;
+  RESOLUTION res2;
+  strPath = g_SkinInfo.GetSkinPath("LockSettings.xml", &res2);
+  if (CFile::Exists(strPath))
+    pDialog = new CGUIDialogLockSettings;
+  
+  if (pDialog)
+    m_gWindowManager.Add(pDialog); // window id = 131
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
@@ -1097,7 +1123,7 @@ HRESULT CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
-  if (g_guiSettings.GetBool("masterlock.startuplock") && g_guiSettings.GetInt("masterlock.lockmode") != LOCK_MODE_EVERYONE ) 
+  if (g_guiSettings.GetBool("masterlock.startuplock") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE ) 
   	g_passwordManager.CheckStartUpLock();
 
   if (!m_bAllSettingsLoaded)
@@ -2712,6 +2738,8 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_KEYBOARD);
     m_gWindowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
     m_gWindowManager.Delete(WINDOW_DIALOG_TRAINER_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_PROFILE_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_LOCK_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
     m_gWindowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
 

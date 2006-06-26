@@ -87,6 +87,7 @@
 #define SYSTEM_ISMASTER             141
 #define SYSTEM_TRAYOPEN	            142
 #define SYSTEM_KAI_ENABLED          143
+#define SYSTEM_ALARM_POS            144
 
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161
@@ -181,6 +182,9 @@
 
 #define SKIN_HAS_SETTING_START      510
 #define SKIN_HAS_SETTING_END        600 // allow 90
+
+#define SKIN_STRING_EQUALS_START    610
+#define SKIN_STRING_EQUALS_END      700 // max 90 strings, no?
 
 #define XLINK_KAI_USERNAME          701
 
@@ -350,6 +354,9 @@ protected:
 
   int m_nextWindowID;
   int m_prevWindowID;
+
+  // *shame*
+  CStdString m_strSkinStringCompareTo;
 
   class CCombinedValue
   {
