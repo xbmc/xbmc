@@ -207,7 +207,7 @@
    <id>1</id>
    <width>430</width>
    <posx>210</posx>
-   <posy>393</posy>
+   <posy>395</posy>
    <info>MusicPlayer.Album</info>
    <align>left</align>
    <font>font10</font>
@@ -223,7 +223,7 @@
    <id>1</id>
    <posx>210</posx>
    <posy>415</posy>
-   <info>MusicPlayer.Time</info>
+   <label>$INFO[MusicPlayer.Time]$INFO[MusicPlayer.Duration, / ]</label>
    <align>left</align>
    <font>font10</font>
    <visible>System.IdleTime(64)</visible>
@@ -289,7 +289,7 @@
    <id>1</id>
    <width>235</width>
    <posx>514</posx>
-   <posy>393</posy>
+   <posy>395</posy>
    <info>VideoPlayer.Genre</info>
    <align>right</align>
    <font>font10</font>
@@ -303,7 +303,7 @@
    <width>235</width>
    <posx>514</posx>
    <posy>415</posy>
-   <label>$INFO[VideoPlayer.Time]$INFO[VideoPlayer.TimeRemaining, / ]</label>
+   <label>$INFO[VideoPlayer.Time]$INFO[VideoPlayer.Duration, / ]</label>
    <align>right</align>
    <font>font10</font>
    <include>homevideoinfo</include>
@@ -333,7 +333,6 @@
    <height>99</height>
    <info>MusicPlayer.Cover</info>
    <include>homemediainfo</include>
-   <aspectratio>keep</aspectratio>
   </control>
 
   <control>
@@ -368,7 +367,7 @@
    <id>1</id>
    <width>255</width>
    <posx>540</posx>
-   <posy>393</posy>
+   <posy>395</posy>
    <info>MusicPlayer.Album</info>
    <align>right</align>
    <font>font10</font>
@@ -381,10 +380,347 @@
    <id>1</id>
    <posx>540</posx>
    <posy>415</posy>
-   <info>MusicPlayer.Time</info>
+   <label>$INFO[MusicPlayer.Time]$INFO[MusicPlayer.Duration, / ]</label>
    <align>right</align>
    <font>font10</font>
    <include>homemediainfo</include>
+  </control>
+
+<!-- Drive Space Info C: E: F:-->
+
+
+  <control>
+   <description>free space gradient</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>315</posx>
+   <posy>338</posy>
+   <width>400</width>
+   <height>99</height>
+   <texture>gradient.png</texture>
+   <visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>drive image</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>557</posx>
+   <posy>343</posy>
+   <width>86</width>
+   <height>96</height>
+   <texture>defaultHardDiskBig.png</texture>
+   <visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>Freespace label</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>340</posy>
+   <label>$LOCALIZE[155] $LOCALIZE[154] $LOCALIZE[156]</label>
+   <align>right</align>
+   <font>special12</font>
+   <visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>freespace f:</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>365</posy>
+   <info>System.Freespace(F)</info>
+   <align>right</align>
+   <font>special13</font>
+   <visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>freespace c:</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>395</posy>
+   <info>System.Freespace(C)</info>
+   <align>right</align>
+   <font>font10</font>
+   <visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>freespace e:</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>415</posy>
+   <info>System.Freespace(E)</info>
+   <align>right</align>
+   <font>font10</font>
+   <visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+<!-- Drive Space Info E: F: G:-->
+
+  <control>
+   <description>free space gradient</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>315</posx>
+   <posy>338</posy>
+   <width>400</width>
+   <height>99</height>
+   <texture>gradient.png</texture>
+   <visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>drive image</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>557</posx>
+   <posy>343</posy>
+   <width>86</width>
+   <height>96</height>
+   <texture>defaultHardDiskBig.png</texture>
+   <visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>Freespace label</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>340</posy>
+   <label>$LOCALIZE[155] $LOCALIZE[154] $LOCALIZE[156]</label>
+   <align>right</align>
+   <font>special12</font>
+   <visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>freespace f:</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>365</posy>
+   <info>System.Freespace(F)</info>
+   <align>right</align>
+   <font>special13</font>
+   <visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>freespace e:</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>395</posy>
+   <info>System.Freespace(E)</info>
+   <align>right</align>
+   <font>font10</font>
+   <visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>freespace g:</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>415</posy>
+   <info>System.Freespace(G)</info>
+   <align>right</align>
+   <font>font10</font>
+   <visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+<!-- System Info -->
+
+  <control>
+   <description>system info gradient</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>315</posx>
+   <posy>338</posy>
+   <width>400</width>
+   <height>99</height>
+   <texture>gradient.png</texture>
+   <visible>Control.HasFocus(9) + !Skin.HasSetting(homepageSysteminfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>settings image</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>550</posx>
+   <posy>335</posy>
+   <width>99</width>
+   <height>112</height>
+   <texture>settings-system-nofocus.png</texture>
+   <visible>Control.HasFocus(9) + !Skin.HasSetting(homepageSysteminfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>Settings label</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>340</posy>
+   <label>10511</label>
+   <align>right</align>
+   <font>special12</font>
+   <visible>Control.HasFocus(9) + !Skin.HasSetting(homepageSysteminfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>Ip Address label</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>365</posy>
+   <info>Network.IPAddress</info>
+   <align>right</align>
+   <font>special13</font>
+   <visible>Control.HasFocus(9) + !Skin.HasSetting(homepageSysteminfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>CPU Temperature Label</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>395</posy>
+   <label>$INFO[System.CPUTemperature]</label>
+   <align>right</align>
+   <font>font10</font>
+   <visible>Control.HasFocus(9) + !Skin.HasSetting(homepageSysteminfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>GPU Temperature Label</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>415</posy>
+   <label>$INFO[System.GPUTemperature]</label>
+   <align>right</align>
+   <font>font10</font>
+   <visible>Control.HasFocus(9) + !Skin.HasSetting(homepageSysteminfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+<!-- weather Info -->
+
+  <control>
+   <description>weather gradient</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>315</posx>
+   <posy>338</posy>
+   <width>400</width>
+   <height>99</height>
+   <texture>gradient.png</texture>
+   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>Weather image</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>555</posx>
+   <posy>338</posy>
+   <width>90</width>
+   <height>99</height>
+   <info>Weather.Conditions</info>
+   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>weather label</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>340</posy>
+   <label>20088</label>
+   <align>right</align>
+   <font>special12</font>
+   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>location label</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>365</posy>
+   <info>Weather.Location</info>
+   <align>right</align>
+   <font>special13</font>
+   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>conditions Label</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>395</posy>
+   <label>$INFO[Weather.Conditions]</label>
+   <align>right</align>
+   <font>font10</font>
+   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>temp Label</description>
+   <type>label</type>
+   <id>1</id>
+   <width>255</width>
+   <posx>540</posx>
+   <posy>415</posy>
+   <label>$LOCALIZE[143] $INFO[Weather.Temperature]</label>
+   <align>right</align>
+   <font>font10</font>
+   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <include>homestatsinfo</include>
   </control>
 
  <!-- main buttons -->
