@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-06-2006 changed: cddb info is displayed even if tag reading is disabled
  - 26-06-2006 fixed: if cddb is disabled, the content of a cd is listed, then cddb is enabled, the info from cddb is not displayed
  - 26-06-2006 changed: moved playlist window content into a directory class
  - 26-06-2006 changed: moved shares of media windows into the view state
