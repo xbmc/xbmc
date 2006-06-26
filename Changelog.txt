@@ -5,8 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 25-06-2006 changed: moved playlist window content into a directory class
- - 25-06-2006 changed: moved shares of media windows into the view state
+ - 26-06-2006 fixed: if cddb is disabled, the content of a cd is listed, then cddb is enabled, the info from cddb is not displayed
+ - 26-06-2006 changed: moved playlist window content into a directory class
+ - 26-06-2006 changed: moved shares of media windows into the view state
  - 25-06-2006 fixed: some dll loader cleanup and additions, attempt 2 (python was broken since the 24th after previous version of this)
  - 25-06-2006 fixed: Subtitles should now word-wrap (based on calibration values) when TTF fonts are used.
  - 25-06-2006 added: Font fallback to "font13" if a requested font isn't available.
