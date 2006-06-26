@@ -52,13 +52,13 @@ void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, co
 }
 
 void CRssReader::AddToQueue(int iAdd)
-{
+{  
   if (iAdd < (int)m_vecUrls.size())
     m_vecQueue.push_back(iAdd);
   if (!m_bIsRunning)
   {
-    m_bIsRunning = true;
     StopThread();
+    m_bIsRunning = true;
     CThread::Create();
   }
 }
@@ -479,5 +479,3 @@ bool CRssManager::GetReader(DWORD controlID, DWORD windowID, IRssObserver* obser
   m_readers.push_back(readerControl);
   return false;
 }
-
-

@@ -64,7 +64,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
-
       m_database.Open();
       // try to open the destination path
       if (!strDestination.IsEmpty())
@@ -192,7 +191,6 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     int btn_ScanTrainers = pMenu->AddButton(12012);
 
     //int btn_Settings = -2;
-    //if (g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings"))
     int btn_Settings = pMenu->AddButton(5);         // Settings
 
     // position it correctly

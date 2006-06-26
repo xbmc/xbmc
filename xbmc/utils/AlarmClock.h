@@ -30,6 +30,17 @@ public:
     return (m_event.find(strName) != m_event.end());
   }
 
+  double GetRemaining(const CStdString& strName)
+  {
+    std::map<CStdString,SAlarmClockEvent>::iterator iter;
+    if ((iter=m_event.find(strName)) != m_event.end())
+    {
+      return iter->second.m_fSecs-iter->second.watch.GetElapsedSeconds();
+    }
+
+    return 0.f;
+  }
+
 	void stop(const CStdString& strName);
 	virtual void Process();
 private:

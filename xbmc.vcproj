@@ -1020,6 +1020,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogKeyboard.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogLockSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogLocksettings.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogMediaSource.cpp">
 				</File>
 				<File
@@ -1051,6 +1057,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogPlayerControls.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogProfileSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogProfileSettings.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogProgress.cpp">

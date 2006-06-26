@@ -8,6 +8,7 @@
 #include "GUIPassword.h"
 #include "util.h"
 #include "GUIDialogMediaSource.h"
+#include "GUIDialogLockSettings.h"
 #include "MediaManager.h"
 
 #define BACKGROUND_IMAGE 999
@@ -154,7 +155,6 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
   if (g_guiSettings.GetInt("masterlock.maxretries") != 0)
   bMaxRetryExceeded = !(item->m_iBadPwdCount < g_guiSettings.GetInt("masterlock.maxretries"));
 
-
   // Get the share object from our file object
   VECSHARES *shares = g_settings.GetSharesFromType(strType);
   if (!shares) return false;
@@ -193,22 +193,29 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     CStdString strDefault = GetDefaultShareNameByType(strType);
     
     // add the needed buttons
-    int btn_EditPath = pMenu->AddButton(1027); // Edit Source
-    int btn_Default = pMenu->AddButton(13335); // Set as Default
-    int btn_ClearDefault = 0;
-    int btn_Delete = pMenu->AddButton(522); // Remove Source
+    int btn_AddShare=0;
+    int btn_EditPath=0;
+    int btn_Default=0;
+    int btn_Delete=0;
+    int btn_setThumb=0;
+    int btn_RemoveThumb=0;
+    int btn_ClearDefault=0;
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
+    {
+      btn_EditPath = pMenu->AddButton(1027); // Edit Source
+      btn_Default = pMenu->AddButton(13335); // Set as Default
+      btn_Delete = pMenu->AddButton(522); // Remove Source
 
-    int btn_setThumb = pMenu->AddButton(20019);
-    int btn_RemoveThumb = 0;
-    if (share->m_strThumbnailImage != "")
-      btn_RemoveThumb = pMenu->AddButton(20057);
+      btn_setThumb = pMenu->AddButton(20019);
+      if (share->m_strThumbnailImage != "")
+        btn_RemoveThumb = pMenu->AddButton(20057);
 
-    if (!strDefault.IsEmpty())
-      btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
+      if (!strDefault.IsEmpty())
+        btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
 
-    int btn_AddShare = pMenu->AddButton(1026); // Add Source
-
-    // GeminiServer: DVD Drive Context menu stuff
+      btn_AddShare = pMenu->AddButton(1026); // Add Source
+    }
+      // GeminiServer: DVD Drive Context menu stuff
     int btn_PlayDisc = 0;
     int btn_Eject = 0;
     CIoSupport TrayIO;
@@ -233,27 +240,27 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     int btn_ReactivateLock = 0; // Reactivate Share Lock
     int btn_ChangeLock = 0; // Change Share Lock;
     
-    if (LOCK_MODE_EVERYONE != g_guiSettings.GetInt("masterlock.lockmode"))
+
+    if (LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
     {
       if (share->m_iHasLock == 0)
         btn_LockShare = pMenu->AddButton(12332);
       else if (share->m_iHasLock == 1)
       {
         btn_RemoveLock = pMenu->AddButton(12335);
-        if (!g_passwordManager.bMasterUser)
-          btn_ReactivateLock = pMenu->AddButton(12353);
       }
       else if (share->m_iHasLock == 2)
       {
         btn_RemoveLock = pMenu->AddButton(12335);
-        if (g_guiSettings.GetBool("masterlock.sharelocks") && !bMaxRetryExceeded)
+        if (!bMaxRetryExceeded)
           btn_ChangeLock = pMenu->AddButton(12356);
         if (bMaxRetryExceeded)
           btn_ResetLock = pMenu->AddButton(12334);
       }
     }
-    //int btn_Settings = -2;
-    //if (g_passwordManager.bMasterUser || !g_guiSettings.GetBool("masterlock.locksettings") || g_guiSettings.GetInt("masterlock.lockmode") == LOCK_MODE_EVERYONE)
+    if (!g_passwordManager.bMasterUser && share->m_iHasLock == 1)
+      btn_ReactivateLock = pMenu->AddButton(12353);
+
     int btn_Settings = pMenu->AddButton(5);         // Settings
 
     // set the correct position
@@ -293,19 +300,31 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       {
         if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
+        
         return CGUIDialogMediaSource::ShowAndAddMediaSource(strType);
       }
       else if (btn == btn_Default)
       {
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
+        {
+          if (!g_passwordManager.IsProfileLockUnlocked())
+            return false;
+        }
+        else if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
+        
         // make share default
         SetDefault(strType, share->strName);
         return true;
       }
       else if (btn == btn_ClearDefault)
       {
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
+        {
+          if (!g_passwordManager.IsProfileLockUnlocked())
+            return false;
+        }
+        else if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
         // remove share default
         ClearDefault(strType);
@@ -355,21 +374,18 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_LockShare)
       {
+        bool bResult = false;
         CStdString strNewPassword = "";
         int iButton=0;
-        if (!g_guiSettings.GetBool("masterlock.sharelocks"))
-        {
-          if (!g_passwordManager.IsMasterLockUnlocked(true))
-            return false;
+        // prompt user for mastercode when changing lock settings) only for default user
+        if (!g_passwordManager.IsMasterLockUnlocked(true))    
+          return false;
 
-          strNewPassword = "";
-          iButton = LOCK_MODE_FOLLOWS_MASTER;
-        }
-        else //Advanced User Mode
+        CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
+        if (pDialog && g_advancedSettings.m_profilesupport)
+          bResult = CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPassword);
+        else // OLD DEPRECATED
         {
-          // prompt user for mastercode when changing lock settings
-          if (!g_passwordManager.IsMasterLockUnlocked(true))
-            return false;
 
           // popup the context menu
           CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -406,13 +422,16 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
               break;
             }
           }
+          share->m_iLockMode = iButton;
+          bResult = true;
         }
+        if (!bResult)
+          return false;
         // password entry and re-entry succeeded, write out the lock data
         share->m_iHasLock = 2;
-        share->m_iLockMode = iButton;
         g_settings.BeginBookmarkTransaction();
         g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPassword);
-        strNewPassword.Format("%i",iButton);
+        strNewPassword.Format("%i",share->m_iLockMode);
         g_settings.UpdateBookmark(strType, share->strName, "lockmode", strNewPassword);
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
         g_settings.CommitBookmarkTransaction();
@@ -420,10 +439,11 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
         m_gWindowManager.SendThreadMessage(msg);        
         return true;
+
       }
       else if (btn == btn_ResetLock)
       {
-        // prompt user for mastercode when changing lock settings
+        // prompt user for profile lock when changing lock settings
         if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
 
@@ -434,12 +454,12 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_RemoveLock)
       {
-        // prompt user for mastercode when changing lock settings
         if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
 
         if (!CGUIDialogYesNo::ShowAndGetInput(12335, 0, 750, 0))
           return false;
+        
         share->m_iHasLock = 0;
         g_settings.BeginBookmarkTransaction();
         g_settings.UpdateBookmark(strType, share->strName, "lockmode", "0");
@@ -464,31 +484,46 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_ChangeLock)
       {
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
+        if (!g_passwordManager.IsMasterLockUnlocked(true))    
           return false;
+
         CStdString strNewPW;
 	      CStdString strNewLockMode;
-		    switch (item->m_iLockMode)
-		    {
-		    case 1:  // 1: Numeric Password
-			    if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPW))
-			    return false;
-			    else strNewLockMode = "1";
-			    break;
-		    case 2:  // 2: Gamepad Password
-			    if (!CGUIDialogGamepad::ShowAndVerifyNewPassword(strNewPW))
-			    return false;
-			    else strNewLockMode = "2";
-			    break;
-		    case 3:  // 3: Fulltext Password
-			    if (!CGUIDialogKeyboard::ShowAndVerifyNewPassword(strNewPW))
-			    return false;
-			    else strNewLockMode = "3";
-			    break;
-		    default:  // Not supported, abort
-			    return false;
-			    break;
-		    }
+        bool bResult=false;		    
+        CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
+        if (pDialog && g_advancedSettings.m_profilesupport)
+        {
+          bResult = CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW);
+          if (bResult)
+            strNewLockMode.Format("%i",share->m_iLockMode);
+        }
+        else // OLD DEPRECATED
+        {
+          switch (item->m_iLockMode)
+          {
+          case 1:  // 1: Numeric Password
+            if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPW))
+              return false;
+            else strNewLockMode = "1";
+            break;
+          case 2:  // 2: Gamepad Password
+            if (!CGUIDialogGamepad::ShowAndVerifyNewPassword(strNewPW))
+              return false;
+            else strNewLockMode = "2";
+            break;
+          case 3:  // 3: Fulltext Password
+            if (!CGUIDialogKeyboard::ShowAndVerifyNewPassword(strNewPW))
+              return false;
+            else strNewLockMode = "3";
+            break;
+          default:  // Not supported, abort
+            return false;
+            break;
+          }
+          bResult = true;
+        }
+        if (!bResult)
+          return false;
 		    // password ReSet and re-entry succeeded, write out the lock data
         g_settings.BeginBookmarkTransaction();
 		    g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPW);

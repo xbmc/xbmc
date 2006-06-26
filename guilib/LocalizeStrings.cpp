@@ -187,11 +187,11 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20035] = ToUTF8(strEncoding, "km/h");
   m_vecStrings[20036] = ToUTF8(strEncoding, "mph");
   m_vecStrings[20037] = ToUTF8(strEncoding, "m/s");
-  m_vecStrings[20038] = "Lock music";
-  m_vecStrings[20039] = "Lock videos";
-  m_vecStrings[20040] = "Lock pictures";
-  m_vecStrings[20041] = "Lock programs and scripts";
-  m_vecStrings[20042] = "Lock files";
+  m_vecStrings[20038] = "Lock music section";
+  m_vecStrings[20039] = "Lock video section";
+  m_vecStrings[20040] = "Lock pictures section";
+  m_vecStrings[20041] = "Lock programs and scripts sections";
+  m_vecStrings[20042] = "Lock filemanager";
   m_vecStrings[20043] = "Lock settings";
   m_vecStrings[20044] = "Use individual locks per share";
   m_vecStrings[20045] = "Enter master mode";
@@ -207,14 +207,25 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20055] = "Allmusic.com Thumb";
   m_vecStrings[20056] = "Source Thumbnail";
   m_vecStrings[20057] = "Remove Thumbnail";
-  m_vecStrings[20058] = "Enter the new value";
+  m_vecStrings[20058] = "Add Profile...";
   m_vecStrings[20059] = "Query Info For All Albums";
-  m_vecStrings[20060] = "MPAA Rating:";
-
+  m_vecStrings[20060] = "Media info";
+  m_vecStrings[20061] = "Separate";
+  m_vecStrings[20062] = "Shares with default";
+  m_vecStrings[20063] = "Shares with default (read only)";
+  m_vecStrings[20064] = "Set name";
+  m_vecStrings[20065] = "Select picture";
+  m_vecStrings[20066] = "Lock preferences";
+  m_vecStrings[20067] = "Edit profile";
+  m_vecStrings[20068] = "Lock Mode";
   m_vecStrings[20069] = "Could not create folder";
+  m_vecStrings[20070] = "Profile directory";
+  m_vecStrings[20071] = "Query info for all albums";
   m_vecStrings[20072] = "Make sure that the selected folder is writable";
   m_vecStrings[20073] = "and that the new folder name is valid.";
-
+  m_vecStrings[20074] = "MPAA Rating:";
+  m_vecStrings[20075] = "Enter master lock code";
+  m_vecStrings[20076] = "Ask for master lock code on startup";
   m_vecStrings[20077] = "Skin Settings";
   m_vecStrings[20078] = "- no link set -";
   m_vecStrings[20079] = "Enable Animations";
@@ -229,6 +240,12 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20088] = "Weather Info";
   m_vecStrings[20089] = "Drive Space Free";
   m_vecStrings[20090] = "Enter the name of an existing Share";
+  m_vecStrings[20091] = "Lock Code";
+  m_vecStrings[20092] = "Lock Code (set)";
+  m_vecStrings[20093] = "Profile name";
+  m_vecStrings[20094] = "Media sources";
+  m_vecStrings[20095] = "Enter profile lock code";
+  m_vecStrings[20096] = "Login screen";
 
   m_vecStrings[20097] = "Fetching album info";
   m_vecStrings[20098] = "Fetching info for album";

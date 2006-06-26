@@ -154,10 +154,9 @@ CSettings::CSettings(void)
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.cdda";
 
-  g_stSettings.m_userDataFolder = "Q:\\UserData"; // main user data folder
   g_stSettings.m_logFolder = "Q:\\";              // log file location
 
-  m_iLastLoadedProfileIndex = -1;
+  m_iLastLoadedProfileIndex = 0;
 
   // defaults for scanning
   g_stSettings.m_bMyMusicIsScanning = false;
@@ -224,6 +223,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_sambaclienttimeout = 10;
 
   g_advancedSettings.m_playlistAsFolders = true;
+  g_settings.bUseLoginScreen = false;
 
   xbmcXmlLoaded = false;
   bTransaction = false;
@@ -243,7 +243,7 @@ void CSettings::Save() const
     //for every screen when the application is stopping.
     return ;
   }
-  if (!SaveSettings(GetSettingsFile(), true))
+  if (!SaveSettings(GetSettingsFile()))
   {
     CLog::Log(LOGERROR, "Unable to save settings to %s", GetSettingsFile().c_str());
   }
@@ -254,15 +254,32 @@ bool CSettings::Reset()
   CLog::Log(LOGINFO, "Resetting settings");
   CFile::Delete(GetSettingsFile());
   Save();
-  return LoadSettings(GetSettingsFile(), true);
+  return LoadSettings(GetSettingsFile());
 }
 
 bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 {
   // load settings file...
   bXboxMediacenter = bSettings = false;
+
+  char szDevicePath[1024]; 
+  CIoSupport helper;
+  CStdString strMnt = GetUserDataFolder();
+  if (GetUserDataFolder().Left(2).Equals("Q:"))
+  {
+    CUtil::GetHomePath(strMnt);
+    strMnt += GetUserDataFolder().substr(2);
+  }
+    
+  helper.GetPartition(strMnt, szDevicePath);
+  strcat(szDevicePath,strMnt.c_str()+2);
+  
+  helper.Unmount("P:");
+  helper.Mount("P:",szDevicePath);
+
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
-  if (!LoadSettings(GetSettingsFile(), true))
+  CStdString strFile=GetSettingsFile();
+  if (!LoadSettings(strFile))
   {
     CLog::Log(LOGERROR, "Unable to load %s, creating new %s with default values", GetSettingsFile().c_str(), GetSettingsFile().c_str());
     Save();
@@ -271,8 +288,8 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   }
 
   // load xml file...
-  CLog::Log(LOGNOTICE, "loading Q:\\XboxMediaCenter.xml");
-  CStdString strXMLFile = "Q:\\XboxMediaCenter.xml";
+  CStdString strXMLFile = GetSourcesFile();
+  CLog::Log(LOGNOTICE, "%s",strXMLFile.c_str());
   TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
   {
@@ -284,9 +301,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   CStdString strValue;
   if (pRootElement)
     strValue = pRootElement->Value();
-  if ( strValue != "xboxmediacenter")
+  if ( strValue != "sources")
   {
-    g_LoadErrorStr.Format("%s Doesn't contain <xboxmediacenter>", strXMLFile.c_str());
+    g_LoadErrorStr.Format("%s Doesn't contain <sources>", strXMLFile.c_str());
     return false;
   }
   /*
@@ -306,6 +323,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   LoadRSSFeeds();
 
+  helper.Unmount("S:");
   CStdString strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szAlternateSubtitleDirectory);
   strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
 
@@ -414,6 +432,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
   CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
   strDefault = "";
 
+  items.clear();
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
   if (pChild)
   {
@@ -450,7 +469,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
   }
   else
   {
-    CLog::Log(LOGERROR, "  <%s> tag is missing or XboxMediaCenter.xml is malformed", strTagName.c_str());
+    CLog::Log(LOGERROR, "  <%s> tag is missing or sources.xml is malformed", strTagName.c_str());
   }
 }
 
@@ -806,34 +825,22 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
   return true;
 }
 
-bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadprofiles)
+bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 {
   // load the xml file
   TiXmlDocument xmlDoc;
+
   if (!xmlDoc.LoadFile(strSettingsFile))
   {
     g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
+
   TiXmlElement *pRootElement = xmlDoc.RootElement();
   if (strcmpi(pRootElement->Value(), "settings") != 0)
   {
     g_LoadErrorStr.Format("%s\nDoesn't contain <settings>", strSettingsFile.c_str());
     return false;
-  }
-
-  if (loadprofiles)
-  {
-    LoadProfiles(pRootElement, strSettingsFile);
-    if (m_vecProfiles.size() == 0)
-    {
-      //no profiles yet, make one based on the default settings
-      CProfile profile;
-      profile.setFileName(GetProfilesFile(0));
-      profile.setName("Default settings");
-      m_vecProfiles.push_back(profile);
-      SaveSettingsToProfile(0);
-    }
   }
 
   // mypictures
@@ -997,7 +1004,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
   }
   
-  pElement = pRootElement->FirstChildElement("DefaultVideoSettings");
+  pElement = pRootElement->FirstChildElement("defaultvideosettings");
   if (pElement)
   {
     GetInteger(pElement, "interlacemethod", (int &)g_stSettings.m_defaultVideoSettings.m_InterlaceMethod, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_SYNC_EVEN);
@@ -1053,7 +1060,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 void CSettings::LoadAdvancedSettings()
 {
   CStdString advancedSettingsXML;
-  advancedSettingsXML.Format("%s\\AdvancedSettings.xml", GetUserDataFolder().c_str());
+  advancedSettingsXML  = g_settings.GetUserDataItem("advancedsettings.xml");
   TiXmlDocument advancedXML;
   if (!CFile::Exists(advancedSettingsXML))
     return;
@@ -1141,6 +1148,8 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "usefdrive", g_advancedSettings.m_useFDrive);
   XMLUtils::GetBoolean(pRootElement, "usegdrive", g_advancedSettings.m_useGDrive);
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
+
+  GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
 
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
@@ -1279,23 +1288,20 @@ void CSettings::LoadAdvancedSettings()
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", g_advancedSettings.m_playlistAsFolders);
 
+  // temporary profiles support
+  XMLUtils::GetBoolean(pRootElement,"profilesupport",g_advancedSettings.m_profilesupport);
+
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 }
 
-bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool saveprofiles) const
+bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 {
   TiXmlDocument xmlDoc;
   TiXmlElement xmlRootElement("settings");
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot) return false;
   // write our tags one by one - just a big list for now (can be flashed up later)
-
-  if (saveprofiles)
-  {
-    SaveProfiles(pRoot);
-  }
-
   // myprograms settings
   TiXmlElement programsNode("myprograms");
   TiXmlNode *pNode = pRoot->InsertEndChild(programsNode);
@@ -1465,14 +1471,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
   SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
   SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
-  
-  //screensaver
-  TiXmlElement screensaverNode("ScreenSaver");
-  pNode = pRoot->InsertEndChild(screensaverNode);
-  if (!pNode) return false;
-  
+    
   // default video settings
-  TiXmlElement videoSettingsNode("DefaultVideoSettings");
+  TiXmlElement videoSettingsNode("defaultvideosettings");
   pNode = pRoot->InsertEndChild(videoSettingsNode);
   if (!pNode) return false;
   SetInteger(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
@@ -1514,102 +1515,231 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 }
 
 bool CSettings::LoadProfile(int index)
-{
-  CProfile& profile = m_vecProfiles.at(index);
-  if (LoadSettings(GetProfilesFile(index), false))
+{  
+  int iOldIndex = m_iLastLoadedProfileIndex;
+  m_iLastLoadedProfileIndex = index;
+  bool bSourcesXML=true;
+  if (Load(bSourcesXML,bSourcesXML))
   {
-    m_iLastLoadedProfileIndex = index;
-    Save();
+    bool bOldMaster = g_passwordManager.bMasterUser;
+    g_passwordManager.bMasterUser  = true;
+    CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
+    CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetIMDbFolder().c_str(), NULL);
+
+    // Thumbnails/
+    CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetMusicArtistThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
+    CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
+    CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
+    for (unsigned int hex=0; hex < 16; hex++)
+    {
+      CStdString strThumbLoc = g_settings.GetPicturesThumbFolder();
+      CStdString strHex;
+      strHex.Format("%x",hex);
+      strThumbLoc += "\\" + strHex;
+      CreateDirectory(strThumbLoc.c_str(),NULL);
+    }
+
+    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    // initialize our charset converter
+    g_charsetConverter.reset();
+
+    // Load the langinfo to have user charset <-> utf-8 conversion
+    CStdString strLangInfoPath;
+    strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("lookandfeel.language"));
+
+    CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
+    g_langInfo.Load(strLangInfoPath);
+
+    CStdString strLanguagePath;
+    strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("lookandfeel.language"));
+
+    g_buttonTranslator.Load();
+    g_localizeStrings.Load(strLanguagePath);
+
+    if (m_iLastLoadedProfileIndex != 0)
+    {
+      TiXmlDocument doc;
+      if (doc.LoadFile(GetUserDataFolder()+"\\guisettings.xml"))
+      {
+        g_guiSettings.LoadMasterLock(doc.RootElement());
+      }
+    }
+    g_passwordManager.bMasterUser = bOldMaster;
+    SaveProfiles("q:\\system\\profiles.xml");
     return true;
   }
+
+  m_iLastLoadedProfileIndex = iOldIndex;
+ 
   return false;
 }
 
 void CSettings::DeleteProfile(int index)
 {
-  for (IVECPROFILES iProfile = g_settings.m_vecProfiles.begin(); iProfile != g_settings.m_vecProfiles.end(); ++iProfile)
-  {
-    if (iProfile == &g_settings.m_vecProfiles.at(index))
-    {
-      if (index == m_iLastLoadedProfileIndex) {m_iLastLoadedProfileIndex = -1;}
-      ::DeleteFile(iProfile->getFileName());
-      m_vecProfiles.erase(iProfile);
-      Save();
-      break;
-    }
-  }
+  if (index > 0 && index < (int)g_settings.m_vecProfiles.size())
+    m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+index);
+
+  SaveProfiles("q:\\system\\profiles.xml");
 }
 
 bool CSettings::SaveSettingsToProfile(int index)
 {
-  CProfile& profile = m_vecProfiles.at(index);
-  return SaveSettings(profile.getFileName(), false);
+  /*CProfile& profile = m_vecProfiles.at(index);
+  return SaveSettings(profile.getFileName(), false);*/
+  return true;
 }
 
 
-bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile)
+bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 {
-  CLog::Log(LOGDEBUG, "Parsing <profiles> tag");
-  const TiXmlElement *pChild = pRootElement->FirstChildElement("profiles");
-  if (pChild)
-  {
-    GetInteger(pChild, "lastloaded", m_iLastLoadedProfileIndex, -1, -1, INT_MAX);
-    const TiXmlNode *pChildNode = pChild->FirstChild();
-    while (pChildNode > 0)
-    {
-      CStdString strValue = pChildNode->Value();
-      if (strValue == "profile")
-      {
-        const TiXmlNode *pProfileName = pChildNode->FirstChild("name");
-        const TiXmlNode *pProfileFile = pChildNode->FirstChild("file");
-        if (pProfileName && pProfileFile)
-        {
-          const char* szName = pProfileName->FirstChild()->Value();
-          CLog::Log(LOGDEBUG, "    Profile Name: %s", szName);
-          const char* szPath = pProfileFile->FirstChild()->Value();
-          CLog::Log(LOGDEBUG, "    Profile Filename: %s", szPath);
-
-          CProfile profile;
-          CStdString str = szName;
-          profile.setName(str);
-          str = szPath;
-          profile.setFileName(str);
-          m_vecProfiles.push_back(profile);
-        }
-        else
-        {
-          CLog::Log(LOGERROR, "    <name> and/or <file> not properly defined within <profile>");
-        }
-      }
-      pChildNode = pChildNode->NextSibling();
-    }
-    return true;
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "  <profiles> tag is missing or %s is malformed", strSettingsFile.c_str());
+  TiXmlDocument profilesDoc;
+  CIoSupport helper;
+  if (!CFile::Exists(strSettingsFile))
+  { // set defaults, or assume no rss feeds??
     return false;
   }
+  if (!profilesDoc.LoadFile(strSettingsFile.c_str()))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *pRootElement = profilesDoc.RootElement();
+  if (!pRootElement || strcmpi(pRootElement->Value(),"profiles") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <profiles> node", strSettingsFile.c_str());
+    return false;
+  }
+  GetInteger(pRootElement,"lastloaded",m_iLastLoadedProfileIndex,0,0,1000);
+  if (m_iLastLoadedProfileIndex < 0)
+    m_iLastLoadedProfileIndex = 0;
+
+  XMLUtils::GetBoolean(pRootElement,"useloginscreen",bUseLoginScreen);
+
+  TiXmlElement* pProfile = pRootElement->FirstChildElement("profile");
+  CProfile profile;
+
+  while (pProfile)
+  {
+    profile.setName("default user");
+    profile.setDirectory("q:\\userdata");
+    TiXmlElement* pName = pProfile->FirstChildElement("name");
+    if (pName)
+      if (pName->FirstChild())
+        profile.setName(pName->FirstChild()->Value());
+    
+    TiXmlElement* pDirectory = pProfile->FirstChildElement("directory");
+    if (pDirectory)
+      if (pDirectory->FirstChild())
+        profile.setDirectory(pDirectory->FirstChild()->Value());
+
+    TiXmlElement* pThumbnail = pProfile->FirstChildElement("thumbnail");
+    if (pThumbnail)
+      if (pThumbnail->FirstChild())
+        profile.setThumb(pThumbnail->FirstChild()->Value());
+
+    bool bHas=true;
+    XMLUtils::GetBoolean(pProfile, "hasdatabases", bHas);
+    profile.setDatabases(bHas);
+
+    bHas = true;
+    XMLUtils::GetBoolean(pProfile, "canwritedatabases", bHas);
+    profile.setWriteDatabases(bHas);
+    
+    bHas = true;
+    XMLUtils::GetBoolean(pProfile, "hassources", bHas);
+    profile.setSources(bHas);
+    
+    bHas = true;
+    XMLUtils::GetBoolean(pProfile, "canwritesources", bHas);
+    profile.setWriteSources(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
+    profile.setSettingsLocked(bHas);
+    
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockfiles", bHas);
+    profile.setMusicLocked(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockmusic", bHas);
+    profile.setMusicLocked(bHas);
+    
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockvideo", bHas);
+    profile.setVideoLocked(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockpictures", bHas);
+    profile.setPicturesLocked(bHas);
+
+    bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockprograms", bHas);
+    profile.setProgramsLocked(bHas);
+
+    int iLockMode=LOCK_MODE_EVERYONE;
+    XMLUtils::GetInt(pProfile,"lockmode",iLockMode);
+    profile.setLockMode(iLockMode);
+
+    CStdString strLockCode;
+    XMLUtils::GetString(pProfile,"lockcode",strLockCode);
+    profile.setLockCode(strLockCode);
+    
+    m_vecProfiles.push_back(profile);
+    pProfile = pProfile->NextSiblingElement("profile");
+  }
+
+  if (m_iLastLoadedProfileIndex >= (int)m_vecProfiles.size() || m_iLastLoadedProfileIndex < 0)
+    m_iLastLoadedProfileIndex = 0;
+
+  return true;
 }
 
-
-bool CSettings::SaveProfiles(TiXmlNode* pRootElement) const
+bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
 {
-  TiXmlElement xmlProfilesElement("profiles");
-  TiXmlNode *pProfileNode = pRootElement->InsertEndChild(xmlProfilesElement);
-  if (!pProfileNode) return false;
-  SetInteger(pProfileNode, "lastloaded", m_iLastLoadedProfileIndex);
-  for (int i = 0; i < (int)m_vecProfiles.size(); ++i)
+  TiXmlDocument xmlDoc;
+  TiXmlElement xmlRootElement("profiles");
+  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+  if (!pRoot) return false;
+  SetInteger(pRoot,"lastloaded",m_iLastLoadedProfileIndex);
+  SetBoolean(pRoot,"useloginscreen",bUseLoginScreen);
+  for (unsigned int iProfile=0;iProfile<g_settings.m_vecProfiles.size();++iProfile)
   {
-    const CProfile& profile = m_vecProfiles.at(i);
+    TiXmlElement profileNode("profile");
+    TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
+    SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
+    SetString(pNode,"directory",g_settings.m_vecProfiles[iProfile].getDirectory());
+    SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    {
+      SetInteger(pNode,"lockmode",g_settings.m_vecProfiles[iProfile].getLockMode());
+      SetString(pNode,"lockcode",g_settings.m_vecProfiles[iProfile].getLockCode());
+      SetBoolean(pNode,"lockmusic",g_settings.m_vecProfiles[iProfile].musicLocked());
+      SetBoolean(pNode,"lockvideo",g_settings.m_vecProfiles[iProfile].videoLocked());
+      SetBoolean(pNode,"lockpictures",g_settings.m_vecProfiles[iProfile].picturesLocked());
+      SetBoolean(pNode,"lockprograms",g_settings.m_vecProfiles[iProfile].programsLocked());
+      SetBoolean(pNode,"locksettings",g_settings.m_vecProfiles[iProfile].settingsLocked());
+      SetBoolean(pNode,"lockfiles",g_settings.m_vecProfiles[iProfile].filesLocked());
+    }
 
-    TiXmlElement profileElement("profile");
-    TiXmlNode *pNode = pProfileNode->InsertEndChild(profileElement);
-    if (!pNode) return false;
-    SetString(pNode, "name", profile.getName());
-    SetString(pNode, "file", profile.getFileName());
+    if (iProfile > 0)
+    {
+      SetBoolean(pNode,"hasdatabases",g_settings.m_vecProfiles[iProfile].hasDatabases());
+      SetBoolean(pNode,"canwritedatabases",g_settings.m_vecProfiles[iProfile].canWriteDatabases());
+      SetBoolean(pNode,"hassources",g_settings.m_vecProfiles[iProfile].hasSources());
+      SetBoolean(pNode,"canwritesources",g_settings.m_vecProfiles[iProfile].canWriteSources());
+    }
   }
-  return true;
+  // save the file
+  return xmlDoc.SaveFile(strSettingsFile);
 }
 
 bool CSettings::LoadXml()
@@ -1617,7 +1747,7 @@ bool CSettings::LoadXml()
   // load xml file - we use the xbe path in case we were loaded as dash
   if (!xbmcXmlLoaded)
   {
-    if ( !xbmcXml.LoadFile( "Q:\\XBoxMediaCenter.xml" ) )
+    if ( !xbmcXml.LoadFile( g_settings.GetSourcesFile() ) )
     {
       return false;
     }
@@ -1951,7 +2081,7 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
       }
     }
     if (!foundXML)
-      CLog::Log(LOGERROR, "Unable to find the bookmark %s with path %s for deletion from xboxmediacenter.xml", strName.c_str(), strPath.c_str());
+      CLog::Log(LOGERROR, "Unable to find the bookmark %s with path %s for deletion from sources.xml", strName.c_str(), strPath.c_str());
     return xbmcXml.SaveFile();
   }
   else
@@ -2067,7 +2197,8 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
 bool CSettings::LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders)
 { // load xml file...
   CStdString strXMLFile;
-  CUtil::AddFileToFolder(GetUserDataFolder(), strFolderXML, strXMLFile);
+  //CUtil::AddFileToFolder(GetUserDataFolder(), strFolderXML, strXMLFile);
+  CUtil::AddFileToFolder(GetProfileUserDataFolder(), strFolderXML, strXMLFile);
 
   TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
@@ -2282,13 +2413,12 @@ void CSettings::ResetSkinSettings()
 
 void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
 {
-  GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
-
   // check them all
   if (g_guiSettings.GetString("system.playlistspath") == "set default")
   {
     CStdString strDir;
-    CUtil::AddFileToFolder(GetUserDataFolder(), "playlists", strDir);
+    //CUtil::AddFileToFolder(GetUserDataFolder(), "playlists", strDir);
+    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "playlists", strDir);
     CUtil::AddSlashAtEnd(strDir);
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
     CDirectory::Create(strDir);
@@ -2306,99 +2436,190 @@ void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
     CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"video",strDir2);
     CDirectory::Create(strDir2);
   }
+}
 
-  if (g_stSettings.m_szAlternateSubtitleDirectory[0] == 0)
-  {
-    strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "Q:\\subtitles");
-  }
+CStdString CSettings::GetProfileUserDataFolder() const
+{
+  CStdString folder;
+  if (m_iLastLoadedProfileIndex == 0)
+    return GetUserDataFolder();
+
+  CUtil::AddFileToFolder(GetUserDataFolder(),m_vecProfiles[m_iLastLoadedProfileIndex].getDirectory(),folder);
+  
+  return folder;
+}
+
+CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
+{
+  CStdString folder;
+  folder = "P:\\"+g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getDirectory()+"\\"+strFile;
+  if (!CFile::Exists(folder))
+    folder = "P:\\"+strFile;
+  return folder;
 }
 
 CStdString CSettings::GetUserDataFolder() const
 {
-  return g_stSettings.m_userDataFolder;
+  return m_vecProfiles[0].getDirectory();
 }
 
 CStdString CSettings::GetDatabaseFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database", folder);
+  else
+    CUtil::AddFileToFolder(GetUserDataFolder(), "Database", folder);
+  
   return folder;
 }
 
 CStdString CSettings::GetCDDBFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database\\CDDB", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database\\CDDB", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\CDDB", folder);
+  else
+    CUtil::AddFileToFolder(GetUserDataFolder(), "Database\\CDDB", folder);
+  
   return folder;
 }
 
 CStdString CSettings::GetIMDbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database\\IMDb", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database\\IMDb", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\IMDb", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Database\\IMDb", folder);
+  
   return folder;
 }
 
 CStdString CSettings::GetThumbnailsFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails", folder);
+  
   return folder;
 }
 
 CStdString CSettings::GetMusicThumbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music", folder);
+  
   return folder;
 }
 
 CStdString CSettings::GetMusicArtistThumbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music\\Artists", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music\\Artists", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
+  
   return folder;
 }
 
 CStdString CSettings::GetVideoThumbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Video", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Video", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video", folder);
+  
   return folder;
 }
 
 CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Video\\Bookmarks", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Video\\Bookmarks", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
+  
   return folder;
 }
 
 CStdString CSettings::GetPicturesThumbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Pictures", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Pictures", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Pictures", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Pictures", folder);
+  
   return folder;
 }
 
 CStdString CSettings::GetProgramsThumbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Programs", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Programs", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs", folder);
+  
   return folder;
 }
+
+CStdString CSettings::GetProfilesThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Profiles", folder);
+  
+  return folder;
+}
+
 
 CStdString CSettings::GetXLinkKaiThumbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Programs\\XLinkKai", folder);
+  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Programs\\XLinkKai", folder);
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs\\XLinkKai", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs\\XlinkKai", folder);
+  
+  return folder;
+}
+
+CStdString CSettings::GetSourcesFile() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasSources())
+    CUtil::AddFileToFolder(GetProfileUserDataFolder(),"sources.xml",folder);
+  else
+    CUtil::AddFileToFolder(GetUserDataFolder(),"sources.xml",folder);
+
   return folder;
 }
 
 void CSettings::LoadRSSFeeds()
 {
   CStdString rssXML;
-  rssXML.Format("%s\\RSSFeeds.xml", GetUserDataFolder().c_str());
+  //rssXML.Format("%s\\RSSFeeds.xml", GetUserDataFolder().c_str());
+  rssXML = GetUserDataItem("rssfeeds.xml");
   TiXmlDocument rssDoc;
   if (!CFile::Exists(rssXML))
   { // set defaults, or assume no rss feeds??
@@ -2448,7 +2669,7 @@ void CSettings::LoadRSSFeeds()
       g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<string> > >(iId,std::make_pair<std::vector<int>,std::vector<string> >(vecIntervals,vecSet)));
     } 
     else 
-      CLog::Log(LOGERROR,"found rss url set with no id in XboxMediaCenter.xml, ignored");
+      CLog::Log(LOGERROR,"found rss url set with no id in RssFeeds.xml, ignored");
 
     pSet = pSet->NextSiblingElement("set");
   }
@@ -2457,15 +2678,9 @@ void CSettings::LoadRSSFeeds()
 CStdString CSettings::GetSettingsFile() const
 {
   CStdString settings;
-  CUtil::AddFileToFolder(GetUserDataFolder(), "guisettings.xml", settings);
-  return settings;
-}
-
-CStdString CSettings::GetProfilesFile(int number) const
-{
-  CStdString settings;
-  CStdString profile;
-  profile.Format("guiprofile%i.xml", number);
-  CUtil::AddFileToFolder(GetUserDataFolder(), profile, settings);
+  if (g_settings.m_iLastLoadedProfileIndex == 0)
+    settings = "P:\\guisettings.xml";
+  else
+    settings = "P:\\"+g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getDirectory()+"\\guisettings.xml";
   return settings;
 }
