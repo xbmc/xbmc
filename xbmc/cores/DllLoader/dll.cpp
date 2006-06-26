@@ -6,7 +6,7 @@
 #include "dll_tracker.h"
 #include "dll_util.h"
 
-#define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs"
+#define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs\\"
 #define HIGH_WORD(a) ((WORD)(((DWORD)(a) >> 16) & MAXWORD))
 #define LOW_WORD(a) ((WORD)(((DWORD)(a)) & MAXWORD))
 
@@ -17,71 +17,61 @@ char* getpath(char *buf, const char *full)
   char* pos;
   if (pos = strrchr(full, '\\'))
   {
-    strncpy(buf, full, pos - full);
-    buf[pos - full] = 0;
+    strncpy(buf, full, pos - full + 1 );
+    buf[pos - full + 1] = 0;
     return buf;
   }
-  else return NULL;
+  else 
+  {
+    buf[0] = 0;
+    return buf;
+  }
 }
 
 extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sourcedll)
-{
-  char file[MAX_PATH + 1];
-  file[0] = 0;
-  strcpy(file, lib_file);
-  
-  // we skip to the last backslash
-  // this is effectively eliminating weird characters in
-  // the text output windows
+{    
+  char libname[MAX_PATH + 1] = {};
+  char libpath[MAX_PATH + 1] = {};
+  DllLoader* dll = NULL; 
 
-  char* libname = strrchr(file, '\\');
-  if (libname) libname++;
-  else libname = (char*)file;
+  /* extract name */  
+  char* p = strrchr(lib_file, '\\');
+  if (p) 
+    strcpy(libname, p+1);
+  else 
+    strcpy(libname, lib_file);  
 
-  char llibname[MAX_PATH + 1]; // lower case
-  strcpy(llibname, libname);
-  strlwr(llibname);
-
-  // ws2_32.dll hack
-  // for libraries linked in visual.net with ws2_32.lib
-  if (strlen(file) > 2 && file[1] != ':' && strstr(file, ".dll") == NULL && strstr(file,".qts") == NULL)
-  {
-    strcpy(file, libname);
-    strcat(file, ".dll");
-  }
+  /* extract path */
+  getpath(libpath, lib_file);
   
   CLog::Log(LOGDEBUG, "LoadLibraryA('%s')", libname);
-  char* l = llibname;
-  
-    char pfile[MAX_PATH + 1];
-  if (strlen(file) > 1 && file[1] == ':')
-    sprintf(pfile, "%s", (char *)file);
-  else
+  if (sourcedll)
   {
-    if (sourcedll)
+    if( libpath[0] == '\0' )
     {
-      //Use calling dll's path as base address for this call
-      char path[MAX_PATH + 1];
-      getpath(path, sourcedll);
+      /* use calling dll's path as base address for this call */
+      getpath(libpath, sourcedll);
 
-      //Handle mplayer case specially
-      //it has all it's dlls in a codecs subdirectory
+      /* mplayer has all it's dlls in a codecs subdirectory */
       if (strstr(sourcedll, "mplayer.dll"))
-        sprintf(pfile, "%s\\codecs\\%s", path, (char *)libname);
-      else
-        sprintf(pfile, "%s\\%s", path, (char *)libname);
+        strcat(libpath, "codecs\\");
     }
-    else
-      sprintf(pfile, "%s\\%s", DEFAULT_DLLPATH , (char *)libname);
   }
+
+  /* if we still don't have a path, use default path */
+  if( libpath[0] == '\0' )
+    strcpy(libpath, DEFAULT_DLLPATH);
   
-  // Check if dll is already loaded and return its handle
+  dll = g_dlls.LoadModule(libname, libpath);
   
-  // first try filename only
-  
-  DllLoader* dll = g_dlls.LoadModule(file);
-  // now with base address
-  if (!dll) dll = g_dlls.LoadModule(pfile);
+  if (!dll)
+  {
+    /* we didn't find a library, check if we can find same library but with a .dll appended */
+    /* some linkers call without the .dll part */
+    strcat(libname, ".dll");
+    dll = g_dlls.LoadModule(libname, libpath);
+  }
+
   
   if (dll)
   {
