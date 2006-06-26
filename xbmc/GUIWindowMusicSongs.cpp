@@ -66,9 +66,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
-      m_rootDir.SetMask(g_stSettings.m_musicExtensions);
-      m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
-
       // try to open the destination path
       if (!strDestination.IsEmpty())
       {
@@ -407,7 +404,6 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
     // and do the popup menu
     if (CGUIDialogContextMenu::BookmarksMenu("music", m_vecItems[iItem], iPosX, iPosY))
     {
-      m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
       Update(m_vecItems.m_strPath);
       return ;
     }

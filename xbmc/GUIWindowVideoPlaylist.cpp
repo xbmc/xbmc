@@ -56,7 +56,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_vecItems.m_strPath="";
+      m_vecItems.m_strPath="playlistvideo://";
 
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
@@ -277,53 +277,6 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   // update repeat button
   int iRepeat = 595 + g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO);
   SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
-}
-
-
-bool CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
-{
-  if (items.Size())
-  {
-    items.Clear(); // will clean up everything
-  }
-
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
-  /* copy playlist from general playlist*/
-  int iCurrentSong = -1;
-  if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
-    iCurrentSong = g_playlistPlayer.GetCurrentSong();
-
-  CStdString strPath, strFileName;
-  for (int i = 0; i < playlist.size(); ++i)
-  {
-    const CPlayList::CPlayListItem& item = playlist[i];
-
-    CStdString strFileName = item.GetFileName();
-    //CStdString strPath;
-    //CUtil::GetDirectory( strFileName, strPath);
-    //m_Pathes.insert(strPath);
-
-    CFileItem *pItem = new CFileItem(item.GetDescription());
-    pItem->m_strPath = strFileName;
-    pItem->m_bIsFolder = false;
-    pItem->m_bIsShareOrDrive = false;
-
-    if (item.GetDuration())
-    {
-      int nDuration = item.GetDuration();
-      if (nDuration > 0)
-      {
-        CStdString str;
-        StringUtils::SecondsToTimeString(nDuration, str);
-        pItem->SetLabel2(str);
-      }
-      else
-        pItem->SetLabel2("");
-    }
-    items.Add(pItem);
-  }
-
-  return true;
 }
 
 bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)

@@ -53,7 +53,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYLIST_CHANGED:
     {
       // global playlist changed outside playlist window
-      Update("");
+      Update(m_vecItems.m_strPath);
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
       {
@@ -69,7 +69,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       // Setup item cache for tagloader
       m_tagloader.UseCacheOnHD("Z:\\MusicPlaylist.fi");
 
-      m_vecItems.m_strPath="";
+      m_vecItems.m_strPath="playlistmusic://";
 
       // updatebuttons is called in here
       if (!CGUIWindowMusicBase::OnMessage(message))
@@ -98,17 +98,6 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         m_tagloader.StopThread();
 
       iPos = -1;
-
-      // items should not be freed, else the musicdatabase 
-      // info is lost
-      //for (int i = 0; i < (int)m_vecItems.Size(); ++i)
-      //{
-      //  CFileItem* pItem = m_vecItems[i];
-      //  pItem->FreeMemory();
-      //  // Do not clear musicinfo for cue items
-      //  if (pItem->m_lEndOffset == 0)
-      //    pItem->m_musicInfoTag.Clear();
-      //}
     }
     break;
 
@@ -141,7 +130,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNPLAY)
       {
-        m_guiState->SetPlaylistDirectory("");
+        m_guiState->SetPlaylistDirectory("playlistmusic://");
         g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
         g_playlistPlayer.Reset();
         g_playlistPlayer.Play(m_viewControl.GetSelectedItem());
@@ -252,74 +241,6 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bo
   return false;
 }
 
-bool CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
-{
-  if (items.Size())
-  {
-    ClearFileItems();
-  }
-
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
-  /* copy playlist from general playlist*/
-  CStdString strPath, strFileName;
-  items.Reserve(playlist.size());
-
-  for (int i = 0; i < playlist.size(); ++i)
-  {
-    // Make a copy of each playlist item, so that we don't have to try and
-    // keep track of the playlist player rearranging things as it increases in size.
-    // Reason is that the Playlist is a vector of CPlayListItem objects (not pointers)
-    // and so when the vector needs to resize itself, the pointers here will all be
-    // wrong if we just use pointers into the Playlist.  This is, however, a waste
-    // of memory as really we should be keeping the playlist and playlist windows
-    // in sync.  Ideally we'd do it by actually giving the list control/thumb controls
-    // the actual CFileItemList as a pointer, rather than constructing a new vector
-    // of the same objects (See how listcontrolex is done for instance).  That way we
-    // can have the playlist player use a CFileItemList (adjusted for playlist items)
-    // and can then just grab the pointer (or reference) to that list for use both
-    // here and in the listcontrol and thumbcontrols of this window.  The disadvantage
-    // to this method is that it breaks the common window code goal, as all the other
-    // windows have to maintain there own lists.  This window is fundamentally different
-    // from the others in this way though I guess.
-    CPlayList::CPlayListItem* item = new CPlayList::CPlayListItem(playlist[i]);
-
-    // Commented by JM - don't see the point of this code, as our label is in the least
-    // the filename.  Why precede it with a number?  Also, if we have a "proper" label
-    // from the EXFINF code, then this will override it.
-/*    {
-      CStdString strFileName = item.GetFileName();
-      CStdString strPath, strFName;
-      CUtil::Split( strFileName, strPath, strFName);
-      if (CUtil::HasSlashAtEnd(strFileName))
-        strFileName.Delete(strFileName.size());
-
-      CStdString strLabel;
-      strLabel.Format("%02.2i. %s", i + 1, strFName);
-      item.SetLabel(strLabel);
-    }*/
-
-    if (item->GetDuration())
-    {
-      int nDuration = item->GetDuration();
-      if (nDuration > 0)
-      {
-        CStdString str;
-        StringUtils::SecondsToTimeString(nDuration, str);
-        item->SetLabel2(str);
-      }
-      else
-        item->SetLabel2("");
-    }
-    items.Add(item);
-  }
-
-  // Set default icons first,
-  // the tagloader will load the thumbs later
-  items.FillInDefaultIcons();
-
-  return true;
-}
-
 void CGUIWindowMusicPlayList::SavePlayList()
 {
   CStdString strNewFileName;
@@ -365,8 +286,7 @@ void CGUIWindowMusicPlayList::ClearPlayList()
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
-  OnSort();
-  UpdateButtons();
+  Update(m_vecItems.m_strPath);
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
 
@@ -544,16 +464,6 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
 void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 {
   CLog::DebugLog("Started OnItemLoaded for item at %p", pItem);
-  // FIXME: get the position of the item in the playlist
-  int iTrack = 0;
-  for (int i = 0; i < m_vecItems.Size(); ++i)
-  {
-    if (pItem == m_vecItems[i])
-    {
-      iTrack = i + 1;
-      break;
-    }
-  }
 
   if (pItem->m_musicInfoTag.Loaded())
   { // set label 1+2 from tags
@@ -566,16 +476,6 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       strTrackRight = g_guiSettings.GetString("mymusic.trackformatright");
     pItem->FormatLabel(strTrackLeft);
     pItem->FormatLabel2(strTrackRight);
-
-    /* this works funny. the labels keep changing?
-    // add position to label
-    if (g_guiSettings.GetBool("MusicPlaylist.ShowPosition"))
-    {
-      CStdString str;
-      str.Format("%02.2i. %s", iTrack, pItem->GetLabel());
-      pItem->SetLabel(str);
-    }
-    */
   } // if (pItem->m_musicInfoTag.Loaded())
   else
   {
@@ -592,6 +492,17 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     }
     else if (pItem->GetLabel() == "") // pls labels come in preformatted
     {
+      // FIXME: get the position of the item in the playlist
+      int iTrack = 0;
+      for (int i = 0; i < m_vecItems.Size(); ++i)
+      {
+        if (pItem == m_vecItems[i])
+        {
+          iTrack = i + 1;
+          break;
+        }
+      }
+
       // No music info and it's not CDDA so we'll just show the filename
       CStdString str;
       str = CUtil::GetTitleFromPath(pItem->m_strPath);
@@ -643,21 +554,7 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 
   m_tagloader.Load(m_vecItems);
 
-  // mark the currently playing song
-  if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
-  {
-    int iSong = g_playlistPlayer.GetCurrentSong();
-    if (iSong >= 0 && iSong <= m_vecItems.Size())
-      m_vecItems[iSong]->Select(true);
-  }
-
   return true;
-}
-
-void CGUIWindowMusicPlayList::ClearFileItems()
-{
-  m_viewControl.Clear();
-  m_vecItems.Clear();
 }
 
 void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)

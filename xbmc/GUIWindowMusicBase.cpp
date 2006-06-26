@@ -741,7 +741,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() && !g_application.IsPlayingAudio())
   {
     if (m_guiState.get())
-      m_guiState->SetPlaylistDirectory("");
+      m_guiState->SetPlaylistDirectory("playlistmusic://");
 
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
@@ -1480,7 +1480,7 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
   if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC))
   {
     if (m_guiState.get())
-      m_guiState->SetPlaylistDirectory("");
+      m_guiState->SetPlaylistDirectory("playlistmusic://");
     // activate the playlist window if its not activated yet
     if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
     {
