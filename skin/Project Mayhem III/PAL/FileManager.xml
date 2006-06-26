@@ -12,7 +12,17 @@
    <id>1</id>
    <width>720</width>
    <height>576</height>
-   <texture>background-filemanager.png</texture>
+   <texture>background-plain.png</texture>
+  </control>
+
+  <control>
+   <description>filemanager background image</description>
+   <type>image</type>
+   <id>1</id>
+   <width>720</width>
+   <height>576</height>
+   <texture>filemanager.png</texture>
+   <include>contentpanelslide</include>
   </control>
 
   <control>
@@ -20,10 +30,11 @@
    <type>fadelabel</type>
    <id>101</id>
    <align>left</align>
-   <posx>90</posx>
-   <posy>65</posy>
+   <posx>78</posx>
+   <posy>53</posy>
    <width>270</width>
-   <font>font13</font>
+   <font>font12</font>
+   <include>contentpanelslide</include>
   </control>
 
   <control>
@@ -31,30 +42,33 @@
    <type>fadelabel</type>
    <id>102</id>
    <align>left</align>
-   <posx>380</posx>
-   <posy>65</posy>
+   <posx>367</posx>
+   <posy>53</posy>
    <width>270</width>
-   <font>font13</font>
+   <font>font12</font>
+   <include>contentpanelslide</include>
   </control>
 
   <control>
    <description>number of files in left list text label</description>
    <type>label</type>
    <id>12</id>
-   <posx>90</posx>
+   <posx>78</posx>
    <posy>484</posy>
    <label>-</label>
-   <font>font13</font>
+   <font>font12</font>
+   <include>contentpanelslide</include>
   </control>
 
   <control>
    <description>number of files in right list text label</description>
    <type>label</type>
    <id>13</id>
-   <posx>380</posx>
+   <posx>367</posx>
    <posy>484</posy>
    <label>-</label>
-   <font>font13</font>
+   <font>font12</font>
+   <include>contentpanelslide</include>
   </control>
 
   <control>
@@ -63,13 +77,17 @@
    <id>20</id>
    <include>listselectedcolor</include>
    <posx>74</posx>
-   <posy>102</posy>
-   <width>290</width>
-   <height>400</height>
+   <posy>82</posy>
+   <width>284</width>
+   <height>433</height>
+   <texturefocus>input-focus.png</texturefocus>
+   <texturenofocus>input-nofocus.png</texturenofocus>
    <onleft>21</onleft>
    <onright>21</onright>
    <onup>20</onup>
    <ondown>20</ondown>
+   <include>contentpanelslide</include>
+   <font>font12</font>
   </control>
 
   <control>
@@ -77,50 +95,101 @@
    <type>listcontrol</type>
    <id>21</id>
    <include>listselectedcolor</include>
-   <posx>364</posx>
-   <posy>102</posy>
-   <width>290</width>
-   <height>400</height>
+   <posx>363</posx>
+   <posy>82</posy>
+   <width>284</width>
+   <height>433</height>
+   <texturefocus>input-focus.png</texturefocus>
+   <texturenofocus>input-nofocus.png</texturenofocus>
    <onleft>20</onleft>
    <onright>20</onright>
    <onup>21</onup>
    <ondown>21</ondown>
+   <include>contentpanelslide</include>
+   <font>font12</font>
   </control>
 
   <control>
    <description>free space label</description>
-   <type>label</type>
+   <type>button</type>
    <id>1</id>
-   <posx>120</posx>
-   <posy>530</posy>
-   <info>System.Freespace(C)</info>
+   <posx>74</posx>
+   <posy>521</posy>
+   <width>142</width>
+   <texturefocus>-</texturefocus>
+   <texturenofocus>-</texturenofocus>
+   <label>$INFO[System.Freespace(C)]</label>
    <include>textcolorlightgrey</include>
    <font>font10</font>
    <align>left</align>
+   <textoffsetx>5</textoffsetx>
+   <animation effect="slide" time="500" start="-600,0" end="0,0" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+   <animation effect="slide" time="300" start="0,0" end="-600,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
   </control>
 
   <control>
    <description>free space label</description>
-   <type>label</type>
+   <type>button</type>
    <id>1</id>
-   <posx>270</posx>
-   <posy>530</posy>
-   <info>System.Freespace(E)</info>
+   <posx>207</posx>
+   <posy>521</posy>
+   <width>142</width>
+   <texturefocus>-</texturefocus>
+   <texturenofocus>-</texturenofocus>
+   <label>$INFO[System.Freespace(E)]</label>
    <include>textcolorlightgrey</include>
    <font>font10</font>
    <align>left</align>
+   <textoffsetx>5</textoffsetx>
+   <animation effect="slide" time="500" start="-600,0" end="0,0" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+   <animation effect="slide" time="300" start="0,0" end="-600,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
   </control>
 
   <control>
    <description>free space label</description>
-   <type>label</type>
+   <type>button</type>
    <id>1</id>
-   <posx>430</posx>
-   <posy>530</posy>
-   <info>System.Freespace(F)</info>
+   <posx>353</posx>
+   <posy>521</posy>
+   <width>142</width>
+   <texturefocus>-</texturefocus>
+   <texturenofocus>-</texturenofocus>
+   <label>$INFO[System.Freespace(F)]</label>
    <include>textcolorlightgrey</include>
    <font>font10</font>
    <align>left</align>
+   <textoffsetx>5</textoffsetx>
+   <animation effect="slide" time="500" start="-600,0" end="0,0" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+   <animation effect="slide" time="300" start="0,0" end="-600,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+  </control>
+
+  <control>
+   <description>free space label</description>
+   <type>button</type>
+   <id>1</id>
+   <posx>506</posx>
+   <posy>521</posy>
+   <width>142</width>
+   <texturefocus>-</texturefocus>
+   <texturenofocus>-</texturenofocus>
+   <label>$INFO[System.Freespace(G)]</label>
+   <include>textcolorlightgrey</include>
+   <font>font10</font>
+   <align>left</align>
+   <textoffsetx>5</textoffsetx>
+   <animation effect="slide" time="500" start="-600,0" end="0,0" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+   <animation effect="slide" time="300" start="0,0" end="-600,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+  </control>
+
+  <control>
+   <description>bg preview</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>0</posx>
+   <posy>0</posy>
+   <width>720</width>
+   <height>576</height>
+   <include>windowswitchtransition</include>
   </control>
 
  </controls>

@@ -47,6 +47,7 @@
   </include>
 
   <include name="homemediainfo">
+   <visible>!Skin.HasSetting(homepageMusicinfo)</visible>
    <visible>Player.HasAudio + ![Control.HasFocus(9) + !Skin.HasSetting(homepageSysteminfo)] + ![Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)] + ![Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2)] + ![Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)] + !System.IdleTime(60)</visible> 
    <animation effect="fade" time="200">VisibleChange</animation>
    <animation effect="slide" time="500" start="600,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
