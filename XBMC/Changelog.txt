@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-06-2006 fixed: "Query Info For All Albums" accessible in files & library. Now Playing is now fully accessible at the bottom of context menus.
+                             Item count fixed and a check for * all items and parent folder implemented.
+                             Also localized a few of the strings.
  - 26-06-2006 updated: Dutch language file (Thnx to nightspirit)
  - 26-06-2006 updated: Chinese (Simple) language file (Thnx to omenpica)
  - 26-06-2006 updated: Russian language file (Thnx to que_)
