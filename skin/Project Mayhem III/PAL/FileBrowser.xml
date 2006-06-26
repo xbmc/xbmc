@@ -54,8 +54,10 @@
    <id>450</id>
    <posx>10</posx>
    <posy>70</posy>
-   <width>400</width>
+   <width>387</width>
    <height>323</height>
+   <texturefocus>input-focus.png</texturefocus>
+   <texturenofocus>input-nofocus.png</texturenofocus>
    <onleft>413</onleft>
    <onright>413</onright>
    <onup>413</onup>
