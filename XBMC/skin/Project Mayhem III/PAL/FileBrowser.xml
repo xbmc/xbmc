@@ -94,8 +94,8 @@
     <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
     <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
     <onleft>450</onleft>
-    <onright>414</onright>
-    <onup>413</onup>
+    <onright>450</onright>
+    <onup>415</onup>
     <ondown>414</ondown>
    </control>
 
@@ -113,27 +113,28 @@
     <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
     <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
     <onleft>450</onleft>
-    <onright>413</onright>
+    <onright>450</onright>
     <onup>413</onup>
     <ondown>415</ondown>
    </control>
+
    <control>
-     <description>Create folder button</description>
-     <type>button</type>
-     <id>415</id>
-     <posx>400</posx>
-     <posy>140</posy>
-     <width>90</width>
-     <height>32</height>
-     <align>center</align>
-     <label>119</label>
-     <font>font10</font>
-     <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-     <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-     <onleft>450</onleft>
-     <onright>413</onright>
-     <onup>414</onup>
-     <ondown>415</ondown>
+    <description>Create folder button</description>
+    <type>button</type>
+    <id>415</id>
+    <posx>400</posx>
+    <posy>140</posy>
+    <width>90</width>
+    <height>32</height>
+    <align>center</align>
+    <label>119</label>
+    <font>font10</font>
+    <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+    <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+    <onleft>450</onleft>
+    <onright>450</onright>
+    <onup>414</onup>
+    <ondown>413</ondown>
   </control>
 
   </controlgroup>
