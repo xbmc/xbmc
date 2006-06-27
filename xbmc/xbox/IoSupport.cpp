@@ -690,7 +690,7 @@ VOID CIoSupport::GetXbePath(char* szDest)
 
 bool CIoSupport::DriveExists(const char* szDrive)
 {
-  if (szDrive[0] == 'Q' || szDrive[0] == 'P') return true;
+  if (szDrive[0] == 'Q' || szDrive[0] == 'P' || szDrive[0] == 'O') return true;
   for (int i = 0; i < (int)NUM_OF_DRIVES; ++i)
   {
     if ( driveMapping[i].szDriveLetter == szDrive[0])

@@ -209,7 +209,7 @@ bool CGUIPassword::SetMasterLockMode()
   if (pDialog && g_advancedSettings.m_profilesupport)
   {
     CProfile& profile=g_settings.m_vecProfiles.at(0);
-    if (pDialog->ShowAndGetLock(profile._iLockMode,profile._strLockCode,profile._bLockMusic,profile._bLockVideo,profile._bLockPictures,profile._bLockPrograms,profile._bLockFiles,profile._bLockSettings))
+    if (pDialog->ShowAndGetLock(profile._iLockMode,profile._strLockCode,profile._bLockMusic,profile._bLockVideo,profile._bLockPictures,profile._bLockPrograms,profile._bLockFiles,profile._bLockSettings,12360))
       return true;
 
     return false;
