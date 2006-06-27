@@ -705,7 +705,7 @@ CStdString CFileItem::GetCachedArtistThumb()
 CStdString CFileItem::GetCachedProfileThumb()
 {
   Crc32 crc;
-  crc.ComputeFromLowerCase("profile" + GetLabel());
+  crc.ComputeFromLowerCase("profile" + m_strPath);
   CStdString cachedThumb;
   cachedThumb.Format("%s\\Thumbnails\\Profiles\\%08x.tbn", g_settings.GetUserDataFolder().c_str(), crc);
   return cachedThumb;

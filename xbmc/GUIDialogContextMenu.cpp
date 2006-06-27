@@ -243,7 +243,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 
     if (LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
     {
-      if (share->m_iHasLock == 0)
+      if (share->m_iHasLock == 0 && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
         btn_LockShare = pMenu->AddButton(12332);
       else if (share->m_iHasLock == 1)
       {
