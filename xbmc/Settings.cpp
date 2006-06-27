@@ -269,14 +269,21 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   {
     CUtil::GetHomePath(strMnt);
     strMnt += GetUserDataFolder().substr(2);
-  }
-    
+  }    
   helper.GetPartition(strMnt, szDevicePath);
   strcat(szDevicePath,strMnt.c_str()+2);
-  
+  helper.Unmount("O:");
+  helper.Mount("O:",szDevicePath);
+  strMnt = GetProfileUserDataFolder();
+  if (GetUserDataFolder().Left(2).Equals("Q:"))
+  {
+    CUtil::GetHomePath(strMnt);
+    strMnt += GetUserDataFolder().substr(2);
+  }    
+  helper.GetPartition(strMnt, szDevicePath);
+  strcat(szDevicePath,strMnt.c_str()+2);
   helper.Unmount("P:");
   helper.Mount("P:",szDevicePath);
-
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   CStdString strFile=GetSettingsFile();
   if (!LoadSettings(strFile))
@@ -1667,7 +1674,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "lockfiles", bHas);
-    profile.setMusicLocked(bHas);
+    profile.setFilesLocked(bHas);
 
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "lockmusic", bHas);
@@ -2452,11 +2459,11 @@ CStdString CSettings::GetProfileUserDataFolder() const
 CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
 {
   CStdString folder;
-  folder = "P:\\"+g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getDirectory()+"\\"+strFile;
+  folder = "P:\\"+strFile;
   if (!CFile::Exists(folder))
-    folder = "P:\\"+strFile;
+    folder = "O:\\"+strFile;
   return folder;
-}
+} 
 
 CStdString CSettings::GetUserDataFolder() const
 {
@@ -2679,8 +2686,8 @@ CStdString CSettings::GetSettingsFile() const
 {
   CStdString settings;
   if (g_settings.m_iLastLoadedProfileIndex == 0)
-    settings = "P:\\guisettings.xml";
+    settings = "O:\\guisettings.xml";
   else
-    settings = "P:\\"+g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getDirectory()+"\\guisettings.xml";
+    settings = "P:\\guisettings.xml";
   return settings;
 }
