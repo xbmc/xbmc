@@ -71,7 +71,8 @@ void CGUIDialogProfileSettings::CreateSettings()
 {
   // clear out any old settings
   m_settings.clear();
-  AddButton(1,20064);
+  
+  AddButton(1,20093);
   AddButton(2,20065);
   if (!m_bIsDefault)
     AddButton(3,20070);
@@ -164,7 +165,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
 
   if (setting.id == 4)
   {
-    if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings))
+    if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings,m_bIsDefault?12360:20068))
     {
       m_bNeedSave = true;
     }
