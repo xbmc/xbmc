@@ -1,3 +1,5 @@
+2006-06-27 fixed:	navigation bugs in filebrowser and settings
+
 2006-06-26 fixed:	Music Infos in the homescreen didnt hide when the "Show Music Info" Setting was disabled
 2006-06-26 changed:	trainer icons retouched
 2006-06-26 fixed:	listcontrol in the filebrowser was too wide
