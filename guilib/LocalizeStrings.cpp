@@ -217,7 +217,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20065] = "Select picture";
   m_vecStrings[20066] = "Lock preferences";
   m_vecStrings[20067] = "Edit profile";
-  m_vecStrings[20068] = "Lock Mode";
+  m_vecStrings[20068] = "Profile lock";
   m_vecStrings[20069] = "Could not create folder";
   m_vecStrings[20070] = "Profile directory";
   m_vecStrings[20071] = "Query info for all albums";
@@ -246,7 +246,6 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20094] = "Media sources";
   m_vecStrings[20095] = "Enter profile lock code";
   m_vecStrings[20096] = "Login screen";
-
   m_vecStrings[20097] = "Fetching album info";
   m_vecStrings[20098] = "Fetching info for album";
   m_vecStrings[20099] = "Can't rip CD or Track while playing from CD";
