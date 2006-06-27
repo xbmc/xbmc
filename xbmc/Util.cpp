@@ -140,7 +140,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
     CStdString strRegExp = regexps[i];
     if (!reg.RegComp(strRegExp.c_str()))
     { // invalid regexp - complain in logs
-      CLog::Log(LOGERROR, "Invalid RegExp: %s.  Check XBoxMediaCenter.xml", regexps[i].c_str());
+      CLog::Log(LOGERROR, "Invalid RegExp: %s.", regexps[i].c_str());
       continue;
     }
     int iFoundToken = reg.RegFind(strFileNameLower.c_str());
