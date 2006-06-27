@@ -41,11 +41,11 @@ void CGUIDialogLockSettings::CreateSettings()
   // clear out any old settings
   m_settings.clear();
   // create our settings
-  AddButton(1,20091);
+  AddButton(1,m_iButtonLabel);
   if (m_iLock != LOCK_MODE_EVERYONE)
-    m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(20091).c_str(),g_localizeStrings.Get(12336+m_iLock));
+    m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(12336+m_iLock));
   else
-    m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(20091).c_str(),g_localizeStrings.Get(1223).c_str());
+    m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(1223).c_str());
 
   if (m_bDetails)
   {
@@ -125,14 +125,15 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
 bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword)
 {
   bool f;
-  return ShowAndGetLock(iLockMode,strPassword,f,f,f,f,f,f,false);
+  return ShowAndGetLock(iLockMode,strPassword,f,f,f,f,f,f,20091,false);
 }
 
-bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, bool bDetails)
+bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel, bool bDetails)
 {
   CGUIDialogLockSettings *dialog = (CGUIDialogLockSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
   if (!dialog) return false;
   dialog->m_iLock = iLockMode;
+  dialog->m_iButtonLabel = iButtonLabel;
   dialog->m_strLock = strPassword;
   dialog->m_bChanged = false;
   if (bDetails)
