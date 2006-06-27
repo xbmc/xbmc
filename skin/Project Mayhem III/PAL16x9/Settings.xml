@@ -105,8 +105,8 @@
     <onclick>XBMC.ActivateWindow(56)</onclick>
     <onleft>8</onleft>
     <onright>6</onright>
-    <onup>11</onup>
-    <ondown>14</ondown>
+    <onup>112</onup>
+    <ondown>11</ondown>
     <include>buttonpanelslide</include>
    </control>
 
