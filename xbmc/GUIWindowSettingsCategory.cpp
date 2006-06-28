@@ -44,18 +44,6 @@
 #define CONTROL_START_BUTTONS           30
 #define CONTROL_START_CONTROL           50
 
-struct sortstringbyname
-{
-  bool operator()(const CStdString& strItem1, const CStdString& strItem2)
-  {
-    CStdString strLine1 = strItem1;
-    CStdString strLine2 = strItem2;
-    strLine1 = strLine1.ToLower();
-    strLine2 = strLine2.ToLower();
-    return strcmp(strLine1.c_str(), strLine2.c_str()) < 0;
-  }
-};
-
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
 {
@@ -2471,33 +2459,12 @@ void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
   pControl->SetShowRange(true);
   pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standart Textures.xpr will be used!
   
-  // Get the Current Skin Path 
-  CStdString strPath = "Q:\\skin\\"; 
-  strPath += g_guiSettings.GetString("lookandfeel.skin"); 
-  strPath += "\\media\\";
-
   // find all *.xpr in this path
-  CHDDirectory directory;
-  CFileItemList items;
-  directory.GetDirectory(strPath, items);
   CStdString strDefaultTheme = pSettingString->GetData();
   
   // Search for Themes in the Current skin!
   vector<CStdString> vecTheme;
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    CFileItem* pItem = items[i];
-    if (!pItem->m_bIsFolder)
-    {
-      CStdString strExtension;
-      CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".xpr" && pItem->GetLabel().CompareNoCase("Textures.xpr"))
-      {
-        CStdString strLabel = pItem->GetLabel();
-        vecTheme.push_back(strLabel.Mid(0, strLabel.size() - 4));
-      }
-    }
-  }
+  CUtil::GetSkinThemes(vecTheme);
 
   // Remove the .xpr extension from the Themes
   CStdString strExtension;
@@ -2505,8 +2472,7 @@ void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
   if (strExtension == ".xpr") strSettingString.Delete(strSettingString.size() - 4, 4);
   // Sort the Themes for GUI and list them
   int iCurrentTheme = 0;
-  sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
-  for (i = 0; i < (int) vecTheme.size(); ++i)
+  for (int i = 0; i < (int) vecTheme.size(); ++i)
   {
     CStdString strTheme = vecTheme[i];
     // Is the Current Theme our Used Theme! If yes set the ID!

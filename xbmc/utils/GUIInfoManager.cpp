@@ -157,10 +157,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
     else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
     else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
-	else if (strTest.Equals("system.kaienabled")) ret = SYSTEM_KAI_ENABLED;
+	  else if (strTest.Equals("system.kaienabled")) ret = SYSTEM_KAI_ENABLED;
     else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
-	else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
-	else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
+	  else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
+	  else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
     else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
     else if (strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
@@ -297,6 +297,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (strCategory.Equals("skin"))
   {
+    if (strTest.Equals("skin.currenttheme"))
+      ret = SKIN_THEME;
     if (strTest.Left(12).Equals("skin.string("))
     {
       CStdString settingName;
@@ -576,6 +578,12 @@ string CGUIInfoManager::GetLabel(int info)
       else
         strLabel.Format("\5");
     }
+    break;
+  case SKIN_THEME:
+    if (g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
+      strLabel = g_localizeStrings.Get(15109);
+    else
+      strLabel = g_guiSettings.GetString("lookandfeel.skintheme");
     break;
   case LCD_PROGRESS_BAR:
     if (g_lcd) strLabel = g_lcd->GetProgressBar(g_application.GetTime(), g_application.GetTotalTime());
