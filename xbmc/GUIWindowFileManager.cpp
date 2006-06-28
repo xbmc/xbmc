@@ -1222,7 +1222,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU); 
     }
 
-    if (bDeselect && item >= 0)
+    if (bDeselect && item >= 0 && item < m_vecItems[list].Size())
     { // deselect item as we didn't do anything
       m_vecItems[list][item]->Select(false);
     }

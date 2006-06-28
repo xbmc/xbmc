@@ -1380,7 +1380,6 @@ if (btnid > 0)
     else if (btnid == btn_Settings)
     { 
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
-      return;
     }
   }
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
