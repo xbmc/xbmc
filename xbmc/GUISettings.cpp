@@ -317,7 +317,7 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "audiooutput.dtspassthrough", 254, true);
 
   AddCategory(4, "masterlock", 12360);
-  AddString(1, "masterlock.lockcode"       , 12365, "-", BUTTON_CONTROL_STANDARD);
+  AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "masterlock.sep1");
   AddBool(4, "masterlock.startuplock"      , 20076,false);
   AddBool(5, "masterlock.enableshutdown"   , 12362,false);
