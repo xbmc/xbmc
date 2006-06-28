@@ -187,6 +187,7 @@
 #define SKIN_STRING_EQUALS_END      700 // max 90 strings, no?
 
 #define XLINK_KAI_USERNAME          701
+#define SKIN_THEME                  702
 
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
