@@ -246,6 +246,9 @@ bool CGUIListControlEx::OnMessage(CGUIMessage& message)
 
     if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
+      if (!m_pList)
+        return false;
+
       CGUIList::GUILISTITEMS& list = m_pList->Lock();
 
       if ((int)list.size() > m_iCursorY + m_iOffset)
@@ -263,6 +266,9 @@ bool CGUIListControlEx::OnMessage(CGUIMessage& message)
 
     if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
+      if (!m_pList)
+        return false;
+
       CGUIList::GUILISTITEMS& list = m_pList->Lock();
 
       if (message.GetParam1() >= 0 && message.GetParam1() < (int)list.size())
