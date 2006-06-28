@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-06-2006 added: builtin command xbmc.theme. cycles skin themes (xbmc.theme(-1) to go backwards). skin label "skin.currenttheme". themes are now at the mercy of the skinner.
  - 28-06-2006 added: AIFF codec to paplayer.
  - 28-06-2006 fixed: Editing of text containing UTF8 character codes could cause crashes.
  - 28-06-2006 fixed: Listcontrol could sometimes truncate one character when not scrolling the selected item.

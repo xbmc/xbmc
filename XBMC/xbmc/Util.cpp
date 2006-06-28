@@ -2705,6 +2705,7 @@ const BUILT_IN commands[] = {
   "Skin.SetString"," Prompts and sets skin string",
   "Skin.SetNumeric"," Prompts and sets numeric input",
   "Skin.SetPath"," Prompts and sets a skin path",
+  "Skin.Theme"," Control skin theme",
   "Skin.SetImage"," Prompts and sets a skin image",
   "Skin.SetBool"," Sets a skin setting on",
   "Skin.Reset"," Resets a skin setting to default",
@@ -3261,6 +3262,40 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_settings.ResetSkinSettings();
     g_settings.Save();
+  }
+  else if (execute.Equals("skin.theme"))
+  {
+    // enumerate themes
+    std::vector<CStdString> vecTheme;
+    GetSkinThemes(vecTheme);
+
+    int iTheme = -1;
+    int iThemes = vecTheme.size();
+    // find current theme
+    if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
+      for (unsigned int i=0;i<vecTheme.size();++i)
+        if (vecTheme[i].Equals(g_guiSettings.GetString("lookandfeel.skintheme")))
+        {
+          iTheme=i;
+          break;
+        }
+
+    int iParam = atoi(parameter.c_str());
+    if (iParam == 0)
+      iTheme++;
+    if (iParam == -1)
+      iTheme--;
+    if (iTheme > (int)vecTheme.size()-1)
+      iTheme = -1;
+    if (iTheme < -1)
+      iTheme = vecTheme.size()-1; 
+
+    if (iTheme==-1)
+      g_guiSettings.SetString("lookandfeel.skintheme","skindefault");
+    else
+      g_guiSettings.SetString("lookandfeel.skintheme",vecTheme[iTheme]);
+    
+    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
   }
   else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric"))
   {
@@ -4159,4 +4194,29 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   CStdString thumb;
   thumb.Format("%s\\%x.tbn", g_settings.GetMusicThumbFolder().c_str(), crc);
   return thumb;
+}
+
+void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
+{ 
+  CStdString strPath;
+  CUtil::AddFileToFolder(g_settings.GetSkinFolder(),"media",strPath);
+  CHDDirectory directory;
+  CFileItemList items;
+  directory.GetDirectory(strPath, items);
+  // Search for Themes in the Current skin!
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItem* pItem = items[i];
+    if (!pItem->m_bIsFolder)
+    {
+      CStdString strExtension;
+      CUtil::GetExtension(pItem->m_strPath, strExtension);
+      if (strExtension == ".xpr" && pItem->GetLabel().CompareNoCase("Textures.xpr"))
+      {
+        CStdString strLabel = pItem->GetLabel();
+        vecTheme.push_back(strLabel.Mid(0, strLabel.size() - 4));
+      }
+    }
+  }
+  sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
