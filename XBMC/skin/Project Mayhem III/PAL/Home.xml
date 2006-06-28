@@ -406,11 +406,11 @@
    <description>drive image</description>
    <type>image</type>
    <id>1</id>
-   <posx>557</posx>
-   <posy>343</posy>
-   <width>86</width>
-   <height>96</height>
-   <texture>defaultHardDiskBig.png</texture>
+   <posx>555</posx>
+   <posy>338</posy>
+   <width>90</width>
+   <height>99</height>
+   <texture>homeinfo-bgdrive.png</texture>
    <visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
    <include>homestatsinfo</include>
   </control>
@@ -490,11 +490,11 @@
    <description>drive image</description>
    <type>image</type>
    <id>1</id>
-   <posx>557</posx>
-   <posy>343</posy>
-   <width>86</width>
-   <height>96</height>
-   <texture>defaultHardDiskBig.png</texture>
+   <posx>555</posx>
+   <posy>338</posy>
+   <width>90</width>
+   <height>99</height>
+   <texture>homeinfo-bgdrive.png</texture>
    <visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2)</visible>
    <include>homestatsinfo</include>
   </control>
@@ -574,11 +574,11 @@
    <description>settings image</description>
    <type>image</type>
    <id>1</id>
-   <posx>550</posx>
-   <posy>335</posy>
-   <width>99</width>
-   <height>112</height>
-   <texture>settings-system-nofocus.png</texture>
+   <posx>555</posx>
+   <posy>338</posy>
+   <width>90</width>
+   <height>99</height>
+   <texture>homeinfo-system.png</texture>
    <visible>Control.HasFocus(9) + !Skin.HasSetting(homepageSysteminfo)</visible>
    <include>homestatsinfo</include>
   </control>
@@ -655,14 +655,40 @@
   </control>
 
   <control>
-   <description>Weather image</description>
+   <description>Weather image bg</description>
    <type>image</type>
    <id>1</id>
    <posx>555</posx>
    <posy>338</posy>
    <width>90</width>
    <height>99</height>
+   <texture>homeinfo-bg.png</texture>
+   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>Weather image</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>569</posx>
+   <posy>351</posy>
+   <width>64</width>
+   <height>73</height>
    <info>Weather.Conditions</info>
+   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <include>homestatsinfo</include>
+  </control>
+
+  <control>
+   <description>Weather image overlay</description>
+   <type>image</type>
+   <id>1</id>
+   <posx>555</posx>
+   <posy>338</posy>
+   <width>90</width>
+   <height>99</height>
+   <texture>homeinfo-overlay.png</texture>
    <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
    <include>homestatsinfo</include>
   </control>
