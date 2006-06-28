@@ -2032,12 +2032,16 @@ void CFileItem::SetUserProgramThumb()
   if (m_bIsShareOrDrive) return;
   if (IsParentFolder()) return;
 
-  CStdString path(m_strPath);
   if (IsShortCut())
   {
     CShortcut shortcut;
     if ( shortcut.Create( m_strPath ) )
-      path = shortcut.m_strPath;
+    {
+      CFileItem item(shortcut.m_strPath,false);
+      item.SetUserProgramThumb();
+      m_strThumbnailImage = item.m_strThumbnailImage;
+      return;
+    }
   }
   // 1.  Try <filename>.tbn
   CStdString fileThumb(GetTBNFile());
