@@ -265,7 +265,7 @@ void CGUIListControl::RenderText(const CListText &text, const CLabelInfo &label,
   {
     if (text.width <= text.maxwidth)
     { // don't need to scroll
-      label.font->DrawTextWidth(text.x, text.y, color, label.shadowColor, text.text, text.width);
+      label.font->DrawTextWidth(text.x, text.y, color, label.shadowColor, text.text, text.maxwidth);
       scroll.Reset();
       return ;
     }
