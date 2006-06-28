@@ -508,10 +508,10 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       else if (btnid == btn_Settings)
       { 
         m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
-        return;
       }
     }
-    m_vecItems[iItem]->Select(false);
+    if (iItem < m_vecItems.Size())
+      m_vecItems[iItem]->Select(false);
   }
 }
 

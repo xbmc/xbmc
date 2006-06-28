@@ -449,10 +449,10 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     else if (btn == btn_Settings)  // Settings
     {
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
-      return;
     }
   }
-  m_vecItems[iItem]->Select(bSelected);
+  if (iItem < m_vecItems.Size())
+    m_vecItems[iItem]->Select(bSelected);
 }
 
 void CGUIWindowMusicNav::SetArtistImage(int iItem)
