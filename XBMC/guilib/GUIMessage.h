@@ -27,7 +27,6 @@
 #define GUI_MSG_DESELECTED     11   // control = not selected
 
 #define GUI_MSG_LABEL_ADD      12   // add label control (for controls supporting more then 1 label)
-#define GUI_MSG_LABEL_BIND     23   // bind label control (for controls supporting more then 1 label)
 
 #define GUI_MSG_LABEL_SET      13  // set the label of a control
 
@@ -48,6 +47,8 @@
 
 #define GUI_MSG_MOVE          23 // message is sent to the window from the base control class when it's
                                  // been asked to move.  dwParam1 contains direction.
+
+#define GUI_MSG_LABEL_BIND     24   // bind label control (for controls supporting more then 1 label)
 
 #define GUI_MSG_USER         1000
 
