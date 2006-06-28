@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-06-2006 fixed: shortcuts in my programs misbehaved slightly.
  - 28-06-2006 fixed: XLink Kai crash on load.
  - 28-06-2006 added: builtin command skin.theme. cycles skin themes (skin.theme(-1) to go backwards). skin label "skin.currenttheme". themes are now at the mercy of the skinner.
  - 28-06-2006 added: AIFF codec to paplayer.
