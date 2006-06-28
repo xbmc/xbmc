@@ -99,6 +99,8 @@ void CGUIWindowSettingsProfile::DoDelete(int iItem)
     {
       //delete profile
       g_settings.DeleteProfile(iItem);
+      if (iItem == g_settings.m_iLastLoadedProfileIndex)
+        g_settings.LoadProfile(0);
       LoadList();
     }
   }
