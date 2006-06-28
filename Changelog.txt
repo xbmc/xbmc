@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-06-2006 added: AIFF codec to paplayer.
  - 28-06-2006 fixed: Editing of text containing UTF8 character codes could cause crashes.
  - 28-06-2006 fixed: Listcontrol could sometimes truncate one character when not scrolling the selected item.
  - 26-06-2006 fixed: "Query Info For All Albums" accessible in files & library. Now Playing is now fully accessible at the bottom of context menus.
