@@ -18,7 +18,8 @@
    <imagepath>4x3home-myprograms</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
-   <visible>!Player.HasMedia + ControlGroup(1).HasFocus(2) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(2)</visible>
+   <visible>!Player.HasMedia | Skin.HasSetting(HomeViewToggle)</visible>
+   <visible>ControlGroup(1).HasFocus(2)</visible>
    <animation effect="fade" time="200">VisibleChange</animation>
   </control>
 
@@ -32,7 +33,8 @@
    <imagepath>16x9home-myfiles</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
-   <visible>!Player.HasMedia + ControlGroup(1).HasFocus(6) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(6)</visible>
+   <visible>!Player.HasMedia | Skin.HasSetting(HomeViewToggle)</visible>
+   <visible>ControlGroup(1).HasFocus(6)</visible>
    <animation effect="fade" time="200">VisibleChange</animation>
   </control>
 
@@ -46,7 +48,8 @@
    <imagepath>4x3home-mymusic</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
-   <visible>!Player.HasMedia + ControlGroup(1).HasFocus(3) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(3)</visible>
+   <visible>!Player.HasMedia | Skin.HasSetting(HomeViewToggle)</visible>
+   <visible>ControlGroup(1).HasFocus(3)</visible>
    <animation effect="fade" time="200">VisibleChange</animation>
   </control>
 
@@ -60,7 +63,8 @@
    <imagepath>4x3home-mypictures</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
-   <visible>!Player.HasMedia + ControlGroup(1).HasFocus(4) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(4)</visible>
+   <visible>!Player.HasMedia | Skin.HasSetting(HomeViewToggle)</visible>
+   <visible>ControlGroup(1).HasFocus(4)</visible>
    <animation effect="fade" time="200">VisibleChange</animation>
   </control>
 
@@ -74,7 +78,8 @@
    <imagepath>16x9home-myvideos</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
-   <visible>!Player.HasMedia + ControlGroup(1).HasFocus(5) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(5)</visible>
+   <visible>!Player.HasMedia | Skin.HasSetting(HomeViewToggle)</visible>
+   <visible>ControlGroup(1).HasFocus(5)</visible>
    <animation effect="fade" time="200">VisibleChange</animation>
   </control>
 
@@ -88,7 +93,8 @@
    <imagepath>16x9home-myweather</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
-   <visible>!Player.HasMedia + ControlGroup(1).HasFocus(7) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(7)</visible>
+   <visible>!Player.HasMedia | Skin.HasSetting(HomeViewToggle)</visible>
+   <visible>ControlGroup(1).HasFocus(7)</visible>
    <animation effect="fade" time="200">VisibleChange</animation>
   </control>
 
@@ -102,7 +108,8 @@
    <imagepath>4x3home-settings</imagepath>
    <timeperimage>5000</timeperimage>
    <fadetime>2000</fadetime>
-   <visible>!Player.HasMedia + ControlGroup(1).HasFocus(9) | Skin.HasSetting(HomeViewToggle) + ControlGroup(1).HasFocus(9)</visible>
+   <visible>!Player.HasMedia | Skin.HasSetting(HomeViewToggle)</visible>
+   <visible>ControlGroup(1).HasFocus(9)</visible>
    <animation effect="fade" time="200">VisibleChange</animation>
   </control>
 
@@ -1011,7 +1018,8 @@
    <titlecolor>ffD2FF00</titlecolor>
    <headlinecolor>DDced8da</headlinecolor>
    <textcolor>ffD2FF00</textcolor>
-   <visible>[!Player.HasVideo +Player.HasAudio + Skin.HasSetting(NoAudioRSS)] | [!Player.HasVideo +!Player.HasAudio + !Skin.HasSetting(NoAudioRSS)]</visible>
+   <visible>!Player.HasVideo</visible>
+   <visible>!Player.HasAudio | Skin.HasSetting(NoAudioRSS)</visible>
    <include>homemisc</include>
   </control>
 
