@@ -193,6 +193,18 @@ static unsigned char lcd_toy_x3[246] =
 using namespace std;
 using namespace PLAYLIST;
 
+struct sortstringbyname
+{
+  bool operator()(const CStdString& strItem1, const CStdString& strItem2)
+  {
+    CStdString strLine1 = strItem1;
+    CStdString strLine2 = strItem2;
+    strLine1 = strLine1.ToLower();
+    strLine2 = strLine2.ToLower();
+    return strcmp(strLine1.c_str(), strLine2.c_str()) < 0;
+  }
+};
+
 class CUtil
 {
 public:
@@ -313,6 +325,7 @@ public:
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
   static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);
   static bool GetXBOXNickName(CStdString &strXboxNickNameOut);
+  static void GetSkinThemes(std::vector<CStdString>& vecTheme);
 
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask);
   
