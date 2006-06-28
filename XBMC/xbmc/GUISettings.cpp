@@ -321,6 +321,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(2, "masterlock.sep1");
   AddBool(4, "masterlock.startuplock"      , 20076,false);
   AddBool(5, "masterlock.enableshutdown"   , 12362,false);
+  AddBool(6, "masterlock.automastermode"   , 20101,false);
   
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries"       , 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT); 
@@ -597,7 +598,15 @@ void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
   it = settingsMap.find("masterlock.maxretries");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-  // don't load startup lock - safety
+  it = settingsMap.find("masterlock.automastermode");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.startuplock");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("masterlock.enableshutdown");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
 }
 
 
