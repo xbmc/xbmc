@@ -207,15 +207,23 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 
 void CGUIDialogKeyboard::SetText(CStdString& aTextString)
 {
-  m_strEdit = aTextString;
+  g_charsetConverter.utf8ToUTF16(aTextString, m_strEdit);
   UpdateLabel();
   MoveCursor(m_strEdit.size());
+}
+
+CStdString CGUIDialogKeyboard::GetText() const
+{
+  CStdString utf8String;
+  g_charsetConverter.utf16toUTF8(m_strEdit, utf8String);
+  return utf8String;
 }
 
 void CGUIDialogKeyboard::Character(char ch)
 {
   if (!ch) return;
-  m_strEdit.Insert(GetCursorPos(), ch);
+  // TODO: May have to make this routine take a WCHAR for the symbols?
+  m_strEdit.Insert(GetCursorPos(), WCHAR(ch));
   UpdateLabel();
   MoveCursor(1);
 }
@@ -233,7 +241,7 @@ void CGUIDialogKeyboard::UpdateLabel()
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
-    CStdString edit = m_strEdit;
+    CStdStringW edit = m_strEdit;
     if (m_lastRemoteClickTime && m_lastRemoteClickTime + 1000 < timeGetTime())
     {
       // finished inputting a sms style character - turn off our shift and symbol states
@@ -244,13 +252,16 @@ void CGUIDialogKeyboard::UpdateLabel()
       edit.Empty();
       if (m_lastRemoteClickTime + 1000 > timeGetTime() && m_strEdit.size())
       { // using the remove to input, so display the last key input
-        edit.append(m_strEdit.size() - 1, '*');
+        edit.append(m_strEdit.size() - 1, L'*');
         edit.append(1, m_strEdit[m_strEdit.size() - 1]);
       }
       else
-        edit.append(m_strEdit.size(), '*');
+        edit.append(m_strEdit.size(), L'*');
     }
-    pEdit->SetLabel(edit);
+    // convert back to utf8
+    CStdString utf8Edit;
+    g_charsetConverter.utf16toUTF8(edit, utf8Edit);
+    pEdit->SetLabel(utf8Edit);
   }
 }
 
@@ -625,21 +636,24 @@ void CGUIDialogKeyboard::OnIPAddress()
 {
   // find any IP address in the current string if there is any
   // We match to #.#.#.#
+  CStdString utf8String;
+  g_charsetConverter.utf16toUTF8(m_strEdit, utf8String);
   CStdString ip;
   CRegExp reg;
   reg.RegComp("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+");
-  int start = reg.RegFind(m_strEdit.c_str());
+  int start = reg.RegFind(utf8String.c_str());
   int length = 0;
   if (start > -1)
   {
     length = reg.GetSubLenght(0);
-    ip = m_strEdit.Mid(start, length);
+    ip = utf8String.Mid(start, length);
   }
   else
-    start = m_strEdit.size();
+    start = utf8String.size();
   if (CGUIDialogNumeric::ShowAndGetIPAddress(ip, m_strHeading))
   {
-    m_strEdit = m_strEdit.Left(start) + ip + m_strEdit.Mid(start + length);
+    utf8String = utf8String.Left(start) + ip + utf8String.Mid(start + length);
+    g_charsetConverter.utf8ToUTF16(utf8String, m_strEdit);
     UpdateLabel();
   }
 }
