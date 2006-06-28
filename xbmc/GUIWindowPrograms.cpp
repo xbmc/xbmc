@@ -533,9 +533,9 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   // flatten any folders
   m_database.BeginTransaction();
-  CStdString shortcutPath;
   for (int i = 0; i < items.Size(); i++)
   {
+    CStdString shortcutPath;
     CFileItem *item = items[i];
     if (item->m_bIsFolder && !item->IsParentFolder())
     { // folder item - let's check for a default.xbe file, and flatten if we have one
@@ -566,6 +566,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
         CStdString description;
         if (CUtil::GetXBEDescription(item->m_strPath, description))
           item->SetLabel(description);
+   
         dwTitleID = CUtil::GetXbeID(item->m_strPath);
         if (!item->IsOnDVD())
           m_database.AddProgramInfo(item, dwTitleID);
