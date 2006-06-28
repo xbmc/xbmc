@@ -1,3 +1,6 @@
+2006-06-27 fixed:	my pictures homescreen texture was there twice - wtf!?
+2006-06-27 changed:	homescreen infos
+2006-06-27 changed:	some new icons 
 2006-06-27 fixed:	navigation bugs in filebrowser and settings
 
 2006-06-26 fixed:	Music Infos in the homescreen didnt hide when the "Show Music Info" Setting was disabled
