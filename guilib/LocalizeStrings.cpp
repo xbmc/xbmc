@@ -250,6 +250,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20098] = "Fetching info for album";
   m_vecStrings[20099] = "Can't rip CD or Track while playing from CD";
   m_vecStrings[20100] = "Master code and Locks";
+  m_vecStrings[20101] = "Entering master code always enables master mode";
 
   // new strings for weather localization
   m_vecStrings[1411] = "with";
