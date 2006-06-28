@@ -13,7 +13,7 @@ public:
   virtual void Render();
   void SetHeading(const CStdString& strHeading) {m_strHeading = strHeading;} ;
   void SetText(CStdString& aTextString);
-  CStdString GetText() const { return m_strEdit;};
+  CStdString GetText() const;
   bool IsConfirmed() { return m_bIsConfirmed; };
   void SetHiddenInput(bool hiddenInput) { m_hiddenInput = hiddenInput; };
 
@@ -52,7 +52,7 @@ private:
   void Character(char wch);
   void Backspace();
 
-  CStdString m_strEdit;
+  CStdStringW m_strEdit;
   bool m_bIsConfirmed;
   KEYBOARD m_keyType;
   int m_iMode;
