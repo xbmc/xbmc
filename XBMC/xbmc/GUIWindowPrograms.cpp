@@ -302,7 +302,8 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
   else
     return false;
 
-  m_vecItems[iItem]->Select(false);
+  if (iItem < m_vecItems.Size())
+    m_vecItems[iItem]->Select(false);
   return true;
 }
 

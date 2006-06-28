@@ -847,7 +847,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Settings)
     { 
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
-      return;
     }
     else if (btnid == btn_Delete)
     {
@@ -858,7 +857,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       OnRenameItem(iItem);
     }
   }
-  m_vecItems[iItem]->Select(bSelected);
+  if (iItem < m_vecItems.Size())
+    m_vecItems[iItem]->Select(bSelected);
 }
 
 void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath1, vector<CStdString> &movies)
