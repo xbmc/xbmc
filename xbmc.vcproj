@@ -2916,6 +2916,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\AdplugCodec.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\AIFFcodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\AIFFcodec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\APEcodec.cpp">
 				</File>
 				<File
