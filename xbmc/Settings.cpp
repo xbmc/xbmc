@@ -275,10 +275,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   helper.Unmount("O:");
   helper.Mount("O:",szDevicePath);
   strMnt = GetProfileUserDataFolder();
-  if (GetUserDataFolder().Left(2).Equals("Q:"))
+  if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
   {
     CUtil::GetHomePath(strMnt);
-    strMnt += GetUserDataFolder().substr(2);
+    strMnt += GetProfileUserDataFolder().substr(2);
   }    
   helper.GetPartition(strMnt, szDevicePath);
   strcat(szDevicePath,strMnt.c_str()+2);
