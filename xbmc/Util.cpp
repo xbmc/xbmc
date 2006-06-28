@@ -4199,7 +4199,7 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
 void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
 { 
   CStdString strPath;
-  CUtil::AddFileToFolder(g_settings.GetSkinFolder(),"media",strPath);
+  CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(),"media",strPath);
   CHDDirectory directory;
   CFileItemList items;
   directory.GetDirectory(strPath, items);
