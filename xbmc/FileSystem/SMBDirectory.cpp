@@ -164,7 +164,11 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
   strAuth = smb.URLEncode(urlIn);
 
   CStdString strPath;
-  CStdString strShare = urlIn.GetShareName();	// it's only the server\share we're interested in authenticating
+  CStdString strShare;
+  /* must url encode this as, auth code will look for the encoded value */
+  strShare  = smb.URLEncode(urlIn.GetHostName());
+  strShare += "/";
+  strShare += smb.URLEncode(urlIn.GetShareName());
 
   IMAPPASSWORDS it = g_passwordManager.m_mapSMBPasswordCache.find(strShare);
   if(it != g_passwordManager.m_mapSMBPasswordCache.end())
