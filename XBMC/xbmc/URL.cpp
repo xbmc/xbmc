@@ -182,13 +182,12 @@ CURL::CURL(const CStdString& strURL)
     if ((int)strURL.size() > iPos)
     {
       m_strFileName = strURL.Right(strURL.size() - iPos);
-      m_strShareName = m_strHostName;
-      m_strShareName += "/";
+
       iSlash = m_strFileName.Find("/"); 
       if(iSlash < 0)
-        m_strShareName += m_strFileName;
+        m_strShareName = m_strFileName;
       else
-        m_strShareName += m_strFileName.Left(iSlash);
+        m_strShareName = m_strFileName.Left(iSlash);
     }
   }
 
