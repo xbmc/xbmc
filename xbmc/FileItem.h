@@ -105,7 +105,7 @@ public:
   void RemoveExtension();
   void CleanFileName();
   void FillInDefaultIcon();
-  void SetMusicThumb();
+  void SetMusicThumb(bool alwaysCheckRemote = false);
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
   CURL GetAsUrl() const;
@@ -133,12 +133,12 @@ public:
 
   // Gets the user thumb, if it exists
   CStdString GetUserVideoThumb();
-  CStdString GetUserMusicThumb();
+  CStdString GetUserMusicThumb(bool alwaysCheckRemote = false);
 
   // Caches the user thumb and assigns it to the item
   void SetUserVideoThumb();
   void SetUserProgramThumb();
-  void SetUserMusicThumb();
+  void SetUserMusicThumb(bool alwaysCheckRemote = false);
 
   /* returns the content type of this item if known. will lookup for http streams */  
   const CStdString& GetContentType() const; 
