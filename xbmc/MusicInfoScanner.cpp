@@ -193,7 +193,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
     if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList())
     {
       // get the item's thumb (this will cache the album thumb)
-      pItem->SetMusicThumb();
+      pItem->SetMusicThumb(true); // true forces it to get a remote thumb
       CStdString strPath=pItem->m_strPath;
       if (!DoScan(strPath))
       {

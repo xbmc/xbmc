@@ -160,8 +160,6 @@ CSettings::CSettings(void)
 
   // defaults for scanning
   g_stSettings.m_bMyMusicIsScanning = false;
-  g_stSettings.m_bMyMusicOldUseTags = true;
-  g_stSettings.m_bMyMusicOldFindThumbs = true;
 
   // Advanced settings
   g_advancedSettings.m_audioHeadRoom = 0;
@@ -906,15 +904,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       XMLUtils::GetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
     }
-    // use tags and find thumbs should be enabled when a scan is iniated
-    // these settings will keep track of the previous values and restore them
-    // if the user happened to reboot in the middle of the scan
+    // if the user happened to reboot in the middle of the scan we save this state
     pChild = pElement->FirstChildElement("scanning");
     if (pChild)
     {
       XMLUtils::GetBoolean(pChild, "isscanning", g_stSettings.m_bMyMusicIsScanning);
-      XMLUtils::GetBoolean(pChild, "oldusetags", g_stSettings.m_bMyMusicOldUseTags);
-      XMLUtils::GetBoolean(pChild, "oldfindthumbs", g_stSettings.m_bMyMusicOldFindThumbs);
     }
     GetInteger(pElement, "startwindow", g_stSettings.m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     XMLUtils::GetBoolean(pElement, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
@@ -1380,8 +1374,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
     if (!pChild) return false;
     SetBoolean(pChild, "isscanning", g_stSettings.m_bMyMusicIsScanning);
-    SetBoolean(pChild, "oldusetags", g_stSettings.m_bMyMusicOldUseTags);
-    SetBoolean(pChild, "oldfindthumbs", g_stSettings.m_bMyMusicOldFindThumbs);
   }
 
   SetInteger(pNode, "startwindow", g_stSettings.m_iMyMusicStartWindow);
