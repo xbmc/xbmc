@@ -350,8 +350,6 @@ public:
 
     // for scanning
     bool m_bMyMusicIsScanning;
-    bool m_bMyMusicOldUseTags;
-    bool m_bMyMusicOldFindThumbs;
 
     CVideoSettings m_defaultVideoSettings;
     CVideoSettings m_currentVideoSettings;
