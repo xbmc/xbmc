@@ -723,12 +723,12 @@ void CFileItem::SetCachedArtistThumb()
 }
 
 // set the album thumb for a file or folder
-void CFileItem::SetMusicThumb()
+void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
 { 
   if (HasThumbnail()) return;
   SetCachedMusicThumb();
   if (!HasThumbnail())
-    SetUserMusicThumb();
+    SetUserMusicThumb(alwaysCheckRemote);
 }
 
 void CFileItem::RemoveExtension()
@@ -1853,7 +1853,7 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb()
   return "";
 }
 
-CStdString CFileItem::GetUserMusicThumb()
+CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
 {
   if (m_bIsShareOrDrive) return "";
   if (IsInternetStream()) return "";
@@ -1867,7 +1867,7 @@ CStdString CFileItem::GetUserMusicThumb()
   if (CFile::Exists(fileThumb))
     return fileThumb;
   // if a folder, check for folder.jpg
-  if (m_bIsFolder && (!IsRemote() || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
+  if (m_bIsFolder && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
     CStdString folderThumb;
     CUtil::AddFileToFolder(m_strPath, "folder.jpg", folderThumb);
@@ -1878,10 +1878,10 @@ CStdString CFileItem::GetUserMusicThumb()
   return "";
 }
 
-void CFileItem::SetUserMusicThumb()
+void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
 {
   // caches as the local thumb 
-  CStdString thumb(GetUserMusicThumb());
+  CStdString thumb(GetUserMusicThumb(alwaysCheckRemote));
   if (!thumb.IsEmpty())
   {
     CStdString cachedThumb(CUtil::GetCachedMusicThumb(m_strPath));
