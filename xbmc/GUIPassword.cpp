@@ -463,7 +463,11 @@ CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
   CURL urlIn(strAuth);
   CStdString strPath(strAuth);
 
-  CStdString strShare = urlIn.GetShareName();	// it's only the server\share we're interested in authenticating
+  CStdString strShare;  // it's only the server\share we're interested in authenticating 
+  strShare  = urlIn.GetHostName();
+  strShare += "/";
+  strShare += urlIn.GetShareName();
+
   IMAPPASSWORDS it = m_mapSMBPasswordCache.find(strShare);
   if(it != m_mapSMBPasswordCache.end())
   {
