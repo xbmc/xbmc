@@ -289,32 +289,27 @@ int CFileSMB::OpenFile(const CURL &url, CStdString& strAuth)
   if (fd < 0 && map_nt_error_from_unix(errno) == NT_STATUS_ACCESS_DENIED)
   {
     CURL urlshare(url);
-    CStdString strShare = urlshare.GetShareName();
     
-    int iPos = strShare.Find('/');
-    if (iPos != -1)
+    /* just replace the filename with the sharename */
+    urlshare.SetFileName(url.GetShareName());
+
+    CSMBDirectory smbDir;
+    // TODO: Currently we always allow prompting on files.  This may need to
+    // change in the future as background scanners are more prolific.
+    smbDir.SetAllowPrompting(true);
+    fd = smbDir.Open(urlshare);
+
+    // directory open worked, try opening the file again
+    if (fd >= 0)
     {
-      urlshare.SetHostName(strShare.Left(iPos));
-      urlshare.SetFileName(strShare.Mid(iPos+1));
+      CSingleLock lock(smb);
+      // close current directory filehandle
+      // dont need to purge since its the same server and share
+      smbc_closedir(fd);
 
-      CSMBDirectory smbDir;
-      // TODO: Currently we always allow prompting on files.  This may need to
-      // change in the future as background scanners are more prolific.
-      smbDir.SetAllowPrompting(true);
-      fd = smbDir.Open(urlshare);
-
-      // directory open worked, try opening the file again
-      if (fd >= 0)
-      {
-        CSingleLock lock(smb);
-        // close current directory filehandle
-        // dont need to purge since its the same server and share
-        smbc_closedir(fd);
-
-        // set up new filehandle (as CFileSMB::Open does)
-        strPath = g_passwordManager.GetSMBAuthFilename(strPath);
-        fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
-      }
+      // set up new filehandle (as CFileSMB::Open does)
+      strPath = g_passwordManager.GetSMBAuthFilename(strPath);
+      fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
     }
   }
 
