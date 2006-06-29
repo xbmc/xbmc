@@ -105,7 +105,7 @@ void CGUIDialogMusicScan::OnFinished()
   m_gWindowManager.SendThreadMessage(msg);
 
   // be sure to restore the settings
-  CLog::Log(LOGINFO,"Music scan was stopped or finished ... restoring UseTags and FindRemoteThumbs");
+  CLog::Log(LOGINFO,"Music scan was stopped or finished ... restoring FindRemoteThumbs");
   g_application.RestoreMusicScanSettings();
 
   Close();
