@@ -4264,18 +4264,11 @@ void CApplication::SaveMusicScanSettings()
 {
   CLog::Log(LOGINFO,"Music scan has started ... enabling Tag Reading, and Remote Thumbs");
   g_stSettings.m_bMyMusicIsScanning = true;
-  //g_stSettings.m_bMyMusicOldUseTags = g_guiSettings.GetBool("musicfiles.usetags");
-  g_stSettings.m_bMyMusicOldFindThumbs = g_guiSettings.GetBool("musicfiles.findremotethumbs");
   g_settings.Save();
-  
-  //g_guiSettings.SetBool("musicfiles.usetags", true);
-  g_guiSettings.SetBool("musicfiles.findremotethumbs", true);
 }
 
 void CApplication::RestoreMusicScanSettings()
 {
-  //g_guiSettings.SetBool("musicfiles.usetags", g_stSettings.m_bMyMusicOldUseTags);
-  g_guiSettings.SetBool("musicfiles.findremotethumbs", g_stSettings.m_bMyMusicOldFindThumbs);
   g_stSettings.m_bMyMusicIsScanning = false;
   g_settings.Save();
 }
