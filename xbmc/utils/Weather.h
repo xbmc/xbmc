@@ -48,6 +48,7 @@ public:
   char *GetCurrentWind() { return m_szCurrentWind; };
   char *GetCurrentDewPoint() { return m_szCurrentDewPoint; };
   char *GetCurrentHumidity() { return m_szCurrentHumidity; };
+  bool IsFetched() { return !CStdString(m_szLastUpdateTime).IsEmpty(); }
   
   void SetArea(int iArea) { m_iCurWeather = iArea; };
   int GetArea() const { return m_iCurWeather; };
