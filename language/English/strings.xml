@@ -1201,7 +1201,7 @@
   <string id="15203">Last.FM Password</string>
   <string id="15204">Unable to handshake: sleeping...</string>
   <string id="15205">Please Update XBMC</string>
-  <string id="15206">Submission failed: bad authorization.</string>
+  <string id="15206">Bad authorization: Check username and password</string>
   <string id="15207">Connected</string>
   <string id="15208">Not Connected</string>
   <string id="15209">Submit Interval %i</string>

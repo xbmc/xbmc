@@ -251,6 +251,8 @@ private:
 
   bool m_bUpdateWarningDone;
   bool m_bConnectionWarningDone;
+  bool m_bAuthWarningDone;
+  bool m_bBadPassWarningDone;
 
   int m_iSecsTillSubmit;
   bool m_bShouldSubmit;
