@@ -667,7 +667,7 @@
    <width>400</width>
    <height>99</height>
    <texture>gradient.png</texture>
-   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <visible>Control.HasFocus(7) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
    <include>homestatsinfo</include>
   </control>
 
@@ -680,7 +680,7 @@
    <width>75</width>
    <height>99</height>
    <texture>homeinfo-bg.png</texture>
-   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <visible>Control.HasFocus(7) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
    <include>homestatsinfo</include>
   </control>
 
@@ -693,7 +693,7 @@
    <width>49</width>
    <height>73</height>
    <info>Weather.Conditions</info>
-   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <visible>Control.HasFocus(7) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
    <include>homestatsinfo</include>
   </control>
 
@@ -706,7 +706,7 @@
    <width>75</width>
    <height>99</height>
    <texture>homeinfo-overlay.png</texture>
-   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <visible>Control.HasFocus(7) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
    <include>homestatsinfo</include>
   </control>
 
@@ -720,7 +720,7 @@
    <label>20088</label>
    <align>right</align>
    <font>special12</font>
-   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <visible>Control.HasFocus(7) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
    <include>homestatsinfo</include>
   </control>
 
@@ -734,7 +734,7 @@
    <info>Weather.Location</info>
    <align>right</align>
    <font>special13</font>
-   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <visible>Control.HasFocus(7) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
    <include>homestatsinfo</include>
   </control>
 
@@ -748,7 +748,7 @@
    <label>$INFO[Weather.Conditions]</label>
    <align>right</align>
    <font>font10</font>
-   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <visible>Control.HasFocus(7) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
    <include>homestatsinfo</include>
   </control>
 
@@ -762,7 +762,7 @@
    <label>$LOCALIZE[143] $INFO[Weather.Temperature]</label>
    <align>right</align>
    <font>font10</font>
-   <visible>Control.HasFocus(7) + system.hasnetwork + !Skin.HasSetting(homepageWeatherinfo)</visible>
+   <visible>Control.HasFocus(7) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
    <include>homestatsinfo</include>
   </control>
 
