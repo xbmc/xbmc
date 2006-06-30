@@ -140,6 +140,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
     else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
     else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
+    else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
   }
   else if (strCategory.Equals("system"))
   {
@@ -767,8 +768,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   }
   else if (condition == SYSTEM_HASLOCKS)  
     bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE;
-    else if (condition == SYSTEM_ISMASTER)
-      bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+  else if (condition == SYSTEM_ISMASTER)
+    bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+  else if (condition == WEATHER_IS_FETCHED)
+    bReturn = g_weatherManager.IsFetched();
   else if (g_application.IsPlaying())
   {
     switch (condition)
