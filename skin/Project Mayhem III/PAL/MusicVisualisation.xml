@@ -172,14 +172,28 @@
   </control>
 
   <control>
-   <description>Playlist</description>
+   <description>Playlist Pos No</description>
    <type>label</type>
    <id>1</id>
    <width>200</width>
    <posx>660</posx>
    <posy>508</posy>
-   <label>$INFO[musicplayer.Playlistposition,$LOCALIZE[435]]$INFO[musicplayer.Playlistlength, / ]</label>
-   <visible>Player.ShowInfo</visible>
+   <label>$INFO[musicplayer.Playlistposition,$LOCALIZE[435] ]$INFO[musicplayer.Playlistlength, / ]</label>
+   <visible>Player.ShowInfo + !MusicPartyMode.Enabled</visible>
+   <animation effect="fade" time="1000">VisibleChange</animation>
+   <align>right</align>
+   <font>font10</font>
+  </control>
+
+  <control>
+   <description>PartyMode Enabled</description>
+   <type>label</type>
+   <id>1</id>
+   <width>200</width>
+   <posx>660</posx>
+   <posy>508</posy>
+   <label>589</label>
+   <visible>Player.ShowInfo + MusicPartyMode.Enabled</visible>
    <animation effect="fade" time="1000">VisibleChange</animation>
    <align>right</align>
    <font>font10</font>
