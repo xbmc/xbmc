@@ -43,6 +43,8 @@ CScrobbler::CScrobbler()
   m_bShouldSubmit=false;
   m_bUpdateWarningDone=false;
   m_bConnectionWarningDone=false;
+  m_bAuthWarningDone=false;
+  m_bBadPassWarningDone=false;
   m_bReHandShaking=false;
   m_strClientId = CLIENT_ID; 
   m_strClientVer = CLIENT_VERSION;
@@ -101,6 +103,12 @@ void CScrobbler::Init()
 
   if (strPassword.IsEmpty() || strUserName.IsEmpty())
     return;
+
+  // show all warnings each time we init the scrobbler
+  m_bAuthWarningDone=false;
+  m_bUpdateWarningDone=false;
+  m_bConnectionWarningDone=false;
+  m_bBadPassWarningDone=false;
 
   SetPassword(strPassword);
   SetUsername(strUserName);
@@ -465,15 +473,32 @@ void CScrobbler::StatusUpdate(ScrobbleStatus status, const CStdString& strText)
     case S_SUBMIT_FAILED:
     case S_HANDSHAKE_INVALID_RESPONSE:
     case S_SUBMIT_INVALID_RESPONSE:
-    case S_HANDSHAKE_BAD_USERNAME:
-    case S_SUBMIT_BAD_PASSWORD:
     case S_CONNECT_ERROR:
-    case S_SUBMIT_BADAUTH:
       // these are the bad ones just log
       CLog::Log(LOGERROR, "AudioScrobbler: %s", strText.c_str());
       break;
     case S_HANDSHAKE_SUCCESS:
       CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
+      break;
+    case S_HANDSHAKE_BAD_USERNAME:
+    case S_SUBMIT_BADAUTH:
+      CLog::Log(LOGERROR, "AudioScrobbler: %s", strText.c_str());
+      if(!m_bAuthWarningDone)
+      {
+        m_bAuthWarningDone=true;
+        m_bConnectionWarningDone=true; // eat "handshake not ready" message in this case
+        CStdString strMsg=g_localizeStrings.Get(15206); // Bad authorization: Check username and password
+        StatusUpdate(strMsg);
+      }
+      break;
+    case S_SUBMIT_BAD_PASSWORD:
+      CLog::Log(LOGERROR, "AudioScrobbler: %s", strText.c_str());
+      if(!m_bBadPassWarningDone)
+      {
+        m_bBadPassWarningDone=true;
+        CStdString strMsg=g_localizeStrings.Get(15206); // Bad authorization: Check username and password
+        StatusUpdate(strMsg);
+      }
       break;
     case S_HANDHAKE_NOTREADY:
       CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
@@ -502,7 +527,7 @@ void CScrobbler::StatusUpdate(ScrobbleStatus status, const CStdString& strText)
 void CScrobbler::StatusUpdate(const CStdString& strText)
 {
   CStdString strAudioScrobbler=g_localizeStrings.Get(15200);  // AudioScrobbler
-  g_application.m_guiDialogKaiToast.QueueNotification(strAudioScrobbler, strText);
+  g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
 }
 
 void CScrobbler::WorkerThread()
