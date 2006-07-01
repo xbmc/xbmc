@@ -3,6 +3,7 @@
 // forward definitions
 struct CAction;
 #include "IAudioDeviceChangedCallback.h"
+#include "../xbmc/utils/CriticalSection.h"
 
 enum WINDOW_SOUND { SOUND_INIT = 0, SOUND_DEINIT };
 
@@ -26,6 +27,7 @@ public:
 
           void        PlayActionSound(const CAction& action);
           void        PlayWindowSound(DWORD dwID, WINDOW_SOUND event);
+          void        PlayPythonSound(const CStdString& strFileName);
 
           void        FreeUnused();
 
@@ -48,6 +50,7 @@ private:
   typedef map<DWORD, LPDIRECTSOUNDBUFFER> soundBufferMap;
   typedef map<WORD, CStdString> actionSoundMap;
   typedef map<WORD, CWindowSounds> windowSoundMap;
+  typedef map<CStdString, LPDIRECTSOUNDBUFFER> pythonSoundBufferMap;
 
   actionSoundMap      m_actionSoundMap;
   windowSoundMap      m_windowSoundMap;
@@ -56,9 +59,12 @@ private:
 
   LPDIRECTSOUNDBUFFER m_lpActionSoundBuffer;
   soundBufferMap      m_windowSoundBuffers;
+  pythonSoundBufferMap m_pythonSoundBuffers;
 
   CStdString          m_strMediaDir;
   bool                m_bEnabled;
+
+  CCriticalSection    m_cs;
 };
 
 extern CGUIAudioManager g_audioManager;
