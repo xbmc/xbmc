@@ -214,7 +214,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20062] = "Shares with default";
   m_vecStrings[20063] = "Shares with default (read only)";
   m_vecStrings[20064] = "Set name";
-  m_vecStrings[20065] = "Select picture";
+  m_vecStrings[20065] = "Profile picture";
   m_vecStrings[20066] = "Lock preferences";
   m_vecStrings[20067] = "Edit profile";
   m_vecStrings[20068] = "Profile lock";

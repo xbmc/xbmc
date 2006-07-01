@@ -101,6 +101,11 @@ void CGUIDialogProfileSettings::CreateSettings()
     setting2.entry.push_back(g_localizeStrings.Get(20063));
     m_settings.push_back(setting2);
   }
+  if (m_bIsNewUser)
+  {
+    OnSettingChanged(0); // id=1
+    OnSettingChanged(2); // id=3
+  }
 }
 
 void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
@@ -137,23 +142,13 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
   if (setting.id == 3)
   {
     VECSHARES shares;
-    if (m_bIsDefault)
-    {
-      g_mediaManager.GetLocalDrives(shares);
-      CShare share;
-      share.strName = "Q Drive";
-      share.strPath = "Q:\\";
-      shares.push_back(share);
-    }
-    else
-    {
-      CShare share;
-      share.strName = "Profiles";
-      share.strPath = g_settings.m_vecProfiles[0].getDirectory()+"\\profiles";
-      shares.push_back(share);
-      if (m_strDirectory == "")
-        m_strDirectory = share.strPath;
-    }
+    CShare share;
+    share.strName = "Profiles";
+    share.strPath = g_settings.m_vecProfiles[0].getDirectory()+"\\profiles";
+    shares.push_back(share);
+    if (m_strDirectory == "")
+      m_strDirectory = share.strPath;
+    
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(20070),m_strDirectory,true))
     {
       if (!m_bIsDefault)
@@ -199,6 +194,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
     dialog->m_strDirectory.Empty();
     dialog->m_strThumb.Empty();
     dialog->m_strName = "";
+    dialog->m_bIsNewUser = true;
   }
   else
   {
@@ -220,6 +216,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
     dialog->m_bLockPrograms = g_settings.m_vecProfiles[iProfile].programsLocked();
     dialog->m_bLockPictures = g_settings.m_vecProfiles[iProfile].picturesLocked();
     dialog->m_bLockSettings = g_settings.m_vecProfiles[iProfile].settingsLocked();
+    dialog->m_bIsNewUser = false;
   }
   dialog->DoModal();
   if (dialog->m_bNeedSave)
