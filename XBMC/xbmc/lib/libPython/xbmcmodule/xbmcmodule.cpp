@@ -9,6 +9,7 @@
 #include "infotagmusic.h"
 #include "..\..\libgoahead\xbmchttp.h"
 #include "..\..\..\utils\GUIInfoManager.h"
+#include "..\..\..\..\guilib\GUIAudioManager.h"
 
 // include for constants
 #include "pyutil.h"
@@ -407,7 +408,52 @@ namespace PYXBMC
     return Py_BuildValue("s", g_infoManager.GetImage(ret).c_str());
   }
 
-	// define c functions to be used in python here
+	// playSFX() method
+	PyDoc_STRVAR(playSFX__doc__,
+		"playSFX(filename) -- Plays a wav file by filename\n"
+		"\n"
+    "filename       : string - filename of the wav file to play.\n"
+		"\n"
+		"example:\n"
+    "  - xbmc.playSFX('Q:\\scripts\\dingdong.wav')\n");
+
+  PyObject* XBMC_PlaySFX(PyObject *self, PyObject *args)
+  {
+    const char *cFile = NULL;
+ 
+    if (!PyArg_ParseTuple(args, "s", &cFile))  return NULL;
+ 
+    if (CFile::Exists(cFile))
+    {
+      g_audioManager.PlayPythonSound(cFile);
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+  
+	// enableNavSounds() method
+	PyDoc_STRVAR(enableNavSounds__doc__,
+		"enableNavSounds(yesNo) -- Enables/Disables nav sounds\n"
+		"\n"
+    "yesNo          : integer - enable (True) or disable (False) nav sounds\n"
+		"\n"
+		"example:\n"
+    "  - xbmc.enableNavSounds(True)\n");
+
+  PyObject* XBMC_EnableNavSounds(PyObject *self, PyObject *args)
+  {
+    int yesNo = 1;
+ 
+    if (!PyArg_ParseTuple(args, "i", &yesNo))  return NULL;
+ 
+    g_audioManager.Enable(yesNo==1);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+  
+  // define c functions to be used in python here
 	PyMethodDef xbmcMethods[] = {
 		{"output", (PyCFunction)XBMC_Output, METH_VARARGS, output__doc__},
 		{"log", (PyCFunction)XBMC_Log, METH_VARARGS, log__doc__},
@@ -430,6 +476,9 @@ namespace PYXBMC
     {"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
 		{"getInfoLabel", (PyCFunction)XBMC_GetInfoLabel, METH_VARARGS, getInfoLabel__doc__},
 		{"getInfoImage", (PyCFunction)XBMC_GetInfoImage, METH_VARARGS, getInfoImage__doc__},
+
+		{"playSFX", (PyCFunction)XBMC_PlaySFX, METH_VARARGS, playSFX__doc__},
+		{"enableNavSounds", (PyCFunction)XBMC_EnableNavSounds, METH_VARARGS, enableNavSounds__doc__},
 
 		{NULL, NULL, 0, NULL}
 	};
