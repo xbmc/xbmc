@@ -3245,17 +3245,17 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("skin.togglesetting"))
   {
-    g_settings.SetSkinSetting(parameter.c_str(), !g_settings.GetSkinSetting(g_guiSettings.GetString("lookandfeel.skin") + "." + parameter));
+    g_settings.SetSkinSetting(parameter, !g_settings.GetSkinSetting(g_guiSettings.GetString("lookandfeel.skin") + "." + parameter));
     g_settings.Save();
   }
   else if (execute.Equals("skin.setbool"))
   {
-    g_settings.SetSkinSetting(parameter.c_str(), true);
+    g_settings.SetSkinSetting(parameter, true);
     g_settings.Save();
   }
   else if (execute.Equals("skin.reset"))
   {
-    g_settings.ResetSkinSetting(parameter.c_str());
+    g_settings.ResetSkinSetting(parameter);
     g_settings.Save();
   }
   else if (execute.Equals("skin.resetsettings"))
