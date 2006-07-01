@@ -5,6 +5,7 @@
 #include "../xbmc/settings.h"
 #include "../xbmc/buttontranslator.h"
 #include "../xbmc/memutil.h"
+#include "../xbmc/utils/singlelock.h"
 
 typedef struct
 {
@@ -35,7 +36,9 @@ CGUIAudioManager::~CGUIAudioManager()
 }
 
 void CGUIAudioManager::Initialize(int iDevice)
-{  
+{
+  CSingleLock lock(m_cs);
+
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
     bool bAudioOnAllSpeakers=false;
@@ -51,6 +54,8 @@ void CGUIAudioManager::Initialize(int iDevice)
 
 void CGUIAudioManager::DeInitialize(int iDevice)
 {
+  CSingleLock lock(m_cs);
+
   if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
 
   //  Wait for finish when an action sound is playing
@@ -67,6 +72,17 @@ void CGUIAudioManager::DeInitialize(int iDevice)
     it=m_windowSoundBuffers.erase(it);
   }
 
+  pythonSoundBufferMap::iterator it1=m_pythonSoundBuffers.begin();
+  while (it1!=m_pythonSoundBuffers.end())
+  {
+    if (IsPlaying(it1->second))
+      StopPlaying(it1->second);
+
+    FreeBuffer(&it1->second);
+    it1=m_pythonSoundBuffers.erase(it1);
+  }
+
+  
   m_lpDirectSound=NULL;
 }
 
@@ -139,6 +155,8 @@ void CGUIAudioManager::FreeBuffer(LPDIRECTSOUNDBUFFER* pSoundBuffer)
 // \brief Clear any unused audio buffers
 void CGUIAudioManager::FreeUnused()
 {
+  CSingleLock lock(m_cs);
+
   //  Free sound buffer from actions
   if (!IsPlaying(m_lpActionSoundBuffer))
     FreeBuffer(&m_lpActionSoundBuffer);
@@ -153,6 +171,18 @@ void CGUIAudioManager::FreeUnused()
       it=m_windowSoundBuffers.erase(it);
     }
     else ++it;
+  }
+
+  // Free soundbuffers from python
+  pythonSoundBufferMap::iterator it1=m_pythonSoundBuffers.begin();
+  while (it1!=m_pythonSoundBuffers.end())
+  {
+    if (!IsPlaying(it1->second))
+    {
+      FreeBuffer(&it1->second);
+      it1=m_pythonSoundBuffers.erase(it1);
+    }
+    else ++it1;
   }
 }
 
@@ -180,7 +210,7 @@ bool CGUIAudioManager::IsPlaying(LPDIRECTSOUNDBUFFER pSoundBuffer)
 
 bool CGUIAudioManager::CreateBufferFromFile(const CStdString& strFile, LPDIRECTSOUNDBUFFER* ppSoundBuffer)
 {
-  if (!m_lpDirectSound || !m_bEnabled)
+  if (!m_lpDirectSound)
     return false;
 
   LPBYTE pbData=NULL;
@@ -271,6 +301,11 @@ void CGUIAudioManager::Play(LPDIRECTSOUNDBUFFER pSoundBuffer)
 // \brief Play a sound associated with a CAction
 void CGUIAudioManager::PlayActionSound(const CAction& action)
 {
+  if (!m_bEnabled)
+    return;
+
+  CSingleLock lock(m_cs);
+
   actionSoundMap::iterator it=m_actionSoundMap.find(action.wID);
   if (it==m_actionSoundMap.end()) 
     return;
@@ -284,6 +319,11 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 // Events: SOUND_INIT, SOUND_DEINIT
 void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
 {
+  if (!m_bEnabled)
+    return;
+
+  CSingleLock lock(m_cs);
+
   windowSoundMap::iterator it=m_windowSoundMap.find((WORD)(dwID & 0xffff));
   if (it==m_windowSoundMap.end())
     return;
@@ -317,6 +357,31 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
   if (CreateBufferFromFile(m_strMediaDir+"\\"+strFile, &pBuffer))
   {
     m_windowSoundBuffers.insert(pair<DWORD, LPDIRECTSOUNDBUFFER>(dwID, pBuffer));
+    Play(pBuffer);
+  }
+}
+
+// \brief Play a sound given by filename
+void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
+{
+  CSingleLock lock(m_cs);
+
+  // If we already loaded the sound, just play it
+  pythonSoundBufferMap::iterator itsb=m_pythonSoundBuffers.find(strFileName);
+  if (itsb!=m_pythonSoundBuffers.end())
+  {
+    if (IsPlaying(itsb->second))
+      StopPlaying(itsb->second);
+
+    Play(itsb->second);
+
+    return;
+  }
+
+  LPDIRECTSOUNDBUFFER pBuffer=NULL;
+  if (CreateBufferFromFile(strFileName, &pBuffer))
+  {
+    m_pythonSoundBuffers.insert(pair<CStdString, LPDIRECTSOUNDBUFFER>(strFileName, pBuffer));
     Play(pBuffer);
   }
 }
@@ -435,11 +500,17 @@ bool CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString&
 
 void CGUIAudioManager::Enable(bool bEnable)
 {
+  // Enable/Disable has no effect if nav sounds are turned off
+  if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
+    return;
+
   m_bEnabled=bEnable;
 }
 
 void CGUIAudioManager::SetVolume(int iLevel)
 {
+  CSingleLock lock(m_cs);
+
   if (m_lpActionSoundBuffer)
     m_lpActionSoundBuffer->SetVolume(iLevel);
 
@@ -450,5 +521,14 @@ void CGUIAudioManager::SetVolume(int iLevel)
       it->second->SetVolume(iLevel);
 
     ++it;
+  }
+
+  pythonSoundBufferMap::iterator it1=m_pythonSoundBuffers.begin();
+  while (it1!=m_pythonSoundBuffers.end())
+  {
+    if (it1->second)
+      it1->second->SetVolume(iLevel);
+
+    ++it1;
   }
 }

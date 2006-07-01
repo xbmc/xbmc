@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-07-2006 added: two new python functions:
+                     xbmc.playSFX(filename) -- Plays a wav file by filename
+                     xbmc.enableNavSounds(yesNo) -- Enables/Disables (True/False) nav sounds
  - 30-06-2006 changed: a toast message is displayed if last.fm username/password is wrong
  - 30-06-2006 added: visible condition Weather.IsFetched, is true if the weather data is downloaded
  - 30-06-2006 fixed: smb shares with special chars (spaces, %..) in them would fail to use correct authentication information when opening files.
