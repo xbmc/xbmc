@@ -24,6 +24,7 @@ protected:
   int m_iSourcesMode;
   int m_iDbMode;
   bool m_bIsDefault;
+  bool m_bIsNewUser;
 
   // lock stuff
   CStdString m_strLockCode;
