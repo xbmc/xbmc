@@ -392,7 +392,7 @@ string CGUIInfoManager::GetLabel(int info)
   CStdString strLabel;
   if (info >= SKIN_HAS_SETTING_START && info <= SKIN_HAS_SETTING_END)
   {
-    strLabel = g_settings.GetSkinString(m_stringParameters[info - SKIN_HAS_SETTING_START].c_str());
+    strLabel = g_settings.GetSkinString(m_stringParameters[info - SKIN_HAS_SETTING_START]);
   }
   switch (info)
   {
@@ -761,7 +761,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   else if (condition >= SKIN_STRING_EQUALS_START && condition <= SKIN_STRING_EQUALS_END)
     bReturn = m_strSkinStringCompareTo.Equals(m_stringParameters[condition - SKIN_STRING_EQUALS_START]);
   else if (condition >= SKIN_HAS_SETTING_START && condition <= SKIN_HAS_SETTING_END)
-    bReturn = g_settings.GetSkinSetting(m_stringParameters[condition - SKIN_HAS_SETTING_START].c_str());
+    bReturn = g_settings.GetSkinSetting(m_stringParameters[condition - SKIN_HAS_SETTING_START]);
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
     return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow);
@@ -969,7 +969,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 {
   if (info >= SKIN_HAS_SETTING_START && info <= SKIN_HAS_SETTING_END)
   {
-    return g_settings.GetSkinString(m_stringParameters[info - SKIN_HAS_SETTING_START].c_str());
+    return g_settings.GetSkinString(m_stringParameters[info - SKIN_HAS_SETTING_START]);
   }
   else if (info == WEATHER_CONDITIONS)
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
