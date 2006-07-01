@@ -216,11 +216,11 @@ public:
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue);
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue);
 
-  CStdString GetSkinString(const char *setting) const;
-  void SetSkinString(const char *setting, const CStdString &label);
-  bool GetSkinSetting(const char *setting) const;
-  void SetSkinSetting(const char *setting, bool set);
-  void ResetSkinSetting(const char *setting);
+  CStdString GetSkinString(const CStdString &setting) const;
+  void SetSkinString(const CStdString &setting, const CStdString &label);
+  bool GetSkinSetting(const CStdString &setting) const;
+  void SetSkinSetting(const CStdString &setting, bool set);
+  void ResetSkinSetting(const CStdString &setting);
   void ResetSkinSettings();
   
   struct AdvancedSettings
