@@ -126,7 +126,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
   if (setting.id == 2)
   {
     CStdString strThumb;
-    if (CGUIDialogFileBrowser::ShowAndGetImage(*g_settings.GetSharesFromType("files"),"Select thumb",strThumb))
+    if (CGUIDialogFileBrowser::ShowAndGetImage(*g_settings.GetSharesFromType("files"),g_localizeStrings.Get(20065),strThumb))
     {
       m_bNeedSave = true;
       CGUIImage *pImage = (CGUIImage*)GetControl(2);
