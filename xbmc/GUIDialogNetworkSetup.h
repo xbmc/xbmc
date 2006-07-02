@@ -8,7 +8,8 @@ public:
   enum NET_PROTOCOL { NET_PROTOCOL_SMB = 0,
                       NET_PROTOCOL_XBMSP,
                       NET_PROTOCOL_FTP,
-                      NET_PROTOCOL_DAAP };
+                      NET_PROTOCOL_DAAP,
+                      NET_PROTOCOL_UPNP };
   CGUIDialogNetworkSetup(void);
   virtual ~CGUIDialogNetworkSetup(void);
   virtual bool OnMessage(CGUIMessage& message);

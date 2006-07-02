@@ -97,6 +97,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   pSpin->AddLabel(CStdString("XBMSP Server"), NET_PROTOCOL_XBMSP);
   pSpin->AddLabel(CStdString("FTP Server"), NET_PROTOCOL_FTP);
   pSpin->AddLabel(CStdString("ITunes music share (DAAP)"), NET_PROTOCOL_DAAP);
+  pSpin->AddLabel(CStdString("UPNP Server"), NET_PROTOCOL_UPNP);
 
   pSpin->SetValue(m_protocol);
   OnProtocolChange();
@@ -127,7 +128,7 @@ void CGUIDialogNetworkSetup::OnServerBrowse()
 
 void CGUIDialogNetworkSetup::OnServerAddress()
 {
-  if (m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_DAAP)
+  if (m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_DAAP || m_protocol == NET_PROTOCOL_UPNP)
     CGUIDialogNumeric::ShowAndGetIPAddress(m_server, g_localizeStrings.Get(1016));
   else
     CGUIDialogKeyboard::ShowAndGetInput(m_server, g_localizeStrings.Get(1016), false);
@@ -183,6 +184,8 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "1400";
   else if (m_protocol == NET_PROTOCOL_DAAP)
     m_port = "3689";
+  else if (m_protocol == NET_PROTOCOL_UPNP)
+    m_port = "1901";
 
   UpdateButtons();
 }
@@ -233,14 +236,14 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   CGUIButtonControl *port = (CGUIButtonControl *)GetControl(CONTROL_PORT_NUMBER);
   if (port)
   {
-    port->SetEnabled(m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_FTP);
+    port->SetEnabled(m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_UPNP);
     port->SetLabel2(m_port);
   }
   // username
   CGUIButtonControl *username = (CGUIButtonControl *)GetControl(CONTROL_USERNAME);
   if (username)
   {
-    username->SetEnabled(m_protocol != NET_PROTOCOL_DAAP);
+    username->SetEnabled(m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP);
     username->SetLabel2(m_username);
   }
   
@@ -251,7 +254,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
     CStdString asterix;
     asterix.append(m_password.size(), '*');
     password->SetLabel2(asterix);
-    password->SetEnabled(m_protocol != NET_PROTOCOL_DAAP);
+    password->SetEnabled(m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP);
   }
 }
 
@@ -266,6 +269,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     path = "ftp://";
   else if (m_protocol == NET_PROTOCOL_DAAP)
     path = "daap://";
+  else if (m_protocol == NET_PROTOCOL_UPNP)
+    path = "upnp://";
   if (!m_username.IsEmpty())
   {
     path += m_username;
@@ -279,7 +284,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   path += m_server;
   if ((m_protocol == NET_PROTOCOL_FTP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
    || (m_protocol == NET_PROTOCOL_XBMSP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
-   || (m_protocol == NET_PROTOCOL_DAAP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty()))
+   || (m_protocol == NET_PROTOCOL_DAAP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
+   || (m_protocol == NET_PROTOCOL_UPNP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty()))
   {
     path += ":";
     path += m_port;
@@ -302,6 +308,8 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_FTP;
   else if (protocol == "daap")
     m_protocol = NET_PROTOCOL_DAAP;
+  else if (protocol == "upnp")
+    m_protocol = NET_PROTOCOL_UPNP;
   else
     m_protocol = NET_PROTOCOL_SMB;  // default to smb
   m_username = url.GetUserName();
