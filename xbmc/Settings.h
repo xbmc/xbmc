@@ -218,6 +218,7 @@ public:
 
   CStdString GetSkinString(const CStdString &setting) const;
   void SetSkinString(const CStdString &setting, const CStdString &label);
+  bool GetSkinSetting(const CStdString &setting, const CStdString& strCompare) const;
   bool GetSkinSetting(const CStdString &setting) const;
   void SetSkinSetting(const CStdString &setting, bool set);
   void ResetSkinSetting(const CStdString &setting);
@@ -456,6 +457,7 @@ public:
   CStdString GetXLinkKaiThumbFolder() const;
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
+  CStdString GetSkinFolder() const;
 
   CStdString GetSettingsFile() const;
 
