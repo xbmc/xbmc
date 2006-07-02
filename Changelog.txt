@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-07-2006 fixed: filenames with an @ signed in them in the root of dvd/cd's would refuse to play
  - 01-07-2006 added: two new python functions:
                      xbmc.playSFX(filename) -- Plays a wav file by filename
                      xbmc.enableNavSounds(yesNo) -- Enables/Disables (True/False) nav sounds
