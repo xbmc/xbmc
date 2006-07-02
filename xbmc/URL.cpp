@@ -103,46 +103,47 @@ CURL::CURL(const CStdString& strURL)
     }
   }
 
-  // check for username/password - should occur before first /
-  // unless it is after a :
+  // check for username/password - should occur before first /  
   if (iPos == -1) iPos = 0;
-  int iAlphaSign = strURL.Find("@", iPos);
   int iSlash = strURL.Find("/", iPos);
-  int iColon = strURL.Find(":", iPos);
 
-  if (iAlphaSign >= 0 && (iAlphaSign < iSlash || iSlash < 0 || (iAlphaSign > iColon && iColon > 0)))
-  {
-    // username/password found
-    CStdString strUserNamePassword = strURL.Mid(iPos, iAlphaSign - iPos);
-
-    // first extract domain, if protocol is smb
-    if (m_strProtocol.Equals("smb"))
+  if( !m_strProtocol.Equals("iso9669") )
+  {    
+    int iAlphaSign = strURL.Find("@", iPos);
+    if (iAlphaSign >= 0 && (iAlphaSign < iSlash || iSlash < 0))
     {
-      int iSemiColon = strUserNamePassword.Find(";");
-      
-      if (iSemiColon >= 0)
+      // username/password found
+      CStdString strUserNamePassword = strURL.Mid(iPos, iAlphaSign - iPos);
+
+      // first extract domain, if protocol is smb
+      if (m_strProtocol.Equals("smb"))
       {
-        m_strDomain = strUserNamePassword.Left(iSemiColon);
-        strUserNamePassword.Delete(0, iSemiColon + 1);
+        int iSemiColon = strUserNamePassword.Find(";");
+        
+        if (iSemiColon >= 0)
+        {
+          m_strDomain = strUserNamePassword.Left(iSemiColon);
+          strUserNamePassword.Delete(0, iSemiColon + 1);
+        }
       }
-    }
 
-    // username:password
-    int iColon = strUserNamePassword.Find(":");
-    if (iColon >= 0)
-    {
-      m_strUserName = strUserNamePassword.Left(iColon);
-      iColon++;
-      m_strPassword = strUserNamePassword.Right(strUserNamePassword.size() - iColon);
-    }
-    // username
-    else
-    {
-      m_strUserName = strUserNamePassword;
-    }
+      // username:password
+      int iColon = strUserNamePassword.Find(":");
+      if (iColon >= 0)
+      {
+        m_strUserName = strUserNamePassword.Left(iColon);
+        iColon++;
+        m_strPassword = strUserNamePassword.Right(strUserNamePassword.size() - iColon);
+      }
+      // username
+      else
+      {
+        m_strUserName = strUserNamePassword;
+      }
 
-    iPos = iAlphaSign + 1;
-    iSlash = strURL.Find("/", iAlphaSign);
+      iPos = iAlphaSign + 1;
+      iSlash = strURL.Find("/", iAlphaSign);
+    }
   }
 
   // detect hostname:port/
@@ -192,7 +193,9 @@ CURL::CURL(const CStdString& strURL)
   }
 
   // iso9960 doesnt have an hostname;-)
-  if (m_strProtocol.CompareNoCase("iso9660") == 0 || m_strProtocol.CompareNoCase("musicdb") == 0 || m_strProtocol.CompareNoCase("lastfm") == 0)
+  if (m_strProtocol.CompareNoCase("iso9660") == 0 
+    || m_strProtocol.CompareNoCase("musicdb") == 0 
+    || m_strProtocol.CompareNoCase("lastfm") == 0)
   {
     if (m_strHostName != "" && m_strFileName != "")
     {
@@ -216,7 +219,7 @@ CURL::CURL(const CStdString& strURL)
     m_strOptions = m_strFileName.Mid(iOptions+1);
     m_strFileName = m_strFileName.Left(iOptions);
   }
-  
+
   m_strFileName.Replace("\\", "/");
 
   /* update extension */
