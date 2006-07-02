@@ -371,7 +371,7 @@ namespace PYXBMC
 	  PlayList_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
 	  PlayList_Type.tp_doc = playlist__doc__;
 	  PlayList_Type.tp_methods = PlayList_methods;
-	  PlayList_Type.tp_base = 0;
+    PlayList_Type.tp_as_mapping = &Playlist_as_mapping;
 	  PlayList_Type.tp_new = PlayList_New;
 	}
 }
