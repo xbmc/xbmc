@@ -404,6 +404,11 @@ void CDVDPlayerAudio::Process()
       break;
     }
 
+#ifdef PROFILE /* during profiling we just drop all packets, after having decoded */
+  m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock, 0);
+  continue;
+#endif
+
     if( result & DECODE_FLAG_DROP )
     {
       //frame should be dropped. Don't let audio move ahead of the current time thou

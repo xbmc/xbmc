@@ -698,6 +698,10 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     if( m_speed > DVD_PLAYSPEED_NORMAL )
       iSleepTime = iSleepTime * DVD_PLAYSPEED_NORMAL / m_speed;
 
+#ifdef PROFILE /* during profiling, try to play as fast as possible */
+    iSleepTime = 0;
+#endif
+
     // present the current pts of this frame to user, and include the actual
     // presentation delay, to allow him to adjust for it
     m_iCurrentPts = pts - (iSleepTime > 0 ? iSleepTime : 0) - 5000 + m_PresentThread.GetDelay();
