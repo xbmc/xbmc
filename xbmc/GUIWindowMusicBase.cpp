@@ -332,11 +332,11 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     if (m_musicdatabase.GetAlbumsByPath(strPath, albums))
     {
       if (albums.size() == 1)
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
           bSaveDirThumb = true;
     }
 
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
       bSaveDb=true;
   }
   else if (pItem->m_musicInfoTag.Loaded())
@@ -349,10 +349,10 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     if (m_musicdatabase.GetAlbumsByPath(strPath, albums))
     {
       if (albums.size() == 1)
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
           bSaveDirThumb = true;
 
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
         bSaveDb = true;
     }
     else if (!pItem->m_bIsFolder) // handle files
@@ -375,7 +375,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       {
         //CStdString strAlbum = *albums.begin();
         //strLabel = strAlbum;
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
           bSaveDirThumb = true;
       }
     }
@@ -388,7 +388,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       CAlbum& album = albums[0];
       strAlbumName = album.strAlbum;
       strArtistName = album.strArtist;
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
         bSaveDirThumb = true;
     }
     else
@@ -428,7 +428,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       }
     }
 
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
       bSaveDb = true;
   }
   else if (pItem->m_bIsFolder)
@@ -460,7 +460,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     {
       if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
       strAlbumName = pItem->GetLabel();
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
         bSaveDirThumb = true;
     }
 
@@ -470,7 +470,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
       CAlbum album = *setAlbums.begin();
       strAlbumName = album.strAlbum;
       strArtistName = album.strArtist;
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
         bSaveDirThumb = true;
     }
 
@@ -619,7 +619,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
     return;
   }
 
-  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
     return;
 
   // find album info
@@ -1238,7 +1238,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     if (!m_vecItems[iItem]->IsPlayList())
       btn_Info = pMenu->AddButton(13351);
 
-    if (!m_vecItems[iItem]->IsPlayList() && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+    if (!m_vecItems[iItem]->IsPlayList() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       btn_InfoAll = pMenu->AddButton(20059);
   }
   
@@ -1252,7 +1252,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   }
   else
   {
-    if (!m_vecItems.IsInternetStream() && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+    if (!m_vecItems.IsInternetStream() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       btn_Scan = pMenu->AddButton(13352);         // Scan Folder to Database
   }
 
@@ -1273,7 +1273,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 
   // enable CDDB lookup if the current dir is CDDA
   int btn_CDDB   = 0; // CDDB lookup
-  if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA() && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+  if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
     btn_CDDB = pMenu->AddButton(16002);
 
   int btn_Delete = 0; // Delete
