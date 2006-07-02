@@ -710,7 +710,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
         g_charsetConverter.utf8ToUTF16(utf8Sub, subtitleText);
         m_subtitleFont->GetTextExtent(subtitleText.c_str(), &w, &h);
       }
-      float x = (float) (g_settings.m_ResInfo[res].iWidth) / 2;
+      float x = (float) maxWidth / 2 + g_settings.m_ResInfo[res].Overscan.left;
       float y = (float) g_settings.m_ResInfo[res].iSubtitles - h;
 
       float outlinewidth = 3;
