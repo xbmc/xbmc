@@ -200,7 +200,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     int btn_setThumb=0;
     int btn_RemoveThumb=0;
     int btn_ClearDefault=0;
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
     {
       btn_EditPath = pMenu->AddButton(1027); // Edit Source
       btn_Default = pMenu->AddButton(13335); // Set as Default
@@ -243,7 +243,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 
     if (LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
     {
-      if (share->m_iHasLock == 0 && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
+      if (share->m_iHasLock == 0 && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser))
         btn_LockShare = pMenu->AddButton(12332);
       else if (share->m_iHasLock == 1)
       {
@@ -272,15 +272,28 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     {
       if (btn == btn_EditPath)
       {
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasSources())
+        {
+          if (!g_passwordManager.IsProfileLockUnlocked())
+            return false;
+        }
+        else
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
         
         return CGUIDialogMediaSource::ShowAndEditMediaSource(strType, *share);
       }
       else if (btn == btn_Delete)
       {
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasSources())
+        {
+          if (!g_passwordManager.IsProfileLockUnlocked())
+            return false;
+        }
+        else
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
+
         // prompt user if they want to really delete the bookmark
         if (CGUIDialogYesNo::ShowAndGetInput(bMyProgramsMenu ? 758 : 751, 0, 750, 0))
         {
@@ -298,14 +311,20 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_AddShare)
       {
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasSources())
+        {
+          if (!g_passwordManager.IsProfileLockUnlocked())
+            return false;
+        }
+        else
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
         
         return CGUIDialogMediaSource::ShowAndAddMediaSource(strType);
       }
       else if (btn == btn_Default)
       {
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasSources())
         {
           if (!g_passwordManager.IsProfileLockUnlocked())
             return false;
@@ -319,7 +338,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_ClearDefault)
       {
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources())
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasSources())
         {
           if (!g_passwordManager.IsProfileLockUnlocked())
             return false;
@@ -332,6 +351,15 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_setThumb)
       {
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasSources())
+        {
+          if (!g_passwordManager.IsProfileLockUnlocked())
+            return false;
+        }
+        else
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
+
         CStdString strThumb;
         VECSHARES shares;
         g_mediaManager.GetLocalDrives(shares);
@@ -349,6 +377,15 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_RemoveThumb)
       {
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasSources())
+        {
+          if (!g_passwordManager.IsProfileLockUnlocked())
+            return false;
+        }
+        else
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
+
         g_settings.UpdateBookmark(strType,share->strName,"thumbnail","");
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
         m_gWindowManager.SendThreadMessage(msg);        

@@ -14,9 +14,9 @@ public:
   int getLockMode() const { return _iLockMode; }
 
   bool hasDatabases() const { return _bDatabases; }
-  bool canWriteDatabases() const { if (!g_passwordManager.bMasterUser) return _bCanWrite; else return true; }
+  bool canWriteDatabases() const { return _bCanWrite; }
   bool hasSources() const { return _bSources; }
-  bool canWriteSources() const { if (!g_passwordManager.bMasterUser) return _bCanWriteSources; else return true; }
+  bool canWriteSources() const { return _bCanWriteSources; }
   bool settingsLocked() const { return _bLockSettings; }
   bool musicLocked() const { return _bLockMusic; }
   bool videoLocked() const { return _bLockVideo; }

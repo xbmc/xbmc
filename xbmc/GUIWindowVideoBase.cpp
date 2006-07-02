@@ -294,7 +294,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
     // quietly return if Internet lookups are disabled
     if (!g_guiSettings.GetBool("network.enableinternet")) return ;
 
-    if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+    if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser )
       return;
 
     m_database.DeleteMovieInfo(item->m_strPath);
@@ -302,7 +302,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
 
   // quietly return if Internet lookups are disabled
   if (!g_guiSettings.GetBool("network.enableinternet")) return ;
-  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
     return;
 
   CIMDBUrl url;
@@ -408,7 +408,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
         OutputDebugString("show info\n");
 
         // Add to the database if applicable
-        if (item->m_strPath && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        if (item->m_strPath && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
           m_database.SetMovieInfo(item->m_strPath, movieDetails);
 
         pDlgInfo->SetMovie(movieDetails, item);
@@ -713,13 +713,13 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       btn_Resume = pMenu->AddButton(13381);     // Resume Video
 
     // turn off the query info button if we are in playlists view
-    if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES) && !(GetID() == WINDOW_VIDEO_FILES && !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases()))
+    if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES) && !(GetID() == WINDOW_VIDEO_FILES && !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser))
       btn_Show_Info = pMenu->AddButton(13346);
   }
 
   // hide scan button unless we're in files window
   int btn_Query = 0;
-  if (GetID() == WINDOW_VIDEO_FILES && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+  if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
     btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
 
   int btn_Mark_UnWatched = 0;
@@ -727,7 +727,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Update_Title   = 0;
   //if (GetID() == WINDOW_VIDEO_TITLE || GetID() == WINDOW_VIDEO_GENRE || GetID() == WINDOW_VIDEO_ACTOR || GetID() == WINDOW_VIDEO_YEAR)
   // is the item a database movie?
-  if (GetID() != WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty() && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+  if (GetID() != WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
   {
     // uses Loaded to hold Watched/UnWatched status
     if (m_vecItems[iItem]->m_musicInfoTag.Loaded())
@@ -751,7 +751,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     }
     */
 
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
       btn_Update_Title = pMenu->AddButton(16105); //Edit Title
   }
 
@@ -780,7 +780,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
         }
       }
     }
-    if (GetID() == WINDOW_VIDEO_TITLE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+    if (GetID() == WINDOW_VIDEO_TITLE && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       btn_Delete = pMenu->AddButton(646);
   }
 

@@ -325,7 +325,7 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
 
   // user successfully entered mastercode
   UpdateMasterLockRetryCount(true);
-  if (g_guiSettings.GetBool("masterlock.automastermode"))
+  if (g_guiSettings.GetBool("masterlock.automastermode") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
   {
       UnlockBookmarks();
       bMasterUser = true;
