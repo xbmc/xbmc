@@ -288,7 +288,7 @@ void SqliteDataset::set_autorefresh(bool val){
 
 sqlite3* SqliteDataset::handle(){
   if (db != NULL){
-    return dynamic_cast<SqliteDatabase*>(db)->getHandle();
+    return static_cast<SqliteDatabase*>(db)->getHandle();
       }
   else return NULL;
 }
@@ -298,10 +298,8 @@ void SqliteDataset::make_query(StringList &_sql) {
 
  try {
 
-  if (autocommit) db->start_transaction();
-
-
   if (db == NULL) throw DbErrors("No Database Connection");
+  if (autocommit) db->start_transaction();
 
 
   for (list<string>::iterator i =_sql.begin(); i!=_sql.end(); i++) {
@@ -396,8 +394,7 @@ const void* SqliteDataset::getExecRes() {
 
 
 bool SqliteDataset::query(const char *query) {
-    if (db == NULL) throw DbErrors("Database is not Defined");
-    if(dynamic_cast<SqliteDatabase*>(db)->getHandle() == NULL) throw DbErrors("No Database Connection");
+    if(!handle()) throw DbErrors("No Database Connection");
     std::string qry = query;
     int fs = qry.find("select");
     int fS = qry.find("SELECT");
