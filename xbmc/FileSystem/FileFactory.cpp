@@ -39,6 +39,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 
   if (strProtocol.Equals("http") || strProtocol.Equals("https")) return new CFileCurl();
   else if (strProtocol.Equals("ftp") || strProtocol.Equals("ftpx")) return new CFileCurl();
+  else if (strProtocol.Equals("upnp")) return new CFileCurl();
   else if (strProtocol == "iso9660") return new CFileISO();
   else if (strProtocol == "smb") return new CFileSMB();
   else if (strProtocol == "xbms") return new CFileXBMSP();
