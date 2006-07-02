@@ -908,6 +908,10 @@ void CXBoxRenderer::FlipPage(bool bAsync)
 
     bool bSync = (m_iFieldSync != FS_NONE && mStatus.Field != D3DFIELD_PROGRESSIVE);
 
+#ifdef PROFILE
+  mRaster.InVBlank = 1;
+  bSync = false;
+#endif
 
     if( mRaster.InVBlank == 0 )
     {
