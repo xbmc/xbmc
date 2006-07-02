@@ -246,10 +246,11 @@ CStdString CGUIButtonControl::GetDescription() const
   return strLabel;
 }
 
-void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor)
+void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor, DWORD dwShadowColor)
 {
   m_label.font = g_fontManager.GetFont(strFont);
   m_label.textColor = dwTextColor;
+  m_label.shadowColor = dwShadowColor;
   SetLabel(strText);
 }
 
