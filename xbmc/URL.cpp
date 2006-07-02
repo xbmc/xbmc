@@ -107,7 +107,7 @@ CURL::CURL(const CStdString& strURL)
   if (iPos == -1) iPos = 0;
   int iSlash = strURL.Find("/", iPos);
 
-  if( !m_strProtocol.Equals("iso9669") )
+  if( !m_strProtocol.Equals("iso9660") )
   {    
     int iAlphaSign = strURL.Find("@", iPos);
     if (iAlphaSign >= 0 && (iAlphaSign < iSlash || iSlash < 0))
