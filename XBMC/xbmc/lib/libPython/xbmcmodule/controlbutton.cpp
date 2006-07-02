@@ -22,16 +22,17 @@ namespace PYXBMC
         PyObject *kwds )
 	{
 		static char *keywords[] = {	
-			"x", "y", "width", "height", "label",
-            "focusTexture", "noFocusTexture", 
-			"textXOffset", "textYOffset", "alignment",
-            "font", "textColor", "disabledColor", "angle", NULL };
+  		"x", "y", "width", "height", "label",
+      "focusTexture", "noFocusTexture", 
+		  "textXOffset", "textYOffset", "alignment",
+      "font", "textColor", "disabledColor", "angle", "shadowColor", NULL };
 		ControlButton *self;
     char* cFont = NULL;
     char* cTextureFocus = NULL;
 		char* cTextureNoFocus = NULL;
     char* cTextColor = NULL;
     char* cDisabledColor = NULL;
+    char* cShadowColor = NULL;
 
 		PyObject* pObjectText;
 		
@@ -46,11 +47,12 @@ namespace PYXBMC
 		self->dwTextColor = 0xffffffff;
 		self->dwDisabledColor = 0x60ffffff;
     self->iAngle = 0;
+		self->dwShadowColor = NULL;
 
-		if (!PyArg_ParseTupleAndKeywords(
+    if (!PyArg_ParseTupleAndKeywords(
             args,
             kwds,
-            "llllO|sslllsssl",
+            "llllO|sslllsssls",
             keywords,
             &self->dwPosX,
             &self->dwPosY,
@@ -65,7 +67,8 @@ namespace PYXBMC
             &cFont,
             &cTextColor,
             &cDisabledColor, 
-            &self->iAngle))
+            &self->iAngle,
+            &cShadowColor)) 
         {
             Py_DECREF( self );
             return NULL;
@@ -88,10 +91,8 @@ namespace PYXBMC
 
         if (cFont) self->strFont = cFont;
         if (cTextColor) sscanf( cTextColor, "%x", &self->dwTextColor );
-        if (cDisabledColor)
-        {
-            sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-        }
+        if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
+        if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
 		return (PyObject*)self;
 	}
 
@@ -106,6 +107,7 @@ namespace PYXBMC
     label.font = g_fontManager.GetFont(pControl->strFont);
     label.textColor = pControl->dwTextColor;
     label.disabledColor = pControl->dwDisabledColor;
+    label.shadowColor = pControl->dwShadowColor;
     label.align = pControl->dwAlign;
     label.offsetX = pControl->dwTextXOffset;
     label.offsetY = pControl->dwTextYOffset;
@@ -161,30 +163,33 @@ namespace PYXBMC
 
   // setLabel() Method
 	PyDoc_STRVAR(setLabel__doc__,
-		"setLabel(label[, font, textColor, disabledColor]) -- Set's this buttons text attributes.\n"
+		"setLabel(label[, font, textColor, disabledColor, shadowColor]) -- Set's this buttons text attributes.\n"
 		"\n"
 		"label          : string or unicode - text string.\n"
     "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
     "textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')\n"
     "disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n"
+    "shadowColor    : [opt] hexstring - color of button's label's shadow. (e.g. '0xFF000000')\n"
 		"\n"
 		"example:\n"
-		"  - self.button.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300')\n");
+		"  - self.button.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300', '0xFF000000')\n");
 
 	PyObject* ControlButton_SetLabel(ControlButton *self, PyObject *args)
 	{
 		PyObject *pObjectText;
 		char *cFont = NULL;
 		char *cTextColor = NULL;
-		char* cDisabledColor = NULL;
+		char *cDisabledColor = NULL;
+		char *cShadowColor = NULL;
 
 		if (!PyArg_ParseTuple(
                 args,
-                "O|sss",
+                "O|ssss",
                 &pObjectText,
                 &cFont,
                 &cTextColor,
-                &cDisabledColor))
+                &cDisabledColor,
+                &cShadowColor))
         {
             return NULL;
         }
@@ -193,18 +198,16 @@ namespace PYXBMC
             return NULL;
         }
 
-        if (cFont) self->strFont = cFont;
-		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-        if (cDisabledColor)
-        {
-            sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-        }
+    if (cFont) self->strFont = cFont;
+  	if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
+    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
+	  if (cShadowColor) sscanf(cShadowColor, "%x", &self->dwShadowColor);
 
 		PyGUILock();
 		if (self->pGUIControl)
         {
 			((CGUIButtonControl*)self->pGUIControl)->PythonSetLabel(
-                self->strFont, self->strText, self->dwTextColor );
+                self->strFont, self->strText, self->dwTextColor, self->dwShadowColor );
 			((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(
                 self->dwDisabledColor );
         }
@@ -224,8 +227,8 @@ namespace PYXBMC
   PyDoc_STRVAR(controlButton__doc__,
 		"ControlButton class.\n"
 		"\n"
-		"ControlButton(x, y, width, height, label[, focusTexture, noFocusTexture, \n"
-    "              textXOffset, textYOffset, alignment, font, textColor, disabledColor, angle])\n"
+		"ControlButton(x, y, width, height, label[, focusTexture, noFocusTexture, textXOffset,\n"
+    "              textYOffset, alignment, font, textColor, disabledColor, angle])\n"
 		"\n"
     "x              : integer - x coordinate of control.\n"
     "y              : integer - y coordinate of control.\n"
@@ -240,7 +243,8 @@ namespace PYXBMC
     "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
     "textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')\n"
     "disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n"
-    "angle          : [opt] integer - angle of control. (+ rotates CCW, - rotates CW)"
+    "angle          : [opt] integer - angle of control. (+ rotates CCW, - rotates CW)\n"
+    "shadowColor    : [opt] hexstring - color of button's label's shadow. (e.g. '0xFF000000')\n"
 		"\n"
 		"*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"

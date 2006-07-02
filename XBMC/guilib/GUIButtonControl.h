@@ -52,7 +52,7 @@ public:
   void Flicker(bool bFlicker = TRUE);
   virtual void Update();
   virtual CStdString GetDescription() const;
-  void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor);
+  void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor, DWORD dwShadowColor);
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
   void RAMSetTextColor(DWORD dwTextColor);
