@@ -1566,12 +1566,10 @@ bool CSettings::LoadProfile(int index)
     {
       TiXmlDocument doc;
       if (doc.LoadFile(GetUserDataFolder()+"\\guisettings.xml"))
-      {
         g_guiSettings.LoadMasterLock(doc.RootElement());
-      }
     }
+    SaveProfiles("q:\\system\\profiles.xml"); // to set last loaded
     g_passwordManager.bMasterUser = bOldMaster;
-    SaveProfiles("q:\\system\\profiles.xml");
     return true;
   }
 
@@ -2354,8 +2352,12 @@ void CSettings::ResetSkinSetting(const CStdString &setting)
   if (it2 != m_skinSettings.end())
     (*it2).second = false;
 }
-
 bool CSettings::GetSkinSetting(const CStdString &setting) const
+{
+  return GetSkinSetting(setting,__strEmpty__);
+}
+
+bool CSettings::GetSkinSetting(const CStdString &setting, const CStdString& strCompare) const
 {
   std::map<CStdString, bool>::const_iterator it = m_skinSettings.find(setting);
   if (it != m_skinSettings.end())
@@ -2366,7 +2368,13 @@ bool CSettings::GetSkinSetting(const CStdString &setting) const
   std::map<CStdString, CStdString>::const_iterator it2 = m_skinStrings.find(setting);
   if (it2 != m_skinStrings.end())
   {
-    return !(*it2).second.IsEmpty();
+    if (!strCompare.IsEmpty())
+    {
+      CStdString strComp = it2->second;
+      return strComp.Equals(strCompare);
+    }
+    else
+      return !(*it2).second.IsEmpty();
   }
   return false;
 }
@@ -2610,6 +2618,16 @@ CStdString CSettings::GetSourcesFile() const
     CUtil::AddFileToFolder(GetProfileUserDataFolder(),"sources.xml",folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(),"sources.xml",folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetSkinFolder() const
+{
+  CStdString folder;
+
+  // Get the Current Skin Path 
+  CUtil::AddFileToFolder("Q:\\skin\\",g_guiSettings.GetString("lookandfeel.skin"),folder);
 
   return folder;
 }
