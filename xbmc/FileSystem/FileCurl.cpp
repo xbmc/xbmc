@@ -295,7 +295,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   bool isstream = false;
   if( url2.GetProtocol().Equals("ftpx") )
     url2.SetProtocol("ftp");
-  else if( url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") )
+  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp"))
     url2.SetProtocol("http");
   
   if( url2.GetProtocol().Equals("ftp") )
@@ -482,7 +482,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURL url2(url);
   if( url2.GetProtocol().Equals("ftpx") )
     url2.SetProtocol("ftp");
-  else if( url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") )
+  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp"))
     url2.SetProtocol("http");
   
   /* ditch options as it's not supported on ftp */

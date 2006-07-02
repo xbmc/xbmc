@@ -438,10 +438,16 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     // false.  Else, we assume we can get the previous directory
     if (strDirectory.Equals(strOldDirectory))
       return false;
-    return !Update(strOldDirectory); // We assume, we can get the parent 
-  }                                  // directory again, but we have to 
-                                     // return false to be able to eg. show 
-                                     // an error message.
+
+    // We assume, we can get the parent 
+    // directory again, but we have to 
+    // return false to be able to eg. show 
+    // an error message.    
+    CStdString strParentPath = m_history.GetParentPath();
+    m_history.RemoveParentPath();
+    Update(strParentPath);
+    return false;
+  } 
 
   // if we're getting the root bookmark listing
   // make sure the path history is clean
