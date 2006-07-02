@@ -279,21 +279,19 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
     return ;
   }
   bool NeedReset = false;
-  if (m_bFullScreenVideo)
+
+  UINT interval = D3DPRESENT_INTERVAL_ONE;  
+  if( m_bFullScreenVideo )
+    interval = D3DPRESENT_INTERVAL_IMMEDIATE;
+
+#ifdef PROFILE
+  interval = D3DPRESENT_INTERVAL_IMMEDIATE;
+#endif
+ 
+  if (interval != m_pd3dParams->FullScreen_PresentationInterval)
   {
-    if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_IMMEDIATE )
-    {
-      m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-      NeedReset = true;
-    }
-  }
-  else
-  {
-    if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_ONE)
-    {
-      m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-      NeedReset = true;
-    }
+    m_pd3dParams->FullScreen_PresentationInterval = interval;
+    NeedReset = true;
   }
 
 

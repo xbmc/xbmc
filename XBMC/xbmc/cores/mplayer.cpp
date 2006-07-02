@@ -282,6 +282,11 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   m_vecOptions.erase(m_vecOptions.begin(), m_vecOptions.end());
   m_vecOptions.push_back("xbmc.exe");
 
+#ifdef PROFILE
+  m_vecOptions.push_back("-benchmark");
+  m_vecOptions.push_back("-nosound");
+#endif
+
   // enable direct rendering (mplayer directly draws on xbmc's overlay texture)
   m_vecOptions.push_back("-dr");
   if (m_strHexRawAudioFormat.length() > 0)
