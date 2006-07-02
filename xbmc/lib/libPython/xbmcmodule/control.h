@@ -114,10 +114,11 @@ namespace PYXBMC
 		string strTextureNoFocus;
 		DWORD dwTextColor;
 		DWORD dwDisabledColor;
-        DWORD dwTextXOffset;
-        DWORD dwTextYOffset;
-        DWORD dwAlign;
-        int iAngle;
+    DWORD dwTextXOffset;
+    DWORD dwTextYOffset;
+    DWORD dwAlign;
+    int iAngle;
+		DWORD dwShadowColor;
   } ControlButton;
 
 	typedef struct {
