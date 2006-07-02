@@ -19,6 +19,7 @@
 #include "MusicDatabaseDirectory.h"
 #include "StackDirectory.h"
 #include "PlaylistDirectory.h"
+#include "UPnPDirectory.h"
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
@@ -44,6 +45,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "rtv") return new CRTVDirectory();
   if (strProtocol == "soundtrack") return new CSndtrkDirectory();
   if (strProtocol == "daap") return new CDAAPDirectory();
+  if (strProtocol == "upnp") return new CUPnPDirectory();
   if (strProtocol == "shout") return new CShoutcastDirectory();
   if (strProtocol == "lastfm") return new CLastFMDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
