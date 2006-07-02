@@ -109,11 +109,10 @@
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
 
-#define USE_RELEASE_LIBS
+//#define USE_RELEASE_LIBS
 
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
-#pragma comment (lib,"xbmc/lib/libUPnP/libPlatinum.lib")
 
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
@@ -132,6 +131,7 @@
  #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib")
+ #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinumd.lib")
 #else
  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
  #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
@@ -149,6 +149,7 @@
  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
+ #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinum.lib")
 #endif
 
 #define MAX_FFWD_SPEED 5
