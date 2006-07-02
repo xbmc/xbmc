@@ -76,6 +76,7 @@
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/XBFileZilla.pch"
 				AssemblerListingLocation=".\Debug/"
