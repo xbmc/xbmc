@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-07-2006 added: shadowColor to the ControlButton in Python.
+                     - If you want a label with a shadow, use the button without textures :)
  - 02-07-2006 fixed: subtitles where centered according to overscan corrections
  - 02-07-2006 fixed: filenames with an @ signed in them in the root of dvd/cd's would refuse to play
  - 01-07-2006 added: two new python functions:
