@@ -72,7 +72,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       strData.TrimRight("\r");
     }
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(PROFILE)
     OutputDebugString(strData.c_str());
     OutputDebugString("\n");
 #endif
@@ -85,7 +85,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     fwrite(strData.c_str(), strData.size(), 1, fd);
     fflush(fd);
   }
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(PROFILE)
   else
   {
     // In debug mode dump everything to devstudio regardless of level
