@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-07-2006 fixed: navigation could get stuck in media windows if a server disappeared. also, this incidentially adds upnp support! thx a bunch to c0diq, see http://www.plutinosoft.com/blog/category/blahblah/120 
  - 02-07-2006 added: shadowColor to the ControlButton in Python.
                      - If you want a label with a shadow, use the button without textures :)
  - 02-07-2006 fixed: subtitles where centered according to overscan corrections
