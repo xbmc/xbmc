@@ -113,6 +113,7 @@
 
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
+#pragma comment (lib,"xbmc/lib/libUPnP/libPlatinum.lib")
 
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
@@ -145,7 +146,6 @@
  #pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")   // SECTIONNAME=SID_RW,SID_RX
  #pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX*/
  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
- #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinum.lib")
  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
