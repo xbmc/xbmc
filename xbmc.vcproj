@@ -102,7 +102,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib dsound.lib dmusici.lib xactengi.lib xsndtrk.lib xvoice.lib xonline.lib xboxkrnl.lib xbdm.lib xperf.lib xkbd.lib"
+				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8i.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib xkbd.lib xvoice.lib xbdm.lib xperf.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc"
@@ -125,7 +125,7 @@
 				RemotePath="xe:\xbmc\profile.xbe"/>
 			<Tool
 				Name="XboxImageTool"
-				StackSize="65536"
+				StackSize="0x80000"
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
@@ -164,10 +164,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib dsound.lib dmusici.lib xactengi.lib xsndtrk.lib xvoice.lib xonline.lib xboxkrnl.lib xbdm.lib xperf.lib xkbd.lib"
+				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8i.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib xkbd.lib xvoice.lib xbdm.lib xperf.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="LIBCMTd;libc;libcpmtd"
+				IgnoreDefaultLibraryNames="libc"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
