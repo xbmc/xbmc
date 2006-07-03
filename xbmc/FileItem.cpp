@@ -1870,9 +1870,16 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   if (m_bIsFolder && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
     CStdString folderThumb;
-    CUtil::AddFileToFolder(m_strPath, "folder.jpg", folderThumb);
-    if (CFile::Exists(folderThumb))
-      return folderThumb;
+    CStdStringArray thumbs;
+    StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);
+    for (unsigned int i = 0; i < thumbs.size(); ++i)
+    {
+      CUtil::AddFileToFolder(m_strPath, thumbs[i], folderThumb);
+      if (CFile::Exists(folderThumb))
+      {
+        return folderThumb;
+      }
+    }
   }
   // No thumb found
   return "";
