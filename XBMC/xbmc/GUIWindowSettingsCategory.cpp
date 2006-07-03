@@ -2159,7 +2159,11 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
   pControl->Clear();
   // Find the valid resolutions and add them as necessary
   vector<RESOLUTION> res;
-  g_graphicsContext.GetAllowedResolutions(res);
+  g_graphicsContext.GetAllowedResolutions(res, false);
+
+  /* add the virtual resolutions */
+  res.push_back(AUTORES);
+
   for (vector<RESOLUTION>::iterator it = res.begin(); it != res.end();it++)
   {
     RESOLUTION res = *it;

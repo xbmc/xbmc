@@ -223,8 +223,7 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
 void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllowPAL60)
 {
   bool bCanDoWidescreen = g_videoConfig.HasWidescreen();
-  res.clear();
-  res.push_back(AUTORES);
+  res.clear();  
   if (g_videoConfig.HasPAL())
   {
     res.push_back(PAL_4x3);
