@@ -79,7 +79,10 @@ VECSHARES& CGUIViewStateWindowPictures::GetShares()
 
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
-  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%I", "%F", ""));  // Titel, Size | Foldername, empty
+  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%I", "%F", ""));  // Titel, Size | Foldername, empty
+  else
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%I", "%F", ""));  // Titel, Size | Foldername, empty
   AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%K", "%J", "%F", "%J"));  // Titel, Date | Foldername, Date
   AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 507, LABEL_MASKS("%K", "%C", "%F", ""));  // Titel, Count | Foldername, empty
   AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%K", "%I", "%K", "%I"));  // Filename, Size | Foldername, Size
