@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-07-2006 changed: ignore "the" when sorting now applies to programs.
  - 03-07-2006 fixed: Fixed WMC not being detected right away
  - 03-07-2006 fixed: Removed need for SsdpProxy when only interested in WMC on the host
  - 03-07-2006 fixed: Removed browsing to upnp:// in NetworkSetup, now behaves like Daap
