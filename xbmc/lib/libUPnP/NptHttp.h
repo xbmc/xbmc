@@ -39,6 +39,8 @@ const int NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH = 2048;
 #define NPT_HTTP_HEADER_CONTENT_TYPE        "Content-Type"
 #define NPT_HTTP_HEADER_CONTENT_ENCODING    "Content-Encoding"
 #define NPT_HTTP_HEADER_LOCATION            "Location"
+#define NPT_HTTP_HEADER_RANGE               "Range"
+#define NPT_HTTP_HEADER_CONTENT_RANGE       "Content-Range"
 
 const int NPT_ERROR_HTTP_INVALID_RESPONSE_LINE = NPT_ERROR_BASE_HTTP - 0;
 const int NPT_ERROR_HTTP_INVALID_REQUEST_LINE  = NPT_ERROR_BASE_HTTP - 1;
