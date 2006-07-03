@@ -282,6 +282,7 @@ public:
 
     int m_sambaclienttimeout;
     CStdString m_sambadoscodepage;
+    CStdString m_musicThumbs;
   };
   struct stSettings
   {

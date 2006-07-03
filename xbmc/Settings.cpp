@@ -223,6 +223,8 @@ CSettings::CSettings(void)
   g_advancedSettings.m_playlistAsFolders = true;
   g_settings.bUseLoginScreen = false;
 
+  g_advancedSettings.m_musicThumbs = "folder.jpg";
+
   xbmcXmlLoaded = false;
   bTransaction = false;
 }
@@ -1288,6 +1290,29 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 128, 64, 512);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", g_advancedSettings.m_playlistAsFolders);
+
+ CStdString extraThumbs;
+  TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
+  if (pThumbs)
+  {
+    GetString(pThumbs, "add", extraThumbs,"");
+    if (extraThumbs != "")
+      g_advancedSettings.m_musicThumbs += "|" + extraThumbs;
+
+    GetString(pThumbs, "remove", extraThumbs, "");
+    if (extraThumbs != "")
+    {
+      CStdStringArray thumbs;
+      StringUtils::SplitString(extraThumbs, "|", thumbs);
+      for (unsigned int i = 0; i < thumbs.size(); ++i)
+      {
+        int iPos = g_advancedSettings.m_musicThumbs.Find(thumbs[i]);
+        if (iPos == -1)
+          continue;
+        g_advancedSettings.m_musicThumbs.erase(iPos, thumbs[i].size() + 1);
+      }
+    }    
+  }
 
   // temporary profiles support
   XMLUtils::GetBoolean(pRootElement,"profilesupport",g_advancedSettings.m_profilesupport);
