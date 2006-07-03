@@ -20,6 +20,7 @@ public:
     ~CUPnP();
 
     void Init();
+    bool IsInitted() { return m_Initted; }
 
     PLT_UPnP* m_UPnP;
     PLT_CtrlPointReference m_CtrlPoint;
