@@ -195,15 +195,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         //set our lookandfeelres to the resolution set in graphiccontext
         g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
       }
-      // Reload the skin.  Save the current focused control, and refocus it
-      // when done.
-      unsigned iCtrlID = GetFocusedControl();
-      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iCtrlID, 0, 0, NULL);
-      g_graphicsContext.SendMessage(msg);
-      g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-      SET_CONTROL_FOCUS(iCtrlID, 0);
-      CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, GetID(), iCtrlID, msg.GetParam1(), msg.GetParam2());
-      OnMessage(msgSelect);
     }
     break;
   case GUI_MSG_WINDOW_INIT:
