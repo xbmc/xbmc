@@ -127,7 +127,7 @@ void XBPython::Initialize()
 		{
 		  //DllLoader* pDll = g_sectionLoader.LoadDLL(PYTHON_DLL);
 		  m_hModule = dllLoadLibraryA(PYTHON_DLL);
-		  DllLoader* pDll = (DllLoader*)m_hModule;
+		  DllLoader* pDll = g_dlls.GetModule(m_hModule);
 		  if (!pDll || !python_load_dll(*pDll))
 		  {
 		    CLog::Log(LOGFATAL, "Python: error loading python24.dll");

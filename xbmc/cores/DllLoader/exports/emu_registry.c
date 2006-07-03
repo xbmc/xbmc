@@ -292,12 +292,25 @@ static void init_registry(void)
   // can't be free-ed - it's static and probably thread
   // unsafe structure which is stored in glibc
 
+  char corekey[] = "ABCD-ABCD-ABCD-ABCD-ABCD-ABCD-ABCD-ABCD";
+  char corename[] = "john doe";
+
+  reg_handle_t* handle;
+
+
   if( regpathname != NULL )
     localregpathname = regpathname;
 
   open_registry();
   insert_handle((long)HKEY_LOCAL_MACHINE, "HKLM");
   insert_handle((long)HKEY_CURRENT_USER, "HKCU");
+
+  handle = insert_handle(generate_handle(), "HKCU\\SOFTWARE");
+  handle = insert_handle(generate_handle(), "HKCU\\SOFTWARE\\Licenturion GmbH");
+  handle = insert_handle(generate_handle(), "HKCU\\SOFTWARE\\Licenturion GmbH\\0000032D");
+
+  insert_reg_value(handle->handle, "Product Key", REG_SZ, corekey, sizeof(corekey));
+  insert_reg_value(handle->handle, "User ID", REG_SZ, corename, sizeof(corename));
 }
 
 static reg_handle_t* find_handle_2(long key, const char* subkey)

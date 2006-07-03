@@ -41,6 +41,7 @@ public:
   int GetNrOfModules();
   DllLoader* GetModule(int iPos);
   DllLoader* GetModule(const char* sName);
+  DllLoader* GetModule(HMODULE hModule);
   
   DllLoader* LoadModule(const char* sName, const char* sCurrentDir=NULL, bool bLoadSymbols=false);
   void ReleaseModule(DllLoader*& pDll);

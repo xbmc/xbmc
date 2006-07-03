@@ -71,12 +71,11 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
     strcat(libname, ".dll");
     dll = g_dlls.LoadModule(libname, libpath);
   }
-
   
   if (dll)
   {
     CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: 0x%x", libname, dll);
-    return (HMODULE)dll;
+    return (HMODULE)dll->hModule;
   }
 
   CLog::Log(LOGERROR, "LoadLibrary('%s') failed", libname);
@@ -115,7 +114,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFil
 
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {
-  DllLoader* dllhandle = (DllLoader*)hLibModule;
+  DllLoader* dllhandle = g_dlls.GetModule(hLibModule);
   
   // to make sure systems dlls are never deleted
   if (dllhandle->IsSystemDll()) return 1;
@@ -134,7 +133,13 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
   __asm mov loc, eax;
   
   void* address = NULL;
-  DllLoader* dll = (DllLoader*)hModule;
+  DllLoader* dll = g_dlls.GetModule(hModule);
+
+  if( !dll )
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Invalid hModule specified");
+    return NULL;
+  }
 
   /* how can somebody get the stupid idea to create such a stupid function */
   /* where you never know if the given pointer is a pointer or a value */
@@ -200,15 +205,15 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
 
   //CLog::Log(LOGDEBUG, "GetModuleHandleA(%s) .. looking up", lpModuleName);
 
-  HMODULE h = g_dlls.GetModuleAddress(strModuleName);
-  if (h)
-  {
-    //CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') => 0x%x", lpModuleName, h);
-    return h;
-  }
- 
+  DllLoader *p = g_dlls.GetModule(strModuleName);
   delete []strModuleName;
 
+  if (p)
+  {
+    //CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') => 0x%x", lpModuleName, h);
+    return (HMODULE)p->hModule;
+  }
+   
   CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') failed", lpModuleName);
   return NULL;
 }
@@ -222,8 +227,15 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
               hModule, lpFilename, nSize, lpFilename);
     return 1;
   }
+  
+  DllLoader* dll = g_dlls.GetModule(hModule);
+  if( !dll )
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Invalid hModule specified");
+    return NULL;
+  }
 
-  char* sName = ((DllLoader*)hModule)->GetFileName();
+  char* sName = dll->GetFileName();
   if (sName)
   {
     strncpy(lpFilename, sName, nSize);
