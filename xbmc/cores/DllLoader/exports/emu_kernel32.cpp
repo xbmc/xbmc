@@ -681,13 +681,13 @@ extern "C" BOOL WINAPI dllTlsFree(DWORD dwTlsIndex)
 
 extern "C" BOOL WINAPI dllTlsSetValue(int dwTlsIndex, LPVOID lpTlsValue)
 {
-  //if ((int)lpTlsValue == 0x4d6f6f56) {
-  // __asm {
-  //  int 3;
-  // }
-  //}
-
   BOOL retval = TlsSetValue(dwTlsIndex, lpTlsValue);
+
+#if 0
+  /* this seem to be a way to emulate tlsget/set value on systems that doesn't have those */
+  /* however the 0x88 offset is taken from mplayer wich is compiled using gcc instead */
+  /* and i really don't know if it is correct */
+
   if (retval)
   {
     __asm {
@@ -697,6 +697,8 @@ extern "C" BOOL WINAPI dllTlsSetValue(int dwTlsIndex, LPVOID lpTlsValue)
       mov [eax + 0x88 + ecx*4], ebx
     }
   }
+#endif
+
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "KERNEL32!TlsSetValue(%d, 0x%x) => %d", dwTlsIndex, lpTlsValue, retval);
 #endif
@@ -706,6 +708,8 @@ extern "C" BOOL WINAPI dllTlsSetValue(int dwTlsIndex, LPVOID lpTlsValue)
 extern "C" LPVOID WINAPI dllTlsGetValue(DWORD dwTlsIndex)
 {
   LPVOID retval = TlsGetValue(dwTlsIndex);
+
+#if 0  
   if (retval)
   {
     __asm {
@@ -715,6 +719,7 @@ extern "C" LPVOID WINAPI dllTlsGetValue(DWORD dwTlsIndex)
       mov retval, eax
     }
   }
+#endif
 
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "KERNEL32!TlsGetValue(%d) => 0x%x", dwTlsIndex, retval);
@@ -822,13 +827,14 @@ extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine,
 
 typedef struct _SFlsSlot
 {
-  BOOL bInUse; 
+  LONG lInUse; 
   PVOID	pData;
   PFLS_CALLBACK_FUNCTION pCallback;
 }
 SFlsSlot, *LPSFlsSlot;
 
 #define FLS_NUM_SLOTS 5
+#define FLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
 SFlsSlot flsSlots[FLS_NUM_SLOTS] = { false, NULL, NULL };
 
 extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback)
@@ -837,17 +843,16 @@ extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback)
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "FlsAlloc(0x%x)\n", lpCallback);
 #endif
-  for (i = 0; i < FLS_NUM_SLOTS; i++) {
-    if (!flsSlots[i].bInUse) {
-      flsSlots[i].bInUse = true;
+  for (i = 0; i < FLS_NUM_SLOTS; i++) {    
+    if( InterlockedCompareExchange(&flsSlots[i].lInUse, 1, 0) == 0 ) {      
       flsSlots[i].pData = NULL;
       flsSlots[i].pCallback = lpCallback;
       return i;
     }
   }
-  SetLastError(ERROR_INVALID_PARAMETER); // should be FLS_OUT_OF_INDEXES
+  SetLastError(ERROR_INVALID_PARAMETER);
   CLog::Log(LOGERROR, " - Out of fls slots");
-  return ERROR_INVALID_PARAMETER; // "
+  return FLS_OUT_OF_INDEXES; // "
 }
 
 static LPSFlsSlot FlsGetSlot(DWORD dwFlsIndex)
@@ -856,7 +861,7 @@ static LPSFlsSlot FlsGetSlot(DWORD dwFlsIndex)
     SetLastError(ERROR_INVALID_PARAMETER);
     return NULL;
   }
-  if (!flsSlots[dwFlsIndex].bInUse) {
+  if (flsSlots[dwFlsIndex].lInUse != 1) {
     SetLastError(ERROR_INVALID_PARAMETER); // actually ERROR_NO_MEMORY would be correct
     return NULL;
   }
@@ -895,9 +900,9 @@ extern "C" BOOL WINAPI dllFlsFree(DWORD dwFlsIndex)
 
   if( slot->pCallback )
     slot->pCallback(slot->pData);
-
-  slot->bInUse = false;
+  
   slot->pData = NULL;  
+  slot->lInUse = 0;
 
   return true;
 }
@@ -912,6 +917,21 @@ extern "C" PVOID WINAPI dllDecodePointer(PVOID ptr)
 {
   return ptr;
 }
+
+
+extern "C" HANDLE WINAPI dllCreateFileA(
+    IN LPCSTR lpFileName,
+    IN DWORD dwDesiredAccess,
+    IN DWORD dwShareMode,
+    IN LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+    IN DWORD dwCreationDisposition,
+    IN DWORD dwFlagsAndAttributes,
+    IN HANDLE hTemplateFile
+    )
+{
+  return CreateFileA(lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+}
+
 
 /*
 

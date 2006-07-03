@@ -178,6 +178,11 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
 
   m_bUnloadSymbols=false;
   
+  /* system dll's are never loaded in any way, so let's just use the pointer */
+  /* to this object as their base address */
+  if (m_bSystemDll)
+    hModule = (HMODULE)this;
+
   if (stricmp(sDll, "Q:\\system\\python\\python24.dll")==0 ||
       strstr(sDll, ".pyd") != NULL)
   {
@@ -765,7 +770,7 @@ bool DllLoader::Load()
   /* since we are handing execution over to unknown code, safeguard here */
   try 
   {
-    (*initdll)((HINSTANCE)this, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
+    (*initdll)((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
 
 #ifdef LOGALL
     CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_ATTACH called - Dll: %s", sName);
@@ -793,7 +798,7 @@ void DllLoader::Unload()
 
     //call "DllMain" with DLL_PROCESS_DETACH
     EntryFunc* initdll = (EntryFunc *)EntryAddress;
-    (*initdll)((HINSTANCE)this, DLL_PROCESS_DETACH , 0);
+    (*initdll)((HINSTANCE)hModule, DLL_PROCESS_DETACH , 0);
 
 #ifdef LOGALL
   CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_DETACH called - Dll: %s", pDll->GetFileName());

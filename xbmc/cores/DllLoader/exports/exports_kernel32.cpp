@@ -64,7 +64,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("InterlockedCompareExchange", (unsigned long) InterlockedCompareExchange);
   g_dlls.kernel32.AddExport("GetVersionExA", (unsigned long) dllGetVersionExA);
   g_dlls.kernel32.AddExport("GetProfileIntA", (unsigned long) dllGetProfileIntA);
-  g_dlls.kernel32.AddExport("CreateFileA", (unsigned long) CreateFileA);
+  g_dlls.kernel32.AddExport("CreateFileA", (unsigned long) dllCreateFileA);
   g_dlls.kernel32.AddExport("DeviceIoControl", (unsigned long) DeviceIoControl);
   g_dlls.kernel32.AddExport("ReadFile", (unsigned long) ReadFile);
   g_dlls.kernel32.AddExport("dllDVDReadFile", (unsigned long) dllDVDReadFileLayerChangeHack);
