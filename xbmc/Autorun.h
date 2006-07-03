@@ -17,7 +17,6 @@ public:
   CAutorun();
   virtual ~CAutorun();
   static bool PlayDisc();
-  static bool PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot);
   void HandleAutorun();
   void Enable();
   void Disable();
@@ -28,7 +27,7 @@ protected:
   void RunXboxCd();
   void RunCdda();
   void RunISOMedia();
-  bool RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot);
+  static bool RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings = false);
   bool m_bEnable;
 };
 }
