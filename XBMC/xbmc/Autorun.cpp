@@ -187,7 +187,7 @@ void CAutorun::RunISOMedia()
     g_playlistPlayer.Play(nSize);
   }
 }
-bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot)
+bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings /* = false */)
 {
   bool bPlaying(false);
   CFileItemList vecItems;
@@ -210,7 +210,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       {
         if (bRoot && pItem->m_strPath.Find( "VIDEO_TS" ) != -1 )
         {
-          if ( g_guiSettings.GetBool("autorun.dvd") )
+          if ( bypassSettings || g_guiSettings.GetBool("autorun.dvd") )
           {
             if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked())
               if (!g_passwordManager.IsMasterLockUnlocked(true))
@@ -223,9 +223,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         }
         else if (bRoot && pItem->m_strPath.Find("MPEGAV") != -1 )
         {
-          if ( g_guiSettings.GetBool("autorun.vcd") )
+          if ( bypassSettings || g_guiSettings.GetBool("autorun.vcd") )
           {
-            if ( g_guiSettings.GetBool("autorun.dvd") )
+            if ( bypassSettings || g_guiSettings.GetBool("autorun.dvd") )
             {
               if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked())
                 if (!g_passwordManager.IsMasterLockUnlocked(true))
@@ -254,9 +254,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           }
           else if (bRoot && pItem->m_strPath.Find("MPEG2") != -1 )
           {
-            if ( g_guiSettings.GetBool("autorun.vcd") )
+            if ( bypassSettings || g_guiSettings.GetBool("autorun.vcd") )
             {
-              if ( g_guiSettings.GetBool("autorun.dvd") )
+              if ( bypassSettings || g_guiSettings.GetBool("autorun.dvd") )
               {
                 if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked())
                   if (!g_passwordManager.IsMasterLockUnlocked(true))
@@ -284,9 +284,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             }
             else if (bRoot && pItem->m_strPath.Find("PICTURES") != -1 )
             {
-              if (g_guiSettings.GetBool("autorun.pictures"))
+              if (bypassSettings || g_guiSettings.GetBool("autorun.pictures"))
               {
-                if ( g_guiSettings.GetBool("autorun.dvd") )
+                if ( bypassSettings || g_guiSettings.GetBool("autorun.dvd") )
                 {
                   if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].picturesLocked())
                     if (!g_passwordManager.IsMasterLockUnlocked(true))
@@ -302,7 +302,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           }
         }
         // check video first
-        if (!nAddedToPlaylist && !bPlaying && g_guiSettings.GetBool("autorun.video"))
+        if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video")))
         {
           // stack video files
           CFileItemList tempItems;
@@ -341,7 +341,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           }
         }
         // then music
-        if (!bPlaying && g_guiSettings.GetBool("autorun.music"))
+        if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.music")))
         {
           for (int i = 0; i < vecItems.Size(); i++)
           {
@@ -363,7 +363,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           }
         }
         // and finally pictures
-        if (!nAddedToPlaylist && !bPlaying && g_guiSettings.GetBool("autorun.pictures"))
+        if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.pictures")))
         {
           for (int i = 0; i < vecItems.Size(); i++)
           {
@@ -393,7 +393,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             {
               if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
               {
-                if (RunDisc(pDir, pItem->m_strPath, nAddedToPlaylist, false))
+                if (RunDisc(pDir, pItem->m_strPath, nAddedToPlaylist, false, bypassSettings))
                 {
                   bPlaying = true;
                   break;
@@ -491,7 +491,7 @@ bool CAutorun::PlayDisc()
     int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
     int nAddedToPlaylist = 0;
     auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
-    bool bPlaying = PlayRunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true);
+    bool bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, true);
     if ( !bPlaying && nAddedToPlaylist > 0 )
     {
       CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
@@ -502,183 +502,4 @@ bool CAutorun::PlayDisc()
     }
   }
   return true;
-}
-// GeminiServer: PlayRunDisc()
-// Will Play, if a disc is inserted! Has nothing todo with Autorun, therefore no autorun settings will be used!
-// Can be executed from the Context menu!
-bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot)
-{
-  bool bPlaying(false);
-  CFileItemList vecItems;
-  CFileItemList itemlist(vecItems);
-  char szSlash = '\\';
-  if (strDrive.Find("iso9660") != -1) szSlash = '/';
-
-  if ( !pDir->GetDirectory( strDrive, vecItems ) )
-  {
-    return false;
-  }
-  // check root...
-  for (int i = 0; i < vecItems.Size(); i++)
-  {
-    CFileItem* pItem = vecItems[i];
-    if (pItem->m_bIsFolder)
-    {
-      if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
-      {
-        if (bRoot && pItem->m_strPath.Find( "VIDEO_TS" ) != -1 )
-        {
-          if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked())
-            if (!g_passwordManager.IsMasterLockUnlocked(true))
-              return false;
-
-          CUtil::PlayDVD();
-          bPlaying = true;
-          break;
-        }
-        else if (bRoot && pItem->m_strPath.Find("MPEGAV") != -1 )
-        {
-          CFileItemList items;
-          CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
-          if (items.Size())
-          {
-            g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
-            items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-            for (int i=0; i<items.Size(); ++i)
-            {
-              if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked() && !bPlaying)
-                if (!g_passwordManager.IsMasterLockUnlocked(true))
-                  return false;
-
-              bPlaying = true;
-              CFileItem* pItem=items[i];
-              CPlayList::CPlayListItem playlistItem;
-              CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
-            }
-
-            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
-            g_playlistPlayer.Play(0);
-            bPlaying = true;
-          }
-          break;
-        }
-        else if (bRoot && pItem->m_strPath.Find("MPEG2") != -1 )
-        {
-          CFileItemList items;
-          CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
-          if (items.Size())
-          {
-            g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
-            items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-            for (int i=0; i<items.Size(); ++i)
-            {
-              if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked() && !bPlaying)
-                if (!g_passwordManager.IsMasterLockUnlocked(true))
-                  return false;
-
-              bPlaying = true;
-              CFileItem* pItem=items[i];
-              CPlayList::CPlayListItem playlistItem;
-              CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
-            }
-            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
-            g_playlistPlayer.Play(0);
-            bPlaying = true;
-          }
-          break;
-        }
-        else if (bRoot && pItem->m_strPath.Find("PICTURES") != -1 )
-        {
-          bPlaying = true;
-          CStdString strExec;
-          strExec.Format("XBMC.RecursiveSlideShow(%s)", pItem->m_strPath.c_str());
-          CUtil::ExecBuiltIn(strExec);
-          break;
-        }
-      }
-    }
-  }
-  // check video first
-  if (!nAddedToPlaylist && !bPlaying )
-  {
-    for (int i = 0; i < vecItems.Size(); i++)
-    {
-      CFileItem *pItem = vecItems[i];
-      if (!pItem->m_bIsFolder && pItem->IsVideo())
-      {
-        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked() && !bPlaying)
-          if (!g_passwordManager.IsMasterLockUnlocked(true))
-            return false;
-
-        bPlaying = true;
-        g_application.PlayFile( *pItem );
-        break;
-      }
-    }
-  }
-  // then music
-  if (!bPlaying )
-  {
-    for (int i = 0; i < vecItems.Size(); i++)
-    {
-      CFileItem *pItem = vecItems[i];
-      if (!pItem->m_bIsFolder && pItem->IsAudio())
-      {
-        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked() && !bPlaying)
-          if (!g_passwordManager.IsMasterLockUnlocked(true))
-            return false;
-
-        bPlaying = true;
-        nAddedToPlaylist++;
-        CPlayList::CPlayListItem playlistItem;
-        playlistItem.SetFileName(pItem->m_strPath);
-        playlistItem.SetDescription(pItem->GetLabel());
-        playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
-        g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
-      }
-    }
-  }
-  // and finally pictures
-  if (!nAddedToPlaylist && !bPlaying )
-  {
-    for (int i = 0; i < vecItems.Size(); i++)
-    {
-      CFileItem *pItem = vecItems[i];
-      if (!pItem->m_bIsFolder && pItem->IsPicture())
-      {
-        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].picturesLocked() && !bPlaying)
-          if (!g_passwordManager.IsMasterLockUnlocked(true))
-            return false;
-
-        bPlaying = true;
-        CStdString strExec;
-        strExec.Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
-        CUtil::ExecBuiltIn(strExec);
-        break;
-      }
-    }
-  }
-
-  // check subdirs
-  if (!bPlaying)
-  {
-    for (int i = 0; i < vecItems.Size(); i++)
-    {
-      CFileItem* pItem = vecItems[i];
-      if (pItem->m_bIsFolder)
-      {
-        if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
-        {
-          if (PlayRunDisc(pDir, pItem->m_strPath, nAddedToPlaylist, false))
-          {
-            bPlaying = true;
-            break;
-          }
-        }
-      }
-    }
-  }
-  return bPlaying;
 }
