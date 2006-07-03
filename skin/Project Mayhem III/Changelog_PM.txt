@@ -1,3 +1,5 @@
+2006-07-03 fixed:	Default Album image was shown even if no music was playing on the Movie Information screen.
+
 2006-06-30 changed:	visible condition for weather on homescreen from system.hasnetwork to weather.isfetched
 
 2006-06-27 fixed:	my pictures homescreen texture was there twice - wtf!?
