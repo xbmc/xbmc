@@ -41,13 +41,17 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   else 
     strcpy(libname, lib_file);  
 
+  if( libname[0] == '\0' )
+    return NULL;
+
   /* extract path */
   getpath(libpath, lib_file);
   
   CLog::Log(LOGDEBUG, "LoadLibraryA('%s')", libname);
   if (sourcedll)
   {
-    if( libpath[0] == '\0' )
+    /* also check for invalid paths wich begin with a \ */
+    if( libpath[0] == '\0' || libpath[0] == '\\' )
     {
       /* use calling dll's path as base address for this call */
       getpath(libpath, sourcedll);
@@ -62,16 +66,16 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   if( libpath[0] == '\0' )
     strcpy(libpath, DEFAULT_DLLPATH);
   
-  dll = g_dlls.LoadModule(libname, libpath);
-  
-  if (!dll)
-  {
-    /* we didn't find a library, check if we can find same library but with a .dll appended */
-    /* some linkers call without the .dll part */
+  /* msdn docs state */
+  /* "If no file name extension is specified in the lpFileName parameter, the default library extension .dll is appended.  */
+  /* However, the file name string can include a trailing point character (.) to indicate that the module name has no extension." */
+  if( strrchr(libname, '.') == NULL )
     strcat(libname, ".dll");
-    dll = g_dlls.LoadModule(libname, libpath);
-  }
-  
+  else if( libname[strlen(libname)-1] == '.' )
+    libname[strlen(libname)-1] = '\0';
+
+  dll = g_dlls.LoadModule(libname, libpath);
+    
   if (dll)
   {
     CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: 0x%x", libname, dll);
@@ -162,6 +166,11 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
 
       CLog::Log(LOGDEBUG, __FUNCTION__" - created dummy function %s!%s", dll->GetName(), ordinal);
     }
+    else
+    {
+      address = NULL;
+      CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), '%s') => 0x%x", hModule, dll->GetName(), function, address);
+    }
   }
   else
   {
@@ -169,6 +178,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
     {
       CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), '%s') => 0x%x", hModule, dll->GetName(), function, address);
     }
+#ifdef API_DEBUG /* apperently not a good idea to create dummy functions for missing functions */
     else if( dll->IsSystemDll() )
     {
       address = (void*)create_dummy_function(dll->GetName(), function);
@@ -179,6 +189,12 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
         tracker_dll_data_track(track->pDll, (unsigned long)address);
 
       CLog::Log(LOGDEBUG, __FUNCTION__" - created dummy function %s!%s", dll->GetName(), function);
+    }
+#endif
+    else
+    {      
+      address = NULL;
+      CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), '%s') => 0x%x", hModule, dll->GetName(), function, address);
     }
   }
   
