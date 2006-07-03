@@ -47,16 +47,7 @@ void CGUIMediaWindow::OnWindowLoaded()
   m_viewControl.AddView(VIEW_METHOD_LARGE_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.AddView(VIEW_METHOD_LARGE_LIST, GetControl(CONTROL_BIG_LIST));
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
-
-  // Setup shares and filemasks for this window
-  CFileItemList items;
-  CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
-  if (viewState)
-  {
-    m_rootDir.SetMask(viewState->GetExtensions());
-    m_rootDir.SetShares(viewState->GetShares());
-    delete viewState;
-  }
+  SetupShares();
 }
 
 void CGUIMediaWindow::OnWindowUnload()
@@ -779,6 +770,8 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
 // path given by strDirectory.
 void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
 {
+  // Make sure our shares are configured
+  SetupShares();
   if (!strDirectory.IsEmpty())
   {
     // Build the directory history for default path
@@ -920,4 +913,17 @@ CGUIControl *CGUIMediaWindow::GetFirstFocusableControl(int id)
   if (m_viewControl.HasControl(id))
     id = m_viewControl.GetCurrentControl();
   return CGUIWindow::GetFirstFocusableControl(id);
+}
+
+void CGUIMediaWindow::SetupShares()
+{
+  // Setup shares and filemasks for this window
+  CFileItemList items;
+  CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
+  if (viewState)
+  {
+    m_rootDir.SetMask(viewState->GetExtensions());
+    m_rootDir.SetShares(viewState->GetShares());
+    delete viewState;
+  }
 }
