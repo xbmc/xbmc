@@ -71,6 +71,7 @@ public:
     /* metadata */
     NPT_String m_Title;
     NPT_String m_Creator;
+    NPT_String m_Artist;
     NPT_String m_Album;
     NPT_String m_Genre;
 
