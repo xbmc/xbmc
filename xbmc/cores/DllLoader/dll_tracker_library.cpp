@@ -4,6 +4,7 @@
 #include "dll_tracker.h"
 #include "dll.h"
 #include "DllLoader.h"
+#include "DllLoaderContainer.h"
 
 extern "C" inline void tracker_library_track(unsigned long caller, HMODULE hHandle)
 {
@@ -38,7 +39,13 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
     CLog::DebugLog("%s: Detected %d unloaded dll's", pInfo->pDll->GetFileName(), pInfo->dllList.size());
     for (DllListIter it = pInfo->dllList.begin(); it != pInfo->dllList.end(); ++it)
     {
-      DllLoader* pDll = (DllLoader*)*it;
+      DllLoader* pDll = g_dlls.GetModule((HMODULE)*it);
+      if( !pDll)
+      {
+        CLog::Log(LOGERROR, __FUNCTION__" - Invalid module in tracker");
+        return;
+      }
+
       if (!pDll->IsSystemDll())
       {
         if (strlen(pDll->GetFileName()) > 0) CLog::DebugLog("  : %s", pDll->GetFileName());
@@ -48,10 +55,16 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
     // now unload the dlls
     for (DllListIter it = pInfo->dllList.begin(); it != pInfo->dllList.end(); ++it)
     {
-      DllLoader* pDll = (DllLoader*)*it;
+      DllLoader* pDll = g_dlls.GetModule((HMODULE)*it);
+      if( !pDll)
+      {
+        CLog::Log(LOGERROR, __FUNCTION__" - Invalid module in tracker");
+        return;
+      }
+
       if (!pDll->IsSystemDll())
       {
-        dllFreeLibrary((HMODULE)pDll);
+        dllFreeLibrary((HMODULE)pDll->hModule);
       }
     }
   }
