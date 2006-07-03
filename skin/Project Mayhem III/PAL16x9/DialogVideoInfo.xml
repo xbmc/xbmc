@@ -472,6 +472,7 @@
    <height>109</height>
    <texture>defaultAlbumCover.png</texture>
    <info>MusicPlayer.Cover</info>
+   <visible>Player.HasAudio</visible>
   </control>
 
   <control>
