@@ -463,7 +463,8 @@ bool CDVDDemuxFFmpeg::Seek(int iTime)
 
 int CDVDDemuxFFmpeg::GetStreamLenght()
 {
-  if (m_pFormatContext->duration == DVD_NOPTS_VALUE)
+  /* apperently ffmpeg messes up sometimes, so check for negative value too */
+  if (m_pFormatContext->duration == DVD_NOPTS_VALUE || m_pFormatContext->duration < 0LL)
   {
     // no duration is available for us
     // try to calculate it
