@@ -3295,7 +3295,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       g_guiSettings.SetString("lookandfeel.skintheme",vecTheme[iTheme]);
     
-    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    g_application.DelayLoadSkin();
   }
   else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric"))
   {
