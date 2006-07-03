@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-07-2006 fixed: Fixed WMC not being detected right away
+ - 03-07-2006 fixed: Removed need for SsdpProxy when only interested in WMC on the host
+ - 03-07-2006 fixed: Removed browsing to upnp:// in NetworkSetup, now behaves like Daap
+ - 03-07-2006 fixed: Changed default Network name from UPnP Server to Windows Media Connect (UPnP)
  - 03-07-2006 fixed: Removed duplicate code in AutoRun/PlayDisc function.
  - 03-07-2006 fixed: [ 1515857 ] Default bookmark and back problem.
  - 02-07-2006 fixed: PyMappingMethods were not included for Pythons playlist.  __getitem__, __len__ & __setitem__
