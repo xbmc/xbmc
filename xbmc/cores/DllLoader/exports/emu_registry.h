@@ -26,6 +26,7 @@ extern "C"
 #define HKEY_DYN_DATA           ((HKEY) 0x80000006)
 
 #define REG_DWORD                   ( 4 )   // 32-bit number
+#define REG_SZ                      ( 1 )   // null terminated string
 #define REG_CREATED_NEW_KEY 0x00000001
 
   /*

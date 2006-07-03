@@ -108,6 +108,15 @@ DllLoader* DllLoaderContainer::GetModule(const char* sName)
   return NULL;
 }
 
+DllLoader* DllLoaderContainer::GetModule(HMODULE hModule)
+{
+  for (int i = 0; m_dlls[i] != NULL && i < m_iNrOfDlls; i++)
+  {
+    if (m_dlls[i]->hModule == hModule) return m_dlls[i];    
+  }
+  return NULL;
+}
+
 DllLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurrentDir/*=NULL*/, bool bLoadSymbols/*=false*/)
 {
   DllLoader* pDll=NULL;

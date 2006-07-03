@@ -214,6 +214,17 @@ extern "C" BOOL WINAPI dllFlsSetValue(DWORD dwFlsIndex, PVOID lpFlsData);
 extern "C" PVOID WINAPI dllFlsGetValue(DWORD dwFlsIndex);
 extern "C" BOOL WINAPI dllFlsFree(DWORD dwFlsIndex);
 
+extern "C" HANDLE WINAPI dllCreateFileA(
+    IN LPCSTR lpFileName,
+    IN DWORD dwDesiredAccess,
+    IN DWORD dwShareMode,
+    IN LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+    IN DWORD dwCreationDisposition,
+    IN DWORD dwFlagsAndAttributes,
+    IN HANDLE hTemplateFile
+    );
+
+
 
 extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped);
 
