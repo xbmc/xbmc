@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-07-2006 fixed: Removed duplicate code in AutoRun/PlayDisc function.
  - 03-07-2006 fixed: [ 1515857 ] Default bookmark and back problem.
  - 02-07-2006 fixed: PyMappingMethods were not included for Pythons playlist.  __getitem__, __len__ & __setitem__
                      It is subscriptable, Use PlayList[int] to retrieve a playlistItem.
