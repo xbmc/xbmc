@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-07-2006 fixed: during movie calibration, on a pal system, there would be one additional mode available identical to other (pal16:9 if widescreen is supported pal4:3 if not)
  - 03-07-2006 added: Additional filenames to try when searching for music thumbs - declared in AdvancedSettings.xml 
  - 03-07-2006 changed: use alternate time calculation for dvdplayer if ffmpeg gives us negative duration
  - 03-07-2006 changed: builtin skin.theme now uses delayed skin loading bumping the usability somewhat.
