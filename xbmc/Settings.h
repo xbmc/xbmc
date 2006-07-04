@@ -147,6 +147,21 @@ public:
 
   vector<CStdString> vecPaths;
 };
+
+class CSkinString
+{
+public:
+  CStdString name;
+  CStdString value;
+};
+
+class CSkinBool
+{
+public:
+  CStdString name;
+  bool value;
+};
+
 /*!
 \ingroup windows
 \brief A vector to hold CShare objects.
@@ -216,11 +231,14 @@ public:
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue);
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue);
 
-  CStdString GetSkinString(const CStdString &setting) const;
-  void SetSkinString(const CStdString &setting, const CStdString &label);
-  bool GetSkinSetting(const CStdString &setting, const CStdString& strCompare) const;
-  bool GetSkinSetting(const CStdString &setting) const;
-  void SetSkinSetting(const CStdString &setting, bool set);
+  int TranslateSkinString(const CStdString &setting);
+  const CStdString &GetSkinString(int setting) const;
+  void SetSkinString(int setting, const CStdString &label);
+
+  int TranslateSkinBool(const CStdString &setting);
+  bool GetSkinBool(int setting) const;
+  void SetSkinBool(int setting, bool set);
+
   void ResetSkinSetting(const CStdString &setting);
   void ResetSkinSettings();
   
@@ -420,8 +438,8 @@ public:
   };
 
   std::map<int,std::pair<std::vector<int>,std::vector<string> > > m_mapRssUrls;
-  std::map<CStdString, bool> m_skinSettings;
-  std::map<CStdString, CStdString> m_skinStrings;
+  std::map<int, CSkinString> m_skinStrings;
+  std::map<int, CSkinBool> m_skinBools;
 
   // cache copies of these parsed values, to avoid re-parsing over and over
   CStdString m_szMyVideoStackSeparatorsString;
