@@ -111,8 +111,6 @@ public:
   void Insert(CGUIControl *control, const CGUIControl *insertPoint);
   void Remove(DWORD dwId);
   bool ControlGroupHasFocus(int groupID, int controlID);
-  void SelectNextControl();
-  void SelectPreviousControl();
   void SetID(DWORD dwID);
   virtual DWORD GetID(void) const;
   virtual bool HasID(DWORD dwID) { return (dwID >= m_dwWindowId && dwID < m_dwWindowId + m_dwIDRange); };
@@ -221,6 +219,7 @@ protected:
   // control states
   bool m_saveLastControl;
   int m_lastControlID;
+  int m_focusedControl;
   vector<CControlState> m_controlStates;
   DWORD m_previousWindow;
 };

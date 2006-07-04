@@ -179,10 +179,10 @@
 #define VISUALISATION_ENABLED       403
 
 #define SKIN_HAS_THEME_START        500
-#define SKIN_HAS_THEME_END          509 // allow for max 10 themes
+#define SKIN_HAS_THEME_END          599 // allow for max 100 themes
 
-#define SKIN_HAS_SETTING_START      510
-#define SKIN_HAS_SETTING_END        600 // allow 90
+#define SKIN_BOOL                   600
+#define SKIN_STRING                 601
 
 #define SKIN_STRING_EQUALS_START    610
 #define SKIN_STRING_EQUALS_END      700 // max 90 strings, no?
@@ -249,7 +249,7 @@ public:
   void Clear();
 
   int TranslateString(const CStdString &strCondition);
-  bool GetBool(int condition, DWORD dwContextWindow = 0) const;
+  bool GetBool(int condition, DWORD dwContextWindow = 0);
   int GetInt(int info) const;
   string GetLabel(int info);
 
@@ -308,8 +308,11 @@ public:
   void ParseLabel(const CStdString &strLabel, vector<CInfoPortion> &multiInfo);
   CStdString GetMultiLabel(const vector<CInfoPortion> &multiInfo);
 
+  void ResetCache();
+
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
+  const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
   int TranslateSingleString(const CStdString &strCondition);
   CStdString GetItemLabel(const CFileItem *item, int info);
 
@@ -357,9 +360,6 @@ protected:
   int m_nextWindowID;
   int m_prevWindowID;
 
-  // *shame*
-  CStdString m_strSkinStringCompareTo;
-
   class CCombinedValue
   {
   public:
@@ -371,9 +371,11 @@ protected:
 
   int GetOperator(const char ch);
   int TranslateBooleanExpression(const CStdString &expression);
-  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow) const;
+  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow);
 
   std::vector<CCombinedValue> m_CombinedValues;
+
+  std::map<int, bool> m_boolCache;
 };
 
 /*!

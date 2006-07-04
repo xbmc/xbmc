@@ -47,6 +47,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_performingSeek = false;
   m_nextWindowID = WINDOW_INVALID;
   m_prevWindowID = WINDOW_INVALID;
+  m_stringParameters.push_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -300,27 +301,25 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("skin.currenttheme"))
       ret = SKIN_THEME;
-    if (strTest.Left(12).Equals("skin.string("))
+    else if (strTest.Left(12).Equals("skin.string("))
     {
-      CStdString settingName;
-      settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), strTest.Mid(12, strTest.GetLength() - 13).c_str());
-      ret = SKIN_HAS_SETTING_START + ConditionalStringParameter(settingName);
+      int pos = strTest.Find(",");
+      if (pos >= 0)
+      {
+        int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, pos - 13));
+        int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+        return AddMultiInfo(GUIInfo(bNegate ? -SKIN_STRING : SKIN_STRING, skinOffset, compareString));
+      }
+      int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, strTest.GetLength() - 13));
+      return AddMultiInfo(GUIInfo(SKIN_STRING, skinOffset));
     }
-    if (strTest.Left(16).Equals("skin.hassetting("))
+    else if (strTest.Left(16).Equals("skin.hassetting("))
     {
-      CStdString settingName;
-      settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), strTest.Mid(16, strTest.GetLength() - 17).c_str());
-      ret = SKIN_HAS_SETTING_START + ConditionalStringParameter(settingName);
+      int skinOffset = g_settings.TranslateSkinBool(strTest.Mid(16, strTest.GetLength() - 17));
+      return AddMultiInfo(GUIInfo(bNegate ? -SKIN_BOOL : SKIN_BOOL, skinOffset));
     }
     else if (strTest.Left(14).Equals("skin.hastheme("))
       ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
-    else if (strTest.Left(18).Equals("skin.comparestring("))
-    {
-      CStdString settingName;
-      settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), strTest.Mid(18, strTest.GetLength() - 19).c_str());
-      ret = SKIN_STRING_EQUALS_START+ConditionalStringParameter(settingName);
-      m_strSkinStringCompareTo = strTest.substr(strTest.Find(','));
-    }
   }
   else if (strTest.Left(16).Equals("window.isactive("))
   {
@@ -390,9 +389,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 string CGUIInfoManager::GetLabel(int info)
 {
   CStdString strLabel;
-  if (info >= SKIN_HAS_SETTING_START && info <= SKIN_HAS_SETTING_END)
+  if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
-    strLabel = g_settings.GetSkinString(m_stringParameters[info - SKIN_HAS_SETTING_START]);
+    strLabel = GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START]);
   }
   switch (info)
   {
@@ -680,15 +679,20 @@ int CGUIInfoManager::GetInt(int info) const
 }
 // checks the condition and returns it as necessary.  Currently used
 // for toggle button controls and visibility of images.
-bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
+bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
 {
+  // check our cache
+  map<int, bool>::const_iterator it = m_boolCache.find(condition1);
+  if (it != m_boolCache.end())
+    return (*it).second;
   if(  condition1 >= COMBINED_VALUES_START && (condition1 - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
   {
     const CCombinedValue &comb = m_CombinedValues[condition1 - COMBINED_VALUES_START];
     bool result;
-    if (EvaluateBooleanExpression(comb, result, dwContextWindow))
-      return result;
-    return false;
+    if (!EvaluateBooleanExpression(comb, result, dwContextWindow))
+      result = false;
+    m_boolCache.insert(pair<int, bool>(condition1, result));
+    return result;
   }
 
   int condition = abs(condition1);
@@ -733,18 +737,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
       bReturn = false;
   }
   else if (condition == SYSTEM_DVDREADY)
-  {
-    // we must: 1.  Check tray state.
-    //          2.  Check that we actually have a disc in the drive (detection
-    //              of disk type takes a while from a separate thread).
-    //CIoSupport TrayIO;
-	//m_DriveState = DRIVE_NOT_READY;
-	bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
-  }
+	  bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
-  {
-	bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
-  }
+  	bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
   else if (condition == PLAYER_SHOWCODEC)
@@ -758,13 +753,12 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     CUtil::RemoveExtension(theme);
     bReturn = theme.Equals(m_stringParameters[condition - SKIN_HAS_THEME_START]);
   }
-  else if (condition >= SKIN_STRING_EQUALS_START && condition <= SKIN_STRING_EQUALS_END)
-    bReturn = m_strSkinStringCompareTo.Equals(m_stringParameters[condition - SKIN_STRING_EQUALS_START]);
-  else if (condition >= SKIN_HAS_SETTING_START && condition <= SKIN_HAS_SETTING_END)
-    bReturn = g_settings.GetSkinSetting(m_stringParameters[condition - SKIN_HAS_SETTING_START]);
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
-    return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow);
+    // cache return value
+    bool ret = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow);
+    m_boolCache.insert(pair<int, bool>(condition1, ret));
+    return ret;
   }
   else if (condition == SYSTEM_HASLOCKS)  
     bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE;
@@ -894,7 +888,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     break;
     }
   }
-  return (condition1 < 0) ? !bReturn : bReturn;
+  // cache return value
+  if (condition1 < 0) bReturn = !bReturn;
+  m_boolCache.insert(pair<int, bool>(condition1, bReturn));
+  return bReturn;
 }
 
 /// \brief Examines the multi information sent and returns true or false accordingly.
@@ -904,6 +901,19 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
   int condition = abs(info.m_info);
   switch (condition)
   {
+    case SKIN_BOOL:
+      {
+        bReturn = g_settings.GetSkinBool(info.m_data1);
+      }
+      break;
+    case SKIN_STRING:
+      {
+        if (info.m_data2)
+          bReturn = g_settings.GetSkinString(info.m_data1).Equals(m_stringParameters[info.m_data2]);
+        else
+          bReturn = !g_settings.GetSkinString(info.m_data1).IsEmpty();
+      }
+      break;
     case CONTROL_GROUP_HAS_FOCUS:
       {
         CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
@@ -964,12 +974,22 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
   return (info.m_info < 0) ? !bReturn : bReturn;
 }
 
+/// \brief Examines the multi information sent and returns the string as appropriate
+const CStdString &CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info) const
+{
+  if (info.m_info == SKIN_STRING)
+  {
+    return g_settings.GetSkinString(info.m_data1);
+  }
+  return __strEmpty__;
+}
+
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
 CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 {
-  if (info >= SKIN_HAS_SETTING_START && info <= SKIN_HAS_SETTING_END)
+  if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
-    return g_settings.GetSkinString(m_stringParameters[info - SKIN_HAS_SETTING_START]);
+    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START]);
   }
   else if (info == WEATHER_CONDITIONS)
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
@@ -1661,7 +1681,7 @@ int CGUIInfoManager::GetOperator(const char ch)
     return 0;
 }
 
-bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow) const
+bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow)
 {
   // stack to save our bool state as we go
   stack<bool> save;
@@ -1925,3 +1945,7 @@ void CGUIInfoManager::ParseLabel(const CStdString &strLabel, vector<CInfoPortion
     multiInfo.push_back(CInfoPortion(0, work, ""));
 }
 
+void CGUIInfoManager::ResetCache()
+{
+  m_boolCache.clear();
+}
