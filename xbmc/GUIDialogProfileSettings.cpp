@@ -188,7 +188,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
   if (iProfile >= g_settings.m_vecProfiles.size())
   {
     dialog->m_strName.Empty();
-    dialog->m_iDbMode = 0;
+    dialog->m_iDbMode = 2;
     dialog->m_iLockMode = LOCK_MODE_EVERYONE;
     dialog->m_iSourcesMode = 2;
     dialog->m_bLockSettings = true;
@@ -268,7 +268,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
 
       if (!bExists)
       {
-        if (dialog->m_iSourcesMode == 0)
+        if ((dialog->m_iSourcesMode & 2) == 2)
           if (CGUIDialogYesNo::ShowAndGetInput(20058,20071,20102,20022,20044,20064))
             CFile::Cache(g_settings.GetUserDataFolder()+"\\sources.xml",g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
           else
