@@ -103,6 +103,7 @@ void CGUIDialogProfileSettings::CreateSettings()
   }
   if (m_bIsNewUser)
   {
+    SetupPage();
     OnSettingChanged(0); // id=1
     OnSettingChanged(2); // id=3
   }
@@ -230,41 +231,60 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
       if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(20058),strLabel,dialog->m_strDirectory,""))
         return false;
 
+      // check for old profile settings
       CProfile profile;
-      g_settings.m_vecProfiles.push_back(profile);
-      // save new profile guisettings
-      if (CGUIDialogYesNo::ShowAndGetInput(20058,20048,20102,20022,20044,20064))
-        CFile::Cache(g_settings.GetUserDataFolder()+"\\guisettings.xml",g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
-      else
+      g_settings.m_vecProfiles.push_back(profile);      
+      bool bExists = CFile::Exists(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
+
+      if (bExists)
+        if (!CGUIDialogYesNo::ShowAndGetInput(20058,20103,20104,20022))
+          bExists = false;
+
+      if (!bExists)
       {
-        CGUISettings settings = g_guiSettings;
-        CGUISettings settings2;
-        g_guiSettings = settings2;
-        g_settings.SaveSettings(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
-        g_guiSettings = settings;
-      }
-      if (dialog->m_iSourcesMode == 0)
-        if (CGUIDialogYesNo::ShowAndGetInput(20058,20071,20102,20022,20044,20064))
-          CFile::Cache(g_settings.GetUserDataFolder()+"\\sources.xml",g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
+        // save new profile guisettings
+        if (CGUIDialogYesNo::ShowAndGetInput(20058,20048,20102,20022,20044,20064))
+          CFile::Cache(g_settings.GetUserDataFolder()+"\\guisettings.xml",g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
         else
         {
-          TiXmlDocument xmlDoc;
-          TiXmlElement xmlRootElement("sources");
-          TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-          TiXmlElement xmlProgramElement("myprograms");
-          pRoot->InsertEndChild(xmlProgramElement);
-          TiXmlElement xmlVideoElement("video");
-          pRoot->InsertEndChild(xmlVideoElement);
-          TiXmlElement xmlMusicElement("music");
-          pRoot->InsertEndChild(xmlMusicElement);
-          TiXmlElement xmlPicturesElement("pictures");
-          pRoot->InsertEndChild(xmlPicturesElement);
-          TiXmlElement xmlFilesElement("files");
-          pRoot->InsertEndChild(xmlFilesElement); 
-          xmlDoc.SaveFile(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
+          CGUISettings settings = g_guiSettings;
+          CGUISettings settings2;
+          g_guiSettings = settings2;
+          g_settings.SaveSettings(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
+          g_guiSettings = settings;
         }
+      }
+
+      bExists = CFile::Exists(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
+      if (bExists)
+        if (!CGUIDialogYesNo::ShowAndGetInput(20058,20105,20104,20022))
+          bExists = false;
+
+      if (!bExists)
+      {
+        if (dialog->m_iSourcesMode == 0)
+          if (CGUIDialogYesNo::ShowAndGetInput(20058,20071,20102,20022,20044,20064))
+            CFile::Cache(g_settings.GetUserDataFolder()+"\\sources.xml",g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
+          else
+          {
+            TiXmlDocument xmlDoc;
+            TiXmlElement xmlRootElement("sources");
+            TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+            TiXmlElement xmlProgramElement("myprograms");
+            pRoot->InsertEndChild(xmlProgramElement);
+            TiXmlElement xmlVideoElement("video");
+            pRoot->InsertEndChild(xmlVideoElement);
+            TiXmlElement xmlMusicElement("music");
+            pRoot->InsertEndChild(xmlMusicElement);
+            TiXmlElement xmlPicturesElement("pictures");
+            pRoot->InsertEndChild(xmlPicturesElement);
+            TiXmlElement xmlFilesElement("files");
+            pRoot->InsertEndChild(xmlFilesElement); 
+            xmlDoc.SaveFile(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
+          }
+      }
     }
-        
+
     if (!dialog->m_bIsNewUser)
       if (!CGUIDialogYesNo::ShowAndGetInput(20067,20103,20022,20022))
         return false;

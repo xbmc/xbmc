@@ -16,7 +16,7 @@ protected:
 
   void OnPopupMenu(int iItem);
   void DoRename(int iItem);
-  void DoDelete(int iItem);
+  bool DoDelete(int iItem);
   void DoOverwrite(int iItem);
   int GetSelectedItem();
   void LoadList();
