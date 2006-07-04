@@ -15,7 +15,6 @@
 #define GUI_MSG_LOSTFOCUS       4   // control lost focus
 
 #define GUI_MSG_CLICKED         5   // control has been clicked
-#define GUI_MSG_SELCHANGED  25  // selection within the control has changed
 
 #define GUI_MSG_VISIBLE         6   // set control visible
 #define GUI_MSG_HIDDEN          7   // set control hidden
@@ -49,6 +48,10 @@
                                  // been asked to move.  dwParam1 contains direction.
 
 #define GUI_MSG_LABEL_BIND     24   // bind label control (for controls supporting more then 1 label)
+
+#define GUI_MSG_SELCHANGED  25  // selection within the control has changed
+
+#define GUI_MSG_FOCUSED     26  // a control has become focused
 
 #define GUI_MSG_USER         1000
 

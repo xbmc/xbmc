@@ -2167,6 +2167,7 @@ bool CSettings::AddShare(const CStdString &type, const CShare &share)
 
 void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
 {
+  int number = 0;
   const TiXmlElement *pElement = pRootElement->FirstChildElement("skinsettings");
   if (pElement)
   {
@@ -2176,12 +2177,17 @@ void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
       CStdString settingName = pChild->Attribute("name");
       if (pChild->Attribute("type") && strcmpi(pChild->Attribute("type"),"string") == 0)
       { // string setting
-        m_skinStrings.insert(pair<CStdString, CStdString>(settingName, pChild->FirstChild()->Value()));
+        CSkinString string;
+        string.name = settingName;
+        string.value = pChild->FirstChild()->Value();
+        m_skinStrings.insert(pair<int, CSkinString>(number++, string));
       }
       else
       { // bool setting
-        bool settingData = strcmpi(pChild->FirstChild()->Value(), "true") == 0;
-        m_skinSettings.insert(pair<CStdString, bool>(settingName, settingData));
+        CSkinBool setting;
+        setting.name = settingName;
+        setting.value = strcmpi(pChild->FirstChild()->Value(), "true") == 0;
+        m_skinBools.insert(pair<int, CSkinBool>(number++, setting));
       }
       pChild = pChild->NextSiblingElement("setting");
     }
@@ -2194,23 +2200,23 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
   TiXmlElement xmlSettingsElement("skinsettings");
   TiXmlNode *pSettingsNode = pRootElement->InsertEndChild(xmlSettingsElement);
   if (!pSettingsNode) return;
-  for (std::map<CStdString, bool>::const_iterator it = m_skinSettings.begin(); it != m_skinSettings.end(); ++it)
+  for (std::map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); ++it)
   {
     // Add a <setting type="bool" name="name">true/false</setting>
     TiXmlElement xmlSetting("setting");
     xmlSetting.SetAttribute("type", "bool");
-    xmlSetting.SetAttribute("name", (*it).first);
-    TiXmlText xmlBool((*it).second ? "true" : "false");
+    xmlSetting.SetAttribute("name", (*it).second.name);
+    TiXmlText xmlBool((*it).second.value ? "true" : "false");
     xmlSetting.InsertEndChild(xmlBool);
     pSettingsNode->InsertEndChild(xmlSetting);
   }
-  for (std::map<CStdString, CStdString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); ++it)
+  for (std::map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); ++it)
   {
     // Add a <setting type="string" name="name">string</setting>
     TiXmlElement xmlSetting("setting");
     xmlSetting.SetAttribute("type", "string");
-    xmlSetting.SetAttribute("name", (*it).first);
-    TiXmlText xmlLabel((*it).second);
+    xmlSetting.SetAttribute("name", (*it).second.name);
+    TiXmlText xmlLabel((*it).second.value);
     xmlSetting.InsertEndChild(xmlLabel);
     pSettingsNode->InsertEndChild(xmlSetting);
   }
@@ -2334,108 +2340,131 @@ void CSettings::Clear()
   g_advancedSettings.m_videoStackRegExps.clear();
   m_mapRssUrls.clear();
   xbmcXml.Clear();
-  m_skinSettings.clear();
+  m_skinBools.clear();
   m_skinStrings.clear();
 }
 
-CStdString CSettings::GetSkinString(const CStdString &setting) const
-{
-  std::map<CStdString, CStdString>::const_iterator it = m_skinStrings.find(setting);
-  if (it != m_skinStrings.end())
-  {
-    return (*it).second;
-  }
-  return "";
-}
-
-void CSettings::SetSkinString(const CStdString &setting, const CStdString &label)
+int CSettings::TranslateSkinString(const CStdString &setting)
 {
   CStdString settingName;
   settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
-  std::map<CStdString, CStdString>::iterator it = m_skinStrings.find(settingName);
+  // run through and see if we have this setting
+  for (std::map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
+  {
+    if (settingName.Equals((*it).second.name))
+      return (*it).first;
+  }
+  // didn't find it - insert it
+  CSkinString skinString;
+  skinString.name = settingName;
+  m_skinStrings.insert(pair<int, CSkinString>(m_skinStrings.size() + m_skinBools.size(), skinString));
+  return m_skinStrings.size() + m_skinBools.size() - 1;
+}
+
+const CStdString &CSettings::GetSkinString(int setting) const
+{
+  std::map<int, CSkinString>::const_iterator it = m_skinStrings.find(setting);
   if (it != m_skinStrings.end())
   {
-    (*it).second = label;
+    return (*it).second.value;
   }
-  else
-  { // insert setting
-    m_skinStrings.insert(pair<CStdString, CStdString>(settingName, label));
+  return __strEmpty__;
+}
+
+void CSettings::SetSkinString(int setting, const CStdString &label)
+{
+  std::map<int, CSkinString>::iterator it = m_skinStrings.find(setting);
+  if (it != m_skinStrings.end())
+  {
+    (*it).second.value = label;
+    return;
   }
+  assert(false);
+  CLog::Log(LOGFATAL,__FUNCTION__" : Unknown setting requested");
 }
 
 void CSettings::ResetSkinSetting(const CStdString &setting)
 {
   CStdString settingName;
   settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
-  std::map<CStdString, CStdString>::iterator it = m_skinStrings.find(settingName);
-  if (it != m_skinStrings.end())
+  // run through and see if we have this setting as a string
+  for (std::map<int, CSkinString>::iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
   {
-    (*it).second.Empty();
-    return;
-  }
-  std::map<CStdString, bool>::iterator it2 = m_skinSettings.find(settingName);
-  if (it2 != m_skinSettings.end())
-    (*it2).second = false;
-}
-bool CSettings::GetSkinSetting(const CStdString &setting) const
-{
-  return GetSkinSetting(setting,__strEmpty__);
-}
-
-bool CSettings::GetSkinSetting(const CStdString &setting, const CStdString& strCompare) const
-{
-  std::map<CStdString, bool>::const_iterator it = m_skinSettings.find(setting);
-  if (it != m_skinSettings.end())
-  {
-    return (*it).second;
-  }
-  // check the skin strings as well
-  std::map<CStdString, CStdString>::const_iterator it2 = m_skinStrings.find(setting);
-  if (it2 != m_skinStrings.end())
-  {
-    if (!strCompare.IsEmpty())
+    if (settingName.Equals((*it).second.name))
     {
-      CStdString strComp = it2->second;
-      return strComp.Equals(strCompare);
+      (*it).second.value = "";
+      return;
     }
-    else
-      return !(*it2).second.IsEmpty();
   }
-  return false;
+  // and now check for the skin bool
+  for (std::map<int, CSkinBool>::iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
+  {
+    if (settingName.Equals((*it).second.name))
+    {
+      (*it).second.value = false;
+      return;
+    }
+  }
 }
 
-void CSettings::SetSkinSetting(const CStdString &setting, bool set)
+int CSettings::TranslateSkinBool(const CStdString &setting)
 {
   CStdString settingName;
   settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
-  std::map<CStdString, bool>::iterator it = m_skinSettings.find(settingName);
-  if (it != m_skinSettings.end())
+  // run through and see if we have this setting
+  for (std::map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
   {
-    (*it).second = set;
+    if (settingName.Equals((*it).second.name))
+      return (*it).first;
   }
-  else
-  { // insert setting
-    m_skinSettings.insert(pair<CStdString, bool>(settingName, set)); // defaults are false
+  // didn't find it - insert it
+  CSkinBool skinBool;
+  skinBool.name = settingName;
+  skinBool.value = false;
+  m_skinBools.insert(pair<int, CSkinBool>(m_skinBools.size() + m_skinStrings.size(), skinBool));
+  return m_skinBools.size() + m_skinStrings.size() - 1;
+}
+
+bool CSettings::GetSkinBool(int setting) const
+{
+  std::map<int, CSkinBool>::const_iterator it = m_skinBools.find(setting);
+  if (it != m_skinBools.end())
+  {
+    return (*it).second.value;
   }
+  // default is to return false
+  return false;
+}
+
+void CSettings::SetSkinBool(int setting, bool set)
+{
+  std::map<int, CSkinBool>::iterator it = m_skinBools.find(setting);
+  if (it != m_skinBools.end())
+  {
+    (*it).second.value = set;
+    return;
+  }
+  assert(false);
+  CLog::Log(LOGFATAL,__FUNCTION__" : Unknown setting requested");
 }
 
 void CSettings::ResetSkinSettings()
 {
   CStdString currentSkin = g_guiSettings.GetString("lookandfeel.skin") + ".";
   // clear all the settings and strings from this skin.
-  std::map<CStdString, bool>::iterator it = m_skinSettings.begin();
-  while (it != m_skinSettings.end())
+  std::map<int, CSkinBool>::iterator it = m_skinBools.begin();
+  while (it != m_skinBools.end())
   {
-    CStdString skinName = (*it).first;
+    CStdString skinName = (*it).second.name;
     if (skinName.Left(currentSkin.size()) == currentSkin)
-      it = m_skinSettings.erase(it);
+      it = m_skinBools.erase(it);
     else
       it++;
   }
-  std::map<CStdString, CStdString>::iterator it2 = m_skinStrings.begin();
+  std::map<int, CSkinString>::iterator it2 = m_skinStrings.begin();
   while (it2 != m_skinStrings.end())
   {
-    CStdString skinName = (*it2).first;
+    CStdString skinName = (*it2).second.name;
     if (skinName.Left(currentSkin.size()) == currentSkin)
       it2 = m_skinStrings.erase(it2);
     else

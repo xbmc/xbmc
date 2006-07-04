@@ -1878,7 +1878,7 @@ void CApplication::Render()
 
 void CApplication::RenderMemoryStatus()
 {
-#ifndef _DEBUG
+#if !defined(_DEBUG) && !defined(PROFILE)
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
 #endif
   {
@@ -3849,6 +3849,9 @@ void CApplication::Process()
 {
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
   m_Autorun.HandleAutorun();
+
+  // reset our info cache
+  g_infoManager.ResetCache();
 
   // check if we need to load a new skin
   if (m_dwSkinTime && timeGetTime() >= m_dwSkinTime)

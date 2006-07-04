@@ -1238,8 +1238,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     if (!m_vecItems[iItem]->IsPlayList())
       btn_Info = pMenu->AddButton(13351);
 
-    if (!m_vecItems[iItem]->IsPlayList() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-      btn_InfoAll = pMenu->AddButton(20059);
+    //if (!m_vecItems[iItem]->IsPlayList() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+    //  btn_InfoAll = pMenu->AddButton(20059);
   }
   
   int btn_Scan = 0;
@@ -1306,7 +1306,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
-if (btnid > 0)
+  if (btnid > 0)
   {
     // Music Information
     if (btnid == btn_Info) 
