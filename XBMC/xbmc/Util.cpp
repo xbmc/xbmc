@@ -3220,11 +3220,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("kaiconnection"))
   {
     if (CKaiClient::GetInstance())	
-	{
+    {
       if (!CKaiClient::GetInstance()->IsEngineConnected())
-	  {
+      {
         while (!CKaiClient::GetInstance()->IsEngineConnected())
-		{
+        {
           CKaiClient::GetInstance()->Reattach();
           Sleep(3000);
         }
@@ -3233,7 +3233,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       {
         CKaiClient::GetInstance()->Detach();
       }
-	}
+    }
     else
     {
       CGUIDialogOK::ShowAndGetInput(15000, 0, 14073, 0);
@@ -3245,12 +3245,23 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("skin.togglesetting"))
   {
-    g_settings.SetSkinSetting(parameter, !g_settings.GetSkinSetting(g_guiSettings.GetString("lookandfeel.skin") + "." + parameter));
+    int setting = g_settings.TranslateSkinBool(parameter);
+    g_settings.SetSkinBool(setting, !g_settings.GetSkinBool(setting));
     g_settings.Save();
   }
   else if (execute.Equals("skin.setbool"))
   {
-    g_settings.SetSkinSetting(parameter, true);
+    int pos = parameter.Find(",");
+    if (pos >= 0)
+    {
+      int string = g_settings.TranslateSkinString(parameter.Left(pos));
+      g_settings.SetSkinBool(string, parameter.Mid(pos+1).Equals("true"));
+      g_settings.Save();
+      return 0;
+    }
+    // default is to set it to true
+    int setting = g_settings.TranslateSkinBool(parameter);
+    g_settings.SetSkinBool(setting, true);
     g_settings.Save();
   }
   else if (execute.Equals("skin.reset"))
@@ -3304,34 +3315,34 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     int pos = strParameterCaseIntact.Find(",");
     if (pos >= 0)
     {
-      g_settings.SetSkinString(strParameterCaseIntact.Left(pos).ToLower(), strParameterCaseIntact.Mid(pos+1));
+      int string = g_settings.TranslateSkinString(strParameterCaseIntact.Left(pos));
+      g_settings.SetSkinString(string, strParameterCaseIntact.Mid(pos+1));
       g_settings.Save();
       return 0;
     }
-    CStdString settingName;
-    settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), parameter);
-    CStdString value = g_settings.GetSkinString(settingName);
+    int string = g_settings.TranslateSkinString(strParameterCaseIntact);
+    CStdString value = g_settings.GetSkinString(string);
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (execute.Equals("skin.setstring"))
     {
       if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
-        g_settings.SetSkinString(parameter, value);
+        g_settings.SetSkinString(string, value);
     }
     else if (execute.Equals("skin.setnumeric"))
     {
       if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(20074)))
-        g_settings.SetSkinString(parameter, value);
+        g_settings.SetSkinString(string, value);
     }
     else if (execute.Equals("skin.setimage"))
     {
       if (CGUIDialogFileBrowser::ShowAndGetImage(shares, g_localizeStrings.Get(1030), value))
-        g_settings.SetSkinString(parameter, value);
+        g_settings.SetSkinString(string, value);
     }
     else // execute.Equals("skin.setpath"))
     {
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(1031), value))
-        g_settings.SetSkinString(parameter, value);
+        g_settings.SetSkinString(string, value);
     }
     g_settings.Save();
   }
