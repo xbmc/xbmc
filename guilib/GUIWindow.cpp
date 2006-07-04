@@ -45,6 +45,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_saveLastControl = false;
   m_dwDefaultFocusControlID = 0;
   m_lastControlID = 0;
+  m_focusedControl = 0;
   m_bRelativeCoords = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
@@ -888,6 +889,12 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       }
       break;
     }
+  case GUI_MSG_FOCUSED:
+    { // a control has been focused
+      if (HasID(message.GetSenderId()))
+        m_focusedControl = message.GetControlId();
+      break;
+    }
   case GUI_MSG_MOVE:
     {
       if (HasID(message.GetSenderId()))
@@ -1104,39 +1111,6 @@ void CGUIWindow::Remove(DWORD dwId)
   }
 }
 
-void CGUIWindow::SelectPreviousControl()
-{
-  int i = GetFocusedControl();
-  while (1)
-  {
-    if ( i < 0 || i >= (int)m_vecControls.size() )
-    {
-      i = (int)m_vecControls.size();
-    }
-    if (m_vecControls[i]->CanFocus()) break;
-    else i--;
-  }
-  CGUIMessage msgSetFocus(GUI_MSG_SETFOCUS, GetID(), m_vecControls[i]->GetID() );
-  g_graphicsContext.SendMessage(msgSetFocus);
-}
-
-void CGUIWindow::SelectNextControl()
-{
-  int i = GetFocusedControl() + 1;
-  while (1)
-  {
-    if ( i < 0 || i >= (int)m_vecControls.size() )
-    {
-      i = 0;
-    }
-    if (m_vecControls[i]->CanFocus()) break;
-    else i++;
-  }
-  CGUIMessage msgSetFocus(GUI_MSG_SETFOCUS, GetID(), m_vecControls[i]->GetID() );
-  g_graphicsContext.SendMessage(msgSetFocus);
-}
-
-
 void CGUIWindow::ClearAll()
 {
   OnWindowUnload();
@@ -1163,9 +1137,10 @@ const CGUIControl* CGUIWindow::GetControl(int iControl) const
 
 int CGUIWindow::GetFocusedControl() const
 {
-  for (int i = 0;i < (int)m_vecControls.size(); ++i)
+  if (m_focusedControl) return m_focusedControl;
+  for (vector<CGUIControl *>::const_iterator it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
   {
-    const CGUIControl* pControl = m_vecControls[i];
+    const CGUIControl* pControl = *it;
     if (pControl->HasFocus() ) return pControl->GetID();
   }
   return -1;
@@ -1414,6 +1389,7 @@ void CGUIWindow::RestoreControlStates()
 void CGUIWindow::ResetControlStates()
 {
   m_lastControlID = 0;
+  m_focusedControl = 0;
   m_controlStates.clear();
 }
 
