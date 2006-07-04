@@ -138,11 +138,13 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
       m_bNeedSave = true;
       CGUIImage *pImage = (CGUIImage*)GetControl(2);
       m_strThumb = CFileItem(strThumb).GetCachedProfileThumb();
-      if (!CFile::Exists(m_strThumb))
-      {
-        CPicture pic;
-        pic.DoCreateThumbnail(strThumb, m_strThumb);
-      }
+      if (CFile::Exists(m_strThumb))
+        CFile::Delete(m_strThumb);
+
+      CPicture pic;
+      pic.DoCreateThumbnail(strThumb, m_strThumb);
+      pImage->SetFileName("foo.bmp");
+      pImage->Update();
       pImage->SetFileName(m_strThumb);
     }
   }
