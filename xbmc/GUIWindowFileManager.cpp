@@ -1050,7 +1050,18 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
     m_strParentPath[iList] = "";
   }
 
-  return m_rootDir.GetDirectory(strDirectory, items, false);
+  bool bResult = m_rootDir.GetDirectory(strDirectory,items,false);
+  if (strDirectory.IsEmpty() && items.Size() == 0)
+  {
+    CStdString strLabel = g_localizeStrings.Get(1026);
+    CFileItem *pItem = new CFileItem(strLabel);
+    pItem->m_strPath = "add";
+    pItem->SetThumbnailImage("settings-network-focus.png");
+    pItem->SetLabel(strLabel);
+    pItem->SetLabelPreformated(true);
+    items.Add(pItem);
+  }
+  return bResult;
 }
 
 bool CGUIWindowFileManager::CanRename(int iList)
