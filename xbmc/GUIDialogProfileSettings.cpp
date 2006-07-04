@@ -237,7 +237,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
       bool bExists = CFile::Exists(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
 
       if (bExists)
-        if (!CGUIDialogYesNo::ShowAndGetInput(20058,20103,20104,20022))
+        if (!CGUIDialogYesNo::ShowAndGetInput(20058,20104,20105,20022))
           bExists = false;
 
       if (!bExists)
@@ -257,7 +257,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
 
       bExists = CFile::Exists(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
       if (bExists)
-        if (!CGUIDialogYesNo::ShowAndGetInput(20058,20105,20104,20022))
+        if (!CGUIDialogYesNo::ShowAndGetInput(20058,20104,20106,20022))
           bExists = false;
 
       if (!bExists)
@@ -312,8 +312,6 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
     g_settings.m_vecProfiles[iProfile].setProgramsLocked(dialog->m_bLockPrograms);
 
     g_settings.SaveProfiles("q:\\system\\profiles.xml");
-    if (iProfile == g_settings.m_iLastLoadedProfileIndex)
-      g_settings.LoadProfile(iProfile); // to activate changes
     return true;
   }
 
