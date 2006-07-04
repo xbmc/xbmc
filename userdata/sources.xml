@@ -112,6 +112,10 @@
             <name>ReplayTV</name>
             <path>rtv://*/</path>
         </bookmark>
+        <bookmark>
+            <name>UPnP Media Servers (Auto-Discover)</name>
+            <path>upnp://</path>
+        </bookmark>         
     </video>
 
     <!-- My Music shares !-->
@@ -181,6 +185,10 @@
             <!-- shout://www.shoutcast.com/sbin/newxml.phtml?genre=Top500                        -->
             <!-- shout://www.shoutcast.com/sbin/newxml.phtml?search=[stationname]                -->
         </bookmark>
+        <bookmark>
+            <name>UPnP Media Servers (Auto-Discover)</name>
+            <path>upnp://</path>
+        </bookmark>         
     </music>
 
     <!-- My Pictures shares !-->
@@ -229,6 +237,10 @@
             <name>WORKGROUP (SMB) Network</name>
             <path>smb://</path>
         </bookmark>
+        <bookmark>
+            <name>UPnP Media Servers (Auto-Discover)</name>
+            <path>upnp://</path>
+        </bookmark>         
     </pictures>
 
     <!-- File-manager shares !-->
