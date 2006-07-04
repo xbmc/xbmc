@@ -219,6 +219,11 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         return false;
       }
       SetFocus(true);
+      {
+        // inform our parent window that this has happened
+        CGUIMessage message(GUI_MSG_FOCUSED, GetParentID(), GetID());
+        SendWindowMessage(message);
+      }
       return true;
       break;
 
