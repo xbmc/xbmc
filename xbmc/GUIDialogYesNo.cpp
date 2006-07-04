@@ -57,3 +57,15 @@ bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int lin
   dialog->DoModal();
   return (dialog->IsConfirmed()) ? true : false;
 }
+
+bool CGUIDialogYesNo::ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2)
+{
+  CGUIDialogYesNo *dialog = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (!dialog) return false;
+  dialog->SetHeading(heading);
+  dialog->SetLine(0, line0);
+  dialog->SetLine(1, line1);
+  dialog->SetLine(2, line2);
+  dialog->DoModal();
+  return (dialog->IsConfirmed()) ? true : false;
+}

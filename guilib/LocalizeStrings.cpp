@@ -193,11 +193,11 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20041] = "Lock programs and scripts sections";
   m_vecStrings[20042] = "Lock filemanager";
   m_vecStrings[20043] = "Lock settings";
-  m_vecStrings[20044] = "Use individual locks per share";
+  m_vecStrings[20044] = "Start fresh";
   m_vecStrings[20045] = "Enter master mode";
   m_vecStrings[20046] = "Leave master mode";
-  m_vecStrings[20047] = "Are your sure you want to change share locks mode?";
-  m_vecStrings[20048] = "This will remove all current share locks.";
+  m_vecStrings[20047] = "Create profile '%s'";
+  m_vecStrings[20048] = "Start with fresh settings";
   m_vecStrings[20049] = "Best Available";
   m_vecStrings[20050] = "Autoswitch between 16x9 and 4x3";
   m_vecStrings[20051] = "Treat stacked files as single file";
@@ -213,14 +213,14 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20061] = "Separate";
   m_vecStrings[20062] = "Shares with default";
   m_vecStrings[20063] = "Shares with default (read only)";
-  m_vecStrings[20064] = "Set name";
+  m_vecStrings[20064] = "Copy default";
   m_vecStrings[20065] = "Profile picture";
   m_vecStrings[20066] = "Lock preferences";
   m_vecStrings[20067] = "Edit profile";
   m_vecStrings[20068] = "Profile lock";
   m_vecStrings[20069] = "Could not create folder";
   m_vecStrings[20070] = "Profile directory";
-  m_vecStrings[20071] = "Query info for all albums";
+  m_vecStrings[20071] = "Start with fresh media sources";
   m_vecStrings[20072] = "Make sure that the selected folder is writable";
   m_vecStrings[20073] = "and that the new folder name is valid.";
   m_vecStrings[20074] = "MPAA Rating:";
@@ -251,7 +251,8 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20099] = "Can't rip CD or Track while playing from CD";
   m_vecStrings[20100] = "Master code and Locks";
   m_vecStrings[20101] = "Entering master code always enables master mode";
-
+  m_vecStrings[20102] = "or copy from default?";
+  m_vecStrings[20103] = "Save changes to profile?";
   // new strings for weather localization
   m_vecStrings[1411] = "with";
   m_vecStrings[1412] = "windy";

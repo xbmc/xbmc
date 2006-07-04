@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-07-2006 fixed: 'add source button' didn't appear on empty bookmark listing in my programs.
  - 04-07-2006 added: Support for UPnP Media Servers auto-discovery. No need to specify IP address of host in sources.xml. No need to use the SsdpProxy program anymore.
  - 04-07-2006 changed: Network Setup now uses UPnP auto-discovery.
  - 04-07-2006 changed: Speed improvements on all skin setting retrieval.  Removed not completely working Skin.CompareString() and replaced with Skin.String(name,value) to do comparisons.  Also extended Skin.SetBool(name,value) to take true or false as a parameter.
