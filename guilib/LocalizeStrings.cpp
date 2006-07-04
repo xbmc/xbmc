@@ -196,7 +196,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20044] = "Start fresh";
   m_vecStrings[20045] = "Enter master mode";
   m_vecStrings[20046] = "Leave master mode";
-  m_vecStrings[20047] = "Create profile '%s'";
+  m_vecStrings[20047] = "Create profile '%s' ?";
   m_vecStrings[20048] = "Start with fresh settings";
   m_vecStrings[20049] = "Best Available";
   m_vecStrings[20050] = "Autoswitch between 16x9 and 4x3";
@@ -256,6 +256,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20104] = "Old settings file found";
   m_vecStrings[20105] = "Do you want to use it?";
   m_vecStrings[20106] = "Old media sources file found";
+  m_vecStrings[20107] = "Separate (locked)";
 
   // new strings for weather localization
   m_vecStrings[1411] = "with";
