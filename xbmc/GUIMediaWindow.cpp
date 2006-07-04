@@ -446,12 +446,13 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     m_history.ClearPathHistory();
 
   int iWindow = GetID();
-  bool bOkay = (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_VIDEO_FILES || iWindow == WINDOW_FILES || iWindow == WINDOW_PICTURES);
+  bool bOkay = (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_VIDEO_FILES || iWindow == WINDOW_FILES || iWindow == WINDOW_PICTURES || iWindow == WINDOW_PROGRAMS);
   if (strDirectory.IsEmpty() && m_vecItems.IsEmpty() && bOkay) // add 'add source button'
   {
     CStdString strLabel = g_localizeStrings.Get(1026);
     CFileItem *pItem = new CFileItem(strLabel);
     pItem->m_strPath = "add";
+    pItem->SetThumbnailImage("settings-network-focus.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
     m_vecItems.Add(pItem);
