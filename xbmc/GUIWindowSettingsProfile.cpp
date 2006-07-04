@@ -100,7 +100,15 @@ void CGUIWindowSettingsProfile::DoDelete(int iItem)
       //delete profile
       g_settings.DeleteProfile(iItem);
       if (iItem == g_settings.m_iLastLoadedProfileIndex)
+      {
+        unsigned iCtrlID = GetFocusedControl();
         g_settings.LoadProfile(0);
+        g_settings.Save();
+        CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
+        OnMessage(msg3);
+        CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0);
+        OnMessage(msgSelect);
+      }
       LoadList();
     }
   }
@@ -143,8 +151,15 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           }
           else if (iItem < (int)g_settings.m_vecProfiles.size())
           {
+            unsigned iCtrlID = GetFocusedControl();
+            CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0, NULL);
+            g_graphicsContext.SendMessage(msg2);
             g_settings.LoadProfile(iItem);
             g_settings.Save();
+            CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
+            OnMessage(msg3);
+            CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());
+            OnMessage(msgSelect);
             return true;
           }
           else if (iItem > (int)g_settings.m_vecProfiles.size() - 1)
