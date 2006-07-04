@@ -69,7 +69,13 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   pMenu->DoModal();
   int iButton = pMenu->GetButton();
   if (iButton == btnEdit)
-    CGUIDialogProfileSettings::ShowForProfile(iItem);
+    if (CGUIDialogProfileSettings::ShowForProfile(iItem))
+      if (iItem == g_settings.m_iLastLoadedProfileIndex)
+      {
+        CGUIMessage msg(GUI_MSG_CLICKED,CONTROL_PROFILES,0,ACTION_SELECT_ITEM,iItem);
+        OnMessage(msg);        
+      }
+
   if (iButton == btnDelete)
   {
     if (DoDelete(iItem))
