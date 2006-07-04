@@ -128,7 +128,7 @@ void CGUIDialogNetworkSetup::OnServerBrowse()
 
 void CGUIDialogNetworkSetup::OnServerAddress()
 {
-  if (m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_DAAP || m_protocol == NET_PROTOCOL_UPNP)
+  if (m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_DAAP)
     CGUIDialogNumeric::ShowAndGetIPAddress(m_server, g_localizeStrings.Get(1016));
   else
     CGUIDialogKeyboard::ShowAndGetInput(m_server, g_localizeStrings.Get(1016), false);
@@ -184,8 +184,6 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "1400";
   else if (m_protocol == NET_PROTOCOL_DAAP)
     m_port = "3689";
-  else if (m_protocol == NET_PROTOCOL_UPNP)
-    m_port = "1901";
 
   UpdateButtons();
 }
@@ -217,7 +215,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   }
   // TODO: FIX BETTER DAAP SUPPORT
   // server browse should be disabled if we are in FTP
-  if (m_server.IsEmpty() && (m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_DAAP || m_protocol == NET_PROTOCOL_UPNP))
+  if (m_server.IsEmpty() && (m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_DAAP))
   {
     CONTROL_DISABLE(CONTROL_SERVER_BROWSE);
   }
@@ -236,7 +234,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   CGUIButtonControl *port = (CGUIButtonControl *)GetControl(CONTROL_PORT_NUMBER);
   if (port)
   {
-    port->SetEnabled(m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_UPNP);
+    port->SetEnabled(m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_FTP);
     port->SetLabel2(m_port);
   }
   // username
@@ -284,8 +282,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   path += m_server;
   if ((m_protocol == NET_PROTOCOL_FTP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
    || (m_protocol == NET_PROTOCOL_XBMSP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
-   || (m_protocol == NET_PROTOCOL_DAAP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
-   || (m_protocol == NET_PROTOCOL_UPNP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty()))
+   || (m_protocol == NET_PROTOCOL_DAAP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty()))
   {
     path += ":";
     path += m_port;
