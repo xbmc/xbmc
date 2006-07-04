@@ -44,6 +44,7 @@
 #include "GUIFontTTF.h"
 #include "xbox/network.h"
 #include "utils/win32exception.h"
+#include "cores/videorenderers/rendermanager.h"
 
 // Windows includes
 #include "GUIStandardWindow.h"
@@ -1435,6 +1436,25 @@ void CApplication::CancelDelayLoadSkin()
 
 void CApplication::LoadSkin(const CStdString& strSkin)
 {
+  bool bPreviousPlayingState=false;
+  bool bPreviousRenderingState=false;
+  if (g_application.m_pPlayer && g_application.IsPlayingVideo())
+  {
+    bPreviousPlayingState = !g_application.m_pPlayer->IsPaused();
+    if (bPreviousPlayingState)
+      g_application.m_pPlayer->Pause();
+    if (!g_renderManager.Paused())
+    {
+      if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+     {
+        m_gWindowManager.ActivateWindow(WINDOW_HOME);
+        bPreviousRenderingState = true;
+      }
+    }
+  }
+  // close the music and video overlays (they're re-opened automatically later)
+  CSingleLock lock(g_graphicsContext);
+
   m_dwSkinTime = 0;
 
   CStdString strHomePath;
@@ -1443,23 +1463,10 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
-  StopPlaying();
-
   // save the current window details
   int currentWindow = m_gWindowManager.GetActiveWindow();
   vector<DWORD> currentModelessWindows;
   m_gWindowManager.GetActiveModelessWindows(currentModelessWindows);
-/*
-  if ( IsPlaying() )
-  {
-    CLog::Log(LOGINFO, " stop playing...");
-    m_CdgParser.Stop();
-    m_pPlayer->CloseFile();
-    m_itemCurrentFile.Reset();
-    m_currentStack.Clear();
-    delete m_pPlayer;
-    m_pPlayer = NULL;
-  }*/
 
   //  When the app is started the instance of the
   //  kai client should not be created until the
@@ -1520,8 +1527,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   // Load the user windows
   LoadUserWindows(strSkinPath);
 
-//  CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
-
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
@@ -1562,18 +1567,37 @@ void CApplication::LoadSkin(const CStdString& strSkin)
       if (dialog) dialog->Show();
     }
   }
+
+  if (g_application.m_pPlayer && g_application.IsPlayingVideo())
+  {
+    lock.Leave();
+    if (bPreviousPlayingState)
+      g_application.m_pPlayer->Pause();
+    if (bPreviousRenderingState)
+      m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+  }
 }
 
 void CApplication::UnloadSkin()
 {
   g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE);
 
-  //These windows are not handled by the windowmanager (why not?) so we should unload them manually
-  m_guiPointer.FreeResources(true);
-  m_guiDialogMuteBug.FreeResources(true);
-  m_guiVideoOverlay.FreeResources(true); 	 
-  m_guiMusicOverlay.FreeResources(true);
   m_gWindowManager.DeInitialize();
+
+  //These windows are not handled by the windowmanager (why not?) so we should unload them manually
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+  m_guiPointer.OnMessage(msg);
+  m_guiPointer.ResetControlStates();
+  m_guiPointer.FreeResources(true);
+  m_guiDialogMuteBug.OnMessage(msg);
+  m_guiDialogMuteBug.ResetControlStates();
+  m_guiDialogMuteBug.FreeResources(true);
+  m_guiVideoOverlay.OnMessage(msg);
+  m_guiVideoOverlay.ResetControlStates();
+  m_guiVideoOverlay.FreeResources(true); 	 
+  m_guiMusicOverlay.OnMessage(msg);
+  m_guiMusicOverlay.ResetControlStates();
+  m_guiMusicOverlay.FreeResources(true);
 
   CGUIWindow::FlushReferenceCache(); // flush the cache
 
