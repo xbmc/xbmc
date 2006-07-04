@@ -253,6 +253,10 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20101] = "Entering master code always enables master mode";
   m_vecStrings[20102] = "or copy from default?";
   m_vecStrings[20103] = "Save changes to profile?";
+  m_vecStrings[20103] = "Old settings file found";
+  m_vecStrings[20104] = "Do you want to use it?";
+  m_vecStrings[20105] = "Old media sources file found";
+
   // new strings for weather localization
   m_vecStrings[1411] = "with";
   m_vecStrings[1412] = "windy";

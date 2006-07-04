@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GUIWindowSettingsProfile.h"
+#include "GUIWindowFileManager.h"
 #include "Profile.h"
 #include "../guilib/GUIListControl.h"
 #include "util.h"
@@ -71,8 +72,8 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     CGUIDialogProfileSettings::ShowForProfile(iItem);
   if (iButton == btnDelete)
   {
-    DoDelete(iItem);
-    iItem--;
+    if (DoDelete(iItem))
+      iItem--;
   }
 
   LoadList();
@@ -81,7 +82,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
 
 }
 
-void CGUIWindowSettingsProfile::DoDelete(int iItem)
+bool CGUIWindowSettingsProfile::DoDelete(int iItem)
 {
   CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (dlgYesNo)
@@ -98,6 +99,7 @@ void CGUIWindowSettingsProfile::DoDelete(int iItem)
     if (dlgYesNo->IsConfirmed())
     {
       //delete profile
+      CStdString strDirectory = g_settings.m_vecProfiles[iItem].getDirectory();
       g_settings.DeleteProfile(iItem);
       if (iItem == g_settings.m_iLastLoadedProfileIndex)
       {
@@ -109,9 +111,18 @@ void CGUIWindowSettingsProfile::DoDelete(int iItem)
         CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0);
         OnMessage(msgSelect);
       }
+
+      CFileItem item(g_settings.GetUserDataFolder()+"\\"+strDirectory);
+      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory;
+      item.m_bIsFolder = true;
+      item.Select(true);
+      CGUIWindowFileManager::DeleteItem(&item);
       LoadList();
+      return true;
     }
   }
+  
+  return false;
 }
 
 bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
