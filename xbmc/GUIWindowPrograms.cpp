@@ -6,6 +6,7 @@
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogTrainerSettings.h"
+#include "GUIDialogMediaSource.h"
 #include "xbox/xbeheader.h"
 #include "utils/Trainer.h"
 #include "utils/kaiclient.h"
@@ -323,6 +324,16 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
   CFileItem* pItem = m_vecItems[iItem];
+
+  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  {
+    if (CGUIDialogMediaSource::ShowAndAddMediaSource("myprograms"))
+    {
+      Update("");
+      return true;
+    }
+    return false;
+  }
 
   if (pItem->m_bIsFolder) return false;
 
