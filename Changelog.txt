@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-07-2006 changed: Speed improvements on all skin setting retrieval.  Removed not completely working Skin.CompareString() and replaced with Skin.String(name,value) to do comparisons.  Also extended Skin.SetBool(name,value) to take true or false as a parameter.
  - 03-07-2006 fixed: Video & Picture titles for UPnP is now displaying actual text
  - 03-07-2006 fixed: Compiler settings for debug lipPlatinumd was wrong causing crashes in debug build with debug libs
  - 03-07-2006 fixed: some quicktime external dll's where broken since 26-06-2006
