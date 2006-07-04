@@ -73,7 +73,7 @@
    <onright>2</onright>
    <onleft>2</onleft>
    <label>20096</label>
-   <include>contentpanelslide</include>
+    <include>buttonpanelslide</include>
   </control>
 
   <control>
