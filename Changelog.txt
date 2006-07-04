@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-07-2006 changed: Skin reload no longer stops the currently playing media.
  - 04-07-2006 fixed: 'add source button' didn't appear on empty bookmark listing in my programs.
  - 04-07-2006 added: Support for UPnP Media Servers auto-discovery. No need to specify IP address of host in sources.xml. No need to use the SsdpProxy program anymore.
  - 04-07-2006 changed: Network Setup now uses UPnP auto-discovery.
