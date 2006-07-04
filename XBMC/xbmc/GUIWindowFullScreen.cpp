@@ -415,8 +415,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       // Pause player before lock or the app will deadlock
-      if (g_application.m_pPlayer)
+      bool needsUpdate(false);
+      if (g_application.m_pPlayer && !g_renderManager.Paused())
+      {
+        needsUpdate = true;
         g_application.m_pPlayer->Update(true);
+      }
 
       // Pause so that we make sure that our fullscreen renderer has finished...
       Sleep(100);
@@ -444,7 +448,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         m_subtitleFont = NULL;
       }
 
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer && needsUpdate)
         g_application.m_pPlayer->Update();
 
 
