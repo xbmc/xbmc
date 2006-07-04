@@ -180,7 +180,9 @@ bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
                         pItem->m_strPath = (const char*) (*entry)->m_Resources[0].m_Uri;
                     }
 
-                    pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
+                    if ((*entry)->m_Resources[0].m_Size > 0) {
+                        pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
+                    }
                     pItem->m_musicInfoTag.SetDuration((*entry)->m_Resources[0].m_Duration);
                     pItem->m_musicInfoTag.SetGenre((const char*) (*entry)->m_Genre);
                     pItem->m_musicInfoTag.SetAlbum((const char*) (*entry)->m_Album);
@@ -205,6 +207,7 @@ bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
                         }
                     }
                     
+                    pItem->SetLabelPreformated(true);
                     pItem->m_musicInfoTag.SetLoaded();
 
                     //TODO: figure out howto set the album art
