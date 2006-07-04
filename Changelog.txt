@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-07-2006 fixed: Compiler settings for debug lipPlatinumd was wrong causing crashes in debug build with debug libs
  - 03-07-2006 fixed: some quicktime external dll's where broken since 26-06-2006
  - 03-07-2006 changed: made loadlibrary return base address of dll instead of pointer to xbmc dllloader structure.
  - 03-07-2006 added: some more emulation needed for the coreavc codec (still not entirely there)
