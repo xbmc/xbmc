@@ -51,6 +51,10 @@ void CUPnP::Init()
     m_UPnP->Start();
     m_MediaBrowser = new PLT_SyncMediaBrowser(m_CtrlPoint);
 
+    // Issue a search request on the broadcast address instead of the upnp multicast address 239.255.255.250
+    // since the xbox does not support multicast. UPnP devices will still respond to us
+    //g_UPnP.m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1);
+
     m_Initted = true;
 }
 
@@ -67,30 +71,24 @@ bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     bool was_initted = g_UPnP.IsInitted();
     if (!was_initted) g_UPnP.Init();
                      
-    // We accept m_UPnP://server[:port[/devuuid[/path[/file]]]]
     CFileItemList vecCacheItems;
     g_directoryCache.ClearDirectory(strPath);
 
+    // We accept upnp://devuuid[/path[/file]]]]
+    // make sure we have a slash to look for at the end
     CStdString strRoot = strPath;
     if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
 
-    // we need an url to do proper escaping 
-    NPT_HttpUrl url(strRoot);
-    NPT_String path = url.GetPath();
+    NPT_String path = strPath.c_str();
 
-    if (path.IsEmpty()) {
+    if (path.Left(7).Compare("upnp://", true) != 0) {
         return false;
-    } else if (path == "/") {
+    } else if (path.Compare("upnp://", true) == 0) {
         // root ?         
         
-        // always issue to 1900 just in case ssdp proxy is not running
-        // If WMC is the only one running, it will respond to it
-        if (url.GetPort() != 1900) {
-            g_UPnP.m_CtrlPoint->Discover(NPT_HttpUrl(url.GetHost(), 1900, "*"), "upnp:rootdevice", 1);
-        }
-
-        // issue a search at the address/port specified 
-        g_UPnP.m_CtrlPoint->Discover(NPT_HttpUrl(url.GetHost(), url.GetPort()?url.GetPort():1901, "*"), "upnp:rootdevice", 1);
+        // Issue a search request on the broadcast address instead of the upnp multicast address 239.255.255.250
+        // since the xbox does not support multicast. UPnP devices will still respond to us
+        g_UPnP.m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1);
 
         // wait a bit the first time to let devices respond
         // it's not guaranteed that it is enough time so users will have to go 
@@ -109,7 +107,7 @@ bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             NPT_String uuid = (*entry)->GetKey();
 
             CFileItem *pItem = new CFileItem((const char*)name);
-            pItem->m_strPath = (const char*) url.AsString() + uuid;
+            pItem->m_strPath = (const char*) path + uuid;
             pItem->m_bIsFolder = true;
             pItem->m_bIsShareOrDrive = true;
             pItem->m_iDriveType = SHARE_TYPE_REMOTE;
@@ -123,11 +121,11 @@ bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         }
     } else {
         // look for nextslash 
-        int next_slash = path.Find('/', 1);
+        int next_slash = path.Find('/', 7);
         if (next_slash == -1) 
             return false;
 
-        NPT_String uuid = path.SubString(1, next_slash-1);
+        NPT_String uuid = path.SubString(7, next_slash-7);
         NPT_String object_id = path.SubString(next_slash+1, path.GetLength()-next_slash-2);
 
         // look for device 
@@ -168,7 +166,7 @@ bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
             // if it's a container, format a string as upnp://host/uuid/object_id/ 
             if (pItem->m_bIsFolder) {
-                pItem->m_strPath = (const char*) NPT_String("upnp://") + url.GetHost() + ":1900/" + uuid + "/" + (*entry)->m_ObjectID;
+                pItem->m_strPath = (const char*) NPT_String("upnp://") + uuid + "/" + (*entry)->m_ObjectID;
                 if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
             } else {
                 if ((*entry)->m_Resources.GetItemCount()) {
