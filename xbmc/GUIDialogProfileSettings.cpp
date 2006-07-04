@@ -86,9 +86,12 @@ void CGUIDialogProfileSettings::CreateSettings()
     setting.name = g_localizeStrings.Get(20060);
     setting.data = &m_iDbMode;
     setting.type = SettingInfo::SPIN;
-    setting.entry.push_back(g_localizeStrings.Get(20061));
     setting.entry.push_back(g_localizeStrings.Get(20062));
     setting.entry.push_back(g_localizeStrings.Get(20063));
+    setting.entry.push_back(g_localizeStrings.Get(20061));
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+      setting.entry.push_back(g_localizeStrings.Get(20107));
+
     m_settings.push_back(setting);
 
     SettingInfo setting2;
@@ -96,9 +99,12 @@ void CGUIDialogProfileSettings::CreateSettings()
     setting2.name = g_localizeStrings.Get(20094);
     setting2.data = &m_iSourcesMode;
     setting2.type = SettingInfo::SPIN;
-    setting2.entry.push_back(g_localizeStrings.Get(20061));
     setting2.entry.push_back(g_localizeStrings.Get(20062));
     setting2.entry.push_back(g_localizeStrings.Get(20063));
+    setting2.entry.push_back(g_localizeStrings.Get(20061));
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+      setting2.entry.push_back(g_localizeStrings.Get(20107));
+
     m_settings.push_back(setting2);
   }
   if (m_bIsNewUser)
@@ -184,7 +190,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
     dialog->m_strName.Empty();
     dialog->m_iDbMode = 0;
     dialog->m_iLockMode = LOCK_MODE_EVERYONE;
-    dialog->m_iSourcesMode = 0;
+    dialog->m_iSourcesMode = 2;
     dialog->m_bLockSettings = true;
     dialog->m_bLockMusic = false;
     dialog->m_bLockVideo = false;
@@ -202,12 +208,12 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
     dialog->m_strName = g_settings.m_vecProfiles[iProfile].getName();
     dialog->m_strThumb = g_settings.m_vecProfiles[iProfile].getThumb();
     dialog->m_strDirectory = g_settings.m_vecProfiles[iProfile].getDirectory();
-    dialog->m_iDbMode = g_settings.m_vecProfiles[iProfile].hasDatabases()?0:1;
-    dialog->m_iSourcesMode = g_settings.m_vecProfiles[iProfile].hasSources()?0:1;
-    if (!g_settings.m_vecProfiles[iProfile].canWriteDatabases() && !g_settings.m_vecProfiles[iProfile].hasDatabases())
-      dialog->m_iDbMode = 2;
-    if (!g_settings.m_vecProfiles[iProfile].canWriteSources() && !g_settings.m_vecProfiles[iProfile].hasSources())
-      dialog->m_iSourcesMode = 2;
+    dialog->m_iDbMode = g_settings.m_vecProfiles[iProfile].canWriteDatabases()?0:1;
+    dialog->m_iSourcesMode = g_settings.m_vecProfiles[iProfile].canWriteSources()?0:1;
+    if (g_settings.m_vecProfiles[iProfile].hasDatabases())
+      dialog->m_iDbMode += 2;
+    if (g_settings.m_vecProfiles[iProfile].hasSources())
+      dialog->m_iSourcesMode += 2;
     
     dialog->m_iLockMode = g_settings.m_vecProfiles[iProfile].getLockMode();
     dialog->m_strLockCode = g_settings.m_vecProfiles[iProfile].getLockCode();
@@ -292,10 +298,10 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
     g_settings.m_vecProfiles[iProfile].setName(dialog->m_strName);
     g_settings.m_vecProfiles[iProfile].setDirectory(dialog->m_strDirectory);
     g_settings.m_vecProfiles[iProfile].setThumb(dialog->m_strThumb);
-    g_settings.m_vecProfiles[iProfile].setWriteDatabases(dialog->m_iDbMode < 2);
-    g_settings.m_vecProfiles[iProfile].setWriteSources(dialog->m_iSourcesMode < 2);
-    g_settings.m_vecProfiles[iProfile].setDatabases(dialog->m_iDbMode == 0);
-    g_settings.m_vecProfiles[iProfile].setSources(dialog->m_iSourcesMode == 0);
+    g_settings.m_vecProfiles[iProfile].setWriteDatabases(!((dialog->m_iDbMode & 1) == 1));
+    g_settings.m_vecProfiles[iProfile].setWriteSources(!((dialog->m_iSourcesMode & 1) == 1));
+    g_settings.m_vecProfiles[iProfile].setDatabases((dialog->m_iDbMode & 2) == 2);
+    g_settings.m_vecProfiles[iProfile].setSources((dialog->m_iSourcesMode & 2) == 2);
     if (dialog->m_strLockCode == "-")
       g_settings.m_vecProfiles[iProfile].setLockMode(LOCK_MODE_EVERYONE);
     else
