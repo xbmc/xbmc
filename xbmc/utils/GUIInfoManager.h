@@ -184,9 +184,6 @@
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
 
-#define SKIN_STRING_EQUALS_START    610
-#define SKIN_STRING_EQUALS_END      700 // max 90 strings, no?
-
 #define XLINK_KAI_USERNAME          701
 #define SKIN_THEME                  702
 
