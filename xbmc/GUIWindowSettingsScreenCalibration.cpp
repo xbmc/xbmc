@@ -3,6 +3,7 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #include "Application.h"
 #include "Util.h"
 
@@ -94,7 +95,6 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
       g_settings.Save();
       // make sure our OSD is closed
       CGUIDialog *dialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
@@ -104,7 +104,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       // reset our screen resolution to what it was initially
       g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
       // Inform the player so we can update the resolution
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer && !g_renderManager.Paused())
         g_application.m_pPlayer->Update();
     }
     break;
