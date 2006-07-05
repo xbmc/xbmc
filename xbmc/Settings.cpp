@@ -68,7 +68,7 @@ CSettings::CSettings(void)
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
     g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
-    g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].GUIOverscan);
+    g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
   }
 
   g_stSettings.m_iMyVideoStack = STACK_NONE;
@@ -763,7 +763,6 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
       fSafe = 0.035f;
     GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles, (int)((1 - fSafe)*m_ResInfo[iRes].iHeight), m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight*5 / 4);
     GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio, 128.0f / 117.0f, 0.5f, 2.0f);
-    GetInteger(pResolution, "osdyoffset", m_ResInfo[iRes].iOSDYOffset, 0, -m_ResInfo[iRes].iHeight, m_ResInfo[iRes].iHeight);
 
     // get the overscan info
     const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
@@ -774,24 +773,12 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
       GetInteger(pOverscan, "right", m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iWidth / 2, m_ResInfo[iRes].iWidth*3 / 2);
       GetInteger(pOverscan, "bottom", m_ResInfo[iRes].Overscan.bottom, m_ResInfo[iRes].iHeight, m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight*3 / 2);
     }
-    // GUI overscan info
-    pOverscan = pResolution->FirstChildElement("guioverscan");
-    if (pOverscan)
-    {
-      GetInteger(pOverscan, "left", m_ResInfo[iRes].GUIOverscan.left, 0, -m_ResInfo[iRes].iWidth / 4, m_ResInfo[iRes].iWidth / 4);
-      GetInteger(pOverscan, "top", m_ResInfo[iRes].GUIOverscan.top, 0, -m_ResInfo[iRes].iHeight / 4, m_ResInfo[iRes].iHeight / 4);
-      GetInteger(pOverscan, "right", m_ResInfo[iRes].GUIOverscan.right, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iWidth / 2, m_ResInfo[iRes].iWidth * 3 / 2);
-      GetInteger(pOverscan, "bottom", m_ResInfo[iRes].GUIOverscan.bottom, m_ResInfo[iRes].iHeight, m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight * 3 / 2);
-    }
+
     CLog::Log(LOGDEBUG, "  calibration for %s %ix%i", m_ResInfo[iRes].strMode, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iHeight);
-    CLog::Log(LOGDEBUG, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i) osdyoffset:%i",
+    CLog::Log(LOGDEBUG, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i)",
               m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
               m_ResInfo[iRes].Overscan.left, m_ResInfo[iRes].Overscan.top,
-              m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].Overscan.bottom,
-              m_ResInfo[iRes].iOSDYOffset);
-    CLog::Log(LOGDEBUG, "    GUI calibration :(%i,%i)->(%i,%i)",
-              m_ResInfo[iRes].GUIOverscan.left, m_ResInfo[iRes].GUIOverscan.top,
-              m_ResInfo[iRes].GUIOverscan.right, m_ResInfo[iRes].GUIOverscan.bottom);
+              m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].Overscan.bottom);
 
     // iterate around
     pResolution = pResolution->NextSiblingElement("resolution");
@@ -812,7 +799,6 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
     SetString(pNode, "description", m_ResInfo[i].strMode);
     SetInteger(pNode, "id", i);
     SetInteger(pNode, "subtitles", m_ResInfo[i].iSubtitles);
-    SetInteger(pNode, "osdyoffset", m_ResInfo[i].iOSDYOffset);
     SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
     // create the overscan child
     TiXmlElement overscanElement("overscan");
@@ -821,13 +807,6 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
     SetInteger(pOverscanNode, "top", m_ResInfo[i].Overscan.top);
     SetInteger(pOverscanNode, "right", m_ResInfo[i].Overscan.right);
     SetInteger(pOverscanNode, "bottom", m_ResInfo[i].Overscan.bottom);
-    // create the GUIoverscan child
-    TiXmlElement guiOverscanElement("guioverscan");
-    TiXmlNode *pGUIOverscanNode = pNode->InsertEndChild(guiOverscanElement);
-    SetInteger(pGUIOverscanNode, "left", m_ResInfo[i].GUIOverscan.left);
-    SetInteger(pGUIOverscanNode, "top", m_ResInfo[i].GUIOverscan.top);
-    SetInteger(pGUIOverscanNode, "right", m_ResInfo[i].GUIOverscan.right);
-    SetInteger(pGUIOverscanNode, "bottom", m_ResInfo[i].GUIOverscan.bottom);
   }
   return true;
 }

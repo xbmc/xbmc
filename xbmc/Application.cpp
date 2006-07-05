@@ -66,7 +66,6 @@
 #include "GUIWindowSettings.h"
 #include "GUIWindowSettingsProfile.h"
 #include "GUIWindowSettingsCategory.h"
-#include "GUIWindowSettingsUICalibration.h"
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowScreensaver.h"
@@ -1030,7 +1029,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
-  m_gWindowManager.Add(new CGUIWindowSettingsUICalibration);    // window id = 10
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
@@ -2773,8 +2771,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_SETTINGS_MENU);
     m_gWindowManager.Delete(WINDOW_SETTINGS_PROFILES);
     m_gWindowManager.Delete(WINDOW_SETTINGS_MYPICTURES);  // all the settings categories
-    m_gWindowManager.Delete(WINDOW_UI_CALIBRATION);
-    m_gWindowManager.Delete(WINDOW_MOVIE_CALIBRATION);
+    m_gWindowManager.Delete(WINDOW_SCREEN_CALIBRATION);
     m_gWindowManager.Delete(WINDOW_SYSTEM_INFORMATION);
     m_gWindowManager.Delete(WINDOW_SCREENSAVER);
     m_gWindowManager.Delete(WINDOW_OSD);

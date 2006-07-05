@@ -2365,10 +2365,10 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     if (0)
     { // reset calibration to defaults
       OVERSCAN oscan;
-      memcpy(&oscan, &g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].GUIOverscan, sizeof(OVERSCAN));
-      g_graphicsContext.ResetOverscan(g_graphicsContext.GetVideoResolution(), g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].GUIOverscan);
+      memcpy(&oscan, &g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan, sizeof(OVERSCAN));
+      g_graphicsContext.ResetOverscan(g_graphicsContext.GetVideoResolution(), g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan);
       g_application.Render();
-      memcpy(&g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].GUIOverscan, &oscan, sizeof(OVERSCAN));
+      memcpy(&g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan, &oscan, sizeof(OVERSCAN));
     }
     // now take screenshot
     g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
