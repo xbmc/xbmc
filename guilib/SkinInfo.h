@@ -39,6 +39,8 @@ public:
 
   bool OnlyAnimateToHome() { return m_onlyAnimateToHome; };
 
+  inline float GetSkinZoom() { return m_skinzoom; };
+
 protected:
   void LoadIncludes();
   bool LoadStartupWindows(const TiXmlElement *startup);
@@ -55,6 +57,8 @@ protected:
 
   vector<CStartupWindow> m_startupWindows;
   bool m_onlyAnimateToHome;
+
+  float m_skinzoom;
 };
 
 extern CSkinInfo g_SkinInfo;

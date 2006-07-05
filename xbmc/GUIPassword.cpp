@@ -414,10 +414,10 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
   int iSwitch = iWindowID;
   
   // check if a settings subcategory was called from other than settings window
-  if (iWindowID >= WINDOW_UI_CALIBRATION && iWindowID <= WINDOW_SETTINGS_APPEARANCE)
+  if (iWindowID >= WINDOW_SCREEN_CALIBRATION && iWindowID <= WINDOW_SETTINGS_APPEARANCE)
   {
     int iCWindowID = m_gWindowManager.GetActiveWindow();
-    if (iCWindowID != WINDOW_SETTINGS_MENU && (iCWindowID < WINDOW_UI_CALIBRATION || iCWindowID > WINDOW_SETTINGS_APPEARANCE))
+    if (iCWindowID != WINDOW_SETTINGS_MENU && (iCWindowID < WINDOW_SCREEN_CALIBRATION || iCWindowID > WINDOW_SETTINGS_APPEARANCE))
       iSwitch = WINDOW_SETTINGS_MENU;
   }
   CLog::Log(LOGDEBUG, "Checking if window ID %i is locked.", iSwitch);

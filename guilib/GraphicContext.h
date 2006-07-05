@@ -57,11 +57,9 @@ struct OVERSCAN
 struct RESOLUTION_INFO
 {
   OVERSCAN Overscan;
-  OVERSCAN GUIOverscan;
   int iWidth;
   int iHeight;
   int iSubtitles;
-  int iOSDYOffset; // Y offset for OSD (applied to all Y pos in skin)
   DWORD dwFlags;
   float fPixelRatio;
   char strMode[11];

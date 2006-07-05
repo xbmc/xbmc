@@ -434,9 +434,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\settings\VideoSettings.cpp">
 				</File>
 				<File
