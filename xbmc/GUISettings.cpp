@@ -427,15 +427,16 @@ CGUISettings::CGUISettings(void)
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(3, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(5, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
-  AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
-  AddSeparator(7, "lookandfeel.sep1");
-  AddString(8, "lookandfeel.language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(9, "lookandfeel.region", 20026, "", SPIN_CONTROL_TEXT);
-  AddString(10, "lookandfeel.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-  AddSeparator(11, "lookandfeel.sep2");
-  AddInt(12, "lookandfeel.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
-  AddString(13, "lookandfeel.guicalibration",213,"", BUTTON_CONTROL_STANDARD);
-  AddSeparator(14, "lookandfeel.sep3");
+  AddInt(6, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
+  AddInt(7, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
+  AddSeparator(8, "lookandfeel.sep1");
+  AddString(9, "lookandfeel.language",248,"english", SPIN_CONTROL_TEXT);
+  AddString(10, "lookandfeel.region", 20026, "", SPIN_CONTROL_TEXT);
+  AddString(11, "lookandfeel.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+  AddSeparator(12, "lookandfeel.sep2");
+  AddInt(13, "lookandfeel.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);  
+  AddString(14, "lookandfeel.guicalibration",213,"", BUTTON_CONTROL_STANDARD);
+  AddSeparator(15, "lookandfeel.sep3");
   
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideextensions", 497, false);

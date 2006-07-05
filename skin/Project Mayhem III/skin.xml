@@ -2,6 +2,10 @@
   <defaultresolution>pal</defaultresolution>
   <defaultresolutionwide>pal16x9</defaultresolutionwide>
   <version>2.0</version>
+  
+  <!-- amount to zoom skin to remove overscan compensation -->
+  <zoom>1.1</zoom>
+  
   <credits>
     <skinname>Project Mayhem III</skinname>
     <name>by Mathias Mahling aka. ChokeManiac</name>

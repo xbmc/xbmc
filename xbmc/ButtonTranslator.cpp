@@ -366,8 +366,8 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("mymusicfiles")) wWindowID = WINDOW_MUSIC_FILES;
   else if (strWindow.Equals("myvideos")) wWindowID = WINDOW_VIDEOS;
   else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
-  else if (strWindow.Equals("guicalibration")) wWindowID = WINDOW_UI_CALIBRATION;
-  else if (strWindow.Equals("screencalibration")) wWindowID = WINDOW_MOVIE_CALIBRATION;
+  else if (strWindow.Equals("guicalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
+  else if (strWindow.Equals("screencalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
   else if (strWindow.Equals("mypicturessettings")) wWindowID = WINDOW_SETTINGS_MYPICTURES;
   else if (strWindow.Equals("myprogramssettings")) wWindowID = WINDOW_SETTINGS_MYPROGRAMS;
   else if (strWindow.Equals("myweathersettings")) wWindowID = WINDOW_SETTINGS_MYWEATHER;

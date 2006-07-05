@@ -57,9 +57,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:  // fired when OSD is shown
     {
       CGUIDialog::OnMessage(message);
-      // position correctly
-      int iResolution = g_graphicsContext.GetVideoResolution();
-      SetPosition(0, g_settings.m_ResInfo[iResolution].iOSDYOffset);
       return true;
     }
     break;
