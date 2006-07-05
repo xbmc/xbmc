@@ -270,15 +270,17 @@ bool CGUIPassword::SetMasterLockMode()
   return true;
 }
 
-bool CGUIPassword::IsProfileLockUnlocked()
+bool CGUIPassword::IsProfileLockUnlocked(int iProfile)
 {
   if (g_passwordManager.bMasterUser || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
     return true;
-
-  if (g_settings.m_iLastLoadedProfileIndex == 0)
-    return CheckLock(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode(),g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockCode(),20075);
+  int iProfileToCheck=iProfile;
+  if (iProfile == -1)
+    iProfileToCheck = g_settings.m_iLastLoadedProfileIndex;
+  if (iProfileToCheck == 0)
+    return IsMasterLockUnlocked(true);
   else
-    return CheckLock(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode(),g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockCode(),20095);
+    return CheckLock(g_settings.m_vecProfiles[iProfileToCheck].getLockMode(),g_settings.m_vecProfiles[iProfileToCheck].getLockCode(),20095);
 }
 
 bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
