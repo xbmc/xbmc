@@ -294,9 +294,23 @@ void CGUIWindowFileManager::UpdateButtons()
   // update our current directory labels
   CStdString strDir;
   CURL(m_Directory[0].m_strPath).GetURLWithoutUserDetails(strDir);
-  SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT, strDir);
+  if (strDir.IsEmpty())
+  {
+    SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT,g_localizeStrings.Get(20108));
+  }
+  else
+  {
+    SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT, strDir);
+  }
   CURL(m_Directory[1].m_strPath).GetURLWithoutUserDetails(strDir);
-  SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT, strDir);
+    if (strDir.IsEmpty())
+  {
+    SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT,g_localizeStrings.Get(20108));
+  }
+  else
+  {
+    SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT, strDir);
+  }
 
   // update the number of items in each list
   UpdateItemCounts();

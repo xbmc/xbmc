@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-07-2006 changed: directory labels in file manager now show 'root' instead of being blank in the root listing.
  - 05-07-2006 fixed: !Skin.String(name) conditional wasn't functioning (the ! was ignored)
  - 05-07-2006 fixed: Initial control visibility and dialog control visibility were cached incorrectly.
  - 04-07-2006 changed: Skin reload no longer stops the currently playing media.
