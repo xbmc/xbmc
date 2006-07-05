@@ -257,6 +257,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20105] = "Do you want to use it?";
   m_vecStrings[20106] = "Old media sources file found";
   m_vecStrings[20107] = "Separate (locked)";
+  m_vecStrings[20108] = "Root";
 
   // new strings for weather localization
   m_vecStrings[1411] = "with";
