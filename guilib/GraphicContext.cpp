@@ -5,8 +5,12 @@
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBVideoConfig.h"
 #include "xgraphics.h"
+#include "SkinInfo.h"
 
 CGraphicContext g_graphicsContext;
+
+/* quick access to a skin setting, fine unless we starts clearing video settings */
+static CSettingInt* g_guiSkinzoom = NULL;
 
 CGraphicContext::CGraphicContext(void)
 {
@@ -469,7 +473,6 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
 void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
   ResetOverscan(res, g_settings.m_ResInfo[res].Overscan);
-  g_settings.m_ResInfo[res].iOSDYOffset = 0;
   g_settings.m_ResInfo[res].fPixelRatio = GetPixelRatio(res);
   // 1080i
   switch (res)
@@ -593,16 +596,30 @@ void CGraphicContext::ApplyStateBlock()
 
 void CGraphicContext::SetScalingResolution(RESOLUTION res, int posX, int posY, bool needsScaling)
 {
-  // calculate necessary scalings
-  float fFromWidth = (float)g_settings.m_ResInfo[res].iWidth;
-  float fFromHeight = (float)g_settings.m_ResInfo[res].iHeight;
-  float fToPosX = (float)g_settings.m_ResInfo[m_Resolution].GUIOverscan.left;
-  float fToPosY = (float)g_settings.m_ResInfo[m_Resolution].GUIOverscan.top;
-  float fToWidth = (float)g_settings.m_ResInfo[m_Resolution].GUIOverscan.right - fToPosX;
-  float fToHeight = (float)g_settings.m_ResInfo[m_Resolution].GUIOverscan.bottom - fToPosY;
-
   if (needsScaling)
   {
+    // calculate necessary scalings
+    float fFromWidth = (float)g_settings.m_ResInfo[res].iWidth;
+    float fFromHeight = (float)g_settings.m_ResInfo[res].iHeight;
+    float fToPosX = (float)g_settings.m_ResInfo[m_Resolution].Overscan.left;
+    float fToPosY = (float)g_settings.m_ResInfo[m_Resolution].Overscan.top;
+    float fToWidth = (float)g_settings.m_ResInfo[m_Resolution].Overscan.right - fToPosX;
+    float fToHeight = (float)g_settings.m_ResInfo[m_Resolution].Overscan.bottom - fToPosY;
+
+    // add additional zoom to compensate for any overskan built in skin
+    float fZoom = g_SkinInfo.GetSkinZoom();
+
+    if(!g_guiSkinzoom) // lookup gui setting if we didn't have it already
+      g_guiSkinzoom = (CSettingInt*)g_guiSettings.GetSetting("lookandfeel.skinzoom");
+
+    if(g_guiSkinzoom)
+      fZoom *= (100 + g_guiSkinzoom->GetData()) * 0.01f;
+
+    fToPosX -= fToWidth * (fZoom - 1.0f) * 0.5f;
+    fToPosY -= fToHeight * (fZoom - 1.0f) * 0.5f;
+    fToWidth *= fZoom;
+    fToHeight *= fZoom;
+           
     m_windowScaleX = fToWidth / fFromWidth;
     m_windowScaleY = fToHeight / fFromHeight;
     TransformMatrix windowOffset = TransformMatrix::CreateTranslation((float)posX, (float)posY);
