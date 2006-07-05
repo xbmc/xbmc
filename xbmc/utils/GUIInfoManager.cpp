@@ -311,7 +311,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         return AddMultiInfo(GUIInfo(bNegate ? -SKIN_STRING : SKIN_STRING, skinOffset, compareString));
       }
       int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, strTest.GetLength() - 13));
-      return AddMultiInfo(GUIInfo(SKIN_STRING, skinOffset));
+      return AddMultiInfo(GUIInfo(bNegate ? -SKIN_STRING : SKIN_STRING, skinOffset));
     }
     else if (strTest.Left(16).Equals("skin.hassetting("))
     {
