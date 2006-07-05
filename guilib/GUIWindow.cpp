@@ -1163,6 +1163,8 @@ bool CGUIWindow::Initialize()
 
 void CGUIWindow::SetControlVisibility()
 {
+  // reset our info manager caches
+  g_infoManager.ResetCache();
   for (unsigned int i=0; i < m_vecControls.size(); i++)
   {
     CGUIControl *pControl = m_vecControls[i];

@@ -682,16 +682,17 @@ int CGUIInfoManager::GetInt(int info) const
 bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
 {
   // check our cache
-  map<int, bool>::const_iterator it = m_boolCache.find(condition1);
-  if (it != m_boolCache.end())
-    return (*it).second;
+  bool result;
+  if (IsCached(condition1, dwContextWindow, result))
+    return result;
+
   if(  condition1 >= COMBINED_VALUES_START && (condition1 - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
   {
     const CCombinedValue &comb = m_CombinedValues[condition1 - COMBINED_VALUES_START];
     bool result;
     if (!EvaluateBooleanExpression(comb, result, dwContextWindow))
       result = false;
-    m_boolCache.insert(pair<int, bool>(condition1, result));
+    CacheBool(condition1, dwContextWindow, result);
     return result;
   }
 
@@ -756,9 +757,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
     // cache return value
-    bool ret = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow);
-    m_boolCache.insert(pair<int, bool>(condition1, ret));
-    return ret;
+    bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow);
+    CacheBool(condition1, dwContextWindow, result);
+    return result;
   }
   else if (condition == SYSTEM_HASLOCKS)  
     bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE;
@@ -890,7 +891,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   }
   // cache return value
   if (condition1 < 0) bReturn = !bReturn;
-  m_boolCache.insert(pair<int, bool>(condition1, bReturn));
+  CacheBool(condition1, dwContextWindow, bReturn);
   return bReturn;
 }
 
@@ -1948,4 +1949,26 @@ void CGUIInfoManager::ParseLabel(const CStdString &strLabel, vector<CInfoPortion
 void CGUIInfoManager::ResetCache()
 {
   m_boolCache.clear();
+}
+
+inline void CGUIInfoManager::CacheBool(int condition, DWORD contextWindow, bool result)
+{
+  // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
+  // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
+  int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
+  m_boolCache.insert(pair<int, bool>(hash, result));
+}
+
+bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result) const
+{
+  // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
+  // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
+  int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
+  map<int, bool>::const_iterator it = m_boolCache.find(hash);
+  if (it != m_boolCache.end())
+  {
+    result = (*it).second;
+    return true;
+  }
+  return false;
 }

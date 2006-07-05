@@ -372,6 +372,9 @@ protected:
 
   std::vector<CCombinedValue> m_CombinedValues;
 
+  // routines for caching the bool results
+  bool IsCached(int condition, DWORD contextWindow, bool &result) const;
+  void CacheBool(int condition, DWORD contextWindow, bool result);
   std::map<int, bool> m_boolCache;
 };
 
