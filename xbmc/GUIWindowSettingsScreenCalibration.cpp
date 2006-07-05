@@ -14,12 +14,11 @@
 #define CONTROL_BOTTOM_RIGHT 9
 #define CONTROL_SUBTITLES  10
 #define CONTROL_PIXEL_RATIO  11
-#define CONTROL_OSD    12
 #define CONTROL_VIDEO   20
 #define CONTROL_NONE   0
 
 CGUIWindowSettingsScreenCalibration::CGUIWindowSettingsScreenCalibration(void)
-    : CGUIWindow(WINDOW_MOVIE_CALIBRATION, "SettingsScreenCalibration.xml")
+    : CGUIWindow(WINDOW_SCREEN_CALIBRATION, "SettingsScreenCalibration.xml")
 {
   m_needsScaling = false;         // we handle all the scaling
 }
@@ -50,8 +49,6 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
     {
       g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
       ResetControls();
-      CGUIWindow *pOSD = m_gWindowManager.GetWindow(WINDOW_OSD);
-      if (pOSD) pOSD->SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
       return true;
     }
     break;
@@ -65,8 +62,6 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
       Sleep(1000);
       g_graphicsContext.SetGUIResolution(m_Res[m_iCurRes]);
       ResetControls();
-      CGUIWindow *pOSD = m_gWindowManager.GetWindow(WINDOW_OSD);
-      if (pOSD) pOSD->SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
       return true;
     }
     break;
@@ -77,14 +72,10 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 void CGUIWindowSettingsScreenCalibration::AllocResources(bool forceLoad)
 {
   CGUIWindow::AllocResources(forceLoad);
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
-  if (pWindow) pWindow->AllocResources(true);
 }
 
 void CGUIWindowSettingsScreenCalibration::FreeResources(bool forceUnload)
 {
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
-  if (pWindow) pWindow->FreeResources(true);
   CGUIWindow::FreeResources(forceUnload);
 }
 
@@ -96,9 +87,6 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       g_settings.Save();
-      // make sure our OSD is closed
-      CGUIDialog *dialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
-      if (dialog) dialog->Close();
       g_graphicsContext.SetCalibrating(false);
       m_gWindowManager.ShowOverlay(true);
       // reset our screen resolution to what it was initially
@@ -163,7 +151,7 @@ void CGUIWindowSettingsScreenCalibration::NextControl()
   }
   // switch to the next control
   m_iControl++;
-  if (m_iControl > CONTROL_OSD)
+  if (m_iControl > CONTROL_PIXEL_RATIO)
     m_iControl = CONTROL_TOP_LEFT;
   // enable the new control
   EnableControl(m_iControl);
@@ -171,30 +159,11 @@ void CGUIWindowSettingsScreenCalibration::NextControl()
 
 void CGUIWindowSettingsScreenCalibration::EnableControl(int iControl)
 {
-  // get the current control
-  if (iControl == CONTROL_OSD)
-  {
-    SET_CONTROL_HIDDEN(CONTROL_TOP_LEFT);
-    SET_CONTROL_HIDDEN(CONTROL_BOTTOM_RIGHT);
-    SET_CONTROL_HIDDEN(CONTROL_SUBTITLES);
-    SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
-    SET_CONTROL_VISIBLE(CONTROL_OSD);
-    SET_CONTROL_FOCUS(CONTROL_OSD, 0);
-    CGUIDialog *dialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
-    if (dialog) dialog->Show();
-  }
-  else
-  {
-    SET_CONTROL_HIDDEN(CONTROL_OSD);
-    SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
-    SET_CONTROL_VISIBLE(CONTROL_BOTTOM_RIGHT);
-    SET_CONTROL_VISIBLE(CONTROL_SUBTITLES);
-    SET_CONTROL_VISIBLE(CONTROL_PIXEL_RATIO);
-    SET_CONTROL_FOCUS(iControl, 0);
-    // hide the OSD dialog
-    CGUIDialog *pOSD = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
-    if (pOSD) pOSD->Close(true);
-  }
+  SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
+  SET_CONTROL_VISIBLE(CONTROL_BOTTOM_RIGHT);
+  SET_CONTROL_VISIBLE(CONTROL_SUBTITLES);
+  SET_CONTROL_VISIBLE(CONTROL_PIXEL_RATIO);
+  SET_CONTROL_FOCUS(iControl, 0);
 }
 
 void CGUIWindowSettingsScreenCalibration::ResetControls()
@@ -237,16 +206,6 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
     pControl->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pControl->GetWidth()) / 2,
                           g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles - (int)pControl->GetHeight());
     pControl->SetLocation(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles, false);
-  }
-  pControl = (CGUIMoverControl*)GetControl(CONTROL_OSD);
-  if (pControl)
-  {
-    pControl->SetLimits(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 2,
-                        0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*5 / 4);
-    pControl->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pControl->GetWidth()) / 2,
-                          g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset - (int)pControl->GetHeight());
-    pControl->SetLocation(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset, false);
-    pControl->SetVisible(false);
   }
   // lastly the pixel ratio control...
   CGUIResizeControl *pResize = (CGUIResizeControl*)GetControl(CONTROL_PIXEL_RATIO);
@@ -313,16 +272,6 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
           g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles = pControl->GetYLocation();
           strStatus.Format("%s (%i)", g_localizeStrings.Get(274).c_str(), pControl->GetYLocation());
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 277);
-        }
-        break;
-
-      case CONTROL_OSD:
-        {
-          g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset = pControl->GetYLocation() - g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight;
-          strStatus.Format("%s (%i, Offset=%i)", g_localizeStrings.Get(469).c_str(), pControl->GetYLocation(), g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
-          SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 468);
-          CGUIWindow *pOSD = m_gWindowManager.GetWindow(WINDOW_OSD);
-          if (pOSD) pOSD->SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
         }
         break;
       }

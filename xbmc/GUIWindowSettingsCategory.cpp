@@ -1157,9 +1157,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (port <= 0 || port > 65535)
       pSetting->SetData("8080");
   }
-  else if (strSetting.Equals("myvideos.calibrate"))
+  else if (strSetting.Equals("myvideos.calibrate") || strSetting.Equals("lookandfeel.guicalibration"))
   { // activate the video calibration screen
-    m_gWindowManager.ActivateWindow(WINDOW_MOVIE_CALIBRATION);
+    m_gWindowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
   else if (strSetting.Equals("myvideos.externaldvdplayer"))
   {
@@ -1268,10 +1268,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_guiSettings.SetString("lookandfeel.soundskin", pControl->GetCurrentLabel());
 
     g_audioManager.Load();
-  }
-  else if (strSetting.Equals("lookandfeel.guicalibration"))
-  { // activate the video calibration screen
-    m_gWindowManager.ActivateWindow(WINDOW_UI_CALIBRATION);
   }
   else if (strSetting.Equals("lookandfeel.resolution"))
   { // new resolution choosen... - update if necessary

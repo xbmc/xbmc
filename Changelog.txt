@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-07-2006 changed: combined gui and video calibration, 
+              added: new gui setting skin zoom and new skin.xml setting, to allow for overscan adjustment of skin.
+              removed: osd location adjustment, now only follows what's been set in skin
  - 05-07-2006 changed: directory labels in file manager now show 'root' instead of being blank in the root listing.
  - 05-07-2006 fixed: !Skin.String(name) conditional wasn't functioning (the ! was ignored)
  - 05-07-2006 fixed: Initial control visibility and dialog control visibility were cached incorrectly.
