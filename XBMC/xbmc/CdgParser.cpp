@@ -434,16 +434,16 @@ void CCdgRenderer::DrawTexture()
 
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
   m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)BORDERWIDTH, (float) BORDERHEIGHT);
-  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.left, (float) g_settings.m_ResInfo[res].GUIOverscan.top, 0, 0 );
+  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].Overscan.left, (float) g_settings.m_ResInfo[res].Overscan.top, 0, 0 );
 
   m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)(WIDTH - BORDERWIDTH), (float) BORDERHEIGHT);
-  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.right, (float) g_settings.m_ResInfo[res].GUIOverscan.top, 0, 0 );
+  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].Overscan.right, (float) g_settings.m_ResInfo[res].Overscan.top, 0, 0 );
 
   m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)(WIDTH - BORDERWIDTH), (float)(HEIGHT - BORDERHEIGHT));
-  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.right, (float) g_settings.m_ResInfo[res].GUIOverscan.bottom, 0, 0);
+  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].Overscan.right, (float) g_settings.m_ResInfo[res].Overscan.bottom, 0, 0);
 
   m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)BORDERWIDTH, (float)(HEIGHT - BORDERHEIGHT));
-  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.left, (float) g_settings.m_ResInfo[res].GUIOverscan.bottom, 0, 0 );
+  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].Overscan.left, (float) g_settings.m_ResInfo[res].Overscan.bottom, 0, 0 );
 
   m_pd3dDevice->End();
 }

@@ -105,6 +105,14 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
           pGrandChild = pGrandChild->NextSibling("name");
         }
       }
+
+      // get the skin zoom parameter. it's how much skin should be enlarged to get rid of overscan
+      pChild = pRootElement->FirstChild("zoom");
+      if (pChild && pChild->FirstChild())
+        m_skinzoom = (float)atof(pChild->FirstChild()->Value());
+      else
+        m_skinzoom = 1.0f;
+
       // now load the startupwindow information
       LoadStartupWindows(pRootElement->FirstChildElement("startupwindows"));
     }
