@@ -1958,7 +1958,6 @@ inline void CGUIInfoManager::CacheBool(int condition, DWORD contextWindow, bool 
   CSingleLock lock(m_critInfo);
   int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
   m_boolCache.insert(pair<int, bool>(hash, result));
-  lock.Leave();
 }
 
 bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result) const
@@ -1969,13 +1968,11 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
   CSingleLock lock(m_critInfo);
   int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
   map<int, bool>::const_iterator it = m_boolCache.find(hash);
-  bool bFound=false;
   if (it != m_boolCache.end())
   {
     result = (*it).second;
-    bFound = true;
+    return true;
   }
-  lock.Leave();
 
-  return bFound;
+  return false;
 }
