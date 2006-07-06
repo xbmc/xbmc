@@ -265,7 +265,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
 
       bExists = CFile::Exists(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
       if (bExists)
-        if (!CGUIDialogYesNo::ShowAndGetInput(20058,20104,20106,20022))
+        if (!CGUIDialogYesNo::ShowAndGetInput(20058,20106,20105,20022))
           bExists = false;
 
       if (!bExists)
