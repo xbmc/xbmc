@@ -599,12 +599,45 @@ HRESULT CApplication::Create()
   helper.Unmount("Q:");
   helper.Mount("Q:", szDevicePath);
 
+  g_settings.m_vecProfiles.clear();
+  g_settings.LoadProfiles("q:\\system\\profiles.xml");
+  if (g_settings.m_vecProfiles.size() == 0)
+  {
+    //no profiles yet, make one based on the default settings
+    CProfile profile;
+    profile.setDirectory("q:\\userdata");
+    profile.setName("Default user");
+    g_settings.m_vecProfiles.push_back(profile);
+  }
+
   // if we are running from DVD our UserData location will be TDATA
   if (CUtil::IsDVD(strExecutablePath))
   {
     // TODO: Should we copy over any UserData folder from the DVD?
+    if (!CFile::Exists("T:\\guisettings.xml")) // first run - cache userdata folder
+    {
+      CFileItem item("Q:\\UserData");
+      item.m_strPath = "Q:\\UserData";
+      item.m_bIsFolder = true;
+      item.Select(true);
+      CGUIWindowFileManager::CopyItem(&item,"T:\\",NULL);
+    }
     g_settings.m_vecProfiles[0].setDirectory("T:\\");
     g_stSettings.m_logFolder = "T:\\";
+  }
+  else
+  {
+    helper.Unmount("T:");
+    CStdString strMnt = g_settings.GetUserDataFolder();
+    if (g_settings.GetUserDataFolder().Left(2).Equals("Q:"))
+    {
+      CUtil::GetHomePath(strMnt);
+      strMnt += g_settings.GetUserDataFolder().substr(2);
+    }    
+
+    helper.GetPartition(strMnt, szDevicePath);
+    strcat(szDevicePath, &strMnt.c_str()[2]);
+    helper.Mount("T:",szDevicePath);
   }
 
   // check logpath
@@ -696,18 +729,6 @@ HRESULT CApplication::Create()
     if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
       CUtil::DeleteGUISettings();
     m_pd3dDevice->Release();
-  }
-
-  CLog::Log(LOGNOTICE,"load profiles...");
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles("q:\\system\\profiles.xml");
-  if (g_settings.m_vecProfiles.size() == 0)
-  {
-    //no profiles yet, make one based on the default settings
-    CProfile profile;
-    profile.setDirectory("q:\\userdata");
-    profile.setName("Default user");
-    g_settings.m_vecProfiles.push_back(profile);
   }
 
   CLog::Log(LOGNOTICE, "load settings...");
