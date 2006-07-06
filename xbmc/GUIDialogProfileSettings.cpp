@@ -137,7 +137,9 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
     {
       m_bNeedSave = true;
       CGUIImage *pImage = (CGUIImage*)GetControl(2);
-      m_strThumb = CFileItem(strThumb).GetCachedProfileThumb();
+      CFileItem item(strThumb);
+      item.m_strPath = strThumb;
+      m_strThumb = item.GetCachedProfileThumb();
       if (CFile::Exists(m_strThumb))
         CFile::Delete(m_strThumb);
 
