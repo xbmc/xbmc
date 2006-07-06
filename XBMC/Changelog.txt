@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-07-2006 fixed: pressing play dvd and autorun would attempt to start mplayer on some dvd's
  - 06-07-2006 fixed: random lockups due to thread issues with settings bool cache.
  - 06-07-2006 fixed: Some skin settings weren't loaded correctly once a blank setting was encountered.
  - 06-07-2006 changed: combined gui and video calibration, 
