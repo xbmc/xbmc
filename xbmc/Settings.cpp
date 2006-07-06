@@ -2165,7 +2165,7 @@ void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
       { // bool setting
         CSkinBool setting;
         setting.name = settingName;
-        setting.value = pChild->FirstChild() ? false : strcmpi(pChild->FirstChild()->Value(), "true") == 0;
+        setting.value = pChild->FirstChild() ? strcmpi(pChild->FirstChild()->Value(), "true") == 0 : false;
         m_skinBools.insert(pair<int, CSkinBool>(number++, setting));
       }
       pChild = pChild->NextSiblingElement("setting");
