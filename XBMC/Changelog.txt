@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-07-2006 changed: removed o: mapping. t: is now mapped to the user data folder. if you run from a dvd it will be set to the savegame folder and the userdata folder will be cached on first run.
  - 06-07-2006 fixed: pressing play dvd and autorun would attempt to start mplayer on some dvd's
  - 06-07-2006 fixed: random lockups due to thread issues with settings bool cache.
  - 06-07-2006 fixed: Some skin settings weren't loaded correctly once a blank setting was encountered.
