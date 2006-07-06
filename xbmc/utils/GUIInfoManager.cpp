@@ -186,8 +186,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
       //else if (strTest.Left(16).Equals("system.alarmpos("))
-  else if (strTest.Equals("system.alarmpos"))
-    ret = SYSTEM_ALARM_POS;
+      else if (strTest.Equals("system.alarmpos"))
+        ret = SYSTEM_ALARM_POS;
 
   }
   else if (strCategory.Equals("xlinkkai"))
@@ -1955,20 +1955,27 @@ inline void CGUIInfoManager::CacheBool(int condition, DWORD contextWindow, bool 
 {
   // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
   // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
+  CSingleLock lock(m_critInfo);
   int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
   m_boolCache.insert(pair<int, bool>(hash, result));
+  lock.Leave();
 }
 
 bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result) const
 {
   // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
   // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
+ 
+  CSingleLock lock(m_critInfo);
   int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
   map<int, bool>::const_iterator it = m_boolCache.find(hash);
+  bool bFound=false;
   if (it != m_boolCache.end())
   {
     result = (*it).second;
-    return true;
+    bFound = true;
   }
-  return false;
+  lock.Leave();
+
+  return bFound;
 }
