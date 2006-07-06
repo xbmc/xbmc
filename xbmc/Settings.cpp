@@ -264,17 +264,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   char szDevicePath[1024]; 
   CIoSupport helper;
-  CStdString strMnt = GetUserDataFolder();
-  if (GetUserDataFolder().Left(2).Equals("Q:"))
-  {
-    CUtil::GetHomePath(strMnt);
-    strMnt += GetUserDataFolder().substr(2);
-  }    
-  helper.GetPartition(strMnt, szDevicePath);
-  strcat(szDevicePath,strMnt.c_str()+2);
-  helper.Unmount("O:");
-  helper.Mount("O:",szDevicePath);
-  strMnt = GetProfileUserDataFolder();
+  CStdString strMnt = GetProfileUserDataFolder();
   if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
   {
     CUtil::GetHomePath(strMnt);
@@ -2494,7 +2484,7 @@ CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
   CStdString folder;
   folder = "P:\\"+strFile;
   if (!CFile::Exists(folder))
-    folder = "O:\\"+strFile;
+    folder = "T:\\"+strFile;
   return folder;
 } 
 
@@ -2729,7 +2719,7 @@ CStdString CSettings::GetSettingsFile() const
 {
   CStdString settings;
   if (g_settings.m_iLastLoadedProfileIndex == 0)
-    settings = "O:\\guisettings.xml";
+    settings = "T:\\guisettings.xml";
   else
     settings = "P:\\guisettings.xml";
   return settings;
