@@ -257,7 +257,7 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
 
   pDialog->DoModal();
 
-  if (bGetUserInput)
+  if (bGetUserInput && !pDialog->IsCanceled())
   {
     md5_state_t md5state;
     unsigned char md5pword[16];
