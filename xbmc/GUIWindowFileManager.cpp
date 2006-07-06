@@ -303,7 +303,7 @@ void CGUIWindowFileManager::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT, strDir);
   }
   CURL(m_Directory[1].m_strPath).GetURLWithoutUserDetails(strDir);
-    if (strDir.IsEmpty())
+  if (strDir.IsEmpty())
   {
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT,g_localizeStrings.Get(20108));
   }
@@ -710,8 +710,13 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
     break;
   }
 
-  if (m_dlgProgress) m_dlgProgress->Progress();
-  return !m_dlgProgress->IsCanceled();
+  bool bResult = true;
+  if (m_dlgProgress) 
+  {
+    m_dlgProgress->Progress();
+    bResult = !m_dlgProgress->IsCanceled();
+  }
+  return bResult;
 }
 
 bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPath, const CStdString& strDestFile)
@@ -1333,6 +1338,59 @@ bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
   }
   return true;
 }
+
+bool CGUIWindowFileManager::CopyItem(const CFileItem *pItem, const CStdString& strDirectory, CGUIDialogProgress* pProgress)
+{
+  if (!pItem) return false;
+  CLog::Log(LOGDEBUG,"FileManager::CopyItem: %s",pItem->GetLabel().c_str());
+
+  // prompt user for confirmation of file/folder deletion
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (pDialog && pProgress)
+  {
+    pDialog->SetHeading(122);
+    pDialog->SetLine(0, 125);
+    pDialog->SetLine(1, CUtil::GetFileName(pItem->m_strPath));
+    pDialog->SetLine(2, "");
+    pDialog->DoModal();
+    if (!pDialog->IsConfirmed()) return false;
+  }
+
+  // Create a temporary item list containing the file/folder for deletion
+  CFileItemList items;
+
+  if (pItem->m_bIsFolder)
+  {
+    CDirectory::GetDirectory(pItem->m_strPath,items,"",false);
+    for (int i=0;i<items.Size();++i)
+      items[i]->Select(true);
+  }
+  else
+  {
+    CFileItem *pItemTemp = new CFileItem(*pItem);
+    items.Add(pItemTemp);
+  }
+
+  bool bAllocated = false;
+  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES);
+  if (!pFileManager)
+  {
+    pFileManager = new CGUIWindowFileManager();
+    bAllocated = true;
+  }
+  if (pFileManager)
+  {
+    pFileManager->m_dlgProgress = pProgress;
+    pFileManager->ResetProgressBar(false);
+    pFileManager->DoProcess(ACTION_COPY, items, strDirectory);
+    if (pFileManager->m_dlgProgress) pFileManager->m_dlgProgress->Close();
+  }
+  if (bAllocated)
+    delete pFileManager;
+  
+  return true;
+}
+
 
 void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 {
