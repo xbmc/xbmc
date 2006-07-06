@@ -42,8 +42,10 @@ void CGUIDialogLockSettings::CreateSettings()
   m_settings.clear();
   // create our settings
   AddButton(1,m_iButtonLabel);
+  if (m_iLock > LOCK_MODE_QWERTY)
+    m_iLock = LOCK_MODE_EVERYONE;
   if (m_iLock != LOCK_MODE_EVERYONE)
-    m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(12336+m_iLock));
+    m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(12336+m_iLock).c_str());
   else
     m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(1223).c_str());
 
@@ -99,6 +101,8 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
         iLockMode = LOCK_MODE_QWERTY;
         bResult = CGUIDialogKeyboard::ShowAndVerifyNewPassword(newPassword);
         break;
+      default:
+        break;
       }
       if (bResult)
       {
@@ -110,9 +114,9 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
         m_iLock = iLockMode;
         m_bChanged = true;
         if (m_iLock != LOCK_MODE_EVERYONE)
-          setting.name.Format("%s (%s)",g_localizeStrings.Get(20091),g_localizeStrings.Get(12336+m_iLock));
+          setting.name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(12336+m_iLock).c_str());
         else
-          setting.name.Format("%s (%s)",g_localizeStrings.Get(20091),g_localizeStrings.Get(1223));
+          setting.name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(1223).c_str());
 
         UpdateSetting(1);
       }
