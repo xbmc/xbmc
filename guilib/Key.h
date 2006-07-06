@@ -344,6 +344,8 @@ public:
   bool FromKeyboard() const;
   bool IsAnalogButton() const;
   bool IsIRRemote() const;
+  void SetFromHttpApi(bool);
+  bool GetFromHttpApi() const;
 
 private:
   DWORD m_dwButtonCode;
@@ -354,5 +356,6 @@ private:
   float m_fRightThumbX;
   float m_fRightThumbY;
   float m_fRepeat; // time since last keypress
+  bool m_fromHttpApi;
 };
 #endif
