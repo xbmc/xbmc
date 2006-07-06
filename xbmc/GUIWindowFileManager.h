@@ -2,6 +2,7 @@
 #include "GUIWindow.h"
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
+#include "utils/CriticalSection.h"
 
 using namespace DIRECTORY;
 
@@ -22,6 +23,7 @@ public:
   // static members for all windows to use
   static bool DeleteItem(const CFileItem *pItem);
   static bool RenameFile(const CStdString &strFile);
+  static bool CopyItem(const CFileItem *pItem, const CStdString& strDest, CGUIDialogProgress* pProgress = NULL);
 
   void ResetProgressBar(bool showProgress = true);
   static __int64 CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
