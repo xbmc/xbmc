@@ -1678,6 +1678,8 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     int iLockMode=LOCK_MODE_EVERYONE;
     XMLUtils::GetInt(pProfile,"lockmode",iLockMode);
+    if (iLockMode > LOCK_MODE_QWERTY)
+      iLockMode = LOCK_MODE_EVERYONE; 
     profile.setLockMode(iLockMode);
 
     CStdString strLockCode;
