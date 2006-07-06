@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-07-2006 fixed: random lockups due to thread issues with settings bool cache.
  - 06-07-2006 fixed: Some skin settings weren't loaded correctly once a blank setting was encountered.
  - 06-07-2006 changed: combined gui and video calibration, 
               added: new gui setting skin zoom and new skin.xml setting, to allow for overscan adjustment of skin.
