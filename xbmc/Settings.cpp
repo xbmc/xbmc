@@ -2151,21 +2151,21 @@ void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
   if (pElement)
   {
     const TiXmlElement *pChild = pElement->FirstChildElement("setting");
-    while (pChild && pChild->FirstChild())
+    while (pChild)
     {
       CStdString settingName = pChild->Attribute("name");
       if (pChild->Attribute("type") && strcmpi(pChild->Attribute("type"),"string") == 0)
       { // string setting
         CSkinString string;
         string.name = settingName;
-        string.value = pChild->FirstChild()->Value();
+        string.value = pChild->FirstChild() ? pChild->FirstChild()->Value() : "";
         m_skinStrings.insert(pair<int, CSkinString>(number++, string));
       }
       else
       { // bool setting
         CSkinBool setting;
         setting.name = settingName;
-        setting.value = strcmpi(pChild->FirstChild()->Value(), "true") == 0;
+        setting.value = pChild->FirstChild() ? false : strcmpi(pChild->FirstChild()->Value(), "true") == 0;
         m_skinBools.insert(pair<int, CSkinBool>(number++, setting));
       }
       pChild = pChild->NextSiblingElement("setting");
