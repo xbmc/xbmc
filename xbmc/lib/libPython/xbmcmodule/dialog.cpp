@@ -224,7 +224,7 @@ namespace PYXBMC
 		pDialog->SetHeading(utf8Line[0]);
 
 		for (int i = 1; i < 4; i++)
-			pDialog->SetLine(i,utf8Line[i]);
+			pDialog->SetLine(i - 1,utf8Line[i]);
 
 		pDialog->StartModal();
 		g_graphicsContext.Unlock();
