@@ -12,6 +12,7 @@ CKey::CKey(void)
   m_fRightThumbX = 0.0f;
   m_fRightThumbY = 0.0f;
   m_fRepeat = 0.0f;
+  m_fromHttpApi = false;
 }
 
 CKey::~CKey(void)
@@ -27,6 +28,7 @@ CKey::CKey(DWORD dwButtonCode, BYTE bLeftTrigger, BYTE bRightTrigger, float fLef
   m_fRightThumbY = fRightThumbY;
   m_dwButtonCode = dwButtonCode;
   m_fRepeat = fRepeat;
+  m_fromHttpApi = false;
 }
 
 CKey::CKey(const CKey& key)
@@ -49,6 +51,7 @@ const CKey& CKey::operator=(const CKey& key)
   m_fRightThumbX = key.m_fRightThumbX;
   m_fRightThumbY = key.m_fRightThumbY;
   m_fRepeat = key.m_fRepeat;
+  m_fromHttpApi = key.m_fromHttpApi;
   return *this;
 }
 
@@ -106,4 +109,14 @@ bool CKey::IsIRRemote() const
 float CKey::GetRepeat() const
 {
   return m_fRepeat;
+}
+
+bool CKey::GetFromHttpApi() const
+{
+  return m_fromHttpApi;
+}
+
+void CKey::SetFromHttpApi(bool bFromHttpApi)
+{
+	m_fromHttpApi = bFromHttpApi;
 }
