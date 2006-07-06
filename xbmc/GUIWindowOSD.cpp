@@ -39,9 +39,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
     {
-      // don't save the settings here, it's bad for the hd-spindown feature (causes spinup)
-      // settings are saved in FreeResources in GUIWindowFullScreen
-      //g_settings.Save();
       // Remove our subdialogs if visible
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
       if (pDialog && pDialog->IsRunning())
@@ -50,14 +47,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       if (pDialog && pDialog->IsRunning()) pDialog->Close(true);
       pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);
       if (pDialog && pDialog->IsRunning()) pDialog->Close(true);
-      //return true;
-    }
-    break;
-
-  case GUI_MSG_WINDOW_INIT:  // fired when OSD is shown
-    {
-      CGUIDialog::OnMessage(message);
-      return true;
     }
     break;
   }
