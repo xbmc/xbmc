@@ -1999,11 +1999,17 @@ bool CApplication::OnKey(CKey& key)
     // to map key->action
     if (key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_BUDDIES) )
     {
-      // see if we've got an ascii key
-      if (g_Keyboard.GetAscii() != 0)
-        action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
-      else
-        action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
+      if (key.GetFromHttpApi())
+      {
+        if (key.GetButtonCode() != KEY_INVALID)
+          action.wID = (WORD) key.GetButtonCode();
+      }
+      else 
+		// see if we've got an ascii key
+		if (g_Keyboard.GetAscii() != 0)
+			action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
+		else
+			action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
     }
     else
       g_buttonTranslator.GetAction(iWin, key, action);
@@ -2605,7 +2611,6 @@ bool CApplication::ProcessMouse()
 
 bool CApplication::ProcessHTTPApiButtons()
 {
-  //if (m_pWebServer && pXbmcHttp)
   if (pXbmcHttp)
   {
     // copy key from webserver, and reset it in case we're called again before
