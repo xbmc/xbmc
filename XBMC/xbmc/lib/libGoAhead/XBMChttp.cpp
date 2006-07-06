@@ -11,7 +11,6 @@
 
 #pragma once
 
-
 #include "..\..\stdafx.h"
 #include "WebServer.h"
 #include "XbmcHttp.h"
@@ -33,10 +32,7 @@
 #include "..\..\MusicDatabase.h"
 #include "..\..\GUIWindowSlideShow.h"
 #include "..\..\GUIMediaWindow.h"
-//#include "..\..\GUIWindowMusicNav.h"
 #include "..\..\GUIWindowFileManager.h"
-//#include "..\..\GUIWindowPictures.h"
-//#include "..\..\GUIWindowPrograms.h"
 #include "..\..\guilib\GUIButtonScroller.h"
 
 #define XML_MAX_INNERTEXT_SIZE 256
@@ -1672,6 +1668,7 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
       }
     }
     CKey tempKey(dwButtonCode, bLeftTrigger, bRightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
+	tempKey.SetFromHttpApi(true);
     key = tempKey ;
     return SetResponse(openTag+"OK");
   }
@@ -1837,14 +1834,17 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing album name");
   else
-    {
+  {
     try
     {
+	  int cnt=0;
       scraper.FindAlbuminfo(paras[0]);
-      while (!scraper.Completed()) {Sleep(1);}
+	  //wait a max of 20s
+      while (!scraper.Completed() && cnt++<200)
+	    Sleep(100);
       if (scraper.Successfull())
       {
-        // did we found at least 1 album?
+        // did we find at least 1 album?
         int iAlbumCount=scraper.GetAlbumCount();
         if (iAlbumCount >=1)
         {
@@ -1865,7 +1865,8 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
     {
       return SetResponse(openTag+"Error");
     }
-  }}
+  }
+}
 
 int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
 {
@@ -2436,13 +2437,9 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
         retVal = SetResponse(openTag+"Error:Unknown command");
   else
     retVal = SetResponse(openTag+"Error:Missing command");
-#ifndef _DEBUG
-  // Why are we sleeping here??
-  // This gets called from the main XBMC thread, so any sleeps here will cause
-  // the GUI to be unresponsive.
-  // Perhaps the sleep is supposed to occur in the receiving thread??
-  // In the meantime, I've changed this from 100ms -> 10ms
-  Sleep(10);
+//relinquish the remainder of time slice
+#ifndef _DEBUG 
+  Sleep(0);
 #else
   //Not sure why but to have a reliable debugging experience I need a bigger value here otherwise the thread sometimes gets lost.
   //Perhaps time to upgrade my PC.
@@ -2496,17 +2493,19 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
     g_applicationMessenger.HttpApi(cmd);
   else
     g_applicationMessenger.HttpApi(cmd+"; "+paras);
-  //wait for response - max 10s
-  while (response=="[No response yet]" && cnt<100) 
+  //wait for response - max 20s
+  Sleep(0);
+  response=g_applicationMessenger.GetResponse();
+  while (response=="[No response yet]" && cnt++<200) 
   {
     response=g_applicationMessenger.GetResponse();
+	CLog::Log(LOGDEBUG, "XBMCHTTPShim: waiting %d", cnt);
     Sleep(100);
-    cnt++;
   }
-  if (cnt==100)
+  if (cnt>199)
   {
     response="Error:Timed out";
-    CLog::Log(LOGDEBUG, "HttpApi Waiting");
+    CLog::Log(LOGDEBUG, "HttpApi Timed out");
   }
   //flushresult
   retVal=flushResult(eid, wp, userHeader+response+userFooter);
