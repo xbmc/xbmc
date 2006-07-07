@@ -2,30 +2,16 @@
 #include "GUIAudioManager.h"
 #include "key.h"
 #include "audiocontext.h"
+#include "GUISound.h"
 #include "../xbmc/settings.h"
 #include "../xbmc/buttontranslator.h"
-#include "../xbmc/memutil.h"
 #include "../xbmc/utils/singlelock.h"
-
-typedef struct
-{
-  char chunk_id[4];
-  long chunksize;
-} WAVE_CHUNK;
-
-typedef struct
-{
-  char riff[4];
-  long filesize;
-  char rifftype[4];
-} WAVE_RIFFHEADER;
 
 CGUIAudioManager g_audioManager;
 
 CGUIAudioManager::CGUIAudioManager()
 {
-  m_lpDirectSound=NULL;
-  m_lpActionSoundBuffer=NULL;
+  m_actionSound=NULL;
   m_bEnabled=true;
   g_audioContext.SetSoundDeviceCallback(this);    
 }
@@ -44,11 +30,6 @@ void CGUIAudioManager::Initialize(int iDevice)
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-    m_lpDirectSound=g_audioContext.GetDirectSoundDevice();
-  }
-  else if (iDevice==CAudioContext::DIRECTSOUND_DEVICE)
-  {
-    m_lpDirectSound=g_audioContext.GetDirectSoundDevice();
   }
 }
 
@@ -58,98 +39,36 @@ void CGUIAudioManager::DeInitialize(int iDevice)
 
   if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
 
-  //  Wait for finish when an action sound is playing
-  while(IsPlaying(m_lpActionSoundBuffer));
-  FreeBuffer(&m_lpActionSoundBuffer);
-
-  soundBufferMap::iterator it=m_windowSoundBuffers.begin();
-  while (it!=m_windowSoundBuffers.end())
+  if (m_actionSound)
   {
-    if (IsPlaying(it->second))
-      StopPlaying(it->second);
+    //  Wait for finish when an action sound is playing
+    while(m_actionSound->IsPlaying());
 
-    FreeBuffer(&it->second);
-    it=m_windowSoundBuffers.erase(it);
+    delete m_actionSound;
+    m_actionSound=NULL;
   }
 
-  pythonSoundBufferMap::iterator it1=m_pythonSoundBuffers.begin();
-  while (it1!=m_pythonSoundBuffers.end())
+  windowSoundsMap::iterator it=m_windowSounds.begin();
+  while (it!=m_windowSounds.end())
   {
-    if (IsPlaying(it1->second))
-      StopPlaying(it1->second);
+    CGUISound* sound=it->second;
+    if (sound->IsPlaying())
+      sound->Stop();
 
-    FreeBuffer(&it1->second);
-    it1=m_pythonSoundBuffers.erase(it1);
+    delete sound;
+    it=m_windowSounds.erase(it);
   }
 
-  
-  m_lpDirectSound=NULL;
-}
-
-bool CGUIAudioManager::CreateBuffer(LPWAVEFORMATEX wfx, int iLength, LPDIRECTSOUNDBUFFER* ppSoundBuffer)
-{
-  StopPlaying(*ppSoundBuffer);
-  FreeBuffer(ppSoundBuffer);
-
-  //  Use a volume pair preset
-  DSMIXBINVOLUMEPAIR vp[2] = { DSMIXBINVOLUMEPAIRS_DEFAULT_STEREO };
-
-  //  Set up DSMIXBINS structure
-  DSMIXBINS mixbins;
-  mixbins.dwMixBinCount=2;
-  mixbins.lpMixBinVolumePairs=vp;
-
-  //  Set up DSBUFFERDESC structure
-  DSBUFFERDESC dsbdesc; 
-  memset(&dsbdesc, 0, sizeof(DSBUFFERDESC)); 
-  dsbdesc.dwSize=sizeof(DSBUFFERDESC); 
-  dsbdesc.dwFlags=0; 
-  dsbdesc.dwBufferBytes=iLength; 
-  dsbdesc.lpwfxFormat=wfx;
-  dsbdesc.lpMixBins=&mixbins;
-
-  //  Create buffer
-  if (FAILED(m_lpDirectSound->CreateSoundBuffer(&dsbdesc, ppSoundBuffer, NULL)))
+  pythonSoundsMap::iterator it1=m_pythonSounds.begin();
+  while (it1!=m_pythonSounds.end())
   {
-    (*ppSoundBuffer) = NULL;
-    CLog::Log(LOGERROR, "Sound Manager: Creating sound buffer failed!");
-    return false;
+    CGUISound* sound=it->second;
+    if (sound->IsPlaying())
+      sound->Stop();
+
+    delete sound;
+    it1=m_pythonSounds.erase(it1);
   }
-
-  //  Make effects a loud as possible
-  (*ppSoundBuffer)->SetVolume(g_stSettings.m_nVolumeLevel);
-  (*ppSoundBuffer)->SetHeadroom(0);
-
-  // Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
-  for (DWORD i = 0; i < mixbins.dwMixBinCount;i++)
-    m_lpDirectSound->SetMixBinHeadroom(i, DWORD(g_advancedSettings.m_audioHeadRoom / 6));
-
-  return true; 
-}
-
-bool CGUIAudioManager::FillBuffer(LPBYTE pbData, int iLength, LPDIRECTSOUNDBUFFER pSoundBuffer)
-{
-  if (!pSoundBuffer)
-    return false;
-
-  LPVOID lpvWrite;
-  DWORD  dwLength;
-
-  if (SUCCEEDED(pSoundBuffer->Lock(0, 0, &lpvWrite, &dwLength, NULL, NULL, DSBLOCK_ENTIREBUFFER)))
-  {
-    fast_memcpy(lpvWrite, pbData, iLength);
-    pSoundBuffer->Unlock(lpvWrite, dwLength, NULL, 0);
-    return true;
-  }
-
-  CLog::Log(LOGERROR, "Sound Manager: Filling sound buffer failed!");
-
-  return false;
-}
-
-void CGUIAudioManager::FreeBuffer(LPDIRECTSOUNDBUFFER* pSoundBuffer)
-{
-  SAFE_RELEASE(*pSoundBuffer);
 }
 
 // \brief Clear any unused audio buffers
@@ -157,151 +76,45 @@ void CGUIAudioManager::FreeUnused()
 {
   CSingleLock lock(m_cs);
 
-  //  Free sound buffer from actions
-  if (!IsPlaying(m_lpActionSoundBuffer))
-    FreeBuffer(&m_lpActionSoundBuffer);
-
-  //  Free sound buffers from windows
-  soundBufferMap::iterator it=m_windowSoundBuffers.begin();
-  while (it!=m_windowSoundBuffers.end())
+  //  Free the sound from the last action
+  if (m_actionSound && !m_actionSound->IsPlaying())
   {
-    if (!IsPlaying(it->second))
+    delete m_actionSound;
+    m_actionSound=NULL;
+  }
+
+  //  Free sounds from windows
+  windowSoundsMap::iterator it=m_windowSounds.begin();
+  while (it!=m_windowSounds.end())
+  {
+    CGUISound* sound=it->second;
+    if (!sound->IsPlaying())
     {
-      FreeBuffer(&it->second);
-      it=m_windowSoundBuffers.erase(it);
+      delete sound;
+      it=m_windowSounds.erase(it);
     }
     else ++it;
   }
 
-  // Free soundbuffers from python
-  pythonSoundBufferMap::iterator it1=m_pythonSoundBuffers.begin();
-  while (it1!=m_pythonSoundBuffers.end())
+  // Free sounds from python
+  pythonSoundsMap::iterator it1=m_pythonSounds.begin();
+  while (it1!=m_pythonSounds.end())
   {
-    if (!IsPlaying(it1->second))
+    CGUISound* sound=it->second;
+    if (!sound->IsPlaying())
     {
-      FreeBuffer(&it1->second);
-      it1=m_pythonSoundBuffers.erase(it1);
+      delete sound;
+      it1=m_pythonSounds.erase(it1);
     }
     else ++it1;
   }
 }
 
-void CGUIAudioManager::StopPlaying(LPDIRECTSOUNDBUFFER pSoundBuffer)
-{
-  if (pSoundBuffer)
-  {
-    pSoundBuffer->StopEx( 0, DSBSTOPEX_IMMEDIATE );
-
-    while(IsPlaying(pSoundBuffer));
-  }
-}
-
-bool CGUIAudioManager::IsPlaying(LPDIRECTSOUNDBUFFER pSoundBuffer)
-{
-  if (pSoundBuffer)
-  {
-    DWORD dwStatus;
-    pSoundBuffer->GetStatus(&dwStatus);
-    return (dwStatus & DSBSTATUS_PLAYING);
-  }
-
-  return false;
-}
-
-bool CGUIAudioManager::CreateBufferFromFile(const CStdString& strFile, LPDIRECTSOUNDBUFFER* ppSoundBuffer)
-{
-  if (!m_lpDirectSound)
-    return false;
-
-  LPBYTE pbData=NULL;
-  WAVEFORMATEX wfx;
-  int size=0;
-  if (!LoadWav(strFile, &wfx, &pbData, &size))
-    return false;
-
-  bool bReady=(CreateBuffer(&wfx, size, ppSoundBuffer) && FillBuffer(pbData, size, *ppSoundBuffer));
-
-  if (!bReady)
-    FreeBuffer(ppSoundBuffer);
-
-  delete[] pbData;
-
-  return bReady;
-}
-
-bool CGUIAudioManager::LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* ppWavData, int* pDataSize)
-{
-  FILE* fd = fopen(strFile, "rb");
-  if (!fd)
-    return false;
-
-  // read header
-  WAVE_RIFFHEADER riffh;
-  fread(&riffh, sizeof(WAVE_RIFFHEADER), 1, fd);
-
-  // file valid?
-  if (strncmp(riffh.riff, "RIFF", 4)!=0 && strncmp(riffh.rifftype, "WAVE", 4)!=0)
-  {
-    fclose(fd);
-    return false;
-  }
-
-  long offset=0;
-  offset += sizeof(WAVE_RIFFHEADER);
-  offset -= sizeof(WAVE_CHUNK);
-
-  // parse chunks
-  do
-  {
-    WAVE_CHUNK chunk;
-
-    // always seeking to the start of a chunk
-    fseek(fd, offset + sizeof(WAVE_CHUNK), SEEK_SET);
-    fread(&chunk, sizeof(WAVE_CHUNK), 1, fd);
-
-    if (!strncmp(chunk.chunk_id, "fmt ", 4))
-    { // format chunk
-      memset(wfx, 0, sizeof(WAVEFORMATEX));
-      fread(wfx, 1, 16, fd);
-      // we only need 16 bytes of the fmt chunk
-      if (chunk.chunksize-16>0)
-        fseek(fd, chunk.chunksize-16, SEEK_CUR);
-    }
-    else if (!strncmp(chunk.chunk_id, "data", 4))
-    { // data chunk
-      *ppWavData=new BYTE[chunk.chunksize+1];
-      fread(*ppWavData, 1, chunk.chunksize, fd);
-      *pDataSize=chunk.chunksize;
-
-      if (chunk.chunksize & 1)
-        offset++;
-    }
-    else
-    { // other chunk - unused, just skip
-      fseek(fd, chunk.chunksize, SEEK_CUR);
-    }
-
-    offset+=(chunk.chunksize+sizeof(WAVE_CHUNK));
-
-    if (offset & 1)
-      offset++;
-
-  } while (offset+(int)sizeof(WAVE_CHUNK) < riffh.filesize);
-
-  fclose(fd);
-  return (*ppWavData!=NULL);
-}
-
-void CGUIAudioManager::Play(LPDIRECTSOUNDBUFFER pSoundBuffer)
-{
-  if (pSoundBuffer)
-    pSoundBuffer->Play(0, 0, DSBPLAY_FROMSTART);
-}
-
 // \brief Play a sound associated with a CAction
 void CGUIAudioManager::PlayActionSound(const CAction& action)
 {
-  if (!m_bEnabled)
+  // it's not possible to play gui sounds when passthrough is active
+  if (!m_bEnabled || g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -311,15 +124,17 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
     return;
   
   CStdString strFile=m_strMediaDir+"\\"+it->second;
-  if (CreateBufferFromFile(strFile, &m_lpActionSoundBuffer))
-    Play(m_lpActionSoundBuffer);
+  m_actionSound=new CGUISound();
+  if (m_actionSound->Load(strFile))
+    m_actionSound->Play();
 }
 
 // \brief Play a sound associated with a window and its event
 // Events: SOUND_INIT, SOUND_DEINIT
 void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
 {
-  if (!m_bEnabled)
+  // it's not possible to play gui sounds when passthrough is active
+  if (!m_bEnabled || g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -344,45 +159,51 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
     return;
 
   //  One sound buffer for each window
-  soundBufferMap::iterator itsb=m_windowSoundBuffers.find(dwID);
-  if (itsb!=m_windowSoundBuffers.end())
+  windowSoundsMap::iterator itsb=m_windowSounds.find(dwID);
+  if (itsb!=m_windowSounds.end())
   {
-    if (IsPlaying(itsb->second))
-      StopPlaying(itsb->second);
-    FreeBuffer(&itsb->second);
-    m_windowSoundBuffers.erase(itsb);
+    CGUISound* sound=itsb->second;
+    if (sound->IsPlaying())
+      sound->Stop();
+    delete sound;
+    m_windowSounds.erase(itsb);
   }
 
-  LPDIRECTSOUNDBUFFER pBuffer=NULL;
-  if (CreateBufferFromFile(m_strMediaDir+"\\"+strFile, &pBuffer))
+  CGUISound* sound=new CGUISound();
+  if (sound->Load(m_strMediaDir+"\\"+strFile))
   {
-    m_windowSoundBuffers.insert(pair<DWORD, LPDIRECTSOUNDBUFFER>(dwID, pBuffer));
-    Play(pBuffer);
+    m_windowSounds.insert(pair<DWORD, CGUISound*>(dwID, sound));
+    sound->Play();
   }
 }
 
 // \brief Play a sound given by filename
 void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
 {
+  // it's not possible to play gui sounds when passthrough is active
+  if (g_audioContext.IsPassthroughActive())
+    return;
+
   CSingleLock lock(m_cs);
 
   // If we already loaded the sound, just play it
-  pythonSoundBufferMap::iterator itsb=m_pythonSoundBuffers.find(strFileName);
-  if (itsb!=m_pythonSoundBuffers.end())
+  pythonSoundsMap::iterator itsb=m_pythonSounds.find(strFileName);
+  if (itsb!=m_pythonSounds.end())
   {
-    if (IsPlaying(itsb->second))
-      StopPlaying(itsb->second);
+    CGUISound* sound=itsb->second;
+    if (sound->IsPlaying())
+      sound->Stop();
 
-    Play(itsb->second);
+    sound->Play();
 
     return;
   }
 
-  LPDIRECTSOUNDBUFFER pBuffer=NULL;
-  if (CreateBufferFromFile(strFileName, &pBuffer))
+  CGUISound* sound=new CGUISound();
+  if (sound->Load(strFileName))
   {
-    m_pythonSoundBuffers.insert(pair<CStdString, LPDIRECTSOUNDBUFFER>(strFileName, pBuffer));
-    Play(pBuffer);
+    m_pythonSounds.insert(pair<CStdString, CGUISound*>(strFileName, sound));
+    sound->Play();
   }
 }
 
@@ -483,6 +304,7 @@ bool CGUIAudioManager::Load()
   return true;
 }
 
+// \brief Load a window node of the config file (sounds.xml)
 bool CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier, CStdString& strFile)
 {
   if (!pWindowNode)
@@ -498,6 +320,7 @@ bool CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString&
   return false;
 }
 
+// \brief Enable/Disable nav sounds
 void CGUIAudioManager::Enable(bool bEnable)
 {
   // Enable/Disable has no effect if nav sounds are turned off
@@ -507,15 +330,16 @@ void CGUIAudioManager::Enable(bool bEnable)
   m_bEnabled=bEnable;
 }
 
+// \brief Sets the volume of all playing sounds
 void CGUIAudioManager::SetVolume(int iLevel)
 {
   CSingleLock lock(m_cs);
 
-  if (m_lpActionSoundBuffer)
-    m_lpActionSoundBuffer->SetVolume(iLevel);
+  if (m_actionSound)
+    m_actionSound->SetVolume(iLevel);
 
-  soundBufferMap::iterator it=m_windowSoundBuffers.begin();
-  while (it!=m_windowSoundBuffers.end())
+  windowSoundsMap::iterator it=m_windowSounds.begin();
+  while (it!=m_windowSounds.end())
   {
     if (it->second)
       it->second->SetVolume(iLevel);
@@ -523,8 +347,8 @@ void CGUIAudioManager::SetVolume(int iLevel)
     ++it;
   }
 
-  pythonSoundBufferMap::iterator it1=m_pythonSoundBuffers.begin();
-  while (it1!=m_pythonSoundBuffers.end())
+  pythonSoundsMap::iterator it1=m_pythonSounds.begin();
+  while (it1!=m_pythonSounds.end())
   {
     if (it1->second)
       it1->second->SetVolume(iLevel);
