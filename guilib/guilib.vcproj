@@ -342,6 +342,9 @@
 				RelativePath=".\GUISliderControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUISound.cpp">
+			</File>
+			<File
 				RelativePath=".\GUISpinControl.cpp">
 			</File>
 			<File
@@ -528,6 +531,9 @@
 			</File>
 			<File
 				RelativePath=".\GUISliderControl.h">
+			</File>
+			<File
+				RelativePath=".\GUISound.h">
 			</File>
 			<File
 				RelativePath=".\GUISpinControl.h">
