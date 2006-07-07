@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-07-2006 fixed: [ 1518898 ] Trying to delete *.m3u file, deletes my music instead...
  - 07-07-2006 updated: German language file
  - 07-07-2006 updated: Turkish language file (Thnx to necipfazil)
  - 07-07-2006 updated: Polish language file (Thnx to smuto and the Polish Community Forum)

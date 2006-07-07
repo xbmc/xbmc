@@ -884,7 +884,12 @@ void CGUIMediaWindow::UpdateFileList()
 void CGUIMediaWindow::OnDeleteItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
-  if (!CGUIWindowFileManager::DeleteItem(m_vecItems[iItem]))
+  CFileItem item(*m_vecItems[iItem]);
+  
+  if (item.IsPlayList())
+    item.m_bIsFolder = false;
+
+  if (!CGUIWindowFileManager::DeleteItem(&item))
     return;
   Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
