@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-06-2006 fixed: delete and rename in my videos were broken.
+ - 07-06-2006 changed: visualisations now load settings from userdata/visualisations. cleaned up saville and boxalizer.
  - 07-07-2006 fixed: random lockups due to thread issues with settings bool cache (once more ;))
  - 06-07-2006 fixed: HttpApi SendKey should now process "keyboard" codes again
  - 06-07-2006 fixed: HttpApi should process commands slightly quicker
