@@ -223,7 +223,7 @@ bool CGUIWindowPictures::OnClick(int iItem)
   {
     CUtil::GetDirectory(pItem->m_strPath,strPath);
     CShare shareZip;
-    shareZip.strPath.Format("zip://Z:\\filesrar\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    CUtil::CreateZipPath(shareZip.strPath, pItem->m_strPath, "");
     shareZip.strEntryPoint = strPath;
     m_rootDir.AddShare(shareZip);
     Update(shareZip.strPath);
@@ -246,7 +246,7 @@ bool CGUIWindowPictures::OnClick(int iItem)
   {
     CUtil::GetDirectory(pItem->m_strPath,strPath);
     CShare shareRar;
-    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE,pItem->m_strPath.c_str() );
+    CUtil::CreateRarPath(shareRar.strPath, pItem->m_strPath, "");
     shareRar.strEntryPoint = strPath;
     m_rootDir.AddShare(shareRar);
     m_iSelectedItem = -1;

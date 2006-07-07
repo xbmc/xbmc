@@ -155,7 +155,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
 	CFileItem* pFileItem = NULL;
   vector<CStdString> vec;
   std::set<CStdString> dirSet;
-  CUtil::Tokenize(strPathInRar,vec,"\\/");
+  CUtil::Tokenize(strPathInRar,vec,"/");
   unsigned int iDepth = vec.size();
   
   ArchiveList_struct* pIterator;
@@ -164,23 +164,29 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
 	{
     CStdString strDirDelimiter = (pIterator->item.HostOS==3 ? "/":"\\"); // win32 or unix paths?
     CStdString strName;
+    
+    /* convert to utf8 */
+    if( pIterator->item.NameW && wcslen(pIterator->item.NameW) > 0)
+      g_charsetConverter.utf16toUTF8(pIterator->item.NameW, strName);
+    else
+      g_charsetConverter.stringCharsetToUtf8(pIterator->item.Name, strName);
+
+    /* replace back slashes into forward slashes */
+    /* this could get us into troubles, file could two different files, one with / and one with \ */
+    strName.Replace('\\', '/');
+      
     if (bMask)
     {
       vec.clear();
-      CStdStringW strNameW=pIterator->item.NameW;
-      if (!strNameW.IsEmpty())
-        g_charsetConverter.utf16toUTF8(strNameW, strName);
-      else
-      {
-        strName=pIterator->item.Name;
-        g_charsetConverter.stringCharsetToUtf8(strName);
-      }
-      CUtil::Tokenize(strName.c_str(),vec,strDirDelimiter);
+
       if (!strstr(strName.c_str(),strPathInRar.c_str()))
         continue;
       if (vec.size() < iDepth)
         continue;
+
+      CUtil::Tokenize(strName,vec,"/");
     }
+
     int iMask = (pIterator->item.HostOS==3 ? 0x0040000:16); // win32 or unix attribs?
     if (((pIterator->item.FileAttr & iMask) == iMask) || (vec.size() > iDepth+1 && bMask)) // we have a directory
     {
@@ -193,8 +199,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
         dirSet.insert(vec[iDepth]);
         pFileItem = new CFileItem(vec[iDepth]);
         pFileItem->m_strPath = vec[iDepth];
-        pFileItem->m_strPath += '\\';
-        pFileItem->m_strPath.Replace("/","\\");
+        pFileItem->m_strPath += '/';
         pFileItem->m_bIsFolder = true;
         pFileItem->m_idepth = pIterator->item.Method;
         //pFileItem->m_lEndOffset = long(pIterator->item.iOffset);
@@ -204,17 +209,8 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
     {
       if (vec.size() == iDepth+1 || !bMask)
       {
-        CStdStringW strNameW=pIterator->item.NameW;
-        if (!strNameW.IsEmpty())
-          g_charsetConverter.utf16toUTF8(strNameW, strName);
-        else
-        {
-          strName=pIterator->item.Name;
-          g_charsetConverter.stringCharsetToUtf8(strName);
-        }
         pFileItem = new CFileItem(strName.c_str()+strPathInRar.size());
 		    pFileItem->m_strPath = strName.c_str()+strPathInRar.size();
-        pFileItem->m_strPath.Replace("/","\\");
         pFileItem->m_dwSize = pIterator->item.UnpSize;
         pFileItem->m_idepth = pIterator->item.Method;
         //pFileItem->m_lEndOffset = long(pIterator->item.iOffset);
