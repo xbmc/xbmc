@@ -287,11 +287,11 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
 {
   if (iMasterLockRetriesLeft == -1)
     iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
-  if ((LOCK_MODE_EVERYONE < g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode()) && !bPromptUser)
+  if ((LOCK_MODE_EVERYONE < g_settings.m_vecProfiles[0].getLockMode()) && !bPromptUser)
     // not unlocked, but calling code doesn't want to prompt user
     return false;
 
-  if (g_passwordManager.bMasterUser)
+  if (g_passwordManager.bMasterUser || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
     return true;
 
   if (iMasterLockRetriesLeft == 0)

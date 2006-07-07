@@ -615,6 +615,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CBaseSettingControl *pSettingControl = m_vecSettings[i];
     pSettingControl->Update();
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
+    if (strSetting.Equals("filelists.allowfiledeletion"))
+    {
+       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+       if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
+    }
     if (strSetting.Equals("pictures.autoswitchuselargethumbs"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
