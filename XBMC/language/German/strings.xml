@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007-->
 <!--Email: bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 06/20/2006-->
+<!--Date of translation: 07/06/2006-->
 <!--$Revision$-->
-<!--Based on english strings version 1.326-->
+<!--Based on english strings version 1.329-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -176,7 +176,7 @@
   <string id="238">Vergrößerung:</string>
   <string id="239">Playlist nach der Wiedergabe löschen</string>
   <string id="240">DVD-Videos automatisch abspielen</string>
-  <string id="241">VCD's  &amp; SVCD's automatisch abspielen</string>
+  <string id="241">VCDs &amp; SVCDs automatisch abspielen</string>
   <string id="242">Audio-CDs automatisch abspielen</string>
   <string id="243">XBOX-Spiele automatisch laden</string>
   <string id="244">Videos auf CD/DVD automatisch abspielen</string>
@@ -193,7 +193,7 @@
   <string id="255">CDDB</string>
   <string id="256">Suche in freedb nach CDDB-Infos</string>
   <string id="257">Fehler</string>
-  <string id="258">ID3-Informationen anzeigen</string>
+  <string id="258">Tag-Informationen aktivieren</string>
   <string id="259">Öffne</string>
   <string id="260">Shoutcast</string>
   <string id="261">Warte auf Start...</string>
@@ -209,10 +209,10 @@
   <string id="271">Top 100</string>
   <string id="272">Bildbereich oben links ausrichten</string>
   <string id="273">Bildbereich unten rechts ausrichten</string>
-  <string id="274">Untertitelposition</string>
+  <string id="274">Position der Untertitel</string>
   <string id="275">Bild-Verhältnis einstellen</string>
   <string id="276">Bewegen Sie den Pfeil um den Bildbereich einzustellen</string>
-  <string id="277">Bewegen Sie den Balken um die Untertitelposition einzustellen</string>
+  <string id="277">Bewegen Sie den Balken um die Position der Untertitel in Filmen einzustellen</string>
   <string id="278">Ändern Sie das Rechteck so, dass es ein perfektes Quadrat ergibt</string>
   <string id="279">Einstellungen können nicht geladen werden!</string>
   <string id="280">Standardeinstellungen verwenden</string>
@@ -546,7 +546,7 @@
   <string id="743">Gelb</string>
   <string id="744">Dateien</string>
   <string id="745">Keine Informationen für diese Ansicht verfügbar.</string>
-  <string id="746">Bitte wechseln Sie wieder zur Ansicht "Dateien".</string>
+  <string id="746">Bitte wechseln Sie wieder zur Ansicht 'Dateien'.</string>
   <string id="747">Nicht genügend Speicher um das Bild zu laden!</string>
   <string id="748">Pfad bearbeiten</string>
   <string id="749">Freigabe hinzufügen</string>
@@ -647,7 +647,7 @@
   <string id="1250">Autom. erkennen</string>
   <string id="1251">XBOX-Konsolen im Netzwerk suchen</string>
   <string id="1252">Nick-Name der eigenen XBOX</string>
-  <string id="1253">Automatisch eine FTP-Freigabe in Dateien erstellen</string>
+  <string id="1253">Automatisch eine FTP-Freigabe in 'Dateien' erstellen</string>
   <string id="1254">Nachfragen ob Verbindung aufgebaut werden soll</string>
   <string id="1255">FTP-Benutzername und Passwort senden</string>
   <string id="1256">Ping-Intervall</string>
@@ -822,6 +822,7 @@
   <string id="12385">Tag/Monat</string>
   <string id="12386">Monat/Tag</string>
   <string id="12387">Datenbank aktualisieren</string>
+  <string id="12388">Master Benutzer</string>
   <string id="12390">Betriebszeit</string>
   <string id="12391">Minuten</string>
   <string id="12392">Stunden</string>
@@ -942,7 +943,7 @@
   <string id="13332">Nach oben</string>
   <string id="13333">Nach unten</string>
   <string id="13334">Beschriftung ändern</string>
-  <string id="13335">Einstellungen als Standard setzen</string>
+  <string id="13335">Als Standard setzen</string>
   <string id="13336">Schaltfläche entfernen</string>
   <string id="13337">- Stereo PCM durchreichen</string>
   <string id="13338">Front-LED</string>
@@ -952,7 +953,7 @@
   <string id="13342">Orange</string>
   <string id="13343">Rot</string>
   <string id="13344">Zyklisch</string>
-  <string id="13345">Aus während der Wiedergabe</string>
+  <string id="13345">LED während der Wiedergabe ausschalten</string>
   <string id="13346">Film-Informationen</string>
   <string id="13347">Zur Playlist hinzufügen</string>
   <string id="13348">Film in IMDB suchen...</string>
@@ -960,7 +961,7 @@
   <string id="13350">Playlist anzeigen</string>
   <string id="13351">Album-Informationen</string>
   <string id="13352">Datenbank aktualisieren</string>
-  <string id="13353">Suche anhalten</string>
+  <string id="13353">Aktualisieren abbrechen</string>
   <string id="13354">Render-Methode</string>
   <string id="13355">Shader (niedrige Qualität)</string>
   <string id="13356">Hardware-Overlays</string>
@@ -1008,8 +1009,8 @@ Visualisierung verfügbar</string>
   <string id="13396">Audio- und Untertitel-Einstellungen</string>
   <string id="13397">Untertitel aktivieren</string>
   <string id="13398">Lesezeichen</string>
-  <string id="13399">"The" bei der Sortierung ignorieren</string>
-  <string id="13400">Crossfade bei Titel desselben Albums</string>
+  <string id="13399">'The' bei der Sortierung ignorieren</string>
+  <string id="13400">Crossfade bei Titeln des gleichen Albums</string>
   <string id="13401">Nach %s durchsuchen</string>
   <string id="13402">Titel-Position anzeigen</string>
   <string id="13403">Standard entfernen</string>
@@ -1037,7 +1038,7 @@ Visualisierung verfügbar</string>
   <string id="14021">Stadt 3</string>
   <string id="14022">Datenbank</string>
   <string id="14023">Kein TV</string>
-  <string id="14024">Bitte geben Sie eine Stadt oder einen US-ZIP-Code ein</string>
+  <string id="14024">Bitte geben Sie den Namen einer Stadt ein</string>
   <string id="14025">Video/Audio/DVD-Cache - Festplatte</string>
   <string id="14026">Video-Cache - DVD-Rom</string>
   <string id="14027">- Lokales Netzwerk</string>
@@ -1070,7 +1071,7 @@ Visualisierung verfügbar</string>
   <string id="14056">Stop</string>
   <string id="14057">Nicht möglich während des Durchsuchens</string>
   <string id="14058">Filmkörnungseffekt</string>
-  <string id="14059">Thumbnails von Netzwerk-Freigaben zwischenspeichern</string>
+  <string id="14059">Netzwerk-Freigaben nach Thumbnails durchsuchen</string>
   <string id="14060">Unbekannter Typ - Internet</string>
   <string id="14061">Automatisch</string>
   <string id="14062">Bitte Benutzernamen eingeben für</string>
@@ -1167,7 +1168,7 @@ Visualisierung verfügbar</string>
   <string id="15203">Last.fm Passwort</string>
   <string id="15204">Verbindung fehlgeschlagen.</string>
   <string id="15205">Bitte installieren Sie eine neuere Version von XBMC!</string>
-  <string id="15206">Übertragung fehlgeschlagen: Bitte Benutzerdaten prüfen!</string>
+  <string id="15206">Authorisierung fehlgeschlagen: Bitte Benutzerdaten prüfen!</string>
   <string id="15207">Verbunden</string>
   <string id="15208">Nicht verbunden</string>
   <string id="15209">Übertragungsintervall %i</string>
