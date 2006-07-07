@@ -453,11 +453,29 @@ void CFileRar::InitFromUrl(const CURL& url)
   if (!CUtil::HasSlashAtEnd(m_strCacheDir))
     m_strCacheDir += "/"; // should work local and remote..
 	m_strRarPath = url.GetHostName();
-	m_strPassword = url.GetPassWord();
-	m_strPathInRar = url.GetFileName();
-    m_strPathInRar.Replace("/","\\");
-	int iAutoDelMask = url.GetPort();
+	m_strPassword = url.GetUserName();
+	m_strPathInRar = url.GetFileName();  
+  m_strPathInRar.Replace("/","\\");
 
+  std::vector<CStdString> options;
+  CUtil::Tokenize(url.GetOptions(), options, "&");
+  
+  int iAutoDelMask = 0;
+
+  for( std::vector<CStdString>::iterator it = options.begin();it != options.end(); it++)
+  {
+    int iEqual = (*it).Find('=');
+    if( iEqual >= 0 )
+    {
+      CStdString strOption = (*it).Left(iEqual);
+      CStdString strValue = (*it).Mid(iEqual+1);
+
+      if( strOption.Equals("flags") )
+        iAutoDelMask = atoi(strValue.c_str());
+      else if( strOption.Equals("cache") )
+        m_strCacheDir = strValue;
+    }
+  }
 	m_bRarOptions = 0;
 
 	bool bAutoDelFile = (iAutoDelMask & EXFILE_AUTODELETE) !=0;

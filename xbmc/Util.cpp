@@ -371,28 +371,10 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   CURL url(strPath);
   CStdString strFile = url.GetFileName();
-  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
+  if ( ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) && strFile.IsEmpty())
   { 
-    if (url.GetFileName().size() == 0)
-    {
-      CUtil::GetDirectory(url.GetHostName(),strParent);
-      return true;
-    }
-    else
-    {
-      CStdString strParentPath;
-      bool bOkay = GetParentPath("D:\\"+url.GetFileName(),strParentPath);
-      if (bOkay) 
-      {
-        if (strParentPath.size() > 3)
-          strParent = strPath.substr(0,strPath.size()-url.GetFileName().size())+strParentPath.substr(3)+"\\";
-        else
-          strParent = strPath.substr(0,strPath.size()-url.GetFileName().size());
-        return true;
-      }
-      else
-        return false;
-    }
+    strFile = url.GetHostName();
+    return GetParentPath(strFile, strParent);
   }
   else if (strFile.size() == 0)
   {
@@ -1138,28 +1120,20 @@ void CUtil::GetHomePath(CStdString& strPath)
   strPath = szXBEFileName;
 }
 
+/* WARNING, this function can easily fail on full urls, since they might have options at the end */
 void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile)
 {
-  CURL url(strFile);
-  CStdString strSearch = strFile;
-  if (url.GetProtocol() == "zip" || url.GetProtocol() == "rar")
-    strSearch = url.GetFileName();
   CStdString strExtension;
-  GetExtension(strSearch, strExtension);
+  GetExtension(strFile, strExtension);
   if ( strExtension.size() )
   {
-    strChangedFile = strSearch.substr(0, strSearch.size() - strExtension.size()) ;
+    strChangedFile = strFile.substr(0, strFile.size() - strExtension.size()) ;
     strChangedFile += strNewExtension;
   }
   else
   {
-    strChangedFile = strSearch;
+    strChangedFile = strFile;
     strChangedFile += strNewExtension;
-  }
-  if (url.GetProtocol() == "zip" || url.GetProtocol() == "rar")
-  {
-    url.SetFileName(strChangedFile);
-    url.GetURL(strChangedFile);
   }
 }
 
@@ -1235,14 +1209,22 @@ bool CUtil::IsRAR(const CStdString& strFile)
 
 bool CUtil::IsInZIP(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return strFile.substr(0,6) == "zip://" && url.GetFileName() != "";
+  if( strFile.substr(0,6) == "zip://" )
+  {
+    CURL url(strFile);
+    return url.GetFileName() != "";
+  }
+  return false;
 }
 
 bool CUtil::IsInRAR(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return strFile.substr(0,6) == "rar://" && url.GetFileName() != "";
+  if( strFile.substr(0,6) == "rar://" )
+  {
+    CURL url(strFile);
+    return url.GetFileName() != "";
+  }
+  return false;
 }
 
 bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
@@ -1256,31 +1238,22 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
-  CURL url(strFile);
-  if (url.GetProtocol() == "cdda")
-    return true;
-  return false;
+  return strFile.Left(5).Equals("cdda:");
 }
 
 bool CUtil::IsISO9660(const CStdString& strFile)
 {
-  CStdString strLeft = strFile.Left(8);
-  strLeft.ToLower();
-  if (strLeft == "iso9660:")
-    return true;
-  return false;
+  return strFile.Left(8).Equals("iso9660:");
 }
 
 bool CUtil::IsSmb(const CStdString& strFile)
 {
-  CStdString strLeft = strFile.Left(4);
-  return (strLeft.CompareNoCase("smb:") == 0);
+  return strFile.Left(4).Equals("smb:");
 }
 
 bool CUtil::IsDAAP(const CStdString& strFile)
 {
-  CStdString strLeft = strFile.Left(5);
-  return (strLeft.CompareNoCase("daap:") == 0);
+  return strFile.Left(5).Equals("daap:");  
 }
 
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
@@ -1847,7 +1820,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   if (strMovie.substr(0,6) == "rar://") // <--- if this is found in main path then ignore it!
   {
     CURL url(strMovie);
-    CUtil::Split(url.GetHostName(), strPath, strFileName);
+    CStdString strArchive = url.GetHostName();
+    CUtil::Split(strArchive, strPath, strFileName);
     strLookInPaths.push_back(strPath);
   }
 
@@ -2152,14 +2126,6 @@ void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectory
   //has no trailing slash on result. Could lead to problems when reading from root on cd
   //ISO9660://filename.bla will result in path ISO9660:/
   //This behaviour should probably be changed, but it would break other things
-  if ((strFilePath.substr(0,6) == "rar://") || (strFilePath.substr(0,6) == "zip://"))
-  {
-    CURL url(strFilePath);
-    CStdString strTemp;
-    GetDirectory(url.GetFileName(),strTemp);
-    strDirectoryPath.Format("%s://%s,%i,%s,%s,\\%s",url.GetProtocol().c_str(),url.GetDomain(),url.GetPort(),url.GetPassWord(),url.GetHostName(),strTemp);
-    return;
-  }
   int iPos1 = strFilePath.ReverseFind('/');
   int iPos2 = strFilePath.ReverseFind('\\');
 
@@ -2191,6 +2157,51 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
 
+void CUtil::CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar,const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
+{
+  //The possibilties for wOptions are
+  //RAR_AUTODELETE : the cached version of the rar (strRarPath) will be deleted in file's dtor.
+  //EXFILE_AUTODELETE : the extracted file (strFilePathInRar) will be deleted in file's dtor.
+  //RAR_OVERWRITE : if the rar is already cached, overwrite the local copy.
+  //EXFILE_OVERWRITE : if the extracted file is already cached, overwrite the local copy.
+  CStdString strBuffer;
+
+  strUrlPath = "zip://";
+
+  if( !strPwd.IsEmpty() )
+  {
+    strBuffer = strPwd;
+    CUtil::URLEncode(strBuffer);
+    strUrlPath += strBuffer;
+    strUrlPath += "@";
+  }    
+
+  strBuffer = strRarPath;
+  CUtil::URLEncode(strBuffer);
+
+  strUrlPath += strBuffer;
+
+  strBuffer = strFilePathInRar;
+  strBuffer.Replace('\\', '/');
+  strBuffer.TrimLeft('/');
+
+  strUrlPath += "/";
+  strUrlPath += strBuffer;
+
+#if 0  // options are not used
+  strBuffer = strCachePath;
+  CUtil::URLEncode(strBuffer);
+
+  strUrlPath += "?cache=";
+  strUrlPath += strBuffer;
+
+  strBuffer.Format("%i", wOptions);
+  strUrlPath += "&flags=";
+  strUrlPath += strBuffer;
+#endif
+}
+
+
 void CUtil::CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar,const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
 {
   //The possibilties for wOptions are
@@ -2198,9 +2209,43 @@ void CUtil::CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, 
   //EXFILE_AUTODELETE : the extracted file (strFilePathInRar) will be deleted in file's dtor.
   //RAR_OVERWRITE : if the rar is already cached, overwrite the local copy.
   //EXFILE_OVERWRITE : if the extracted file is already cached, overwrite the local copy.
-  int iAutoDelMask = wOptions;
-  strUrlPath.Format("rar://%s,%i,%s,%s,\\%s",  strCachePath, iAutoDelMask, strPwd, strRarPath, strFilePathInRar);
+  CStdString strBuffer;
+
+  strUrlPath = "rar://";
+
+  if( !strPwd.IsEmpty() )
+  {
+    strBuffer = strPwd;
+    CUtil::URLEncode(strBuffer);
+    strUrlPath += strBuffer;
+    strUrlPath += "@";
+  }    
+
+  strBuffer = strRarPath;
+  CUtil::URLEncode(strBuffer);
+
+  strUrlPath += strBuffer;
+
+  strBuffer = strFilePathInRar;
+  strBuffer.Replace('\\', '/');
+  strBuffer.TrimLeft('/');
+
+  strUrlPath += "/";
+  strUrlPath += strBuffer;
+
+#if 0 // options are not used
+  strBuffer = strCachePath;
+  CUtil::URLEncode(strBuffer);
+
+  strUrlPath += "?cache=";
+  strUrlPath += strBuffer;
+
+  strBuffer.Format("%i", wOptions);
+  strUrlPath += "&flags=";
+  strUrlPath += strBuffer;
+#endif
 }
+
 bool CUtil::ThumbExists(const CStdString& strFileName, bool bAddCache)
 {
   return CThumbnailCache::GetThumbnailCache()->ThumbExists(strFileName, bAddCache);
@@ -3374,11 +3419,6 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   if (checkURL.GetProtocol() == "stack")
     strPath.Delete(0, 8); // remove the stack protocol
 
-  // rar:// and zip://
-  // get the hostname portion of the url since it contains the archive file
-  // (see URL.cpp for details of how archives are processed)
-  if (checkURL.GetProtocol().Equals("rar") || checkURL.GetProtocol().Equals("zip"))
-    strPath = checkURL.GetHostName();
 
   if (checkURL.GetProtocol() == "shout")
     strPath = checkURL.GetHostName();
@@ -3479,7 +3519,22 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
   // return the index of the share with the longest match
   if (iIndex == -1)
+  {
+
+    // rar:// and zip://
+    // if archive wasn't mounted, look for a matching share for the archive instead    
+    if( strPath.Left(6).Equals("rar://") || strPath.Left(6).Equals("zip://") )
+    {
+      // get the hostname portion of the url since it contains the archive file 
+      strPath = checkURL.GetHostName();
+      
+      bIsBookmarkName = false;
+      bool bDummy;
+      return GetMatchingShare(strPath, vecShares, bDummy);
+    }
+
     CLog::Log(LOGWARNING,"CUtil::GetMatchingShare... no matching bookmark found for [%s]", strPath1.c_str());
+  }
   return iIndex;
 }
 
