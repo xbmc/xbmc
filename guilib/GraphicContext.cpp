@@ -615,11 +615,16 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, int posX, int posY, b
     if(g_guiSkinzoom)
       fZoom *= (100 + g_guiSkinzoom->GetData()) * 0.01f;
 
-    fToPosX -= fToWidth * (fZoom - 1.0f) * 0.5f;
-    fToPosY -= fToHeight * (fZoom - 1.0f) * 0.5f;
-    fToWidth *= fZoom;
-    fToHeight *= fZoom;
-           
+    fZoom -= 1.0f;
+    fToPosX -= fToWidth * fZoom * 0.5f;
+    fToWidth *= fZoom + 1.0f;
+
+    /* adjust for aspect ratio as zoom is given in the vertical direction and we don't /*
+    /* do aspect ratio corrections in the gui code */
+    fZoom = fZoom / g_settings.m_ResInfo[m_Resolution].fPixelRatio;
+    fToPosY -= fToHeight * fZoom * 0.5f;
+    fToHeight *= fZoom + 1.0f;
+    
     m_windowScaleX = fToWidth / fFromWidth;
     m_windowScaleY = fToHeight / fFromHeight;
     TransformMatrix windowOffset = TransformMatrix::CreateTranslation((float)posX, (float)posY);

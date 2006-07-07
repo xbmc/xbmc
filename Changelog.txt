@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-07-2006 fixed: skin zoom should respect aspect ratio, zoom level is set on the horizontal direction
  - 07-07-2006 fixed: files within rar/zips in rar/zips (double archived) would not play
  - 07-07-2006 changed: rewrote how rar/zip's urls are handled, less workarounds needed. (expect glitches)
  - 07-07-2006 fixed: [ 1518898 ] Trying to delete *.m3u file, deletes my music instead...
