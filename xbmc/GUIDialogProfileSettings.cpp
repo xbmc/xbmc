@@ -111,7 +111,16 @@ void CGUIDialogProfileSettings::CreateSettings()
   {
     SetupPage();
     OnSettingChanged(0); // id=1
+    if (!m_strName.IsEmpty())
+    {
+      m_strDirectory.Format("profiles\\%s",m_strName.c_str());
+      CUtil::GetFatXQualifiedPath(m_strDirectory);
+      CDirectory::Create(g_settings.m_vecProfiles[0].getDirectory()+"\\"+m_strDirectory);
+    }
+    CStdString strPath = m_strDirectory;
     OnSettingChanged(2); // id=3
+    if (strPath != m_strDirectory)
+      CDirectory::Remove(g_settings.m_vecProfiles[0].getDirectory()+"\\"+strPath);
   }
 }
 
@@ -242,7 +251,10 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
       CStdString strLabel;
       strLabel.Format(g_localizeStrings.Get(20047),dialog->m_strName);
       if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(20058),strLabel,dialog->m_strDirectory,""))
+      {
+        CDirectory::Remove(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory);
         return false;
+      }
 
       // check for old profile settings
       CProfile profile;
