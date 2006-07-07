@@ -65,39 +65,36 @@ CURL::CURL(const CStdString& strURL)
     iPos += 3;
   }
 
-  //archive subpaths may contain delimiters so they need special processing
-  //format 4: zip://CachePath,AutoDelMask,Password, RarPath,\FilePathInRar
-  if ((m_strProtocol.CompareNoCase("rar")==0) || (m_strProtocol.CompareNoCase("zip")==0))
+  //check for old archive format, dll's might use it
+  if (m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip"))
   {
+    //archive subpaths may contain delimiters so they need special processing
+    //format 4: zip://CachePath,AutoDelMask,Password, RarPath,\FilePathInRar
+
     CRegExp reg;
-    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),(.*),[\\\\/](.*)?$");
-    CStdString strURL2 = strURL;
-    if (strURL[strURL.size()-1] == ',')
-      CUtil::AddSlashAtEnd(strURL2);
-    if( (reg.RegFind(strURL2.c_str()) >= 0))
+    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),([^,]*),[\\/]+(.*)$");
+
+    if(reg.RegFind(strURL) == 0) /* if found at position 0 */
     {
-      char* szDomain = reg.GetReplaceString("\\1");
-      char* szPort = reg.GetReplaceString("\\2");
+      char* szCache = reg.GetReplaceString("\\1");
+      char* szFlags = reg.GetReplaceString("\\2");
       char* szPassword = reg.GetReplaceString("\\3");
-      char* szHostName = reg.GetReplaceString("\\4");
+      char* szArchive = reg.GetReplaceString("\\4");
       char* szFileName = reg.GetReplaceString("\\5");
-      m_strDomain = szDomain;
-      m_iPort = atoi(szPort);
+      
+      m_strHostName = szArchive;
       m_strPassword = szPassword;
-      m_strHostName = szHostName;
       if (szFileName)
         SetFileName(szFileName);
 
-      if (szDomain)
-        free(szDomain);
-      if (szPort)
-        free(szPort);
-      if (szPassword)
-        free(szPassword);
-      if (szHostName)
-        free(szHostName);
-      if (szFileName)
-        free(szFileName);
+      // currently neither zip nor rar code cares for the 
+      // flags or cache dir, so just ignore them for now
+
+      if (szCache) free(szCache);
+      if (szFlags) free(szFlags);
+      if (szPassword) free(szPassword);
+      if (szArchive) free(szArchive);
+      if (szFileName) free(szFileName);
 
       return;
     }
@@ -226,6 +223,9 @@ CURL::CURL(const CStdString& strURL)
   SetFileName(m_strFileName);
 
   /* decode urlencoding on this stuff */
+  if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") )
+    CUtil::UrlDecode(m_strHostName);
+
   CUtil::UrlDecode(m_strUserName);
   CUtil::UrlDecode(m_strPassword);
 }
@@ -367,7 +367,7 @@ const CStdString CURL::GetFileNameWithoutPath() const
 
 const char CURL::GetDirectorySeparator() const
 {
-  if ( IsLocal() || m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") ) 
+  if ( IsLocal() ) 
     return '\\';
   else
     return '/';
@@ -417,20 +417,6 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
     strURL = m_strFileName;
     return ;
   }
-  if (m_strProtocol == "rar")
-  {
-    CStdString strNoBackSlash = m_strFileName;
-    strNoBackSlash.Replace("\\","/");
-    strURL.Format("rar://%s/%s",m_strHostName.c_str(),strNoBackSlash.c_str());
-    return; 
-  }
-  if( m_strProtocol == "zip")
-  {
-    CStdString strNoBackSlash = m_strFileName;
-    strNoBackSlash.Replace("\\","/");
-    strURL.Format("zip://%s/%s",m_strHostName.c_str(),strNoBackSlash.c_str());
-    return; 
-  }
 
   strURL = m_strProtocol;
   strURL += "://";
@@ -471,24 +457,6 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
     strURL = m_strFileName.substr(0, 2); // only copy 'e:'
     return ;
   }
-  if (m_strProtocol == "rar")
-  {
-    strURL.Format("rar://%s,%i,%s,%s,\\",
-      m_strDomain,
-      m_iPort,
-      URLEncodeInline(m_strPassword),
-      m_strHostName);
-    return; 
-  }
-  if (m_strProtocol == "zip")
-  {
-    strURL.Format("zip://%s,%i,%s,%s,\\",
-      m_strDomain,
-      m_iPort,
-      URLEncodeInline(m_strPassword),
-      m_strHostName);
-    return; 
-  }
 
   strURL = m_strProtocol;
   strURL += "://";
@@ -516,7 +484,10 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
 
   if (m_strHostName != "")
   {
-    strURL += m_strHostName;
+    if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") )
+      strURL += URLEncodeInline(m_strHostName);
+    else
+      strURL += m_strHostName;
     if (HasPort())
     {
       CStdString strPort;

@@ -480,7 +480,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
           {
             CFileItem* item = new CFileItem(*inArchives[j]);
             CStdString strPathInArchive = item->m_strPath;
-            item->m_strPath.Format("rar://%s,2,,%s,\\%s",g_advancedSettings.m_cachePath.c_str(),archives[i]->m_strPath.c_str(),strPathInArchive.c_str());
+            CUtil::CreateRarPath(item->m_strPath, archives[i]->m_strPath, strPathInArchive,EXFILE_AUTODELETE,"",g_advancedSettings.m_cachePath);
             trainers.Add(item);
           }
       }      
