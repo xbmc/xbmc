@@ -1948,6 +1948,7 @@ void CGUIInfoManager::ParseLabel(const CStdString &strLabel, vector<CInfoPortion
 
 void CGUIInfoManager::ResetCache()
 {
+  CSingleLock lock(m_critInfo);
   m_boolCache.clear();
 }
 
