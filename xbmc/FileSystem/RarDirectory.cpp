@@ -14,14 +14,33 @@ namespace DIRECTORY
   {
   }
 
-  bool CRarDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
+  bool CRarDirectory::GetDirectory(const CStdString& strPathOrig, CFileItemList& items)
   {
+    CStdString strPath;
+
+    /* if this isn't a proper archive path, assume it's the path to a archive file */
+    if( !strPathOrig.Left(6).Equals("rar://") )
+      CUtil::CreateZipPath(strPath, strPathOrig, "");
+    else
+      strPath = strPathOrig;
+
+    CURL url(strPath);
+    CStdString strArchive = url.GetHostName();
+    CStdString strOptions = url.GetOptions();
+    CStdString strPathInArchive = url.GetFileName();
+    url.SetOptions("");
+
+    if( !strOptions.IsEmpty() )
+      strOptions.Insert(0, '?');
+
+    CStdString strSlashPath;
+    url.GetURL(strSlashPath);
+
     // the RAR code depends on things having a "\" at the end of the path
-    CStdString strSlashPath = strPath;
     if (!CUtil::HasSlashAtEnd(strSlashPath))
-      strSlashPath += "\\";
-    CURL url(strSlashPath);
-    if (g_RarManager.GetFilesInRar(items,url.GetHostName(),true,url.GetFileName()))
+      strSlashPath += "/";
+
+    if (g_RarManager.GetFilesInRar(items,strArchive,true,strPathInArchive))
     {
       // fill in paths
       for( int iEntry=0;iEntry<items.Size();++iEntry)
@@ -30,7 +49,7 @@ namespace DIRECTORY
           continue;
         if ((IsAllowed(items[iEntry]->m_strPath)) || (items[iEntry]->m_bIsFolder))
         {
-          items[iEntry]->m_strPath = strSlashPath + items[iEntry]->m_strPath;
+          items[iEntry]->m_strPath = strSlashPath + items[iEntry]->m_strPath + strOptions;
           //CLog::Log(LOGDEBUG, "RarDirectory::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
         }
         else

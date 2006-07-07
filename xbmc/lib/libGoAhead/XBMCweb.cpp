@@ -144,7 +144,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
   else if (pItem->IsZIP() && g_guiSettings.GetBool("VideoFiles.HandleArchives"))
   {
     CStdString strDirectory;
-    strDirectory.Format("zip://z:\\,2,,%s,\\",pItem->m_strPath.c_str());
+    CUtil::CreateZipPath(strDirectory, pItem->m_strPath, "");
     CFileItemList items;
     directory->GetDirectory(strDirectory, items);
 
@@ -157,7 +157,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
   else if (pItem->IsRAR() && g_guiSettings.GetBool("VideoFiles.HandleArchives"))
   {
     CStdString strDirectory;
-    strDirectory.Format("rar://z:\\,2,,%s,\\",pItem->m_strPath.c_str());
+    CUtil::CreateRarPath(strDirectory, pItem->m_strPath, "");
     CFileItemList items;
     directory->GetDirectory(strDirectory, items);
 
@@ -682,7 +682,8 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           if (itm->IsZIP() && g_guiSettings.GetBool("VideoFiles.HandleArchives")) // mount zip archive
           {
             CShare shareZip;
-            shareZip.strPath.Format("zip://Z:\\temp\\,%i,,%s,\\",1, itm->m_strPath.c_str() );
+            //shareZip.strPath.Format("zip://Z:\\temp\\,%i,,%s,\\",1, itm->m_strPath.c_str() );
+            CUtil::CreateZipPath(shareZip.strPath, itm->m_strPath, "", 1);
             directory->AddShare(shareZip);
             itm->m_strPath = shareZip.strPath;
             itm->m_bIsFolder = true;
@@ -690,7 +691,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           else if (itm->IsRAR() && g_guiSettings.GetBool("VideoFiles.HandleArchives")) // mount rar archive 
           {
             CShare shareRar;
-            shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",1, itm->m_strPath.c_str() );
+            //shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",1, itm->m_strPath.c_str() );
+            CUtil::CreateRarPath(shareRar.strPath, itm->m_strPath, "", 1);
+
             directory->AddShare(shareRar);
             itm->m_strPath = shareRar.strPath;
             itm->m_bIsFolder = true;

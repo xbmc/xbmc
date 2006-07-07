@@ -277,6 +277,9 @@ public:
   static void RemoveSlashAtEnd(CStdString& strFolder);
   static void GetPath(const CStdString& strFileName, CStdString& strPath);
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
+  static void CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, 
+    const CStdString& strFilePathInRar,  const WORD wOptions = EXFILE_AUTODELETE , 
+    const CStdString& strPwd = RAR_DEFAULT_PASSWORD, const CStdString& strCachePath = RAR_DEFAULT_CACHE);
   static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, 
     const CStdString& strFilePathInRar,  const WORD wOptions = EXFILE_AUTODELETE , 
     const CStdString& strPwd = RAR_DEFAULT_PASSWORD, const CStdString& strCachePath = RAR_DEFAULT_CACHE);
