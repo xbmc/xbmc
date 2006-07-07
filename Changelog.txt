@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-07-2006 updated: German language file
+ - 07-07-2006 updated: Turkish language file (Thnx to necipfazil)
+ - 07-07-2006 updated: Polish language file (Thnx to smuto and the Polish Community Forum)
+ - 07-07-2006 updated: Dutch language file (Thnx to nightspirit)
+ - 07-07-2006 updated: Chinese (Traditional) language file (Thnx to omenpica)
  - 07-07-2006 changed: cleanup of guiaudiomanager
  - 07-06-2006 fixed: delete and rename in my videos were broken.
  - 07-06-2006 changed: visualisations now load settings from userdata/visualisations. cleaned up saville and boxalizer.
