@@ -127,13 +127,13 @@ namespace TeamXBMC.Translator
 			this.menuItemOptions = new System.Windows.Forms.MenuItem();
 			this.menuItemUserName = new System.Windows.Forms.MenuItem();
 			this.menuItemTools = new System.Windows.Forms.MenuItem();
+			this.menuItemValidate = new System.Windows.Forms.MenuItem();
 			this.menuItemConvert = new System.Windows.Forms.MenuItem();
 			this.menuItem1 = new System.Windows.Forms.MenuItem();
 			this.menuItemAbout = new System.Windows.Forms.MenuItem();
 			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-			this.menuItemValidate = new System.Windows.Forms.MenuItem();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -425,6 +425,12 @@ namespace TeamXBMC.Translator
 																																									this.menuItemConvert});
 			this.menuItemTools.Text = "&Tools";
 			// 
+			// menuItemValidate
+			// 
+			this.menuItemValidate.Index = 0;
+			this.menuItemValidate.Text = "&Validate...";
+			this.menuItemValidate.Click += new System.EventHandler(this.menuItemValidateFile_Click);
+			// 
 			// menuItemConvert
 			// 
 			this.menuItemConvert.Index = 1;
@@ -449,19 +455,13 @@ namespace TeamXBMC.Translator
 			this.openFileDialog1.DefaultExt = "xml";
 			this.openFileDialog1.FileName = "strings.xml";
 			this.openFileDialog1.Filter = "Language File|strings.xml|All Files|*.*";
-			this.openFileDialog1.Title = "Open language file to convert to new format";
+			this.openFileDialog1.Title = "Choose the language file";
 			// 
 			// saveFileDialog1
 			// 
 			this.saveFileDialog1.FileName = "strings.xml";
 			this.saveFileDialog1.Filter = "Language File|strings.xml|All Files|*.*";
 			this.saveFileDialog1.Title = "Save converted file as";
-			// 
-			// menuItemValidate
-			// 
-			this.menuItemValidate.Index = 0;
-			this.menuItemValidate.Text = "&Validate...";
-			this.menuItemValidate.Click += new System.EventHandler(this.menuItemValidateFile_Click);
 			// 
 			// MainForm
 			// 
@@ -474,7 +474,7 @@ namespace TeamXBMC.Translator
 			this.Menu = this.mainMenu1;
 			this.Name = "MainForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "XBMC Translator";
+			this.Text = "Team XBMC Translator";
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
@@ -868,21 +868,19 @@ namespace TeamXBMC.Translator
 							}
 							else if (pos==0)
 							{
-								if (text[pos+findText.Length]!=' ')
+								if (Char.IsLetterOrDigit(text[pos+findText.Length]))
 									continue;
 							}
 							else if (pos>0)
 							{
-								if (text[pos-1]!=' ')
+								if (Char.IsLetterOrDigit(text[pos-1]))
 									continue;
 
-								int pos1=text.IndexOf(" ", pos);
-								if (pos1==-1)
-									pos1=text.Length;
-
-								string text1=text.Substring(pos, pos1-pos);
-								if (text1!=findText)
-									continue;
+								if (text.Length>pos+findText.Length)
+								{
+									if (Char.IsLetterOrDigit(text[pos+findText.Length]))
+										continue;
+								}
 							}
 						}
 						item.Selected=true;
