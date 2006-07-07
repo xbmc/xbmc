@@ -767,17 +767,14 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   {
     if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion")))
     {
-      if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.IsMasterLockUnlocked(false))
-      {
-        btn_Delete = pMenu->AddButton(117);
-        btn_Rename = pMenu->AddButton(118);
+      btn_Delete = pMenu->AddButton(117);
+      btn_Rename = pMenu->AddButton(118);
 
-        // disable these functions if not supported by the protocol
-        if (!CUtil::SupportsFileOperations(m_vecItems[iItem]->m_strPath))
-        {
-          pMenu->EnableButton(btn_Delete, false);
-          pMenu->EnableButton(btn_Rename, false);
-        }
+      // disable these functions if not supported by the protocol
+      if (!CUtil::SupportsFileOperations(m_vecItems[iItem]->m_strPath))
+      {
+        pMenu->EnableButton(btn_Delete, false);
+        pMenu->EnableButton(btn_Rename, false);
       }
     }
     if (GetID() == WINDOW_VIDEO_TITLE && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
@@ -962,6 +959,10 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (m_vecItems[iItem]->IsStack())
     m_vecItems[iItem]->m_bIsFolder = true;
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
+    if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return;
+
   if (!CGUIWindowFileManager::DeleteItem(m_vecItems[iItem]))
     return;
   Update(m_vecItems.m_strPath);
