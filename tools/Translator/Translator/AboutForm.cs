@@ -79,7 +79,7 @@ namespace TeamXBMC.Translator
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(208, 23);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "XBMC Translator Version 0.1";
+			this.label1.Text = "Team XBMC Translator 0.2";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.label1.UseMnemonic = false;
 			// 
