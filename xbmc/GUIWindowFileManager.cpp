@@ -450,17 +450,15 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   }
   else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
   {
-    CShare shareZip;
-    shareZip.strPath.Format("zip://Z:\\temp\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
-    m_rootDir.AddShare(shareZip);
-    Update(iList, shareZip.strPath);
+    CStdString strArcivedPath;
+    CUtil::CreateZipPath(strArcivedPath, pItem->m_strPath, "");
+    Update(iList, strArcivedPath);
   }
   else if (pItem->IsRAR() || pItem->IsCBR())
   {
-    CShare shareRar;
-    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE,pItem->m_strPath.c_str() );
-    m_rootDir.AddShare(shareRar);
-    Update(iList, shareRar.strPath);
+    CStdString strArcivedPath;
+    CUtil::CreateRarPath(strArcivedPath, pItem->m_strPath, "");
+    Update(iList, strArcivedPath);
   }
   else
   {
@@ -951,16 +949,10 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
   {
     // check for step-below, if, unmount rar
     if (url.GetFileName().IsEmpty())
-    {
       if (url.GetProtocol() == "zip") 
         g_ZipManager.release(m_Directory[iList].m_strPath); // release resources
-      m_rootDir.RemoveShare(m_Directory[iList].m_strPath);
-      CStdString strPath;
-      CUtil::GetDirectory(url.GetHostName(),strPath);
-      Update(iList,strPath);
-      return;
-    }
   }
+
   CStdString strPath(m_strParentPath[iList]), strOldPath(m_Directory[iList].m_strPath);
   Update(iList, strPath);
 

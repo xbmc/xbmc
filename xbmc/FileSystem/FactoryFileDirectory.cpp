@@ -58,7 +58,9 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   }
   if (strExtension.Equals(".zip"))
   {
-    CStdString strUrl; strUrl.Format("zip://Z:\\,2,,%s,\\",strPath.c_str());
+    CStdString strUrl; 
+    CUtil::CreateZipPath(strUrl, strPath, "");
+
     CFileItemList item;
     CGUIViewState* guiState = CGUIViewState::GetViewState(0,item);
     if (guiState)
@@ -90,7 +92,9 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   }
   if (strExtension.Equals(".rar") || strExtension.Equals(".001"))
   {
-    CStdString strUrl; strUrl.Format("rar://Z:\\,2,,%s,\\",strPath.c_str());
+    CStdString strUrl; 
+    CUtil::CreateRarPath(strUrl, strPath, "");
+
     std::vector<CStdString> tokens;
     CUtil::Tokenize(strPath,tokens,".");
     if (tokens.size() > 2)

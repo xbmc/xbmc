@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "ZipManager.h"
-
+#include "../util.h"
 
 CZipManager g_ZipManager;
 
@@ -42,11 +42,14 @@ bool CZipManager::HasMultipleEntries(const CStdString& strPath)
 bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& items)
 {
   CURL url(strPath);
-  std::map<CStdString,std::vector<SZipEntry> >::iterator it = mZipMap.find(url.GetHostName());
+
+  CStdString strFile = url.GetHostName();
+ 
+  std::map<CStdString,std::vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
-    std::map<CStdString,__int64>::iterator it2=mZipDate.find(url.GetHostName());
-    if (mFile.Stat(url.GetHostName().c_str(),&m_StatData))
+    std::map<CStdString,__int64>::iterator it2=mZipDate.find(strFile);
+    if (mFile.Stat(strFile,&m_StatData))
       CLog::Log(LOGDEBUG,"statdata: %i, new: %i",it2->second,m_StatData.st_mtime);
       if (m_StatData.st_mtime == it2->second)
       {
@@ -58,9 +61,9 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   }
 
   mFile.Close();
-  if (!mFile.Open(url.GetHostName()))
+  if (!mFile.Open(strFile))
   {
-    CLog::Log(LOGDEBUG,"ZipManager: unable to open file %s!",url.GetHostName().c_str());
+    CLog::Log(LOGDEBUG,"ZipManager: unable to open file %s!",strFile.c_str());
     return false;
   }
 
@@ -74,8 +77,8 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   }
   // push date for update detection
   CFile fileStat;
-  fileStat.Stat(url.GetHostName().c_str(),&m_StatData);
-  mZipDate.insert(std::make_pair<CStdString,__int64>(url.GetHostName(),m_StatData.st_mtime));
+  fileStat.Stat(strFile,&m_StatData);
+  mZipDate.insert(std::make_pair<CStdString,__int64>(strFile,m_StatData.st_mtime));
   
   // now list'em
   mFile.Seek(0,SEEK_SET);
@@ -87,12 +90,12 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
     if (ze.header != ZIP_LOCAL_HEADER)
       if (ze.header != ZIP_CENTRAL_HEADER)
       {
-        CLog::Log(LOGDEBUG,"ZipManager: broken file %s!",url.GetHostName().c_str());
+        CLog::Log(LOGDEBUG,"ZipManager: broken file %s!",strFile.c_str());
         return false;
       }
       else // no handling of zip central header, we are done
       {        
-        mZipMap.insert(std::make_pair<CStdString,std::vector<SZipEntry> >(url.GetHostName(),items));
+        mZipMap.insert(std::make_pair<CStdString,std::vector<SZipEntry> >(strFile,items));
         mFile.Close();
         return true;
       }
@@ -121,7 +124,10 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
 bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
 {
   CURL url(strPath);
-  std::map<CStdString,std::vector<SZipEntry> >::iterator it = mZipMap.find(url.GetHostName());
+
+  CStdString strFile = url.GetHostName();
+
+  std::map<CStdString,std::vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   std::vector<SZipEntry> items;
   if (it == mZipMap.end()) // we need to list the zip
   {
@@ -133,7 +139,6 @@ bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
   }
 
   CStdString strFileName = url.GetFileName();
-  strFileName.Replace("\\","/");
   for (std::vector<SZipEntry>::iterator it2=items.begin();it2 != items.end();++it2)
   {
     if (CStdString(it2->name) == strFileName)
@@ -149,15 +154,19 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
 {
   std::vector<SZipEntry> entry;
   CStdString strZipPath;
-  strZipPath.Format("zip://Z:\\temp,1,,%s,\\",strArchive.c_str());
+  //strZipPath.Format("zip://Z:\\temp,1,,%s,\\",strArchive.c_str());
+  CUtil::CreateZipPath(strZipPath, strArchive, "", 1);  
   GetZipList(strZipPath,entry);
   for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
   {
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
     CStdString strFilePath(it->name);
+    
+    
+    //strZipPath.Format("zip://Z:\\temp,1,,%s,\\%s",strArchive.c_str(),strFilePath.c_str());
+    CUtil::CreateZipPath(strZipPath, strArchive, strFilePath, 1);  
     strFilePath.Replace("/","\\");
-    strZipPath.Format("zip://Z:\\temp,1,,%s,\\%s",strArchive.c_str(),strFilePath.c_str());
     if (!CFile::Cache(strZipPath.c_str(),(strPath+strFilePath).c_str()))
       return false;
   }
@@ -168,7 +177,9 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
 {
   std::vector<SZipEntry> entry;
   CStdString strZipPath;
-  strZipPath.Format("zip://Z:\\temp,1,,%s,\\",strArchive.c_str());
+  //strZipPath.Format("zip://Z:\\temp,1,,%s,\\",strArchive.c_str());
+  CUtil::CreateZipPath(strZipPath, strArchive, "", 1);  
+
   GetZipList(strZipPath,entry);
   for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
   {
