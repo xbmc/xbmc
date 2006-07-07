@@ -207,10 +207,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         {
           CFileItemList items;
           CStdString strPath;
+          
           if (CUtil::IsZIP(pMsg->strParam))
-            strPath.Format("zip://Z:\\,2,,%s,\\",pMsg->strParam.c_str());
+            CUtil::CreateZipPath(strPath, pMsg->strParam.c_str(), "", 2, "", "Z:\\");
           else
-            strPath.Format("rar://Z:\\,2,,%s,\\",pMsg->strParam.c_str());
+            CUtil::CreateRarPath(strPath, pMsg->strParam.c_str(), "", 2, "", "Z:\\");
+
           CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
           if (items.Size() > 0)
           {
