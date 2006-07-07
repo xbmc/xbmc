@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: NiGhTsPiRiT-->
 <!--Email: spam@nightspirit.nl-->
-<!--Date of translation: 06/21/2006-->
+<!--Date of translation: 06/26/2006-->
 <!--$Revision$-->
-<!--Based on english strings version 1.326-->
+<!--Based on english strings version 1.328-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -1163,9 +1163,9 @@
   <string id="15111">Thema</string>
   <string id="15112">Standaard thema</string>
   <string id="15200">Last.FM</string>
-  <string id="15201">Trackinformatie aan LastFM toevoegen</string>
-  <string id="15202">LastFM gebruikersnaam</string>
-  <string id="15203">LastFM wachtwoord</string>
+  <string id="15201">Trackinformatie aan Last.FM toevoegen</string>
+  <string id="15202">Last.FM gebruikersnaam</string>
+  <string id="15203">Last.FM wachtwoord</string>
   <string id="15204">Verbinding mislukt</string>
   <string id="15205">Update XBMC a.u.b.</string>
   <string id="15206">Authentificatie mislukt</string>
@@ -1178,8 +1178,8 @@
   <string id="15213">Speelt af met...</string>
   <string id="15214">Geleidelijk A/V Syncronisatie gebruiken</string>
   <string id="15215">Verberg Bestandsnamen in Thumb-weergave</string>
-  <string id="15250">Last.fm radio aan LastFM toevoegen</string>
-  <string id="15251">Verbinding maken met LastFM...</string>
+  <string id="15250">Last.FM radio aan Last.FM toevoegen</string>
+  <string id="15251">Verbinding maken met Last.FM...</string>
   <string id="15252">Station selecteren...</string>
   <string id="15253">Zoek naar gelijksoortige artiesten</string>
   <string id="15254">Zoek naar gelijksoortige genres</string>
