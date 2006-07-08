@@ -70,11 +70,38 @@ namespace PYXBMC
 		return pControl->pGUIControl;
 	}
 
+
+	PyDoc_STRVAR(setImage__doc__,
+		"setImage(filename) -- Changes the image.\n"
+		"\n"
+		"filename          : string or unicode - text string.\n"
+		"\n"
+		"example:\n"
+		"  - self.image.setImage('q:\\scripts\\test.png')\n");
+	
+	PyObject* ControlImage_SetImage(ControlImage *self, PyObject *args)
+	{
+		char *cImage;
+		if (!PyArg_ParseTuple(args, "s", &cImage)) return NULL;
+		self->strFileName = cImage;
+		PyGUILock();
+		if (self->pGUIControl)
+		{
+			((CGUIImage*)self->pGUIControl)->SetFileName(self->strFileName);
+		}
+		PyGUIUnlock();
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+
+
 	PyMethodDef ControlImage_methods[] = {
+		{"setImage", (PyCFunction)ControlImage_SetImage, METH_VARARGS, setImage__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
-  // ControlImage class
+	// ControlImage class
 	PyDoc_STRVAR(controlImage__doc__,
 		"ControlImage class.\n"
 		"\n"
