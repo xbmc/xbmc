@@ -4,6 +4,8 @@
 #include "pyutil.h"
 #include "..\..\..\application.h"
 #include "..\xbmc\GUIDialogFileBrowser.h"
+#include "..\xbmc\GUIDialogNumeric.h"
+#include "..\xbmc\GUIDialogGamepad.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
 
@@ -113,6 +115,45 @@ namespace PYXBMC
 			CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value) ;
 		else
 			CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value);
+		return Py_BuildValue("s", value.c_str());
+	}
+
+	PyDoc_STRVAR(numeric__doc__,
+		/*"numeric(heading,type,default) -- Show a numeric dialog'.\n"*/
+		"numeric(type, header) -- Show a numeric dialog'.\n"
+		"\n"
+		"heading  : string or unicode string\n"
+		"type	  : interger\n"
+		"returns String of the infomation the user typed");
+
+	PyObject* Dialog_Numeric(PyObject *self, PyObject *args)
+	{
+		int inputtype = 0;
+		CStdString value;
+		PyObject *heading = NULL;
+		SYSTEMTIME timedate;	
+		GetLocalTime(&timedate);
+		if (!PyArg_ParseTuple(args, "iO", &inputtype,&heading))	return NULL;
+
+		CStdString utf8Heading;
+		if (heading && PyGetUnicodeString(utf8Heading, heading, 1))
+			if (inputtype == 0)
+				CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading);
+			else if (inputtype == 1)
+			{
+				CGUIDialogNumeric::ShowAndGetDate(timedate, utf8Heading);
+				value.Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
+			}
+			else if (inputtype == 2)
+			{
+
+				CGUIDialogNumeric::ShowAndGetTime(timedate, utf8Heading);
+				value.Format("%2d:%02d", timedate.wHour, timedate.wMinute);
+			}
+			else if (inputtype == 3)
+				CGUIDialogNumeric::ShowAndGetIPAddress(value, utf8Heading);
+			else
+				CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading);
 		return Py_BuildValue("s", value.c_str());
 	}
 
@@ -321,6 +362,7 @@ namespace PYXBMC
 		{"select", (PyCFunction)Dialog_Select, METH_VARARGS, select__doc__},
 		{"ok", (PyCFunction)Dialog_OK, METH_VARARGS, ok__doc__},
 		{"browse", (PyCFunction)Dialog_Browse, METH_VARARGS, browse__doc__},
+		{"numeric", (PyCFunction)Dialog_Numeric, METH_VARARGS, numeric__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
