@@ -123,6 +123,12 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
   if (it==m_actionSoundMap.end()) 
     return;
   
+  if (m_actionSound)
+  {
+    delete m_actionSound;
+    m_actionSound=NULL;
+  }
+
   CStdString strFile=m_strMediaDir+"\\"+it->second;
   m_actionSound=new CGUISound();
   if (m_actionSound->Load(strFile))
