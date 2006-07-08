@@ -131,8 +131,14 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 
   CStdString strFile=m_strMediaDir+"\\"+it->second;
   m_actionSound=new CGUISound();
-  if (m_actionSound->Load(strFile))
-    m_actionSound->Play();
+  if (!m_actionSound->Load(strFile))
+  {
+    delete m_actionSound;
+    m_actionSound=NULL;
+    return;
+  }
+
+  m_actionSound->Play();
 }
 
 // \brief Play a sound associated with a window and its event
@@ -176,11 +182,14 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
   }
 
   CGUISound* sound=new CGUISound();
-  if (sound->Load(m_strMediaDir+"\\"+strFile))
+  if (!sound->Load(m_strMediaDir+"\\"+strFile))
   {
-    m_windowSounds.insert(pair<DWORD, CGUISound*>(dwID, sound));
-    sound->Play();
+    delete sound;
+    return;
   }
+
+  m_windowSounds.insert(pair<DWORD, CGUISound*>(dwID, sound));
+  sound->Play();
 }
 
 // \brief Play a sound given by filename
@@ -206,11 +215,14 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   }
 
   CGUISound* sound=new CGUISound();
-  if (sound->Load(strFileName))
+  if (!sound->Load(strFileName))
   {
-    m_pythonSounds.insert(pair<CStdString, CGUISound*>(strFileName, sound));
-    sound->Play();
+    delete sound;
+    return;
   }
+
+  m_pythonSounds.insert(pair<CStdString, CGUISound*>(strFileName, sound));
+  sound->Play();
 }
 
 // \brief Load the config file (sounds.xml) for nav sounds
