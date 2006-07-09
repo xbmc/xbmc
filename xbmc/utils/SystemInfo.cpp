@@ -640,6 +640,7 @@ bool SYSINFO::GetXBOXVersionDetected(CStdString& strXboxVer)
 	if ( strcmp(Ver,("01D")) == NULL || strcmp(Ver,("D01")) == NULL || strcmp(Ver,("1D0")) == NULL || strcmp(Ver,("0D1")) == NULL)
 	{ strXboxVer = "DEVKIT";  return true;}
 	else if ( strcmp(Ver,("DBG")) == NULL){ strXboxVer = "DEBUGKIT Green";	return true;}
+  else if ( strcmp(Ver,("B11")) == NULL){ strXboxVer = "DEBUGKIT Green";	return true;}
 	else if ( strcmp(Ver,("P01")) == NULL){ strXboxVer = "v1.0";  return true;}
 	else if ( strcmp(Ver,("P05")) == NULL){	strXboxVer = "v1.1";  return true;}
 	else if ( strcmp(Ver,("P11")) == NULL ||  strcmp(Ver,("1P1")) == NULL || strcmp(Ver,("11P")) == NULL )
