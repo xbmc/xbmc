@@ -43,6 +43,7 @@ public:
   int GetTextureHeight() const;
   void GetBottomRight(float &x, float &y) const;
 
+  void PythonSetColorKey(DWORD dwColorKey);
   void SetFileName(const CStdString& strFileName);
   const CStdString& GetFileName() const { return m_strFileName;};
   DWORD GetColorKey() const { return m_dwColorKey;};
