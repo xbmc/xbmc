@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-07-2006 fixed: [ 1519504 ] Last.fm radio no default thumb displayed
  - 08-07-2006 fixed: nav sounds completely disappear after fast scrolling
  - 08-07-2006 added: ControlImage now have function setImage(filename)
  - 08-07-2006 added: Dialog().numeric to Python. Prompt the user for a number, date,time, ip via the Keypad (DialogNumeric)
