@@ -43,7 +43,6 @@ public:
 	DWORD SuspendThread();
 	DWORD ResumeThread();
 	BOOL PostThreadMessage( UINT message , WPARAM wParam, LPARAM lParam );
-	
 protected:
 	virtual int OnThreadMessage(UINT Msg, WPARAM wParam, LPARAM lParam);
 	virtual BOOL InitInstance();

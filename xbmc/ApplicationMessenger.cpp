@@ -9,6 +9,7 @@
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowSlideShow.h"
 #include "lib/libGoAhead/xbmchttp.h"
+#include "xbox/network.h"
 
 CApplicationMessenger g_applicationMessenger;
 
@@ -333,6 +334,11 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         if (pWindowScripts) pWindowScripts->OnMessage(msg);
       }
       break;
+    case TMSG_NETWORKMESSAGE:
+      {
+        g_network.NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);
+      }
+      break;
   }
 }
 
@@ -489,5 +495,11 @@ void CApplicationMessenger::RestartApp()
 void CApplicationMessenger::RebootToDashBoard()
 {
   ThreadMessage tMsg = {TMSG_DASHBOARD};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::NetworkMessage(DWORD dwMessage, DWORD dwParam)
+{
+  ThreadMessage tMsg = {TMSG_NETWORKMESSAGE, dwMessage, dwParam};
   SendMessage(tMsg);
 }

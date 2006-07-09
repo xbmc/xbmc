@@ -7,6 +7,7 @@
 #include "Http.h"
 #include "../utils/HTMLUtil.h"
 #include "../util.h"
+#include "../xbox/network.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -70,6 +71,13 @@ void CRssReader::OnExit()
 
 void CRssReader::Process()
 {
+  /* make sure we have network before attempting anything */
+  if( !g_network.IsAvailable() )
+  {
+    m_vecQueue.clear();
+    return;
+  }
+
   int tempLeading = m_iLeadingSpaces;
   while (m_vecQueue.size())
   {

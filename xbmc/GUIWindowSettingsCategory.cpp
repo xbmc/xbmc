@@ -1137,9 +1137,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (g_guiSettings.GetBool("servers.webserver"))
     {
       g_application.StartWebServer();
-      CStdString strPassword = g_guiSettings.GetString("servers.webserverpassword");
-//      if (strPassword.size() > 0)
-      g_application.m_pWebServer->SetPassword((char_t*)strPassword.c_str());
+      g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
     }
   }
   else if (strSetting.Equals("network.ipaddress"))
@@ -1635,6 +1633,16 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
       g_applicationMessenger.RestartApp();
       // Todo: aquire new network settings without restart app!
     }
+    else
+    {
+      g_network.Deinitialize();
+      g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
+        g_guiSettings.GetString("network.ipaddress").c_str(),
+        g_guiSettings.GetString("network.subnet").c_str(),
+        g_guiSettings.GetString("network.gateway").c_str(),
+        g_guiSettings.GetString("network.dns").c_str());
+    }
+
  
     // update our settings variables
     m_iNetworkAssignment = g_guiSettings.GetInt("network.assignment");

@@ -15,6 +15,7 @@
 #include "FileCurl.h"
 #include "FileMusicDatabase.h"
 #include "FileLastFM.h"
+#include "../xbox/network.h"
 
 using namespace XFILE;
 
@@ -37,22 +38,27 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.MakeLower();
 
-  if (strProtocol.Equals("http") || strProtocol.Equals("https")) return new CFileCurl();
-  else if (strProtocol.Equals("ftp") || strProtocol.Equals("ftpx")) return new CFileCurl();
-  else if (strProtocol.Equals("upnp")) return new CFileCurl();
-  else if (strProtocol == "iso9660") return new CFileISO();
-  else if (strProtocol == "smb") return new CFileSMB();
-  else if (strProtocol == "xbms") return new CFileXBMSP();
-  else if (strProtocol == "shout") return new CFileShoutcast();
-  else if (strProtocol == "lastfm") return new CFileLastFM();
+  if (strProtocol == "iso9660") return new CFileISO();
   else if (strProtocol == "rtv") return new CFileRTV();
   else if (strProtocol == "soundtrack") return new CFileSndtrk();
-  else if (strProtocol == "daap") return new CFileDAAP();
   else if (strProtocol == "cdda") return new CFileCDDA();
   else if (strProtocol == "zip") return new CFileZip();
   else if (strProtocol == "rar") return new CFileRar();
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
-  else if (strProtocol == "file") return new CFileHD();
-  
-  else return new CFileHD();
+  else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
+
+  if( g_network.IsAvailable() )
+  {
+    if (strProtocol == "smb") return new CFileSMB();
+    else if (strProtocol == "xbms") return new CFileXBMSP();
+    else if (strProtocol == "shout") return new CFileShoutcast();
+    else if (strProtocol == "lastfm") return new CFileLastFM();
+    else if (strProtocol == "daap") return new CFileDAAP();
+    else if (strProtocol == "http" || strProtocol == "https") return new CFileCurl();
+    else if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFileCurl();
+    else if (strProtocol == "upnp") return new CFileCurl();
+
+  }
+
+  return NULL;
 }

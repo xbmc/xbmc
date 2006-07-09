@@ -20,6 +20,7 @@
 #include "StackDirectory.h"
 #include "PlaylistDirectory.h"
 #include "UPnPDirectory.h"
+#include "../xbox/network.h"
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
@@ -37,24 +38,29 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     return pDir;
 
   CStdString strProtocol = url.GetProtocol();
-  if (strProtocol.size() == 0) return new CHDDirectory();
+  if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
   if (strProtocol == "iso9660") return new CISO9660Directory();
-  if (strProtocol == "smb") return new CSMBDirectory();
-  if (strProtocol == "xbms") return new CXBMSDirectory();
   if (strProtocol == "cdda") return new CCDDADirectory();
   if (strProtocol == "rtv") return new CRTVDirectory();
   if (strProtocol == "soundtrack") return new CSndtrkDirectory();
-  if (strProtocol == "daap") return new CDAAPDirectory();
-  if (strProtocol == "upnp") return new CUPnPDirectory();
-  if (strProtocol == "shout") return new CShoutcastDirectory();
-  if (strProtocol == "lastfm") return new CLastFMDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") return new CRarDirectory();
-  if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFTPDirectory();
   if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
   if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();
   if (strProtocol == "playlistvideo") return new CPlaylistDirectory();
- return new CHDDirectory();
+
+  if( g_network.IsAvailable() )
+  {
+    if (strProtocol == "smb") return new CSMBDirectory();
+    if (strProtocol == "daap") return new CDAAPDirectory();
+    if (strProtocol == "upnp") return new CUPnPDirectory();
+    if (strProtocol == "shout") return new CShoutcastDirectory();
+    if (strProtocol == "lastfm") return new CLastFMDirectory();
+    if (strProtocol == "xbms") return new CXBMSDirectory();
+    if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFTPDirectory();
+  }
+
+ return NULL;
 }

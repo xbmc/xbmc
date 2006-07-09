@@ -2,6 +2,7 @@
 
 #include "network.h"
 #include "Undocumented.h"
+#include "../application.h"
 
 // global network variable
 CNetwork g_network;
@@ -13,11 +14,10 @@ static char* inet_ntoa (struct in_addr in)
   return _inetaddress;
 }
 
-
-void CNetwork::OverrideDash( struct network_info& networkinfo )
-{
-  TXNetConfigParams params;
-  XNetLoadConfigParams( &params );
+/* translator function wich will take our network info and make TXNetConfigParams of it */
+/* returns true if config is different from default */
+static bool TranslateConfig( const struct network_info& networkinfo, TXNetConfigParams &params )
+{    
   bool bDirty = false;
 
   if ( !networkinfo.DHCP )
@@ -117,8 +117,18 @@ void CNetwork::OverrideDash( struct network_info& networkinfo )
   }
   else
   {
+
+    if( params.Flag != 0 )
+    {
+      params.Flag = 0;
+      bDirty = true;
+    }
+
+#if 0
     TXNetConfigParams oldconfig;
     memcpy(&oldconfig, &params, sizeof(TXNetConfigParams));
+
+    oldconfig.Flag = 0;
 
     unsigned char *raw = (unsigned char*)&params;
     
@@ -141,120 +151,118 @@ void CNetwork::OverrideDash( struct network_info& networkinfo )
     
     /* no idea what this is, could be additional dhcp options, but's hard to tell */
     raw[340] = 160; raw[341] = 93; raw[342] = 131; raw[343] = 191; raw[344] = 46;
-    
+
     /* if something was changed, update with this */
     if( memcmp(&oldconfig, &params, sizeof(TXNetConfigParams)) != 0 ) 
       bDirty = true;
+#endif
 
     CLog::Log(LOGINFO, "requesting DHCP");
   }
 
-  /* if we changed anything, we should write data to persistant memory */
-  /* maybe we could avoid this by calling XNetConfig after XNetStartup */
-  if( bDirty )
-    XNetSaveConfigParams( &params );
+  return bDirty;
 }
 
 bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
 {
 
-  WSACleanup();
-  XNetCleanup();
+  XNetStartupParams xnsp = {};
+  WSADATA WsaData = {};
+  TXNetConfigParams params = {};
+  DWORD dwState = 0;
+  bool dashconfig = false;
+
 
   memset(&m_networkinfo , 0, sizeof(m_networkinfo ));
+
+  /* load current params */
+  XNetLoadConfigParams( &params );
+
   if (iAssignment == NETWORK_DHCP)
   {
-    CLog::Log(LOGNOTICE, "use DHCP");
-    m_networkinfo.DHCP = true;
-    OverrideDash( m_networkinfo );
+    m_networkinfo.DHCP = true;    
+    dashconfig = !TranslateConfig(m_networkinfo, params);
+    CLog::Log(LOGNOTICE, "use DHCP");    
   }
   else if (iAssignment == NETWORK_STATIC)
   {
-    CLog::Log(LOGNOTICE, "use static ip");
     m_networkinfo.DHCP = false;
-
     strcpy(m_networkinfo.ip, szLocalAddress);
     strcpy(m_networkinfo.subnet, szLocalSubnet);
     strcpy(m_networkinfo.gateway, szLocalGateway);
     strcpy(m_networkinfo.DNS1, szNameServer);
-    OverrideDash( m_networkinfo );
+
+    dashconfig = !TranslateConfig(m_networkinfo, params);
+    CLog::Log(LOGNOTICE, "use static ip");
   }
   else
   {
+    dashconfig = true;
     CLog::Log(LOGWARNING, "use dashboard");
   }
 
-  { /* okey now startup the settings we wish to use */
-    XNetStartupParams xnsp;
-    memset(&xnsp, 0, sizeof(xnsp));
-    xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
-
-    // Bypass security so that we may connect to 'untrusted' hosts
-    xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
-    // create more memory for networking
-    xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
-    xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
-    xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
-    xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
-    xnsp.cfgSockMaxSockets = 64; // default = 64
-    xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
-    xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
-
-    DWORD dwState = XNetStartup(&xnsp);
-    if( dwState != 0 )
-    {
-      CLog::Log(LOGERROR, __FUNCTION__" - XNetStartup failed with error %d", dwState);
-      return false;
-    }
+  /* configure addresses */  
+  if( !dashconfig )
+  { 
+    /* override dashboard setting with this, if it was different */      
+    XNetSaveConfigParams( &params );    
   }
 
-  /* startup winsock */
-  WSADATA WsaData;
-  DWORD dwState = WSAStartup( MAKEWORD(2, 2), &WsaData );
+
+  /* okey now startup the settings we wish to use */
+  xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
+
+  // Bypass security so that we may connect to 'untrusted' hosts
+  xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
+  // create more memory for networking
+  xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
+  xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
+  xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
+  xnsp.cfgIpFragMaxPacketDiv256 = 32; // == 8kb, default = 8 (2kb)
+  xnsp.cfgSockMaxSockets = 64; // default = 64
+  xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
+  xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
+
+  dwState = XNetStartup(&xnsp);
+  if( dwState != 0 )
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - XNetStartup failed with error %d", dwState);
+    return false;
+  }
+
+  if( !dashconfig )
+  {
+    dwState = XNetConfig( &params, 0 );
+    if( dwState != 0 )
+    {
+      CLog::Log(LOGERROR, __FUNCTION__" - XNetConfig failed with error %d", dwState);
+      return false;
+    }      
+  }
+
+  /* startup winsock */  
+  dwState = WSAStartup( MAKEWORD(2, 2), &WsaData );
   if( NO_ERROR != dwState )
   {
     CLog::Log(LOGERROR, __FUNCTION__" - WSAStartup failed with error %d", dwState);
     return false;
   }
 
+
   return true;
 }
 
-/* update network state, call repetedly while return value is XNET_GET_XNADDR_PENDING */
-DWORD CNetwork::UpdateState()
+void CNetwork::NetworkDown()
 {
-  XNADDR xna;
-  DWORD dwState = XNetGetTitleXnAddr(&xna);
-  DWORD dwLink = XNetGetEthernetLinkStatus();
+  memset(&m_networkinfo, 0, sizeof(m_networkinfo));
+  m_lastlink = 0;
+  m_laststate = 0;
+  m_networkup = false;
+  g_applicationMessenger.NetworkMessage(SERVICES_DOWN, 0);
+}
 
-  if( !(dwLink & XNET_ETHERNET_LINK_ACTIVE) )
-  {
-    if( m_networkup )
-    {
-      memset(&m_networkinfo, 0, sizeof(m_networkinfo));
-      m_lastlink = 0;
-      m_laststate = 0;
-      m_networkup = false;
-    }
-    return XNET_GET_XNADDR_NONE;
-  }
-
-  if( dwState == XNET_GET_XNADDR_PENDING )
-  {
-    /* reset current network settings, as we might have lost */
-    /* connection */
-    if( m_networkup )
-    {
-      memset(&m_networkinfo, 0, sizeof(m_networkinfo));      
-      m_lastlink = 0;
-      m_laststate = 0;
-      m_networkup = false;
-    }
-
-    return XNET_GET_XNADDR_PENDING;
-  }
-
-
+void CNetwork::NetworkUp()
+{
   /* get the current status */
   TXNetConfigStatus status;
   XNetGetConfigStatus(&status);
@@ -265,77 +273,36 @@ DWORD CNetwork::UpdateState()
   strcpy(m_networkinfo.gateway, inet_ntoa(status.gateway));
   strcpy(m_networkinfo.dhcpserver, "");
   strcpy(m_networkinfo.DNS1, inet_ntoa(status.dns1));
-  strcpy(m_networkinfo.DNS2, inet_ntoa(status.dns2));    
+  strcpy(m_networkinfo.DNS2, inet_ntoa(status.dns2));
 
+  m_networkinfo.DHCP = !(status.dhcp == 0);
 
-  if( m_lastlink != dwState )
+  m_networkup = true;
+  
+  g_applicationMessenger.NetworkMessage(SERVICES_UP, 0);
+}
+
+/* update network state, call repetedly while return value is XNET_GET_XNADDR_PENDING */
+DWORD CNetwork::UpdateState()
+{
+  XNADDR xna;
+  DWORD dwState = XNetGetTitleXnAddr(&xna);
+  DWORD dwLink = XNetGetEthernetLinkStatus();
+
+  if( m_lastlink != dwLink || m_laststate != dwState )
   {
-    /* check that what type of network is attached */
-    if ( dwLink & XNET_ETHERNET_LINK_ACTIVE )
-    {
+    m_lastlink = dwLink;
+    m_laststate = dwState;
 
-      if ( dwLink & XNET_ETHERNET_LINK_FULL_DUPLEX )
-        CLog::Log(LOGINFO, __FUNCTION__" - Link: full duplex");
+    if( m_networkup )
+      NetworkDown();
+    
+    if ( dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC )
+      NetworkUp();
 
-      if ( dwLink & XNET_ETHERNET_LINK_HALF_DUPLEX )
-        CLog::Log(LOGINFO, __FUNCTION__" - Link: half duplex");
-
-      if ( dwLink & XNET_ETHERNET_LINK_100MBPS )
-        CLog::Log(LOGINFO, __FUNCTION__" - Link: 100 mbps");
-
-      if ( dwLink & XNET_ETHERNET_LINK_10MBPS )
-        CLog::Log(LOGINFO, __FUNCTION__" - Link: 10bmps");
-    }
+    LogState();
   }
 
-  if( m_laststate != dwState )
-  {
-    if ( dwState & XNET_GET_XNADDR_STATIC )
-    {
-      CLog::Log(LOGINFO, __FUNCTION__" - State: static");
-
-      m_networkinfo.DHCP = false;
-      m_networkup = true;
-    }
-
-    if ( dwState & XNET_GET_XNADDR_DHCP )
-    {
-      CLog::Log(LOGINFO, __FUNCTION__" - State: dhcp");
-
-      m_networkinfo.DHCP = true;
-      m_networkup = true;
-    }
-
-    if ( dwState & XNET_GET_XNADDR_DNS )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: dns");
-
-    if ( dwState & XNET_GET_XNADDR_ETHERNET )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: ethernet");
-
-    if ( dwState & XNET_GET_XNADDR_NONE )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: none");
-
-    if ( dwState & XNET_GET_XNADDR_ONLINE )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: online");
-
-    if ( dwState & XNET_GET_XNADDR_PENDING )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: pending");
-
-    if ( dwState & XNET_GET_XNADDR_TROUBLESHOOT )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: error");
-
-    if ( dwState & XNET_GET_XNADDR_PPPOE )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: ppoe");
-
-
-    CLog::Log(LOGINFO,  __FUNCTION__" - Interface: IP         %s", m_networkinfo.ip);
-    CLog::Log(LOGINFO,  __FUNCTION__" - Interface: SUBNET     %s", m_networkinfo.subnet);
-    CLog::Log(LOGINFO,  __FUNCTION__" - Interface: GATEWAY    %s", m_networkinfo.gateway);
-  //  CLog::Log(LOGINFO,  __FUNCTION__" - DHCPSERVER: %s", m_networkinfo.dhcpserver);
-    CLog::Log(LOGINFO,  __FUNCTION__" - Interface: DNS1       %s", m_networkinfo.DNS1);
-    CLog::Log(LOGINFO,  __FUNCTION__" - Interface: DNS2       %s", m_networkinfo.DNS2);
-
-  }
   return dwState;
 }
 
@@ -375,4 +342,101 @@ CNetwork::CNetwork(void)
 
 CNetwork::~CNetwork(void)
 {
+  Deinitialize();
+}
+
+void CNetwork::Deinitialize()
+{
+  if( m_networkup )
+    NetworkDown();
+
+  WSACleanup();
+  XNetCleanup();
+}
+
+void CNetwork::LogState()
+{
+    DWORD dwLink = m_lastlink;
+    DWORD dwState = m_laststate;
+
+
+    if ( dwLink & XNET_ETHERNET_LINK_FULL_DUPLEX )
+      CLog::Log(LOGINFO, __FUNCTION__" - Link: full duplex");
+
+    if ( dwLink & XNET_ETHERNET_LINK_HALF_DUPLEX )
+      CLog::Log(LOGINFO, __FUNCTION__" - Link: half duplex");
+
+    if ( dwLink & XNET_ETHERNET_LINK_100MBPS )
+      CLog::Log(LOGINFO, __FUNCTION__" - Link: 100 mbps");
+
+    if ( dwLink & XNET_ETHERNET_LINK_10MBPS )
+      CLog::Log(LOGINFO, __FUNCTION__" - Link: 10bmps");
+
+    if ( dwState & XNET_GET_XNADDR_DNS )
+      CLog::Log(LOGINFO, __FUNCTION__" - State: dns");
+
+    if ( dwState & XNET_GET_XNADDR_ETHERNET )
+      CLog::Log(LOGINFO, __FUNCTION__" - State: ethernet");
+
+    if ( dwState & XNET_GET_XNADDR_NONE )
+      CLog::Log(LOGINFO, __FUNCTION__" - State: none");
+
+    if ( dwState & XNET_GET_XNADDR_ONLINE )
+      CLog::Log(LOGINFO, __FUNCTION__" - State: online");
+
+    if ( dwState & XNET_GET_XNADDR_PENDING )
+      CLog::Log(LOGINFO, __FUNCTION__" - State: pending");
+
+    if ( dwState & XNET_GET_XNADDR_TROUBLESHOOT )
+      CLog::Log(LOGINFO, __FUNCTION__" - State: error");
+
+    if ( dwState & XNET_GET_XNADDR_PPPOE )
+      CLog::Log(LOGINFO, __FUNCTION__" - State: ppoe");
+
+    if ( dwState & XNET_GET_XNADDR_STATIC )
+      CLog::Log(LOGINFO, __FUNCTION__" - State: static");
+
+    if ( dwState & XNET_GET_XNADDR_DHCP )
+      CLog::Log(LOGINFO, __FUNCTION__" - State: dhcp");
+
+    CLog::Log(LOGINFO,  __FUNCTION__" - ip: %s", m_networkinfo.ip);
+    CLog::Log(LOGINFO,  __FUNCTION__" - subnet: %s", m_networkinfo.subnet);
+    CLog::Log(LOGINFO,  __FUNCTION__" - gateway: %s", m_networkinfo.gateway);
+  //  CLog::Log(LOGINFO,  __FUNCTION__" - DHCPSERVER: %s", m_networkinfo.dhcpserver);
+    CLog::Log(LOGINFO,  __FUNCTION__" - dns: %s, %s", m_networkinfo.DNS1, m_networkinfo.DNS2);
+
+}
+
+bool CNetwork::IsAvailable()
+{
+  /* if network isn't up, wait for it to setup */
+  if( !m_networkup )
+    WaitForSetup(5000);
+
+  return m_networkup;
+}
+
+void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
+{
+  switch( message )
+  {
+    case SERVICES_UP:
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Starting network services");      
+      g_application.StartTimeServer();
+      g_application.StartWebServer();
+      g_application.StartFtpServer();
+      g_application.StartKai();
+    }
+    break;
+    case SERVICES_DOWN:
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Stopping network services");
+      g_application.StopTimeServer();
+      g_application.StopWebServer();
+      g_application.StopFtpServer();
+      g_application.StopKai();      
+    }
+    break;
+  }
 }

@@ -37,9 +37,9 @@ CXBFileZilla::~CXBFileZilla()
   XBFILEZILLA(DestructInstance());
 }
 
-bool CXBFileZilla::Start()
+bool CXBFileZilla::Start(bool Wait)
 {
-  return XBFILEZILLA(Start());
+  return XBFILEZILLA(Start(Wait));
 }
 
 bool CXBFileZilla::Stop()
