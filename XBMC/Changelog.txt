@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-07-2006 changed: network startup is now asyncronos, doesn't delay boot
  - 10-07-2006 fixed: play dvd on vcd's would not work, while autorun would. 
  - 09-07-2006 added: Colorkey to the new setImage Python method.
  - 09-07-2006 fixed: [ 1519501 ] ListControl spincontrol down stays focused/pressed

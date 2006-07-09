@@ -27,6 +27,8 @@
 
 #define TMSG_HTTPAPI              400
 
+#define TMSG_NETWORKMESSAGE         500
+
 typedef struct
 {
   DWORD dwMessage;
@@ -71,6 +73,7 @@ public:
   int SetResponse(CStdString response);
   void HttpApi(string cmd);
 
+  void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
 private:
   void ProcessMessage(ThreadMessage *pMsg);
 
