@@ -449,7 +449,7 @@ bool CFileLastFM::RetreiveMetaData()
     )
   {
     CStdString cachedFile = "";
-    if ((coverUrl != "") && (coverUrl.Find("noalbum") == -1) && (coverUrl.Right(1) != "/"))
+    if ((coverUrl != "") && (coverUrl.Find("no_album") == -1) && (coverUrl.Find("noalbum") == -1) && (coverUrl.Right(1) != "/") && (coverUrl.Find(".gif") == -1))
     {
       Crc32 crc;
       crc.ComputeFromLowerCase(coverUrl);
