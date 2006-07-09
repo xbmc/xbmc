@@ -1466,8 +1466,14 @@ typedef struct XNetConfigStatus
   IN_ADDR dns1;     // 0x1c
   IN_ADDR dns2;     // 0x20
   
-  DWORD data_24[5];
-  WORD data_38; // is is possible this should be one byte less
+  DWORD data_24;
+  DWORD data_28;
+  DWORD data_2c;
+  DWORD data_30;
+
+  BYTE dhcp;        // 0x34
+  BYTE data_35;
+  DWORD data_36;
 }
 TXNetConfigStatus, *PTXNetConfigStatus;
 

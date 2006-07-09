@@ -3961,6 +3961,9 @@ bool CUtil::IsFTP(const CStdString& strFile)
 
 bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax )
 {
+  if( !g_application.m_pFileZilla )
+    return false;
+
   class CXFUser*	m_pUser;
   std::vector<CXFUser*> users;
   g_application.m_pFileZilla->GetAllUsers(users);
@@ -3972,10 +3975,15 @@ bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &i
     strFtpUser1 = m_pUser->GetName();
     if (strFtpUser1.size() != 0) return true;
     else return false;
-	}else return false;
+	}
+  else 
+    return false;
 }
 bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword)
 {
+  if( !g_application.m_pFileZilla )
+    return false;
+  
   CStdString strTempUserName;
   class CXFUser*	p_ftpUser;
   std::vector<CXFUser*> v_ftpusers;

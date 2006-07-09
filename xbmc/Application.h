@@ -95,6 +95,7 @@ public:
 
   void ResetAllControls();
   virtual void Process();
+  void ProcessSlow();
   void ResetScreenSaver();
   int GetVolume() const;
   void SetVolume(int iPercent);
@@ -192,6 +193,7 @@ protected:
   CXBStopWatch m_restartPlayerTimer;
   CXBStopWatch m_frameTime;
   CXBStopWatch m_navigationTimer;
+  CXBStopWatch m_slowTimer;
 };
 
 extern CApplication g_application;

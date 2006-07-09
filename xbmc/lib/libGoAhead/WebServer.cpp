@@ -60,7 +60,7 @@ CWebServer::CWebServer()
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
 
-  m_hEvent = CreateEvent(NULL, false, false, NULL);
+  m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
 
 
@@ -88,19 +88,28 @@ DWORD CWebServer::ResumeThread()
   return res;
 }
 
-bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web)
+bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web, bool wait)
 {
   m_bFinished = false;
+  ResetEvent(m_hEvent);
 
   strcpy(m_szLocalAddress, szLocalAddress);
   strcpy(m_szRootWeb, web);
   m_port = port;
 
   Create(false);
-  if (m_ThreadHandle == NULL) return false;
+  if (m_ThreadHandle == NULL) return false;  
 
-  // wait until the webserver is ready
-  WaitForSingleObject(m_hEvent, INFINITE);
+  CThread::SetName("Webserver");
+  if( wait )
+  {    
+    // wait until the webserver is ready
+    WaitForSingleObject(m_hEvent, INFINITE);
+  }
+  else
+  {
+    SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
+  }
 
   return true;
 }
@@ -108,7 +117,7 @@ bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web)
 void CWebServer::Stop()
 {
   m_bFinished = true;
-
+  
   StopThread();
 }
 
@@ -225,6 +234,7 @@ int CWebServer::initWebs()
 	// Create a handler for the default home page
 	websUrlHandlerDefine(T("/"), NULL, 0, websHomePageHandler, 0); 
 
+  CLog::Log(LOGNOTICE, "Webserver: Started");
 	return 0;
 }
 
@@ -268,6 +278,9 @@ void CWebServer::Process()
 	 */
 	int sockReady, sockSelect;
 
+  /* set our thread priority */
+  SetPriority(THREAD_PRIORITY_NORMAL);
+
 	while (!m_bFinished) 
 	{
 		sockReady = socketReady(-1);
@@ -286,8 +299,12 @@ void CWebServer::Process()
  * this is done in group "sys_xbox".
  * Note that when setting the password this function will delete all database info!!
  */
-void CWebServer::SetPassword(char_t* strPassword)
+void CWebServer::SetPassword(const char* strPassword)
 {
+  // wait until the webserver is ready
+  if( WaitForSingleObject(m_hEvent, 5000) != WAIT_OBJECT_0 ) 
+    return;
+
   // open the database and clean it
   int did = umOpen();
   dbZero(did);
@@ -302,7 +319,7 @@ void CWebServer::SetPassword(char_t* strPassword)
     umAddGroup(WEBSERVER_UM_GROUP, PRIV_READ | PRIV_WRITE | PRIV_ADMIN, AM_BASIC, false, false);
     
     // greate user
-    umAddUser("xbox", strPassword, WEBSERVER_UM_GROUP, false, false);
+    umAddUser("xbox", (char_t*)strPassword, WEBSERVER_UM_GROUP, false, false);
     
     // create access limit
     umAddAccessLimit("/", AM_BASIC, 0, WEBSERVER_UM_GROUP);
@@ -315,6 +332,10 @@ void CWebServer::SetPassword(char_t* strPassword)
 
 char* CWebServer::GetPassword()
 {
+  // wait until the webserver is ready
+  if( WaitForSingleObject(m_hEvent, 5000) != WAIT_OBJECT_0 ) 
+    return "";
+
   char* pPass = "";
   
   umOpen();

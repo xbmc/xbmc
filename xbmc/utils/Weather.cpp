@@ -6,7 +6,7 @@
 #include "HTTP.h"
 #include "xmlutils.h"
 #include "../temperature.h"
-
+#include "../xbox/network.h"
 
 #define CONTROL_BTNREFRESH  2
 #define CONTROL_SELECTLOCATION 3
@@ -76,6 +76,10 @@ void CBackgroundWeatherLoader::GetInformation()
 {
   if (!g_guiSettings.GetBool("network.enableinternet"))
     return;
+
+  if (!g_network.IsAvailable())
+    return;
+
   CWeather *callback = (CWeather *)m_callback;
   // Download our weather
   CLog::Log(LOGINFO, "WEATHER: Downloading weather");

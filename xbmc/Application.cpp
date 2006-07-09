@@ -381,7 +381,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       std::vector<int>::iterator it;
       for( it = netorder.begin();it != netorder.end(); it++)
       {
-        XNetCleanup();
+        g_network.Deinitialize();
 
         if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
         {
@@ -1024,19 +1024,6 @@ HRESULT CApplication::Initialize()
           g_guiSettings.GetString("network.gateway").c_str(),
           g_guiSettings.GetString("network.dns").c_str());
 
-  /* now attempt to get all settings for the network as soon as it is */
-  /* available. this could be done further down, to keep network */
-  /* from stalling startup */
-  if( g_network.IsEthernetConnected() )
-  {
-    if( g_network.WaitForSetup( 5000 ) )
-      CLog::Log(LOGINFO, __FUNCTION__" - network fully setup");
-    else
-      CLog::Log(LOGERROR, __FUNCTION__" - network init timed out");
-  }
-  else
-    CLog::Log(LOGINFO, __FUNCTION__" - network not connected");
-
   StartServices();
 
   m_gWindowManager.Add(new CGUIWindowHome);                     // window id = 0
@@ -1176,10 +1163,11 @@ HRESULT CApplication::Initialize()
     RestoreMusicScanSettings();
   }
 
+  m_slowTimer.StartZero();
+
   CLog::Log(LOGNOTICE, "initialize done");
 
   CScrobbler::GetInstance()->Init();
-  StartKai();
 
   m_bInitializing = false;
 
@@ -1214,10 +1202,10 @@ void CApplication::StartWebServer()
 {
   if (g_guiSettings.GetBool("servers.webserver") && g_network.IsAvailable() )
   {
-    CLog::Log(LOGNOTICE, "start webserver");
+    CLog::Log(LOGNOTICE, "Webserver: Starting...");
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
-    m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web");
+    m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
   }
 }
 
@@ -1225,11 +1213,12 @@ void CApplication::StopWebServer()
 {
   if (m_pWebServer)
   {
-    CLog::Log(LOGNOTICE, "stop webserver");
+    CLog::Log(LOGNOTICE, "Webserver: Stopping...");
     m_pWebServer->Stop();
     delete m_pWebServer;
     m_pWebServer = NULL;
     CSectionLoader::Unload("LIBHTTP");
+    CLog::Log(LOGNOTICE, "Webserver: Stopped...");
   }
 }
 
@@ -1245,9 +1234,9 @@ void CApplication::StartFtpServer()
       if (!CFile::Exists("Q:\\System\\FileZilla Server.xml") && CFile::Exists("Q:\\FileZilla Server.xml"))
         CFile::Cache("Q:\\FileZilla Server.xml", "Q:\\System\\FileZilla Server.xml");
       m_pFileZilla = new CXBFileZilla("Q:\\System\\");
-      m_pFileZilla->Start();
+      m_pFileZilla->Start(false);
     }
-    CLog::Log(LOGNOTICE, "XBFileZilla: Started");
+    //CLog::Log(LOGNOTICE, "XBFileZilla: Started");
   }
 }
 
@@ -1363,10 +1352,6 @@ void CApplication::DimLCDOnPlayback(bool dim)
 void CApplication::StartServices()
 {
   CheckDate();
-  StartTimeServer();
-  StartWebServer();
-  StartFtpServer();
-  StartKai();
   StartLEDControl(false);
     
   // Start Thread for DVD Mediatype detection
@@ -1429,10 +1414,7 @@ void CApplication::CheckDate()
 }
 void CApplication::StopServices()
 {
-  StopWebServer();
-  StopTimeServer();
-  StopFtpServer();
-  StopKai();
+  g_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
@@ -3928,19 +3910,6 @@ void CApplication::Process()
   // process any Python scripts
   g_pythonParser.Process();
 
-  // check if we need 2 spin down the harddisk
-  CheckNetworkHDSpinDown();
-  if (!m_bNetworkSpinDown)
-    CheckHDSpindown();
-
-  // check if we need to activate the screensaver (if enabled)
-  if (g_guiSettings.GetString("screensaver.mode") != "None")
-    CheckScreenSaver();
-
-  // check if we need to shutdown (if enabled)
-  if (g_guiSettings.GetInt("system.shutdowntime"))
-    CheckShutdown();
-
   // process messages, even if a movie is playing
   g_applicationMessenger.ProcessMessages();
 
@@ -3954,14 +3923,41 @@ void CApplication::Process()
   // and do anything that needs doing (lastfm submission, playcount updates etc)
   CheckPlayingProgress();
 
+  // do any processing that isn't needed on each run
+  if( m_slowTimer.GetElapsedMilliseconds() > 500 )
+  {
+    m_slowTimer.Reset();
+    ProcessSlow();
+  }
+}
+
+void CApplication::ProcessSlow()
+{
+
+  // update our network state
+  g_network.UpdateState();
+
+  // check if we need 2 spin down the harddisk
+  CheckNetworkHDSpinDown();
+  if (!m_bNetworkSpinDown)
+    CheckHDSpindown();
+
+  // check if we need to activate the screensaver (if enabled)
+  if (g_guiSettings.GetString("screensaver.mode") != "None")
+    CheckScreenSaver();
+
+  // check if we need to shutdown (if enabled)
+  if (g_guiSettings.GetInt("system.shutdowntime"))
+    CheckShutdown();
+
+  // check if we should restart the player
+  CheckDelayedPlayerRestart();
+
   //  check if we can unload any unreferenced dlls or sections
   CSectionLoader::UnloadDelayed();
 
   // GeminiServer Xbox Autodetection // Send in X sec PingTime Interval
   CUtil::XboxAutoDetection();
-
-  // check if we should restart the player
-  CheckDelayedPlayerRestart();
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
