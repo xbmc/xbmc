@@ -72,22 +72,30 @@ namespace PYXBMC
 
 
 	PyDoc_STRVAR(setImage__doc__,
-		"setImage(filename) -- Changes the image.\n"
+		"setImage(filename, colorkey) -- Changes the image.\n"
 		"\n"
-		"filename          : string or unicode - text string.\n"
+		"filename       : string - image filename.\n"
+    "colorKey       : [opt] hexString - (example, '0xFFFF3300')\n"
 		"\n"
 		"example:\n"
-		"  - self.image.setImage('q:\\scripts\\test.png')\n");
+		"  - self.image.setImage('q:\\scripts\\test.png', '0xFFFF3300')\n");
 	
 	PyObject* ControlImage_SetImage(ControlImage *self, PyObject *args)
 	{
 		char *cImage;
-		if (!PyArg_ParseTuple(args, "s", &cImage)) return NULL;
-		self->strFileName = cImage;
-		PyGUILock();
+		char *cColorKey = NULL;
+
+    if (!PyArg_ParseTuple(args, "s|s", &cImage, &cColorKey)) return NULL;
+
+    self->strFileName = cImage;
+		if (cColorKey) sscanf(cColorKey, "%x", &self->strColorKey);
+		else self->strColorKey = 0;
+
+    PyGUILock();
 		if (self->pGUIControl)
 		{
 			((CGUIImage*)self->pGUIControl)->SetFileName(self->strFileName);
+			((CGUIImage*)self->pGUIControl)->PythonSetColorKey(self->strColorKey);
 		}
 		PyGUIUnlock();
 		Py_INCREF(Py_None);
