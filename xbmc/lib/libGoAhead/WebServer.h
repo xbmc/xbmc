@@ -63,13 +63,13 @@ public:
 
 	CWebServer();
 	virtual ~CWebServer();
-	bool						Start(const char* szLocalAddress, int port = 80, const char* web = "Q:\\web");
+	bool						Start(const char* szLocalAddress, int port = 80, const char* web = "Q:\\web", bool wait = true);
 	void						Stop();
 
 	DWORD						SuspendThread();
 	DWORD						ResumeThread();
 
-	void						SetPassword(char_t* strPassword);
+	void						SetPassword(const char* strPassword);
 	char*           GetPassword();
 
 protected:
