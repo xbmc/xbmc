@@ -23,10 +23,10 @@ public:
   bool IsEnabled();
 protected:
   static void ExecuteXBE(const CStdString &xbeFile);
-  void ExecuteAutorun();
-  void RunXboxCd();
-  void RunCdda();
-  void RunISOMedia();
+  static void ExecuteAutorun(bool bypassSettings = false);
+  static void RunXboxCd(bool bypassSettings = false);
+  static void RunCdda();
+  static void RunISOMedia(bool bypassSettings = false);
   static bool RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings = false);
   bool m_bEnable;
 };
