@@ -533,8 +533,8 @@ void CGUIListControl::OnLeft()
     m_upDown.OnLeft();
   else
   {
+    m_upDown.SetFocus(false);
     m_iSelect = CONTROL_LIST;
-    m_upDown.SetFocus(true);
   }
 }
 
