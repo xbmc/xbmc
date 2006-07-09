@@ -508,6 +508,11 @@ int CGUIImage::GetRenderHeight() const
   return m_iRenderHeight;
 }
 
+void CGUIImage::PythonSetColorKey(DWORD dwColorKey)
+{
+  m_dwColorKey = dwColorKey;
+}
+
 void CGUIImage::SetFileName(const CStdString& strFileName)
 {
   if (m_strFileName.Equals(strFileName)) return;
