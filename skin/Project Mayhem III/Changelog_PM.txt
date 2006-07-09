@@ -1,3 +1,5 @@
+2006-07-09 changed:	Kai button in programs is now only visible if kai is enabled.
+
 2006-07-04 fixed:	Wrong slide in profile window.
 2006-07-03 fixed:	Default Album image was shown even if no music was playing on the Movie Information screen.
 
