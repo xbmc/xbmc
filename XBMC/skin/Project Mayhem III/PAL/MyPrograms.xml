@@ -129,6 +129,7 @@
     <onright>50</onright>
     <onup>3</onup>
     <ondown>31</ondown>
+    <visible>System.KaiEnabled</visible>
     <include>buttonpanelslide</include>
    </control>
 
@@ -141,7 +142,7 @@
     <width>19</width>
     <height>19</height>
     <texture>Kai_disconnected.png</texture>
-    <visible>!System.KaiConnected</visible>
+    <visible>!System.KaiConnected + System.KaiEnabled</visible>
     <include>buttonpanelslide</include>
    </control>
 
