@@ -21,7 +21,8 @@ CAutorun::CAutorun()
 
 CAutorun::~CAutorun()
 {}
-void CAutorun::ExecuteAutorun()
+
+void CAutorun::ExecuteAutorun( bool bypassSettings )
 {
   if ( g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.IsRouted())
     return ;
@@ -33,25 +34,28 @@ void CAutorun::ExecuteAutorun()
 
   g_application.ResetScreenSaverWindow();  // turn off the screensaver if it's active
 
-  if ( g_guiSettings.GetBool("autorun.cdda") && pInfo->IsAudio( 1 ) )
+  if ( pInfo->IsAudio( 1 ) )
   {
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked())
-      if (!g_passwordManager.IsMasterLockUnlocked(true))
+    if( !bypassSettings && !g_guiSettings.GetBool("autorun.cdda") )
+      return;
+
+    if (!g_passwordManager.IsMasterLockUnlocked(bypassSettings))
+      if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked())
         return ;
 
     RunCdda();
   }
   else if (pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1))
   {
-    RunXboxCd();
+    RunXboxCd(bypassSettings);
   }
   else if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
   {
-    RunISOMedia();
+    RunISOMedia(bypassSettings);
   }
   else
   {
-    RunXboxCd();
+    RunXboxCd(bypassSettings);
   }
 }
 
@@ -107,14 +111,15 @@ void CAutorun::ExecuteXBE(const CStdString &xbeFile)
   CUtil::RunXBE(xbeFile.c_str(), NULL,F_VIDEO(iRegion));
 }
 
-void CAutorun::RunXboxCd()
+void CAutorun::RunXboxCd(bool bypassSettings)
 {
   if ( CFile::Exists("D:\\default.xbe") )
   {
-    if (!g_guiSettings.GetBool("autorun.xbox"))
+    if (!g_guiSettings.GetBool("autorun.xbox") && !bypassSettings)
       return;
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked())
-      if (!g_passwordManager.IsMasterLockUnlocked(true))
+
+    if (!g_passwordManager.IsMasterLockUnlocked(bypassSettings))
+      if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked())
         return;
 
     ExecuteXBE("D:\\default.xbe");
@@ -127,7 +132,7 @@ void CAutorun::RunXboxCd()
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
   auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
-  bool bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true);
+  bool bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings);
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
     CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
@@ -169,15 +174,12 @@ void CAutorun::RunCdda()
   g_playlistPlayer.Play();
 }
 
-void CAutorun::RunISOMedia()
+void CAutorun::RunISOMedia(bool bypassSettings)
 {
-  if ( !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") )
-    return ;
-
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
   auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
-  bool bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true);
+  bool bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings);
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
     CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
@@ -203,20 +205,16 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   bool bAllowVideo = true;
   bool bAllowPictures = true;
   bool bAllowMusic = true;
-  if (!g_passwordManager.IsMasterLockUnlocked(true))
+  if (!g_passwordManager.IsMasterLockUnlocked(bypassSettings))
   {
-    if( g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked() )
-      bAllowVideo = false;
-
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].picturesLocked())
-      bAllowPictures = false;
-
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked())
-      bAllowMusic = false;
+    bAllowVideo = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked();
+    bAllowPictures = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].picturesLocked();
+    bAllowMusic = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked();
   }
 
   if( bRoot )
   {
+
     // check root folders first, for normal structured dvd's
     for (int i = 0; i < vecItems.Size(); i++)
     {
@@ -415,70 +413,9 @@ bool CAutorun::IsEnabled()
 {
   return m_bEnable;
 }
-// GeminiServer: PlayDisc()
-// Will Play, if a disc is inserted! Has nothing todo with Autorun, therefore no autorun settings will be used!
-// Can be executed from the Context menu!
+
 bool CAutorun::PlayDisc()
 {
-  CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
-  if ( pInfo == NULL )
-    return false ;
-  if ( pInfo->IsAudio( 1 ) )
-  {
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked())
-      if (!g_passwordManager.IsMasterLockUnlocked(true))
-        return false;
-
-    CLog::Log(LOGDEBUG, "Playdisc called on an audio disk");
-    CFileItemList vecItems;
-
-    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
-    if ( !pDir->GetDirectory( "cdda://local/", vecItems ) ) return false;
-    if ( vecItems.Size() <= 0 ) return false;
-    int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-    for (int i = 0; i < vecItems.Size(); i++)
-    {
-      CFileItem* pItem = vecItems[i];
-      CPlayList::CPlayListItem playlistItem;
-      playlistItem.SetFileName(pItem->m_strPath);
-      playlistItem.SetDescription(pItem->GetLabel());
-      playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
-    }
-    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-    m_gWindowManager.SendMessage( msg );
-
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    g_playlistPlayer.Play(nSize);
-  }
-  else 
-  {
-    if (!pInfo->IsISOHFS(1) && !pInfo->IsIso9660(1) && !pInfo->IsIso9660Interactive(1))
-    { // pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)
-      CLog::Log(LOGDEBUG, "Playdisc called on an UDFX/UDF/ISOUDFn or Unknown disk, attempting to run XBE");
-      if ( CFile::Exists("D:\\default.xbe") )
-      {
-        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked())
-          if (!g_passwordManager.IsMasterLockUnlocked(true))
-            return false;
-
-        ExecuteXBE("D:\\default.xbe");
-        return false;
-      }
-    }
-    CLog::Log(LOGDEBUG, "Playdisc called on an ISOHFS/iso9660/iso9660Interactive disk, or no xbe found, searching for music files");
-    int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-    int nAddedToPlaylist = 0;
-    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
-    bool bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, true);
-    if ( !bPlaying && nAddedToPlaylist > 0 )
-    {
-      CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-      m_gWindowManager.SendMessage( msg );
-      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-      // Start playing the items we inserted
-      g_playlistPlayer.Play( nSize );
-    }
-  }
+  ExecuteAutorun(true);
   return true;
 }
