@@ -882,7 +882,7 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'F')
     { // filename
-      str = CUtil::GetTitleFromPath(m_strPath);
+      str = CUtil::GetTitleFromPath(m_strPath, m_bIsFolder);
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'L')
