@@ -1850,7 +1850,7 @@ bool CDVDPlayer::HasMenu()
 //  return NULL;
 //}
 
-bool CDVDPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
+bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 {
   __int64 pts = m_clock.GetClock();
   bool bGotSubtitle = false;//m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
