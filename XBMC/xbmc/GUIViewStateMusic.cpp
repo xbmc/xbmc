@@ -603,3 +603,38 @@ VECSHARES& CGUIViewStateWindowMusicPlaylist::GetShares()
 
   return CGUIViewStateWindowMusic::GetShares();
 }
+
+CGUIViewStateMusicShoutcast::CGUIViewStateMusicShoutcast(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
+{
+  if( m_items.m_idepth > 1 )
+  { /* station list */
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%B kbps", "%K", ""));  // Title, Bitrate | Title, nothing
+    AddSortMethod(SORT_METHOD_VIDEO_RATING, 507, LABEL_MASKS("%K", "%A listeners", "%K", ""));  // Titel, Listeners | Titel, nothing
+    AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%K", "%B kbps", "%K", ""));  // Title, Bitrate | Title, nothing
+
+    SetSortMethod(g_stSettings.m_MyMusicShoutcastSortMethod);
+    SetSortOrder(g_stSettings.m_MyMusicShoutcastSortOrder);
+  }
+  else
+  { /* genre list */
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "", "%K", ""));  // Title, nothing | Title, nothing
+    SetSortMethod(SORT_METHOD_LABEL);
+    SetSortOrder(SORT_ORDER_ASC); /* maybe we should have this stored somewhere */
+  }
+
+
+  AddViewAsControl(VIEW_METHOD_LIST, 101);
+  SetViewAsControl(VIEW_METHOD_LIST);  
+}
+
+bool CGUIViewStateMusicShoutcast::AutoPlayNextItem()
+{
+  return false;
+}
+
+void CGUIViewStateMusicShoutcast::SaveViewState()
+{
+  g_stSettings.m_MyMusicShoutcastSortMethod = GetSortMethod();
+  g_stSettings.m_MyMusicShoutcastSortOrder = GetSortOrder();
+  return;
+}
