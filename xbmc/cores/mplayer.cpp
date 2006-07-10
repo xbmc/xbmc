@@ -1976,9 +1976,9 @@ float CMPlayer::GetActualFPS()
   return options.GetSpeed()*fFPS;
 }
 
-bool CMPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
+bool CMPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 {
-  strSubtitle = L"";
+  strSubtitle = "";
   
   subtitle* sub = mplayer_GetCurrentSubtitle();
   if (sub)
@@ -1987,16 +1987,10 @@ bool CMPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
     {
       if (i != 0)
       {
-        strSubtitle += L"\n";
+        strSubtitle += "\n";
       }
-
-      CStdStringA S = sub->text[i];
-      CStdStringW W;
-      // mplayer now internally tries to detect charset
-      // and converts it to utf8 before adding it to
-      // the subtitle structure
-      g_charsetConverter.utf8ToUTF16(S, W, false); // mplayer does flipping of hebrew/arabic for use
-      strSubtitle += W;
+      
+      strSubtitle += sub->text[i];
     }
     
     return true;
