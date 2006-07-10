@@ -112,13 +112,15 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   m_iMaxCharWidth = (float)width;
   // cache the ellipses width
   m_pTrueTypeFont->GetTextExtent( L".", 1, &m_ellipsesWidth);
+  
+  m_pTrueTypeFont->GetFontMetrics(&m_cellheight, &m_descent);
 
-  unsigned int cellheight;
-  m_pTrueTypeFont->GetFontMetrics(&cellheight, &m_descent);
+  /* we need some extra space above characters, otherwise we miss parts of hyphens and such */
+  m_cellheight += 4;
 
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = TEXTURE_WIDTH;
-  m_posY = -(m_iHeight + (int)m_descent);
+  m_posY = -(int)(m_cellheight + m_descent);
 
   // create our character texture + font shader
   CreateShaderAndTexture();
@@ -170,7 +172,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
   }
 
   float posX = sx;
-  float posY = sy;
+  float posY = sy + m_iHeight - m_cellheight; /* cell could be higher than the normal font size */
   int numLines = 0;
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
@@ -181,8 +183,8 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
-      posX = sx - angle.sine * m_pTrueTypeFont->GetTextHeight() * numLines;
-      posY = sy + angle.cosine * m_pTrueTypeFont->GetTextHeight() * numLines;
+      posX = sx - angle.sine * m_cellheight * numLines;
+      posY = sy + angle.cosine * m_cellheight * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
@@ -353,9 +355,9 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   m_pTrueTypeFont->GetTextExtent(&letter, 1, &width);
   if (m_posX + width + m_charGap > TEXTURE_WIDTH)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
-    int newHeight = (m_iHeight + m_descent) * (m_textureRows + 1);
+    int newHeight = (m_cellheight + m_descent) * (m_textureRows + 1);
     m_posX = 0;
-    m_posY += m_iHeight + m_descent;
+    m_posY += m_cellheight + m_descent;
     // create the new larger texture
     LPDIRECT3DTEXTURE8 newTexture;
     // check for max height (can't be more than 4096 texels)
@@ -375,11 +377,11 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     { // copy across from our current one, and clear the new row
       D3DLOCKED_RECT lr2;
       m_texture->LockRect(0, &lr2, NULL, 0);
-      memcpy(lr.pBits, lr2.pBits, lr2.Pitch * m_textureRows * (m_iHeight + m_descent));
+      memcpy(lr.pBits, lr2.pBits, lr2.Pitch * m_textureRows * (m_cellheight + m_descent));
       m_texture->UnlockRect(0);
       m_texture->Release();
     }
-    memset((BYTE *)lr.pBits + lr.Pitch * m_textureRows * (m_iHeight + m_descent), 0, lr.Pitch * (m_iHeight + m_descent));
+    memset((BYTE *)lr.pBits + lr.Pitch * m_textureRows * (m_cellheight + m_descent), 0, lr.Pitch * (m_cellheight + m_descent));
     newTexture->UnlockRect(0);
     m_texture = newTexture;
     m_textureRows++;
@@ -390,11 +392,11 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   m_charTexture->GetSurfaceLevel(0, &surface);
   D3DLOCKED_RECT lr;
   surface->LockRect(&lr, NULL, 0);
-  memset(lr.pBits, 0, lr.Pitch * (m_iHeight + m_descent));
+  memset(lr.pBits, 0, lr.Pitch * (m_cellheight + m_descent));
   surface->UnlockRect();
-  if (D3D_OK != m_pTrueTypeFont->TextOut(surface, text, 1, 0, 0))
+  if (D3D_OK != m_pTrueTypeFont->TextOut(surface, text, 1, 0, m_cellheight - m_iHeight))
   {
-    CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error on TextOut for size %i", m_iHeight);
+    CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error on TextOut for size %i, cellheight %u", m_iHeight, m_cellheight);
     surface->Release();
     return false;
   }
@@ -407,7 +409,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   ch->left = m_posX;
   ch->top = m_posY;
   ch->right = m_posX + (unsigned short)(width + m_charGap);
-  ch->bottom = m_posY + (unsigned short)(m_iHeight + m_descent);
+  ch->bottom = m_posY + (unsigned short)(m_cellheight + m_descent);
   ch->width = (unsigned short)width;
   ch->height = (unsigned short)m_iHeight;
   m_posX += ch->width + m_charGap + 1;  // 1 pixel extra to control kerning.
@@ -465,7 +467,7 @@ void CGUIFontTTF::End()
 void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor)
 {
   // actual image width isn't same as the character width as that is
-  // just baseline width and hight should include the descent
+  // just baseline width and height should include the descent
   const float width = (float)(ch->right - ch->left);
   const float height = (float)(ch->bottom - ch->top);
 
@@ -490,11 +492,11 @@ void CGUIFontTTF::CreateShaderAndTexture()
     m_charTexture->Release();
   m_charTexture = NULL;
 
-  if (D3D_OK == m_pD3DDevice->CreateTexture(m_iHeight * 2, (m_iHeight + m_descent), 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_charTexture))
+  if (D3D_OK == m_pD3DDevice->CreateTexture(m_iHeight * 2, (m_cellheight + m_descent), 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_charTexture))
   {
     D3DLOCKED_RECT lr;
     m_charTexture->LockRect(0, &lr, NULL, 0);
-    memset(lr.pBits, 0, lr.Pitch * (m_iHeight + m_descent));
+    memset(lr.pBits, 0, lr.Pitch * (m_cellheight + m_descent));
     m_charTexture->UnlockRect(0);
   }
   else
@@ -555,11 +557,11 @@ void CGUIFontTTF::CopyTexture(int width)
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)(width + m_charGap), (float)0 );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX + (width + m_charGap), (float)m_posY, 0, 1.0f );
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)(width + m_charGap), (float)(m_iHeight + m_descent));
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX + (width + m_charGap), (float)m_posY + (m_iHeight + m_descent), 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)(width + m_charGap), (float)(m_cellheight + m_descent));
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX + (width + m_charGap), (float)m_posY + (m_cellheight + m_descent), 0, 1.0f );
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)0, (float)(m_iHeight + m_descent) );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX, (float)m_posY + (m_iHeight + m_descent), 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)0, (float)(m_cellheight + m_descent) );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX, (float)m_posY + (m_cellheight + m_descent), 0, 1.0f );
   m_pD3DDevice->End();
   m_pD3DDevice->SetScreenSpaceOffset( 0, 0 );
 
