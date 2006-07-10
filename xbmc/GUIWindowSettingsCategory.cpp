@@ -1463,6 +1463,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_applicationMessenger.RestartApp();
     }
   }
+  else if (strSetting.Equals("upnp.autostart"))
+  {
+      if (g_guiSettings.GetBool("upnp.autostart"))
+          g_application.StartUPnP();
+      else
+          g_application.StopUPnP();
+  }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
     // Now Prompt User to enter the old and then the new MasterCode!

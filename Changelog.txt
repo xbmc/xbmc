@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-07-2006 changed: Default bookmark name for UPnP is now "UPnP Server" instead of "Windows Media Connect (UPnP)" as this was too long for some skins like MC360
+ - 10-07-2006 fixed: UPnP bookmarks now work after reboot
+ - 10-07-2006 added: Network Option to autostart upnp client on boot (speeds up autodetection & upnp bookmarks)
+ - 10-07-2006 changed: pre-populate friendly name in Add Network Location for UPnP Servers
  - 10-07-2006 changed: network startup is now asyncronos, doesn't delay boot
  - 10-07-2006 fixed: play dvd on vcd's would not work, while autorun would. 
  - 09-07-2006 added: Colorkey to the new setImage Python method.

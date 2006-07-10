@@ -35,6 +35,10 @@ class NPT_TimeStamp
     bool operator>=(const NPT_TimeStamp& time_stamp) const;
     bool operator<=(const NPT_TimeStamp& time_stamp) const;
 
+    // friend operators
+    friend NPT_TimeStamp operator+(const NPT_TimeStamp& timestamp, long seconds);
+    friend NPT_TimeStamp operator-(const NPT_TimeStamp& timestamp, long seconds);
+
     // members
     long m_Seconds;
     long m_NanoSeconds;

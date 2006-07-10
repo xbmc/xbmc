@@ -427,6 +427,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StartWebServer();
       g_application.StartFtpServer();
       g_application.StartKai();
+      g_application.StartUPnP();
     }
     break;
     case SERVICES_DOWN:
@@ -435,7 +436,8 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopTimeServer();
       g_application.StopWebServer();
       g_application.StopFtpServer();
-      g_application.StopKai();      
+      g_application.StopKai();   
+      g_application.StopUPnP();
     }
     break;
   }

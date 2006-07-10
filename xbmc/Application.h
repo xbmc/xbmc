@@ -48,6 +48,8 @@ public:
   void StopFtpServer();
   void StartTimeServer();
   void StopTimeServer();
+  void StartUPnP();
+  void StopUPnP();
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);

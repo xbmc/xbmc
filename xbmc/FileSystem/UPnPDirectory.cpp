@@ -25,26 +25,22 @@
 #include "../util.h"
 #include "directorycache.h"
 
-CUPnP g_UPnP;
+CUPnP* CUPnP::upnp = NULL;
 
-CUPnP::CUPnP() : 
-    m_Initted(false), 
-    m_UPnP(NULL),
-    m_MediaBrowser(NULL)
+class CUPnPCleaner : public NPT_Thread
 {
-    PLT_SetLogLevel(PLT_LOG_LEVEL_4);
-}
+public:
+    CUPnPCleaner(CUPnP* upnp) : NPT_Thread(true), m_UPnP(upnp) {}
+    void Run() {
+        delete m_UPnP;
+    }
 
-CUPnP::~CUPnP()
+    CUPnP* m_UPnP;
+};
+
+CUPnP::CUPnP()
 {
-    delete m_MediaBrowser;
-    delete m_UPnP;
-}
-
-void CUPnP::Init()
-{
-    if (m_Initted) return;
-
+    //PLT_SetLogLevel(PLT_LOG_LEVEL_4);
     m_UPnP = new PLT_UPnP(1900, false);
     m_CtrlPoint = new PLT_CtrlPoint();
     m_UPnP->AddCtrlPoint(m_CtrlPoint);
@@ -53,23 +49,72 @@ void CUPnP::Init()
 
     // Issue a search request on the broadcast address instead of the upnp multicast address 239.255.255.250
     // since the xbox does not support multicast. UPnP devices will still respond to us
-    //g_UPnP.m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1);
-
-    m_Initted = true;
+    // Repeat every 6 seconds
+    m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
 }
 
-CUPnPDirectory::CUPnPDirectory(void)
+CUPnP::~CUPnP()
 {
-} 
-
-CUPnPDirectory::~CUPnPDirectory(void)
-{
+    m_UPnP->Stop();
+    delete m_UPnP;
+    delete m_MediaBrowser;
 }
 
-bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+CUPnP*
+CUPnP::GetInstance()
 {
-    bool was_initted = g_UPnP.IsInitted();
-    if (!was_initted) g_UPnP.Init();
+    if (!upnp) {
+        upnp = new CUPnP();
+    }
+
+    return upnp;
+}
+
+void
+CUPnP::ReleaseInstance()
+{
+    if (upnp) {
+        // since it takes a while to clean up
+        // starts a detached thread to do this
+        CUPnPCleaner* cleaner = new CUPnPCleaner(upnp);
+        cleaner->Start();
+        upnp = NULL;
+    }
+}
+
+const char* 
+CUPnPDirectory::GetFriendlyName(const char* url)
+{
+    NPT_String path = url;
+    if (!path.EndsWith("/")) path += "/";
+
+    if (path.Left(7).Compare("upnp://", true) != 0) {
+        return NULL;
+    } else if (path.Compare("upnp://", true) == 0) {
+        return "UPnP Media Servers (Auto-Discover)";
+    } 
+
+    // look for nextslash 
+    int next_slash = path.Find('/', 7);
+    if (next_slash == -1) 
+        return NULL;
+
+    NPT_String uuid = path.SubString(7, next_slash-7);
+    NPT_String object_id = path.SubString(next_slash+1, path.GetLength()-next_slash-2);
+
+    // look for device 
+    PLT_DeviceDataReference* device;
+    const NPT_Lock<PLT_DeviceMap>& devices = CUPnP::GetInstance()->m_MediaBrowser->GetMediaServers();
+    if (NPT_FAILED(devices.Get(uuid, device)) || device == NULL) 
+        return NULL;
+
+    return (const char*)(*device)->GetFriendlyName();
+}
+
+bool 
+CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+{
+    CUPnP* upnp = CUPnP::GetInstance();
                      
     CFileItemList vecCacheItems;
     g_directoryCache.ClearDirectory(strPath);
@@ -84,21 +129,8 @@ bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     if (path.Left(7).Compare("upnp://", true) != 0) {
         return false;
     } else if (path.Compare("upnp://", true) == 0) {
-        // root ?         
-        
-        // Issue a search request on the broadcast address instead of the upnp multicast address 239.255.255.250
-        // since the xbox does not support multicast. UPnP devices will still respond to us
-        g_UPnP.m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1);
-
-        // wait a bit the first time to let devices respond
-        // it's not guaranteed that it is enough time so users will have to go 
-        // try again (going back up then again) if the device has not showed up
-        // yet. If xbmc supports a way to refresh a view asynchronously, it would
-        // be better...
-        if (!was_initted) NPT_System::Sleep(NPT_TimeInterval(2, 0));
-
-        // get list of devices 
-        const NPT_Lock<PLT_DeviceMap>& devices = g_UPnP.m_MediaBrowser->GetMediaServers();
+        // root -> get list of devices 
+        const NPT_Lock<PLT_DeviceMap>& devices = upnp->m_MediaBrowser->GetMediaServers();
         const NPT_List<PLT_DeviceMapEntry*>& entries = devices.GetEntries();
         NPT_List<PLT_DeviceMapEntry*>::Iterator entry = entries.GetFirstItem();
         while (entry) {
@@ -130,7 +162,7 @@ bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
         // look for device 
         PLT_DeviceDataReference* device;
-        const NPT_Lock<PLT_DeviceMap>& devices = g_UPnP.m_MediaBrowser->GetMediaServers();
+        const NPT_Lock<PLT_DeviceMap>& devices = upnp->m_MediaBrowser->GetMediaServers();
         if (NPT_FAILED(devices.Get(uuid, device)) || device == NULL) 
             return false;
 
@@ -154,7 +186,7 @@ bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         }
 
         PLT_MediaItemListReference list;
-        if (NPT_FAILED(g_UPnP.m_MediaBrowser->Browse(*device, root_id, list)))
+        if (NPT_FAILED(upnp->m_MediaBrowser->Browse(*device, root_id, list)))
             return false;
 
         NPT_List<PLT_MediaItem*>::Iterator entry = list->GetFirstItem();
@@ -205,13 +237,13 @@ bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
                         }
                     }
                     
-                    pItem->SetLabelPreformated(true);
                     pItem->m_musicInfoTag.SetLoaded();
 
                     //TODO: figure out howto set the album art
                 }
             }
 
+            pItem->SetLabelPreformated(true);
             vecCacheItems.Add(pItem);
             items.Add(new CFileItem(*pItem));
 
