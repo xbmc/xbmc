@@ -97,7 +97,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   pSpin->AddLabel(CStdString("XBMSP Server"), NET_PROTOCOL_XBMSP);
   pSpin->AddLabel(CStdString("FTP Server"), NET_PROTOCOL_FTP);
   pSpin->AddLabel(CStdString("ITunes music share (DAAP)"), NET_PROTOCOL_DAAP);
-  pSpin->AddLabel(CStdString("Windows Media Connect (UPNP)"), NET_PROTOCOL_UPNP);
+  pSpin->AddLabel(CStdString("UPnP Server"), NET_PROTOCOL_UPNP);
 
   pSpin->SetValue(m_protocol);
   OnProtocolChange();

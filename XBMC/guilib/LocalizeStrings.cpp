@@ -259,6 +259,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20107] = "Separate (locked)";
   m_vecStrings[20108] = "Root";
   m_vecStrings[20109] = "Skin Zoom";
+  m_vecStrings[20110] = "UPnP Client";
+  m_vecStrings[20111] = "Autostart";
+
 
   // new strings for weather localization
   m_vecStrings[1411] = "with";

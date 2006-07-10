@@ -128,10 +128,18 @@ public:
 
     NPT_Result   Start(PLT_TaskManager* task_manager);
     NPT_Result   Stop();
-    NPT_Result   Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), const char* target = "upnp:rootdevice", const NPT_Cardinal MX = 5);
-    NPT_Result   Discover(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), const char* target = "ssdp:all", const NPT_Cardinal MX = 5);
+
+    NPT_Result   Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
+                        const char*        target = "upnp:rootdevice", 
+                        const NPT_Cardinal MX = 5);
+    
+    NPT_Result   Discover(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
+                          const char*        target = "ssdp:all", 
+                          const NPT_Cardinal MX = 5,
+                          NPT_Timeout        repeat = 50000);
     
     NPT_Result   InvokeAction(PLT_Action* action, PLT_Arguments& arguments, void* userdata = NULL);
+
     NPT_Result   Subscribe(PLT_Service* service, bool renew = false, void* userdata = NULL);
 
     // PLT_HttpServerListener methods
