@@ -333,6 +333,9 @@ public:
 
     VIEW_METHOD m_MyMusicPlaylistViewMethod;
 
+    SORT_METHOD m_MyMusicShoutcastSortMethod;
+    SORT_ORDER  m_MyMusicShoutcastSortOrder;
+
     // new settings for the Music Nav Window
     VIEW_METHOD m_MyMusicNavRootViewMethod;
     VIEW_METHOD m_MyMusicNavGenresViewMethod;
