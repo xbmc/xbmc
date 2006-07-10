@@ -120,7 +120,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
   
-  virtual bool GetCurrentSubtitle(CStdStringW& strSubtitle);
+  virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
   
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);

@@ -155,7 +155,7 @@ public:
   virtual bool IsCaching() const {return m_bCaching;};
   virtual int GetCacheLevel() const {return m_CacheLevel;};
 
-  virtual bool GetCurrentSubtitle(CStdStringW& strSubtitle);
+  virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
   
   CStdString _SubtitleExtension;
 protected:
