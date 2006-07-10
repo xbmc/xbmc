@@ -73,3 +73,13 @@ protected:
   virtual bool HideParentDirItems();
   virtual VECSHARES& GetShares();
 };
+
+class CGUIViewStateMusicShoutcast : public CGUIViewStateWindowMusic
+{
+public:
+  CGUIViewStateMusicShoutcast(const CFileItemList& items);
+
+protected:
+  virtual bool AutoPlayNextItem();
+  virtual void SaveViewState();
+};
