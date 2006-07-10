@@ -288,76 +288,71 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
   }
 
-  // check for special case stuff next
-  for (int i = 0; i < vecItems.Size(); i++)
+  // check video first
+  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video")) && bAllowVideo)
   {
-    // check video first
-    if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video")) && bAllowVideo)
+    // stack video files
+    CFileItemList tempItems;
+    tempItems.Append(vecItems);
+    tempItems.Stack();
+    for (int i = 0; i < tempItems.Size(); i++)
     {
-      // stack video files
-      CFileItemList tempItems;
-      tempItems.Append(vecItems);
-      tempItems.Stack();
-      for (int i = 0; i < tempItems.Size(); i++)
+      CFileItem *pItem = tempItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsVideo())
       {
-        CFileItem *pItem = tempItems[i];
-        if (!pItem->m_bIsFolder && pItem->IsVideo())
+        bPlaying = true;
+        if (pItem->IsStack())
         {
-          bPlaying = true;
-          if (pItem->IsStack())
+          // TODO: remove this once the app/player is capable of handling stacks immediately
+          g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
+          CStackDirectory dir;
+          CFileItemList items;
+          dir.GetDirectory(pItem->m_strPath, items);
+          for (int i = 0; i < items.Size(); i++)
           {
-            // TODO: remove this once the app/player is capable of handling stacks immediately
-            g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
-            CStackDirectory dir;
-            CFileItemList items;
-            dir.GetDirectory(pItem->m_strPath, items);
-            for (int i = 0; i < items.Size(); i++)
-            {
-              CPlayList::CPlayListItem playlistItem;
-              CUtil::ConvertFileItemToPlayListItem(items[i], playlistItem);
-              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
-            }
-            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
-            g_playlistPlayer.Play(0);
+            CPlayList::CPlayListItem playlistItem;
+            CUtil::ConvertFileItemToPlayListItem(items[i], playlistItem);
+            g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
           }
-          else
-            g_application.PlayMedia(*pItem, PLAYLIST_VIDEO_TEMP);
-          break;
+          g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+          g_playlistPlayer.Play(0);
         }
+        else
+          g_application.PlayMedia(*pItem, PLAYLIST_VIDEO_TEMP);
+        break;
       }
     }
-    // then music
-    if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.music")) && bAllowMusic)
+  }
+  // then music
+  if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.music")) && bAllowMusic)
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
     {
-      for (int i = 0; i < vecItems.Size(); i++)
+      CFileItem *pItem = vecItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsAudio())
       {
-        CFileItem *pItem = vecItems[i];
-        if (!pItem->m_bIsFolder && pItem->IsAudio())
-        {
-          bPlaying = true;
-          nAddedToPlaylist++;
-          CPlayList::CPlayListItem playlistItem;
-          playlistItem.SetFileName(pItem->m_strPath);
-          playlistItem.SetDescription(pItem->GetLabel());
-          playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
-          g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
-        }
+        nAddedToPlaylist++;
+        CPlayList::CPlayListItem playlistItem;
+        playlistItem.SetFileName(pItem->m_strPath);
+        playlistItem.SetDescription(pItem->GetLabel());
+        playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
+        g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
       }
     }
-    // and finally pictures
-    if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.pictures")) && bAllowPictures)
+  }
+  // and finally pictures
+  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.pictures")) && bAllowPictures)
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
     {
-      for (int i = 0; i < vecItems.Size(); i++)
+      CFileItem *pItem = vecItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsPicture())
       {
-        CFileItem *pItem = vecItems[i];
-        if (!pItem->m_bIsFolder && pItem->IsPicture())
-        {
-          bPlaying = true;
-          CStdString strExec;
-          strExec.Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
-          CUtil::ExecBuiltIn(strExec);
-          break;
-        }
+        bPlaying = true;
+        CStdString strExec;
+        strExec.Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
+        CUtil::ExecBuiltIn(strExec);
+        break;
       }
     }
   }
