@@ -215,7 +215,7 @@ public:
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
   static void CleanFileName(CStdString& strFileName);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);  
-  static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath);
+  static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static bool IsHD(const CStdString& strFileName);
   static bool IsBuiltIn(const CStdString& execString);
   static void GetBuiltInHelp(CStdString &help);
