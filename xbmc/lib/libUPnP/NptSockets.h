@@ -97,14 +97,15 @@ class NPT_SocketInterface
 
     // interface methods
     virtual NPT_Result Bind(const NPT_SocketAddress& address, bool reuse_address = true) = 0;
-    virtual NPT_Result Connect(const NPT_SocketAddress& address,
-                               NPT_Timeout timeout) = 0;
+    virtual NPT_Result Connect(const NPT_SocketAddress& address, NPT_Timeout timeout) = 0;
     virtual NPT_Result Disconnect() = 0;
     virtual NPT_Result WaitForConnection(NPT_Timeout timeout) = 0;
     virtual NPT_Result GetInputStream(NPT_InputStreamReference& stream) = 0;
     virtual NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) = 0;
     virtual NPT_Result GetInfo(NPT_SocketInfo& info) = 0;
     virtual NPT_Result SetBlockingMode(bool blocking) = 0;
+    virtual NPT_Result SetReadTimeout(NPT_Timeout timeout) = 0;
+    virtual NPT_Result SetWriteTimeout(NPT_Timeout timeout) = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -189,6 +190,12 @@ public:
     }                                                               
     NPT_Result SetBlockingMode(bool blocking) {                      
         return m_SocketDelegate->SetBlockingMode(blocking);                            
+    }                                                          
+    NPT_Result SetReadTimeout(NPT_Timeout timeout) {                      
+        return m_SocketDelegate->SetReadTimeout(timeout);                            
+    }                                                          
+    NPT_Result SetWriteTimeout(NPT_Timeout timeout) {                      
+        return m_SocketDelegate->SetWriteTimeout(timeout);                            
     }                                                          
 
 protected:
