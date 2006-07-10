@@ -550,7 +550,7 @@ void CGUIListControl::OnUp()
     {
       m_iOffset--;
     }
-    else
+    else if( m_dwControlUp == 0 || m_dwControlUp == GetID() )
     {
       if (m_vecItems.size() > 0)
       {
@@ -559,6 +559,10 @@ void CGUIListControl::OnUp()
         if (m_iOffset < 0) m_iOffset = 0;
         m_iCursorY = m_vecItems.size() - m_iOffset - 1;
       }
+    }
+    else
+    {
+      CGUIControl::OnUp();
     }
   }
   else
@@ -578,11 +582,15 @@ void CGUIListControl::OnDown()
       {
         m_iCursorY++;
       }
-      else
+      else if( m_dwControlDown == 0 || m_dwControlDown == GetID() )
       {
         // move first item in list
         m_iOffset = 0;
         m_iCursorY = 0;
+      }
+      else
+      {
+        CGUIControl::OnDown();
       }
     }
     else
