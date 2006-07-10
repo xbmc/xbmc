@@ -80,6 +80,7 @@ protected:
   int m_posY;
   unsigned int m_descent;
   unsigned int m_ellipsesWidth;               // this is used every character (width of '.')
+  unsigned int m_cellheight;
 
   DWORD m_dwNestedBeginCount;             // speedups
 };
