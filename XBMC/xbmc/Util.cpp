@@ -109,7 +109,7 @@ const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
     return strFileNameAndPath.substr(slash+1, options-(slash+1));
 }
 
-CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
+CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder /* = false */)
 {
   // use above to get the filename
   CStdString strFilename = GetFileName(strFileNameAndPath);
@@ -120,7 +120,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
   }
 
   // now remove the extension if needed
-  if (g_guiSettings.GetBool("filelists.hideextensions"))
+  if (g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
   {
     RemoveExtension(strFilename);
     return strFilename;
