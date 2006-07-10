@@ -23,6 +23,8 @@ bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, 
     CLog::Log(LOGWARNING, __FUNCTION__" - No genres found");
     return false;
   }
+    
+  items.m_idepth = 1; /* genre list */
 
   CStdString genre, path;
   while(element != NULL)
@@ -35,8 +37,8 @@ bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, 
 
     CFileItem* pItem = new CFileItem;
     pItem->m_bIsFolder = true;
-    pItem->SetLabelPreformated(true);
     pItem->SetLabel(genre);
+    pItem->m_musicInfoTag.SetGenre(genre);
     pItem->m_strPath = path;  
     
     items.Add(pItem);
@@ -51,6 +53,8 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 {
   TiXmlElement *element = NULL;
   CStdString path;
+
+  items.m_idepth = 2; /* station list */
 
   element = root->FirstChildElement("tunein");
   if(element == NULL) 
@@ -78,22 +82,32 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     CStdString id = element->Attribute("id");
     CStdString bitrate = element->Attribute("br");
     CStdString genre = element->Attribute("genre");
+    CStdString listeners = element->Attribute("lc");
+    CStdString content = element->Attribute("mt");
 
     CStdString label = name;
-    CStdString label2;
-    label2.Format("%s kbps", bitrate);
 
     url.SetOptions("id=" + id);
     url.GetURL(path);
 
     CFileItem* pItem = new CFileItem;
     pItem->m_bIsFolder = false;
-    pItem->SetLabelPreformated(true);
-        
+    
+    /* we highjack the music tag for this stuff, they will be used by *7
+    /* viewstates to sort and display proper information */
+    pItem->m_musicInfoTag.SetArtist(listeners);
+    pItem->m_musicInfoTag.SetAlbum(bitrate);
+    pItem->m_musicInfoTag.SetGenre(genre);
+
+    /* this is what will be sorted upon */
+    pItem->m_fRating = (float)atoi(listeners.c_str());
+    pItem->m_dwSize = atoi(bitrate.c_str());
+
+
     pItem->SetLabel(label);
-    pItem->SetLabel2(label2);
 
     /* content type is known before hand, should save later lookup */
+    /* wonder if we could combine the contentype of the playlist and of the real stream */
     pItem->SetContentType("audio/x-scpls");
 
     pItem->m_strPath = path;

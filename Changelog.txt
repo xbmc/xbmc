@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-07-2006 added: sorting on listener count and bitrate for shoutcast directory
  - 10-07-2006 changed: subs are now in utf8 encoding. conversion is done at render time.
  - 10-07-2006 fixed: [ 1519293 ] Hide file extensions appears to affect (certain) directories
  - 10-07-2006 fixed: autostart of audio discs (mp3...) was not working
