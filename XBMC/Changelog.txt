@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-07-2006 fixed: autostart of audio discs (mp3...)  where not working
  - 10-07-2006 changed: Default bookmark name for UPnP is now "UPnP Server" instead of "Windows Media Connect (UPnP)" as this was too long for some skins like MC360
  - 10-07-2006 fixed: UPnP bookmarks now work after reboot
  - 10-07-2006 added: Network Option to autostart upnp client on boot (speeds up autodetection & upnp bookmarks)
