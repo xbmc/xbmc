@@ -125,8 +125,8 @@
    <id>50</id>
    <onleft>2</onleft>
    <onright>50</onright>
-   <onup>2</onup>
-   <ondown>2</ondown>
+   <onup>50</onup>
+   <ondown>50</ondown>
    <include>contentpanelslide</include>
   </control>
 
