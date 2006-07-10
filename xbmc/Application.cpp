@@ -45,6 +45,7 @@
 #include "xbox/network.h"
 #include "utils/win32exception.h"
 #include "cores/videorenderers/rendermanager.h"
+#include "FileSystem/UPnPDirectory.h"
 
 // Windows includes
 #include "GUIStandardWindow.h"
@@ -1293,14 +1294,32 @@ void CApplication::StartKai()
   }
 }
 
+void CApplication::StartUPnP()
+{
+    if (g_guiSettings.GetBool("upnp.autostart"))
+    {
+        CLog::Log(LOGNOTICE, "starting upnp");
+        CUPnP::GetInstance();
+    }
+}
+
 void CApplication::StopKai()
 {
   if (CKaiClient::IsInstantiated())
   {
-    CLog::Log(LOGNOTICE, "stop kai");
+    CLog::Log(LOGNOTICE, "stopping kai");
     CKaiClient::GetInstance()->RemoveObserver();
     CKaiClient::RemoveInstance();
   }
+}
+
+void CApplication::StopUPnP()
+{
+    if (CUPnP::IsInstantiated())
+    {
+        CLog::Log(LOGNOTICE, "stopping upnp");
+        CUPnP::ReleaseInstance();
+    }
 }
 
 void CApplication::StartLEDControl(bool switchoff)

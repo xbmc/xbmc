@@ -13,33 +13,40 @@
 
 using namespace DIRECTORY;
 
+namespace DIRECTORY
+{
+class CUPnPDirectory;
+
 class CUPnP
 {
 public:
     CUPnP();
     ~CUPnP();
 
-    void Init();
-    bool IsInitted() { return m_Initted; }
+    // methods
+    static CUPnP* GetInstance();
+    static void   ReleaseInstance();
+    static bool   IsInstantiated() { return upnp != NULL; }
 
-    PLT_UPnP* m_UPnP;
+private:
+    friend class CUPnPDirectory;
+
+    PLT_UPnP*              m_UPnP;
     PLT_CtrlPointReference m_CtrlPoint;
     PLT_SyncMediaBrowser*  m_MediaBrowser;
 
-private:
-    bool m_Initted;
+    static CUPnP* upnp;
 };
 
-extern CUPnP g_UPnP;
-
-namespace DIRECTORY
-{
 class CUPnPDirectory :  public IDirectory
 {
 public:
-    CUPnPDirectory(void);
-    virtual ~CUPnPDirectory(void);
+    CUPnPDirectory(void) {}
+    virtual ~CUPnPDirectory(void) {}
+
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+
+    static const char* GetFriendlyName(const char* url);
 
 private:
 };
