@@ -174,7 +174,12 @@ class NPT_XmlElementNode : public NPT_XmlNode
     const NPT_String&       GetPrefix() const { return m_Prefix; }
     const NPT_String&       GetTag()    const { return m_Tag;    }
     const NPT_String*       GetText(NPT_Ordinal n=0) const;
-    
+
+    // bring all the namespace definitions used in this element of one of its descendants
+    // into the namespace map of this element so that it may be serialized as a
+    // standalone element without any prefixes with undefined namespace uris
+    NPT_Result              MakeStandalone();
+
     // namespace methods   
     const NPT_String* GetNamespace() const;
     NPT_Result        SetNamespaceUri(const char* prefix, const char* uri);
@@ -209,6 +214,7 @@ protected:
     friend class NPT_XmlNodeCanonicalWriter;
     friend class NPT_XmlParser;
     friend class NPT_XmlProcessor;
+    friend class NPT_XmlNamespaceCollapser;
 };
 
 /*----------------------------------------------------------------------

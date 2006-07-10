@@ -420,6 +420,10 @@ CGUISettings::CGUISettings(void)
   AddString(3, "smb.winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
 
+  //  TODO: localize 2.0
+  AddCategory(6, "upnp", 20110);
+  AddBool(1,    "upnp.autostart", 20111, true);
+
   // appearance settings
   AddGroup(7, 480);
   AddCategory(7,"lookandfeel", 14037);

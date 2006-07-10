@@ -21,8 +21,9 @@
 /*----------------------------------------------------------------------
 |   constants
 +---------------------------------------------------------------------*/
-const int NPT_ERROR_LIST_EMPTY             = NPT_ERROR_BASE_LIST - 0;
-const int NPT_ERROR_LIST_OPERATION_ABORTED = NPT_ERROR_BASE_LIST - 1;
+const int NPT_ERROR_LIST_EMPTY              = NPT_ERROR_BASE_LIST - 0;
+const int NPT_ERROR_LIST_OPERATION_ABORTED  = NPT_ERROR_BASE_LIST - 1;
+const int NPT_ERROR_LIST_OPERATION_CONTINUE = NPT_ERROR_BASE_LIST - 2;
 
 /*----------------------------------------------------------------------
 |   NPT_List
