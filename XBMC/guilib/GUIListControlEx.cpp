@@ -386,13 +386,17 @@ void CGUIListControlEx::OnUp()
     {
       m_iOffset--;
     }
-    else if (m_pList)
+    else if (m_pList && (m_dwControlUp == 0 || m_dwControlUp == GetID()))
     {
       // move 2 last item in list
       CGUIList::GUILISTITEMS& list = m_pList->Lock();
       CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), list.size() - 1);
       OnMessage(msg);
       m_pList->Release();
+    }
+    else
+    {
+      CGUIControl::OnUp();
     }
   }
   else
@@ -414,11 +418,15 @@ void CGUIListControlEx::OnDown()
       {
         m_iCursorY++;
       }
-      else
+      else if(m_dwControlDown == 0 || m_dwControlDown == GetID())
       {
         // move first item in list
         CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), 0);
         OnMessage(msg);
+      }
+      else
+      {
+        CGUIControl::OnDown();
       }
     }
     else
