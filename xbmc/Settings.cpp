@@ -868,6 +868,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       GetInteger(pChild, "playlistssortorder", (int&)g_stSettings.m_MyMusicNavPlaylistsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
     }
 
+    pChild = pElement->FirstChildElement("shoutcast");
+    if (pChild)
+    {
+      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyMusicShoutcastSortMethod,SORT_METHOD_VIDEO_RATING,SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyMusicShoutcastSortOrder,SORT_ORDER_DESC,SORT_ORDER_NONE, SORT_ORDER_DESC);
+    }
+
     pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     {
@@ -1354,6 +1361,14 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     SetInteger(pChild, "albumssortorder", g_stSettings.m_MyMusicNavAlbumsSortOrder);
     SetInteger(pChild, "songssortorder", g_stSettings.m_MyMusicNavSongsSortOrder);
     SetInteger(pChild, "playlistssortorder", g_stSettings.m_MyMusicNavPlaylistsSortOrder);
+  }
+  {
+    TiXmlElement childNode("shoutcast");
+    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+    if (!pChild) return false;
+
+    SetInteger(pChild, "sortmethod", g_stSettings.m_MyMusicShoutcastSortMethod);
+    SetInteger(pChild, "sortorder", g_stSettings.m_MyMusicShoutcastSortOrder);
   }
   {
     TiXmlElement childNode("playlist");
