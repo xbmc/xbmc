@@ -695,7 +695,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
 
     // TODO: UTF-8: Currently our Subtitle text is sent from the player in UTF-16.
-    CStdStringW subtitleText = L"";
+    CStdString subtitleText = "";
     if (g_application.m_pPlayer && g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
     {
 
@@ -703,23 +703,23 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 
       float w;
       float h;
-      m_subtitleFont->GetTextExtent(subtitleText.c_str(), &w, &h);
+      CStdStringW utf16Sub;
+      g_charsetConverter.utf8ToUTF16(subtitleText, utf16Sub);
+      m_subtitleFont->GetTextExtent(utf16Sub.c_str(), &w, &h);
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
       if (maxWidth < w)
       {
-        CStdString utf8Sub;
-        g_charsetConverter.utf16toUTF8(subtitleText, utf8Sub);
-        CGUILabelControl::WrapText(utf8Sub, m_subtitleFont, maxWidth);
-        g_charsetConverter.utf8ToUTF16(utf8Sub, subtitleText);
-        m_subtitleFont->GetTextExtent(subtitleText.c_str(), &w, &h);
+        CGUILabelControl::WrapText(subtitleText, m_subtitleFont, maxWidth);
+        g_charsetConverter.utf8ToUTF16(subtitleText, utf16Sub);
+        m_subtitleFont->GetTextExtent(utf16Sub.c_str(), &w, &h);
       }
       float x = (float) maxWidth / 2 + g_settings.m_ResInfo[res].Overscan.left;
       float y = (float) g_settings.m_ResInfo[res].iSubtitles - h;
 
       float outlinewidth = 3;
 
-      m_subtitleFont->DrawOutlineText(x, y, 0, 0xFF000000, 3, subtitleText.c_str(), XBFONT_CENTER_X);
+      m_subtitleFont->DrawOutlineText(x, y, 0, 0xFF000000, 3, utf16Sub.c_str(), XBFONT_CENTER_X);
     }
   }
 }
