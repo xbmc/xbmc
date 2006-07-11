@@ -5,7 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 10-07-2006 fixed: samba default username/password wasn't being applied in all cases
+ - 11-07-2006 fixed: fribidi flipping was done both by mplayer and by gui when using ttf fonts
+ - 11-07-2006 changed: subtitle conversion to utf is now disabled if user is using mplayer fonts. 
+ - 11-07-2006 fixed: samba default username/password wasn't being applied in all cases
  - 10-07-2006 changed: listcontrol onup/ondown is now respected. set them to listcontrols own id for old wraparound behavior. ( they are now the same as thumbpanels )
  - 10-07-2006 fixed: top part of ttf subtitles (hyphens and such) would get cut of in some sizes
  - 10-07-2006 added: sorting on listener count and bitrate for shoutcast directory
