@@ -46,8 +46,8 @@ public:
     inline bool GetDeinterlace() { return m_bDeinterlace; };
     inline void SetDeinterlace(bool mDeint) { m_bDeinterlace = mDeint; };
       
-    bool GetForceUtf8() { return m_forceUtf8; };
-    void SetForceUtf8(bool onOff) { m_forceUtf8 = onOff; };
+    const string& GetSubtitleCharset() { return m_subcp; };
+    void SetSubtitleCharset(const string& subcp) { m_subcp = subcp; };
       
     const string GetChannelMapping() const;
     void SetChannelMapping(const string& strMapping);
@@ -80,7 +80,7 @@ public:
     bool m_bNonInterleaved;
     bool m_bForceIndex;
     bool m_bLimitedHWAC3;
-    bool m_forceUtf8;
+    string m_subcp;
     string m_strChannelMapping;
     string m_strDvdDevice;
     string m_strFlipBiDiCharset;
