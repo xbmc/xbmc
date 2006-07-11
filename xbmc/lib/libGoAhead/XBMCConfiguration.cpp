@@ -6,6 +6,7 @@
 #include "XBMCConfiguration.h"
 #include "..\..\xbox\iosupport.h"
 #include "..\..\util.h"
+#include "includes.h"
 
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")

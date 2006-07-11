@@ -8,6 +8,7 @@
 #include "HTMLUtil.h"
 #include "../FileSystem/FileCurl.h"
 #include "XMLUtils.h"
+#include "../GUIDialogProgress.h"
 
 using namespace HTML;
 
