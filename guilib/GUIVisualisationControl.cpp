@@ -8,6 +8,7 @@
 #include "../xbmc/visualizations/fft.h"
 #include "../xbmc/utils/CriticalSection.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "../xbmc/CdgParser.h"
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -171,8 +172,9 @@ void CGUIVisualisationControl::Render()
       LoadVisualisation();
     }
     CGUIControl::Render();
-    if (g_guiSettings.GetBool("karaoke.enabled"))
-      g_application.m_CdgParser.Render();
+
+    if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
+      g_application.m_pCdgParser->Render();
 
     return;
   }
@@ -188,8 +190,9 @@ void CGUIVisualisationControl::Render()
     { // vis changed - reload
       LoadVisualisation();
 
-      if (g_guiSettings.GetBool("karaoke.enabled"))
-        g_application.m_CdgParser.Render();
+      if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
+        g_application.m_pCdgParser->Render();
+
       CGUIControl::Render();
       return;
     }
@@ -213,8 +216,8 @@ void CGUIVisualisationControl::Render()
       g_graphicsContext.RestoreViewPort();
     }
   }
-  if (g_guiSettings.GetBool("karaoke.enabled"))
-    g_application.m_CdgParser.Render();
+  if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
+    g_application.m_pCdgParser->Render();
 
   CGUIControl::Render();
 }
@@ -326,7 +329,7 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
 
 bool CGUIVisualisationControl::UpdateAlbumArt()
 {
-    m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER);
+    m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
     if (m_AlbumThumb == "defaultAlbumCover.png")
     {
       m_AlbumThumb = "";

@@ -488,6 +488,7 @@ CCdgParser::CCdgParser()
   m_pReader = NULL;
   m_pLoader = NULL;
   m_pRenderer = NULL;
+  m_pVoiceManager = NULL;
   m_bIsRunning = false;
 }
 CCdgParser::~CCdgParser()

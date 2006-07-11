@@ -25,7 +25,7 @@
 #include "../../util.h"
 #include "../../application.h" // Karaoke patch (114097)
 #include "AudioContext.h"
-
+#include "../../CdgParser.h"
 
 #define CALC_DELAY_START   0
 #define CALC_DELAY_STARTED 1
@@ -269,8 +269,11 @@ CASyncDirectSound::~CASyncDirectSound()
 HRESULT CASyncDirectSound::Deinitialize()
 {
   OutputDebugString("CASyncDirectSound::Deinitialize\n");
-  g_application.m_CdgParser.Stop(); // need this here
-                                    // as CloseFile() could be called from mplayer
+
+  // CDGParser needs to be close since closefile could be called from mplayer
+  // WHY?????, what does it matter who removes this for the cdg parser?
+  if( g_application.m_pCdgParser )
+    g_application.m_pCdgParser->Stop(); 
 
   m_bIsAllocated = false;
   if (m_pStream)

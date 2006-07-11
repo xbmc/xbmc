@@ -14,6 +14,8 @@
 #include "..\..\stdafx.h"
 #include "WebServer.h"
 #include "XbmcHttp.h"
+#include "includes.h"
+
 #include "..\..\PlayListFactory.h"
 #include "..\..\Application.h"
 #include "..\..\util.h"
@@ -34,6 +36,7 @@
 #include "..\..\GUIMediaWindow.h"
 #include "..\..\GUIWindowFileManager.h"
 #include "..\..\guilib\GUIButtonScroller.h"
+#include "..\..\FileSystem\VirtualDirectory.h"
 
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 10

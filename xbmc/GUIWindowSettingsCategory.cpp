@@ -28,6 +28,7 @@
 #include "GUIDialogContextMenu.h"
 #include "MediaManager.h"
 #include "xbox/network.h"
+#include "lib/libGoAhead/webserver.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
