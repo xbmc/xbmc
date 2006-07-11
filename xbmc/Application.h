@@ -12,21 +12,23 @@
 #include "GUIWindowMusicOverlay.h"
 #include "GUIWindowVideoOverlay.h"
 
-#include "utils/sntp.h"
 #include "utils/delaycontroller.h"
-#include "lib/libGoAhead/webserver.h"
-#include "lib/libfilezilla/xbfilezilla.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"
-#include "CdgParser.h"
 #include "utils/Splash.h"
 #include "PlaylistPlayer.h"
 #include "utils/IMDB.h"
+#include "xbstopwatch.h"
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
+
+class CWebServer;
+class CXBFileZilla;
+class CCdgParser;
+class CSNTPClient;
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -126,7 +128,7 @@ public:
   CGUIWindowVideoOverlay m_guiVideoOverlay;
   CGUIWindowPointer m_guiPointer;
 
-  CSNTPClient m_sntpClient;
+  CSNTPClient *m_psntpClient;
   CDetectDVDMedia m_DetectDVDType;
   CAutorun m_Autorun;
   CDelayController m_ctrDpad;
@@ -142,13 +144,7 @@ public:
   DWORD m_dwSaverTick;  // CB: SCREENSAVER PATCH
   DWORD m_dwSkinTime;
 
-  char m_CurrDAAPHost[64];
-  void *m_DAAPPtr;
-  int m_DAAPDBID;
-  void *m_DAAPSong;
-  UINT64 m_DAAPSongSize;
-  void *m_DAAPArtistPtr;
-  CCdgParser m_CdgParser;
+  CCdgParser* m_pCdgParser;
   
   EPLAYERCORES m_eForcedNextPlayer;
 

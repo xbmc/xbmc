@@ -38,7 +38,7 @@ void CGUIMultiImage::Render()
   // alloc as this can free our resources
   if (m_Info)
   {
-    CStdString texturePath = g_infoManager.GetImage(m_Info);
+    CStdString texturePath = g_infoManager.GetImage(m_Info, WINDOW_INVALID);
     if (texturePath != m_currentPath && !texturePath.IsEmpty())
     {
       m_currentPath = texturePath;

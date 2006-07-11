@@ -12,6 +12,7 @@
 #include "../videodatabase.h"
 #include "../StringUtils.h"
 #include "../Temperature.h"
+#include "../utils/criticalsection.h"
 
 #define PLAYER_HAS_MEDIA              1
 #define PLAYER_HAS_AUDIO              2
@@ -250,7 +251,7 @@ public:
   int GetInt(int info) const;
   string GetLabel(int info);
 
-  CStdString GetImage(int info, int contextWindow = WINDOW_INVALID);
+  CStdString GetImage(int info, int contextWindow);
 
   CStdString GetTime(bool bSeconds = false);
   CStdString GetDate(bool bNumbersOnly = false);
