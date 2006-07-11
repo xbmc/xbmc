@@ -21,9 +21,14 @@
 */
 
 #include "../stdafx.h"
-#include "UPnPDirectory.h"
 #include "../util.h"
 #include "directorycache.h"
+
+#include "UPnPDirectory.h"
+#include "../lib/libUPnP/Platinum.h"
+#include "../lib/libUPnP/PltMediaServer.h"
+#include "../lib/libUPnP/PltMediaBrowser.h"
+#include "../lib/libUPnP/PltSyncMediaBrowser.h"
 
 CUPnP* CUPnP::upnp = NULL;
 
@@ -42,15 +47,15 @@ CUPnP::CUPnP()
 {
     //PLT_SetLogLevel(PLT_LOG_LEVEL_4);
     m_UPnP = new PLT_UPnP(1900, false);
-    m_CtrlPoint = new PLT_CtrlPoint();
-    m_UPnP->AddCtrlPoint(m_CtrlPoint);
+    PLT_CtrlPointReference ctrl_point(new PLT_CtrlPoint());
+    m_UPnP->AddCtrlPoint(ctrl_point);
     m_UPnP->Start();
-    m_MediaBrowser = new PLT_SyncMediaBrowser(m_CtrlPoint);
+    m_MediaBrowser = new PLT_SyncMediaBrowser(ctrl_point);
 
     // Issue a search request on the broadcast address instead of the upnp multicast address 239.255.255.250
     // since the xbox does not support multicast. UPnP devices will still respond to us
     // Repeat every 6 seconds
-    m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
+    ctrl_point->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
 }
 
 CUPnP::~CUPnP()
