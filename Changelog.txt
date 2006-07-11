@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-07-2006 fixed: python sounds where broken
  - 11-07-2006 fixed: fribidi flipping was done both by mplayer and by gui when using ttf fonts
  - 11-07-2006 changed: subtitle conversion to utf is now disabled if user is using mplayer fonts. 
  - 11-07-2006 fixed: samba default username/password wasn't being applied in all cases
