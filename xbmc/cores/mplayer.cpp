@@ -119,7 +119,7 @@ CMPlayer::Options::Options()
 
   m_bLimitedHWAC3 = false;
   m_bDeinterlace = false;
-  m_forceUtf8 = false;
+  m_subcp = "";
 }
 void CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -310,20 +310,23 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-noidx");
   }
 
-  if (m_forceUtf8)
+  if (m_subcp.length() > 0)
   {
-    // force utf8 as default charset
-    m_vecOptions.push_back("-utf8");
-    CLog::Log(LOGINFO, "Forcing utf8 charset for subtitle. Setting -utf8");
-  }
-  else
-  {
-    /* try to autodetect any multicharacter charset */
-    /* then fallback to user specified charset */
-    m_vecOptions.push_back("-subcp");
-    strTmp.Format("enca:__:%s", g_langInfo.GetSubtitleCharSet().c_str());
-    m_vecOptions.push_back(strTmp);
-    CLog::Log(LOGINFO, "Using -subcp %s to detect the subtitle charset", strTmp.c_str());
+    if (m_subcp == "utf8")
+    {
+      // force utf8 as default charset
+      m_vecOptions.push_back("-utf8");
+      CLog::Log(LOGINFO, "Forcing utf8 charset for subtitle. Setting -utf8");
+    }
+    else 
+    {
+      /* try to autodetect any multicharacter charset */
+      /* then fallback to user specified charset */
+      m_vecOptions.push_back("-subcp");
+      strTmp.Format("enca:__:%s", m_subcp.c_str());
+      m_vecOptions.push_back(strTmp);
+      CLog::Log(LOGINFO, "Using -subcp %s to detect the subtitle charset", strTmp.c_str());
+    }
   }
 
   //MOVED TO mplayer.conf
@@ -842,8 +845,16 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     }
     options.SetNoCache(g_stSettings.m_currentVideoSettings.m_NoCache);
 
-
     CStdString strCharset=g_langInfo.GetSubtitleCharSet();
+    if( CUtil::IsUsingTTFSubtitles() )
+    {
+      /* we only set this if we are using ttf, since the font itself, will handle the charset */
+      /* this needed to do conversion to utf wich we expect */
+      options.SetSubtitleCharset(strCharset);
+
+      /* also we don't want to flip the subtitle since that will be handled by our rendering instead */
+    }
+
     if (g_guiSettings.GetBool("subtitles.flipbidicharset") && g_charsetConverter.isBidiCharset(strCharset) > 0)
     {
       options.SetFlipBiDiCharset(strCharset);
@@ -905,6 +916,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     CUtil::GetExtension(strFile, strExtension);
     strExtension.MakeLower();
 
+
     if (strExtension == ".avi")
     {
       // check length of file, as mplayer can't handle opendml very well
@@ -926,7 +938,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     else if (strExtension == ".mkv")
     {
       // mkv files only have utf8 encoded subtitles
-      options.SetForceUtf8(true);
+      options.SetSubtitleCharset("utf8");
     }
 
     if (file.IsRAR())
