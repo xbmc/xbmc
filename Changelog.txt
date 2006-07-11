@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-07-2006 fixed: masked directory listings in rars where broken
  - 11-07-2006 changed: header file cleanup and sectioned of time server client
  - 11-07-2006 changed: recompiled release rar lib without debug information to avoid all warnings about missing debug information during build
  - 11-07-2006 fixed: python sounds where broken
