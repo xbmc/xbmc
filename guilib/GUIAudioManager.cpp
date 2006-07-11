@@ -62,7 +62,7 @@ void CGUIAudioManager::DeInitialize(int iDevice)
   pythonSoundsMap::iterator it1=m_pythonSounds.begin();
   while (it1!=m_pythonSounds.end())
   {
-    CGUISound* sound=it->second;
+    CGUISound* sound=it1->second;
     if (sound->IsPlaying())
       sound->Stop();
 
@@ -100,7 +100,7 @@ void CGUIAudioManager::FreeUnused()
   pythonSoundsMap::iterator it1=m_pythonSounds.begin();
   while (it1!=m_pythonSounds.end())
   {
-    CGUISound* sound=it->second;
+    CGUISound* sound=it1->second;
     if (!sound->IsPlaying())
     {
       delete sound;
