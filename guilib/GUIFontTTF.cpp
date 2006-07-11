@@ -171,8 +171,8 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
     }
   }
 
-  float posX = sx;
-  float posY = sy + m_iHeight - m_cellheight; /* cell could be higher than the normal font size */
+  float posX;
+  float posY;
   int numLines = 0;
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
@@ -183,8 +183,8 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
-      posX = sx - angle.sine * m_cellheight * numLines;
-      posY = sy + angle.cosine * m_cellheight * numLines;
+      posX = sx - angle.sine * m_iHeight * numLines;
+      posY = sy + angle.cosine * m_iHeight * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
@@ -470,6 +470,11 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, c
   // just baseline width and height should include the descent
   const float width = (float)(ch->right - ch->left);
   const float height = (float)(ch->bottom - ch->top);
+
+  /* top left of our texture isn't the topleft of the textcell */
+  /* celltop could be higher than m_iHeight over baseline */
+  posY -= (m_cellheight - m_iHeight) * angle.cosine;
+  posX -= (m_cellheight - m_iHeight) * angle.sine;
 
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
 
