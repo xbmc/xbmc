@@ -130,6 +130,15 @@ CStdString CSMB::URLEncode(const CURL &url)
     flat += URLEncode(url.GetPassWord());
     flat += "@";
   }
+  else if( !url.GetHostName().IsEmpty() && !g_guiSettings.GetString("smb.username").IsEmpty() )
+  {
+    /* okey this is abit uggly to do this here, as we don't really only url encode */
+    /* but it's the simplest place to do so */
+    flat += URLEncode(g_guiSettings.GetString("smb.username"));
+    flat += ":";
+    flat += URLEncode(g_guiSettings.GetString("smb.password"));
+    flat += "@";
+  }
 
   flat += URLEncode(url.GetHostName());  
 
