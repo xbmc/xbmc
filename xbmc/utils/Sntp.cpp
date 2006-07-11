@@ -39,6 +39,16 @@ to maintain a single distribution point for the source code.
 #include "../DNSNameCache.h"
 
 
+#pragma code_seg("SNTP_TEXT")
+#pragma data_seg("SNTP_DATA")
+#pragma bss_seg("SNTP_BSS")
+#pragma const_seg("SNTP_RD")
+#pragma comment(linker, "/merge:SNTP_TEXT=SNTP")
+#pragma comment(linker, "/merge:SNTP_DATA=SNTP")
+#pragma comment(linker, "/merge:SNTP_BSS=SNTP")
+#pragma comment(linker, "/merge:SNTP_RD=SNTP")
+
+
 const double NTP_FRACTIONAL_TO_MS = (((double)1000.0) / 0xFFFFFFFF);
 const double NTP_TO_SECOND = (((double)1.0) / 0xFFFFFFFF);
 const long JAN_1ST_1900 = 2415021;
