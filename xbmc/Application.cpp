@@ -46,6 +46,10 @@
 #include "utils/win32exception.h"
 #include "cores/videorenderers/rendermanager.h"
 #include "FileSystem/UPnPDirectory.h"
+#include "lib/libGoAhead/webserver.h"
+#include "lib/libfilezilla/xbfilezilla.h"
+#include "CdgParser.h"
+#include "utils/sntp.h"
 
 // Windows includes
 #include "GUIStandardWindow.h"
@@ -131,7 +135,7 @@
  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
  #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
- #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib")
+ #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib") 
  #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinumd.lib")
 #else
  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
@@ -180,15 +184,15 @@ CApplication::CApplication(void)
   m_bScreenSave = false;   // CB: SCREENSAVER PATCH
   m_dwSaverTick = timeGetTime(); // CB: SCREENSAVER PATCH
   m_dwSkinTime = 0;
-  m_DAAPSong = NULL;
-  m_DAAPPtr = NULL;
-  m_DAAPArtistPtr = NULL;
 
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
+
+  /* for now allways keep this around */
+  m_pCdgParser = new CCdgParser();
 }
 
 CApplication::~CApplication(void)
@@ -1270,15 +1274,26 @@ void CApplication::StartTimeServer()
 {
   if (g_guiSettings.GetBool("xbdatetime.timeserver") && g_network.IsAvailable() )
   {
-    CLog::Log(LOGNOTICE, "start timeserver thread");
-    m_sntpClient.Create();
+    if( !m_psntpClient )
+    {
+      CSectionLoader::Load("SNTP");
+      CLog::Log(LOGNOTICE, "start timeserver client");
+
+      m_psntpClient = new CSNTPClient();
+      m_psntpClient->Create();
+    }
   }
 }
 
 void CApplication::StopTimeServer()
 {
-  CLog::Log(LOGNOTICE, "stop time server");
-  m_sntpClient.StopThread();
+  if( m_psntpClient )
+  {
+    CLog::Log(LOGNOTICE, "stop time server client");
+    m_psntpClient->StopThread();
+    SAFE_DELETE(m_psntpClient);
+    CSectionLoader::Unload("SNTP");
+  }
 }
 
 void CApplication::StartKai()
@@ -1732,7 +1747,8 @@ void CApplication::Render()
     m_pPlayer->DoAudioWork();
   }
   // process karaoke
-  m_CdgParser.ProcessVoice();
+  if (m_pCdgParser)
+    m_pCdgParser->ProcessVoice();
 
   // check if we haven't rewound past the start of the file
 
@@ -3008,7 +3024,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   m_eForcedNextPlayer = EPC_NONE;
 
   //We have to stop parsing a cdg before mplayer is deallocated
-  m_CdgParser.Stop();
+  if(m_pCdgParser)
+    m_pCdgParser->Stop();
 
   // We should restart the player, unless the previous and next tracks are using
   // one of the players that allows gapless playback (paplayer, dvdplayer)
@@ -3053,12 +3070,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // Enable Karaoke voice as necessary
 //    if (g_guiSettings.GetBool("karaoke.voiceenabled"))
   //  {
-    if (item.IsAudio() && !item.IsInternetStream() && g_guiSettings.GetBool("karaoke.enabled") && !m_CdgParser.IsRunning())
+    if( m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") )
     {
-      if (item.IsMusicDb())
-        m_CdgParser.Start(item.m_musicInfoTag.GetURL());
-      else
-        m_CdgParser.Start(item.m_strPath);
+      if(!m_pCdgParser->IsRunning())
+      {
+        if (item.IsAudio() && !item.IsInternetStream() )
+        {
+          if (item.IsMusicDb())
+            m_pCdgParser->Start(item.m_musicInfoTag.GetURL());
+          else
+            m_pCdgParser->Start(item.m_strPath);
+        }
+      }
     }
 
     // if file happens to contain video stream
@@ -3139,8 +3162,7 @@ void CApplication::OnPlayBackStopped()
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStopped();
-
-  m_CdgParser.Free();
+  
   OutputDebugString("Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
   m_gWindowManager.SendMessage(msg);
@@ -3188,7 +3210,9 @@ void CApplication::StopPlaying()
   int iWin = m_gWindowManager.GetActiveWindow();
   if ( IsPlaying() )
   {
-    m_CdgParser.Stop();
+    if( m_pCdgParser )
+      m_pCdgParser->Stop();
+
     // turn off visualisation window when stopping
     if (iWin == WINDOW_VISUALISATION)
       m_gWindowManager.PreviousWindow();
@@ -3772,10 +3796,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
       }
 
-      if (!m_pPlayer)
-      {
-        m_CdgParser.Free();
-      }
+      /* no new player, free any cdg parser */
+      if (!m_pPlayer && m_pCdgParser)
+        m_pCdgParser->Free();
 
       if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
       {
@@ -3821,7 +3844,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION || m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
           m_gWindowManager.PreviousWindow();
 
-      m_CdgParser.Free();
+      if(m_pCdgParser)
+        m_pCdgParser->Free();
+
       SAFE_DELETE(m_pPlayer);
       return true;
     }

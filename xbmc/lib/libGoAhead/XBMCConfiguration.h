@@ -1,6 +1,7 @@
 #pragma once
 
-#include "includes.h"
+typedef char char_t;
+typedef struct websRec *webs_t;
 
 class CXbmcConfiguration
 {

@@ -11,11 +11,11 @@
 
 #include "http.h"
 #include "thread.h"
-#include "../GUIDialogProgress.h"
 #include "DllHtmlScraper.h"
 
 // forward definitions
 class TiXmlDocument;
+class CGUIDialogProgress;
 
 class CIMDBUrl
 {

@@ -405,7 +405,7 @@ namespace PYXBMC
 		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
 
     int ret = g_infoManager.TranslateString(cLine);
-    return Py_BuildValue("s", g_infoManager.GetImage(ret).c_str());
+    return Py_BuildValue("s", g_infoManager.GetImage(ret, WINDOW_INVALID).c_str());
   }
 
 	// playSFX() method

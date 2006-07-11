@@ -20,6 +20,7 @@
 #include "xbmcweb.h"
 #include "xbmcconfiguration.h"
 #include "xbmchttp.h"
+#include "includes.h"
 
 static CXbmcWeb* pXbmcWeb;
 static CXbmcConfiguration* pXbmcWebConfig;
