@@ -177,14 +177,13 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
       
     if (bMask)
     {
-      vec.clear();
-
       if (!strstr(strName.c_str(),strPathInRar.c_str()))
         continue;
+
+      vec.clear();
+      CUtil::Tokenize(strName,vec,"/");
       if (vec.size() < iDepth)
         continue;
-
-      CUtil::Tokenize(strName,vec,"/");
     }
 
     int iMask = (pIterator->item.HostOS==3 ? 0x0040000:16); // win32 or unix attribs?
