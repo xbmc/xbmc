@@ -7,6 +7,7 @@
 #include "ButtonTranslator.h"
 #include "util.h"
 #include "GUIDialogVisualisationPresetList.h"
+#include "CdgParser.h"
 
 #define TRANSISTION_COUNT   50  // 1 second
 #define TRANSISTION_LENGTH 200  // 4 seconds
@@ -119,7 +120,9 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       if (pOSD && pOSD->IsRunning()) pOSD->Close(true);
       CGUIDialogVisualisationPresetList *pList = (CGUIDialogVisualisationPresetList *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
       if (pList && pList->IsRunning()) pList->Close(true);
-      g_application.m_CdgParser.FreeGraphics();
+
+      if(g_application.m_pCdgParser)
+        g_application.m_pCdgParser->FreeGraphics();
     }
     break;
   case GUI_MSG_WINDOW_INIT:
@@ -137,8 +140,9 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       g_infoManager.SetShowInfo(true);  // always show the info initially.
       CGUIWindow::OnMessage(message);
       m_tag = g_infoManager.GetCurrentSongTag();
-      if (g_guiSettings.GetBool("karaoke.enabled"))
-        g_application.m_CdgParser.AllocGraphics();
+      if( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
+        g_application.m_pCdgParser->AllocGraphics();
+
       if (g_stSettings.m_bMyMusicSongThumbInVis)
       { // always on
         m_dwInitTimer = 0;

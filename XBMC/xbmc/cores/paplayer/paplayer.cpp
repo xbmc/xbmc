@@ -5,6 +5,7 @@
 #include "AudioContext.h"
 #include "../../filesystem/fileshoutcast.h"
 #include "../../application.h"
+#include "../../CdgParser.h"
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
@@ -100,8 +101,11 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
   if (!m_decoder[m_currentDecoder].Create(file, iStartTime, m_crossFading))
     return false;
-  if (g_guiSettings.GetBool("karaoke.enabled") && !g_application.m_CdgParser.IsRunning())
-    g_application.m_CdgParser.Start(file.m_strPath);
+
+  if ( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") )
+    if(!g_application.m_pCdgParser->IsRunning())
+      g_application.m_pCdgParser->Start(file.m_strPath);
+
   m_iSpeed = 1;
   m_bPaused = false;
   m_bStopPlaying = false;
@@ -168,7 +172,8 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
 
 bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
 {
-  g_application.m_CdgParser.Stop();
+  if( g_application.m_pCdgParser )
+    g_application.m_pCdgParser->Stop();
 
   if (file.m_strPath == m_currentFile.m_strPath &&
       file.m_lStartOffset > 0 && 
@@ -511,8 +516,11 @@ bool PAPlayer::ProcessPAP()
           m_decoder[m_currentDecoder].Start();
           m_currentStream = 1 - m_currentStream;
           CLog::Log(LOGDEBUG, "Starting Crossfade - resuming stream %i", m_currentStream);
-          if (g_guiSettings.GetBool("karaoke.enabled") && !g_application.m_CdgParser.IsRunning())
-            g_application.m_CdgParser.Start(m_nextFile.m_strPath);
+
+          if( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") )
+            if (!g_application.m_pCdgParser->IsRunning())
+              g_application.m_pCdgParser->Start(m_nextFile.m_strPath);
+
           m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
           m_callback.OnPlayBackStarted();
           m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
