@@ -982,7 +982,7 @@ const CStdString &CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info) const
   {
     return g_settings.GetSkinString(info.m_data1);
   }
-  return __strEmpty__;
+  return StringUtils::EmptyString;
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
