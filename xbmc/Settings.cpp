@@ -2354,7 +2354,7 @@ const CStdString &CSettings::GetSkinString(int setting) const
   {
     return (*it).second.value;
   }
-  return __strEmpty__;
+  return StringUtils::EmptyString;
 }
 
 void CSettings::SetSkinString(int setting, const CStdString &label)
