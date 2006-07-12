@@ -604,6 +604,22 @@ HRESULT CApplication::Create()
   helper.Unmount("Q:");
   helper.Mount("Q:", szDevicePath);
 
+  // check logpath
+  CStdString strLogFile, strLogFileOld;
+  strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder);
+  strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder);
+
+  ::DeleteFile(strLogFileOld.c_str());
+  ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+  
+  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+  CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
+  CLog::Log(LOGNOTICE, "Q is mapped to: %s",szDevicePath );
+  CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
+  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+
+
+
   g_settings.m_vecProfiles.clear();
   g_settings.LoadProfiles("q:\\system\\profiles.xml");
   if (g_settings.m_vecProfiles.size() == 0)
@@ -644,20 +660,6 @@ HRESULT CApplication::Create()
     strcat(szDevicePath, &strMnt.c_str()[2]);
     helper.Mount("T:",szDevicePath);
   }
-
-  // check logpath
-  CStdString strLogFile, strLogFileOld;
-  strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder);
-  strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder);
-
-  ::DeleteFile(strLogFileOld.c_str());
-  ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
-  
-  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-  CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
-  CLog::Log(LOGNOTICE, "Q is mapped to: %s",szDevicePath );
-  CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
-  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
   CLog::Log(LOGNOTICE, "Setup DirectX");
   // Create the Direct3D object
