@@ -20,7 +20,7 @@ namespace DIRECTORY
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
     if( !strPathOrig.Left(6).Equals("rar://") )
-      CUtil::CreateZipPath(strPath, strPathOrig, "");
+      CUtil::CreateRarPath(strPath, strPathOrig, "");
     else
       strPath = strPathOrig;
 
@@ -50,6 +50,7 @@ namespace DIRECTORY
         if ((IsAllowed(items[iEntry]->m_strPath)) || (items[iEntry]->m_bIsFolder))
         {
           items[iEntry]->m_strPath = strSlashPath + items[iEntry]->m_strPath + strOptions;
+          items[iEntry]->m_iDriveType = 0;
           //CLog::Log(LOGDEBUG, "RarDirectory::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
         }
         else
