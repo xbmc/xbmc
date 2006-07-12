@@ -87,8 +87,11 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
       return false;
     }
   }
-  
-  if (iRes==0) iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPathInRar.c_str()),NULL);
+
+  CStdString strPath = strPathInRar;
+  strPath.Replace('/', '\\');
+
+  iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPath.c_str()),NULL);
   if (iRes == 0)
   {
     CLog::Log(LOGERROR,"failed to extract file: %s",strPathInRar.c_str());
@@ -201,6 +204,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
         pFileItem->m_strPath += '/';
         pFileItem->m_bIsFolder = true;
         pFileItem->m_idepth = pIterator->item.Method;
+        pFileItem->m_iDriveType = pIterator->item.HostOS;
         //pFileItem->m_lEndOffset = long(pIterator->item.iOffset);
       }
     }
@@ -212,6 +216,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
 		    pFileItem->m_strPath = strName.c_str()+strPathInRar.size();
         pFileItem->m_dwSize = pIterator->item.UnpSize;
         pFileItem->m_idepth = pIterator->item.Method;
+        pFileItem->m_iDriveType = pIterator->item.HostOS;
         //pFileItem->m_lEndOffset = long(pIterator->item.iOffset);
       }
     }
