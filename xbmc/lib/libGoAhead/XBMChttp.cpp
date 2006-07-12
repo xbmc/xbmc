@@ -146,7 +146,7 @@ void decodeblock( unsigned char in[4], unsigned char out[3] )
 **
 ** decode a base64 encoded stream discarding padding, line breaks and noise
 */
-bool decodeBase64ToFile( const CStdString &inString, const CStdString &outfilename )
+bool decodeBase64ToFile( const CStdString &inString, const CStdString &outfilename, bool append = false )
 {
   unsigned char in[4], out[3], v;
   bool ret=true;
@@ -156,7 +156,10 @@ bool decodeBase64ToFile( const CStdString &inString, const CStdString &outfilena
 
   try
   {
-    outfile = fopen( outfilename.c_str(), "wb" );
+    if (append)
+	  outfile = fopen( outfilename.c_str(), "ab" );
+	else
+      outfile = fopen( outfilename.c_str(), "wb" );
     while( ptr < inString.length() )
     {
       for( len = 0, i = 0; i < 4 && ptr < inString.length(); i++ ) 
@@ -287,7 +290,7 @@ bool playableFile(const CStdString &filename)
       || url.GetProtocol().Equals("https")
       || url.GetProtocol().Equals("lastfm")
       || url.GetProtocol().Equals("shout")    
-      || CFile::Exists(filename) ;
+      || CFile::Exists(filename);
 }
 
 int SetResponse(const CStdString &response)
@@ -1160,6 +1163,14 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
       if (!sampleRate.IsEmpty())
         output+=closeTag+openTag+"Samplerate"+tag+":"+sampleRate;  
     }
+	if (g_application.IsPlaying())
+	  if (!g_application.m_pPlayer->IsPaused()) 
+		output+=closeTag+openTag+"PlayStatus:Playing";
+      else
+        output+=closeTag+openTag+"PlayStatus:Paused";
+	else
+		output+=closeTag+openTag+"PlayStatus:Stopped";
+
     // Thumb information - our fileItem has this information
     if (fileItem.HasThumbnail())
       output+=closeTag+openTag+"Thumb"+tag+":"+fileItem.GetThumbnailImage();
@@ -1937,16 +1948,34 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
 }
 
 int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
-//parameter = destFilename ; base64String
+//parameter = destFilename ; base64String ; ( first | continue | last )
 {
   if (numParas<2)
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     paras[1].Replace(" ","+");
-    decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp");
-    CFile::Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
-    ::DeleteFile("Z:\\xbmcTemp.tmp");
+	if (numParas>2)
+	  if (paras[2].ToLower() == "first")
+		decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp");
+	  else 
+	    if (paras[2].ToLower() == "continue")
+		  decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp", true);
+		else
+		  if (paras[2].ToLower() == "last")
+		  {
+		    decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp", true);
+			CFile::Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
+            ::DeleteFile("Z:\\xbmcTemp.tmp");
+		  }
+		  else
+		    return  SetResponse(openTag+"Error:Unknown 2nd parameter");
+	else
+	{
+      decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp");
+      CFile::Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
+      ::DeleteFile("Z:\\xbmcTemp.tmp");
+	}
     return SetResponse(openTag+"OK");
   }
 }
