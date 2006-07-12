@@ -690,10 +690,10 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
           g_settings.Save();
         }
         else 
-          return __strEmpty__;
+          return StringUtils::EmptyString;
       }
       else
-        return __strEmpty__;
+        return StringUtils::EmptyString;
     }
     if (result->GetData() == "select writable folder")
     {
@@ -706,10 +706,10 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
           g_settings.Save();
         }
         else
-          return __strEmpty__;
+          return StringUtils::EmptyString;
       }
       else
-        return __strEmpty__;
+        return StringUtils::EmptyString;
     }
     return result->GetData();
   }
