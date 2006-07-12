@@ -3727,8 +3727,6 @@ struct StdStringEqualsNoCaseA
     { return ssicmp(sLeft.c_str(), sRight.c_str()) == 0; }
 };
 
-const CStdString __strEmpty__ = "";
-
 // If we had to define our own version of TRACE above, get rid of it now
 
 #ifdef TRACE_DEFINED_HERE
