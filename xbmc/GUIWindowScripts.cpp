@@ -87,10 +87,12 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
   return true;
 }
 
+/* Moved to SetProgramThumbs() to CGUIWindowScripts::OnFinalizeFileItems()
 void CGUIWindowScripts::OnPrepareFileItems(CFileItemList &items)
 {
   items.SetProgramThumbs();
 }
+*/
 
 bool CGUIWindowScripts::OnPlayMedia(int iItem)
 {
@@ -141,3 +143,22 @@ void CGUIWindowScripts::Render()
   CGUIWindow::Render();
 }
 
+void CGUIWindowScripts::OnFinalizeFileItems(CFileItemList &items)
+{
+  // flatten any folders
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItem *item = items[i];
+    if (item->m_bIsFolder && !item->IsParentFolder())
+    { // folder item - let's check for a default.py file, and flatten if we have one
+      CStdString defaultPY;
+      CUtil::AddFileToFolder(item->m_strPath, "default.py", defaultPY);
+      if (CFile::Exists(defaultPY))
+      { // yes, format the item up
+        item->m_strPath = defaultPY;
+        item->m_bIsFolder = false;
+      }
+    }
+  }
+  items.SetProgramThumbs();
+}
