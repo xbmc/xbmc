@@ -145,13 +145,10 @@ protected:
   // clear colour for "black" bars
   DWORD m_clearColour;
 
-  //When this fence has been passed, textures can be modified again
-  DWORD m_dwTextureFence;
-
   static void TextureCallback(DWORD dwContext);
 
-  HANDLE m_eventTexturesDone;
-  HANDLE m_eventOSDDone;
+  HANDLE m_eventTexturesDone[NUM_BUFFERS];
+  HANDLE m_eventOSDDone[NUM_BUFFERS];
 
   // render thread
   CEvent m_eventFrame;
