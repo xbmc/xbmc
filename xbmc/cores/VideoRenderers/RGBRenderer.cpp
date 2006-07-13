@@ -142,7 +142,7 @@ void CRGBRenderer::Render()
     int iRenderBuffer = ((m_iYV12DecodeBuffer + 1) % m_NumYV12Buffers);
     if (!m_YUVTexture) return ;
 
-    ResetEvent(m_eventTexturesDone);
+    ResetEvent(m_eventTexturesDone[iRenderBuffer]);
 
     // First do the interleaving YV12->YUV, with chroma upsampling
     // if we are field syncing interlaced material, the chroma upsampling must be done per-field
@@ -314,7 +314,7 @@ void CRGBRenderer::Render()
 
 
     //Okey, when the gpu is done with the textures here, they are free to be modified again
-    m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone);
+    m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[iRenderBuffer]);
 
     // Now perform the YUV->RGB conversion in a single pass, and render directly to the screen
     if ( m_iFieldSync != FS_NONE )
