@@ -240,7 +240,7 @@ void CComboRenderer::YV12toYUY2()
 
   CSingleLock lock(g_graphicsContext);
   
-  ResetEvent( m_eventTexturesDone );
+  ResetEvent( m_eventTexturesDone[m_iYUVDecodeBuffer] );
 
   // Do the YV12 -> YUY2 conversion.
   // ALWAYS use buffer 0 in this case (saves 12 bits/pixel)
@@ -325,7 +325,7 @@ void CComboRenderer::YV12toYUY2()
   m_pD3DDevice->KickPushBuffer();
 
   //Okey, when the gpu is done with the textures here, they are free to be modified again
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone);
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[m_iYUVDecodeBuffer]);
 }
 
 void CComboRenderer::Render()
