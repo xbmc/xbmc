@@ -44,13 +44,13 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
     m_YTexture[i] = NULL;
     m_UTexture[i] = NULL;
     m_VTexture[i] = NULL;
+    m_eventTexturesDone[i] = CreateEvent(NULL,TRUE,TRUE,NULL);
+    m_eventOSDDone[i] = CreateEvent(NULL,TRUE,TRUE,NULL);
   }
   m_hLowMemShader = 0;
   m_bPrepared=false;
   m_iAsyncFlipTime = 0;
   m_iFieldSync = FS_NONE;
-  m_eventTexturesDone = CreateEvent(NULL,TRUE,TRUE,NULL);
-  m_eventOSDDone = CreateEvent(NULL,TRUE,TRUE,NULL);
 
   if(!g_eventVBlank)
   {
@@ -63,9 +63,11 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
 CXBoxRenderer::~CXBoxRenderer()
 {
   UnInit();
-
-  CloseHandle(m_eventTexturesDone);
-  CloseHandle(m_eventOSDDone);
+  for (int i = 0; i < NUM_BUFFERS; i++)
+  {
+    CloseHandle(m_eventTexturesDone[i]);
+    CloseHandle(m_eventOSDDone[i]);
+  }
 }
 
 //********************************************************************************************************
@@ -279,19 +281,15 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
     {
       CLog::Log(LOGDEBUG, "Created OSD textures (%i)", iOSDBuffer);
     }
+    SetEvent(m_eventOSDDone[iOSDBuffer]);
   }
 
   //Don't do anything here that would require locking of grapichcontext
   //it shouldn't be needed, and locking here will slow down prepared rendering
-  if( m_NumOSDBuffers == 1 )
+  if( WaitForSingleObject(m_eventOSDDone[iOSDBuffer], 500) == WAIT_TIMEOUT )
   {
-    //Only do this when we have 1 buffer (that is in fullscreen)
-    //tearing doesn't matter so much in gui + we have two buffers then
-    if( WaitForSingleObject(m_eventOSDDone, 500) == WAIT_TIMEOUT )
-    {
-      //This should only happen if flippage wasn't called
-      SetEvent(m_eventOSDDone);
-    }
+    //This should only happen if flippage wasn't called
+    SetEvent(m_eventOSDDone[iOSDBuffer]);
   }
 
   //We know the resources have been used at this point (or they are the second buffer, wich means they aren't in use anyways)
@@ -332,7 +330,7 @@ void CXBoxRenderer::RenderOSD()
   if (!m_OSDWidth || !m_OSDHeight)
     return ;
 
-  ResetEvent(m_eventOSDDone);
+  ResetEvent(m_eventOSDDone[m_iOSDBuffer]);
 
   //copy alle static vars to local vars because they might change during this function by mplayer callbacks
   int buffer = m_iOSDBuffer;
@@ -407,7 +405,7 @@ void CXBoxRenderer::RenderOSD()
   //Okey, when the gpu is done with the textures here, they are free to be modified again
   //this is very weird.. D3DCALLBACK_READ is not enough.. if that is used, we start flushing 
   //the texutures to early.. I have no idea why really
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventOSDDone);
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventOSDDone[m_iOSDBuffer]);
   
 }
 
@@ -725,9 +723,6 @@ unsigned int CXBoxRenderer::Configure(unsigned int width, unsigned int height, u
   ManageDisplay();
   SetupSubtitles();
 
-  SetEvent(m_eventTexturesDone);
-  SetEvent(m_eventOSDDone);
-
   return 0;
 }
 
@@ -746,10 +741,10 @@ unsigned int CXBoxRenderer::GetImage(YV12Image *image)
   //it shouldn't be needed, and locking here will slow down prepared rendering
   //Probably shouldn't even call blockonfence as it can clash with other blocking calls
 
-  if( WaitForSingleObject(m_eventTexturesDone, 500) == WAIT_TIMEOUT )
+  if( WaitForSingleObject(m_eventTexturesDone[m_iYV12DecodeBuffer], 500) == WAIT_TIMEOUT )
   {
     //This should only happen if flippage wasn't called
-    SetEvent(m_eventTexturesDone);
+    SetEvent(m_eventTexturesDone[m_iYV12DecodeBuffer]);
   }
 
   //We know the resources have been used at this point
@@ -934,13 +929,7 @@ void CXBoxRenderer::FlipPage(bool bAsync)
       }
     }
 
-
     m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
-
-    //If textures hasn't been released earlier, release them here
-    SetEvent(m_eventTexturesDone);
-    SetEvent(m_eventOSDDone);    
-
   }  
 
   //if no osd was rendered before this call to flip_page make sure it doesn't get
@@ -979,12 +968,17 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
   BYTE *d;
   int i = 0;
 
+  if (!m_YTexture[m_iYV12DecodeBuffer])
+  {
+    ++m_iYV12DecodeBuffer %= m_NumYV12Buffers;
+  }
+
   //Don't do anything here that would require locking of grapichcontext
   //it shouldn't be needed, and locking here will slow down prepared rendering
-  if( WaitForSingleObject(m_eventTexturesDone, 500) == WAIT_TIMEOUT )
+  if( WaitForSingleObject(m_eventTexturesDone[m_iYV12DecodeBuffer], 500) == WAIT_TIMEOUT )
   {
     //This should only happen if flippage wasn't called
-    SetEvent(m_eventTexturesDone);
+    SetEvent(m_eventTexturesDone[m_iYV12DecodeBuffer]);
   }
 
   //We know the resources have been used at this point
@@ -992,11 +986,6 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
   m_YTexture[m_iYV12DecodeBuffer]->Lock = 0;
   m_UTexture[m_iYV12DecodeBuffer]->Lock = 0;
   m_VTexture[m_iYV12DecodeBuffer]->Lock = 0;
-
-  if (!m_YTexture[m_iYV12DecodeBuffer])
-  {
-    ++m_iYV12DecodeBuffer %= m_NumYV12Buffers;
-  }
 
   D3DLOCKED_RECT lr;
 
@@ -1311,7 +1300,7 @@ void CXBoxRenderer::RenderLowMem()
   {
     g_graphicsContext.ClipToViewWindow();
   }
-  ResetEvent(m_eventTexturesDone);
+  ResetEvent(m_eventTexturesDone[iRenderBuffer]);
 
   m_pD3DDevice->SetTexture( 0, m_YTexture[iRenderBuffer]);
   m_pD3DDevice->SetTexture( 1, m_UTexture[iRenderBuffer]);
@@ -1373,7 +1362,7 @@ void CXBoxRenderer::RenderLowMem()
   m_pD3DDevice->SetScissors(0, FALSE, NULL );
 
   //Okey, when the gpu is done with the textures here, they are free to be modified again
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone);
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[iRenderBuffer]);
 
 }
 
@@ -1490,6 +1479,8 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
   XGSetTextureHeader(m_iSourceWidth / 2 + m_UVFieldPitch, m_iSourceHeight / 4, 1, 0, D3DFMT_LIN_L8, 0, &m_VFieldTexture[index], 0, lr.Pitch * 2);
   m_VFieldTexture[index].Register(lr.pBits);
   m_VTexture[index]->UnlockRect(0);
+
+  SetEvent(m_eventTexturesDone[index]);
 
   CLog::Log(LOGDEBUG, "created yv12 texture %i", index);
   return true;
