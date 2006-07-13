@@ -274,6 +274,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
   CIMDB IMDB;
   bool bUpdate = false;
   bool bFound = false;
+  bool bRollBack = false;
 
   if (!pDlgProgress) return ;
   if (!pDlgSelect) return ;
@@ -297,6 +298,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
     if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser )
       return;
 
+    m_database.BeginTransaction();
+    bRollBack = true;
     m_database.DeleteMovieInfo(item->m_strPath);
   }
 
@@ -367,7 +370,11 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
           if (iSelectedMovie >= 0)
             url = movielist[iSelectedMovie];
           else if (!pDlgSelect->IsButtonPressed())
+          {
+            if (bRollBack)
+              m_database.RollbackTransaction();
             return; // user backed out
+          }
         }
       }
     }
@@ -378,11 +385,19 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
       // Check for cancel of the progress dialog
       pDlgProgress->Close();
       if (pDlgProgress->IsCanceled())
+      {
+        if (bRollBack)
+          m_database.RollbackTransaction();
         return;
+      }
 
       // Prompt the user to input the movieName
       if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, g_localizeStrings.Get(16009), false))
+      {
+        if (bRollBack)
+          m_database.RollbackTransaction();
         return; // user backed out
+      }
 
       needsRefresh = true;
     }
@@ -420,7 +435,11 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
       {
         pDlgProgress->Close();
         if (pDlgProgress->IsCanceled())
+        {
+          if (bRollBack)
+            m_database.RollbackTransaction();
           return; // user cancelled
+        }
         OutputDebugString("failed to get details\n");
         // show dialog...
         CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
@@ -433,11 +452,15 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
           pDlgOK->SetLine(3, "");
           pDlgOK->DoModal();
         }
+        if (bRollBack)
+          m_database.RollbackTransaction();
         return;
       }
     }
     // 6. Check for a refresh
   } while (needsRefresh);
+  if (bRollBack)
+    m_database.CommitTransaction();
 }
 
 void CGUIWindowVideoBase::Render()
