@@ -13,8 +13,10 @@ public:
 protected:
   virtual bool Update(const CStdString &strDirectory);
   virtual bool OnPlayMedia(int iItem);
+  virtual void OnFinalizeFileItems(CFileItemList &items);
+  /* Only used for SetProgramThumbs() which was moved
   virtual void OnPrepareFileItems(CFileItemList &items);
-
+  */
   void OnInfo();
 
   bool m_bViewOutput;
