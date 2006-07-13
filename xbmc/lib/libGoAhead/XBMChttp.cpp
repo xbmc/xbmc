@@ -1139,6 +1139,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         output+=closeTag+openTag+"Title"+tag+":"+tagVal.m_strTitle ;
       if (!tagVal.m_strGenre.IsEmpty())
         output+=closeTag+openTag+"Genre"+tag+":"+tagVal.m_strGenre;
+	  output+=closeTag+openTag+"Thumb"+tag+":"+g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
     }
     else if (g_application.IsPlayingAudio())
     { // Audio information
@@ -1162,6 +1163,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         output+=closeTag+openTag+"Bitrate"+tag+":"+bitRate;  
       if (!sampleRate.IsEmpty())
         output+=closeTag+openTag+"Samplerate"+tag+":"+sampleRate;  
+	  output+=closeTag+openTag+"Thumb"+tag+":"+g_infoManager.GetImage(MUSICPLAYER_COVER, -1);
     }
 	if (g_application.IsPlaying())
 	  if (!g_application.m_pPlayer->IsPaused()) 
@@ -1172,9 +1174,9 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
 		output+=closeTag+openTag+"PlayStatus:Stopped";
 
     // Thumb information - our fileItem has this information
-    if (fileItem.HasThumbnail())
-      output+=closeTag+openTag+"Thumb"+tag+":"+fileItem.GetThumbnailImage();
-    // play time
+    //if (fileItem.HasThumbnail())
+    //  output+=closeTag+openTag+"Thumb"+tag+":"+fileItem.GetThumbnailImage();
+
     output+=closeTag+openTag+"Time:"+g_infoManager.GetCurrentPlayTime();
     output+=closeTag+openTag+"Duration:";
     if (g_application.IsPlayingVideo())
