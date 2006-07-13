@@ -5,7 +5,8 @@
 
 
 CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags)
-: CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
+: CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight),
+  m_scrollInfo(-1)
 {
   m_label = labelInfo;
   m_dwChannelColor = dwChannelColor;
@@ -109,6 +110,12 @@ void CGUIRSSControl::RenderText()
   dwPalette[1]=m_dwHeadlineColor;
   dwPalette[2]=m_dwChannelColor;
 
+  if (m_scrollInfo.initialWait == -1)
+  {
+    m_scrollInfo.initialWait = (g_graphicsContext.GetVideoResolution()<6?60.f:50.f)/g_graphicsContext.GetWidth()*720;
+    m_scrollInfo.Reset();
+  }
+  
   m_label.font->DrawScrollingText((float)m_iPosX, (float)m_iPosY, dwPalette, 3, m_label.shadowColor, m_pwzText, (float)m_dwWidth, m_scrollInfo, m_pbColors);
 }
 
