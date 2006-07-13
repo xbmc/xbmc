@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-07-2006 fixed: rss scroll speed should now be refresh rate and resolution independent.
  - 13-07-2006 changed: My Scripts now flatterns folders if default default.py is found
  - 12-07-2006 fixed: HttpApi GetCurrentlyPlaying so it again returns playing state
  - 12-07-2006 added: HttpApi FileUpload can now take an optional third parameter (first, continue, last) to allow large files to be uploaded in multiple chunks
