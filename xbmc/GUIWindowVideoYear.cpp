@@ -60,6 +60,7 @@ bool CGUIWindowVideoYear::GetDirectory(const CStdString &strDirectory, CFileItem
     m_database.GetMoviesByYear(m_vecItems.m_strPath, movies);
     SetDatabaseDirectory(movies, items);
   }
+  items.SetCachedVideoThumbs();
   return true;
 }
 
