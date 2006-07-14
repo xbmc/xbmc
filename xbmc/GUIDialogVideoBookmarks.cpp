@@ -68,7 +68,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
           videoDatabase.Close();
           Update();
         }
-        else
+        else if (iAction == ACTION_SELECT_ITEM)
           GotoBookmark(iItem);
       }
     }
