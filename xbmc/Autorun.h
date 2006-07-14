@@ -23,7 +23,7 @@ public:
   bool IsEnabled();
 protected:
   static void ExecuteXBE(const CStdString &xbeFile);
-  static void ExecuteAutorun(bool bypassSettings = false);
+  static void ExecuteAutorun(bool bypassSettings = false, bool ignoreplaying=false);
   static void RunXboxCd(bool bypassSettings = false);
   static void RunCdda();
   static void RunISOMedia(bool bypassSettings = false);
