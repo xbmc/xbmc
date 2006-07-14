@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-07-2006 added: a progress dialog is shown if loading a my program directory takes > 1.5secs.
  - 14-07-2006 fixed: wrong thumb assignment in the script window.
  - 14-07-2006 fixed: [ 1521878 ] if playing muisc, DVD disc can't be play
  - 13-07-2006 fixed: HttpApi GetCurrentlyPlaying thumb information should be more reliable
