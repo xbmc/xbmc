@@ -32,8 +32,8 @@ bool CPartyModeManager::Enable()
   CStdString partyModePath;
 
   CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDialog->SetHeading("Party party");
-  pDialog->SetLine(0,"Filtering songs");
+  pDialog->SetHeading(20121);
+  pDialog->SetLine(0,20123);
   pDialog->StartModal();
   partyModePath = g_settings.GetUserDataItem("partymode.xml");
   if (playlist.Load(partyModePath))
@@ -96,7 +96,7 @@ bool CPartyModeManager::Enable()
   g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
 
-  pDialog->SetLine(0,"Adding songs");
+  pDialog->SetLine(0,20124);
   pDialog->Progress();
   // add initial songs
 #ifdef NEW_PARTY_MODE_METHOD
@@ -237,12 +237,14 @@ bool CPartyModeManager::ReapSongs()
 
   // reap any played songs
   int iCurrentSong = g_playlistPlayer.GetCurrentSong();
-  vector<int> vecPlayed;
+  /*vector<int> vecPlayed;
   for (int i=0; i<playlist.size(); i++)
   {
     // get played song list
-    if (playlist[i].WasPlayed() && i != iCurrentSong)
+    if ((playlist[i].WasPlayed() && i != iCurrentSong)
       vecPlayed.push_back(i);
+    else if (i < iCurrentSong)
+      vecPlayed.push_back(0);
   }
   // dont remove them while traversing the playlist!
   for (int i=0; i<(int)vecPlayed.size(); i++)
@@ -252,7 +254,29 @@ bool CPartyModeManager::ReapSongs()
     g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(iSong);
     if (iSong < iCurrentSong) iCurrentSong--;
     if (iSong <= m_iLastUserSong) m_iLastUserSong--;
+  }*/
+  int i=0;
+  while (i < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size())
+  {
+    if (playlist[i].WasPlayed() && i != iCurrentSong)
+    {
+      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(i);
+      if (i < iCurrentSong)
+        iCurrentSong--;
+      if (i <= m_iLastUserSong) 
+        m_iLastUserSong--;
+    }
+    else if (i < iCurrentSong)
+    {
+      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(i);
+      iCurrentSong--;
+      if (i <= m_iLastUserSong) 
+        m_iLastUserSong--;
+    }
+    else
+      i++;
   }
+
   g_playlistPlayer.SetCurrentSong(iCurrentSong);
   return true;
 }
