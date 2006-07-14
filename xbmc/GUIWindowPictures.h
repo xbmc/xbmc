@@ -18,12 +18,13 @@ public:
 protected:
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
+  virtual void OnPrepareFileItems(CFileItemList& items);
   virtual bool Update(const CStdString &strDirectory);
 
   void OnPopupMenu(int iItem);
   void OnRegenerateThumbs();
   virtual bool OnPlayMedia(int iItem);
-  void OnShowPictureRecursive(const CStdString& strPicture);
+  void OnShowPictureRecursive(const CStdString& strPicture, CFileItemList* pVecItems=NULL);
   void OnSlideShow(const CStdString& strPicture);
   void OnSlideShow();
   void OnSlideShowRecursive(const CStdString& strPicture);
