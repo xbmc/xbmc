@@ -159,7 +159,21 @@ VECSHARES& CGUIViewStateWindowScripts::GetShares()
   m_shares.clear();
 
   CShare share;
-  share.strName = "Q Drive";
+  if (g_settings.m_vecProfiles.size() > 1)
+  {
+    if (CDirectory::Exists("P:\\scripts"))
+    {
+      CShare share2;
+      share2.strName = "Profile Scripts";
+      share2.strPath = "P:\\scripts";
+      share2.m_iDriveType = SHARE_TYPE_LOCAL;
+      m_shares.push_back(share2);
+    }
+    share.strName = "Shared Scripts";
+  }
+  else 
+    share.strName = "Scripts";
+
   share.strPath = "Q:\\scripts";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   m_shares.push_back(share);
