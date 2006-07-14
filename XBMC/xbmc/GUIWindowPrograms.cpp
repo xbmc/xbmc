@@ -76,20 +76,33 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyProgramsShares, bIsBookmarkName);
         if (iIndex > -1)
         {
+          bool bDoStuff = true;
+          if (g_settings.m_vecMyProgramsShares[iIndex].m_iHasLock == 2)
+          {
+            CFileItem item(g_settings.m_vecMyProgramsShares[iIndex]);
+            if (!g_passwordManager.IsItemUnlocked(&item,"myprograms"))
+            {
+              m_vecItems.m_strPath = ""; // no u don't
+              bDoStuff = false;
+              CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
+            }
+          }
           // set current directory to matching share
-          if (bIsBookmarkName)
-            m_vecItems.m_strPath = g_settings.m_vecMyProgramsShares[iIndex].strPath;
-          else
-            m_vecItems.m_strPath = strDestination;
-          CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
-          CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+          if (bDoStuff)
+          {
+            if (bIsBookmarkName)
+              m_vecItems.m_strPath=g_settings.m_vecMyProgramsShares[iIndex].strPath;
+            else
+              m_vecItems.m_strPath=strDestination;
+            CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+            CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+          }
         }
         else
         {
           CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
         }
       }
-
       SetHistoryForPath(m_vecItems.m_strPath);
 
       return CGUIMediaWindow::OnMessage(message);
@@ -544,10 +557,27 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   // flatten any folders
   m_database.BeginTransaction();
+  DWORD dwTick=timeGetTime();
+  bool bProgressVisible = false;
   for (int i = 0; i < items.Size(); i++)
   {
     CStdString shortcutPath;
     CFileItem *item = items[i];
+    if (!bProgressVisible && timeGetTime()-dwTick>1500 && m_dlgProgress)
+    { // tag loading takes more then 1.5 secs, show a progress dialog
+      m_dlgProgress->SetHeading(189);
+      m_dlgProgress->SetLine(0, 20120);
+      m_dlgProgress->SetLine(1,"");
+      m_dlgProgress->SetLine(2, item->GetLabel());
+      m_dlgProgress->StartModal();
+      bProgressVisible = true;
+    }
+    if (bProgressVisible)
+    {
+      m_dlgProgress->SetLine(2,item->GetLabel());
+      m_dlgProgress->Progress();
+    }
+
     if (item->m_bIsFolder && !item->IsParentFolder())
     { // folder item - let's check for a default.xbe file, and flatten if we have one
       CStdString defaultXBE;
@@ -596,9 +626,11 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       item->m_strPath = shortcutPath;
   }
   m_database.CommitTransaction();
-
   // set the cached thumbs
   items.SetCachedProgramThumbs();
+  if (bProgressVisible)
+    m_dlgProgress->Close();
+
   return true;
 }
 
