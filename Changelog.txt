@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-07-2006 fixed: [ 1520931 ] Custom movie thumbnail ignored when viewing from cast
  - 14-07-2006 changed: if you select a song in party mode, all songs with a earlier id is removed. more in line with itunes etc.
  - 14-07-2006 changed: folder.jpg is hidden in my pictures. cleaned up cbr/cbz support a bit.
  - 14-07-2006 added: a progress dialog is shown if loading a my program directory takes > 1.5secs.
