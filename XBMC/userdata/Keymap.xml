@@ -554,7 +554,7 @@
   <VideoBookmarks>
     <gamepad>
       <X></X>
-      <Y>AspectRatio</Y>
+      <Y>Delete</Y>
       <B>Stop</B>
       <back>Close</back>
       <start>Close</start>
@@ -564,6 +564,7 @@
       <back>Close</back>
       <menu>Close</menu>
       <start>Close</start>
+      <zero>Delete</zero>
     </remote>
 
     <keyboard>
