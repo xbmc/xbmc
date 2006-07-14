@@ -22,9 +22,9 @@ CAutorun::CAutorun()
 CAutorun::~CAutorun()
 {}
 
-void CAutorun::ExecuteAutorun( bool bypassSettings )
+void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 {
-  if ( g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.IsRouted())
+  if ( !ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.IsRouted()))
     return ;
 
   CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
@@ -39,8 +39,8 @@ void CAutorun::ExecuteAutorun( bool bypassSettings )
     if( !bypassSettings && !g_guiSettings.GetBool("autorun.cdda") )
       return;
 
-    if (!g_passwordManager.IsMasterLockUnlocked(bypassSettings))
-      if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked())
+    if (!g_passwordManager.IsMasterLockUnlocked(false))
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked())
         return ;
 
     RunCdda();
@@ -118,8 +118,8 @@ void CAutorun::RunXboxCd(bool bypassSettings)
     if (!g_guiSettings.GetBool("autorun.xbox") && !bypassSettings)
       return;
 
-    if (!g_passwordManager.IsMasterLockUnlocked(bypassSettings))
-      if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked())
+    if (!g_passwordManager.IsMasterLockUnlocked(false))
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked())
         return;
 
     ExecuteXBE("D:\\default.xbe");
@@ -205,7 +205,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   bool bAllowVideo = true;
   bool bAllowPictures = true;
   bool bAllowMusic = true;
-  if (!g_passwordManager.IsMasterLockUnlocked(bypassSettings))
+  if (!g_passwordManager.IsMasterLockUnlocked(false))
   {
     bAllowVideo = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked();
     bAllowPictures = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].picturesLocked();
@@ -411,6 +411,6 @@ bool CAutorun::IsEnabled()
 
 bool CAutorun::PlayDisc()
 {
-  ExecuteAutorun(true);
+  ExecuteAutorun(true,true);
   return true;
 }
