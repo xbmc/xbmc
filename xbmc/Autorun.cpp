@@ -295,6 +295,8 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     CFileItemList tempItems;
     tempItems.Append(vecItems);
     tempItems.Stack();
+    itemlist.Clear();
+
     for (int i = 0; i < tempItems.Size(); i++)
     {
       CFileItem *pItem = tempItems[i];
@@ -304,23 +306,29 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         if (pItem->IsStack())
         {
           // TODO: remove this once the app/player is capable of handling stacks immediately
-          g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
           CStackDirectory dir;
           CFileItemList items;
           dir.GetDirectory(pItem->m_strPath, items);
           for (int i = 0; i < items.Size(); i++)
           {
-            CPlayList::CPlayListItem playlistItem;
-            CUtil::ConvertFileItemToPlayListItem(items[i], playlistItem);
-            g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
+            itemlist.Add(new CFileItem(*items[i]));
           }
-          g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
-          g_playlistPlayer.Play(0);
         }
         else
-          g_application.PlayMedia(*pItem, PLAYLIST_VIDEO_TEMP);
-        break;
+          itemlist.Add(new CFileItem(*pItem));
       }
+    }
+    if (itemlist.Size())
+    {
+      g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
+      for (int i=0;i<itemlist.Size();++i)
+      {
+        CPlayList::CPlayListItem playlistItem;
+        CUtil::ConvertFileItemToPlayListItem(itemlist[i], playlistItem);            
+        g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP).Add(playlistItem);
+      }
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+      g_playlistPlayer.Play(0);
     }
   }
   // then music
