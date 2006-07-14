@@ -60,6 +60,7 @@ bool CGUIWindowVideoGenre::GetDirectory(const CStdString &strDirectory, CFileIte
     VECMOVIES movies;
     m_database.GetMoviesByGenre(items.m_strPath, movies);
     SetDatabaseDirectory(movies, items);
+    items.SetCachedVideoThumbs();
   }
   return true;
 }
