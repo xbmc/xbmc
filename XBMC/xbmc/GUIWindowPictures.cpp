@@ -64,24 +64,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPictures;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
-      
-      for (unsigned int i=0;i<m_rootDir.GetNumberOfShares();++i)
-      {
-        const CShare& share = m_rootDir[i];
-        CURL url(share.strPath);
-        if ((url.GetProtocol() != "zip") && (url.GetProtocol() != "rar"))
-          continue;
-
-        if (share.strEntryPoint.IsEmpty()) // do not unmount 'normal' rars/zips
-          continue;
-        
-        if (url.GetProtocol() == "zip")
-          g_ZipManager.release(share.strPath);
-        
-        strDestination = share.strEntryPoint;
-        m_rootDir.RemoveShare(share.strPath);
-      }
-      
+            
       // try to open the destination path
       if (!strDestination.IsEmpty())
       {
@@ -92,18 +75,33 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyPictureShares, bIsBookmarkName);
         if (iIndex > -1)
         {
+          bool bDoStuff = true;
+          if (g_settings.m_vecMyPictureShares[iIndex].m_iHasLock == 2)
+          {
+            CFileItem item(g_settings.m_vecMyPictureShares[iIndex]);
+            if (!g_passwordManager.IsItemUnlocked(&item,"pictures"))
+            {
+              m_vecItems.m_strPath = ""; // no u don't
+              bDoStuff = false;
+              CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
+            }
+          }
           // set current directory to matching share
-          if (bIsBookmarkName)
-            m_vecItems.m_strPath = g_settings.m_vecMyPictureShares[iIndex].strPath;
-          else
-            m_vecItems.m_strPath = strDestination;
-          CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
-          CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+          if (bDoStuff)
+          {
+            if (bIsBookmarkName)
+              m_vecItems.m_strPath=g_settings.m_vecMyPictureShares[iIndex].strPath;
+            else
+              m_vecItems.m_strPath=strDestination;
+            CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+            CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+          }
         }
         else
         {
           CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
         }
+
         SetHistoryForPath(m_vecItems.m_strPath);
       }
 
@@ -200,6 +198,13 @@ void CGUIWindowPictures::UpdateButtons()
   }
 }
 
+void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
+{
+  for (int i=0;i<items.Size();++i )
+    if (items[i]->GetLabel().Equals("folder.jpg"))
+      items.Remove(i);
+}
+
 bool CGUIWindowPictures::Update(const CStdString &strDirectory)
 {
   if (m_thumbLoader.IsLoading())
@@ -219,52 +224,28 @@ bool CGUIWindowPictures::OnClick(int iItem)
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strPath = pItem->m_strPath;
 
-  if (pItem->IsCBZ()) //mount'n'show'n'unmount
+  if (pItem->IsCBZ() || pItem->IsCBR())
   {
     CUtil::GetDirectory(pItem->m_strPath,strPath);
-    CShare shareZip;
-    CUtil::CreateZipPath(shareZip.strPath, pItem->m_strPath, "");
-    shareZip.strEntryPoint = strPath;
-    m_rootDir.AddShare(shareZip);
-    Update(shareZip.strPath);
-    if (m_vecItems.Size() > 0)
-    {
-      CStdString strEmpty; strEmpty.Empty();
-      OnShowPictureRecursive(strEmpty);
-    }
+    CStdString strComicPath;
+    if (pItem->IsCBZ())
+      CUtil::CreateZipPath(strComicPath, pItem->m_strPath, "");
     else
+      CUtil::CreateRarPath(strComicPath, pItem->m_strPath, "");
+    CFileItemList vecItems;
+    if (CGUIMediaWindow::GetDirectory(strComicPath, vecItems))
     {
-      CLog::Log(LOGERROR,"No pictures found in cbz file!");
-      m_rootDir.RemoveShare(shareZip.strPath);
-      Update(strPath);
+      if (m_vecItems.Size() > 0)
+      {
+        OnShowPictureRecursive("",&vecItems);
+        return true;
+      }
+      else
+      {
+        CLog::Log(LOGERROR,"No pictures found in cbz file!");
+        return false;
+      }
     }
-    m_iSelectedItem = iItem;
-
-    return true;
-  }
-  else if (pItem->IsCBR()) // mount'n'show'n'unmount
-  {
-    CUtil::GetDirectory(pItem->m_strPath,strPath);
-    CShare shareRar;
-    CUtil::CreateRarPath(shareRar.strPath, pItem->m_strPath, "");
-    shareRar.strEntryPoint = strPath;
-    m_rootDir.AddShare(shareRar);
-    m_iSelectedItem = -1;
-    Update(shareRar.strPath);
-    if (m_vecItems.Size() > 0)
-    {
-      CStdString strEmpty; strEmpty.Empty();
-      OnShowPictureRecursive(strEmpty);
-    }
-    else
-    {
-      CLog::Log(LOGERROR,"No pictures found in cbr file!");
-      m_rootDir.RemoveShare(shareRar.strPath);
-      Update(strPath);
-    }
-    m_iSelectedItem = iItem;
-
-    return true;
   }
   else if (CGUIMediaWindow::OnClick(iItem))
     return true;
@@ -309,7 +290,7 @@ bool CGUIWindowPictures::OnPlayMedia(int iItem)
   return true;
 }
 
-void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture)
+void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture, CFileItemList* pVecItems)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
@@ -318,9 +299,12 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  for (int i = 0; i < (int)m_vecItems.Size();++i)
+  if (!pVecItems)
+    pVecItems = &m_vecItems;
+  CFileItemList& vecItems = *pVecItems;
+  for (int i = 0; i < (int)vecItems.Size();++i)
   {
-    CFileItem* pItem = m_vecItems[i];
+    CFileItem* pItem = vecItems[i];
     if (pItem->m_bIsFolder)
       AddDir(pSlideShow, pItem->m_strPath);
     else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
