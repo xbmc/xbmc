@@ -57,6 +57,7 @@ bool CGUIWindowVideoActors::GetDirectory(const CStdString &strDirectory, CFileIt
     m_database.GetMoviesByActor(items.m_strPath, movies);
     SetDatabaseDirectory(movies, items);
   }
+    items.SetCachedVideoThumbs();
   return true;
 }
 
