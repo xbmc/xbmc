@@ -241,7 +241,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20089] = "Drive Space Free";
   m_vecStrings[20090] = "Enter the name of an existing Share";
   m_vecStrings[20091] = "Lock Code";
-  m_vecStrings[20092] = "Lock Code (set)";
+  m_vecStrings[20092] = "Load profile";
   m_vecStrings[20093] = "Profile name";
   m_vecStrings[20094] = "Media sources";
   m_vecStrings[20095] = "Enter profile lock code";
@@ -261,8 +261,18 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20109] = "Skin Zoom";
   m_vecStrings[20110] = "UPnP Client";
   m_vecStrings[20111] = "Autostart";
-
-
+  m_vecStrings[20112] = "Last login: %s";
+  m_vecStrings[20113] = "Never logged on";
+  m_vecStrings[20114] = "Profile %i / %i";
+  m_vecStrings[20115] = "User Login / Select a Profile";
+  m_vecStrings[20116] = "Use locks on login screen";
+  m_vecStrings[20117] = "Invalid lock code.";
+  m_vecStrings[20118] = "Requires the master lock to be set.";
+  m_vecStrings[20119] = "Would you like to set it now?";
+  m_vecStrings[20120] = "Loading program information";
+  m_vecStrings[20121] = "Party on!";
+  m_vecStrings[20123] = "Filtering songs";
+  m_vecStrings[20124] = "Adding songs";
   // new strings for weather localization
   m_vecStrings[1411] = "with";
   m_vecStrings[1412] = "windy";
