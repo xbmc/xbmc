@@ -3375,6 +3375,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					Name="xbmcmodule"
 					Filter="">
 					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\action.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\action.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\control.cpp">
 					</File>
 					<File
