@@ -146,6 +146,13 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_NOTIFY_ALL:
     { // Message is received even if this window is inactive
+      if (message.GetParam1() == GUI_MSG_WINDOW_RESET)
+      {
+        m_vecItems.Clear();
+        m_vecItems.m_strPath = "?";
+        return true;
+      }
+
       if ( message.GetParam1() == GUI_MSG_REFRESH_THUMBS )
       {
         for (int i = 0; i < m_vecItems.Size(); i++)

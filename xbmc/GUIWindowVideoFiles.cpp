@@ -90,13 +90,27 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyVideoShares, bIsBookmarkName);
           if (iIndex > -1)
           {
+            bool bDoStuff = true;
+            if (g_settings.m_vecMyVideoShares[iIndex].m_iHasLock == 2)
+            {
+              CFileItem item(g_settings.m_vecMyVideoShares[iIndex]);
+              if (!g_passwordManager.IsItemUnlocked(&item,"video"))
+              {
+                m_vecItems.m_strPath = ""; // no u don't
+                bDoStuff = false;
+                CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
+              }
+            }
             // set current directory to matching share
-            if (bIsBookmarkName)
-              m_vecItems.m_strPath = g_settings.m_vecMyVideoShares[iIndex].strPath;
-            else
-              m_vecItems.m_strPath = strDestination;
-            CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
-            CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+            if (bDoStuff)
+            {
+              if (bIsBookmarkName)
+                m_vecItems.m_strPath=g_settings.m_vecMyVideoShares[iIndex].strPath;
+              else
+                m_vecItems.m_strPath=strDestination;
+              CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+              CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+            }
           }
           else
           {
@@ -236,6 +250,12 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
   CFileItem* pItem = m_vecItems[iItem];
+
+  if (pItem->IsDVD())
+    return CAutorun::PlayDisc();
+  
+  if (pItem->m_bIsShareOrDrive)
+  	return false;
 
   if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
   {
