@@ -982,6 +982,12 @@ const CStdString &CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info) const
   {
     return g_settings.GetSkinString(info.m_data1);
   }
+  else if (info.m_info == SKIN_BOOL)
+  {
+    bool bInfo = g_settings.GetSkinBool(info.m_data1);
+    if (bInfo)
+      return g_localizeStrings.Get(20122);
+  }
   return StringUtils::EmptyString;
 }
 
