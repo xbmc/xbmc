@@ -153,6 +153,8 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
           else
             return false;
         }
+        else if (iAction == ACTION_PLAYER_PLAY)
+          OnPlayMedia(iItem);
       }
     }
     break;
@@ -268,6 +270,12 @@ bool CGUIWindowPictures::OnPlayMedia(int iItem)
     }
     return false;
   }
+
+  if (pItem->IsDVD())
+    return CAutorun::PlayDisc();
+
+  if (pItem->m_bIsShareOrDrive)
+    return false;
 
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
