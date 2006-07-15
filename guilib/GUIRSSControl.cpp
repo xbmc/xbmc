@@ -112,7 +112,7 @@ void CGUIRSSControl::RenderText()
 
   if (m_scrollInfo.initialWait == -1)
   {
-    m_scrollInfo.initialWait = (g_graphicsContext.GetVideoResolution()<6?60.f:50.f)/g_graphicsContext.GetWidth()*720;
+    m_scrollInfo.initialWait = (int)(g_graphicsContext.GetVideoResolution()<6?60.f:50.f)/g_graphicsContext.GetWidth()*720;
     m_scrollInfo.Reset();
   }
   
