@@ -10,6 +10,7 @@
 #include "xbox/xbeheader.h"
 #include "utils/Trainer.h"
 #include "utils/kaiclient.h"
+#include "autorun.h"
 
 using namespace DIRECTORY;
 
@@ -121,6 +122,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           // iItem is checked inside OnPopupMenu
           OnPopupMenu(iItem);
         }
+        if (iAction == ACTION_PLAYER_PLAY)
+          OnPlayMedia(m_viewControl.GetSelectedItem());
       }
     }
     break;
@@ -347,6 +350,9 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
     }
     return false;
   }
+
+  if (pItem->IsDVD())
+    return MEDIA_DETECT::CAutorun::PlayDisc();
 
   if (pItem->m_bIsFolder) return false;
 

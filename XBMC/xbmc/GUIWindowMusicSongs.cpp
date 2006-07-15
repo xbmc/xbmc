@@ -84,13 +84,27 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyMusicShares, bIsBookmarkName);
           if (iIndex > -1)
           {
+            bool bDoStuff = true;
+            if (g_settings.m_vecMyMusicShares[iIndex].m_iHasLock == 2)
+            {
+              CFileItem item(g_settings.m_vecMyMusicShares[iIndex]);
+              if (!g_passwordManager.IsItemUnlocked(&item,"music"))
+              {
+                m_vecItems.m_strPath = ""; // no u don't
+                bDoStuff = false;
+                 CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
+              }
+            }
             // set current directory to matching share
-            if (bIsBookmarkName)
-              m_vecItems.m_strPath=g_settings.m_vecMyMusicShares[iIndex].strPath;
-            else
-              m_vecItems.m_strPath=strDestination;
-            CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
-            CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+              if (bDoStuff)
+              {
+                if (bIsBookmarkName)
+                  m_vecItems.m_strPath=g_settings.m_vecMyMusicShares[iIndex].strPath;
+                else
+                  m_vecItems.m_strPath=strDestination;
+                CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+                CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+              }
           }
           else
           {
@@ -272,6 +286,28 @@ void CGUIWindowMusicSongs::UpdateButtons()
   else
   {
     CONTROL_ENABLE(CONTROL_BTNSCAN);
+  }
+  static int iOldLeftControl=-1;
+  if (m_vecItems.IsShoutCast())
+  {
+    CONTROL_DISABLE(CONTROL_BTNVIEWASICONS);
+    CGUIControl* pControl = (CGUIControl*)GetControl(2);
+    if (pControl)
+      if (pControl->GetControlIdLeft() == 2)
+      {
+        iOldLeftControl = pControl->GetControlIdLeft();
+        pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),CONTROL_BTNSORTBY,pControl->GetControlIdRight());
+      }
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_BTNVIEWASICONS);
+    if (iOldLeftControl != -1)
+    {
+      CGUIControl* pControl = (CGUIControl*)GetControl(2);
+      if (pControl)
+        pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),CONTROL_BTNVIEWASICONS,pControl->GetControlIdRight());
+    }
   }
 
   CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
@@ -460,10 +496,13 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
   // and cleared!
 
   // we're at the root bookmark listing
-  if (m_vecItems.IsVirtualDirectoryRoot())
+  if (m_vecItems.IsVirtualDirectoryRoot() && !m_vecItems[iItem]->IsDVD())
     return;
 
-  CGUIWindowMusicBase::PlayItem(iItem);
+  if (m_vecItems[iItem]->IsDVD())
+    CAutorun::PlayDisc();
+  else
+    CGUIWindowMusicBase::PlayItem(iItem);
 }
 
 bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
