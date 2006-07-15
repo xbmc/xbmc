@@ -140,7 +140,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
   if (!m_bInitialized)
   {
-    CLog::Log(LOGFATAL, "CDVDMessageQueue::Put MSGQ_NOT_INITIALIZED");
+    CLog::Log(LOGFATAL, "CDVDMessageQueue::Get MSGQ_NOT_INITIALIZED");
     return MSGQ_NOT_INITIALIZED;
   }
 
