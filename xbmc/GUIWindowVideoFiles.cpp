@@ -170,6 +170,11 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         // use play button to add folders of items to temp playlist
         if (iAction == ACTION_PLAYER_PLAY && pItem->m_bIsFolder && !pItem->IsParentFolder())
         {
+          if (pItem->IsDVD())
+            return CAutorun::PlayDisc();
+          
+          if (pItem->m_bIsShareOrDrive)
+            return false;
           // if playback is paused or playback speed != 1, return
           if (g_application.IsPlayingVideo())
           {
