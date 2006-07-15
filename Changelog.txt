@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-07-2006 added: skin.hassetting() infoLabel. (returns string localized("True") or "" for False)
  - 15-07-2006 fixed: Fadelabels scrolling did not scale.
  - 14-07-2006 fixed: adjusting volume while in bookmarks menu selected a bookmark.
  - 14-07-2006 changed: play disc on a video disc enqueues all items.
