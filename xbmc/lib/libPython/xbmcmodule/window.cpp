@@ -6,6 +6,7 @@
 #include "GuiFadeLabelControl.h"
 #include "GuiTextBox.h"
 #include "pyutil.h"
+#include "action.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
 
@@ -291,7 +292,7 @@ namespace PYXBMC
 	}
 
 	PyDoc_STRVAR(onAction__doc__,
-		"onAction(self, int action) -- onAction method.\n"
+		"onAction(self, Action action) -- onAction method.\n"
 		"\n"
 		"This method will recieve all actions that the main program will send\n"
 		"to this window.\n"
@@ -301,10 +302,10 @@ namespace PYXBMC
 
 	PyObject* Window_OnAction(Window *self, PyObject *args)
 	{
-		DWORD action;
-		if (!PyArg_ParseTuple(args, "l", &action)) return NULL;
+		Action* action;
+		if (!PyArg_ParseTuple(args, "O", &action)) return NULL;
 
-		if(action == ACTION_PREVIOUS_MENU)
+		if(action->id == ACTION_PREVIOUS_MENU)
 		{
 			Window_Close(self, args);
 		}

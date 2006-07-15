@@ -4,6 +4,7 @@
 #include "..\..\..\application.h"
 #include "window.h"
 #include "control.h"
+#include "action.h"
 
 using namespace PYXBMC;
 
@@ -27,7 +28,7 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
 	if(pCallbackWindow)
 	{
 		PyXBMCAction* inf = new PyXBMCAction;
-		inf->dwParam = action.wID;
+		inf->pObject = Action_FromAction(action);
 		inf->pCallbackWindow = pCallbackWindow;
 
 		// aquire lock?
@@ -79,11 +80,10 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
 				{
 					// currently we only accept messages from a button or controllist with a select action
           if ((ControlList_CheckExact(inf->pObject) && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK))||
-							ControlButton_CheckExact(inf->pObject)||
-                            ControlCheckMark_CheckExact(inf->pObject))
+					    ControlButton_CheckExact(inf->pObject) ||
+              ControlCheckMark_CheckExact(inf->pObject))
 					{
 						// create a new call and set it in the python queue
-						inf->dwParam = iControl;
 						inf->pCallbackWindow = pCallbackWindow;
 
 						// aquire lock?
@@ -140,7 +140,7 @@ int Py_XBMC_Event_OnAction(void* arg)
 	{
 		PyXBMCAction* action = (PyXBMCAction*)arg;
 
-		PyObject_CallMethod(action->pCallbackWindow, "onAction", "l", action->dwParam);
+		PyObject_CallMethod(action->pCallbackWindow, "onAction", "O", action->pObject);
 
 		delete action;
 	}
