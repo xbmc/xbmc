@@ -10,6 +10,7 @@
 
 #define GUI_MSG_WINDOW_INIT     1   // initialize window
 #define GUI_MSG_WINDOW_DEINIT   2   // deinit window
+#define GUI_MSG_WINDOW_RESET    27  // reset window to initial state
 
 #define GUI_MSG_SETFOCUS        3   // set focus to control param1=up/down/left/right
 #define GUI_MSG_LOSTFOCUS       4   // control lost focus

@@ -111,6 +111,11 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
     m_gWindowManager.PreviousWindow();
     return true;
   }
+  if (action.wID == ACTION_PLAYER_PLAY)
+  {
+    if (m_vecItems[list][GetSelectedItem(list)]->IsDVD())
+      return CAutorun::PlayDisc();
+  }
   return CGUIWindow::OnAction(action);
 }
 
@@ -121,6 +126,17 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
   case GUI_MSG_NOTIFY_ALL:
     { // Message is received even if window is inactive
       //  Is there a dvd share in this window?
+      if (message.GetParam1() == GUI_MSG_WINDOW_RESET)
+      {
+        ClearFileItems(0);
+        ClearFileItems(1);
+        m_Directory[0].m_strPath = "?";
+        m_Directory[1].m_strPath = "?";
+        m_Directory[0].m_bIsFolder = true;
+        m_Directory[1].m_bIsFolder = true;    
+        return true;
+      }
+
       if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
       {
         if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
