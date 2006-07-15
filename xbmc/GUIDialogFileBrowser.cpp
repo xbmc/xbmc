@@ -261,7 +261,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     }
 
     m_Directory.m_strPath = strDirectory;
-    m_rootDir.GetDirectory(strDirectory, m_vecItems);
+    m_rootDir.GetDirectory(strDirectory, m_vecItems,false);
   }
 
   // No need to set thumbs
