@@ -124,6 +124,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
   if (!g_graphicsContext.SetViewPort(x, y, w, h, true))
     return; // nothing to render
   g_graphicsContext.ScaleFinalCoords(x,y);
+  w *= g_graphicsContext.ScaleFinalX();
   // draw at our scroll position
   // we handle the scrolling as follows:
   //   We scroll on a per-pixel basis up until we have scrolled the first character outside
