@@ -211,6 +211,7 @@ extern "C"
   FUNCTION8(PyDict_GetItemString)
   FUNCTION4(PyType_Ready);
   FUNCTION12(PyType_GenericNew);
+  FUNCTION12(PyObject_RichCompare);
   
   // PyFloat_FromDouble(double)
   void* (__cdecl* p_PyFloat_FromDouble)(double a); \
@@ -225,6 +226,9 @@ extern "C"
   DATA_OBJECT(PyExc_ReferenceError);
 
   DATA_OBJECT(_Py_NoneStruct);
+  DATA_OBJECT(_Py_NotImplementedStruct);
+  DATA_OBJECT(_Py_TrueStruct);
+  DATA_OBJECT(_Py_ZeroStruct);
   DATA_OBJECT(PyString_Type);
   DATA_OBJECT(PyList_Type);
   DATA_OBJECT(PyLong_Type);
@@ -286,7 +290,8 @@ extern "C"
                 dll.ResolveExport(DLL_FUNCTION(PyType_GenericNew)) &&
                 dll.ResolveExport(DLL_VA_FUNCTION(PyArg_Parse)) &&
                 dll.ResolveExport(DLL_VA_FUNCTION(PyArg_ParseTuple)) &&
-                
+                dll.ResolveExport(DLL_FUNCTION(PyObject_RichCompare)) &&
+
                 dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemError)) &&
                 dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ValueError)) &&
                 dll.ResolveExport(DLL_OBJECT_DATA(PyExc_Exception)) &&
@@ -294,8 +299,11 @@ extern "C"
                 dll.ResolveExport(DLL_OBJECT_DATA(PyExc_KeyboardInterrupt)) &&
                 dll.ResolveExport(DLL_OBJECT_DATA(PyExc_RuntimeError)) &&
                 dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ReferenceError)) &&
-  
+
                 dll.ResolveExport(DLL_OBJECT_DATA(_Py_NoneStruct)) &&
+                dll.ResolveExport(DLL_OBJECT_DATA(_Py_NotImplementedStruct)) &&
+                dll.ResolveExport(DLL_OBJECT_DATA(_Py_TrueStruct)) &&
+                dll.ResolveExport(DLL_OBJECT_DATA(_Py_ZeroStruct)) &&
                 dll.ResolveExport(DLL_OBJECT_DATA(PyString_Type)) &&
                 dll.ResolveExport(DLL_OBJECT_DATA(PyList_Type)) &&
                 dll.ResolveExport(DLL_OBJECT_DATA(PyLong_Type)) &&
