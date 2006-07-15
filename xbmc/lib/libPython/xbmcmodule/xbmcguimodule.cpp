@@ -5,6 +5,7 @@
 #include "window.h"
 #include "dialog.h"
 #include "pyutil.h"
+#include "action.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -96,6 +97,7 @@ namespace PYXBMC
     initControlImage_Type();
     initDialog_Type();
     initDialogProgress_Type();
+    initAction_Type();
     
 		DialogProgress_Type.tp_new = PyType_GenericNew;
 		Dialog_Type.tp_new = PyType_GenericNew;
@@ -113,7 +115,8 @@ namespace PYXBMC
 				PyType_Ready(&ControlList_Type) < 0 ||
 				PyType_Ready(&ControlImage_Type) < 0 ||
 				PyType_Ready(&Dialog_Type) < 0 ||
-				PyType_Ready(&DialogProgress_Type) < 0)
+				PyType_Ready(&DialogProgress_Type) < 0 ||
+				PyType_Ready(&Action_Type) < 0)
 			return;
 
 		Py_INCREF(&Window_Type);
@@ -130,6 +133,7 @@ namespace PYXBMC
 		Py_INCREF(&ControlImage_Type);
 		Py_INCREF(&Dialog_Type);
 		Py_INCREF(&DialogProgress_Type);
+		Py_INCREF(&Action_Type);
 
 		pXbmcGuiModule = Py_InitModule3("xbmcgui", xbmcGuiMethods, xbmcgui_module_documentation);
 
@@ -149,10 +153,11 @@ namespace PYXBMC
 		PyModule_AddObject(pXbmcGuiModule, "ControlImage", (PyObject*)&	ControlImage_Type);
 		PyModule_AddObject(pXbmcGuiModule, "Dialog", (PyObject *)&Dialog_Type);
 		PyModule_AddObject(pXbmcGuiModule, "DialogProgress", (PyObject *)&DialogProgress_Type);
+		PyModule_AddObject(pXbmcGuiModule, "Action", (PyObject *)&Action_Type);
 
 		PyModule_AddStringConstant(pXbmcGuiModule, "__author__",		PY_XBMC_AUTHOR);
-		PyModule_AddStringConstant(pXbmcGuiModule, "__date__",			"18 August 2004");
-		PyModule_AddStringConstant(pXbmcGuiModule, "__version__",		"1.1");
+		PyModule_AddStringConstant(pXbmcGuiModule, "__date__",			"14 July 2006");
+		PyModule_AddStringConstant(pXbmcGuiModule, "__version__",		"1.2");
 		PyModule_AddStringConstant(pXbmcGuiModule, "__credits__",		PY_XBMC_CREDITS);
 		PyModule_AddStringConstant(pXbmcGuiModule, "__platform__",	PY_XBMC_PLATFORM);
 	}
