@@ -4,6 +4,9 @@
 #define DATA_OBJECT(data) unsigned long pointer_##data;
 
 #define _Py_NoneStruct (*((PyObject*)pointer__Py_NoneStruct))
+#define _Py_NotImplementedStruct (*((PyObject*)pointer__Py_NotImplementedStruct))
+#define _Py_TrueStruct (*((PyObject*)pointer__Py_TrueStruct))
+#define _Py_ZeroStruct (*((PyObject*)pointer__Py_ZeroStruct))
 #define PyString_Type (*((PyTypeObject*)pointer_PyString_Type))
 #define PyList_Type (*((PyTypeObject*)pointer_PyList_Type))
 #define PyLong_Type (*((PyTypeObject*)pointer_PyLong_Type))
@@ -27,6 +30,9 @@ extern "C"
 #include "../../cores/DllLoader/DllLoader.h"
 
   extern DATA_OBJECT(_Py_NoneStruct);
+  extern DATA_OBJECT(_Py_NotImplementedStruct);
+  extern DATA_OBJECT(_Py_TrueStruct);
+  extern DATA_OBJECT(_Py_ZeroStruct);
   extern DATA_OBJECT(PyString_Type);
   extern DATA_OBJECT(PyList_Type);
   extern DATA_OBJECT(PyLong_Type);
