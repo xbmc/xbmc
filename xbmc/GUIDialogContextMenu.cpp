@@ -190,6 +190,23 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     // load our menu
     pMenu->Initialize();
 
+    // GeminiServer: DVD Drive Context menu stuff
+    int btn_PlayDisc = 0;
+    int btn_Eject = 0;
+    CIoSupport TrayIO;
+    if (item->IsDVD() || item->IsCDDA())
+    {
+      // We need to check if there is a detected is inserted! 
+      int iTrayState = TrayIO.GetTrayState();
+      if ( iTrayState == DRIVE_CLOSED_MEDIA_PRESENT || iTrayState == TRAY_CLOSED_MEDIA_PRESENT )
+      {
+        btn_PlayDisc = pMenu->AddButton(341); // Play CD/DVD!
+        bIsDVDMediaPresent = true;
+      }
+      btn_Eject = pMenu->AddButton(13391);  // Eject/Load CD/DVD!
+      bIsDVDContextMenu = true;
+    }
+
     CStdString strDefault = GetDefaultShareNameByType(strType);
     
     // add the needed buttons
@@ -214,22 +231,6 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
 
       btn_AddShare = pMenu->AddButton(1026); // Add Source
-    }
-      // GeminiServer: DVD Drive Context menu stuff
-    int btn_PlayDisc = 0;
-    int btn_Eject = 0;
-    CIoSupport TrayIO;
-    if (item->IsDVD() || item->IsCDDA())
-    {
-      // We need to check if there is a detected is inserted! 
-      int iTrayState = TrayIO.GetTrayState();
-      if ( iTrayState == DRIVE_CLOSED_MEDIA_PRESENT || iTrayState == TRAY_CLOSED_MEDIA_PRESENT )
-      {
-        btn_PlayDisc = pMenu->AddButton(341); // Play CD/DVD!
-        bIsDVDMediaPresent = true;
-      }
-      btn_Eject = pMenu->AddButton(13391);  // Eject/Load CD/DVD!
-      bIsDVDContextMenu = true;
     }
 
     // This if statement should always be the *last* one to add buttons
