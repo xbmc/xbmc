@@ -271,6 +271,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20119] = "Would you like to set it now?";
   m_vecStrings[20120] = "Loading program information";
   m_vecStrings[20121] = "Party on!";
+  m_vecStrings[20122] = "True";
   m_vecStrings[20123] = "Filtering songs";
   m_vecStrings[20124] = "Adding songs";
   // new strings for weather localization
