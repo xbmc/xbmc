@@ -136,13 +136,14 @@ void XBPython::Initialize()
 		  }
       
 		  // first we check if all necessary files are installed
-		  if (!FileExist("Q:\\system\\python\\python24.zlib"))// ||
-		      //!FileExist("Q:\\python\\Lib\\_sre.pyd") ||
-		      //!FileExist("Q:\\python\\Lib\\_ssl.pyd") ||
-		      //!FileExist("Q:\\python\\Lib\\_symtable.pyd") ||
-		      //!FileExist("Q:\\python\\Lib\\pyexpat.pyd") ||
-		      //!FileExist("Q:\\python\\Lib\\unicodedata.pyd") ||
-		      //!FileExist("Q:\\python\\Lib\\zlib.pyd"))
+		  if (!FileExist("Q:\\system\\python\\python24.zlib") ||
+		      !FileExist("Q:\\system\\python\\DLLs\\_socket.pyd") ||
+		      !FileExist("Q:\\system\\python\\DLLs\\_ssl.pyd") ||
+		      !FileExist("Q:\\system\\python\\DLLs\\bz2.pyd") ||
+		      !FileExist("Q:\\system\\python\\DLLs\\pyexpat.pyd") ||
+		      !FileExist("Q:\\system\\python\\DLLs\\select.pyd") ||
+		      !FileExist("Q:\\system\\python\\DLLs\\unicodedata.pyd") ||
+		      !FileExist("Q:\\system\\python\\DLLs\\zlib.pyd"))
 		  {
 		    CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
 		    Finalize();
@@ -151,6 +152,11 @@ void XBPython::Initialize()
 
 			Py_Initialize();
 			PyEval_InitThreads();
+			
+			//char* python_argv[1] = { "--verbose" } ;
+			char* python_argv[1] = { "" } ;
+			PySys_SetArgv(1, python_argv);
+			
 			initxbmc(); // init xbmc modules
 			initxbmcgui(); // init xbmcgui modules
 			// redirecting default output to debug console
