@@ -39,19 +39,45 @@ bool CShortcut::Create(const CStdString& szPath)
     CStdString strValue = pChild->Value();
     if (strValue == "path")
     {
-      m_strPath = pChild->FirstChild()->Value();
-      bPath = true;
+      if (pChild->FirstChild())
+      {
+        m_strPath = pChild->FirstChild()->Value();
+        bPath = true;
+      }
     }
 
     if (strValue == "video")
     {
-      m_strVideo = pChild->FirstChild()->Value();
+      if (pChild->FirstChild())
+      {
+        m_strVideo = pChild->FirstChild()->Value();
+      }
     }
 
     if (strValue == "parameters")
     {
-      m_strParameters = pChild->FirstChild()->Value();
+      if (pChild->FirstChild())
+      {
+        m_strParameters = pChild->FirstChild()->Value();
+      }
     }
+    
+    if (strValue == "thumb")
+    {
+      if (pChild->FirstChild())
+      {
+        m_strThumb = pChild->FirstChild()->Value();
+      }
+    }
+
+    if (strValue == "label")
+    {
+      if (pChild->FirstChild())
+      {
+        m_strLabel = pChild->FirstChild()->Value();
+      }
+    }
+
     if (strValue == "custom")
     {
       const TiXmlNode* pCustomElement = pChild->FirstChildElement();

@@ -602,6 +602,12 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       {
         shortcutPath = item->m_strPath;
         item->m_strPath = cut.m_strPath;
+        item->SetThumbnailImage(cut.m_strThumb);
+        if (!cut.m_strLabel.IsEmpty())
+        {
+          item->SetLabel(cut.m_strLabel);
+          item->SetLabelPreformated(true);
+        }
       }
     }
     if (item->IsXBE())
@@ -611,7 +617,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       if (!dwTitleID)
       {
         CStdString description;
-        if (CUtil::GetXBEDescription(item->m_strPath, description))
+        if (CUtil::GetXBEDescription(item->m_strPath, description) && (!item->IsLabelPreformated() && !item->GetLabel().IsEmpty()))
           item->SetLabel(description);
    
         dwTitleID = CUtil::GetXbeID(item->m_strPath);
