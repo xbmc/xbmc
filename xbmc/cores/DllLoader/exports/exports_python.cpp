@@ -15,12 +15,6 @@
     int iSize_##str = wcslen(str); \
     for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
 
-#define IS_STDIN_STREAM(stream)  (stream == stdin  || stream->_file == 0)
-#define IS_STDOUT_STREAM(stream) (stream == stdout || stream->_file == 1)
-#define IS_STDERR_STREAM(stream) (stream == stderr || stream->_file == 2)
-
-#define IS_STD_STREAM(stream) (IS_STDIN_STREAM(stream) || IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
-
 #include "..\dll_tracker_file.h"
 #include "emu_msvcrt.h"
 
