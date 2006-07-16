@@ -18,21 +18,6 @@
 #include "emu_dummy.h"
 #include "util\EmuFileWrapper.h"
 
-#define __IS_STDIN_STREAM(stream)   (stream == stdin  || stream->_file == 0)
-#define __IS_STDOUT_STREAM(stream)  (stream == stdout || stream->_file == 1)
-#define __IS_STDERR_STREAM(stream)  (stream == stderr || stream->_file == 2)
-#define IS_STDIN_STREAM(stream)     (stream != NULL && __IS_STDIN_STREAM(stream))
-#define IS_STDOUT_STREAM(stream)    (stream != NULL && __IS_STDOUT_STREAM(stream))
-#define IS_STDERR_STREAM(stream)    (stream != NULL && __IS_STDERR_STREAM(stream))
-
-#define IS_STD_STREAM(stream)       (stream != NULL && (__IS_STDIN_STREAM(stream) || __IS_STDOUT_STREAM(stream) || __IS_STDERR_STREAM(stream)))
-
-#define IS_STDIN_DESCRIPTOR(fd)  (fd == 0)
-#define IS_STDOUT_DESCRIPTOR(fd) (fd == 1)
-#define IS_STDERR_DESCRIPTOR(fd) (fd == 2)
-
-#define IS_STD_DESCRIPTOR(fd) (IS_STDIN_DESCRIPTOR(fd) || IS_STDOUT_DESCRIPTOR(fd) || IS_STDERR_DESCRIPTOR(fd))
-
 struct SDirData
 {
   DIRECTORY::IDirectory* Directory;
@@ -85,12 +70,12 @@ extern "C" void __stdcall init_emu_environ()
 	//dll_putenv("THREADDEBUG=1");
 	//dll_putenv("PYTHONMALLOCSTATS=1");
 	//dll_putenv("PYTHONY2K=1");
+	dll_putenv("TEMP=Z:\\temp"); // for python tempdir
 }
 
-bool emu_is_root_drive(const char* path)
+bool emu_is_hd(const char* path)
 {
-  int pathlen = strlen(path);
-  if (pathlen == 2 || pathlen == 3)
+  if (path[0] != 0 && path[1] == ':')
   {
 		if (path[0] == 'C' ||
 		    path[0] == 'E' ||
@@ -110,36 +95,14 @@ bool emu_is_root_drive(const char* path)
   return false;
 }
 
-/**
- * strdup the supplied argument
- * and add the current working directory if needed
- */
-extern "C" char* xbp_getcwd(char *buf, int size);
-char* emu_full_path_strdup(const char* path)
+bool emu_is_root_drive(const char* path)
 {
-  char* result = NULL;
-  
-  int iLen = strlen(path);
-  
-  if (iLen > 2)
+  int pathlen = strlen(path);
+  if (pathlen == 2 || pathlen == 3)
   {
-  	if (path[1] != ':')
-		{
-		  result = (char*)malloc(MAX_PATH);
-		  xbp_getcwd(result, MAX_PATH);
-		  
-		  // add '\\'
-			char* t = strchr(result, '\\');
-			if (t[1] == 0) t[0] = 0;
-			strcat(result, "\\");
-			
-			// append path
-			strcat(result, path);
-		}
+    return emu_is_hd(path);
   }
-  
-  if (result == NULL) result = strdup(path);
-  return result;
+  return false;
 }
 
 extern "C"
@@ -640,7 +603,7 @@ extern "C"
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
       return fgets(pszString, num, stream);
-    }
+    } 
     CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
     return NULL;
   }
@@ -1289,10 +1252,11 @@ extern "C"
 
   int dll_fstat(int fd, struct stat* buffer)
   {
-    CLog::Log(LOGINFO, "Stating open file");
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
+      CLog::Log(LOGINFO, "Stating open file");
+    
       __int64 size = pFile->GetLength();
       if (size <= LONG_MAX)
         buffer->st_size = (_off_t)size;
@@ -1309,16 +1273,19 @@ extern "C"
     {
       return fstat(fd, buffer);
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    
+    // fstat on stdin, stdout or stderr should fail
+    // this is what python expects
     return -1;
   }
 
   int dll_fstati64(int fd, struct _stati64 *buffer)
   {
-    CLog::Log(LOGINFO, "Stating open file");
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
+      CLog::Log(LOGINFO, "Stating open file");
+      
       buffer->st_size = pFile->GetLength();
       buffer->st_mode = _S_IFREG;
       return 0;
@@ -1335,7 +1302,9 @@ extern "C"
       }
       return res;
     }
-    CLog::Log(LOGERROR, "emulated function " __FUNCTION__ " failed");
+    
+    // fstat on stdin, stdout or stderr should fail
+    // this is what python expects
     return -1;
   }
 
