@@ -4,6 +4,22 @@
 
 typedef void ( *PFV)(void);
 
+#define __IS_STDIN_STREAM(stream)   (stream == stdin  || stream->_file == 0)
+#define __IS_STDOUT_STREAM(stream)  (stream == stdout || stream->_file == 1)
+#define __IS_STDERR_STREAM(stream)  (stream == stderr || stream->_file == 2)
+#define IS_STDIN_STREAM(stream)     (stream != NULL && __IS_STDIN_STREAM(stream))
+#define IS_STDOUT_STREAM(stream)    (stream != NULL && __IS_STDOUT_STREAM(stream))
+#define IS_STDERR_STREAM(stream)    (stream != NULL && __IS_STDERR_STREAM(stream))
+
+#define IS_STD_STREAM(stream)       (stream != NULL && (__IS_STDIN_STREAM(stream) || __IS_STDOUT_STREAM(stream) || __IS_STDERR_STREAM(stream)))
+
+#define IS_STDIN_DESCRIPTOR(fd)  (fd == 0)
+#define IS_STDOUT_DESCRIPTOR(fd) (fd == 1)
+#define IS_STDERR_DESCRIPTOR(fd) (fd == 2)
+
+#define IS_STD_DESCRIPTOR(fd) (IS_STDIN_DESCRIPTOR(fd) || IS_STDOUT_DESCRIPTOR(fd) || IS_STDERR_DESCRIPTOR(fd))
+
+
 extern "C"
 {
   char* dll_strdup( const char* str);
@@ -64,6 +80,7 @@ extern "C"
                            LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
                            LPDWORD lpThreadId);
   int dll_stati64(const char *path, struct _stati64 *buffer);
+  int dll_stat(const char *path, struct _stat *buffer);
   int dll_fstat(int fd, struct stat *buffer);
   int dll_fstati64(int fd, struct _stati64 *buffer);
   int dll_setmode(int handle, int mode );
