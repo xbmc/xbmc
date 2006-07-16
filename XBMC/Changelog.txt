@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-07-2006 added: existence for python libraries, python will now refuse to start and gives an error if libraries are missing
  - 15-07-2006 changed: the onAction method in a python window class so that an Action object is passes instead of a number
  - 15-07-2006 changed: [ 1518589 ] disabled filedirectories in filebrowser. This means playlists and archives are selectable.
  - 15-07-2006 changed: play on the remote now plays the dvd if the dvd bookmark is selected in the media windows.
