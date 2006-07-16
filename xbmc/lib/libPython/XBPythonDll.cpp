@@ -211,8 +211,9 @@ extern "C"
   FUNCTION8(PyDict_GetItemString)
   FUNCTION4(PyType_Ready);
   FUNCTION12(PyType_GenericNew);
+  FUNCTION8(PySys_SetArgv);
   FUNCTION12(PyObject_RichCompare);
-  
+   
   // PyFloat_FromDouble(double)
   void* (__cdecl* p_PyFloat_FromDouble)(double a); \
   void* PyFloat_FromDouble(double a) { return p_PyFloat_FromDouble(a); }
@@ -290,6 +291,7 @@ extern "C"
                 dll.ResolveExport(DLL_FUNCTION(PyType_GenericNew)) &&
                 dll.ResolveExport(DLL_VA_FUNCTION(PyArg_Parse)) &&
                 dll.ResolveExport(DLL_VA_FUNCTION(PyArg_ParseTuple)) &&
+                dll.ResolveExport(DLL_FUNCTION(PySys_SetArgv)) &&
                 dll.ResolveExport(DLL_FUNCTION(PyObject_RichCompare)) &&
 
                 dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemError)) &&
