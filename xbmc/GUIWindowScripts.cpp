@@ -159,7 +159,7 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
     }
   }
 
-  items.SetCachedProgramThumbs();
+  items.SetProgramThumbs();
 
   return true;
 }
