@@ -224,6 +224,9 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
 {
   CFileItem* pItem=NULL;
 
+  if (g_guiSettings.GetBool("mymusic.hideallitems"))
+    return;
+
   switch (GetChildType())
   {
     //  Have no queuing folder
