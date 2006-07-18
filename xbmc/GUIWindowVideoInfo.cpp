@@ -574,11 +574,11 @@ void CGUIWindowVideoInfo::OnGetThumb()
   { // no local thumb exists, so we are just using the IMDb thumb or cached thumb
     // which is probably the IMDb thumb.  These could be wrong, so allow the user
     // to delete the incorrect thumb
-    if (0 == items.Size())
+/*    if (0 == items.Size())
     { // no cached thumb or no imdb thumb available
       // TODO: tell user and return
       return;
-    }
+    }*/
     CFileItem *item = new CFileItem("thumb://None", false);
     item->SetThumbnailImage("defaultVideoBig.png");
     item->SetLabel(g_localizeStrings.Get(20018)); // TODO: localize 2.0
