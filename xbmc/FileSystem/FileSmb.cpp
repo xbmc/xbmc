@@ -6,8 +6,10 @@
 #include "FileSmb.h"
 #include "../GUIPassword.h"
 #include "SMBDirectory.h"
+#include "../lib/libsmb/xbLibSmb.h"
 #include "../util.h"
 #include "../xbox/network.h"
+#include "../utils/win32exception.h"
 
 void xb_smbc_log(const char* msg)
 {
@@ -27,15 +29,31 @@ CSMB::CSMB()
 
 CSMB::~CSMB()
 {
+  Deinit();
+}
+void CSMB::Deinit()
+{
+  CSingleLock(*this);
+
+  /* samba goes loco if deinited while it has some files opened */
   if (m_context)
   {
-    smbc_free_context(m_context, 1);
+    try
+    {
+      smbc_set_context(NULL);
+      smbc_free_context(m_context, 1);
+    }
+    catch(win32_exception e)
+    {
+      e.writelog(__FUNCTION__);
+    }
     m_context = NULL;
   }
 }
 
 void CSMB::Init()
 {
+  CSingleLock(*this);
   if (!m_context)
   {
     set_xbox_interface(g_network.m_networkinfo.ip, g_network.m_networkinfo.subnet);
