@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-07-2006 fixed: since xbms and ccx can be case sensitive, we have to try some more common subtitle subdirs.
  - 18-07-2006 added: 'go to root' in context menu of media windows.
  - 18-07-2006 fixed: [ 1523588 ] get thumbs from imdb or local drive
  - 18-07-2006 added: option to hide 'all' items in library views.
