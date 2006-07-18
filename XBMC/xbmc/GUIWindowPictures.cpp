@@ -464,7 +464,9 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       }
     }
     //int btn_Settings = -2;
+
     int btn_Settings = pMenu->AddButton(5);         // Settings
+    int btn_GoToRoot = pMenu->AddButton(20128);
 
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -496,6 +498,11 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       else if (btnid == btn_Rename)
       {
         OnRenameItem(iItem);
+      }
+      else if (btnid == btn_GoToRoot)
+      {
+        Update("");
+        return;
       }
       else if (btnid == btn_Settings)
       { 
