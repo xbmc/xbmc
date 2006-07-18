@@ -43,6 +43,10 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
+  case GUI_MSG_WINDOW_RESET:
+    m_vecItems.Clear();
+    m_vecItems.m_strPath = "?";
+    break;
   case GUI_MSG_PLAYLIST_CHANGED:
     {
       UpdateButtons();
@@ -356,7 +360,8 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   int btn_Queue       = 0;  // Queue Item
   int btn_PlayWith    = 0;  // Play using alternate player
   int btn_Info        = 0;  // Music Information
-  int btn_InfoAll          = 0; // Query Information for all albums
+  int btn_InfoAll     = 0; // Query Information for all albums
+  int btn_GoToRoot    = 0;
   int btn_NowPlaying  = 0;  // Now Playing... very bottom of context accessible
   
   // directory tests
@@ -398,6 +403,9 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   // almost always visible
   //int btn_Settings = -2;
   int btn_Settings = pMenu->AddButton(5);     // Settings...
+
+  if (dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT)
+    btn_GoToRoot = pMenu->AddButton(20128);
 
   // if the Now Playing item is still not in the list, add it here
   if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
@@ -445,6 +453,11 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     else if (btn == btn_Thumb)  // Set Artist Image
     {
       SetArtistImage(iItem);
+    }
+    else if (btn == btn_GoToRoot)
+    {
+      Update("");
+      return;
     }
     else if (btn == btn_Settings)  // Settings
     {

@@ -1294,9 +1294,9 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     }
   }
 
-  // GeminiServer Todo: Set a MasterLock Option to Enable or disable Settings incontext menu!
-  //int btn_Settings = -2;
   int btn_Settings = pMenu->AddButton(5);    // Settings...
+
+  int btn_GoToRoot = pMenu->AddButton(20128);
 
   if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
     btn_NowPlaying = pMenu->AddButton(13350);
@@ -1375,6 +1375,11 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Rename)
     {
       OnRenameItem(iItem);
+    }
+    else if (btnid == btn_GoToRoot)
+    {
+      Update("");
+      return;
     }
     // Settings
     else if (btnid == btn_Settings)

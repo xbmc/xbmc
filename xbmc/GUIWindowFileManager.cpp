@@ -1200,6 +1200,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     int btn_Size = pMenu->AddButton(13393); // Calculate Size
     //int btn_Settings = -2;
     int btn_Settings = pMenu->AddButton(5);         // Settings
+    int btn_GoToRoot = pMenu->AddButton(20128);
 
     pMenu->EnableButton(btn_SelectAll, item >= 0);
     pMenu->EnableButton(btn_Rename, item >= 0 && CanRename(list) && !m_vecItems[list][item]->IsParentFolder());
@@ -1254,6 +1255,11 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
         }
       }
       if (progress) progress->Close();
+    }
+    if (btnid == btn_GoToRoot)
+    {
+      Update(list,"");
+      return;
     }
     if (btnid == btn_Settings)
     {
