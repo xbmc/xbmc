@@ -291,9 +291,9 @@ void CGUIWindowMusicSongs::UpdateButtons()
   if (m_vecItems.IsShoutCast())
   {
     CONTROL_DISABLE(CONTROL_BTNVIEWASICONS);
-    CGUIControl* pControl = (CGUIControl*)GetControl(2);
+    CGUIControl* pControl = (CGUIControl*)GetControl(CONTROL_LIST);
     if (pControl)
-      if (pControl->GetControlIdLeft() == 2)
+      if (pControl->GetControlIdLeft() == CONTROL_BTNVIEWASICONS)
       {
         iOldLeftControl = pControl->GetControlIdLeft();
         pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),CONTROL_BTNSORTBY,pControl->GetControlIdRight());
@@ -304,7 +304,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNVIEWASICONS);
     if (iOldLeftControl != -1)
     {
-      CGUIControl* pControl = (CGUIControl*)GetControl(2);
+      CGUIControl* pControl = (CGUIControl*)GetControl(CONTROL_LIST);
       if (pControl)
         pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),CONTROL_BTNVIEWASICONS,pControl->GetControlIdRight());
     }
