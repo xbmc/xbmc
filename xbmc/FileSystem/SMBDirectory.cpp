@@ -15,6 +15,7 @@
 #include "directorycache.h"
 #include "localizeStrings.h"
 #include "../GUIPassword.h"
+#include "../lib/libsmb/xbLibSmb.h"
 
 CSMBDirectory::CSMBDirectory(void)
 {
