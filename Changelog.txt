@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-07-2006 added: option to hide 'all' items in library views.
  - 18-07-2006 fixed: python scripts custom thumbs were not being used. 
  - 16-07-2006 added: <thumb> and <label> in .cut files.
  - 16-07-2006 added: existence for python libraries, python will now refuse to start and gives an error if libraries are missing
