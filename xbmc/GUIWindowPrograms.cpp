@@ -209,6 +209,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
 
     //int btn_Settings = -2;
     int btn_Settings = pMenu->AddButton(5);         // Settings
+    int btn_GoToRoot = pMenu->AddButton(20128);
 
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -255,7 +256,10 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     }
     if (btnid == btn_Settings)
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
-
+    else if (btnid == btn_GoToRoot)
+    {
+      return Update("");
+    }
     else if (btnid == btn_Launch)
     {
       OnClick(iItem);
