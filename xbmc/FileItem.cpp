@@ -649,7 +649,7 @@ void CFileItem::FillInDefaultIcon()
         // video
         SetIconImage("defaultVideo.png");
       }
-      else if ( IsShortCut() )
+      else if ( IsShortCut() && !IsLabelPreformated() )
       {
         // shortcut
         CStdString strDescription;
