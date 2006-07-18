@@ -1781,11 +1781,17 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   // new array for commons sub dirs
   char * common_sub_dirs[] = {"subs",
+                              "Subs",
                               "subtitles",
+                              "Subtitles",
                               "vobsubs",
+                              "Vobsubs",
                               "sub",
+                              "Sub",
                               "vobsub",
+                              "Vobsub",
                               "subtitle",
+                              "Subtitle",
                               NULL};
 
   std::vector<CStdString> vecExtensionsCached;
@@ -1841,19 +1847,40 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     CUtil::GetParentPath(strLookInPaths[i],strParent);
     if (CURL(strParent).GetFileName() == "")
       strParent = "";
-    for (int j=0; common_sub_dirs[j]; j++)
+    for (int j=0; common_sub_dirs[j]; j+=2)
     {
       CStdString strPath2;
       CUtil::AddFileToFolder(strLookInPaths[i],common_sub_dirs[j],strPath2);
       if (CDirectory::Exists(strPath2))
         strLookInPaths.push_back(strPath2);
-
+      else
+      {
+        CURL url(strLookInPaths[i]);
+        if (url.GetProtocol() == "smb" || url.GetProtocol() == "xbms")
+        {
+          CUtil::AddFileToFolder(strLookInPaths[i],common_sub_dirs[j+1],strPath2);
+          if (CDirectory::Exists(strPath2))
+            strLookInPaths.push_back(strPath2);
+        }
+      }
+        
       // ../common dirs aswell
       if (strParent != "")
       {
         CUtil::AddFileToFolder(strParent,common_sub_dirs[j],strPath2);
         if (CDirectory::Exists(strPath2))
           strLookInPaths.push_back(strPath2);
+        else
+        {
+          CURL url(strParent);
+
+          if (url.GetProtocol() == "smb" || url.GetProtocol() == "xbms")
+          {
+            CUtil::AddFileToFolder(strParent,common_sub_dirs[j+1],strPath2);
+            if (CDirectory::Exists(strPath2))
+              strLookInPaths.push_back(strPath2);
+          }
+        }
       }
     }
   }
