@@ -274,6 +274,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20122] = "True";
   m_vecStrings[20123] = "Filtering songs";
   m_vecStrings[20124] = "Adding songs";
+  m_vecStrings[20125] = "Logged on as";
+  m_vecStrings[20126] = "Log off";
+  m_vecStrings[20127] = "Hide 'all' items in library views";
   // new strings for weather localization
   m_vecStrings[1411] = "with";
   m_vecStrings[1412] = "windy";
@@ -286,6 +289,10 @@ static CStdString szEmptyString = "";
 const CStdString& CLocalizeStrings::Get(DWORD dwCode) const
 {
   ivecStrings i;
+  if (dwCode == 20045)
+  {
+    CLog::DebugLog("fisemannen!");
+  }
   i = m_vecStrings.find(dwCode);
   if (i == m_vecStrings.end())
   {
