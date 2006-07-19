@@ -278,18 +278,18 @@ bool CHTTP::IsInternet(bool checkDNS /* = true */)
   CStdString strURL = "http://www.google.com";
   if (!checkDNS)
     strURL = "http://66.102.7.99"; // www.google.com ip
-  CLog::Log(LOGDEBUG, "Connecting to the Internet:!");
-  CLog::Log(LOGDEBUG, "	- Sending Ping to: http://www.google.com");
+  //CLog::Log(LOGDEBUG, "Connecting to the Internet:!");
+  //CLog::Log(LOGDEBUG, "	- Sending Ping to: http://www.google.com");
   int status = Open(strURL, "HEAD", NULL);
   Close();
   if (status != 302 )
   {
-    CLog::Log(LOGDEBUG, "ERROR Connecting to the Internet Failed!");
+    //CLog::Log(LOGDEBUG, "ERROR Connecting to the Internet Failed!");
     return false;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "Connecting to the Internet Succesfull!");
+    //CLog::Log(LOGDEBUG, "Connecting to the Internet Succesfull!");
     return true; 
   }
   return false;

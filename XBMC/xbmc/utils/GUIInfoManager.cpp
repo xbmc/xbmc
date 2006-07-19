@@ -20,6 +20,7 @@
 #include "Weather.h"
 #include <stack>
 #include "../xbox/network.h"
+#include "SystemInfo.h"
 
 // stuff for current song
 #include "../filesystem/CDDADirectory.h"
@@ -27,7 +28,6 @@
 #include "../filesystem/SndtrkDirectory.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
-
 CGUIInfoManager g_infoManager;
 
 void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
@@ -175,6 +175,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.haslocks")) ret = SYSTEM_HASLOCKS;
     else if (strTest.Equals("system.hasloginscreen")) ret = SYSTEM_HAS_LOGINSCREEN;
     else if (strTest.Equals("system.ismaster")) ret = SYSTEM_ISMASTER;
+    else if (strTest.Equals("system.hddtemp")) ret = SYSTEM_HDD_TEMP;
+    else if (strTest.Equals("system.internetstate")) ret = SYSTEM_INTERNET_STATE;
     else if (strTest.Equals("system.loggedon")) ret = SYSTEM_LOGGEDON;
     else if (strTest.Left(16).Equals("system.idletime("))
     {
@@ -664,6 +666,13 @@ string CGUIInfoManager::GetLabel(int info)
       }
     }
     break;
+
+  case SYSTEM_HDD_TEMP:
+    strLabel.Format("%s %s", g_localizeStrings.Get(13151).c_str(), GetHDDTemp().c_str());
+    break;
+  case SYSTEM_INTERNET_STATE:
+    strLabel.Format("%s", SystemHasInternet_s().c_str());
+    break;
   }
 
   return strLabel;
@@ -785,6 +794,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     bReturn = g_settings.bUseLoginScreen;
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
+  else if (condition == SYSTEM_INTERNET_STATE)
+    bReturn = SystemHasInternet();
+    
   else if (g_application.IsPlaying())
   {
     switch (condition)
@@ -2000,4 +2012,39 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
   }
 
   return false;
+}
+
+CStdString CGUIInfoManager::GetHDDTemp()
+{
+  CStdString strItemhdd;
+  static DWORD reqTimer = 0;
+  g_sysinfo.Create(true);
+  int iSmartREQ = 17; // SmartRequest HDD Temperature
+  DWORD hddsmarttemp =  g_sysinfo.GetSmartValues(iSmartREQ);
+  CTemperature HddTemp = CTemperature::CreateFromCelsius(hddsmarttemp);
+  strItemhdd.Format("%s", HddTemp.ToString().c_str());
+  return strItemhdd;
+}
+bool CGUIInfoManager::SystemHasInternet()
+{
+  CHTTP http;
+  if (http.IsInternet()) 
+    return true;
+  else if (http.IsInternet(false))
+    return true;
+  return false;
+}
+CStdString CGUIInfoManager::SystemHasInternet_s()
+{
+  CStdString StrTemp;
+  CStdString lbl2 = g_localizeStrings.Get(13295);
+  CStdString lbl3 = g_localizeStrings.Get(13296);
+  CStdString lbl4 = g_localizeStrings.Get(13297);
+
+  if (SystemHasInternet())
+    StrTemp.Format("%s %s",lbl2.c_str(), lbl3.c_str());
+  else
+    StrTemp.Format("%s %s",lbl2.c_str(), lbl4.c_str());
+  
+  return StrTemp;
 }
