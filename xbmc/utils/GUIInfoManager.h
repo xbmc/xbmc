@@ -93,7 +93,12 @@
 #define SYSTEM_LOGGEDON             145
 #define SYSTEM_PROFILENAME          146
 #define SYSTEM_PROFILETHUMB         147
-#define SYSTEM_HAS_LOGINSCREEN       148
+#define SYSTEM_HAS_LOGINSCREEN      148
+
+// reserved for systeminfo stuff
+#define SYSTEM_HDD_TEMP             150
+#define SYSTEM_INTERNET_STATE       159
+//
 
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161
@@ -285,7 +290,10 @@ public:
   CStdString GetCurrentPlayTimeRemaining();
   CStdString GetVersion();
   CStdString GetBuild();
-
+  CStdString GetHDDTemp();
+  bool SystemHasInternet();
+  CStdString SystemHasInternet_s();
+  
   bool GetDisplayAfterSeek() const;
   void SetDisplayAfterSeek(DWORD TimeOut = 2500);
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
