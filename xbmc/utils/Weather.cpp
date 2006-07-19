@@ -114,38 +114,8 @@ CWeather::CWeather(void) : CInfoLoader("weather")
 {
   m_bImagesOkay = false;
 
-  // empty all our strings etc.
-  strcpy(m_szLastUpdateTime, "");
-  //strcpy(m_szCurrentIcon, "Q:\\weather\\128x128\\na.png");
-  /*strcpy(m_szCurrentIcon,strBasePath.c_str());
-  strcat(m_szCurrentIcon,"128x128\\na.png");*/
-  strcpy(m_szCurrentIcon,"");
-  strcpy(m_szCurrentConditions, "");
-  strcpy(m_szCurrentTemperature, "");
-  strcpy(m_szCurrentFeelsLike, "");
+  Reset();
 
-  strcpy(m_szCurrentWind, "");
-  strcpy(m_szCurrentHumidity, "");
-  strcpy(m_szCurrentUVIndex, "");
-  strcpy(m_szCurrentDewPoint, "");
-
-  //loop here as well
-  for (int i = 0; i < NUM_DAYS; i++)
-  {
-    //strcpy(m_dfForcast[i].m_szIcon, "Q:\\weather\\64x64\\na.png");
-    /*strcpy(m_dfForcast[i].m_szIcon,strBasePath.c_str());
-    strcat(m_dfForcast[i].m_szIcon,"64x64\\na.png");*/
-    strcat(m_dfForcast[i].m_szIcon,"");
-    strcpy(m_dfForcast[i].m_szOverview, "");
-    strcpy(m_dfForcast[i].m_szDay, "");
-    strcpy(m_dfForcast[i].m_szHigh, "");
-    strcpy(m_dfForcast[i].m_szLow, "");
-  }
-  for (int i = 0; i < MAX_LOCATION; i++)
-  {
-    strcpy(m_szLocation[i], "");
-  }
-  m_iCurWeather = 0;
   srand(timeGetTime());
 }
 
@@ -672,4 +642,32 @@ char *CWeather::GetLocation(int iLocation)
     strcpy(m_szLocation[iLocation], GetAreaCity(g_guiSettings.GetString(setting)).c_str());
   }
   return m_szLocation[iLocation];
+}
+
+void CWeather::Reset()
+{
+  strcpy(m_szLastUpdateTime, "");
+  strcpy(m_szCurrentIcon,"");
+  strcpy(m_szCurrentConditions, "");
+  strcpy(m_szCurrentTemperature, "");
+  strcpy(m_szCurrentFeelsLike, "");
+
+  strcpy(m_szCurrentWind, "");
+  strcpy(m_szCurrentHumidity, "");
+  strcpy(m_szCurrentUVIndex, "");
+  strcpy(m_szCurrentDewPoint, "");
+
+  //loop here as well
+  for (int i = 0; i < NUM_DAYS; i++)
+  {
+    strcat(m_dfForcast[i].m_szIcon,"");
+    strcpy(m_dfForcast[i].m_szOverview, "");
+    strcpy(m_dfForcast[i].m_szDay, "");
+    strcpy(m_dfForcast[i].m_szHigh, "");
+    strcpy(m_dfForcast[i].m_szLow, "");
+  }
+  for (int i = 0; i < MAX_LOCATION; i++)
+  {
+    strcpy(m_szLocation[i], "");
+  }
 }

@@ -60,6 +60,8 @@ public:
 
   PyThreadState *getMainThreadState();
 
+  bool bStartup;
+  bool bLogin;
 private:
   bool              FileExist(const char* strFile);
   
@@ -68,7 +70,6 @@ private:
 	DWORD							dThreadId;
 	bool							m_bInitialized;
 	bool							bThreadInitialize;
-	bool							bStartup;
 	HANDLE						m_hEvent;
   int               m_iDllScriptCounter; // to keep track of the total scripts running that need the dll
   HMODULE           m_hModule;

@@ -34,6 +34,7 @@
 #include "GUIPassword.h"
 #include "FileSystem/UPnPDirectory.h"
 #include "lib/libfilezilla/xbfilezilla.h"
+#include "lib/libscrobbler/scrobbler.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -1340,13 +1341,15 @@ bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIco
   CStdString localFile;
   g_charsetConverter.utf8ToStringCharset(strFilePath, localFile);
   CXBE xbeReader;
-  ::DeleteFile("T:\\1.xpr");
-  if (!xbeReader.ExtractIcon(localFile, "T:\\1.xpr"))
+  CStdString strTempFile;
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"1.xpr",strTempFile);
+
+  if (!xbeReader.ExtractIcon(localFile, strTempFile.c_str()))
     return false;
 
   bool success(false);
   CXBPackedResource* pPackedResource = new CXBPackedResource();
-  if ( SUCCEEDED( pPackedResource->Create( "T:\\1.xpr", 1, NULL ) ) )
+  if ( SUCCEEDED( pPackedResource->Create( strTempFile.c_str(), 1, NULL ) ) )
   {
     LPDIRECT3DTEXTURE8 pTexture;
     LPDIRECT3DTEXTURE8 m_pTexture;
@@ -1398,6 +1401,7 @@ bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIco
     }
   }
   delete pPackedResource;
+  CFile::Delete(strTempFile);
   return success;
 }
 
@@ -1415,12 +1419,14 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
     iPos = strDescription.ReverseFind("/");
   if (iPos >= 0)
   {
-    strDescription = strDescription.Right(strDescription.size() - iPos - 1);
+    CStdString strTmp = strDescription.Right(strDescription.size()-iPos-1);
+    strDescription = strTmp;//strDescription.Right(strDescription.size() - iPos - 1);
   }
   else if (strDescription.size() <= 0)    
     strDescription = strFName;
   return true;
 }
+
 bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDescription)
 {
   _XBE_CERTIFICATE HC;
@@ -2792,7 +2798,8 @@ const BUILT_IN commands[] = {
   "Skin.ResetSettings"," Resets all skin settings",
   "Mute","Mute the player",
   "SetVolume","Set the current volume",
-  "Dialog.Close","Close a dialog"
+  "Dialog.Close","Close a dialog",
+  "System.LogOff","Log off current user"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3432,6 +3439,22 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIWindow *window = (CGUIWindow *)m_gWindowManager.GetWindow(id);
     if (window && window->IsDialog())
       ((CGUIDialog *)window)->Close();
+  }
+  else if (execute.Equals("system.logoff"))
+  {
+    if (m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.bUseLoginScreen)
+      return -1;
+
+    g_application.StopPlaying();
+    g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    g_network.Deinitialize();
+    g_settings.LoadProfile(0); // login screen always runs as default user
+    g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
+      g_guiSettings.GetString("network.ipaddress").c_str(),
+      g_guiSettings.GetString("network.subnet").c_str(),
+      g_guiSettings.GetString("network.gateway").c_str(),
+      g_guiSettings.GetString("network.dns").c_str());
+    m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
   }
   else
     return -1;
