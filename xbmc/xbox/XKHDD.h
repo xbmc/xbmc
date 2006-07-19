@@ -263,10 +263,7 @@ Reason: Prepared for Public Release
 class XKHDD
 {
 private:
-
 public:
-
-
 	//IDE ATA Input Registers Structure
 	typedef struct IP_IDE_REG
 	{
@@ -334,9 +331,5 @@ public:
 	//Given a XBOX HDDKey and ATA Identify data structure, this function calucates
 	//Password the xbox will use when trying to unlock a drive..
 	static void	GenerateHDDPwd(UCHAR* HDDKey, UCHAR* IDEData, UCHAR* HDDPass);
-
-
 	static BYTE	GetHddSmartTemp(UCHAR* IDEData);
-
-
 };

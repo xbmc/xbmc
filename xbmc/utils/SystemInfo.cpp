@@ -1,9 +1,9 @@
-//////////////////////////////////////////
-//		XBOX Hardware Info				        //
-//	   01.02.2005 GeminiServer			    //
-//////////////////////////////////////////
+// **********************************************
+// XBOX Hardware Info 01.02.2005 GeminiServer
+// **********************************************
 #include "../stdafx.h"
 #include "SystemInfo.h"
+
 #include "../xbox/XKUtils.h"
 #include "../xbox/xkhdd.h"
 #include "../xbox/xkeeprom.h"
@@ -13,7 +13,6 @@
 #include "../settings.h"
 #include "../utils/log.h"
 #include "../xbox/Undocumented.h"
-
 
 // SMART Attributes				   //Req: ID:	Offset:		Name of attribute:					Description:						
 PCHAR	pAttrNames[] = {		   //----------------------------------------------------------------------------------------------------------------------------	
@@ -65,8 +64,8 @@ PCHAR	pAttrNames[] = {		   //---------------------------------------------------
 	"Read Error Retry Rate      "  //46		250		FA		Read Error Retry Rate				Frequency of errors appearance while reading data from a disk	
 };		
 
-SYSINFO*			SYSINFO::_Instance = NULL;
 CXBoxFlash			*mbFlash;
+SYSINFO g_sysinfo;
 
 typedef struct 
 {
@@ -95,19 +94,12 @@ char* cBIOSmd5IDs	=	"Q:\\System\\SystemInfo\\BiosIDs.ini";
 static char* MDPrint (MD5_CTX_N *mdContext);
 static char* MD5File(char *filename,long PosizioneInizio,int KBytes);
 
-SYSINFO* SYSINFO::Instance()
-{
-  if (_Instance == NULL)
-  {
-    _Instance = new SYSINFO();
-  }
-  return _Instance;
-}
+
 SYSINFO::SYSINFO()
-{}
-SYSINFO::~SYSINFO(void)
 {
-	_Instance = NULL;
+}
+SYSINFO::~SYSINFO()
+{
 }
 
 static void outb(unsigned short port, unsigned char data)
@@ -461,7 +453,7 @@ UCHAR SYSINFO::IdeRead(USHORT port)
 }
 BYTE SYSINFO::GetSmartValues(int SmartREQ)
 {
-	BYTE retVal = 0;
+  BYTE retVal = 0;
 	XKHDD::ATA_COMMAND_OBJ hddcommand;
 	ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
 	
@@ -504,7 +496,8 @@ BYTE SYSINFO::GetSmartValues(int SmartREQ)
 		return retVal;
 		CLog::Log(LOGDEBUG, "HDD S.M.A.R.T Request: %d°C",retVal);
 	}
-	else return 0;
+	else 
+    return 0;
 }
 bool SYSINFO::CheckBios(CStdString& strDetBiosNa)
 {	
