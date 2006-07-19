@@ -1147,6 +1147,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowHome.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowLoginScreen.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowLoginScreen.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowOSD.cpp">
 				</File>
 				<File

@@ -7,6 +7,7 @@ public:
   CProfile(void);
   ~CProfile(void);
 
+  const CStdString& getDate() const { return _date;}
   const CStdString& getName() const { return _name;}
   const CStdString& getDirectory() const { return _directory;}
   const CStdString& getThumb() const { return _thumb;}
@@ -26,6 +27,7 @@ public:
 
   void setName(const CStdString& name) {_name = name;}
   void setDirectory(const CStdString& directory) {_directory = directory;}
+  void setDate(const CStdString& strDate) { _date = strDate;}
   void setLockMode(int iLockMode) { _iLockMode = iLockMode;}
   void setLockCode(const CStdString& strLockCode) { _strLockCode = strLockCode; }
   void setThumb(const CStdString& thumb) {_thumb = thumb;}
@@ -43,6 +45,7 @@ public:
 
   CStdString _directory;
   CStdString _name;
+  CStdString _date;
   CStdString _thumb;
   bool _bDatabases;
   bool _bCanWrite;

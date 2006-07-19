@@ -62,9 +62,9 @@
    <description>No button</description>
    <type>button</type>
    <id>10</id>
-   <posx>285</posx>
+   <posx>362</posx>
    <posy>330</posy>
-   <width>77</width>
+   <width>90</width>
    <height>32</height>
    <label>106</label>
    <font>font10</font>
@@ -81,9 +81,9 @@
    <description>Yes button</description>
    <type>button</type>
    <id>11</id>
-   <posx>365</posx>
+   <posx>268</posx>
    <posy>330</posy>
-   <width>77</width>
+   <width>90</width>
    <height>32</height>
    <label>107</label>
    <font>font10</font>

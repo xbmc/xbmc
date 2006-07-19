@@ -29,6 +29,7 @@ bool CButtonTranslator::Load()
     return false;
   }
 
+  translatorMap.clear();
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
   if ( strValue != "keymap")

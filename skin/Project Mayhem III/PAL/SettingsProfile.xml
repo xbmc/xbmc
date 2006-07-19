@@ -84,7 +84,7 @@
    <posy>526</posy>
    <width>250</width>
    <align>right</align>
-   <label>-</label>
+   <label>$LOCALIZE[13204] $INFO[system.profilename]</label>
    <font>font10</font>
    <include>contentpanelslide</include>
   </control>

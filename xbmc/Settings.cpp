@@ -3,11 +3,15 @@
 #include "application.h"
 #include "util.h"
 #include "GUIWindowMusicBase.h"
+#include "GUIWindowFileManager.h"
+#include "GUIDialogButtonMenu.h"
 #include "utils/FanController.h"
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIPassword.h"
+#include "utils/GUIInfoManager.h"
+#include "xbox/Network.h"
 
 struct CSettings::stSettings g_stSettings;
 struct CSettings::AdvancedSettings g_advancedSettings;
@@ -327,24 +331,19 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   // parse my programs bookmarks...
   CStdString strDefault;
   GetShares(pRootElement, "myprograms", m_vecMyProgramsShares, strDefault);
-  if (strDefault.size())
-    strcpy( g_stSettings.m_szDefaultPrograms, strDefault.c_str());
+  strcpy( g_stSettings.m_szDefaultPrograms, strDefault.c_str());
 
   GetShares(pRootElement, "pictures", m_vecMyPictureShares, strDefault);
-  if (strDefault.size())
-    strcpy( g_stSettings.m_szDefaultPictures, strDefault.c_str());
+  strcpy( g_stSettings.m_szDefaultPictures, strDefault.c_str());
 
   GetShares(pRootElement, "files", m_vecMyFilesShares, strDefault);
-  if (strDefault.size())
-    strcpy( g_stSettings.m_szDefaultFiles, strDefault.c_str());
+  strcpy( g_stSettings.m_szDefaultFiles, strDefault.c_str());
 
   GetShares(pRootElement, "music", m_vecMyMusicShares, strDefault);
-  if (strDefault.size())
-    strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());
+  strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());
 
   GetShares(pRootElement, "video", m_vecMyVideoShares, strDefault);
-  if (strDefault.size())
-    strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
+  strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
 
   bXboxMediacenter = true;
   return true;
@@ -1290,9 +1289,6 @@ void CSettings::LoadAdvancedSettings()
     }    
   }
 
-  // temporary profiles support
-  XMLUtils::GetBoolean(pRootElement,"profilesupport",g_advancedSettings.m_profilesupport);
-
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 }
@@ -1529,8 +1525,6 @@ bool CSettings::LoadProfile(int index)
   bool bSourcesXML=true;
   if (Load(bSourcesXML,bSourcesXML))
   {
-    bool bOldMaster = g_passwordManager.bMasterUser;
-    g_passwordManager.bMasterUser  = true;
     CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
     CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetIMDbFolder().c_str(), NULL);
@@ -1544,6 +1538,7 @@ bool CSettings::LoadProfile(int index)
     CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
+    CreateDirectory("P:\\visualisations",NULL);
     CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
     for (unsigned int hex=0; hex < 16; hex++)
     {
@@ -1554,6 +1549,8 @@ bool CSettings::LoadProfile(int index)
       CreateDirectory(strThumbLoc.c_str(),NULL);
     }
 
+    g_infoManager.ResetCache();
+ //   g_infoManager.Clear();
     g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
     // initialize our charset converter
     g_charsetConverter.reset();
@@ -1577,8 +1574,16 @@ bool CSettings::LoadProfile(int index)
       if (doc.LoadFile(GetUserDataFolder()+"\\guisettings.xml"))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
+
+    // to set labels - shares are reloaded
+    CDetectDVDMedia::UpdateState();
+
+    m_vecProfiles[m_iLastLoadedProfileIndex].setDate(g_infoManager.GetDate(true)+" - " + g_infoManager.GetTime());
     SaveProfiles("q:\\system\\profiles.xml"); // to set last loaded
-    g_passwordManager.bMasterUser = bOldMaster;
+    // init windows
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
+    m_gWindowManager.SendMessage(msg);
+
     return true;
   }
 
@@ -1587,12 +1592,46 @@ bool CSettings::LoadProfile(int index)
   return false;
 }
 
-void CSettings::DeleteProfile(int index)
+bool CSettings::DeleteProfile(int index)
 {
-  if (index > 0 && index < (int)g_settings.m_vecProfiles.size())
-    m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+index);
+  if (index < 0 && index >= (int)g_settings.m_vecProfiles.size())
+    return false;
 
+  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (dlgYesNo)
+  {
+    CStdString message;
+    CStdString str = g_localizeStrings.Get(13201);
+    message.Format(str.c_str(), g_settings.m_vecProfiles.at(index).getName());
+    dlgYesNo->SetHeading(13200);
+    dlgYesNo->SetLine(0, message);
+    dlgYesNo->SetLine(1, "");
+    dlgYesNo->SetLine(2, "");
+    dlgYesNo->DoModal();
+
+    if (dlgYesNo->IsConfirmed())
+    {
+      //delete profile
+      CStdString strDirectory = g_settings.m_vecProfiles[index].getDirectory();
+      m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+index);
+      if (index == g_settings.m_iLastLoadedProfileIndex)
+      {
+        g_settings.LoadProfile(0);
+        g_settings.Save();
+      }
+
+      CFileItem item(g_settings.GetUserDataFolder()+"\\"+strDirectory);
+      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory;
+      item.m_bIsFolder = true;
+      item.Select(true);
+      CGUIWindowFileManager::DeleteItem(&item);
+    }
+    else
+      return false;
+  }
+  
   SaveProfiles("q:\\system\\profiles.xml");
+  return true;
 }
 
 bool CSettings::SaveSettingsToProfile(int index)
@@ -1634,22 +1673,20 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
   while (pProfile)
   {
-    profile.setName("default user");
+    profile.setName("master user");
     profile.setDirectory("q:\\userdata");
-    TiXmlElement* pName = pProfile->FirstChildElement("name");
-    if (pName)
-      if (pName->FirstChild())
-        profile.setName(pName->FirstChild()->Value());
-    
-    TiXmlElement* pDirectory = pProfile->FirstChildElement("directory");
-    if (pDirectory)
-      if (pDirectory->FirstChild())
-        profile.setDirectory(pDirectory->FirstChild()->Value());
 
-    TiXmlElement* pThumbnail = pProfile->FirstChildElement("thumbnail");
-    if (pThumbnail)
-      if (pThumbnail->FirstChild())
-        profile.setThumb(pThumbnail->FirstChild()->Value());
+    CStdString strName;
+    XMLUtils::GetString(pProfile,"name",strName);
+    profile.setName(strName);
+    
+    CStdString strDirectory;
+    XMLUtils::GetString(pProfile,"directory",strDirectory);
+    profile.setDirectory(strDirectory);
+
+    CStdString strThumb;
+    XMLUtils::GetString(pProfile,"thumbnail",strThumb);
+    profile.setThumb(strThumb);
 
     bool bHas=true;
     XMLUtils::GetBoolean(pProfile, "hasdatabases", bHas);
@@ -1700,7 +1737,11 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     CStdString strLockCode;
     XMLUtils::GetString(pProfile,"lockcode",strLockCode);
     profile.setLockCode(strLockCode);
-    
+
+    CStdString strDate;
+    XMLUtils::GetString(pProfile,"lastdate",strDate);
+    profile.setDate(strDate);
+
     m_vecProfiles.push_back(profile);
     pProfile = pProfile->NextSiblingElement("profile");
   }
@@ -1726,6 +1767,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
     SetString(pNode,"directory",g_settings.m_vecProfiles[iProfile].getDirectory());
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
+    SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     {
       SetInteger(pNode,"lockmode",g_settings.m_vecProfiles[iProfile].getLockMode());
@@ -2157,6 +2199,8 @@ void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
   const TiXmlElement *pElement = pRootElement->FirstChildElement("skinsettings");
   if (pElement)
   {
+    m_skinStrings.clear();
+    m_skinBools.clear();
     const TiXmlElement *pChild = pElement->FirstChildElement("setting");
     while (pChild)
     {
@@ -2513,7 +2557,6 @@ CStdString CSettings::GetUserDataFolder() const
 CStdString CSettings::GetDatabaseFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database", folder);
   else
@@ -2525,7 +2568,6 @@ CStdString CSettings::GetDatabaseFolder() const
 CStdString CSettings::GetCDDBFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database\\CDDB", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\CDDB", folder);
   else
@@ -2537,7 +2579,6 @@ CStdString CSettings::GetCDDBFolder() const
 CStdString CSettings::GetIMDbFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database\\IMDb", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\IMDb", folder);
   else
@@ -2549,7 +2590,6 @@ CStdString CSettings::GetIMDbFolder() const
 CStdString CSettings::GetThumbnailsFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails", folder);
   else
@@ -2561,7 +2601,6 @@ CStdString CSettings::GetThumbnailsFolder() const
 CStdString CSettings::GetMusicThumbFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music", folder);
   else
@@ -2573,7 +2612,6 @@ CStdString CSettings::GetMusicThumbFolder() const
 CStdString CSettings::GetMusicArtistThumbFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music\\Artists", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
   else
@@ -2585,7 +2623,6 @@ CStdString CSettings::GetMusicArtistThumbFolder() const
 CStdString CSettings::GetVideoThumbFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Video", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video", folder);
   else
@@ -2597,7 +2634,6 @@ CStdString CSettings::GetVideoThumbFolder() const
 CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Video\\Bookmarks", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
   else
@@ -2609,7 +2645,6 @@ CStdString CSettings::GetBookmarksThumbFolder() const
 CStdString CSettings::GetPicturesThumbFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Pictures", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Pictures", folder);
   else
@@ -2621,7 +2656,6 @@ CStdString CSettings::GetPicturesThumbFolder() const
 CStdString CSettings::GetProgramsThumbFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Programs", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs", folder);
   else
@@ -2642,7 +2676,6 @@ CStdString CSettings::GetProfilesThumbFolder() const
 CStdString CSettings::GetXLinkKaiThumbFolder() const
 {
   CStdString folder;
-  //CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Programs\\XLinkKai", folder);
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs\\XLinkKai", folder);
   else

@@ -268,7 +268,6 @@ void CCdgReader::Process()
   while (!CThread::m_bStop)
   {
     CSingleLock lock (m_CritSection);
-    m_fAVDelay=0.f;
     double fDiff;
     //if (!g_application.IsPlaying())
     if (g_application.GetCurrentSong()->GetURL().substr(0,strExt.size()) != strExt)
@@ -285,7 +284,7 @@ void CCdgReader::Process()
     else
     {
       fNewTime=g_application.GetTime();
-      fDiff = fNewTime-fCurTime;
+      fDiff = fNewTime-fCurTime-m_fAVDelay;
     }
     if (fDiff < -0.3f)
     {
@@ -296,10 +295,10 @@ void CCdgReader::Process()
       m_uiNumReadSubCodes = 0;
       m_Cdg.ClearDisplay();
       fNewTime = g_application.GetTime();
-      SkipUpToTime((float)fNewTime);
+      SkipUpToTime((float)fNewTime-m_fAVDelay);
     }
     else
-      ReadUpToTime((float)fNewTime);
+      ReadUpToTime((float)fNewTime-m_fAVDelay);
     
     fCurTime = fNewTime;
     lock.Leave();
