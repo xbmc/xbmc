@@ -1,5 +1,6 @@
-2006-07-10 changed: onright in mediasource dialog's name fields now move to cancel, otherwise no way to select cancel if ok is disabled
-2006-07-10 changed: listcontrols now have same onup/ondown setting as thumbpanel. (ie same id as itself if it should wrap around), preparation for potential skin engine change
+2006-07-19 added:	profiles / login screen support
+2006-07-10 changed: 	onright in mediasource dialog's name fields now move to cancel, otherwise no way to select cancel if ok is disabled
+2006-07-10 changed: 	listcontrols now have same onup/ondown setting as thumbpanel. (ie same id as itself if it should wrap around), preparation for potential skin engine change
 2006-07-09 changed:	Kai button in programs is now only visible if kai is enabled.
 
 2006-07-04 fixed:	Wrong slide in profile window.
