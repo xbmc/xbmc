@@ -3,6 +3,7 @@
 #include "network.h"
 #include "Undocumented.h"
 #include "../application.h"
+#include "../filesystem/filesmb.h"
 
 // global network variable
 CNetwork g_network;
@@ -291,12 +292,12 @@ DWORD CNetwork::UpdateState()
 
   if( m_lastlink != dwLink || m_laststate != dwState )
   {
+    if( m_networkup )
+      NetworkDown();
+
     m_lastlink = dwLink;
     m_laststate = dwState;
 
-    if( m_networkup )
-      NetworkDown();
-    
     if ( dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC )
       NetworkUp();
 
@@ -438,6 +439,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopFtpServer();
       g_application.StopKai();   
       g_application.StopUPnP();
+      // smb.Deinit(); if any file is open over samba this will break.
     }
     break;
   }
