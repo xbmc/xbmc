@@ -7,6 +7,7 @@
 #include "application.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
+#include "xbox/network.h"
 
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
@@ -59,7 +60,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     return;
 
   // add the needed buttons  
-  int btnEdit = pMenu->AddButton(20067); // edit
+  int btnLoad = pMenu->AddButton(20092); // load profile
   int btnDelete=0;
   if (iItem > 0)
     btnDelete = pMenu->AddButton(117); // Delete
@@ -68,67 +69,38 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal();
   int iButton = pMenu->GetButton();
-  if (iButton == btnEdit)
-    if (CGUIDialogProfileSettings::ShowForProfile(iItem))
-      if (iItem == g_settings.m_iLastLoadedProfileIndex)
-      {
-        CGUIMessage msg(GUI_MSG_CLICKED,CONTROL_PROFILES,0,ACTION_SELECT_ITEM,iItem);
-        OnMessage(msg);        
-      }
+  if (iButton == btnLoad)
+  {
+    unsigned iCtrlID = GetFocusedControl();
+    g_application.StopPlaying();
+    CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0, NULL);
+    g_graphicsContext.SendMessage(msg2);
+    g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    g_network.Deinitialize();
+    bool bOldMaster = g_passwordManager.bMasterUser;
+    g_passwordManager.bMasterUser = true;
+    g_settings.LoadProfile(iItem);
+    g_passwordManager.bMasterUser = bOldMaster;
+    g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
+      g_guiSettings.GetString("network.ipaddress").c_str(),
+      g_guiSettings.GetString("network.subnet").c_str(),
+      g_guiSettings.GetString("network.gateway").c_str(),
+      g_guiSettings.GetString("network.dns").c_str());    
+    CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
+    OnMessage(msg3);
+    CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());
+    OnMessage(msgSelect);
+  }
 
   if (iButton == btnDelete)
   {
-    if (DoDelete(iItem))
+    if (g_settings.DeleteProfile(iItem))
       iItem--;
   }
 
   LoadList();
-  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
-  m_gWindowManager.SendMessage(msg);
-
-}
-
-bool CGUIWindowSettingsProfile::DoDelete(int iItem)
-{
-  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (dlgYesNo)
-  {
-    CStdString message;
-    CStdString str = g_localizeStrings.Get(13201);
-    message.Format(str.c_str(), g_settings.m_vecProfiles.at(iItem).getName());
-    dlgYesNo->SetHeading(13200);
-    dlgYesNo->SetLine(0, message);
-    dlgYesNo->SetLine(1, "");
-    dlgYesNo->SetLine(2, "");
-    dlgYesNo->DoModal();
-
-    if (dlgYesNo->IsConfirmed())
-    {
-      //delete profile
-      CStdString strDirectory = g_settings.m_vecProfiles[iItem].getDirectory();
-      g_settings.DeleteProfile(iItem);
-      if (iItem == g_settings.m_iLastLoadedProfileIndex)
-      {
-        unsigned iCtrlID = GetFocusedControl();
-        g_settings.LoadProfile(0);
-        g_settings.Save();
-        CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
-        OnMessage(msg3);
-        CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0);
-        OnMessage(msgSelect);
-      }
-
-      CFileItem item(g_settings.GetUserDataFolder()+"\\"+strDirectory);
-      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory;
-      item.m_bIsFolder = true;
-      item.Select(true);
-      CGUIWindowFileManager::DeleteItem(&item);
-      LoadList();
-      return true;
-    }
-  }
-  
-  return false;
+  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(),CONTROL_PROFILES,iItem);
+  OnMessage(msg);
 }
 
 bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
@@ -168,23 +140,29 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           }
           else if (iItem < (int)g_settings.m_vecProfiles.size())
           {
-            unsigned iCtrlID = GetFocusedControl();
-            CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0, NULL);
-            g_graphicsContext.SendMessage(msg2);
-            g_settings.LoadProfile(iItem);
-            g_settings.Save();
-            CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
-            OnMessage(msg3);
-            CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());
-            OnMessage(msgSelect);
-            return true;
+            if (CGUIDialogProfileSettings::ShowForProfile(iItem))
+            {
+              LoadList();
+              CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
+              m_gWindowManager.SendMessage(msg);
+
+              return true;
+            }
+
+            return false;
           }
           else if (iItem > (int)g_settings.m_vecProfiles.size() - 1)
           {
             CDirectory::Create(g_settings.GetUserDataFolder()+"\\profiles");
             if (CGUIDialogProfileSettings::ShowForProfile(g_settings.m_vecProfiles.size()))
+            {
               LoadList();
-            return true;
+              CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
+              m_gWindowManager.SendMessage(msg);
+              return true;
+            }
+
+            return false;
           }
         }
       }
@@ -227,38 +205,7 @@ void CGUIWindowSettingsProfile::LoadList()
   {
     CONTROL_DESELECT(CONTROL_LOGINSCREEN);
   }
-
-  SetLastLoaded();
 }
-
-void CGUIWindowSettingsProfile::SetLastLoaded()
-{
-  //last loaded
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LASTLOADED_PROFILE);
-    g_graphicsContext.SendMessage(msg);
-  }
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LASTLOADED_PROFILE);
-    CStdString lbl = g_localizeStrings.Get(13204);
-    CStdString lastLoaded;
-
-    if ((g_settings.m_iLastLoadedProfileIndex < 0) || (g_settings.m_iLastLoadedProfileIndex >= (int)g_settings.m_vecProfiles.size()))
-    {
-      lastLoaded = g_localizeStrings.Get(13205); //unknown
-    }
-    else
-    {
-      CProfile& profile = g_settings.m_vecProfiles.at(g_settings.m_iLastLoadedProfileIndex);
-      lastLoaded = profile.getName();
-    }
-    CStdString strItem;
-    strItem.Format("%s %s", lbl.c_str(), lastLoaded.c_str());
-    msg.SetLabel(strItem);
-    g_graphicsContext.SendMessage(msg);
-  }
-}
-
 
 void CGUIWindowSettingsProfile::ClearListItems()
 {

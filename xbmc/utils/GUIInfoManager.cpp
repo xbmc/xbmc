@@ -173,8 +173,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.xboxnickname")) ret = SYSTEM_XBOX_NICKNAME;
     else if (strTest.Equals("system.dvdlabel")) ret = SYSTEM_DVD_LABEL;
     else if (strTest.Equals("system.haslocks")) ret = SYSTEM_HASLOCKS;
+    else if (strTest.Equals("system.hasloginscreen")) ret = SYSTEM_HAS_LOGINSCREEN;
     else if (strTest.Equals("system.ismaster")) ret = SYSTEM_ISMASTER;
-
+    else if (strTest.Equals("system.loggedon")) ret = SYSTEM_LOGGEDON;
     else if (strTest.Left(16).Equals("system.idletime("))
     {
       int time = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
@@ -188,7 +189,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       //else if (strTest.Left(16).Equals("system.alarmpos("))
       else if (strTest.Equals("system.alarmpos"))
         ret = SYSTEM_ALARM_POS;
-
+      else if (strTest.Equals("system.profilename"))
+        ret = SYSTEM_PROFILENAME;
+      else if (strTest.Equals("system.profilethumb"))
+        ret = SYSTEM_PROFILETHUMB;
   }
   else if (strCategory.Equals("xlinkkai"))
   {
@@ -563,6 +567,16 @@ string CGUIInfoManager::GetLabel(int info)
         strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
     }
     break;
+  case SYSTEM_PROFILENAME:
+    strLabel = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getName();
+    break;
+  case SYSTEM_PROFILETHUMB:
+    {
+      strLabel = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getThumb();
+      if (strLabel.IsEmpty())
+        strLabel = "unknown-user.png";
+    }
+    break;
   case XLINK_KAI_USERNAME:
     strLabel = g_guiSettings.GetString("xlinkkai.username");
     break;
@@ -765,6 +779,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_ISMASTER)
     bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+  else if (condition == SYSTEM_LOGGEDON)
+    bReturn = !(m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
+  else if (condition == SYSTEM_HAS_LOGINSCREEN)
+    bReturn = g_settings.bUseLoginScreen;
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (g_application.IsPlaying())

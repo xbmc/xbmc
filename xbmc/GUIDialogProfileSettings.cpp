@@ -74,12 +74,15 @@ void CGUIDialogProfileSettings::CreateSettings()
   
   AddButton(1,20093);
   AddButton(2,20065);
-  if (!m_bIsDefault)
+  if (!m_bIsDefault && m_bShowDetails)
     AddButton(3,20070);
-  if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE || m_bIsDefault)
+  
+  if (m_bShowDetails)
+    AddButton(4,20066);
+  if (!m_bShowDetails && m_iLockMode == LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     AddButton(4,20066);
 
-  if (!m_bIsDefault)
+  if (!m_bIsDefault && m_bShowDetails)
   {
     SettingInfo setting;
     setting.id = 5;
@@ -126,7 +129,6 @@ void CGUIDialogProfileSettings::CreateSettings()
 
 void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
 {
-  
   // setting has changed - update anything that needs it
   if (num >= m_settings.size()) return;
   SettingInfo &setting = m_settings.at(num);
@@ -142,7 +144,9 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
   if (setting.id == 2)
   {
     CStdString strThumb;
-    if (CGUIDialogFileBrowser::ShowAndGetImage(*g_settings.GetSharesFromType("files"),g_localizeStrings.Get(20065),strThumb))
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(20065),strThumb))
     {
       m_bNeedSave = true;
       CGUIImage *pImage = (CGUIImage*)GetControl(2);
@@ -183,16 +187,29 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
 
   if (setting.id == 4)
   {
-    if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings,m_bIsDefault?12360:20068))
+    if (m_bShowDetails)
     {
-      m_bNeedSave = true;
+      if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE && !m_bIsDefault)
+      {
+        if (CGUIDialogYesNo::ShowAndGetInput(20066,20118,20119,20022))
+          g_passwordManager.SetMasterLockMode();
+        if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+          return;
+      }
+      if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings,m_bIsDefault?12360:20068))
+        m_bNeedSave = true;
     }
-  }
+    else
+    {
+      if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bIsDefault?12360:20068))
+        m_bNeedSave = true;
+    }
+  } 
   if (setting.id > 4)
     m_bNeedSave = true;
 }
 
-bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
+bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDetails)
 {
   CGUIDialogProfileSettings *dialog = (CGUIDialogProfileSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROFILE_SETTINGS);
   if (!dialog) return false;
@@ -200,6 +217,10 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
     dialog->m_bIsDefault = true;
   else
     dialog->m_bIsDefault = false;
+  if (!bDetails && iProfile > g_settings.m_vecProfiles.size())
+    return false;
+  
+  dialog->m_bShowDetails = bDetails;
 
   if (iProfile >= g_settings.m_vecProfiles.size())
   {
@@ -340,7 +361,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile)
     return true;
   }
 
-  return false;
+  return !dialog->m_bNeedSave;
 }
 
 void CGUIDialogProfileSettings::OnInitWindow()

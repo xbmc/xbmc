@@ -414,7 +414,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           return false;
 
         CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
-        if (pDialog && g_advancedSettings.m_profilesupport)
+        if (pDialog)
           bResult = CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPassword);
         else // OLD DEPRECATED
         {
@@ -523,7 +523,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 	      CStdString strNewLockMode;
         bool bResult=false;		    
         CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
-        if (pDialog && g_advancedSettings.m_profilesupport)
+        if (pDialog)
         {
           bResult = CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW);
           if (bResult)

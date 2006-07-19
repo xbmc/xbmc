@@ -1,0 +1,157 @@
+<window>
+<id>29</id>
+  <defaultcontrol always="true">52</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <coordinates>
+   <system>1</system>
+   <posx>0</posx>
+   <posy>0</posy>
+ </coordinates>
+ <controls>
+
+    <control>
+      <description>Background image</description>
+      <type>image</type>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>720</width>
+      <height>576</height>
+      <texture>background-settings.png</texture>
+      <animation effect="fade" time="200">WindowOpen</animation>
+      <animation effect="fade" time="200">WindowClose</animation>
+    </control>
+
+  <control>
+   <description>xbox media center label</description>
+   <type>label</type>
+   <id>1</id>
+   <posx>200</posx>
+   <posy>63</posy>
+   <align>right</align>
+   <label>xbox media center</label>
+   <font>special12</font>
+      <animation effect="fade" time="200">WindowOpen</animation>
+      <animation effect="fade" time="200">WindowClose</animation>
+  </control>
+
+  <control>
+   <description>Login label</description>
+   <type>label</type>
+   <id>1</id>
+   <posx>207</posx>
+   <posy>63</posy>
+   <align>left</align>
+   <label>User Login</label>
+   <font>special13</font>
+      <animation effect="fade" time="200">WindowOpen</animation>
+      <animation effect="fade" time="200">WindowClose</animation>
+  </control>
+
+    <control>
+      <description>Profile background</description>
+      <type>image</type>
+      <id>1</id>
+      <posx>140</posx>
+      <posy>135</posy>
+      <width>440</width>
+      <height>360</height>
+      <texture>dialog-panelprofile.png</texture>
+      <animation effect="fade" time="200">WindowOpen</animation>
+      <animation effect="fade" time="200">WindowClose</animation>
+    </control>
+
+    <control>
+      <description>Heading Label</description>
+      <type>label</type>
+      <id>2</id>
+      <posx>165</posx>
+      <posy>148</posy>
+      <width>420</width>
+      <align>left</align>
+      <label>Select a Profile</label>
+      <font>special13</font>
+      <textcolor>DDced8da</textcolor>
+      <animation effect="fade" time="200">WindowOpen</animation>
+      <animation effect="fade" time="200">WindowClose</animation>
+    </control>
+
+    <control>
+      <description>Profile Amount Label</description>
+      <type>label</type>
+      <id>3</id>
+      <posx>565</posx>
+      <posy>148</posy>
+      <width>420</width>
+      <align>right</align>
+      <label>Profiles : 1/3</label>
+      <font>special13</font>
+      <textcolor>DDced8da</textcolor>
+      <animation effect="fade" time="200">WindowOpen</animation>
+      <animation effect="fade" time="200">WindowClose</animation>
+    </control>
+
+    <control>
+      <description>big listcontrol</description>
+      <type>listcontrol</type>
+      <id>52</id>
+      <posx>165</posx>
+      <posy>180</posy>
+      <width>400</width>
+      <height>300</height>
+      <spinwidth>16</spinwidth>
+      <spinheight>16</spinheight>
+      <spincolor>ffffffff</spincolor>
+      <spinfont>font10</spinfont>
+      <spinposx>365</spinposx>
+      <spinposy>265</spinposy>
+      <textureup>scroll-up.png</textureup>
+      <texturedown>scroll-down.png</texturedown>
+      <textureupfocus>scroll-up-focus.png</textureupfocus>
+      <texturedownfocus>scroll-down-focus.png</texturedownfocus>
+      <texturefocus>folder-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <font>special13</font>
+      <font2>font13</font2>
+      <include>listselectedcolor</include>
+      <include>textcolorlightgrey</include>
+      <selectedcolor2>FFFFffff</selectedcolor2>
+      <textcolor2>d0ffffff</textcolor2>
+      <suffix>|</suffix>
+      <textxoff>10</textxoff>
+      <textyoff>5</textyoff>
+      <textxoff2>390</textxoff2>
+      <textyoff2>50</textyoff2>
+      <aligny>top</aligny>
+      <itemwidth>70</itemwidth>
+      <itemheight>70</itemheight>
+      <spacebetweenitems>10</spacebetweenitems>
+      <textureheight>80</textureheight>
+      <onleft>98</onleft>
+      <onright>98</onright>
+      <onup>52</onup>
+      <ondown>52</ondown>
+      <animation effect="fade" time="200">WindowOpen</animation>
+      <animation effect="fade" time="200">WindowClose</animation>
+    </control>
+
+    <control>
+     <description>submenu button</description>
+     <type>button</type>
+     <id>98</id>
+     <posx>610</posx>
+     <posy>503</posy>
+     <width>35</width>
+     <height>35</height>
+     <onclick>ActivateWindow(ShutdownMenu)</onclick>
+     <texturefocus>logon-power.gif</texturefocus>
+     <texturenofocus>logon-power.png</texturenofocus>
+     <label>-</label>
+     <onleft>52</onleft>
+     <onright>52</onright>
+     <onup>52</onup>
+     <ondown>52</ondown>
+     <include>homemisc</include>
+  </control>
+
+  </controls>
+</window>
