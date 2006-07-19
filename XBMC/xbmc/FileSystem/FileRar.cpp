@@ -17,19 +17,26 @@ CFileRarExtractThread::CFileRarExtractThread()
   m_pArc = NULL;
   m_pCmd = NULL;
   m_pExtract = NULL;
+  hRunning = CreateEvent(NULL,true,false,NULL);
+  hRestart = CreateEvent(NULL,false,false,NULL);
   hQuit = CreateEvent(NULL,true,false,NULL);
+  StopThread();
+  Create();
 }
 
 CFileRarExtractThread::~CFileRarExtractThread()
 {
   SetEvent(hQuit);
+  WaitForSingleObject(hRestart,INFINITE);
   StopThread();
+  
+  CloseHandle(hRunning);
+  CloseHandle(hQuit);
+  CloseHandle(hRestart);
 }
 
 void CFileRarExtractThread::Start(Archive* pArc, CommandData* pCmd, CmdExtract* pExtract, int iSize)
 {
-  StopThread();
-
   m_pArc = pArc;
   m_pCmd = pCmd;
   m_pExtract = pExtract;
@@ -39,9 +46,10 @@ void CFileRarExtractThread::Start(Archive* pArc, CommandData* pCmd, CmdExtract* 
   m_pExtract->GetDataIO().hBufferEmpty = CreateEvent(NULL,false,false,NULL);
   m_pExtract->GetDataIO().hSeek = CreateEvent(NULL,true,false,NULL);
   m_pExtract->GetDataIO().hSeekDone = CreateEvent(NULL,false,false,NULL);
-  m_pExtract->GetDataIO().hQuit = hQuit;
+  m_pExtract->GetDataIO().hQuit = CreateEvent(NULL,true,false,NULL);
 
-  Create();
+  SetEvent(hRunning);
+  SetEvent(hRestart);
 }
 
 void CFileRarExtractThread::OnStartup()
@@ -54,19 +62,15 @@ void CFileRarExtractThread::OnExit()
 
 void CFileRarExtractThread::Process()
 {
-  bool bRepeat = false;
-  do
-  {
-    if(  m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,bRepeat) )
-      CLog::Log(LOGDEBUG, " - Extract finished successfully");
-    else if( !bRepeat )
-      CLog::Log(LOGERROR, " - Extract failed with code %d", ErrHandler.GetErrorCode());      
-  }
-  while (bRepeat && WaitForSingleObject(hQuit,1) != WAIT_OBJECT_0);
-  
-  /* set any event we might be waiting on */
-  SetEvent(m_pExtract->GetDataIO().hSeekDone);
-  SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
+  while (WaitForSingleObject(hQuit,1) != WAIT_OBJECT_0)
+    if (WaitForSingleObject(hRestart,1) == WAIT_OBJECT_0)
+    {
+      bool Repeat = false;
+      m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat);
+      ResetEvent(hRunning);
+    }
+
+  SetEvent(hRestart);
 }
 
 CFileRar::CFileRar()
@@ -103,6 +107,11 @@ CFileRar::~CFileRar()
   else
   {
     CleanUp();
+    if (m_pExtractThread)
+    {
+      delete m_pExtractThread;
+      m_pExtractThread = NULL;
+    }
   }
 }
 //*********************************************************************************************
@@ -260,12 +269,7 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
     }
     
     SetEvent(m_pExtract->GetDataIO().hBufferFilled);
-    if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,5000) == WAIT_TIMEOUT )
-    {
-      CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
-      return -1;
-    }
-    SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
+    WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,INFINITE);
 
     if (m_pExtract->GetDataIO().NextVolumeMissing)
       break;
@@ -294,7 +298,9 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
       m_iDataInBuffer = 0;
     }
   }
-    
+  
+  SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
+  
   return static_cast<unsigned int>(uiBufSize-uicBufSize);
 }
 
@@ -319,6 +325,11 @@ void CFileRar::Close()
   else
   {
     CleanUp();
+    if (m_pExtractThread)
+    {
+      delete m_pExtractThread;
+      m_pExtractThread = NULL;
+    }
     m_bOpen = false;
   }
 }
@@ -340,6 +351,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
     CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
     return -1;
   }
+
   SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
  
   switch (iWhence)
@@ -391,12 +403,13 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
       CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
       return -1;
     }
-    SetEvent(m_pExtract->GetDataIO().hBufferEmpty);    
+    SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
+    m_pExtract->GetDataIO().m_iSeekTo = iFilePosition;
   }
-
-  m_pExtract->GetDataIO().m_iSeekTo = iFilePosition;  
+  else
+    m_pExtract->GetDataIO().m_iSeekTo = iFilePosition;
+  
   m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,MAXWINMEMSIZE);
-
   SetEvent(m_pExtract->GetDataIO().hSeek);
   SetEvent(m_pExtract->GetDataIO().hBufferFilled);
   if( WaitForSingleObject(m_pExtract->GetDataIO().hSeekDone,5000) == WAIT_TIMEOUT )
@@ -416,8 +429,6 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
     CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
     return -1;
   }
-  SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
-
   m_iDataInBuffer = m_pExtract->GetDataIO().m_iSeekTo; // keep data
   m_iBufferStart = m_pExtract->GetDataIO().m_iStartOfBuffer;
   m_szStartOfBuffer = m_szBuffer+MAXWINMEMSIZE-m_iDataInBuffer;
@@ -496,16 +507,22 @@ void CFileRar::InitFromUrl(const CURL& url)
 void CFileRar::CleanUp()
 {
   if (m_pExtractThread)
-    SAFE_DELETE(m_pExtractThread);
-
-  if (m_pExtract)
   {
+    if (WaitForSingleObject(m_pExtractThread->hRunning,1) == WAIT_OBJECT_0)
+    {
+      SetEvent(m_pExtract->GetDataIO().hQuit);
+      while (WaitForSingleObject(m_pExtractThread->hRunning,1) == WAIT_OBJECT_0) 
+        Sleep(1);
+    
+    }
     CloseHandle(m_pExtract->GetDataIO().hBufferFilled);
     CloseHandle(m_pExtract->GetDataIO().hBufferEmpty);
     CloseHandle(m_pExtract->GetDataIO().hSeek);
     CloseHandle(m_pExtract->GetDataIO().hSeekDone);
     CloseHandle(m_pExtract->GetDataIO().hQuit);
-
+  }
+  if (m_pExtract)
+  {
     delete m_pExtract;
     m_pExtract = NULL;
   }
