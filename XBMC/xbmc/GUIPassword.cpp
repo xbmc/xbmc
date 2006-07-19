@@ -6,6 +6,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogLockSettings.h"
+#include "GUIDialogProfileSettings.h"
 #include "util.h"
 #include "settings.h"
 #include "xbox/xkutils.h"
@@ -206,7 +207,7 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
 bool CGUIPassword::SetMasterLockMode()
 {
   CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
-  if (pDialog && g_advancedSettings.m_profilesupport)
+  if (pDialog)
   {
     CProfile& profile=g_settings.m_vecProfiles.at(0);
     if (pDialog->ShowAndGetLock(profile._iLockMode,profile._strLockCode,profile._bLockMusic,profile._bLockVideo,profile._bLockPictures,profile._bLockPrograms,profile._bLockFiles,profile._bLockSettings,12360))
@@ -229,7 +230,7 @@ bool CGUIPassword::SetMasterLockMode()
       menu->DoModal();
 
       CStdString newPassword;
-      int iLockMode = -1;
+      int iLockMode = LOCK_MODE_EVERYONE;
       switch(menu->GetButton())
       {
       case 1:
@@ -272,7 +273,7 @@ bool CGUIPassword::SetMasterLockMode()
 
 bool CGUIPassword::IsProfileLockUnlocked(int iProfile)
 {
-  if (g_passwordManager.bMasterUser || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+  if (g_passwordManager.bMasterUser)
     return true;
   int iProfileToCheck=iProfile;
   if (iProfile == -1)
@@ -280,14 +281,25 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile)
   if (iProfileToCheck == 0)
     return IsMasterLockUnlocked(true);
   else
-    return CheckLock(g_settings.m_vecProfiles[iProfileToCheck].getLockMode(),g_settings.m_vecProfiles[iProfileToCheck].getLockCode(),20095);
+  {
+    if (g_settings.m_vecProfiles[iProfileToCheck].getDate().IsEmpty() && (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_settings.m_vecProfiles[iProfileToCheck].getLockMode() == LOCK_MODE_EVERYONE))
+    {
+      if (CGUIDialogProfileSettings::ShowForProfile(iProfileToCheck,false))    
+        return true;
+    }
+    else
+       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+        return CheckLock(g_settings.m_vecProfiles[iProfileToCheck].getLockMode(),g_settings.m_vecProfiles[iProfileToCheck].getLockCode(),20095);
+  }
+  
+  return true;
 }
 
 bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
 {
   if (iMasterLockRetriesLeft == -1)
     iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
-  if ((LOCK_MODE_EVERYONE < g_settings.m_vecProfiles[0].getLockMode()) && !bPromptUser)
+  if ((LOCK_MODE_EVERYONE < g_settings.m_vecProfiles[0].getLockMode() && !bMasterUser) && !bPromptUser)
     // not unlocked, but calling code doesn't want to prompt user
     return false;
 

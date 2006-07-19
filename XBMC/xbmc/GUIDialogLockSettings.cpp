@@ -126,10 +126,10 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
     m_bChanged = true;
 }
 
-bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword)
+bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword, int iHeader)
 {
   bool f;
-  return ShowAndGetLock(iLockMode,strPassword,f,f,f,f,f,f,20091,false);
+  return ShowAndGetLock(iLockMode,strPassword,f,f,f,f,f,f,iHeader,false);
 }
 
 bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel, bool bDetails)
@@ -153,12 +153,15 @@ bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassw
   dialog->DoModal();
   if (dialog->m_bChanged)
   {
-    if (dialog->m_iLock != LOCK_MODE_EVERYONE && dialog->m_strLock == "-")
+    if (dialog->m_iLock != LOCK_MODE_EVERYONE && dialog->m_strLock == "-" || dialog->m_strLock.IsEmpty())
       iLockMode = LOCK_MODE_EVERYONE;
     else
       iLockMode = dialog->m_iLock;
 
-    strPassword = dialog->m_strLock;
+    if (dialog->m_strLock.IsEmpty() || iLockMode == LOCK_MODE_EVERYONE)
+      strPassword = "-";
+    else
+      strPassword = dialog->m_strLock;
     if (bDetails)
     {
       bLockMusic = dialog->m_bLockMusic;

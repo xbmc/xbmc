@@ -213,7 +213,7 @@ public:
 
   bool LoadProfile(int index);
   bool SaveSettingsToProfile(int index);
-  void DeleteProfile(int index);
+  bool DeleteProfile(int index);
 
   VECSHARES *GetSharesFromType(const CStdString &type);
   CStdString GetDefaultShareFromType(const CStdString &type);
@@ -288,7 +288,6 @@ public:
     bool m_usePCDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
-    bool m_profilesupport;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;

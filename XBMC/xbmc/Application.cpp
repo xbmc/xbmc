@@ -81,6 +81,7 @@
 #include "GUIWindowScripts.h"
 #include "GUIWindowBuddies.h"
 #include "GUIWindowWeather.h"
+#include "GUIWindowLoginScreen.h"
 
 // Dialog includes
 #include "GUIDialogInvite.h"
@@ -627,7 +628,7 @@ HRESULT CApplication::Create()
     //no profiles yet, make one based on the default settings
     CProfile profile;
     profile.setDirectory("q:\\userdata");
-    profile.setName("Default user");
+    profile.setName("Master user");
     g_settings.m_vecProfiles.push_back(profile);
   }
 
@@ -740,6 +741,9 @@ HRESULT CApplication::Create()
 
   CLog::Log(LOGNOTICE, "load settings...");
   g_LoadErrorStr = "Unable to load settings";
+  if (g_settings.bUseLoginScreen && g_settings.m_iLastLoadedProfileIndex != 0)
+    g_settings.m_iLastLoadedProfileIndex = 0;
+
   m_bAllSettingsLoaded = g_settings.Load(m_bXboxMediacenterLoaded, m_bSettingsLoaded);
   if (!m_bAllSettingsLoaded)
     FatalErrorHandler(true, true, true);
@@ -1023,14 +1027,6 @@ HRESULT CApplication::Initialize()
     g_guiSettings.SetBool("xbdatetime.timeserver", false);
   }
   
-  /* setup netowork based on our settings */
-  /* network will start it's init procedure */
-  g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-          g_guiSettings.GetString("network.ipaddress").c_str(),
-          g_guiSettings.GetString("network.subnet").c_str(),
-          g_guiSettings.GetString("network.gateway").c_str(),
-          g_guiSettings.GetString("network.dns").c_str());
-
   StartServices();
 
   m_gWindowManager.Add(new CGUIWindowHome);                     // window id = 0
@@ -1051,7 +1047,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVideoActors);              // window id = 22
   m_gWindowManager.Add(new CGUIWindowVideoYear);                // window id = 23
   m_gWindowManager.Add(new CGUIWindowVideoTitle);               // window id = 25
-  m_gWindowManager.Add(new CGUIWindowVideoPlaylist);          // window id = 28
+  m_gWindowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
+  m_gWindowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   m_gWindowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
 
   m_gWindowManager.Add(new CGUIDialogYesNo);              // window id = 100
@@ -1119,28 +1116,45 @@ HRESULT CApplication::Initialize()
 
   SAFE_DELETE(m_splash);
 
-  RESOLUTION res = INVALID;
-  CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
-  int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-  // test for a startup window, and activate that instead of home
-  if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
-  {
-    m_gWindowManager.ActivateWindow(WINDOW_STARTUP);
-  }
-  else
-  {
-    // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
-    // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode!
-    m_gWindowManager.ActivateWindow(WINDOW_HOME);
-    if (startWindow != WINDOW_HOME)
-      m_gWindowManager.ActivateWindow(startWindow);
-  }
-
-  CLog::Log(LOGINFO, "removing tempfiles");
-  CUtil::RemoveTempFiles();
-
   if (g_guiSettings.GetBool("masterlock.startuplock") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE ) 
   	g_passwordManager.CheckStartUpLock();
+
+  /* setup netowork based on our settings */
+  /* network will start it's init procedure */
+  g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
+    g_guiSettings.GetString("network.ipaddress").c_str(),
+    g_guiSettings.GetString("network.subnet").c_str(),
+    g_guiSettings.GetString("network.gateway").c_str(),
+    g_guiSettings.GetString("network.dns").c_str());
+  
+  g_pythonParser.bStartup = true;
+
+  // check if we should use the login screen
+  if (g_settings.bUseLoginScreen)
+  {
+    m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
+  }
+  else 
+  {
+    RESOLUTION res = INVALID;
+    CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
+    int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
+    // test for a startup window, and activate that instead of home
+    if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_STARTUP);
+    }
+    else
+    {
+      // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
+      // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode!
+      m_gWindowManager.ActivateWindow(WINDOW_HOME);
+      if (startWindow != WINDOW_HOME)
+        m_gWindowManager.ActivateWindow(startWindow);
+    }
+  }
+  CLog::Log(LOGINFO, "removing tempfiles");
+  CUtil::RemoveTempFiles();
 
   if (!m_bAllSettingsLoaded)
   {
@@ -1173,8 +1187,6 @@ HRESULT CApplication::Initialize()
   m_slowTimer.StartZero();
 
   CLog::Log(LOGNOTICE, "initialize done");
-
-  CScrobbler::GetInstance()->Init();
 
   m_bInitializing = false;
 

@@ -646,6 +646,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE);
     }
+    else if (strSetting.Equals("masterlock.loginlock"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.bUseLoginScreen);
+    }
+
     else if (strSetting.Equals("musicfiles.autoswitchuselargethumbs"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -875,7 +881,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       pSettingString->SetData(time);
       pSettingControl->Update();
     }
-    else if (strSetting.Equals("autodetect.nickname") || strSetting.Equals("autodetect.createlink") || strSetting.Equals("autodetect.popupinfo") || strSetting.Equals("autodetect.senduserpw"))
+    else if (strSetting.Equals("autodetect.nickname") || strSetting.Equals("autodetect.senduserpw"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("autodetect.onoff") && (g_settings.m_iLastLoadedProfileIndex == 0));
+    }
+    else if (strSetting.Equals("autodetect.createlink") || strSetting.Equals("autodetect.popupinfo"))
     {
       //GeminiServer
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1634,15 +1645,16 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
          m_strNetworkGateway != g_guiSettings.GetString("network.gateway") ||
          m_strNetworkDNS != g_guiSettings.GetString("network.dns"))))
   { 
-    // our network settings have changed - we should prompt the user to reset XBMC
+/*    // our network settings have changed - we should prompt the user to reset XBMC
     if (CGUIDialogYesNo::ShowAndGetInput(14038, 14039, 14040, 0))
     { 
       // reset settings
       g_applicationMessenger.RestartApp();
       // Todo: aquire new network settings without restart app!
     }
-    else
+    else*/
     {
+      g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
       g_network.Deinitialize();
       g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
         g_guiSettings.GetString("network.ipaddress").c_str(),
