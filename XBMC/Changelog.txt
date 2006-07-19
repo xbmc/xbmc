@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-07-2006 fixed: Internet not connected message even if connected. (added return code 200)
  - 19-07-2006 fixed: [ 1524849 ] Screensaver unhiding on next song play
  - 19-07-2006 changed: removed DCHP IP from SystemInfo, and some other little changes
  - 19-07-2006 changed: improved the profiles support somewhat. xbmc is now fully multiuser capable. http://www.xbmc.xbox-scene.com/wiki/index.php?title=Profiles. thanks to bpairs, jezz_x, chokeman and smokehead for skin work. known issue: webserver sometimes misbehaves on login/logout.
