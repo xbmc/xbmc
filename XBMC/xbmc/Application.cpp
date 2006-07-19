@@ -3076,8 +3076,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (bResult)
   {
     // reset the screensaver
-    ResetScreenSaver();
-    ResetScreenSaverWindow();
+    if (m_pPlayer->HasVideo())
+    {
+      ResetScreenSaver();
+      ResetScreenSaverWindow();
+    }
 
     if ( IsPlayingVideo())
     {
