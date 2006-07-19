@@ -323,7 +323,9 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "masterlock.startuplock"      , 20076,false);
   AddBool(5, "masterlock.enableshutdown"   , 12362,false);
   AddBool(6, "masterlock.automastermode"   , 20101,false);
-  
+  AddSeparator(7,"masterlock.sep2" );
+  AddBool(8, "masterlock.loginlock",20116,true);
+
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries"       , 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT); 
   
@@ -610,7 +612,7 @@ void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
   it = settingsMap.find("masterlock.startuplock");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.enableshutdown");
+    it = settingsMap.find("autodetect.nickname");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
 }

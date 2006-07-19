@@ -33,7 +33,7 @@
    <posy>-11</posy>
    <width>446</width>
    <height>405</height>
-   <texture>dialog-panelprofile2.png</texture>
+   <texture>dialog-panellock.png</texture>
   </control>
 
   <control>

@@ -8,7 +8,7 @@ public:
   CGUIDialogLockSettings(void);
   virtual ~CGUIDialogLockSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
-  static bool ShowAndGetLock(int& iLockMode, CStdString& strPassword);
+  static bool ShowAndGetLock(int& iLockMode, CStdString& strPassword, int iHeader=20091);
   static bool ShowAndGetLock(int& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel=20091,bool bDetails=true);
 protected:
   virtual void OnInitWindow();

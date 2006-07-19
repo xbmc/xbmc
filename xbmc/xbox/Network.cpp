@@ -4,6 +4,7 @@
 #include "Undocumented.h"
 #include "../application.h"
 #include "../filesystem/filesmb.h"
+#include "../lib/libscrobbler/scrobbler.h"
 
 // global network variable
 CNetwork g_network;
@@ -300,7 +301,7 @@ DWORD CNetwork::UpdateState()
 
     if ( dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC )
       NetworkUp();
-
+    
     LogState();
   }
 
@@ -423,12 +424,13 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
   {
     case SERVICES_UP:
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Starting network services");      
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Starting network services");
       g_application.StartTimeServer();
       g_application.StartWebServer();
       g_application.StartFtpServer();
       g_application.StartKai();
       g_application.StartUPnP();
+      CScrobbler::GetInstance()->Init();
     }
     break;
     case SERVICES_DOWN:
@@ -439,6 +441,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopFtpServer();
       g_application.StopKai();   
       g_application.StopUPnP();
+      CScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.
     }
     break;

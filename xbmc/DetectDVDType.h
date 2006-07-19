@@ -32,6 +32,7 @@ public:
 
   static const CStdString &GetDVDLabel();
 
+  static void UpdateState();
 protected:
   void UpdateDvdrom();
   DWORD GetTrayState();

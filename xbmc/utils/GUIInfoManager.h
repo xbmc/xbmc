@@ -90,6 +90,10 @@
 #define SYSTEM_TRAYOPEN	            142
 #define SYSTEM_KAI_ENABLED          143
 #define SYSTEM_ALARM_POS            144
+#define SYSTEM_LOGGEDON             145
+#define SYSTEM_PROFILENAME          146
+#define SYSTEM_PROFILETHUMB         147
+#define SYSTEM_HAS_LOGINSCREEN       148
 
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161

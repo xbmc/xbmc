@@ -349,6 +349,12 @@ DWORD CDetectDVDMedia::GetTrayState()
   return DRIVE_NOT_READY;
 }
 
+void CDetectDVDMedia::UpdateState()
+{
+  CSingleLock waitLock(m_muReadingMedia);
+  m_pInstance->DetectMediaType();
+}
+
 // Static function
 // Wait for drive, to finish media detection.
 void CDetectDVDMedia::WaitMediaReady()
