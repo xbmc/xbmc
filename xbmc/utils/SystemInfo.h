@@ -1,12 +1,7 @@
 #pragma once
-#include "stdstring.h"
 #include "thread.h"
-#include "SystemInfo.h"
-#include <string.h>
-#include <stdio.h>
 
-
-class SYSINFO
+class SYSINFO : public CThread //CThread
 {
 public:
 	#define KB	(1024)					// 1 KiloByte (1KB) 	1024 Byte (2^10 Byte)
@@ -62,11 +57,11 @@ public:
 		BYTE	bReserved[10];			// ...
 	} ATTRTHRESHOLD, *PATTRTHRESHOLD, *LPATTRTHRESHOLD;	
 
-	static SYSINFO* Instance();
-	virtual ~SYSINFO();
+  SYSINFO();
+	~SYSINFO();
 
-	BYTE GetSmartValues(int SmartREQ);
-	double GetCPUFrequence();
+  static BYTE GetSmartValues(int SmartREQ);
+	static double GetCPUFrequence();
 	static double RDTSC(void);
 	
 	static CStdString GetAVPackInfo();
@@ -97,7 +92,5 @@ public:
 	static CStdString MD5FileNew(char *filename,long PosizioneInizio,int KBytes);
   static bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
 
-private:
-	static SYSINFO* _Instance;
-	SYSINFO();	
  };
+extern SYSINFO g_sysinfo;
