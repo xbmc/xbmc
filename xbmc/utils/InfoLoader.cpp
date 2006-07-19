@@ -55,7 +55,7 @@ void CInfoLoader::LoaderFinished()
   m_backgroundLoader = NULL;
   if (m_type == "weather" && m_busy)
   {
-    CGUIMessage msg(GUI_MSG_WEATHER_FETCHED,0,WINDOW_WEATHER);
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
     m_gWindowManager.SendThreadMessage(msg);
   }
   m_busy = false;

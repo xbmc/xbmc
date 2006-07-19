@@ -38,9 +38,6 @@ bool CGUIWindowSettings::OnMessage(CGUIMessage& message)
         RunCredits();
         return true;
       }
-
-      if (iControl == 11 && !g_advancedSettings.m_profilesupport)
-        return true;
     }
     break;
   }

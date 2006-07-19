@@ -9,7 +9,7 @@ public:
   virtual ~CGUIDialogProfileSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
 
-  static bool ShowForProfile(unsigned int iProfile);
+  static bool ShowForProfile(unsigned int iProfile, bool bDetails=true);
 protected:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
@@ -25,6 +25,7 @@ protected:
   int m_iDbMode;
   bool m_bIsDefault;
   bool m_bIsNewUser;
+  bool m_bShowDetails;
 
   // lock stuff
   CStdString m_strLockCode;
