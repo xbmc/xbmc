@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-07-2006 changed: removed DCHP IP from SystemInfo, and some other little changes
  - 19-07-2006 changed: improved the profiles support somewhat. xbmc is now fully multiuser capable. http://www.xbmc.xbox-scene.com/wiki/index.php?title=Profiles. thanks to bpairs, jezz_x, chokeman and smokehead for skin work. known issue: webserver sometimes misbehaves on login/logout.
  - 19-07-2006 fixed: since xbms and ccx can be case sensitive, we have to try some more common subtitle subdirs.
  - 18-07-2006 added: 'go to root' in context menu of media windows.

@@ -168,6 +168,11 @@ void XKHDD::GetIDEModel(UCHAR* IDEData, LPSTR ModelString, LPDWORD StrLen)
 }
 BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite)
 {
+  // Wait Timers! No wait time.. let's see if this will also work!
+  const int waitSleepTime = 5; //default 5
+  const int writeSleepTime = 10; // default 10
+  const int readSleepTime = 300; // default 300
+
 	//XBOX Sending ATA Commands..  
 	BOOL retVal			= FALSE;
 	UCHAR waitcount		= 15;
@@ -175,9 +180,7 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 	WORD SuccessRet		= 0x58;
 	LPDWORD PIDEDATA	= (LPDWORD) &ATACommandObj->DATA_BUFFER ;
 
-  const int writeSleepTime = 10;
-  const int readSleepTime = 300;
-	//Write IDE Registers to IDE Port.. and in essence Execute the ATA Command..
+  //Write IDE Registers to IDE Port.. and in essence Execute the ATA Command..
 	_outp(IDEPort + 1, ATACommandObj->IPReg.bFeaturesReg);		Sleep(writeSleepTime);
 	_outp(IDEPort + 2, ATACommandObj->IPReg.bSectorCountReg); 	Sleep(writeSleepTime);
 	_outp(IDEPort + 3, ATACommandObj->IPReg.bSectorNumberReg);	Sleep(writeSleepTime);
@@ -208,14 +211,14 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 		ATACommandObj->OPReg.bStatusReg =		_inp(IDEPort + 7);
 
 		ATACommandObj->DATA_BUFFSIZE = 512;
-		Sleep(10);
+		Sleep(writeSleepTime);
 
 		//Now read a sector (512 Bytes) from the IDE Port
 		ZeroMemory(ATACommandObj->DATA_BUFFER, 512);
 		for (int i = 0; i < 128; i++)
 		{
 			PIDEDATA[i] = _inpd(IDEPort);
-			Sleep(5);
+			Sleep(waitSleepTime);
 		}
 
 		retVal = TRUE;
@@ -232,13 +235,13 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 		ATACommandObj->OPReg.bCylHighReg		= _inp(IDEPort + 5);
 		ATACommandObj->OPReg.bDriveHeadReg		= _inp(IDEPort + 6);
 		ATACommandObj->OPReg.bStatusReg			= _inp(IDEPort + 7);
-		Sleep(10);
+		Sleep(writeSleepTime);
 
 		//Now Write a sector (512 Bytes) To the IDE Port
 		for (int i = 0; i <  128; i++)
 		{
 			_outpd(IDEPort, PIDEDATA[i]);
-				Sleep(5);
+				Sleep(waitSleepTime);
 		}
 		retVal = TRUE;
 	}
