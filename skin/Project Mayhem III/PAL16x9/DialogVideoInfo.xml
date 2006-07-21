@@ -169,7 +169,7 @@
    <posx>335</posx>
    <posy>313</posy>
    <width>90</width>
-   <label>20060</label>
+   <label>20074</label>
    <font>font12</font>
   </control>
 
@@ -264,7 +264,7 @@
   <control>
    <description>MPPA Rating value</description>
    <type>fadelabel</type>
-   <id>31</id>
+   <id>32</id>
    <posx>435</posx>
    <posy>313</posy>
    <width>220</width>
