@@ -67,7 +67,7 @@ void PAPlayer::OnExit()
 
 }
 
-bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
+bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   if (m_currentlyCrossFading) CloseFileInternal(false); //user seems to be in a hurry
 
@@ -99,7 +99,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   // always open the file using the current decoder
   m_currentDecoder = 0;
 
-  if (!m_decoder[m_currentDecoder].Create(file, iStartTime, m_crossFading))
+  if (!m_decoder[m_currentDecoder].Create(file, options.starttime, m_crossFading))
     return false;
 
   if ( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") )
@@ -113,7 +113,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
   CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
 
-  m_timeOffset = iStartTime;
+  m_timeOffset = options.starttime;
 
   m_decoder[m_currentDecoder].GetDataFormat(&m_Channels, &m_SampleRate, &m_BitsPerSample);
 

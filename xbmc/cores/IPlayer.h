@@ -12,6 +12,21 @@ public:
   virtual void OnQueueNextItem() = 0;
 };
 
+class CPlayerOptions
+{
+public:
+  CPlayerOptions()
+  {
+    starttime = 0LL;
+    identify = false;
+  }
+  __int64 starttime;
+
+  /* identify mode, used for checking format and length of a file */
+  bool    identify;  
+};
+
+
 class IPlayer
 {
 public:
@@ -19,7 +34,7 @@ public:
   virtual ~IPlayer(){};
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
   virtual void UnRegisterAudioCallback() = 0;
-  virtual bool OpenFile(const CFileItem& file, __int64 iStartTime){ return false;};
+  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;};
   virtual bool QueueNextFile(const CFileItem &file) { return false; };
   virtual bool CloseFile(){ return true;};
   virtual bool IsPlaying() const { return false;} ;
@@ -103,7 +118,6 @@ public:
   virtual bool SetPlayerState(CStdString state) { return false;};
 
   //virtual IChapterProvider* GetChapterProvider() { return NULL; }
-  
 protected:
   IPlayerCallback& m_callback;
 };

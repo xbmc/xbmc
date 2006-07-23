@@ -62,6 +62,11 @@ public:
 
     void SetAutoSync(int iAutoSync);
 
+    void SetAudioOutput(const string& output) { m_videooutput = output; }
+    void SetVideoOutput(const string& output) { m_audiooutput = output; }
+    void SetAudioCodec(const string& output) { m_videooutput = output; }
+    void SetVideoCodec(const string& output) { m_audiooutput = output; }
+
   private:
     bool m_bDeinterlace;
     bool m_bResampleAudio;
@@ -80,6 +85,11 @@ public:
     bool m_bNonInterleaved;
     bool m_bForceIndex;
     bool m_bLimitedHWAC3;
+    string m_videooutput;
+    string m_audiooutput;
+    string m_videocodec;
+    string m_audiocodec;
+    bool m_bDisableAO;
     string m_subcp;
     string m_strChannelMapping;
     string m_strDvdDevice;
@@ -91,7 +101,7 @@ public:
   virtual ~CMPlayer();
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
-  virtual bool OpenFile(const CFileItem& file, __int64 iStartTime);
+  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& initoptions);
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
   virtual void Pause();
