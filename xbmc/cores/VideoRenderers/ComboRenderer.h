@@ -18,10 +18,6 @@ public:
   // Functions called from mplayer
   // virtual void     WaitForFlip();
   virtual unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);
-  virtual void ReleaseImage();
-  virtual unsigned int GetImage(YV12Image *image);
-  virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void PrepareDisplay();
   virtual unsigned int PreInit();
   virtual void UnInit();
 
@@ -29,21 +25,17 @@ protected:
   virtual void Render();
   virtual void ManageDisplay();
   virtual void ManageTextures();
-  bool CreateYUY2Textures();
-  void DeleteYUY2Textures();
-  void ClearYUY2Textures();
+  bool CreateYUY2Texture();
+  void DeleteYUY2Texture();
+  void ClearYUY2Texture();
   void YV12toYUY2();
   LONG YUV2RGB(BYTE y, BYTE u, BYTE v);
 
   DWORD m_hPixelShader;
 
-  int m_iYUVDecodeBuffer;
-  int m_iYUVRenderBuffer;
-  int m_NumYUY2Buffers;
-
   // RGB/YUY2 texture target(s)
-  LPDIRECT3DTEXTURE8 m_RGBTexture[NUM_BUFFERS];
-  D3DTexture m_YUY2Texture[NUM_BUFFERS];
+  LPDIRECT3DTEXTURE8 m_RGBTexture;
+  D3DTexture m_YUY2Texture;
 
   static const DWORD FVF_YUYVVERTEX = D3DFVF_XYZRHW | D3DFVF_TEX4;
   static const DWORD FVF_RGBVERTEX = D3DFVF_XYZRHW | D3DFVF_TEX1;

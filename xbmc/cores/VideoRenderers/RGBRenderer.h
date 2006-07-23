@@ -12,21 +12,27 @@ public:
   // Functions called from mplayer
   // virtual void     WaitForFlip();
   virtual unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);
-  virtual void PrepareDisplay();
   virtual unsigned int PreInit();
   virtual void UnInit();
 
 protected:
   virtual void Render();
   virtual void ManageTextures();
-  bool CreateYUVTexture();
-  void DeleteYUVTexture();
-  void ClearYUVTexture();
+  bool Create444PTexture();
+  void Delete444PTexture();
+  void Clear444PTexture();
   bool CreateLookupTextures();
   void DeleteLookupTextures();
 
+  void InterleaveYUVto444P(
+      YUVPLANES pSources,
+      LPDIRECT3DTEXTURE8 pTarget,
+      unsigned width,     unsigned height,
+      unsigned cshift_x,  unsigned cshift_y,
+      float    coffset_x, float    coffset_y);
+
   // YUV interleaved texture
-  LPDIRECT3DTEXTURE8 m_YUVTexture;
+  LPDIRECT3DTEXTURE8 m_444PTexture[MAX_FIELDS];
 
   // textures for YUV->RGB lookup
   LPDIRECT3DTEXTURE8 m_UVLookup;
@@ -36,9 +42,7 @@ protected:
   DWORD m_hInterleavingShader;
   DWORD m_hYUVtoRGBLookup;
 
-  // Texture for Field deinterlacing
-  unsigned int m_YUVFieldPitch;
-  D3DTexture m_YUVFieldTexture;
+
   // Vertex types
   static const DWORD FVF_YUVRGBVERTEX = D3DFVF_XYZRHW | D3DFVF_TEX4;
   static const DWORD FVF_RGBVERTEX = D3DFVF_XYZRHW | D3DFVF_TEX1;
