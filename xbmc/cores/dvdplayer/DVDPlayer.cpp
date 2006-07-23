@@ -76,7 +76,7 @@ CDVDPlayer::~CDVDPlayer()
 #endif
 }
 
-bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
+bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   try
   {
@@ -923,7 +923,7 @@ void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
   int bsize = m_dvdPlayerVideo.m_messageQueue.GetDataSize();
   if (bsize > 0) bsize = (int)(((double)m_dvdPlayerVideo.m_messageQueue.GetDataSize() / m_dvdPlayerVideo.m_messageQueue.GetMaxDataSize()) * 100);
   if (bsize > 99) bsize = 99;
-  strPlayerInfo.Format("vq size: %i, cpu: %i%%", bsize, (int)(m_dvdPlayerVideo.GetRelativeUsage()*100+m_dvdPlayerVideo.m_PresentThread.GetRelativeUsage()*100));
+  strPlayerInfo.Format("vq size: %i, cpu: %i%%", bsize, (int)(m_dvdPlayerVideo.GetRelativeUsage()*100));
   strVideoInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), strPlayerInfo.c_str());
 }
 

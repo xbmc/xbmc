@@ -60,7 +60,7 @@ public:
   virtual ~CDVDPlayer();
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio.RegisterAudioCallback(pCallback); }
   virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio.UnRegisterAudioCallback(); }
-  virtual bool OpenFile(const CFileItem& file, __int64 iStartTime);
+  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
   virtual void Pause();
