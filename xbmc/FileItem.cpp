@@ -1646,7 +1646,7 @@ void CFileItemList::Stack()
           //if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
           if (CUtil::GetVolumeFromFileName(Get(j)->GetLabel(), fileTitle2, volumeNumber2))
           {
-            if (fileTitle2 == fileTitle && filePath2 == filePath)
+            if (fileTitle2.Equals(fileTitle, false) && filePath2.Equals(filePath, false))
             {
               //CLog::Log(LOGDEBUG,"  adding item: [%03i] %s", j, Get(j)->GetLabel().c_str());
               stack.push_back(j);
