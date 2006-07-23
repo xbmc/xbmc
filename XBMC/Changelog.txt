@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-07-2006 changed: cleanup and simplification of renderer and field rendering. 
+                       combined async rendering of dvdplayer and mplayer
+                       changed texture memory to not be write combined, allows fast reads
  - 23-07-2006 changed: stacking of files was case sensitive on filenames before, now it's case insensitive
  - 23-07-2006 changed: made seamless stacking quicker to startup with mplayer by not initing codecs or audio/video outputs and disabled caching of subtitles
  - 20-07-2006 fixed: Internet not connected message even if connected. (added return code 200)

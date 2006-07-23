@@ -377,19 +377,14 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
 
-      CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);
-
-      g_graphicsContext.Lock();
+      CSingleLock lock (g_graphicsContext);
+      CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);      
       g_graphicsContext.SetFullScreenVideo( true );
-      g_graphicsContext.Unlock();
-
-      if (g_application.m_pPlayer)
-        g_application.m_pPlayer->Update();
-
-      m_bShowViewModeInfo = false;
-
-      // set the correct view mode
+      lock.Leave();
       g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+      g_renderManager.Update(false);      
+            
+      m_bShowViewModeInfo = false;
 
       if (CUtil::IsUsingTTFSubtitles())
       {
@@ -414,19 +409,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_WINDOW_DEINIT:
     {
-      // Pause player before lock or the app will deadlock
-      bool needsUpdate(false);
-      if (g_application.m_pPlayer && !g_renderManager.Paused())
-      {
-        needsUpdate = true;
-        g_application.m_pPlayer->Update(true);
-      }
-
-      // Pause so that we make sure that our fullscreen renderer has finished...
-      Sleep(100);
-
-      CSingleLock lock (m_section);
-
       CGUIWindow::OnMessage(message);
 
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
@@ -434,12 +416,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       FreeResources(true);
 
+      CSingleLock lock (g_graphicsContext);
       CUtil::RestoreBrightnessContrastGamma();
-
-      g_graphicsContext.Lock();
       g_graphicsContext.SetFullScreenVideo(false);
       g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
-      g_graphicsContext.Unlock();
+      lock.Leave();
+      g_renderManager.Update(false);      
 
       CSingleLock lockFont(m_fontLock);
       if (m_subtitleFont)
@@ -447,10 +429,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         g_fontManager.Unload("__subtitle__");
         m_subtitleFont = NULL;
       }
-
-      if (g_application.m_pPlayer && needsUpdate)
-        g_application.m_pPlayer->Update();
-
+          
 
       g_audioManager.Enable(true);
       return true;
@@ -492,7 +471,7 @@ void CGUIWindowFullScreen::Render()
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()
 {
-  CSingleLock lock (m_section);
+  CSingleLock lock (g_graphicsContext);
   if (g_application.m_pPlayer)
   {
     if (g_application.m_pPlayer->IsPaused() ) return true;
