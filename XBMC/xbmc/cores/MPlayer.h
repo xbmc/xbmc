@@ -64,8 +64,8 @@ public:
 
     void SetAudioOutput(const string& output) { m_videooutput = output; }
     void SetVideoOutput(const string& output) { m_audiooutput = output; }
-    void SetAudioCodec(const string& output) { m_videooutput = output; }
-    void SetVideoCodec(const string& output) { m_audiooutput = output; }
+    void SetAudioCodec(const string& codec) { m_videocodec = codec; }
+    void SetVideoCodec(const string& codec) { m_audiocodec = codec; }
 
   private:
     bool m_bDeinterlace;
