@@ -27,7 +27,7 @@ public:
   PAPlayer(IPlayerCallback& callback);
   virtual ~PAPlayer();
 
-  virtual bool OpenFile(const CFileItem& file, __int64 iStartTime);
+  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool QueueNextFile(const CFileItem &file);
   virtual bool CloseFile()       { return CloseFileInternal(true); }
   virtual bool CloseFileInternal(bool bAudioDevice = true);

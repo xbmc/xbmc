@@ -598,6 +598,30 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back(strOpt.c_str());
   }
 
+  if( m_videooutput.length() > 0 )
+  {
+    m_vecOptions.push_back("-vo");
+    m_vecOptions.push_back(m_videooutput);
+  }
+
+  if( m_audiooutput.length() > 0 )
+  {
+    m_vecOptions.push_back("-vo");
+    m_vecOptions.push_back(m_audiooutput);
+  }
+
+  if( m_videocodec.length() > 0 )
+  {
+    m_vecOptions.push_back("-vc");
+    m_vecOptions.push_back(m_videocodec);
+  }
+
+  if( m_audiocodec.length() > 0 )
+  {
+    m_vecOptions.push_back("-ac");
+    m_vecOptions.push_back(m_audiocodec);
+  }
+
   m_vecOptions.push_back("1.avi");
 
   argc = (int)m_vecOptions.size();
@@ -736,7 +760,7 @@ void update_cache_dialog(const char* tmp)
 
 extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers); //lowlevel audio
 
-bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
+bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions)
 {
   //Close any prevoiusely playing file
   CloseFile();
@@ -809,7 +833,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     CLog::Log(LOGINFO, "mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);
 
     // cache (remote) subtitles to HD
-    if (!bFileOnInternet && bIsVideo && !bIsDVD && g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+    if (!bFileOnInternet && bIsVideo && !bIsDVD && g_stSettings.m_currentVideoSettings.m_SubtitleOn && !initoptions.identify)
     {
 
       m_dlgCache->SetMessage("Caching subtitles...");
@@ -841,7 +865,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     {
       options.SetNonInterleaved(g_stSettings.m_currentVideoSettings.m_NonInterleaved);
       options.SetForceIndex(g_stSettings.m_currentVideoSettings.m_bForceIndex);
-
     }
     options.SetNoCache(g_stSettings.m_currentVideoSettings.m_NoCache);
 
@@ -983,6 +1006,16 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
       options.SetDeinterlace(false);
 
 
+    if(initoptions.identify)
+    {
+      options.SetVideoOutput("null");
+      options.SetAudioOutput("null");
+      options.SetVideoCodec("null");
+      options.SetAudioCodec("null");
+      options.SetNoCache(true);
+    }
+
+
     options.GetOptions(argc, argv);
 
 
@@ -1009,7 +1042,8 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     }
 
     // Seek to the correct starting position
-    if (iStartTime) SeekTime(iStartTime);
+    if (initoptions.starttime) 
+      SeekTime(initoptions.starttime);
 
     if (bFileOnInternet)
     {
@@ -1127,7 +1161,8 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
           throw iRet;
         }
         // Seek to the correct starting position
-        if (iStartTime) SeekTime(iStartTime);
+        if (initoptions.starttime) 
+          SeekTime(initoptions.starttime);
 
       }
     }
@@ -1253,8 +1288,10 @@ void CMPlayer::Process()
         if (!m_bPaused)
         {
 
-          //Set audio delay we wish to use, take into account the delay caused by using an async flip
-          mplayer_setAVDelay(m_fAVDelay + g_renderManager.GetAsyncFlipTime() * 0.001f);
+          //Set audio delay we wish to use, since mplayer 
+          //does the sleeping for us, we present as soon as possible
+          //so mplayer has to take presentation delay into account
+          mplayer_setAVDelay(m_fAVDelay + g_renderManager.GetPresentDelay() * 0.001f );
 
           // we're playing
           int iRet = mplayer_process();
