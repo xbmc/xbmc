@@ -92,8 +92,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       // reset our screen resolution to what it was initially
       g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
       // Inform the player so we can update the resolution
-      if (g_application.m_pPlayer && !g_renderManager.Paused())
-        g_application.m_pPlayer->Update();
+      g_renderManager.Update(false);
     }
     break;
 
@@ -102,9 +101,10 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       m_gWindowManager.ShowOverlay(false);
       g_graphicsContext.SetCalibrating(true);
-      // Inform the player so we can update the resolution
-      if (g_application.IsPlayingVideo())
-        g_application.m_pPlayer->Update();
+      
+      // Inform the renderer so we can update the resolution
+      g_renderManager.Update(false);
+
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
       if (g_application.IsPlayingVideo())

@@ -452,21 +452,6 @@ extern "C"
     IN PVOID StartContext2
   );
 
-  // Structure of a critical section
-  // Same as the XBOX's RTL_CRITICAL_SECTION, but with the more explicit header
-  typedef struct _KCRITICAL_SECTION
-  {
-    // 000 Dispatcher header
-    DISPATCHER_HEADER Header;
-    // 010 Lock count of the critical section
-    LONG LockCount;
-    // 014 Recursion count of the critical section
-    LONG RecursionCount;
-    // 018 Thread ID of the thread that currently owns this critical section
-    ULONG OwningThread;
-  }
-  KCRITICAL_SECTION, *PKCRITICAL_SECTION;
-
   // Structure of a thread object
   typedef struct _KTHREAD
   {
@@ -481,7 +466,65 @@ extern "C"
   }
   KTHREAD, *PKTHREAD;
 
-  // Structure of the data at FS
+  // Structure of a critical section
+  // Same as the XBOX's RTL_CRITICAL_SECTION, but with the more explicit header
+  typedef struct _KCRITICAL_SECTION
+  {
+    // 000 Dispatcher header
+    DISPATCHER_HEADER Header;
+    // 010 Lock count of the critical section
+    LONG LockCount;
+    // 014 Recursion count of the critical section
+    LONG RecursionCount;
+    // 018 Thread of the thread that currently owns this critical section
+    PKTHREAD OwningThread;
+  }
+  KCRITICAL_SECTION, *PKCRITICAL_SECTION;
+
+
+  // ******************************************************************
+  // * KPCRB (XBox Specific)
+  // ******************************************************************
+  // *
+  // * NOTE: INCOMPLETE!!
+  // *
+  // ******************************************************************
+  typedef struct _KPRCB
+  {
+      struct _KTHREAD* CurrentThread;                                 // 0x00, KPCR : 0x28
+      struct _KTHREAD* NextThread;                                    // 0x04, KPCR : 0x2C
+      struct _KTHREAD* IdleThread;                                    // 0x08, KPCR : 0x30
+
+      // NOTE: There are many other fields!
+  }
+
+  KPRCB, *PKPRCB;
+
+  // ******************************************************************
+  // * KPCR (XBox Specific)
+  // ******************************************************************
+  // *
+  // * NOTE: KPCR is the structure which exists at the FS: segment.
+  // *
+  // ******************************************************************
+  typedef struct _KPCR
+  {
+      struct _NT_TIB  NtTib;                                          // 0x00    TIB block
+      struct _KPCR   *SelfPcr;                                        // 0x1C    Pointer to self
+      PKPRCB          Prcb;                                           // 0x20    Pointer to thread structre
+      UCHAR           Irql;                                           // 0x24    Current IRQL of the OS
+      KPRCB           PrcbData;                                       // 0x28    Thread structure
+  } KPCR, *PKPCR; 
+
+  inline PKPCR GetCurrentKPCR()
+  {
+    PKPCR kpcr;
+    __asm mov  eax,fs:[0x1c];
+    __asm mov  kpcr,eax
+  }
+
+  // Structure of the data at FS, 
+  // KPCR is more complete, only kept here for reference
   typedef struct _FS_STRUCTURE
   {
     // 000 Current exception handler information
@@ -498,6 +541,7 @@ extern "C"
     BYTE unknown3[0x100];
   }
   FS_STRUCTURE, *PFS_STRUCTURE;
+
 
   // DPC routine
   typedef

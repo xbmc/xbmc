@@ -23,20 +23,42 @@
 #include "PixelShaderRenderer.h"
 #include "ComboRenderer.h"
 #include "RGBRenderer.h"
-
+#include "../../xbox/Undocumented.h"
 
 CXBoxRenderManager g_renderManager;
 
+
+#define MAXPRESENTDELAY 500
+
+/* at any point we want an exclusive lock on rendermanager */
+/* we must make sure we don't have a graphiccontext lock */
+/* these two functions allow us to step out from that lock */
+/* and reaquire it after having the exclusive lock */
+
+//VBlank information
+HANDLE g_eventVBlank=NULL;
+void VBlankCallback(D3DVBLANKDATA *pData)
+{
+  PulseEvent(g_eventVBlank);
+}
+
+
 CXBoxRenderManager::CXBoxRenderManager()
 {
-  CExclusiveLock lock(m_sharedSection);
   m_pRenderer = NULL;
   m_bPauseDrawing = false;
+
+  m_presentdelay = 5; //Just a guess to what delay we have
+  m_presentfield = FS_NONE;
+  m_presenttime = 0L;
 }
 
 CXBoxRenderManager::~CXBoxRenderManager()
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   if (m_pRenderer)
     delete m_pRenderer;
   m_pRenderer = NULL;
@@ -44,9 +66,13 @@ CXBoxRenderManager::~CXBoxRenderManager()
 
 unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps)
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   m_iSourceWidth = width;
   m_iSourceHeight = height;
+  m_presentdelay = 5;
   unsigned int result = 0;
   if (m_pRenderer)
   {
@@ -59,7 +85,10 @@ unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int heig
 
 void CXBoxRenderManager::Update(bool bPauseDrawing)
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   m_bPauseDrawing = bPauseDrawing;
   if (m_pRenderer)
   {
@@ -69,7 +98,20 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
 
 unsigned int CXBoxRenderManager::PreInit()
 {
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
+  if(!g_eventVBlank)
+  {
+    //Only do this on first run
+    g_eventVBlank = CreateEvent(NULL,FALSE,FALSE,NULL);
+    D3D__pDevice->SetVerticalBlankCallback((D3DVBLANKCALLBACK)VBlankCallback);
+  }
+
+  /* no pedning present */
+  m_eventPresented.Set();
+
   m_bIsStarted = false;
   m_bPauseDrawing = false;
   if (!m_pRenderer)
@@ -96,7 +138,15 @@ unsigned int CXBoxRenderManager::PreInit()
 
 void CXBoxRenderManager::UnInit()
 {
+  m_bStop = true;
+  m_eventFrame.Set();
+
+  StopThread();
+
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   if (m_pRenderer)
   {
     m_pRenderer->UnInit();
@@ -114,7 +164,163 @@ void CXBoxRenderManager::SetupScreenshot()
 
 void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
 {
-  CSharedLock lock(m_sharedSection);
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   if (m_pRenderer)
     m_pRenderer->CreateThumbnail(surface, width, height);
+}
+
+
+void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+{
+  DWORD timestamp = 0;
+
+  if(delay > MAXPRESENTDELAY) delay = MAXPRESENTDELAY;
+  if(delay > 0)
+    timestamp = GetTickCount() + delay;
+
+  CSharedLock lock(m_sharedSection);
+  if(!m_pRenderer) return;
+
+  /* make sure any previous frame was presented */
+  if( !m_eventPresented.WaitMSec(MAXPRESENTDELAY*2) )
+    CLog::Log(LOGERROR, " - Timeout waiting for previous frame to be presented");
+
+  CSingleLock lock2(g_graphicsContext);
+  if( g_graphicsContext.IsFullScreenVideo() )
+  {
+    lock2.Leave();
+
+    EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.GetInterlaceMethod();
+    if( mInt == VS_INTERLACEMETHOD_SYNC_AUTO )
+      m_presentfield = sync;
+    else if( mInt == VS_INTERLACEMETHOD_SYNC_EVEN )
+      m_presentfield = FS_EVEN;
+    else if( mInt == VS_INTERLACEMETHOD_SYNC_ODD )
+      m_presentfield = FS_ODD;
+    else
+      m_presentfield = FS_NONE;
+
+    /* if we have a field, we will have a presentation delay */
+    if( m_presentfield == FS_NONE )
+      m_presentdelay = 20;
+    else
+      m_presentdelay = 40;
+
+    if( timestamp >= m_presentdelay )
+      timestamp -=  m_presentdelay;
+    else
+      timestamp = 0;
+
+    m_pRenderer->FlipPage(source);
+    if( timestamp )
+    {
+      if( CThread::ThreadHandle() == NULL ) CThread::Create();
+      m_presenttime = timestamp;
+      m_eventFrame.Set();
+    }
+    else
+    {
+      m_presenttime = 0LL;
+      Present();
+      m_eventPresented.Set();
+    }
+  }
+  else
+  {
+    lock2.Leave();
+
+    /* if we are not in fullscreen, we don't control when we render */
+    /* so we must await the time and flip then */
+    while( timestamp > GetTickCount() && !CThread::m_bStop) Sleep(1);
+    m_pRenderer->FlipPage(source);
+    m_eventPresented.Set();
+  }
+}
+
+
+void CXBoxRenderManager::Present()
+{
+  CSingleLock lock(g_graphicsContext);
+
+  //Render all data to back buffer
+  m_pRenderer->SetFieldSync(m_presentfield);
+  m_pRenderer->RenderUpdate(true);
+
+  /* make sure pushbuffer is empty */
+  while( D3D__pDevice->IsBusy() && !CThread::m_bStop ) Sleep(1);
+
+  /* wait for timestamp */
+  while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
+
+  D3DRASTER_STATUS mRaster;
+  D3DFIELD_STATUS mStatus;
+  D3D__pDevice->GetDisplayFieldStatus(&mStatus);
+  D3D__pDevice->GetRasterStatus(&mRaster);
+
+  bool bSync = (m_presentfield != FS_NONE && mStatus.Field != D3DFIELD_PROGRESSIVE);
+
+#ifdef PROFILE
+  mRaster.InVBlank = 1;
+  bSync = false;
+#endif
+
+  if( mRaster.InVBlank == 0 )
+  {
+    if( WaitForSingleObject(g_eventVBlank, 500) == WAIT_TIMEOUT )
+      CLog::Log(LOGERROR, __FUNCTION__" - Waiting for vertical-blank timed out");
+
+    D3D__pDevice->GetDisplayFieldStatus(&mStatus);
+  }
+
+  //If we have interlaced video, we have to sync to only render on even fields
+  if( bSync )
+  {
+
+    //If this was not the correct field. we have to wait for the next one.. damn
+    if( (mStatus.Field == D3DFIELD_EVEN && m_presentfield == FS_ODD) ||
+        (mStatus.Field == D3DFIELD_ODD && m_presentfield == FS_EVEN) )
+    {
+      if( WaitForSingleObject(g_eventVBlank, 500) == WAIT_TIMEOUT )
+        CLog::Log(LOGERROR, __FUNCTION__" - Waiting for vertical-blank timed out");
+    }
+  }
+
+  D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+}
+
+void CXBoxRenderManager::Process()
+{
+  float actualdelay = (float)m_presentdelay;
+
+  SetPriority(THREAD_PRIORITY_TIME_CRITICAL);
+  SetName("AsyncRenderer");
+  while( !m_bStop )
+  {
+    //Wait for new frame or an stop event
+    m_eventFrame.Wait();
+    if( m_bStop ) return;
+
+    DWORD dwTimeStamp = GetTickCount();
+    try
+    {
+      CSharedLock lock(m_sharedSection);
+      CSingleLock lock2(g_graphicsContext);
+
+      if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() )
+      {
+        Present();
+      }
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "CXBoxRenderer::Process() - Exception thrown in flippage");
+    }
+    m_eventPresented.Set();
+
+    const int TC = 100; /* time (frame) constant for convergence */
+    actualdelay = ( actualdelay * (TC-1) + (GetTickCount() - dwTimeStamp) ) / TC;
+  }
 }
