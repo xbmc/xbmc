@@ -4,7 +4,7 @@
 #include "XBoxRenderer.h"
 #include "..\..\utils\SharedSection.h"
 
-class CXBoxRenderManager
+class CXBoxRenderManager : private CThread
 {
 public:
   CXBoxRenderManager();
@@ -34,110 +34,54 @@ public:
 
   // a call to GetImage must be followed by a call to releaseimage if getimage was successfull
   // failure to do so will result in deadlock
-  inline unsigned int GetImage(YV12Image *image)
-  {
-    m_sharedSection.EnterShared();
-    if (!m_bPauseDrawing && m_pRenderer)
-    {
-      try
-      {
-        int success = m_pRenderer->GetImage(image);
-        if( success ) return success;
-      }
-      catch(...)
-      {
-        CLog::Log(LOGERROR, "CRenderManager::GetImage - Exception cought");
-      }
-    }
-    m_sharedSection.LeaveShared();
-    return 0;
-  }
-  inline void ReleaseImage()
-  {    
-    if (m_pRenderer)
-      m_pRenderer->ReleaseImage();
-
-    m_sharedSection.LeaveShared();
-  }
-  inline unsigned int PutImage(YV12Image *image)
+  inline int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false)
   {
     CSharedLock lock(m_sharedSection);
-    if (m_bPauseDrawing) return 0;
     if (m_pRenderer)
-      return m_pRenderer->PutImage(image);
-    return 0;
+      return m_pRenderer->GetImage(image, source, readonly);
+    return -1;
   }
-  inline unsigned int DrawFrame(unsigned char *src[])
+  inline void ReleaseImage(int source = AUTOSOURCE, bool preserve = false)
   {
     CSharedLock lock(m_sharedSection);
-    if (m_bPauseDrawing) return 0;
     if (m_pRenderer)
-      return m_pRenderer->DrawFrame(src);
-    return 0;
+      m_pRenderer->ReleaseImage(source, preserve);
   }
   inline unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
   {
     CSharedLock lock(m_sharedSection);
-    if (m_bPauseDrawing) return 0;
     if (m_pRenderer)
       return m_pRenderer->DrawSlice(src, stride, w, h, x, y);
     return 0;
   }
 
-  inline void PrepareDisplay()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_bPauseDrawing) return;
-    if (m_pRenderer)
-    {
-      m_pRenderer->PrepareDisplay();
-    }
-  }
-
-  inline void FlipPage(bool bAsync = false)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-    {
-      if (m_bPauseDrawing)
-        m_pRenderer->RenderBlank();
-      else
-        m_pRenderer->FlipPage(bAsync);
-    }
-  }
-
-  inline int GetAsyncFlipTime()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->GetAsyncFlipTime();
-    else
-      return 0;
-  }
-
+  void FlipPage(DWORD timestamp = 0L, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
+
   inline void DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
   {
     CSharedLock lock(m_sharedSection);
-    if (m_bPauseDrawing) return ;
     if (m_pRenderer)
       m_pRenderer->DrawAlpha(x0, y0, w, h, src, srca, stride);
   }
+  inline void Reset()
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->Reset();
+  }
+
   inline int GetOSDWidth() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetNormalDisplayWidth(); else return 0;};
   inline int GetOSDHeight() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetNormalDisplayHeight(); else return 0; };
+  inline DWORD GetPresentDelay() { return m_presentdelay;  }
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
 
-  inline void SetFieldSync(EFIELDSYNC mSync) 
-  { 
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer) 
-      m_pRenderer->SetFieldSync(mSync); 
-  } ;
 
   CXBoxRenderer *m_pRenderer;
 protected:
+  void Present();
   float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
   unsigned int m_iSourceWidth;    // width
   unsigned int m_iSourceHeight;   // height
@@ -145,6 +89,18 @@ protected:
 
   bool m_bIsStarted;
   CSharedSection m_sharedSection;
+
+
+  // render thread
+  CEvent m_eventFrame;
+  CEvent m_eventPresented;
+
+  DWORD m_presentdelay;
+  DWORD m_presenttime;
+  EFIELDSYNC m_presentfield;
+
+  virtual void Process();
+
 };
 
 extern CXBoxRenderManager g_renderManager;

@@ -169,6 +169,7 @@ void CGUIDialogVideoBookmarks::AddBookmark()
     height = 128;
     width = (int)(128.0f * aspectRatio);
   }
+  CSingleLock lock(g_graphicsContext);
   LPDIRECT3DTEXTURE8 texture = NULL;
   if (D3D_OK == g_graphicsContext.Get3DDevice()->CreateTexture(width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &texture))
   {
@@ -188,6 +189,7 @@ void CGUIDialogVideoBookmarks::AddBookmark()
     surface->Release();
     texture->Release();
   }
+  lock.Leave();
   videoDatabase.Open();
   videoDatabase.AddBookMarkToMovie(g_application.CurrentFile(), bookmark);
   videoDatabase.Close();
