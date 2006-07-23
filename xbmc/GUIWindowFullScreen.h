@@ -40,8 +40,6 @@ private:
   int m_timeCodeStamp[5];
   int m_timeCodePosition;
 
-  CCriticalSection m_section;
-
   CCriticalSection m_fontLock;
   CGUIFont* m_subtitleFont;
 };

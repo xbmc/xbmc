@@ -27,95 +27,69 @@ CComboRenderer::CComboRenderer(LPDIRECT3DDEVICE8 pDevice)
     : CXBoxRenderer(pDevice)
 {
   m_bHasDimView = false;
-  for (int i = 0; i < NUM_BUFFERS; i++)
-    m_RGBTexture[i] = NULL;
+  m_RGBTexture = NULL;
   m_hPixelShader = 0;
 }
 
-void CComboRenderer::DeleteYUY2Textures()
+void CComboRenderer::DeleteYUY2Texture()
 {
   CSingleLock lock(g_graphicsContext);
-  for (int index = 0; index < NUM_BUFFERS; index++)
-  {
-    if (m_RGBTexture[index])
-    {
-      m_RGBTexture[index]->Release();
-      m_RGBTexture[index] = NULL;
-    }
-  }
+  if (m_RGBTexture)
+    SAFE_RELEASE(m_RGBTexture);
 }
 
-void CComboRenderer::ClearYUY2Textures()
+void CComboRenderer::ClearYUY2Texture()
 {
   D3DLOCKED_RECT lr;
   // Clear our RGB/YUY2 texture
-  for (int index = 0; index < NUM_BUFFERS; index ++)
-  {
-    m_RGBTexture[index]->LockRect(0, &lr, NULL, 0);
-    fast_memset(lr.pBits, 0x00800080, lr.Pitch*m_iSourceHeight);
-    m_RGBTexture[index]->UnlockRect(0);
-  }
+  m_RGBTexture->LockRect(0, &lr, NULL, 0);
+  fast_memset(lr.pBits, 0x00800080, lr.Pitch*m_iSourceHeight);
+  m_RGBTexture->UnlockRect(0);
 }
 
-bool CComboRenderer::CreateYUY2Textures()
+bool CComboRenderer::CreateYUY2Texture()
 {
   CSingleLock lock(g_graphicsContext);
-  DeleteYUY2Textures();
+  DeleteYUY2Texture();
   // Create our textures...
-  if (D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_RGBTexture[0]) ||
-      D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_RGBTexture[1]))
-  {    
+  if (D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_RGBTexture))
+  {
     return false;
   }
 
   // setup the RGB texture as both a YUY2 texture AND a RGB texture
   // (We can only render into an RGB texture, so we do the YUV->YUY2 conversion by)
   // rendering into the RGB texture which shares memory with the YUY2 texture.
-  for (int index = 0; index < 2; index++)
-  {
-    D3DLOCKED_RECT lr;
-    m_RGBTexture[index]->LockRect(0, &lr, NULL, 0);
-    XGSetTextureHeader(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_YUY2, 0, &m_YUY2Texture[index], 0, lr.Pitch);
-    m_YUY2Texture[index].Register(lr.pBits);
-    m_RGBTexture[index]->UnlockRect(0);
-  }
-  ClearYUY2Textures();
+
+  D3DLOCKED_RECT lr;
+  m_RGBTexture->LockRect(0, &lr, NULL, 0);
+  XGSetTextureHeader(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_YUY2, 0, &m_YUY2Texture, 0, lr.Pitch);
+  m_YUY2Texture.Register(lr.pBits);
+  m_RGBTexture->UnlockRect(0);
+
+  ClearYUY2Texture();
   CLog::Log(LOGDEBUG, "Created yuy2 textures");
   return true;
 }
 
 void CComboRenderer::ManageTextures()
 {
-  CXBoxRenderer::ManageTextures();
-  //use 1 buffer in fullscreen mode and 2 buffers in windowed mode
+  //use 1 buffer in fullscreen mode and 0 buffers in windowed mode
   if (g_graphicsContext.IsFullScreenVideo())
   {
-    // Check our YUY2 buffers - need two of these...
-    if (m_NumYUY2Buffers < NUM_BUFFERS)
-    {
-      CreateYUY2Textures();
-      // if paused, copy our YV12 textures into our YUY2 textures
-      if (g_application.m_pPlayer && g_application.m_pPlayer->IsPaused())
-      {
-        m_iYUVDecodeBuffer = 1;
-        YV12toYUY2();
-      }
-      m_iYUVDecodeBuffer = 0;
-      m_iYUVRenderBuffer = 0;
-      m_NumYUY2Buffers = NUM_BUFFERS;
+    if (!m_RGBTexture)
+    { // we need to create the YUV texture
+      CreateYUY2Texture();
     }
   }
   else
   {
-    // Check YUY2 buffers - don't need any
-    if (m_NumYUY2Buffers > 0)
-    {
-      DeleteYUY2Textures();
-      m_iYUVDecodeBuffer = 0;
-      m_iYUVRenderBuffer = 0;
-      m_NumYUY2Buffers = 0;
+    if (m_RGBTexture)
+    { // don't need the YUV texture in the GUI
+      DeleteYUY2Texture();
     }
   }
+  CXBoxRenderer::ManageTextures();
 }
 
 void CComboRenderer::ManageDisplay()
@@ -186,16 +160,6 @@ unsigned int CComboRenderer::Configure(unsigned int width, unsigned int height, 
   return 0;
 }
 
-unsigned int CComboRenderer::GetImage(YV12Image *image)
-{
-  return CXBoxRenderer::GetImage(image);
-}
-
-void CComboRenderer::ReleaseImage()
-{
-  CXBoxRenderer::ReleaseImage();
-}
-
 void CComboRenderer::Update(bool bPauseDrawing)
 {
   CSingleLock lock(g_graphicsContext);
@@ -204,50 +168,19 @@ void CComboRenderer::Update(bool bPauseDrawing)
   CXBoxRenderer::Update(bPauseDrawing);
 }
 
-void CComboRenderer::PrepareDisplay()
-{
-  if (m_NumYUY2Buffers)
-  {
-    YV12toYUY2();
-    ++m_iYUVDecodeBuffer %= m_NumYUY2Buffers;
-  }
-  else
-  {
-    //This is when we not are in fullscreen
-    ++m_iYV12DecodeBuffer %= m_NumYV12Buffers;
-  }
-
-  m_bHasDimView = false;
-  CXBoxRenderer::PrepareDisplay();
-}
-
-unsigned int CComboRenderer::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
-{
-  return CXBoxRenderer::DrawSlice(src, stride, w, h, x, y);
-}
-
 void CComboRenderer::YV12toYUY2()
 {
-  if (!m_RGBTexture[m_iYUVDecodeBuffer]) return;
+  if (!m_RGBTexture) return;
+  int index = m_iYV12RenderBuffer;
 
-  while (m_RGBTexture[m_iYUVDecodeBuffer]->IsBusy())
-  {
-    if (m_RGBTexture[m_iYUVDecodeBuffer]->Lock)
-      m_pD3DDevice->BlockOnFence(m_RGBTexture[m_iYUVDecodeBuffer]->Lock);
-    else
-      Sleep(1);
-  }
-
-  CSingleLock lock(g_graphicsContext);
-  
-  ResetEvent( m_eventTexturesDone[m_iYUVDecodeBuffer] );
+  ResetEvent(m_eventTexturesDone[index]);
 
   // Do the YV12 -> YUY2 conversion.
   // ALWAYS use buffer 0 in this case (saves 12 bits/pixel)
-  m_pD3DDevice->SetTexture( 0, m_YTexture[0] );
-  m_pD3DDevice->SetTexture( 1, m_UTexture[0] );
-  m_pD3DDevice->SetTexture( 2, m_YTexture[0] );
-  m_pD3DDevice->SetTexture( 3, m_VTexture[0] );
+  m_pD3DDevice->SetTexture( 0, m_YUVTexture[index][FIELD_FULL][PLANE_Y] );
+  m_pD3DDevice->SetTexture( 1, m_YUVTexture[index][FIELD_FULL][PLANE_U] );
+  m_pD3DDevice->SetTexture( 2, m_YUVTexture[index][FIELD_FULL][PLANE_Y] );
+  m_pD3DDevice->SetTexture( 3, m_YUVTexture[index][FIELD_FULL][PLANE_V] );
 
   for (int i = 0; i < 4; ++i)
   {
@@ -275,7 +208,7 @@ void CComboRenderer::YV12toYUY2()
   m_pD3DDevice->SetPixelShader( m_hPixelShader );
   // Render the image
   LPDIRECT3DSURFACE8 pOldRT, pNewRT;
-  m_RGBTexture[m_iYUVDecodeBuffer]->GetSurfaceLevel(0, &pNewRT);
+  m_RGBTexture->GetSurfaceLevel(0, &pNewRT);
   m_pD3DDevice->GetRenderTarget(&pOldRT);
   m_pD3DDevice->SetRenderTarget(pNewRT, NULL);
 
@@ -325,35 +258,39 @@ void CComboRenderer::YV12toYUY2()
   m_pD3DDevice->KickPushBuffer();
 
   //Okey, when the gpu is done with the textures here, they are free to be modified again
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[m_iYUVDecodeBuffer]);
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[index]);
+
+  m_bHasDimView = false;
 }
 
 void CComboRenderer::Render()
 {
-  if (m_NumYUY2Buffers == 0)
+  if ( m_RGBTexture == NULL )
   {
-    //This is in fullscreen
     RenderLowMem();
   }
   else
   {
-    //always render the buffer that is not currently being decoded to.
-    if (!m_bHasDimView)
-      m_iYUVRenderBuffer = ((m_iYUVDecodeBuffer + 1) % m_NumYUY2Buffers);
+    YV12toYUY2();
 
-    if (!m_RGBTexture[m_iYUVRenderBuffer]) return;
     // Don't render if we are waiting an overlay event
     while (!m_pD3DDevice->GetOverlayUpdateStatus()) Sleep(1);
 
+    /* clear target area, otherwise we won't get any picture */
+    D3DRECT target;
+    target.x1 = rd.left;
+    target.x2 = rd.right;
+    target.y1 = rd.top;
+    target.y2 = rd.bottom;
+    m_pD3DDevice->Clear( 1L, &target, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
+
     LPDIRECT3DSURFACE8 pSurface;
-    m_YUY2Texture[m_iYUVRenderBuffer].GetSurfaceLevel(0, &pSurface);
+    m_YUY2Texture.GetSurfaceLevel(0, &pSurface);
     m_pD3DDevice->UpdateOverlay( pSurface, &rs, &rd, TRUE, m_clearColour );
     pSurface->Release();
   }
-  RenderOSD();
 
-  if (g_graphicsContext.IsFullScreenVideo())
-    g_application.RenderMemoryStatus();
+  CXBoxRenderer::Render();
 }
 
 unsigned int CComboRenderer::PreInit()
@@ -362,9 +299,7 @@ unsigned int CComboRenderer::PreInit()
   // May have to set clearColour non-zero in future for HW overlays method?
 //  if (!m_clearColour)
 //    m_clearColour = 0x010001;
-  m_NumYUY2Buffers = 0;
-  m_iYUVDecodeBuffer = 0;
-  m_iYUVRenderBuffer = 0;
+
   m_bHasDimView = false;
   // Create the pixel shader
   if (!m_hPixelShader)
@@ -393,15 +328,18 @@ unsigned int CComboRenderer::PreInit()
 
 void CComboRenderer::UnInit()
 {
-  CXBoxRenderer::UnInit();
+  CSingleLock lock(g_graphicsContext);
+
   m_pD3DDevice->EnableOverlay(FALSE);
-  DeleteYUY2Textures();
+  DeleteYUY2Texture();
 
   if (m_hPixelShader)
   {
     m_pD3DDevice->DeletePixelShader(m_hPixelShader);
     m_hPixelShader = 0;
   }
+
+  CXBoxRenderer::UnInit();
 }
 
 void CComboRenderer::CheckScreenSaver()
@@ -413,7 +351,7 @@ void CComboRenderer::CheckScreenSaver()
 
   if (g_application.m_bScreenSave && !m_bHasDimView)
   {
-    if ( D3D_OK == m_YUY2Texture[m_iYUVRenderBuffer].LockRect(0, &lr, NULL, 0 ))
+    if ( D3D_OK == m_YUY2Texture.LockRect(0, &lr, NULL, 0 ))
     {
       // Drop brightness of current surface to 20%
       DWORD strideScreen = lr.Pitch;
@@ -429,14 +367,14 @@ void CComboRenderer::CheckScreenSaver()
           pDest += 4;
         }
       }
-      m_YUY2Texture[m_iYUVRenderBuffer].UnlockRect(0);
+      m_YUY2Texture.UnlockRect(0);
 
       // Commit to screen
       CSingleLock lock(g_graphicsContext);
 
       while (!m_pD3DDevice->GetOverlayUpdateStatus()) Sleep(1);
       LPDIRECT3DSURFACE8 pSurface;
-      m_YUY2Texture[m_iYUVDecodeBuffer].GetSurfaceLevel(0, &pSurface);
+      m_YUY2Texture.GetSurfaceLevel(0, &pSurface);
       m_pD3DDevice->UpdateOverlay( pSurface, &rs, &rd, TRUE, m_clearColour );
       pSurface->Release();
     }
@@ -457,7 +395,7 @@ void CComboRenderer::SetupScreenshot()
     return ;
   }
   D3DLOCKED_RECT lr, lr2;
-  m_YUY2Texture[m_iYUVRenderBuffer].LockRect(0, &lr, NULL, 0);
+  m_YUY2Texture.LockRect(0, &lr, NULL, 0);
   pRGB->LockRect(0, &lr2, NULL, 0);
   // convert to RGB via software converter
   BYTE *s = (BYTE *)lr.pBits;
@@ -473,7 +411,7 @@ void CComboRenderer::SetupScreenshot()
     s += lr.Pitch;
     d += dpitch;
   }
-  m_YUY2Texture[m_iYUVRenderBuffer].UnlockRect(0);
+  m_YUY2Texture.UnlockRect(0);
   pRGB->UnlockRect(0);
   // ok - now lets dump the RGB texture to a file to test
   // ok, now this needs to be rendered to the screen

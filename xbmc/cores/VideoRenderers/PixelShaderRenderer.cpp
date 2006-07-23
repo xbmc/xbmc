@@ -34,19 +34,11 @@ unsigned int CPixelShaderRenderer::Configure(unsigned int width, unsigned int he
   return 0;
 }
 
-void CPixelShaderRenderer::PrepareDisplay()
-{
-  ++m_iYV12DecodeBuffer %= m_NumYV12Buffers;
-  CXBoxRenderer::PrepareDisplay();
-}
 
 void CPixelShaderRenderer::Render()
 {
   // this is the low memory renderer
   RenderLowMem();
 
-  RenderOSD();
-
-  if (g_graphicsContext.IsFullScreenVideo())
-    g_application.RenderMemoryStatus();
+  CXBoxRenderer::Render();
 }
