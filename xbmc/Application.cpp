@@ -2949,6 +2949,9 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     haveTimes = dbs.GetStackTimes(item.m_strPath, times);
     dbs.Close();
   }
+
+  if (m_pPlayer) SAFE_DELETE(m_pPlayer);
+
   // calculate the total time of the stack
   CStackDirectory dir;
   dir.GetDirectory(item.m_strPath, m_currentStack);
@@ -2959,15 +2962,32 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       m_currentStack[i]->m_lEndOffset = times[i];
     else
     {
-      if (!PlayFile(*m_currentStack[i], true))
+      EPLAYERCORES eNewCore = m_eForcedNextPlayer;
+      if (eNewCore == EPC_NONE)
+        eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
+
+      m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
+      if(!m_pPlayer) 
       {
         m_currentStack.Clear();
         return false;
       }
+
+      CPlayerOptions options;
+      options.identify = true;
+    
+      if (!m_pPlayer->OpenFile(*m_currentStack[i], options))
+      {
+        m_currentStack.Clear();
+        return false;
+      }
+
       totalTime += (long)GetTotalTime();
-      m_currentStack[i]->m_lEndOffset = totalTime;
-      if (m_pPlayer)
-        m_pPlayer->CloseFile();
+
+      m_pPlayer->CloseFile();
+      SAFE_DELETE(m_pPlayer);
+
+      m_currentStack[i]->m_lEndOffset = totalTime;      
       times.push_back(totalTime);
     }
   }
@@ -2980,6 +3000,9 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     }
   }
   m_itemCurrentFile = item;
+  m_currentStackPosition = 0;
+  m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used
+
   if (item.m_lStartOffset)
   {
     // work out where to seek to
@@ -2996,7 +3019,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       }
     }
   }
-  m_currentStackPosition = 0;
+  
   return PlayFile(*m_currentStack[0], true);
 }
 
@@ -3005,7 +3028,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsPlayList())
     return false;
 
-  m_iPlaySpeed = 1;
   if (!bRestart)
   {
     OutputDebugString("new file set audiostream:0\n");
@@ -3020,24 +3042,25 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       dbs.GetVideoSettings(item.m_strPath, g_stSettings.m_currentVideoSettings);
       dbs.Close();
     }
+
+    m_itemCurrentFile = item;
+    m_nextPlaylistItem = -1;
   }
 
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
+  // will recall with restart set to true
   if (item.IsStack())
-  {
     return PlayStack(item, bRestart);
-  }
-  
-  EPLAYERCORES eNewCore = EPC_NONE;
 
+  EPLAYERCORES eNewCore = EPC_NONE;
   if (bRestart && m_eCurrentPlayer != EPC_NONE)
     eNewCore = m_eCurrentPlayer;
   else if (m_eForcedNextPlayer != EPC_NONE)
     eNewCore = m_eForcedNextPlayer;
   else
     eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
-  
+
   // reset any forced player
   m_eForcedNextPlayer = EPC_NONE;
 
@@ -3055,7 +3078,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       m_pPlayer = NULL;
     }
   }
-
+  
   if (!m_pPlayer)
   {
     m_eCurrentPlayer = eNewCore;
@@ -3068,11 +3091,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return false;
   }
 
-  if (!bRestart)
-    m_itemCurrentFile = item;
-  m_nextPlaylistItem = -1;
+  CPlayerOptions options;
+  options.starttime = item.m_lStartOffset * 1000 / 75;
 
-  bool bResult = m_pPlayer->OpenFile(item, item.m_lStartOffset * 1000 / 75);
+  bool bResult = m_pPlayer->OpenFile(item, options);
   if (bResult)
   {
     // reset the screensaver

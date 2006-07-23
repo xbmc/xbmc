@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-07-2006 changed: made seamless stacking quicker to startup with mplayer by not initing codecs or audio/video outputs and disabled caching of subtitles
  - 20-07-2006 fixed: Internet not connected message even if connected. (added return code 200)
  - 19-07-2006 fixed: [ 1524849 ] Screensaver unhiding on next song play
  - 19-07-2006 changed: removed DCHP IP from SystemInfo, and some other little changes
