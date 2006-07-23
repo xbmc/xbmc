@@ -1,15 +1,40 @@
 #ifndef XBOX_RENDERER
 #define XBOX_RENDERER
 
-#define NUM_BUFFERS      2
+//#define MP_DIRECTRENDERING
+
+#ifdef MP_DIRECTRENDERING
+#define NUM_BUFFERS 3
+#else
+#define NUM_BUFFERS 2
+#endif
+
+#define MAX_PLANES 3
+#define MAX_FIELDS 3
+
+#define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 
 typedef struct YV12Image
 {
-  BYTE *plane[3];
-  unsigned int stride[3];
-  unsigned int width;
-  unsigned int height;
+  BYTE *   plane[MAX_PLANES];
+  unsigned stride[MAX_PLANES];
+  unsigned width;
+  unsigned height;
+  unsigned flags;
+
+  unsigned cshift_x; /* this is the chroma shift used */
+  unsigned cshift_y;
 } YV12Image;
+
+#define AUTOSOURCE -1
+
+#define IMAGE_FLAG_WRITING   0x01 /* image is in use after a call to GetImage, caller may be reading or writing */
+#define IMAGE_FLAG_READING   0x02 /* image is in use after a call to GetImage, caller is only reading */
+#define IMAGE_FLAG_DYNAMIC   0x04 /* image was allocated due to a call to GetImage */
+#define IMAGE_FLAG_RESERVED  0x08 /* image is reserved, must be asked for specifically used to preserve images */
+
+#define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
+
 
 struct DRAWRECT
 {
@@ -29,7 +54,7 @@ static enum EFIELDSYNC
 static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX2;
 
-class CXBoxRenderer : private CThread
+class CXBoxRenderer
 {
 public:
   CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice);
@@ -43,23 +68,21 @@ public:
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
-
-  // Functions called from mplayer
   virtual void WaitForFlip();
+
+  // Player functions
   virtual unsigned int QueryFormat(unsigned int format) { return 0; };
-  virtual unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);
-  virtual unsigned int GetImage(YV12Image *image);
-  // ReleaseImage().  Called when the player has finished with the image from GetImage()
-  // useful to do any postprocessing stuff (change of data formats etc.) in preparation
-  // for FlipPage() without loading FlipPage() with code.
-  virtual void ReleaseImage();
-  virtual unsigned int PutImage(YV12Image *image);
-  virtual unsigned int DrawFrame(unsigned char *src[]);
+  virtual unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);  
+  virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
+  virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void FlipPage(bool bAsync = false);
+  virtual void         DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
+  virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
-  virtual void UnInit();
-  virtual void DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
+  virtual void         UnInit();
+  virtual void         Reset(); /* resets renderer after seek for example */
+
+
   virtual int GetNormalDisplayWidth() { return m_iNormalDestWidth; }
   virtual int GetNormalDisplayHeight() { return (int)(m_iNormalDestWidth / (m_iSourceWidth / (float)m_iSourceHeight)); }
   virtual void RenderBlank();
@@ -68,13 +91,8 @@ public:
 
   void SetFieldSync(EFIELDSYNC mSync);
 
-  virtual void PrepareDisplay();
-
-
-  int GetAsyncFlipTime() { return m_iAsyncFlipTime; } ;
-
 protected:
-  virtual void Render() {};
+  virtual void Render();
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
   void CalculateFrameAspectRatio(int desired_width, int desired_height);
   virtual void ManageDisplay();
@@ -91,11 +109,12 @@ protected:
   void ClearYV12Texture(int index);
   bool CreateYV12Texture(int index);
   void CopyYV12Texture(int dest);
+  int  NextYV12Texture();
 
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem();
   static const DWORD FVF_YV12VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX3;
-  int m_iYV12DecodeBuffer;
+  int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
 
   float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
@@ -118,23 +137,29 @@ protected:
   float m_OSDWidth;
   float m_OSDHeight;
   DRAWRECT m_OSDRect;
-  int m_iOSDBuffer;
-  bool m_OSDRendered;
+  int m_iOSDRenderBuffer;
   int m_iOSDTextureWidth;
   int m_iOSDTextureHeight[NUM_BUFFERS];
   int m_NumOSDBuffers;
 
-  // YV12 decoder textures
-  LPDIRECT3DTEXTURE8 m_YTexture[NUM_BUFFERS];
-  LPDIRECT3DTEXTURE8 m_UTexture[NUM_BUFFERS];
-  LPDIRECT3DTEXTURE8 m_VTexture[NUM_BUFFERS];
+  // Raw data used by renderer
+  YV12Image m_image[NUM_BUFFERS];
 
-  // Deinterlace/reinterlace fields for upsampling
-  D3DTexture m_YFieldTexture[NUM_BUFFERS];
-  D3DTexture m_UFieldTexture[NUM_BUFFERS];
-  D3DTexture m_VFieldTexture[NUM_BUFFERS];
-  unsigned int m_YFieldPitch;
-  unsigned int m_UVFieldPitch;
+  typedef LPDIRECT3DTEXTURE8 YUVPLANES[MAX_PLANES];
+  typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
+  typedef YUVFIELDS          YUVBUFFERS[NUM_BUFFERS];
+
+  #define PLANE_Y 0
+  #define PLANE_U 1
+  #define PLANE_V 2
+
+  #define FIELD_FULL 0
+  #define FIELD_ODD 1
+  #define FIELD_EVEN 2
+
+  // YV12 decoder textures  
+  // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines  
+  YUVBUFFERS m_YUVTexture;
 
   // render device
   LPDIRECT3DDEVICE8 m_pD3DDevice;
@@ -150,13 +175,6 @@ protected:
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
   HANDLE m_eventOSDDone[NUM_BUFFERS];
 
-  // render thread
-  CEvent m_eventFrame;
-  bool m_bPrepared;
-
-  int m_iAsyncFlipTime; //Time of an average flip in milliseconds
-
-  void Process();
 };
 
 #endif

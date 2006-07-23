@@ -27,21 +27,15 @@
 
 //Uncomment line here to allow direct rendering
 //Disabling for now.. the code below works, however it doesn't seem
-//to be any gain in using it.. atleast not the way it is now
-//pp goes slower for some reason. i believe it's reading back data
-//even thou the mp_imgflag_readable hasn't been set
-//and since we are using video memmory reading from it is slow as hell
-//also there is a bug in ffmpeg that causes MP_IMGFLAG_ACCEPT_STRIDE to be 
-//set even thou it can't handle a different stride than width.
-
-//#define MP_DIRECTRENDERING
+//#define MP_DIRECTRENDERING  // should be defined in XboxRenderer.h instead
 
 #ifdef MP_DIRECTRENDERING
-static bool m_bImageLocked = false;
 static bool m_bAllowDR = true;
+static unsigned int m_iBuffer = -1;
 #endif
 
 static int m_iLastFieldFlags = 0;
+static EFIELDSYNC m_iFieldSync = FS_NONE;
 
 void video_uninit(void);
 
@@ -141,7 +135,11 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w, 
 static void video_flip_page(void)
 {
   //Do this async to let mplayer keep better sync
-  g_renderManager.FlipPage(true);
+#ifdef MP_DIRECTRENDERING
+  g_renderManager.FlipPage(1, m_iBuffer, m_iFieldSync);
+#else
+  g_renderManager.FlipPage(1, -1, m_iFieldSync);
+#endif
 }
 /********************************************************************************************************
   draw_frame(): this is the older interface, this displays only complete
@@ -151,8 +149,7 @@ static void video_flip_page(void)
 */
 static unsigned int video_draw_frame(unsigned char *src[])
 {
-  return VO_FALSE; //SHOULD NEVER HAPPEN
-  return g_renderManager.DrawFrame(src);
+  return VO_FALSE;
 }
 
 /********************************************************************************************************
@@ -165,7 +162,7 @@ static unsigned int video_draw_frame(unsigned char *src[])
       0x04  - allow software scaling (-zoom)
       0x08  - flipping (-flip)
       They're defined as VOFLAG_* (see libvo/video_out.h)
-      
+
       IMPORTAMT NOTE: config() may be called 0 (zero), 1 or more (2,3...)
       times between preinit() and uninit() calls. You MUST handle it, and
       you shouldn't crash at second config() call or at uninit() without
@@ -179,7 +176,6 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 {
   OutputDebugString("video_config()\n");
 #ifdef MP_DIRECTRENDERING
-  m_bImageLocked = false;
   m_bAllowDR = true;
 #endif
 
@@ -204,60 +200,79 @@ static unsigned int video_control(unsigned int request, void *data, ...)
     //look at vo_x11, vo_sdl, vo_xv or mga_common.
 
 #ifdef MP_DIRECTRENDERING
-
-      if( !m_bAllowDR ) return VO_FALSE;
-
       mp_image_t *mpi = (mp_image_t*)data;
-      
-      //We have several buffers, can't direct render right now..
-      
-      if( mpi->type == MP_IMGTYPE_STATIC && g_renderManager.m_pRenderer->GetBuffersCount() > 1 ) return VO_FALSE;
 
-      //We only work with planar data
-      if( !(mpi->flags & MP_IMGFLAG_PLANAR) ) return VO_FALSE;
-      
-      if( mpi->flags & MP_IMGFLAG_READABLE )
-      { //Okey codec will read back data..
-        //but we normally don't have enough buffers for anything else than just normal I frames
-        //also not sure if the memory our textures are in is fast enough to read from
-        if( mpi->type == MP_IMGTYPE_IPB )
-        {
-          //TODO
-          return VO_FALSE;
-        }
-        else if( mpi->type == MP_IMGTYPE_IP )
-        {
-          //TODO
-          return VO_FALSE;
-        }
+      if( !m_bAllowDR )
+      {
+        mpi->flags &= ~MP_IMGFLAG_DIRECT;
+        return VO_FALSE;
+      }
+
+      /* only planar yuv data */
+      if( !(mpi->flags & MP_IMGFLAG_PLANAR) )
+        return VO_FALSE;
+
+      /* check what format we support */
+      if( mpi->imgfmt != IMGFMT_YV12 )
+        return VO_FALSE;
+
+      /* we always need codec to accept stride, due to our very special stride restrictions */
+      if( !(mpi->flags&MP_IMGFLAG_ACCEPT_STRIDE) )
+        return VO_FALSE;
+
+      /* this could be handled with some changes in renderer           *
+       * common stride could be a trouble thou as it would require     *
+       * double the alignment on the first stride to keep support      *
+       * for interlaced scaling. i suppose we could make that optional */
+      if( mpi->flags & MP_IMGFLAG_COMMON_STRIDE)
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Direct rendering disabled due to need of common stride");
+        return VO_FALSE;
       }
 
       YV12Image image;
-      if( g_renderManager.GetImage(&image) )
+      unsigned index = AUTOSOURCE;
+
+      /* if image should be presereved, we must get same image again */
+      if(mpi->priv && mpi->flags & MP_IMGFLAG_PRESERVE)
+        if( mpi->priv )
+          index = (int)mpi->priv - 1;
+
+      /* wish i could know when ffmpeg is doing a reget instead *
+       * of a get, since it only needs read access then         */
+      index = g_renderManager.GetImage(&image, index, false);
+      if( index >= 0 )
       {
-        if((mpi->width==image.stride[0]) || (mpi->flags&(MP_IMGFLAG_ACCEPT_STRIDE|MP_IMGFLAG_ACCEPT_WIDTH)))
-	      {
-		      //IMGFMT_YV12 
-			    mpi->planes[2] = image.plane[2];
+        if( mpi->flags & MP_IMGFLAG_SWAPPED )
+        {
+			    mpi->planes[2] = image.plane[0];
 	        mpi->planes[1] = image.plane[1];
-          mpi->planes[0] = image.plane[0];
+          mpi->planes[0] = image.plane[2];
+
+          mpi->stride[2] = image.stride[0];
+          mpi->stride[1] = image.stride[1];
+          mpi->stride[0] = image.stride[2];
+        }
+        else
+        {
+			    mpi->planes[0] = image.plane[0];
+	        mpi->planes[1] = image.plane[1];
+          mpi->planes[2] = image.plane[2];
 
           mpi->stride[0] = image.stride[0];
           mpi->stride[1] = image.stride[1];
           mpi->stride[2] = image.stride[2];
-
-          //Okey, everything seem fine for direct rendering
-          m_bImageLocked = true;
-          mpi->flags |= MP_IMGFLAG_DIRECT;
-          return VO_TRUE;
         }
 
-        //Can't direct render so release our image again
-        g_renderManager.ReleaseImage();
+        /* everything seem fine for direct rendering */
+        mpi->flags |= MP_IMGFLAG_DIRECT;
+        mpi->priv = (void*)(index+1);
+        return VO_TRUE;
+
       }
 #endif
 
-      return VO_FALSE; 
+      return VO_FALSE;
     }
     /********************************************************************************************************
        VOCTRL_QUERY_FORMAT  -  queries if a given pixelformat is supported.
@@ -278,7 +293,7 @@ static unsigned int video_control(unsigned int request, void *data, ...)
       unsigned int format = *((unsigned int*)data);
       if (format == IMGFMT_YV12)
         return VFCAP_CSP_SUPPORTED_BY_HW | VFCAP_CSP_SUPPORTED | VFCAP_OSD | VFCAP_HWSCALE_UP | VFCAP_HWSCALE_DOWN | VFCAP_ACCEPT_STRIDE;
-     
+
       return 0;
     }
   case VOCTRL_DRAW_IMAGE:
@@ -296,36 +311,38 @@ static unsigned int video_control(unsigned int request, void *data, ...)
          m_iLastFieldFlags & MP_IMGFIELD_REPEAT_FIRST && !(m_iLastFieldFlags & MP_IMGFIELD_INTERLACED))
       {
           //This is a workaround for some stupid encoders that doesn't set the progressive frame flag properly
-          g_renderManager.SetFieldSync(FS_NONE);
+          m_iFieldSync = FS_NONE;
       }
       else if( mpi->fields & MP_IMGFIELD_INTERLACED )
       {
         if( mpi->fields & MP_IMGFIELD_ORDERED )
-        { 
+        {
           if( mpi->fields & MP_IMGFIELD_TOP_FIRST )
-            g_renderManager.SetFieldSync(FS_ODD);
+            m_iFieldSync = FS_ODD;
           else
-            g_renderManager.SetFieldSync(FS_EVEN);
+            m_iFieldSync = FS_EVEN;
         }
         else
-          g_renderManager.SetFieldSync(FS_ODD);
+          m_iFieldSync = FS_ODD;
       }
       else
-        g_renderManager.SetFieldSync(FS_NONE);
+        m_iFieldSync = FS_NONE;
 
       m_iLastFieldFlags = mpi->fields;
 
 #ifdef MP_DIRECTRENDERING
-      if( m_bImageLocked )
+      if( mpi->priv )
       {
         //We where direct rendering last frame, release image here
-        g_renderManager.ReleaseImage();
-        m_bImageLocked = false;
+        m_iBuffer = (int)mpi->priv - 1;
+        if(mpi->flags & MP_IMGFLAG_PRESERVE)
+          g_renderManager.ReleaseImage(m_iBuffer, true);
+        else
+          g_renderManager.ReleaseImage(m_iBuffer, false);
 
         if (mpi->flags & MP_IMGFLAG_DIRECT)
         {
           // direct rendering.. everything should already be fine
-          g_renderManager.PrepareDisplay();
           return VO_TRUE;
         }
         else
@@ -333,23 +350,28 @@ static unsigned int video_control(unsigned int request, void *data, ...)
           //Crap, we enabled directrendering in last call, but apperently something went wrong
           CLog::Log(LOGWARNING, "Direct Rendering Failed, Disabling for future frames");
           m_bAllowDR = false;
+          mpi->priv = NULL;
         }
       }
 #endif
 
       if (mpi->flags & MP_IMGFLAG_DRAW_CALLBACK)
       {
-        g_renderManager.PrepareDisplay();
         return VO_TRUE;         // done
       }
       if (mpi->flags & MP_IMGFLAG_PLANAR)
       {
         g_renderManager.DrawSlice(mpi->planes, (int*)(mpi->stride), mpi->w, mpi->h, 0, 0);
-        g_renderManager.PrepareDisplay();
         return VO_TRUE;
       }
       return VO_FALSE;
     }
+  case VOCTRL_RESET:
+    {
+      g_renderManager.Reset();
+      return VO_TRUE;
+    }
+    break;
   case VOCTRL_FULLSCREEN:
     {
       //TODO
@@ -357,7 +379,6 @@ static unsigned int video_control(unsigned int request, void *data, ...)
     }
   case VOCTRL_PAUSE:
   case VOCTRL_RESUME:
-  case VOCTRL_RESET:
   case VOCTRL_GUISUPPORT:
   case VOCTRL_SET_EQUALIZER:
   case VOCTRL_GET_EQUALIZER:

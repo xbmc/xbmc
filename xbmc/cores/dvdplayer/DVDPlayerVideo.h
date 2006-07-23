@@ -116,50 +116,5 @@ protected:
   DVDVideoPicture* m_pTempOverlayPicture;
   
   CRITICAL_SECTION m_critCodecSection;
-
-public:
-  class CPresentThread : public CThread
-  {
-  public:
-    CPresentThread( CDVDClock *pClock )
-    {           
-      m_pClock = pClock;
-      m_iTimestamp = 0i64;
-      m_iDelay = 0;
-      CThread::Create();
-      CThread::SetPriority(THREAD_PRIORITY_TIME_CRITICAL);      
-      CThread::SetName("CPresentThread");
-    }
-
-    virtual ~CPresentThread() { StopThread(); }
-
-    virtual void StopThread()
-    {
-      CThread::m_bStop = true;
-      m_eventFrame.Set();
-
-      CThread::StopThread();
-    }
-
-    // aborts any pending displays.
-    void AbortPresent() { m_iTimestamp = 0i64; } 
-
-    // delay before we want to present this picture
-    void Present(__int64 iTimeStamp, EFIELDSYNC m_OnField); 
-
-    // delay between when we wanted frame to be presented and it acually was
-    __int64 GetDelay() { return m_iDelay; }
-
-  protected:
-
-    virtual void Process();
-
-  private:
-    __int64 m_iTimestamp;
-    __int64 m_iDelay;
-    CCriticalSection m_critSection;
-    CEvent m_eventFrame;
-    CDVDClock *m_pClock;
-  } m_PresentThread;
-
 };
+
