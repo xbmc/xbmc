@@ -3042,7 +3042,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       dbs.GetVideoSettings(item.m_strPath, g_stSettings.m_currentVideoSettings);
       dbs.Close();
     }
-
+    
+    m_iPlaySpeed = 1;
     m_itemCurrentFile = item;
     m_nextPlaylistItem = -1;
   }
