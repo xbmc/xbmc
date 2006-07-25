@@ -112,16 +112,20 @@ unsigned int CAudioDecoder::GetDataSize()
   // check for end of file and end of buffer
   if (m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < PACKET_SIZE)
     m_status = STATUS_ENDED;
+#ifdef USE_FLOAT_BUFFERS
+  return m_pcmBuffer.GetMaxReadSize() / sizeof(float);
+#else
   return m_pcmBuffer.GetMaxReadSize();
+#endif
 }
 
 void *CAudioDecoder::GetData(unsigned int size)
 {
-  if (size > PACKET_SIZE)
+  if (size > OUTPUT_SAMPLES)
   {
-    CLog::Log(LOGWARNING, "CAudioDecoder::GetData() more bytes (%i) requested than we have to give (%i)!", size, PACKET_SIZE);
-    ASSERT(true);
-    size = PACKET_SIZE;
+    CLog::Log(LOGWARNING, "CAudioDecoder::GetData() more bytes/samples (%i) requested than we have to give (%i)!", size, OUTPUT_SAMPLES);
+    assert(false);
+    size = OUTPUT_SAMPLES;
   }
   if (m_outputBufferSize > size)
   {
@@ -129,13 +133,25 @@ void *CAudioDecoder::GetData(unsigned int size)
     return m_outputBuffer;
   }
 
+#ifdef USE_FLOAT_BUFFERS
+  if (m_pcmBuffer.ReadBinary( (char *)(m_outputBuffer + m_outputBufferSize), (size - m_outputBufferSize) * sizeof(float)))
+#else
   if (m_pcmBuffer.ReadBinary( (char *)m_outputBuffer + m_outputBufferSize, size - m_outputBufferSize))
+#endif
   {
     m_outputBufferSize = 0;
     // check for end of file + end of buffer
-    if ( m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < PACKET_SIZE)
+#ifdef USE_FLOAT_BUFFERS
+    if ( m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < OUTPUT_SAMPLES * sizeof(float))
+#else
+    if ( m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < OUTPUT_SAMPLES)
+#endif
     {
+#ifdef USE_FLOAT_BUFFERS
+      CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %i bytes left", m_pcmBuffer.GetMaxReadSize() * sizeof(float));
+#else
       CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %i bytes left", m_pcmBuffer.GetMaxReadSize());
+#endif
       m_status = STATUS_ENDED;
     }
     return m_outputBuffer;
@@ -157,6 +173,75 @@ void CAudioDecoder::PrefixData(void *data, unsigned int size)
     CLog::Log(LOGWARNING, "CAudioDecoder::PrefixData - losing %i bytes of audio data in track transistion", size - m_outputBufferSize);
 }
 
+#ifdef USE_FLOAT_BUFFERS
+int CAudioDecoder::ReadSamples(int numsamples)
+{
+  if (m_status == STATUS_NO_FILE || m_status == STATUS_ENDING || m_status == STATUS_ENDING)
+    return RET_SLEEP;             // nothing loaded yet
+
+  // start playing once we're fully queued and we're ready to go
+  if (m_status == STATUS_QUEUED && m_canPlay)
+    m_status = STATUS_PLAYING;
+
+  // grab a lock to ensure the codec is created at this point.
+  CSingleLock lock(m_critSection);
+
+  // Read in more data
+  int maxsize = min(INPUT_SAMPLES, m_pcmBuffer.GetMaxWriteSize() / sizeof(float));
+  numsamples = min(numsamples, maxsize);
+  numsamples -= (numsamples % m_codec->m_Channels);  // make sure it's divisible by our number of channels
+  if ( numsamples )
+  {
+    int actualsamples = 0;
+    // if our codec sends floating point, then read it
+    int result = READ_ERROR;
+    if (m_codec->HasFloatData())
+      result = m_codec->ReadSamples(m_inputBuffer, numsamples, &actualsamples);
+    else
+      result = ReadPCMSamples(m_inputBuffer, numsamples, &actualsamples);
+
+    if ( result != READ_ERROR && actualsamples ) 
+    {
+      // do any post processing of the audio (eg replaygain etc.)
+      ProcessAudio(m_inputBuffer, actualsamples);
+
+      // move it into our buffer
+      m_pcmBuffer.WriteBinary((char *)m_inputBuffer, actualsamples * sizeof(float));
+
+      // update status
+      if (m_status == STATUS_QUEUING && m_pcmBuffer.GetMaxReadSize() > m_pcmBuffer.Size() * 0.9)
+      {
+        CLog::Log(LOGINFO, "AudioDecoder: File is queued");
+        m_status = STATUS_QUEUED;
+      }
+
+      if (result == READ_EOF) // EOF reached
+      {
+        // setup ending if we're within set time of the end (currently just EOF)
+        m_eof = true;
+        if (m_status < STATUS_ENDING)
+          m_status = STATUS_ENDING;
+      }
+
+      return RET_SUCCESS;
+    }
+    if (result == READ_ERROR)
+    {
+      // error decoding, lets finish up and get out
+      CLog::Log(LOGERROR, "CAudioDecoder: Error while decoding %i", result);
+      return RET_ERROR;
+    }
+    if (result == READ_EOF)
+    {
+      m_eof = true;
+      // setup ending if we're within set time of the end (currently just EOF)
+      if (m_status < STATUS_ENDING)
+        m_status = STATUS_ENDING;
+    }
+  }
+  return RET_SLEEP; // nothing to do
+}
+#else
 int CAudioDecoder::ReadData(int sendsize)
 {
   if (m_status == STATUS_NO_FILE || m_status == STATUS_ENDING || m_status == STATUS_ENDING)
@@ -216,10 +301,27 @@ int CAudioDecoder::ReadData(int sendsize)
   }
   return RET_SLEEP; // nothing to do
 }
+#endif
 
 #define MAX_SHORT_VALUE 32767
 #define MIN_SHORT_VALUE -32768
 
+#ifdef USE_FLOAT_BUFFERS
+void CAudioDecoder::ProcessAudio(float *data, int numsamples)
+{
+  if (g_guiSettings.m_replayGain.iType != REPLAY_GAIN_NONE)
+  {
+    float gainFactor = GetReplayGain();
+    for (int i = 0; i < numsamples; i++)
+    {
+      data[i] *= gainFactor;
+      // check the range (is this needed here?)
+      if (data[i] > 1.0f) data[i] = 1.0f;
+      if (data[i] < -1.0f) data[i] = -1.0f;
+    }
+  }
+}
+#else
 void CAudioDecoder::ProcessAudio(void *data, int size)
 {
   if (size & 1)
@@ -241,6 +343,7 @@ void CAudioDecoder::ProcessAudio(void *data, int size)
     *shortData++ = (short)result;
   }
 }
+#endif
 
 float CAudioDecoder::GetReplayGain()
 {
@@ -284,3 +387,34 @@ float CAudioDecoder::GetReplayGain()
   }
   return replaygain;
 }
+
+int CAudioDecoder::ReadPCMSamples(float *buffer, int numsamples, int *actualsamples)
+{
+  // convert samples to bytes
+  numsamples *= (m_codec->m_BitsPerSample / 8);
+
+  // read in our PCM data
+  int result = m_codec->ReadPCM(m_pcmInputBuffer, numsamples, actualsamples);
+
+  // convert to floats (-1 ... 1) range
+  int i;
+  switch (m_codec->m_BitsPerSample)
+  {
+  case 8:
+    for (i = 0; i < *actualsamples; i++)
+      m_inputBuffer[i] = 1.0f / 0x7f * m_pcmInputBuffer[i];
+    break;
+  case 16:
+    *actualsamples /= 2;
+    for (i = 0; i < *actualsamples; i++)
+      m_inputBuffer[i] = 1.0f / 0x7fff * ((short *)m_pcmInputBuffer)[i];
+    break;
+  case 24:
+    *actualsamples /= 3;
+    for (i = 0; i < *actualsamples; i++)
+      m_inputBuffer[i] = 1.0f / 0x7fffff * (((int)m_pcmInputBuffer[3*i] << 0) | ((int)m_pcmInputBuffer[3*i+1] << 8) | (((int)((char *)m_pcmInputBuffer)[3*i+2]) << 16));
+    break;
+  }
+  return result;
+}
+
