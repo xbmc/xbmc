@@ -70,7 +70,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new YMCodec();
   else if (strFileType.Equals("wma"))
     return new WMACodec();
-  else if (strFileType.Equals("aiff"))
+  else if (strFileType.Equals("aiff") || strFileType.Equals("aif"))
     return new AIFFCodec();
 
   return NULL;
