@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-07-2006 changed: Make .aif play with the AIFFcodec in paplayer.
  - 25-07-2006 changed: Moved the paplayer chain to fully use floating point (speedup and possible quality boosts)
  - 25-07-2006 fixed: [ 1527036 ] My Programs shares show network-shares icons
  - 25-07-2006 fixed: [ 1526978 ] Movie info is no longer pulling the Cast data from IMDB
