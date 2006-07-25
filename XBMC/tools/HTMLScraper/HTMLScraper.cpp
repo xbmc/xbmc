@@ -459,18 +459,24 @@ extern "C"
 
 		if(pCast) 
 		{
-			char *pStart = strstr(pCast, " <tr>");
+			char *pStart = strstr(pCast, " <tr");
 			if(pStart)
 			{
         char cast[10000];
         strcpy(cast, "Cast overview:\n");
 
+        // OLD VERSION:
         // looking for: <td valign="top"><a href="/name/nm0004875/">Taye Diggs</a></td>
         // <tr><td valign="top"><a href="/name/nm0004875/">Taye Diggs</a></td><td valign="top" nowrap="1"> .... </td><td valign="top">The Bandleader</td></tr>
         // OR:
         // <tr><td valign="top"><a href="/name/nm0814639/">Pat Soper</a></td><td valign="top" nowrap="1"></td><td valign="top"></td></tr>
 
-        reg.RegComp("<tr><td valign=\"top\"><a href[^>]*>([^<]*)</a></td><td valign=\"top\" nowrap=\"1\">[. ]*</td><td valign=\"top\">([^<]*)</td></tr>");
+        // NEW VERSION (as at 25/07/2006)
+        // <td valign="middle"><a href="/name/nm0642338/">Willa O'Neill</a></td><td valign="middle" nowrap="1"> .... </td><td valign="middle">Emma</td></tr>
+        // OR:
+        // <td valign="middle"><a href="/name/nm0814639/">Pat Soper</a></td><td valign="middle" nowrap="1"></td><td valign="middle"></td></tr>
+
+        reg.RegComp("<td valign=\"middle\"><a href[^>]*>([^<]*)</a></td><td valign=\"middle\" nowrap=\"1\">[. ]*</td><td valign=\"middle\">([^<]*)</td></tr>");
         while (reg.RegFind(pStart) >= 0)
         {
           // found - decipher
@@ -479,7 +485,7 @@ extern "C"
           {
             strcat(cast, actor);
             char *role = reg.GetReplaceString("\\2");
-            if (role)
+            if (role && strlen(role))
             {
               strcat(cast, " as ");
               strcat(cast, role);
