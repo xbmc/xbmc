@@ -146,6 +146,47 @@ __int64 MPCCodec::Seek(__int64 iSeekTime)
   return iSeekTime;
 }
 
+int MPCCodec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
+{
+  if (!m_handle)
+    return READ_ERROR;
+  *actualsamples = 0;
+  // start by emptying out our frame buffer
+  int copied = min(m_sampleBufferSize, numsamples);
+  fast_memcpy(pBuffer, m_sampleBuffer, copied*sizeof(float));
+  numsamples -= copied;
+  m_sampleBufferSize -= copied;
+  *actualsamples = copied;
+  pBuffer += copied;
+
+  // copy down any additional data if we have some
+  if (m_sampleBufferSize)
+  { // didn't require as much as was in our sample buffer - copy data down and return.
+    memmove(m_sampleBuffer, &m_sampleBuffer[copied], m_sampleBufferSize * sizeof(float));
+    return READ_SUCCESS;
+  }
+
+  // emptied our sample buffer - let's fill it up again
+  int ret = m_dll.Read(m_handle, m_sampleBuffer, FRAMELEN * 2);
+  if (ret == -2)
+    return READ_EOF;
+  if (ret == -1)
+    return READ_ERROR;
+
+  // have valid float data - copy it across
+  copied = min(ret * 2, numsamples);
+  ASSERT(ret <= FRAMELEN * 2);
+
+  fast_memcpy(pBuffer, m_sampleBuffer, copied*sizeof(float));
+  *actualsamples += copied;
+  m_sampleBufferSize = ret * 2 - copied;
+  if (m_sampleBufferSize)
+  { // copy data down
+    memmove(m_sampleBuffer, &m_sampleBuffer[copied], m_sampleBufferSize * sizeof(float));
+  }
+  return READ_SUCCESS;
+}
+
 int MPCCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   if (!m_handle)
