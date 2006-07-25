@@ -26,6 +26,7 @@
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
 #include "FileSystem/StackDirectory.h"
+#include "FileSystem/VirtualPathDirectory.h"
 #include "GUIDialogFileBrowser.h"
 #include "MediaManager.h"
 #include <xbdm.h>
@@ -1162,6 +1163,17 @@ bool CUtil::IsRemote(const CStdString& strFile)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
   if (strProtocol == "cdda" || strProtocol == "iso9660") return false;
+  if (strProtocol == "virtualpath")
+  { // virtual paths need to be checked separately
+    CVirtualPathDirectory dir;
+    vector<CStdString> paths;
+    if (dir.GetPathes(strFile, paths))
+    {
+      for (unsigned int i = 0; i < paths.size(); i++)
+        if (IsRemote(paths[i])) return true;
+    }
+    return false;
+  }
   if ( !url.IsLocal() ) return true;
   return false;
 }
