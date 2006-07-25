@@ -2036,16 +2036,17 @@ bool CApplication::OnKey(CKey& key)
           action.wID = (WORD) key.GetButtonCode();
       }
       else 
-		// see if we've got an ascii key
-		if (g_Keyboard.GetAscii() != 0)
-			action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
-		else
-			action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
+    // see if we've got an ascii key
+    if (g_Keyboard.GetAscii() != 0)
+      action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
+   else
+      action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
     }
     else
       g_buttonTranslator.GetAction(iWin, key, action);
   }
-  CLog::Log(LOGDEBUG, __FUNCTION__": %i pressed, action is %i", key.GetButtonCode(), action.wID);
+  if (!key.IsAnalogButton())
+    CLog::Log(LOGDEBUG, __FUNCTION__": %i pressed, action is %i", key.GetButtonCode(), action.wID);
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
