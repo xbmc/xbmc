@@ -2561,7 +2561,7 @@ CStdString CSettings::GetDatabaseFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Database", folder);
-  
+
   return folder;
 }
 
