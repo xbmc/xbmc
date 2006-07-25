@@ -140,13 +140,22 @@ public:
   int Cssrc::PutData(unsigned char *pInData, int iSize);
 
   //---------------------------------------------------------------------------
-  // returns the amount of data read that the resampler will take in
+  // Put up to iSize samples of **FLOAT** data into our resampler
+  // returns the amount of data read in.
+  // if there is not enough data, it returns -1
+  // if we first need to do a GetData() it returns 0
+  //---------------------------------------------------------------------------
+  int Cssrc::PutFloatData(float *pInData, int numSamples);
+
+  //---------------------------------------------------------------------------
+  // returns the amount of data (or samples) that the resampler will take in
   // in one run of PutData()
   // if we first need to do a GetData() it returns 0.
   // if we can't take any data (eg downsampling, which is current disabled) it
   // returns -1
   //---------------------------------------------------------------------------
   int Cssrc::GetInputSize();
+  int Cssrc::GetInputSamples();
 
   int Cssrc::GetMaxInputSize() { return m_iMaxInputSize;};
   //---------------------------------------------------------------------------
@@ -226,6 +235,16 @@ private:
   //---------------------------------------------------------------------------
   int Cssrc::UpSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread);
 
+  //---------------------------------------------------------------------------
+  // Upsamples a buffer full of *FLOAT* rawindata
+  // returns the datalength
+  //---------------------------------------------------------------------------
+  int Cssrc::UpSampleFloatIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread);
+
+  //---------------------------------------------------------------------------
+  // Common routine for above upsampling routines
+  //---------------------------------------------------------------------------
+  int Cssrc::UpSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread);
 
   //---------------------------------------------------------------------------
   // Downsamples a buffer full of rawindata

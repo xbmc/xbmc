@@ -3201,7 +3201,7 @@ bool Cssrc::InitConverter(int OldFreq, int OldBPS, int Channels, int NewFreq, in
     return (true); // nothing to change so exit
   }
 
-  if (bps != 1 && bps != 2 && bps != 3)  // only 8 16 24 supported
+  if (bps != 1 && bps != 2 && bps != 3 && bps != 4)  // only 8 16 24 supported
     return (false);
 
   if (sfrq < dfrq)
@@ -3221,14 +3221,7 @@ bool Cssrc::InitConverter(int OldFreq, int OldBPS, int Channels, int NewFreq, in
 //---------------------------------------------------------------------------
 int Cssrc::UpSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread)
 {
-  int i, j;
-  double att = 0;
-  double gain = pow(10.0, -att / 20);
-
-  int ToRet = 0;
-
-  bool BreakOut = false;
-
+  int i;
 
   switch (bps)
   {
@@ -3257,9 +3250,33 @@ int Cssrc::UpSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead,
       inbuf[nch*inbuflen + i] = (1 / (REAL)0x7fffffff) * ((((int)rawinbuf[i * 4 ]) << 0 ) | (((int)rawinbuf[i * 4 + 1]) << 8 ) | (((int)rawinbuf[i * 4 + 2]) << 16) | (((int)((char *)rawinbuf)[i * 4 + 3]) << 24));
     break;
   }
-
   for (;i < nch*toberead2;i++)
     inbuf[nch*inbuflen + i] = 0;
+
+  return UpSampleCommon(pRetDataPtr, IsEof, toberead, toberead2, nsmplread);
+}
+
+int Cssrc::UpSampleFloatIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread)
+{
+  float *floatIn = (float *)rawinbuf;
+  fast_memcpy(inbuf + nch*inbuflen, floatIn, nsmplread*nch*sizeof(REAL));
+
+  // pad with zeros
+  for (int i = nsmplread*nch; i < nch*toberead2; i++)
+    inbuf[nch*inbuflen + i] = 0;
+
+  return UpSampleCommon(pRetDataPtr, IsEof, toberead, toberead2, nsmplread);
+}
+
+int Cssrc::UpSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread)
+{
+  int i, j;
+  double att = 0;
+  double gain = pow(10.0, -att / 20);
+
+  int ToRet = 0;
+
+  bool BreakOut = false;
 
   inbuflen += toberead2;
   sumread += nsmplread;
@@ -4009,7 +4026,7 @@ bool Cssrc::GetData(unsigned char *pOutData)
   return false;
 }
 
-int Cssrc::GetInputSize()
+int Cssrc::GetInputSamples()
 {
   // First check whether we have enough space in our output buffer, or whether they
   // should take data out of it first
@@ -4020,7 +4037,7 @@ int Cssrc::GetInputSize()
   {
     int toberead;
     toberead = (DWORD)(floor((double)n2b2 * sfrq / (dfrq * osf)) + 1 + n1x - inbuflen);
-    return toberead * bps * nch;
+    return toberead * nch;
   }
   else if (DownSampling)
   {
@@ -4028,8 +4045,79 @@ int Cssrc::GetInputSize()
   }
   else
   {
-    return m_iOutputBufferSize * bps / dbps;
+    return m_iOutputBufferSize / dbps;
   }
+}
+
+int Cssrc::GetInputSize()
+{
+  int size = GetInputSamples();
+  if (size < 0) return size;
+  return size * bps;
+}
+
+int Cssrc::PutFloatData(float *pInData, int numSamples)
+{
+  // First check whether we have enough space in our output buffer, or whether they
+  // should take data out of it first
+  if (m_iResampleBufferPos >= m_iOutputBufferSize)
+    return 0;  // need to take data out first!
+
+  // Copy the desired amount of data in, and resample it
+  if (UpSampling)
+  {
+    int toberead, toberead2;
+    toberead2 = toberead = (DWORD)(floor((double)n2b2 * sfrq / (dfrq * osf)) + 1 + n1x - inbuflen);
+
+    int iAmountToRead = toberead * nch;
+    // Check that we've got enough data
+    if (numSamples < iAmountToRead)
+      return -1;
+
+    // Doesn't currently support EOF reading
+    bool IsEOF(false);
+
+    //---run upsample-----
+    int nsmplread = toberead;
+    rawinbuf = (unsigned char *)pInData;
+    unsigned char *pOutData = NULL;
+    int iNewSamples = UpSampleFloatIn(&pOutData, IsEOF, toberead, toberead2, nsmplread);
+
+    // save data into our output buffer
+    if (iNewSamples)
+    {
+      fast_memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
+      m_iResampleBufferPos += iNewSamples;
+    }
+    return iAmountToRead;
+  }
+  else if (DownSampling)
+  { // unimplemented!
+    return 0;
+  }
+  else
+  { // just convert to the output bits per sample
+    if (dbps == 2)  // 16 bit
+    { // most likely for us - convert float -> short with rounding
+      short *pShort = (short *)m_pResampleBuffer;
+      float *pInput = (float *)pInData;
+      for (int i = 0; i < numSamples; i++)
+      {
+        float result = 32767.0f * pInput[i] + 0.5f;
+        if (result > 32767.0f)
+          *pShort++ = 32767;
+        else if (result < -32768.0f)
+          *pShort++ = -32768;
+        else
+          *pShort++ = (short)result;
+      }
+      m_iResampleBufferPos += numSamples * dbps;
+    }
+    else  // unimplemented
+      return 0;
+    return numSamples;
+  }
+  return 0;
 }
 
 // Need to alter for downsampling
