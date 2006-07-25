@@ -85,7 +85,6 @@ protected:
   virtual void Process();
   virtual void OnExit();
 
-  bool ReadData(int amount);
   void HandleSeeking();
   bool HandleFFwdRewd();
 
