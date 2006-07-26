@@ -35,10 +35,10 @@ unsigned int CPixelShaderRenderer::Configure(unsigned int width, unsigned int he
 }
 
 
-void CPixelShaderRenderer::Render()
+void CPixelShaderRenderer::Render(DWORD flags)
 {
   // this is the low memory renderer
-  RenderLowMem();
+  RenderLowMem(flags);
 
-  CXBoxRenderer::Render();
+  CXBoxRenderer::Render(flags);
 }

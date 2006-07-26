@@ -81,7 +81,12 @@ public:
 
   CXBoxRenderer *m_pRenderer;
 protected:
-  void Present();
+  inline void Present();
+  void PresentSingle();
+  void PresentWeave();
+  void PresentBob();
+  void PresentBlend();
+
   float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
   unsigned int m_iSourceWidth;    // width
   unsigned int m_iSourceHeight;   // height
