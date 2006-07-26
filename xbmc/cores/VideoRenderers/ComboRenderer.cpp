@@ -263,11 +263,11 @@ void CComboRenderer::YV12toYUY2()
   m_bHasDimView = false;
 }
 
-void CComboRenderer::Render()
+void CComboRenderer::Render(DWORD flags)
 {
   if ( m_RGBTexture == NULL )
   {
-    RenderLowMem();
+    RenderLowMem(flags);
   }
   else
   {
@@ -290,7 +290,7 @@ void CComboRenderer::Render()
     pSurface->Release();
   }
 
-  CXBoxRenderer::Render();
+  CXBoxRenderer::Render(flags | RENDER_FLAG_NOOSDALPHA);
 }
 
 unsigned int CComboRenderer::PreInit()

@@ -36,6 +36,14 @@ typedef struct YV12Image
 #define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
 
 
+#define RENDER_FLAG_EVEN        0x01
+#define RENDER_FLAG_ODD         0x02
+#define RENDER_FLAG_BOTH (RENDER_FLAG_EVEN | RENDER_FLAG_ODD)
+#define RENDER_FLAG_FIELDMASK   0x03
+
+#define RENDER_FLAG_NOOSD       0x04
+#define RENDER_FLAG_NOOSDALPHA  0x08
+
 struct DRAWRECT
 {
   float left;
@@ -49,6 +57,7 @@ static enum EFIELDSYNC
   FS_NONE,
   FS_ODD,
   FS_EVEN,
+  FS_BOTH,
 };
 
 static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
@@ -63,7 +72,6 @@ public:
   virtual void GetVideoRect(RECT &rs, RECT &rd);
   virtual float GetAspectRatio();
   virtual void Update(bool bPauseDrawing);
-  virtual void RenderUpdate(bool clear);
   virtual void CheckScreenSaver() {};
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
@@ -88,11 +96,10 @@ public:
   virtual void RenderBlank();
   void AutoCrop(bool bCrop);
   int GetBuffersCount() { return m_NumYV12Buffers; };
-
-  void SetFieldSync(EFIELDSYNC mSync);
+  void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
 protected:
-  virtual void Render();
+  virtual void Render(DWORD flags);
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
   void CalculateFrameAspectRatio(int desired_width, int desired_height);
   virtual void ManageDisplay();
@@ -112,7 +119,7 @@ protected:
   int  NextYV12Texture();
 
   // low memory renderer (default PixelShaderRenderer)
-  void RenderLowMem();
+  void RenderLowMem(DWORD flags);
   static const DWORD FVF_YV12VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX3;
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
@@ -129,8 +136,6 @@ protected:
 
   bool m_bConfigured;
   
-  EFIELDSYNC m_iFieldSync;
-
   // OSD stuff
   LPDIRECT3DTEXTURE8 m_pOSDYTexture[NUM_BUFFERS];
   LPDIRECT3DTEXTURE8 m_pOSDATexture[NUM_BUFFERS];

@@ -333,13 +333,13 @@ void CDVDPlayerVideo::Process()
             
             //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
             //this video
-            EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.GetInterlaceMethod();
-            if( mInt == VS_INTERLACEMETHOD_DEINTERLACE || (mInt == VS_INTERLACEMETHOD_DEINTERLACE_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)) )
+            EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+            if( mInt == VS_INTERLACEMETHOD_DEINTERLACE )
             {
               mDeinterlace.Process(&picture);
               mDeinterlace.GetPicture(&picture);
             }
-            else if( mInt == VS_INTERLACEMETHOD_SYNC_AUTO || mInt == VS_INTERLACEMETHOD_SYNC_EVEN || mInt == VS_INTERLACEMETHOD_SYNC_ODD )
+            else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
             { 
               /* if we are syncing frames, dvdplayer will be forced to play at a given framerate */
               /* unless we directly sync to the correct pts, we won't get a/v sync as video can never catch up */

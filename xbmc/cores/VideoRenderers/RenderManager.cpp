@@ -188,42 +188,22 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
   if( !m_eventPresented.WaitMSec(MAXPRESENTDELAY*2) )
     CLog::Log(LOGERROR, " - Timeout waiting for previous frame to be presented");
 
+  m_presenttime = timestamp;
+  m_presentfield = sync;
+
   CSingleLock lock2(g_graphicsContext);
   if( g_graphicsContext.IsFullScreenVideo() )
   {
     lock2.Leave();
 
-    EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.GetInterlaceMethod();
-    if( mInt == VS_INTERLACEMETHOD_SYNC_AUTO )
-      m_presentfield = sync;
-    else if( mInt == VS_INTERLACEMETHOD_SYNC_EVEN )
-      m_presentfield = FS_EVEN;
-    else if( mInt == VS_INTERLACEMETHOD_SYNC_ODD )
-      m_presentfield = FS_ODD;
-    else
-      m_presentfield = FS_NONE;
-
-    /* if we have a field, we will have a presentation delay */
-    if( m_presentfield == FS_NONE )
-      m_presentdelay = 20;
-    else
-      m_presentdelay = 40;
-
-    if( timestamp >= m_presentdelay )
-      timestamp -=  m_presentdelay;
-    else
-      timestamp = 0;
-
     m_pRenderer->FlipPage(source);
     if( timestamp )
     {
       if( CThread::ThreadHandle() == NULL ) CThread::Create();
-      m_presenttime = timestamp;
       m_eventFrame.Set();
     }
     else
     {
-      m_presenttime = 0LL;
       Present();
       m_eventPresented.Set();
     }
@@ -240,52 +220,134 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
   }
 }
 
-
 void CXBoxRenderManager::Present()
+{
+  EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+  
+  /* check for forced fields */
+  if( mInt == VS_INTERLACEMETHOD_AUTO && m_presentfield != FS_NONE )
+  {
+    /* this is uggly to do on each frame, should only need be done once */
+    int mResolution = g_graphicsContext.GetVideoResolution();
+    if( mResolution == HDTV_480p_16x9 || mResolution == HDTV_480p_4x3 || mResolution == HDTV_720p || mResolution == HDTV_1080i)
+      mInt = VS_INTERLACEMETHOD_RENDER_BLEND;
+    else
+      mInt = VS_INTERLACEMETHOD_RENDER_BOB;
+  }
+  else if( mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
+  {
+    /* all methods should default to odd if nothing is specified */
+    if( m_presentfield == FS_EVEN )
+      m_presentfield = FS_ODD;
+    else
+      m_presentfield = FS_EVEN;
+  }
+
+  /* if we have a field, we will have a presentation delay */
+  if( m_presentfield == FS_NONE )
+    m_presentdelay = 20;
+  else
+    m_presentdelay = 40;
+  
+  if( m_presenttime >= m_presentdelay )
+    m_presenttime -=  m_presentdelay;
+  else
+    m_presenttime = 0;
+
+  if( mInt == VS_INTERLACEMETHOD_RENDER_BOB || mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+    PresentBob();
+  else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
+    PresentWeave(); 
+  else if( mInt == VS_INTERLACEMETHOD_RENDER_BLEND )
+    PresentBlend();
+  else
+    PresentSingle();
+}
+
+/* simple present method */
+void CXBoxRenderManager::PresentSingle()
 {
   CSingleLock lock(g_graphicsContext);
 
-  //Render all data to back buffer
-  m_pRenderer->SetFieldSync(m_presentfield);
-  m_pRenderer->RenderUpdate(true);
+  m_pRenderer->RenderUpdate(true, 0, 255);
 
-  /* make sure pushbuffer is empty */
-  while( D3D__pDevice->IsBusy() && !CThread::m_bStop ) Sleep(1);
+  while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
+
+  D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+}
+
+/* new simpler method of handling interlaced material, *
+ * we just render the two fields right after eachother */
+void CXBoxRenderManager::PresentBob()
+{
+  CSingleLock lock(g_graphicsContext);
+
+  if( m_presentfield == FS_EVEN )
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+  else
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
 
   /* wait for timestamp */
   while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
-  D3DRASTER_STATUS mRaster;
+  D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+
+  /* render second field */
+  if( m_presentfield == FS_EVEN )
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+  else
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+  
+  D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+}
+
+void CXBoxRenderManager::PresentBlend()
+{
+  CSingleLock lock(g_graphicsContext);
+
+  if( m_presentfield == FS_EVEN )
+  {
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOOSD, 255);
+    m_pRenderer->RenderUpdate(false, RENDER_FLAG_ODD, 128);
+  }
+  else
+  {
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOOSD, 255);
+    m_pRenderer->RenderUpdate(false, RENDER_FLAG_EVEN, 128);
+  }
+  
+
+  /* wait for timestamp */
+  while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
+
+  D3D__pDevice->Present( NULL, NULL, NULL, NULL );
+}
+
+/* renders the two fields as one, but doing fieldbased *
+ * scaling then reinterlaceing resulting image         */
+void CXBoxRenderManager::PresentWeave()
+{
+  CSingleLock lock(g_graphicsContext);
+
+  m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOTH, 255);
+
+  /* wait for timestamp */
+  while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
+
+  //If we have interlaced video, we have to sync to only render on even fields
   D3DFIELD_STATUS mStatus;
   D3D__pDevice->GetDisplayFieldStatus(&mStatus);
-  D3D__pDevice->GetRasterStatus(&mRaster);
-
-  bool bSync = (m_presentfield != FS_NONE && mStatus.Field != D3DFIELD_PROGRESSIVE);
 
 #ifdef PROFILE
-  mRaster.InVBlank = 1;
-  bSync = false;
+  m_presentfield = FS_NONE;
 #endif
 
-  if( mRaster.InVBlank == 0 )
+  //If this was not the correct field. we have to wait for the next one.. damn
+  if( (mStatus.Field == D3DFIELD_EVEN && m_presentfield == FS_EVEN) ||
+      (mStatus.Field == D3DFIELD_ODD && m_presentfield == FS_ODD) )
   {
     if( WaitForSingleObject(g_eventVBlank, 500) == WAIT_TIMEOUT )
       CLog::Log(LOGERROR, __FUNCTION__" - Waiting for vertical-blank timed out");
-
-    D3D__pDevice->GetDisplayFieldStatus(&mStatus);
-  }
-
-  //If we have interlaced video, we have to sync to only render on even fields
-  if( bSync )
-  {
-
-    //If this was not the correct field. we have to wait for the next one.. damn
-    if( (mStatus.Field == D3DFIELD_EVEN && m_presentfield == FS_ODD) ||
-        (mStatus.Field == D3DFIELD_ODD && m_presentfield == FS_EVEN) )
-    {
-      if( WaitForSingleObject(g_eventVBlank, 500) == WAIT_TIMEOUT )
-        CLog::Log(LOGERROR, __FUNCTION__" - Waiting for vertical-blank timed out");
-    }
   }
 
   D3D__pDevice->Present( NULL, NULL, NULL, NULL );
@@ -310,9 +372,7 @@ void CXBoxRenderManager::Process()
       CSingleLock lock2(g_graphicsContext);
 
       if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() )
-      {
         Present();
-      }
     }
     catch(...)
     {

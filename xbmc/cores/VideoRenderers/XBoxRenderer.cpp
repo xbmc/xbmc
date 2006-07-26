@@ -459,14 +459,6 @@ void CXBoxRenderer::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, floa
   rd.right = (int)(rd.left + fNewWidth + 0.5f);
   rd.top = (int)(fPosY + fOffsetY1);
   rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
-
-  if( m_iFieldSync != FS_NONE )
-  {
-    //Make sure top is located on an odd scanline and bottom on an even one
-    rd.top = rd.top & ~1;
-    rd.bottom = rd.bottom & ~1;
-  }
-
 }
 
 
@@ -722,7 +714,7 @@ int CXBoxRenderer::NextYV12Texture()
 #ifdef MP_DIRECTRENDERING
   int source = m_iYV12RenderBuffer;
   do {
-    source = (source + 1) % m_NumYV12Buffers;
+    source = (source + 1) % m_NumYV12Buffers;    
   } while( source != m_iYV12RenderBuffer
     && m_image[source].flags & IMAGE_FLAG_INUSE);
 
@@ -745,7 +737,7 @@ int CXBoxRenderer::GetImage(YV12Image *image, int source, bool readonly)
   if( source == AUTOSOURCE )
     source = NextYV12Texture();
 
-#ifdef MP_DIRECTRENDERING
+#ifdef MP_DIRECTRENDERING 
     if( source < 0 )
     { /* no free source existed, so create one */
       CSingleLock lock(g_graphicsContext);
@@ -781,12 +773,12 @@ void CXBoxRenderer::ReleaseImage(int source, bool preserve)
 {
   if( m_image[source].flags & IMAGE_FLAG_WRITING )
     SetEvent(m_eventTexturesDone[source]);
-
+  
   m_image[source].flags &= ~IMAGE_FLAG_INUSE;
 
   /* if image should be preserved reserve it so it's not auto seleceted */
   if( preserve )
-    m_image[source].flags |= IMAGE_FLAG_RESERVED;
+    m_image[source].flags |= IMAGE_FLAG_RESERVED;  
 }
 
 void CXBoxRenderer::Reset()
@@ -796,7 +788,7 @@ void CXBoxRenderer::Reset()
     /* reset all image flags, this will cleanup textures later */
     m_image[i].flags = 0;
     /* reset texure locks, abit uggly, could result in tearing */
-    SetEvent(m_eventTexturesDone[i]);
+    SetEvent(m_eventTexturesDone[i]); 
   }
 }
 
@@ -811,7 +803,7 @@ void CXBoxRenderer::Update(bool bPauseDrawing)
   }
 }
 
-void CXBoxRenderer::RenderUpdate(bool clear)
+void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   if (!m_YUVTexture[m_iYV12RenderBuffer][FIELD_FULL][0]) return ;
 
@@ -820,19 +812,24 @@ void CXBoxRenderer::RenderUpdate(bool clear)
   if (clear)
     m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
-  Render();
+  if(alpha < 255)
+  {
+    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+    m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_CONSTANTALPHA );
+    m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVCONSTANTALPHA );
+    m_pD3DDevice->SetRenderState( D3DRS_BLENDCOLOR, alpha );
+  }
+  else
+    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+
+  Render(flags);
 
   //Kick commands out to the GPU, or we won't get the callback for textures being done
   m_pD3DDevice->KickPushBuffer();
 }
 
-void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
-{
-  m_iFieldSync = mSync;
-}
-
 void CXBoxRenderer::FlipPage(int source)
-{
+{  
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
@@ -852,7 +849,7 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
   BYTE *s;
   BYTE *d;
   int i, p;
-
+  
   int index = NextYV12Texture();
   if( index < 0 )
     return -1;
@@ -912,7 +909,7 @@ unsigned int CXBoxRenderer::PreInit()
   m_iYV12RenderBuffer = 0;
   m_NumOSDBuffers = 0;
   m_NumYV12Buffers = 0;
-
+  
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
   // low memory pixel shader
@@ -961,7 +958,7 @@ void CXBoxRenderer::UnInit()
     DeleteYV12Texture(i);
     DeleteOSDTextures(i);
   }
-
+  
   if (m_hLowMemShader)
   {
     m_pD3DDevice->DeletePixelShader(m_hLowMemShader);
@@ -969,8 +966,10 @@ void CXBoxRenderer::UnInit()
   }
 }
 
-void CXBoxRenderer::Render()
+void CXBoxRenderer::Render(DWORD flags)
 {
+  if( flags & RENDER_FLAG_NOOSD ) return;
+
   /* general stuff */
   RenderOSD();
 
@@ -1175,7 +1174,7 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 }
 
-void CXBoxRenderer::RenderLowMem()
+void CXBoxRenderer::RenderLowMem(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
   int index = m_iYV12RenderBuffer;
@@ -1199,12 +1198,8 @@ void CXBoxRenderer::RenderLowMem()
 
   m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
   m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
   m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_ONE );
-  m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
   m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
   m_pD3DDevice->SetVertexShader( FVF_YV12VERTEX );
   m_pD3DDevice->SetPixelShader( m_hLowMemShader );
@@ -1259,7 +1254,7 @@ void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int wid
   rd.bottom = height;
   m_pD3DDevice->GetRenderTarget(&oldRT);
   m_pD3DDevice->SetRenderTarget(surface, NULL);
-  RenderLowMem();
+  RenderLowMem(0);
   rd = saveSize;
   m_pD3DDevice->SetRenderTarget(oldRT, NULL);
   oldRT->Release();
