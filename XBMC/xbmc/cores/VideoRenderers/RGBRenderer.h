@@ -16,7 +16,7 @@ public:
   virtual void UnInit();
 
 protected:
-  virtual void Render();
+  virtual void Render(DWORD flags);
   virtual void ManageTextures();
   bool Create444PTexture();
   void Delete444PTexture();

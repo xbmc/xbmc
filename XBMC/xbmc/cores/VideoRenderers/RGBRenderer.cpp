@@ -138,11 +138,11 @@ unsigned int CRGBRenderer::Configure(unsigned int width, unsigned int height, un
   return 0;
 }
 
-void CRGBRenderer::Render()
+void CRGBRenderer::Render(DWORD flags)
 {
   if ( m_444PTexture[FIELD_FULL] == NULL )
   {
-    RenderLowMem();
+    RenderLowMem(flags);
   }
   else
   {
@@ -185,43 +185,51 @@ void CRGBRenderer::Render()
     //
     //.........................................
     //.........................................
-
     m_pD3DDevice->SetRenderState( D3DRS_SWATHWIDTH, 15 );
     m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
     m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-    m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_ONE );
-    m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
-    m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
+    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );    
+    m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );    
 
-    if( m_iFieldSync == FS_NONE )
+    DWORD alphaenabled;
+    m_pD3DDevice->GetRenderState( D3DRS_ALPHABLENDENABLE, &alphaenabled );
+    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+
+    if( (flags & RENDER_FLAG_FIELDMASK) == 0 )
     {
       InterleaveYUVto444P(
           m_YUVTexture[index][FIELD_FULL],
-          m_444PTexture[0],
+          m_444PTexture[FIELD_FULL],
           m_iSourceWidth, m_iSourceHeight,
           1, 1,
           CHROMAOFFSET_HORIZ, 0.0f);
     }
-    else
+    else 
     {
-      InterleaveYUVto444P(
-          m_YUVTexture[index][FIELD_ODD],
-          m_444PTexture[1],
-          m_iSourceWidth, m_iSourceHeight,
-          1, 1,
-          CHROMAOFFSET_HORIZ, +CHROMAOFFSET_VERT);
+      if( flags & RENDER_FLAG_ODD )
+      {
+        InterleaveYUVto444P(
+            m_YUVTexture[index][FIELD_ODD],
+            m_444PTexture[FIELD_ODD],
+            m_iSourceWidth, m_iSourceHeight>>1,
+            1, 1,
+            CHROMAOFFSET_HORIZ, +CHROMAOFFSET_VERT);
+      }
 
-      InterleaveYUVto444P(
-          m_YUVTexture[index][FIELD_EVEN],
-          m_444PTexture[2],
-          m_iSourceWidth, m_iSourceHeight,
-          1, 1,
-          CHROMAOFFSET_HORIZ, -CHROMAOFFSET_VERT);
+      if( flags & RENDER_FLAG_EVEN )
+      {
+        InterleaveYUVto444P(
+            m_YUVTexture[index][FIELD_EVEN],
+            m_444PTexture[FIELD_EVEN],
+            m_iSourceWidth, m_iSourceHeight>>1,
+            1, 1,
+            CHROMAOFFSET_HORIZ, -CHROMAOFFSET_VERT);
+      }
     }
+
+    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, alphaenabled );
 
     //Okey, when the gpu is done with the textures here, they are free to be modified again
     m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[index]);
@@ -248,8 +256,11 @@ void CRGBRenderer::Render()
     // per line, and render from alternating fields into each quad.
 
 
-    if( m_iFieldSync != FS_NONE  )
+    if( (flags & RENDER_FLAG_FIELDMASK) == RENDER_FLAG_BOTH )
     {
+      /* top on odd scanline, bottom on even */
+      rd.top = rd.top & ~1;
+      rd.bottom = rd.bottom & ~1;
 
       unsigned height = (rd.bottom - rd.top) >> 1;
       float scale = (float)(rs.bottom - rs.top) / (rd.bottom - rd.top);
@@ -301,7 +312,19 @@ void CRGBRenderer::Render()
     }
     else
     {
-      m_pD3DDevice->SetTexture( 0, m_444PTexture[FIELD_FULL]);
+      float offsety = 0.0f;
+      if( (flags & RENDER_FLAG_FIELDMASK) == RENDER_FLAG_ODD )
+      {
+        m_pD3DDevice->SetTexture( 0, m_444PTexture[FIELD_ODD]);
+        offsety = 0.25;
+      }
+      else if( (flags & RENDER_FLAG_FIELDMASK) == RENDER_FLAG_EVEN )
+      {
+        m_pD3DDevice->SetTexture( 0, m_444PTexture[FIELD_EVEN]);
+        offsety = -0.25;
+      }
+      else
+        m_pD3DDevice->SetTexture( 0, m_444PTexture[FIELD_FULL]);
 
       m_pD3DDevice->Begin(D3DPT_QUADLIST);
 
@@ -324,17 +347,36 @@ void CRGBRenderer::Render()
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f, 1.0f );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD3, 0.0f, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  (float)rs.top );
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.top, 0, 1.0f );
+      if( (flags & RENDER_FLAG_FIELDMASK) )
+      {
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  (float)(rs.top>>1)+offsety );
+        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.top, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.top, 0, 1.0f );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)(rs.top>>1)+offsety );
+        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.top, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.bottom, 0, 1.0f );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)(rs.bottom>>1)+offsety );
+        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.bottom, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  (float)rs.bottom );
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.bottom, 0, 1.0f );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  (float)(rs.bottom>>1)+offsety );
+        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.bottom, 0, 1.0f );
+      }
+      else
+      {
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  (float)rs.top );
+        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.top, 0, 1.0f );        
+
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
+        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.top, 0, 1.0f );
+
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
+        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.bottom, 0, 1.0f );
+
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  (float)rs.bottom );
+        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.bottom, 0, 1.0f );
+
+      }
+
 
       m_pD3DDevice->End();
     }
@@ -349,7 +391,7 @@ void CRGBRenderer::Render()
     m_pD3DDevice->SetPixelShader( NULL );
   }
 
-  CXBoxRenderer::Render();
+  CXBoxRenderer::Render(flags);
 }
 
 unsigned int CRGBRenderer::PreInit()
@@ -637,7 +679,6 @@ void CRGBRenderer::InterleaveYUVto444P(
       unsigned cshift_x,  unsigned cshift_y,
       float    coffset_x, float    coffset_y)
 {
-
       for (int i = 0; i < 3; ++i)
       {
         m_pD3DDevice->SetTexture( i, pSources[i]);
