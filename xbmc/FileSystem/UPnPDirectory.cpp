@@ -146,8 +146,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             CFileItem *pItem = new CFileItem((const char*)name);
             pItem->m_strPath = (const char*) path + uuid;
             pItem->m_bIsFolder = true;
-            pItem->m_bIsShareOrDrive = true;
-            pItem->m_iDriveType = SHARE_TYPE_REMOTE;
+            //pItem->m_bIsShareOrDrive = true;
+            //pItem->m_iDriveType = SHARE_TYPE_REMOTE;
 
             if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
 
