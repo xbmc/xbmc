@@ -198,8 +198,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         while (entry) {
             CFileItem *pItem = new CFileItem((const char*)(*entry)->m_Title);
             pItem->m_bIsFolder = (*entry)->IsContainer();
-            pItem->m_bIsShareOrDrive = true;
-            pItem->m_iDriveType = SHARE_TYPE_REMOTE;
+            //pItem->m_bIsShareOrDrive = false;
+            //pItem->m_iDriveType = SHARE_TYPE_REMOTE;
 
             // if it's a container, format a string as upnp://host/uuid/object_id/ 
             if (pItem->m_bIsFolder) {
