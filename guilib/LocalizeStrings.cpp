@@ -282,6 +282,14 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[1411] = "with";
   m_vecStrings[1412] = "windy";
 
+  m_vecStrings[16020] = "Deinterlace";    //OVERRIDE
+  m_vecStrings[16021] = "Bob";            //OVERRIDE
+  m_vecStrings[16022] = "Bob (Inverted)"; //OVERRIDE
+
+  m_vecStrings[20129] = "Weave";            //NEW
+  m_vecStrings[20130] = "Weave (Inverted)"; //NEW
+  m_vecStrings[20131] = "Blend";            //NEW
+
   return true;
 }
 

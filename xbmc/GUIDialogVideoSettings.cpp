@@ -51,8 +51,8 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
 
   {
-    const int entries[] = { 16018, 16019, 16020, 16021, 16022 };
-    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 5, entries);
+    const int entries[] = { 16018, 16019, 16020, 16021, 16022, 20129, 20130, 20131 };
+    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 8, entries);
   }
 
   AddSeparator(8);

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-07-2006 added: bob and blend deinterlacing using renderer (gpu)
  - 26-07-2006 fixed: Refresh of IMDb info freeze.
  - 26-07-2006 fixed: Video streaming fixed with UPnP (ShareOrDrive flag was the problem. somehow the code logic is different for Music vs Video)
  - 26-07-2006 changed: Make .aif play with the AIFFcodec in paplayer.
