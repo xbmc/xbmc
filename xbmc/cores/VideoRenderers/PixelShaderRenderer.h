@@ -14,7 +14,7 @@ public:
   virtual unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);
 
 protected:
-  virtual void Render();
+  virtual void Render(DWORD flags);
 };
 
 #endif

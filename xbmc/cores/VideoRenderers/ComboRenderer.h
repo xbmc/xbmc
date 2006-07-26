@@ -22,7 +22,7 @@ public:
   virtual void UnInit();
 
 protected:
-  virtual void Render();
+  virtual void Render(DWORD flags);
   virtual void ManageDisplay();
   virtual void ManageTextures();
   bool CreateYUY2Texture();
