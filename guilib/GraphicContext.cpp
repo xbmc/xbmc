@@ -284,8 +284,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
   bool NeedReset = false;
 
   UINT interval = D3DPRESENT_INTERVAL_ONE;  
-  if( m_bFullScreenVideo )
-    interval = D3DPRESENT_INTERVAL_IMMEDIATE;
+  //if( m_bFullScreenVideo )
+  //  interval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
 #ifdef PROFILE
   interval = D3DPRESENT_INTERVAL_IMMEDIATE;
