@@ -415,7 +415,7 @@ namespace PYXBMC
     "filename       : string - filename of the wav file to play.\n"
 		"\n"
 		"example:\n"
-    "  - xbmc.playSFX('Q:\\scripts\\dingdong.wav')\n");
+    "  - xbmc.playSFX('Q:\\\\scripts\\\\dingdong.wav')\n");
 
   PyObject* XBMC_PlaySFX(PyObject *self, PyObject *args)
   {
@@ -453,6 +453,28 @@ namespace PYXBMC
     return Py_None;
   }
   
+	// getVisibility() method
+  PyDoc_STRVAR(getCondVisibility__doc__,
+		"getCondVisibility(condition) -- Returns True/False as a string.\n"
+		"\n"
+    "condition      : string - condition to check.\n"
+    "\n"
+    "List of Conditions - http://www.xbmc.xbox-scene.com/wiki/index.php?title=List_of_Boolean_Conditions \n"
+		"\n"
+    "*Note, You may and ('+') or or ('|') conditions. You group conditions with ('[]').\n"
+    "\n"
+		"example:\n"
+		"  - visble = xbmc.getCondVisibility('System.KaiConnected')\n");
+
+	PyObject* XBMC_GetCondVisibility(PyObject *self, PyObject *args)
+	{
+		char *cLine;
+		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+
+    int ret = g_infoManager.TranslateString(cLine);
+    return Py_BuildValue("b", g_infoManager.GetBool(ret));
+  }
+
   // define c functions to be used in python here
 	PyMethodDef xbmcMethods[] = {
 		{"output", (PyCFunction)XBMC_Output, METH_VARARGS, output__doc__},
@@ -476,6 +498,7 @@ namespace PYXBMC
     {"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
 		{"getInfoLabel", (PyCFunction)XBMC_GetInfoLabel, METH_VARARGS, getInfoLabel__doc__},
 		{"getInfoImage", (PyCFunction)XBMC_GetInfoImage, METH_VARARGS, getInfoImage__doc__},
+		{"getCondVisibility", (PyCFunction)XBMC_GetCondVisibility, METH_VARARGS, getCondVisibility__doc__},
 
 		{"playSFX", (PyCFunction)XBMC_PlaySFX, METH_VARARGS, playSFX__doc__},
 		{"enableNavSounds", (PyCFunction)XBMC_EnableNavSounds, METH_VARARGS, enableNavSounds__doc__},
