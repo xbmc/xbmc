@@ -301,6 +301,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   m_OSDRect = osdRect;
   m_OSDWidth = (float)w;
   m_OSDHeight = (float)h;
+  m_OSDRendered = true;
 }
 
 //********************************************************************************************************
@@ -838,6 +839,12 @@ void CXBoxRenderer::FlipPage(int source)
   /* we always decode into to the next buffer */
   ++m_iOSDRenderBuffer %= m_NumOSDBuffers;
 
+  /* if osd wasn't rendered this time around, previuse should not be */
+  /* displayed on next frame */
+  if( !m_OSDRendered )
+    m_OSDWidth = m_OSDHeight = 0;
+
+  m_OSDRendered = false;
   m_bFlipped = true;
 
   return;
