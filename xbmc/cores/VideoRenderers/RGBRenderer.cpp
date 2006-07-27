@@ -41,6 +41,7 @@
 // g = y - 0.344u - 0.714v
 // b = y + 1.770u
 
+#define SURFTOTEX(a) ((a)->Parent ? (a)->Parent : (D3DBaseTexture*)(a))
 
 
 CRGBRenderer::CRGBRenderer(LPDIRECT3DDEVICE8 pDevice)
@@ -114,20 +115,14 @@ bool CRGBRenderer::Create444PTexture()
 void CRGBRenderer::ManageTextures()
 {
   //use 1 buffer in fullscreen mode and 0 buffers in windowed mode
-  if (g_graphicsContext.IsFullScreenVideo())
-  {
-    if (!m_444PTexture[FIELD_FULL])
-    { // we need to create the YUV texture
-      Create444PTexture();
-    }
-  }
-  else
+  if (!g_graphicsContext.IsFullScreenVideo())
   {
     if (m_444PTexture[FIELD_FULL])
     { // don't need the YUV texture in the GUI
       Delete444PTexture();
     }
   }
+
   CXBoxRenderer::ManageTextures();
 }
 
@@ -140,13 +135,13 @@ unsigned int CRGBRenderer::Configure(unsigned int width, unsigned int height, un
 
 void CRGBRenderer::Render(DWORD flags)
 {
-  if ( m_444PTexture[FIELD_FULL] == NULL )
+  CSingleLock lock(g_graphicsContext);
+  if ( !g_graphicsContext.IsFullScreenVideo() )
   {
     RenderLowMem(flags);
   }
   else
-  {
-    CSingleLock lock(g_graphicsContext);
+  {    
     int index = m_iYV12RenderBuffer;
 
     if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
@@ -197,34 +192,112 @@ void CRGBRenderer::Render(DWORD flags)
     m_pD3DDevice->GetRenderState( D3DRS_ALPHABLENDENABLE, &alphaenabled );
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 
-    if( (flags & RENDER_FLAG_FIELDMASK) == 0 )
+    RECT rs_new = rd;
+    D3DSurface* p444PSource[MAX_FIELDS];
+
+    if( (flags & RENDER_FLAG_FIELDMASK) == RENDER_FLAG_BOTH || alphaenabled )
     {
+      rs_new = rs;
+      if( flags & RENDER_FLAG_BOTH )
+      { /* if we are rendering any type of field to buffer */
+        /* output can't be target output */
+        rs_new.top >>=1;
+        rs_new.bottom >>=1;
+      }
+      
+      /* we will need extra texture, make sure it exists */
+      if (!m_444PTexture[FIELD_FULL])
+        Create444PTexture();
+
+      for(int i = 0;i<MAX_FIELDS;i++)
+        m_444PTexture[i]->GetSurfaceLevel(0, &p444PSource[i]);
+    }
+    else
+    {
+      // we can render directly to backbuffer
+      m_pD3DDevice->GetBackBuffer(0, 0, &p444PSource[FIELD_FULL]);
+
+#if 0 
+      // currently doesn't work properly, not sure why yet
+      // no error is thrown, but rendering to these genrerated surfaces
+      // doesn't result in any data on screen, not supported
+      // further down currently either
+      if( (flags & RENDER_FLAG_FIELDMASK) == RENDER_FLAG_BOTH )
+      {
+        rs_new.top >>=1;
+        rs_new.bottom >>=1;
+
+        
+        const DWORD pitch = (((p444PSource[FIELD_FULL]->Size&D3DSIZE_PITCH_MASK)>>D3DSIZE_PITCH_SHIFT)+1)*64;
+        const DWORD height = ((p444PSource[FIELD_FULL]->Size&D3DSIZE_HEIGHT_MASK)>>D3DSIZE_HEIGHT_SHIFT)+1;
+        const DWORD width = ((p444PSource[FIELD_FULL]->Size&D3DSIZE_WIDTH_MASK))+1;
+        const D3DFORMAT format = (D3DFORMAT)((p444PSource[FIELD_FULL]->Format&D3DFORMAT_FORMAT_MASK)>>D3DFORMAT_FORMAT_SHIFT);
+
+        p444PSource[FIELD_ODD] = new D3DSurface();
+        p444PSource[FIELD_EVEN] = new D3DSurface();
+
+        XGSetSurfaceHeader(width, height>>1, format, p444PSource[FIELD_ODD],  0,     pitch<<1);
+        XGSetSurfaceHeader(width, height>>1, format, p444PSource[FIELD_EVEN], pitch, pitch<<1);
+
+        p444PSource[FIELD_ODD]->Register((void*)(p444PSource[FIELD_FULL]->Data + D3DSURFACE_OWNSMEMORY));
+        p444PSource[FIELD_EVEN]->Register((void*)(p444PSource[FIELD_FULL]->Data + D3DSURFACE_OWNSMEMORY));
+      }
+      else
+#endif
+      {
+        p444PSource[FIELD_ODD] = p444PSource[FIELD_FULL];
+        p444PSource[FIELD_ODD]->AddRef();
+        p444PSource[FIELD_EVEN] = p444PSource[FIELD_FULL];
+        p444PSource[FIELD_EVEN]->AddRef();
+      }
+
+    }
+
+    if( (flags & RENDER_FLAG_FIELDMASK) == 0 )
+    {      
       InterleaveYUVto444P(
           m_YUVTexture[index][FIELD_FULL],
-          m_444PTexture[FIELD_FULL],
-          m_iSourceWidth, m_iSourceHeight,
+          p444PSource[FIELD_FULL],
+          rs, rs_new,
           1, 1,
+          0.0f, 0.0f,
           CHROMAOFFSET_HORIZ, 0.0f);
+
     }
-    else 
+    else
     {
+      RECT rs_half = rs;
+      rs_half.top >>=1;
+      rs_half.bottom >>=1;
+
+      /* calculate any offset needed for any resize */
+      float offsety;
+      if( (flags & RENDER_FLAG_FIELDMASK) == RENDER_FLAG_BOTH )
+        // keep field offsets, only compensate for scaling
+        offsety = 0.25f * ((float(rs_half.bottom - rs_half.top) / float(rs_new.bottom - rs_new.top)) -  1.0f); 
+      else
+        // spatially align source, needs be done here if we are using same target surface here as in next step
+        offsety = 0.25; 
+
       if( flags & RENDER_FLAG_ODD )
       {
         InterleaveYUVto444P(
             m_YUVTexture[index][FIELD_ODD],
-            m_444PTexture[FIELD_ODD],
-            m_iSourceWidth, m_iSourceHeight>>1,
+            p444PSource[FIELD_ODD],
+            rs_half, rs_new,
             1, 1,
+            0.0f, +offsety,
             CHROMAOFFSET_HORIZ, +CHROMAOFFSET_VERT);
       }
-
+      
       if( flags & RENDER_FLAG_EVEN )
       {
         InterleaveYUVto444P(
             m_YUVTexture[index][FIELD_EVEN],
-            m_444PTexture[FIELD_EVEN],
-            m_iSourceWidth, m_iSourceHeight>>1,
+            p444PSource[FIELD_EVEN],
+            rs_half, rs_new,
             1, 1,
+            0.0f, -offsety,
             CHROMAOFFSET_HORIZ, -CHROMAOFFSET_VERT);
       }
     }
@@ -263,11 +336,11 @@ void CRGBRenderer::Render(DWORD flags)
       rd.bottom = rd.bottom & ~1;
 
       unsigned height = (rd.bottom - rd.top) >> 1;
-      float scale = (float)(rs.bottom - rs.top) / (rd.bottom - rd.top);
+      float scale = (float)(rs_new.bottom - rs_new.top) / height;
 
       for( int field = 0; field < 2; field++ )
       {
-        m_pD3DDevice->SetTexture( 0, m_444PTexture[field+1]);
+        m_pD3DDevice->SetTexture( 0, SURFTOTEX(p444PSource[field+1]));
 
         m_pD3DDevice->Begin(D3DPT_QUADLIST);
 
@@ -290,21 +363,28 @@ void CRGBRenderer::Render(DWORD flags)
         m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f, 1.0f );
         m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD3, 0.0f, 1.0f );
 
+        /* correct the already existing spatial offset between fields for scaling */
+        float offsety;
+        if( field == FIELD_ODD )
+          offsety = 0.25f*(scale - 1.0f);
+        else
+          offsety = -0.25f*(scale - 1.0f);
+
         for(unsigned int line = 0; line < height; line++)
         {
-          float source_line = (float)rs.top * 0.5f + line * scale;
+          float source_line = (float)rs_new.top + line * scale + offsety;
           float target_line = (float)rd.top + (line<<1) + field;
 
-          m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  source_line );
+          m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs_new.left,  source_line );
           m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  target_line, 0, 1.0f );
 
-          m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, source_line );
+          m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs_new.right, source_line );
           m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, target_line, 0, 1.0f );
 
-          m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, source_line+scale );
+          m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs_new.right, source_line+scale );
           m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, target_line+1.0f, 0, 1.0f );
 
-          m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  source_line+scale );
+          m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs_new.left,  source_line+scale );
           m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  target_line+1.0f, 0, 1.0f );
         }
         m_pD3DDevice->End();
@@ -312,19 +392,13 @@ void CRGBRenderer::Render(DWORD flags)
     }
     else
     {
-      float offsety = 0.0f;
       if( (flags & RENDER_FLAG_FIELDMASK) == RENDER_FLAG_ODD )
-      {
-        m_pD3DDevice->SetTexture( 0, m_444PTexture[FIELD_ODD]);
-        offsety = 0.25;
-      }
+        m_pD3DDevice->SetTexture(0, SURFTOTEX(p444PSource[FIELD_ODD]));
       else if( (flags & RENDER_FLAG_FIELDMASK) == RENDER_FLAG_EVEN )
-      {
-        m_pD3DDevice->SetTexture( 0, m_444PTexture[FIELD_EVEN]);
-        offsety = -0.25;
-      }
+        m_pD3DDevice->SetTexture(0, SURFTOTEX(p444PSource[FIELD_EVEN]));
       else
-        m_pD3DDevice->SetTexture( 0, m_444PTexture[FIELD_FULL]);
+        m_pD3DDevice->SetTexture(0, SURFTOTEX(p444PSource[FIELD_FULL]));
+
 
       m_pD3DDevice->Begin(D3DPT_QUADLIST);
 
@@ -347,36 +421,17 @@ void CRGBRenderer::Render(DWORD flags)
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f, 1.0f );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD3, 0.0f, 1.0f );
 
-      if( (flags & RENDER_FLAG_FIELDMASK) )
-      {
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  (float)(rs.top>>1)+offsety );
-        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.top, 0, 1.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs_new.left,  (float)rs_new.top);
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.top, 0, 1.0f );
 
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)(rs.top>>1)+offsety );
-        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.top, 0, 1.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs_new.right, (float)rs_new.top);
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.top, 0, 1.0f );
 
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)(rs.bottom>>1)+offsety );
-        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.bottom, 0, 1.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs_new.right, (float)rs_new.bottom);
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.bottom, 0, 1.0f );
 
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  (float)(rs.bottom>>1)+offsety );
-        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.bottom, 0, 1.0f );
-      }
-      else
-      {
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  (float)rs.top );
-        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.top, 0, 1.0f );        
-
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
-        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.top, 0, 1.0f );
-
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
-        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.right, (float)rd.bottom, 0, 1.0f );
-
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left,  (float)rs.bottom );
-        m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.bottom, 0, 1.0f );
-
-      }
-
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs_new.left,  (float)rs_new.bottom);
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)rd.left,  (float)rd.bottom, 0, 1.0f );
 
       m_pD3DDevice->End();
     }
@@ -387,6 +442,19 @@ void CRGBRenderer::Render(DWORD flags)
     m_pD3DDevice->SetTexture(1, NULL);
     m_pD3DDevice->SetTexture(2, NULL);
     m_pD3DDevice->SetTexture(3, NULL);
+
+    for(int i=0;i<MAX_FIELDS;i++)
+    {
+      if( p444PSource[i] && p444PSource[i]->Common & D3DCOMMON_D3DCREATED )
+      {
+        SAFE_RELEASE(p444PSource[i]);
+      }
+      else
+      {
+        p444PSource[i]->BlockUntilNotBusy();
+        SAFE_DELETE(p444PSource[i]);
+      }
+    }
 
     m_pD3DDevice->SetPixelShader( NULL );
   }
@@ -673,12 +741,16 @@ bool CRGBRenderer::CreateLookupTextures()
 }
 
 void CRGBRenderer::InterleaveYUVto444P(
-      YUVPLANES pSources,
-      LPDIRECT3DTEXTURE8 pTarget,
-      unsigned width,     unsigned height,
+      YUVPLANES          pSources,
+      LPDIRECT3DSURFACE8 pTarget,
+      RECT &source,    RECT &target,
       unsigned cshift_x,  unsigned cshift_y,
+      float    offset_x,  float    offset_y,
       float    coffset_x, float    coffset_y)
 {
+      coffset_x += offset_x;
+      coffset_y += offset_y;
+
       for (int i = 0; i < 3; ++i)
       {
         m_pD3DDevice->SetTexture( i, pSources[i]);
@@ -688,42 +760,38 @@ void CRGBRenderer::InterleaveYUVto444P(
         m_pD3DDevice->SetTextureStageState( i, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
       }
 
-      /* we are not scaling the Y component, so point sample it */
-      m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_POINT );
-      m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_POINT );
-
       m_pD3DDevice->SetVertexShader( FVF_YV12VERTEX );
       m_pD3DDevice->SetPixelShader( m_hInterleavingShader );
 
-      LPDIRECT3DSURFACE8 pYUVSurface, pOldRT;
-      m_pD3DDevice->GetRenderTarget(&pOldRT);
-
-      pTarget->GetSurfaceLevel(0, &pYUVSurface);
-      m_pD3DDevice->SetRenderTarget(pYUVSurface, NULL);
-      pYUVSurface->Release();
+      LPDIRECT3DSURFACE8 pOldRT = NULL;
+      if( pTarget )
+      {
+        m_pD3DDevice->GetRenderTarget(&pOldRT);
+        m_pD3DDevice->SetRenderTarget(pTarget, NULL);
+      }
 
       m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
       m_pD3DDevice->Begin(D3DPT_QUADLIST);
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, 0.0f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f + coffset_x, 0.0f + coffset_y );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f + coffset_x, 0.0f + coffset_y );
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, 0.0f, 0.0f, 0, 1.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.left + offset_x, (float)source.top + offset_y);
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)(source.left>>cshift_x) + coffset_x, (float)(source.top>>cshift_y) + coffset_y );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)(source.left>>cshift_x) + coffset_x, (float)(source.top>>cshift_y) + coffset_y );
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)target.left, (float)target.top, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)width, 0.0f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)(width>>cshift_x) + coffset_x, 0.0f + coffset_y );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)(width>>cshift_x) + coffset_x, 0.0f + coffset_y );
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)width, 0.0f, 0, 1.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.right + offset_x, (float)source.top + offset_y);
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)(source.right>>cshift_x) + coffset_x, (float)(source.top>>cshift_y) + coffset_y );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)(source.right>>cshift_x) + coffset_x, (float)(source.top>>cshift_y) + coffset_y );
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)target.right, (float)target.top, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)width, (float)height );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)(width>>cshift_x) + coffset_x, (float)(height>>cshift_y) + coffset_y  );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)(width>>cshift_x) + coffset_x, (float)(height>>cshift_y) + coffset_y  );
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)width, (float)height, 0, 1.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.right + offset_x, (float)source.bottom + offset_y);
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)(source.right>>cshift_x) + coffset_x, (float)(source.bottom>>cshift_y) + coffset_y );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)(source.right>>cshift_x) + coffset_x, (float)(source.bottom>>cshift_y) + coffset_y );
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)target.right, (float)target.bottom, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, (float)height );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f + coffset_x, (float)(height>>cshift_y) + coffset_y );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f + coffset_x, (float)(height>>cshift_y) + coffset_y );
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    0.0f, (float)height, 0, 1.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)source.left + offset_x, (float)source.bottom + offset_y);
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)(source.left>>cshift_x) + coffset_x, (float)(source.bottom>>cshift_y) + coffset_y );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)(source.left>>cshift_x) + coffset_x, (float)(source.bottom>>cshift_y) + coffset_y );
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX,    (float)target.left, (float)target.bottom, 0, 1.0f );
 
       m_pD3DDevice->End();
 
@@ -733,7 +801,10 @@ void CRGBRenderer::InterleaveYUVto444P(
       m_pD3DDevice->SetTexture(1, NULL);
       m_pD3DDevice->SetTexture(2, NULL);
 
-      m_pD3DDevice->SetRenderTarget( pOldRT, NULL);
-      pOldRT->Release();
+      if( pOldRT )
+      {
+        m_pD3DDevice->SetRenderTarget( pOldRT, NULL);
+        pOldRT->Release();
+      }
 }
 
