@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-07-2006 fixed: Weave (Old Sync...) deinterlacer would use invalid field offsets during scaling, causing more small details to dissapear than needed
+ - 28-07-2006 changed: HQ PixelShader now uses one 32bit video frame less of memory (1.5megs dvdres) during standard output (blend and weave deinterlaces still need it thou)
+ - 28-07-2006 fixed: vobsubs and text subtitles using mplayer font's would lock on screen and not disapear until next subtitle since render cleanup.
  - 27-07-2006 added: xbmc.getCondVisibility() method to python. Pass it any condition(s) string as you would
                      for skinning. It returns (true (1) or False (0)).
  - 26-07-2006 added: bob and blend deinterlacing using renderer (gpu)

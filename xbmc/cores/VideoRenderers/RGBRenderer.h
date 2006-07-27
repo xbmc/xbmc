@@ -25,10 +25,11 @@ protected:
   void DeleteLookupTextures();
 
   void InterleaveYUVto444P(
-      YUVPLANES pSources,
-      LPDIRECT3DTEXTURE8 pTarget,
-      unsigned width,     unsigned height,
+      YUVPLANES          pSources,
+      LPDIRECT3DSURFACE8 pTarget,
+      RECT &source,       RECT &target,
       unsigned cshift_x,  unsigned cshift_y,
+      float    offset_x,  float    offset_y,
       float    coffset_x, float    coffset_y);
 
   // YUV interleaved texture
