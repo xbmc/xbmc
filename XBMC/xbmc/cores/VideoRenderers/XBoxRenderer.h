@@ -146,6 +146,7 @@ protected:
   int m_iOSDTextureWidth;
   int m_iOSDTextureHeight[NUM_BUFFERS];
   int m_NumOSDBuffers;
+  bool m_OSDRendered;
 
   // Raw data used by renderer
   YV12Image m_image[NUM_BUFFERS];
