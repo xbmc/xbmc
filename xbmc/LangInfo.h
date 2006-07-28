@@ -47,9 +47,18 @@ public:
 
   typedef enum _SPEED_UNIT
   {
-    SPEED_UNIT_KMH=0,
-    SPEED_UNIT_MPH,
-    SPEED_UNIT_MPS
+    SPEED_UNIT_KMH=0, // kilemetre per hour
+    SPEED_UNIT_MPMIN, // metres per minute
+    SPEED_UNIT_MPS, // metres per second
+    SPEED_UNIT_FTH, // feet per hour
+    SPEED_UNIT_FTMIN, // feet per minute
+    SPEED_UNIT_FTS, // feet per second
+    SPEED_UNIT_MPH, // miles per hour
+    SPEED_UNIT_KTS, // knots
+    SPEED_UNIT_BEAUFORT, // beaufort
+    SPEED_UNIT_INCHPS, // inch per second
+    SPEED_UNIT_YARDPS, // yard per second
+    SPEED_UNIT_FPF // Furlong per Fortnight
   } SPEED_UNIT;
 
   const CStdString& GetSpeedUnitString();

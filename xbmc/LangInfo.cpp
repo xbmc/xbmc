@@ -5,7 +5,7 @@ CLangInfo g_langInfo;
 
 #define TEMP_UNIT_STRINGS 20027
 
-#define SPEED_UNIT_STRINGS 20035
+#define SPEED_UNIT_STRINGS 20200
 
 CLangInfo::CRegion::CRegion(const CRegion& region)
 {
@@ -78,10 +78,28 @@ void CLangInfo::CRegion::SetSpeedUnit(const CStdString& strUnit)
 {
   if (strUnit.Equals("kmh"))
     m_speedUnit=SPEED_UNIT_KMH;
-  else if (strUnit.Equals("mph"))
-    m_speedUnit=SPEED_UNIT_MPH;
+  else if (strUnit.Equals("mpmin"))
+    m_speedUnit=SPEED_UNIT_MPMIN;
   else if (strUnit.Equals("mps"))
     m_speedUnit=SPEED_UNIT_MPS;
+  else if (strUnit.Equals("fth"))
+    m_speedUnit=SPEED_UNIT_FTH;
+  else if (strUnit.Equals("ftm"))
+    m_speedUnit=SPEED_UNIT_FTMIN;
+  else if (strUnit.Equals("fts"))
+    m_speedUnit=SPEED_UNIT_FTS;
+  else if (strUnit.Equals("mph"))
+    m_speedUnit=SPEED_UNIT_MPH;
+  else if (strUnit.Equals("kts"))
+    m_speedUnit=SPEED_UNIT_KTS;
+  else if (strUnit.Equals("beaufort"))
+    m_speedUnit=SPEED_UNIT_BEAUFORT;
+  else if (strUnit.Equals("inchs"))
+    m_speedUnit=SPEED_UNIT_INCHPS;
+  else if (strUnit.Equals("yards"))
+    m_speedUnit=SPEED_UNIT_YARDPS;
+  else if (strUnit.Equals("fpf"))
+    m_speedUnit=SPEED_UNIT_FPF;
 }
 
 CLangInfo::CLangInfo()
