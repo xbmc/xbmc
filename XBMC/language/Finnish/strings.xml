@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: jutski-->
+<!--Email: jutski@users.sourceforge.net-->
+<!--Date of translation: 07/23/2006-->
 <!--$Revision$-->
+<!--Based on english strings version 1.329-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -49,7 +54,7 @@
   <string id="116">Siirrä</string>
   <string id="117">Poista</string>
   <string id="118">Nimeä</string>
-  <string id="119">Uusi hakemisto</string>
+  <string id="119">Uusi kansio</string>
   <string id="120">Vahvista kopiointi</string>
   <string id="121">Vahvista siirto</string>
   <string id="122">Vahvista poisto</string>
@@ -98,7 +103,7 @@
   <string id="165">Levy sisällä</string>
   <string id="166">Skini</string>
   <string id="167">FTP-palvelin käytössä</string>
-  <string id="168">Synkronoi aika internetistä (NTP)</string>
+  <string id="168">Synkronoi aika internetistä</string>
   <string id="169">Näyttötarkkuus</string>
   <string id="170">Albumi:</string>
   <string id="171">Esittäjä:</string>
@@ -193,14 +198,14 @@
   <string id="260">Shoutcast</string>
   <string id="261">Käynnistetään...</string>
   <string id="262">Skriptin tuloste</string>
-  <string id="263">Web-palvelin (HTTP) käytössä</string>
+  <string id="263">Web-palvelin käytössä</string>
   <string id="264">Nauhoita</string>
   <string id="265">Pysäytä nauh.</string>
-  <string id="266">Raidan mukaan</string>
-  <string id="267">Keston mukaan</string>
-  <string id="268">Nimen mukaan</string>
-  <string id="269">Esittäjän muk.</string>
-  <string id="270">Albumin muk.</string>
+  <string id="266">Järjestä: Raita</string>
+  <string id="267">Järjestä: Kesto</string>
+  <string id="268">Järjestä: Nimi</string>
+  <string id="269">Järjestä: Esittäjä</string>
+  <string id="270">Järjestä: Albumi</string>
   <string id="271">Top 100</string>
   <string id="272">Aktiivisen kuva-alan vasen yläkulma</string>
   <string id="273">Aktiivisen kuva-alan oikea alakulma</string>
@@ -416,7 +421,7 @@
   <string id="485">Poista albumin id tiedot</string>
   <string id="486">Toista</string>
   <string id="487">Toista yksi</string>
-  <string id="488">Toista hakemisto</string>
+  <string id="488">Toista kansiot</string>
   <string id="489">Toista automaattisesti seuraava tiedosto</string>
   <string id="490">Vaihda automaattisesti lista/kuvat kappaleissa</string>
   <string id="491">- Isot kuvakkeet</string>
@@ -569,7 +574,7 @@
   <string id="771">- Automaattinen FATX-rajoitus</string>
   <string id="772">Äänilaitteisto</string>
   <string id="773">Haku</string>
-  <string id="774">Diaesitys-hakemisto</string>
+  <string id="774">Diakansio</string>
   <string id="998">XLink Kai</string>
   <string id="999">Nettipelaaminen</string>
   <string id="1000">Näytönsäästäjän esikatselu</string>
@@ -583,7 +588,7 @@
   <string id="1008">Protokolla</string>
   <string id="1009">Palvelimen osoite</string>
   <string id="1010">Palvelimen nimi</string>
-  <string id="1011">Etähakemisto</string>
+  <string id="1011">Etäpolku</string>
   <string id="1012">Jaettu kansio</string>
   <string id="1013">Portti</string>
   <string id="1014">Käyttäjätunnus</string>
@@ -786,8 +791,8 @@
   <string id="12351">asettaa pääsalasanan uudelleen käyttöön.)</string>
   <string id="12352">Anna pääsalasana-painikeyhdistelmä ja paina Start</string>
   <string id="12353">Uudelleenaktivoi lukitus</string>
-  <string id="12354">Ohita hakemistojen lukitus uudelleenkäynnitykseen asti?</string>
-  <string id="12355">Ota hakemistojen lukitus automaattisesti käyttöön uudestaan.)</string>
+  <string id="12354">Ohita kansioiden lukitus uudelleenkäynnitykseen asti?</string>
+  <string id="12355">Ota kansioiden lukitus automaattisesti käyttöön uudestaan.)</string>
   <string id="12356">Muuta lukitus</string>
   <string id="12357">Jaon lukitus</string>
   <string id="12358">Tyhjä salasana. Yritä uudestaan.</string>
@@ -924,7 +929,7 @@
   <string id="13316">Pikkukuvat rekursiivisesti</string>
   <string id="13317">Näytä Diaesitys</string>
   <string id="13318">Rekursiivinen Diaesitys</string>
-  <string id="13319">Sekoita</string>
+  <string id="13319">Satunnainen</string>
   <string id="13320">Stereo</string>
   <string id="13321">Vain vasen</string>
   <string id="13322">Vain oikea</string>
@@ -994,12 +999,12 @@
   <string id="13386">Käytä aikapohjaista hakua</string>
   <string id="13387">Kappaleen nimeämismalli, oikeanpuoleinen</string>
   <string id="13388">Presetit</string>
-  <string id="13389">Tälle visualisoinnille ei löytynyt presettejä</string>
-  <string id="13390">Tälle visualisoinnille ei löytynyt asetuksia</string>
+  <string id="13389">Tälle visualisoinnille ei&amp;#10;löytynyt presettejä</string>
+  <string id="13390">Tälle visualisoinnille ei&amp;#10;löytynyt asetuksia</string>
   <string id="13391">Poista/Lataa</string>
   <string id="13392">Käytä Visualisointeja audiotiedostoja toistettaessa</string>
   <string id="13393">Laske koko</string>
-  <string id="13394">Laske hakemiston koko</string>
+  <string id="13394">Lasketaan kansion kokoa</string>
   <string id="13395">Videoasetukset</string>
   <string id="13396">Ääni- ja tekstiasetukset</string>
   <string id="13397">Tekstitys käytössä</string>
@@ -1011,7 +1016,7 @@
   <string id="13403">Tyhjennä oletus</string>
   <string id="13404">Jatka</string>
   <string id="13405">Hae pikkukuva</string>
-  <string id="14000">Älä yhdistä osia</string>
+  <string id="14000">Yhdistä osat</string>
   <string id="14001">Pinoa</string>
   <string id="14002">Älä pinoa</string>
   <string id="14003">Ladataan soittolistatiedosto...</string>
@@ -1035,7 +1040,7 @@
   <string id="14021">Sääasema 3</string>
   <string id="14022">Kirjasto</string>
   <string id="14023">Ei TV:tä</string>
-  <string id="14024">Syötä lähin suuri kaupunki tai yhdysvaltalainen postinumero</string>
+  <string id="14024">Anna lähin suuri kaupunki</string>
   <string id="14025">Video/Audio/DVD-välimuisti - Kovalevy</string>
   <string id="14026">Video-välimuisti - DVD-ROM</string>
   <string id="14027">- Lähiverkko</string>
@@ -1165,7 +1170,7 @@
   <string id="15203">Last.FM salasana</string>
   <string id="15204">Ei saatu yhteyttä: odotetaan...</string>
   <string id="15205">Päivitä XBMC</string>
-  <string id="15206">Lähetys epäonnistui: salasana/tunnus ei kelpaa.</string>
+  <string id="15206">Tunnistautumisvirhe: tarkista salasana ja tunnus</string>
   <string id="15207">Yhdistetty</string>
   <string id="15208">Ei yhdistetty</string>
   <string id="15209">Lähetysväli %i</string>
@@ -1225,7 +1230,7 @@
   <string id="16011">Anna albumin nimi</string>
   <string id="16012">Anna soittolistan nimi</string>
   <string id="16013">Anna uusi tiedostonimi</string>
-  <string id="16014">Anna hakemistonimi</string>
+  <string id="16014">Anna kansion nimi</string>
   <string id="16015">Anna hakemisto</string>
   <string id="16016">Käytettävissä: %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
   <string id="16017">Anna hakulauseke</string>
