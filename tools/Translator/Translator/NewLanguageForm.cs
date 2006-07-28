@@ -102,7 +102,7 @@ namespace TeamXBMC.Translator
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(224, 32);
 			this.label2.TabIndex = 1;
-			this.label2.Text = "Please enter a country name for the new language to be created";
+			this.label2.Text = "Please enter the country name of the new language to be created";
 			// 
 			// NewLanguageForm
 			// 
