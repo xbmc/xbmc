@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
+<!--Based on english strings version 1.329-->
 <strings>
   <string id="0">Mine Programmer</string>
   <string id="1">Mine Bilder</string>
@@ -7,10 +8,8 @@
   <string id="3">Mine Filmer</string>
   <string id="4">TV-Guide</string>
   <string id="5">Innstillinger</string>
-  <string id="6">Xbox Media Center CVS</string>
   <string id="7">Mine Filer</string>
   <string id="8">Været</string>
-
   <string id="11">Mandag</string>
   <string id="12">Tirsdag</string>
   <string id="13">Onsdag</string>
@@ -18,7 +17,6 @@
   <string id="15">Fredag</string>
   <string id="16">Lørdag</string>
   <string id="17">Søndag</string>
-
   <string id="21">Januar</string>
   <string id="22">Februar</string>
   <string id="23">Mars</string>
@@ -31,7 +29,6 @@
   <string id="30">Oktober</string>
   <string id="31">November</string>
   <string id="32">Desember</string>
-
   <string id="98">Visning: Auto</string>
   <string id="99">Visning: Auto stor</string>
   <string id="100">Viser: Ikoner</string>
@@ -342,7 +339,6 @@
   <string id="406">Fuktighet</string>
   <string id="407">Fra</string>
   <string id="408">med</string>
-
   <string id="410">Kobler til Weather.com</string>
   <string id="411">Henter værdata for:</string>
   <string id="412">Kunne ikke hente værdata</string>
@@ -457,7 +453,6 @@
   <string id="521">Samlinger</string>
   <string id="522">Fjern kilde</string>
   <string id="588">Avbryt partymodus</string>
-
   <string id="589">Partymodus</string>
   <string id="590">Tilfeldig</string>
   <string id="591">Av</string>
@@ -467,7 +462,6 @@
   <string id="595">Gjenta: Av</string>
   <string id="596">Gjenta: En</string>
   <string id="597">Gjenta: Alle</string>
-
   <string id="600">Ripp musikk-CD</string>
   <string id="601">Middels</string>
   <string id="602">Standard</string>
@@ -478,7 +472,6 @@
   <string id="607">Til:</string>
   <string id="608">Kunne ikke rippe CD eller spor</string>
   <string id="609">CDDARipPath er ikke satt i XboxMediaCenter.xml</string>
-
   <string id="620">CD-ripping</string>
   <string id="621">Enkoder</string>
   <string id="622">Kvalitet</string>
@@ -503,7 +496,6 @@
   <string id="644">Fjern sorte felt</string>
   <string id="645">Må cache en stor fil. Fortsette?</string>
   <string id="646">Fjern tittel</string>
-
   <string id="700">Rydder opp i databasen</string>
   <string id="701">Fjerner gamle sanger fra databasen</string>
   <string id="702">Denne katalogen har blitt skannet før.</string>
@@ -579,7 +571,6 @@
   <string id="772">Lyd-maskinvare</string>
   <string id="773">Søker</string>
   <string id="774">Mappe for bildevisning</string>
-
   <string id="998">XLink Kai</string>
   <string id="999">Spill på nettet</string>
   <string id="1000">Forhåndsvisning av skjermbeskytter</string>
@@ -615,14 +606,11 @@
   <string id="1030">et bilde</string>
   <string id="1031">en bildemappe</string>
   <string id="1032">Legg til nettverkssted...</string>
-
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbeidsgruppe</string>
   <string id="1203">Standard brukernavn</string>
   <string id="1204">Standard passord</string>
-
   <string id="1207">WINS-server</string>
-
   <string id="1210">Fjern</string>
   <string id="1211">Musikk</string>
   <string id="1212">Video</string>
@@ -649,11 +637,9 @@
   <string id="1233">Programmer &amp; Video &amp; Musikk</string>
   <string id="1234">Programmer &amp; Bilder &amp; Musikk</string>
   <string id="1235">Programmer &amp; Bilder &amp; Video</string>
-
   <string id="1245">FTP brukernavn</string>
   <string id="1246">FTP passord</string>
   <string id="1247">FTP-servers brukerpassord ble endret</string>
-
   <string id="1250">Autooppdagelse</string>
   <string id="1251">XBOX Autooppdagelse</string>
   <string id="1252">Kallenavn</string>
@@ -662,7 +648,6 @@
   <string id="1255">Send FTP brukernavn og passord</string>
   <string id="1256">Ping-intervall</string>
   <string id="1257">Ønsker du å koble til den oppdagede XBOX'en?</string>
-
   <string id="1396">Forbigående</string>
   <string id="1397">og</string>
   <string id="1398">Kjølig</string>
@@ -673,16 +658,14 @@
   <string id="1403">Sol</string>
   <string id="1404">Tunge</string>
   <string id="1405">i</string>
-  <string id="1406"></string>
+  <string id="1406">
+  </string>
   <string id="1407">nærheten</string>
   <string id="1408">Is</string>
   <string id="1409">krystaller</string>
   <string id="1410">Stille</string>
-
   <string id="2050">Spilletid:</string>
-
   <string id="4501">LCD-type</string>
-
   <string id="10000">Forside</string>
   <string id="10001">Mine programmer</string>
   <string id="10002">Mine bilder</string>
@@ -710,10 +693,8 @@
   <string id="10025">Mine filmer/tittel</string>
   <string id="10028">Mine filmer/spilleliste</string>
   <string id="10034">Innstillinger-&gt;Profiler</string>
-
   <string id="10100">Ja/nei-dialog</string>
   <string id="10101">Progresjonsdialog</string>
-
   <string id="10500">Min musikk/spilleliste</string>
   <string id="10501">Min musikk/filer</string>
   <string id="10502">Min musikk/bibliotek</string>
@@ -739,7 +720,6 @@
   <string id="10522">Min video - Spiller nå</string>
   <string id="10523">Albuminfo</string>
   <string id="10524">Filminfo</string>
-
   <string id="12000">Velgedialog</string>
   <string id="12001">Min musikk/info</string>
   <string id="12002">Dialog OK</string>
@@ -763,7 +743,6 @@
   <string id="12020">Spør</string>
   <string id="12021">Start fra begynnelsen</string>
   <string id="12022">Fortsett fra siste posisjon</string>
-
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -777,7 +756,6 @@
   <string id="12320">c</string>
   <string id="12321">ok</string>
   <string id="12322">*</string>
-
   <string id="12324">XBMC Masterlås</string>
   <string id="12325">Låst! Skriv inn kode...</string>
   <string id="12326">Skriv inn passord</string>
@@ -842,18 +820,14 @@
   <string id="12386">Måned/Dag</string>
   <string id="12387">Skann database på nytt</string>
   <string id="12388">Masterbruker</string>
-
   <string id="12390">Systemets oppetid</string>
   <string id="12391">Minutter</string>
   <string id="12392">Timer</string>
   <string id="12393">Dager</string>
   <string id="12394">Total oppetid</string>
-
   <string id="12600">Været</string>
-
   <string id="12900">Skjermbeskytter</string>
   <string id="12901">Fullskjerm OSD</string>
-
   <string id="13000">System</string>
   <string id="13001">Skru av harddisk umiddelbart</string>
   <string id="13002">Kun video</string>
@@ -861,9 +835,7 @@
   <string id="13004">- Minimum filvarighet</string>
   <string id="13005">Slå av</string>
   <string id="13006">Dashbord</string>
-
   <string id="13100">Flimmerfilter</string>
-
   <string id="13150">HDD-nøkkel:</string>
   <string id="13151">HDD-temperatur:</string>
   <string id="13152">DVD-modell:</string>
@@ -887,7 +859,6 @@
   <string id="13170">Aldri</string>
   <string id="13171">Umiddelbart</string>
   <string id="13172">Etter %i sek</string>
-
   <string id="13200">Profiler</string>
   <string id="13201">Vil du slette profilen '%s'?</string>
   <string id="13202">Lagrer gjeldende innstillinger som profil...</string>
@@ -901,16 +872,13 @@
   <string id="13210">Startet, alarm om %im</string>
   <string id="13211">Alarm!</string>
   <string id="13212">Avbrutt med %im%is igjen</string>
-
   <string id="13249">Søk etter tekster i RAR-filer</string>
   <string id="13250">Finn tekster...</string>
   <string id="13251">Flytt enhet</string>
   <string id="13252">Flytt enhet hit</string>
   <string id="13253">Avbryt flytting</string>
-
   <string id="13270">Maskinvare:</string>
   <string id="13271">Prosessorhastighet:</string>
-
   <string id="13274">Xbox er tilkoblet, men ingen DNS er tilgjengelig.</string>
   <string id="13275">Harddisk</string>
   <string id="13276">DVD-ROM</string>
@@ -1043,7 +1011,6 @@
   <string id="13403">Fjern standard</string>
   <string id="13404">Fortsett</string>
   <string id="13405">Hent miniatyrbilde</string>
-
   <string id="14000">Stable</string>
   <string id="14001">Ikke stable</string>
   <string id="14002">Stabling: Samlet</string>
@@ -1116,7 +1083,6 @@
   <string id="14071">Tillat sletting av filer og endring av filnavn</string>
   <string id="14072">Skru på XLink Kai</string>
   <string id="14073">XLink Kai er ikke skrudd på.</string>
-
   <string id="15000">XLink Kai</string>
   <string id="15001">Tjenesten er ikke tilkoblet, vil du forsøke</string>
   <string id="15002">å koble den til Xbox Media Center?</string>
@@ -1180,7 +1146,6 @@
   <string id="15060">Melding her</string>
   <string id="15061">Du er invitert til å spille %s.</string>
   <string id="15062">Bruk alternativ mplayer</string>
-
   <string id="15100">Bibliotek</string>
   <string id="15101">Database</string>
   <string id="15102">* Alle albumer</string>
@@ -1194,14 +1159,13 @@
   <string id="15110">Kontrollvibrasjon</string>
   <string id="15111">Skinets tema</string>
   <string id="15112">Standard tema</string>
-
   <string id="15200">Last.FM</string>
   <string id="15201">Send sanger til Last.FM</string>
   <string id="15202">Last.FM brukernavn</string>
   <string id="15203">Last.FM passord</string>
   <string id="15204">Kunne ikke koble til: i dvale...</string>
   <string id="15205">Vennligst oppdater XBMC</string>
-  <string id="15206">Sending feilet: feil ved autorisasjon.</string>
+  <string id="15206">Feil ved autorisasjon: sjekk brukernavn og passord</string>
   <string id="15207">Koblet til</string>
   <string id="15208">Ikke tilkoblet</string>
   <string id="15209">Send interval %i</string>
@@ -1211,7 +1175,6 @@
   <string id="15213">Spill med...</string>
   <string id="15214">Bruk utjevnet A/V-synkronisering</string>
   <string id="15215">Skjul finavn i miniatyrvisning</string>
-
   <string id="15250">Send inn Last.fm Radio til Last.FM</string>
   <string id="15251">Kobler til Last.FM...</string>
   <string id="15252">Velger stasjon...</string>
@@ -1246,21 +1209,17 @@
   <string id="15281">Skriv inn et artistnavn for å finne relaterte</string>
   <string id="15282">Skriv inn ent tag-navn for å finne liknende</string>
   <string id="15283">Spor nylig lyttet til av %name%</string>
-
   <string id="15300">Bane ikke funnet eller ugyldig</string>
   <string id="15301">Kunne ikke koble til nettverksserver</string>
   <string id="15302">Ingen servere funnet</string>
   <string id="15303">Arbeidsgruppe ikke funnet</string>
-
   <string id="15310">Åpner bokmerke med flere baner</string>
   <string id="15311">Bane:</string>
-
   <string id="16000">Generelt</string>
   <string id="16001">Konfigurer lyd-maskinvare...</string>
   <string id="16002">CDDB-søk</string>
   <string id="16003">Spiller</string>
   <string id="16004">Spill media fra plate</string>
-
   <string id="16009">Skriv inn filmens navn</string>
   <string id="16010">Skriv inn profilnavnet</string>
   <string id="16011">Skriv inn albumets navn</string>
@@ -1280,13 +1239,11 @@
   <string id="16025">Skriv inn artistnavn</string>
   <string id="16026">Avspilling av spilleliste avbrutt</string>
   <string id="16027">For mange feilende enheter på rad</string>
-
   <string id="16030">Partymodus avbrutt.</string>
   <string id="16031">Ingen matchende sanger i databasen.</string>
   <string id="16032">Kunne ikke initialisere databasen.</string>
   <string id="16033">Kunne ikke åpne databasen.</string>
   <string id="16034">Kunne ikke hente sanger fra databasen.</string>
-
   <string id="16100">Alle videoer</string>
   <string id="16101">Usette</string>
   <string id="16102">Sette</string>
