@@ -232,7 +232,10 @@ void CGUIWindowVideoBase::OnInfo(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strFile = CUtil::GetFileName(pItem->m_strPath);
-  ShowIMDB(pItem);
+  // ShowIMDB can kill the item as this window can be closed while we do it,
+  // so take a copy of the item now
+  CFileItem item(*pItem);
+  ShowIMDB(&item);
   Update(m_vecItems.m_strPath);
 }
 

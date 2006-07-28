@@ -372,10 +372,13 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
     }
   }
 
+  // save our old item, as ShowIMDB() may cause this item to vanish
+  CFileItem oldItem(*pItem);
+
   ShowIMDB(&item);
   // apply any IMDb icon to our item
-  if (pItem->m_bIsFolder)
-    ApplyIMDBThumbToFolder(pItem->m_strPath, item.GetThumbnailImage());
+  if (oldItem.m_bIsFolder)
+    ApplyIMDBThumbToFolder(oldItem.m_strPath, item.GetThumbnailImage());
   Update(m_vecItems.m_strPath);
 }
 

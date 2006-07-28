@@ -3261,24 +3261,31 @@ void CApplication::StopPlaying()
     // turn off visualisation window when stopping
     if (iWin == WINDOW_VISUALISATION)
       m_gWindowManager.PreviousWindow();
+
+    // TODO: Add saving of watched status in here
     if ( IsPlayingVideo() )
     { // save our position for resuming at a later date
       g_stSettings.m_currentVideoSettings.m_ResumeTime = (int)(GetTime() * 75); // need it in frames (75ths of a second)
 
-      if( m_pPlayer )
+      CVideoDatabase dbs;
+      if (dbs.Open())
       {
-        CBookmark bookmark;
+        // mark as watched if we are passed the usual amount
+        if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
+          dbs.MarkAsWatched(m_itemCurrentFile);
 
-        bookmark.playerState = m_pPlayer->GetPlayerState();
-        bookmark.timeInSeconds = (int)GetTime();
-        bookmark.thumbNailImage.Empty();
+        if( m_pPlayer )
+        {
+          CBookmark bookmark;
 
-        CVideoDatabase db;
-        db.Open();
-        db.AddBookMarkToMovie(CurrentFile(),bookmark, true);
-        db.Close();
+          bookmark.playerState = m_pPlayer->GetPlayerState();
+          bookmark.timeInSeconds = (int)GetTime();
+          bookmark.thumbNailImage.Empty();
+
+          dbs.AddBookMarkToMovie(CurrentFile(),bookmark, true);
+        }
+        dbs.Close();
       }
-
     }
     m_pPlayer->CloseFile();
     g_partyModeManager.Disable();
@@ -3819,6 +3826,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CVideoDatabase dbs;
         dbs.Open();
         dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
+        if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
+          dbs.MarkAsWatched(m_itemCurrentFile);
         dbs.Close();
       }
 
@@ -4423,10 +4432,9 @@ void CApplication::RestoreMusicScanSettings()
 
 void CApplication::CheckPlayingProgress()
 {
-  if (IsPlayingAudio())
-    CheckAudioScrobblerStatus();
+  if (!IsPlayingAudio()) return;
 
-  if (!IsPlaying()) return;
+  CheckAudioScrobblerStatus();
 
   // work out where we are in the playing item
   if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
@@ -4434,17 +4442,7 @@ void CApplication::CheckPlayingProgress()
     if (m_playCountUpdated)
       return;
     m_playCountUpdated = true;
-    if (IsPlayingVideo() && !m_itemCurrentFile.m_musicInfoTag.GetURL().IsEmpty())
-    {
-      long movieID = atoi(m_itemCurrentFile.m_musicInfoTag.GetURL().c_str());
-      CVideoDatabase dbs;
-      if (dbs.Open())
-      {
-        dbs.MarkAsWatched(movieID);
-        dbs.Close();
-      }
-    }
-    else if (IsPlayingAudio())
+    if (IsPlayingAudio())
     {
       // Can't write to the musicdatabase while scanning for music info
       CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);

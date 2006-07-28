@@ -34,7 +34,9 @@ public:
 
   long AddMovie(const CStdString& strFilenameAndPath, const CStdString& strcdLabel, bool bHassubtitles);
 
+  void MarkAsWatched(const CFileItem &item);
   void MarkAsWatched(long lMovieId);
+
   void MarkAsUnWatched(long lMovieId);
   void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle);
 
