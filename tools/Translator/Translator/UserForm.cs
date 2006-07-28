@@ -108,8 +108,8 @@ namespace TeamXBMC.Translator
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(272, 32);
 			this.label3.TabIndex = 0;
-			this.label3.Text = "Set your name here. It will be automatically saved to your translated language fi" +
-				"les";
+			this.label3.Text = "Set your name and email adress (optional). They will be automatically saved to yo" +
+				"ur translation.";
 			// 
 			// textBoxName
 			// 
