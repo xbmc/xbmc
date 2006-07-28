@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-07-2006 added: menu item help that links to http://www.xbmc.xbox-scene.com/wiki/index.php?title=XBMC_Translator
  - 07-07-2006 changed: better searching of stings by whole word
  - 26-06-2006 changed: input focus is always set to the textbox in the find form
  - 24-06-2006 added: better error message for files with duplicate string id's
