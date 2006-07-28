@@ -525,7 +525,7 @@ namespace TeamXBMC.Translator
 			speedUnits.Add(new Unit("fth", "foot/h"));
 			speedUnits.Add(new Unit("ftm", "foot/min"));
 			speedUnits.Add(new Unit("fts", "foot/s"));
-			speedUnits.Add(new Unit("mph", "mil/h"));
+			speedUnits.Add(new Unit("mph", "mph"));
 			speedUnits.Add(new Unit("kts", "knots"));
 			speedUnits.Add(new Unit("beaufort", "beaufort"));
 			speedUnits.Add(new Unit("inchs", "inch/s"));
