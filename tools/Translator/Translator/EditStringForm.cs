@@ -88,7 +88,7 @@ namespace TeamXBMC.Translator
 			this.buttonNewline.Location = new System.Drawing.Point(352, 48);
 			this.buttonNewline.Name = "buttonNewline";
 			this.buttonNewline.Size = new System.Drawing.Size(24, 23);
-			this.buttonNewline.TabIndex = 6;
+			this.buttonNewline.TabIndex = 4;
 			this.buttonNewline.Text = "¶";
 			this.buttonNewline.Click += new System.EventHandler(this.buttonNewline_Click);
 			// 
@@ -106,7 +106,8 @@ namespace TeamXBMC.Translator
 			this.textBoxOriginal.Name = "textBoxOriginal";
 			this.textBoxOriginal.ReadOnly = true;
 			this.textBoxOriginal.Size = new System.Drawing.Size(360, 20);
-			this.textBoxOriginal.TabIndex = 5;
+			this.textBoxOriginal.TabIndex = 6;
+			this.textBoxOriginal.TabStop = false;
 			this.textBoxOriginal.Text = "";
 			// 
 			// label2
@@ -124,7 +125,7 @@ namespace TeamXBMC.Translator
 			this.label1.Location = new System.Drawing.Point(24, 96);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(360, 16);
-			this.label1.TabIndex = 4;
+			this.label1.TabIndex = 5;
 			this.label1.Text = "English:";
 			// 
 			// buttonCancel
@@ -133,7 +134,7 @@ namespace TeamXBMC.Translator
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.buttonCancel.Location = new System.Drawing.Point(328, 168);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.TabIndex = 7;
+			this.buttonCancel.TabIndex = 8;
 			this.buttonCancel.Text = "Cancel";
 			// 
 			// buttonOk
@@ -142,7 +143,7 @@ namespace TeamXBMC.Translator
 			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.buttonOk.Location = new System.Drawing.Point(240, 168);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.TabIndex = 6;
+			this.buttonOk.TabIndex = 7;
 			this.buttonOk.Text = "OK";
 			// 
 			// EditStringForm
