@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-07-2006 added: new speed units
  - 28-07-2006 fixed: tab stop order when editing a string
  - 28-07-2006 added: Translator icon to Add/Remove Programs
  - 28-07-2006 added: menu item help that links to http://www.xbmc.xbox-scene.com/wiki/index.php?title=XBMC_Translator
