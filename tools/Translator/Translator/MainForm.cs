@@ -55,6 +55,8 @@ namespace TeamXBMC.Translator
 		private System.Windows.Forms.MenuItem menuItemOptions;
 		private System.Windows.Forms.MenuItem menuItemTools;
 		private System.Windows.Forms.MenuItem menuItemValidate;
+		private System.Windows.Forms.MenuItem menuItemHelp;
+		private System.Windows.Forms.MenuItem menuItem8;
 		private FindForm findForm=new FindForm();
 
 		public MainForm()
@@ -134,6 +136,8 @@ namespace TeamXBMC.Translator
 			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+			this.menuItemHelp = new System.Windows.Forms.MenuItem();
+			this.menuItem8 = new System.Windows.Forms.MenuItem();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -441,12 +445,14 @@ namespace TeamXBMC.Translator
 			// 
 			this.menuItem1.Index = 4;
 			this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+																																							this.menuItemHelp,
+																																							this.menuItem8,
 																																							this.menuItemAbout});
 			this.menuItem1.Text = "&?";
 			// 
 			// menuItemAbout
 			// 
-			this.menuItemAbout.Index = 0;
+			this.menuItemAbout.Index = 2;
 			this.menuItemAbout.Text = "&About...";
 			this.menuItemAbout.Click += new System.EventHandler(this.menuItemAbout_Click);
 			// 
@@ -462,6 +468,17 @@ namespace TeamXBMC.Translator
 			this.saveFileDialog1.FileName = "strings.xml";
 			this.saveFileDialog1.Filter = "Language File|strings.xml|All Files|*.*";
 			this.saveFileDialog1.Title = "Save converted file as";
+			// 
+			// menuItemHelp
+			// 
+			this.menuItemHelp.Index = 0;
+			this.menuItemHelp.Text = "&Help...";
+			this.menuItemHelp.Click += new System.EventHandler(this.menuItemHelp_Click);
+			// 
+			// menuItem8
+			// 
+			this.menuItem8.Index = 1;
+			this.menuItem8.Text = "-";
 			// 
 			// MainForm
 			// 
@@ -987,6 +1004,14 @@ namespace TeamXBMC.Translator
 		#region Menu Item Handler ?
 
 		/// <summary>
+		/// Opens the standard webbrowser and shows the help page of the online manual
+		/// </summary>
+		private void menuItemHelp_Click(object sender, System.EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://www.xbmc.xbox-scene.com/wiki/index.php?title=XBMC_Translator");
+		}
+
+		/// <summary>
 		/// Shows the AboutForm
 		/// </summary>
 		private void menuItemAbout_Click(object sender, System.EventArgs e)
@@ -996,5 +1021,6 @@ namespace TeamXBMC.Translator
 		}
 
 		#endregion
+
 	}
 }
