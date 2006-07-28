@@ -948,6 +948,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       CStdString strResult = ((CSettingString *)pSettingControl->GetSetting())->GetData();
       if (g_weatherManager.GetSearchResults(strSearch, strResult))
         ((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
+      g_weatherManager.ResetTimer();
     }
   }
   pSettingControl->OnClick(); // call the control to do it's thing
