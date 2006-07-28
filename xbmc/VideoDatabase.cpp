@@ -1727,6 +1727,20 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
   return true;
 }
 
+void CVideoDatabase::MarkAsWatched(const CFileItem &item)
+{
+  // find the movie in the db
+  long movieID = -1;
+  if (item.m_musicInfoTag.GetURL().IsEmpty())
+    movieID = GetMovieInfo(item.m_strPath);
+  else
+    movieID = atol(item.m_musicInfoTag.GetURL().c_str());
+  if (movieID < 0)
+    return;
+  // and mark as watched
+  MarkAsWatched(movieID);
+}
+
 void CVideoDatabase::MarkAsWatched(long lMovieId)
 {
   try
