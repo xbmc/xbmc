@@ -12,6 +12,30 @@ namespace TeamXBMC.Translator
 	/// </summary>
 	public class RegionForm : System.Windows.Forms.Form
 	{
+		private class Unit
+		{
+			public Unit(string nameShort, string nameLong)
+			{
+				this.nameShort=nameShort;
+				this.nameLong=nameLong;
+			}
+
+			public string NameShort
+			{
+				get { return nameShort; } 
+			}
+
+			public string NameLong
+			{
+				get { return nameLong; } 
+			}
+
+			private string nameShort;
+			private string nameLong;
+		};
+
+		private ArrayList speedUnits=new ArrayList();
+		private ArrayList tempUnits=new ArrayList();
 		private LanguageInfo.Region region=null;
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonCancel;
@@ -432,15 +456,6 @@ namespace TeamXBMC.Translator
 			// comboBoxTempUnit
 			// 
 			this.comboBoxTempUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxTempUnit.Items.AddRange(new object[] {
-																													"F",
-																													"K",
-																													"C",
-																													"Re",
-																													"Ra",
-																													"Ro",
-																													"De",
-																													"N"});
 			this.comboBoxTempUnit.Location = new System.Drawing.Point(136, 112);
 			this.comboBoxTempUnit.Name = "comboBoxTempUnit";
 			this.comboBoxTempUnit.Size = new System.Drawing.Size(121, 21);
@@ -456,10 +471,6 @@ namespace TeamXBMC.Translator
 			// comboBoxSpeedUnit
 			// 
 			this.comboBoxSpeedUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxSpeedUnit.Items.AddRange(new object[] {
-																													 "kmh",
-																													 "mph",
-																													 "mps"});
 			this.comboBoxSpeedUnit.Location = new System.Drawing.Point(136, 48);
 			this.comboBoxSpeedUnit.Name = "comboBoxSpeedUnit";
 			this.comboBoxSpeedUnit.Size = new System.Drawing.Size(121, 21);
@@ -507,13 +518,66 @@ namespace TeamXBMC.Translator
 		/// </summary>
 		private void RegionForm_Load(object sender, System.EventArgs e)
 		{
+			// setup abbreviation array for speed units
+			speedUnits.Add(new Unit("kmh", "km/h"));
+			speedUnits.Add(new Unit("mpmin", "m/min"));
+			speedUnits.Add(new Unit("mps", "m/s"));
+			speedUnits.Add(new Unit("fth", "foot/h"));
+			speedUnits.Add(new Unit("ftm", "foot/min"));
+			speedUnits.Add(new Unit("fts", "foot/s"));
+			speedUnits.Add(new Unit("mph", "mil/h"));
+			speedUnits.Add(new Unit("kts", "knots"));
+			speedUnits.Add(new Unit("beaufort", "beaufort"));
+			speedUnits.Add(new Unit("inchs", "inch/s"));
+			speedUnits.Add(new Unit("yards", "yard/s"));
+			speedUnits.Add(new Unit("fpf", "Furlong/Fortnight"));
+
+			// fill combobox with long names
+			foreach (Unit speedUnit in speedUnits)
+			{
+				comboBoxSpeedUnit.Items.Add(speedUnit.NameLong);
+			}
+
+			// select the combobox item based on the abbreviation
+			foreach (Unit speedUnit in speedUnits)
+			{
+				if (speedUnit.NameShort==region.speedUnit)
+				{
+					comboBoxSpeedUnit.Text=speedUnit.NameLong;
+				}
+			}
+
+			// setup abbreviation array for temp units
+			tempUnits.Add(new Unit("F", "°F"));
+			tempUnits.Add(new Unit("K", "K"));
+			tempUnits.Add(new Unit("C", "°C"));
+			tempUnits.Add(new Unit("Re", "°Ré"));
+			tempUnits.Add(new Unit("Ra", "°Ra"));
+			tempUnits.Add(new Unit("Ro", "°Rø"));
+			tempUnits.Add(new Unit("De", "°De"));
+			tempUnits.Add(new Unit("N", "°N"));
+
+			// fill combobox with long names
+			foreach (Unit tempUnit in tempUnits)
+			{
+				comboBoxTempUnit.Items.Add(tempUnit.NameLong);
+			}
+
+			// select the combobox item based on the abbreviation
+			foreach (Unit tempUnit in tempUnits)
+			{
+				if (tempUnit.NameShort==region.tempUnit)
+				{
+					comboBoxTempUnit.Text=tempUnit.NameLong;
+				}
+			}
+
+			// fill in the rest of the region info
 			textBoxDateShort.Text=region.dateShort;
 			textBoxDateLong.Text=region.dateLong;
 			textBoxTime.Text=region.time;
 			textBoxAM.Text=region.symbolAM;
 			textBoxPM.Text=region.symbolPM;
-			comboBoxSpeedUnit.Text=region.speedUnit;
-			comboBoxTempUnit.Text=region.tempUnit;
 		}
 
 		#endregion
@@ -530,8 +594,26 @@ namespace TeamXBMC.Translator
 			region.time=textBoxTime.Text;
 			region.symbolAM=textBoxAM.Text;
 			region.symbolPM=textBoxPM.Text;
-			region.speedUnit=comboBoxSpeedUnit.Text;
-			region.tempUnit=comboBoxTempUnit.Text;
+
+			// tranlate the speed unit text of the combobox to 
+			// the abbreviation used in the xml file
+			foreach (Unit speedUnit in speedUnits)
+			{
+				if (speedUnit.NameLong==comboBoxSpeedUnit.Text)
+				{
+					region.speedUnit=speedUnit.NameShort;
+				}
+			}
+
+			// tranlate the temp unit text of the combobox to 
+			// the abbreviation used in the xml file
+			foreach (Unit tempUnit in tempUnits)
+			{
+				if (tempUnit.NameLong==comboBoxTempUnit.Text)
+				{
+					region.tempUnit=tempUnit.NameShort;
+				}
+			}
 		}
 
 		#endregion
