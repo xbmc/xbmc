@@ -1,10 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: NiGhTsPiRiT-->
-<!--Email: spam@nightspirit.nl-->
-<!--Date of translation: 06/26/2006-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 1.328-->
+<!--Translator: www.console-ombouw.nl-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -162,7 +158,7 @@
   <string id="224">Wisseltijd</string>
   <string id="225">Overgangstijd</string>
   <string id="226">PAL60 gebruiken</string>
-  <string id="227">CDDB gebruiken</string>
+  <string id="227">Audio cd's zoeken op freedb</string>
   <string id="228">Afspeellijst willekeurig afspelen</string>
   <string id="229">HD automatisch uit na</string>
   <string id="230">Videofilters</string>
@@ -193,7 +189,7 @@
   <string id="255">CDDB</string>
   <string id="256">Bezig met zoeken in FreeDB</string>
   <string id="257">Fout</string>
-  <string id="258">ID3 Tags inschakelen</string>
+  <string id="258">Tags lezen inschakelen</string>
   <string id="259">Openen</string>
   <string id="260">Shoutcast</string>
   <string id="261">Wachten op start</string>
@@ -582,11 +578,11 @@
   <string id="1002">XBMC kon niet verbinden met de netwerk locatie.</string>
   <string id="1003">Dit kan veroorzaakt worden doordat het netwerk niet verbonden is.</string>
   <string id="1004">Wilt u het evengoed toevoegen?</string>
-  <string id="1005">Voer een naam in voor deze share</string>
+  <string id="1005">Voer een naam in voor deze locatie</string>
   <string id="1006">IP Adres</string>
   <string id="1007">Voeg netwerklocatie toe</string>
   <string id="1008">Protocol</string>
-  <string id="1009">Server Addres</string>
+  <string id="1009">Server Adres</string>
   <string id="1010">Server Naam</string>
   <string id="1011">Remote Path</string>
   <string id="1012">Gedeelde Map</string>
@@ -598,23 +594,23 @@
   <string id="1018">Voer het poortnummer in</string>
   <string id="1019">Voer de gebruikersnaam in</string>
   <string id="1020">%s bron toevoegen</string>
-  <string id="1021">Voer de locatie in of browse naar de media locatie.</string>
-  <string id="1022">Voer een naam in voor deze Mediabron.</string>
-  <string id="1023">Browse voor nieuwe share</string>
+  <string id="1021">Voer locatie's in of browse naar de locatie's.</string>
+  <string id="1022">Voer een naam in voor deze locatie.</string>
+  <string id="1023">Browse voor nieuwe locatie</string>
   <string id="1024">Browse</string>
   <string id="1025">Kon geen directoryinformatie verkrijgen.</string>
-  <string id="1026">Bron toevoegen</string>
-  <string id="1027">Bron aanpassen</string>
-  <string id="1028">Pas %s bron aan</string>
+  <string id="1026">Locatie toevoegen</string>
+  <string id="1027">Locatie aanpassen</string>
+  <string id="1028">Pas %s locatie aan</string>
   <string id="1029">Voer nieuwe label in</string>
   <string id="1030">een afbeelding</string>
-  <string id="1031">een afbeelding</string>
+  <string id="1031">een afbeeldingsmap</string>
   <string id="1032">Voeg netwerklocatie toe...</string>
-  <string id="1200">SMB deelmappen</string>
-  <string id="1202">SMB werkgroep</string>
-  <string id="1203">SMB gebruikersnaam</string>
-  <string id="1204">SMB wachtwoord</string>
-  <string id="1207">SMB WINS server</string>
+  <string id="1200">SMB Client</string>
+  <string id="1202">Werkgroep</string>
+  <string id="1203">Standaard gebruikersnaam</string>
+  <string id="1204">Standaard wachtwoord</string>
+  <string id="1207">WINS server</string>
   <string id="1210">Verwijderen</string>
   <string id="1211">Muziek</string>
   <string id="1212">Video</string>
@@ -793,10 +789,10 @@
   <string id="12355">automatisch vergrendeling heractiveren.)</string>
   <string id="12356">Vergrendeling veranderen</string>
   <string id="12357">Vergrendeling delen</string>
-  <string id="12358">Wachtwoord is niet opgegeven. Probeer het opnieuw.</string>
+  <string id="12358">Wachtwoord niet opgegeven.Probeer opnieuw.</string>
   <string id="12360">Hoofdcode</string>
-  <string id="12361">Aantal keer proberen</string>
-  <string id="12362">Uitschakelen</string>
+  <string id="12361">Max. aantal pogingen</string>
+  <string id="12362">Xbox uitschakelen als max. aantal pogingen gebruikt zijn</string>
   <string id="12363">Deelmappen beveiligen</string>
   <string id="12364">Hoofdcode</string>
   <string id="12365">Hoofdcode</string>
@@ -883,7 +879,7 @@
   <string id="13270">Hardware:</string>
   <string id="13271">CPU Snelheid:</string>
   <string id="13274">Xbox is verbonden, maar geen DNS is beschikbaar.</string>
-  <string id="13275">Harde Schijf</string>
+  <string id="13275">Hard Disk</string>
   <string id="13276">DVD-ROM</string>
   <string id="13277">Opslag</string>
   <string id="13278">Standaard</string>
@@ -898,7 +894,7 @@
   <string id="13287">Scherm Resolutie:</string>
   <string id="13288">Xbox Versie:</string>
   <string id="13289">Xbox Serie Nummer:</string>
-  <string id="13290">Xbox Fabrikant:</string>
+  <string id="13290">XBOX Fabrikant:</string>
   <string id="13291">ModChip:</string>
   <string id="13292">A/V Kabel:</string>
   <string id="13293">Video &amp; XBE Regio:</string>
@@ -917,7 +913,7 @@
   <string id="13306">Hoofdmap verbergen</string>
   <string id="13307">Tracks weergeven als</string>
   <string id="13308">Wilt u de Xbox opnieuw opstarten</string>
-  <string id="13309">in plaats van alleen XBMC herstarten?</string>
+  <string id="13309">In plaats van alleen XBMC herstarten?</string>
   <string id="13310">Zoom effect</string>
   <string id="13311">Zweef effect</string>
   <string id="13312">Rand reductie</string>
@@ -997,8 +993,10 @@
   <string id="13386">Op tijd gebaseerd zoeken</string>
   <string id="13387">Track weergeven als (rechts)</string>
   <string id="13388">Presets</string>
-  <string id="13389">Er zijn geen presets beschikbaar&amp;#10;voor deze visualisatie</string>
-  <string id="13390">Er zijn geen instellingen beschikbaar&amp;#10;voor deze visualisatie</string>
+  <string id="13389">Er zijn geen presets beschikbaar
+voor deze visualisatie</string>
+  <string id="13390">Er zijn geen instellingen beschikbaar
+voor deze visualisatie</string>
   <string id="13391">Tray open/dicht</string>
   <string id="13392">Gebruik visualisation bij geluid afspelen</string>
   <string id="13393">Bereken grootte</string>
@@ -1014,8 +1012,8 @@
   <string id="13403">Default leegmaken</string>
   <string id="13404">Hervatten</string>
   <string id="13405">Verkrijg Thumb</string>
-  <string id="14000">Groeperen: Uit</string>
-  <string id="14001">Groeperen: Aan</string>
+  <string id="14000">Groeperen</string>
+  <string id="14001">Groeperen: Uit</string>
   <string id="14002">Groeperen: Fuzzy</string>
   <string id="14003">Downloaden van playlist...</string>
   <string id="14004">Downloaden van streams lijst...</string>
@@ -1038,7 +1036,7 @@
   <string id="14021">Locatie 3</string>
   <string id="14022">Bibliotheek</string>
   <string id="14023">Geen TV</string>
-  <string id="14024">Vul de dichtbijzijnste grote plaats in of US ZIP code</string>
+  <string id="14024">Vul de dichtbijzijnste grote plaats in</string>
   <string id="14025">Video/Audio/DVD cache - Harde schijf</string>
   <string id="14026">Video cache - DVD</string>
   <string id="14027">- Lokaal netwerk</string>
@@ -1081,9 +1079,9 @@
   <string id="14066">Geef de tijd in 24 uurs formaat (HH:MM)</string>
   <string id="14067">Geef de datum in DD/MM/YYYY formaat</string>
   <string id="14068">Geef het IP adres</string>
-  <string id="14069">Wil je de volgende instellingen nu toepassen?</string>
+  <string id="14069">Instellingen nu toepassen?</string>
   <string id="14070">Instellingen toepassen</string>
-  <string id="14071">Sta bestanden hernoemen en verwijderen toe</string>
+  <string id="14071">Sta bestanden verwijderen toe</string>
   <string id="14072">XLink Kai inschakelen</string>
   <string id="14073">XLink Kai is niet ingeschakeld</string>
   <string id="15000">XLink Kai</string>
@@ -1143,7 +1141,7 @@
   <string id="15054">Uitnodig venster</string>
   <string id="15055">Kies een spel:</string>
   <string id="15056">Type je bericht:</string>
-  <string id="15057">Versturen</string>
+  <string id="15057">Sturen</string>
   <string id="15058">Host</string>
   <string id="15059">Uitnodiging geaccepteerd!</string>
   <string id="15060">Bericht hier</string>
@@ -1168,17 +1166,17 @@
   <string id="15203">Last.FM wachtwoord</string>
   <string id="15204">Verbinding mislukt</string>
   <string id="15205">Update XBMC a.u.b.</string>
-  <string id="15206">Authentificatie mislukt</string>
+  <string id="15206">Authentificatie mislukt:Controleer gebruikersnaam en wachtwoord</string>
   <string id="15207">Verbonden</string>
   <string id="15208">Niet verbonden</string>
   <string id="15209">Verzend interval %i</string>
-  <string id="15210">%i nummers gecached</string>
+  <string id="15210">%i nummer gecached</string>
   <string id="15211">Verzenden...</string>
   <string id="15212">Verzenden over %i sec.</string>
   <string id="15213">Speelt af met...</string>
   <string id="15214">Geleidelijk A/V Syncronisatie gebruiken</string>
   <string id="15215">Verberg Bestandsnamen in Thumb-weergave</string>
-  <string id="15250">Last.FM radio aan Last.FM toevoegen</string>
+  <string id="15250">Last.fm radio aan Last.FM toevoegen</string>
   <string id="15251">Verbinding maken met Last.FM...</string>
   <string id="15252">Station selecteren...</string>
   <string id="15253">Zoek naar gelijksoortige artiesten</string>
@@ -1241,7 +1239,7 @@
   <string id="16024">Bezig met annuleren...</string>
   <string id="16025">Geef de artiest op</string>
   <string id="16026">Playlist afspelen afgebroken</string>
-  <string id="16027">Teveel opeenvolgende ontbroken punten</string>
+  <string id="16027">Teveel consecutive failed items</string>
   <string id="16030">Party Mode afgebroken.</string>
   <string id="16031">Geen overeenkomstige nummers in database.</string>
   <string id="16032">Kon database niet initialeren.</string>
