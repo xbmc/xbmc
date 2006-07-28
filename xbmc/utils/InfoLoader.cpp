@@ -85,3 +85,8 @@ const char *CInfoLoader::TranslateInfo(DWORD dwInfo)
 {
   return "";
 }
+
+void CInfoLoader::ResetTimer()
+{
+  m_refreshTime = timeGetTime();
+}
