@@ -916,6 +916,8 @@ unsigned int CXBoxRenderer::PreInit()
   m_iYV12RenderBuffer = 0;
   m_NumOSDBuffers = 0;
   m_NumYV12Buffers = 0;
+  m_OSDHeight = m_OSDWidth = 0;
+  m_OSDRendered = false;
   
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
