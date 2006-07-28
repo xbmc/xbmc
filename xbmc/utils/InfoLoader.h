@@ -23,6 +23,7 @@ public:
   const char *GetInfo(DWORD dwInfo);
   void Refresh();
   void LoaderFinished();
+  void ResetTimer();
 protected:
   virtual const char *TranslateInfo(DWORD dwInfo);
   virtual const char *BusyInfo(DWORD dwInfo);
