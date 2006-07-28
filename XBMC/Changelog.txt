@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-07-2006 added: new speed units
  - 28-07-2006 updated: Icelandic language file (Thnx to kristjan)
  - 28-07-2006 updated: Swedish language file (Thnx to blittan)
  - 28-07-2006 updated: Norwegian language file (Thnx to vnm)

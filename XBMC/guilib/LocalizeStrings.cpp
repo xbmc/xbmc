@@ -42,13 +42,14 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   XMLUtils::GetEncoding(&xmlDoc, strEncoding);
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if (strValue != CStdString("strings"))
+  if (!pRootElement || pRootElement->NoChildren() || 
+       pRootElement->Value()!=CStdString("strings"))
   {
     CLog::Log(LOGERROR, "%s Doesn't contain <strings>", strFileName.c_str());
     g_LoadErrorStr.Format("%s\nDoesnt start with <strings>", strFileName.c_str());
     return false;
   }
+
   const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
   while (pChild)
   {
@@ -98,8 +99,8 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
     XMLUtils::GetEncoding(&xmlDoc, strEncoding);
 
     TiXmlElement* pRootElement = xmlDoc.RootElement();
-    CStdString strValue = pRootElement->Value();
-    if (strValue != CStdString("strings")) return false;
+    if (!pRootElement || pRootElement->NoChildren() || 
+         pRootElement->Value()!=CStdString("strings")) return false;
 
     const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
     while (pChild)
@@ -184,9 +185,6 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20032] = ToUTF8(strEncoding, "°Rø"); 
   m_vecStrings[20033] = ToUTF8(strEncoding, "°De"); 
   m_vecStrings[20034] = ToUTF8(strEncoding, "°N");
-  m_vecStrings[20035] = ToUTF8(strEncoding, "km/h");
-  m_vecStrings[20036] = ToUTF8(strEncoding, "mph");
-  m_vecStrings[20037] = ToUTF8(strEncoding, "m/s");
   m_vecStrings[20038] = "Lock music section";
   m_vecStrings[20039] = "Lock video section";
   m_vecStrings[20040] = "Lock pictures section";
@@ -278,6 +276,20 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20126] = "Log off";
   m_vecStrings[20127] = "Hide 'all' items in library views";
   m_vecStrings[20128] = "Go to Root";
+
+  m_vecStrings[20200] = ToUTF8(strEncoding, "km/h");
+  m_vecStrings[20201] = ToUTF8(strEncoding, "m/min");
+  m_vecStrings[20202] = ToUTF8(strEncoding, "m/s");
+  m_vecStrings[20203] = ToUTF8(strEncoding, "ft/h");
+  m_vecStrings[20204] = ToUTF8(strEncoding, "ft/min");
+  m_vecStrings[20205] = ToUTF8(strEncoding, "ft/s");
+  m_vecStrings[20206] = ToUTF8(strEncoding, "mph");
+  m_vecStrings[20207] = ToUTF8(strEncoding, "kts");
+  m_vecStrings[20208] = ToUTF8(strEncoding, "Beaufort");
+  m_vecStrings[20209] = ToUTF8(strEncoding, "inch/s");
+  m_vecStrings[20210] = ToUTF8(strEncoding, "yard/s");
+  m_vecStrings[20211] = ToUTF8(strEncoding, "Furlong/Fortnight");
+
   // new strings for weather localization
   m_vecStrings[1411] = "with";
   m_vecStrings[1412] = "windy";
