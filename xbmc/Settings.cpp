@@ -328,6 +328,46 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   CStdString strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szAlternateSubtitleDirectory);
   strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
 
+  // look for external sources file
+  CStdString strCached = "Z:\\remotesources.xml";
+  bool bRemoteSourceFile = false;
+  TiXmlNode *pInclude = pRootElement->FirstChild("remote");
+  if (pInclude)
+  {
+    CStdString strRemoteFile = pInclude->FirstChild()->Value();
+    if (!strRemoteFile.IsEmpty())
+    {
+      CLog::Log(LOGDEBUG,"Found <remote> tag");
+      // cache and open the external source file
+      if (!CUtil::IsHD(strRemoteFile) && CFile::Exists(strRemoteFile))
+      {
+        CLog::Log(LOGDEBUG,"Opening remote sources file [%s]", strRemoteFile.c_str());
+        CFile::Cache(strRemoteFile, strCached);
+        bRemoteSourceFile = true;
+      }
+    }
+  }
+
+  // open cached external source file
+  if (bRemoteSourceFile)
+  {
+    strXMLFile = strCached;
+    if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
+    {
+      g_LoadErrorStr.Format("%s, Line %d\n%s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+      return false;
+    }
+
+    pRootElement = xmlDoc.RootElement();
+    if (pRootElement)
+      strValue = pRootElement->Value();
+    if ( strValue != "sources")
+    {
+      g_LoadErrorStr.Format("%s Doesn't contain <sources>", strXMLFile.c_str());
+      return false;
+    }
+  }
+
   // parse my programs bookmarks...
   CStdString strDefault;
   GetShares(pRootElement, "myprograms", m_vecMyProgramsShares, strDefault);
