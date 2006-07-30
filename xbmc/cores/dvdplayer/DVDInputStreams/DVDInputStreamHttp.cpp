@@ -4,9 +4,8 @@
 
 #include "..\..\..\util.h"
 
-CDVDInputStreamHttp::CDVDInputStreamHttp() : CDVDInputStream()
+CDVDInputStreamHttp::CDVDInputStreamHttp() : CDVDInputStream(DVDSTREAM_TYPE_HTTP)
 {
-  m_streamType = DVDSTREAM_TYPE_HTTP;
   m_pFile = NULL;
   m_eof = true;
 }

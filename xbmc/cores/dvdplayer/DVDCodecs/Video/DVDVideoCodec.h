@@ -21,7 +21,7 @@ typedef struct stDVDVideoPicture
   unsigned int iRepeatPicture;
   unsigned int iDuration;
   int iFrameType; // see defines above // 1->I, 2->P, 3->B, 0->Undef
-
+  int iGroupId;
 
   unsigned int iWidth;
   unsigned int iHeight;
