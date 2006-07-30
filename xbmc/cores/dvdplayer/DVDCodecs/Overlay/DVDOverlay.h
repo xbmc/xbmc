@@ -25,6 +25,7 @@ public:
 #ifdef DVDDEBUG_OVERLAY_TRACKER
     m_bTrackerReference = 0;
 #endif
+    iGroupId = 0;
   }
   
   virtual ~CDVDOverlay()
@@ -66,7 +67,7 @@ public:
   __int64 iPTSStartTime;
   __int64 iPTSStopTime;
   bool bForced; // display, no matter what
-
+  int iGroupId;
 #ifdef DVDDEBUG_OVERLAY_TRACKER
   int m_bTrackerReference;
 #endif

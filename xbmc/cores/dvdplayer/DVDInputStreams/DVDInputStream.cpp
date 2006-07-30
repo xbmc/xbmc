@@ -3,8 +3,9 @@
 #include "DVDInputStream.h"
 
 
-CDVDInputStream::CDVDInputStream()
+CDVDInputStream::CDVDInputStream(DVDStreamType streamType)
 {
+  m_streamType = streamType;
   m_strFileName = NULL;
 }
 

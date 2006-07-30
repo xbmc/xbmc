@@ -6,9 +6,8 @@
 #include "..\DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
 
-CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInputStream()
+CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInputStream(DVDSTREAM_TYPE_DVD)
 {
-  m_streamType = DVDSTREAM_TYPE_DVD;
   m_dvdnav = 0;
   m_pDVDPlayer = player;
   InitializeCriticalSection(&m_critSection);
@@ -25,7 +24,7 @@ CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
 bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& content)
 {
   char* strDVDFile;
-  
+  m_icurrentGroupId = 0;
   if (!CDVDInputStream::Open(strFile, "video/mpeg")) return false;
   
   // load libdvdnav.dll
@@ -338,7 +337,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
         CLog::DebugLog("Cell change: Title %d, Chapter %d\n", tt, ptt);
         CLog::DebugLog("At position %.0f%% inside the feature\n", 100 * (double)pos / (double)len);
-        
+        m_icurrentGroupId = (ptt * 1000) + tt;
         //Get total segment time        
         
         

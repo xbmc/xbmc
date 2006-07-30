@@ -16,7 +16,7 @@ enum DVDStreamType
 class CDVDInputStream
 {
 public:
-  CDVDInputStream();
+  CDVDInputStream(DVDStreamType m_streamType);
   virtual ~CDVDInputStream();
   virtual bool Open(const char* strFileName, const std::string& content) = 0;
   virtual void Close() = 0;
@@ -31,7 +31,7 @@ public:
   int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_FILE; }
   bool IsStreamType(DVDStreamType type) { return m_streamType == type; }
   virtual bool IsEOF() = 0;  
-  
+  virtual int GetCurrentGroupId() { return 0; }
 
 protected:
   DVDStreamType m_streamType;
