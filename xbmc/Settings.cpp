@@ -337,14 +337,26 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     CStdString strRemoteFile = pInclude->FirstChild()->Value();
     if (!strRemoteFile.IsEmpty())
     {
-      CLog::Log(LOGDEBUG,"Found <remote> tag");
-      // cache and open the external source file
-      if (!CUtil::IsHD(strRemoteFile) && CFile::Exists(strRemoteFile))
+      // local file is not allowed as a remote source
+      if (!CUtil::IsHD(strRemoteFile))
       {
-        CLog::Log(LOGDEBUG,"Opening remote sources file [%s]", strRemoteFile.c_str());
-        CFile::Cache(strRemoteFile, strCached);
-        bRemoteSourceFile = true;
+        CLog::Log(LOGDEBUG, "Found <remote> tag");
+        CLog::Log(LOGDEBUG, "Attempting to retrieve remote file: %s", strRemoteFile.c_str());
+        // sometimes we have to wait for the network
+        if (g_network.IsAvailable())
+        {
+          // cache the external source file
+          if (CFile::Cache(strRemoteFile, strCached))
+          {
+            bRemoteSourceFile = true;
+            CLog::Log(LOGDEBUG, "Success! Remote sources will be used");
+          }
+        }
+        else
+          CLog::Log(LOGERROR, "Could not retrieve remote file, defaulting to local sources");
       }
+      else
+        CLog::Log(LOGERROR, "Local harddrive path is not allowed as remote");
     }
   }
 
