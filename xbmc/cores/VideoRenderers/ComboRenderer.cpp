@@ -271,10 +271,10 @@ void CComboRenderer::Render(DWORD flags)
   }
   else
   {
-    YV12toYUY2();
-
     // Don't render if we are waiting an overlay event
     while (!m_pD3DDevice->GetOverlayUpdateStatus()) Sleep(1);
+
+    YV12toYUY2();
 
     /* clear target area, otherwise we won't get any picture */
     D3DRECT target;
