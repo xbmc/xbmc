@@ -92,7 +92,8 @@ public:
   float GetVideoAspectRatio();
 
   bool Seek(int iTimeInMsec); //seek within current pg(c)
-
+  virtual int GetCurrentGroupId() { return m_icurrentGroupId; }
+  
 protected:
   void Lock()   { EnterCriticalSection(&m_critSection); }
   void Unlock() { LeaveCriticalSection(&m_critSection); }
@@ -119,7 +120,8 @@ protected:
   DllDvdNav m_dll;
   bool m_bCheckButtons;
   bool m_bEOF;
-
+  
+  int m_icurrentGroupId;
   int m_iTotalTime;
   int m_iTime;
   __int64 m_iCellStart; // start time of current cell in pts units (90khz clock)
