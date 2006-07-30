@@ -5,9 +5,8 @@
 #include "..\..\..\util.h"
 
 
-CDVDInputStreamMemory::CDVDInputStreamMemory() : CDVDInputStream()
+CDVDInputStreamMemory::CDVDInputStreamMemory() : CDVDInputStream(DVDSTREAM_TYPE_MEMORY)
 {
-  m_streamType = DVDSTREAM_TYPE_MEMORY;
   m_pData = NULL;
   m_iDataSize = 0;
   m_iDataPos = 0;
