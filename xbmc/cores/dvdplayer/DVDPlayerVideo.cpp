@@ -42,7 +42,6 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
-  
   m_iDroppedFrames = 0;
   m_fFrameRate = 25;
 }
@@ -320,7 +319,9 @@ void CDVDPlayerVideo::Process()
           // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
           fast_memset(&picture, 0, sizeof(DVDVideoPicture));
           if (m_pVideoCodec->GetPicture(&picture))
-          {          
+          {
+            picture.iGroupId = pPacket->iGroupId;
+            
             if (picture.iDuration == 0)
               // should not use iFrameTime here. cause framerate can change while playing video
               picture.iDuration = iFrameTime;
@@ -573,7 +574,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   while (it != pVecOverlays->end())
   {
     CDVDOverlay* pOverlay = *it;
-    if ((pOverlay->bForced || m_bRenderSubs) &&
+    if ((pOverlay->bForced || m_bRenderSubs) && (pOverlay->iGroupId == pSource->iGroupId) && 
         ((pOverlay->iPTSStartTime <= pts && (pOverlay->iPTSStopTime >= pts || pOverlay->iPTSStopTime == 0LL)) || pts == 0))
     {
       if (bHasSpecialOverlay && m_pTempOverlayPicture) CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay);

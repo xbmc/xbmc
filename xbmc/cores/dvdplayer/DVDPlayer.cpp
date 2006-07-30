@@ -373,6 +373,9 @@ void CDVDPlayer::Process()
         continue;
       }
 
+      // it's a valid data packet, add some more information too it
+      pPacket->iGroupId = m_pInputStream->GetCurrentGroupId();
+
       try
       {
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -546,7 +549,7 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* p
     if (pSPUInfo)
     {
       CLog::Log(LOGDEBUG, "CDVDPlayer::ProcessSubData: Got complete SPU packet");
-
+      pSPUInfo->iGroupId = pPacket->iGroupId;
       m_overlayContainer.Add(pSPUInfo);
       pSPUInfo->Release();
       
