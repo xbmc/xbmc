@@ -39,11 +39,6 @@ static EFIELDSYNC m_iFieldSync = FS_NONE;
 
 void video_uninit(void);
 
-void xbox_video_CheckScreenSaver()
-{
-  g_renderManager.CheckScreenSaver();
-}
-
 void xbox_video_getAR(float& fAR)
 {
   fAR = g_renderManager.GetAspectRatio();

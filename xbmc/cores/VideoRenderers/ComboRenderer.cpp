@@ -196,6 +196,9 @@ void CComboRenderer::YV12toYUY2()
   int index = m_iYV12RenderBuffer;
   if (!m_RGBSurface[m_iYUY2RenderBuffer]) return;
 
+  /* if we have dimmed our texture, don't overwrite it */
+  if( g_application.m_bScreenSave && m_bHasDimView ) return;
+
   if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
     CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
 
@@ -294,6 +297,7 @@ void CComboRenderer::Render(DWORD flags)
   else
   {
     YV12toYUY2();
+    CheckScreenSaver();
 
     /* clear target area, otherwise we won't get any picture */
     D3DRECT target;
@@ -369,13 +373,10 @@ void CComboRenderer::UnInit()
 
 void CComboRenderer::CheckScreenSaver()
 {
-  // Called from CMPlayer::Process() (mplayer.cpp) when in 'pause' mode
-  D3DLOCKED_RECT lr;
-
-  float fAmount = (float)g_guiSettings.GetInt("screensaver.dimlevel") / 100.0f;
-
   if (g_application.m_bScreenSave && !m_bHasDimView)
   {
+    D3DLOCKED_RECT lr;
+    float fAmount = (float)g_guiSettings.GetInt("screensaver.dimlevel") / 100.0f;
     if ( D3D_OK == m_YUY2Texture[m_iYUY2RenderBuffer]->LockRect(0, &lr, NULL, 0 ))
     {
       // Drop brightness of current surface to 20%
@@ -394,17 +395,7 @@ void CComboRenderer::CheckScreenSaver()
       }
       m_YUY2Texture[m_iYUY2RenderBuffer]->UnlockRect(0);
 
-      // Commit to screen
-      CSingleLock lock(g_graphicsContext);
-
-      while (!m_pD3DDevice->GetOverlayUpdateStatus()) Sleep(1);
-      
-      LPDIRECT3DSURFACE8 pSurface;
-      m_YUY2Texture[m_iYUY2RenderBuffer]->GetSurfaceLevel(0, &pSurface);
-      m_pD3DDevice->UpdateOverlay( pSurface, &rs, &rd, TRUE, m_clearColour );
-      pSurface->Release();
     }
-
     m_bHasDimView = true;
   }
 }

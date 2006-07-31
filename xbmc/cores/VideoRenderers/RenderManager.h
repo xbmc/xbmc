@@ -18,7 +18,6 @@ public:
   void AutoCrop(bool bCrop = true) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->AutoCrop(bCrop); };
   void Update(bool bPauseDrawing);
   void RenderUpdate(bool clear) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->RenderUpdate(clear); };
-  void CheckScreenSaver() { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->CheckScreenSaver(); };
   void SetupScreenshot();
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
