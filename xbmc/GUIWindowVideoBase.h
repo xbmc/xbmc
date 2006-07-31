@@ -30,6 +30,7 @@ protected:
   virtual void OnDeleteItem(int iItem);
 
   bool OnClick(int iItem);
+  void OnRestartItem(int iItem);
   void OnResumeItem(int iItem);
   void PlayItem(int iItem);
   virtual bool OnPlayMedia(int iItem);
