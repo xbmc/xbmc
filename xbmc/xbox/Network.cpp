@@ -428,7 +428,8 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StartTimeServer();
       g_application.StartWebServer();
       g_application.StartFtpServer();
-      g_application.StartKai();
+      if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
+        g_application.StartKai();
       g_application.StartUPnP();
       CScrobbler::GetInstance()->Init();
     }
