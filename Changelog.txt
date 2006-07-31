@@ -5,11 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-07-2006 fixed: overlay rendering had tearing, renderer updated overlay surface before previous overlay had been copied (second attempt, restored double buffering)
  - 31-07-2006 changed: player controls are now disabled on the login screen.
  - 31-07-2006 fixed: conflict with using the different types of locks (all locks had to be of the same kind as the master lock).
  - 31-07-2006 fixed: Stuck in settings after loading PM3 (or other skins) from Mc360.
  - 31-07-2006 fixed: Removed old non-float code from paplayer path, and fixed buffer sizes.
- - 31-07-2006 fixed: overlay rendering had tearing, renderer updated overlay surface before, previous overlay had been copied
  - 30-07-2006 fixed: on some dvd's, menu overlays appeared to soon
  - 28-07-2006 added: new speed units
  - 28-07-2006 updated: Icelandic language file (Thnx to kristjan)
