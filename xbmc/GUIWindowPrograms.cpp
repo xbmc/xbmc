@@ -470,6 +470,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
   m_dlgProgress->Progress();
   
   bool bBreak=false;
+  m_database.BeginTransaction();
   for (unsigned int i=0;i<vecTrainerPath.size();++i)
   {
     m_dlgProgress->SetPercentage((int)((float)i/(float)vecTrainerPath.size()*100.f));
@@ -477,11 +478,12 @@ void CGUIWindowPrograms::PopulateTrainersList()
     strLine.Format("%s %i / %i",g_localizeStrings.Get(12013).c_str(), i+1,vecTrainerPath.size());
     m_dlgProgress->SetLine(1,strLine);
     m_dlgProgress->Progress();
-    if (!CFile::Exists(vecTrainerPath[i]))
+    if (!CFile::Exists(vecTrainerPath[i]) || vecTrainerPath[i].find(g_guiSettings.GetString("myprograms.trainerpath",false)) == -1)
       m_database.RemoveTrainer(vecTrainerPath[i]);
     if (m_dlgProgress->IsCanceled())
     {
       bBreak = true;
+      m_database.RollbackTransaction();
       break;
     }
   }
@@ -513,8 +515,15 @@ void CGUIWindowPrograms::PopulateTrainersList()
     m_dlgProgress->ShowProgressBar(true);
   
     CLog::Log(LOGDEBUG,"# trainers %i",trainers.Size());
-    m_database.BeginTransaction();
     m_dlgProgress->SetLine(1,"");
+    int j=0;
+    while (j < trainers.Size())
+    {
+      if (trainers[j]->m_bIsFolder)
+        trainers.Remove(j);
+      else
+        j++;
+    }
     for (int i=0;i<trainers.Size();++i)
     {
       CLog::Log(LOGDEBUG,"found trainer %s",trainers[i]->m_strPath.c_str());
