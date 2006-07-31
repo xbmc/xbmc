@@ -403,7 +403,7 @@ bool CGUIPassword::CheckLock(int btnType, const CStdString& strPassword, int iHe
 
   int iVerifyPasswordResult = -1;
   CStdString strHeading = g_localizeStrings.Get(iHeading);
-  switch (g_settings.m_vecProfiles[0].getLockMode())
+  switch (btnType)
   {
   case LOCK_MODE_NUMERIC:
     iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword(const_cast<CStdString&>(strPassword), strHeading, 0);
