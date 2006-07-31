@@ -5,7 +5,7 @@
 #include "xbox/xbeheader.h"
 #include "GUIWindowFileManager.h"
 
-#define PROGRAM_DATABASE_VERSION 0.81f
+#define PROGRAM_DATABASE_VERSION 0.9f
 
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)
@@ -143,8 +143,8 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
       CLog::Log(LOGINFO, "dropping path table");
       m_pDS->exec("DROP TABLE path");
     }
-    if (fVersion < 0.81f)
-    { // Version 0.8 to 0.81 update - add size field
+    if (fVersion < 0.9f) // 0.81 was mistake ;)
+    { // Version 0.8 to 0.9 update - add size field
       CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dialog)
       {
@@ -441,6 +441,7 @@ bool CProgramDatabase::GetTrainers(unsigned int iTitleId, std::vector<CStdString
     CLog::Log(LOGERROR,"programdatabase: error reading trainers for %i (%s)",iTitleId,strSQL.c_str());
   }
   return false;
+
 }
 
 bool CProgramDatabase::GetAllTrainers(std::vector<CStdString>& vecTrainers)
@@ -449,16 +450,15 @@ bool CProgramDatabase::GetAllTrainers(std::vector<CStdString>& vecTrainers)
   CStdString strSQL;
   try 
   {
-    strSQL = FormatSQL("select * from trainers");
+    strSQL = FormatSQL("select distinct strTrainerPath from trainers");//FormatSQL("select * from trainers");
     if (!m_pDS->query(strSQL.c_str()))
       return false;
     
     while (!m_pDS->eof())
     {
-      vecTrainers.push_back(m_pDS->fv("strTrainerPath").get_asString());
+      vecTrainers.push_back(m_pDS->fv("strTrainerPath").get_asString());      
       m_pDS->next();
     }
-    
     
     return true;
   }
