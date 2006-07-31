@@ -1122,16 +1122,6 @@ HRESULT CApplication::Initialize()
   if (g_guiSettings.GetBool("masterlock.startuplock") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE ) 
   	g_passwordManager.CheckStartUpLock();
 
-  /* setup netowork based on our settings */
-  /* network will start it's init procedure */
-  g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-    g_guiSettings.GetString("network.ipaddress").c_str(),
-    g_guiSettings.GetString("network.subnet").c_str(),
-    g_guiSettings.GetString("network.gateway").c_str(),
-    g_guiSettings.GetString("network.dns").c_str());
-  
-  g_pythonParser.bStartup = true;
-
   // check if we should use the login screen
   if (g_settings.bUseLoginScreen)
   {
@@ -1156,6 +1146,16 @@ HRESULT CApplication::Initialize()
         m_gWindowManager.ActivateWindow(startWindow);
     }
   }
+  /* setup netowork based on our settings */
+  /* network will start it's init procedure */
+  g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
+    g_guiSettings.GetString("network.ipaddress").c_str(),
+    g_guiSettings.GetString("network.subnet").c_str(),
+    g_guiSettings.GetString("network.gateway").c_str(),
+    g_guiSettings.GetString("network.dns").c_str());
+
+  g_pythonParser.bStartup = true;
+  
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
