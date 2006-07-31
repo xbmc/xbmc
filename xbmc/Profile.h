@@ -29,6 +29,7 @@ public:
   void setName(const CStdString& name) {_name = name;}
   void setDirectory(const CStdString& directory) {_directory = directory;}
   void setDate(const CStdString& strDate) { _date = strDate;}
+  void setDate();
   void setLockMode(int iLockMode) { _iLockMode = iLockMode;}
   void setLockCode(const CStdString& strLockCode) { _strLockCode = strLockCode; }
   void setThumb(const CStdString& thumb) {_thumb = thumb;}
