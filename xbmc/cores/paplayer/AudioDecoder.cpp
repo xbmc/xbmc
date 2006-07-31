@@ -4,7 +4,7 @@
 #include "CodecFactory.h"
 
 
-#define INTERNAL_BUFFER_LENGTH  4*44100       // 1 second
+#define INTERNAL_BUFFER_LENGTH  sizeof(float)*2*44100       // float samples, 2 channels, 44100 samples per sec = 1 second
 
 CAudioDecoder::CAudioDecoder()
 {
@@ -112,11 +112,7 @@ unsigned int CAudioDecoder::GetDataSize()
   // check for end of file and end of buffer
   if (m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < PACKET_SIZE)
     m_status = STATUS_ENDED;
-#ifdef USE_FLOAT_BUFFERS
   return m_pcmBuffer.GetMaxReadSize() / sizeof(float);
-#else
-  return m_pcmBuffer.GetMaxReadSize();
-#endif
 }
 
 void *CAudioDecoder::GetData(unsigned int size)
@@ -124,7 +120,6 @@ void *CAudioDecoder::GetData(unsigned int size)
   if (size > OUTPUT_SAMPLES)
   {
     CLog::Log(LOGWARNING, "CAudioDecoder::GetData() more bytes/samples (%i) requested than we have to give (%i)!", size, OUTPUT_SAMPLES);
-    assert(false);
     size = OUTPUT_SAMPLES;
   }
   if (m_outputBufferSize > size)
@@ -133,25 +128,13 @@ void *CAudioDecoder::GetData(unsigned int size)
     return m_outputBuffer;
   }
 
-#ifdef USE_FLOAT_BUFFERS
   if (m_pcmBuffer.ReadBinary( (char *)(m_outputBuffer + m_outputBufferSize), (size - m_outputBufferSize) * sizeof(float)))
-#else
-  if (m_pcmBuffer.ReadBinary( (char *)m_outputBuffer + m_outputBufferSize, size - m_outputBufferSize))
-#endif
   {
     m_outputBufferSize = 0;
     // check for end of file + end of buffer
-#ifdef USE_FLOAT_BUFFERS
     if ( m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < OUTPUT_SAMPLES * sizeof(float))
-#else
-    if ( m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < OUTPUT_SAMPLES)
-#endif
     {
-#ifdef USE_FLOAT_BUFFERS
       CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %i bytes left", m_pcmBuffer.GetMaxReadSize() * sizeof(float));
-#else
-      CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %i bytes left", m_pcmBuffer.GetMaxReadSize());
-#endif
       m_status = STATUS_ENDED;
     }
     return m_outputBuffer;
@@ -173,7 +156,6 @@ void CAudioDecoder::PrefixData(void *data, unsigned int size)
     CLog::Log(LOGWARNING, "CAudioDecoder::PrefixData - losing %i bytes of audio data in track transistion", size - m_outputBufferSize);
 }
 
-#ifdef USE_FLOAT_BUFFERS
 int CAudioDecoder::ReadSamples(int numsamples)
 {
   if (m_status == STATUS_NO_FILE || m_status == STATUS_ENDING || m_status == STATUS_ENDING)
@@ -241,72 +223,10 @@ int CAudioDecoder::ReadSamples(int numsamples)
   }
   return RET_SLEEP; // nothing to do
 }
-#else
-int CAudioDecoder::ReadData(int sendsize)
-{
-  if (m_status == STATUS_NO_FILE || m_status == STATUS_ENDING || m_status == STATUS_ENDING)
-    return RET_SLEEP;             // nothing loaded yet
-
-  // start playing once we're fully queued and we're ready to go
-  if (m_status == STATUS_QUEUED && m_canPlay)
-    m_status = STATUS_PLAYING;
-
-  // grab a lock to ensure the codec is created at this point.
-  CSingleLock lock(m_critSection);
-
-  // Read in more data
-  int maxsize = min(INPUT_SIZE, m_pcmBuffer.GetMaxWriteSize());
-  sendsize = min(sendsize, maxsize);
-  sendsize -= (sendsize % m_blockSize);  // make sure it's divisible by our block size!
-  if ( sendsize )
-  {
-    int actualdatasent = 0;
-    int result = m_codec->ReadPCM(m_inputBuffer, sendsize, &actualdatasent);
-    if ( result != READ_ERROR && actualdatasent ) 
-    {
-      ProcessAudio(m_inputBuffer, actualdatasent);
-      // move it into our buffer
-      m_pcmBuffer.WriteBinary((char *)m_inputBuffer, actualdatasent);
-
-      // update status
-      if (m_status == STATUS_QUEUING && m_pcmBuffer.GetMaxReadSize() > m_pcmBuffer.Size() * 0.9)
-      {
-        CLog::Log(LOGINFO, "AudioDecoder: File is queued");
-        m_status = STATUS_QUEUED;
-      }
-
-      if (result == READ_EOF) // EOF reached
-      {
-        // setup ending if we're within set time of the end (currently just EOF)
-        m_eof = true;
-        if (m_status < STATUS_ENDING)
-          m_status = STATUS_ENDING;
-      }
-
-      return RET_SUCCESS;
-    }
-    if (result == READ_ERROR)
-    {
-      // error decoding, lets finish up and get out
-      CLog::Log(LOGERROR, "CAudioDecoder: Error while decoding %i", result);
-      return RET_ERROR;
-    }
-    if (result == READ_EOF)
-    {
-      m_eof = true;
-      // setup ending if we're within set time of the end (currently just EOF)
-      if (m_status < STATUS_ENDING)
-        m_status = STATUS_ENDING;
-    }
-  }
-  return RET_SLEEP; // nothing to do
-}
-#endif
 
 #define MAX_SHORT_VALUE 32767
 #define MIN_SHORT_VALUE -32768
 
-#ifdef USE_FLOAT_BUFFERS
 void CAudioDecoder::ProcessAudio(float *data, int numsamples)
 {
   if (g_guiSettings.m_replayGain.iType != REPLAY_GAIN_NONE)
@@ -321,29 +241,6 @@ void CAudioDecoder::ProcessAudio(float *data, int numsamples)
     }
   }
 }
-#else
-void CAudioDecoder::ProcessAudio(void *data, int size)
-{
-  if (size & 1)
-  {
-    CLog::Log(LOGERROR, "ProcessAudio called with non-even size (%i)", size);
-    return;
-  }
-  float gainFactor = 1.0f;
-  // convert data to floats
-  if (g_guiSettings.m_replayGain.iType != REPLAY_GAIN_NONE)
-    gainFactor = GetReplayGain();
-  // multiply this by the fadelevel, and by the volume level of the stream
-  short *shortData = (short *)data;
-  for (int i = size; i; i-=2)
-  {
-    float result = *shortData * gainFactor;
-    if (result > MAX_SHORT_VALUE) result = MAX_SHORT_VALUE;
-    if (result < MIN_SHORT_VALUE) result = MIN_SHORT_VALUE;
-    *shortData++ = (short)result;
-  }
-}
-#endif
 
 float CAudioDecoder::GetReplayGain()
 {
