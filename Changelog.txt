@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-07-2006 changed: player controls are now disabled on the login screen.
  - 31-07-2006 fixed: conflict with using the different types of locks (all locks had to be of the same kind as the master lock).
  - 31-07-2006 fixed: Stuck in settings after loading PM3 (or other skins) from Mc360.
  - 31-07-2006 fixed: Removed old non-float code from paplayer path, and fixed buffer sizes.
