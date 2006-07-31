@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-07-2006 fixed: [ 1530774 ] Trainers "update list" bug
  - 31-07-2006 fixed: overlay rendering had tearing, renderer updated overlay surface before previous overlay had been copied (second attempt, restored double buffering)
  - 31-07-2006 changed: player controls are now disabled on the login screen.
  - 31-07-2006 fixed: conflict with using the different types of locks (all locks had to be of the same kind as the master lock).
