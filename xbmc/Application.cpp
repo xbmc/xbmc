@@ -629,6 +629,9 @@ HRESULT CApplication::Create()
     CProfile profile;
     profile.setDirectory("q:\\userdata");
     profile.setName("Master user");
+    profile.setLockMode(LOCK_MODE_EVERYONE);
+    profile.setLockCode("");
+    profile.setDate("");
     g_settings.m_vecProfiles.push_back(profile);
   }
 

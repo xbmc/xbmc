@@ -8,6 +8,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
 #include "xbox/network.h"
+#include "utils/guiinfomanager.h"
 
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
@@ -80,6 +81,15 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     bool bOldMaster = g_passwordManager.bMasterUser;
     g_passwordManager.bMasterUser = true;
     g_settings.LoadProfile(iItem);
+    
+    CStdString strDate = g_infoManager.GetDate(true);
+    CStdString strTime = g_infoManager.GetTime();
+    if (strDate.IsEmpty() || strTime.IsEmpty())
+      g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate("-");
+    else
+      g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate(strDate+" - "+strTime);
+    g_settings.SaveProfiles("q:\\system\\profiles.xml"); // to set last loaded
+
     g_passwordManager.bMasterUser = bOldMaster;
     g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
       g_guiSettings.GetString("network.ipaddress").c_str(),
@@ -170,6 +180,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
       {
         g_settings.bUseLoginScreen = !g_settings.bUseLoginScreen;
         g_settings.SaveProfiles("q:\\system\\profiles.xml");
+        return true;
       }
     }
     break;
