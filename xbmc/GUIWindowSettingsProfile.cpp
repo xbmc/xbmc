@@ -82,12 +82,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     g_passwordManager.bMasterUser = true;
     g_settings.LoadProfile(iItem);
     
-    CStdString strDate = g_infoManager.GetDate(true);
-    CStdString strTime = g_infoManager.GetTime();
-    if (strDate.IsEmpty() || strTime.IsEmpty())
-      g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate("-");
-    else
-      g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate(strDate+" - "+strTime);
+    g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
     g_settings.SaveProfiles("q:\\system\\profiles.xml"); // to set last loaded
 
     g_passwordManager.bMasterUser = bOldMaster;
