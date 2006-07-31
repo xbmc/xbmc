@@ -631,22 +631,13 @@ bool PAPlayer::ProcessPAP()
 
     // Let our decoding stream(s) do their thing
     DWORD time = timeGetTime();
-    unsigned int dataToRead = PACKET_SIZE * 2;  // read 2 packets at a time
-#ifdef USE_FLOAT_BUFFERS
     int retVal = m_decoder[m_currentDecoder].ReadSamples(PACKET_SIZE);
-#else
-    int retVal = m_decoder[m_currentDecoder].ReadData(dataToRead);
-#endif
     if (retVal == RET_ERROR)
     {
       m_decoder[m_currentDecoder].Destroy();
       return false;
     }
-#ifdef USE_FLOAT_BUFFERS
     int retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples(PACKET_SIZE);
-#else
-    int retVal2 = m_decoder[1 - m_currentDecoder].ReadData(dataToRead);
-#endif
     if (retVal2 == RET_ERROR)
     {
       m_decoder[1 - m_currentDecoder].Destroy();
@@ -915,21 +906,13 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     }
     else
     { // resampler wants more data - let's feed it
-#ifdef USE_FLOAT_BUFFERS
       int amount = m_resampler[stream].GetInputSamples();
-#else
-      int amount = m_resampler[stream].GetInputSize();
-#endif
       if (amount <= 0 || amount > (int)dec.GetDataSize())
       { // doesn't need anything
         break;
       }
       // needs some data - let's feed it
-#ifdef USE_FLOAT_BUFFERS
       m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
-#else
-      m_resampler[stream].PutData((BYTE *)dec.GetData(amount), amount);
-#endif
       ret = true;
     }
   }

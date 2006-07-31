@@ -3,8 +3,6 @@
 #include "ICodec.h"
 #include "ringholdbuffer.h"
 
-#define USE_FLOAT_BUFFERS 1
-
 #define PACKET_SIZE 3840    // audio packet size - we keep 1 in reserve for gapless playback
                             // using a multiple of 1, 2, 3, 4, 5, 6 to guarantee track alignment
                             // note that 7 or higher channels won't work too well.
@@ -35,11 +33,7 @@ public:
   bool Create(const CFileItem &file, __int64 seekOffset, unsigned int nBufferSize);
   void Destroy();
 
-#ifdef USE_FLOAT_BUFFERS
   int ReadSamples(int numsamples);
-#else
-  int ReadData(int size);
-#endif
 
   bool CanSeek() { if (m_codec) return m_codec->CanSeek(); else return false; };
   __int64 Seek(__int64 time);
@@ -57,12 +51,9 @@ public:
   ICodec *GetCodec() { return m_codec; }
 
 private:
-#ifdef USE_FLOAT_BUFFERS
   void ProcessAudio(float *data, int numsamples);
+  // ReadPCMSamples() - helper to convert PCM (short/byte) to float
   int ReadPCMSamples(float *buffer, int numsamples, int *actualsamples);
-#else
-  void ProcessAudio(void *data, int size);
-#endif
   float GetReplayGain();
 
   // block size (number of bytes per sample * number of channels)
@@ -71,11 +62,7 @@ private:
   CRingHoldBuffer m_pcmBuffer;
 
   // output buffer (for transferring data from the Pcm Buffer to the rest of the audio chain)
-#ifdef USE_FLOAT_BUFFERS
   float m_outputBuffer[OUTPUT_SAMPLES];
-#else
-  BYTE m_outputBuffer[PACKET_SIZE];
-#endif
 
   unsigned int m_outputBufferSize;    // generally zero unless we feed data in
                                       // for gapless playback purposes, as the
@@ -84,12 +71,8 @@ private:
                                       // left over to prefix to the next track.
 
   // input buffer (for transferring data from the Codecs to our Pcm Ringbuffer
-#ifdef USE_FLOAT_BUFFERS
   BYTE m_pcmInputBuffer[INPUT_SIZE];
   float m_inputBuffer[INPUT_SAMPLES];
-#else
-  BYTE m_inputBuffer[INPUT_SIZE];
-#endif
 
   // status
   bool    m_eof;
