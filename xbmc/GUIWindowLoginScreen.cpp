@@ -66,7 +66,8 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           
           if (bOkay)
           {
-            if (m_viewControl.GetSelectedItem() != 0)
+            int iItem = m_viewControl.GetSelectedItem();
+            if (iItem != 0)
             {
               g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
               g_network.Deinitialize();
@@ -92,6 +93,8 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
               m_gWindowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
             }
 
+            if (iItem == 0)
+              g_application.StartKai();
             CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
             OnMessage(msg);
             return true;
