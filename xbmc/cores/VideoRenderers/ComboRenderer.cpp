@@ -173,7 +173,11 @@ void CComboRenderer::YV12toYUY2()
   if (!m_RGBTexture) return;
   int index = m_iYV12RenderBuffer;
 
-  ResetEvent(m_eventTexturesDone[index]);
+  if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
+    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
+
+  // Don't render if we are waiting an overlay event
+  while (!m_pD3DDevice->GetOverlayUpdateStatus()) Sleep(1);
 
   // Do the YV12 -> YUY2 conversion.
   // ALWAYS use buffer 0 in this case (saves 12 bits/pixel)
@@ -271,9 +275,6 @@ void CComboRenderer::Render(DWORD flags)
   }
   else
   {
-    // Don't render if we are waiting an overlay event
-    while (!m_pD3DDevice->GetOverlayUpdateStatus()) Sleep(1);
-
     YV12toYUY2();
 
     /* clear target area, otherwise we won't get any picture */
