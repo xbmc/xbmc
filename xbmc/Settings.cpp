@@ -1629,9 +1629,6 @@ bool CSettings::LoadProfile(int index)
 
     // to set labels - shares are reloaded
     CDetectDVDMedia::UpdateState();
-
-    m_vecProfiles[m_iLastLoadedProfileIndex].setDate(g_infoManager.GetDate(true)+" - " + g_infoManager.GetTime());
-    SaveProfiles("q:\\system\\profiles.xml"); // to set last loaded
     // init windows
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
     m_gWindowManager.SendMessage(msg);
@@ -1725,7 +1722,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
   while (pProfile)
   {
-    profile.setName("master user");
+    profile.setName("Master user");
     profile.setDirectory("q:\\userdata");
 
     CStdString strName;
@@ -1782,7 +1779,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     int iLockMode=LOCK_MODE_EVERYONE;
     XMLUtils::GetInt(pProfile,"lockmode",iLockMode);
-    if (iLockMode > LOCK_MODE_QWERTY)
+    if (iLockMode > LOCK_MODE_QWERTY || iLockMode < 0)
       iLockMode = LOCK_MODE_EVERYONE; 
     profile.setLockMode(iLockMode);
 
