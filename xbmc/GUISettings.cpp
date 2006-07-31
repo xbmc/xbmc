@@ -345,7 +345,7 @@ CGUISettings::CGUISettings(void)
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
-  AddInt(6, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_OVERLAYS, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
+  AddInt(6, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
   AddInt(8, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddInt(9, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
   AddSeparator(10, "videoplayer.sep3");
