@@ -659,6 +659,11 @@ bool CGUIWindowVideoBase::OnClick(int iItem)
   return true;
 }
 
+void CGUIWindowVideoBase::OnRestartItem(int iItem)
+{
+  CGUIMediaWindow::OnClick(iItem);
+}
+
 void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
   m_vecItems[iItem]->m_lStartOffset = GetResumeItemOffset(m_vecItems[iItem]);
@@ -692,6 +697,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 
   int btn_Queue         = 0; // Add to Playlist
   int btn_PlayWith      = 0; // Play
+  int btn_Restart       = 0; // Restart Video from Beginning
   int btn_Resume        = 0; // Resume Video
   int btn_Show_Info     = 0; // Show Video Information
 
@@ -711,6 +717,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (GetID() == WINDOW_VIDEO_FILES && (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList()))
       btn_PlayWith = pMenu->AddButton(208);
 
+    // if autoresume is enabled then add restart video button
+    if (g_guiSettings.GetBool("videoplayer.autoresume"))
+      btn_Restart = pMenu->AddButton(20132);    // Restart Video
+    else 
     // check to see if the Resume Video button is applicable
     if (GetResumeItemOffset(m_vecItems[iItem]) > 0)               
       btn_Resume = pMenu->AddButton(13381);     // Resume Video
@@ -798,6 +808,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     if (btnid == btn_Show_Info)
     {
       OnInfo(iItem);
+	}
+	else if (btnid == btn_Restart)
+    {
+      OnRestartItem(iItem);
     }
     else if (btnid == btn_Resume)
     {
