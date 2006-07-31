@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-07-2006 changed: autoexec.py is hidden in the script window (clutter). use the filemanager for testing.
  - 31-07-2006 fixed: [ 1530774 ] Trainers "update list" bug
  - 31-07-2006 fixed: overlay rendering had tearing, renderer updated overlay surface before previous overlay had been copied (second attempt, restored double buffering)
  - 31-07-2006 changed: player controls are now disabled on the login screen.
