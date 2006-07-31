@@ -489,8 +489,16 @@ void CGUIWindowPrograms::PopulateTrainersList()
   }
   if (!bBreak)
   {
-    CLog::Log(LOGDEBUG,"trainerpath %s",g_guiSettings.GetString("myprograms.trainerpath").c_str());
+    CLog::Log(LOGDEBUG,"trainerpath %s",g_guiSettings.GetString("myprograms.trainerpath",false).c_str());
     directory.GetDirectory(g_guiSettings.GetString("myprograms.trainerpath").c_str(),trainers,".xbtf|.etm");
+    if (g_guiSettings.GetString("myprograms.trainerpath",false).IsEmpty())
+    {
+      m_database.RollbackTransaction();
+      m_dlgProgress->Close();
+
+      return;
+    }
+
     directory.GetDirectory(g_guiSettings.GetString("myprograms.trainerpath").c_str(),archives,".rar",false); // TODO: ZIP SUPPORT
     for( int i=0;i<archives.Size();++i)
     {

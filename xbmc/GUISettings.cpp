@@ -8,6 +8,7 @@
 #include "XBVideoConfig.h"
 #include <xfont.h>
 #include "GUIDialogFileBrowser.h"
+#include "mediamanager.h"
 
 // String id's of the masks
 #define MASK_MINS   14044
@@ -687,7 +688,9 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
       CStdString strData = "";
       if (bPrompt)
       {
-        if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(result->GetLabel()),strData,false))
+        VECSHARES shares;
+        g_mediaManager.GetLocalDrives(shares);
+        if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,false))
         {
           result->SetData(strData);
           g_settings.Save();
