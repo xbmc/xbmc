@@ -5,6 +5,7 @@
 #include "GUIListControl.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
+#include "utils/guiinfomanager.h"
 #include "lib/libPython/XBPython.h"
 #include "lib/libscrobbler/scrobbler.h"
 #include "utils/weather.h"
@@ -76,6 +77,15 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
                 g_guiSettings.GetString("network.gateway").c_str(),
                 g_guiSettings.GetString("network.dns").c_str());
             }
+            
+            CStdString strDate = g_infoManager.GetDate(true);
+            CStdString strTime = g_infoManager.GetTime();
+            if (strDate.IsEmpty() || strTime.IsEmpty())
+              g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate("-");
+            else
+              g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate(strDate+" - "+strTime);
+            g_settings.SaveProfiles("q:\\system\\profiles.xml");
+            
             g_pythonParser.bLogin = true;
             if (g_guiSettings.GetInt("lookandfeel.startupwindow") == WINDOW_HOME)
             {
