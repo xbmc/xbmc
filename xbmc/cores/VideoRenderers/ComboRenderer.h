@@ -12,7 +12,6 @@ public:
   //~CComboRenderer();
 
   virtual void Update(bool bPauseDrawing);
-  virtual void CheckScreenSaver();
   virtual void SetupScreenshot();
   virtual void FlipPage(int source);
 
@@ -29,6 +28,8 @@ protected:
   void DeleteYUY2Texture(int index);
   void ClearYUY2Texture(int index);
   void YV12toYUY2();
+  void CheckScreenSaver();
+
   LONG YUV2RGB(BYTE y, BYTE u, BYTE v);
 
   DWORD m_hPixelShader;

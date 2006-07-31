@@ -72,7 +72,6 @@ public:
   virtual void GetVideoRect(RECT &rs, RECT &rd);
   virtual float GetAspectRatio();
   virtual void Update(bool bPauseDrawing);
-  virtual void CheckScreenSaver() {};
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
