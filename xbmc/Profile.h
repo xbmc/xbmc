@@ -24,6 +24,7 @@ public:
   bool picturesLocked() const { return _bLockPictures; }
   bool filesLocked() const { return _bLockFiles; }
   bool programsLocked() const { return _bLockPrograms; }
+  bool useAvpackSettings() const { return _bUseAvpackSettings; }
 
   void setName(const CStdString& name) {_name = name;}
   void setDirectory(const CStdString& directory) {_directory = directory;}
@@ -35,6 +36,7 @@ public:
   void setWriteDatabases(bool bCan) { _bCanWrite = bCan; }
   void setSources(bool bHas) { _bSources = bHas; }
   void setWriteSources(bool bCan) { _bCanWriteSources = bCan; }
+  void setUseAvpackSettings(bool bUse) { _bUseAvpackSettings = bUse; }
   
   void setSettingsLocked(bool bLocked) { _bLockSettings = bLocked; }
   void setFilesLocked(bool bLocked) { _bLockFiles = bLocked; }
@@ -51,6 +53,7 @@ public:
   bool _bCanWrite;
   bool _bSources;
   bool _bCanWriteSources;
+  bool _bUseAvpackSettings;
 
   // lock stuff
   int _iLockMode;
