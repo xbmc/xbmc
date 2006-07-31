@@ -39,6 +39,7 @@ typedef struct DVDInfo
   unsigned __int64 iNAVPackStart;
   unsigned __int64 iNAVPackFinish;
   int iFlagSentStart;
+  int iNrOfExpectedDiscontinuities;
 }
 DVDInfo;
 
