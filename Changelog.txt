@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-08-2006 added: [ 1527477 ] Add restart video menu when auto resume video option is on. thanks to kusskowe.
  - 01-08-2006 changed: don't start kai on login screen.
  - 31-07-2006 added: [ 1440803 ] Associate Profiles with AV pack. thanks to markeen. will be documented on http://xbmc.xbox-scene.com/wiki/ soonish.
  - 31-07-2006 fixed: some minor trainer related issues.
