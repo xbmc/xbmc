@@ -157,6 +157,11 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
         item->SetLabelPreformated(true);
       }
     }
+    if (item->GetLabel().Equals("autoexec.py"))
+    {
+      items.Remove(i);
+      i--;
+    }
   }
 
   items.SetProgramThumbs();
