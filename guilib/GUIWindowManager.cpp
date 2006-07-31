@@ -194,7 +194,7 @@ void CGUIWindowManager::PreviousWindow()
   CLog::DebugLog("CGUIWindowManager::PreviousWindow: Deactivate");
   int currentWindow = GetActiveWindow();
   CGUIWindow *pCurrentWindow = GetWindow(currentWindow);
-  if (!pCurrentWindow || m_windowHistory.size() < 2)
+  if (!pCurrentWindow)
     return;     // no windows or window history yet
 
   // check to see whether our current window has a <previouswindow> tag
@@ -209,6 +209,15 @@ void CGUIWindowManager::PreviousWindow()
     return;
   }
   // get the previous window in our stack
+  if (m_windowHistory.size() < 2)
+  { // no previous window history yet - check if we should just activate home
+    if (GetActiveWindow() != WINDOW_INVALID && GetActiveWindow() != WINDOW_HOME)
+    {
+      ClearWindowHistory();
+      ActivateWindow(WINDOW_HOME);
+    }
+    return;
+  }
   m_windowHistory.pop();
   int previousWindow = GetActiveWindow();
   m_windowHistory.push(currentWindow);
