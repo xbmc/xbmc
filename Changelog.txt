@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-08-2006 fixed: on some dvd's, menu overlays appeared to soon, even after the last bugfix.
  - 01-08-2006 fixed: [ 1530775 ] Trainerpath dialog bug.
  - 01-08-2006 added: [ 1527477 ] Add restart video menu when auto resume video option is on. thanks to kusskowe.
  - 01-08-2006 changed: don't start kai on login screen.
