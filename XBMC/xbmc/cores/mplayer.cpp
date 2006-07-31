@@ -81,7 +81,6 @@ void audio_resume();
 extern void tracker_free_mplayer_dlls(void);
 extern "C" void save_registry(void);
 extern "C" void free_registry(void);
-extern void xbox_video_CheckScreenSaver(); // Screensaver check
 extern CFileShoutcast* m_pShoutCastRipper;
 extern "C" void dllReleaseAll( );
 
@@ -1312,13 +1311,7 @@ void CMPlayer::Process()
         }
         else // we're paused
         {
-          if (HasVideo())
-          {
-            xbox_video_CheckScreenSaver();  // Check for screen saver
-            Sleep(100);
-          }
-          else
-            Sleep(10);
+          Sleep(100);
         }
 
         //Only count forward buffer as part of buffer level
