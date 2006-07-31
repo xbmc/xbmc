@@ -477,7 +477,6 @@ void CGUIWindowPrograms::PopulateTrainersList()
     strLine.Format("%s %i / %i",g_localizeStrings.Get(12013).c_str(), i+1,vecTrainerPath.size());
     m_dlgProgress->SetLine(1,strLine);
     m_dlgProgress->Progress();
-    m_dlgProgress->Progress();
     if (!CFile::Exists(vecTrainerPath[i]))
       m_database.RemoveTrainer(vecTrainerPath[i]);
     if (m_dlgProgress->IsCanceled())
@@ -515,14 +514,15 @@ void CGUIWindowPrograms::PopulateTrainersList()
   
     CLog::Log(LOGDEBUG,"# trainers %i",trainers.Size());
     m_database.BeginTransaction();
+    m_dlgProgress->SetLine(1,"");
     for (int i=0;i<trainers.Size();++i)
     {
       CLog::Log(LOGDEBUG,"found trainer %s",trainers[i]->m_strPath.c_str());
       m_dlgProgress->SetPercentage((int)((float)(i)/trainers.Size()*100.f));
       CStdString strLine;
       strLine.Format("%s %i / %i",g_localizeStrings.Get(12013).c_str(), i+1,trainers.Size());
-
       m_dlgProgress->SetLine(0,strLine);
+      m_dlgProgress->SetLine(2,"");
       m_dlgProgress->Progress();
       if (m_database.HasTrainer(trainers[i]->m_strPath)) // skip existing trainers
         continue;
@@ -543,7 +543,10 @@ void CGUIWindowPrograms::PopulateTrainersList()
           m_database.AddTrainer(iTitle3,trainers[i]->m_strPath);
       }
       if (m_dlgProgress->IsCanceled())
+      {
+        m_database.RollbackTransaction();
         break;
+      }
     }
   }
   m_database.CommitTransaction();
