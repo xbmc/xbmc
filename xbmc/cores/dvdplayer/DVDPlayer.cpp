@@ -374,7 +374,13 @@ void CDVDPlayer::Process()
       }
 
       // it's a valid data packet, add some more information too it
+      
+      // this groupId stuff is getting a bit messy, need to find a better way
+      // currently it is used to determine if a menu overlay is associated with a picture
+      // for dvd's we use as a group id, the current cell and the current title
+      // to be a bit more precise we alse count the number of disc's in case of a pts wrap back in the same cell / title
       pPacket->iGroupId = m_pInputStream->GetCurrentGroupId();
+      pPacket->iGroupId += (10000 * m_dvd.iNrOfExpectedDiscontinuities);
 
       try
       {
@@ -1622,6 +1628,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         //if (cell_change_event->pgN != m_dvd.iCurrentCell)
         {
           m_dvd.iCurrentCell = cell_change_event->pgN;
+          m_dvd.iNrOfExpectedDiscontinuities = 0;
           // m_iCommands |= DVDCOMMAND_SYNC;
         }
 
@@ -1642,7 +1649,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           // pts values outside that boundary, it belongs
           // to the new vobunit, wich has new timestamps
 
-          // ptm is in a 90khz clock.
+          // pts is in a 90khz clock.
           unsigned __int64 pts = ((unsigned __int64)pci->pci_gi.vobu_s_ptm) * 1000 / 90;
           if( pts != m_dvd.iNAVPackFinish )
           {
@@ -1655,6 +1662,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
             // only set this when we have the first non continous packet
             // so that we know at what packets this new continuous stream starts
             m_dvd.iNAVPackStart = pts;
+            m_dvd.iNrOfExpectedDiscontinuities++;
           }
 
           //m_dvd.iNAVPackStart = pts;
