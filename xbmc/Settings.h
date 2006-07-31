@@ -481,6 +481,7 @@ public:
   CStdString GetSkinFolder() const;
 
   CStdString GetSettingsFile() const;
+  CStdString GetAvpackSettingsFile() const;
 
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
@@ -522,6 +523,12 @@ protected:
   void LoadUserFolderLayout(const TiXmlElement *pRootElement);
 
   void LoadRSSFeeds();
+
+  CStdString  GetPluggedAvpack() const;
+  bool SaveAvpackXML() const;
+  bool SaveNewAvpackXML() const;
+  bool SaveAvpackSettings(TiXmlNode *io_pRoot) const;
+  bool LoadAvpackXML();
 
   //TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
   bool xbmcXmlLoaded;
