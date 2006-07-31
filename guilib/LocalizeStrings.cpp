@@ -302,6 +302,8 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20130] = "Weave (Inverted)"; //NEW
   m_vecStrings[20131] = "Blend";            //NEW
 
+  m_vecStrings[20132] = "Restart Video";
+
   return true;
 }
 
