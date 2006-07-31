@@ -78,12 +78,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
                 g_guiSettings.GetString("network.dns").c_str());
             }
             
-            CStdString strDate = g_infoManager.GetDate(true);
-            CStdString strTime = g_infoManager.GetTime();
-            if (strDate.IsEmpty() || strTime.IsEmpty())
-              g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate("-");
-            else
-              g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate(strDate+" - "+strTime);
+            g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
             g_settings.SaveProfiles("q:\\system\\profiles.xml");
             
             g_pythonParser.bLogin = true;
