@@ -934,17 +934,6 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
 
 bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7, int i_lblp8, int i_lblp9, int i_lblp10)
 {
-  // There is something going Wrong during Mapping the Drives in XBMC!
-  // I need to Remap the Drives to be sure that they mapped Correct and they are Present!
-  CIoSupport helper;
-  helper.Remap("C:,Harddisk0\\Partition2");
-  helper.Remap("E:,Harddisk0\\Partition1");
-  helper.Remap("F:,Harddisk0\\Partition6");
-  helper.Remap("G:,Harddisk0\\Partition7");
-  helper.Remap("X:,Harddisk0\\Partition3");
-  helper.Remap("Y:,Harddisk0\\Partition4");
-  helper.Remap("Z:,Harddisk0\\Partition5");
-
   // Set HDD Space Informations 
   ULARGE_INTEGER lTotalFreeBytesC;  ULARGE_INTEGER lTotalNumberOfBytesC;
   ULARGE_INTEGER lTotalFreeBytesE;  ULARGE_INTEGER lTotalNumberOfBytesE;
@@ -1111,8 +1100,12 @@ bool CGUIWindowSystemInfo::GetDiskSpace(const CStdString &drive, ULARGE_INTEGER 
     string.Format("%s: %s MB of %s MB %s", drive.c_str(),t1.c_str(),t2.c_str(), g_localizeStrings.Get(160).c_str());
     //string.Format("%s: %u MB of %u MB %s", drive.c_str(), (totalFree.QuadPart/MB), (total.QuadPart/MB), g_localizeStrings.Get(160).c_str());
   }
-  else 
+  else
+  {
     string.Format("%s %s: %s", g_localizeStrings.Get(155).c_str(), drive.c_str(), g_localizeStrings.Get(161).c_str());
+    total.QuadPart = 0;
+    totalFree.QuadPart = 0;
+  }
   return ret == TRUE;
 }
 
