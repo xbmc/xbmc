@@ -426,7 +426,7 @@ CGUISettings::CGUISettings(void)
 
   //  TODO: localize 2.0
   AddCategory(6, "upnp", 20110);
-  AddBool(1,    "upnp.autostart", 20111, true);
+  AddBool(1,    "upnp.autostart", 20111, false);
 
   // appearance settings
   AddGroup(7, 480);
