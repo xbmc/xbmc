@@ -204,14 +204,14 @@ class GUIBuilder:
 					# key node so save to the dictionary
 					if (node.tagName.lower() == 'label'): 
 						try: 
-							ls = xbmc.getLocalizedifong(int(node.firstChild.nodeValue))
+							ls = xbmc.getLocalizedString(int(node.firstChild.nodeValue))
 							if (ls): lbl1.append(ls)
 							else: raise
 						except: 
 							if (node.hasChildNodes()): lbl1.append(node.firstChild.nodeValue)
 					elif (node.tagName.lower() == 'label2'):
 						try: 
-							ls = xbmc.getLocalizedifong(int(node.firstChild.nodeValue))
+							ls = xbmc.getLocalizedString(int(node.firstChild.nodeValue))
 							if (ls): lbl2.append(ls)
 							else: raise
 						except:
