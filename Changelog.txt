@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-08-2006 fixed: guibuilder.py, apparently xbmc.getLocalizedifong() isn't the same as xbmc.getLocalizedString() :)
  - 01-08-2006 added: guibuilder.py and example in GUI Builder.zip. This module allows you to skin your python scripts with a standard XBMC skinfile.xml.
  - 01-08-2006 fixed: on some dvd's, menu overlays appeared to soon, even after the last bugfix.
  - 01-08-2006 fixed: [ 1530775 ] Trainerpath dialog bug.
