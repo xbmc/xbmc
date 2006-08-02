@@ -470,7 +470,9 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
       m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
       m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
-      m_iCursorX = m_iCursorY = m_iRowOffset = 0;
+      m_iCursorX = m_iCursorY = 0;
+      // don't reset our row offset here - it's taken care of in SELECT
+      //m_iRowOffset = 0;
       m_bScrollUp = false;
       m_bScrollDown = false;
       return true;
@@ -812,29 +814,53 @@ void CGUIThumbnailPanel::ShowTexture(bool bOnoff)
 
 void CGUIThumbnailPanel::SetSelectedItem(int iItem)
 {
-  if (iItem >= 0 && iItem < (int)m_vecItems.size())
-  {
-    m_iCursorX = 0;
-    m_iCursorY = 0;
-    m_iRowOffset = 0;
-    while (iItem >= (m_iRows*m_iColumns) )
-    {
-      m_iRowOffset++;
-      iItem -= m_iColumns;
-    }
-    while (iItem >= m_iColumns)
-    {
-      m_iCursorY++;
-      iItem -= m_iColumns;
-    }
-    m_iCursorX = iItem;
-    // calculate page
-//    SetPageNumber();
-    int iPage = m_iRowOffset / m_iRows + 1;
-    if ((m_iRowOffset + m_iRows)*m_iColumns >= (int)m_vecItems.size() && iPage < m_upDown.GetMaximum())
-      iPage++; // last page
-    m_upDown.SetValue(iPage);
+  // check the location of our row offset first
+  if (m_iRowOffset > (int)m_vecItems.size() / m_iColumns) m_iRowOffset = m_vecItems.size() / m_iColumns;
+  if (m_iRowOffset < 0) m_iRowOffset = 0;
+
+  // now check our item is in the valid range
+  if (iItem < 0 || iItem >= (int)m_vecItems.size())
+    return;
+
+  // move to the appropriate page on the thumb control
+  if (iItem < m_iRowOffset * (m_iRows * m_iColumns))
+  { // before the page we need to be on - make it in the first row
+    m_iRowOffset = iItem / m_iColumns;
+    int item = iItem - m_iRowOffset * m_iColumns;
+    m_iCursorY = item / m_iColumns;
+    m_iCursorX = item % m_iColumns;
   }
+  else if (iItem > (m_iRowOffset + m_iRows) * m_iColumns)
+  { // after the page we are on - make it the last row
+    m_iRowOffset = max(iItem / m_iColumns - m_iRows + 1, 0);
+    int item = iItem - m_iRowOffset * m_iColumns;
+    m_iCursorY = item / m_iColumns;
+    m_iCursorX = item % m_iColumns;
+  }
+  int item = iItem - m_iRowOffset * m_iColumns;
+  m_iCursorY = item / m_iColumns;
+  m_iCursorX = item % m_iColumns;
+/*
+  m_iCursorX = 0;
+  m_iCursorY = 0;
+  m_iRowOffset = 0;
+  while (iItem >= (m_iRows*m_iColumns) )
+  {
+    m_iRowOffset++;
+    iItem -= m_iColumns;
+  }
+  while (iItem >= m_iColumns)
+  {
+    m_iCursorY++;
+    iItem -= m_iColumns;
+  }
+  m_iCursorX = iItem;*/
+  // calculate page
+//    SetPageNumber();
+  int iPage = m_iRowOffset / m_iRows + 1;
+  if ((m_iRowOffset + m_iRows)*m_iColumns >= (int)m_vecItems.size() && iPage < m_upDown.GetMaximum())
+    iPage++; // last page
+  m_upDown.SetValue(iPage);
 }
 
 void CGUIThumbnailPanel::ShowBigIcons(bool bOnOff)
