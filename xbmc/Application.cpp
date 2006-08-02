@@ -965,6 +965,47 @@ HRESULT CApplication::Create()
 
 HRESULT CApplication::Initialize()
 {
+  // test memcard stuff
+  {
+    CLog::Log(LOGERROR, "MEMCARDTEST: ======== START REPORT ========");
+    DWORD dev = XGetDevices(XDEVICE_TYPE_MEMORY_UNIT);
+    CLog::Log(LOGERROR, "MEMCARDTEST: Testing for insertion of memory cards (returned %i)", dev);
+    
+    for (unsigned int unit = 0; unit < 8; unit++)
+    {
+      CLog::Log(LOGERROR, "MEMCARDTEST: Testing stat on memcard at unit %i", unit);
+	    ANSI_STRING a_file;
+	    OBJECT_ATTRIBUTES obj_attr;
+	    IO_STATUS_BLOCK io_stat_block;
+	    HANDLE handle;
+	    unsigned int status;
+      LARGE_INTEGER rw_offset;
+      BYTE buffer[4096];
+
+      CStdString device;
+      device.Format("\\Device\\MU_%i", unit);
+	    RtlInitAnsiString(&a_file, device.c_str());
+	    obj_attr.RootDirectory = 0;
+	    obj_attr.ObjectName = &a_file;
+	    obj_attr.Attributes = OBJ_CASE_INSENSITIVE;
+
+      memset(&rw_offset, 0, sizeof(LARGE_INTEGER));
+
+	    status = NtOpenFile(&handle, (GENERIC_READ|0x00100000),
+		    &obj_attr, &io_stat_block, (FILE_SHARE_READ|FILE_SHARE_WRITE), 0x10);
+
+      CLog::Log(LOGERROR, "MEMCARDTEST: Output from openfile = %08x", status);
+
+      if (status == STATUS_SUCCESS)
+      { // read worked ok
+        status = NtReadFile(handle, NULL, NULL, NULL, &io_stat_block, (PVOID) &buffer, 4096, &rw_offset);
+        CLog::Log(LOGERROR, "MEMCARDTEST: Output from readfile = %08x", status);
+      }
+      NtClose(handle);
+    }
+    CLog::Log(LOGERROR, "MEMCARDTEST: ======== END REPORT ========");
+  }
+
   CLog::Log(LOGINFO, "creating subdirectories");
 
   //CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
@@ -2064,23 +2105,35 @@ bool CApplication::OnKey(CKey& key)
     }
   }
 
-  // handle global functions
-  static bool PowerButtonDown = false;
-  static DWORD PowerButtonCode;
-  static DWORD MarkTime;
+  // in normal case
+  // just pass the action to the current window and let it handle it
+  if (m_gWindowManager.OnAction(action))
+  {
+    m_navigationTimer.StartZero();
+    return true;
+  }
 
+  /* handle extra global presses */
+
+  // screenshot : take a screenshot :)
   if (action.wID == ACTION_TAKE_SCREENSHOT)
   {
     CUtil::TakeScreenshot();
     return true;
   }
-  else if (action.wID == ACTION_BUILT_IN_FUNCTION)
+  // built in functions : execute the built-in
+  if (action.wID == ACTION_BUILT_IN_FUNCTION)
   {
     CUtil::ExecBuiltIn(action.strAction);
     m_navigationTimer.StartZero();
     return true;
   }
-  else if (action.wID == ACTION_POWERDOWN)
+
+  // power down : turn off after 3 seconds of button down
+  static bool PowerButtonDown = false;
+  static DWORD PowerButtonCode;
+  static DWORD MarkTime;
+  if (action.wID == ACTION_POWERDOWN)
   {
     // Hold button for 3 secs to power down
     if (!PowerButtonDown)
@@ -2103,16 +2156,6 @@ bool CApplication::OnKey(CKey& key)
     else
       PowerButtonDown = false;
   }
-  // in normal case
-  // just pass the action to the current window and let it handle it
-  if (m_gWindowManager.OnAction(action))
-  {
-    m_navigationTimer.StartZero();
-    return true;
-  }
-
-  /* handle extra global presses */
-
   // show info : Shows the current video or song information
   if (action.wID == ACTION_SHOW_INFO)
   {
