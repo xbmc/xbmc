@@ -99,14 +99,14 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetFileType", (unsigned long) dllGetFileType);
   g_dlls.kernel32.AddExport("GetStartupInfoA", (unsigned long) dllGetStartupInfoA);
   g_dlls.kernel32.AddExport("FreeEnvironmentStringsA", (unsigned long) dllFreeEnvironmentStringsA);
-  g_dlls.kernel32.AddExport("WideCharToMultiByte", (unsigned long) WideCharToMultiByte);
+  g_dlls.kernel32.AddExport("WideCharToMultiByte", (unsigned long) dllWideCharToMultiByte);
   g_dlls.kernel32.AddExport("GetEnvironmentStrings", (unsigned long) dllGetEnvironmentStrings);
   g_dlls.kernel32.AddExport("GetEnvironmentStringsW", (unsigned long) dllGetEnvironmentStringsW);
   g_dlls.kernel32.AddExport("GetEnvironmentVariableA", (unsigned long) dllGetEnvironmentVariableA);
   g_dlls.kernel32.AddExport("HeapDestroy", (unsigned long) HeapDestroy, (void*)track_HeapDestroy );
   g_dlls.kernel32.AddExport("HeapCreate", (unsigned long) HeapCreate, (void*)track_HeapCreate );
   g_dlls.kernel32.AddExport("VirtualFree", (unsigned long) VirtualFree);
-  g_dlls.kernel32.AddExport("MultiByteToWideChar", (unsigned long) MultiByteToWideChar);
+  g_dlls.kernel32.AddExport("MultiByteToWideChar", (unsigned long) dllMultiByteToWideChar);
   g_dlls.kernel32.AddExport("LCMapStringA", (unsigned long) dllLCMapStringA);
   g_dlls.kernel32.AddExport("LCMapStringW", (unsigned long) dllLCMapStringW);
   g_dlls.kernel32.AddExport("VirtualAlloc", (unsigned long) VirtualAlloc);
