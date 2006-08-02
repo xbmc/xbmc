@@ -421,7 +421,8 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
       m_iCursorY = 0;
-      m_iOffset = 0;
+      // don't reset our page offset
+//      m_iOffset = 0;
       m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
       m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
