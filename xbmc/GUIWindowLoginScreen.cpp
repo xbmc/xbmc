@@ -123,6 +123,15 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
+bool CGUIWindowLoginScreen::OnAction(const CAction &action)
+{
+  // don't allow any built in actions to act here.
+  // this forces only navigation type actions to be performed.
+  if (action.wID == ACTION_BUILT_IN_FUNCTION)
+    return true;  // pretend we handled it
+  return CGUIWindow::OnAction(action);
+}
+
 void CGUIWindowLoginScreen::Render()
 {
   if (GetFocusedControl() == CONTROL_BIG_LIST && m_gWindowManager.GetTopMostRoutedWindowID() == WINDOW_INVALID)
