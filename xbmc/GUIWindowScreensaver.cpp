@@ -53,10 +53,7 @@ void CGUIWindowScreensaver::Render()
 
 bool CGUIWindowScreensaver::OnAction(const CAction &action)
 {
-  // We're just a screen saver, nothing to do here except maybe take screenshots
-  // of the guys' hardwork :)
-  if (action.wID == ACTION_TAKE_SCREENSHOT)
-    return CGUIWindow::OnAction(action);
+  // We're just a screen saver, nothing to do here
   return false;
 }
 
