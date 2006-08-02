@@ -841,6 +841,84 @@ extern "C" UINT WINAPI dllGetConsoleOutputCP()
   return 437; // OEM - United States 
 }
 
+// emulated because windows expects different behaviour
+// the xbox calculates always 1 character extra for 0 termination
+// however, this is only desired when cbMultiByte has the value -1
+extern "C" int WINAPI dllMultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCSTR lpMultiByteStr, int cbMultiByte, LPWSTR lpWideCharStr, int cchWideChar)
+{
+  // first fix, on windows cchWideChar and cbMultiByte may be the same.
+  // xbox fails, because it expects cbMultiByte to be at least one character bigger
+  // solution, create a new buffer to can hold the new data and copy it (without the 0 termination)
+  // to lpMultiByteStr. This is needed because we cannot be sure that lpMultiByteStr is big enough
+  int destinationBufferSize = cchWideChar;
+  LPWSTR destinationBuffer = lpWideCharStr;
+  if (cbMultiByte > 0 && cbMultiByte == cchWideChar) {
+    destinationBufferSize++;
+    destinationBuffer = (LPWSTR)malloc(destinationBufferSize * sizeof(WCHAR));
+  }
+  
+  int ret = MultiByteToWideChar(CodePage, dwFlags, lpMultiByteStr, cbMultiByte, destinationBuffer, destinationBufferSize);
+
+  if (ret > 0)
+  {
+    // second fix, but only if cchWideChar == 0, and ofcours ret > 0 indicating the function
+    // returned the number of bytes needed, otherwise ret would be 0, meaning a successfull conversion
+    if (cchWideChar == 0) {
+      ret--;
+    }
+    
+    // revert the first fix again
+    if (cbMultiByte > 0 && cbMultiByte == cchWideChar) {
+      // the 0 termination character could never have been written on a windows machine
+      // because of cchWideChar == cbMultiByte, again xbox added one for it.
+      ret--;
+      
+      memcpy(lpWideCharStr, destinationBuffer, ret * sizeof(WCHAR));
+      free(destinationBuffer);
+    }
+  }
+  
+  return ret;
+}
+
+// same reason as above
+extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWSTR lpWideCharStr, int cchWideChar, LPSTR lpMultiByteStr, int cbMultiByte, LPCSTR lpDefaultChar, LPBOOL lpUsedDefaultChar)
+{
+  // first fix, on windows cchWideChar and cbMultiByte may be the same.
+  // xbox fails, because it expects cbMultiByte to be at least one character bigger
+  // solution, create a new buffer to can hold the new data and copy it (without the 0 termination)
+  // to lpMultiByteStr. This is needed because we cannot be sure that lpMultiByteStr is big enough
+  int destinationBufferSize = cbMultiByte;
+  LPSTR destinationBuffer = lpMultiByteStr;
+  if (cchWideChar > 0 && cchWideChar == cbMultiByte) {
+    destinationBufferSize++;
+    destinationBuffer = (LPSTR)malloc(destinationBufferSize * sizeof(char));
+  }
+  
+  int ret = WideCharToMultiByte(CodePage, dwFlags, lpWideCharStr, cchWideChar, destinationBuffer, destinationBufferSize, lpDefaultChar, lpUsedDefaultChar);
+
+  if (ret > 0)
+  {
+    // second fix, but only if cbMultiByte == 0, and ofcours ret > 0 indicating the function
+    // returned the number of bytes needed, otherwise ret would be 0, meaning a successfull conversion
+    if (cbMultiByte == 0) {
+      ret--;
+    }
+    
+    // revert the first fix again
+    if (cchWideChar > 0 && cchWideChar == cbMultiByte) {
+      // the 0 termination character could never have been written on a windows machine
+      // because of cchWideChar == cbMultiByte, again xbox added one for it.
+      ret--;
+      
+      memcpy(lpMultiByteStr, destinationBuffer, ret);
+      free(destinationBuffer);
+    }
+  }
+  
+  return ret;
+}
+
 extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine, BOOL Add)
 {
   // no consoles exists on the xbox, do nothing
