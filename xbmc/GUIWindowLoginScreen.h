@@ -8,7 +8,9 @@ public:
   CGUIWindowLoginScreen(void);
   virtual ~CGUIWindowLoginScreen(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
   virtual void Render();
+
 protected:
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
