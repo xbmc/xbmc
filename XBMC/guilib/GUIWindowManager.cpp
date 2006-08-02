@@ -304,9 +304,6 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
     CLog::Log(LOGERROR, "MasterCode is Wrong: Window with id %d will not be loaded! Enter a correct MasterCode!", iWindowID);
     return;
   }
-  // disable player controls on login screen
-  if (iWindowID == WINDOW_DIALOG_PLAYER_CONTROLS && m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
-    return;
 
   // first check existence of the window we wish to activate.
   CGUIWindow *pNewWindow = GetWindow(iWindowID);
