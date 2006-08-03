@@ -10,9 +10,12 @@ It creates a dictionary of your controls positions in a tuple, with the controls
 It also creates a list variable for a coordinates based window (self.coordinates[x, y]).
 e.g. self.controls[300].setPosition(self.positions[300][0] + self.coordinates[0], self.positions[300][1] + self.coordinates[1])
 
+It sets self.SUCCEEDED to True if the window creation succeeded.
+
 Post a message at http://www.xbmc.xbox-scene.com/forum/ with any suggestions.
 
-The Includes & references functions were translated from Xbox media center's source, thanks Developers.
+GetConditionalVisibility(), GetSkinPath(), LoadReferences(), LoadIncludes(), ResolveInclude()
+The above functions were translated from Xbox Media Center's source, thanks Developers.
 A special thanks to elupus for shaming me into doing it the right way. :)
 
 Nuka1195
@@ -22,45 +25,48 @@ import xbmc, xbmcgui
 import xml.dom.minidom
 
 class GUIBuilder:
-	def __init__(self, win, skinXML, ImagePath = '', title = 'GUI Builder', line1 = '', dlg = None, pct = 0):
+	def __init__(self, win, skinXML, imagePath = '', title = 'GUI Builder', line1 = '', dlg = None, pct = 0, fastMethod = False):
 		try:
 			self.win 							= win
 			self.win.SUCCEEDED	 			= True
-			if (not skinXML): raise
 			self.skinXML 						= skinXML[skinXML.rfind('\\') + 1:]
+			self.fastMethod					= fastMethod
 			self.pct 							= pct
 			self.lineno 							= line1 != ''
 			self.lines 							= [''] * 3
 			self.lines[0] 						= line1
 			self.lines[self.lineno] 			= 'Importing controls from %s.' % (self.skinXML,)
-			if (dlg): self.dlg = dlg
-			else: 
-				self.dlg = xbmcgui.DialogProgress()
-				self.dlg.create(title, self.lines[0], self.lines[1], self.lines[2])
-			self.dlg.update(self.pct, self.lines[0], self.lines[1], self.lines[2])
 			self.initVariables()
-			self.pct1 = int((100 - pct) * 0.333)
-			self.includesExist = self.LoadIncludes()
-			self.referencesExist = self.LoadReferences()
+			if (not self.fastMethod):	
+				if (dlg): self.dlg = dlg
+				else: 
+					self.dlg = xbmcgui.DialogProgress()
+					self.dlg.create(title)#, self.lines[0], self.lines[1], self.lines[2])
+				self.dlg.update(self.pct, self.lines[0], self.lines[1], self.lines[2])
+				self.pct1 = int((100 - pct) * 0.333)
+				self.includesExist = self.LoadIncludes()
+				self.referencesExist = self.LoadReferences()
+			else:
+				self.includesExist = False
 			self.pct1 = int((100 - self.pct) * 0.5)
-			self.parseSkinFile(ImagePath, skinXML)
+			self.parseSkinFile(imagePath, skinXML)
 			if (self.win.SUCCEEDED): self.setNav()
 			if (not self.win.SUCCEEDED): raise
 			else:
 				if (self.defaultControl and self.win.controls.has_key(self.defaultControl)):
 					self.win.setFocus(self.win.controls[self.defaultControl])
 				if (self.includesExist): self.incdoc.unlink()
-				self.dlg.close()
+			if (not self.fastMethod): self.dlg.close()
 		except:
 			self.win.SUCCEEDED = False
-			if (dlg): dlg.close()
-			dlg = xbmcgui.Dialog()
-			dlg.ok(title, 'There was an error setting up controls.', 'Check your skin file:', skinXML)
-			self.dlg.close()
-		
+			if (not self.fastMethod):
+				if (dlg): dlg.close()
+				dlg = xbmcgui.Dialog()
+				dlg.ok(title, 'There was an error setting up controls.', 'Check your skin file:', skinXML)
+				self.dlg.close()
+
+
 	def initVariables(self):
-		self.lines[self.lineno + 1]	= 'initializing variables...'
-		self.dlg.update(self.pct, self.lines[0], self.lines[1], self.lines[2])
 		self.win.SUCCEEDED	 				= True
 		self.win.controls 						= {}
 		self.win.visibility 						= {}
@@ -68,6 +74,9 @@ class GUIBuilder:
 		#self.win.onclick 						= {}
 		#self.win.onfocus 						= {}
 		self.navigation						= {}
+		self.m_references 					= {}
+		self.resolution							= 6
+		self.resolutions = {'1080i' : 0, '720p' : 1, '480p' : 2, '480p16x9' : 3, 'ntsc' : 4, 'ntsc16x9' : 5, 'pal' : 6, 'pal16x9' : 7, 'pal60' : 8, 'pal6016x9' : 9}
 
 
 	def GetConditionalVisibility(self, conditions):
@@ -151,45 +160,70 @@ class GUIBuilder:
 								l = xbmcgui.ListItem(item, tmp, '', control['image'])
 								self.win.controls[int(control['id'])].addItem(l)
 			try: 
-				self.win.controls[int(control['id'])].setVisible(xbmc.getCondVisibility(control['visible']))
 				self.win.visibility[int(control['id'])] = control['visible']
 				self.win.positions[int(control['id'])] = (int(control['posx']), int(control['posy']))
+				#self.win.onclick[int(control['id'])] = control['onclick']
+				#self.win.onfocus[int(control['id'])] = control['onfocus']
 				self.navigation[int(control['id'])] = (int(control['onup']), int(control['ondown']), int(control['onleft']), int(control['onright']))
+				self.win.controls[int(control['id'])].setVisible(xbmc.getCondVisibility(control['visible']))
 			except: pass
 		except:
-			self.dlg.close()
+			if (not self.fastMethod): self.dlg.close()
 			self.win.SUCCEEDED = False
 
 
-	def parseSkinFile(self, ImagePath, filename):
+	def parseSkinFile(self, imagePath, filename):
 		try:
-			self.lines[self.lineno + 1]	= 'parsing %s file...' % (self.skinXML,)
+			if (not self.fastMethod):
+				self.lines[self.lineno + 1]	= 'loading %s file...' % (self.skinXML,)
+				self.dlg.update(self.pct, self.lines[0], self.lines[1], self.lines[2])
 			# load and parse skin.xml file
 			skindoc = xml.dom.minidom.parse(filename)
+			root = skindoc.documentElement
+			# make sure this is a valid <window> xml file
+			if (not root or root.tagName != 'window'): raise
+			
 			self.posx = 0
 			self.posy = 0
+
+			# Check for default control and coordinates based system
 			try:
-				default = skindoc.getElementsByTagName('defaultcontrol')
-				if (len(default)):
-					if (default[0].hasChildNodes()): self.defaultControl = int(default[0].firstChild.nodeValue)
-					else: self.defaultControl = None
-				coordinates = skindoc.getElementsByTagName('coordinates')
-				if (len(coordinates)):
-					systemBase = self.FirstChildElement(coordinates[0], 'system')
+				default = self.FirstChildElement(root, 'defaultcontrol')
+				if (default and default.firstChild): self.defaultControl = int(default.firstChild.nodeValue)
+				else: self.defaultControl = None
+				coordinates = self.FirstChildElement(root, 'coordinates')
+				if (coordinates and coordinates.firstChild):
+					systemBase = self.FirstChildElement(coordinates, 'system')
 					if (systemBase and systemBase.firstChild): 
 						system = int(systemBase.firstChild.nodeValue)
 						if (system == 1):
-							posx = self.FirstChildElement(coordinates[0], 'posx')
+							posx = self.FirstChildElement(coordinates, 'posx')
 							if (posx and posx.firstChild): self.posx = int(posx.firstChild.nodeValue)
-							posy = self.FirstChildElement(coordinates[0], 'posy')
+							posy = self.FirstChildElement(coordinates, 'posy')
 							if (posy and posy.firstChild): self.posy = int(posy.firstChild.nodeValue)
 			except: pass
 			self.win.coordinates = [self.posx, self.posy]
-			data = skindoc.getElementsByTagName('control')
-			t = len(data)
+
+			# check for a <resolution> tag and setCoordinateResolution()
+			resolution = self.FirstChildElement(root, 'resolution')
+			if (resolution and resolution.firstChild): self.resolution = self.resolutions[resolution.firstChild.nodeValue.lower()]
+			self.win.setCoordinateResolution(self.resolution)
+			
+
+			# make sure <controls> block exists and resolve if necessary
+			controls = self.FirstChildElement(root, 'controls')
+			if (controls and controls.firstChild):
+				if (self.includesExist): controls = self.ResolveInclude(controls)
+			else: raise
+
+			#parse and resolve each control
+			data = controls.getElementsByTagName('control')
 			if (not data): raise
+			if (not self.fastMethod):
+				self.lines[self.lineno + 1]	= 'parsing %s file...' % (self.skinXML,)
+				t = len(data)
 			for cnt, control in enumerate(data):
-				self.dlg.update(int((float(self.pct1) / float(t) * (cnt + 1)) + self.pct), self.lines[0], self.lines[1], self.lines[2])
+				if (not self.fastMethod): self.dlg.update(int((float(self.pct1) / float(t) * (cnt + 1)) + self.pct), self.lines[0], self.lines[1], self.lines[2])
 				if (self.includesExist): tmp = self.ResolveInclude(control)
 				else: tmp = control
 				ctl = {}
@@ -200,6 +234,7 @@ class GUIBuilder:
 				vis 		= []
 				ctype 	= ''
 
+				# loop thru control and find all tags
 				while (node):
 					# key node so save to the dictionary
 					if (node.tagName.lower() == 'label'): 
@@ -225,6 +260,7 @@ class GUIBuilder:
 						ctl[node.tagName.lower()] = node.firstChild.nodeValue
 					node = self.NextSiblingElement(node, None)
 
+				# setup the controls settings and defaults if necessary
 				if (ctype):
 					# The following apply to all controls
 					if (not ctl.has_key('id')): ctl['id'] = self.m_references.get(ctype + '_id', '0')
@@ -239,9 +275,7 @@ class GUIBuilder:
 					if (vis): ctl['visible'] = self.GetConditionalVisibility(vis)
 					else: ctl['visible'] = self.m_references.get(ctype + '_visible', 'true')
 					#if (not ctl.has_key('onclick')): ctl['onclick'] = self.m_references.get(ctype + '_onclick', '')
-					#self.onClick.append(ctl['onclick'])
 					#if (not ctl.has_key('onfocus')): ctl['onfocus'] = self.m_references.get(ctype + '_onfocus', '')
-					#self.onFocus.append(ctl['onfocus'])
 
 					if (ctype == 'image' or ctype == 'label' or ctype == 'fadelabel' or ctype == 'button' or ctype == 'checkmark' or ctype == 'textbox'):
 						if (ifo): ctl['info'] = ifo
@@ -272,9 +306,9 @@ class GUIBuilder:
 
 					if (ctype == 'listcontrol' or ctype == 'button'):
 						if (not ctl.has_key('texturefocus')): ctl['texturefocus'] = self.m_references.get(ctype + '_texturefocus', '')
-						elif (ctl['texturefocus'][0] == '\\'): ctl['texturefocus'] = ImagePath + ctl['texturefocus']
+						elif (ctl['texturefocus'][0] == '\\'): ctl['texturefocus'] = imagePath + ctl['texturefocus']
 						if (not ctl.has_key('texturenofocus')): ctl['texturenofocus'] = self.m_references.get(ctype + '_texturenofocus', '')
-						elif (ctl['texturenofocus'][0] == '\\'): ctl['texturenofocus'] = ImagePath + ctl['texturenofocus']
+						elif (ctl['texturenofocus'][0] == '\\'): ctl['texturenofocus'] = imagePath + ctl['texturenofocus']
 						
 					if (ctype == 'image'):
 						if (not ctl.has_key('aspectratio')): ctl['aspectratio'] = self.m_references.get(ctype + '_aspectratio', 0)
@@ -285,7 +319,7 @@ class GUIBuilder:
 						if (not ctl.has_key('colorkey')): ctl['colorkey'] = self.m_references.get(ctype + '_colorkey', '')
 						if (not ctl.has_key('colordiffuse')): ctl['colordiffuse'] = self.m_references.get(ctype + '_colordiffuse', '0xFFFFFFFF')
 						if (not ctl.has_key('texture')): ctl['texture'] = self.m_references.get(ctype + '_texture', '')
-						elif (ctl['texture'][0] == '\\'): ctl['texture'] = ImagePath + ctl['texture']
+						elif (ctl['texture'][0] == '\\'): ctl['texture'] = imagePath + ctl['texture']
 
 					if (ctype == 'label'):
 						if (not ctl.has_key('haspath')): ctl['haspath'] = self.m_references.get(ctype + '_haspath', 0)
@@ -300,9 +334,9 @@ class GUIBuilder:
 							
 					if (ctype == 'checkmark'):
 						if (not ctl.has_key('texturecheckmark')): ctl['texturecheckmark'] = self.m_references.get(ctype + '_texturecheckmark', '')
-						elif (ctl['texturecheckmark'][0] == '\\'): ctl['texturecheckmark'] = ImagePath + ctl['texturecheckmark']
+						elif (ctl['texturecheckmark'][0] == '\\'): ctl['texturecheckmark'] = imagePath + ctl['texturecheckmark']
 						if (not ctl.has_key('texturecheckmarknofocus')): ctl['texturecheckmarknofocus'] = self.m_references.get(ctype + '_texturecheckmarknofocus', '')
-						elif (ctl['texturecheckmarknofocus'][0] == '\\'): ctl['texturecheckmarknofocus'] = ImagePath + ctl['texturecheckmarknofocus']
+						elif (ctl['texturecheckmarknofocus'][0] == '\\'): ctl['texturecheckmarknofocus'] = imagePath + ctl['texturecheckmarknofocus']
 						if (not ctl.has_key('markwidth')): ctl['markwidth'] = self.m_references.get(ctype + '_markwidth', '20')
 						if (not ctl.has_key('markheight')): ctl['markheight'] = self.m_references.get(ctype + '_markheight', '20')
 
@@ -317,22 +351,24 @@ class GUIBuilder:
 						if (not ctl.has_key('textyoff')): ctl['textyoff'] = self.m_references.get(ctype + '_textyoff', '0')
 						if (not ctl.has_key('spacebetweenitems')): ctl['spacebetweenitems'] = self.m_references.get(ctype + '_spacebetweenitems', '0')
 						if (not ctl.has_key('image')): ctl['image'] = self.m_references.get(ctype + '_image', '')
-						if (not ctl.has_key('image')): ctl['image'] = self.m_references.get(ctype + '_image', '')
-						elif (ctl['image'][0] == '\\'): ctl['image'] = ImagePath + ctl['image']
+						elif (ctl['image'][0] == '\\'): ctl['image'] = imagePath + ctl['image']
 
 				self.addCtl(ctl)
 			self.pct += self.pct1
 		except:
-			self.dlg.close()
+			try: skindoc.unlink()
+			except: pass
+			if (not self.fastMethod): self.dlg.close()
 			self.win.SUCCEEDED = False
 		else:	skindoc.unlink()
 
 	def setNav(self):
 		try:
-			self.lines[self.lineno + 1]	= 'setting up navigation...'
-			t = len(self.navigation)
+			if (not self.fastMethod): 
+				self.lines[self.lineno + 1]	= 'setting up navigation...'
+				t = len(self.navigation)
 			for cnt, item in enumerate(self.navigation):
-				self.dlg.update(int((float(self.pct1) / float(t) * (cnt + 1)) + self.pct), self.lines[0], self.lines[1], self.lines[2])
+				if (not self.fastMethod): self.dlg.update(int((float(self.pct1) / float(t) * (cnt + 1)) + self.pct), self.lines[0], self.lines[1], self.lines[2])
 				if (self.win.controls.has_key(item)):
 					if (self.win.controls.has_key(self.navigation[item][0])):
 						self.win.controls[item].controlUp(self.win.controls[self.navigation[item][0]])
@@ -343,13 +379,12 @@ class GUIBuilder:
 					if (self.win.controls.has_key(self.navigation[item][3])):
 						self.win.controls[item].controlRight(self.win.controls[self.navigation[item][3]])
 		except:
-			self.dlg.close()
+			if (not self.fastMethod): self.dlg.close()
 			self.win.SUCCEEDED = False
 
 
 	def GetSkinPath(self, filename):
 		from os import path
-		paths = {'1080i' : 0, '720p' : 1, '480p' : 2, '480p16x9' : 3, 'ntsc' : 4, 'ntsc16x9' : 5, 'pal' : 6, 'pal16x9' : 7, 'pal60' : 8, 'pal6016x9' : 9}
 		paths2 = ('1080i', '720p', '480p', '480p16x9', 'ntsc', 'ntsc16x9', 'pal', 'pal16x9', 'pal60', 'pal6016x9')
 		res = self.win.getResolution()
 		default = 6
@@ -359,50 +394,51 @@ class GUIBuilder:
 			skindoc = xml.dom.minidom.parse(fname)
 			root = skindoc.documentElement
 			if (not root or root.tagName != 'skin'): raise
-			strDefault = skindoc.getElementsByTagName('defaultresolution')
-			strDefaultWide = skindoc.getElementsByTagName('defaultresolutionwide')
-			default = paths.get(strDefault[0].firstChild.nodeValue.lower(), default)
-			defaultwide = paths.get(strDefaultWide[0].firstChild.nodeValue.lower(), defaultwide)
+			strDefault = self.FirstChildElement(root, 'defaultresolution')
+			if (strDefault and strDefault.firstChild): default = self.resolutions.get(strDefault.firstChild.nodeValue.lower(), default)
+			strDefaultWide = self.FirstChildElement(root, 'defaultresolutionwide')
+			if (strDefaultWide and strDefaultWide.firstChild): defaultwide = self.resolutions.get(strDefaultWide.firstChild.nodeValue.lower(), defaultwide)
 			skindoc.unlink()
 		except: pass
 		fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + paths2[res] + '\\' + filename
 		if (path.exists(fname)):
-			if (filename == 'includes.xml'): self.win.setCoordinateResolution(res)
+			if (filename == 'references.xml'): self.resolution = res
 			return fname
 		# if we're in 1080i mode, try 720p next
 		if (res == 0):
 			fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + paths2[1] + '\\' + filename
 			if (path.exists(fname)):
-				if (filename == 'includes.xml'): self.win.setCoordinateResolution(1)
+				if (filename == 'references.xml'): self.resolution = 1
 				return fname
 		# that failed - drop to the default widescreen resolution if we're in a widemode
 		if (res == 9 or res == 7 or res == 5 or res == 3 or res == 1):
 			fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + paths2[defaultwide] + '\\' + filename
 			if (path.exists(fname)):
-				if (filename == 'includes.xml'): self.win.setCoordinateResolution(defaultwide)
+				if (filename == 'references.xml'): self.resolution = defaultwide
 				return fname
 		# that failed - drop to the default resolution
 		fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + paths2[default] + '\\' + filename
 		if (path.exists(fname)): res = default
 		if (path.exists(fname)):
-			if (filename == 'includes.xml'): self.win.setCoordinateResolution(default)
+			if (filename == 'references.xml'): self.resolution = default
 			return fname
 		else: return None
 
 	
 	def LoadReferences(self):
-		self.lines[self.lineno + 1]	= 'loading references.xml file...'
-		self.dlg.update(self.pct, self.lines[0], self.lines[1], self.lines[2])
-		self.pct += self.pct1
-		# make sure our reference map is cleared.
-		self.m_references = {}
+		if (not self.fastMethod): 
+			self.lines[self.lineno + 1]	= 'loading references.xml file...'
+			self.dlg.update(self.pct, self.lines[0], self.lines[1], self.lines[2])
+			self.pct += self.pct1
 		# get the references.xml file location if it exists
 		referenceFile = self.GetSkinPath('references.xml')
 		# load and parse references.xml file
 		try: refdoc = xml.dom.minidom.parse(referenceFile)
 		except: return False
 		root = refdoc.documentElement
-		if (not root or root.tagName != 'controls'): return False
+		if (not root or root.tagName != 'controls'): 
+			refdoc.unlink()
+			return False
 		data = refdoc.getElementsByTagName('control')
 		for control in data:
 			if (self.includesExist): tmp = self.ResolveInclude(control)
@@ -425,8 +461,7 @@ class GUIBuilder:
 		node = root.firstChild
 		while (node):
 			if (node and node.nodeType == 1):
-				if (node.tagName == value or not value):
-					return node
+				if (node.tagName == value or not value): return node
 			node = node.nextSibling
 		return None
 
@@ -435,15 +470,15 @@ class GUIBuilder:
 		while (node):
 			node = node.nextSibling
 			if (node and node.nodeType == 1):
-				if (node.tagName == value or not value):
-					return node
+				if (node.tagName == value or not value): return node
 		return None
 
 
 	def LoadIncludes(self):
-		self.lines[self.lineno + 1]	= 'loading includes.xml file...'
-		self.dlg.update(self.pct, self.lines[0], self.lines[1], self.lines[2])
-		self.pct += self.pct1
+		if (not self.fastMethod):
+			self.lines[self.lineno + 1]	= 'loading includes.xml file...'
+			self.dlg.update(self.pct, self.lines[0], self.lines[1], self.lines[2])
+			self.pct += self.pct1
 		# make sure our include map is cleared.
 		self.m_includes = {}
 		# get the includes.xml file location if it exists
