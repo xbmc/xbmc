@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-08-2006 changed: guibuilder.py, added <resolution> option tag to skin.xml file, fastMethod option, maybe others.
  - 02-08-2006 fixed: [ 1492732 ] mbcs encoding incorrectly leaves null byte at end of string.
  - 01-08-2006 fixed: Cleaned up the action code + moved the special case built in function interception for the login window to its class.
  - 01-08-2006 fixed: List and thumbcontrols cleared there page reference when cleared, meaning refreshed windows often caused jumping in the lists.
