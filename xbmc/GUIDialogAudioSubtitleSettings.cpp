@@ -226,7 +226,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
       strPath = g_application.CurrentFileItem().m_strPath;
 
     const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
-    if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(293),strPath)) // "subtitles"
+    if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(293),strPath,false,true)) // "subtitles"
     {
       CStdString strExt;
       CUtil::GetExtension(strPath,strExt);
