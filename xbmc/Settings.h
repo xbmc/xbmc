@@ -458,6 +458,7 @@ public:
   //VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;
   int m_iLastLoadedProfileIndex;
+  int m_iLastUsedProfileIndex;
   bool bUseLoginScreen;
   RESOLUTION_INFO m_ResInfo[10];
 
