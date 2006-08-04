@@ -436,11 +436,12 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
     }
     if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
+      // Check that m_iOffset is valid
+      if (m_iOffset > (int)m_vecItems.size() - m_iItemsPerPage) m_iOffset = m_vecItems.size() - m_iItemsPerPage;
+      if (m_iOffset < 0) m_iOffset = 0;
+      // only select an item if it's in a valid range
       if (message.GetParam1() >= 0 && message.GetParam1() < (int)m_vecItems.size())
       {
-        // Check that m_iOffset is valid
-        if (m_iOffset > (int)m_vecItems.size() - m_iItemsPerPage) m_iOffset = m_vecItems.size() - m_iItemsPerPage;
-        if (m_iOffset < 0) m_iOffset = 0;
         // Select the item requested
         int iItem = message.GetParam1();
         if (iItem >= m_iOffset && iItem < m_iOffset + m_iItemsPerPage)
