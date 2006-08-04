@@ -136,7 +136,9 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
         }
         while (m_iFilePos < iFilePosition)
         {
-          Read(temp,(iFilePosition-m_iFilePos)>131072?131072:iFilePosition-m_iFilePos);
+          int iToRead = (iFilePosition-m_iFilePos)>131072?131072:iFilePosition-m_iFilePos;
+          if (Read(temp,iToRead) != iToRead)
+            return -1;
           if (m_bUseProgressBar)
           {
             m_dlgProgress->SetPercentage(static_cast<int>(static_cast<float>(m_iFilePos)/static_cast<float>(iFilePosition)*100));
@@ -168,7 +170,9 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       }
       while (m_iFilePos < iFilePosition)
       {
-        Read(temp,(iFilePosition-m_iFilePos)>131072?131072:iFilePosition-m_iFilePos);
+        int iToRead = (iFilePosition-m_iFilePos)>131072?131072:iFilePosition-m_iFilePos;
+        if (Read(temp,iToRead) != iToRead)
+          return -1;
         if (m_bUseProgressBar)
         {
           m_dlgProgress->SetPercentage(static_cast<int>(static_cast<float>(m_iFilePos)/static_cast<float>(iFilePosition)*100));
@@ -196,7 +200,9 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
 
       while( m_ZStream.total_out < mZipItem.usize+iFilePosition)
       {
-        Read(temp,(mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:mZipItem.usize+iFilePosition-m_ZStream.total_out);
+        int iToRead = (mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:mZipItem.usize+iFilePosition-m_ZStream.total_out;
+        if (Read(temp,iToRead) != iToRead)
+          return -1;
         if (m_bUseProgressBar)
         {
           m_dlgProgress->SetPercentage(static_cast<int>(static_cast<float>(m_iFilePos-iStartPos)/static_cast<float>(mZipItem.usize+iFilePosition)*100));
@@ -258,7 +264,7 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
       m_ZStream.avail_out = static_cast<uInt>(uiBufSize-iDecompressed);
       if (m_bFlush) // need to flush buffer !
       {        
-        int iMessage = inflate(&m_ZStream,Z_SYNC_FLUSH);
+        int iMessage = inflate(&m_ZStream,Z_SYNC_FLUSH);        
         m_bFlush = ((iMessage == Z_OK) && (m_ZStream.avail_out == 0))?true:false;
         if (!m_ZStream.avail_out) // flush filled buffer, get out of here
         {
@@ -277,6 +283,12 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
       }
 
       int iMessage = inflate(&m_ZStream,Z_SYNC_FLUSH);
+      if (iMessage < 0)
+      {
+        Close();
+        return 0; // READ ERROR
+      }
+
       m_bFlush = ((iMessage == Z_OK) && (m_ZStream.avail_out == 0))?true:false; // more info in input buffer
       
       iDecompressed = m_ZStream.total_out-prevOut;
@@ -305,6 +317,7 @@ void CFileZip::Close()
 {
   if (mZipItem.method == 8)
     inflateEnd(&m_ZStream);
+  
   mFile.Close();
 }
 /* CHANGED: JM - moved to CFile
@@ -387,7 +400,8 @@ bool CFileZip::FillBuffer()
   if (sToRead <= 0)
     return false; // eof!
   
-  mFile.Read(m_szBuffer,sToRead);
+  if (mFile.Read(m_szBuffer,sToRead) != sToRead)
+    return false;
   m_ZStream.avail_in = sToRead;
   m_ZStream.next_in = (Bytef*)m_szBuffer;
   m_iZipFilePos += sToRead;
