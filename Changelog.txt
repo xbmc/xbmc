@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-08-2006 fixed: reenabled filedirectories in the browse for subtitles dialog. means archives works again.
  - 04-08-2006 added: [ 1533282 ] IMDb Python Library. thanks to no1cantel and allthekill. now go create a bunch of fancy imdb enabled scripts! :)
  - 03-08-2006 changed: guibuilder.py, added <resolution> option tag to skin.xml file, fastMethod option, maybe others.
  - 02-08-2006 fixed: [ 1492732 ] mbcs encoding incorrectly leaves null byte at end of string.

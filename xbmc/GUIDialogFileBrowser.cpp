@@ -234,35 +234,38 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
 
     // check if current directory is a root share
-    if ( !m_rootDir.IsShare(strDirectory) )
+    if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
     {
-      // no, do we got a parent dir?
-      if ( bParentExists )
+      if ( !m_rootDir.IsShare(strDirectory))
       {
-        // yes
+        // no, do we got a parent dir?
+        if (bParentExists)
+        {
+          // yes
+          CFileItem *pItem = new CFileItem("..");
+          pItem->m_strPath = strParentPath;
+          pItem->m_bIsFolder = true;
+          pItem->m_bIsShareOrDrive = false;
+          m_vecItems.Add(pItem);
+          m_strParentPath = strParentPath;
+        }
+      }
+      else
+      {
+        // yes, this is the root of a share
+        // add parent path to the virtual directory
         CFileItem *pItem = new CFileItem("..");
-        pItem->m_strPath = strParentPath;
-        pItem->m_bIsFolder = true;
+        pItem->m_strPath = "";
         pItem->m_bIsShareOrDrive = false;
+        pItem->m_bIsFolder = true;
         m_vecItems.Add(pItem);
-        m_strParentPath = strParentPath;
+        m_strParentPath = "";
       }
     }
-    else
-    {
-      // yes, this is the root of a share
-      // add parent path to the virtual directory
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath = "";
-      pItem->m_bIsShareOrDrive = false;
-      pItem->m_bIsFolder = true;
-      m_vecItems.Add(pItem);
-      m_strParentPath = "";
-    }
-
     m_Directory.m_strPath = strDirectory;
-    m_rootDir.GetDirectory(strDirectory, m_vecItems,false);
+    m_rootDir.GetDirectory(strDirectory, m_vecItems,m_useFileDirectories);
   }
+
 
   // No need to set thumbs
 
@@ -487,12 +490,14 @@ bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdStr
   return ShowAndGetFile(shares, "/", heading, path);
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs /* = false */)
+bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */)
 {
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
   m_gWindowManager.AddUniqueInstance(browser);
+
+  browser->m_useFileDirectories = useFileDirectories;
 
   CStdString browseHeading;
   browseHeading.Format(g_localizeStrings.Get(13401).c_str(), heading.c_str());
