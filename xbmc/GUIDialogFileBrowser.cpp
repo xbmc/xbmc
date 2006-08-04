@@ -266,6 +266,16 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     m_rootDir.GetDirectory(strDirectory, m_vecItems,m_useFileDirectories);
   }
 
+  // some evil stuff don't work with the '/' mask, e.g. shoutcast directory - make sure no files are in there
+  if (m_browsingForFolders)
+  {
+    for (int i=0;i<m_vecItems.Size();++i)
+      if (!m_vecItems[i]->m_bIsFolder)
+      {
+        m_vecItems.Remove(i);
+        i--;
+      }
+  }
 
   // No need to set thumbs
 
