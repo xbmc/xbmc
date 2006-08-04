@@ -744,6 +744,7 @@ HRESULT CApplication::Create()
 
   CLog::Log(LOGNOTICE, "load settings...");
   g_LoadErrorStr = "Unable to load settings";
+  g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
   if (g_settings.bUseLoginScreen && g_settings.m_iLastLoadedProfileIndex != 0)
     g_settings.m_iLastLoadedProfileIndex = 0;
 
@@ -4060,7 +4061,8 @@ void CApplication::ProcessSlow()
   CSectionLoader::UnloadDelayed();
 
   // GeminiServer Xbox Autodetection // Send in X sec PingTime Interval
-  CUtil::XboxAutoDetection();
+  if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN) // sorry jm ;D
+    CUtil::XboxAutoDetection();
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
