@@ -3458,6 +3458,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       return -1;
 
     g_application.StopPlaying();
+    g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
     g_settings.LoadProfile(0); // login screen always runs as default user
