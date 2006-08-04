@@ -21,7 +21,7 @@ public:
   void SetHeading(const CStdString &heading);
 
   static bool ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly=false);
-  static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false);
+  static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories=false);
   static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares, VECSHARES* additionalShare = NULL);
   static bool ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path);
   static bool ShowAndGetImage(const CFileItemList &items, VECSHARES &shares, const CStdString &heading, CStdString &path);
@@ -54,6 +54,7 @@ protected:
   bool m_bConfirmed;
   bool m_addNetworkShareEnabled;
   bool m_browsingForImages;
+  bool m_useFileDirectories;
   bool m_singleList;              // if true, we have no shares or anything
 
   CPictureThumbLoader m_thumbLoader;
