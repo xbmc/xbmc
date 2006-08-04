@@ -1220,7 +1220,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       pItem->m_musicInfoTag.SetLoaded(movie.m_bWatched);
       // End hack for extra info
 
-      m_vecItems.Add(pItem);
+      items.Add(pItem);
     }
   }
   CLog::Log(LOGDEBUG, "Time taken for SetDatabaseDirectory(): %i", timeGetTime() - time);
