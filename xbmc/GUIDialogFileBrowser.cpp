@@ -234,8 +234,8 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
 
     // check if current directory is a root share
-    if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
-    {
+/*    if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
+    {*/
       if ( !m_rootDir.IsShare(strDirectory))
       {
         // no, do we got a parent dir?
@@ -261,7 +261,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
         m_vecItems.Add(pItem);
         m_strParentPath = "";
       }
-    }
+    //}
     m_Directory.m_strPath = strDirectory;
     m_rootDir.GetDirectory(strDirectory, m_vecItems,m_useFileDirectories);
   }
@@ -614,7 +614,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
     if (CDirectory::GetDirectory(path, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1002,1003,1004))
     { // add the network location to the shares list
       CShare share;
-      share.strPath = path;
+      share.setPath(path);
       CURL url(path);
       url.GetURLWithoutUserDetails(share.strName);
       m_shares.push_back(share);
@@ -658,10 +658,10 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
       g_mediaManager.SetLocationPath(strOldPath,newPath);
       for (unsigned int i=0;i<shares.size();++i)
       {
-        if (shares[i].strPath == strOldPath)
+        if (shares[i].getPath().Equals(strOldPath))
         {
           shares[i].strName = newPath;
-          shares[i].strPath = newPath;
+          shares[i].setPath(newPath);
           break;
         }
       }
@@ -677,9 +677,10 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   if (btnid == btn_Remove)
   {
     g_mediaManager.RemoveLocation(m_selectedPath);
+    
     for (unsigned int i=0;i<m_shares.size();++i)
     {
-      if (m_shares[i].strPath == m_selectedPath)
+      if (m_shares[i].getPath().Equals(m_selectedPath))
       {
         m_shares.erase(m_shares.begin()+i);
         break;
