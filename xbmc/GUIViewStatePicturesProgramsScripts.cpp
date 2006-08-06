@@ -19,9 +19,9 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
   }
   else
   {
-    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%F", ""));  // Filename, Size | Foldername, empty
-    AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%F", "%I", "%F", "%I"));  // Filename, Size | Foldername, Size
-    AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%F", "%J", "%F", "%J"));  // Filename, Date | Foldername, Date
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+    AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%F", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
+    AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%F", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
     SetSortMethod(g_stSettings.m_MyPicturesSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -80,11 +80,11 @@ VECSHARES& CGUIViewStateWindowPictures::GetShares()
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%I", "%F", ""));  // Titel, Size | Foldername, empty
+    AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
   else
-    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%I", "%F", ""));  // Titel, Size | Foldername, empty
-  AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%K", "%J", "%F", "%J"));  // Titel, Date | Foldername, Date
-  AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 507, LABEL_MASKS("%K", "%C", "%F", ""));  // Titel, Count | Foldername, empty
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
+  AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%K", "%J", "%L", "%J"));  // Titel, Date | Foldername, Date
+  AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 507, LABEL_MASKS("%K", "%C", "%L", ""));  // Titel, Count | Foldername, empty
   AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%K", "%I", "%K", "%I"));  // Filename, Size | Foldername, Size
   SetSortMethod(g_stSettings.m_MyProgramsSortMethod);
 
@@ -128,9 +128,9 @@ VECSHARES& CGUIViewStateWindowPrograms::GetShares()
 
 CGUIViewStateWindowScripts::CGUIViewStateWindowScripts(const CFileItemList& items) : CGUIViewState(items)
 {
-  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%F", ""));  // Filename, Size | Foldername, empty
-  AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%F", "%J", "%F", "%J"));  // Filename, Date | Foldername, Date
-  AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%F", "%I", "%F", "%I"));  // Filename, Size | Foldername, Size
+  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+  AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%F", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
+  AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%F", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
   SetSortMethod(g_stSettings.m_ScriptsSortMethod);
 
   AddViewAsControl(VIEW_METHOD_LIST, 101);

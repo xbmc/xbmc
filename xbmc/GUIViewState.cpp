@@ -288,7 +288,7 @@ VECSHARES& CGUIViewState::GetShares()
 
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)
 {
-  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%F", ""));  // Filename, size | Foldername, empty
+  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, size | Foldername, empty
   SetSortMethod(SORT_METHOD_LABEL);
 
   AddViewAsControl(VIEW_METHOD_LIST, 101);
