@@ -1505,21 +1505,11 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
   }
   else
   {
-    float percent = 0.0f;
+    int percent;
     if (bLargeStep)
-    {
-      if (bPlus)
-        percent += g_advancedSettings.m_videoPercentSeekForwardBig;
-      else
-        percent += g_advancedSettings.m_videoPercentSeekBackwardBig;
-    }
+      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
     else
-    {
-      if (bPlus)
-        percent += g_advancedSettings.m_videoPercentSeekForward;
-      else
-        percent += g_advancedSettings.m_videoPercentSeekBackward;
-    }
+      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
 
     //If current time isn't bound by the total time, 
     //we have to seek using absolute percentage instead
@@ -1529,17 +1519,16 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
     }
     else
     {
-      percent *= iTime;
-      percent /= 100;
+      // time based seeking
+      float timeInSecs = percent * 0.01f * iTime;
       
       //Seek a minimum of 1 second
-      if( percent < 1 && percent > 0 )
-        percent = 1;
-      else if( percent > -1 && percent < 0 )
-        percent = -1;
+      if( timeInSecs < 1 && timeInSecs > 0 )
+        timeInSecs = 1;
+      else if( timeInSecs > -1 && timeInSecs < 0 )
+        timeInSecs = -1;
 
-      SeekRelativeTime( (int)percent );
-
+      SeekRelativeTime( (int)timeInSecs );
     }    
   }
 }

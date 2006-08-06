@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-08-2006 fixed: DVDPlayer didn't use the time seek values from AdvancedSettings.xml
  - 04-08-2006 fixed: some files slipped through when browsing for dirs in filebrowser (for instance shoutcast streams).
  - 04-08-2006 fixed: [ 1518486 ] xbmc.PlayList(0)[i].getduration() is broken.
  - 04-08-2006 changed: last loaded profile is now automatically selected in the login screen.
