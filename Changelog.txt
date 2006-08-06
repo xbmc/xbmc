@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-08-2006 added: zipped trainers.|
  - 06-08-2006 fixed: Listcontrol crash when going from a long listing to a short listing.
  - 06-08-2006 changed: Folders should display with their labels by default, rather than the filenames.
  - 05-08-2006 fixed: DVDPlayer didn't use the time seek values from AdvancedSettings.xml
