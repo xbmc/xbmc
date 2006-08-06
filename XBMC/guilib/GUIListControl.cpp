@@ -43,6 +43,10 @@ void CGUIListControl::Render()
 {
   if (!IsVisible()) return;
 
+  // first thing is we check the range of m_iOffset
+  if (m_iOffset > (int)m_vecItems.size() - m_iItemsPerPage) m_iOffset = m_vecItems.size() - m_iItemsPerPage;
+  if (m_iOffset < 0) m_iOffset = 0;
+
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   if (m_iOffset < 30000)
   {
