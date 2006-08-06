@@ -89,7 +89,7 @@ bool CTrainer::Load(const CStdString& strPath)
       popad
     }
 
-    strcpy(m_szCreationKey,(char*)(m_pData+4));
+    strncpy(m_szCreationKey,(char*)(m_pData+4),200);
     unsigned int iKeyLength = strlen(m_szCreationKey)+1;
     if (m_szCreationKey[6] != '-')
     {
