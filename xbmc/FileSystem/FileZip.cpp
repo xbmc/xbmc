@@ -136,7 +136,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
         }
         while (m_iFilePos < iFilePosition)
         {
-          int iToRead = (iFilePosition-m_iFilePos)>131072?131072:iFilePosition-m_iFilePos;
+          int iToRead = (iFilePosition-m_iFilePos)>131072?131072:(int)(iFilePosition-m_iFilePos);
           if (Read(temp,iToRead) != iToRead)
             return -1;
           if (m_bUseProgressBar)
@@ -170,7 +170,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       }
       while (m_iFilePos < iFilePosition)
       {
-        int iToRead = (iFilePosition-m_iFilePos)>131072?131072:iFilePosition-m_iFilePos;
+        int iToRead = (iFilePosition-m_iFilePos)>131072?131072:(int)(iFilePosition-m_iFilePos);
         if (Read(temp,iToRead) != iToRead)
           return -1;
         if (m_bUseProgressBar)
@@ -200,7 +200,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
 
       while( m_ZStream.total_out < mZipItem.usize+iFilePosition)
       {
-        int iToRead = (mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:mZipItem.usize+iFilePosition-m_ZStream.total_out;
+        int iToRead = (mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:(int)(mZipItem.usize+iFilePosition-m_ZStream.total_out);
         if (Read(temp,iToRead) != iToRead)
           return -1;
         if (m_bUseProgressBar)
