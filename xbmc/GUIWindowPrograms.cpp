@@ -499,7 +499,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
       return;
     }
 
-    directory.GetDirectory(g_guiSettings.GetString("myprograms.trainerpath").c_str(),archives,".rar",false); // TODO: ZIP SUPPORT
+    directory.GetDirectory(g_guiSettings.GetString("myprograms.trainerpath").c_str(),archives,".rar|.zip",false); // TODO: ZIP SUPPORT
     for( int i=0;i<archives.Size();++i)
     {
       if (stricmp(CUtil::GetExtension(archives[i]->m_strPath),".rar") == 0)
@@ -515,7 +515,17 @@ void CGUIWindowPrograms::PopulateTrainersList()
             CUtil::CreateRarPath(item->m_strPath, archives[i]->m_strPath, strPathInArchive,EXFILE_AUTODELETE,"",g_advancedSettings.m_cachePath);
             trainers.Add(item);
           }
-      }      
+      }
+      if (stricmp(CUtil::GetExtension(archives[i]->m_strPath),".zip")==0)
+      {
+        // add trainers in zip
+        CStdString strZipPath;
+        CUtil::CreateZipPath(strZipPath,archives[i]->m_strPath,"");
+        CFileItemList zipTrainers;
+        directory.GetDirectory(strZipPath,zipTrainers,".etm|.xbtf");
+        for (int j=0;j<zipTrainers.Size();++j)
+          trainers.Add(new CFileItem(*zipTrainers[j]));
+      }
     }
     if (!m_dlgProgress)
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
