@@ -138,11 +138,12 @@ void CLog::DebugLogMemory()
 
 void CLog::MemDump(BYTE *pData, int length)
 {
-  DebugLog("MEM_DUMP: Dumping from %x", pData);
+  Log(LOGDEBUG, "MEM_DUMP: Dumping from %x", pData);
   for (int i = 0; i < length; i+=16)
   {
     CStdString strLine;
     strLine.Format("MEM_DUMP: %04x ", i);
+    BYTE *alpha = pData;
     for (int k=0; k < 4 && i + 4*k < length; k++)
     {
       for (int j=0; j < 4 && i + 4*k + j < length; j++)
@@ -153,7 +154,19 @@ void CLog::MemDump(BYTE *pData, int length)
       }
       strLine += " ";
     }
-    DebugLog(strLine.c_str());
+    // pad with spaces
+    while (strLine.size() < 13*4 + 16)
+      strLine += " ";
+    for (int j=0; j < 16 && i + j < length; j++)
+    {
+      CStdString strFormat;
+      if (*alpha > 31 && *alpha < 128)
+        strLine += *alpha;
+      else
+        strLine += '.';
+      alpha++;
+    }
+    Log(LOGDEBUG, strLine.c_str());
   }
 }
 

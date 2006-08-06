@@ -614,7 +614,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
     if (CDirectory::GetDirectory(path, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1002,1003,1004))
     { // add the network location to the shares list
       CShare share;
-      share.setPath(path);
+      share.strPath = path; //setPath(path);
       CURL url(path);
       url.GetURLWithoutUserDetails(share.strName);
       m_shares.push_back(share);
@@ -658,10 +658,10 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
       g_mediaManager.SetLocationPath(strOldPath,newPath);
       for (unsigned int i=0;i<shares.size();++i)
       {
-        if (shares[i].getPath().Equals(strOldPath))
+        if (shares[i].strPath.Equals(strOldPath))//getPath().Equals(strOldPath))
         {
           shares[i].strName = newPath;
-          shares[i].setPath(newPath);
+          shares[i].strPath = newPath;//setPath(newPath);
           break;
         }
       }
@@ -680,7 +680,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
     
     for (unsigned int i=0;i<m_shares.size();++i)
     {
-      if (m_shares[i].getPath().Equals(m_selectedPath))
+      if (m_shares[i].strPath.Equals(m_selectedPath)) // getPath().Equals(m_selectedPath))
       {
         m_shares.erase(m_shares.begin()+i);
         break;
