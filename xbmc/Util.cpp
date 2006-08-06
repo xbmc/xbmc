@@ -3353,7 +3353,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     int pos = parameter.Find(",");
     if (pos >= 0)
     {
-      int string = g_settings.TranslateSkinString(parameter.Left(pos));
+      int string = g_settings.TranslateSkinBool(parameter.Left(pos));
       g_settings.SetSkinBool(string, parameter.Mid(pos+1).Equals("true"));
       g_settings.Save();
       return 0;
