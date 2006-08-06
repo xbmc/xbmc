@@ -878,15 +878,29 @@ bool CDVDPlayer::CanSeek()
 
 void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  float percent = (bLargeStep ? 10.0f : 2.0f);
-
-  if (bPlus) percent += GetPercentage();
-  else percent = GetPercentage() - percent;
-
-  if (percent >= 0 && percent <= 100)
+  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
-    // should be modified to seektime
-    SeekPercentage(percent);
+    int seek = 0;
+    if (bLargeStep)
+      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
+    else
+      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+    // do the seek
+    SeekTime(GetTime() + seek * 1000);
+  }
+  else
+  {
+    float percent = GetPercentage();
+    if (bLargeStep)
+      percent += bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
+    else
+      percent += bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
+
+    if (percent >= 0 && percent <= 100)
+    {
+      // should be modified to seektime
+      SeekPercentage(percent);
+    }
   }
 }
 
