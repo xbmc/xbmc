@@ -18,6 +18,12 @@
 #include "NptInterfaces.h"
 
 /*----------------------------------------------------------------------
+|   error codes
++---------------------------------------------------------------------*/
+const int NPT_ERROR_CALLBACK_HANDLER_SHUTDOWN = NPT_ERROR_BASE_THREADS-0;
+const int NPT_ERROR_CALLBACK_NOTHING_PENDING  = NPT_ERROR_BASE_THREADS-1;
+
+/*----------------------------------------------------------------------
 |   NPT_MutexInterface
 +---------------------------------------------------------------------*/
 class NPT_MutexInterface
@@ -161,16 +167,13 @@ public:
 /*----------------------------------------------------------------------
 |   NPT_ThreadInterface
 +---------------------------------------------------------------------*/
-class NPT_ThreadInterface : public NPT_Runnable
+class NPT_ThreadInterface: public NPT_Runnable, public NPT_Interruptible
 {
  public:
     // methods
     virtual           ~NPT_ThreadInterface() {}
     virtual NPT_Result Start() = 0;
     virtual NPT_Result Wait()  = 0;
-
-    // NPT_Runnable methods
-    virtual void Run() {}
 };
 
 /*----------------------------------------------------------------------
@@ -179,20 +182,75 @@ class NPT_ThreadInterface : public NPT_Runnable
 class NPT_Thread : public NPT_ThreadInterface
 {
  public:
+    // types
+    typedef unsigned long ThreadId;
+
+    // class methods
+    static ThreadId GetCurrentThreadId();
+
     // methods
     NPT_Thread(bool detached = false);
     NPT_Thread(NPT_Runnable& target, bool detached = false);
    ~NPT_Thread() { delete m_Delegate; }
+
+    // NPT_ThreadInterface methods
     NPT_Result Start() { return m_Delegate->Start(); } 
     NPT_Result Wait()  { return m_Delegate->Wait();  }
 
     // NPT_Runnable methods
     virtual void Run() {}
 
+    // NPT_Interruptible methods
+    virtual NPT_Result Interrupt() { return m_Delegate->Interrupt(); }
+
  private:
     // members
     NPT_ThreadInterface* m_Delegate;
 };
 
+
+/*----------------------------------------------------------------------
+|   NPT_ThreadCallbackReceiver
++---------------------------------------------------------------------*/
+class NPT_ThreadCallbackReceiver
+{
+public:
+    virtual ~NPT_ThreadCallbackReceiver() {}
+    virtual void OnCallback(void* args) = 0;
+};
+
+/*----------------------------------------------------------------------
+|   NPT_ThreadCallbackSlot
++---------------------------------------------------------------------*/
+class NPT_ThreadCallbackSlot
+{
+public:
+    // types
+    class NotificationHelper {
+    public:
+        virtual ~NotificationHelper() {};
+        virtual void Notify(void) = 0;
+    };
+
+    // constructor and destructor
+             NPT_ThreadCallbackSlot();
+    virtual ~NPT_ThreadCallbackSlot() {}
+
+    // methods
+    NPT_Result ReceiveCallback(NPT_ThreadCallbackReceiver& receiver, NPT_Timeout timeout = 0);
+    NPT_Result SendCallback(void* args);
+    NPT_Result SetNotificationHelper(NotificationHelper* helper);
+    NPT_Result Shutdown();
+
+protected:
+    // members
+    volatile void*      m_CallbackArgs;
+    volatile bool       m_Shutdown;
+    NPT_SharedVariable  m_Pending;
+    NPT_SharedVariable  m_Ack;
+    NPT_Mutex           m_ReadLock;
+    NPT_Mutex           m_WriteLock;
+    NotificationHelper* m_NotificationHelper;
+};
 
 #endif // _NPT_THREADS_H_
