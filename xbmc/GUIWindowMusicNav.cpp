@@ -187,21 +187,18 @@ void CGUIWindowMusicNav::UpdateButtons()
   int iItems = m_vecItems.Size();
   if (iItems)
   {
-    // check for parent dir
-    // check for "all" items
-    // they should always be the first two items
+    // check for parent dir and "all" items
+    // should always be the first two items
     for (int i = 0; i <= (iItems>=2 ? 1 : 0); i++)
     {
       CFileItem* pItem = m_vecItems[i];
       if (pItem->IsParentFolder()) iItems--;
-      if (
-        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15102)) ||  /* all albums  */
-        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15103)) ||  /* all artists */
-        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15104)) ||  /* all songs   */
-        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15105))     /* all genres  */
-        )
-        iItems--;
+      if (pItem->m_strPath.Left(4).Equals("/-1/")) iItems--;
     }
+    // or the last item
+    if (m_vecItems.Size() > 2 && 
+      m_vecItems[m_vecItems.Size()-1]->m_strPath.Left(4).Equals("/-1/"))
+      iItems--;
   }
   CStdString items;
   items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
