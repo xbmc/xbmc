@@ -173,10 +173,6 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     }
   }
 
-  // TODO: This should be callable with no valid shares
-  if (!share)
-    return false;
-
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
@@ -219,14 +215,16 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     int btn_ClearDefault=0;
     if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
     {
-      btn_EditPath = pMenu->AddButton(1027); // Edit Source
-      btn_Default = pMenu->AddButton(13335); // Set as Default
-      btn_Delete = pMenu->AddButton(522); // Remove Source
+      if (share)
+      {
+        btn_EditPath = pMenu->AddButton(1027); // Edit Source
+        btn_Default = pMenu->AddButton(13335); // Set as Default
+        btn_Delete = pMenu->AddButton(522); // Remove Source
 
-      btn_setThumb = pMenu->AddButton(20019);
-      if (share->m_strThumbnailImage != "")
-        btn_RemoveThumb = pMenu->AddButton(20057);
-
+        btn_setThumb = pMenu->AddButton(20019);
+        if (share->m_strThumbnailImage != "")
+          btn_RemoveThumb = pMenu->AddButton(20057);
+      }
       if (!strDefault.IsEmpty())
         btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
 
@@ -241,7 +239,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     int btn_ReactivateLock = 0; // Reactivate Share Lock
     int btn_ChangeLock = 0; // Change Share Lock;
 
-    if (LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
+    if (share && LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
     {
       if (share->m_iHasLock == 0 && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser))
         btn_LockShare = pMenu->AddButton(12332);
@@ -258,7 +256,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           btn_ResetLock = pMenu->AddButton(12334);
       }
     }
-    if (!g_passwordManager.bMasterUser && share->m_iHasLock == 1)
+    if (share && !g_passwordManager.bMasterUser && share->m_iHasLock == 1)
       btn_ReactivateLock = pMenu->AddButton(12353);
 
     int btn_Settings = pMenu->AddButton(5);         // Settings
