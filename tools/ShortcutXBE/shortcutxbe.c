@@ -152,7 +152,7 @@ int LaunchShortcut(char* filename)
   while(1)
   {
     target[length] = fgetc(file);
-    if( target[length] == EOF || target[length] == '\n' )
+    if( target[length] == EOF || target[length] == '\n' || target[length] == '\r' )
       break;
     length++;
   }
