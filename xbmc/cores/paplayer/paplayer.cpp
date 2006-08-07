@@ -291,17 +291,16 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
   // create our resampler
   // upsample to 48000, only do this for sources with 1 or 2 channels
-  int targetSR = channels>2?samplerate:48000;
-  m_resampler[num].InitConverter(samplerate, bitspersample, channels, targetSR, 16, PACKET_SIZE);
-  samplerate = targetSR;
-  bitspersample = 16;
+  m_SampleRateOutput = channels>2?samplerate:48000;
+  m_BitsPerSampleOutput = 16;
+  m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
 
   // our wave format
   WAVEFORMATEX wfx    = {0};
   wfx.wFormatTag      = WAVE_FORMAT_PCM;
   wfx.nChannels       = channels;
-  wfx.nSamplesPerSec  = samplerate;
-  wfx.wBitsPerSample  = bitspersample;
+  wfx.nSamplesPerSec  = m_SampleRateOutput;
+  wfx.wBitsPerSample  = m_BitsPerSampleOutput;
   wfx.nBlockAlign     = wfx.nChannels * wfx.wBitsPerSample / 8;
   wfx.nAvgBytesPerSec = wfx.nBlockAlign * wfx.nSamplesPerSec;
   m_BytesPerSecond = wfx.nAvgBytesPerSec;
@@ -362,7 +361,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
   // fire off our init to our callback
   if (m_pCallback)
-    m_pCallback->OnInitialize(channels, samplerate, bitspersample);
+    m_pCallback->OnInitialize(channels, m_SampleRateOutput, m_BitsPerSampleOutput);
 
   return true;
 }
@@ -939,7 +938,7 @@ void PAPlayer::RegisterAudioCallback(IAudioCallback *pCallback)
 {
   m_pCallback = pCallback;
   if (m_pCallback)
-    m_pCallback->OnInitialize(m_Channels, m_SampleRate, m_BitsPerSample);
+    m_pCallback->OnInitialize(m_Channels, m_SampleRateOutput, m_BitsPerSampleOutput);
 }
 
 void PAPlayer::UnRegisterAudioCallback()
