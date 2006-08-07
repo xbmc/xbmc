@@ -7,6 +7,7 @@
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 07-08-2006 fixed: possible fix for UPnP leak
  - 07-08-2006 fixed: UPnP limit to 256 entries per container.
+ - 06-08-2006 fixed: Skin bool settings with value didn't work (and caused eratic behaviour)
  - 06-08-2006 fixed: broken trainers could crash xbmc in some cases.
  - 06-08-2006 added: zipped trainers.|
  - 06-08-2006 fixed: Listcontrol crash when going from a long listing to a short listing.
