@@ -205,14 +205,17 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   bool bSuccess=false;
   if (pNode.get())
   {
-    AddQueuingFolder(items);
     bSuccess=pNode->GetContent(items);
-    if (!bSuccess)
+    if (bSuccess)
+    {
+      AddQueuingFolder(items);
+      if (CanCache())
+        items.SetCacheToDisc(true);
+    }
+    else
       items.Clear();
-    pNode->RemoveParent();
 
-    if (CanCache())
-      items.SetCacheToDisc(true);
+    pNode->RemoveParent();
   }
 
   return bSuccess;
@@ -224,7 +227,12 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
 {
   CFileItem* pItem=NULL;
 
+  // always hide "all" items
   if (g_guiSettings.GetBool("mymusic.hideallitems"))
+    return;
+
+  // no need for "all" item when only one item
+  if (items.Size() == 1)
     return;
 
   switch (GetChildType())
@@ -235,22 +243,26 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   case NODE_TYPE_TOP100:
     break;
 
+  /* no need for all genres
   case NODE_TYPE_GENRE:
     pItem = new CFileItem(g_localizeStrings.Get(15105));  // "All Genres"
     pItem->m_strPath = BuildPath() + "-1/";
     break;
+  */
 
   case NODE_TYPE_ARTIST:
+    if (GetType() == NODE_TYPE_OVERVIEW) return;
     pItem = new CFileItem(g_localizeStrings.Get(15103));  // "All Artists"
     pItem->m_strPath = BuildPath() + "-1/";
     break;
 
     //  All album related nodes
+  case NODE_TYPE_ALBUM:
+    if (GetType() == NODE_TYPE_OVERVIEW) return;
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
   case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM_TOP100:
-  case NODE_TYPE_ALBUM:
     pItem = new CFileItem(g_localizeStrings.Get(15102));  // "All Albums"
     pItem->m_strPath = BuildPath() + "-1/";
     break;
@@ -270,9 +282,12 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   if (pItem)
   {
     pItem->m_bIsFolder = true;
-    //  HACK: This item will stay on top of a list
     CStdString strFake;
+    //  HACK: This item will stay on top of a list
     strFake.Format("%c", 0x01);
+    if (g_guiSettings.GetBool("mymusic.allitemsonbottom"))
+      //  HACK: This item will stay on bottom of a list
+      strFake.Format("%c", 0xff);
     pItem->m_musicInfoTag.SetAlbum(strFake);
     pItem->m_musicInfoTag.SetArtist(strFake);
     pItem->m_musicInfoTag.SetTitle(strFake);
