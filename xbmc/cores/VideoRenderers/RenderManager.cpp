@@ -283,9 +283,9 @@ void CXBoxRenderManager::PresentBob()
   CSingleLock lock(g_graphicsContext);
 
   if( m_presentfield == FS_EVEN )
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOUNLOCK , 255);
   else
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOUNLOCK, 255);
 
   /* wait for timestamp */
   while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
@@ -294,9 +294,9 @@ void CXBoxRenderManager::PresentBob()
 
   /* render second field */
   if( m_presentfield == FS_EVEN )
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOLOCK, 255);
   else
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOLOCK, 255);
   
   D3D__pDevice->Present( NULL, NULL, NULL, NULL );
 }

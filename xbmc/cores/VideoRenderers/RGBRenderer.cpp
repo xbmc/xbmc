@@ -144,8 +144,9 @@ void CRGBRenderer::Render(DWORD flags)
   {    
     int index = m_iYV12RenderBuffer;
 
-    if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
-      CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
+    if( !(flags & RENDER_FLAG_NOLOCK) )
+      if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
+        CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
 
     //UV in interlaced video is seen as being closer to first line in first field and closer to second line in second field
     //we shift it with an offset of 1/4th pixel (1/8 in UV planes)
@@ -305,7 +306,8 @@ void CRGBRenderer::Render(DWORD flags)
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, alphaenabled );
 
     //Okey, when the gpu is done with the textures here, they are free to be modified again
-    m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[index]);
+    if( !(flags & RENDER_FLAG_NOUNLOCK) )
+      m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[index]);
 
     // Now perform the YUV->RGB conversion in a single pass, and render directly to the screen
     m_pD3DDevice->SetTexture( 1, m_UVLookup);
