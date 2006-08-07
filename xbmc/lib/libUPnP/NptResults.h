@@ -19,14 +19,14 @@
 do {                                \
     NPT_Result _result = (_x);      \
     if (_result != NPT_SUCCESS) {   \
-        NPT_Debug("@@@ NPT_CHECK failed, file %s line %d, result=%d\n", __FILE__, __LINE__, _result); \
+        NPT_Debug("%s(%d): @@@ NPT_CHECK failed, result=%d\n", __FILE__, __LINE__, _result); \
         return _result;             \
     }                               \
 } while(0)
 #define NPT_CHECK_POINTER(_p)                 \
 do {                                          \
     if ((_p) == NULL) {                       \
-        NPT_Debug("@@@ NULL pointer parameter, file %s line %d\n", __FILE__, __LINE__); \
+        NPT_Debug("%s(%d): @@@ NULL pointer parameter\n", __FILE__, __LINE__); \
         return NPT_ERROR_INVALID_PARAMETERS;  \
     }                                         \
 } while(0)
@@ -34,7 +34,7 @@ do {                                          \
 do {                                \
     NPT_Result _result = (x);       \
     if (_result != NPT_SUCCESS) {   \
-        NPT_Debug("@@@ NPT_CHECK failed file %s line %d, result=%d\n", __FILE__, __LINE__, _result); \
+        NPT_Debug("%s(%d): @@@ NPT_CHECK failed, result=%d\n", __FILE__, __LINE__, _result); \
         goto label;                 \
     }                               \
 } while(0)
@@ -85,6 +85,7 @@ const int NPT_ERROR_BASE_INTERFACES     = NPT_ERROR_BASE-500;
 const int NPT_ERROR_BASE_XML            = NPT_ERROR_BASE-600;
 const int NPT_ERROR_BASE_UNIX           = NPT_ERROR_BASE-700;
 const int NPT_ERROR_BASE_HTTP           = NPT_ERROR_BASE-800;
+const int NPT_ERROR_BASE_THREADS        = NPT_ERROR_BASE-900;
 
 // general errors
 const int NPT_ERROR_INVALID_PARAMETERS  = NPT_ERROR_BASE_GENERAL - 0;
