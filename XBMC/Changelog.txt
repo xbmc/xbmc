@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-08-2006 fixed: video files with large amounts of audio data before first video data would refuse to play. (dvr-ms files in particular)
  - 07-08-2006 added: Drempels screen saver
  - 07-08-2006 fixed: Visualisations were often sent incorrect samplerate and/or bitspersample info (unless the source audio was 16bit 48kHz)
  - 07-08-2006 fixed: bob deinterlacing wasn't working for dvdplayer, it overwrote texture before displaying second field

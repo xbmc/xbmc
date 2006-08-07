@@ -12,7 +12,7 @@
 static IDirectSoundRenderer* m_pAudioDecoder = NULL;
 static CCriticalSection m_critAudio;
 static IAudioCallback* m_pAudioCallback = NULL;
-static int m_bHasVideo = false;
+static bool m_waitvideo = false;
 void audio_uninit(int);
 
 ao_info_t audio_info = {
@@ -147,7 +147,6 @@ static int audio_init(int rate, int channels, int format, int flags)
   pao_data = GetAOData();
 
   channels = pao_data->channels;
-  m_bHasVideo = mplayer_HasVideo() == TRUE;
 
   //In the case of forced audio filter, channel number for the GetAudioInfo, and from pao_data
   //is not the same, so the follwing two lines are not correct
@@ -193,14 +192,15 @@ static int audio_init(int rate, int channels, int format, int flags)
     pao_data->bps *= (ao_format_bits / 8);
   }
 
-  //if(pao_data->buffersize==-1)
-  //{
-  //pao_data->buffersize  = ao_format_bits/8;
-  //pao_data->buffersize *= channels;
-  //pao_data->buffersize *= m_pAudioDecoder->GetChunkLen();
-  pao_data->buffersize = channels * m_pAudioDecoder->GetChunkLen();
-  //}
   pao_data->outburst = m_pAudioDecoder->GetChunkLen();
+
+
+  if( mplayer_HasVideo() )
+  {
+    m_waitvideo = true;
+    m_pAudioDecoder->Pause();
+  }
+
   return 1;
 }
 
@@ -263,9 +263,21 @@ static int audio_play(void* data, int len, int flags)
 {
   CSingleLock lock(m_critAudio);
   if (!m_pAudioDecoder) return 0;
-  //if we have video, don't process any audio before video is ready to go.
-  if (m_bHasVideo && (!g_renderManager.IsStarted())) return 0;
-  return m_pAudioDecoder->AddPackets( (unsigned char*)data, len);
+
+  DWORD playsize = m_pAudioDecoder->AddPackets( (unsigned char*)data, len);
+  if( m_waitvideo )
+  {
+    if( playsize == 0 ) 
+      CLog::Log(LOGINFO, __FUNCTION__" - Audio buffer filled up waiting for video to start, starting playback");
+
+    if( g_renderManager.IsStarted() || playsize == 0 )
+    {
+      m_pAudioDecoder->Resume();
+      m_waitvideo = false;
+    }
+  }
+    
+  return playsize;
 }
 
 //******************************************************************************************
