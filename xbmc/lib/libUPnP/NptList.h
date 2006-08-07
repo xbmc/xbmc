@@ -104,6 +104,9 @@ public:
     Iterator     GetLastItem() const  { return Iterator(m_Tail); }
     Iterator     GetItem(NPT_Ordinal index) const;
 
+    // list manipulation
+    NPT_Result   Add(NPT_List<T>& list);
+
     // item manipulation
     NPT_Result   Add(Item& item);
     NPT_Result   Detach(Item& item);
@@ -312,6 +315,23 @@ NPT_List<T>::Add(Item& item)
     // one more item in the list now
     ++m_ItemCount;
  
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_List<T>::Add
++---------------------------------------------------------------------*/
+template <typename T>
+NPT_Result
+NPT_List<T>::Add(NPT_List<T>& list)
+{
+    // copy the new list
+    Item* item = list.m_Head;
+    while (item) {
+        Add(item->m_Data);
+        item = item->m_Next;
+    }
+
     return NPT_SUCCESS;
 }
 

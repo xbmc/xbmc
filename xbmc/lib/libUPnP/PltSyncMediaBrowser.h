@@ -27,6 +27,7 @@ typedef struct PLT_BrowseData {
     PLT_MediaItemListReference  list;
     NPT_SharedVariable          shared_var;
     NPT_Result                  res;
+    NPT_UInt32                  total_matches;
 } PLT_BrowseData;
 
 typedef NPT_Reference<PLT_BrowseData> PLT_BrowseDataReference;
