@@ -211,12 +211,14 @@ CGUISettings::CGUISettings(void)
   AddString(10,"mymusic.lastfmpassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
   AddSeparator(11, "mymusic.sep3");
   AddString(12, "mymusic.cleanupmusiclibrary", 334, "", BUTTON_CONTROL_STANDARD);
-  AddBool(13,"mymusic.hideallitems",20127,false);
   // advanced per-view trackformats.
   AddString(0, "mymusic.nowplayingtrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(0, "mymusic.nowplayingtrackformatright", 13387, "", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(0, "mymusic.librarytrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(0, "mymusic.librarytrackformatright", 13387, "", BUTTON_CONTROL_INPUT, false, 16016);
+  // advanced library options
+  AddBool(0, "mymusic.hideallitems", 0, false);
+  AddBool(0, "mymusic.allitemsonbottom", 0, false);
 
   AddCategory(3, "musicfiles", 744);
   AddBool(1, "musicfiles.autoplaynextitem", 489, true);
