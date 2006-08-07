@@ -12,7 +12,8 @@
 static IDirectSoundRenderer* m_pAudioDecoder = NULL;
 static CCriticalSection m_critAudio;
 static IAudioCallback* m_pAudioCallback = NULL;
-static bool m_waitvideo = false;
+
+static int m_waitvideo = 0;
 void audio_uninit(int);
 
 ao_info_t audio_info = {
@@ -197,7 +198,7 @@ static int audio_init(int rate, int channels, int format, int flags)
 
   if( mplayer_HasVideo() )
   {
-    m_waitvideo = true;
+    m_waitvideo = 5; /* allow 5 empty returns after filling audio buffer */
     m_pAudioDecoder->Pause();
   }
 
@@ -265,15 +266,15 @@ static int audio_play(void* data, int len, int flags)
   if (!m_pAudioDecoder) return 0;
 
   DWORD playsize = m_pAudioDecoder->AddPackets( (unsigned char*)data, len);
-  if( m_waitvideo )
+  if( m_waitvideo > 0 )
   {
-    if( playsize == 0 ) 
-      CLog::Log(LOGINFO, __FUNCTION__" - Audio buffer filled up waiting for video to start, starting playback");
+    if( playsize == 0 )
+      m_waitvideo--;
 
-    if( g_renderManager.IsStarted() || playsize == 0 )
+    if( g_renderManager.IsStarted() || m_waitvideo <= 0 )
     {
       m_pAudioDecoder->Resume();
-      m_waitvideo = false;
+      m_waitvideo = 0;
     }
   }
     
