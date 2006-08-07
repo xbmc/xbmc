@@ -22,7 +22,7 @@
 +---------------------------------------------------------------------*/
 const int NPT_ERROR_NO_SUCH_INTERFACE = NPT_ERROR_BASE_INTERFACES - 0;
 
-#if 0 // disabled
+#if 0 // disabled, use NPT_Reference instead
 /*----------------------------------------------------------------------
 |   macros
 +---------------------------------------------------------------------*/
@@ -74,6 +74,19 @@ public:
     // methods
     virtual NPT_Result GetInterface(const NPT_InterfaceId& id, 
                                     NPT_Interface*&        iface) = 0;
+};
+
+/*----------------------------------------------------------------------
+|   NPT_Interruptible
++---------------------------------------------------------------------*/
+class NPT_Interruptible
+{
+public:
+    // destructor
+    virtual ~NPT_Interruptible() {}
+
+    // methods
+    virtual NPT_Result Interrupt() = 0;
 };
 
 /*----------------------------------------------------------------------
