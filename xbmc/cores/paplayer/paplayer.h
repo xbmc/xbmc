@@ -139,6 +139,9 @@ private:
   unsigned int     m_BitsPerSample;
   unsigned int     m_BytesPerSecond;
 
+  unsigned int     m_SampleRateOutput;
+  unsigned int     m_BitsPerSampleOutput;
+
   unsigned int     m_CacheLevel;
   unsigned int     m_LastCacheLevelCheck;
 
