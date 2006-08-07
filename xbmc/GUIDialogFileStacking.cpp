@@ -58,7 +58,8 @@ int CGUIDialogFileStacking::GetSelectedFile() const
 
 void CGUIDialogFileStacking::SetNumberOfFiles(int iFiles)
 {
-  m_iNumberOfFiles = iFiles;
+  // maximum number of files is 20 (as we have 20 cd images)
+  m_iNumberOfFiles = min(iFiles,20);
 }
 
 void CGUIDialogFileStacking::Render()
