@@ -18,11 +18,11 @@
 /*----------------------------------------------------------------------
 |    standard macros
 +---------------------------------------------------------------------*/
-#if defined(NPT_CONFIG_HAVE_ASSERT_H)
+#if defined(NPT_CONFIG_HAVE_ASSERT_H) && defined(NPT_DEBUG)
 #include <assert.h>
 #define NPT_ASSERT(x) assert(x)
 #else
-#define NPT_ASSERT(x)
+#define NPT_ASSERT(x) ((void)0)
 #endif
 
 /*----------------------------------------------------------------------
