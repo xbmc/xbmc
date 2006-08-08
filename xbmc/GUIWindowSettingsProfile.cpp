@@ -114,7 +114,9 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      CGUIWindow::OnMessage(message);
       ClearListItems();
+      return true;
     }
     break;
 
