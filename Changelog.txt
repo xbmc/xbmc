@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-08-2006 updated: mplayer.dll - better support for dvr-ms files
  - 08-08-2006 fixed: Settings Profile window list was cleared before the window close animation was performed.
  - 07-08-2006 changed: the behaviour of the "all" items in music library
  - 07-08-2006 fixed: video files with large amounts of audio data before first video data would refuse to play. (dvr-ms files in particular)
