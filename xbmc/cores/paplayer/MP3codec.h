@@ -15,9 +15,11 @@ public:
   virtual bool CanSeek();
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
+  virtual int ReadSamples(float *pBuffer, int numsamples, int *actualsamples);
   virtual bool CanInit();
   virtual bool SkipNext();
   virtual int GetCacheLevel();
+  virtual bool HasFloatData() const { return m_BitsPerSampleInternal == 32; };
 private:
   void OnFileReaderClearEvent();
   void FlushDecoder();
@@ -50,6 +52,8 @@ private:
   bool m_IgnoreFirst;     // Ignore first samples if this is true (for gapless playback)
   bool m_IgnoreLast;      // Ignore first samples if this is true (for gapless playback)
   int m_IgnoredBytes;     // amount of samples ignored thus far
+
+  int m_BitsPerSampleInternal;
 
   DllMadCodec m_dll;
 };
