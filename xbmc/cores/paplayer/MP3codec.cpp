@@ -8,6 +8,7 @@ MP3Codec::MP3Codec()
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_BitsPerSampleInternal = 0;
   m_TotalTime = 0;
   m_Bitrate = 0;
   m_CodecName = "MP3";
@@ -22,7 +23,7 @@ MP3Codec::MP3Codec()
   m_InputBufferPos = 0;
 
   // create our output buffer
-  m_OutputBufferSize = 1152*4*4;        // enough for 4 frames
+  m_OutputBufferSize = 1152*4*8;        // enough for 4 frames
   m_OutputBuffer = new BYTE[m_OutputBufferSize];
   m_OutputBufferPos = 0;
   m_Decoding = false;
@@ -132,9 +133,11 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   int result = m_pDecoder->decode(m_InputBuffer, 8192, m_InputBuffer + 8192, &sendsize, (unsigned int *)&m_Formatdata);
   if ( (result == 0 || result == 1) && sendsize )
   {
-    m_Channels      = m_Formatdata[2];
-    m_SampleRate    = m_Formatdata[1];
-    m_BitsPerSample = m_Formatdata[3];
+    m_Channels              = m_Formatdata[2];
+    m_SampleRate            = m_Formatdata[1];
+    m_BitsPerSampleInternal = m_Formatdata[3];
+    //m_BitsPerSample holds display value when using 32-bits floats (source is 24 bits), real value otherwise
+    m_BitsPerSample         = m_BitsPerSampleInternal>16?24:m_BitsPerSampleInternal;
     if (bIsInternetStream) m_Bitrate = m_Formatdata[4];
   }
   else
@@ -177,6 +180,13 @@ __int64 MP3Codec::Seek(__int64 iSeekTime)
   m_file.Seek(m_lastByteOffset, SEEK_SET);
   FlushDecoder();
   return iSeekTime;
+}
+
+int MP3Codec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
+{
+  int result = ReadPCM((BYTE *)pBuffer, numsamples * sizeof(float), actualsamples);
+  *actualsamples /= sizeof(float);
+  return result;
 }
 
 int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
@@ -232,7 +242,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
         {
           // starting up - lets ignore the first (typically 576) samples
           int iDelay = DECODER_DELAY + m_seekInfo.GetFirstSample();  // decoder delay + encoder delay
-          iDelay *= m_Channels * m_BitsPerSample / 8;            // sample size
+          iDelay *= m_Channels * m_BitsPerSampleInternal / 8;            // sample size
           if (outputsize + m_IgnoredBytes >= iDelay)
           {
             // have enough data to ignore - let's move the valid data to the start
@@ -262,7 +272,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
             if (m_IgnoreLast && m_seekInfo.GetLastSample())
             {
               unsigned int samplestoremove = (m_seekInfo.GetLastSample() - DECODER_DELAY);
-              samplestoremove *= m_Channels * m_BitsPerSample / 8;
+              samplestoremove *= m_Channels * m_BitsPerSampleInternal / 8;
               if (samplestoremove > m_OutputBufferPos)
                 samplestoremove = m_OutputBufferPos;
               m_OutputBufferPos -= samplestoremove;
