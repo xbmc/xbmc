@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-08-2006 changed: renamed region "Great Britain" to "UK" in the english language settings
+ - 11-08-2006 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 11-08-2006 updated: Dutch language file (Thnx to nightspirit)
+ - 11-08-2006 updated: Slovenian language file (Thnx to Peter)
  - 10-08-2006 changed: added useThumbs and TreatAsFolder arguments to the browse dialog in python. Got rid of redundent code and changed some documentation.
  - 08-08-2006 updated: mplayer.dll - better support for dvr-ms files
  - 08-08-2006 fixed: Settings Profile window list was cleared before the window close animation was performed.
