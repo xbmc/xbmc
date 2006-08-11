@@ -1528,17 +1528,21 @@ bool CVideoDatabase::GetStackTimes(const CStdString &filePath, vector<long> &tim
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
     // ok, now obtain the settings for this file
-    CStdString strSQL=FormatSQL("select * from stacktimes where idFile='%i'\n", lFileId);
+    CStdString strSQL=FormatSQL("select times from stacktimes where idFile='%i'\n", lFileId);
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
     { // get the video settings info
       CStdStringArray timeString;
+      long timeTotal = 0;
       StringUtils::SplitString(m_pDS->fv("times").get_asString(), ",", timeString);
       times.clear();
       for (unsigned int i = 0; i < timeString.size(); i++)
+      {
         times.push_back(atoi(timeString[i].c_str()));
+        timeTotal += atoi(timeString[i].c_str());
+      }
       m_pDS->close();
-      return true;
+      return (timeTotal > 0);
     }
     m_pDS->close();
   }
