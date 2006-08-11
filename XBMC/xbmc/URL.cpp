@@ -65,6 +65,14 @@ CURL::CURL(const CStdString& strURL)
     iPos += 3;
   }
 
+  // virtual protocols
+  // just assume everything after the protocol is a path + file
+  if (m_strProtocol.Equals("stack") || m_strProtocol.Equals("multipath"))
+  {
+    m_strFileName = strURL.Mid(iPos);
+    return;
+  }
+
   //check for old archive format, dll's might use it
   if (m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip"))
   {
