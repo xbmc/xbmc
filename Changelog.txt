@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-08-2006 changed: consider a total time of 0 for a stack, as missing times so it tries again.
  - 11-08-2006 added: xbmc.playercontrol(partymode) - enables / disables party mode.
  - 11-08-2006 changed: renamed region "Great Britain" to "UK" in the english language settings
  - 11-08-2006 updated: German (Austrian) language file (Thnx to CEOMR)
