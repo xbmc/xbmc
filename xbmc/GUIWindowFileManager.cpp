@@ -1485,24 +1485,33 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
   // try to open the destination path
   if (!strDestination.IsEmpty())
   {
-    // default parameters if the jump fails
-    m_Directory[0].m_strPath = "";
-
-    bool bIsBookmarkName = false;
-    int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyFilesShares, bIsBookmarkName);
-    if (iIndex > -1)
+    // open root
+    if (strDestination.Equals("$ROOT"))
     {
-      // set current directory to matching share
-      if (bIsBookmarkName)
-        m_Directory[0].m_strPath = g_settings.m_vecMyFilesShares[iIndex].strPath;
-      else
-        m_Directory[0].m_strPath = strDestination;
-      CUtil::RemoveSlashAtEnd(m_Directory[0].m_strPath);
-      CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+      m_Directory[0].m_strPath = "";
+      CLog::Log(LOGINFO, "  Success! Opening root listing.");
     }
     else
     {
-      CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+      // default parameters if the jump fails
+      m_Directory[0].m_strPath = "";
+
+      bool bIsBookmarkName = false;
+      int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyFilesShares, bIsBookmarkName);
+      if (iIndex > -1)
+      {
+        // set current directory to matching share
+        if (bIsBookmarkName)
+          m_Directory[0].m_strPath = g_settings.m_vecMyFilesShares[iIndex].strPath;
+        else
+          m_Directory[0].m_strPath = strDestination;
+        CUtil::RemoveSlashAtEnd(m_Directory[0].m_strPath);
+        CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+      }
     }
   }
 
