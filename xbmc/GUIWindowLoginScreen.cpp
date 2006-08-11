@@ -78,6 +78,12 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
                 g_guiSettings.GetString("network.gateway").c_str(),
                 g_guiSettings.GetString("network.dns").c_str());
             }
+            else
+            {
+              CGUIWindow* pWindow = m_gWindowManager.GetWindow(WINDOW_HOME);
+              if (pWindow)
+                pWindow->ResetControlStates();
+            }
             
             g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
             g_settings.SaveProfiles("q:\\system\\profiles.xml");
@@ -182,6 +188,11 @@ void CGUIWindowLoginScreen::Update()
     m_vecItems.Add(new CFileItem(item));
   }
   m_viewControl.SetItems(m_vecItems);
+  if (g_settings.m_iLastUsedProfileIndex != -1)
+  {
+    m_viewControl.SetSelectedItem(g_settings.m_iLastUsedProfileIndex);
+    g_settings.m_iLastUsedProfileIndex = -1;
+  }
 }
 
 bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
