@@ -37,6 +37,7 @@
 #include "lib/libfilezilla/xbfilezilla.h"
 #include "lib/libscrobbler/scrobbler.h"
 #include "partymodemanager.h"
+#include "filesystem/MultiPathDirectory.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -1193,6 +1194,12 @@ bool CUtil::IsOnDVD(const CStdString& strFile)
   if (strFile.Left(8) == "ISO9660:" || strFile.Left(8) == "iso9660:")
     return true;
 
+  return false;
+}
+
+bool CUtil::IsMultiPath(const CStdString& strPath)
+{
+  if (strPath.Left(12).Equals("multipath://")) return true;
   return false;
 }
 
@@ -3498,9 +3505,16 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   if (checkURL.GetProtocol() == "stack")
     strPath.Delete(0, 8); // remove the stack protocol
 
-
   if (checkURL.GetProtocol() == "shout")
     strPath = checkURL.GetHostName();
+
+  if (checkURL.GetProtocol() == "multipath")
+  {
+    vector<CStdString> vecTest;
+    CMultiPathDirectory dir;
+    dir.GetPaths(strPath, vecTest);
+    strPath = vecTest[0]; // just test the first path
+  }
 
   // remove user details, and ensure path only uses forward slashes
   // and ends with a trailing slash so as not to match a substring
