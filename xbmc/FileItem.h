@@ -94,6 +94,7 @@ public:
   bool IsSmb() const;
   bool IsDAAP() const;
   bool IsStack() const;
+  bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;

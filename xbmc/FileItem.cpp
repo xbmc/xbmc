@@ -422,6 +422,11 @@ bool CFileItem::IsStack() const
   return url.GetProtocol().Equals("stack");
 }
 
+bool CFileItem::IsMultiPath() const
+{
+  return CUtil::IsMultiPath(m_strPath);
+}
+
 bool CFileItem::IsCDDA() const
 {
   return CUtil::IsCDDA(m_strPath);
