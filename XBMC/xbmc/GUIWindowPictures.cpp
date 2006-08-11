@@ -68,38 +68,47 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       // try to open the destination path
       if (!strDestination.IsEmpty())
       {
-        // default parameters if the jump fails
-        m_vecItems.m_strPath = "";
-
-        bool bIsBookmarkName = false;
-        int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyPictureShares, bIsBookmarkName);
-        if (iIndex > -1)
+        // open root
+        if (strDestination.Equals("$ROOT"))
         {
-          bool bDoStuff = true;
-          if (g_settings.m_vecMyPictureShares[iIndex].m_iHasLock == 2)
-          {
-            CFileItem item(g_settings.m_vecMyPictureShares[iIndex]);
-            if (!g_passwordManager.IsItemUnlocked(&item,"pictures"))
-            {
-              m_vecItems.m_strPath = ""; // no u don't
-              bDoStuff = false;
-              CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
-            }
-          }
-          // set current directory to matching share
-          if (bDoStuff)
-          {
-            if (bIsBookmarkName)
-              m_vecItems.m_strPath=g_settings.m_vecMyPictureShares[iIndex].strPath;
-            else
-              m_vecItems.m_strPath=strDestination;
-            CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
-            CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
-          }
+          m_vecItems.m_strPath = "";
+          CLog::Log(LOGINFO, "  Success! Opening root listing.");
         }
         else
         {
-          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+          // default parameters if the jump fails
+          m_vecItems.m_strPath = "";
+
+          bool bIsBookmarkName = false;
+          int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyPictureShares, bIsBookmarkName);
+          if (iIndex > -1)
+          {
+            bool bDoStuff = true;
+            if (g_settings.m_vecMyPictureShares[iIndex].m_iHasLock == 2)
+            {
+              CFileItem item(g_settings.m_vecMyPictureShares[iIndex]);
+              if (!g_passwordManager.IsItemUnlocked(&item,"pictures"))
+              {
+                m_vecItems.m_strPath = ""; // no u don't
+                bDoStuff = false;
+                CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
+              }
+            }
+            // set current directory to matching share
+            if (bDoStuff)
+            {
+              if (bIsBookmarkName)
+                m_vecItems.m_strPath=g_settings.m_vecMyPictureShares[iIndex].strPath;
+              else
+                m_vecItems.m_strPath=strDestination;
+              CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+              CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+            }
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+          }
         }
 
         SetHistoryForPath(m_vecItems.m_strPath);

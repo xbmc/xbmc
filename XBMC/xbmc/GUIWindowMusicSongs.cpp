@@ -69,8 +69,14 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       // try to open the destination path
       if (!strDestination.IsEmpty())
       {
+        // open root
+        if (strDestination.Equals("$ROOT"))
+        {
+          m_vecItems.m_strPath = "";
+          CLog::Log(LOGINFO, "  Success! Opening root listing.");
+        }
         // open playlists location
-        if (strDestination.Equals("$PLAYLISTS"))
+        else if (strDestination.Equals("$PLAYLISTS"))
         {
           m_vecItems.m_strPath = CUtil::MusicPlaylistsLocation();
           CLog::Log(LOGINFO, "  Success! Opening destination path: %s", m_vecItems.m_strPath.c_str());
