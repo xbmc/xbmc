@@ -64,7 +64,11 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         message.SetStringParam("");
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
 
-        if (strDestination.Equals("Genres"))
+        if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
+        {
+          m_vecItems.m_strPath = "";
+        }
+        else if (strDestination.Equals("Genres"))
         {
           m_vecItems.m_strPath = "musicdb://1/";
           SetHistoryForPath(m_vecItems.m_strPath);
