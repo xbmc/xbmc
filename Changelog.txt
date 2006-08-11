@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-08-2006 fixed: "Treat Stacks as single file" only worked for files that already had times (since 23-07-2006)
  - 11-08-2006 added: MyPrograms and MyFiles also accept $ROOT as a path when called from ActivateWindow
  - 11-08-2006 added: MyMusicFiles, MyVideoFiles, and MyPictures windows now accept $ROOT to open to the root listing when called from ActivateWindow.
 			MyMusicLibrary accepts both $ROOT and Root.
