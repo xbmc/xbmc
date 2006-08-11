@@ -36,6 +36,7 @@
 #include "FileSystem/UPnPDirectory.h"
 #include "lib/libfilezilla/xbfilezilla.h"
 #include "lib/libscrobbler/scrobbler.h"
+#include "partymodemanager.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -3171,6 +3172,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       {
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
+    }
+    else if (parameter.Equals("partymode"))
+    {
+      if (g_partyModeManager.IsEnabled())
+        g_partyModeManager.Disable();
+      else
+        g_partyModeManager.Enable();
     }
     else if (parameter.Equals("random"))
     {
