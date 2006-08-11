@@ -12,12 +12,16 @@
 #include "GUIPassword.h"
 #include "utils/GUIInfoManager.h"
 #include "xbox/Network.h"
+#include "filesystem/MultiPathDirectory.h"
 
 struct CSettings::stSettings g_stSettings;
 struct CSettings::AdvancedSettings g_advancedSettings;
 class CSettings g_settings;
 
 extern CStdString g_LoadErrorStr;
+
+//uncomment to use new multipath:// protocol while still in development
+//#define	MULTIPATH 1
 
 void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths)
 {
@@ -32,7 +36,14 @@ void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name
   }
   else
   { // multiple valid paths?
+#ifdef MULTIPATH
+    // use new multipath:// protocol
+    CMultiPathDirectory dir;
+    strPath = dir.ConstructMultiPath(vecPaths);
+#else
+    // use older virtualpath:// protocol
     strPath.Format("virtualpath://%s/%s", category.c_str(), name.c_str());
+#endif
   }
 
   strName = name;
@@ -42,7 +53,7 @@ void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name
   m_iBadPwdCount = 0;
   m_iHasLock = 0;
 
-  if (strPath.Left(12).Equals("virtualpath:"))
+  if (CUtil::IsVirtualPath(strPath) || CUtil::IsMultiPath(strPath))
     m_iDriveType = SHARE_TYPE_VPATH;
   else if (strPath.Left(4).Equals("udf:"))
   {

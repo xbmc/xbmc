@@ -1941,6 +1941,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\LastFMDirectory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\MultiPathDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\MultiPathDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory.cpp">
 			</File>
 			<File
