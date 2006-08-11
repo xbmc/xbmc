@@ -67,7 +67,7 @@
       <speedunit>mph</speedunit>
     </region>
 
-    <region name="Great Britain">
+    <region name="UK">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
