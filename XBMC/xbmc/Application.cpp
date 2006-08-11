@@ -2989,7 +2989,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
         return false;
       }
 
-      totalTime += (long)GetTotalTime();
+      totalTime += (long)m_pPlayer->GetTotalTime();
 
       m_pPlayer->CloseFile();
       SAFE_DELETE(m_pPlayer);
