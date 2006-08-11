@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 11-08-2006 added: MyPrograms also accepts $ROOT as a path when called from ActivateWindow
+ - 11-08-2006 added: MyPrograms and MyFiles also accept $ROOT as a path when called from ActivateWindow
  - 11-08-2006 added: MyMusicFiles, MyVideoFiles, and MyPictures windows now accept $ROOT to open to the root listing when called from ActivateWindow.
 			MyMusicLibrary accepts both $ROOT and Root.
  - 11-08-2006 changed: consider a total time of 0 for a stack, as missing times so it tries again.
