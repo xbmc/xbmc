@@ -16,6 +16,7 @@
 #include "rardirectory.h"
 #include "FTPDirectory.h"
 #include "VirtualPathDirectory.h"
+#include "MultiPathDirectory.h"
 #include "MusicDatabaseDirectory.h"
 #include "StackDirectory.h"
 #include "PlaylistDirectory.h"
@@ -46,6 +47,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") return new CRarDirectory();
   if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
+  if (strProtocol == "multipath") return new CMultiPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
   if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();
