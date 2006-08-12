@@ -18,6 +18,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 11-08-2006 updated: Dutch language file (Thnx to nightspirit)
  - 11-08-2006 updated: Slovenian language file (Thnx to Peter)
  - 10-08-2006 changed: added useThumbs and TreatAsFolder arguments to the browse dialog in python. Got rid of redundent code and changed some documentation.
+ - 09-08-2006 changed: MadCodec.dll (mp3) now outputs floating point (24-bit audio), previous versions of the dll will also still work (16 bit).
  - 08-08-2006 updated: mplayer.dll - better support for dvr-ms files
  - 08-08-2006 fixed: Settings Profile window list was cleared before the window close animation was performed.
  - 07-08-2006 changed: the behaviour of the "all" items in music library
