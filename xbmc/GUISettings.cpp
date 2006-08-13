@@ -163,6 +163,9 @@ CGUISettings::CGUISettings(void)
   AddCategory(0, "pictures", 16000);
   AddBool(1, "pictures.useautoswitching", 14011, false);
   AddBool(2, "pictures.autoswitchuselargethumbs", 14012, false);
+  AddSeparator(3,"pictures.sep1");
+  AddString(4,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
+
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddInt(2, "slideshow.transistiontime", 225, 2500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
@@ -230,6 +233,8 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "musicfiles.sep2");
   AddBool(8, "musicfiles.useautoswitching", 14011, false);
   AddBool(9, "musicfiles.autoswitchuselargethumbs", 14012, false);
+  AddSeparator(10,"musicfiles.sep3");
+  AddString(11,"musicfiles.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
 
   AddCategory(3, "musicplaylist", 136);
   AddBool(1, "musicplaylist.clearplaylistsonend",239,false);
@@ -478,8 +483,6 @@ CGUISettings::CGUISettings(void)
   AddString(5, "xbdatetime.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
 
   //  TODO: localize 2.0
-    AddString(0,"system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
-    AddString(0,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
     AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
   }
 
