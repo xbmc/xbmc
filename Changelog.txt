@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-08-2006 fixed: listcontrol and listcontrolex would wraparound instead of going to ondown if it where at the max page size of the list
  - 13-08-2006 fixed: forgot to comment out some code in controllist.cpp.
  - 13-08-2006 added: size() method to the ControlList in python. Updated some documentation.
  - 12-08-2006 added: xbmc.getGlobalIdleTime() method to python. Updated some documentation.

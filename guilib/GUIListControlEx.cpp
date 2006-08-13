@@ -444,12 +444,17 @@ void CGUIListControlEx::OnDown()
         }
         m_upDown.SetValue(iPage);
       }
-      else
+      else if(m_dwControlDown == 0 || m_dwControlDown == GetID())
       {
         // move first item in list
         CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), 0);
         OnMessage(msg);
       }
+      else
+      {
+        CGUIControl::OnDown();
+      }
+
     }
     m_pList->Release();
   }
