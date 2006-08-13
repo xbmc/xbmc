@@ -25,6 +25,7 @@ CGUIWindowPrograms::CGUIWindowPrograms(void)
     : CGUIMediaWindow(WINDOW_PROGRAMS, "MyPrograms.xml")
 {
   m_thumbLoader.SetObserver(this);
+  m_dlgProgress = NULL;
 }
 
 
@@ -468,8 +469,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
   // first, remove any dead items
   std::vector<CStdString> vecTrainerPath;
   m_database.GetAllTrainers(vecTrainerPath);
-  if (!m_dlgProgress)
-    m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   m_dlgProgress->SetLine(0,"Validating existing trainers");
   m_dlgProgress->SetLine(1,"");
   m_dlgProgress->SetLine(2,"");
@@ -479,6 +479,9 @@ void CGUIWindowPrograms::PopulateTrainersList()
   m_dlgProgress->Progress();
   
   bool bBreak=false;
+  bool bDatabaseState = m_database.IsOpen();
+  if (!bDatabaseState)
+    m_database.Open();
   m_database.BeginTransaction();
   for (unsigned int i=0;i<vecTrainerPath.size();++i)
   {
@@ -588,12 +591,10 @@ void CGUIWindowPrograms::PopulateTrainersList()
   m_database.CommitTransaction();
   m_dlgProgress->Close();
 
-  Update(m_vecItems.m_strPath);
-
-//  SetOverlayIcons();
-//  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-//  OnSort();
-//  UpdateButtons();
+  if (!bDatabaseState)
+    m_database.Close();
+  else
+    Update(m_vecItems.m_strPath);
 }
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
