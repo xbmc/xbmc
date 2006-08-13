@@ -582,35 +582,22 @@ void CGUIListControl::OnDown()
 {
   if (m_iSelect == CONTROL_LIST)
   {
-    if (m_iCursorY + 1 < m_iItemsPerPage)
+    if (m_iOffset + 1 + m_iCursorY < (int)m_vecItems.size())
     {
-      if (m_iOffset + 1 + m_iCursorY < (int)m_vecItems.size())
-      {
+      if (m_iCursorY + 1 < m_iItemsPerPage)
         m_iCursorY++;
-      }
-      else if( m_dwControlDown == 0 || m_dwControlDown == GetID() )
-      {
-        // move first item in list
-        m_iOffset = 0;
-        m_iCursorY = 0;
-      }
       else
-      {
-        CGUIControl::OnDown();
-      }
+        m_iOffset++;
+    }
+    else if( m_dwControlDown == 0 || m_dwControlDown == GetID() )
+    {
+      // move first item in list
+      m_iOffset = 0;
+      m_iCursorY = 0;
     }
     else
     {
-      if (m_iOffset + 1 + m_iCursorY < (int)m_vecItems.size())
-      {
-        m_iOffset++;
-      }
-      else
-      {
-        // move first item in list
-        m_iOffset = 0;
-        m_iCursorY = 0;
-      }
+      CGUIControl::OnDown();
     }
   }
   else
