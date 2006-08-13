@@ -606,7 +606,9 @@ VECSHARES& CGUIViewStateWindowMusicPlaylist::GetShares()
 
 CGUIViewStateMusicShoutcast::CGUIViewStateMusicShoutcast(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
-  if( m_items.m_idepth > 1 )
+  /* sadly m_idepth isn't remembered when a directory is retrieved from cache */
+  /* and thus this check hardly ever works, so let's just disable it for now */
+  if( true || m_items.m_idepth > 1 )
   { /* station list */
     AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%B kbps", "%K", ""));  // Title, Bitrate | Title, nothing
     AddSortMethod(SORT_METHOD_VIDEO_RATING, 507, LABEL_MASKS("%K", "%A listeners", "%K", ""));  // Titel, Listeners | Titel, nothing
