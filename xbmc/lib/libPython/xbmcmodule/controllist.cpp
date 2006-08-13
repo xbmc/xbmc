@@ -38,7 +38,7 @@ namespace PYXBMC
     char *cSelectedColor = NULL;
     char *cTextureButton = NULL;
     char *cTextureButtonFocus = NULL;
-    char* cShadowColor = NULL;
+    //char* cShadowColor = NULL;
     self = (ControlList*)type->tp_alloc(type, 0);
     if (!self) return NULL;
     
@@ -100,7 +100,7 @@ namespace PYXBMC
     {
       sscanf( cSelectedColor, "%x", &self->dwSelectedColor );
     }
-    if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
+    //if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
 
     self->strTextureButton = cTextureButton ? cTextureButton :
       PyGetDefaultImage("listcontrol", "textureNoFocus", "list-nofocus.png");    
