@@ -26,6 +26,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIWindowPrograms.h"
 #include "MediaManager.h"
 #include "xbox/network.h"
 #include "lib/libGoAhead/webserver.h"
@@ -897,13 +898,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 		  if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("myvideos.useexternaldvdplayer"));
     }
-    else if (strSetting.Equals("myprograms.trainerpath"))
-    {
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-      if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
-        pControl->SetLabel2("");
-    }
-    else if (strSetting.Equals("cddaripper.path"))
+    else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("musicfiles.recordingpath") || strSetting.Equals("pictures.screenshotpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
@@ -1041,13 +1036,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("musicplayer.replaygainpreamp");
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
-  }
-  else if (strSetting.Equals("cddaripper.path"))
-  {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-    CStdString strPath = pSettingString->GetData();
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(607),strPath,true))
-      pSettingString->SetData(strPath);
   }
   else if (strSetting.Equals("xlinkkai.enabled"))
   {
@@ -1397,14 +1385,25 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-  else if (strSetting.Equals("myprograms.trainerpath"))
+  else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("musicfiles.recordingpath") || strSetting.Equals("cddaripper.path"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-    CStdString path = pSettingString->GetData();
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
+    CStdString path = g_guiSettings.GetString(strSetting,false);
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    UpdateSettings();
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
     {
       pSettingString->SetData(path);
-      // TODO: Should we ask to rescan the trainers here?
+      if (strSetting.Equals("myprograms.trainerpath"))
+      {
+        if (CGUIDialogYesNo::ShowAndGetInput(12012,20135,20022,20022))
+        {
+          CGUIWindowPrograms* pWindow = (CGUIWindowPrograms*)m_gWindowManager.GetWindow(WINDOW_PROGRAMS);
+          if (pWindow)
+            pWindow->PopulateTrainersList();
+        }
+      }
     }
   }
   else if (strSetting.Equals("led.colour"))

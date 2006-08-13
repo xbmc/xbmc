@@ -13,6 +13,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnPopupMenu(int iItem);
 
+  void PopulateTrainersList();
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual bool Update(const CStdString& strDirectory);
@@ -21,7 +22,6 @@ protected:
   virtual void OnWindowLoaded();
 
   int GetRegion(int iItem, bool bReload=false);
-  void PopulateTrainersList();
 
   CGUIDialogProgress* m_dlgProgress;
 
