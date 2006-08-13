@@ -1,19 +1,19 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
 ** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 **
 ** Any non-GPL usage of this software or parts of this software is strictly
@@ -22,9 +22,7 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
-** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
 ** $Id$
-** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
 **/
 
 #ifndef __STRUCTS_H__
@@ -78,9 +76,6 @@ typedef struct
     mdct_info *mdct2048;
 #ifdef PROFILE
     int64_t cycles;
-#endif
-#ifdef USE_SSE
-    void (*if_func)(void *a, uint8_t b, uint8_t c, uint8_t d, real_t *e, real_t *f, uint8_t g, uint16_t h);
 #endif
 } fb_info;
 
@@ -368,6 +363,9 @@ typedef struct NeAACDecFrameInfo
     /*uint8_t*/ unsigned char num_back_channels;
     /*uint8_t*/ unsigned char num_lfe_channels;
     /*uint8_t*/ unsigned char channel_position[MAX_CHANNELS];
+
+    /* PS: 0: off, 1: on */
+    /*uint8_t*/ unsigned char ps;
 } NeAACDecFrameInfo;
 
 typedef struct
@@ -433,6 +431,7 @@ typedef struct
 #endif
 #if (defined(PS_DEC) || defined(DRM_PS))
     uint8_t ps_used[MAX_SYNTAX_ELEMENTS];
+    uint8_t ps_used_global;
 #endif
 
 #ifdef SSR_DEC
@@ -456,10 +455,6 @@ typedef struct
 
     /* Configuration data */
     NeAACDecConfiguration config;
-
-#ifdef USE_SSE
-    void (*apply_sf_func)(void *a, void *b, void *c, uint16_t d);
-#endif
 
 #ifdef PROFILE
     int64_t cycles;

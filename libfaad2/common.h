@@ -24,7 +24,8 @@
 **
 ** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
 ** $Id$
-** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
+** detailed changelog at http://svn.mplayerhq.hu/mplayer/trunk/
+** local_changes.diff contains the exact changes to this file.
 **/
 
 #ifndef __COMMON_H__
@@ -34,7 +35,7 @@
 extern "C" {
 #endif
 
-/* Allow build on cygwin*/
+/* Allow build on Cygwin*/
 #if defined(__CYGWIN__)
 #define __STRICT_ANSI__
 #endif
@@ -66,7 +67,7 @@ extern "C" {
 /* Use if target platform has address generators with autoincrement */
 //#define PREFER_POINTERS
 
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE) || defined(__arm__)
 #define FIXED_POINT
 #endif
 
@@ -133,12 +134,6 @@ extern "C" {
 # endif
 #endif
 
-#if ((defined(_WIN32) && !defined(_WIN32_WCE)) /* || ((__GNUC__ >= 3) && defined(__i386__)) */ )
-#ifndef FIXED_POINT
-/* includes <xmmintrin.h> to enable SSE intrinsics */
-//#define USE_SSE
-#endif
-#endif
 
 #ifdef FIXED_POINT
 #define DIV_R(A, B) (((int64_t)A << REAL_BITS)/B)
@@ -306,10 +301,6 @@ char *strchr(), *strrchr();
 
   typedef float real_t;
 
-#ifdef USE_SSE
-# include <xmmintrin.h>
-#endif
-
   #define MUL_R(A,B) ((A)*(B))
   #define MUL_C(A,B) ((A)*(B))
   #define MUL_F(A,B) ((A)*(B))
@@ -328,7 +319,7 @@ char *strchr(), *strrchr();
   }
 
 
-  #if defined(_WIN32) && !defined(__MINGW32__)
+  #if defined(_WIN32) && !defined(__MINGW32__) && !defined(HAVE_LRINTF)
     #define HAS_LRINTF
     static INLINE int lrintf(float f)
     {
@@ -340,7 +331,7 @@ char *strchr(), *strrchr();
         }
         return i;
     }
-  #elif (defined(__i386__) && defined(__GNUC__)) && !defined(__MINGW32__)
+  #elif (defined(__i386__) && defined(__GNUC__)) && !defined(HAVE_LRINTF)
     #define HAS_LRINTF
     // from http://www.stereopsis.com/FPU.html
     static INLINE int lrintf(float f)
@@ -425,6 +416,7 @@ uint32_t wl_min_lzc(uint32_t x);
 #ifdef FIXED_POINT
 #define LOG2_MIN_INF REAL_CONST(-10000)
 int32_t log2_int(uint32_t val);
+int32_t log2_fix(uint32_t val);
 int32_t pow2_int(real_t val);
 real_t pow2_fix(real_t val);
 #endif

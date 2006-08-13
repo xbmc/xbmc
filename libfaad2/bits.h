@@ -1,19 +1,19 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
 ** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 **
 ** Any non-GPL usage of this software or parts of this software is strictly
@@ -24,7 +24,8 @@
 **
 ** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
 ** $Id$
-** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
+** detailed changelog at http://svn.mplayerhq.hu/mplayer/trunk/
+** local_changes.diff contains the exact changes to this file.
 **/
 
 #ifndef __BITS_H__
@@ -319,7 +320,7 @@ typedef struct
     /* bit input */
     uint32_t bufa;
     uint32_t bufb;
-    int8_t len; 
+    int8_t len;
 } bits_t;
 
 
@@ -333,7 +334,7 @@ static INLINE uint32_t showbits_hcr(bits_t *ld, uint8_t bits)
         if (ld->len >= bits)
             return ((ld->bufa >> (ld->len - bits)) & (0xFFFFFFFF >> (32 - bits)));
         else
-            return ((ld->bufa << (bits - ld->len)) & (0xFFFFFFFF >> (32 - bits)));        
+            return ((ld->bufa << (bits - ld->len)) & (0xFFFFFFFF >> (32 - bits)));
     } else {
         if ((ld->len - bits) < 32)
         {

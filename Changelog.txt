@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-08-2006 added: demux_aac.c from mplayerhq and content-type detection for shoutcast streams
+  - 13-08-2006 updated: libfaad2, demux_aac to mplayerhq version (aac+)
   - 08-08-2006 updated: demux_asf to mplayerhq version, allows dvr-ms files to be played in a better way
   - 05-04-2006 fixed: odml index wouldn't be read for > 2.0gb files (http://thread.gmane.org/gmane.comp.video.mplayer.devel/31404)
   - 26-03-2006 fixed: dts frames with uneven data size would play garbled using hwdts output

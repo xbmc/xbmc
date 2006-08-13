@@ -1,19 +1,19 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
 ** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
-**
+**  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-**
+** 
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-**
+** 
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software
+** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 **
 ** Any non-GPL usage of this software or parts of this software is strictly
@@ -22,8 +22,7 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
-** Initially modified for use with MPlayer by Diego Biurrun on 2004/09/24
-** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
+** $Id$
 **/
 
 #ifndef __PS_DEC_H__
@@ -84,6 +83,9 @@ typedef struct
     /* ps data was correctly read */
     uint8_t ps_data_available;
 
+    /* a header has been read */
+    uint8_t header_read;
+
     /* hybrid filterbank parameters */
     void *hyb;
     uint8_t use34hybrid_bands;
@@ -130,7 +132,7 @@ typedef struct
 } ps_info;
 
 /* ps_syntax.c */
-uint16_t ps_data(ps_info *ps, bitfile *ld);
+uint16_t ps_data(ps_info *ps, bitfile *ld, uint8_t *header);
 
 /* ps_dec.c */
 ps_info *ps_init(uint8_t sr_index);

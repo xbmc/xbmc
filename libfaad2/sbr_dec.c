@@ -22,9 +22,10 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
-** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
+** Initially modified for use with MPlayer on 2005/12/05
 ** $Id$
-** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
+** detailed changelog at http://svn.mplayerhq.hu/mplayer/trunk/
+** local_changes.diff contains the exact changes to this file.
 **/
 
 
@@ -81,7 +82,6 @@ sbr_info *sbrDecodeInit(uint16_t framelength, uint8_t id_aac,
 #ifdef DRM
     sbr->Is_DRM_SBR = IsDRM;
 #endif
-    sbr->bs_samplerate_mode = 1;
     sbr->tHFGen = T_HFGEN;
     sbr->tHFAdj = T_HFADJ;
 
@@ -529,8 +529,8 @@ uint8_t sbrDecodeSingleFramePS(sbr_info *sbr, real_t *left_channel, real_t *righ
     uint8_t l, k;
     uint8_t dont_process = 0;
     uint8_t ret = 0;
-    ALIGN qmf_t X_left[38][64] = {{0}};
-    ALIGN qmf_t X_right[38][64] = {{0}}; /* must set this to 0 */
+    ALIGN qmf_t X_left[38][64] = {{{0}}};
+    ALIGN qmf_t X_right[38][64] = {{{0}}}; /* must set this to 0 */
 
     if (sbr == NULL)
         return 20;
@@ -577,7 +577,7 @@ uint8_t sbrDecodeSingleFramePS(sbr_info *sbr, real_t *left_channel, real_t *righ
 #ifdef DRM_PS
     if (sbr->Is_DRM_SBR)
     {
-        drm_ps_decode(sbr->drm_ps, sbr->sample_rate, X_left, X_right);
+        drm_ps_decode(sbr->drm_ps, (sbr->ret > 0), sbr->sample_rate, X_left, X_right);
     } else {
 #endif
 #ifdef PS_DEC

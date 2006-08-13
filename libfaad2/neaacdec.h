@@ -22,8 +22,7 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
-** Initially modified for use with MPlayer by Diego Biurrun on 2004/09/24
-** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
+** $Id$
 **/
 
 #ifndef __NEAACDEC_H__
@@ -190,6 +189,9 @@ typedef struct NeAACDecFrameInfo
     unsigned char num_back_channels;
     unsigned char num_lfe_channels;
     unsigned char channel_position[64];
+
+    /* PS: 0: off, 1: on */
+    unsigned char ps;
 } NeAACDecFrameInfo;
 
 char* NEAACDECAPI NeAACDecGetErrorMessage(unsigned char errcode);
@@ -227,6 +229,13 @@ void* NEAACDECAPI NeAACDecDecode(NeAACDecHandle hDecoder,
                                  NeAACDecFrameInfo *hInfo,
                                  unsigned char *buffer,
                                  unsigned long buffer_size);
+
+void* NEAACDECAPI NeAACDecDecode2(NeAACDecHandle hDecoder,
+                                  NeAACDecFrameInfo *hInfo,
+                                  unsigned char *buffer,
+                                  unsigned long buffer_size,
+                                  void **sample_buffer,
+                                  unsigned long sample_buffer_size);
 
 char NEAACDECAPI NeAACDecAudioSpecificConfig(unsigned char *pBuffer,
                                              unsigned long buffer_size,

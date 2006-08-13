@@ -47,11 +47,31 @@ static int preinit(sh_audio_t *sh)
   return 1;
 }
 
+static int aac_probe(unsigned char *buffer, int len)
+{
+  int i = 0, pos = 0;
+  mp_msg(MSGT_DECAUDIO,MSGL_V, "\nAAC_PROBE: %d bytes\n", len);
+  while(i <= len-4) {
+    if(
+       ((buffer[i] == 0xff) && ((buffer[i+1] & 0xf6) == 0xf0)) ||
+       (buffer[i] == 'A' && buffer[i+1] == 'D' && buffer[i+2] == 'I' && buffer[i+3] == 'F')
+    ) {
+      pos = i;
+      break;
+    }
+    mp_msg(MSGT_DECAUDIO,MSGL_V, "AUDIO PAYLOAD: %x %x %x %x\n", buffer[i], buffer[i+1], buffer[i+2], buffer[i+3]);
+    i++;
+  }
+  mp_msg(MSGT_DECAUDIO,MSGL_V, "\nAAC_PROBE: ret %d\n", pos);
+  return pos;
+}
+	
+extern int audio_output_channels;
 static int init(sh_audio_t *sh)
 {
   unsigned long faac_samplerate;
   unsigned char faac_channels;
-  int faac_init;
+  int faac_init, pos = 0;
   faac_hdec = faacDecOpen();
 
   // If we don't get the ES descriptor, try manual config
@@ -71,6 +91,7 @@ static int init(sh_audio_t *sh)
     /* XXX: FAAD support FLOAT output, how do we handle
       * that (FAAD_FMT_FLOAT)? ::atmos
       */
+    if (audio_output_channels <= 2) faac_conf->downMatrix = 1;
       switch(sh->samplesize){
 	case 1: // 8Bit
 	  mp_msg(MSGT_DECAUDIO,MSGL_WARN,"FAAD: 8Bit samplesize not supported by FAAD, assuming 16Bit!\n");
@@ -92,20 +113,30 @@ static int init(sh_audio_t *sh)
 #endif
 
     sh->a_in_buffer_len = demux_read_data(sh->ds, sh->a_in_buffer, sh->a_in_buffer_size);
+    pos = aac_probe(sh->a_in_buffer, sh->a_in_buffer_len);
+    if(pos) {
+      sh->a_in_buffer_len -= pos;
+      memmove(sh->a_in_buffer, &(sh->a_in_buffer[pos]), sh->a_in_buffer_len);
+      sh->a_in_buffer_len +=
+	demux_read_data(sh->ds,&(sh->a_in_buffer[sh->a_in_buffer_len]),
+	sh->a_in_buffer_size - sh->a_in_buffer_len);
+      pos = 0;
+    }
 
     /* init the codec */
-#if (FAADVERSION <= 11)
-    faac_init = faacDecInit(faac_hdec, sh->a_in_buffer,
-       &faac_samplerate, &faac_channels);
-#else
     faac_init = faacDecInit(faac_hdec, sh->a_in_buffer,
        sh->a_in_buffer_len, &faac_samplerate, &faac_channels);
-#endif
 
     sh->a_in_buffer_len -= (faac_init > 0)?faac_init:0; // how many bytes init consumed
     // XXX FIXME: shouldn't we memcpy() here in a_in_buffer ?? --A'rpi
 
   } else { // We have ES DS in codecdata
+    faacDecConfigurationPtr faac_conf = faacDecGetCurrentConfiguration(faac_hdec);
+    if (audio_output_channels <= 2) {
+        faac_conf->downMatrix = 1;
+        faacDecSetConfiguration(faac_hdec, faac_conf);
+    }
+    
     /*int i;
     for(i = 0; i < sh_audio->codecdata_len; i++)
       printf("codecdata_dump %d: 0x%02X\n", i, sh_audio->codecdata[i]);*/
@@ -120,8 +151,9 @@ static int init(sh_audio_t *sh)
     return 0;
   } else {
     mp_msg(MSGT_DECAUDIO,MSGL_V,"FAAD: Decoder init done (%dBytes)!\n", sh->a_in_buffer_len); // XXX: remove or move to debug!
-    mp_msg(MSGT_DECAUDIO,MSGL_V,"FAAD: Negotiated samplerate: %dHz  channels: %d\n", faac_samplerate, faac_channels);
+    mp_msg(MSGT_DECAUDIO,MSGL_V,"FAAD: Negotiated samplerate: %ldHz  channels: %d\n", faac_samplerate, faac_channels);
     sh->channels = faac_channels;
+    if (audio_output_channels <= 2) sh->channels = faac_channels > 1 ? 2 : 1;
     sh->samplerate = faac_samplerate;
     sh->samplesize=2;
     //sh->o_bps = sh->samplesize*faac_channels*faac_samplerate;
@@ -140,13 +172,33 @@ static void uninit(sh_audio_t *sh)
   faacDecClose(faac_hdec);
 }
 
+static int aac_sync(sh_audio_t *sh)
+{
+  int pos = 0;
+  if(!sh->codecdata_len) {
+    if(sh->a_in_buffer_len < sh->a_in_buffer_size){
+      sh->a_in_buffer_len +=
+	demux_read_data(sh->ds,&sh->a_in_buffer[sh->a_in_buffer_len],
+	sh->a_in_buffer_size - sh->a_in_buffer_len);
+    }
+    pos = aac_probe(sh->a_in_buffer, sh->a_in_buffer_len);
+    if(pos) {
+      sh->a_in_buffer_len -= pos;
+      memmove(sh->a_in_buffer, &(sh->a_in_buffer[pos]), sh->a_in_buffer_len);
+      mp_msg(MSGT_DECAUDIO,MSGL_V, "\nAAC SYNC AFTER %d bytes\n", pos);
+    }
+  }
+  return pos;
+}
+
 static int control(sh_audio_t *sh,int cmd,void* arg, ...)
 {
     switch(cmd)
     {
-#if 0      
       case ADCTRL_RESYNC_STREAM:
-	  return CONTROL_TRUE;
+         aac_sync(sh);
+	 return CONTROL_TRUE;
+#if 0      
       case ADCTRL_SKIP_FRAME:
 	  return CONTROL_TRUE;
 #endif
@@ -154,12 +206,13 @@ static int control(sh_audio_t *sh,int cmd,void* arg, ...)
   return CONTROL_UNKNOWN;
 }
 
+#define MAX_FAAD_ERRORS 10
 static int decode_audio(sh_audio_t *sh,unsigned char *buf,int minlen,int maxlen)
 {
-  int j = 0, len = 0;	      
+  int j = 0, len = 0, last_dec_len = 1, errors = 0;	      
   void *faac_sample_buffer;
 
-  while(len < minlen) {
+  while(len < minlen && last_dec_len > 0 && errors < MAX_FAAD_ERRORS) {
 
     /* update buffer for raw aac streams: */
   if(!sh->codecdata_len)
@@ -179,39 +232,34 @@ static int decode_audio(sh_audio_t *sh,unsigned char *buf,int minlen,int maxlen)
   if(!sh->codecdata_len){
    // raw aac stream:
    do {
-#if (FAADVERSION <= 11)
-    faac_sample_buffer = faacDecDecode(faac_hdec, &faac_finfo, sh->a_in_buffer+j);
-#else
-    faac_sample_buffer = faacDecDecode(faac_hdec, &faac_finfo, sh->a_in_buffer+j, sh->a_in_buffer_len);
-#endif
+    faac_sample_buffer = faacDecDecode(faac_hdec, &faac_finfo, sh->a_in_buffer, sh->a_in_buffer_len);
 	
     /* update buffer index after faacDecDecode */
     if(faac_finfo.bytesconsumed >= sh->a_in_buffer_len) {
       sh->a_in_buffer_len=0;
     } else {
       sh->a_in_buffer_len-=faac_finfo.bytesconsumed;
-      memcpy(sh->a_in_buffer,&sh->a_in_buffer[faac_finfo.bytesconsumed],sh->a_in_buffer_len);
+      memmove(sh->a_in_buffer,&sh->a_in_buffer[faac_finfo.bytesconsumed],sh->a_in_buffer_len);
     }
 
     if(faac_finfo.error > 0) {
       mp_msg(MSGT_DECAUDIO,MSGL_WARN,"FAAD: error: %s, trying to resync!\n",
               faacDecGetErrorMessage(faac_finfo.error));
-      j++;
+      sh->a_in_buffer_len--;
+      memmove(sh->a_in_buffer,&sh->a_in_buffer[1],sh->a_in_buffer_len);
+      aac_sync(sh);
+      errors++;
     } else
       break;
-   } while(j < FAAD_BUFFLEN);	  
+   } while(errors < MAX_FAAD_ERRORS);	  
   } else {
    // packetized (.mp4) aac stream:
     unsigned char* bufptr=NULL;
     int buflen=ds_get_packet(sh->ds, &bufptr);
     if(buflen<=0) break;
-#if (FAADVERSION <= 11)
-    faac_sample_buffer = faacDecDecode(faac_hdec, &faac_finfo, bufptr);
-#else
     faac_sample_buffer = faacDecDecode(faac_hdec, &faac_finfo, bufptr, buflen);
-#endif
-//    printf("FAAC decoded %d of %d  (err: %d)  \n",faac_finfo.bytesconsumed,buflen,faac_finfo.error);
   }
+  //for (j=0;j<faac_finfo.channels;j++) printf("%d:%d\n", j, faac_finfo.channel_position[j]);
   
     if(faac_finfo.error > 0) {
       mp_msg(MSGT_DECAUDIO,MSGL_WARN,"FAAD: Failed to decode frame: %s \n",
@@ -220,7 +268,7 @@ static int decode_audio(sh_audio_t *sh,unsigned char *buf,int minlen,int maxlen)
       mp_msg(MSGT_DECAUDIO,MSGL_DBG2,"FAAD: Decoded zero samples!\n");
     } else {
       /* XXX: samples already multiplied by channels! */
-      mp_msg(MSGT_DECAUDIO,MSGL_DBG2,"FAAD: Successfully decoded frame (%d Bytes)!\n",
+      mp_msg(MSGT_DECAUDIO,MSGL_DBG2,"FAAD: Successfully decoded frame (%ld Bytes)!\n",
       sh->samplesize*faac_finfo.samples);
       memcpy(buf+len,faac_sample_buffer, sh->samplesize*faac_finfo.samples);
       len += sh->samplesize*faac_finfo.samples;
