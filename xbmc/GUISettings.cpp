@@ -164,7 +164,7 @@ CGUISettings::CGUISettings(void)
   AddBool(1, "pictures.useautoswitching", 14011, false);
   AddBool(2, "pictures.autoswitchuselargethumbs", 14012, false);
   AddSeparator(3,"pictures.sep1");
-  AddString(4,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
+  AddString(4,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20004);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -234,7 +234,7 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "musicfiles.useautoswitching", 14011, false);
   AddBool(9, "musicfiles.autoswitchuselargethumbs", 14012, false);
   AddSeparator(10,"musicfiles.sep3");
-  AddString(11,"musicfiles.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
+  AddString(11,"musicfiles.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20005);
 
   AddCategory(3, "musicplaylist", 136);
   AddBool(1, "musicplaylist.clearplaylistsonend",239,false);
@@ -245,7 +245,7 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
   //  TODO: localize 2.0
-  AddString(5, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false);
+  AddString(5, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 20000);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -335,7 +335,7 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "masterlock.loginlock",20116,true);
 
   // hidden masterlock settings
-  AddInt(0,"masterlock.maxretries"       , 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT); 
+  AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT); 
   
   // video settings
   AddGroup(5, 3);
