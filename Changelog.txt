@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-08-2006 changed: renamed some variables. system.screenshotpath -> pictures.screenshotpath, mymusic.recordingpath -> musicfiles.recordingpath.
  - 13-08-2006 updated: mplayer.dll with support for aac and aac+ streams.
  - 13-08-2006 fixed: listcontrol and listcontrolex would wraparound instead of going to ondown if it where at the max page size of the list
  - 13-08-2006 fixed: forgot to comment out some code in controllist.cpp.
