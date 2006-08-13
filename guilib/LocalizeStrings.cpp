@@ -303,6 +303,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20131] = "Blend";            //NEW
 
   m_vecStrings[20132] = "Restart Video";
+  m_vecStrings[20133] = "Edit Network Location";
+  m_vecStrings[20134] = "Remove Network Location";
+  m_vecStrings[20135] = "Do you want to scan the folder?";
 
   return true;
 }
