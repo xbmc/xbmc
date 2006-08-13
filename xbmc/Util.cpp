@@ -2509,7 +2509,7 @@ void CUtil::TakeScreenshot()
 
   bool promptUser = false;
   // check to see if we have a screenshot folder yet
-  CStdString strDir = g_guiSettings.GetString("system.screenshotpath", false);
+  CStdString strDir = g_guiSettings.GetString("pictures.screenshotpath", false);
   if (strDir.IsEmpty())
   {
     strDir = "Z:\\";
@@ -2534,7 +2534,7 @@ void CUtil::TakeScreenshot()
         screenShots.push_back(fn);
       if (promptUser)
       { // grab the real directory
-        CStdString newDir = g_guiSettings.GetString("system.screenshotpath");
+        CStdString newDir = g_guiSettings.GetString("pictures.screenshotpath");
         if (!newDir.IsEmpty())
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)
@@ -3647,9 +3647,9 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
     else if (strSpecial.Left(11).Equals("$THUMBNAILS"))
       CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), strSpecial.Mid(11), strReturn);
     else if (strSpecial.Left(11).Equals("$RECORDINGS"))
-      CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), strSpecial.Mid(11), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("musicfiles.recordingpath",false), strSpecial.Mid(11), strReturn);
     else if (strSpecial.Left(12).Equals("$SCREENSHOTS"))
-      CUtil::AddFileToFolder(g_guiSettings.GetString("system.screenshotpath",false), strSpecial.Mid(12), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), strSpecial.Mid(12), strReturn);
     else if (strSpecial.Left(10).Equals("$PLAYLISTS"))
       CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath",false), strSpecial.Mid(10), strReturn);
     else if (strSpecial.Left(15).Equals("$MUSICPLAYLISTS"))
