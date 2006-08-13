@@ -60,8 +60,8 @@
    <texturenofocus>input-nofocus.png</texturenofocus>
    <onleft>413</onleft>
    <onright>413</onright>
-   <onup>413</onup>
-   <ondown>413</ondown>
+   <onup>450</onup>
+   <ondown>450</ondown>
   </control>
 
   <control>
@@ -74,8 +74,8 @@
    <height>323</height>
    <onleft>413</onleft>
    <onright>413</onright>
-   <onup>413</onup>
-   <ondown>413</ondown>
+   <onup>451</onup>
+   <ondown>451</ondown>
   </control>
 
   <controlgroup>
