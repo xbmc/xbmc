@@ -1,3 +1,4 @@
+2006-08-13 fixed: onup/ondown on listcontrol were not set correctly to wraparound in FileBrowser.xml
 2006-07-21 fixed: MPPA Rating was not displayed in 16x9 and label was incorrect
 2006-07-19 added:	profiles / login screen support
 2006-07-10 changed: 	onright in mediasource dialog's name fields now move to cancel, otherwise no way to select cancel if ok is disabled
