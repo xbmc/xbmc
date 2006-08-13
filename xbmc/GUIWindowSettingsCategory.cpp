@@ -1392,7 +1392,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
     UpdateSettings();
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
+    bool bWriteOnly = true;
+    if (strSetting.Equals("myprograms.trainerpath"))
+      bWriteOnly = false;
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path,bWriteOnly))
     {
       pSettingString->SetData(path);
       if (strSetting.Equals("myprograms.trainerpath"))
