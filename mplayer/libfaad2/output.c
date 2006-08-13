@@ -1,30 +1,27 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
 ** Copyright (C) 2003 M. Bakker, Ahead Software AG, http://www.nero.com
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 **
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
-**
-** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
+** Initially modified for use with MPlayer by Rich Felker on 2005/03/29
 ** $Id$
-** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
+** detailed changelog at http://svn.mplayerhq.hu/mplayer/trunk/
 **/
 
 #include "common.h"
@@ -465,7 +462,7 @@ static INLINE real_t get_sample(real_t **input, uint8_t channel, uint16_t sample
     }
 }
 
-void* output_to_PCM(NeAACDecHandle hDecoder,
+void* output_to_PCM_sux(NeAACDecHandle hDecoder,
                     real_t **input, void *sample_buffer, uint8_t channels,
                     uint16_t frame_len, uint8_t format)
 {
@@ -550,6 +547,53 @@ void* output_to_PCM(NeAACDecHandle hDecoder,
                 int_sample_buffer[(i*channels)+ch] = (int32_t)tmp;
             }
             break;
+        }
+    }
+
+    return sample_buffer;
+}
+
+void* output_to_PCM(NeAACDecHandle hDecoder,
+                    real_t **input, void *sample_buffer, uint8_t channels,
+                    uint16_t frame_len, uint8_t format)
+{
+    int ch;
+    int i;
+    int16_t *short_sample_buffer = (int16_t*)sample_buffer;
+    real_t *ch0 = input[hDecoder->internal_channel[0]];
+    real_t *ch1 = input[hDecoder->internal_channel[1]];
+    real_t *ch2 = input[hDecoder->internal_channel[2]];
+    real_t *ch3 = input[hDecoder->internal_channel[3]];
+    real_t *ch4 = input[hDecoder->internal_channel[4]];
+
+    if (format != FAAD_FMT_16BIT)
+        return output_to_PCM_sux(hDecoder, input, sample_buffer, channels, frame_len, format);
+
+    if (hDecoder->downMatrix) {
+        for(i = 0; i < frame_len; i++)
+        {
+	    int32_t tmp;
+	    tmp = (ch1[i] + ((ch0[i]+ch3[i])>>1) + ((ch0[i]+ch3[i])>>2) + (1<<(REAL_BITS))) >> (REAL_BITS+1);
+	    if ((tmp+0x8000) & ~0xffff) tmp = ~(tmp>>31)-0x8000;
+            short_sample_buffer[0] = tmp;
+	    tmp = (ch2[i] + ((ch0[i]+ch4[i])>>1) + ((ch0[i]+ch4[i])>>2) + (1<<(REAL_BITS))) >> (REAL_BITS+1);
+	    if ((tmp+0x8000) & ~0xffff) tmp = ~(tmp>>31)-0x8000;
+            short_sample_buffer[1] = tmp;
+	    short_sample_buffer += channels;
+        }
+        return sample_buffer;
+    }
+
+    /* Copy output to a standard PCM buffer */
+    for(i = 0; i < frame_len; i++)
+    {
+        for (ch = 0; ch < channels; ch++)
+        {
+            int32_t tmp = input[hDecoder->internal_channel[ch]][i];
+            tmp += (1 << (REAL_BITS-1));
+            tmp >>= REAL_BITS;
+	    if ((tmp+0x8000) & ~0xffff) tmp = ~(tmp>>31)-0x8000;
+            *(short_sample_buffer++) = tmp;
         }
     }
 

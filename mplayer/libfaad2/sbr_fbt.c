@@ -22,9 +22,7 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
-** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
 ** $Id$
-** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
 **/
 
 /* Calculate frequency band tables */
@@ -199,7 +197,7 @@ uint8_t master_frequency_table_fs0(sbr_info *sbr, uint8_t k0, uint8_t k2,
     if (k2 <= k0)
     {
         sbr->N_master = 0;
-        return 0;
+        return 1;
     }
 
     dk = bs_alter_scale ? 2 : 1;
@@ -365,7 +363,7 @@ uint8_t master_frequency_table(sbr_info *sbr, uint8_t k0, uint8_t k2,
     if (k2 <= k0)
     {
         sbr->N_master = 0;
-        return 0;
+        return 1;
     }
 
     bands = temp1[bs_freq_scale-1];

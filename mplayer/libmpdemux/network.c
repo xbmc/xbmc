@@ -66,6 +66,9 @@ static struct {
 } mime_type_table[] = {
 	// MP3 streaming, some MP3 streaming server answer with audio/mpeg
 	{ "audio/mpeg", DEMUXER_TYPE_AUDIO },
+  // AAC streaming
+  { "audio/aac", DEMUXER_TYPE_AAC },
+  { "audio/aacp", DEMUXER_TYPE_AAC },
 	// MPEG streaming
 	{ "video/mpeg", DEMUXER_TYPE_UNKNOWN },
 	{ "video/x-mpeg", DEMUXER_TYPE_UNKNOWN },
@@ -777,13 +780,17 @@ extension=NULL;
 						if( (field_data = http_get_field(http_hdr, "icy-br")) != NULL )
 							mp_msg(MSGT_NETWORK,MSGL_INFO,"Bitrate: %skbit/s\n", field_data); field_data = NULL;
 						
-						// If content-type == video/nsv we most likely have a winamp video stream 
-						// otherwise it should be mp3. if there are more types consider adding mime type 
-						// handling like later
-				                if ( (field_data = http_get_field(http_hdr, "content-type")) != NULL && (!strcmp(field_data, "video/nsv") || !strcmp(field_data, "misc/ultravox")))
-							*file_format = DEMUXER_TYPE_NSV;
-						else
-							*file_format = DEMUXER_TYPE_AUDIO;
+
+            *file_format = DEMUXER_TYPE_AUDIO;
+            if( (field_data = http_get_field(http_hdr, "content-type")) != NULL )
+            { /* try to lookup demuxer type by contenttype */
+						  for( i=0 ; i<(sizeof(mime_type_table)/sizeof(mime_type_table[0])) ; i++ ) {
+							  if( !strcasecmp( field_data, mime_type_table[i].mime_type ) ) {
+								  *file_format = mime_type_table[i].demuxer_type;
+								  break;
+							  }
+						  }
+            }                
 						return 0;
 					}
 					case 400: // Server Full
@@ -1333,6 +1340,7 @@ try_livedotcom:
 		case DEMUXER_TYPE_PLAYLIST:
 		case DEMUXER_TYPE_UNKNOWN:
 		case DEMUXER_TYPE_NSV: 
+    case DEMUXER_TYPE_AAC:
 			// Generic start, doesn't need to filter
 			// the network stream, it's a raw stream
 			ret = nop_streaming_start( stream );

@@ -22,9 +22,7 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
-** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
 ** $Id$
-** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
 **/
 
 #ifndef __CFFT_H__
@@ -47,10 +45,6 @@ void cfftf(cfft_info *cfft, complex_t *c);
 void cfftb(cfft_info *cfft, complex_t *c);
 cfft_info *cffti(uint16_t n);
 void cfftu(cfft_info *cfft);
-
-#ifdef USE_SSE
-void cfftb_sse(cfft_info *cfft, complex_t *c);
-#endif
 
 
 #ifdef __cplusplus
