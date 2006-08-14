@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-08-2006 fixed: do not allow movie information lookup on a bookmark.
  - 14-08-2006 added: allow user to skip still manually by pressing right or select
  - 14-08-2006 fixed: dvdplayer would not take delay in video queue in in account when skipping stills ( short still might not even display )
  - 13-08-2006 changed: renamed some variables. system.screenshotpath -> pictures.screenshotpath, mymusic.recordingpath -> musicfiles.recordingpath.
