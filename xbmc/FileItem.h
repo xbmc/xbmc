@@ -102,6 +102,7 @@ public:
   bool CanQueue() const;
   void SetCanQueue(bool bYesNo);
   bool IsParentFolder() const;
+  bool IsFileFolder() const;
 
   void RemoveExtension();
   void CleanFileName();
