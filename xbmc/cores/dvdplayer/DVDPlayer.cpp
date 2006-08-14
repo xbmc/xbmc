@@ -1517,7 +1517,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         {
           if (m_dvd.iDVDStillTime < 0xff)
           {
-            if (((GetTickCount() - m_dvd.iDVDStillStartTime) / 1000) >= ((DWORD)m_dvd.iDVDStillTime))
+            if (GetTickCount() >= (m_dvd.iDVDStillStartTime + m_dvd.iDVDStillTime * 1000 ))
             {
               m_dvd.iDVDStillTime = 0;
               m_dvd.iDVDStillStartTime = 0;
@@ -1525,20 +1525,28 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
               return NAVRESULT_NOP;
             }
-            else Sleep(200);
           }
-          else Sleep(10);
+
+          Sleep(100);
           return NAVRESULT_HOLD;
         }
         else
         {
           // else notify the player we have recieved a still frame
-          CLog::Log(LOGDEBUG, "recieved still frame, waiting %i sec", still_event->length);
 
           m_dvd.iDVDStillTime = still_event->length;
           m_dvd.iDVDStillStartTime = GetTickCount();
-          m_dvd.bDisplayedStill = false;
+
+          /* adjust for the output delay in the video queue */
+          DWORD time = 0;
+          if( m_CurrentVideo.stream )
+          {
+            time = (DWORD)(m_dvdPlayerVideo.GetOutputDelay() / ( DVD_TIME_BASE / 1000 ));
+            if( time < 10000 && time > 0 ) 
+              m_dvd.iDVDStillStartTime += time;
+          }
           m_dvd.state = DVDSTATE_STILL;
+          CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME - waiting %i sec, with delay of %d sec", still_event->length, time / 1000);
         }
       }
       break;
@@ -1714,6 +1722,27 @@ bool CDVDPlayer::OnAction(const CAction &action)
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
 
+
+    if( m_dvd.state == DVDSTATE_STILL && pStream->GetTotalButtons() == 0 )
+    {
+      switch(action.wID)
+      {
+        case ACTION_NEXT_ITEM:
+        case ACTION_MOVE_RIGHT:
+        case ACTION_MOVE_UP:
+        case ACTION_SELECT_ITEM:
+          {
+            /* this will force us out of the stillframe */
+            CLog::Log(LOGDEBUG, __FUNCTION__ " - User asked to exit stillframe");
+            m_dvd.iDVDStillStartTime = 0;
+            m_dvd.iDVDStillTime = 0;
+            return true;
+          }
+          break;
+      }        
+    }
+
+
     switch (action.wID)
     {
     case ACTION_PREV_ITEM:  // SKIP-:
@@ -1822,7 +1851,10 @@ bool CDVDPlayer::IsInMenu() const
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-    return pStream->IsInMenu();
+    if( m_dvd.state == DVDSTATE_STILL )
+      return true;
+    else
+      return pStream->IsInMenu();
   }
   return false;
 }

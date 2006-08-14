@@ -29,13 +29,12 @@ class CStreamInfo;
 typedef struct DVDInfo
 {
   int iCurrentCell;
-  int state; // current dvdstate
-  int iDVDStillTime; // total time in seconds we should display the still before continuing
-  __int64 iDVDStillStartTime; // time in ticks when we started the still
-  bool bDisplayedStill;
-  int iSelectedSPUStream; // mpeg stream id, or -1 if disabled
+  int state;                // current dvdstate
+  DWORD iDVDStillTime;      // total time in ticks we should display the still before continuing
+  DWORD iDVDStillStartTime; // time in ticks when we started the still
+  int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
   int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
-  // DVDVideoPicture* pStillPicture;
+
   unsigned __int64 iNAVPackStart;
   unsigned __int64 iNAVPackFinish;
   int iFlagSentStart;
@@ -47,7 +46,7 @@ typedef struct SCurrentStream
 {
   int              id;     // demuxerid of current playing stream
   unsigned __int64 dts;    // last dts from demuxer, used to find disncontinuities
-  CDVDStreamInfo      hint;   // stream hints, used to notice stream changes
+  CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
 } SCurrentStream;
 
