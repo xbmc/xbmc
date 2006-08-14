@@ -16,6 +16,7 @@ public:
   bool GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths);
   void MergeItems(CFileItemList &items);
   CStdString ConstructMultiPath(const CFileItemList& items, const vector<int> &stack);
+  void AddToMultiPath(CStdString& strMultiPath, const CStdString& strPath);
   CStdString ConstructMultiPath(const vector<CStdString> &vecPaths);
 };
 }
