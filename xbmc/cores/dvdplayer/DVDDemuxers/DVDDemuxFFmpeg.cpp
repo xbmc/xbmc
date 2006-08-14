@@ -69,7 +69,7 @@ int dvd_input_stream_write_packet(void* opaque, BYTE* buf, int buf_size)
 
 __int64 dvd_input_stream_seek(void *opaque, __int64 offset, int whence)
 {
-  return (int)(dvd_file_seek((URLContext*)opaque, offset, whence) & 0xFFFFFFFF);
+  return dvd_file_seek((URLContext*)opaque, offset, whence);
 }
 
 URLProtocol dvd_file_protocol = {
