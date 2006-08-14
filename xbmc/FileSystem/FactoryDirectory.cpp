@@ -42,7 +42,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
   if (strProtocol == "iso9660") return new CISO9660Directory();
   if (strProtocol == "cdda") return new CCDDADirectory();
-  if (strProtocol == "rtv") return new CRTVDirectory();
   if (strProtocol == "soundtrack") return new CSndtrkDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") return new CRarDirectory();
@@ -62,6 +61,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "lastfm") return new CLastFMDirectory();
     if (strProtocol == "xbms") return new CXBMSDirectory();
     if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFTPDirectory();
+    if (strProtocol == "rtv") return new CRTVDirectory();
   }
 
  return NULL;
