@@ -51,6 +51,8 @@ public:
   
   __int64 GetCurrentPts()                           { return m_iCurrentPts; }
 
+  __int64 GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
+
   void SetSpeed(int iSpeed);
 
   // classes

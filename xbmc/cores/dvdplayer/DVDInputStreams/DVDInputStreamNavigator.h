@@ -61,7 +61,7 @@ public:
   void OnPrevious();
 
   int GetCurrentButton();
-  
+  int GetTotalButtons();
   bool GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
 
   bool IsInMenu();
@@ -99,8 +99,7 @@ protected:
   void Unlock() { LeaveCriticalSection(&m_critSection); }
 
   int ProcessBlock(BYTE* buffer, int* read);
-
-  int GetTotalButtons();
+  
   void CheckButtons();
   
   /**
