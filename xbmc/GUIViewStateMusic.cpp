@@ -614,8 +614,15 @@ CGUIViewStateMusicShoutcast::CGUIViewStateMusicShoutcast(const CFileItemList& it
     AddSortMethod(SORT_METHOD_VIDEO_RATING, 507, LABEL_MASKS("%K", "%A listeners", "%K", ""));  // Titel, Listeners | Titel, nothing
     AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%K", "%B kbps", "%K", ""));  // Title, Bitrate | Title, nothing
 
-    SetSortMethod(g_stSettings.m_MyMusicShoutcastSortMethod);
-    SetSortOrder(g_stSettings.m_MyMusicShoutcastSortOrder);
+    if( g_stSettings.m_MyMusicShoutcastSortMethod == SORT_METHOD_NONE )
+      SetSortMethod(SORT_METHOD_LABEL);
+    else
+      SetSortMethod(g_stSettings.m_MyMusicShoutcastSortMethod);
+
+    if( g_stSettings.m_MyMusicShoutcastSortOrder == SORT_ORDER_NONE )
+      SetSortOrder(SORT_ORDER_ASC);
+    else
+      SetSortOrder(g_stSettings.m_MyMusicShoutcastSortOrder);
   }
   else
   { /* genre list */

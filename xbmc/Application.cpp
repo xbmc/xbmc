@@ -1116,7 +1116,7 @@ HRESULT CApplication::Initialize()
   /* window id's 3000 - 3100 are reserved for python */
   g_DownloadManager.Initialize();
 
-  m_ctrDpad.SetDelays(220, 220); //g_stSettings.m_iMoveDelayController, g_stSettings.m_iRepeatDelayController);
+  m_ctrDpad.SetDelays(100, 500); //g_stSettings.m_iMoveDelayController, g_stSettings.m_iRepeatDelayController);
 
   SAFE_DELETE(m_splash);
 
