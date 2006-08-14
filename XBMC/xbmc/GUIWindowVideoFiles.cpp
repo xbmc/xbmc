@@ -409,22 +409,9 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
     }
   }
 
-  char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", ".ifo", NULL};
-  // check if movie has subtitles
-  int ipos = 0;
-  while (sub_exts[ipos])
-  {
-    CStdString strSubTitleFile = pItem->m_strPath;
-    CUtil::ReplaceExtension(pItem->m_strPath, sub_exts[ipos], strSubTitleFile);
-    CFile file;
-    if (file.Open(strSubTitleFile, false) )
-    {
-      bHassubtitles = true;
-      break;
-    }
-    ipos++;
-  }
-  m_database.AddMovie(pItem->m_strPath, strCDLabel, bHassubtitles);
+  /* subtitles are assumed not to exist here, if we need it  */
+  /* player should update this when it figures out if it has */
+  m_database.AddMovie(pItem->m_strPath, strCDLabel, false);
 }
 
 void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
