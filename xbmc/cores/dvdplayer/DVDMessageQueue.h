@@ -44,6 +44,7 @@ public:
 
   
   int GetDataSize()                     { return m_iDataSize; }
+  unsigned GetPacketCount(CDVDMsg::Message type);
   bool RecievedAbortRequest()           { return m_bAbortRequest; }
   void WaitUntilEmpty()                 { while (m_pFirstMessage) Sleep(1); }
   
