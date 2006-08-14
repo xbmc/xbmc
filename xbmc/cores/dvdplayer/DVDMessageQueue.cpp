@@ -193,3 +193,24 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
   
   return (MsgQueueReturnCode)ret;
 }
+
+
+unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
+{    
+  if (!m_bInitialized)
+    return 0;
+
+  EnterCriticalSection(&m_critSection);
+  
+  unsigned count = 0;
+  DVDMessageListItem* msgItem = m_pFirstMessage;
+  while(msgItem)
+  {
+    if( msgItem->pMsg->IsType(type) )
+      count++;
+    msgItem = msgItem->pNext;
+  }
+  
+  LeaveCriticalSection(&m_critSection);
+  return count;
+}
