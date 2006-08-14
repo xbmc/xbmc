@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-08-2006 changed: logging off now leaves master mode.
  - 14-08-2006 fixed: shoutcast sorting sometimes didn't allow user to change order and locked in reverse sorting
  - 14-08-2006 changed: better repeat code for gamepad navigation. speed increases in 3 steps
  - 14-08-2006 fixed: some issues with the login screen (weather not updating, conflict with autoexec.py, excessive wrong code messages).
