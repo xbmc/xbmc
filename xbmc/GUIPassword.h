@@ -15,8 +15,11 @@ public:
   bool IsItemUnlocked(CFileItem* pItem, const CStdString &strType);
   bool IsItemUnlocked(CShare* pItem, const CStdString &strType);
   bool CheckLock(int btnType, const CStdString& strPassword, int iHeading);
+  bool CheckLock(int btnType, const CStdString& strPassword, int iHeading, bool& bCanceled);
   bool IsProfileLockUnlocked(int iProfile=-1);
+  bool IsProfileLockUnlocked(int iProfile, bool& bCanceled);
   bool IsMasterLockUnlocked(bool bPromptUser);
+  bool IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled);
   
   void UpdateMasterLockRetryCount(bool bResetCount);
   bool GetSMBShareUserPassword();

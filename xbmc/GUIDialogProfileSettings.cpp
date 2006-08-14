@@ -168,11 +168,11 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
     VECSHARES shares;
     CShare share;
     share.strName = "Profiles";
-    share.strPath = g_settings.m_vecProfiles[0].getDirectory()+"\\profiles";
+    share.setPath(g_settings.m_vecProfiles[0].getDirectory()+"\\profiles");
     shares.push_back(share);
     CStdString strDirectory;
     if (m_strDirectory == "")
-      strDirectory = share.strPath;
+      strDirectory = share.getPath();
     else
       strDirectory.Format("%s\\%s",g_settings.m_vecProfiles[0].getDirectory().c_str(),m_strDirectory.c_str());
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(20070),strDirectory,true))
