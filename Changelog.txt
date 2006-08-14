@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-08-2006 fixed: xbe's with no title id said was added to the program db each time you listed the bookmark.
  - 14-08-2006 changed: potentially fixed seeking in files larger than 2gb with dvdplayer.
  - 14-08-2006 changed: logging off now leaves master mode.
  - 14-08-2006 fixed: shoutcast sorting sometimes didn't allow user to change order and locked in reverse sorting
