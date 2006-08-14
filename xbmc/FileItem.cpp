@@ -315,6 +315,22 @@ bool CFileItem::IsInternetStream() const
   return false;
 }
 
+bool CFileItem::IsFileFolder() const
+{
+  return (
+    m_bIsFolder && (
+    IsSmartPlayList() ||
+    IsPlayList() ||
+    IsZIP() ||
+    IsRAR() ||
+    IsType("ogg") ||
+    IsType("nsf") ||
+    IsType("sid")
+    )
+    );
+}
+
+
 bool CFileItem::IsSmartPlayList() const
 {
   CStdString strExtension;
