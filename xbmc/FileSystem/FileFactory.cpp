@@ -39,7 +39,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   strProtocol.MakeLower();
 
   if (strProtocol == "iso9660") return new CFileISO();
-  else if (strProtocol == "rtv") return new CFileRTV();
   else if (strProtocol == "soundtrack") return new CFileSndtrk();
   else if (strProtocol == "cdda") return new CFileCDDA();
   else if (strProtocol == "zip") return new CFileZip();
@@ -57,7 +56,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "http" || strProtocol == "https") return new CFileCurl();
     else if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFileCurl();
     else if (strProtocol == "upnp") return new CFileCurl();
-
+    else if (strProtocol == "rtv") return new CFileRTV();
   }
 
   return NULL;
