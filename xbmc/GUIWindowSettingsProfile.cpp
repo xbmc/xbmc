@@ -9,6 +9,7 @@
 #include "GUIDialogProfileSettings.h"
 #include "xbox/network.h"
 #include "utils/guiinfomanager.h"
+#include "utils/weather.h"
 
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
@@ -95,6 +96,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     OnMessage(msg3);
     CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());
     OnMessage(msgSelect);
+    g_weatherManager.Refresh();            
   }
 
   if (iButton == btnDelete)

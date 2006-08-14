@@ -215,63 +215,17 @@ bool CGUIPassword::SetMasterLockMode()
 
     return false;
   }
-  else // DEPRECATED BUT LEFT FOR COMPATIBILITY
-  {
-    // load a context menu with the options for the mastercode...
-    CGUIDialogContextMenu *menu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-    if (menu)
-    {
-      menu->Initialize();
-      menu->AddButton(1223);
-      menu->AddButton(12337);
-      menu->AddButton(12338);
-      menu->AddButton(12339);
-      menu->SetPosition((g_graphicsContext.GetWidth() - menu->GetWidth()) / 2, (g_graphicsContext.GetHeight() - menu->GetHeight()) / 2);
-      menu->DoModal();
 
-      CStdString newPassword;
-      int iLockMode = LOCK_MODE_EVERYONE;
-      switch(menu->GetButton())
-      {
-      case 1:
-        iLockMode = LOCK_MODE_EVERYONE; //Disabled! Need check routine!!!
-        break;
-      case 2:
-        iLockMode = LOCK_MODE_NUMERIC;
-        CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword);
-        break;
-      case 3:
-        iLockMode = LOCK_MODE_GAMEPAD;
-        CGUIDialogGamepad::ShowAndVerifyNewPassword(newPassword);
-        break;
-      case 4:
-        iLockMode = LOCK_MODE_QWERTY;
-        CGUIDialogKeyboard::ShowAndVerifyNewPassword(newPassword);
-        break;
-      }
-
-      if (iLockMode == LOCK_MODE_EVERYONE) // disable
-      {
-        g_settings.m_vecProfiles[0].setLockMode(LOCK_MODE_EVERYONE);
-        return true;
-      }
-
-      if (!newPassword.IsEmpty() && newPassword.c_str() != "-" )
-      {
-        g_settings.m_vecProfiles[0].setLockCode(newPassword);
-      }
-      else         
-        return false;
-
-      g_settings.m_vecProfiles[0].setLockMode(iLockMode);
-    }
-    else 
-      return false;
-  }
   return true;
 }
 
 bool CGUIPassword::IsProfileLockUnlocked(int iProfile)
+{
+  bool bDummy;
+  return IsProfileLockUnlocked(iProfile,bDummy);
+}
+
+bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled)
 {
   if (g_passwordManager.bMasterUser)
     return true;
@@ -279,7 +233,7 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile)
   if (iProfile == -1)
     iProfileToCheck = g_settings.m_iLastLoadedProfileIndex;
   if (iProfileToCheck == 0)
-    return IsMasterLockUnlocked(true);
+    return IsMasterLockUnlocked(true,bCanceled);
   else
   {
     if (g_settings.m_vecProfiles[iProfileToCheck].getDate().IsEmpty() && (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_settings.m_vecProfiles[iProfileToCheck].getLockMode() == LOCK_MODE_EVERYONE))
@@ -289,7 +243,7 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile)
     }
     else
        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-        return CheckLock(g_settings.m_vecProfiles[iProfileToCheck].getLockMode(),g_settings.m_vecProfiles[iProfileToCheck].getLockCode(),20095);
+        return CheckLock(g_settings.m_vecProfiles[iProfileToCheck].getLockMode(),g_settings.m_vecProfiles[iProfileToCheck].getLockCode(),20095,bCanceled);
   }
   
   return true;
@@ -297,6 +251,13 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile)
 
 bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
 {
+  bool bDummy;
+  return IsMasterLockUnlocked(bPromptUser,bDummy);
+}
+
+bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
+{
+  bCanceled = false;
   if (iMasterLockRetriesLeft == -1)
     iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
   if ((LOCK_MODE_EVERYONE < g_settings.m_vecProfiles[0].getLockMode() && !bMasterUser) && !bPromptUser)
@@ -331,11 +292,14 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
     iVerifyPasswordResult = 0;
     break;
   }
-  if (1 == iVerifyPasswordResult) 
+  if (1 == iVerifyPasswordResult)
     UpdateMasterLockRetryCount(false);
   
-  if (0 != iVerifyPasswordResult) 
+  if (0 != iVerifyPasswordResult)
+  {
+    bCanceled = true;
     return false;
+  }
 
   // user successfully entered mastercode
   UpdateMasterLockRetryCount(true);
@@ -398,6 +362,13 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
 
 bool CGUIPassword::CheckLock(int btnType, const CStdString& strPassword, int iHeading)
 {
+  bool bDummy;
+  return CheckLock(btnType,strPassword,iHeading,bDummy);
+}
+
+bool CGUIPassword::CheckLock(int btnType, const CStdString& strPassword, int iHeading, bool& bCanceled)
+{
+  bCanceled = false;
   if (btnType == 0 || strPassword.Equals("-") || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser)
     return true;
 
@@ -419,6 +390,9 @@ bool CGUIPassword::CheckLock(int btnType, const CStdString& strPassword, int iHe
     break;
   }
   
+  if (iVerifyPasswordResult == -1)
+    bCanceled = true;
+
   return (iVerifyPasswordResult==0);
 }
 

@@ -18,6 +18,7 @@
 CGUIWindowLoginScreen::CGUIWindowLoginScreen(void) 
 : CGUIWindow(WINDOW_LOGIN_SCREEN, "LoginScreen.xml")
 {
+  watch.StartZero();
 }
 
 CGUIWindowLoginScreen::~CGUIWindowLoginScreen(void)
@@ -60,13 +61,16 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           return false;
         else if (iAction == ACTION_SELECT_ITEM)
         {
+          int iItem = m_viewControl.GetSelectedItem();
           bool bOkay = !g_guiSettings.GetBool("masterlock.loginlock");
+          bool bCanceled;
           if (!bOkay)
-            bOkay = g_passwordManager.IsProfileLockUnlocked(m_viewControl.GetSelectedItem());
+            bOkay = g_passwordManager.IsProfileLockUnlocked(m_viewControl.GetSelectedItem(), bCanceled);
           
           if (bOkay)
           {
-            int iItem = m_viewControl.GetSelectedItem();
+            if (CFile::Exists("q:\\scripts\\autoexec.py") && watch.GetElapsedMilliseconds() < 5000.f)
+              while (watch.GetElapsedMilliseconds() < 5000) ;
             if (iItem != 0)
             {
               g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
@@ -88,6 +92,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
             g_settings.SaveProfiles("q:\\system\\profiles.xml");
             
+            g_weatherManager.Refresh();
             g_pythonParser.bLogin = true;
             if (g_guiSettings.GetInt("lookandfeel.startupwindow") == WINDOW_HOME)
             {
@@ -107,7 +112,8 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           }
           else
           {
-            CGUIDialogOK::ShowAndGetInput(20068,20117,20022,20022); 
+            if (!bCanceled && iItem != 0)
+              CGUIDialogOK::ShowAndGetInput(20068,20117,20022,20022); 
           }
         }
       }
@@ -188,7 +194,7 @@ void CGUIWindowLoginScreen::Update()
     m_vecItems.Add(new CFileItem(item));
   }
   m_viewControl.SetItems(m_vecItems);
-  if (g_settings.m_iLastUsedProfileIndex != -1)
+  if (g_settings.m_iLastUsedProfileIndex > -1)
   {
     m_viewControl.SetSelectedItem(g_settings.m_iLastUsedProfileIndex);
     g_settings.m_iLastUsedProfileIndex = -1;
