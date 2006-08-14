@@ -147,43 +147,51 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, c
 {
   // we replace all instances of comma's with double comma's, then separate
   // the paths using " , "
-  CLog::Log(LOGDEBUG, "Building multipath");
+  //CLog::Log(LOGDEBUG, "Building multipath");
   CStdString newPath = "multipath://";
   CStdString strPath = items[stack[0]]->m_strPath;
-  CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
+  //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
   strPath.Replace(",", ",,");
   newPath += strPath;
   for (unsigned int i = 1; i < stack.size(); ++i)
   {
     newPath += " , ";
     strPath = items[stack[i]]->m_strPath;
-    CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
+    //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
     strPath.Replace(",", ",,");
     newPath += strPath;
   }
-  CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
+  //CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
   return newPath;
+}
+
+void CMultiPathDirectory::AddToMultiPath(CStdString& strMultiPath, const CStdString& strPath)
+{
+  CStdString strPath1 = strPath;
+  strPath1.Replace(",", ",,");
+  strMultiPath += " , ";
+  strMultiPath += strPath1;
 }
 
 CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vecPaths)
 {
   // we replace all instances of comma's with double comma's, then separate
   // the paths using " , "
-  CLog::Log(LOGDEBUG, "Building multipath");
+  //CLog::Log(LOGDEBUG, "Building multipath");
   CStdString newPath = "multipath://";
   CStdString strPath = vecPaths[0];
-  CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
+  //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
   strPath.Replace(",", ",,");
   newPath += strPath;
   for (unsigned int i = 1; i < vecPaths.size(); ++i)
   {
     newPath += " , ";
     strPath = vecPaths[i];
-    CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
+    //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
     strPath.Replace(",", ",,");
     newPath += strPath;
   }
-  CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
+  //CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
   return newPath;
 }
 
@@ -192,6 +200,54 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
   CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", (int)items.Size());
   DWORD dwTime=GetTickCount();
 
+  // sort items by label
+  // folders are before files in this sort method
+  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  int i = 0;
+
+  // if first item in the sorted list is a file, just abort
+  if (!items.Get(i)->m_bIsFolder)
+    return;
+
+  while (i + 1 < items.Size())
+  {
+    int j = i + 1;
+
+    // there are no more folders left, so exit the loop
+    if (!items.Get(j)->m_bIsFolder)
+      break;
+
+    vector<int> stack;
+    stack.push_back(i);
+    CLog::Log(LOGDEBUG,"Testing path: [%03i] %s", i, items.Get(i)->m_strPath.c_str());
+    while (j < items.Size() && items.Get(j)->GetLabel().Equals(items.Get(i)->GetLabel()))
+    {
+      // ignore any filefolders which may coincidently have
+      // the same label as a true folder
+      if (!items.Get(j)->IsFileFolder())
+      {
+        stack.push_back(j);
+        CLog::Log(LOGDEBUG,"  Adding path: [%03i] %s", j, items.Get(j)->m_strPath.c_str());
+      }
+      j++;
+    }
+
+    if (stack.size() > 1)
+    {
+      // we have a multipath so remove the items and add the new item
+      CStdString newPath = ConstructMultiPath(items, stack);
+      for (unsigned int k = stack.size() - 1; k > 0; --k)
+        items.Remove(stack[k]);
+      items.Get(i)->m_strPath = newPath;
+      CLog::Log(LOGDEBUG,"  New path: %s", items.Get(i)->m_strPath.c_str());
+    }
+
+    // increment our position in the list
+    // since we're sorted, we can jump ahead to index j
+    i = j;
+  }
+
+  /*
   // adapted from CFileItemList::Stack
   for (int i = 0; i < items.Size() - 1; ++i)
   {
@@ -227,5 +283,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
       CLog::Log(LOGDEBUG,"  ** final path: %s", item->m_strPath.c_str());
     }
   }
+  */
+
   CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i,  took %ld ms", (int)items.Size(), GetTickCount()-dwTime);
 }
