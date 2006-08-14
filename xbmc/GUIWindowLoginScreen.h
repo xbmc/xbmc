@@ -1,6 +1,7 @@
 #pragma once
 #include "GUIDialog.h"
 #include "GUIViewControl.h"
+#include "xbstopwatch.h"
 
 class CGUIWindowLoginScreen : public CGUIWindow
 {
@@ -22,4 +23,5 @@ protected:
   CFileItemList m_vecItems;
 
   int m_iSelectedItem;
+  CXBStopWatch watch;  
 };

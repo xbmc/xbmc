@@ -410,7 +410,7 @@ int XBPython::getScriptId(const char* strFile)
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
   {
-    if (!strcmp(it->strFile.c_str(), strFile)) iId = it->id;
+    if (!stricmp(it->strFile.c_str(), strFile)) iId = it->id;
     ++it;
   }
 
