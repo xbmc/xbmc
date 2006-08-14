@@ -82,6 +82,7 @@ WORD CDelayController::DirInput( WORD wDir )
   }
   else
   {
+#if 0
     if ( m_iCount > 10 )
     {
       if ( wDir == DC_UP )
@@ -115,14 +116,24 @@ WORD CDelayController::DirInput( WORD wDir )
       }
     }
     else
+#endif
     {
+      /* decrease this delay quadratic */
+      DWORD delay = m_dwMoveDelay;
+      if( m_iCount > 10 + 20 + 40 )
+        delay /= 8;
+      else if( m_iCount > 10 + 20 )
+        delay /= 4;
+      else if( m_iCount > 10 )
+        delay /= 2;
+
       if ( wDir == DC_UP )
       {
         if ( m_dwTimer < GetTickCount() )
         {
           wResult |= DC_UP;
           m_iCount++;
-          m_dwTimer = GetTickCount() + m_dwMoveDelay;
+          m_dwTimer = GetTickCount() + delay;
         }
         else
         {
@@ -135,7 +146,7 @@ WORD CDelayController::DirInput( WORD wDir )
         {
           wResult |= DC_DOWN;
           m_iCount++;
-          m_dwTimer = GetTickCount() + m_dwMoveDelay;
+          m_dwTimer = GetTickCount() + delay;
         }
         else
         {
@@ -148,7 +159,7 @@ WORD CDelayController::DirInput( WORD wDir )
         {
           wResult |= DC_LEFT;
           m_iCount++;
-          m_dwTimer = GetTickCount() + m_dwMoveDelay;
+          m_dwTimer = GetTickCount() + delay;
         }
         else
         {
@@ -161,7 +172,7 @@ WORD CDelayController::DirInput( WORD wDir )
         {
           wResult |= DC_RIGHT;
           m_iCount++;
-          m_dwTimer = GetTickCount() + m_dwMoveDelay;
+          m_dwTimer = GetTickCount() + delay;
         }
         else
         {
@@ -174,7 +185,7 @@ WORD CDelayController::DirInput( WORD wDir )
         {
           wResult |= DC_RIGHTTRIGGER;
           m_iCount++;
-          m_dwTimer = GetTickCount() + m_dwMoveDelay;
+          m_dwTimer = GetTickCount() + delay;
         }
         else
         {
@@ -187,7 +198,7 @@ WORD CDelayController::DirInput( WORD wDir )
         {
           wResult |= DC_LEFTTRIGGER;
           m_iCount++;
-          m_dwTimer = GetTickCount() + m_dwMoveDelay;
+          m_dwTimer = GetTickCount() + delay;
         }
         else
         {
