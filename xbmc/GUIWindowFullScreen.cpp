@@ -253,7 +253,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     return true;
     break;
   case ACTION_AUDIO_NEXT_LANGUAGE:
-    //g_application.m_pPlayer->AudioOffset(false);
+      if (g_application.m_pPlayer->GetAudioStreamCount() == 1)
+        return true;
+
+      g_stSettings.m_currentVideoSettings.m_AudioStream++;
+      if (g_stSettings.m_currentVideoSettings.m_AudioStream == g_application.m_pPlayer->GetAudioStreamCount())
+        g_stSettings.m_currentVideoSettings.m_AudioStream = 0;
+      g_application.m_pPlayer->SetAudioStream(g_stSettings.m_currentVideoSettings.m_AudioStream);    // Set the audio stream to the one selected
     return true;
     break;
   case REMOTE_0:
