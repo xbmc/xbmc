@@ -66,8 +66,15 @@ CURL::CURL(const CStdString& strURL)
   }
 
   // virtual protocols
-  // just assume everything after the protocol is a path + file
-  if (m_strProtocol.Equals("stack") || m_strProtocol.Equals("multipath"))
+  // why not handle all format 2 (protocol://file) style urls here?
+  // ones that come to mind are iso9660, cdda, musicdb, etc.
+  // they are all local protocols and have no server part, port number, special options, etc.
+  // this removes the need for special handling below.
+  if (
+    m_strProtocol.Equals("stack") || 
+    m_strProtocol.Equals("virtualpath") ||
+    m_strProtocol.Equals("multipath")
+    )
   {
     m_strFileName = strURL.Mid(iPos);
     return;
