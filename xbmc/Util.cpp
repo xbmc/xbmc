@@ -3477,6 +3477,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
     g_settings.LoadProfile(0); // login screen always runs as default user
+    g_passwordManager.bMasterUser = false;
     m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
       g_guiSettings.GetString("network.ipaddress").c_str(),
