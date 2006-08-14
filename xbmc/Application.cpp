@@ -4604,5 +4604,8 @@ void CApplication::CheckForDebugButtonCombo()
     g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
     CLog::Log(LOGINFO, "Key combination detected for full debug logging (X+Y)");
   }
+#ifdef _DEBUG
+  g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
+#endif
 }
 
