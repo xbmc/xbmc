@@ -55,9 +55,8 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
 __int64 CDVDPlayerVideo::GetOutputDelay()
 {
     __int64 time = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET);
-    time *= DVD_TIME_BASE;
     if( m_fFrameRate )
-      time /= m_fFrameRate;
+      time = (__int64)( (time * DVD_TIME_BASE) / m_fFrameRate );
     else
       time = 0LL;
     return time;
