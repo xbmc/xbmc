@@ -294,6 +294,8 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strFile = pItem->m_strPath;
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
+  if (pItem->m_bIsShareOrDrive) // oh no u don't
+    return ;
   if (pItem->m_bIsFolder)
   {
     // IMDB is done on a folder
