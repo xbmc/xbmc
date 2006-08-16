@@ -718,12 +718,12 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       btn_PlayWith = pMenu->AddButton(208);
 
     // if autoresume is enabled then add restart video button
-    if (g_guiSettings.GetBool("videoplayer.autoresume"))
-      btn_Restart = pMenu->AddButton(20132);    // Restart Video
-    else 
     // check to see if the Resume Video button is applicable
     if (GetResumeItemOffset(m_vecItems[iItem]) > 0)               
-      btn_Resume = pMenu->AddButton(13381);     // Resume Video
+      if (g_guiSettings.GetBool("videoplayer.autoresume"))
+        btn_Restart = pMenu->AddButton(20132);    // Restart Video
+      else
+        btn_Resume = pMenu->AddButton(13381);     // Resume Video
 
     // turn off the query info button if we are in playlists view
     if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES) && !(GetID() == WINDOW_VIDEO_FILES && !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser))
