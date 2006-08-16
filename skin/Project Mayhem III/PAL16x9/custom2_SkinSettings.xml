@@ -72,7 +72,7 @@
     <posx>50</posx>
     <posy>120</posy>
     <label>128</label>
-    <onleft>11</onleft>
+    <onleft>20</onleft>
     <onright>20</onright>
     <onup>13</onup>
     <ondown>12</ondown>
@@ -86,7 +86,7 @@
     <posx>50</posx>
     <posy>157</posy>
     <label>513</label>
-    <onleft>12</onleft>
+    <onleft>30</onleft>
     <onright>30</onright>
     <onup>11</onup>
     <ondown>13</ondown>
@@ -100,7 +100,7 @@
     <posx>50</posx>
     <posy>194</posy>
     <label>13398</label>
-    <onleft>13</onleft>
+    <onleft>40</onleft>
     <onright>40</onright>
     <onup>12</onup>
     <ondown>11</ondown>
@@ -124,7 +124,7 @@
     <onclick>Skin.ToggleSetting(animated)</onclick>
     <selected>Skin.HasSetting(animated)</selected>
     <onleft>11</onleft>
-    <onright>20</onright>
+    <onright>11</onright>
     <onup>20</onup>
     <ondown>20</ondown>
     <textoffsetx>7</textoffsetx>
@@ -151,7 +151,7 @@
     <onclick>Skin.ToggleSetting(NoAudioRSS)</onclick>
     <selected>Skin.HasSetting(NoAudioRSS)</selected>
     <onleft>11</onleft>
-    <onright>30</onright>
+    <onright>11</onright>
     <onup>36</onup>
     <ondown>31</ondown>
     <textoffsetx>7</textoffsetx>
@@ -172,7 +172,7 @@
     <onclick>Skin.ToggleSetting(homepageVideoinfo)</onclick>
     <selected>Skin.HasSetting(homepageVideoinfo)</selected>
     <onleft>11</onleft>
-    <onright>31</onright>
+    <onright>11</onright>
     <onup>30</onup>
     <ondown>32</ondown>
     <textoffsetx>7</textoffsetx>
@@ -193,7 +193,7 @@
     <onclick>Skin.ToggleSetting(homepageMusicinfo)</onclick>
     <selected>Skin.HasSetting(homepageMusicinfo)</selected>
     <onleft>11</onleft>
-    <onright>32</onright>
+    <onright>11</onright>
     <onup>31</onup>
     <ondown>33</ondown>
     <textoffsetx>7</textoffsetx>
@@ -214,7 +214,7 @@
     <onclick>Skin.ToggleSetting(homepageWeatherinfo)</onclick>
     <selected>Skin.HasSetting(homepageWeatherinfo)</selected>
     <onleft>11</onleft>
-    <onright>33</onright>
+    <onright>11</onright>
     <onup>32</onup>
     <ondown>34</ondown>
     <textoffsetx>7</textoffsetx>
@@ -235,7 +235,7 @@
     <onclick>Skin.ToggleSetting(homepageSysteminfo)</onclick>
     <selected>Skin.HasSetting(homepageSysteminfo)</selected>
     <onleft>11</onleft>
-    <onright>34</onright>
+    <onright>11</onright>
     <onup>33</onup>
     <ondown>35</ondown>
     <textoffsetx>7</textoffsetx>
@@ -256,7 +256,7 @@
     <selected>Skin.HasSetting(homepageDriveinfo1)</selected> 
     <onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
     <onleft>11</onleft> 
-    <onright>35</onright> 
+    <onright>11</onright> 
     <onup>34</onup> 
     <ondown>36</ondown>
     <textoffsetx>7</textoffsetx>
@@ -277,7 +277,7 @@
     <selected>Skin.HasSetting(homepageDriveinfo1)</selected> 
     <onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
     <onleft>11</onleft> 
-    <onright>31</onright> 
+    <onright>11</onright> 
     <onup>30</onup> 
     <ondown>32</ondown>
     <textoffsetx>7</textoffsetx>
@@ -299,7 +299,7 @@
     <selected>!Skin.HasSetting(homepageDriveinfo2)</selected> 
     <onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
     <onleft>11</onleft> 
-    <onright>36</onright> 
+    <onright>11</onright> 
     <onup>35</onup> 
     <ondown>30</ondown>
     <textoffsetx>7</textoffsetx>
@@ -320,7 +320,7 @@
     <selected>!Skin.HasSetting(homepageDriveinfo2)</selected> 
     <onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
     <onleft>11</onleft> 
-    <onright>31</onright> 
+    <onright>11</onright> 
     <onup>31</onup> 
     <ondown>30</ondown>
     <textoffsetx>7</textoffsetx>
@@ -348,7 +348,7 @@
     <onclick>Skin.ToggleSetting(bookmarkbuttons)</onclick>
     <selected>Skin.HasSetting(bookmarkbuttons)</selected>
     <onleft>11</onleft>
-    <onright>40</onright>
+    <onright>11</onright>
     <onup>48</onup>
     <ondown>41</ondown>
     <textoffsetx>7</textoffsetx>

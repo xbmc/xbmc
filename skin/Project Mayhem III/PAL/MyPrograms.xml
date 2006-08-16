@@ -86,7 +86,7 @@
     <label>100</label>
     <onleft>50</onleft>
     <onright>50</onright>
-    <onup>35</onup>
+    <onup>34</onup>
     <ondown>3</ondown>
     <include>buttonpanelslide</include>
    </control>
@@ -136,7 +136,6 @@
    <control>
     <description>Kai disconnected icon</description>
     <type>image</type>
-    <id>0</id>
     <posx>173</posx>
     <posy>201</posy>
     <width>19</width>
@@ -149,7 +148,6 @@
    <control>
     <description>Kai connected icon</description>
     <type>image</type>
-    <id>0</id>
     <posx>173</posx>
     <posy>201</posy>
     <width>19</width>
@@ -169,7 +167,7 @@
     <onclick>ActivateWindow(MyPrograms,$INFO[Skin.String(Programsbookmark1)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
-    <onup>5</onup>
+    <onup>99</onup>
     <ondown>32</ondown>
     <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(ProgramsBM1)</visible>
     <include>buttonpanelslide</include>
@@ -281,21 +279,6 @@
     <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(ProgramsBookmark4)] + Skin.HasSetting(ProgramsBM4)</visible>
     <include>buttonpanelslide</include>
     <include>textcolorgrey</include>
-   </control>
-
-   <control>
-    <description>scan button</description>
-    <type>button</type>
-    <id>6</id>
-    <posx>50</posx>
-    <posy>416</posy>
-    <label>102</label>
-    <onleft>50</onleft>
-    <onright>50</onright>
-    <onup>104</onup>
-    <ondown>2</ondown>
-    <include>buttonpanelslide</include>
-    <visible>no</visible>
    </control>
 
   </controlgroup>
