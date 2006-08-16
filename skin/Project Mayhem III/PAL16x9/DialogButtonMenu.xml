@@ -105,33 +105,10 @@
     <pulseonselect>no</pulseonselect>
     <onleft>3113</onleft>
     <onright>3110</onright>
-    <onup>3115</onup>
-    <ondown>3115</ondown>
-    <font>-</font>
-    <label>13005</label>
-   </control>
-
-   <control>
-    <description>Reload XBMC button</description>
-    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-    <visible>System.LoggedOn + System.HasLocks + !System.HasLoginScreen</visible>
-    <type>button</type>
-    <id>3115</id>
-    <posx>150</posx>
-    <posy>10</posy>
-    <width>60</width>
-    <height>79</height>
-    <texturefocus>sub-shutdown-focus.gif</texturefocus>
-    <texturenofocus>-</texturenofocus>
-    <onclick>XBMC.RestartApp()</onclick>
-    <pulseonselect>no</pulseonselect>
-    <onleft>3113</onleft>
-    <onright>3110</onright>
     <onup>3112</onup>
     <ondown>3112</ondown>
     <font>-</font>
-    <label>$LOCALIZE[13313] XBMC</label>
+    <label>13005</label>
    </control>
 
    <control>
@@ -174,10 +151,33 @@
     <pulseonselect>no</pulseonselect>
     <onleft>3110</onleft>
     <onright>3116</onright>
+    <onup>3115</onup>
+    <ondown>3115</ondown>
+    <font>-</font>
+    <label>13313</label>
+   </control>
+
+   <control>
+    <description>Restart XBMC button</description>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+    <visible>System.LoggedOn + System.HasLocks + !System.HasLoginScreen</visible>
+    <type>button</type>
+    <id>3115</id>
+    <posx>270</posx>
+    <posy>10</posy>
+    <width>60</width>
+    <height>79</height>
+    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <onclick>XBMC.RestartApp()</onclick>
+    <pulseonselect>no</pulseonselect>
+    <onleft>3110</onleft>
+    <onright>3116</onright>
     <onup>3114</onup>
     <ondown>3114</ondown>
     <font>-</font>
-    <label>13313</label>
+    <label>$LOCALIZE[13313] XBMC</label>
    </control>
 
 <!--- No Logon no Lock --> 
@@ -222,33 +222,10 @@
     <pulseonselect>no</pulseonselect>
     <onleft>3113</onleft>
     <onright>3110</onright>
-    <onup>3115</onup>
-    <ondown>3115</ondown>
-    <font>-</font>
-    <label>13005</label>
-   </control>
-
-   <control>
-    <description>Reload XBMC button</description>
-    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-    <visible>System.LoggedOn + !System.HasLocks + !System.HasLoginScreen</visible>
-    <type>button</type>
-    <id>3115</id>
-    <posx>120</posx>
-    <posy>10</posy>
-    <width>60</width>
-    <height>79</height>
-    <texturefocus>sub-shutdown-focus.gif</texturefocus>
-    <texturenofocus>-</texturenofocus>
-    <onclick>XBMC.RestartApp()</onclick>
-    <pulseonselect>no</pulseonselect>
-    <onleft>3113</onleft>
-    <onright>3110</onright>
     <onup>3112</onup>
     <ondown>3112</ondown>
     <font>-</font>
-    <label>Restart XBMC</label>
+    <label>13005</label>
    </control>
 
    <control>
@@ -291,10 +268,33 @@
     <pulseonselect>no</pulseonselect>
     <onleft>3110</onleft>
     <onright>3113</onright>
+    <onup>3115</onup>
+    <ondown>3115</ondown>
+    <font>-</font>
+    <label>13313</label>
+   </control>
+
+   <control>
+    <description>Restart XBMC button</description>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+    <visible>System.LoggedOn + !System.HasLocks + !System.HasLoginScreen</visible>
+    <type>button</type>
+    <id>3115</id>
+    <posx>240</posx>
+    <posy>10</posy>
+    <width>60</width>
+    <height>79</height>
+    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <onclick>XBMC.RestartApp()</onclick>
+    <pulseonselect>no</pulseonselect>
+    <onleft>3110</onleft>
+    <onright>3113</onright>
     <onup>3114</onup>
     <ondown>3114</ondown>
     <font>-</font>
-    <label>13313</label>
+    <label>$LOCALIZE[13313] XBMC</label>
    </control>
 
 <!-- Yes Logon No Locks -->
@@ -362,33 +362,10 @@
     <pulseonselect>no</pulseonselect>
     <onleft>3117</onleft>
     <onright>3110</onright>
-    <onup>3115</onup>
-    <ondown>3115</ondown>
-    <font>-</font>
-    <label>13005</label>
-   </control>
-
-   <control>
-    <description>Reload XBMC button</description>
-    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-    <visible>System.LoggedOn + !System.HasLocks + System.HasLoginScreen</visible>
-    <type>button</type>
-    <id>3115</id>
-    <posx>150</posx>
-    <posy>10</posy>
-    <width>60</width>
-    <height>79</height>
-    <texturefocus>sub-shutdown-focus.gif</texturefocus>
-    <texturenofocus>-</texturenofocus>
-    <onclick>XBMC.RestartApp()</onclick>
-    <pulseonselect>no</pulseonselect>
-    <onleft>3117</onleft>
-    <onright>3110</onright>
     <onup>3112</onup>
     <ondown>3112</ondown>
     <font>-</font>
-    <label>$LOCALIZE[13313] XBMC</label>
+    <label>13005</label>
    </control>
 
    <control>
@@ -431,10 +408,33 @@
     <pulseonselect>no</pulseonselect>
     <onleft>3110</onleft>
     <onright>3113</onright>
+    <onup>3115</onup>
+    <ondown>3115</ondown>
+    <font>-</font>
+    <label>13313</label>
+   </control>
+
+   <control>
+    <description>Restart XBMC button</description>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+    <visible>System.LoggedOn + !System.HasLocks + System.HasLoginScreen</visible>
+    <type>button</type>
+    <id>3115</id>
+    <posx>270</posx>
+    <posy>10</posy>
+    <width>60</width>
+    <height>79</height>
+    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <onclick>XBMC.RestartApp()</onclick>
+    <pulseonselect>no</pulseonselect>
+    <onleft>3110</onleft>
+    <onright>3113</onright>
     <onup>3114</onup>
     <ondown>3114</ondown>
     <font>-</font>
-    <label>13313</label>
+    <label>$LOCALIZE[13313] XBMC</label>
    </control>
 
 <!--- Yes Logon Yes Locks -->
@@ -529,33 +529,10 @@
     <pulseonselect>no</pulseonselect>
     <onleft>3117</onleft>
     <onright>3110</onright>
-    <onup>3115</onup>
-    <ondown>3115</ondown>
-    <font>-</font>
-    <label>13005</label>
-   </control>
-
-   <control>
-    <description>Reload XBMC button</description>
-    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-    <visible>System.LoggedOn + System.HasLocks + System.HasLoginScreen</visible>
-    <type>button</type>
-    <id>3115</id>
-    <posx>180</posx>
-    <posy>10</posy>
-    <width>60</width>
-    <height>79</height>
-    <texturefocus>sub-shutdown-focus.gif</texturefocus>
-    <texturenofocus>-</texturenofocus>
-    <onclick>XBMC.RestartApp()</onclick>
-    <pulseonselect>no</pulseonselect>
-    <onleft>3117</onleft>
-    <onright>3110</onright>
     <onup>3112</onup>
     <ondown>3112</ondown>
     <font>-</font>
-    <label>$LOCALIZE[13313] XBMC</label>
+    <label>13005</label>
    </control>
 
    <control>
@@ -573,7 +550,7 @@
     <texturenofocus>sub-exit-nofocus.png</texturenofocus>
     <onclick>XBMC.Dashboard()</onclick>
     <pulseonselect>no</pulseonselect>
-    <onleft>3115</onleft>
+    <onleft>3112</onleft>
     <onright>3114</onright>
     <onup>3110</onup>
     <ondown>3110</ondown>
@@ -598,10 +575,33 @@
     <pulseonselect>no</pulseonselect>
     <onleft>3110</onleft>
     <onright>3118</onright>
+    <onup>3115</onup>
+    <ondown>3115</ondown>
+    <font>-</font>
+    <label>13313</label>
+   </control>
+
+   <control>
+    <description>Restart XBMC button</description>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+    <visible>System.LoggedOn + System.HasLocks + System.HasLoginScreen</visible>
+    <type>button</type>
+    <id>3115</id>
+    <posx>300</posx>
+    <posy>10</posy>
+    <width>60</width>
+    <height>79</height>
+    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <onclick>XBMC.RestartApp()</onclick>
+    <pulseonselect>no</pulseonselect>
+    <onleft>3110</onleft>
+    <onright>3118</onright>
     <onup>3114</onup>
     <ondown>3114</ondown>
     <font>-</font>
-    <label>13313</label>
+    <label>$LOCALIZE[13313] XBMC</label>
    </control>
 
 <!--- Logon Screen -->
@@ -646,33 +646,10 @@
     <pulseonselect>no</pulseonselect>
     <onleft>3110</onleft>
     <onright>3114</onright>
-    <onup>3115</onup>
-    <ondown>3115</ondown>
-    <font>-</font>
-    <label>13005</label>
-   </control>
- 
-   <control>
-    <description>Restart XBMC button</description>
-    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-    <visible>!System.Loggedon</visible>
-    <type>button</type>
-    <id>3115</id>
-    <posx>150</posx>
-    <posy>10</posy>
-    <width>60</width>
-    <height>79</height>
-    <texturefocus>sub-shutdown-focus.gif</texturefocus>
-    <texturenofocus>-</texturenofocus>
-    <onclick>XBMC.RestartApp()</onclick>
-    <pulseonselect>no</pulseonselect>
-    <onleft>3110</onleft>
-    <onright>3114</onright>
     <onup>3112</onup>
     <ondown>3112</ondown>
     <font>-</font>
-    <label>$LOCALIZE[13313] XBMC</label>
+    <label>13005</label>
    </control>
  
    <control>
@@ -692,10 +669,33 @@
     <pulseonselect>no</pulseonselect>
     <onleft>3112</onleft>
     <onright>3110</onright>
+    <onup>3115</onup>
+    <ondown>3115</ondown>
+    <font>-</font>
+    <label>13313</label>
+   </control>
+
+   <control>
+    <description>Restart XBMC button</description>
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+    <visible>!System.Loggedon</visible>
+    <type>button</type>
+    <id>3115</id>
+    <posx>210</posx>
+    <posy>10</posy>
+    <width>60</width>
+    <height>79</height>
+    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <onclick>XBMC.RestartApp()</onclick>
+    <pulseonselect>no</pulseonselect>
+    <onleft>3112</onleft>
+    <onright>3110</onright>
     <onup>3114</onup>
     <ondown>3114</ondown>
     <font>-</font>
-    <label>13313</label>
+    <label>$LOCALIZE[13313] XBMC</label>
    </control>
 
   </controlgroup>
@@ -759,4 +759,3 @@
  </controls>
 
 </window>
-
