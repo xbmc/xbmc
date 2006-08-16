@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-08-2006 fixed: mockup with restart video in context menu.
  - 15-08-2006 fixed: [ 1536827 ] Problem w/ keymap.xml
  - 14-08-2006 fixed: xbe's with no title id said was added to the program db each time you listed the bookmark.
  - 14-08-2006 changed: potentially fixed seeking in files larger than 2gb with dvdplayer.
