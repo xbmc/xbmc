@@ -842,7 +842,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       OutputDebugString("------------------- GUI_MSG_WINDOW_INIT ");
-      OutputDebugString(g_localizeStrings.Get(10000 + GetID()).c_str());
+      OutputDebugString(g_localizeStrings.Get(GetID()).c_str());
       OutputDebugString("------------------- \n");
       if (m_dynamicResourceAlloc || !m_WindowAllocated) AllocResources();
       OnInitWindow();
@@ -853,7 +853,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       OutputDebugString("------------------- GUI_MSG_WINDOW_DEINIT ");
-      OutputDebugString(g_localizeStrings.Get(10000 + GetID()).c_str());
+      OutputDebugString(g_localizeStrings.Get(GetID()).c_str());
       OutputDebugString("------------------- \n");
       OnDeinitWindow(message.GetParam1());
       // now free the window
@@ -1127,12 +1127,17 @@ void CGUIWindow::ClearAll()
 
 const CGUIControl* CGUIWindow::GetControl(int iControl) const
 {
+  const CGUIControl* pPotential=NULL;
   for (int i = 0;i < (int)m_vecControls.size(); ++i)
   {
     const CGUIControl* pControl = m_vecControls[i];
-    if (pControl->GetID() == iControl) return pControl;
+    if (pControl->GetID() == iControl) 
+      if (pControl->IsVisible())
+        return pControl;
+      else if (!pPotential)
+        pPotential = pControl;
   }
-  return NULL;
+  return pPotential;
 }
 
 int CGUIWindow::GetFocusedControl() const

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-08-2006 fixed: mockup with dual ids in anything based on guidialogsettings.
  - 16-08-2006 fixed: mockup with restart video in context menu.
  - 15-08-2006 fixed: [ 1536827 ] Problem w/ keymap.xml
  - 14-08-2006 fixed: xbe's with no title id said was added to the program db each time you listed the bookmark.
