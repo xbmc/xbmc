@@ -211,79 +211,46 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 
   while (i + 1 < items.Size())
   {
-    int j = i + 1;
-
     // there are no more folders left, so exit the loop
-    if (!items.Get(j)->m_bIsFolder)
+    CFileItem* pItem1 = items.Get(i);
+    if (!pItem1->m_bIsFolder)
       break;
 
     vector<int> stack;
     stack.push_back(i);
-    CLog::Log(LOGDEBUG,"Testing path: [%03i] %s", i, items.Get(i)->m_strPath.c_str());
-    while (j < items.Size() && items.Get(j)->GetLabel().Equals(items.Get(i)->GetLabel()))
+    CLog::Log(LOGDEBUG,"Testing path: [%03i] %s", i, pItem1->m_strPath.c_str());
+
+    int j = i + 1;
+    do
     {
+      CFileItem* pItem2 = items.Get(j);
+      if (!pItem2->GetLabel().Equals(pItem1->GetLabel()))
+        break;
+
       // ignore any filefolders which may coincidently have
       // the same label as a true folder
-      if (!items.Get(j)->IsFileFolder())
+      if (!pItem2->IsFileFolder())
       {
         stack.push_back(j);
-        CLog::Log(LOGDEBUG,"  Adding path: [%03i] %s", j, items.Get(j)->m_strPath.c_str());
+        CLog::Log(LOGDEBUG,"  Adding path: [%03i] %s", j, pItem2->m_strPath.c_str());
       }
       j++;
     }
+    while (j < items.Size());
 
+    // do we have anything to combine?
     if (stack.size() > 1)
     {
       // we have a multipath so remove the items and add the new item
       CStdString newPath = ConstructMultiPath(items, stack);
       for (unsigned int k = stack.size() - 1; k > 0; --k)
         items.Remove(stack[k]);
-      items.Get(i)->m_strPath = newPath;
-      CLog::Log(LOGDEBUG,"  New path: %s", items.Get(i)->m_strPath.c_str());
+      pItem1->m_strPath = newPath;
+      CLog::Log(LOGDEBUG,"  New path: %s", pItem1->m_strPath.c_str());
     }
 
-    // increment our position in the list
-    // since we're sorted, we can jump ahead to index j
-    i = j;
+    i++;
   }
-
-  /*
-  // adapted from CFileItemList::Stack
-  for (int i = 0; i < items.Size() - 1; ++i)
-  {
-    CFileItem *item = items.Get(i);
-    if (!item->m_bIsFolder || item->IsPlayList() || item->IsMultiPath())
-      continue;
-
-    CLog::Log(LOGDEBUG,"Testing path: %s", item->m_strPath.c_str());
-    CStdString folder = item->GetLabel();
-    vector<int> stack;
-    stack.push_back(i);
-    for (int j = i + 1; j < items.Size(); ++j)
-    {
-      CFileItem *item2 = items.Get(j);
-      if (!item->m_bIsFolder || item->IsPlayList() || item->IsMultiPath())
-       continue;
-      
-      CStdString folder2 = item2->GetLabel();
-      if (folder.Equals(folder2))
-      {
-        CLog::Log(LOGDEBUG,"  adding path: [%03i] %s", j, item2->m_strPath.c_str());
-        stack.push_back(j);
-      }
-    }
-    if (stack.size() > 1)
-    {
-      // we have a multipath so remove the items and add the new item
-      CStdString newPath = ConstructMultiPath(items, stack);
-      for (unsigned int j = stack.size() - 1; j > 0; --j)
-        items.Remove(stack[j]);
-      item->m_strPath = newPath;
-      item->m_bIsFolder = true;
-      CLog::Log(LOGDEBUG,"  ** final path: %s", item->m_strPath.c_str());
-    }
-  }
-  */
 
   CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i,  took %ld ms", (int)items.Size(), GetTickCount()-dwTime);
 }
