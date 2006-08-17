@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-08-2006 fixed: slow queuing by allowing python xbmc.PlayList(0)[i].getduration() to load the tag if necessary. python guru's please test!
  - 17-08-2006 fixed: mockup with dual ids in anything based on guidialogsettings.
  - 16-08-2006 fixed: mockup with restart video in context menu.
  - 15-08-2006 fixed: [ 1536827 ] Problem w/ keymap.xml
