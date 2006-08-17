@@ -156,11 +156,19 @@ void CGUIDialogSettings::SetupPage()
   }
   // fix first and last navigation
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START + numControlsOnPage - 1);
-  if (pControl) pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_PAGE,
-                                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  if (pControl) 
+    if (m_iNumPages > 1)
+        pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_PAGE, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+    else
+      pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  
   pControl = (CGUIControl *)GetControl(CONTROL_START);
-  if (pControl) pControl->SetNavigation(CONTROL_PAGE, pControl->GetControlIdDown(),
-                                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  if (pControl) 
+    if (m_iNumPages > 1)
+      pControl->SetNavigation(CONTROL_PAGE, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+    else
+      pControl->SetNavigation(CONTROL_START+numControlsOnPage-1, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+
   pControl = (CGUIControl *)GetControl(CONTROL_PAGE);
   if (pControl) pControl->SetNavigation(CONTROL_START + numControlsOnPage - 1, CONTROL_START,
                                           pControl->GetControlIdLeft(), pControl->GetControlIdRight());
@@ -431,6 +439,7 @@ void CGUIDialogSettings::OnInitWindow()
   CreateSettings();
   m_iCurrentPage = 0;
   m_iNumPages = 0;
+  SetControlVisibility();
   SetupPage();
   // set the default focus control
   m_lastControlID = CONTROL_START;
