@@ -836,7 +836,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
     if (pItem->IsParentFolder()) return ;
     CFileItemList items;
     GetDirectory(pItem->m_strPath, items);
-    OnRetrieveMusicInfo(items);
+    //OnRetrieveMusicInfo(items);
     SortItems(items);
     for (int i = 0; i < items.Size(); ++i)
       AddItemToPlayList(items[i], queuedItems);
