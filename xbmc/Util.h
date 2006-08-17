@@ -344,6 +344,9 @@ public:
   static CStdString GetCachedMusicThumb(const CStdString &path);
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &path);
 
+  static bool LoadMusicTag(CFileItem *pItem);
+  static bool LoadMusicTag(CPlayList::CPlayListItem *playListItem);
+
 private:
   static HANDLE m_hCurrentCpuUsage;
 };

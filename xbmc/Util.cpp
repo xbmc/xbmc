@@ -38,6 +38,7 @@
 #include "lib/libscrobbler/scrobbler.h"
 #include "partymodemanager.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "MusicInfoLoader.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -4387,4 +4388,25 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
     }
   }
   sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
+}
+
+bool CUtil::LoadMusicTag(CFileItem *pItem)
+{
+  if (!pItem->IsAudio()) return false;
+  CMusicInfoLoader musicInfoLoader;
+  return musicInfoLoader.LoadItem(pItem);
+}
+
+bool CUtil::LoadMusicTag(CPlayList::CPlayListItem *playListItem)
+{
+  CFileItem* pItem = new CFileItem(playListItem->m_strPath, false);
+  if (CUtil::LoadMusicTag(pItem))
+  {
+    // apply missing infomration - tag, duration, and thumb
+    playListItem->SetMusicTag(pItem->m_musicInfoTag);
+    playListItem->SetDuration(pItem->m_musicInfoTag.GetDuration());
+    playListItem->SetThumbnailImage(pItem->GetThumbnailImage());
+    return true;
+  }
+  return false;
 }
