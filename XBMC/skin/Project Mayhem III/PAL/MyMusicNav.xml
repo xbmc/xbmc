@@ -141,6 +141,21 @@
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>3</onup>
+    <ondown>8</ondown>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Search button</description>
+    <type>button</type>
+    <id>8</id>
+    <posx>50</posx>
+    <posy>231</posy>
+    <label>137</label>
+    <font>font13</font>
+    <onleft>50</onleft>
+    <onright>50</onright>
+    <onup>5</onup>
     <ondown>17</ondown>
     <include>buttonpanelslide</include>
    </control>
@@ -150,11 +165,11 @@
     <type>button</type>
     <id>17</id>
     <posx>50</posx>
-    <posy>231</posy>
+    <posy>268</posy>
     <label>Allmusic</label>
     <onleft>50</onleft>
     <onright>50</onright>
-    <onup>5</onup>
+    <onup>8</onup>
     <ondown>16</ondown>
     <include>buttonpanelslide</include>
    </control>
@@ -164,7 +179,7 @@
     <type>radiobutton</type>
     <id>16</id>
     <posx>50</posx>
-    <posy>268</posy>
+    <posy>305</posy>
     <label>589</label>
     <onleft>50</onleft>
     <onright>50</onright>
