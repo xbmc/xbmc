@@ -1,3 +1,5 @@
+2006-08-18 fixed:	Onright wasn't working correct in SettingsProfile.xml, also changed dialogyesno.xml back to old behavior (for now).
+2006-08-18 changed:	Turned back Some earlier changes/mistakes (search button in MusicNav) it's not in contextmenu, so it's back now.
 2006-08-18 changed:	Startup.xml wasn't using any textures, so the login to home transition didn't look very smooth.
 2006-08-18 added:	ProfileSettings.xml to PAL16x9 folder since the user image was not 16x9.
 2006-08-18 changed:	included the most used animation in includes.xml, better for quick tweaking them all at once.
