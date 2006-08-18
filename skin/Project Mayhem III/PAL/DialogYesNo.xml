@@ -1,7 +1,7 @@
 <window>
 
  <id>100</id>
- <defaultcontrol>10</defaultcontrol>
+ <defaultcontrol always="true">10</defaultcontrol>
  <include>dialogeffect</include>
  <controls>
 
