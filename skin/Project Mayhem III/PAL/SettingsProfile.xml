@@ -94,7 +94,7 @@
    <type>listcontrol</type>
    <id>2</id>
    <onleft>4</onleft>
-   <onright>2</onright>
+   <onright>4</onright>
    <onup>2</onup>
    <ondown>2</ondown>
    <include>contentpanelslide</include>
