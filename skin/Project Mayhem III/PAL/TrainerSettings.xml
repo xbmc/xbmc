@@ -3,8 +3,7 @@
  <id>127</id>
  <defaultcontrol>1</defaultcontrol>
  <visible>Window.IsActive(127)</visible>
- <animation effect="fade" time="200">WindowOpen</animation>
- <animation effect="fade" time="200">WindowClose</animation>
+ <include>dialogeffect</include>
 
  <coordinates>
   <system>1</system>

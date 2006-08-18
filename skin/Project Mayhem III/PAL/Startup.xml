@@ -14,7 +14,16 @@
    <texturefocus>-</texturefocus>
   </control>
 
+ <control>
+	<description>Background image</description>
+	<type>image</type>
+	<posx>0</posx>
+	<posy>0</posy>
+	<width>720</width>
+	<height>576</height>
+	<texture>background-plain.png</texture>
+ </control>
+
  </controls>
 
 </window>
-
