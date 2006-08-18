@@ -599,6 +599,24 @@ void CGUIWindowPrograms::PopulateTrainersList()
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+  if (CUtil::IsDVD(strDirectory))
+  {
+    CStdString strPath;
+    CUtil::AddFileToFolder(strDirectory,"default.xbe",strPath);
+    if (CFile::Exists(strPath)) // flatten dvd
+    {
+      CStdString description;
+      CFileItem* item;
+      if (CUtil::GetXBEDescription(strPath, description))
+        item = new CFileItem(description);
+      else
+        item = new CFileItem("default.xbe");
+      item->m_strPath = strPath;
+      item->SetUserProgramThumb();
+      items.Add(item);
+      return true;
+    }
+  }
   if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
     return false;
 
