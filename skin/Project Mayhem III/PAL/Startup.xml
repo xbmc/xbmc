@@ -22,8 +22,8 @@
 	<width>720</width>
 	<height>576</height>
 	<texture>background-plain.png</texture>
+	<visible>system.hasloginscreen</visible>
  </control>
 
  </controls>
-
 </window>
