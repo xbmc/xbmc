@@ -39,7 +39,7 @@
 	<id>2</id>
 	<posx>0</posx>
 	<posy>8</posy>
-	<width>128</width>
+	<width>96</width>
 	<height>128</height>
 	<align>left</align>
 	<texture>unknown-user.png</texture>
@@ -49,7 +49,7 @@
 	<description>profile name label</description>
 	<type>label</type>
 	<id>0</id>
-	<posx>140</posx>
+	<posx>108</posx>
 	<posy>6</posy>
 	<width>280</width>
 	<align>left</align>
@@ -57,12 +57,12 @@
 	<textcolor>DDced8da</textcolor>
 	<label>$LOCALIZE[ 20093 ]</label>
  </control>
-  
+
  <control>
 	<description>profile name label</description>
 	<type>label</type>
 	<id>1000</id>
-	<posx>140</posx>
+	<posx>108</posx>
 	<posy>26</posy>
 	<width>280</width>
 	<align>left</align>
@@ -74,7 +74,7 @@
 	<description>profile name label</description>
 	<type>label</type>
 	<id>0</id>
-	<posx>140</posx>
+	<posx>108</posx>
 	<posy>66</posy>
 	<width>280</width>
 	<align>left</align>
@@ -87,7 +87,7 @@
 	<description>profile directory label</description>
 	<type>label</type>
 	<id>1001</id>
-	<posx>140</posx>
+	<posx>108</posx>
 	<posy>86</posy>
 	<width>280</width>
 	<align>left</align>

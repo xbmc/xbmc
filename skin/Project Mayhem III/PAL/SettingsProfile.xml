@@ -100,7 +100,17 @@
    <include>contentpanelslide</include>
   </control>
 
+  <control>
+   <description>bg preview</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>0</posx>
+   <posy>0</posy>
+   <width>720</width>
+   <height>576</height>
+   <include>windowswitchtransition</include>
+  </control>
+
  </controls>
 
 </window>
-
