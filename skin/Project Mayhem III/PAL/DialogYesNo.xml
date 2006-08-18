@@ -1,9 +1,8 @@
 <window>
 
  <id>100</id>
- <defaultcontrol always="true">11</defaultcontrol>
- <animation effect="fade" time="200">WindowOpen</animation>
- <animation effect="fade" time="200">WindowClose</animation>
+ <defaultcontrol>10</defaultcontrol>
+ <include>dialogeffect</include>
  <controls>
 
   <control>
@@ -98,4 +97,3 @@
  </controls>
 
 </window>
-
