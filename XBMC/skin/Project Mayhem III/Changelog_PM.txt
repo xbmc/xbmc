@@ -1,8 +1,20 @@
-2006-08-13 fixed: onup/ondown on listcontrol were not set correctly to wraparound in FileBrowser.xml
-2006-07-21 fixed: MPPA Rating was not displayed in 16x9 and label was incorrect
+2006-08-18 changed:	Startup.xml wasn't using any textures, so the login to home transition didn't look very smooth.
+2006-08-18 added:	ProfileSettings.xml to PAL16x9 folder since the user image was not 16x9.
+2006-08-18 changed:	included the most used animation in includes.xml, better for quick tweaking them all at once.
+2006-08-18 fixed:	SettingsProfile.xml wasn't using the windowswitchtransition stuff, so it didn't fade the top image when windowopen/close.
+
+2006-08-16 fixed:	Restart label wasn't multi-language in some layouts + onleft of dashboard button was wrong.
+2006-08-16 changed:	Switched "Restart XBMC" button in shutdownmenu to onup restart instead of onup shutdown button.
+2006-08-16 changed:	Use "Yes" as default in DialogYesNo.xml (old change, but never comitted!!).
+2006-08-16 removed:	search button from library view, since the option is in contextmenu.
+2006-08-16 fixed:	Skin Settings onleft/right wasn't working (not consistant with other window behavior).
+2006-08-16 fixed:	Several onup were wrong/not working (My Programs, VideoInfo)
+
+2006-08-13 fixed:	onup/ondown on listcontrol were not set correctly to wraparound in FileBrowser.xml
+2006-07-21 fixed:	MPPA Rating was not displayed in 16x9 and label was incorrect
 2006-07-19 added:	profiles / login screen support
-2006-07-10 changed: 	onright in mediasource dialog's name fields now move to cancel, otherwise no way to select cancel if ok is disabled
-2006-07-10 changed: 	listcontrols now have same onup/ondown setting as thumbpanel. (ie same id as itself if it should wrap around), preparation for potential skin engine change
+2006-07-10 changed:	onright in mediasource dialog's name fields now move to cancel, otherwise no way to select cancel if ok is disabled
+2006-07-10 changed:	listcontrols now have same onup/ondown setting as thumbpanel. (ie same id as itself if it should wrap around), preparation for potential skin engine change
 2006-07-09 changed:	Kai button in programs is now only visible if kai is enabled.
 
 2006-07-04 fixed:	Wrong slide in profile window.

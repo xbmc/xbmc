@@ -2,9 +2,8 @@
 
  <id>114</id>
  <defaultcontrol always="true">403</defaultcontrol>
+ <include>dialogeffect</include>
  <visible>Player.HasMedia + Window.IsActive(PlayerControls) + !Window.IsActive(FullscreenVideo)</visible>
- <animation effect="fade" time="200">WindowOpen</animation>
- <animation effect="fade" time="200">WindowClose</animation>
  <type>dialog</type>
 
  <coordinates>
