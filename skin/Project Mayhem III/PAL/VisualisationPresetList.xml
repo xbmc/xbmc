@@ -2,8 +2,7 @@
 
  <id>122</id>
  <defaultcontrol>2</defaultcontrol>
- <animation effect="fade" time="200">WindowOpen</animation>
- <animation effect="fade" time="200">WindowClose</animation>
+ <include>dialogeffect</include>
 
  <coordinates>
   <system>1</system>

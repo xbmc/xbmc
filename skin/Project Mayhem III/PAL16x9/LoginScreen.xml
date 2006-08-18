@@ -163,6 +163,7 @@
 	<itemheight>70</itemheight>
 	<spacebetweenitems>10</spacebetweenitems>
 	<textureheight>80</textureheight>
+	<texturewidth>80</texturewidth>
 	<onleft>98</onleft>
 	<onright>98</onright>
 	<onup>52</onup>
@@ -176,7 +177,7 @@
 	<id>98</id>
 	<posx>610</posx>
 	<posy>503</posy>
-	<width>35</width>
+	<width>26</width>
 	<height>35</height>
 	<onclick>ActivateWindow(ShutdownMenu)</onclick>
 	<texturefocus>logon-power.gif</texturefocus>

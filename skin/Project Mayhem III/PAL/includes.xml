@@ -81,5 +81,9 @@
    <animation effect="fade" time="300">VisibleChange</animation>
   </include>
 
-</includes>
+  <include name="dialogeffect">
+   <animation effect="fade" time="200">WindowOpen</animation>
+   <animation effect="fade" time="200">WindowClose</animation>
+  </include>
 
+</includes>

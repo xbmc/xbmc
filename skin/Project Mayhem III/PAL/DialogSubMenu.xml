@@ -1,8 +1,7 @@
 <window>
 
  <id>105</id>
- <animation effect="fade" time="200">WindowOpen</animation>
- <animation effect="fade" time="200">WindowClose</animation>
+ <include>dialogeffect</include>
 
 <!--  Change the defaultcontrol ID to have another button focussed when  !-->
 <!--  you bring the panel up.                                            !-->
