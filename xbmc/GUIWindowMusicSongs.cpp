@@ -338,52 +338,6 @@ void CGUIWindowMusicSongs::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 
-void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
-{
-  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() || (!g_guiSettings.GetBool("musicfiles.usetags") && !items.IsCDDA()))
-    return;
-
-  // Start the music info loader thread
-  m_musicInfoLoader.SetProgressCallback(m_dlgProgress);
-  m_musicInfoLoader.Load(items);
-
-  bool bShowProgress=!m_gWindowManager.IsRouted();
-  bool bProgressVisible=false;
-
-  DWORD dwTick=timeGetTime();
-
-  while (m_musicInfoLoader.IsLoading())
-  {
-    if (bShowProgress)
-    { // Do we have to init a progress dialog?
-      DWORD dwElapsed=timeGetTime()-dwTick;
-
-      if (!bProgressVisible && dwElapsed>1500 && m_dlgProgress)
-      { // tag loading takes more then 1.5 secs, show a progress dialog
-        CURL url(m_vecItems.m_strPath);
-        CStdString strStrippedPath;
-        url.GetURLWithoutUserDetails(strStrippedPath);
-        m_dlgProgress->SetHeading(189);
-        m_dlgProgress->SetLine(0, 505);
-        m_dlgProgress->SetLine(1, "");
-        m_dlgProgress->SetLine(2, strStrippedPath );
-        m_dlgProgress->StartModal();
-        m_dlgProgress->ShowProgressBar(true);
-        bProgressVisible = true;
-      }
-
-      if (bProgressVisible && m_dlgProgress)
-      { // keep GUI alive
-        m_dlgProgress->Progress();
-      }
-    } // if (bShowProgress)
-    Sleep(1);
-  } // while (m_musicInfoLoader.IsLoading())
-
-  if (bProgressVisible && m_dlgProgress)
-    m_dlgProgress->Close();
-}
-
 /// \brief Search for a song or a artist with search string \e strSearch in the musicdatabase and return the found \e items
 /// \param strSearch The search string
 /// \param items Items Found
