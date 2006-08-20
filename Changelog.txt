@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-08-2006 fixed: 8-bit audio playback was distorted.
  - 18-08-2006 fixed: flattening of dvd games.
  - 17-08-2006 fixed: slow queuing by allowing python xbmc.PlayList(0)[i].getduration() to load the tag if necessary. python guru's please test!
  - 17-08-2006 fixed: mockup with dual ids in anything based on guidialogsettings.
