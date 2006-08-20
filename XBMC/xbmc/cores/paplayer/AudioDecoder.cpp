@@ -299,7 +299,7 @@ int CAudioDecoder::ReadPCMSamples(float *buffer, int numsamples, int *actualsamp
   {
   case 8:
     for (i = 0; i < *actualsamples; i++)
-      m_inputBuffer[i] = 1.0f / 0x7f * m_pcmInputBuffer[i];
+      m_inputBuffer[i] = 1.0f / 0x7f * (m_pcmInputBuffer[i] - 128);
     break;
   case 16:
     *actualsamples /= 2;
