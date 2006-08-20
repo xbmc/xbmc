@@ -177,10 +177,12 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     return true;
 
   CFileItem directory(strDirectory, true);
-  if (directory.IsPlayList())
-    return GetSongsFromPlayList(strDirectory, items);
 
-  return CGUIWindowMusicBase::GetDirectory(strDirectory, items);
+  bool bResult = CGUIWindowMusicBase::GetDirectory(strDirectory, items);
+  if (bResult && directory.IsPlayList())
+    OnRetrieveMusicInfo(items);
+
+  return bResult;
 }
 
 void CGUIWindowMusicNav::UpdateButtons()
@@ -233,22 +235,6 @@ void CGUIWindowMusicNav::UpdateButtons()
   CONTROL_DESELECT(CONTROL_BTNPARTYMODE);
   if (g_partyModeManager.IsEnabled())
     CONTROL_SELECT(CONTROL_BTNPARTYMODE);
-}
-
-bool CGUIWindowMusicNav::OnClick(int iItem)
-{
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return true;
-  CFileItem* pItem = m_vecItems[iItem];
-
-  if (!pItem->m_bIsFolder && pItem->IsPlayList())
-  { //  treat playlists like folders
-    CStdString strPath=pItem->m_strPath;
-    m_history.AddPath(strPath);
-    Update(strPath);
-    return true;
-  }
-
-  return CGUIWindowMusicBase::OnClick(iItem);
 }
 
 /// \brief Search for songs, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items

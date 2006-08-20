@@ -10,6 +10,7 @@
 #include "MusicInfoTagLoaderFactory.h"
 #include "Utils/MusicInfoScraper.h"
 #include "playlistplayer.h"
+#include "musicinfoloader.h"
 
 using namespace DIRECTORY;
 using namespace PLAYLIST;
@@ -72,4 +73,5 @@ protected:
   // member variables to save frequently used g_guiSettings (which is slow)
   bool m_hideExtensions;
   CMusicDatabase m_musicdatabase;
+  CMusicInfoLoader m_musicInfoLoader;
 };
