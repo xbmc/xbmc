@@ -1,6 +1,6 @@
 #pragma once
 #include "GUIWindowMusicBase.h"
-#include "MusicInfoLoader.h"
+//#include "MusicInfoLoader.h"
 
 class CGUIWindowMusicPlayList : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
 {
@@ -29,7 +29,6 @@ protected:
   
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
 
-  CMusicInfoLoader m_tagloader;
   int iPos;
   VECSHARES m_shares;
 };
