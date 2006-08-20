@@ -744,11 +744,13 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 
 }
 
+/*
 /// \brief Can be overwritten to implement an own tag filling function.
 /// \param items File items to fill
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
 }
+*/
 
 /// \brief Retrieve tag information for \e m_vecItems
 void CGUIWindowMusicBase::RetrieveMusicInfo()
@@ -822,7 +824,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
   if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP()) // no zip/rar enques thank you!
     return;
 
-  if (pItem->m_bIsFolder)
+  if (pItem->m_bIsFolder || (m_gWindowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
   {
     // Check if we add a locked share
     if ( pItem->m_bIsShareOrDrive )
@@ -1432,7 +1434,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
       bIsDAAPplaylist = true;
   }
   // if its a folder, build a playlist
-  if (pItem->m_bIsFolder)
+  if (pItem->m_bIsFolder || (m_gWindowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
   {
     CFileItem item(*m_vecItems[iItem]);
   
@@ -1594,4 +1596,50 @@ void CGUIWindowMusicBase::UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb
       }
     }
   }
+}
+
+void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
+{
+  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() || (!g_guiSettings.GetBool("musicfiles.usetags") && !items.IsCDDA()))
+    return;
+
+  // Start the music info loader thread
+  m_musicInfoLoader.SetProgressCallback(m_dlgProgress);
+  m_musicInfoLoader.Load(items);
+
+  bool bShowProgress=!m_gWindowManager.IsRouted();
+  bool bProgressVisible=false;
+
+  DWORD dwTick=timeGetTime();
+
+  while (m_musicInfoLoader.IsLoading())
+  {
+    if (bShowProgress)
+    { // Do we have to init a progress dialog?
+      DWORD dwElapsed=timeGetTime()-dwTick;
+
+      if (!bProgressVisible && dwElapsed>1500 && m_dlgProgress)
+      { // tag loading takes more then 1.5 secs, show a progress dialog
+        CURL url(m_vecItems.m_strPath);
+        CStdString strStrippedPath;
+        url.GetURLWithoutUserDetails(strStrippedPath);
+        m_dlgProgress->SetHeading(189);
+        m_dlgProgress->SetLine(0, 505);
+        m_dlgProgress->SetLine(1, "");
+        m_dlgProgress->SetLine(2, strStrippedPath );
+        m_dlgProgress->StartModal();
+        m_dlgProgress->ShowProgressBar(true);
+        bProgressVisible = true;
+      }
+
+      if (bProgressVisible && m_dlgProgress)
+      { // keep GUI alive
+        m_dlgProgress->Progress();
+      }
+    } // if (bShowProgress)
+    Sleep(1);
+  } // while (m_musicInfoLoader.IsLoading())
+
+  if (bProgressVisible && m_dlgProgress)
+    m_dlgProgress->Close();
 }
