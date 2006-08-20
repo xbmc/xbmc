@@ -30,7 +30,7 @@
 CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST, "MyMusicPlaylist.xml")
 {
-  m_tagloader.SetObserver(this);
+  m_musicInfoLoader.SetObserver(this);
   iPos = -1;
 }
 
@@ -67,7 +67,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       // Setup item cache for tagloader
-      m_tagloader.UseCacheOnHD("Z:\\MusicPlaylist.fi");
+      m_musicInfoLoader.UseCacheOnHD("Z:\\MusicPlaylist.fi");
 
       m_vecItems.m_strPath="playlistmusic://";
 
@@ -94,8 +94,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      if (m_tagloader.IsLoading())
-        m_tagloader.StopThread();
+      if (m_musicInfoLoader.IsLoading())
+        m_musicInfoLoader.StopThread();
 
       iPos = -1;
     }
@@ -123,8 +123,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNCLEAR)
       {
-        if (m_tagloader.IsLoading())
-          m_tagloader.StopThread();
+        if (m_musicInfoLoader.IsLoading())
+          m_musicInfoLoader.StopThread();
 
         ClearPlayList();
       }
@@ -546,13 +546,13 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 
 bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 {
-  if (m_tagloader.IsLoading())
-    m_tagloader.StopThread();
+  if (m_musicInfoLoader.IsLoading())
+    m_musicInfoLoader.StopThread();
 
   if (!CGUIWindowMusicBase::Update(strDirectory))
     return false;
 
-  m_tagloader.Load(m_vecItems);
+  m_musicInfoLoader.Load(m_vecItems);
 
   return true;
 }
@@ -696,14 +696,14 @@ void CGUIWindowMusicPlayList::OnMove(int iItem, int iAction)
 {
   if (iItem < 0 || iItem >= m_vecItems.Size()) return;
 
-  bool bRestart = m_tagloader.IsLoading();
+  bool bRestart = m_musicInfoLoader.IsLoading();
   if (bRestart)
-    m_tagloader.StopThread();
+    m_musicInfoLoader.StopThread();
 
   MoveCurrentPlayListItem(iItem, iAction);
 
   if (bRestart)
-    m_tagloader.Load(m_vecItems);
+    m_musicInfoLoader.Load(m_vecItems);
 }
 
 void CGUIWindowMusicPlayList::MoveItem(int iStart, int iDest)
@@ -721,9 +721,9 @@ void CGUIWindowMusicPlayList::MoveItem(int iStart, int iDest)
     iDirection = 1;
   }
 
-  bool bRestart = m_tagloader.IsLoading();
+  bool bRestart = m_musicInfoLoader.IsLoading();
   if (bRestart)
-    m_tagloader.StopThread();
+    m_musicInfoLoader.StopThread();
 
   // keep swapping until you get to the destination or you
   // hit the currently playing song
@@ -740,5 +740,5 @@ void CGUIWindowMusicPlayList::MoveItem(int iStart, int iDest)
   Update(m_vecItems.m_strPath);
 
   if (bRestart)
-    m_tagloader.Load(m_vecItems);
+    m_musicInfoLoader.Load(m_vecItems);
 }

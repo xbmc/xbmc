@@ -1,6 +1,5 @@
 #pragma once
 #include "GUIWindowMusicBase.h"
-#include "musicinfoloader.h"
 #include "ThumbLoader.h"
 
 class CGUIWindowMusicSongs : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
@@ -19,7 +18,6 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnPopupMenu(int iItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
-  virtual void OnRetrieveMusicInfo(CFileItemList& items);
   virtual void OnScan();
 
   // new method
@@ -27,7 +25,6 @@ protected:
 
   void DeleteDirectoryCache();
   void DeleteRemoveableMediaDirectoryCache();
-  CMusicInfoLoader m_musicInfoLoader;
 
   CMusicThumbLoader m_thumbLoader;
 };
