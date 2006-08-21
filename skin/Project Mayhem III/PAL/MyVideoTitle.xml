@@ -230,8 +230,8 @@
    <textureheight>120</textureheight>
    <onleft>2</onleft>
    <onright>52</onright>
-   <onup>2</onup>
-   <ondown>2</ondown>
+   <onup>52</onup>
+   <ondown>52</ondown>
    <include>contentpanelslide</include>
   </control>
 
