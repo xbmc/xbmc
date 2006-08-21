@@ -401,6 +401,14 @@ void CRGBRenderer::Render(DWORD flags)
       else
         m_pD3DDevice->SetTexture(0, SURFTOTEX(p444PSource[FIELD_FULL]));
 
+      /* hackish fix for odd rendering issue              */
+      /* when backbuffer is used as render source         */
+      /* if the top pixel lies outside the backbuffer     */
+      /* (ie negative), we get weird lines in the result. */
+      if( rs_new.top == rd.top && rs_new.bottom == rd.bottom )
+        if(rd.top <0)
+          rd.top = rs_new.top = 0;
+
 
       m_pD3DDevice->Begin(D3DPT_QUADLIST);
 
