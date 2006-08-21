@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-08-2006 fixed: if video was zoomed in so that part of video was rendered above top of display, artifacts in the form of lines would appear using HQ Renderer.
  - 20-08-2006 fixed: playlist support from the music library view
  - 20-08-2006 fixed: 8-bit audio playback was distorted.
  - 18-08-2006 fixed: flattening of dvd games.
