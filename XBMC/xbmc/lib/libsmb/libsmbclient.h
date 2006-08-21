@@ -71,7 +71,7 @@ extern "C" {
 #include <sys/stat.h>
 #include <fcntl.h>
 #ifdef _XBOX
-	#include <sys/utime.h>
+#include <sys/utime.h>
 #elif
 #include <utime.h>
 #endif
@@ -208,7 +208,7 @@ typedef struct _SMBCCTX SMBCCTX;
 
 
 /**@ingroup callback
- * Authentication callback function type.
+ * Authentication callback function type (traditional method)
  * 
  * Type for the the authentication function called by the library to
  * obtain authentication credentals
@@ -241,6 +241,43 @@ typedef void (*smbc_get_auth_data_fn)(const char *srv,
                                       char *wg, int wglen, 
                                       char *un, int unlen,
                                       char *pw, int pwlen);
+/**@ingroup callback
+ * Authentication callback function type (method that includes context)
+ * 
+ * Type for the the authentication function called by the library to
+ * obtain authentication credentals
+ *
+ * @param c         Pointer to the smb context
+ *
+ * @param srv       Server being authenticated to
+ *
+ * @param shr       Share being authenticated to
+ *
+ * @param wg        Pointer to buffer containing a "hint" for the
+ *                  workgroup to be authenticated.  Should be filled in
+ *                  with the correct workgroup if the hint is wrong.
+ * 
+ * @param wglen     The size of the workgroup buffer in bytes
+ *
+ * @param un        Pointer to buffer containing a "hint" for the
+ *                  user name to be use for authentication. Should be
+ *                  filled in with the correct workgroup if the hint is
+ *                  wrong.
+ * 
+ * @param unlen     The size of the username buffer in bytes
+ *
+ * @param pw        Pointer to buffer containing to which password 
+ *                  copied
+ * 
+ * @param pwlen     The size of the password buffer in bytes
+ *           
+ */
+typedef void (*smbc_get_auth_data_with_context_fn)(SMBCCTX *c,
+                                                   const char *srv, 
+                                                   const char *shr,
+                                                   char *wg, int wglen, 
+                                                   char *un, int unlen,
+                                                   char *pw, int pwlen);
 
 
 /**@ingroup callback
@@ -392,7 +429,7 @@ struct _SMBCCTX {
 			       struct smbc_dirent *dirp, int count);
 	int        (*mkdir)   (SMBCCTX *c, const char *fname, mode_t mode);
 	int        (*rmdir)   (SMBCCTX *c, const char *fname);
-	SMB_OFF_T      (*telldir) (SMBCCTX *c, SMBCFILE *dir);
+	SMB_OFF_T  (*telldir) (SMBCCTX *c, SMBCFILE *dir);
 	int        (*lseekdir)(SMBCCTX *c, SMBCFILE *dir, SMB_OFF_T offset);
 	int        (*fstatdir)(SMBCCTX *c, SMBCFILE *dir, SMB_STRUCT_STAT *st);
         int        (*chmod)(SMBCCTX *c, const char *fname, mode_t mode);
@@ -426,14 +463,15 @@ struct _SMBCCTX {
 	int        (*unlink_print_job)(SMBCCTX *c, const char *fname, int id);
 
 
-	/** Callbacks
-	 * These callbacks _always_ have to be initialized because they will not be checked
-	 * at dereference for increased speed.
-	 */
+        /*
+        ** Callbacks
+        * These callbacks _always_ have to be initialized because they will
+        * not be checked at dereference for increased speed.
+        */
 	struct _smbc_callbacks {
 		/** authentication function callback: called upon auth requests
 		 */
-		smbc_get_auth_data_fn auth_fn;
+                smbc_get_auth_data_fn auth_fn;
 		
 		/** check if a server is still good
 		 */
@@ -581,9 +619,41 @@ SMBCCTX * smbc_new_context(void);
  */
 int smbc_free_context(SMBCCTX * context, int shutdown_ctx);
 
-#ifdef _XBOX
-int smbc_purge();
-#endif //_XBOX
+
+/**@ingroup misc
+ * Each time the context structure is changed, we have binary backward
+ * compatibility issues.  Instead of modifying the public portions of the
+ * context structure to add new options, instead, we put them in the internal
+ * portion of the context structure and provide a set function for these new
+ * options.
+ *
+ * @param context   A pointer to a SMBCCTX obtained from smbc_new_context()
+ *
+ * @param option_name
+ *                  The name of the option for which the value is to be set
+ *
+ * @param option_value
+ *                  The new value of the option being set
+ *
+ */
+void
+smbc_option_set(SMBCCTX *context,
+                char *option_name,
+                void *option_value);
+/*
+ * Retrieve the current value of an option
+ *
+ * @param context   A pointer to a SMBCCTX obtained from smbc_new_context()
+ *
+ * @param option_name
+ *                  The name of the option for which the value is to be
+ *                  retrieved
+ *
+ * @return          The value of the specified option.
+ */
+void *
+smbc_option_get(SMBCCTX *context,
+                char *option_name);
 
 /**@ingroup misc
  * Initialize a SBMCCTX (a context).
@@ -592,16 +662,19 @@ int smbc_purge();
  *
  * @param context   A pointer to a SMBCCTX obtained from smbc_new_context()
  *
- * @return          A pointer to the given SMBCCTX on success, NULL on error with errno set:
+ * @return          A pointer to the given SMBCCTX on success,
+ *                  NULL on error with errno set:
  *                  - EBADF  NULL context given
  *                  - ENOMEM Out of memory
  *                  - ENOENT The smb.conf file would not load
  *
  * @see             smbc_new_context()
  *
- * @note            my_context = smbc_init_context(smbc_new_context()) is perfectly safe, 
- *                  but it might leak memory on smbc_context_init() failure. Avoid this.
- *                  You'll have to call smbc_free_context() yourself on failure.  
+ * @note            my_context = smbc_init_context(smbc_new_context())
+ *                  is perfectly safe, but it might leak memory on
+ *                  smbc_context_init() failure. Avoid this.
+ *                  You'll have to call smbc_free_context() yourself
+ *                  on failure.  
  */
 
 SMBCCTX * smbc_init_context(SMBCCTX * context);
@@ -802,7 +875,7 @@ ssize_t smbc_write(int fd, void *buf, size_t bufsize);
  * @return          Upon successful completion, lseek returns the 
  *                  resulting offset location as measured in bytes 
  *                  from the beginning  of the file. Otherwise, a value
- *                  of (off_t)-1 is returned and errno is set to 
+ *                  of (SMB_OFF_T)-1 is returned and errno is set to 
  *                  indicate the error:
  *                  - EBADF  Fildes is not an open file descriptor.
  *                  - EINVAL Whence is not a proper value or smbc_init
@@ -1074,7 +1147,7 @@ int smbc_rmdir(const char *durl);
  * @param url       The smb url to get information for
  *
  * @param st        pointer to a buffer that will be filled with 
- *                  standard Unix struct stat information.
+ *                  standard Unix SMB_STRUCT_STAT information.
  *
  * @return          0 on success, < 0 on error with errno set:
  *                  - ENOENT A component of the path file_name does not
@@ -1096,7 +1169,7 @@ int smbc_stat(const char *url, SMB_STRUCT_STAT *st);
  * @param fd        Open file handle from smbc_open() or smbc_creat()
  *
  * @param st        pointer to a buffer that will be filled with 
- *                  standard Unix struct stat information.
+ *                  standard Unix SMB_STRUCT_STAT information.
  * 
  * @return          EBADF  filedes is bad.
  *                  - EACCES Permission denied.

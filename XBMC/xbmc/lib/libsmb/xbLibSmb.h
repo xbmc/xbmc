@@ -37,6 +37,7 @@ extern "C" {
 	void set_log_callback(smb_log_callback fn);
 	void xb_setSambaWorkgroup(char* workgroup);
 
+  int smbc_purge();
 #ifdef __cplusplus
 }
 #endif
