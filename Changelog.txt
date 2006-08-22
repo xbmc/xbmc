@@ -5,6 +5,19 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 22-08-2006 added: SmartXX v3 and OPX full RGB PWM controll (http://www.xboxmediacenter.com/wiki/index.php?title=List_of_Built_In_Functions)
+                     BuildIn Command: XBMC.system.pwmcontroll(#rrggbb,#rrggbb,action,time)
+                     e.g.: blink Blue <onclick>XBMC.system.pwmcontroll(#0000FF,#000000,blink,100)</onclick>
+		     Thanks to www.freakware.com for sponsoring some SmartXX v3
+ - 22-08-2006 fixed: CURL FTP Client speed up transfer rate, debug log causes a sleep effect
+ - 22-08-2006 added: popup informations if xbox memory units are detected
+ - 22-08-2006 added: XBOX Autodetection now creates a Virtual ftp share on sucessfull detection
+ - 22-08-2006 removed: Settings, XBOX autodetection Createlink, no longer needed
+ - 22-08-2006 fixed: [ 1476262 ] System Info error while playing music
+ - 22-08-2006 added: Systeminfo: display Memunit information
+ - 22-08-2006 added: HDD S.M.A.R.T Requesting to InfoManager (atm. only HDD Temperature is Tested)
+                     Request String: System.HDDsmart(17) http://www.xboxmediacenter.com/wiki/index.php?title=InfoLabels#Labels_Available_In_XBMC
  - 22-08-2006 added: B as Back in media windows (and elsewhere).  Thanks to Markeen.
  - 22-08-2006 changed: Stretch 14:9 zooms additionally so that black bars are eliminated.
  - 22-08-2006 fixed: Random highlighted items when entering folders for the first time.

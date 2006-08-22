@@ -887,7 +887,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("autodetect.onoff") && (g_settings.m_iLastLoadedProfileIndex == 0));
     }
-    else if (strSetting.Equals("autodetect.createlink") || strSetting.Equals("autodetect.popupinfo"))
+    else if ( strSetting.Equals("autodetect.popupinfo"))
     {
       //GeminiServer
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
