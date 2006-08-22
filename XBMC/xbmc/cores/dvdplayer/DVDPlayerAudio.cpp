@@ -538,7 +538,7 @@ bool CDVDPlayerAudio::InitializeOutputDevice()
   int iChannels = m_pAudioCodec->GetChannels();
   int iSampleRate = m_pAudioCodec->GetSampleRate();
   int iBitsPerSample = m_pAudioCodec->GetBitsPerSample();
-  bool bPasstrough = m_pAudioCodec->NeedPasstrough();
+  bool bPassthrough = m_pAudioCodec->NeedPasstrough();
 
   if (iChannels == 0 || iSampleRate == 0 || iBitsPerSample == 0)
   {
@@ -546,8 +546,8 @@ bool CDVDPlayerAudio::InitializeOutputDevice()
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i", m_streaminfo.codec, iChannels, iSampleRate);
-  if (m_dvdAudio.Create(iChannels, iSampleRate, iBitsPerSample, bPasstrough)) // always 16 bit with ffmpeg ?
+  CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i, %s", m_streaminfo.codec, iChannels, iSampleRate, bPassthrough ? "pass-through" : "no pass-through");
+  if (m_dvdAudio.Create(iChannels, iSampleRate, iBitsPerSample, bPassthrough)) // always 16 bit with ffmpeg ?
   {
     return true;
   }
