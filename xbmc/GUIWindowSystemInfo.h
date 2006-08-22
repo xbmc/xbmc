@@ -24,7 +24,7 @@ public:
 	void	CreateEEPROMBackup(LPCSTR BackupFilePrefix);
 	void	WriteTXTInfoFile(LPCSTR strFilename);
 	
-	bool	GetUnits(int i_lblp1, int i_lblp2);
+	bool	GetUnits(int i_lblp1, int i_lblp2, int i_lblp3);
 	bool	GetATAPIValues(int i_lblp1, int i_lblp2);
 	bool  GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7);
 	bool	GetBuildTime(int i_lblp1, int i_lblp2, int i_lblp3);

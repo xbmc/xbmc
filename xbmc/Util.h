@@ -1,8 +1,9 @@
 #pragma once
+#include <vector>
 #include "playlist.h"
 #include "filesystem/rarmanager.h"
-#include "settings.h"
 #include "xbox/custom_launch_params.h"
+#include "Settings.h"
 
 class CTrainer;
 
@@ -325,18 +326,19 @@ public:
   static int GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew);
   static bool XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo );
   static bool XboxAutoDetection();
+  static bool XboxAutoDetectionGetShare(CShare& share);
   static bool IsFTP(const CStdString& strFile);
   static bool GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax );
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
   static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);
   static bool GetXBOXNickName(CStdString &strXboxNickNameOut);
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
-
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask);
-  
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
   static void ForceForwardSlashes(CStdString& strPath);
+  static bool PWMControll(CStdString strRGBa, CStdString strRGBb, CStdString strTransition, int iTrTime);
 
+  
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
   static float CurrentCpuUsage();

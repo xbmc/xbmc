@@ -13,59 +13,9 @@
 #include "../settings.h"
 #include "../utils/log.h"
 #include "../xbox/Undocumented.h"
-
-// SMART Attributes				   //Req: ID:	Offset:		Name of attribute:					Description:						
-PCHAR	pAttrNames[] = {		   //----------------------------------------------------------------------------------------------------------------------------	
-	"No Attribute Here          ", //0		0		0		No Attribute Here					No description here		
-	"Raw Read Error Rate        ", //1		1		1		Raw Read Error Rate					Frequency of errors appearance while reading RAW data from a disk	
-	"Throughput Performance     ", //2		2		2		Throughput Performance				The average efficiency of hard disk	
-	"Spin Up Time               ", //3		3		3		Spin Up Time						Time needed by spindle to spin-up	
-	"Start/Stop Count           ", //4		4		4		Start/Stop Count					Number of start/stop cycles of spindle	
-	"Reallocated Sector Count   ", //5		5		5		Reallocated Sector Count			Quantity of remapped sectors	
-	"Read Channel Margin        ", //6		6		6		Read Channel Margin					Reserve of channel while reading	
-	"Seek Error Rate            ", //7		7		7		Seek Error Rate						Frequency of errors appearance while positioning	
-	"Seek Time Performance      ", //8		8		8		Seek Time Performance				The average efficiency of operations while positioning	
-	"Power On Hours Count       ", //9		9		9		Power-On Hours Count				Quantity of elapsed hours in the switched-on state	
-	"Spin Retry Count           ", //10		10		A		Spin-up Retry Count					Number of attempts to start a spindle of a disk	
-	"Calibration Retry Count    ", //11		11		B		Calibration Retry Count				Number of attempts to calibrate a drive	
-	"Power Cycle Count          ", //12		12		C		Power Cycle Count					Number of complete start/stop cycles of hard disk	
-	"Soft Read Error Rate       ", //13		13		D		Soft Read Error Rate				Frequency of "program" errors appearance while reading data from a disk	
-	"G-Sense Error Rate         ", //14		191		BF		G-Sense Error Rate					Frequency of mistakes appearance as a result of impact loads	
-	"Power-Off Retract Cycle    ", //15		192		C0		Power-Off Retract Cycle				Number of the fixed 'turning off drive' cycles (Fujitsu: Emergency Retract Cycle Count)	
-	"Load/Unload Cycle Count    ", //16		193		C1		Load/Unload Cycle Count				Number of cycles into Landing Zone position	
-	"HDA Temperature            ", //17		194		C2		HDA Temperature						Temperature of a Hard Disk Assembly	
-	"Hardware ECC Recovered     ", //18		195		C3		Hardware ECC Recovered				Frequency of the on the fly errors (Fujitsu: ECC On The Fly Count)	
-	"Reallocated Event Count    ", //19		196		C4		Reallocated Event Count				Quantity of remapping operations	
-	"CurrentPending SecrCnt     ", //20		197		C5		Current Pending Sector Count		Current quantity of unstable sectors (waiting for remapping)	
-	"Off-LineUncorrectableCnt   ", //21		198		C6		Off-line Scan Uncorrectable Count	Quantity of uncorrected errors	
-	"UltraDMA CRC Error Rate    ", //22		199		C7		UltraDMA CRC Error Rate				Total quantity of errors CRC during UltraDMA mode	
-	"Write Error Rate           ", //23		200		C8		Write Error Rate					Frequency of errors appearance while recording data into disk (Western Digital: Multi Zone Error Rate)	
-	"Soft Read Error Rate       ", //24		201		C9		Soft Read Error Rate				Frequency of the off track errors (Maxtor: Off Track Errors)	
-	"Data Address Mark Errors   ", //25		202		CA		Data Address Mark Errors			Frequency of the Data Address Mark errors	
-	"Run Out Cancel             ", //26		203		CB		Run Out Cancel						Frequency of the ECC errors (Maxtor: ECC Errors)	
-	"Soft ECC Correction        ", //27		204		CC		Soft ECC Correction					Quantity of errors corrected by software ECC	
-	"Thermal Asperity Rate      ", //28		205		CD		Thermal Asperity Rate				Frequency of the thermal asperity errors	
-	"Flying Height              ", //29		206		CE		Flying Height						The height of the disk heads above the disk surface	
-	"Spin High Current          ", //30		207		CF		Spin High Current					Quantity of used high current to spin up drive	
-	"Spin Buzz                  ", //31		208		D0		Spin Buzz							Quantity of used buzz routines to spin up drive	
-	"Offline Seek Performance   ", //32		209		D1		Offline Seek Performance			Drive's seek performance during offline operations	
-	"Disk Shift                 ", //34		220		DC		Disk Shift							Shift of disk is possible as a result of strong shock loading in the store, as a result of it's falling or for other reasons (sometimes: Temperature)	
-	"G-Sense Error              ", //35		221		DD		G-Sense Error						Rate	This attribute is an indication of shock-sensitive sensor - total quantity of errors appearance as a result of impact loads (dropping drive, for example)	
-	"Loaded Hours               ", //36		222		DE		Loaded Hours						Loading on drive caused by the general operating time of hours it stores	
-	"Load/Unload Retry Count    ", //37		223		DF		Load/Unload Retry Count				Loading on drive caused by numerous recurrences of operations like: reading, recording, positioning of heads, etc.	
-	"Load Friction              ", //38		224		E0		Load Friction						Loading on drive caused by friction in mechanical parts of the store	
-	"Load/Unload Cycle Count    ", //39		225		E1		Load/Unload Cycle Count				Total of cycles of loading on drive	
-	"Load-in Time               ", //40		226		E2		Load-in Time						General time of loading for drive	
-	"Torque Amplification Cnt   ", //41		227		E3		Torque Amplification Count			Quantity efforts of the rotating moment of a drive	
-	"Power-Off Retract Count    ", //42		228		E4		Power-Off Retract Count				Quantity of the fixed turning off's a drive	
-	"GMR Head Amplitude         ", //43		230		E6		GMR Head Amplitude					Amplitude of heads trembling (GMR-head) in running mode	
-	"Temperature                ", //44		231		E7		Temperature							Temperature of a drive	
-	"Head Flying Hours          ", //45		240		F0		Head Flying Hours					Time while head is positioning	
-	"Read Error Retry Rate      "  //46		250		FA		Read Error Retry Rate				Frequency of errors appearance while reading data from a disk	
-};		
+#include "../application.h"
 
 CXBoxFlash			*mbFlash;
-SYSINFO g_sysinfo;
 
 typedef struct 
 {
@@ -94,12 +44,36 @@ char* cBIOSmd5IDs	=	"Q:\\System\\SystemInfo\\BiosIDs.ini";
 static char* MDPrint (MD5_CTX_N *mdContext);
 static char* MD5File(char *filename,long PosizioneInizio,int KBytes);
 
-
-SYSINFO::SYSINFO()
+CSysInfo::CSysInfo()
 {
 }
-SYSINFO::~SYSINFO()
+CSysInfo::~CSysInfo()
+{ 
+  Stop(); 
+}
+void CSysInfo::OnStartup()
 {
+}
+void CSysInfo::OnExit()
+{
+}
+void CSysInfo::Process()
+{
+  //can do something usefull here
+}
+bool CSysInfo::Start()
+{
+  // if(!1) return false;
+  Create();
+  return true;
+}
+void CSysInfo::Stop()
+{
+  StopThread();
+}
+bool CSysInfo::IsRunning()
+{
+  return (m_ThreadHandle != NULL);
 }
 
 static void outb(unsigned short port, unsigned char data)
@@ -171,7 +145,7 @@ char* MD5File(char *filename,long PosizioneInizio,int KBytes)
   free (data);
   return (strupr(MD5_Sign));
 }
-CStdString SYSINFO::MD5FileNew(char *filename,long PosizioneInizio,int KBytes)
+CStdString CSysInfo::MD5FileNew(char *filename,long PosizioneInizio,int KBytes)
 {
   CStdString strReturn;
   FILE *inFile = fopen (filename, "rb");
@@ -187,7 +161,7 @@ CStdString SYSINFO::MD5FileNew(char *filename,long PosizioneInizio,int KBytes)
   free(data);
   return strReturn;
 }
-CStdString SYSINFO::GetAVPackInfo()
+CStdString CSysInfo::GetAVPackInfo()
 {	//AV-Pack Detection PICReg(0x04)
 	int cAVPack; 
 	HalReadSMBusValue(0x20,XKUtils::PIC16L_CMD_AV_PACK,0,(LPBYTE)&cAVPack);
@@ -202,7 +176,7 @@ CStdString SYSINFO::GetAVPackInfo()
 	else if (cAVPack == XKUtils::AV_PACK_Missing)	return "Missing or Unknown";
 	else return "Unknown";
 }
-CStdString SYSINFO::GetVideoEncoder()
+CStdString CSysInfo::GetVideoEncoder()
 {	
 	// XBOX Video Encoder Detection GeminiServer
 	int iTemp;
@@ -215,7 +189,7 @@ CStdString SYSINFO::GetVideoEncoder()
 	else {	CLog::Log(LOGDEBUG, "Video Encoder: UNKNOWN");	return "UNKNOWN";	}
 }
 
-CStdString SYSINFO::GetModCHIPDetected()
+CStdString CSysInfo::GetModCHIPDetected()
 {
 	mbFlash=new(CXBoxFlash); //Max description Leng= 40
 	{
@@ -410,7 +384,7 @@ CStdString SYSINFO::GetModCHIPDetected()
   return strTemp;
 }
 
-CStdString SYSINFO::SmartXXModCHIP()
+CStdString CSysInfo::SmartXXModCHIP()
 {	
   // SmartXX ModChip Detection Routine! 13.04.2005 GeminiServer
   unsigned char uSmartXX_ID = ((inb(0xf701)) & 0xf);
@@ -440,7 +414,7 @@ CStdString SYSINFO::SmartXXModCHIP()
 		return "None";
 	}
 }
-UCHAR SYSINFO::IdeRead(USHORT port) 
+UCHAR CSysInfo::IdeRead(USHORT port) 
 {
   UCHAR rval;
   _asm 
@@ -451,7 +425,7 @@ UCHAR SYSINFO::IdeRead(USHORT port)
   }
   return rval;
 }
-BYTE SYSINFO::GetSmartValues(int SmartREQ)
+BYTE CSysInfo::GetSmartValues(int SmartREQ)
 {
   BYTE retVal = 0;
 	XKHDD::ATA_COMMAND_OBJ hddcommand;
@@ -499,7 +473,7 @@ BYTE SYSINFO::GetSmartValues(int SmartREQ)
 	else 
     return 0;
 }
-bool SYSINFO::CheckBios(CStdString& strDetBiosNa)
+bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 {	
 	FILE *fp;
 	BYTE data;
@@ -620,7 +594,7 @@ bool SYSINFO::CheckBios(CStdString& strDetBiosNa)
 	free(BIOS_Name);
 	return false;
 }
-bool SYSINFO::GetXBOXVersionDetected(CStdString& strXboxVer)
+bool CSysInfo::GetXBOXVersionDetected(CStdString& strXboxVer)
 {
 	unsigned int iTemp;
 	char Ver[6];
@@ -646,7 +620,7 @@ bool SYSINFO::GetXBOXVersionDetected(CStdString& strXboxVer)
   else  {	strXboxVer.Format("UNKNOWN: Please report this --> %s",Ver); return true;
 	}
 }
-bool SYSINFO::LoadBiosSigns()
+bool CSysInfo::LoadBiosSigns()
 {
 	FILE *infile;
 	int cntBioses;
@@ -667,8 +641,8 @@ bool SYSINFO::LoadBiosSigns()
 			{
 				if (strstr(stringone,"=")!= NULL)
 				{
-					strcpy(Listone[cntBioses].Name,SYSINFO::ReturnBiosName(stringone));
-					strcpy(Listone[cntBioses].Signature,SYSINFO::ReturnBiosSign(stringone));
+					strcpy(Listone[cntBioses].Name,CSysInfo::ReturnBiosName(stringone));
+					strcpy(Listone[cntBioses].Signature,CSysInfo::ReturnBiosSign(stringone));
 				cntBioses++;
 				}
 			}
@@ -679,7 +653,7 @@ bool SYSINFO::LoadBiosSigns()
 		return true;
 	}
 }
-bool SYSINFO::GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware)
+bool CSysInfo::GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware)
 {
 	XKHDD::ATA_COMMAND_OBJ hddcommand;
  	DWORD slen = 0;
@@ -712,7 +686,7 @@ bool SYSINFO::GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware)
 		return false;
 	}
 }
-bool SYSINFO::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState)
+bool CSysInfo::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState)
 {
 	XKHDD::ATA_COMMAND_OBJ hddcommand;
 	DWORD slen = 0;
@@ -785,7 +759,7 @@ bool SYSINFO::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdS
 	}
 	else return false;
 }
-bool SYSINFO::SmartXXLEDControll(int iSmartXXLED) 
+bool CSysInfo::SmartXXLEDControll(int iSmartXXLED) 
 {
 	//SmartXX LED0/LED1 Controll Routine! 21.04.2005 GeminiServer
 	//LED_R, LED_B, LED_RB, LED_RBCYCLE
@@ -903,7 +877,7 @@ bool SYSINFO::SmartXXLEDControll(int iSmartXXLED)
 	}
 	else return false;
 }
-void SYSINFO::Init_IDE()
+void CSysInfo::Init_IDE()
 {
     int ret;
     int errorCode;
@@ -931,7 +905,7 @@ void SYSINFO::Init_IDE()
     }
 }
 
-void SYSINFO::IdeWrite(USHORT port, UCHAR data) 
+void CSysInfo::IdeWrite(USHORT port, UCHAR data) 
 {
 	_asm
 	{
@@ -940,7 +914,7 @@ void SYSINFO::IdeWrite(USHORT port, UCHAR data)
 		out dx, al
 	}
 }
-double SYSINFO::GetCPUFrequence()
+double CSysInfo::GetCPUFrequence()
 {
 	unsigned __int64 Fwin;
 	unsigned __int64 Twin_fsb, Twin_result;
@@ -968,7 +942,7 @@ double SYSINFO::GetCPUFrequence()
 	CLog::Log(LOGDEBUG, "- CPU Speed: %4.6f Mhz",CPUSpeed);
 	return CPUSpeed;
 }
-double SYSINFO::RDTSC(void)
+double CSysInfo::RDTSC(void)
 {
 	unsigned long a, b;
 	double x;
@@ -983,7 +957,7 @@ double SYSINFO::RDTSC(void)
 	x+=a;
 	return x;
 }
-int	SYSINFO::readDriveConfig(int drive)
+int	CSysInfo::readDriveConfig(int drive)
 {
     int i;
     int status;
@@ -1034,7 +1008,7 @@ int	SYSINFO::readDriveConfig(int drive)
 
     return 0;
 }
-int	SYSINFO::IDE_getNumBlocks(int driveNum)
+int	CSysInfo::IDE_getNumBlocks(int driveNum)
 {
     if (driveNum < 0 || driveNum > (numDrives-1)) {
         return IDE_ERROR_BAD_DRIVE;
@@ -1045,7 +1019,7 @@ int	SYSINFO::IDE_getNumBlocks(int driveNum)
 	    drives[driveNum].num_Cylinders);
 }
 
-int	SYSINFO::IDE_Read(int driveNum, int blockNum, char *buffer)
+int	CSysInfo::IDE_Read(int driveNum, int blockNum, char *buffer)
 {
     int i;
     int head;
@@ -1116,7 +1090,7 @@ int	SYSINFO::IDE_Read(int driveNum, int blockNum, char *buffer)
 
     return IDE_ERROR_NO_ERROR;
 }
-int	SYSINFO::IDE_Write(int driveNum, int blockNum, char *buffer)
+int	CSysInfo::IDE_Write(int driveNum, int blockNum, char *buffer)
 {
     int i;
     int head;
@@ -1184,7 +1158,7 @@ int	SYSINFO::IDE_Write(int driveNum, int blockNum, char *buffer)
     //if (reEnable) Enable_Interrupts();
     return IDE_ERROR_NO_ERROR;
 }
-char* SYSINFO::ReturnBiosName(char *str)
+char* CSysInfo::ReturnBiosName(char *str)
 {
 	int cnt1,cnt2,i;
 	cnt1=cnt2=0;
@@ -1202,7 +1176,7 @@ char* SYSINFO::ReturnBiosName(char *str)
 	RetStrNomeBios[cnt1++]='\0';
 	return (RetStrNomeBios);
 }
-char* SYSINFO::ReturnBiosSign(char *str)
+char* CSysInfo::ReturnBiosSign(char *str)
 {
 	int cnt1,cnt2,i;
 	cnt1=cnt2=0;
@@ -1222,7 +1196,7 @@ char* SYSINFO::ReturnBiosSign(char *str)
 	RetStrSignBios[cnt1++]='\0';
 	return (RetStrSignBios);
 }
-char* SYSINFO::CheckMD5 (char *Sign)
+char* CSysInfo::CheckMD5 (char *Sign)
 {
 	int cntBioses;
 	cntBioses=0;
@@ -1238,7 +1212,7 @@ char* SYSINFO::CheckMD5 (char *Sign)
 //GeminiServer: System Up Time in Minutes 
 // Will return the time since the system was started!
 // Input Value int: Minutes  Return Values int: Minutes, Hours, Days
-bool SYSINFO::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
+bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
 {
   iMinutes=0;iHours=0;iDays=0;
   iMinutes = iInputMinutes;
@@ -1270,5 +1244,31 @@ bool SYSINFO::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &i
   }
   */
 
+  return true;
+}
+bool CSysInfo::MemUnitNotification( int iMountState, int iMemPort, char cDriveLetter )
+{
+  CStdString strText, strMountState;
+  switch ( iMountState )
+  {
+    case MEMUNIT_UNMOUNTED:
+      strMountState= g_localizeStrings.Get(20137);
+      break;
+    case MEMUNIT_MOUNTED:
+      strMountState= g_localizeStrings.Get(20138);
+      break;
+    case MEMUNIT_UNABLE_TO_MOUNT:
+      strMountState= g_localizeStrings.Get(20139);
+      break;
+    default:
+      return false;
+      break;
+  }
+  if (iMemPort != NULL)
+    strText.Format("%s%i %s %s %c",g_localizeStrings.Get(13167),iMemPort,g_localizeStrings.Get(20136).c_str(), strMountState.c_str(),cDriveLetter);
+  else
+    strText.Format("%s %s %c",g_localizeStrings.Get(20136).c_str(), strMountState.c_str(),cDriveLetter);
+
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(130) /*Head: Sysmtem Info*/, strText);
   return true;
 }

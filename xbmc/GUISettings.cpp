@@ -422,8 +422,7 @@ CGUISettings::CGUISettings(void)
   AddString(2,  "autodetect.nickname",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
   AddBool(4,    "autodetect.popupinfo", 1254, true);
   AddSeparator(5, "autodetect.sep1");
-  AddBool(6,    "autodetect.senduserpw",1255, true);
-  AddBool(7,    "autodetect.createlink",1253, false);
+  AddBool(6,    "autodetect.senduserpw",1255, true); // can be in advanced.xml! default:true
   
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
