@@ -103,7 +103,10 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
   }
   if (action.wID == ACTION_PARENT_DIR)
   {
-    GoParentFolder(list);
+    if (m_vecItems[list].IsVirtualDirectoryRoot())
+      m_gWindowManager.PreviousWindow();
+    else
+      GoParentFolder(list);
     return true;
   }
   if (action.wID == ACTION_PREVIOUS_MENU)
