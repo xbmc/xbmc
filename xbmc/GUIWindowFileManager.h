@@ -17,7 +17,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
-  virtual bool OnFileCallback(void* pContext, int ipercent);
+  virtual bool OnFileCallback(void* pContext, int ipercent, float curSpeed, float avgSpeed);
   const CFileItem &CurrentDirectory(int indx) const { return m_Directory[indx];};
 
   // static members for all windows to use

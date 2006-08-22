@@ -13,6 +13,7 @@
 #include "Utils/fstrcmp.h"
 #include "videodatabase.h"
 #include "SortFileItem.h"
+#include "utils/MemoryUnitManager.h"
 
 CFileItem::CFileItem(const CSong& song)
 {
@@ -494,12 +495,25 @@ bool CFileItem::IsVirtualDirectoryRoot() const
   return (m_bIsFolder && m_strPath.IsEmpty());
 }
 
+bool CFileItem::IsMemoryUnit() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Left(3).Equals("mem");
+}
+
+bool CFileItem::IsRemovable() const
+{
+  return IsOnDVD() || IsCDDA() || IsMemoryUnit();
+}
+
 bool CFileItem::IsReadOnly() const
 {
   // check for dvd/cd media
   if (IsOnDVD() || IsCDDA()) return true;
   // now check for remote shares (smb is writeable??)
   if (IsSmb()) return false;
+  // memory units are only writeable in some circumstances
+  if (IsMemoryUnit() && g_memoryUnitManager.IsDriveWriteable(m_strPath)) return true;
   // no other protocols are writeable??
   if (IsRemote()) return true;
   return false;

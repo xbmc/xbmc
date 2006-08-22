@@ -167,19 +167,18 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
             control->FreeResources();
         }
       }
-      //  Is there a dvd share in this window?
-      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
+      if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
       {
-        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
+        if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
         {
-          if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
-          {
-            int iItem = m_viewControl.GetSelectedItem();
-            Update(m_vecItems.m_strPath);
-            m_viewControl.SetSelectedItem(iItem);
-          }
-          else if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
-          { // Disc has changed and we are inside a DVD Drive share, get out of here :)
+          int iItem = m_viewControl.GetSelectedItem();
+          Update(m_vecItems.m_strPath);
+          m_viewControl.SetSelectedItem(iItem);
+        }
+        else if (m_vecItems.IsRemovable())
+        { // check that we have this removable share still
+          if (!m_rootDir.IsInShare(m_vecItems.m_strPath))
+          { // don't have this share any more
             if (IsActive()) Update("");
             else 
             {
@@ -187,20 +186,18 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
               m_vecItems.m_strPath="";
             }
           }
-
-          return true;
         }
-        else if (message.GetParam1()==GUI_MSG_DVDDRIVE_CHANGED_CD)
-        { // State of the dvd-drive changed (Open/Busy label,...), so update it
-          if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
-          {
-            int iItem = m_viewControl.GetSelectedItem();
-            Update(m_vecItems.m_strPath);
-            m_viewControl.SetSelectedItem(iItem);
-          }
-
-          return true;
+        return true;
+      }
+      else if (message.GetParam1()==GUI_MSG_UPDATE_BOOKMARKS)
+      { // State of the bookmarks changed, so update our view
+        if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
+        {
+          int iItem = m_viewControl.GetSelectedItem();
+          Update(m_vecItems.m_strPath);
+          m_viewControl.SetSelectedItem(iItem);
         }
+        return true;
       }
     }
     break;

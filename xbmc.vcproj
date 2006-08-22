@@ -832,7 +832,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\MediaMonitor.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\utils\MemUnit.cpp">
+					RelativePath=".\xbmc\utils\MemoryUnitManager.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\MemoryUnitManager.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\NfoFile.cpp">
@@ -1595,9 +1598,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\xbox\MediaPacketQueue.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\MemUnit.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
@@ -1872,6 +1872,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\FileLastFM.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileMemUnit.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileMemUnit.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FileMusicDatabase.cpp">
 			</File>
 			<File
@@ -1939,6 +1945,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\LastFMDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\MemUnitDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\MemUnitDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\MultiPathDirectory.cpp">
@@ -2170,6 +2182,28 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\QueryParams.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="MemoryUnits"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\FileSystem\MemoryUnits\FatXDevice.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MemoryUnits\FatXDevice.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MemoryUnits\FatXFileSystem.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MemoryUnits\FatXFileSystem.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MemoryUnits\IDevice.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MemoryUnits\IFileSystem.h">
 				</File>
 			</Filter>
 		</Filter>
