@@ -8,7 +8,7 @@
 #include "HTMLUtil.h"
 #include "../FileSystem/FileCurl.h"
 #include "XMLUtils.h"
-#include "../GUIDialogProgress.h"
+#include "RegExp.h"
 
 using namespace HTML;
 
@@ -39,8 +39,8 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   CIMDBUrl url;
   movielist.clear();
 
-  CStdString strURL, strHTML;
-  GetURL(strMovie, strURL);
+	CStdString strURL, strHTML, strYear;
+	GetURL(strMovie, strURL, strYear);
 
   if (!m_http.Get(strURL, strHTML) || strHTML.size() == 0)
   {
@@ -73,6 +73,20 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     {
       url.m_strTitle = title->FirstChild()->Value();
       url.m_strURL = link->FirstChild()->Value();
+
+			char cFoundYear = 0; //0 no year available 1: not yet found 2: found
+			if (!strYear.Equals("")) cFoundYear=1; // Year exists in title
+
+			if ((cFoundYear>0) && (!url.m_strTitle.substr(max(url.m_strTitle.length()-5,0),4).compare(strYear)))
+			{
+				if (cFoundYear==1) // not previously found
+				{
+					movielist.clear(); // First time right year found, remove previous entries
+					cFoundYear=2; // year found
+				}
+				movielist.push_back(url);
+			}
+			else if (cFoundYear<2) // Only add when not yet filtering on year
       movielist.push_back(url);
     }
   }
@@ -300,106 +314,57 @@ void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
   if (pPtr) *pPtr = 0;
 }
 
-void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
+// TODO: Make this user-configurable?
+void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& strYear)
 {
-  // char szURL[1024];
   char szMovie[1024];
-  CIMDBUrl url;
-  bool bSkip = false;
-  int ipos = 0;
+  char szYear[5];
 
-  // skip extension
-  int imax = 0;
-  for (int i = 0; i < strMovie.size();i++)
+  CStdString strMovieNoExtension = strMovie;
+  CUtil::RemoveExtension(strMovieNoExtension);
+
+  // replace whitespace with +
+  strMovieNoExtension.Replace(".","+");
+  strMovieNoExtension.Replace("-","+");
+  strMovieNoExtension.Replace(" ","+");
+
+  // lowercase
+  strMovieNoExtension = strMovieNoExtension.ToLower();
+
+  // default to movie name begin complete filename, no year
+  strcpy(szMovie, strMovieNoExtension.c_str());
+  strcpy(szYear,"");
+
+  CRegExp reYear;
+  reYear.RegComp("(.+)\\+\\(?(19[0-9][0-9]|200[0-9])\\)?(\\+.*)?");
+  if (reYear.RegFind(szMovie) >= 0)
   {
-    if (strMovie[i] == '.') imax = i;
-    if (i + 2 < strMovie.size())
-    {
-      // skip -CDx. also
-      if (strMovie[i] == '-')
-      {
-        if (strMovie[i + 1] == 'C' || strMovie[i + 1] == 'c')
-        {
-          if (strMovie[i + 2] == 'D' || strMovie[i + 2] == 'd')
-          {
-            imax = i;
-            break;
+    char *pMovie = reYear.GetReplaceString("\\1");
+    char *pYear = reYear.GetReplaceString("\\2");
+    strcpy(szMovie,pMovie);
+    strcpy(szYear,pYear);
+
+    if (pMovie) free(pMovie);
+    if (pYear) free(pYear);
           }
-        }
-      }
-    }
-  }
-  if (!imax) imax = strMovie.size();
-  for (int i = 0; i < imax;i++)
-  {
-    // Removing arbitrary numbers like this destroys lookup of movies
-    // such as "1942"
-    // TODO: Redo this routine entirely.
-/*    for (int c = 0;isdigit(strMovie[i + c]);c++)
+
+  CRegExp reTags;
+  reTags.RegComp("(.*)\\+(ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|se|svcd|swedish|unrated|ws|xvid|cd[1-9]|\\[.*\\])(\\+.*)?");
+
+  CStdString strTemp;
+  while (reTags.RegFind(szMovie) >= 0)
     {
-      if (c == 3)
-      {
-        i += 4;
-        break;
-      }
-    }*/
-    char kar = strMovie[i];
-    if (kar == '.') kar = ' ';
-    if (kar == 32) kar = '+';
-    if (kar == '[' || kar == '(' ) bSkip = true;   //skip everthing between () and []
-    else if (kar == ']' || kar == ')' ) bSkip = false;
-    else if (!bSkip)
-    {
-      if (ipos > 0)
-      {
-        if (!isalnum(kar))
-        {
-          if (szMovie[ipos - 1] != '+')
-            kar = '+';
-          else
-            kar = '.';
-        }
-      }
-      if (isalnum(kar) || kar == ' ' || kar == '+')
-      {
-        szMovie[ipos] = kar;
-        szMovie[ipos + 1] = 0;
-        ipos++;
-      }
+    char *pFN = reTags.GetReplaceString("\\1");
+    strcpy(szMovie,pFN);
+    if (pFN) free(pFN);
     }
+
+  strURL.Format("http://%s/find?s=tt;q=%s", g_advancedSettings.m_imdbAddress.c_str(), szMovie);
+
+  strYear = szYear;
   }
 
-  CStdString strTmp = szMovie;
-  strTmp = strTmp.ToLower();
-  strTmp = strTmp.Trim();
-  strcpy(szMovie, strTmp.c_str());
 
-  RemoveAllAfter(szMovie, "+divx");
-  RemoveAllAfter(szMovie, "+xvid");
-  RemoveAllAfter(szMovie, "+dvd");
-  RemoveAllAfter(szMovie, "+svcd");
-  RemoveAllAfter(szMovie, "+ac3");
-  RemoveAllAfter(szMovie, "+ogg");
-  RemoveAllAfter(szMovie, "+ogm");
-  RemoveAllAfter(szMovie, "+internal");
-  RemoveAllAfter(szMovie, "+fragment");
-  RemoveAllAfter(szMovie, "+dvdrip");
-  RemoveAllAfter(szMovie, "+proper");
-  RemoveAllAfter(szMovie, "+limited");
-  RemoveAllAfter(szMovie, "+rerip");
-  RemoveAllAfter(szMovie, "+custom");
-  RemoveAllAfter(szMovie, "+dvdscr");
-  RemoveAllAfter(szMovie, "+unrated");
-  RemoveAllAfter(szMovie, "+multisubs");
-  RemoveAllAfter(szMovie, "+ws");
-  RemoveAllAfter(szMovie, "+swedish");
-  RemoveAllAfter(szMovie, "+pal");
-  RemoveAllAfter(szMovie, "+ntsc");
-
-  // sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
-  // strURL = szURL;
-  strURL.Format("http://%s/Tsearch?title=%s", g_advancedSettings.m_imdbAddress.c_str(), szMovie);
-}
 
 // threaded functions
 void CIMDB::Process()
