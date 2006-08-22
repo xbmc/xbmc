@@ -20,7 +20,7 @@ const CStdString StringUtils::EmptyString = "";
 // if 2 delimiters are in a row, it will include the empty string between them.
 int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results)
 {
-  int iPos = 0;
+  int iPos = -1;
   int newPos = -1;
   int sizeS2 = delimiter.GetLength();
   int isize = input.GetLength();
