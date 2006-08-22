@@ -340,7 +340,7 @@ void CGUIDialogFileBrowser::Render()
       url.GetURLWithoutUserDetails(safePath);
       SET_CONTROL_LABEL(CONTROL_LABEL_PATH, safePath);
     }
-    if (!m_browsingForFolders && m_vecItems[item]->m_bIsFolder)
+    if ((!m_browsingForFolders && m_vecItems[item]->m_bIsFolder) || m_viewControl.GetCurrentControl() == CONTROL_THUMBS)
     {
       CONTROL_DISABLE(CONTROL_OK);
     }
