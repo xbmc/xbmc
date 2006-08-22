@@ -15,6 +15,7 @@
 #include "FileCurl.h"
 #include "FileMusicDatabase.h"
 #include "FileLastFM.h"
+#include "FileMemUnit.h"
 #include "../xbox/network.h"
 
 using namespace XFILE;
@@ -44,6 +45,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "zip") return new CFileZip();
   else if (strProtocol == "rar") return new CFileRar();
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
+  else if (strProtocol.Left(3) == "mem") return new CFileMemUnit();
   else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
 
   if( g_network.IsAvailable() )

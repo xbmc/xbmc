@@ -362,7 +362,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         {
           g_settings.UpdateBookmark(strType,share->strName,"thumbnail",strThumb);
           
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
           m_gWindowManager.SendThreadMessage(msg);        
           return true;
         }
@@ -380,7 +380,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           return false;
 
         g_settings.UpdateBookmark(strType,share->strName,"thumbnail","");
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
         m_gWindowManager.SendThreadMessage(msg);        
         return true;
       }
@@ -466,7 +466,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
         g_settings.CommitBookmarkTransaction();
 
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
         m_gWindowManager.SendThreadMessage(msg);        
         return true;
 
@@ -478,7 +478,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           return false;
 
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
         m_gWindowManager.SendThreadMessage(msg);        
         return true;
       }
@@ -496,7 +496,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         g_settings.UpdateBookmark(strType, share->strName, "lockcode", "0");
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
         g_settings.CommitBookmarkTransaction();
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
         m_gWindowManager.SendThreadMessage(msg);        
 
         return true;

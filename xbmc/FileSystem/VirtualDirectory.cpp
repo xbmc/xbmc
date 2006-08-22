@@ -4,12 +4,14 @@
 #include "FactoryDirectory.h"
 #include "../util.h"
 #include "directorycache.h"
-
+#include "../utils/MemoryUnitManager.h"
+#include "../DetectDVDType.h"
 
 CVirtualDirectory::CVirtualDirectory(void) : m_vecShares(NULL)
 {
   m_allowPrompting = true;  // by default, prompting is allowed.
   m_cacheDirectory = true;  // by default, caching is done.
+  m_allowMemUnitShares = true;
 }
 
 CVirtualDirectory::~CVirtualDirectory(void)
@@ -112,11 +114,12 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   }
   */
 
+  VECSHARES shares;
+  GetShares(shares);
   if (!strPath.IsEmpty())
   {
     bool bIsBookmarkName = false;
-    VECSHARES vecShares = *m_vecShares;
-    int iIndex = CUtil::GetMatchingShare(strPath, vecShares, bIsBookmarkName);
+    int iIndex = CUtil::GetMatchingShare(strPath, shares, bIsBookmarkName);
     // added exception for various local hd items
     // function doesn't work for http/shout streams with options..
     if (iIndex > -1 || strPath.Mid(1, 1) == ":" 
@@ -124,7 +127,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       || strPath.Left(8).Equals("https://") 
       || strPath.Left(7).Equals("http://") 
       || strPath.Left(7).Equals("daap://") 
-      || strPath.Left(7).Equals("upnp://") )
+      || strPath.Left(7).Equals("upnp://"))
     {
       // Only cache directory we are getting now
       if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://"))
@@ -142,9 +145,11 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   // if strPath is blank, return the root bookmark listing
   items.Clear();
   items.m_strPath=strPath;
-  for (int i = 0; i < (int)m_vecShares->size(); ++i)
+
+  // grab our shares
+  for (unsigned int i = 0; i < shares.size(); ++i)
   {
-    CShare& share = m_vecShares->at(i);
+    CShare& share = shares[i];
     CFileItem* pItem = new CFileItem(share);
     CStdString strPathUpper = pItem->m_strPath;
     strPathUpper.ToUpper();
@@ -198,9 +203,12 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
   // ie. f:/video and f:\video was not be recognised as the same directory,
   // resulting in navigation to a lower directory then the share.
   strPathCpy.Replace("/", "\\");
-  for (int i = 0; i < (int)m_vecShares->size(); ++i)
+
+  VECSHARES shares;
+  GetShares(shares);
+  for (int i = 0; i < (int)shares.size(); ++i)
   {
-    const CShare& share = m_vecShares->at(i);
+    const CShare& share = shares.at(i);
     CStdString strShare = share.strPath;
     strShare.TrimRight("/");
     strShare.TrimRight("\\");
@@ -211,20 +219,36 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
 }
 
 /*!
- \brief Retrieve the current share type of the DVD-Drive.
- \return Returns the share type, eg. iso9660://.
+ \brief Is the share \e path in the virtual directory.
+ \param path Share to test
+ \return Returns \e true, if share is in the virtual directory.
+ \note The parameter \e path CAN be a share with directory. Eg. "iso9660://dir" will
+       return the same as "iso9660://".
  */
-CStdString CVirtualDirectory::GetDVDDriveUrl()
+bool CVirtualDirectory::IsInShare(const CStdString &path) const
 {
-  if (m_vecShares)
+  bool isBookmarkName;
+  VECSHARES shares;
+  GetShares(shares);
+  int iShare = CUtil::GetMatchingShare(path, shares, isBookmarkName);
+  // TODO: May need to handle other special cases that GetMatchingShare() fails on
+  return (iShare > -1);
+}
+
+void CVirtualDirectory::GetShares(VECSHARES &shares) const
+{
+  shares = *m_vecShares;
+  // add our plug n play shares
+  if (m_allowMemUnitShares)
+    g_memoryUnitManager.GetMemoryUnitShares(shares);
+  // and update our dvd share
+  for (unsigned int i = 0; i < shares.size(); ++i)
   {
-    for (int i = 0; i < (int)m_vecShares->size(); ++i)
+    CShare& share = shares[i];
+    if (share.m_iDriveType == SHARE_TYPE_DVD)
     {
-      const CShare& share = m_vecShares->at(i);
-      if (share.m_iDriveType == SHARE_TYPE_DVD)
-        return share.strPath;
+      share.strStatus = MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
+      share.strPath = MEDIA_DETECT::CDetectDVDMedia::GetDVDPath();
     }
   }
-
-  return "";
 }

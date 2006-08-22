@@ -31,6 +31,7 @@ public:
   static CEvent m_evAutorun;
 
   static const CStdString &GetDVDLabel();
+  static const CStdString &GetDVDPath();
 
   static void UpdateState();
 protected:
@@ -59,5 +60,6 @@ private:
   DWORD m_dwLastTrayState;
 
   static CStdString m_diskLabel;
+  static CStdString m_diskPath;
 };
 }

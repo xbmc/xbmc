@@ -15,6 +15,7 @@ CCdInfo* CDetectDVDMedia::m_pCdInfo = NULL;
 time_t CDetectDVDMedia::m_LastPoll = 0;
 CDetectDVDMedia* CDetectDVDMedia::m_pInstance = NULL;
 CStdString CDetectDVDMedia::m_diskLabel = "";
+CStdString CDetectDVDMedia::m_diskPath = "";
 
 CDetectDVDMedia::CDetectDVDMedia()
 {
@@ -78,7 +79,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         m_DriveState = DRIVE_OPEN;
         SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
         // Send Message to GUI that disc been ejected
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_DVDDRIVE_EJECTED_CD, 0, NULL);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA, 0, NULL);
         waitLock.Leave();
         m_gWindowManager.SendThreadMessage( msg );
 
@@ -100,7 +101,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           m_pCdInfo = NULL;
         }
         waitLock.Leave();
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_DVDDRIVE_CHANGED_CD, 0, NULL);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
         m_gWindowManager.SendThreadMessage( msg );
         Sleep(6000);
         return ;
@@ -119,7 +120,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         m_DriveState = DRIVE_CLOSED_NO_MEDIA;
         SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
         // Send Message to GUI that disc has changed
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_DVDDRIVE_CHANGED_CD, 0, NULL);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
         waitLock.Leave();
         m_gWindowManager.SendThreadMessage( msg );
         return ;
@@ -133,7 +134,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         m_helper.Remount("D:", "Cdrom0");
         // Detect ISO9660(mode1/mode2) or CDDA filesystem
         DetectMediaType();
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_DVDDRIVE_CHANGED_CD, 0, NULL);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
         waitLock.Leave();
         m_gWindowManager.SendThreadMessage( msg );
         // Tell the application object that a new Cd is inserted
@@ -248,57 +249,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 
   // store it in case others want it
   m_diskLabel = strDescription;
-
-  // Set new URL for every share group
-  // My Music
-  for (int i = 0; i < (int)g_settings.m_vecMyMusicShares.size(); ++i)
-  {
-    if ( g_settings.m_vecMyMusicShares[i].m_iDriveType == SHARE_TYPE_DVD )
-    {
-      g_settings.m_vecMyMusicShares[i].strPath = strNewUrl;
-      g_settings.m_vecMyMusicShares[i].strStatus = strDescription;
-    }
-  }
-
-  // My Pictures
-  for (i = 0; i < (int)g_settings.m_vecMyPictureShares.size(); ++i)
-  {
-    if ( g_settings.m_vecMyPictureShares[i].m_iDriveType == SHARE_TYPE_DVD )
-    {
-      g_settings.m_vecMyPictureShares[i].strPath = strNewUrl;
-      g_settings.m_vecMyPictureShares[i].strStatus = strDescription;
-    }
-  }
-
-  // My Files
-  for (i = 0; i < (int)g_settings.m_vecMyFilesShares.size(); ++i)
-  {
-    if ( g_settings.m_vecMyFilesShares[i].m_iDriveType == SHARE_TYPE_DVD )
-    {
-      g_settings.m_vecMyFilesShares[i].strPath = strNewUrl;
-      g_settings.m_vecMyFilesShares[i].strStatus = strDescription;
-    }
-  }
-
-  // My Videos
-  for (i = 0; i < (int)g_settings.m_vecMyVideoShares.size(); ++i)
-  {
-    if ( g_settings.m_vecMyVideoShares[i].m_iDriveType == SHARE_TYPE_DVD )
-    {
-      g_settings.m_vecMyVideoShares[i].strPath = strNewUrl;
-      g_settings.m_vecMyVideoShares[i].strStatus = strDescription;
-    }
-  }
-
-  // My Programs
-  for (i = 0; i < (int)g_settings.m_vecMyProgramsShares.size(); ++i)
-  {
-    if ( g_settings.m_vecMyProgramsShares[i].m_iDriveType == SHARE_TYPE_DVD )
-    {
-      g_settings.m_vecMyProgramsShares[i].strPath = strNewUrl;
-      g_settings.m_vecMyProgramsShares[i].strStatus = strDescription;
-    }
-  }
+  m_diskPath = strNewUrl;
 }
 
 DWORD CDetectDVDMedia::GetTrayState()
@@ -417,4 +368,9 @@ CCdInfo* CDetectDVDMedia::GetCdInfo()
 const CStdString &CDetectDVDMedia::GetDVDLabel()
 {
   return m_diskLabel;
+}
+
+const CStdString &CDetectDVDMedia::GetDVDPath()
+{
+  return m_diskPath;
 }
