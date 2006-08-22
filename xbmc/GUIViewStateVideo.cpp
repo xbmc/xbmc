@@ -35,7 +35,8 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
   }
   else
   {
-    CStdString strFileMask = "%F";
+    // always use the label by default
+    CStdString strFileMask = "%L";
     // when stacking is enabled, filenames are already cleaned so use the existing label
     if (g_stSettings.m_iMyVideoStack != STACK_NONE)
       strFileMask = "%L"; 
