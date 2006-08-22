@@ -482,7 +482,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSHARE
 
 bool CGUIDialogFileBrowser::ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path)
 {
-  return ShowAndGetFile(shares, ".png|.jpg|.bmp|.gif", heading, path, true); // true for use thumbs
+  return ShowAndGetFile(shares, ".png|.jpg|.bmp|.gif|.tbn", heading, path, true); // true for use thumbs
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly)
