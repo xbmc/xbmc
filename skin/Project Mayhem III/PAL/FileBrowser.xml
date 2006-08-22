@@ -1,7 +1,7 @@
 <window>
 
  <id>126</id>
- <defaultcontrol alwyays="true">450</defaultcontrol>
+ <defaultcontrol always="true">450</defaultcontrol>
  <allowoverlay>no</allowoverlay>
 
  <coordinates>
@@ -94,7 +94,7 @@
     <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
     <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
     <onleft>450</onleft>
-    <onright>450</onright>
+    <onright>414</onright>
     <onup>415</onup>
     <ondown>414</ondown>
    </control>
@@ -113,7 +113,7 @@
     <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
     <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
     <onleft>450</onleft>
-    <onright>450</onright>
+    <onright>415</onright>
     <onup>413</onup>
     <ondown>415</ondown>
    </control>
@@ -132,7 +132,7 @@
     <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
     <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
     <onleft>450</onleft>
-    <onright>450</onright>
+    <onright>413</onright>
     <onup>414</onup>
     <ondown>413</ondown>
   </control>
