@@ -150,7 +150,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       else
       {
         // start display init timer (fade out after 3 secs...)
-        m_dwInitTimer = START_FADE_LENGTH;
+        m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
       }
       return true;
     }
@@ -185,7 +185,7 @@ void CGUIWindowVisualisation::Render()
   { // need to fade in then out again
     m_tag = tag;
     // fade in
-    m_dwInitTimer = START_FADE_LENGTH;
+    m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
     g_infoManager.SetShowInfo(true);
   }
   if (m_dwInitTimer)
