@@ -21,6 +21,7 @@
 #include <stack>
 #include "../xbox/network.h"
 #include "SystemInfo.h"
+#include "HddSmart.h"
 
 // stuff for current song
 #include "../filesystem/CDDADirectory.h"
@@ -29,6 +30,9 @@
 
 #include "GUILabelControl.h"  // for CInfoPortion
 CGUIInfoManager g_infoManager;
+CHDDSmart* m_smartRequest= new CHDDSmart();
+CSysInfo* m_sysinfo = new CSysInfo();
+
 
 void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
 {
@@ -175,7 +179,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.haslocks")) ret = SYSTEM_HASLOCKS;
     else if (strTest.Equals("system.hasloginscreen")) ret = SYSTEM_HAS_LOGINSCREEN;
     else if (strTest.Equals("system.ismaster")) ret = SYSTEM_ISMASTER;
-    else if (strTest.Equals("system.hddtemp")) ret = SYSTEM_HDD_TEMP;
     else if (strTest.Equals("system.internetstate")) ret = SYSTEM_INTERNET_STATE;
     else if (strTest.Equals("system.loggedon")) ret = SYSTEM_LOGGEDON;
     else if (strTest.Left(16).Equals("system.idletime("))
@@ -186,15 +189,21 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (time > 0)
         ret = SYSTEM_IDLE_TIME_START + time;
     }
-      else if (strTest.Left(16).Equals("system.hasalarm("))
+    else if (strTest.Left(16).Equals("system.hddsmart("))
+    {
+      i_SmartRequest = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
+      if (i_SmartRequest <= 0) i_SmartRequest=17; //falling back to HDD temp
+      ret = SYSTEM_HDD_SMART;
+    }
+    else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
-      //else if (strTest.Left(16).Equals("system.alarmpos("))
-      else if (strTest.Equals("system.alarmpos"))
-        ret = SYSTEM_ALARM_POS;
-      else if (strTest.Equals("system.profilename"))
-        ret = SYSTEM_PROFILENAME;
-      else if (strTest.Equals("system.profilethumb"))
-        ret = SYSTEM_PROFILETHUMB;
+    //else if (strTest.Left(16).Equals("system.alarmpos("))
+    else if (strTest.Equals("system.alarmpos"))
+      ret = SYSTEM_ALARM_POS;
+    else if (strTest.Equals("system.profilename"))
+      ret = SYSTEM_PROFILENAME;
+    else if (strTest.Equals("system.profilethumb"))
+      ret = SYSTEM_PROFILETHUMB;
   }
   else if (strCategory.Equals("xlinkkai"))
   {
@@ -667,9 +676,10 @@ string CGUIInfoManager::GetLabel(int info)
     }
     break;
 
-  case SYSTEM_HDD_TEMP:
-    strLabel.Format("%s %s", g_localizeStrings.Get(13151).c_str(), GetHDDTemp().c_str());
+  case SYSTEM_HDD_SMART:
+    strLabel.Format("%s %s", g_localizeStrings.Get(13151).c_str(), GetHDDTemp(i_SmartRequest).c_str());
     break;
+
   case SYSTEM_INTERNET_STATE:
     strLabel.Format("%s", SystemHasInternet_s().c_str());
     break;
@@ -1698,10 +1708,6 @@ CStdString CGUIInfoManager::GetAudioScrobblerLabel(int item)
   return "";
 }
 
-#define OPERATOR_NOT  3
-#define OPERATOR_AND  2
-#define OPERATOR_OR   1
-
 int CGUIInfoManager::GetOperator(const char ch)
 {
   if (ch == '[')
@@ -2014,14 +2020,16 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
   return false;
 }
 
-CStdString CGUIInfoManager::GetHDDTemp()
+
+CStdString CGUIInfoManager::GetHDDTemp( int iSmartRequest )
 {
+  // 36 Loaded Hours
   CStdString strItemhdd;
-  static DWORD reqTimer = 0;
-  g_sysinfo.Create(true);
-  int iSmartREQ = 17; // SmartRequest HDD Temperature
-  DWORD hddsmarttemp =  g_sysinfo.GetSmartValues(iSmartREQ);
-  CTemperature HddTemp = CTemperature::CreateFromCelsius(hddsmarttemp);
+  //int ismartRequest = 17; // HDD Temperature 
+  if (!m_smartRequest->IsRunning())
+    m_smartRequest->Create();
+  m_smartRequest->DelayRequestSmartValue(iSmartRequest, 30);
+  CTemperature HddTemp = CTemperature::CreateFromCelsius(m_smartRequest->m_HddSmarValue);
   strItemhdd.Format("%s", HddTemp.ToString().c_str());
   return strItemhdd;
 }

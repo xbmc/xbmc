@@ -1,19 +1,17 @@
 /*
 ******************************************
-**    XBOX System/Hardware Info   **
-**     01.03.2005 GeminiServer      **
+**    XBOX System/Hardware Info         **
+**     01.03.2005 GeminiServer          **
 ******************************************
 Todo/BUG: GeminiServer 10.05.2005
 
 - TODO: Create EEPROM Backup [CreateEEPROMBackup], like ConfigMagic also cfg and TXT [50% done cur_on pending]
 - TODO: Need Better routine that checks if the XBOX is Connected to the Internet!
-- TODO: add. S.M.A.R.T Values State in Harddisk Section
 - TODO: MemoryStick Detection on which Port and Size!
-- TODO: Rewriting the NETWORK Info Section! XBOX Title:IP/Routers/DNS Server/DHCP! FIxed IP! etc.
 
 - Exlude from System Info: May Fix Later!   
 BUG: HDD Password is show Wrong!! Print HDD Password... [SomeThing Goes Wrong! Need analizing & Fixing!]
-BUG: The XBE Region detection Is wrong! Need to Decyrpt the EEPROM! Port!
+BUG: The XBE Region detection Is wrong! Need to Decyrpt the EEPROM!
 
 */
 #include "stdafx.h"
@@ -22,6 +20,7 @@ BUG: The XBE Region detection Is wrong! Need to Decyrpt the EEPROM! Port!
 #include "utils/GUIInfoManager.h"
 #include "utils/SystemInfo.h"
 #include "xbox/network.h"
+#include "application.h"
 
 #define DEBUG_KEYBOARD
 #define DEBUG_MOUSE
@@ -36,6 +35,8 @@ BOOL  m_EnryptedRegionValid;
 BOOL  m_XBOX_EEPROM_Current;
 XBOX_VERSION  m_XBOX_Version;
 DWORD m_dwlastTime;
+
+CSysInfo g_SYSinfo;
 
 char* cTempEEPROMBackUPPath = "Q:\\System\\SystemInfo\\";
 
@@ -164,14 +165,22 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       unsigned int iControl=message.GetSenderId();
+      bool b_playing= false;
       if(iControl == CONTROL_BT_HDD)
       { 
+        // Pause the Current Playing Media, to prevent corruption during info request
+        if (g_application.IsPlaying())
+        {
+           b_playing= true;
+           g_application.m_pPlayer->Pause();
+        }
+
         b_IsHome = FALSE;
         SetLabelDummy();
         SET_CONTROL_LABEL(40,"Hard Disk Information");
 
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-		pDlgProgress.SetHeading("Hard Disk Information");
+		    pDlgProgress.SetHeading("Hard Disk Information");
         pDlgProgress.SetLine(0, "Detecting Harddisk Information");
         pDlgProgress.SetLine(1, "");
         pDlgProgress.SetLine(2, "Please Wait");
@@ -203,11 +212,19 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(6,strItemhdd);
 
         pDlgProgress.Close();
+        if(b_playing) g_application.m_pPlayer->Pause();
 
         CGUIWindow::Render();
       }
       else if(iControl == CONTROL_BT_DVD)
       {
+        // Pause the Current Playing Media, to prevent corruption during info request
+        if (g_application.IsPlaying())
+        {
+           b_playing= true;
+           g_application.m_pPlayer->Pause();
+        }
+
         b_IsHome = FALSE;
         //Todo: Get DVD-ROM Supportted Disc's
         SetLabelDummy();
@@ -230,7 +247,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         GetATAPIValues(2, 3);
 
         pDlgProgress.Close();
-
+        
+        if(b_playing) g_application.m_pPlayer->Pause();
         CGUIWindow::Render();
       }
       else if(iControl == CONTROL_BT_STORAGE)
@@ -392,7 +410,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
         // Label 9,10: Attached Units!
         pDlgProgress.SetLine(1, "Detecting Attached Units");
-        GetUnits(9, 10);
+        GetUnits(9, 10, 11);
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         pDlgProgress.Close();
@@ -449,6 +467,14 @@ void CGUIWindowSystemInfo::Render()
     CStdString strSystemTotalUptime;
     GetSystemTotalUpTime(strSystemTotalUptime);
     SET_CONTROL_LABEL(10,strSystemTotalUptime);
+
+    /*
+    // Label 11: Get System Total Uptime
+    CStdString strSmartHDDTemp;
+    strSmartHDDTemp.Format("%s %s",g_localizeStrings.Get(13151).c_str(),g_infoManager.GetHDDTemp(17).c_str());
+    SET_CONTROL_LABEL(11,strSmartHDDTemp);
+    */
+    
   }
 
   // Label 50: Get Current Time
@@ -479,7 +505,7 @@ bool CGUIWindowSystemInfo::GetCPUFreqInfo(CStdString& strCPUFreq)
   // XBOX CPU Frequence Detection
   double CPUFreq;
   CStdString lblCPUSpeed  = g_localizeStrings.Get(13284).c_str();
-  CPUFreq         = g_sysinfo.GetCPUFrequence();
+  CPUFreq         = g_SYSinfo.GetCPUFrequence();
   
   strCPUFreq.Format("%s %4.2f Mhz.",lblCPUSpeed.c_str(), CPUFreq);
   return true;
@@ -506,7 +532,7 @@ bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
   // Get XBOX Bios Informations, BiosDetector!
   CStdString cBIOSName;
   CStdString strlblBios = g_localizeStrings.Get(13285).c_str();
-  if(g_sysinfo.CheckBios(cBIOSName))
+  if(g_SYSinfo.CheckBios(cBIOSName))
   {
     strBiosName.Format("%s %s", strlblBios.c_str(),cBIOSName.c_str());
     return true;
@@ -522,7 +548,7 @@ bool CGUIWindowSystemInfo::GetVideoEncInfo(CStdString& strItemVideoENC)
 {
   // XBOX Video Encoder Detection
   CStdString lblVideoEnc  = g_localizeStrings.Get(13286).c_str();
-  CStdString VideoEncoder = g_sysinfo.GetVideoEncoder();
+  CStdString VideoEncoder = g_SYSinfo.GetVideoEncoder();
   strItemVideoENC.Format("%s %s", lblVideoEnc.c_str(),VideoEncoder.c_str());
   return true;
 }
@@ -545,7 +571,7 @@ bool CGUIWindowSystemInfo::GetXBVerInfo(CStdString& strXBoxVer)
   // XBOX Version Detection
   CStdString strXBOXVersion;
   CStdString lblXBver   =  g_localizeStrings.Get(13288).c_str();
-  if (g_sysinfo.GetXBOXVersionDetected(strXBOXVersion))
+  if (g_SYSinfo.GetXBOXVersionDetected(strXBOXVersion))
   {
     strXBoxVer.Format("%s %s", lblXBver.c_str(),strXBOXVersion.c_str());
     CLog::Log(LOGDEBUG,"XBOX Version: %s",strXBOXVersion.c_str());
@@ -607,10 +633,10 @@ bool CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate)
 bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
 {
   // XBOX ModCHIP Type Detection GeminiServer
-  CStdString ModChip    = g_sysinfo.GetModCHIPDetected();
+  CStdString ModChip    = g_SYSinfo.GetModCHIPDetected();
   CStdString lblModChip = g_localizeStrings.Get(13291).c_str();
   // Chech if it is a SmartXX or Another One!
-  CStdString strIsSmartXX = g_sysinfo.SmartXXModCHIP();
+  CStdString strIsSmartXX = g_SYSinfo.SmartXXModCHIP();
   if (strIsSmartXX != "None")
   { 
     strModChip.Format("%s %s", lblModChip.c_str(),strIsSmartXX.c_str());
@@ -628,7 +654,7 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
 void CGUIWindowSystemInfo::GetAVPackInfo(CStdString& stravpack)
 {
   //AV-[Cable]Pack Detection 
-  CStdString DetectedAVpack = g_sysinfo.GetAVPackInfo();
+  CStdString DetectedAVpack = g_SYSinfo.GetAVPackInfo();
   CStdString lblAVpack    = g_localizeStrings.Get(13292).c_str();
   stravpack.Format("%s %s",lblAVpack.c_str(), DetectedAVpack.c_str());
   return;
@@ -747,7 +773,7 @@ bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
   CStdString lblhdd = g_localizeStrings.Get(13151).c_str();
   DWORD hddsmarttemp;
   int iSmartREQ = 17; // SmartRequest HDD Temperature
-  hddsmarttemp = g_sysinfo.GetSmartValues(iSmartREQ);
+  hddsmarttemp = g_SYSinfo.GetSmartValues(iSmartREQ);
 
   CTemperature temp=CTemperature::CreateFromCelsius(hddsmarttemp);
   if (hddsmarttemp<=0)
@@ -771,7 +797,7 @@ bool CGUIWindowSystemInfo::GetATAPIValues(int i_lblp1, int i_lblp2)
   CStdString strDVDModel, strDVDFirmware;
   CStdString lblDVDModel    = g_localizeStrings.Get(13152).c_str();
   CStdString lblDVDFirmware = g_localizeStrings.Get(13153).c_str();
-  if(g_sysinfo.GetDVDInfo(strDVDModel, strDVDFirmware))
+  if(g_SYSinfo.GetDVDInfo(strDVDModel, strDVDFirmware))
   {
     CStdString strDVDModelA;
     strDVDModelA.Format("%s %s",lblDVDModel.c_str(), strDVDModel.c_str());
@@ -830,7 +856,7 @@ bool CGUIWindowSystemInfo::GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, i
 
   */
   CStdString strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState;
-  if (g_sysinfo.GetHDDInfo(strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState))
+  if (g_SYSinfo.GetHDDInfo(strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState))
   {
     CStdString strHDDModelA, strHDDSerialA, strHDDFirmwareA, strHDDpwA, strHDDLockStateA;
 
@@ -1121,7 +1147,7 @@ bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
   return true;
 }
 
-bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2 )
+bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
 {
   // Get the Connected Units on the Front USB Ports!
   DWORD dwDeviceGamePad   = XGetDevices(XDEVICE_TYPE_GAMEPAD);      char* sclDeviceVle;       
@@ -1277,7 +1303,7 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2 )
     }
   }
   else sclDeviceMicroPhone ="0";
-  if (dwDeviceMemory > 15)
+  if (dwDeviceMemory > 0)
   {
     switch (dwDeviceMemory)
     {
@@ -1334,8 +1360,8 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2 )
   strItem7.Format("%s %s", strItem5.c_str(), strItem6.c_str());
 
   // !? Show Memory stick, because it only shows with USB->MemoryStick adapter!
-  //strItem8.Format("%s %s", strlblMemoryStk.c_str(), sclDeviceMemory);
-  //SET_CONTROL_LABEL(i_lblp3, strItem8); // MemoryStick
+  strItem8.Format("%s %s", strlblMemoryStk.c_str(), sclDeviceMemory);
+  SET_CONTROL_LABEL(i_lblp3, strItem8); // MemoryStick
 
   CLog::Log(LOGDEBUG,"- GamePads are Connected on Port:   %s (%d)", sclDeviceVle, dwDeviceGamePad );
   CLog::Log(LOGDEBUG,"- Keyboard is Connected on Port:    %s (%d)", sclDeviceKeyb, dwDeviceKeyboard);
@@ -1630,7 +1656,7 @@ bool CGUIWindowSystemInfo::GetSystemUpTime(CStdString& strSystemUptime)
 
   int iInputMinutes, iMinutes,iHours,iDays;
   iInputMinutes = (int)(timeGetTime() / 60000);
-  g_sysinfo.SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
+  g_SYSinfo.SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   // Will Display Autodetected Values!
   if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1.c_str(), iDays,lblDay.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
   else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
@@ -1647,7 +1673,7 @@ bool CGUIWindowSystemInfo::GetSystemTotalUpTime(CStdString& strSystemUptime)
 
   int iInputMinutes, iMinutes,iHours,iDays;
   iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
-  g_sysinfo.SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
+  g_SYSinfo.SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   // Will Display Autodetected Values!
   if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1.c_str(), iDays,lblDay.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
   else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());

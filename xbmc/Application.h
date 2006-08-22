@@ -21,6 +21,7 @@
 #include "PlaylistPlayer.h"
 #include "utils/IMDB.h"
 #include "xbstopwatch.h"
+#include "utils/HddSmart.h"
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
@@ -145,13 +146,13 @@ public:
   DWORD m_dwSkinTime;
 
   CCdgParser* m_pCdgParser;
-  
-  EPLAYERCORES m_eForcedNextPlayer;
 
+  EPLAYERCORES m_eForcedNextPlayer;
   CStdString m_strPlayListFile;
   
   int GlobalIdleTime();
   bool SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed,int iDuration);
+
   
 protected:
   void SetHardwareVolume(long hardwareVolume);

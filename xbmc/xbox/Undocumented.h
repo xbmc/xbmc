@@ -1274,6 +1274,13 @@ extern "C"
     IN BOOLEAN InternalDeviceIoControl
   );
 
+  NTSYSAPI
+  EXPORTNUM(84)
+  NTSTATUS
+  NTAPI
+  IoAllocateIrp(
+  IN PDEVICE_OBJECT DeviceObject
+  );
   // ExQueryNonVolatileSettings
   // Queries saved information, such as the region code.
   //
