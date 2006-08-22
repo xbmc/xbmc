@@ -130,7 +130,7 @@ void CGUIViewControl::UpdateView()
   int item = GetSelectedItem(pControl);
   UpdateContents(pControl);
   // set the current item
-  if (item < -1) item = 0;
+  if (item < 0) item = 0;
   CGUIMessage msg(GUI_MSG_ITEM_SELECT, m_parentWindow, pControl->GetID(), item);
   g_graphicsContext.SendMessage(msg);
 }
