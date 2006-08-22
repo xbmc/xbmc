@@ -432,6 +432,7 @@
       <A>NextCalibration</A>
       <black>ResetCalibration</black>
       <white>NextResolution</white>
+      <B>PreviousMenu</B>
     </gamepad>
 
     <remote>
@@ -455,6 +456,7 @@
       <leftthumbstick>AnalogMove</leftthumbstick>
       <A>NextCalibration</A>
       <black>ResetCalibration</black>
+      <B>PreviousMenu</B>
     </gamepad>
 
     <remote>
@@ -489,7 +491,7 @@
     <gamepad>
       <start>Close</start>
       <back>PreviousMenu</back>
-      <B>Stop</B>
+      <B>PreviousMenu</B>
     </gamepad>
 
     <remote>
@@ -507,7 +509,7 @@
   <VideoMenu>
     <gamepad>
       <Y>AspectRatio</Y>
-      <B>Stop</B>
+      <B>PreviousMenu</B>
       <start>OSD</start>
       <back>PreviousMenu</back>
       <white>ShowTime</white>
@@ -533,7 +535,7 @@
     <gamepad>
       <X></X>
       <Y>AspectRatio</Y>
-      <B>Stop</B>
+      <B>Close</B>
       <back>Close</back>
       <start>Close</start>
     </gamepad>
@@ -555,7 +557,7 @@
     <gamepad>
       <X></X>
       <Y>Delete</Y>
-      <B>Stop</B>
+      <B>Close</B>
       <back>Close</back>
       <start>Close</start>
     </gamepad>
@@ -675,6 +677,7 @@
     <gamepad>
       <righttrigger>NextPicture</righttrigger> <!-- Next Tab -->
       <lefttrigger>PreviousPicture</lefttrigger> <!-- Previous Tab -->
+      <B>PreviousMenu</B>
     </gamepad>
   </XlinkKai>
 
@@ -763,5 +766,89 @@
       <start>Stop</start> <!-- Enter Password -->
     </gamepad>
   </GamepadInput>
+
+  <Weather>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </Weather>
+
+  <Settings>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </Settings>
+
+  <MyPicturesSettings>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </MyPicturesSettings>
+
+  <MyProgramsSettings>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </MyProgramsSettings>
+
+  <MyWeatherSettings>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </MyWeatherSettings>
+
+  <MyMusicSettings>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </MyMusicSettings>
+
+  <SystemSettings>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </SystemSettings>
+
+  <MyVideosSettings>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </MyVideosSettings>
+
+  <NetworkSettings>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </NetworkSettings>
+
+  <AppearanceSettings>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </AppearanceSettings>
+
+  <Profiles>
+    <gamepad>
+      <B>PreviousMenu</B>
+    </gamepad>
+  </Profiles>
+
+  <systeminfo>
+    <gamepad>
+      <B>PreviousMenu</B>	
+    </gamepad>
+  </systeminfo>
+
+  <shutdownmenu>
+    <gamepad>
+      <B>PreviousMenu</B>	
+    </gamepad>
+  </shutdownmenu>
+
+  <submenu>
+    <gamepad>
+      <B>PreviousMenu</B>	
+    </gamepad>
+  </submenu>
 
 </keymap>

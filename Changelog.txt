@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-08-2006 added: B as Back in media windows (and elsewhere).  Thanks to Markeen.
  - 22-08-2006 changed: Stretch 14:9 zooms additionally so that black bars are eliminated.
  - 22-08-2006 fixed: Random highlighted items when entering folders for the first time.
  - 22-08-2006 changed: Slightly faster video database lookup of video settings.
