@@ -26,7 +26,7 @@ namespace DIRECTORY
     bool RemoveShare(const CStdString& strPath);
     bool RemoveShareName(const CStdString& strName);
     bool IsShare(const CStdString& strPath) const;
-    CStdString GetDVDDriveUrl();
+    bool IsInShare(const CStdString& strPath) const;
 
     inline const CShare& operator [](const int index) const
     {
@@ -38,8 +38,14 @@ namespace DIRECTORY
       return m_vecShares->at(index);
     }
 
+    void GetShares(VECSHARES &shares) const;
+
+    void AllowMemoryUnitShares(bool allow) { m_allowMemUnitShares = allow; };
+
   protected:
     void CacheThumbs(CFileItemList &items);
+
     VECSHARES* m_vecShares;
+    bool       m_allowMemUnitShares;
   };
 };

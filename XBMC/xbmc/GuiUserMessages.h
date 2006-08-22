@@ -3,9 +3,9 @@
 #pragma once
 #include "guimessage.h"
 
-//  DVD Drive Messages
-#define GUI_MSG_DVDDRIVE_EJECTED_CD     GUI_MSG_USER + 1
-#define GUI_MSG_DVDDRIVE_CHANGED_CD     GUI_MSG_USER + 2
+//  Bookmark related messages
+#define GUI_MSG_REMOVED_MEDIA           GUI_MSG_USER + 1
+#define GUI_MSG_UPDATE_BOOKMARKS        GUI_MSG_USER + 2
 
 //  General playlist items changed
 #define GUI_MSG_PLAYLIST_CHANGED        GUI_MSG_USER + 3
@@ -80,3 +80,4 @@
 
 // Message is sent by the background info loader when it is finished with fetching a weather location.
 #define GUI_MSG_WEATHER_FETCHED       GUI_MSG_USER + 24
+

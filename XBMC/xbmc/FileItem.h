@@ -103,6 +103,8 @@ public:
   void SetCanQueue(bool bYesNo);
   bool IsParentFolder() const;
   bool IsFileFolder() const;
+  bool IsMemoryUnit() const;
+  bool IsRemovable() const;
 
   void RemoveExtension();
   void CleanFileName();

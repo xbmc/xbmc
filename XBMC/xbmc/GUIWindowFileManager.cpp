@@ -125,7 +125,6 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_NOTIFY_ALL:
     { // Message is received even if window is inactive
-      //  Is there a dvd share in this window?
       if (message.GetParam1() == GUI_MSG_WINDOW_RESET)
       {
         ClearFileItems(0);
@@ -137,37 +136,39 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
         return true;
       }
 
-      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
+      //  handle removable media
+      if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
       {
-        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
+        for (int i = 0; i < 2; i++)
         {
-          for (int i = 0; i < 2; i++)
+          if (m_Directory[i].IsVirtualDirectoryRoot() && IsActive())
           {
-            if (m_Directory[i].IsVirtualDirectoryRoot() && IsActive())
-            {
-              int iItem = GetSelectedItem(i);
-              Update(i, m_Directory[i].m_strPath);
-              CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
-            }
-            else if (m_Directory[i].IsCDDA() || m_Directory[i].IsOnDVD())
-            { // Disc has changed and we are inside a DVD Drive share, get out of here :)
-              if (IsActive()) Update(i, "");
-              else m_Directory[i].m_strPath="";
-            }
+            int iItem = GetSelectedItem(i);
+            Update(i, m_Directory[i].m_strPath);
+            CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
+          }
+          else if (m_Directory[i].IsRemovable() && !m_rootDir.IsInShare(m_Directory[i].m_strPath))
+          { // 
+            if (IsActive())
+              Update(i, "");
+            else
+              m_Directory[i].m_strPath="";
           }
         }
-        else if (message.GetParam1()==GUI_MSG_DVDDRIVE_CHANGED_CD)
-        { // State of the dvd-drive changed (Open/Busy label,...), so update it
-          for (int i = 0; i < 2; i++)
+        return true;
+      }
+      else if (message.GetParam1()==GUI_MSG_UPDATE_BOOKMARKS)
+      { // State of the bookmarks changed, so update our view
+        for (int i = 0; i < 2; i++)
+        {
+          if (m_Directory[i].IsVirtualDirectoryRoot() && IsActive())
           {
-            if (m_Directory[i].IsVirtualDirectoryRoot() && IsActive())
-            {
-              int iItem = GetSelectedItem(i);
-              Update(i, m_Directory[i].m_strPath);
-              CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
-            }
+            int iItem = GetSelectedItem(i);
+            Update(i, m_Directory[i].m_strPath);
+            CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
           }
         }
+        return true;
       }
     }
     break;
@@ -642,8 +643,8 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
           return bResult;
         }
         else
-        if (!CFile::Cache(strFile.c_str(), strDestFile.c_str(), this, NULL))
-          return false;
+          if (!CFile::Cache(strFile.c_str(), strDestFile.c_str(), this, NULL))
+            return false;
     }
     break;
 
@@ -981,11 +982,14 @@ void CGUIWindowFileManager::Render()
   CGUIWindow::Render();
 }
 
-bool CGUIWindowFileManager::OnFileCallback(void* pContext, int ipercent)
+bool CGUIWindowFileManager::OnFileCallback(void* pContext, int ipercent, float curSpeed, float avgSpeed)
 {
   if (m_dlgProgress)
   {
     m_dlgProgress->SetPercentage(ipercent);
+    CStdString speedString;
+    speedString.Format("%2.2f (%2.2f) KB/s", avgSpeed / 1024, curSpeed / 1024);
+    m_dlgProgress->SetLine(0, speedString);
     m_dlgProgress->Progress();
     if (m_dlgProgress->IsCanceled()) return false;
   }
