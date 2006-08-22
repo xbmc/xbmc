@@ -790,6 +790,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUISettings.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\HddSmart.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\HddSmart.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\InfoLoader.cpp">
 				</File>
 				<File

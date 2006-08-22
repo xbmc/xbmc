@@ -59,6 +59,7 @@ DDRAM address      54 55 56 57 58 59 5a 5b 5c 5d 5e 5f 60 61 62 63 64 65 66 67
 #define DISP_DDRAM_SET		  0x80 // cmd: set DDRAM address in address counter
 
 char AnimIndex=0;
+CSysInfo g_Sysinfo;
 
 //*************************************************************************************************************
 static void outb(unsigned short port, unsigned char data)
@@ -406,7 +407,7 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
   }
   else //if (g_guiSettings.GetInt("lcd.type")==LCD_TYPE_LCD_HD44780)
   {
-    if (g_sysinfo.SmartXXModCHIP()== "SmartXX V3")
+    if (g_Sysinfo.SmartXXModCHIP().Equals("SmartXX V3"))
     {
       float fBackLight=((float)level)/100.0f;
       fBackLight*=127.0f;
@@ -414,7 +415,7 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
       if (iNewLevel==63) iNewLevel=64;
       outb(DISP_O_LIGHT, iNewLevel&127);
     }
-    else if (g_sysinfo.SmartXXModCHIP()== "SmartXX OPX")
+    else if (g_Sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
     {
       float fBackLight=((float)level)/100.0f;
       fBackLight*=127.0f;
@@ -443,7 +444,7 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
 
   float fBackLight=((float)level)/100.0f;
   
-  if (g_sysinfo.SmartXXModCHIP() == "SmartXX V3") // Smartxx V3 
+  if (g_Sysinfo.SmartXXModCHIP().Equals("SmartXX V3")) // Smartxx V3 
   {   
       fBackLight*=127.0f;
       int iNewLevel=(int)fBackLight;
@@ -451,7 +452,7 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
       int itemp = iNewLevel;
       outb(0xF701, itemp&127|128);
  	}
-  else if ( g_sysinfo.SmartXXModCHIP() == "SmartXX OPX" )
+  else if ( g_Sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
   {
     fBackLight*=127.0f;
     int iNewLevel=(int)fBackLight;
