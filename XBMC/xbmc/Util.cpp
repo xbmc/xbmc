@@ -2830,7 +2830,7 @@ const BUILT_IN commands[] = {
   "SetVolume","Set the current volume",
   "Dialog.Close","Close a dialog",
   "System.LogOff","Log off current user",
-  "system.pwmcontroll","Controll PWM RGB LEDs"
+  "system.pwmcontrol","Controll PWM RGB LEDs"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3496,7 +3496,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_guiSettings.GetString("network.gateway").c_str(),
       g_guiSettings.GetString("network.dns").c_str());
   }
-  else if (execute.Left(19).Equals("system.pwmcontroll"))
+  else if (execute.Left(18).Equals("system.pwmcontrol"))
   {
     CStdString strTemp ,strRgbA, strRgbB, strTran; 
     CStdStringArray arSplit; 
@@ -3510,7 +3510,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       strTran  = arSplit[2].c_str();
       iTrTime  = atoi(arSplit[3].c_str());
     }
-      PWMControll(strRgbA,strRgbB,strTran, iTrTime);
+      PWMControl(strRgbA,strRgbB,strTran, iTrTime);
   }
   else
     return -1;
@@ -4428,7 +4428,7 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
   }
   sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
-bool CUtil::PWMControll(CStdString strRGBa, CStdString strRGBb, CStdString strTransition, int iTrTime)
+bool CUtil::PWMControl(CStdString strRGBa, CStdString strRGBb, CStdString strTransition, int iTrTime)
 {
   ILEDSmartxxRGB* s_XXrbg = new ILEDSmartxxRGB();
    if(!s_XXrbg->IsRunning())
