@@ -306,6 +306,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20133] = "Edit Network Location";
   m_vecStrings[20134] = "Remove Network Location";
   m_vecStrings[20135] = "Do you want to scan the folder?";
+  m_vecStrings[20136] = "Memory Unit";
 
   return true;
 }

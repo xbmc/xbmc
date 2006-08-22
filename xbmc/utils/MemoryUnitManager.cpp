@@ -209,10 +209,11 @@ void CMemoryUnitManager::GetMemoryUnitShares(VECSHARES &shares)
     CShare share;
     CStdString volumeName = m_memUnits[i]->GetVolumeName();
     volumeName.TrimRight(' ');
+    // Memory Unit # (volumeName) (fs)
     if (volumeName.IsEmpty())
-      share.strName.Format("%s %i (%s)", "Memory Unit", i + 1, m_memUnits[i]->GetFileSystem());
+      share.strName.Format("%s %i", g_localizeStrings.Get(20136).c_str(), i + 1);
     else
-      share.strName.Format("%s %i (%s) (%s)", "Memory Unit", i + 1, volumeName.c_str(), m_memUnits[i]->GetFileSystem());
+      share.strName.Format("%s %i (%s)", g_localizeStrings.Get(20136).c_str(), i + 1, volumeName.c_str());
     share.strPath.Format("mem%i://", i);
     shares.push_back(share);
   }
