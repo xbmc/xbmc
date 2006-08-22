@@ -14,6 +14,10 @@
 #include "../Temperature.h"
 #include "../utils/criticalsection.h"
 
+#define OPERATOR_NOT  3
+#define OPERATOR_AND  2
+#define OPERATOR_OR   1
+
 #define PLAYER_HAS_MEDIA              1
 #define PLAYER_HAS_AUDIO              2
 #define PLAYER_HAS_VIDEO              3
@@ -96,7 +100,7 @@
 #define SYSTEM_HAS_LOGINSCREEN      148
 
 // reserved for systeminfo stuff
-#define SYSTEM_HDD_TEMP             150
+#define SYSTEM_HDD_SMART            150
 #define SYSTEM_INTERNET_STATE       159
 //
 
@@ -290,7 +294,7 @@ public:
   CStdString GetCurrentPlayTimeRemaining();
   CStdString GetVersion();
   CStdString GetBuild();
-  CStdString GetHDDTemp();
+  CStdString GetHDDTemp(int iSmartRequest);
   bool SystemHasInternet();
   CStdString SystemHasInternet_s();
   
@@ -345,6 +349,7 @@ protected:
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
+  int i_SmartRequest;
 
   // fan stuff
   DWORD m_lastSysHeatInfoTime;

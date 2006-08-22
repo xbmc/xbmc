@@ -38,7 +38,9 @@
 #include "lib/libscrobbler/scrobbler.h"
 #include "partymodemanager.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "utils/LED.h"
 #include "MusicInfoLoader.h"
+
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -52,6 +54,7 @@ using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 static D3DGAMMARAMP oldramp, flashramp;
+
 
 extern "C"
 {
@@ -2826,7 +2829,8 @@ const BUILT_IN commands[] = {
   "Mute","Mute the player",
   "SetVolume","Set the current volume",
   "Dialog.Close","Close a dialog",
-  "System.LogOff","Log off current user"
+  "System.LogOff","Log off current user",
+  "system.pwmcontroll","Controll PWM RGB LEDs"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3492,6 +3496,22 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_guiSettings.GetString("network.gateway").c_str(),
       g_guiSettings.GetString("network.dns").c_str());
   }
+  else if (execute.Left(19).Equals("system.pwmcontroll"))
+  {
+    CStdString strTemp ,strRgbA, strRgbB, strTran; 
+    CStdStringArray arSplit; 
+    int iTrTime;
+    StringUtils::SplitString(parameter,",", arSplit);
+    
+    if ((int)arSplit.size() > 1)
+    {
+      strRgbA  = arSplit[0].c_str();
+      strRgbB  = arSplit[1].c_str();
+      strTran  = arSplit[2].c_str();
+      iTrTime  = atoi(arSplit[3].c_str());
+    }
+      PWMControll(strRgbA,strRgbB,strTran, iTrTime);
+  }
   else
     return -1;
   return 0;
@@ -3935,8 +3955,8 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 	life = select( 0,&readfds, NULL, NULL, &timeout );
   if (life == 0 ) // Do we have a Ping able xbox ? 0:no 1:yes
   {
-    if (!g_guiSettings.GetBool("autodetect.createlink"))
-    { strNewClientIP =""; strNewClientInfo =""; } // To prevent to create more then one Same Share! todo: Until we have a vec list
+    strNewClientIP =""; 
+    strNewClientInfo ="";
     g_infoManager.SetAutodetectedXbox(false);
   }
   while( life )
@@ -4014,20 +4034,6 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
         CStdString strtemplbl;
         strtemplbl.Format("%s %s",strNickName, strNewClientIP);
         g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);
-        
-        if (g_guiSettings.GetBool("autodetect.createlink")) //Check if this XBOX is allread in the FileManager List! If Not add it!
-        {
-          // Why on earth are we adding these to the XML file??
-          if(!g_settings.UpdateBookmark("files", strNickName, "path", strFTPPath) ) // Add a FTP link to MyFiles! //Todo: If there is a same Name ask to overwrite it!
-          {
-            CShare share;
-            share.strName = strNickName;
-            share.strPath = strFTPPath;
-            VECSHARES *shares = g_settings.GetSharesFromType("files");
-            if (shares)
-              shares->push_back(share);
-          }
-        }
         CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", strLabel.c_str(), strNickName.c_str(), strFTPPath.c_str());
         
         if (g_guiSettings.GetBool("autodetect.popupinfo")) //PopUP Ask window to connect to the detected XBOX via Filemanger!
@@ -4035,11 +4041,10 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
           if (CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
           {
             g_infoManager.SetAutodetectedXbox(true);
-            strcpy( g_stSettings.m_szDefaultFiles, strNickName.c_str());
-            if (g_guiSettings.GetBool("autodetect.createlink"))
-              m_gWindowManager.ActivateWindow(WINDOW_FILES, strNickName);  //Open FileManager with the created ShareName
-            else
-              m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath);  // Open FileManager with the SharePath! [a TMP Share session will be created]
+            CStdString strTemp;
+            strNickName.TrimRight(' ');
+            strTemp.Format("FTP XBOX (%s)", strNickName.c_str());
+            m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
           }
         }
       }
@@ -4052,6 +4057,31 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
     g_infoManager.SetAutodetectedXbox(false);
   }
   return true;
+}
+bool CUtil::XboxAutoDetectionGetShare(CShare& share)
+{
+  if( !strNewClientIP.IsEmpty() && !strNewClientInfo.IsEmpty())
+  {
+    //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
+    CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
+    CStdStringArray arSplit; 
+    StringUtils::SplitString(strNewClientInfo,";", arSplit);
+    if ((int)arSplit.size() > 1)
+    {
+      strNickName     = arSplit[0].c_str();
+      strFtpUserName  = arSplit[1].c_str();
+      strFtpPassword  = arSplit[2].c_str();
+      strFtpPort      = arSplit[3].c_str();
+      strBoosMode     = arSplit[4].c_str();
+      strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strNewClientIP.c_str(),strFtpPort.c_str());
+
+      strNickName.TrimRight(' ');
+      share.strName.Format("FTP XBOX (%s)", strNickName.c_str());
+      share.strPath.Format("%s",strFTPPath.c_str());
+    }
+    return true;
+  }
+  return false;
 }
 bool CUtil::IsFTP(const CStdString& strFile)
 {
@@ -4102,6 +4132,7 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
         if (p_ftpUser->SetPassword(strFtpUserPassword.c_str()) != XFS_INVALID_PARAMETERS)
         {
           p_ftpUser->CommitChanges();
+          g_guiSettings.SetString("servers.ftpserverpassword",strFtpUserPassword.c_str());
           return true;
         }
         break;
@@ -4397,6 +4428,15 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
   }
   sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
+bool CUtil::PWMControll(CStdString strRGBa, CStdString strRGBb, CStdString strTransition, int iTrTime)
+{
+  ILEDSmartxxRGB* s_XXrbg = new ILEDSmartxxRGB();
+   if(!s_XXrbg->IsRunning())
+     s_XXrbg->Start();
+   s_XXrbg->SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
+   return true;
+}
+
 
 bool CUtil::LoadMusicTag(CFileItem *pItem)
 {
