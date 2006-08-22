@@ -1059,10 +1059,21 @@ void CXBoxRenderer::SetViewMode(int iViewMode)
   }
   else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_14x9)
   { // stretch image to 14:9 ratio
-    g_stSettings.m_fZoomAmount = 1.0;
     // now we need to set g_stSettings.m_fPixelRatio so that
     // fOutputFrameRatio = 14:9.
     g_stSettings.m_fPixelRatio = (14.0f / 9.0f) / fSourceFrameRatio;
+    // calculate the desired output ratio
+    float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
+    // now calculate the correct zoom amount.  First zoom to full height.
+    float fNewHeight = fScreenHeight;
+    float fNewWidth = fNewHeight * fOutputFrameRatio;
+    g_stSettings.m_fZoomAmount = fNewWidth / fScreenWidth;
+    if (fNewWidth < fScreenWidth)
+    { // zoom to full width
+      fNewWidth = fScreenWidth;
+      fNewHeight = fNewWidth / fOutputFrameRatio;
+      g_stSettings.m_fZoomAmount = fNewHeight / fScreenHeight;
+    }
   }
   else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
   { // stretch image to 16:9 ratio
