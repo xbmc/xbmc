@@ -17,7 +17,7 @@ namespace XFILE
 class IFileCallback
 {
 public:
-  virtual bool OnFileCallback(void* pContext, int ipercent) = 0;
+  virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) = 0;
 };
 class CFile
 {
