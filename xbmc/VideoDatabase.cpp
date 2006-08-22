@@ -125,6 +125,22 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
     CStdString strPath, strFileName ;
     Split(strFilenameAndPath, strPath, strFileName);
 
+#define NEW_VIDEO_DB_METHODS 1
+
+#ifdef NEW_VIDEO_DB_METHODS
+    CStdString strSQL;
+    strSQL=FormatSQL("select * from files, path where path.idpath=files.idpath and path.strPath like '%s' and files.strFileName like '%s'", strPath.c_str(), strFileName.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() > 0)
+    {
+      long lFileId = m_pDS->fv("files.idFile").get_asLong();
+      lMovieId = m_pDS->fv("files.idMovie").get_asLong();
+      lPathId = m_pDS->fv("files.idPath").get_asLong();
+      m_pDS->close();
+      return lFileId;
+    }
+#else
+
     lPathId = GetPath(strPath);
     if (lPathId < 0) return -1;
 
@@ -150,6 +166,7 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
       }
       m_pDS->close();
     }
+#endif
   }
   catch (...)
   {
@@ -1412,13 +1429,21 @@ bool CVideoDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CVid
   try
   {
     // obtain the FileID (if it exists)
+#ifdef NEW_VIDEO_DB_METHODS
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    CStdString strPath, strFileName;
+    Split(strFilenameAndPath, strPath, strFileName);
+    CStdString strSQL=FormatSQL("select * from settings, files, path where settings.idfile=files.idfile and path.idpath=files.idpath and path.strPath like '%s' and files.strFileName like '%s'", strPath.c_str() , strFileName.c_str());
+#else
     long lPathId, lMovieId;
     long lFileId = GetFile(strFilenameAndPath, lPathId, lMovieId, true);
     if (lFileId < 0) return false;
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
     // ok, now obtain the settings for this file
-    CStdString strSQL=FormatSQL("select * from settings where idFile='%i'\n", lFileId);
+    CStdString strSQL=FormatSQL("select settings.* settings where settings.idFile = '%i'", lFileId);
+#endif
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
     { // get the video settings info
