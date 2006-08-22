@@ -1,12 +1,14 @@
 #include "../../stdafx.h"
 #include "FatXDevice.h"
 #include "../../xbox/Undocumented.h"
+#include "../../utils/SystemInfo.h"
 
 typedef STRING OBJECT_STRING;
 typedef PSTRING POBJECT_STRING;
 
 #define IRP_MJ_READ                     0x02
 #define IRP_MJ_WRITE                    0x03
+CSysInfo m_Sysinfo;
 
 extern "C"
 {
@@ -109,6 +111,9 @@ void CFatXDevice::UnMount()
     status = NtFsControlFile(handle, NULL, NULL, NULL, &IoStatusBlock, FSCTL_DISMOUNT_VOLUME, NULL, 0, NULL, 0);
     CLog::Log(LOGDEBUG, __FUNCTION__ " filesystem dismount returned %08x", status);
     NtClose(handle);
+    
+    // Mount Notify ? show that this memunit is supported!
+    m_Sysinfo.MemUnitNotification(MEMUNIT_UNMOUNTED,NULL,m_drive);
   }
 
   CLog::Log(LOGDEBUG, __FUNCTION__ " Deleting symbolic link");
@@ -208,8 +213,12 @@ bool CFatXDevice::Mount(const char *device)
       if (!ReadVolumeName())
       {
         UnMount();
+        // Mount Notify ? show that this memunit is supported or not supported
+        m_Sysinfo.MemUnitNotification(MEMUNIT_UNABLE_TO_MOUNT,NULL,m_drive);
         return false;
       }
+      // Mount Notify ? show that this memunit is supported!
+      m_Sysinfo.MemUnitNotification(MEMUNIT_MOUNTED,NULL,m_drive);
       return true;
     }
   }

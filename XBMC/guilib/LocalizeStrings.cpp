@@ -307,6 +307,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20134] = "Remove Network Location";
   m_vecStrings[20135] = "Do you want to scan the folder?";
   m_vecStrings[20136] = "Memory Unit";
+  m_vecStrings[20137] = "UnMounted from Drive:";
+  m_vecStrings[20138] = "Mounted to Drive:";
+  m_vecStrings[20139] = "Unable to mount!";
 
   return true;
 }
