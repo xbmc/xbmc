@@ -982,13 +982,13 @@ void CGUIWindowFileManager::Render()
   CGUIWindow::Render();
 }
 
-bool CGUIWindowFileManager::OnFileCallback(void* pContext, int ipercent, float curSpeed, float avgSpeed)
+bool CGUIWindowFileManager::OnFileCallback(void* pContext, int ipercent, float avgSpeed)
 {
   if (m_dlgProgress)
   {
     m_dlgProgress->SetPercentage(ipercent);
     CStdString speedString;
-    speedString.Format("%2.2f (%2.2f) KB/s", avgSpeed / 1024, curSpeed / 1024);
+    speedString.Format("%2.2f KB/s", avgSpeed / 1024);
     m_dlgProgress->SetLine(0, speedString);
     m_dlgProgress->Progress();
     if (m_dlgProgress->IsCanceled()) return false;
