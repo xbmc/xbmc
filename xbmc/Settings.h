@@ -279,6 +279,7 @@ public:
     int m_autoDetectPingTime;
     float m_playCountMinimumPercent;
 
+    int m_songInfoDuration;
     int m_logLevel;
     CStdString m_cddbAddress;
     CStdString m_imdbAddress;
