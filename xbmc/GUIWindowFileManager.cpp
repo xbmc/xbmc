@@ -647,13 +647,9 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         }
         else
         {
-          DWORD time = timeGetTime();
           if (!CFile::Cache(strFile.c_str(), strDestFile.c_str(), this, NULL))
             return false;
-          CLog::Log(LOGDEBUG, "File copy time: %i ms", timeGetTime() - time);
         }
-          if (!CFile::Cache(strFile.c_str(), strDestFile.c_str(), this, NULL))
-            return false;
     }
     break;
 
