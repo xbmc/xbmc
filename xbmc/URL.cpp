@@ -207,7 +207,8 @@ CURL::CURL(const CStdString& strURL)
   // iso9960 doesnt have an hostname;-)
   if (m_strProtocol.CompareNoCase("iso9660") == 0 
     || m_strProtocol.CompareNoCase("musicdb") == 0 
-    || m_strProtocol.CompareNoCase("lastfm") == 0)
+    || m_strProtocol.CompareNoCase("lastfm") == 0
+    || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
   {
     if (m_strHostName != "" && m_strFileName != "")
     {

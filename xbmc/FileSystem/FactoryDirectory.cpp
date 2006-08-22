@@ -21,6 +21,7 @@
 #include "StackDirectory.h"
 #include "PlaylistDirectory.h"
 #include "UPnPDirectory.h"
+#include "MemUnitDirectory.h"
 #include "../xbox/network.h"
 
 /*!
@@ -51,6 +52,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();
   if (strProtocol == "playlistvideo") return new CPlaylistDirectory();
+  if (strProtocol.Left(3) == "mem") return new CMemUnitDirectory();
 
   if( g_network.IsAvailable() )
   {
