@@ -15,7 +15,7 @@ public:
   void Close(bool bForceClose = false);
 
   virtual void Process();
-  virtual bool OnFileCallback(void* pContext, int ipercent, float curSpeed, float avgSpeed);
+  virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed);
 
 protected:
 

@@ -123,6 +123,9 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     ::SetEndOfFile(hMovie);
     size.QuadPart = 0;
     ::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);*/    
+    CXBStopWatch timer;
+    timer.StartZero();
+    float start = 0.0f;
     while (llFileSize > 0)
     {
       g_application.ResetScreenSaver();
@@ -150,6 +153,11 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       llFileSize -= iRead;
       llPos += iRead;
 
+      // calculate the current and average speeds
+      float end = timer.GetElapsedSeconds();
+      float averageSpeed = llPos / end;
+      start = end;
+
       float fPercent = (float)llPos;
       fPercent /= ((float)llFileSizeOrg);
       fPercent *= 100.0;
@@ -157,7 +165,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       {
         ipercent = (int)fPercent;
         if (pCallback)
-          if (!pCallback->OnFileCallback(pContext, ipercent)) break;
+          if (!pCallback->OnFileCallback(pContext, ipercent, averageSpeed)) break;
       }
     }
 
