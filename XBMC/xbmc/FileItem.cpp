@@ -799,12 +799,17 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'F')
     { // filename
-      str = CUtil::GetTitleFromPath(m_strPath, m_bIsFolder);
+      str = CUtil::GetTitleFromPath(m_strPath, m_bIsFolder && !IsFileFolder());
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'L')
     { // pre-existing label
       str = GetLabel();
+      // is the label the actual file or folder name?
+      if (str == m_strPath.Right(str.GetLength()))
+      { // label is the same as filename, clean it up as appropriate
+        str = CUtil::GetTitleFromPath(m_strPath, m_bIsFolder && !IsFileFolder());
+      }
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'D')

@@ -4,7 +4,6 @@
 #include "factorydirectory.h"
 #include "factoryfiledirectory.h"
 #include "../utils/win32exception.h"
-#include "../util.h"
 
 using namespace DIRECTORY;
 
@@ -41,16 +40,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
         {
           auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem,strMask));
           if (pDirectory.get())
-          {
             pItem->m_bIsFolder = true;
-            // hide extensions for file directories
-            if (g_guiSettings.GetBool("filelists.hideextensions"))
-            {
-              CStdString strFileName = CUtil::GetFileName(pItem->m_strPath);
-              CUtil::RemoveExtension(strFileName);
-              pItem->SetLabel(strFileName);
-            }
-          }
           else
             if (pItem->m_bIsFolder)
             {
