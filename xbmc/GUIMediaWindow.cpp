@@ -67,7 +67,10 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PARENT_DIR)
   {
-    GoParentFolder();
+    if (m_vecItems.IsVirtualDirectoryRoot())
+      m_gWindowManager.PreviousWindow();
+    else
+      GoParentFolder();
     return true;
   }
 
