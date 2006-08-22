@@ -111,8 +111,8 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
   if (amount)
   {
     // causing a (sleep effect) ergo: lower transfer speed!
-    // CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback(%p) not enough free space for %i bytes", this,  amount); 
-    CLog::DebugLog("CFileCurl::WriteCallback(%p) not enough free space for %i bytes", this,  amount);
+    CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback(%p) not enough free space for %i bytes", this,  amount); 
+    //CLog::DebugLog("CFileCurl::WriteCallback(%p) not enough free space for %i bytes", this,  amount);
     
     // don't have enough room in our buffer - need to copy into our temp buffer
     char *newbuffer = (char *)malloc(amount + m_overflowSize);
