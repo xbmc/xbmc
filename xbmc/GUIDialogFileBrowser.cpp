@@ -160,34 +160,37 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_NOTIFY_ALL:
     { // Message is received only if this window is active
-      
-      //  Is there a dvd share in this window?
-      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
+      if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
       {
-        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
+        if (m_Directory.IsVirtualDirectoryRoot() && IsActive())
         {
-          if (m_Directory.IsVirtualDirectoryRoot())
-          {
-            int iItem = m_viewControl.GetSelectedItem();
-            Update(m_Directory.m_strPath);
-            m_viewControl.SetSelectedItem(iItem);
-          }
-          else if (m_Directory.IsCDDA() || m_Directory.IsOnDVD())
-          { // Disc has changed and we are inside a DVD Drive share, get out of here :)
-            Update("");
-          }
-          return true;
+          int iItem = m_viewControl.GetSelectedItem();
+          Update(m_Directory.m_strPath);
+          m_viewControl.SetSelectedItem(iItem);
         }
-        else if (message.GetParam1()==GUI_MSG_DVDDRIVE_CHANGED_CD)
-        { // State of the dvd-drive changed (Open/Busy label,...), so update it
-          if (m_Directory.IsVirtualDirectoryRoot())
-          {
-            int iItem = m_viewControl.GetSelectedItem();
-            Update(m_Directory.m_strPath);
-            m_viewControl.SetSelectedItem(iItem);
+        else if (m_Directory.IsRemovable())
+        { // check that we have this removable share still
+          if (!m_rootDir.IsInShare(m_Directory.m_strPath))
+          { // don't have this share any more
+            if (IsActive()) Update("");
+            else 
+            {
+              m_history.ClearPathHistory();
+              m_Directory.m_strPath="";
+            }
           }
-          return true;
         }
+        return true;
+      }
+      else if (message.GetParam1()==GUI_MSG_UPDATE_BOOKMARKS)
+      { // State of the bookmarks changed, so update our view
+        if (m_Directory.IsVirtualDirectoryRoot() && IsActive())
+        {
+          int iItem = m_viewControl.GetSelectedItem();
+          Update(m_Directory.m_strPath);
+          m_viewControl.SetSelectedItem(iItem);
+        }
+        return true;
       }
     }
     break;
