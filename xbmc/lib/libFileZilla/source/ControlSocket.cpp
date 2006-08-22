@@ -33,7 +33,7 @@
 #include "../../../Util.h"
 #include "../../utils/Log.h"
 #include "../../Settings.h"
-#include "../../utils/MemUnit.h"
+#include "../../utils/MemoryUnitManager.h"
 #include "../../Util.h"
 #include "../../Utils/log.h"
 #include "../../GUISettings.h"
@@ -1086,7 +1086,7 @@ void CControlSocket::ParseCommand()
 									(drive == 'f' && !g_advancedSettings.m_useFDrive) ||
 									(drive == 'g' && !g_advancedSettings.m_useGDrive))
 								{
-									if (!MU_IsDriveValid(drive))
+									if (!g_memoryUnitManager.IsDriveValid(drive))
 										continue;
 								}
 							}

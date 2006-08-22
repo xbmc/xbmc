@@ -145,7 +145,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_NOTIFY_ALL:
     {
-      if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
+      if (message.GetParam1()==GUI_MSG_REMOVED_MEDIA)
         DeleteRemoveableMediaDirectoryCache();
     }
     break;

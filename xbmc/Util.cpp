@@ -1166,6 +1166,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
   if (strProtocol == "cdda" || strProtocol == "iso9660") return false;
+  if (strProtocol.Left(3) == "mem") return false;   // memory cards
   if (strProtocol == "virtualpath")
   { // virtual paths need to be checked separately
     CVirtualPathDirectory dir;
@@ -1284,6 +1285,11 @@ bool CUtil::IsSmb(const CStdString& strFile)
 bool CUtil::IsDAAP(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("daap:");  
+}
+
+bool CUtil::IsMemCard(const CStdString& strFile)
+{
+  return strFile.Left(3).Equals("mem");
 }
 
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
@@ -4344,6 +4350,8 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     CStackDirectory dir;
     return SupportsFileOperations(dir.GetFirstStackedFile(strPath));
   }
+  if (IsMemCard(strPath))
+    return true;
   return false;
 }
 

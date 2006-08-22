@@ -13,7 +13,7 @@
 #include "ActionManager.h"
 #include "utils/LCDFactory.h"
 #include "utils/KaiClient.h"
-#include "utils/MemUnit.h"
+#include "utils/MemoryUnitManager.h"
 #include "utils/FanController.h"
 #include "XBVideoConfig.h"
 #include "utils/LED.h"
@@ -1016,8 +1016,6 @@ HRESULT CApplication::Initialize()
   CreateDirectory("Q:\\visualisations", NULL);
   CreateDirectory("Q:\\sounds", NULL);
 
-  InitMemoryUnits();
-
   // initialize network
   if (!m_bXboxMediacenterLoaded)
   {
@@ -1253,10 +1251,11 @@ void CApplication::StartFtpServer()
     if (!m_pFileZilla)
     {
       // if user didn't upgrade properly...
-      // TODO 2.0: This can be removed in a few weeks probably
-      if (!CFile::Exists("Q:\\System\\FileZilla Server.xml") && CFile::Exists("Q:\\FileZilla Server.xml"))
-        CFile::Cache("Q:\\FileZilla Server.xml", "Q:\\System\\FileZilla Server.xml");
-      m_pFileZilla = new CXBFileZilla("Q:\\System\\");
+      // check whether P:\\FileZilla Server.xml exists (UserData/FileZilla Server.xml)
+      if (CFile::Exists("P:\\FileZilla Server.xml"))
+        m_pFileZilla = new CXBFileZilla("P:\\");
+      else
+        m_pFileZilla = new CXBFileZilla("Q:\\System\\");
       m_pFileZilla->Start(false);
     }
     //CLog::Log(LOGNOTICE, "XBFileZilla: Started");
@@ -3740,7 +3739,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_NOTIFY_ALL:
     {
-      if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
+      if (message.GetParam1()==GUI_MSG_REMOVED_MEDIA)
       {
         // Update general playlist: Remove DVD playlist items
         int nRemoved = g_playlistPlayer.RemoveDVDItems();
@@ -4018,7 +4017,11 @@ void CApplication::Process()
   g_applicationMessenger.ProcessMessages();
 
   // check for memory unit changes
-  UpdateMemoryUnits();
+  if (g_memoryUnitManager.Update())
+  { // changes have occured - update our shares
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
+    m_gWindowManager.SendThreadMessage(msg);        
+  }
 
   // check if we can free unused memory
   g_audioManager.FreeUnused();

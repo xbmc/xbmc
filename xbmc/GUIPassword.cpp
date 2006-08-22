@@ -487,7 +487,7 @@ bool CGUIPassword::LockBookmark(const CStdString& strType, const CStdString& str
       break;
     }
   }
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
   m_gWindowManager.SendThreadMessage(msg);        
 
   return bResult;
@@ -509,7 +509,7 @@ void CGUIPassword::LockBookmarks()
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
         it->m_iHasLock = 2;
   }
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
   m_gWindowManager.SendThreadMessage(msg);
 }
 
@@ -529,7 +529,7 @@ void CGUIPassword::UnlockBookmarks()
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
         it->m_iHasLock = 1;
   }
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_DVDDRIVE_CHANGED_CD);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
   m_gWindowManager.SendThreadMessage(msg);
 }
 
@@ -555,7 +555,7 @@ void CGUIPassword::RemoveBookmarkLocks()
       }
   }
   g_settings.CommitBookmarkTransaction();
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_DVDDRIVE_CHANGED_CD);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_BOOKMARKS);
   m_gWindowManager.SendThreadMessage(msg);
 }
 

@@ -95,7 +95,7 @@ void CDlgCache::SetMessage(const CStdString& strMessage)
   m_strLinePrev = strMessage;
 }
 
-bool CDlgCache::OnFileCallback(void* pContext, int ipercent)
+bool CDlgCache::OnFileCallback(void* pContext, int ipercent, float curSpeed, float avgSpeed)
 {
   CSingleLock lock(g_graphicsContext);
   ShowProgressBar(true);
