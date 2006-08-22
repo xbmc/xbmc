@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-08-2006 improved: Filtering of filenames prior to IMDb lookup, thanks to ezd
  - 22-08-2006 changed: Better support for xbox memory units.
  - 22-08-2006 fixed: "hide media extensions" works on virtual folders like playlists, archives, etc.
  - 22-08-2006 updated: libsmbclient to 3.0.23b, fixes some signing issues and some bugs with landrives
