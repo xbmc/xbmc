@@ -1274,6 +1274,7 @@ void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int wid
   rd.bottom = height;
   m_pD3DDevice->GetRenderTarget(&oldRT);
   m_pD3DDevice->SetRenderTarget(surface, NULL);
+  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
   RenderLowMem(0);
   rd = saveSize;
   m_pD3DDevice->SetRenderTarget(oldRT, NULL);
