@@ -317,6 +317,10 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20144] = "Shutdown Timer";
   m_vecStrings[20145] = "Shutdown interval (in minutes)";
   m_vecStrings[20146] = "Started, shutdown in %im";
+  m_vecStrings[20147] = "Shutdown in 30 minutes";
+  m_vecStrings[20148] = "Shutdown in 60 minutes";
+  m_vecStrings[20149] = "Shutdown in 120 minutes";
+  m_vecStrings[20150] = "Cancel Shutdown Timer";
 
   return true;
 }
