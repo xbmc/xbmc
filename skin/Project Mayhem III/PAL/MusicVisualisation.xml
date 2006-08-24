@@ -52,7 +52,7 @@
    <posx>75</posx>
    <posy>75</posy>
    <width>560</width>
-   <label>Visuals | fps: $INFO[System.FPS] -</label>
+   <label>Visual | fps: $INFO[System.FPS] -</label>
    <font>font12</font>
    <align>left</align>
    <visible>Player.ShowCodec</visible>
