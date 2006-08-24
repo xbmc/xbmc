@@ -770,6 +770,12 @@ bool CGUIWindowBuddies::OnAction(const CAction &action)
       {
       case State::Arenas:
         {
+          INT arenaDelimiter = m_pKaiClient->GetCurrentVector().ReverseFind('/') + 1;
+          if (arenaDelimiter == 0)
+          {
+            m_gWindowManager.PreviousWindow();
+            return true;
+          }
           m_pKaiClient->ExitVector();
           Enter(CArenaItem(m_pKaiClient->GetCurrentVector()));
           CStdString strGame;
