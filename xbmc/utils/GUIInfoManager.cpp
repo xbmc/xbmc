@@ -677,7 +677,12 @@ string CGUIInfoManager::GetLabel(int info)
     break;
 
   case SYSTEM_HDD_SMART:
-    strLabel.Format("%s %s", g_localizeStrings.Get(13151).c_str(), GetHDDTemp(i_SmartRequest).c_str());
+    {
+      if (i_SmartRequest == 17)
+        strLabel.Format("%s %s", g_localizeStrings.Get(13151).c_str(), GetHDDSmart(i_SmartRequest).c_str());
+      else
+        strLabel.Format("%s", GetHDDSmart(i_SmartRequest).c_str());
+    }
     break;
 
   case SYSTEM_INTERNET_STATE:
@@ -2021,7 +2026,7 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
 }
 
 
-CStdString CGUIInfoManager::GetHDDTemp( int iSmartRequest )
+CStdString CGUIInfoManager::GetHDDSmart( int iSmartRequest )
 {
   // 36 Loaded Hours
   CStdString strItemhdd;
@@ -2029,8 +2034,18 @@ CStdString CGUIInfoManager::GetHDDTemp( int iSmartRequest )
   if (!m_smartRequest->IsRunning())
     m_smartRequest->Create();
   m_smartRequest->DelayRequestSmartValue(iSmartRequest, 30);
-  CTemperature HddTemp = CTemperature::CreateFromCelsius(m_smartRequest->m_HddSmarValue);
-  strItemhdd.Format("%s", HddTemp.ToString().c_str());
+
+  if (iSmartRequest == 17 )
+  {
+    CTemperature HddTemp = CTemperature::CreateFromCelsius((double)m_smartRequest->m_HddSmarValue);
+    strItemhdd.Format("%s", HddTemp.ToString().c_str());
+  }
+  else
+  {
+    char buffer[10];
+    itoa(m_smartRequest->m_HddSmarValue, buffer, 10);
+    strItemhdd.Format("%s", buffer);
+  }
   return strItemhdd;
 }
 bool CGUIInfoManager::SystemHasInternet()
