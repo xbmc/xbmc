@@ -1760,6 +1760,7 @@ bool CSettings::LoadProfile(int index)
   int iOldIndex = m_iLastLoadedProfileIndex;
   m_iLastLoadedProfileIndex = index;
   bool bSourcesXML=true;
+  CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
   if (Load(bSourcesXML,bSourcesXML))
   {
     CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
@@ -1788,7 +1789,8 @@ bool CSettings::LoadProfile(int index)
 
     g_infoManager.ResetCache();
  //   g_infoManager.Clear();
-    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")))
+      g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
     // initialize our charset converter
     g_charsetConverter.reset();
 
