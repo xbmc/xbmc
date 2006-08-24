@@ -10,6 +10,7 @@
 #include "lib/libscrobbler/scrobbler.h"
 #include "utils/weather.h"
 #include "xbox/network.h"
+#include "skininfo.h"
 
 #define CONTROL_BIG_LIST 52
 #define CONTROL_LABEL_HEADER 2
@@ -94,13 +95,22 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             
             g_weatherManager.Refresh();
             g_pythonParser.bLogin = true;
-            m_gWindowManager.ChangeActiveWindow(WINDOW_HOME);
-            m_gWindowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
+            RESOLUTION res=INVALID;
+            CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
+            int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
+            // test for a startup window, and activate that instead of home
+            if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
+            {
+              m_gWindowManager.ActivateWindow(WINDOW_STARTUP);
+            }
+            else
+            {
+              m_gWindowManager.ChangeActiveWindow(WINDOW_HOME);
+              m_gWindowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
+            }
 
             if (iItem == 0)
               g_application.StartKai();
-            CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
-            OnMessage(msg);
             return true;
           }
           else
@@ -150,14 +160,14 @@ void CGUIWindowLoginScreen::Render()
 
 void CGUIWindowLoginScreen::OnInitWindow()
 {
-  CGUIWindow::OnInitWindow();
-
   // Update list/thumb control
   m_viewControl.SetCurrentView(VIEW_METHOD_LARGE_LIST);
   Update();
   m_viewControl.SetFocused();
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER,g_localizeStrings.Get(20115));
   SET_CONTROL_VISIBLE(CONTROL_BIG_LIST);
+
+  CGUIWindow::OnInitWindow();
 }
 
 void CGUIWindowLoginScreen::OnWindowLoaded()
@@ -169,7 +179,6 @@ void CGUIWindowLoginScreen::OnWindowLoaded()
 
 void CGUIWindowLoginScreen::Update()
 {
-  m_viewControl.Clear();
   m_vecItems.Clear();
   for (unsigned int i=0;i<g_settings.m_vecProfiles.size(); ++i)
   {
