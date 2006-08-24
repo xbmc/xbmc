@@ -3314,7 +3314,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (fSecs == -1.f)
     {
       CStdString strTime;
-      CStdString strHeading = g_localizeStrings.Get(13209);
+      CStdString strHeading;
+      if (strCommand.Equals("xbmc.shutdown") || strCommand.Equals("xbmc.shutdown()"))
+        strHeading = g_localizeStrings.Get(20145);
+      else
+        strHeading = g_localizeStrings.Get(13209);
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
         fSecs = static_cast<float>(atoi(strTime.c_str())*60);
       else
