@@ -677,7 +677,6 @@
     <gamepad>
       <righttrigger>NextPicture</righttrigger> <!-- Next Tab -->
       <lefttrigger>PreviousPicture</lefttrigger> <!-- Previous Tab -->
-      <B>PreviousMenu</B>
     </gamepad>
   </XlinkKai>
 
