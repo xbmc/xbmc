@@ -34,6 +34,7 @@ void CGUIDialogLockSettings::SetupPage()
   CGUIDialogSettings::SetupPage();
   // update our settings label
   SET_CONTROL_LABEL(2,g_localizeStrings.Get(20066));
+  SET_CONTROL_HIDDEN(3);
 }
 
 void CGUIDialogLockSettings::CreateSettings()
@@ -41,6 +42,17 @@ void CGUIDialogLockSettings::CreateSettings()
   // clear out any old settings
   m_settings.clear();
   // create our settings
+  if (m_bGetUser)
+  {
+    AddButton(1,20142);
+    if (!m_strUser.IsEmpty())
+      m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(20142).c_str(),m_strUser.c_str());
+    AddButton(2,12326);
+    if (!m_strLock.IsEmpty())
+      m_settings[1].name.Format("%s (%s)",g_localizeStrings.Get(12326).c_str(),g_localizeStrings.Get(20141).c_str());
+
+    return;
+  }
   AddButton(1,m_iButtonLabel);
   if (m_iLock > LOCK_MODE_QWERTY)
     m_iLock = LOCK_MODE_EVERYONE;
@@ -69,6 +81,18 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
   // check and update anything that needs it
   if (setting.id == 1)
   {
+    if (m_bGetUser)
+    {
+      CStdString strHeading;
+      strHeading.Format("%s %s",g_localizeStrings.Get(14062).c_str(),m_strURL.c_str());
+      if (CGUIDialogKeyboard::ShowAndGetInput(m_strUser,strHeading,true))
+      {
+        m_bChanged = true;
+        m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(20142).c_str(),m_strUser.c_str());
+        UpdateSetting(1);
+      }
+      return;
+    }
     CGUIDialogContextMenu *menu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
     if (menu)
     {
@@ -122,8 +146,40 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
       }
     }
   }
+  if (setting.id == 2 && m_bGetUser)
+  {
+    CStdString strHeading;
+    strHeading.Format("%s %s",g_localizeStrings.Get(20143).c_str(),m_strURL.c_str());
+    if (CGUIDialogKeyboard::ShowAndGetInput(m_strLock,strHeading,true,true))
+    {
+      m_settings[1].name.Format("%s (%s)",g_localizeStrings.Get(12326).c_str(),g_localizeStrings.Get(20141).c_str());
+      m_bChanged = true;
+      UpdateSetting(2);
+    }
+    return;
+  }
   if (setting.id > 1)
     m_bChanged = true;
+}
+
+bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(CStdString& strUser, CStdString& strPassword, const CStdString& strURL)
+{
+  CGUIDialogLockSettings *dialog = (CGUIDialogLockSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
+  if (!dialog) return false;
+  dialog->m_bGetUser = true;
+  dialog->m_strLock = strPassword;
+  dialog->m_strUser = strUser;
+  dialog->m_strURL = strURL;
+  dialog->m_bChanged = false;
+  dialog->DoModal();
+  if (dialog->m_bChanged)
+  {
+    strUser = dialog->m_strUser;
+    strPassword = dialog->m_strLock;
+    return true;
+  }
+
+  return false;
 }
 
 bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword, int iHeader)

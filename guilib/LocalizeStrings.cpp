@@ -311,6 +311,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20138] = "Mounted to Drive:";
   m_vecStrings[20139] = "Unable to mount!";
   m_vecStrings[20140] = "Lock Screensaver";
+  m_vecStrings[20141] = "Set";
+  m_vecStrings[20142] = "Username";
+  m_vecStrings[20143] = "Enter password for";
 
   return true;
 }
