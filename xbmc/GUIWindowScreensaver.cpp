@@ -2,7 +2,7 @@
 #include "GUIWindowScreensaver.h"
 #include "util.h"
 #include "screensavers/ScreenSaverFactory.h"
-
+#include "application.h"
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
     : CGUIWindow(WINDOW_SCREENSAVER, "")
@@ -71,7 +71,6 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CSingleLock lock (m_critSection);
-
       if (m_pScreenSaver)
       {
         OutputDebugString("ScreenSaver::Stop()\n");
@@ -129,6 +128,14 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       m_gWindowManager.ShowOverlay(false);
       return true;
     }
+  case GUI_MSG_CHECK_LOCK:
+    if (!g_passwordManager.IsProfileLockUnlocked())
+    {
+      g_application.m_iScreenSaveLock = -1;
+      return false;
+    }
+    g_application.m_iScreenSaveLock = 1;
+    return true;
   }
   return CGUIWindow::OnMessage(message);
 }

@@ -81,3 +81,5 @@
 // Message is sent by the background info loader when it is finished with fetching a weather location.
 #define GUI_MSG_WEATHER_FETCHED       GUI_MSG_USER + 24
 
+// Message is sent to the screensaver window to tell that it should check the lock
+#define GUI_MSG_CHECK_LOCK            GUI_MSG_USER + 25
