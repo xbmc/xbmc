@@ -24,9 +24,22 @@ void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdStrin
     Create();
     m_bIsRunning = true;
   }
-  CStdString strAlarmClock = g_localizeStrings.Get(13208);
+
+  CStdString strAlarmClock;
+  CStdString strStarted;
+  if (event.m_strCommand.Equals("xbmc.shutdown") || event.m_strCommand.Equals("xbmc.shutdown()"))
+  {
+    strAlarmClock = g_localizeStrings.Get(20144);
+    strStarted = g_localizeStrings.Get(20146);
+  }
+  else
+  {
+    strAlarmClock = g_localizeStrings.Get(13208);
+    strStarted = g_localizeStrings.Get(13210);
+  }
+
   CStdString strMessage;
-  CStdString strStarted = g_localizeStrings.Get(13210);
+
   strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60);
   g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
   event.watch.StartZero();
@@ -42,9 +55,15 @@ void CAlarmClock::stop(const CStdString& strName)
   if (iter == m_event.end())
     return;
 
-  CStdString strAlarmClock = g_localizeStrings.Get(13208);
-  CStdString strMessage;
+  SAlarmClockEvent& event = iter->second;
+  
+  CStdString strAlarmClock;
+  if (event.m_strCommand.Equals("xbmc.shutdown") || event.m_strCommand.Equals("xbmc.shutdown()"))
+    strAlarmClock = g_localizeStrings.Get(20144);
+  else
+    strAlarmClock = g_localizeStrings.Get(13208);
 
+  CStdString strMessage;
   if( iter->second.watch.GetElapsedSeconds() > iter->second.m_fSecs )
     strMessage = g_localizeStrings.Get(13211);
   else 
