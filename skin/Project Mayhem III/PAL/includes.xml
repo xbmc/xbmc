@@ -86,4 +86,9 @@
    <animation effect="fade" time="200">WindowClose</animation>
   </include>
 
+  <include name="shutdownmenu">
+    <animation effect="zoom" start="600" center="175,288" time="700" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+    <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+  </include>
+
 </includes>
