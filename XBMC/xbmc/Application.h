@@ -142,6 +142,7 @@ public:
   DWORD m_dwSpinDownTime;
   bool m_bInactive;    // CB: SCREENSAVER PATCH
   bool m_bScreenSave;  // CB: SCREENSAVER PATCH
+  int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
   DWORD m_dwSaverTick;  // CB: SCREENSAVER PATCH
   DWORD m_dwSkinTime;
 
