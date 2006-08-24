@@ -215,7 +215,14 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_NEXT_SUBTITLE:
     {
-      g_application.m_pPlayer->SwitchToNextLanguage();
+      if (g_application.m_pPlayer->GetSubtitleCount() == 1)
+        return true;
+
+      g_stSettings.m_currentVideoSettings.m_SubtitleStream++;
+      if (g_stSettings.m_currentVideoSettings.m_SubtitleStream >= g_application.m_pPlayer->GetSubtitleCount())
+        g_stSettings.m_currentVideoSettings.m_SubtitleStream = 0;
+      g_application.m_pPlayer->SetSubtitle(g_stSettings.m_currentVideoSettings.m_SubtitleStream);
+      return true;    
     }
     return true;
     break;
@@ -257,7 +264,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         return true;
 
       g_stSettings.m_currentVideoSettings.m_AudioStream++;
-      if (g_stSettings.m_currentVideoSettings.m_AudioStream == g_application.m_pPlayer->GetAudioStreamCount())
+      if (g_stSettings.m_currentVideoSettings.m_AudioStream >= g_application.m_pPlayer->GetAudioStreamCount())
         g_stSettings.m_currentVideoSettings.m_AudioStream = 0;
       g_application.m_pPlayer->SetAudioStream(g_stSettings.m_currentVideoSettings.m_AudioStream);    // Set the audio stream to the one selected
     return true;
