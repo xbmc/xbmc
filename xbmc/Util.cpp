@@ -2830,7 +2830,7 @@ const BUILT_IN commands[] = {
   "SetVolume","Set the current volume",
   "Dialog.Close","Close a dialog",
   "System.LogOff","Log off current user",
-  "system.pwmcontrol","Controll PWM RGB LEDs"
+  "System.PWMControl","Control PWM RGB LEDs"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3483,11 +3483,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.bUseLoginScreen)
       return -1;
 
-    g_application.StopPlaying();
     g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
+    g_application.StopPlaying();
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
     g_settings.LoadProfile(0); // login screen always runs as default user
+    g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
     m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
