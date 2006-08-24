@@ -462,13 +462,14 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(7, "screensaver", 360);
   AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
-  AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
-  AddBool(3, "screensaver.usemusicvisinstead", 13392, true);
-  AddInt(4, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddSeparator(5, "screensaver.sep1");
-  AddInt(6, "screensaver.dimlevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddString(7, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 774); // GeminiServer: PictureSlideShow
-  AddBool(8, "screensaver.slideshowshuffle", 13319, false);
+  AddInt(2, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddString(3, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
+  AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
+  AddBool(5, "screensaver.uselock",20140,false);
+  AddSeparator(6, "screensaver.sep1");
+  AddInt(7, "screensaver.dimlevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 774); // GeminiServer: PictureSlideShow
+  AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 
   AddCategory(7, "uifilters", 14053);
   AddInt(1, "uifilters.flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
