@@ -196,6 +196,7 @@ bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassw
   dialog->m_iButtonLabel = iButtonLabel;
   dialog->m_strLock = strPassword;
   dialog->m_bChanged = false;
+  dialog->m_bGetUser = false;
   if (bDetails)
   {
     dialog->m_bLockMusic = bLockMusic;
