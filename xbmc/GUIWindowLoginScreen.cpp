@@ -94,15 +94,8 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             
             g_weatherManager.Refresh();
             g_pythonParser.bLogin = true;
-            if (g_guiSettings.GetInt("lookandfeel.startupwindow") == WINDOW_HOME)
-            {
-              m_gWindowManager.ActivateWindow(WINDOW_STARTUP);
-            }
-            else
-            {
-              m_gWindowManager.ActivateWindow(WINDOW_HOME);
-              m_gWindowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
-            }
+            m_gWindowManager.ChangeActiveWindow(WINDOW_HOME);
+            m_gWindowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
 
             if (iItem == 0)
               g_application.StartKai();
