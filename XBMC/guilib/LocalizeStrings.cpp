@@ -314,6 +314,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20141] = "Set";
   m_vecStrings[20142] = "Username";
   m_vecStrings[20143] = "Enter password for";
+  m_vecStrings[20144] = "Shutdown Timer";
+  m_vecStrings[20145] = "Shutdown interval (in minutes)";
+  m_vecStrings[20146] = "Started, shutdown in %im";
 
   return true;
 }
