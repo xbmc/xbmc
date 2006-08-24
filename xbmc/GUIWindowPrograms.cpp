@@ -613,6 +613,16 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       else
         item = new CFileItem("default.xbe");
       item->m_strPath = strPath;
+      // SetOverlayIcons()
+      DWORD dwTitleID = CUtil::GetXbeID(strPath);
+      if (m_database.ItemHasTrainer(dwTitleID))
+      {
+        if (m_database.GetActiveTrainer(dwTitleID) != "")
+          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_TRAINED);
+        else
+          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_HAS_TRAINER);
+      }
+      
       items.Add(item);
       items.SetCachedProgramThumbs();
       items.m_strPath="D:\\";
