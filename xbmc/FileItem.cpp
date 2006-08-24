@@ -1940,7 +1940,16 @@ CStdString CFileItem::GetCachedProgramThumb()
 {
   // get the locally cached thumb
   Crc32 crc;
-  crc.ComputeFromLowerCase(m_strPath);
+  if (IsOnDVD())
+  {
+    CStdString strDesc;
+    CUtil::GetXBEDescription(m_strPath,strDesc);
+    CStdString strCRC;
+    strCRC.Format("%s%u",strDesc.c_str(),CUtil::GetXbeID(m_strPath));
+    crc.ComputeFromLowerCase(strCRC);
+  }
+  else
+    crc.ComputeFromLowerCase(m_strPath);
   CStdString thumb;
   thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), crc);
   return thumb;
@@ -1952,7 +1961,7 @@ void CFileItem::SetCachedProgramThumb()
   // same (D:\default.xbe).
   if (IsParentFolder()) return;
   CStdString thumb(GetCachedProgramThumb());
-  if (!IsOnDVD() && CFile::Exists(thumb))
+  if (CFile::Exists(thumb))
     SetThumbnailImage(thumb);
 }
 
