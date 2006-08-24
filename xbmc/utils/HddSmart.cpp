@@ -6,7 +6,7 @@
 // -----------------------------------------------------
 //
 //
-// Possible request SMART Attributes:
+// Possible request SMART Attributes: system.hddsmart(ID)
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------/*
 //                        Request:    ID: Offset:	Name of attribute:		        Description:						
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------/*
@@ -176,47 +176,81 @@ BYTE CHDDSmart::GetSmartValue(int SmartREQ)
 	hddcommand.IPReg.bDriveHeadReg		= 0x00a0;			//SET Device Where HDD is
 	hddcommand.IPReg.bCommandReg		= 0xb0;	        //SET ON IDE SEND SMART MODE;
 	
-  UCHAR waitcount		= 50;
+  bool waitcon		= true;
   bool bSuccessRet = false;
-  while (!bSuccessRet && (waitcount > 0) )
+  while (!bSuccessRet && waitcon)
 	{
-	
-	if (SendATACommand(0x01f0, &hddcommand, 0x00))
-	{	
-		int	i;
-		BYTE Attr;
-		PDRIVEATTRIBUTE	pDA;
-		PATTRTHRESHOLD	pAT;
-		pDA = (PDRIVEATTRIBUTE)&hddcommand.DATA_BUFFER[2];
-		pAT = (PATTRTHRESHOLD)&hddcommand.DATA_BUFFER[2];
-    for (i = 0; i < 46; i++)
-		{	Attr = pDA->bAttrID;
-			if (Attr == 191) Attr =14;	if (Attr == 192) Attr =15;	if (Attr == 192) Attr =15;	if (Attr == 193) Attr =16;
-			if (Attr == 195) Attr =18;	if (Attr == 196) Attr =19;	if (Attr == 197) Attr =20;	if (Attr == 250) Attr =45;
-			if (Attr == 198) Attr =21;	if (Attr == 199) Attr =22;	if (Attr == 200) Attr =23;	if (Attr == 201) Attr =24;
-			if (Attr == 202) Attr =25;	if (Attr == 203) Attr =26;	if (Attr == 204) Attr =27;	if (Attr == 205) Attr =28;
-			if (Attr == 206) Attr =29;	if (Attr == 207) Attr =30;	if (Attr == 208) Attr =31;	if (Attr == 209) Attr =32;
-			if (Attr == 220) Attr =33;	if (Attr == 221) Attr =34;	if (Attr == 222) Attr =35;	if (Attr == 223) Attr =36;
-			if (Attr == 224) Attr =37;	if (Attr == 225) Attr =38;	if (Attr == 226) Attr =39;	if (Attr == 227) Attr =40;
-			if (Attr == 228) Attr =41;	if (Attr == 230) Attr =42;	if (Attr == 231) Attr =43;	if (Attr == 240) Attr =44;
-			if (Attr == 194) Attr =17;
-			if (Attr)
-			{
-				if (Attr > 46) Attr = 46+1;
+    waitcon = false; // run just for one time!
 
-				if (Attr == SmartREQ ) 
+    if (SendATACommand(0x01f0, &hddcommand, 0x00))
+    {	
+	    int	i;
+	    BYTE Attr;
+	    PDRIVEATTRIBUTE	pDA;
+	    PATTRTHRESHOLD	pAT;
+	    pDA = (PDRIVEATTRIBUTE)&hddcommand.DATA_BUFFER[2];
+	    pAT = (PATTRTHRESHOLD)&hddcommand.DATA_BUFFER[2];
+      for (i = 0; i < 46; i++)
+	    {	
+        Attr = pDA->bAttrID;
+        if (Attr == 191) Attr =14;	
+        if (Attr == 192) Attr =15;	
+        if (Attr == 193) Attr =16;
+        if (Attr == 194) Attr =17;
+		    if (Attr == 195) Attr =18;	
+        if (Attr == 196) Attr =19;
+
+        if (Attr == 197) Attr =20;
+		    if (Attr == 198) Attr =21;
+        if (Attr == 199) Attr =22;
+        if (Attr == 200) Attr =23;
+        if (Attr == 201) Attr =24;
+		    if (Attr == 202) Attr =25;
+        if (Attr == 203) Attr =26;
+        if (Attr == 204) Attr =27;
+        if (Attr == 205) Attr =28;
+		    if (Attr == 206) Attr =29;
+
+        if (Attr == 207) Attr =30;
+        if (Attr == 208) Attr =31;
+        if (Attr == 209) Attr =32;
+        if (Attr == 220) Attr =34;
+        if (Attr == 221) Attr =35;
+        if (Attr == 222) Attr =36;
+		    if (Attr == 223) Attr =37;
+        if (Attr == 224) Attr =38;
+        if (Attr == 225) Attr =39;
+
+        if (Attr == 226) Attr =40;
+		    if (Attr == 227) Attr =41;
+        if (Attr == 228) Attr =42;
+        if (Attr == 230) Attr =43;
+        if (Attr == 231) Attr =44;
+        if (Attr == 240) Attr =45;
+        if (Attr == 250) Attr =46;
+
+        if( (Attr < 47) && (Attr == SmartREQ))
         {
-          retVal = (pDA->bWorstValue);	// Requested S.M.A.R.T Value
-          bSuccessRet = true;
-          //CLog::Log(LOGDEBUG, "HDD S.M.A.R.T Request Result: %d",retVal);
+          // This is only for HDD-Temperature! ID:17! Returned: bWorstValue! Seems to be a working value on all Drives!
+          if (SmartREQ == 17)
+          {
+            retVal = (pDA->bWorstValue);	
+            bSuccessRet = true;
+            CLog::Log(LOGDEBUG, "HDD S.M.A.R.T Reported Temperature: %d °C",retVal);
+          }
+		      if (SmartREQ != 17)
+		      {
+			      retVal = (pDA->bAttrValue);
+            bSuccessRet = true;
+            CLog::Log(LOGDEBUG, "HDD S.M.A.R.T Request Result: %d",retVal);
+          }
         }
-			}
-			pDA++;
-			pAT++;
+        pDA++;
+		    pAT++;
+      }
     }
-	}
   }
-
+  // If the returned value is 0, return the last known Value!
   if (retVal == 0)
     retVal = m_HddSmarValue;
   else

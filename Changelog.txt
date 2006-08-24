@@ -5,9 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-08-2006 fixed: HDD S.M.A.R.T Requesting of non (ID:17) will cause a loop request! http://www.xboxmediacenter.com/wiki/index.php?title=InfoLabels&action=submit
  - 23-08-2006 fixed: adding bookmarks wouldn't generate proper video thumbnails
  - 22-08-2006 added: songinfoduration tag to advancedsettings.xml. controls how long song info remains onscreen after song change in visualisation
-			valid range is 1 to 15, in seconds. example: <songinfoduration>10</songinfoduration>
+		     valid range is 1 to 15, in seconds. example: <songinfoduration>10</songinfoduration>
  - 22-08-2006 added: SmartXX v3 and OPX full RGB PWM control (http://www.xboxmediacenter.com/wiki/index.php?title=List_of_Built_In_Functions)
                      BuildIn Command: XBMC.system.pwmcontrol(#rrggbb,#rrggbb,action,time)
                      e.g.: blink Blue <onclick>XBMC.system.pwmcontrol(#0000FF,#000000,blink,100)</onclick>
