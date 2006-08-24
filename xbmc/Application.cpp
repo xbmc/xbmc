@@ -183,6 +183,7 @@ CApplication::CApplication(void)
   XSetFileCacheSize (256*1024); //default=64kb
   m_bInactive = false;   // CB: SCREENSAVER PATCH
   m_bScreenSave = false;   // CB: SCREENSAVER PATCH
+  m_iScreenSaveLock = 0;
   m_dwSaverTick = timeGetTime(); // CB: SCREENSAVER PATCH
   m_dwSkinTime = 0;
 
@@ -1118,7 +1119,7 @@ HRESULT CApplication::Initialize()
 
   SAFE_DELETE(m_splash);
 
-  if (g_guiSettings.GetBool("masterlock.startuplock") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE ) 
+  if (g_guiSettings.GetBool("masterlock.startuplock") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_settings.m_vecProfiles[0].getLockCode().IsEmpty()) 
   	g_passwordManager.CheckStartUpLock();
 
   // check if we should use the login screen
@@ -2334,6 +2335,7 @@ void CApplication::FrameMove()
 
   if (g_lcd)
     UpdateLCD();
+
   // read raw input from controller, remote control, mouse and keyboard
   ReadInput();
   // process input actions
@@ -3327,7 +3329,7 @@ void CApplication::RenderFullScreen()
 
 void CApplication::ResetScreenSaver()
 {
-  if (m_bInactive && !m_bScreenSave)
+  if (m_bInactive && !m_bScreenSave && m_iScreenSaveLock == 0)
   {
     m_dwSaverTick = timeGetTime(); // Start the timer going ...
   }
@@ -3335,12 +3337,30 @@ void CApplication::ResetScreenSaver()
 
 bool CApplication::ResetScreenSaverWindow()
 {
+  if (m_iScreenSaveLock == 2)
+    return false;
+
   m_bInactive = false;  // reset the inactive flag as a key has been pressed
+  
   // if Screen saver is active
   if (m_bScreenSave)
   {
+    if (m_iScreenSaveLock == 0)
+      if (g_guiSettings.GetBool("screensaver.uselock") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && !(g_application.IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead")) && !g_guiSettings.GetString("screensaver.mode").Equals("Black"))
+      {
+        m_iScreenSaveLock = 2;
+        CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
+        m_gWindowManager.GetWindow(WINDOW_SCREENSAVER)->OnMessage(msg);
+      }
+    if (m_iScreenSaveLock == -1)
+    {
+      m_iScreenSaveLock = 0;
+      return true;
+    }
+    
     // disable screensaver
     m_bScreenSave = false;
+    m_iScreenSaveLock = 0;
 
     // if matrix trails screensaver is active
     int iWin = m_gWindowManager.GetActiveWindow();
