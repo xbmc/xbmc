@@ -613,8 +613,9 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       else
         item = new CFileItem("default.xbe");
       item->m_strPath = strPath;
-      item->SetUserProgramThumb();
       items.Add(item);
+      items.SetCachedProgramThumbs();
+      items.m_strPath="D:\\";
       return true;
     }
   }
