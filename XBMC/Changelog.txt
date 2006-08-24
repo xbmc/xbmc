@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-08-2006 changed: better samba user and password entry dialogs.
  - 24-08-2006 fixed: mockup in the kai client with the new evil b button.
  - 24-08-2006 added: you can now lock the screensaver.
  - 24-08-2006 fixed: mockup in my programs with the new evil b button.

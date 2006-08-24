@@ -131,17 +131,9 @@ bool CGUIPassword::GetSMBShareUserPassword()
   CStdString share;
   url.GetURLWithoutUserDetails(share);
 
-  CStdString header;
-  header.Format("%s %s", g_localizeStrings.Get(14062).c_str(), share.c_str());
-
-  if (!CGUIDialogKeyboard::ShowAndGetInput(outusername, header, false))
-  {
-    if (outusername.IsEmpty() || outusername != username) // just because the routine returns false when enter is hit and nothing was changed
-      return false;
-  }
-  if (!CGUIDialogKeyboard::ShowAndGetInput(passcode, g_localizeStrings.Get(12326), true))
+  if (!CGUIDialogLockSettings::ShowAndGetUserAndPassword(outusername,passcode,share))
     return false;
-  
+
   url.SetPassword(passcode);
   url.SetUserName(outusername);
   url.GetURL(m_SMBShare);
