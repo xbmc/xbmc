@@ -294,7 +294,7 @@ public:
   CStdString GetCurrentPlayTimeRemaining();
   CStdString GetVersion();
   CStdString GetBuild();
-  CStdString GetHDDTemp(int iSmartRequest);
+  CStdString GetHDDSmart(int iSmartRequest);
   bool SystemHasInternet();
   CStdString SystemHasInternet_s();
   
