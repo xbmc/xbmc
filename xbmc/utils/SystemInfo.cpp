@@ -13,7 +13,6 @@
 #include "../settings.h"
 #include "../utils/log.h"
 #include "../xbox/Undocumented.h"
-#include "../application.h"
 
 CXBoxFlash			*mbFlash;
 
@@ -1244,31 +1243,5 @@ bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &
   }
   */
 
-  return true;
-}
-bool CSysInfo::MemUnitNotification( int iMountState, int iMemPort, char cDriveLetter )
-{
-  CStdString strText, strMountState;
-  switch ( iMountState )
-  {
-    case MEMUNIT_UNMOUNTED:
-      strMountState= g_localizeStrings.Get(20137);
-      break;
-    case MEMUNIT_MOUNTED:
-      strMountState= g_localizeStrings.Get(20138);
-      break;
-    case MEMUNIT_UNABLE_TO_MOUNT:
-      strMountState= g_localizeStrings.Get(20139);
-      break;
-    default:
-      return false;
-      break;
-  }
-  if (iMemPort != NULL)
-    strText.Format("%s%i %s %s %c",g_localizeStrings.Get(13167),iMemPort,g_localizeStrings.Get(20136).c_str(), strMountState.c_str(),cDriveLetter);
-  else
-    strText.Format("%s %s %c",g_localizeStrings.Get(20136).c_str(), strMountState.c_str(),cDriveLetter);
-
-  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(130) /*Head: Sysmtem Info*/, strText);
   return true;
 }

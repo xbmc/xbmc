@@ -12,10 +12,6 @@
 #define SMARTXX_LED_BLUE_RED	3
 #define SMARTXX_LED_CYCLE		4
 
-#define MEMUNIT_UNMOUNTED        0
-#define MEMUNIT_MOUNTED          1
-#define MEMUNIT_UNABLE_TO_MOUNT  2
-
 #define MAX_KNOWN_ATTRIBUTES	46
 
 class CSysInfo : public CThread //CThread
@@ -55,7 +51,6 @@ class CSysInfo : public CThread //CThread
 	  int IDE_Write(int driveNum, int blockNum, char *buffer);
     
 	  bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
-    bool MemUnitNotification( int iMountState, int iMemPort, char cDriveLetter );
 
   private:
     virtual void OnStartup();
