@@ -11,7 +11,7 @@ CVirtualDirectory::CVirtualDirectory(void) : m_vecShares(NULL)
 {
   m_allowPrompting = true;  // by default, prompting is allowed.
   m_cacheDirectory = true;  // by default, caching is done.
-  m_allowMemUnitShares = true;
+  m_allowNonLocalShares = true;
 }
 
 CVirtualDirectory::~CVirtualDirectory(void)
@@ -239,14 +239,15 @@ void CVirtualDirectory::GetShares(VECSHARES &shares) const
 {
   shares = *m_vecShares;
   // add our plug n play shares
-  if (m_allowMemUnitShares)
+  if (m_allowNonLocalShares)
+  {
     g_memoryUnitManager.GetMemoryUnitShares(shares);
-  
-  // XBOX Autodetection
-  CShare Share;
-  if(CUtil::XboxAutoDetectionGetShare(Share))
-    shares.push_back(Share);
-  
+    // XBOX Autodetection
+    CShare Share;
+    if(CUtil::XboxAutoDetectionGetShare(Share))
+      shares.push_back(Share);
+  }
+
   // and update our dvd share
   for (unsigned int i = 0; i < shares.size(); ++i)
   {
