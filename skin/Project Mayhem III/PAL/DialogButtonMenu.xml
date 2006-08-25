@@ -172,11 +172,33 @@
    </control>
 
    <control>
+    <description>Custom ShutdownTimer button</description>
+    <visible>System.LoggedOn + System.HasLocks + !System.HasLoginScreen</visible>
+    <type>button</type>
+    <id>3203</id>
+    <posx>150</posx>
+    <posy>5</posy>
+    <width>60</width>
+    <height>65</height>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <onclick>XBMC.AlarmClock(shutdowntimer,XBMC.ShutDown())</onclick>
+    <pulseonselect>no</pulseonselect>
+    <onleft>3113</onleft>
+    <onright>3110</onright>
+    <onup>3204</onup>
+    <ondown>3202</ondown>
+    <font>-</font>
+    <label>20150</label>
+    <include>shutdownmenu</include>
+   </control>
+
+   <control>
     <description>Cancel ShutdownTimer button</description>
     <visible>System.LoggedOn + System.HasLocks + !System.HasLoginScreen</visible>
     <visible>System.HasAlarm(shutdowntimer)</visible>
     <type>button</type>
-    <id>3203</id>
+    <id>3204</id>
     <posx>150</posx>
     <posy>5</posy>
     <width>60</width>
@@ -188,9 +210,9 @@
     <onleft>3113</onleft>
     <onright>3110</onright>
     <onup>3112</onup>
-    <ondown>3202</ondown>
+    <ondown>3203</ondown>
     <font>-</font>
-    <label>20150</label>
+    <label>20151</label>
     <include>shutdownmenu</include>
    </control>
 
@@ -204,7 +226,7 @@
     <texture>sub-shutdown-focus.gif</texture>
     <include>shutdownmenu</include>
     <visible>System.LoggedOn + System.HasLocks + !System.HasLoginScreen</visible>
-    <visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203)]</visible>
+    <visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203) | Control.HasFocus(3204)]</visible>
   </control>
 
    <control>
@@ -386,11 +408,33 @@
    </control>
 
    <control>
+    <description>Custom ShutdownTimer button</description>
+    <visible>System.LoggedOn + !System.HasLocks + !System.HasLoginScreen</visible>
+    <type>button</type>
+    <id>3203</id>
+    <posx>120</posx>
+    <posy>5</posy>
+    <width>60</width>
+    <height>65</height>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <onclick>XBMC.AlarmClock(shutdowntimer,XBMC.ShutDown())</onclick>
+    <pulseonselect>no</pulseonselect>
+    <onleft>3113</onleft>
+    <onright>3110</onright>
+    <onup>3204</onup>
+    <ondown>3202</ondown>
+    <font>-</font>
+    <label>20150</label>
+    <include>shutdownmenu</include>
+   </control>
+
+   <control>
     <description>Cancel ShutdownTimer button</description>
     <visible>System.LoggedOn + !System.HasLocks + !System.HasLoginScreen</visible>
     <visible>System.HasAlarm(shutdowntimer)</visible>
     <type>button</type>
-    <id>3203</id>
+    <id>3204</id>
     <posx>120</posx>
     <posy>5</posy>
     <width>60</width>
@@ -402,9 +446,9 @@
     <onleft>3113</onleft>
     <onright>3110</onright>
     <onup>3112</onup>
-    <ondown>3202</ondown>
+    <ondown>3203</ondown>
     <font>-</font>
-    <label>20150</label>
+    <label>20151</label>
     <include>shutdownmenu</include>
    </control>
 
@@ -418,7 +462,7 @@
     <texture>sub-shutdown-focus.gif</texture>
     <include>shutdownmenu</include>
     <visible>System.LoggedOn + !System.HasLocks + !System.HasLoginScreen</visible>
-    <visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203)]</visible>
+    <visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203) | Control.HasFocus(3204)]</visible>
   </control>
 
    <control>
@@ -622,11 +666,33 @@
    </control>
 
    <control>
+    <description>Custom ShutdownTimer button</description>
+    <visible>System.LoggedOn + !System.HasLocks + System.HasLoginScreen</visible>
+    <type>button</type>
+    <id>3203</id>
+    <posx>150</posx>
+    <posy>5</posy>
+    <width>60</width>
+    <height>65</height>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <onclick>XBMC.AlarmClock(shutdowntimer,XBMC.ShutDown())</onclick>
+    <pulseonselect>no</pulseonselect>
+    <onleft>3117</onleft>
+    <onright>3110</onright>
+    <onup>3204</onup>
+    <ondown>3202</ondown>
+    <font>-</font>
+    <label>20150</label>
+    <include>shutdownmenu</include>
+   </control>
+
+   <control>
     <description>Cancel ShutdownTimer button</description>
     <visible>System.LoggedOn + !System.HasLocks + System.HasLoginScreen</visible>
     <visible>System.HasAlarm(shutdowntimer)</visible>
     <type>button</type>
-    <id>3203</id>
+    <id>3204</id>
     <posx>150</posx>
     <posy>5</posy>
     <width>60</width>
@@ -638,9 +704,9 @@
     <onleft>3117</onleft>
     <onright>3110</onright>
     <onup>3112</onup>
-    <ondown>3202</ondown>
+    <ondown>3203</ondown>
     <font>-</font>
-    <label>20150</label>
+    <label>20151</label>
     <include>shutdownmenu</include>
    </control>
 
@@ -654,7 +720,7 @@
     <texture>sub-shutdown-focus.gif</texture>
     <include>shutdownmenu</include>
     <visible>System.LoggedOn + !System.HasLocks + System.HasLoginScreen</visible>
-    <visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203)]</visible>
+    <visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203) | Control.HasFocus(3204)]</visible>
   </control>
 
    <control>
@@ -884,11 +950,33 @@
    </control>
 
    <control>
+    <description>Custom ShutdownTimer button</description>
+    <visible>System.LoggedOn + System.HasLocks + System.HasLoginScreen</visible>
+    <type>button</type>
+    <id>3203</id>
+    <posx>180</posx>
+    <posy>5</posy>
+    <width>60</width>
+    <height>65</height>
+    <texturefocus>-</texturefocus>
+    <texturenofocus>-</texturenofocus>
+    <onclick>XBMC.AlarmClock(shutdowntimer,XBMC.ShutDown())</onclick>
+    <pulseonselect>no</pulseonselect>
+    <onleft>3117</onleft>
+    <onright>3110</onright>
+    <onup>3204</onup>
+    <ondown>3202</ondown>
+    <font>-</font>
+    <label>20150</label>
+    <include>shutdownmenu</include>
+   </control>
+
+   <control>
     <description>Cancel ShutdownTimer button</description>
     <visible>System.LoggedOn + System.HasLocks + System.HasLoginScreen</visible>
     <visible>System.HasAlarm(shutdowntimer)</visible>
     <type>button</type>
-    <id>3203</id>
+    <id>3204</id>
     <posx>180</posx>
     <posy>5</posy>
     <width>60</width>
@@ -900,9 +988,9 @@
     <onleft>3117</onleft>
     <onright>3110</onright>
     <onup>3112</onup>
-    <ondown>3202</ondown>
+    <ondown>3203</ondown>
     <font>-</font>
-    <label>20150</label>
+    <label>20151</label>
     <include>shutdownmenu</include>
    </control>
 
@@ -916,7 +1004,7 @@
     <texture>sub-shutdown-focus.gif</texture>
     <include>shutdownmenu</include>
     <visible>System.LoggedOn + System.HasLocks + System.HasLoginScreen</visible>
-    <visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203)]</visible>
+    <visible>[Control.HasFocus(3112) | Control.HasFocus(3200) | Control.HasFocus(3201) | Control.HasFocus(3202) | Control.HasFocus(3203) | Control.HasFocus(3204)]</visible>
   </control>
 
    <control>
