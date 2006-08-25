@@ -26,9 +26,11 @@ public:
 
 
 private:
+  void Notify(unsigned long port, unsigned long slot, bool success);
+
   bool HasDevice(unsigned long port, unsigned long slot);
   bool MountDevice(unsigned long port, unsigned long slot);
-  void UnMountDevice(unsigned long port, unsigned long slot);
+  bool UnMountDevice(unsigned long port, unsigned long slot);
   
   void MountUnits(unsigned long device);
   void UnMountUnits(unsigned long device);

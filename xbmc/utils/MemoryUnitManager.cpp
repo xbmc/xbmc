@@ -4,6 +4,7 @@
 #include "MemoryUnitManager.h"
 #include "../FileSystem/MemoryUnits/FatXDevice.h"
 #include "../FileSystem/MemoryUnits/FatXFileSystem.h"
+#include "../application.h"
 
 // Undocumented stuff
 
@@ -92,11 +93,13 @@ void CMemoryUnitManager::MountUnits(unsigned long device)
   {
     if (device & (1 << i))
     {
-      MountDevice(XDEVICE_PORT0 + i, XDEVICE_TOP_SLOT);
+      bool success = MountDevice(XDEVICE_PORT0 + i, XDEVICE_TOP_SLOT);
+      Notify(XDEVICE_PORT0 + i, XDEVICE_TOP_SLOT, success);
     }
     if (device & (1 << (i + 16)))
     {
-      MountDevice(XDEVICE_PORT0 + i, XDEVICE_BOTTOM_SLOT);
+      bool success = MountDevice(XDEVICE_PORT0 + i, XDEVICE_BOTTOM_SLOT);
+      Notify(XDEVICE_PORT0 + i, XDEVICE_BOTTOM_SLOT, success);
     }
   }
 }
@@ -162,7 +165,7 @@ bool CMemoryUnitManager::MountDevice(unsigned long port, unsigned long slot)
   return false;
 }
 
-void CMemoryUnitManager::UnMountDevice(unsigned long port, unsigned long slot)
+bool CMemoryUnitManager::UnMountDevice(unsigned long port, unsigned long slot)
 {
   CLog::Log(LOGDEBUG, __FUNCTION__" Unmounting MU device (port %i, slot %i)", port, slot);
   for (vector<IDevice *>::iterator it = m_memUnits.begin(); it != m_memUnits.end(); ++it)
@@ -178,9 +181,10 @@ void CMemoryUnitManager::UnMountDevice(unsigned long port, unsigned long slot)
       delete device;
       CLog::Log(LOGDEBUG, __FUNCTION__" Device is deleted");
       m_memUnits.erase(it);
-      return;
+      return true;
     }
   }
+  return false;
 }
 
 IDevice *CMemoryUnitManager::GetDevice(unsigned char unit)
@@ -225,4 +229,15 @@ IFileSystem *CMemoryUnitManager::GetFileSystem(unsigned char unit)
   if (!device)
     return NULL;
   return new CFatXFileSystem(unit);
+}
+
+void CMemoryUnitManager::Notify(unsigned long port, unsigned long slot, bool success)
+{
+  CStdString portSlot;
+  portSlot.Format(g_localizeStrings.Get(20139).c_str(), port, slot);
+
+  if (success)
+    g_application.SetKaiNotification(g_localizeStrings.Get(20137), portSlot, NULL);
+  else
+    g_application.SetKaiNotification(g_localizeStrings.Get(20138), portSlot, NULL);
 }
