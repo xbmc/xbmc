@@ -307,7 +307,11 @@ void CGUIWindowVideoInfo::Update()
   // Check for resumability
   CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   CFileItem movie(m_Movie.m_strPath, false);
-  if (window && window->GetResumeItemOffset(&movie))
+
+  m_database.Open();
+  CBookmark bookmark;
+  
+  if (window && m_database.GetResumeBookMark(m_Movie.m_strPath, bookmark))
   {
     CONTROL_ENABLE(CONTROL_BTN_RESUME);
   }
@@ -315,6 +319,9 @@ void CGUIWindowVideoInfo::Update()
   {
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
   }
+
+  m_database.Close();
+
   // update the thumbnail
   const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
   if (pControl)
@@ -486,7 +493,7 @@ void CGUIWindowVideoInfo::Play(bool resume)
     // close our dialog
     Close(true);
     if (resume)
-      movie.m_lStartOffset = pWindow->GetResumeItemOffset(&movie);
+      movie.m_lStartOffset = STARTOFFSET_RESUME;
     pWindow->PlayMovie(&movie);
   }
 }

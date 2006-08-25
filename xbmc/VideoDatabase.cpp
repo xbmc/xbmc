@@ -12,8 +12,14 @@
 #include "filesystem/VirtualPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 
-#define VIDEO_DATABASE_VERSION 1.9f
+#define VIDEO_DATABASE_VERSION 2.0f
 #define VIDEO_DATABASE_NAME "MyVideos31.db"
+
+CBookmark::CBookmark()
+{
+  timeInSeconds = 0.0f;
+  type = STANDARD;
+}
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
@@ -35,7 +41,7 @@ bool CVideoDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create bookmark table");
-    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text, playerState text, type integer)\n");
+    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
 
     CLog::Log(LOGINFO, "create settings table");
     m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
@@ -1137,7 +1143,7 @@ bool SortBookmarks(const CBookmark &left, const CBookmark &right)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks)
+void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type /*= CBookmark::STANDARD*/)
 {
   try
   {
@@ -1148,14 +1154,16 @@ void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, 
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=FormatSQL("select * from bookmark where idFile=%i and type=0 order by timeInSeconds", lFileId);
+    CStdString strSQL=FormatSQL("select * from bookmark where idFile=%i and type=%i order by timeInSeconds", lFileId, (int)type);
     m_pDS->query( strSQL.c_str() );
     while (!m_pDS->eof())
     {
       CBookmark bookmark;
-      bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asLong();
+      bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asDouble();
       bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
       bookmark.playerState = m_pDS->fv("playerState").get_asString();
+      bookmark.player = m_pDS->fv("player").get_asString();
+      bookmark.type = type;
       bookmarks.push_back(bookmark);
       m_pDS->next();
     }
@@ -1168,8 +1176,20 @@ void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, 
   }
 }
 
+bool CVideoDatabase::GetResumeBookMark(const CStdString& strFilenameAndPath, CBookmark &bookmark)
+{
+  VECBOOKMARKS bookmarks;
+  GetBookMarksForMovie(strFilenameAndPath, bookmarks, CBookmark::RESUME);
+  if(bookmarks.size()>0)
+  {
+    bookmark = bookmarks[0];
+    return true;
+  }
+  return false;
+}
+
 //********************************************************************************************************************************
-void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark, bool bResumeMark /*= false*/)
+void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type /*= CBookmark::STANDARD*/)
 {
   try
   {
@@ -1190,16 +1210,16 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, co
 
     CStdString strSQL;
     int idBookmark=-1;
-    int type = 0;
-    if( bResumeMark ) // get the same resume mark bookmark each time type
+    if( type == CBookmark::RESUME ) // get the same resume mark bookmark each time type
     {
-      strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type = 1", lFileId);   
-      type = 1;
+      strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type=1", lFileId);   
     }
     else // get the same bookmark again, and update. not sure here as a dvd can have same time in multiple places, state will differ thou
     {
-      strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type = 0 and timeInSeconds=%i and playerState='%s'", lFileId, bookmark.timeInSeconds, bookmark.playerState.c_str());   
-      type = 0;
+      /* get a bookmark within the same time as previous */
+      double mintime = bookmark.timeInSeconds - 0.5f;
+      double maxtime = bookmark.timeInSeconds + 0.5f;
+      strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type=%i and (timeInSeconds between %f and %f) and playerState='%s'", lFileId, (int)type, mintime, maxtime, bookmark.playerState.c_str());
     }
 
     // get current id
@@ -1210,9 +1230,9 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, co
 
     // update or insert depending if it existed before
     if( idBookmark >= 0 )
-      strSQL=FormatSQL("update bookmark set timeInSeconds = %i, thumbNailImage = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.playerState.c_str(), idBookmark);
+      strSQL=FormatSQL("update bookmark set timeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idBookmark);
     else
-      strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, thumbNailImage, playerState, type) values(NULL,%i,%i,'%s','%s', %i)", lFileId, bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.playerState.c_str(), type);
+      strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,'%s','%s','%s', %i)", lFileId, bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), (int)type);
 
     m_pDS->exec(strSQL.c_str());
   }
@@ -1222,7 +1242,7 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, co
   }
 }
 
-void CVideoDatabase::ClearBookMarkOfVideo(const CStdString& strFilenameAndPath, CBookmark& bookmark)
+void CVideoDatabase::ClearBookMarkOfVideo(const CStdString& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type /*= CBookmark::STANDARD*/)
 {
   try
   {
@@ -1232,12 +1252,16 @@ void CVideoDatabase::ClearBookMarkOfVideo(const CStdString& strFilenameAndPath, 
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type=0 and timeInSeconds=%i", lFileId,bookmark.timeInSeconds);
+    /* a litle bit uggly, we clear first bookmark that is within one second of given */
+    /* should be no problem since we never add bookmarks that are closer than that   */
+    double mintime = bookmark.timeInSeconds - 0.5f;
+    double maxtime = bookmark.timeInSeconds + 0.5f;
+    CStdString strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type=%i and (timeInSeconds between %f and %f)", lFileId, type, mintime, maxtime);
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() != 0)
     {
       int idBookmark = m_pDS->get_field_value("idBookmark").get_asInteger();
-      strSQL=FormatSQL("delete from bookmark where idFile=%i and idBookmark=%i",lFileId,idBookmark);
+      strSQL=FormatSQL("delete from bookmark where idBookmark=%i",idBookmark);
       m_pDS->exec(strSQL.c_str());
     }
 
@@ -1250,7 +1274,7 @@ void CVideoDatabase::ClearBookMarkOfVideo(const CStdString& strFilenameAndPath, 
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::ClearBookMarksOfMovie(const CStdString& strFilenameAndPath)
+void CVideoDatabase::ClearBookMarksOfMovie(const CStdString& strFilenameAndPath, CBookmark::EType type /*= CBookmark::STANDARD*/)
 {
   try
   {
@@ -1260,7 +1284,7 @@ void CVideoDatabase::ClearBookMarksOfMovie(const CStdString& strFilenameAndPath)
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=FormatSQL("delete from bookmark where idFile=%i", lFileId);
+    CStdString strSQL=FormatSQL("delete from bookmark where idFile=%i and type=%i", lFileId, (int)type);
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -1593,28 +1617,23 @@ void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<long> &tim
       lFileId = GetFile(filePath, lPathId, lMovieId, true);
       if (lFileId < 0) return ;
     }
+
+    // delete any existing items
     CStdString strSQL;
-    strSQL.Format("select * from stacktimes where idFile=%i", lFileId);
-    m_pDS->query( strSQL.c_str() );
-    if (m_pDS->num_rows() > 0)
+    strSQL.Format("delete from stacktimes where idFile=%i", lFileId);
+    m_pDS->exec( strSQL.c_str() );
+
+    // add the items
+    CStdString timeString;
+    timeString.Format("%i", times[0]);
+    for (unsigned int i = 1; i < times.size(); i++)
     {
-      m_pDS->close();
-      return ;
+      CStdString time;
+      time.Format(",%i", times[i]);
+      timeString += time;
     }
-    else
-    { // add the items
-      m_pDS->close();
-      CStdString timeString;
-      timeString.Format("%i", times[0]);
-      for (unsigned int i = 1; i < times.size(); i++)
-      {
-        CStdString time;
-        time.Format(",%i", times[i]);
-        timeString += time;
-      }
-      strSQL.Format("insert into stacktimes (idFile,usingConversions,times) values (%i,%i,'%s')\n", lFileId, false, timeString.c_str());
-      m_pDS->exec(strSQL.c_str());
-    }
+    strSQL.Format("insert into stacktimes (idFile,usingConversions,times) values (%i,%i,'%s')\n", lFileId, false, timeString.c_str());
+    m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
@@ -1753,6 +1772,32 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
       CLog::Log(LOGERROR, "Error adding stacktimes table to the database");
     }
   }
+
+
+//*************
+// 2006-02-20
+// dvdplayer state
+  if (fVersion < 2.0f)
+  {
+    try
+    {
+      CLog::Log(LOGINFO, "Adding player and changing timeInSeconds to float in bookmark table");
+      m_pDS->exec("CREATE TABLE TMPbookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text, playerState text, type integer)\n");
+      m_pDS->exec("INSERT INTO TMPbookmark SELECT idBookmark, idFile, timeInSeconds, thumbNailImage, playerState, type FROM bookmark");
+      m_pDS->exec("DROP TABLE bookmark");
+      m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
+      m_pDS->exec("INSERT INTO bookmark SELECT idBookmark, idFile, timeInSeconds, thumbNailImage, '', playerState, type FROM TMPbookmark");
+      m_pDS->exec("DROP TABLE TMPbookmark");
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "Failed to upgrade bookmarks");
+      return false;
+    }
+    
+  }
+
+
   return true;
 }
 

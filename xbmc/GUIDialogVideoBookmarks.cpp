@@ -57,15 +57,13 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
         if (iAction == ACTION_DELETE_ITEM)
         {
-          // open the d/b and retrieve the bookmarks for the current movie
-          CVideoDatabase videoDatabase;
-          videoDatabase.Open();
-          
-          VECBOOKMARKS bookmarks;
-          videoDatabase.GetBookMarksForMovie(g_application.CurrentFile(), bookmarks);
-
-          videoDatabase.ClearBookMarkOfVideo(g_application.CurrentFile(),bookmarks[iItem]);
-          videoDatabase.Close();
+          if( (unsigned)iItem < m_bookmarks.size() )
+          {
+            CVideoDatabase videoDatabase;
+            videoDatabase.Open();
+            videoDatabase.ClearBookMarkOfVideo(g_application.CurrentFile(),m_bookmarks[iItem]);
+            videoDatabase.Close();
+          }
           Update();
         }
         else if (iAction == ACTION_SELECT_ITEM)
@@ -89,28 +87,38 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
 
 void CGUIDialogVideoBookmarks::Update()
 {
-  // lock our display, as this window is rendered from the player thread
-  g_graphicsContext.Lock();
-  m_viewControl.SetCurrentView((VIEW_METHOD)1);
-
-  VECBOOKMARKS bookmarks;
+  m_bookmarks.clear();
+  CBookmark resumemark;
 
   // open the d/b and retrieve the bookmarks for the current movie
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.GetBookMarksForMovie(g_application.CurrentFile(), bookmarks);
+  videoDatabase.GetBookMarksForMovie(g_application.CurrentFile(), m_bookmarks);
+  
+  /* push in the resume mark first */
+  if( videoDatabase.GetResumeBookMark(g_application.CurrentFile(), resumemark) )
+    m_bookmarks.insert(m_bookmarks.begin(), resumemark);
+
   videoDatabase.Close();
+
+  // lock our display, as this window is rendered from the player thread
+  g_graphicsContext.Lock();
+  m_viewControl.SetCurrentView((VIEW_METHOD)1);
 
   // empty the list ready for population
   Clear();
 
   // cycle through each stored bookmark and add it to our list control
-  for (unsigned int i = 0; i < bookmarks.size(); ++i)
+  for (unsigned int i = 0; i < m_bookmarks.size(); ++i)
   {
+    if( m_bookmarks[i].type == CBookmark::RESUME )
+      m_bookmarks[i].thumbNailImage = "bookmark-resume.png";
+
     CStdString bookmarkTime;
-    StringUtils::SecondsToTimeString(bookmarks[i].timeInSeconds, bookmarkTime, true);
+    StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, bookmarkTime, true);
+
     CFileItem *item = new CFileItem(bookmarkTime);
-    item->SetThumbnailImage(bookmarks[i].thumbNailImage);
+    item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);   
     m_vecItems.Add(item);
   }
   m_viewControl.SetItems(m_vecItems);
@@ -125,16 +133,11 @@ void CGUIDialogVideoBookmarks::Clear()
 
 void CGUIDialogVideoBookmarks::GotoBookmark(int item)
 {
-  CVideoDatabase videoDatabase;
-  videoDatabase.Open();
-  VECBOOKMARKS bookmarks;
-  videoDatabase.GetBookMarksForMovie(g_application.CurrentFile(), bookmarks);
-  videoDatabase.Close();
-  if (item < 0 || item >= (int)bookmarks.size()) return;
+  if (item < 0 || item >= (int)m_bookmarks.size()) return;
   if (g_application.m_pPlayer)
   {
-    g_application.m_pPlayer->SetPlayerState(bookmarks[item].playerState);
-    g_application.SeekTime((double)bookmarks[item].timeInSeconds);
+    g_application.m_pPlayer->SetPlayerState(m_bookmarks[item].playerState);
+    g_application.SeekTime((double)m_bookmarks[item].timeInSeconds);
   }
 }
 
@@ -142,7 +145,8 @@ void CGUIDialogVideoBookmarks::ClearBookmarks()
 {
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.ClearBookMarksOfMovie(g_application.CurrentFile());
+  videoDatabase.ClearBookMarksOfMovie(g_application.CurrentFile(), CBookmark::STANDARD);
+  videoDatabase.ClearBookMarksOfMovie(g_application.CurrentFile(), CBookmark::RESUME);
   videoDatabase.Close();
   Update();
 }
@@ -157,6 +161,8 @@ void CGUIDialogVideoBookmarks::AddBookmark()
     bookmark.playerState = g_application.m_pPlayer->GetPlayerState();
   else
     bookmark.playerState.Empty();
+
+  bookmark.player = CPlayerCoreFactory::GetPlayerName(g_application.GetCurrentPlayer());
 
   // create the thumbnail image
   RECT rs, rd;
@@ -191,7 +197,7 @@ void CGUIDialogVideoBookmarks::AddBookmark()
   }
   lock.Leave();
   videoDatabase.Open();
-  videoDatabase.AddBookMarkToMovie(g_application.CurrentFile(), bookmark);
+  videoDatabase.AddBookMarkToMovie(g_application.CurrentFile(), bookmark, CBookmark::STANDARD);
   videoDatabase.Close();
   Update();
 }

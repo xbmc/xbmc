@@ -116,6 +116,12 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     Create();
     WaitForSingleObject(m_hReadyEvent, INFINITE);
 
+    /* check if we got a full dvd state, then use that */
+    if( options.state.size() > 0 && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+      SetPlayerState(options.state);
+    else if( options.starttime > 0 )
+      SeekTime( (__int64)(options.starttime * 1000) );
+
     // if we are playing a media file with pictures, we should wait for the video output device to be initialized
     // if we don't wait, the fullscreen window will init with a picture that is 0 pixels width and high
     // we also have to wait for the player to be initialized so that we can set and access all settings when playing a dvd
