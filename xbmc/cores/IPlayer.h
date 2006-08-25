@@ -20,10 +20,9 @@ public:
     starttime = 0LL;
     identify = false;
   }
-  __int64 starttime;
-
-  /* identify mode, used for checking format and length of a file */
-  bool    identify;  
+  double  starttime; /* start time in seconds */
+  bool    identify;  /* identify mode, used for checking format and length of a file */
+  CStdString state;  /* potential playerstate to restore to */
 };
 
 

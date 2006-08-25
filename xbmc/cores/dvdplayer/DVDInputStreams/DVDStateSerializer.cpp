@@ -27,62 +27,63 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
   eRoot.SetAttribute("version", 1);
   
 	
-	TiXmlElement eRegisters("registers");
+  { TiXmlElement eRegisters("registers");
 
-  for( int i = 0; i < 24; i++ )
-  {    
+    for( int i = 0; i < 24; i++ )
+    {    
 
-    if( state->registers.SPRM[i] )
-    { TiXmlElement eReg("sprm");
-      eReg.SetAttribute("index", i);
+      if( state->registers.SPRM[i] )
+      { TiXmlElement eReg("sprm");
+        eReg.SetAttribute("index", i);
 
-      { TiXmlElement eValue("value");
-        sprintf(buffer, "0x%hx", state->registers.SPRM[i]);
-        eValue.InsertEndChild( TiXmlText(buffer) );
-        eReg.InsertEndChild(eValue);
+        { TiXmlElement eValue("value");
+          sprintf(buffer, "0x%hx", state->registers.SPRM[i]);
+          eValue.InsertEndChild( TiXmlText(buffer) );
+          eReg.InsertEndChild(eValue);
+        }
+
+        eRegisters.InsertEndChild(eReg);
       }
-
-      eRegisters.InsertEndChild(eReg);
     }
-  }
 
-  for( int i = 0; i < 16; i++ )
-  {
-    if( state->registers.GPRM[i] || state->registers.GPRM_mode[i] || state->registers.GPRM_time[i].tv_sec || state->registers.GPRM_time[i].tv_usec )
-    { TiXmlElement eReg("gprm");
-      eReg.SetAttribute("index", i);
+    for( int i = 0; i < 16; i++ )
+    {
+      if( state->registers.GPRM[i] || state->registers.GPRM_mode[i] || state->registers.GPRM_time[i].tv_sec || state->registers.GPRM_time[i].tv_usec )
+      { TiXmlElement eReg("gprm");
+        eReg.SetAttribute("index", i);
 
-      { TiXmlElement eValue("value");
-        sprintf(buffer, "0x%hx", state->registers.GPRM[i]);
-        eValue.InsertEndChild( TiXmlText(buffer) );
-        eReg.InsertEndChild(eValue);
-      }
-      
-      { TiXmlElement eMode("mode");
-        sprintf(buffer, "0x%hc", state->registers.GPRM_mode[i]);
-        eMode.InsertEndChild( TiXmlText(buffer) );
-        eReg.InsertEndChild(eMode);
-      }
-
-      { TiXmlElement eTime("time");
-        { TiXmlElement eValue("tv_sec");
-          sprintf(buffer, "%ld", state->registers.GPRM_time[i].tv_sec);      
-          eValue.InsertEndChild( TiXmlText( buffer ) );
-          eTime.InsertEndChild( eValue ) ;
+        { TiXmlElement eValue("value");
+          sprintf(buffer, "0x%hx", state->registers.GPRM[i]);
+          eValue.InsertEndChild( TiXmlText(buffer) );
+          eReg.InsertEndChild(eValue);
+        }
+        
+        { TiXmlElement eMode("mode");
+          sprintf(buffer, "0x%hc", state->registers.GPRM_mode[i]);
+          eMode.InsertEndChild( TiXmlText(buffer) );
+          eReg.InsertEndChild(eMode);
         }
 
-        { TiXmlElement eValue("tv_usec");
-          sprintf(buffer, "%ld", state->registers.GPRM_time[i].tv_usec);      
-          eValue.InsertEndChild( TiXmlText( buffer ) );
-          eTime.InsertEndChild( eValue ) ;
-        }
-        eReg.InsertEndChild(eTime);
-      }    
-      eRegisters.InsertEndChild(eReg);  
+        { TiXmlElement eTime("time");
+          { TiXmlElement eValue("tv_sec");
+            sprintf(buffer, "%ld", state->registers.GPRM_time[i].tv_sec);      
+            eValue.InsertEndChild( TiXmlText( buffer ) );
+            eTime.InsertEndChild( eValue ) ;
+          }
+
+          { TiXmlElement eValue("tv_usec");
+            sprintf(buffer, "%ld", state->registers.GPRM_time[i].tv_usec);      
+            eValue.InsertEndChild( TiXmlText( buffer ) );
+            eTime.InsertEndChild( eValue ) ;
+          }
+          eReg.InsertEndChild(eTime);
+        }    
+        eRegisters.InsertEndChild(eReg);  
+      }
     }
     eRoot.InsertEndChild(eRegisters);
   }
-	
+
   { TiXmlElement element("domain");
     sprintf(buffer, "%d", state->domain);
     element.InsertEndChild( TiXmlText( buffer ) );
@@ -166,11 +167,9 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
 
         regs.InsertEndChild(reg);
       }
-
-      eRoot.InsertEndChild(regs);
+      rsm.InsertEndChild(regs);
     }
-
-    
+    eRoot.InsertEndChild(rsm);
   }
 
 
