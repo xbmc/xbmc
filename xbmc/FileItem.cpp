@@ -679,7 +679,10 @@ void CFileItem::SetLabel(const CStdString &strLabel)
 
 void CFileItem::SetFileSizeLabel()
 {
-  SetLabel2(StringUtils::SizeToString(m_dwSize));
+  if( m_bIsFolder && m_dwSize == 0 )
+    SetLabel2("");
+  else
+    SetLabel2(StringUtils::SizeToString(m_dwSize));
 }
 
 CURL CFileItem::GetAsUrl() const
@@ -826,7 +829,10 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'I')
     { // size
-      str=StringUtils::SizeToString(m_dwSize);
+      if( m_bIsFolder && m_dwSize == 0 )
+        str="";
+      else
+        str=StringUtils::SizeToString(m_dwSize);
       bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'J' && m_dateTime.IsValid())
