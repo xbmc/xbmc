@@ -1,3 +1,5 @@
+2006-08-25 added:	Custom shutdown timer button to shutdownmenu, for users who prefer other times then the default ones.
+2006-08-25 changed:	Visible conditions of LockSettings.xml layouts
 2006-08-25 added:	Shutdown timer to shutdownmenu, accesable by onup/down on shutdown button, times are 30,60 or 120 minutes
 2006-08-22 fixed:	Unable to go to cancel button if OK button was greyed out in the filebrowser.
 
