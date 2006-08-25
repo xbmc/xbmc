@@ -13,11 +13,21 @@ typedef vector<CStdString> VECMOVIESFILES;
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-struct CBookmark
+
+class CBookmark
 {
-  int timeInSeconds;
+public:
+  CBookmark();
+  double timeInSeconds;
   CStdString thumbNailImage;
   CStdString playerState;
+  CStdString player;
+
+  enum EType
+  {
+    STANDARD = 0,
+    RESUME = 1,
+  } type;
 };
 
 typedef vector<CBookmark> VECBOOKMARKS;
@@ -59,10 +69,13 @@ public:
   long GetMovieInfo(const CStdString& strFilenameAndPath);
   void SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details);
   void GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
-  void GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks);
-  void AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark, bool bResumeMark = false);
-  void ClearBookMarkOfVideo(const CStdString& strFilenameAndPath, CBookmark& bookmark);
-  void ClearBookMarksOfMovie(const CStdString& strFilenameAndPath);
+
+  void GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD);
+  void AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
+  bool GetResumeBookMark(const CStdString& strFilenameAndPath, CBookmark &bookmark);
+  void ClearBookMarkOfVideo(const CStdString& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
+  void ClearBookMarksOfMovie(const CStdString& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
+
   void DeleteMovie(const CStdString& strFilenameAndPath);
   void GetDVDLabel(long lMovieId, CStdString& strDVDLabel);
   void SetDVDLabel(long lMovieId, const CStdString& strDVDLabel1);

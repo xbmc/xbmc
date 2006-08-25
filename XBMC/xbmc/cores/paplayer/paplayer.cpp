@@ -99,7 +99,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   // always open the file using the current decoder
   m_currentDecoder = 0;
 
-  if (!m_decoder[m_currentDecoder].Create(file, options.starttime, m_crossFading))
+  if (!m_decoder[m_currentDecoder].Create(file, (__int64)(options.starttime * 1000), m_crossFading))
     return false;
 
   if ( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") )
@@ -113,7 +113,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
 
-  m_timeOffset = options.starttime;
+  m_timeOffset = (__int64)(options.starttime * 1000);
 
   m_decoder[m_currentDecoder].GetDataFormat(&m_Channels, &m_SampleRate, &m_BitsPerSample);
 

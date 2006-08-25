@@ -1042,7 +1042,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
 
     // Seek to the correct starting position
     if (initoptions.starttime) 
-      SeekTime(initoptions.starttime);
+      SeekTime( (__int64)(initoptions.starttime * 1000) );
 
     if (bFileOnInternet)
     {
@@ -1161,7 +1161,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
         }
         // Seek to the correct starting position
         if (initoptions.starttime) 
-          SeekTime(initoptions.starttime);
+          SeekTime( (__int64)(initoptions.starttime * 1000) );
 
       }
     }
