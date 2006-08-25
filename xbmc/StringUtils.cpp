@@ -197,6 +197,12 @@ void StringUtils::RemoveCRLF(CStdString& strLine)
 CStdString StringUtils::SizeToString(__int64 size)
 {
   CStdString strLabel;
+  if (size == 0)
+  {
+    strLabel.Format("0.0 KB");
+    return strLabel;
+  }
+
   // file < 1 kbyte?
   if (size < 1024)
   {
