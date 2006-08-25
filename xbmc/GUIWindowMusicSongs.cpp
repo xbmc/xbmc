@@ -90,27 +90,27 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyMusicShares, bIsBookmarkName);
           if (iIndex > -1)
           {
-            bool bDoStuff = true;
+            bool unlocked = true;
             if (g_settings.m_vecMyMusicShares[iIndex].m_iHasLock == 2)
             {
               CFileItem item(g_settings.m_vecMyMusicShares[iIndex]);
               if (!g_passwordManager.IsItemUnlocked(&item,"music"))
               {
                 m_vecItems.m_strPath = ""; // no u don't
-                bDoStuff = false;
-                 CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
+                unlocked = false;
+                CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
               }
             }
             // set current directory to matching share
-              if (bDoStuff)
-              {
-                if (bIsBookmarkName)
-                  m_vecItems.m_strPath=g_settings.m_vecMyMusicShares[iIndex].strPath;
-                else
-                  m_vecItems.m_strPath=strDestination;
-                CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
-                CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
-              }
+            if (unlocked)
+            {
+              if (bIsBookmarkName)
+                m_vecItems.m_strPath=g_settings.m_vecMyMusicShares[iIndex].strPath;
+              else
+                m_vecItems.m_strPath=strDestination;
+              CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+              CLog::Log(LOGINFO, "  Success! Opened destination path: %s (%s)", strDestination.c_str(), m_vecItems.m_strPath.c_str());
+            }
           }
           else
           {
