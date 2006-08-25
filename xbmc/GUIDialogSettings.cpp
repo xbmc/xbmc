@@ -24,7 +24,6 @@ CGUIDialogSettings::CGUIDialogSettings(DWORD id, const char *xmlFile)
   m_iCurrentPage = 0;
   m_iNumPages = 0;
   m_iNumPerPage = 0;
-  m_loadOnDemand = false;
 }
 
 CGUIDialogSettings::~CGUIDialogSettings(void)

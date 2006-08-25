@@ -8,7 +8,6 @@
 CGUIDialogLockSettings::CGUIDialogLockSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_LOCK_SETTINGS, "LockSettings.xml")
 {
-  m_loadOnDemand = true;
 }
 
 CGUIDialogLockSettings::~CGUIDialogLockSettings(void)
