@@ -26,7 +26,7 @@ CGUIWindowPrograms::CGUIWindowPrograms(void)
 {
   m_thumbLoader.SetObserver(this);
   m_dlgProgress = NULL;
-  m_rootDir.AllowMemoryUnitShares(false); // no memory units for this window please
+  m_rootDir.AllowNonLocalShares(false); // no nonlocal shares for this window please
 }
 
 
