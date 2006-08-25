@@ -9,7 +9,14 @@
 
 #include "GUIFontBase.h"
 #include <xfont.h>
-#include <hash_map>
+
+// forward definition
+struct FT_FaceRec_;
+struct FT_LibraryRec_;
+
+typedef struct FT_FaceRec_ *FT_Face;
+typedef struct FT_LibraryRec_ *FT_Library;
+
 
 /*!
  \ingroup textures
@@ -19,9 +26,10 @@ class CGUIFontTTF: public CGUIFontBase
 {
   struct Character
   {
-    int letter;
-    unsigned short left, top, right, bottom;
-    unsigned short width, height;           // just for packing to 16 bytes.
+    WCHAR letter;
+    unsigned short originX, originY;
+    short left, top, right, bottom;
+    float advance;
   };
 public:
 
@@ -52,7 +60,6 @@ protected:
                             const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
                             FLOAT fMaxPixelWidth = 0.0f);
 
-  XFONT* m_pTrueTypeFont;
   int m_iHeight;
   int m_iStyle;
   CStdString m_strFilename;
@@ -61,28 +68,32 @@ protected:
   Character *GetCharacter(WCHAR letter);
   bool CacheCharacter(WCHAR letter, Character *ch);
   void RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor);
-  void CreateShaderAndTexture();
-  void CopyTexture(int width);
+  void CreateShader();
   void ClearCharacterCache();
 
   LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
-  LPDIRECT3DTEXTURE8 m_charTexture;  // texture to use for first render of characters (32bit)
   DWORD m_fontShader;                // pixel shader for rendering chars from the 8bit alpha texture
-  DWORD m_copyShader;                // pixel shader for copying from 32bit -> 8bit alpha texture
   LPDIRECT3DDEVICE8 m_pD3DDevice;
 
   Character *m_char;                 // our characters
   int m_maxChars;                    // size of character array (can be incremented)
   int m_numChars;                    // the current number of cached characters
   int m_textureRows;                 // the number of rows in our texture
-  int m_charGap;                     // space between characters in pixels in our texture (for kerning)
   int m_posX;                        // current position in the texture
   int m_posY;
-  unsigned int m_descent;
-  unsigned int m_ellipsesWidth;               // this is used every character (width of '.')
-  unsigned int m_cellheight;
+
+  float m_ellipsesWidth;               // this is used every character (width of '.')
+
+  unsigned int m_cellBaseLine;
+  unsigned int m_cellHeight;
+  unsigned int m_cellAscent;          // typical distance from baseline to top of glyph - based on the 'W'
+  unsigned int m_lineHeight;
 
   DWORD m_dwNestedBeginCount;             // speedups
+
+  // freetype stuff
+  FT_Face    m_face;
+  FT_Library m_library;
 };
 
 #endif
