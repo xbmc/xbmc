@@ -68,7 +68,7 @@ protected:
                                   const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
                                   FLOAT fMaxPixelWidth) = 0;
 
-  float m_iMaxCharWidth;
+  unsigned int m_iMaxCharWidth;
   CStdString m_strFileName;
 private:
   int m_referenceCount;
