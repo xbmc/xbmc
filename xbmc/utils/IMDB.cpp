@@ -147,12 +147,19 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   m_http.Get(strPlotURL, strPlotHTML);
 
   // now grab our details using the dll
-  char szXML[50000];
+  CStdString strXML;
+  char *szXML = strXML.GetBuffer(50000);
   if (!m_dll.IMDbGetDetails(szXML, strHTML.c_str(), strPlotHTML.c_str()))
   {
+    strXML.ReleaseBuffer();
     CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
     return false;
   }
+  strXML.ReleaseBuffer();
+
+  // abit uggly, but should work. would have been better if parset
+  // set the charset of the xml, and we made use of that
+  g_charsetConverter.stringCharsetToUtf8(strXML);
 
   // save the xml file for later reading...
   CFile file;
@@ -160,7 +167,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   strXMLFile.Format("%s\\%s.xml", g_settings.GetIMDbFolder().c_str(), movieDetails.m_strIMDBNumber.c_str());
   if (file.OpenForWrite(strXMLFile))
   {
-    file.Write(szXML, strlen(szXML));
+    file.Write(strXML.c_str(), strXML.size());
     file.Close();
   }
 
@@ -221,15 +228,6 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
   XMLUtils::GetString(details, "plot", movieDetails.m_strPlot);
   XMLUtils::GetString(details, "mpaa", movieDetails.m_strMPAARating);
 
-  // convert to utf8
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTitle);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strCast);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlotOutline);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTagLine);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strGenre);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strWritingCredits);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strDirector);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlot);
   return true;
 }
 
