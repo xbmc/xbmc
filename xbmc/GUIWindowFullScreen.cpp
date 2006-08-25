@@ -388,15 +388,17 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         g_audioManager.Enable(false);
       }
 
-      CGUIWindow::OnMessage(message);
-
+      // setup the brightness, contrast and resolution
       CSingleLock lock (g_graphicsContext);
       CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);      
       g_graphicsContext.SetFullScreenVideo( true );
       lock.Leave();
       g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
-      g_renderManager.Update(false);      
-            
+      g_renderManager.Update(false);
+
+      // now call the base class to load our windows
+      CGUIWindow::OnMessage(message);
+
       m_bShowViewModeInfo = false;
 
       if (CUtil::IsUsingTTFSubtitles())
