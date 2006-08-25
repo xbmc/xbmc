@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-08-2006 fixed: Fullscreen video didn't load the OSD files from the appropriate resolution.
  - 25-08-2006 changed: TTF rendering improved through the use of freetype.
  - 25-08-2006 changed: Cleaned up the memory card notification code.
  - 25-08-2006 added: some better labels for the shutdown timer.
