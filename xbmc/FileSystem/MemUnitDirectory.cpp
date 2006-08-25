@@ -18,7 +18,7 @@ bool CMemUnitDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   
   g_directoryCache.ClearDirectory(strPath);
   CFileItemList cacheItems;
-  if (!fileSystem->GetDirectory(strPath.Mid(7), cacheItems))
+  if (!fileSystem->GetDirectory(strPath.Mid(6), cacheItems))
   {
     delete fileSystem;
     return false;
