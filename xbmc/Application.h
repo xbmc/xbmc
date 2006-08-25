@@ -21,7 +21,6 @@
 #include "PlaylistPlayer.h"
 #include "utils/IMDB.h"
 #include "xbstopwatch.h"
-#include "utils/HddSmart.h"
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
