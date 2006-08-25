@@ -40,12 +40,12 @@ namespace DIRECTORY
 
     void GetShares(VECSHARES &shares) const;
 
-    void AllowMemoryUnitShares(bool allow) { m_allowMemUnitShares = allow; };
+    void AllowNonLocalShares(bool allow) { m_allowNonLocalShares = allow; };
 
   protected:
     void CacheThumbs(CFileItemList &items);
 
     VECSHARES* m_vecShares;
-    bool       m_allowMemUnitShares;
+    bool       m_allowNonLocalShares;
   };
 };
