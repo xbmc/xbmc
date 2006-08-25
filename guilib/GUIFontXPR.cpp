@@ -21,8 +21,9 @@ boolean CGUIFontXPR::Load(const CStdString& strFilename)
     }
     else
     {
-      float fTextHeight;
-      GetTextExtentInternal( L"W", &m_iMaxCharWidth, &fTextHeight);
+      float fTextHeight, fTextWidth;
+      GetTextExtentInternal( L"W", &fTextWidth, &fTextHeight);
+      m_iMaxCharWidth = (unsigned int)fTextWidth;
     }
 
     return bResult;
