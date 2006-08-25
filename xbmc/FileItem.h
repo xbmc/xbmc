@@ -40,6 +40,9 @@ typedef enum {
   SORT_ORDER_DESC
 } SORT_ORDER;
 
+/* special startoffset used to indicate that we wish to resume */
+#define STARTOFFSET_RESUME (-1) 
+
 class CShare;
 
 /*!

@@ -13,7 +13,7 @@ public:
   virtual void Render();
 
   void PlayMovie(const CFileItem *item);
-  int  GetResumeItemOffset(CFileItem *item);
+  int  GetResumeItemOffset(const CFileItem *item);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);

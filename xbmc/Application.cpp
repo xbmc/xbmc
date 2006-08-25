@@ -2952,6 +2952,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   CVideoDatabase dbs;
   if (dbs.Open())
   {
+    dbs.GetVideoSettings(item.m_strPath, g_stSettings.m_currentVideoSettings);
     haveTimes = dbs.GetStackTimes(item.m_strPath, times);
     dbs.Close();
   }
@@ -2973,7 +2974,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
         eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
 
       m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
-      if(!m_pPlayer) 
+      if(!m_pPlayer)
       {
         m_currentStack.Clear();
         return false;
@@ -2993,26 +2994,40 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       m_pPlayer->CloseFile();
       SAFE_DELETE(m_pPlayer);
 
-      m_currentStack[i]->m_lEndOffset = totalTime;      
+      m_currentStack[i]->m_lEndOffset = totalTime;
       times.push_back(totalTime);
     }
   }
-  if (!haveTimes)
-  {  // have our times now, so update the dB
-    if (dbs.Open())
-    {
-      dbs.SetStackTimes(item.m_strPath, times);
-      dbs.Close();
-    }
-  }
+
   m_itemCurrentFile = item;
   m_currentStackPosition = 0;
   m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used
 
-  if (item.m_lStartOffset)
+  double seconds = item.m_lStartOffset / 75.0;
+
+  if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME )
+  {  // have our times now, so update the dB
+    if (dbs.Open())
+    {
+      if( !haveTimes )
+        dbs.SetStackTimes(item.m_strPath, times);
+
+      if( item.m_lStartOffset == STARTOFFSET_RESUME )
+      {
+        /* can only resume seek here, not dvdstate */
+        CBookmark bookmark;
+        if( dbs.GetResumeBookMark(item.m_strPath, bookmark) )
+          seconds = bookmark.timeInSeconds;
+        else
+          seconds = 0.0f;
+      }
+      dbs.Close();
+    }
+  }
+
+  if (seconds > 0)
   {
-    // work out where to seek to
-    double seconds = item.m_lStartOffset / 75.0;
+    // work out where to seek to    
     for (int i = 0; i < m_currentStack.Size(); i++)
     {
       if (seconds < m_currentStack[i]->m_lEndOffset)
@@ -3031,42 +3046,69 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
-  if (item.IsPlayList())
-    return false;
-
   if (!bRestart)
   {
     OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
     g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
     // see if we have saved options in the database
-    if (item.IsVideo())
-    {
-      CVideoDatabase dbs;
-      // open the d/b and retrieve the bookmarks for the current movie
-      dbs.Open();
-      dbs.GetVideoSettings(item.m_strPath, g_stSettings.m_currentVideoSettings);
-      dbs.Close();
-    }
-    
+
     m_iPlaySpeed = 1;
     m_itemCurrentFile = item;
     m_nextPlaylistItem = -1;
   }
-
+ 
+  if (item.IsPlayList())
+    return false;
+  
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
   // will recall with restart set to true
   if (item.IsStack())
     return PlayStack(item, bRestart);
 
+  CPlayerOptions options;  
   EPLAYERCORES eNewCore = EPC_NONE;
-  if (bRestart && m_eCurrentPlayer != EPC_NONE)
-    eNewCore = m_eCurrentPlayer;
-  else if (m_eForcedNextPlayer != EPC_NONE)
-    eNewCore = m_eForcedNextPlayer;
+  if( bRestart )
+  {
+    /* have to be set here due to playstack using this for starting the file */
+    options.starttime = item.m_lStartOffset / 75.0;
+
+    if( m_eCurrentPlayer == EPC_NONE )
+      eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
+    else
+      eNewCore = m_eCurrentPlayer;
+  }
   else
-    eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
+  {
+    options.starttime = item.m_lStartOffset / 75.0;
+    
+    if (item.IsVideo())
+    {
+      // open the d/b and retrieve the bookmarks for the current movie      
+      CVideoDatabase dbs;
+      dbs.Open();
+      dbs.GetVideoSettings(item.m_strPath, g_stSettings.m_currentVideoSettings);      
+
+      if( item.m_lStartOffset == STARTOFFSET_RESUME )
+      {
+        options.starttime = 0.0f;        
+        CBookmark bookmark;
+        if(dbs.GetResumeBookMark(item.m_strPath, bookmark))
+        {
+          options.starttime = bookmark.timeInSeconds;
+          options.state = bookmark.playerState;
+        }
+      }
+      
+      dbs.Close();
+    }
+
+    if (m_eForcedNextPlayer != EPC_NONE)
+      eNewCore = m_eForcedNextPlayer;
+    else
+      eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
+  }
 
   // reset any forced player
   m_eForcedNextPlayer = EPC_NONE;
@@ -3097,9 +3139,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
     return false;
   }
-
-  CPlayerOptions options;
-  options.starttime = item.m_lStartOffset * 1000 / 75;
 
   bool bResult = m_pPlayer->OpenFile(item, options);
   if (bResult)
@@ -3159,9 +3198,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
 void CApplication::OnPlayBackEnded()
 {
-  // reset resume time as we have reached the end of the movie
-  g_stSettings.m_currentVideoSettings.m_ResumeTime = 0;
-
   //playback ended
   SetPlaySpeed(1);
 
@@ -3270,8 +3306,6 @@ void CApplication::StopPlaying()
     // TODO: Add saving of watched status in here
     if ( IsPlayingVideo() )
     { // save our position for resuming at a later date
-      g_stSettings.m_currentVideoSettings.m_ResumeTime = (int)(GetTime() * 75); // need it in frames (75ths of a second)
-
       CVideoDatabase dbs;
       if (dbs.Open())
       {
@@ -3282,12 +3316,12 @@ void CApplication::StopPlaying()
         if( m_pPlayer )
         {
           CBookmark bookmark;
-
+          bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
           bookmark.playerState = m_pPlayer->GetPlayerState();
-          bookmark.timeInSeconds = (int)GetTime();
+          bookmark.timeInSeconds = GetTime();
           bookmark.thumbNailImage.Empty();
 
-          dbs.AddBookMarkToMovie(CurrentFile(),bookmark, true);
+          dbs.AddBookMarkToMovie(CurrentFile(),bookmark, CBookmark::RESUME);
         }
         dbs.Close();
       }
@@ -3850,7 +3884,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
         dbs.Open();
         dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
         if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
+        {
           dbs.MarkAsWatched(m_itemCurrentFile);
+          dbs.ClearBookMarksOfMovie(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
+        }
         dbs.Close();
       }
 
