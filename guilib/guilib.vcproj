@@ -149,7 +149,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="&quot;C:\Downloads\freetype-2.2.1\freetype2\include&quot;;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
 				StringPooling="FALSE"
 				MinimalRebuild="FALSE"
