@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-08-2006 fixed: Fullscreen information bar wasn't rendered while paused.
+ - 25-08-2006 fixed: Fullscreen GUI was rendered twice while paused.
+ - 25-08-2006 fixed: Some fullscreen OSD dialogs weren't unloaded (wasted memory after playing a video)
  - 25-08-2006 fixed: Fullscreen video didn't load the OSD files from the appropriate resolution.
  - 25-08-2006 changed: TTF rendering improved through the use of freetype.
  - 25-08-2006 changed: Cleaned up the memory card notification code.
