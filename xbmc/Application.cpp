@@ -3106,19 +3106,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   bool bResult = m_pPlayer->OpenFile(item, options);
   if (bResult)
   {
-    // reset the screensaver
-    if (m_pPlayer->HasVideo())
-    {
-      ResetScreenSaver();
-      ResetScreenSaverWindow();
-    }
-
-    if ( IsPlayingVideo())
-    {
-      //pause video until screen is setup
-      m_pPlayer->Pause();
-    }
-
     // Enable Karaoke voice as necessary
 //    if (g_guiSettings.GetBool("karaoke.voiceenabled"))
   //  {
@@ -3139,6 +3126,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // if file happens to contain video stream
     if ( IsPlayingVideo())
     {
+      // reset the screensaver
+      ResetScreenSaver();
+      ResetScreenSaverWindow();
+
       bool bCanSwitch = true;
       // check whether we are playing from a playlist...
       int playlist = g_playlistPlayer.GetCurrentPlaylist();
@@ -3150,9 +3141,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
         }
       }
       // switch to fullscreen video mode if we can
-      if (bCanSwitch) SwitchToFullScreen();
-      //screen is setup, resume playing
-      m_pPlayer->Pause();
+      if (bCanSwitch)
+      {
+        // wait till the screen is configured before we pause
+        // I'm sure this can be done better than just a sleep...
+        while (!g_renderManager.IsStarted())
+          Sleep(1);
+        // pause video until screen is setup
+        m_pPlayer->Pause();
+        SwitchToFullScreen();
+        //screen is setup, resume playing
+        m_pPlayer->Pause();
+      }
     }
 
   }
