@@ -1520,6 +1520,9 @@ void CFileItemList::Stack()
   // purposes).
   if (g_stSettings.m_iMyVideoStack != STACK_NONE)
   {
+    // items needs to be sorted for stuff below to work properly
+    Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+
     // First stack any DVD folders by removing every dvd file other than
     // the VIDEO_TS.IFO file.
     bool isDVDFolder(false);
@@ -1533,12 +1536,13 @@ void CFileItemList::Stack()
       }
     }
     if (isDVDFolder)
-    { // remove any other dvd files in this folder
+    { // remove any other ifo files in this folder
+      // leave the vobs stacked.
       const int num = Size() ? Size() - 1 : 0;  // Size will alter in this loop
       for (int i = num; i; --i)
       {
         CFileItem *item = Get(i);
-        if (item->IsDVDFile() && item->GetLabel().CompareNoCase("video_ts.ifo"))
+        if (item->IsDVDFile(false, true) && item->GetLabel().CompareNoCase("video_ts.ifo"))
         {
           Remove(i);
         }
@@ -1548,9 +1552,29 @@ void CFileItemList::Stack()
     for (int i = 0; i < Size() - 1; ++i)
     {
       CFileItem *item = Get(i);
+
       // ignore directories and playlists
-      if (item->IsPlayList() || item->m_bIsFolder || item->IsNFO())
+      if (item->IsPlayList() || item->IsParentFolder() || item->IsNFO())
         continue;
+
+      if( item->m_bIsFolder )
+      {
+        // check for any dvd directories, only on known fast types
+        if( !item->IsRemote() )
+        {
+          CStdString path;
+          CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS.IFO", path);
+          if(CFile::Exists(path))
+          {
+            item->m_bIsFolder = false;
+            item->m_strPath = path;
+            item->SetLabel2("");
+            item->SetLabelPreformated(true);
+            m_sortMethod = SORT_METHOD_NONE; /* sorting is now broken */
+          }
+        }
+        continue;
+      }
 
       CStdString fileName, filePath;
       CUtil::Split(item->m_strPath, filePath, fileName);
