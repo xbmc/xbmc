@@ -1804,10 +1804,8 @@ void CApplication::Render()
         {
           CSingleLock lock(g_graphicsContext);
           extern void xbox_video_render_update(bool);
-          xbox_video_render_update(true);
           m_gWindowManager.UpdateModelessVisibility();
-          RenderFullScreen();
-          m_gWindowManager.Render();
+          xbox_video_render_update(true);
           m_pd3dDevice->BlockUntilVerticalBlank();
           m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
           return ;
