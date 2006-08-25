@@ -11,7 +11,6 @@ CGUIDialogTrainerSettings::CGUIDialogTrainerSettings(void)
   m_iTrainer = 0;
   m_iOldTrainer = 0;
   m_bNeedSave = false;
-  m_loadOnDemand = true;
 }
 
 CGUIDialogTrainerSettings::~CGUIDialogTrainerSettings(void)

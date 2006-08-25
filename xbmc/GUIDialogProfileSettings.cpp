@@ -18,7 +18,6 @@ CGUIDialogProfileSettings::CGUIDialogProfileSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_PROFILE_SETTINGS, "ProfileSettings.xml")
 {
   m_bNeedSave = false;
-  m_loadOnDemand = true;
 }
 
 CGUIDialogProfileSettings::~CGUIDialogProfileSettings(void)

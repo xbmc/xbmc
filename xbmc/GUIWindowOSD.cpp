@@ -4,7 +4,6 @@
 CGUIWindowOSD::CGUIWindowOSD(void)
     : CGUIDialog(WINDOW_OSD, "VideoOSD.xml")
 {
-  m_loadOnDemand = false;
 }
 
 CGUIWindowOSD::~CGUIWindowOSD(void)
