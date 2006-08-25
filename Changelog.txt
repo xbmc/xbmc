@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-08-2006 added: resume playback for dvd's and automatic bookmark for last played position
  - 25-08-2006 fixed: Folders on memory units weren't retrieved correctly.
  - 25-08-2006 fixed: Prepended characters in track label were applied even if the track had no tag information (usually only on playlists treated as files).
  - 25-08-2006 fixed: Fullscreen information bar wasn't rendered while paused.

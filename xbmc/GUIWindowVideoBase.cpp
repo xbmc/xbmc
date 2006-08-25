@@ -614,39 +614,37 @@ void CGUIWindowVideoBase::DisplayEmptyDatabaseMessage(bool bDisplay)
   m_bDisplayEmptyDatabaseMessage = bDisplay;
 }
 
-int  CGUIWindowVideoBase::GetResumeItemOffset(CFileItem *item)
+int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 {
-  int startOffset = 0;
-  if (item->IsStack())
+  m_database.Open();
+  long startoffset = 0;
+
+  if (item->IsStack() && !g_guiSettings.GetBool("videoplayer.treatstackasfile") )
   {
-    CVideoSettings settings;
-    if (m_database.GetVideoSettings(item->m_strPath, settings))
-      return settings.m_ResumeTime;
 
-    // TODO: Remove this code once the player can handle the stack:// protocol.
-    // grab the database info.  If stacking is enabled, we may have to check multiple files...
-    vector<CStdString> movies;
+    CStdStringArray movies;
     GetStackedFiles(item->m_strPath, movies);
-    for (unsigned int i=0; i < movies.size(); i++)
+
+    /* check if any of the stacked files have a resume bookmark */
+    for(unsigned i = 0; i<movies.size();i++)
     {
-      CVideoSettings settings;
-
-      m_database.GetVideoSettings(movies[i], settings);
-
-      if (settings.m_ResumeTime > 0)
+      CBookmark bookmark;
+      if(m_database.GetResumeBookMark(movies[i], bookmark))
       {
-        startOffset = settings.m_ResumeTime + 0x10000000 * i; // assume no more than 16 files are stacked
+        startoffset = (long)(bookmark.timeInSeconds*75);
+        startoffset += 0x10000000 * (i+1); /* store file number in here */
         break;
       }
     }
   }
   else if (!item->IsNFO() && !item->IsPlayList())
   {
-    CVideoSettings settings;
-    m_database.GetVideoSettings(item->m_strPath, settings);
-    startOffset = settings.m_ResumeTime;
+    CBookmark bookmark;
+    if(m_database.GetResumeBookMark(item->m_strPath, bookmark))
+      startoffset = (long)(bookmark.timeInSeconds*75);
   }
-  return startOffset;
+  m_database.Close();
+  return startoffset;
 }
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
@@ -666,7 +664,7 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
 
 void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
-  m_vecItems[iItem]->m_lStartOffset = GetResumeItemOffset(m_vecItems[iItem]);
+  m_vecItems[iItem]->m_lStartOffset = STARTOFFSET_RESUME;
   CGUIMediaWindow::OnClick(iItem);
 }
 
@@ -928,15 +926,48 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 {
   CFileItemList movieList;
-  int selectedFile = 1;
+  int selectedFile = 1;  
+  long startoffset = item->m_lStartOffset;
+
   if (item->IsStack() && !g_guiSettings.GetBool("videoplayer.treatstackasfile"))
   {
-    // TODO: Once the players are capable of playing a stack, we should remove
-    // this code in favour of just using the resume feature.
     CStdStringArray movies;
     GetStackedFiles(item->m_strPath, movies);
-    if (item->m_lStartOffset)
-      selectedFile = ((item->m_lStartOffset & 0x10000000) >> 28) + 1;
+
+    if( item->m_lStartOffset == STARTOFFSET_RESUME )
+    {
+      startoffset = GetResumeItemOffset(item);
+
+      if( startoffset & 0xF0000000 ) /* file is specified as a flag */
+      {
+        selectedFile = (startoffset>>28);
+        startoffset = startoffset & ~0xF0000000;
+      }
+      else
+      {
+        /* attempt to start on a specific time in a stack */
+        /* if we are lucky, we might have stored timings for */
+        /* this stack at some point */
+
+        m_database.Open();
+
+        /* figure out what file this time offset is */
+        vector<long> times;
+        m_database.GetStackTimes(item->m_strPath, times);
+        long totaltime = 0;
+        for(unsigned i = 0; i < times.size(); i++)
+        {
+          totaltime += times[i]*75;
+          if( startoffset < totaltime )
+          {
+            selectedFile = i+1;
+            startoffset -= totaltime - times[i]*75; /* rebase agains selected file */
+            break;
+          }
+        }
+        m_database.Close();
+      }
+    }
     else
     { // show file stacking dialog
       CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
@@ -968,7 +999,7 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
     CPlayList::CPlayListItem playlistItem;
     CUtil::ConvertFileItemToPlayListItem(movieList[i], playlistItem);
     if (i == selectedFile - 1)
-      playlistItem.m_lStartOffset = item->m_lStartOffset & 0x0fffffff;
+      playlistItem.m_lStartOffset = startoffset;
     playlist.Add(playlistItem);
   }
 
