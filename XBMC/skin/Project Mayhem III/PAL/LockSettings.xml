@@ -20,7 +20,7 @@
 	<align>center</align>
 	<label>12016</label>
 	<font>font12</font>
-	<visible>!Window.IsActive(systemsettings)</visible>
+	<visible>Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -34,7 +34,7 @@
 	<onleft>60</onleft>
 	<onright>60</onright>
 	<ondown>2</ondown>
-	<visible>!Window.IsActive(systemsettings)</visible>
+	<visible>Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -46,7 +46,7 @@
 	<width>408</width>
 	<height>325</height>
 	<texture>-</texture>
-	<visible>!Window.IsActive(systemsettings)</visible>
+	<visible>Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -56,7 +56,7 @@
 	<width>350</width>
 	<height>31</height>
 	<texture>-</texture>
-	<visible>!Window.IsActive(systemsettings)</visible>
+	<visible>Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -71,7 +71,7 @@
 	<aligny>center</aligny>
 	<texturefocus>input-focus.png</texturefocus>
 	<texturenofocus>-</texturenofocus>
-	<visible>!Window.IsActive(systemsettings)</visible>
+	<visible>Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -88,7 +88,7 @@
 	<aligny>center</aligny>
 	<textureradiofocus>settings-check-box.png</textureradiofocus>
 	<textureradionofocus>settings-check-boxNF.png</textureradionofocus>
-	<visible>!Window.IsActive(systemsettings)</visible>
+	<visible>Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -111,7 +111,7 @@
 	<textoffsetx>12</textoffsetx>
 	<aligny>center</aligny>
 	<reverse>yes</reverse>
-	<visible>!Window.IsActive(systemsettings)</visible>
+	<visible>Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -133,7 +133,7 @@
 	<include>textcolorwhite</include>
 	<disabledcolor>60d0d0d0</disabledcolor>
 	<textoffsetx>12</textoffsetx>
-	<visible>!Window.IsActive(systemsettings)</visible>
+	<visible>Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -143,7 +143,7 @@
 	<width>350</width>
 	<height>5</height>
 	<texture>separatorOSD.png</texture>
-	<visible>!Window.IsActive(systemsettings)</visible>
+	<visible>Window.IsActive(130)</visible>
  </control>
 
  <!-- System -->
@@ -155,7 +155,7 @@
 	<width>1300</width>
 	<height>1300</height>
 	<texture>black.png</texture>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
 	<animation effect="fade" time="2000" delay="300" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
 	<animation effect="fade" time="200" delay="300" condition="!Skin.HasSetting(animated)">WindowClose</animation>
  </control>
@@ -170,7 +170,7 @@
 	<height>406</height>
 	<texture>dialog-panellock.png</texture>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130) | Window.IsActive(MyVideoFiles)</visible>
  </control>
 
  <control>
@@ -184,7 +184,7 @@
 	<font>special13</font>
 	<textcolor>DDced8da</textcolor>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -198,7 +198,7 @@
 	<label>12016</label>
 	<font>font12</font>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -213,7 +213,7 @@
 	<onright>60</onright>
 	<ondown>2</ondown>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -226,7 +226,7 @@
 	<height>325</height>
 	<texture>-</texture>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -237,7 +237,7 @@
 	<height>31</height>
 	<texture>-</texture>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -253,7 +253,7 @@
 	<texturefocus>list-focus.png</texturefocus>
 	<texturenofocus>-</texturenofocus>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -271,7 +271,7 @@
 	<textureradiofocus>settings-check-box.png</textureradiofocus>
 	<textureradionofocus>settings-check-boxNF.png</textureradionofocus>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -295,7 +295,7 @@
 	<aligny>center</aligny>
 	<reverse>yes</reverse>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -318,7 +318,7 @@
 	<disabledcolor>60d0d0d0</disabledcolor>
 	<textoffsetx>12</textoffsetx>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
  </control>
 
  <control>
@@ -329,7 +329,7 @@
 	<height>5</height>
 	<texture>separatorOSD.png</texture>
 	<include>homemisc</include>
-	<visible>Window.IsActive(systemsettings)</visible>
+	<visible>!Window.IsActive(130)</visible>
  </control>
 
  </controls>
