@@ -337,6 +337,7 @@ public:
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
   static void ForceForwardSlashes(CStdString& strPath);
   static bool PWMControl(CStdString strRGBa, CStdString strRGBb, CStdString strTransition, int iTrTime);
+  static bool RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath);
 
   
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);

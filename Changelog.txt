@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-08-2006 added: Flicker Filter Xbe Patcher.  Based on hargle and VooD Win32 Flicker Filter XBE Patcher http://xbox.nugnugnug.com/FlickerFucker/
+		     settings - my Programs - auto flicker filter patch on/off     
+		     will always create a patched _ffp.xbe, the default will not touched
+		     ff patcher uses the flicker filter setting in XBMC settings
+                     will not patch: in progressive mode and homebrew xbe's
  - 25-08-2006 changed: skins are not reloaded unless needed when you log on / log off - allows for smoother transitions.
  - 25-08-2006 fixed: files (or folders) with 0 byte size would display as 0.1 Kb.
  - 25-08-2006 changed: treat a folder containing a VIDEO_TS.IFO file a complete dvd when stacking is enabled. you now don't need to enter folder and select video_ts.ifo to start it.
