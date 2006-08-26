@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-08-2006 fixed: Very short songs were often cut short when played with paplayer (meaning no sound at all).
  - 26-08-2006 added: Flicker Filter Xbe Patcher.  Based on hargle and VooD Win32 Flicker Filter XBE Patcher http://xbox.nugnugnug.com/FlickerFucker/
 		     settings - my Programs - auto flicker filter patch on/off     
 		     will always create a patched _ffp.xbe, the default will not touched
