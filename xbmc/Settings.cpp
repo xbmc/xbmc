@@ -5,6 +5,7 @@
 #include "GUIWindowMusicBase.h"
 #include "GUIWindowFileManager.h"
 #include "GUIDialogButtonMenu.h"
+#include "GUIFontManager.h"
 #include "utils/FanController.h"
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
@@ -1761,6 +1762,7 @@ bool CSettings::LoadProfile(int index)
   m_iLastLoadedProfileIndex = index;
   bool bSourcesXML=true;
   CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
+  CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   if (Load(bSourcesXML,bSourcesXML))
   {
     CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
@@ -1791,6 +1793,24 @@ bool CSettings::LoadProfile(int index)
  //   g_infoManager.Clear();
     if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")))
       g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    else
+    {
+      if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font")))
+      {
+        CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
+        CStdString strFontSet;
+        if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
+        {
+          CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
+          g_guiSettings.SetString("lookandfeel.font", strFontSet);
+          g_settings.Save();
+        }
+        else
+          CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("lookandfeel.language").c_str());
+      }
+      if (g_guiSettings.GetString("lookandfeel.font") != strOldFont)
+        g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
+    }
     // initialize our charset converter
     g_charsetConverter.reset();
 
