@@ -181,6 +181,7 @@ CGUISettings::CGUISettings(void)
   AddString(3, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
   //  TODO: localize 2.0
   AddString(4, "myprograms.trainerpath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 20003);
+  AddBool(5, "myprograms.autoffpatch", 29999, false);
 
   AddCategory(1,"programfiles",744);
   AddBool(1, "programfiles.useautoswitching", 14011, false);
