@@ -172,10 +172,10 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share2.strName = "ReplayTV";
     extraShares.push_back(share2);
   }
-  if (m_type == "pictures" && g_guiSettings.GetString("system.screenshotpath",false)!= "")
+  if (m_type == "pictures" && g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
   {
     CShare share1;
-    share1.strPath = g_guiSettings.GetString("system.screenshotpath");
+    share1.strPath = g_guiSettings.GetString("pictures.screenshotpath");
     share1.strName = g_localizeStrings.Get(20008); // TODO: localize 2.0
     extraShares.push_back(share1);
   }
