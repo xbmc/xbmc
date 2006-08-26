@@ -521,6 +521,10 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     }
   }
 
+  // if we haven't found the selected item, select the first item
+  if (!bSelectedFound)
+    m_viewControl.SetSelectedItem(0);
+
   m_history.AddPath(strDirectory);
 
   //m_history.DumpPathHistory();
