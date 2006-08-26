@@ -121,6 +121,7 @@ private:
   void FreeStream(int stream);
   bool CreateStream(int stream, int channels, int samplerate, int bitspersample);
   void FlushStreams();
+  void WaitForStream();
   void SetStreamVolume(int stream, long nVolume);
   
   void UpdateCrossFadingTime(const CFileItem& file);
