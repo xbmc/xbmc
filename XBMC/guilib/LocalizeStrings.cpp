@@ -276,7 +276,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20126] = "Log off";
   m_vecStrings[20127] = "Hide 'all' items in library views";
   m_vecStrings[20128] = "Go to Root";
-
+  
   m_vecStrings[20200] = ToUTF8(strEncoding, "km/h");
   m_vecStrings[20201] = ToUTF8(strEncoding, "m/min");
   m_vecStrings[20202] = ToUTF8(strEncoding, "m/s");
@@ -322,6 +322,8 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20149] = "Shutdown in 120 minutes";
   m_vecStrings[20150] = "Custom Shutdown Timer";
   m_vecStrings[20151] = "Cancel Shutdown Timer";
+  m_vecStrings[29999] = "Auto Flicker Filter Patch";
+
 
   return true;
 }

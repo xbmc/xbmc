@@ -40,6 +40,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "utils/LED.h"
 #include "MusicInfoLoader.h"
+#include "utils/FilterFlickerPatch.h"
 
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
@@ -507,35 +508,30 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
 {
   BYTE	*Kernel=(BYTE *)0x80010000;
-  DWORD	i, j = 0;
+  DWORD	i, j = 0, k;
   DWORD	*CountryPtr;
   BYTE	CountryValues[4]={0, 1, 2, 4};
   BYTE	VideoTyValues[5]={0, 1, 2, 3, 3};
   BYTE	VideoFrValues[5]={0x00, 0x40, 0x40, 0x80, 0x40};
 
-  // No Country or Video specified, do nothing.
-  if ((Country==0) && (Video==0))
-    return( false );
-
-  // Video specified with no Country - select default Country for this Video Mode.
-  if (Country==0)
+  switch (Country) 
   {
-    Country=COUNTRY_EUR;
-    if (Video==VIDEO_NTSCM)	
-      Country=COUNTRY_USA;
-    else if (Video==VIDEO_NTSCJ)	
-      Country=COUNTRY_JAP;
-  }
-
-  // Country specified with no Video - select default Video Mode for this Country.
-  if (Video==0)
-  {
-    Video=VIDEO_PAL50;
-    if(Country==COUNTRY_USA)
-	    Video=VIDEO_NTSCM;
-    if(Country==COUNTRY_JAP)
-	    Video=VIDEO_NTSCJ;
-  }
+	  case COUNTRY_EUR:
+		  if (!Video)
+		    Video = VIDEO_PAL50;
+		  break;
+	  case COUNTRY_USA:
+	    Video = VIDEO_NTSCM;
+	  Country = COUNTRY_USA;
+		  break;
+	  case COUNTRY_JAP:
+	    Video = VIDEO_NTSCJ;
+	  Country = COUNTRY_JAP;
+		  break;
+	  default:
+	  Country = COUNTRY_EUR;
+	    Video = VIDEO_PAL50;
+  };
 
   // Search for the original code in the Kernel.
   // Searching from 0x80011000 to 0x80024000 in order that this will work on as many Kernels
@@ -610,11 +606,11 @@ bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
   Kernel[i+0x19]=VideoTyValues[Video];
   Kernel[i+0x1a]=VideoFrValues[Video];
 
-  j=(DWORD)CountryPtr;
-  Kernel[i+66]=(BYTE)(j&0xff);
-  Kernel[i+67]=(BYTE)((j>>8)&0xff);
-  Kernel[i+68]=(BYTE)((j>>16)&0xff);
-  Kernel[i+69]=(BYTE)((j>>24)&0xff);
+  k=(DWORD)CountryPtr;
+  Kernel[i+66]=(BYTE)(k&0xff);
+  Kernel[i+67]=(BYTE)((k>>8)&0xff);
+  Kernel[i+68]=(BYTE)((k>>16)&0xff);
+  Kernel[i+69]=(BYTE)((k>>24)&0xff);
 
   MmSetAddressProtect(&Kernel[i], 70, j);
 
@@ -1020,7 +1016,47 @@ void CUtil::RunShortcut(const char* szShortcutPath)
   }
 }
 
-
+bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
+{
+  if (!g_guiSettings.GetBool("myprograms.autoffpatch"))
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is off. Skipping Filter Flicker Patching.");
+    return false;
+  }
+  CStdString strIsPMode = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode;
+  if ( strIsPMode.Equals("480p 16:9") || strIsPMode.Equals("480p 4:3") || strIsPMode.Equals("720p 16:9"))
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Progressive Mode detected: Skipping Auto Filter Flicker Patching!");
+    return false;
+  }
+  if (strncmp(szPath1, "D:", 2) == 0)
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Source is DVD-ROM! Skipping Filter Flicker Patching.");
+    return false;
+  }
+  
+  CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is ON. Starting Filter Flicker Patching.");
+  CXBE m_xbe;
+  if((int)m_xbe.ExtractGameRegion(szPath1.c_str()) <= 0) // Reading the GameRegion is enought to detect a Patchable xbe!
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - %s",szPath1.c_str());
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.");
+    return false;
+  }
+  CGFFPatch m_ffp;
+  if (!m_ffp.FFPatch(szPath1, szNewPath))
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - ERROR during Filter Flicker Patching. Falling back to the original source.");
+    return false;
+  }
+  if(szNewPath.IsEmpty())
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - ERROR NO Patchfile Path is empty! Falling back to the original source.");
+    return false;
+  }
+  CLog::Log(LOGDEBUG, __FUNCTION__" - Filter Flicker Patching done. Starting %s.",szNewPath.c_str());
+  return true;
+}
 void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData) 
 {
   /// \brief Runs an executable file
@@ -1029,6 +1065,11 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
   g_application.PrintXBEToLCD(szPath1); //write to LCD
   Sleep(600);        //and wait a little bit to execute
 
+  CStdString szNewPath;
+  if(RunFFPatchedXBE(szPath1, szNewPath))
+  {
+    szPath1 = szNewPath;
+  }
   char szDevicePath[1024];
   char szPath[1024];
   char szXbePath[1024];
@@ -1088,18 +1129,18 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   if (ForceVideo != VIDEO_NULL)
   {
     if (!ForceCountry)
+    {
       if (ForceVideo == VIDEO_NTSCM)
         ForceCountry = COUNTRY_USA;
       if (ForceVideo == VIDEO_NTSCJ)
         ForceCountry = COUNTRY_JAP;
       if (ForceVideo == VIDEO_PAL50)
         ForceCountry = COUNTRY_EUR;
-    
-      CLog::Log(LOGDEBUG,"forcing video mode: %i",ForceVideo);
-      
-      bool bSuccessful = PatchCountryVideo(ForceCountry, ForceVideo);
-      if( !bSuccessful )
-        CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
+    }
+    CLog::Log(LOGDEBUG,"forcing video mode: %i",ForceVideo);
+    bool bSuccessful = PatchCountryVideo(ForceCountry, ForceVideo);
+    if( !bSuccessful )
+      CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
   }
   if (pData)
   {
