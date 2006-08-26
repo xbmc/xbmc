@@ -602,7 +602,9 @@ bool PAPlayer::ProcessPAP()
         }
         else
         {
-          // no track queued - return and get another one
+          // no track queued - return and get another one once we are finished
+          // with the current stream
+          WaitForStream();
           return false;
         }
       }
@@ -1030,4 +1032,19 @@ bool PAPlayer::Record(bool bOnOff)
 
   m_pShoutCastRipper->StopRecording();
   return true;
+}
+
+void PAPlayer::WaitForStream()
+{
+  // should we wait for our other stream as well?
+  // currently we don't.
+  if (!m_pStream[m_currentStream])
+  {
+    DWORD status;
+    do
+    {
+      m_pStream[m_currentStream]->GetStatus(&status);
+    }
+    while (status & DSSTREAMSTATUS_PLAYING);
+  }
 }
