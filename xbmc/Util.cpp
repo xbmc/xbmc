@@ -3491,7 +3491,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_application.StopPlaying();
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
-    g_guiSettings.SetString("lookandfeel.skin","");
     g_settings.LoadProfile(0); // login screen always runs as default user
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
