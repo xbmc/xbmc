@@ -99,7 +99,7 @@
     <onleft>3113</onleft>
     <onright>3110</onright>
     <onup>3200</onup>
-    <ondown>3203</ondown>
+    <ondown>3204</ondown>
     <font>-</font>
     <label>13005</label>
     <include>shutdownmenu</include>
@@ -260,7 +260,7 @@
     <posy>10</posy>
     <width>60</width>
     <height>79</height>
-    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturefocus>-</texturefocus>
     <texturenofocus>sub-reboot-nofocus.png</texturenofocus>
     <onclick>XBMC.Reset()</onclick>
     <pulseonselect>no</pulseonselect>
@@ -282,7 +282,7 @@
     <posy>10</posy>
     <width>60</width>
     <height>79</height>
-    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturefocus>-</texturefocus>
     <texturenofocus>-</texturenofocus>
     <onclick>XBMC.RestartApp()</onclick>
     <pulseonselect>no</pulseonselect>
@@ -294,6 +294,19 @@
     <label>$LOCALIZE[13313] XBMC</label>
     <include>shutdownmenu</include>
    </control>
+
+  <control>
+    <description>Restart focus image</description>
+    <type>image</type>
+    <posx>270</posx>
+    <posy>10</posy>
+    <width>60</width>
+    <height>79</height>
+    <texture>sub-reboot-focus.gif</texture>
+    <include>shutdownmenu</include>
+    <visible>System.LoggedOn + System.HasLocks + !System.HasLoginScreen</visible>
+    <visible>[Control.HasFocus(3114) |Control.HasFocus(3115)]</visible>
+  </control>
 
    <!--- No Logon no Lock --> 
 
@@ -335,7 +348,7 @@
     <onleft>3113</onleft>
     <onright>3110</onright>
     <onup>3200</onup>
-    <ondown>3203</ondown>
+    <ondown>3204</ondown>
     <font>-</font>
     <label>13005</label>
     <include>shutdownmenu</include>
@@ -496,7 +509,7 @@
     <posy>10</posy>
     <width>60</width>
     <height>79</height>
-    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturefocus>-</texturefocus>
     <texturenofocus>sub-reboot-nofocus.png</texturenofocus>
     <onclick>XBMC.Reset()</onclick>
     <pulseonselect>no</pulseonselect>
@@ -518,7 +531,7 @@
     <posy>10</posy>
     <width>60</width>
     <height>79</height>
-    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturefocus>-</texturefocus>
     <texturenofocus>-</texturenofocus>
     <onclick>XBMC.RestartApp()</onclick>
     <pulseonselect>no</pulseonselect>
@@ -530,6 +543,19 @@
     <label>$LOCALIZE[13313] XBMC</label>
     <include>shutdownmenu</include>
    </control>
+
+  <control>
+    <description>Restart focus image</description>
+    <type>image</type>
+    <posx>240</posx>
+    <posy>10</posy>
+    <width>60</width>
+    <height>79</height>
+    <texture>sub-reboot-focus.gif</texture>
+    <include>shutdownmenu</include>
+    <visible>System.LoggedOn + !System.HasLocks + !System.HasLoginScreen</visible>
+    <visible>[Control.HasFocus(3114) |Control.HasFocus(3115)]</visible>
+  </control>
 
    <!-- Yes Logon No Locks -->
 
@@ -593,7 +619,7 @@
     <onleft>3117</onleft>
     <onright>3110</onright>
     <onup>3200</onup>
-    <ondown>3203</ondown>
+    <ondown>3204</ondown>
     <font>-</font>
     <label>13005</label>
     <include>shutdownmenu</include>
@@ -754,7 +780,7 @@
     <posy>10</posy>
     <width>60</width>
     <height>79</height>
-    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturefocus>-</texturefocus>
     <texturenofocus>sub-reboot-nofocus.png</texturenofocus>
     <onclick>XBMC.Reset()</onclick>
     <pulseonselect>no</pulseonselect>
@@ -776,7 +802,7 @@
     <posy>10</posy>
     <width>60</width>
     <height>79</height>
-    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturefocus>-</texturefocus>
     <texturenofocus>-</texturenofocus>
     <onclick>XBMC.RestartApp()</onclick>
     <pulseonselect>no</pulseonselect>
@@ -788,6 +814,19 @@
     <label>$LOCALIZE[13313] XBMC</label>
     <include>shutdownmenu</include>
    </control>
+
+  <control>
+    <description>Restart focus image</description>
+    <type>image</type>
+    <posx>270</posx>
+    <posy>10</posy>
+    <width>60</width>
+    <height>79</height>
+    <texture>sub-reboot-focus.gif</texture>
+    <include>shutdownmenu</include>
+    <visible>System.LoggedOn + !System.HasLocks + System.HasLoginScreen</visible>
+    <visible>[Control.HasFocus(3114) |Control.HasFocus(3115)]</visible>
+  </control>
 
    <!--- Yes Logon Yes Locks -->
 
@@ -877,7 +916,7 @@
     <onleft>3117</onleft>
     <onright>3110</onright>
     <onup>3200</onup>
-    <ondown>3203</ondown>
+    <ondown>3204</ondown>
     <font>-</font>
     <label>13005</label>
     <include>shutdownmenu</include>
@@ -1038,7 +1077,7 @@
     <posy>10</posy>
     <width>60</width>
     <height>79</height>
-    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturefocus>-</texturefocus>
     <texturenofocus>sub-reboot-nofocus.png</texturenofocus>
     <onclick>XBMC.Reset()</onclick>
     <pulseonselect>no</pulseonselect>
@@ -1060,7 +1099,7 @@
     <posy>10</posy>
     <width>60</width>
     <height>79</height>
-    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturefocus>-</texturefocus>
     <texturenofocus>-</texturenofocus>
     <onclick>XBMC.RestartApp()</onclick>
     <pulseonselect>no</pulseonselect>
@@ -1072,6 +1111,19 @@
     <label>$LOCALIZE[13313] XBMC</label>
     <include>shutdownmenu</include>
    </control>
+
+  <control>
+    <description>Restart focus image</description>
+    <type>image</type>
+    <posx>300</posx>
+    <posy>10</posy>
+    <width>60</width>
+    <height>79</height>
+    <texture>sub-reboot-focus.gif</texture>
+    <include>shutdownmenu</include>
+    <visible>System.LoggedOn + System.HasLocks + System.HasLoginScreen</visible>
+    <visible>[Control.HasFocus(3114) |Control.HasFocus(3115)]</visible>
+  </control>
 
    <!--- Logon Screen -->
 
@@ -1128,7 +1180,7 @@
     <posy>10</posy>
     <width>60</width>
     <height>79</height>
-    <texturefocus>sub-reboot-focus.gif</texturefocus>
+    <texturefocus>-</texturefocus>
     <texturenofocus>sub-reboot-nofocus.png</texturenofocus>
     <onclick>XBMC.Reset()</onclick>
     <pulseonselect>no</pulseonselect>
@@ -1162,6 +1214,19 @@
     <label>$LOCALIZE[13313] XBMC</label>
     <include>shutdownmenu</include>
    </control>
+
+  <control>
+    <description>Restart focus image</description>
+    <type>image</type>
+    <posx>210</posx>
+    <posy>10</posy>
+    <width>60</width>
+    <height>79</height>
+    <texture>sub-reboot-focus.gif</texture>
+    <include>shutdownmenu</include>
+    <visible>!System.LoggedOn</visible>
+    <visible>[Control.HasFocus(3114) |Control.HasFocus(3115)]</visible>
+  </control>
 
   </controlgroup>
 
