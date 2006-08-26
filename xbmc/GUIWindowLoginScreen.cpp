@@ -174,6 +174,7 @@ void CGUIWindowLoginScreen::OnWindowLoaded()
 {  
   CGUIWindow::OnWindowLoaded();
   m_viewControl.Reset();
+  m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(VIEW_METHOD_LARGE_LIST, GetControl(CONTROL_BIG_LIST)); 
 }
 
