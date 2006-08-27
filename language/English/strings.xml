@@ -1358,9 +1358,9 @@
   <string id="20134">Remove Network Location</string>
   <string id="20135">Do you want to scan the folder?</string>
   <string id="20136">Memory Unit</string>
-  <string id="20137">UnMounted from Drive</string>
-  <string id="20138">Mounted to Drive</string>
-  <string id="20139">Unable to Mount</string>
+  <string id="20137">Memory Unit mounted</string>
+  <string id="20138">Unable to mount Memory Unit</string>
+  <string id="20139">In port %i, slot %i</string>
   <string id="20140">Lock Screensaver</string>
   <string id="20141">Set</string>
   <string id="20142">Username</string>
