@@ -11,6 +11,7 @@ public:
 
   static bool ShowForProfile(unsigned int iProfile, bool bDetails=true);
 protected:
+  virtual void OnCancel();
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void SetupPage();
