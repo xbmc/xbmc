@@ -1434,6 +1434,8 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
   SetEvent(m_eventTexturesDone[index]);
 
   CLog::Log(LOGDEBUG, "Created YV12 texture %i", index);
+
+  ClearYV12Texture(index);
   return true;
 }
 
