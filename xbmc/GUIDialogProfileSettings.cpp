@@ -191,11 +191,11 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
       if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE && !m_bIsDefault)
       {
         if (CGUIDialogYesNo::ShowAndGetInput(20066,20118,20119,20022))
-          g_passwordManager.SetMasterLockMode();
+          g_passwordManager.SetMasterLockMode(false);
         if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
           return;
       }
-      if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings,m_bIsDefault?12360:20068))
+      if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings,m_bIsDefault?12360:20068,g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || m_bIsDefault))
         m_bNeedSave = true;
     }
     else

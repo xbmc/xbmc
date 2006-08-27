@@ -196,13 +196,13 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
   }
 }
 
-bool CGUIPassword::SetMasterLockMode()
+bool CGUIPassword::SetMasterLockMode(bool bDetails)
 {
   CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
   if (pDialog)
   {
     CProfile& profile=g_settings.m_vecProfiles.at(0);
-    if (pDialog->ShowAndGetLock(profile._iLockMode,profile._strLockCode,profile._bLockMusic,profile._bLockVideo,profile._bLockPictures,profile._bLockPrograms,profile._bLockFiles,profile._bLockSettings,12360))
+    if (pDialog->ShowAndGetLock(profile._iLockMode,profile._strLockCode,profile._bLockMusic,profile._bLockVideo,profile._bLockPictures,profile._bLockPrograms,profile._bLockFiles,profile._bLockSettings,12360,true,bDetails))
       return true;
 
     return false;
