@@ -1374,5 +1374,6 @@
   <string id="20150">Custom Shutdown Timer</string>
   <string id="20151">Cancel Shutdown Timer</string>
   <string id="20152">Lock preferences for %s</string>
+  <string id="20153">Browse...</string>
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>
