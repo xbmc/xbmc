@@ -150,7 +150,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
 
   // TODO: localize 2.0
   // Hardcoded strings (starting at 20000)
-  m_vecStrings[20000] = "CDDA Rip Folder";
+/*  m_vecStrings[20000] = "CDDA Rip Folder";
   m_vecStrings[20001] = "Use external DVD Player";
   m_vecStrings[20002] = "External DVD Player";
   m_vecStrings[20003] = "Trainers Folder";
@@ -171,9 +171,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20018] = "No Thumb";
   m_vecStrings[20019] = "Thumbnail";
   m_vecStrings[20020] = "Cannot use both KAI and trainer";
-  m_vecStrings[20021] = "Choose which you want to use";
+  m_vecStrings[20021] = "Choose which you want to use";*/
   m_vecStrings[20022] = "";
-  m_vecStrings[20023] = "Conflict";
+  /*m_vecStrings[20023] = "Conflict";
   m_vecStrings[20024] = "Scan new";
   m_vecStrings[20025] = "Scan all"; 
   m_vecStrings[20026] = "Region"; 
@@ -276,7 +276,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20126] = "Log off";
   m_vecStrings[20127] = "Hide 'all' items in library views";
   m_vecStrings[20128] = "Go to Root";
-  
+  */
   m_vecStrings[20200] = ToUTF8(strEncoding, "km/h");
   m_vecStrings[20201] = ToUTF8(strEncoding, "m/min");
   m_vecStrings[20202] = ToUTF8(strEncoding, "m/s");
@@ -291,7 +291,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20211] = ToUTF8(strEncoding, "Furlong/Fortnight");
 
   // new strings for weather localization
-  m_vecStrings[1411] = "with";
+/*  m_vecStrings[1411] = "with";
   m_vecStrings[1412] = "windy";
 
   m_vecStrings[16020] = "Deinterlace";    //OVERRIDE
@@ -324,7 +324,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20151] = "Cancel Shutdown Timer";
   m_vecStrings[20152] = "Lock preferences for %s";
   m_vecStrings[29999] = "Auto Flicker Filter Patch";
-
+*/
 
   return true;
 }
