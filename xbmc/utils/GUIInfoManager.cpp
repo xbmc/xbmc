@@ -826,10 +826,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
       bReturn = g_application.IsPlayingVideo();
       break;
     case PLAYER_PLAYING:
-      bReturn = !g_application.m_pPlayer->IsPaused() && (g_application.GetPlaySpeed() == 1);
+      bReturn = !g_application.IsPaused() && (g_application.GetPlaySpeed() == 1);
       break;
     case PLAYER_PAUSED:
-      bReturn = g_application.m_pPlayer->IsPaused();
+      bReturn = g_application.IsPaused();
       break;
     case PLAYER_REWINDING:
       bReturn = g_application.GetPlaySpeed() < 1;
