@@ -5,7 +5,6 @@
 #include "Picture.h"
 #include "application.h"
 #include "GUIPassword.h"
-#include "FileSystem/ZipManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMediaSource.h"
 #include "PlayListFactory.h"
@@ -253,7 +252,7 @@ bool CGUIWindowPictures::OnClick(int iItem)
       }
       else
       {
-        CLog::Log(LOGERROR,"No pictures found in cbz file!");
+        CLog::Log(LOGERROR,"No pictures found in comic file!");
         return false;
       }
     }
@@ -525,7 +524,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 {
-  if (pItem->m_bIsFolder && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && !pItem->IsParentFolder())
+  if ((pItem->m_bIsFolder || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && !pItem->IsParentFolder())
   {
     // first check for a folder.jpg
     CStdString thumb;
@@ -541,7 +540,13 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       // the thumb.
 
       CFileItemList items;
-      CDirectory::GetDirectory(pItem->m_strPath, items, g_stSettings.m_pictureExtensions, false, false);
+      CStdString strPath = pItem->m_strPath;
+      if (pItem->IsCBR())
+        CUtil::CreateRarPath(strPath,pItem->m_strPath,"");
+      if (pItem->IsCBZ())
+        CUtil::CreateZipPath(strPath,pItem->m_strPath,"");
+
+      CDirectory::GetDirectory(strPath, items, g_stSettings.m_pictureExtensions, false, false);
 
       // create the folder thumb by choosing 4 random thumbs within the folder and putting
       // them into one thumb.
@@ -549,13 +554,31 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       for (int i=0; i < items.Size();)
       {
         if (!items[i]->IsPicture() || items[i]->IsZIP() || items[i]->IsRAR())
+        {
           items.Remove(i);
+        }
         else
           i++;
       }
 
       if (items.IsEmpty())
+      {
+        if (pItem->IsCBZ() || pItem->IsCBR())
+        {
+          CDirectory::GetDirectory(strPath, items, g_stSettings.m_pictureExtensions, false, false);
+          for (int i=0;i<items.Size();++i)
+          {
+            if (items[i]->m_bIsFolder)
+            {
+              OnItemLoaded(items[i]);
+              pItem->SetThumbnailImage(items[i]->GetThumbnailImage());
+              pItem->SetIconImage(items[i]->GetIconImage());
+              return;
+            }
+          }
+        }
         return; // no images in this folder
+      }
 
       // randomize them
       items.Randomize();
