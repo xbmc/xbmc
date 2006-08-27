@@ -80,6 +80,7 @@ public:
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
   bool IsPlaying() const ;
+  bool IsPaused() const;
   bool IsPlayingAudio() const ;
   bool IsPlayingVideo() const ;
   bool OnKey(CKey& key);
@@ -193,6 +194,8 @@ protected:
   CXBStopWatch m_frameTime;
   CXBStopWatch m_navigationTimer;
   CXBStopWatch m_slowTimer;
+
+  bool m_switchingToFullScreen;
 };
 
 extern CApplication g_application;
