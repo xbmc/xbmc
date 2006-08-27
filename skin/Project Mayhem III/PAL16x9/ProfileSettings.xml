@@ -7,7 +7,6 @@
    <posy>132</posy>
  </coordinates>
  <visible>Window.IsActive(130)</visible>
- <animation effect="fade" time="200">VisibleChange</animation>
  <controls>
 
  <control>
@@ -18,8 +17,9 @@
 	<width>1300</width>
 	<height>1300</height>
 	<texture>black.png</texture>
-	<visible>![Window.IsActive(29)]</visible>
+	<visible>!Window.IsActive(29)</visible>
 	<animation effect="fade" time="2000">WindowOpen</animation>
+	<animation effect="fade" time="200">WindowClose</animation>
  </control>
 
  <control>
@@ -31,6 +31,7 @@
 	<width>446</width>
 	<height>406</height>
 	<texture>dialog-panelprofile.png</texture>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -43,6 +44,7 @@
 	<height>128</height>
 	<align>left</align>
 	<texture>unknown-user.png</texture>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -56,6 +58,7 @@
 	<font>special13</font>
 	<textcolor>DDced8da</textcolor>
 	<label>$LOCALIZE[ 20093 ]</label>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -68,6 +71,7 @@
 	<align>left</align>
 	<font>special13</font>
 	<textcolor>FFFFFFFF</textcolor>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -81,6 +85,7 @@
 	<font>special13</font>
 	<textcolor>DDced8da</textcolor>
 	<label>$LOCALIZE[ 20070 ]</label>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -93,6 +98,7 @@
 	<align>left</align>
 	<font>special13</font>
 	<textcolor>FFFFFFFF</textcolor>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -106,7 +112,7 @@
 	<onleft>60</onleft>
 	<onright>60</onright>
 	<ondown>2</ondown>
-	<visible>!Window.IsActive(131)</visible>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -118,7 +124,7 @@
 	<width>408</width>
 	<height>325</height>
 	<texture>-</texture>
-	<visible>!Window.IsActive(131)</visible>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -128,7 +134,7 @@
 	<width>350</width>
 	<height>31</height>
 	<texture>-</texture>
-	<visible>!Window.IsActive(131)</visible>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -143,7 +149,7 @@
 	<aligny>center</aligny>
 	<texturefocus>input-focus.png</texturefocus>
 	<texturenofocus>-</texturenofocus>
-	<visible>!Window.IsActive(131)</visible>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -160,7 +166,7 @@
 	<aligny>center</aligny>
 	<textureradiofocus>settings-check-box.png</textureradiofocus>
 	<textureradionofocus>settings-check-boxNF.png</textureradionofocus>
-	<visible>!Window.IsActive(131)</visible>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -183,7 +189,7 @@
 	<textoffsetx>12</textoffsetx>
 	<aligny>center</aligny>
 	<reverse>yes</reverse>
-	<visible>!Window.IsActive(131)</visible>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -205,7 +211,7 @@
 	<include>textcolorwhite</include>
 	<disabledcolor>60d0d0d0</disabledcolor>
 	<textoffsetx>12</textoffsetx>
-	<visible>!Window.IsActive(131)</visible>
+	<include>homemisc</include>
  </control>
 
  <control>
@@ -215,7 +221,7 @@
 	<width>350</width>
 	<height>5</height>
 	<texture>separatorOSD.png</texture>
-	<visible>!Window.IsActive(131)</visible>
+	<include>homemisc</include>
  </control>
 
  </controls>
