@@ -305,7 +305,7 @@
     <texture>sub-reboot-focus.gif</texture>
     <include>shutdownmenu</include>
     <visible>System.LoggedOn + System.HasLocks + !System.HasLoginScreen</visible>
-    <visible>[Control.HasFocus(3114) |Control.HasFocus(3115)]</visible>
+    <visible>[Control.HasFocus(3114) | Control.HasFocus(3115)]</visible>
   </control>
 
    <!--- No Logon no Lock --> 
@@ -554,7 +554,7 @@
     <texture>sub-reboot-focus.gif</texture>
     <include>shutdownmenu</include>
     <visible>System.LoggedOn + !System.HasLocks + !System.HasLoginScreen</visible>
-    <visible>[Control.HasFocus(3114) |Control.HasFocus(3115)]</visible>
+    <visible>[Control.HasFocus(3114) | Control.HasFocus(3115)]</visible>
   </control>
 
    <!-- Yes Logon No Locks -->
@@ -826,7 +826,7 @@
     <texture>sub-reboot-focus.gif</texture>
     <include>shutdownmenu</include>
     <visible>System.LoggedOn + !System.HasLocks + System.HasLoginScreen</visible>
-    <visible>[Control.HasFocus(3114) |Control.HasFocus(3115)]</visible>
+    <visible>[Control.HasFocus(3114) | Control.HasFocus(3115)]</visible>
   </control>
 
    <!--- Yes Logon Yes Locks -->
@@ -1124,7 +1124,7 @@
     <texture>sub-reboot-focus.gif</texture>
     <include>shutdownmenu</include>
     <visible>System.LoggedOn + System.HasLocks + System.HasLoginScreen</visible>
-    <visible>[Control.HasFocus(3114) |Control.HasFocus(3115)]</visible>
+    <visible>[Control.HasFocus(3114) | Control.HasFocus(3115)]</visible>
   </control>
 
    <!--- Logon Screen -->
@@ -1141,6 +1141,7 @@
     <texturefocus>sub-exit-focus.gif</texturefocus>
     <texturenofocus>sub-exit-nofocus.png</texturenofocus>
     <onclick>XBMC.Dashboard()</onclick>
+    <onclick>dialog.close(shutdownmenu,true)</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3114</onleft>
     <onright>3112</onright>
@@ -1163,6 +1164,7 @@
     <texturefocus>sub-shutdown-focus.gif</texturefocus>
     <texturenofocus>sub-shutdown-nofocus.png</texturenofocus>
     <onclick>XBMC.ShutDown()</onclick>
+    <onclick>dialog.close(shutdownmenu,true)</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3110</onleft>
     <onright>3114</onright>
@@ -1185,6 +1187,7 @@
     <texturefocus>-</texturefocus>
     <texturenofocus>sub-reboot-nofocus.png</texturenofocus>
     <onclick>XBMC.Reset()</onclick>
+    <onclick>dialog.close(shutdownmenu,true)</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3112</onleft>
     <onright>3110</onright>
@@ -1207,6 +1210,7 @@
     <texturefocus>-</texturefocus>
     <texturenofocus>-</texturenofocus>
     <onclick>XBMC.RestartApp()</onclick>
+    <onclick>dialog.close(shutdownmenu,true)</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3112</onleft>
     <onright>3110</onright>
@@ -1227,7 +1231,7 @@
     <texture>sub-reboot-focus.gif</texture>
     <include>shutdownmenu</include>
     <visible>!System.LoggedOn</visible>
-    <visible>[Control.HasFocus(3114) |Control.HasFocus(3115)]</visible>
+    <visible>[Control.HasFocus(3114) | Control.HasFocus(3115)]</visible>
   </control>
 
   </controlgroup>
