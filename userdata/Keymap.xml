@@ -944,4 +944,15 @@
       <back>PreviousMenu</back>
     </remote>
   </LockSettings>
+  <ProfileSettings>
+    <gamepad>
+      <start>Close</start>
+      <B>PreviousMenu</B>
+      <back>PreviousMenu</back>
+    </gamepad>
+    <remote>
+      <menu>Close</menu>
+      <back>PreviousMenu</back>
+    </remote>
+  </ProfileSettings>
 </keymap>
