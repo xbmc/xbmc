@@ -3518,10 +3518,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("dialog.close"))
   {
-    DWORD id = g_buttonTranslator.TranslateWindowString(parameter);
+    CStdStringArray arSplit; 
+    StringUtils::SplitString(parameter,",", arSplit);
+    DWORD id = g_buttonTranslator.TranslateWindowString(arSplit[0]);
+    bool bForce = false;
+    if (arSplit.size() > 1)
+      if (arSplit[1].Equals("true"))
+        bForce = true;
     CGUIWindow *window = (CGUIWindow *)m_gWindowManager.GetWindow(id);
     if (window && window->IsDialog())
-      ((CGUIDialog *)window)->Close();
+      ((CGUIDialog *)window)->Close(bForce);
   }
   else if (execute.Equals("system.logoff"))
   {
