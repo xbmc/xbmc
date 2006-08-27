@@ -30,13 +30,26 @@ bool IDirectory::IsAllowed(const CStdString& strFile)
   CUtil::GetExtension(strFile, strExtension);
   if (!strExtension.size()) return false;
   strExtension.ToLower();
-  int i = m_strFileMask.Find(strExtension.c_str());
-  bool bOkay = true;
-  if (i+strExtension.size() < m_strFileMask.size()-1 && i >= 0)
+  bool bOkay = false;
+  int i=-1;
+  while (!bOkay)
   {
-    char c = m_strFileMask[i+strExtension.size()];
-    if (c != '|')
-      bOkay = false;
+    i = m_strFileMask.Find(strExtension,i+1);
+    if (i >= 0)
+    {
+      if (i+strExtension.size() == m_strFileMask.size())
+        bOkay = true;
+      else
+      {
+        char c = m_strFileMask[i+strExtension.size()];
+        if (c == '|')
+          bOkay = true;
+        else
+          bOkay = false;
+      }
+    }    
+    else
+      break;
   }
   if ( i >= 0 && bOkay)
   {
