@@ -1763,6 +1763,7 @@ bool CSettings::LoadProfile(int index)
   bool bSourcesXML=true;
   CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
+  CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
   if (Load(bSourcesXML,bSourcesXML))
   {
     CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
@@ -1791,8 +1792,10 @@ bool CSettings::LoadProfile(int index)
 
     g_infoManager.ResetCache();
  //   g_infoManager.Clear();
-    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")))
+    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")))
+    {
       g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    }
     else
     {
       if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font")))
