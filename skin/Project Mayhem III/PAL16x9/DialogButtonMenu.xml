@@ -592,6 +592,7 @@
     <height>79</height>
     <texturefocus>sub-logoff-focus.gif</texturefocus>
     <texturenofocus>sub-logoff-nofocus.png</texturenofocus>
+    <onclick>dialog.close(shutdownmenu,true)</onclick>
     <onclick>system.logoff</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3113</onleft>
@@ -889,6 +890,7 @@
     <height>79</height>
     <texturefocus>sub-logoff-focus.gif</texturefocus>
     <texturenofocus>sub-logoff-nofocus.png</texturenofocus>
+    <onclick>dialog.close(shutdownmenu,true)</onclick>
     <onclick>system.logoff</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3113</onleft>
