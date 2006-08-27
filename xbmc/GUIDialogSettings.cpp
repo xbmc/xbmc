@@ -10,6 +10,8 @@
 #define CONTROL_DEFAULT_SPIN        9
 #define CONTROL_DEFAULT_SLIDER     10
 #define CONTROL_DEFAULT_SEPARATOR  11
+#define CONTROL_OKAY_BUTTON        28
+#define CONTROL_CANCEL_BUTTON      29
 #define CONTROL_START              30
 #define CONTROL_PAGE               60
 
@@ -44,7 +46,7 @@ bool CGUIDialogSettings::OnMessage(CGUIMessage &message)
         m_iCurrentPage = msg.GetParam1() - 1;
         SetupPage();
       }
-      else if (iControl >= CONTROL_START && iControl < CONTROL_PAGE)
+      else if (iControl >= CONTROL_OKAY_BUTTON && iControl < CONTROL_PAGE)
         OnClick(iControl);
       return true;
     }
@@ -166,7 +168,7 @@ void CGUIDialogSettings::SetupPage()
     if (m_iNumPages > 1)
       pControl->SetNavigation(CONTROL_PAGE, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
     else
-      pControl->SetNavigation(CONTROL_START+numControlsOnPage-1, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+      pControl->SetNavigation(CONTROL_START + numControlsOnPage - 1, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
 
   pControl = (CGUIControl *)GetControl(CONTROL_PAGE);
   if (pControl) pControl->SetNavigation(CONTROL_START + numControlsOnPage - 1, CONTROL_START,
@@ -225,8 +227,31 @@ void CGUIDialogSettings::UpdateSetting(unsigned int num)
   }
 }
 
+bool CGUIDialogSettings::OnAction(const CAction& action)
+{
+  if (action.wID == ACTION_PREVIOUS_MENU)
+  {
+    OnCancel();
+    Close();
+    return true;
+  }
+  return CGUIDialog::OnAction(action);
+}
+
 void CGUIDialogSettings::OnClick(int iID)
 {
+  if (iID == CONTROL_OKAY_BUTTON)
+  {
+    OnOkay();
+    Close();
+    return;
+  }
+  if (iID == CONTROL_CANCEL_BUTTON)
+  {
+    OnCancel();
+    Close();
+    return;
+  }
   unsigned int settingNum = iID - CONTROL_START + m_iPageOffset;
   if (settingNum >= m_settings.size()) return;
   SettingInfo &setting = m_settings.at(settingNum);
@@ -337,10 +362,18 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
     }
   }
   if (!pControl) return;
-  pControl->SetNavigation(iControlID - 1,
-                          iControlID + 1,
-                          iControlID,
-                          iControlID);
+  if (GetControl(CONTROL_OKAY_BUTTON) && GetControl(CONTROL_CANCEL_BUTTON))
+  {
+    pControl->SetNavigation(iControlID - 1,
+      iControlID + 1,
+      CONTROL_OKAY_BUTTON,
+      CONTROL_OKAY_BUTTON);
+  }
+  else
+    pControl->SetNavigation(iControlID - 1,
+                            iControlID + 1,
+                            iControlID,
+                            iControlID);
   pControl->SetID(iControlID);
   pControl->SetVisible(true);
   pControl->SetEnabled(setting.enabled);

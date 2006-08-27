@@ -37,6 +37,9 @@ public:
   virtual ~CGUIDialogSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
 protected:
+  virtual void OnOkay() {};
+  virtual void OnCancel() {};
+  virtual bool OnAction(const CAction& action);
   virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings() {};
