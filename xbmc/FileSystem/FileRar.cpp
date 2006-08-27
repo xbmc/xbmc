@@ -561,7 +561,10 @@ bool CFileRar::OpenInArchive()
   m_pCmd->ExtrPath[sizeof(m_pCmd->Command) - 2] = '\0';
   AddEndSlash(m_pCmd->ExtrPath);
   m_pCmd->ParseArg("-va",NULL);
-  m_pCmd->FileArgs->AddString(m_strPathInRar.c_str());
+  CStdString strPath = m_strPathInRar;
+  strPath.Replace('/', '\\');
+
+  m_pCmd->FileArgs->AddString(strPath.c_str());
 
   // Set password for encrypted archives
   if ((m_strPassword.size() > 0) && (m_strPassword.size() < 128))
@@ -602,9 +605,6 @@ bool CFileRar::OpenInArchive()
   m_pExtract->ExtractArchiveInit(m_pCmd,*m_pArc);
   bool bRes = false;
   bool Repeat=false;
-
-  CStdString strPath = m_strPathInRar;
-  strPath.Replace('/', '\\');
 
   while(1)
   {
