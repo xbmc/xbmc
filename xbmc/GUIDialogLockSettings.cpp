@@ -37,7 +37,14 @@ void CGUIDialogLockSettings::SetupPage()
 {
   CGUIDialogSettings::SetupPage();
   // update our settings label
-  SET_CONTROL_LABEL(2,g_localizeStrings.Get(20066));
+  if (m_bGetUser)
+  {
+    CStdString strLabel;
+    strLabel.Format(g_localizeStrings.Get(20152),m_strURL);
+    SET_CONTROL_LABEL(2,strLabel);
+  }
+  else
+    SET_CONTROL_LABEL(2,g_localizeStrings.Get(20066));
   SET_CONTROL_HIDDEN(3);
 }
 
