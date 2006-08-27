@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 27-06-2006 changed: dialog.close builtin now takes an additional true parameter to force the closing (no anims etc).
+ - 27-08-2006 changed: you can now have okay/cancel buttons in the lock dialog. skinners are free to update if they feel like it. id 28=okay, id 29=cancel.
+ - 27-08-2006 changed: dialog.close builtin now takes an additional true parameter to force the closing (no anims etc).
  - 27-08-2006 fixed: Very short songs were often cut short when played with paplayer (meaning no sound at all).
  - 26-08-2006 added: Flicker Filter Xbe Patcher.  Based on hargle and VooD Win32 Flicker Filter XBE Patcher http://xbox.nugnugnug.com/FlickerFucker/
 		     settings - my Programs - auto flicker filter patch on/off     

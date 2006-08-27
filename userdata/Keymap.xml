@@ -244,7 +244,8 @@
       <info>CodecInfo</info>
       <enter>AspectRatio</enter>
       <select>AspectRatio</select>
-    </remote>
+      <skipplus>NextSubtitle</skipplus> 
+   </remote>
 
     <gamepad>
       <A>Pause</A>
@@ -929,7 +930,18 @@
       <B>Close</B>	
     </gamepad>
     <remote>
-      <back>Closeu</back>
+      <back>Close</back>
     </remote>
   </MovieInformation>
+  <LockSettings>
+    <gamepad>
+      <start>Close</start>
+      <B>PreviousMenu</B>
+      <back>PreviousMenu</back>
+    </gamepad>
+    <remote>
+      <menu>Close</menu>
+      <back>PreviousMenu</back>
+    </remote>
+  </LockSettings>
 </keymap>
