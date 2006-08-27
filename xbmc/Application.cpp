@@ -192,6 +192,9 @@ CApplication::CApplication(void)
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
 
+  // true while we switch to fullscreen (while video is paused)
+  m_switchingToFullScreen = false;
+
   /* for now allways keep this around */
   m_pCdgParser = new CCdgParser();
 }
@@ -3184,10 +3187,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
         while (!g_renderManager.IsStarted())
           Sleep(1);
         // pause video until screen is setup
+        m_switchingToFullScreen = true;
         m_pPlayer->Pause();
         SwitchToFullScreen();
         //screen is setup, resume playing
         m_pPlayer->Pause();
+        m_switchingToFullScreen = false;
       }
     }
 
@@ -3263,6 +3268,17 @@ bool CApplication::IsPlaying() const
   if (!m_pPlayer->IsPlaying())
     return false;
   return true;
+}
+
+bool CApplication::IsPaused() const
+{
+  if (!m_pPlayer)
+    return false;
+  if (!m_pPlayer->IsPlaying())
+    return false;
+  if (m_pPlayer->HasVideo() && m_switchingToFullScreen)
+    return false;
+  return m_pPlayer->IsPaused();
 }
 
 bool CApplication::IsPlayingAudio() const
