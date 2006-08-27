@@ -1,7 +1,6 @@
 <window>
 
  <id>107</id>
- <defaultcontrol>402</defaultcontrol>
  <animation effect="slide" time="400" start="300,0">WindowOpen</animation>
  <animation effect="slide" time="400" end="300,0">WindowClose</animation>
 
