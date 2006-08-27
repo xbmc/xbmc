@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-08-2006 fixed: thumbnail generation of cbr/cbz files.
  - 27-08-2006 fixed: stored rared files in directories inside the archive would fail to open.
  - 27-08-2008 fixed: imdb lookups would truncate half listed movies if filename contained a year. 
                      code expects last part of title to contain year ex "Movie Name (2000)", if this changes, scraper should generate a year xml tag
