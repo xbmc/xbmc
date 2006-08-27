@@ -770,7 +770,7 @@
     <texture>homebutton-small.png</texture>
     <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
     <animation effect="fade" time="1000" start="0" end="100" delay="400">VisibleChange</animation>
-    <animation effect="slide" time="200" end="-600,0" acceleration="1.3" delay="0"condition="!Skin.HasSetting(animated)">WindowClose</animation>
+    <animation effect="slide" time="200" end="-600,0" acceleration="1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
     <animation effect="slide" time="500" start="-600,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
    </control>
 
