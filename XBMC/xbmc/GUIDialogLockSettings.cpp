@@ -4,6 +4,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogContextMenu.h"
+#include "Util.h"
 
 CGUIDialogLockSettings::CGUIDialogLockSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_LOCK_SETTINGS, "LockSettings.xml")
@@ -40,7 +41,9 @@ void CGUIDialogLockSettings::SetupPage()
   if (m_bGetUser)
   {
     CStdString strLabel;
-    strLabel.Format(g_localizeStrings.Get(20152),m_strURL);
+    CStdString strLabel2=m_strURL;
+    CUtil::UrlDecode(strLabel2);
+    strLabel.Format(g_localizeStrings.Get(20152),strLabel2.c_str());
     SET_CONTROL_LABEL(2,strLabel);
   }
   else
@@ -105,7 +108,9 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
     if (m_bGetUser)
     {
       CStdString strHeading;
-      strHeading.Format("%s %s",g_localizeStrings.Get(14062).c_str(),m_strURL.c_str());
+      CStdString strDecodeUrl = m_strURL;
+      CUtil::UrlDecode(strDecodeUrl);
+      strHeading.Format("%s %s",g_localizeStrings.Get(14062).c_str(),strDecodeUrl.c_str());
       if (CGUIDialogKeyboard::ShowAndGetInput(m_strUser,strHeading,true))
       {
         m_bChanged = true;
@@ -172,7 +177,9 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
   if (setting.id == 2 && m_bGetUser)
   {
     CStdString strHeading;
-    strHeading.Format("%s %s",g_localizeStrings.Get(20143).c_str(),m_strURL.c_str());
+    CStdString strDecodeUrl = m_strURL;
+    CUtil::UrlDecode(strDecodeUrl);
+    strHeading.Format("%s %s",g_localizeStrings.Get(20143).c_str(),strDecodeUrl.c_str());
     if (CGUIDialogKeyboard::ShowAndGetInput(m_strLock,strHeading,true,true))
     {
       m_settings[1].name.Format("%s (%s)",g_localizeStrings.Get(12326).c_str(),g_localizeStrings.Get(20141).c_str());
