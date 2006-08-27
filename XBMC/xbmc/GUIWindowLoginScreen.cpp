@@ -72,7 +72,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           {
             if (CFile::Exists("q:\\scripts\\autoexec.py") && watch.GetElapsedMilliseconds() < 5000.f)
               while (watch.GetElapsedMilliseconds() < 5000) ;
-            if (iItem != 0)
+            if (iItem != 0 || g_settings.m_iLastLoadedProfileIndex != 0)
             {
               g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
               g_network.Deinitialize();
