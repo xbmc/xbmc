@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-08-2008 fixed: imdb lookups would truncate half listed movies if filename contained a year. 
+                     code expects last part of title to contain year ex "Movie Name (2000)", if this changes, scraper should generate a year xml tag
  - 27-08-2006 added: all strings are now localizable. there are about 150 new strings to translate. final call to all translators, have a blast! :)
  - 27-08-2006 fixed: [ 1530771 ] "Open tray" problem
  - 27-08-2006 changed: you can now have okay/cancel buttons in the lock dialog. skinners are free to update if they feel like it. id 28=okay, id 29=cancel.

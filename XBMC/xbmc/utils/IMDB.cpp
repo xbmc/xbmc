@@ -65,28 +65,38 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   TiXmlHandle docHandle( &doc );
   TiXmlElement *movie = docHandle.FirstChild( "results" ).FirstChild( "movie" ).Element();
 
+  int iYear = atoi(strYear);
+
   for ( movie; movie; movie = movie->NextSiblingElement() )
   {
-    TiXmlNode * title = movie->FirstChild("title");
+    TiXmlNode *title = movie->FirstChild("title");
     TiXmlNode *link = movie->FirstChild("url");
+    TiXmlNode *year = movie->FirstChild("year");
     if (title && title->FirstChild() && link && link->FirstChild())
     {
       url.m_strTitle = title->FirstChild()->Value();
       url.m_strURL = link->FirstChild()->Value();
 
-			char cFoundYear = 0; //0 no year available 1: not yet found 2: found
-			if (!strYear.Equals("")) cFoundYear=1; // Year exists in title
+      // if source contained a distinct year, only allow those
+      if(iYear != 0)
+      {
+        if(year && year->FirstChild())
+        { // sweet scraper provided a year
+          if(iYear != atoi(year->FirstChild()->Value()))
+            continue;
+        }
+        else if(url.m_strTitle.length() >= 6)
+        { // imdb normally puts year at end of title within ()
+          if(url.m_strTitle.at(url.m_strTitle.length()-1) == ')'
+          && url.m_strTitle.at(url.m_strTitle.length()-6) == '(')
+          {
+            int iYear2 = atoi(url.m_strTitle.Right(5).Left(4).c_str());
+            if( iYear2 != 0 && iYear != iYear2)
+              continue;
+          }
+        }
+      }
 
-			if ((cFoundYear>0) && (!url.m_strTitle.substr(max(url.m_strTitle.length()-5,0),4).compare(strYear)))
-			{
-				if (cFoundYear==1) // not previously found
-				{
-					movielist.clear(); // First time right year found, remove previous entries
-					cFoundYear=2; // year found
-				}
-				movielist.push_back(url);
-			}
-			else if (cFoundYear<2) // Only add when not yet filtering on year
       movielist.push_back(url);
     }
   }
