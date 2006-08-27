@@ -67,83 +67,79 @@ VOID CDetectDVDMedia::UpdateDvdrom()
   // newly inserted media.
   {
     CSingleLock waitLock(m_muReadingMedia);
-
-    DWORD dwCurrentState;
-
-    dwCurrentState = GetTrayState();
-    switch (dwCurrentState)
+    switch (GetTrayState())
     {
-    case DRIVE_OPEN:
-      {
-        m_isoReader.Reset();
-        m_DriveState = DRIVE_OPEN;
-        SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
-        // Send Message to GUI that disc been ejected
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA, 0, NULL);
-        waitLock.Leave();
-        m_gWindowManager.SendThreadMessage( msg );
-
-        return ;
-      }
-      break;
-
-    case DRIVE_NOT_READY:
-      {
-        // drive is not ready (closing, opening)
-        m_isoReader.Reset();
-        SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
-        m_DriveState = DRIVE_NOT_READY;
-        // DVD-ROM in undefined state
-        // better delete old CD Information
-        if ( m_pCdInfo != NULL )
+      case DRIVE_OPEN:
         {
-          delete m_pCdInfo;
-          m_pCdInfo = NULL;
+          // Send Message to GUI that disc been ejected
+          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA, 0, NULL);
+          m_gWindowManager.SendThreadMessage( msg );
+          m_isoReader.Reset();
+          waitLock.Leave();
+          m_DriveState = DRIVE_OPEN;
+          return;
         }
-        waitLock.Leave();
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
-        m_gWindowManager.SendThreadMessage( msg );
-        Sleep(6000);
-        return ;
-      }
-      break;
+        break;
 
-    case DRIVE_READY:
-      // drive is ready
-      //m_DriveState = DRIVE_READY;
-      return ;
-      break;
-    case DRIVE_CLOSED_NO_MEDIA:
-      {
-        // nothing in there...
-        m_isoReader.Reset();
-        m_DriveState = DRIVE_CLOSED_NO_MEDIA;
-        SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
-        // Send Message to GUI that disc has changed
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
-        waitLock.Leave();
-        m_gWindowManager.SendThreadMessage( msg );
+      case DRIVE_NOT_READY:
+        {
+          // drive is not ready (closing, opening)
+          m_isoReader.Reset();
+          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
+          m_DriveState = DRIVE_NOT_READY;
+          // DVD-ROM in undefined state
+          // better delete old CD Information
+          if ( m_pCdInfo != NULL )
+          {
+            delete m_pCdInfo;
+            m_pCdInfo = NULL;
+          }
+          waitLock.Leave();
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
+          m_gWindowManager.SendThreadMessage( msg );
+          // GeminiServer: do we really need sleep here? This will fix: [ 1530771 ] "Open tray" problem
+          // Sleep(6000);
+          return ;
+        }
+        break;
+
+      case DRIVE_READY:
+        // drive is ready
+        //m_DriveState = DRIVE_READY;
         return ;
-      }
-      break;
-    case DRIVE_CLOSED_MEDIA_PRESENT:
-      {
-        m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
-        // drive has been closed and is ready
-        OutputDebugString("Drive closed media present, remounting...\n");
-        m_helper.Remount("D:", "Cdrom0");
-        // Detect ISO9660(mode1/mode2) or CDDA filesystem
-        DetectMediaType();
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
-        waitLock.Leave();
-        m_gWindowManager.SendThreadMessage( msg );
-        // Tell the application object that a new Cd is inserted
-        // So autorun can be started.
-        if ( !m_bStartup )
-          m_bAutorun = true;
-        return ;
-      }
-      break;
+        break;
+      case DRIVE_CLOSED_NO_MEDIA:
+        {
+          // nothing in there...
+          m_isoReader.Reset();
+          m_DriveState = DRIVE_CLOSED_NO_MEDIA;
+          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
+          // Send Message to GUI that disc has changed
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
+          waitLock.Leave();
+          m_gWindowManager.SendThreadMessage( msg );
+          return ;
+        }
+        break;
+      case DRIVE_CLOSED_MEDIA_PRESENT:
+        {
+          m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
+          // drive has been closed and is ready
+          OutputDebugString("Drive closed media present, remounting...\n");
+          m_helper.Remount("D:", "Cdrom0");
+          // Detect ISO9660(mode1/mode2) or CDDA filesystem
+          DetectMediaType();
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
+          waitLock.Leave();
+          m_gWindowManager.SendThreadMessage( msg );
+          // Tell the application object that a new Cd is inserted
+          // So autorun can be started.
+          if ( !m_bStartup )
+            m_bAutorun = true;
+          return ;
+        }
+        break;
     }
 
     // We have finished media detection
