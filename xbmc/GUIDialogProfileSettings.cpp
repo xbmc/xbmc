@@ -208,6 +208,11 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
     m_bNeedSave = true;
 }
 
+void CGUIDialogProfileSettings::OnCancel()
+{
+  m_bNeedSave = false;
+}
+
 bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDetails)
 {
   CGUIDialogProfileSettings *dialog = (CGUIDialogProfileSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROFILE_SETTINGS);
