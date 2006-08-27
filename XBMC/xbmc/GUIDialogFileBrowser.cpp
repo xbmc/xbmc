@@ -458,7 +458,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSHARE
   if (true)
   {
     CFileItem *item = new CFileItem("image://Browse", false);
-    item->SetLabel("Browse...");
+    item->SetLabel(g_localizeStrings.Get(20153));
     browser->m_vecItems.Add(item);
   }
   browser->SetHeading(heading);
