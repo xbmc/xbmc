@@ -322,6 +322,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20149] = "Shutdown in 120 minutes";
   m_vecStrings[20150] = "Custom Shutdown Timer";
   m_vecStrings[20151] = "Cancel Shutdown Timer";
+  m_vecStrings[20152] = "Lock preferences for %s";
   m_vecStrings[29999] = "Auto Flicker Filter Patch";
 
 
