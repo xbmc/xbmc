@@ -344,6 +344,7 @@
 
   <VisualisationSettings>
     <gamepad>
+      <B>Close</B>
       <back>Close</back>
       <start>Close</start>
     </gamepad>
@@ -356,6 +357,7 @@
 
   <VisualisationPresetList>
     <gamepad>
+      <B>Close</B>
       <back>Close</back>
       <start>Close</start>
       <Y>Close</Y>
@@ -552,6 +554,26 @@
     </keyboard>
   </OSDVideoSettings>
 
+  <OSDAudioSettings>
+    <gamepad>
+      <X></X>
+      <Y>AspectRatio</Y>
+      <B>Close</B>
+      <back>Close</back>
+      <start>Close</start>
+    </gamepad>
+
+    <remote>
+      <back>Close</back>
+      <menu>Close</menu>
+      <start>Close</start>
+    </remote>
+
+    <keyboard>
+      <backspace>HideSubMenu</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </OSDAudioSettings>
 
   <VideoBookmarks>
     <gamepad>
@@ -621,6 +643,7 @@
       <Y>Delete</Y>
       <black>Playlist</black> <!-- Close playlist -->
       <back>Playlist</back>   <!-- Close playlist -->
+      <B>Playlist</B>
     </gamepad>
 
     <remote>
@@ -770,84 +793,143 @@
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </Weather>
 
   <Settings>
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </Settings>
 
   <MyPicturesSettings>
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </MyPicturesSettings>
 
   <MyProgramsSettings>
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </MyProgramsSettings>
 
   <MyWeatherSettings>
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </MyWeatherSettings>
 
   <MyMusicSettings>
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </MyMusicSettings>
 
   <SystemSettings>
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </SystemSettings>
 
   <MyVideosSettings>
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </MyVideosSettings>
 
   <NetworkSettings>
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </NetworkSettings>
 
   <AppearanceSettings>
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </AppearanceSettings>
 
   <Profiles>
     <gamepad>
       <B>PreviousMenu</B>
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </Profiles>
 
   <systeminfo>
     <gamepad>
       <B>PreviousMenu</B>	
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </systeminfo>
 
   <shutdownmenu>
     <gamepad>
       <B>PreviousMenu</B>	
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </shutdownmenu>
 
   <submenu>
     <gamepad>
       <B>PreviousMenu</B>	
     </gamepad>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
   </submenu>
 
+  <MusicInformation>
+    <gamepad>
+      <B>Close</B>	
+    </gamepad>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </MusicInformation>
+
+  <MovieInformation>
+    <gamepad>
+      <B>Close</B>	
+    </gamepad>
+    <remote>
+      <back>Closeu</back>
+    </remote>
+  </MovieInformation>
 </keymap>
