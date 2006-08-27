@@ -27,7 +27,7 @@ public:
   CStdString GetSMBShare();
   bool CheckStartUpLock();
   bool CheckMenuLock(int iWindowID);
-  bool SetMasterLockMode();
+  bool SetMasterLockMode(bool bDetails=true);
   CStdString GetSMBAuthFilename(const CStdString& strAuth);
   bool LockBookmark(const CStdString& strType, const CStdString& strName, bool bState);
   void LockBookmarks();
