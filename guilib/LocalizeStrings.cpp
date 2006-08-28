@@ -176,7 +176,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   /*m_vecStrings[20023] = "Conflict";
   m_vecStrings[20024] = "Scan new";
   m_vecStrings[20025] = "Scan all"; 
-  m_vecStrings[20026] = "Region"; 
+  m_vecStrings[20026] = "Region"; */
   m_vecStrings[20027] = ToUTF8(strEncoding, "°F");
   m_vecStrings[20028] = ToUTF8(strEncoding, "K");
   m_vecStrings[20029] = ToUTF8(strEncoding, "°C");
@@ -185,6 +185,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20032] = ToUTF8(strEncoding, "°Rø"); 
   m_vecStrings[20033] = ToUTF8(strEncoding, "°De"); 
   m_vecStrings[20034] = ToUTF8(strEncoding, "°N");
+  /*
   m_vecStrings[20038] = "Lock music section";
   m_vecStrings[20039] = "Lock video section";
   m_vecStrings[20040] = "Lock pictures section";
