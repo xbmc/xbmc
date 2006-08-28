@@ -295,6 +295,7 @@ public:
     float m_controllerDeadzone;
 
     bool m_playlistAsFolders;
+    bool m_detectAsUdf;
 
     int m_thumbSize;
 
