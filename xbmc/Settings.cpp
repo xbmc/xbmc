@@ -1263,7 +1263,6 @@ void CSettings::LoadAdvancedSettings()
   }
   
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
-  CLog::Log(LOGERROR, "displayremotecodes is %s", g_advancedSettings.m_displayRemoteCodes ? "true" : "false");
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
@@ -1337,7 +1336,7 @@ void CSettings::LoadAdvancedSettings()
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", g_advancedSettings.m_playlistAsFolders);
 
- CStdString extraThumbs;
+  CStdString extraThumbs;
   TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
   if (pThumbs)
   {
