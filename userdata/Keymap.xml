@@ -244,7 +244,6 @@
       <info>CodecInfo</info>
       <enter>AspectRatio</enter>
       <select>AspectRatio</select>
-      <skipplus>NextSubtitle</skipplus> 
    </remote>
 
     <gamepad>
