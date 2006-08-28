@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET
+ - 28-08-2006 fixed: Temperature units weren't displayed.
  - 27-08-2006 fixed: [ 1546191 ] Music file extensions with 2 chars
  - 27-08-2006 fixed: thumbnail generation of cbr/cbz files.
  - 27-08-2006 fixed: stored rared files in directories inside the archive would fail to open.
