@@ -198,16 +198,15 @@ void CDetectDVDMedia::DetectMediaType()
 
   if (m_pCdInfo->IsISOUDF(1))
   {
-    // always detect as ISO
-    //if (g_stSettings.m_bDetectAsIso)
+    if (!g_advancedSettings.m_detectAsUdf)
     {
       strNewUrl = "iso9660://";
       m_isoReader.Scan();
     }
-    /*else
+    else
     {
       strNewUrl = "D:\\";
-    }*/
+    }
   }
 
   CLog::Log(LOGINFO, "Using protocol %s", strNewUrl.c_str());

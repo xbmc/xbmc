@@ -238,6 +238,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_sambaclienttimeout = 10;
 
   g_advancedSettings.m_playlistAsFolders = true;
+  g_advancedSettings.m_detectAsUdf = false;
   g_settings.bUseLoginScreen = false;
 
   g_advancedSettings.m_musicThumbs = "folder.jpg";
@@ -1335,6 +1336,7 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 128, 64, 512);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", g_advancedSettings.m_playlistAsFolders);
+  XMLUtils::GetBoolean(pRootElement, "detectasudf", g_advancedSettings.m_detectAsUdf);
 
   CStdString extraThumbs;
   TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
