@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET
+ - 30-08-2006 fixed: new video_ts folder stacking wouldn't set thumbnail correctly
  - 29-08-2006 fixed: [ 1548447 ] Sorting for LastFM should be separated like in Shoutcast
  - 29-08-2006 fixed: if two profiles had same skin, different resolution bad things happened.
  - 29-08-2006 fixed: [ 1548307 ] DVD unflattens when re-entering My Programs
