@@ -106,7 +106,7 @@
 	<font>font12</font>
 	<textoffsetx>12</textoffsetx>
 	<aligny>center</aligny>
-	<texturefocus>list-focus.png</texturefocus>
+	<texturefocus>input-focus.png</texturefocus>
 	<texturenofocus>-</texturenofocus>
 	<include>homemisc</include>
  </control>
@@ -119,7 +119,7 @@
 	<posy>150</posy>
 	<height>31</height>
 	<font>font12</font>
-	<texturefocus>list-focus.png</texturefocus>
+	<texturefocus>input-focus.png</texturefocus>
 	<texturenofocus>-</texturenofocus>
 	<textoffsetx>12</textoffsetx>
 	<aligny>center</aligny>
@@ -136,7 +136,7 @@
 	<posy>150</posy>
 	<height>31</height>
 	<width>300</width>
-	<texturefocus>list-focus.png</texturefocus>
+	<texturefocus>input-focus.png</texturefocus>
 	<texturenofocus>-</texturenofocus>
 	<textureup>scroll-up.png</textureup>
 	<texturedown>scroll-down.png</texturedown>
@@ -159,7 +159,7 @@
 	<posy>150</posy>
 	<height>31</height>
 	<width>300</width>
-	<texturefocus>list-focus.png</texturefocus>
+	<texturefocus>input-focus.png</texturefocus>
 	<texturenofocus>-</texturenofocus>
 	<sliderwidth>100</sliderwidth>
 	<sliderheight>20</sliderheight>
@@ -187,8 +187,8 @@
 	<description>OK button</description>
 	<type>button</type>
 	<id>28</id>
-	<posx>220</posx>
-	<posy>310</posy>
+	<posx>223</posx>
+	<posy>325</posy>
 	<width>90</width>
 	<height>32</height>
 	<align>center</align>
@@ -207,8 +207,8 @@
 	<description>Cancel button</description>
 	<type>button</type>
 	<id>29</id>
-	<posx>315</posx>
-	<posy>310</posy>
+	<posx>318</posx>
+	<posy>325</posy>
 	<width>90</width>
 	<height>32</height>
 	<align>center</align>
