@@ -224,5 +224,45 @@
 	<include>homemisc</include>
  </control>
 
+ <control>
+	<description>OK button</description>
+	<type>button</type>
+	<id>28</id>
+	<posx>220</posx>
+	<posy>310</posy>
+	<width>90</width>
+	<height>32</height>
+	<align>center</align>
+	<label>186</label>
+	<font>font10</font>
+	<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+	<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+	<onleft>30</onleft>
+	<onright>29</onright>
+	<onup>30</onup>
+	<ondown>30</ondown>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>Cancel button</description>
+	<type>button</type>
+	<id>29</id>
+	<posx>315</posx>
+	<posy>310</posy>
+	<width>90</width>
+	<height>32</height>
+	<align>center</align>
+	<label>222</label>
+	<font>font10</font>
+	<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+	<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+	<onleft>28</onleft>
+	<onright>30</onright>
+	<onup>30</onup>
+	<ondown>30</ondown>
+	<include>homemisc</include>
+ </control>
+
  </controls>
 </window>
