@@ -600,37 +600,23 @@ void CGUIWindowPrograms::PopulateTrainersList()
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+  bool bFlattened=false;
   if (CUtil::IsDVD(strDirectory))
   {
     CStdString strPath;
     CUtil::AddFileToFolder(strDirectory,"default.xbe",strPath);
     if (CFile::Exists(strPath)) // flatten dvd
     {
-      CStdString description;
-      CFileItem* item;
-      if (CUtil::GetXBEDescription(strPath, description))
-        item = new CFileItem(description);
-      else
-        item = new CFileItem("default.xbe");
-      item->m_strPath = strPath;
-      // SetOverlayIcons()
-      DWORD dwTitleID = CUtil::GetXbeID(strPath);
-      if (m_database.ItemHasTrainer(dwTitleID))
-      {
-        if (m_database.GetActiveTrainer(dwTitleID) != "")
-          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_TRAINED);
-        else
-          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_HAS_TRAINER);
-      }
-      
-      items.Add(item);
-      items.SetCachedProgramThumbs();
-      items.m_strPath="D:\\";
-      return true;
+      CFileItem item("default.xbe");
+      item.m_strPath = strPath;
+      items.Add(new CFileItem(item));
+      items.m_strPath=strDirectory;
+      bFlattened = true;
     }
   }
-  if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
-    return false;
+  if (!bFlattened)
+    if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
+      return false;
 
   if (items.IsVirtualDirectoryRoot())
     return true;
