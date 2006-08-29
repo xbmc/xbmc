@@ -615,7 +615,7 @@ CStdString CFileItem::GetCachedArtistThumb()
   Crc32 crc;
   crc.ComputeFromLowerCase("artist" + GetLabel());
   CStdString cachedThumb;
-  cachedThumb.Format("%s\\%08x.tbn", g_settings.GetMusicArtistThumbFolder().c_str(), crc);
+  cachedThumb.Format("%s\\%08x.tbn", g_settings.GetMusicArtistThumbFolder().c_str(), (unsigned __int32)crc);
   return cachedThumb;
 }
 
@@ -624,7 +624,7 @@ CStdString CFileItem::GetCachedProfileThumb()
   Crc32 crc;
   crc.ComputeFromLowerCase("profile" + m_strPath);
   CStdString cachedThumb;
-  cachedThumb.Format("%s\\Thumbnails\\Profiles\\%08x.tbn", g_settings.GetUserDataFolder().c_str(), crc);
+  cachedThumb.Format("%s\\Thumbnails\\Profiles\\%08x.tbn", g_settings.GetUserDataFolder().c_str(), (unsigned __int32)crc);
   return cachedThumb;
 }
 
@@ -1572,11 +1572,26 @@ void CFileItemList::Stack()
           CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS.IFO", path);
           if(CFile::Exists(path))
           {
+            /* set the thumbnail based on folder */
+            item->SetCachedVideoThumb();
+            if (!item->HasThumbnail())
+              item->SetUserVideoThumb();
+
             item->m_bIsFolder = false;
             item->m_strPath = path;
             item->SetLabel2("");
             item->SetLabelPreformated(true);
             m_sortMethod = SORT_METHOD_NONE; /* sorting is now broken */
+
+            /* override the previously set thumb if video_ts.ifo has any */
+            /* otherwise user can't set icon on the stacked file as that */
+            /* will allways be set on the video_ts.ifo file */
+            CStdString thumb(item->GetCachedVideoThumb());
+            if(CFile::Exists(thumb))
+              item->SetThumbnailImage(thumb);              
+            else
+              item->SetUserVideoThumb();
+              
           }
         }
         continue;
@@ -1648,9 +1663,9 @@ bool CFileItemList::Load()
 
   CStdString strFileName;
   if (IsCDDA() || IsOnDVD())
-    strFileName.Format("Z:\\r-%08x.fi", crc);
+    strFileName.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
   else
-    strFileName.Format("Z:\\%08x.fi", crc);
+    strFileName.Format("Z:\\%08x.fi", (unsigned __int32)crc);
 
   CLog::Log(LOGDEBUG,"Loading fileitems [%s]",strFileName.c_str());
 
@@ -1685,9 +1700,9 @@ bool CFileItemList::Save()
 
   CStdString strFileName;
   if (IsCDDA() || IsOnDVD())
-    strFileName.Format("Z:\\r-%08x.fi", crc);
+    strFileName.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
   else
-    strFileName.Format("Z:\\%08x.fi", crc);
+    strFileName.Format("Z:\\%08x.fi", (unsigned __int32)crc);
 
   CFile file;
   if (file.OpenForWrite(strFileName, true, true)) // overwrite always
@@ -1875,7 +1890,7 @@ CStdString CFileItem::GetCachedVideoThumb()
   else
     crc.ComputeFromLowerCase(m_strPath);
   CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), crc);
+  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), (unsigned __int32)crc);
   return thumb;
 }
 
@@ -1986,7 +2001,7 @@ CStdString CFileItem::GetCachedProgramThumb()
   else
     crc.ComputeFromLowerCase(m_strPath);
   CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), crc);
+  thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), (unsigned __int32)crc);
   return thumb;
 }
 
