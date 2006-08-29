@@ -40,8 +40,8 @@
 	<id>2</id>
 	<posx>0</posx>
 	<posy>8</posy>
-	<width>96</width>
-	<height>128</height>
+	<width>90</width>
+	<height>120</height>
 	<align>left</align>
 	<texture>unknown-user.png</texture>
 	<include>homemisc</include>
@@ -120,7 +120,7 @@
 	<type>image</type>
 	<id>5</id>
 	<posx>-1</posx>
-	<posy>146</posy>
+	<posy>136</posy>
 	<width>408</width>
 	<height>325</height>
 	<texture>-</texture>
@@ -228,8 +228,8 @@
 	<description>OK button</description>
 	<type>button</type>
 	<id>28</id>
-	<posx>220</posx>
-	<posy>310</posy>
+	<posx>223</posx>
+	<posy>325</posy>
 	<width>90</width>
 	<height>32</height>
 	<align>center</align>
@@ -248,8 +248,8 @@
 	<description>Cancel button</description>
 	<type>button</type>
 	<id>29</id>
-	<posx>315</posx>
-	<posy>310</posy>
+	<posx>318</posx>
+	<posy>325</posy>
 	<width>90</width>
 	<height>32</height>
 	<align>center</align>
