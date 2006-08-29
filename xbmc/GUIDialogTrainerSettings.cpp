@@ -24,43 +24,47 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIDialogSettings::OnMessage(message);
-      if (m_iTrainer && m_iTrainer <= (int)m_vecTrainers.size())
+      if (!m_bCanceled)
       {
-        m_database->BeginTransaction();
-        if (m_bNeedSave)
-          m_database->SetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions(),m_vecTrainers[m_iTrainer-1]->GetNumberOfOptions());
-        
-        if (m_strActive != m_vecTrainers[m_iTrainer-1]->GetPath())
-        {
-          m_database->SetTrainerActive(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,true);
-          m_bNeedSave = true;
-        }
-        else
-          m_bNeedSave = false;
-        m_database->CommitTransaction();
-      }
-      else 
-      {
-        if (m_strActive == "")
-          m_bNeedSave = false;
-        else
-          m_bNeedSave = true;
-      }
-
-      for (unsigned int i=0;i<m_vecTrainers.size();++i)
-      {
-        if (i != m_iTrainer-1 && m_bNeedSave)
+        if (m_iTrainer && m_iTrainer <= (int)m_vecTrainers.size())
         {
           m_database->BeginTransaction();
-          m_database->SetTrainerActive(m_vecTrainers[i]->GetPath(),m_iTitleId,false);
+          if (m_bNeedSave)
+            m_database->SetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions(),m_vecTrainers[m_iTrainer-1]->GetNumberOfOptions());
+
+          if (m_strActive != m_vecTrainers[m_iTrainer-1]->GetPath())
+          {
+            m_database->SetTrainerActive(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,true);
+            m_bNeedSave = true;
+          }
+          else
+            m_bNeedSave = false;
           m_database->CommitTransaction();
         }
-        delete m_vecTrainers[i];
+        else 
+        {
+          if (m_strActive == "")
+            m_bNeedSave = false;
+          else
+            m_bNeedSave = true;
+        }
+
+        for (unsigned int i=0;i<m_vecTrainers.size();++i)
+        {
+          if (i != m_iTrainer-1 && m_bNeedSave)
+          {
+            m_database->BeginTransaction();
+            m_database->SetTrainerActive(m_vecTrainers[i]->GetPath(),m_iTitleId,false);
+            m_database->CommitTransaction();
+          }
+          delete m_vecTrainers[i];
+        }
+        m_vecTrainers.clear();
       }
-      m_vecTrainers.clear();
+      break;
     }
-    break;
   }
+  m_bCanceled = false;
   return CGUIDialogSettings::OnMessage(message);
 }
 
@@ -69,6 +73,13 @@ void CGUIDialogTrainerSettings::SetupPage()
   CGUIDialogSettings::SetupPage();
   // update our settings label
   SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(12015));
+  m_bCanceled = false;
+}
+
+void CGUIDialogTrainerSettings::OnCancel()
+{
+  m_bNeedSave = false;
+  m_bCanceled = true;
 }
 
 void CGUIDialogTrainerSettings::AddBool(unsigned int id, const CStdString& strLabel, unsigned char* on)

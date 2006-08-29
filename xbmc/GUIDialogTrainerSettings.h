@@ -17,6 +17,7 @@ protected:
   virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings();
+  virtual void OnCancel();
   void OnSettingChanged(unsigned int setting);
 
   void AddBool(unsigned int id, const CStdString& strLabel, unsigned char* on);
@@ -28,5 +29,6 @@ protected:
   std::vector<CTrainer*> m_vecTrainers;
   CProgramDatabase* m_database;
   bool m_bNeedSave;
+  bool m_bCanceled;
   CStdString m_strActive; // active trainer at start - to save db work
 };
