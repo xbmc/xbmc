@@ -3189,11 +3189,15 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else if (parameter.Equals("next"))
     {
-      g_playlistPlayer.PlayNext();
+      CAction action;
+      action.wID = ACTION_NEXT_ITEM;
+      g_application.OnAction(action);
     }
     else if (parameter.Equals("previous"))
     {
-      g_playlistPlayer.PlayPrevious();
+      CAction action;
+      action.wID = ACTION_PREV_ITEM;
+      g_application.OnAction(action);
     }
     else if (parameter.Equals("bigskipbackward"))
     {
@@ -3596,21 +3600,11 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     strPath = vecTest[0]; // just test the first path
   }
 
-  // remove user details, and ensure path only uses forward slashes
-  // and ends with a trailing slash so as not to match a substring
-  CURL urlDest(strPath);
-  CStdString strDest;
-  urlDest.GetURLWithoutUserDetails(strDest);
-  ForceForwardSlashes(strDest);
-  if (!HasSlashAtEnd(strDest))
-    strDest += "/";
-  int iLenPath = strDest.size();
-
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
-
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing for matching name [%s]", strPath.c_str());
   bIsBookmarkName = false;
   int iIndex = -1;
   int iLength = -1;
+  // we first test the NAME of a bookmark
   for (int i = 0; i < (int)vecShares.size(); ++i)
   {
     CShare share = vecShares.at(i);
@@ -3629,9 +3623,33 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       if (iPos > 1)
         strName = strName.Mid(0, iPos - 1);
     }
+    //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing name [%s]", strName.c_str());
+    if (strPath.Equals(strName))
+    {
+      bIsBookmarkName = true;
+      return i;
+    }
+  }
+
+  // now test the paths
+
+  // remove user details, and ensure path only uses forward slashes
+  // and ends with a trailing slash so as not to match a substring
+  CURL urlDest(strPath);
+  CStdString strDest;
+  urlDest.GetURLWithoutUserDetails(strDest);
+  ForceForwardSlashes(strDest);
+  if (!HasSlashAtEnd(strDest))
+    strDest += "/";
+  int iLenPath = strDest.size();
+
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
+
+  for (int i = 0; i < (int)vecShares.size(); ++i)
+  {
+    CShare share = vecShares.at(i);
 
     // does it match a bookmark name?
-    //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing name [%s]", strName.c_str());
     if (share.strPath.substr(0,8) == "shout://")
     {
       CURL url(share.strPath);
@@ -3639,13 +3657,6 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
         return i;
     }
     
-    if (strPath.Equals(strName))
-    {
-      bIsBookmarkName = true;
-      return i;
-
-    }
-
     // doesnt match a name, so try the bookmark path
     vector<CStdString> vecPaths;
 

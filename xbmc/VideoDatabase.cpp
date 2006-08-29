@@ -1879,3 +1879,134 @@ void CVideoDatabase::EraseVideoSettings()
     CLog::Log(LOGERROR, "CVideoDatabase::EraseVideoSettings() failed");
   }
 }
+
+void CVideoDatabase::CleanDatabase()
+{
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (progress)
+  {
+    progress->SetHeading(700);
+    progress->SetLine(0, "");
+    progress->SetLine(1, 313);
+    progress->SetLine(2, 330);
+    progress->SetPercentage(0);
+    progress->StartModal();
+    progress->ShowProgressBar(true);
+  }
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    // find all the files
+    CStdString sql = "select * from files, path where files.idPath = path.idPath";
+    m_pDS->query(sql.c_str());
+    if (m_pDS->num_rows() == 0) return;
+
+    CStdString filesToDelete = "(";
+    CStdString moviesToDelete = "(";
+    int total = m_pDS->num_rows();
+    int current = 0;
+    while (!m_pDS->eof())
+    {
+      CStdString path = m_pDS->fv("path.strPath").get_asString();
+      CStdString fileName = m_pDS->fv("files.strFileName").get_asString();
+      CStdString fullPath;
+      CUtil::AddFileToFolder(path, fileName, fullPath);
+
+      if (CUtil::IsStack(fullPath))
+      { // do something?
+        CStackDirectory dir;
+        CFileItemList items;
+        if (dir.GetDirectory(fullPath, items) && items.Size())
+          fullPath = items[0]->m_strPath; // just test the first path
+      }
+
+      // delete all removable media + ftp/http streams
+      CURL url(fullPath);
+      if (CUtil::IsOnDVD(fullPath) ||
+          CUtil::IsMemCard(fullPath) ||
+          url.GetProtocol() == "http" ||
+          url.GetProtocol() == "ftp" ||
+          !CFile::Exists(fullPath))
+      { // mark for deletion
+        filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
+        moviesToDelete += m_pDS->fv("files.idMovie").get_asString() + ",";
+      }
+      if ((current % 50) == 0 && progress)
+      {
+        progress->SetPercentage(current * 100 / total);
+        progress->Progress();
+        if (progress->IsCanceled())
+        {
+          progress->Close();
+          m_pDS->close();
+          return;
+        }
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+    filesToDelete.TrimRight(",");
+    filesToDelete += ")";
+    moviesToDelete.TrimRight(",");
+    moviesToDelete += ")";
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning files table");
+    sql = "delete from files where idFile in " + filesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning bookmark table");
+    sql = "delete from bookmark where idFile in " + filesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning settings table");
+    sql = "delete from settings where idFile in " + filesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning stacktimes table");
+    sql = "delete from stacktimes where idFile in " + filesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning path table");
+    sql = "delete from path where idPath not in (select distinct idPath from files)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning movie table");
+    sql = "delete from movie where idMovie in " + moviesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning movieinfo table");
+    sql = "delete from movieinfo where idMovie in " + moviesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actorlinkmovie table");
+    sql = "delete from actorlinkmovie where idMovie in " + moviesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of actors");
+    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of directors");
+    sql = "delete from actors where idActor not in (select distinct idDirector from movieinfo)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinkmovie table");
+    sql = "delete from genrelinkmovie where idMovie in " + moviesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
+    sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie)";
+    m_pDS->exec(sql.c_str());
+ 
+    Compress();
+
+    if (progress)
+      progress->Close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::CleanDatabase() failed");
+  }
+}

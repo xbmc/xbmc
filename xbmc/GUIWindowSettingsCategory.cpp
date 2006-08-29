@@ -1007,6 +1007,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     musicdatabase.Clean();
     CUtil::DeleteDatabaseDirectoryCache();
   }
+  else if (strSetting.Equals("myvideos.cleanupvideolibrary"))
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
+    {
+      CVideoDatabase videodatabase;
+      videodatabase.Open();
+      videodatabase.CleanDatabase();
+      videodatabase.Close();
+    }
+  }
   else if (strSetting.Equals("musicplayer.jumptoaudiohardware") || strSetting.Equals("videoplayer.jumptoaudiohardware"))
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, "audiooutput");
