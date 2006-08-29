@@ -88,6 +88,8 @@ public:
   bool GetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
 
+  void CleanDatabase();
+
 protected:
   long GetPath(const CStdString& strPath);
   long AddPath(const CStdString& strPath);
