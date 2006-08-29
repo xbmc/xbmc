@@ -256,8 +256,8 @@
   <string id="330">This may take some time...</string>
   <string id="331">Compressing database...</string>
   <string id="332">Error compressing database</string>
-  <string id="333">Do you want to clean the music library?</string>
-  <string id="334">Clean Music Library...</string>
+  <string id="333">Do you want to clean the library?</string>
+  <string id="334">Clean Library...</string>
   <string id="335">Start</string>
   <string id="336">Framerate Conversion</string>
   <string id="337">Audio Output</string>
