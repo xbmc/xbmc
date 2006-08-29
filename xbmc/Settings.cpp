@@ -1765,6 +1765,7 @@ bool CSettings::LoadProfile(int index)
   CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
+  int iOldRes = g_guiSettings.GetInt("lookandfeel.resolution");
   if (Load(bSourcesXML,bSourcesXML))
   {
     CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
@@ -1793,7 +1794,7 @@ bool CSettings::LoadProfile(int index)
 
     g_infoManager.ResetCache();
  //   g_infoManager.Clear();
-    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")))
+    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) || iOldRes != g_guiSettings.GetInt("lookandfeel.resolution"))
     {
       g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
     }
