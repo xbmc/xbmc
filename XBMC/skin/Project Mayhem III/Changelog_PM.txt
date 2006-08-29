@@ -1,3 +1,4 @@
+2006-08-29 added:	OK and Cancel button to ProfileSettings.xml.
 2006-08-27 added:	OK and Cancel button to LockSettings.xml, also reverted back to the old layout for locks in loginscreen.
 2006-08-25 added:	Custom shutdown timer button to shutdownmenu, for users who prefer other times then the default ones.
 2006-08-25 changed:	Visible conditions of LockSettings.xml layouts
