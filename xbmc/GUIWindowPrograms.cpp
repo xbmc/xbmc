@@ -114,9 +114,9 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
           }
         }
+        SetHistoryForPath(m_vecItems.m_strPath);
       }
-      SetHistoryForPath(m_vecItems.m_strPath);
-
+      
       return CGUIMediaWindow::OnMessage(message);
     }
   break;
