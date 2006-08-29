@@ -11,6 +11,7 @@ CGUIDialogTrainerSettings::CGUIDialogTrainerSettings(void)
   m_iTrainer = 0;
   m_iOldTrainer = 0;
   m_bNeedSave = false;
+  m_bCanceled = false;
 }
 
 CGUIDialogTrainerSettings::~CGUIDialogTrainerSettings(void)
@@ -23,7 +24,6 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CGUIDialogSettings::OnMessage(message);
       if (!m_bCanceled)
       {
         if (m_iTrainer && m_iTrainer <= (int)m_vecTrainers.size())
@@ -61,10 +61,12 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
         }
         m_vecTrainers.clear();
       }
+      else
+        m_bCanceled = false;
+
       break;
     }
   }
-  m_bCanceled = false;
   return CGUIDialogSettings::OnMessage(message);
 }
 
@@ -73,7 +75,6 @@ void CGUIDialogTrainerSettings::SetupPage()
   CGUIDialogSettings::SetupPage();
   // update our settings label
   SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(12015));
-  m_bCanceled = false;
 }
 
 void CGUIDialogTrainerSettings::OnCancel()
@@ -157,7 +158,7 @@ bool CGUIDialogTrainerSettings::ShowForTitle(unsigned int iTitleId, CProgramData
   dialog->m_iTitleId = iTitleId;
   dialog->m_database = database;
   dialog->DoModal();
-  if (database->GetActiveTrainer(iTitleId) != strTrainer)
+  if (dialog->m_bNeedSave)
     return true;
 
   return false;
@@ -170,6 +171,7 @@ void CGUIDialogTrainerSettings::OnInitWindow()
   m_iTrainer = 0;
   m_iOldTrainer = 0;
   m_bNeedSave = false;
+  m_bCanceled = false;
   for (unsigned int i=0;i<m_vecOptions.size();++i)
   {
     CTrainer* trainer = new CTrainer;
