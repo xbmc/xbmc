@@ -466,7 +466,7 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
     CFileItem* item=items[i];
     CShare share;
     share.strName=item->GetLabel();
-    share.strPath=item->m_strPath;
+    share.strPath = item->m_strPath;
     share.m_strThumbnailImage="defaultFolderBig.png";
     share.m_iDriveType = SHARE_TYPE_LOCAL;
     m_shares.push_back(share);
@@ -475,7 +475,7 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
   //  Playlists share
   CShare share;
   share.strName=g_localizeStrings.Get(136); // Playlists
-  share.strPath=CUtil::MusicPlaylistsLocation();
+  share.strPath = CUtil::MusicPlaylistsLocation();
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   m_shares.push_back(share);
@@ -596,7 +596,7 @@ VECSHARES& CGUIViewStateWindowMusicPlaylist::GetShares()
   //  Playlist share
   CShare share;
   share.strName;
-  share.strPath="playlistmusic://";
+  share.strPath = "playlistmusic://";
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   m_shares.push_back(share);
@@ -633,7 +633,7 @@ CGUIViewStateMusicShoutcast::CGUIViewStateMusicShoutcast(const CFileItemList& it
 
 
   AddViewAsControl(VIEW_METHOD_LIST, 101);
-  SetViewAsControl(VIEW_METHOD_LIST);  
+  SetViewAsControl(VIEW_METHOD_LIST);
 }
 
 bool CGUIViewStateMusicShoutcast::AutoPlayNextItem()
@@ -645,5 +645,39 @@ void CGUIViewStateMusicShoutcast::SaveViewState()
 {
   g_stSettings.m_MyMusicShoutcastSortMethod = GetSortMethod();
   g_stSettings.m_MyMusicShoutcastSortOrder = GetSortOrder();
+  return;
+}
+
+CGUIViewStateMusicLastFM::CGUIViewStateMusicLastFM(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
+{
+  CStdString strTrackLeft=g_guiSettings.GetString("mymusic.trackformat");
+  CStdString strTrackRight=g_guiSettings.GetString("mymusic.trackformatright");
+
+  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
+  AddSortMethod(SORT_METHOD_SIZE, 507, LABEL_MASKS(strTrackLeft, "%I", "%L", "%I"));  // Userdefined, Size | FolderName, Size
+
+  if( g_stSettings.m_MyMusicLastFMSortMethod == SORT_METHOD_NONE )
+    SetSortMethod(SORT_METHOD_LABEL);
+  else
+    SetSortMethod(g_stSettings.m_MyMusicLastFMSortMethod);
+
+  if( g_stSettings.m_MyMusicLastFMSortOrder == SORT_ORDER_NONE )
+    SetSortOrder(SORT_ORDER_ASC);
+  else
+    SetSortOrder(g_stSettings.m_MyMusicLastFMSortOrder);
+  
+  AddViewAsControl(VIEW_METHOD_LIST, 101);
+  SetViewAsControl(VIEW_METHOD_LIST);
+}
+
+bool CGUIViewStateMusicLastFM::AutoPlayNextItem()
+{
+  return false;
+}
+
+void CGUIViewStateMusicLastFM::SaveViewState()
+{
+  g_stSettings.m_MyMusicLastFMSortMethod = GetSortMethod();
+  g_stSettings.m_MyMusicLastFMSortOrder = GetSortOrder();
   return;
 }
