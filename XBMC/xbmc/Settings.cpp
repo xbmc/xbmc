@@ -133,6 +133,9 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyMusicPlaylistRepeat = false;
   g_stSettings.m_bMyMusicPlaylistShuffle = false;
 
+  g_stSettings.m_MyMusicLastFMSortMethod = SORT_METHOD_LABEL;
+  g_stSettings.m_MyMusicLastFMSortOrder = SORT_ORDER_ASC;
+ 
   g_stSettings.m_MyVideoSortOrder = SORT_ORDER_ASC;
   g_stSettings.m_MyVideoRootSortOrder = SORT_ORDER_ASC;
 
@@ -940,6 +943,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyMusicShoutcastSortOrder,SORT_ORDER_DESC,SORT_ORDER_NONE, SORT_ORDER_DESC);
     }
 
+    pChild = pElement->FirstChildElement("lastfm");
+    if (pChild)
+    {
+      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyMusicLastFMSortMethod,SORT_METHOD_VIDEO_RATING,SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyMusicLastFMSortOrder,SORT_ORDER_DESC,SORT_ORDER_NONE, SORT_ORDER_DESC);
+    }
+
     pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     {
@@ -1599,6 +1609,15 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     SetInteger(pChild, "sortmethod", g_stSettings.m_MyMusicShoutcastSortMethod);
     SetInteger(pChild, "sortorder", g_stSettings.m_MyMusicShoutcastSortOrder);
   }
+  {
+    TiXmlElement childNode("lastfm");
+    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+    if (!pChild) return false;
+
+    SetInteger(pChild, "sortmethod", g_stSettings.m_MyMusicLastFMSortMethod);
+    SetInteger(pChild, "sortorder", g_stSettings.m_MyMusicLastFMSortOrder);
+  }
+  
   {
     TiXmlElement childNode("playlist");
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
