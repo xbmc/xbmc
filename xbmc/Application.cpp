@@ -2055,6 +2055,11 @@ bool CApplication::OnKey(CKey& key)
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
 
+  return OnAction(action);
+}
+
+bool CApplication::OnAction(const CAction &action)
+{
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
   { // Switch to fullscreen mode if we can

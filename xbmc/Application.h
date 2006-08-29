@@ -84,6 +84,7 @@ public:
   bool IsPlayingAudio() const ;
   bool IsPlayingVideo() const ;
   bool OnKey(CKey& key);
+  bool OnAction(const CAction &action);
   void RenderFullScreen();
   void RenderMemoryStatus();
   bool NeedRenderFullScreen();
