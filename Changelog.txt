@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET
+ - 29-08-2006 fixed: if two profiles had same skin, different resolution bad things happened.
  - 29-08-2006 fixed: [ 1548307 ] DVD unflattens when re-entering My Programs
  - 29-08-2006 added: Clean Video Database.  Removes all http, ftp, removable media + files that no longer exist from the database.
  - 29-08-2006 changed: GetMatchingShare() looks for names before it tries paths.
