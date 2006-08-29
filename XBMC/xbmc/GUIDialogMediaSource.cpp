@@ -134,10 +134,10 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strPath = CUtil::MusicPlaylistsLocation();
     share1.strName = g_localizeStrings.Get(20011);   // TODO: localize 2.0
     extraShares.push_back(share1);
-    if (g_guiSettings.GetString("mymusic.recordingpath",false) != "")
+    if (g_guiSettings.GetString("musicfiles.recordingpath",false) != "")
     {
       CShare share2;
-      share2.strPath = g_guiSettings.GetString("mymusic.recordingpath");
+      share2.strPath = g_guiSettings.GetString("musicfiles.recordingpath");
       share2.strName = g_localizeStrings.Get(20007); // TODO: localize 2.0
       extraShares.push_back(share2);
     }
