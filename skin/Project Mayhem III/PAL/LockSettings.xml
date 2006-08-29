@@ -187,8 +187,8 @@
 	<description>OK button</description>
 	<type>button</type>
 	<id>28</id>
-	<posx>215</posx>
-	<posy>305</posy>
+	<posx>220</posx>
+	<posy>310</posy>
 	<width>90</width>
 	<height>32</height>
 	<align>center</align>
@@ -207,8 +207,8 @@
 	<description>Cancel button</description>
 	<type>button</type>
 	<id>29</id>
-	<posx>320</posx>
-	<posy>305</posy>
+	<posx>315</posx>
+	<posy>310</posy>
 	<width>90</width>
 	<height>32</height>
 	<align>center</align>
