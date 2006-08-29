@@ -335,9 +335,9 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
       }
     }
 
-    if (!dialog->m_bIsNewUser)
+    /*if (!dialog->m_bIsNewUser)
       if (!CGUIDialogYesNo::ShowAndGetInput(20067,20103,20022,20022))
-        return false;
+        return false;*/
 
     g_settings.m_vecProfiles[iProfile].setName(dialog->m_strName);
     g_settings.m_vecProfiles[iProfile].setDirectory(dialog->m_strDirectory);
