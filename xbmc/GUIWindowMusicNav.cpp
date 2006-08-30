@@ -44,7 +44,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   switch (message.GetMessage())
   {
   case GUI_MSG_WINDOW_RESET:
-    m_vecItems.Clear();
     m_vecItems.m_strPath = "?";
     break;
   case GUI_MSG_PLAYLIST_CHANGED:
