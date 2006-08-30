@@ -269,8 +269,6 @@
   <string id="343">Adjust Framerate</string>
   <string id="344">Actors</string>
   <string id="345">Year</string>
-  <string id="346">Stack</string>
-  <string id="347">Unstack</string>
   <string id="350">Programs</string>
   <string id="351">Off</string>
   <string id="352">Dim</string>
@@ -483,7 +481,7 @@
   <string id="643">Avoid Clipping on Replay Gained Files</string>
   <string id="644">Crop Black Bars</string>
   <string id="645">Need to cache a big file. Continue?</string>
-  <string id="646">Remove Title</string>
+  <string id="646">Remove From Database</string>
 
   <string id="700">Cleaning up Library</string>
   <string id="701">Removing old songs from the Library</string>
@@ -1038,7 +1036,6 @@
   <string id="14056">Stop Scan</string>
   <string id="14057">Not possible while scanning for media info</string>
   <string id="14058">Film Grain Effect</string>
-  <string id="14059">Look for custom thumbnails on remote shares</string>
   <string id="14060">Unknown type Cache - Internet</string>
   <string id="14061">Auto</string>
   <string id="14062">Enter username for</string>
@@ -1375,5 +1372,27 @@
   <string id="20151">Cancel Shutdown Timer</string>
   <string id="20152">Lock preferences for %s</string>
   <string id="20153">Browse...</string>
+  <string id="20154">Basic Information</string>
+  <string id="20155">Storage Information</string>
+  <string id="20156">Hard Disk Information</string>
+  <string id="20157">DVD-ROM Information</string>
+  <string id="20158">Network Information</string>
+  <string id="20159">Video Information</string>
+  <string id="20160">Hardware Information</string>
+  <string id="20161">Total: %s MB, Used: %s MB, Free: %s MB</string>
+  <string id="20162">Total HDD Used: %u%%  Free: %u%%</string>
+  <string id="20163">%s: %s MB of %s MB %s</string>
+  <string id="20164">Locking Not Supported</string>
+  <string id="20165">Not Locked</string>
+  <string id="20166">Locked</string>
+  <string id="20167">Frozen</string>
+  <string id="20168">Requires Reset</string>
+  <string id="20169">Week</string>
+  <string id="20170">Line</string>
+  <string id="20171">Windows Network (SMB)</string>
+  <string id="20172">XBMSP Server</string>
+  <string id="20173">FTP Server</string>
+  <string id="20174">ITunes music share (DAAP)</string>
+  <string id="20175">UPnP Server</string>
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>
