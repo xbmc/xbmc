@@ -150,8 +150,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   case GUI_MSG_NOTIFY_ALL:
     { // Message is received even if this window is inactive
       if (message.GetParam1() == GUI_MSG_WINDOW_RESET)
-      {
-        m_vecItems.Clear();
+      {        
         m_vecItems.m_strPath = "?";
         return true;
       }
@@ -474,6 +473,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   m_vecItems.FillInDefaultIcons();
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+
   OnSort();
   UpdateButtons();
 
@@ -719,7 +719,6 @@ void CGUIMediaWindow::GoParentFolder()
 
   if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
     m_history.RemoveSelectedItem(strOldPath); //Delete current path
-
 }
 
 // \brief Override the function to change the default behavior on how
