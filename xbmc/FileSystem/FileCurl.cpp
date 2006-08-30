@@ -41,6 +41,20 @@ extern "C" size_t header_callback(void *ptr, size_t size, size_t nmemb, void *st
   return file->HeaderCallback(ptr, size, nmemb);
 }
 
+/* fix for silly behavior of realloc */
+static inline void* realloc_simple(void *ptr, size_t size)
+{
+  void *ptr2 = realloc(ptr, size);
+  if(ptr && !ptr2 && size > 0)
+  {
+    free(ptr);
+    return NULL;
+  }
+  else
+    return ptr2;
+}
+
+
 /* small dummy class to be able to get headers simply */
 class CDummyHeaders : public IHttpHeaderCallback
 {
@@ -110,20 +124,16 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
   }
   if (amount)
   {
-    // causing a (sleep effect) ergo: lower transfer speed!
     CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback(%p) not enough free space for %i bytes", this,  amount); 
-    //CLog::DebugLog("CFileCurl::WriteCallback(%p) not enough free space for %i bytes", this,  amount);
     
-    // don't have enough room in our buffer - need to copy into our temp buffer
-    char *newbuffer = (char *)malloc(amount + m_overflowSize);
-    if (m_overflowBuffer)
+    m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
+    if(m_overflowBuffer == NULL)
     {
-      memcpy(newbuffer, m_overflowBuffer, m_overflowSize);
-      free(m_overflowBuffer);
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Failed to grow overflow buffer");
+      return 0;
     }
-    memcpy(newbuffer + m_overflowSize, buffer, amount);
+    memcpy(m_overflowBuffer + m_overflowSize, buffer, amount);
     m_overflowSize += amount;
-    m_overflowBuffer = newbuffer;
   }
   return size * nitems;
 }
@@ -557,8 +567,12 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
 unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
 {
-//  CLog::Log(LOGDEBUG, "FileCurl::Read(%p) %i bytes", this, uiBufSize);
-  unsigned int want = (unsigned int)uiBufSize;
+  /* only allow caller to read buffersize at a time */
+  unsigned int want;
+  if(uiBufSize > m_bufferSize)
+    want = m_bufferSize;
+  else
+    want = (unsigned int)uiBufSize;
 
   if(!FillBuffer(want,10))
     return -1;
@@ -607,6 +621,20 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
   // doesnt exceed required size already
   while (m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0 )
   {
+    /* if there is data in overflow buffer, try to use that first */
+    if(m_overflowSize)
+    {
+      unsigned amount = min(m_buffer.GetMaxWriteSize(), m_overflowSize);
+      m_buffer.WriteBinary(m_overflowBuffer, amount);
+
+      if(amount < m_overflowSize)
+        memcpy(m_overflowBuffer, m_overflowBuffer+amount,m_overflowSize-amount);
+
+      m_overflowSize -= amount;
+      m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, m_overflowSize);
+      continue;
+    }
+
     if( GetTickCount() > timestamp )
     {
       CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for data");
