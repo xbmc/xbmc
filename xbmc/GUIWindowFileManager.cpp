@@ -130,8 +130,6 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
     { // Message is received even if window is inactive
       if (message.GetParam1() == GUI_MSG_WINDOW_RESET)
       {
-        ClearFileItems(0);
-        ClearFileItems(1);
         m_Directory[0].m_strPath = "?";
         m_Directory[1].m_strPath = "?";
         m_Directory[0].m_bIsFolder = true;
@@ -625,31 +623,30 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", strFile.c_str(), strDestFile.c_str());
 
       CURL url(strFile);
-      if (!(url.GetProtocol() == "rar://"))
-        if (m_dlgProgress)
-        {
-          m_dlgProgress->SetLine(0, 115);
-          m_dlgProgress->SetLine(1, strShortSourceFile);
-          m_dlgProgress->SetLine(2, strShortDestFile);
-          m_dlgProgress->Progress();
-        }
+      if (m_dlgProgress)
+      {
+        m_dlgProgress->SetLine(0, 115);
+        m_dlgProgress->SetLine(1, strShortSourceFile);
+        m_dlgProgress->SetLine(2, strShortDestFile);
+        m_dlgProgress->Progress();
+      }
 
-        if (url.GetProtocol() == "rar://")
-        {
-          CStdString strOriginalCachePath = g_advancedSettings.m_cachePath;
-          CStdString strDestPath;
-          CUtil::GetDirectory(strDestFile,strDestPath);
-          g_advancedSettings.m_cachePath = strDestPath;
-          CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
-          bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,1);
-          g_advancedSettings.m_cachePath = strOriginalCachePath;
-          return bResult;
-        }
-        else
-        {
-          if (!CFile::Cache(strFile.c_str(), strDestFile.c_str(), this, NULL))
-            return false;
-        }
+      if (url.GetProtocol() == "rar")
+      {
+        CStdString strOriginalCachePath = g_advancedSettings.m_cachePath;
+        CStdString strDestPath;
+        CUtil::GetDirectory(strDestFile,strDestPath);
+        g_advancedSettings.m_cachePath = strDestPath;
+        CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
+        bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,1);
+        g_advancedSettings.m_cachePath = strOriginalCachePath;
+        return bResult;
+      }
+      else
+      {
+        if (!CFile::Cache(strFile.c_str(), strDestFile.c_str(), this, NULL))
+          return false;
+      }
     }
     break;
 
