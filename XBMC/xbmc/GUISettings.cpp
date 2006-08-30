@@ -346,7 +346,7 @@ CGUISettings::CGUISettings(void)
   //  TODO: localize 2.0
   AddBool(7, "myvideos.useexternaldvdplayer", 20001, false);
   AddString(8, "myvideos.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 20002);
-  AddSeparator(2, "myvideos.sep1");
+  AddSeparator(11, "myvideos.sep2");
   AddString(12, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videofiles", 744);
