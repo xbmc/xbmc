@@ -224,9 +224,6 @@ int CAudioDecoder::ReadSamples(int numsamples)
   return RET_SLEEP; // nothing to do
 }
 
-#define MAX_SHORT_VALUE 32767
-#define MIN_SHORT_VALUE -32768
-
 void CAudioDecoder::ProcessAudio(float *data, int numsamples)
 {
   if (g_guiSettings.m_replayGain.iType != REPLAY_GAIN_NONE)
