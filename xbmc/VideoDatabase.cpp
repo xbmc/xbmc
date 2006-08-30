@@ -1895,6 +1895,7 @@ void CVideoDatabase::CleanDatabase()
   }
   try
   {
+    BeginTransaction();
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
@@ -2007,6 +2008,8 @@ void CVideoDatabase::CleanDatabase()
     sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie)";
     m_pDS->exec(sql.c_str());
  
+    CommitTransaction();
+
     Compress();
 
     if (progress)
