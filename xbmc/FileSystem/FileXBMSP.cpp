@@ -245,32 +245,33 @@ int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
 //*********************************************************************************************
 unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
 {
-  unsigned char *buf = NULL, *pBuf;
+  unsigned char *buf = NULL;
   size_t buflen = 0;
-  size_t totalbuf = 0;
+  size_t readsize;
 
-  pBuf = (unsigned char*)lpBuf;
   if (!m_bOpened) return 0;
-  __int64 uicBufSize = uiBufSize;
-  while (uicBufSize > 0)
+
+  /* ccx has a max read size of 120k */
+  if(uiBufSize > 120*1024)
+    readsize = 120*1024;
+  else
+    readsize = (size_t)uiBufSize;
+
+  if (cc_xstream_client_file_read(m_connection, m_handle, readsize, &buf, &buflen) !=
+      CC_XSTREAM_CLIENT_OK)
   {
-    if (cc_xstream_client_file_read(m_connection, m_handle, size_t(uicBufSize>120*1024?120*1024:uicBufSize), &buf, &buflen) !=
-        CC_XSTREAM_CLIENT_OK)
-    {
-      CLog::Log(LOGERROR, "xbms:cc_xstream_client_file_read reported error on read");
-      if(buf) free(buf);
-      return 0;
-    }
-    uicBufSize -= buflen;
-    totalbuf += buflen;
-    fast_memcpy(pBuf, buf, buflen);
-    pBuf += buflen;
-    free(buf);
-    if (buflen == 0)
-      break;
+    CLog::Log(LOGERROR, "xbms:cc_xstream_client_file_read reported error on read");
+    if(buf) 
+      free(buf);
+    return -1;
   }
-  m_filePos += totalbuf;
-  return totalbuf;
+  fast_memcpy(lpBuf, buf, buflen);
+  m_filePos += buflen;
+
+  if(buf)
+    free(buf);
+  
+  return buflen;
 }
 
 //*********************************************************************************************
