@@ -103,15 +103,15 @@ int StringUtils::AlphaNumericCompare(const char *left, const char *right)
     {
       ld = l;
       lnum = 0;
-      while (*ld >= '0' && *ld <= '9')
-      {
+      while (*ld >= '0' && *ld <= '9' && ld < l + 8)
+      { // compare only up to 8 digits
         lnum *= 10;
         lnum += *ld++ - '0';
       }
       rd = r;
       rnum = 0;
-      while (*rd >= '0' && *rd <= '9')
-      {
+      while (*rd >= '0' && *rd <= '9' && rd < r + 8)
+      { // compare only up to 8 digits
         rnum *= 10;
         rnum += *rd++ - '0';
       }
