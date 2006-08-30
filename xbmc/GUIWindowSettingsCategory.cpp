@@ -1186,7 +1186,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
     // TODO 2.0: Localize this
-    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", "DVD Player", path))
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(20002), path))
       pSettingString->SetData(path);
   }
   else if (strSetting.Equals("subtitles.height"))
