@@ -1945,12 +1945,19 @@ void CVideoDatabase::CleanDatabase()
         }
       }
       m_pDS->next();
+      current++;
     }
     m_pDS->close();
     filesToDelete.TrimRight(",");
     filesToDelete += ")";
     moviesToDelete.TrimRight(",");
     moviesToDelete += ")";
+
+    if (progress)
+    {
+      progress->SetPercentage(100);
+      progress->Progress();
+    }
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning files table");
     sql = "delete from files where idFile in " + filesToDelete;
