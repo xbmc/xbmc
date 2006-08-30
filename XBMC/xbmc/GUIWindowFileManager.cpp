@@ -414,6 +414,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   UpdateButtons();
   UpdateControl(iList);
 
+  bool foundItem(false);
   strSelectedItem = m_history[iList].GetSelectedItem(m_Directory[iList].m_strPath);
   for (int i = 0; i < m_vecItems[iList].Size(); ++i)
   {
@@ -423,10 +424,14 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     if (strHistory == strSelectedItem)
     {
       CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, i);
+      foundItem = true;
       break;
     }
   }
-
+  if (!foundItem)
+  { // select the first item
+    CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, 0);
+  }
   return true;
 }
 
