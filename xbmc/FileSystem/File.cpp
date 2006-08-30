@@ -94,38 +94,18 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     // 128k is optimal for xbox
     int iBufferSize = 128 * 1024;
 
-    // WORKAROUND:
-    // Protocol is xbms? Must use a smaller buffer
-    // else nothing will be cached and the file is
-    // filled with garbage. :(
-    CURL url(strFileName);
-    CStdString strProtocol = url.GetProtocol();
-    strProtocol.ToLower();
-    if (strProtocol == "xbms") iBufferSize = 120 * 1024;
-
-    // ouch, auto_ptr doesn't work for arrays!
-    //auto_ptr<char> buffer ( new char[16384]);
     CAutoBuffer buffer(iBufferSize);
     int iRead, iWrite;
 
     UINT64 llFileSize = file.GetLength();
     UINT64 llFileSizeOrg = llFileSize;
     UINT64 llPos = 0;
-    DWORD ipercent = 0;
-    char *szFileName = strrchr(strFileName.c_str(), '\\');
-    if (!szFileName) szFileName = strrchr(strFileName.c_str(), '/');
+    int ipercent = 0;
 
-    // Presize file for faster writes
-    // removed it since this isn't supported by samba
-    /*LARGE_INTEGER size;
-    size.QuadPart = llFileSizeOrg;
-    ::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);
-    ::SetEndOfFile(hMovie);
-    size.QuadPart = 0;
-    ::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);*/    
     CXBStopWatch timer;
     timer.StartZero();
     float start = 0.0f;
+    float callback = 0.0f;
     while (llFileSize > 0)
     {
       g_application.ResetScreenSaver();
@@ -143,7 +123,15 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       }
 
       /* write data and make sure we managed to write it all */
-      iWrite = newFile.Write(buffer.get(), iRead); 
+      iWrite = 0;
+      while(iWrite < iRead)
+      {
+        int iWrite2 = newFile.Write(buffer.get()+iWrite, iRead-iWrite);
+        if(iWrite2 <=0)          
+          break;
+        iWrite+=iWrite2;
+      }
+
       if (iWrite != iRead)
       {
         CLog::Log(LOGERROR, __FUNCTION__" - Failed write to file %s", strDest.c_str());
@@ -158,11 +146,13 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       float averageSpeed = llPos / end;
       start = end;
 
-      float fPercent = (float)llPos;
-      fPercent /= ((float)llFileSizeOrg);
-      fPercent *= 100.0;
-      if ((int)fPercent != ipercent)
+      /* this is so uggly, since the onfilecallback directly updates gui */
+      /* it will stall the copy process. not a good thing at all */
+      /* a minimum of 10fps is now enforced, however this will still slow us down alot */
+      float fPercent = 100.0f * (float)llPos / (float)llFileSizeOrg;
+      if ((int)fPercent != ipercent || (start - callback) > (1.0f/5.0f) )
       {
+        callback = start;
         ipercent = (int)fPercent;
         if (pCallback)
           if (!pCallback->OnFileCallback(pContext, ipercent, averageSpeed)) break;
