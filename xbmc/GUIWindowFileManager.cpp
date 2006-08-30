@@ -808,9 +808,12 @@ void CGUIWindowFileManager::OnCopy(int iList)
 
   ResetProgressBar();
 
-  DoProcess(ACTION_COPY, m_vecItems[iList], m_Directory[1 - iList].m_strPath);
+  bool success = DoProcess(ACTION_COPY, m_vecItems[iList], m_Directory[1 - iList].m_strPath);
 
   if (m_dlgProgress) m_dlgProgress->Close();
+
+  if(!success)
+    CGUIDialogOK::ShowAndGetInput(16201, 16202, 16200, 0);
 
   Refresh(1 - iList);
 }
@@ -822,9 +825,12 @@ void CGUIWindowFileManager::OnMove(int iList)
 
   ResetProgressBar();
 
-  DoProcess(ACTION_MOVE, m_vecItems[iList], m_Directory[1 - iList].m_strPath);
+  bool success = DoProcess(ACTION_MOVE, m_vecItems[iList], m_Directory[1 - iList].m_strPath);
 
   if (m_dlgProgress) m_dlgProgress->Close();
+
+  if(!success)
+    CGUIDialogOK::ShowAndGetInput(16203, 16204, 16200, 0);
 
   Refresh();
 }
@@ -836,9 +842,12 @@ void CGUIWindowFileManager::OnDelete(int iList)
 
   ResetProgressBar(false);
 
-  DoProcess(ACTION_DELETE, m_vecItems[iList], m_Directory[iList].m_strPath);
+  bool success = DoProcess(ACTION_DELETE, m_vecItems[iList], m_Directory[iList].m_strPath);
 
   if (m_dlgProgress) m_dlgProgress->Close();
+
+  if(!success)
+    CGUIDialogOK::ShowAndGetInput(16205, 16206, 16200, 0);
 
   Refresh(iList);
 }
