@@ -113,6 +113,12 @@ void CGUIDialogProfileSettings::CreateSettings()
   {
     SetupPage();
     OnSettingChanged(0); // id=1
+    if (!m_bNeedSave)
+    {
+      OnCancel();
+      Close();
+      return;
+    }
     if (!m_strName.IsEmpty())
     {
       m_strDirectory.Format("profiles\\%s",m_strName.c_str());
@@ -134,7 +140,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
   // check and update anything that needs it
   if (setting.id == 1)
   {
-    if (CGUIDialogKeyboard::ShowAndGetInput(m_strName,"Profile name",false))
+    if (CGUIDialogKeyboard::ShowAndGetInput(m_strName,g_localizeStrings.Get(20093),false))
     {
       m_bNeedSave = true;
       SET_CONTROL_LABEL(1000,m_strName);

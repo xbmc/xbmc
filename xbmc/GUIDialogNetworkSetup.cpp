@@ -93,11 +93,11 @@ void CGUIDialogNetworkSetup::OnInitWindow()
     return;
 
   pSpin->Clear();
-  pSpin->AddLabel(CStdString("Windows Network (SMB)"), NET_PROTOCOL_SMB);
-  pSpin->AddLabel(CStdString("XBMSP Server"), NET_PROTOCOL_XBMSP);
-  pSpin->AddLabel(CStdString("FTP Server"), NET_PROTOCOL_FTP);
-  pSpin->AddLabel(CStdString("ITunes music share (DAAP)"), NET_PROTOCOL_DAAP);
-  pSpin->AddLabel(CStdString("UPnP Server"), NET_PROTOCOL_UPNP);
+  pSpin->AddLabel(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB);
+  pSpin->AddLabel(g_localizeStrings.Get(20172), NET_PROTOCOL_XBMSP);
+  pSpin->AddLabel(g_localizeStrings.Get(20173), NET_PROTOCOL_FTP);
+  pSpin->AddLabel(g_localizeStrings.Get(20174), NET_PROTOCOL_DAAP);
+  pSpin->AddLabel(g_localizeStrings.Get(20175), NET_PROTOCOL_UPNP);
 
   pSpin->SetValue(m_protocol);
   OnProtocolChange();
