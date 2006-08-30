@@ -438,7 +438,7 @@
    <width>255</width>
    <posx>555</posx>
    <posy>340</posy>
-   <label>$LOCALIZE[155] $LOCALIZE[154] $LOCALIZE[156]</label>
+   <label>$LOCALIZE[20089]</label>
    <align>right</align>
    <font>special12</font>
    <visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
@@ -523,7 +523,7 @@
    <width>255</width>
    <posx>555</posx>
    <posy>340</posy>
-   <label>$LOCALIZE[155] $LOCALIZE[154] $LOCALIZE[156]</label>
+   <label>$LOCALIZE[20089]</label>
    <align>right</align>
    <font>special12</font>
    <visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2)</visible>
