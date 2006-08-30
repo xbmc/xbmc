@@ -177,7 +177,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
         b_IsHome = FALSE;
         SetLabelDummy();
-        SET_CONTROL_LABEL(40,"Hard Disk Information");
+        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20156));
 
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
 		    pDlgProgress.SetHeading("Hard Disk Information");
@@ -228,7 +228,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         b_IsHome = FALSE;
         //Todo: Get DVD-ROM Supportted Disc's
         SetLabelDummy();
-        SET_CONTROL_LABEL(40,"DVD-ROM Information");
+        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20157));
 
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
         pDlgProgress.SetHeading("DVD-ROM Information");
@@ -255,7 +255,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       {
         b_IsHome = FALSE;
         SetLabelDummy();
-        SET_CONTROL_LABEL(40,"Storage Information");
+        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
 
         // Label 2-10: Storage Values
         GetStorage(2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
@@ -272,7 +272,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       {
         b_IsHome = FALSE;
         SetLabelDummy();
-        SET_CONTROL_LABEL(40,"Network Information");
+        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
 
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
         pDlgProgress.SetHeading("Xbox Network");
@@ -312,7 +312,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       {
         b_IsHome = FALSE;
         SetLabelDummy();
-        SET_CONTROL_LABEL(40,"Video Information");
+        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
 
         // Label 2: Video Encoder
         CStdString strVideoEnc;
@@ -346,7 +346,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         b_IsHome = FALSE;
 
         SetLabelDummy();
-        SET_CONTROL_LABEL(40,"Hardware Information");
+        SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
 
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
         pDlgProgress.SetHeading("Xbox Hardware");
@@ -428,7 +428,7 @@ void CGUIWindowSystemInfo::Render()
   if (b_IsHome) 
   {
     // Default Values
-    SET_CONTROL_LABEL(40,"Basic Information");
+    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20154));
     SET_CONTROL_LABEL(2, g_infoManager.GetSystemHeatInfo("cpu")); // CPU Temperature
     SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo("gpu")); // GPU Temperature
     SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo("fan")); // Fan Speed
@@ -624,7 +624,7 @@ bool CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate)
       break;
     }
     CLog::Log(LOGDEBUG, "- XBOX became produced: Country: %s, LineNumber: %c, Week %c%c, Year 200%c", country, info[0x00], info[0x08], info[0x09],info[0x07]);
-    strXBProDate.Format("%s %s, %s 200%c, Week: %c%c Line: %c",lbl.c_str(), country, lblYear.c_str(),info[0x07], info[0x08],info[0x09], info[0x00]);
+    strXBProDate.Format("%s %s, %s 200%c, "+g_localizeStrings.Get(20169)+": %c%c "+g_localizeStrings.Get(20170)+": %c",lbl.c_str(), country, lblYear.c_str(),info[0x07], info[0x08],info[0x09], info[0x00]);
     return true;
   }
   else return false;
@@ -1047,11 +1047,11 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   t1.Format("%u",lTotalDiscSpace.QuadPart/MB);
   t2.Format("%u",lTotalDiscUsed.QuadPart/MB);
   t3.Format("%u",lTotalDiscFree.QuadPart/MB);
-  hdTotalSize.Format("Total: %s MB, Used: %s MB, Free: %s MB ", t1.c_str(), t2.c_str(), t3.c_str());  //Total Free To make it MB
+  hdTotalSize.Format(g_localizeStrings.Get(20161), t1.c_str(), t2.c_str(), t3.c_str());  //Total Free To make it MB
   //hdTotalSize.Format("Total: %u MB, Used: %u MB, Free: %u MB ", lTotalDiscSpace.QuadPart/MB, lTotalDiscUsed.QuadPart/MB, lTotalDiscFree.QuadPart/MB );  //Total Free To make it MB
 
   int percentUsed = (int)(100.0f * lTotalDiscUsed.QuadPart/lTotalDiscSpace.QuadPart + 0.5f);
-  hdTotalUsedPercent.Format("Total HDD Used: %u%%  Free: %u%%", percentUsed, 100 - percentUsed); //Total Free %
+  hdTotalUsedPercent.Format(g_localizeStrings.Get(20162), percentUsed, 100 - percentUsed); //Total Free %
 
   CLog::Log(LOGDEBUG, "------------- HDD Space Info: -------------------");
   CLog::Log(LOGDEBUG, "HDD Total Size: %u MB", lTotalDiscSpace.QuadPart/MB);
