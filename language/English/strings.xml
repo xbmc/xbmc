@@ -1230,6 +1230,14 @@
   <string id="16109">Use only PAL-60</string>
   <string id="16110">For 60hz Games</string>
 
+  <string id="16200">Operation was aborted</string>
+  <string id="16201">Copy failed</string>
+  <string id="16202">Failed to copy atleast one file</string>
+  <string id="16203">Move failed</string>
+  <string id="16204">Failed to move atleast one file</string>  
+  <string id="16205">Delete failed</string>
+  <string id="16206">Failed to delete atleast one file</string>
+
   <string id="20000">CDDA Rip Folder</string>
   <string id="20001">Use external DVD Player</string>
   <string id="20002">External DVD Player</string>

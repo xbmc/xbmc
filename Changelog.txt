@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET
+ - 30-08-2006 added: failure notifications for copy, move and delete.
  - 30-08-2006 fixed: filetransfers end early for curl sources (ftp, shout, http...), due to not trying to use it's overflow buffer before trying to get more data from host.
  - 30-08-2006 added: a bunch of more localizable strings. id's 20154-20175.
  - 30-08-2006 fixed: logging out while in a media window crashed.
