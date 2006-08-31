@@ -7,7 +7,6 @@
 #include "../xbmc/GUIPassword.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-
 CGUIWindowManager m_gWindowManager;
 
 CGUIWindowManager::CGUIWindowManager(void)
@@ -347,6 +346,20 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   if (!strPath.IsEmpty()) msg.SetStringParam(strPath);
   pNewWindow->OnMessage(msg);
 //  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
+}
+
+void CGUIWindowManager::CloseDialogs(bool forceClose)
+{
+  while (m_vecModelessWindows.size() > 0)
+  {
+    CGUIDialog* pDialog = (CGUIDialog*)m_vecModelessWindows[0];
+    pDialog->Close(forceClose);
+  }
+  while (m_vecModalWindows.size() > 0)
+  {
+    CGUIDialog* pDialog = (CGUIDialog*)m_vecModalWindows[0];
+    pDialog->Close(forceClose);
+  }
 }
 
 bool CGUIWindowManager::OnAction(const CAction &action)
