@@ -40,6 +40,8 @@ public:
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
 
+  void CloseDialogs(bool forceClose = false);
+
   // OnAction() runs through our active dialogs and windows and sends the message
   // off to the callbacks (application, python, playlist player) and to the
   // currently focused window(s).  Returns true only if the message is handled.
