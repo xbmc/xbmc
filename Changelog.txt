@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-08-2006 fixed: mockup with fonts and profile logins.
  - 31-08-2006 changed: dialog.close(..) now takes 'all' as windowid to close all dialogs.
  - 31-08-2006 fixed: Pixel ratio passed into visualisations was wrong.
  - 31-08-2006 changed: PreviousItem takes you back to the start of the current item if you aren't within 3 seconds of the start (like most CD players)
