@@ -162,6 +162,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
       if (items.Size() > 1)
         return pDir;
     }
+    delete pDir;
     return NULL;
   }
   return NULL;
