@@ -594,12 +594,12 @@ string CGUIInfoManager::GetLabel(int info)
   case LCD_PLAY_ICON:
     {
       int iPlaySpeed = g_application.GetPlaySpeed();
-      if (iPlaySpeed < 1)
+      if (g_application.IsPaused())
+        strLabel.Format("\7");
+      else if (iPlaySpeed < 1)
         strLabel.Format("\3:%ix", iPlaySpeed);
       else if (iPlaySpeed > 1)
         strLabel.Format("\4:%ix", iPlaySpeed);
-      else if (g_application.m_pPlayer && g_application.m_pPlayer->IsPaused())
-        strLabel.Format("\7");
       else
         strLabel.Format("\5");
     }
@@ -832,40 +832,40 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
       bReturn = g_application.IsPaused();
       break;
     case PLAYER_REWINDING:
-      bReturn = g_application.GetPlaySpeed() < 1;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() < 1;
       break;
     case PLAYER_FORWARDING:
-      bReturn = g_application.GetPlaySpeed() > 1;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() > 1;
       break;
     case PLAYER_REWINDING_2x:
-      bReturn = g_application.GetPlaySpeed() == -2;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == -2;
       break;
     case PLAYER_REWINDING_4x:
-      bReturn = g_application.GetPlaySpeed() == -4;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == -4;
       break;
     case PLAYER_REWINDING_8x:
-      bReturn = g_application.GetPlaySpeed() == -8;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == -8;
       break;
     case PLAYER_REWINDING_16x:
-      bReturn = g_application.GetPlaySpeed() == -16;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == -16;
       break;
     case PLAYER_REWINDING_32x:
-      bReturn = g_application.GetPlaySpeed() == -32;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == -32;
       break;
     case PLAYER_FORWARDING_2x:
-      bReturn = g_application.GetPlaySpeed() == 2;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == 2;
       break;
     case PLAYER_FORWARDING_4x:
-      bReturn = g_application.GetPlaySpeed() == 4;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == 4;
       break;
     case PLAYER_FORWARDING_8x:
-      bReturn = g_application.GetPlaySpeed() == 8;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == 8;
       break;
     case PLAYER_FORWARDING_16x:
-      bReturn = g_application.GetPlaySpeed() == 16;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == 16;
       break;
     case PLAYER_FORWARDING_32x:
-      bReturn = g_application.GetPlaySpeed() == 32;
+      bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == 32;
       break;
     case PLAYER_CAN_RECORD:
       bReturn = g_application.m_pPlayer->CanRecord();
