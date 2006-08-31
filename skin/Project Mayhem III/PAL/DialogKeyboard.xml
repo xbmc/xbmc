@@ -70,7 +70,7 @@
    <posy>255</posy>
    <width>120</width>
    <height>30</height>
-   <label>Done</label>
+   <label>20177</label>
    <onleft>57</onleft>
    <onright>48</onright>
    <onup>307</onup>
@@ -280,7 +280,7 @@
    <posy>285</posy>
    <width>120</width>
    <height>30</height>
-   <label>Shift</label>
+   <label>20178</label>
    <onleft>74</onleft>
    <onright>65</onright>
    <onup>300</onup>
@@ -492,7 +492,7 @@
    <posy>315</posy>
    <width>120</width>
    <height>30</height>
-   <label>Caps Lock</label>
+   <label>20179</label>
    <onleft>84</onleft>
    <onright>75</onright>
    <onup>302</onup>
@@ -704,7 +704,7 @@
    <posy>345</posy>
    <width>120</width>
    <height>30</height>
-   <label>Symbols</label>
+   <label>20180</label>
    <onleft>8</onleft>
    <onright>85</onright>
    <onup>303</onup>
@@ -840,7 +840,7 @@
    <posy>345</posy>
    <width>120</width>
    <height>30</height>
-   <label>Backspace</label>
+   <label>20181</label>
    <onleft>90</onleft>
    <onright>304</onright>
    <onup>81</onup>
@@ -880,7 +880,7 @@
    <posy>375</posy>
    <width>180</width>
    <height>30</height>
-   <label>Space</label>
+   <label>20182</label>
    <onleft>307</onleft>
    <onright>305</onright>
    <onup>85</onup>

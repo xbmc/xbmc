@@ -168,7 +168,7 @@
     <posx>211</posx>
     <posy>157</posy>
     <width>445</width>
-    <label>Show Video Info</label>
+    <label>20176</label>
     <onclick>Skin.ToggleSetting(homepageVideoinfo)</onclick>
     <selected>Skin.HasSetting(homepageVideoinfo)</selected>
     <onleft>11</onleft>
