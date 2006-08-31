@@ -4,7 +4,8 @@
 ************************************************************************************************************* 
 *************************************************************************************************************
 
-added/fixed: (dd-mm-yyyy) (please specify date in CET
+added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-08-2006 fixed: Pixel ratio passed into visualisations was wrong.
  - 31-08-2006 changed: PreviousItem takes you back to the start of the current item if you aren't within 3 seconds of the start (like most CD players)
  - 31-08-2006 fixed: [ 1548018 ] MyFiles: Context Menu Doesn't Appear When Folder is Empty.
  - 31-08-2006 fixed: [ 1548042 ] "Pause" Icon not showing when Fast-Forward in Videos.
