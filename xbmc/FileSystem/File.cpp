@@ -33,6 +33,58 @@ using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
 #pragma warning (disable:4244)
 
+class CAsyncFileCallback
+  : public CThread
+{
+public:
+  ~CAsyncFileCallback()
+  {
+    StopThread();
+  }
+
+  CAsyncFileCallback(IFileCallback* callback, void* context)
+  {
+    m_callback = callback;
+    m_context = context;
+    m_percent = 0;
+    m_speed = 0.0f;
+    m_cancel = false;
+    Create();
+  }
+
+  virtual void Process()
+  {
+    while(!m_bStop)
+    {
+      m_event.WaitMSec(1000/30);
+      if(!m_callback->OnFileCallback(m_context, m_percent, m_speed))
+        if(!m_cancel)
+          m_cancel = true;
+    }
+  }
+
+  void SetStatus(int percent, float speed)
+  {
+    m_percent = percent;
+    m_speed = speed;
+    m_event.Set();
+  }
+
+  bool IsCanceled()
+  {
+    return m_cancel;
+  }
+
+private:
+  IFileCallback* m_callback;
+  void* m_context;
+  int   m_percent;
+  float m_speed;
+  CEvent m_event;
+  bool m_cancel;
+};
+
+
 //*********************************************************************************************
 CFile::CFile()
 {
@@ -60,6 +112,8 @@ char* get() { return p; }
 bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
   CFile file;
+  CAsyncFileCallback* helper = NULL;
+
   if (file.Open(strFileName, true))
   {
     if (file.GetLength() <= 0)
@@ -90,6 +144,10 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       file.Close();
       return false;
     }
+
+    /* larger then 1 meg, let's do rendering async */
+    if( file.GetLength() > 1024*1024 )
+      helper = new CAsyncFileCallback(pCallback, pContext);
 
     // 128k is optimal for xbox
     int iBufferSize = 128 * 1024;
@@ -146,22 +204,32 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       float averageSpeed = llPos / end;
       start = end;
 
-      /* this is so uggly, since the onfilecallback directly updates gui */
-      /* it will stall the copy process. not a good thing at all */
-      /* a minimum of 10fps is now enforced, however this will still slow us down alot */
       float fPercent = 100.0f * (float)llPos / (float)llFileSizeOrg;
-      if ((int)fPercent != ipercent || (start - callback) > (1.0f/5.0f) )
+
+      if ((int)fPercent != ipercent)
       {
-        callback = start;
+        if( helper )
+        {
+          helper->SetStatus((int)fPercent, averageSpeed);
+          if(helper->IsCanceled())
+            break;
+        }
+        else if( pCallback )
+        {
+          if (!pCallback->OnFileCallback(pContext, ipercent, averageSpeed)) 
+            break;
+        }
+
         ipercent = (int)fPercent;
-        if (pCallback)
-          if (!pCallback->OnFileCallback(pContext, ipercent, averageSpeed)) break;
       }
     }
 
     /* close both files */
     newFile.Close();
     file.Close();
+    
+    if(helper)
+      delete helper;
 
     /* verify that we managed to completed the file */
     if (llPos != llFileSizeOrg)
