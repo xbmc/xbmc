@@ -459,6 +459,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSHARE
   {
     CFileItem *item = new CFileItem("image://Browse", false);
     item->SetLabel(g_localizeStrings.Get(20153));
+    item->SetThumbnailImage("defaultPictureBig.png");
     browser->m_vecItems.Add(item);
   }
   browser->SetHeading(heading);
@@ -691,6 +692,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
     }
     m_rootDir.SetShares(m_shares);
     m_rootDir.SetMask("/");
+
     m_browsingForFolders = true;
     m_addNetworkShareEnabled = true;
     m_selectedPath = "";
@@ -704,7 +706,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 const CFileItem *CGUIDialogFileBrowser::GetCurrentListItem() const
 {
   int iItem = m_viewControl.GetSelectedItem();
-  if (iItem < 0) return NULL;
+  if (iItem < 0 || iItem >= m_vecItems.Size()) return NULL;
   return m_vecItems[iItem];
 }
 
