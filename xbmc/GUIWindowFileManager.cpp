@@ -1202,12 +1202,14 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     m_vecItems[list][item]->Select(false);
     return ;
   }
-  if (item >= m_vecItems[list].Size()) return ;
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
-    bool showEntry=(!m_vecItems[list][item]->IsParentFolder() || (m_vecItems[list][item]->IsParentFolder() && m_vecItems[list].GetSelectedCount()>0));
+    bool showEntry = false;
+    if (item >= m_vecItems[list].Size()) item = -1;
+    if (item >= 0)
+      showEntry=(!m_vecItems[list][item]->IsParentFolder() || (m_vecItems[list][item]->IsParentFolder() && m_vecItems[list].GetSelectedCount()>0));
     // load our menu
     pMenu->Initialize();
     // add the needed buttons
