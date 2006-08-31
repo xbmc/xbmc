@@ -155,7 +155,7 @@ void CGUIDialogNetworkSetup::OnUserName()
 
 void CGUIDialogNetworkSetup::OnPassword()
 {
-  CGUIDialogKeyboard::ShowAndGetNewPassword(m_password);
+  CGUIDialogKeyboard::ShowAndGetNewPassword(m_password,g_localizeStrings.Get(12326),true);
   UpdateButtons();
 }
 

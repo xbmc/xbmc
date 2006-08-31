@@ -1,3 +1,4 @@
+2006-09-01 changed:	a bunch of string labels for localization.
 2006-08-31 changed:	Logging off close all dialogs to get a proper window transition.
 2006-08-30 changed:	FreeSpace labels : $LOCALIZE[155] $LOCALIZE[154] $LOCALIZE[156] TO --> $LOCALIZE[20089] in home.xml
 2006-08-29 added:	OK and Cancel button to ProfileSettings.xml.
