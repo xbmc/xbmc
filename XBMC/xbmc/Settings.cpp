@@ -1813,27 +1813,23 @@ bool CSettings::LoadProfile(int index)
 
     g_infoManager.ResetCache();
  //   g_infoManager.Clear();
-    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) || iOldRes != g_guiSettings.GetInt("lookandfeel.resolution"))
+    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) || iOldRes != g_guiSettings.GetInt("lookandfeel.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")))
     {
       g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
     }
-    else
+    if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font"))) // need to redo if same skin, other lanuage..
     {
-      if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font")))
+      CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
+      CStdString strFontSet;
+      if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
       {
-        CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
-        CStdString strFontSet;
-        if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
-        {
-          CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
-          g_guiSettings.SetString("lookandfeel.font", strFontSet);
-          g_settings.Save();
-        }
-        else
-          CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("lookandfeel.language").c_str());
+        CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
+        g_guiSettings.SetString("lookandfeel.font", strFontSet);
+        g_settings.Save();
+        g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
       }
-      if (g_guiSettings.GetString("lookandfeel.font") != strOldFont)
-        g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
+      else
+        CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("lookandfeel.language").c_str());
     }
     // initialize our charset converter
     g_charsetConverter.reset();
