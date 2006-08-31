@@ -592,7 +592,7 @@
     <height>65</height>
     <texturefocus>sub-logoff-focus.gif</texturefocus>
     <texturenofocus>sub-logoff-nofocus.png</texturenofocus>
-    <onclick>dialog.close(shutdownmenu,true)</onclick>
+    <onclick>dialog.close(all,true)</onclick>
     <onclick>system.logoff</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3113</onleft>
@@ -890,7 +890,7 @@
     <height>65</height>
     <texturefocus>sub-logoff-focus.gif</texturefocus>
     <texturenofocus>sub-logoff-nofocus.png</texturenofocus>
-    <onclick>dialog.close(shutdownmenu,true)</onclick>
+    <onclick>dialog.close(all,true)</onclick>
     <onclick>system.logoff</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3113</onleft>
@@ -1164,7 +1164,7 @@
     <texturefocus>sub-shutdown-focus.gif</texturefocus>
     <texturenofocus>sub-shutdown-nofocus.png</texturenofocus>
     <onclick>XBMC.ShutDown()</onclick>
-    <onclick>dialog.close(shutdownmenu,true)</onclick>
+    <onclick>dialog.close(all,true)</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3110</onleft>
     <onright>3114</onright>
@@ -1187,7 +1187,7 @@
     <texturefocus>-</texturefocus>
     <texturenofocus>sub-reboot-nofocus.png</texturenofocus>
     <onclick>XBMC.Reset()</onclick>
-    <onclick>dialog.close(shutdownmenu,true)</onclick>
+    <onclick>dialog.close(all,true)</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3112</onleft>
     <onright>3110</onright>
@@ -1210,7 +1210,7 @@
     <texturefocus>-</texturefocus>
     <texturenofocus>-</texturenofocus>
     <onclick>XBMC.RestartApp()</onclick>
-    <onclick>dialog.close(shutdownmenu,true)</onclick>
+    <onclick>dialog.close(all,true)</onclick>
     <pulseonselect>no</pulseonselect>
     <onleft>3112</onleft>
     <onright>3110</onright>
