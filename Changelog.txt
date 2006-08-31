@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET
+ - 30-08-2006 changed: CUtil::Cache (used for all file copies) will now spawn a separate thread for gui rendering if file is larger than 1 meg
  - 30-08-2006 fixed: Sorting of filenames consisting of a long string of numbers was broken.
  - 30-08-2006 added: failure notifications for copy, move and delete.
  - 30-08-2006 fixed: filetransfers end early for curl sources (ftp, shout, http...), due to not trying to use it's overflow buffer before trying to get more data from host.
