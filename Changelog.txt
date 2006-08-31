@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET
+ - 30-08-2006 fixed: some non windows smb servers would refuse to finish returning a file properly due to a bug in client. reduced max read chunk in samba to (64*1024-2) bytes, same as windows workaround in samba client
  - 30-08-2006 changed: CUtil::Cache (used for all file copies) will now spawn a separate thread for gui rendering if file is larger than 1 meg
  - 30-08-2006 fixed: Sorting of filenames consisting of a long string of numbers was broken.
  - 30-08-2006 added: failure notifications for copy, move and delete.
