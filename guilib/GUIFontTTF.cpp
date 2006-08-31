@@ -161,7 +161,8 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 
   // increment by 1 for good measure to give space in our texture
   m_cellWidth++;
-  m_cellHeight++;
+  m_cellHeight+=2;
+  m_cellBaseLine++;
 
   CLog::Log(LOGDEBUG, __FUNCTION__" Scaled size of font %s (%i): width = %i, height = %i", 
     strFilename.c_str(), iHeight, m_cellWidth, m_cellHeight);
