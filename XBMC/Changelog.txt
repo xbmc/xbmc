@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET
+ - 31-08-2006 changed: PreviousItem takes you back to the start of the current item if you aren't within 3 seconds of the start (like most CD players)
  - 31-08-2006 fixed: [ 1548018 ] MyFiles: Context Menu Doesn't Appear When Folder is Empty.
  - 31-08-2006 fixed: [ 1548042 ] "Pause" Icon not showing when Fast-Forward in Videos.
  - 30-08-2006 fixed: some non windows smb servers would refuse to finish returning a file properly due to a bug in client. reduced max read chunk in samba to (64*1024-2) bytes, same as windows workaround in samba client
