@@ -19,6 +19,7 @@
 #include "ButtonTranslator.h"
 #include "Picture.h"
 #include "GUIDialogNumeric.h"
+#include "GUIDialogMusicScan.h"
 #include "autorun.h"
 #include "utils/fstrcmp.h"
 #include "utils/GUIInfoManager.h"
@@ -1252,7 +1253,7 @@ bool CUtil::IsMultiPath(const CStdString& strPath)
 bool CUtil::IsDVD(const CStdString& strFile)
 {
   CStdString strFileLow = strFile; strFileLow.MakeLower();
-  if (strFileLow == "d:\\" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
+  if (strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 
   return false;
@@ -3524,14 +3525,21 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     CStdStringArray arSplit; 
     StringUtils::SplitString(parameter,",", arSplit);
-    DWORD id = g_buttonTranslator.TranslateWindowString(arSplit[0]);
     bool bForce = false;
     if (arSplit.size() > 1)
       if (arSplit[1].Equals("true"))
         bForce = true;
-    CGUIWindow *window = (CGUIWindow *)m_gWindowManager.GetWindow(id);
-    if (window && window->IsDialog())
-      ((CGUIDialog *)window)->Close(bForce);
+    if (arSplit[0].Equals("all"))
+    {
+      m_gWindowManager.CloseDialogs(bForce);
+    }
+    else
+    {
+      DWORD id = g_buttonTranslator.TranslateWindowString(arSplit[0]);
+      CGUIWindow *window = (CGUIWindow *)m_gWindowManager.GetWindow(id);
+      if (window && window->IsDialog())
+        ((CGUIDialog *)window)->Close(bForce);
+    }
   }
   else if (execute.Equals("system.logoff"))
   {
@@ -3540,8 +3548,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
     g_application.StopPlaying();
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan && musicScan->IsScanning())
+      musicScan->StopScanning();
+
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
+    
     g_settings.LoadProfile(0); // login screen always runs as default user
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
