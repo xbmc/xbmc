@@ -44,10 +44,12 @@ bool CMemoryUnitManager::Update()
 {
   DWORD newdev = 0;
   DWORD deaddev = 0;
+  bool notify = true;
   if (!m_initialized)
   {
     newdev = XGetDevices(XDEVICE_TYPE_MEMORY_UNIT);
     m_initialized = true;
+    notify = false;
   }
   else if (!XGetDeviceChanges(XDEVICE_TYPE_MEMORY_UNIT, &newdev, &deaddev))
     return false;
@@ -60,7 +62,7 @@ bool CMemoryUnitManager::Update()
   if (deaddev && deaddev != newdev)
     UnMountUnits(deaddev);
   if (newdev && newdev != deaddev)
-    MountUnits(newdev);
+    MountUnits(newdev, notify);
   return (newdev || deaddev);
 }
 
@@ -86,7 +88,7 @@ void CMemoryUnitManager::UnMountUnits(unsigned long device)
   }
 }
 
-void CMemoryUnitManager::MountUnits(unsigned long device)
+void CMemoryUnitManager::MountUnits(unsigned long device, bool notify)
 {
   CLog::Log(LOGNOTICE, "Attempting to mount memory unit device %08x", device);
   for (DWORD i = 0; i < 4; ++i)
@@ -94,12 +96,12 @@ void CMemoryUnitManager::MountUnits(unsigned long device)
     if (device & (1 << i))
     {
       bool success = MountDevice(XDEVICE_PORT0 + i, XDEVICE_TOP_SLOT);
-      Notify(XDEVICE_PORT0 + i, XDEVICE_TOP_SLOT, success);
+      if (notify || !success) Notify(XDEVICE_PORT0 + i, XDEVICE_TOP_SLOT, success);
     }
     if (device & (1 << (i + 16)))
     {
       bool success = MountDevice(XDEVICE_PORT0 + i, XDEVICE_BOTTOM_SLOT);
-      Notify(XDEVICE_PORT0 + i, XDEVICE_BOTTOM_SLOT, success);
+      if (notify || !success) Notify(XDEVICE_PORT0 + i, XDEVICE_BOTTOM_SLOT, success);
     }
   }
 }
