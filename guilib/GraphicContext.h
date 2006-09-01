@@ -124,6 +124,8 @@ public:
 
   // output scaling
   void SetScalingResolution(RESOLUTION res, int posX, int posY, bool needsScaling);  // sets the input skin resolution.
+  inline RESOLUTION GetScalingResolution() const { return m_windowResolution; };
+
   inline float ScaleFinalXCoord(float x, float y) const;
   inline float ScaleFinalYCoord(float x, float y) const;
   inline void ScaleFinalCoords(float &x, float &y) const;
@@ -157,6 +159,7 @@ protected:
   DWORD m_stateBlock;
 
 private:
+  RESOLUTION m_windowResolution;
   float m_windowScaleX;
   float m_windowScaleY;
 
