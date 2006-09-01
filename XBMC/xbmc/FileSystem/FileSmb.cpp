@@ -503,25 +503,9 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 
 bool CFileSMB::IsValidFile(const CStdString& strFileName)
 {
-  if (strFileName.Find('/') < 0) return false;
-  if (strFileName.at(0) == '.') return false;
-
-  int i = 0;
-
-  i = strFileName.Find("/.",0);
-  while (i>=0)
-  {
-    i += 2;
-    if ((uint)i>=strFileName.length()) // illegal if ends in "/."
-      return false;
-
-    if (strFileName.at(i) == '.')
-      return false; // illegal if "/.."
-    if (strFileName.at(i) == '/') 
-      return false; // illegal if "/./"
-
-    i = strFileName.Find("/.",i);
-  }
-
+  if (strFileName.Find('/') < 0 ||
+      strFileName.at(0) == '.' ||
+      strFileName.find_last_of("/.") == strFileName.length() - 2 ||
+      strFileName.find_last_of("/..") == strFileName.length() - 3) return false;
   return true;
 }
