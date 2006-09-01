@@ -106,6 +106,21 @@
     <onleft>8</onleft>
     <onright>6</onright>
     <onup>112</onup>
+    <ondown>14</ondown>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>reload skin</description>
+    <type>button</type>
+    <id>14</id>
+    <posx>50</posx>
+    <posy>231</posy>
+    <label>20183</label>
+    <onclick>XBMC.ReloadSkin()</onclick>
+    <onleft>8</onleft>
+    <onright>6</onright>
+    <onup>13</onup>
     <ondown>11</ondown>
     <include>buttonpanelslide</include>
    </control>
