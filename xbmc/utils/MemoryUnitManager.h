@@ -32,7 +32,7 @@ private:
   bool MountDevice(unsigned long port, unsigned long slot);
   bool UnMountDevice(unsigned long port, unsigned long slot);
   
-  void MountUnits(unsigned long device);
+  void MountUnits(unsigned long device, bool notify);
   void UnMountUnits(unsigned long device);
 
   char DriveLetterFromPort(unsigned long port, unsigned long slot);
