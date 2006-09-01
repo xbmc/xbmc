@@ -1,3 +1,4 @@
+2006-09-01 added:	Reload Skin button to Settings.xml.
 2006-09-01 fixed:	Overlapping text in SettingsSystemInfo.xml.
 2006-09-01 changed:	a bunch of string labels for localization.
 2006-08-31 changed:	Logging off close all dialogs to get a proper window transition.
