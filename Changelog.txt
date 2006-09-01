@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-09-2006 fixed: [ 1532642 ] Weather icons disappear if subtitles are enabled.
  - 01-09-2006 fixed: <aspectratio> keep and scale were not applied correctly if the window's coordinate system was different than the current GUI resolution (eg python loaded windows)
  - 01-09-2006 fixed: files/folders beginning with "..." could not be opened over smb.
  - 01-09-2006 fixed: Textbox would wordwrap even when a 2nd label was present (eg Album Information tracks listing)
