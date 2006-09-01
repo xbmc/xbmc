@@ -120,34 +120,24 @@ void CGUIWindowMusicInfo::Update()
   }
   else
   {
-    CStdString strLine;
+    vector<CGUIListItem> items;
     for (int i = 0; i < m_album.GetNumberOfSongs();++i)
     {
       const CMusicSong& song = m_album.GetSong(i);
-      CStdString strTmp;
-      strTmp.Format("%i. %-30s\n",
-                    song.GetTrack(),
-                    song.GetSongName());
-      strLine += strTmp;
+      CGUIListItem item;
+      CStdString label;
+      label.Format("%i. %s", song.GetTrack(), song.GetSongName().c_str());
+      item.SetLabel(label);
+      if (song.GetDuration() > 0)
+        StringUtils::SecondsToTimeString(song.GetDuration(), label);
+      item.SetLabel2(label);
+      items.push_back(item);
     };
 
-    SET_CONTROL_LABEL(CONTROL_TEXTAREA, strLine);
-
-    for (int i = 0; i < m_album.GetNumberOfSongs();++i)
-    {
-      const CMusicSong& song = m_album.GetSong(i);
-      CStdString strTmp;
-
-      if (song.GetDuration() > 0)
-        StringUtils::SecondsToTimeString(song.GetDuration(), strTmp);
-
-      CGUIMessage msg3(GUI_MSG_LABEL2_SET, GetID(), CONTROL_TEXTAREA, i, 0);
-      msg3.SetLabel(strTmp);
-      g_graphicsContext.SendMessage(msg3);
-    }
+    CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_TEXTAREA, 0, 0, &items);
+    OnMessage(message);
 
     SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 183);
-
   }
   // update the thumbnail
   const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
