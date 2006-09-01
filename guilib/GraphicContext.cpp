@@ -26,6 +26,7 @@ CGraphicContext::CGraphicContext(void)
   m_pCallback = NULL;
   m_stateBlock = 0xffffffff;
   m_windowScaleX = m_windowScaleY = 1.0f;
+  m_windowResolution = INVALID;
   MergeAlpha(10); // this just here so the inline function is included (why doesn't it include it normally??)
   float x=0,y=0;
   ScaleFinalCoords(x, y);
@@ -596,6 +597,7 @@ void CGraphicContext::ApplyStateBlock()
 
 void CGraphicContext::SetScalingResolution(RESOLUTION res, int posX, int posY, bool needsScaling)
 {
+  m_windowResolution = res;
   if (needsScaling)
   {
     // calculate necessary scalings
@@ -663,4 +665,3 @@ inline DWORD CGraphicContext::MergeAlpha(DWORD color) const
   DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
   return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
 }
-
