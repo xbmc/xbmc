@@ -305,6 +305,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
 
     // grab the next character
     Character *ch = GetCharacter(letter);
+    if (!ch) continue;
 
     if ( dwFlags & XBFONT_TRUNCATED )
     {
@@ -317,7 +318,9 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
         {
           float posX = lineX + cursorX*angle.cosine;
           float posY = lineY + cursorX*angle.sine;
-          RenderCharacter(posX, posY, angle, GetCharacter(L'.'), dwColor);
+          Character *period = GetCharacter(L'.');
+          if (period)
+            RenderCharacter(posX, posY, angle, period, dwColor);
           cursorX += m_ellipsesWidth;
         }
         End();
@@ -417,6 +420,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
     if (!CacheCharacter(letter, m_char + low))
     {
       CLog::Log(LOGERROR, "GUIFontTTF::GetCharacter: Unable to cache character (out of memory?)");
+      return NULL;
     }
   }
   if (dwNestedBeginCount) Begin();
