@@ -63,6 +63,8 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
   }
   CStdString strLine = szLine;
   StringUtils::RemoveCRLF(strLine);
+  while (strLine[0] == ' ' || strLine[0] == '\t')
+    strLine.erase(0,1);
   if (strLine != START_PLAYLIST_MARKER)
   {
     CFileItem item(strLine, false);
@@ -105,6 +107,8 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
       iPosEqual++;
       CStdString strValue = strLine.Right(strLine.size() - iPosEqual);
       strLeft.ToLower();
+      while (strLeft[0] == ' ' || strLeft[0] == '\t')
+        strLeft.erase(0,1);
 
       if (strLeft == "numberofentries")
       {

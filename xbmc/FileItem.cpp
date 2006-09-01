@@ -543,7 +543,6 @@ void CFileItem::FillInDefaultIcon()
     {
       if ( IsPlayList() )
       {
-        // playlist, only used when playlistsasfolders is false
         SetIconImage("defaultPlaylist.png");
       }
       if ( IsPicture() )
@@ -590,7 +589,11 @@ void CFileItem::FillInDefaultIcon()
     }
     else
     {
-      if (IsParentFolder())
+      if ( IsPlayList() )
+      {
+        SetIconImage("defaultPlaylist.png");
+      }
+      else if (IsParentFolder())
       {
         SetIconImage("defaultFolderBack.png");
       }
