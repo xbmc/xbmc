@@ -306,7 +306,7 @@
    <type>label</type>
    <id>11</id>
    <posx>220</posx>
-   <posy>405</posy>
+   <posy>410</posy>
    <label>13282</label>
    <font>font13</font>
    <include>textcolorgrey</include>
@@ -345,7 +345,7 @@
    <type>label</type>
    <id>50</id>
    <posx>220</posx>
-   <posy>443</posy>
+   <posy>445</posy>
    <label>143</label>
    <font>font12</font>
    <include>textcolorgrey</include>
