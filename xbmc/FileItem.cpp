@@ -1569,7 +1569,14 @@ void CFileItemList::Stack()
       if( item->m_bIsFolder )
       {
         // check for any dvd directories, only on known fast types
-        if( !item->IsRemote() )
+        // i'm adding xbms even thou it really isn't fast due to
+        // opening file to check for existance
+        if( !item->IsRemote() 
+         || item->IsSmb() 
+         || CUtil::IsInRAR(item->m_strPath) 
+         || CUtil::IsInZIP(item->m_strPath)
+         || item->m_strPath.Left(5).Equals("xbms", false)
+         )
         {
           CStdString path;
           CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS.IFO", path);
