@@ -163,6 +163,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   m_cellWidth++;
   m_cellHeight+=2;
   m_cellBaseLine++;
+  m_lineHeight++;
 
   CLog::Log(LOGDEBUG, __FUNCTION__" Scaled size of font %s (%i): width = %i, height = %i", 
     strFilename.c_str(), iHeight, m_cellWidth, m_cellHeight);
@@ -229,7 +230,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
   // vertically centered
   if (dwFlags & XBFONT_CENTER_Y)
   {
-    sy -= m_lineHeight * 0.5f;
+    sy -= m_cellHeight * 0.5f;
   }
 
   // Check if we will really need to truncate the CStdString
@@ -336,8 +337,6 @@ void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
 {
   // First let's calculate width
   int len = wcslen(strText);
-  WCHAR* buf = new WCHAR[len+1];
-  buf[0] = L'\0';
   int i = 0, j = 0;
   *pWidth = *pHeight = 0.0f;
 
@@ -351,30 +350,22 @@ void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
       }
     }
 
-    wcsncpy(buf, strText + i, j - i);
-    buf[j - i] = L'\0';
     float width = 0;
-    float height = 0;
-    WCHAR *ch = buf;
-    while (*ch)
+    for (int k = i; k < j && k < len; k++)
     {
-      Character *c = GetCharacter(*ch++);
+      Character *c = GetCharacter(strText[k]);
       if (c) width += ROUND(c->advance);
     }
     if (width > *pWidth)
       *pWidth = width;
-    *pHeight += m_lineHeight;
+    *pHeight += m_cellHeight;//m_lineHeight;
 
     i = j + 1;
 
     if (bFirstLineOnly)
-    {
-      delete[] buf;
-      return ;
-    }
+      break;
   }
 
-  delete[] buf;
   return ;
 }
 
