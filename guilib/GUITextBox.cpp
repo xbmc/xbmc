@@ -25,6 +25,7 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_iMaxPages = 50;
   m_upDown.SetShowRange(true); // show the range by default
   ControlType = GUICONTROL_TEXTBOX;
+  m_wrapText = false;
 }
 
 CGUITextBox::~CGUITextBox(void)
@@ -35,7 +36,7 @@ void CGUITextBox::Render()
 {
   if (!IsVisible()) return;
 
-  if (!HasRendered())
+  if (!HasRendered() && m_wrapText)
   { // do set text once so that we make sure
     // we have all the sizing correct
     SetText(m_strText);
@@ -127,7 +128,17 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
         item.SetLabel2( message.GetLabel() );
       }
     }
-
+    if (message.GetMessage() == GUI_MSG_LABEL_BIND)
+    { // send parameter is a link to a vector of CGUIListItem's
+      vector<CGUIListItem> *items = (vector<CGUIListItem> *)message.GetLPVOID();
+      if (items)
+      {
+        m_vecItems.clear();
+        m_vecItems.assign(items->begin(), items->end());
+        m_wrapText = false;
+        UpdatePageControl();
+      }
+    }
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
       m_iOffset = 0;
@@ -233,6 +244,7 @@ void CGUITextBox::OnPageDown()
 }
 void CGUITextBox::SetText(const string &strText)
 {
+  m_wrapText = true;
   m_strText = strText;
   m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
   // start wordwrapping
@@ -250,6 +262,11 @@ void CGUITextBox::SetText(const string &strText)
     m_vecItems.push_back(item);
   }
 
+  UpdatePageControl();
+}
+
+void CGUITextBox::UpdatePageControl()
+{
   // and update our page control
   int iPages = m_vecItems.size() / m_iItemsPerPage;
   if (m_vecItems.size() % m_iItemsPerPage || !iPages) iPages++;
