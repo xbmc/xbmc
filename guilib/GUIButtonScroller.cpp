@@ -81,6 +81,8 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
     {
       handled = true;
       m_fAnalogScrollSpeed -= ANALOG_SCROLL_START;
+      if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == 0)
+        break;
       DoUp();
     }
     return handled;
@@ -93,6 +95,8 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
     {
       handled = true;
       m_fAnalogScrollSpeed -= ANALOG_SCROLL_START;
+      if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == m_vecButtons.size() - 1)
+        break;
       DoDown();
     }
     return handled;
@@ -330,9 +334,15 @@ void CGUIButtonScroller::Render()
       {
         m_iScrollOffset = 0;
         if (m_bMoveUp)
-          m_iCurrentSlot--;
+        {
+          if (m_iCurrentSlot > 0)
+            m_iCurrentSlot--;
+        }
         else
-          m_iCurrentSlot++;
+        {
+          if (m_iCurrentSlot + 1 < m_iNumSlots)
+            m_iCurrentSlot++;
+        }
         m_bMoveUp = false;
         m_bMoveDown = false;
         OnChangeFocus();
@@ -458,7 +468,7 @@ void CGUIButtonScroller::SetActiveButton(int iButton)
     int iNumButtonsToShow = m_vecButtons.size() - iButton + m_iCurrentSlot;
     if (iNumButtonsToShow < m_iNumSlots && iNumButtonsToShow < (int)m_vecButtons.size())
     { // we have empty space - try and fill it up
-      while (iNumButtonsToShow < (int)m_vecButtons.size() && m_iCurrentSlot < m_iNumSlots)
+      while (iNumButtonsToShow < (int)m_vecButtons.size() && m_iCurrentSlot + 1 < m_iNumSlots)
       {
         m_iCurrentSlot++;
         iNumButtonsToShow = m_vecButtons.size() - iButton + m_iCurrentSlot;
@@ -555,7 +565,7 @@ void CGUIButtonScroller::DoUp()
       {
         m_bMoveUp = false;
         m_iScrollOffset = 0;
-        m_iCurrentSlot--;
+        if (m_iCurrentSlot > 0) m_iCurrentSlot--;
         OnChangeFocus();
       }
       m_bMoveUp = true;
@@ -586,7 +596,7 @@ void CGUIButtonScroller::DoDown()
       {
         m_bMoveDown = false;
         m_iScrollOffset = 0;
-        m_iCurrentSlot++;
+        if (m_iCurrentSlot + 1 < m_iNumSlots) m_iCurrentSlot++;
         OnChangeFocus();
       }
       m_bMoveDown = true;
