@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-09-2006 fixed: Textbox would wordwrap even when a 2nd label was present (eg Album Information tracks listing)
+ - 01-09-2006 changed: Don't show notification of memory card at boot.
  - 01-09-2006 added: some more labels, ids 20176-20181. hopefully this will be the last.
  - 31-08-2006 fixed: mockup with fonts and profile logins.
  - 31-08-2006 changed: dialog.close(..) now takes 'all' as windowid to close all dialogs.
