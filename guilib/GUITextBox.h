@@ -60,6 +60,7 @@ public:
 protected:
   void OnPageUp();
   void OnPageDown();
+  void UpdatePageControl();
 
   int m_iSpinPosX;
   int m_iSpinPosY;
@@ -73,5 +74,7 @@ protected:
   CGUISpinControl m_upDown;
   vector<CGUIListItem> m_vecItems;
   typedef vector<CGUIListItem> ::iterator ivecItems;
+
+  bool m_wrapText;  // whether we need to wordwrap or not
 };
 #endif
