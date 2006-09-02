@@ -1992,12 +1992,8 @@ void CVideoDatabase::CleanDatabase()
     sql = "delete from actorlinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of actors");
-    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie)";
-    m_pDS->exec(sql.c_str());
-
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of directors");
-    sql = "delete from actors where idActor not in (select distinct idDirector from movieinfo)";
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of actors and directors");
+    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from movieinfo)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinkmovie table");
