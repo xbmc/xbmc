@@ -210,7 +210,7 @@
    <type>label</type>
    <id>3</id>
    <posx>220</posx>
-   <posy>180</posy>
+   <posy>178</posy>
    <label>13282</label>
    <font>font13</font>
    <include>textcolorgrey</include>
@@ -222,7 +222,7 @@
    <type>label</type>
    <id>4</id>
    <posx>220</posx>
-   <posy>210</posy>
+   <posy>206</posy>
    <label>13282</label>
    <font>font13</font>
    <include>textcolorgrey</include>
@@ -234,7 +234,7 @@
    <type>label</type>
    <id>5</id>
    <posx>220</posx>
-   <posy>240</posy>
+   <posy>234</posy>
    <label>13282</label>
    <font>font13</font>
    <include>textcolorgrey</include>
@@ -246,7 +246,7 @@
    <type>label</type>
    <id>6</id>
    <posx>220</posx>
-   <posy>270</posy>
+   <posy>262</posy>
    <label>13282</label>
    <font>font13</font>
    <include>textcolorgrey</include>
@@ -258,7 +258,7 @@
    <type>label</type>
    <id>7</id>
    <posx>220</posx>
-   <posy>300</posy>
+   <posy>290</posy>
    <label>13282</label>
    <font>font13</font>
    <include>textcolorgrey</include>
@@ -270,7 +270,7 @@
    <type>label</type>
    <id>8</id>
    <posx>220</posx>
-   <posy>330</posy>
+   <posy>318</posy>
    <label>13282</label>
    <font>font13</font>
    <include>textcolorgrey</include>
@@ -282,7 +282,7 @@
    <type>label</type>
    <id>9</id>
    <posx>220</posx>
-   <posy>360</posy>
+   <posy>346</posy>
    <label>13282</label>
    <font>font13</font>
    <include>textcolorgrey</include>
@@ -294,7 +294,7 @@
    <type>label</type>
    <id>10</id>
    <posx>220</posx>
-   <posy>390</posy>
+   <posy>374</posy>
    <label>13282</label>
    <font>font13</font>
    <include>textcolorgrey</include>
@@ -306,7 +306,7 @@
    <type>label</type>
    <id>11</id>
    <posx>220</posx>
-   <posy>410</posy>
+   <posy>402</posy>
    <label>13282</label>
    <font>font13</font>
    <include>textcolorgrey</include>
