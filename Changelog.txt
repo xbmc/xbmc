@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-09-2006 fixed: [ 1550694 ] "Clean Video Database" deletes too much.
  - 01-09-2006 changed: smb/xbmc and inside rar/zip should now stack dvd directories
  - 01-09-2006 fixed: [ 1548039 ] Thumbnails for .m3u Playlists show the "My Pictures"-Icon
  - 01-09-2006 fixed: Possible crash in TTF font rendering if the font file disappears.
