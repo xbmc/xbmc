@@ -5,31 +5,149 @@
 // forward declarations
 void fast_memcpy(void* d, const void* s, unsigned n);
 
-/**** the following two functions comes from a52dec */
-static inline int blah (__int32 i)
+
+typedef __int16 int16_t;
+typedef __int32 int32_t;
+
+static inline __int16 convert(int32_t i)
 {
-  if (i > 0x43c07fff)
-    return 32767;
-  else if (i < 0x43bf8000)
-    return -32768;
-  return i - 0x43c00000;
+#ifdef LIBA52_FIXED
+    i >>= 15;
+#else
+    i -= 0x43c00000;
+#endif
+    return (i > 32767) ? 32767 : ((i < -32768) ? -32768 : i);
 }
 
-static inline void float_to_int (float * _f, __int16 * s16, int nchannels)
+static inline void convert2s16_2 (sample_t * _f, int16_t * s16)
 {
-  int i, j, c;
-  __int32 * f = (__int32 *) _f; // XXX assumes IEEE float format
+  int i;
+  int32_t * f = (int32_t *) _f;
 
-  j = 0;
-  nchannels *= 256;
   for (i = 0; i < 256; i++)
+    {
+      s16[2*i] = convert (f[i]);
+      s16[2*i+1] = convert (f[i+256]);
+    }
+}
+
+static inline void convert2s16_4 (sample_t * _f, int16_t * s16)
+{
+  int i;
+  int32_t * f = (int32_t *) _f;
+
+  for (i = 0; i < 256; i++)
+    {
+      s16[4*i] = convert (f[i]);
+      s16[4*i+1] = convert (f[i+256]);
+      s16[4*i+2] = convert (f[i+512]);
+      s16[4*i+3] = convert (f[i+768]);
+    }
+}
+
+static inline void convert2s16_5 (sample_t * _f, int16_t * s16)
+{
+  int i;
+  int32_t * f = (int32_t *) _f;
+
+  for (i = 0; i < 256; i++)
+    {
+      s16[5*i] = convert (f[i+256]);
+      s16[5*i+1] = convert (f[i+512]);
+      s16[5*i+2] = convert (f[i+768]);
+      s16[5*i+3] = convert (f[i+1024]);
+      s16[5*i+4] = convert (f[i]);
+    }
+}
+
+static inline void convert2s16_multi (sample_t * _f, int16_t * s16, int flags)
+{
+  int i;
+  int32_t * f = (int32_t *) _f;
+
+  switch (flags)
   {
-    for (c = 0; c < nchannels; c += 256)
-      s16[j++] = blah (f[i + c]);
+    case A52_MONO:
+      for (i = 0; i < 256; i++)
+      {
+        s16[5*i] = s16[5*i+1] = s16[5*i+2] = s16[5*i+3] = 0;
+        s16[5*i+4] = convert (f[i]);
+      }
+      break;
+    case A52_CHANNEL:
+    case A52_STEREO:
+    case A52_DOLBY:
+      convert2s16_2 (_f, s16);
+      break;
+    case A52_3F:
+      for (i = 0; i < 256; i++)
+      {
+        s16[5*i] = convert (f[i]);
+        s16[5*i+1] = convert (f[i+512]);
+        s16[5*i+2] = s16[5*i+3] = 0;
+        s16[5*i+4] = convert (f[i+256]);
+      }
+      break;
+    case A52_2F2R:
+      convert2s16_4 (_f, s16);
+      break;
+    case A52_3F2R:
+      convert2s16_5 (_f, s16);
+      break;
+    case A52_MONO | A52_LFE:
+      for (i = 0; i < 256; i++)
+      {
+        s16[6*i] = s16[6*i+1] = s16[6*i+2] = s16[6*i+3] = 0;
+        s16[6*i+4] = convert (f[i+256]);
+        s16[6*i+5] = convert (f[i]);
+      }
+      break;
+    case A52_CHANNEL | A52_LFE:
+    case A52_STEREO | A52_LFE:
+    case A52_DOLBY | A52_LFE:
+      for (i = 0; i < 256; i++)
+      {
+        s16[6*i] = convert (f[i+256]);
+        s16[6*i+1] = convert (f[i+512]);
+        s16[6*i+2] = s16[6*i+3] = s16[6*i+4] = 0;
+        s16[6*i+5] = convert (f[i]);
+      }
+      break;
+    case A52_3F | A52_LFE:
+      for (i = 0; i < 256; i++)
+      {
+        s16[6*i] = convert (f[i+256]);
+        s16[6*i+1] = convert (f[i+768]);
+        s16[6*i+2] = s16[6*i+3] = 0;
+        s16[6*i+4] = convert (f[i+512]);
+        s16[6*i+5] = convert (f[i]);
+      }
+      break;
+    case A52_2F2R | A52_LFE:
+      for (i = 0; i < 256; i++)
+      {
+        s16[6*i] = convert (f[i+256]);
+        s16[6*i+1] = convert (f[i+512]);
+        s16[6*i+2] = convert (f[i+768]);
+        s16[6*i+3] = convert (f[i+1024]);
+        s16[6*i+4] = 0;
+        s16[6*i+5] = convert (f[i]);
+      }
+      break;
+    case A52_3F2R | A52_LFE:
+      for (i = 0; i < 256; i++)
+      {
+        s16[6*i] = convert (f[i+256]);
+        s16[6*i+1] = convert (f[i+768]);
+        s16[6*i+2] = convert (f[i+1024]);
+        s16[6*i+3] = convert (f[i+1280]);
+        s16[6*i+4] = convert (f[i+512]);
+        s16[6*i+5] = convert (f[i]);
+      }
+      break;
   }
 }
 
-/**** end */
 
 CDVDAudioCodecLiba52::CDVDAudioCodecLiba52() : CDVDAudioCodec()
 {
@@ -51,9 +169,6 @@ bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate,
   if (!m_dll.Load()) return false;
 
   SetDefault();
-
-  // analog output is only supported in stereo
-  iChannels = 2;
   
   m_pState = m_dll.a52_init(0);
   if (!m_pState)
@@ -230,15 +345,22 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
       // we have a frame to decode
       float fLevel = 1.0f;
       int iFlags = m_iFlags;
+
       if (m_iOutputChannels == 1)
         iFlags = A52_MONO;
       else if (m_iOutputChannels == 2)
-        iFlags = A52_STEREO;
+        iFlags = A52_STEREO; /* this could be set to A52_DOLBY, to keep the suround effects */
       else
       {
+        if(m_iOutputChannels > 0 && m_iOutputChannels != m_iSourceChannels)
+          CLog::Log(LOGINFO, __FUNCTION__" - Requested output channels (%d), differs from source (%d). Using source's channels", m_iOutputChannels, m_iSourceChannels);
+
         m_iOutputChannels = m_iSourceChannels;
-        iFlags |= A52_ADJUST_LEVEL;
       };
+
+      /* adjust level should always be set, to keep samples in proper range */
+      /* after any downmixing has been done */
+      iFlags |= A52_ADJUST_LEVEL;
 
       m_dll.a52_frame(m_pState, m_inputBuffer, &iFlags, &fLevel, 384);
 
@@ -253,12 +375,13 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
           m_decodedDataSize = 0;
           return -1;
         }
-        float_to_int(m_fSamples, ((short*)m_decodedData) + (i * 256 * m_iOutputChannels), m_iOutputChannels);
+
+        convert2s16_multi(m_fSamples, (short*)(m_decodedData + m_decodedDataSize), iFlags & (A52_CHANNEL_MASK | A52_LFE));
+        m_decodedDataSize += 256 * sizeof(short) * m_iOutputChannels;
       }
 
       m_pInputBuffer = m_inputBuffer;
-      m_iFrameSize = 0;
-      m_decodedDataSize = 6 * m_iOutputChannels * 256 * sizeof(short);
+      m_iFrameSize = 0;      
       return (pData - pOldDataPointer);
     }
   }
