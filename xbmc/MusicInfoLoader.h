@@ -25,7 +25,7 @@ protected:
   CSongMap m_songsMap;
   CStdString m_strPrevPath;
   CMusicDatabase m_musicDatabase;
-  int m_songsFromDb;
-  int m_taglessItems;
+  unsigned int m_databaseHits;
+  unsigned int m_tagReads;
 };
 };
