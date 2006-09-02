@@ -121,7 +121,7 @@ class PLT_CtrlPoint : public PLT_HttpServerListener,
                       public PLT_SsdpSearchResponseListener
 {
 public:
-    PLT_CtrlPoint(const char* uuid_to_ignore = "");
+    PLT_CtrlPoint(const char* uuid_to_ignore = NULL, const char* autosearch = "upnp:rootdevice");
 
     NPT_Result   AddListener(PLT_CtrlPointListener* listener);
     NPT_Result   RemoveListener(PLT_CtrlPointListener* listener);
@@ -155,6 +155,7 @@ public:
 
     // helper methods
     NPT_Result FindDevice(NPT_String& uuid, PLT_DeviceDataReference& device) {
+        NPT_AutoLock lock(m_Devices);
         NPT_List<PLT_DeviceDataReference>::Iterator it = m_Devices.Find(PLT_DeviceDataFinder(uuid));
         if (it) {
             device = (*it);
@@ -220,8 +221,9 @@ private:
     NPT_Lock<PLT_CtrlPointListenerList>     m_ListenerList;
     PLT_HttpServer*                         m_EventHttpServer;
     PLT_TaskManager*                        m_TaskManager;
-    NPT_List<PLT_DeviceDataReference>       m_Devices;
+    NPT_Lock<NPT_List<PLT_DeviceDataReference> >       m_Devices;
     NPT_List<PLT_EventSubscriber*>          m_Subscribers;
+    NPT_String                              m_AutoSearch;
 };
 
 typedef NPT_Reference<PLT_CtrlPoint> PLT_CtrlPointReference;
