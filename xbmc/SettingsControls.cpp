@@ -20,9 +20,10 @@ CRadioButtonSettingControl::CRadioButtonSettingControl(CGUIRadioButtonControl *p
 CRadioButtonSettingControl::~CRadioButtonSettingControl()
 {}
 
-void CRadioButtonSettingControl::OnClick()
+bool CRadioButtonSettingControl::OnClick()
 {
   ((CSettingBool *)m_pSetting)->SetData(!((CSettingBool *)m_pSetting)->GetData());
+  return true;
 }
 
 void CRadioButtonSettingControl::Update()
@@ -78,8 +79,10 @@ CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, DWORD dwI
 CSpinExSettingControl::~CSpinExSettingControl()
 {}
 
-void CSpinExSettingControl::OnClick()
+bool CSpinExSettingControl::OnClick()
 {
+  // TODO: Should really check for a change here (as end of spincontrols may
+  //       cause no change)
   if (m_pSetting->GetControlType() == SPIN_CONTROL_FLOAT)
     ((CSettingFloat *)m_pSetting)->SetData(m_pSpin->GetFloatValue());
   else
@@ -90,6 +93,7 @@ void CSpinExSettingControl::OnClick()
       pSettingInt->SetData(m_pSpin->GetValue());
     }
   }
+  return true;
 }
 
 void CSpinExSettingControl::Update()
@@ -117,7 +121,7 @@ CButtonSettingControl::CButtonSettingControl(CGUIButtonControl *pButton, DWORD d
 CButtonSettingControl::~CButtonSettingControl()
 {}
 
-void CButtonSettingControl::OnClick()
+bool CButtonSettingControl::OnClick()
 {
   // grab the onscreen keyboard
   CStdString keyboardInput(((CSettingString *)m_pSetting)->GetData());
@@ -127,20 +131,21 @@ void CButtonSettingControl::OnClick()
   if (m_pSetting->GetControlType() == BUTTON_CONTROL_INPUT)
   {
     if (!CGUIDialogKeyboard::ShowAndGetInput(keyboardInput, heading, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
-      return ;
+      return false;
   }
   if (m_pSetting->GetControlType() == BUTTON_CONTROL_HIDDEN_INPUT)
   {
     if (!CGUIDialogKeyboard::ShowAndGetNewPassword(keyboardInput, heading, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
-      return ;
+      return false;
   }
   if (m_pSetting->GetControlType() == BUTTON_CONTROL_IP_INPUT)
   {
     if (!CGUIDialogNumeric::ShowAndGetIPAddress(keyboardInput, g_localizeStrings.Get(14068)))
-      return;
+      return false;
   }
   ((CSettingString *)m_pSetting)->SetData(keyboardInput);
   Update();
+  return true;
 }
 
 void CButtonSettingControl::Update()
