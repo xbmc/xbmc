@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-09-2006 changed: Made auto-rotation via the EXIF orientation data optional for pictures (new string added)
+ - 02-09-2006 fixed: Delete and Rename from Mediawindows didn't work from Keymap.xml
  - 02-09-2006 fixed: UPnP memory leak + possible race condition during house cleaning
  - 02-09-2006 fixed: dvdplayer wouldn't output prologic for ac3 streams when analog was selected. 
  - 02-09-2006 changed: Music Info Loader now prioritises previously cached information over the music database.

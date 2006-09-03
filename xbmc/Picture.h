@@ -8,7 +8,6 @@ public:
   virtual ~CPicture(void);
   IDirect3DTexture8* Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128);
 
-  bool CreateExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb);
   bool CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
   bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
   int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality);
@@ -19,8 +18,6 @@ public:
   unsigned int GetOriginalWidth() const { return m_info.originalwidth; };
   unsigned int GetOriginalHeight() const { return m_info.originalheight; };
   long GetExifOrientation() const { return m_info.rotation; };
-
-  void RenderImage(IDirect3DTexture8* pTexture, float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft = 0, int iTextureTop = 0, DWORD dwAlpha = 0xFF);
 
   void CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail);
   bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);

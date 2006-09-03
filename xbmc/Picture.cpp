@@ -40,7 +40,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   if (!m_dll.Load()) return false;
 
   memset(&m_info, 0, sizeof(ImageInfo));
-  if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
+  if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
   {
     CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to create thumbfile %s from image %s", strThumbFileName.c_str(), strFileName.c_str());
     return false;
@@ -58,72 +58,6 @@ bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, cons
     return false;
   }
   return true;
-}
-
-void CPicture::RenderImage(IDirect3DTexture8* pTexture, float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft, int iTextureTop, DWORD dwAlpha)
-{
-  CPicture::VERTEX* vertex = NULL;
-  LPDIRECT3DVERTEXBUFFER8 m_pVB;
-
-  g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(CPicture::VERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pVB );
-  m_pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
-
-  float fxOff = (float)iTextureLeft;
-  float fyOff = (float)iTextureTop;
-
-  vertex[0].p = D3DXVECTOR4( x - 0.5f, y - 0.5f, 0, 0 );
-  vertex[0].tu = fxOff;
-  vertex[0].tv = fyOff;
-
-  vertex[1].p = D3DXVECTOR4( x + width - 0.5f, y - 0.5f, 0, 0 );
-  vertex[1].tu = fxOff + (float)iTextureWidth;
-  vertex[1].tv = fyOff;
-
-  vertex[2].p = D3DXVECTOR4( x + width - 0.5f, y + height - 0.5f, 0, 0 );
-  vertex[2].tu = fxOff + (float)iTextureWidth;
-  vertex[2].tv = fyOff + (float)iTextureHeight;
-
-  vertex[3].p = D3DXVECTOR4( x - 0.5f, y + height - 0.5f, 0, 0 );
-  vertex[3].tu = fxOff;
-  vertex[3].tv = fyOff + iTextureHeight;
-
-  D3DCOLOR dwColor = (dwAlpha << 24) | 0xFFFFFF;
-  for (int i = 0; i < 4; i++)
-  {
-    vertex[i].col = dwColor;
-  }
-  m_pVB->Unlock();
-
-  // Set state to render the image
-  g_graphicsContext.Get3DDevice()->SetTexture( 0, pTexture );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE, FALSE );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, FALSE);
-  g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
-  // Render the image
-  g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pVB, sizeof(VERTEX) );
-  g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
-  // reset texture state
-  g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
-  m_pVB->Release();
 }
 
 void CPicture::CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail)
@@ -147,12 +81,6 @@ void CPicture::CreateFolderThumb(const CStdString *strThumbs, const CStdString &
   {
     CLog::Log(LOGERROR, "PICTURE::CreateFolderThumb() failed for folder thumb %s", folderThumbnail.c_str());
   }
-}
-
-bool CPicture::CreateExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb)
-{
-  if (!m_dll.Load()) return false;
-  return m_dll.CreateExifThumbnail(strFile.c_str(), strCachedThumb.c_str());
 }
 
 bool CPicture::CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName)
