@@ -306,12 +306,7 @@ void CGUIWindowVideoInfo::Update()
 
   // Check for resumability
   CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-  CFileItem movie(m_Movie.m_strPath, false);
-
-  m_database.Open();
-  CBookmark bookmark;
-  
-  if (window && m_database.GetResumeBookMark(m_Movie.m_strPath, bookmark))
+  if (window && window->GetResumeItemOffset(&m_movieItem) > 0)
   {
     CONTROL_ENABLE(CONTROL_BTN_RESUME);
   }
@@ -319,8 +314,6 @@ void CGUIWindowVideoInfo::Update()
   {
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
   }
-
-  m_database.Close();
 
   // update the thumbnail
   const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
