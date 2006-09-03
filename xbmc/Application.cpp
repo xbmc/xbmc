@@ -2236,7 +2236,9 @@ bool CApplication::OnAction(const CAction &action)
     {
       if (action.wID == ACTION_PLAYER_PLAY)
       {
+        // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
+        g_application.SetPlaySpeed(1);
         return true;
       }
     }
