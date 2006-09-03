@@ -164,7 +164,8 @@ CGUISettings::CGUISettings(void)
   AddBool(1, "pictures.useautoswitching", 14011, false);
   AddBool(2, "pictures.autoswitchuselargethumbs", 14012, false);
   AddSeparator(3,"pictures.sep1");
-  AddString(4,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20004);
+  AddBool(4, "pictures.useexifrotation", 20184, true);
+  AddString(5,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20004);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
