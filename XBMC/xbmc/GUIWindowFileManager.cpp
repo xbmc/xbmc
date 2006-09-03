@@ -1359,6 +1359,7 @@ bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
 
   // Create a temporary item list containing the file/folder for deletion
   CFileItem *pItemTemp = new CFileItem(*pItem);
+  pItemTemp->Select(true);
   CFileItemList items;
   items.Add(pItemTemp);
 
@@ -1404,6 +1405,7 @@ bool CGUIWindowFileManager::CopyItem(const CFileItem *pItem, const CStdString& s
   else
   {
     CFileItem *pItemTemp = new CFileItem(*pItem);
+    pItemTemp->Select(true);
     items.Add(pItemTemp);
   }
 
