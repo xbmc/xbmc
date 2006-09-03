@@ -950,7 +950,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_weatherManager.ResetTimer();
     }
   }
-  pSettingControl->OnClick(); // call the control to do it's thing
+
+  // if OnClick() returns false, the setting hasn't changed
+  if (!pSettingControl->OnClick()) // call the control to do it's thing
+    return;
+
   // ok, now check the various special things we need to do
   if (strSetting.Equals("MyPrograms.UseDirectoryName"))
   { // delete the program database.
