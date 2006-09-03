@@ -639,6 +639,8 @@ void CGUIWindowSlideShow::Move(float fX, float fY)
 
 void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize)
 {
+  if (!g_guiSettings.GetBool("pictures.useexifrotation"))
+    iRotate = 1;
   if (pTexture)
   {
     // set the pic's texture + size etc.
