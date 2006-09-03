@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-09-2006 fixed: [ 1551186 ] CD'S with datatrack do not rip correctly.
  - 03-09-2006 fixed: SMB workgroup/winsserver prompted for a restart even if the setting was cancelled.
  - 02-09-2006 fixed: Resume item from movie information page sometimes didn't function.
  - 02-09-2006 fixed: Missing string (id 14059).
