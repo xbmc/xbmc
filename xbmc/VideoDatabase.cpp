@@ -1882,17 +1882,6 @@ void CVideoDatabase::EraseVideoSettings()
 
 void CVideoDatabase::CleanDatabase()
 {
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (progress)
-  {
-    progress->SetHeading(700);
-    progress->SetLine(0, "");
-    progress->SetLine(1, 313);
-    progress->SetLine(2, 330);
-    progress->SetPercentage(0);
-    progress->StartModal();
-    progress->ShowProgressBar(true);
-  }
   try
   {
     BeginTransaction();
@@ -1903,6 +1892,18 @@ void CVideoDatabase::CleanDatabase()
     CStdString sql = "select * from files, path where files.idPath = path.idPath";
     m_pDS->query(sql.c_str());
     if (m_pDS->num_rows() == 0) return;
+
+    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (progress)
+    {
+      progress->SetHeading(700);
+      progress->SetLine(0, "");
+      progress->SetLine(1, 313);
+      progress->SetLine(2, 330);
+      progress->SetPercentage(0);
+      progress->StartModal();
+      progress->ShowProgressBar(true);
+    }
 
     CStdString filesToDelete = "(";
     CStdString moviesToDelete = "(";
