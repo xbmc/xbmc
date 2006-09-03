@@ -325,6 +325,10 @@ bool CCDDARipper::RipCD()
 
     DWORD dwTick = timeGetTime();
 
+    // don't rip non cdda items
+    if (vecItems[i]->m_strPath.Find(".cdda") < 0)
+      continue;
+
     // return false if Rip returned false (this means an error or the user cancelled
     if (!Rip(vecItems[i]->m_strPath, strFile.c_str(), vecItems[i]->m_musicInfoTag)) return false;
 
