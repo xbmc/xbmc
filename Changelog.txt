@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-09-2006 fixed: Resume item from movie information page sometimes didn't function.
  - 02-09-2006 fixed: Missing string (id 14059).
  - 02-09-2006 fixed: Video database cleanup would hang if no database was present.
  - 02-09-2006 fixed: Fast forward, then Pause, then Play via the remote would restore fastforwarding, instead of playing.
