@@ -252,6 +252,17 @@ private:
   //---------------------------------------------------------------------------
   int Cssrc::DownSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread);
 
+  //---------------------------------------------------------------------------
+  // Downsamples a buffer full of *FLOAT* rawindata
+  // returns the datalength
+  //---------------------------------------------------------------------------
+  int Cssrc::DownSampleFloatIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread);
+
+  //---------------------------------------------------------------------------
+  // Common routine for above downsampling routines
+  //---------------------------------------------------------------------------
+  int Cssrc::DownSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread);
+
   //----------------------------------------------------
   double Cssrc::alpha(double a);
   double Cssrc::dbesi0(double x);
