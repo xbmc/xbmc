@@ -397,7 +397,22 @@ int File::Read(void *Data,int Size)
 
 int File::DirectRead(void *Data,int Size)
 {
-#ifdef _WIN_32
+  int Read = 0;
+  while (Size)
+  {
+    int nRead = m_File.Read(Data,Size);
+    if (nRead == 0)
+      break;
+    Read += nRead;
+    Data = (void*)(((char*)Data)+nRead);
+    Size -= nRead;
+  }
+  if (Read == 0)
+    return -1;
+
+  return Read;
+#if 0
+  #ifdef _WIN_32
   const int MaxDeviceRead=20000;
 #endif
 //#ifndef _WIN_CE
@@ -412,7 +427,7 @@ int File::DirectRead(void *Data,int Size)
     hFile=stdin;
 #endif
   }
-#endif*/
+#endif
 #ifdef _WIN_32
   DWORD Read;
   //if (!ReadFile(hFile,Data,Size,&Read,NULL))
@@ -437,6 +452,7 @@ int File::DirectRead(void *Data,int Size)
   if (ferror(hFile))
     return(-1);
   return(ReadSize);
+#endif*/
 #endif
 }
 
