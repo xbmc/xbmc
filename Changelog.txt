@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-09-2006 fixed: BMPs and some PNGs wouldn't load correctly in slideshows.
  - 04-09-2006 updated: German language file
  - 04-09-2006 fixed: xbmc would crash if mplayer failed to open video codec in avi. updated mplayer.dll + additional handlings of exceptions in mplayer core.
  - 04-09-2006 changed: more agressive rarmanager. deletes the biggest "alien" file found if it runs out of caching space.
