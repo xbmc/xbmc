@@ -259,8 +259,8 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
     long lMovieId = -1;
 
     // needed for query parameters
@@ -318,7 +318,7 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
   {
     CLog::Log(LOGERROR, "CVideoDatabase::GetMovieInfo(%s) failed", strFilenameAndPath.c_str());
   }
-  return false;
+  return -1;
 }
 
 int CVideoDatabase::GetRecentMovies(long* pMovieIdArray, int nSize)
