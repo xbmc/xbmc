@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-09-2006 changed: LED and LCD Controll: new settings on Pause LED and or LCD Backlight will be switched On!
+ - 05-09-2006 changed: LCD Dim on playback, now uses its own setting
+ - 05-09-2006 fixed: FTP User Passwort is not identical with internal settings, if the user change the Password via FileZilla Server.xml and not over GUI settings!
+ - 05-09-2006 fixed: Infinite reboot loops when NTSC was set with EvoX to ID_REG_NA
+ - 05-09-2006 fixed: Settings FTP Server: on more then one FTP user,changing User password doesn't effect
  - 04-09-2006 fixed: BMPs and some PNGs wouldn't load correctly in slideshows.
  - 04-09-2006 updated: German language file
  - 04-09-2006 fixed: xbmc would crash if mplayer failed to open video codec in avi. updated mplayer.dll + additional handlings of exceptions in mplayer core.
