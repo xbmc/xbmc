@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-09-2006 fixed: GoAhead web server headers should now be more standards compliant (changed LF to CRLF)
  - 04-09-2006 fixed: Better reliability of pls parsing (should workaround the shoutcast problems)
  - 04-09-2006 fixed: Playback of 96kHz tracks with paplayer.
  - 03-09-2006 fixed: Query Info for All Files did not treat DVDs as a single entity.
