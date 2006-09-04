@@ -63,7 +63,7 @@ void CDVDInputStreamFile::Close()
 int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
 {
   int ret = 0;
-  if (m_pFile) ret = m_pFile->Read(buf, buf_size);
+  if (m_pFile) ret = m_pFile->Read(buf, buf_size, READ_TRUNCATED);
   else return -1;
 
   /* on error close file */
