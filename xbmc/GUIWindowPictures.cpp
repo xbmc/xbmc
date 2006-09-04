@@ -323,7 +323,7 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture, CF
     CFileItem* pItem = vecItems[i];
     if (pItem->m_bIsFolder)
       AddDir(pSlideShow, pItem->m_strPath);
-    else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
+    else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)) && !CUtil::GetFileName(pItem->m_strPath).Equals("folder.jpg"))
       pSlideShow->Add(pItem->m_strPath);
   }
   if (!strPicture.IsEmpty())
@@ -473,6 +473,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     }
     //int btn_Settings = -2;
 
+
     int btn_Settings = pMenu->AddButton(5);         // Settings
     int btn_GoToRoot = pMenu->AddButton(20128);
 
@@ -524,15 +525,35 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 {
+  if (pItem->IsCBR() || pItem->IsCBZ())
+  {
+    CStdString strTBN;
+    CUtil::ReplaceExtension(pItem->m_strPath,".tbn",strTBN);
+    if (CFile::Exists(strTBN))
+    {
+      CPicture pic;
+      if (pic.DoCreateThumbnail(strTBN, pItem->GetCachedPictureThumb(),true))
+      {
+        pItem->SetCachedPictureThumb();
+        pItem->FillInDefaultIcon();
+        return;
+      }
+    }
+  }
   if ((pItem->m_bIsFolder || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && !pItem->IsParentFolder())
   {
     // first check for a folder.jpg
     CStdString thumb;
-    CUtil::AddFileToFolder(pItem->m_strPath, "folder.jpg", thumb);
+    CStdString strPath = pItem->m_strPath;
+    if (pItem->IsCBR())
+      CUtil::CreateRarPath(strPath,pItem->m_strPath,"");
+    if (pItem->IsCBZ())
+      CUtil::CreateZipPath(strPath,pItem->m_strPath,"");
+    CUtil::AddFileToFolder(strPath, "folder.jpg", thumb);
     if (CFile::Exists(thumb))
     {
       CPicture pic;
-      pic.DoCreateThumbnail(thumb, pItem->GetCachedPictureThumb());
+      pic.DoCreateThumbnail(thumb, pItem->GetCachedPictureThumb(),true);
     }
     else
     {
@@ -540,12 +561,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       // the thumb.
 
       CFileItemList items;
-      CStdString strPath = pItem->m_strPath;
-      if (pItem->IsCBR())
-        CUtil::CreateRarPath(strPath,pItem->m_strPath,"");
-      if (pItem->IsCBZ())
-        CUtil::CreateZipPath(strPath,pItem->m_strPath,"");
-
+  
       CDirectory::GetDirectory(strPath, items, g_stSettings.m_pictureExtensions, false, false);
 
       // create the folder thumb by choosing 4 random thumbs within the folder and putting
