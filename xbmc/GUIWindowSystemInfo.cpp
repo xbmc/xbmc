@@ -945,7 +945,7 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
   //strItem3.Format("%s %s", strlblDHCPServer.c_str(), g_network.m_networkinfo.dhcpserver); // DHCP-Server IP
   
   strItem3.Format("%s: %s", strlblDNS.c_str(), g_network.m_networkinfo.DNS1 ); // DNS1
-  strItem4.Format("%s: %s", strlblDNS.c_str(), g_network.m_networkinfo.DNS2 ); // DNS2
+  strItem4.Format("%s: %s", strlblDNS2.c_str(), g_network.m_networkinfo.DNS2 ); // DNS2
   
   SET_CONTROL_LABEL(i_lblp2,ip);
   SET_CONTROL_LABEL(i_lblp4,strItem1);
