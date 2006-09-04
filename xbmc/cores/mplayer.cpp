@@ -11,6 +11,7 @@
 #include "../VideoDatabase.h"
 #include "../utils/GUIInfoManager.h"
 #include "VideoRenderers/RenderManager.h"
+#include "../utils/win32exception.h"
 
 #define KEY_ENTER 13
 #define KEY_TAB 9
@@ -1907,10 +1908,18 @@ __int64 CMPlayer::GetTime()
 {
   if (m_bIsPlaying)
   {
-    if (HasVideo()) //As mplayer has the audio counter 10 times to big. Should be fixed
-      return 1000*mplayer_getCurrentTime();
-    else
-      return 100*m_iPTS;
+    try 
+    {
+      if (HasVideo()) //As mplayer has the audio counter 10 times to big. Should be fixed
+        return 1000*mplayer_getCurrentTime();
+      else
+        return 100*m_iPTS;
+    }
+    catch(win32_exception e)
+    {
+      e.writelog(__FUNCTION__);
+      g_applicationMessenger.MediaStop();
+    }
   }
   return 0;
 }
@@ -1919,14 +1928,32 @@ int CMPlayer::GetTotalTime()
 {
   if (m_bIsPlaying)
   {
-    return mplayer_getTime();
+    try 
+    {
+      return mplayer_getTime();
+    }
+    catch(win32_exception e)
+    {
+      e.writelog(__FUNCTION__);
+      g_applicationMessenger.MediaStop();
+    }
   }
   return 0;
 }
 
 void CMPlayer::ToFFRW(int iSpeed)
 {
-  mplayer_ToFFRW( iSpeed);
+  if (m_bIsPlaying)
+  {
+    try 
+    {
+      mplayer_ToFFRW( iSpeed);
+    }
+    catch(win32_exception e)
+    {
+      e.writelog(__FUNCTION__);
+    }
+  }
 }
 
 
@@ -2010,8 +2037,16 @@ float CMPlayer::GetActualFPS()
 bool CMPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 {
   strSubtitle = "";
-  
-  subtitle* sub = mplayer_GetCurrentSubtitle();
+  subtitle* sub = NULL;
+  try 
+  {
+    sub = mplayer_GetCurrentSubtitle();
+  }
+  catch(win32_exception e)
+  {
+    e.writelog(__FUNCTION__);
+  }
+
   if (sub)
   {
     for (int i = 0; i < sub->lines; i++)
