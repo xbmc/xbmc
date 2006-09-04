@@ -7,7 +7,6 @@ Todo/BUG: GeminiServer 10.05.2005
 
 - TODO: Create EEPROM Backup [CreateEEPROMBackup], like ConfigMagic also cfg and TXT [50% done cur_on pending]
 - TODO: Need Better routine that checks if the XBOX is Connected to the Internet!
-- TODO: MemoryStick Detection on which Port and Size!
 
 - Exlude from System Info: May Fix Later!   
 BUG: HDD Password is show Wrong!! Print HDD Password... [SomeThing Goes Wrong! Need analizing & Fixing!]
@@ -631,11 +630,11 @@ bool CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate)
 bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
 {
   // XBOX ModCHIP Type Detection GeminiServer
-  CStdString ModChip    = g_SYSinfo.GetModCHIPDetected();
+  CStdString ModChip    = g_SYSinfo.GetModCHIPDetected().c_str();
   CStdString lblModChip = g_localizeStrings.Get(13291).c_str();
-  // Chech if it is a SmartXX or Another One!
+   // Chech if it is a SmartXX
   CStdString strIsSmartXX = g_SYSinfo.SmartXXModCHIP();
-  if (strIsSmartXX != "None")
+  if (!strIsSmartXX.Equals("None"))
   { 
     strModChip.Format("%s %s", lblModChip.c_str(),strIsSmartXX.c_str());
     CLog::Log(LOGDEBUG, "- Detected ModChip: %s",strIsSmartXX.c_str());
@@ -643,7 +642,16 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
   }
   else
   { 
-    strModChip.Format("%s %s", lblModChip.c_str(),ModChip.c_str()); 
+    CStdString strXBOXVersion;
+    g_SYSinfo.GetXBOXVersionDetected(strXBOXVersion);
+    if ( strXBOXVersion.Equals("v1.6") && ModChip.Equals("Unknown/Onboard TSOP (protected)"))
+    {
+      strModChip.Format("%s %s", lblModChip.c_str(),"Unknown / (Protected)"); 
+    }
+    else
+    {
+      strModChip.Format("%s %s", lblModChip.c_str(),ModChip.c_str()); 
+    }
     return true;
   }
   return false; 

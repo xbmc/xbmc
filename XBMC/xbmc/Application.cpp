@@ -161,6 +161,7 @@
 
 CStdString g_LoadErrorStr;
 
+
 extern "C"
 {
 	extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
@@ -784,6 +785,8 @@ HRESULT CApplication::Create()
 // now check if we are switching video modes. if, are we in the wrong mode according to eeprom?
   if (g_guiSettings.GetBool("myprograms.gameautoregion"))
   {
+    bool fDoPatchTest = false;
+    
     // should use xkeeprom.h :/
     EEPROMDATA EEPROM;
   	ZeroMemory(&EEPROM, sizeof(EEPROMDATA));
@@ -807,6 +810,7 @@ HRESULT CApplication::Create()
         ForceVideo = VIDEO_NTSCM;
         ForceCountry = COUNTRY_USA;
         bNeedReboot = true;
+        fDoPatchTest = true;
       }
       else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::PAL_I) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) || initialResolution < 6))
       {
@@ -814,6 +818,7 @@ HRESULT CApplication::Create()
         ForceVideo = VIDEO_PAL50;
         ForceCountry = COUNTRY_EUR;
         bNeedReboot = true;
+        fDoPatchTest = true;
       }
       else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_J) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || initialResolution > 5))
       {
@@ -821,6 +826,19 @@ HRESULT CApplication::Create()
         ForceVideo = VIDEO_NTSCJ;
         ForceCountry = COUNTRY_JAP;
         bNeedReboot = true;
+        fDoPatchTest = true;
+      }
+      else
+        CUtil::RemoveKernelPatch(); // This removes the Resolution patch from the kernel if it is not needed (if actual resolution matches eeprom setting)	
+
+      if (fDoPatchTest) // Is set if we have to test whether our patch is in the kernel & therefore responsible for the mismatch of resolution & eeprom setting
+      {	
+        if (!CUtil::LookForKernelPatch()) // If our patch is not present we are not responsible for the mismatch of current resolution & eeprom setting
+        {
+          // We do a hard reset to come back to default resolution and avoid infinite reboots
+          CLog::Log(LOGINFO, "No infinite reboot loop...");
+          g_applicationMessenger.Reset();
+        }
       }
     }
   } 
@@ -1256,10 +1274,21 @@ void CApplication::StartFtpServer()
       // if user didn't upgrade properly...
       // check whether P:\\FileZilla Server.xml exists (UserData/FileZilla Server.xml)
       if (CFile::Exists("P:\\FileZilla Server.xml"))
+      {
         m_pFileZilla = new CXBFileZilla("P:\\");
+        // GeminiServer!
+        // We need to set the FTP Password from the GUI to the XML! To be sure this is the right one for the internal settings! (Pass can be changed via XML!)
+        // The user must always set the Password within the GUI Settings!
+        // Todo: After v2.0! FTP Server Usermanager [Only Create/Delete FTP-USERS!]
+        // Seems this would slow the startup of XBMC! ? What should we do!
+        CUtil::SetFTPServerUserPassword(g_guiSettings.GetString("servers.ftpserveruser").c_str(),g_guiSettings.GetString("servers.ftpserverpassword").c_str()); 
+      }
       else
+      {
         m_pFileZilla = new CXBFileZilla("Q:\\System\\");
-      m_pFileZilla->Start(false);
+        m_pFileZilla->Start(false);
+        CUtil::SetFTPServerUserPassword(g_guiSettings.GetString("servers.ftpserveruser").c_str(),g_guiSettings.GetString("servers.ftpserverpassword").c_str()); 
+      }
     }
     //CLog::Log(LOGNOTICE, "XBFileZilla: Started");
   }
@@ -1359,47 +1388,53 @@ void CApplication::StopUPnP()
 
 void CApplication::StartLEDControl(bool switchoff)
 {
-  if (g_guiSettings.GetInt("led.colour") != LED_COLOUR_NO_CHANGE)
-    CLog::Log(LOGNOTICE, "Start LED Control");
-  if (switchoff == true && g_guiSettings.GetInt("led.colour") != LED_COLOUR_NO_CHANGE)
+  if (switchoff && g_guiSettings.GetInt("led.colour") != LED_COLOUR_NO_CHANGE)
   {
-    if ( IsPlayingVideo() && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
+    if ( (IsPlayingVideo()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
     {
-      CLog::Log(LOGNOTICE, "LED Control: Playing Video LED is switched OFF!");
+      //CLog::Log(LOGNOTICE, "LED Control: Playing Video LED is switched OFF!");
       ILED::CLEDControl(LED_COLOUR_OFF);
     }
-    if ( IsPlayingAudio() && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_MUSIC)
+    if ( (IsPlayingAudio()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_MUSIC)
     {
-      CLog::Log(LOGNOTICE, "LED Control: Playing Music LED is switched OFF!");
+      //CLog::Log(LOGNOTICE, "LED Control: Playing Music LED is switched OFF!");
       ILED::CLEDControl(LED_COLOUR_OFF);
     }
-    if ( (IsPlayingVideo() || IsPlayingAudio()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
+    if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
     {
-      CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
+      //CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
       ILED::CLEDControl(LED_COLOUR_OFF);
     }
   }
-  else if (switchoff == false)
+  else if (!switchoff)
   {
     ILED::CLEDControl(g_guiSettings.GetInt("led.colour"));
   }
-  // and dim our LCD as required as well
-  DimLCDOnPlayback(switchoff);
 }
 
 void CApplication::DimLCDOnPlayback(bool dim)
 {
-  if (g_lcd && g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
+  if(g_lcd && dim && (g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF) && (g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE))
   {
-    CLog::Log(LOGNOTICE, "Dim LCD On Playback");
-    if (IsPlayingVideo() && dim == true && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
+    if ( (IsPlayingVideo()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO)
     {
+      //CLog::Log(LOGNOTICE, "LCD Control: Playing Video LCD is switched OFF!");
       g_lcd->SetBackLight(0);
     }
-    else if (dim == false && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
+    if ( (IsPlayingAudio()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_MUSIC)
     {
-      g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
+      //CLog::Log(LOGNOTICE, "LCD Control: Playing Music LCD is switched OFF!");
+      g_lcd->SetBackLight(0);
     }
+    if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
+    {
+      //CLog::Log(LOGNOTICE, "LCD Control: Playing Video Or Music LCD is switched OFF!");
+      g_lcd->SetBackLight(0);
+    }
+  }
+  else if(!dim) 
+  {
+    g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
   }
 }
 
@@ -1771,7 +1806,6 @@ void CApplication::Render()
     m_pCdgParser->ProcessVoice();
 
   // check if we haven't rewound past the start of the file
-
   if (IsPlaying())
   {
     int iSpeed = g_application.GetPlaySpeed();
@@ -1828,7 +1862,6 @@ void CApplication::Render()
   {
     g_graphicsContext.EnablePreviewWindow(false);
   }
-
   // update our FPS
   g_infoManager.UpdateFPS();
 
@@ -1951,7 +1984,6 @@ void CApplication::Render()
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
   g_graphicsContext.Unlock();
   
-
 }
 
 void CApplication::RenderMemoryStatus()
@@ -2174,8 +2206,8 @@ bool CApplication::OnAction(const CAction &action)
       if (!m_pPlayer->IsPaused())
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
+        return true;
       }
-      return true;
     }
     if (!m_pPlayer->IsPaused())
     {
@@ -3212,6 +3244,13 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   return bResult;
 }
 
+void CApplication::OnPlayBackPaused()
+{
+  //TODO after v2.0
+  //we need Paused state returned!
+  //StartLEDControl(false);
+  //DimLCDOnPlayback(false);
+}
 void CApplication::OnPlayBackEnded()
 {
   //playback ended
@@ -3226,6 +3265,7 @@ void CApplication::OnPlayBackEnded()
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL);
   m_gWindowManager.SendThreadMessage(msg);
   StartLEDControl(false);
+  DimLCDOnPlayback(false);
 
   //  Reset audioscrobbler submit status
   CScrobbler::GetInstance()->SetSubmitSong(false);
@@ -3245,6 +3285,7 @@ void CApplication::OnPlayBackStarted()
   CheckNetworkHDSpinDown(true);
 
   StartLEDControl(true);
+  DimLCDOnPlayback(true);
 }
 
 void CApplication::OnQueueNextItem()
@@ -3269,6 +3310,7 @@ void CApplication::OnPlayBackStopped()
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
   m_gWindowManager.SendMessage(msg);
   StartLEDControl(false);
+  DimLCDOnPlayback(false);
   //  Reset audioscrobbler submit status
   CScrobbler::GetInstance()->SetSubmitSong(false);
 }
@@ -4151,6 +4193,15 @@ void CApplication::ProcessSlow()
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
+  
+  // LED - LCD SwitchOn On Paused!!
+  if(IsPlaying())
+  {     
+    if(g_guiSettings.GetBool("led.enableonpaused"))
+      StartLEDControl(!IsPaused());
+    if(g_guiSettings.GetBool("lcd.enableonpaused"))
+      DimLCDOnPlayback(!IsPaused());
+  }
 }
 
 // GeminiServer: Global Idle Time in Seconds

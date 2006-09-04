@@ -69,6 +69,7 @@ public:
   const EPLAYERCORES GetCurrentPlayer();
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnPlayBackEnded();
+  virtual void OnPlayBackPaused();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
@@ -157,38 +158,6 @@ public:
 
   
 protected:
-  void SetHardwareVolume(long hardwareVolume);
-  bool PlayStack(const CFileItem& item, bool bRestart);
-  EPLAYERCORES m_eCurrentPlayer;
-  void UpdateLCD();
-  bool SwitchToFullScreen();
-  void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
-  bool ProcessMouse();
-  bool ProcessHTTPApiButtons();
-  bool ProcessKeyboard();
-  bool ProcessRemote(float frameTime);
-  bool ProcessGamepad(float frameTime);
-  float NavigationIdleTime();
-  void CheckForDebugButtonCombo();
-
-  void InitBasicD3D();
-  bool m_bXboxMediacenterLoaded;
-  bool m_bSettingsLoaded;
-  int m_iPlaySpeed;
-  bool m_bAllSettingsLoaded;
-  bool m_bInitializing;
-  CFileItem m_itemCurrentFile;
-  CFileItemList m_currentStack;
-  int m_currentStackPosition;
-  int m_nextPlaylistItem;
-  bool m_playCountUpdated;
-  D3DGAMMARAMP m_OldRamp;  // CB: SCREENSAVER PATCH
-  CSplash* m_splash;
-
-  DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where
-                          // we are firing a thread with delay from.
-  static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
-
   // timer information
   CXBStopWatch m_idleTimer;
   CXBStopWatch m_restartPlayerTimer;
@@ -196,7 +165,44 @@ protected:
   CXBStopWatch m_navigationTimer;
   CXBStopWatch m_slowTimer;
 
+  CFileItem m_itemCurrentFile;
+  CFileItemList m_currentStack;
+  D3DGAMMARAMP m_OldRamp;  // CB: SCREENSAVER PATCH
+  CSplash* m_splash;
+  DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
+  EPLAYERCORES m_eCurrentPlayer;
+  
+  bool m_bXboxMediacenterLoaded;
+  bool m_bSettingsLoaded;
   bool m_switchingToFullScreen;
+  bool m_bAllSettingsLoaded;
+  bool m_bInitializing;
+  bool m_playCountUpdated;
+  
+  int m_iPlaySpeed;
+  int m_currentStackPosition;
+  int m_nextPlaylistItem;
+
+  static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
+
+  void SetHardwareVolume(long hardwareVolume);
+  void UpdateLCD();
+  void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
+  void CheckForDebugButtonCombo();
+  void InitBasicD3D();
+  
+  
+  bool PlayStack(const CFileItem& item, bool bRestart);
+  bool SwitchToFullScreen();
+  bool ProcessMouse();
+  bool ProcessHTTPApiButtons();
+  bool ProcessKeyboard();
+  bool ProcessRemote(float frameTime);
+  bool ProcessGamepad(float frameTime);
+ 
+  
+  float NavigationIdleTime();
+ 
 };
 
 extern CApplication g_application;
