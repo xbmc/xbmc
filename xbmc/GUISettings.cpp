@@ -171,18 +171,19 @@ CGUISettings::CGUISettings(void)
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddInt(2, "slideshow.transistiontime", 225, 2500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
   AddBool(3, "slideshow.displayeffects", 12379, true);
-  AddSeparator(6, "slideshow.sep1");
   AddBool(0, "slideshow.shuffle", 13319, false);
 
   // Programs settings
   AddGroup(1, 0);
   AddCategory(1, "myprograms", 16000);
-  AddBool(1, "myprograms.gameautoregion",511,false);
-  AddInt(2, "myprograms.ntscmode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
-  AddString(3, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
+  AddBool(1, "myprograms.autoffpatch", 29999, false);
+  AddSeparator(2,"myprograms.sep1");
+  AddBool(3, "myprograms.gameautoregion",511,false);
+  AddInt(4, "myprograms.ntscmode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
+  AddSeparator(5,"myprograms.sep2");
+  AddString(6, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
   //  TODO: localize 2.0
-  AddString(4, "myprograms.trainerpath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 20003);
-  AddBool(5, "myprograms.autoffpatch", 29999, false);
+  AddString(7, "myprograms.trainerpath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 20003);
 
   AddCategory(1,"programfiles",744);
   AddBool(1, "programfiles.useautoswitching", 14011, false);
@@ -238,17 +239,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(10,"musicfiles.sep3");
   AddString(11,"musicfiles.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20005);
 
-  AddCategory(3, "musicplaylist", 136);
-  AddBool(1, "musicplaylist.clearplaylistsonend",239,false);
-
-  AddCategory(3, "cddaripper", 620);
-  AddString(1, "cddaripper.trackformat", 13307, "%N. %T - %A", BUTTON_CONTROL_INPUT, false, 16016);
-  AddInt(2, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
-  AddInt(3, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
-  AddInt(4, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
-  //  TODO: localize 2.0
-  AddString(5, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 20000);
-
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddBool(2, "musicplayer.outputtoallspeakers", 252, false);
@@ -260,6 +250,17 @@ CGUISettings::CGUISettings(void)
   AddSeparator(8, "musicplayer.sep2");
   AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
+
+  AddCategory(3, "musicplaylist", 136);
+  AddBool(1, "musicplaylist.clearplaylistsonend",239,false);
+
+  AddCategory(3, "cddaripper", 620);
+  AddInt(1, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
+  AddInt(2, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
+  AddInt(3, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
+  //  TODO: localize 2.0
+  AddString(4, "cddaripper.trackformat", 13307, "%N. %T - %A", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(5, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 20000);
   
   AddCategory(3, "karaoke", 13327);
   AddBool(1, "karaoke.enabled", 13323, false);
@@ -423,10 +424,10 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(6,"autodetect",           1250  );
   AddBool(1,    "autodetect.onoff",     1251, true);
-  AddString(2,  "autodetect.nickname",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
-  AddBool(4,    "autodetect.popupinfo", 1254, true);
-  AddSeparator(5, "autodetect.sep1");
-  AddBool(6,    "autodetect.senduserpw",1255, true); // can be in advanced.xml! default:true
+  AddBool(2,    "autodetect.popupinfo", 1254, true);
+  AddString(3,  "autodetect.nickname",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
+  AddSeparator(4, "autodetect.sep1");
+  AddBool(5,    "autodetect.senduserpw",1255, true); // can be in advanced.xml! default:true
   
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
@@ -454,7 +455,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(12, "lookandfeel.sep2");
   AddInt(13, "lookandfeel.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);  
   AddString(14, "lookandfeel.guicalibration",213,"", BUTTON_CONTROL_STANDARD);
-  AddSeparator(15, "lookandfeel.sep3");
   
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideextensions", 497, false);
