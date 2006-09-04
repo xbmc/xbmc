@@ -157,7 +157,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   //CURL doesn't seem to understand that data is encoded.. odd
   // opening as text for now
   //http.SetContentEncoding("deflate");
-  
+
   if( !http.Open(url, false) ) 
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Unable to get shoutcast dir");
