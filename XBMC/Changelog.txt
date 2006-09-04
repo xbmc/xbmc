@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-09-2006 fixed: xbmc would crash if mplayer failed to open video codec in avi. updated mplayer.dll + additional handlings of exceptions in mplayer core.
  - 04-09-2006 changed: more agressive rarmanager. deletes the biggest "alien" file found if it runs out of caching space.
  - 04-09-2006 changed: since the majority of all file reading done in xbmc expects the CFile::Read function to fully read the requested size, add a wrapper in CFile wich does this for us. (can be overridden with flag READ_TRUNCATED)
  - 04-09-2006 fixed: comic books (.cbr/.cbz) now can hold folder.jpg, or you can use a .tbn.
