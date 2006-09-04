@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-09-2006 fixed: Better reliability of pls parsing (should workaround the shoutcast problems)
  - 04-09-2006 fixed: Playback of 96kHz tracks with paplayer.
  - 03-09-2006 fixed: Query Info for All Files did not treat DVDs as a single entity.
  - 03-09-2006 fixed: [ 1551186 ] CD'S with datatrack do not rip correctly.
