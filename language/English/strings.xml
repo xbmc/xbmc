@@ -1437,5 +1437,9 @@
   <string id="20307">Secondary DNS</string>
   <string id="20308">DHCP Server:</string>
   <string id="20309">Make New Folder</string>
+  <string id="20310">Dim LCD off on Playback</string>
+  <string id="20311">Unknown or Onboard (protected)</string>
+  <string id="20312">Dim On LCD on Paused</string>
+  <string id="20313">Switch ON LED on Paused </string>
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>
