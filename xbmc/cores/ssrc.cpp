@@ -3573,15 +3573,7 @@ int Cssrc::UpSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead
 //---------------------------------------------------------------------------
 int Cssrc::DownSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread)
 {
-  int i, j;
-  double att = 0;
-  double gain = pow(10.0, -att / 20);
-
-  int ToRet = 0;
-
-  bool BreakOut = false;
-
-
+  int i;
 
   switch (bps)
   {
@@ -3613,6 +3605,31 @@ int Cssrc::DownSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberea
 
   for (; i < nch*toberead; i++)
     inbuf[i] = 0;
+
+  return DownSampleCommon(pRetDataPtr, IsEof, toberead, nsmplread);
+}
+
+int Cssrc::DownSampleFloatIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread)
+{
+  float *floatIn = (float *)rawinbuf;
+  fast_memcpy(inbuf + nch*inbuflen, floatIn, nsmplread*nch*sizeof(REAL));
+
+  // pad with zeros
+  for (int i = nsmplread*nch; i < nch*toberead; i++)
+    inbuf[nch*inbuflen + i] = 0;
+
+  return DownSampleCommon(pRetDataPtr, IsEof, toberead, nsmplread);
+}
+
+int Cssrc::DownSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread)
+{
+  int i, j;
+  double att = 0;
+  double gain = pow(10.0, -att / 20);
+
+  int ToRet = 0;
+
+  bool BreakOut = false;
 
   sumread += nsmplread;
   ending = IsEof;
@@ -4041,7 +4058,8 @@ int Cssrc::GetInputSamples()
   }
   else if (DownSampling)
   {
-    return -1;  // unimplemented
+    int toberead = (n1b2-rps-1)/osf+1;
+    return toberead * nch;
   }
   else
   {
@@ -4093,7 +4111,28 @@ int Cssrc::PutFloatData(float *pInData, int numSamples)
   }
   else if (DownSampling)
   { // unimplemented!
-    return 0;
+    int toberead = (n1b2-rps-1)/osf+1;
+
+    int iAmountToRead = toberead * nch;
+    // Check that we've got enough data
+    if (numSamples < iAmountToRead)
+      return -1;
+
+    // Doesn't currently support EOF reading
+    bool IsEOF(false);
+
+    //---run downsample-----
+    int nsmplread = toberead;
+    rawinbuf = (unsigned char *)pInData;
+    unsigned char *pOutData = NULL;
+    int iNewSamples = DownSampleFloatIn(&pOutData, IsEOF, toberead, nsmplread);
+    // save data into our output buffer
+    if (iNewSamples)
+    {
+      fast_memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
+      m_iResampleBufferPos += iNewSamples;
+    }
+    return iAmountToRead;
   }
   else
   { // just convert to the output bits per sample
@@ -4158,7 +4197,28 @@ int Cssrc::PutData(unsigned char *pInData, int iSize)
   }
   else if (DownSampling)
   { // unimplemented!
-    return 0;
+    int toberead = (n1b2-rps-1)/osf+1;
+
+    int iAmountToRead = toberead * bps * nch;
+    // Check that we've got enough data
+    if (iSize < iAmountToRead)
+      return -1;
+
+    // Doesn't currently support EOF reading
+    bool IsEOF(false);
+
+    //---run downsample-----
+    int nsmplread = toberead;
+    rawinbuf = pInData;
+    unsigned char *pOutData = NULL;
+    int iNewSamples = DownSampleRawIn(&pOutData, IsEOF, toberead, nsmplread);
+    // save data into our output buffer
+    if (iNewSamples)
+    {
+      fast_memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
+      m_iResampleBufferPos += iNewSamples;
+    }
+    return iAmountToRead;
   }
   else
   { // just convert bitspersample (unimplemented - currently we just assume it's the same!)
