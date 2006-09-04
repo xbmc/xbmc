@@ -265,7 +265,7 @@ void CGUIDialogMediaSource::UpdateButtons()
       CStdString path;
       CURL url(item->m_strPath);
       url.GetURLWithoutUserDetails(path);
-      if (path.IsEmpty()) path = "<None>";
+      if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
       item->SetLabel(path);
       CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, (void*)item);
       OnMessage(msg);
@@ -278,7 +278,7 @@ void CGUIDialogMediaSource::UpdateButtons()
     CStdString path;
     CURL url(m_paths[0]->m_strPath);
     url.GetURLWithoutUserDetails(path);
-    if (path.IsEmpty()) path = "<None>";
+    if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
     SET_CONTROL_LABEL(CONTROL_PATH, path);
   }
 }
