@@ -152,13 +152,13 @@ void XKUtils::XBOXRebootToDash()
 // To Restart or Reset the box !!!
 void XKUtils::XBOXReset()
 {
-	OUTPUT_DEBUG_STRING("XKUtils: Reset...\n");
+	// OUTPUT_DEBUG_STRING("XKUtils: Reset...\n");
 	HalWriteSMBusValue(SMBDEV_PIC16L, PIC16L_CMD_POWER, 0, POWER_SUBCMD_RESET);
 }
 
 void XKUtils::SetXBOXLEDStatus(UCHAR LEDStatus)
 {
-	OUTPUT_DEBUG_STRING("XKUtils: Setting LED Status Registers...\n");
+	// OUTPUT_DEBUG_STRING("XKUtils: Setting LED Status Registers...\n");
 	HalWriteSMBusValue(SMBDEV_PIC16L, PIC16L_CMD_LED_REGISTER, 0, LEDStatus);
 	Sleep(10);
 	HalWriteSMBusValue(SMBDEV_PIC16L, PIC16L_CMD_LED_MODE, 0, 1);
@@ -169,7 +169,7 @@ void XKUtils::SetXBOXLEDStatus(UCHAR LEDStatus)
 void XKUtils::XBOXPowerOff()
 {
 	//Console Shutdown...
-	OUTPUT_DEBUG_STRING("XKUtils: Shutdown...\n");
+	// OUTPUT_DEBUG_STRING("XKUtils: Shutdown...\n");
 	HalWriteSMBusValue(SMBDEV_PIC16L, PIC16L_CMD_POWER, 0, POWER_SUBCMD_POWER_OFF);
 }
 
@@ -184,7 +184,7 @@ void XKUtils::XBOXPowerCycle()
 }
 void XKUtils::WriteEEPROMToXBOX(LPBYTE EEPROMDATA, UCHAR STARTPOS, UCHAR ENDPOS)
 {	//  StartPos and EndPos are both ZERO offset based
-	OUTPUT_DEBUG_STRING( "XKUtils: Writing EEPROM to XBOX...\n" );
+	// OUTPUT_DEBUG_STRING( "XKUtils: Writing EEPROM to XBOX...\n" );
  	for (UCHAR i=STARTPOS;i<ENDPOS;i++)
 	{
 		HalWriteSMBusValue(SMBDEV_EEPROM , i, 0, EEPROMDATA[i]);
@@ -195,7 +195,7 @@ bool XKUtils::ReadEEPROMFromXBOX(LPBYTE EEPROMDATA, UCHAR STARTPOS, UCHAR ENDPOS
 {
 	// StartPos and EndPos are both ZERO offset based
 	BYTE pad[4];
-	OUTPUT_DEBUG_STRING( "XKUtils: Reading EEPROM from XBOX...\n" );
+	// OUTPUT_DEBUG_STRING( "XKUtils: Reading EEPROM from XBOX...\n" );
 	for (UCHAR i=STARTPOS;i<ENDPOS;i++)
 	{
     //HalReadSMBusValue allways touches 4 bytes on each call. we use a temp variable to not 
@@ -210,7 +210,7 @@ bool XKUtils::ReadEEPROMFromXBOX(LPBYTE EEPROMDATA, UCHAR STARTPOS, UCHAR ENDPOS
 void XKUtils::DVDDisableEjectReset()
 {
 
-	OUTPUT_DEBUG_STRING("XKUtils: Disable Reset on DVD Tray Eject...\n");
+	// OUTPUT_DEBUG_STRING("XKUtils: Disable Reset on DVD Tray Eject...\n");
 	HalWriteSMBusValue(SMBDEV_PIC16L, PIC16L_CMD_RESET_ON_EJECT, 0, RESET_ON_EJECT_SUBCMD_DISABLE);
 	Sleep(1);
 }
@@ -218,21 +218,21 @@ void XKUtils::DVDDisableEjectReset()
 void XKUtils::DVDEnableEjectReset()
 {
 
-	OUTPUT_DEBUG_STRING("XKUtils: Enable Reset on DVD Tray Eject...\n");
+	// OUTPUT_DEBUG_STRING("XKUtils: Enable Reset on DVD Tray Eject...\n");
 	HalWriteSMBusValue(SMBDEV_PIC16L, PIC16L_CMD_RESET_ON_EJECT, 0, RESET_ON_EJECT_SUBCMD_ENABLE);
 	Sleep(1);
 }
 
 void XKUtils::DVDEjectTray()
 {
-	OUTPUT_DEBUG_STRING("XKUtils: Ejecting DVD Tray...\n");
+	// OUTPUT_DEBUG_STRING("XKUtils: Ejecting DVD Tray...\n");
 	HalWriteSMBusValue(SMBDEV_PIC16L, PIC16L_CMD_EJECT, 0, 0x00);
 	Sleep(1);
 }
 
 void XKUtils::DVDLoadTray()
 {
-	OUTPUT_DEBUG_STRING("XKUtils: Loading DVD Tray...\n");
+	// OUTPUT_DEBUG_STRING("XKUtils: Loading DVD Tray...\n");
 	HalWriteSMBusValue(SMBDEV_PIC16L, PIC16L_CMD_EJECT, 0, EJECT_SUBCMD_LOAD);
 	Sleep(1);
 }
