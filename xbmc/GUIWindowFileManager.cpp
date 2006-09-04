@@ -1218,7 +1218,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     int btn_Delete = pMenu->AddButton(117); // Delete
     int btn_Copy = pMenu->AddButton(115); // Copy
     int btn_Move = pMenu->AddButton(116); // Move
-    int btn_NewFolder = pMenu->AddButton(119); // New Folder
+    int btn_NewFolder = pMenu->AddButton(20309); // New Folder
     int btn_Size = pMenu->AddButton(13393); // Calculate Size
     //int btn_Settings = -2;
     int btn_Settings = pMenu->AddButton(5);         // Settings
