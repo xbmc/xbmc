@@ -528,7 +528,7 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(MD5_Sign));
 							CLog::Log(LOGINFO, "  Add this to BiosIDs.ini: (256)BiosNameHere = %hs",MD5_Sign);
 							CLog::Log(LOGINFO, "---------------------------------------------------------");
-							strDetBiosNa = "Unknown! Add. MD5 from Log to BiosIDs.ini!";
+							strDetBiosNa = g_localizeStrings.Get(20306);
 							free(BIOS_Name);
 							return true;
 					}
@@ -543,7 +543,7 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(MD5_Sign));
 							CLog::Log(LOGINFO, "  Add. this to BiosIDs.ini: (512)BiosNameHere = %hs",MD5_Sign);
 							CLog::Log(LOGINFO, "---------------------------------------------------------");
-							strDetBiosNa = "Unknown! Add. MD5 from Log to BiosIDs.ini!";
+							strDetBiosNa = g_localizeStrings.Get(20306);
 							free(BIOS_Name);
 							return true;
 						}
@@ -557,7 +557,7 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(MD5_Sign));
 							CLog::Log(LOGINFO, "  Add. this to BiosIDs.ini: (1MB)BiosNameHere = %hs",MD5_Sign);
 							CLog::Log(LOGINFO, "---------------------------------------------------------");
-							strDetBiosNa = "Unknown! Add. MD5 from Log to BiosIDs.ini!";
+							strDetBiosNa = g_localizeStrings.Get(20306);
 							free(BIOS_Name);
 							return true;
 						}
@@ -729,29 +729,29 @@ bool CSysInfo::GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStd
 		DWORD SecStatus = XKHDD::GetIDESecurityStatus(hddcommand.DATA_BUFFER);
 		if (!(SecStatus & IDE_SECURITY_SUPPORTED))
 		{
-			strHDDLockState.Format("%s","LOCKING NOT SUPPORTED");
+			strHDDLockState = g_localizeStrings.Get(20164);
 			return true;
 		}
 		if ((SecStatus & IDE_SECURITY_SUPPORTED) && !(SecStatus & IDE_SECURITY_ENABLED))
 		{
-			strHDDLockState.Format("%s","NOT LOCKED");
+			strHDDLockState = g_localizeStrings.Get(20165);
 			return true;
 		}
 		if ((SecStatus & IDE_SECURITY_SUPPORTED) && (SecStatus & IDE_SECURITY_ENABLED))
 		{
-			strHDDLockState.Format("%s","LOCKED");
+			strHDDLockState = g_localizeStrings.Get(20166);
 			return true;
 		}
 		
 		if (SecStatus & IDE_SECURITY_FROZEN)
 		{
-			strHDDLockState.Format("%s","FROZEN");
+			strHDDLockState = g_localizeStrings.Get(20167);
 			return true;
 		}
 		
 		if (SecStatus & IDE_SECURITY_COUNT_EXPIRED)
 		{
-			strHDDLockState.Format("%s","REQUIRES RESET");
+			strHDDLockState = g_localizeStrings.Get(20168);
 			return true;
 		}
 	return true;
