@@ -172,7 +172,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       /* make sure we don't try to read more than filesize*/
       if (iBytesToRead > llFileSize) iBytesToRead = llFileSize;
 
-      iRead = file.Read(buffer.get(), iBytesToRead);
+      iRead = file.Read(buffer.get(), iBytesToRead, READ_TRUNCATED);
       if (iRead == 0) break;
       else if (iRead < 0) 
       {
@@ -351,9 +351,31 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 //*********************************************************************************************
 unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
 {
+  return Read(lpBuf, (unsigned int)uiBufSize, 0);
+}
+
+unsigned int CFile::Read(void *lpBuf, unsigned int uiBufSize, unsigned flags)
+{
   try
   {
-    if (m_pFile) return m_pFile->Read(lpBuf, uiBufSize);
+    if (m_pFile) 
+    {
+      if(flags & READ_TRUNCATED)
+        return m_pFile->Read(lpBuf, uiBufSize);
+      else
+      {        
+        unsigned int done = 0;
+        while((uiBufSize-done) > 0)
+        {
+          unsigned int curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
+          if(curr==0)
+            break;
+
+          done+=curr;
+        }
+        return done;
+      }        
+    }
     return 0;
   }
   catch (const win32_exception &e) 

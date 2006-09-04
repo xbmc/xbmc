@@ -371,7 +371,7 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-       return pFile->Read(buffer, uiSize);
+       return pFile->Read(buffer, uiSize, READ_TRUNCATED);
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
