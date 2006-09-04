@@ -63,9 +63,11 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
   }
   CStdString strLine = szLine;
   StringUtils::RemoveCRLF(strLine);
-  while (strLine[0] == ' ' || strLine[0] == '\t')
-    strLine.erase(0,1);
-  if (strLine != START_PLAYLIST_MARKER)
+  strLine.TrimLeft(" \t");
+
+  // run through looking for the [playlist] marker.
+  // if we find another http stream, then load it.
+  while (strLine != START_PLAYLIST_MARKER)
   {
     CFileItem item(strLine, false);
     CURL url(strLine);
@@ -91,8 +93,14 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
       file.Close();
       return true;
     }
-    file.Close();
-    return false;
+    if ( !file.ReadString(szLine, sizeof(szLine) ) )
+    {
+      file.Close();
+      return false;
+    }
+    strLine = szLine;
+    StringUtils::RemoveCRLF(strLine);
+    strLine.TrimLeft(" \t");
   }
 
   int iMaxSize = 0;
@@ -228,6 +236,10 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
   if (strContentType == "audio/x-scpls" || strContentType == "playlist")
   {
     return LoadPLSInfo(strURL, strContentType, true);
+  }
+  if (strContentType == "text/html")
+  { // most probably a server is b0rking - try pls
+    return LoadPLSInfo(strURL, "playlist", true);
   }
   
   CLog::Log(LOGWARNING, __FUNCTION__" - Unknown playlist contenttype %s", strContentType.c_str());
