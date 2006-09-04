@@ -19,6 +19,10 @@ class IFileCallback
 public:
   virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) = 0;
 };
+
+/* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
+#define READ_TRUNCATED 0x1  
+
 class CFile
 {
 public:
@@ -26,7 +30,8 @@ public:
   virtual ~CFile();
 
   bool Open(const CStdString& strFileName, bool bBinary = true);
-  bool OpenForWrite(const CStdString& strFileName, bool bBinary = true, bool bOverWrite = false);
+  bool OpenForWrite(const CStdString& strFileName, bool bBinary = true, bool bOverWrite = false);  
+  unsigned int Read(void* lpBuf, unsigned int uiBufSize, unsigned int flags);
   unsigned int Read(void* lpBuf, __int64 uiBufSize);
   bool ReadString(char *szLine, int iLineLength);
   int Write(const void* lpBuf, __int64 uiBufSize);
