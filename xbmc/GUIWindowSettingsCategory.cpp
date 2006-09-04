@@ -530,7 +530,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(351), LED_COLOUR_OFF);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("led.disableonplayback"))
+    else if (strSetting.Equals("led.disableonplayback") || strSetting.Equals("lcd.disableonplayback"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -844,11 +844,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetLabel2(g_weatherManager.GetAreaCity(pSetting->GetData()));
     }
-    else if (strSetting.Equals("led.disableonplayback"))
+    else if (strSetting.Equals("led.disableonplayback") || strSetting.Equals("led.enableonpaused"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       int iColour = g_guiSettings.GetInt("led.colour");
-      pControl->SetEnabled(iColour != LED_COLOUR_NO_CHANGE && iColour != LED_COLOUR_OFF);
+      pControl->SetEnabled(/*iColour != LED_COLOUR_NO_CHANGE &&*/ iColour != LED_COLOUR_OFF);
     }
     else if (strSetting.Equals("mymusic.trackformat"))
     {
@@ -2384,6 +2384,7 @@ void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
 }
 bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
 {
+  // TODO: Read the FileZilla Server XML and Set it here!
   // Get GUI USER and pass and set pass to FTP Server
     CStdString strFtpUserName, strFtpUserPassword;
     strFtpUserName      = g_guiSettings.GetString("servers.ftpserveruser");
