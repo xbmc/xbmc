@@ -7,9 +7,10 @@
                             // using a multiple of 1, 2, 3, 4, 5, 6 to guarantee track alignment
                             // note that 7 or higher channels won't work too well.
 
-#define INPUT_SIZE PACKET_SIZE * 2  // input data size we read from the codecs at a time
+#define INPUT_SIZE PACKET_SIZE * 3      // input data size we read from the codecs at a time
+                                        // * 3 to allow 24 bit audio
 
-#define OUTPUT_SAMPLES PACKET_SIZE / 2  // max number of output samples
+#define OUTPUT_SAMPLES PACKET_SIZE      // max number of output samples
 #define INPUT_SAMPLES  PACKET_SIZE      // number of input samples (distributed over channels)
 
 #define STATUS_NO_FILE  0
