@@ -215,7 +215,7 @@ do{
 
     pos = (off_t)priv->idx_offset+AVI_IDX_OFFSET(idx);
     if((pos<demux->movi_start || pos>=demux->movi_end) && (demux->movi_end>demux->movi_start) && (demux->stream->flags & STREAM_SEEK)){
-      mp_msg(MSGT_DEMUX,MSGL_V,"ChunkOffset out of range!   idx=0x%X  \n",pos);
+      mp_msg(MSGT_DEMUX,MSGL_V,"ChunkOffset out of range!   idx=0x%"PRIX64"  \n",(int64_t)pos);
       continue;
     }
 #if 0
@@ -239,7 +239,7 @@ do{
 //    if((len&(~1))!=(idx->dwChunkLength&(~1))){
 //    if((len)!=(idx->dwChunkLength)){
     if((len!=idx->dwChunkLength)&&((len+1)!=idx->dwChunkLength)){
-      mp_msg(MSGT_DEMUX,MSGL_V,"ChunkSize mismatch! raw=%d idx=%ld  \n",len,idx->dwChunkLength);
+      mp_msg(MSGT_DEMUX,MSGL_V,"ChunkSize mismatch! raw=%d idx=%d  \n",len,idx->dwChunkLength);
       if(len>0x200000 && idx->dwChunkLength>0x200000) continue; // both values bad :(
       len=choose_chunk_len(idx->dwChunkLength,len);
     }
@@ -327,7 +327,7 @@ do{
 
     pos = priv->idx_offset+AVI_IDX_OFFSET(idx);
     if((pos<demux->movi_start || pos>=demux->movi_end) && (demux->movi_end>demux->movi_start)){
-      mp_msg(MSGT_DEMUX,MSGL_V,"ChunkOffset out of range!  current=0x%X  idx=0x%X  \n",demux->filepos,pos);
+      mp_msg(MSGT_DEMUX,MSGL_V,"ChunkOffset out of range!  current=0x%"PRIX64"  idx=0x%"PRIX64"  \n",(int64_t)demux->filepos,(int64_t)pos);
       continue;
     }
 #if 0
@@ -350,7 +350,7 @@ do{
     }
     len=stream_read_dword_le(demux->stream);
     if((len!=idx->dwChunkLength)&&((len+1)!=idx->dwChunkLength)){
-      mp_msg(MSGT_DEMUX,MSGL_V,"ChunkSize mismatch! raw=%d idx=%ld  \n",len,idx->dwChunkLength);
+      mp_msg(MSGT_DEMUX,MSGL_V,"ChunkSize mismatch! raw=%d idx=%d  \n",len,idx->dwChunkLength);
       if(len>0x200000 && idx->dwChunkLength>0x200000) continue; // both values bad :(
       len=choose_chunk_len(idx->dwChunkLength,len);
     }
@@ -555,8 +555,8 @@ demuxer_t* demux_open_avi(demuxer_t* demuxer){
   // calculating audio/video bitrate:
   if(priv->idx_size>0){
     // we have index, let's count 'em!
-    size_t vsize=0;
-    size_t asize=0;
+    int64_t vsize=0;
+    int64_t asize=0;
     size_t vsamples=0;
     size_t asamples=0;
     int i;
@@ -572,14 +572,14 @@ demuxer_t* demux_open_avi(demuxer_t* demuxer){
 	asamples+=(len+priv->audio_block_size-1)/priv->audio_block_size;
       }
     }
-    mp_msg(MSGT_DEMUX,MSGL_V,"AVI video size=%lu (%lu) audio size=%lu (%lu)\n",vsize,vsamples,asize,asamples);
+    mp_msg(MSGT_DEMUX,MSGL_V,"AVI video size=%"PRId64" (%u) audio size=%"PRId64" (%u)\n",vsize,vsamples,asize,asamples);
     priv->numberofframes=vsamples;
     sh_video->i_bps=((float)vsize/(float)vsamples)*(float)sh_video->video.dwRate/(float)sh_video->video.dwScale;
     if(sh_audio) sh_audio->i_bps=((float)asize/(float)asamples)*(float)sh_audio->audio.dwRate/(float)sh_audio->audio.dwScale;
   } else {
     // guessing, results may be inaccurate:
-    size_t vsize;
-    size_t asize=0;
+    int64_t vsize;
+    int64_t asize=0;
 
     if((priv->numberofframes=sh_video->video.dwLength)<=1)
       // bad video header, try to get number of frames from audio
@@ -599,7 +599,7 @@ demuxer_t* demux_open_avi(demuxer_t* demuxer){
       }
     }
     vsize=demuxer->movi_end-demuxer->movi_start-asize-8*priv->numberofframes;
-    mp_msg(MSGT_DEMUX,MSGL_V,"AVI video size=%lu (%lu)  audio size=%lu\n",vsize,priv->numberofframes,asize);
+    mp_msg(MSGT_DEMUX,MSGL_V,"AVI video size=%"PRId64" (%u)  audio size=%"PRId64"\n",vsize,priv->numberofframes,asize);
     sh_video->i_bps=(float)vsize/(sh_video->frametime*priv->numberofframes);
   }
 
@@ -839,16 +839,14 @@ int demux_avi_control(demuxer_t *demuxer,int cmd, void *arg){
 
     switch(cmd) {
 	case DEMUXER_CTRL_GET_TIME_LENGTH:
-    	    if (!priv->numberofframes) return DEMUXER_CTRL_DONTKNOW;
+    	    if (!priv->numberofframes || !sh_video) return DEMUXER_CTRL_DONTKNOW;
 	    *((unsigned long *)arg)=priv->numberofframes/sh_video->fps;
 	    if (sh_video->video.dwLength<=1) return DEMUXER_CTRL_GUESS;
 	    return DEMUXER_CTRL_OK;
 
 	case DEMUXER_CTRL_GET_PERCENT_POS:
-    	    if (!priv->numberofframes) {
-		if (demuxer->movi_end==demuxer->movi_start) return DEMUXER_CTRL_DONTKNOW;
-		*((int *)arg)=(int)((demuxer->filepos-demuxer->movi_start)/((demuxer->movi_end-demuxer->movi_start)/100));
-		return DEMUXER_CTRL_OK; 
+    	    if (!priv->numberofframes || !sh_video) {
+              return DEMUXER_CTRL_DONTKNOW;
 	    }
 	    *((int *)arg)=(int)(priv->video_pack_no*100/priv->numberofframes);
 	    if (sh_video->video.dwLength<=1) return DEMUXER_CTRL_GUESS;

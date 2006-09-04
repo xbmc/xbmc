@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-09-2006 fixed: mplayer would crash if total time was requested from an avi where decoding of video had failed
   - 13-08-2006 added: demux_aac.c from mplayerhq and content-type detection for shoutcast streams
   - 13-08-2006 updated: libfaad2, demux_aac to mplayerhq version (aac+)
   - 08-08-2006 updated: demux_asf to mplayerhq version, allows dvr-ms files to be played in a better way
