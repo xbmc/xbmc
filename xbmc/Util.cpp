@@ -4109,7 +4109,7 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
         strBoosMode     = arSplit[4].c_str();
         strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
 
-        //PopUp Notification (notify antime if a box is found! no switch needed)
+        //PopUp Notification (notify anytime if a box is found! no switch needed)
         CStdString strtemplbl;
         strtemplbl.Format("%s %s",strNickName, strNewClientIP);
         g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);
@@ -4202,11 +4202,12 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
   int iUserSize = v_ftpusers.size();
 	if (iUserSize > 0)
 	{
-		for (int i = 1 ; i < iUserSize; i++)
+    int i = 1 ;
+		while( i <= iUserSize)
     {
       p_ftpUser = v_ftpusers[i-1];
       strTempUserName = p_ftpUser->GetName();
-      if (strTempUserName == strFtpUserName) 
+      if (strTempUserName.Equals(strFtpUserName.c_str()) )
       { 
         if (p_ftpUser->SetPassword(strFtpUserPassword.c_str()) != XFS_INVALID_PARAMETERS)
         {
@@ -4216,6 +4217,7 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
         }
         break;
       }
+      i++;
     }
   }
   return false;
@@ -4536,4 +4538,53 @@ bool CUtil::LoadMusicTag(CPlayList::CPlayListItem *playListItem)
     return true;
   }
   return false;
+}
+// We check if the MediaCenter-Video-patch is already installed.
+// To do this we search for the original code in the Kernel.
+// This is done by searching from 0x80011000 to 0x80024000.
+bool CUtil::LookForKernelPatch()
+{
+	BYTE	*Kernel=(BYTE *)0x80010000;
+	DWORD	i, j = 0;
+
+	for(i=0x1000; i<0x14000; i++)
+  {
+		if(Kernel[i]!=PatchData[0])
+      continue;
+		for(j=0; j<25; j++) 
+    {
+			if(Kernel[i+j]!=PatchData[j])
+        break;
+	  }
+		if(j==25) 
+      return true;
+	}
+	return false;
+}
+// This routine removes our patch if it is not used.
+// This is to ensure proper testing whether we are responsible
+// for a mismatch of eeprom setting and current resolution.
+void CUtil::RemoveKernelPatch()
+{
+	BYTE	*Kernel=(BYTE *)0x80010000;
+	DWORD	i, j = 0;
+
+	for(i=0x1000; i<0x14000; i++)
+  {
+		if(Kernel[i]!=PatchData[0])
+      continue;
+
+		for(j=0; j<25; j++) 
+    {
+			if(Kernel[i+j]!=PatchData[j])
+        break;
+    }
+		if(j==25) 
+    {
+			j=MmQueryAddressProtect(&Kernel[i]);
+			MmSetAddressProtect(&Kernel[i], 70, PAGE_READWRITE);
+			memcpy(&Kernel[i], &rawData[0], 70); // Reset Kernel
+			MmSetAddressProtect(&Kernel[i], 70, j);
+		}
+  }
 }
