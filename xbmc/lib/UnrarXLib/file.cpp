@@ -407,8 +407,8 @@ int File::DirectRead(void *Data,int Size)
     Data = (void*)(((char*)Data)+nRead);
     Size -= nRead;
   }
-  if (Read == 0)
-    return -1;
+  //if (Read == 0)
+   // return -1;
 
   return Read;
 #if 0
