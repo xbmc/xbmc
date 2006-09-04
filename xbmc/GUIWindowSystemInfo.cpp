@@ -130,29 +130,29 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
       //Open Progress Dialog
       CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-      pDlgProgress.SetHeading("System Information");
-      pDlgProgress.SetLine(0, "Detecting Hardware Values");
+      pDlgProgress.SetHeading(g_localizeStrings.Get(10007));
+      pDlgProgress.SetLine(0, g_localizeStrings.Get(20185));
       pDlgProgress.SetLine(1, "");
-      pDlgProgress.SetLine(2, "Please Wait");
+      pDlgProgress.SetLine(2, g_localizeStrings.Get(20186));
       pDlgProgress.SetPercentage(0);
       pDlgProgress.Progress();
       pDlgProgress.StartModal();
       pDlgProgress.ShowProgressBar(true);
 
       // Get Values from EEPROM 
-      pDlgProgress.SetLine(1, "Reading Values from EEPROM");
+      pDlgProgress.SetLine(1, g_localizeStrings.Get(20187));
       pDlgProgress.SetPercentage(50);
       pDlgProgress.Progress();
       if ( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&m_EEPROMData, 0, 255))
       {
         CreateEEPROMBackup("System");
-        pDlgProgress.SetLine(1, "Reading from EEPROM Done");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20188));
         pDlgProgress.SetPercentage(55);
         pDlgProgress.Progress();
       }
       m_dwlastTime=0;
       GetMPlayerVersion(strMplayerVersion);
-      pDlgProgress.SetLine(1, "Detecting Done");
+      pDlgProgress.SetLine(1, g_localizeStrings.Get(20189));
       pDlgProgress.SetPercentage(100);
       pDlgProgress.Progress();
       pDlgProgress.Close();
@@ -180,23 +180,23 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20156));
 
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-		    pDlgProgress.SetHeading("Hard Disk Information");
-        pDlgProgress.SetLine(0, "Detecting Harddisk Information");
+		    pDlgProgress.SetHeading(g_localizeStrings.Get(20156));
+        pDlgProgress.SetLine(0, g_localizeStrings.Get(20190));
         pDlgProgress.SetLine(1, "");
-        pDlgProgress.SetLine(2, "Please Wait");
+        pDlgProgress.SetLine(2, g_localizeStrings.Get(20186));
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         pDlgProgress.StartModal();
         pDlgProgress.ShowProgressBar(true);
 
         //Label 2-6; HDD Values
-        pDlgProgress.SetLine(1, "Detecting HDD Values");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20191));
         pDlgProgress.SetPercentage(60);
         pDlgProgress.Progress();
         GetATAValues(2, 3, 4, 5, 0); //0=6 is excluded.. todo: Fix the HDD PW detection!
 
         //Label 7: HDD Lock/UnLock key
-        pDlgProgress.SetLine(1, "Detecting HDD Key");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20192));
         pDlgProgress.SetPercentage(80);
         pDlgProgress.Progress();
         CStdString strhddlockey;
@@ -204,7 +204,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         //SET_CONTROL_LABEL(6,strhddlockey); //// is exclded.. todo: Fix the HDD key detection!
 
         //Label 8: HDD Temperature
-        pDlgProgress.SetLine(1, "Detecting HDD Temperature");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20193));
         pDlgProgress.SetPercentage(100);
         pDlgProgress.Progress();
         CStdString strItemhdd;
@@ -231,17 +231,17 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20157));
 
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-        pDlgProgress.SetHeading("DVD-ROM Information");
-        pDlgProgress.SetLine(0, "Detecting DVD-ROM Information");
+        pDlgProgress.SetHeading(g_localizeStrings.Get(20157));
+        pDlgProgress.SetLine(0, g_localizeStrings.Get(20194));
         pDlgProgress.SetLine(1, "");
-        pDlgProgress.SetLine(2, "Please Wait");
+        pDlgProgress.SetLine(2, g_localizeStrings.Get(20186));
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         pDlgProgress.StartModal();
         pDlgProgress.ShowProgressBar(true);
 
         //Label 2-3: DVD-ROM Values
-        pDlgProgress.SetLine(1, "Detecting Model/Firmware");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20195));
         pDlgProgress.SetPercentage(100);
         pDlgProgress.Progress();
         GetATAPIValues(2, 3);
@@ -275,22 +275,21 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
 
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-        pDlgProgress.SetHeading("Xbox Network");
-        pDlgProgress.SetLine(0, "Detecting Xbox Network Settings");
+        pDlgProgress.SetHeading(g_localizeStrings.Get(20158));
+        pDlgProgress.SetLine(0, g_localizeStrings.Get(20196));
         pDlgProgress.SetLine(1, "");
-        pDlgProgress.SetLine(2, "Please Wait");
+        pDlgProgress.SetLine(2, g_localizeStrings.Get(20186));
         pDlgProgress.SetPercentage(40);
         pDlgProgress.Progress();
         pDlgProgress.StartModal();
         pDlgProgress.ShowProgressBar(true);
 
-        pDlgProgress.SetLine(1, "Detecting Network");
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         GetNetwork(2,5,3,6,7,8,9);  // Label 2-7
 
         // Label 8: Mac Adress
-        pDlgProgress.SetLine(1, "Detecting Mac Address");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20197));
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         CStdString strMacAdress;
@@ -298,7 +297,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
           SET_CONTROL_LABEL(4, strMacAdress);
 
         // Label 9: Online State
-        pDlgProgress.SetLine(1, "Detecting Online State");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20198));
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         CStdString strInetCon;
@@ -349,17 +348,16 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
 
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-        pDlgProgress.SetHeading("Xbox Hardware");
-        pDlgProgress.SetLine(0, "Detecting Xbox Hardware");
-        pDlgProgress.SetLine(1, "");
-        pDlgProgress.SetLine(2, "Please Wait");
+        pDlgProgress.SetHeading(g_localizeStrings.Get(20160));
+        pDlgProgress.SetLine(0, g_localizeStrings.Get(20300));
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20199));
+        pDlgProgress.SetLine(2, g_localizeStrings.Get(20186));
         pDlgProgress.SetPercentage(0);
         pDlgProgress.Progress();
         pDlgProgress.StartModal();
         pDlgProgress.ShowProgressBar(true);
 
         // Label 2: XBOX Version
-        pDlgProgress.SetLine(1, "Detecting Xbox Version, Serial and CPU");
         CStdString strXBoxVer;
         GetXBVerInfo(strXBoxVer);
         SET_CONTROL_LABEL(2,strXBoxVer);
@@ -372,7 +370,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(3,strXBOXSerial);
 
         // Label 4: ModChip ID!
-        pDlgProgress.SetLine(1, "Detecting ModChip");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20301));
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         CStdString strModChip;
@@ -380,7 +378,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
           SET_CONTROL_LABEL(4,strModChip);    
 
         // Label 5: Detested BiosName
-        pDlgProgress.SetLine(1, "Detecting BIOS");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20302));
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         CStdString strBiosName;
@@ -388,7 +386,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
           SET_CONTROL_LABEL(5,strBiosName);
 
         // Label 6: CPU Speed!
-        pDlgProgress.SetLine(1, "Detecting CPU Speed");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20303));
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         CStdString strCPUFreq;
@@ -401,7 +399,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(7,strXBLiveKey);
 
         // Label 8: XBOX ProducutionDate Info
-        pDlgProgress.SetLine(1, "Detecting Production Date");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20304));
         CStdString strXBProDate;
         if (GetXBProduceInfo(strXBProDate))
           SET_CONTROL_LABEL(8,strXBProDate);  
@@ -409,7 +407,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.Progress();
 
         // Label 9,10: Attached Units!
-        pDlgProgress.SetLine(1, "Detecting Attached Units");
+        pDlgProgress.SetLine(1, g_localizeStrings.Get(20305));
         GetUnits(9, 10, 11);
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
@@ -933,11 +931,11 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
   // Get IP/Subnet/Gateway/DHCP Server/DNS1/DNS2
   const char* pszIP=g_localizeStrings.Get(150).c_str();
 
-  CStdString strlblSubnet   = g_localizeStrings.Get(13159).c_str(); //"Subnet:";      
-  CStdString strlblGateway  = g_localizeStrings.Get(13160).c_str(); //"Gateway:";
-  CStdString strlblDNS    = g_localizeStrings.Get(13161).c_str(); //"DNS:";
-  CStdString strlblDNS2    = "DNS2:";
-  CStdString strlblDHCPServer = "DHCP-Server:";
+  CStdString strlblSubnet   = g_localizeStrings.Get(13159); //"Subnet:";      
+  CStdString strlblGateway  = g_localizeStrings.Get(13160); //"Gateway:";
+  CStdString strlblDNS    = g_localizeStrings.Get(13161); //"DNS:";
+  CStdString strlblDNS2    = g_localizeStrings.Get(20307);
+  CStdString strlblDHCPServer = g_localizeStrings.Get(20308);
     
   CStdString strItem1, strItem2, strItem3, strItem4;
 
@@ -946,8 +944,8 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
   strItem2.Format("%s %s", strlblGateway.c_str(), g_network.m_networkinfo.gateway); //Gateway (Router IP)
   //strItem3.Format("%s %s", strlblDHCPServer.c_str(), g_network.m_networkinfo.dhcpserver); // DHCP-Server IP
   
-  strItem3.Format("%s1: %s", strlblDNS.c_str(), g_network.m_networkinfo.DNS1 ); // DNS1
-  strItem4.Format("%s2: %s", strlblDNS.c_str(), g_network.m_networkinfo.DNS2 ); // DNS2
+  strItem3.Format("%s: %s", strlblDNS.c_str(), g_network.m_networkinfo.DNS1 ); // DNS1
+  strItem4.Format("%s: %s", strlblDNS.c_str(), g_network.m_networkinfo.DNS2 ); // DNS2
   
   SET_CONTROL_LABEL(i_lblp2,ip);
   SET_CONTROL_LABEL(i_lblp4,strItem1);
@@ -1123,7 +1121,7 @@ bool CGUIWindowSystemInfo::GetDiskSpace(const CStdString &drive, ULARGE_INTEGER 
   {
     t1.Format("%u",totalFree.QuadPart/MB);
     t2.Format("%u",total.QuadPart/MB);
-    string.Format("%s: %s MB of %s MB %s", drive.c_str(),t1.c_str(),t2.c_str(), g_localizeStrings.Get(160).c_str());
+    string.Format(g_localizeStrings.Get(20163), drive.c_str(),t1.c_str(),t2.c_str());
     //string.Format("%s: %u MB of %u MB %s", drive.c_str(), (totalFree.QuadPart/MB), (total.QuadPart/MB), g_localizeStrings.Get(160).c_str());
   }
   else
