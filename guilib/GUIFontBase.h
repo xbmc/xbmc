@@ -14,6 +14,11 @@
 #define XBFONT_CENTER_Y   0x00000004
 #define XBFONT_TRUNCATED  0x00000008
 
+#define FONT_STYLE_NORMAL       0
+#define FONT_STYLE_BOLD         1
+#define FONT_STYLE_ITALICS      2
+#define FONT_STYLE_BOLD_ITALICS 3
+
 #define DEGREE_TO_RADIAN 0.01745329f
 class CAngle
 {
