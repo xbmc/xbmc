@@ -842,7 +842,11 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   CFileItem* pItem=m_vecItems[iItem];
 
-  return g_application.PlayFile(*pItem);
+  bool bResult = g_application.PlayFile(*pItem);
+  if (pItem->m_lStartOffset == STARTOFFSET_RESUME)
+    pItem->m_lStartOffset = 0;
+  
+  return bResult;
 }
 
 // \brief Synchonize the fileitems with the playlistplayer
