@@ -8,7 +8,6 @@
 #pragma once
 
 #include "GUIFontBase.h"
-#include <xfont.h>
 
 // forward definition
 struct FT_FaceRec_;
@@ -38,8 +37,7 @@ public:
 
   void Clear();
 
-  // Change font style: XFONT_NORMAL, XFONT_BOLD, XFONT_ITALICS, XFONT_BOLDITALICS
-  bool Load(const CStdString& strFilename, int height = 20, int style = XFONT_NORMAL);
+  bool Load(const CStdString& strFilename, int height = 20, int style = FONT_STYLE_NORMAL);
 
   virtual void Begin();
   virtual void End();
@@ -74,13 +72,14 @@ protected:
   LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
   DWORD m_fontShader;                // pixel shader for rendering chars from the 8bit alpha texture
   LPDIRECT3DDEVICE8 m_pD3DDevice;
+  unsigned int m_textureWidth;       // width of our texture
+  int m_textureRows;                 // the number of rows in our texture
+  int m_posX;                        // current position in the texture
+  int m_posY;
 
   Character *m_char;                 // our characters
   int m_maxChars;                    // size of character array (can be incremented)
   int m_numChars;                    // the current number of cached characters
-  int m_textureRows;                 // the number of rows in our texture
-  int m_posX;                        // current position in the texture
-  int m_posY;
 
   float m_ellipsesWidth;               // this is used every character (width of '.')
 

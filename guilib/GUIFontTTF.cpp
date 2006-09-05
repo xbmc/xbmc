@@ -57,7 +57,7 @@ CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
 #define ROUND(x) floorf(x + 0.5f)
 
-#define TEXTURE_WIDTH 512
+#define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
@@ -90,7 +90,7 @@ void CGUIFontTTF::ClearCharacterCache()
   m_maxChars = CHAR_CHUNK;
   m_textureRows = 0;
   // set the posX and posY so that our texture will be created on first character write.
-  m_posX = TEXTURE_WIDTH;
+  m_posX = m_textureWidth;
   m_posY = -(int)m_cellHeight;
 }
 
@@ -120,7 +120,6 @@ void CGUIFontTTF::Clear()
   }
 }
 
-// Change font style: XFONT_NORMAL, XFONT_BOLD, XFONT_ITALICS, XFONT_BOLDITALICS
 bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 {
   m_library = g_freeTypeLibrary.Get();
@@ -185,8 +184,11 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 
   m_strFilename = strFilename;
 
+  m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
+  if (m_textureWidth > 4096) m_textureWidth = 4096;
+
   // set the posX and posY so that our texture will be created on first character write.
-  m_posX = TEXTURE_WIDTH;
+  m_posX = m_textureWidth;
   m_posY = -(int)m_cellHeight;
 
   // load in the 'W' to get the "max" width of the font
@@ -436,10 +438,10 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   if (FT_Load_Glyph( m_face, glyph_index, FT_LOAD_TARGET_LIGHT ))
     return false;
   // make bold if applicable
-  if (m_iStyle == XFONT_BOLD || m_iStyle == XFONT_BOLDITALICS)
+  if (m_iStyle == FONT_STYLE_BOLD || m_iStyle == FONT_STYLE_BOLD_ITALICS)
     FT_GlyphSlot_Embolden(m_face->glyph);
   // and italics if applicable
-  if (m_iStyle == XFONT_ITALICS || m_iStyle == XFONT_BOLDITALICS)
+  if (m_iStyle == FONT_STYLE_ITALICS || m_iStyle == FONT_STYLE_BOLD_ITALICS)
     FT_GlyphSlot_Oblique(m_face->glyph);
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
@@ -450,7 +452,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   // at this point we have the information regarding the character that we need
   unsigned int width = bbox.xMax - bbox.xMin;
   // check we have enough room for the character
-  if (m_posX + width > TEXTURE_WIDTH)
+  if (m_posX + width > m_textureWidth)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
     int newHeight = m_cellHeight * (m_textureRows + 1);
     m_posX = 0;
@@ -463,7 +465,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
       CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%i > 4096 pixels long)", newHeight);
       return false;
     }
-    if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, newHeight, 1, 0, D3DFMT_LIN_L8, 0, &newTexture))
+    if (D3D_OK != m_pD3DDevice->CreateTexture(m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_L8, 0, &newTexture))
     {
       CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
       return false;
@@ -494,10 +496,21 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   m_texture->LockRect(0, &rect, NULL, 0);
   if (bitGlyph->left < 0)
     m_posX += -bitGlyph->left;
-  //CLog::Log(LOGDEBUG, __FUNCTION__" tex location %i,%i, y offset %i, x offset %i", m_posX, m_posY, bitGlyph->top, bitGlyph->left);
+
+  // set the character in our table
+  ch->letter = letter;
+  ch->originX = m_posX;
+  ch->originY = m_posY;
+  ch->left = bitGlyph->left;
+  ch->top = max((int)m_cellBaseLine - bitGlyph->top, 0);
+  ch->right = ch->left + bitmap.width;
+  ch->bottom = ch->top + bitmap.rows;
+  ch->advance = (float)m_face->glyph->advance.x / 64;
+
+  //CLog::Log(LOGDEBUG, __FUNCTION__" tex location %i,%i, y offset %i, x offset %i, width %i, height %i", m_posX, m_posY, bitGlyph->top, bitGlyph->left, bitmap.width, bitmap.rows);
   for (int y = 0; y < bitmap.rows; y++)
   {
-    BYTE *dest = (BYTE *)rect.pBits + (m_posY + y + m_cellBaseLine - bitGlyph->top) * rect.Pitch + m_posX + bitGlyph->left;
+    BYTE *dest = (BYTE *)rect.pBits + (m_posY + y + ch->top) * rect.Pitch + m_posX + bitGlyph->left;
     BYTE *source = (BYTE *)bitmap.buffer + y * bitmap.pitch;
     for (int x = 0; x < bitmap.width; x++)
     {
@@ -506,15 +519,6 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   }
   m_texture->UnlockRect(0);
 
-  // and set it in our table
-  ch->letter = letter;
-  ch->originX = m_posX;
-  ch->originY = m_posY;
-  ch->left = bitGlyph->left;
-  ch->top = m_cellBaseLine - bitGlyph->top;
-  ch->right = ch->left + bitmap.width;
-  ch->bottom = ch->top + bitmap.rows;
-  ch->advance = (float)m_face->glyph->advance.x / 64;
   m_posX += (unsigned short)max(ch->right, ch->advance + 1);
   m_numChars++;
 
