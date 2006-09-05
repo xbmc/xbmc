@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-09-2006 changed: guibuilder.py correctly uses setCoordinateResolution(), add debug info. Read the top of the script.
  - 05-09-2006 changed: LED and LCD Controll: new settings on Pause LED and or LCD Backlight will be switched On!
  - 05-09-2006 changed: LCD Dim on playback, now uses its own setting
  - 05-09-2006 fixed: FTP User Passwort is not identical with internal settings, if the user change the Password via FileZilla Server.xml and not over GUI settings!
