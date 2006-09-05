@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-09-2006 fixed: optimized memory usage of TTF texture and fixed a couple of potential crashes.
  - 05-09-2006 changed: guibuilder.py correctly uses setCoordinateResolution(), add debug info. Read the top of the script.
  - 05-09-2006 changed: LED and LCD Controll: new settings on Pause LED and or LCD Backlight will be switched On!
  - 05-09-2006 changed: LCD Dim on playback, now uses its own setting
