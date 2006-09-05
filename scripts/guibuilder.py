@@ -1,19 +1,77 @@
 '''
-This module allows you to skin your python scripts with a standard XBMC skinfile.xml.
-You may pass a dialog and a percent finished as a continuation for your scripts initialization.
+This module creates your scripts GUI from a standard XBMC skinfile.xml. It works for both Windows and
+WindowDialogs. Hopefully it will make it easier to skin your scripts for different XBMC skins.
 
-It creates a dictionary of your controls, with the controls <id> as the key (self.controls{id : control}). It also
-creates a dictionary of visibilty conditions, with the controls <id> as the key (self.visibility{id : condition}).
+There is one optional tag you may use, <resolution>. This tag is used in place of the folder structure XBMC
+skinning engine uses. It's used for setCoordinateResolution().  It is suggested you use the <resolution> tag.
+<resolution> can be one of (1080i, 720p, 480p, 480p16x9, ntsc, ntsc16x9, pal, pal16x9, pal60, pal6016x9)
+e.g. <resolution>pal</resolution>
+
+GUI Builder sets initial focus to the <control> with <id> equal to <defaultcontrol>.
+
+You may use <include> tags and references.xml will be used for default values if no tag is given.
+(Unless you use fastMethod=True) All unsupported tags will be ignored. (e.g. <animation>)
+
+GUI Builder sets up navigation based on the <onup>, <ondown>, <onleft> and <onright> tags.
+
+The <control> <type> fadelabel takes multiple <label> and/or <info> tags.
+
+The <control> <type> listcontrol supports an additional tag <label2> for use as the second column.
+GUI Builder creates a listitem from multiple <label>, <label2> and <image> tags. In most cases these
+tags won't be used as your code will populate a listcontrol.
+
+You may pass an optional path for any custom textures. If you precede the <texture> tags value with a
+backslash (\) in the xml, it will use the imagePath. Do not include ending \\ in the imagePath argument.
+e.g. <texture>\button.png</texture> will use imagePath
+
+You may pass an optional progress dialog, with an optional first line and percent finished as a continuation
+for your scripts initialization. GUI Builder will begin at percent finished and finish at 100 percent.
+
+You may pass fastMethod=True. If True, no dialogs will be displayed, GUI Builder will not resolve <include> tags
+and will not use default values from references.xml for missing tags. If you do include all necessary tags in the
+xml file and no <include> tags, this can speed up GUI creation slightly.
+
+If you are having problems, pass debug=True and progress will be output to the scripts info window and
+if <loglevel> is at one (1) or higher to xbmc.log.
+
+You need to pass your Window or WindowDialog Class as self and a skin xml file. All other arguments are optional.
+
+**************************************************************************************
+class GUIBuilder:
+GUIBuilder(win, skinXML[, imagePath, title, line1, dlg, pct, fastMethod, debug])
+
+win				: class - Your Window or WindowDialog class passed as self.
+skinXML			: string - The xml file including path you want to use.
+imagePath		: [opt] string - The path to any custom images. (do not end with \\)
+title				: [opt] string - Title you want to use for a new progress dialog.
+line1				: [opt] string - The first line of the progress dialog.
+dialog			: [opt] progress dialog - A current progress dialog.
+pct				: [opt] integer - The percent already completed. (0-100)
+fastMethod		: [opt] bool - True=no dialogs, no <include> tags and no defaults from references.xml.
+debug			: [opt] bool - True=output debug information / False=no logging.
+
+*Note, You may use the above as keywords for arguments and skip certain optional arguments.
+		  Once you use a keyword, all following arguments require the keyword.
+
+example:
+	- import guibuilder
+	- guibuilder.GUIBuilder(self,  'Project Mayhem III.xml', fastMethod=True)
+**************************************************************************************
+
+GUI Builder creates a dictionary of your controls, with the controls <id> as the key (self.controls{id : control}).
+GUI Builder creates a dictionary of visibilty conditions, with the controls <id> as the key (self.visibility{id : condition}).
 e.g.  self.controls[300].setVisible(xbmc.getCondVisibility(self.visibility[300]))
 
-It creates a dictionary of your controls positions in a tuple, with the controls <id> as the key (self.positions{id : (x, y)}).
-It also creates a list variable for a coordinates based window (self.coordinates[x, y]).
+GUI Builder creates a dictionary of your controls positions in a tuple, with the controls <id> as the key (self.positions{id : (x, y)}).
+GUI Builder creates a list variable for a <coordinates> based window (self.coordinates[x, y]).
 e.g. self.controls[300].setPosition(self.positions[300][0] + self.coordinates[0], self.positions[300][1] + self.coordinates[1])
 
-It sets self.SUCCEEDED to True if the window creation succeeded.
+GUI Builder sets self.SUCCEEDED to True if the window creation succeeded or False if something failed. You may
+want to check this before the call to doModal().
 
 Post a message at http://www.xbmc.xbox-scene.com/forum/ with any suggestions.
 
+Credits:
 GetConditionalVisibility(), GetSkinPath(), LoadReferences(), LoadIncludes(), ResolveInclude()
 The above functions were translated from Xbox Media Center's source, thanks Developers.
 A special thanks to elupus for shaming me into doing it the right way. :)
@@ -25,8 +83,10 @@ import xbmc, xbmcgui
 import xml.dom.minidom
 
 class GUIBuilder:
-	def __init__(self, win, skinXML, imagePath = '', title = 'GUI Builder', line1 = '', dlg = None, pct = 0, fastMethod = False):
+	def __init__(self, win, skinXML, imagePath='', title='GUI Builder', line1='', dlg=None, pct=0, fastMethod=False, debug=False):
 		try:
+			self.debug							= debug
+			self.debugWrite('guibuilder.py', 2)
 			self.win 							= win
 			self.win.SUCCEEDED	 			= True
 			self.skinXML 						= skinXML[skinXML.rfind('\\') + 1:]
@@ -35,13 +95,13 @@ class GUIBuilder:
 			self.lineno 							= line1 != ''
 			self.lines 							= [''] * 3
 			self.lines[0] 						= line1
-			self.lines[self.lineno] 			= 'Importing controls from %s.' % (self.skinXML,)
+			self.lines[self.lineno] 			= 'Creating GUI from %s.' % (self.skinXML,)
 			self.initVariables()
 			if (not self.fastMethod):	
 				if (dlg): self.dlg = dlg
 				else: 
 					self.dlg = xbmcgui.DialogProgress()
-					self.dlg.create(title)#, self.lines[0], self.lines[1], self.lines[2])
+					self.dlg.create(title)
 				self.dlg.update(self.pct, self.lines[0], self.lines[1], self.lines[2])
 				self.pct1 = int((100 - pct) * 0.333)
 				self.includesExist = self.LoadIncludes()
@@ -66,6 +126,18 @@ class GUIBuilder:
 				self.dlg.close()
 
 
+	def debugWrite(self, function, action, lines=[], values=[]):
+		if (self.debug):
+			Action = ('Failed', 'Succeeded', 'Started')
+			Highlight = ('__', '__', '<<<<< ', '__', '__', ' >>>>>')
+			xbmc.output('%s%s%s : (%s)\n' % (Highlight[action], function, Highlight[action + 3], Action[action]))
+			try:
+				for cnt, line in enumerate(lines):
+					fLine = '%s\n' % (line,)
+					xbmc.output(fLine % values[cnt])
+			except: pass
+
+
 	def initVariables(self):
 		self.win.SUCCEEDED	 				= True
 		self.win.controls 						= {}
@@ -75,8 +147,12 @@ class GUIBuilder:
 		#self.win.onfocus 						= {}
 		self.navigation						= {}
 		self.m_references 					= {}
+		self.resPath 							= {}
 		self.resolution							= 6
+		self.currentResolution 				= self.win.getResolution()
 		self.resolutions = {'1080i' : 0, '720p' : 1, '480p' : 2, '480p16x9' : 3, 'ntsc' : 4, 'ntsc16x9' : 5, 'pal' : 6, 'pal16x9' : 7, 'pal60' : 8, 'pal6016x9' : 9}
+		for key, value in self.resolutions.items(): self.resPath[value] = key
+		self.debugWrite('initVariables', True)
 
 
 	def GetConditionalVisibility(self, conditions):
@@ -89,6 +165,7 @@ class GUIBuilder:
 				conditionString += conditions[i] + "] + ["
 			conditionString += conditions[len(conditions) - 1] + "]"
 		return conditionString
+
 
 	def addCtl(self, control):
 		try:
@@ -132,33 +209,35 @@ class GUIBuilder:
 					textColor=control['textcolor']))
 				self.win.addControl(self.win.controls[int(control['id'])])
 				if (control.has_key('label')): self.win.controls[int(control['id'])].setText(control['label'][0])
-			elif (control['type'] == 'fadelabel' or control['type'] == 'listcontrol'):
-				if (control['type'] == 'fadelabel'):
-					self.win.controls[int(control['id'])] = (xbmcgui.ControlFadeLabel(x=int(control['posx']) + self.posx,\
-						y=int(control['posy']) + self.posy, width=int(control['width']), height=int(control['height']), font=control['font'],\
-						textColor=control['textcolor'], alignment=control['align']))#, shadowColor=control['shadowcolor']))
-					self.win.addControl(self.win.controls[int(control['id'])])
-					if (control.has_key('info')):
-						for item in control['info']:
-							if (item != ''): self.win.controls[int(control['id'])].addLabel(xbmc.getInfoLabel(item))
-					if (control.has_key('label')):
-						for item in control['label']:
-							if (item != ''): self.win.controls[int(control['id'])].addLabel(item)
-				elif (control['type'] == 'listcontrol'):
-					self.win.controls[int(control['id'])] = (xbmcgui.ControlList(x=int(control['posx']) + self.posx,\
-						y=int(control['posy']) + self.posy, width=int(control['width']), height=int(control['height']), font=control['font'],\
-						textColor=control['textcolor'], alignmentY=control['aligny'], buttonTexture=control['texturenofocus'],\
-						buttonFocusTexture=control['texturefocus'], selectedColor=control['selectedcolor'], imageWidth=int(control['itemwidth']),\
-						imageHeight=int(control['itemheight']), itemTextXOffset=int(control['textxoff']), itemTextYOffset=int(control['textyoff']),\
-						itemHeight=int(control['textureheight']), space=int(control['spacebetweenitems'])))#, shadowColor=control['shadowcolor']))
-					self.win.addControl(self.win.controls[int(control['id'])])
-					if (control.has_key('label')):
-						for cnt, item in enumerate(control['label']):
-							if (item != ''): 
-								if (cnt < len(control['label2'])): tmp = control['label2'][cnt]
-								else: tmp = ''
-								l = xbmcgui.ListItem(item, tmp, '', control['image'])
-								self.win.controls[int(control['id'])].addItem(l)
+			elif (control['type'] == 'fadelabel'):
+				self.win.controls[int(control['id'])] = (xbmcgui.ControlFadeLabel(x=int(control['posx']) + self.posx,\
+					y=int(control['posy']) + self.posy, width=int(control['width']), height=int(control['height']), font=control['font'],\
+					textColor=control['textcolor'], alignment=control['align']))#, shadowColor=control['shadowcolor']))
+				self.win.addControl(self.win.controls[int(control['id'])])
+				if (control.has_key('info')):
+					for item in control['info']:
+						if (item != ''): self.win.controls[int(control['id'])].addLabel(xbmc.getInfoLabel(item))
+				if (control.has_key('label')):
+					for item in control['label']:
+						if (item != ''): self.win.controls[int(control['id'])].addLabel(item)
+			elif (control['type'] == 'listcontrol'):
+				self.win.controls[int(control['id'])] = (xbmcgui.ControlList(x=int(control['posx']) + self.posx,\
+					y=int(control['posy']) + self.posy, width=int(control['width']), height=int(control['height']), font=control['font'],\
+					textColor=control['textcolor'], alignmentY=control['aligny'], buttonTexture=control['texturenofocus'],\
+					buttonFocusTexture=control['texturefocus'], selectedColor=control['selectedcolor'], imageWidth=int(control['itemwidth']),\
+					imageHeight=int(control['itemheight']), itemTextXOffset=int(control['textxoff']), itemTextYOffset=int(control['textyoff']),\
+					itemHeight=int(control['textureheight']), space=int(control['spacebetweenitems'])))#, shadowColor=control['shadowcolor']))
+				self.win.addControl(self.win.controls[int(control['id'])])
+				if (control.has_key('label')):
+					for cnt, item in enumerate(control['label']):
+						if (item != ''): 
+							if (cnt < len(control['label2'])): tmp = control['label2'][cnt]
+							else: tmp = ''
+							if (cnt < len(control['image'])): tmp2 = control['image'][cnt]
+							elif control['image']:	tmp2 = control['image'][len(control['image']) - 1]
+							else: tmp2 = ''
+							l = xbmcgui.ListItem(item, tmp, '', tmp2)
+							self.win.controls[int(control['id'])].addItem(l)
 			try: 
 				self.win.visibility[int(control['id'])] = control['visible']
 				self.win.positions[int(control['id'])] = (int(control['posx']), int(control['posy']))
@@ -170,10 +249,35 @@ class GUIBuilder:
 		except:
 			if (not self.fastMethod): self.dlg.close()
 			self.win.SUCCEEDED = False
+			self.controlsFailed += control['id'] + ', '
+			self.controlsFailedCnt += 1
+
+
+	def setResolution(self):
+		try:
+			offset = 0
+			# If resolutions differ calculate widescreen offset
+			if ((not (self.currentResolution == self.resolution)) and self.resolution > 1):
+				# check if current resolution is 16x9
+				if (self.currentResolution == 0 or self.currentResolution % 2): iCur16x9 = 1
+				else: iCur16x9 = 0
+				# check if skinned resolution is 16x9
+				if (self.resolution % 2): i16x9 = 1
+				else: i16x9 = 0
+				# calculate offset
+				offset = iCur16x9 - i16x9
+			self.win.setCoordinateResolution(self.resolution + offset)
+			self.debugWrite('setResolution', True, ['Current resolution: %i-%s', 'Skinned at resolution: %i-%s',\
+				'Set coordinate resolution at: %i-%s'], [(self.currentResolution, self.resPath[self.currentResolution],),\
+				(self.resolution, self.resPath[self.resolution],), (self.resolution + offset, self.resPath[self.resolution + offset],)])
+		except: self.debugWrite('setResolution', False)
 
 
 	def parseSkinFile(self, imagePath, filename):
 		try:
+			cnt = -1
+			self.controlsFailed = ''
+			self.controlsFailedCnt = 0
 			if (not self.fastMethod):
 				self.lines[self.lineno + 1]	= 'loading %s file...' % (self.skinXML,)
 				self.dlg.update(self.pct, self.lines[0], self.lines[1], self.lines[2])
@@ -206,9 +310,8 @@ class GUIBuilder:
 
 			# check for a <resolution> tag and setCoordinateResolution()
 			resolution = self.FirstChildElement(root, 'resolution')
-			if (resolution and resolution.firstChild): self.resolution = self.resolutions[resolution.firstChild.nodeValue.lower()]
-			self.win.setCoordinateResolution(self.resolution)
-			
+			if (resolution and resolution.firstChild): self.resolution = self.resolutions.get(resolution.firstChild.nodeValue.lower(), 6)
+			self.setResolution()
 
 			# make sure <controls> block exists and resolve if necessary
 			controls = self.FirstChildElement(root, 'controls')
@@ -226,14 +329,14 @@ class GUIBuilder:
 				if (not self.fastMethod): self.dlg.update(int((float(self.pct1) / float(t) * (cnt + 1)) + self.pct), self.lines[0], self.lines[1], self.lines[2])
 				if (self.includesExist): tmp = self.ResolveInclude(control)
 				else: tmp = control
-				ctl = {}
+				ctl 		= {}
 				node 		= self.FirstChildElement(tmp, None)
 				lbl1 		= []
 				lbl2 		= []
 				ifo 		= []
+				img		= []
 				vis 		= []
 				ctype 	= ''
-
 				# loop thru control and find all tags
 				while (node):
 					# key node so save to the dictionary
@@ -253,6 +356,8 @@ class GUIBuilder:
 							if (node.hasChildNodes()): lbl2.append(node.firstChild.nodeValue)
 					elif (node.tagName.lower() == 'info'):
 						if (node.hasChildNodes()): ifo.append(node.firstChild.nodeValue)
+					elif (node.tagName.lower() == 'image'):
+						if (node.hasChildNodes()): img.append(node.firstChild.nodeValue)
 					elif (node.tagName.lower() == 'visible'):
 						if (node.hasChildNodes()): vis.append(node.firstChild.nodeValue)
 					elif (node.hasChildNodes()): 
@@ -280,6 +385,7 @@ class GUIBuilder:
 					if (ctype == 'image' or ctype == 'label' or ctype == 'fadelabel' or ctype == 'button' or ctype == 'checkmark' or ctype == 'textbox'):
 						if (ifo): ctl['info'] = ifo
 						else: ctl['info'] = [self.m_references.get(ctype + '_info', '')]
+
 					if (ctype == 'label' or ctype == 'fadelabel' or ctype == 'button' or ctype == 'checkmark' or ctype == 'textbox' or ctype == 'listcontrol'):
 						if (lbl1): ctl['label'] = lbl1
 						else: ctl['label'] = [self.m_references.get(ctype + '_label', '')]
@@ -341,8 +447,8 @@ class GUIBuilder:
 						if (not ctl.has_key('markheight')): ctl['markheight'] = self.m_references.get(ctype + '_markheight', '20')
 
 					if (ctype == 'listcontrol'):
-						if (lbl2): ctl['label2'] = lbl2
-						else: ctl['label2'] = ['']
+						ctl['label2'] = lbl2
+						ctl['image'] = img
 						if (not ctl.has_key('selectedcolor')): ctl['selectedcolor'] = self.m_references.get(ctype + '_selectedcolor', '0xFFFFFFFF')
 						if (not ctl.has_key('itemwidth')): ctl['itemwidth'] = self.m_references.get(ctype + '_itemwidth', '20')
 						if (not ctl.has_key('itemheight')): ctl['itemheight'] = self.m_references.get(ctype + '_itemheight', '20')
@@ -350,17 +456,23 @@ class GUIBuilder:
 						if (not ctl.has_key('textxoff')): ctl['textxoff'] = self.m_references.get(ctype + '_textxoff', '0')
 						if (not ctl.has_key('textyoff')): ctl['textyoff'] = self.m_references.get(ctype + '_textyoff', '0')
 						if (not ctl.has_key('spacebetweenitems')): ctl['spacebetweenitems'] = self.m_references.get(ctype + '_spacebetweenitems', '0')
-						if (not ctl.has_key('image')): ctl['image'] = self.m_references.get(ctype + '_image', '')
-						elif (ctl['image'][0] == '\\'): ctl['image'] = imagePath + ctl['image']
+						if (not ctl['image']): ctl['image'] = [self.m_references.get(ctype + '_image', ' ')]
+						for i in range(len(ctl['image'])):
+							if (ctl['image'][i][0] == '\\'): ctl['image'][i] = imagePath + ctl['image'][i]
 
 				self.addCtl(ctl)
 			self.pct += self.pct1
 		except:
-			try: skindoc.unlink()
-			except: pass
 			if (not self.fastMethod): self.dlg.close()
 			self.win.SUCCEEDED = False
-		else:	skindoc.unlink()
+		try: skindoc.unlink()
+		except: pass
+		if (self.win.SUCCEEDED):
+			self.debugWrite('parseSkinFile', self.win.SUCCEEDED, ['Parsed %i control(s) from %s'], [(cnt + 1, self.skinXML,)])
+		else:
+			self.debugWrite('parseSkinFile', self.win.SUCCEEDED, ['Parsed %i control(s) from %s', 'Control(s) Failed: %s'],\
+				[((cnt + 1 - self.controlsFailedCnt), self.skinXML), self.controlsFailed[:-2]])
+
 
 	def setNav(self):
 		try:
@@ -378,15 +490,15 @@ class GUIBuilder:
 						self.win.controls[item].controlLeft(self.win.controls[self.navigation[item][2]])
 					if (self.win.controls.has_key(self.navigation[item][3])):
 						self.win.controls[item].controlRight(self.win.controls[self.navigation[item][3]])
+			self.debugWrite('setNav', True)
 		except:
 			if (not self.fastMethod): self.dlg.close()
 			self.win.SUCCEEDED = False
+			self.debugWrite('setNav', False)
 
 
 	def GetSkinPath(self, filename):
 		from os import path
-		paths2 = ('1080i', '720p', '480p', '480p16x9', 'ntsc', 'ntsc16x9', 'pal', 'pal16x9', 'pal60', 'pal6016x9')
-		res = self.win.getResolution()
 		default = 6
 		defaultwide = 7
 		try:
@@ -400,29 +512,34 @@ class GUIBuilder:
 			if (strDefaultWide and strDefaultWide.firstChild): defaultwide = self.resolutions.get(strDefaultWide.firstChild.nodeValue.lower(), defaultwide)
 			skindoc.unlink()
 		except: pass
-		fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + paths2[res] + '\\' + filename
+		fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + self.resPath[self.currentResolution] + '\\' + filename
 		if (path.exists(fname)):
-			if (filename == 'references.xml'): self.resolution = res
+			if (filename == 'references.xml'): self.resolution = self.currentResolution
+			self.debugWrite('GetSkinPath', True, ['Found path for %s at %s'], [(filename, fname,)])
 			return fname
 		# if we're in 1080i mode, try 720p next
-		if (res == 0):
-			fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + paths2[1] + '\\' + filename
+		if (self.currentResolution == 0):
+			fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + self.resPath[1] + '\\' + filename
 			if (path.exists(fname)):
 				if (filename == 'references.xml'): self.resolution = 1
+				self.debugWrite('GetSkinPath', True, ['Found path for %s at %s'], [(filename, fname,)])
 				return fname
 		# that failed - drop to the default widescreen resolution if we're in a widemode
-		if (res == 9 or res == 7 or res == 5 or res == 3 or res == 1):
-			fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + paths2[defaultwide] + '\\' + filename
+		if (self.currentResolution % 2):
+			fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + self.resPath[defaultwide] + '\\' + filename
 			if (path.exists(fname)):
 				if (filename == 'references.xml'): self.resolution = defaultwide
+				self.debugWrite('GetSkinPath', True, ['Found path for %s at %s'], [(filename, fname,)])
 				return fname
 		# that failed - drop to the default resolution
-		fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + paths2[default] + '\\' + filename
-		if (path.exists(fname)): res = default
+		fname = 'Q:\\skin\\' + xbmc.getSkinDir() + '\\' + self.resPath[default] + '\\' + filename
 		if (path.exists(fname)):
 			if (filename == 'references.xml'): self.resolution = default
+			self.debugWrite('GetSkinPath', True, ['Found path for %s at %s'], [(filename, fname,)])
 			return fname
-		else: return None
+		else:
+			self.debugWrite('GetSkinPath', False, ['No path for %s found'], [(filename,)])
+			return None
 
 	
 	def LoadReferences(self):
@@ -434,10 +551,13 @@ class GUIBuilder:
 		referenceFile = self.GetSkinPath('references.xml')
 		# load and parse references.xml file
 		try: refdoc = xml.dom.minidom.parse(referenceFile)
-		except: return False
+		except: 
+			self.debugWrite('LoadReferences', False)
+			return False
 		root = refdoc.documentElement
 		if (not root or root.tagName != 'controls'): 
 			refdoc.unlink()
+			self.debugWrite('LoadReferences', False)
 			return False
 		data = refdoc.getElementsByTagName('control')
 		for control in data:
@@ -454,6 +574,7 @@ class GUIBuilder:
 							self.m_references[tagName + '_' + node.tagName.lower()] = node.firstChild.nodeValue
 					node = self.NextSiblingElement(node, None)
 		refdoc.unlink()
+		self.debugWrite('LoadReferences', True)
 		return True
 
 
@@ -485,10 +606,13 @@ class GUIBuilder:
 		includeFile = self.GetSkinPath('includes.xml')
 		# load and parse includes.xml file
 		try: self.incdoc = xml.dom.minidom.parse(includeFile)
-		except: return False
+		except:
+			self.debugWrite('LoadIncludes', False)
+			return False
 		root = self.incdoc.documentElement
 		if (not root or root.tagName != 'includes'):
 			self.incdoc.unlink()
+			self.debugWrite('LoadIncludes', False)
 			return False
 		node = self.FirstChildElement(root)
 		while (node):
@@ -497,6 +621,7 @@ class GUIBuilder:
 				tagName = node.attributes["name"].value
 				self.m_includes[tagName] = node
 			node = self.NextSiblingElement(node)
+		self.debugWrite('LoadIncludes', True)
 		return True
 
 
