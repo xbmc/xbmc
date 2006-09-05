@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-09-2006 fixed: many strings in English strings.xml: 195, 197, 333, 368, 645, 1247, 1251, 12016, 12347, 12362, 12367, 12368, 13290, 13308, 15039, 15040, 15214, 15260, 15266, 15267, 15276, 15277, 15278, 15279, 15280, 20045, 20046, 20053, 20054, 20072, 20075, 20076, 20100, 20101, 20174, 20310, 20312, 20313
  - 05-09-2006 fixed: optimized memory usage of TTF texture and fixed a couple of potential crashes.
  - 05-09-2006 changed: guibuilder.py correctly uses setCoordinateResolution(), add debug info. Read the top of the script.
  - 05-09-2006 changed: LED and LCD Controll: new settings on Pause LED and or LCD Backlight will be switched On!
