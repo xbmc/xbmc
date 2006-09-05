@@ -50,6 +50,7 @@
 #include "lib/libfilezilla/xbfilezilla.h"
 #include "CdgParser.h"
 #include "utils/sntp.h"
+#include <xfont.h>  // for textout functions
 
 // Windows includes
 #include "GUIStandardWindow.h"
