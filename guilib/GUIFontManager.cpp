@@ -273,7 +273,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
           else if (strstr(strFontFileName, ".ttf") != NULL)
           {
             int iSize = 20;
-            int iStyle = XFONT_NORMAL;
+            int iStyle = FONT_STYLE_NORMAL;
 
             XMLUtils::GetInt(fontNode, "size", iSize);
             if (iSize <= 0) iSize = 20;
@@ -283,13 +283,13 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
             {
               CStdString style = pNode->FirstChild()->Value();
               if (style == "normal")
-                iStyle = XFONT_NORMAL;
+                iStyle = FONT_STYLE_NORMAL;
               else if (style == "bold")
-                iStyle = XFONT_BOLD;
+                iStyle = FONT_STYLE_BOLD;
               else if (style == "italics")
-                iStyle = XFONT_ITALICS;
+                iStyle = FONT_STYLE_ITALICS;
               else if (style == "bolditalics")
-                iStyle = XFONT_BOLDITALICS;
+                iStyle = FONT_STYLE_BOLD_ITALICS;
             }
 
             LoadTTF(strFontName, strFontFileName, textColor, shadowColor, iSize, iStyle);

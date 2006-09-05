@@ -449,10 +449,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(738), XFONT_NORMAL);
-      pControl->AddLabel(g_localizeStrings.Get(739), XFONT_BOLD);
-      pControl->AddLabel(g_localizeStrings.Get(740), XFONT_ITALICS);
-      pControl->AddLabel(g_localizeStrings.Get(741), XFONT_BOLDITALICS);
+      pControl->AddLabel(g_localizeStrings.Get(738), FONT_STYLE_NORMAL);
+      pControl->AddLabel(g_localizeStrings.Get(739), FONT_STYLE_BOLD);
+      pControl->AddLabel(g_localizeStrings.Get(740), FONT_STYLE_ITALICS);
+      pControl->AddLabel(g_localizeStrings.Get(741), FONT_STYLE_BOLD_ITALICS);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("subtitles.color"))
