@@ -757,7 +757,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
       strHistoryString = pItem->GetLabel() + strPath;
     }
   }
-  else if (pItem->m_lEndOffset>pItem->m_lStartOffset)
+  else if (pItem->m_lEndOffset>pItem->m_lStartOffset && pItem->m_lStartOffset != -1)
   {
     // Could be a cue item, all items of a cue share the same filename
     // so add the offsets to build the history string
@@ -775,6 +775,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
     if (CUtil::HasSlashAtEnd(strHistoryString))
       strHistoryString.Delete(strHistoryString.size() - 1);
   }
+  strHistoryString.ToLower();
 }
 
 // \brief Call this function to create a directory history for the
