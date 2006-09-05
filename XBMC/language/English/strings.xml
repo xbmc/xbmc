@@ -129,9 +129,9 @@
   <string id="192">Clear</string>
   <string id="193">Scan</string>
   <string id="194">Searching...</string>
-  <string id="195">No IMDB info found!</string>
+  <string id="195">No IMDb info found!</string>
   <string id="196">Select movie:</string>
-  <string id="197">Querying IMDB info</string>
+  <string id="197">Querying IMDb info</string>
   <string id="198">Loading Movie details</string>
   <string id="199">Director:</string>
   <string id="200">Writer:</string>
@@ -256,7 +256,7 @@
   <string id="330">This may take some time...</string>
   <string id="331">Compressing database...</string>
   <string id="332">Error compressing database</string>
-  <string id="333">Do you want to clean the library?</string>
+  <string id="333">Do you want to clean the Library?</string>
   <string id="334">Clean Library...</string>
   <string id="335">Start</string>
   <string id="336">Framerate Conversion</string>
@@ -287,7 +287,7 @@
   <string id="365">Sort by: Name</string>
   <string id="366">Sort by: Year</string>
   <string id="367">Sort by: Rating</string>
-  <string id="368">IMDB</string>
+  <string id="368">IMDb</string>
   <string id="369">Title</string>
   <string id="370">T-Storms</string>
   <string id="371">Partly</string>
@@ -480,7 +480,7 @@
   <string id="642">PreAmp Level - Non Replay Gained Files</string>
   <string id="643">Avoid Clipping on Replay Gained Files</string>
   <string id="644">Crop Black Bars</string>
-  <string id="645">Need to cache a big file. Continue?</string>
+  <string id="645">Need to unpack a big file. Continue?</string>
   <string id="646">Remove From Database</string>
 
   <string id="700">Cleaning up Library</string>
@@ -627,10 +627,10 @@
 
   <string id="1245">FTP User Name</string>
   <string id="1246">FTP User Password</string>
-  <string id="1247">FTP Server User Password has been set sucessfully</string>
+  <string id="1247">User Password has been set successfully</string>
 
   <string id="1250">Autodetection</string>
-  <string id="1251">XBOX Autodetection</string>
+  <string id="1251">Xbox Autodetection</string>
   <string id="1252">Nick Name</string>
   <string id="1253">Create FTP Link in My Files</string>
   <string id="1254">Ask to Connect</string>
@@ -732,7 +732,7 @@
   <string id="12013">Trainer</string>
   <string id="12014">No trainers found</string>
   <string id="12015">Trainer settings</string>
-  <string id="12016">All registered trailers are missing. Update your list</string>
+  <string id="12016">All registered trainers are missing. Update your list</string>
   <string id="12017">Auto resume from last position</string>
   <string id="12018">No</string>
   <string id="12019">Yes</string>
@@ -774,16 +774,16 @@
   <string id="12344">Passwords entered did not match.</string>
   <string id="12345">Access Denied</string>
   <string id="12346">Password retry limit exceeded.</string>
-  <string id="12347">The XBOX will now shut off.</string>
+  <string id="12347">The Xbox will now shut off.</string>
   <string id="12348">Item Locked</string>
   <string id="12353">Reactivate Lock</string>
   <string id="12356">Change Lock</string>
   <string id="12357">Share Lock</string>
   <string id="12358">Password entry was blank. Try again.</string>
   <string id="12360">Master Lock</string>
-  <string id="12362">Shutdown xbox if master lock retries exceeded</string>
-  <string id="12367">Master Code is not Valid!</string>
-  <string id="12368">Please Enter a Valid Master Code!</string>
+  <string id="12362">Shutdown Xbox if Master Lock retries exceeded</string>
+  <string id="12367">Master Code is not valid!</string>
+  <string id="12368">Please Enter a valid Master Code!</string>
   <string id="12373">Settings &amp;  My Files</string>
   <string id="12376">Set as default for all Movies</string>
   <string id="12377">This will reset any previously saved values</string>
@@ -877,7 +877,7 @@
   <string id="13287">Screen Resolution:</string>
   <string id="13288">Xbox Version:</string>
   <string id="13289">Xbox Serial Number:</string>
-  <string id="13290">XBOX Manufacturer:</string>
+  <string id="13290">Xbox Manufacturer:</string>
   <string id="13291">ModChip:</string>
   <string id="13292">A/V Cable:</string>
   <string id="13293">Video &amp; XBE Region:</string>
@@ -895,7 +895,7 @@
   <string id="13305">Enable RSS Feeds</string>
   <string id="13306">Hide Parent Folder Items</string>
   <string id="13307">Track Naming Template</string>
-  <string id="13308">Do you wish to reboot your xbox</string>
+  <string id="13308">Do you wish to reboot your Xbox</string>
   <string id="13309">instead of just XBMC?</string>
   <string id="13310">Zoom Effect</string>
   <string id="13311">Float Effect</string>
@@ -1091,8 +1091,8 @@
   <string id="15036">has sent you an invitation</string>
   <string id="15037">XBMC is unable to confirm your network is reachable.</string>
   <string id="15038">You may experience difficulties joining or hosting games.</string>
-  <string id="15039">Xbox Media Center unable to locate game automatically.</string>
-  <string id="15040">Insert the game disk into your XBOX or press 'A' to cancel</string>
+  <string id="15039">Unable to locate game automatically.</string>
+  <string id="15040">Insert the game disk into your Xbox or press 'A' to cancel</string>
   <string id="15041">and launch the game manually.</string>
   <string id="15042">Access Denied</string>
   <string id="15043">%s joins chat.</string>
@@ -1141,7 +1141,7 @@
   <string id="15211">Submitting...</string>
   <string id="15212">Submitting in %i secs</string>
   <string id="15213">Play Using...</string>
-  <string id="15214">Use Smoothed A/V Syncronization</string>
+  <string id="15214">Use Smoothed A/V Synchronization</string>
   <string id="15215">Hide File Names in Thumbs View</string>
 
   <string id="15250">Submit Last.FM Radio to Last.FM</string>
@@ -1154,14 +1154,14 @@
   <string id="15257">Top artists for tag %name%</string>
   <string id="15258">Top albums for tag %name%</string>
   <string id="15259">Top tracks for tag %name%</string>
-  <string id="15260">Listen to tag %name% last.fm radio</string>
+  <string id="15260">Listen to tag %name% Last.FM radio</string>
   <string id="15261">Similar artists as %name%</string>
   <string id="15262">Top %name% albums</string>
   <string id="15263">Top %name% tracks</string>
   <string id="15264">Top %name% tags</string>
   <string id="15265">Biggest fans of %name%</string>
-  <string id="15266">Listen to %name% fans last.fm radio</string>
-  <string id="15267">Listen to %name% similar artists last.fm radio</string>
+  <string id="15266">Listen to %name% fans Last.FM radio</string>
+  <string id="15267">Listen to %name% similar artists Last.FM radio</string>
   <string id="15268">Top artists for user %name%</string>
   <string id="15269">Top albums for user %name%</string>
   <string id="15270">Top tracks for user %name%</string>
@@ -1170,11 +1170,11 @@
   <string id="15273">Weekly artist chart for %name%</string>
   <string id="15274">Weekly album chart for %name%</string>
   <string id="15275">Weekly track chart for %name%</string>
-  <string id="15276">Listen to %name%'s neighbours last.fm radio</string>
-  <string id="15277">Listen to %name%'s personal last.fm radio</string>
-  <string id="15278">Listen to %name%'s loved tracks last.fm radio</string>
-  <string id="15279">Retrieving list from last.fm...</string>
-  <string id="15280">Can't retrieve list from last.fm...</string>
+  <string id="15276">Listen to %name%'s neighbours Last.FM radio</string>
+  <string id="15277">Listen to %name%'s personal Last.FM radio</string>
+  <string id="15278">Listen to %name%'s loved tracks Last.FM radio</string>
+  <string id="15279">Retrieving list from Last.FM...</string>
+  <string id="15280">Can't retrieve list from Last.FM...</string>
   <string id="15281">Enter an artist name to find related ones</string>
   <string id="15282">Enter a tag name to find similar ones</string>
   <string id="15283">Tracks recently listened by %name%</string>
@@ -1273,16 +1273,16 @@
   <string id="20042">Lock filemanager</string>
   <string id="20043">Lock settings</string>
   <string id="20044">Start fresh</string>
-  <string id="20045">Enter master mode</string>
-  <string id="20046">Leave master mode</string>
+  <string id="20045">Enter Master Mode</string>
+  <string id="20046">Leave Master Mode</string>
   <string id="20047">Create profile '%s' ?</string>
   <string id="20048">Start with fresh settings</string>
   <string id="20049">Best Available</string>
   <string id="20050">Autoswitch between 16x9 and 4x3</string>
   <string id="20051">Treat stacked files as single file</string>
   <string id="20052">Caution</string>
-  <string id="20053">Left master mode</string>
-  <string id="20054">Entered master mode</string>
+  <string id="20053">Left Master Mode</string>
+  <string id="20054">Entered Master Mode</string>
   <string id="20055">Allmusic.com Thumb</string>
   <string id="20056">Source Thumbnail</string>
   <string id="20057">Remove Thumbnail</string>
@@ -1300,11 +1300,11 @@
   <string id="20069">Could not create folder</string>
   <string id="20070">Profile directory</string>
   <string id="20071">Start with fresh media sources</string>
-  <string id="20072">Make sure the select folder is writable</string>
+  <string id="20072">Make sure the selected folder is writable</string>
   <string id="20073">and that the new folder name is valid</string>
   <string id="20074">MPAA Rating:</string>
-  <string id="20075">Enter master lock code</string>
-  <string id="20076">Ask for master lock code on startup</string>
+  <string id="20075">Enter Master Lock Code</string>
+  <string id="20076">Ask for Master Lock Code on startup</string>
   <string id="20077">Skin Settings</string>
   <string id="20078">- no link set -</string>
   <string id="20079">Enable Animations</string>
@@ -1328,8 +1328,8 @@
   <string id="20097">Fetching album info</string>
   <string id="20098">Fetching info for album</string>
   <string id="20099">Can't rip CD or Track while playing from CD</string>
-  <string id="20100">Master Code and Locks</string> 
-  <string id="20101">Entering master code always enables master mode</string>
+  <string id="20100">Master Lock Code and Settings</string> 
+  <string id="20101">Entering Master Lock Code always enables Master Mode</string>
   <string id="20102">or copy from default?</string>
   <string id="20103">Save changes to profile?</string>
   <string id="20104">Old settings found.</string>
@@ -1346,7 +1346,7 @@
   <string id="20115">User Login / Select a Profile</string>
   <string id="20116">Use lock on login screen</string>
   <string id="20117">Invalid lock code.</string>
-  <string id="20118">This requires the master lock to be set.</string>
+  <string id="20118">This requires the Master Lock to be set.</string>
   <string id="20119">Would you like to set it now?</string>
   <string id="20120">Loading program information</string>
   <string id="20121">Party on!</string>
@@ -1401,7 +1401,7 @@
   <string id="20171">Windows Network (SMB)</string>
   <string id="20172">XBMSP Server</string>
   <string id="20173">FTP Server</string>
-  <string id="20174">ITunes music share (DAAP)</string>
+  <string id="20174">iTunes music share (DAAP)</string>
   <string id="20175">UPnP Server</string>
   <string id="20176">Show Video Info</string>
   <string id="20177">Done</string>
@@ -1437,9 +1437,9 @@
   <string id="20307">Secondary DNS</string>
   <string id="20308">DHCP Server:</string>
   <string id="20309">Make New Folder</string>
-  <string id="20310">Dim LCD off on Playback</string>
+  <string id="20310">Dim LCD on Playback</string>
   <string id="20311">Unknown or Onboard (protected)</string>
-  <string id="20312">Dim On LCD on Paused</string>
-  <string id="20313">Switch ON LED on Paused </string>
+  <string id="20312">Dim LCD on Paused</string>
+  <string id="20313">Switch LED back on if Paused</string>
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>
