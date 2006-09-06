@@ -264,6 +264,15 @@ bool CFileLastFM::Open(const CURL& url, bool bBinary)
   return true;
 }
 
+bool CFileLastFM::Exists(const CURL& url)
+{
+  CURL url2(url);
+  url2.SetProtocol("http");
+  CStdString strURL;
+  url2.GetURL(strURL);
+  return CFile::Exists(strURL);
+}
+
 bool CFileLastFM::OpenStream()
 {
   m_pFile = new CFileCurl();
