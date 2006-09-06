@@ -45,7 +45,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 
     RunCdda();
   }
-  else if (pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1))
+  else if (pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1) || (pInfo->IsISOUDF(1) && g_advancedSettings.m_detectAsUdf))
   {
     RunXboxCd(bypassSettings);
   }
