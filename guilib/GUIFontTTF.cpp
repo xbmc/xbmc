@@ -451,6 +451,20 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   FT_Glyph_Get_CBox( glyph, FT_GLYPH_BBOX_PIXELS, &bbox );
   // at this point we have the information regarding the character that we need
   unsigned int width = bbox.xMax - bbox.xMin;
+
+  /* store away old backbuffer, and prepare state */  
+  D3DSurface *pSurfOld;
+  m_pD3DDevice->GetRenderTarget(&pSurfOld);
+  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
+  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_POINT );
+  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_POINT );
+
+  m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
+  m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
+  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+  m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
+
   // check we have enough room for the character
   if (m_posX + width > m_textureWidth)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
@@ -470,34 +484,48 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
       CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
       return false;
     }
-    D3DLOCKED_RECT lr;
-    newTexture->LockRect(0, &lr, NULL, 0);
+    // no need to clear the texture - we render into it without alpha blending
+
     if (m_texture)
-    { // copy across from our current one, and clear the new row
-      D3DLOCKED_RECT lr2;
-      m_texture->LockRect(0, &lr2, NULL, 0);
-      memcpy(lr.pBits, lr2.pBits, lr2.Pitch * m_textureRows * m_cellHeight);
-      m_texture->UnlockRect(0);
-      m_texture->Release();
+    { // copy across from our current one using gpu
+      D3DSurface *pSurfNew;
+      newTexture->GetSurfaceLevel(0, &pSurfNew);
+      m_pD3DDevice->SetRenderTarget(pSurfNew, NULL);
+      SAFE_RELEASE(pSurfNew);
+      m_pD3DDevice->SetTexture(0,  m_texture);
+
+      m_pD3DDevice->Begin(D3DPT_QUADLIST);
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, 0.0f);
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, 0.0f, 0.0f, 0, 1.0f );
+
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_textureWidth, 0.0f );
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_textureWidth, 0.0f, 0.0f, 1.0f );
+
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_textureWidth , (float)(m_cellHeight * m_textureRows));
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_textureWidth , (float)(m_cellHeight * m_textureRows), 0.0f, 1.0f );
+
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, (float)(m_cellHeight * m_textureRows) );
+      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, 0.0f, (float)(m_cellHeight * m_textureRows), 0.0f, 1.0f );
+      m_pD3DDevice->End();
+
+      SAFE_RELEASE(m_texture);
     }
-    memset((BYTE *)lr.pBits + lr.Pitch * m_textureRows * m_cellHeight, 0, lr.Pitch * m_cellHeight);
-    newTexture->UnlockRect(0);
+
     m_texture = newTexture;
     m_textureRows++;
   }
+
   // ok, render the glyph
   // TODO: Ideally this function would automatically render into our texture
   if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, 1))
     return false;
   FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)glyph;
   FT_Bitmap bitmap = bitGlyph->bitmap;
-  // rendered, now copy into our texture
-  D3DLOCKED_RECT rect;
-  m_texture->LockRect(0, &rect, NULL, 0);
+
+  // set the character in our table
   if (bitGlyph->left < 0)
     m_posX += -bitGlyph->left;
 
-  // set the character in our table
   ch->letter = letter;
   ch->originX = m_posX;
   ch->originY = m_posY;
@@ -507,23 +535,66 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   ch->bottom = ch->top + bitmap.rows;
   ch->advance = (float)m_face->glyph->advance.x / 64;
 
-  //CLog::Log(LOGDEBUG, __FUNCTION__" tex location %i,%i, y offset %i, x offset %i, width %i, height %i", m_posX, m_posY, bitGlyph->top, bitGlyph->left, bitmap.width, bitmap.rows);
-  for (int y = 0; y < bitmap.rows; y++)
+  // we need only render if we actually have some pixels
+  if (bitmap.width * bitmap.rows)
   {
-    BYTE *dest = (BYTE *)rect.pBits + (m_posY + y + ch->top) * rect.Pitch + m_posX + bitGlyph->left;
-    BYTE *source = (BYTE *)bitmap.buffer + y * bitmap.pitch;
-    for (int x = 0; x < bitmap.width; x++)
+    // create a texture to render to, don't use main texture as locking that will
+    // wait for gpu needlessly
+    D3DTexture *pTexture;
+    if (D3D_OK != m_pD3DDevice->CreateTexture(bitmap.width, bitmap.rows, 1, 0, D3DFMT_LIN_L8, 0, &pTexture))
     {
-      *dest++ = *source++;
+      CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new character texture");
+      return false;
     }
+
+    D3DLOCKED_RECT rect;
+    pTexture->LockRect(0, &rect, NULL, 0);
+    for (int y = 0; y < bitmap.rows; y++)
+    {
+      BYTE *dest = (BYTE *)rect.pBits + y * rect.Pitch;
+      BYTE *source = (BYTE *)bitmap.buffer + y * bitmap.pitch;
+      memcpy(dest, source, bitmap.width);
+    }
+    pTexture->UnlockRect(0);
+
+    // render this onto our normal texture using gpu
+    D3DSurface *pSurfNew;
+    m_texture->GetSurfaceLevel(0, &pSurfNew);
+    m_pD3DDevice->SetRenderTarget(pSurfNew, NULL);
+    SAFE_RELEASE(pSurfNew);
+
+    m_pD3DDevice->SetTexture(0,  pTexture);
+    m_pD3DDevice->Begin(D3DPT_QUADLIST);
+
+    m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, 0xffffffff);
+
+    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, 0.0f);
+    m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)(m_posX + bitGlyph->left)               , (float)(m_posY + ch->top), 0.0f, 1.0f );
+
+    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)bitmap.width, (float)0.0f);
+    m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)(m_posX + bitGlyph->left + bitmap.width), (float)(m_posY + ch->top), 0.0f, 1.0f );
+
+    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)bitmap.width, (float)bitmap.rows);
+    m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)(m_posX + bitGlyph->left + bitmap.width), (float)(m_posY + ch->top + bitmap.rows), 0.0f, 1.0f );
+
+    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, (float)bitmap.rows);
+    m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)(m_posX + bitGlyph->left)               , (float)(m_posY + ch->top + bitmap.rows), 0.0f, 1.0f );
+    m_pD3DDevice->End();
+
+    m_pD3DDevice->SetTexture(0,  NULL);
+    SAFE_RELEASE(pTexture);
   }
-  m_texture->UnlockRect(0);
 
   m_posX += (unsigned short)max(ch->right, ch->advance + 1);
   m_numChars++;
 
   // free the glyph
   FT_Done_Glyph(glyph);
+  
+  // restore render target
+  m_pD3DDevice->SetRenderTarget(pSurfOld, NULL);
+  SAFE_RELEASE(pSurfOld);
+
   return true;
 }
 
