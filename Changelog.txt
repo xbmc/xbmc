@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-09-2006 fixed: (hopefully) [ 1546405 ] Last.fm radio hangs after choosing a station
  - 06-09-2006 fixed: TTF Caching speed (initial font draw) speed up (addresses [ 1530907 ])
  - 05-09-2006 fixed: [ 1530770 ] QTB and repeating, [ 1547134 ] Internet Video Streams are repeated everytime.
  - 05-09-2006 fixed: directory nav history was a bit off.
