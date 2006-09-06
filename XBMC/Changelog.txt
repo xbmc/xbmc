@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-09-2006 changed: force read/fread functions to read the entire requested size normally, as libdvdcss can't handle truncated reads. (this potentially fixes the dvdplayer video distortions when playing over smb from certain landrives)
  - 06-09-2006 fixed: <detectasudf> didn't apply to autorun / discs started using xbmc.playdisc.
  - 06-09-2006 fixed: (hopefully) [ 1546405 ] Last.fm radio hangs after choosing a station
  - 06-09-2006 fixed: TTF Caching speed (initial font draw) speed up (addresses [ 1530907 ])
