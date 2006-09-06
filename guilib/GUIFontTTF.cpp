@@ -452,19 +452,6 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   // at this point we have the information regarding the character that we need
   unsigned int width = bbox.xMax - bbox.xMin;
 
-  /* store away old backbuffer, and prepare state */  
-  D3DSurface *pSurfOld;
-  m_pD3DDevice->GetRenderTarget(&pSurfOld);
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_POINT );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_POINT );
-
-  m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-  m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
-
   // check we have enough room for the character
   if (m_posX + width > m_textureWidth)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
@@ -484,33 +471,24 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
       CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
       return false;
     }
-    // no need to clear the texture - we render into it without alpha blending
+    // clear texture, doesn't cost much
+    D3DLOCKED_RECT rect;
+    newTexture->LockRect(0, &rect, NULL, 0);
+    memset(rect.pBits, 0, rect.Pitch * newHeight);
+    newTexture->UnlockRect(0);
 
     if (m_texture)
     { // copy across from our current one using gpu
-      D3DSurface *pSurfNew;
-      newTexture->GetSurfaceLevel(0, &pSurfNew);
-      m_pD3DDevice->SetRenderTarget(pSurfNew, NULL);
-      SAFE_RELEASE(pSurfNew);
-      m_pD3DDevice->SetTexture(0,  m_texture);
+      D3DSurface *pTarget, *pSource;
+      newTexture->GetSurfaceLevel(0, &pTarget);
+      m_texture->GetSurfaceLevel(0, &pSource);
 
-      m_pD3DDevice->Begin(D3DPT_QUADLIST);
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, 0.0f);
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, 0.0f, 0.0f, 0, 1.0f );
+      m_pD3DDevice->CopyRects(pSource, NULL, 0, pTarget, NULL);
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_textureWidth, 0.0f );
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_textureWidth, 0.0f, 0.0f, 1.0f );
-
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_textureWidth , (float)(m_cellHeight * m_textureRows));
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_textureWidth , (float)(m_cellHeight * m_textureRows), 0.0f, 1.0f );
-
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, (float)(m_cellHeight * m_textureRows) );
-      m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, 0.0f, (float)(m_cellHeight * m_textureRows), 0.0f, 1.0f );
-      m_pD3DDevice->End();
-
+      SAFE_RELEASE(pTarget);
+      SAFE_RELEASE(pSource);
       SAFE_RELEASE(m_texture);
     }
-
     m_texture = newTexture;
     m_textureRows++;
   }
@@ -541,7 +519,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     // create a texture to render to, don't use main texture as locking that will
     // wait for gpu needlessly
     D3DTexture *pTexture;
-    if (D3D_OK != m_pD3DDevice->CreateTexture(bitmap.width, bitmap.rows, 1, 0, D3DFMT_LIN_L8, 0, &pTexture))
+    if (D3D_OK != m_pD3DDevice->CreateTexture (bitmap.width, bitmap.rows, 1, 0, D3DFMT_LIN_L8, 0, &pTexture))
     {
       CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new character texture");
       return false;
@@ -558,30 +536,24 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     pTexture->UnlockRect(0);
 
     // render this onto our normal texture using gpu
-    D3DSurface *pSurfNew;
-    m_texture->GetSurfaceLevel(0, &pSurfNew);
-    m_pD3DDevice->SetRenderTarget(pSurfNew, NULL);
-    SAFE_RELEASE(pSurfNew);
+    D3DSurface *pTarget, *pSource;
+    m_texture->GetSurfaceLevel(0, &pTarget);
+    pTexture->GetSurfaceLevel(0, &pSource);
 
-    m_pD3DDevice->SetTexture(0,  pTexture);
-    m_pD3DDevice->Begin(D3DPT_QUADLIST);
+    RECT sourcerect;
+    sourcerect.top = 0;
+    sourcerect.left = 0;
+    sourcerect.right = bitmap.width;
+    sourcerect.bottom = bitmap.rows;
 
-    m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, 0xffffffff);
+    POINT targetpoint;
+    targetpoint.x = m_posX + bitGlyph->left;
+    targetpoint.y = m_posY + ch->top;
 
-    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, 0.0f);
-    m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)(m_posX + bitGlyph->left)               , (float)(m_posY + ch->top), 0.0f, 1.0f );
+    m_pD3DDevice->CopyRects(pSource, &sourcerect, 1, pTarget, &targetpoint);
 
-    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)bitmap.width, (float)0.0f);
-    m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)(m_posX + bitGlyph->left + bitmap.width), (float)(m_posY + ch->top), 0.0f, 1.0f );
-
-    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)bitmap.width, (float)bitmap.rows);
-    m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)(m_posX + bitGlyph->left + bitmap.width), (float)(m_posY + ch->top + bitmap.rows), 0.0f, 1.0f );
-
-    m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, (float)bitmap.rows);
-    m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)(m_posX + bitGlyph->left)               , (float)(m_posY + ch->top + bitmap.rows), 0.0f, 1.0f );
-    m_pD3DDevice->End();
-
-    m_pD3DDevice->SetTexture(0,  NULL);
+    SAFE_RELEASE(pTarget);
+    SAFE_RELEASE(pSource);
     SAFE_RELEASE(pTexture);
   }
 
@@ -591,10 +563,6 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   // free the glyph
   FT_Done_Glyph(glyph);
   
-  // restore render target
-  m_pD3DDevice->SetRenderTarget(pSurfOld, NULL);
-  SAFE_RELEASE(pSurfOld);
-
   return true;
 }
 
