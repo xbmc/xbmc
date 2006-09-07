@@ -425,24 +425,24 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
     case SERVICES_UP:
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - Starting network services");
-      g_application.StartFtpServer();
-      g_application.StartWebServer();
       g_application.StartTimeServer();
-      g_application.StartUPnP();
-      CScrobbler::GetInstance()->Init();
+      g_application.StartWebServer();
+      g_application.StartFtpServer();
       if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
         g_application.StartKai();
+      g_application.StartUPnP();
+      CScrobbler::GetInstance()->Init();
     }
     break;
     case SERVICES_DOWN:
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - Stopping network services");
-      g_application.StopFtpServer();
-      g_application.StopWebServer();
       g_application.StopTimeServer();
+      g_application.StopWebServer();
+      g_application.StopFtpServer();
+      g_application.StopKai();   
       g_application.StopUPnP();
       CScrobbler::GetInstance()->Term();
-      g_application.StopKai();   
       // smb.Deinit(); if any file is open over samba this will break.
     }
     break;
