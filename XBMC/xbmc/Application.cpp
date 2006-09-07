@@ -1275,21 +1275,10 @@ void CApplication::StartFtpServer()
       // if user didn't upgrade properly...
       // check whether P:\\FileZilla Server.xml exists (UserData/FileZilla Server.xml)
       if (CFile::Exists("P:\\FileZilla Server.xml"))
-      {
         m_pFileZilla = new CXBFileZilla("P:\\");
-        // GeminiServer!
-        // We need to set the FTP Password from the GUI to the XML! To be sure this is the right one for the internal settings! (Pass can be changed via XML!)
-        // The user must always set the Password within the GUI Settings!
-        // Todo: After v2.0! FTP Server Usermanager [Only Create/Delete FTP-USERS!]
-        // Seems this would slow the startup of XBMC! ? What should we do!
-        CUtil::SetFTPServerUserPassword(g_guiSettings.GetString("servers.ftpserveruser").c_str(),g_guiSettings.GetString("servers.ftpserverpassword").c_str()); 
-      }
       else
-      {
         m_pFileZilla = new CXBFileZilla("Q:\\System\\");
-        m_pFileZilla->Start(false);
-        CUtil::SetFTPServerUserPassword(g_guiSettings.GetString("servers.ftpserveruser").c_str(),g_guiSettings.GetString("servers.ftpserverpassword").c_str()); 
-      }
+      m_pFileZilla->Start(false);
     }
     //CLog::Log(LOGNOTICE, "XBFileZilla: Started");
   }
@@ -2207,8 +2196,8 @@ bool CApplication::OnAction(const CAction &action)
       if (!m_pPlayer->IsPaused())
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
-        return true;
       }
+      return true;
     }
     if (!m_pPlayer->IsPaused())
     {
@@ -3245,13 +3234,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   return bResult;
 }
 
-void CApplication::OnPlayBackPaused()
-{
-  //TODO after v2.0
-  //we need Paused state returned!
-  //StartLEDControl(false);
-  //DimLCDOnPlayback(false);
-}
 void CApplication::OnPlayBackEnded()
 {
   //playback ended
