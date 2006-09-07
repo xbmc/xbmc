@@ -69,7 +69,6 @@ public:
   const EPLAYERCORES GetCurrentPlayer();
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnPlayBackEnded();
-  virtual void OnPlayBackPaused();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
