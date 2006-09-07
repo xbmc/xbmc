@@ -417,7 +417,7 @@
     <label>20078</label>
     <texturefocus>-</texturefocus>
     <texturenofocus>-</texturenofocus>
-    <visible>[Control.HasFocus(13) | ControlGroup(4).HasFocus()] + !Skin.HasSetting(bookmarkbuttons) + !Skin.String(ProgramsBookmark1,fishy)</visible>
+    <visible>[Control.HasFocus(13) | ControlGroup(4).HasFocus()] + !Skin.HasSetting(bookmarkbuttons) + !Skin.String(ProgramsBookmark1)</visible>
     <include>contentpanelslide</include>
     <include>textcolorgrey</include>
    </control>
