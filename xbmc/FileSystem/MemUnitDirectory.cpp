@@ -18,7 +18,7 @@ bool CMemUnitDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   
   g_directoryCache.ClearDirectory(strPath);
   CFileItemList cacheItems;
-  if (!fileSystem->GetDirectory(strPath.Mid(6), cacheItems))
+  if (!fileSystem->GetDirectory(strPath.Mid(7), cacheItems))
   {
     delete fileSystem;
     return false;
@@ -40,14 +40,14 @@ bool CMemUnitDirectory::Create(const char* strPath)
 {
   IFileSystem *fileSystem = GetFileSystem(strPath);
   if (!fileSystem) return false;
-  return fileSystem->MakeDir(strPath + 6);
+  return fileSystem->MakeDir(strPath + 7);
 }
 
 bool CMemUnitDirectory::Remove(const char* strPath)
 {
   IFileSystem *fileSystem = GetFileSystem(strPath);
   if (!fileSystem) return false;
-  return fileSystem->RemoveDir(strPath + 6);
+  return fileSystem->RemoveDir(strPath + 7);
 }
 
 bool CMemUnitDirectory::Exists(const char* strPath)

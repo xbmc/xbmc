@@ -155,8 +155,7 @@ IFileSystem *CFileMemUnit::GetFileSystem(const CURL& url)
 
 CStdString CFileMemUnit::GetPath(const CURL& url)
 {
-  CStdString path = "/";
-  path += url.GetFileName();
+  CStdString path = url.GetFileName();
   path.Replace("\\", "/");
   return path;
 }
