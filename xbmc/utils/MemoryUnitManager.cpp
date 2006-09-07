@@ -203,7 +203,7 @@ bool CMemoryUnitManager::IsDriveWriteable(const CStdString &path)
 {
   CURL url(path);
   IDevice *device = GetDevice(url.GetProtocol()[3] - '0');
-  if (device && strcmpi(device->GetFileSystem(), "fatx"))
+  if (device && strcmpi(device->GetFileSystem(), "fatx") == 0)
     return true;
   return false;
 }

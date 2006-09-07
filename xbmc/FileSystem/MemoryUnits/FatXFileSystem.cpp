@@ -120,7 +120,7 @@ CStdString CFatXFileSystem::GetLocal(const CStdString &file)
   CFatXDevice *device = (CFatXDevice *)g_memoryUnitManager.GetDevice(m_unit);
   if (device)
   {
-    path.Format("%c:%s", device->GetDrive(), file);
+    path.Format("%c:\\%s", device->GetDrive(), file);
     path.Replace("/", "\\");
   }
   return path;
