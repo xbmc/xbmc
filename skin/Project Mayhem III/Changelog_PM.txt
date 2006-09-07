@@ -1,3 +1,4 @@
+2006-09-07 fixed: One of spiffs screwups, something to do with fishy :)
 2006-09-02 fixed:	Label spacing in SettingsSystemInfo.xml.
 2006-09-01 added:	Reload Skin button to Settings.xml.
 2006-09-01 fixed:	Overlapping text in SettingsSystemInfo.xml.
