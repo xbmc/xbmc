@@ -69,7 +69,7 @@
   <string id="127">Objekt(e)</string>
   <string id="128">Allgemein</string>
   <string id="129">Diaschau</string>
-  <string id="130">Systeminfo</string>
+  <string id="130">System-Info</string>
   <string id="131">Bildschirm</string>
   <string id="132">Alben</string>
   <string id="133">Interpreten</string>
@@ -77,7 +77,7 @@
   <string id="135">Genre</string>
   <string id="136">Wiedergabelisten</string>
   <string id="137">Suchen..</string>
-  <string id="138">Systeminformationen</string>
+  <string id="138">System-Informationen</string>
   <string id="139">Temperatur:</string>
   <string id="140">CPU Temperatur:</string>
   <string id="141">GPU Temperatur:</string>
@@ -88,7 +88,7 @@
   <string id="146">Typ:</string>
   <string id="147">Statisch</string>
   <string id="148">DHCP</string>
-  <string id="149">MAC</string>
+  <string id="149">MAC-Adresse</string>
   <string id="150">IP</string>
   <string id="151">Verbindung:</string>
   <string id="152">Half Duplex</string>
@@ -251,7 +251,7 @@
   <string id="310">Auto Helligkeit/Kontrast</string>
   <string id="311">Dering</string>
   <string id="312">(0=auto)</string>
-  <string id="313">Musik-Datenbank reorganisieren</string>
+  <string id="313">Datenbank reorganisieren</string>
   <string id="314">Daten werden eingelesen...</string>
   <string id="315">Datenbank-Fehler!</string>
   <string id="316">Durchsuche Musikdateien...</string>
@@ -268,11 +268,11 @@
   <string id="327">Fehler beim Reorganisieren!</string>
   <string id="328">Schreibe Änderungen...</string>
   <string id="329">Fehler beim Schreiben der Änderungen!</string>
-  <string id="330">Einen Moment Geduld...</string>
+  <string id="330">Bitte warten..</string>
   <string id="331">Komprimiere Datenbank...</string>
   <string id="332">Fehler beim Komprimieren der Datenbank!</string>
-  <string id="333">Wollen sie die Datenbank reorganisieren?</string>
-  <string id="334">Musik Datenbank reorganisieren..</string>
+  <string id="333">Möchten Sie die Datenbank reorganisieren?</string>
+  <string id="334">Datenbank reorganisieren..</string>
   <string id="335">Ausführen</string>
   <string id="336">Framerate anpassen</string>
   <string id="337">Audioausgabe</string>
@@ -349,8 +349,8 @@
   <string id="408">mit</string>
    
   <string id="410">Wettervorhersage</string>     
-  <string id="411">Wetterinformationen werden geladen für:</string>
-  <string id="412">Wetterinformationen nicht erhältlich!</string>  
+  <string id="411">Wetter-Informationen werden geladen für:</string>
+  <string id="412">Wetter-Informationen nicht erhältlich!</string>  
   <string id="413">Titeleingabe</string>  
   <string id="414">Keine Vorschau für dieses Album!</string>  
   <string id="415">Lade Abbild...</string>
@@ -371,7 +371,7 @@
   <string id="430">n. DVD# ord.</string>
   <string id="431">Keinen Cache verwenden</string>
   <string id="432">Lösche Film aus der Datenbank..</string>
-  <string id="433">Löschen! Sind sie sicher?</string>
+  <string id="433">Löschen! Sind Sie sicher?</string>
   <string id="434">Film löschen?</string>
   <string id="435">Titel</string>
   <string id="436">Jahr:</string>
@@ -438,8 +438,8 @@
   <string id="497">Dateityp-Erweiterungen ausblenden</string>
   <string id="498">n. Typ ord.</string>
   <string id="499">Verbinden mit www.allmusic.com nicht möglich!</string>
-  <string id="500">Fehler beim Erhalten der Albuminformationen!</string>
-  <string id="501">Albuminformationen werden gesucht..</string>
+  <string id="500">Fehler beim Erhalten der Album-Informationen!</string>
+  <string id="501">Album-Informationen werden gesucht..</string>
   <string id="502">Offen</string>
   <string id="503">Laden...</string>
   <string id="504">Leer</string>
@@ -473,19 +473,19 @@
   <string id="596">Wdhl: aktuelles</string> 
   <string id="597">Wdhl: alle</string> 
 
-  <string id="600">CD rippen</string>
+  <string id="600">CD kopieren</string>
   <string id="601">mittlere</string>
   <string id="602">standard</string>
   <string id="603">höchste</string>
   <string id="604">konstante Bitrate</string>
-  <string id="605">Rippen...</string>
+  <string id="605">Kopieren...</string>
   <string id="606">Titel</string>
   <string id="607">Speicherort</string>
-  <string id="608">CD oder Titel konnte nicht gerippt werden!</string>
+  <string id="608">CD oder Titel konnte nicht kopiert werden!</string>
   <string id="609">CDDARipp-Pfad ist fehlerhaft..</string>
 
-  <string id="620">CD rippen</string>
-  <string id="621">Encoder</string>
+  <string id="620">CD kopieren</string>
+  <string id="621">Umwandlungs-Algorithmus</string>
   <string id="622">Qualität</string>
   <string id="623">Bitrate</string>
   <string id="624">Titelnummer einbeziehen</string>
@@ -508,7 +508,7 @@
   <string id="643">Störgeräusche entfernen bei angepassten Dateien</string>
   <string id="644">Balken entfernen</string>
   <string id="645">Große Dateien in den Zwischenspeicher laden?</string>
-  <string id="646">Entfernen</string>
+  <string id="646">Aus Datenbank entfernen</string>
 
   <string id="700">Datenbank aufräumen</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
@@ -591,7 +591,7 @@
   <string id="1000">Bildschirmschoner Vorschau</string>
   <string id="1001">Verbindung nicht möglich..</string> 
   <string id="1002">Es konnte keine Verbindung erstellt werden.</string> 
-  <string id="1003">Überprüfen sie die Verbindung / das Netzwerk.</string> 
+  <string id="1003">Überprüfen Sie die Verbindung / das Netzwerk.</string> 
   <string id="1004">Den Eintrag trotzdem hinzufügen?</string> 
   <string id="1005">Geben Sie einen Namen für die Freigabe ein:</string> 
   <string id="1006">IP Adresse</string> 
@@ -606,7 +606,7 @@
   <string id="1015">Netzwerk - Server</string> 
   <string id="1016">Server - Adresse eingeben..</string> 
   <string id="1017">Server - Pfad eingeben..</string> 
-  <string id="1018">Server - Port eingeben..</string> 
+  <string id="1018">Server - Port-Nummer eingeben..</string> 
   <string id="1019">Benutzername eingeben..</string> 
   <string id="1020">Quelle hinzufügen.. (%s)</string> 
   <string id="1021">Pfad eingeben oder Speicherort auswählen:</string> 
@@ -703,7 +703,7 @@
   <string id="10004">Einstellungen</string>
   <string id="10005">Musik</string>
   <string id="10006">Videos</string>
-  <string id="10007">Systeminformationen</string>
+  <string id="10007">System-Informationen</string>
   <string id="10008">Einstellungen</string>
   <string id="10009">Einstellungen-&gt;Bildschirm</string>
   <string id="10010">Einstellungen-&gt;Allgemein-&gt;GUI-Kalibrierung</string>
@@ -727,19 +727,19 @@
 
   <string id="10100">Auswahlmenü</string>
   <string id="10101">Statusleiste</string>
+
   <string id="10500">Musik/Wiedergabeliste</string>
   <string id="10501">Musik/Dateien</string>
   <string id="10502">Musik/Bibliothek</string>
   <string id="10503">Musik/Top100</string>
   <string id="10504">Top 100 Titel</string> 
   <string id="10505">Top 100 Alben</string> 
-
   <string id="10506">Anwendungen</string>
   <string id="10507">Einstellungen</string>
   <string id="10508">Wetterbericht</string> 
   <string id="10509">Netzwerk spielen</string> 
   <string id="10510">Erweiterungen</string>
-  <string id="10511">System Info</string> 
+  <string id="10511">System-Info</string> 
   <string id="10512">Musik - Alben</string> 
   <string id="10513">Musik - Interpreten</string> 
   <string id="10514">Musik - Genres</string> 
@@ -751,8 +751,8 @@
   <string id="10520">Videos - Titel</string> 
   <string id="10521">Videos - Jahr</string> 
   <string id="10522">Videos - Wiedergabe-liste</string> 
-  <string id="10523">Album Info</string> 
-  <string id="10524">Film Info</string> 
+  <string id="10523">Album-Info</string> 
+  <string id="10524">Film-Info</string> 
 
   <string id="12000">Dialogauswahl</string>
   <string id="12001">Musik/Info</string>
@@ -890,12 +890,12 @@
   <string id="13158">Sperr- Status:</string> 
   <string id="13159">Subnetzmaske:</string> 
   <string id="13160">Gateway:</string> 
-  <string id="13161">DNS</string> 
+  <string id="13161">Primärer DNS</string> 
   <string id="13162">Initialisierungs-Fehler</string> 
   <string id="13163">GamePad an Port:</string> 
   <string id="13164">Tastatur an Port:</string> 
   <string id="13165">Maus an Port:</string> 
-  <string id="13166">Kopf/Mikrofon an Port:</string> 
+  <string id="13166">Headset/Mikrofon an Port:</string> 
   <string id="13167">MemoryStick an Port:</string> 
   <string id="13168">IR-Remote an Port:</string> 
   <string id="13169">Gekoppelte Datei abspielen..</string> 
@@ -925,8 +925,8 @@
 
   <string id="13270">System:</string> 
   <string id="13271">CPU-Geschwindigkeit:</string> 
-  <string id="13275">Festplatte</string>
   <string id="13274">Netzwerkverbindung besteht, jedoch ist kein DNS erreichbar.</string> 
+  <string id="13275">Festplatte</string>
   <string id="13276">DVD-Laufwerk</string> 
   <string id="13277">Speicher</string> 
   <string id="13278">Allgemein</string> 
@@ -937,7 +937,7 @@
   <string id="13283">Kernel Version:</string> 
   <string id="13284">CPU-Geschwindigkeit:</string> 
   <string id="13285">BIOS:</string> 
-  <string id="13286">Video-Encoder:</string> 
+  <string id="13286">Video-Algorithmus:</string> 
   <string id="13287">Bildschirmauflösung:</string> 
   <string id="13288">Xbox-Version:</string> 
   <string id="13289">Xbox-Seriennummer:</string> 
@@ -949,7 +949,7 @@
   <string id="13295">Internet:</string> 
   <string id="13296">Xbox verbunden.</string> 
   <string id="13297">Xbox nicht verbunden, Netzwerk prüfen.</string> 
-  <string id="13298">XBLIVE-Schlüssel:</string> 
+  <string id="13298">Xbox-LIVE-Schlüssel:</string> 
   <string id="13299">Temperatur</string>
   <string id="13300">Lüftergeschwindigkeit</string>
   <string id="13301">Automatische Temperaturkontrolle</string>
@@ -1098,7 +1098,7 @@
   <string id="14037">Darstellung</string>
   <string id="14038">Netzwerkeinstellungen wurden geändert!</string>
   <string id="14039">Um die Änderungen wirksam zu machen,</string>
-  <string id="14040">müssen sie die XBOX neu starten. NEUSTART?</string>
+  <string id="14040">müssen Sie die XBOX neu starten. NEUSTART?</string>
   <string id="14041">Nachbearbeitung</string>
   <string id="14042">Engine IP-Addresse</string>
   <string id="14043">ausschalten während Wiedergabe</string>
@@ -1134,8 +1134,8 @@
   <string id="14073">XLink Kai ist deaktiviert.</string> 
 
   <string id="15000">XLink-Kai</string>
-  <string id="15001">Es besteht keine Verbindung mit XLink,</string> 
-  <string id="15002">soll XBMC versuchen mit XLink zu verbinden?</string> 
+  <string id="15001">Es besteht keine Verbindung,</string> 
+  <string id="15002">Soll versucht werden erneut zu verbinden?</string> 
   <string id="15003">Nachricht eingeben:</string> 
   <string id="15004">Für %s bestand eine Einladung.</string> 
   <string id="15005">Datum: %s</string> 
@@ -1217,7 +1217,7 @@
   <string id="15203">Kennwort</string> 
   <string id="15204">Verbindungsfehler...</string> 
   <string id="15205">MediaCenter aktualisieren!</string> 
-  <string id="15206">Übertragung fehlgeschlagen: Benutzerdaten prüfen!</string> 
+  <string id="15206">Fehler: Benutzerdaten prüfen!</string> 
   <string id="15207">Verbunden</string> 
   <string id="15208">Nicht verbunden</string> 
   <string id="15209">Übertragungs-Intervall %i</string> 
@@ -1256,9 +1256,9 @@
   <string id="15275">Wöchentliche Titelcharts von %name%</string>
   <string id="15276">Last.fm Radio der Nachbarn von %name% anhören</string>
   <string id="15277">Privates Last.fm Radio von %name% anhören</string>
-  <string id="15278">Last.fm Radio mit den Lieblingstitel von %name% anhören</string>
-  <string id="15279">Liste von Last.fm wird übertragen...</string>
-  <string id="15280">Liste kann nicht von Last.fm übertragen werden...</string>
+  <string id="15278">Lieblingstitel von %name% über Last.fm anhören</string>
+  <string id="15279">Daten werden von Last.fm übertragen...</string>
+  <string id="15280">Daten können nicht von Last.fm übertragen werden...</string>
   <string id="15281">Bitte einen Interpreten eingeben, um ähnliche zu finden</string>
   <string id="15282">Bitte einen Tagnamen eingeben, um ähnliche Tags zu finden</string>
   <string id="15283">Zuletzt gehörte Titel n. %name% ord.</string>
@@ -1289,9 +1289,9 @@
   <string id="16018">Deaktiviert</string> 
   <string id="16019">Auto</string> 
   <string id="16020">DeInterlace</string> 
-  <string id="16021">Bob</string> 
-  <string id="16022">Bob (Inverted)</string> 
-  <string id="16023">Interlaced</string> 
+  <string id="16021">Synchronisieren (ungerade)</string> 
+  <string id="16022">Synchronisieren (gerade)</string> 
+  <string id="16023">Zwischenzeilenabtastung (Interlaced)</string> 
   <string id="16024">Abbrechen..</string> 
   <string id="16025">Interpretenname eingeben..</string>
   <string id="16026">Abspielen der Wiedergabeliste abgebrochen</string>
@@ -1313,21 +1313,29 @@
   <string id="16107">NTSC-M</string> 
   <string id="16108">NTSC-J</string> 
   <string id="16109">PAL-60</string> 
-  <string id="16110">60hz</string> 
+  <string id="16110">60hz</string>
 
-  <string id="20000">CDDA Rip-Verzeichnis</string>
+  <string id="16200">Der Vorgang wurde abgebrochen</string>
+  <string id="16201">Fehler beim Kopieren</string>
+  <string id="16202">Es wurde mindestens eine Datei fehlerhaft kopiert.</string>
+  <string id="16203">Fehler beim Verschieben</string>
+  <string id="16204">Es wurde mindestens eine Datei fehlerhaft verschoben.</string>  
+  <string id="16205">Fehler beim Löschen</string>
+  <string id="16206">Es wurde mindestens eine Datei fehlerhaft gelöscht.</string>
+
+  <string id="20000">CDDA Kopier-Verzeichnis</string>
   <string id="20001">Externen DVD Player verwenden</string>
   <string id="20002">DVD Player-Verzeichnis</string>
-  <string id="20003">Trainers-Verzeichnis</string>
-  <string id="20004">Bildschirmaufnahme-Verzeichnis</string>
-  <string id="20005">Aufnahme-Verzeichnis</string>
-  <string id="20006">Wiedergabeliste-Verzeichnis</string>
+  <string id="20003">Trainer-Verzeichnis</string>
+  <string id="20004">Bildschirmaufnahmen-Verzeichnis</string>
+  <string id="20005">Audio-Aufnahmen-Verzeichnis</string>
+  <string id="20006">Wiedergabelisten-Verzeichnis</string>
   <string id="20007">Aufnahmen</string>
   <string id="20008">Bildschirmaufnahme</string>
   <string id="20009">XBMC verwenden</string>
   <string id="20010">Interpret-Abbild</string>
-  <string id="20011">Musik Wiedergabeliste</string>
-  <string id="20012">Video Wiedergabeliste</string>
+  <string id="20011">Musik Wiedergabelisten</string>
+  <string id="20012">Video Wiedergabelisten</string>
   <string id="20013">Möchten Sie das Spiel starten?</string>
   <string id="20014">n. Wiedergabeliste ord.</string>
   <string id="20015">IMDb Miniaturansicht</string>
@@ -1336,7 +1344,7 @@
   <string id="20018">Nicht vorhanden</string>
   <string id="20019">Miniaturansicht auswählen</string>
   <string id="20020">KAI und Trainer können nicht gleichzeitig verwendet werden,</string>
-  <string id="20021">wählen Sie was aktiviert werden soll.</string>
+  <string id="20021">wählen Sie welches Sie verwenden möchten.</string>
   <string id="20022"></string>
   <string id="20023">Konflikt</string>
   <string id="20024">Aktualisieren</string>
@@ -1363,7 +1371,7 @@
   <string id="20047">Profil '%s' erstellen?</string>
   <string id="20048">Möchten Sie die "aktuellen" Einstellungen,</string>
   <string id="20049">Automatisch</string>
-  <string id="20050">16x9 and 4x3 automatisch ändern</string>
+  <string id="20050">Zwischen 16x9 and 4x3 automatisch umschalten</string>
   <string id="20051">Gekoppelte Dateien als einzelne betrachten</string>
   <string id="20052">Achtung</string>
   <string id="20053">Hauptbenutzer-Modus verlassen</string>
@@ -1373,13 +1381,13 @@
   <string id="20057">Miniaturansicht entfernen</string>
   <string id="20058">Profil hinzufügen...</string>
   <string id="20059">Infos für Alben abfragen</string>
-  <string id="20060">Medien Info</string>
+  <string id="20060">Medien-Info</string>
   <string id="20061">Unabhängig</string>
   <string id="20062">Standardquellen</string>
   <string id="20063">Standardquellen (schreibgeschützt)</string>
   <string id="20064">Aktuell</string>
   <string id="20065">Profilbild ändern</string>
-  <string id="20066">Sperren</string>
+  <string id="20066">Zugriffsrechte</string>
   <string id="20067">Profil bearbeiten</string>
   <string id="20068">Profil sperren</string>
   <string id="20069">Verzeichnis konnte nicht erstellt werden.</string>
@@ -1391,45 +1399,45 @@
   <string id="20075">Hauptkennwort eingeben..</string>
   <string id="20076">Hauptkennwort am Start abfragen..</string>
   <string id="20077">Oberflächen-Einstellungen</string>
-  <string id="20078">- keine verküpfung gesetzt -</string>
+  <string id="20078">- keine Verküpfung gesetzt -</string>
   <string id="20079">Animationen aktivieren</string>
   <string id="20080">RSS deaktivieren währende Musikwiedergabe</string>
   <string id="20081">Lesezeichen aktivieren</string>
   <string id="20082">XLink Kai Info anzeigen</string>
-  <string id="20083">Musik Info anzeigen</string>
-  <string id="20084">Wetter Info anzeigen</string>
-  <string id="20085">System Info anzeigen</string>
+  <string id="20083">Musik-Info anzeigen</string>
+  <string id="20084">Wetter-Info anzeigen</string>
+  <string id="20085">System-Info anzeigen</string>
   <string id="20086">Verfügbaren Speicherplatz für C: E: F: anzeigen</string>
   <string id="20087">Verfügbaren Speicherplatz für E: F: G: anzeigen</string>
-  <string id="20088">Wetter Info</string>
+  <string id="20088">Wetter-Info</string>
   <string id="20089">Verfügbarer Speicherplatz</string>
   <string id="20090">Geben Sie die Bezeichnung einer verfügbaren Verknüpfung ein.</string>
   <string id="20091">Sperr-Kennwort</string>
   <string id="20092">Profil laden</string>
-  <string id="20093">Profilname</string>
+  <string id="20093">Profil-Name</string>
   <string id="20094">Medien-Quelle</string>
   <string id="20095">Profil-Sperr-Kennwort eingeben</string>
   <string id="20096">Benutzerabfrage</string>
-  <string id="20097">Album Info abrufen</string>
-  <string id="20098">Album Info wird abgerufen</string>
-  <string id="20099">Während CD-Wiedergabe können Audidateien nicht gerippt werden.</string>
+  <string id="20097">Album-Info abrufen</string>
+  <string id="20098">Album-Info wird abgerufen</string>
+  <string id="20099">Während CD-Wiedergabe können Audidateien nicht kopiert werden.</string>
   <string id="20100">Hauptkennwort und Sperren</string>
   <string id="20101">Hauptkennwort aktiviert Hauptbenutzermodus</string>
   <string id="20102">oder die "standard" Vorgaben verwenden?</string>
   <string id="20103">Profil-Änderungen speichern?</string>
   <string id="20104">Bestehende Einstelleungen gefunden,</string>
-  <string id="20105">möchten sie diese verwenden?</string>
+  <string id="20105">möchten Sie diese verwenden?</string>
   <string id="20106">Bestehende Medien-Quellen gefunden,</string>
   <string id="20107">Unabhängig (gesperrt)</string>
   <string id="20108">Hauptverzeichnis</string>
   <string id="20109">Zoombereich</string>
   <string id="20110">UPnP Klient</string>
-  <string id="20111">Autostart</string>
+  <string id="20111">UPnP automatisch starten</string>
   <string id="20112">Letzte Anmeldung: %s</string>
   <string id="20113">Keine bisherige Anmeldung</string>
   <string id="20114">Profil %i / %i</string>
   <string id="20115">Benutzeranmeldung / Profil auswählen</string>
-  <string id="20116">Sperren bei Benuteranmeldung verwenden</string>
+  <string id="20116">Kennwortabfrage bei Benuteranmeldung verwenden</string>
   <string id="20117">Fehlerhafte Sperr-Kennwort</string>
   <string id="20118">Hauptkennwort wird benötigt.</string>
   <string id="20119">Möchten Sie es jetzt festlegen?</string>
@@ -1442,10 +1450,78 @@
   <string id="20126">Abmelden</string>
   <string id="20127">In der Bibliothek die Verknüpfung 'Alle' ausblenden</string>
   <string id="20128">Hauptverzeichnis wechseln</string>
-  <string id="20129">Weave</string>
-  <string id="20130">Weave (Inverted)</string>
-  <string id="20131">Blend</string>
+  <string id="20129">Verbinden</string>
+  <string id="20130">Verbinden (umgekehrt)</string>
+  <string id="20131">Angleichen</string>
   <string id="20132">Video neustarten</string>
+  <string id="20133">Netzwerkpfad ändern</string>
+  <string id="20134">Netzwerkpfad löschen</string>
+  <string id="20135">Soll der Ordner durchsucht werden?</string>
+  <string id="20136">Speicherkarte</string>
+  <string id="20137">Speicherkarte initialisiert</string>
+  <string id="20138">Speicherkarte konnte nicht initialisiert werden.</string>
+  <string id="20139">In Port %i, Slot %i</string>
+  <string id="20140">Bildschirmschoner mit Kennwort sperren</string>
+  <string id="20141">Festlegen</string>
+  <string id="20142">Benutzername</string>
+  <string id="20143">Kennwort eingeben für</string>
+  <string id="20144">Abschalt-Timer</string>
+  <string id="20145">Abschalt-Intervall (in Minuten)</string>
+  <string id="20146">XBOX wird in %im Minuten abgeschaltet</string>
+  <string id="20147">Abschalten in 30 Minuten</string>
+  <string id="20148">Abschalten in 60 Minuten</string>
+  <string id="20149">Abschalten in 120 Minuten</string>
+  <string id="20150">Abschalt-Timer (spezifisch)</string>
+  <string id="20151">Abschalt-Timer ABBRECHEN</string>
+  <string id="20152">Einstellungen für %s sperren</string>
+  <string id="20153">Durchsuchen..</string>
+  <string id="20154">Allgemein</string>
+  <string id="20155">Speicher</string>
+  <string id="20156">Festplatte</string>
+  <string id="20157">DVD Laufwerk</string>
+  <string id="20158">Netzwerk</string>
+  <string id="20159">Video</string>
+  <string id="20160">System</string>
+  <string id="20161">Gesamt: %s MB, Belegt: %s MB, Verfügbar: %s MB</string>
+  <string id="20162">Gesamt: %u%%  Verfügbar: %u%%</string>
+  <string id="20163">%s: %s MB von %s MB verfügbar</string>
+  <string id="20164">Zugriffschutz wird nicht unterstützt.</string>
+  <string id="20165">Offen</string>
+  <string id="20166">Gesperrt</string>
+  <string id="20167">Angehalten</string>
+  <string id="20168">Ein Neustart wird benötigt</string>
+  <string id="20169">Woche</string>
+  <string id="20170">Fließband</string>
+  <string id="20171">Windows-Netzwerk (SMB)</string>
+  <string id="20172">XBMSP-Server</string>
+  <string id="20173">FTP-Server</string>
+  <string id="20174">ITunes Musik-Freigabe (DAAP)</string>
+  <string id="20175">UPnP-Server</string>
+  <string id="20176">Video-Informationen anzeigen</string>
+  <string id="20177">Beendet</string>
+  <string id="20178">Umschalten</string>
+  <string id="20179">Feststelltaste</string>
+  <string id="20180">Symbole</string>
+  <string id="20181">löschen</string>
+  <string id="20182">Leertaste</string>
+  <string id="20183">Oberfläche aktualisieren</string>
+  <string id="20184">Automatisches Drehen auf Grundlage der EXIF-Infos</string>
+
+  <string id="20185">System wird verifiziert...</string>
+  <string id="20186">Bitte warten..</string>
+  <string id="20187">EEPROM wird verifiziert..</string>
+  <string id="20188">EEPROM Verifizierung abgeschlossen.</string>
+  <string id="20189">System Verifizierung abgeschlossen.</string>
+  <string id="20190">Festplatte wird verifiziert...</string>
+  <string id="20191">Dateisystem wird verifiziert..</string>
+  <string id="20192">Schluessel wird verifiziert..</string>
+  <string id="20193">Temperatur wird verifiziert..</string>
+  <string id="20194">DVD Laufwerk wird verifiziert...</string>
+  <string id="20195">Firmware wird verifiziert..</string>
+  <string id="20196">Netzwerk wird verifiziert...</string>
+  <string id="20197">MAC Adresse wird verifiziert..</string>
+  <string id="20198">Online Status wird verifiziert..</string>
+  <string id="20199">Xbox Version, Seriennummer und CPU</string>
 
   <string id="20200">km/h</string> 
   <string id="20201">m/min</string> 
@@ -1459,5 +1535,18 @@
   <string id="20209">inch/s</string> 
   <string id="20210">yard/s</string> 
   <string id="20211">Furlong/Fortnight</string>
+
+  <string id="20300">System wird verifiziert...</string>
+  <string id="20301">ModChip wird verifiziert..</string>
+  <string id="20302">BIOS wird verifiziert..</string>
+  <string id="20303">CPU wird verifiziert..</string>
+  <string id="20304">Herstellung wird verifiziert..</string>
+  <string id="20305">Externe Hardware wird gesucht..</string>
+  <string id="20306">Unbekannt. MD5Info in der xbmc.log in die BiosIDs.ini eintragen.</string>
+  <string id="20307">Sekundärer DNS</string>
+  <string id="20308">DHCP Server:</string>
+  <string id="20309">Neuer Ordner</string>
+
+  <string id="29999">Automatische Flicker Filter Korrektur</string>
 
 </strings>
