@@ -264,7 +264,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
       return;
     }
     CFileItem *item = new CFileItem("thumb://None", false);
-    item->SetThumbnailImage("defaultAlbumBig.png");
+    item->SetThumbnailImage("defaultAlbumCover.png");
     item->SetLabel(g_localizeStrings.Get(20018)); // TODO: localize 2.0
     items.Add(item);
   }
