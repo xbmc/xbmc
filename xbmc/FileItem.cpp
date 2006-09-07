@@ -513,7 +513,7 @@ bool CFileItem::IsReadOnly() const
   // now check for remote shares (smb is writeable??)
   if (IsSmb()) return false;
   // memory units are only writeable in some circumstances
-  if (IsMemoryUnit() && g_memoryUnitManager.IsDriveWriteable(m_strPath)) return true;
+  if (IsMemoryUnit() && !g_memoryUnitManager.IsDriveWriteable(m_strPath)) return true;
   // no other protocols are writeable??
   if (IsRemote()) return true;
   return false;
