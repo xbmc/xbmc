@@ -844,7 +844,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetLabel2(g_weatherManager.GetAreaCity(pSetting->GetData()));
     }
-    else if (strSetting.Equals("led.disableonplayback") || strSetting.Equals("led.enableonpaused"))
+    else if (strSetting.Equals("led.disableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       int iColour = g_guiSettings.GetInt("led.colour");
@@ -907,6 +907,21 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
+    }
+    else if (strSetting.Equals("lcd.enableonpaused"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
+    }
+    else if (strSetting.Equals("led.enableonpaused"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("led.disableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("led.colour") != LED_COLOUR_OFF);
+    }
+    else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.backlight") || strSetting.Equals("lcd.contrast") || strSetting.Equals("lcd.disableonplayback"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
     }
   }
 }
