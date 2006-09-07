@@ -91,8 +91,8 @@ void CBackgroundWeatherLoader::GetInformation()
   CStdString areaCode(callback->GetAreaCode(g_guiSettings.GetString(strSetting)));
   strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=m&dayf=4&prod=xoap&par=%s&key=%s",
                 areaCode.c_str(), PARTNER_ID, PARTNER_KEY);
-  CStdString strWeatherFile = "Z:\\curWeather.xml";
-  if (httpUtil.Download(strURL, strWeatherFile))
+  CStdString xml;
+  if (httpUtil.Get(strURL, xml))
   {
     CLog::Log(LOGINFO, "WEATHER: Weather download successful");
     if (!callback->m_bImagesOkay)
@@ -104,7 +104,7 @@ void CBackgroundWeatherLoader::GetInformation()
         g_RarManager.ExtractArchive(strRarFile,strBasePath);
       callback->m_bImagesOkay = true;
     }
-    callback->LoadWeather(strWeatherFile);
+    callback->LoadWeather(xml);
   }
   else
     CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
@@ -261,7 +261,7 @@ int CWeather::ConvertSpeed(int curSpeed)
   return curSpeed;
 }
 
-bool CWeather::LoadWeather(const CStdString &strWeatherFile)
+bool CWeather::LoadWeather(const CStdString &weatherXML)
 {
   int iTmpInt;
   char iTmpStr[256];
@@ -275,7 +275,7 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
 
   // load the xml file
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(strWeatherFile))
+  if (!xmlDoc.Parse(weatherXML.c_str()))
   {
     CLog::Log(LOGERROR, "WEATHER: Unable to get data - invalid XML");
     return false;
