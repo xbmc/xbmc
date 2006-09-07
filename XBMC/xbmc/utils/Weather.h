@@ -63,7 +63,6 @@ protected:
   virtual const char *BusyInfo(DWORD dwInfo);
   virtual DWORD TimeToNextRefreshInMs();
 
-  bool Download(const CStdString& strWeatherFile);  //download to strWeatherFile
   void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
   void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
   void LocalizeOverview(char *szStr);
