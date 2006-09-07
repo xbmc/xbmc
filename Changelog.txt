@@ -5,6 +5,18 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-09-2006 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 07-09-2006 updated: Spanish language file (Thnx to jose_t)
+ - 07-09-2006 updated: Norwegian language file (Thnx to vnm)
+ - 07-09-2006 updated: Indonesian language file (Thnx to djoens)
+ - 07-09-2006 updated: Polish language file (Thnx to napek)
+ - 07-09-2006 updated: Chinese (Simple) language file (Thnx to gamepc)
+ - 07-09-2006 updated: Italian language file (Thnx to kotix)
+ - 07-09-2006 updated: Chinese (Traditional) language file (Thnx to omenpica)
+ - 07-09-2006 updated: Catalan language file (Thnx to buc)
+ - 07-09-2006 updated: Swedish language file (Thnx to blittan)
+ - 07-09-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
+ - 07-09-2006 updated: Slovenian language file (Thnx to xsiluro)
  - 07-09-2006 fixed: Weather would create a file on Z: unnecessarily.
  - 06-09-2006 changed: force read/fread functions to read the entire requested size normally, as libdvdcss can't handle truncated reads. (this potentially fixes the dvdplayer video distortions when playing over smb from certain landrives)
  - 06-09-2006 fixed: <detectasudf> didn't apply to autorun / discs started using xbmc.playdisc.
