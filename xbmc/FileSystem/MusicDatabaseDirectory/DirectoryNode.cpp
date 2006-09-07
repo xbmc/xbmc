@@ -56,7 +56,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const CStdString& strPath)
   for (int i=0; i<(int)Path.size(); ++i)
   {
     pNode=CDirectoryNode::CreateNode(NodeType, Path[i], pParent);
-    NodeType=pNode->GetChildType();
+    NodeType= pNode ? pNode->GetChildType() : NODE_TYPE_NONE;
     pParent=pNode;
   }
 
