@@ -1519,19 +1519,19 @@ bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
   TiXmlElement uifiltersNode("uifilters");
   pNode = io_pRoot->InsertEndChild(uifiltersNode);
   if (!pNode) return false;
-  SetInteger(pNode, "flicker", g_guiSettings.GetInt("uifilters.flicker"));
-  SetBoolean(pNode, "soften", g_guiSettings.GetBool("uifilters.soften"));
+  SetInteger(pNode, "flicker", g_guiSettings.GetInt("videoscreen.flickerfilter"));
+  SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoscreen.soften"));
 
   TiXmlElement filtersNode("filters");
   pNode = io_pRoot->InsertEndChild(uifiltersNode);
   if (!pNode) return false;
-  SetInteger(pNode, "flicker", g_guiSettings.GetInt("filters.flicker"));
-  SetBoolean(pNode, "soften", g_guiSettings.GetBool("filters.soften"));
+  SetInteger(pNode, "flicker", g_guiSettings.GetInt("videoplayer.flicker"));
+  SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoplayer.soften"));
 
   TiXmlElement lookandfeelNode("lookandfeel");
   pNode = io_pRoot->InsertEndChild(lookandfeelNode);
   if (!pNode) return false;
-  SetInteger(pNode, "resolution", g_guiSettings.GetInt("lookandfeel.resolution"));
+  SetInteger(pNode, "resolution", g_guiSettings.GetInt("videoscreen.resolution"));
 
   return SaveCalibration(io_pRoot);
 }
@@ -1784,7 +1784,7 @@ bool CSettings::LoadProfile(int index)
   CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
-  int iOldRes = g_guiSettings.GetInt("lookandfeel.resolution");
+  int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
   if (Load(bSourcesXML,bSourcesXML))
   {
     CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
@@ -1813,7 +1813,7 @@ bool CSettings::LoadProfile(int index)
 
     g_infoManager.ResetCache();
  //   g_infoManager.Clear();
-    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) || iOldRes != g_guiSettings.GetInt("lookandfeel.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")))
+    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) || iOldRes != g_guiSettings.GetInt("videoscreen.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")))
     {
       g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
     }
@@ -1829,20 +1829,20 @@ bool CSettings::LoadProfile(int index)
         g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
       }
       else
-        CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("lookandfeel.language").c_str());
+        CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("locale.language").c_str());
     }
     // initialize our charset converter
     g_charsetConverter.reset();
 
     // Load the langinfo to have user charset <-> utf-8 conversion
     CStdString strLangInfoPath;
-    strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("lookandfeel.language"));
+    strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("locale.language"));
 
     CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
     g_langInfo.Load(strLangInfoPath);
 
     CStdString strLanguagePath;
-    strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("lookandfeel.language"));
+    strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("locale.language"));
 
     g_buttonTranslator.Load();
     g_localizeStrings.Load(strLanguagePath);
