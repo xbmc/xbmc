@@ -34,11 +34,14 @@ CGUIWindowVideoTitle::~CGUIWindowVideoTitle()
 bool CGUIWindowVideoTitle::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   items.m_strPath = strDirectory;
+  if (items.m_strPath.Equals("?"))
+    items.m_strPath = "";
   VECMOVIES movies;
   m_database.GetMovies(movies);
   // Display an error message if the database doesn't contain any movies
   DisplayEmptyDatabaseMessage(movies.empty());
   SetDatabaseDirectory(movies, items);
+
   return true;
 }
 

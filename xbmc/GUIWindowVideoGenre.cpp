@@ -31,7 +31,7 @@ CGUIWindowVideoGenre::~CGUIWindowVideoGenre()
 bool CGUIWindowVideoGenre::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   items.m_strPath = strDirectory;
-  if (items.IsVirtualDirectoryRoot())
+  if (items.IsVirtualDirectoryRoot() || items.m_strPath.Equals("?"))
   {
     VECMOVIEGENRES genres;
     m_database.GetGenres(genres, g_stSettings.m_iMyVideoWatchMode);

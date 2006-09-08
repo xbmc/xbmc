@@ -31,6 +31,7 @@
 #define CONTROL_THUMBS            51
 #define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
+#define CONTROL_LABELEMPTY        13
 
 #define CONTROL_PLAY_DVD          6
 #define CONTROL_STACK             7
@@ -226,6 +227,21 @@ void CGUIWindowVideoBase::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + g_stSettings.m_iMyVideoWatchMode));
   CGUIMediaWindow::UpdateButtons();
 }
+
+void CGUIWindowVideoBase::OnWindowLoaded()
+{
+  CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
+  int iX = pControl->GetXPosition();
+  int iY = pControl->GetYPosition() + pControl->GetHeight() / 2;
+  CLabelInfo info = pControl->GetLabelInfo();
+  info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
+  CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,iX,iY,pControl->GetWidth(),40,"",info,false);
+  pLabel->SetAnimations(pControl->GetAnimations());
+  Add(pLabel);
+  
+  CGUIMediaWindow::OnWindowLoaded();
+}
+
 
 void CGUIWindowVideoBase::OnInfo(int iItem)
 {
@@ -445,31 +461,24 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
 
 void CGUIWindowVideoBase::Render()
 {
-  CGUIMediaWindow::Render();
-
   if (m_bDisplayEmptyDatabaseMessage)
   {
-    int iX = 400;
-    int iY = 400;
+    CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(CONTROL_LABELEMPTY);
     CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
-    if (pControl)
-    {
-      iX = pControl->GetXPosition() + pControl->GetWidth() / 2;
-      iY = pControl->GetYPosition() + pControl->GetHeight() / 2;
-    }
-    CGUIFont *pFont = pControl->GetLabelInfo().font;
-    if (pFont)
-    {
-      float fWidth, fHeight;
-      CStdStringW utf16NoScannedInfo, utf16SwitchToFiles;
-      g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(745), utf16NoScannedInfo); // "No scanned information for this view"
-      g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(746), utf16SwitchToFiles); // "Switch back to Files view"
-      pFont->GetTextExtent(utf16NoScannedInfo.c_str(), &fWidth, &fHeight);
-      g_graphicsContext.SetControlTransform(TransformMatrix());
-      pFont->DrawText((float)iX, (float)iY - fHeight, 0xffffffff, 0, utf16NoScannedInfo.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
-      pFont->DrawText((float)iX, (float)iY + fHeight, 0xffffffff, 0, utf16SwitchToFiles.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
-    }
+    float fWidth,fHeight;
+    CStdStringW utf16NoScannedInfo;
+    g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746), utf16NoScannedInfo); // "No scanned information for this view"
+    CLabelInfo info = pLabel->GetLabelInfo();
+    info.font->GetTextExtent(utf16NoScannedInfo.c_str(), &fWidth, &fHeight);
+    pLabel->SetPosition(pLabel->GetXPosition(),pControl->GetYPosition()+pControl->GetHeight()/2-(int)fHeight/2);
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746))
   }
+  else
+  {
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"")
+  }
+  
+  CGUIMediaWindow::Render();
 }
 
 void CGUIWindowVideoBase::OnManualIMDB()
