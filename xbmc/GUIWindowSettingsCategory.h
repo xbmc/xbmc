@@ -85,4 +85,6 @@ protected:
   int m_iSectionBeforeJump;
   int m_iControlBeforeJump;
   int m_iWindowBeforeJump;
+
+  bool m_returningFromSkinLoad; // true if we are returning from loading the skin
 };

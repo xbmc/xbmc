@@ -205,7 +205,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    const CStdString& strName=g_guiSettings.GetString("lookandfeel.region");
+    const CStdString& strName=g_guiSettings.GetString("locale.country");
     SetCurrentRegion(strName);
   }
   return true;
@@ -225,7 +225,7 @@ void CLangInfo::SetDefaults()
 CStdString CLangInfo::GetGuiCharSet() const
 {
   CStdString strCharSet;
-  strCharSet=g_guiSettings.GetString("lookandfeel.charset");
+  strCharSet=g_guiSettings.GetString("locale.charset");
   if (strCharSet=="DEFAULT")
     strCharSet=m_currentRegion->m_strGuiCharSet;
 

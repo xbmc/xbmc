@@ -895,7 +895,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
       bReturn = g_partyModeManager.IsEnabled();
     break;
     case AUDIOSCROBBLER_ENABLED:
-      bReturn = g_guiSettings.GetBool("mymusic.uselastfm");
+      bReturn = g_guiSettings.GetBool("lastfm.enable");
     break;
     case VIDEOPLAYER_USING_OVERLAYS:
       bReturn = (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_OVERLAYS);

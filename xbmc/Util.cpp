@@ -2384,9 +2384,9 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD()
 {
-  if (g_guiSettings.GetBool("myvideos.useexternaldvdplayer") && !g_guiSettings.GetString("myvideos.externaldvdplayer").IsEmpty())
+  if (g_guiSettings.GetBool("videoplayer.useexternaldvdplayer") && !g_guiSettings.GetString("videoplayer.externaldvdplayer").IsEmpty())
   {
-    RunXBE(g_guiSettings.GetString("myvideos.externaldvdplayer").c_str());
+    RunXBE(g_guiSettings.GetString("videoplayer.externaldvdplayer").c_str());
   }
   else
   {
@@ -3754,7 +3754,7 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
     else if (strSpecial.Left(11).Equals("$THUMBNAILS"))
       CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), strSpecial.Mid(11), strReturn);
     else if (strSpecial.Left(11).Equals("$RECORDINGS"))
-      CUtil::AddFileToFolder(g_guiSettings.GetString("musicfiles.recordingpath",false), strSpecial.Mid(11), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), strSpecial.Mid(11), strReturn);
     else if (strSpecial.Left(12).Equals("$SCREENSHOTS"))
       CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), strSpecial.Mid(12), strReturn);
     else if (strSpecial.Left(10).Equals("$PLAYLISTS"))

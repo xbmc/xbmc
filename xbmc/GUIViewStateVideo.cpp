@@ -51,7 +51,7 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
     AddViewAsControl(VIEW_METHOD_LIST, 101);
     AddViewAsControl(VIEW_METHOD_ICONS, 100);
     AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-    if (g_guiSettings.GetBool("videofiles.useautoswitching"))
+    if (g_guiSettings.GetBool("myvideos.useautoswitching"))
     {
       SetViewAsControl(CAutoSwitch::GetView(items));
     }
