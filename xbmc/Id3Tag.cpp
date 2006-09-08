@@ -146,7 +146,6 @@ bool CID3Tag::Parse()
 
       id3_length_t nBufSize = 0;
       const BYTE* pPic = GetPictureData(pictype, &nBufSize );
-
       if (pPic != NULL && nBufSize > 0)
       {
         CPicture pic;
