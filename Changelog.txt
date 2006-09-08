@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-09-2006 fixed: Delete and Rename were sometimes active on parent folder items.
+ - 08-09-2006 fixed: Added workaround for iTunes v2.4 tag bug to libid3tag to allow us to load these (incorrect) tags.
  - 08-09-2006 changed: Settings screens reordered.
  - 08-09-2006 fixed: no info scanned for this view message didn't follow animations.
  - 07-09-2006 updated: German (Austrian) language file (Thnx to CEOMR)
