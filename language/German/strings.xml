@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe-->
-<!--Date of translation: 09/04/2006-->
+<!--Date of translation: 09/09/2006-->
 <!--$Revision$-->
-<!--Based on english strings version 1.341-->
+<!--Based on english strings version 1.343-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -276,7 +276,7 @@
   <string id="354">Matrix-Schleifen</string>
   <string id="355">Bildschirmschoner aktivieren nach</string>
   <string id="356">Bildschirmschoner</string>
-  <string id="357">XBOX automatisch ausschalten nach</string>
+  <string id="357">XBOX automatisch ausschalten</string>
   <string id="358">Alle Alben</string>
   <string id="359">Zuletzt hinzugefügte Alben</string>
   <string id="360">Bildschirmschoner</string>
@@ -419,7 +419,7 @@
   <string id="502">Offen</string>
   <string id="503">Beschäftigt</string>
   <string id="504">Leer</string>
-  <string id="505">Medien-Informationen werden geladen...</string>
+  <string id="505">Medien-Informationen werden gespeichert...</string>
   <string id="507">Nach Gebrauch</string>
   <string id="510">Visualisierung verwenden</string>
   <string id="511">Video-Modus auf Basis der Spiele-Region wechseln</string>
@@ -476,7 +476,7 @@
   <string id="642">Lautstärke-Niveau - Ohne Replay-Gain</string>
   <string id="643">Abschneiden verhindern bei Dateien mit Replay-Gain</string>
   <string id="644">Schwarze Balken entfernen</string>
-  <string id="645">Große Dateien müssen zwischengespeichert werden. Fortsetzen?</string>
+  <string id="645">Größere Dateien müssen entpackt werden. Fortsetzen?</string>
   <string id="646">Titel entfernen</string>
   <string id="700">Datenbank aufräumen</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
@@ -765,7 +765,7 @@
   <string id="12360">Master-Sperre</string>
   <string id="12362">Nach maximaler Anzahl Fehlversuchen XBOX ausschalten</string>
   <string id="12367">Das Master-Passwort ist ungültig!</string>
-  <string id="12368">Bitte geben Sie das Master-Passwort noch einmal ein.</string>
+  <string id="12368">Bitte geben Sie das gültige Master-Passwort ein!</string>
   <string id="12373">Einstellungen/Dateien</string>
   <string id="12376">Einstellungen als Standard für alle Filme setzen</string>
   <string id="12377">Alle vorherigen Werte werden damit überschrieben.</string>
@@ -868,7 +868,7 @@
   <string id="13305">RSS-Newsfeeds aktivieren</string>
   <string id="13306">Eintrag zum übergeordneten Ordner ausblenden</string>
   <string id="13307">Formatvorlage für Musiktitel-Dateinamen</string>
-  <string id="13308">Wählen Sie 'Ja' um die XBOX neu zu starten.</string>
+  <string id="13308">Möchten Sie die XBOX neustarten?</string>
   <string id="13309">Wählen Sie 'Nein' um XBMC neu zu starten.</string>
   <string id="13310">Übergang streckend</string>
   <string id="13311">Übergang gleitend</string>
@@ -1118,7 +1118,7 @@
   <string id="15252">Station wird ausgewählt...</string>
   <string id="15253">Ähnliche Interpreten suchen...</string>
   <string id="15254">Ähnliche Tags suchen...</string>
-  <string id="15255">Ihr Profil (%name%)</string>
+  <string id="15255">Eigenes Profil (%name%)</string>
   <string id="15256">Die besten Tags</string>
   <string id="15257">Die besten Interpreten des Tags %name%</string>
   <string id="15258">Die besten Alben des Tags %name%</string>
@@ -1143,7 +1143,7 @@
   <string id="15277">Privates Last.fm Radio von %name% anhören</string>
   <string id="15278">Die Lieblingstitel von %name% im Last.fm Radio anhören</string>
   <string id="15279">Daten werden von Last.fm übertragen...</string>
-  <string id="15280">Liste kann nicht von Last.fm übertragen werden...</string>
+  <string id="15280">Daten konnten nicht von Last.fm übertragen werden.</string>
   <string id="15281">Bitte geben Sie einen zu suchenden Interpreten ein</string>
   <string id="15282">Bitte geben Sie einen zu suchenden Tagnamen ein</string>
   <string id="15283">Kürzlich gehörte Titel von %name%</string>
@@ -1361,7 +1361,7 @@
   <string id="20171">Windows-Netzwerk (SMB)</string>
   <string id="20172">XBMSP-Server</string>
   <string id="20173">FTP-Server</string>
-  <string id="20174">iTunes Musik Freigabe (DAAP)</string>
+  <string id="20174">iTunes Musik-Freigabe (DAAP)</string>
   <string id="20175">UPnP-Server</string>
   <string id="20176">Video-Informationen anzeigen</string>
   <string id="20177">Fertig</string>
@@ -1397,5 +1397,9 @@
   <string id="20307">Sekundärer DNS-Server</string>
   <string id="20308">DHCP-Server:</string>
   <string id="20309">Neuer Ordner</string>
+  <string id="20310">LCD während der Wiedergabe verdunkeln</string>
+  <string id="20311">Unbekannt oder Onboard (geschützt)</string>
+  <string id="20312">LCD während 'Pause' verdunkeln</string>
+  <string id="20313">Bei 'Pause' die LED wieder einschalten</string>
   <string id="29999">Automatische Flicker Filter Korrektur für Programme</string>
 </strings>
