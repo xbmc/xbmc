@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-09-2006 updated: German language file
  - 08-09-2006 fixed: Edit XBE Title was enabled for profiles that didn't have database access.
  - 08-09-2006 fixed: Delete and Rename were sometimes active on parent folder items.
  - 08-09-2006 fixed: Added workaround for iTunes v2.4 tag bug to libid3tag to allow us to load these (incorrect) tags.
