@@ -31,7 +31,7 @@ CGUIWindowVideoYear::~CGUIWindowVideoYear()
 bool CGUIWindowVideoYear::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   items.m_strPath = strDirectory;
-  if (m_vecItems.IsVirtualDirectoryRoot())
+  if (m_vecItems.IsVirtualDirectoryRoot() || items.m_strPath.Equals("?"))
   {
     VECMOVIEYEARS years;
     m_database.GetYears(years, g_stSettings.m_iMyVideoWatchMode);

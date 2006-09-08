@@ -27,6 +27,7 @@ using namespace MUSICDATABASEDIRECTORY;
 #define CONTROL_FILTER            15
 #define CONTROL_BTNPARTYMODE      16
 #define CONTROL_BTNMANUALINFO     17
+#define CONTROL_LABELEMPTY        18
 
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_NAV, "MyMusicNav.xml")
@@ -322,6 +323,20 @@ void CGUIWindowMusicNav::PlayItem(int iItem)
   CGUIWindowMusicBase::PlayItem(iItem);
 }
 
+void CGUIWindowMusicNav::OnWindowLoaded()
+{
+  CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
+  int iX = pControl->GetXPosition();
+  int iY = pControl->GetYPosition() + pControl->GetHeight() / 2;
+  CLabelInfo info = pControl->GetLabelInfo();
+  info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
+  CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,iX,iY,pControl->GetWidth(),40,"",info,false);
+  pLabel->SetAnimations(pControl->GetAnimations());
+  Add(pLabel);
+  
+  CGUIWindowMusicBase::OnWindowLoaded();
+}
+
 void CGUIWindowMusicNav::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
@@ -519,7 +534,6 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const CStdString& strPlayList, CFi
   }
 
   items.m_strPath=strPlayList;
-
   CLog::Log(LOGDEBUG,"CGUIWindowMusicNav, opening playlist [%s]", strPlayList.c_str());
   CPlayListFactory factory;
   auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
@@ -555,24 +569,21 @@ void CGUIWindowMusicNav::DisplayEmptyDatabaseMessage(bool bDisplay)
 
 void CGUIWindowMusicNav::Render()
 {
-  CGUIWindowMusicBase::Render();
-
   if (m_bDisplayEmptyDatabaseMessage)
   {
+    CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(CONTROL_LABELEMPTY);
     CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
-    int iX = pControl->GetXPosition() + pControl->GetWidth() / 2;
-    int iY = pControl->GetYPosition() + pControl->GetHeight() / 2;
-    CGUIFont *pFont = pControl->GetLabelInfo().font;
-    if (pFont)
-    {
-      float fWidth, fHeight;
-      CStdStringW utf16NoScannedInfo, utf16SwitchToFiles;
-      g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(745), utf16NoScannedInfo); // "No scanned information for this view"
-      g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(746), utf16SwitchToFiles); // "Switch back to Files view"
-      pFont->GetTextExtent(utf16NoScannedInfo.c_str(), &fWidth, &fHeight);
-      g_graphicsContext.SetControlTransform(TransformMatrix());
-      pFont->DrawText((float)iX, (float)iY - fHeight, 0xffffffff, 0, utf16NoScannedInfo.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
-      pFont->DrawText((float)iX, (float)iY + fHeight, 0xffffffff, 0, utf16SwitchToFiles.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
-    }
+    float fWidth,fHeight;
+    CStdStringW utf16NoScannedInfo;
+    g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746), utf16NoScannedInfo); // "No scanned information for this view"
+    CLabelInfo info = pLabel->GetLabelInfo();
+    info.font->GetTextExtent(utf16NoScannedInfo.c_str(), &fWidth, &fHeight);
+    pLabel->SetPosition(pLabel->GetXPosition(),pControl->GetYPosition()+pControl->GetHeight()/2-(int)fHeight/2);
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746))
   }
+  else
+  {
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"")
+  }
+  CGUIWindowMusicBase::Render();
 }
