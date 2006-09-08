@@ -208,7 +208,9 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       if (g_guiSettings.GetBool("myprograms.gameautoregion"))
         btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
 
-      btn_Rename = pMenu->AddButton(520); // edit xbe title
+      if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        btn_Rename = pMenu->AddButton(520); // edit xbe title
+  
       DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
       if (m_database.ItemHasTrainer(dwTitleId))
       {
