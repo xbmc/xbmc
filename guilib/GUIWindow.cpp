@@ -33,6 +33,7 @@
 #include "SkinInfo.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/ButtonTranslator.h"
+#include "XMLUtils.h"
 
 CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
@@ -516,17 +517,9 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
     }
     else if (strValue == "allowoverlay")
     {
-      CStdString strValue = pChild->FirstChild()->Value();
-      strValue.MakeLower();
-
-      if (strValue == "yes")
-        m_overlayState = OVERLAY_STATE_SHOWN;
-      else if (strValue == "true")
-        m_overlayState = OVERLAY_STATE_SHOWN;
-      else if (strValue == "no")
-        m_overlayState = OVERLAY_STATE_HIDDEN;
-      else if (strValue == "false")
-        m_overlayState = OVERLAY_STATE_HIDDEN;
+      bool overlay = false;
+      if (XMLUtils::GetBoolean(pRootElement, "allowoverlay", overlay))
+        m_overlayState = overlay ? OVERLAY_STATE_SHOWN : OVERLAY_STATE_HIDDEN;
     }
 
     pChild = pChild->NextSiblingElement();
