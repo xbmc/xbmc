@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-09-2006 fixed: no info scanned for this view message didn't follow animations.
  - 07-09-2006 updated: German (Austrian) language file (Thnx to CEOMR)
  - 07-09-2006 updated: Spanish language file (Thnx to jose_t)
  - 07-09-2006 updated: Norwegian language file (Thnx to vnm)
