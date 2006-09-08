@@ -27,7 +27,7 @@ CGUIWindowVideoActors::~CGUIWindowVideoActors()
 bool CGUIWindowVideoActors::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   items.m_strPath = strDirectory;
-  if (items.IsVirtualDirectoryRoot())
+  if (items.IsVirtualDirectoryRoot() || items.m_strPath.Equals("?"))
   {
     VECMOVIEACTORS actors;
     m_database.GetActors(actors, g_stSettings.m_iMyVideoWatchMode);
@@ -57,7 +57,9 @@ bool CGUIWindowVideoActors::GetDirectory(const CStdString &strDirectory, CFileIt
     m_database.GetMoviesByActor(items.m_strPath, movies);
     SetDatabaseDirectory(movies, items);
   }
-    items.SetCachedVideoThumbs();
+
+  m_vecItems.SetCachedVideoThumbs();
+  
   return true;
 }
 
