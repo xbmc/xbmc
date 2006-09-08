@@ -340,8 +340,8 @@ void CPlayListPlayer::ClearPlaylist(int iPlayList)
     m_repeatState[iPlayList] = REPEAT_NONE;
     
     // restore repeat for music temp
-    if (iPlayList == PLAYLIST_MUSIC_TEMP && g_guiSettings.GetBool("musicfiles.repeat"))
-      m_repeatState[iPlayList] = REPEAT_ALL;
+    //if (iPlayList == PLAYLIST_MUSIC_TEMP && g_guiSettings.GetBool("musicfiles.repeat"))
+    //  m_repeatState[iPlayList] = REPEAT_ALL;
   }
 
   // its likely that the playlist changed

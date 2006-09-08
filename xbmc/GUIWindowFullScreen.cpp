@@ -599,13 +599,13 @@ void CGUIWindowFullScreen::RenderFullScreen()
     {
       CStdString strStatus;
       strStatus.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
-      if (g_guiSettings.GetBool("filters.soften"))
+      if (g_guiSettings.GetBool("videoplayer.soften"))
         strStatus += "  |  Soften";
       else
         strStatus += "  |  No Soften";
 
       CStdString strFilter;
-      strFilter.Format("  |  Flicker Filter: %i", g_guiSettings.GetInt("filters.flicker"));
+      strFilter.Format("  |  Flicker Filter: %i", g_guiSettings.GetInt("videoplayer.flicker"));
       strStatus += strFilter;
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);

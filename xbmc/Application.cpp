@@ -933,7 +933,7 @@ HRESULT CApplication::Create()
 
   // Load the langinfo to have user charset <-> utf-8 conversion
   CStdString strLangInfoPath;
-  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("lookandfeel.language"));
+  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("locale.language"));
 
   CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
@@ -942,7 +942,7 @@ HRESULT CApplication::Create()
   m_splash->Start();
 
   CStdString strLanguagePath;
-  strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("lookandfeel.language"));
+  strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("locale.language"));
 
   CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath ))
@@ -992,7 +992,7 @@ HRESULT CApplication::Initialize()
 
   //CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "  recording folder:%s", g_guiSettings.GetString("musicfiles.recordingpath",false).c_str());
+  CLog::Log(LOGINFO, "  recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
   CLog::Log(LOGINFO, "  screenshots folder:%s", g_guiSettings.GetString("pictures.screenshotpath",false).c_str());
 	
   // UserData folder layout:
@@ -1048,7 +1048,7 @@ HRESULT CApplication::Initialize()
     g_guiSettings.SetString("network.dns", "192.168.0.1");
     g_guiSettings.SetBool("servers.ftpserver", true);
     g_guiSettings.SetBool("servers.webserver", false);
-    g_guiSettings.SetBool("xbdatetime.timeserver", false);
+    g_guiSettings.SetBool("locale.timeserver", false);
   }
   
   StartServices();
@@ -1311,7 +1311,7 @@ void CApplication::StopFtpServer()
 
 void CApplication::StartTimeServer()
 {
-  if (g_guiSettings.GetBool("xbdatetime.timeserver") && g_network.IsAvailable() )
+  if (g_guiSettings.GetBool("locale.timeserver") && g_network.IsAvailable() )
   {
     if( !m_psntpClient )
     {
@@ -1378,19 +1378,19 @@ void CApplication::StopUPnP()
 
 void CApplication::StartLEDControl(bool switchoff)
 {
-  if (switchoff && g_guiSettings.GetInt("led.colour") != LED_COLOUR_NO_CHANGE)
+  if (switchoff && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE)
   {
-    if ( (IsPlayingVideo()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
+    if ( (IsPlayingVideo()) && g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO)
     {
       //CLog::Log(LOGNOTICE, "LED Control: Playing Video LED is switched OFF!");
       ILED::CLEDControl(LED_COLOUR_OFF);
     }
-    if ( (IsPlayingAudio()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_MUSIC)
+    if ( (IsPlayingAudio()) && g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_MUSIC)
     {
       //CLog::Log(LOGNOTICE, "LED Control: Playing Music LED is switched OFF!");
       ILED::CLEDControl(LED_COLOUR_OFF);
     }
-    if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
+    if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
     {
       //CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
       ILED::CLEDControl(LED_COLOUR_OFF);
@@ -1398,7 +1398,7 @@ void CApplication::StartLEDControl(bool switchoff)
   }
   else if (!switchoff)
   {
-    ILED::CLEDControl(g_guiSettings.GetInt("led.colour"));
+    ILED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
   }
 }
 
@@ -1440,7 +1440,9 @@ void CApplication::StartServices()
   CLog::Log(LOGNOTICE, "initializing playlistplayer");
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
   g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
-  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("musicfiles.repeat") ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
+  // The temp music playlist is used for playing from a "folder"
+  // eg library, folder on disk, playlists when treated as folders etc.
+  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC_TEMP, PLAYLIST::REPEAT_NONE);
   g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
   g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
   g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO_TEMP, PLAYLIST::REPEAT_NONE);
@@ -1583,7 +1585,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
       g_settings.Save();
     }
     else
-      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("lookandfeel.language").c_str());
+      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("locale.language").c_str());
   }
   g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
 
@@ -3619,11 +3621,7 @@ void CApplication::CheckShutdown()
   // counted from when the screensaver activates.
   if (!m_bInactive)
   {
-    if (g_guiSettings.GetBool("system.shutdownwhileplaying")) // shutdown if active
-    {
-      m_bInactive = true;
-    }
-    else if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie?
+    if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie?
     {
       m_bInactive = false;
     }
@@ -3650,11 +3648,7 @@ void CApplication::CheckShutdown()
     if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("system.shutdowntime")*60*1000L) )
     {
       bool bShutDown = false;
-      if (g_guiSettings.GetBool("system.shutdownwhileplaying")) // shutdown if active
-      {
-        bShutDown = true;
-      }
-      else if (m_pPlayer && m_pPlayer->IsPlaying()) // if we're playing something don't shutdown
+      if (m_pPlayer && m_pPlayer->IsPlaying()) // if we're playing something don't shutdown
       {
         m_dwSaverTick = timeGetTime();
       }
@@ -3979,7 +3973,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // reset the audio playlist on finish
-      if (!IsPlayingAudio() && (g_guiSettings.GetBool("musicplaylist.clearplaylistsonend")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)) 
+      if (!IsPlayingAudio() && (g_guiSettings.GetBool("mymusic.clearplaylistsonend")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)) 
       {
         g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
         g_playlistPlayer.Reset();
@@ -4097,17 +4091,12 @@ void CApplication::Process()
   {
     CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, m_gWindowManager.GetActiveWindow());
     g_graphicsContext.SendMessage(msg);
-     // Reload the skin.  Save the current focused control, and refocus it
-    // when done.
+    // Reload the skin, restoring the previously focused control
     CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     unsigned iCtrlID = pWindow->GetFocusedControl();
-    CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0, NULL);
-    g_graphicsContext.SendMessage(msg2);
     g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
     CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
     pWindow->OnMessage(msg3);
-    CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());
-    pWindow->OnMessage(msgSelect);
   }
 
   // dispatch the messages generated by python or other threads to the current window
@@ -4180,7 +4169,7 @@ void CApplication::ProcessSlow()
   // LED - LCD SwitchOn On Paused!!
   if(IsPlaying())
   {     
-    if(g_guiSettings.GetBool("led.enableonpaused"))
+    if(g_guiSettings.GetBool("system.ledenableonpaused"))
       StartLEDControl(!IsPaused());
     if(g_guiSettings.GetBool("lcd.enableonpaused"))
       DimLCDOnPlayback(!IsPaused());

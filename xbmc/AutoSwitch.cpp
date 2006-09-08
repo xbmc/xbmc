@@ -38,7 +38,7 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
   case WINDOW_VIDEO_FILES:
     {
       iSortMethod = METHOD_BYTHUMBPERCENT;
-      bBigThumbs = g_guiSettings.GetBool("videofiles.autoswitchuselargethumbs");
+      bBigThumbs = g_guiSettings.GetBool("myvideos.autoswitchuselargethumbs");
       iPercent = 50;  // 50% of thumbs -> use thumbs.
     }
     break;

@@ -628,7 +628,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   m_database.Open();
   long startoffset = 0;
 
-  if (item->IsStack() && !g_guiSettings.GetBool("videoplayer.treatstackasfile") )
+  if (item->IsStack() && !g_guiSettings.GetBool("myvideos.treatstackasfile") )
   {
 
     CStdStringArray movies;
@@ -658,7 +658,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  if (g_guiSettings.GetBool("videoplayer.autoresume"))
+  if (g_guiSettings.GetBool("myvideos.autoresume"))
     OnResumeItem(iItem);
   else
     return CGUIMediaWindow::OnClick(iItem);
@@ -727,7 +727,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     // if autoresume is enabled then add restart video button
     // check to see if the Resume Video button is applicable
     if (GetResumeItemOffset(m_vecItems[iItem]) > 0)               
-      if (g_guiSettings.GetBool("videoplayer.autoresume"))
+      if (g_guiSettings.GetBool("myvideos.autoresume"))
         btn_Restart = pMenu->AddButton(20132);    // Restart Video
       else
         btn_Resume = pMenu->AddButton(13381);     // Resume Video
@@ -938,7 +938,7 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   int selectedFile = 1;  
   long startoffset = item->m_lStartOffset;
 
-  if (item->IsStack() && !g_guiSettings.GetBool("videoplayer.treatstackasfile"))
+  if (item->IsStack() && !g_guiSettings.GetBool("myvideos.treatstackasfile"))
   {
     CStdStringArray movies;
     GetStackedFiles(item->m_strPath, movies);

@@ -57,9 +57,9 @@ void CGUIDialogVideoSettings::CreateSettings()
 
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
-  m_flickerFilter = g_guiSettings.GetInt("filters.flicker");
+  m_flickerFilter = g_guiSettings.GetInt("videoplayer.flicker");
   AddSpin(VIDEO_SETTINGS_FLICKER, 13100, &m_flickerFilter, 0, 5);
-  m_soften = g_guiSettings.GetBool("filters.soften");
+  m_soften = g_guiSettings.GetBool("videoplayer.soften");
   AddBool(VIDEO_SETTINGS_SOFTEN, 215, &m_soften);
   AddSlider(VIDEO_SETTINGS_FILM_GRAIN, 14058, (int*)&g_stSettings.m_currentVideoSettings.m_FilmGrain, 0, 10);
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
@@ -99,8 +99,8 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   else if (setting.id == VIDEO_SETTINGS_FLICKER || setting.id == VIDEO_SETTINGS_SOFTEN)
   {
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    g_guiSettings.SetInt("filters.flicker", m_flickerFilter);
-    g_guiSettings.SetBool("filters.soften", m_soften);
+    g_guiSettings.SetInt("videoplayer.flicker", m_flickerFilter);
+    g_guiSettings.SetBool("videoplayer.soften", m_soften);
     g_graphicsContext.SetVideoResolution(res);
   }
   else if (setting.id == VIDEO_SETTINGS_CALIBRATION)
