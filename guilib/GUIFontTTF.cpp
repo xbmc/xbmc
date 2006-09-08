@@ -446,14 +446,16 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
     return false;
-  // and get it's bounding box
-  FT_BBox bbox;
-  FT_Glyph_Get_CBox( glyph, FT_GLYPH_BBOX_PIXELS, &bbox );
-  // at this point we have the information regarding the character that we need
-  unsigned int width = bbox.xMax - bbox.xMin;
+  // render the glyph
+  if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, 1))
+    return false;
+  FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)glyph;
+  FT_Bitmap bitmap = bitGlyph->bitmap;
+  if (bitGlyph->left < 0)
+    m_posX += -bitGlyph->left;
 
   // check we have enough room for the character
-  if (m_posX + width > m_textureWidth)
+  if (m_posX + bitGlyph->left + bitmap.width > m_textureWidth)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
     int newHeight = m_cellHeight * (m_textureRows + 1);
     m_posX = 0;
@@ -464,11 +466,13 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     if (newHeight > 4096)
     {
       CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%i > 4096 pixels long)", newHeight);
+      FT_Done_Glyph(glyph);
       return false;
     }
     if (D3D_OK != m_pD3DDevice->CreateTexture(m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_L8, 0, &newTexture))
     {
       CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
+      FT_Done_Glyph(glyph);
       return false;
     }
     // clear texture, doesn't cost much
@@ -493,17 +497,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     m_textureRows++;
   }
 
-  // ok, render the glyph
-  // TODO: Ideally this function would automatically render into our texture
-  if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, 1))
-    return false;
-  FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)glyph;
-  FT_Bitmap bitmap = bitGlyph->bitmap;
-
   // set the character in our table
-  if (bitGlyph->left < 0)
-    m_posX += -bitGlyph->left;
-
   ch->letter = letter;
   ch->originX = m_posX;
   ch->originY = m_posY;
@@ -522,6 +516,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     if (D3D_OK != m_pD3DDevice->CreateTexture (bitmap.width, bitmap.rows, 1, 0, D3DFMT_LIN_L8, 0, &pTexture))
     {
       CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new character texture");
+      FT_Done_Glyph(glyph);
       return false;
     }
 
