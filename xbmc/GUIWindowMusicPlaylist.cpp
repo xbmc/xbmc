@@ -388,7 +388,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     }
 
     // disable repeat options if clear on end is enabled
-    if (g_guiSettings.GetBool("musicplaylist.clearplaylistsonend"))
+    if (g_guiSettings.GetBool("mymusic.clearplaylistsonend"))
     {
       g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
       CONTROL_DISABLE(CONTROL_BTNREPEAT);
@@ -468,12 +468,12 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (pItem->m_musicInfoTag.Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
-    CStdString strTrackLeft=g_guiSettings.GetString("mymusic.nowplayingtrackformat");
+    CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.nowplayingtrackformat");
     if (strTrackLeft.IsEmpty())
-      strTrackLeft = g_guiSettings.GetString("mymusic.trackformat");
-    CStdString strTrackRight=g_guiSettings.GetString("mymusic.nowplayingtrackformatright");
+      strTrackLeft = g_guiSettings.GetString("musicfiles.trackformat");
+    CStdString strTrackRight=g_guiSettings.GetString("musicfiles.nowplayingtrackformatright");
     if (strTrackRight.IsEmpty())
-      strTrackRight = g_guiSettings.GetString("mymusic.trackformatright");
+      strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
     pItem->FormatLabel(strTrackLeft);
     pItem->FormatLabel2(strTrackRight);
   } // if (pItem->m_musicInfoTag.Loaded())

@@ -20,7 +20,7 @@ bool CGUIViewStateWindowMusic::UnrollArchives()
 
 bool CGUIViewStateWindowMusic::AutoPlayNextItem()
 {
-  return g_guiSettings.GetBool("musicfiles.autoplaynextitem");
+  return g_guiSettings.GetBool("mymusic.autoplaynextitem");
 }
 
 CStdString CGUIViewStateWindowMusic::GetLockType()
@@ -39,12 +39,12 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   NODE_TYPE NodeType=dir.GetDirectoryChildType(items.m_strPath);
   NODE_TYPE ParentNodeType=dir.GetDirectoryType(items.m_strPath);
 
-  CStdString strTrackLeft=g_guiSettings.GetString("mymusic.librarytrackformat");
+  CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.librarytrackformat");
   if (strTrackLeft.IsEmpty())
-    strTrackLeft = g_guiSettings.GetString("mymusic.trackformat");
-  CStdString strTrackRight=g_guiSettings.GetString("mymusic.librarytrackformatright");
+    strTrackLeft = g_guiSettings.GetString("musicfiles.trackformat");
+  CStdString strTrackRight=g_guiSettings.GetString("musicfiles.librarytrackformatright");
   if (strTrackRight.IsEmpty())
-    strTrackRight = g_guiSettings.GetString("mymusic.trackformatright");
+    strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
 
   switch (NodeType)
   {
@@ -335,8 +335,8 @@ void CGUIViewStateMusicDatabase::SaveViewState()
 
 CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
-  CStdString strTrackLeft=g_guiSettings.GetString("mymusic.trackformat");
-  CStdString strTrackRight=g_guiSettings.GetString("mymusic.trackformatright");
+  CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
+  CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
   // TODO: localize 2.0
   AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 20014, LABEL_MASKS(strTrackLeft, strTrackRight));
   AddSortMethod(SORT_METHOD_TRACKNUM, 266, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
@@ -373,8 +373,8 @@ void CGUIViewStateMusicSmartPlaylist::SaveViewState()
 
 CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
-  CStdString strTrackLeft=g_guiSettings.GetString("mymusic.trackformat");
-  CStdString strTrackRight=g_guiSettings.GetString("mymusic.trackformatright");
+  CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
+  CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
   // TODO: localize 2.0
   AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 20014, LABEL_MASKS(strTrackLeft, strTrackRight));
   AddSortMethod(SORT_METHOD_TRACKNUM, 266, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
@@ -500,8 +500,8 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
   }
   else
   {
-    CStdString strTrackLeft=g_guiSettings.GetString("mymusic.trackformat");
-    CStdString strTrackRight=g_guiSettings.GetString("mymusic.trackformatright");
+    CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
+    CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
 
     AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
     AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS(strTrackLeft, "%I", "%L", "%I"));  // Userdefined, Size | FolderName, Size
@@ -550,12 +550,12 @@ VECSHARES& CGUIViewStateWindowMusicSongs::GetShares()
 
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
-  CStdString strTrackLeft=g_guiSettings.GetString("mymusic.nowplayingtrackformat");
+  CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.nowplayingtrackformat");
   if (strTrackLeft.IsEmpty())
-    strTrackLeft = g_guiSettings.GetString("mymusic.trackformat");
-  CStdString strTrackRight=g_guiSettings.GetString("mymusic.nowplayingtrackformatright");
+    strTrackLeft = g_guiSettings.GetString("musicfiles.trackformat");
+  CStdString strTrackRight=g_guiSettings.GetString("musicfiles.nowplayingtrackformatright");
   if (strTrackRight.IsEmpty())
-    strTrackRight = g_guiSettings.GetString("mymusic.trackformatright");
+    strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
 
   AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
   SetSortMethod(SORT_METHOD_NONE);
@@ -650,8 +650,8 @@ void CGUIViewStateMusicShoutcast::SaveViewState()
 
 CGUIViewStateMusicLastFM::CGUIViewStateMusicLastFM(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
-  CStdString strTrackLeft=g_guiSettings.GetString("mymusic.trackformat");
-  CStdString strTrackRight=g_guiSettings.GetString("mymusic.trackformatright");
+  CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
+  CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
 
   AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
   AddSortMethod(SORT_METHOD_SIZE, 507, LABEL_MASKS(strTrackLeft, "%I", "%L", "%I"));  // Userdefined, Size | FolderName, Size

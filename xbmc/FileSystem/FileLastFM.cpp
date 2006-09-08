@@ -85,8 +85,8 @@ bool CFileLastFM::HandShake()
   CHTTP http;
   CStdString html;
 
-  CStdString strPassword = g_guiSettings.GetString("mymusic.lastfmpassword");
-  CStdString strUserName = g_guiSettings.GetString("mymusic.lastfmusername");
+  CStdString strPassword = g_guiSettings.GetString("lastfm.password");
+  CStdString strUserName = g_guiSettings.GetString("lastfm.username");
   if (strUserName.IsEmpty() || strPassword.IsEmpty())
   {
     CLog::Log(LOGERROR, "Last.fm stream selected but no username or password set.");
@@ -479,7 +479,7 @@ bool CFileLastFM::RetreiveMetaData()
 
     //check recordtoprofile, only update if server has wrong setting
     Parameter("recordtoprofile", html, value);
-    bool bRTP = g_guiSettings.GetBool("mymusic.lastfmrecordtoprofile");
+    bool bRTP = g_guiSettings.GetBool("lastfm.recordtoprofile");
     if ((value == "1" && !bRTP) || (value == "0" && bRTP))
       RecordToProfile(bRTP);
     return true;

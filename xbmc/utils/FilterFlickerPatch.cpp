@@ -151,7 +151,7 @@ BOOL CGFFPatch::applyPatches(BYTE* pbuffer, int patchCount)
 
 BOOL CGFFPatch::Patch1(BYTE* pbuffer, UINT location)
 {
-	int flickerVal = g_guiSettings.GetInt("uifilters.flicker");
+	int flickerVal = g_guiSettings.GetInt("videoscreen.flickerfilter");
 	UINT tmp=location;
 	replaceConditionalJump(&pbuffer[0], tmp, 0x20);
 	pbuffer[location-1] = flickerVal;
@@ -161,7 +161,7 @@ BOOL CGFFPatch::Patch1(BYTE* pbuffer, UINT location)
 
 BOOL CGFFPatch::Patch2(BYTE* pbuffer, UINT location)
 {
-	int flickerVal = g_guiSettings.GetInt("uifilters.flicker");
+	int flickerVal = g_guiSettings.GetInt("videoscreen.flickerfilter");
 	UINT tmp=location;
 	replaceConditionalJump(&pbuffer[0], tmp, 0x20);
 	pbuffer[tmp] = 0x6a;
@@ -175,7 +175,7 @@ BOOL CGFFPatch::Patch2(BYTE* pbuffer, UINT location)
 
 BOOL CGFFPatch::Patch3(BYTE* pbuffer, UINT location)
 {
-	int flickerVal = g_guiSettings.GetInt("uifilters.flicker");
+	int flickerVal = g_guiSettings.GetInt("videoscreen.flickerfilter");
 	UINT tmp=location;
 	replaceConditionalJump(&pbuffer[0], tmp, 0x20);
 	pbuffer[tmp] = pbuffer[location-2];		// move the solitary push
@@ -188,7 +188,7 @@ BOOL CGFFPatch::Patch3(BYTE* pbuffer, UINT location)
 
 BOOL CGFFPatch::Patch4(BYTE* pbuffer, UINT location)
 {
-	int flickerVal = g_guiSettings.GetInt("uifilters.flicker");
+	int flickerVal = g_guiSettings.GetInt("videoscreen.flickerfilter");
 	UINT tmp=location;
 	replaceConditionalJump(&pbuffer[0], tmp, 0x20);
 	pbuffer[tmp] = pbuffer[location-4];		// move the 2 bytes before the pushes start.  Prolly an "xor reg,reg"

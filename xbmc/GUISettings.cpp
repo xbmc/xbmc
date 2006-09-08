@@ -165,7 +165,8 @@ CGUISettings::CGUISettings(void)
   AddBool(2, "pictures.autoswitchuselargethumbs", 14012, false);
   AddSeparator(3,"pictures.sep1");
   AddBool(4, "pictures.useexifrotation", 20184, true);
-  AddString(5,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20004);
+  AddSeparator(5,"pictures.sep2");
+  AddString(6,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20004);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -181,9 +182,9 @@ CGUISettings::CGUISettings(void)
   AddBool(3, "myprograms.gameautoregion",511,false);
   AddInt(4, "myprograms.ntscmode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
   AddSeparator(5,"myprograms.sep2");
-  AddString(6, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
-  //  TODO: localize 2.0
-  AddString(7, "myprograms.trainerpath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 20003);
+  AddString(6, "myprograms.trainerpath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 20003);
+  AddSeparator(7,"myprograms.sep3");
+  AddString(8, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
 
   AddCategory(1,"programfiles",744);
   AddBool(1, "programfiles.useautoswitching", 14011, false);
@@ -202,42 +203,21 @@ CGUISettings::CGUISettings(void)
   AddString(1, "weather.areacode1", 14019, "GMXX0154 - Aachen, Germany", BUTTON_CONTROL_STANDARD);
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(3, "weather.areacode3", 14021, "CAXX0343 - Ontario, Canada", BUTTON_CONTROL_STANDARD);
+  AddSeparator(4, "weather.sep1");
+  AddString(5, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
   AddCategory(3, "mymusic", 16000);
   AddString(1, "mymusic.visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
   AddSeparator(2, "mymusic.sep1");
-  AddString(4, "mymusic.trackformat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(5, "mymusic.trackformatright", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
+  AddBool(3, "mymusic.autoplaynextitem", 489, true);
+  //AddBool(4, "musicfiles.repeat", 488, false);
+  AddBool(5, "mymusic.clearplaylistsonend",239,false);
   AddSeparator(6, "mymusic.sep2");
-  AddBool(7, "mymusic.uselastfm", 15201, false);
-  AddBool(8, "mymusic.lastfmrecordtoprofile", 15250, false);
-  AddString(9,"mymusic.lastfmusername", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
-  AddString(10,"mymusic.lastfmpassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
-  AddSeparator(11, "mymusic.sep3");
-  AddString(12, "mymusic.cleanupmusiclibrary", 334, "", BUTTON_CONTROL_STANDARD);
-  // advanced per-view trackformats.
-  AddString(0, "mymusic.nowplayingtrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(0, "mymusic.nowplayingtrackformatright", 13387, "", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(0, "mymusic.librarytrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(0, "mymusic.librarytrackformatright", 13387, "", BUTTON_CONTROL_INPUT, false, 16016);
-  // advanced library options
-  AddBool(0, "mymusic.hideallitems", 0, false);
-  AddBool(0, "mymusic.allitemsonbottom", 0, false);
-
-  AddCategory(3, "musicfiles", 744);
-  AddBool(1, "musicfiles.autoplaynextitem", 489, true);
-  AddBool(2, "musicfiles.repeat", 488, false);
-  AddSeparator(3, "musicfiles.sep1");
-  AddBool(4, "musicfiles.usetags", 258, true);
-  AddBool(5, "musicfiles.usecddb", 227, true);
-  AddBool(6, "musicfiles.findremotethumbs", 14059, true);
-  AddSeparator(7, "musicfiles.sep2");
-  AddBool(8, "musicfiles.useautoswitching", 14011, false);
-  AddBool(9, "musicfiles.autoswitchuselargethumbs", 14012, false);
-  AddSeparator(10,"musicfiles.sep3");
-  AddString(11,"musicfiles.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20005);
+  AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20005);
+  AddSeparator(8, "mymusic.sep3");
+  AddString(9, "mymusic.cleanupmusiclibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -250,17 +230,40 @@ CGUISettings::CGUISettings(void)
   AddSeparator(8, "musicplayer.sep2");
   AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
+  AddSeparator(11, "musicplayer.sep3");
+  AddString(12, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(3, "musicplaylist", 136);
-  AddBool(1, "musicplaylist.clearplaylistsonend",239,false);
+  AddCategory(3, "musicfiles", 744);
+  AddBool(1, "musicfiles.usetags", 258, true);
+  AddString(2, "musicfiles.trackformat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(3, "musicfiles.trackformatright", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
+  // advanced per-view trackformats.
+  AddString(0, "musicfiles.nowplayingtrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(0, "musicfiles.nowplayingtrackformatright", 13387, "", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(0, "musicfiles.librarytrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(0, "musicfiles.librarytrackformatright", 13387, "", BUTTON_CONTROL_INPUT, false, 16016);
+  AddSeparator(4, "musicfiles.sep1");
+  AddBool(5, "musicfiles.useautoswitching", 14011, false);
+  AddBool(6, "musicfiles.autoswitchuselargethumbs", 14012, false);
+  AddSeparator(7, "musicfiles.sep2");
+  AddBool(8, "musicfiles.usecddb", 227, true);
+  AddBool(9, "musicfiles.findremotethumbs", 14059, true);
+  // advanced library options
+  AddBool(0, "musicfiles.hideallitems", 0, false);
+  AddBool(0, "musicfiles.allitemsonbottom", 0, false);
+
+  AddCategory(3, "lastfm", 15200);
+  AddBool(1, "lastfm.enable", 15201, false);
+  AddBool(2, "lastfm.recordtoprofile", 15250, false);
+  AddString(3,"lastfm.username", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
+  AddString(4,"lastfm.password", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
 
   AddCategory(3, "cddaripper", 620);
-  AddInt(1, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
-  AddInt(2, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
-  AddInt(3, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
-  //  TODO: localize 2.0
-  AddString(4, "cddaripper.trackformat", 13307, "%N. %T - %A", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(5, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 20000);
+  AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 20000);
+  AddString(2, "cddaripper.trackformat", 13307, "%N. %T - %A", BUTTON_CONTROL_INPUT, false, 16016);
+  AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
+  AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
+  AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
   
   AddCategory(3, "karaoke", 13327);
   AddBool(1, "karaoke.enabled", 13323, false);
@@ -273,20 +276,32 @@ CGUISettings::CGUISettings(void)
 
   // System settings
   AddGroup(4, 13000);
-  AddCategory(4, "system", 13000);
+  AddCategory(4, "system", 13281);
   AddInt(1, "system.hdspindowntime", 229, 0, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF); // Minutes
   AddInt(2, "system.remoteplayhdspindown", 13001, 0, 0, 1, 3, SPIN_CONTROL_TEXT); // off, music, video, both
-  AddInt(3, "system.remoteplayhdspindownminduration", 13004, 20, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_MINS); // Minutes
-  AddInt(4, "system.remoteplayhdspindowndelay", 13003, 20, 5, 5, 300, SPIN_CONTROL_INT_PLUS, MASK_SECS); // seconds
-  AddSeparator(5, "system.sep1");
-  AddInt(6, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-  AddBool(7, "system.shutdownwhileplaying", 14043, false);
-  AddSeparator(8, "system.sep2");
-  AddBool(9, "system.fanspeedcontrol", 13302, false);
-  AddInt(10, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
-  AddSeparator(11, "system.sep3");
-  AddBool(12, "system.autotemperature", 13301, false);
-  AddInt(13, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
+  // advanced only configuration
+  AddInt(0, "system.remoteplayhdspindownminduration", 13004, 20, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_MINS); // Minutes
+  AddInt(0, "system.remoteplayhdspindowndelay", 13003, 20, 5, 5, 300, SPIN_CONTROL_INT_PLUS, MASK_SECS); // seconds
+  AddSeparator(3, "system.sep1");
+  AddInt(4, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddSeparator(5, "system.sep2");
+  AddInt(6, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
+  AddInt(7, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
+  AddBool(8, "system.ledenableonpaused", 20313, true);
+  AddSeparator(9, "system.sep3");
+  AddBool(10, "system.fanspeedcontrol", 13302, false);
+  AddInt(11, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
+  AddSeparator(12, "system.sep4");
+  AddBool(13, "system.autotemperature", 13301, false);
+  AddInt(14, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
+
+  AddCategory(4, "lcd", 448);
+  AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_VFD, SPIN_CONTROL_TEXT);
+  AddInt(3, "lcd.modchip", 471, MODCHIP_SMARTXX, MODCHIP_SMARTXX, 1, MODCHIP_XECUTER3, SPIN_CONTROL_TEXT);
+  AddInt(4, "lcd.backlight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddInt(5, "lcd.contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddInt(6, "lcd.disableonplayback", 20310, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
+  AddBool(7, "lcd.enableonpaused", 20312, true);
 
   AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
@@ -313,19 +328,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(13, "cache.sep4");
   AddInt(14, "cacheunknown.internet", 14060, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
 
-  AddCategory(4, "led", 13338);
-  AddInt(1, "led.colour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
-  AddInt(2, "led.disableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
-  AddBool(3, "led.enableonpaused", 20313, true);
-
-  AddCategory(4, "lcd", 448);
-  AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_VFD, SPIN_CONTROL_TEXT);
-  AddInt(3, "lcd.modchip", 471, MODCHIP_SMARTXX, MODCHIP_SMARTXX, 1, MODCHIP_XECUTER3, SPIN_CONTROL_TEXT);
-  AddInt(4, "lcd.backlight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddInt(5, "lcd.contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddInt(6, "lcd.disableonplayback", 20310, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
-  AddBool(7, "lcd.enableonpaused", 20312, true);
-
   AddCategory(4, "audiooutput", 772);
   AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
   AddBool(4, "audiooutput.ac3passthrough", 364, true);
@@ -339,36 +341,34 @@ CGUISettings::CGUISettings(void)
   AddBool(6, "masterlock.automastermode"   , 20101,false);
   AddSeparator(7,"masterlock.sep2" );
   AddBool(8, "masterlock.loginlock",20116,true);
-
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT); 
   
   // video settings
   AddGroup(5, 3);
   AddCategory(5, "myvideos", 16000);
-  AddString(1, "myvideos.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(2, "myvideos.sep1");
-  //  TODO: localize 2.0
-  AddBool(7, "myvideos.useexternaldvdplayer", 20001, false);
-  AddString(8, "myvideos.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 20002);
-  AddSeparator(11, "myvideos.sep2");
-  AddString(12, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddBool(1, "myvideos.treatstackasfile", 20051, true);
+  AddBool(2, "myvideos.autoresume",12017, false);
+  AddSeparator(3, "myvideos.sep1");
+  AddBool(4, "myvideos.useautoswitching", 14011, false);
+  AddBool(5, "myvideos.autoswitchuselargethumbs", 14012, false);
+  AddSeparator(6, "myvideos.sep2");
+  AddString(7, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(5, "videofiles", 744);
-  AddBool(1, "videofiles.useautoswitching", 14011, false);
-  AddBool(2, "videofiles.autoswitchuselargethumbs", 14012, false);
-  
   AddCategory(5, "videoplayer", 16003);
-  AddString(1, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
+  AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
+  AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
-  AddInt(6, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
-  AddInt(8, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
-  AddInt(9, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
-  AddSeparator(10, "videoplayer.sep3");
-  //  TODO: localize 2.0
-  AddBool(12, "videoplayer.treatstackasfile", 20051, true);
-  AddSeparator(13,"videoplayer.sep4");
-  AddBool(14,"videoplayer.autoresume",12017, false);
+  AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
+  AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
+  AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
+  AddBool(8, "videoplayer.soften", 215, false);
+  AddSeparator(9, "videoplayer.sep2");
+  AddString(10, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(11, "videoplayer.sep3");
+  AddBool(12, "videoplayer.useexternaldvdplayer", 20001, false);
+  AddString(13, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 20002);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);
@@ -380,7 +380,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "subtitles.sep1");
   AddBool(9, "subtitles.searchrars", 13249, false);
 
-  // JM: Don't add the category - makes them hidden in the GUI
+  // Don't add the category - makes them hidden in the GUI
   //AddCategory(5, "postprocessing", 14041);
   AddBool(2, "postprocessing.enable", 286, false);
   AddBool(3, "postprocessing.auto", 307, true); // only has effect if PostProcessing.Enable is on.
@@ -391,11 +391,6 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "postprocessing.autobrightnesscontrastlevels", 310, false);
   AddBool(9, "postprocessing.dering", 311, false);
 
-  AddCategory(5, "filters", 230);
-  AddInt(1, "filters.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
-  AddBool(2, "filters.soften", 215, false);
-  //AddSeparator(3, "filters.sep1");
-  //AddBool(7, "filters.useautosync", 15214, false);
 
   // network settings
   AddGroup(6, 705);
@@ -411,8 +406,6 @@ CGUISettings::CGUISettings(void)
   AddString(9, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
   AddSeparator(10, "network.sep2");
   AddBool(11, "network.enableinternet", 14054, true);
-  AddSeparator(12, "network.sep3");
-  AddBool(13,   "network.enablerssfeeds",13305,  true);
 
   //GeminiServer
   AddCategory(6, "servers", 14036);
@@ -438,7 +431,6 @@ CGUISettings::CGUISettings(void)
   AddString(3, "smb.winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
 
-  //  TODO: localize 2.0
   AddCategory(6, "upnp", 20110);
   AddBool(1,    "upnp.autostart", 20111, false);
 
@@ -447,30 +439,44 @@ CGUISettings::CGUISettings(void)
   AddCategory(7,"lookandfeel", 14037);
   AddString(1, "lookandfeel.skin",166,"Project Mayhem III", SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddString(3, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddString(5, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
-  AddInt(6, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
-  AddInt(7, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
-  AddSeparator(8, "lookandfeel.sep1");
-  AddString(9, "lookandfeel.language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(10, "lookandfeel.region", 20026, "", SPIN_CONTROL_TEXT);
-  AddString(11, "lookandfeel.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-  AddSeparator(12, "lookandfeel.sep2");
-  AddInt(13, "lookandfeel.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);  
-  AddString(14, "lookandfeel.guicalibration",213,"", BUTTON_CONTROL_STANDARD);
-  
+  AddString(3, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
+  AddInt(4, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
+  AddInt(5, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
+  AddSeparator(6, "lookandfeel.sep1");
+  AddString(7, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
+  AddSeparator(8, "lookandfeel.sep2");
+  AddBool(9, "lookandfeel.enablerssfeeds",13305,  true);
+
+  AddCategory(7, "locale", 20026);
+  AddString(1, "locale.country", 20026, "", SPIN_CONTROL_TEXT);
+  AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
+  AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+  AddSeparator(4, "locale.sep1");
+  AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
+  AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+  AddSeparator(7, "locale.sep2");
+  AddBool(8,   "locale.timeserver"       , 168  , false);
+  AddString(9, "locale.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
+
+  AddCategory(7, "videoscreen", 131);
+  AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);  
+  AddString(2, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
+  AddInt(3, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
+  AddBool(4, "videoscreen.soften", 215, false);
+
   AddCategory(7, "filelists", 14018);
-  AddBool(1, "filelists.hideextensions", 497, false);
-  AddBool(2, "filelists.hideparentdiritems", 13306, false);
+  AddBool(1, "filelists.hideparentdiritems", 13306, false);
+  AddBool(2, "filelists.hideextensions", 497, false);
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);
-  AddBool(4, "filelists.allowfiledeletion", 14071, false);
-  AddBool(5, "filelists.unrollarchives",516, false);
-  AddBool(6, "filelists.fulldirectoryhistory", 15106, true);
+  AddBool(4, "filelists.unrollarchives",516, false);
+  AddBool(5, "filelists.fulldirectoryhistory", 15106, true);
+  AddSeparator(6, "filelists.sep1");
+  AddBool(7, "filelists.allowfiledeletion", 14071, false);
 
   AddCategory(7, "screensaver", 360);
   AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
-  AddInt(2, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddString(3, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
+  AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
+  AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(5, "screensaver.uselock",20140,false);
   AddSeparator(6, "screensaver.sep1");
@@ -478,20 +484,8 @@ CGUISettings::CGUISettings(void)
   AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 774); // GeminiServer: PictureSlideShow
   AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 
-  AddCategory(7, "uifilters", 14053);
-  AddInt(1, "uifilters.flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
-  AddBool(2, "uifilters.soften", 215, false);
-
-  AddCategory(7, "xbdatetime", 14063);
-  AddBool(1,   "xbdatetime.timeserver"       , 168  , false);
-  AddString(2, "xbdatetime.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
-  AddSeparator(3, "xbdatetime.sep1");
-  AddString(4, "xbdatetime.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
-  AddString(5, "xbdatetime.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
-
-  //  TODO: localize 2.0
-    AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
-  }
+  AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+}
 
 CGUISettings::~CGUISettings(void)
 {}
@@ -673,7 +667,7 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
   if (it != settingsMap.end())
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
-    if (stricmp(strSetting, "lookandfeel.resolution") == 0)
+    if (stricmp(strSetting, "videoscreen.resolution") == 0)
       g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)iSetting;
     return ;
   }
@@ -790,7 +784,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "Using %s output", GetInt("audiooutput.mode") == AUDIO_ANALOG ? "analog" : "digital");
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
-  g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("lookandfeel.resolution");
+  g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
   g_videoConfig.PrintInfo();
   if (
@@ -801,14 +795,14 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     RESOLUTION newRes = g_videoConfig.GetBestMode();
     if (g_guiSettings.m_LookAndFeelResolution == AUTORES)
     {
-      //"lookandfeel.resolution" will stay at AUTORES, m_LookAndFeelResolution will be the real mode
+      //"videoscreen.resolution" will stay at AUTORES, m_LookAndFeelResolution will be the real mode
       CLog::Log(LOGNOTICE, "Setting autoresolution mode %i", newRes);
       g_guiSettings.m_LookAndFeelResolution = newRes;
     }
     else
     {
       CLog::Log(LOGNOTICE, "Setting safe mode %i", newRes);
-      SetInt("lookandfeel.resolution", newRes);
+      SetInt("videoscreen.resolution", newRes);
     }
   }
   // Move replaygain settings into our struct
