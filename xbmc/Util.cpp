@@ -42,6 +42,7 @@
 #include "utils/LED.h"
 #include "MusicInfoLoader.h"
 #include "utils/FilterFlickerPatch.h"
+#include "utils/MemoryUnitManager.h"
 
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
@@ -4462,7 +4463,7 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     CStackDirectory dir;
     return SupportsFileOperations(dir.GetFirstStackedFile(strPath));
   }
-  if (IsMemCard(strPath))
+  if (IsMemCard(strPath) && g_memoryUnitManager.IsDriveWriteable(strPath))
     return true;
   return false;
 }
