@@ -95,11 +95,11 @@ void CScrobbler::RemoveInstance()
 
 void CScrobbler::Init()
 {
-  if (!g_guiSettings.GetBool("mymusic.uselastfm") || !g_guiSettings.GetBool("network.enableinternet"))
+  if (!g_guiSettings.GetBool("lastfm.enable") || !g_guiSettings.GetBool("network.enableinternet"))
     return;
 
-  CStdString strPassword=g_guiSettings.GetString("mymusic.lastfmpassword");
-  CStdString strUserName=g_guiSettings.GetString("mymusic.lastfmusername");
+  CStdString strPassword=g_guiSettings.GetString("lastfm.password");
+  CStdString strUserName=g_guiSettings.GetString("lastfm.username");
 
   if (strPassword.IsEmpty() || strUserName.IsEmpty())
     return;
@@ -172,7 +172,7 @@ void CScrobbler::SetCache(const CStdString& strCache, int iNumEntries)
 
 int CScrobbler::AddSong(const CMusicInfoTag& tag)
 {
-  if (!g_guiSettings.GetBool("mymusic.uselastfm") || !g_guiSettings.GetBool("network.enableinternet"))
+  if (!g_guiSettings.GetBool("lastfm.enable") || !g_guiSettings.GetBool("network.enableinternet"))
     return 0;
 
   if (tag.GetDuration() <= MINLENGTH || tag.GetDuration() > MAXLENGTH) // made <= to minlength to stop iTMS previews being submitted in iTunes
@@ -605,7 +605,7 @@ void CScrobbler::SetSongStartTime()
 
 CStdString CScrobbler::GetConnectionState()
 {
-  if (!g_guiSettings.GetBool("mymusic.uselastfm"))
+  if (!g_guiSettings.GetBool("lastfm.enable"))
     return "";
 
   return (m_bReadyToSubmit ? g_localizeStrings.Get(15207) : g_localizeStrings.Get(15208));  // Connected : Not Connected
@@ -615,7 +615,7 @@ CStdString CScrobbler::GetSubmitInterval()
 {
   CStdString strInterval;
 
-  if (!g_guiSettings.GetBool("mymusic.uselastfm"))
+  if (!g_guiSettings.GetBool("lastfm.enable"))
     return strInterval;
 
   CStdString strFormat=g_localizeStrings.Get(15209);  // Submit Interval %i
@@ -628,7 +628,7 @@ CStdString CScrobbler::GetFilesCached()
 {
   CStdString strCachedFiles;
 
-  if (!g_guiSettings.GetBool("mymusic.uselastfm"))
+  if (!g_guiSettings.GetBool("lastfm.enable"))
     return strCachedFiles;
 
   CStdString strFormat=g_localizeStrings.Get(15210);  // Cached %i Songs
@@ -646,7 +646,7 @@ CStdString CScrobbler::GetSubmitState()
 {
   CStdString strText;
 
-  if (!g_guiSettings.GetBool("mymusic.uselastfm"))
+  if (!g_guiSettings.GetBool("lastfm.enable"))
     return strText;
 
   if (m_bSubmitInProgress)

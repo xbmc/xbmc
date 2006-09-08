@@ -711,12 +711,12 @@ void CSNTPClient::OnExit()
 
 void CSNTPClient::Process()
 {
-  if (!g_guiSettings.GetBool("xbdatetime.timeserver")) return ;
+  if (!g_guiSettings.GetBool("locale.timeserver")) return ;
   int nTries = 0;
-  while (!m_bStop && g_guiSettings.GetBool("xbdatetime.timeserver"))
+  while (!m_bStop && g_guiSettings.GetBool("locale.timeserver"))
   {
     NtpServerResponse response;
-    if (GetServerTime( g_guiSettings.GetString("xbdatetime.timeaddress"), response))
+    if (GetServerTime( g_guiSettings.GetString("locale.timeaddress"), response))
     {
       SYSTEMTIME st1 = response.m_OriginateTime;
       SYSTEMTIME st2 = response.m_ReceiveTime;
@@ -738,7 +738,7 @@ void CSNTPClient::Process()
     for (int i = 0; i < 600; i++)
     {
       Sleep(500);
-      if (m_bStop || false == g_guiSettings.GetBool("xbdatetime.timeserver")) break;
+      if (m_bStop || false == g_guiSettings.GetBool("locale.timeserver")) break;
     }
   }
 }
