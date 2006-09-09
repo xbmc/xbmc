@@ -12,6 +12,8 @@ using namespace XFILE;
 
 //*********************************************************************************************
 
+#define SEEKTIMOUT 10000
+
 CFileRarExtractThread::CFileRarExtractThread()
 {
   m_pArc = NULL;
@@ -346,7 +348,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   if (m_bUseFile)
     return m_File.Seek(iFilePosition,iWhence);
   
-  if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,5000) == WAIT_TIMEOUT )
+  if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
     return -1;
@@ -398,7 +400,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
     if (!OpenInArchive())
       return -1;
     
-    if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,5000) == WAIT_TIMEOUT )
+    if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
     {
       CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
       return -1;
@@ -412,7 +414,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,MAXWINMEMSIZE);
   SetEvent(m_pExtract->GetDataIO().hSeek);
   SetEvent(m_pExtract->GetDataIO().hBufferFilled);
-  if( WaitForSingleObject(m_pExtract->GetDataIO().hSeekDone,5000) == WAIT_TIMEOUT )
+  if( WaitForSingleObject(m_pExtract->GetDataIO().hSeekDone,SEEKTIMOUT) == WAIT_TIMEOUT )
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for seek to finish");
     return -1;
@@ -424,7 +426,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
     return -1;
   }
 
-  if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,5000) == WAIT_TIMEOUT )
+  if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
     return -1;
