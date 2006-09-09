@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-09-2006 fixed: LED setting "no Change" can switch off the LED
+ - 09-09-2006 fixed: SystemInfo, extended memunit port detection 
+ - 09-09-2006 changed: LCD Contrast adjustment is not supported by Xecuter3 Modchip
+ - 09-09-2006 fixed: LCD SmartXX v3 and OPX Contrast Control method was inaccurately
  - 09-09-2006 changed: ttf fonts where went through unneded charset conversions if width was larger than screen. (also flipped multiple times in hebrew case, could solve the last char jumping issue)
  - 09-09-2006 changed: force mplayer to use libavformat for decoding dvr-ms files, as it handles them better
  - 09-09-2006 fixed: comparison for mkv, avi extension where case sensitve in mplayer.

@@ -1325,6 +1325,39 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
     case 8:   // Values 8 ->  on Port 4
       sclDeviceMemory = "4";
       break;
+    case 3:   // Values 3 ->  on Port 1&2 
+      sclDeviceMemory = "1, 2";
+      break;
+    case 5:   // Values 5 ->  on Port 1&3 
+      sclDeviceMemory = "1, 3";
+      break;
+    case 6:   // Values 6 ->  on Port 2&3 
+      sclDeviceMemory = "2, 3";
+      break;
+    case 7:   // Values 7 ->  on Port 1&2&3
+      sclDeviceMemory = "1, 2, 3";
+      break;
+    case 9:   // Values 9  -> on Port 1&4 
+      sclDeviceMemory = "1, 4";
+      break;
+    case 10:  // Values 10 -> on Port 2&4 
+      sclDeviceMemory = "2, 4";
+      break;
+    case 11:  // Values 11 -> on Port 1&2&4
+      sclDeviceMemory = "1, 2, 4";
+      break;
+    case 12:  // Values 12 -> on Port 3&4
+      sclDeviceMemory = "3, 4";
+      break;
+    case 13:  // Values 13 -> on Port 1&3&4
+      sclDeviceMemory = "1, 3, 4";
+      break;
+    case 14:  // Values 14 -> on Port 2&3&4
+      sclDeviceMemory = "2, 3, 4";
+      break;
+    case 15:  // Values 15 -> on Port 1&2&3&4
+      sclDeviceMemory = "1, 2, 3, 4";
+      break;
     default:
       sclDeviceMemory = "-";
     }
