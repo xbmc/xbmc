@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-09-2006 fixed: ts (or any files with a 2 char extension) files wouldn't play over smb.
  - 09-09-2006 updated: German language file
  - 08-09-2006 fixed: Edit XBE Title was enabled for profiles that didn't have database access.
  - 08-09-2006 fixed: Delete and Rename were sometimes active on parent folder items.
