@@ -1380,21 +1380,24 @@ void CApplication::StartLEDControl(bool switchoff)
 {
   if (switchoff && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE)
   {
-    if ( (IsPlayingVideo()) && g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO)
-    {
-      //CLog::Log(LOGNOTICE, "LED Control: Playing Video LED is switched OFF!");
-      ILED::CLEDControl(LED_COLOUR_OFF);
-    }
-    if ( (IsPlayingAudio()) && g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_MUSIC)
-    {
-      //CLog::Log(LOGNOTICE, "LED Control: Playing Music LED is switched OFF!");
-      ILED::CLEDControl(LED_COLOUR_OFF);
-    }
-    if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
-    {
-      //CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
-      ILED::CLEDControl(LED_COLOUR_OFF);
-    }
+    //if(CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY)
+    //{
+      if ( (IsPlayingVideo()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
+      {
+        //CLog::Log(LOGNOTICE, "LED Control: Playing Video LED is switched OFF!");
+        ILED::CLEDControl(LED_COLOUR_OFF);
+      }
+      if ( (IsPlayingAudio()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_MUSIC)
+      {
+        //CLog::Log(LOGNOTICE, "LED Control: Playing Music LED is switched OFF!");
+        ILED::CLEDControl(LED_COLOUR_OFF);
+      }
+      if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
+      {
+        //CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
+        ILED::CLEDControl(LED_COLOUR_OFF);
+      }
+    //}
   }
   else if (!switchoff)
   {

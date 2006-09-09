@@ -39,7 +39,8 @@ void ILED::CLEDControl(int ixLED)
   else if (ixLED == LED_COLOUR_NO_CHANGE) //Default Bios Settings
   {
     //No need to Change! Leave the LED with the Default Bios Settings
-	  //g_sysinfo.SmartXXLEDControll(5);
+    //Since we can't get the BIOS LED Color Setting: we will set it to Standart Green!
+    XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_GREEN | XKUtils::LED_REGISTER_CYCLE2_GREEN | XKUtils::LED_REGISTER_CYCLE1_GREEN | XKUtils::LED_REGISTER_CYCLE3_GREEN);
   }
 }
 

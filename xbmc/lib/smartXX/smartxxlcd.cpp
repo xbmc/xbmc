@@ -446,17 +446,23 @@ void CSmartXXLCD::DisplaySetContrast(unsigned char level)
   
   if (g_Sysinfo.SmartXXModCHIP().Equals("SmartXX V3")) // Smartxx V3 
   {   
-      fBackLight*=127.0f;
-      int iNewLevel=(int)fBackLight;
-      if (iNewLevel==63) iNewLevel=64;
-      int itemp = iNewLevel;
-      outb(0xF701, itemp&127|128);
+    if (level<0 || level>99) level=99;
+    level = (99-level);
+    
+    fBackLight=((float)level/100)*42.0f;
+    int iNewLevel=(int)fBackLight;
+    if (iNewLevel==42) iNewLevel=43;
+
+    outb(0xF701, iNewLevel&127|128);
  	}
   else if ( g_Sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
   {
-    fBackLight*=127.0f;
+    if (level<0 || level>99) level=99;
+    level = (99-level);
+    
+    fBackLight=((float)level/100)*42.0f;
     int iNewLevel=(int)fBackLight;
-    if (iNewLevel==63) iNewLevel=64;
+    if (iNewLevel==42) iNewLevel=43;
     
     outb(DISP_O_CONTRAST, iNewLevel&127|128);
   }
