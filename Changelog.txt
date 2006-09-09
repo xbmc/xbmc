@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-09-2006 changed: handle fribidi flipping in xbmc instead of mplayer for bidirectional subs
  - 09-09-2006 fixed: LED setting "no Change" can switch off the LED
  - 09-09-2006 fixed: SystemInfo, extended memunit port detection 
  - 09-09-2006 changed: LCD Contrast adjustment is not supported by Xecuter3 Modchip
