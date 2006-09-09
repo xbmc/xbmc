@@ -696,8 +696,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
       if (maxWidth < w)
       {
-        CGUILabelControl::WrapText(subtitleText, m_subtitleFont, maxWidth);
-        g_charsetConverter.utf8ToUTF16(subtitleText, utf16Sub, false);
+        CGUILabelControl::WrapText(utf16Sub, m_subtitleFont, maxWidth);
         m_subtitleFont->GetTextExtent(utf16Sub.c_str(), &w, &h);
       }
       float x = (float) maxWidth / 2 + g_settings.m_ResInfo[res].Overscan.left;
