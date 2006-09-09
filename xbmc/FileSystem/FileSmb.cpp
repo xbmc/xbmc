@@ -503,9 +503,9 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 
 bool CFileSMB::IsValidFile(const CStdString& strFileName)
 {
-  if (strFileName.Find('/') < 0 ||
-      strFileName.at(0) == '.' ||
-      strFileName.find_last_of("/.") == strFileName.length() - 2 ||
-      strFileName.find_last_of("/..") == strFileName.length() - 3) return false;
+  if (strFileName.Find('/') == CStdString::npos || /* doesn't have sharename */
+      strFileName.Right(2) == "/." || /* not current folder */
+      strFileName.Right(3) == "/..")  /* not parent folder */
+      return false;
   return true;
 }
