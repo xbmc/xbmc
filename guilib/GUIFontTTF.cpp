@@ -455,11 +455,13 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     m_posX += -bitGlyph->left;
 
   // check we have enough room for the character
-  if (m_posX + bitGlyph->left + bitmap.width > m_textureWidth)
+  if (m_posX + bitGlyph->left + bitmap.width > (int)m_textureWidth)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
     int newHeight = m_cellHeight * (m_textureRows + 1);
     m_posX = 0;
     m_posY += m_cellHeight;
+    if (bitGlyph->left < 0)
+      m_posX += -bitGlyph->left;
     // create the new larger texture
     LPDIRECT3DTEXTURE8 newTexture;
     // check for max height (can't be more than 4096 texels)
