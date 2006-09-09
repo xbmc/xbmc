@@ -196,7 +196,7 @@ CStdString CSysInfo::GetModCHIPDetected()
     mbFlash->AddFCI(0x09,0x00,"Unknown/Onboard TSOP (protected)",0x00000);
 		
     // Known XBOX ModCHIP IDs&Names
-		mbFlash->AddFCI(0x01,0xAD,"XECUTER 3",0x100000);
+		mbFlash->AddFCI(0x01,0xAD,"XECUTER 3",0x100000); // if Write Protection is ON!: this chip can not detected! X3 Bug or Feature! it will return Unknown/Onboard TSOP (protected)!
 		mbFlash->AddFCI(0x01,0xD5,"XECUTER 2",0x100000);
 		mbFlash->AddFCI(0x01,0xC4,"XENIUM",0x100000);
 		mbFlash->AddFCI(0x01,0xC4,"XENIUM",0x000000);
