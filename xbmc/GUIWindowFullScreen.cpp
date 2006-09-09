@@ -690,7 +690,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       float w;
       float h;
       CStdStringW utf16Sub;
-      g_charsetConverter.utf8ToUTF16(subtitleText, utf16Sub, false);
+      g_charsetConverter.utf8ToUTF16(subtitleText, utf16Sub, true);
       m_subtitleFont->GetTextExtent(utf16Sub.c_str(), &w, &h);
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
