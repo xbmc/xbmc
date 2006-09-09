@@ -66,6 +66,7 @@ public:
     void SetVideoOutput(const string& output) { m_audiooutput = output; }
     void SetAudioCodec(const string& codec) { m_videocodec = codec; }
     void SetVideoCodec(const string& codec) { m_audiocodec = codec; }
+    void SetDemuxer(const string& demuxer) { m_demuxer = demuxer; }
 
   private:
     bool m_bDeinterlace;
@@ -89,6 +90,7 @@ public:
     string m_audiooutput;
     string m_videocodec;
     string m_audiocodec;
+    string m_demuxer;
     bool m_bDisableAO;
     string m_subcp;
     string m_strChannelMapping;
