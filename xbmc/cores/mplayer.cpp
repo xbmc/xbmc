@@ -622,6 +622,12 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back(m_audiocodec);
   }
 
+  if( m_demuxer.length() > 0 )
+  {
+    m_vecOptions.push_back("-demuxer");
+    m_vecOptions.push_back(m_demuxer);
+  }
+
   m_vecOptions.push_back("1.avi");
 
   argc = (int)m_vecOptions.size();
@@ -940,7 +946,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     strExtension.MakeLower();
 
 
-    if (strExtension == ".avi")
+    if (strExtension.Equals(".avi", false))
     {
       // check length of file, as mplayer can't handle opendml very well
       CFile* pFile = new CFile();
@@ -958,11 +964,17 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
         CLog::Log(LOGINFO, "Trying to play a large avi file. Setting -noidx");
       }
     }
-    else if (strExtension == ".mkv")
+    else if (strExtension.Equals(".mkv", false))
     {
       // mkv files only have utf8 encoded subtitles
       options.SetSubtitleCharset("utf8");
     }
+    else if (strExtension.Equals(".dvr-ms", false))
+    {
+      // force libavformat since mplayer's asf demuxer can't handle them properly yet
+      options.SetDemuxer("35");
+    }
+
 
     if (file.IsRAR())
     {
