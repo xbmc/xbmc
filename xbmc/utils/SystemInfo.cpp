@@ -16,8 +16,6 @@
 
 CSysInfo g_sysinfo;
 
-CXBoxFlash			*mbFlash;
-
 typedef struct 
 {
     short num_Cylinders;
@@ -34,8 +32,6 @@ struct Bios
 int ideDebug = 1;
 int numDrives = 1;
 ideDisk drives[2];
-char RetStrNomeBios[255];
-char RetStrSignBios[255];
 char MD5_Sign[16];
 
 // Folder where the Bios Detections Files Are!
@@ -167,7 +163,7 @@ CStdString CSysInfo::GetVideoEncoder()
 
 CStdString CSysInfo::GetModCHIPDetected()
 {
-	mbFlash=new(CXBoxFlash); //Max description Leng= 40
+	CXBoxFlash *mbFlash=new CXBoxFlash(); //Max description Leng= 40
 	{
     // Unknown or TSOP
     mbFlash->AddFCI(0x09,0x00,"Unknown/Onboard TSOP (protected)",0x00000);
@@ -357,6 +353,9 @@ CStdString CSysInfo::GetModCHIPDetected()
     strTemp.Format("%s",strTemp1.c_str());
   }
   else strTemp = strTemp2;
+
+  delete mbFlash;
+
   return strTemp;
 }
 
@@ -458,7 +457,7 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 	int BiosTrovato,i;
 	DWORD addr			=	FLASH_BASE_ADDRESS;
 	DWORD addr_kernel	=	KERNEL_BASE_ADDRESS;
-	mbFlash				=	new(CXBoxFlash);
+	CXBoxFlash mbFlash;
 	BiosTrovato			=	0;
 	BIOS_Name			=	(char*) malloc(100);
 	
@@ -466,7 +465,7 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 		{
 		for(loop=0;loop<0x100000;loop++)
 			{
-				data = mbFlash->Read(addr++);
+				data = mbFlash.Read(addr++);
 				fwrite(&data,1,sizeof(BYTE),fp);
 			}
 		fclose(fp);
@@ -610,6 +609,7 @@ bool CSysInfo::LoadBiosSigns()
 	else
 	{
 		cntBioses=0;
+    char buffer[255];
 		do
 		{
 	fgets(stringone,255,infile);
@@ -617,8 +617,8 @@ bool CSysInfo::LoadBiosSigns()
 			{
 				if (strstr(stringone,"=")!= NULL)
 				{
-					strcpy(Listone[cntBioses].Name,CSysInfo::ReturnBiosName(stringone));
-					strcpy(Listone[cntBioses].Signature,CSysInfo::ReturnBiosSign(stringone));
+					strcpy(Listone[cntBioses].Name,ReturnBiosName(buffer, stringone));
+					strcpy(Listone[cntBioses].Signature,ReturnBiosSign(buffer, stringone));
 				cntBioses++;
 				}
 			}
@@ -1134,43 +1134,43 @@ int	CSysInfo::IDE_Write(int driveNum, int blockNum, char *buffer)
     //if (reEnable) Enable_Interrupts();
     return IDE_ERROR_NO_ERROR;
 }
-char* CSysInfo::ReturnBiosName(char *str)
+char* CSysInfo::ReturnBiosName(char *buffer, char *str)
 {
 	int cnt1,cnt2,i;
 	cnt1=cnt2=0;
 
-	for (i=0;i<255;i++) RetStrNomeBios[i]='\0';
+	for (i=0;i<255;i++) buffer[i]='\0';
 	if ( (strstr(str,"(1MB)")==0) || (strstr(str,"(512)")==0) || (strstr(str,"(256)")==0) )
 		cnt2=5;
 
 	while (str[cnt2] != '=')
 	{
-		RetStrNomeBios[cnt1]=str[cnt2];
+		buffer[cnt1]=str[cnt2];
 		cnt1++;
 		cnt2++;
 	}
-	RetStrNomeBios[cnt1++]='\0';
-	return (RetStrNomeBios);
+	buffer[cnt1++]='\0';
+	return buffer;
 }
-char* CSysInfo::ReturnBiosSign(char *str)
+char* CSysInfo::ReturnBiosSign(char *buffer, char *str)
 {
 	int cnt1,cnt2,i;
 	cnt1=cnt2=0;
-	for (i=0;i<255;i++) RetStrSignBios[i]='\0';
+	for (i=0;i<255;i++) buffer[i]='\0';
 	while (str[cnt2] != '=') cnt2++;
 	cnt2++;
 	while (str[cnt2] != NULL)
 	{
 		if ( str[cnt2] != ' ' )
 		{
-			RetStrSignBios[cnt1]=toupper(str[cnt2]);
+			buffer[cnt1]=toupper(str[cnt2]);
 			cnt1++;
 			cnt2++;
 		}
 		else cnt2++;
 	}
-	RetStrSignBios[cnt1++]='\0';
-	return (RetStrSignBios);
+	buffer[cnt1++]='\0';
+	return buffer;
 }
 char* CSysInfo::CheckMD5 (char *Sign)
 {
