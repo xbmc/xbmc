@@ -175,6 +175,9 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
   if( g_application.m_pCdgParser )
     g_application.m_pCdgParser->Stop();
 
+  if (IsPaused())
+    Pause();
+
   if (file.m_strPath == m_currentFile.m_strPath &&
       file.m_lStartOffset > 0 && 
       file.m_lStartOffset == m_currentFile.m_lEndOffset)
