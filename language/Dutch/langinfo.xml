@@ -1,16 +1,14 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <language>
   <charsets>
-    <gui>CP1252</gui>
+    <gui unicodefont="false">CP1252</gui>
     <subtitle>CP1252</subtitle>
   </charsets>
-
   <dvd>
     <menu>nl</menu>
     <audio>nl</audio>
     <subtitle>nl</subtitle>
   </dvd>
-
   <regions>
     <region>
       <dateshort>D-M-YYYY</dateshort>
@@ -21,4 +19,3 @@
     </region>
   </regions>
 </language>
-
