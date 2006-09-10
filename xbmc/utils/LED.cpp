@@ -7,34 +7,33 @@ OFF/Green/Red/Orange/Cycle
 #include "LED.h"
 #include "SystemInfo.h"
 #include "../xbox/XKUtils.h"
-CSysInfo* t_sysinfo = new CSysInfo();
 
 void ILED::CLEDControl(int ixLED)
 {
   if (ixLED == LED_COLOUR_OFF)
   {
     XKUtils::SetXBOXLEDStatus(0);
-	  //t_sysinfo.SmartXXLEDControll(SMARTXX_LED_OFF);
+	  //g_sysinfo.SmartXXLEDControll(SMARTXX_LED_OFF);
   }
   else if (ixLED == LED_COLOUR_GREEN)
   {
     XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_GREEN | XKUtils::LED_REGISTER_CYCLE2_GREEN | XKUtils::LED_REGISTER_CYCLE1_GREEN | XKUtils::LED_REGISTER_CYCLE3_GREEN);
-	  //t_sysinfo.SmartXXLEDControll(SMARTXX_LED_BLUE);
+	  //g_sysinfo.SmartXXLEDControll(SMARTXX_LED_BLUE);
   }
   else if (ixLED == LED_COLOUR_RED)
   {
     XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_RED | XKUtils::LED_REGISTER_CYCLE2_RED | XKUtils::LED_REGISTER_CYCLE1_RED | XKUtils::LED_REGISTER_CYCLE3_RED);
-	  //t_sysinfo.SmartXXLEDControll(SMARTXX_LED_RED);
+	  //g_sysinfo.SmartXXLEDControll(SMARTXX_LED_RED);
   }
   else if (ixLED == LED_COLOUR_ORANGE)
   {
     XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_ORANGE | XKUtils::LED_REGISTER_CYCLE2_ORANGE | XKUtils::LED_REGISTER_CYCLE1_ORANGE | XKUtils::LED_REGISTER_CYCLE3_ORANGE);
-	  //t_sysinfo.SmartXXLEDControll(SMARTXX_LED_BLUE_RED);
+	  //g_sysinfo.SmartXXLEDControll(SMARTXX_LED_BLUE_RED);
   }
   else if (ixLED == LED_COLOUR_CYCLE)
   {
     XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_GREEN | XKUtils::LED_REGISTER_CYCLE2_GREEN | XKUtils::LED_REGISTER_CYCLE1_ORANGE | XKUtils::LED_REGISTER_CYCLE3_RED);
-	  //t_sysinfo.SmartXXLEDControll(SMARTXX_LED_CYCLE);
+	  //g_sysinfo.SmartXXLEDControll(SMARTXX_LED_CYCLE);
   }
   else if (ixLED == LED_COLOUR_NO_CHANGE) //Default Bios Settings
   {
@@ -69,7 +68,7 @@ ILEDSmartxxRGB::~ILEDSmartxxRGB()
 }
 void ILEDSmartxxRGB::OnStartup()
 {
-  if (t_sysinfo->SmartXXModCHIP().Equals("SmartXX V3") || t_sysinfo->SmartXXModCHIP().Equals("SmartXX OPX"))
+  if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") || g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
   {
 	  SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
 	  CLog::Log(LOGDEBUG,"Starting SmartXX RGB LED thread");
@@ -208,7 +207,7 @@ void ILEDSmartxxRGB::OnExit()
 
 bool ILEDSmartxxRGB::Start()
 {
-  if (t_sysinfo->SmartXXModCHIP().Equals("SmartXX V3") || t_sysinfo->SmartXXModCHIP().Equals("SmartXX OPX"))
+  if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") || g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
   {
     Create();
     return true;

@@ -14,6 +14,8 @@
 #include "../utils/log.h"
 #include "../xbox/Undocumented.h"
 
+CSysInfo g_sysinfo;
+
 CXBoxFlash			*mbFlash;
 
 typedef struct 
@@ -48,31 +50,6 @@ CSysInfo::CSysInfo()
 }
 CSysInfo::~CSysInfo()
 { 
-  Stop(); 
-}
-void CSysInfo::OnStartup()
-{
-}
-void CSysInfo::OnExit()
-{
-}
-void CSysInfo::Process()
-{
-  //can do something usefull here
-}
-bool CSysInfo::Start()
-{
-  // if(!1) return false;
-  Create();
-  return true;
-}
-void CSysInfo::Stop()
-{
-  StopThread();
-}
-bool CSysInfo::IsRunning()
-{
-  return (m_ThreadHandle != NULL);
 }
 
 static void outb(unsigned short port, unsigned char data)

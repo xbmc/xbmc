@@ -63,42 +63,23 @@
 #include "HddSmart.h"
 BYTE retVal = 0;
 
+CHDDSmart g_hddsmart;
+
+/* use one global section */
+CCriticalSection m_section;
+
 CHDDSmart::CHDDSmart()
 {
-  InitializeCriticalSection(&m_CriticalSection);
   m_HddSmarValue= 0;
 }
 CHDDSmart::~CHDDSmart()
-{ 
-  Stop(); 
-}
-void CHDDSmart::OnStartup()
-{
-  SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
-	CLog::Log(LOGDEBUG,"Starting HDD S.M.A.R.T Thread");
-}
-void CHDDSmart::OnExit()
-{
-  DeleteCriticalSection(&m_CriticalSection);
-}
-void CHDDSmart::Process()
 {
 }
-bool CHDDSmart::Start()
-{
-  Create();
-  return true;
-}
-void CHDDSmart::Stop()
-{
-  StopThread();
-}
-bool CHDDSmart::IsRunning()
-{
-  return (m_ThreadHandle != NULL);
-}
+
 BOOL CHDDSmart::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite)
 {
+  CSingleLock lock(m_section);
+
   // Wait Timers! No wait time.. let's see if this will also work!
   const int waitSleepTime = 5; //default 5 
   const int writeSleepTime = 10; // default 10
@@ -160,10 +141,13 @@ BOOL CHDDSmart::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UC
 		}
 		retVal = TRUE;
 	}
+  
 	return retVal;
 }
 BYTE CHDDSmart::GetSmartValue(int SmartREQ)
 {
+  CSingleLock lock(m_section);
+
   ATA_COMMAND_OBJ hddcommand;
 	ZeroMemory(&hddcommand, sizeof(ATA_COMMAND_OBJ));
 	
@@ -260,11 +244,13 @@ BYTE CHDDSmart::GetSmartValue(int SmartREQ)
 }
 bool CHDDSmart::DelayRequestSmartValue(int SmartREQ , int iDelayTime)
 {
+  CSingleLock lock(m_section);
+
   static DWORD pingTimer = 0;
   if (iDelayTime <0 ) iDelayTime = 60;
   bool bWait=false;
   if( timeGetTime() - pingTimer < (DWORD)iDelayTime * 1000)
-    return false;
+    return false;    
   else { do
   {
     GetSmartValue(SmartREQ);
@@ -273,5 +259,6 @@ bool CHDDSmart::DelayRequestSmartValue(int SmartREQ , int iDelayTime)
     }while(!bWait);
   }
   pingTimer = timeGetTime();
+  
   return bWait;
 }

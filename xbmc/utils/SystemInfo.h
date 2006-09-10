@@ -1,5 +1,4 @@
 #pragma once
-#include "thread.h"
 
 #define KB	(1024)					// 1 KiloByte (1KB) 	1024 Byte (2^10 Byte)
 #define MB	(1024*KB)				// 1 MegaByte (1MB) 	1024 KB (2^10 KB) 
@@ -14,15 +13,11 @@
 
 #define MAX_KNOWN_ATTRIBUTES	46
 
-class CSysInfo : public CThread //CThread
+class CSysInfo
 {
   public:
     CSysInfo();
     virtual ~CSysInfo();
-
-    bool IsRunning();
-    bool Start();
-    void Stop();
     
     BYTE GetSmartValues(int SmartREQ);
 	  double GetCPUFrequence();
@@ -53,9 +48,6 @@ class CSysInfo : public CThread //CThread
 	  bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
 
   private:
-    virtual void OnStartup();
-    virtual void OnExit();
-    virtual void Process();
     
     char* ReturnBiosName(char *str);
 	  char* ReturnBiosSign(char *str);
@@ -105,3 +97,5 @@ class CSysInfo : public CThread //CThread
 protected:
     //
  };
+
+extern CSysInfo g_sysinfo;
