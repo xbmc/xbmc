@@ -125,9 +125,9 @@
   <string id="192">Eliminare</string>
   <string id="193">Scansiona</string>
   <string id="194">Ricerca...</string>
-  <string id="195">Nessuna informazione IMDB trovata!</string>
+  <string id="195">Nessuna informazione IMDb trovata!</string>
   <string id="196">Seleziona il film:</string>
-  <string id="197">Richiesta informazioni IMDB</string>
+  <string id="197">Richiesta informazioni IMDb</string>
   <string id="198">Caricamento dettagli del film</string>
   <string id="199">Regista:</string>
   <string id="200">Autore:</string>
@@ -258,7 +258,7 @@
   <string id="330">Potrebbe richiedere diversi minuti...</string>
   <string id="331">Compressione archivio...</string>
   <string id="332">Errore durante la compressione dell'archivio</string>
-  <string id="333">Vuoi riorganizzare l'archivio?</string>
+  <string id="333">Vuoi riorganizzare l'Archivio?</string>
   <string id="334">Riorganizza Archivio...</string>
   <string id="335">Avvia</string>
   <string id="336">Conversione Framerate</string>
@@ -290,7 +290,7 @@
   <string id="365">Ordina x Nome</string>
   <string id="366">Ordina x Anno</string>
   <string id="367">Ordina x Voto</string>
-  <string id="368">IMDB</string>
+  <string id="368">IMDb</string>
   <string id="369">Titolo</string>
   <string id="370">Temporali</string>
   <string id="371">Parzialmente</string>
@@ -627,15 +627,15 @@
   <string id="1235">Programmi, Immagini e Video</string>
   <string id="1245">FTP User Name</string>
   <string id="1246">FTP User Password</string>
-  <string id="1247">FTP Server User Password salvata con successo!</string>
+  <string id="1247">User Password salvata con successo!</string>
   <string id="1250">AutoRilevamento</string>
-  <string id="1251">AutoRilevamento XBOX</string>
+  <string id="1251">AutoRilevamento Xbox</string>
   <string id="1252">Nick Name</string>
   <string id="1253">Crea collegamento FTP nel Filemanager</string>
   <string id="1254">Richiedi di connetersi</string>
   <string id="1255">Invia FTP User e Password</string>
   <string id="1256">Intervallo Ping</string>
-  <string id="1257">Vuoi connetterti alla XBOX AutoRilevata?</string>
+  <string id="1257">Vuoi connetterti alla Xbox AutoRilevata?</string>
   <string id="1396">Mutevole</string>
   <string id="1397">e</string>
   <string id="1398">Gelata</string>
@@ -769,8 +769,9 @@
   <string id="12344">La Password inserita non è corretta.</string>
   <string id="12345">Accesso Negato</string>
   <string id="12346">Limite di tentativi superato.</string>
-  <string id="12347">L'XBOX ora si spegnerà.</string>
-  <string id="12348">Item Locked</string>
+
+  <string id="12347">L'Xbox ora si spegnerà.</string>
+  <string id="12348">Elemento Bloccato</string>
 
   <string id="12353">Riattiva Blocco</string>
 
@@ -779,7 +780,7 @@
   <string id="12358">Password inserita è vuota. Riprova.</string>
   <string id="12360">Master Lock</string>
 
-  <string id="12362">Spegni xbox ad esaurimento tentativi</string>
+  <string id="12362">Spegni Xbox ad esaurimento tentativi</string>
 
   <string id="12367">Master Code non è Valido!</string>
   <string id="12368">Inserire un Master Code valido!</string>
@@ -873,7 +874,7 @@
   <string id="13287">Risoluzione Schermo:</string>
   <string id="13288">Xbox Version:</string>
   <string id="13289">Xbox Serialnumber:</string>
-  <string id="13290">XBOX Manufacture:</string>
+  <string id="13290">Costruttore Xbox:</string>
   <string id="13291">ModChip:</string>
   <string id="13292">A/V Cable:</string>
   <string id="13293">Video &amp; XBE Region:</string>
@@ -891,7 +892,7 @@
   <string id="13305">Abilita i Feed RSS</string>
   <string id="13306">Nascondi Oggetti delle Sottocartelle</string>
   <string id="13307">Elementi Descrittivi Titolo Traccia</string>
-  <string id="13308">Vuoi riavviare la tua xbox</string>
+  <string id="13308">Vuoi riavviare la tua Xbox</string>
   <string id="13309">invece di XBMC?</string>
   <string id="13310">Effetto Zoom</string>
   <string id="13311">Effetto Spostamento</string>
@@ -1091,8 +1092,8 @@
   <string id="15036">ti ha mandato un invito</string>
   <string id="15037">XBMC non assicura che la tua rete sia raggiungibile.</string>
   <string id="15038">Potresti avere difficoltà ad unirti od ospitare i giochi.</string>
-  <string id="15039">XBMC non riesce a trovare il gioco automaticamente.</string>
-  <string id="15040">Inserisci il disco del gioco nella tua XBOX o premi 'A' per</string>
+  <string id="15039">Impossibile localizzare il gioco automaticamente.</string>
+  <string id="15040">Inserisci il disco del gioco nella tua Xbox o premi 'A' per</string>
   <string id="15041">annullare e lanciare il gioco manualmente.</string>
   <string id="15042">Accesso Negato</string>
   <string id="15043">%s si è unito alla chat.</string>
@@ -1155,14 +1156,14 @@
   <string id="15257">Artisti migliori con etichetta %name%</string>
   <string id="15258">Albums migliori con etichetta %name%</string>
   <string id="15259">Canzoni migliori con etichetta %name%</string>
-  <string id="15260">Ascolta l'etichetta %name% last.fm radio</string>
+  <string id="15260">Ascolta l'etichetta %name% Last.FM radio</string>
   <string id="15261">Artisti simili a %name%</string>
   <string id="15262">Albums %name% migliori</string>
   <string id="15263">Canzoni %name% migliori</string>
   <string id="15264">Etichette %name% migliori</string>
   <string id="15265">Più grandi fans di %name%</string>
-  <string id="15266">Ascolta %name% fans last.fm radio</string>
-  <string id="15267">Ascolta %name% artisti simili last.fm radio</string>
+  <string id="15266">Ascolta %name% fans Last.FM radio</string>
+  <string id="15267">Ascolta %name% artisti simili Last.FM radio</string>
   <string id="15268">Artisti migliori per l'utente %name%</string>
   <string id="15269">Albums migliori per l'utente %name%</string>
   <string id="15270">Canzoni migliori per l'utente %name%</string>
@@ -1174,8 +1175,8 @@
   <string id="15276">Ascolta la last.fm radio dei vicini di %name%</string>
   <string id="15277">Ascolta la last.fm radio personale di %name%</string>
   <string id="15278">Ascolta le last.fm radio canzoni preferite di %name%</string>
-  <string id="15279">Ricezione lista da last.fm...</string>
-  <string id="15280">Impossibile ricevere la lista da last.fm...</string>
+  <string id="15279">Ricezione lista da Last.FM...</string>
+  <string id="15280">Impossibile ricevere la lista da Last.FM...</string>
   <string id="15281">Inserire il nome di un artista per trovarne i relazionati</string>
   <string id="15282">Inserire il nome di un etichetta per trovarne di simili</string>
   <string id="15283">Traccce recentemente ascoltate da %name%</string>
@@ -1269,16 +1270,16 @@
   <string id="20042">Blocca filemanager</string>
   <string id="20043">Blocca impostazioni</string>
   <string id="20044">Nuova partenza</string>
-  <string id="20045">Entra in master mode</string>
-  <string id="20046">Esci da master mode</string>
+  <string id="20045">Entra in Master Mode</string>
+  <string id="20046">Esci da Master Mode</string>
   <string id="20047">Crea profilo '%i' ?</string>
   <string id="20048">Parti con impostazioni nuove?</string>
   <string id="20049">Migliore Disponibile</string>
   <string id="20050">Cambio automatico tra 16x9 and 4x3</string>
   <string id="20051">Tratta i volumi come files singoli</string>
   <string id="20052">Attenzione</string>
-  <string id="20053">Uscito da master mode</string>
-  <string id="20054">Entrato in master mode</string>
+  <string id="20053">Uscito da Master Mode</string>
+  <string id="20054">Entrato in Master Mode</string>
   <string id="20055">Icona Allmusic.com</string>
   <string id="20056">Icona Sorgente</string>
   <string id="20057">Rimuovi Icona</string>
@@ -1299,8 +1300,8 @@
   <string id="20072">Assicurati che la cartella selezionata sia scrivibile</string>
   <string id="20073">ed il nuovo nome della cartella sia valido</string>
   <string id="20074">MPAA Rating:</string>
-  <string id="20075">Inserisci codice master lock</string>
-  <string id="20076">Richiedi codice master lock all'avvio</string>
+  <string id="20075">Inserisci Codice Master Lock</string>
+  <string id="20076">Richiedi Codice Master Lock all'avvio</string>
   <string id="20077">Impostazioni Skin</string>
   <string id="20078">- da impostare -</string>
   <string id="20079">Attiva Animazioni</string>
@@ -1397,7 +1398,7 @@
   <string id="20171">condivisione di Windows (SMB)</string>
   <string id="20172">XBMSP Server</string>
   <string id="20173">FTP Server</string>
-  <string id="20174">Condivisione musica ITunes (DAAP)</string>
+  <string id="20174">Condivisione musica iTunes (DAAP)</string>
   <string id="20175">UPnP Server</string>
   <string id="20176">Mostra Info Video</string>
   <string id="20177">Fatto</string>
@@ -1433,5 +1434,9 @@
   <string id="20307">DNS Secondario</string>
   <string id="20308">DHCP Server:</string>
   <string id="20309">Crea Nuova Cartella</string>
+  <string id="20310">Oscura LCD se in Riproduzione</string>
+  <string id="20311">Sconosciuto o Montato (protetto)</string>
+  <string id="20312">Oscura LCD se in Pausa</string>
+  <string id="20313">Riaccendi il LED se in Pausa</string>
   <string id="29999">Patch Flicker Filter Automatica</string>
 </strings>
