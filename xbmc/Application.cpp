@@ -1380,8 +1380,10 @@ void CApplication::StartLEDControl(bool switchoff)
 {
   if (switchoff && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE)
   {
-    //if(CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY)
-    //{
+#ifdef AFTER2_0
+    if(CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY)
+    {
+#endif
       if ( (IsPlayingVideo()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
       {
         //CLog::Log(LOGNOTICE, "LED Control: Playing Video LED is switched OFF!");
@@ -1397,7 +1399,9 @@ void CApplication::StartLEDControl(bool switchoff)
         //CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
         ILED::CLEDControl(LED_COLOUR_OFF);
       }
-    //}
+#ifdef AFTER2_0
+    }
+#endif
   }
   else if (!switchoff)
   {
