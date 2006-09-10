@@ -23,20 +23,16 @@ typedef struct
     short num_SectorsPerTrack;
     short num_BytesPerSector;
 } ideDisk;
-struct Bios
-{
-	char Name[200];
-	char Signature[200];
-} Listone[1000];
 
-int ideDebug = 1;
-int numDrives = 1;
-ideDisk drives[2];
-char MD5_Sign[16];
+// this is bullshit, these should not be global...
+static int ideDebug = 1;
+static int numDrives = 1;
+static ideDisk drives[2];
+static char MD5_Sign[16];
 
 // Folder where the Bios Detections Files Are!
-char* cTempBIOSFile =	"Q:\\System\\SystemInfo\\BiosBackup.bin";
-char* cBIOSmd5IDs	=	"Q:\\System\\SystemInfo\\BiosIDs.ini";
+static char* cTempBIOSFile =	"Q:\\System\\SystemInfo\\BiosBackup.bin";
+static char* cBIOSmd5IDs	=	"Q:\\System\\SystemInfo\\BiosIDs.ini";
 
 static char* MDPrint (MD5_CTX_N *mdContext);
 static char* MD5File(char *filename,long PosizioneInizio,int KBytes);
@@ -469,26 +465,33 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 				fwrite(&data,1,sizeof(BYTE),fp);
 			}
 		fclose(fp);
-		if (!LoadBiosSigns()) return false;
+    struct Bios *Listone = LoadBiosSigns();
+
+    if( !Listone )
+    {
+      free(BIOS_Name);
+      return false;
+    }
 		
 		// Detect a 1024 KB Bios MD5
 		MD5File (cTempBIOSFile,0,1024);
-		strcpy(BIOS_Name,CheckMD5(MD5_Sign));
+		strcpy(BIOS_Name,CheckMD5(Listone, MD5_Sign));
 		if ( strcmp(BIOS_Name,"Unknown") == 0)
 		{
 			// Detect a 512 KB Bios MD5
 			MD5File (cTempBIOSFile,0,512);
-			strcpy(BIOS_Name,CheckMD5(MD5_Sign));
+			strcpy(BIOS_Name,CheckMD5(Listone, MD5_Sign));
 			if ( strcmp(BIOS_Name,"Unknown") == 0)
 			{
 				// Detect a 256 KB Bios MD5
 				MD5File (cTempBIOSFile,0,256);
-				strcpy(BIOS_Name,CheckMD5(MD5_Sign));
+				strcpy(BIOS_Name,CheckMD5(Listone, MD5_Sign));
 				if ( strcmp(BIOS_Name,"Unknown") != 0)
 				{
 					CLog::Log(LOGDEBUG, "- Detected BIOS [256 KB]: %hs",BIOS_Name);
 					CLog::Log(LOGDEBUG, "- BIOS MD5 Hash: %hs",MD5_Sign);
 					strDetBiosNa = BIOS_Name;
+          free(Listone);
 					free(BIOS_Name);
 					return true;					
 				}
@@ -501,10 +504,11 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 							for (i=0;i<16; i++) MD5_Sign[i]='\0';
 							MD5File(cTempBIOSFile,0,256);
 							CLog::Log(LOGINFO, "256k BIOSES: Checksums are (256)");					
-							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(MD5_Sign));
+							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(Listone, MD5_Sign));
 							CLog::Log(LOGINFO, "  Add this to BiosIDs.ini: (256)BiosNameHere = %hs",MD5_Sign);
 							CLog::Log(LOGINFO, "---------------------------------------------------------");
 							strDetBiosNa = g_localizeStrings.Get(20306);
+              free(Listone);
 							free(BIOS_Name);
 							return true;
 					}
@@ -516,10 +520,11 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 							for (i=0;i<16; i++) MD5_Sign[i]='\0';
 							MD5File(cTempBIOSFile,0,512);
 							CLog::Log(LOGINFO, "512k BIOSES: Checksums are (512)");					
-							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(MD5_Sign));
+							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(Listone,MD5_Sign));
 							CLog::Log(LOGINFO, "  Add. this to BiosIDs.ini: (512)BiosNameHere = %hs",MD5_Sign);
 							CLog::Log(LOGINFO, "---------------------------------------------------------");
 							strDetBiosNa = g_localizeStrings.Get(20306);
+              free(Listone);
 							free(BIOS_Name);
 							return true;
 						}
@@ -530,10 +535,11 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 							for (i=0;i<16; i++) MD5_Sign[i]='\0';
 							MD5File(cTempBIOSFile,0,1024);
 							CLog::Log(LOGINFO, "1024k BIOS: Checksums are (1MB)");
-							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(MD5_Sign));
+							CLog::Log(LOGINFO, "  1.Bios > %hs",CheckMD5(Listone, MD5_Sign));
 							CLog::Log(LOGINFO, "  Add. this to BiosIDs.ini: (1MB)BiosNameHere = %hs",MD5_Sign);
 							CLog::Log(LOGINFO, "---------------------------------------------------------");
 							strDetBiosNa = g_localizeStrings.Get(20306);
+              free(Listone);
 							free(BIOS_Name);
 							return true;
 						}
@@ -545,6 +551,7 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 				CLog::Log(LOGINFO, "- Detected BIOS [512 KB]: %hs",BIOS_Name);
 				CLog::Log(LOGINFO, "- BIOS MD5 Hash: %hs",MD5_Sign);
 				strDetBiosNa = BIOS_Name;
+        free(Listone);
 				free(BIOS_Name);
 				return true;
 				
@@ -555,9 +562,11 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
 			CLog::Log(LOGINFO, "- Detected BIOS [1024 KB]: %hs",BIOS_Name);
 			CLog::Log(LOGINFO, "- BIOS MD5 Hash: %hs",MD5_Sign);
 			strDetBiosNa = BIOS_Name;
+      free(Listone);
 			free(BIOS_Name);
 			return true;
 		}
+    free(Listone);
 	}
 	else 
 	{
@@ -595,38 +604,38 @@ bool CSysInfo::GetXBOXVersionDetected(CStdString& strXboxVer)
   else  {	strXboxVer.Format("UNKNOWN: Please report this --> %s",Ver); return true;
 	}
 }
-bool CSysInfo::LoadBiosSigns()
+struct Bios * CSysInfo::LoadBiosSigns()
 {
-	FILE *infile;
-	int cntBioses;
-	char stringone[255];
+	FILE *infile;	
 
 	if ((infile = fopen(cBIOSmd5IDs,"r")) == NULL)
 	{ 
 		CLog::Log(LOGDEBUG, "ERROR LOADING BIOSES.INI!!"); 
-		return false;
+		return NULL;
 	}
 	else
 	{
-		cntBioses=0;
+    struct Bios * Listone = (struct Bios *)calloc(1000, sizeof(struct Bios));
+		int cntBioses=0;
     char buffer[255];
+    char stringone[255];
 		do
 		{
-	fgets(stringone,255,infile);
+	    fgets(stringone,255,infile);
 			if  (stringone[0] != '#') 
 			{
 				if (strstr(stringone,"=")!= NULL)
 				{
 					strcpy(Listone[cntBioses].Name,ReturnBiosName(buffer, stringone));
 					strcpy(Listone[cntBioses].Signature,ReturnBiosSign(buffer, stringone));
-				cntBioses++;
+				  cntBioses++;
 				}
 			}
-		} while( !feof( infile ) );
+		} while( !feof( infile ) && cntBioses < 999 );
 		fclose(infile);
 		strcpy(Listone[cntBioses++].Name,"\0");
 		strcpy(Listone[cntBioses++].Signature,"\0");
-		return true;
+		return Listone;
 	}
 }
 bool CSysInfo::GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware)
@@ -1172,7 +1181,7 @@ char* CSysInfo::ReturnBiosSign(char *buffer, char *str)
 	buffer[cnt1++]='\0';
 	return buffer;
 }
-char* CSysInfo::CheckMD5 (char *Sign)
+char* CSysInfo::CheckMD5 (struct Bios *Listone, char *Sign)
 {
 	int cntBioses;
 	cntBioses=0;
