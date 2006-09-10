@@ -30,9 +30,6 @@
 
 #include "GUILabelControl.h"  // for CInfoPortion
 CGUIInfoManager g_infoManager;
-CHDDSmart* m_smartRequest= new CHDDSmart();
-CSysInfo* m_sysinfo = new CSysInfo();
-
 
 void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
 {
@@ -2031,19 +2028,17 @@ CStdString CGUIInfoManager::GetHDDSmart( int iSmartRequest )
   // 36 Loaded Hours
   CStdString strItemhdd;
   //int ismartRequest = 17; // HDD Temperature 
-  if (!m_smartRequest->IsRunning())
-    m_smartRequest->Create();
-  m_smartRequest->DelayRequestSmartValue(iSmartRequest, 30);
+  g_hddsmart.DelayRequestSmartValue(iSmartRequest, 30);
 
   if (iSmartRequest == 17 )
   {
-    CTemperature HddTemp = CTemperature::CreateFromCelsius((double)m_smartRequest->m_HddSmarValue);
+    CTemperature HddTemp = CTemperature::CreateFromCelsius((double)g_hddsmart.m_HddSmarValue);
     strItemhdd.Format("%s", HddTemp.ToString().c_str());
   }
   else
   {
     char buffer[10];
-    itoa(m_smartRequest->m_HddSmarValue, buffer, 10);
+    itoa(g_hddsmart.m_HddSmarValue, buffer, 10);
     strItemhdd.Format("%s", buffer);
   }
   return strItemhdd;

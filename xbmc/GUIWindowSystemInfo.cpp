@@ -35,8 +35,6 @@ BOOL  m_XBOX_EEPROM_Current;
 XBOX_VERSION  m_XBOX_Version;
 DWORD m_dwlastTime;
 
-CSysInfo g_SYSinfo;
-
 char* cTempEEPROMBackUPPath = "Q:\\System\\SystemInfo\\";
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
@@ -502,7 +500,7 @@ bool CGUIWindowSystemInfo::GetCPUFreqInfo(CStdString& strCPUFreq)
   // XBOX CPU Frequence Detection
   double CPUFreq;
   CStdString lblCPUSpeed  = g_localizeStrings.Get(13284).c_str();
-  CPUFreq         = g_SYSinfo.GetCPUFrequence();
+  CPUFreq         = g_sysinfo.GetCPUFrequence();
   
   strCPUFreq.Format("%s %4.2f Mhz.",lblCPUSpeed.c_str(), CPUFreq);
   return true;
@@ -529,7 +527,7 @@ bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
   // Get XBOX Bios Informations, BiosDetector!
   CStdString cBIOSName;
   CStdString strlblBios = g_localizeStrings.Get(13285).c_str();
-  if(g_SYSinfo.CheckBios(cBIOSName))
+  if(g_sysinfo.CheckBios(cBIOSName))
   {
     strBiosName.Format("%s %s", strlblBios.c_str(),cBIOSName.c_str());
     return true;
@@ -545,7 +543,7 @@ bool CGUIWindowSystemInfo::GetVideoEncInfo(CStdString& strItemVideoENC)
 {
   // XBOX Video Encoder Detection
   CStdString lblVideoEnc  = g_localizeStrings.Get(13286).c_str();
-  CStdString VideoEncoder = g_SYSinfo.GetVideoEncoder();
+  CStdString VideoEncoder = g_sysinfo.GetVideoEncoder();
   strItemVideoENC.Format("%s %s", lblVideoEnc.c_str(),VideoEncoder.c_str());
   return true;
 }
@@ -568,7 +566,7 @@ bool CGUIWindowSystemInfo::GetXBVerInfo(CStdString& strXBoxVer)
   // XBOX Version Detection
   CStdString strXBOXVersion;
   CStdString lblXBver   =  g_localizeStrings.Get(13288).c_str();
-  if (g_SYSinfo.GetXBOXVersionDetected(strXBOXVersion))
+  if (g_sysinfo.GetXBOXVersionDetected(strXBOXVersion))
   {
     strXBoxVer.Format("%s %s", lblXBver.c_str(),strXBOXVersion.c_str());
     CLog::Log(LOGDEBUG,"XBOX Version: %s",strXBOXVersion.c_str());
@@ -630,10 +628,10 @@ bool CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate)
 bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
 {
   // XBOX ModCHIP Type Detection GeminiServer
-  CStdString ModChip    = g_SYSinfo.GetModCHIPDetected().c_str();
+  CStdString ModChip    = g_sysinfo.GetModCHIPDetected().c_str();
   CStdString lblModChip = g_localizeStrings.Get(13291).c_str();
    // Chech if it is a SmartXX
-  CStdString strIsSmartXX = g_SYSinfo.SmartXXModCHIP();
+  CStdString strIsSmartXX = g_sysinfo.SmartXXModCHIP();
   if (!strIsSmartXX.Equals("None"))
   { 
     strModChip.Format("%s %s", lblModChip.c_str(),strIsSmartXX.c_str());
@@ -643,7 +641,7 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
   else
   { 
     CStdString strXBOXVersion;
-    g_SYSinfo.GetXBOXVersionDetected(strXBOXVersion);
+    g_sysinfo.GetXBOXVersionDetected(strXBOXVersion);
     if ( strXBOXVersion.Equals("v1.6") && ModChip.Equals("Unknown/Onboard TSOP (protected)"))
     {
       strModChip.Format("%s %s", lblModChip.c_str(),"Unknown / (Protected)"); 
@@ -660,7 +658,7 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
 void CGUIWindowSystemInfo::GetAVPackInfo(CStdString& stravpack)
 {
   //AV-[Cable]Pack Detection 
-  CStdString DetectedAVpack = g_SYSinfo.GetAVPackInfo();
+  CStdString DetectedAVpack = g_sysinfo.GetAVPackInfo();
   CStdString lblAVpack    = g_localizeStrings.Get(13292).c_str();
   stravpack.Format("%s %s",lblAVpack.c_str(), DetectedAVpack.c_str());
   return;
@@ -779,7 +777,7 @@ bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
   CStdString lblhdd = g_localizeStrings.Get(13151).c_str();
   DWORD hddsmarttemp;
   int iSmartREQ = 17; // SmartRequest HDD Temperature
-  hddsmarttemp = g_SYSinfo.GetSmartValues(iSmartREQ);
+  hddsmarttemp = g_sysinfo.GetSmartValues(iSmartREQ);
 
   CTemperature temp=CTemperature::CreateFromCelsius(hddsmarttemp);
   if (hddsmarttemp<=0)
@@ -803,7 +801,7 @@ bool CGUIWindowSystemInfo::GetATAPIValues(int i_lblp1, int i_lblp2)
   CStdString strDVDModel, strDVDFirmware;
   CStdString lblDVDModel    = g_localizeStrings.Get(13152).c_str();
   CStdString lblDVDFirmware = g_localizeStrings.Get(13153).c_str();
-  if(g_SYSinfo.GetDVDInfo(strDVDModel, strDVDFirmware))
+  if(g_sysinfo.GetDVDInfo(strDVDModel, strDVDFirmware))
   {
     CStdString strDVDModelA;
     strDVDModelA.Format("%s %s",lblDVDModel.c_str(), strDVDModel.c_str());
@@ -862,7 +860,7 @@ bool CGUIWindowSystemInfo::GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, i
 
   */
   CStdString strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState;
-  if (g_SYSinfo.GetHDDInfo(strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState))
+  if (g_sysinfo.GetHDDInfo(strHDDModel, strHDDSerial,strHDDFirmware,strHDDpw,strHDDLockState))
   {
     CStdString strHDDModelA, strHDDSerialA, strHDDFirmwareA, strHDDpwA, strHDDLockStateA;
 
@@ -1695,7 +1693,7 @@ bool CGUIWindowSystemInfo::GetSystemUpTime(CStdString& strSystemUptime)
 
   int iInputMinutes, iMinutes,iHours,iDays;
   iInputMinutes = (int)(timeGetTime() / 60000);
-  g_SYSinfo.SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
+  g_sysinfo.SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   // Will Display Autodetected Values!
   if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1.c_str(), iDays,lblDay.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
   else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
@@ -1712,7 +1710,7 @@ bool CGUIWindowSystemInfo::GetSystemTotalUpTime(CStdString& strSystemUptime)
 
   int iInputMinutes, iMinutes,iHours,iDays;
   iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
-  g_SYSinfo.SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
+  g_sysinfo.SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   // Will Display Autodetected Values!
   if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1.c_str(), iDays,lblDay.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
   else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
