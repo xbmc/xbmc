@@ -13,6 +13,12 @@
 
 #define MAX_KNOWN_ATTRIBUTES	46
 
+struct Bios
+{
+	char Name[200];
+	char Signature[200];
+};
+
 class CSysInfo
 {
   public:
@@ -35,7 +41,7 @@ class CSysInfo
 	  bool GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware);
 	  bool SmartXXLEDControll(int iSmartXXLED);
 	  bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
-	  bool LoadBiosSigns();
+	  struct Bios * LoadBiosSigns();
     
 	  void Init_IDE();
 	  void IdeWrite(USHORT port, UCHAR data);
@@ -51,7 +57,7 @@ class CSysInfo
     
     char* ReturnBiosName(char *buffer, char *str);
 	  char* ReturnBiosSign(char *buffer, char *str);
-	  char* CheckMD5 (char *Sign);
+	  char* CheckMD5 (struct Bios *Listone, char *Sign);
 	  CStdString MD5FileNew(char *filename,long PosizioneInizio,int KBytes);
 
 	  typedef struct _IDEREGS 
