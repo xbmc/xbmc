@@ -49,8 +49,8 @@ class CSysInfo
 
   private:
     
-    char* ReturnBiosName(char *str);
-	  char* ReturnBiosSign(char *str);
+    char* ReturnBiosName(char *buffer, char *str);
+	  char* ReturnBiosSign(char *buffer, char *str);
 	  char* CheckMD5 (char *Sign);
 	  CStdString MD5FileNew(char *filename,long PosizioneInizio,int KBytes);
 
