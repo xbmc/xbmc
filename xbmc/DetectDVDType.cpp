@@ -4,7 +4,10 @@
 #include "Filesystem/cdiosupport.h"
 #include "Filesystem/iso9660.h"
 #include "xbox/undocumented.h"
-//#include "utils/LED.h"
+
+#ifdef AFTER2_0
+#include "utils/LED.h"
+#endif
 
 
 using namespace MEDIA_DETECT;
@@ -79,8 +82,10 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           m_isoReader.Reset();
           waitLock.Leave();
           m_DriveState = DRIVE_OPEN;
+#ifdef AFTER2_0
           //On NOT READY MODE! LED State: LED_COLOUR_CYCLE 
-          //ILED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
+          ILED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
+#endif
           return;
         }
         break;
@@ -103,9 +108,10 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           m_gWindowManager.SendThreadMessage( msg );
           // Do we really need sleep here? This will fix: [ 1530771 ] "Open tray" problem
           // Sleep(6000);
-          
+#ifdef AFTER2_0          
           //On NOT READY MODE! LED State: LED_COLOUR_CYCLE 
-          //ILED::CLEDControl(LED_COLOUR_CYCLE);
+          ILED::CLEDControl(LED_COLOUR_CYCLE);
+#endif
           return ;
         }
         break;
@@ -113,8 +119,10 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_READY:
         // drive is ready
         //m_DriveState = DRIVE_READY;
+#ifdef AFTER2_0
         //On NOT READY MODE! LED State: LED_COLOUR_CYCLE 
-        //ILED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
+        ILED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
+#endif
         return ;
         break;
       case DRIVE_CLOSED_NO_MEDIA:
@@ -127,8 +135,10 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_BOOKMARKS, 0, NULL);
           waitLock.Leave();
           m_gWindowManager.SendThreadMessage( msg );
+#ifdef AFTER2_0
           //On NOT READY MODE! LED State: LED_COLOUR_CYCLE 
-          //LED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
+          LED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
+#endif
           return ;
         }
         break;
@@ -147,7 +157,9 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           // So autorun can be started.
           if ( !m_bStartup )
             m_bAutorun = true;
-          //ILED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
+#ifdef AFTER2_0
+          ILED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
+#endif
           return ;
         }
         break;
