@@ -132,12 +132,12 @@ namespace TeamXBMC.Translator
 			this.menuItemValidate = new System.Windows.Forms.MenuItem();
 			this.menuItemConvert = new System.Windows.Forms.MenuItem();
 			this.menuItem1 = new System.Windows.Forms.MenuItem();
+			this.menuItemHelp = new System.Windows.Forms.MenuItem();
+			this.menuItem8 = new System.Windows.Forms.MenuItem();
 			this.menuItemAbout = new System.Windows.Forms.MenuItem();
 			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-			this.menuItemHelp = new System.Windows.Forms.MenuItem();
-			this.menuItem8 = new System.Windows.Forms.MenuItem();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -202,7 +202,7 @@ namespace TeamXBMC.Translator
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Size = new System.Drawing.Size(696, 363);
 			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "All Stings";
+			this.tabPage1.Text = "All Strings";
 			// 
 			// tabPage2
 			// 
@@ -432,13 +432,13 @@ namespace TeamXBMC.Translator
 			// menuItemValidate
 			// 
 			this.menuItemValidate.Index = 0;
-			this.menuItemValidate.Text = "&Validate...";
+			this.menuItemValidate.Text = "&Validate Language File...";
 			this.menuItemValidate.Click += new System.EventHandler(this.menuItemValidateFile_Click);
 			// 
 			// menuItemConvert
 			// 
 			this.menuItemConvert.Index = 1;
-			this.menuItemConvert.Text = "&Convert...";
+			this.menuItemConvert.Text = "&Convert Language File...";
 			this.menuItemConvert.Click += new System.EventHandler(this.menuItemConvert_Click);
 			// 
 			// menuItem1
@@ -449,6 +449,17 @@ namespace TeamXBMC.Translator
 																																							this.menuItem8,
 																																							this.menuItemAbout});
 			this.menuItem1.Text = "&?";
+			// 
+			// menuItemHelp
+			// 
+			this.menuItemHelp.Index = 0;
+			this.menuItemHelp.Text = "&Help...";
+			this.menuItemHelp.Click += new System.EventHandler(this.menuItemHelp_Click);
+			// 
+			// menuItem8
+			// 
+			this.menuItem8.Index = 1;
+			this.menuItem8.Text = "-";
 			// 
 			// menuItemAbout
 			// 
@@ -468,17 +479,6 @@ namespace TeamXBMC.Translator
 			this.saveFileDialog1.FileName = "strings.xml";
 			this.saveFileDialog1.Filter = "Language File|strings.xml|All Files|*.*";
 			this.saveFileDialog1.Title = "Save converted file as";
-			// 
-			// menuItemHelp
-			// 
-			this.menuItemHelp.Index = 0;
-			this.menuItemHelp.Text = "&Help...";
-			this.menuItemHelp.Click += new System.EventHandler(this.menuItemHelp_Click);
-			// 
-			// menuItem8
-			// 
-			this.menuItem8.Index = 1;
-			this.menuItem8.Text = "-";
 			// 
 			// MainForm
 			// 
@@ -1008,7 +1008,7 @@ namespace TeamXBMC.Translator
 		/// </summary>
 		private void menuItemHelp_Click(object sender, System.EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://www.xbmc.xbox-scene.com/wiki/index.php?title=XBMC_Translator");
+			System.Diagnostics.Process.Start("http://www.xboxmediacenter.com/wiki/index.php?title=XBMC_Translator");
 		}
 
 		/// <summary>
