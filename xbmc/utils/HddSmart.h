@@ -1,26 +1,20 @@
 #pragma once
-#include "thread.h"
 
-static CRITICAL_SECTION m_CriticalSection;
-class CHDDSmart : public CThread //CThread
+class CHDDSmart
 {
   public:
     CHDDSmart();
     ~CHDDSmart();
     
-    virtual void OnStartup();
-    virtual void OnExit();
-    virtual void Process();
-
     BYTE m_HddSmarValue;
     bool IsRunning();
     bool Start();
     void Stop();
     BYTE GetSmartValue(int SmartREQ);
     bool DelayRequestSmartValue(int SmartREQ , int iDelayTime);
-
-protected:
     
+protected:
+
     typedef struct IP_IDE_REG
     {
 	    BYTE bFeaturesReg;			  // Used for specifying SMART "commands".
@@ -67,7 +61,6 @@ protected:
     } ATTRTHRESHOLD, *PATTRTHRESHOLD, *LPATTRTHRESHOLD;	
 
     BOOL SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite);
- 
  };
 
-extern CHDDSmart* m_hddsmart;
+extern CHDDSmart g_hddsmart;
