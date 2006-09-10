@@ -1653,7 +1653,7 @@ string CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
     if (shortText)
       space.Format("%uMB", (unsigned int)(lTotalFreeBytes.QuadPart / 1024 / 1024)); //To make it MB
   	else
-      space.Format("%s %c: %u Mb", pszDrive, cDrive, (unsigned int)(lTotalFreeBytes.QuadPart / 1048576)); //To make it MB
+      space.Format("%s %c: %u MB", pszDrive, cDrive, (unsigned int)(lTotalFreeBytes.QuadPart / 1048576)); //To make it MB
   }
   else
   {
