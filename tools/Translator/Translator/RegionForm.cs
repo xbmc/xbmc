@@ -481,7 +481,7 @@ namespace TeamXBMC.Translator
 			this.label16.Location = new System.Drawing.Point(24, 48);
 			this.label16.Name = "label16";
 			this.label16.TabIndex = 0;
-			this.label16.Text = "Speed unit:";
+			this.label16.Text = "Speed Unit:";
 			// 
 			// RegionForm
 			// 
