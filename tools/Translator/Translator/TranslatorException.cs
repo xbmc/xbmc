@@ -5,7 +5,7 @@ namespace TeamXBMC.TranslatorCore
 	/// <summary>
 	/// Exception thrown by the TranslatorCore namespace
 	/// </summary>
-	public class TranslatorException : Exception
+	public class TranslatorException : ApplicationException
 	{
 		#region Constructors
 

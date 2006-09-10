@@ -21,14 +21,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8DF39D3C82A542C4B2A77AB57D96302F"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_15F65061D55F45418AAEF2D60CB7B847"
+        "OwnerKey" = "8:_8DF39D3C82A542C4B2A77AB57D96302F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_EE7E5B40922040A4A0FD386CC8B3D88C"
-        "OwnerKey" = "8:_8DF39D3C82A542C4B2A77AB57D96302F"
+        "MsmKey" = "8:_8DF39D3C82A542C4B2A77AB57D96302F"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -183,7 +183,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Translator"
         "ProductCode" = "8:{2C7E914A-C942-4AD5-BECD-70E3A916851B}"
-        "PackageCode" = "8:{29BDFD3A-7E12-4CA9-A7CC-65E8C8525989}"
+        "PackageCode" = "8:{261EC689-4F4A-4478-8876-63D66EAC2DA8}"
         "UpgradeCode" = "8:{C448D307-6596-4437-88A2-A45CB80E62AF}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -996,7 +996,7 @@
         }
         "MergeModule"
         {
-            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_EE7E5B40922040A4A0FD386CC8B3D88C"
+            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_15F65061D55F45418AAEF2D60CB7B847"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"

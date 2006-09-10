@@ -6,12 +6,12 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Tool To Translate XBMC Language Files")]
+[assembly: AssemblyDescription("Tool To Translate XBMC Language Files")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("Team XBMC")]
+[assembly: AssemblyProduct("Translator")]
+[assembly: AssemblyCopyright("Team XBMC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 

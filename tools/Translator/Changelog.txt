@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-09-2006 changed: help url now points to www.xboxmediacenter.com/wiki/index.php?title=XBMC_Translator
+ - 10-09-2006 added: Product information to the assembly
+ - 10-09-2006 changed: derived TranslatorException from ApplicationException
+ - 10-09-2006 fixed: corrected some typos
  - 28-07-2006 added: new speed units
  - 28-07-2006 fixed: tab stop order when editing a string
  - 28-07-2006 added: Translator icon to Add/Remove Programs
