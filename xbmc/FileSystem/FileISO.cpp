@@ -99,7 +99,10 @@ unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
     }
     return lTotalBytesRead;
   }
-  return m_isoReader.ReadFile( m_hFile, (byte*)pData, (long)uiBufSize);
+  int iResult = m_isoReader.ReadFile( m_hFile, (byte*)pData, (long)uiBufSize);
+  if (iResult == -1)
+    return 0;
+  return iResult;
 }
 
 //*********************************************************************************************
