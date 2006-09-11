@@ -10,6 +10,7 @@ public:
 
   bool CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
   bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
+  bool CreateThumbnailFromSwizzledTexture(LPDIRECT3DTEXTURE8 &texture, int width, int height, const CStdString &thumb);
   int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality);
 
   ImageInfo GetInfo() const { return m_info; };
@@ -21,6 +22,9 @@ public:
 
   void CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail);
   bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
+
+  // caches a skin image as a thumbnail image
+  bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile);
 
 protected:
   
