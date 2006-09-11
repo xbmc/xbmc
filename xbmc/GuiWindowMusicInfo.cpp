@@ -282,16 +282,19 @@ void CGUIWindowMusicInfo::OnGetThumb()
   CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_album.GetTitle(), m_album.GetAlbumPath()));
 
   if (result == "thumb://None")
-  { // delete any cached thumb
-    CFile::Delete(cachedThumb);
-    cachedThumb.Empty();
+  { // cache the default thumb
+    CPicture pic;
+    pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
   }
   else if (result == "thumb://allmusic.com")
     CFile::Cache(thumbFromWeb, cachedThumb);
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))
-    CFile::Cache(result, cachedThumb);
+  {
+    CPicture pic;
+    pic.DoCreateThumbnail(result, cachedThumb);
+  }
 
   m_albumItem.SetThumbnailImage(cachedThumb);
   m_hasUpdatedThumb = true;

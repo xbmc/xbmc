@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "picture.h"
 #include "util.h"
+#include "TextureManager.h"
 
 
 CPicture::CPicture(void)
@@ -100,4 +101,58 @@ int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile,
     return ret;
   }
   return ret;
+}
+
+// caches a skin image as a thumbnail image
+bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destFile)
+{
+  int iImages = g_TextureManager.Load(srcFile, 0);
+  if (iImages > 0)
+  {
+    int width, height;
+    bool linear;
+    LPDIRECT3DPALETTE8 palette;
+    LPDIRECT3DTEXTURE8 texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
+    if (texture)
+    {
+      bool success(false);
+      CPicture pic;
+      if (!linear)
+      { // damn, have to copy it to a linear texture first :(
+        return CreateThumbnailFromSwizzledTexture(texture, width, height, destFile);
+      }
+      else
+      {
+        D3DLOCKED_RECT lr;
+        texture->LockRect(0, &lr, NULL, 0);
+        success = pic.CreateThumbnailFromSurface((BYTE *)lr.pBits, width, height, lr.Pitch, destFile);
+        texture->UnlockRect(0);
+      }
+      g_TextureManager.ReleaseTexture(srcFile, 0);
+      return success;
+    }
+  }
+  return false;
+}
+
+bool CPicture::CreateThumbnailFromSwizzledTexture(LPDIRECT3DTEXTURE8 &texture, int width, int height, const CStdString &thumb)
+{
+  LPDIRECT3DTEXTURE8 linTexture = NULL;
+  if (D3D_OK == g_graphicsContext.Get3DDevice()->CreateTexture(width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &linTexture))
+  {
+    D3DSurface *source;
+    D3DSurface *dest;
+    texture->GetSurfaceLevel(0, &source);
+    linTexture->GetSurfaceLevel(0, &dest);
+    D3DXLoadSurfaceFromSurface(dest, NULL, NULL, source, NULL, NULL, D3DX_FILTER_NONE, 0);
+    D3DLOCKED_RECT lr;
+    dest->LockRect(&lr, NULL, 0);
+    bool success = CreateThumbnailFromSurface((BYTE *)lr.pBits, width, height, lr.Pitch, thumb);
+    dest->UnlockRect();
+    SAFE_RELEASE(source);
+    SAFE_RELEASE(dest);
+    SAFE_RELEASE(linTexture);
+    return success;
+  }
+  return false;
 }
