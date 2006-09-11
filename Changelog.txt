@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-09-2006 fixed: [ 1556094 ] XBMC crash when try play video files from ISO 9660 discs
  - 11-09-2006 fixed: unnecessary calls to update() when marking a movie as watched/unwatched.
  - 11-09-2006 fixed: Consistency: Always remove the rename/delete buttons from the context menu when they're not appropriate in media windows.
  - 11-09-2006 fixed: Radiobutton responded in the opposite way to the <selected> tag.
