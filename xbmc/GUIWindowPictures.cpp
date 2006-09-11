@@ -363,6 +363,8 @@ void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
 
   pSlideShow->Reset();
   AddDir(pSlideShow, m_vecItems.m_strPath);
+  if (g_guiSettings.GetBool("slideshow.shuffle"))
+    pSlideShow->Shuffle();
   pSlideShow->StartSlideShow();
   if (!strPicture.IsEmpty())
     pSlideShow->Select(strPicture);
@@ -399,6 +401,8 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
       pSlideShow->Add(pItem->m_strPath);
     }
   }
+  if (g_guiSettings.GetBool("slideshow.shuffle"))
+    pSlideShow->Shuffle();
   pSlideShow->StartSlideShow();
   if (!strPicture.IsEmpty())
     pSlideShow->Select(strPicture);

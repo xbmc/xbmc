@@ -558,10 +558,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       // get sharper images
       g_graphicsContext.SetScreenFilters(true);
 
-      // shuffle
-      if (g_guiSettings.GetBool("slideshow.shuffle") && m_bSlideShow)
-        Shuffle();
-
       // turn off slideshow if we only have 1 image
       if (m_vecSlides.size() <= 1)
         m_bSlideShow = false;
@@ -710,6 +706,9 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
     AddItems(strPath, bRecursive);
     // ok, now run the slideshow
   }
+  if (g_guiSettings.GetBool("slideshow.shuffle"))
+    Shuffle();
+
   StartSlideShow();
   if (NumSlides())
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
