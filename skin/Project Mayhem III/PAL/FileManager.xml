@@ -31,7 +31,7 @@
    <id>101</id>
    <align>left</align>
    <posx>78</posx>
-   <posy>53</posy>
+   <posy>45</posy>
    <width>270</width>
    <font>font12</font>
    <include>contentpanelslide</include>
@@ -43,7 +43,7 @@
    <id>102</id>
    <align>left</align>
    <posx>367</posx>
-   <posy>53</posy>
+   <posy>45</posy>
    <width>270</width>
    <font>font12</font>
    <include>contentpanelslide</include>
@@ -54,7 +54,7 @@
    <type>label</type>
    <id>12</id>
    <posx>78</posx>
-   <posy>484</posy>
+   <posy>495</posy>
    <label>-</label>
    <font>font12</font>
    <include>contentpanelslide</include>
@@ -65,10 +65,22 @@
    <type>label</type>
    <id>13</id>
    <posx>367</posx>
-   <posy>484</posy>
+   <posy>495</posy>
    <label>-</label>
    <font>font12</font>
    <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>filemanager List Sel Left</description>
+   <type>image</type>
+   <posx>70</posx>
+   <posy>76</posy>
+   <width>290</width>
+   <height>404</height>
+   <texture>filemanager_Panel_Sel.png</texture>
+   <include>contentpanelslide</include>
+   <visible>Control.HasFocus(20)</visible>
   </control>
 
   <control>
@@ -76,9 +88,9 @@
    <type>listcontrol</type>
    <id>20</id>
    <include>listselectedcolor</include>
-   <posx>74</posx>
+   <posx>76</posx>
    <posy>82</posy>
-   <width>284</width>
+   <width>280</width>
    <height>433</height>
    <texturefocus>input-focus.png</texturefocus>
    <texturenofocus>input-nofocus.png</texturenofocus>
@@ -91,13 +103,25 @@
   </control>
 
   <control>
+   <description>filemanager List Sel Right</description>
+   <type>image</type>
+   <posx>361</posx>
+   <posy>76</posy>
+   <width>290</width>
+   <height>404</height>
+   <texture>filemanager_Panel_Sel.png</texture>
+   <include>contentpanelslide</include>
+   <visible>Control.HasFocus(21)</visible>
+  </control>
+
+  <control>
    <description>Right File list</description>
    <type>listcontrol</type>
    <id>21</id>
    <include>listselectedcolor</include>
-   <posx>363</posx>
+   <posx>365</posx>
    <posy>82</posy>
-   <width>284</width>
+   <width>280</width>
    <height>433</height>
    <texturefocus>input-focus.png</texturefocus>
    <texturenofocus>input-nofocus.png</texturenofocus>
