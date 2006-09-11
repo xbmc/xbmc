@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-09-2006 fixed: Thumbnail generation from a surface (eg xbe thumbs) ignored transparency.
  - 11-09-2006 fixed: [ 1555714 ] Thumbnails weren't displayed off the playlists item in Library view.
  - 11-09-2006 fixed: [ 1555436 ] partymode ---> open a playlist failed on single stream "playlists"
  - 11-09-2006 fixed: Slow queuing of library folders (such as a Genre folder) due to recursive database lookups.  "Solved" by just queuing the "all" item under each category.  Sort order will be the same as if you queue the "All" item under the category.
