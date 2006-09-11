@@ -18,6 +18,7 @@
 #include "GUIDialogMediaSource.h"
 #include "PartyModeManager.h"
 #include "utils/GUIInfoManager.h"
+#include "filesystem/MusicDatabaseDirectory.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -821,9 +822,22 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 /// \param pItem The file item to add
 void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems)
 {
-  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP()) // no zip/rar enques thank you!
+  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
     return;
 
+  if (pItem->IsMusicDb() && pItem->m_bIsFolder && !pItem->IsParentFolder())
+  { // we have a music database folder, just grab the "all" item underneath it
+    CMusicDatabaseDirectory dir;
+    if (!dir.ContainsSongs(pItem->m_strPath))
+    { // grab the ALL item in this category
+      // Genres will still require 2 lookups, and queuing the entire Genre folder
+      // will require 3 lookups (genre, artist, album)
+      CFileItem item(pItem->m_strPath + "-1/", true);
+      item.SetCanQueue(true); // workaround for CanQueue() check above
+      AddItemToPlayList(&item, queuedItems);
+      return;
+    }
+  }
   if (pItem->m_bIsFolder || (m_gWindowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
   {
     // Check if we add a locked share
@@ -835,7 +849,6 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
     }
 
     // recursive
-    if (pItem->IsParentFolder()) return ;
     CFileItemList items;
     GetDirectory(pItem->m_strPath, items);
     //OnRetrieveMusicInfo(items);
