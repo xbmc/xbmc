@@ -6,11 +6,9 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 
 
-// NB: This is backwards.  Really, the Alt textures should be rendered when selected.
-// Currently they are rendered when NOT selected.  (Normal textures rendered when selected)
 CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus, const CStdString& strAltTextureNoFocus, const CLabelInfo &labelInfo)
-    : CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strAltTextureFocus, strAltTextureNoFocus, labelInfo)
-    , m_selectButton(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus, strTextureNoFocus, labelInfo)
+    : CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus, strTextureNoFocus, labelInfo)
+    , m_selectButton(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strAltTextureFocus, strAltTextureNoFocus, labelInfo)
 {
   m_bSelected = false;
   m_toggleSelect = 0;
@@ -27,7 +25,7 @@ void CGUIToggleButtonControl::Render()
 
   // ask our infoManager whether we are selected or not...
   if (m_toggleSelect)
-    m_bSelected = !g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
+    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
 
   if (m_bSelected)
   {
