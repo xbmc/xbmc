@@ -179,3 +179,14 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   return true;
 }
 
+bool CMusicDatabaseDirectory::ContainsSongs(const CStdString &path)
+{
+  MUSICDATABASEDIRECTORY::NODE_TYPE type = GetDirectoryChildType(path);
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG) return true;
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS) return true;
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS) return true; 
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_COMPILATIONS_SONGS) return true;
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_TOP100_SONGS) return true;
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG_TOP100) return true;
+  return false;
+}
