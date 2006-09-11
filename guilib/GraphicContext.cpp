@@ -330,17 +330,16 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
   if (NeedReset && m_pd3dDevice)
   {
     m_pd3dDevice->Reset(m_pd3dParams);
+    /* need to clear and preset, otherwise flicker filters won't take effect */
+    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+    m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
   }
   if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
   { // set the mouse resolution
     g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
   }
-  if (m_pd3dDevice)
-  {
-    SetFullScreenViewWindow(res);
-    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-    m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-  }
+
+  SetFullScreenViewWindow(res);
   SetScreenFilters(m_bFullScreenVideo);
   Unlock();
   m_Resolution = res;
