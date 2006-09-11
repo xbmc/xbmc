@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-09-2006 fixed: audio hickup when switching from fullscreen
  - 11-09-2006 fixed: hopefully the kai play/host buttons behave better now.
  - 11-09-2006 fixed: mockup with slideshow screensaver random and general slideshow random.
  - 11-09-2006 fixed: [ 1556094 ] XBMC crash when try play video files from ISO 9660 discs
