@@ -850,17 +850,14 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Mark_UnWatched)
 	  {
 		  MarkUnWatched(iItem);
-		  Update(m_vecItems.m_strPath);
 	  }
 	  else if (btnid == btn_Mark_Watched)
 	  {
 		  MarkWatched(iItem);
-		  Update(m_vecItems.m_strPath);
 	  }
 	  else if (btnid == btn_Update_Title)
 	  {
 		  UpdateVideoTitle(iItem);
-		  Update(m_vecItems.m_strPath);
 	  }
     else if (btnid == btn_Settings)
     { 
@@ -1033,6 +1030,7 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsUnWatched(atol(pItem->m_musicInfoTag.GetURL()));
+  m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
 
@@ -1042,6 +1040,7 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()));
+  m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
 
@@ -1061,6 +1060,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false)) return ;
   m_database.UpdateMovieTitle(atol(pItem->m_musicInfoTag.GetURL()), strInput);
   UpdateVideoTitleXML(detail.m_strIMDBNumber, strInput);
+  m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
 
