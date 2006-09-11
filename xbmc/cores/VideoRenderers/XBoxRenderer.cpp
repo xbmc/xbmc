@@ -1292,8 +1292,7 @@ void CXBoxRenderer::DeleteYV12Texture(int index)
   if( fields[FIELD_FULL][0] == NULL ) return;
 
   if( WaitForSingleObject(m_eventTexturesDone[index], 1000) == WAIT_TIMEOUT )
-    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
-  ResetEvent(m_eventTexturesDone[index]);
+    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);  
 
   /* finish up all textures, and delete them */
   for(int f = 0;f<MAX_FIELDS;f++) {
@@ -1321,13 +1320,15 @@ void CXBoxRenderer::DeleteYV12Texture(int index)
 void CXBoxRenderer::ClearYV12Texture(int index)
 {
   if( WaitForSingleObject(m_eventTexturesDone[index], 1000) == WAIT_TIMEOUT )
-    SetEvent(m_eventTexturesDone[index]);
+    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
 
   YV12Image &im = m_image[index];
 
   fast_memset(im.plane[0], 0,   im.stride[0] * im.height);
   fast_memset(im.plane[1], 128, im.stride[1] * im.height>>im.cshift_y );
   fast_memset(im.plane[2], 128, im.stride[2] * im.height>>im.cshift_y );
+
+  SetEvent(m_eventTexturesDone[index]);
 }
 #if 0
 void CXBoxRenderer::CopyYV12Texture(int dest)
