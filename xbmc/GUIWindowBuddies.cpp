@@ -777,18 +777,21 @@ bool CGUIWindowBuddies::OnAction(const CAction &action)
             return true;
           }
           m_pKaiClient->ExitVector();
-          Enter(CArenaItem(m_pKaiClient->GetCurrentVector()));
           CStdString strGame;
           CArenaItem::GetTier(CArenaItem::Game, CKaiClient::GetInstance()->GetCurrentVector(), strGame);
-          if (!strGame.IsEmpty() && GetArenaSelection())
+          arenaDelimiter = CKaiClient::GetInstance()->GetCurrentVector().ReverseFind('/') + 1;
+          CStdString arenaLabel = CKaiClient::GetInstance()->GetCurrentVector().Mid(arenaDelimiter);
+          CArenaItem* pItem = (CArenaItem*)m_arena.Find(arenaLabel);
+
+          if (!strGame.IsEmpty() && pItem)
           {
-            if (GetArenaSelection()->m_bIsPersonal)
+            if (pItem->m_bIsPersonal)
             {
               CONTROL_ENABLE(CONTROL_BTNPLAY);
             }
             else
             {
-              CONTROL_DISABLE(CONTROL_BTNPLAY);
+              CONTROL_ENABLE(CONTROL_BTNPLAY);
             }
           }
           else
@@ -850,7 +853,7 @@ void CGUIWindowBuddies::UpdatePanel()
   {
     CONTROL_ENABLE(CONTROL_BTNADD);
     CONTROL_ENABLE(CONTROL_BTNREMOVE);
-    CONTROL_ENABLE(CONTROL_BTNSPEEX);
+    //CONTROL_ENABLE(CONTROL_BTNSPEEX);
 
     if (pBuddy->m_bIsOnline)
     {
@@ -1257,9 +1260,13 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
       SET_CONTROL_LABEL(CONTROL_BTNHOST, g_localizeStrings.Get(15025)); // Host
       CStdString strGame;
       CArenaItem::GetTier(CArenaItem::Game, CKaiClient::GetInstance()->GetCurrentVector(), strGame);
-      if (!strGame.IsEmpty() && GetArenaSelection())  
+      INT arenaDelimiter = CKaiClient::GetInstance()->GetCurrentVector().ReverseFind('/') + 1;
+      CStdString arenaLabel = CKaiClient::GetInstance()->GetCurrentVector().Mid(arenaDelimiter);
+      CArenaItem* pItem = (CArenaItem*)m_arena.Find(arenaLabel);
+
+      if (!strGame.IsEmpty() && pItem)  
       {
-        if (GetArenaSelection()->m_bIsPersonal)
+        if (pItem->m_bIsPersonal)
         {
           CONTROL_ENABLE(CONTROL_BTNPLAY);
         }
@@ -1339,8 +1346,8 @@ void CGUIWindowBuddies::Enter(CArenaItem& aArena)
     }
   }
 
-  ChangeState(State::Arenas);
   m_pKaiClient->EnterVector(aArena.m_strVector, aArena.m_strPassword );
+  ChangeState(State::Arenas);
 }
 
 
