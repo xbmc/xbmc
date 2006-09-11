@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-09-2006 fixed: Get Thumb function in Music and Video Info didn't cache the "No thumb" item, so it was reverted next time you opened the dialog.
  - 11-09-2006 fixed: Thumbnail generation from a surface (eg xbe thumbs) ignored transparency.
  - 11-09-2006 fixed: [ 1555714 ] Thumbnails weren't displayed off the playlists item in Library view.
  - 11-09-2006 fixed: [ 1555436 ] partymode ---> open a playlist failed on single stream "playlists"

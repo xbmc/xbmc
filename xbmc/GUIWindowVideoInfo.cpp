@@ -598,16 +598,19 @@ void CGUIWindowVideoInfo::OnGetThumb()
   CStdString cachedThumb(m_movieItem.GetCachedVideoThumb());
 
   if (result == "thumb://None")
-  { // delete any cached thumb
-    CFile::Delete(cachedThumb);
-    cachedThumb.Empty();
+  { // cache the default thumb
+    CPicture pic;
+    pic.CacheSkinImage("defaultVideoBig.png", cachedThumb);
   }
   else if (result == "thumb://IMDb")
     CFile::Cache(thumbFromWeb, cachedThumb);
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))
-    CFile::Cache(result, cachedThumb);
+  {
+    CPicture pic;
+    pic.DoCreateThumbnail(result, cachedThumb);
+  }
 
   m_movieItem.SetThumbnailImage(cachedThumb);
 
