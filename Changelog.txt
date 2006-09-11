@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-09-2006 fixed: Consistency: Always remove the rename/delete buttons from the context menu when they're not appropriate in media windows.
  - 11-09-2006 fixed: Radiobutton responded in the opposite way to the <selected> tag.
  - 11-09-2006 fixed: Made sure you could call the media windows with a removable source as destination.
  - 11-09-2006 fixed: Get Thumb function in Music and Video Info didn't cache the "No thumb" item, so it was reverted next time you opened the dialog.

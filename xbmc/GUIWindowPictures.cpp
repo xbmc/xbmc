@@ -464,16 +464,11 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       btn_Thumbs = pMenu->AddButton(13315);         // Create Thumbnails
     
     int btn_Delete = 0, btn_Rename = 0;             // Delete and Rename
-    if (g_guiSettings.GetBool("filelists.allowfiledeletion"))
+    // add delete/rename functions if supported by the protocol
+    if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !m_vecItems[iItem]->IsReadOnly())
     {
       btn_Delete = pMenu->AddButton(117);           // Delete
       btn_Rename = pMenu->AddButton(118);           // Rename
-      // disable these functions if not supported by the protocol
-      if (m_vecItems[iItem]->IsReadOnly())
-      {
-        pMenu->EnableButton(btn_Delete, false);
-        pMenu->EnableButton(btn_Rename, false);
-      }
     }
     //int btn_Settings = -2;
 
