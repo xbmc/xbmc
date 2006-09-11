@@ -1198,7 +1198,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 10, 5, 100);
   }
 
-  GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NORMAL, LOG_LEVEL_MAX);
+  GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_NORMAL, LOG_LEVEL_MAX);
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
   GetString(pRootElement, "imdbaddress", g_advancedSettings.m_imdbAddress, "akas.imdb.com");
 
