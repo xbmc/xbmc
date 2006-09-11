@@ -1384,19 +1384,19 @@ void CApplication::StartLEDControl(bool switchoff)
     if(CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY)
     {
 #endif
-      if ( (IsPlayingVideo()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO)
+      if ( IsPlayingVideo() && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO))
       {
         //CLog::Log(LOGNOTICE, "LED Control: Playing Video LED is switched OFF!");
         ILED::CLEDControl(LED_COLOUR_OFF);
       }
-      if ( (IsPlayingAudio()) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_MUSIC)
+      if ( IsPlayingAudio() && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_MUSIC))
       {
         //CLog::Log(LOGNOTICE, "LED Control: Playing Music LED is switched OFF!");
         ILED::CLEDControl(LED_COLOUR_OFF);
       }
-      if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("led.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
+      if ( ((IsPlayingVideo() || IsPlayingAudio())) && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO_MUSIC))
       {
-        //CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
+        //CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!"); 
         ILED::CLEDControl(LED_COLOUR_OFF);
       }
 #ifdef AFTER2_0
