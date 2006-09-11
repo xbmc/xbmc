@@ -3583,7 +3583,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       strTran  = arSplit[2].c_str();
       iTrTime  = atoi(arSplit[3].c_str());
     }
-      PWMControl(strRgbA,strRgbB,strTran, iTrTime);
+    CUtil::PWMControl(strRgbA,strRgbB,strTran, iTrTime);
   }
   else
     return -1;
@@ -4510,13 +4510,22 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
   }
   sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
+ILEDSmartxxRGB* s_XXrbg = new ILEDSmartxxRGB();
 bool CUtil::PWMControl(CStdString strRGBa, CStdString strRGBb, CStdString strTransition, int iTrTime)
 {
-  ILEDSmartxxRGB* s_XXrbg = new ILEDSmartxxRGB();
-   if(!s_XXrbg->IsRunning())
-     s_XXrbg->Start();
-   s_XXrbg->SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
-   return true;
+  if(s_XXrbg->IsRunning())
+  {
+    s_XXrbg->Stop();
+    delete s_XXrbg;
+    s_XXrbg = new ILEDSmartxxRGB();
+    s_XXrbg->Start();
+    return s_XXrbg->SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
+  }else {
+    s_XXrbg = new ILEDSmartxxRGB();
+    s_XXrbg->Start();
+    return s_XXrbg->SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
+  }
+  return false;
 }
 
 
