@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 10-09-2006 fixed: smartxx pwm control memory leak
  - 10-09-2006 added: Disable all logging through <loglevel>-1</loglevel>
  - 10-09-2006 fixed: system information used 390k memory all the time (even when not on screen).
  - 10-09-2006 updated: Dutch language file (Thnx to MrNice)
@@ -20,7 +22,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 09-09-2006 changed: LCD Contrast adjustment is not supported by Xecuter3 Modchip
  - 09-09-2006 fixed: LCD SmartXX v3 and OPX Contrast Control method was inaccurately
  - 09-09-2006 changed: ttf fonts where went through unneded charset conversions if width was larger than screen. (also flipped multiple times in hebrew case, could solve the last char jumping issue)
- - 09-09-2006 changed: force mplayer to use libavformat for decoding dvr-ms files, as it handles them better
+ - 09-09-2006 changed: force mplayer to use libavformat for decoding dvr-memms files, as it handles them better
  - 09-09-2006 fixed: comparison for mkv, avi extension where case sensitve in mplayer.
  - 09-09-2006 fixed: ts (or any files with a 2 char extension) files wouldn't play over smb.
  - 09-09-2006 updated: German language file
