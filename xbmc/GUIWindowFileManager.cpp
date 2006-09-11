@@ -1478,23 +1478,6 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
 {
   // check for a passed destination path
   CStdString strDestination = path;
-  CStdString strFTPTMP = g_localizeStrings.Get(1251); // ShareName: XBOX Autodetection
-  if (!g_infoManager.HasAutodetectedXbox())
-    m_rootDir.RemoveShareName(strFTPTMP);
-  //--------------------------------
-  if (g_guiSettings.GetBool("autodetect.onoff"))
-  {
-    if (g_infoManager.HasAutodetectedXbox() && !strDestination.IsEmpty()) // XBOX Autodetection: add a dummy share
-    {
-      m_rootDir.RemoveShareName(strFTPTMP); // Remove a previos share: to be sure to not have double stuff..
-      CShare shareTmp;
-      shareTmp.strName.Format(strFTPTMP);
-      shareTmp.strPath.Format(strDestination,1);
-      m_rootDir.AddShare(shareTmp);
-    }
-  }
-  //--------------------------------
-
   m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
   if (!strDestination.IsEmpty())
   {
@@ -1521,12 +1504,14 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
       m_Directory[0].m_strPath = "";
 
       bool bIsBookmarkName = false;
-      int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyFilesShares, bIsBookmarkName);
+      VECSHARES shares;
+      m_rootDir.GetShares(shares);
+      int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
       if (iIndex > -1)
       {
         // set current directory to matching share
         if (bIsBookmarkName)
-          m_Directory[0].m_strPath = g_settings.m_vecMyFilesShares[iIndex].strPath;
+          m_Directory[0].m_strPath = shares[iIndex].strPath;
         else
           m_Directory[0].m_strPath = strDestination;
         CUtil::RemoveSlashAtEnd(m_Directory[0].m_strPath);

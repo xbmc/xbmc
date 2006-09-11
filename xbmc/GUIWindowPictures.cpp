@@ -79,13 +79,17 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "";
 
           bool bIsBookmarkName = false;
-          int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyPictureShares, bIsBookmarkName);
+
+          SetupShares();
+          VECSHARES shares;
+          m_rootDir.GetShares(shares);
+          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
           if (iIndex > -1)
           {
             bool bDoStuff = true;
-            if (g_settings.m_vecMyPictureShares[iIndex].m_iHasLock == 2)
+            if (shares[iIndex].m_iHasLock == 2)
             {
-              CFileItem item(g_settings.m_vecMyPictureShares[iIndex]);
+              CFileItem item(shares[iIndex]);
               if (!g_passwordManager.IsItemUnlocked(&item,"pictures"))
               {
                 m_vecItems.m_strPath = ""; // no u don't
@@ -97,7 +101,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
             if (bDoStuff)
             {
               if (bIsBookmarkName)
-                m_vecItems.m_strPath=g_settings.m_vecMyPictureShares[iIndex].strPath;
+                m_vecItems.m_strPath=shares[iIndex].strPath;
               else
                 m_vecItems.m_strPath=strDestination;
               CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
