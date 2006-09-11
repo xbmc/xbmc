@@ -80,7 +80,7 @@ void CRGBRenderer::Clear444PTexture()
 {
   D3DLOCKED_RECT lr;
   m_444PTexture[FIELD_FULL]->LockRect(0, &lr, NULL, 0);
-  fast_memset(lr.pBits, 0x00800080, lr.Pitch*m_iSourceHeight);
+  fast_memset(lr.pBits, 0x00000000, lr.Pitch*m_iSourceHeight);
   m_444PTexture[FIELD_FULL]->UnlockRect(0);
 }
 
@@ -198,7 +198,12 @@ void CRGBRenderer::Render(DWORD flags)
 
     if( (flags & RENDER_FLAG_FIELDMASK) == RENDER_FLAG_BOTH || alphaenabled )
     {
-      rs_new = rs;
+      // scale it up to fill the entire texture
+      rs_new.top = 0;
+      rs_new.bottom = m_iSourceHeight;
+      rs_new.left = 0;
+      rs_new.right = m_iSourceWidth;
+
       if( flags & RENDER_FLAG_BOTH )
       { /* if we are rendering any type of field to buffer */
         /* output can't be target output */
