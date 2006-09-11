@@ -787,14 +787,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   {
     if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion")))
     {
-      btn_Delete = pMenu->AddButton(117);
-      btn_Rename = pMenu->AddButton(118);
-
-      // disable these functions if not supported by the protocol
-      if (m_vecItems[iItem]->IsReadOnly())
-      {
-        pMenu->EnableButton(btn_Delete, false);
-        pMenu->EnableButton(btn_Rename, false);
+      if (!m_vecItems[iItem]->IsReadOnly())
+      { // enable only if writeable
+        btn_Delete = pMenu->AddButton(117);
+        btn_Rename = pMenu->AddButton(118);
       }
     }
     if (GetID() == WINDOW_VIDEO_TITLE && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
