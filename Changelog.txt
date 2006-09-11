@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+ - 11-09-2006 fixed: [ 1555716 ] system.profilethumb not displayed
  - 11-09-2006 fixed: led on playback control was broken
  - 10-09-2006 fixed: smartxx pwm control memory leak
  - 10-09-2006 added: Disable all logging through <loglevel>-1</loglevel>
