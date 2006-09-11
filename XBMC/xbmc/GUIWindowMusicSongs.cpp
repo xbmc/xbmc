@@ -87,13 +87,17 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath.Empty();
 
           bool bIsBookmarkName = false;
-          int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyMusicShares, bIsBookmarkName);
+
+          SetupShares();
+          VECSHARES shares;
+          m_rootDir.GetShares(shares);
+          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);
           if (iIndex > -1)
           {
             bool unlocked = true;
-            if (g_settings.m_vecMyMusicShares[iIndex].m_iHasLock == 2)
+            if (shares[iIndex].m_iHasLock == 2)
             {
-              CFileItem item(g_settings.m_vecMyMusicShares[iIndex]);
+              CFileItem item(shares[iIndex]);
               if (!g_passwordManager.IsItemUnlocked(&item,"music"))
               {
                 m_vecItems.m_strPath = ""; // no u don't
@@ -105,7 +109,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
             if (unlocked)
             {
               if (bIsBookmarkName)
-                m_vecItems.m_strPath=g_settings.m_vecMyMusicShares[iIndex].strPath;
+                m_vecItems.m_strPath=shares[iIndex].strPath;
               else
                 m_vecItems.m_strPath=strDestination;
               CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
