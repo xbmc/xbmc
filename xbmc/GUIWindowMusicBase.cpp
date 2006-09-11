@@ -1517,10 +1517,9 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
 void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
 {
-  // for now, ignore PLAY on a playlist if party mode is active
-  //if (g_application.m_bMusicPartyMode)
+  // if partymode is active, we disable it
   if (g_partyModeManager.IsEnabled())
-    return;
+    g_partyModeManager.Disable();
 
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
