@@ -578,13 +578,6 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_PROFILENAME:
     strLabel = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getName();
     break;
-  case SYSTEM_PROFILETHUMB:
-    {
-      strLabel = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getThumb();
-      if (strLabel.IsEmpty())
-        strLabel = "unknown-user.png";
-    }
-    break;
   case XLINK_KAI_USERNAME:
     strLabel = g_guiSettings.GetString("xlinkkai.username");
     break;
@@ -1042,6 +1035,13 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
   }
   else if (info == WEATHER_CONDITIONS)
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
+  else if (info == SYSTEM_PROFILETHUMB)
+  {
+    CStdString thumb = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getThumb();
+    if (thumb.IsEmpty())
+      thumb = "unknown-user.png";
+    return thumb;
+  }
   else if (info == MUSICPLAYER_COVER)
   {
     if (!g_application.IsPlayingAudio()) return "";
