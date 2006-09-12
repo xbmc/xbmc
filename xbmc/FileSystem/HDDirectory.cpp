@@ -114,9 +114,10 @@ bool CHDDirectory::Create(const char* strPath)
   // caller have no idea that a different directory was created
   if (g_guiSettings.GetBool("servers.ftpautofatx"))
   {
+    CStdString strPath2(strPath1);
     CUtil::GetFatXQualifiedPath(strPath1);
-    if( !strPath1.Equals(strPath, true) )
-      CLog::Log(LOGNOTICE,"fatxq: %s -> %s",strPath, strPath1.c_str());
+    if(strPath2 != strPath1)
+      CLog::Log(LOGNOTICE,"fatxq: %s -> %s",strPath2.c_str(), strPath1.c_str());
   }
   
   if(::CreateDirectory(strPath1.c_str(), NULL))
