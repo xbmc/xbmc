@@ -531,7 +531,8 @@ bool CFile::Delete(const CStdString& strFileName)
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get()) return false;
 
-    return pFile->Delete(url);
+    if(pFile->Delete(url))
+      return true;
   }
   catch (const access_violation &e) 
   {
@@ -559,7 +560,8 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get()) return false;
 
-    return pFile->Rename(url, urlnew);
+    if(pFile->Rename(url, urlnew))
+      return true;
   }
   catch (const win32_exception &e) 
   {
