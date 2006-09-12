@@ -539,7 +539,7 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
       if (m_drcAmount)
         ApplyDynamicRangeCompression(xmpAudio.pvBuffer, &data[iBytesCopied], iSize / m_iAudioSkip);
       else
-        fast_memcpy(xmpAudio.pvBuffer, &data[iBytesCopied], iSize / m_iAudioSkip);
+        memcpy(xmpAudio.pvBuffer, &data[iBytesCopied], iSize / m_iAudioSkip);
       //   if (m_pCallback)
       //   {
       //    m_pCallback->OnAudioData(&data[iBytesCopied],iSize/m_iAudioSkip);

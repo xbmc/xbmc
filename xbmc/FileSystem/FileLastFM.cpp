@@ -328,7 +328,7 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
   if (read == 0) return 0;
   char* data = (char*)lpBuf;
   //copy first 3 chars to syncbuffer, might be "YNC"
-  fast_memcpy(m_pSyncBuffer + 3, (char*)lpBuf, 3);
+  memcpy(m_pSyncBuffer + 3, (char*)lpBuf, 3);
   int iSyncPos = -1;
   if ((iSyncPos = SyncReceived(m_pSyncBuffer, 6)) != -1)
   {
@@ -361,7 +361,7 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
     SetEvent(m_hWorkerEvent);
   }
   //copy last 3 chars of data to first three chars of syncbuffer, might be "SYN"
-  fast_memcpy(m_pSyncBuffer, (char*)lpBuf + max(0, read - 3), 3);
+  memcpy(m_pSyncBuffer, (char*)lpBuf + max(0, read - 3), 3);
   return read;
 }
 

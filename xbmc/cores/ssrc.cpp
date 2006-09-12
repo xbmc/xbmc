@@ -29,8 +29,6 @@
 #include "ssrc.h" 
 //#include "SRand.h"
 
-void fast_memcpy(void* d, const void* s, unsigned n);
-
 //--------------------------------------------------------------------------------------
 void Cssrc::cdft(int n, int isgn, REAL *a, int *ip, REAL *w)
 {
@@ -3259,7 +3257,7 @@ int Cssrc::UpSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead,
 int Cssrc::UpSampleFloatIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread)
 {
   float *floatIn = (float *)rawinbuf;
-  fast_memcpy(inbuf + nch*inbuflen, floatIn, nsmplread*nch*sizeof(REAL));
+  memcpy(inbuf + nch*inbuflen, floatIn, nsmplread*nch*sizeof(REAL));
 
   // pad with zeros
   for (int i = nsmplread*nch; i < nch*toberead2; i++)
@@ -3612,7 +3610,7 @@ int Cssrc::DownSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberea
 int Cssrc::DownSampleFloatIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread)
 {
   float *floatIn = (float *)rawinbuf;
-  fast_memcpy(inbuf + nch*inbuflen, floatIn, nsmplread*nch*sizeof(REAL));
+  memcpy(inbuf + nch*inbuflen, floatIn, nsmplread*nch*sizeof(REAL));
 
   // pad with zeros
   for (int i = nsmplread*nch; i < nch*toberead; i++)
@@ -4033,7 +4031,7 @@ bool Cssrc::GetData(unsigned char *pOutData)
   // See if we have data to return
   if (m_iResampleBufferPos >= m_iOutputBufferSize)
   { // Yes.  Copy the data from our buffer
-    fast_memcpy(pOutData, m_pResampleBuffer, m_iOutputBufferSize);
+    memcpy(pOutData, m_pResampleBuffer, m_iOutputBufferSize);
     // Now move any extra data in our resample buffer to the front
     m_iResampleBufferPos -= m_iOutputBufferSize;
     if (m_iResampleBufferPos)
@@ -4104,7 +4102,7 @@ int Cssrc::PutFloatData(float *pInData, int numSamples)
     // save data into our output buffer
     if (iNewSamples)
     {
-      fast_memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
+      memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
       m_iResampleBufferPos += iNewSamples;
     }
     return iAmountToRead;
@@ -4129,7 +4127,7 @@ int Cssrc::PutFloatData(float *pInData, int numSamples)
     // save data into our output buffer
     if (iNewSamples)
     {
-      fast_memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
+      memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
       m_iResampleBufferPos += iNewSamples;
     }
     return iAmountToRead;
@@ -4190,7 +4188,7 @@ int Cssrc::PutData(unsigned char *pInData, int iSize)
     // save data into our output buffer
     if (iNewSamples)
     {
-      fast_memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
+      memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
       m_iResampleBufferPos += iNewSamples;
     }
     return iAmountToRead;
@@ -4215,7 +4213,7 @@ int Cssrc::PutData(unsigned char *pInData, int iSize)
     // save data into our output buffer
     if (iNewSamples)
     {
-      fast_memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
+      memcpy(m_pResampleBuffer + m_iResampleBufferPos, pOutData, iNewSamples);
       m_iResampleBufferPos += iNewSamples;
     }
     return iAmountToRead;

@@ -360,9 +360,9 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
       xmpAudio.pContext = NULL;
 
       if (m_bMute)
-        fast_memset(xmpAudio.pvBuffer, 0, iSize);
+        memset(xmpAudio.pvBuffer, 0, iSize);
       else
-        fast_memcpy(xmpAudio.pvBuffer, &data[iBytesCopied], iSize);
+        memcpy(xmpAudio.pvBuffer, &data[iBytesCopied], iSize);
 
       // no need to do analogue out - analogue should be disabled as we're
       // passing non-PCM streams only using AC97

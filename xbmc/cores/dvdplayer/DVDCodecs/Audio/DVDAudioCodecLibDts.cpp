@@ -249,7 +249,7 @@ int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
   
   m_iDecodedDataSize = 0;
   
-  fast_memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesToCopy);
+  memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesToCopy);
   m_iInputBufferSize += iBytesToCopy;
   BYTE* pInput = m_inputBuffer;
   

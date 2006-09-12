@@ -9,7 +9,6 @@
 #include <XGraphics.h>
 
 
-extern void fast_memcpy(void* d, const void* s, unsigned n);
 
 extern "C" void dllprintf( const char *format, ... );
 
@@ -564,7 +563,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       PALETTEENTRY* pal;
       pPal->Lock((D3DCOLOR**)&pal, 0);
 
-      fast_memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*iPalletSize);
+      memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*iPalletSize);
       for (int i = 0; i < iPalletSize; i++)
         pal[i].peFlags = 0xff; // alpha
       if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
