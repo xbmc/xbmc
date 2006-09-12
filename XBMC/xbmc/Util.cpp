@@ -2143,38 +2143,57 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
 
 void CUtil::PrepareSubtitleFonts()
 {
-  if (g_guiSettings.GetString("subtitles.font").size() == 0) return ;
-  if (g_guiSettings.GetInt("subtitles.height") == 0) return ;
+  CStdString strFontPath = "Q:\\system\\players\\mplayer\\font";
 
-  CStdString strPath, strHomePath, strSearchMask;
-  //  if(!g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
-  strHomePath = "Q:\\system\\players";
-  //  else
-  //    strHomePath = "Q:";
-
-  strPath.Format("%s\\mplayer\\font\\%s\\%i\\",
-                 strHomePath.c_str(),
-                 g_guiSettings.GetString("Subtitles.Font").c_str(), g_guiSettings.GetInt("Subtitles.Height"));
-
-  strSearchMask = strPath + "*.*";
-  WIN32_FIND_DATA wfd;
-  CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
-  if (hFind.isValid())
+  if( IsUsingTTFSubtitles() 
+    || g_guiSettings.GetInt("subtitles.height") == 0 
+    || g_guiSettings.GetString("subtitles.font").size() == 0)
   {
-    do
+    /* delete all files in the font dir, so mplayer doesn't try to load them */
+
+    CStdString strSearchMask = strFontPath + "\\*.*";
+    WIN32_FIND_DATA wfd;
+    CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
+    if (hFind.isValid())
     {
-      if (wfd.cFileName[0] != 0)
+      do
       {
+        if(wfd.cFileName[0] == 0) continue;
+        if( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
+        {
+          CStdString strSource = strFontPath + "\\" + wfd.cFileName;
+          ::DeleteFile(strSource.c_str());
+        }
+      }
+      while (FindNextFile((HANDLE)hFind, &wfd));
+    }
+  }
+  else
+  {
+    CStdString strPath;
+    strPath.Format("%s\\%s\\%i",
+                  strFontPath.c_str(),
+                  g_guiSettings.GetString("Subtitles.Font").c_str(), 
+                  g_guiSettings.GetInt("Subtitles.Height"));
+
+    CStdString strSearchMask = strPath + "\\*.*";
+    WIN32_FIND_DATA wfd;
+    CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
+    if (hFind.isValid())
+    {
+      do
+      {
+        if (wfd.cFileName[0] == 0) continue;
         if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
         {
           CStdString strSource, strDest;
-          strSource.Format("%s%s", strPath.c_str(), wfd.cFileName);
-          strDest.Format("%s\\mplayer\\font\\%s", strHomePath.c_str(), wfd.cFileName);
+          strSource.Format("%s\\%s", strPath.c_str(), wfd.cFileName);
+          strDest.Format("%s\\%s", strFontPath.c_str(), wfd.cFileName);
           ::CopyFile(strSource.c_str(), strDest.c_str(), FALSE);
         }
       }
+      while (FindNextFile((HANDLE)hFind, &wfd));
     }
-    while (FindNextFile((HANDLE)hFind, &wfd));
   }
 }
 
