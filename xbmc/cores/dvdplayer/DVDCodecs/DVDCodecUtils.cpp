@@ -3,9 +3,6 @@
 #include "DVDCodecUtils.h"
 #include "..\..\VideoRenderers\XBoxRenderer.h" // for YV12Image definition
 
-// forward declarations
-void fast_memcpy(void* d, const void* s, unsigned n);
-
 // allocate a new picture (PIX_FMT_YUV420P)
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
 {
@@ -55,9 +52,9 @@ bool CDVDCodecUtils::CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc)
   int size_u = pSrc->iWidth / 2 * pSrc->iHeight / 2;
   int size_v = size_u;
 
-  fast_memcpy(pDst->data[0], pSrc->data[0], size_y);
-  fast_memcpy(pDst->data[1], pSrc->data[1], size_u);
-  fast_memcpy(pDst->data[2], pSrc->data[2], size_v);
+  memcpy(pDst->data[0], pSrc->data[0], size_y);
+  memcpy(pDst->data[1], pSrc->data[1], size_u);
+  memcpy(pDst->data[2], pSrc->data[2], size_v);
 
   return true;
 }
@@ -70,7 +67,7 @@ bool CDVDCodecUtils::CopyPictureToOverlay(YV12Image* pImage, DVDVideoPicture *pS
   int h = pSrc->iHeight;
   for (int y = 0; y < h; y++)
   {
-    fast_memcpy(d, s, w);
+    memcpy(d, s, w);
     s += pSrc->iLineSize[0];
     d += pImage->stride[0];
   }
@@ -80,7 +77,7 @@ bool CDVDCodecUtils::CopyPictureToOverlay(YV12Image* pImage, DVDVideoPicture *pS
   h = pSrc->iHeight >> 1;
   for (int y = 0; y < h; y++)
   {
-    fast_memcpy(d, s, w);
+    memcpy(d, s, w);
     s += pSrc->iLineSize[1];
     d += pImage->stride[1];
   }
@@ -88,7 +85,7 @@ bool CDVDCodecUtils::CopyPictureToOverlay(YV12Image* pImage, DVDVideoPicture *pS
   d = pImage->plane[2];
   for (int y = 0; y < h; y++)
   {
-    fast_memcpy(d, s, w);
+    memcpy(d, s, w);
     s += pSrc->iLineSize[2];
     d += pImage->stride[2];
   }

@@ -4,6 +4,7 @@
 #include "conio.h"
 #include "../../Util.h"
 #include "../../utils/SystemInfo.h"
+#include "../../memutil.h"
 
 /*
 HD44780 or equivalent

@@ -346,7 +346,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
           pPacket->iSize = pkt.size;
           
           // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
-          fast_memcpy(pPacket->pData, pkt.data, pPacket->iSize);
+          memcpy(pPacket->pData, pkt.data, pPacket->iSize);
           
           if (pkt.pts == AV_NOPTS_VALUE) pPacket->pts = DVD_NOPTS_VALUE;
           else

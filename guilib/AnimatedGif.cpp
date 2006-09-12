@@ -28,7 +28,6 @@
 // ****************************************************************************
 
 #include "AnimatedGif.h"
-#include "../xbmc/memutil.h"
 
 
 #pragma pack(1) 
@@ -158,8 +157,8 @@ int CAnimatedGif::GDIPaint (HDC hdc, int x, int y)
 CAnimatedGif& CAnimatedGif::operator = (CAnimatedGif& rhs)
 {
   Init(rhs.Width, rhs.Height, rhs.BPP); // respects virtualization
-  fast_memcpy(Raster, rhs.Raster, BytesPerRow*Height);
-  fast_memcpy((char*)Palette, (char*)rhs.Palette, (1 << BPP)*sizeof(*Palette));
+  memcpy(Raster, rhs.Raster, BytesPerRow*Height);
+  memcpy((char*)Palette, (char*)rhs.Palette, (1 << BPP)*sizeof(*Palette));
   return *this;
 }
 
@@ -431,7 +430,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
           fread((char*)NextImage->Palette, 1, sizeof(COLOR)*(1 << NextImage->BPP), fd);
 
         else     // Otherwise copy Global
-          fast_memcpy(NextImage->Palette, GlobalColorMap, sizeof(COLOR)*(1 << NextImage->BPP));
+          memcpy(NextImage->Palette, GlobalColorMap, sizeof(COLOR)*(1 << NextImage->BPP));
 
         short firstbyte = getbyte(fd); // 1st byte of img block (CodeSize)
 

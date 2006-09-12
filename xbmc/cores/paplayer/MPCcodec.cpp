@@ -153,7 +153,7 @@ int MPCCodec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
   *actualsamples = 0;
   // start by emptying out our frame buffer
   int copied = min(m_sampleBufferSize, numsamples);
-  fast_memcpy(pBuffer, m_sampleBuffer, copied*sizeof(float));
+  memcpy(pBuffer, m_sampleBuffer, copied*sizeof(float));
   numsamples -= copied;
   m_sampleBufferSize -= copied;
   *actualsamples = copied;
@@ -177,7 +177,7 @@ int MPCCodec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
   copied = min(ret * 2, numsamples);
   ASSERT(ret <= FRAMELEN * 2);
 
-  fast_memcpy(pBuffer, m_sampleBuffer, copied*sizeof(float));
+  memcpy(pBuffer, m_sampleBuffer, copied*sizeof(float));
   *actualsamples += copied;
   m_sampleBufferSize = ret * 2 - copied;
   if (m_sampleBufferSize)

@@ -472,7 +472,7 @@ int DTSCodec::Decode(BYTE* pData, int iSize)
       // just copy more data to it
       iLen = m_iFrameSize - (m_pInputBuffer - m_inputBuffer);
       if (iSize < iLen) iLen = iSize;
-      fast_memcpy(m_pInputBuffer, pData, iLen);
+      memcpy(m_pInputBuffer, pData, iLen);
       
       m_pInputBuffer += iLen;
       pData          += iLen;

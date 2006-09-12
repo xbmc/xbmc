@@ -89,7 +89,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
     
     if (iBytesToCopy > iBytesFree) iBytesToCopy = iBytesFree;
     
-    fast_memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesToCopy);
+    memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesToCopy);
     m_iInputBufferSize += iBytesToCopy;
     
     // if the caller does not supply enough data, return
@@ -138,7 +138,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
             if (m_frameInfo.samples > 0)
             {
               int iSize = m_frameInfo.samples * sizeof(short);
-              fast_memcpy(m_decodedData + m_iDecodedDataSize, pSamples, iSize);
+              memcpy(m_decodedData + m_iDecodedDataSize, pSamples, iSize);
               m_iDecodedDataSize += iSize;
               
               // check for the next run if can can save all decoded data

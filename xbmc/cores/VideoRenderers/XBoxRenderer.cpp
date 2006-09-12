@@ -176,8 +176,8 @@ void CXBoxRenderer::CopyAlpha(int w, int h, unsigned char* src, unsigned char *s
 {
   for (int y = 0; y < h; ++y)
   {
-    fast_memcpy(dst, src, w);
-    fast_memcpy(dsta, srca, w);
+    memcpy(dst, src, w);
+    memcpy(dsta, srca, w);
     src += srcstride;
     srca += srcstride;
     dst += dststride;
@@ -289,8 +289,8 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   )
   {
     //clear the textures
-    fast_memset(lr.pBits, 0, lr.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
-    fast_memset(lra.pBits, 0, lra.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
+    memset(lr.pBits, 0, lr.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
+    memset(lra.pBits, 0, lra.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
     //draw the osd/subs
     CopyAlpha(w, h, src, srca, stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
   }
@@ -871,7 +871,7 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
   s = src[p];
   for (i = 0;i < h;i++)
   {
-    fast_memcpy(d, s, w);
+    memcpy(d, s, w);
     s += stride[p];
     d += im.stride[p];
   }
@@ -885,7 +885,7 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
   s = src[p];
   for (i = 0;i < h;i++)
   {
-    fast_memcpy(d, s, w);
+    memcpy(d, s, w);
     s += stride[p];
     d += im.stride[p];
   }
@@ -896,7 +896,7 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
   s = src[p];
   for (i = 0;i < h;i++)
   {
-    fast_memcpy(d, s, w);
+    memcpy(d, s, w);
     s += stride[p];
     d += im.stride[p];
   }
@@ -1324,9 +1324,9 @@ void CXBoxRenderer::ClearYV12Texture(int index)
 
   YV12Image &im = m_image[index];
 
-  fast_memset(im.plane[0], 0,   im.stride[0] * im.height);
-  fast_memset(im.plane[1], 128, im.stride[1] * im.height>>im.cshift_y );
-  fast_memset(im.plane[2], 128, im.stride[2] * im.height>>im.cshift_y );
+  memset(im.plane[0], 0,   im.stride[0] * im.height);
+  memset(im.plane[1], 128, im.stride[1] * im.height>>im.cshift_y );
+  memset(im.plane[2], 128, im.stride[2] * im.height>>im.cshift_y );
 
   SetEvent(m_eventTexturesDone[index]);
 }
@@ -1337,19 +1337,19 @@ void CXBoxRenderer::CopyYV12Texture(int dest)
   D3DLOCKED_RECT lr_src, lr_dest;
   m_YTexture[src]->LockRect(0, &lr_src, NULL, 0);
   m_YTexture[dest]->LockRect(0, &lr_dest, NULL, 0);
-  fast_memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*m_iSourceHeight);
+  memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*m_iSourceHeight);
   m_YTexture[dest]->UnlockRect(0);
   m_YTexture[src]->UnlockRect(0);
 
   m_UTexture[src]->LockRect(0, &lr_src, NULL, 0);
   m_UTexture[dest]->LockRect(0, &lr_dest, NULL, 0);
-  fast_memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*(m_iSourceHeight / 2));
+  memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*(m_iSourceHeight / 2));
   m_UTexture[dest]->UnlockRect(0);
   m_UTexture[src]->UnlockRect(0);
 
   m_VTexture[src]->LockRect(0, &lr_src, NULL, 0);
   m_VTexture[dest]->LockRect(0, &lr_dest, NULL, 0);
-  fast_memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*(m_iSourceHeight / 2));
+  memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*(m_iSourceHeight / 2));
   m_VTexture[dest]->UnlockRect(0);
   m_VTexture[src]->UnlockRect(0);
 }

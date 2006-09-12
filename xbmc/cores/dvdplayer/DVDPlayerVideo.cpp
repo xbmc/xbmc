@@ -327,7 +327,7 @@ void CDVDPlayerVideo::Process()
         {
 
           // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
-          fast_memset(&picture, 0, sizeof(DVDVideoPicture));
+          memset(&picture, 0, sizeof(DVDVideoPicture));
           if (m_pVideoCodec->GetPicture(&picture))
           {
             picture.iGroupId = pPacket->iGroupId;
