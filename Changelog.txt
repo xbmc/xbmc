@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 12-09-2006 fixed: Toggle button's that switch from code (not skin) were reversed due to changes yesterday.
+ - 12-09-2006 fixed: mplayer would stall for 2 secs on seek when in gui.
  - 11-09-2006 fixed: audio hickup when switching from fullscreen
  - 11-09-2006 fixed: hopefully the kai play/host buttons behave better now.
  - 11-09-2006 fixed: mockup with slideshow screensaver random and general slideshow random.
