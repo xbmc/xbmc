@@ -3,6 +3,7 @@
 #include "../lib/UnrarXLib/rar.hpp"
 #include "../util.h"
 #include "../utils/singlelock.h"
+#include "../fileitem.h"
 
 #include <set>
 
@@ -78,20 +79,34 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     }
   }
 
-  if (CheckFreeSpace(strDir.Left(3)) < iSize)
+  if (CheckFreeSpace(strDir.Left(3)) < iSize && iRes != 2)
   {
     ClearCache();
     if (CheckFreeSpace(strDir.Left(3)) < iSize)
     {
-      CLog::Log(LOGERROR,"rarmanager::cache out of disk space!");
-      return false;
+      // wipe at will
+      CFileItemList items;
+      CDirectory::GetDirectory(g_advancedSettings.m_cachePath,items);
+      items.Sort(SORT_METHOD_SIZE, SORT_ORDER_DESC);
+      while (items.Size() && CheckFreeSpace(strDir.Left(3)) < iSize)
+      {
+        CStdString strPath = items[0]->m_strPath;
+        if (!items[0]->m_bIsFolder)
+          if (!CFile::Delete(items[0]->m_strPath))
+            break;
+        
+        items.Remove(0);
+      }
+      if (!items.Size())
+        return false;
     }
   }
 
   CStdString strPath = strPathInRar;
   strPath.Replace('/', '\\');
 
-  iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPath.c_str()),NULL);
+  if (iRes != 2)
+    iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPath.c_str()),NULL);
   if (iRes == 0)
   {
     CLog::Log(LOGERROR,"failed to extract file: %s",strPathInRar.c_str());
@@ -117,10 +132,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     pFile = &(j->second.second[j->second.second.size()-1]);
     pFile->m_iUsed = 1;
   }
-  if (CUtil::HasSlashAtEnd(strDir))
-    pFile->m_strCachedPath = strDir+CUtil::GetFileName(strPathInRar);
-  else
-    pFile->m_strCachedPath = strDir+"\\"+CUtil::GetFileName(strPathInRar);
+  CUtil::AddFileToFolder(strDir,CUtil::GetFileName(strPathInRar),pFile->m_strCachedPath); // GetFileName
   CUtil::GetFatXQualifiedPath(pFile->m_strCachedPath);
   pFile->m_bAutoDel = (bOptions & EXFILE_AUTODELETE) != 0;
 	strPathInCache = pFile->m_strCachedPath;
