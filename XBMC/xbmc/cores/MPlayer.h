@@ -173,6 +173,7 @@ public:
 protected:
   int GetCacheSize(bool bFileOnHD, bool bFileOnISO, bool bFileOnUDF, bool bFileOnInternet, bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD);
   CStdString GetDVDArgument(const CStdString& strFile);
+  void WaitOnCommand();
   bool load();
   virtual void OnStartup();
   virtual void OnExit();
