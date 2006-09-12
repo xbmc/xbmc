@@ -109,10 +109,22 @@ bool CHDDirectory::Create(const char* strPath)
   g_charsetConverter.utf8ToStringCharset(strPath1);
   if (!CUtil::HasSlashAtEnd(strPath1))
     strPath1 += '\\';
+
+  // okey this is really evil, since the create will succed
+  // caller have no idea that a different directory was created
   if (g_guiSettings.GetBool("servers.ftpautofatx"))
+  {
     CUtil::GetFatXQualifiedPath(strPath1);
-  CLog::Log(LOGDEBUG,"fatxq: %s",strPath1.c_str());
-  return ::CreateDirectory(strPath1.c_str(), NULL) ? true : false;
+    if( !strPath1.Equals(strPath, true) )
+      CLog::Log(LOGNOTICE,"fatxq: %s -> %s",strPath, strPath1.c_str());
+  }
+  
+  if(::CreateDirectory(strPath1.c_str(), NULL))
+    return true;
+  else if(GetLastError() == ERROR_ALREADY_EXISTS)
+    return true;
+
+  return false;
 }
 
 bool CHDDirectory::Remove(const char* strPath)
