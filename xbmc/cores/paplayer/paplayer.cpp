@@ -972,7 +972,7 @@ void PAPlayer::StreamCallback( LPVOID pPacketContext )
 
   if (m_pCallback)
   { // copy into our visualisation buffer.
-    // can't use a fast_memcpy() here due to the context (will crash otherwise)
+    // can't use a memcpy() here due to the context (will crash otherwise)
     memcpy(m_visBuffer, pkt->packet, pkt->length);
     m_visBufferLength = pkt->length;
   }

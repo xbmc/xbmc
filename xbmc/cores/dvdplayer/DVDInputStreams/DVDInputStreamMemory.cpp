@@ -51,7 +51,7 @@ int CDVDInputStreamMemory::Read(BYTE* buf, int buf_size)
   
   if (iBytesToCopy > 0)
   {
-    fast_memcpy(buf, m_pData + m_iDataPos, iBytesToCopy);
+    memcpy(buf, m_pData + m_iDataPos, iBytesToCopy);
     m_iDataPos += iBytesToCopy;
   }
   

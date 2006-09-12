@@ -101,7 +101,7 @@ int CDVDSubtitleStream::Read(BYTE* buf, int buf_size)
     
     if (iBytesToRead > iBytesLeft) iBytesToRead = iBytesLeft;
     
-    fast_memcpy(buf, m_buffer + m_iBufferPos, iBytesToRead);
+    memcpy(buf, m_buffer + m_iBufferPos, iBytesToRead);
     m_iBufferPos += iBytesToRead;
     m_iBufferSize -= iBytesToRead;
     
@@ -218,7 +218,7 @@ char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
         m_iBufferPos += iStringLength;
         m_iBufferSize -= iStringLength;
         
-        fast_memcpy(pBuffer, pLineStart, iStringLength);
+        memcpy(pBuffer, pLineStart, iStringLength);
 
         pBuffer += iStringLength;
         pBuffer[0] = 0;
@@ -233,7 +233,7 @@ char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
           return NULL;
         }
         
-        fast_memcpy(pBuffer, m_buffer + m_iBufferPos, m_iBufferSize);
+        memcpy(pBuffer, m_buffer + m_iBufferPos, m_iBufferSize);
         m_iBufferPos += m_iBufferSize;
         m_iBufferSize -= m_iBufferSize;
         pBuffer += m_iBufferSize;
