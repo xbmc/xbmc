@@ -1637,10 +1637,18 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   // This routine gets rid of any "\\"'s at the start of the path.
   // Should this be the case?
   vector<CStdString> tokens;
-  CStdString strBasePath;
+  CStdString strBasePath, strFileName;
   strFileNameAndPath.Replace("/","\\");
-  CUtil::GetDirectory(strFileNameAndPath,strBasePath);
-  CStdString strFileName = CUtil::GetFileName(strFileNameAndPath);
+  if(strFileNameAndPath.Right(1) == "\\")
+  {
+    strBasePath = strFileNameAndPath;
+    strFileName = "";
+  }
+  else
+  {
+    CUtil::GetDirectory(strFileNameAndPath,strBasePath);
+    strFileName = CUtil::GetFileName(strFileNameAndPath);
+  }
   CUtil::Tokenize(strBasePath,tokens,"\\");
   if (tokens.empty())
     return; // nothing to do here (invalid path)
@@ -1670,6 +1678,8 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
       strNoExt.erase(strNoExt.size()-1);
     strFileNameAndPath += "\\"+strNoExt+strExtension;
   }
+  else if( strBasePath.Right(1) == "\\" )
+    strFileNameAndPath += "\\";
 }
 
 void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
