@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-09-2006 changed: make xbmc log when a delete or rename fails
  - 12-09-2006 fixed: mplayer would stall for 2 secs on seek when in gui.
  - 11-09-2006 fixed: audio hickup when switching from fullscreen
  - 11-09-2006 fixed: hopefully the kai play/host buttons behave better now.

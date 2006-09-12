@@ -71,7 +71,8 @@ bool CDirectory::Create(const CStdString& strPath)
   {
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
     if (pDirectory.get())
-      return pDirectory->Create(strPath.c_str());
+      if(pDirectory->Create(strPath.c_str()))
+        return true;
   }
   catch (const win32_exception &e) 
   {
@@ -111,7 +112,8 @@ bool CDirectory::Remove(const CStdString& strPath)
   {
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
     if (pDirectory.get())
-      return pDirectory->Remove(strPath.c_str());
+      if(pDirectory->Remove(strPath.c_str()))
+        return true;
   }
   catch (const win32_exception &e) 
   {
