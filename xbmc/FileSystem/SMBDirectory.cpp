@@ -207,10 +207,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
     
     if (fd < 0)
     {
-      int error = errno;
-      if (error == ENODEV || error == ENETUNREACH || error == WSAETIMEDOUT) nt_error = NT_STATUS_INVALID_COMPUTER_NAME;
-      else if(error == WSAECONNREFUSED || error == WSAECONNABORTED) nt_error = NT_STATUS_CONNECTION_REFUSED;
-      else nt_error = map_nt_error_from_unix(error);
+      nt_error = smb.ConvertUnixToNT(errno);
 
       // if we have an 'invalid handle' error we don't display the error
       // because most of the time this means there is no cdrom in the server's
@@ -287,6 +284,10 @@ bool CSMBDirectory::Create(const char* strPath)
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
   int result = smbc_mkdir(strFileName.c_str(), 0);
+
+  if(result != 0)
+    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+
   return (result == 0 || EEXIST == result);
 }
 
@@ -300,6 +301,10 @@ bool CSMBDirectory::Remove(const char* strPath)
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
   int result = smbc_rmdir(strFileName.c_str());
+
+  if(result != 0)
+    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+
   return (result == 0);
 }
 

@@ -40,6 +40,7 @@ public:
   CStdString URLEncode(const CStdString &value);
   CStdString URLEncode(const CURL &url);
 
+  DWORD ConvertUnixToNT(int error);
 private:
   SMBCCTX *m_context;
   CStdString m_strLastHost;
@@ -75,7 +76,7 @@ public:
 
 protected:
   CURL m_url;
-  bool IsValidFile(const CStdString& strFileName);
+  bool IsValidFile(const CStdString& strFileName);  
   __int64 m_fileSize;
   bool m_bBinary;
   int m_fd;
