@@ -1550,15 +1550,7 @@ void CMPlayer::SeekRelativeTime(int iSeconds)
   CStdString strCommand;
   strCommand.Format("seek %+i 0",iSeconds);
   mplayer_SlaveCommand(strCommand.c_str());
-
-  //We are in the normal mplayer thread, return as otherwise we would
-  //hardlock waiting for those events
-  if( GetCurrentThreadId() == ThreadId() ) return;
-
-  //Wait till process has finished twice, 
-  //otherwise we can't be sure the seek has finished
-  m_evProcessDone.WaitMSec(1000);
-  m_evProcessDone.WaitMSec(1000);
+  WaitOnCommand();
 }
 
 void CMPlayer::ToggleFrameDrop()
@@ -1740,15 +1732,7 @@ void CMPlayer::SeekPercentage(float percent)
   if (percent < 0) percent = 0;
 
   mplayer_setPercentage( (int)percent );
-
-  //We are in the normal mplayer thread, return as otherwise we would
-  //hardlock waiting for those events
-  if( GetCurrentThreadId() == ThreadId() ) return;
-
-  //Wait till process has finished twice, 
-  //otherwise we can't be sure the seek has finished
-  m_evProcessDone.WaitMSec(1000);
-  m_evProcessDone.WaitMSec(1000);
+  WaitOnCommand();
 }
 
 float CMPlayer::GetPercentage()
@@ -1819,15 +1803,13 @@ void CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 
 void CMPlayer::SetSubtitle(int iStream)
 {
-  mplayer_setSubtitle(iStream);
+  mplayer_setSubtitle(iStream);  
   options.SetSubtitleStream(iStream);
   g_stSettings.m_currentVideoSettings.m_SubtitleStream = iStream;
 
+  WaitOnCommand();
   if( CUtil::IsUsingTTFSubtitles() )
   { // wait two frames to make sure subtitle change has been handled
-    m_evProcessDone.WaitMSec(1000);
-    m_evProcessDone.WaitMSec(1000);
-
     SetSubtitleVisible(GetSubtitleVisible());
   }
 };
@@ -1903,15 +1885,7 @@ void CMPlayer::SeekTime(__int64 iTime)
 {
   mplayer_setTimeMs(iTime);
   g_infoManager.m_performingSeek = false;
-
-  //We are in the normal mplayer thread, return as otherwise we would
-  //hardlock waiting for those events
-  if( GetCurrentThreadId() == ThreadId() ) return;
-
-  //Wait till process has finished twice, 
-  //otherwise we can't be sure the seek has finished
-  m_evProcessDone.WaitMSec(1000);
-  m_evProcessDone.WaitMSec(1000);
+  WaitOnCommand();
 }
 
 //Time in milleseconds
@@ -2076,4 +2050,19 @@ bool CMPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   return false;
 
   
+}
+
+void CMPlayer::WaitOnCommand()
+{
+  //We are in the normal mplayer thread, return as otherwise we would
+  //hardlock waiting for those events
+  if( GetCurrentThreadId() == ThreadId() ) return;
+
+  //If we hold graphiccontext, this may stall mplayer process
+  if( OwningCriticalSection(g_graphicsContext) ) return;
+
+  //Wait till process has finished twice, 
+  //otherwise we can't be sure the seek has finished
+  m_evProcessDone.WaitMSec(1000);
+  m_evProcessDone.WaitMSec(1000);
 }
