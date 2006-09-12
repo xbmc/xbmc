@@ -188,6 +188,16 @@ CStdString CSMB::URLEncode(const CStdString &value)
 }
 
 
+DWORD CSMB::ConvertUnixToNT(int error)
+{
+  DWORD nt_error;
+  if (error == ENODEV || error == ENETUNREACH || error == WSAETIMEDOUT) nt_error = NT_STATUS_INVALID_COMPUTER_NAME;
+  else if(error == WSAECONNREFUSED || error == WSAECONNABORTED) nt_error = NT_STATUS_CONNECTION_REFUSED;
+  else nt_error = map_nt_error_from_unix(error);
+
+  return nt_error;
+}
+
 CSMB smb;
 
 CFileSMB::CFileSMB()
@@ -447,6 +457,10 @@ bool CFileSMB::Delete(const CURL& url)
   CSingleLock lock(smb);
   smb.Init();
   int result = smbc_unlink(strFile.c_str());
+
+  if(result != 0)
+    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+
   return (result == 0);
 }
 
@@ -458,6 +472,10 @@ bool CFileSMB::Rename(const CURL& url, const CURL& urlnew)
   CSingleLock lock(smb);
   smb.Init();
   int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
+
+  if(result != 0)
+    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+
   return (result == 0);
 }
 

@@ -897,13 +897,8 @@ bool CGUIWindowFileManager::RenameFile(const CStdString &strFile)
   {
     strPath += strFileName;
     
-    CStdString strLog;
-    strLog.Format("FileManager: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
-    OutputDebugString(strLog.c_str());
-    CLog::Log(LOGINFO,"%s",strLog.c_str());
-
-    CFile::Rename(strFileAndPath.c_str(), strPath.c_str());
-    return true;
+    CLog::Log(LOGINFO,"FileManager: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
+    return CFile::Rename(strFileAndPath.c_str(), strPath.c_str());
   }
   return false;
 }
