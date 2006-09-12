@@ -80,7 +80,7 @@ void CRGBRenderer::Clear444PTexture()
 {
   D3DLOCKED_RECT lr;
   m_444PTexture[FIELD_FULL]->LockRect(0, &lr, NULL, 0);
-  fast_memset(lr.pBits, 0x00000000, lr.Pitch*m_iSourceHeight);
+  memset(lr.pBits, 0x00000000, lr.Pitch*m_iSourceHeight);
   m_444PTexture[FIELD_FULL]->UnlockRect(0);
 }
 

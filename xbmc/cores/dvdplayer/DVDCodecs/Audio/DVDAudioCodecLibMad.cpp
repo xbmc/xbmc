@@ -80,7 +80,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
   if (iBytesUsed > iSize) iBytesUsed = iSize;
   
   // copy data into our buffer for decoding
-  fast_memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesUsed);
+  memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesUsed);
   m_iInputBufferSize += iBytesUsed;
   
   

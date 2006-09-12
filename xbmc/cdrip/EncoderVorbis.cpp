@@ -114,7 +114,7 @@ int CEncoderVorbis::Encode(int nNumBytesRead, BYTE* pbtStream)
     float **buffer = m_VorbisDll.vorbis_analysis_buffer(&m_sVorbisDspState, 1024);
 
     /* uninterleave samples */
-    fast_memcpy(m_pBuffer, pbtStream, block);
+    memcpy(m_pBuffer, pbtStream, block);
     pbtStream += 4096;
     LONG iSamples = block / (2 * 2);
     signed char* buf = (signed char*) m_pBuffer;

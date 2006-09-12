@@ -25,7 +25,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
 
   try 
   {    
-    fast_memset(pPacket, 0, sizeof(CDVDDemux::DemuxPacket));
+    memset(pPacket, 0, sizeof(CDVDDemux::DemuxPacket));
     
     if (iDataSize > 0)
     {
