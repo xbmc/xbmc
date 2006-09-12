@@ -45,13 +45,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#if defined(_XBOX)
-extern void fast_memcpy(void* d, const void* s, unsigned n);
-#else
-#define fast_memcpy memcpy
-#endif
-
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CControlSocket
@@ -348,8 +341,8 @@ BOOL CControlSocket::Send(LPCTSTR str)
 	{
 		char *tmp = m_pSendBuffer;
 		m_pSendBuffer = new char[m_nSendBufferLen + len];
-		fast_memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
-		fast_memcpy(m_pSendBuffer+m_nSendBufferLen, buffer, len);
+		memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
+		memcpy(m_pSendBuffer+m_nSendBufferLen, buffer, len);
 		delete [] tmp;
 		m_nSendBufferLen += len;
 		delete [] buffer;
@@ -362,15 +355,15 @@ BOOL CControlSocket::Send(LPCTSTR str)
 		if (!m_pSendBuffer)
 		{
 			m_pSendBuffer = new char[len];
-			fast_memcpy(m_pSendBuffer, buffer, len);
+			memcpy(m_pSendBuffer, buffer, len);
 			m_nSendBufferLen = len;
 		}
 		else
 		{
 			char *tmp = m_pSendBuffer;
 			m_pSendBuffer = new char[m_nSendBufferLen + len];
-			fast_memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
-			fast_memcpy(m_pSendBuffer+m_nSendBufferLen, buffer, len);
+			memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
+			memcpy(m_pSendBuffer+m_nSendBufferLen, buffer, len);
 			delete [] tmp;
 			m_nSendBufferLen += len;
 		}
@@ -403,15 +396,15 @@ BOOL CControlSocket::Send(LPCTSTR str)
 		if (!m_pSendBuffer)
 		{
 			m_pSendBuffer = new char[len-res];
-			fast_memcpy(m_pSendBuffer, buffer+res, len-res);
+			memcpy(m_pSendBuffer, buffer+res, len-res);
 			m_nSendBufferLen = len-res;
 		}
 		else
 		{
 			char *tmp = m_pSendBuffer;
 			m_pSendBuffer = new char[m_nSendBufferLen + len - res];
-			fast_memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
-			fast_memcpy(m_pSendBuffer+m_nSendBufferLen, buffer+res, len-res);
+			memcpy(m_pSendBuffer, tmp, m_nSendBufferLen);
+			memcpy(m_pSendBuffer+m_nSendBufferLen, buffer+res, len-res);
 			delete [] tmp;
 			m_nSendBufferLen += len-res;
 		}

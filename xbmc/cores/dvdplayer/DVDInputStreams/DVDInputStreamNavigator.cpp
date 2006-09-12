@@ -225,7 +225,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       {
         // We have received a regular block of the currently playing MPEG stream.
         // buf contains the data and len its length (obviously!) (which is always 2048 bytes btw)
-        fast_memcpy(dest_buffer, buf, len);
+        memcpy(dest_buffer, buf, len);
         *read = len;
         iNavresult = NAVRESULT_DATA;
       }
