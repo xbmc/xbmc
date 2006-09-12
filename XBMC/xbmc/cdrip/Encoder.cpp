@@ -58,7 +58,7 @@ int CEncoder::WriteStream(LPCVOID pBuffer, DWORD iBytes)
   if ((WRITEBUFFER_SIZE - m_dwWriteBufferPointer) > iBytes)
   {
     // writebuffer is big enough to fit data
-    fast_memcpy(m_btWriteBuffer + m_dwWriteBufferPointer, pBuffer, iBytes);
+    memcpy(m_btWriteBuffer + m_dwWriteBufferPointer, pBuffer, iBytes);
     m_dwWriteBufferPointer += iBytes;
     return iBytes;
   }
@@ -73,7 +73,7 @@ int CEncoder::WriteStream(LPCVOID pBuffer, DWORD iBytes)
 
     DWORD dwBytesRemaining = iBytes - (WRITEBUFFER_SIZE - m_dwWriteBufferPointer);
     // fill up our write buffer and write it to disk
-    fast_memcpy(m_btWriteBuffer + m_dwWriteBufferPointer, pBuffer, (WRITEBUFFER_SIZE - m_dwWriteBufferPointer));
+    memcpy(m_btWriteBuffer + m_dwWriteBufferPointer, pBuffer, (WRITEBUFFER_SIZE - m_dwWriteBufferPointer));
     FileWrite(m_btWriteBuffer, WRITEBUFFER_SIZE);
     m_dwWriteBufferPointer = 0;
 
@@ -88,7 +88,7 @@ int CEncoder::WriteStream(LPCVOID pBuffer, DWORD iBytes)
     else
     {
       // copy remaining bytes to our currently empty writebuffer
-      fast_memcpy(m_btWriteBuffer, pbtRemaining, dwBytesRemaining);
+      memcpy(m_btWriteBuffer, pbtRemaining, dwBytesRemaining);
       m_dwWriteBufferPointer = dwBytesRemaining;
       return iBytes;
     }

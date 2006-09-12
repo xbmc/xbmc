@@ -96,13 +96,13 @@ CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, __int64 pts)
 
     BYTE* newdata = new BYTE[pSPUData->iAllocatedSize];
     // copy over data
-    fast_memcpy(newdata, pSPUData->data, pSPUData->iSize);
+    memcpy(newdata, pSPUData->data, pSPUData->iSize);
     delete[] pSPUData->data;
     pSPUData->data = newdata;
   }
 
   // add new data
-  fast_memcpy(pSPUData->data + pSPUData->iSize, data, iSize);
+  memcpy(pSPUData->data + pSPUData->iSize, data, iSize);
   pSPUData->iSize += iSize;
 
   if (pSPUData->iNeededSize - pSPUData->iSize == 1) // to make it even

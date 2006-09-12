@@ -151,7 +151,7 @@ void CAudioDecoder::PrefixData(void *data, unsigned int size)
     return;
   }
   m_outputBufferSize = min(PACKET_SIZE, size);
-  fast_memcpy(m_outputBuffer, data, m_outputBufferSize);
+  memcpy(m_outputBuffer, data, m_outputBufferSize);
   if (m_outputBufferSize != size)
     CLog::Log(LOGWARNING, "CAudioDecoder::PrefixData - losing %i bytes of audio data in track transistion", size - m_outputBufferSize);
 }

@@ -54,7 +54,7 @@ void CComboRenderer::ClearYUY2Texture(int index)
   D3DLOCKED_RECT lr;
   // Clear our RGB/YUY2 texture
   m_RGBSurface[index]->LockRect(&lr, NULL, 0);
-  fast_memset(lr.pBits, 0x00800080, lr.Pitch*m_iSourceHeight);
+  memset(lr.pBits, 0x00800080, lr.Pitch*m_iSourceHeight);
   m_RGBSurface[index]->UnlockRect();
 }
 

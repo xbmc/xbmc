@@ -1,7 +1,6 @@
 #include "include.h"
 #include "GUISound.h"
 #include "audiocontext.h"
-#include "../xbmc/memutil.h"
 #include "../xbmc/settings.h"
 
 typedef struct
@@ -136,7 +135,7 @@ bool CGUISound::FillBuffer(LPBYTE pbData, int iLength)
 
   if (SUCCEEDED(m_soundBuffer->Lock(0, 0, &lpvWrite, &dwLength, NULL, NULL, DSBLOCK_ENTIREBUFFER)))
   {
-    fast_memcpy(lpvWrite, pbData, iLength);
+    memcpy(lpvWrite, pbData, iLength);
     m_soundBuffer->Unlock(lpvWrite, dwLength, NULL, 0);
     return true;
   }

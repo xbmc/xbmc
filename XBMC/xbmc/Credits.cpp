@@ -456,7 +456,7 @@ static HRESULT InitLogo()
 
   pIBuffer = (LPDIRECT3DINDEXBUFFER8)(ResourceHeader + credits_XBMCIBuffer_OFFSET);
   WORD* IdxBuf = new WORD[NumFaces * 3]; // needs to be in cached memory
-  fast_memcpy(IdxBuf, (char*)ResourceData + pIBuffer->Data, NumFaces * 3 * sizeof(WORD));
+  memcpy(IdxBuf, (char*)ResourceData + pIBuffer->Data, NumFaces * 3 * sizeof(WORD));
   pIBuffer->Data = (DWORD)IdxBuf;
 
   pNormalMap = (LPDIRECT3DTEXTURE8)(ResourceHeader + credits_NormMap_OFFSET);
