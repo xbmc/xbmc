@@ -448,7 +448,8 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     strYear.Format(" (%i)", movies[i].m_iYear);
     strItem += strYear;
     CFileItem *pItem = new CFileItem(strItem);
-    pItem->m_strPath = movies[i].m_strSearchString;
+    pItem->m_strPath = movies[i].m_strFileNameAndPath;
+    pItem->m_musicInfoTag.SetURL(movies[i].m_strSearchString);
     items.Add(pItem);
   }
 }
@@ -457,7 +458,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
 /// \param pItem Search result item
 void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
-  long lMovieId = atol(pItem->m_strPath);
+  long lMovieId = atol(pItem->m_musicInfoTag.GetURL().c_str());
   CIMDBMovie movieDetails;
   m_database.GetMovieInfo(pItem->m_strPath, movieDetails, lMovieId);
   SetMovie(movieDetails, pItem);
