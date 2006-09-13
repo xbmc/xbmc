@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ 
+ - 14-09-2006 fixed: hddsmart request coused a "hang" on request!
+ - 14-09-2006 fixed: [ 1551670 ] switch fullscreen hang in system info
  - 13-09-2006 fixed: [ 1275340 ] PCDVDROM always display the directory of first inserted disc
  - 13-09-2006 fixed: on a new smartxx pwmcontrol request, the internal rgb settings needs a reset
  - 13-09-2006 fixed: Wrong button focus if masterlock is cancelled after going to Settings->Masterlock.

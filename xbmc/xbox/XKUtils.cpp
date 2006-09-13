@@ -198,11 +198,9 @@ bool XKUtils::ReadEEPROMFromXBOX(LPBYTE EEPROMDATA, UCHAR STARTPOS, UCHAR ENDPOS
 	OUTPUT_DEBUG_STRING( "XKUtils: Reading EEPROM from XBOX...\n" );
 	for (UCHAR i=STARTPOS;i<ENDPOS;i++)
 	{
-    //HalReadSMBusValue allways touches 4 bytes on each call. we use a temp variable to not 
-    //overrun the given target
-		HalReadSMBusValue(SMBDEV_EEPROM, i, 0, pad);
+    //HalReadSMBusValue allways touches 4 bytes on each call. we use a temp variable to not overrun the given target
+		DWORD status = HalReadSMBusValue(SMBDEV_EEPROM, i, 0, pad);
     (*(EEPROMDATA+i)) = pad[0];
-		Sleep(1);
 	}
 	return TRUE;
 }
