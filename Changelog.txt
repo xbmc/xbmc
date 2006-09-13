@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-09-2006 changed: Removed wraparound in Kai lists (listcontrolex)
  - 13-09-2006 fixed: [ 1503867 ] cdg doesn't follow mp3.
  - 13-09-2006 fixed: [ 1520931 ] Custom movie thumbnail ignored when viewing from cast.
  - 12-09-2006 fixed: make sure there is no raw font's available to mplayer to load into memory when using ttf fonts for subs
