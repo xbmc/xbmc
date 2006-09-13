@@ -28,12 +28,6 @@ struct RGBVALUES
 	unsigned short blue2;
 };
 
-static map<CStdString,RGBVALUES>mapc_rgb;
-static RGBVALUES					s_RGBs;
-static CStdString					strCurrentStatus;
-static CStdString					strLastStatus;
-static CRITICAL_SECTION m_criticalSection;
-
 class ILED
 {
 public:
@@ -42,31 +36,22 @@ public:
 class ILEDSmartxxRGB : public CThread
 {
 protected:
-	
+  map<CStdString,RGBVALUES>mapc_rgb;
+  RGBVALUES s_RGBs;
+  CStdString  strCurrentStatus;
+  CStdString  strLastStatus;
 	CStdString  strLastTransition;
-	RGBVALUE s_CurRGB;
+	RGBVALUE  s_CurRGB;
 	DWORD	dwLastTime;
 	DWORD dwFrameTime;
 	int iSleepTime;
 
+  void outb(unsigned short port, unsigned char data);
 	void getRGBValues(CStdString strRGBa,CStdString strRGBb,RGBVALUES* s_rgb);
-
+  bool SetRGBStatus(CStdString strStatus);
+	bool SetLastRGBStatus();
 	bool SetRGBLed(int red, int green, int blue);
-  static void outb(unsigned short port, unsigned char data)
-  {
-    __asm
-    {
-      nop
-      mov dx, port
-      nop
-      mov al, data
-      nop
-      out dx,al
-      nop
-      nop
-    }
-  }
-
+  
 public:
 	ILEDSmartxxRGB();
 	~ILEDSmartxxRGB();
@@ -77,9 +62,6 @@ public:
   virtual bool IsRunning();
   virtual bool Start();
   virtual void Stop();
-
-	static bool SetRGBStatus(CStdString strStatus);
-	static bool SetLastRGBStatus();
   bool SetRGBState(CStdString strRGB1, CStdString strRGB2, CStdString strTransition, int iTranTime);
 
 };

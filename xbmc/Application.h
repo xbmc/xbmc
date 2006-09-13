@@ -146,6 +146,7 @@ public:
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
   DWORD m_dwSaverTick;  // CB: SCREENSAVER PATCH
   DWORD m_dwSkinTime;
+  bool m_bIsPaused;
 
   CCdgParser* m_pCdgParser;
 
