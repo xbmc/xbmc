@@ -81,9 +81,9 @@ BOOL CHDDSmart::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UC
   CSingleLock lock(m_section);
 
   // Wait Timers! No wait time.. let's see if this will also work!
-  const int waitSleepTime = 5; //default 5 
-  const int writeSleepTime = 10; // default 10
-  const int readSleepTime = 300; // default 300
+  const int waitSleepTime = 0; //default 5 
+  const int writeSleepTime = 0; // default 10
+  const int readSleepTime = 0; // default 300
 
 	//XBOX Sending ATA Commands..
 
@@ -247,7 +247,7 @@ bool CHDDSmart::DelayRequestSmartValue(int SmartREQ , int iDelayTime)
   CSingleLock lock(m_section);
 
   static DWORD pingTimer = 0;
-  if (iDelayTime <0 ) iDelayTime = 60;
+  if (iDelayTime <0 ) iDelayTime = 0; //60 default
   bool bWait=false;
   if( timeGetTime() - pingTimer < (DWORD)iDelayTime * 1000)
     return false;    

@@ -49,7 +49,6 @@ ILEDSmartxxRGB::ILEDSmartxxRGB()
 {
   if(mapc_rgb.size()>0)
     mapc_rgb.clear();
-	InitializeCriticalSection(&m_criticalSection);
 	strCurrentStatus = "NULL";
 	strLastStatus = "NULL";
   
@@ -77,7 +76,6 @@ void ILEDSmartxxRGB::OnStartup()
 	  SetRGBStatus("general");
   }
 }
-
 void ILEDSmartxxRGB::Process()
 {
   bool bSettingsRGBTrue = true; // for settings!
@@ -269,6 +267,20 @@ void ILEDSmartxxRGB::Stop()
 {
   StopThread();
 }
+void ILEDSmartxxRGB::outb(unsigned short port, unsigned char data)
+  {
+    __asm
+    {
+      nop
+      mov dx, port
+      nop
+      mov al, data
+      nop
+      out dx,al
+      nop
+      nop
+    }
+  }
 bool ILEDSmartxxRGB::IsRunning()
 {
   return (m_ThreadHandle != NULL);
@@ -312,11 +324,9 @@ bool ILEDSmartxxRGB::SetRGBStatus(CStdString strStatus)
   ikey = mapc_rgb.find(strStatus);
 	if(ikey != mapc_rgb.end())
 	{
-		EnterCriticalSection(&m_criticalSection);
 		strLastStatus = strCurrentStatus;
 		strCurrentStatus = strStatus;
 		s_RGBs = ikey->second;
-		LeaveCriticalSection(&m_criticalSection);
 	}
 	return true;
 }
@@ -357,7 +367,7 @@ bool ILEDSmartxxRGB::SetRGBState(CStdString strRGB1, CStdString strRGB2, CStdStr
 
   getRGBValues(strRGB1,strRGB2,&s_RGBs);
 	if(!strTransition.Equals("none") || !strTransition.IsEmpty())
-    s_RGBs.strTransition = strTransition.c_str();
+    s_RGBs.strTransition = strTransition;
 	else
 		s_RGBs.strTransition = "none";
 
