@@ -124,7 +124,10 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
             if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
             {
               if (!g_passwordManager.IsMasterLockUnlocked(true))
+              { // unable to go to this category - focus the previous one
+                SET_CONTROL_FOCUS(CONTROL_START_BUTTONS + m_iSection, 0);
                 return false;
+              }
             }
             m_iSection = focusedControl - CONTROL_START_BUTTONS;
             CheckNetworkSettings();
