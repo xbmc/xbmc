@@ -197,6 +197,9 @@ CApplication::CApplication(void)
   // true while we switch to fullscreen (while video is paused)
   m_switchingToFullScreen = false;
 
+  //true while we in IsPaused mode! Workarround for OnPaused, which must be add. after v2.0
+  m_bIsPaused = false;
+
   /* for now allways keep this around */
   m_pCdgParser = new CCdgParser();
 }
@@ -4186,12 +4189,13 @@ void CApplication::ProcessSlow()
   g_curlInterface.CheckIdle();
   
   // LED - LCD SwitchOn On Paused!!
-  if(IsPlaying())
-  {     
+  if(!IsPaused() == !m_bIsPaused)
+  {
     if(g_guiSettings.GetBool("system.ledenableonpaused"))
-      StartLEDControl(!IsPaused());
+      StartLEDControl(!m_bIsPaused);
     if(g_guiSettings.GetBool("lcd.enableonpaused"))
-      DimLCDOnPlayback(!IsPaused());
+      DimLCDOnPlayback(!m_bIsPaused);
+    m_bIsPaused = !m_bIsPaused;
   }
 }
 
