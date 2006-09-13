@@ -2,10 +2,10 @@
 #include "LED.h"
 #include "../util.h"
 
-#define SMARTXX_PWD_RED    0xf70c   //SmartXX V3 port for PWM red output
-#define SMARTXX_PWD_GREEN  0xf70d   //SmartXX V3 port for PWM green output
-#define SMARTXX_PWD_BLUE   0xf70e   //SmartXX V3 port for PWM blue output
-#define SMARTXX_PWM_STATUS 0xf702   //Status LED port
+#define SMARTXX_PWD_RED    0xf70c   //PWM1: SmartXX V3 port for RGB red output
+#define SMARTXX_PWD_GREEN  0xf70d   //PWM2: SmartXX V3 port for RGB green output
+#define SMARTXX_PWD_BLUE   0xf70e   //PWM3: SmartXX V3 port for RGB blue output
+#define SMARTXX_PWM_STATUS 0xf702   //PWM4: SmartXX V3 Status LED port BLUE!
 
 struct RGBVALUE
 {
@@ -51,7 +51,7 @@ protected:
 
 	void getRGBValues(CStdString strRGBa,CStdString strRGBb,RGBVALUES* s_rgb);
 
-	void SetRGBLed(int red, int green, int blue);
+	bool SetRGBLed(int red, int green, int blue);
   static void outb(unsigned short port, unsigned char data)
   {
     __asm
@@ -78,8 +78,9 @@ public:
   virtual bool Start();
   virtual void Stop();
 
-	static void SetRGBStatus(CStdString strStatus);
-	static void SetLastRGBStatus();
+	static bool SetRGBStatus(CStdString strStatus);
+	static bool SetLastRGBStatus();
   bool SetRGBState(CStdString strRGB1, CStdString strRGB2, CStdString strTransition, int iTranTime);
 
 };
+extern ILEDSmartxxRGB g_iledSmartxxrgb;
