@@ -357,6 +357,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
       CLog::Log(LOGINFO, "Polling PC-DVDROM...");
 
       CIoSupport helper;
+      m_isoReader.Reset();
       if (helper.Remount("D:", "Cdrom0") == S_OK)
       {
         if (m_pInstance)
