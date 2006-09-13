@@ -102,10 +102,6 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   if (!m_decoder[m_currentDecoder].Create(file, (__int64)(options.starttime * 1000), m_crossFading))
     return false;
 
-  if ( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") )
-    if(!g_application.m_pCdgParser->IsRunning())
-      g_application.m_pCdgParser->Start(file.m_strPath);
-
   m_iSpeed = 1;
   m_bPaused = false;
   m_bStopPlaying = false;
@@ -172,9 +168,6 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
 
 bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
 {
-  if( g_application.m_pCdgParser )
-    g_application.m_pCdgParser->Stop();
-
   if (IsPaused())
     Pause();
 
@@ -519,10 +512,6 @@ bool PAPlayer::ProcessPAP()
           m_currentStream = 1 - m_currentStream;
           CLog::Log(LOGDEBUG, "Starting Crossfade - resuming stream %i", m_currentStream);
 
-          if( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") )
-            if (!g_application.m_pCdgParser->IsRunning())
-              g_application.m_pCdgParser->Start(m_nextFile.m_strPath);
-
           m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
           m_callback.OnPlayBackStarted();
           m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
@@ -579,6 +568,7 @@ bool PAPlayer::ProcessPAP()
               }
             }
             CLog::Log(LOGINFO, "PAPlayer: Starting new track");
+
             m_decoder[m_currentDecoder].Destroy();
             m_decoder[1 - m_currentDecoder].Start();
             m_callback.OnPlayBackStarted();
