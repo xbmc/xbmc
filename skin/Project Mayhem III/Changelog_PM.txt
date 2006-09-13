@@ -1,3 +1,4 @@
+2006-09-13 added:	Ok and Cancel buttons to TrainerSettings.xml
 2006-09-11 changed: 	New filemanager. Thanks to Jezz-X!
 2006-09-07 fixed: 	One of spiffs screwups, something to do with fishy :)
 2006-09-02 fixed:	Label spacing in SettingsSystemInfo.xml.
