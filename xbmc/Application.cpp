@@ -3159,6 +3159,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   m_eForcedNextPlayer = EPC_NONE;
 
   //We have to stop parsing a cdg before mplayer is deallocated
+  // WHY do we have to do this????
   if(m_pCdgParser)
     m_pCdgParser->Stop();
 
@@ -3191,7 +3192,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // Enable Karaoke voice as necessary
 //    if (g_guiSettings.GetBool("karaoke.voiceenabled"))
   //  {
-    if( m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") )
+/*    if( m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") )
     {
       if(!m_pCdgParser->IsRunning())
       {
@@ -3203,7 +3204,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
             m_pCdgParser->Start(item.m_strPath);
         }
       }
-    }
+    }*/
 
     // if file happens to contain video stream
     if ( IsPlayingVideo())
@@ -3881,6 +3882,17 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       if (IsPlayingAudio())
       {
+        // Start our cdg parser as appropriate
+        if (m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") && !m_itemCurrentFile.IsInternetStream())
+        {
+          if (m_pCdgParser->IsRunning())
+            m_pCdgParser->Stop();
+          if (m_itemCurrentFile.IsMusicDb())
+            m_pCdgParser->Start(m_itemCurrentFile.m_musicInfoTag.GetURL());
+          else
+            m_pCdgParser->Start(m_itemCurrentFile.m_strPath);
+        }
+
         //  Activate audio scrobbler
         if (!m_itemCurrentFile.IsInternetStream())
         {
