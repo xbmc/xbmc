@@ -389,10 +389,13 @@ void CGUIListControlEx::OnUp()
     else if (m_pList && (m_dwControlUp == 0 || m_dwControlUp == GetID()))
     {
       // move 2 last item in list
+
+      /* No longer done, on recommendation of Sollie
       CGUIList::GUILISTITEMS& list = m_pList->Lock();
       CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), list.size() - 1);
       OnMessage(msg);
       m_pList->Release();
+      */
     }
     else
     {
@@ -420,9 +423,11 @@ void CGUIListControlEx::OnDown()
       }
       else if(m_dwControlDown == 0 || m_dwControlDown == GetID())
       {
+        /* No longer done, on recommendation of Sollie
         // move first item in list
         CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), 0);
         OnMessage(msg);
+        */
       }
       else
       {
@@ -446,9 +451,11 @@ void CGUIListControlEx::OnDown()
       }
       else if(m_dwControlDown == 0 || m_dwControlDown == GetID())
       {
+        /* No longer done, on recommendation of Sollie
         // move first item in list
         CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), 0);
         OnMessage(msg);
+        */
       }
       else
       {
