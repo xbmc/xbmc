@@ -1362,7 +1362,7 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
   /* since we also want the field textures, pitch must be texture aligned */
   DWORD dwTextureSize;
   unsigned stride, p;
-  unsigned memflags = PAGE_READWRITE; //| PAGE_WRITECOMBINE;
+  unsigned memflags = PAGE_READWRITE | PAGE_WRITECOMBINE;
 
   YV12Image &im = m_image[index];
   YUVFIELDS &fields = m_YUVTexture[index];
