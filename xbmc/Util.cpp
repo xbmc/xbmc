@@ -3602,7 +3602,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     CStdString strTemp ,strRgbA, strRgbB, strTran; 
     CStdStringArray arSplit; 
-    int iTrTime;
+    int iTrTime = 0;
     StringUtils::SplitString(parameter,",", arSplit);
     
     if ((int)arSplit.size() > 1)
@@ -3611,6 +3611,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       strRgbB  = arSplit[1].c_str();
       strTran  = arSplit[2].c_str();
       iTrTime  = atoi(arSplit[3].c_str());
+    }
+    else if(parameter.size() > 6)
+    {
+      strRgbA = strRgbB = parameter;
+      strTran = "none";
     }
     CUtil::PWMControl(strRgbA,strRgbB,strTran, iTrTime);
   }
@@ -4539,25 +4544,20 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
   }
   sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
-ILEDSmartxxRGB* s_XXrbg = new ILEDSmartxxRGB();
 bool CUtil::PWMControl(CStdString strRGBa, CStdString strRGBb, CStdString strTransition, int iTrTime)
 {
-  if(s_XXrbg->IsRunning())
+  if (strRGBa.IsEmpty() && strRGBb.IsEmpty()) // no color, return false!
+    return false;
+
+  if(g_iledSmartxxrgb.IsRunning())
   {
-    s_XXrbg->Stop();
-    delete s_XXrbg;
-    s_XXrbg = new ILEDSmartxxRGB();
-    s_XXrbg->Start();
-    return s_XXrbg->SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
+    return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
   }else {
-    s_XXrbg = new ILEDSmartxxRGB();
-    s_XXrbg->Start();
-    return s_XXrbg->SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
+    g_iledSmartxxrgb.Start();
+    return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
   }
   return false;
 }
-
-
 bool CUtil::LoadMusicTag(CFileItem *pItem)
 {
   if (!pItem->IsAudio()) return false;
