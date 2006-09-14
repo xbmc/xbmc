@@ -1,3 +1,4 @@
+2006-09-14 fixed:	Wrong onup/down in settings button 
 2006-09-14 fixed:       Skin Settings reversed radio buttons. Thx to Jezz_X!
 2006-09-13 added:	Ok and Cancel buttons to TrainerSettings.xml
 2006-09-11 changed: 	New filemanager. Thanks to Jezz-X!
