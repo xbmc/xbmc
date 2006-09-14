@@ -24,45 +24,21 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      if (!m_bCanceled)
+      m_database->BeginTransaction();
+      for (unsigned int i=0;i<m_vecTrainers.size();++i)
       {
-        if (m_iTrainer && m_iTrainer <= (int)m_vecTrainers.size())
+        if (m_bNeedSave && !m_bCanceled)
         {
-          m_database->BeginTransaction();
-          if (m_bNeedSave)
-            m_database->SetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions(),m_vecTrainers[m_iTrainer-1]->GetNumberOfOptions());
-
-          if (m_strActive != m_vecTrainers[m_iTrainer-1]->GetPath())
-          {
-            m_database->SetTrainerActive(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,true);
-            m_bNeedSave = true;
-          }
-          else
-            m_bNeedSave = false;
-          m_database->CommitTransaction();
+          m_database->SetTrainerActive(m_vecTrainers[i]->GetPath(),m_iTitleId,m_iTrainer-1 == i);
+          m_database->SetTrainerOptions(m_vecTrainers[i]->GetPath(),m_iTitleId,m_vecTrainers[i]->GetOptions(),m_vecTrainers[i]->GetNumberOfOptions());
         }
-        else 
-        {
-          if (m_strActive == "")
-            m_bNeedSave = false;
-          else
-            m_bNeedSave = true;
-        }
-
-        for (unsigned int i=0;i<m_vecTrainers.size();++i)
-        {
-          if (i != m_iTrainer-1 && m_bNeedSave)
-          {
-            m_database->BeginTransaction();
-            m_database->SetTrainerActive(m_vecTrainers[i]->GetPath(),m_iTitleId,false);
-            m_database->CommitTransaction();
-          }
-          delete m_vecTrainers[i];
-        }
-        m_vecTrainers.clear();
+        delete m_vecTrainers[i];
       }
-      else
-        m_bCanceled = false;
+      m_vecTrainers.clear();
+      m_database->CommitTransaction();
+
+      if (m_bCanceled)
+        m_bNeedSave = false;
 
       break;
     }
@@ -108,7 +84,7 @@ void CGUIDialogTrainerSettings::CreateSettings()
     setting.name = "";
     setting.type = SettingInfo::SPIN;
     setting.data = &m_iTrainer;
-    setting.entry.push_back("None");
+    setting.entry.push_back(g_localizeStrings.Get(231));
     for (unsigned int i = 0; i < m_vecTrainers.size(); i++)
       setting.entry.push_back(m_vecTrainers[i]->GetName());
     m_settings.push_back(setting);
@@ -131,28 +107,16 @@ void CGUIDialogTrainerSettings::OnSettingChanged(unsigned int num)
   // check and update anything that needs it
   if (setting.id == 1)
   {
-    if (m_iOldTrainer && m_bNeedSave)
-    {
-      m_database->BeginTransaction();
-      m_database->SetTrainerOptions(m_vecTrainers[m_iOldTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iOldTrainer-1]->GetOptions(), m_vecTrainers[m_iOldTrainer-1]->GetNumberOfOptions());
-      m_database->CommitTransaction();
-    }
-
-    if (m_iTrainer)
-      m_database->GetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions(),m_vecTrainers[m_iTrainer-1]->GetNumberOfOptions());
-  
     CreateSettings();
     SetupPage();
     SET_CONTROL_FOCUS(CONTROL_START, 0);
-    m_bNeedSave = false;
   }
-  else
-    m_bNeedSave = true;
+    
+  m_bNeedSave = true;
 }
 
 bool CGUIDialogTrainerSettings::ShowForTitle(unsigned int iTitleId, CProgramDatabase* database)
 {
-  CStdString strTrainer = database->GetActiveTrainer(iTitleId);
   CGUIDialogTrainerSettings *dialog = (CGUIDialogTrainerSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_TRAINER_SETTINGS);
   if (!dialog) return false;
   dialog->m_iTitleId = iTitleId;
@@ -179,13 +143,12 @@ void CGUIDialogTrainerSettings::OnInitWindow()
     {
       if (m_vecOptions[i] == m_strActive)
         m_iTrainer = i+1;
+      m_database->GetTrainerOptions(trainer->GetPath(),m_iTitleId,trainer->GetOptions(), trainer->GetNumberOfOptions());
       m_vecTrainers.push_back(trainer);
     }
     else
       delete trainer;
   }
-  if (m_iTrainer)
-    m_database->GetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions(), m_vecTrainers[m_iTrainer-1]->GetNumberOfOptions());
 
   CGUIDialogSettings::OnInitWindow();
 }
