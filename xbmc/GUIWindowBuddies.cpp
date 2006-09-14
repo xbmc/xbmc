@@ -777,36 +777,7 @@ bool CGUIWindowBuddies::OnAction(const CAction &action)
             return true;
           }
           m_pKaiClient->ExitVector();
-          CStdString strGame;
-          CArenaItem::GetTier(CArenaItem::Game, CKaiClient::GetInstance()->GetCurrentVector(), strGame);
-          arenaDelimiter = CKaiClient::GetInstance()->GetCurrentVector().ReverseFind('/') + 1;
-          CStdString arenaLabel = CKaiClient::GetInstance()->GetCurrentVector().Mid(arenaDelimiter);
-          CArenaItem* pItem = (CArenaItem*)m_arena.Find(arenaLabel);
-
-          if (!strGame.IsEmpty() && pItem)
-          {
-            if (pItem->m_bIsPersonal)
-            {
-              CONTROL_ENABLE(CONTROL_BTNPLAY);
-            }
-            else
-            {
-              CONTROL_ENABLE(CONTROL_BTNPLAY);
-            }
-          }
-          else
-          {
-            CONTROL_DISABLE(CONTROL_BTNPLAY);
-          }
-          if (strGame.IsEmpty() || CKaiClient::GetInstance()->IsHosting())
-          {
-            CONTROL_DISABLE(CONTROL_BTNHOST);
-          }
-          else
-          {
-            CONTROL_ENABLE(CONTROL_BTNHOST);
-          }
-
+          UpdatePlayAndHost();
           break;
         }
       }
@@ -1258,36 +1229,9 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
       SET_CONTROL_LABEL(CONTROL_BTNPLAY, g_localizeStrings.Get(15023)); // Play
       SET_CONTROL_LABEL(CONTROL_BTNADD, g_localizeStrings.Get(15024)); // Add
       SET_CONTROL_LABEL(CONTROL_BTNHOST, g_localizeStrings.Get(15025)); // Host
-      CStdString strGame;
-      CArenaItem::GetTier(CArenaItem::Game, CKaiClient::GetInstance()->GetCurrentVector(), strGame);
-      INT arenaDelimiter = CKaiClient::GetInstance()->GetCurrentVector().ReverseFind('/') + 1;
-      CStdString arenaLabel = CKaiClient::GetInstance()->GetCurrentVector().Mid(arenaDelimiter);
-      CArenaItem* pItem = (CArenaItem*)m_arena.Find(arenaLabel);
 
-      if (!strGame.IsEmpty() && pItem)  
-      {
-        if (pItem->m_bIsPersonal)
-        {
-          CONTROL_ENABLE(CONTROL_BTNPLAY);
-        }
-        else
-        {
-          CONTROL_DISABLE(CONTROL_BTNPLAY);
-        }
-      }
-      else
-      {
-        CONTROL_DISABLE(CONTROL_BTNPLAY);
-      }
+      UpdatePlayAndHost();
       CONTROL_DISABLE(CONTROL_BTNADD);
-      if (strGame.IsEmpty() || CKaiClient::GetInstance()->IsHosting())
-      {
-        CONTROL_DISABLE(CONTROL_BTNHOST);
-      }
-      else
-      {
-        CONTROL_ENABLE(CONTROL_BTNHOST);
-      }
 
       SelectTab(CONTROL_KAI_TAB_ARENA);
 
@@ -2060,5 +2004,50 @@ void CGUIWindowBuddies::OnLeavesChat(CStdString& aOpponent)
     DWORD dwColour = KAI_CONSOLE_PEN_ACTION;
     strMessage.Format(strFormat.c_str(), aOpponent);
     m_pConsole->Write(strMessage, dwColour);
+  }
+}
+
+void CGUIWindowBuddies::UpdatePlayAndHost()
+{
+  // only update if we're active
+  if (!IsActive()) return;
+
+  CStdString strGame;
+  CArenaItem::GetTier(CArenaItem::Game, CKaiClient::GetInstance()->GetCurrentVector(), strGame);
+  int arenaDelimiter = CKaiClient::GetInstance()->GetCurrentVector().ReverseFind('/') + 1;
+  CStdString arenaLabel = CKaiClient::GetInstance()->GetCurrentVector().Mid(arenaDelimiter);
+  CArenaItem* pItem = (CArenaItem*)m_arena.Find(arenaLabel);
+
+  // This is completely wrong, but is the best I can think of at the moment.
+  // According to Sollie, Play and Host should be disabled unless in an arena which allows
+  // hosting etc. (eg not in the Halo/ folder, as this is further split into Halo/Americas etc.
+  // As there doesn't seem to be any reliable way to get this information at present,
+  // this is the best thing we can come up with.  It will fail dismally on backward
+  // navigation, as we only rely on the forward navigation for things to work.
+  if (!strGame.IsEmpty() && pItem)
+  {
+    // play should be enabled in personal and public arenas
+    CONTROL_ENABLE(CONTROL_BTNPLAY);
+/*
+    if (pItem->m_bIsPersonal)
+    {
+      CONTROL_ENABLE(CONTROL_BTNPLAY);
+    }
+    else
+    {
+      CONTROL_ENABLE(CONTROL_BTNPLAY);
+    }*/
+  }
+  else
+  {
+    CONTROL_DISABLE(CONTROL_BTNPLAY);
+  }
+  if (strGame.IsEmpty() || !pItem || CKaiClient::GetInstance()->IsHosting())
+  {
+    CONTROL_DISABLE(CONTROL_BTNHOST);
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_BTNHOST);
   }
 }
