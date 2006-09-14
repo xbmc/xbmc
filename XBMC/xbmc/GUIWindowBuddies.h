@@ -88,6 +88,7 @@ protected:
   void UpdateArena();
 
   void UpdateGamesPlayerCount();
+  void UpdatePlayAndHost();
 
   void PreviousView();
   void NextView();
