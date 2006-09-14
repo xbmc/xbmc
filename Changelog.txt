@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- 
+ - 14-09-2006 changed: Behaviour of Play/Host buttons under various circumstances in Kai.
  - 14-09-2006 fixed: hddsmart request coused a "hang" on request!
  - 14-09-2006 fixed: [ 1551670 ] switch fullscreen hang in system info
  - 13-09-2006 fixed: [ 1275340 ] PCDVDROM always display the directory of first inserted disc
