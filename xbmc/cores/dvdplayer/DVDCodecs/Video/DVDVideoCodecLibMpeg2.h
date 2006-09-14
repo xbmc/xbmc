@@ -33,6 +33,7 @@ protected:
   unsigned int m_irffpattern;
   bool m_bFilm; //Signals that we have film material
 
+  bool m_bmpeg1;
   //The buffer of pictures we need
   DVDVideoPicture m_pVideoBuffer[3];
   DVDVideoPicture* m_pCurrentBuffer;
