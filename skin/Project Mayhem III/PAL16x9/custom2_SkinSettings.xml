@@ -122,7 +122,7 @@
     <width>445</width>
     <label>20079</label>
     <onclick>Skin.ToggleSetting(animated)</onclick>
-    <selected>Skin.HasSetting(animated)</selected>
+    <selected>!Skin.HasSetting(animated)</selected>
     <onleft>11</onleft>
     <onright>11</onright>
     <onup>20</onup>
@@ -149,7 +149,7 @@
     <width>445</width>
     <label>20080</label>
     <onclick>Skin.ToggleSetting(NoAudioRSS)</onclick>
-    <selected>Skin.HasSetting(NoAudioRSS)</selected>
+    <selected>!Skin.HasSetting(NoAudioRSS)</selected>
     <onleft>11</onleft>
     <onright>11</onright>
     <onup>36</onup>
@@ -170,7 +170,7 @@
     <width>445</width>
     <label>20176</label>
     <onclick>Skin.ToggleSetting(homepageVideoinfo)</onclick>
-    <selected>Skin.HasSetting(homepageVideoinfo)</selected>
+    <selected>!Skin.HasSetting(homepageVideoinfo)</selected>
     <onleft>11</onleft>
     <onright>11</onright>
     <onup>30</onup>
@@ -191,7 +191,7 @@
     <width>445</width>
     <label>20083</label>
     <onclick>Skin.ToggleSetting(homepageMusicinfo)</onclick>
-    <selected>Skin.HasSetting(homepageMusicinfo)</selected>
+    <selected>!Skin.HasSetting(homepageMusicinfo)</selected>
     <onleft>11</onleft>
     <onright>11</onright>
     <onup>31</onup>
@@ -212,7 +212,7 @@
     <width>445</width>
     <label>20084</label>
     <onclick>Skin.ToggleSetting(homepageWeatherinfo)</onclick>
-    <selected>Skin.HasSetting(homepageWeatherinfo)</selected>
+    <selected>!Skin.HasSetting(homepageWeatherinfo)</selected>
     <onleft>11</onleft>
     <onright>11</onright>
     <onup>32</onup>
@@ -233,7 +233,7 @@
     <width>445</width>
     <label>20085</label>
     <onclick>Skin.ToggleSetting(homepageSysteminfo)</onclick>
-    <selected>Skin.HasSetting(homepageSysteminfo)</selected>
+    <selected>!Skin.HasSetting(homepageSysteminfo)</selected>
     <onleft>11</onleft>
     <onright>11</onright>
     <onup>33</onup>
@@ -253,7 +253,7 @@
     <posy>305</posy>
     <width>445</width>
     <label>20086</label> 
-    <selected>Skin.HasSetting(homepageDriveinfo1)</selected> 
+    <selected>!Skin.HasSetting(homepageDriveinfo1)</selected> 
     <onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
     <onleft>11</onleft> 
     <onright>11</onright> 
@@ -274,7 +274,7 @@
     <posy>305</posy>
     <width>445</width>
     <label>20086</label> 
-    <selected>Skin.HasSetting(homepageDriveinfo1)</selected> 
+    <selected>!Skin.HasSetting(homepageDriveinfo1)</selected> 
     <onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
     <onleft>11</onleft> 
     <onright>11</onright> 
@@ -296,7 +296,7 @@
     <posy>342</posy>
     <width>445</width>
     <label>20087</label> 
-    <selected>!Skin.HasSetting(homepageDriveinfo2)</selected> 
+    <selected>Skin.HasSetting(homepageDriveinfo2)</selected> 
     <onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
     <onleft>11</onleft> 
     <onright>11</onright> 
@@ -317,7 +317,7 @@
     <posy>342</posy>
     <width>445</width>
     <label>20087</label> 
-    <selected>!Skin.HasSetting(homepageDriveinfo2)</selected> 
+    <selected>Skin.HasSetting(homepageDriveinfo2)</selected> 
     <onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
     <onleft>11</onleft> 
     <onright>11</onright> 
@@ -346,7 +346,7 @@
     <width>445</width>
     <label>20081</label>
     <onclick>Skin.ToggleSetting(bookmarkbuttons)</onclick>
-    <selected>Skin.HasSetting(bookmarkbuttons)</selected>
+    <selected>!Skin.HasSetting(bookmarkbuttons)</selected>
     <onleft>11</onleft>
     <onright>11</onright>
     <onup>48</onup>
@@ -431,7 +431,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(ProgramsBM1)</onclick>
-    <selected>!Skin.HasSetting(ProgramsBM1)</selected>
+    <selected>Skin.HasSetting(ProgramsBM1)</selected>
     <onleft>41</onleft>
     <onright>61</onright>
     <onup>40</onup>
@@ -484,7 +484,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(ProgramsBM2)</onclick>
-    <selected>!Skin.HasSetting(ProgramsBM2)</selected>
+    <selected>Skin.HasSetting(ProgramsBM2)</selected>
     <onleft>42</onleft>
     <onright>62</onright>
     <onup>51</onup>
@@ -537,7 +537,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(ProgramsBM3)</onclick>
-    <selected>!Skin.HasSetting(ProgramsBM3)</selected>
+    <selected>Skin.HasSetting(ProgramsBM3)</selected>
     <onleft>43</onleft>
     <onright>63</onright>
     <onup>52</onup>
@@ -590,7 +590,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(ProgramsBM4)</onclick>
-    <selected>!Skin.HasSetting(ProgramsBM4)</selected>
+    <selected>Skin.HasSetting(ProgramsBM4)</selected>
     <onleft>44</onleft>
     <onright>64</onright>
     <onup>53</onup>
@@ -674,7 +674,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(VideoBM1)</onclick>
-    <selected>!Skin.HasSetting(VideoBM1)</selected>
+    <selected>Skin.HasSetting(VideoBM1)</selected>
     <onleft>45</onleft>
     <onright>65</onright>
     <onup>54</onup>
@@ -727,7 +727,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(VideoBM2)</onclick>
-    <selected>!Skin.HasSetting(VideoBM2)</selected>
+    <selected>Skin.HasSetting(VideoBM2)</selected>
     <onleft>46</onleft>
     <onright>66</onright>
     <onup>55</onup>
@@ -780,7 +780,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(VideoBM3)</onclick>
-    <selected>!Skin.HasSetting(VideoBM3)</selected>
+    <selected>Skin.HasSetting(VideoBM3)</selected>
     <onleft>47</onleft>
     <onright>67</onright>
     <onup>56</onup>
@@ -833,7 +833,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(VideoBM4)</onclick>
-    <selected>!Skin.HasSetting(VideoBM4)</selected>
+    <selected>Skin.HasSetting(VideoBM4)</selected>
     <onleft>48</onleft>
     <onright>68</onright>
     <onup>57</onup>
@@ -917,7 +917,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(MusicBM1)</onclick>
-    <selected>!Skin.HasSetting(MusicBM1)</selected>
+    <selected>Skin.HasSetting(MusicBM1)</selected>
     <onleft>61</onleft>
     <onright>71</onright>
     <onup>40</onup>
@@ -970,7 +970,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(MusicBM2)</onclick>
-    <selected>!Skin.HasSetting(MusicBM2)</selected>
+    <selected>Skin.HasSetting(MusicBM2)</selected>
     <onleft>62</onleft>
     <onright>72</onright>
     <onup>71</onup>
@@ -1023,7 +1023,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(MusicBM3)</onclick>
-    <selected>!Skin.HasSetting(MusicBM3)</selected>
+    <selected>Skin.HasSetting(MusicBM3)</selected>
     <onleft>63</onleft>
     <onright>73</onright>
     <onup>72</onup>
@@ -1076,7 +1076,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(MusicBM4)</onclick>
-    <selected>!Skin.HasSetting(MusicBM4)</selected>
+    <selected>Skin.HasSetting(MusicBM4)</selected>
     <onleft>64</onleft>
     <onright>74</onright>
     <onup>73</onup>
@@ -1162,7 +1162,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(PicturesBM1)</onclick>
-    <selected>!Skin.HasSetting(PicturesBM1)</selected>
+    <selected>Skin.HasSetting(PicturesBM1)</selected>
     <onleft>65</onleft>
     <onright>75</onright>
     <onup>74</onup>
@@ -1215,7 +1215,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(PicturesBM2)</onclick>
-    <selected>!Skin.HasSetting(PicturesBM2)</selected>
+    <selected>Skin.HasSetting(PicturesBM2)</selected>
     <onleft>66</onleft>
     <onright>76</onright>
     <onup>75</onup>
@@ -1268,7 +1268,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(PicturesBM3)</onclick>
-    <selected>!Skin.HasSetting(PicturesBM3)</selected>
+    <selected>Skin.HasSetting(PicturesBM3)</selected>
     <onleft>67</onleft>
     <onright>77</onright>
     <onup>76</onup>
@@ -1321,7 +1321,7 @@
     <width>32</width>
     <label>-</label>
     <onclick>Skin.ToggleSetting(PicturesBM4)</onclick>
-    <selected>!Skin.HasSetting(PicturesBM4)</selected>
+    <selected>Skin.HasSetting(PicturesBM4)</selected>
     <onleft>68</onleft>
     <onright>78</onright>
     <onup>77</onup>
