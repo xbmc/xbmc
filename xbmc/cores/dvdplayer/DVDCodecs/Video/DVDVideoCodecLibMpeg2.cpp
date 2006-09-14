@@ -2,6 +2,11 @@
 #include "../../../../stdafx.h"
 #include "DVDVideoCodecLibMpeg2.h"
 #include "..\..\DVDClock.h"
+#include "..\..\DVDStreamInfo.h"
+
+/* I really don't want to include ffmpeg headers here, could */
+/* potentially interfere with libmpeg2's, so let's just define this */
+const int CODEC_ID_MPEG1VIDEO = 1;
 
 //Decoder specific flags used internal to decoder
 #define DVP_FLAG_LIBMPEG2_MASK      0x0000f00
@@ -18,6 +23,7 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_pCurrentBuffer = NULL;
   m_irffpattern = 0;
   m_bFilm = false;
+  m_bmpeg1 = false;
 }
 
 CDVDVideoCodecLibMpeg2::~CDVDVideoCodecLibMpeg2()
@@ -120,6 +126,11 @@ bool CDVDVideoCodecLibMpeg2::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
 {
   if (!m_dll.Load())
     return false;
+
+  if(hints.codec == CODEC_ID_MPEG1VIDEO)
+    m_bmpeg1 = true;
+  else
+    m_bmpeg1 = false;
 
   m_dll.mpeg2_accel(MPEG2_ACCEL_X86_MMX);
 
@@ -375,8 +386,13 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
 
 void CDVDVideoCodecLibMpeg2::Reset()
 {
-  CLog::DebugLog("RESET(LIBMPEG2)");
-  if (m_pHandle) m_dll.mpeg2_reset(m_pHandle, 1);
+  CLog::Log(LOGDEBUG, __FUNCTION__"()");
+
+  if (m_pHandle) 
+    if(m_bmpeg1) /* sadly, libmpeg2 doesn't resync after a reset if we are playing mpeg1 files if we do a full reset */
+      m_dll.mpeg2_reset(m_pHandle, 0);
+    else
+      m_dll.mpeg2_reset(m_pHandle, 1);
 
   ReleaseBuffer(NULL);
   m_pCurrentBuffer = NULL;
