@@ -345,7 +345,7 @@ public:
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
   static void ForceForwardSlashes(CStdString& strPath);
-  static bool PWMControl(CStdString strRGBa, CStdString strRGBb, CStdString strTransition, int iTrTime);
+  static bool PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strTransition, int iTrTime);
   static bool RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath);
   static void RemoveKernelPatch();
   static bool LookForKernelPatch();
