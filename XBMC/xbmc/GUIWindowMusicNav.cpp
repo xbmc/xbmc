@@ -381,15 +381,15 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
   if (!bIsGotoParent && dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT)
   { 
-  // allow queue for anything but root
-  if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList() || m_vecItems[iItem]->IsAudio())
-    btn_Queue = pMenu->AddButton(13347);
+    // allow queue for anything but root
+    if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList() || m_vecItems[iItem]->IsAudio())
+      btn_Queue = pMenu->AddButton(13347);
 
-    if (vecCores.size() >= 1)
-      btn_PlayWith = pMenu->AddButton(15213);
     // allow a folder to be ad-hoc queued and played by the default player
-    else if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList())
+    if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList())
       btn_PlayWith = pMenu->AddButton(208);
+    else if (vecCores.size() >= 1)
+      btn_PlayWith = pMenu->AddButton(15213);
     
     // enable music info button only in album view
     if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath) && m_vecItems[iItem]->m_bIsFolder)
