@@ -1245,11 +1245,11 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   {
     btn_Queue = pMenu->AddButton(13347);
 
-    if (vecCores.size() >= 1)
-      btn_PlayWith = pMenu->AddButton(15213);
     // allow a folder to be ad-hoc queued and played by the default player
-    else if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList())
+    if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList())
       btn_PlayWith = pMenu->AddButton(208);
+    else if (vecCores.size() >= 1)
+      btn_PlayWith = pMenu->AddButton(15213);
 
     if (!m_vecItems[iItem]->IsPlayList())
       btn_Info = pMenu->AddButton(13351);

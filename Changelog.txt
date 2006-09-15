@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-09-2006 changed: The play action will pause if a media item is currently playing.
+ - 15-09-2006 fixed: Play with... popped up instead of Play on the context menu of playlists in My Music.
  - 15-09-2006 fixed: Advancedsettings were also saved to guisettings.xml.
  - 15-09-2006 changed: grabbing of the next song in partymode speed up.
  - 14-09-2006 fixed: seeking in mpeg1 files using dvdplayer caused video to halt. (bug is really in libmpeg2, but work around in place for now)
