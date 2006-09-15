@@ -4188,14 +4188,14 @@ void CApplication::ProcessSlow()
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
   
-  // LED - LCD SwitchOn On Paused!!
-  if(!IsPaused() == !m_bIsPaused)
+  // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
+  if(IsPaused() != m_bIsPaused)
   {
     if(g_guiSettings.GetBool("system.ledenableonpaused"))
-      StartLEDControl(!m_bIsPaused);
+      StartLEDControl(m_bIsPaused); 
     if(g_guiSettings.GetBool("lcd.enableonpaused"))
-      DimLCDOnPlayback(!m_bIsPaused);
-    m_bIsPaused = !m_bIsPaused;
+      DimLCDOnPlayback(m_bIsPaused); 
+    m_bIsPaused = IsPaused();
   }
 }
 
