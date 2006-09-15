@@ -141,7 +141,7 @@ struct ReplayGainSettings
 class CSetting
 {
 public:
-  CSetting(int iOrder, const char *strSetting, int iLabel, int iControlType) { m_iOrder = iOrder; m_strSetting = strSetting; m_iLabel = iLabel; m_iControlType = iControlType;};
+  CSetting(int iOrder, const char *strSetting, int iLabel, int iControlType) { m_iOrder = iOrder; m_strSetting = strSetting; m_iLabel = iLabel; m_iControlType = iControlType; m_advanced = false; };
   ~CSetting() {};
   virtual int GetType() { return 0; };
   int GetControlType() { return m_iControlType; };
@@ -150,11 +150,13 @@ public:
   const char *GetSetting() { return m_strSetting.c_str(); };
   int GetLabel() { return m_iLabel; };
   int GetOrder() const { return m_iOrder; };
-  void SetHidden() { m_iOrder = 0; };         // order 0 means it won't be shown in the GUI.
+  void SetAdvanced() { m_advanced = true; };
+  bool IsAdvanced() { return m_advanced; };
 private:
   int m_iControlType;
   int m_iLabel;
   int m_iOrder;
+  bool m_advanced;
   CStdString m_strSetting;
 };
 
@@ -359,7 +361,7 @@ private:
   typedef std::map<CStdString, CSetting*>::const_iterator constMapIter;
   std::map<CStdString, CSetting*> settingsMap;
   std::vector<CSettingsGroup *> settingsGroups;
-  void LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool hideSetting = false);
+  void LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced = false);
 };
 
 extern class CGUISettings g_guiSettings;
