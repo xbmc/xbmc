@@ -763,7 +763,7 @@ void CGUISettings::GetSettingsGroup(const char *strGroup, vecSettings &settings)
   settings.clear();
   for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
-    if ((*it).first.Left(strlen(strGroup)).Equals(strGroup) && (*it).second->GetOrder() > 0)
+    if ((*it).first.Left(strlen(strGroup)).Equals(strGroup) && (*it).second->GetOrder() > 0 && !(*it).second->IsAdvanced())
       settings.push_back((*it).second);
   }
   // now order them...
@@ -813,7 +813,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
 }
 
-void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool hideSetting /* = false */)
+void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)
 {
   CStdStringArray strSplit;
   StringUtils::SplitString((*it).first, ".", strSplit);
@@ -831,8 +831,8 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool hid
           if (strValue != "-")
           { // update our item
             (*it).second->FromString(strValue);
-            if (hideSetting)
-              (*it).second->SetHidden();
+            if (advanced)
+              (*it).second->SetAdvanced();
             CLog::Log(LOGDEBUG, "  %s: %s", (*it).first.c_str(), (*it).second->ToString().c_str());
           }
         }
@@ -845,6 +845,11 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
 {
   for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
+    // don't save advanced settings
+    CStdString first = (*it).first;
+    if ((*it).second->IsAdvanced())
+      continue;
+
     CStdStringArray strSplit;
     StringUtils::SplitString((*it).first, ".", strSplit);
     if (strSplit.size() > 1)
