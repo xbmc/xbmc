@@ -2214,11 +2214,16 @@ bool CApplication::OnAction(const CAction &action)
     if (!m_pPlayer->IsPaused())
     {
       // if we do a FF/RW in my music then map PLAY action togo back to normal speed
+      // if we are playing at normal speed, then allow play to pause
       if (action.wID == ACTION_PLAYER_PLAY)
       {
         if (m_iPlaySpeed != 1)
         {
           SetPlaySpeed(1);
+        }
+        else
+        {
+          m_pPlayer->Pause();
         }
         return true;
       }
