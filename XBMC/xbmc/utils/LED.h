@@ -48,9 +48,8 @@ protected:
 	int iSleepTime;
 
   void outb(unsigned short port, unsigned char data);
-	void getRGBValues(CStdString strRGBa,CStdString strRGBb,RGBVALUES* s_rgb);
-  bool SetRGBStatus(CStdString strStatus);
-	bool SetLastRGBStatus();
+	void getRGBValues(const CStdString &strRGBa, const CStdString &strRGBb,RGBVALUES* s_rgb);
+  bool SetRGBStatus(const CStdString &strStatus);
   
 public:
 	ILEDSmartxxRGB();
@@ -62,7 +61,7 @@ public:
   virtual bool IsRunning();
   virtual bool Start();
   virtual void Stop();
-  bool SetRGBState(CStdString strRGB1, CStdString strRGB2, CStdString strTransition, int iTranTime);
+  bool SetRGBState(const CStdString &strRGB1, const CStdString &strRGB2, const CStdString &strTransition, int iTranTime);
   
   //can used outsite to pass the values directly to the RGB port! 
   //Don't forget to check if there is a SmartXX V3/OPX! -> g_sysinfo.SmartXXModCHIP()
