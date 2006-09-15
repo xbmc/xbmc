@@ -282,7 +282,7 @@ void ILEDSmartxxRGB::outb(unsigned short port, unsigned char data)
       nop
     }
   }
-void ILEDSmartxxRGB::getRGBValues(CStdString strRGBa,CStdString strRGBb,RGBVALUES* s_rgb)
+void ILEDSmartxxRGB::getRGBValues(const CStdString &strRGBa, const CStdString &strRGBb, RGBVALUES* s_rgb)
 {
 	DWORD red=0,green=0,blue=0;
 	int ret = sscanf(strRGBa,"#%2X%2X%2X",&red,&green,&blue); 
@@ -314,16 +314,11 @@ void ILEDSmartxxRGB::getRGBValues(CStdString strRGBa,CStdString strRGBb,RGBVALUE
 	}
 }
 
-bool ILEDSmartxxRGB::SetRGBStatus(CStdString strStatus)
+bool ILEDSmartxxRGB::SetRGBStatus(const CStdString &strStatus)
 {
   strLastStatus = strCurrentStatus;
 	strCurrentStatus = strStatus;
 	return true;
-}
-
-bool ILEDSmartxxRGB::SetLastRGBStatus()
-{
-	return SetRGBStatus(strLastStatus);
 }
 
 bool ILEDSmartxxRGB::SetRGBLed(int red, int green, int blue)
@@ -338,7 +333,7 @@ bool ILEDSmartxxRGB::SetRGBLed(int red, int green, int blue)
 //strRGB2: to rgb state in form: #rrggbb
 //strTransition: "none", "blink", "fade", "fadeloop", "faderepeat"
 //iTranTime: Transition time in ms between transitions e.g. 50
-bool ILEDSmartxxRGB::SetRGBState(CStdString strRGB1, CStdString strRGB2, CStdString strTransition, int iTranTime)
+bool ILEDSmartxxRGB::SetRGBState(const CStdString &strRGB1, const CStdString &strRGB2, const CStdString &strTransition, int iTranTime)
 {
   // we have a new request: start reset
   strCurrentStatus = "NULL";
