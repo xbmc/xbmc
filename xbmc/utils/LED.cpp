@@ -47,8 +47,6 @@ void ILED::CLEDControl(int ixLED)
 
 ILEDSmartxxRGB::ILEDSmartxxRGB()
 {
-  if(mapc_rgb.size()>0)
-    mapc_rgb.clear();
 	strCurrentStatus = "NULL";
 	strLastStatus = "NULL";
   
@@ -63,8 +61,6 @@ ILEDSmartxxRGB::ILEDSmartxxRGB()
 
 ILEDSmartxxRGB::~ILEDSmartxxRGB()
 {
-	mapc_rgb.clear();
-	DeleteCriticalSection(&m_criticalSection);
 }
 void ILEDSmartxxRGB::OnStartup()
 {
@@ -188,7 +184,7 @@ void ILEDSmartxxRGB::Process()
 					s_CurRGB.blue++;
 
         if (s_CurRGB.red == s_RGBs.red2 && s_CurRGB.green == s_RGBs.green2 && s_CurRGB.blue == s_RGBs.blue2)
-        { //reset for loop
+        { 
           strLastTransition.clear();
         }
         
@@ -250,6 +246,7 @@ void ILEDSmartxxRGB::Process()
 void ILEDSmartxxRGB::OnExit()
 {
 	SetRGBLed(0,0,0);
+  outb(SMARTXX_PWM_STATUS, 0xb);  // Status LED ON
 	CLog::Log(LOGDEBUG,"Stopping SmartXX RGB LED thread");
 }
 
@@ -260,12 +257,16 @@ bool ILEDSmartxxRGB::Start()
     Create();
     return true;
   }
-  else return false;
-  
+  else 
+    return false;
 }
 void ILEDSmartxxRGB::Stop()
 {
   StopThread();
+}
+bool ILEDSmartxxRGB::IsRunning()
+{
+  return (m_ThreadHandle != NULL);
 }
 void ILEDSmartxxRGB::outb(unsigned short port, unsigned char data)
   {
@@ -281,14 +282,10 @@ void ILEDSmartxxRGB::outb(unsigned short port, unsigned char data)
       nop
     }
   }
-bool ILEDSmartxxRGB::IsRunning()
-{
-  return (m_ThreadHandle != NULL);
-}
 void ILEDSmartxxRGB::getRGBValues(CStdString strRGBa,CStdString strRGBb,RGBVALUES* s_rgb)
 {
 	DWORD red=0,green=0,blue=0;
-	int ret = sscanf(strRGBa.c_str(),"#%2X%2X%2X",&red,&green,&blue); 
+	int ret = sscanf(strRGBa,"#%2X%2X%2X",&red,&green,&blue); 
 	if(ret == 3)
 	{
 		s_rgb->red1 = int(red/2);
@@ -302,7 +299,7 @@ void ILEDSmartxxRGB::getRGBValues(CStdString strRGBa,CStdString strRGBb,RGBVALUE
 		s_rgb->blue1 = 0;
 	}
 
-	ret = sscanf(strRGBb.c_str(),"#%2X%2X%2X",&red,&green,&blue);
+	ret = sscanf(strRGBb,"#%2X%2X%2X",&red,&green,&blue);
 	if(ret == 3)
 	{
 		s_rgb->red2 = int(red/2);
@@ -319,15 +316,8 @@ void ILEDSmartxxRGB::getRGBValues(CStdString strRGBa,CStdString strRGBb,RGBVALUE
 
 bool ILEDSmartxxRGB::SetRGBStatus(CStdString strStatus)
 {
-  map<CStdString,RGBVALUES>::iterator ikey;
-
-  ikey = mapc_rgb.find(strStatus);
-	if(ikey != mapc_rgb.end())
-	{
-		strLastStatus = strCurrentStatus;
-		strCurrentStatus = strStatus;
-		s_RGBs = ikey->second;
-	}
+  strLastStatus = strCurrentStatus;
+	strCurrentStatus = strStatus;
 	return true;
 }
 
@@ -346,13 +336,11 @@ bool ILEDSmartxxRGB::SetRGBLed(int red, int green, int blue)
 
 //strRGB1: from rgb state in form: #rrggbb
 //strRGB2: to rgb state in form: #rrggbb
-//strTransition: "none", "blink", "fade", "fadeloop"
-//iTranTime: int time between transitions e.g. 50
+//strTransition: "none", "blink", "fade", "fadeloop", "faderepeat"
+//iTranTime: Transition time in ms between transitions e.g. 50
 bool ILEDSmartxxRGB::SetRGBState(CStdString strRGB1, CStdString strRGB2, CStdString strTransition, int iTranTime)
 {
   // we have a new request: start reset
-  if(mapc_rgb.size()>0)
-    mapc_rgb.clear();
   strCurrentStatus = "NULL";
 	strLastStatus = "NULL";
   strLastTransition = "NULL";
@@ -376,6 +364,5 @@ bool ILEDSmartxxRGB::SetRGBState(CStdString strRGB1, CStdString strRGB2, CStdStr
 	else
 		s_RGBs.iTime = 0;
 
-  mapc_rgb.insert(std::pair<CStdString,RGBVALUES>(strTransition,s_RGBs));
   return SetRGBStatus(strTransition);
 }
