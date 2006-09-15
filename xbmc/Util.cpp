@@ -58,7 +58,6 @@ using namespace XFILE;
 using namespace PLAYLIST;
 static D3DGAMMARAMP oldramp, flashramp;
 
-
 extern "C"
 {
 	extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
@@ -1425,7 +1424,6 @@ bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIco
   if ( SUCCEEDED( pPackedResource->Create( strTempFile.c_str(), 1, NULL ) ) )
   {
     LPDIRECT3DTEXTURE8 pTexture;
-    LPDIRECT3DTEXTURE8 m_pTexture;
     D3DSURFACE_DESC descSurface;
 
     pTexture = pPackedResource->GetTexture((DWORD)0);
@@ -1437,38 +1435,8 @@ bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIco
         int iHeight = descSurface.Height;
         int iWidth = descSurface.Width;
         DWORD dwFormat = descSurface.Format;
-        g_graphicsContext.Get3DDevice()->CreateTexture( 128,
-            128,
-            1,
-            0,
-            D3DFMT_LIN_A8R8G8B8,
-            0,
-            &m_pTexture);
-        LPDIRECT3DSURFACE8 pSrcSurface = NULL;
-        LPDIRECT3DSURFACE8 pDestSurface = NULL;
-
-        pTexture->GetSurfaceLevel( 0, &pSrcSurface );
-        m_pTexture->GetSurfaceLevel( 0, &pDestSurface );
-
-        D3DXLoadSurfaceFromSurface( pDestSurface, NULL, NULL,
-                                    pSrcSurface, NULL, NULL,
-                                    D3DX_DEFAULT, D3DCOLOR( 0 ) );
-        D3DLOCKED_RECT rectLocked;
-        if ( D3D_OK == m_pTexture->LockRect(0, &rectLocked, NULL, 0L ) )
-        {
-          BYTE *pBuff = (BYTE*)rectLocked.pBits;
-          if (pBuff)
-          {
-            DWORD strideScreen = rectLocked.Pitch;
-            //mp_msg(0,0," strideScreen=%i\n", strideScreen);
-            CPicture pic;
-            success = pic.CreateThumbnailFromSurface(pBuff, iHeight, iWidth, strideScreen, strIcon.c_str());
-          }
-          m_pTexture->UnlockRect(0);
-        }
-        pSrcSurface->Release();
-        pDestSurface->Release();
-        m_pTexture->Release();
+        CPicture pic;
+        success = pic.CreateThumbnailFromSwizzledTexture(pTexture, iHeight, iWidth, strIcon.c_str());
       }
       pTexture->Release();
     }
@@ -1803,7 +1771,7 @@ void CUtil::DeleteGUISettings()
   {
     g_guiSettings.LoadMasterLock(doc.RootElement());
   }
-  // delete T:\\settings.xml only
+  // delete the settings file only
   CLog::Log(LOGINFO, "  DeleteFile(%s)", g_settings.GetSettingsFile().c_str());
   ::DeleteFile(g_settings.GetSettingsFile().c_str());
 }
@@ -4544,7 +4512,8 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
   }
   sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
-bool CUtil::PWMControl(CStdString strRGBa, CStdString strRGBb, CStdString strTransition, int iTrTime)
+
+bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strTransition, int iTrTime)
 {
   if (strRGBa.IsEmpty() && strRGBb.IsEmpty()) // no color, return false!
     return false;
@@ -4552,12 +4521,11 @@ bool CUtil::PWMControl(CStdString strRGBa, CStdString strRGBb, CStdString strTra
   if(g_iledSmartxxrgb.IsRunning())
   {
     return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
-  }else {
-    g_iledSmartxxrgb.Start();
-    return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
   }
-  return false;
+  g_iledSmartxxrgb.Start();
+  return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
 }
+
 bool CUtil::LoadMusicTag(CFileItem *pItem)
 {
   if (!pItem->IsAudio()) return false;
