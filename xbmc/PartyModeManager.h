@@ -35,11 +35,13 @@ private:
   int GetSongCount(int iType);
   void ClearState();
   void UpdateStats();
+  CStdString GetWhereClauseWithHistory() const;
+  void AddToHistory(long songID);
+  void GetRandomSelection(vector<long> &in, unsigned int number, vector<long> &out);
 
   // state
   bool m_bEnabled;
   int m_iLastUserSong;
-  int m_iHistory;
   CStdString m_strCurrentFilter;
 
   // statistics
@@ -49,6 +51,10 @@ private:
   int m_iMatchingSongsLeft;
   int m_iRelaxedSongs;
   int m_iRandomSongs;
+
+  // history
+  unsigned int m_songsInHistory;
+  vector<long> m_history;
 };
 
 extern CPartyModeManager g_partyModeManager;
