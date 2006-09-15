@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-09-2006 changed: grabbing of the next song in partymode speed up.
  - 14-09-2006 fixed: seeking in mpeg1 files using dvdplayer caused video to halt. (bug is really in libmpeg2, but work around in place for now)
  - 14-09-2006 changed: Behaviour of Play/Host buttons under various circumstances in Kai.
  - 14-09-2006 fixed: hddsmart request coused a "hang" on request!
