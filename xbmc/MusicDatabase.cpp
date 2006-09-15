@@ -4087,7 +4087,7 @@ bool CMusicDatabase::PartyModeGetRandomSongs(CFileItemList& items, int iNumSongs
   if (!bRelaxRestrictions)
     strWhereTemp = strWhere;
   // add history if necessary
-  if (iHistory > 0)
+  if (!strHistory.IsEmpty())
   {
     if (!strWhereTemp.IsEmpty())
       strWhereTemp += " and ";
