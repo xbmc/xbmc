@@ -36,12 +36,13 @@ public:
 class ILEDSmartxxRGB : public CThread
 {
 protected:
-  map<CStdString,RGBVALUES>mapc_rgb;
+  RGBVALUE  s_CurRGB;
   RGBVALUES s_RGBs;
+
   CStdString  strCurrentStatus;
   CStdString  strLastStatus;
 	CStdString  strLastTransition;
-	RGBVALUE  s_CurRGB;
+	
 	DWORD	dwLastTime;
 	DWORD dwFrameTime;
 	int iSleepTime;
@@ -50,7 +51,6 @@ protected:
 	void getRGBValues(CStdString strRGBa,CStdString strRGBb,RGBVALUES* s_rgb);
   bool SetRGBStatus(CStdString strStatus);
 	bool SetLastRGBStatus();
-	bool SetRGBLed(int red, int green, int blue);
   
 public:
 	ILEDSmartxxRGB();
@@ -63,6 +63,10 @@ public:
   virtual bool Start();
   virtual void Stop();
   bool SetRGBState(CStdString strRGB1, CStdString strRGB2, CStdString strTransition, int iTranTime);
+  
+  //can used outsite to pass the values directly to the RGB port! 
+  //Don't forget to check if there is a SmartXX V3/OPX! -> g_sysinfo.SmartXXModCHIP()
+  bool SetRGBLed(int red, int green, int blue);
 
 };
 extern ILEDSmartxxRGB g_iledSmartxxrgb;
