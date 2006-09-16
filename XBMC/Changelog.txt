@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-09-2006 fixed: Playlists used picture icons if <playlistsasfolders> was false.
  - 15-09-2006 changed: Kai button enabling yet again (will it ever end??)
  - 15-09-2006 changed: The play action will pause if a media item is currently playing.
  - 15-09-2006 fixed: Play with... popped up instead of Play on the context menu of playlists in My Music.
