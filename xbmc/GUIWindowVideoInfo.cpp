@@ -78,7 +78,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_DISC);
       CONTROL_DISABLE(CONTROL_DISC);
       int iItem = 0;
-      CFileItem movie(m_Movie.m_strPath, false);
+      CFileItem movie(m_Movie.m_strFileNameAndPath, false);
       if ( movie.IsOnDVD() )
       {
         SET_CONTROL_VISIBLE(CONTROL_DISC);
@@ -480,7 +480,7 @@ void CGUIWindowVideoInfo::AddItemsToList(const vector<CStdString> &vecStr)
 
 void CGUIWindowVideoInfo::Play(bool resume)
 {
-  CFileItem movie(m_Movie.m_strPath, false);
+  CFileItem movie(m_Movie.m_strFileNameAndPath, false);
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (pWindow)
   {
