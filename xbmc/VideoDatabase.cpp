@@ -824,7 +824,6 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     if (m_pDS->num_rows() > 0)
     {
       details = GetDetailsFromDataset(m_pDS);
-      details.m_strPath = strFilenameAndPath;
       if (details.m_strWritingCredits.IsEmpty())
       { // try loading off disk
         CIMDB imdb;
@@ -852,6 +851,7 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     Split(strFilenameAndPath, strPath, strFileName);
     details.m_strPath = strPath;
     details.m_strFile = strFileName;
+    details.m_strFileNameAndPath = strFilenameAndPath;
 
     // add director
     long lDirector = AddActor(details.m_strDirector);

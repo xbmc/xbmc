@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-09-2006 fixed: [ 1559620 ] Resume in Movie-Information window doesn't work first time.
+ - 15-09-2006 changed: New special:// protocol for the virtual folders (Such as $MUSICPLAYLISTS etc.)
  - 15-09-2006 fixed: Weather wasn't refreshed on language change, so showed a mix of languages.
  - 15-09-2006 fixed: Playlists used picture icons if <playlistsasfolders> was false.
  - 15-09-2006 changed: Kai button enabling yet again (will it ever end??)
