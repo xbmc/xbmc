@@ -4,6 +4,7 @@
 #include "factorydirectory.h"
 #include "factoryfiledirectory.h"
 #include "../utils/win32exception.h"
+#include "../util.h"
 
 using namespace DIRECTORY;
 
@@ -17,41 +18,44 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 {
   try 
   {
-
-  auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
-  if (!pDirectory.get()) return false;
-
-  pDirectory->SetMask(strMask);
-  pDirectory->SetAllowPrompting(allowPrompting);
-  pDirectory->SetCacheDirectory(cacheDirectory);
-
-  items.m_strPath=strPath;
-
-  bool bSuccess = pDirectory->GetDirectory(strPath, items);
-  if (bSuccess)
-  {
-    //  Should any of the files we read be treated as a directory?
-    //  Disable for musicdatabase, it already contains the extracted items
-    if (bUseFileDirectories && !items.IsMusicDb())
-      for (int i=0; i< items.Size(); ++i)
-      {
-        CFileItem* pItem=items[i];
-        if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
-        {
-          auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem,strMask));
-          if (pDirectory.get())
-            pItem->m_bIsFolder = true;
-          else
-            if (pItem->m_bIsFolder)
-            {
-              items.Remove(i);
-              i--; // don't confuse loop
-            }
-        }
+    CStdString translatedPath(strPath);
+    if (strPath.Left(10) == "special://")
+    { // need to translate this special folder
+      translatedPath = CUtil::TranslateSpecialPath(strPath);
     }
-  }
-  return bSuccess;
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
+    if (!pDirectory.get()) return false;
 
+    pDirectory->SetMask(strMask);
+    pDirectory->SetAllowPrompting(allowPrompting);
+    pDirectory->SetCacheDirectory(cacheDirectory);
+
+    items.m_strPath=strPath;
+
+    bool bSuccess = pDirectory->GetDirectory(translatedPath, items);
+    if (bSuccess)
+    {
+      //  Should any of the files we read be treated as a directory?
+      //  Disable for musicdatabase, it already contains the extracted items
+      if (bUseFileDirectories && !items.IsMusicDb())
+        for (int i=0; i< items.Size(); ++i)
+        {
+          CFileItem* pItem=items[i];
+          if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
+          {
+            auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem,strMask));
+            if (pDirectory.get())
+              pItem->m_bIsFolder = true;
+            else
+              if (pItem->m_bIsFolder)
+              {
+                items.Remove(i);
+                i--; // don't confuse loop
+              }
+          }
+      }
+    }
+    return bSuccess;
   }
   catch (const win32_exception &e) 
   {
