@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-09-2006 fixed: Double up of settings separators could occur if all the settings between them were removed via advancedsettings.xml
  - 15-09-2006 fixed: [ 1559620 ] Resume in Movie-Information window doesn't work first time.
  - 15-09-2006 changed: New special:// protocol for the virtual folders (Such as $MUSICPLAYLISTS etc.)
  - 15-09-2006 fixed: Weather wasn't refreshed on language change, so showed a mix of languages.
