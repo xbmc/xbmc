@@ -169,6 +169,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         CStdString strLanguagePath;
         strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
         g_localizeStrings.Load(strLanguagePath);
+
+        // also tell our weather to reload, as this must be localized
+        g_weatherManager.ResetTimer();
       }
 
       // Do we need to reload the skin font set
