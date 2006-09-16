@@ -159,7 +159,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             OnDeleteItem(iItem);
 
           // or be at the video playlists location
-          if (m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation()))
+          if (m_vecItems.m_strPath.Equals("special://videoplaylists/"))
             OnDeleteItem(iItem);
 
           else
@@ -329,7 +329,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
       CNfoFile nfoReader;
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
       {
-        CIMDBMovie movieDetails;
         url.m_strURL = nfoReader.m_strImDbUrl;
         CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL.c_str());
       }
@@ -514,7 +513,7 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
 
   CIMDBMovie movieDetails;
   m_database.GetMovieInfo(strFileName, movieDetails);
-  CFileItem movieFile(movieDetails.m_strPath, false);
+  CFileItem movieFile(movieDetails.m_strFileNameAndPath, false);
   if ( !movieFile.IsOnDVD()) return true;
   CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   if (!pDlgOK) return true;
@@ -785,7 +784,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Rename = 0;
   if (!bIsGotoParent)
   {
-    if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion")))
+    if ((m_vecItems.m_strPath.Equals("special://videoplaylists/")) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion")))
     {
       if (!m_vecItems[iItem]->IsReadOnly())
       { // enable only if writeable

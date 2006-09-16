@@ -78,7 +78,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         // open playlists location
         else if (strDestination.Equals("$PLAYLISTS"))
         {
-          m_vecItems.m_strPath = CUtil::MusicPlaylistsLocation();
+          m_vecItems.m_strPath = "special://musicplaylists/";
           CLog::Log(LOGINFO, "  Success! Opening destination path: %s", m_vecItems.m_strPath.c_str());
         }
         else
@@ -166,8 +166,8 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
       if (iControl == CONTROL_BTNPLAYLISTS)
       {
-        if (!m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()))
-          Update(CUtil::MusicPlaylistsLocation());
+        if (!m_vecItems.m_strPath.Equals("special://musicplaylists/"))
+          Update("special://musicplaylists/");
       }
       else if (iControl == CONTROL_BTNSCAN)
       {
