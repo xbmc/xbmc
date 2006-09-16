@@ -2024,7 +2024,9 @@ void CGUIWindowBuddies::UpdatePlayAndHost()
   // As there doesn't seem to be any reliable way to get this information at present,
   // this is the best thing we can come up with.  It will fail dismally on backward
   // navigation, as we only rely on the forward navigation for things to work.
-  if (!strGame.IsEmpty() && pItem)
+
+  // As the above fails, we'll just always enable these buttons if strGame isn't empty
+  if (!strGame.IsEmpty())
   {
     // play should be enabled in personal and public arenas
     CONTROL_ENABLE(CONTROL_BTNPLAY);
@@ -2042,7 +2044,7 @@ void CGUIWindowBuddies::UpdatePlayAndHost()
   {
     CONTROL_DISABLE(CONTROL_BTNPLAY);
   }
-  if (strGame.IsEmpty() || !pItem || CKaiClient::GetInstance()->IsHosting())
+  if (strGame.IsEmpty() || CKaiClient::GetInstance()->IsHosting())
   {
     CONTROL_DISABLE(CONTROL_BTNHOST);
   }
