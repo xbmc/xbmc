@@ -180,8 +180,8 @@
 	<width>26</width>
 	<height>35</height>
 	<onclick>ActivateWindow(ShutdownMenu)</onclick>
-	<texturefocus>logon-power.gif</texturefocus>
-	<texturenofocus>logon-power.png</texturenofocus>
+	<texturefocus>login-power.gif</texturefocus>
+	<texturenofocus>login-power.png</texturenofocus>
 	<label>-</label>
 	<onleft>52</onleft>
 	<onright>52</onright>
