@@ -38,7 +38,7 @@ namespace DIRECTORY
   CStdString CSmartPlaylistDirectory::GetPlaylistByName(const CStdString& name)
   {
     CFileItemList list;
-    if (CDirectory::GetDirectory(CUtil::MusicPlaylistsLocation(), list, "*.xsp"))
+    if (CDirectory::GetDirectory("special://musicplaylists/", list, "*.xsp"))
     {
       for (int i = 0; i < list.Size(); i++)
       {
