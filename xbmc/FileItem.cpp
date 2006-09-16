@@ -538,7 +538,7 @@ void CFileItem::FillInDefaultIcon()
       {
         SetIconImage("defaultPlaylist.png");
       }
-      if ( IsPicture() )
+      else if ( IsPicture() )
       {
         // picture
         SetIconImage("defaultPicture.png");
