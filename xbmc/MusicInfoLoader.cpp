@@ -55,7 +55,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
   CFileItem* mapItem=NULL;
   // first check the cached item
-  if ((mapItem=m_mapFileItems[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime)
+  if ((mapItem=m_mapFileItems[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime && mapItem->m_musicInfoTag.Loaded())
   { // Query map if we previously cached the file on HD
     pItem->m_musicInfoTag = mapItem->m_musicInfoTag;
     pItem->SetThumbnailImage(mapItem->GetThumbnailImage());
