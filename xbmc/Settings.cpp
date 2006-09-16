@@ -342,7 +342,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   LoadRSSFeeds();
 
   helper.Unmount("S:");
-  CStdString strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szAlternateSubtitleDirectory);
+  CStdString strDir = CUtil::TranslateSpecialSource(g_stSettings.m_szAlternateSubtitleDirectory);
   strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
 
   // look for external sources file
@@ -564,7 +564,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
         if (strPath.at(0) == '$')
         {
           CStdString strPathOld(strPath);
-          strPath = CUtil::TranslateSpecialDir(strPath);
+          strPath = CUtil::TranslateSpecialSource(strPath);
           if (!strPath.IsEmpty())
             CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
           else
@@ -1278,7 +1278,7 @@ void CSettings::LoadAdvancedSettings()
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
   GetString(pRootElement, "cachepath", g_advancedSettings.m_cachePath,"Z:\\");
-  g_advancedSettings.m_cachePath = CUtil::TranslateSpecialDir(g_advancedSettings.m_cachePath);
+  g_advancedSettings.m_cachePath = CUtil::TranslateSpecialSource(g_advancedSettings.m_cachePath);
   CUtil::AddSlashAtEnd(g_advancedSettings.m_cachePath);
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
@@ -2461,7 +2461,7 @@ bool CSettings::AddShare(const CStdString &type, const CShare &share)
   CShare shareToAdd = share;
   if (strPath1.at(0) == '$')
   {
-    shareToAdd.strPath = CUtil::TranslateSpecialDir(strPath1);
+    shareToAdd.strPath = CUtil::TranslateSpecialSource(strPath1);
     if (!share.strPath.IsEmpty())
       CLog::Log(LOGDEBUG,"AddBookmark: Translated (%s) to Path (%s)",strPath1.c_str(),shareToAdd.strPath.c_str());
     else

@@ -417,7 +417,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
       bSpecial = true;
     else if (strLocation.Equals("$playlists"))
     {
-      strLocation = CUtil::MusicPlaylistsLocation();
+      strLocation = "special://musicplaylists/";
       bSpecial = true;
     }
   }
@@ -425,7 +425,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   {
     if (strLocation.Equals("$playlists"))
     {
-      strLocation = CUtil::VideoPlaylistsLocation();
+      strLocation = "special://videoplaylists/";
       bSpecial = true;
     }
   }

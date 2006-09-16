@@ -475,7 +475,7 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
   //  Playlists share
   CShare share;
   share.strName=g_localizeStrings.Get(136); // Playlists
-  share.strPath = CUtil::MusicPlaylistsLocation();
+  share.strPath = "special://musicplaylists/";
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   m_shares.push_back(share);
