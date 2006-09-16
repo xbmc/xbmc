@@ -760,14 +760,33 @@ CSetting *CGUISettings::GetSetting(const char *strSetting)
 // get all the settings beginning with the term "strGroup"
 void CGUISettings::GetSettingsGroup(const char *strGroup, vecSettings &settings)
 {
-  settings.clear();
+  vecSettings unorderedSettings;
   for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
     if ((*it).first.Left(strlen(strGroup)).Equals(strGroup) && (*it).second->GetOrder() > 0 && !(*it).second->IsAdvanced())
-      settings.push_back((*it).second);
+      unorderedSettings.push_back((*it).second);
   }
   // now order them...
-  sort(settings.begin(), settings.end(), sortsettings());
+  sort(unorderedSettings.begin(), unorderedSettings.end(), sortsettings());
+
+  // remove any instances of 2 separators in a row
+  bool lastWasSeparator(false);
+  for (vecSettings::iterator it = unorderedSettings.begin(); it != unorderedSettings.end(); it++)
+  {
+    CSetting *setting = *it;
+    // only add separators if we don't have 2 in a row
+    if (setting->GetType() == SETTINGS_TYPE_SEPARATOR)
+    {
+      if (!lastWasSeparator)
+        settings.push_back(setting);
+      lastWasSeparator = true;
+    }
+    else
+    {
+      lastWasSeparator = false;
+      settings.push_back(setting);
+    }
+  }
 }
 
 void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = false */)
