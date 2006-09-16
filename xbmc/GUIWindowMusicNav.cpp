@@ -115,7 +115,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         }
         else if (strDestination.Equals("Playlists"))
         {
-          m_vecItems.m_strPath = CUtil::MusicPlaylistsLocation();
+          m_vecItems.m_strPath = "special://musicplaylists/";
           SetHistoryForPath(m_vecItems.m_strPath);
         }
         else
@@ -219,7 +219,7 @@ void CGUIWindowMusicNav::UpdateButtons()
   CStdString strLabel;
 
   // "Playlists"
-  if (m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()))
+  if (m_vecItems.m_strPath.Equals("special://musicplaylists/"))
     strLabel = g_localizeStrings.Get(136);
   // "{Playlist Name}"
   else if (m_vecItems.IsPlayList())
