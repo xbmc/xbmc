@@ -43,7 +43,7 @@
    <width>160</width>
    <font>font12</font>
    <align>center</align>
-   <label>ChokeManiac</label>
+   <label>-</label>
    <scroll>true</scroll>
   </control>
 
@@ -54,7 +54,7 @@
    <posx>76</posx>
    <posy>33</posy>
    <width>160</width>
-   <label>has just signed in</label>
+   <label>-</label>
    <font>font10</font>
    <align>center</align>
    <scroll>true</scroll>
