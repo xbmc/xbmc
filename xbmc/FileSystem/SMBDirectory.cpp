@@ -84,6 +84,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         {
           bIsDir = (info.st_mode & S_IFDIR) ? true : false;
           lTimeDate = info.st_mtime;
+          if(lTimeDate == 0) /* if modification date is missing, use create date */
+            lTimeDate = info.st_ctime;
           iSize = info.st_size;
         }
         else
