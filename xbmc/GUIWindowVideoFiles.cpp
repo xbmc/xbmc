@@ -84,7 +84,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         // open playlists location
         else if (strDestination.Equals("$PLAYLISTS"))
         {
-          m_vecItems.m_strPath = CUtil::VideoPlaylistsLocation();
+          m_vecItems.m_strPath = "special://videoplaylists/";
           CLog::Log(LOGINFO, "  Success! Opening destination path: %s", m_vecItems.m_strPath.c_str());
         }
         else
@@ -162,11 +162,11 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNPLAYLISTS)
       {
-        if (!m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation()))
+        if (!m_vecItems.m_strPath.Equals("special://videoplaylists/"))
         {
           CStdString strParent = m_vecItems.m_strPath;
           UpdateButtons();
-          Update(CUtil::VideoPlaylistsLocation());
+          Update("special://videoplaylists/");
         }
       }
       // list/thumb panel 
