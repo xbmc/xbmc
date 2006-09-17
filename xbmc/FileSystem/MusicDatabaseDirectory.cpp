@@ -190,3 +190,13 @@ bool CMusicDatabaseDirectory::ContainsSongs(const CStdString &path)
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG_TOP100) return true;
   return false;
 }
+
+bool CMusicDatabaseDirectory::Exists(const char* strPath)
+{
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+
+  if (!pNode.get())
+    return false;
+
+  return true;
+}
