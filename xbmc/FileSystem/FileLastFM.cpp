@@ -3,6 +3,7 @@
 #include "../Util.h"
 #include "../utils/GUIInfoManager.h"
 #include "../lib/libscrobbler/md5.h"
+#include "../Application.h"
 
 enum ACTION
 {
@@ -472,10 +473,10 @@ bool CFileLastFM::RetreiveMetaData()
     tag.SetLoaded();
     g_infoManager.SetCurrentSongTag(tag);
 
-    //inform app a new track has started
+    //inform app a new track has started, and reset our playtime
     CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, NULL);
     m_gWindowManager.SendThreadMessage(msg);
-
+    g_application.ResetPlayTime();
 
     //check recordtoprofile, only update if server has wrong setting
     Parameter("recordtoprofile", html, value);

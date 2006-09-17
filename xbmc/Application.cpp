@@ -4417,6 +4417,12 @@ double CApplication::GetTotalTime() const
   return rc;
 }
 
+void CApplication::ResetPlayTime()
+{
+  if (IsPlaying() && m_pPlayer)
+    m_pPlayer->ResetTime();
+}
+
 // Returns the current time in seconds of the currently playing media.
 // Fractional portions of a second are possible.  This returns a double to
 // be consistent with GetTotalTime() and SeekTime().

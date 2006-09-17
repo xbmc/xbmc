@@ -117,6 +117,7 @@ public:
   float GetPercentage() const;
   void SeekPercentage(float percent);
   void SeekTime( double dTime = 0.0 );
+  void ResetPlayTime();
 
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
