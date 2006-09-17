@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-09-2006 improved: handling of vobs/mpeg's with a nonzero start pts. (mplayer.dll)
+ - 17-09-2006 fixed: rewind on some movies would just lock picture untill a fastforward request was made (mplayer.dll)
+ - 17-09-2006 fixed: udp:// where not working in mplayer.dll, still no multicast support but atleast you can stream directly from vlc (mplayer.dll)
+ - 17-09-2006 fixed: some videos would not display any time, but would still have totaltime and progress (mplayer.dll)
+ - 17-09-2006 fixed: audio delay returned from audio renderer's where way of for mplayer when resampling it was resampling audio.
  - 17-09-2006 added: missing ::Exists function in CMusicDatabaseDirectory. fixes listings through httpapi.
  - 17-09-2006 fixed: mockup with dvd share context menus.
  - 17-09-2006 fixed: changing sort by in video title view crashed.
