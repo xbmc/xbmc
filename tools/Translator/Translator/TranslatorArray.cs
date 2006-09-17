@@ -13,6 +13,7 @@ namespace TeamXBMC.TranslatorCore
 		private Hashtable stringsMap=new Hashtable();
 		private TranslatorArrayEnumerator enumerator=TranslatorArrayEnumerator.All;
 		private double versionOriginal=0.0;
+		private bool modified=false;
 
 		#region Constructors
 
@@ -127,6 +128,8 @@ namespace TeamXBMC.TranslatorCore
 			if (Settings.Instance.LanguageFolder=="" || Settings.Instance.Language=="")
 				return;
 
+			modified=false;
+
 			if (!File.Exists(Settings.Instance.FilenameOriginal))
 				throw new TranslatorException("File "+Settings.Instance.FilenameOriginal+" was not found. Please be sure your language folder is set properly.");
 
@@ -147,11 +150,25 @@ namespace TeamXBMC.TranslatorCore
 				DetermineUntranslated(stringsTranslated, stringsOriginal);
 				DetermineChanged(stringsTranslated, stringsOriginal);
 				Sort();
+
+				foreach (TranslatorItem item in strings)
+				{ // Add StringModified to the stringUpdated delegate
+					// to be informed if a string has changed
+					item.StringTranslated.stringUpdated+=new StringItem.StringUpdatedDelegate(StringModified);
+				}
 			}
 			catch(Exception e)
 			{
 				throw new TranslatorException("Error processing xml data", e);
 			}
+		}
+
+		/// <summary>
+		/// Returns true if the current language file is modified
+		/// </summary>
+		public bool IsModified
+		{
+			get { return modified; }
 		}
 
 		/// <summary>
@@ -184,6 +201,8 @@ namespace TeamXBMC.TranslatorCore
 				comments.Add("Based on english strings version "+versionOriginal.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
 			strings.Save(Settings.Instance.FilenameTranslated, (string[])comments.ToArray(typeof(string)));
+
+			modified=false;
 		}
 
 		/// <summary>
@@ -264,6 +283,14 @@ namespace TeamXBMC.TranslatorCore
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// This function is called if a StringItem has beeen modified
+		/// </summary>
+		private void StringModified(StringItem item)
+		{
+			modified=true;
 		}
 
 		#endregion

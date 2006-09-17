@@ -493,6 +493,7 @@ namespace TeamXBMC.Translator
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Team XBMC Translator";
 			this.Load += new System.EventHandler(this.MainForm_Load);
+			this.Closing +=new CancelEventHandler(MainForm_Closing);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);
@@ -523,6 +524,18 @@ namespace TeamXBMC.Translator
 		private void MainForm_Load(object sender, System.EventArgs e)
 		{
 			Initialize();
+		}
+
+		/// <summary>
+		/// Check if we have to save the language file
+		/// </summary>
+		private void MainForm_Closing(object sender, CancelEventArgs e)
+		{
+			DialogResult result=ShouldSaveLanguageFile();
+			if (result==DialogResult.Yes)
+				SaveLanguageFile();
+			else if (result==DialogResult.Cancel)
+				e.Cancel=true;
 		}
 
 		/// <summary>
@@ -716,6 +729,12 @@ namespace TeamXBMC.Translator
 			if (Settings.Instance.LanguageFolder=="" && !ShowFolderBrowser())
 				return;
 
+			DialogResult result=ShouldSaveLanguageFile();
+			if (result==DialogResult.Yes)
+				SaveLanguageFile();
+			else if (result==DialogResult.Cancel)
+				return;
+
 			NewLanguageForm form=new NewLanguageForm();
 			if (form.ShowDialog()==DialogResult.Cancel)
 				return;
@@ -740,6 +759,12 @@ namespace TeamXBMC.Translator
 		private void menuItemOpen_Click(object sender, System.EventArgs e)
 		{
 			if (Settings.Instance.LanguageFolder=="" && !ShowFolderBrowser())
+				return;
+
+			DialogResult result=ShouldSaveLanguageFile();
+			if (result==DialogResult.Yes)
+				SaveLanguageFile();
+			else if (result==DialogResult.Cancel)
 				return;
 
 			ChooseLanguageForm form=new ChooseLanguageForm();
@@ -781,6 +806,28 @@ namespace TeamXBMC.Translator
 		/// </summary>
 		private void menuItemSave_Click(object sender, System.EventArgs e)
 		{
+			SaveLanguageFile();
+		}
+
+		/// <summary>
+		/// Asks the user if he wants to save the language file is it's modified
+		/// </summary>
+		private DialogResult ShouldSaveLanguageFile()
+		{
+			if (TranslationManager.Instance.IsModified)
+			{
+				string message="The language file has been modified.\n\nSave changes?";
+				return MessageBox.Show(message, Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+			}
+
+			return DialogResult.No;
+		}
+
+		/// <summary>
+		/// Saves the active language file
+		/// </summary>
+		private void SaveLanguageFile()
+		{
 			try
 			{
 				TranslationManager.Instance.SaveTranslated();
@@ -796,6 +843,12 @@ namespace TeamXBMC.Translator
 		/// </summary>
 		private void menuItemLanguageFolder_Click(object sender, System.EventArgs e)
 		{
+			DialogResult result=ShouldSaveLanguageFile();
+			if (result==DialogResult.Yes)
+				SaveLanguageFile();
+			else if (result==DialogResult.Cancel)
+				return;
+
 			if (ShowFolderBrowser())
 				Initialize();
 		}
@@ -805,6 +858,12 @@ namespace TeamXBMC.Translator
 		/// </summary>
 		private void menuItemExit_Click(object sender, System.EventArgs e)
 		{
+			DialogResult result=ShouldSaveLanguageFile();
+			if (result==DialogResult.Yes)
+				SaveLanguageFile();
+			else if (result==DialogResult.Cancel)
+				return;
+
 			Application.Exit();
 		}
 
@@ -1021,6 +1080,5 @@ namespace TeamXBMC.Translator
 		}
 
 		#endregion
-
 	}
 }
