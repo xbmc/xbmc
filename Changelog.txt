@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-09-2006 fixed: mockup with dvd share context menus.
  - 17-09-2006 fixed: changing sort by in video title view crashed.
  - 17-09-2006 changed: flicker filter settings now shows off instead of level 0.
  - 17-09-2006 updated: German language file
