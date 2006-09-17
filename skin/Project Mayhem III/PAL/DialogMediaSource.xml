@@ -69,13 +69,14 @@
    <width>320</width>
    <height>150</height>
    <font>font12</font>
-   <textoffsetx>12</textoffsetx>
+   <textoffsetx>8</textoffsetx>
    <aligny>center</aligny>
    <texturefocus>input-focus.png</texturefocus>
    <texturenofocus>input-nofocus.png</texturenofocus>
    <textureheight>32</textureheight>
    <spacebetweenitems>8</spacebetweenitems>
-   <textxoff>-20</textxoff>
+   <itemwidth>0</itemwidth>
+   <textxoff>0</textxoff>
    <font2>-</font2>
    <onup>18</onup>
    <onleft>11</onleft>
