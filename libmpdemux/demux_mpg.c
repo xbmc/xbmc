@@ -47,9 +47,12 @@ int demux_mpg_open(demuxer_t* demuxer) {
   mpg_demuxer_t* mpg_d;
 
 #ifdef _XBOX
+  int has_first_pts = 0;
+
   mpg_d = (mpg_demuxer_t*)calloc(1,sizeof(mpg_demuxer_t));
   demuxer->priv = mpg_d;
-  mpg_d->final_pts = 0.0;
+  mpg_d->final_pts = 0.0f;
+  mpg_d->first_pts = 0.0f;
   mpg_d->has_valid_timestamps = 1;
 
   if (!ds_fill_buffer(demuxer->video)) 
@@ -58,9 +61,8 @@ int demux_mpg_open(demuxer_t* demuxer) {
     mpg_d=NULL;
     return 0;
   }
-  //Remember our first pts given as this is needed for seeking later
-  //some files don't start at 0. This should probably be offset by how much is in the buffer
-  mpg_d->first_pts = mpg_d->last_pts;
+
+  has_first_pts = mpg_d->first_pts!= 0.0f;
 #else
   if (!ds_fill_buffer(demuxer->video)) return 0;
   mpg_d = (mpg_demuxer_t*)calloc(1,sizeof(mpg_demuxer_t));
@@ -77,10 +79,18 @@ int demux_mpg_open(demuxer_t* demuxer) {
     while ((!s->eof) && ds_fill_buffer(demuxer->video)) {
       if (mpg_d->final_pts < mpg_d->last_pts) mpg_d->final_pts = mpg_d->last_pts;
     }
+#ifdef _XBOX
+    // educated guess about validity of timestamps
+    if(!has_first_pts) mpg_d->first_pts = 0.0f;
+    if ((mpg_d->final_pts-mpg_d->first_pts) > 3 * (half_pts-mpg_d->first_pts) ||(mpg_d->final_pts-mpg_d->first_pts) < 1.5 * (half_pts-mpg_d->first_pts)) {
+      mpg_d->has_valid_timestamps = 0;
+    }
+#else
     // educated guess about validity of timestamps
     if (mpg_d->final_pts > 3 * half_pts || mpg_d->final_pts < 1.5 * half_pts) {
       mpg_d->has_valid_timestamps = 0;
     }
+#endif
     ds_free_packs(demuxer->audio);
     ds_free_packs(demuxer->video);
     demuxer->stream->eof=0; // clear eof flag
@@ -303,6 +313,14 @@ static int demux_mpg_read_packet(demuxer_t *demux,int id){
 //    printf("packet start = 0x%X  \n",stream_tell(demux->stream)-packet_start_pos);
     ds_read_packet(ds,demux->stream,len,pts/90000.0f,demux->filepos,0);
     if (demux->priv) ((mpg_demuxer_t*)demux->priv)->last_pts = pts/90000.0f;
+#ifdef _XBOX
+    if (demux->priv)
+    {
+      mpg_demuxer_t* mpg_d = ((mpg_demuxer_t*)demux->priv);
+      if( mpg_d->first_pts == 0.0f || (pts !=0 && mpg_d->first_pts > pts/90000.0f))
+        mpg_d->first_pts = pts/90000.0f;
+    }
+#endif
 //    if(ds==demux->sub) parse_dvdsub(ds->last->buffer,ds->last->len);
     return 1;
   }
@@ -551,8 +569,13 @@ int demux_mpg_control(demuxer_t *demuxer,int cmd, void *arg){
 
     switch(cmd) {
 	case DEMUXER_CTRL_GET_TIME_LENGTH:
+#ifdef _XBOX
+            if (mpg_d && mpg_d->has_valid_timestamps && mpg_d->final_pts > 0.0) {
+              *((unsigned long *)arg)=(long)(mpg_d->final_pts-mpg_d->first_pts);
+#else
             if (mpg_d && mpg_d->has_valid_timestamps) {
               *((unsigned long *)arg)=(long)mpg_d->final_pts;
+#endif
               return DEMUXER_CTRL_GUESS;
             }
 	    if(!sh_video || !sh_video->i_bps)  // unspecified or VBR 
