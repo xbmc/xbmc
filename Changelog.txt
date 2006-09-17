@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-09-2006 updated: German language file
+ - 17-09-2006 updated: Swedish language file (Thnx to blittan)
+ - 17-09-2006 updated: Dutch language file (Thnx to MrNice)
+ - 17-09-2006 updated: Polish language file (Thnx to napek)
  - 17-09-2006 fixed: Last.FM didn't reset the timer when switching tracks.
  - 17-09-2006 fixed: Play from remote on a folder queued it then immediately paused the playback.
  - 16-09-2006 changed: potential fix for [ 1493993 ] Strange date behavior on FAT32 SMB shares. fallback to create date instead of modification date if missing
