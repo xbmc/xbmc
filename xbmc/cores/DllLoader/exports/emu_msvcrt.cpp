@@ -54,7 +54,7 @@ extern "C" void __stdcall init_emu_environ()
   dll_putenv("DVDREAD_NOKEYS=1");
   
   // libdvdcss
-  dll_putenv("DVDCSS_METHOD=title");
+  dll_putenv("DVDCSS_METHOD=key");
   dll_putenv("DVDCSS_VERBOSE=3");
   dll_putenv("DVDCSS_CACHE=T:\\cache");
   
