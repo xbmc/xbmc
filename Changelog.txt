@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-09-2006 changed: flicker filter settings now shows off instead of level 0.
  - 17-09-2006 updated: German language file
  - 17-09-2006 updated: Swedish language file (Thnx to blittan)
  - 17-09-2006 updated: Dutch language file (Thnx to MrNice)

@@ -53,7 +53,7 @@ protected:
   void AddButton(unsigned int it, int label, bool bOn=true);
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
-  void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max);
+  void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max, const char* minLabel = NULL);
   void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, const char *format = NULL);
   void AddSlider(unsigned int id, int label, int *current, int min, int max);
   void AddSeparator(unsigned int id);

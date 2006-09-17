@@ -415,7 +415,7 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsig
   m_settings.push_back(setting);
 }
 
-void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max)
+void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max, const char* minLabel)
 {
   SettingInfo setting;
   setting.id = id;
@@ -425,7 +425,10 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsig
   for (unsigned int i = min; i <= max; i++)
   {
     CStdString format;
-    format.Format("%i", i);
+    if (i == min && minLabel)
+      format = minLabel;
+    else
+      format.Format("%i", i);
     setting.entry.push_back(format);
   }
   m_settings.push_back(setting);
