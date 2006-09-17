@@ -868,7 +868,10 @@ void CGUIMediaWindow::UpdateFileList()
   {
     int iPlaylist=m_guiState->GetPlaylist();
     int nSong = g_playlistPlayer.GetCurrentSong();
-    const CFileItem& playlistItem=g_playlistPlayer.GetPlaylist(iPlaylist)[nSong];
+    CFileItem playlistItem;
+    if (nSong > -1 && iPlaylist > -1)
+      playlistItem=g_playlistPlayer.GetPlaylist(iPlaylist)[nSong];
+    
     g_playlistPlayer.ClearPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
     int nFolderCount = 0;
@@ -883,11 +886,12 @@ void CGUIMediaWindow::UpdateFileList()
       }
       if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
       {
-        CPlayList::CPlayListItem playlistItem ;
-        CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-        g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
+        CPlayList::CPlayListItem newPlaylistItem ;
+        CUtil::ConvertFileItemToPlayListItem(pItem, newPlaylistItem);
+        g_playlistPlayer.GetPlaylist(iPlaylist).Add(newPlaylistItem);
       }
-      else iNoSongs++;
+      else 
+        iNoSongs++;
 
       if (pItem->m_strPath == playlistItem.m_strPath &&
           pItem->m_lStartOffset == playlistItem.m_lStartOffset)
