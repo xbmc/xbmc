@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 17-09-2006 fixed: some video's would not return current time, even thou they had total time and current percentage
+  - 17-09-2006 fixed: rewind on some movies would just lock picture untill a fastforward request was made
+  - 17-09-2006 added: support for udp:// protocol, can only be used for targeted streaming directly to the xbox
   - 04-09-2006 fixed: mplayer would crash if total time was requested from an avi where decoding of video had failed
   - 13-08-2006 added: demux_aac.c from mplayerhq and content-type detection for shoutcast streams
   - 13-08-2006 updated: libfaad2, demux_aac to mplayerhq version (aac+)

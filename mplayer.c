@@ -99,7 +99,7 @@ int oggsub_count = 0;
 float orgplayback_speed=1.0;
 static float ffrw_speed=0;
 static unsigned int ffrw_starttime=0;
-static int ffrw_startpts=0;
+static float ffrw_startpts=0;
 static int ffrw_sstepframes=0;
 static int ffrw_sstepnum=0;
 void ffrw_setspeed(int iSpeed);
@@ -281,10 +281,9 @@ static char* spudec_ifo=NULL;
 char* filename=NULL; //"MI2-Trailer.avi";
 int forced_subs_only=0;
 
-// cache2:
 #ifdef _XBOX
-static voldpts=0;
-static aoldpts=0;
+static float voldpts=0;
+static float aoldpts=0;
 
 extern float demux_mpg_get_first_pts(demuxer_t* demuxer);
 float demux_get_first_pts(demuxer_t* demuxer)
@@ -298,6 +297,7 @@ float demux_get_first_pts(demuxer_t* demuxer)
 };
 
 #endif //!_XBOX
+// cache2:
        int stream_cache_size=-1;
 #ifdef USE_STREAM_CACHE
 extern int cache_fill_status;
@@ -920,6 +920,9 @@ static void saddf(char *buf, unsigned *pos, int len, const char *format, ...)
  */
 static void print_status(float a_pos, float a_v, float corr)
 {
+#ifdef _XBOX
+  return; /* we never want this printed */
+#endif
   int width;
   char *line;
   unsigned pos = 0;
@@ -1130,7 +1133,10 @@ const char* mplayer_getcompiletime()
 
 __int64 mplayer_get_pts()
 {
-  return aoldpts - demux_get_first_pts(demuxer);
+  if(sh_video)
+    return (__int64)aoldpts;
+  else /* stupid hack that lives on */
+    return (__int64)aoldpts*10;
 }
 
 short mplayer_HasVideo()
@@ -2762,7 +2768,8 @@ while(sh_audio){
 if(!sh_video) {
   // handle audio-only case:
 #ifdef _XBOX
-  aoldpts= 10 * sh_audio->delay - audio_out->get_delay();
+  aoldpts=sh_audio->delay - audio_out->get_delay() * orgplayback_speed;
+  voldpts= 0.0f;
 #else
   if(!quiet) {
     float a_pos = sh_audio->delay - audio_out->get_delay() * playback_speed;
@@ -2813,10 +2820,10 @@ if(!sh_video) {
   if( ffrw_speed < 0.0 )
   {
       float v_pts = sh_video ? sh_video->pts : d_video->pts;
-      float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + (float)ffrw_startpts;     
+      float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + ffrw_startpts;     
 
       //Check if we are still way of the correct frame
-      if( ( newpts - v_pts > 0.5 ) ) drop_frame = 1;
+      if( ( v_pts - newpts > 0.5 ) ) drop_frame = 1;
   }
 #endif
 
@@ -3027,7 +3034,11 @@ if(time_frame>0.001 && !(vo_flags&256)){
     float v_pts=0;
 
     // unplayed bytes in our and soundcard/dma buffer:
+#ifdef _XBOX
+    float delay=orgplayback_speed*audio_out->get_delay()+(float)sh_audio->a_buffer_len/(float)sh_audio->o_bps;
+#else
     float delay=playback_speed*audio_out->get_delay()+(float)sh_audio->a_buffer_len/(float)sh_audio->o_bps;
+#endif
 
     if (autosync){
       /*
@@ -3056,17 +3067,11 @@ if(time_frame>0.001 && !(vo_flags&256)){
         a_pts=samples*(float)sh_audio->audio.dwScale/(float)sh_audio->audio.dwRate;
 	delay_corrected=1;
 	a_pts-=(sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
-    #ifdef _XBOX
-    aoldpts=a_pts;
-    #endif
     } else
 #endif
     {
       // PTS = (last timestamp) + (bytes after last timestamp)/(bytes per sec)
       a_pts=d_audio->pts;
-      #ifdef _XBOX
-      aoldpts=a_pts;
-      #endif
       if(!delay_corrected) if(a_pts) delay_corrected=1;
 #if 0
       mp_msg(MSGT_FIXME, MSGL_FIXME, "\n#X# pts=%5.3f ds_pts=%5.3f buff=%5.3f total=%5.3f\n",
@@ -3076,9 +3081,6 @@ if(time_frame>0.001 && !(vo_flags&256)){
 	  a_pts+(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps);
 #endif	  
       a_pts+=(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
-      #ifdef _XBOX
-      aoldpts=a_pts;
-      #endif
     }
     v_pts=sh_video ? sh_video->pts : d_video->pts;
 
@@ -3101,16 +3103,8 @@ if(time_frame>0.001 && !(vo_flags&256)){
           max_pts_correction=sh_video->frametime*0.10; // +-10% of time
 	if(!frame_time_remaining){ sh_audio->delay+=x; c_total+=x;} // correction
 #ifdef _XBOX
-	if (v_pts >= voldpts+1.0)
-	{
-		fFPS = fFPS / (v_pts-voldpts);
-		voldpts=v_pts;
-		fFPS=0.0f;
-	}
-  else if (v_pts < voldpts)
-  {
-    voldpts=v_pts;
-  }
+  aoldpts=a_pts - audio_delay - delay;
+  voldpts=v_pts;
 #else
         if(!quiet)
           print_status(a_pts - audio_delay - delay, AV_delay, c_total);
@@ -3119,10 +3113,12 @@ if(time_frame>0.001 && !(vo_flags&256)){
     
   } else {
     // No audio:
-#ifndef _XBOX
+#ifdef _XBOX
+  aoldpts=0.0f;
+  voldpts=sh_video ? sh_video->pts : (d_video ? d_video->pts : 0.0f);
+#endif
     if(!quiet)
       print_status(0, 0, 0);
-#endif
   }
 
 //============================ Auto QUALITY ============================
@@ -3227,7 +3223,7 @@ if(auto_quality>0){
       //Don't seek forward, and only display frames every half second
       while(rel_seek_secs > -0.5f) 
       {
-        float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + (float)ffrw_startpts;     
+        float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + ffrw_startpts;
         rel_seek_secs= newpts - v_pts;
         abs_seek_pos=0;
         usec_sleep(0); //Sleep 1 ms
@@ -3258,7 +3254,7 @@ if(auto_quality>0){
   else if(ffrw_speed>0.0f)
   {
     float v_pts = sh_video ? sh_video->pts : d_video->pts;
-    float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + (float)ffrw_startpts;    
+    float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + ffrw_startpts;    
     //If we diff more than 2 seconds from where we are supposed to be
     //and we have rendered ffrw_sstepframes frames, seek to correct pos.
     if( (newpts - v_pts) > 2.0f && ffrw_sstepnum >= ffrw_sstepframes)
@@ -4509,9 +4505,6 @@ if(rel_seek_secs || abs_seek_pos){
 	if(verbose>0){
 	    float a_pts=d_audio->pts;
             a_pts+=(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
-			#ifdef _XBOX
-			aoldpts=a_pts;
-			#endif
 	    mp_msg(MSGT_AVSYNC,MSGL_V,"SEEK: A: %5.3f  V: %5.3f  A-V: %5.3f   \n",a_pts,d_video->pts,a_pts-d_video->pts);
 	}
         mp_msg(MSGT_AVSYNC,MSGL_STATUS,"A:%6.1f  V:%6.1f  A-V:%7.3f  ct: ?   \r",d_audio->pts,d_video->pts,0.0f);
@@ -5178,15 +5171,10 @@ int mplayer_getAudioStream()
 
 __int64 mplayer_getCurrentTime()
 {
-  
-  if (sh_video ||d_video)
-  {
-    if (step_sec != 0 ||  playback_speed != orgplayback_speed)
-    {
-      return( (sh_video ? sh_video->pts : d_video->pts) - demux_get_first_pts(demuxer) );
-    }
-  }
-  return (__int64)(aoldpts - demux_get_first_pts(demuxer)) ;
+  if( voldpts != 0.0f && (aoldpts == 0.0f || step_sec != 0 || playback_speed != orgplayback_speed))
+    return (__int64)(voldpts - demux_get_first_pts(demuxer));
+  else
+    return (__int64)(aoldpts - demux_get_first_pts(demuxer)) ;
 }
 
 void mplayer_setTime(int iTime)
@@ -5245,7 +5233,7 @@ void ffrw_setspeed(int iSpeed)
     {
       if(playback_speed != orgplayback_speed){
         abs_seek_pos=1; //Absolute seek since something goes wrong when ff/rw
-        rel_seek_secs = aoldpts/10+1; //for some reason pts is multiplied by 10, and somewhat to small
+        rel_seek_secs = aoldpts+1; //for some reason pts is somewhat to small
         playback_speed = orgplayback_speed;
       }
 
