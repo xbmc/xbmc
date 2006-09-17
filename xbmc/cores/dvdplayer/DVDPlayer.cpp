@@ -161,10 +161,6 @@ bool CDVDPlayer::CloseFile()
   // unpause the player
   SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
-  // flush all buffers, and let OnExit do the rest of all the work
-  // doing all the closing in OnExit requires less thread synchronisation and locking
-  FlushBuffers();
-
   CLog::Log(LOGNOTICE, "DVDPlayer: waiting for threads to exit");
 
   // wait for the main thread to finish up

@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-09-2006 changed: use DVDCSS_METHOD key instead of title, it will fallback to key if initial attempt fails. 
+                       this could potentially cause troubles for dvd's where vobs have diffrent keys, but should speed up opening of most dvds
+ - 18-09-2006 fixed: crash when stopping playback in dvdplayer, due too wrong thread trying to flush codecs.
  - 17-09-2006 improved: handling of vobs/mpeg's with a nonzero start pts. (mplayer.dll)
  - 17-09-2006 fixed: rewind on some movies would just lock picture untill a fastforward request was made (mplayer.dll)
  - 17-09-2006 fixed: udp:// where not working in mplayer.dll, still no multicast support but atleast you can stream directly from vlc (mplayer.dll)
