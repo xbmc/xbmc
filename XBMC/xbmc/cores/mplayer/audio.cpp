@@ -290,7 +290,7 @@ static float audio_get_delay()
   FLOAT fDelay = m_pAudioDecoder->GetDelay();
   // check our output rate...
   if (m_pAudioDecoder->IsResampling())
-    fDelay += (float)m_pAudioDecoder->GetBytesInBuffer() / (float)48000 * pao_data->channels * 2;
+    fDelay += (float)m_pAudioDecoder->GetBytesInBuffer() / (float)(48000 * pao_data->channels * 2);
   else
     fDelay += (float)m_pAudioDecoder->GetBytesInBuffer() / (float)pao_data->bps;
   return fDelay;
