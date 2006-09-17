@@ -363,7 +363,7 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
   AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
-  AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
+  AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(8, "videoplayer.soften", 215, false);
   AddSeparator(9, "videoplayer.sep2");
   AddString(10, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
@@ -462,7 +462,7 @@ CGUISettings::CGUISettings(void)
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);  
   AddString(2, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
-  AddInt(3, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
+  AddInt(3, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(4, "videoscreen.soften", 215, false);
 
   AddCategory(7, "filelists", 14018);
