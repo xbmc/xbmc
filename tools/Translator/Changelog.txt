@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-09-2006 fixed: No new languages could be created
+ - 17-09-2006 added: user is now asked if he wants to save changes on app exit or when opening a new file
  - 10-09-2006 changed: help url now points to www.xboxmediacenter.com/wiki/index.php?title=XBMC_Translator
  - 10-09-2006 added: Product information to the assembly
  - 10-09-2006 changed: derived TranslatorException from ApplicationException

@@ -172,6 +172,14 @@ namespace TeamXBMC.TranslatorCore
 			}
 		}
 
+		/// <summary>
+		/// Returns true if the currently edited language file is has been changed by the user
+		/// </summary>
+		public bool IsModified
+		{
+			get { return strings.IsModified; }
+		}
+
 		#endregion
 	}
 }
