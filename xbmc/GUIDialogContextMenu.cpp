@@ -162,14 +162,22 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
   for (unsigned int i = 0; i < shares->size(); i++)
   {
     CShare &testShare = shares->at(i);
-    if (testShare.strPath.Equals(item->m_strPath))
-    { // paths match, what about share name - only match the leftmost
-      // characters as the label may contain other info (status for instance)
-      if (item->GetLabel().Left(testShare.strName.size()).Equals(testShare.strName))
-      {
-        share = &testShare;
-        break;
-      }
+    if (CUtil::IsDVD(testShare.strPath))
+    {
+      if (!item->IsDVD())
+        continue;
+    }
+    else
+    {
+      if (!testShare.strPath.Equals(item->m_strPath))
+        continue;
+    }
+    // paths match, what about share name - only match the leftmost
+    // characters as the label may contain other info (status for instance)
+    if (item->GetLabel().Left(testShare.strName.size()).Equals(testShare.strName))
+    {
+      share = &testShare;
+      break;
     }
   }
 
@@ -192,9 +200,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     CIoSupport TrayIO;
     if (item->IsDVD() || item->IsCDDA())
     {
-      // We need to check if there is a detected is inserted! 
-      int iTrayState = TrayIO.GetTrayState();
-      if ( iTrayState == DRIVE_CLOSED_MEDIA_PRESENT || iTrayState == TRAY_CLOSED_MEDIA_PRESENT )
+      // We need to check if there is a detected is inserted!
+      if ( CDetectDVDMedia::IsDiscInDrive() )
       {
         btn_PlayDisc = pMenu->AddButton(341); // Play CD/DVD!
         bIsDVDMediaPresent = true;
