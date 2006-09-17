@@ -442,6 +442,188 @@ check4proxies( URL_t *url ) {
 	return url_out;
 }
 
+#ifdef _XBOX
+/* Start listening on a UDP port. If multicast, join the group. */
+int
+udp_open_socket (URL_t *url)
+{
+  int socket_server_fd, rxsockbufsz;
+  int err;
+  socklen_t err_len;
+  fd_set set;
+  struct sockaddr_in server_address;
+  struct ip_mreq mcast;
+  struct timeval tv;
+  struct hostent *hp;
+
+  mp_msg (MSGT_NETWORK, MSGL_V,
+          "Listening for traffic on %s:%d ...\n", url->hostname, url->port);
+
+  socket_server_fd = socket (AF_INET, SOCK_DGRAM, 0);
+  if (socket_server_fd == -1)
+  {
+    mp_msg (MSGT_NETWORK, MSGL_ERR, "Failed to create socket\n");
+    return -1;
+  }
+
+  if (isalpha (url->hostname[0]))
+  {
+#ifndef HAVE_WINSOCK2
+    hp = (struct hostent *) gethostbyname (url->hostname);
+    if (!hp)
+    {
+      mp_msg (MSGT_NETWORK, MSGL_ERR,
+              "Counldn't resolve name: %s\n", url->hostname);
+      closesocket (socket_server_fd);
+      return -1;
+    }
+    memcpy ((void *) &server_address.sin_addr.s_addr,
+            (void *) hp->h_addr_list[0], hp->h_length);
+#else
+    server_address.sin_addr.s_addr = htonl (INADDR_ANY);
+#endif /* HAVE_WINSOCK2 */
+  }
+  else
+  {    
+#ifndef HAVE_WINSOCK2
+#ifdef USE_ATON
+    inet_aton (url->hostname, &server_address.sin_addr);
+#else
+    inet_pton (AF_INET, url->hostname, &server_address.sin_addr);
+#endif /* USE_ATON */
+#else
+    server_address.sin_addr.s_addr = htonl(INADDR_ANY);
+#endif /* HAVE_WINSOCK2 */
+  }
+  server_address.sin_family = AF_INET;
+  server_address.sin_port = htons (url->port);
+
+  if (bind (socket_server_fd, (struct sockaddr *) &server_address,
+            sizeof (server_address)) == -1)
+  {
+#ifndef HAVE_WINSOCK2
+    if (errno != EINPROGRESS)
+#else
+    if (WSAGetLastError () != WSAEINPROGRESS)
+#endif /* HAVE_WINSOCK2 */
+    {
+      mp_msg (MSGT_NETWORK, MSGL_ERR, "Failed to connect to server\n");
+      closesocket (socket_server_fd);
+      return -1;
+    }
+  }
+	
+#ifdef HAVE_WINSOCK2
+  if (isalpha (url->hostname[0]))
+  {
+    hp = (struct hostent *) gethostbyname (url->hostname);
+    if (!hp)
+    {
+      mp_msg (MSGT_NETWORK, MSGL_ERR,
+              "Counldn't resolve name: %s\n", url->hostname);
+      closesocket (socket_server_fd);
+      return -1;
+    }
+    memcpy ((void *) &server_address.sin_addr.s_addr,
+            (void *) hp->h_addr, hp->h_length);
+  }
+  else
+  {
+    unsigned int addr = inet_addr (url->hostname);
+    memcpy ((void *) &server_address.sin_addr, (void *) &addr, sizeof (addr));
+  }
+#endif /* HAVE_WINSOCK2 */
+
+  /* Increase the socket rx buffer size to maximum -- this is UDP */
+  rxsockbufsz = 240 * 1024;
+  if (setsockopt (socket_server_fd, SOL_SOCKET, SO_RCVBUF,
+                  &rxsockbufsz, sizeof (rxsockbufsz)))
+  {
+    mp_msg (MSGT_NETWORK, MSGL_ERR,
+            "Couldn't set receive socket buffer size\n");
+  }
+
+  if ((ntohl (server_address.sin_addr.s_addr) >> 28) == 0xe)
+  {
+    mcast.imr_multiaddr.s_addr = server_address.sin_addr.s_addr;
+    mcast.imr_interface.s_addr = 0;
+
+    if (setsockopt (socket_server_fd, IPPROTO_IP,
+                    IP_ADD_MEMBERSHIP, &mcast, sizeof (mcast)))
+    {
+      mp_msg (MSGT_NETWORK, MSGL_ERR, "IP_ADD_MEMBERSHIP failed (do you have multicasting enabled in your kernel?)\n");
+      closesocket (socket_server_fd);
+      return -1;
+    }
+  }
+
+  tv.tv_sec = 0;
+  tv.tv_usec = (1 * 1000000);	/* 1 second timeout */
+
+  FD_ZERO (&set);
+  FD_SET (socket_server_fd, &set);
+  
+  err = select (socket_server_fd + 1, &set, NULL, NULL, &tv);
+  if (err < 0)
+  {
+    mp_msg (MSGT_NETWORK, MSGL_FATAL,
+            "Select failed: %s\n", strerror (errno));
+    closesocket (socket_server_fd);
+    return -1;
+  }
+
+  if (err == 0)
+  {
+    mp_msg (MSGT_NETWORK, MSGL_ERR,
+            "Timeout! No data from host %s\n", url->hostname);
+    closesocket (socket_server_fd);
+    return -1;
+  }
+
+  err_len = sizeof (err);
+  getsockopt (socket_server_fd, SOL_SOCKET, SO_ERROR, &err, &err_len);
+  if (err)
+  {
+    mp_msg (MSGT_NETWORK, MSGL_DBG2, "Socket error: %d\n", err);
+    closesocket (socket_server_fd);
+    return -1;
+  }
+
+  return socket_server_fd;
+}
+
+static int
+udp_streaming_start (stream_t *stream)
+{
+  streaming_ctrl_t *streaming_ctrl;
+  int fd;
+
+  if (!stream)
+    return -1;
+
+  streaming_ctrl = stream->streaming_ctrl;
+  fd = stream->fd;
+	
+  if (fd < 0)
+  {
+    fd = udp_open_socket (streaming_ctrl->url); 
+    if (fd < 0)
+      return -1;
+    stream->fd = fd;
+  }
+
+  streaming_ctrl->streaming_read = nop_streaming_read;
+  streaming_ctrl->streaming_seek = nop_streaming_seek;
+  streaming_ctrl->prebuffer_size = 64 * 1024; /* 64 KBytes */
+  streaming_ctrl->buffering = 0;
+  streaming_ctrl->status = streaming_playing_e;
+  
+  return 0;
+}
+
+#endif
+
+
 int
 http_send_request( URL_t *url, off_t pos ) {
 	HTTP_header_t *http_hdr;
@@ -726,6 +908,14 @@ extension=NULL;
 			}
 			return 0;
 		}
+
+#ifdef _XBOX
+		// Checking for UDP
+		if( !strncasecmp(url->protocol, "udp", 3) ) {
+			*file_format = DEMUXER_TYPE_UNKNOWN;
+			return 0;
+		}
+#endif
 
 		// Checking for ASF
 		if( !strncasecmp(url->protocol, "mms", 3) ) {
@@ -1288,6 +1478,13 @@ streaming_start(stream_t *stream, int *demuxer_type, URL_t *url) {
 #endif
 		}
 	} else
+
+#ifdef _XBOX
+	if( !strcasecmp( stream->streaming_ctrl->url->protocol, "udp")) {
+		stream->fd = -1;
+		ret = udp_streaming_start( stream );
+	} else
+#endif
 
 	// For connection-oriented streams, we can usually determine the streaming type.
 try_livedotcom:
