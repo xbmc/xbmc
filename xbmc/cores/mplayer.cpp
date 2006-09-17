@@ -1883,9 +1883,20 @@ bool CMPlayer::CanSeek()
 
 void CMPlayer::SeekTime(__int64 iTime)
 {
-  mplayer_setTimeMs(iTime);
-  g_infoManager.m_performingSeek = false;
-  WaitOnCommand();
+  if (m_bIsPlaying)
+  {
+    try 
+    {
+      mplayer_setTimeMs(iTime);
+    }
+    catch(win32_exception e)
+    {
+      e.writelog(__FUNCTION__);
+      g_applicationMessenger.MediaStop();
+    }
+    g_infoManager.m_performingSeek = false;
+    WaitOnCommand();
+  }
 }
 
 //Time in milleseconds
