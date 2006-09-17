@@ -55,20 +55,24 @@ namespace TeamXBMC.TranslatorCore
 					}
 				}
 
-				XmlNodeList list=doc.DocumentElement.SelectNodes("/strings/string");
-
-				if (list.Count==0)
+				XmlNode root=doc.DocumentElement.SelectSingleNode("/strings");
+				if (root==null)
 					throw new TranslatorException(filename+" is not a language file.");
 
-				foreach (XmlNode node in list)
+				XmlNodeList list=doc.DocumentElement.SelectNodes("/strings/string");
+
+				if (list.Count>0)
 				{
-					StringItem item=new StringItem();
-					item.LoadFromXml((XmlElement)node);
+					foreach (XmlNode node in list)
+					{
+						StringItem item=new StringItem();
+						item.LoadFromXml((XmlElement)node);
 
-					Add(item);
+						Add(item);
+					}
+
+					strings.Sort();
 				}
-
-				strings.Sort();
 			}
 			catch(Exception e)
 			{
