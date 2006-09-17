@@ -203,6 +203,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
           // not playing audio, or playback speed == 1
           PlayItem(iItem);
+          return true;
         }
       }
     }
