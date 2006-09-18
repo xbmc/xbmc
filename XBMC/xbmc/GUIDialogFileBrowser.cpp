@@ -416,6 +416,9 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( CStdString& strPath, int iDriv
 void CGUIDialogFileBrowser::GoParentFolder()
 {
   CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
+  if (strPath.size() == 2)
+    if (strPath[1] == ':')
+      CUtil::AddSlashAtEnd(strPath);
   Update(strPath);
 
   if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
