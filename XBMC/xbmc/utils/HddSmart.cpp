@@ -1,11 +1,8 @@
 // -----------------------------------------------------
 //  HDD S.M.A.R.T Values 
 //  Requesting values from HDD using the Self-Monitoring, Analysis and Reporting Technology
-
 //  GeminiServer
 // -----------------------------------------------------
-//
-//
 // Possible request SMART Attributes: system.hddsmart(ID)
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------/*
 //                        Request:    ID: Offset:	Name of attribute:		        Description:						
@@ -56,56 +53,176 @@
 //	"Temperature                ", //44		231		E7		Temperature							      Temperature of a drive	
 //	"Head Flying Hours          ", //45		240		F0		Head Flying Hours					    Time while head is positioning	
 //	"Read Error Retry Rate      "  //46		250		FA		Read Error Retry Rate				  Frequency of errors appearance while reading data from a disk	
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------/*
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include "../stdafx.h"
 #include <conio.h>
 #include "HddSmart.h"
-BYTE retVal = 0;
 
 CHDDSmart g_hddsmart;
 
-/* use one global section */
-CCriticalSection m_section;
-
 CHDDSmart::CHDDSmart()
 {
-  m_HddSmarValue= 0;
 }
 CHDDSmart::~CHDDSmart()
 {
 }
-
-BOOL CHDDSmart::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite)
+bool CHDDSmart::Start()
 {
-  CSingleLock lock(m_section);
+  SmartREQ = 0;
+  m_HddSmarValue = 0;
+  tmpvalue = 0;
+	waitcon	= false;
+  Create();
+  return true;
+}
+void CHDDSmart::Stop()
+{
+  StopThread();
+}
+bool CHDDSmart::IsRunning()
+{
+  return (m_ThreadHandle != NULL);
+}
+void CHDDSmart::OnExit()
+{
+  CLog::Log(LOGDEBUG,"Stopping HDDSmart thread");
+}
+void CHDDSmart::OnStartup()
+{
+  CLog::Log(LOGDEBUG,"Starting HDDSmart thread");
+  SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
+}
+void CHDDSmart::Process()
+{
+  ATA_COMMAND_OBJ hddcommand;
+  ZeroMemory(&hddcommand, sizeof(ATA_COMMAND_OBJ));
+  
+  hddcommand.DATA_BUFFSIZE = 0;
+	hddcommand.IPReg.bFeaturesReg		= 0xd0;	        // SEND READ SMART VALUES
+	hddcommand.IPReg.bSectorCountReg	= 1;					
+	hddcommand.IPReg.bSectorNumberReg	= 1;
+	hddcommand.IPReg.bCylLowReg			= 0x4f;				  //SET SMART CYL LOW
+	hddcommand.IPReg.bCylHighReg		= 0xc2;					//SET SMART CYL HI
+	hddcommand.IPReg.bDriveHeadReg		= 0x00a0;			//SET Device Where HDD is
+	hddcommand.IPReg.bCommandReg		= 0xb0;	        //SET ON IDE SEND SMART MODE;
 
-  // Wait Timers! No wait time.. let's see if this will also work!
-  const int waitSleepTime = 0; //default 5 
-  const int writeSleepTime = 0; // default 10
-  const int readSleepTime = 0; // default 300
+  while(!m_bStop)
+  {
+    if (!IsIdeDriveBussy()) // If the drive is bussy.. don't request..
+	  {
+      if (SendATACommand(0x01f0, &hddcommand, 0x00))
+      {	
+	      int	i;
+	      BYTE Attr;
+	      PDRIVEATTRIBUTE	pDA;
+	      PATTRTHRESHOLD	pAT;
+	      pDA = (PDRIVEATTRIBUTE)&hddcommand.DATA_BUFFER[2];
+	      pAT = (PATTRTHRESHOLD)&hddcommand.DATA_BUFFER[2];
+        for (i = 0; i < 46; i++)
+	      {	
+          Attr = pDA->bAttrID;
+          if (Attr == 191) Attr =14;	
+          if (Attr == 192) Attr =15;	
+          if (Attr == 193) Attr =16;
+          if (Attr == 194) Attr =17;
+		      if (Attr == 195) Attr =18;	
+          if (Attr == 196) Attr =19;
 
-	//XBOX Sending ATA Commands..
+          if (Attr == 197) Attr =20;
+		      if (Attr == 198) Attr =21;
+          if (Attr == 199) Attr =22;
+          if (Attr == 200) Attr =23;
+          if (Attr == 201) Attr =24;
+		      if (Attr == 202) Attr =25;
+          if (Attr == 203) Attr =26;
+          if (Attr == 204) Attr =27;
+          if (Attr == 205) Attr =28;
+		      if (Attr == 206) Attr =29;
 
-	BOOL retVal			= FALSE;
-	UCHAR waitcount		= 15;
-	WORD inVal			= 0;
-	WORD SuccessRet		= 0x58;
-	LPDWORD PIDEDATA	= (LPDWORD) &ATACommandObj->DATA_BUFFER ;
+          if (Attr == 207) Attr =30;
+          if (Attr == 208) Attr =31;
+          if (Attr == 209) Attr =32;
+          if (Attr == 220) Attr =34;
+          if (Attr == 221) Attr =35;
+          if (Attr == 222) Attr =36;
+		      if (Attr == 223) Attr =37;
+          if (Attr == 224) Attr =38;
+          if (Attr == 225) Attr =39;
 
-  //Write IDE Registers to IDE Port.. and in essence Execute the ATA Command..
+          if (Attr == 226) Attr =40;
+		      if (Attr == 227) Attr =41;
+          if (Attr == 228) Attr =42;
+          if (Attr == 230) Attr =43;
+          if (Attr == 231) Attr =44;
+          if (Attr == 240) Attr =45;
+          if (Attr == 250) Attr =46;
+
+          if( (Attr < 47) && (Attr == SmartREQ))
+          {
+            // This is only for HDD-Temperature! ID:17! 
+            // Returned: bWorstValue, seems to be a working temperature value on all Drives!
+            if (SmartREQ == 17)
+            {
+              m_HddSmarValue = (pDA->bWorstValue);	
+              CLog::Log(LOGDEBUG, "HDD S.M.A.R.T Reported Temperature: %d °C",m_HddSmarValue);
+              waitcon = true;
+              Sleep(5000);
+            }
+		        if (SmartREQ != 17)
+		        {
+			        m_HddSmarValue = (pDA->bAttrValue);
+              CLog::Log(LOGDEBUG, "HDD S.M.A.R.T Request Result: %d",m_HddSmarValue);
+              waitcon = true;
+              Sleep(5000);
+            }
+          }
+          pDA++;
+		      pAT++;
+        }
+      }
+      if (waitcon)
+      { 
+        Sleep(25000); //25 sec.!!
+        tmpvalue = m_HddSmarValue;
+      }
+      else 
+      {
+        Sleep(15000); //10 sec.!
+        m_HddSmarValue = tmpvalue;  //no responce using tempvalue
+        waitcon = false;
+      }
+    }
+  }
+}
+
+bool CHDDSmart::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite)
+{
+  // Wait Timers!
+  const int waitSleepTime = 5; //default 5 
+  const int writeSleepTime = 10; // default 10
+  const int readSleepTime = 300; // default 300
+
+	// Sending ATA Commands..
+	bool bRetVal = false;
+	UCHAR waitcount = 15;
+	WORD inVal = 0;
+	WORD SuccessRet = 0x58;
+	LPDWORD PIDEDATA = (LPDWORD) &ATACommandObj->DATA_BUFFER ;
+
+  // Write IDE Registers to IDE Port.. and in essence Execute the ATA Command..
 	_outp(IDEPort + 1, ATACommandObj->IPReg.bFeaturesReg);		
-      Sleep(writeSleepTime);
+    Sleep(writeSleepTime);
 	_outp(IDEPort + 2, ATACommandObj->IPReg.bSectorCountReg); 	
-      Sleep(writeSleepTime);
+    Sleep(writeSleepTime);
 	_outp(IDEPort + 3, ATACommandObj->IPReg.bSectorNumberReg);	
-      Sleep(writeSleepTime);
+    Sleep(writeSleepTime);
 	_outp(IDEPort + 4, ATACommandObj->IPReg.bCylLowReg);		
-      Sleep(writeSleepTime);
+    Sleep(writeSleepTime);
 	_outp(IDEPort + 5, ATACommandObj->IPReg.bCylHighReg);		
-      Sleep(writeSleepTime);
+    Sleep(writeSleepTime);
 	_outp(IDEPort + 6, ATACommandObj->IPReg.bDriveHeadReg);		
-      Sleep(writeSleepTime);
+    Sleep(writeSleepTime);
 	_outp(IDEPort + 7, ATACommandObj->IPReg.bCommandReg);		
       Sleep(readSleepTime);
 
@@ -121,13 +238,13 @@ BOOL CHDDSmart::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UC
 	if ((waitcount > 0) && (ReadWrite == 0x00))
 	{
 		//Read the command return output Registers
-		ATACommandObj->OPReg.bErrorReg =		_inp(IDEPort + 1);
-		ATACommandObj->OPReg.bSectorCountReg =	_inp(IDEPort + 2);
+		ATACommandObj->OPReg.bErrorReg = _inp(IDEPort + 1);
+		ATACommandObj->OPReg.bSectorCountReg = _inp(IDEPort + 2);
 		ATACommandObj->OPReg.bSectorNumberReg =	_inp(IDEPort + 3);
-		ATACommandObj->OPReg.bCylLowReg =		_inp(IDEPort + 4);
-		ATACommandObj->OPReg.bCylHighReg =		_inp(IDEPort + 5);
-		ATACommandObj->OPReg.bDriveHeadReg =	_inp(IDEPort + 6);
-		ATACommandObj->OPReg.bStatusReg =		_inp(IDEPort + 7);
+		ATACommandObj->OPReg.bCylLowReg = _inp(IDEPort + 4);
+		ATACommandObj->OPReg.bCylHighReg = _inp(IDEPort + 5);
+		ATACommandObj->OPReg.bDriveHeadReg = _inp(IDEPort + 6);
+		ATACommandObj->OPReg.bStatusReg = _inp(IDEPort + 7);
 
 		ATACommandObj->DATA_BUFFSIZE = 512;
 		Sleep(writeSleepTime);
@@ -139,126 +256,21 @@ BOOL CHDDSmart::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UC
 			PIDEDATA[i] = _inpd(IDEPort);
 			Sleep(waitSleepTime);
 		}
-		retVal = TRUE;
+		bRetVal = true;
 	}
-  
-	return retVal;
+	return bRetVal;
 }
-BYTE CHDDSmart::GetSmartValue(int SmartREQ)
+bool CHDDSmart::IsIdeDriveBussy()
 {
-  CSingleLock lock(m_section);
-
-  ATA_COMMAND_OBJ hddcommand;
-	ZeroMemory(&hddcommand, sizeof(ATA_COMMAND_OBJ));
-	
-	hddcommand.DATA_BUFFSIZE = 0;
-	hddcommand.IPReg.bFeaturesReg		= 0xd0;	        // SEND READ SMART VALUES
-	hddcommand.IPReg.bSectorCountReg	= 1;					
-	hddcommand.IPReg.bSectorNumberReg	= 1;
-	hddcommand.IPReg.bCylLowReg			= 0x4f;				  //SET SMART CYL LOW
-	hddcommand.IPReg.bCylHighReg		= 0xc2;					//SET SMART CYL HI
-	hddcommand.IPReg.bDriveHeadReg		= 0x00a0;			//SET Device Where HDD is
-	hddcommand.IPReg.bCommandReg		= 0xb0;	        //SET ON IDE SEND SMART MODE;
-	
-  bool waitcon		= true;
-  bool bSuccessRet = false;
-  while (!bSuccessRet && waitcon)
-	{
-    waitcon = false; // run just for one time!
-
-    if (SendATACommand(0x01f0, &hddcommand, 0x00))
-    {	
-	    int	i;
-	    BYTE Attr;
-	    PDRIVEATTRIBUTE	pDA;
-	    PATTRTHRESHOLD	pAT;
-	    pDA = (PDRIVEATTRIBUTE)&hddcommand.DATA_BUFFER[2];
-	    pAT = (PATTRTHRESHOLD)&hddcommand.DATA_BUFFER[2];
-      for (i = 0; i < 46; i++)
-	    {	
-        Attr = pDA->bAttrID;
-        if (Attr == 191) Attr =14;	
-        if (Attr == 192) Attr =15;	
-        if (Attr == 193) Attr =16;
-        if (Attr == 194) Attr =17;
-		    if (Attr == 195) Attr =18;	
-        if (Attr == 196) Attr =19;
-
-        if (Attr == 197) Attr =20;
-		    if (Attr == 198) Attr =21;
-        if (Attr == 199) Attr =22;
-        if (Attr == 200) Attr =23;
-        if (Attr == 201) Attr =24;
-		    if (Attr == 202) Attr =25;
-        if (Attr == 203) Attr =26;
-        if (Attr == 204) Attr =27;
-        if (Attr == 205) Attr =28;
-		    if (Attr == 206) Attr =29;
-
-        if (Attr == 207) Attr =30;
-        if (Attr == 208) Attr =31;
-        if (Attr == 209) Attr =32;
-        if (Attr == 220) Attr =34;
-        if (Attr == 221) Attr =35;
-        if (Attr == 222) Attr =36;
-		    if (Attr == 223) Attr =37;
-        if (Attr == 224) Attr =38;
-        if (Attr == 225) Attr =39;
-
-        if (Attr == 226) Attr =40;
-		    if (Attr == 227) Attr =41;
-        if (Attr == 228) Attr =42;
-        if (Attr == 230) Attr =43;
-        if (Attr == 231) Attr =44;
-        if (Attr == 240) Attr =45;
-        if (Attr == 250) Attr =46;
-
-        if( (Attr < 47) && (Attr == SmartREQ))
-        {
-          // This is only for HDD-Temperature! ID:17! Returned: bWorstValue! Seems to be a working value on all Drives!
-          if (SmartREQ == 17)
-          {
-            retVal = (pDA->bWorstValue);	
-            bSuccessRet = true;
-            CLog::Log(LOGDEBUG, "HDD S.M.A.R.T Reported Temperature: %d °C",retVal);
-          }
-		      if (SmartREQ != 17)
-		      {
-			      retVal = (pDA->bAttrValue);
-            bSuccessRet = true;
-            CLog::Log(LOGDEBUG, "HDD S.M.A.R.T Request Result: %d",retVal);
-          }
-        }
-        pDA++;
-		    pAT++;
-      }
-    }
-  }
-  // If the returned value is 0, return the last known Value!
-  if (retVal == 0)
-    retVal = m_HddSmarValue;
-  else
-    m_HddSmarValue = retVal;
-
-  return retVal;
-}
-bool CHDDSmart::DelayRequestSmartValue(int SmartREQ , int iDelayTime)
-{
-  CSingleLock lock(m_section);
-
-  static DWORD pingTimer = 0;
-  if (iDelayTime <0 ) iDelayTime = 0; //60 default
-  bool bWait=false;
-  if( timeGetTime() - pingTimer < (DWORD)iDelayTime * 1000)
-    return false;    
-  else { do
+  int status = _inp(0x01F7);
+  int i = 0;
+  while ( (i < 2000) && ((status & 0x80) == 0x80) )
   {
-    GetSmartValue(SmartREQ);
-    if (retVal>0)
-      bWait=true;
-    }while(!bWait);
-  }
-  pingTimer = timeGetTime();
-  
-  return bWait;
+    //wait for drive to process the command
+    status = _inp(0x01F7);
+    if ( (i < 2000) && (!(status & 0x01)) )
+      return true;
+    i++;
+  };
+  return false;
 }

@@ -20,6 +20,7 @@ BUG: The XBE Region detection Is wrong! Need to Decyrpt the EEPROM!
 #include "utils/SystemInfo.h"
 #include "xbox/network.h"
 #include "application.h"
+#include "utils/HddSmart.h"
 
 #define DEBUG_KEYBOARD
 #define DEBUG_MOUSE
@@ -775,12 +776,12 @@ bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
 {
   // Set HDD Temp
   CStdString lblhdd = g_localizeStrings.Get(13151).c_str();
-  DWORD hddsmarttemp;
-  int iSmartREQ = 17; // SmartRequest HDD Temperature
-  hddsmarttemp = g_sysinfo.GetSmartValues(iSmartREQ);
+  if(!g_hddsmart.IsRunning())
+    g_hddsmart.Start();
+  g_hddsmart.SmartREQ = 17;
 
-  CTemperature temp=CTemperature::CreateFromCelsius(hddsmarttemp);
-  if (hddsmarttemp<=0)
+  CTemperature temp= CTemperature::CreateFromCelsius((double)g_hddsmart.m_HddSmarValue);
+  if (g_hddsmart.m_HddSmarValue<=0 || g_hddsmart.m_HddSmarValue>=100)
     temp.SetState(CTemperature::invalid);
 
   strItemhdd.Format("%s %s", lblhdd.c_str(), temp.ToString().c_str()); 
