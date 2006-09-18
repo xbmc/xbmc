@@ -929,7 +929,8 @@ HRESULT CApplication::Create()
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   CUtil::InitGamma();
-  g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
+  // set GUI res and force the clear of the screen
+  g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution, true);
 
   // initialize our charset converter
   g_charsetConverter.reset();
