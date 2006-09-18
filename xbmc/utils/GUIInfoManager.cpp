@@ -2025,14 +2025,16 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
 
 CStdString CGUIInfoManager::GetHDDSmart( int iSmartRequest )
 {
-  // 36 Loaded Hours
   CStdString strItemhdd;
-  //int ismartRequest = 17; // HDD Temperature 
-  g_hddsmart.DelayRequestSmartValue(iSmartRequest, 30);
+  if(!g_hddsmart.IsRunning())
+    g_hddsmart.Start();
+  g_hddsmart.SmartREQ = iSmartRequest;
 
   if (iSmartRequest == 17 )
   {
     CTemperature HddTemp = CTemperature::CreateFromCelsius((double)g_hddsmart.m_HddSmarValue);
+    if (g_hddsmart.m_HddSmarValue<=0 || g_hddsmart.m_HddSmarValue>=100)
+      HddTemp.SetState(CTemperature::invalid);
     strItemhdd.Format("%s", HddTemp.ToString().c_str());
   }
   else
