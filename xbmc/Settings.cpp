@@ -620,7 +620,8 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
         else
         {
           // only allow HD, SMB, and XBMS
-          if (url.IsLocal() || protocol.Equals("smb") || protocol.Equals("xbms"))
+          if (url.IsLocal() || protocol.Equals("smb") || protocol.Equals("xbms")
+                            || protocol.Equals("special"))
             verifiedPaths.push_back(vecPaths[j]);
           else
             bIsInvalid = true;
