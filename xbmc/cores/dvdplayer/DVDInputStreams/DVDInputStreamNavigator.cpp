@@ -569,7 +569,7 @@ void CDVDInputStreamNavigator::OnMenu()
 
 void CDVDInputStreamNavigator::OnBack()
 {
-  if (!m_dvdnav) m_dll.dvdnav_go_up(m_dvdnav);
+  if (m_dvdnav) m_dll.dvdnav_go_up(m_dvdnav);
 }
 
 // we don't allow skipping in menu's cause it will remove menu overlays
