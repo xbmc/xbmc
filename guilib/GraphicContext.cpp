@@ -255,10 +255,10 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllow
   }
 }
 
-void CGraphicContext::SetGUIResolution(RESOLUTION &res)
+void CGraphicContext::SetGUIResolution(RESOLUTION &res, bool forceClear /* = false */)
 {
   CLog::Log(LOGDEBUG, "Setting resolution %i", res);
-  SetVideoResolution(res, TRUE);
+  SetVideoResolution(res, TRUE, forceClear);
   CLog::Log(LOGDEBUG, "We set resolution %i", m_Resolution);
   if (!m_pd3dParams) return ;
   m_iScreenWidth = m_pd3dParams->BackBufferWidth ;
@@ -266,7 +266,7 @@ void CGraphicContext::SetGUIResolution(RESOLUTION &res)
   m_bWidescreen = (m_pd3dParams->Flags & D3DPRESENTFLAG_WIDESCREEN) != 0;
 }
 
-void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
+void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
   if (res == AUTORES)
   {
@@ -327,12 +327,16 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
     }
   }
   Lock();
-  if (NeedReset && m_pd3dDevice)
+  if (m_pd3dDevice)
   {
-    m_pd3dDevice->Reset(m_pd3dParams);
+    if (NeedReset)
+      m_pd3dDevice->Reset(m_pd3dParams);
     /* need to clear and preset, otherwise flicker filters won't take effect */
-    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-    m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+    if (NeedReset || forceClear)
+    {
+      m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+      m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+    }
   }
   if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
   { // set the mouse resolution
