@@ -23,10 +23,9 @@ class CSysInfo
 {
   public:
     CSysInfo();
-    virtual ~CSysInfo();
-    
-    BYTE GetSmartValues(int SmartREQ);
-	  double GetCPUFrequence();
+    ~CSysInfo();
+
+    double GetCPUFrequence();
 	  double RDTSC(void);
     
 	  CStdString GetAVPackInfo();
