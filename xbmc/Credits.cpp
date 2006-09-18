@@ -281,6 +281,15 @@ CreditLine_t Credits[] =
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"all my free time coding" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"and playing with my toys" },
 
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"GeminiServer" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanks to everybody involved in this Project" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"To our little angel Helin J. " },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"without her crying in the nights,i never found" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"time for this project!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"To Andrew Huang (bunnie)," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"for his initial work to get run unsigned code!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Special Thanks also goes to M$ for the XBOX!" },
+
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"RUNTiME" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"I asked for my own scroll-text" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"and all I got was this crappy slot" },
