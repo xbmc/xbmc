@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-09-2006 fixed: Flicker filter (and other) GUI settings showed "My Programs" instead of their integer level.
  - 18-09-2006 fixed: GUI Flicker filter wasn't applied on boot.
  - 18-09-2006 fixed: custom windows didn't fallback to default skin dirs.
  - 18-09-2006 fixed: .cdg files wouldn't work with library items launched using the http api.
