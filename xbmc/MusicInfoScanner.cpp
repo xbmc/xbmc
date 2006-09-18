@@ -252,8 +252,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
           // if id3 tag scanning is turned on OR we're scanning the directory
           // then parse id3tag from file
           // get correct tag parser
-          CMusicInfoTagLoaderFactory factory;
-          auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+          auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
           if (NULL != pLoader.get())
           {
             // get id3tag

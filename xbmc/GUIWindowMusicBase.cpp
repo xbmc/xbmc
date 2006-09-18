@@ -521,8 +521,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
   {
     // single file, not in database
     // get correct tag parser
-    CMusicInfoTagLoaderFactory factory;
-    auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+    auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
     if (NULL != pLoader.get())
     {
       // get id3tag
