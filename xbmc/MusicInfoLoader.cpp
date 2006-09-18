@@ -83,8 +83,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   { // Nothing found, load tag from file,
     // always try to load cddb info
     // get correct tag parser
-    CMusicInfoTagLoaderFactory factory;
-    auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+    auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
     if (NULL != pLoader.get())
       // get tag
       pLoader->Load(pItem->m_strPath, pItem->m_musicInfoTag);
