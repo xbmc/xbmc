@@ -1060,15 +1060,18 @@ extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuff
   DWORD numChecked = *lpNumberOfBytesRead;
   while (numChecked >= DVD_CHUNK_SIZE)
   {
-    int p = *(int *)((BYTE *)lpBuffer + numChecked - DVD_CHUNK_SIZE);
-    if (p == 0)
-    { // reread this block
+    BYTE *p = (BYTE *)lpBuffer + numChecked - DVD_CHUNK_SIZE;
+    // test for a NULL block
+    while (*p == 0 && p < (BYTE *)lpBuffer + numChecked)
+      p++;
+    if (p == (BYTE *)lpBuffer + numChecked)
+    { // fully NULL block - reread
       LONG low = 0;
       LONG high = 0;
       low = SetFilePointer(hFile, low, &high, FILE_CURRENT);
       CLog::Log(LOGWARNING, "DVDReadFile() warning - invalid data read from block at %d (%d) - rereading", low, high);
-      DWORD numRead;
       SetFilePointer(hFile, (int)numChecked - (int)*lpNumberOfBytesRead - DVD_CHUNK_SIZE, NULL, FILE_CURRENT);
+      DWORD numRead;
       ret = ReadFile(hFile, (BYTE *)lpBuffer + numChecked - DVD_CHUNK_SIZE, DVD_CHUNK_SIZE, &numRead, lpOverlapped);
       if (!ret) return FALSE;
       SetFilePointer(hFile, low, &high, FILE_BEGIN);
