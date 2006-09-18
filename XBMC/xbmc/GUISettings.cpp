@@ -90,9 +90,8 @@ CSettingInt::CSettingInt(int iOrder, const char *strSetting, int iLabel, int iDa
   m_iMax = iMax;
   m_iStep = iStep;
   m_iLabelMin = iLabelMin;
-  if (iFormat > -1)
-    m_iFormat = iFormat;
-  else
+  m_iFormat = iFormat;
+  if (m_iFormat < 0)
     m_strFormat = "%i";
 }
 
