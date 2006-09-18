@@ -20,6 +20,8 @@
 #include "MusicInfoTagLoaderGYM.h"
 #include "MusicInfoTagLoaderAdplug.h"
 #include "MusicInfoTagLoaderYM.h"
+#include "MusicInfoTagLoaderDatabase.h"
+
 #include "util.h"
 
 
@@ -37,6 +39,9 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   CFileItem item(strFileName, false);
   if (item.IsInternetStream())
     return NULL;
+
+  if (item.IsMusicDb())
+    return new CMusicInfoTagLoaderDatabase();
 
   CStdString strExtension;
   CUtil::GetExtension( strFileName, strExtension);
