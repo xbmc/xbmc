@@ -1708,91 +1708,103 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
   TiXmlDocument xmlDoc;
   RESOLUTION resToUse = INVALID;
 
-  // Load from wherever home.xml is
+  // Start from wherever home.xml is
   g_SkinInfo.GetSkinPath("home.xml", &resToUse);
-
-  CStdString strLoadPath;
-  strLoadPath.Format("%s%s", strSkinPath, g_SkinInfo.GetDirFromRes(resToUse));
-
-  CStdString strPath;
-  strPath.Format("%s\\%s", strLoadPath, "custom*.xml");
-  CLog::Log(LOGINFO, "Loading user windows %s", strPath.c_str());
-  hFind = FindFirstFile(strPath.c_str(), &NextFindFileData);
-
-  CStdString strFileName;
-  while (hFind != INVALID_HANDLE_VALUE)
+  std::vector<CStdString> vecSkinPath;
+  if (resToUse == HDTV_1080i)
+    vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(HDTV_1080i));
+  if (resToUse == HDTV_720p)
+    vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(HDTV_720p));  
+  if (resToUse == PAL_16x9 || resToUse == NTSC_16x9 || resToUse == HDTV_480p_16x9 || resToUse == HDTV_720p || resToUse == HDTV_1080i)
+    vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultWideResolution()));
+  vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultResolution()));
+  for (unsigned int i=0;i<vecSkinPath.size();++i)
   {
-    FindFileData = NextFindFileData;
+    CStdString strPath;
+    strPath.Format("%s\\%s", vecSkinPath[i], "custom*.xml");
+    CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
+    hFind = FindFirstFile(strPath.c_str(), &NextFindFileData);
 
-    if (!FindNextFile(hFind, &NextFindFileData))
+    CStdString strFileName;
+    while (hFind != INVALID_HANDLE_VALUE)
     {
-      FindClose(hFind);
-      hFind = INVALID_HANDLE_VALUE;
-    }
+      FindFileData = NextFindFileData;
 
-    // skip "up" directories, which come in all queries
-    if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
-      continue;
-
-    strFileName.Format("%s\\%s", strLoadPath.c_str(), FindFileData.cFileName);
-    CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
-    if (!xmlDoc.LoadFile(strFileName.c_str()))
-    {
-      CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-      continue;
-    }
-
-    // Root element should be <window>
-    TiXmlElement* pRootElement = xmlDoc.RootElement();
-    CStdString strValue = pRootElement->Value();
-    if (!strValue.Equals("window"))
-    {
-      CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strFileName.c_str());
-      continue;
-    }
-
-    // Read the <type> element to get the window type to create
-    // If no type is specified, create a CGUIWindow as default
-    CGUIWindow* pWindow = NULL;
-    const TiXmlNode *pType = pRootElement->FirstChild("type");
-    if (!pType || !pType->FirstChild())
-    {
-      pWindow = new CGUIStandardWindow();
-    }
-    else
-    {
-      CStdString strType = pType->FirstChild()->Value();
-      if (strType == "dialog")
+      if (!FindNextFile(hFind, &NextFindFileData))
       {
-        pWindow = new CGUIDialog(0, "");
+        FindClose(hFind);
+        hFind = INVALID_HANDLE_VALUE;
       }
-      else if (strType == "subMenu")
+
+      // skip "up" directories, which come in all queries
+      if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
+        continue;
+
+      strFileName = vecSkinPath[i]+"\\"+FindFileData.cFileName;
+      CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
+      if (!xmlDoc.LoadFile(strFileName.c_str()))
       {
-        pWindow = new CGUIDialogSubMenu();
+        CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+        continue;
       }
-      else if (strType == "buttonMenu")
+
+      // Root element should be <window>
+      TiXmlElement* pRootElement = xmlDoc.RootElement();
+      CStdString strValue = pRootElement->Value();
+      if (!strValue.Equals("window"))
       {
-        pWindow = new CGUIDialogButtonMenu();
+        CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strFileName.c_str());
+        continue;
       }
-      else
+
+      // Read the <type> element to get the window type to create
+      // If no type is specified, create a CGUIWindow as default
+      CGUIWindow* pWindow = NULL;
+      const TiXmlNode *pType = pRootElement->FirstChild("type");
+      if (!pType || !pType->FirstChild())
       {
         pWindow = new CGUIStandardWindow();
       }
-    }
-    pType = pRootElement->FirstChild("id");
-
-    // Check to make sure the pointer isn't still null
-    if (pWindow == NULL || !pType || !pType->FirstChild())
-    {
-      CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
-      return false;
-    }
-    // set the window's xml file, and add it to the window manager.
-    pWindow->SetXMLFile(FindFileData.cFileName);
-    pWindow->SetID(WINDOW_HOME + atol(pType->FirstChild()->Value()));
-    m_gWindowManager.AddCustomWindow(pWindow);
+      else
+      {
+        CStdString strType = pType->FirstChild()->Value();
+        if (strType == "dialog")
+        {
+          pWindow = new CGUIDialog(0, "");
+        }
+        else if (strType == "subMenu")
+        {
+          pWindow = new CGUIDialogSubMenu();
+        }
+        else if (strType == "buttonMenu")
+        {
+          pWindow = new CGUIDialogButtonMenu();
+        }
+        else
+        {
+          pWindow = new CGUIStandardWindow();
+        }
+      }
+      pType = pRootElement->FirstChild("id");
+      
+      // Check to make sure the pointer isn't still null
+      if (pWindow == NULL || !pType || !pType->FirstChild())
+      {
+        CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
+        return false;
+      }
+      if (m_gWindowManager.GetWindow(WINDOW_HOME + atol(pType->FirstChild()->Value())))
+      {
+        delete pWindow;
+        continue;
+      }
+      // set the window's xml file, and add it to the window manager.
+      pWindow->SetXMLFile(FindFileData.cFileName);
+      pWindow->SetID(WINDOW_HOME + atol(pType->FirstChild()->Value()));
+      m_gWindowManager.AddCustomWindow(pWindow);
+    } 
+    CloseHandle(hFind);
   }
-
   return true;
 }
 
