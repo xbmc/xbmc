@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-09-2006 fixed: custom windows didn't fallback to default skin dirs.
  - 18-09-2006 fixed: .cdg files wouldn't work with library items launched using the http api.
  - 18-09-2006 changed: use DVDCSS_METHOD key instead of title, it will fallback to key if initial attempt fails. 
                        this could potentially cause troubles for dvd's where vobs have diffrent keys, but should speed up opening of most dvds
