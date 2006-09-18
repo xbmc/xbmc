@@ -3896,7 +3896,15 @@ bool CApplication::OnMessage(CGUIMessage& message)
           if (m_pCdgParser->IsRunning())
             m_pCdgParser->Stop();
           if (m_itemCurrentFile.IsMusicDb())
+          {
+            if (!m_itemCurrentFile.m_musicInfoTag.Loaded())
+            {              
+              IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(m_itemCurrentFile.m_strPath);
+              tagloader->Load(m_itemCurrentFile.m_strPath,m_itemCurrentFile.m_musicInfoTag);
+              delete tagloader;
+            }
             m_pCdgParser->Start(m_itemCurrentFile.m_musicInfoTag.GetURL());
+          }
           else
             m_pCdgParser->Start(m_itemCurrentFile.m_strPath);
         }
