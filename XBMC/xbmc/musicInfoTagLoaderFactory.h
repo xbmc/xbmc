@@ -13,6 +13,6 @@ public:
   CMusicInfoTagLoaderFactory(void);
   virtual ~CMusicInfoTagLoaderFactory();
 
-  IMusicInfoTagLoader* CreateLoader(const CStdString& strFileName);
+  static IMusicInfoTagLoader* CreateLoader(const CStdString& strFileName);
 };
 };
