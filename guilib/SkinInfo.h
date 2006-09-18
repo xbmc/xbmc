@@ -41,6 +41,9 @@ public:
 
   inline float GetSkinZoom() { return m_skinzoom; };
 
+  inline const RESOLUTION& GetDefaultWideResolution() { return m_DefaultResolutionWide; };
+  inline const RESOLUTION& GetDefaultResolution() { return m_DefaultResolution; };
+
 protected:
   void LoadIncludes();
   bool LoadStartupWindows(const TiXmlElement *startup);
