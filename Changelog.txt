@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-09-2006 updated: french language file
  - 19-09-2006 fixed: [ 1561135 ] video auto resume not work
  - 19-09-2006 updated: German (Austrian) language file (Thnx to CEOMR)
  - 18-09-2006 changed: Layer change dvd reading only re-reads blocks if the entire block is NULL.
