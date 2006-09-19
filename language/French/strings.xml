@@ -1,10 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: zeewul-->
-<!--Email: zeewul2001@yahoo.fr-->
-<!--Date of translation: 09/09/2006-->
-<!--$Revision$-->
-<!--Based on english strings version 1.343-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -54,7 +49,7 @@
   <string id="116">Déplacer</string>
   <string id="117">Effacer</string>
   <string id="118">Renommer</string>
-  <string id="119">Nouveau Dossier</string>
+  <string id="119">Nouveau</string>
   <string id="120">Confirmer copie du fichier</string>
   <string id="121">Confirmer déplacement du fichier</string>
   <string id="122">Confirmer effacement du fichier</string>
@@ -159,7 +154,7 @@
   <string id="224">Vitesse</string>
   <string id="225">Durée transitions</string>
   <string id="227">Activer CDDB</string>
-  <string id="228">Mélanger la playliste lors de son chargement</string>
+  <string id="228">Mélanger la sélection lors de son chargement</string>
   <string id="229">Temps d'arrêt DD</string>
   <string id="230">Filtres</string>
   <string id="231">Aucun</string>
@@ -170,7 +165,7 @@
   <string id="236">Cubique Gaussien</string>
   <string id="237">Optique (-)</string>
   <string id="238">Optique (+)</string>
-  <string id="239">Effacer la Playliste à la fin de la lecture</string>
+  <string id="239">Effacer la Sélection à la fin de la lecture</string>
   <string id="240">Lire automatiquement les DVD vidéo</string>
   <string id="241">Lire automatiquement les VCD/SVCD</string>
   <string id="242">Lire automatiquement les CD audio</string>
@@ -393,7 +388,7 @@
   <string id="474">Désactivé</string>
   <string id="475">Musique seule</string>
   <string id="476">Musique et vidéo</string>
-  <string id="477">Impossible de charger la playlist</string>
+  <string id="477">Impossible de charger la sélection</string>
   <string id="478">Réglages écran</string>
   <string id="479">Thème et langue</string>
   <string id="480">Interface</string>
@@ -672,7 +667,7 @@
   <string id="10023">Vidéos/année</string>
   <string id="10025">Vidéos/titre</string>
   <string id="10028">Vidéos/playlist</string>
-  <string id="10034">Paramètres-&gt;Profiles</string>
+  <string id="10034">Paramètres-&gt;Profils</string>
   <string id="10100">Boîtes de dialogues: Oui/non</string>
   <string id="10101">Boîtes de dialogues: progression</string>
   <string id="10500">Musique/playlist</string>
@@ -691,7 +686,7 @@
   <string id="10513">Musique - Artistes</string>
   <string id="10514">Musique - Genres</string>
   <string id="10515">Musique - Top 100</string>
-  <string id="10516">Musique - Librairie</string>
+  <string id="10516">Musique - Bibliothèque</string>
   <string id="10517">Musique - Lecture en cours</string>
   <string id="10518">Vidéos - Acteurs</string>
   <string id="10519">Vidéos - Genres</string>
@@ -828,7 +823,7 @@
   <string id="13210">Démarré, alarme dans %im</string>
   <string id="13211">Alarme !</string>
   <string id="13212">Annulé avec %im%is restant</string>
-  <string id="13249">Chercher dans les Rar pour les sous-titres</string>
+  <string id="13249">Activer la recherche des sous-titres compressés en RAR</string>
   <string id="13250">Rechercher des sous-titres...</string>
   <string id="13251">Déplacer</string>
   <string id="13252">Déplacer ici</string>
@@ -920,7 +915,7 @@
   <string id="13357">ombrage pixels haute qualité</string>
   <string id="13358">Lire la musique</string>
   <string id="13359">Définir Image Artiste</string>
-  <string id="13360">Générer les miniatures automatiquement</string>
+  <string id="13360">Générer les vignettes automatiquement</string>
   <string id="13361">Activer la Voix</string>
   <string id="13375">Activer le périphérique</string>
   <string id="13376">Volume</string>
@@ -947,7 +942,7 @@ pour cette visualisation</string>
   <string id="13395">Configurations Vidéo</string>
   <string id="13396">Configurations Son et Sous-Titres</string>
   <string id="13397">Activer Sous-Titres</string>
-  <string id="13398">Signets Vidéos</string>
+  <string id="13398">Signets</string>
   <string id="13399">Ignore le mot "The" lors du Tri</string>
   <string id="13400">Enchainer Pistes Audio</string>
   <string id="13401">Parcourir pour %s</string>
@@ -976,7 +971,7 @@ pour cette visualisation</string>
   <string id="14019">Changer emplacement 1</string>
   <string id="14020">Changer emplacement 2</string>
   <string id="14021">Changer emplacement 3</string>
-  <string id="14022">Librairie</string>
+  <string id="14022">Bibliothèque</string>
   <string id="14023">Sans TV</string>
   <string id="14024">Saisissez la ville la plus proche</string>
   <string id="14025">Cache Vidéo/Audio/DVD - Disque Dur</string>
@@ -1025,7 +1020,7 @@ pour cette visualisation</string>
   <string id="14070">Appliquer les changements maintenant</string>
   <string id="14071">Activer les options Supprimer et Renommer</string>
   <string id="14072">Activer XLink Kai</string>
-  <string id="14073">XLink Kai n'est pas Dispo.</string>
+  <string id="14073">XLink Kai n'est pas activé.</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">Le service n'est pas connecté, voulez-vous essayer</string>
   <string id="15002">de vous y connecter avec Xbox Media Center ?</string>
@@ -1088,7 +1083,7 @@ pour cette visualisation</string>
   <string id="15059">Invitation acceptée !</string>
   <string id="15060">Votre message</string>
   <string id="15061">Vous avez été invité(e) à jouer %s.</string>
-  <string id="15100">Librairie</string>
+  <string id="15100">Bibliothèque</string>
   <string id="15101">Base de données</string>
   <string id="15102">* Tous les Albums</string>
   <string id="15103">* Tous les Artistes</string>
@@ -1101,7 +1096,7 @@ pour cette visualisation</string>
   <string id="15111">Thème du Skin</string>
   <string id="15112">Theme par Défaut</string>
   <string id="15200">LastFM</string>
-  <string id="15201">Envoyer les infos des chansons à LastFM</string>
+  <string id="15201">Envoyer les stats des chansons à LastFM</string>
   <string id="15202">Compte LastFM</string>
   <string id="15203">Mot de passe LastFM</string>
   <string id="15204">Impossible de contacter le serveur: En attente...</string>
@@ -1116,7 +1111,7 @@ pour cette visualisation</string>
   <string id="15213">Lire avec...</string>
   <string id="15214">Utiliser une synchronisation A/V lissée</string>
   <string id="15215">Masquer Nom quand Vue Vignettes</string>
-  <string id="15250">Envoyer Last.fm Radio à LastFM</string>
+  <string id="15250">Envoyer les stats Last.fm Radio à LastFM</string>
   <string id="15251">Connexion à Last.fm...</string>
   <string id="15252">Sélection des stations...</string>
   <string id="15253">Chercher par Artistes...</string>
@@ -1162,9 +1157,9 @@ pour cette visualisation</string>
   <string id="16003">Lecteur</string>
   <string id="16004">Jouer les médias depuis le disque</string>
   <string id="16009">Saisissez le nom du Film</string>
-  <string id="16010">Choisissez un nom pour votre Profile</string>
+  <string id="16010">Choisissez un nom pour votre Profil</string>
   <string id="16011">Saisissez  le nom de l'Album</string>
-  <string id="16012">Choisissez un nom pour votre Liste de lecture</string>
+  <string id="16012">Choisissez un nom pour votre sélection</string>
   <string id="16013">Saisissez le nouveau nom</string>
   <string id="16014">Saisissez le nom du répertoire</string>
   <string id="16015">Saisissez répertoire</string>
@@ -1196,13 +1191,13 @@ pour cette visualisation</string>
   <string id="16108">Utiliser NTSC-J</string>
   <string id="16109">Utiliser PAL-60</string>
   <string id="16110">Pour les jeux en 60hz</string>
-  <string id="16200">Opréation annulée</string>
-  <string id="16201">Copie échouée</string>
-  <string id="16202">Echec de la copie d'au moins un fichier</string>
-  <string id="16203">Déplacement échoué</string>
-  <string id="16204">Echec du déplacement d'au moins un fichier</string>
-  <string id="16205">Suppression échouée</string>
-  <string id="16206">Echec du déplacement d'au moins un fichier</string>
+  <string id="16200">Opération annulée</string>
+  <string id="16201">La copie a échouée</string>
+  <string id="16202">Un ou plusieurs fichiers n’ont pas été copiés</string>
+  <string id="16203">Le déplacement a échoué</string>
+  <string id="16204">Un ou plusieurs fichiers n’ont pas été déplacés</string>
+  <string id="16205">La suppression a échouée</string>
+  <string id="16206">Un ou plusieurs fichiers n’ont pas été supprimés</string>
   <string id="20000">Dossier Rip CDDA</string>
   <string id="20001">Utiliser un lecteur DVD externe</string>
   <string id="20002">Lecteur DVD externe</string>
@@ -1214,8 +1209,8 @@ pour cette visualisation</string>
   <string id="20008">Copies d'écran</string>
   <string id="20009">Utiliser XBMC</string>
   <string id="20010">Image de l'artiste</string>
-  <string id="20011">Playlist musicale</string>
-  <string id="20012">Playlist vidéo</string>
+  <string id="20011">Sélection musicale</string>
+  <string id="20012">Sélection vidéo</string>
   <string id="20013">Voulez-vous lancer le jeu ?</string>
   <string id="20014">Trier par: Playlist</string>
   <string id="20015">Vignette IMDb</string>
@@ -1223,7 +1218,7 @@ pour cette visualisation</string>
   <string id="20017">Vignette locale</string>
   <string id="20018">Pas de vignette</string>
   <string id="20019">Choisir une vignette</string>
-  <string id="20020">Impossible d'utiliser KAI et trainer ensemble</string>
+  <string id="20020">Impossible d'utiliser KAI et Trainer ensemble</string>
   <string id="20021">Choisissez celui que vous voulez utiliser</string>
   <string id="20023">Conflit</string>
   <string id="20024">Scanner Nouveau</string>
@@ -1240,12 +1235,12 @@ pour cette visualisation</string>
   <string id="20046">Sortir du mode Admin.</string>
   <string id="20047">Créer le profil '%s' ?</string>
   <string id="20048">Démarrer avec des paramètres à neuf</string>
-  <string id="20049">Le meilleur disponible</string>
+  <string id="20049">La meilleure disponible</string>
   <string id="20050">Bascule auto. entre 16x9 et 4x3</string>
   <string id="20051">Traiter les fichiers empilés comme un seul fichier</string>
   <string id="20052">Attention</string>
-  <string id="20053">Mode Admin. quitté</string>
-  <string id="20054">Entré en mode Admin.</string>
+  <string id="20053">Vous quittez le mode Admin.</string>
+  <string id="20054">Vous entrez en mode Admin.</string>
   <string id="20055">Vignette Allmusic.com</string>
   <string id="20056">Vignette source</string>
   <string id="20057">Supprimer la vignette</string>
@@ -1257,7 +1252,7 @@ pour cette visualisation</string>
   <string id="20063">Partages par défaut (lecture seule)</string>
   <string id="20064">Copier Défaut</string>
   <string id="20065">Image du profil</string>
-  <string id="20066">Verrouiller les préférences</string>
+  <string id="20066">Verrouillage Préférences</string>
   <string id="20067">Editer le profil</string>
   <string id="20068">Verrouiller le profil</string>
   <string id="20069">Impossible de créer le dossier</string>
@@ -1293,7 +1288,7 @@ pour cette visualisation</string>
   <string id="20099">Impossible de ripper le CD ou le morceau pendant la lecture</string>
   <string id="20100">Codes et paramètres Admin.</string>
   <string id="20101">Entrer le code Admin. active toujours le mode Admin.</string>
-  <string id="20102">ou copier à partir de défaut ?</string>
+  <string id="20102">ou copier ceux définis par défaut ?</string>
   <string id="20103">Enregistrer les changements du profil ?</string>
   <string id="20104">Anciens paramètres trouvés.</string>
   <string id="20105">Voulez-vous les utiliser ?</string>
@@ -1312,7 +1307,7 @@ pour cette visualisation</string>
   <string id="20118">Ceci nécessite le code Admin. pour être réglé.</string>
   <string id="20119">Voulez-vous le régler maintenant ?</string>
   <string id="20120">Chargement des informations du programme</string>
-  <string id="20121">Mode Soirée lancé !</string>
+  <string id="20121">Mix de Soirée lancé !</string>
   <string id="20122">Vrai</string>
   <string id="20123">Mélange des ingrédients</string>
   <string id="20124">Remplissage des verres</string>
@@ -1358,7 +1353,7 @@ pour cette visualisation</string>
   <string id="20165">Non verrouillé</string>
   <string id="20166">Verrouillé</string>
   <string id="20167">Gelé</string>
-  <string id="20168">Necessite un reset</string>
+  <string id="20168">Nécessite un reset</string>
   <string id="20169">Semaine</string>
   <string id="20170">Ligne</string>
   <string id="20171">Réseau Windows (SMB)</string>
