@@ -572,8 +572,9 @@ DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
     CStdString strSQL = FormatSQL("select xbedescription,iTimesPlayed,lastAccessed,titleId,iSize from files where strFileName like '%s'", item->m_strPath.c_str());
     m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
-    { // get info
-      item->SetLabel(m_pDS->fv("xbedescription").get_asString());
+    { // get info - only set the label if not preformatted
+      if (!item->IsLabelPreformated())
+        item->SetLabel(m_pDS->fv("xbedescription").get_asString());
       item->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asLong();
       item->m_strTitle = item->GetLabel();  // is this needed?
       item->m_dateTime = TimeStampToLocalTime(_atoi64(m_pDS->fv("lastAccessed").get_asString().c_str()));
