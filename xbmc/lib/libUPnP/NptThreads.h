@@ -232,9 +232,8 @@ public:
         virtual void Notify(void) = 0;
     };
 
-    // constructor and destructor
-             NPT_ThreadCallbackSlot();
-    virtual ~NPT_ThreadCallbackSlot() {}
+    // constructor
+    NPT_ThreadCallbackSlot();
 
     // methods
     NPT_Result ReceiveCallback(NPT_ThreadCallbackReceiver& receiver, NPT_Timeout timeout = 0);

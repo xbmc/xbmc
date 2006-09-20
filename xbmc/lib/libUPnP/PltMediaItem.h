@@ -86,7 +86,7 @@ public:
     NPT_UInt8 m_Flags;
 
     /* container info related */
-    NPT_UInt32 m_ChildrenCount;
+    NPT_Int32 m_ChildrenCount;
 
     /* original DIDL for Control Points to pass to a renderer when invoking SetAVTransportURI */
     NPT_String m_Didl;
