@@ -121,10 +121,15 @@ class PLT_CtrlPoint : public PLT_HttpServerListener,
                       public PLT_SsdpSearchResponseListener
 {
 public:
-    PLT_CtrlPoint(const char* uuid_to_ignore = NULL, const char* autosearch = "upnp:rootdevice");
+    PLT_CtrlPoint(const char* autosearch = "upnp:rootdevice");
 
     NPT_Result   AddListener(PLT_CtrlPointListener* listener);
     NPT_Result   RemoveListener(PLT_CtrlPointListener* listener);
+
+    NPT_Result   SetUUIDToIgnore(const char* uuid) {
+        m_UUIDToIgnore = uuid;
+        return NPT_SUCCESS;
+    }
 
     NPT_Result   Start(PLT_TaskManager* task_manager);
     NPT_Result   Stop();
@@ -236,9 +241,8 @@ class PLT_AddGetSCPDRequestIterator
 public:
     PLT_AddGetSCPDRequestIterator(PLT_TaskManager*         task_manager, 
                                   PLT_CtrlPoint*           ctrl_point, 
-                                  PLT_DeviceDataReference& device,
-                                  NPT_HttpUrl              base_url) :
-        m_TaskManager(task_manager), m_CtrlPoint(ctrl_point), m_Device(device), m_BaseURL(base_url) {}
+                                  PLT_DeviceDataReference& device) :
+        m_TaskManager(task_manager), m_CtrlPoint(ctrl_point), m_Device(device) {}
 
     NPT_Result operator()(PLT_Service*& service) const;
     
@@ -246,7 +250,6 @@ private:
     PLT_TaskManager*        m_TaskManager;
     PLT_CtrlPoint*          m_CtrlPoint;
     PLT_DeviceDataReference m_Device;
-    NPT_HttpUrl             m_BaseURL;
 };
 
 /*----------------------------------------------------------------------
