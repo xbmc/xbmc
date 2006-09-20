@@ -166,7 +166,10 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
             return false;
         }
         else if (iAction == ACTION_PLAYER_PLAY)
+        {
           OnPlayMedia(iItem);
+          return true;
+        }
       }
     }
     break;
