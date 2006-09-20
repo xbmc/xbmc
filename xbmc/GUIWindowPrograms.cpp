@@ -137,7 +137,10 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           OnPopupMenu(iItem);
         }
         if (iAction == ACTION_PLAYER_PLAY)
+        {
           OnPlayMedia(m_viewControl.GetSelectedItem());
+          return true;
+        }
       }
     }
     break;
