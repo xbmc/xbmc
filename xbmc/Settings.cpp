@@ -11,6 +11,8 @@
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIPassword.h"
+#include "GUIAudioManager.h"
+#include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
 #include "xbox/Network.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -1817,6 +1819,12 @@ bool CSettings::LoadProfile(int index)
     if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) || iOldRes != g_guiSettings.GetInt("videoscreen.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")))
     {
       g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    }
+    else
+    {
+      g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE); // needs to reset 
+      g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
+      g_audioManager.Load();
     }
     if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font"))) // need to redo if same skin, other lanuage..
     {
