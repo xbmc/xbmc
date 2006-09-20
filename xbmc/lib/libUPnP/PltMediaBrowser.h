@@ -43,14 +43,17 @@ public:
                       const char*              sort_criteria = "",
                       void*                    userdata = NULL);
 
+    // accessor methods
+    const NPT_Lock<PLT_DeviceDataReferenceList>& GetMediaServers() { return m_MediaServers; }
+
 protected:
     // ContentDirectory service responses
     virtual NPT_Result OnBrowseResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_Action* action, void* userdata);
 
 protected:
-    PLT_CtrlPointReference            m_CtrlPoint;
-    PLT_MediaBrowserListener*         m_Listener;
-    NPT_List<PLT_DeviceDataReference> m_MediaServers;
+    PLT_CtrlPointReference                m_CtrlPoint;
+    PLT_MediaBrowserListener*             m_Listener;
+    NPT_Lock<PLT_DeviceDataReferenceList> m_MediaServers;
 };
 
 #endif /* _PLT_MEDIA_BROWSER_H_ */

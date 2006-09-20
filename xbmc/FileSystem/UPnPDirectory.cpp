@@ -192,15 +192,14 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
 
         PLT_MediaItemListReference list;
-        if (NPT_FAILED(upnp->m_MediaBrowser->Browse(*device, root_id, list)))
-            return false;
+        // if error, the list could be partial and that's ok
+        // we still want to process it
+        upnp->m_MediaBrowser->Browse(*device, root_id, list);
 
         NPT_List<PLT_MediaItem*>::Iterator entry = list->GetFirstItem();
         while (entry) {
             CFileItem *pItem = new CFileItem((const char*)(*entry)->m_Title);
             pItem->m_bIsFolder = (*entry)->IsContainer();
-            //pItem->m_bIsShareOrDrive = false;
-            //pItem->m_iDriveType = SHARE_TYPE_REMOTE;
 
             // if it's a container, format a string as upnp://host/uuid/object_id/ 
             if (pItem->m_bIsFolder) {
