@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-09-2006 fixed: mockup with nav sounds and changing profiles.
  - 20-09-2006 updated: German language file
  - 19-09-2006 fixed: UPnP client now supports UPnP Media Servers with a description doc url other than root (and no URLBase in description doc)
  - 19-09-2006 fixed: Play on folder could cause it to start paused in My Videos
