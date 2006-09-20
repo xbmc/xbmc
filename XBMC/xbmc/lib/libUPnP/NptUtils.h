@@ -35,7 +35,7 @@ extern NPT_UInt32 NPT_BytesToInt32Le(const unsigned char* buffer);
 extern NPT_UInt16 NPT_BytesToInt16Le(const unsigned char* buffer);
 
 extern void NPT_ByteToHex(NPT_Byte b, char* buffer);
-extern void NPT_HexToByte(const char* buffer, NPT_Byte& b);
+extern NPT_Result NPT_HexToByte(const char* buffer, NPT_Byte& b);
 
 /*----------------------------------------------------------------------
 |    conversion utilities
