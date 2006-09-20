@@ -195,10 +195,9 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           // queue folder or playlist into temp playlist and play
           if ((pItem->m_bIsFolder && !pItem->IsParentFolder()) || pItem->IsPlayList())
             PlayItem(iItem);
+          return true;
         }
       }
-      else
-        return CGUIWindowVideoBase::OnMessage(message);
     }
   }
   return CGUIWindowVideoBase::OnMessage(message);
