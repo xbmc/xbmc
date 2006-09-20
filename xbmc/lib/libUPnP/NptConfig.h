@@ -1,10 +1,8 @@
 /*****************************************************************
 |
-|   File: NptConfig.h
-|
 |   Neptune - Configuration
 |
-|   (c) 2002-2003 Gilles Boccon-Gibod
+|   (c) 2002-2006 Gilles Boccon-Gibod
 |   Author: Gilles Boccon-Gibod (bok@bok.net)
 |
  ****************************************************************/
@@ -118,6 +116,9 @@
 typedef __w64 long NPT_PointerLong;
 #define NPT_POINTER_TO_LONG(_p) ((long)(NPT_PointerLong) (_p) )
 #define NPT_CONFIG_HAVE_FOPEN_S
+#endif
+#if defined(_DEBUG)
+#define _CRTDBG_MAP_ALLOC
 #endif
 #endif
 
