@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-09-2006 fixed: UPnP client now supports UPnP Media Servers with a description doc url other than root (and no URLBase in description doc)
  - 19-09-2006 fixed: Play on folder could cause it to start paused in My Videos
  - 19-09-2006 fixed: <label> wasn't used in a .cut file once the xbe it points to had been read into the database.
  - 19-09-2006 fixed: Don't stack dvd folders in virtual root directory.

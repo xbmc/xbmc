@@ -203,7 +203,7 @@ NPT_Array<T>::operator=(const NPT_Array<T>& copy)
     // copy all elements from the other object
     Reserve(copy.GetItemCount());
     for (NPT_Ordinal i=0; i<copy.m_ItemCount; i++) {
-        new ((void*)&m_Items[i]) T(copy.m_Item[i]);
+        new ((void*)&m_Items[i]) T(copy.m_Items[i]);
     }
 
     return *this;

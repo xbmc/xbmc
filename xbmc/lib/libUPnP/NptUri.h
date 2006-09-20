@@ -26,31 +26,31 @@ public:
         SCHEME_ID_HTTP
     } SchemeId;
 
+    // constants. use as a parameter to Encode()
+    static const char* const PathCharsToEncode;
+    static const char* const QueryCharsToEncode;
+    static const char* const UnsafeCharsToEncode;
+
     // class methods
-    static NPT_String Encode(const char* uri);
+    static NPT_String Encode(const char* uri, const char* chars, bool encode_percents=true);
     static NPT_String Decode(const char* uri);
     static SchemeId   ParseScheme(const NPT_String& scheme);
 
     // methods
-    NPT_Uri(const char* uri);
+    NPT_Uri() : m_SchemeId(SCHEME_ID_UNKNOWN) {}
     virtual ~NPT_Uri() {}
-    const NPT_String& AsString() const { 
-        return m_Uri;  
-    }
     const NPT_String& GetScheme() const {
         return m_Scheme;
     }
+    void SetScheme(const char* scheme);
     SchemeId GetSchemeId() const {
         return m_SchemeId;
     }
-    const NPT_String& GetSpecific() { return m_Specific; }
 
 protected:
     // members
-    NPT_String m_Uri;
     NPT_String m_Scheme;
     SchemeId   m_SchemeId;
-    NPT_String m_Specific;
 };
 
 #endif // _NPT_URI_H_

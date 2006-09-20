@@ -28,6 +28,7 @@ class PLT_DeviceDataFinder;
 class PLT_DeviceData;
 
 typedef NPT_Reference<PLT_DeviceData> PLT_DeviceDataReference;
+typedef NPT_List<PLT_DeviceDataReference> PLT_DeviceDataReferenceList;
 
 /*----------------------------------------------------------------------
 |   PLT_DeviceData class
@@ -36,18 +37,18 @@ class PLT_DeviceData
 {
 public:
     PLT_DeviceData(
-        const char*      url_base_path = "/", 
+        const char*      url_description_path = "/", 
         const char*      uuid = "",
         NPT_TimeInterval lease_time = NPT_TimeInterval(40, 0),
         const char*      device_type = "",
         const char*      friendly_name = "");
 
-    virtual NPT_Result GetDescription(NPT_String& desc);
-    virtual NPT_String GetURLBase(const char* bind_addr = NULL);
-    virtual NPT_Result GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** device = NULL);
+    virtual NPT_Result  GetDescription(NPT_String& desc);
+    virtual NPT_String  GetDescriptionUrl(const char* bind_addr = NULL);
+    virtual NPT_HttpUrl GetURLBase();
+    virtual NPT_Result  GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** device = NULL);
 
     const NPT_TimeInterval& GetLeaseTime()    const { return m_LeaseTime;    }
-    const NPT_String&       GetURLBasePath()  const { return m_URLBasePath;  }
     const NPT_String&       GetUUID()         const { return m_UUID;         }
     const NPT_String&       GetFriendlyName() const { return m_FriendlyName; }
     const NPT_String&       GetType()         const { return m_DeviceType;   }
@@ -95,16 +96,16 @@ protected:
     NPT_AtomicVariable  m_ReferenceCount;
     bool                m_Root;
     NPT_String          m_UUID;
+    NPT_String          m_URLDescriptionPath;
+    NPT_String          m_URLBaseHost;
+    unsigned int        m_Port;
     NPT_String          m_URLBasePath;
     NPT_String          m_DeviceType;
     NPT_String          m_FriendlyName;
-    unsigned int        m_Port;
 
     NPT_TimeInterval    m_LeaseTime;
     NPT_TimeStamp       m_LeaseTimeLastUpdate;
-             
     NPT_String          m_PresentationURL;
-    NPT_String          m_URLBase;
 
     NPT_Array<PLT_Service*>             m_Services;
     NPT_Array<PLT_DeviceDataReference>  m_EmbeddedDevices;

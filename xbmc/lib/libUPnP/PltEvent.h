@@ -97,19 +97,19 @@ private:
 };
 
 /*----------------------------------------------------------------------
-|   PLT_EventSubscriberFinder
+|   PLT_EventSubscriberFinderByService
 +---------------------------------------------------------------------*/
-class PLT_EventSubscriberFinder
+class PLT_EventSubscriberFinderByService
 {
 public:
     // methods
-    PLT_EventSubscriberFinder(const char* event_sub_url) : m_EventSubUrl(event_sub_url) {}
-    virtual ~PLT_EventSubscriberFinder() {}
+    PLT_EventSubscriberFinderByService(PLT_Service* service) : m_Service(service) {}
+    virtual ~PLT_EventSubscriberFinderByService() {}
     bool operator()(PLT_EventSubscriber* const & eventSub) const ;
 
 private:
     // members
-    NPT_String m_EventSubUrl;
+    PLT_Service* m_Service;
 };
 
 #endif /* _PLT_EVENT_H_ */

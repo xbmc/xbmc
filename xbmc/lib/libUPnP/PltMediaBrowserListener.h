@@ -19,7 +19,10 @@
 /*----------------------------------------------------------------------
 |   PLT_BrowseInfo
 +---------------------------------------------------------------------*/
-struct PLT_BrowseInfo {
+class PLT_BrowseInfo {
+public:
+    PLT_BrowseInfo() : nr(0), tm(0), uid(0) {}
+
     NPT_String                 object_id;
     PLT_MediaItemListReference items;
     unsigned long              nr;
@@ -38,11 +41,11 @@ public:
     virtual void OnMSAddedRemoved(
         PLT_DeviceDataReference& /*device*/, 
         int                      /*added*/) {}
+
     virtual void OnMSStateVariablesChanged(
         PLT_Service*                  /*service*/, 
         NPT_List<PLT_StateVariable*>* /*vars*/) {}
 
-    // 
     virtual void OnMSBrowseResult(
         NPT_Result               /*res*/, 
         PLT_DeviceDataReference& /*device*/, 

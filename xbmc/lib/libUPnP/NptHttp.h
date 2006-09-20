@@ -24,7 +24,15 @@
 const unsigned int NPT_HTTP_DEFAULT_PORT = 80;
 const unsigned int NPT_HTTP_INVALID_PORT = 0;
 
-const int NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH = 2048;
+const NPT_Timeout NPT_HTTP_CLIENT_DEFAULT_CONNECTION_TIMEOUT    = 30000;
+const NPT_Timeout NPT_HTTP_CLIENT_DEFAULT_IO_TIMEOUT            = 30000;
+const NPT_Timeout NPT_HTTP_CLIENT_DEFAULT_NAME_RESOLVER_TIMEOUT = 60000;
+
+const NPT_Timeout NPT_HTTP_SERVER_DEFAULT_CONNECTION_TIMEOUT    = NPT_TIMEOUT_INFINITE;
+const NPT_Timeout NPT_HTTP_SERVER_DEFAULT_IO_TIMEOUT            = 60000;
+
+const int NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH  = 8192;
+const int NPT_HTTP_PROTOCOL_MAX_HEADER_COUNT = 100;
 
 #define NPT_HTTP_PROTOCOL_1_0   "HTTP/1.0"
 #define NPT_HTTP_PROTOCOL_1_1   "HTTP/1.1"
@@ -63,31 +71,72 @@ public:
 };
 
 /*----------------------------------------------------------------------
+|   NPT_HttpUrlQuery
++---------------------------------------------------------------------*/
+class NPT_HttpUrlQuery
+{
+public:
+    // types
+    struct Field {
+        Field(const char* name, const char* value) :
+            m_Name(name), m_Value(value) {}
+        NPT_String m_Name;
+        NPT_String m_Value;
+    };
+
+    // constructor
+    NPT_HttpUrlQuery() {}
+    NPT_HttpUrlQuery(const char* query);
+
+    // accessors
+    NPT_List<Field>& GetFields() { return m_Fields; }
+
+    // methods
+    NPT_Result AddField(const char* name, const char* value);
+    NPT_String ToString();
+
+private:
+    // members
+    NPT_List<Field> m_Fields;
+};
+
+/*----------------------------------------------------------------------
 |   NPT_HttpUrl
 +---------------------------------------------------------------------*/
 class NPT_HttpUrl : public NPT_Uri {
 public:
     // constructors and destructor
-    NPT_HttpUrl() : NPT_Uri("http:") {}
+    NPT_HttpUrl();
     NPT_HttpUrl(const char* url);
-    NPT_HttpUrl(const char* host, NPT_UInt16 port, const char* path);
+    NPT_HttpUrl(const char* host, 
+                NPT_UInt16  port, 
+                const char* path,
+                const char* query = NULL,
+                const char* fragment = NULL);
 
     // methods
-    NPT_UInt16        GetPort() const { return m_Port; }
-    const NPT_String& GetHost() const { return m_Host; }
-    const NPT_String& GetPath() const { return m_Path; }
-    bool              IsValid() const { return m_Port != NPT_HTTP_INVALID_PORT; }
-    NPT_Result        SetHost(const char* host);
-    NPT_Result        SetPath(const char* path);
+    NPT_UInt16        GetPort() const     { return m_Port;     }
+    const NPT_String& GetHost() const     { return m_Host;     }
+    const NPT_String& GetPath() const     { return m_Path;     }
+    const NPT_String& GetQuery() const    { return m_Query;    }
+    const NPT_String& GetFragment() const { return m_Fragment; }
+    bool              IsValid() const;
+    NPT_Result        SetHost(const char*     host);
+    NPT_Result        SetPath(const char*     path);
+    NPT_Result        SetQuery(const char*    query);
+    NPT_Result        SetFragment(const char* fragment);
+    NPT_String        ToRequestString(bool with_fragment = false) const;
+    NPT_String        ToString(bool with_fragment = false) const;
 
 private:
     // members
     NPT_String m_Host;
     NPT_UInt16 m_Port;
     NPT_String m_Path;
-
-    // methods
-    void RebuildUri();
+    bool       m_HasQuery;
+    NPT_String m_Query;
+    bool       m_HasFragment;
+    NPT_String m_Fragment;
 };
 
 /*----------------------------------------------------------------------
@@ -188,7 +237,6 @@ public:
     }
     virtual NPT_Result ParseHeaders(NPT_BufferedInputStream& stream,
                                     NPT_Timeout              timeout = NPT_TIMEOUT_INFINITE);
-    virtual NPT_Result Emit(NPT_OutputStream& stream) const = 0;
 
 protected:
     // constructors
@@ -223,7 +271,7 @@ public:
     const NPT_HttpUrl& GetUrl() { return m_Url; }
     NPT_Result         SetUrl(const char* url);
     const NPT_String&  GetMethod() const { return m_Method; }
-    NPT_Result         Emit(NPT_OutputStream& stream) const;
+    virtual NPT_Result Emit(NPT_OutputStream& stream, bool use_proxy=false) const;
     
 protected:
     // members
@@ -253,7 +301,7 @@ public:
                                  const char*        protocol = NPT_HTTP_PROTOCOL_1_0);
     NPT_HttpStatusCode GetStatusCode()   { return m_StatusCode;   }
     NPT_String&        GetReasonPhrase() { return m_ReasonPhrase; }
-    NPT_Result         Emit(NPT_OutputStream& stream) const;
+    virtual NPT_Result Emit(NPT_OutputStream& stream) const;
 
 protected:
     // members
@@ -266,23 +314,37 @@ protected:
 +---------------------------------------------------------------------*/
 class NPT_HttpClient {
 public:
+    // types
+    struct Config {
+        NPT_Timeout m_ConnectionTimeout;
+        NPT_Timeout m_IoTimeout;
+        NPT_Timeout m_NameResolverTimeout;
+        bool        m_UseProxy;
+        NPT_String  m_ProxyHostname;
+        NPT_UInt16  m_ProxyPort;
+        bool        m_FollowRedirect;
+    };
+
     // constructors and destructor
              NPT_HttpClient();
     virtual ~NPT_HttpClient();
 
     // methods
     NPT_Result SendRequest(NPT_HttpRequest&   request,
-                           NPT_HttpResponse*& response,
-                           NPT_Timeout        timeout = NPT_TIMEOUT_INFINITE);
+                           NPT_HttpResponse*& response);
+    NPT_Result SetConfig(const Config& config);
+    NPT_Result SetProxy(const char* hostname, NPT_UInt16 port);
+    NPT_Result SetTimeouts(NPT_Timeout connection_timeout,
+                           NPT_Timeout io_timeout,
+                           NPT_Timeout name_resolver_timeout);
 
 protected:
     // methods
     NPT_Result SendRequestOnce(NPT_HttpRequest&   request,
-                               NPT_HttpResponse*& response,
-                               NPT_Timeout        timeout = NPT_TIMEOUT_INFINITE);
+                               NPT_HttpResponse*& response);
 
     // members
-    bool m_FollowRedirect;
+    Config m_Config;
 };
 
 /*----------------------------------------------------------------------
@@ -290,19 +352,28 @@ protected:
 +---------------------------------------------------------------------*/
 class NPT_HttpServer {
 public:
+    // types
+    struct Config {
+        NPT_Timeout m_ConnectionTimeout;
+        NPT_Timeout m_IoTimeout;
+        NPT_UInt16  m_ListenPort;
+    };
+
     // constructors and destructor
     NPT_HttpServer();
     virtual ~NPT_HttpServer();
 
     // methods
+    NPT_Result SetConfig(const Config& config);
+    NPT_Result SetListenPort(NPT_UInt16 port);
+    NPT_Result SetTimeouts(NPT_Timeout connection_timeout, NPT_Timeout io_timeout);
     NPT_Result WaitForRequest(NPT_HttpRequest*&          request,
-                              NPT_OutputStreamReference& stream,
-                              NPT_Timeout                timeout = NPT_TIMEOUT_INFINITE);
+                              NPT_OutputStreamReference& stream);
     NPT_Result SendResponse(NPT_HttpResponse& response, NPT_OutputStream& stream);
 
 protected:
     // members
-    NPT_UInt16 m_Port;
+    Config m_Config;
 };
 
 #endif // _NPT_HTTP_H_
