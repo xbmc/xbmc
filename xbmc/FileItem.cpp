@@ -1554,11 +1554,11 @@ void CFileItemList::Stack()
     {
       CFileItem *item = Get(i);
 
-      // ignore directories and playlists
-      if (item->IsPlayList() || item->IsParentFolder() || item->IsNFO())
+      // ignore parent directories, playlists and the virtual root
+      if (item->IsPlayList() || item->IsParentFolder() || item->IsNFO() || IsVirtualDirectoryRoot())
         continue;
 
-      if( item->m_bIsFolder )
+      if( item->m_bIsFolder)
       {
         // check for any dvd directories, only on known fast types
         // i'm adding xbms even thou it really isn't fast due to
@@ -1572,7 +1572,7 @@ void CFileItemList::Stack()
         {
           CStdString path;
           CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS.IFO", path);
-          if(CFile::Exists(path))
+          if (CFile::Exists(path))
           {
             /* set the thumbnail based on folder */
             item->SetCachedVideoThumb();
@@ -2027,9 +2027,15 @@ void CFileItem::SetUserProgramThumb()
     CShortcut shortcut;
     if ( shortcut.Create( m_strPath ) )
     {
-      CFileItem item(shortcut.m_strPath,false);
-      item.SetUserProgramThumb();
-      m_strThumbnailImage = item.m_strThumbnailImage;
+      // use the shortcut's thumb
+      if (!shortcut.m_strThumb.IsEmpty())
+        m_strThumbnailImage = shortcut.m_strThumb;
+      else
+      {
+        CFileItem item(shortcut.m_strPath,false);
+        item.SetUserProgramThumb();
+        m_strThumbnailImage = item.m_strThumbnailImage;
+      }
       return;
     }
   }
