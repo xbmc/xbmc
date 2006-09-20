@@ -134,18 +134,22 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
           OnQueueItem(iItem);
+          return true;
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
           OnInfo(iItem);
+          return true;
         }
         else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
           OnPopupMenu(iItem);
+          return true;
         }
        	else if (iAction == ACTION_PLAYER_PLAY && !g_application.IsPlayingVideo())
         {
           OnResumeItem(iItem);
+          return true;
         }
         else if (iAction == ACTION_DELETE_ITEM)
         {
@@ -159,11 +163,11 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             OnDeleteItem(iItem);
 
           // or be at the video playlists location
-          if (m_vecItems.m_strPath.Equals("special://videoplaylists/"))
+          else if (m_vecItems.m_strPath.Equals("special://videoplaylists/"))
             OnDeleteItem(iItem);
-
           else
             return false;
+          return true;
         }
       }
       else if (iControl == CONTROL_IMDB)
