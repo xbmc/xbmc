@@ -239,7 +239,7 @@ void CGUILabelControl::WrapText(CStdStringW &utf16Text, CGUIFont *font, float ma
     }
     pos++;
   }
-  utf16Text = multiLine;
+  utf16Text = multiLine.Trim();
 }
 
 CStdString CGUILabelControl::ShortenPath(const CStdString &path)
