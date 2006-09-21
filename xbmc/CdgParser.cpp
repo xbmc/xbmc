@@ -242,9 +242,9 @@ void CCdgReader::SkipUpToTime(float secs)
   m_FileState= FILE_SKIP;
 
   UINT uiFinalOffset = (UINT) (secs * PARSING_FREQ);
-  if ( m_uiNumReadSubCodes >= uiFinalOffset) return ;
-  UINT i;
-  for (i = m_uiNumReadSubCodes; i <= uiFinalOffset; i++)
+  // is this needed?
+  if ( m_uiNumReadSubCodes > uiFinalOffset) return ;
+  for (UINT i = m_uiNumReadSubCodes; i <= uiFinalOffset; i++)
   {
     //m_Cdg.ReadSubCode(m_pLoader->GetCurSubCode());
     if (m_pLoader->SetNextSubCode())
