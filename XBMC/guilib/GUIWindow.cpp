@@ -401,6 +401,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
   m_previousWindow = WINDOW_INVALID;
   m_showAnimation.Reset();
   m_closeAnimation.Reset();
+  m_origins.clear();
 
   VECREFERENCECONTOLS referencecontrols;
   IVECREFERENCECONTOLS it;
@@ -468,7 +469,6 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
         g_graphicsContext.ScaleYCoord(m_iPosY, resToUse);
       }
 
-      m_origins.clear();
       TiXmlElement *originElement = pChild->FirstChildElement("origin");
       while (originElement)
       {
