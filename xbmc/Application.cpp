@@ -2197,7 +2197,17 @@ bool CApplication::OnAction(const CAction &action)
     if (m_pPlayer && m_pPlayer->CanSeek() && GetTime() > 3)
       SeekTime(0);
     else
+    {
+      if (IsPlayingVideo())
+      {
+        // save video settings
+        CVideoDatabase dbs;
+        dbs.Open();
+        dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
+        dbs.Close();
+      }
       g_playlistPlayer.PlayPrevious();
+    }
     return true;
   }
 
@@ -2206,6 +2216,15 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (IsPlaying() && m_pPlayer->SkipNext())
       return true;
+
+    if (IsPlayingVideo())
+    {
+      // save video settings
+      CVideoDatabase dbs;
+      dbs.Open();
+      dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
+      dbs.Close();
+    }
 
     g_playlistPlayer.PlayNext();
     
