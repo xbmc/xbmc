@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Bobbin007/sCAPe/Deezle-->
+<!--Translator: Bobbin007 / sCAPe / Deezle-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 09/20/2006-->
+<!--Date of translation: 09/24/2006-->
 <!--$Revision$-->
 <!--Based on english strings version 1.343-->
 <strings>
@@ -12,7 +12,7 @@
   <string id="3">Videos</string>
   <string id="4">TV-Programm</string>
   <string id="5">Einstellungen</string>
-  <string id="7">Dateien</string>
+  <string id="7">Dateimanager</string>
   <string id="8">Wetter</string>
   <string id="11">Montag</string>
   <string id="12">Dienstag</string>
@@ -130,9 +130,9 @@
   <string id="192">Löschen</string>
   <string id="193">Durchsuchen</string>
   <string id="194">Durchsuche...</string>
-  <string id="195">Es wurde kein IMDB-Eintrag gefunden!</string>
+  <string id="195">Es wurde kein IMDb-Eintrag gefunden!</string>
   <string id="196">Video auswählen:</string>
-  <string id="197">IMDB-Informationen abfragen</string>
+  <string id="197">IMDb-Informationen abfragen</string>
   <string id="198">Lade Video-Informationen</string>
   <string id="199">Regisseur:</string>
   <string id="200">Verfasser:</string>
@@ -187,7 +187,7 @@
   <string id="253">Anzahl der Kanäle</string>
   <string id="254">- Receiver unterstützt DTS</string>
   <string id="255">CDDB</string>
-  <string id="256">Suche in freedb nach CDDB-Informationen...</string>
+  <string id="256">Suche in freedb.org nach CDDB-Informationen...</string>
   <string id="257">Fehler</string>
   <string id="258">Tag-Informationen aktivieren</string>
   <string id="259">Öffne</string>
@@ -288,7 +288,7 @@
   <string id="365">Nach Namen</string>
   <string id="366">Nach Jahr</string>
   <string id="367">Nach Quote</string>
-  <string id="368">IMDB-Suche</string>
+  <string id="368">IMDb-Suche</string>
   <string id="369">Titel</string>
   <string id="370">Gewitter</string>
   <string id="371">teilweise</string>
@@ -622,7 +622,7 @@
   <string id="1250">Autom. erkennen</string>
   <string id="1251">Andere Konsolen im Netzwerk suchen</string>
   <string id="1252">Nick-Name der eigenen XBOX</string>
-  <string id="1253">Automatisch eine FTP-Freigabe in 'Dateien' erstellen</string>
+  <string id="1253">Automatisch eine FTP-Freigabe im Dateimanager erstellen</string>
   <string id="1254">Nachfragen ob eine Verbindung aufgebaut werden soll</string>
   <string id="1255">FTP-Benutzername und Passwort senden</string>
   <string id="1256">Ping-Intervall</string>
@@ -869,7 +869,7 @@
   <string id="13305">RSS-Newsfeeds aktivieren</string>
   <string id="13306">Eintrag zum übergeordneten Ordner ausblenden</string>
   <string id="13307">Formatvorlage für Musiktitel-Dateinamen</string>
-  <string id="13308">Möchten Sie die XBOX neustarten?</string>
+  <string id="13308">Möchten Sie die XBOX neu starten?</string>
   <string id="13309">Wählen Sie 'Nein' um XBMC neu zu starten.</string>
   <string id="13310">Übergang streckend</string>
   <string id="13311">Übergang gleitend</string>
@@ -908,7 +908,7 @@
   <string id="13345">LED während der Wiedergabe ausschalten</string>
   <string id="13346">Film-Informationen</string>
   <string id="13347">Zur Playlist hinzufügen</string>
-  <string id="13348">Film in IMDB suchen...</string>
+  <string id="13348">Film in IMDb suchen...</string>
   <string id="13349">Datenbank aktualisieren</string>
   <string id="13350">Playlist anzeigen</string>
   <string id="13351">Album-Informationen</string>
@@ -1004,7 +1004,7 @@
   <string id="14051">Zeit-Format</string>
   <string id="14052">Datums-Format</string>
   <string id="14053">GUI-Filter</string>
-  <string id="14054">Internet-Anfragen aktivieren</string>
+  <string id="14054">Internet-Anfragen zulassen</string>
   <string id="14055">Durchsuchen im Hintergrund</string>
   <string id="14056">Stop</string>
   <string id="14057">Nicht möglich während des Durchsuchens</string>
@@ -1216,7 +1216,7 @@
   <string id="20012">Video Playlisten</string>
   <string id="20013">Möchten Sie das Spiel jetzt starten?</string>
   <string id="20014">Nach Playlisten</string>
-  <string id="20015">IMDB Cover</string>
+  <string id="20015">IMDb Cover</string>
   <string id="20016">Aktuelles Cover</string>
   <string id="20017">Lokales Cover</string>
   <string id="20018">Kein Cover</string>
@@ -1345,7 +1345,7 @@
   <string id="20154">Allgemeine Informationen</string>
   <string id="20155">Speicherplatz-Informationen</string>
   <string id="20156">Festplatten-Informationen</string>
-  <string id="20157">DVD Laufwerks-Informationen</string>
+  <string id="20157">DVD-Laufwerks-Informationen</string>
   <string id="20158">Netzwerk-Informationen</string>
   <string id="20159">Grafik-Informationen</string>
   <string id="20160">Hardware-Informationen</string>
@@ -1382,7 +1382,7 @@
   <string id="20191">Festplatten-Werte werden geprüft</string>
   <string id="20192">Festplatten-Schlüssel wird geprüft</string>
   <string id="20193">Festplatten-Temperatur wird geprüft</string>
-  <string id="20194">DVD Laufwerks-Informationen werden geprüft</string>
+  <string id="20194">DVD-Laufwerks-Informationen werden geprüft</string>
   <string id="20195">Modell/Firmware wird geprüft</string>
   <string id="20196">Netzwerk-Einstellungen werden geprüft</string>
   <string id="20197">MAC-Adresse wird geprüft</string>
