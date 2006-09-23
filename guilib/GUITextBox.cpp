@@ -36,10 +36,28 @@ void CGUITextBox::Render()
 {
   if (!IsVisible()) return;
 
-  if (!HasRendered() && m_wrapText)
-  { // do set text once so that we make sure
-    // we have all the sizing correct
-    SetText(m_strText);
+  if (m_bInvalidated)
+  { 
+    // first correct any sizing we need to do
+    float fWidth, fHeight;
+    m_label.font->GetTextExtent( L"y", &fWidth, &fHeight);
+    m_iItemHeight = (int)fHeight;
+    float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);
+    m_iItemsPerPage = (int)(fTotalHeight / fHeight);
+
+    // we have all the sizing correct so do any wordwrapping
+    m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
+    CStdString text(m_strText);
+    CGUILabelControl::WrapText(text, m_label.font, (float)m_dwWidth);
+    // convert to line by lines
+    CStdStringArray lines;
+    StringUtils::SplitString(text, "\n", lines);
+    for (unsigned int i = 0; i < lines.size(); i++)
+    {
+      CGUIListItem item(lines[i]);
+      m_vecItems.push_back(item);
+    }
+    UpdatePageControl();
   }
 
   int iPosY = m_iPosY;
@@ -246,23 +264,7 @@ void CGUITextBox::SetText(const string &strText)
 {
   m_wrapText = true;
   m_strText = strText;
-  m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
-  // start wordwrapping
-
-  // word wrap to width at spaces
-  CStdString text(strText);
-  CGUILabelControl::WrapText(text, m_label.font, (float)m_dwWidth);
-
-  // convert to line by lines
-  CStdStringArray lines;
-  StringUtils::SplitString(text, "\n", lines);
-  for (unsigned int i = 0; i < lines.size(); i++)
-  {
-    CGUIListItem item(lines[i]);
-    m_vecItems.push_back(item);
-  }
-
-  UpdatePageControl();
+  m_bInvalidated = true;
 }
 
 void CGUITextBox::UpdatePageControl()
@@ -338,17 +340,6 @@ void CGUITextBox::SetHeight(int iHeight)
   int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
   CGUIControl::SetHeight(iHeight);
   m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + iSpinOffsetY);
-
-  float fWidth, fHeight;
-  m_label.font->GetTextExtent( L"y", &fWidth, &fHeight);
-
-  m_iItemHeight = (int)fHeight;
-  float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);
-  m_iItemsPerPage = (int)(fTotalHeight / fHeight);
-
-  int iPages = m_vecItems.size() / m_iItemsPerPage;
-  if (m_vecItems.size() % m_iItemsPerPage || !iPages) iPages++;
-  m_upDown.SetRange(1, iPages);
 }
 
 void CGUITextBox::SetPulseOnSelect(bool pulse)
