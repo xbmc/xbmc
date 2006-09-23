@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-09-2006 fixed: Context menu for playlists wasn't quite right.
  - 23-09-2006 fixed: Textbox wasn't correctly aligned in python, and the line spacing was incorrect.
  - 23-09-2006 updated: German language file
  - 21-09-2006 fixed: video settings weren't saved if you skipped file (ACTION_NEXT_ITEM, ACTION_PREV_ITEM).
