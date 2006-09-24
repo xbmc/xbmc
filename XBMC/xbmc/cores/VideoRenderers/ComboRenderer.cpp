@@ -197,7 +197,7 @@ void CComboRenderer::YV12toYUY2()
   if (!m_RGBSurface[m_iYUY2RenderBuffer]) return;
 
   /* if we have dimmed our texture, don't overwrite it */
-  if( g_application.m_bScreenSave && m_bHasDimView ) return;
+  if( g_application.IsInScreenSaver() && m_bHasDimView ) return;
 
   if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
     CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
@@ -373,7 +373,7 @@ void CComboRenderer::UnInit()
 
 void CComboRenderer::CheckScreenSaver()
 {
-  if (g_application.m_bScreenSave && !m_bHasDimView)
+  if (g_application.IsInScreenSaver() && !m_bHasDimView)
   {
     D3DLOCKED_RECT lr;
     float fAmount = (float)g_guiSettings.GetInt("screensaver.dimlevel") / 100.0f;
