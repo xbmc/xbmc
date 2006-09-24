@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: djoens-->
 <!--Email: djoens2000@yahoo.com-->
-<!--Date of translation: 08/30/2006-->
+<!--Date of translation: 09/17/2006-->
 <!--$Revision$-->
-<!--Based on english strings version 1.332-->
+<!--Based on english strings version 1.343-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Gambar</string>
@@ -131,7 +131,7 @@
   <string id="192">Kosongkan</string>
   <string id="193">Pindai</string>
   <string id="194">Pencarian...</string>
-  <string id="195">Informasi IMDB idak ditemukan!</string>
+  <string id="195">Informasi IMDB tidak ditemukan!</string>
   <string id="196">Pilih film:</string>
   <string id="197">Meminta info IMDB</string>
   <string id="198">Mengakses detil Film</string>
@@ -271,8 +271,6 @@
   <string id="343">Atur Framerate</string>
   <string id="344">Aktor</string>
   <string id="345">Tahun</string>
-  <string id="346">Stack</string>
-  <string id="347">Unstack</string>
   <string id="350">Program</string>
   <string id="351">Mati</string>
   <string id="352">Dim</string>
@@ -1199,6 +1197,13 @@ utk visualisasi ini</string>
   <string id="16108">Gunakan hanya NTSC-J</string>
   <string id="16109">Gunakan hanya PAL-60</string>
   <string id="16110">Untuk Permainan 60hz</string>
+  <string id="16200">Operasi dibatalkan</string>
+  <string id="16201">Penyalinan gagal</string>
+  <string id="16202">Gagal untuk menyalin sedikitnya satu file</string>
+  <string id="16203">Pemindahan gagal</string>
+  <string id="16204">Gagal untuk memindahkan sedikitnya satu file</string>
+  <string id="16205">Penghapusan gagal</string>
+  <string id="16206">Gagal untuk menghapus sedikitnya satu file</string>
   <string id="20000">Folder CDDA Rip</string>
   <string id="20001">Gunakan Player DVD eksternal</string>
   <string id="20002">Player DVD Eksternal</string>
@@ -1340,5 +1345,65 @@ utk visualisasi ini</string>
   <string id="20151">Batalkan Waktu Penghentian</string>
   <string id="20152">Kunci pilihan untuk %s</string>
   <string id="20153">Jelajah...</string>
+  <string id="20154">Informasi Dasar</string>
+  <string id="20155">Informasi Penyimpanan</string>
+  <string id="20156">Informasi Hard Disk</string>
+  <string id="20157">Informasi VD-ROM</string>
+  <string id="20158">Informasi Jaringan</string>
+  <string id="20159">Informasi Video</string>
+  <string id="20160">Informasi Perangkat Keras</string>
+  <string id="20161">Total: %s MB, Digunakan: %s MB, Bebas: %s MB</string>
+  <string id="20162">Total HDD Digunakan: %u%%  Bebas: %u%%</string>
+  <string id="20163">%s: %s MB of %s MB Bebas</string>
+  <string id="20164">Penguncian Tidak Didukung</string>
+  <string id="20165">Tidak Dikunci</string>
+  <string id="20166">Dikunci</string>
+  <string id="20167">Membeku</string>
+  <string id="20168">Membutuhkan Reset</string>
+  <string id="20169">Minggu</string>
+  <string id="20170">Baris</string>
+  <string id="20171">Jaringan Windows (SMB)</string>
+  <string id="20172">Server XBMSP</string>
+  <string id="20173">Server FTP</string>
+  <string id="20174">iTunes music share (DAAP) </string>
+  <string id="20175">Server UPnP</string>
+  <string id="20176">Tampilkan Informasi Video</string>
+  <string id="20177">Selesai</string>
+  <string id="20178">Shift</string>
+  <string id="20179">Caps Lock</string>
+  <string id="20180">Simbol</string>
+  <string id="20181">Backspace</string>
+  <string id="20182">Space</string>
+  <string id="20183">Memuat lagi skin</string>
+  <string id="20184">Putar menggunakan informasi EXIF</string>
+  <string id="20185">Mendeteksi Nilai Perangkat Keras</string>
+  <string id="20186">Harap Tunggu</string>
+  <string id="20187">Membaca Nilai dari EEPROM</string>
+  <string id="20188">Membaca dari EEPROM Selesai</string>
+  <string id="20189">Pendeteksian Selesai</string>
+  <string id="20190">Mendeteksi Informasi Harddisk</string>
+  <string id="20191">Mendeteksi  Nilai HDD</string>
+  <string id="20192">Mendeteksi Kunci HDD</string>
+  <string id="20193">Mendeteksi Suhu HDD</string>
+  <string id="20194">Mendeteksi Informasi DVD-ROM</string>
+  <string id="20195">Mendeteksi Model/Firmware</string>
+  <string id="20196">Mendeteksi Setelan Jaringan</string>
+  <string id="20197">Mendeteksi Alamat MAC</string>
+  <string id="20198">Mendeteksi Status Online</string>
+  <string id="20199">Mendeteksi Versi Xbox, Serial dan CPU</string>
+  <string id="20300">Mendeteksi Perangkat Keras Xbox</string>
+  <string id="20301">Mendeteksi ModChip</string>
+  <string id="20302">Mendeteksi BIOS</string>
+  <string id="20303">Mendeteksi Kecepatan CPU</string>
+  <string id="20304">Mendeteksi Tanggal Produksi</string>
+  <string id="20305">Mendeteksi Unit Terpasang</string>
+  <string id="20306">Tidak diketahui. Harap tambahkan MD5 dari xbmc.log ke BiosIDs.ini.</string>
+  <string id="20307">Secondary DNS</string>
+  <string id="20308">Server DHCP:</string>
+  <string id="20309">Buat Folder Baru</string>
+  <string id="20310">Dim LCD saat Playback</string>
+  <string id="20311">Tidak Dikenal atau Onboard (diproteksi)</string>
+  <string id="20312">Dim LCD saat Jeda</string>
+  <string id="20313">Ubah LED kembali jika Jeda</string>
   <string id="29999">Tambalan Filter Auto Flicker</string>
 </strings>
