@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-09-2006 updated: Hungarian language file (Thnx to bali001)
+ - 24-09-2006 updated: Indonesian language file (Thnx to djoens)
+ - 24-09-2006 updated: Spanish language file (Thnx to jose_t)
+ - 24-09-2006 updated: Slovenian language file (Thnx to xsiluro)
  - 23-09-2006 fixed: Context menu for playlists wasn't quite right.
  - 23-09-2006 fixed: Textbox wasn't correctly aligned in python, and the line spacing was incorrect.
  - 23-09-2006 updated: German language file
