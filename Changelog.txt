@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-09-2006 fixed: item 7 was not remembered in large item view
  - 24-09-2006 fixed: no sound when playing dvr-ms files ( switched back to mplayer demuxer with fix for it's choppy playback )
  - 24-09-2006 updated: Hungarian language file (Thnx to bali001)
  - 24-09-2006 updated: Indonesian language file (Thnx to djoens)
