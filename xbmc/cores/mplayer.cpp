@@ -968,12 +968,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
       // mkv files only have utf8 encoded subtitles
       options.SetSubtitleCharset("utf8");
     }
-    else if (strExtension.Equals(".dvr-ms", false))
-    {
-      // force libavformat since mplayer's asf demuxer can't handle them properly yet
-      options.SetDemuxer("35");
-    }
-
 
     if (file.IsRAR())
     {
