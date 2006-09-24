@@ -30,9 +30,6 @@ namespace DIRECTORY
     CStdString strPathInArchive = url.GetFileName();
     url.SetOptions("");
 
-    if( !strOptions.IsEmpty() )
-      strOptions.Insert(0, '?');
-
     CStdString strSlashPath;
     url.GetURL(strSlashPath);
 
