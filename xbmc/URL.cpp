@@ -176,6 +176,9 @@ CURL::CURL(const CStdString& strURL)
 
       iPos = iAlphaSign + 1;
       iSlash = strURL.Find("/", iAlphaSign);
+
+      if(iSlash >= iEnd)
+        iSlash = -1;
     }
   }
 
