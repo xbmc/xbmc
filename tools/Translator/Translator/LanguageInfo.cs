@@ -12,32 +12,98 @@ namespace TeamXBMC.TranslatorCore
 
 		public class Region
 		{
-			public string dateLong="DDDD, D MMMM YYYY";
-			public string dateShort="DD/MM/YYYY";
-			public string time="H:mm:ss";
-			public string symbolAM="";
-			public string symbolPM="";
-			public string speedUnit="kmh";
-			public string tempUnit="C";
-			public string name="(default)";
+			private string dateLong="DDDD, D MMMM YYYY";
+			private string dateShort="DD/MM/YYYY";
+			private string time="H:mm:ss";
+			private string symbolAM="";
+			private string symbolPM="";
+			private string speedUnit="kmh";
+			private string tempUnit="C";
+			private string name="(default)";
 
 			public Region()
 			{
 
 			}
 
+			public string DateLong
+			{
+				get { return dateLong; }
+				set { dateLong=value; }
+			}
+
+			public string DateShort
+			{
+				get { return dateShort; }
+				set { dateShort=value; }
+			}
+
+			public string Time
+			{
+				get { return time; }
+				set { time=value; }
+			}
+
+			public string SymbolAM
+			{
+				get { return symbolAM; }
+				set { symbolAM=value; }
+			}
+
+			public string SymbolPM
+			{
+				get { return symbolPM; }
+				set { symbolPM=value; }
+			}
+
+			public string SpeedUnit
+			{
+				get { return speedUnit; }
+				set { speedUnit=value; }
+			}
+
+			public string TempUnit
+			{
+				get { return tempUnit; }
+				set { tempUnit=value; }
+			}
+
+			public string Name
+			{
+				get { return name; }
+				set { name=value; }
+			}
+
 			public void Load(XmlElement element)
 			{
 				if (element.GetAttribute("name")!="")
 					name=element.GetAttribute("name");
-				dateShort=element.SelectSingleNode("dateshort").InnerText;
-				dateLong=element.SelectSingleNode("datelong").InnerText;
+
+				XmlNode node=null;
+
+				node=element.SelectSingleNode("dateshort");
+				if (node!=null)
+					dateShort=node.InnerText;
+
+				node=element.SelectSingleNode("datelong");
+				if (node!=null)
+					dateLong=node.InnerText;
+
 				XmlElement timeElement=(XmlElement)element.SelectSingleNode("time");
-				symbolAM=timeElement.GetAttribute("symbolAM");
-				symbolPM=timeElement.GetAttribute("symbolPM");
-				time=timeElement.InnerText;
-				speedUnit=element.SelectSingleNode("speedunit").InnerText;
-				tempUnit=element.SelectSingleNode("tempunit").InnerText;
+				if (timeElement!=null)
+				{
+					symbolAM=timeElement.GetAttribute("symbolAM");
+					symbolPM=timeElement.GetAttribute("symbolPM");
+					time=timeElement.InnerText;
+				}
+
+				node=element.SelectSingleNode("speedunit");
+				if (node!=null)
+					speedUnit=node.InnerText;
+
+				node=element.SelectSingleNode("tempunit");
+				if (node!=null)
+					tempUnit=node.InnerText;
 			}
 
 			public void Save(ref XmlElement element)
@@ -81,9 +147,6 @@ namespace TeamXBMC.TranslatorCore
 		{
 			// Add a region with default values
 			regions.Add(new Region()); 
-			//
-			// TODO: Add constructor logic here
-			//
 		}
 
 		/// <summary>
@@ -137,7 +200,7 @@ namespace TeamXBMC.TranslatorCore
 
 				XmlNodeList regionNodes=doc.DocumentElement.SelectNodes("/language/regions/region");
 
-				if (regionNodes!=null)
+				if (regionNodes.Count>0)
 				{
 					regions.Clear(); // remove default region
 
@@ -301,7 +364,7 @@ namespace TeamXBMC.TranslatorCore
 			Region toDelete=null;
 			foreach (Region region in regions)
 			{
-				if (region.name==regionName)
+				if (region.Name==regionName)
 				{
 					// Region to remove is found
 					toDelete=region;
@@ -315,8 +378,8 @@ namespace TeamXBMC.TranslatorCore
 		}
 
 		/// <summary>
-		/// Removes a region to the language info.
-		/// The name if the new region is returned.
+		/// Adds a region to the language info.
+		/// The name of the new region is returned.
 		/// </summary>
 		public string AddRegion()
 		{
@@ -332,7 +395,7 @@ namespace TeamXBMC.TranslatorCore
 				bool exists=false;
 				foreach (Region region in regions)
 				{
-					if (region.name==newName)
+					if (region.Name==newName)
 					{
 						exists=true;
 						break;
@@ -344,7 +407,7 @@ namespace TeamXBMC.TranslatorCore
 					// add a region with this name
 					found=true;
 					Region region=new Region();
-					region.name=newName;
+					region.Name=newName;
 					regions.Add(region);
 					break;
 				}
