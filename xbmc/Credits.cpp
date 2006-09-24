@@ -10,8 +10,14 @@
 #include "lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
 #include "util.h"
-#include "guifontxpr.h"
 
+//#define USE_TTF_FONTS
+
+#ifdef USE_TTF_FONTS
+#include "guifont.h"
+#else
+#include "guifontxpr.h"
+#endif
 
 // Transition effects for text, must specific exactly one in and one out effect
 enum CRED_EFFECTS
@@ -368,7 +374,13 @@ static D3DXVECTOR4 colour(1.0f, 1.0f, 1.0f, 0);
 static char* ResourceHeader;
 static void* ResourceData;
 static int SkinOffset;
+
+#ifdef USE_TTF_FONTS
+LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text);
+static map<int, CGUIFont*> Fonts;
+#else
 static map<int, CGUIFontXPR*> Fonts;
+#endif
 
 static HRESULT InitLogo()
 {
@@ -917,36 +929,20 @@ void RunCredits()
     // map fonts
     if (Fonts.find(Credits[i].Font) == Fonts.end())
     {
-      CStdString strFont;
-      strFont.Fmt("creditsfont%d", Credits[i].Font);
       // first try loading it
+#ifdef USE_TTF_FONTS
+      CStdString fontPath = "Q:\\Media\\Fonts\\Arial.ttf";
+      CStdString strFont;
+      strFont.Fmt("__credits%d__", Credits[i].Font);
+      CGUIFont *font = g_fontManager.LoadTTF(strFont, fontPath, 0xFFFFFFFF, 0, Credits[i].Font, FONT_STYLE_NORMAL);
+      Fonts.insert(std::pair<int, CGUIFont*>(Credits[i].Font, font));
+#else
       CStdString strFilename;
       strFilename.Fmt("q:\\credits\\credits-font%d.xpr", Credits[i].Font);
       CGUIFontXPR* pFont = new CGUIFontXPR(strFilename);
       pFont->Load(strFilename);
-      // we don't do this anymore as the TTF fonts won't work with the routines we use
-      // if we don't have the credits font, then we can't do much about it
-/*      if (!pFont)
-      {
-        // Find closest skin font size
-        for (int j = 0; j < Credits[i].Font; ++j)
-        {
-          strFont.Fmt("font%d", Credits[i].Font + j);
-          pFont = g_fontManager.GetFont(strFont);
-          if (pFont)
-            break;
-          if (j)
-          {
-            strFont.Fmt("font%d", Credits[i].Font - j);
-            pFont = g_fontManager.GetFont(strFont);
-            if (pFont)
-              break;
-          }
-        }
-        if (!pFont)
-          pFont = g_fontManager.GetFont("font13"); // should have this!
-      }*/
       Fonts.insert(std::pair<int, CGUIFontXPR*>(Credits[i].Font, pFont));
+#endif
     }
 
     // validate credits
@@ -1044,9 +1040,15 @@ void RunCredits()
       {
         if (Credits[NextCredit].Text)
         {
+#ifdef USE_TTF_FONTS
+          CGUIFont* pFont = Fonts.find(Credits[NextCredit].Font)->second;
+          Credits[NextCredit].pTex = CreateCreditsTexture(pFont, Credits[NextCredit].Text);
+          pFont->GetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
+#else
           CGUIFontXPR* pFont = Fonts.find(Credits[NextCredit].Font)->second;
           Credits[NextCredit].pTex = pFont->CreateTexture(Credits[NextCredit].Text, 0, 0xffffffff, D3DFMT_LIN_A8R8G8B8);
           pFont->CreditsGetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
+#endif
         }
         ActiveList.push_back(&Credits[NextCredit]);
         ++NextCredit;
@@ -1064,6 +1066,7 @@ void RunCredits()
         {
           if ((*iCredit)->pTex)
             (*iCredit)->pTex->Release();
+          (*iCredit)->pTex = NULL;
           iCredit = ActiveList.erase(iCredit);
           if (iCredit == ActiveList.end())
             break;
@@ -1151,13 +1154,34 @@ void RunCredits()
         CloseHandle(hMusicThread);
 
         // Unload fonts
+#ifdef USE_TTF_FONTS
+        for (map<int, CGUIFont*>::iterator iFont = Fonts.begin(); iFont != Fonts.end(); ++iFont)
+#else
         for (map<int, CGUIFontXPR*>::iterator iFont = Fonts.begin(); iFont != Fonts.end(); ++iFont)
+#endif
         {
+          // TODO: Delete the font - how do we do this??
+#ifdef USE_TTF_FONTS
+          CGUIFont *font = iFont->second;
+          CStdString fontName = font->GetFontName();
+          g_fontManager.Unload(fontName);
+#else
           delete iFont->second;
+#endif
         }
         Fonts.clear();
 
         CleanupLogo();
+
+        // cleanup our activelist
+        for (list<CreditLine_t*>::iterator iCredit = ActiveList.begin(); iCredit != ActiveList.end(); ++iCredit)
+        {
+          CreditLine_t* pCredit = *iCredit;
+          if (pCredit->pTex)
+            pCredit->pTex->Release();
+          pCredit->pTex = NULL;
+        }
+        ActiveList.clear();
 
         // wait for button release
         do
@@ -1292,4 +1316,28 @@ unsigned __stdcall CreditsMusicThread(void* pParam)
   CSectionLoader::Unload("MOD_RW");
 
   return 0;
+}
+
+LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text)
+{
+  // grab the text extents
+  float width, height;
+  font->GetTextExtent(text, &width, &height);
+  // create a texture of this size
+  LPDIRECT3DTEXTURE8 texture = NULL;
+  if (D3D_OK == D3DDevice::CreateTexture((UINT)width, (UINT)height, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &texture))
+  {
+    // grab the surface level
+    D3DSurface *oldSurface, *newSurface;
+    texture->GetSurfaceLevel(0, &newSurface);
+    D3DDevice::GetRenderTarget(&oldSurface);
+    D3DDevice::SetRenderTarget(newSurface, NULL);
+    // render text into it
+    D3DDevice::Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
+    font->DrawText(0, 0, 0xffffffff, 0, text);
+    D3DDevice::SetRenderTarget(oldSurface, NULL);
+    newSurface->Release();
+    oldSurface->Release();
+  }
+  return texture;
 }
