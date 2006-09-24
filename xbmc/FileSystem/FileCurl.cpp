@@ -313,7 +313,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   
   if( url2.GetProtocol().Equals("ftp") )
   {
-    if( url2.GetOptions().Equals("stream") )
+    if( url2.GetOptions().Mid(1).Equals("stream") )
       isstream = true;
 
     /* ditch options as it's not supported on ftp */

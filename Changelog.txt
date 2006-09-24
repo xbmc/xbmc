@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-09-2006 fixed: url parser choked on http urls containing ;, #, also for urls with ? but no filename after host
  - 24-09-2006 fixed: item 7 was not remembered in large item view
  - 24-09-2006 fixed: no sound when playing dvr-ms files ( switched back to mplayer demuxer with fix for it's choppy playback )
  - 24-09-2006 updated: Hungarian language file (Thnx to bali001)
