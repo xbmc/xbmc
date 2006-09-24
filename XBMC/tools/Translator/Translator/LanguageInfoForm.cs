@@ -568,7 +568,7 @@ namespace TeamXBMC.Translator
 			// Fill listbox with region form langinfo
 			foreach (LanguageInfo.Region region in languageInfo.Regions)
 			{
-				listViewRegions.Items.Add(region.name);
+				listViewRegions.Items.Add(region.Name);
 			}
 
 			if (listViewRegions.Items.Count>0)
@@ -673,7 +673,7 @@ namespace TeamXBMC.Translator
 		{
 			foreach (LanguageInfo.Region region in languageInfo.Regions)
 			{
-				if (region.name==listViewRegions.SelectedItems[0].Text)
+				if (region.Name==listViewRegions.SelectedItems[0].Text)
 				{
 					RegionForm form=new RegionForm();
 					form.RegionInfo=region;
@@ -690,7 +690,7 @@ namespace TeamXBMC.Translator
 		{
 			foreach (LanguageInfo.Region region in languageInfo.Regions)
 			{
-				if (region.name==listViewRegions.SelectedItems[0].Text)
+				if (region.Name==listViewRegions.SelectedItems[0].Text)
 				{
 					RegionForm form=new RegionForm();
 					form.RegionInfo=region;
@@ -714,7 +714,7 @@ namespace TeamXBMC.Translator
 			// Does the new name exist
 			foreach (LanguageInfo.Region region in languageInfo.Regions)
 			{
-				if (region.name==e.Label)
+				if (region.Name==e.Label)
 				{
 					e.CancelEdit=true;
 					return;
@@ -724,9 +724,9 @@ namespace TeamXBMC.Translator
 			// Find the item the user renames and set the new region name
 			foreach (LanguageInfo.Region region in languageInfo.Regions)
 			{
-				if (region.name==listViewRegions.Items[e.Item].Text)
+				if (region.Name==listViewRegions.Items[e.Item].Text)
 				{
-					region.name=e.Label;
+					region.Name=e.Label;
 					return;
 				}
 			}
