@@ -826,16 +826,10 @@ void CGUIThumbnailPanel::SetSelectedItem(int iItem)
   if (iItem < m_iRowOffset * (m_iRows * m_iColumns))
   { // before the page we need to be on - make it in the first row
     m_iRowOffset = iItem / m_iColumns;
-    int item = iItem - m_iRowOffset * m_iColumns;
-    m_iCursorY = item / m_iColumns;
-    m_iCursorX = item % m_iColumns;
   }
-  else if (iItem > (m_iRowOffset + m_iRows) * m_iColumns)
+  else if (iItem >= (m_iRowOffset + m_iRows) * m_iColumns)
   { // after the page we are on - make it the last row
     m_iRowOffset = max(iItem / m_iColumns - m_iRows + 1, 0);
-    int item = iItem - m_iRowOffset * m_iColumns;
-    m_iCursorY = item / m_iColumns;
-    m_iCursorX = item % m_iColumns;
   }
   int item = iItem - m_iRowOffset * m_iColumns;
   m_iCursorY = item / m_iColumns;
