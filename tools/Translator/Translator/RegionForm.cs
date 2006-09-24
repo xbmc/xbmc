@@ -541,7 +541,7 @@ namespace TeamXBMC.Translator
 			// select the combobox item based on the abbreviation
 			foreach (Unit speedUnit in speedUnits)
 			{
-				if (speedUnit.NameShort==region.speedUnit)
+				if (speedUnit.NameShort==region.SpeedUnit)
 				{
 					comboBoxSpeedUnit.Text=speedUnit.NameLong;
 				}
@@ -566,18 +566,18 @@ namespace TeamXBMC.Translator
 			// select the combobox item based on the abbreviation
 			foreach (Unit tempUnit in tempUnits)
 			{
-				if (tempUnit.NameShort==region.tempUnit)
+				if (tempUnit.NameShort==region.TempUnit)
 				{
 					comboBoxTempUnit.Text=tempUnit.NameLong;
 				}
 			}
 
 			// fill in the rest of the region info
-			textBoxDateShort.Text=region.dateShort;
-			textBoxDateLong.Text=region.dateLong;
-			textBoxTime.Text=region.time;
-			textBoxAM.Text=region.symbolAM;
-			textBoxPM.Text=region.symbolPM;
+			textBoxDateShort.Text=region.DateShort;
+			textBoxDateLong.Text=region.DateLong;
+			textBoxTime.Text=region.Time;
+			textBoxAM.Text=region.SymbolAM;
+			textBoxPM.Text=region.SymbolPM;
 		}
 
 		#endregion
@@ -589,11 +589,11 @@ namespace TeamXBMC.Translator
 		/// </summary>
 		private void buttonOK_Click(object sender, System.EventArgs e)
 		{
-			region.dateShort=textBoxDateShort.Text;
-			region.dateLong=textBoxDateLong.Text;
-			region.time=textBoxTime.Text;
-			region.symbolAM=textBoxAM.Text;
-			region.symbolPM=textBoxPM.Text;
+			region.DateShort=textBoxDateShort.Text;
+			region.DateLong=textBoxDateLong.Text;
+			region.Time=textBoxTime.Text;
+			region.SymbolAM=textBoxAM.Text;
+			region.SymbolPM=textBoxPM.Text;
 
 			// tranlate the speed unit text of the combobox to 
 			// the abbreviation used in the xml file
@@ -601,7 +601,7 @@ namespace TeamXBMC.Translator
 			{
 				if (speedUnit.NameLong==comboBoxSpeedUnit.Text)
 				{
-					region.speedUnit=speedUnit.NameShort;
+					region.SpeedUnit=speedUnit.NameShort;
 				}
 			}
 
@@ -611,7 +611,7 @@ namespace TeamXBMC.Translator
 			{
 				if (tempUnit.NameLong==comboBoxTempUnit.Text)
 				{
-					region.tempUnit=tempUnit.NameShort;
+					region.TempUnit=tempUnit.NameShort;
 				}
 			}
 		}
