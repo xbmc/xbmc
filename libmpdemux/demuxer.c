@@ -1302,7 +1302,9 @@ switch(file_format){
  }
  case DEMUXER_TYPE_ASF: {
   //---- ASF header:
-  read_asf_header(demuxer);
+  if (!read_asf_header(demuxer)) {
+      break; // this will actually leak the global asf object, oh well
+  }
   stream_reset(demuxer->stream);
   stream_seek(demuxer->stream,demuxer->movi_start);
 //  demuxer->idx_pos=0;
@@ -1314,8 +1316,8 @@ switch(file_format){
       //printf("ASF: missing video stream!? contact the author, it may be a bug :(\n");
     } else {
       sh_video=d_video->sh;sh_video->ds=d_video;
-      sh_video->fps=1000.0f; sh_video->frametime=0.001f; // 1ms
-      //      sh_video->i_bps=10*asf_packetsize; // FIXME!
+      //sh_video->fps=1000.0f; sh_video->frametime=0.001f; // 1ms  - now set when reading asf header
+      //sh_video->i_bps=10*asf_packetsize; // FIXME!
     }
   }
   if(d_audio->id!=-2){

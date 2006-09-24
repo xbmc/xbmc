@@ -42,7 +42,7 @@
 // defined at asfheader.c:
 
 extern int asf_check_header(demuxer_t *demuxer);
-extern int read_asf_header(demuxer_t *demuxer);
+extern int read_asf_header(demuxer_t *demuxer,struct asf_priv* asf);
 
 #ifdef _XBOX /* no priv structure in demuxer */
 extern struct asf_priv *g_asf;
@@ -200,6 +200,15 @@ static int demux_asf_read_packet(demuxer_t *demux,unsigned char *data,int len,in
             len -= frame_end_pos;
           }
           close_seg = 1;
+          if (asf->avg_vid_frame_time > 0.0 ) {
+            // correct the pts for the packet
+            // because dvr-ms files do not contain accurate
+            // pts values but we can deduce them using
+            // the average frame time
+            if (asf->dvr_last_vid_pts > 0.0)
+              dp->pts=asf->dvr_last_vid_pts+asf->avg_vid_frame_time;
+            asf->dvr_last_vid_pts = dp->pts;
+          }
         } else seq = ds->asf_seq;
       } else close_seg = ds->asf_seq!=seq;
 
@@ -490,6 +499,8 @@ void demux_seek_asf(demuxer_t *demuxer,float rel_seek_secs,int flags){
     if(newpos<0 || newpos<demuxer->movi_start) newpos=demuxer->movi_start;
 //    printf("\r -- asf: newpos=%d -- \n",newpos);
     stream_seek(demuxer->stream,newpos);
+
+    if (asf->asf_is_dvr_ms) asf->dvr_last_vid_pts = 0.0f;
 
     if (d_video->id >= 0)
     ds_fill_buffer(d_video);
