@@ -484,7 +484,7 @@ void CFileRar::InitFromUrl(const CURL& url)
 	m_strPathInRar = url.GetFileName();  
 
   std::vector<CStdString> options;
-  CUtil::Tokenize(url.GetOptions(), options, "&");
+  CUtil::Tokenize(url.GetOptions().Mid(1), options, "&");
   
 	m_bFileOptions = 0;
 	m_bRarOptions = 0;

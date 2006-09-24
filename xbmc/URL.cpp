@@ -113,16 +113,37 @@ CURL::CURL(const CStdString& strURL)
 
       return;
     }
-  }
-
+  }  
+  
   // check for username/password - should occur before first /  
   if (iPos == -1) iPos = 0;
+  
+
+  // for protocols supporting options, chop that part off here
+  int iEnd = strURL.length();
+  if(m_strProtocol.Equals("http")
+    || m_strProtocol.Equals("https")
+    || m_strProtocol.Equals("ftp")
+    || m_strProtocol.Equals("shout")
+    || m_strProtocol.Equals("daap"))
+  {
+    int iOptions = strURL.find_first_of("?;#", iPos);
+    if (iOptions >= 0 )
+    {
+      // we keep the initial char as it can be any of the above
+      m_strOptions = strURL.substr(iOptions);
+      iEnd = iOptions;
+    }
+  }
+
   int iSlash = strURL.Find("/", iPos);
+  if(iSlash >= iEnd)
+    iSlash = -1; // was an invalid slash as it was contained in options
 
   if( !m_strProtocol.Equals("iso9660") )
   {    
     int iAlphaSign = strURL.Find("@", iPos);
-    if (iAlphaSign >= 0 && (iAlphaSign < iSlash || iSlash < 0))
+    if (iAlphaSign >= 0 && iAlphaSign < iEnd && (iAlphaSign < iSlash || iSlash < 0))
     {
       // username/password found
       CStdString strUserNamePassword = strURL.Mid(iPos, iAlphaSign - iPos);
@@ -161,7 +182,7 @@ CURL::CURL(const CStdString& strURL)
   // detect hostname:port/
   if (iSlash < 0)
   {
-    CStdString strHostNameAndPort = strURL.Right(strURL.size() - iPos);
+    CStdString strHostNameAndPort = strURL.Mid(iPos, iEnd - iPos);
     int iColon = strHostNameAndPort.Find(":");
     if (iColon >= 0)
     {
@@ -192,9 +213,9 @@ CURL::CURL(const CStdString& strURL)
       m_strHostName = strHostNameAndPort;
     }
     iPos = iSlash + 1;
-    if ((int)strURL.size() > iPos)
+    if (iEnd > iPos)
     {
-      m_strFileName = strURL.Right(strURL.size() - iPos);
+      m_strFileName = strURL.Mid(iPos, iEnd - iPos);
 
       iSlash = m_strFileName.Find("/"); 
       if(iSlash < 0)
@@ -218,21 +239,14 @@ CURL::CURL(const CStdString& strURL)
     }
     else
     {
-      if (!m_strHostName.IsEmpty() && strURL[strURL.size()-1]=='/')
+      if (!m_strHostName.IsEmpty() && strURL[iEnd-1]=='/')
         m_strFileName=m_strHostName + "/";
       else
         m_strFileName = m_strHostName;
       m_strHostName = "";
     }
   }
-
-  int iOptions = m_strFileName.Find("?");
-  if (iOptions >= 0 )
-  {
-    m_strOptions = m_strFileName.Mid(iOptions+1);
-    m_strFileName = m_strFileName.Left(iOptions);
-  }
-
+  
   m_strFileName.Replace("\\", "/");
 
   /* update extension */
