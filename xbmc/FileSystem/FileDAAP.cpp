@@ -165,8 +165,7 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
   int requestid = ++m_thisHost->request_id;
     
   m_hashurl = "/" + m_url.GetFileName();
-  if (m_url.GetOptions().length() > 0)
-    m_hashurl += "?" + m_url.GetOptions();
+  m_hashurl += m_url.GetOptions();
 
   char hash[33] = {0};
   GenerateHash(m_thisHost->version_major, (unsigned char*)(m_hashurl.c_str()), 2, (unsigned char*)hash, requestid);

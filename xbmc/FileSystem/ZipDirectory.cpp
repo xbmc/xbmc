@@ -35,9 +35,6 @@ namespace DIRECTORY
     url.SetOptions(""); // delete options to have a clean path to add stuff too
     url.SetFileName(""); // delete filename too as our names later will contain it
 
-    if( !strOptions.IsEmpty() )
-      strOptions.Insert(0, '?');
-
     CStdString strSlashPath;
     url.GetURL(strSlashPath);
 
