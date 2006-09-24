@@ -142,10 +142,10 @@ public:
   bool m_bSpinDown;
   bool m_bNetworkSpinDown;
   DWORD m_dwSpinDownTime;
-  bool m_bInactive;    // CB: SCREENSAVER PATCH
-  bool m_bScreenSave;  // CB: SCREENSAVER PATCH
+
+  inline bool IsInScreenSaver() { return m_bScreenSave; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
-  DWORD m_dwSaverTick;  // CB: SCREENSAVER PATCH
+
   DWORD m_dwSkinTime;
   bool m_bIsPaused;
 
@@ -157,8 +157,14 @@ public:
   int GlobalIdleTime();
   bool SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed,int iDuration);
 
-  
 protected:
+  // screensaver
+  bool m_bInactive;
+  bool m_bScreenSave;
+  CStdString m_screenSaverMode;
+  DWORD m_dwSaverTick;
+  D3DGAMMARAMP m_OldRamp;
+
   // timer information
   CXBStopWatch m_idleTimer;
   CXBStopWatch m_restartPlayerTimer;
@@ -168,7 +174,6 @@ protected:
 
   CFileItem m_itemCurrentFile;
   CFileItemList m_currentStack;
-  D3DGAMMARAMP m_OldRamp;  // CB: SCREENSAVER PATCH
   CSplash* m_splash;
   DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
   EPLAYERCORES m_eCurrentPlayer;

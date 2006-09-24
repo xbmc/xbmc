@@ -3496,37 +3496,27 @@ bool CApplication::ResetScreenSaverWindow()
     m_bScreenSave = false;
     m_iScreenSaveLock = 0;
 
-    // if matrix trails screensaver is active
-    int iWin = m_gWindowManager.GetActiveWindow();
-    if (iWin == WINDOW_SCREENSAVER)
-    {
-      // then show previous window
-      m_gWindowManager.PreviousWindow();
-      return true;
-    }
-    else if (iWin == WINDOW_VISUALISATION && g_guiSettings.GetBool("screensaver.usemusicvisinstead"))
+    float fFadeLevel = 1.0f;
+    if (m_screenSaverMode == "Visualisation")
     {
       // we can just continue as usual from vis mode
       return false;
-//      m_gWindowManager.PreviousWindow();
-//      return true;
     }
-    // Fade to dim or black screensaver is active --> fade in
-    float fFadeLevel = 1.0f;
-    CStdString strScreenSaver = g_guiSettings.GetString("screensaver.mode");
-    if (strScreenSaver == "Dim")
+    else if (m_screenSaverMode == "Dim")
     {
       fFadeLevel = (float)g_guiSettings.GetInt("screensaver.dimlevel") / 100;
     }
-    else if (strScreenSaver == "Fade")
+    else if (m_screenSaverMode == "Black")
     {
       fFadeLevel = 0;
     }
-    else if (strScreenSaver == "SlideShow" && iWin == WINDOW_SLIDESHOW)
-    {
-      m_gWindowManager.PreviousWindow();
+    else if (m_screenSaverMode != "None")
+    { // we're in screensaver window
+      if (m_gWindowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
+        m_gWindowManager.PreviousWindow();  // show the previous window
       return true;
     }
+    // Fade to dim or black screensaver is active --> fade in
     D3DGAMMARAMP Ramp;
     for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
     {
@@ -3608,42 +3598,43 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   D3DGAMMARAMP Ramp;
   FLOAT fFadeLevel;
 
-  m_bInactive = true;
   m_bScreenSave = true;
+  m_bInactive = true;
   m_dwSaverTick = timeGetTime();  // Save the current time for the shutdown timeout
 
   // Get Screensaver Mode
-  CStdString strScreenSaver = g_guiSettings.GetString("screensaver.mode");
+  m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
 
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
     if (m_gWindowManager.IsRouted() || IsPlayingVideo())
-      strScreenSaver = "Dim";
+      m_screenSaverMode = "Dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead"))
     { // activate the visualisation
+      m_screenSaverMode = "Visualisation";
       m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
       return;
     }
   }
   // Picture slideshow
-  if (strScreenSaver == "SlideShow")
+  if (m_screenSaverMode == "SlideShow")
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
     g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
     return;
   }
-  else if (strScreenSaver == "Dim")
+  else if (m_screenSaverMode == "Dim")
   {
     fFadeLevel = (FLOAT) g_guiSettings.GetInt("screensaver.dimlevel") / 100; // 0.07f;
   }
-  else if (strScreenSaver == "Black")
+  else if (m_screenSaverMode == "Black")
   {
     fFadeLevel = 0;
   }
-  else if (strScreenSaver != "None")
+  else if (m_screenSaverMode != "None")
   {
     m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
     return ;
