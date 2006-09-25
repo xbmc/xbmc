@@ -56,10 +56,11 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
   // initialize our transistion effect
   m_transistionStart.type = transEffect;
   m_transistionStart.start = 0;
-  m_transistionStart.length = (int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("slideshow.transistiontime") * 0.001f); // transition time in msec
+  // the +1's make sure it actually occurs
+  m_transistionStart.length = max((int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("slideshow.transistiontime") * 0.001f), 1); // transition time in msec
   m_transistionEnd.type = transEffect;
-  m_transistionEnd.start = m_transistionStart.length + (int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
-  m_transistionEnd.length = (int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("slideshow.transistiontime") * 0.001f); // transition time in msec
+  m_transistionEnd.start = m_transistionStart.length + max((int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("slideshow.staytime")), 1);
+  m_transistionEnd.length = max((int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("slideshow.transistiontime") * 0.001f), 1); // transition time in msec
   CLog::Log(LOGDEBUG,"Duration: %i (transistion out length %i)", m_transistionEnd.start, m_transistionEnd.length);
   m_transistionTemp.type = TRANSISTION_NONE;
   m_fTransistionAngle = 0;
@@ -76,7 +77,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
   m_fZoomAmount = 1;
   m_fZoomLeft = 0;
   m_fZoomTop = 0;
-  m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + ((int)g_infoManager.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
+  m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + max(((int)g_infoManager.GetFPS() * g_guiSettings.GetInt("slideshow.staytime")), 1);
   // initialize our display effect
   if (dispEffect == EFFECT_RANDOM)
     m_displayEffect = (DISPLAY_EFFECT)((rand() % (EFFECT_RANDOM - 1)) + 1);
@@ -148,7 +149,7 @@ void CSlideShowPic::UpdateTexture(D3DTexture *pTexture, int iWidth, int iHeight)
 void CSlideShowPic::Process()
 {
   if (!m_pImage || !m_bIsLoaded || m_bIsFinished) return ;
-  if (m_iCounter < m_transistionStart.length)
+  if (m_iCounter <= m_transistionStart.length)
   { // do start transistion
     if (m_transistionStart.type == CROSSFADE)
     { // fade in at 1x speed
