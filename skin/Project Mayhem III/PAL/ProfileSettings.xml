@@ -43,6 +43,7 @@
 	<width>120</width>
 	<height>120</height>
 	<align>left</align>
+    <aspectratio>keep</aspectratio>
 	<texture>unknown-user.png</texture>
 	<include>homemisc</include>
  </control>
