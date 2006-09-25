@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-09-2006 fixed: Initial image shown when viewing a picture/slideshow was sometimes blank.
  - 25-09-2006 changed: TTF rendering speed up.
  - 24-09-2006 fixed: memory leak when exiting credits
  - 24-09-2006 fixed: leaving the screensaver could cause black screens for non-dimmed screensaver modes
