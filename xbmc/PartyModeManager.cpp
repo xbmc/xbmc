@@ -440,13 +440,14 @@ bool CPartyModeManager::AddInitialSongs(vector<long> &songIDs)
     if (musicdatabase.Open())
     {
       CFileItemList items;
-      musicdatabase.BeginTransaction();
+      //musicdatabase.BeginTransaction();
       if (musicdatabase.GetSongsByWhere(sqlWhere, items))
       {
         // We no longer keep the partymode history in the database - it slows
         // things down unnecessarily
         //musicdatabase.InitialisePartyMode();
         m_history = chosenSongIDs;
+		items.Randomize(); //randomizing the initial list or they will be in database order
         for (int i = 0; i < items.Size(); i++)
         {
           Add(items[i]);
@@ -456,12 +457,12 @@ bool CPartyModeManager::AddInitialSongs(vector<long> &songIDs)
       }
       else
       {
-        musicdatabase.CommitTransaction();
+        //musicdatabase.CommitTransaction();
         musicdatabase.Close();
         OnError(16034, (CStdString)"Cannot get songs from database. Aborting.");
         return false;
       }
-      musicdatabase.CommitTransaction();
+      //musicdatabase.CommitTransaction();
     }
     else
     {
