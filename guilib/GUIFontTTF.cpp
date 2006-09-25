@@ -67,7 +67,8 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_char = NULL;
   m_maxChars = 0;
   m_dwNestedBeginCount = 0;
-  m_fontShader = NULL;
+  m_pixelShader = NULL;
+  m_vertexShader = NULL;
 
   m_face = NULL;
   m_library = NULL;
@@ -101,7 +102,8 @@ void CGUIFontTTF::Clear()
   m_texture = NULL;
   if (m_char)
     delete[] m_char;
-  m_fontShader = NULL;
+  m_vertexShader = NULL;
+  m_pixelShader = NULL;
   m_char = NULL;
   m_maxChars = 0;
   m_numChars = 0;
@@ -196,8 +198,8 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   Character *w = GetCharacter(L'W');
   if (w)
   {
-    m_iMaxCharWidth = w->right - w->left;
-    m_cellAscent = w->bottom - w->top;
+    m_iMaxCharWidth = (unsigned int)(w->right - w->left);
+    m_cellAscent = (unsigned int)(w->bottom - w->top);
   }
 
   // cache the ellipses width
@@ -501,10 +503,10 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 
   // set the character in our table
   ch->letter = letter;
-  ch->originX = m_posX;
-  ch->originY = m_posY;
-  ch->left = bitGlyph->left;
-  ch->top = max((int)m_cellBaseLine - bitGlyph->top, 0);
+  ch->offsetX = (short)bitGlyph->left;
+  ch->offsetY = (short)max(m_cellBaseLine - bitGlyph->top, 0);
+  ch->left = (float)m_posX + ch->offsetX;
+  ch->top = (float)m_posY + ch->offsetY;
   ch->right = ch->left + bitmap.width;
   ch->bottom = ch->top + bitmap.rows;
   ch->advance = (float)m_face->glyph->advance.x / 64;
@@ -545,7 +547,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 
     POINT targetpoint;
     targetpoint.x = m_posX + bitGlyph->left;
-    targetpoint.y = m_posY + ch->top;
+    targetpoint.y = m_posY + ch->offsetY;
 
     m_pD3DDevice->CopyRects(pSource, &sourcerect, 1, pTarget, &targetpoint);
 
@@ -584,8 +586,8 @@ void CGUIFontTTF::Begin()
     m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
-    m_pD3DDevice->SetVertexShader( D3DFVF_XYZRHW | D3DFVF_TEX1 );
-    m_pD3DDevice->SetPixelShader(m_fontShader);
+    m_pD3DDevice->SetVertexShader(m_vertexShader);
+    m_pD3DDevice->SetPixelShader(m_pixelShader);
     m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f ); // fix texel align
 
     // Render the image
@@ -610,54 +612,64 @@ void CGUIFontTTF::End()
   m_pD3DDevice->SetTexture(0, NULL);
 }
 
-void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor)
+inline void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor)
 {
   // actual image width isn't same as the character width as that is
   // just baseline width and height should include the descent
-  const float width = (float)(ch->right - ch->left);
-  const float height = (float)(ch->bottom - ch->top);
+  const float width = ch->right - ch->left;
+  const float height = ch->bottom - ch->top;
 
   /* top left of our texture isn't the topleft of the textcell */
   /* celltop could be higher than m_iHeight over baseline */
-  posX += ch->left * angle.cosine - ch->top * angle.sine;
-  posY += ch->left * angle.sine + ch->top * angle.cosine;
+  posX += ch->offsetX * angle.cosine - ch->offsetY * angle.sine;
+  posY += ch->offsetX * angle.sine + ch->offsetY * angle.cosine;
 
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->originX + ch->left, (float)ch->originY + ch->top );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX, posY, 0, 1.0f );
-
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->originX + ch->right, (float)ch->originY + ch->top );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * width, posY + angle.sine * width, 0, 1.0f );
-
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->originX + ch->right, (float)ch->originY + ch->bottom );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * width - angle.sine * height, posY + angle.sine * width + angle.cosine * height, 0, 1.0f );
-
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->originX + ch->left, (float)ch->originY + ch->bottom );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX - angle.sine * height, posY + angle.cosine * height, 0, 1.0f );
+  m_pD3DDevice->SetVertexData4f( 0, posX, posY, ch->left, ch->top );
+  m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width, posY + angle.sine * width, ch->right, ch->top );
+  m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width - angle.sine * height, posY + angle.sine * width + angle.cosine * height, ch->right, ch->bottom );
+  m_pD3DDevice->SetVertexData4f( 0, posX - angle.sine * height, posY + angle.cosine * height, ch->left, ch->bottom );
 }
 
 void CGUIFontTTF::CreateShader()
 {
-  if (!m_fontShader)
+  if (!m_pixelShader)
   {
     // shader from the alpha texture to the full 32bit font.  Basically, anything with
     // alpha > 0 is filled in fully in the colour channels
     const char *fonts =
       "xps.1.1\n"
-      "def c0,0,0,0,0\n"
-      "def c1,1,1,1,0\n"
-      "def c2,0.0039,0.0039,0.0039,0.0039\n"
-      "def c3,0,0,0,1\n"
       "tex t0\n"
-      "mul r1, t0.b, v0.a\n"     // modulate the 2 alpha values into r1
-      "sub r0, r1, c2_bias\n"    // compare alpha value in r1 to minimum alpha
-      "cnd r0, r0.a, v0, c0\n"   // and if greater, copy the colour to r0, else set r0 to transparent.
-      "xmma discard, discard, r0, r0, c1, r1, c3\n"; // add colour value in r0 to alpha value in r1
+      "mov r0.rgb, v0\n"
+      "+ mul r0.a, v0.a, t0.b\n";
 
     XGBuffer* pShader;
     XGAssembleShader("FontsShader", fonts, strlen(fonts), 0, NULL, &pShader, NULL, NULL, NULL, NULL, NULL);
-    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_fontShader);
+    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_pixelShader);
     pShader->Release();
+  }
+
+  // Create the vertex shader
+  if (!m_vertexShader)
+  {
+    // our vertex declaration
+    DWORD vertexDecl[] =
+      {
+        D3DVSD_STREAM(0),
+        D3DVSD_REG( 0, D3DVSDT_FLOAT4 ),         // xy vertex, zw texture coord
+        D3DVSD_REG( 3, D3DVSDT_D3DCOLOR ),       // diffuse color
+        D3DVSD_END()
+      };
+
+    // shader for the vertex format we use
+    static DWORD vertexShader[] =
+      {
+        0x00032078,
+        0x00000000, 0x00200015, 0x0836106c, 0x2070c800,  // mov oPos.xy, v0.xy
+        0x00000000, 0x002000bf, 0x0836106c, 0x2070c848,  // mov oT0.xy, v0.zw
+        0x00000000, 0x0020061b, 0x0836106c, 0x2070f819  // mov oD0, v3
+      };
+    m_pD3DDevice->CreateVertexShader(vertexDecl, vertexShader, &m_vertexShader, D3DUSAGE_PERSISTENTDIFFUSE);
   }
 }
