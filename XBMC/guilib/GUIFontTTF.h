@@ -25,10 +25,10 @@ class CGUIFontTTF: public CGUIFontBase
 {
   struct Character
   {
-    WCHAR letter;
-    unsigned short originX, originY;
-    short left, top, right, bottom;
+    short offsetX, offsetY;
+    float left, top, right, bottom;
     float advance;
+    WCHAR letter;
   };
 public:
 
@@ -63,15 +63,17 @@ protected:
   CStdString m_strFilename;
 
   // Stuff for pre-rendering for speed
-  Character *GetCharacter(WCHAR letter);
+  inline Character *GetCharacter(WCHAR letter);
   bool CacheCharacter(WCHAR letter, Character *ch);
-  void RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor);
+  inline void RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor);
   void CreateShader();
   void ClearCharacterCache();
 
-  LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
-  DWORD m_fontShader;                // pixel shader for rendering chars from the 8bit alpha texture
+  DWORD m_pixelShader;               // pixel shader for rendering chars from the 8bit alpha texture
+  DWORD m_vertexShader;              // vertex shader (speedup?)
   LPDIRECT3DDEVICE8 m_pD3DDevice;
+
+  LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
   unsigned int m_textureWidth;       // width of our texture
   int m_textureRows;                 // the number of rows in our texture
   int m_posX;                        // current position in the texture
