@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-09-2006 fixed: Ftp directory didn't handle failed listings very gratiously.
  - 25-09-2006 fixed: Initial partymode list was not randomized (always database order).
  - 25-09-2006 fixed: Initial image shown when viewing a picture/slideshow was sometimes blank.
  - 25-09-2006 changed: TTF rendering speed up.
