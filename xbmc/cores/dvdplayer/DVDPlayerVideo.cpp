@@ -257,7 +257,14 @@ void CDVDPlayerVideo::Process()
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
       m_fForcedAspectRatio = ((CDVDMsgVideoSetAspect*)pMsg)->GetAspect();
     }
-
+    else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private mesasage sent by (CDVDPlayerVideo::Flush())
+    {
+      EnterCriticalSection(&m_critCodecSection);
+      if(m_pVideoCodec)
+        m_pVideoCodec->Reset();
+      LeaveCriticalSection(&m_critCodecSection);
+    }
+    
     if (m_DetectedStill)
     {
       CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");      
@@ -300,14 +307,7 @@ void CDVDPlayerVideo::Process()
     // decoder still needs to provide an empty image structure, with correct flags
     m_pVideoCodec->SetDropState(bRequestDrop);
     
-    if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private mesasage sent by (CDVDPlayerVideo::Flush())
-    {
-      if (m_pVideoCodec)
-      {
-        m_pVideoCodec->Reset();
-      }
-    }
-    else if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
+    if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
       CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
       CDVDDemux::DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
@@ -534,19 +534,11 @@ void CDVDPlayerVideo::SetSpeed(int speed)
 
 void CDVDPlayerVideo::Flush()
 { 
-  /* when we flush, make sure we lock crit section */
-  /* to make sure everything is rendered */
-  /* maybe we also should drop the image that we are holding */
-
-  EnterCriticalSection(&m_critCodecSection);
+  /* flush using message as this get's called from dvdplayer thread */
+  /* and any demux packet that has been taken out of queue need to *
+  /* be disposed of before we flush */
   m_messageQueue.Flush();
-
-  /* flush codec, new data coming is not related */
-  if (m_pVideoCodec)
-    m_pVideoCodec->Reset();
-  
-  m_iCurrentPts = DVD_NOPTS_VALUE;
-  LeaveCriticalSection(&m_critCodecSection);
+  m_messageQueue.Put(new CDVDMsgGeneralFlush());  
 }
 
 void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, __int64 pts)
