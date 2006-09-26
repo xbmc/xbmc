@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-09-2006 fixed: shoutcast listings broke after the url parsing fixes
  - 26-09-2006 fixed: Milkdrop - crash when changing preset packs when preset was locked
  - 26-09-2006 fixed: Milkdrop - started with default preset when preset was locked
  - 26-09-2006 fixed: first packet received by video decoder in dvdplayer after a flush would be from previouse set of data (more junk frames than needed)
