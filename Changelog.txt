@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-09-2006 fixed: Milkdrop - crash when changing preset packs when preset was locked
+ - 26-09-2006 fixed: Milkdrop - started with default preset when preset was locked
  - 26-09-2006 fixed: first packet received by video decoder in dvdplayer after a flush would be from previouse set of data (more junk frames than needed)
  - 26-09-2006 fixed: progressbar didn't show on chapter change
  - 26-09-2006 fixed: skip buttons in osd always changed file not chapter in dvd's
