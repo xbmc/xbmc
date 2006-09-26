@@ -1751,6 +1751,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       {
         CLog::Log(LOGDEBUG, " - pushed prev");
         pStream->OnPrevious();
+        g_infoManager.SetDisplayAfterSeek();
         return true;
       }
       break;
@@ -1758,6 +1759,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       {
         CLog::Log(LOGDEBUG, " - pushed next");
         pStream->OnNext();
+        g_infoManager.SetDisplayAfterSeek();
         return true;
       }
       break;
