@@ -556,7 +556,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     SAFE_RELEASE(pTexture);
   }
 
-  m_posX += (unsigned short)max(ch->right, ch->advance + 1);
+  m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
   m_numChars++;
 
   // free the glyph
