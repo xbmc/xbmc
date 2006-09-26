@@ -802,6 +802,10 @@ void CDVDPlayer::HandleMessages()
           ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(pMsgPlayerSetState->GetState());
         }
       }
+      else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
+      {
+        FlushBuffers();
+      }
     }
     catch (...)
     {
@@ -1472,7 +1476,7 @@ bool CDVDPlayer::CloseSubtitleStream(bool bKeepOverlays)
 
 void CDVDPlayer::FlushBuffers()
 {
-  //m_pDemuxer->Flush();
+  m_pDemuxer->Flush();
   m_dvdPlayerAudio.Flush();
   m_dvdPlayerVideo.Flush();
   //m_dvdPlayerSubtitle.Flush();
@@ -1698,9 +1702,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         // This event is issued whenever a non-seamless operation has been executed.
         // Applications with fifos should drop the fifos content to speed up responsiveness.
         CLog::Log(LOGDEBUG, "DVDNAV_HOP_CHANNEL");
-
-        FlushBuffers();
-        // m_bReadAgain = true;
+        m_messenger.Put(new CDVDMsgGeneralFlush());
         return NAVRESULT_ERROR;
       }
       break;
