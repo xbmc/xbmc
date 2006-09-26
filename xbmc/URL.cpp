@@ -328,7 +328,12 @@ void CURL::SetProtocol(const CStdString& strProtocol)
 
 void CURL::SetOptions(const CStdString& strOptions)
 {
-  m_strOptions = strOptions;
+  m_strOptions.Empty();
+  if( strOptions.length() > 0)
+    if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' )
+      m_strOptions = strOptions;
+    else
+      CLog::Log(LOGWARNING, __FUNCTION__" - Invalid options specified for url %s", strOptions.c_str());  
 }
 
 void CURL::SetPort(int port)
@@ -429,7 +434,7 @@ void CURL::GetURL(CStdString& strURL) const
   strURL += m_strFileName;
 
   if( m_strOptions.length() > 0 )
-    strURL += "?" + m_strOptions;
+    strURL += m_strOptions;
 }
 
 void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
@@ -469,7 +474,7 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
   strURL += m_strFileName;
 
   if( m_strOptions.length() > 0 )
-    strURL += "?" + m_strOptions;
+    strURL += m_strOptions;
 }
 
 void CURL::GetURLWithoutFilename(CStdString& strURL) const
