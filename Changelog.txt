@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-09-2006 fixed: progressbar didn't show on chapter change
+ - 26-09-2006 fixed: skip buttons in osd always changed file not chapter in dvd's
  - 26-09-2006 changed: libdvdnav.dll and libdvdcss-2. dll updated with simpler cache and builtin layerchange error detection.
  - 26-09-2006 fixed: Ftp directory didn't handle failed listings very gratiously.
  - 25-09-2006 fixed: Initial partymode list was not randomized (always database order).

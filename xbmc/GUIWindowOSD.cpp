@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GUIWindowOSD.h"
+#include "Application.h"
 
 CGUIWindowOSD::CGUIWindowOSD(void)
     : CGUIDialog(WINDOW_OSD, "VideoOSD.xml")
@@ -24,6 +25,13 @@ bool CGUIWindowOSD::OnAction(const CAction &action)
     Close();
     return true;
   }
+  else if (action.wID == ACTION_NEXT_ITEM || action.wID == ACTION_PREV_ITEM)
+  {
+    // these could indicate next chapter if video supports it
+    if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
+      return true;
+  }
+
   return CGUIDialog::OnAction(action);
 }
 
