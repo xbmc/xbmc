@@ -21,7 +21,8 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if( !path.Right(1).Equals("/") ) 
     path += "/";
 
-  reader.Open(path, false);
+  if (!reader.Open(path, false))
+    return false;
 
 
   char buffer[MAX_PATH + 1024];
