@@ -285,7 +285,8 @@ void CDVDPlayer::Process()
 
         if (m_CurrentVideo.id >= 0 &&
             m_dvdPlayerVideo.GetCurrentPts() != DVD_NOPTS_VALUE &&
-            !bMenu)
+            !bMenu &&
+            !m_bDontSkipNextFrame)
         {
 
           // check how much off clock video is when ff/rw:ing
