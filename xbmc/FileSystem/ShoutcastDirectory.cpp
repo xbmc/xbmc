@@ -31,7 +31,7 @@ bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, 
   {
     genre = element->Attribute("name");
 
-    url.SetOptions("genre=" + genre);
+    url.SetOptions("?genre=" + genre);
     url.GetURL(path);
 
 
@@ -87,7 +87,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 
     CStdString label = name;
 
-    url.SetOptions("id=" + id);
+    url.SetOptions("?id=" + id);
     url.GetURL(path);
 
     CFileItem* pItem = new CFileItem;
