@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-09-2006 fixed: mockups with programs in root of bookmarks.
  - 27-09-2006 fixed: shoutcast listings broke after the url parsing fixes
  - 26-09-2006 fixed: Milkdrop - crash when changing preset packs when preset was locked
  - 26-09-2006 fixed: Milkdrop - started with default preset when preset was locked

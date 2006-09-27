@@ -617,9 +617,23 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     item->m_dateTime=CDateTime::GetCurrentDateTime();
     item->m_dateTime.GetAsTimeStamp(time);
     unsigned __int64 lastAccessed = ((ULARGE_INTEGER*)&time)->QuadPart;
-    CStdString strPath;
+    CStdString strPath, strParent;
     CUtil::GetDirectory(item->m_strPath,strPath);
-    __int64 iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
+    // special case - programs in root of bookmarks
+    bool bIsShare=false;
+    CUtil::GetMatchingShare(strPath,g_settings.m_vecMyProgramsShares,bIsShare);
+    __int64 iSize=0;
+    if (bIsShare || !item->IsDefaultXBE())
+    {
+      CFile file;
+      if (file.Open(item->m_strPath))
+      {
+        iSize = file.GetLength();
+        file.Close();
+      }
+    }
+    else
+      iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
     if (titleID == 0)
       titleID = -1;
     CStdString strSQL=FormatSQL("insert into files (idFile, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion, iSize) values(NULL, '%s', %u, '%s', %i, %I64u, %i, %I64u)", item->m_strPath.c_str(), titleID, item->GetLabel().c_str(), 0, lastAccessed, iRegion, iSize);
