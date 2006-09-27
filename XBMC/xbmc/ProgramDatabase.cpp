@@ -638,6 +638,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
       titleID = -1;
     CStdString strSQL=FormatSQL("insert into files (idFile, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion, iSize) values(NULL, '%s', %u, '%s', %i, %I64u, %i, %I64u)", item->m_strPath.c_str(), titleID, item->GetLabel().c_str(), 0, lastAccessed, iRegion, iSize);
     m_pDS->exec(strSQL.c_str());
+    item->m_dwSize = iSize;
   }
   catch (...)
   {
