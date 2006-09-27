@@ -625,12 +625,9 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     __int64 iSize=0;
     if (bIsShare || !item->IsDefaultXBE())
     {
-      CFile file;
-      if (file.Open(item->m_strPath))
-      {
-        iSize = file.GetLength();
-        file.Close();
-      }
+      __stat64 stat;
+      if (CFile::Stat(item->m_strPath,&stat) == 0)
+        iSize = stat.st_size;
     }
     else
       iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);

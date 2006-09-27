@@ -126,6 +126,26 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_CLICKED:
     {
+      if (message.GetSenderId() == CONTROL_BTNSORTBY)
+      {
+        // need to update shortcuts manually
+        if (CGUIMediaWindow::OnMessage(message))
+        {
+          for (int i=0;i<m_vecItems.Size();++i)
+          {
+            if (m_vecItems[i]->IsShortCut())
+            {
+              CGUIViewState::LABEL_MASKS labelMasks;
+              m_guiState->GetSortMethodLabelMasks(labelMasks);
+
+              m_vecItems[i]->FormatLabel2(labelMasks.m_strLabel2File);
+            }
+          }
+          return true;
+        }
+        else
+          return false;
+      }
       if (m_viewControl.HasControl(message.GetSenderId()))  // list/thumb control
       {
         // get selected item
@@ -674,6 +694,14 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
         if (!cut.m_strLabel.IsEmpty())
         {
           item->SetLabel(cut.m_strLabel);
+          __stat64 stat;
+          if (CFile::Stat(item->m_strPath,&stat) == 0)
+            item->m_dwSize = stat.st_size;
+
+          CGUIViewState::LABEL_MASKS labelMasks;
+          m_guiState->GetSortMethodLabelMasks(labelMasks);
+
+          item->FormatLabel2(labelMasks.m_strLabel2File);
           item->SetLabelPreformated(true);
         }
       }
