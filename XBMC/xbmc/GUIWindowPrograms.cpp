@@ -680,6 +680,11 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     if (item->IsXBE())
     {
+      if (CUtil::GetFileName(item->m_strPath).Equals("default_ffp.xbe"))
+      {
+        m_vecItems.Remove(i--);
+        continue;
+      }
       // add to database if not already there
       DWORD dwTitleID = item->IsOnDVD() ? 0 : m_database.GetProgramInfo(item);
       if (!dwTitleID)
