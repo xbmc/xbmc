@@ -100,6 +100,7 @@ namespace PYXBMC
     "  0 : ShowAndGetDirectory\n"
     "  1 : ShowAndGetFile\n"
     "  2 : ShowAndGetImage\n"
+    "  3 : ShowAndGetWriteableDirectory\n"
     "\n"
     "*Note, Returns filename and/or path as a string to the location of the highlighted item,\n"
     "       if user pressed 'Ok' or a masked item was selected.\n"
@@ -134,7 +135,7 @@ namespace PYXBMC
     else if (browsetype == 2)
       CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value);
     else
-      CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value);
+      CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value, browsetype != 0);
     return Py_BuildValue("s", value.c_str());
   }
 
@@ -502,3 +503,4 @@ namespace PYXBMC
 #ifdef __cplusplus
 }
 #endif
+
