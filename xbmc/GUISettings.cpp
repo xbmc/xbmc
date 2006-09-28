@@ -712,7 +712,9 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
       CStdString strData = "";
       if (bPrompt)
       {
-        if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(result->GetLabel()),strData,true))
+        VECSHARES shares;
+        g_mediaManager.GetLocalDrives(shares);
+        if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,true))
         {
           result->SetData(strData);
           g_settings.Save();
