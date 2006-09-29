@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-09-2006 fixed: ActivateWindow(WINDOW_FILES,path), if the path is not connectable, files window just shows a empty share view without a error message
  - 28-09-2006 changed: dialog browse for python now supports new folder creation. (Thanks to spiff) type 3 : ShowAndGetWriteableDirectory
  - 28-09-2006 fixed: mockups with programs in root of bookmarks.
  - 27-09-2006 fixed: shoutcast listings broke after the url parsing fixes
