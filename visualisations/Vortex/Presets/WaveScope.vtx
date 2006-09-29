@@ -1,0 +1,99 @@
+// Author - MrC
+// Based on WaveScope.r4 by Gordon Williams
+Map map;
+
+float dx,dy,a,r,d,tp,s,t,c;
+float px,py,pdx,pdy; // point 
+float cr,cg,cb,basstime;
+
+void Init()
+{
+   px = 16;
+   py = 12;
+   pdx = 1.342;
+   pdy = 1;
+   basstime = 0;
+   map.SetTimed();
+}
+
+void Render()
+{
+	//--------------------------------------
+	// Update map
+	
+	t = TIMEPASS*(BASS+0.25)*40;
+	px = px + (pdx*t);
+	if (px>28)
+	{
+		pdx = -(pdx);
+		px = 28;
+	}
+	else if (px<4)
+	{
+		pdx = -(pdx);
+		px = 4;
+	}
+	py = py + (pdy*t);
+	if (py>20)
+	{
+		pdy = -(pdy);
+		py = 20;
+	}
+	else if (py<4)
+	{
+		pdy = -(pdy);
+		py = 4;
+	}
+
+	basstime = basstime + (TIMEPASS*(BASS+1));
+	cr = (Cos(basstime)-1.0)/2.0;
+	cg = (Cos(basstime*2.0)-1.0)/2.0;
+	cb = (Cos(basstime*4.0)-1.0)/2.0;
+
+	for (int y = 0; y < 24; y++)
+	{
+		for (int x = 0; x < 32; x++)
+		{
+			dx = x-px;
+			dy = y-py;
+			d = Mag(dx,dy);
+			if (d>0.01)
+			{
+				c = (0.5/d)-0.05;
+				if (c<0)
+					c=0;
+				a = (d-12)/64;
+				if (a>0)
+					a=0;
+				r = 1-(d/4.0);
+				map.SetValues(x,y, (dx*a)+(dy*c), (dy*a)-(dx*c), cr+r, cg+r, cb+r);
+			}
+		}
+	}
+
+	map.Render();
+
+	gfxSetRenderTarget(map);
+
+	gfxSetAspect(0);
+	gfxTranslate(0, 0, 2.414);
+	
+	gfxBegin(PRIM_LINESTRIP);
+	for (int x=0; x < 256; x = x+1)
+	{
+		gfxVertex((x-128)/128.0f, (WaveLeft(x) / 3.0f) + 0.5f, 0);
+	}
+	gfxEnd();
+
+	gfxBegin(PRIM_LINESTRIP);
+	for (int x=0; x < 256; x = x+1)
+	{
+		gfxVertex((x-128)/128.0f, (WaveRight(x) / 3.0f) - 0.5f, 0);
+	}
+	gfxEnd();
+
+	gfxSetRenderTarget(0);
+	gfxSetTexture(map);
+	gfxTexRect(-1, -1, 1, 1);
+
+}
