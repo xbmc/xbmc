@@ -1,0 +1,28 @@
+// AlbumArtCube.vtx
+// Author - MrC
+
+float time = 0;
+float rx,rxamt,ry,ryamt;
+
+void Render()
+{
+	time += TIMEPASS;
+
+	gfxSetTexture(TEXTURE_ALBUMART);
+	gfxTranslate(0, 0, 2.0f - (TREBLE * 0.5));
+
+	if (BASS>0.3) rxamt = 1;
+	if (BASS<-0.3) rxamt = -1;
+	if (TREBLE>0.3) ryamt = 1;
+	if (TREBLE<-0.3) ryamt = -1;
+	rx = rx + (rxamt*TIMEPASS);
+	ry = ry + (ryamt*TIMEPASS);
+
+	gfxRotate(-70+(Sin(time)*12),1,0,0);
+	gfxRotate(rx*90,0,0,1);
+	gfxRotate(ry*90,0,1,0);
+
+	gfxColour(1, 1, 1, 1);
+	gfxCube(-0.25f, -0.25f, -0.25f, 0.25f, 0.25f, 0.25f);
+	
+}
