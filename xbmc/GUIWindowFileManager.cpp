@@ -52,6 +52,7 @@ CGUIWindowFileManager::CGUIWindowFileManager(void)
   m_Directory[1].m_strPath = "?";
   m_Directory[0].m_bIsFolder = true;
   m_Directory[1].m_bIsFolder = true;
+  bCheckShareConnectivity = true;
 }
 
 CGUIWindowFileManager::~CGUIWindowFileManager(void)
@@ -1465,8 +1466,21 @@ void CGUIWindowFileManager::OnInitWindow()
   {
     Update(i, m_Directory[i].m_strPath);
   }
-
   CGUIWindow::OnInitWindow();
+
+  if (!bCheckShareConnectivity)
+  {
+    bCheckShareConnectivity = true; //reset
+    CFileItem pItem; 
+    pItem.m_strPath=strCheckSharePath;
+    pItem.m_bIsShareOrDrive = true;
+    if (CUtil::IsHD(strCheckSharePath))
+      pItem.m_iDriveType=SHARE_TYPE_LOCAL;
+    else //we asume that this is a remote share else we can set SHARE_TYPE_UNKNOWN
+      pItem.m_iDriveType=SHARE_TYPE_REMOTE; 
+    ShowShareErrorMessage(&pItem); //show the error message after window is loaded!
+    Update(0,""); // reset view to root
+  }
 }
 
 void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
@@ -1511,6 +1525,11 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
           m_Directory[0].m_strPath = strDestination;
         CUtil::RemoveSlashAtEnd(m_Directory[0].m_strPath);
         CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+
+        // outside call: check the share for connectivity
+        bCheckShareConnectivity = Update(0, m_Directory[0].m_strPath);
+        if(!bCheckShareConnectivity)
+          strCheckSharePath = m_Directory[0].m_strPath;
       }
       else
       {
