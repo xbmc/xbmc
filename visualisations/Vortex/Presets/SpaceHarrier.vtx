@@ -1,0 +1,91 @@
+/*
+
+SCENE (
+"name" = "Space Harrier 2";
+"author" = "Gordon Williams";
+SOLID bg();
+TEXTURE texa();
+TEXTURE texb();
+GL gl(bg,texa,texb);
+)
+*/
+Texture checker;
+
+int x;
+float bt,bump,n;
+float time;
+
+//- ---------------------------
+void drawit(float ox,float oy)
+{
+	gfxColour(1, 1, 1, 1);
+   gfxTexCoord(0+ox,0+oy);
+   gfxVertex(-10,0,-5);
+   gfxTexCoord(20+ox,0+oy);
+   gfxVertex(10,0,-5);
+
+	gfxColour(0, 0, 0, 0);
+   gfxTexCoord(20+ox,10+oy);
+   gfxVertex(10,0,5);
+   gfxTexCoord(0+ox,10+oy);
+   gfxVertex(-10,0,5);
+}
+//- ---------------------------
+
+void Init()
+{
+	checker.LoadTexture("checker.png");
+	bt = 0;
+//   bg.col = rgb(0,0,0);
+//   strcpy(texa.filename,"dots.png");
+//   strcpy(texb.filename,"grid.png");
+//   strcpy(gl.shader,"T0;BAa;");
+}
+
+void Render()
+{
+	time += TIMEPASS;
+   bt = bt + (TIMEPASS*(0.5+BASS));
+   n = 1.0-(TIMEPASS*4);
+   bump = (bump*n)+(BASS*(1.0-n));
+
+//   gl.clear();
+
+   gfxRotate(bump*40.0,1,0,0);
+   gfxRotate((Sin(bt*6.43)+Cos(bt*4.23))*15,0,1,0);
+
+   gfxRotate((Sin(bt*2)+Cos(bt*4.23))*30,0,0,1);
+
+	gfxSetTexture(checker);
+   gfxTranslate(0,0.3,5);
+   gfxColour(1,1,1,1);
+   gfxBegin(PRIM_QUADLIST);
+   drawit(0,bt);
+   gfxEnd();
+
+//   gl.glbindtexture(2);
+   gfxTranslate(0,-0.6,0);
+//   gl.glcolor(1,1,1,1);
+   gfxBegin(PRIM_QUADLIST);
+   drawit(0,bt+time);
+   gfxEnd();
+   
+   gfxSetTexture(NULL);
+   gfxTranslate(0, 0.3, -2 );
+   gfxScale(5,0.35,1);
+   gfxColour(1,1,1,1);
+   gfxSetLineWidth(2);
+   gfxBegin(PRIM_LINESTRIP);
+
+   gfxColour(1, 1, 0, 1);
+   for (x=0;x<256;x=x+1)
+	gfxVertex((x-128.0)/128.0,WaveLeft(x),0);
+   gfxEnd();
+   
+   gfxColour(0, 1, 1, 1);
+   gfxBegin(PRIM_LINESTRIP);
+   for (x=0;x<256;x=x+1)
+	gfxVertex((x-128.0)/128.0,WaveRight(x),0);
+   gfxEnd();
+   
+}

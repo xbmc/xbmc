@@ -1,0 +1,66 @@
+// Square.tra
+// Author - MrC
+// Based on FadeGrid.r4 by Gordon Williams
+
+int x,y,mx,my;
+float dx,dy,sx,sy,a,b,mytime;
+
+void Init()
+{
+
+}
+
+void Render()
+{
+	mytime = mytime + (TIMEPASS*0.40);
+	
+	gfxSetTexture(TEXTURE_NEXTPRESET);
+	gfxSetAspect(0);
+	gfxTranslate(0, 0, 2.414);
+	gfxColour(1, 1, 1, 1);
+	gfxTexRect(-1, 1, 1, -1);
+
+	gfxSetAspect(0);
+	gfxTranslate(-1, -1, 0);
+
+	mx = 16;
+	my = 12;
+
+	gfxScale(2.0/mx,2.0/my,1.0);
+	sx = 1.0/mx;
+	sy = 1.0/my;
+
+	gfxSetTexture(TEXTURE_CURRPRESET);
+	gfxColour(1, 1, 1, 1);
+
+	gfxBegin(PRIM_QUADLIST);
+
+	FINISHED = true;
+
+	dx = 0;
+	for (x=0;x<mx;x=x+1)
+	{
+		dy = 0;
+		for (y=0;y<my;y=y+1)
+		{     
+			a = (mytime*10.0)-((my+1.0+x-y)*0.25);
+			if (a<0) a=0;
+			if (a<3.14159)
+			{
+				a = (Cos(a)*0.25)+0.25;
+				gfxTexCoord(dx,1.0f - dy);
+				gfxVertex(x+0.5-a,y+0.5-a,0.0);
+				gfxTexCoord(dx+sx,1.0f-dy);
+				gfxVertex(x+0.5+a,y+0.5-a,0.0);
+				gfxTexCoord(dx+sx,1.0f-(dy+sy));
+				gfxVertex(x+0.5+a,y+0.5+a,0.0);
+				gfxTexCoord(dx,1.0f - (dy+sy));
+				gfxVertex(x+0.5-a,y+0.5+a,0.0);
+				FINISHED = false;
+			}
+			dy = dy + sy;
+		}
+		dx = dx + sx;
+	}
+	gfxEnd();
+}
