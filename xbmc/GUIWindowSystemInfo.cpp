@@ -641,9 +641,9 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
   }
   else
   { 
-    CStdString strXBOXVersion;
-    g_sysinfo.GetXBOXVersionDetected(strXBOXVersion);
-    if ( strXBOXVersion.Equals("v1.6") && ModChip.Equals("Unknown/Onboard TSOP (protected)"))
+    //CStdString strXBOXVersion;
+    //g_sysinfo.GetXBOXVersionDetected(strXBOXVersion);
+    if ( ModChip.Equals("Unknown/Onboard TSOP (protected)"))
     {
       strModChip.Format("%s %s", lblModChip.c_str(),g_localizeStrings.Get(20311));
     }
