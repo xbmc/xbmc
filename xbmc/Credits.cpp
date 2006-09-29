@@ -76,11 +76,11 @@ CreditLine_t Credits[] =
 
     // Lead dev (32 beats)
     { 50, 25, 15360, 13200, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Project Founders" },
-    { 50, 40, 720, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Frodo" },
-    { 50, 50, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"RUNTiME" },
-    { 50, 60, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"d7o3g4q" },
-    { 50, 70, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Team XBMC wish you all good luck" },
-    { 50, 80, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"with your future projects!" },
+    { 50, 40, 720, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Frodo (yamp, xbmc)" },
+    { 50, 50, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"RUNTiME (xbplayer)" },
+    { 50, 60, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"d7o3g4q (xbmp)" },
+    { 50, 70, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L" " },
+    { 50, 80, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"We wish you well with your future projects" },
 
     // Devs  (16 beats per group, 32 beats total
     { 50, 20, 14640, 13380, 60, 1920, EFF_IN_FLASH | EFF_OUT_FADE , 42, L"Developers" },
@@ -131,7 +131,7 @@ CreditLine_t Credits[] =
     // Note the pause of 8 beats here
 
     // Visualisations (16 beats)
-    { 50, 22, 7680, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Visualizations" },
+    { 50, 22, 7680, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Visualisations" },
     { 50, 35, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Dinomight" },
     { 50, 45, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"MrC" },
     { 50, 55, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"mynci" },
@@ -145,7 +145,7 @@ CreditLine_t Credits[] =
     { 50, 60, 0, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Sylfan" },
 
     // Stream Servers (16 beats)
-    { 50, 25, 7680, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Stream Servers and Clients" },
+    { 50, 25, 7680, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Stream Servers, Clients" },
     { 50, 40, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"c0diq" },
     { 50, 50, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"puh-puh" },
     { 50, 60, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"[XC]D-Ice" },
@@ -183,11 +183,11 @@ CreditLine_t Credits[] =
 
     // Skin credits (16 beats)
     { 50, 22, 7980, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 42, L"$SKINTITLE" },
-    { 50, 35, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 22, NULL },  // skin names go in these 5
-    { 50, 45, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 22, NULL },
-    { 50, 55, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 22, NULL },
-    { 50, 65, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 22, NULL },
-    { 50, 75, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 22, NULL },
+    { 50, 35, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 20, NULL },  // skin names go in these 5
+    { 50, 45, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 20, NULL },
+    { 50, 55, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 20, NULL },
+    { 50, 65, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 20, NULL },
+    { 50, 75, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 20, NULL },
 
     // Online manual (16 beats)
     { 50, 22, 7680, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Online Manual (WIKI)" },
@@ -330,8 +330,9 @@ CreditLine_t Credits[] =
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"DDay" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special thanks to:" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for putting up with me." },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for understanding that it sometimes is" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"normal to have five xbox's hooked up at home" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for understanding that it" }, 
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"sometimes is normal to have five" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"xbox's hooked up at home." },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for giving me Emil" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Pike, for doing a great job" },
 
@@ -391,9 +392,11 @@ CreditLine_t Credits[] =
 
     // section mrc
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"MrC" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to all of Team-XBMC for their hard work" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to Pike for his cool chats and support" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"And thanks to Mumbles for his Vortex textures" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to all of Team-XBMC for" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"their hard work. Thanks to Pike" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for his cool chats and support." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"And thanks to Mumbles for his" }, 
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Vortex textures." },
 
     // section c0diq
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"c0diq" },
@@ -402,8 +405,9 @@ CreditLine_t Credits[] =
 
     // section Donno
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Donno" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks TeknoJuce for making #xbmc worthwhile" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to Tazta for intro to XBMC n Mods" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks TeknoJuce for making" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"#xbmc worthwhile. Thanks to" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Tazta for intro to XBMC n Mods." },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks Pepsi for the Max" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks MString for the XBOX" },
 
@@ -453,9 +457,10 @@ CreditLine_t Credits[] =
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for the years of pure bliss!" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special thanks to my Swede brother Pike," },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"play me them ch0oNZ!" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"DOS4GW, Spiff, Nad, Elupus, Tslayer, Kraqh3d," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"DDay, Chokemaniac, Darkie, my apprentice Donno" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"and JMarshall - the gawd among men." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"DOS4GW, Spiff, Nad, Elupus, Tslayer," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Kraqh3d, DDay, Chokemaniac, Darkie" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"my apprentice Donno and JMarshall" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L" - the gawd among men." },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to our entire userbase in #XBMC," },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"<3 U's okplzthx!" },
 
