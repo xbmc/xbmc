@@ -1041,6 +1041,7 @@ HRESULT CApplication::Initialize()
   CreateDirectory("Q:\\language", NULL);
   CreateDirectory("Q:\\visualisations", NULL);
   CreateDirectory("Q:\\sounds", NULL);
+  CreateDirectory(g_settings.GetUserDataFolder()+"\\visualisations",NULL);
 
   // initialize network
   if (!m_bXboxMediacenterLoaded)
