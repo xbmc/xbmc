@@ -1246,7 +1246,9 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     btn_Queue = pMenu->AddButton(13347);
 
     // allow a folder to be ad-hoc queued and played by the default player
-    if (m_vecItems[iItem]->m_bIsFolder || (m_vecItems[iItem]->IsPlayList() && !g_advancedSettings.m_playlistAsFolders) || vecCores.size() >= 1 )
+    if (m_vecItems[iItem]->m_bIsFolder || (m_vecItems[iItem]->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
+      btn_PlayWith = pMenu->AddButton(208);
+    else if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
 
     if (!m_vecItems[iItem]->IsPlayList())
@@ -1305,8 +1307,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   }
 
   int btn_Settings = pMenu->AddButton(5);    // Settings...
-  int btn_GoToRoot = pMenu->AddButton(20128); // go to root
-  int btn_Play = pMenu->AddButton(208); // play 
+
+  int btn_GoToRoot = pMenu->AddButton(20128);
 
   if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
     btn_NowPlaying = pMenu->AddButton(13350);
@@ -1329,10 +1331,10 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
       OnInfoAll(iItem);
     }
     // Play Item
-    else if (btnid == btn_PlayWith || btnid == btn_Play)
+    else if (btnid == btn_PlayWith)
     {
       // if folder, play with default player
-      if (m_vecItems[iItem]->m_bIsFolder || btnid == btn_Play)
+      if (m_vecItems[iItem]->m_bIsFolder || (m_vecItems[iItem]->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
       {
         PlayItem(iItem);
       }
