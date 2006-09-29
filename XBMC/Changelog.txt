@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-09-2006 added: A spanking new (skinnable) 3D music Visualiser: Vortex, created by MrC. THANKS!
  - 29-09-2006 updated: french language file
  - 29-09-2006 added: Fat16/32 support for USB memory sticks.  4GB limit in size, readonly support.
  - 29-09-2006 fixed: context menu for playlists, play button issue

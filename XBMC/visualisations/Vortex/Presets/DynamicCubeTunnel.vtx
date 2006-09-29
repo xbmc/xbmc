@@ -1,0 +1,176 @@
+// DynamicCubeTunnel.vtx
+// Author - MrC
+// Based on DynamicCubeTunnel.r4 by Gordon Williams
+
+Texture env;
+Texture skybox;
+Map map;
+
+
+int x,y;
+float tm,tn,ofs,c;
+float btime,ctime;
+float[] v(32*24),o(32*24),va(32*24),oa(32*24);
+float[] pv(4),po(4);
+int sx,sy,i;
+float wa,txa,txb,tya,tyb;
+
+
+void Init()
+{
+	skybox.LoadTexture("skybox.dds");
+	env.LoadTexture("huemap.jpg");
+	map.SetTimed();
+	reset();
+}
+
+void reset()
+{
+	tm = 0;
+	tn = 0;
+	btime = 0;
+	ctime = 0;
+
+	for (sy=0;sy<24;sy=sy+1)
+	{
+		for (sx=0;sx<32;sx=sx+1)
+		{
+			v[sy*32 + sx] = Rand()+1.0;
+			o[sy*32 + sx] = Rand()*6.3;	
+			va[sy*32 + sx] = (Rand()+1.0)*3.0;
+			oa[sy*32 + sx] = Rand()*6.3;	
+		}
+	}
+
+
+	for (i=0;i<4;i=i+1)
+	{
+		pv[i] = Rand()+1.0;
+		po[i] = Rand()*6.3;
+	}
+
+}
+
+float tiltfunc(float p)
+{
+   return (Sin((ofs+p)*0.1)+Cos((ofs+p)*0.123))*10.0;
+}
+
+void Render()
+{
+
+	btime = btime + (TIMEPASS*(TREBLE+0.5)*2.0);
+	ctime = ctime + (TIMEPASS*(BASS+0.5)*0.5);
+
+	for (sy=0;sy<24;sy=sy+1)
+	for (sx=0;sx<32;sx=sx+1)
+	{
+	float tu = ((sx-15.5)/16) + Sin(oa[sy * 32 + sx] + (va[sy * 32 + sx]*btime));
+	float tv = ((sy-11.5)/12) + Sin(o[sy * 32 + sx] + (v[sy * 32 + sx]*btime));
+	map.SetValues(sx, sy, tu, tv, -1.5, -1.5, -1.5);
+	}
+
+	map.Render();
+
+	gfxPushMatrix();
+	gfxSetAspect(0);
+	gfxTranslate(0,0,2.414);
+
+	gfxSetTexture(env);
+	gfxSetBlendMode(BLEND_MOD);
+
+	gfxSetRenderTarget(map);
+
+	txa = (Sin(po[0]+(ctime*pv[0]))*2.0);
+	tya = (Sin(po[1]+(ctime*pv[1]))*2.0);
+	txb = (Sin(po[2]+(ctime*pv[2]))*2.0);
+	tyb = (Sin(po[3]+(ctime*pv[3]))*2.0);
+
+	gfxBegin(PRIM_QUADLIST);
+	// bottom
+	gfxColour(1,1,1,0);
+	gfxTexCoord(txa,tya);   
+	gfxVertex(-1,-0.9,0);
+	gfxTexCoord(txb,tyb);
+	gfxVertex(1,-0.9,0);
+	gfxColour(1,1,1,1);
+	gfxTexCoord(txb,tyb);
+	gfxVertex(1,-1.0,0);
+	gfxTexCoord(txa,tya);   
+	gfxVertex(-1,-1.0,0);
+
+	// top
+	gfxColour(1,1,1,0);
+	gfxTexCoord(txa,tya);   
+	gfxVertex(-1,0.9,0);
+	gfxTexCoord(txb,tyb);
+	gfxVertex(1,0.9,0);
+	gfxColour(1,1,1,1);
+	gfxTexCoord(txb,tyb);
+	gfxVertex(1,1.0,0);
+	gfxTexCoord(txa,tya);   
+	gfxVertex(-1,1.0,0);
+
+	// left
+	gfxColour(1,1,1,0);
+	gfxTexCoord(txa,tya);   
+	gfxVertex(-0.9,-1,0);
+	gfxTexCoord(txb,tyb);
+	gfxVertex(-0.9,1,0);
+	gfxColour(1,1,1,1);
+	gfxTexCoord(txb,tyb);
+	gfxVertex(-1,1,0);
+	gfxTexCoord(txa,tya);   
+	gfxVertex(-1,-1,0);
+
+	// right
+	gfxColour(1,1,1,0);
+	gfxTexCoord(txa,tya);   
+	gfxVertex(0.9,-1,0);
+	gfxTexCoord(txb,tyb);
+	gfxVertex(0.9,1,0);
+	gfxColour(1,1,1,1);
+	gfxTexCoord(txb,tyb);
+	gfxVertex(1,1,0);
+	gfxTexCoord(txa,tya);   
+	gfxVertex(1,-1,0);
+	gfxEnd();
+
+	gfxSetRenderTarget(0);
+	gfxSetTexture(map);
+	gfxPopMatrix();
+
+
+	tm = tm + ((TREBLE+1.5)*TIMEPASS*8);
+	while (tm>1)
+	{
+		tm = tm-1;
+		ofs = ofs + 1;
+	}
+
+	tn = tn + ((BASS+1.5)*TIMEPASS);
+
+	gfxSetAspect(0);
+	gfxLookAt(Cos(tn*1.23)*3.5,Sin(tn)*3.5,(tm*2)-1,Cos(tn*0.6734)*2,Sin(tn*0.2143)*2,(tm*2)+8,0,1,0);
+	gfxRotate(-tiltfunc(0)*tm,0,0,1);
+	gfxSetTexture(skybox);
+	gfxPushMatrix();
+	gfxTranslate(0,0,tm*2);
+	gfxRotate(tiltfunc(0)*tm,0,0,1);
+	gfxCube(-400,-400,-400,400,400,400);
+	gfxPopMatrix();
+	gfxSetTexture(map);
+
+	gfxSetBlendMode(BLEND_ADD);
+
+	for (y=0;y<15;y=y+1)
+	{
+		c = 1.0 - ((y-tm)/15.0);      
+		gfxColour(c,c,c,1);
+		gfxCube(-4,-4,(y*2)-0.75, 4,-4.5,(y*2)+0.75);
+		gfxCube(-4,4,(y*2)-0.75, 4,4.5,(y*2)+0.75);
+		gfxCube(-4,-4,(y*2)-0.75, -4.5,4,(y*2)+0.75);
+		gfxCube(4,-4,(y*2)-0.75, 4.5,4,(y*2)+0.75);
+		gfxRotate(tiltfunc(y),0,0,1);
+	}
+}
