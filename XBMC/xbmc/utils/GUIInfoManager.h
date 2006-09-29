@@ -170,6 +170,7 @@
 #define LISTITEM_GENRE              317
 #define LISTITEM_ICON               318
 #define LISTITEM_DIRECTOR           319
+#define LISTITEM_OVERLAY            320
 
 #define MUSICPM_ENABLED             350
 #define MUSICPM_SONGSPLAYED         351
@@ -217,7 +218,7 @@
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
-#define VERSION_STRING "1.1.0"
+#define VERSION_STRING "2.0.0"
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
