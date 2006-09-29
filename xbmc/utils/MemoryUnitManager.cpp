@@ -4,6 +4,8 @@
 #include "MemoryUnitManager.h"
 #include "../FileSystem/MemoryUnits/FatXDevice.h"
 #include "../FileSystem/MemoryUnits/FatXFileSystem.h"
+#include "../FileSystem/MemoryUnits/Fat32Device.h"
+#include "../FileSystem/MemoryUnits/Fat32FileSystem.h"
 #include "../application.h"
 
 // Undocumented stuff
@@ -133,7 +135,7 @@ bool CMemoryUnitManager::MountDevice(unsigned long port, unsigned long slot)
   // check whether we already have one mounted here...
   if (HasDevice(port, slot))
   {
-    CLog::Log(LOGERROR, __FUNCTION__" Attempt to mount already mounted MU device");
+    CLog::Log(LOGERROR, __FUNCTION__" Attempt to mount already mounted usb device");
     return false;
   }
 
@@ -163,6 +165,17 @@ bool CMemoryUnitManager::MountDevice(unsigned long port, unsigned long slot)
       return true;
     }
     delete device;
+
+    // Try FAT12/16/32
+    CFat32Device *fatDevice = new CFat32Device(port, slot, DeviceObject);
+
+    if (fatDevice->Mount(DeviceName.Buffer))
+    {
+      m_memUnits.push_back(fatDevice);
+      return true;
+    }
+    delete fatDevice;
+    MU_CloseDeviceObject(port, slot);
   }
   return false;
 }
@@ -217,9 +230,9 @@ void CMemoryUnitManager::GetMemoryUnitShares(VECSHARES &shares)
     volumeName.TrimRight(' ');
     // Memory Unit # (volumeName) (fs)
     if (volumeName.IsEmpty())
-      share.strName.Format("%s %i", g_localizeStrings.Get(20136).c_str(), i + 1);
+      share.strName.Format("%s %i (%s)", g_localizeStrings.Get(20136).c_str(), i + 1, m_memUnits[i]->GetFileSystem());
     else
-      share.strName.Format("%s %i (%s)", g_localizeStrings.Get(20136).c_str(), i + 1, volumeName.c_str());
+      share.strName.Format("%s %i (%s) (%s)", g_localizeStrings.Get(20136).c_str(), i + 1, volumeName.c_str(), m_memUnits[i]->GetFileSystem());
     share.strPath.Format("mem%i://", i);
     shares.push_back(share);
   }
@@ -230,7 +243,9 @@ IFileSystem *CMemoryUnitManager::GetFileSystem(unsigned char unit)
   IDevice *device = GetDevice(unit);
   if (!device)
     return NULL;
-  return new CFatXFileSystem(unit);
+  if (strcmpi(device->GetFileSystem(), "fatx") == 0)
+    return new CFatXFileSystem(unit);
+  return new CFat32FileSystem(unit);
 }
 
 void CMemoryUnitManager::Notify(unsigned long port, unsigned long slot, bool success)
