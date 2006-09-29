@@ -95,7 +95,7 @@ extern "C" void* __cdecl track_malloc(size_t s)
   void* p = malloc(s);
   if (!p) 
   {    
-    CLog::Log(LOGSEVERE, "DLL: %s : malloc failed, crash imminent (Out of memory)", tracker_getdllname(loc));
+    CLog::Log(LOGSEVERE, "DLL: %s : malloc failed, crash imminent (Out of memory requesting %d bytes)", tracker_getdllname(loc), s);
     return NULL;
   }
 

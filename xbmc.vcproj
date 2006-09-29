@@ -1624,6 +1624,24 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					Name="MemoryUnits"
 					Filter="">
 					<File
+						RelativePath=".\xbmc\FileSystem\MemoryUnits\dosfs.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MemoryUnits\dosfs.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MemoryUnits\Fat32Device.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MemoryUnits\Fat32Device.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MemoryUnits\Fat32FileSystem.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MemoryUnits\Fat32FileSystem.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\FileSystem\MemoryUnits\FatXDevice.cpp">
 					</File>
 					<File
