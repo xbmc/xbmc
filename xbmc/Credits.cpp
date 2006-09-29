@@ -11,7 +11,7 @@
 #include "SkinInfo.h"
 #include "util.h"
 
-//#define USE_TTF_FONTS
+#define USE_TTF_FONTS
 
 #ifdef USE_TTF_FONTS
 #include "guifont.h"
@@ -70,274 +70,401 @@ struct CreditLine_t
 CreditLine_t Credits[] =
   {
     // Intro  fadein 32 rows, on 80 rows, fadeout 16 rows
-    { 50, 25, 0, 9600, 3840, 1920, EFF_IN_FADE | EFF_OUT_FADE , 78, L"XBOX" },
-    { 50, 45, 0, 9600, 3840, 1920, EFF_IN_FADE | EFF_OUT_FADE , 78, L"MEDIA" },
-    { 50, 65, 0, 9600, 3840, 1920, EFF_IN_FADE | EFF_OUT_FADE , 78, L"CENTER" },
+    { 50, 30, 0, 9600, 3840, 1920, EFF_IN_FADE | EFF_OUT_FADE , 80, L"XBOX" },
+    { 50, 50, 0, 9600, 3840, 1920, EFF_IN_FADE | EFF_OUT_FADE , 80, L"MEDIA" },
+    { 50, 70, 0, 9600, 3840, 1920, EFF_IN_FADE | EFF_OUT_FADE , 80, L"CENTER" },
 
-    // Lead dev  fadein 2 rows, on 110 rows, fadeout 16 rows
-    { 50, 22, 15360, 13200, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 36, L"Project Founders" },
-    { 50, 35, 720, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Frodo" },
-    { 50, 45, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"RUNTiME" },
-    { 50, 55, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"d7o3g4q" },
+    // Lead dev (32 beats)
+    { 50, 25, 15360, 13200, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Project Founders" },
+    { 50, 40, 720, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Frodo" },
+    { 50, 50, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"RUNTiME" },
+    { 50, 60, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"d7o3g4q" },
+    { 50, 70, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Team XBMC wish you all good luck" },
+    { 50, 80, 0, 12480, 240, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"with your future projects!" },
 
-    // Devs  flash 0.5 rows, on 63 rows, crossfade 3.5 rows
-    { 50, 22, 14640, 13380, 60, 1920, EFF_IN_FLASH | EFF_OUT_FADE , 36, L"Developers" },
-    { 50, 35, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"Butcher" },
-    { 50, 45, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"Forza" },
-    { 50, 55, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"Bobbin007" },
-    { 50, 65, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"elupus" },
-    { 50, 75, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"J Marshall" },
-    { 50, 85, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"GeminiServer" },
+    // Devs  (16 beats per group, 32 beats total
+    { 50, 20, 14640, 13380, 60, 1920, EFF_IN_FLASH | EFF_OUT_FADE , 42, L"Developers" },
+    { 50, 32, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"J Marshall" },
+    { 50, 42, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Darkie" },
+    { 50, 52, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"elupus" },
+    { 50, 62, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Bobbin007" },
+    { 50, 72, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"spiff" },
+    { 50, 82, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"chadoe" },
     //  crossfade 3.5, on 45, fadeout 16
-    { 50, 35, 7620, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"jwnmulder" },
-    { 50, 43, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"monkeyhappy" },
-    { 50, 51, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Tslayer" },
-    { 50, 59, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"yuvalt" },
-    { 50, 67, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Charly" },
-    { 50, 75, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Guybrush" },
-    { 50, 83, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Nad" },
+    { 50, 32, 7620, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Kraqh3d" },
+    { 50, 42, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"GeminiServer" },
+    { 50, 52, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Nad" },
+    { 50, 62, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"MrC" },
+    { 50, 72, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"c0diq" },
+    { 50, 82, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Ysbox" },
+    
+    // Project management (16 beats)
+    { 50, 30, 7740, 6360, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 42, L"Project Managers" },
+    { 50, 45, 0, 6360, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Gamester17" },
+    { 50, 55, 0, 6360, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Pike" },
+    
+    // Tech support (8 beats per group - 16 total)
+    { 50, 25, 6960+420, 7200, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Technical Support" },
+    { 50, 40, 0, 3840, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"DDay (a.k.a. JayDee on Xbox-Scene.com)" },
+    { 50, 50, 0, 3840, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"AlTheKill (IRC)" },
+    { 50, 60, 0, 3840, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Cocoliso (IRC)" },
+    { 50, 70, 0, 3840, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Jezz_X (IRC)" },
 
-    // Project management flash 0.5, on 63, crossfade 3.5
-    { 50, 18, 7740, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 36, L"Project Management" },
-    { 50, 28, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"Gamester17" },
-    { 50, 38, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"Hullebulle aka Nuendo" },
-    { 50, 48, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"pike" },
+    { 50, 40, 3840, 3360, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"MattAaron (IRC)" },
+    { 50, 50, 0, 3360, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"No1CaNTeL (IRC)" },
+    { 50, 60, 0, 3360, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"xLoial (IRC)" },
+    
+    // Testers (8 beats per group - 24 total + 8 beats blank)
+    { 50, 25, 4200, 7560 + 7560/2, 60, 840, EFF_IN_FLASH | EFF_OUT_FADE , 42, L"Testers" },
+    { 50, 40, 0, 7560/2, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Caldor" },
+    { 50, 50, 0, 7560/2, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"DeanRParry" },
+    { 50, 60, 0, 7560/2, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Donno" },
 
-    { 50, 60, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 36, L"Tech Support Mods" },
-    { 50, 70, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"DDay" },
+    { 50, 40, 7560/2, 7560/2, 60, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"ModHack" },
+    { 50, 50, 0, 7560/2, 60, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Nuka1195" },
+    { 50, 60, 0, 7560/2, 60, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"sCAPe" },
 
-    // Testers crossfade 3.5, on 45, fadeout 16
-    { 50, 22, 7620, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 36, L"Testers" },
-    { 50, 35, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Shadow_Mx" },
-    { 50, 45, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"xAD/nIGHTFALL" },
-    { 50, 55, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"[XC]D-Ice" },
-    { 50, 65, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Chokemaniac" },
+    { 50, 40, 7560/2, 7560/2, 60, 840, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Smokehead" },
+    { 50, 50, 0, 7560/2, 60, 840, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Sollie" },
+    { 50, 60, 0, 7560/2, 60, 840, EFF_IN_FADE | EFF_OUT_FADE , 24, L"TeknoJuice" },
 
+    // Note the pause of 8 beats here
 
-    // Patches  flash 0.5, on 63, crossfade 3.5
-    { 50, 22, 7740, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 36, L"Exceptional Patches" },
-    { 50, 35, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"WiSo" },
-    { 50, 45, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"Tilmann" },
-    { 50, 55, 0, 7560, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 20, L"kraqh3d" },
+    // Visualisations (16 beats)
+    { 50, 22, 7680, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Visualizations" },
+    { 50, 35, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Dinomight" },
+    { 50, 45, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"MrC" },
+    { 50, 55, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"mynci" },
+    { 50, 65, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"nmrs" },
+    { 50, 75, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"questor (a.k.a. fused)" },
 
-    // Stream server  crossfade 3.5, on 60 crossfade 3
-    { 50, 22, 7620, 7200, 420, 360, EFF_IN_FADE | EFF_OUT_FADE , 36, L"Stream Servers" },
-    { 50, 35, 0, 7200, 420, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"[XC]D-Ice" },
-    { 50, 45, 0, 7200, 420, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"PuhPuh" },
-    { 50, 55, 0, 7200, 420, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Pope-X" },
+    // Screensavers (16 beats)
+    { 50, 25, 7680, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Screensavers" },
+    { 50, 40, 0, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Jme" },
+    { 50, 50, 0, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Siw" },
+    { 50, 60, 0, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Sylfan" },
 
-    // Website Hosts  crossfade 3, on 61, crossfade 3
-    { 50, 22, 7680, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 36, L"Website Hosting" },
-    { 50, 35, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"HulleBulle aka Nuendo" },
-    { 50, 45, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"MrX" },
-    { 50, 55, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Team-XBMC" },
-    { 50, 65, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"xAD/nIGHTFALL (ASP Site Upload)" },
-    { 50, 75, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Sourceforge.net" },
+    // Stream Servers (16 beats)
+    { 50, 25, 7680, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Stream Servers and Clients" },
+    { 50, 40, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"c0diq" },
+    { 50, 50, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"puh-puh" },
+    { 50, 60, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"[XC]D-Ice" },
 
-    // Online-manual crossfade 3, on 61, crossfade 3
-    { 50, 22, 7680, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 36, L"Online Manual" },
-    { 50, 35, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"nimbles" },
-    { 50, 45, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Sig Olafsson" },
-    { 50, 55, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"No Good" },
+    // Patches (16 beats)
+    { 50, 22, 7680, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Great Patch Submitters" },
+    { 50, 35, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Lossol93" },
+    { 50, 45, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"markeen" },
+    { 50, 55, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"soepy" },
+    { 50, 65, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"stgcolin" },
+    { 50, 75, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"WiSO" },
 
-    // Sponsors crossfade 3, on 61, crossfade 3
-    { 50, 22, 7680, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 36, L"Sponsors" },
-    { 50, 35, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Team-Xecuter" },
-    { 50, 45, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Team-SmartXX" },
-    { 50, 55, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Team-OzXodus" },
+    // Translators (8 beats per group, 32 total)
+    { 50, 22, 7680, 7320+7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Translators" },
+    { 50, 35, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"gamepc (Chinese (Simple))" },
+    { 50, 45, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"omenpica (Chinese (Traditional))" },
+    { 50, 55, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Modhack (French)" },
+    { 50, 65, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Bobbin007 (German)" },
+    { 50, 75, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"sCAPe (German)" },
+    { 50, 85, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Deezle (German)" },
 
-    // Current Skin crossfade 3, on 61, crossfade 3
-    { 50, 22, 7680, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 36, L"$SKINTITLE" },
-    { 50, 35, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, NULL },  // skin names go in these 5
-    { 50, 45, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, NULL },
-    { 50, 55, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, NULL },
-    { 50, 65, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, NULL },
-    { 50, 75, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, NULL },
+    { 50, 35, 7320/2, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"ceomr (German (Austrian))" },
+    { 50, 45, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"kotix (Italian)" },
+    { 50, 55, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"vnm (Norwegian)" },
+    { 50, 65, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"napek (Polish)" },
+    { 50, 75, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"smuto (Polish)" },
+    { 50, 85, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"blittan (Swedish)" },
 
-    // Special Thanks crossfade 3, on 46, crossfade 3
-    { 50, 22, 7680, 5520, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 36, L"Special Thanks to" },
-    { 50, 35, 0, 5520, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Team Avalaunch (for help with some code)" },
-    { 50, 43, 0, 5520, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Team Complex" },
-    { 50, 51, 0, 5520, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Team EvoX" },
-    { 50, 59, 0, 5520, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Xbox-scene.com" },
-    { 50, 67, 0, 5520, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"bestplayer.de" },
-    { 50, 75, 0, 5520, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"modplug (credits music)" },
-    { 50, 85, 0, 5520, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Wabid" },
+    { 50, 35, 7320/2, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"bali001 (Hungarian)" },
+    { 50, 45, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"djoens (Indonesian)" },
+    { 50, 55, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"xsiluro (Slovenian)" },
+    { 50, 65, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"jose_t (Spanish)" },
 
-    // Visualizations crossfade 3, on 61, fadeout 16
-    { 50, 22, 7680, 7320, 360, 1920, EFF_IN_FADE | EFF_OUT_FADE , 36, L"Visualizations by" },
-    { 50, 35, 0, 7320, 360, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"nmrs" },
-    { 50, 45, 0, 7320, 360, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"questor/fused" },
-    { 50, 55, 0, 7320, 360, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"Dinomight" },
-    { 50, 65, 0, 7320, 360, 1920, EFF_IN_FADE | EFF_OUT_FADE , 20, L"mynci" },
+    // note pause here of 8 beats as more translators pop up
 
-    // empty block, can be used for more credits if needed
-    { 0, 0, 7800, 15360, 0, 0, EFF_IN_APPEAR | EFF_OUT_APPEAR , 20, NULL },
+    // Skin credits (16 beats)
+    { 50, 22, 7980, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 42, L"$SKINTITLE" },
+    { 50, 35, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 22, NULL },  // skin names go in these 5
+    { 50, 45, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 22, NULL },
+    { 50, 55, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 22, NULL },
+    { 50, 65, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 22, NULL },
+    { 50, 75, 0, 7320, 60, 360, EFF_IN_FLASH | EFF_OUT_FADE , 22, NULL },
+
+    // Online manual (16 beats)
+    { 50, 22, 7680, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Online Manual (WIKI)" },
+    { 50, 35, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Dankula" },
+    { 50, 45, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"nimbles" },
+    { 50, 55, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Sig Olafsson" },
+    { 50, 65, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"No Good" },
+    { 50, 75, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Loto_Bak" },
+
+    // Webhosting (16 beats)
+    { 50, 22, 7680, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Web Hosting" },
+    { 50, 35, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Xbox-Scene" },
+    { 50, 45, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"MrX" },
+    { 50, 55, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"EnderW" },
+    { 50, 65, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"SourceForge.net" },
+    { 50, 75, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Hullebulle (a.k.a. Nuendo)" },
+    { 50, 85, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"xAD (a.k.a. xantal)" },
+
+    // Sponsors (16 beats)
+    { 50, 22, 7680, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Sponsors" },
+    { 50, 40, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"None currently" },
+    { 50, 50, 0, 7320, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Contact us if you want to sponsor XBMC" },
+
+    // Ex team members (8 beats per group, 32 total)
+    { 50, 22, 7680, 7320+7320/2+360, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Retired Team Members" },
+    { 50, 35, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Butcher" },
+    { 50, 45, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Chokemaniac" },
+    { 50, 55, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Forza" },
+    { 50, 65, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Guybrush" },
+    { 50, 75, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Hullebulle (a.k.a. Nuendo)" },
+
+    { 50, 35, 7320/2, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"monkeyhappy" },
+    { 50, 45, 0, 7320/2,360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Obstler" },
+    { 50, 55, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Poing" },
+    { 50, 65, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Shadow_Mx" },
+
+    { 50, 35, 7320/2+360, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Tslayer" },
+    { 50, 45, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"xAD (a.k.a. xantal)" },
+    { 50, 55, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"yuvalt" },
+    { 50, 65, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"[XC]D-Ice" },
+
+//    // empty block, can be used for more credits if needed
+ //   { 0, 0, 7800, 15360, 0, 0, EFF_IN_APPEAR | EFF_OUT_APPEAR , 24, NULL },
 
     // All stuff after this just scrolls
 
     // Code credits
-    { 50, 50, 14400, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Code Credits" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"MPlayer" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"FFmpeg" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"XVID" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"libmpeg2" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"libvorbis" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"libmad" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"xiph" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"MikMod" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Matroska" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"CxImage" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"libCDIO" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"LZO" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Sidplay2" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Goom" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"MXM" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"XBFileZilla" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"GoAhead Webserver" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Samba" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Python" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"libid3" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"FriBiDi" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"libdca" },
+    { 50, 50, 7200, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Code Credits" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Adplug" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"BiosChecker" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"CxImage" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"D.U.M.B." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"dosfs" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Drempels" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"FFmpeg" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"FileZilla (FTP-Server)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"FreeType (freetype.org)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"FriBiDi" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"G-Force" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"GensAPU" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"GoAhead (Web-Server)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"in_cube" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"liba52" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libCDIO" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libcurl" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libdaap" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libdca/libdts (VideoLan.org)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libdvdcss" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libdvdnav/dvdread" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libfaad2 (AudioCoding.com)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libid3tag" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libLame" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libmad" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libmpcdec" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libmpeg2" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libOggVorbis" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libSpeex" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"libvorbis" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"LZO" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Matroska" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"MikMod" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Milkdrop" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"MPlayer" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"MXM" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"NoseFart" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Platinum (UPnP-client)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Python" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Samba/libsmb (SMB/CIFS-client)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Sidplay2" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"SNESAPU" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"SQLite" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"St-Sound Library" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"UnRAR (rarlab.com)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"xiph" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Xored Trainer Engine" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"XviD" },
+
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"TEAM THANKS:" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Team-XBMC would like to send"},
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"a special thanks out to:" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Xbox-Scene.com" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Dankula (for the manual labour)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Bizzeh (wiki and forums setup)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"MrC (great visualizations)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"freakware.com (some SmartXx v3)" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Modchip makers for LCD code" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"modplug (credits music)" },
 
     // JOKE section;-)
 
-    // section Frodo
-    { 50, 50, 7040, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Frodo" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Special thanks to my dear friends" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Gandalf, Legolas, Gimli, Aragorn, Boromir" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Merry, Pippin and ofcourse Samwise" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"and..." },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Team-XBMC wants to wish Frodo" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Good Luck with his future projects!" },
+    // section gamester17
+    { 50, 50, 8000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Gamester17" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special thanks to all in" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Team-XBMC who stay active." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to Frodo, RUNTiME and d7o3g4g" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for starting XBMP." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to all all new developers" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"who submit code patches." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to everyone who has ever" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"contributed to XBMC." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Remember, real men don't make backups" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"but they cry often!" },
+
+    // section pike
+    { 50, 50, 3600, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Pike" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"XBMC has come a long way since 1.1.0" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Enjoy our vision of pure excellence" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special thanks to all in team" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"who remain active." },
+
+    // section JMarshall
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"J Marshall" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to everyone in the XBMC team" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for the awesome work" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"My beautiful wife Keren" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for supporting me while I spend all my free" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"time coding and playing with my toys" },
 
     // section dday
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"DDay" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Special thanks to:" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Frodo for not kicking in my skull" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"God for pizza, beer and women" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Douglas Adams for making me smile" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"each summer when reading" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Hitchhikers Guide To The Galaxy" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special thanks to:" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for putting up with me." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for understanding that it sometimes is" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"normal to have five xbox's hooked up at home" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for giving me Emil" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Pike, for doing a great job" },
 
-    // section [XC]D-Ice
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"[XC]D-Ice" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Tnx to my friends:" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"mira, galaxy, mumrik, Frodo," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"my girlfriend, heineken, pepsi" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"my family, niece and nephew" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"M$ for Blue-screen error :)" },
-
-    // section xAD
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"xAD/nIGHTFALL" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Special thanks to:" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Butcher for making me happy (Sid player)" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"My wife for moral support" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"My friend 'Fox/nIGHTFALL' for the ASP help" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"My little computer room" },
-
-    // section Obstler
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Obstler" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanks to XTender for forgetting" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"to protect their PROM and thereby" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"kickstarting the homebrew mod scene..." },
-    { 50, 50, 1600, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Special thanks to Goesser for inspiring 42! ;)" },
-
-    // section gamestr17
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Gamester17" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Special thanks to everyone on the" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"XBMC/XBMP-Team," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"and users who don't complain" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Real men don't make backups," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"but they cry often" },
-
-    // section pike
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Pike" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Microsoft for the XBOX," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"which we have turned into" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"THE BEST Mediaplayer!" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Trance & other uplifting music" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"for making my days more enjoyable!" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"And remember - best things in life are free" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Sex and ofcourse XBMC!" },
-
-    // section forza
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Forza" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanks to everyone on the XBMC team" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"and to MS for making the" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"XBox so good to hack :)" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Special thanks to Enzo & Dino" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"for the glory that is Ferrari." },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Forza Ferrari!" },
-
+    // section bobbin007    
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Bobbin007" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanks to" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Mr. Lucas for the Arts," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Pott's beer for there great plopp bottles," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"My girlfriend," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Lidl for selling the greatest" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"frozen salami pizza ever" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Mr. Lucas for the Arts," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Pott's beer for there great plopp bottles," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"My girlfriend," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Lidl for selling the greatest" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"frozen salami pizza ever" },
 
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"J Marshall" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanks to Frodo,RUNTiME and d7o3g4q" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"for starting it all" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"My beautiful wife Keren" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"for supporting me while I spend" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"all my free time coding" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"and playing with my toys" },
-
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"GeminiServer" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanks to everybody involved in this Project" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"To our little angel Helin J. " },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"without her crying in the nights,i never found" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"time for this project!" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"To Andrew Huang (bunnie)," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"for his initial work to get run unsigned code!" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Special Thanks also goes to M$ for the XBOX!" },
-
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"RUNTiME" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"I asked for my own scroll-text" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"and all I got was this crappy slot" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"on the ass-end of the credits!" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanks to duo, frodo and Team Complex" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"for their patience and support;" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"my fiancee for putting up with" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"the long hours and Gamester" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"for keeping it all together." },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Shouts to Team Evox, X-Link, AVA" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"and any other sod who reckons" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"they deserve greeting... " },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"except Butcher (j/k)..." },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"now please go away so we can get some sleep!" },
-
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Tslayer" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Special thanks to everybody involved" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"with XBMC, especially Frodo." },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Without this amazing program," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"I would never have bought an XBOX" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"and would never have had a chance" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"to become part of this amazing team." },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanks all!" },
-
+    // section elupus
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"elupus" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanx to everybody on the XBMC team," },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"with special thanx to frodo for giving me" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"cvs access and in that something else" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"to do instead of sleeping at nights." },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"Thanx a bunch!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanx to everybody in the XBMC team," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"with special thanx to frodo for giving me" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"cvs access and in that something else" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"to do instead of sleeping at nights." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanx a bunch!" },
 
+    // section spiff
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"spiff" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to the world for beer!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Appreciation to the team for the product" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"\"If you make something fool proof," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"a better fool will be invented.\"" },
+
+    // section chadoe
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"chadoe" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to whoever invented the internet" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"thus making this kind of team work possible" },
+    
+    // section geminiserver
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"GeminiServer" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to everybody involved in this Project" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"To our little angel Helin J. " },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"without her crying in the nights, i'd never" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"have found time for this project!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"To Andrew Huang (bunnie)," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for his initial work to run unsigned code!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special Thanks to M$ for the XBOX!" },
+
+    // section tslayer
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Tslayer" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special thanks to everybody involved" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"with XBMC, especially Frodo." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Without this amazing program," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"I would never have bought an XBOX" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"and would never have had a chance" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"to become part of this amazing team." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks all!" },
+
+    // section nad
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Nad" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"To my Mum who passed away April 2006 -" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 20, L"we miss you." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"To my Mum who passed away April 2006 -" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"we miss you." },
 
+    // section mrc
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"MrC" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to all of Team-XBMC for their hard work" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to Pike for his cool chats and support" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"And thanks to Mumbles for his Vortex textures" },
+
+    // section c0diq
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"c0diq" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks Bunnie, you're the man" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to K., M., & L." },
+
+    // section Donno
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Donno" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks TeknoJuce for making #xbmc worthwhile" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to Tazta for intro to XBMC n Mods" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks Pepsi for the Max" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks MString for the XBOX" },
+
+    // section DeanRParry
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"DeanRParry" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to Spiff for putting up with my" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"lame ass code skills!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks MS for the superb piece of h/w," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"shame about your s/w." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks Gamester for reminding me" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"to buy some tissues..." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thank you God for my fingers or i'd be" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"stuck typing this!" },
+
+    // section sollie
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"sollie" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to all XBMC-devs for creating" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"this great application!!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special thanks to my girl and son for" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"not throwing away my xbox" },
+
+    // section modhack
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Modhack" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to my job for giving me" }, 
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"free time to play with XBMC" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to gueux.be community" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for the french support" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks Mathias for your mighty skin!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Big thanks to Alexsolex for the script MyCine" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to Thibaud, Greg (Mgt1275)" }, 
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"and Mathieu (Sergent M@B)" },
+
+    // section scape
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"sCAPe" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special thanks to everyone in Team-XBMC" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for creating the best Media-Center ever" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"and for being part of the team!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to my wonderful wife for having" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"so much patience with me," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"while playing with XBMC." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Also many greetings to the German" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"XBOX and XBMC-Scene" },
+
+    // section teknojuce
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"TeknoJuce" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to our great XBMC team/family" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for the years of pure bliss!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special thanks to my Swede brother Pike," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"play me them ch0oNZ!" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"DOS4GW, Spiff, Nad, Elupus, Tslayer, Kraqh3d," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"DDay, Chokemaniac, Darkie, my apprentice Donno" },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"and JMarshall - the gawd among men." },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to our entire userbase in #XBMC," },
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"<3 U's okplzthx!" },
 
     // can duplicate the lines below as many times as required for more credits
     // {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"" },
     // {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"" },
 
     // Leave this as is - it tells the music to fade
-    { 0, 0, 10000, 5000, 0, 0, EFF_IN_APPEAR | EFF_OUT_APPEAR , 20, NULL },
+    { 0, 0, 10000, 5000, 0, 0, EFF_IN_APPEAR | EFF_OUT_APPEAR , 22, NULL },
   };
 
 
@@ -927,16 +1054,24 @@ void RunCredits()
   for (int i = 0; i < NUM_CREDITS; ++i)
   {
     // map fonts
+#ifdef USE_TTF_FONTS
     if (Fonts.find(Credits[i].Font) == Fonts.end())
     {
       // first try loading it
-#ifdef USE_TTF_FONTS
       CStdString fontPath = "Q:\\Media\\Fonts\\Arial.ttf";
       CStdString strFont;
       strFont.Fmt("__credits%d__", Credits[i].Font);
-      CGUIFont *font = g_fontManager.LoadTTF(strFont, fontPath, 0xFFFFFFFF, 0, Credits[i].Font, FONT_STYLE_NORMAL);
+      CGUIFont *font = g_fontManager.LoadTTF(strFont, fontPath, 0xFFdadada, 0, Credits[i].Font, FONT_STYLE_BOLD);
       Fonts.insert(std::pair<int, CGUIFont*>(Credits[i].Font, font));
 #else
+    if (Credits[i].Font < 30)
+      Credits[i].Font = 20;
+    if (Credits[i].Font >= 30 && Credits[i].Font < 48)
+      Credits[i].Font = 36;
+    if (Credits[i].Font >= 48)
+      Credits[i].Font = 78;
+    if (Fonts.find(Credits[i].Font) == Fonts.end())
+    {
       CStdString strFilename;
       strFilename.Fmt("q:\\credits\\credits-font%d.xpr", Credits[i].Font);
       CGUIFontXPR* pFont = new CGUIFontXPR(strFilename);
@@ -973,6 +1108,16 @@ void RunCredits()
 
       if (Credits[i].Text && !wcsicmp(Credits[i].Text, L"$SKINTITLE"))
         SkinOffset = i;
+
+      // calculate text size (allows ttf to scroll smoothly, as initial rendertime
+      // can be quite long)
+      if (Credits[i].Text)
+      {
+#ifdef USE_TTF_FONTS
+        CGUIFont* pFont = Fonts.find(Credits[i].Font)->second;
+        pFont->GetTextExtent(Credits[i].Text, &Credits[i].TextWidth, &Credits[i].TextHeight);
+#endif
+      }
     }
   }
 
@@ -1003,6 +1148,7 @@ void RunCredits()
 
     DWORD StartTime = timeGetTime();
     DWORD LastTime = StartTime;
+    DWORD LastCreditTime = 0;
 
     if (WaitForSingleObject(hMusicThread, 0) == WAIT_TIMEOUT)
       LastTime = 0;
@@ -1051,6 +1197,7 @@ void RunCredits()
 #endif
         }
         ActiveList.push_back(&Credits[NextCredit]);
+        LastCreditTime = Credits[NextCredit].Time;
         ++NextCredit;
       }
       // CreateTexture zaps the viewport
@@ -1144,6 +1291,13 @@ void RunCredits()
 
       // check for keypress
       g_application.ReadInput();
+      if (g_application.m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_A] > XINPUT_GAMEPAD_MAX_CROSSTALK)
+      {
+        // output timing to log, rounded to 60ms
+        DWORD roundedTime = Time - (Time % 60);
+        CLog::Log(LOGDEBUG, __FUNCTION__" time since last credit: %i (%i)", roundedTime - LastCreditTime, roundedTime);
+      }
+
       if (g_application.m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_B] > XINPUT_GAMEPAD_MAX_CROSSTALK ||
           g_application.m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_BACK ||
           g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_BACK ||
@@ -1160,7 +1314,6 @@ void RunCredits()
         for (map<int, CGUIFontXPR*>::iterator iFont = Fonts.begin(); iFont != Fonts.end(); ++iFont)
 #endif
         {
-          // TODO: Delete the font - how do we do this??
 #ifdef USE_TTF_FONTS
           CGUIFont *font = iFont->second;
           CStdString fontName = font->GetFontName();
@@ -1325,6 +1478,7 @@ LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text)
   font->GetTextExtent(text, &width, &height);
   // create a texture of this size
   LPDIRECT3DTEXTURE8 texture = NULL;
+  OutputDebugString("Creating texture\n");
   if (D3D_OK == D3DDevice::CreateTexture((UINT)width, (UINT)height, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &texture))
   {
     // grab the surface level
@@ -1334,7 +1488,7 @@ LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text)
     D3DDevice::SetRenderTarget(newSurface, NULL);
     // render text into it
     D3DDevice::Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
-    font->DrawText(0, 0, 0xffffffff, 0, text);
+    font->DrawText(0, 0, 0xffdadada, 0, text);
     D3DDevice::SetRenderTarget(oldSurface, NULL);
     newSurface->Release();
     oldSurface->Release();
