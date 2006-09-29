@@ -68,6 +68,11 @@ protected:
   void ShowShareErrorMessage(CFileItem* pItem);
   void UpdateItemCounts();
 
+  // 
+  bool bCheckShareConnectivity;
+  CStdString strCheckSharePath;
+
+
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems[2];
   typedef vector <CFileItem*> ::iterator ivecItems;
