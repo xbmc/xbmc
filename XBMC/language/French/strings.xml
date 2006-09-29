@@ -1348,7 +1348,7 @@ pour cette visualisation</string>
   <string id="20160">Infos Matériel</string>
   <string id="20161">Total: %s MB, Utilisé: %s MB, Libre: %s MB</string>
   <string id="20162">Total DD Utilisé: %u%% Libre: %u%%</string>
-  <string id="20163">%s: MB de %s MB libre</string>
+  <string id="20163">%s: %s MB de libre sur %s MB</string>
   <string id="20164">Verrouillage non supporté</string>
   <string id="20165">Non verrouillé</string>
   <string id="20166">Verrouillé</string>
