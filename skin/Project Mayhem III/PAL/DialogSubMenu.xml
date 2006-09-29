@@ -271,7 +271,7 @@
 
   <control>
    <description>Scripts button</description>		<visible>yes</visible>
-   <type>button</type>					<onclick>q:\scripts\AppleMovieTrailers_prerelease\default.py</onclick>
+   <type>button</type>					<onclick>q:\scripts\Apple Movie Trailers\default.py</onclick>
    <id>1110</id>					<label>Movie Trailers</label>
    <posx>30</posx>
    <posy>370</posy>
