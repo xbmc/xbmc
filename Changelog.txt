@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-09-2006 fixed: shoutcast genres with characters that isn't allowed by http urls, would fail du to a huge result. ex R&b.
+
+----- 2.0 -----
  - 29-09-2006 added: A spanking new (skinnable) 3D music Visualiser: Vortex, created by MrC. THANKS!
  - 29-09-2006 updated: french language file
  - 29-09-2006 added: Fat16/32 support for USB memory sticks.  4GB limit in size, readonly support.
