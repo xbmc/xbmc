@@ -30,8 +30,12 @@ bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, 
   while(element != NULL)
   {
     genre = element->Attribute("name");
+    path = genre;
 
-    url.SetOptions("?genre=" + genre);
+    /* genre must be urlencoded */
+    CUtil::URLEncode(path);
+
+    url.SetOptions("?genre=" + path);
     url.GetURL(path);
 
 
@@ -75,8 +79,8 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     CLog::Log(LOGWARNING, __FUNCTION__" - No stations found");
     return false;
   }
-
-  while(element != NULL)
+  int stations = 0;
+  while(element != NULL && stations < 1000)
   {
     CStdString name = element->Attribute("name");
     CStdString id = element->Attribute("id");
@@ -114,6 +118,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     
     items.Add(pItem);
 
+    stations++;
     element = element->NextSiblingElement("station");
   }
 
