@@ -217,7 +217,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
   {
     CStdString strPath;
-    if (CUtil::IsInRAR(g_application.CurrentFileItem().m_strPath))
+    if (CUtil::IsInRAR(g_application.CurrentFileItem().m_strPath) || CUtil::IsInZIP(g_application.CurrentFileItem().m_strPath))
     {
       CURL url(g_application.CurrentFileItem().m_strPath);
       strPath = url.GetHostName();
@@ -256,7 +256,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
             CUtil::ReplaceExtension(strPath3,".",strFileNameNoExtNoCase);
             strFileNameNoExtNoCase.ToLower();
             CUtil::GetDirectory(strPath,strDir);
-            CDirectory::GetDirectory(strDir,items,".rar",false);
+            CDirectory::GetDirectory(strDir,items,".rar|.zip",false);
             vector<CStdString> vecExts;
             for (int i=0;i<items.Size();++i)
               CUtil::CacheRarSubtitles(vecExts,items[i]->m_strPath,strFileNameNoExtNoCase,".keep");
