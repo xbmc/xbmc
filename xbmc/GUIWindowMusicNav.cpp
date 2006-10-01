@@ -509,16 +509,18 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
         strPicture.Delete(j,strPicture.size()-j);
       }
       
-      iPos = -1;
-      int iSlashes2 = 0;
-      while ((iPos = strPicture.find(slash,iPos+1)) != -1)
-        iSlashes2++;
-      if (iSlashes == iSlashes2 && strPicture[strPicture.size()-1] != slash) // we have a partly match - happens with e.g. f:\foo\disc 1, f:\foo\disc 2 -> strPicture = f:\foo\disc
+      if (!strPicture.Equals(albums[0].strPath))
       {
-        CStdString strPicture2(strPicture);
-        CUtil::GetParentPath(strPicture2,strPicture);
+        iPos = -1;
+        int iSlashes2 = 0;
+        while ((iPos = strPicture.find(slash,iPos+1)) != -1)
+          iSlashes2++;
+        if (iSlashes == iSlashes2 && strPicture[strPicture.size()-1] != slash) // we have a partly match - happens with e.g. f:\foo\disc 1, f:\foo\disc 2 -> strPicture = f:\foo\disc
+        {
+          CStdString strPicture2(strPicture);
+          CUtil::GetParentPath(strPicture2,strPicture);
+        }
       }
-
       if (strPicture.size() > 2)
       {
         if ((strPicture[strPicture.size()-1] == '/' && strPicture[strPicture.size()-2] == '/') || (strPicture[1] ==':' && strPicture[2] == '\\' && strPicture.size()==3) || strPicture.IsEmpty())
