@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-10-2006 fixed: [ 1561317 ] Browse and load RAR:ed subtitles don't work. also added zip support.
  - 02-10-2006 fixed: browse for artist thumb was a pita.
  - 01-10-2006 fixed: [ 1568291 ] Saving large playlist fails
  - 01-10-2006 fixed: [ 1568607 ] XBMC 2.0.0 Web Control bookmarks

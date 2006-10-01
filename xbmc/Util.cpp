@@ -1979,7 +1979,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     {
       CFileItemList items;
 
-      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar",false);
+      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip",false);
       int fnl = strFileNameNoExt.size();
 
       CStdString strFileNameNoExtNoCase(strFileNameNoExt);
@@ -1989,13 +1989,15 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
         Split(items[j]->m_strPath, strPath, strItem);
 
         // is this a rar-file .. 
-        if (CUtil::IsRAR(strItem) && g_guiSettings.GetBool("subtitles.searchrars"))
+        if ((CUtil::IsRAR(strItem) || CUtil::IsZIP(strItem)) && g_guiSettings.GetBool("subtitles.searchrars"))
         {
           CStdString strRar, strItemWithPath;
-          CUtil::AddFileToFolder(strLookInPaths[step],strFileNameNoExt+".rar",strRar);
+          CUtil::AddFileToFolder(strLookInPaths[step],strFileNameNoExt+CUtil::GetExtension(strItem),strRar);
           CUtil::AddFileToFolder(strLookInPaths[step],strItem,strItemWithPath);
           
-          if (step != (strMovie.substr(0,6)=="rar://"?1:0) || (strFileNameNoExtNoCase+".rar").Equals(strItem))
+          int iPos = strMovie.substr(0,6)=="rar://"?1:0;
+          iPos = strMovie.substr(0,6)=="zip://"?1:0;
+          if ((step != iPos) || (strFileNameNoExtNoCase+".rar").Equals(strItem) || (strFileNameNoExtNoCase+".zip").Equals(strItem))
             CacheRarSubtitles( vecExtensionsCached, items[j]->m_strPath, strFileNameNoExtNoCase);
         }
         else
@@ -2060,20 +2062,35 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
   bool bFoundSubs = false;
   CFileItemList ItemList;
 
-  // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
-  // so now we dont have to find any subdirs anymore, all files in the rar is checked.
-  if( !g_RarManager.GetFilesInRar(ItemList, strRarPath, false, "") ) return false;
+  // zip only gets the root dir
+  if (CUtil::GetExtension(strRarPath).Equals(".zip"))
+  {
+    CStdString strZipPath;
+    CUtil::CreateZipPath(strZipPath,strRarPath,"");
+    if (!CDirectory::GetDirectory(strZipPath,ItemList,"",false))
+      return false;
+  }
+  else
+  {
+    // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
+    // so now we dont have to find any subdirs anymore, all files in the rar is checked.
+    if( !g_RarManager.GetFilesInRar(ItemList, strRarPath, false, "") ) 
+      return false;
+  }
   for (int it= 0 ; it <ItemList.Size();++it)
   {
     CStdString strPathInRar = ItemList[it]->m_strPath;
     CLog::Log(LOGDEBUG, "CacheRarSubs:: Found file %s", strPathInRar.c_str());
     // always check any embedded rar archives
     // checking for embedded rars, I moved this outside the sub_ext[] loop. We only need to check this once for each file.
-    if (CUtil::IsRAR(strPathInRar))
+    if (CUtil::IsRAR(strPathInRar) || CUtil::IsZIP(strPathInRar))
     {
       CStdString strExtAdded;
       CStdString strRarInRar;
-      CUtil::CreateRarPath(strRarInRar, strRarPath, strPathInRar);
+      if (CUtil::GetExtension(strPathInRar).Equals(".rar"))
+        CUtil::CreateRarPath(strRarInRar, strRarPath, strPathInRar);
+      else
+        CUtil::CreateZipPath(strRarInRar, strRarPath, strPathInRar);
       CacheRarSubtitles(vecExtensionsCached,strRarInRar,strCompare, strExtExt);
     }
     // done checking if this is a rar-in-rar
@@ -2089,7 +2106,10 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
         if (strExt.CompareNoCase(sub_exts[iPos]) == 0)
         {
           CStdString strSourceUrl, strDestUrl;
-          CUtil::CreateRarPath(strSourceUrl, strRarPath, strPathInRar);
+          if (CUtil::GetExtension(strRarPath).Equals(".rar"))
+            CUtil::CreateRarPath(strSourceUrl, strRarPath, strPathInRar);
+          else
+            strSourceUrl = strPathInRar;
 
           CStdString strDestFile;
           strDestFile.Format("z:\\subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
