@@ -246,6 +246,7 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
   CShare share;
   share.strName = name;
   share.strPath = path;
+  share.vecPaths.push_back(path);
   g_settings.AddShare(type,share);
 
   return 0;
@@ -471,7 +472,11 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
  */
 int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-	char_t	*filename = NULL;
+  eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
+  response="<li>Error:Functino is deprecated";
+  return -1;
+
+  char_t	*filename = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s"), &filename) < 1) {
@@ -511,7 +516,12 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
  */
 int CXbmcConfiguration::GetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-	char_t* name = NULL;
+  eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
+response="<li>Error:Functino is deprecated";
+return -1;
+
+  
+  char_t* name = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s"), &name) < 1) {
