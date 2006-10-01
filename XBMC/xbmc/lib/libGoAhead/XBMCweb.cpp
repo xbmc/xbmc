@@ -682,8 +682,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           if (itm->IsZIP()) // mount zip archive
           {
             CShare shareZip;
-            //shareZip.strPath.Format("zip://Z:\\temp\\,%i,,%s,\\",1, itm->m_strPath.c_str() );
-            CUtil::CreateZipPath(share.strPath,itm->m_strPath,"",1);
+            CUtil::CreateZipPath(shareZip.strPath,itm->m_strPath,"",1);
             directory->AddShare(shareZip);
             itm->m_strPath = shareZip.strPath;
             itm->m_bIsFolder = true;

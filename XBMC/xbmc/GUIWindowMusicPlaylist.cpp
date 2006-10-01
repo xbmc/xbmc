@@ -119,6 +119,9 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSAVE)
       {
+        if (m_musicInfoLoader.IsLoading()) // needed since we destroy m_vecitems to save memory
+          m_musicInfoLoader.StopThread();
+
         SavePlayList();
       }
       else if (iControl == CONTROL_BTNCLEAR)
@@ -253,6 +256,21 @@ void CGUIWindowMusicPlayList::SavePlayList()
     strNewFileName += ".m3u";
     CUtil::AddFileToFolder(strFolder, strNewFileName, strPath);
 
+    // get selected item
+    int iItem = m_viewControl.GetSelectedItem();
+    CStdString strSelectedItem = "";
+    if (iItem >= 0 && iItem < m_vecItems.Size())
+    {
+      CFileItem* pItem = m_vecItems[iItem];
+      if (!pItem->IsParentFolder())
+      {
+        GetDirectoryHistoryString(pItem, strSelectedItem);
+      }
+    }
+
+    CStdString strOldDirectory = m_vecItems.m_strPath;
+    m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
+
     CPlayListM3U playlist;
     for (int i = 0; i < (int)m_vecItems.Size(); ++i)
     {
@@ -271,9 +289,11 @@ void CGUIWindowMusicPlayList::SavePlayList()
         newItem.m_strPath=pItem->m_musicInfoTag.GetURL();
 
       playlist.Add(newItem);
+      m_vecItems.Remove(i--);
     }
     CLog::Log(LOGDEBUG, "Saving music playlist: [%s]", strPath.c_str());
     playlist.Save(strPath);
+    Update(m_vecItems.m_strPath); // need to update
   }
 }
 
