@@ -445,7 +445,7 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 	}
 
   VECSHARES* pShares = g_settings.GetSharesFromType(type);
-  const CShare& share = (*pShares)[nr];
+  const CShare& share = (*pShares)[nr-1];
   if (g_settings.DeleteBookmark(type,share.strName,share.strPath))
     return 0;
 
