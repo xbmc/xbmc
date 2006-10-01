@@ -57,9 +57,10 @@ public:
     while(!m_bStop)
     {
       m_event.WaitMSec(1000/30);
-      if(!m_callback->OnFileCallback(m_context, m_percent, m_speed))
-        if(!m_cancel)
-          m_cancel = true;
+      if (m_callback)
+        if(!m_callback->OnFileCallback(m_context, m_percent, m_speed))
+          if(!m_cancel)
+            m_cancel = true;
     }
   }
 
@@ -130,12 +131,15 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       vector<CStdString> tokens;
       CStdString strDirectory;
       CUtil::GetDirectory(strDest,strDirectory);
-      CUtil::Tokenize(strDirectory,tokens,"\\");
-      CStdString strCurrPath = tokens[0]+"\\";
-      for (vector<CStdString>::iterator iter=tokens.begin()+1;iter!=tokens.end();++iter)
+      if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {
-        strCurrPath += *iter+"\\";
-        CDirectory::Create(strCurrPath);
+        CUtil::Tokenize(strDirectory,tokens,"\\");
+        CStdString strCurrPath = tokens[0]+"\\";
+        for (vector<CStdString>::iterator iter=tokens.begin()+1;iter!=tokens.end();++iter)
+        {
+          strCurrPath += *iter+"\\";
+          CDirectory::Create(strCurrPath);
+        }
       }
     }
     CFile::Delete(strDest);
