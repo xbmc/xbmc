@@ -41,7 +41,8 @@ void ILED::CLEDControl(int ixLED)
   {
     //No need to Change! Leave the LED with the Default Bios Settings
     //Since we can't get the BIOS LED Color Setting: we will set it to Standart Green!
-    XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_GREEN | XKUtils::LED_REGISTER_CYCLE2_GREEN | XKUtils::LED_REGISTER_CYCLE1_GREEN | XKUtils::LED_REGISTER_CYCLE3_GREEN);
+    //XKUtils::SetXBOXLEDStatus(XKUtils::LED_REGISTER_CYCLE0_GREEN | XKUtils::LED_REGISTER_CYCLE2_GREEN | XKUtils::LED_REGISTER_CYCLE1_GREEN | XKUtils::LED_REGISTER_CYCLE3_GREEN);
+    //Todo: read the LED settings from BIOS!
   }
 }
 
