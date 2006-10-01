@@ -2237,6 +2237,12 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
         (*it).m_iBadPwdCount = atoi(strUpdateText);
       else if ("thumbnail" == strUpdateElement)
         (*it).m_strThumbnailImage = strUpdateText;
+      else if ("path" == strUpdateElement)
+      {
+        (*it).vecPaths.clear();
+        (*it).strPath = strUpdateText;
+        (*it).vecPaths.push_back(strUpdateText);
+      }
       else
         return false;
       pShare = &(*it);
