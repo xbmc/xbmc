@@ -679,20 +679,22 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 
           if (!itm) return 0;
 
-          if (itm->IsZIP() && g_guiSettings.GetBool("VideoFiles.HandleArchives")) // mount zip archive
+          if (itm->IsZIP()) // mount zip archive
           {
             CShare shareZip;
             //shareZip.strPath.Format("zip://Z:\\temp\\,%i,,%s,\\",1, itm->m_strPath.c_str() );
-            CUtil::CreateZipPath(shareZip.strPath, itm->m_strPath, "", 1);
+            CUtil::CreateZipPath(share.strPath,itm->m_strPath,"",1);
             directory->AddShare(shareZip);
             itm->m_strPath = shareZip.strPath;
             itm->m_bIsFolder = true;
           }
-          else if (itm->IsRAR() && g_guiSettings.GetBool("VideoFiles.HandleArchives")) // mount rar archive 
+          else if (itm->IsRAR()) // mount rar archive 
           {
             CShare shareRar;
             //shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",1, itm->m_strPath.c_str() );
-            CUtil::CreateRarPath(shareRar.strPath, itm->m_strPath, "", 1);
+            CStdString strRarPath;
+            CUtil::CreateRarPath(strRarPath,itm->m_strPath,"",1);
+            shareRar.strPath = strRarPath;
 
             directory->AddShare(shareRar);
             itm->m_strPath = shareRar.strPath;
@@ -988,8 +990,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   if (!bFound && g_guiSettings.GetBool("musicfiles.usetags"))
   {
     //	...no, try to load the tag of the file.
-    CMusicInfoTagLoaderFactory factory;
-    auto_ptr<IMusicInfoTagLoader> pLoader(factory.CreateLoader(newItem.m_strPath));
+    auto_ptr<IMusicInfoTagLoader> pLoader(CMusicInfoTagLoaderFactory::CreateLoader(newItem.m_strPath));
     //	Do we have a tag loader for this file type?
     if (pLoader.get() != NULL)
       pLoader->Load(newItem.m_strPath,tag);
