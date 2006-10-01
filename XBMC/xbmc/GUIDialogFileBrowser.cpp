@@ -71,12 +71,24 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_bConfirmed = false;
-      if (!CFile::Exists(m_selectedPath))
-        m_selectedPath.Empty();
+      bool bIsDir = false;
+      // this code allows two different selection modes for directories
+      // end the path with a slash to start inside the directory
+      if (m_selectedPath[m_selectedPath.size()-1] == '\\' || m_selectedPath[m_selectedPath.size()-1] == '/' ) // assume directory
+      {
+        bIsDir = true;
+        if (!CDirectory::Exists(m_selectedPath))
+          m_selectedPath.Empty();
+      }
+      else
+      {
+        if (!CFile::Exists(m_selectedPath) && !CDirectory::Exists(m_selectedPath))
+          m_selectedPath.Empty();
+      }
 
       // find the parent folder if we are a file browser (don't do this for folders)
       m_Directory.m_strPath = m_selectedPath;
-      if (!m_browsingForFolders)
+      if (!m_browsingForFolders && !bIsDir)
         CUtil::GetParentPath(m_selectedPath, m_Directory.m_strPath);
       Update(m_Directory.m_strPath);
       m_viewControl.SetSelectedItem(m_selectedPath);
