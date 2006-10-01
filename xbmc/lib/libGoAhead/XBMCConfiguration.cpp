@@ -52,7 +52,28 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
 		return -1;
 	}
 
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+  VECSHARES *pShares = g_settings.GetSharesFromType(type);
+  if (pShares)
+  {
+    char buffer[10];
+
+    if (eid!=-1) 
+      ejSetResult( eid, itoa(pShares->size(), buffer, 10));
+    else
+    {
+      CStdString tmp;
+      tmp.Format("%s", itoa(pShares->size(), buffer, 10));
+      response="<li>" + tmp;
+    }
+
+    return 0;
+  }
+
+  eid!=-1 ? websError(wp, 500, T("Bookmark type does not exist\n")):
+  response="<li>Error:Bookmark type does not exist";
+  return -1;
+
+/*	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
     eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
@@ -86,7 +107,7 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
     tmp.Format("%s", itoa(counter, buffer, 10));
     response="<li>" + tmp;
   }
-	return 0;
+	return 0;*/
 }
 
 /*
@@ -116,9 +137,15 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
   }
 
   VECSHARES* pShares = g_settings.GetSharesFromType(type);
-  if (nr > -1 && nr < (int)pShares->size())
+  if (!pShares)
   {
-    const CShare& share = (*pShares)[nr];
+    eid!=-1 ? websError(wp, 500, T("Bookmark type does not exist\n")):
+    response="<li>Error:Bookmark type does not exist";
+    return -1;
+  }
+  if (nr > 0 && nr <= (int)pShares->size())
+  {
+    const CShare& share = (*pShares)[nr-1];
     if (CStdString(parameter).Equals("path"))
     {
       if (eid!=-1)
@@ -336,9 +363,9 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 		return -1;
 	}
 
-  if (nr > -1 && nr < (int)pShares->size()) // update share
+  if (nr > 0 && nr <= (int)pShares->size()) // update share
   {
-    const CShare& share = (*pShares)[nr];
+    const CShare& share = (*pShares)[nr-1];
     g_settings.BeginBookmarkTransaction();
     g_settings.UpdateBookmark(type, share.strName, "path", path);
     g_settings.UpdateBookmark(type, share.strName, "name", name);
