@@ -106,7 +106,55 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
 		return -1;
 	}
 
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+  int nr = 0;
+  try { nr = atoi(id); }
+  catch (...)
+  {
+    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
+    response="<li>Error:Id is not a number";
+    return -1;
+  }
+
+  VECSHARES* pShares = g_settings.GetSharesFromType(type);
+  if (nr > -1 && nr < (int)pShares->size())
+  {
+    const CShare& share = (*pShares)[nr];
+    if (CStdString(parameter).Equals("path"))
+    {
+      if (eid!=-1)
+        ejSetResult( eid, const_cast<char*>(share.strPath.c_str()));
+      else
+      {
+        CStdString tmp;
+        tmp.Format("%s",share.strPath);
+        response="<li>" + tmp;
+      }
+    }
+    else if (CStdString(parameter).Equals("name"))
+    {
+      if (eid!=-1)
+        ejSetResult( eid, const_cast<char*>(share.strName.c_str()));
+      else
+      {
+        CStdString tmp;
+        tmp.Format("%s",share.strName);
+        response="<li>" + tmp;
+      }
+    }
+    else
+    {
+      eid!=-1 ? websError(wp, 500, T("Parameter not known\n")):
+      response="<li>Error:Parameter not known";
+    }
+    return 0;
+  }
+
+  eid!=-1 ? websError(wp, 500, T("Position not found\n")):
+  response="<li>Error:Position not found";
+  return -1;
+
+
+	/*// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
     eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
@@ -175,7 +223,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
               response="<li>Error:Position not found";
     return -1;
   }
-	return 0;
+	return 0;*/
 }
 
 /*
@@ -195,7 +243,13 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
               response="<li>Error:Insufficient args, use: function(command, type, name, path, [postion])";
 		return -1;
 	}
+  CShare share;
+  share.strName = name;
+  share.strPath = path;
+  g_settings.AddShare(type,share);
 
+  return 0;
+/*
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
@@ -251,7 +305,7 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
 	{
 		pNode->ToElement()->InsertEndChild(bookmark);
 	}
-	return 0;
+	return 0;*/
 }
 
 /*
@@ -271,8 +325,32 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
               response="<li>Error:Insufficient args, use: function(command, type, name, path, postion)";
 		return -1;
 	}
+  VECSHARES* pShares = g_settings.GetSharesFromType(type);
+  int nr = 0;
+	try { nr = atoi(position); }
+	catch (...)
+	{
+    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
+              response="<li>Error:Id is not a number";
+		return -1;
+	}
 
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+  if (nr > -1 && nr < (int)pShares->size()) // update share
+  {
+    const CShare& share = (*pShares)[nr];
+    g_settings.BeginBookmarkTransaction();
+    g_settings.UpdateBookmark(type, share.strName, "path", path);
+    g_settings.UpdateBookmark(type, share.strName, "name", name);
+    g_settings.CommitBookmarkTransaction();
+    return 0;
+  }
+  
+  eid!=-1 ? websError(wp, 500, T("Position not found\n")):
+  response="<li>Error:Position not found";
+  return -1;
+
+
+/*	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
     eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
@@ -308,7 +386,8 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
     eid!=-1 ? websError(wp, 500, T("Position not found\n")):
               response="<li>Error:Position not found";
     return -1;
-  }
+  }*/
+  
 	return 0;
 }
 
@@ -328,6 +407,24 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 		return -1;
 	}
 
+	int nr = 0;
+	try { nr = atoi(position); }
+	catch (...)
+	{
+    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
+              response="<li>Error:position is not a number";
+		return -1;
+	}
+
+  VECSHARES* pShares = g_settings.GetSharesFromType(type);
+  const CShare& share = (*pShares)[nr];
+  if (g_settings.DeleteBookmark(type,share.strName,share.strPath))
+    return 0;
+
+  eid!=-1 ? websError(wp, 500, T("Position not found\n")):
+  response="<li>Error:Position not found";
+  return -1;
+  /*
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
@@ -363,7 +460,7 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
               response="<li>Error:Position not found";
     return -1;
   }
-	return 0;
+	return 0;*/
 }
 
 /*
@@ -479,6 +576,10 @@ int CXbmcConfiguration::GetOption( int eid, webs_t wp, CStdString& response, int
 int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
 	char_t *name, *value = NULL;
+
+  eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
+  response="<li>Error:Functino is deprecated";
+  return -1;
 
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
