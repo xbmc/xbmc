@@ -698,8 +698,7 @@ void SetCurrentMediaItem(CFileItem& newItem)
   if (!bFound && g_guiSettings.GetBool("musicfiles.usetags"))
   {
     //  ...no, try to load the tag of the file.
-    CMusicInfoTagLoaderFactory factory;
-    auto_ptr<IMusicInfoTagLoader> pLoader(factory.CreateLoader(newItem.m_strPath));
+    auto_ptr<IMusicInfoTagLoader> pLoader(CMusicInfoTagLoaderFactory::CreateLoader(newItem.m_strPath));
     //  Do we have a tag loader for this file type?
     if (pLoader.get() != NULL)
       pLoader->Load(newItem.m_strPath,tag);
@@ -969,8 +968,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     if (g_guiSettings.GetBool("musicfiles.usetags"))
     {
       // get correct tag parser
-      CMusicInfoTagLoaderFactory factory;
-      auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+      auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
       if (NULL != pLoader.get())
       {            
         // get id3tag
