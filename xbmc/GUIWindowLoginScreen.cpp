@@ -101,7 +101,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             // test for a startup window, and activate that instead of home
             if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
             {
-              m_gWindowManager.ActivateWindow(WINDOW_STARTUP);
+              m_gWindowManager.ChangeActiveWindow(WINDOW_STARTUP);
             }
             else
             {
