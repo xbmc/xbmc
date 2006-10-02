@@ -126,7 +126,7 @@ CreditLine_t Credits[] =
 
     { 50, 40, 7560/2, 7560/2, 60, 840, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Smokehead" },
     { 50, 50, 0, 7560/2, 60, 840, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Sollie" },
-    { 50, 60, 0, 7560/2, 60, 840, EFF_IN_FADE | EFF_OUT_FADE , 24, L"TeknoJuice" },
+    { 50, 60, 0, 7560/2, 60, 840, EFF_IN_FADE | EFF_OUT_FADE , 24, L"TeknoJuce" },
 
     // Note the pause of 8 beats here
 
