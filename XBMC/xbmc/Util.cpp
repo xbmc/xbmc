@@ -431,8 +431,12 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     url.GetURL(strParent);
     return true;
   }
-
+  
   strFile = strFile.Left(iPos);
+
+  if (strFile.size() == 2 && strFile[1] == ':') // we need f:\, not f:
+    AddSlashAtEnd(strFile);
+
   url.SetFileName(strFile);
   url.GetURL(strParent);
   return true;
