@@ -892,7 +892,7 @@ HRESULT CApplication::Create()
   //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
   if (access(strHomePath + "\\skin", 0) || access(keymapPath.c_str(), 0))
   {
-    g_LoadErrorStr = "Unable to find skins or Keymap.xml.  Make sure you have UserData/Keymap.xml and Skins/ folder";
+    g_LoadErrorStr = "Unable to find skin or Keymap.xml.  Make sure you have UserData/Keymap.xml and Skin/ folder";
     FatalErrorHandler(true, false, true);
   }
 
