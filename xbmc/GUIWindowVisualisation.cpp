@@ -49,6 +49,19 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 
   case ACTION_VIS_PRESET_LOCK:
     { // show the locked icon + fall through so that the vis handles the locking
+      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+      g_graphicsContext.SendMessage(msg);
+      if (msg.GetLPVOID())
+      {
+        CVisualisation *pVis = (CVisualisation *)msg.GetLPVOID();
+        char** pPresets=NULL;
+        int currpreset=0, numpresets=0;
+        bool locked;
+        
+        pVis->GetPresets(&pPresets,&currpreset,&numpresets,&locked);
+        if (numpresets == 1 || !pPresets)
+          return true;
+      }
       if (!m_bShowPreset)
       {
         m_dwLockedTimer = START_FADE_LENGTH;
