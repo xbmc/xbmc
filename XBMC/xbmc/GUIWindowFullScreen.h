@@ -1,7 +1,8 @@
 #pragma once
 #include "GUIWindow.h"
 #include "utils/CriticalSection.h"
-#include "GUIFont.h"
+
+class CGUIFont; // forward
 
 class CGUIWindowFullScreen :
       public CGUIWindow
