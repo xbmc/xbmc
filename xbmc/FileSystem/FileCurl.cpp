@@ -307,19 +307,13 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   CURL url2(url);
   bool isstream = false;
   if( url2.GetProtocol().Equals("ftpx") )
+  { /* only used by mplayer, and crashes if seeking is allowed */
+    isstream = true;
     url2.SetProtocol("ftp");
+  }
   else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp"))
     url2.SetProtocol("http");
   
-  if( url2.GetProtocol().Equals("ftp") )
-  {
-    if( url2.GetOptions().Mid(1).Equals("stream") )
-      isstream = true;
-
-    /* ditch options as it's not supported on ftp */
-    url2.SetOptions("");
-  }
-
   url2.GetURL(m_url);
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", this, m_url.c_str());  
