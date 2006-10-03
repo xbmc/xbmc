@@ -83,6 +83,16 @@ void CPlayList::CPlayListItem::SetMusicTag(const CMusicInfoTag &tag)
   m_musicInfoTag = tag;
 }
 
+bool CPlayList::CPlayListItem::LoadMusicTag()
+{
+  if (CFileItem::LoadMusicTag())
+  {
+    SetDuration(m_musicInfoTag.GetDuration());
+    return true;
+  }
+  return false;
+}
+
 CMusicInfoTag CPlayList::CPlayListItem::GetMusicTag() const
 {
   return m_musicInfoTag;

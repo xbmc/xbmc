@@ -147,6 +147,8 @@ public:
   void SetUserProgramThumb();
   void SetUserMusicThumb(bool alwaysCheckRemote = false);
 
+  virtual bool LoadMusicTag();
+
   /* returns the content type of this item if known. will lookup for http streams */  
   const CStdString& GetContentType() const; 
 
