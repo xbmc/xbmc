@@ -668,3 +668,10 @@ inline DWORD CGraphicContext::MergeAlpha(DWORD color) const
   DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
   return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
 }
+
+int CGraphicContext::GetFPS() const
+{
+  if (m_Resolution == PAL_4x3 || m_Resolution == PAL_16x9)
+    return 50;
+  return 60;
+}
