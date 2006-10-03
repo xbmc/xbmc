@@ -144,11 +144,11 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
     sz[1] = 0;
     float charWidth;
     m_font->GetTextExtentInternal(sz, &charWidth, &unneeded);
-    if (scrollInfo.pixelPos < charWidth - 1)
-      scrollInfo.pixelPos++;
+    if (scrollInfo.pixelPos < charWidth - scrollInfo.pixelSpeed)
+      scrollInfo.pixelPos += scrollInfo.pixelSpeed;
     else
     {
-      scrollInfo.pixelPos = 0;
+      scrollInfo.pixelPos -= (charWidth - scrollInfo.pixelSpeed);
       scrollInfo.characterPos++;
       if (scrollInfo.characterPos > text.size())
         scrollInfo.Reset();
