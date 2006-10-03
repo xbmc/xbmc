@@ -124,6 +124,7 @@ CURL::CURL(const CStdString& strURL)
   if(m_strProtocol.Equals("http")
     || m_strProtocol.Equals("https")
     || m_strProtocol.Equals("ftp")
+    || m_strProtocol.Equals("ftpx")
     || m_strProtocol.Equals("shout")
     || m_strProtocol.Equals("daap"))
   {
