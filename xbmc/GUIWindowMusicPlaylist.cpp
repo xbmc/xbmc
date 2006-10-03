@@ -31,6 +31,7 @@ CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST, "MyMusicPlaylist.xml")
 {
   m_musicInfoLoader.SetObserver(this);
+  m_musicInfoLoader.SetPriority(THREAD_PRIORITY_LOWEST);
   iPos = -1;
 }
 
@@ -464,7 +465,10 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
         m_guiState->SetPlaylistDirectory(m_vecItems.m_strPath);
 
       g_playlistPlayer.SetCurrentPlaylist( iPlaylist );
-      g_playlistPlayer.Reset();
+
+      // I don't see why we should be reset'ing here.  The playlist has not
+      // been changed in anyway from what I can see
+//      g_playlistPlayer.Reset();
       g_playlistPlayer.Play( iItem );
     }
     else
@@ -483,8 +487,6 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
 
 void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 {
-  CLog::DebugLog("Started OnItemLoaded for item at %p", pItem);
-
   if (pItem->m_musicInfoTag.Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
@@ -513,43 +515,45 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     else if (pItem->GetLabel() == "") // pls labels come in preformatted
     {
       // FIXME: get the position of the item in the playlist
-      int iTrack = 0;
-      for (int i = 0; i < m_vecItems.Size(); ++i)
-      {
-        if (pItem == m_vecItems[i])
-        {
-          iTrack = i + 1;
-          break;
-        }
-      }
+      //        currently it is hacked into m_iprogramCount
 
       // No music info and it's not CDDA so we'll just show the filename
       CStdString str;
       str = CUtil::GetTitleFromPath(pItem->m_strPath);
-      str.Format("%02.2i. %s ", iTrack, str);
+      str.Format("%02.2i. %s ", pItem->m_iprogramCount, str);
       pItem->SetLabel(str);
     }
   }
 
-  // FIXME: Highly inefficient. :)
-  // Since we can't directly use the items 
-  // of the playlistplayer, we need to set each
-  // label of the playlist items or else the label
-  // is reset to the filename each time Update() 
-  // is called and this is annoying. ;)
   if (m_guiState.get())
   {
     CPlayList& playlist=g_playlistPlayer.GetPlaylist(m_guiState->GetPlaylist());
-    for (int i=0; i<playlist.size(); ++i)
+    CPlayList::CPlayListItem& item=playlist[pItem->m_iprogramCount];
+    if (item.m_strPath==pItem->m_strPath && 
+        item.m_lStartOffset==pItem->m_lStartOffset && 
+        item.m_lEndOffset==pItem->m_lEndOffset)
     {
-      CPlayList::CPlayListItem& item=playlist[i];
-
-      if (item.m_strPath==pItem->m_strPath && 
-          item.m_lStartOffset==pItem->m_lStartOffset && 
-          item.m_lEndOffset==pItem->m_lEndOffset)
+      item.SetDescription(pItem->GetLabel());
+    }
+    else
+    { // for some reason the order is wrong - do it the incredibly slow way
+      // FIXME: Highly inefficient. :)
+      // Since we can't directly use the items 
+      // of the playlistplayer, we need to set each
+      // label of the playlist items or else the label
+      // is reset to the filename each time Update() 
+      // is called and this is annoying. ;)
+      for (int i=0; i<playlist.size(); ++i)
       {
-        item.SetDescription(pItem->GetLabel());
-        break;
+        CPlayList::CPlayListItem& item=playlist[i];
+
+        if (item.m_strPath==pItem->m_strPath && 
+            item.m_lStartOffset==pItem->m_lStartOffset && 
+            item.m_lEndOffset==pItem->m_lEndOffset)
+        {
+          item.SetDescription(pItem->GetLabel());
+          break;
+        }
       }
     }
   }
@@ -561,7 +565,6 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     pItem->SetMusicThumb();
     pItem->FillInDefaultIcon();
   }
-  CLog::DebugLog("Finished OnItemLoaded for item at %p", pItem);
 }
 
 bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
