@@ -788,12 +788,9 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
 
   /* use our own protocol for ftp to avoid using mplayer's builtin */
   // not working well with seeking.. curl locks up for some reason. think it's the thread handover
-  // so disabled for release builds for now
+  // thus any requests to ftpx in curl will now be non seekable
   if( strFile.Left(6).Equals("ftp://") )
-  {
     strFile.replace(0, 6, "ftpx://");
-    strFile += "?stream";
-  }
 
 
 
