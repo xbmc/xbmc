@@ -4563,26 +4563,6 @@ bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, con
   return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
 }
 
-bool CUtil::LoadMusicTag(CFileItem *pItem)
-{
-  if (!pItem->IsAudio()) return false;
-  CMusicInfoLoader musicInfoLoader;
-  return musicInfoLoader.LoadItem(pItem);
-}
-
-bool CUtil::LoadMusicTag(CPlayList::CPlayListItem *playListItem)
-{
-  CFileItem* pItem = new CFileItem(playListItem->m_strPath, false);
-  if (CUtil::LoadMusicTag(pItem))
-  {
-    // apply missing infomration - tag, duration, and thumb
-    playListItem->SetMusicTag(pItem->m_musicInfoTag);
-    playListItem->SetDuration(pItem->m_musicInfoTag.GetDuration());
-    playListItem->SetThumbnailImage(pItem->GetThumbnailImage());
-    return true;
-  }
-  return false;
-}
 // We check if the MediaCenter-Video-patch is already installed.
 // To do this we search for the original code in the Kernel.
 // This is done by searching from 0x80011000 to 0x80024000.
