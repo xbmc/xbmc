@@ -80,6 +80,7 @@ public:
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
+  int GetFPS() const;
   bool SendMessage(CGUIMessage& message);
   void setMessageSender(IMsgSenderCallback* pCallback);
   DWORD GetNewID();
