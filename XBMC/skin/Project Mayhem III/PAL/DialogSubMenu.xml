@@ -7,7 +7,7 @@
 <!--  you bring the panel up.                                            !-->
 <!--  (look for this tag: <id>1123</id> on the button u want to focus)   !-->
 
- <defaultcontrol>1109</defaultcontrol>
+ <defaultcontrol always="true">1109</defaultcontrol>
  <type>buttonMenu</type>
 
  <coordinates>
