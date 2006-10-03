@@ -30,6 +30,8 @@ class CPlayListItem : public CFileItem
     void SetEndOffset(long lEndOffset);
     long GetEndOffset() const;
 
+    virtual bool LoadMusicTag();
+
     void SetMusicTag(const CMusicInfoTag &tag);
     CMusicInfoTag GetMusicTag() const;
 

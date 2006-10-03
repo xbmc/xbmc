@@ -351,7 +351,6 @@ public:
   static void RemoveKernelPatch();
   static bool LookForKernelPatch();
 
-  
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
   static float CurrentCpuUsage();
@@ -359,11 +358,6 @@ public:
 
   static CStdString GetCachedMusicThumb(const CStdString &path);
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &path);
-
-  static bool LoadMusicTag(CFileItem *pItem);
-  static bool LoadMusicTag(CPlayList::CPlayListItem *playListItem);
-
-
 
 private:
   static HANDLE m_hCurrentCpuUsage;
