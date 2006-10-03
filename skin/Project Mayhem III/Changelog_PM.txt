@@ -1,3 +1,5 @@
+2006-10-04 fixed:	Defaultcontrol is always the first button in submenu.
+2006-10-04 fixed:	Labels around the wrong way on the mastermode button (buttonmenu).
 2006-09-25 fixed:	Keep aspect ratio for profile image in profile settings.
 2006-09-17 fixed:	Text offset of path list in dialogmediasource was off in 720p
 2006-09-17 fixed:	Login screen power button still didn't show, created new textures.xpr
