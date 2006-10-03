@@ -540,7 +540,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     {
       Sleep(50);
       if (AnyButtonDown())
-        g_applicationMessenger.Restart();
+      {
+        g_application.Stop();
+        Sleep(200);
+#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
+        XKUtils::XBOXPowerCycle();
+#endif
+      }
     }
   }
   else
@@ -649,11 +655,10 @@ HRESULT CApplication::Create()
     // TODO: Should we copy over any UserData folder from the DVD?
     if (!CFile::Exists("T:\\guisettings.xml")) // first run - cache userdata folder
     {
-      CFileItem item("Q:\\UserData");
-      item.m_strPath = "Q:\\UserData";
-      item.m_bIsFolder = true;
-      item.Select(true);
-      CGUIWindowFileManager::CopyItem(&item,"T:\\",NULL);
+      CFileItemList items;
+      CUtil::GetRecursiveListing("q:\\userdata",items,"");
+      for (int i=0;i<items.Size();++i)
+          CFile::Cache(items[i]->m_strPath,"T:\\"+CUtil::GetFileName(items[i]->m_strPath));      
     }
     g_settings.m_vecProfiles[0].setDirectory("T:\\");
     g_stSettings.m_logFolder = "T:\\";
@@ -716,12 +721,13 @@ HRESULT CApplication::Create()
   {
     ReadInput();
   }
-
+  Sleep(10); // needed or the readinput doesnt fetch anything
+  ReadInput(); 
   //Check for LTHUMBCLICK+RTHUMBCLICK and BLACK+WHITE, no LTRIGGER+RTRIGGER
-  if (((m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB + XINPUT_GAMEPAD_RIGHT_THUMB) && !(m_DefaultGamepad.wButtons & KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER)) ||
+  if (((m_DefaultGamepad.wButtons & (XINPUT_GAMEPAD_LEFT_THUMB + XINPUT_GAMEPAD_RIGHT_THUMB)) && !(m_DefaultGamepad.wButtons & (KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER))) ||
       ((m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_BLACK] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE]) && !(m_DefaultGamepad.wButtons & KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER)))
   {
-    CLog::Log(LOGINFO, "Key combination detected for TDATA deletion (LTHUMB+RTHUMB or BLACK+WHITE)");
+    CLog::Log(LOGINFO, "Key combination detected for userdata deletion (LTHUMB+RTHUMB or BLACK+WHITE)");
     InitBasicD3D();
     // D3D is up, load default font
     XFONT* pFont;
@@ -735,18 +741,39 @@ HRESULT CApplication::Create()
     pFont->SetBkColor(D3DCOLOR_XRGB(0, 0, 0));
     pFont->SetTextColor(D3DCOLOR_XRGB(0xff, 0x20, 0x20));
     int iLine = 0;
-    FEH_TextOut(pFont, iLine++, L"Key combination detected for TDATA deletion:");
+    FEH_TextOut(pFont, iLine++, L"Key combination for userdata deletion detected!");
     FEH_TextOut(pFont, iLine++, L"Are you sure you want to proceed?");
     iLine++;
     FEH_TextOut(pFont, iLine++, L"A for yes, any other key for no");
     bool bAnyAnalogKey = false;
+    while (m_DefaultGamepad.wPressedButtons != XBGAMEPAD_NONE) // wait for user to let go of lclick + rclick
+    {
+      ReadInput();
+    }
     while (m_DefaultGamepad.wPressedButtons == XBGAMEPAD_NONE && !bAnyAnalogKey) 
     {
       ReadInput();
       bAnyAnalogKey = m_DefaultGamepad.bPressedAnalogButtons[0] || m_DefaultGamepad.bPressedAnalogButtons[1] || m_DefaultGamepad.bPressedAnalogButtons[2] || m_DefaultGamepad.bPressedAnalogButtons[3] || m_DefaultGamepad.bPressedAnalogButtons[4] || m_DefaultGamepad.bPressedAnalogButtons[5] || m_DefaultGamepad.bPressedAnalogButtons[6] || m_DefaultGamepad.bPressedAnalogButtons[7];
     }
     if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
+    {
       CUtil::DeleteGUISettings();
+      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\database\\");
+      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\thumbnails\\");
+      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\playlists\\");
+      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\cache\\");      
+      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\profiles\\");
+      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\visualisations\\");
+      CFile::Delete(g_settings.GetUserDataFolder()+"\\avpacksettings.xml");
+      g_settings.m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+1,g_settings.m_vecProfiles.end());
+      
+      g_settings.SaveProfiles("q:\\system\\profiles.xml");
+
+      char szXBEFileName[1024];
+      CIoSupport helper;
+      helper.GetXbePath(szXBEFileName);
+      CUtil::RunXBE(szXBEFileName);
+    }
     m_pd3dDevice->Release();
   }
 

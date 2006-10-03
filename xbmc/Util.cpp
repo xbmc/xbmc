@@ -4313,7 +4313,7 @@ bool CUtil::GetXBOXNickName(CStdString &strXboxNickNameOut)
 void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask)
 {
   CFileItemList myItems;
-  CDirectory::GetDirectory(strPath,myItems,strMask);
+  CDirectory::GetDirectory(strPath,myItems,strMask,false);
   for (int i=0;i<myItems.Size();++i)
   {
     if (myItems[i]->m_bIsFolder)
@@ -4326,14 +4326,14 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
 void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& item)
 {
   CFileItemList myItems;
-  CDirectory::GetDirectory(strPath,myItems,"");
+  CDirectory::GetDirectory(strPath,myItems,"",false);
   for (int i=0;i<myItems.Size();++i)
   {
     if (myItems[i]->m_bIsFolder && !myItems[i]->m_strPath.Equals(".."))
     {
       CFileItem* pItem = new CFileItem(*myItems[i]);
       item.Add(pItem);
-      CUtil::GetRecursiveListing(myItems[i]->m_strPath,item,"");
+      CUtil::GetRecursiveDirsListing(myItems[i]->m_strPath,item);
     }   
   }
   CLog::Log(LOGDEBUG,"done listing!");
@@ -4611,4 +4611,25 @@ void CUtil::RemoveKernelPatch()
 			MmSetAddressProtect(&Kernel[i], 70, j);
 		}
   }
+}
+
+void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
+{
+  CFileItemList items;
+  CUtil::GetRecursiveListing(strPath,items,"");
+  for (int i=0;i<items.Size();++i)
+  {
+    if (!items[i]->m_bIsFolder)
+      CFile::Delete(items[i]->m_strPath);
+  }
+  items.Clear();
+  CUtil::GetRecursiveDirsListing(strPath,items);
+  for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
+  {
+    CLog::Log(LOGDEBUG,"wipe dir %s",items[i]->m_strPath.c_str());
+    if (!::RemoveDirectory((items[i]->m_strPath+"\\").c_str()))
+      CLog::Log(LOGDEBUG,"this sucks %u!",GetLastError());
+  }
+  if (!::RemoveDirectory((strPath+"\\").c_str()))
+    CLog::Log(LOGDEBUG,"wtf %u",GetLastError());
 }
