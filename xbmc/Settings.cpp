@@ -3020,7 +3020,7 @@ void CSettings::LoadRSSFeeds()
   TiXmlElement *pRootElement = rssDoc.RootElement();
   if (!pRootElement || strcmpi(pRootElement->Value(),"rssfeeds") != 0)
   {
-    CLog::Log(LOGERROR, "Error loading %s, no <rss> node", rssXML.c_str());
+    CLog::Log(LOGERROR, "Error loading %s, no <rssfeeds> node", rssXML.c_str());
     return;
   }
 
