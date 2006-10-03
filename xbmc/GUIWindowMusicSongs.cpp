@@ -212,8 +212,11 @@ void CGUIWindowMusicSongs::OnScan()
   if (strPaths.length() > 2)
   { // yes, we have, we should prompt the user to ask if they want
     // to do a full scan, or just add new items...
-    if (CGUIDialogYesNo::ShowAndGetInput(189, 702, 0, 0,20024,20025))
+    bool bCanceled = false;
+    if (CGUIDialogYesNo::ShowAndGetInput(189, 702, 0, 0,20024,20025,bCanceled))
       bUpdateAll = true;
+    if (bCanceled)
+      return;
   }
 
   CUtil::DeleteDatabaseDirectoryCache();
@@ -298,7 +301,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSCAN);
   }
   static int iOldLeftControl=-1;
-  if (m_vecItems.IsShoutCast())
+  if (m_vecItems.IsShoutCast() || m_vecItems.IsLastFM())
   {
     CONTROL_DISABLE(CONTROL_BTNVIEWASICONS);
     CGUIControl* pControl = (CGUIControl*)GetControl(CONTROL_LIST);
