@@ -12,6 +12,7 @@
 #include "cuedocument.h"
 #include "Utils/fstrcmp.h"
 #include "videodatabase.h"
+#include "musicdatabase.h"
 #include "SortFileItem.h"
 
 CFileItem::CFileItem(const CSong& song)
@@ -2091,3 +2092,36 @@ void CFileItemList::SetProgramThumbs()
       pItem->SetUserProgramThumb();
   }
 }
+
+bool CFileItem::LoadMusicTag()
+{
+  // not audio
+  if (!IsAudio())
+    return false;
+  // already loaded?
+  if (m_musicInfoTag.Loaded())
+    return true;
+  // check db
+  CMusicDatabase musicDatabase;
+  CSong song;
+  if (musicDatabase.GetSongByFileName(m_strPath, song))
+  {
+    m_musicInfoTag.SetSong(song);
+    return true;
+  }
+  // load tag from file
+  else
+  {
+		CLog::Log(LOGDEBUG, __FUNCTION__": loading tag information for file: %s", m_strPath.c_str());
+    CMusicInfoTagLoaderFactory factory;
+    CMusicInfoTag tag;
+    auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
+    if (NULL != pLoader.get())
+    {
+      if (pLoader->Load(m_strPath, m_musicInfoTag))
+        return true;
+    }
+  }
+  return false;
+}
+
