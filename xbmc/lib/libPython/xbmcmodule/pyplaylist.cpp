@@ -52,7 +52,7 @@ namespace PYXBMC
 	PyObject* PlayListItem_GetDuration(PlayListItem *self, PyObject *key)
 	{
     if (self->item->GetDuration() == 0)
-      CUtil::LoadMusicTag(self->item);
+      self->item->LoadMusicTag();
 		return Py_BuildValue("l", self->item->GetDuration());
 	}
 
