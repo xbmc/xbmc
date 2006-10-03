@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-10-2006 changed: Scrollspeed of RSS feeds the same in all resolutions.
  - 03-10-2006 fixed: [ 1568300 ] Add/Edit Source Dialogue Remove all Paths bug.
  - 02-10-2006 added: [ 1568369 ] Fix for strange characters in web interface. thx to benmat!
  - 02-10-2006 fixed: [ 1568845 ] Unable to access Delete from context menu
