@@ -48,7 +48,12 @@ void CGUIDialogSubMenu::OnClickDashboard(CGUIMessage& aMessage)
 
 void CGUIDialogSubMenu::OnClickReboot(CGUIMessage& aMessage)
 {
-  if (CGUIDialogYesNo::ShowAndGetInput(13313, 13308, 13309, 0))
+  bool bCanceled;
+  bool bResult = CGUIDialogYesNo::ShowAndGetInput(13313, 13308, 13309, 0, bCanceled);
+  if (bCanceled)
+    return;
+
+  if (bResult)
     g_applicationMessenger.Restart();
   else
     g_applicationMessenger.RestartApp();
