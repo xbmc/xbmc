@@ -112,7 +112,10 @@ void CGUIRSSControl::RenderText()
 
   if (m_scrollInfo.initialWait == -1)
   {
-    m_scrollInfo.initialWait = (int)(g_graphicsContext.GetVideoResolution()<6?60.f:50.f)/g_graphicsContext.GetWidth()*720;
+    // speed is 1 pixel/frame in PAL, which translates to
+    // one screen per 14.4 seconds.
+    m_scrollInfo.initialWait = 0;
+    m_scrollInfo.pixelSpeed = (float)g_graphicsContext.GetWidth() / (14.4f * g_graphicsContext.GetFPS());
     m_scrollInfo.Reset();
   }
   
