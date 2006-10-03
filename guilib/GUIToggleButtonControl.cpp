@@ -30,7 +30,7 @@ void CGUIToggleButtonControl::Render()
 
   // ask our infoManager whether we are selected or not...
   if (m_toggleSelect)
-    useAltTextures = g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
+    useAltTextures = m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
 
   if (useAltTextures)
   {
