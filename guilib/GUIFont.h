@@ -12,14 +12,16 @@
 class CScrollInfo
 {
 public:
-  CScrollInfo(unsigned int wait = 50) { initialWait = wait; Reset(); };
+  CScrollInfo(unsigned int wait = 50, float speed = 1.0f) { initialWait = wait; pixelSpeed = speed; Reset(); };
   void Reset()
   {
     waitTime = initialWait;
-    pixelPos = characterPos = 0;
+    characterPos = 0;
+    pixelPos = 0.0f;
   }
+  float pixelPos;
+  float pixelSpeed;
   unsigned int waitTime;
-  unsigned int pixelPos;
   unsigned int characterPos;
   unsigned int initialWait;
 };
