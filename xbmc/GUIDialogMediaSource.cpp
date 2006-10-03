@@ -37,7 +37,8 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_PATH)
+      int iAction = message.GetParam1();
+      if (iControl == CONTROL_PATH && iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         OnPath(GetSelectedItem());
       else if (iControl == CONTROL_PATH_BROWSE)
         OnPathBrowse(GetSelectedItem());
@@ -361,15 +362,13 @@ void CGUIDialogMediaSource::OnPathRemove(int item)
   m_paths.Remove(item);
   UpdateButtons();
   if (item >= m_paths.Size())
-  {
     HighlightItem(m_paths.Size() - 1);
-    if (1 == m_paths.Size())
-    {
-      SET_CONTROL_FOCUS(CONTROL_PATH_ADD, 0);
-    }
-  }
   else
     HighlightItem(item);
+  if (m_paths.Size() <= 1)
+  {
+    SET_CONTROL_FOCUS(CONTROL_PATH_ADD, 0);
+  }
 }
 
 void CGUIDialogMediaSource::OnPathAdd()
