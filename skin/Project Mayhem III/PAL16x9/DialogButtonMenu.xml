@@ -44,8 +44,8 @@
     <posy>10</posy>
     <width>60</width>
     <height>79</height>
-    <label>20046</label>
-    <altlabel>20045</altlabel>
+    <label>20045</label>
+    <altlabel>20046</altlabel>
     <texturefocus>sub-master-focus.gif</texturefocus>
     <texturenofocus>sub-master-nofocus.png</texturenofocus>
     <usealttexture>System.IsMaster</usealttexture>
