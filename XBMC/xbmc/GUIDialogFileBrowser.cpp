@@ -603,6 +603,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
   }
   browser->SetShares(shares);
   browser->m_rootDir.SetMask("/");
+  browser->m_rootDir.AllowNonLocalShares(false);  // don't allow plug n play shares
   browser->m_browsingForFolders = true;
   browser->m_addNetworkShareEnabled = allowNetworkShares;
   browser->m_selectedPath = "";
