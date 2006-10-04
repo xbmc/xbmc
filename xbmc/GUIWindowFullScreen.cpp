@@ -129,9 +129,10 @@ void CGUIWindowFullScreen::AllocResources(bool forceLoad)
   PreloadDialog(WINDOW_OSD);
   PreloadDialog(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
   PreloadDialog(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
-  PreloadDialog(WINDOW_DIALOG_SEEK_BAR);
-  PreloadDialog(WINDOW_DIALOG_VOLUME_BAR);
-  PreloadDialog(WINDOW_DIALOG_MUTE_BUG);
+  // No need to preload these here, as they're preloaded by our app
+//  PreloadDialog(WINDOW_DIALOG_SEEK_BAR);
+//  PreloadDialog(WINDOW_DIALOG_VOLUME_BAR);
+//  PreloadDialog(WINDOW_DIALOG_MUTE_BUG);
 }
 
 void CGUIWindowFullScreen::FreeResources(bool forceUnload)
@@ -141,9 +142,10 @@ void CGUIWindowFullScreen::FreeResources(bool forceUnload)
   UnloadDialog(WINDOW_OSD);
   UnloadDialog(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
   UnloadDialog(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
-  UnloadDialog(WINDOW_DIALOG_SEEK_BAR);
-  UnloadDialog(WINDOW_DIALOG_VOLUME_BAR);
-  UnloadDialog(WINDOW_DIALOG_MUTE_BUG);
+  // No need to unload these here, as they're preloaded by our app
+//  UnloadDialog(WINDOW_DIALOG_SEEK_BAR);
+//  UnloadDialog(WINDOW_DIALOG_VOLUME_BAR);
+//  UnloadDialog(WINDOW_DIALOG_MUTE_BUG);
   CGUIWindow::FreeResources(forceUnload);
 }
 
