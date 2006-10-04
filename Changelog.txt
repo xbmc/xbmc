@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-10-2006 fixed: Reloading skin while in My Music Songs would cause the progress dialog to show endlessly.
  - 04-10-2006 fixed: memory stick shares were chooseable in the Add Source browser, even though they're plug n play.
  - 04-10-2006 fixed: special:// protocols (eg musicplaylists, cdrip etc.) always showed network overlays, even if they were local.
  - 03-10-2006 fixed: Huge playlists would cause major GUI slowdowns whenever track was changed from the Now Playing window.
