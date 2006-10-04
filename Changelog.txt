@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-10-2006 changed: Z: is erased on boot, due to many issues if it was full.
  - 04-10-2006 fixed: Seekbar, Volume bar etc. would be unloaded when exiting from fullscreen video, causing them to vanish.
  - 04-10-2006 fixed: Reloading skin while in My Music Songs would cause the progress dialog to show endlessly.
  - 04-10-2006 fixed: memory stick shares were chooseable in the Add Source browser, even though they're plug n play.
