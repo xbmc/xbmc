@@ -1215,6 +1215,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
   if (strProtocol == "cdda" || strProtocol == "iso9660") return false;
+  if (strProtocol == "special") return IsRemote(TranslateSpecialPath(strFile));
   if (strProtocol.Left(3) == "mem") return false;   // memory cards
   if (strProtocol == "virtualpath")
   { // virtual paths need to be checked separately
