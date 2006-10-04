@@ -5,9 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 04-10-2006 fixed: Huge playlists would cause major GUI slowdowns whenever track was changed from the Now Playing window.
- - 04-10-2006 fixed: Toggle button showed the incorrect label when using <usealttexture>
- - 04-10-2006 fixed: the feh and the userdata wiping didn't quite work as expected (i.e. it didnt work at all).
+ - 03-10-2006 fixed: Huge playlists would cause major GUI slowdowns whenever track was changed from the Now Playing window.
+ - 03-10-2006 fixed: Toggle button showed the incorrect label when using <usealttexture>
+ - 03-10-2006 fixed: the feh and the userdata wiping didn't quite work as expected (i.e. it didnt work at all).
  - 03-10-2006 fixed: if you canceled the 'scan all / scan new' dialog in the music window, it would still scan.
  - 03-10-2006 fixed: ftp playback in mplayer where broken due to yet another url parsing mistake
  - 03-10-2006 changed: Scrollspeed of RSS feeds the same in all resolutions.
