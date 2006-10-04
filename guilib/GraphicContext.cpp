@@ -513,42 +513,42 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 480);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 480;
-    g_settings.m_ResInfo[res].dwFlags = 0;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED;
     strcpy(g_settings.m_ResInfo[res].strMode, "NTSC 4:3");
     break;
   case NTSC_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 480);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 480;
-    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     strcpy(g_settings.m_ResInfo[res].strMode, "NTSC 16:9");
     break;
   case PAL_4x3:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 576);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 576;
-    g_settings.m_ResInfo[res].dwFlags = 0;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL 4:3");
     break;
   case PAL_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 576);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 576;
-    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL 16:9");
     break;
   case PAL60_4x3:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 480);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 480;
-    g_settings.m_ResInfo[res].dwFlags = 0;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL60 4:3");
     break;
   case PAL60_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 480);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 480;
-    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL60 16:9");
     break;
   }
