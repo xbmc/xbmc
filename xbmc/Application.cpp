@@ -1678,6 +1678,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     Sleep(3000);  //  The client need some time to "resync"
   }
 
+  // leave the graphics lock
+  lock.Leave();
+
   // restore windows
   if (currentWindow != WINDOW_INVALID)
   {
@@ -1691,7 +1694,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   if (g_application.m_pPlayer && g_application.IsPlayingVideo())
   {
-    lock.Leave();
     if (bPreviousPlayingState)
       g_application.m_pPlayer->Pause();
     if (bPreviousRenderingState)
