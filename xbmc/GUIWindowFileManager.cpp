@@ -1268,7 +1268,10 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
           if (folderSize >= 0)
           {
             pItem->m_dwSize = folderSize;
-            pItem->SetFileSizeLabel();
+            if (folderSize == 0)
+              pItem->SetLabel2(StringUtils::SizeToString(folderSize));
+            else
+              pItem->SetFileSizeLabel();
           }
         }
       }
