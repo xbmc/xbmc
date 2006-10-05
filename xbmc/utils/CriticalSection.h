@@ -13,8 +13,6 @@ class CCriticalSection
 {
 public:
   CCriticalSection();
-  CCriticalSection(const CCriticalSection& src);
-  CCriticalSection& operator=(const CCriticalSection& src);
 
   // Conversion operator
   operator LPCRITICAL_SECTION();
