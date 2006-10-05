@@ -36,6 +36,8 @@ protected:
 
   void RenderText();
 
+  CCriticalSection m_criticalSection;
+
   CRssReader* m_pReader;
   WCHAR* m_pwzText;
   LPBYTE m_pbColors;
