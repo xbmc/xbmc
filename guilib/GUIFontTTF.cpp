@@ -346,6 +346,7 @@ void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
   int len = wcslen(strText);
   int i = 0, j = 0;
   *pWidth = *pHeight = 0.0f;
+  int numLines = 0;
 
   while (j < len)
   {
@@ -365,7 +366,7 @@ void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
     }
     if (width > *pWidth)
       *pWidth = width;
-    *pHeight += m_cellHeight;//m_lineHeight;
+    numLines++;
 
     i = j + 1;
 
@@ -373,6 +374,7 @@ void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
       break;
   }
 
+  *pHeight = (float)(numLines - 1) * m_lineHeight + m_cellHeight;
   return ;
 }
 
