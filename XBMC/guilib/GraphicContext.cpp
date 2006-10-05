@@ -673,5 +673,7 @@ int CGraphicContext::GetFPS() const
 {
   if (m_Resolution == PAL_4x3 || m_Resolution == PAL_16x9)
     return 50;
+  else if (m_Resolution == HDTV_1080i)
+    return 30;
   return 60;
 }
