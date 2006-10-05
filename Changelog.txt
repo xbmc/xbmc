@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-10-2006 fixed: Changed RSS speed to a multiple of 0.5 pixels/frame for improved smoothness.
  - 05-10-2006 fixed: [ 1571200 ] Arial.ttf subtitles not using subtitle position.
  - 05-10-2006 fixed: Potential RSS control crash when removing the control while it's updating.
  - 04-10-2006 changed: Z: is erased on boot, due to many issues if it was full.
