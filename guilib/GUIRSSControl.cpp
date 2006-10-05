@@ -2,6 +2,8 @@
 #include "GUIRSSControl.h"
 #include "GUIWindowManager.h"
 #include "..\xbmc\settings.h"
+#include "../xbmc/utils/CriticalSection.h"
+#include "..\xbmc\utils\SingleLock.h"
 
 
 CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags)
@@ -29,16 +31,17 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, i
 
 CGUIRSSControl::~CGUIRSSControl(void)
 {
-  if (m_pwzText)
-    delete[] m_pwzText;
-  if (m_pbColors) //Deallocate here since there isn't any better place
-    delete[] m_pbColors;
-
+  CSingleLock lock(m_criticalSection);
   if (m_pReader)
     m_pReader->SetObserver(NULL);
-
   m_pReader = NULL;
+
+  if (m_pwzText)
+    delete[] m_pwzText;
   m_pwzText = NULL;
+
+  if (m_pbColors)
+    delete[] m_pbColors;
   m_pbColors = NULL;
 }
 
@@ -59,6 +62,7 @@ void CGUIRSSControl::Render()
   // only render the control if they are enabled and the network is available
   if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && g_guiSettings.GetBool("network.enableinternet"))
   {
+    CSingleLock lock(m_criticalSection);
     // Create RSS background/worker thread if needed
     if (m_pReader == NULL && !g_rssManager.GetReader(GetID(), GetParentID(), this, m_pReader))
     {
@@ -88,6 +92,7 @@ void CGUIRSSControl::Render()
 
 void CGUIRSSControl::OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray)
 {
+  CSingleLock lock(m_criticalSection);
   int nStringLength = aFeed.GetLength() + 1;
   if (m_pwzText)
     delete[] m_pwzText;
