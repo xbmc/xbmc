@@ -37,11 +37,6 @@ CCriticalSection::~CCriticalSection()
   DeleteCriticalSection(&m_critSection);
 }
 
-CCriticalSection::CCriticalSection(const CCriticalSection& src)
-{
-  InitializeCriticalSection(&m_critSection);
-}
-
 CCriticalSection::operator LPCRITICAL_SECTION()
 {
   return &m_critSection;
