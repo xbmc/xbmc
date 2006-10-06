@@ -48,9 +48,12 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       if( name.Equals("..") || name.Equals(".") )
         continue;
 
+      CStdString name2(name);
+      CUtil::URLEncode(name2);
+
 			CFileItem* pItem = new CFileItem;
-      pItem->SetLabel(name);
-			pItem->m_strPath = path + name;
+      pItem->SetLabel(name);      
+      pItem->m_strPath = path + name2;
 			pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
 			pItem->m_dwSize = lp.size;
       pItem->m_dateTime=lp.mtime;
