@@ -91,4 +91,30 @@
     <animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
   </include>
 
+  <include name="contentpanel">
+  <control>
+   <description>contentpanel slice</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>160</posx>
+   <posy>108</posy>
+   <width>64</width>
+   <height>468</height>
+   <texture>contentpanel_left.png</texture>
+   <include>contentpanelslide</include>
+  </control>
+
+  <control>
+   <description>contentpanel slice</description>
+   <type>image</type>
+   <id>0</id>
+   <posx>224</posx>
+   <posy>108</posy>
+   <width>500</width>
+   <height>468</height>
+   <texture>contentpanel.png</texture>
+   <include>contentpanelslide</include>
+  </control>
+  </include>
+
 </includes>
