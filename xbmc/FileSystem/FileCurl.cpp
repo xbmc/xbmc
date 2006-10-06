@@ -341,9 +341,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   // read some data in to try and obtain the length
   // maybe there's a better way to get this info??
-  FillBuffer(m_bufferSize, 10);           // completely fill our buffer
-
-  if (m_buffer.GetMaxReadSize() == 0 && !m_stillRunning)
+  if (!FillBuffer(m_bufferSize, 10))
   {
     CLog::Log(LOGERROR, "CFileCurl:Open, didn't get any data from stream.");
     // if still_running is 0 now, we should return NULL
