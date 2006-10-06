@@ -79,15 +79,30 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   D3DVIEWPORT8 newviewport;
   D3DVIEWPORT8 *oldviewport = new D3DVIEWPORT8;
   Get3DDevice()->GetViewport(oldviewport);
-  // transform coordinates
-  ScaleFinalCoords(fx, fy);
-  fwidth *= m_windowScaleX;
-  fheight *= m_windowScaleY;
+  // transform coordinates - we may have a rotation which changes the positioning of the
+  // minimal and maximal viewport extents.  We currently go to the maximal extent.
+  float x[4], y[4];
+  x[0] = x[3] = fx;
+  x[1] = x[2] = fx + fwidth;
+  y[0] = y[1] = fy;
+  y[2] = y[3] = fy + fheight;
+  float minX = m_iScreenWidth;
+  float maxX = 0;
+  float minY = m_iScreenHeight;
+  float maxY = 0;
+  for (int i = 0; i < 4; i++)
+  {
+    ScaleFinalCoords(x[i], y[i]);
+    if (x[i] < minX) minX = x[i];
+    if (x[i] > maxX) maxX = x[i];
+    if (y[i] < minY) minY = y[i];
+    if (y[i] > maxY) maxY = y[i];
+  }
 
-  int newLeft = (int)(fx + 0.5f);
-  int newTop = (int)(fy + 0.5f);
-  int newRight = (int)(fx + fwidth + 0.5f);
-  int newBottom = (int)(fy + fheight + 0.5f);
+  int newLeft = (int)(minX + 0.5f);
+  int newTop = (int)(minY + 0.5f);
+  int newRight = (int)(maxX + 0.5f);
+  int newBottom = (int)(maxY + 0.5f);
   if (intersectPrevious)
   {
     // do the intersection
