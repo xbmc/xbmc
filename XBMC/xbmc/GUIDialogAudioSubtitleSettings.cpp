@@ -227,11 +227,18 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
 
     const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
     if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(293),strPath,false,true)) // "subtitles"
-    {
+    {      
       CStdString strExt;
       CUtil::GetExtension(strPath,strExt);
       if (strExt.CompareNoCase(".idx") == 0 || strExt.CompareNoCase(".sub") == 0)
       {
+        // else get current position
+        double time = g_application.GetTime();
+
+        // get player state, needed for dvd's
+        CStdString state = g_application.m_pPlayer->GetPlayerState();
+
+        g_application.m_pPlayer->CloseFile(); // to conserve memory if unraring
         if (CFile::Cache(strPath,"z:\\subtitle"+strExt+".keep"))
         {
           CStdString strPath2;
@@ -263,7 +270,14 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
           }
           g_stSettings.m_currentVideoSettings.m_SubtitleCached = false;
           g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
-          g_application.Restart(true); // to reread subtitles
+          
+          // reopen the file
+          if ( g_application.PlayFile(g_application.CurrentFileItem(), true) && g_application.m_pPlayer )
+          {
+            // and seek to the position
+            g_application.m_pPlayer->SetPlayerState(state);
+            g_application.SeekTime(time);
+          }
           
           Close();
         }
