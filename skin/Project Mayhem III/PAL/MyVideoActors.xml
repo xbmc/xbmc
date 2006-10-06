@@ -39,29 +39,7 @@
    <font>special13</font>
   </control>
 
-  <control>
-   <description>contentpanel slice</description>
-   <type>image</type>
-   <id>0</id>
-   <posx>160</posx>
-   <posy>108</posy>
-   <width>64</width>
-   <height>468</height>
-   <texture>contentpanel_left.png</texture>
-   <include>contentpanelslide</include>
-  </control>
-
-  <control>
-   <description>contentpanel slice</description>
-   <type>image</type>
-   <id>0</id>
-   <posx>224</posx>
-   <posy>108</posy>
-   <width>500</width>
-   <height>468</height>
-   <texture>contentpanel.png</texture>
-   <include>contentpanelslide</include>
-  </control>
+  <include>contentpanel</include>
 
   <control>
    <description>number of files text label</description>
