@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-10-2006 fixed: Setting of viewport (for cropping scrolling text etc.) was not rotated correctly.  We now use the rectangle that contains all the rotated coordinates.
  - 06-10-2006 fixed: http urls pointing to nonexisting files would lockup on some servers due to them not returning an error
  - 06-10-2006 fixed: ftp browsing with files/directory with non valid html url names, would fail.
  - 05-10-2006 fixed: Changed RSS speed to a multiple of 0.5 pixels/frame for improved smoothness.
