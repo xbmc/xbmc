@@ -498,6 +498,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     m_easyHandle = g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName());
 
   SetCommonOptions(); 
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TIMEOUT, 5);
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
@@ -511,6 +512,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     /* request normal and just fail out, it's their loss */
     /* somehow curl doesn't reset CURLOPT_NOBODY properly so reset everything */    
     SetCommonOptions(); 
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TIMEOUT, 5);
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, "0-0");
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/    
