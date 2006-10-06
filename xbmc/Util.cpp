@@ -1400,8 +1400,8 @@ void CUtil::URLEncode(CStdString& strURLData)
   for (int i = 0; i < (int)strURLData.size(); ++i)
   {
     int kar = (unsigned char)strURLData[i];
-    if (kar == ' ') strResult += '+';
-    else if (isalnum(kar)) strResult += kar;
+    //if (kar == ' ') strResult += '+';
+    if (isalnum(kar)) strResult += kar;
     else
     {
       CStdString strTmp;
