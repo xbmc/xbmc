@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: MrNice_NL-->
-<!--Email: MrNice_NL@users.sourceforge.net-->
-<!--Date of translation: 09/16/2006-->
+<!--Email: MrNice_NL@whatever.nl-->
+<!--Date of translation: 09/30/2006-->
 <!--$Revision$-->
 <!--Based on english strings version 1.343-->
 <strings>
@@ -592,7 +592,7 @@
   <string id="1203">Standaard gebruikersnaam</string>
   <string id="1204">Standaard wachtwoord</string>
   <string id="1207">WINS server</string>
-  <string id="1210">Verwijderen</string>
+  <string id="1210">Verwijder</string>
   <string id="1211">Muziek</string>
   <string id="1212">Video</string>
   <string id="1213">Afbeeldingen</string>
@@ -770,7 +770,7 @@
   <string id="12373">Instellingen vergrendelen</string>
   <string id="12376">Als standaard instellen voor alle films</string>
   <string id="12377">Dit zal alle voorgaande opgeslagen waarden resetten</string>
-  <string id="12378">Laat alle afbeeldingen zien voor</string>
+  <string id="12378">Laat alle afbeeldingen zien gedurende</string>
   <string id="12379">Gebruik Pan en Zoom effecten</string>
   <string id="12380">Speel NTSC videos met PAL waarden af</string>
   <string id="12381">Speel PAL videos met NTSC waarden af</string>
@@ -1041,16 +1041,16 @@ voor deze visualisatie</string>
   <string id="15012">Meedoen</string>
   <string id="15013">Praten</string>
   <string id="15014">Uitnodigen</string>
-  <string id="15015">Verwijderen</string>
+  <string id="15015">Verwijder</string>
   <string id="15016">Spellen</string>
   <string id="15017">Weergeven: Spellen</string>
   <string id="15018">Bekijken</string>
-  <string id="15019">Toevoegen</string>
+  <string id="15019">Voeg toe</string>
   <string id="15020">Host</string>
   <string id="15021">Arena's</string>
   <string id="15022">Weergeven: Arena's</string>
   <string id="15023">Spelen</string>
-  <string id="15024">Toevoegen</string>
+  <string id="15024">Voeg toe</string>
   <string id="15025">Hosten</string>
   <string id="15026">Chat</string>
   <string id="15027">Weergeven: Chat</string>
@@ -1265,6 +1265,7 @@ voor deze visualisatie</string>
   <string id="20075">Voer hoofdkode in</string>
   <string id="20076">Vraag om hoofdkode bij opstarten</string>
   <string id="20077">Skin instellingen</string>
+  <string id="20078">- geen link ingesteld -</string>
   <string id="20079">Schakel skin animaties in</string>
   <string id="20080">Geen RSS feeds tijdens muziek</string>
   <string id="20081">Activeer Bookmark knoppen</string>
@@ -1312,10 +1313,14 @@ voor deze visualisatie</string>
   <string id="20125">Ingelogd als</string>
   <string id="20126">Uitloggen</string>
   <string id="20128">Ga naar hoofdmap</string>
+  <string id="20131">Overgaan</string>
   <string id="20132">Herstart Video</string>
   <string id="20133">Wijzig Netwerk Locatie</string>
   <string id="20134">Verwijder Netwerk Locatie</string>
   <string id="20135">Wil je de map doorzoeken?</string>
+  <string id="20136">Geheugen module</string>
+  <string id="20137">Geheugen module geplaatst</string>
+  <string id="20138">Kan geheugen module niet koppelen</string>
   <string id="20139">In poort %i, slot %i</string>
   <string id="20140">Vergrendel Screensaver</string>
   <string id="20141">Zet</string>
@@ -1339,6 +1344,7 @@ voor deze visualisatie</string>
   <string id="20166">Vergrendelt</string>
   <string id="20167">Bevroren</string>
   <string id="20168">Herstart nodig</string>
+  <string id="20169">?Week of zwak?</string>
   <string id="20170">Regel</string>
   <string id="20171">Windows Netwerk (SMB)</string>
   <string id="20172">XBMSP server</string>
