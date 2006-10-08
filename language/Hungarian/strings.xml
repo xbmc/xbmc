@@ -190,7 +190,7 @@
   <string id="257">Hiba</string>
   <string id="258">ID3 engedélyezése</string>
   <string id="259">Megnyitás</string>
-  <string id="260">SHOUTcast</string>
+  <string id="260">Hanglenyomat</string>
   <string id="261">Várakozás az indításra....</string>
   <string id="262">Script-ek kimenete</string>
   <string id="263">Web Server engedélyezése</string>
@@ -280,7 +280,7 @@
   <string id="358">Összes album</string>
   <string id="359">Új albumok</string>
   <string id="360">Képernyőkímélő</string>
-  <string id="361">&amp;lt; Diavetítés &amp;lt;</string>
+  <string id="361">Diavetítés</string>
   <string id="362">Képernyőkímélő álfedése (%)</string>
   <string id="363">Fájlnév szerint</string>
   <string id="364">- AC3 Kompatibilis erősítő</string>
@@ -349,7 +349,7 @@
   <string id="428">Tedd be a helyes CD/DVD-t</string>
   <string id="429">Tedd be a következő CD/DVD-t</string>
   <string id="430">DVD# szerint</string>
-  <string id="431">Nincs cache</string>
+  <string id="431">Nincs gyorsítótár</string>
   <string id="432">Film kitörlése az adatbázisból</string>
   <string id="433">Biztos el akardot távolítani</string>
   <string id="434">A film?</string>
@@ -357,7 +357,7 @@
   <string id="436">Év:</string>
   <string id="437">Hossz:</string>
   <string id="438">Fájl megnyitása</string>
-  <string id="439">Cache</string>
+  <string id="439">Gyorsítótár</string>
   <string id="440">Merevlemez</string>
   <string id="441">UDF</string>
   <string id="442">LAN</string>
@@ -376,7 +376,7 @@
   <string id="455">Sorok</string>
   <string id="456">Mód</string>
   <string id="457">Nézet váltása</string>
-  <string id="459">Subs</string>
+  <string id="459">Alárendelt</string>
   <string id="460">Audio Sáv</string>
   <string id="461">[aktív]</string>
   <string id="462">Felirat</string>
@@ -476,7 +476,7 @@
   <string id="642">Előerősítés halk számoknál</string>
   <string id="643">Levágás tiltása erősített számoknál</string>
   <string id="644">Fekete csíkok eltávolítása</string>
-  <string id="645">Egy elég nagy fájl cache-elése szükséges. Folytatod?</string>
+  <string id="645">Egy elég nagy fájl gyorsítótárazása szükséges. Folytatod?</string>
   <string id="646">Cím eltávolítása</string>
   <string id="700">Adatbázis tisztítása</string>
   <string id="701">A régi számok eltávolítása az adatbázisból</string>
@@ -927,10 +927,10 @@
   <string id="13379">Alapértelmezett kontraszt</string>
   <string id="13380">Alapértelmezett gamma</string>
   <string id="13381">Videó folytatása</string>
-  <string id="13382">Voice Mask - Port 0</string>
-  <string id="13383">Voice Mask - Port 1</string>
-  <string id="13384">Voice Mask - Port 2</string>
-  <string id="13385">Voice Mask - Port 3</string>
+  <string id="13382">Hang maszk - Port 0</string>
+  <string id="13383">Hang maszk - Port 1</string>
+  <string id="13384">Hang maszk - Port 2</string>
+  <string id="13385">Hang maszk - Port 3</string>
   <string id="13386">Idő-alapú pörgetés</string>
   <string id="13387">Sáv-elnevezési sablon jobbra</string>
   <string id="13388">Gyári értékek</string>
@@ -977,14 +977,14 @@ nincsenek beállítások</string>
   <string id="14022">Könyvtár</string>
   <string id="14023">Nincs TV</string>
   <string id="14024">Add meg a legközelebbi nagyvárost, vagy egy irányítószámot (USA)</string>
-  <string id="14025">Video/Audio/DVD Cache - Merevlemez</string>
-  <string id="14026">Video Cache - DVDRom</string>
+  <string id="14025">Video/Audio/DVD gyorsítótár - Merevlemez</string>
+  <string id="14026">Video gyorsítótár - DVDRom</string>
   <string id="14027">- Helyi Hálózat</string>
   <string id="14028">- Internet</string>
-  <string id="14030">Audio Cache - DVDRom</string>
+  <string id="14030">Audio gyorsítótár - DVDRom</string>
   <string id="14031">- Helyi Hálózat</string>
   <string id="14032">- Internet</string>
-  <string id="14034">DVD Cache - DVDRom</string>
+  <string id="14034">DVD gyorsítótár - DVDRom</string>
   <string id="14035">- Helyi Hálózat</string>
   <string id="14036">Szerverek</string>
   <string id="14037">Kinézet</string>
@@ -1010,7 +1010,7 @@ nincsenek beállítások</string>
   <string id="14057">Nem lehetséges, miközben a média-infókat olvasom be</string>
   <string id="14058">Filmes szemcsék Effekt</string>
   <string id="14059">Miniatűrök keresése távoli megosztásokon</string>
-  <string id="14060">Cache ismeretlen típusoknál - Internet</string>
+  <string id="14060">Gyorsítótár ismeretlen típusoknál - Internet</string>
   <string id="14061">Auto</string>
   <string id="14062">Add meg a felhasználónevet a következőhöz:</string>
   <string id="14063">Dátum és Idő</string>
@@ -1108,7 +1108,7 @@ nincsenek beállítások</string>
   <string id="15207">Csatlakoztatva</string>
   <string id="15208">Nincs csatlakozás</string>
   <string id="15209">Küldési időköz %i</string>
-  <string id="15210">%i szám cache-elve</string>
+  <string id="15210">%i szám gyorsítótárban</string>
   <string id="15211">Küldés...</string>
   <string id="15212">Küldés %i mp. múlva</string>
   <string id="15213">Lejátszás a következővel...</string>
@@ -1283,7 +1283,7 @@ nincsenek beállítások</string>
   <string id="20093">Profil neve</string>
   <string id="20094">Média források</string>
   <string id="20095">Adja meg a profil kódját</string>
-  <string id="20096">Login ablak</string>
+  <string id="20096">Bejelentkező ablak</string>
   <string id="20097">Album info lekérése</string>
   <string id="20098">Album info lekérése</string>
   <string id="20099">Lejátszás közben nem lehet rip-elni a lemezt</string>
@@ -1394,6 +1394,6 @@ nincsenek beállítások</string>
   <string id="20310">LCD halványítás lejátszás közben</string>
   <string id="20311">Ismeretlen vagy alaplapi (védett)</string>
   <string id="20312">LCD halványítás pasue közben</string>
-  <string id="20313">LED visszakapcsolás pasue utrán</string>
-  <string id="29999">Auto Flicker Filter Patch</string>
+  <string id="20313">LED visszakapcsolás pasue után</string>
+  <string id="29999">Automatikus lebegés szűrő toldás</string>
 </strings>
