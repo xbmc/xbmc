@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-10-2006 updated: Russian language file (Thnx to que_)
+ - 07-10-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
+ - 07-10-2006 updated: Hungarian language file (Thnx to sigismund)
+ - 07-10-2006 updated: Hebrew language file (Thnx to ookladek)
+ - 07-10-2006 updated: Dutch language file (Thnx to MrNice)
  - 06-10-2006 fixed: Setting of viewport (for cropping scrolling text etc.) was not rotated correctly.  We now use the rectangle that contains all the rotated coordinates.
  - 06-10-2006 fixed: http urls pointing to nonexisting files would lockup on some servers due to them not returning an error
  - 06-10-2006 fixed: ftp browsing with files/directory with non valid html url names, would fail.
