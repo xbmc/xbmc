@@ -34,8 +34,10 @@ bool CFat32FileSystem::Open(const CStdString &file)
   if (!device) return false;
   // convert long path to short path
   CStdString shortPath;
-  GetShortFilePath(file, shortPath);
-  BYTE sector[SECTOR_SIZE];
+  if(!GetShortFilePath(file, shortPath))
+    return false;
+
+  BYTE sector[FAT_PAGE_SIZE];
 	if (DFS_OK != DFS_OpenFile(device->GetVolume(), (uint8_t*)shortPath.c_str(), DFS_READ, sector, &m_file))
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" Error opening file %s", file.c_str());
@@ -52,7 +54,7 @@ bool CFat32FileSystem::OpenForWrite(const CStdString &file, bool overWrite)
 
   if (overWrite)
     Delete(file);
-  BYTE sector[SECTOR_SIZE];
+  BYTE sector[FAT_PAGE_SIZE];
 	if (DFS_OK != DFS_OpenFile(device->GetVolume(), (uint8_t*)file.c_str(), DFS_READ | DFS_WRITE, sector, &m_file))
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" Error opening file %s", file.c_str());
@@ -78,7 +80,7 @@ void CFat32FileSystem::Close()
 unsigned int CFat32FileSystem::Read(void *buffer, __int64 size)
 {
   if (m_opened == CLOSED) return 0;
-  unsigned char sector[SECTOR_SIZE];
+  BYTE sector[FAT_PAGE_SIZE];
   unsigned int amountRead = 0;
 	if (DFS_OK != DFS_ReadFile(&m_file, sector, (unsigned char *)buffer, &amountRead, (unsigned int)size))
   {
@@ -89,17 +91,21 @@ unsigned int CFat32FileSystem::Read(void *buffer, __int64 size)
 }
 
 bool CFat32FileSystem::GetShortFilePath(const CStdString &path, CStdString &shortPath)
-{
+{  
   shortPath.Empty();
   if (path.IsEmpty())
     return true;  // nothing to do
   // split the path up
   CStdStringArray folders;
   StringUtils::SplitString(path, "/", folders);
+
+  bool isfolder = true;
   for (unsigned int i = 0; i < folders.size(); ++i)
   {
-    CStdString folder = folders[i];
-    if (folder.IsEmpty())
+    if(!isfolder)
+      return false;
+
+    if (folders[i].IsEmpty())
       continue; // ignore empty portions (eg at the start of the url)
     CFileItemList items;
     if (GetDirectoryWithShortPaths(shortPath, items))
@@ -111,6 +117,7 @@ bool CFat32FileSystem::GetShortFilePath(const CStdString &path, CStdString &shor
         { // found :)
           shortPath += "/" + items[j]->m_strPath;
           found = true;
+          isfolder = items[j]->m_bIsFolder;
           break;
         }
       }
@@ -128,7 +135,7 @@ bool CFat32FileSystem::GetShortFilePath(const CStdString &path, CStdString &shor
 unsigned int CFat32FileSystem::Write(const void *buffer, __int64 size)
 {
   if (m_opened != OPEN_FOR_WRITE) return 0;
-  unsigned char sector[SECTOR_SIZE];
+  BYTE sector[FAT_PAGE_SIZE];
   unsigned int amountWritten = 0;
 	if (DFS_OK != DFS_WriteFile(&m_file, sector, (unsigned char *)buffer, &amountWritten, (unsigned int)size))
   {
@@ -141,7 +148,7 @@ unsigned int CFat32FileSystem::Write(const void *buffer, __int64 size)
 __int64 CFat32FileSystem::Seek(__int64 position)
 {
   if (m_opened == CLOSED) return -1;
-  unsigned char sector[SECTOR_SIZE];
+  BYTE sector[FAT_PAGE_SIZE];
   DFS_Seek(&m_file, (unsigned int)position, sector);
   return m_file.pointer;
 }
@@ -163,7 +170,7 @@ bool CFat32FileSystem::Delete(const CStdString &file)
 /*  CFat32Device *device = (CFat32Device *)g_memoryUnitManager.GetDevice(m_unit);
   if (!device) return false;
 
-  BYTE sector[SECTOR_SIZE];
+  BYTE sector[FAT_PAGE_SIZE];
 	if (DFS_OK != DFS_UnlinkFile(device->GetVolume(), (uint8_t*)file.c_str(), sector))
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" Error deleting file %s", file.c_str());
@@ -212,9 +219,10 @@ bool CFat32FileSystem::GetDirectoryWithShortPaths(const CStdString &directory, C
   if (!device) return false;
 
   DIRINFO di;
-  di.scratch = new BYTE[SECTOR_SIZE];
+  BYTE buffer[FAT_PAGE_SIZE];
+  di.scratch = (uint8_t*)buffer;
 	if (DFS_OpenDir(device->GetVolume(), (uint8_t*)directory.c_str(), &di)) {
-    CLog::Log(LOGDEBUG, __FUNCTION__" Error opening directory %s", directory);
+    CLog::Log(LOGDEBUG, __FUNCTION__" Error opening directory %s", directory.c_str());
 		return false;
 	}
   // vfat naming
@@ -235,11 +243,18 @@ bool CFat32FileSystem::GetDirectoryWithShortPaths(const CStdString &directory, C
         { // invalid entry
           continue;
         }
+        // not sure why but very long filename's have 0x40 set on both their 5 and 6th part. 
+        // let's only check if sequence mismatches
         if ((vfat->sequence & 0x40) == 0x40)
         { // last entry
-          vfatName.Empty();
-          vfatSequence = (vfat->sequence & 0x1f);
-          vfatChecksum = vfat->checksum;
+          if((vfat->sequence & 0x1f) == vfatSequence && vfat->checksum == vfatChecksum)
+            CLog::Log(LOGWARNING, __FUNCTION__" Last entry signaled, but sequence and checksum still match, ignoring");
+          else
+          {
+            vfatName.Empty();
+            vfatSequence = (vfat->sequence & 0x1f);
+            vfatChecksum = vfat->checksum;
+          }
         }
         if (vfat->checksum == vfatChecksum && (vfat->sequence & 0x1f) == vfatSequence && vfatSequence)
         {
