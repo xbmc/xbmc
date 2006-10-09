@@ -25,6 +25,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
   m_iImageWidth = 0;
   m_iImageHeight = 0;
   m_bWasVisible = m_visible;
+  m_dwAlpha = 0xFF;
   for (int i = 0; i < 4; i++)
     m_cornerAlpha[i] = 0xFF;
   ControlType = GUICONTROL_IMAGE;
@@ -53,6 +54,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_iImageHeight = 0;
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
+  m_dwAlpha = left.m_dwAlpha;
   for (int i = 0; i < 4; i++)
     m_cornerAlpha[i] = left.m_cornerAlpha[i];
   m_pPalette = NULL;
@@ -541,6 +543,11 @@ void CGUIImage::SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBo
     m_cornerAlpha[3] = dwRightBottom;
     Update();
   }
+}
+
+void CGUIImage::SetAlpha(DWORD dwAlpha)
+{
+  m_dwAlpha = dwAlpha;
 }
 
 void CGUIImage::GetBottomRight(float &x, float &y) const

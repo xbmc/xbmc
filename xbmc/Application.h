@@ -99,7 +99,6 @@ public:
   CMusicInfoTag* GetCurrentSong();
   CIMDBMovie* GetCurrentMovie();
 
-  void ResetAllControls();
   virtual void Process();
   void ProcessSlow();
   void ResetScreenSaver();

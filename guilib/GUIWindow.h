@@ -127,7 +127,6 @@ public:
   virtual void AllocResources(bool forceLoad = false);
   virtual void FreeResources(bool forceUnLoad = false);
   void DynamicResourceAlloc(bool bOnOff);
-  virtual void ResetAllControls();
   static void FlushReferenceCache();
   virtual bool IsDialog() const { return false;};
   virtual bool IsMediaWindow() const { return false; };
@@ -144,7 +143,6 @@ public:
   enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
 
   OVERLAY_STATE GetOverlayState() const { return m_overlayState; };
-  void ChangeControlID(DWORD oldID, DWORD newID, CGUIControl::GUICONTROLTYPES type);
 
   virtual void QueueAnimation(ANIMATION_TYPE animType);
   virtual bool IsAnimating(ANIMATION_TYPE animType);

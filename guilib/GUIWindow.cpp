@@ -1144,16 +1144,6 @@ int CGUIWindow::GetFocusedControl() const
   return -1;
 }
 
-void CGUIWindow::ResetAllControls()
-{
-  for (int i = 0;i < (int)m_vecControls.size(); ++i)
-  {
-    CGUIControl* pControl = m_vecControls[i];
-    pControl->SetWidth( pControl->GetWidth() );
-    pControl->Update();
-  }
-}
-
 bool CGUIWindow::Initialize()
 {
   return Load(m_xmlFile);
@@ -1169,28 +1159,6 @@ void CGUIWindow::SetControlVisibility()
     if (pControl->GetVisibleCondition())
       pControl->SetInitialVisibility();
   }
-}
-
-// Changes the control id if it is of the type specified, and updates the navigation
-// of all controls accordingly.  Useful for when we are changing the skin file definition.
-void CGUIWindow::ChangeControlID(DWORD oldID, DWORD newID, CGUIControl::GUICONTROLTYPES type)
-{
-  // change the ID
-  CGUIControl *control = (CGUIControl *)GetControl(oldID);
-  if (control && control->GetControlType() == type)
-    control->SetID(newID);
-  // change navigation
-  for (unsigned int i = 0; i < m_vecControls.size(); i++)
-  {
-    CGUIControl *control = m_vecControls[i];
-    if (control->GetControlIdUp() == oldID) control->SetNavigation(newID, control->GetControlIdDown(), control->GetControlIdLeft(), control->GetControlIdRight());
-    if (control->GetControlIdDown() == oldID) control->SetNavigation(control->GetControlIdUp(), newID, control->GetControlIdLeft(), control->GetControlIdRight());
-    if (control->GetControlIdLeft() == oldID) control->SetNavigation(control->GetControlIdUp(), control->GetControlIdDown(), newID, control->GetControlIdRight());
-    if (control->GetControlIdRight() == oldID) control->SetNavigation(control->GetControlIdUp(), control->GetControlIdDown(), control->GetControlIdLeft(), newID);
-  }
-  // update our default control
-  if (m_dwDefaultFocusControlID == oldID)
-    m_dwDefaultFocusControlID = newID;
 }
 
 bool CGUIWindow::IsActive() const
