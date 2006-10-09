@@ -215,7 +215,6 @@ void CGUIMoverControl::SetPosition(int iPosX, int iPosY)
 
 void CGUIMoverControl::SetAlpha(DWORD dwAlpha)
 {
-  CGUIControl::SetAlpha(dwAlpha);
   m_imgFocus.SetAlpha(dwAlpha);
   m_imgNoFocus.SetAlpha(dwAlpha);
 }

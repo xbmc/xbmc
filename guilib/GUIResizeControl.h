@@ -42,7 +42,6 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(int iPosX, int iPosY);
-  virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   const CStdString& GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
   const CStdString& GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
@@ -50,6 +49,7 @@ public:
 
 protected:
   virtual void Update() ;
+  void SetAlpha(DWORD dwAlpha);
   void UpdateSpeed(int nDirection);
   void Resize(int iX, int iY);
   CGUIImage m_imgFocus;

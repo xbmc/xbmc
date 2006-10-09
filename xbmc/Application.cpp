@@ -3889,17 +3889,6 @@ void CApplication::CheckHDSpindown()
   }
 }
 
-void CApplication::ResetAllControls()
-{
-  m_guiMusicOverlay.ResetAllControls();
-  m_guiVideoOverlay.ResetAllControls();
-  m_guiDialogVolumeBar.ResetAllControls();
-  m_guiDialogSeekBar.ResetAllControls();
-  m_guiDialogKaiToast.ResetAllControls();
-  m_guiDialogMuteBug.ResetAllControls();
-
-}
-
 bool CApplication::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )

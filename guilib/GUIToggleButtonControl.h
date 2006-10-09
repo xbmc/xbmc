@@ -29,7 +29,6 @@ public:
   virtual void SetPosition(int iPosX, int iPosY);
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
-  virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   void SetLabel(const string& strLabel);
   void SetAltLabel(const string& label);

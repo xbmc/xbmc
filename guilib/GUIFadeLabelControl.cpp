@@ -87,7 +87,7 @@ void CGUIFadeLabelControl::Render()
   }
   if (m_bFadeIn)
   {
-    DWORD dwAlpha = (m_dwAlpha / 12) * m_iCurrentFrame;
+    DWORD dwAlpha = 21 * m_iCurrentFrame;
     dwAlpha <<= 24;
     dwAlpha += ( m_label.textColor & 0x00ffffff);
     m_label.font->DrawTextWidth((float)m_iPosX, (float)m_iPosY, dwAlpha, m_label.shadowColor, strLabelUnicode.c_str(), (float)m_dwWidth);
@@ -172,8 +172,3 @@ void CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
   m_label.font->DrawScrollingText(fPosX, fPosY, &m_label.textColor, 1, m_label.shadowColor, wszOrgText, fMaxWidth, m_scrollInfo);
 }
 
-void CGUIFadeLabelControl::SetAlpha(DWORD dwAlpha)
-{
-  CGUIControl::SetAlpha(dwAlpha);
-  m_label.textColor = (dwAlpha << 24) | (m_label.textColor & 0xFFFFFF);
-}

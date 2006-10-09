@@ -21,7 +21,6 @@ CGUIControl::CGUIControl()
   m_bSelected = false;
   m_bCalibration = true;
   m_colDiffuse = 0xFFFFFFFF;
-  m_dwAlpha = 0xFF;
   m_iPosX = 0;
   m_iPosY = 0;
   m_dwControlLeft = 0;
@@ -36,7 +35,6 @@ CGUIControl::CGUIControl()
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 {
   m_colDiffuse = 0xFFFFFFFF;
-  m_dwAlpha = 0xFF;
   m_iPosX = iPosX;
   m_iPosY = iPosY;
   m_dwWidth = dwWidth;
@@ -311,11 +309,6 @@ void CGUIControl::SetPosition(int iPosX, int iPosY)
     m_iPosY = iPosY;
     Update();
   }
-}
-
-void CGUIControl::SetAlpha(DWORD dwAlpha)
-{
-  m_dwAlpha = dwAlpha;
 }
 
 void CGUIControl::SetColourDiffuse(D3DCOLOR colour)

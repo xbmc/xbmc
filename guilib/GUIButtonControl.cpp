@@ -14,6 +14,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
 {
   m_bSelected = false;
   m_bTabButton = false;
+  m_dwAlpha = 255;
   m_dwFocusCounter = 0;
   m_dwFlickerCounter = 0;
   m_dwFrameCounter = 0;
@@ -51,7 +52,7 @@ void CGUIButtonControl::Render()
         dwAlphaChannel = 63 - (dwAlphaCounter % 64);
 
       dwAlphaChannel += 192;
-      dwAlphaChannel = DWORD((float)m_dwAlpha * (float)dwAlphaChannel / 255.0f);
+      dwAlphaChannel = (DWORD)((float)m_dwAlpha * (float)dwAlphaChannel / 255.0f);
       m_imgFocus.SetAlpha(dwAlphaChannel);
     }
     m_imgFocus.SetVisible(true);
@@ -200,10 +201,10 @@ void CGUIButtonControl::SetPosition(int iPosX, int iPosY)
   m_imgFocus.SetPosition(iPosX, iPosY);
   m_imgNoFocus.SetPosition(iPosX, iPosY);
 }
+
 void CGUIButtonControl::SetAlpha(DWORD dwAlpha)
 {
-  CGUIControl::SetAlpha(dwAlpha);
-
+  m_dwAlpha = dwAlpha;
   m_imgFocus.SetAlpha(dwAlpha);
   m_imgNoFocus.SetAlpha(dwAlpha);
 }
