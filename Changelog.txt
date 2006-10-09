@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-10-2006 fixed: filenames on fat memory units wich where very long (required >6 vfat entries) would chop of last part in some cases.
+ - 09-10-2006 fixed: fat memory units with a sector size different from 512 would not load, now 512, 1024, 2048 and 4096 should be supported.
  - 07-10-2006 updated: Russian language file (Thnx to que_)
  - 07-10-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
  - 07-10-2006 updated: Hungarian language file (Thnx to sigismund)
