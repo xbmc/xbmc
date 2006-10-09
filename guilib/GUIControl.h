@@ -94,7 +94,6 @@ public:
   virtual bool IsSelected() const;
   bool HasRendered() const { return m_hasRendered; };
   virtual void SetPosition(int iPosX, int iPosY);
-  virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   virtual DWORD GetColourDiffuse() const { return m_colDiffuse;};
   virtual int GetXPosition() const;
@@ -183,7 +182,6 @@ protected:
   DWORD m_dwHeight;
   DWORD m_dwWidth;
   D3DCOLOR m_colDiffuse;
-  DWORD m_dwAlpha;
   DWORD m_dwControlID;
   DWORD m_dwParentID;
   bool m_bHasFocus;
