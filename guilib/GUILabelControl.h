@@ -42,7 +42,6 @@ public:
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
 
-  virtual void SetAlpha(DWORD dwAlpha);
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   const string& GetLabel() const { return m_strLabel; }
   void SetLabel(const string &strLabel);

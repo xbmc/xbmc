@@ -24,7 +24,6 @@ public:
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void SetAlpha(DWORD dwAlpha);
   const CLabelInfo& GetLabelInfo() const { return m_label; };
 
   void SetInfo(const vector<int> &vecInfo);

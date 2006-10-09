@@ -123,13 +123,6 @@ bool CGUILabelControl::CanFocus() const
   return false;
 }
 
-void CGUILabelControl::SetAlpha(DWORD dwAlpha)
-{
-  CGUIControl::SetAlpha(dwAlpha);
-  m_label.textColor = (dwAlpha << 24) | (m_label.textColor & 0xFFFFFF);
-  m_label.disabledColor = (dwAlpha << 24) | (m_label.disabledColor & 0xFFFFFF);
-}
-
 void CGUILabelControl::SetLabel(const string &strLabel)
 {
   if (m_strLabel.compare(strLabel) == 0)
