@@ -34,7 +34,6 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(int iPosX, int iPosY);
-  virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   void SetLabel(const string & aLabel);
   void SetLabel2(const string & aLabel2);
@@ -52,11 +51,14 @@ public:
   void Flicker(bool bFlicker = TRUE);
   virtual void Update();
   virtual CStdString GetDescription() const;
+  void SetAlpha(DWORD dwAlpha);
+
   void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor, DWORD dwShadowColor);
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
   void RAMSetTextColor(DWORD dwTextColor);
   void SettingsCategorySetTextAlign(DWORD dwAlign);
+
 protected:
   void OnClick();
   void OnFocus();
@@ -66,6 +68,7 @@ protected:
   DWORD m_dwFocusCounter;
   DWORD m_dwFlickerCounter;
   DWORD m_dwFrameCounter;
+  DWORD m_dwAlpha;
 
   string m_strLabel;
   string m_strLabel2;

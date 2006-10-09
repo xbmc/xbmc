@@ -86,9 +86,9 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   x[1] = x[2] = fx + fwidth;
   y[0] = y[1] = fy;
   y[2] = y[3] = fy + fheight;
-  float minX = m_iScreenWidth;
+  float minX = (float)m_iScreenWidth;
   float maxX = 0;
-  float minY = m_iScreenHeight;
+  float minY = (float)m_iScreenHeight;
   float maxY = 0;
   for (int i = 0; i < 4; i++)
   {

@@ -105,12 +105,6 @@ void CGUIToggleButtonControl::SetHeight(int iHeight)
   m_selectButton.SetHeight(iHeight);
 }
 
-void CGUIToggleButtonControl::SetAlpha(DWORD dwAlpha)
-{
-  CGUIButtonControl::SetAlpha(dwAlpha);
-  m_selectButton.SetAlpha(dwAlpha);
-}
-
 void CGUIToggleButtonControl::SetColourDiffuse(D3DCOLOR colour)
 {
   CGUIButtonControl::SetColourDiffuse(colour);

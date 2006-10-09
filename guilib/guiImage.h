@@ -52,6 +52,7 @@ public:
   int GetRenderWidth() const;
   int GetRenderHeight() const;
   void SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom);
+  void SetAlpha(DWORD dwAlpha);
 
   void SetInfo(int info) { m_Info = info; };
   int GetInfo() const { return m_Info; };
@@ -63,6 +64,7 @@ protected:
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX0;
 
   DWORD m_dwColorKey;
+  DWORD m_dwAlpha;
   CStdString m_strFileName;
   CStdString m_textureFileName;
   int m_iTextureWidth;
