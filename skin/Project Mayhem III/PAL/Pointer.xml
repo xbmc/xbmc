@@ -41,7 +41,7 @@
    <posy>-15</posy>
    <width>30</width>
    <height>30</height>
-   <texture>calibrate-pixelratio-focus.png</texture>
+   <texture>pointer-focus.png</texture>
   </control>
 
   <control>
@@ -52,7 +52,7 @@
    <posy>0</posy>
    <width>30</width>
    <height>30</height>
-   <texture>calibrate-topleft-focus.png</texture>
+   <texture>pointer-focus.png</texture>
   </control>
 
  </controls>
