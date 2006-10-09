@@ -33,11 +33,6 @@ MU_GetExistingDeviceObject(
     IN  ULONG  Port,
     IN  ULONG  Slot
     );
-
-	XBOXAPI VOID WINAPI 
-MU_RemoveDevice(
-    IN  PDEVICE_OBJECT  DeviceObject
-    );
 };
 
 CMemoryUnitManager g_memoryUnitManager;
@@ -161,7 +156,7 @@ bool CMemoryUnitManager::MountDevice(unsigned long port, unsigned long slot)
 	if(NT_SUCCESS(Status))
 	{
     CLog::Log(LOGDEBUG, __FUNCTION__" Getting MU device (port %i, slot %i)", port, slot);
-		DeviceObject = MU_GetExistingDeviceObject(port, slot);    
+		DeviceObject = MU_GetExistingDeviceObject(port, slot);
 
     CFatXDevice *device = new CFatXDevice(port, slot, DeviceObject);
     if (device->Mount(DeviceName.Buffer))
