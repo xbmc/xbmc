@@ -1,3 +1,4 @@
+2006-10-09 changed:	Removed large texture usage from Pointer.xml - saves 300k.  Should really have dedicated drag + click pointer images.
 2006-10-06 changed:	Included Contentpanel stuff to save some lines of code.
 2006-10-04 fixed:	Defaultcontrol is always the first button in submenu.
 2006-10-04 fixed:	Labels around the wrong way on the mastermode button (buttonmenu).
