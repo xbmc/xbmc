@@ -266,6 +266,7 @@ typedef struct _tagVOLINFO {
 	uint16_t rootentries;		// number of root dir entries
 
 	uint32_t numclusters;		// number of clusters on drive
+  uint16_t sectorsize;
 
 	// The fields below are PHYSICAL SECTOR NUMBERS.
 	uint32_t fat1;				// starting sector# of FAT copy 1
