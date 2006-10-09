@@ -152,6 +152,9 @@ uint32_t DFS_GetVolInfo(uint8_t unit, uint8_t *scratchsector, uint32_t startsect
 //		volinfo->system[8] = 0; 
 	}
 
+  // remember sector size, this maps back to device sector size
+  volinfo->sectorsize = ((uint32_t)lbr->bpb.bytepersec_h << 8) | (uint32_t)lbr->bpb.bytepersec_l;
+
 	// note: if rootentries is 0, we must be in a FAT32 volume.
 	volinfo->rootentries =  (uint16_t) lbr->bpb.rootentries_l |
 		  (((uint16_t) lbr->bpb.rootentries_h) << 8);
@@ -164,7 +167,7 @@ uint32_t DFS_GetVolInfo(uint8_t unit, uint8_t *scratchsector, uint32_t startsect
 	// file in that situation.
 	if (volinfo->rootentries) {
 		volinfo->rootdir = volinfo->fat1 + (volinfo->secperfat * 2);
-		volinfo->dataarea = volinfo->rootdir + (((volinfo->rootentries * 32) + (SECTOR_SIZE - 1)) / SECTOR_SIZE);
+		volinfo->dataarea = volinfo->rootdir + (((volinfo->rootentries * 32) + (volinfo->sectorsize - 1)) / volinfo->sectorsize);
 	}
 	else {
 		volinfo->dataarea = volinfo->fat1 + (volinfo->secperfat * 2);
@@ -188,7 +191,7 @@ uint32_t DFS_GetVolInfo(uint8_t unit, uint8_t *scratchsector, uint32_t startsect
 
 /*
 	Fetch FAT entry for specified cluster number
-	You must provide a scratch buffer for one sector (SECTOR_SIZE) and a populated VOLINFO
+	You must provide a scratch buffer for one sector (volinfo->sectorsize) and a populated VOLINFO
 	Returns a FAT32 BAD_CLUSTER value for any error, otherwise the contents of the desired
 	FAT entry.
 	scratchcache should point to a UINT32. This variable caches the physical sector number
@@ -212,7 +215,7 @@ uint32_t DFS_GetFAT(PVOLINFO volinfo, uint8_t *scratch, uint32_t *scratchcache, 
 
 	// at this point, offset is the BYTE offset of the desired sector from the start
 	// of the FAT. Calculate the physical sector containing this FAT entry.
-	sector = ldiv(offset, SECTOR_SIZE).quot + volinfo->fat1;
+	sector = ldiv(offset, volinfo->sectorsize).quot + volinfo->fat1;
 
 	// If this is not the same sector we last read, then read it into RAM
 	if (sector != *scratchcache) {
@@ -229,13 +232,13 @@ uint32_t DFS_GetFAT(PVOLINFO volinfo, uint8_t *scratch, uint32_t *scratchcache, 
 	// This is easy for FAT16 and FAT32, but a royal PITA for FAT12 as a single entry
 	// may span a sector boundary. The normal way around this is always to read two
 	// FAT sectors, but that luxury is (by design intent) unavailable to DOSFS.
-	offset = ldiv(offset, SECTOR_SIZE).rem;
+	offset = ldiv(offset, volinfo->sectorsize).rem;
 
 	if (volinfo->filesystem == FAT12) {
 		// Special case for sector boundary - Store last byte of current sector.
 		// Then read in the next sector and put the first byte of that sector into
 		// the high byte of result.
-		if (offset == SECTOR_SIZE - 1) {
+		if (offset == volinfo->sectorsize - 1) {
 			result = (uint32_t) scratch[offset];
 			sector++;
 			if(DFS_ReadSector(volinfo->unit, scratch, sector, 1)) {
@@ -309,7 +312,7 @@ uint32_t DFS_SetFAT(PVOLINFO volinfo, uint8_t *scratch, uint32_t *scratchcache, 
 
 	// at this point, offset is the BYTE offset of the desired sector from the start
 	// of the FAT. Calculate the physical sector containing this FAT entry.
-	sector = ldiv(offset, SECTOR_SIZE).quot + volinfo->fat1;
+  sector = ldiv(offset, volinfo->sectorsize).quot + volinfo->fat1;
 
 	// If this is not the same sector we last read, then read it into RAM
 	if (sector != *scratchcache) {
@@ -326,7 +329,7 @@ uint32_t DFS_SetFAT(PVOLINFO volinfo, uint8_t *scratch, uint32_t *scratchcache, 
 	// This is easy for FAT16 and FAT32, but a royal PITA for FAT12 as a single entry
 	// may span a sector boundary. The normal way around this is always to read two
 	// FAT sectors, but that luxury is (by design intent) unavailable to DOSFS.
-	offset = ldiv(offset, SECTOR_SIZE).rem;
+	offset = ldiv(offset, volinfo->sectorsize).rem;
 
 	if (volinfo->filesystem == FAT12) {
 
@@ -336,7 +339,7 @@ uint32_t DFS_SetFAT(PVOLINFO volinfo, uint8_t *scratch, uint32_t *scratchcache, 
 			new_contents = new_contents << 4;
 
 		// Special case for sector boundary
-		if (offset == SECTOR_SIZE - 1) {
+		if (offset == volinfo->sectorsize - 1) {
 
 			// Odd cluster: High 12 bits being set
 			if (cluster & 1) {
@@ -376,7 +379,7 @@ uint32_t DFS_SetFAT(PVOLINFO volinfo, uint8_t *scratch, uint32_t *scratchcache, 
 					*scratchcache = 0;
 				}
 			}
-		} // if (offset == SECTOR_SIZE - 1)
+		} // if (offset == volinfo->sectorsize - 1)
 
 		// Not a sector boundary. But we still have to worry about if it's an odd
 		// or even cluster number.
@@ -597,7 +600,7 @@ uint32_t DFS_GetNext(PVOLINFO volinfo, PDIRINFO dirinfo, PDIRENT dirent)
 	uint32_t tempint;	// required by DFS_GetFAT
 
 	// Do we need to read the next sector of the directory?
-	if (dirinfo->currententry >= SECTOR_SIZE / sizeof(DIRENT)) {
+	if (dirinfo->currententry >= volinfo->sectorsize / sizeof(DIRENT)) {
 		dirinfo->currententry = 0;
 		dirinfo->currentsector++;
 
@@ -607,7 +610,7 @@ uint32_t DFS_GetNext(PVOLINFO volinfo, PDIRINFO dirinfo, PDIRENT dirent)
 		// (b) we are on a FAT12/16 volume, where the root dir can't be expanded
 		if (dirinfo->currentcluster == 0) {
 			// Trying to read past end of root directory?
-			if (dirinfo->currentsector * (SECTOR_SIZE / sizeof(DIRENT)) >= volinfo->rootentries)
+			if (dirinfo->currentsector * (volinfo->sectorsize / sizeof(DIRENT)) >= volinfo->rootentries)
 				return DFS_EOF;
 
 			// Otherwise try to read the next sector
@@ -706,7 +709,7 @@ uint32_t DFS_GetFreeDirEnt(PVOLINFO volinfo, uint8_t *path, PDIRINFO di, PDIRENT
 				return DFS_ERRMISC;
 
 			// write out zeroed sectors to the new cluster
-			memset(di->scratch, 0, SECTOR_SIZE);
+			memset(di->scratch, 0, volinfo->sectorsize);
 			for (i=0;i<volinfo->secperclus;i++) {
 				if (DFS_WriteSector(volinfo->unit, di->scratch, volinfo->dataarea + ((tempclus - 2) * volinfo->secperclus) + i, 1))
 					return DFS_ERRMISC;
@@ -926,10 +929,10 @@ uint32_t DFS_ReadFile(PFILEINFO fileinfo, uint8_t *scratch, uint8_t *buffer, uin
 		// extra sectors to add to that number.
 		sector = fileinfo->volinfo->dataarea +
 		  ((fileinfo->cluster - 2) * fileinfo->volinfo->secperclus) +
-		  div(div(fileinfo->pointer,fileinfo->volinfo->secperclus * SECTOR_SIZE).rem, SECTOR_SIZE).quot;
+		  div(div(fileinfo->pointer,fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).rem, fileinfo->volinfo->sectorsize).quot;
 
 		// Case 1 - File pointer is not on a sector boundary
-		if (div(fileinfo->pointer, SECTOR_SIZE).rem) {
+		if (div(fileinfo->pointer, fileinfo->volinfo->sectorsize).rem) {
 			uint16_t tempreadsize;
 
 			// We always have to go through scratch in this case
@@ -937,13 +940,13 @@ uint32_t DFS_ReadFile(PFILEINFO fileinfo, uint8_t *scratch, uint8_t *buffer, uin
 
 			// This is the number of bytes that we actually care about in the sector
 			// just read.
-			tempreadsize = SECTOR_SIZE - (div(fileinfo->pointer, SECTOR_SIZE).rem);
+			tempreadsize = fileinfo->volinfo->sectorsize - (div(fileinfo->pointer, fileinfo->volinfo->sectorsize).rem);
 					
 			// Case 1A - We want the entire remainder of the sector. After this
 			// point, all passes through the read loop will be aligned on a sector
 			// boundary, which allows us to go through the optimal path 2A below.
 		   	if (remain >= tempreadsize) {
-				memcpy(buffer, scratch + (SECTOR_SIZE - tempreadsize), tempreadsize);
+				memcpy(buffer, scratch + (fileinfo->volinfo->sectorsize - tempreadsize), tempreadsize);
 				bytesread = tempreadsize;
 				buffer += tempreadsize;
 				fileinfo->pointer += tempreadsize;
@@ -951,7 +954,7 @@ uint32_t DFS_ReadFile(PFILEINFO fileinfo, uint8_t *scratch, uint8_t *buffer, uin
 			}
 			// Case 1B - This read concludes the file read operation
 			else {
-				memcpy(buffer, scratch + (SECTOR_SIZE - tempreadsize), remain);
+				memcpy(buffer, scratch + (fileinfo->volinfo->sectorsize - tempreadsize), remain);
 
 				buffer += remain;
 				fileinfo->pointer += remain;
@@ -968,12 +971,12 @@ uint32_t DFS_ReadFile(PFILEINFO fileinfo, uint8_t *scratch, uint8_t *buffer, uin
 			// be advantageous to have code similar to case 1A above that would round the
 			// pointer to a cluster boundary the first pass through, so all subsequent
 			// [large] read requests would be able to go a cluster at a time).
-			if (remain >= SECTOR_SIZE) {
+			if (remain >= fileinfo->volinfo->sectorsize) {
 				result = DFS_ReadSector(fileinfo->volinfo->unit, buffer, sector, 1);
-				remain -= SECTOR_SIZE;
-				buffer += SECTOR_SIZE;
-				fileinfo->pointer += SECTOR_SIZE;
-				bytesread = SECTOR_SIZE;
+				remain -= fileinfo->volinfo->sectorsize;
+				buffer += fileinfo->volinfo->sectorsize;
+				fileinfo->pointer += fileinfo->volinfo->sectorsize;
+				bytesread = fileinfo->volinfo->sectorsize;
 			}
 			// Case 2B - We are only reading a partial sector
 			else {
@@ -989,8 +992,8 @@ uint32_t DFS_ReadFile(PFILEINFO fileinfo, uint8_t *scratch, uint8_t *buffer, uin
 		*successcount += bytesread;
 
 		// check to see if we stepped over a cluster boundary
-		if (div(fileinfo->pointer - bytesread, fileinfo->volinfo->secperclus * SECTOR_SIZE).quot !=
-		  div(fileinfo->pointer, fileinfo->volinfo->secperclus * SECTOR_SIZE).quot) {
+		if (div(fileinfo->pointer - bytesread, fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).quot !=
+		  div(fileinfo->pointer, fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).quot) {
 			// An act of minor evil - we use bytesread as a scratch integer, knowing that
 			// its value is not used after updating *successcount above
 			bytesread = 0;
@@ -1048,19 +1051,19 @@ void DFS_Seek(PFILEINFO fileinfo, uint32_t offset, uint8_t *scratch)
 	// Case 3a - Seek size does not cross cluster boundary - 
 	// very simple case
 	// larwe 9/16/06 changed .rem to .quot in both div calls, bugfix
-	if (div(fileinfo->pointer, fileinfo->volinfo->secperclus * SECTOR_SIZE).quot ==
-	  div(fileinfo->pointer + offset, fileinfo->volinfo->secperclus * SECTOR_SIZE).quot) {
+	if (div(fileinfo->pointer, fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).quot ==
+	  div(fileinfo->pointer + offset, fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).quot) {
 		fileinfo->pointer = offset;
 	}
 	// Case 3b - Seeking across cluster boundary(ies)
 	else {
 		// round file pointer down to cluster boundary
-		fileinfo->pointer = div(fileinfo->pointer, fileinfo->volinfo->secperclus * SECTOR_SIZE).quot *
-		  fileinfo->volinfo->secperclus * SECTOR_SIZE;
+		fileinfo->pointer = div(fileinfo->pointer, fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).quot *
+		  fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize;
 
 		// seek by clusters
-		while (div(fileinfo->pointer, fileinfo->volinfo->secperclus * SECTOR_SIZE).quot !=
-		  div(offset, fileinfo->volinfo->secperclus * SECTOR_SIZE).quot) {
+		while (div(fileinfo->pointer, fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).quot !=
+		  div(offset, fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).quot) {
 
 			fileinfo->cluster = DFS_GetFAT(fileinfo->volinfo, scratch, &tempint, fileinfo->cluster);
 			// Abort if there was an error
@@ -1069,7 +1072,7 @@ void DFS_Seek(PFILEINFO fileinfo, uint32_t offset, uint8_t *scratch)
 				fileinfo->cluster = fileinfo->firstcluster;
 				return;
 			}
-			fileinfo->pointer += SECTOR_SIZE * fileinfo->volinfo->secperclus;
+			fileinfo->pointer += fileinfo->volinfo->sectorsize * fileinfo->volinfo->secperclus;
 		}
 
 		// since we know the cluster is right, we have no more work to do
@@ -1139,10 +1142,10 @@ uint32_t DFS_WriteFile(PFILEINFO fileinfo, uint8_t *scratch, uint8_t *buffer, ui
 		// extra sectors to add to that number.
 		sector = fileinfo->volinfo->dataarea +
 		  ((fileinfo->cluster - 2) * fileinfo->volinfo->secperclus) +
-		  div(div(fileinfo->pointer,fileinfo->volinfo->secperclus * SECTOR_SIZE).rem, SECTOR_SIZE).quot;
+		  div(div(fileinfo->pointer,fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).rem, fileinfo->volinfo->sectorsize).quot;
 
 		// Case 1 - File pointer is not on a sector boundary
-		if (div(fileinfo->pointer, SECTOR_SIZE).rem) {
+		if (div(fileinfo->pointer, fileinfo->volinfo->sectorsize).rem) {
 			uint16_t tempsize;
 
 			// We always have to go through scratch in this case
@@ -1150,28 +1153,28 @@ uint32_t DFS_WriteFile(PFILEINFO fileinfo, uint8_t *scratch, uint8_t *buffer, ui
 
 			// This is the number of bytes that we don't want to molest in the
 			// scratch sector just read.
-			tempsize = div(fileinfo->pointer, SECTOR_SIZE).rem;
+			tempsize = div(fileinfo->pointer, fileinfo->volinfo->sectorsize).rem;
 					
 			// Case 1A - We are writing the entire remainder of the sector. After
 			// this point, all passes through the read loop will be aligned on a
 			// sector boundary, which allows us to go through the optimal path
 			// 2A below.
 #ifdef _XBOX
-				if (remain >= (uint32_t)SECTOR_SIZE - tempsize) {
+				if (remain >= (uint32_t)fileinfo->volinfo->sectorsize - tempsize) {
 #else
-				if (remain >= SECTOR_SIZE - tempsize) {
+				if (remain >= fileinfo->volinfo->sectorsize - tempsize) {
 #endif
-				memcpy(scratch + tempsize, buffer, SECTOR_SIZE - tempsize);
+				memcpy(scratch + tempsize, buffer, fileinfo->volinfo->sectorsize - tempsize);
 				if (!result)
 					result = DFS_WriteSector(fileinfo->volinfo->unit, scratch, sector, 1);
 
-				byteswritten = SECTOR_SIZE - tempsize;
-				buffer += SECTOR_SIZE - tempsize;
-				fileinfo->pointer += SECTOR_SIZE - tempsize;
+				byteswritten = fileinfo->volinfo->sectorsize - tempsize;
+				buffer += fileinfo->volinfo->sectorsize - tempsize;
+				fileinfo->pointer += fileinfo->volinfo->sectorsize - tempsize;
 				if (fileinfo->filelen < fileinfo->pointer) {
 					fileinfo->filelen = fileinfo->pointer;
 				}
-				remain -= SECTOR_SIZE - tempsize;
+				remain -= fileinfo->volinfo->sectorsize - tempsize;
 			}
 			// Case 1B - This concludes the file write operation
 			else {
@@ -1194,15 +1197,15 @@ uint32_t DFS_WriteFile(PFILEINFO fileinfo, uint8_t *scratch, uint8_t *buffer, ui
 			// to go through the scratch buffer. You could insert optimizations here to
 			// write multiple sectors at a time, if you were thus inclined. Refer to
 			// similar notes in DFS_ReadFile.
-			if (remain >= SECTOR_SIZE) {
+			if (remain >= fileinfo->volinfo->sectorsize) {
 				result = DFS_WriteSector(fileinfo->volinfo->unit, buffer, sector, 1);
-				remain -= SECTOR_SIZE;
-				buffer += SECTOR_SIZE;
-				fileinfo->pointer += SECTOR_SIZE;
+				remain -= fileinfo->volinfo->sectorsize;
+				buffer += fileinfo->volinfo->sectorsize;
+				fileinfo->pointer += fileinfo->volinfo->sectorsize;
 				if (fileinfo->filelen < fileinfo->pointer) {
 					fileinfo->filelen = fileinfo->pointer;
 				}
-				byteswritten = SECTOR_SIZE;
+				byteswritten = fileinfo->volinfo->sectorsize;
 			}
 			// Case 2B - We are only writing a partial sector and potentially need to
 			// go through the scratch buffer.
@@ -1234,8 +1237,8 @@ uint32_t DFS_WriteFile(PFILEINFO fileinfo, uint8_t *scratch, uint8_t *buffer, ui
 		*successcount += byteswritten;
 
 		// check to see if we stepped over a cluster boundary
-		if (div(fileinfo->pointer - byteswritten, fileinfo->volinfo->secperclus * SECTOR_SIZE).quot !=
-		  div(fileinfo->pointer, fileinfo->volinfo->secperclus * SECTOR_SIZE).quot) {
+		if (div(fileinfo->pointer - byteswritten, fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).quot !=
+		  div(fileinfo->pointer, fileinfo->volinfo->secperclus * fileinfo->volinfo->sectorsize).quot) {
 		  	uint32_t lastcluster;
 
 		  	// We've transgressed into another cluster. If we were already at EOF,

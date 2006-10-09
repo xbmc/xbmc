@@ -67,10 +67,8 @@ public:
 protected:
   void InitialReadForSlowCards(unsigned long sectors);
   int CheckSectorForLBR(unsigned long lbr);
-
-  unsigned char  m_buffer[4096];
-  unsigned long  m_bufferSector;
-
+  
+  unsigned long  m_sectorsize;
   VOLINFO        m_volume;
 
   // FAT caching functions
