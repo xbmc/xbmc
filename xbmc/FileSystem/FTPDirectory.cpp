@@ -18,7 +18,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CFileCurl reader;
 
   CStdString path = strPath;
-  if( !path.Right(1).Equals("/") ) 
+  if( !path.Right(1).Equals("/") )
     path += "/";
 
   if (!reader.Open(path, false))
@@ -33,9 +33,9 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     StringUtils::RemoveCRLF(strBuffer);
 
     struct ftpparse lp = {};
-		if (ftpparse(&lp, (char*)strBuffer.c_str(), strBuffer.size()) == 1)
-		{
-			if( lp.namelen == 0 )
+    if (ftpparse(&lp, (char*)strBuffer.c_str(), strBuffer.size()) == 1)
+    {
+      if( lp.namelen == 0 )
         continue;
 
       if( lp.flagtrycwd == 0 && lp.flagtryretr == 0 )
@@ -58,10 +58,10 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       /* just make sure it's url encoded properly      */
       CUtil::URLEncode(filename);
 
-			CFileItem* pItem = new CFileItem(name);
+      CFileItem* pItem = new CFileItem(name);
       pItem->m_strPath = path + filename;
-			pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
-			pItem->m_dwSize = lp.size;
+      pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
+      pItem->m_dwSize = lp.size;
       pItem->m_dateTime=lp.mtime;
 
       if( m_cacheDirectory )
@@ -69,14 +69,14 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
       /* if file is ok by mask or a folder add it */
       if( pItem->m_bIsFolder || IsAllowed(name) )
-				items.Add(pItem);
+        items.Add(pItem);
       else
         delete pItem;
-		}
-	}
+    }
+  }
 
 
  if (m_cacheDirectory)
     g_directoryCache.SetDirectory(path, vecCacheItems);
-	return true;
+  return true;
 }
