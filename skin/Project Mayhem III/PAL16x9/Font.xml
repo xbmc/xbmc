@@ -22,11 +22,6 @@
     </font>
 
     <font>
-      <name>matrix8</name>
-      <filename>matrix8.xpr</filename>
-    </font>
-
-    <font>
       <name>special12</name>
       <filename>special-normal-pal.xpr</filename>
     </font>
@@ -66,11 +61,6 @@
       <filename>Arial.ttf</filename>
       <size>15</size>
       <style>bold</style>
-    </font>
-
-    <font>
-      <name>matrix8</name>
-      <filename>matrix8.xpr</filename>
     </font>
 
     <font>
