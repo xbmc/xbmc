@@ -42,18 +42,24 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         continue;
 
       /* buffer name as it's not allways null terminated */
-      CStdString name;
+      CStdString name, filename;
       name.assign(lp.name, lp.namelen);
+      filename.assign(lp.name, lp.namelen);
 
       if( name.Equals("..") || name.Equals(".") )
         continue;
 
-      CStdString name2(name);
-      CUtil::URLEncode(name2);
+      /* this should be conditional if we ever add    */
+      /* support for the utf8 extension in ftp client */
+      g_charsetConverter.stringCharsetToUtf8(name);
 
-			CFileItem* pItem = new CFileItem;
-      pItem->SetLabel(name);      
-      pItem->m_strPath = path + name2;
+      /* keep it in whatever format it was as we do no */
+      /* charset conversion in curl client currently   */
+      /* just make sure it's url encoded properly      */
+      CUtil::URLEncode(filename);
+
+			CFileItem* pItem = new CFileItem(name);
+      pItem->m_strPath = path + filename;
 			pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
 			pItem->m_dwSize = lp.size;
       pItem->m_dateTime=lp.mtime;
