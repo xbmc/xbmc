@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-10-2006 updated: Swedish language file finetuned by Blittan & Pike
  - 09-10-2006 changed: Thumbnail loading in the playlists folder of library view is now background threaded.
  - 09-10-2006 fixed: filenames on fat memory units wich where very long (required >6 vfat entries) would chop of last part in some cases.
  - 09-10-2006 fixed: fat memory units with a sector size different from 512 would not load, now 512, 1024, 2048 and 4096 should be supported.
