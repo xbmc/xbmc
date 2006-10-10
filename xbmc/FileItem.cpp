@@ -1870,6 +1870,7 @@ void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
     CPicture pic;
     pic.DoCreateThumbnail(thumb, cachedThumb);
   }
+
   SetCachedMusicThumb();
 }
 
