@@ -31,11 +31,6 @@
       <filename>special-bold-1080i.xpr</filename>
     </font>
 
-    <font>
-      <name>matrix8</name>
-      <filename>matrix8.xpr</filename>
-    </font>
-
   </fontset>
 
   <fontset id="Arial TTF" unicode="true">
@@ -65,11 +60,6 @@
       <name>font13</name>
       <filename>Arial.ttf</filename>
       <size>25</size>
-    </font>
-
-    <font>
-      <name>matrix8</name>
-      <filename>matrix8.xpr</filename>
     </font>
 
     <font>

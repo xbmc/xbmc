@@ -22,11 +22,6 @@
     </font>
 
     <font>
-      <name>matrix8</name>
-      <filename>matrix8.xpr</filename>
-    </font>
-
-    <font>
       <name>special12</name>
       <filename>special-normal-720p.xpr</filename>
     </font>
@@ -65,12 +60,7 @@
       <filename>Arial.ttf</filename>
       <size>19</size>
     </font>
-
-    <font>
-      <name>matrix8</name>
-      <filename>matrix8.xpr</filename>
-    </font>
-
+    
     <font>
       <name>special12</name>
       <filename>Arial.ttf</filename>
