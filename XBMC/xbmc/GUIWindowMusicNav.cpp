@@ -34,6 +34,7 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
 {
   m_vecItems.m_strPath = "?";
   m_bDisplayEmptyDatabaseMessage = false;
+  m_thumbLoader.SetObserver(this);
 }
 
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
@@ -51,6 +52,10 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
     {
       UpdateButtons();
     }
+    break;
+  case GUI_MSG_WINDOW_DEINIT:
+    if (m_thumbLoader.IsLoading())
+      m_thumbLoader.StopThread();
     break;
   case GUI_MSG_WINDOW_INIT:
     {
@@ -178,13 +183,19 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   CFileItem directory(strDirectory, true);
 
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
   bool bResult = CGUIWindowMusicBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
     if (directory.IsPlayList())
       OnRetrieveMusicInfo(items);
     else if (!items.IsMusicDb())  // don't need to do this for playlist, as OnRetrieveMusicInfo() should ideally set thumbs
-      items.SetMusicThumbs();
+    {
+      items.SetCachedMusicThumbs();
+      m_thumbLoader.Load(m_vecItems);
+    }
   }
 
   return bResult;
