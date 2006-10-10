@@ -12,7 +12,7 @@ using namespace XFILE;
 
 //*********************************************************************************************
 
-#define SEEKTIMOUT 10000
+#define SEEKTIMOUT 30000
 
 CFileRarExtractThread::CFileRarExtractThread()
 {
