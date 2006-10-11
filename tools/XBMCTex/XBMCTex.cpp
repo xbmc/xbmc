@@ -283,8 +283,8 @@ void AppendXPRImage(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_
 			return;
 		}
 
-		hr = XGCompressRect(XPRFile.Data, (D3DFORMAT)fmt, Pitch, desc.Width, desc.Height, slr.pBits, (D3DFORMAT)XB_D3DFMT_LIN_A8R8G8B8, slr.Pitch, 0.5f, 0);
-		if (FAILED(hr))
+    hr = CompressRect(XPRFile.Data, fmt, Pitch, desc.Width, desc.Height, slr.pBits, XB_D3DFMT_LIN_A8R8G8B8, slr.Pitch, 0.5f, 0);
+    if (FAILED(hr))
 		{
 			printf("ERROR: %08x\n", hr);
 			return;
@@ -294,7 +294,7 @@ void AppendXPRImage(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_
 	}
 	else
 	{
-		UINT bpp = XGBytesPerPixelFromFormat((D3DFORMAT)fmt);
+		UINT bpp = BytesPerPixelFromFormat(fmt);
 		Pitch = desc.Width * bpp;
 		Size = ((Pitch * desc.Height) + 127) & ~127; // must be 128-byte aligned for any following images
 
@@ -308,10 +308,10 @@ void AppendXPRImage(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_
 			return;
 		}
 
-		if (XGIsSwizzledFormat((D3DFORMAT)fmt))
+		if (IsSwizzledFormat(fmt))
 		{
 			// Swizzle for xbox
-			XGSwizzleRect(slr.pBits, 0, NULL, XPRFile.Data, desc.Width, desc.Height, NULL, bpp);
+			SwizzleRect(slr.pBits, 0, NULL, XPRFile.Data, desc.Width, desc.Height, NULL, bpp);
 		}
 		else
 		{
@@ -329,8 +329,8 @@ void AppendXPRImage(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_
 		pSrcSurf->UnlockRect();
 	}
 
-	XGSetTextureHeader(desc.Width, desc.Height, 1, 0, (D3DFORMAT)fmt, D3DPOOL_DEFAULT, 
-		(IDirect3DTexture8*)&XPRFile.Texture[XPRFile.nImages].D3DTex, XPRFile.Data - XPRFile.DataStart, Pitch);
+	SetTextureHeader(desc.Width, desc.Height, 1, 0, fmt, D3DPOOL_DEFAULT, 
+		&XPRFile.Texture[XPRFile.nImages].D3DTex, XPRFile.Data - XPRFile.DataStart, Pitch);
 	if (!(*XPRFile.flags & XPRFLAG_ANIM))
 		XPRFile.Texture[XPRFile.nImages].RealSize = (info.Width & 0xffff) | ((info.Height & 0xffff) << 16);
 	++XPRFile.nImages;
