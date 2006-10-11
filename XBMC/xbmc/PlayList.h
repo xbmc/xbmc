@@ -38,11 +38,11 @@ class CPlayListItem : public CFileItem
     // keep track of the order items were added to the playlist
     int m_iOrder;
 
-    bool WasPlayed();
+    bool WasPlayed() const;
     void SetPlayed() { m_bPlayed = true; };
     void ClearPlayed() { m_bPlayed = false; };
 
-    bool IsUnPlayable();
+    bool IsUnPlayable() const;
     void SetUnPlayable() { m_bUnPlayable = true; };
     void ClearUnPlayable() { m_bUnPlayable = false; };
 
