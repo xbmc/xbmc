@@ -65,11 +65,15 @@ int CPlayListPlayer::GetNextSong()
   // party mode
   if (g_partyModeManager.IsEnabled() && GetCurrentPlaylist() == PLAYLIST_MUSIC)
   {
-    // if we skipped ahead, go back to the top of the list
-    if (iSong != 0)
-      return 0;
-    else
-      return 1;
+    if (0 != iSong)
+    {
+      // if we skipped ahead, go back to the top of the list
+      // if it hasn't been played
+      const CPlayList::CPlayListItem &item = playlist[0];
+      if (!item.WasPlayed())
+        return 0;
+    }
+    return iSong + 1;
   }
 
   // if repeat one, keep playing the current song if its valid
