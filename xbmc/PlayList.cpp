@@ -162,7 +162,7 @@ CPlayList::CPlayListItem& CPlayList::operator[] (int iItem)
   return m_vecItems[iItem];
 }
 
-bool CPlayList::CPlayListItem::WasPlayed()
+bool CPlayList::CPlayListItem::WasPlayed() const
 {
   if (IsUnPlayable())
     return true;
@@ -170,7 +170,7 @@ bool CPlayList::CPlayListItem::WasPlayed()
     return m_bPlayed;
 }
 
-bool CPlayList::CPlayListItem::IsUnPlayable()
+bool CPlayList::CPlayListItem::IsUnPlayable() const
 {
   return m_bUnPlayable;
 }

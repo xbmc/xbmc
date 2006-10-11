@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-10-2006 fixed: Partymode would repeat tracks if the next song was unavailable (server offline etc.)
  - 10-10-2006 fixed: ftp listings didn't do the string charset -> utf8 conversion. ftp listings are not normally utf8 unless requested (and only a few servers support it)
  - 10-10-2006 changed: Increased the seek timeout in RAR to 30 seconds to fix seeking over CCX with slow connection
  - 10-10-2006 updated: Swedish language file finetuned by Blittan & Pike
