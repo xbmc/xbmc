@@ -10,11 +10,11 @@ START /B /WAIT ..\..\Tools\XBMCTex\XBMCTex -input media -quality high -output me
 
 ECHO ----------------------------------------
 ECHO Copying XPR File...
-xcopy *.xpr BUILD\Project Mayhem III\media\ /Q /I /Y
+xcopy "media\Textures.xpr" "BUILD\Project Mayhem III\media\" /Q /I /Y
 
 ECHO ----------------------------------------
 ECHO Cleaning Up...
-del *.xpr
+del "media\Textures.xpr"
 
 ECHO ----------------------------------------
 ECHO XPR Texture Files Created...
@@ -28,8 +28,8 @@ xcopy "PAL" "BUILD\Project Mayhem III\PAL" /E /Q /I /Y
 xcopy "PAL16x9" "BUILD\Project Mayhem III\PAL16x9" /E /Q /I /Y
 xcopy "sounds\*.*" "BUILD\Project Mayhem III\sounds\" /Q /I /Y 
 
-copy *.xml BUILD\Project Mayhem III\
-copy *.txt BUILD\Project Mayhem III\
+copy *.xml "BUILD\Project Mayhem III\"
+copy *.txt "BUILD\Project Mayhem III\"
 
 ECHO ----------------------------------------
 ECHO Removing CVS directories from build
