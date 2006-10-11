@@ -2,7 +2,7 @@
 
 class CBundler
 {
-	XPR_HEADER XPRHeader;
+	XPR_FILE_HEADER XPRHeader;
 	struct FileHeader_t
 	{
 		// 128 bytes total
