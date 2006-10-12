@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-10-2006 added: [ 1574092 ] New Infolabel Musicplayer.DiscNumber, thanks to buttergemuese.
  - 11-10-2006 changed: Added building of Textures.xpr to build.bat, and removed Textures.xpr from CVS.
  - 11-10-2006 fixed: Partymode would repeat tracks if the next song was unavailable (server offline etc.)
  - 10-10-2006 fixed: ftp listings didn't do the string charset -> utf8 conversion. ftp listings are not normally utf8 unless requested (and only a few servers support it)
