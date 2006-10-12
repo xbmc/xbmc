@@ -243,6 +243,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("musicplayer.bitspersample")) ret = MUSICPLAYER_BITSPERSAMPLE;
     else if (strTest.Equals("musicplayer.samplerate")) ret = MUSICPLAYER_SAMPLERATE;
     else if (strTest.Equals("musicplayer.codec")) ret = MUSICPLAYER_CODEC;
+    else if (strTest.Equals("musicplayer.discnumber")) ret = MUSICPLAYER_DISC_NUMBER;
   }
   else if (strCategory.Equals("videoplayer"))
   {
@@ -460,6 +461,7 @@ string CGUIInfoManager::GetLabel(int info)
   case MUSICPLAYER_BITSPERSAMPLE:
   case MUSICPLAYER_SAMPLERATE:
   case MUSICPLAYER_CODEC:
+  case MUSICPLAYER_DISC_NUMBER:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -1301,6 +1303,16 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       CStdString strCodec;
       strCodec.Format("%s", g_application.m_pPlayer->GetCodecName().c_str());
       return strCodec;
+    }
+    break;
+  case MUSICPLAYER_DISC_NUMBER:
+    {
+      CStdString strDisc;
+      if (tag.Loaded() && tag.GetDiscNumber() > 0)
+      {
+        strDisc.Format("%02i", tag.GetDiscNumber());
+        return strDisc;
+      } 
     }
     break;
   }
