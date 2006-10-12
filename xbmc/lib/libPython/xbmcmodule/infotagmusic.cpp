@@ -95,6 +95,15 @@ namespace PYXBMC
 		return Py_BuildValue("s", self->infoTag.GetTrackNumber());
 	}
 
+	// InfoTagMusic_GetDisc
+	PyDoc_STRVAR(getDisc__doc__,
+		"getDisc() -- returns an integer.\n");
+
+	PyObject* InfoTagMusic_GetDisc(InfoTagMusic *self, PyObject *args)
+	{
+		return Py_BuildValue("s", self->infoTag.GetDiscNumber());
+	}
+
 	// InfoTagMusic_ReleaseDate
 	PyDoc_STRVAR(getReleaseDate__doc__,
 		"getReleaseDate() -- returns a string.\n");
