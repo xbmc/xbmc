@@ -376,12 +376,25 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   // maybe there's a better way to get this info??
   if (!FillBuffer(m_bufferSize, 10))
   {
-    CLog::Log(LOGERROR, "CFileCurl:Open, didn't get any data from stream.");
-    // if still_running is 0 now, we should return NULL
+    CLog::Log(LOGERROR, "CFileCurl:Open, didn't get any data from stream.");    
     Close();
     return false;
   }
   
+  long response;
+  if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_RESPONSE_CODE, &response))
+  {
+    if( url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https") )
+    {
+      if( response >= 400 )
+      {
+        CLog::Log(LOGERROR, "CFileCurl:Open, Error code from server %l", response);
+        Close();
+        return false;
+      }
+    }
+  }
+
   if( !isstream )
   {
     double length;
@@ -669,7 +682,8 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
     }
 
     CURLMcode result = g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning);
-    if( !m_stillRunning ) break;
+    if( !m_stillRunning ) 
+      return (CURLM_OK == result);
 
     switch(result)
     {
