@@ -511,7 +511,7 @@
   <VideoMenu>
     <gamepad>
       <Y>AspectRatio</Y>
-      <B>PreviousMenu</B>
+      <B>Stop</B>
       <start>OSD</start>
       <back>PreviousMenu</back>
       <white>ShowTime</white>
