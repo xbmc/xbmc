@@ -42,9 +42,8 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         continue;
 
       /* buffer name as it's not allways null terminated */
-      CStdString name, filename;
+      CStdString name;
       name.assign(lp.name, lp.namelen);
-      filename.assign(lp.name, lp.namelen);
 
       if( name.Equals("..") || name.Equals(".") )
         continue;
@@ -53,15 +52,8 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       /* support for the utf8 extension in ftp client */
       g_charsetConverter.stringCharsetToUtf8(name);
 
-      /* keep it in whatever format it was as we do no */
-      /* charset conversion in curl client currently   */
-      /* just make sure it's url encoded properly      */
-      /* TODO, could we finally fix so all our urls are encoded. grr */
-      g_charsetConverter.stringCharsetToUtf8(filename);
-      //CUtil::URLEncode(filename);
-
       CFileItem* pItem = new CFileItem(name);
-      pItem->m_strPath = path + filename;
+      pItem->m_strPath = path + name;
       pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
       pItem->m_dwSize = lp.size;
       pItem->m_dateTime=lp.mtime;
