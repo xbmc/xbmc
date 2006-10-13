@@ -312,8 +312,41 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
     url2.SetProtocol("ftp");
   }
   else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp"))
-    url2.SetProtocol("http");
-  
+    url2.SetProtocol("http");    
+
+  if( url2.GetProtocol().Equals("ftp") )
+  {
+    /* this is uggly, depending on from where   */
+    /* we get the link it may or may not be     */
+    /* url encoded. if handed from ftpdirectory */
+    /* it won't be so let's handle that case    */
+    
+    CStdString partial, filename(url2.GetFileName());
+    CStdStringArray array;
+
+    /* our current client doesn't support utf8 */
+    g_charsetConverter.utf8ToStringCharset(filename);
+
+    /* TODO: create a tokenizer that doesn't skip empty's */
+    CUtil::Tokenize(filename, array, "/");
+    filename.Empty();
+    for(CStdStringArray::iterator it = array.begin(); it != array.end(); it++)
+    {
+      if(it != array.begin())
+        filename += "/";
+
+      partial = *it;      
+      CUtil::URLEncode(partial);      
+      filename += partial;
+    }
+
+    /* make sure we keep slashes */    
+    if(url2.GetFileName().Right(1) == "/")
+      filename += "/";
+
+    url2.SetFileName(filename);
+  }
+
   url2.GetURL(m_url);
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", this, m_url.c_str());  
