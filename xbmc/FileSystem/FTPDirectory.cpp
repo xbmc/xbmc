@@ -56,7 +56,9 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       /* keep it in whatever format it was as we do no */
       /* charset conversion in curl client currently   */
       /* just make sure it's url encoded properly      */
-      CUtil::URLEncode(filename);
+      /* TODO, could we finally fix so all our urls are encoded. grr */
+      g_charsetConverter.stringCharsetToUtf8(filename);
+      //CUtil::URLEncode(filename);
 
       CFileItem* pItem = new CFileItem(name);
       pItem->m_strPath = path + filename;
