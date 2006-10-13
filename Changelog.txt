@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-10-2006 changed: keymap.xml: reintroduced 'B' as STOP while in videomenu since we didn't have any way to exit out from dvdmenu with controller.
  - 13-10-2006 fixed: http client wouldn't report failure to open on 404 errors from server
  - 11-10-2006 changed: better solution for multichar ftp listings, wich also fixes issues introduced in last attempt
  - 11-10-2006 added: [ 1574092 ] New Infolabel Musicplayer.DiscNumber, thanks to buttergemuese.
