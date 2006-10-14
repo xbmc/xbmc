@@ -5,6 +5,8 @@
 #include "filesystem/MusicdatabaseDirectory/directoryNode.h"
 #include "filesystem/musicdatabasedirectory/QueryParams.h"
 #include "GUIDialogMusicScan.h"
+#include "filesystem/virtualpathdirectory.h"
+#include "filesystem/multipathdirectory.h"
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
@@ -2014,14 +2016,40 @@ bool CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath1, CStdString&
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    // musicdatabase always stores directories
-    // without a slash at the end
-    CStdString strPath = strPath1;
-    if (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
+		vector<CStdString> vecPaths;
+		// expand virtualpath:// locations
+		if (CUtil::IsVirtualPath(strPath1))
+		{
+			CVirtualPathDirectory dir;
+			dir.GetPathes(strPath1, vecPaths);
+		}
+		// expand multipath:// locations
+		else if (CUtil::IsMultiPath(strPath1))
+		{
+			CMultiPathDirectory dir;
+			dir.GetPaths(strPath1, vecPaths);
+		}
+		else
+			vecPaths.push_back(strPath1);
 
     // get all the path id's that are sub dirs of this directory
-    CStdString strSQL=FormatSQL("select idPath from path where strPath like '%s%%'", strPath.c_str());
+		// select idPath from path where (strPath like 'path1%' or strPath like 'path2%' or strPath like 'path3%')
+    CStdString strSQL = FormatSQL("select idPath from path where (");
+		CStdString strOR = " or ";
+		for (int i=0; i<(int)vecPaths.size(); ++i)
+		{
+	    // musicdatabase always stores directories
+			// without a slash at the end
+			CStdString strPath = vecPaths.at(i);
+			if (CUtil::HasSlashAtEnd(strPath))
+				strPath.Delete(strPath.size() - 1);
+			CStdString strTemp = FormatSQL("strPath like '%s%%'", strPath.c_str());
+			strSQL += strTemp + strOR;
+		}
+		strSQL.TrimRight(strOR);
+		strSQL += ")";
+
+		CLog::Log(LOGDEBUG, __FUNCTION__" query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     // create the idPath search string
     strPathIds = "(";
