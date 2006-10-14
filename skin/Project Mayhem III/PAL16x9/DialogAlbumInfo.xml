@@ -3,8 +3,8 @@
  <id>2001</id>
  <defaultcontrol>5</defaultcontrol>
  <allowoverlay>no</allowoverlay>
- <animation effect="fade" time="1000">WindowOpen</animation>
- <animation effect="fade" time="1000">WindowClose</animation>
+ <animation effect="fade" time="1000" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+ <animation effect="fade" time="1000" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 
  <controls>
 
