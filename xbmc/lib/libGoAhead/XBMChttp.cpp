@@ -405,6 +405,13 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   // TODO: Why are we insisting the passed path has anything to do with
   //       the shares in question??
   //       Surely we should just grab the directory regardless??
+	// 
+	// kraqh3d's response:
+	//	When I added this function, it was meant to behave more like Xbmc internally.
+	//	This code emulates the CVirtualDirectory class which does not allow arbitrary
+	//	fetching of directories. (nor does ActivateWindow for that matter.)
+	//	You can still use the older "getDirectory" command which is unnounded and will
+	//	fetch any old folder.
 
   // special locations
   bool bSpecial = false;
