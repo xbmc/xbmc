@@ -58,11 +58,6 @@ void CGUIConsoleControl::FreeResources()
   CGUIControl::FreeResources();
 }
 
-bool CGUIConsoleControl::OnAction(const CAction &action)
-{
-  return CGUIControl::OnAction(action);
-}
-
 void CGUIConsoleControl::Render()
 {
   if (!IsVisible()) return;
