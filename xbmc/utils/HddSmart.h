@@ -17,8 +17,8 @@ class CHDDSmart : public CThread
       virtual void OnExit();
       virtual void OnStartup();
       virtual void Process();
-      
-      
+
+      BYTE GetSmartValues(int SmartREQ);
 
   protected:
       typedef struct IP_IDE_REG
