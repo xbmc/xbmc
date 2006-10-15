@@ -1611,8 +1611,12 @@ void CMPlayer::GetAudioInfo( CStdString& strAudioInfo)
   }
   mplayer_GetAudioInfo(strFourCC, strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
   float fSampleRate = ((float)lSampleRate) / 1000.0f;
-  strAudioInfo.Format("audio:(%s) br:%i sr:%02.2f khz chns:%i",
-                      strAudioCodec, lBitRate, fSampleRate, iChannels);
+  if (strstr(strAudioCodec, "SPDIF")) // don't state channels if passthrough (we don't know them!)
+    strAudioInfo.Format("audio:(%s) br:%i sr:%02.2f khz",
+                        strAudioCodec, lBitRate, fSampleRate);
+  else
+    strAudioInfo.Format("audio:(%s) br:%i sr:%02.2f khz chns:%i",
+                        strAudioCodec, lBitRate, fSampleRate, iChannels);
 }
 
 void CMPlayer::GetVideoInfo( CStdString& strVideoInfo)
