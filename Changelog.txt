@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-10-2006 fixed: httpapi TakeScreenShot download parameter now works
+ - 15-10-2006 fixed: httpapi GetCurrentSlide now returns "[None]" rather than an empty string if no slide is showing
+ - 15-10-2006 changed: httpapi Help command text has been updated and now includes a link  to http://www.xboxmediacenter.com/wiki/index.php?title=WebServerHTTP-API
  - 14-10-2006 fixed: scanning of multipath bookmarks would not prompt for "scan new" or "scan all"
  - 13-10-2006 changed: keymap.xml: reintroduced 'B' as STOP while in videomenu since we didn't have any way to exit out from dvdmenu with controller.
  - 13-10-2006 fixed: http client wouldn't report failure to open on 404 errors from server
