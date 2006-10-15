@@ -274,3 +274,52 @@ bool CHDDSmart::IsIdeDriveBussy()
   };
   return false;
 }
+//Only One Time Requester
+BYTE CHDDSmart::GetSmartValues(int SmartREQ)
+{
+  BYTE retVal = 0;
+	ATA_COMMAND_OBJ hddcommand;
+	ZeroMemory(&hddcommand, sizeof(ATA_COMMAND_OBJ));
+	
+  hddcommand.DATA_BUFFSIZE = 0;
+	hddcommand.IPReg.bFeaturesReg		= 0xd0;	        // SEND READ SMART VALUES
+	hddcommand.IPReg.bSectorCountReg	= 1;					
+	hddcommand.IPReg.bSectorNumberReg	= 1;
+	hddcommand.IPReg.bCylLowReg			= 0x4f;				  //SET SMART CYL LOW
+	hddcommand.IPReg.bCylHighReg		= 0xc2;					//SET SMART CYL HI
+	hddcommand.IPReg.bDriveHeadReg		= 0x00a0;			//SET Device Where HDD is
+	hddcommand.IPReg.bCommandReg		= 0xb0;	        //SET ON IDE SEND SMART MODE;
+	
+	if (SendATACommand(0x01F0, &hddcommand, 0x00))
+	{	
+		int	i;
+		BYTE Attr;
+		PDRIVEATTRIBUTE	pDA;
+		PATTRTHRESHOLD	pAT;
+		pDA = (PDRIVEATTRIBUTE)&hddcommand.DATA_BUFFER[2];
+		pAT = (PATTRTHRESHOLD)&hddcommand.DATA_BUFFER[2];
+		for (i = 0; i < 46; i++)
+		{	Attr = pDA->bAttrID;
+			if (Attr == 191) Attr =14;	if (Attr == 192) Attr =15;	if (Attr == 192) Attr =15;	if (Attr == 193) Attr =16;
+			if (Attr == 195) Attr =18;	if (Attr == 196) Attr =19;	if (Attr == 197) Attr =20;	if (Attr == 250) Attr =45;
+			if (Attr == 198) Attr =21;	if (Attr == 199) Attr =22;	if (Attr == 200) Attr =23;	if (Attr == 201) Attr =24;
+			if (Attr == 202) Attr =25;	if (Attr == 203) Attr =26;	if (Attr == 204) Attr =27;	if (Attr == 205) Attr =28;
+			if (Attr == 206) Attr =29;	if (Attr == 207) Attr =30;	if (Attr == 208) Attr =31;	if (Attr == 209) Attr =32;
+			if (Attr == 220) Attr =33;	if (Attr == 221) Attr =34;	if (Attr == 222) Attr =35;	if (Attr == 223) Attr =36;
+			if (Attr == 224) Attr =37;	if (Attr == 225) Attr =38;	if (Attr == 226) Attr =39;	if (Attr == 227) Attr =40;
+			if (Attr == 228) Attr =41;	if (Attr == 230) Attr =42;	if (Attr == 231) Attr =43;	if (Attr == 240) Attr =44;
+			if (Attr == 194) Attr =17;	
+			if (Attr)
+			{
+				if (Attr > 46)	Attr = 46+1;
+				if (Attr == SmartREQ ) retVal = (pDA->bWorstValue);	// S.M.A.R.T Get HDD Temp ID: 194 Offset: C2
+			}
+			pDA++;
+			pAT++;
+		}
+		return retVal;
+		CLog::Log(LOGDEBUG, "HDD S.M.A.R.T Request: %d°C",retVal);
+	}
+	else 
+    return 0;
+}
