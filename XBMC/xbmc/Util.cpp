@@ -519,6 +519,12 @@ bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
   BYTE	VideoTyValues[5]={0, 1, 2, 3, 3};
   BYTE	VideoFrValues[5]={0x00, 0x40, 0x40, 0x80, 0x40};
 
+  // Skip if no change is necessary...
+  // That is to avoid a situation in which our Patch *and* the EvoX patch are installed
+  // Otherwise the Infinite-Reboot-Patch does not work anymore!
+  if(Video == XGetVideoStandard())
+    return true;
+
   switch (Country) 
   {
 	  case COUNTRY_EUR:
@@ -1039,8 +1045,22 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
     CLog::Log(LOGDEBUG, __FUNCTION__" - Source is DVD-ROM! Skipping Filter Flicker Patching.");
     return false;
   }
-  
+
   CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is ON. Starting Filter Flicker Patching.");
+  
+  // Do the test if we already have a patched _ffp XBE
+  CFile	xbe;
+	if (xbe.Exists(szPath1)) 
+  {
+    char szDrive[_MAX_DRIVE], szDir[_MAX_DIR], szFname[_MAX_FNAME], szExt[_MAX_EXT];
+		_splitpath(szPath1, szDrive, szDir, szFname, szExt);
+		strncat(szFname, "_ffp", 4);
+		_makepath(szNewPath.GetBuffer(MAX_PATH), szDrive, szDir, szFname, szExt);
+		szNewPath.ReleaseBuffer();
+		if (xbe.Exists(szNewPath))
+			return true;
+	}
+
   CXBE m_xbe;
   if((int)m_xbe.ExtractGameRegion(szPath1.c_str()) <= 0) // Reading the GameRegion is enought to detect a Patchable xbe!
   {

@@ -776,12 +776,16 @@ bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
 {
   // Set HDD Temp
   CStdString lblhdd = g_localizeStrings.Get(13151).c_str();
+  /*
   if(!g_hddsmart.IsRunning())
     g_hddsmart.Start();
   g_hddsmart.SmartREQ = 17;
-
-  CTemperature temp= CTemperature::CreateFromCelsius((double)g_hddsmart.m_HddSmarValue);
-  if (g_hddsmart.m_HddSmarValue<=0 || g_hddsmart.m_HddSmarValue>=100)
+  */
+  
+  BYTE bTemp= g_hddsmart.GetSmartValues(17);
+  //CTemperature temp= CTemperature::CreateFromCelsius((double)g_hddsmart.m_HddSmarValue);
+  CTemperature temp= CTemperature::CreateFromCelsius((double)bTemp);
+  if (bTemp ==0 )
     temp.SetState(CTemperature::invalid);
 
   strItemhdd.Format("%s %s", lblhdd.c_str(), temp.ToString().c_str()); 
