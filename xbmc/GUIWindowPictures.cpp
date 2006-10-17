@@ -252,6 +252,7 @@ bool CGUIWindowPictures::OnClick(int iItem)
     CFileItemList vecItems;
     if (CGUIMediaWindow::GetDirectory(strComicPath, vecItems))
     {
+      vecItems.Sort(SORT_METHOD_FILE,SORT_ORDER_ASC);
       if (m_vecItems.Size() > 0)
       {
         OnShowPictureRecursive("",&vecItems);
@@ -276,7 +277,7 @@ bool CGUIWindowPictures::OnPlayMedia(int iItem)
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strPicture = pItem->m_strPath;
   
-  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  if (pItem->m_strPath == "add") // 'add source button' in empty root
   {
     if (CGUIDialogMediaSource::ShowAndAddMediaSource("pictures"))
     {
@@ -335,6 +336,7 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture, CF
   }
   if (!strPicture.IsEmpty())
     pSlideShow->Select(strPicture);
+  
   m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
@@ -343,8 +345,8 @@ void CGUIWindowPictures::AddDir(CGUIWindowSlideShow *pSlideShow, const CStdStrin
   if (!pSlideShow) return ;
   CFileItemList items;
   m_rootDir.GetDirectory(strPath, items);
-  SortItems(items);
-
+  items.Sort(SORT_METHOD_FILE,SORT_ORDER_ASC); // WARNING: might make sense with the media window sort order but currently used only with comics and there it doesn't.
+  
   for (int i = 0; i < (int)items.Size();++i)
   {
     CFileItem* pItem = items[i];
