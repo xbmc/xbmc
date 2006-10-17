@@ -908,6 +908,10 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
   if (item.IsPlayList())
     item.m_bIsFolder = false;
 
+	if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
+    if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return;
+
   if (!CGUIWindowFileManager::DeleteItem(&item))
     return;
   Update(m_vecItems.m_strPath);
@@ -917,9 +921,11 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
 void CGUIMediaWindow::OnRenameItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
+
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
+
   if (!CGUIWindowFileManager::RenameFile(m_vecItems[iItem]->m_strPath))
     return;
   Update(m_vecItems.m_strPath);
