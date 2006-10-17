@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-10-2006 fixed: forgot to sort images in root of cbr/cbz files.
  - 15-10-2006 fixed: httpapi TakeScreenShot download parameter now works
  - 15-10-2006 fixed: httpapi GetCurrentSlide now returns "[None]" rather than an empty string if no slide is showing
  - 15-10-2006 changed: httpapi Help command text has been updated and now includes a link  to http://www.xboxmediacenter.com/wiki/index.php?title=WebServerHTTP-API
