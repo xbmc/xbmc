@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-10-2006 fixed: [ 1577855 ] can't handle some rar files correctly
  - 17-10-2006 updated: norwegian language file.
  - 17-10-2006 fixed: forgot to sort images in root of cbr/cbz files.
  - 15-10-2006 fixed: httpapi TakeScreenShot download parameter now works

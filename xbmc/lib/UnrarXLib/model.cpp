@@ -35,6 +35,8 @@ void ModelPPM::RestartModelRare()
   SubAlloc.InitSubAllocator();
   InitRL=-(MaxOrder < 12 ? MaxOrder:12)-1;
   MinContext = MaxContext = (PPM_CONTEXT*) SubAlloc.AllocContext();
+  if (!MinContext)
+    return;
   MinContext->Suffix=NULL;
   OrderFall=MaxOrder;
   MinContext->U.SummFreq=(MinContext->NumStats=256)+1;
