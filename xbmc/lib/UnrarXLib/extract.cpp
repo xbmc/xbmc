@@ -418,7 +418,8 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 #ifndef SFX_MODULE
 		if (Cmd->AppendArcNameToPath)
 		{
-			strcat(DestFileName,PointToName(Arc.FileName));
+			AddEndSlash(DestFileName);
+      strcat(DestFileName,PointToName(Arc.FileName));
 			SetExt(DestFileName,NULL);
 			AddEndSlash(DestFileName);
     }
@@ -446,8 +447,13 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
     if (AbsPaths)
       *DestFileName=0;
 
+    if (DestFileName[strlen(DestFileName)-1] != '\\' && DestFileName[strlen(DestFileName)-1] != '/')
+      strcat(DestFileName,"\\");
+      
     if (Command=='E' || Cmd->ExclPath==EXCL_SKIPWHOLEPATH)
+    {
       strcat(DestFileName,PointToName(ExtrName));
+    }
     else
       strcat(DestFileName,ExtrName);
 
@@ -770,7 +776,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 			Arc.SeekToNext();
 
 		bool BrokenFile=false;
-		if (!SkipSolid)
+/*		if (!SkipSolid)
 		{
 			if (Arc.OldFormat && UINT32(DataIO.UnpFileCRC)==UINT32(Arc.NewLhd.FileCRC) ||
 				!Arc.OldFormat && UINT32(DataIO.UnpFileCRC)==UINT32(Arc.NewLhd.FileCRC^0xffffffff))
@@ -798,10 +804,10 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 #endif
 				Alarm();
 			}
-		}
+		}*/
 #ifndef GUI
-		else
-			mprintf("\b\b\b\b\b     ");
+//		else
+//			mprintf("\b\b\b\b\b     ");
 #endif
 
 		if (!TestMode && (Command=='X' || Command=='E') &&
