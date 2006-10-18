@@ -66,11 +66,11 @@ void SubAllocator::StopSubAllocator()
 
 bool SubAllocator::StartSubAllocator(int SASize)
 {
-  uint t=SASize << 20;
+  uint t=(unsigned int)(SASize) << 18;
   if (SubAllocatorSize == t)
     return TRUE;
   StopSubAllocator();
-  uint AllocSize=t/FIXED_UNIT_SIZE*UNIT_SIZE+UNIT_SIZE;
+  uint AllocSize=t;//*FIXED_UNIT_SIZE/(UNIT_SIZE+UNIT_SIZE);
   if ((HeapStart=(byte *)rarmalloc(AllocSize)) == NULL)
   {
     ErrHandler.MemoryError();
