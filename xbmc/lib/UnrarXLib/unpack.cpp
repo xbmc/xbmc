@@ -190,8 +190,14 @@ void Unpack::Unpack29(bool Solid)
     UnpInitData(Solid);
     if (!UnpReadBuf())
       return;
-    if ((!Solid || !TablesRead) && !ReadTables())
-      return;
+    if (!TablesRead)
+      if (!ReadTables())
+        return;
+//    if (!TablesRead && Solid)
+  //    if (!ReadTables())
+  //      return;
+    //if ((!Solid || !TablesRead) && !ReadTables())
+    //  return;
   }
 
   if (PPMError)
