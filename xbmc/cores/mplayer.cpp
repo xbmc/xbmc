@@ -1169,7 +1169,12 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
         }
         // Seek to the correct starting position
         if (initoptions.starttime) 
+        {
+          // hack - needed to make resume work
+          m_bIsPlaying = true;
           SeekTime( (__int64)(initoptions.starttime * 1000) );
+          m_bIsPlaying = false;
+        }
 
       }
     }
