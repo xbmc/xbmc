@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-10-2006 fixed: fixed the python threading exception when exiting a script
  - 18-10-2006 fixed: resume video didn't work if fps adjustment was used for ntsc video's on pal systems
  - 17-10-2006 fixed: [ 1577855 ] can't handle some rar files correctly
  - 17-10-2006 updated: norwegian language file.
