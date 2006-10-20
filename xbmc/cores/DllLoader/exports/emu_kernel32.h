@@ -630,6 +630,10 @@ extern "C" BOOL WINAPI dllFlsFree(DWORD dwFlsIndex);
 extern "C" int WINAPI dllMultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCSTR lpMultiByteStr, int cbMultiByte, LPWSTR lpWideCharStr, int cchWideChar);
 extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWSTR lpWideCharStr, int cchWideChar, LPSTR lpMultiByteStr, int cbMultiByte, LPCSTR lpDefaultChar, LPBOOL lpUsedDefaultChar);
 
+extern "C" BOOL WINAPI dllLockFile(HANDLE hFile, DWORD dwFileOffsetLow, DWORD dwFileOffsetHigh, DWORD nNumberOffBytesToLockLow, DWORD nNumberOffBytesToLockHigh);
+extern "C" BOOL WINAPI dllLockFileEx(HANDLE hFile, DWORD dwFlags, DWORD dwReserved, DWORD nNumberOffBytesToLockLow, DWORD nNumberOffBytesToLockHigh, LPOVERLAPPED lpOverlapped);
+extern "C" BOOL WINAPI dllUnlockFile(HANDLE hFile, DWORD dwFileOffsetLow, DWORD dwFileOffsetHigh, DWORD nNumberOfBytesToUnlockLow, DWORD nNumberOfBytesToUnlockHigh);
+
 extern "C" HANDLE WINAPI dllCreateFileA(
     IN LPCSTR lpFileName,
     IN DWORD dwDesiredAccess,
