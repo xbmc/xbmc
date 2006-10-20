@@ -40,6 +40,10 @@ extern "C" ATOM WINAPI dllAddAtomA( LPCTSTR lpString)
   m_vecAtoms.push_back(lpString);
   return m_vecAtoms.size();
 }
+/*
+extern "C" ATOM WINAPI dllDeleteAtomA(ATOM nAtom)
+{
+}*/
 
 extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
 {
@@ -556,8 +560,14 @@ extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLen
   else
     lpFilePart = (LPTSTR *)lpFileName;
 
-  strcpy(lpBuffer, lpFileName);
-  return strlen(lpBuffer);
+  unsigned int length = strlen(lpFileName);
+  if (nBufferLength < (length + 1))
+  {
+    return length + 1;
+  } else {
+    strcpy(lpBuffer, lpFileName);
+    return length;
+  }
 }
 
 extern "C" DWORD WINAPI dllExpandEnvironmentStringsA(LPCTSTR lpSrc, LPTSTR lpDst, DWORD nSize)
@@ -1034,6 +1044,23 @@ extern "C" HANDLE WINAPI dllCreateFileA(
   return CreateFileA(lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
 }
 
+extern "C" BOOL WINAPI dllLockFile(HANDLE hFile, DWORD dwFileOffsetLow, DWORD dwFileOffsetHigh, DWORD nNumberOffBytesToLockLow, DWORD nNumberOffBytesToLockHigh)
+{
+  //return LockFile(hFile, dwFileOffsetLow, dwFileOffsetHigh, nNumberOffBytesToLockLow, nNumberOffBytesToLockHigh);
+  return TRUE;
+}
+
+extern "C" BOOL WINAPI dllLockFileEx(HANDLE hFile, DWORD dwFlags, DWORD dwReserved, DWORD nNumberOffBytesToLockLow, DWORD nNumberOffBytesToLockHigh, LPOVERLAPPED lpOverlapped)
+{
+  //return LockFileEx(hFile, dwFlags, nNumberOffBytesToLockLow, nNumberOffBytesToLockHigh, lpOverlapped);
+  return TRUE;
+}
+
+extern "C" BOOL WINAPI dllUnlockFile(HANDLE hFile, DWORD dwFileOffsetLow, DWORD dwFileOffsetHigh, DWORD nNumberOfBytesToUnlockLow, DWORD nNumberOfBytesToUnlockHigh)
+{
+  //return UnlockFile(hFile, dwFileOffsetLow, dwFileOffsetHigh, nNumberOfBytesToUnlockLow, nNumberOfBytesToUnlockHigh);
+  return TRUE;
+}
 
 /*
 
