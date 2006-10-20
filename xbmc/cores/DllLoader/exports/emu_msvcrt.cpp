@@ -52,6 +52,8 @@ extern "C" void __stdcall init_emu_environ()
   
   // libdvdnav
   dll_putenv("DVDREAD_NOKEYS=1");
+  //dll_putenv("DVDREAD_VERBOSE=1");
+  //dll_putenv("DVDREAD_USE_DIRECT=1");
   
   // libdvdcss
   dll_putenv("DVDCSS_METHOD=key");

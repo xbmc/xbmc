@@ -173,4 +173,11 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("EncodePointer", (unsigned long)dllEncodePointer);
   g_dlls.kernel32.AddExport("DecodePointer", (unsigned long)dllDecodePointer);
 
+  g_dlls.kernel32.AddExport("LockFile", (unsigned long)dllLockFile);
+  //g_dlls.kernel32.AddExport("LockFileEx", (unsigned long)dllLockFileEx);
+  g_dlls.kernel32.AddExport("UnlockFile", (unsigned long)dllUnlockFile);
+
+  g_dlls.kernel32.AddExport("GetSystemTime", (unsigned long)GetSystemTime);
+  g_dlls.kernel32.AddExport("GetFileSize", (unsigned long)GetFileSize);
+
 }
