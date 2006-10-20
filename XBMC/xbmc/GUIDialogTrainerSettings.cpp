@@ -8,6 +8,7 @@
 CGUIDialogTrainerSettings::CGUIDialogTrainerSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_TRAINER_SETTINGS, "TrainerSettings.xml")
 {
+  m_database = NULL;
   m_iTrainer = 0;
   m_iOldTrainer = 0;
   m_bNeedSave = false;
@@ -24,19 +25,21 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_database->BeginTransaction();
-      for (unsigned int i=0;i<m_vecTrainers.size();++i)
+      if (m_database)
       {
-        if (m_bNeedSave && !m_bCanceled)
+        m_database->BeginTransaction();
+        for (unsigned int i=0;i<m_vecTrainers.size();++i)
         {
-          m_database->SetTrainerActive(m_vecTrainers[i]->GetPath(),m_iTitleId,m_iTrainer-1 == i);
-          m_database->SetTrainerOptions(m_vecTrainers[i]->GetPath(),m_iTitleId,m_vecTrainers[i]->GetOptions(),m_vecTrainers[i]->GetNumberOfOptions());
+          if (m_bNeedSave && !m_bCanceled)
+          {
+            m_database->SetTrainerActive(m_vecTrainers[i]->GetPath(),m_iTitleId,m_iTrainer-1 == i);
+            m_database->SetTrainerOptions(m_vecTrainers[i]->GetPath(),m_iTitleId,m_vecTrainers[i]->GetOptions(),m_vecTrainers[i]->GetNumberOfOptions());
+          }
+          delete m_vecTrainers[i];
         }
-        delete m_vecTrainers[i];
+        m_vecTrainers.clear();
+        m_database->CommitTransaction();
       }
-      m_vecTrainers.clear();
-      m_database->CommitTransaction();
-
       if (m_bCanceled)
         m_bNeedSave = false;
 
@@ -130,8 +133,11 @@ bool CGUIDialogTrainerSettings::ShowForTitle(unsigned int iTitleId, CProgramData
 
 void CGUIDialogTrainerSettings::OnInitWindow()
 {
-  m_database->GetTrainers(m_iTitleId,m_vecOptions);
-  m_strActive = m_database->GetActiveTrainer(m_iTitleId);
+  if (m_database)
+  {
+    m_database->GetTrainers(m_iTitleId,m_vecOptions);
+    m_strActive = m_database->GetActiveTrainer(m_iTitleId);
+  }
   m_iTrainer = 0;
   m_iOldTrainer = 0;
   m_bNeedSave = false;
@@ -143,7 +149,8 @@ void CGUIDialogTrainerSettings::OnInitWindow()
     {
       if (m_vecOptions[i] == m_strActive)
         m_iTrainer = i+1;
-      m_database->GetTrainerOptions(trainer->GetPath(),m_iTitleId,trainer->GetOptions(), trainer->GetNumberOfOptions());
+      if (m_database)
+        m_database->GetTrainerOptions(trainer->GetPath(),m_iTitleId,trainer->GetOptions(), trainer->GetNumberOfOptions());
       m_vecTrainers.push_back(trainer);
     }
     else
