@@ -130,31 +130,33 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
       strFilename = CUPnPDirectory::GetFriendlyName(strFileNameAndPath.c_str());
   }
   CURL url(strFileNameAndPath);
-  if (url.GetProtocol() == "lastfm")
+  if (strFileNameAndPath.Compare("lastfm://") == 0)
   {
     strFilename = g_localizeStrings.Get(15200);
   }
-  else if (url.GetProtocol() == "smb")
+  else if (strFileNameAndPath.Compare("smb://") == 0)
   {
     strFilename = g_localizeStrings.Get(20171); // Windows SMB Network (SMB)
   }
-  /*else if (url.GetProtocol() == "soundtrack")
+
+  /*else if (strFileNameAndPath.Compare("soundtrack://") == 0)
   {
     strFilename = "MS Soundtracks";  // Would need localizing
   }*/ 
-  else if (url.GetProtocol() == "shout")
+
+  else if (strFileNameAndPath.Compare("shout://") == 0)
   {
     strFilename = g_localizeStrings.Get(260); // Shoutcast
   }
-  else if (url.GetProtocol() == "ftp")
+  else if (strFileNameAndPath.Compare("ftp://") == 0)
   {
     strFilename = g_localizeStrings.Get(20174); // FTP Server
   }
-  else if (url.GetProtocol() == "xbms")
+  else if (strFileNameAndPath.Compare("xbms://") == 0)
   {
     strFilename = "XBMSP Network";
   }
-  else if (url.GetProtocol() == "daap")
+  else if (strFileNameAndPath.Compare("daap://") == 0)
   {
     strFilename = g_localizeStrings.Get(20174); // iTunes music share (DAAP)
   }
