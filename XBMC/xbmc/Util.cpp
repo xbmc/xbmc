@@ -129,6 +129,35 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   if (strFileNameAndPath.Left(7).Compare("upnp://") == 0) {
       strFilename = CUPnPDirectory::GetFriendlyName(strFileNameAndPath.c_str());
   }
+  CURL url(strFileNameAndPath);
+  if (url.GetProtocol() == "lastfm")
+  {
+    strFilename = g_localizeStrings.Get(15200);
+  }
+  else if (url.GetProtocol() == "smb")
+  {
+    strFilename = g_localizeStrings.Get(20171); // Windows SMB Network (SMB)
+  }
+  /*else if (url.GetProtocol() == "soundtrack")
+  {
+    strFilename = "MS Soundtracks";  // Would need localizing
+  }*/ 
+  else if (url.GetProtocol() == "shout")
+  {
+    strFilename = g_localizeStrings.Get(260); // Shoutcast
+  }
+  else if (url.GetProtocol() == "ftp")
+  {
+    strFilename = g_localizeStrings.Get(20174); // FTP Server
+  }
+  else if (url.GetProtocol() == "xbms")
+  {
+    strFilename = "XBMSP Network";
+  }
+  else if (url.GetProtocol() == "daap")
+  {
+    strFilename = g_localizeStrings.Get(20174); // iTunes music share (DAAP)
+  }
 
   // now remove the extension if needed
   if (g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
