@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-10-2006 fixed: potential segfault in libdvdnav.dll if a read returned 0 data.
  - 23-10-2006 fixed: segfault in libsmbclient on invalid dates returned in a directory query (lan drives especially)
  - 22-10-2006 added: httpapi QueryMusicDatabase command
  - 22-10-2006 changed: httpapi SetResponseFormat to take multiple format pairs
