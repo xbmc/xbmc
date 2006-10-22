@@ -53,6 +53,7 @@ public:
   int xbmcPlayListPrev();
   int xbmcSetVolume(int numParas, CStdString paras[]);
   int xbmcGetVolume();
+  int xbmcMute();
   int xbmcGetPercentage();
   int xbmcSeekPercentage(int numParas, CStdString paras[], bool relative);
   int xbmcAction(int numParas, CStdString paras[], int theAction);
@@ -61,6 +62,7 @@ public:
   int xbmcGetThumbFilename(int numParas, CStdString paras[]);
   int xbmcLookupAlbum(int numParas, CStdString paras[]);
   int xbmcChooseAlbum(int numParas, CStdString paras[]);
+  int xbmcQueryMusicDataBase(int numParas, CStdString paras[]);
   int xbmcDownloadInternetFile(int numParas, CStdString paras[]);
   int xbmcSetKey(int numParas, CStdString paras[]);
   int xbmcGetMovieDetails(int numParas, CStdString paras[]);
