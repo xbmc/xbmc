@@ -39,7 +39,7 @@
 #include "..\..\FileSystem\VirtualDirectory.h"
 
 #define XML_MAX_INNERTEXT_SIZE 256
-#define MAX_PARAS 10
+#define MAX_PARAS 20
 #define NO_EID -1
 
 #define XBMC_NONE      T("none")
@@ -48,8 +48,8 @@ CXbmcHttp* pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
 
 //Response format
-CStdString openTag="<li>", closeTag="\n", userHeader="", userFooter="";
-bool incWebHeader=true, incWebFooter=true, closeFinalTag=false;
+CStdString openTag, closeTag, userHeader, userFooter, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField;
+bool incWebHeader, incWebFooter, closeFinalTag;
 
 bool autoGetPictureThumbs = true;
 
@@ -211,10 +211,25 @@ __int64 fileSize(const CStdString &filename)
     return -1;
 }
 
-
+void resetTags()
+{
+  openTag="<li>"; 
+  closeTag="\n";
+  userHeader="";
+  userFooter="";
+  openRecordSet="";
+  closeRecordSet="";
+  openRecord="";
+  closeRecord="";
+  openField="<li>";
+  closeField="";
+  incWebHeader=true;
+  incWebFooter=true;
+  closeFinalTag=false;
+}
 
 int splitParameter(const CStdString &parameter, CStdString& command, CStdString paras[], const CStdString &sep)
-//returns -1 if no command else the number of parameters
+//returns -1 if no command, -2 if too many parameters else the number of parameters
 //assumption: sep.length()==1
 {
   unsigned int num=0, p;
@@ -238,6 +253,8 @@ int splitParameter(const CStdString &parameter, CStdString& command, CStdString 
           {
             paras[num]=paras[num].Trim();
             num++;
+			if (num==MAX_PARAS)
+		      return -2;
           }
           else
           {
@@ -253,6 +270,8 @@ int splitParameter(const CStdString &parameter, CStdString& command, CStdString 
         {
           paras[num]=paras[num].Trim();
           num++;
+		  if (num==MAX_PARAS)
+		    return -2;
         }
         else
         {
@@ -875,6 +894,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
 
 CXbmcHttp::CXbmcHttp()
 {
+  resetTags();
   CKey temp;
   key = temp;
 }
@@ -882,6 +902,29 @@ CXbmcHttp::CXbmcHttp()
 CXbmcHttp::~CXbmcHttp()
 {
   CLog::Log(LOGDEBUG, "xbmcHttp ends");
+}
+
+
+int CXbmcHttp::xbmcQueryMusicDataBase(int numParas, CStdString paras[])
+{
+  if (numParas==0)
+    return SetResponse(openTag+"Error:Missing Parameter");
+  else
+  {
+	CMusicDatabase musicdatabase;
+	if (musicdatabase.Open())
+	{
+	  CStdString result;
+      if (musicdatabase.GetArbitraryQuery(paras[0], openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
+		return SetResponse(result);
+	  else
+		  return SetResponse(openTag+"Error:"+result);
+	  musicdatabase.Close();
+	}
+	else
+	  return SetResponse(openTag+"Error:Could not open database");
+  }
+  return true;
 }
 
 int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
@@ -1243,6 +1286,12 @@ int CXbmcHttp::xbmcSeekPercentage(int numParas, CStdString paras[], bool relativ
     else
       return SetResponse(openTag+"Error:Loading mPlayer");
   }
+}
+
+int CXbmcHttp::xbmcMute()
+{
+	g_application.Mute();
+    return SetResponse(openTag+"OK");
 }
 
 int CXbmcHttp::xbmcSetVolume(int numParas, CStdString paras[])
@@ -2352,27 +2401,48 @@ int CXbmcHttp::xbmcAutoGetPictureThumbs(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
 {
-  if (numParas<2)
+  if (numParas==0)
+  {
+    resetTags();
+    return SetResponse(openTag+"OK");
+  }
+  else if ((numParas % 2)==1)
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
-    CStdString para=paras[0].ToLower();
-    if (para=="webheader")
-      incWebHeader=(paras[1].ToLower()=="true");
-    else if (para=="webfooter")
-      incWebFooter=(paras[1].ToLower()=="true");
-    else if (para=="header")
-      userHeader=paras[1];
-    else if (para=="footer")
-      userFooter=paras[1];
-    else if (para=="opentag")
-      openTag=paras[1];
-    else if (para=="closetag")
-      closeTag=paras[1];
-    else if (para=="closefinaltag")
-      closeFinalTag=(paras[1].ToLower()=="true");
-    else
-      return SetResponse(openTag+"Error:Unknown parameter");
+	CStdString para;
+	for (int i=0; i<numParas; i+=2)
+	{
+      para=paras[i].ToLower();
+      if (para=="webheader")
+        incWebHeader=(paras[i+1].ToLower()=="true");
+      else if (para=="webfooter")
+        incWebFooter=(paras[i+1].ToLower()=="true");
+      else if (para=="header")
+        userHeader=paras[i+1];
+      else if (para=="footer")
+        userFooter=paras[i+1];
+      else if (para=="opentag")
+        openTag=paras[i+1];
+      else if (para=="closetag")
+        closeTag=paras[i+1];
+      else if (para=="closefinaltag")
+        closeFinalTag=(paras[i+1].ToLower()=="true");
+      else if (para=="openrecordset")
+        openRecordSet=paras[i+1]; 
+	  else if (para=="closerecordset")
+        closeRecordSet=paras[i+1];
+      else if (para=="openrecord")
+        openRecord=paras[i+1];
+	  else if (para=="closerecord")
+        closeRecord=paras[i+1];
+	  else if (para=="openfield")
+        openField=paras[i+1];
+	  else if (para=="closefield")
+        closeField=paras[i+1];
+	  else
+		  return SetResponse(openTag+"Error:Unknown parameter:"+para);
+	}
     return SetResponse(openTag+"OK");
   }
 }
@@ -2389,7 +2459,6 @@ int CXbmcHttp::xbmcHelp()
 
   return SetResponse(output);
 }
-
 
 
 int CXbmcHttp::xbmcCommand(const CStdString &parameter)
@@ -2436,6 +2505,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "seekpercentagerelative")   retVal = xbmcSeekPercentage(numParas, paras, true);
       else if (command == "setvolume")                retVal = xbmcSetVolume(numParas, paras);
       else if (command == "getvolume")                retVal = xbmcGetVolume();
+	  else if (command == "mute")                     retVal = xbmcMute();
       else if (command == "setplayspeed")             retVal = xbmcSetPlaySpeed(numParas, paras);
       else if (command == "getplayspeed")             retVal = xbmcGetPlaySpeed();
       else if (command == "filedownload")             retVal = xbmcGetThumb(numParas, paras, false);
@@ -2469,6 +2539,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getguidescription")        retVal = xbmcGetGUIDescription();
       else if (command == "setautogetpicturethumbs")  retVal = xbmcAutoGetPictureThumbs(numParas, paras);
       else if (command == "setresponseformat")        retVal = xbmcSetResponseFormat(numParas, paras);
+	  else if (command == "querymusicdatabase")       retVal = xbmcQueryMusicDataBase(numParas, paras);
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
       else if (command == "copyfile")                 retVal = xbmcCopyFile(numParas, paras);
@@ -2480,6 +2551,8 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 
       else
         retVal = SetResponse(openTag+"Error:Unknown command");
+  else if (numParas==-2)
+	  retVal = SetResponse(openTag+"Error:Too many parameters");
   else
     retVal = SetResponse(openTag+"Error:Missing command");
 //relinquish the remainder of time slice
