@@ -1100,6 +1100,53 @@ bool CMusicDatabase::GetGenresByName(const CStdString& strGenre, VECGENRES& genr
   return false;
 }
 
+bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
+	const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult)
+{
+  try
+  {
+    strResult = "";
+	if (NULL == m_pDB.get()) return false;
+	if (NULL == m_pDS.get()) return false;
+	CStdString strSQL=FormatSQL(strQuery);
+	if (!m_pDS->query(strSQL.c_str()))
+	{
+	  strResult = m_pDB->getErrorMsg();
+	  return false;
+	}
+	int iRowsFound = m_pDS->num_rows();
+	strResult=strOpenRecordSet;
+	while (!m_pDS->eof())
+	{
+	  strResult += strOpenRecord;
+	  for (int i=0; i<m_pDS->fieldCount(); i++)
+	  {
+	    strResult += strOpenField + m_pDS->fv(i).get_asString() + strCloseField;
+	  }
+	  strResult += strCloseRecord;
+	  m_pDS->next();
+	}
+	strResult += strCloseRecordSet;
+	m_pDS->close();
+	return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase:GetArbitraryQuery() failed");
+  }
+  try
+  {
+	if (NULL == m_pDB.get()) return false;
+	strResult = m_pDB->getErrorMsg();
+  }
+  catch (...)
+  {
+    
+  }
+
+  return false;
+}
+
 long CMusicDatabase::AddAlbumInfo(const CAlbum& album, const VECSONGS& songs)
 {
   CStdString strSQL;
