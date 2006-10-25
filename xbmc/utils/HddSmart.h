@@ -70,6 +70,6 @@ class CHDDSmart : public CThread
       BYTE tmpvalue;
       bool IsIdeDriveBussy();
       bool SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR ReadWrite);
-
+      CCriticalSection m_crit;
 }; 
 extern CHDDSmart g_hddsmart;
