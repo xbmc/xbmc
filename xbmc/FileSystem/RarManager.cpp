@@ -224,8 +224,8 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
     {
       if (vec.size() == iDepth+1 || !bMask)
       {
-        pFileItem = new CFileItem(strName.c_str()+strPathInRar.size());
-		    pFileItem->m_strPath = strName.c_str()+strPathInRar.size();
+        pFileItem = new CFileItem(vec[iDepth]);
+        pFileItem->m_strPath = strName.c_str()+strPathInRar.size();
         pFileItem->m_dwSize = pIterator->item.UnpSize;
         pFileItem->m_idepth = pIterator->item.Method;
         pFileItem->m_iDriveType = pIterator->item.HostOS;
