@@ -4,6 +4,7 @@
 #include "Filesystem/cdiosupport.h"
 #include "Filesystem/iso9660.h"
 #include "xbox/undocumented.h"
+#include "application.h"
 
 #ifdef AFTER2_0
 #include "utils/LED.h"
@@ -354,15 +355,19 @@ bool CDetectDVDMedia::IsDiscInDrive()
     // allow the application to poll once every five seconds
     if ((clock() - m_LastPoll) > 5000)
     {
-      CLog::Log(LOGINFO, "Polling PC-DVDROM...");
-
-      CIoSupport helper;
-      m_isoReader.Reset();
-      if (helper.Remount("D:", "Cdrom0") == S_OK)
+      // only poll if we're not playing media from the drive
+      if (!(g_application.IsPlaying() && g_application.CurrentFileItem().IsOnDVD()))
       {
-        if (m_pInstance)
+        CLog::Log(LOGINFO, "Polling PC-DVDROM...");
+
+        CIoSupport helper;
+        m_isoReader.Reset();
+        if (helper.Remount("D:", "Cdrom0") == S_OK)
         {
-          m_pInstance->DetectMediaType();
+          if (m_pInstance)
+          {
+            m_pInstance->DetectMediaType();
+          }
         }
       }
       m_LastPoll = clock();
