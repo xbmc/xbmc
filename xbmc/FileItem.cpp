@@ -1923,12 +1923,10 @@ CStdString CFileItem::GetTBNFile()
     return thumbFile;
   }
   if (m_bIsFolder)
-  {
-    CStdString thumbFile = m_strPath;
-    if (CUtil::HasSlashAtEnd(thumbFile))
-      thumbFile.Left(m_strPath.size() - 1);
-    thumbFile += ".tbn";
-    return thumbFile;
+  {    
+    CStdString thumbFile(m_strPath);
+    CUtil::RemoveSlashAtEnd(thumbFile);
+    return thumbFile + ".tbn";
   }
   else
   {
