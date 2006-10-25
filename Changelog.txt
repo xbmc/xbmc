@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-10-2006 fixed: [ 1580744 ] Can't Get PC DVD-ROM to Work Properly with Xbox Media Centre
  - 25-10-2006 fixed: cosmetic bug in filemanager handling of rar files.
  - 24-10-2006 fixed: .tbn file support for hard drive foldernames containing periods
  - 23-10-2006 fixed: users with bad luck could end up with errors on initial opening dvd images or dvd's (use of uninted variable). likely the start at 90 min in the movie syndrom

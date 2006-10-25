@@ -1297,6 +1297,9 @@ bool CUtil::IsOnDVD(const CStdString& strFile)
   if (strFile.Left(8) == "ISO9660:" || strFile.Left(8) == "iso9660:")
     return true;
 
+  if (strFile.Left(5) == "cdda:" || strFile.Left(5) == "CDDA:")
+    return true;
+
   return false;
 }
 
@@ -1845,6 +1848,16 @@ bool CUtil::IsHD(const CStdString& strFileName)
 
 void CUtil::RemoveIllegalChars( CStdString& strText)
 {
+  /*CStdString legalChars;
+  g_charsetConverter.stringCharsetToUtf8("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßֵוִהײצÜüריטחאשךֲסבןכלםגדזמנעפףץקת ",legalChars);
+  CStdString utf8Text;
+    if (g_charsetConverter.isValidUtf8(strText))
+    utf8Text = strText;
+  else
+    g_charsetConverter.stringCharsetToUtf8(strText,utf8Text);
+  for (unsigned int i=0;i<utf8Text.size();++i )
+    if (legalChars.find(utf8Text[i]) == -1)
+      strText[i] = '_';*/
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
   static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßֵוִהײצÜüריטחאשךֲסבןכלםגדזמנעפףץקת ";
