@@ -1922,9 +1922,13 @@ CStdString CFileItem::GetTBNFile()
     url.GetURL(thumbFile);
     return thumbFile;
   }
-  if (m_bIsFolder && CUtil::HasSlashAtEnd(m_strPath))
+  if (m_bIsFolder)
   {
-    return m_strPath.Left(m_strPath.size() - 1) + ".tbn";
+    CStdString thumbFile = m_strPath;
+    if (CUtil::HasSlashAtEnd(thumbFile))
+      thumbFile.Left(m_strPath.size() - 1);
+    thumbFile += ".tbn";
+    return thumbFile;
   }
   else
   {
