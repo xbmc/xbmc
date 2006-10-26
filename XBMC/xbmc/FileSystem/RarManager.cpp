@@ -175,6 +175,9 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   
   ArchiveList_struct* pIterator;
   CStdString strMatch;
+  CStdString strCompare = strPathInRar;
+  if (!CUtil::HasSlashAtEnd(strCompare) && !strCompare.IsEmpty())
+    strCompare += '/';
   for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
 	{
     CStdString strDirDelimiter = (pIterator->item.HostOS==3 ? "/":"\\"); // win32 or unix paths?
@@ -192,7 +195,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
       
     if (bMask)
     {
-      if (!strstr(strName.c_str(),strPathInRar.c_str()))
+      if (!strstr(strName.c_str(),strCompare.c_str()))
         continue;
 
       vec.clear();
