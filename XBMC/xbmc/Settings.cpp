@@ -1113,7 +1113,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
   // Override settings with avpack settings
   if ( m_vecProfiles[m_iLastLoadedProfileIndex].useAvpackSettings())
+  {
+    CLog::Log(LOGNOTICE, "Per AV pack settings are on");
     LoadAvpackXML();
+  }
+  else
+    CLog::Log(LOGNOTICE, "Per AV pack settings are off");
 
   return true;
 }
@@ -1384,7 +1389,10 @@ bool CSettings::LoadAvpackXML()
   avpackSettingsXML  = GetAvpackSettingsFile();
   TiXmlDocument avpackXML;
   if (!CFile::Exists(avpackSettingsXML))
+  {
+    CLog::Log(LOGERROR, "Error loading AV pack settings : %s not found !", avpackSettingsXML.c_str());
     return false;
+  }
 
   CLog::Log(LOGNOTICE, "%s found : loading %s",
     GetPluggedAvpack().c_str(), avpackSettingsXML.c_str());
@@ -1519,22 +1527,19 @@ bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
   SetBoolean(pNode, "ac3passthrough", g_guiSettings.GetBool("audiooutput.ac3passthrough"));
   SetBoolean(pNode, "dtspassthrough", g_guiSettings.GetBool("audiooutput.dtspassthrough"));
 
-  TiXmlElement uifiltersNode("uifilters");
-  pNode = io_pRoot->InsertEndChild(uifiltersNode);
+  TiXmlElement videoscreenNode("videoscreen");
+  pNode = io_pRoot->InsertEndChild(videoscreenNode);
   if (!pNode) return false;
-  SetInteger(pNode, "flicker", g_guiSettings.GetInt("videoscreen.flickerfilter"));
+  SetInteger(pNode, "flickerfilter", g_guiSettings.GetInt("videoscreen.flickerfilter"));
+  SetInteger(pNode, "resolution", g_guiSettings.GetInt("videoscreen.resolution"));
   SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoscreen.soften"));
 
-  TiXmlElement filtersNode("filters");
-  pNode = io_pRoot->InsertEndChild(uifiltersNode);
+  TiXmlElement videoplayerNode("videoplayer");
+  pNode = io_pRoot->InsertEndChild(videoplayerNode);
   if (!pNode) return false;
+  SetInteger(pNode, "displayresolution", g_guiSettings.GetInt("videoplayer.displayresolution"));
   SetInteger(pNode, "flicker", g_guiSettings.GetInt("videoplayer.flicker"));
   SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoplayer.soften"));
-
-  TiXmlElement lookandfeelNode("lookandfeel");
-  pNode = io_pRoot->InsertEndChild(lookandfeelNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "resolution", g_guiSettings.GetInt("videoscreen.resolution"));
 
   return SaveCalibration(io_pRoot);
 }
