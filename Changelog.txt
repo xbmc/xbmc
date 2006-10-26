@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-10-2006 fixed: [ 1584930 ] useAvpackSettings broken. thanks to markeen.
  - 25-10-2006 fixed: added some thread saneness to the hddsmart query.
  - 25-10-2006 fixed: [ 1580744 ] Can't Get PC DVD-ROM to Work Properly with Xbox Media Centre
  - 25-10-2006 fixed: cosmetic bug in filemanager handling of rar files.
