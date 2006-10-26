@@ -224,7 +224,10 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
     {
       if (vec.size() == iDepth+1 || !bMask)
       {
-        pFileItem = new CFileItem(vec[iDepth]);
+        if (vec.size() == 0)
+          pFileItem = new CFileItem(strName);
+        else
+          pFileItem = new CFileItem(vec[iDepth]);
         pFileItem->m_strPath = strName.c_str()+strPathInRar.size();
         pFileItem->m_dwSize = pIterator->item.UnpSize;
         pFileItem->m_idepth = pIterator->item.Method;
@@ -237,7 +240,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
 
     pFileItem = NULL;
 	}
-  return true;
+  return vecpItems.Size() > 0; 
 }
 
 bool CRarManager::ListArchive(const CStdString& strRarPath, ArchiveList_struct* &pArchiveList)
