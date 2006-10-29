@@ -136,6 +136,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetSystemDirectoryA", (unsigned long) dllGetSystemDirectoryA);
   g_dlls.kernel32.AddExport("DuplicateHandle", (unsigned long) dllDuplicateHandle);
   g_dlls.kernel32.AddExport("GetShortPathNameA", (unsigned long) dllGetShortPathName);
+  g_dlls.kernel32.AddExport("GetTempPathA", (unsigned long) dllGetTempPathA);
   g_dlls.kernel32.AddExport("SetErrorMode", (unsigned long) dllSetErrorMode);
   g_dlls.kernel32.AddExport("IsProcessorFeaturePresent", (unsigned long) dllIsProcessorFeaturePresent);
   g_dlls.kernel32.AddExport("FileTimeToLocalFileTime", (unsigned long) FileTimeToLocalFileTime);
@@ -174,7 +175,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("DecodePointer", (unsigned long)dllDecodePointer);
 
   g_dlls.kernel32.AddExport("LockFile", (unsigned long)dllLockFile);
-  //g_dlls.kernel32.AddExport("LockFileEx", (unsigned long)dllLockFileEx);
+  g_dlls.kernel32.AddExport("LockFileEx", (unsigned long)dllLockFileEx);
   g_dlls.kernel32.AddExport("UnlockFile", (unsigned long)dllUnlockFile);
 
   g_dlls.kernel32.AddExport("GetSystemTime", (unsigned long)GetSystemTime);
