@@ -1063,7 +1063,7 @@ HRESULT CApplication::Initialize()
     CreateDirectory(strThumbLoc.c_str(),NULL);
   }
 
-  CreateDirectory("Z:\\temp", NULL); // temp directory for python
+  CreateDirectory("Z:\\temp", NULL); // temp directory for python and dllGetTempPathA
   CreateDirectory("Q:\\scripts", NULL);
   CreateDirectory("Q:\\language", NULL);
   CreateDirectory("Q:\\visualisations", NULL);
