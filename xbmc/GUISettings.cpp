@@ -446,6 +446,7 @@ CGUISettings::CGUISettings(void)
   AddString(7, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(8, "lookandfeel.sep2");
   AddBool(9, "lookandfeel.enablerssfeeds",13305,  true);
+  AddBool(0,"lookandfeel.soundsduringplayback",0,true); // POST 2.0.1: localize me and make me visible
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "", SPIN_CONTROL_TEXT);
