@@ -115,7 +115,7 @@
 #include "GUIDialogLockSettings.h"
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
-#define USE_RELEASE_LIBS
+//#define USE_RELEASE_LIBS
 
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
@@ -2271,6 +2271,8 @@ bool CApplication::OnAction(const CAction &action)
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
       }
+      if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+        g_audioManager.Enable(m_pPlayer->IsPaused());
       return true;
     }
     if (!m_pPlayer->IsPaused())
@@ -2339,6 +2341,9 @@ bool CApplication::OnAction(const CAction &action)
       {
         // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
+        if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+          g_audioManager.Enable(m_pPlayer->IsPaused());
+
         g_application.SetPlaySpeed(1);
         return true;
       }
@@ -3311,6 +3316,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
 
   }
+  if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+    g_audioManager.Enable(false);
   return bResult;
 }
 
@@ -3330,6 +3337,8 @@ void CApplication::OnPlayBackEnded()
   StartLEDControl(false);
   DimLCDOnPlayback(false);
 
+  g_audioManager.Enable(true);
+  
   //  Reset audioscrobbler submit status
   CScrobbler::GetInstance()->SetSubmitSong(false);
 }
@@ -3374,6 +3383,9 @@ void CApplication::OnPlayBackStopped()
   m_gWindowManager.SendMessage(msg);
   StartLEDControl(false);
   DimLCDOnPlayback(false);
+  
+  g_audioManager.Enable(true);
+
   //  Reset audioscrobbler submit status
   CScrobbler::GetInstance()->SetSubmitSong(false);
 }
