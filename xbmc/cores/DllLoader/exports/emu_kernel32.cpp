@@ -1062,6 +1062,22 @@ extern "C" BOOL WINAPI dllUnlockFile(HANDLE hFile, DWORD dwFileOffsetLow, DWORD 
   return TRUE;
 }
 
+extern "C" DWORD WINAPI dllGetTempPathA(DWORD nBufferLength, LPTSTR lpBuffer)
+{
+  // If the function succeeds, the return value is the length, in TCHARs, of the string copied to lpBuffer,
+  // not including the terminating null character. If the return value is greater than nBufferLength,
+  // the return value is the size of the buffer required to hold the path.
+  const char* tempPath = "Z:\\temp\\";
+  unsigned int len = strlen(tempPath);
+  
+  if (nBufferLength > len)
+  {
+    strcpy(lpBuffer, tempPath);
+  }
+
+  return len;
+}
+
 /*
 
 The following routine was hacked up by JM while looking at why the DVD player was failing
