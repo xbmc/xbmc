@@ -2161,7 +2161,7 @@ int CXbmcHttp::xbmcExecBuiltIn(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcGUISetting(int numParas, CStdString paras[])
 //parameter=type;name(;value)
-//type=0->int, 1->bool, 2->float
+//type=0->int, 1->bool, 2->float, 3->string
 {
   if (numParas<2)
     return SetResponse(openTag+"Error:Missing parameters");
@@ -2185,6 +2185,10 @@ int CXbmcHttp::xbmcGUISetting(int numParas, CStdString paras[])
           tmp.Format("%f", g_guiSettings.GetFloat(paras[1]));
           return SetResponse(openTag + tmp);
           break;
+        case 3: // string
+          tmp.Format("%s", g_guiSettings.GetString(paras[1]));
+          return SetResponse(openTag + tmp);
+          break;
         default:
           return SetResponse(openTag+"Error:Unknown type");
           break;
@@ -2203,6 +2207,10 @@ int CXbmcHttp::xbmcGUISetting(int numParas, CStdString paras[])
           break;
         case 2: // float
           g_guiSettings.SetFloat(paras[1], (float)atof(paras[2]));
+          return SetResponse(openTag+"OK");
+          break;
+        case 3: // string
+          g_guiSettings.SetString(paras[1], paras[2]);
           return SetResponse(openTag+"OK");
           break;
         default:
