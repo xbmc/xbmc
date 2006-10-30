@@ -15,14 +15,10 @@ typedef struct _Export
   unsigned long function;
   void* track_function;
   unsigned long ordinal;
+  
+  struct _Export* pNext; // saves a bit of memory if we don't create a List Element
 } Export;
 
-typedef struct _ExportList
-{
-  Export* pExport;
-  _ExportList* pNext;
-} ExportList;
-  
 typedef struct _LoadedList
 {
   DllLoader* pDll;
@@ -69,7 +65,7 @@ private:
   bool m_bSystemDll; // true if this dll should not be removed
   bool m_bLoadSymbols; // when true this dll should not be removed
   bool m_bUnloadSymbols;
-  ExportList* m_pExports;
+  Export* m_pExportHead;
   LoadedList* m_pDlls;
 
   void PrintImportLookupTable(unsigned long ImportLookupTable_RVA);
