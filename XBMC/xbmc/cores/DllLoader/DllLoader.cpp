@@ -153,7 +153,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
     m_sPath=NULL;
 
   m_iRefCount = 1;
-  m_pExports = NULL;
+  m_pExportHead = NULL;
   m_bTrack = bTrack;
   m_bSystemDll = bSystemDll;
   m_pDlls = NULL;
@@ -186,20 +186,18 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   if (stricmp(sDll, "Q:\\system\\python\\python24.dll")==0 ||
       strstr(sDll, ".pyd") != NULL)
   {
-    //m_bLoadSymbols=true;
+    m_bLoadSymbols=true;
   }
 }
 
 DllLoader::~DllLoader()
 {
-  while (m_pExports)
+  while (m_pExportHead)
   {
-    ExportList* entry = m_pExports;
-    m_pExports = entry->pNext;
+    Export* pExport = m_pExportHead;
+    m_pExportHead = pExport->pNext;
     
-    if (entry->pExport->sFunctionName) free(entry->pExport->sFunctionName);
-    delete entry->pExport;
-    delete entry;
+    free(pExport);
   }
 
   while (m_pDlls)
@@ -542,30 +540,30 @@ int DllLoader::ResolveExport(unsigned long ordinal, void **pAddr)
 
 Export* DllLoader::GetExportByOrdinal(unsigned long ordinal)
 {
-  ExportList* it = m_pExports;
+  Export* pExport = m_pExportHead;
   
-  while (it)
+  while (pExport)
   {
-    if (ordinal == it->pExport->ordinal)
+    if (ordinal == pExport->ordinal)
     {
-      return it->pExport;
+      return pExport;
     }
-    it = it->pNext;
+    pExport = pExport->pNext;
   }
   return NULL;
 }
 
 Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
 {
-  ExportList* it = m_pExports;
+  Export* pExport = m_pExportHead;
   
-  while (it)
+  while (pExport)
   {
-    if (it->pExport->sFunctionName && strcmp(sFunctionName, it->pExport->sFunctionName) == 0)
+    if (pExport->sFunctionName && strcmp(sFunctionName, pExport->sFunctionName) == 0)
     {
-      return it->pExport;
+      return pExport;
     }
-    it = it->pNext;
+    pExport = pExport->pNext;
   }
   return NULL;
 }
@@ -648,44 +646,46 @@ int DllLoader::DecrRef()
 
 void DllLoader::AddExport(unsigned long ordinal, unsigned long function, void* track_function)
 {
-  Export* export = new Export;
-  export->function = function;
-  export->ordinal = ordinal;
-  export->track_function = track_function;
-  export->sFunctionName = NULL;
+  int len = sizeof(Export);
+
+  Export* pExport = (Export*)malloc(len);
+  pExport->function = function;
+  pExport->ordinal = ordinal;
+  pExport->track_function = track_function;
+  pExport->sFunctionName = NULL;
   
-  ExportList* entry = new ExportList;
-  entry->pExport = export;
-  entry->pNext = m_pExports;
-  m_pExports = entry;
+  pExport->pNext = m_pExportHead;
+  m_pExportHead = pExport;
 }
 
 void DllLoader::AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function, void* track_function)
 {
-  Export* export = new Export;
-  export->function = function;
-  export->ordinal = ordinal;
-  export->track_function = track_function;
-  export->sFunctionName = strdup(sFunctionName);
+  int len = sizeof(Export);
+
+  Export* pExport = (Export*)malloc(len + strlen(sFunctionName) + 1);
+  pExport->function = function;
+  pExport->ordinal = ordinal;
+  pExport->track_function = track_function;
+  pExport->sFunctionName = ((char*)(pExport)) + len;
+  strcpy(pExport->sFunctionName, sFunctionName);
   
-  ExportList* entry = new ExportList;
-  entry->pExport = export;
-  entry->pNext = m_pExports;
-  m_pExports = entry;
+  pExport->pNext = m_pExportHead;
+  m_pExportHead = pExport;
 }
 
 void DllLoader::AddExport(char* sFunctionName, unsigned long function, void* track_function)
 {
-  Export* export = new Export;
-  export->function = function;
-  export->ordinal = -1;
-  export->track_function = track_function;
-  export->sFunctionName = strdup(sFunctionName);
+  int len = sizeof(Export);
+
+  Export* pExport = (Export*)malloc(len + strlen(sFunctionName) + 1);
+  pExport->function = function;
+  pExport->ordinal = -1;
+  pExport->track_function = track_function;
+  pExport->sFunctionName = ((char*)(pExport)) + len;
+  strcpy(pExport->sFunctionName, sFunctionName);
   
-  ExportList* entry = new ExportList;
-  entry->pExport = export;
-  entry->pNext = m_pExports;
-  m_pExports = entry;
+  pExport->pNext = m_pExportHead;
+  m_pExportHead = pExport;
 }
 
 bool DllLoader::Load()
