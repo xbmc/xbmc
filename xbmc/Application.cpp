@@ -113,9 +113,10 @@
 #include "GUIWindowScriptsInfo.h"
 #include "GUIDialogProfileSettings.h"
 #include "GUIDialogLockSettings.h"
+
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
-//#define USE_RELEASE_LIBS
+#define USE_RELEASE_LIBS
 
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
