@@ -57,6 +57,7 @@ bool CFileRTV::Open(const char* strHostName, const char* strFileName, int iport,
   size = rtv_get_filesize(strHostAndPort.c_str(), strFileName);
   if (!size)
   {
+    CLog::Log(LOGERROR, __FUNCTION__" - Failed to get filesize of %s on %s", strHostName, strFileName);
     return false;
   }
   m_fileSize = size;
@@ -65,9 +66,13 @@ bool CFileRTV::Open(const char* strHostName, const char* strFileName, int iport,
   // Store the handle to the connection in m_rtvd.  Exit if handle invalid.
   m_rtvd = rtv_open_file(strHostAndPort.c_str(), strFileName, m_filePos);
   if (!m_rtvd)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Failed to open %s on %s", strHostName, strFileName);
     return false;
+  }
   m_bOpened = true;
-
+  
+  CLog::Log(LOGDEBUG, __FUNCTION__" - Opened %s on %s, Size %I64d, Position %d", strHostName, strFileName, m_fileSize, m_filePos);
   return true;
 }
 
@@ -87,6 +92,17 @@ unsigned int CFileRTV::Read(void *lpBuf, __int64 uiBufSize)
 
   // Read uiBufSize bytes from the m_rtvd connection
   lenread = rtv_read_file(m_rtvd, (char *) lpBuf, (size_t) uiBufSize);
+
+  CLog::Log(LOGDEBUG, __FUNCTION__" - Requested %d, Recieved %d", (size_t)uiBufSize, lenread);
+
+  // Some extra checking so library behaves
+  if(m_filePos + lenread > m_fileSize)
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - RTV library read passed filesize, returning last chunk");
+    lenread = (size_t)(m_fileSize - m_filePos);
+    m_filePos = m_fileSize;
+    return lenread;
+  }  
 
   // Increase the file position by the number of bytes we just read
   m_filePos += lenread;
