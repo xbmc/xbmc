@@ -32,7 +32,7 @@ CRarManager::~CRarManager()
 	ClearCache(true);
 }
 
-bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE  bOptions, const CStdString& strDir, __int64 iSize)
+bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE  bOptions, const CStdString& strDir, const __int64 iSize)
 {
 	CSingleLock lock(m_CritSection);
     //If file is listed in the cache, then use listed copy or cleanup before overwriting.
@@ -105,8 +105,37 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   CStdString strPath = strPathInRar;
   strPath.Replace('/', '\\');
 
+  __int64 iOffset = -1;
   if (iRes != 2)
-    iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPath.c_str()),NULL);
+  {
+    if (pFile)
+    {
+      if (pFile->m_iOffset != -1)
+        iOffset = pFile->m_iOffset;
+    }
+
+
+    if (iOffset == -1)  // grab from list
+    {
+      for( ArchiveList_struct* pIterator = j->second.first; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
+      {
+        CStdString strName;
+
+        /* convert to utf8 */
+        if( pIterator->item.NameW && wcslen(pIterator->item.NameW) > 0)
+          g_charsetConverter.utf16toUTF8(pIterator->item.NameW, strName);
+        else
+          g_charsetConverter.stringCharsetToUtf8(pIterator->item.Name, strName);
+
+        if (strName.Equals(strPath))
+        {
+          iOffset = pIterator->item.iOffset;
+          break;
+        }
+      }
+    }
+    iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPath.c_str()),NULL,&iOffset);
+  }
   if (iRes == 0)
   {
     CLog::Log(LOGERROR,"failed to extract file: %s",strPathInRar.c_str());
@@ -135,7 +164,8 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   CUtil::AddFileToFolder(strDir,CUtil::GetFileName(strPathInRar),pFile->m_strCachedPath); // GetFileName
   CUtil::GetFatXQualifiedPath(pFile->m_strCachedPath);
   pFile->m_bAutoDel = (bOptions & EXFILE_AUTODELETE) != 0;
-	strPathInCache = pFile->m_strCachedPath;
+  pFile->m_iOffset = iOffset;
+  strPathInCache = pFile->m_strCachedPath;
 
   if (iRes == 2) //canceled
   {
