@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
 					or NULL for all files.
 	libpassword   - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
-int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword)
+int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword, __int64* iOffset)
 {
 	InitCRC();
 	int bRes = 1;
@@ -232,9 +232,13 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 					struct FindData FD;
 					if (FindFile::FastFind(rarfile,NULL,&FD))
 						pExtract->GetDataIO().TotalArcSize+=FD.Size;
-          pExtract->ExtractArchiveInit(pCmd.get(),*pArc);      
+          pExtract->ExtractArchiveInit(pCmd.get(),*pArc);
+
+          __int64 iOff=0;
+          bool bSeeked = false;
           while (1)
 					{
+            iOff = pArc->Tell();
             int Size=pArc->ReadHeader();
           
             if (pArc->GetHeaderType() == ENDARC_HEAD)
@@ -254,17 +258,31 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
             }
 
             if (fileToExtract)
+            {
               if (*fileToExtract)
               {
                 bool EqualNames=false;
 	              int MatchNumber=pCmd->IsProcessFile(pArc->NewLhd,&EqualNames);
                 bool ExactMatch=MatchNumber!=0;
                 if (ExactMatch)
-					  			break;
+                {
+					  			if (iOffset)
+                    *iOffset = iOff;
+                  break;
+                }
               }
-					}
+            }
+            if (iOffset && !bSeeked && !pArc->Solid)
+            {
+              if (*iOffset > -1)
+              {
+                bSeeked = true;
+                pArc->Seek(*iOffset,SEEK_SET);
+              }
+            }
+          }
 
-					pExtract->GetDataIO().ProcessedArcSize+=FD.Size;         
+          pExtract->GetDataIO().ProcessedArcSize+=FD.Size;         
 				}
 			}
 		}
@@ -322,6 +340,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
         if (pArc->IsOpened() && pArc->IsArchive(true))
         {
           bool TitleShown=false;
+          __int64 iOffset = pArc->NextBlockPos;
           while(pArc->ReadHeader()>0)
           {
             if (pArc->GetHeaderType() == FILE_HEAD)
@@ -329,6 +348,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
               if (pPrev)
                 if (stricmp(pArc->NewLhd.FileName,pPrev->item.Name)==0)
                 {
+                  iOffset = pArc->NextBlockPos;
                   pArc->SeekToNext();
                   continue;
                 }
@@ -354,10 +374,12 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
               pCurr->item.UnpVer = pArc->NewLhd.UnpVer;
               pCurr->item.Method = pArc->NewLhd.Method;
               pCurr->item.FileAttr = pArc->NewLhd.FileAttr;
+              pCurr->item.iOffset = iOffset;
               pCurr->next = NULL;
               pPrev = pCurr;
               FileCount++;
             }
+            iOffset = pArc->NextBlockPos;
             pArc->SeekToNext();
           }
           if (pCmd->VolSize!=0 && ((pArc->NewLhd.Flags & LHD_SPLIT_AFTER) || pArc->GetHeaderType()==ENDARC_HEAD && (pArc->EndArcHead.Flags & EARC_NEXT_VOLUME)!=0))
@@ -384,7 +406,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
                       bBreak=true;
                       break;  
                     }
-
+//                  iOffset = pArc->Tell();
                   arc.SeekToNext();
                 }
                 if (bBreak)
