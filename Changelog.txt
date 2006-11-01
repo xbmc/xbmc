@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-11-2006 changed: additional logging for replay-tv filesystem to hopefully figure out why it doesn't work anymore for mplayer.
  - 30-10-2006 changed: memory allocation for dll loader, saves around 100k
  - 30-10-2006 changed: httpapi GuiSetting to accept String type by EQ2K
  - 29-10-2006 changed: now disables navsounds during playback. behaviour can be reverted using advancedsettings.xml
