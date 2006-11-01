@@ -16,6 +16,7 @@ struct RAR20_archive_entry                  /* These infos about files are  */
   unsigned char  UnpVer;
   unsigned char  Method;
   unsigned long  FileAttr;
+  __int64 iOffset;
 };
 
 /* used to list archives */
@@ -33,7 +34,7 @@ typedef struct archivelist
 					or NULL for all files.
 	libpassword   - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
-int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword = NULL);
+int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword = NULL, __int64* iOffset=NULL);
 
 /*-------------------------------------------------------------------------*\
 	List the files in a RAR file
