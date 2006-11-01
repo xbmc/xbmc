@@ -28,6 +28,7 @@ public:
   CStdString m_strPathInRar;
 	bool	m_bAutoDel;
   int m_iUsed;
+  __int64 m_iOffset;
   
   bool m_bIsCanceled()
   {
@@ -50,7 +51,7 @@ public:
 	bool CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE bOptions = EXFILE_AUTODELETE, const CStdString& strDir =RAR_DEFAULT_CACHE, const __int64 iSize=-1);
 	bool GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar = "");
 	bool HasMultipleEntries(const CStdString& strPath);
-  	bool GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath, bool bMask=true, const CStdString& strPathInRar="");
+    bool GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath, bool bMask=true, const CStdString& strPathInRar="");
 	CFileInfo* GetFileInRar(const CStdString& strRarPath, const CStdString& strPathInRar);
   bool IsFileInRar(bool& bResult, const CStdString& strRarPath, const CStdString& strPathInRar);
 	void ClearCache(bool force=false);
