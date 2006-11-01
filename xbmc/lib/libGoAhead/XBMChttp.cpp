@@ -2280,9 +2280,12 @@ int CXbmcHttp::xbmcGetSystemInfo(int numParas, CStdString paras[])
     CStdString strInfo = "";
     int i;
     for (i=0; i<numParas; i++)
-      strInfo += openTag + (CStdString) g_infoManager.GetLabel(atoi(paras[i])) ;
-    if (strInfo == "")
-      strInfo="Error:No information retrieved";
+    {
+      CStdString strTemp = (CStdString) g_infoManager.GetLabel(atoi(paras[i]));
+      if (strTemp.IsEmpty())
+        strTemp = "Error:No information retrieved for " + atoi(paras[i]);
+      strInfo += openTag + strTemp;
+    }
     return SetResponse(strInfo);
   }
 }
@@ -2295,11 +2298,13 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
   {
     CStdString strInfo = "";
     int i;
-
     for (i=0; i<numParas; i++)
-      strInfo += openTag + (CStdString) g_infoManager.GetLabel(g_infoManager.TranslateString(paras[i])) ;
-    if (strInfo == "")
-      strInfo="Error:No information retrieved";
+    {
+      CStdString strTemp = (CStdString) g_infoManager.GetLabel(g_infoManager.TranslateString(paras[i]));
+      if (strTemp.IsEmpty())
+        strTemp = "Error:No information retrieved for " + paras[i];
+      strInfo += openTag + strTemp;
+    }
     return SetResponse(strInfo);
   }
 }
