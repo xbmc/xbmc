@@ -100,7 +100,6 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
 {
   m_pBackgroundLoader = NULL;
   Reset();
-  srand( timeGetTime() );
 }
 
 CGUIWindowSlideShow::~CGUIWindowSlideShow(void)
@@ -684,6 +683,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
 
 void CGUIWindowSlideShow::Shuffle()
 {
+  srand( timeGetTime() );
   random_shuffle(m_vecSlides.begin(), m_vecSlides.end());
   m_iCurrentSlide = 0;
   m_iNextSlide = 1;
