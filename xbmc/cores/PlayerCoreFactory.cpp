@@ -95,6 +95,12 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_PAPLAYER);    
   }
 
+  // force flv files to default to dvd player
+  if (url.GetFileType() == "flv" )
+  {
+    vecCores.push_back(EPC_DVDPLAYER);
+  }
+
   if (url.GetProtocol().Equals("daap") || url.GetProtocol().Equals("upnp"))		// mplayer is better for daap and upnp
   {
     // due to us not using curl for all url handling, extension checking doesn't work
