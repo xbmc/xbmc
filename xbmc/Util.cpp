@@ -4439,6 +4439,7 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
 
 CStdString CUtil::SubstitutePath(const CStdString& strFileName)
 {
+  //CLog::Log(LOGDEBUG,__FUNCTION__" checking source filename:[%s]", strFileName.c_str());
   // substitutes paths to correct issues with remote playlists containing full paths
   for (unsigned int i = 0; i < g_advancedSettings.m_pathSubstitutions.size(); i++)
   {
@@ -4460,6 +4461,7 @@ CStdString CUtil::SubstitutePath(const CStdString& strFileName)
       CUtil::AddSlashAtEnd(strReplace);
 
     // if left most characters match the search, replace them
+    //CLog::Log(LOGDEBUG,__FUNCTION__" testing for path:[%s]", strSearch.c_str());
     int iLen = strSearch.size();
     if (strFileName.Left(iLen).Equals(strSearch))
     {
@@ -4467,12 +4469,12 @@ CStdString CUtil::SubstitutePath(const CStdString& strFileName)
       CStdString strTemp = strFileName.Mid(iLen);
       strTemp.Replace("\\", strReplace.Right(1));
       CStdString strFileNameNew = strReplace + strTemp;
-      //CLog::Log(LOGDEBUG,"CUtil::SubstitutePath, new filename: %s", strFileNameNew.c_str());
+      //CLog::Log(LOGDEBUG,__FUNCTION__" new filename:[%s]", strFileNameNew.c_str());
       return strFileNameNew;
     }
   }
-
   // nothing matches, return original string
+  //CLog::Log(LOGDEBUG,__FUNCTION__" no matches");
   return strFileName;
 }
 
