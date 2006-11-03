@@ -2788,19 +2788,20 @@ void CSettings::ResetSkinSettings()
   {
     CStdString skinName = (*it).second.name;
     if (skinName.Left(currentSkin.size()) == currentSkin)
-      it = m_skinBools.erase(it);
-    else
-      it++;
+      (*it).second.value = false;
+    
+    it++;
   }
   std::map<int, CSkinString>::iterator it2 = m_skinStrings.begin();
   while (it2 != m_skinStrings.end())
   {
     CStdString skinName = (*it2).second.name;
     if (skinName.Left(currentSkin.size()) == currentSkin)
-      it2 = m_skinStrings.erase(it2);
-    else
-      it2++;
+      (*it2).second.value = "";
+    
+    it2++;
   }
+  g_infoManager.ResetCache();
 }
 
 void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
