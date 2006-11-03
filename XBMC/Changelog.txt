@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-11-2006 updated: Dutch language file (Thnx to MrNice).
  - 03-11-2006 changed: XBMC.ResetSkinSettings() now resets the settings instead of removing them.
  - 02-11-2006 changed: .flv files default to the dvdplayer
  - 01-11-2006 fixed: [1586248] http api would not show errors for GetSystemInfo and GetSystemInfoByName
