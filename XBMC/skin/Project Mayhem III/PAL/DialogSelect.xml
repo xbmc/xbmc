@@ -61,8 +61,8 @@
    <textxoff>-5</textxoff>
    <onleft>5</onleft>
    <onright>5</onright>
-   <onup>5</onup>
-   <ondown>5</ondown>
+   <onup>3</onup>
+   <ondown>3</ondown>
   </control>
 
   <control>
