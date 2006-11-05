@@ -159,26 +159,34 @@ CreditLine_t Credits[] =
     { 50, 75, 0, 6400, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"WiSO" },
 
     // Translators (8 beats per group, 32 total)
-    { 50, 22, 7680, 7320+7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Translators" },
+    { 50, 22, 7680, 7320+7320, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Translators" },
     { 50, 35, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"gamepc (Chinese (Simple))" },
     { 50, 45, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"omenpica (Chinese (Traditional))" },
-    { 50, 55, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Modhack (French)" },
-    { 50, 65, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Bobbin007 (German)" },
-    { 50, 75, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"sCAPe (German)" },
-    { 50, 85, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Deezle (German)" },
+    { 50, 55, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"nightspirit (Dutch)" },
+    { 50, 65, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"console-ombouw (Dutch)" },
+    { 50, 75, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"tijmengozer (Dutch)" },
+    { 50, 85, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"mrnice (Dutch)" },
 
-    { 50, 35, 7320/2, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"ceomr (German (Austrian))" },
-    { 50, 45, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"kotix (Italian)" },
-    { 50, 55, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"vnm (Norwegian)" },
-    { 50, 65, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"napek (Polish)" },
-    { 50, 75, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"smuto (Polish)" },
-    { 50, 85, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"blittan (Swedish)" },
+    { 50, 35, 7320/2, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Modhack (French)" },
+    { 50, 45, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Bobbin007 (German)" },
+    { 50, 55, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"sCAPe (German)" },
+    { 50, 65, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Deezle (German)" },
+    { 50, 75, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"ceomr (German (Austrian))" },
+    { 50, 85, 0, 7320/2, 360, 360, EFF_IN_FADE | EFF_OUT_FADE , 24, L"vgs (Hebrew)" },
 
-    { 50, 35, 7320/2, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"bali001 (Hungarian)" },
-    { 50, 45, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"djoens (Indonesian)" },
+    { 50, 35, 7320/2, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"yuvalt (Hebrew)" },
+    { 50, 45, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"ookladek (Hebrew)" },
+    { 50, 55, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Team XboxKlub (Hungarian)" },
+    { 50, 65, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"djoens (Indonesian)" },
+    { 50, 75, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"napek (Polish)" },
+    { 50, 85, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"smuto (Polish)" },
+    
+    { 50, 35, 7320/2, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"mvbm (Portuguese (Brazil))" },
+    { 50, 45, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"que_ (Russian)" },
     { 50, 55, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"xsiluro (Slovenian)" },
     { 50, 65, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"jose_t (Spanish)" },
-
+    { 50, 75, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"blittan (Swedish)" },
+ 
     // note pause here of 8 beats as more translators pop up
 
     // Skin credits (16 beats)
