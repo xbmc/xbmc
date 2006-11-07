@@ -3080,7 +3080,17 @@ if(time_frame>0.001 && !(vo_flags&256)){
 	  -sh_audio->a_in_buffer_len/(float)sh_audio->i_bps,
 	  a_pts+(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps);
 #endif	  
+#ifdef _XBOX
+      // taken from how newer mplayer handles this
+      if(sh_audio->i_bps)
+        a_pts+=(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
+      if(sh_audio->o_bps) // Decoded but not filtered
+        a_pts -= sh_audio->a_buffer_len / (double)sh_audio->o_bps;
+      if(ao_data.bps) // Not accepted by ao
+        a_pts -= sh_audio->a_out_buffer_len * playback_speed / (double)ao_data.bps;
+#else
       a_pts+=(ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
+#endif
     }
     v_pts=sh_video ? sh_video->pts : d_video->pts;
 
