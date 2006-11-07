@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 07-11-2006 changed: use libavformat's demuxer for nsv (shoutcast video) files instead of mplayer's builtin, it's better at handling stream changes.
+ - 07-11-2006 changed: better logging of failed mplayer attempts
  - 01-11-2006 changed: additional logging for replay-tv filesystem to hopefully figure out why it doesn't work anymore for mplayer.
  - 30-10-2006 changed: memory allocation for dll loader, saves around 100k
  - 30-10-2006 changed: httpapi GuiSetting to accept String type by EQ2K
