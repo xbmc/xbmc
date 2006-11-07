@@ -983,16 +983,18 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
       // of ccxstream which sends unrared data when you request the first .rar of a movie.
       // This means you can play a movie gaplessly from 50 rar files without unraring, which is neat.
     }
+#if 0 // sadly, libavformat is much worse at detecting that we actually have a nsv stream.
+      // and there is no way to force it.
 
-    // libavformats demuxer is better than the internal mplayers, sadly
-    // this also causes errors if mplayer.dll doesn't have libavformat
+    // libavformats demuxer is better than the internal mplayers
+    // this however also causes errors if mplayer.dll doesn't have libavformat
     if (file.GetContentType().Equals("video/nsv", false)
       || url.GetOptions().Equals(";stream.nsv", false))
     {
       options.SetDemuxer("35"); // libavformat
       options.SetSyncSpeed(1); // number of seconds per frame mplayer is allowed to correct
     }
-
+#endif
     //Make sure we remeber what subtitle stream and audiostream we where playing so that stacked items gets the same.
     //These will be reset in Application.Playfile if the restart parameter isn't set.
     if (g_stSettings.m_currentVideoSettings.m_AudioStream >= 0)
@@ -1871,7 +1873,7 @@ void CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
   if (slt.language != 0)
   {
     CStdString strName;
-    if (!g_LangCodeExpander.LookupDVDLangCode(strName, slt.language))
+    if (!g_LangCodeExpander.Lookup(strName, slt.language))
     {
       strName = "UNKNOWN:";
       strName += (char)(slt.language >> 8) & 255;
