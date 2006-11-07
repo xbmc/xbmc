@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-11-2006 fixed: some files would indicate inf a/v sync in mplayer and thus not keep sync, (due to missing input bps).
   - 24-09-2006 fixed: choppy playback in dvr-ms files for asf demuxer (update from mplayerhq)
   - 17-09-2006 fixed: better handling of mpegs that don't have a start pts of 0
   - 17-09-2006 fixed: some video's would not return current time, even thou they had total time and current percentage
