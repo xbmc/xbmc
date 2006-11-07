@@ -5,7 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-11-2006 fixed: remote number keys must be mapped to buttons in the dvd when in dvd menu, some dvd's make use of that.
  - 07-11-2006 changed: better logging of failed mplayer attempts
+ - 03-11-2006 updated: Dutch language file (Thnx to MrNice).
+ - 03-11-2006 changed: XBMC.ResetSkinSettings() now resets the settings instead of removing them.
+ - 02-11-2006 changed: .flv files default to the dvdplayer
+ - 01-11-2006 fixed: [1586248] http api would not show errors for GetSystemInfo and GetSystemInfoByName
+ - 01-11-2006 fixed: random slideshow screensaver wouldnt always be random
+ - 01-11-2006 fixed: increased the speed of archive extraction a notch.
  - 01-11-2006 changed: additional logging for replay-tv filesystem to hopefully figure out why it doesn't work anymore for mplayer.
  - 30-10-2006 changed: memory allocation for dll loader, saves around 100k
  - 30-10-2006 changed: httpapi GuiSetting to accept String type by EQ2K
