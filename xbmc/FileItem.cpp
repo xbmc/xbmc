@@ -1551,7 +1551,7 @@ void CFileItemList::Stack()
       }
     }
     // Stacking
-    for (int i = 0; i < Size() - 1; ++i)
+    for (int i = 0; i < Size(); ++i)
     {
       CFileItem *item = Get(i);
 
