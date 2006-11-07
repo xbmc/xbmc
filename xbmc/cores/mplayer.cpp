@@ -120,6 +120,7 @@ CMPlayer::Options::Options()
   m_bLimitedHWAC3 = false;
   m_bDeinterlace = false;
   m_subcp = "";
+  m_synccomp = 0.0f;
 }
 void CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -339,6 +340,12 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   //m_vecOptions.push_back("-mc");
   //m_vecOptions.push_back("0.0001");
 
+  if(m_synccomp)
+  {
+    m_vecOptions.push_back("-mc");
+    strTmp.Format("%2.4f", m_synccomp);
+    m_vecOptions.push_back(strTmp);
+  }
   // smooth out audio driver timer (audio drivers arent perect)
   //Higher values mean more smoothing,but avoid using numbers too high,
   //as they will cause independent timing from the sound card and may result in
@@ -977,6 +984,14 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
       // This means you can play a movie gaplessly from 50 rar files without unraring, which is neat.
     }
 
+    // libavformats demuxer is better than the internal mplayers, sadly
+    // this also causes errors if mplayer.dll doesn't have libavformat
+    if (file.GetContentType().Equals("video/nsv", false)
+      || url.GetOptions().Equals(";stream.nsv", false))
+    {
+      options.SetDemuxer("35"); // libavformat
+      options.SetSyncSpeed(1); // number of seconds per frame mplayer is allowed to correct
+    }
 
     //Make sure we remeber what subtitle stream and audiostream we where playing so that stacked items gets the same.
     //These will be reset in Application.Playfile if the restart parameter isn't set.
@@ -1052,7 +1067,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
       m_bIsPlaying = false;
     }
 
-    if (bFileOnInternet)
+    if (bFileOnInternet || initoptions.identify)
     {
       // for streaming we're done.
     }
@@ -1181,15 +1196,8 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
 
     // set up defaults
     SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
-/*  Why should we do anything other than the defaults (as set by the user)
-    if (g_stSettings.m_currentVideoSettings.m_SubtitleStream < 0)
-    {
-      if (bIsDVD) //Default subtitles for dvd's off
-        SetSubtitleVisible(false);
-      else
-        SetSubtitleVisible(true);
-    }*/
     SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+
     if (g_stSettings.m_currentVideoSettings.m_AudioStream < -1)
     { // check + fix up the stereo/left/right setting
       bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL) && ((g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers && HasVideo()) || (g_guiSettings.GetBool("musicplayer.outputtoallspeakers") && !HasVideo()));
@@ -1214,9 +1222,16 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     }
 
   }
-  catch (...)
+  catch(int e)
   {
-    CLog::Log(LOGERROR, "cmplayer::openfile() %s failed", strFile.c_str());
+    CLog::Log(LOGERROR, __FUNCTION__" %s failed with code %d", strFile.c_str(), e);
+    iRet=-1;
+    CloseFile();
+    Unload();
+  }
+  catch (win32_exception &e)
+  {
+    e.writelog(__FUNCTION__);
     iRet=-1;
     CloseFile();
     Unload();

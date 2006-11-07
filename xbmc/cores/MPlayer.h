@@ -67,6 +67,7 @@ public:
     void SetAudioCodec(const string& codec) { m_videocodec = codec; }
     void SetVideoCodec(const string& codec) { m_audiocodec = codec; }
     void SetDemuxer(const string& demuxer) { m_demuxer = demuxer; }
+    void SetSyncSpeed(const float synccomp) { m_synccomp = synccomp; }
 
   private:
     bool m_bDeinterlace;
@@ -97,6 +98,7 @@ public:
     string m_strDvdDevice;
     string m_strFlipBiDiCharset;
     string m_strHexRawAudioFormat;
+    float m_synccomp;
     vector<string> m_vecOptions;
   };
   CMPlayer(IPlayerCallback& callback);
