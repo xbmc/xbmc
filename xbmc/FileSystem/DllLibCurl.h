@@ -84,18 +84,18 @@ namespace XCURL
     virtual void Unload();
 
     /* structure holding a session info */
-	  typedef struct SSession
-	  {
-		  DWORD         m_idletimestamp;  // timestamp of when this object when idle
+    typedef struct SSession
+    {
+      DWORD         m_idletimestamp;  // timestamp of when this object when idle
       CStdString    m_protocol;
       CStdString    m_hostname;
-		  bool          m_busy;
-		  CURL_HANDLE*  m_session;
-	  } SSession;
+      bool          m_busy;
+      CURL_HANDLE*  m_session;
+    } SSession;
 
-	  typedef std::vector<SSession> VEC_CURLSESSIONS;
-  	
-	  VEC_CURLSESSIONS m_sessions;	
+    typedef std::vector<SSession> VEC_CURLSESSIONS;
+    
+    VEC_CURLSESSIONS m_sessions;  
     CCriticalSection m_critSection;
   };
 };
