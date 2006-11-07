@@ -46,160 +46,6 @@ public: \
 
 ///////////////////////////////////////////////////////////
 //
-//  DEFINE_METHOD_FP
-//
-//  Defines a function for an export from a dll as a fuction pointer.
-//  Use DEFINE_METHOD_FP for each function to be resolved. Functions
-//  defined like this are not listed by IntelliSence.
-//
-//  result: Result of the function
-//  name:   Name of the function
-//  args:   Arguments of the function, enclosed in parentheses
-//          The parameter names can be anything
-//
-#define DEFINE_METHOD_FP(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-  public: \
-    name##_METHOD name;
-
-///////////////////////////////////////////////////////////
-//
-//  DEFINE_METHODX
-//
-//  Defines a function for an export from a dll.
-//  Use DEFINE_METHODX for each function to be resolved.
-//  where X is the number of parameter the function has.
-//
-//  result: Result of the function
-//  name:   Name of the function
-//  args:   Arguments of the function, enclosed in parentheses
-//          The parameter names have to be renamed to px, where
-//          x is the number of the parameter
-//
-
-#define DEFINE_METHOD0(result, name) \
-  protected: \
-    typedef result (* name##_METHOD) (); \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name() \
-    { \
-      return m_##name(); \
-    }
-
-#define DEFINE_METHOD1(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1); \
-    }
-
-#define DEFINE_METHOD2(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2); \
-    }
-
-#define DEFINE_METHOD3(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3); \
-    }
-
-#define DEFINE_METHOD4(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4); \
-    }
-
-#define DEFINE_METHOD5(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5); \
-    }
-
-#define DEFINE_METHOD6(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6); \
-    }
-
-#define DEFINE_METHOD7(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6, p7); \
-    }
-
-#define DEFINE_METHOD8(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6, p7, p8); \
-    }
-
-#define DEFINE_METHOD9(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6, p7, p8, p9); \
-    }
-
-#define DEFINE_METHOD10(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10); \
-    }
-
-#define DEFINE_METHOD11(result, name, args) \
-  protected: \
-    typedef result (* name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11); \
-    }
-
-///////////////////////////////////////////////////////////
-//
 //  DEFINE_METHOD_LINKAGE
 //
 //  Defines a function for an export from a dll, if the 
@@ -336,6 +182,48 @@ public: \
     { \
       return m_##name(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11); \
     }
+///////////////////////////////////////////////////////////
+//
+//  DEFINE_METHOD_FP
+//
+//  Defines a function for an export from a dll as a fuction pointer.
+//  Use DEFINE_METHOD_FP for each function to be resolved. Functions
+//  defined like this are not listed by IntelliSence.
+//
+//  result: Result of the function
+//  name:   Name of the function
+//  args:   Arguments of the function, enclosed in parentheses
+//          The parameter names can be anything
+//
+#define DEFINE_METHOD_FP(result, name, args) DEFINE_METHOD_LINKAGE_FP(result, __cdecl, name, args)
+
+///////////////////////////////////////////////////////////
+//
+//  DEFINE_METHODX
+//
+//  Defines a function for an export from a dll.
+//  Use DEFINE_METHODX for each function to be resolved.
+//  where X is the number of parameter the function has.
+//
+//  result: Result of the function
+//  name:   Name of the function
+//  args:   Arguments of the function, enclosed in parentheses
+//          The parameter names have to be renamed to px, where
+//          x is the number of the parameter
+//
+#define DEFINE_METHOD0(result, name) DEFINE_METHOD_LINKAGE0(result, __cdecl, name)
+#define DEFINE_METHOD1(result, name, args) DEFINE_METHOD_LINKAGE1(result, __cdecl, name, args)
+#define DEFINE_METHOD2(result, name, args) DEFINE_METHOD_LINKAGE2(result, __cdecl, name, args)
+#define DEFINE_METHOD3(result, name, args) DEFINE_METHOD_LINKAGE3(result, __cdecl, name, args)
+#define DEFINE_METHOD4(result, name, args) DEFINE_METHOD_LINKAGE4(result, __cdecl, name, args)
+#define DEFINE_METHOD5(result, name, args) DEFINE_METHOD_LINKAGE5(result, __cdecl, name, args)
+#define DEFINE_METHOD6(result, name, args) DEFINE_METHOD_LINKAGE6(result, __cdecl, name, args)
+#define DEFINE_METHOD7(result, name, args) DEFINE_METHOD_LINKAGE7(result, __cdecl, name, args)
+#define DEFINE_METHOD8(result, name, args) DEFINE_METHOD_LINKAGE8(result, __cdecl, name, args)
+#define DEFINE_METHOD9(result, name, args) DEFINE_METHOD_LINKAGE9(result, __cdecl, name, args)
+#define DEFINE_METHOD10(result, name, args) DEFINE_METHOD_LINKAGE10(result, __cdecl, name, args)
+#define DEFINE_METHOD11(result, name, args) DEFINE_METHOD_LINKAGE11(result, __cdecl, name, args)
+
 
 ///////////////////////////////////////////////////////////
 //
