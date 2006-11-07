@@ -1811,7 +1811,7 @@ void CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 
   if (strlen(sub.name) > 0)
   {
-    if (!g_LangCodeExpander.Lookup(strStreamName, sub.name))
+    if (!g_LangCodeExpander.LookupDVDLangCode(strStreamName, sub.name))
     {
       strStreamName = sub.name;
     }
