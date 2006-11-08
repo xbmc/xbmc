@@ -1811,7 +1811,7 @@ void CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 
   if (strlen(sub.name) > 0)
   {
-    if (!g_LangCodeExpander.LookupDVDLangCode(strStreamName, sub.name))
+    if (!g_LangCodeExpander.Lookup(strStreamName, sub.name))
     {
       strStreamName = sub.name;
     }
@@ -1873,7 +1873,7 @@ void CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
   if (slt.language != 0)
   {
     CStdString strName;
-    if (!g_LangCodeExpander.Lookup(strName, slt.language))
+    if (!g_LangCodeExpander.LookupDVDLangCode(strName, slt.language))
     {
       strName = "UNKNOWN:";
       strName += (char)(slt.language >> 8) & 255;
