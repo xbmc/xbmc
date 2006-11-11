@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-11-2006 fixed: file listings over samba would not display proper dates.
  - 07-11-2006 fixed: in folders wich only contain a video_ts folder, the folder wouldn't stack to a single item.
  - 07-11-2006 fixed: remote number keys must be mapped to buttons in the dvd when in dvd menu, some dvd's make use of that.
  - 07-11-2006 changed: better logging of failed mplayer attempts
