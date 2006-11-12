@@ -219,7 +219,7 @@
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
-#define VERSION_STRING "2.0.0"
+#define VERSION_STRING "2.0.1"
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
