@@ -24,12 +24,13 @@
 
 #include "../stdafx.h"
 #include "IoSupport.h"
+#ifdef HAS_UNDOCUMENTED
 #ifdef _XBOX
 #include "Undocumented.h"
 #else
 #include "ntddcdrm.h"
 #endif
-
+#endif
 
 #ifdef _XBOX
 #define CTLCODE(DeviceType, Function, Method, Access) ( ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method)  )
@@ -45,6 +46,7 @@ typedef struct
 }
 stDriveMapping;
 
+#ifdef _XBOX
 stDriveMapping driveMapping[] =
   {
     { 'C', "Harddisk0\\Partition2", 2},
@@ -56,9 +58,25 @@ stDriveMapping driveMapping[] =
     { 'Z', "Harddisk0\\Partition5", 5},
     { 'G', "Harddisk0\\Partition7", 7},
   };
+#else
+stDriveMapping driveMapping[] =
+  {
+    { 'C', "C:", 2},
+    { 'D', "D:", -1},
+    { 'E', "E:", 1},
+    { 'F', "F:", 6},
+    { 'X', "X:", 3},
+    { 'Y', "Y:", 4},
+    { 'Z', "Z:", 5},
+    { 'G', "G:", 7},
+  };
+
+#include "../../Tools/Win32/XBMC_PC.h"
+#endif
 #define NUM_OF_DRIVES ( sizeof( driveMapping) / sizeof( driveMapping[0] ) )
 
 
+#ifdef _XBOX
 PARTITION_TABLE *CIoSupport::m_partitionTable = NULL;
 
 unsigned int CIoSupport::read_active_partition_table(PARTITION_TABLE *p_table)
@@ -116,6 +134,7 @@ unsigned int CIoSupport::read_active_partition_table(PARTITION_TABLE *p_table)
 
   return STATUS_SUCCESS;
 }
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -183,6 +202,18 @@ HRESULT CIoSupport::Mount(const char* szDrive, char* szDevice)
 //  CLog::Log(LOGERROR, "Calling IoCreateSymbolicLink()");
   IoCreateSymbolicLink(&LinkName, &DeviceName);
 //  CLog::Log(LOGERROR, "IoCreateSymbolicLink() done");
+#else
+  if ((strnicmp(szDevice, "Harddisk0", 9) == 0) ||
+      (strnicmp(szDevice, "CDrom", 5) == 0))
+    return S_OK;
+
+  /*
+  // ok, do the actual mounting then
+  CStdString command;
+  command.Format("subst %s %s", szDrive, szDevice);
+  WinExec(command.c_str(), SW_HIDE);
+  Sleep(500); // HACK: Give it time to run
+  */
 #endif
   return S_OK;
 }
@@ -206,6 +237,14 @@ HRESULT CIoSupport::Unmount(const char* szDrive)
     };
 
   IoDeleteSymbolicLink(&LinkName);
+#else
+  /*if (szDrive[0] == 'Q' || szDrive[0] == 'P' || szDrive[0] == 'Q' || szDrive[0] == 'T')
+  {
+    CStdString command;
+    command.Format("subst %s /D", szDrive);
+    WinExec(command.c_str(), SW_HIDE);
+    Sleep(500); // HACK! give it time to run
+  }*/
 #endif
   return S_OK;
 }
@@ -438,6 +477,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 
 INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
+#ifdef HAS_DVD_DRIVE
   DWORD dwBytesReturned;
   RAW_READ_INFO rawRead = {0};
 
@@ -466,11 +506,13 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
       //   printf("%i\n", iErr);
     }
   }
+#endif
   return -1;
 }
 
 INT CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
+#ifdef HAS_DVD_DRIVE
   DWORD dwBytesReturned;
   RAW_READ_INFO rawRead;
 
@@ -494,6 +536,7 @@ INT CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
       return RAW_SECTOR_SIZE;
     }
   }
+#endif
   return -1;
 }
 
@@ -685,6 +728,11 @@ VOID CIoSupport::GetXbePath(char* szDest)
     OutputDebugString("cant get xbe path\n");
     szDest[0] = 0; //somehow we cant get the xbepath :(
   }
+#else
+//  extern CXBMC_PC *g_xbmcPC;
+//  GetModuleFileName(g_xbmcPC->GetInstance(), szDest, XBMC_MAX_PATH);
+  GetCurrentDirectory(XBMC_MAX_PATH, szDest);
+  strcat(szDest, "\\XBMC_PC.exe");
 #endif
 }
 

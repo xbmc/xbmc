@@ -49,7 +49,9 @@
 
 #define NSUBEXP  10
 
+#ifdef _XBOX
 #include <xtl.h>
+#endif
 #include <stdio.h>
 
 #define FALSE 0

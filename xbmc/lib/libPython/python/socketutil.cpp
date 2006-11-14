@@ -1,7 +1,9 @@
 #include "..\..\..\stdafx.h"
 #include <stdio.h>
 #include "socketutil.h"
+#ifdef _XBOX
 #include "util.h"
+#endif
 
 #pragma code_seg( "PY_UTIL" )
 #pragma data_seg( "PY_UTIL_RW" )
@@ -11,6 +13,7 @@
 #pragma comment(linker, "/merge:PY_UTIL_RD=PY_UTIL")
 #pragma comment(linker, "/section:PY_UTIL,RWE")
 
+#ifdef _XBOX
 char* inet_ntoa (struct in_addr in)
 {
 	static char _inetaddress[32];
@@ -140,3 +143,4 @@ struct protoent* FAR getprotobyname(const char* name) {
 	OutputDebugString("TODO: getprotobyname\n");
 	return NULL;
 }
+#endif

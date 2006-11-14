@@ -3,6 +3,9 @@
 #include "..\..\..\stdafx.h"
 #include <stdio.h>
 //#include <xobjbase.h>
+#ifndef _XBOX
+#include <objbase.h>
+#endif
 
 #include "emu_misc.h"
 #include "emu_dummy.h"

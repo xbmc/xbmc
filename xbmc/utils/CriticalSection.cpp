@@ -20,7 +20,9 @@
 
 #include "../stdafx.h"
 #include "CriticalSection.h"
+#ifdef _XBOX
 #include "../xbox/Undocumented.h"
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -42,6 +44,7 @@ CCriticalSection::operator LPCRITICAL_SECTION()
   return &m_critSection;
 }
 
+#ifdef _XBOX
 BOOL NTAPI OwningCriticalSection(LPCRITICAL_SECTION section)
 {
   return (PKTHREAD)section->OwningThread == GetCurrentKPCR()->PrcbData.CurrentThread;
@@ -65,3 +68,4 @@ VOID NTAPI RestoreCriticalSection(LPCRITICAL_SECTION section, DWORD count)
   for(DWORD i=0;i<count;i++)
     EnterCriticalSection(section);  
 }
+#endif

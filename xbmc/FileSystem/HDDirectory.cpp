@@ -96,7 +96,10 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
       }
     }
     while (FindNextFile((HANDLE)hFind, &wfd));
+#ifdef _XBOX
+    // if we use AutoPtrHandle, this auto-closes
     FindClose((HANDLE)hFind); //should be closed
+#endif
   }
   if (m_cacheDirectory)
     g_directoryCache.SetDirectory(strPath1, vecCacheItems);
@@ -119,7 +122,7 @@ bool CHDDirectory::Create(const char* strPath)
     if(strPath2 != strPath1)
       CLog::Log(LOGNOTICE,"fatxq: %s -> %s",strPath2.c_str(), strPath1.c_str());
   }
-  
+
   if(::CreateDirectory(strPath1.c_str(), NULL))
     return true;
   else if(GetLastError() == ERROR_ALREADY_EXISTS)

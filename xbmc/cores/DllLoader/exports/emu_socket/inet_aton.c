@@ -41,8 +41,12 @@
 /* Minimal implementation of inet_aton.
  * Cannot distinguish between failure and a local broadcast address. */
 
+#ifdef _XBOX
 #include <xtl.h>
 #include <winsockx.h>
+#else
+#include <windows.h>
+#endif
 #include <stddef.h>
 #include "emu_socket.h"
 

@@ -1,4 +1,8 @@
+#ifdef _XBOX
 #include <xtl.h>
+#else
+#include <windows.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>

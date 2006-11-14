@@ -2,6 +2,7 @@
 
 #include "AC3Codec.h"
 
+#ifdef HAS_AC3_CODEC
 class AC3CDDACodec : public AC3Codec
 {
 public:
@@ -12,3 +13,4 @@ public:
 protected:
   virtual bool CalculateTotalTime();
 };
+#endif

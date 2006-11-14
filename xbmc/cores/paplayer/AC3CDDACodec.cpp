@@ -1,5 +1,6 @@
 #include "../../stdafx.h"
 #include "AC3CDDACodec.h"
+#ifdef HAS_AC3_CDDA_CODEC
 #include "../../lib/libcdio/sector.h"
 
 AC3CDDACodec::AC3CDDACodec() : AC3Codec()
@@ -35,3 +36,4 @@ bool AC3CDDACodec::CalculateTotalTime()
   m_TotalTime *= 1000; // ms
   return m_TotalTime > 0;
 }
+#endif

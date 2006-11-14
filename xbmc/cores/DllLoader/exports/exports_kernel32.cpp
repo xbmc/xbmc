@@ -24,7 +24,11 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("TerminateThread", (unsigned long)dllTerminateThread);
   g_dlls.kernel32.AddExport("GetCurrentThread", (unsigned long)dllGetCurrentThread);
   g_dlls.kernel32.AddExport("QueryPerformanceCounter", (unsigned long)QueryPerformanceCounter);
+#ifdef _XBOX
   g_dlls.kernel32.AddExport("QueryPerformanceFrequency", (unsigned long)QueryPerformanceFrequencyXbox);
+#else
+  g_dlls.kernel32.AddExport("QueryPerformanceFrequency", (unsigned long)QueryPerformanceFrequency);
+#endif
   g_dlls.kernel32.AddExport("SetThreadPriority", (unsigned long)SetThreadPriority);
   g_dlls.kernel32.AddExport("GetTickCount", (unsigned long)GetTickCount);
   g_dlls.kernel32.AddExport("GetCurrentThreadId", (unsigned long)GetCurrentThreadId); //test
@@ -69,7 +73,9 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("ReadFile", (unsigned long) ReadFile);
   g_dlls.kernel32.AddExport("dllDVDReadFile", (unsigned long) dllDVDReadFileLayerChangeHack);
   g_dlls.kernel32.AddExport("SetFilePointer", (unsigned long) SetFilePointer);
+#ifdef _XBOX
   g_dlls.kernel32.AddExport("xboxopendvdrom", (unsigned long) xboxopendvdrom);
+#endif
   g_dlls.kernel32.AddExport("GetVersion", (unsigned long) dllGetVersion);
   g_dlls.kernel32.AddExport("MulDiv", (unsigned long) MulDiv);
   g_dlls.kernel32.AddExport("lstrlenA", (unsigned long) lstrlenA);
@@ -103,8 +109,10 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetEnvironmentStrings", (unsigned long) dllGetEnvironmentStrings);
   g_dlls.kernel32.AddExport("GetEnvironmentStringsW", (unsigned long) dllGetEnvironmentStringsW);
   g_dlls.kernel32.AddExport("GetEnvironmentVariableA", (unsigned long) dllGetEnvironmentVariableA);
+#ifdef _XBOX
   g_dlls.kernel32.AddExport("HeapDestroy", (unsigned long) HeapDestroy, (void*)track_HeapDestroy );
   g_dlls.kernel32.AddExport("HeapCreate", (unsigned long) HeapCreate, (void*)track_HeapCreate );
+#endif
   g_dlls.kernel32.AddExport("VirtualFree", (unsigned long) VirtualFree);
   g_dlls.kernel32.AddExport("MultiByteToWideChar", (unsigned long) dllMultiByteToWideChar);
   g_dlls.kernel32.AddExport("LCMapStringA", (unsigned long) dllLCMapStringA);
@@ -129,7 +137,9 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("SetPriorityClass", (unsigned long) dllSetPriorityClass);
   g_dlls.kernel32.AddExport("FormatMessageA", (unsigned long) dllFormatMessageA);
   g_dlls.kernel32.AddExport("GetFullPathNameA", (unsigned long) dllGetFullPathNameA);
+#ifdef _XBOX
   g_dlls.kernel32.AddExport("SignalObjectAndWait", (unsigned long) SignalObjectAndWait);
+#endif
   g_dlls.kernel32.AddExport("ExpandEnvironmentStringsA", (unsigned long) dllExpandEnvironmentStringsA);
   g_dlls.kernel32.AddExport("GetVolumeInformationA", (unsigned long) GetVolumeInformationA);
   g_dlls.kernel32.AddExport("GetWindowsDirectoryA", (unsigned long) dllGetWindowsDirectoryA);

@@ -72,15 +72,15 @@ namespace PYXBMC
   {
     CLabelInfo label;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.textColor = pControl->dwTextColor;
+    label.textColor = label.focusedColor = pControl->dwTextColor;
     label.align = pControl->dwAlign;
     pControl->pGUIControl = new CGUIFadeLabelControl(
       pControl->iParentId,
       pControl->iControlId,
-      pControl->dwPosX,
-      pControl->dwPosY,
-      pControl->dwWidth,
-      pControl->dwHeight,
+      (float)pControl->dwPosX,
+      (float)pControl->dwPosY,
+      (float)pControl->dwWidth,
+      (float)pControl->dwHeight,
       label);
 
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);

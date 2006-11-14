@@ -5,7 +5,6 @@
 
 static int iPyGUILockRef = 0;
 static TiXmlDocument pySkinReferences;
-static int iPyLoadedSkinReferences = 0;
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -57,50 +56,27 @@ namespace PYXBMC
 	/*
 	 * Looks in references.xml for image name
 	 * If none exist return default image name
-	 * iPyLoadedSkinReferences:
-	 * - 0 xml not loaded
-	 * - 1 tried to load xml, but it failed
-	 * - 2 xml loaded
 	 */
 	const char* PyGetDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
 	{
-		if (iPyLoadedSkinReferences == 0)
-		{
-			// xml not loaded. We only try to load references.xml once
-			RESOLUTION res;
-			string strPath = g_SkinInfo.GetSkinPath("references.xml", &res);
-			if (pySkinReferences.LoadFile(strPath.c_str()))	iPyLoadedSkinReferences = true;
-			else return cDefault; // return default value
-				
-		}
-//		else if (iPyLoadedSkinReferences == 1) return cDefault;
+		// create an xml block so that we can resolve our defaults
+		// <control type="type">
+		//   <description />
+		// </control>
+		TiXmlElement control("control");
+		control.SetAttribute("type", cControlType);
+		TiXmlElement filler("description");
+		control.InsertEndChild(filler);
+		g_SkinInfo.ResolveIncludes(&control, cControlType);
 
-		TiXmlElement *pControls = pySkinReferences.RootElement();
-
-		TiXmlNode *pNode = NULL;
-		TiXmlElement *pElement = NULL;
-
-		//find control element
-		while(pNode = pControls->IterateChildren("control", pNode))
-		{
-			pElement = pNode->FirstChildElement("type");
-			if (pElement) if (!strcmp(pElement->FirstChild()->Value(), cControlType)) break;
-		}
-		if (!pElement) return cDefault;
-
-		// get texture element
-    CStdString element = cTextureType;
-		TiXmlElement *pTexture = pNode->FirstChildElement(element.c_str());
+		// ok, now check for our texture type
+		TiXmlElement *pTexture = control.FirstChildElement(cTextureType);
 		if (pTexture)
 		{
 			// found our textureType
-			pNode = pTexture->FirstChild();
-			if (pNode && pNode->Value()[0] != '-') return pNode->Value();
-			else
-			{
-				//set default
-				return cDefault;
-			}
+			TiXmlNode *pNode = pTexture->FirstChild();
+			if (pNode && pNode->Value()[0] != '-')
+				return pNode->Value();
 		}
 		return cDefault;
 	}

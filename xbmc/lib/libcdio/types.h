@@ -37,7 +37,7 @@ extern "C" {
 #include <sys/types.h>
 #endif 
 
-#ifdef _XBOX
+#if defined(_XBOX) || defined(WIN32)
 #include "inttypes.h"
 #endif
 
@@ -186,7 +186,7 @@ extern "C" {
     
     @see lba_t
   */
-#ifdef _XBOX
+#if defined(_XBOX) || defined(WIN32)
   #pragma pack(1)
 #else
   PRAGMA_BEGIN_PACKED
@@ -194,7 +194,7 @@ extern "C" {
   struct msf_rec {
     uint8_t m, s, f;
   } GNUC_PACKED;
-#ifdef _XBOX
+#if defined(_XBOX) || defined(WIN32)
   #pragma pack()
 #else
   PRAGMA_END_PACKED

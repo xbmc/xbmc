@@ -28,7 +28,9 @@ void export_wsock32()
   g_dlls.wsock32.AddExport("closesocket", 3, (unsigned long)dllclosesocket, (void*)track_closesocket);
   g_dlls.wsock32.AddExport("ioctlsocket", 12, (unsigned long)dllioctlsocket);
   g_dlls.wsock32.AddExport("ntohs", 15, (unsigned long)ntohs);
+#ifdef _XBOX
   g_dlls.wsock32.AddExport("gethostbyname", 52, (unsigned long)dllgethostbyname);
+#endif
   g_dlls.wsock32.AddExport("WSAGetLastError", 111, (unsigned long)WSAGetLastError);
   g_dlls.wsock32.AddExport("htons", 9, (unsigned long)htons);
   g_dlls.wsock32.AddExport("__WSAFDIsSet", 151, (unsigned long)dll__WSAFDIsSet);
@@ -38,7 +40,11 @@ void export_wsock32()
   g_dlls.wsock32.AddExport("getprotobyname", 53, (unsigned long)dllgetprotobyname);
   g_dlls.wsock32.AddExport("getpeername", 5, (unsigned long)dllgetpeername);
   g_dlls.wsock32.AddExport("getservbyport", 56, (unsigned long)dllgetservbyport);
+#ifdef _XBOX
   g_dlls.wsock32.AddExport("gethostbyaddr", 51, (unsigned long)dllgethostbyaddr);
+#else
+  g_dlls.wsock32.AddExport("gethostbyaddr", 51, (unsigned long)gethostbyaddr);
+#endif
 }
 
 /*
@@ -130,7 +136,9 @@ void export_ws2_32()
   g_dlls.ws2_32.AddExport("bind", 2, (unsigned long)dllbind);
   g_dlls.ws2_32.AddExport("closesocket", 3, (unsigned long)dllclosesocket, (void*)track_closesocket);
   g_dlls.ws2_32.AddExport("connect", 4, (unsigned long)dllconnect);
+#ifdef _XBOX
   g_dlls.ws2_32.AddExport("gethostbyname", 52, (unsigned long)dllgethostbyname);
+#endif
   g_dlls.ws2_32.AddExport("getsockopt", 7, (unsigned long)dllgetsockopt);
   g_dlls.ws2_32.AddExport("htonl", 8, (unsigned long)htonl);
   g_dlls.ws2_32.AddExport("htons", 9, (unsigned long)htons);
@@ -157,7 +165,9 @@ void export_ws2_32()
   g_dlls.ws2_32.AddExport("getprotobyname", 53, (unsigned long)dllgetprotobyname);
   g_dlls.ws2_32.AddExport("getpeername", 5, (unsigned long)dllgetpeername);
   g_dlls.ws2_32.AddExport("getservbyport", 56, (unsigned long)dllgetservbyport);
+#ifdef _XBOX
   g_dlls.ws2_32.AddExport("gethostbyaddr", 51, (unsigned long)dllgethostbyaddr);
+#endif
   g_dlls.ws2_32.AddExport("getaddrinfo", 95, (unsigned long)dllgetaddrinfo);
   g_dlls.ws2_32.AddExport("getnameinfo", 96, (unsigned long)dllgetnameinfo);
   g_dlls.ws2_32.AddExport("freeaddrinfo", 94, (unsigned long)dllfreeaddrinfo);
