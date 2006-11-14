@@ -4,7 +4,9 @@
 #include "IMsgSenderCallback.h"
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBVideoConfig.h"
+#ifdef HAS_XBOX_D3D
 #include "xgraphics.h"
+#endif
 #include "SkinInfo.h"
 
 CGraphicContext g_graphicsContext;
@@ -160,7 +162,7 @@ const RECT& CGraphicContext::GetViewWindow() const
 {
   return m_videoRect;
 }
-void CGraphicContext::SetViewWindow(const RECT& rc)
+void CGraphicContext::SetViewWindow(float left, float top, float right, float bottom)
 {
   if (m_bCalibrating)
   {
@@ -168,10 +170,10 @@ void CGraphicContext::SetViewWindow(const RECT& rc)
   }
   else
   {
-    m_videoRect.left = (long)(ScaleFinalXCoord((float)rc.left, (float)rc.top) + 0.5f);
-    m_videoRect.top = (long)(ScaleFinalYCoord((float)rc.left, (float)rc.top) + 0.5f);
-    m_videoRect.right = (long)(ScaleFinalXCoord((float)rc.right, (float)rc.bottom) + 0.5f);
-    m_videoRect.bottom = (long)(ScaleFinalYCoord((float)rc.right, (float)rc.bottom) + 0.5f);
+    m_videoRect.left = (long)(ScaleFinalXCoord(left, top) + 0.5f);
+    m_videoRect.top = (long)(ScaleFinalYCoord(left, top) + 0.5f);
+    m_videoRect.right = (long)(ScaleFinalXCoord(right, bottom) + 0.5f);
+    m_videoRect.bottom = (long)(ScaleFinalYCoord(right, bottom) + 0.5f);
     if (m_bShowPreviewWindow && !m_bFullScreenVideo)
     {
       D3DRECT d3dRC;
@@ -195,7 +197,9 @@ void CGraphicContext::ClipToViewWindow()
   if (m_videoRect.bottom > m_iScreenHeight) clip.y2 = m_iScreenHeight;
   if (clip.x2 < clip.x1) clip.x2 = clip.x1 + 1;
   if (clip.y2 < clip.y1) clip.y2 = clip.y1 + 1;
+#ifdef HAS_XBOX_D3D
   m_pd3dDevice->SetScissors(1, FALSE, &clip);
+#endif
 }
 
 void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
@@ -254,7 +258,7 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllow
       if (bCanDoWidescreen) res.push_back(PAL60_16x9);
     }
   }
-  else
+  if (g_videoConfig.HasNTSC())
   {
     res.push_back(NTSC_4x3);
     if (bCanDoWidescreen) res.push_back(NTSC_16x9);
@@ -306,7 +310,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #ifdef PROFILE
   interval = D3DPRESENT_INTERVAL_IMMEDIATE;
 #endif
- 
+
+#ifndef HAS_XBOX_D3D
+  interval = 0;
+#endif
+
   if (interval != m_pd3dParams->FullScreen_PresentationInterval)
   {
     m_pd3dParams->FullScreen_PresentationInterval = interval;
@@ -325,6 +333,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_pd3dParams->BackBufferWidth = g_settings.m_ResInfo[res].iWidth;
     m_pd3dParams->BackBufferHeight = g_settings.m_ResInfo[res].iHeight;
     m_pd3dParams->Flags = g_settings.m_ResInfo[res].dwFlags;
+#ifndef HAS_XBOX_D3D
+    m_pd3dParams->Flags |= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+#endif
     if (res == PAL60_4x3 || res == PAL60_16x9)
     {
       if (m_pd3dParams->BackBufferWidth <= 720 && m_pd3dParams->BackBufferHeight <= 480)
@@ -349,7 +360,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     /* need to clear and preset, otherwise flicker filters won't take effect */
     if (NeedReset || forceClear)
     {
+#ifdef HAS_XBOX_D3D
       m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+#else
+      m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
+#endif
       m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
     }
   }
@@ -376,86 +391,12 @@ void CGraphicContext::SetScreenFilters(bool useFullScreenFilters)
   {
     // These are only valid here and nowhere else
     // set soften on/off
+#ifdef HAS_XBOX_D3D
     m_pd3dDevice->SetSoftDisplayFilter(useFullScreenFilters ? g_guiSettings.GetBool("videoplayer.soften") : g_guiSettings.GetBool("videoscreen.soften"));
     m_pd3dDevice->SetFlickerFilter(useFullScreenFilters ? g_guiSettings.GetInt("videoplayer.flicker") : g_guiSettings.GetInt("videoscreen.flickerfilter"));
+#endif
   }
   Unlock();
-}
-
-void CGraphicContext::ScaleRectToScreenResolution(DWORD& left, DWORD& top, DWORD& right, DWORD& bottom, RESOLUTION res)
-{
-  if (res == INVALID) return ;
-  float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
-  float fPercentY = ((float)m_iScreenHeight) / ((float)g_settings.m_ResInfo[res].iHeight);
-  left = (DWORD) ( (float(left)) * fPercentX + 0.5f);
-  top = (DWORD) ( (float(top)) * fPercentY + 0.5f);
-  right = (DWORD) ( (float(right)) * fPercentX + 0.5f);
-  bottom = (DWORD) ( (float(bottom)) * fPercentY + 0.5f);
-}
-
-void CGraphicContext::ScalePosToScreenResolution(DWORD& x, DWORD& y, RESOLUTION res)
-{
-  if (res == INVALID) return ;
-  float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
-  float fPercentY = ((float)m_iScreenHeight) / ((float)g_settings.m_ResInfo[res].iHeight);
-  x = (DWORD) ( (float(x)) * fPercentX + 0.5f);
-  y = (DWORD) ( (float(y)) * fPercentY + 0.5f);
-}
-
-void CGraphicContext::ScaleXCoord(DWORD& x, RESOLUTION res)
-{
-  if (res == INVALID) return ;
-  float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
-  x = (DWORD) ( (float(x)) * fPercentX + 0.5f);
-}
-
-void CGraphicContext::ScaleXCoord(int& x, RESOLUTION res)
-{
-  if (res == INVALID) return ;
-  float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
-  x = (int) ( (float(x)) * fPercentX + 0.5f);
-}
-
-void CGraphicContext::ScaleXCoord(long& x, RESOLUTION res)
-{
-  if (res == INVALID) return ;
-  float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
-  x = (long) ( (float(x)) * fPercentX + 0.5f);
-}
-
-void CGraphicContext::ScaleXCoord(float& x, RESOLUTION res)
-{
-  if (res == INVALID) return ;
-  float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
-  x *= fPercentX;
-}
-
-void CGraphicContext::ScaleYCoord(DWORD& y, RESOLUTION res)
-{
-  if (res == INVALID) return ;
-  float fPercentY = ((float)m_iScreenHeight ) / ((float)g_settings.m_ResInfo[res].iHeight);
-  y = (DWORD) ( (float(y)) * fPercentY + 0.5f);
-}
-
-void CGraphicContext::ScaleYCoord(int& y, RESOLUTION res)
-{
-  if (res == INVALID) return ;
-  float fPercentY = ((float)m_iScreenHeight ) / ((float)g_settings.m_ResInfo[res].iHeight);
-  y = (int) ( (float(y)) * fPercentY + 0.5f);
-}
-
-void CGraphicContext::ScaleYCoord(long& y, RESOLUTION res)
-{
-  if (res == INVALID) return ;
-  float fPercentY = ((float)m_iScreenHeight ) / ((float)g_settings.m_ResInfo[res].iHeight);
-  y = (long) ( (float(y)) * fPercentY + 0.5f);
-}
-
-void CGraphicContext::ScaleYCoord(float& y, RESOLUTION res)
-{
-  if (res == INVALID) return ;
-  float fPercentY = ((float)m_iScreenHeight ) / ((float)g_settings.m_ResInfo[res].iHeight);
-  y *= fPercentY;
 }
 
 void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
@@ -583,7 +524,11 @@ void CGraphicContext::Clear()
   //Not trying to clear the zbuffer when there is none is 7 fps faster (pal resolution)
   if ((!m_pd3dParams) || (m_pd3dParams->EnableAutoDepthStencil == TRUE))
   {
+#ifdef HAS_XBOX_D3D
     m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+#else
+    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
+#endif
   }
   else
   {
@@ -613,7 +558,7 @@ void CGraphicContext::ApplyStateBlock()
   }
 }
 
-void CGraphicContext::SetScalingResolution(RESOLUTION res, int posX, int posY, bool needsScaling)
+void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
 {
   m_windowResolution = res;
   if (needsScaling)
@@ -647,19 +592,21 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, int posX, int posY, b
     
     m_windowScaleX = fToWidth / fFromWidth;
     m_windowScaleY = fToHeight / fFromHeight;
-    TransformMatrix windowOffset = TransformMatrix::CreateTranslation((float)posX, (float)posY);
+    TransformMatrix windowOffset = TransformMatrix::CreateTranslation(posX, posY);
     TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight);
     TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
     m_guiTransform = guiOffset * guiScaler * windowOffset;
   }
   else
   {
-    m_guiTransform = TransformMatrix::CreateTranslation((float)posX, (float)posY);
+    m_guiTransform = TransformMatrix::CreateTranslation(posX, posY);
     m_windowScaleX = 1.0f;
     m_windowScaleY = 1.0f;
   }
-  // reset the final transform and window transforms
-  m_finalWindowTransform = m_guiTransform;
+  // reset the final transform and window/group transforms
+  while (m_groupTransform.size())
+    m_groupTransform.pop();
+  m_groupTransform.push(m_guiTransform);
   m_finalTransform = m_guiTransform;
 }
 

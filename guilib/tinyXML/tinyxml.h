@@ -873,6 +873,14 @@ public:
 	*/
 	const char* Attribute( const char* name, double* d ) const;
 
+	/** Given an attribute name, Attribute() returns the value
+		for the attribute of that name, or null if none exists.
+		If the attribute exists and can be converted to an float,
+		the float value will be put in the return 'f', if 'f'
+		is non-null.
+	*/
+	const char* Attribute( const char* name, float* f ) const;
+
 	/** QueryIntAttribute examines the attribute - it is an alternative to the
 		Attribute() method with richer error checking.
 		If the attribute is an integer, it is stored in 'value' and 

@@ -19,8 +19,8 @@ class CGUIButtonControl : public CGUIControl
 {
 public:
   CGUIButtonControl(DWORD dwParentID, DWORD dwControlId,
-                    int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                    const CStdString& strTextureFocus, const CStdString& strTextureNoFocus,
+                    float posX, float posY, float width, float height,
+                    const CImage& textureFocus, const CImage& textureNoFocus,
                     const CLabelInfo &label);
 
   virtual ~CGUIButtonControl(void);
@@ -33,21 +33,17 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetPosition(int iPosX, int iPosY);
+  virtual void SetPosition(float posX, float posY);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   void SetLabel(const string & aLabel);
   void SetLabel2(const string & aLabel2);
-  void SetHyperLink(long dwWindowID);
   void SetClickActions(const vector<CStdString>& clickActions) { m_clickActions = clickActions; };
   const vector<CStdString> &GetClickActions() const { return m_clickActions; };
   void SetFocusAction(const CStdString& focusAction) { m_focusAction = focusAction; };
-  const CStdString &GetFocusAction() const { return m_focusAction; };
-  const CStdString& GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
-  const CStdString& GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   virtual const string& GetLabel() const { return m_strLabel; };
-  DWORD GetHyperLink() const { return m_lHyperLinkWindowID;};
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
+  void SetSelected(bool bSelected);
   void Flicker(bool bFlicker = TRUE);
   virtual void Update();
   virtual CStdString GetDescription() const;
@@ -75,9 +71,10 @@ protected:
   vector<CInfoPortion>  m_multiInfo;
   CLabelInfo m_label;
 
-  long m_lHyperLinkWindowID;
   vector<CStdString> m_clickActions;
   CStdString m_focusAction;
   bool m_bTabButton;
+
+  bool m_bSelected;
 };
 #endif

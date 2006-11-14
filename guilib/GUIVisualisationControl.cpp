@@ -2,13 +2,18 @@
 #include "GUIVisualisationControl.h"
 #include "../xbmc/GUIUserMessages.h"
 #include "../xbmc/application.h"
-#include "../xbmc/util.h"
+#ifdef HAS_VISUALISATION
 #include "../xbmc/visualizations/Visualisation.h"
 #include "../xbmc/visualizations/VisualisationFactory.h"
 #include "../xbmc/visualizations/fft.h"
-#include "../xbmc/utils/CriticalSection.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#endif
+#ifdef HAS_KARAOKE
 #include "../xbmc/CdgParser.h"
+#endif
+#include "../xbmc/util.h"
+#include "../xbmc/utils/CriticalSection.h"
+#include "../xbmc/utils/SingleLock.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -62,8 +67,8 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
   for (int i = iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
 }
 
-CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
+CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_pVisualisation = NULL;
   m_iNumBuffers = 0;
@@ -78,6 +83,7 @@ CGUIVisualisationControl::~CGUIVisualisationControl(void)
 void CGUIVisualisationControl::FreeVisualisation()
 {
   if (!m_bInitialized) return;
+#ifdef HAS_VISUALISATION
   m_bInitialized = false;
   // tell our app that we're going
   CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, 0, 0);
@@ -104,10 +110,12 @@ void CGUIVisualisationControl::FreeVisualisation()
   m_pVisualisation = NULL;
   ClearBuffers();
   CLog::Log(LOGDEBUG, "FreeVisualisation() done");
+#endif
 }
 
 void CGUIVisualisationControl::LoadVisualisation()
 {
+#ifdef HAS_VISUALISATION
   CSingleLock lock (m_critSection);
   if (m_pVisualisation)
     FreeVisualisation();
@@ -126,15 +134,15 @@ void CGUIVisualisationControl::LoadVisualisation()
   CLog::Log(LOGDEBUG, "LoadVisualisation() started");
   OutputDebugString("Load Visualisation\n");
   strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
-  m_pVisualisation = factory.LoadVisualisation(strVisz.c_str());
+  m_pVisualisation = factory.LoadVisualisation(strVisz);
   if (m_pVisualisation)
   {
     OutputDebugString("Visualisation::Create()\n");
     g_graphicsContext.CaptureStateBlock();
-    float x = g_graphicsContext.ScaleFinalXCoord((float)GetXPosition(), (float)GetYPosition());
-    float y = g_graphicsContext.ScaleFinalYCoord((float)GetXPosition(), (float)GetYPosition());
-    float w = g_graphicsContext.ScaleFinalXCoord((float)GetXPosition() + GetWidth(), (float)GetYPosition() + GetHeight()) - x;
-    float h = g_graphicsContext.ScaleFinalYCoord((float)GetXPosition() + GetWidth(), (float)GetYPosition() + GetHeight()) - y;
+    float x = g_graphicsContext.ScaleFinalXCoord(GetXPosition(), GetYPosition());
+    float y = g_graphicsContext.ScaleFinalYCoord(GetXPosition(), GetYPosition());
+    float w = g_graphicsContext.ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;
+    float h = g_graphicsContext.ScaleFinalYCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - y;
     if (x < 0) x = 0;
     if (y < 0) y = 0;
     if (x + w > g_graphicsContext.GetWidth()) w = g_graphicsContext.GetWidth() - x;
@@ -154,6 +162,7 @@ void CGUIVisualisationControl::LoadVisualisation()
   // tell our app that we're back
   CGUIMessage msg(GUI_MSG_VISUALISATION_LOADED, 0, 0, 0, 0, m_pVisualisation);
   g_graphicsContext.SendMessage(msg);
+#endif
 }
 
 void CGUIVisualisationControl::Render()
@@ -165,6 +174,7 @@ void CGUIVisualisationControl::Render()
     return;
   }
   
+#ifdef HAS_VISUALISATION
   if (m_pVisualisation == NULL)
   { // check if we need to load
     if (g_application.IsPlayingAudio())
@@ -203,7 +213,7 @@ void CGUIVisualisationControl::Render()
     if (m_bInitialized)
     {
       // set the viewport
-      g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight);
+      g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
       try
       {
         m_pVisualisation->Render();
@@ -219,6 +229,7 @@ void CGUIVisualisationControl::Render()
   if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
     g_application.m_pCdgParser->Render();
 
+#endif
   CGUIControl::Render();
 }
 
@@ -234,6 +245,7 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   m_iSamplesPerSec = iSamplesPerSec;
   m_iBitsPerSample = iBitsPerSample;
 
+#ifdef HAS_VISUALISATION
   // Start the visualisation (this loads settings etc.)
   CStdString strFile = CUtil::GetFileName(g_application.CurrentFile());
   OutputDebugString("Visualisation::Start()\n");
@@ -244,6 +256,7 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   }
   m_bInitialized = true;
   CLog::Log(LOGDEBUG, "OnInitialize() done");
+#endif
 }
 
 void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength)
@@ -253,6 +266,7 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
     return ;
   if (!m_bInitialized) return ;
 
+#ifdef HAS_VISUALISATION
   // Save our audio data in the buffers
   auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
   pBuffer->Set(pAudioData, iAudioDataLength, m_iBitsPerSample);
@@ -304,12 +318,14 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
       CLog::Log(LOGERROR, "Exception in Visualisation::AudioData()");
     }
   }
+#endif
   return ;
 }
 
 bool CGUIVisualisationControl::OnAction(const CAction &action)
 {
   if (!m_pVisualisation) return false;
+#ifdef HAS_VISUALISATION
   enum CVisualisation::VIS_ACTION visAction = CVisualisation::VIS_ACTION_NONE;
   if (action.wID == ACTION_VIS_PRESET_NEXT)
     visAction = CVisualisation::VIS_ACTION_NEXT_PRESET;
@@ -325,6 +341,9 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
     visAction = CVisualisation::VIS_ACTION_RATE_PRESET_MINUS;
 
   return m_pVisualisation->OnAction(visAction);
+#else
+  return false;
+#endif
 }
 
 bool CGUIVisualisationControl::UpdateAlbumArt()
@@ -335,7 +354,9 @@ bool CGUIVisualisationControl::UpdateAlbumArt()
       m_AlbumThumb = "";
     }
     CLog::DebugLog("Updating vis albumart: %s", m_AlbumThumb.c_str());
+#ifdef HAS_VISUALISATION
     if (m_pVisualisation && m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_UPDATE_ALBUMART, (void*)(m_AlbumThumb.c_str()))) return true;
+#endif
     return false;
 }
 
@@ -365,13 +386,14 @@ void CGUIVisualisationControl::CreateBuffers()
   ClearBuffers();
 
   // Get the number of buffers from the current vis
+#ifdef HAS_VISUALISATION
   VIS_INFO info;
   m_pVisualisation->GetInfo(&info);
   m_iNumBuffers = info.iSyncDelay + 1;
   m_bWantsFreq = info.bWantsFreq;
   if (m_iNumBuffers > MAX_AUDIO_BUFFERS)
     m_iNumBuffers = MAX_AUDIO_BUFFERS;
-
+#endif
   if (m_iNumBuffers < 1)
     m_iNumBuffers = 1;
 }
@@ -405,4 +427,27 @@ CVisualisation *CGUIVisualisationControl::GetVisualisation()
 {
   CSingleLock lock (m_critSection);
   return m_pVisualisation;
+}
+
+bool CGUIVisualisationControl::OnMouseOver()
+{
+  // unfocusable, so return true
+  CGUIControl::OnMouseOver();
+  return true;
+}
+
+bool CGUIVisualisationControl::CanFocus() const
+{ // unfocusable
+  return false;
+}
+
+bool CGUIVisualisationControl::CanFocusFromPoint(float posX, float posY, CGUIControl **control) const
+{ // mouse is allowed to focus this control, but it doesn't actually receive focus
+  if (HitTest(posX, posY))
+  {
+    *control = (CGUIControl *)this;
+    return true;
+  }
+  *control = NULL;
+  return false;
 }

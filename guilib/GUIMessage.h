@@ -54,6 +54,8 @@
 
 #define GUI_MSG_FOCUSED     26  // a control has become focused
 
+#define GUI_MSG_PAGE_CHANGE 28  // a page control has changed the page number
+
 #define GUI_MSG_USER         1000
 
 /*!

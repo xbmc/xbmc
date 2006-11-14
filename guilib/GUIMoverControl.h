@@ -32,8 +32,8 @@ class CGUIMoverControl : public CGUIControl
 {
 public:
   CGUIMoverControl(DWORD dwParentID, DWORD dwControlId,
-                   int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                   const CStdString& strTextureFocus, const CStdString& strTextureNoFocus);
+                   float posX, float posY, float width, float height,
+                   const CImage& textureFocus, const CImage& textureNoFocus);
 
   virtual ~CGUIMoverControl(void);
 
@@ -49,10 +49,8 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetPosition(int iPosX, int iPosY);
+  virtual void SetPosition(float posX, float posY);
   virtual void SetColourDiffuse(D3DCOLOR colour);
-  const CStdString& GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
-  const CStdString& GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
   void SetLimits(int iX1, int iY1, int iX2, int iY2);
   void SetLocation(int iLocX, int iLocY, bool bSetPosition = true);
   int GetXLocation() const { return m_iLocationX;};

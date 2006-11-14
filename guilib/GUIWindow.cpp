@@ -30,13 +30,13 @@
 #include "GUIResizeControl.h"
 #include "GUIButtonScroller.h"
 #include "GUIMultiImage.h"
+#include "GUIControlGroup.h"
 #include "SkinInfo.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 
 CStdString CGUIWindow::CacheFilename = "";
-CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
 
 CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
 {
@@ -48,7 +48,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_lastControlID = 0;
   m_focusedControl = 0;
   m_bRelativeCoords = false;
-  m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
+  m_posX = m_posY = m_width = m_height = 0;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_WindowAllocated = false;
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
@@ -69,135 +69,19 @@ CGUIWindow::~CGUIWindow(void)
 void CGUIWindow::FlushReferenceCache()
 {
   CacheFilename.clear();
-  for (int i = 0; i < (int)ControlsCache.size();++i)
-  {
-    struct stReferenceControl stControl = ControlsCache[i];
-    delete stControl.m_pControl;
-  }
-  ControlsCache.clear();
 }
 
-bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
+bool CGUIWindow::LoadReferences()
 {
   // load references.xml
-  controls.clear();
   TiXmlDocument xmlDoc;
   RESOLUTION res;
   CStdString strReferenceFile = g_SkinInfo.GetSkinPath("references.xml", &res);
-
-  // this takes ages and happens about 20 times per skin load.
-  // caching the data speeds up skin loading by a factor of 2. :)
+  // check if we've already loaded it previously
   if (CacheFilename == strReferenceFile)
-  {
-    for (IVECREFERENCECONTOLS it = ControlsCache.begin(); it != ControlsCache.end(); ++it)
-    {
-      stReferenceControl stControl;
-      strcpy(stControl.m_szType, it->m_szType);
-      if (!strcmp(it->m_szType, "label"))
-      {
-        stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "edit"))
-      {
-        stControl.m_pControl = new CGUIEditControl(*((CGUIEditControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "videowindow"))
-      {
-        stControl.m_pControl = new CGUIVideoControl(*((CGUIVideoControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "fadelabel"))
-      {
-        stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "button"))
-      {
-        stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "rss"))
-      {
-        stControl.m_pControl = new CGUIRSSControl(*((CGUIRSSControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "ram"))
-      {
-        stControl.m_pControl = new CGUIRAMControl(*((CGUIRAMControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "console"))
-      {
-        stControl.m_pControl = new CGUIConsoleControl(*((CGUIConsoleControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "togglebutton"))
-      {
-        stControl.m_pControl = new CGUIToggleButtonControl(*((CGUIToggleButtonControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "checkmark"))
-      {
-        stControl.m_pControl = new CGUICheckMarkControl(*((CGUICheckMarkControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "radiobutton"))
-      {
-        stControl.m_pControl = new CGUIRadioButtonControl(*((CGUIRadioButtonControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "spincontrol"))
-      {
-        stControl.m_pControl = new CGUISpinControl(*((CGUISpinControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "slider"))
-      {
-        stControl.m_pControl = new CGUISliderControl(*((CGUISliderControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "progress"))
-      {
-        stControl.m_pControl = new CGUIProgressControl(*((CGUIProgressControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "image"))
-      {
-        stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "multiimage"))
-      {
-        stControl.m_pControl = new CGUIMultiImage(*((CGUIMultiImage*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "listcontrol"))
-      {
-        stControl.m_pControl = new CGUIListControl(*((CGUIListControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "listcontrolex"))
-      {
-        stControl.m_pControl = new CGUIListControlEx(*((CGUIListControlEx*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "textbox"))
-      {
-        stControl.m_pControl = new CGUITextBox(*((CGUITextBox*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "thumbnailpanel"))
-      {
-        stControl.m_pControl = new CGUIThumbnailPanel(*((CGUIThumbnailPanel*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "selectbutton"))
-      {
-        stControl.m_pControl = new CGUISelectButtonControl(*((CGUISelectButtonControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "mover"))
-      {
-        stControl.m_pControl = new CGUIMoverControl(*((CGUIMoverControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "resize"))
-      {
-        stControl.m_pControl = new CGUIResizeControl(*((CGUIResizeControl*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "buttonscroller"))
-      {
-        stControl.m_pControl = new CGUIButtonScroller(*((CGUIButtonScroller*)it->m_pControl));
-      }
-      else if (!strcmp(it->m_szType, "spincontrolex"))
-      {
-        stControl.m_pControl = new CGUISpinControlEx(*((CGUISpinControlEx*)it->m_pControl));
-      }
-      controls.push_back(stControl);
-    }
     return true;
-  }
 
+  // nope - time to load it in
   CLog::Log(LOGINFO, "Loading references file: %s", strReferenceFile.c_str());
   if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
   {
@@ -212,137 +96,38 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     CLog::Log(LOGERROR, "references.xml doesn't contain <controls>");
     return false;
   }
+  RESOLUTION includeRes;
+  g_SkinInfo.GetSkinPath("includes.xml", &includeRes);
   g_SkinInfo.ResolveIncludes(pRootElement);
   CGUIControlFactory factory;
-  string strType;
+  CStdString strType;
   TiXmlElement *pControl = pRootElement->FirstChildElement();
+  TiXmlElement includes("includes");
   while (pControl)
   {
-    g_SkinInfo.ResolveIncludes(pControl);
-    TiXmlNode* pNode = pControl->FirstChild("type");
-    if (pNode)
-    {
-      strType = pNode->FirstChild()->Value();
-      CGUIControl* pGUIControl = factory.Create(m_dwWindowId, pControl, NULL, res);
-      if (pGUIControl)
+    // ok, this is a <control> block, find the type
+    strType = factory.GetType(pControl);
+    if (!strType.IsEmpty())
+    { // we construct a new <default type="type"> block in our includes document
+      TiXmlElement include("default");
+      include.SetAttribute("type", strType);
+      // and add the rest of the items under this controlblock to it
+      TiXmlElement *child = pControl->FirstChildElement();
+      while (child)
       {
-        struct stReferenceControl stControl;
-        strcpy(stControl.m_szType, strType.c_str());
-        stControl.m_pControl = pGUIControl;
-        controls.push_back(stControl);
+        TiXmlElement element(*child);
+        // scale element if necessary
+        factory.ScaleElement(&element, res, includeRes);
+        include.InsertEndChild(element);
+        child = child->NextSiblingElement();
       }
+      includes.InsertEndChild(include);
     }
     pControl = pControl->NextSiblingElement();
   }
   CacheFilename = strReferenceFile;
-  ControlsCache.clear();
-  for (IVECREFERENCECONTOLS it = controls.begin(); it != controls.end(); ++it)
-  {
-    stReferenceControl stControl;
-    strcpy(stControl.m_szType, it->m_szType);
-    if (!strcmp(it->m_szType, "label"))
-    {
-      stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "edit"))
-    {
-      stControl.m_pControl = new CGUIEditControl(*((CGUIEditControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "videowindow"))
-    {
-      stControl.m_pControl = new CGUIVideoControl(*((CGUIVideoControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "fadelabel"))
-    {
-      stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "button"))
-    {
-      stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "rss"))
-    {
-      stControl.m_pControl = new CGUIRSSControl(*((CGUIRSSControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "ram"))
-    {
-      stControl.m_pControl = new CGUIRAMControl(*((CGUIRAMControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "console"))
-    {
-      stControl.m_pControl = new CGUIConsoleControl(*((CGUIConsoleControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "togglebutton"))
-    {
-      stControl.m_pControl = new CGUIToggleButtonControl(*((CGUIToggleButtonControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "checkmark"))
-    {
-      stControl.m_pControl = new CGUICheckMarkControl(*((CGUICheckMarkControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "radiobutton"))
-    {
-      stControl.m_pControl = new CGUIRadioButtonControl(*((CGUIRadioButtonControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "spincontrol"))
-    {
-      stControl.m_pControl = new CGUISpinControl(*((CGUISpinControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "slider"))
-    {
-      stControl.m_pControl = new CGUISliderControl(*((CGUISliderControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "progress"))
-    {
-      stControl.m_pControl = new CGUIProgressControl(*((CGUIProgressControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "image"))
-    {
-      stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "multiimage"))
-    {
-      stControl.m_pControl = new CGUIMultiImage(*((CGUIMultiImage*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "listcontrol"))
-    {
-      stControl.m_pControl = new CGUIListControl(*((CGUIListControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "listcontrolex"))
-    {
-      stControl.m_pControl = new CGUIListControlEx(*((CGUIListControlEx*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "textbox"))
-    {
-      stControl.m_pControl = new CGUITextBox(*((CGUITextBox*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "thumbnailpanel"))
-    {
-      stControl.m_pControl = new CGUIThumbnailPanel(*((CGUIThumbnailPanel*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "selectbutton"))
-    {
-      stControl.m_pControl = new CGUISelectButtonControl(*((CGUISelectButtonControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "mover"))
-    {
-      stControl.m_pControl = new CGUIMoverControl(*((CGUIMoverControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "resize"))
-    {
-      stControl.m_pControl = new CGUIResizeControl(*((CGUIResizeControl*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "buttonscroller"))
-    {
-      stControl.m_pControl = new CGUIButtonScroller(*((CGUIButtonScroller*)it->m_pControl));
-    }
-    else if (!strcmp(it->m_szType, "spincontrolex"))
-    {
-      stControl.m_pControl = new CGUISpinControlEx(*((CGUISpinControlEx*)it->m_pControl));
-    }
-    ControlsCache.push_back(stControl);
-  }
-
+  // now load our includes
+  g_SkinInfo.LoadIncludes(&includes);
   return true;
 }
 
@@ -355,7 +140,6 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
   RESOLUTION resToUse = INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
-  m_vecGroups.erase(m_vecGroups.begin(), m_vecGroups.end());
   TiXmlDocument xmlDoc;
   // Find appropriate skin folder + resolution to load from
   CStdString strPath;
@@ -378,7 +162,8 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   }
   LARGE_INTEGER lend;
   QueryPerformanceCounter(&lend);
-  bool ret = Load(pRootElement, resToUse);
+  m_coordsRes = resToUse;
+  bool ret = Load(pRootElement);
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
@@ -386,7 +171,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   return ret;
 }
 
-bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
+bool CGUIWindow::Load(TiXmlElement* pRootElement)
 {
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
@@ -394,18 +179,15 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
   m_saveLastControl = true;
   m_dwDefaultFocusControlID = 0;
   m_bRelativeCoords = false;
-  m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
+  m_posX = m_posY = m_width = m_height = 0;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
-  m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_visibleCondition = 0;
   m_previousWindow = WINDOW_INVALID;
   m_showAnimation.Reset();
   m_closeAnimation.Reset();
   m_origins.clear();
 
-  VECREFERENCECONTOLS referencecontrols;
-  IVECREFERENCECONTOLS it;
-  LoadReference(referencecontrols);
+  LoadReferences();
   TiXmlElement *pChild = pRootElement->FirstChildElement();
   while (pChild)
   {
@@ -436,9 +218,9 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
     else if (strValue == "animation" && pChild->FirstChild())
     {
       if (strcmpi(pChild->FirstChild()->Value(), "windowopen") == 0)
-        m_showAnimation.Create(pChild->ToElement(), resToUse);
+        m_showAnimation.Create(pChild->ToElement());
       else if (strcmpi(pChild->FirstChild()->Value(), "windowclose") == 0)
-        m_closeAnimation.Create(pChild->ToElement(), resToUse);
+        m_closeAnimation.Create(pChild->ToElement());
     }
     else if (strValue == "zorder" && pChild->FirstChild())
     {
@@ -455,19 +237,8 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
         m_bRelativeCoords = (iCoordinateSystem == 1);
       }
 
-      TiXmlNode* pPosX = pChild->FirstChild("posx");
-      if (pPosX && pPosX->FirstChild())
-      {
-        m_iPosX = atoi(pPosX->FirstChild()->Value());
-        g_graphicsContext.ScaleXCoord(m_iPosX, resToUse);
-      }
-
-      TiXmlNode* pPosY = pChild->FirstChild("posy");
-      if (pPosY && pPosY->FirstChild())
-      {
-        m_iPosY = atoi(pPosY->FirstChild()->Value());
-        g_graphicsContext.ScaleYCoord(m_iPosY, resToUse);
-      }
+      XMLUtils::GetFloat(pChild, "posx", m_posX);
+      XMLUtils::GetFloat(pChild, "posy", m_posY);
 
       TiXmlElement *originElement = pChild->FirstChildElement("origin");
       while (originElement)
@@ -475,8 +246,6 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
         COrigin origin;
         originElement->Attribute("x", &origin.x);
         originElement->Attribute("y", &origin.y);
-        g_graphicsContext.ScaleXCoord(origin.x, resToUse);
-        g_graphicsContext.ScaleYCoord(origin.y, resToUse);
         if (originElement->FirstChild())
           origin.condition = g_infoManager.TranslateString(originElement->FirstChild()->Value());
         m_origins.push_back(origin);
@@ -489,28 +258,16 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
       g_SkinInfo.ResolveIncludes(pChild);
 
       TiXmlElement *pControl = pChild->FirstChildElement();
-      int iGroup = 0;
       while (pControl)
       {
         if (strcmpi(pControl->Value(), "control") == 0)
         {
-          LoadControl(pControl, -1, referencecontrols, resToUse);
+          LoadControl(pControl, NULL);
         }
         else if (strcmpi(pControl->Value(), "controlgroup") == 0)
         {
-          // resolve any includes within the <controlgroup> tag (such as whole <control> includes)
-          g_SkinInfo.ResolveIncludes(pControl);
-          int id = 0;
-          pControl->Attribute("id", &id);
-          TiXmlElement *pSubControl = pControl->FirstChildElement("control");
-          // In this group no focus of the controls is remembered
-          AddControlGroup(id);
-          while (pSubControl)
-          {
-            LoadControl(pSubControl, iGroup, referencecontrols, resToUse);
-            pSubControl = pSubControl->NextSiblingElement("control");
-          }
-          iGroup++;
+          // backward compatibility...
+          LoadControl(pControl, NULL);
         }
         pControl = pControl->NextSiblingElement();
       }
@@ -525,57 +282,45 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
     pChild = pChild->NextSiblingElement();
   }
 
-  for (int i = 0; i < (int)referencecontrols.size();++i)
-  {
-    struct stReferenceControl stControl = referencecontrols[i];
-    delete stControl.m_pControl;
-  }
   m_windowLoaded = true;
   OnWindowLoaded();
   return true;
 }
 
-void CGUIWindow::LoadControl(TiXmlElement* pControl, int iGroup, VECREFERENCECONTOLS& referencecontrols, RESOLUTION& resToUse)
+void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
 {
-  // resolve any <include> tag in this control
-  g_SkinInfo.ResolveIncludes(pControl);
   // get control type
-  TiXmlNode* pNode = pControl->FirstChild("type");
-  if (pNode)
+  CGUIControlFactory factory;
+  CGUIControl* pGUIControl = factory.Create(m_dwWindowId, pGroup, pControl);
+  if (pGUIControl)
   {
-    string strType = pNode->FirstChild()->Value();
-
-    // get reference control
-    CGUIControl* pGUIReferenceControl = NULL;
-    for (int i = 0; i < (int)referencecontrols.size(); ++i)
+    if (m_bRelativeCoords)
     {
-      struct stReferenceControl stControl = referencecontrols[i];
-      if (strType == stControl.m_szType)
+      float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
+      if (maxX > m_width)
       {
-        pGUIReferenceControl = stControl.m_pControl;
-        break;
+        m_width = maxX;
+      }
+
+      float maxY = pGUIControl->GetYPosition() + pGUIControl->GetHeight();
+      if (maxY > m_height)
+      {
+        m_height = maxY;
       }
     }
-    CGUIControlFactory factory;
-    CGUIControl* pGUIControl = factory.Create(m_dwWindowId, pControl, pGUIReferenceControl, resToUse);
-    if (pGUIControl)
-    {
-      pGUIControl->SetGroup(iGroup);
+    // if we are in a group, add to the group, else add to our window
+    if (pGroup)
+      pGroup->AddControl(pGUIControl);
+    else
       Add(pGUIControl);
-
-      if (m_bRelativeCoords)
+    // if the new control is a group, then add it's controls
+    if (pGUIControl->IsGroup())
+    {
+      TiXmlElement *pSubControl = pControl->FirstChildElement("control");
+      while (pSubControl)
       {
-        DWORD dwMaxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
-        if (dwMaxX > m_dwWidth)
-        {
-          m_dwWidth = dwMaxX;
-        }
-
-        DWORD dwMaxY = pGUIControl->GetYPosition() + pGUIControl->GetHeight();
-        if (dwMaxY > m_dwHeight)
-        {
-          m_dwHeight = dwMaxY;
-        }
+        LoadControl(pSubControl, (CGUIControlGroup *)pGUIControl);
+        pSubControl = pSubControl->NextSiblingElement("control");
       }
     }
   }
@@ -584,20 +329,41 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, int iGroup, VECREFERENCECON
 void CGUIWindow::OnWindowLoaded() 
 {
   DynamicResourceAlloc(true);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  // we hook up the controlgroup navigation as desired
+  if (g_SkinInfo.GetVersion() < 2.1)
+  { // run through controls, and check navigation into a controlgroup
+    for (ivecControls i = m_vecControls.begin(); i != m_vecControls.end(); ++i)
+    {
+      CGUIControl *group = *i;
+      if (group->IsGroup())
+      {
+        // first thing first: We have to have a unique id
+        if (!group->GetID())
+        {
+          DWORD id = 9000;
+          while (GetControl(id++) && id < 9100)
+            ;
+          group->SetID(id);
+        }
+      }
+    }
+  }
+#endif
 }
 
-void CGUIWindow::SetPosition(int iPosX, int iPosY)
+void CGUIWindow::SetPosition(float posX, float posY)
 {
-  m_iPosX = iPosX;
-  m_iPosY = iPosY;
+  m_posX = posX;
+  m_posY = posY;
 }
 
 void CGUIWindow::CenterWindow()
 {
   if (m_bRelativeCoords)
   {
-    m_iPosX = (g_graphicsContext.GetWidth() - (int)m_dwWidth) / 2;
-    m_iPosY = (g_graphicsContext.GetHeight() - (int)m_dwHeight) / 2;
+    m_posX = (g_graphicsContext.GetWidth() - m_width) / 2;
+    m_posY = (g_graphicsContext.GetHeight() - m_height) / 2;
   }
 }
 
@@ -610,8 +376,8 @@ void CGUIWindow::Render()
   if (!m_WindowAllocated) return;
 
   // find our origin point
-  int posX = m_iPosX;
-  int posY = m_iPosY;
+  float posX = m_posX;
+  float posY = m_posY;
   for (unsigned int i = 0; i < m_origins.size(); i++)
   {
     // no condition implies true
@@ -648,14 +414,9 @@ bool CGUIWindow::OnAction(const CAction &action)
     OnMouseAction();
     return true;
   }
-  for (ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
-  {
-    CGUIControl* pControl = *i;
-    if (pControl->HasFocus())
-    {
-      return pControl->OnAction(action);
-    }
-  }
+  CGUIControl *focusedControl = GetFocusedControl();
+  if (focusedControl)
+    return focusedControl->OnAction(action);
 
   // no control has focus?
   // set focus to the default control then
@@ -669,8 +430,8 @@ void CGUIWindow::OnMouseAction()
 {
   // save the mouse coordinates as we will need to change them for
   // relative coordinates or if the window is scaled
-  int iPosX = g_Mouse.iPosX;
-  int iPosY = g_Mouse.iPosY;
+  float posX = g_Mouse.posX;
+  float posY = g_Mouse.posY;
   if (m_coordsRes != g_graphicsContext.GetVideoResolution())
   {
     // calculate necessary scalings
@@ -680,13 +441,13 @@ void CGUIWindow::OnMouseAction()
     float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
     float fScaleX = fToWidth / fFromWidth;
     float fScaleY = fToHeight / fFromHeight;
-    g_Mouse.iPosX = (int)((float)iPosX / fScaleX + 0.5f);
-    g_Mouse.iPosY = (int)((float)iPosY / fScaleY + 0.5f);
+    g_Mouse.posX /= fScaleX;
+    g_Mouse.posY /= fScaleY;
   }
   if (m_bRelativeCoords)
   {
-    g_Mouse.iPosX = iPosX - m_iPosX;
-    g_Mouse.iPosY = iPosY - m_iPosY;
+    g_Mouse.posX -= m_posX;
+    g_Mouse.posY -= m_posY;
   }
   bool bHandled = false;
   // check if we have exclusive access
@@ -704,7 +465,7 @@ void CGUIWindow::OnMouseAction()
   for (ivecControls i = m_vecControls.begin(); i != m_vecControls.end(); ++i)
   {
     CGUIControl *pControl = *i;
-    if (pControl->CanFocus() && !pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+    if (!pControl->HitTest(g_Mouse.posX, g_Mouse.posY))
       pControl->SetFocus(false);
   }
   // and find which one is under the pointer
@@ -712,9 +473,10 @@ void CGUIWindow::OnMouseAction()
   for (vector<CGUIControl *>::reverse_iterator i = m_vecControls.rbegin(); i != m_vecControls.rend(); ++i)
   {
     CGUIControl *pControl = *i;
-    if (pControl->CanFocus() && pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+    CGUIControl *focusableControl = NULL;
+    if (pControl->CanFocusFromPoint(g_Mouse.posX, g_Mouse.posY, &focusableControl))
     {
-      bHandled = HandleMouse(pControl);
+      bHandled = HandleMouse(focusableControl);
       if (bHandled)
         break;
     }
@@ -726,8 +488,8 @@ void CGUIWindow::OnMouseAction()
 
 finished:
   // correct the mouse coordinates back to what they were
-  g_Mouse.iPosX = iPosX;
-  g_Mouse.iPosY = iPosY;
+  g_Mouse.posX = posX;
+  g_Mouse.posY = posY;
 }
 
 // Handles any mouse actions that are not handled by a control
@@ -885,7 +647,10 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   case GUI_MSG_FOCUSED:
     { // a control has been focused
       if (HasID(message.GetSenderId()))
+      {
         m_focusedControl = message.GetControlId();
+        return true;
+      }
       break;
     }
   case GUI_MSG_MOVE:
@@ -899,86 +664,76 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 //      CLog::DebugLog("set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
       if ( message.GetControlId() )
       {
-        int iOldControlGroup = -2;  // -1 is the default control group
-        int iOldControlId = -1;
-        ivecControls i;
-        for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
-        {
-          CGUIControl* pControl = *i;
-          if (pControl->HasFocus())
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+        if (g_SkinInfo.GetVersion() < 2.1)
+        { // to support the best backwards compatibility, we reproduce the old method here
+          const CGUIControl *oldGroup = NULL;
+          // first unfocus the current control
+          CGUIControl *control = GetFocusedControl();
+          if (control)
           {
-            CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), pControl->GetID(), message.GetControlId());
-            pControl->OnMessage(msgLostFocus);
-            iOldControlGroup = pControl->GetGroup();
-            iOldControlId = pControl->GetID();
+            CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), control->GetID(), message.GetControlId());
+            control->OnMessage(msgLostFocus);
+            oldGroup = control->GetParentControl();
+          }
+          // get the control to focus
+          CGUIControl* pFocusedControl = GetFirstFocusableControl(message.GetControlId());
+          if (!pFocusedControl) pFocusedControl = (CGUIControl *)GetControl(message.GetControlId());
+
+          // and focus it
+          if (pFocusedControl)
+          {
+            // check for group changes
+            if (pFocusedControl->GetParentControl() && pFocusedControl->GetParentControl() != oldGroup)
+            { // going to a different group, focus the group instead
+              CGUIControlGroup *group = (CGUIControlGroup *)pFocusedControl->GetParentControl();
+              if (group->GetFocusedControlID())
+                pFocusedControl = group;
+            }
+            return pFocusedControl->OnMessage(message);
           }
         }
+        else
+          {
+#endif
+        // first unfocus the current control
+        CGUIControl *control = GetFocusedControl();
+        if (control)
+        {
+          CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), control->GetID(), message.GetControlId());
+          control->OnMessage(msgLostFocus);
+        }
 
-        // find the first focusable control
+        // get the control to focus
         CGUIControl* pFocusedControl = GetFirstFocusableControl(message.GetControlId());
         if (!pFocusedControl) pFocusedControl = (CGUIControl *)GetControl(message.GetControlId());
 
-        //  Handle control group changes
+        // and focus it
         if (pFocusedControl)
-        {
-          // Check if we are being called from a control (focus is set to false before
-          // we call SETFOCUS in the OnLeft, OnRight methods, so we just use the message
-          // sender id).
-          if (message.GetSenderId() < WINDOW_INVALID)
-          {
-            const CGUIControl *pOldFocusedControl = GetControl(message.GetSenderId());
-            if (pOldFocusedControl)
-            {
-              iOldControlGroup = pOldFocusedControl->GetGroup();
-              iOldControlId = pOldFocusedControl->GetID();
-            }
-          }
-          //  Save last control of the group if the group changes
-          if (iOldControlGroup > -1 && pFocusedControl->GetGroup() != iOldControlGroup)
-            m_vecGroups[iOldControlGroup].m_lastControl = iOldControlId;
-
-          //  if the control group changes...
-          if (pFocusedControl->GetGroup() > -1 && pFocusedControl->GetGroup() != iOldControlGroup && iOldControlGroup != -2)
-          {
-            //  ...get the last focused control of the new group...
-            int iLastFocusedControl = m_vecGroups[pFocusedControl->GetGroup()].m_lastControl;
-            for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
-            {
-              CGUIControl* pControl = *i;
-              if (pControl->GetID() == iLastFocusedControl)
-              {
-                //  ...and try to focus the saved control.
-
-                if (!pControl->CanFocus())
-                {
-                  // We can not focus the last control of this group,
-                  // use the control we originally wanted to focus instead.
-                  m_vecGroups[pFocusedControl->GetGroup()].m_lastControl = pFocusedControl->GetID();
-                  pFocusedControl->OnMessage(message);
-                  return true;
-                }
-
-                //  Redirect our message to the new control and fake it a little
-                //  by saying the new control is sender and target
-                //  at once to prevent a stack overflow.
-                CGUIMessage newFocusMsg(GUI_MSG_SETFOCUS, pControl->GetID(), pControl->GetID(), message.GetParam1());
-                //  Remember new last control of group
-                m_vecGroups[pControl->GetGroup()].m_lastControl = pControl->GetID();
-                //  Send the message to the new focused
-                //  control throu the window.
-                OnMessage(newFocusMsg);
-                return true;
-              }
-            }
-          }
-
-          //  Old and new control have no group, or the same group, just pass the message
-          if (pFocusedControl->GetGroup() > -1)
-            m_vecGroups[pFocusedControl->GetGroup()].m_lastControl = pFocusedControl->GetID();
-          pFocusedControl->OnMessage(message);
+          return pFocusedControl->OnMessage(message);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
         }
+#endif
       }
       return true;
+    }
+    break;
+  case GUI_MSG_NOTIFY_ALL:
+    {
+      // only process those notifications that come from this window
+      if (HasID(message.GetSenderId()))
+      {
+        if (message.GetParam1() == GUI_MSG_PAGE_CHANGE ||
+            message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
+        { // alter the message accordingly, and send to all controls
+          for (ivecControls it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
+          {
+            CGUIControl *control = *it;
+            CGUIMessage msg(message.GetParam1(), message.GetControlId(), control->GetID(), message.GetParam2());
+            control->OnMessage(msg);
+          }
+        }
+      }
     }
     break;
   }
@@ -988,7 +743,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    if (pControl && message.GetControlId() == pControl->GetID() && pControl->IsVisible())
+    if (pControl->HasVisibleID(message.GetControlId()))
     {
       if (pControl->OnMessage(message))
         return true;
@@ -999,7 +754,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    if (pControl && message.GetControlId() == pControl->GetID() && !pControl->IsVisible())
+    if (pControl->HasID(message.GetControlId()))
     {
       if (pControl->OnMessage(message))
         handled = true;
@@ -1124,24 +879,47 @@ const CGUIControl* CGUIWindow::GetControl(int iControl) const
   for (int i = 0;i < (int)m_vecControls.size(); ++i)
   {
     const CGUIControl* pControl = m_vecControls[i];
+    if (pControl->IsGroup())
+    {
+      CGUIControlGroup *group = (CGUIControlGroup *)pControl;
+      const CGUIControl *control = group->GetControl(iControl);
+      if (control) pControl = control;
+    }
     if (pControl->GetID() == iControl) 
+    {
       if (pControl->IsVisible())
         return pControl;
       else if (!pPotential)
         pPotential = pControl;
+    }
   }
   return pPotential;
 }
 
-int CGUIWindow::GetFocusedControl() const
+int CGUIWindow::GetFocusedControlID() const
 {
   if (m_focusedControl) return m_focusedControl;
+  CGUIControl *control = GetFocusedControl();
+  if (control) return control->GetID();
+  return -1;
+}
+
+CGUIControl *CGUIWindow::GetFocusedControl() const
+{
   for (vector<CGUIControl *>::const_iterator it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
   {
     const CGUIControl* pControl = *it;
-    if (pControl->HasFocus() ) return pControl->GetID();
+    if (pControl->HasFocus())
+    {
+      if (pControl->IsGroup())
+      {
+        CGUIControlGroup *group = (CGUIControlGroup *)pControl;
+        return group->GetFocusedControl();
+      }
+      return (CGUIControl *)pControl;
+    }
   }
-  return -1;
+  return NULL;
 }
 
 bool CGUIWindow::Initialize()
@@ -1156,8 +934,7 @@ void CGUIWindow::SetControlVisibility()
   for (unsigned int i=0; i < m_vecControls.size(); i++)
   {
     CGUIControl *pControl = m_vecControls[i];
-    if (pControl->GetVisibleCondition())
-      pControl->SetInitialVisibility();
+    pControl->SetInitialVisibility();
   }
 }
 
@@ -1264,23 +1041,26 @@ bool CGUIWindow::HasAnimation(ANIMATION_TYPE animType)
 // its focused control
 bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
 {
-  if (groupID == 0) return false;
-  int focusedControl = GetFocusedControl();
-  const CGUIControl *control = GetControl(focusedControl);
-  int groupNo = control ? control->GetGroup() : -1;
-  if (groupNo > -1 && m_vecGroups[groupNo].m_id == groupID)
-  { // currently focused within the group requested
-    // if controlID == 0, then return true (just want to know if we are in the group)
-    return controlID ? controlID == focusedControl : true;
-  }
-  // not in the group requested - check whether the last control
-  // in the requested group was the one we want
-  for (unsigned int i = 0; i < m_vecGroups.size(); i++)
+  // 1.  Run through and get control with groupID (assume unique)
+  // 2.  Get it's selected item.
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() < 2.1)
+    groupID += 9000;
+#endif
+  CGUIControl *group = GetFirstFocusableControl(groupID);
+  if (!group) group = (CGUIControl *)GetControl(groupID);
+
+  if (group && group->IsGroup())
   {
-    if (m_vecGroups[i].m_id == groupID)
+    if (controlID == 0)
+    { // just want to know if the group is focused
+      return group->HasFocus();
+    }
+    else
     {
-      int test = m_vecGroups[i].m_lastControl;
-      return (m_vecGroups[i].m_lastControl == controlID);
+      CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), group->GetID());
+      group->OnMessage(message);
+      return (controlID == message.GetParam1());
     }
   }
   return false;
@@ -1290,67 +1070,37 @@ void CGUIWindow::SaveControlStates()
 {
   ResetControlStates();
   if (m_saveLastControl)
-    m_lastControlID = GetFocusedControl();
+    m_lastControlID = GetFocusedControlID();
   for (ivecControls it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
-  {
-    CGUIControl *pControl = *it;
-    if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR ||
-        pControl->GetControlType() == CGUIControl::GUICONTROL_LIST || 
-        pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
-    {
-      CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), pControl->GetID());
-      OnMessage(message);
-      m_controlStates.push_back(CControlState(pControl->GetID(), message.GetParam1()));
-    }
-  }
-  // push back the group states as well
-  for (vector<CControlGroup>::iterator it = m_vecGroups.begin(); it != m_vecGroups.end(); ++it)
-  {
-    CControlGroup group = *it;
-    m_controlStates.push_back(CControlState(group.m_id, group.m_lastControl, true));
-  }
+    (*it)->SaveStates(m_controlStates);
 }
 
 void CGUIWindow::RestoreControlStates()
 {
   for (vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
   {
-    if ((*it).m_group)
-    { // special case for control groups
-      for (unsigned int i = 0; i < m_vecGroups.size(); i++)
-      {
-        if (m_vecGroups[i].m_id == (*it).m_id)
-        {
-          int test = (*it).m_data;
-          m_vecGroups[i].m_lastControl = (*it).m_data;
-          break;
-        }
-      }
-    }
-    else
-    {
-      CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
-      OnMessage(message);
-    }
+    CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
+    OnMessage(message);
   }
   // set our initial control visibility before focusing the default control
   // note that we then set it again after this to make sure any controls
   // that depend on the focused control are active.
   SetControlVisibility();
   int focusControl = (m_saveLastControl && m_lastControlID) ? m_lastControlID : m_dwDefaultFocusControlID;
-  // check whether it has a control group, and focus the last control in that group if we can
-  CGUIControl *control = GetFirstFocusableControl(focusControl);
-  if (!control) control = (CGUIControl *)GetControl(focusControl);
-  if (control && control->GetGroup() > -1)
-  {
-    int lastID = m_vecGroups[control->GetGroup()].m_lastControl;
-    if (lastID > -1)
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() < 2.1)
+  { // skins such as mc360 focus a control in a group by default.
+    // In 2.1 they should set the focus to the group, rather than the control in the group
+    CGUIControl *control = GetFirstFocusableControl(focusControl);
+    if (!control) control = (CGUIControl *)GetControl(focusControl);
+    if (control && control->GetParentControl())
     {
-      const CGUIControl *lastControl = GetControl(lastID);
-      if (lastControl && lastControl->CanFocus())
-        focusControl = lastID;
+      CGUIControlGroup *group = (CGUIControlGroup *)control->GetParentControl();
+      if (group->GetFocusedControlID())
+        focusControl = group->GetID();
     }
   }
+#endif
   SET_CONTROL_FOCUS(focusControl, 0);
 }
 
@@ -1361,20 +1111,6 @@ void CGUIWindow::ResetControlStates()
   m_controlStates.clear();
 }
 
-void CGUIWindow::AddControlGroup(int id)
-{
-  if (!id)
-  { // find an appropriate new id - max id plus one.
-    for (vector<CControlGroup>::iterator it = m_vecGroups.begin(); it != m_vecGroups.end(); ++it)
-    {
-      if ((*it).m_id > id)
-        id = (*it).m_id;
-    }
-    id++;
-  }
-  m_vecGroups.push_back(CControlGroup(id));
-}
-
 // find the first focusable control with this id.
 // if no focusable control exists with this id, return NULL
 CGUIControl *CGUIWindow::GetFirstFocusableControl(int id)
@@ -1382,11 +1118,14 @@ CGUIControl *CGUIWindow::GetFirstFocusableControl(int id)
   for (ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    if (pControl->GetID() == id && pControl->CanFocus())
+    if (pControl->IsGroup())
     {
-      return pControl;
-      break;
+      CGUIControlGroup *group = (CGUIControlGroup *)pControl;
+      CGUIControl *control = group->GetFirstFocusableControl(id);
+      if (control) return control;
     }
+    if (pControl->GetID() == id && pControl->CanFocus())
+      return pControl;
   }
   return NULL;
 }

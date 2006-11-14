@@ -6,8 +6,8 @@
 #include "..\xbmc\utils\SingleLock.h"
 
 
-CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags)
-: CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight),
+CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags)
+: CGUIControl(dwParentID, dwControlId, posX, posY, width, height),
   m_scrollInfo(-1)
 {
   m_label = labelInfo;
@@ -20,7 +20,7 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, i
   float fWidth = 15, fHeight;
   if (m_label.font)
     m_label.font->GetTextExtent(wTmp, &fWidth, &fHeight);
-  m_iLeadingSpaces = (int) (dwWidth / fWidth);
+  m_iLeadingSpaces = (int) (width / fWidth);
   m_strRSSTags = strRSSTags;
 
   m_pReader = NULL;
@@ -126,6 +126,6 @@ void CGUIRSSControl::RenderText()
     m_scrollInfo.Reset();
   }
   
-  m_label.font->DrawScrollingText((float)m_iPosX, (float)m_iPosY, dwPalette, 3, m_label.shadowColor, m_pwzText, (float)m_dwWidth, m_scrollInfo, m_pbColors);
+  m_label.font->DrawScrollingText(m_posX, m_posY, dwPalette, 3, m_label.shadowColor, m_pwzText, m_width, m_scrollInfo, m_pbColors);
 }
 
