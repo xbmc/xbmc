@@ -3,8 +3,7 @@
 #include "musicinfotagloadermp4.h"
 #include "Util.h"
 #include "picture.h"
-#include "lib/libID3/globals.h"
-
+#include "id3v1genre.h"
 
 using namespace AUTOPTR;
 using namespace MUSIC_INFO;
