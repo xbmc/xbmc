@@ -3,7 +3,9 @@
 #include "DetectDVDType.h"
 #include "Filesystem/cdiosupport.h"
 #include "Filesystem/iso9660.h"
+#ifdef HAS_UNDOCUMENTED
 #include "xbox/undocumented.h"
+#endif
 #include "application.h"
 
 #ifdef AFTER2_0
@@ -273,8 +275,9 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 
 DWORD CDetectDVDMedia::GetTrayState()
 {
+#ifdef HAS_UNDOCUMENTED
   HalReadSMCTrayState(&m_dwTrayState, &m_dwTrayCount);
-
+#endif
   if (m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT)
   {
     if (m_dwLastTrayState != TRAY_CLOSED_MEDIA_PRESENT)
@@ -316,7 +319,11 @@ DWORD CDetectDVDMedia::GetTrayState()
     m_dwLastTrayState = m_dwTrayState;
   }
 
+#ifdef HAS_DVD_DRIVE
   return DRIVE_NOT_READY;
+#else
+  return DRIVE_READY;
+#endif
 }
 
 void CDetectDVDMedia::UpdateState()
@@ -360,8 +367,8 @@ bool CDetectDVDMedia::IsDiscInDrive()
       {
         CLog::Log(LOGINFO, "Polling PC-DVDROM...");
 
-        CIoSupport helper;
         m_isoReader.Reset();
+        CIoSupport helper;
         if (helper.Remount("D:", "Cdrom0") == S_OK)
         {
           if (m_pInstance)

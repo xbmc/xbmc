@@ -31,8 +31,10 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
         if (pList)
         {
           int iItem = pList->GetSelectedItem();
+#ifdef HAS_VISUALISATION
           if (m_pVisualisation)
             m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_LOAD_PRESET, (void *)&iItem);
+#endif
         }
         return true;
       }
@@ -44,19 +46,24 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
 
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
       g_graphicsContext.SendMessage(msg);
+#ifdef HAS_VISUALISATION
       SetVisualisation((CVisualisation *)msg.GetLPVOID());
+#endif
       return true;
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
   case GUI_MSG_VISUALISATION_UNLOADING:
     {
+#ifdef HAS_VISUALISATION
       m_pVisualisation = NULL;
+#endif
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
       OnMessage(msg);
       m_vecPresets.Clear();
     }
     break;
+#ifdef HAS_VISUALISATION
   case GUI_MSG_VISUALISATION_LOADED:
     {
       if (message.GetLPVOID())
@@ -64,6 +71,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
         SetVisualisation((CVisualisation *)message.GetLPVOID());
       }
     }
+#endif
   }
   return CGUIDialog::OnMessage(message);
 }
@@ -74,8 +82,10 @@ void CGUIDialogVisualisationPresetList::Render()
   int numPresets = 0;
   int currentPreset = 0;
   bool locked = false;
+#ifdef HAS_VISUALISATION
   if (m_pVisualisation)
     m_pVisualisation->GetPresets(&presets, &currentPreset, &numPresets, &locked);
+#endif
   if (currentPreset != m_currentPreset)
   { // current preset changed...
     m_vecPresets[m_currentPreset]->Select(false);
@@ -85,6 +95,7 @@ void CGUIDialogVisualisationPresetList::Render()
   CGUIDialog::Render();
 }
 
+#ifdef HAS_VISUALISATION
 void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisualisation)
 {
   m_pVisualisation = pVisualisation;
@@ -138,3 +149,4 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
     SET_CONTROL_HIDDEN(CONTROL_NONE_AVAILABLE);
   }
 }
+#endif

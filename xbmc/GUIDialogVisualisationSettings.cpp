@@ -21,8 +21,10 @@ CGUIDialogVisualisationSettings::CGUIDialogVisualisationSettings(void)
   m_pOriginalSpin = NULL;
   m_pOriginalRadioButton = NULL;
   m_pOriginalSettingsButton = NULL;
+#ifdef HAS_VISUALISATION
   m_pVisualisation = NULL;
   m_pSettings = NULL;
+#endif
   m_iCurrentPage = 0;
   m_iNumPages = 0;
   m_iNumPerPage = 0;
@@ -56,14 +58,17 @@ bool CGUIDialogVisualisationSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_VISUALISATION_UNLOADING:
     {
       FreeControls();
+#ifdef HAS_VISUALISATION
       m_pVisualisation = NULL;
       m_pSettings = NULL;
+#endif
     }
     break;
   case GUI_MSG_VISUALISATION_LOADED:
     {
+#ifdef HAS_VISUALISATION
       SetVisualisation((CVisualisation *)message.GetLPVOID());
-
+#endif
       m_iCurrentPage = 0;
       m_iNumPages = 0;
       SetupPage();
@@ -97,6 +102,7 @@ void CGUIDialogVisualisationSettings::SetupPage()
   if (!pControlArea || !pControlGap)
     return;
 
+#ifdef HAS_VISUALISATION
   if (!m_pSettings || !m_pSettings->size())
   { // no settings available
     SET_CONTROL_VISIBLE(CONTROL_NONE_AVAILABLE);
@@ -109,12 +115,12 @@ void CGUIDialogVisualisationSettings::SetupPage()
     SET_CONTROL_VISIBLE(CONTROL_PAGE);
   }
 
-  int iPosX = pControlArea->GetXPosition();
-  int iWidth = pControlArea->GetWidth();
-  int iPosY = pControlArea->GetYPosition();
-  int iGapY = pControlGap->GetHeight();
+  float posX = pControlArea->GetXPosition();
+  float width = pControlArea->GetWidth();
+  float posY = pControlArea->GetYPosition();
+  float gapY = pControlGap->GetHeight();
   int numSettings = m_pSettings->size();
-  m_iNumPerPage = (int)pControlArea->GetHeight() / iGapY;
+  m_iNumPerPage = (int)(pControlArea->GetHeight() / gapY);
   if (m_iNumPerPage < 1) m_iNumPerPage = 1;
   m_iNumPages = (numSettings + m_iNumPerPage - 1)/ m_iNumPerPage; // round up
   if (m_iCurrentPage >= m_iNumPages - 1)
@@ -136,8 +142,8 @@ void CGUIDialogVisualisationSettings::SetupPage()
   for (int i = 0; i < m_iNumPerPage && i + m_iCurrentPage * m_iNumPerPage < numSettings; i++)
   {
     VisSetting &setting = m_pSettings->at(i + m_iCurrentPage * m_iNumPerPage);
-    AddSetting(setting, iPosX, iPosY, iWidth, CONTROL_START + i);
-	  iPosY += iGapY;
+    AddSetting(setting, posX, posY, width, CONTROL_START + i);
+    posY += gapY;
     numOnPage++;
   }
   // fix first and last navigation
@@ -151,6 +157,7 @@ void CGUIDialogVisualisationSettings::SetupPage()
   if (pControl) pControl->SetNavigation(CONTROL_START + numOnPage - 1, CONTROL_START,
                                           pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   UpdateSettings();
+#endif
 }
 
 
@@ -160,6 +167,7 @@ void CGUIDialogVisualisationSettings::UpdateSettings()
 
 void CGUIDialogVisualisationSettings::OnClick(int iID)
 {
+#ifdef HAS_VISUALISATION
   if (!m_pSettings || !m_pVisualisation) return;
   unsigned int settingNum = iID - CONTROL_START + m_iCurrentPage * m_iNumPerPage;
   if (settingNum >= m_pSettings->size()) return;
@@ -176,6 +184,7 @@ void CGUIDialogVisualisationSettings::OnClick(int iID)
   }
   m_pVisualisation->UpdateSetting(settingNum);
   UpdateSettings();
+#endif
 }
 
 void CGUIDialogVisualisationSettings::FreeControls()
@@ -193,7 +202,8 @@ void CGUIDialogVisualisationSettings::FreeControls()
   }
 }
 
-void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, int iPosX, int iPosY, int iWidth, int iControlID)
+#ifdef HAS_VISUALISATION
+void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, float posX, float posY, float width, int iControlID)
 {
   CGUIControl *pControl = NULL;
   if (setting.type == VisSetting::CHECK)
@@ -201,18 +211,18 @@ void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, int iPosX,
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
     ((CGUIRadioButtonControl *)pControl)->SetLabel(setting.name);
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
-    pControl->SetSelected(setting.current == 1);
+    pControl->SetPosition(posX, posY);
+    pControl->SetWidth(width);
+    ((CGUIRadioButtonControl *)pControl)->SetSelected(setting.current == 1);
   }
   else if (setting.type == VisSetting::SPIN && setting.entry.size() > 0)
   {
     pControl = new CGUISpinControlEx(*m_pOriginalSpin);
     if (!pControl) return ;
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
+    pControl->SetPosition(posX, posY);
+    pControl->SetWidth(width);
     ((CGUISpinControlEx *)pControl)->SetText(setting.name);
-    pControl->SetWidth(iWidth);
+    pControl->SetWidth(width);
     for (unsigned int i = 0; i < setting.entry.size(); i++)
       ((CGUISpinControlEx *)pControl)->AddLabel(setting.entry[i], i);
     ((CGUISpinControlEx *)pControl)->SetValue(setting.current);
@@ -227,12 +237,14 @@ void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, int iPosX,
   Add(pControl);
   pControl->AllocResources();
 }
+#endif
 
 void CGUIDialogVisualisationSettings::Render()
 {
   CGUIDialog::Render();
 }
 
+#ifdef HAS_VISUALISATION
 void CGUIDialogVisualisationSettings::SetVisualisation(CVisualisation *pVisualisation)
 {
   m_pVisualisation = pVisualisation;
@@ -241,13 +253,16 @@ void CGUIDialogVisualisationSettings::SetVisualisation(CVisualisation *pVisualis
     m_pVisualisation->GetSettings(&m_pSettings);
   }
 }
+#endif
 
 void CGUIDialogVisualisationSettings::OnInitWindow()
 {
   // set our visualisation
   CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
   g_graphicsContext.SendMessage(msg);
+#ifdef HAS_VISUALISATION
   SetVisualisation((CVisualisation *)msg.GetLPVOID());
+#endif
 
   m_iCurrentPage = 0;
   m_iNumPages = 0;

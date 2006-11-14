@@ -1,22 +1,32 @@
 #include "stdafx.h"
-#include "xbox/XKEEPROM.h"
 #include "application.h"
+#ifdef HAS_XBOX_HARDWARE
+#include "xbox/XKEEPROM.h"
 #include "utils/lcd.h"
 #include "xbox\iosupport.h"
+#endif
 #include "xbox/xbeheader.h"
 #include "util.h"
 #include "texturemanager.h"
 #include "cores/playercorefactory.h"
 #include "playlistplayer.h"
 #include "musicdatabase.h"
+#include "videodatabase.h"
 #include "autorun.h"
 #include "ActionManager.h"
+#ifdef HAS_LCD
 #include "utils/LCDFactory.h"
+#else
+#include "GUILabelControl.h"  // needed for CInfoPortion
+#include "GUIImage.h"
+#endif
 #include "utils/KaiClient.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #include "utils/FanController.h"
-#include "XBVideoConfig.h"
 #include "utils/LED.h"
+#endif
+#include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
 #include "lib/libGoAhead/xbmchttp.h"
 #include "utils/GUIInfoManager.h"
@@ -28,65 +38,90 @@
 #include "GUIAudioManager.h"
 #include "lib/libscrobbler/scrobbler.h"
 #include "GUIPassword.h"
-#include "../guilib/localizestrings.h"
-#include "../guilib/guiwindowmanager.h"
 #include "applicationmessenger.h"
 #include "sectionloader.h"
-#include "utils/charsetconverter.h"
+#include "cores/DllLoader/DllLoaderContainer.h"
 #include "guiusermessages.h"
 #include "filesystem/directoryCache.h"
-#include "cores/DllLoader/DllLoaderContainer.h"
-#include "filesystem/filedaap.h"
 #include "filesystem/StackDirectory.h"
-#include "PartyModeManager.h"
 #include "FileSystem/DllLibCurl.h"
+#ifdef HAS_FILESYSTEM
+#include "filesystem/filedaap.h"
+#endif
+#ifdef HAS_UPNP
+#include "FileSystem/UPnPDirectory.h"
+#endif
+#include "PartyModeManager.h"
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/videorenderers/rendermanager.h"
+#endif
+#ifdef HAS_KARAOKE
+#include "CdgParser.h"
+#endif
 #include "audiocontext.h"
 #include "GUIFontTTF.h"
 #include "xbox/network.h"
 #include "utils/win32exception.h"
-#include "cores/videorenderers/rendermanager.h"
-#include "FileSystem/UPnPDirectory.h"
 #include "lib/libGoAhead/webserver.h"
+#ifdef HAS_FTP_SERVER
 #include "lib/libfilezilla/xbfilezilla.h"
-#include "CdgParser.h"
+#endif
+#ifdef HAS_TIME_SERVER
 #include "utils/sntp.h"
+#endif
+#ifdef HAS_XFONT
 #include <xfont.h>  // for textout functions
+#endif
 
 // Windows includes
+#include "GUIWindowHome.h"
 #include "GUIStandardWindow.h"
+#include "GUIWindowSettings.h"
+#include "GUIWindowFileManager.h"
+#include "GUIWindowSettingsCategory.h"
 #include "GUIWindowMusicPlaylist.h"
 #include "GUIWindowMusicSongs.h"
-//#include "GUIWindowMusicTop100.h"
 #include "GUIWindowMusicNav.h"
 #include "GUIWindowVideoPlaylist.h"
 #include "GUIWindowMusicInfo.h"
 #include "GUIWindowVideoInfo.h"
-#include "GUIWindowFullScreen.h"
 #include "GUIWindowVideoFiles.h"
 #include "GUIWindowVideoGenre.h"
 #include "GUIWindowVideoActors.h"
 #include "GUIWindowVideoYear.h"
 #include "GUIWindowVideoTitle.h"
-#include "GUIWindowFileManager.h"
-#include "GUIWindowVisualisation.h"
-#include "GUIWindowSettings.h"
 #include "GUIWindowSettingsProfile.h"
-#include "GUIWindowSettingsCategory.h"
 #include "GUIWindowSettingsScreenCalibration.h"
-#include "GUIWindowSystemInfo.h"
-#include "GUIWindowScreensaver.h"
-#include "GUIWindowSlideshow.h"
-#include "GUIWindowHome.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowScripts.h"
-#include "GUIWindowBuddies.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowLoginScreen.h"
+#include "GUIWindowVisualisation.h"
+#include "GUIWindowSystemInfo.h"
+#include "GUIWindowScreensaver.h"
+#include "GUIWindowSlideshow.h"
+#include "GUIWindowBuddies.h"
+
+#include "GUIWindowFullScreen.h"
+#include "GUIWindowOSD.h"
 
 // Dialog includes
+#include "GUIDialogMusicOSD.h"
+#include "GUIDialogVisualisationSettings.h"
+#include "GUIDialogVisualisationPresetList.h"
 #include "GUIDialogInvite.h"
 #include "GUIDialogHost.h"
+#include "GUIDialogTrainerSettings.h"
+#include "GUIWindowScriptsInfo.h"
+#include "GUIDialogNetworkSetup.h"
+#include "GUIDialogMediaSource.h"
+#include "GUIDialogVideoSettings.h"
+#include "GUIDialogAudioSubtitleSettings.h"
+#include "GUIDialogVideoBookmarks.h"
+#include "GUIDialogProfileSettings.h"
+#include "GUIDialogLockSettings.h"
+
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
@@ -100,74 +135,91 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogPlayerControls.h"
-#include "GUIDialogMusicOSD.h"
-#include "GUIDialogVisualisationSettings.h"
-#include "GUIDialogVisualisationPresetList.h"
-#include "GUIDialogVideoSettings.h"
-#include "GUIDialogAudioSubtitleSettings.h"
-#include "GUIDialogVideoBookmarks.h"
-#include "GUIDialogTrainerSettings.h"
-#include "GUIDialogNetworkSetup.h"
-#include "GUIDialogMediaSource.h"
-#include "GUIWindowOSD.h"
-#include "GUIWindowScriptsInfo.h"
-#include "GUIDialogProfileSettings.h"
-#include "GUIDialogLockSettings.h"
+
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
 #define USE_RELEASE_LIBS
 
+#ifdef HAS_LCD
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
+#endif
+#ifdef HAS_KAI_VOICE
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
+#endif
 
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
- #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
- #pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
- //#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")  // SECTIONNAME=PYTHON,PY_RW
- #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
- #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3d.lib")
- #pragma comment (lib,"xbmc/lib/libcdio/libcdiod.lib" )
- #pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
- #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
- #pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
-/* #pragma comment (lib,"xbmc/lib/libsidplay/libsidplayd.lib")   // SECTIONNAME=SID_RW,SID_RX
- #pragma comment (lib,"xbmc/lib/libsidplay/libsidutilsd.lib")  // SECTIONNAME=SID_RW,SID_RX
- #pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib") // SECTIONNAME=SID_RW,SID_RX*/
- #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
- #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
- #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
- #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib") 
- #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinumd.lib")
+ #ifdef HAS_FILESYSTEM
+  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
+  #pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
+  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
+  #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
+ #endif
+ #ifdef HAS_UPNP
+  #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinumd.lib")
+ #endif
+ #ifdef _XBOX
+  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib") 
+  #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
+  #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3d.lib")
+  #pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
+  #pragma comment (lib,"xbmc/lib/libcdio/libcdiod.lib" )
+  #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
+  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
+ #else
+  #pragma comment (lib,"../../xbmc/lib/unrarXlib/unrarxlibd.lib") 
+  #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
+  #pragma comment (lib,"../../xbmc/lib/sqlLite/libSQLite3_win32d.lib")
+  #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32d.lib" )
+  #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32d.lib" )
+  #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
+  #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidid.lib")
+ #endif
+ #ifdef HAS_MIKMOD
+  #pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
+ #endif
 #else
- #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
- #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
- //#pragma comment (lib,"xbmc/lib/libPython/python.lib")
- #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
- #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3.lib")
- #pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
- #pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
- #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
- #pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
- /*#pragma comment (lib,"xbmc/lib/libsidplay/libsidplay.lib")    // SECTIONNAME=SID_RW,SID_RX
- #pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")   // SECTIONNAME=SID_RW,SID_RX
- #pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX*/
- #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
- #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
- #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
- #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
- #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinum.lib")
+ #ifdef HAS_FILESYSTEM
+  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
+  #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
+  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
+  #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
+ #endif
+ #ifdef HAS_UPNP
+  #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinum.lib")
+ #endif
+ #ifdef _XBOX
+  #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib") 
+  #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
+  #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3.lib")
+  #pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
+  #pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
+  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
+  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
+ #else
+  #pragma comment (lib,"../../xbmc/lib/unrarXlib/unrarxlib.lib") 
+  #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
+  #pragma comment (lib,"../../xbmc/lib/sqlLite/libSQLite3_win32.lib")
+  #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32.lib" )
+  #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32.lib" )
+  #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
+  #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
+ #endif
+ #ifdef HAS_MIKMOD
+  #pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
+ #endif
 #endif
 
 #define MAX_FFWD_SPEED 5
 
 CStdString g_LoadErrorStr;
 
-
+#ifdef HAS_XBOX_HARDWARE
 extern "C"
 {
 	extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
 };
+#endif
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
@@ -178,11 +230,13 @@ CApplication::CApplication(void)
   m_bNetworkSpinDown = false;
   m_dwSpinDownTime = timeGetTime();
   m_pWebServer = NULL;
-  m_pFileZilla = NULL;
   pXbmcHttp = NULL;
+  m_pFileZilla = NULL;
   m_pPlayer = NULL;
+#ifdef HAS_XBOX_HARDWARE
   XSetProcessQuantumLength(5); //default=20msec
   XSetFileCacheSize (256*1024); //default=64kb
+#endif
   m_bInactive = false;   // CB: SCREENSAVER PATCH
   m_bScreenSave = false;   // CB: SCREENSAVER PATCH
   m_iScreenSaveLock = 0;
@@ -202,13 +256,16 @@ CApplication::CApplication(void)
   m_bIsPaused = false;
 
   /* for now allways keep this around */
+#ifdef HAS_KARAOKE
   m_pCdgParser = new CCdgParser();
+#endif
 }
 
 CApplication::~CApplication(void)
 {}
 
 // text out routine for below
+#ifdef HAS_XFONT
 static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...)
 {
   wchar_t buf[100];
@@ -233,6 +290,11 @@ static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...
     D3DDevice::Present(0, 0, 0, 0);
   }
 }
+#else
+static void __cdecl FEH_TextOut(void* pFont, int iLine, const wchar_t* fmt, ...) {}
+#endif
+
+HWND g_hWnd = NULL;
 
 void CApplication::InitBasicD3D()
 {
@@ -245,7 +307,13 @@ void CApplication::InitBasicD3D()
   m_d3dpp.BackBufferCount = 1;
   m_d3dpp.EnableAutoDepthStencil = FALSE;
   m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
+#ifdef HAS_XBOX_D3D
   m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+#else
+  m_d3dpp.FullScreen_PresentationInterval = 0;
+  m_d3dpp.Windowed = TRUE;
+  m_d3dpp.hDeviceWindow = g_hWnd;
+#endif
 
   if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
   {
@@ -268,24 +336,24 @@ void CApplication::InitBasicD3D()
   g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
 
   // Create the device
-  if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
+  if (m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
   {
     CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
     Sleep(INFINITE); // die
   }
 
+#ifdef HAS_XBOX_D3D
   m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
+#endif
 
-  //  XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
-
-  // Create the gamepad devices
-  //  HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);
   if (m_splash)
   {
     m_splash->Stop();
   }
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
+#ifdef HAS_XBOX_D3D
   m_pd3dDevice->BlockUntilVerticalBlank();
+#endif
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 }
 
@@ -310,10 +378,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     m_splash->Stop();
   }
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
+#ifdef HAS_XBOX_D3D
   m_pd3dDevice->BlockUntilVerticalBlank();
+#endif
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 
   // D3D is up, load default font
+#ifdef HAS_XFONT
   XFONT* pFont;
   if (XFONT_OpenDefaultFont(&pFont) != S_OK)
   {
@@ -325,7 +396,9 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   pFont->SetBkMode(XFONT_OPAQUE);
   pFont->SetBkColor(D3DCOLOR_XRGB(0, 0, 0));
   pFont->SetTextColor(D3DCOLOR_XRGB(0xff, 0x20, 0x20));
-
+#else
+  void *pFont = NULL;
+#endif
   int iLine = 0;
   FEH_TextOut(pFont, iLine++, L"XBMC Fatal Error:");
   char buf[500];
@@ -339,6 +412,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   }
   ++iLine;
 
+#ifdef HAS_XBOX_HARDWARE
   if (MapDrives)
   {
     CIoSupport helper;
@@ -353,7 +427,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     */
 
   }
-
+#endif
   bool Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
 
   if (HaveGamepad)
@@ -398,12 +472,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       {
         g_network.Deinitialize();
 
+#ifdef HAS_XBOX_NETWORK
         if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
         {
           FEH_TextOut(pFont, iLine, L"Network cable unplugged");
           break;
         }
-        
+#endif        
         switch( (*it) )
         {
           case NETWORK_DASH:
@@ -436,6 +511,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
         }
 
         int count = 0;
+#ifdef HAS_XBOX_NETWORK
         DWORD dwState = XNET_GET_XNADDR_PENDING;
 
         while(dwState == XNET_GET_XNADDR_PENDING)
@@ -459,6 +535,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
           NetworkUp = true;
           break;
         }
+#endif
         /* increment line before next attempt */
         ++iLine;
       }      
@@ -492,6 +569,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
   if (NetworkUp)
   {
+#ifdef HAS_FTP_SERVER
     if (!m_pFileZilla)
     {
       // Start FTP with default settings
@@ -532,6 +610,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     }
 
     FEH_TextOut(pFont, iLine++, L"FTP server running on port %d, login: xbox/xbox", m_pFileZilla->mSettings.GetServerPort());
+#endif
     ++iLine;
   }
 
@@ -544,14 +623,22 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       {
         g_application.Stop();
         Sleep(200);
-#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
+#ifdef _XBOX
+#ifdef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKUtils::XBOXPowerCycle();
+#endif
+#else
+        SendMessage(g_hWnd, WM_CLOSE, 0, 0);
 #endif
       }
     }
   }
   else
+#ifdef _XBOX
     Sleep(INFINITE);
+#else
+    SendMessage(g_hWnd, WM_CLOSE, 0, 0);
+#endif
 }
 
 LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
@@ -588,12 +675,16 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
 
   return ExceptionInfo->ExceptionRecord->ExceptionCode;
 }
+#ifdef _XBOX
 #include "xbox/undocumented.h"
 extern "C" HANDLE __stdcall KeGetCurrentThread(VOID);
+#endif
 extern "C" void __stdcall init_emu_environ();
 
-HRESULT CApplication::Create()
+HRESULT CApplication::Create(HWND hWnd)
 {
+  g_hWnd = hWnd;
+
   HRESULT hr;
   //grab a handle to our thread to be used later in identifying the render thread
   m_threadID = GetCurrentThreadId();
@@ -698,6 +789,7 @@ HRESULT CApplication::Create()
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
   // controllers will be initialized.
+#ifdef HAS_XBOX_HARDWARE
   XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
 
   // Create the gamepad devices
@@ -712,11 +804,13 @@ HRESULT CApplication::Create()
     CLog::Log(LOGERROR, "XBAppEx: Call to CreateIRRemotes() failed!" );
     return hr;
   }
+#endif
 
   // Create the Mouse and Keyboard devices
-  g_Mouse.Initialize();
-  g_Keyboard.Initialize();
+  g_Mouse.Initialize(hWnd);
+  g_Keyboard.Initialize(hWnd);
 
+#ifdef HAS_XBOX_HARDWARE
   // Wait for controller polling to finish. in an elegant way, instead of a Sleep(1000)
   while (XGetDeviceEnumerationStatus() == XDEVICE_ENUMERATION_BUSY)
   {
@@ -724,6 +818,8 @@ HRESULT CApplication::Create()
   }
   Sleep(10); // needed or the readinput doesnt fetch anything
   ReadInput(); 
+#endif
+#ifdef HAS_GAMEPAD
   //Check for LTHUMBCLICK+RTHUMBCLICK and BLACK+WHITE, no LTRIGGER+RTRIGGER
   if (((m_DefaultGamepad.wButtons & (XINPUT_GAMEPAD_LEFT_THUMB + XINPUT_GAMEPAD_RIGHT_THUMB)) && !(m_DefaultGamepad.wButtons & (KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER))) ||
       ((m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_BLACK] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE]) && !(m_DefaultGamepad.wButtons & KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER)))
@@ -777,7 +873,7 @@ HRESULT CApplication::Create()
     }
     m_pd3dDevice->Release();
   }
-
+#endif
   CLog::Log(LOGNOTICE, "load settings...");
   g_LoadErrorStr = "Unable to load settings";
   g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
@@ -789,15 +885,18 @@ HRESULT CApplication::Create()
     FatalErrorHandler(true, true, true);
 
   // Check for WHITE + Y for forced Error Handler (to recover if something screwy happens)
+#ifdef HAS_GAMEPAD
   if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE])
   {
     g_LoadErrorStr = "Key code detected for Error Recovery mode";
     FatalErrorHandler(true, true, true);
   }
+#endif
 
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
 
+#ifdef HAS_XBOX_HARDWARE
   bool bNeedReboot = false;
   char temp[1024];
   helper.GetXbePath(temp);
@@ -880,7 +979,8 @@ HRESULT CApplication::Create()
     Destroy();
     CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,ForceVideo,ForceCountry);
   }
-  
+#endif
+
   CLog::Log(LOGINFO, "map drives...");
   CLog::Log(LOGINFO, "  map drive C:");
   helper.Remap("C:,Harddisk0\\Partition2");
@@ -908,8 +1008,13 @@ HRESULT CApplication::Create()
 
   helper.Remap("X:,Harddisk0\\Partition3");
   helper.Remap("Y:,Harddisk0\\Partition4");
+#ifdef HAS_XBOX_HARDWARE
   helper.Remap("Z:,Harddisk0\\Partition5");
-  
+#else
+  helper.Unmount("Z:");
+  helper.Mount("Z:","Q:\\cache");
+#endif
+
   CLog::Log(LOGINFO, "Drives are mapped");
 
   CStdString strHomePath = "Q:";
@@ -918,11 +1023,13 @@ HRESULT CApplication::Create()
   
   keymapPath = g_settings.GetUserDataItem("keymap.xml");
   //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
+#ifdef _XBOX
   if (access(strHomePath + "\\skin", 0) || access(keymapPath.c_str(), 0))
   {
     g_LoadErrorStr = "Unable to find skin or Keymap.xml.  Make sure you have UserData/Keymap.xml and Skin/ folder";
     FatalErrorHandler(true, false, true);
   }
+#endif
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
@@ -931,27 +1038,45 @@ HRESULT CApplication::Create()
     g_guiSettings.m_LookAndFeelResolution = initialResolution;
   }
   // Transfer the new resolution information to our graphics context
+#ifndef HAS_XBOX_D3D
+  m_d3dpp.Windowed = TRUE;
+  m_d3dpp.hDeviceWindow = g_hWnd;
+#else
+#define D3DCREATE_MULTITHREADED 0
+#endif
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
   g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
-                                         D3DCREATE_HARDWARE_VERTEXPROCESSING,
+                                         D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &m_d3dpp, &m_pd3dDevice ) ) )
   {
-    CLog::Log(LOGFATAL, "XBAppEx: Could not create D3D device!" );
-    CLog::Log(LOGFATAL, " width/height:(%ix%i)" , m_d3dpp.BackBufferWidth, m_d3dpp.BackBufferHeight);
-    CLog::Log(LOGFATAL, " refreshrate:%i" , m_d3dpp.FullScreen_RefreshRateInHz);
-    if (m_d3dpp.Flags & D3DPRESENTFLAG_WIDESCREEN)
-      CLog::Log(LOGFATAL, " 16:9 widescreen");
-    else
-      CLog::Log(LOGFATAL, " 4:3");
+    // try software vertex processing
+    if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
+                                          D3DCREATE_MULTITHREADED | D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                          &m_d3dpp, &m_pd3dDevice ) ) )
+    {
+      // and slow as arse reference processing
+      if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL,
+                                            D3DCREATE_MULTITHREADED | D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                            &m_d3dpp, &m_pd3dDevice ) ) )
+      {
 
-    if (m_d3dpp.Flags & D3DPRESENTFLAG_INTERLACED)
-      CLog::Log(LOGFATAL, " interlaced");
-    if (m_d3dpp.Flags & D3DPRESENTFLAG_PROGRESSIVE)
-      CLog::Log(LOGFATAL, " progressive");
-    return hr;
+        CLog::Log(LOGFATAL, "XBAppEx: Could not create D3D device!" );
+        CLog::Log(LOGFATAL, " width/height:(%ix%i)" , m_d3dpp.BackBufferWidth, m_d3dpp.BackBufferHeight);
+        CLog::Log(LOGFATAL, " refreshrate:%i" , m_d3dpp.FullScreen_RefreshRateInHz);
+        if (m_d3dpp.Flags & D3DPRESENTFLAG_WIDESCREEN)
+          CLog::Log(LOGFATAL, " 16:9 widescreen");
+        else
+          CLog::Log(LOGFATAL, " 4:3");
+
+        if (m_d3dpp.Flags & D3DPRESENTFLAG_INTERLACED)
+          CLog::Log(LOGFATAL, " interlaced");
+        if (m_d3dpp.Flags & D3DPRESENTFLAG_PROGRESSIVE)
+          CLog::Log(LOGFATAL, " progressive");
+        return hr;
+      }
+    }
   }
-  m_pd3dDevice->GetBackBuffer( 0, 0, &m_pBackBuffer );
   g_graphicsContext.SetD3DDevice(m_pd3dDevice);
   // set filters
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
@@ -1015,7 +1140,7 @@ HRESULT CApplication::Create()
   CLog::Log(LOGINFO, "install unhandled exception filter");
   SetUnhandledExceptionFilter(UnhandledExceptionFilter);
 
-  return CXBApplicationEx::Create();
+  return CXBApplicationEx::Create(hWnd);
 }
 
 HRESULT CApplication::Initialize()
@@ -1148,7 +1273,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
   m_gWindowManager.Add(new CGUIWindowMusicNav);               // window id = 502
-//  m_gWindowManager.Add(new CGUIWindowMusicTop100);            // window id = 503
 
   m_gWindowManager.Add(new CGUIDialogSelect);             // window id = 2000
   m_gWindowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
@@ -1160,12 +1284,12 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
   m_gWindowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
 
-    m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
+  m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
   m_gWindowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
   m_gWindowManager.Add(new CGUIWindowWeather);                // window id = 2600 WEATHER
   m_gWindowManager.Add(new CGUIWindowBuddies);                // window id = 2700 BUDDIES
-
   m_gWindowManager.Add(new CGUIWindow(WINDOW_STARTUP, "Startup.xml"));  // startup window (id 2999)
+
   /* window id's 3000 - 3100 are reserved for python */
   g_DownloadManager.Initialize();
 
@@ -1209,7 +1333,7 @@ HRESULT CApplication::Initialize()
     g_guiSettings.GetString("network.dns").c_str());
 
   g_pythonParser.bStartup = true;
-  
+
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
@@ -1254,6 +1378,7 @@ HRESULT CApplication::Initialize()
 
 void CApplication::PrintXBEToLCD(const char* xbePath)
 {
+#ifdef HAS_LCD
   int pLine = 0;
   CStdString strXBEName;
   if (!CUtil::GetXBEDescription(xbePath, strXBEName))
@@ -1272,6 +1397,7 @@ void CApplication::PrintXBEToLCD(const char* xbePath)
     g_lcd->SetLine(pLine++, strXBEName);
     g_lcd->SetLine(pLine++, "");
   }
+#endif
 }
 
 void CApplication::StartWebServer()
@@ -1300,6 +1426,7 @@ void CApplication::StopWebServer()
 
 void CApplication::StartFtpServer()
 {
+#ifdef HAS_FTP_SERVER
   if ( g_guiSettings.GetBool("servers.ftpserver") && g_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
@@ -1307,18 +1434,20 @@ void CApplication::StartFtpServer()
     {
       // if user didn't upgrade properly...
       // check whether P:\\FileZilla Server.xml exists (UserData/FileZilla Server.xml)
-      if (CFile::Exists("P:\\FileZilla Server.xml"))
-        m_pFileZilla = new CXBFileZilla("P:\\");
+      if (CFile::Exists(g_settings.GetUserDataItem("FileZilla Server.xml")))
+        m_pFileZilla = new CXBFileZilla(g_settings.GetUserDataFolder());
       else
         m_pFileZilla = new CXBFileZilla("Q:\\System\\");
       m_pFileZilla->Start(false);
     }
     //CLog::Log(LOGNOTICE, "XBFileZilla: Started");
   }
+#endif
 }
 
 void CApplication::StopFtpServer()
 {
+#ifdef HAS_FTP_SERVER
   if (m_pFileZilla)
   {
     CLog::Log(LOGINFO, "XBFileZilla: Stopping...");
@@ -1339,11 +1468,12 @@ void CApplication::StopFtpServer()
 
     CLog::Log(LOGINFO, "XBFileZilla: Stopped");
   }
-
+#endif
 }
 
 void CApplication::StartTimeServer()
 {
+#ifdef HAS_TIME_SERVER
   if (g_guiSettings.GetBool("locale.timeserver") && g_network.IsAvailable() )
   {
     if( !m_psntpClient )
@@ -1355,10 +1485,12 @@ void CApplication::StartTimeServer()
       m_psntpClient->Create();
     }
   }
+#endif
 }
 
 void CApplication::StopTimeServer()
 {
+#ifdef HAS_TIME_SERVER
   if( m_psntpClient )
   {
     CLog::Log(LOGNOTICE, "stop time server client");
@@ -1366,6 +1498,7 @@ void CApplication::StopTimeServer()
     SAFE_DELETE(m_psntpClient);
     CSectionLoader::Unload("SNTP");
   }
+#endif
 }
 
 void CApplication::StartKai()
@@ -1381,15 +1514,6 @@ void CApplication::StartKai()
   }
 }
 
-void CApplication::StartUPnP()
-{
-    if (g_guiSettings.GetBool("upnp.autostart"))
-    {
-        CLog::Log(LOGNOTICE, "starting upnp");
-        CUPnP::GetInstance();
-    }
-}
-
 void CApplication::StopKai()
 {
   if (CKaiClient::IsInstantiated())
@@ -1400,17 +1524,31 @@ void CApplication::StopKai()
   }
 }
 
+void CApplication::StartUPnP()
+{
+  if (g_guiSettings.GetBool("upnp.autostart"))
+  {
+    CLog::Log(LOGNOTICE, "starting upnp");
+#ifdef HAS_UPNP
+    CUPnP::GetInstance();
+#endif
+  }
+}
+
 void CApplication::StopUPnP()
 {
-    if (CUPnP::IsInstantiated())
-    {
-        CLog::Log(LOGNOTICE, "stopping upnp");
-        CUPnP::ReleaseInstance();
-    }
+#ifdef HAS_UPNP
+  if (CUPnP::IsInstantiated())
+  {
+    CLog::Log(LOGNOTICE, "stopping upnp");
+    CUPnP::ReleaseInstance();
+  }
+#endif
 }
 
 void CApplication::StartLEDControl(bool switchoff)
 {
+#ifdef HAS_XBOX_HARDWARE
   if (switchoff && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE)
   {
 #ifdef AFTER2_0
@@ -1440,10 +1578,12 @@ void CApplication::StartLEDControl(bool switchoff)
   {
     ILED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
   }
+#endif
 }
 
 void CApplication::DimLCDOnPlayback(bool dim)
 {
+#ifdef HAS_LCD
   if(g_lcd && dim && (g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF) && (g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE))
   {
     if ( (IsPlayingVideo()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO)
@@ -1466,13 +1606,14 @@ void CApplication::DimLCDOnPlayback(bool dim)
   {
     g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
   }
+#endif
 }
 
 void CApplication::StartServices()
 {
   CheckDate();
   StartLEDControl(false);
-    
+
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create( false);
@@ -1487,13 +1628,16 @@ void CApplication::StartServices()
   g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
   g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO_TEMP, PLAYLIST::REPEAT_NONE);
 
+#ifdef HAS_LCD
   CLCDFactory factory;
   g_lcd = factory.Create();
   if (g_lcd)
   {
     g_lcd->Initialize();
   }
+#endif
 
+#ifdef HAS_XBOX_HARDWARE
   if (g_guiSettings.GetBool("system.autotemperature"))
   {
     CLog::Log(LOGNOTICE, "start fancontroller");
@@ -1504,6 +1648,7 @@ void CApplication::StartServices()
     CLog::Log(LOGNOTICE, "setting fanspeed");
     CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
   }
+#endif
 }
 void CApplication::CheckDate()
 {
@@ -1527,8 +1672,9 @@ void CApplication::CheckDate()
 		FILETIME stNewTime, stCurTime;
 		SystemTimeToFileTime(&NewTime, &stNewTime);
 		SystemTimeToFileTime(&CurTime, &stCurTime);
-		NtSetSystemTime(&stNewTime, &stCurTime);	// Set a Default Year 2004!
-
+#ifdef HAS_XBOX_HARDWARE
+    NtSetSystemTime(&stNewTime, &stCurTime);	// Set a Default Year 2004!
+#endif
 		CLog::Log(LOGNOTICE, "- New Date is now: %i-%i-%i",NewTime.wDay, NewTime.wMonth, NewTime.wYear);
 	}
 	return ;
@@ -1540,9 +1686,11 @@ void CApplication::StopServices()
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
 
+#ifdef HAS_XBOX_HARDWARE
   CLog::Log(LOGNOTICE, "stop fancontroller");
   CFanController::Instance()->Stop();
   CFanController::RemoveInstance();
+#endif
 }
 
 void CApplication::DelayLoadSkin()
@@ -1556,6 +1704,18 @@ void CApplication::CancelDelayLoadSkin()
   m_dwSkinTime = 0;
 }
 
+void CApplication::ReloadSkin()
+{
+  CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, m_gWindowManager.GetActiveWindow());
+  g_graphicsContext.SendMessage(msg);
+  // Reload the skin, restoring the previously focused control
+  CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  unsigned iCtrlID = pWindow->GetFocusedControlID();
+  g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+  CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
+  pWindow->OnMessage(msg3);
+}
+
 void CApplication::LoadSkin(const CStdString& strSkin)
 {
   bool bPreviousPlayingState=false;
@@ -1565,6 +1725,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     bPreviousPlayingState = !g_application.m_pPlayer->IsPaused();
     if (bPreviousPlayingState)
       g_application.m_pPlayer->Pause();
+#ifdef HAS_VIDEO_PLAYBACK
     if (!g_renderManager.Paused())
     {
       if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
@@ -1573,6 +1734,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
         bPreviousRenderingState = true;
       }
     }
+#endif
   }
   // close the music and video overlays (they're re-opened automatically later)
   CSingleLock lock(g_graphicsContext);
@@ -1580,8 +1742,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_dwSkinTime = 0;
 
   CStdString strHomePath;
-  CStdString strSkinPath = "Q:\\skin\\";
-  strSkinPath += strSkin;
+  CStdString strSkinPath = "Q:\\skin\\" + strSkin;
 
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
@@ -1792,47 +1953,45 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       // Read the <type> element to get the window type to create
       // If no type is specified, create a CGUIWindow as default
       CGUIWindow* pWindow = NULL;
-      const TiXmlNode *pType = pRootElement->FirstChild("type");
-      if (!pType || !pType->FirstChild())
-      {
-        pWindow = new CGUIStandardWindow();
-      }
+      CStdString strType;
+      if (pRootElement->Attribute("type"))
+        strType = pRootElement->Attribute("type");
       else
       {
-        CStdString strType = pType->FirstChild()->Value();
-        if (strType == "dialog")
-        {
-          pWindow = new CGUIDialog(0, "");
-        }
-        else if (strType == "subMenu")
-        {
-          pWindow = new CGUIDialogSubMenu();
-        }
-        else if (strType == "buttonMenu")
-        {
-          pWindow = new CGUIDialogButtonMenu();
-        }
-        else
-        {
-          pWindow = new CGUIStandardWindow();
-        }
+        const TiXmlNode *pType = pRootElement->FirstChild("type");
+        if (pType && pType->FirstChild())
+          strType = pType->FirstChild()->Value();
       }
-      pType = pRootElement->FirstChild("id");
-      
+      if (strType.Equals("dialog"))
+        pWindow = new CGUIDialog(0, "");
+      else if (strType.Equals("submenu"))
+        pWindow = new CGUIDialogSubMenu();
+      else if (strType.Equals("buttonmenu"))
+        pWindow = new CGUIDialogButtonMenu();
+      else
+        pWindow = new CGUIStandardWindow();
+
+      int id = WINDOW_INVALID;
+      if (!pRootElement->Attribute("id", &id))
+      {
+        const TiXmlNode *pType = pRootElement->FirstChild("id");
+        if (pType && pType->FirstChild())
+          id = atol(pType->FirstChild()->Value());
+      }
       // Check to make sure the pointer isn't still null
-      if (pWindow == NULL || !pType || !pType->FirstChild())
+      if (pWindow == NULL || id == WINDOW_INVALID)
       {
         CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
         return false;
       }
-      if (m_gWindowManager.GetWindow(WINDOW_HOME + atol(pType->FirstChild()->Value())))
+      if (m_gWindowManager.GetWindow(WINDOW_HOME + id))
       {
         delete pWindow;
         continue;
       }
       // set the window's xml file, and add it to the window manager.
       pWindow->SetXMLFile(FindFileData.cFileName);
-      pWindow->SetID(WINDOW_HOME + atol(pType->FirstChild()->Value()));
+      pWindow->SetID(WINDOW_HOME + id);
       m_gWindowManager.AddCustomWindow(pWindow);
     } 
     CloseHandle(hFind);
@@ -1840,16 +1999,23 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
   return true;
 }
 
+#ifdef HAS_XBOX_D3D  // needed for screenshot
 void CApplication::Render()
 {
+#else
+void CApplication::RenderNoPresent()
+{
+#endif
   // update sound
   if (m_pPlayer)
   {
     m_pPlayer->DoAudioWork();
   }
   // process karaoke
+#ifdef HAS_KARAOKE
   if (m_pCdgParser)
     m_pCdgParser->ProcessVoice();
+#endif
 
   // check if we haven't rewound past the start of the file
   if (IsPlaying())
@@ -1880,19 +2046,23 @@ void CApplication::Render()
   {
     if ( g_graphicsContext.IsFullScreenVideo() )
     {
+#ifdef HAS_VIDEO_PLAYBACK
       if (m_pPlayer)
       {
         if (m_pPlayer->IsPaused())
         {
           CSingleLock lock(g_graphicsContext);
-          extern void xbox_video_render_update(bool);
           m_gWindowManager.UpdateModelessVisibility();
+          extern void xbox_video_render_update(bool);
           xbox_video_render_update(true);
+#ifdef HAS_XBOX_D3D
           m_pd3dDevice->BlockUntilVerticalBlank();
+#endif
           m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
           return ;
         }
       }
+#endif
       Sleep(50);
       ResetScreenSaver();
       return ;
@@ -1912,6 +2082,10 @@ void CApplication::Render()
   g_infoManager.UpdateFPS();
 
   g_graphicsContext.Lock();
+
+#ifndef HAS_XBOX_D3D
+  if (m_pd3dDevice) m_pd3dDevice->BeginScene();
+#endif
 
   m_gWindowManager.UpdateModelessVisibility();
 
@@ -1946,25 +2120,25 @@ void CApplication::Render()
   // draw GUI
   g_graphicsContext.Clear();
   //SWATHWIDTH of 4 improves fillrates (performance investigator)
-  m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 4);
+#ifdef HAS_XBOX_D3D
+  if (m_pd3dDevice) m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 4);
+#endif
   m_gWindowManager.Render();
 
+  // if we're recording an audio stream then show blinking REC
+  if (IsPlayingAudio())
   {
-    // if we're recording an audio stream then show blinking REC
-    if (IsPlayingAudio())
+    if (m_pPlayer->IsRecording() )
     {
-      if (m_pPlayer->IsRecording() )
+      static iBlinkRecord = 0;
+      CGUIFont* pFont = g_fontManager.GetFont("font13");
+      if (pFont)
       {
-        static iBlinkRecord = 0;
-        CGUIFont* pFont = g_fontManager.GetFont("font13");
-        if (pFont)
-        {
-          iBlinkRecord++;
-          if (iBlinkRecord > 25)
-            pFont->DrawText(60, 50, 0xffff0000, 0, L"REC"); //Draw REC in RED
-          if (iBlinkRecord > 50)
-            iBlinkRecord = 0;
-        }
+        iBlinkRecord++;
+        if (iBlinkRecord > 25)
+          pFont->DrawText(60, 50, 0xffff0000, 0, L"REC"); //Draw REC in RED
+        if (iBlinkRecord > 50)
+          iBlinkRecord = 0;
       }
     }
   }
@@ -1982,7 +2156,7 @@ void CApplication::Render()
     // free memory if we got les then 10megs free ram
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
-    DWORD dwMegFree = stat.dwAvailPhys / (1024 * 1024);
+    DWORD dwMegFree = (DWORD)(stat.dwAvailPhys / (1024 * 1024));
     if (dwMegFree <= 10)
     {
       g_TextureManager.Flush();
@@ -1994,6 +2168,7 @@ void CApplication::Render()
     // If we have the remote codes enabled, then show them
     if (g_advancedSettings.m_displayRemoteCodes)
     {
+#ifdef HAS_IR_REMOTE
       XBIR_REMOTE* pRemote = &m_DefaultIR_Remote;
       static iRemoteCode = 0;
       static iShowRemoteCode = 0;
@@ -2021,16 +2196,31 @@ void CApplication::Render()
         }
         iShowRemoteCode--;
       }
+#endif
     }
 
     RenderMemoryStatus();
   }
 
+#ifndef HAS_XBOX_D3D
+  if (m_pd3dDevice) m_pd3dDevice->EndScene();
+#else
   // Present the backbuffer contents to the display
-  m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+  if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+#endif
   g_graphicsContext.Unlock();
-  
 }
+
+#ifndef HAS_XBOX_D3D
+void CApplication::Render()
+{
+  g_graphicsContext.Lock();
+  RenderNoPresent();
+  // Present the backbuffer contents to the display
+  if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+  g_graphicsContext.Unlock();
+}
+#endif
 
 void CApplication::RenderMemoryStatus()
 {
@@ -2117,12 +2307,13 @@ bool CApplication::OnKey(CKey& key)
         if (key.GetButtonCode() != KEY_INVALID)
           action.wID = (WORD) key.GetButtonCode();
       }
-      else 
-    // see if we've got an ascii key
-    if (g_Keyboard.GetAscii() != 0)
-      action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
-   else
-      action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
+      else
+      { // see if we've got an ascii key
+        if (g_Keyboard.GetAscii() != 0)
+          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
+        else
+          action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
+      }
     }
     else
       g_buttonTranslator.GetAction(iWin, key, action);
@@ -2156,7 +2347,7 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
-  /* handle extra global presses */
+  // handle extra global presses
 
   // screenshot : take a screenshot :)
   if (action.wID == ACTION_TAKE_SCREENSHOT)
@@ -2294,32 +2485,23 @@ bool CApplication::OnAction(const CAction &action)
       }
       if (action.wID == ACTION_PLAYER_FORWARD || action.wID == ACTION_PLAYER_REWIND)
       {
-/*        if (m_eCurrentPlayer == EPC_SIDPLAYER )
-        {
-          // sid uses these to track skip
-          m_pPlayer->Seek(action.wID == ACTION_PLAYER_FORWARD);
-          return true;
-        }
+        int iPlaySpeed = m_iPlaySpeed;
+        if (action.wID == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
+          iPlaySpeed *= -2;
+        else if (action.wID == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
+          iPlaySpeed /= 2;
+        else if (action.wID == ACTION_PLAYER_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
+          iPlaySpeed /= 2;
         else
-        {*/
-          int iPlaySpeed = m_iPlaySpeed;
-          if (action.wID == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
-            iPlaySpeed *= -2;
-          else if (action.wID == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
-            iPlaySpeed /= 2;
-          else if (action.wID == ACTION_PLAYER_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
-            iPlaySpeed /= 2;
-          else
-            iPlaySpeed *= 2;
+          iPlaySpeed *= 2;
 
-          if (action.wID == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
-            iPlaySpeed = 1;
-          if (iPlaySpeed > 32 || iPlaySpeed < -32)
-            iPlaySpeed = 1;
+        if (action.wID == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+          iPlaySpeed = 1;
+        if (iPlaySpeed > 32 || iPlaySpeed < -32)
+          iPlaySpeed = 1;
 
-          SetPlaySpeed(iPlaySpeed);
-          return true;
-        //}
+        SetPlaySpeed(iPlaySpeed);
+        return true;
       }
       else if ((action.fAmount1 || GetPlaySpeed() != 1) && (action.wID == ACTION_ANALOG_REWIND || action.wID == ACTION_ANALOG_FORWARD))
       {
@@ -2406,9 +2588,10 @@ void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdStri
 
 void CApplication::UpdateLCD()
 {
+#ifdef HAS_LCD
   static lTickCount = 0;
 
-  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
+  if (!g_lcd || g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
     return ;
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
@@ -2427,15 +2610,15 @@ void CApplication::UpdateLCD()
     // reset tick count
     lTickCount = GetTickCount();
   }
+#endif
 }
 
 void CApplication::FrameMove()
 {
-  /* currently we calculate the repeat time (ie time from last similar keypress) just global as fps */
+  // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
   float frameTime = m_frameTime.GetElapsedSeconds();
   m_frameTime.StartZero();
-
-  /* never set a frametime less than 2 fps to avoid problems when debuggin and on breaks */
+  // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
   if( frameTime > 0.5 ) frameTime = 0.5;
 
   if (g_guiSettings.GetBool("xlinkkai.enabled"))
@@ -2452,8 +2635,7 @@ void CApplication::FrameMove()
     }
   }
 
-  if (g_lcd)
-    UpdateLCD();
+  UpdateLCD();
 
   // read raw input from controller, remote control, mouse and keyboard
   ReadInput();
@@ -2467,6 +2649,7 @@ void CApplication::FrameMove()
 
 bool CApplication::ProcessGamepad(float frameTime)
 {
+#ifdef HAS_GAMEPAD
   // Handle the gamepad button presses.  We check for button down,
   // then call OnKey() which handles the translation to actions, and sends the
   // action to our window manager's OnAction() function, which filters the messages
@@ -2571,11 +2754,6 @@ bool CApplication::ProcessGamepad(float frameTime)
       newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
     else if (m_DefaultGamepad.fY1 < 0)
       newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
-    /*else if (m_DefaultGamepad.fX1 != 0)
-    {
-      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
-      m_DefaultGamepad.fY1 = 0.00001f; // small amount of movement
-    }*/
   }
   else if (lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
   {
@@ -2583,11 +2761,6 @@ bool CApplication::ProcessGamepad(float frameTime)
       newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
     else if (m_DefaultGamepad.fX1 < 0)
       newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
-    /*else if (m_DefaultGamepad.fY1 != 0)
-    {
-      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
-      m_DefaultGamepad.fX1 = 0.00001f; // small amount of movement
-    }*/
   }
   else
   { // check for a new control movement
@@ -2721,11 +2894,13 @@ bool CApplication::ProcessGamepad(float frameTime)
     CKey key(KEY_BUTTON_WHITE, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
     if (OnKey(key)) return true;
   }
+#endif
   return false;
 }
 
 bool CApplication::ProcessRemote(float frameTime)
 {
+#ifdef HAS_IR_REMOTE
   if (m_DefaultIR_Remote.wButtons)
   {
     // time depends on whether the movement is repeated (held down) or not.
@@ -2735,6 +2910,7 @@ bool CApplication::ProcessRemote(float frameTime)
     CKey key(m_DefaultIR_Remote.wButtons, 0, 0, 0, 0, 0, 0, time);
     return OnKey(key);
   }
+#endif
   return false;
 }
 
@@ -2785,8 +2961,8 @@ bool CApplication::ProcessHTTPApiButtons()
       {
         CAction action;
         action.wID = ACTION_MOUSE;
-        g_Mouse.iPosX=(int)keyHttp.GetLeftThumbX();
-        g_Mouse.iPosY=(int)keyHttp.GetLeftThumbY();
+        g_Mouse.posX = keyHttp.GetLeftThumbX();
+        g_Mouse.posY = keyHttp.GetLeftThumbY();
         if (keyHttp.GetLeftTrigger()!=0)
           g_Mouse.bClick[keyHttp.GetLeftTrigger()-1]=true;
         if (keyHttp.GetRightTrigger()!=0)
@@ -2835,6 +3011,7 @@ bool CApplication::ProcessKeyboard()
 
 bool CApplication::IsButtonDown(DWORD code)
 {
+#ifdef HAS_GAMEPAD
   if (code >= KEY_BUTTON_A && code <= KEY_BUTTON_RIGHT_TRIGGER)
   {
     // analogue
@@ -2850,12 +3027,14 @@ bool CApplication::IsButtonDown(DWORD code)
     // remote
     return m_DefaultIR_Remote.wButtons == code;
   }
+#endif
   return false;
 }
 
 bool CApplication::AnyButtonDown()
 {
   ReadInput();
+#ifdef HAS_GAMEPAD
   if (m_DefaultGamepad.wPressedButtons || m_DefaultIR_Remote.wButtons)
     return true;
 
@@ -2864,6 +3043,7 @@ bool CApplication::AnyButtonDown()
     if (m_DefaultGamepad.bPressedAnalogButtons[i])
       return true;
   }
+#endif
   return false;
 }
 
@@ -2902,8 +3082,9 @@ void CApplication::Stop()
       musicScan->StopScanning();
 
     CLog::Log(LOGNOTICE, "stop daap clients");
+#ifdef HAS_FILESSYTEM
     g_DaapClient.Release();
-
+#endif
     //g_lcd->StopThread();
     CLog::Log(LOGNOTICE, "stop python");
     g_applicationMessenger.Cleanup();
@@ -2911,14 +3092,13 @@ void CApplication::Stop()
 
     CLog::Log(LOGNOTICE, "clean cached files!");
     g_RarManager.ClearCache(true);
-    
+
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
 
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
     m_gWindowManager.Delete(WINDOW_MUSIC_NAV);
-    //m_gWindowManager.Delete(WINDOW_MUSIC_TOP100);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_FILES);
@@ -2954,7 +3134,11 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_LOCK_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
     m_gWindowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
+    m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
 
+    m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
     m_gWindowManager.Delete(WINDOW_SETTINGS_MENU);
     m_gWindowManager.Delete(WINDOW_SETTINGS_PROFILES);
@@ -2972,6 +3156,19 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_SCRIPTS);
     m_gWindowManager.Delete(WINDOW_BUDDIES);
     m_gWindowManager.Delete(WINDOW_WEATHER);
+
+    m_gWindowManager.Delete(WINDOW_SETTINGS_MYPICTURES);
+    m_gWindowManager.Remove(WINDOW_SETTINGS_MYPROGRAMS);
+    m_gWindowManager.Remove(WINDOW_SETTINGS_MYWEATHER);
+    m_gWindowManager.Remove(WINDOW_SETTINGS_MYMUSIC);
+    m_gWindowManager.Remove(WINDOW_SETTINGS_SYSTEM);
+    m_gWindowManager.Remove(WINDOW_SETTINGS_MYVIDEOS);
+    m_gWindowManager.Remove(WINDOW_SETTINGS_NETWORK);
+    m_gWindowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
+
+    m_gWindowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
+    m_gWindowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
+    m_gWindowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
@@ -2994,12 +3191,14 @@ void CApplication::Stop()
     CKaiClient::RemoveInstance();
     CScrobbler::RemoveInstance();
     g_infoManager.Clear();
+#ifdef HAS_LCD
     if (g_lcd)
     {
       g_lcd->Stop();
       delete g_lcd;
       g_lcd=NULL;
     }
+#endif
     g_dlls.Clear();
     g_settings.Clear();
     g_guiSettings.Clear();
@@ -3135,7 +3334,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
       if( item.m_lStartOffset == STARTOFFSET_RESUME )
       {
-        /* can only resume seek here, not dvdstate */
+        // can only resume seek here, not dvdstate
         CBookmark bookmark;
         if( dbs.GetResumeBookMark(item.m_strPath, bookmark) )
           seconds = bookmark.timeInSeconds;
@@ -3192,7 +3391,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   EPLAYERCORES eNewCore = EPC_NONE;
   if( bRestart )
   {
-    /* have to be set here due to playstack using this for starting the file */
+    // have to be set here due to playstack using this for starting the file
     options.starttime = item.m_lStartOffset / 75.0;
 
     if( m_eCurrentPlayer == EPC_NONE )
@@ -3234,10 +3433,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   // reset any forced player
   m_eForcedNextPlayer = EPC_NONE;
 
+#ifdef HAS_KARAOKE
   //We have to stop parsing a cdg before mplayer is deallocated
   // WHY do we have to do this????
   if(m_pCdgParser)
     m_pCdgParser->Stop();
+#endif
 
   // We should restart the player, unless the previous and next tracks are using
   // one of the players that allows gapless playback (paplayer, dvdplayer)
@@ -3265,23 +3466,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   bool bResult = m_pPlayer->OpenFile(item, options);
   if (bResult)
   {
-    // Enable Karaoke voice as necessary
-//    if (g_guiSettings.GetBool("karaoke.voiceenabled"))
-  //  {
-/*    if( m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") )
-    {
-      if(!m_pCdgParser->IsRunning())
-      {
-        if (item.IsAudio() && !item.IsInternetStream() )
-        {
-          if (item.IsMusicDb())
-            m_pCdgParser->Start(item.m_musicInfoTag.GetURL());
-          else
-            m_pCdgParser->Start(item.m_strPath);
-        }
-      }
-    }*/
-
     // if file happens to contain video stream
     if ( IsPlayingVideo())
     {
@@ -3304,8 +3488,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       {
         // wait till the screen is configured before we pause
         // I'm sure this can be done better than just a sleep...
+#ifdef HAS_VIDEO_PLAYBACK
         while (!g_renderManager.IsStarted())
           Sleep(1);
+#endif
         // pause video until screen is setup
         m_switchingToFullScreen = true;
         m_pPlayer->Pause();
@@ -3378,7 +3564,7 @@ void CApplication::OnPlayBackStopped()
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStopped();
-  
+
   OutputDebugString("Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
   m_gWindowManager.SendMessage(msg);
@@ -3441,8 +3627,10 @@ void CApplication::StopPlaying()
   int iWin = m_gWindowManager.GetActiveWindow();
   if ( IsPlaying() )
   {
+#ifdef HAS_KARAOKE
     if( m_pCdgParser )
       m_pCdgParser->Stop();
+#endif
 
     // turn off visualisation window when stopping
     if (iWin == WINDOW_VISUALISATION)
@@ -3570,7 +3758,7 @@ bool CApplication::ResetScreenSaverWindow()
         Ramp.blue[i] = (int)((float)m_OldRamp.blue[i] * fade);
       }
       Sleep(5);
-      m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp); // use immediate to get a smooth fade
+      m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
     }
     m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
     return true;
@@ -3693,12 +3881,13 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
       Ramp.blue[i] = (int)((float)m_OldRamp.blue[i] * fade);
     }
     Sleep(5);
-    m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp); // use immediate to get a smooth fade
+    m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
   }
 }
 
 void CApplication::CheckShutdown()
 {
+#ifdef HAS_XBOX_HARDWARE
   // Note: if the the screensaver is switched on, the shutdown timeout is
   // counted from when the screensaver activates.
   if (!m_bInactive)
@@ -3711,10 +3900,12 @@ void CApplication::CheckShutdown()
     {
       m_bInactive = false;
     }
+#ifdef HAS_FTP_SERVER
     else if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
     {
       m_bInactive = false;
     }
+#endif
     else    // nothing doing here, so start the timer going
     {
       m_bInactive = true;
@@ -3753,11 +3944,13 @@ void CApplication::CheckShutdown()
   }
 
   return ;
+#endif
 }
 
 //Check if hd spindown must be blocked
 bool CApplication::MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown)
 {
+#ifdef HAS_XBOX_HARDWARE
   if (IsPlayingVideo())
   {
     //block immediate spindown when playing a video non-fullscreen (videocontrol is playing)
@@ -3777,6 +3970,7 @@ bool CApplication::MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown)
       return (strSubTitelExtension == ".idx");
     }
   }
+#endif
   return false;
 }
 
@@ -3946,6 +4140,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (IsPlayingAudio())
       {
         // Start our cdg parser as appropriate
+#ifdef HAS_KARAOKE
         if (m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") && !m_itemCurrentFile.IsInternetStream())
         {
           if (m_pCdgParser->IsRunning())
@@ -3963,7 +4158,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           else
             m_pCdgParser->Start(m_itemCurrentFile.m_strPath);
         }
-
+#endif
         //  Activate audio scrobbler
         if (!m_itemCurrentFile.IsInternetStream())
         {
@@ -4046,9 +4241,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
       }
 
-      /* no new player, free any cdg parser */
+#ifdef HAS_KARAOKE
+      // no new player, free any cdg parser
       if (!m_pPlayer && m_pCdgParser)
         m_pCdgParser->Free();
+#endif
 
       if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
       {
@@ -4094,8 +4291,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION || m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
           m_gWindowManager.PreviousWindow();
 
+#ifdef HAS_KARAOKE
       if(m_pCdgParser)
         m_pCdgParser->Free();
+#endif
 
       SAFE_DELETE(m_pPlayer);
       return true;
@@ -4179,14 +4378,7 @@ void CApplication::Process()
   // check if we need to load a new skin
   if (m_dwSkinTime && timeGetTime() >= m_dwSkinTime)
   {
-    CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, m_gWindowManager.GetActiveWindow());
-    g_graphicsContext.SendMessage(msg);
-    // Reload the skin, restoring the previously focused control
-    CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-    unsigned iCtrlID = pWindow->GetFocusedControl();
-    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-    CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
-    pWindow->OnMessage(msg3);
+    ReloadSkin();
   }
 
   // dispatch the messages generated by python or other threads to the current window
@@ -4203,11 +4395,13 @@ void CApplication::Process()
   g_applicationMessenger.ProcessMessages();
 
   // check for memory unit changes
+#ifdef HAS_XBOX_HARDWARE
   if (g_memoryUnitManager.Update())
   { // changes have occured - update our shares
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
     m_gWindowManager.SendThreadMessage(msg);        
   }
+#endif
 
   // check if we can free unused memory
   g_audioManager.FreeUnused();
@@ -4255,7 +4449,7 @@ void CApplication::ProcessSlow()
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
-  
+
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
   if(IsPaused() != m_bIsPaused)
   {
@@ -4376,7 +4570,7 @@ void CApplication::SetVolume(int iPercent)
 void CApplication::SetHardwareVolume(long hardwareVolume)
 {
   // TODO DRC
-  if (hardwareVolume >= VOLUME_MAXIMUM /*+ VOLUME_DRC_MAXIMUM*/)
+  if (hardwareVolume >= VOLUME_MAXIMUM) // + VOLUME_DRC_MAXIMUM
     hardwareVolume = VOLUME_MAXIMUM;// + VOLUME_DRC_MAXIMUM;
   if (hardwareVolume <= VOLUME_MINIMUM)
   {
@@ -4474,7 +4668,7 @@ double CApplication::GetTotalTime() const
     if (m_itemCurrentFile.IsStack())
       rc = m_currentStack[m_currentStack.Size() - 1]->m_lEndOffset;
     else
-    rc = m_pPlayer->GetTotalTime();
+      rc = m_pPlayer->GetTotalTime();
   }
 
   return rc;
@@ -4741,31 +4935,11 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
 
   CFileItem item(playlist[0]);
 
-  /*
-  // just 1 item? then play it
-  if (playlist.size() == 1)
-    return g_application.PlayFile(item);
-  */
-
   // add each item of the playlist to the playlistplayer
   for (int i = 0; i < (int)playlist.size(); ++i)
   {
     g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlist[i]);
   }
-
-  /*
-    No need for this anymore - shuffle on and off can be performed at any time
-
-  // music option: shuffle playlist on load
-  // dont do this if the first item is a stream
-  if (
-    (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP) &&
-    !item.IsShoutCast() &&
-    g_guiSettings.GetBool("musicplaylist.shuffleplaylistsonload")
-    )
-  {
-    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
-  }*/
 
   // if we have a playlist 
   if (g_playlistPlayer.GetPlaylist(iPlaylist).size())
@@ -4781,28 +4955,33 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
 
 bool CApplication::SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed, int iDuration)
 {
+#ifdef HAS_GAMEPAD
   // GeminiServer: Controll(Rumble): Controller Motors.
   for( DWORD i=0; i<4; i++ )
   {
-      if( m_Gamepad[i].hDevice )
-      { 
-          if( m_Gamepad[i].Feedback.Header.dwStatus != ERROR_IO_PENDING )
-          {
-              m_Gamepad[i].Feedback.Rumble.wLeftMotorSpeed  = WORD( m_fLeftMotorSpeed  * 65535.0f );
-              m_Gamepad[i].Feedback.Rumble.wRightMotorSpeed = WORD( m_fRightMotorSpeed * 65535.0f );
-              XInputSetState( m_Gamepad[i].hDevice, &m_Gamepad[i].Feedback );
-          }
-          else { Sleep(iDuration);
-            SetControllerRumble(m_fLeftMotorSpeed, m_fRightMotorSpeed,iDuration);
-            return false;
-          }
+    if( m_Gamepad[i].hDevice )
+    { 
+      if( m_Gamepad[i].Feedback.Header.dwStatus != ERROR_IO_PENDING )
+      {
+        m_Gamepad[i].Feedback.Rumble.wLeftMotorSpeed  = WORD( m_fLeftMotorSpeed  * 65535.0f );
+        m_Gamepad[i].Feedback.Rumble.wRightMotorSpeed = WORD( m_fRightMotorSpeed * 65535.0f );
+        XInputSetState( m_Gamepad[i].hDevice, &m_Gamepad[i].Feedback );
       }
+      else
+      {
+        Sleep(iDuration);
+        SetControllerRumble(m_fLeftMotorSpeed, m_fRightMotorSpeed,iDuration);
+        return false;
+      }
+    }
   }
+#endif
   return true;
 }
 
 void CApplication::CheckForDebugButtonCombo()
 {
+#ifdef HAS_GAMEPAD
   ReadInput();
   if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_X] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y])
   {
@@ -4811,6 +4990,7 @@ void CApplication::CheckForDebugButtonCombo()
   }
 #ifdef _DEBUG
   g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
+#endif
 #endif
 }
 

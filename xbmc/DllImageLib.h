@@ -1,6 +1,15 @@
 #pragma once
 #include "DynamicDll.h"
 
+#ifndef _XBOX
+ #ifdef LoadImage
+  #undef LoadImage
+ #endif
+ #define IMAGE_DLL_PATH Q:\\system\\ImageLib_win32.dll
+#else
+ #define IMAGE_DLL_PATH Q:\\system\\ImageLib.dll
+#endif
+
 struct ImageInfo
 {
   unsigned int width;
@@ -24,7 +33,7 @@ public:
 
 class DllImageLib : public DllDynamic, DllImageLibInterface
 {
-  DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib.dll)
+  DECLARE_DLL_WRAPPER(DllImageLib, IMAGE_DLL_PATH)
   DEFINE_METHOD4(bool, LoadImage, (const char * p1, unsigned int p2, unsigned int p3, ImageInfo * p4))
   DEFINE_METHOD5(bool, CreateThumbnail, (const char * p1, const char * p2, int p3, int p4, bool p5))
   DEFINE_METHOD6(bool, CreateThumbnailFromMemory, (BYTE *p1, unsigned int p2, const char * p3, const char * p4, int p5, int p6))

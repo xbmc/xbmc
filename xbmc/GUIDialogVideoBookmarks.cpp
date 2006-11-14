@@ -4,8 +4,12 @@
 #include "VideoDatabase.h"
 #include "Application.h"
 #include "Util.h"
+#ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
+#endif
 #include "Picture.h"
+
+#define BOOKMARK_THUMB_WIDTH 128
 
 #define CONTROL_ADD_BOOKMARK     2
 #define CONTROL_CLEAR_BOOKMARKS  3
@@ -165,23 +169,27 @@ void CGUIDialogVideoBookmarks::AddBookmark()
   bookmark.player = CPlayerCoreFactory::GetPlayerName(g_application.GetCurrentPlayer());
 
   // create the thumbnail image
-  RECT rs, rd;
-  g_renderManager.GetVideoRect(rs, rd);
-  int width = 128;
+#ifdef HAS_VIDEO_PLAYBACK
   float aspectRatio = g_renderManager.GetAspectRatio();
-  int height = (int)(128.0f / aspectRatio);
-  if (height > 128)
+#else
+  float aspectRatio = 1.0f;
+#endif
+  int width = BOOKMARK_THUMB_WIDTH;
+  int height = (int)(BOOKMARK_THUMB_WIDTH / aspectRatio);
+  if (height > BOOKMARK_THUMB_WIDTH)
   {
-    height = 128;
-    width = (int)(128.0f * aspectRatio);
+    height = BOOKMARK_THUMB_WIDTH;
+    width = (int)(BOOKMARK_THUMB_WIDTH * aspectRatio);
   }
   CSingleLock lock(g_graphicsContext);
   LPDIRECT3DTEXTURE8 texture = NULL;
-  if (D3D_OK == g_graphicsContext.Get3DDevice()->CreateTexture(width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &texture))
+  if (D3D_OK == g_graphicsContext.Get3DDevice()->CreateTexture(width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &texture))
   {
     LPDIRECT3DSURFACE8 surface = NULL;
     texture->GetSurfaceLevel(0, &surface);
+#ifdef HAS_VIDEO_PLAYBACK
     g_renderManager.CreateThumbnail(surface, width, height);
+#endif
     D3DLOCKED_RECT lockedRect;
     surface->LockRect(&lockedRect, NULL, NULL);
     // compute the thumb name + create the thumb image

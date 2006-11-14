@@ -48,7 +48,7 @@ protected:
   void FreeControls();
   void OnClick(int iControlID);
 
-  void AddSetting(SettingInfo &setting, int iPosX, int iPosY, int iWidth, int iControlID);
+  void AddSetting(SettingInfo &setting, float posX, float posY, float width, int iControlID);
 
   void AddButton(unsigned int it, int label, bool bOn=true);
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);

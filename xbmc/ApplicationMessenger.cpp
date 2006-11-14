@@ -2,7 +2,10 @@
 #include "stdafx.h"
 #include "ApplicationMessenger.h"
 #include "application.h"
+#ifdef _XBOX
 #include "xbox/xkutils.h"
+#endif
+
 #include "texturemanager.h"
 #include "playlistplayer.h"
 #include "util.h"
@@ -10,6 +13,8 @@
 #include "GUIWindowSlideShow.h"
 #include "lib/libGoAhead/xbmchttp.h"
 #include "xbox/network.h"
+
+extern HWND g_hWnd;
 
 CApplicationMessenger g_applicationMessenger;
 
@@ -109,9 +114,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         g_application.Stop(); 
         Sleep(200);
+#ifdef _XBOX
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         CIoSupport::SpindownHarddisk(); // Spindown the Harddisk
         XKUtils::XBOXPowerOff();
+#endif
+#else
+        // send the WM_CLOSE window message
+        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
       }
       break;
@@ -126,8 +136,13 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         g_application.Stop();
         Sleep(200);
+#ifdef _XBOX
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKUtils::XBOXPowerCycle();
+#endif
+#else
+        // send the WM_CLOSE window message
+        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
       }
       break;
@@ -136,8 +151,13 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         g_application.Stop();
         Sleep(200);
+#ifdef _XBOX
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
-        XKUtils::XBOXReset();
+        XKUtils::XBOXPowerCycle();
+#endif
+#else
+        // send the WM_CLOSE window message
+        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
       }
       break;
@@ -208,7 +228,6 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         {
           CFileItemList items;
           CStdString strPath;
-          
           if (CUtil::IsZIP(pMsg->strParam))
             CUtil::CreateZipPath(strPath, pMsg->strParam.c_str(), "", 2, "", "Z:\\");
           else
@@ -391,6 +410,13 @@ void CApplicationMessenger::HttpApi(string cmd)
   ThreadMessage tMsg = {TMSG_HTTPAPI};
   tMsg.strParam = cmd;
   SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::ExecBuiltIn(const CStdString &command)
+{
+  ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
+  tMsg.strParam = command;
+  SendMessage(tMsg);
 }
 
 void CApplicationMessenger::MediaPlay(string filename)

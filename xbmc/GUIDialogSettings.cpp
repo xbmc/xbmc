@@ -99,16 +99,16 @@ void CGUIDialogSettings::SetupPage()
     SET_CONTROL_VISIBLE(CONTROL_PAGE);
   }
 
-  int iPosX = pControlArea->GetXPosition();
-  int iWidth = pControlArea->GetWidth();
-  int iPosY = pControlArea->GetYPosition();
-  int iGapY = pControlGap->GetHeight();
+  float posX = pControlArea->GetXPosition();
+  float width = pControlArea->GetWidth();
+  float posY = pControlArea->GetYPosition();
+  float gapY = pControlGap->GetHeight();
   int numSettings = 0;
   for (unsigned int i=0; i < m_settings.size(); i++)
     if (m_settings[i].type != SettingInfo::SEPARATOR)
       numSettings++;
 
-  int numPerPage = (int)pControlArea->GetHeight() / iGapY;
+  int numPerPage = (int)(pControlArea->GetHeight() / gapY);
   if (numPerPage < 1) numPerPage = 1;
   m_iNumPages = (numSettings + numPerPage - 1)/ numPerPage; // round up
   if (m_iCurrentPage >= m_iNumPages - 1)
@@ -143,12 +143,12 @@ void CGUIDialogSettings::SetupPage()
   for (unsigned int i = m_iPageOffset; i < m_settings.size(); i++)
   {
     SettingInfo &setting = m_settings.at(i);
-    AddSetting(setting, iPosX, iPosY, iWidth, CONTROL_START + i - m_iPageOffset);
+    AddSetting(setting, posX, posY, width, CONTROL_START + i - m_iPageOffset);
     if (setting.type == SettingInfo::SEPARATOR)
-      iPosY += m_pOriginalSeparator->GetHeight();
+      posY += m_pOriginalSeparator->GetHeight();
     else
     {
-      iPosY += iGapY;
+      posY += gapY;
       numSettingsOnPage++;
     }
     numControlsOnPage++;
@@ -298,7 +298,7 @@ void CGUIDialogSettings::FreeControls()
   }
 }
 
-void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, int iWidth, int iControlID)
+void CGUIDialogSettings::AddSetting(SettingInfo &setting, float posX, float posY, float width, int iControlID)
 {
   CGUIControl *pControl = NULL;
   if (setting.type == SettingInfo::BUTTON && m_pOriginalSettingsButton)
@@ -306,15 +306,15 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
     pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
     if (!pControl) return ;
     ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
+    pControl->SetPosition(posX, posY);
+    pControl->SetWidth(width);
   }
   else if (setting.type == SettingInfo::SEPARATOR && m_pOriginalSeparator)
   {
     pControl = new CGUIImage(*m_pOriginalSeparator);
     if (!pControl) return ;
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
+    pControl->SetPosition(posX, posY);
+    pControl->SetWidth(width);
   }
   else if (setting.type == SettingInfo::CHECK || setting.type == SettingInfo::CHECK_UCHAR)
   {
@@ -322,18 +322,18 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
     ((CGUIRadioButtonControl *)pControl)->SetLabel(setting.name);
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
-    if (setting.data) pControl->SetSelected(*(bool *)setting.data == 1);
+    pControl->SetPosition(posX, posY);
+    pControl->SetWidth(width);
+    if (setting.data) ((CGUIRadioButtonControl *)pControl)->SetSelected(*(bool *)setting.data == 1);
   }
   else if (setting.type == SettingInfo::SPIN && setting.entry.size() > 0 && m_pOriginalSpin)
   {
     pControl = new CGUISpinControlEx(*m_pOriginalSpin);
     if (!pControl) return ;
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
+    pControl->SetPosition(posX, posY);
+    pControl->SetWidth(width);
     ((CGUISpinControlEx *)pControl)->SetText(setting.name);
-    pControl->SetWidth(iWidth);
+    pControl->SetWidth(width);
     for (unsigned int i = 0; i < setting.entry.size(); i++)
       ((CGUISpinControlEx *)pControl)->AddLabel(setting.entry[i], i);
     if (setting.data) ((CGUISpinControlEx *)pControl)->SetValue(*(int *)setting.data);
@@ -343,8 +343,8 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
     if (!m_pOriginalSlider) return;
     pControl = new CGUISettingsSliderControl(*m_pOriginalSlider);
     if (!pControl) return ;
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
+    pControl->SetPosition(posX, posY);
+    pControl->SetWidth(width);
     ((CGUISettingsSliderControl *)pControl)->SetText(setting.name);
     if (setting.type == SettingInfo::SLIDER)
     {

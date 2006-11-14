@@ -10,7 +10,9 @@
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {
+#ifdef HAS_VISUALISATION
   m_pVisualisation = NULL;
+#endif
   LoadOnDemand(false);    // we are loaded by the vis window.
 }
 
@@ -56,6 +58,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       return true;
     }
     break;
+#ifdef HAS_VISUALISATION
   case GUI_MSG_WINDOW_DEINIT:
   case GUI_MSG_VISUALISATION_UNLOADING:
     {
@@ -67,6 +70,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       if (message.GetLPVOID())
         m_pVisualisation = (CVisualisation *)message.GetLPVOID();
     }
+#endif
   }
   return CGUIDialog::OnMessage(message);
 }
