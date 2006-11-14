@@ -46,7 +46,7 @@ protected:
   void FreeSettingsControls();
   virtual void FreeControls();
   virtual void OnClick(CBaseSettingControl *pSettingControl);
-  void AddSetting(CSetting *pSetting, int iPosX, int &iPosY, int iGap, int iWidth, int &iControlID);
+  void AddSetting(CSetting *pSetting, float posX, float &posY, float gap, float width, int &iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
   void JumpToSection(DWORD dwWindowId, const CStdString &section);
@@ -59,7 +59,7 @@ protected:
   vecSettingsCategory m_vecSections;
   CGUISpinControlEx *m_pOriginalSpin;
   CGUIRadioButtonControl *m_pOriginalRadioButton;
-  CGUIButtonControl *m_pOriginalSettingsButton;
+  CGUIButtonControl *m_pOriginalCategoryButton;
   CGUIButtonControl *m_pOriginalButton;
   CGUIImage *m_pOriginalImage;
   // Network settings

@@ -425,12 +425,12 @@ void CGUIWindowPictures::OnRegenerateThumbs()
 void CGUIWindowPictures::OnPopupMenu(int iItem)
 {
   // calculate our position
-  int iPosX = 200, iPosY = 100;
+  float posX = 200, posY = 100;
   const CGUIControl *pList = GetControl(CONTROL_LIST);
   if (pList)
   {
-    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
-    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
@@ -441,7 +441,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     // mark the item
     m_vecItems[iItem]->Select(true);
     // and do the popup menu
-    if (CGUIDialogContextMenu::BookmarksMenu("pictures", m_vecItems[iItem], iPosX, iPosY))
+    if (CGUIDialogContextMenu::BookmarksMenu("pictures", m_vecItems[iItem], posX, posY))
     {
       Update(m_vecItems.m_strPath);
       return ;
@@ -486,7 +486,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     int btn_GoToRoot = pMenu->AddButton(20128);
 
     // position it correctly
-    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
     pMenu->DoModal();
 
     int btnid = pMenu->GetButton();

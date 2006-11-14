@@ -10,6 +10,7 @@
 #include "xbox/network.h"
 #include "utils/guiinfomanager.h"
 #include "utils/weather.h"
+#include "GUIPassword.h"
 
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
@@ -45,13 +46,13 @@ int CGUIWindowSettingsProfile::GetSelectedItem()
 void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
 {
   // calculate our position
-  int iPosX = 200;
-  int iPosY = 100;
+  float posX = 200;
+  float posY = 100;
   CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_PROFILES);
   if (pList)
   {
-    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
-    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -68,12 +69,12 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     btnDelete = pMenu->AddButton(117); // Delete
 
   // position it correctly
-  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
   pMenu->DoModal();
   int iButton = pMenu->GetButton();
   if (iButton == btnLoad)
   {
-    unsigned iCtrlID = GetFocusedControl();
+    unsigned iCtrlID = GetFocusedControlID();
     g_application.StopPlaying();
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0, NULL);
     g_graphicsContext.SendMessage(msg2);

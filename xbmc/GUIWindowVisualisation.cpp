@@ -7,7 +7,9 @@
 #include "ButtonTranslator.h"
 #include "util.h"
 #include "GUIDialogVisualisationPresetList.h"
+#ifdef HAS_KARAOKE
 #include "CdgParser.h"
+#endif
 
 #define TRANSISTION_COUNT   50  // 1 second
 #define TRANSISTION_LENGTH 200  // 4 seconds
@@ -53,6 +55,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
       g_graphicsContext.SendMessage(msg);
       if (msg.GetLPVOID())
       {
+#ifdef HAS_VISUALISATION
         CVisualisation *pVis = (CVisualisation *)msg.GetLPVOID();
         char** pPresets=NULL;
         int currpreset=0, numpresets=0;
@@ -61,6 +64,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
         pVis->GetPresets(&pPresets,&currpreset,&numpresets,&locked);
         if (numpresets == 1 || !pPresets)
           return true;
+#endif
       }
       if (!m_bShowPreset)
       {
@@ -134,8 +138,10 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       CGUIDialogVisualisationPresetList *pList = (CGUIDialogVisualisationPresetList *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
       if (pList && pList->IsRunning()) pList->Close(true);
 
+#ifdef HAS_KARAOKE
       if(g_application.m_pCdgParser)
         g_application.m_pCdgParser->FreeGraphics();
+#endif
     }
     break;
   case GUI_MSG_WINDOW_INIT:
@@ -153,8 +159,10 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       g_infoManager.SetShowInfo(true);  // always show the info initially.
       CGUIWindow::OnMessage(message);
       m_tag = g_infoManager.GetCurrentSongTag();
+#ifdef HAS_KARAOKE
       if( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
         g_application.m_pCdgParser->AllocGraphics();
+#endif
 
       if (g_stSettings.m_bMyMusicSongThumbInVis)
       { // always on

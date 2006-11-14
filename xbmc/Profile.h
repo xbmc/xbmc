@@ -1,5 +1,4 @@
 #pragma once
-#include "GUIPassword.h"
 
 class CProfile
 {

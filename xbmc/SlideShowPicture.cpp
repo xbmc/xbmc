@@ -41,7 +41,7 @@ void CSlideShowPic::Close()
   m_bTransistionImmediately = false;
 }
 
-void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
+void CSlideShowPic::SetTexture(int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
 {
   Close();
   m_bPause = false;
@@ -133,12 +133,14 @@ int CSlideShowPic::GetOriginalHeight()
     return m_iOriginalHeight;
 }
 
-void CSlideShowPic::UpdateTexture(D3DTexture *pTexture, int iWidth, int iHeight)
+void CSlideShowPic::UpdateTexture(IDirect3DTexture8 *pTexture, int iWidth, int iHeight)
 {
   if (m_pImage)
   {
+#ifdef HAS_XBOX_D3D
     while (m_pImage->IsBusy())
       Sleep(1);
+#endif
     m_pImage->Release();
   }
   m_pImage = pTexture;
@@ -554,27 +556,32 @@ void CSlideShowPic::Render()
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, D3DFILL_WIREFRAME);
 }
 
-void CSlideShowPic::Render(float *x, float *y, D3DTexture *pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
+void CSlideShowPic::Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
 {
-  VERTEX* vertex = NULL;
-  LPDIRECT3DVERTEXBUFFER8 pVB;
-
-  g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(VERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &pVB );
-  pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
+  VERTEX vertex[4];
 
   for (int i = 0; i < 4; i++)
   {
+#ifdef HAS_XBOX_D3D
     vertex[i].p = D3DXVECTOR4( x[i], y[i], 0, 0 );
+#else
+    vertex[i].p = D3DXVECTOR4( x[i], y[i], 0, 1.0f);
+#endif
     vertex[i].tu = 0;
     vertex[i].tv = 0;
     vertex[i].col = dwColor;
   }
+#ifdef HAS_XBOX_D3D
   vertex[1].tu = m_fWidth;
   vertex[2].tu = m_fWidth;
   vertex[2].tv = m_fHeight;
   vertex[3].tv = m_fHeight;
-
-  pVB->Unlock();
+#else
+  vertex[1].tu = 1.0f;
+  vertex[2].tu = 1.0f;
+  vertex[2].tv = 1.0f;
+  vertex[3].tv = 1.0f;
+#endif
 
   // Set state to render the image
   if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture( 0, pTexture );
@@ -598,11 +605,17 @@ void CSlideShowPic::Render(float *x, float *y, D3DTexture *pTexture, DWORD dwCol
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+#ifdef HAS_XBOX_D3D
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, FALSE);
+#else
+  g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+#endif
   g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
   // Render the image
-  g_graphicsContext.Get3DDevice()->SetStreamSource( 0, pVB, sizeof(VERTEX) );
+#ifdef HAS_XBOX_D3D
   g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
+#else
+  g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
+#endif
   if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
-  pVB->Release();
 }
