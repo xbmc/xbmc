@@ -1,13 +1,14 @@
 #include "include.h"
 #include "GUIControlGroupList.h"
 
-CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl)
+CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation)
 : CGUIControlGroup(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_itemGap = itemGap;
   m_pageControl = pageControl;
   m_offset = 0;
   m_totalSize = 10;
+  m_orientation = orientation;
   ControlType = GUICONTROL_GROUPLIST;
 }
 
@@ -28,21 +29,27 @@ void CGUIControlGroupList::Render()
       SendWindowMessage(message2);
     }
     // we run through the controls, rendering as we go
-    float posX = 0;
-    float posY = 0;
-    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+    if (g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height))
     {
-      CGUIControl *control = *it;
-      control->UpdateEffectState(m_renderTime);
-      if (control->IsVisible())
+      float pos = 0;
+      for (iControls it = m_children.begin(); it != m_children.end(); ++it)
       {
-        if (posY + control->GetHeight() > m_offset && posY < m_offset + m_height)
-        { // we can render
-          control->SetPosition(m_posX + posX, m_posY + posY - m_offset);
-          control->Render();
+        CGUIControl *control = *it;
+        control->UpdateEffectState(m_renderTime);
+        if (control->IsVisible())
+        {
+          if (pos + Size(control) > m_offset && pos < m_offset + Size())
+          { // we can render
+            if (m_orientation == VERTICAL)
+              control->SetPosition(m_posX, m_posY + pos - m_offset);
+            else
+              control->SetPosition(m_posX + pos - m_offset, m_posY);
+            control->Render();
+          }
+          pos += Size(control) + m_itemGap;
         }
-        posY += control->GetHeight() + m_itemGap;
       }
+      g_graphicsContext.RestoreViewPort();
     }
     CGUIControl::Render();
   }
@@ -67,16 +74,12 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         if (control->GetID() == message.GetControlId())
         {
           if (offset < m_offset)
-          { // start of this control is below the current offset
             m_offset = offset;
-          }
-          else if (offset + control->GetHeight() > m_offset + m_height)
-          { // end of this control is below the current offset
-            m_offset = offset + control->GetHeight() - m_height;
-          }
+          else if (offset + Size(control) > m_offset + Size())
+            m_offset = offset + Size(control) - Size();
           break;
         }
-        offset += control->GetHeight() + m_itemGap;
+        offset += Size(control) + m_itemGap;
       }
     }
     break;
@@ -94,13 +97,11 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
           continue;
         if (control->GetID() == m_focusedControl)
         {
-          if (offset >= m_offset && offset + control->GetHeight() < m_offset + m_height)
-          { // control is in our range
+          if (offset >= m_offset && offset + Size(control) < m_offset + Size())
             return CGUIControlGroup::OnMessage(message);
-          }
           break;
         }
-        offset += control->GetHeight() + m_itemGap;
+        offset += Size(control) + m_itemGap;
       }
       // find the first control on this page
       offset = 0;
@@ -109,12 +110,12 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         CGUIControl *control = *it;
         if (!control->IsVisible())
           continue;
-        if (control->CanFocus() && offset >= m_offset && offset + control->GetHeight() < m_offset + m_height)
+        if (control->CanFocus() && offset >= m_offset && offset + Size(control) < m_offset + Size())
         {
           m_focusedControl = control->GetID();
           break;
         }
-        offset += control->GetHeight() + m_itemGap;
+        offset += Size(control) + m_itemGap;
       }
     }
     break;
@@ -139,9 +140,68 @@ void CGUIControlGroupList::ValidateOffset()
   {
     CGUIControl *control = *it;
     if (!control->IsVisible()) continue;
-    m_totalSize += control->GetHeight() + m_itemGap;
+    m_totalSize += Size(control);
   }
   // check our m_offset range
-  if (m_offset > m_totalSize - m_height) m_offset = m_totalSize - m_height;
+  if (m_offset > m_totalSize - Size())
+    m_offset = m_totalSize - Size();
   if (m_offset < 0) m_offset = 0;
+}
+
+void CGUIControlGroupList::AddControl(CGUIControl *control)
+{
+  if (control)
+  { // navigation is quite simple
+    if (m_orientation == VERTICAL)
+    {
+      DWORD upID = GetControlIdUp();
+      DWORD downID = GetControlIdDown();
+      if (m_children.size())
+      {
+        CGUIControl *top = m_children[0];
+        if (downID == GetID())
+          downID = top->GetID();
+        if (upID == GetID())
+          top->SetNavigation(control->GetID(), top->GetControlIdDown(), GetControlIdLeft(), GetControlIdRight());
+        CGUIControl *prev = m_children[m_children.size() - 1];
+        upID = prev->GetID();
+        prev->SetNavigation(prev->GetControlIdUp(), control->GetID(), GetControlIdLeft(), GetControlIdRight());
+      }
+      control->SetNavigation(upID, downID, GetControlIdLeft(), GetControlIdRight());
+    }
+    else
+    {
+      DWORD leftID = GetControlIdLeft();
+      DWORD rightID = GetControlIdRight();
+      if (m_children.size())
+      {
+        CGUIControl *left = m_children[0];
+        if (rightID == GetID())
+          rightID = left->GetID();
+        if (leftID == GetID())
+          left->SetNavigation(GetControlIdUp(), GetControlIdDown(), control->GetID(), left->GetControlIdRight());
+        CGUIControl *prev = m_children[m_children.size() - 1];
+        leftID = prev->GetID();
+        prev->SetNavigation(GetControlIdUp(), GetControlIdDown(), prev->GetControlIdLeft(), control->GetID());
+      }
+      control->SetNavigation(GetControlIdUp(), GetControlIdDown(), leftID, rightID);
+    }
+    CGUIControlGroup::AddControl(control);
+  }
+}
+
+void CGUIControlGroupList::ClearAll()
+{
+  CGUIControlGroup::ClearAll();
+  m_offset = 0;
+}
+
+inline float CGUIControlGroupList::Size(const CGUIControl *control) const
+{
+  return (m_orientation == VERTICAL) ? control->GetHeight() : control->GetWidth();
+}
+
+inline float CGUIControlGroupList::Size() const
+{
+  return (m_orientation == VERTICAL) ? m_height : m_width;
 }

@@ -44,9 +44,9 @@ public:
   const CGUIControl *GetControl(int id) const;
   CGUIControl *GetFirstFocusableControl(int id);
 
-  void AddControl(CGUIControl *control);
-  void RemoveControl(int id);
-  void ClearAll();
+  virtual void AddControl(CGUIControl *control);
+  virtual void RemoveControl(int id);
+  virtual void ClearAll();
   void SetDefaultControl(DWORD id) { m_defaultControl = id; };
 
   virtual void SaveStates(vector<CControlState> &states);

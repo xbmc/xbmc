@@ -18,8 +18,6 @@ class CGUIScrollBar :
       public CGUIControl
 {
 public:
-  enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
-
   CGUIScrollBar(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
                        float width, float height,
                        const CImage& backGroundTexture,

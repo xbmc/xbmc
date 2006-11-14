@@ -380,7 +380,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   bool loop = true;
   bool wrapMultiLine = false;
   CGUIThumbnailPanel::LABEL_STATE labelState = CGUIThumbnailPanel::SHOW_ALL;
-  CGUIScrollBar::ORIENTATION orientation = CGUIScrollBar::VERTICAL;
+  CGUIControl::ORIENTATION orientation = CGUIControl::VERTICAL;
   bool showOnePage = true;
 
   CLabelInfo labelInfo;
@@ -738,7 +738,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     if (strTmp.ToLower() == "horizontal")
     {
       bHorizontal = true;
-      orientation = CGUIScrollBar::HORIZONTAL;
+      orientation = CGUIControl::HORIZONTAL;
     }
   }
   XMLUtils::GetFloat(pControlNode, "buttongap", buttonGap);
@@ -817,7 +817,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   else if (strType == "grouplist")
   {
     CGUIControlGroupList* pControl = new CGUIControlGroupList(
-      dwParentId, id, posX, posY, width, height, buttonGap, pageControl);
+      dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation);
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
