@@ -132,7 +132,6 @@ static int audio_init(int rate, int channels, int format, int flags)
   case AFMT_AC3:
     ao_format_bits = 16;
     break;
-  case AFMT_S24_LE:
   case AFMT_S16_LE:
   case AFMT_S8:
   case AFMT_U8:  //Not sure about this one, added as we have handling for it later
