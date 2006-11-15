@@ -64,7 +64,7 @@ CXBoxRenderManager::~CXBoxRenderManager()
   m_pRenderer = NULL;
 }
 
-unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps)
+bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
@@ -73,10 +73,10 @@ unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int heig
   m_iSourceWidth = width;
   m_iSourceHeight = height;
   m_presentdelay = 5;
-  unsigned int result = 0;
+  bool result = false;
   if (m_pRenderer)
   {
-    result = m_pRenderer->Configure(width, height, d_width, d_height, fps);
+    result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
     Update(false);
     m_bIsStarted = true;
   }

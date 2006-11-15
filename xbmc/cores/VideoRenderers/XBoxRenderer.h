@@ -13,6 +13,7 @@
 #define MAX_FIELDS 3
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
+#define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
 
 typedef struct YV12Image
 {
@@ -48,6 +49,15 @@ typedef struct YV12Image
 #define RENDER_FLAG_NOLOCK      0x10   /* don't attempt to lock texture before rendering */
 #define RENDER_FLAG_NOUNLOCK    0x20   /* don't unlock texture after rendering */
 
+/* this defines what color translation coefficients */
+#define CONF_FLAGS_YUVCOEF_MASK(a) ((a) & 0x07)
+#define CONF_FLAGS_YUVCOEF_BT709 0x01
+#define CONF_FLAGS_YUVCOEF_BT601 0x02
+#define CONF_FLAGS_YUVCOEF_240M  0x03
+#define CONF_FLAGS_YUVCOEF_EBU   0x04
+
+#define CONF_FLAGS_YUV_FULLRANGE 0x08
+
 struct DRAWRECT
 {
   float left;
@@ -63,6 +73,28 @@ static enum EFIELDSYNC
   FS_EVEN,
   FS_BOTH,
 };
+
+
+struct YUVRANGE
+{
+  int y_min, y_max;
+  int u_min, u_max;
+  int v_min, v_max;
+};
+
+struct YUVCOEF
+{
+  float r_up, r_vp;
+  float g_up, g_vp;
+  float b_up, b_vp;
+};
+
+extern YUVRANGE yuv_range_lim;
+extern YUVRANGE yuv_range_full;
+extern YUVCOEF yuv_coef_bt601;
+extern YUVCOEF yuv_coef_bt709;
+extern YUVCOEF yuv_coef_ebu;
+extern YUVCOEF yuv_coef_smtp240m;
 
 static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX2;
@@ -83,7 +115,7 @@ public:
 
   // Player functions
   virtual unsigned int QueryFormat(unsigned int format) { return 0; };
-  virtual unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);  
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
