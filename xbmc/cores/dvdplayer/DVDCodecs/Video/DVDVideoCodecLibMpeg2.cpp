@@ -357,6 +357,10 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
             float fPixelAR = (float)pixel_x / pixel_y;
             pBuffer->iDisplayWidth = (int)((float)pBuffer->iDisplayWidth * fPixelAR);
 
+            // make sure we send the color coeficients with the image
+            pBuffer->color_matrix = m_pInfo->sequence->matrix_coefficients;
+            pBuffer->color_range = 0; // mpeg2 always have th 16->235/229 color range
+        
             m_pCurrentBuffer = pBuffer;
 
             return VC_PICTURE;

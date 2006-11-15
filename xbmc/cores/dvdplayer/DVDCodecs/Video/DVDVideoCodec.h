@@ -20,7 +20,9 @@ typedef struct stDVDVideoPicture
   
   unsigned int iRepeatPicture;
   unsigned int iDuration;
-  int iFrameType; // see defines above // 1->I, 2->P, 3->B, 0->Undef
+  unsigned int iFrameType         : 4; // see defines above // 1->I, 2->P, 3->B, 0->Undef
+  unsigned int color_matrix       : 4;
+  unsigned int color_range        : 1; // 1 indicate if we have a full range of color
   int iGroupId;
 
   unsigned int iWidth;

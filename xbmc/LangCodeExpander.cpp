@@ -156,14 +156,7 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   return false;
 }
 
-#pragma code_seg("LC_TEXT")
-#pragma data_seg("LC_DATA")
-#pragma bss_seg("LC_BSS")
 #pragma const_seg("LC_RDATA")
-
-#pragma comment(linker, "/merge:LC_TEXT=LCODE")
-#pragma comment(linker, "/merge:LC_DATA=LCODE")
-#pragma comment(linker, "/merge:LC_BSS=LCODE")
 #pragma comment(linker, "/merge:LC_RDATA=LCODE")
 
 static const LCENTRY g_iso639_1[143] = 

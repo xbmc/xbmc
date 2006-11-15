@@ -16,7 +16,7 @@ public:
   virtual void FlipPage(int source);
 
   // Functions called from mplayer  
-  virtual unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
   virtual unsigned int PreInit();
   virtual void UnInit();
 
