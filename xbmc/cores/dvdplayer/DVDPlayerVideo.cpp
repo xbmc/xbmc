@@ -183,7 +183,7 @@ void CDVDPlayerVideo::Process()
       {
         CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", (DVD_TIME_BASE / iFrameTime));
         m_DetectedStill = true;
-        pts = m_pClock->GetClock();
+        pts+= iFrameTime*4;
       }
 
       //Waiting timed out, output last picture
@@ -610,18 +610,42 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
    || m_output.height != pPicture->iHeight
    || m_output.dwidth != pPicture->iDisplayWidth
    || m_output.dheight != pPicture->iDisplayHeight
-   || m_output.framerate != m_fFrameRate)
+   || m_output.framerate != m_fFrameRate
+   || ( m_output.color_matrix != pPicture->color_matrix && pPicture->color_matrix != 0 ) // don't reconfigure on unspecified
+   || m_output.color_range != pPicture->color_range)
   {
     CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
       m_fFrameRate, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
+    unsigned flags = 0;
+    if(pPicture->color_range == 1)
+      flags |= CONF_FLAGS_YUV_FULLRANGE;
 
-    g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate);
+    switch(pPicture->color_matrix)
+    {
+      case 7: // SMPTE 240M (1987)
+        flags |= CONF_FLAGS_YUVCOEF_240M; 
+        break;
+      case 6: // SMPTE 170M
+      case 5: // ITU-R BT.470-2
+      case 4: // FCC
+        flags |= CONF_FLAGS_YUVCOEF_BT601;
+        break;
+      case 3: // RESERVED
+      case 2: // UNSPECIFIED
+      case 1: // ITU-R Rec.709 (1990) -- BT.709
+      default: 
+        flags |= CONF_FLAGS_YUVCOEF_BT709;
+    }
+
+    g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate, flags);
 
     m_output.width = pPicture->iWidth;
     m_output.height = pPicture->iHeight;
     m_output.dwidth = pPicture->iDisplayWidth;
     m_output.dheight = pPicture->iDisplayHeight;
     m_output.framerate = m_fFrameRate;
+    m_output.color_matrix = pPicture->color_matrix;
+    m_output.color_range = pPicture->color_range;
   }
 
   if (m_bInitializedOutputDevice)
@@ -672,6 +696,10 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       // don't sleep when going backwords, just push frames out
       iSleepTime = 0;
     }
+    else if( m_DetectedStill )
+    { // when we render a still, we can't sync to clock anyway
+      iSleepTime = iFrameSleep;
+    }
     else
     {
       /* try to decide on how to sync framerate */
@@ -682,7 +710,7 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       /* decouple clock and video a while after a discontinuity */
       const __int64 distance = m_pClock->DistanceToDisc();
 
-      if(  abs(distance) < pPicture->iDuration*3 )
+      if( abs(distance) < pPicture->iDuration*3 )
         iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) * 0;
       else if( pPicture->iFlags & DVP_FLAG_NOAUTOSYNC )
         iSleepTime = iClockSleep;

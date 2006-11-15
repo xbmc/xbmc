@@ -6,6 +6,11 @@
 #include "..\DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
 
+#define HOLDMODE_NONE 0
+#define HOLDMODE_HELD 1 /* set internally when we wish to flush demuxer */
+#define HOLDMODE_SKIP 2 /* set by inputstream user, when they wish to skip the held mode */
+#define HOLDMODE_DATA 3 /* set after hold mode has been exited, and action that inited it has been executed */
+
 CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInputStream(DVDSTREAM_TYPE_DVD)
 {
   m_dvdnav = 0;
@@ -13,6 +18,11 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   InitializeCriticalSection(&m_critSection);
   m_bCheckButtons = false;
   m_iCellStart = 0;
+  m_iVobUnitStart = 0LL;
+  m_iVobUnitStop = 0LL;
+  m_iVobUnitCorrection = 0LL;
+
+  m_holdmode = HOLDMODE_NONE;
 }
 
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
@@ -189,18 +199,27 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   if (!m_dvdnav) return -1;
 
   int result;
-  int event;
   int len;
   int iNavresult = NAVRESULT_NOP;
 
   // m_tempbuffer will be used for anything that isn't a normal data block
-  uint8_t* buf = m_tempbuffer;
+  uint8_t* buf = m_lastblock;
   iNavresult = -1;
   
+  if(m_holdmode == 1)
+    return NAVRESULT_HOLD;
+
   try
   {
     // the main reading function
-    result = m_dll.dvdnav_get_next_cache_block(m_dvdnav, &buf, &event, &len);
+    if(m_holdmode == HOLDMODE_SKIP)
+    { /* we where holding data, return the data held */
+      m_holdmode = HOLDMODE_DATA;
+      result = DVDNAV_STATUS_OK;
+    }
+    else
+      result = m_dll.dvdnav_get_next_cache_block(m_dvdnav, &buf, &m_lastevent, &len);    
+      
   }
   catch (...)
   {
@@ -219,12 +238,13 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
     return NAVRESULT_ERROR;
   }
 
-    switch (event)
+    switch (m_lastevent)
     {
     case DVDNAV_BLOCK_OK:
       {
         // We have received a regular block of the currently playing MPEG stream.
         // buf contains the data and len its length (obviously!) (which is always 2048 bytes btw)
+        m_holdmode = 0;
         memcpy(dest_buffer, buf, len);
         *read = len;
         iNavresult = NAVRESULT_DATA;
@@ -254,8 +274,18 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // ahead in the stream compared to what the application sees.
         // Such applications should wait until their fifos are empty
         // when they receive this type of event.
-
-        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_WAIT);
+        if(m_holdmode == HOLDMODE_NONE)
+        {
+          CLog::Log(LOGDEBUG, " - DVDNAV_WAIT (HOLDING)");
+          m_holdmode = HOLDMODE_HELD;
+          iNavresult = NAVRESULT_HOLD;
+        }
+        else
+          iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_WAIT);
+        
+        /* if user didn't care for action, just skip it */
+        if(iNavresult == NAVRESULT_NOP)
+          SkipWait();          
       }
       break;
 
@@ -319,7 +349,14 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       // information only when necessary and update the decoding/displaying
       // accordingly.
       {
-        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);        
+        if(m_holdmode == HOLDMODE_NONE)
+        {
+          CLog::Log(LOGDEBUG, " - DVDNAV_VTS_CHANGE (HOLDING)");
+          m_holdmode = HOLDMODE_HELD;
+          iNavresult = NAVRESULT_HOLD;
+        }
+        else
+          iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);        
       }
       break;
 
@@ -329,6 +366,17 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // change inside a cell. Therefore this event can be used to query such
         // information only when necessary and update the decoding/displaying
         // accordingly.
+        
+        // this may lead to a discontinuity, but it's also the end of the
+        // vobunit, so make sure everything in demuxer is output
+        if(m_holdmode == HOLDMODE_NONE)
+        {
+          CLog::Log(LOGDEBUG, "DVDNAV_CELL_CHANGE (HOLDING)");
+          m_holdmode = HOLDMODE_HELD;
+          iNavresult = NAVRESULT_HOLD;
+          break;
+        }
+
         int tt = 0, ptt = 0;
         uint32_t pos, len;
         char input = '\0';
@@ -379,10 +427,37 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         //m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
 
         pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
-        if( pci )
+
+        if(!pci)
         {
-          m_iTime = (int) ( m_dll.dvdnav_convert_time( &(pci->pci_gi.e_eltm) ) + m_iCellStart ) / 90;
-        }        
+          iNavresult = NAVRESULT_NOP;
+          break;
+        }
+        
+        /* check for any gap in the stream, this is likely a discontinuity */
+        /* however libdvdnav seem to have a bug where it sometimes */
+        /* misses a nav pack at times ( seems to be in multi angle dvd's ) */
+        __int64 gap = (__int64)pci->pci_gi.vobu_s_ptm - m_iVobUnitStop;
+        __int64 length = m_iVobUnitStop - m_iVobUnitStart;
+        if(gap != 0 && gap != length)
+        {
+          /* make sure demuxer is flushed before we change any correction */
+          if(m_holdmode == HOLDMODE_NONE)
+          {
+            CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET (HOLDING)");
+            m_holdmode = HOLDMODE_HELD;
+            iNavresult = NAVRESULT_HOLD;
+            break;
+          }
+          m_iVobUnitCorrection += gap;
+          
+          CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%I64d TO:%I64d DIFF:%I64d", (m_iVobUnitStop * 1000)/90, ((__int64)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
+        }
+
+        m_iVobUnitStart = pci->pci_gi.vobu_s_ptm;
+        m_iVobUnitStop = pci->pci_gi.vobu_e_ptm;
+
+        m_iTime = (int) ( m_dll.dvdnav_convert_time( &(pci->pci_gi.e_eltm) ) + m_iCellStart ) / 90;
 
         if (m_bCheckButtons)
         {
@@ -417,7 +492,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 
     default:
       {
-        CLog::DebugLog("CDVDInputStreamNavigator: Unknown event (%i)\n", event);
+        CLog::DebugLog("CDVDInputStreamNavigator: Unknown event (%i)\n", m_lastevent);
       }
       break;
 
@@ -426,7 +501,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
     // check if libdvdnav gave us some other buffer to work with
     // probably not needed since function will check if buf
     // is part of the internal cache, but do it for good measure
-    if( buf != m_tempbuffer )
+    if( buf != m_lastblock )
       m_dll.dvdnav_free_cache_block(m_dvdnav, buf);
   
   return iNavresult;
@@ -602,6 +677,17 @@ void CDVDInputStreamNavigator::SkipWait()
   m_dll.dvdnav_wait_skip(m_dvdnav);
 }
 
+void CDVDInputStreamNavigator::SkipHold()
+{
+  if(IsHeld())
+    m_holdmode = 2;
+}
+
+bool CDVDInputStreamNavigator::IsHeld()
+{
+  return m_holdmode == HOLDMODE_HELD;
+}
+
 bool CDVDInputStreamNavigator::IsInMenu()
 {
   if (!m_dvdnav) return false;
@@ -664,7 +750,7 @@ std::string CDVDInputStreamNavigator::GetSubtitleStreamLanguage(int iId)
     if (subp_attributes.type == DVD_SUBPICTURE_TYPE_Language ||
         subp_attributes.type == DVD_SUBPICTURE_TYPE_NotSpecified)
     {
-      if (!g_LangCodeExpander.LookupDVDLangCode(strLanguage, subp_attributes.lang_code)) strLanguage = "Unknown";
+      if (!g_LangCodeExpander.Lookup(strLanguage, subp_attributes.lang_code)) strLanguage = "Unknown";
 
       switch (subp_attributes.lang_extension)
       {
@@ -763,7 +849,7 @@ std::string CDVDInputStreamNavigator::GetAudioStreamLanguage(int iId)
   int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
   if( m_dll.dvdnav_get_audio_info(m_dvdnav, streamId, &audio_attributes) == DVDNAV_STATUS_OK )
   {
-    if (!g_LangCodeExpander.LookupDVDLangCode(strLanguage, audio_attributes.lang_code)) strLanguage = "Unknown";
+    if (!g_LangCodeExpander.Lookup(strLanguage, audio_attributes.lang_code)) strLanguage = "Unknown";
 
     switch( audio_attributes.lang_extension )
     {

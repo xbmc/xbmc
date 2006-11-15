@@ -144,7 +144,7 @@ int FLACCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   if (size<m_BufferSize)
   { //  do we need less audio data then in our buffer
     memcpy(pBuffer, m_pBuffer, size);
-    memcpy(m_pBuffer, m_pBuffer+size, m_BufferSize-size);
+    memmove(m_pBuffer, m_pBuffer+size, m_BufferSize-size);
     m_BufferSize-=size;
     *actualsize=size;
   }

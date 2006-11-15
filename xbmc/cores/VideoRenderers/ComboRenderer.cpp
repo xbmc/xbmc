@@ -168,11 +168,13 @@ void CComboRenderer::ManageDisplay()
   }
 }
 
-unsigned int CComboRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps)
+bool CComboRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-  CXBoxRenderer::Configure(width, height, d_width, d_height, fps);
+  if(!CXBoxRenderer::Configure(width, height, d_width, d_height, fps, flags))
+    return false;
+
   m_bConfigured = true;
-  return 0;
+  return true;
 }
 
 void CComboRenderer::Update(bool bPauseDrawing)
@@ -490,32 +492,25 @@ void CComboRenderer::SetupScreenshot()
   return ;
 }
 
-#define Y_SCALE 1.164383561643835616438356164383f
-#define UV_SCALE 1.1434977578475336322869955156951f
-
-#define R_Vp 1.403f
-#define G_Up -0.344f
-#define G_Vp -0.714f
-#define B_Up 1.770f
-
 LONG CComboRenderer::YUV2RGB(BYTE y, BYTE u, BYTE v)
 {
-  // normalize
-  float Yp = (y - 16) * Y_SCALE;
-  float Up = (u - 128) * UV_SCALE;
-  float Vp = (v - 128) * UV_SCALE;
+  YUVCOEF &coef = yuv_coef_bt601;
+  YUVRANGE &range = yuv_range_lim;
 
-  float R = Yp + R_Vp * Vp;
-  float G = Yp + G_Up * Up + G_Vp * Vp;
-  float B = Yp + B_Up * Up;
+  // normalize
+  float Yp = (y - range.y_min) * 255.0f / (range.y_max - range.y_min);
+  float Up = (u - range.u_min) * 255.0f / (range.u_max - range.u_min) - 127.5f;
+  float Vp = (v - range.v_min) * 255.0f / (range.v_max - range.v_min) - 127.5f;
+
+  // recalculate
+  float R = Yp + coef.r_up * Up + coef.r_vp * Vp;
+  float G = Yp + coef.g_up * Up + coef.g_vp * Vp;
+  float B = Yp + coef.b_up * Up + coef.b_vp * Vp;
 
   // clamp
-  if (R < 0) R = 0;
-  if (R > 255) R = 255;
-  if (G < 0) G = 0;
-  if (G > 255) G = 255;
-  if (B < 0) B = 0;
-  if (B > 255) B = 255;
+  R = CLAMP(R, 0.0f, 255.0f);
+  G = CLAMP(G, 0.0f, 255.0f);
+  B = CLAMP(B, 0.0f, 255.0f);
 
   return ((int)R << 16) + ((int)G << 8) + (int)B;
 }

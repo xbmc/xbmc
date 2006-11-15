@@ -22,6 +22,8 @@ public:
 protected:
   virtual void SetDefault();
 
+  void SetupChannels();
+
   a52_state_t* m_pState;
 
   BYTE m_inputBuffer[4096];
@@ -31,13 +33,13 @@ protected:
   int m_decodedDataSize;
 
   int m_iFrameSize;
-  int m_iFlags;
   float* m_fSamples;
 
   int m_iSourceSampleRate;
-  int m_iSourceChannels;
+  int m_iSourceFlags;
   int m_iSourceBitrate;
 
   int m_iOutputChannels;
+  unsigned int m_iOutputMapping;
   DllLiba52 m_dll;
 };
