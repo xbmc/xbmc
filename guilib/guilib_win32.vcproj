@@ -148,9 +148,6 @@
 				RelativePath=".\GUIControlGroupList.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIControlGroupList.h">
-			</File>
-			<File
 				RelativePath=".\GUIDialog.cpp">
 			</File>
 			<File
@@ -352,6 +349,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIControlGroup.h">
+			</File>
+			<File
+				RelativePath=".\GUIControlGroupList.h">
 			</File>
 			<File
 				RelativePath=".\GUIDialog.h">

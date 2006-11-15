@@ -95,7 +95,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
           continue;
         if (control->GetID() == m_focusedControl)
         {
-          if (offset >= m_offset && offset + Size(control) < m_offset + Size())
+          if (offset >= m_offset && offset + Size(control) <= m_offset + Size())
             return CGUIControlGroup::OnMessage(message);
           break;
         }
@@ -108,7 +108,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         CGUIControl *control = *it;
         if (!control->IsVisible())
           continue;
-        if (control->CanFocus() && offset >= m_offset && offset + Size(control) < m_offset + Size())
+        if (control->CanFocus() && offset >= m_offset && offset + Size(control) <= m_offset + Size())
         {
           m_focusedControl = control->GetID();
           break;
@@ -140,6 +140,7 @@ void CGUIControlGroupList::ValidateOffset()
     if (!control->IsVisible()) continue;
     m_totalSize += Size(control) + m_itemGap;
   }
+  if (m_totalSize > 0) m_totalSize -= m_itemGap;
   // check our m_offset range
   if (m_offset > m_totalSize - Size())
     m_offset = m_totalSize - Size();
