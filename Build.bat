@@ -1,4 +1,5 @@
 @ECHO OFF
+cls
 
 rem ----PURPOSE----
 rem - Create a working XBMC build with a single click
@@ -45,30 +46,32 @@ ECHO Copying files...
 %XBE% release\default.xbe
 rmdir BUILD /S /Q
 md BUILD
+
+Echo .svn>exclude.txt
+Echo Thumbs.db>>exclude.txt
+Echo Desktop.ini>>exclude.txt
+Echo dsstdfx.bin>>exclude.txt
+
 copy release\default.xbe BUILD
-xcopy UserData BUILD\UserData /E /Q /I /Y
-copy *.xml BUILD\
+xcopy UserData BUILD\UserData /E /Q /I /Y /EXCLUDE:exclude.txt
+rem copy *.xml BUILD\
 copy *.txt BUILD\
 
 cd "skin\Project Mayhem III"
 CALL build.bat
 cd ..\..
-xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD\skin\Project Mayhem III" /E /Q /I /Y
+xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
 
-xcopy credits BUILD\credits /Q /I /Y
-xcopy language BUILD\language /E /Q /I /Y
-xcopy screensavers BUILD\screensavers /E /Q /I /Y
-xcopy visualisations BUILD\visualisations /E /Q /I /Y
-xcopy system BUILD\system /E /Q /I /Y
+xcopy credits BUILD\credits /Q /I /Y /EXCLUDE:exclude.txt
+xcopy language BUILD\language /E /Q /I /Y /EXCLUDE:exclude.txt
+xcopy screensavers BUILD\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt
+xcopy visualisations BUILD\visualisations /E /Q /I /Y /EXCLUDE:exclude.txt
+xcopy system BUILD\system /E /Q /I /Y /EXCLUDE:exclude.txt
 rem %rar% x web\Project_Mayhem_webserver*.rar build\web\
-xcopy media BUILD\media /E /Q /I /Y
-xcopy sounds BUILD\sounds /E /Q /I /Y
-del BUILD\media\dsstdfx.bin
-del BUILD\system\players\mplayer\codecs\.cvsignore 
+xcopy media BUILD\media /E /Q /I /Y /EXCLUDE:exclude.txt
+xcopy sounds BUILD\sounds /E /Q /I /Y /EXCLUDE:exclude.txt
 
-ECHO ------------------------------
-ECHO Removing CVS directories from build
-FOR /R BUILD %%d IN (CVS) DO IF EXIST "%%d" RD /S /Q "%%d"
+del exclude.txt
 
 ECHO ------------------------------
 IF NOT EXIST %RAR% (
@@ -78,12 +81,12 @@ IF NOT EXIST %RAR% (
 	%RAR% %RAROPS%
 )
 
-	ECHO ------------------------------
+ECHO ------------------------------
 ECHO Build Succeeded! 
 GOTO VIEWLOG
 
 :DIE
-	ECHO !-!-!-!-!-!-!-!-!-!-!-!-!-!-!-
+ECHO !-!-!-!-!-!-!-!-!-!-!-!-!-!-!-
 set DIETEXT=ERROR: %DIETEXT%
 echo %DIETEXT%
 
