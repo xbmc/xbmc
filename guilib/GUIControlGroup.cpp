@@ -246,10 +246,13 @@ bool CGUIControlGroup::IsAnimating(ANIMATION_TYPE animType)
   if (CGUIControl::IsAnimating(animType))
     return true;
 
-  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  if (IsVisible())
   {
-    if ((*it)->IsAnimating(animType))
-      return true;
+    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+    {
+      if ((*it)->IsAnimating(animType))
+        return true;
+    }
   }
   return false;
 }
