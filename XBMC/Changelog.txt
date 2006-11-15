@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+- 15-11-2006 changed: dvdplayer now uses information present on dvd to consider a dvd as one continuous stream (no discontinuties)
 - 15-11-2006 added: HQ pixelshader can now handle multiple BT601, BT709, 240M yv12->rgb translation (currently only dvdplayer uses it)
 - 15-11-2006 fixed: DVDPlayer would just play mono ac3 in analog mode in a very broken way (this also fixes 3 channel ac3 and 5 channel ac3's)
 - 15-11-2006 changed: langecodeexpander to use 50k mem less while not in use, and 10k less when in use, loaded from section in xbe on demand.

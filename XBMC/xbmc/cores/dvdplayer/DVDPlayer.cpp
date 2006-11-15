@@ -215,14 +215,21 @@ void CDVDPlayer::Process()
   try
   {
     m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
-    if (!m_pDemuxer || !m_pDemuxer->Open(m_pInputStream))
+    if(!m_pDemuxer)
     {
-      throw;
+      CLog::Log(LOGERROR, __FUNCTION__" - Error creating demuxer");
+      return;
+    }
+
+    if (!m_pDemuxer->Open(m_pInputStream))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__" - Error opening demuxer");
+      return;
     }
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Demuxer: Error opening, demuxer");
+    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when opeing demuxer");
     return;
   }
 
@@ -333,39 +340,64 @@ void CDVDPlayer::Process()
       {
         if (!m_pInputStream) break;
         if (m_pInputStream->IsEOF()) break;
-        else if (m_dvd.state == DVDSTATE_WAIT && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-        {
-          static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->SkipWait();
-          continue;
-        }
-        else if (m_dvd.state == DVDSTATE_STILL && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)) continue;
-        else
-        {
-          // keep on trying until user wants us to stop.
-          iErrorCounter++;
-          CLog::Log(LOGERROR, "Error reading data from demuxer");
 
-          // maybe reseting the demuxer at this point would be a good idea, should it have failed in some way.
-          // probably not a good idea, the dvdplayer can get stuck (and it does sometimes) in a loop this way.
-          if (iErrorCounter > 50)
+        if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+        {
+          CDVDInputStreamNavigator* pStream = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
+
+          // stream is holding back data untill demuxer has flushed
+          if(pStream->IsHeld())
           {
-            CLog::Log(LOGERROR, "got 50 read errors in a row, quiting");
-            return;
-            //m_pDemuxer->Reset();
-            //iErrorCounter = 0;
+            pStream->SkipHold();
+            continue;
           }
 
-          continue;
+          // stills will be skipped
+          if(m_dvd.state == DVDSTATE_STILL)
+          {
+            if (m_dvd.iDVDStillTime < 0xff)
+            {
+              if (GetTickCount() >= (m_dvd.iDVDStillStartTime + m_dvd.iDVDStillTime * 1000 ))
+              {
+                m_dvd.iDVDStillTime = 0;
+                m_dvd.iDVDStillStartTime = 0;
+                pStream->SkipStill();
+                continue;
+              }
+            }
+            Sleep(100);
+            continue;
+          }
         }
+
+        // keep on trying until user wants us to stop.
+        iErrorCounter++;
+        CLog::Log(LOGERROR, "Error reading data from demuxer");
+
+        // maybe reseting the demuxer at this point would be a good idea, should it have failed in some way.
+        // probably not a good idea, the dvdplayer can get stuck (and it does sometimes) in a loop this way.
+        if (iErrorCounter > 50)
+        {
+          CLog::Log(LOGERROR, "got 50 read errors in a row, quiting");
+          return;
+          //m_pDemuxer->Reset();
+          //iErrorCounter = 0;
+        }
+
+        continue;
       }
 
       iErrorCounter = 0;
       m_packetcount++;
 
-      // process subtitles, do not remove (it is for external subtitle support in the future)
-      if (pPacket->dts != DVD_NOPTS_VALUE)
+      if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       {
-        //m_dvdPlayerSubtitle.Process(pPacket->dts);
+        CDVDInputStreamNavigator *pInput = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
+
+        if (pPacket->dts != DVD_NOPTS_VALUE)
+          pPacket->dts -= pInput->GetTimeStampCorrection();
+        if (pPacket->pts != DVD_NOPTS_VALUE)
+          pPacket->pts -= pInput->GetTimeStampCorrection();
       }
 
       CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
@@ -383,8 +415,6 @@ void CDVDPlayer::Process()
       // for dvd's we use as a group id, the current cell and the current title
       // to be a bit more precise we alse count the number of disc's in case of a pts wrap back in the same cell / title
       pPacket->iGroupId = m_pInputStream->GetCurrentGroupId();
-      pPacket->iGroupId += (10000 * m_dvd.iNrOfExpectedDiscontinuities);
-
       try
       {
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -575,24 +605,58 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* p
 }
 
 void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source)
-{  
-  /* special case for looping stillframes THX test discs*/
+{
+  if( pPacket->dts == DVD_NOPTS_VALUE )
+    return;
+
+
+  unsigned __int64 mindts, maxdts;
+  if(m_CurrentAudio.dts == DVD_NOPTS_VALUE)
+    maxdts = mindts = m_CurrentVideo.dts;
+  else if(m_CurrentVideo.dts == DVD_NOPTS_VALUE)
+    maxdts = mindts = m_CurrentAudio.dts;
+  else
+  {
+    maxdts = max(m_CurrentAudio.dts, m_CurrentVideo.dts);
+    mindts = min(m_CurrentAudio.dts, m_CurrentVideo.dts);
+  }
+
   if (source == DVDPLAYER_VIDEO)
   {
-    __int64 missing = m_CurrentAudio.dts - m_CurrentVideo.dts;
-    if( missing > DVD_MSEC_TO_TIME(100) )
+    /* check for looping stillframes on non dvd's, dvd's will be detected by long duration check later */
+    if( !(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)) )
     {
-      if( m_CurrentVideo.dts == pPacket->dts )
+      /* special case for looping stillframes THX test discs*/
+      /* only affect playback when not from dvd */
+      if( (m_CurrentAudio.dts > m_CurrentVideo.dts + DVD_MSEC_TO_TIME(200)) 
+      && (m_CurrentVideo.dts == pPacket->dts) )
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - Detected looping stillframe");
         SyncronizePlayers(SYNCSOURCE_VIDEO);
         return;
       }
     }
+
+    /* if we haven't received video for a while, but we have been */
+    /* getting audio much more recently, make sure video wait's  */
+    /* this occurs especially on thx test disc */
+    if( (pPacket->dts > m_CurrentVideo.dts + DVD_MSEC_TO_TIME(200)) 
+     && (pPacket->dts < m_CurrentAudio.dts + DVD_MSEC_TO_TIME(50)) )
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - Potential long duration frame");
+      SyncronizePlayers(SYNCSOURCE_VIDEO);
+      return;
+    }
+
   }
 
+  /* if we don't have max and min, we can't do anything more */
+  if( mindts == DVD_NOPTS_VALUE || maxdts == DVD_NOPTS_VALUE )
+    return;
+
+
   /* stream wrap back */
-  if (pPacket->dts < min(m_CurrentAudio.dts, m_CurrentVideo.dts))
+  if( pPacket->dts < mindts )
   {
     /* if video player is rendering a stillframe, we need to make sure */
     /* audio has finished processing it's data otherwise it will be */
@@ -608,7 +672,7 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
   }
 
   /* stream jump forward */
-  if (pPacket->dts > max(m_CurrentAudio.dts, m_CurrentVideo.dts) + DVD_MSEC_TO_TIME(1000))
+  if( pPacket->dts > maxdts + DVD_MSEC_TO_TIME(1000) )
   {
     /* normally don't need to sync players since video player will keep playing at normal fps */
     /* after a discontinuity */
@@ -1500,18 +1564,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
     switch (iMessage)
     {
-    case DVDNAV_WAIT:
-      {
-        // we are about to pass a cell border, this might trigger a vts change, or some sort of stream change
-        // make sure demuxer has processed all it's data, wait will be skipped when demuxer returns a read error
-        if( m_dvd.state != DVDSTATE_WAIT )
-        {
-          CLog::Log(LOGDEBUG, "DVDNAV_WAIT");
-          m_dvd.state = DVDSTATE_WAIT;
-        }
-        return NAVRESULT_HOLD;
-      }
-      break;
     case DVDNAV_STILL_FRAME:
       {
         //CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME");
@@ -1520,24 +1572,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         // should wait the specified time here while we let the player running
         // after that call dvdnav_still_skip(m_dvdnav);
 
-        if (m_dvd.state == DVDSTATE_STILL)
-        {
-          if (m_dvd.iDVDStillTime < 0xff)
-          {
-            if (GetTickCount() >= (m_dvd.iDVDStillStartTime + m_dvd.iDVDStillTime * 1000 ))
-            {
-              m_dvd.iDVDStillTime = 0;
-              m_dvd.iDVDStillStartTime = 0;
-              pStream->SkipStill();
-
-              return NAVRESULT_NOP;
-            }
-          }
-
-          Sleep(100);
-          return NAVRESULT_HOLD;
-        }
-        else
+        if (m_dvd.state != DVDSTATE_STILL)
         {
           // else notify the player we have recieved a still frame
 
@@ -1555,6 +1590,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           m_dvd.state = DVDSTATE_STILL;
           CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME - waiting %i sec, with delay of %d sec", still_event->length, time / 1000);
         }
+        return NAVRESULT_HOLD;
       }
       break;
     case DVDNAV_SPU_CLUT_CHANGE:
@@ -1642,12 +1678,11 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         // so we send a message to indicate the main loop that the demuxer needs a reset
         // this also means the libdvdnav may not return any data packets after this command
         m_messenger.Put(new CDVDMsgDemuxerReset());
-        m_bReadAgain = true;
 
         //Force an aspect ratio that is set in the dvdheaders if available
         m_dvdPlayerVideo.m_messageQueue.Put(new CDVDMsgVideoSetAspect(pStream->GetVideoAspectRatio()));
 
-        return NAVRESULT_ERROR;
+        return NAVRESULT_HOLD;
       }
       break;
     case DVDNAV_CELL_CHANGE:
@@ -1657,8 +1692,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         //if (cell_change_event->pgN != m_dvd.iCurrentCell)
         {
           m_dvd.iCurrentCell = cell_change_event->pgN;
-          m_dvd.iNrOfExpectedDiscontinuities = 0;
-          // m_iCommands |= DVDCOMMAND_SYNC;
         }
 
         m_dvd.state = DVDSTATE_NORMAL;
@@ -1677,25 +1710,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           // when a packet comes out of demuxer that has
           // pts values outside that boundary, it belongs
           // to the new vobunit, wich has new timestamps
-
-          // pts is in a 90khz clock.
-          unsigned __int64 pts = ((unsigned __int64)pci->pci_gi.vobu_s_ptm) * 1000 / 90;
-          if( pts != m_dvd.iNAVPackFinish )
-          {
-            // we have a discontinuity in our stream.
-            CLog::Log(LOGDEBUG, "DVDNAV_DISCONTINUITY(from: %I64d, to: %I64d)", m_dvd.iNAVPackFinish, pts);
-
-            // don't allow next frame to be skipped
-            m_bDontSkipNextFrame = true;
-
-            // only set this when we have the first non continous packet
-            // so that we know at what packets this new continuous stream starts
-            m_dvd.iNAVPackStart = pts;
-            m_dvd.iNrOfExpectedDiscontinuities++;
-          }
-
-          //m_dvd.iNAVPackStart = pts;
-          m_dvd.iNAVPackFinish = ((unsigned __int64)pci->pci_gi.vobu_e_ptm) * 1000 / 90;
       }
       break;
     case DVDNAV_HOP_CHANNEL:
