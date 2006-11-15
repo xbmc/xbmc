@@ -169,7 +169,8 @@ static unsigned int video_draw_frame(unsigned char *src[])
 */
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
-  OutputDebugString("video_config()\n");
+  CLog::Log(LOGDEBUG, "mplayer::video_config(%d, %d, %d, %d, %d, %d", width, height, d_width, d_height, options, format);
+
 #ifdef MP_DIRECTRENDERING
   m_bAllowDR = true;
 #endif
@@ -179,8 +180,12 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
   float fps = 25.00f;
   if (g_application.m_pPlayer)
     fps = g_application.m_pPlayer->GetActualFPS();
-  return g_renderManager.Configure(width, height, d_width, d_height, fps);
-  OutputDebugString("video_config() done\n");
+
+  //TODO, the format parameter, should be able to give a fullrange yuv format
+  if(g_renderManager.Configure(width, height, d_width, d_height, fps, 0))
+    return 0;
+
+  return VO_ERROR;
 }
 
 //********************************************************************************************************
