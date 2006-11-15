@@ -318,12 +318,29 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
   Lock();
   if (m_pFormatContext)
   {
-    if (m_dllAvFormat.av_read_frame(m_pFormatContext, &pkt) < 0)
+    int result = m_dllAvFormat.av_read_frame(m_pFormatContext, &pkt);
+    if (result < 0)
     {
       // error reading from stream
       // XXX, just reset eof for now, and let the dvd player decide what todo
       m_pFormatContext->pb.eof_reached = 0;
       pPacket = NULL;
+
+      // we are likely atleast at an discontinuity
+      m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+
+      // reset any dts interpolation      
+      for(int i=0;i<MAX_STREAMS;i++)
+      {
+        if(m_pFormatContext->streams[i])
+        {
+          m_pFormatContext->streams[i]->cur_dts = AV_NOPTS_VALUE;
+          m_pFormatContext->streams[i]->last_IP_duration = 0;
+          m_pFormatContext->streams[i]->last_IP_pts = 0;
+        }
+      }
+
+      m_iCurrentPts = 0LL;
     }
     else
     {
@@ -342,6 +359,14 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
         pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
         if (pPacket)
         {
+          // lavf sometimes bugs out and gives 0 dts/pts instead of no dts/pts
+          // since this could only happens on initial frame under normal
+          // circomstances, let's assume it is wrong all the time
+          if(pkt.dts == 0)
+            pkt.dts = AV_NOPTS_VALUE;
+          if(pkt.pts == 0)
+            pkt.pts = AV_NOPTS_VALUE;
+
           // copy contents into our own packet
           pPacket->iSize = pkt.size;
           
