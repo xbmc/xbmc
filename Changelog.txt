@@ -6,6 +6,8 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
+- 15-11-2006 changed: BUILD.BAT to account for svn
+
 ----- 2.0.1 -----
  - 11-11-2006 fixed: file listings over samba would not display proper dates.
  - 07-11-2006 fixed: in folders wich only contain a video_ts folder, the folder wouldn't stack to a single item.
