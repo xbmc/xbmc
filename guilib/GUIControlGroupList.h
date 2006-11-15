@@ -26,12 +26,17 @@ protected:
   void ValidateOffset();
   inline float Size(const CGUIControl *control) const;
   inline float Size() const;
+  void ScrollTo(float offset);
 
   float m_itemGap;
   DWORD m_pageControl;
 
   float m_offset; // measurement in pixels of our origin
   float m_totalSize;
+
+  float m_scrollSpeed;
+  float m_scrollOffset;
+  DWORD m_scrollTime;
 
   ORIENTATION m_orientation;
 };

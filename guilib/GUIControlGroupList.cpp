@@ -1,6 +1,8 @@
 #include "include.h"
 #include "GUIControlGroupList.h"
 
+#define TIME_TO_SCROLL 200;
+
 CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation)
 : CGUIControlGroup(dwParentID, dwControlId, posX, posY, width, height)
 {
@@ -9,6 +11,8 @@ CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, 
   m_offset = 0;
   m_totalSize = 10;
   m_orientation = orientation;
+  m_scrollOffset = 0;
+  m_scrollSpeed = 0;
   ControlType = GUICONTROL_GROUPLIST;
 }
 
@@ -20,6 +24,26 @@ void CGUIControlGroupList::Render()
 {
   if (IsVisible())
   {
+    if (m_scrollSpeed < 0)
+    {
+      m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
+      if (m_offset < m_scrollOffset)
+      {
+        m_offset = m_scrollOffset;
+        m_scrollSpeed = 0;
+      }
+    }
+    if (m_scrollSpeed > 0)
+    {
+      m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
+      if (m_offset > m_scrollOffset)
+      {
+        m_offset = m_scrollOffset;
+        m_scrollSpeed = 0;
+      }
+    }
+    m_scrollTime = m_renderTime;
+
     ValidateOffset();
     if (m_pageControl)
     {
@@ -72,9 +96,9 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         if (control->GetID() == message.GetControlId())
         {
           if (offset < m_offset)
-            m_offset = offset;
+            ScrollTo(offset);
           else if (offset + Size(control) > m_offset + Size())
-            m_offset = offset + Size(control) - Size();
+            ScrollTo(offset + Size(control) - Size());
           break;
         }
         offset += Size(control) + m_itemGap;
@@ -121,7 +145,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == m_pageControl)
       { // it's from our page control
-        m_offset = (float)message.GetParam1();
+        ScrollTo((float)message.GetParam1());
         return true;
       }
     }
@@ -203,4 +227,10 @@ inline float CGUIControlGroupList::Size(const CGUIControl *control) const
 inline float CGUIControlGroupList::Size() const
 {
   return (m_orientation == VERTICAL) ? m_height : m_width;
+}
+
+void CGUIControlGroupList::ScrollTo(float offset)
+{
+  m_scrollOffset = offset;
+  m_scrollSpeed = (m_scrollOffset - m_offset) / TIME_TO_SCROLL;
 }
