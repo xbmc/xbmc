@@ -90,7 +90,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         case 0:  // Movies
           nNewWindow = WINDOW_VIDEO_FILES;
           break;
-        case 1:  // Genre
+        /*case 1:  // Genre
           nNewWindow = WINDOW_VIDEO_GENRE;
           break;
         case 2:  // Actors
@@ -102,7 +102,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         case 4:  // Titel
           nNewWindow = WINDOW_VIDEO_TITLE;
           break;
-        case 5:  // Library
+        case 5:  // Library*/
+        case 1:  // Library
           nNewWindow = WINDOW_VIDEO_NAV;
           break;
         }
@@ -195,32 +196,13 @@ void CGUIWindowVideoBase::UpdateButtons()
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
 
-  strItem = g_localizeStrings.Get(135); // Genre
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-
-  strItem = g_localizeStrings.Get(344); // Actors
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-
-  strItem = g_localizeStrings.Get(345); // Year
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-
-  strItem = g_localizeStrings.Get(369); // Titel
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-
   strItem = g_localizeStrings.Get(14022); // Library
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
   
   // Select the current window as default item
   int nWindow = 0;
-  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_GENRE) nWindow = 1;
-  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_ACTOR) nWindow = 2;
-  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_YEAR) nWindow = 3;
-  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_TITLE) nWindow = 4;
+  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_NAV) nWindow = 1;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
   // disable scan and manual imdb controls if internet lookups are disabled

@@ -374,17 +374,19 @@ public:
     SORT_METHOD m_MyPicturesRootSortMethod;
     SORT_ORDER m_MyPicturesRootSortOrder;
 
-        // new settings for the Video Nav Window
+    // new settings for the Video Nav Window
     VIEW_METHOD m_MyVideoNavRootViewMethod;
-    VIEW_METHOD m_MyVideoNavGenresViewMethod;
+    VIEW_METHOD m_MyVideoNavGenreViewMethod;
     VIEW_METHOD m_MyVideoNavPlaylistsViewMethod;
+    VIEW_METHOD m_MyVideoNavTitleViewMethod;
 
-    SORT_METHOD m_MyVideoNavRootSortMethod;
-    SORT_METHOD m_MyVideoNavAlbumsSortMethod;
+    SORT_METHOD m_MyVideoNavGenreSortMethod;
     SORT_METHOD m_MyVideoNavPlaylistsSortMethod;
-
-    SORT_ORDER m_MyVideoNavGenresSortOrder;
+    SORT_METHOD m_MyVideoNavTitleSortMethod;
+    
+    SORT_ORDER m_MyVideoNavGenreSortOrder;
     SORT_ORDER m_MyVideoNavPlaylistsSortOrder;
+    SORT_ORDER m_MyVideoNavTitleSortOrder;
     
     // for scanning
     bool m_bMyMusicIsScanning;
@@ -403,31 +405,6 @@ public:
     SORT_METHOD m_MyVideoRootSortMethod;
     SORT_ORDER m_MyVideoSortOrder;
     SORT_ORDER m_MyVideoRootSortOrder;
-
-    VIEW_METHOD m_MyVideoGenreViewMethod;
-    VIEW_METHOD m_MyVideoGenreRootViewMethod;
-    SORT_METHOD m_MyVideoGenreSortMethod;
-    SORT_METHOD m_MyVideoGenreRootSortMethod;
-    SORT_ORDER m_MyVideoGenreSortOrder;
-    SORT_ORDER m_MyVideoGenreRootSortOrder;
-
-    VIEW_METHOD m_MyVideoActorViewMethod;
-    VIEW_METHOD m_MyVideoActorRootViewMethod;
-    SORT_METHOD m_MyVideoActorSortMethod;
-    SORT_METHOD m_MyVideoActorRootSortMethod;
-    SORT_ORDER m_MyVideoActorSortOrder;
-    SORT_ORDER m_MyVideoActorRootSortOrder;
-
-    VIEW_METHOD m_MyVideoYearViewMethod;
-    VIEW_METHOD m_MyVideoYearRootViewMethod;
-    SORT_METHOD m_MyVideoYearSortMethod;
-    SORT_METHOD m_MyVideoYearRootSortMethod;
-    SORT_ORDER m_MyVideoYearSortOrder;
-    SORT_ORDER m_MyVideoYearRootSortOrder;
-
-    VIEW_METHOD m_MyVideoTitleViewMethod;
-    SORT_METHOD m_MyVideoTitleSortMethod;
-    SORT_ORDER m_MyVideoTitleSortOrder;
 
     VIEW_METHOD m_MyVideoPlaylistViewMethod;
 

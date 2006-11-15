@@ -513,16 +513,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIViewStateVideo.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIWindowVideoActors.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\GUIWindowVideoBase.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowVideoFiles.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowVideoGenre.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowVideoInfo.cpp">
@@ -538,12 +532,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowVideoPlaylist.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowVideoTitle.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowVideoYear.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -2376,16 +2364,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIWindowSystemInfo.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowVideoActors.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\GUIWindowVideoBase.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowVideoFiles.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVideoGenre.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiWindowVideoInfo.h">
@@ -2395,12 +2377,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowVideoPlaylist.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVideoTitle.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVideoYear.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowVisualisation.h">
