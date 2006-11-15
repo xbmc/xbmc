@@ -980,9 +980,6 @@ HRESULT CApplication::Create()
   if (!g_localizeStrings.Load(strLanguagePath ))
     FatalErrorHandler(false, false, true);
 
-  //Load language translation database
-  g_LangCodeExpander.LoadStandardCodes();
-
   CLog::Log(LOGINFO, "load keymapping");
   if (!g_buttonTranslator.Load())
     FatalErrorHandler(false, false, true);
