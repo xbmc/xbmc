@@ -6,6 +6,7 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
+- 15-11-2006 deleted: various .cvsignore files
 - 15-11-2006 changed: BUILD.BAT to account for svn
 
 ----- 2.0.1 -----
