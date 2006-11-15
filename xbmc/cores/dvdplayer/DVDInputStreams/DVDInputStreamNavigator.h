@@ -51,6 +51,7 @@ public:
   void SelectButton(int iButton);
   void SkipStill();
   void SkipWait();
+  void SkipHold();
   void OnUp();
   void OnDown();
   void OnLeft();
@@ -65,6 +66,7 @@ public:
   bool GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
 
   bool IsInMenu();
+  bool IsHeld();
 
   int GetActiveSubtitleStream();
   std::string GetSubtitleStreamLanguage(int iId);
@@ -94,6 +96,7 @@ public:
   bool Seek(int iTimeInMsec); //seek within current pg(c)
   virtual int GetCurrentGroupId() { return m_icurrentGroupId; }
   
+  __int64 GetTimeStampCorrection() { return (m_iVobUnitCorrection * 1000) / 90; }
 protected:
   void Lock()   { EnterCriticalSection(&m_critSection); }
   void Unlock() { LeaveCriticalSection(&m_critSection); }
@@ -119,16 +122,24 @@ protected:
   DllDvdNav m_dll;
   bool m_bCheckButtons;
   bool m_bEOF;
-  
-  int m_icurrentGroupId;
+
+  unsigned int m_icurrentGroupId;
+  int m_holdmode;
+
   int m_iTotalTime;
   int m_iTime;
   __int64 m_iCellStart; // start time of current cell in pts units (90khz clock)
+
+
+  __int64 m_iVobUnitStart;
+  __int64 m_iVobUnitStop;
+  __int64 m_iVobUnitCorrection;
 
   struct dvdnav_s* m_dvdnav;
   
   IDVDPlayer* m_pDVDPlayer;
   
-  BYTE m_tempbuffer[DVD_VIDEO_BLOCKSIZE];
+  BYTE m_lastblock[DVD_VIDEO_BLOCKSIZE];
+  int  m_lastevent;
   CRITICAL_SECTION m_critSection;
 };
