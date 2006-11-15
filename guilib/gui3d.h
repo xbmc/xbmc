@@ -22,8 +22,8 @@
 
 #undef HAS_XBOX_D3D
 
- #include "/Program Files/Microsoft DirectX 9.0 SDK (Summer 2004)/Include/D3D8.h"
- #include "/Program Files/Microsoft DirectX 9.0 SDK (Summer 2004)/Include/D3DX8.h"
+ #include "D3D8.h"
+ #include "D3DX8.h"
 
 #define D3DPRESENTFLAG_INTERLACED 0
 #define D3DPRESENTFLAG_WIDESCREEN 0
