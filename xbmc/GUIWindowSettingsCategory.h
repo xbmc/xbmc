@@ -46,7 +46,7 @@ protected:
   void FreeSettingsControls();
   virtual void FreeControls();
   virtual void OnClick(CBaseSettingControl *pSettingControl);
-  void AddSetting(CSetting *pSetting, float posX, float &posY, float gap, float width, int &iControlID);
+  void AddSetting(CSetting *pSetting, float width, int &iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
   void JumpToSection(DWORD dwWindowId, const CStdString &section);

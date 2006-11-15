@@ -259,15 +259,12 @@ void CGUIWindowSettingsCategory::SetupControls()
 {
   // cleanup first, if necessary
   FreeControls();
-  // get the area to use...
-  const CGUIControl *pButtonArea = GetControl(CONTROL_BUTTON_AREA);
-  const CGUIControl *pControlGap = GetControl(CONTROL_BUTTON_GAP);
   m_pOriginalSpin = (CGUISpinControlEx*)GetControl(CONTROL_DEFAULT_SPIN);
   m_pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
   m_pOriginalCategoryButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_CATEGORY_BUTTON);
   m_pOriginalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
   m_pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
-  if (!m_pOriginalCategoryButton || !m_pOriginalSpin || !m_pOriginalRadioButton || !m_pOriginalButton || !pControlGap)
+  if (!m_pOriginalCategoryButton || !m_pOriginalSpin || !m_pOriginalRadioButton || !m_pOriginalButton)
     return ;
   m_pOriginalSpin->SetVisible(false);
   m_pOriginalRadioButton->SetVisible(false);
@@ -276,10 +273,18 @@ void CGUIWindowSettingsCategory::SetupControls()
   if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
   // setup our control groups...
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CGUIControlGroup *group = (CGUIControlGroup *)GetControl(CATEGORY_GROUP_ID);
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
   if (!group)
   {
-    group = new CGUIControlGroup(GetID(), CATEGORY_GROUP_ID, 0, 0, 0, 0);
+    // get the area to use...
+    const CGUIControl *area = GetControl(CONTROL_BUTTON_AREA);
+    const CGUIControl *gap = GetControl(CONTROL_BUTTON_GAP);
+    if (!area || !gap)
+      return;
+    group = new CGUIControlGroupList(GetID(), CATEGORY_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
+                                     area->GetWidth(), area->GetHeight(), gap->GetHeight() - m_pOriginalCategoryButton->GetHeight(),
+                                     0, CGUIControl::VERTICAL);
+    group->SetNavigation(CATEGORY_GROUP_ID, CATEGORY_GROUP_ID, SETTINGS_GROUP_ID, SETTINGS_GROUP_ID);
     Insert(group, m_pOriginalCategoryButton);
   }
 #endif
@@ -299,22 +304,11 @@ void CGUIWindowSettingsCategory::SetupControls()
     CGUIButtonControl *pButton = new CGUIButtonControl(*m_pOriginalCategoryButton);
     pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_dwLabelID));
     pButton->SetID(CONTROL_START_BUTTONS + j);
-    pButton->SetPosition(pButtonArea->GetXPosition(), pButtonArea->GetYPosition() + j*pControlGap->GetHeight());
-    pButton->SetNavigation(CONTROL_START_BUTTONS + (int)j - 1, CONTROL_START_BUTTONS + j + 1, SETTINGS_GROUP_ID, SETTINGS_GROUP_ID);
     pButton->SetVisible(true);
     pButton->AllocResources();
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
     group->AddControl(pButton);
-#endif
     j++;
   }
-  // update the first and last buttons...
-  CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS);
-  pControl->SetNavigation(CONTROL_START_BUTTONS + (int)j - 1, pControl->GetControlIdDown(),
-                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS + (int)j - 1);
-  pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_START_BUTTONS,
-                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   if (m_iSection < 0 || m_iSection >= (int)m_vecSections.size())
     m_iSection = 0;
   CreateSettings();
@@ -326,7 +320,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 {
   FreeSettingsControls();
 
-  CGUIControlGroup *group = (CGUIControlGroup *)GetControl(SETTINGS_GROUP_ID);
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   if (!group)
   {
@@ -335,24 +329,20 @@ void CGUIWindowSettingsCategory::CreateSettings()
     group = new CGUIControlGroupList(GetID(), SETTINGS_GROUP_ID, pControlArea->GetXPosition(),
                                                                  pControlArea->GetYPosition(),
                                                                  pControlArea->GetWidth(),
-                                                                 pControlArea->GetHeight(), pControlGap->GetHeight(), 90);
+                                                                 pControlArea->GetHeight(), pControlGap->GetHeight(), 0, CGUIControl::VERTICAL);
+    group->SetNavigation(SETTINGS_GROUP_ID, SETTINGS_GROUP_ID, CATEGORY_GROUP_ID, CATEGORY_GROUP_ID);
     Insert(group, m_pOriginalButton);
   }
 #endif
   if (!group)
     return;
-  float posX = group->GetXPosition();
-  float width = group->GetWidth();
-  float posY = group->GetYPosition();
-  float gapY = 50;  // fixme
-  // TODO: What to do post 2.1?
   vecSettings settings;
   g_guiSettings.GetSettingsGroup(m_vecSections[m_iSection]->m_strCategory, settings);
   int iControlID = CONTROL_START_CONTROL;
   for (unsigned int i = 0; i < settings.size(); i++)
   {
     CSetting *pSetting = settings[i];
-    AddSetting(pSetting, posX, posY, gapY, width, iControlID);
+    AddSetting(pSetting, group->GetWidth(), iControlID);
     CStdString strSetting = pSetting->GetSetting();
     if (strSetting.Equals("myprograms.ntscmode"))
     {
@@ -627,13 +617,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       FillInRegions(pSetting);
     }
   }
-  // fix first and last navigation
-  CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL + (int)m_vecSettings.size() - 1);
-  if (pControl) pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_START_CONTROL,
-                                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL);
-  if (pControl) pControl->SetNavigation(CONTROL_START_CONTROL + (int)m_vecSettings.size() - 1, pControl->GetControlIdDown(),
-                                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   // update our settings (turns controls on/off as appropriate)
   UpdateSettings();
 }
@@ -1575,16 +1558,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 
 void CGUIWindowSettingsCategory::FreeControls()
 {
-  // free any created controls
-  for (unsigned int i = 0; i < m_vecSections.size(); i++)
+  // clear the category group
+  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
+  if (control)
   {
-    CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS + i);
-    Remove(CONTROL_START_BUTTONS + i);
-    if (pControl)
-    {
-      pControl->FreeResources();
-      delete pControl;
-    }
+    control->FreeResources();
+    control->ClearAll();
   }
   m_vecSections.clear();
   FreeSettingsControls();
@@ -1593,16 +1572,16 @@ void CGUIWindowSettingsCategory::FreeControls()
 void CGUIWindowSettingsCategory::FreeSettingsControls()
 {
   // clear the settings group
-  CGUIControl *control = (CGUIControl *)GetControl(SETTINGS_GROUP_ID);
+  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
   if (control)
   {
     control->FreeResources();
-    ((CGUIControlGroup *)control)->ClearAll();
+    control->ClearAll();
   }
   m_vecSettings.clear();
 }
 
-void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float posX, float &posY, float gap, float width, int &iControlID)
+void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int &iControlID)
 {
   CBaseSettingControl *pSettingControl = NULL;
   CGUIControl *pControl = NULL;
@@ -1613,53 +1592,40 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float posX, floa
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
     ((CGUIRadioButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
-    pControl->SetPosition(posX, posY);
     pControl->SetWidth(width);
     pSettingControl = new CRadioButtonSettingControl((CGUIRadioButtonControl *)pControl, iControlID, pSetting);
-    posY += gap;
   }
   else if (pSetting->GetControlType() == SPIN_CONTROL_FLOAT || pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS || pSetting->GetControlType() == SPIN_CONTROL_TEXT || pSetting->GetControlType() == SPIN_CONTROL_INT)
   {
     baseControl = m_pOriginalSpin;
     pControl = new CGUISpinControlEx(*m_pOriginalSpin);
     if (!pControl) return ;
-    pControl->SetPosition(posX, posY);
     pControl->SetWidth(width);
     ((CGUISpinControlEx *)pControl)->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
-    pControl->SetWidth(width);
     pSettingControl = new CSpinExSettingControl((CGUISpinControlEx *)pControl, iControlID, pSetting);
-    posY += gap;
   }
   else if (pSetting->GetControlType() == SEPARATOR_CONTROL && m_pOriginalImage)
   {
     baseControl = m_pOriginalImage;
     pControl = new CGUIImage(*m_pOriginalImage);
     if (!pControl) return;
-    pControl->SetPosition(posX, posY);
     pControl->SetWidth(width);
     pSettingControl = new CSeparatorSettingControl((CGUIImage *)pControl, iControlID, pSetting);
-    posY += pControl->GetHeight();
   }
   else if (pSetting->GetControlType() != SEPARATOR_CONTROL) // button control
   {
     baseControl = m_pOriginalButton;
     pControl = new CGUIButtonControl(*m_pOriginalButton);
     if (!pControl) return ;
-    pControl->SetPosition(posX, posY);
     ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
     ((CGUIButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(width);
     pSettingControl = new CButtonSettingControl((CGUIButtonControl *)pControl, iControlID, pSetting);
-    posY += gap;
   }
   if (!pControl) return;
-  pControl->SetNavigation(iControlID - 1,
-                          iControlID + 1,
-                          CATEGORY_GROUP_ID,
-                          CATEGORY_GROUP_ID);
   pControl->SetID(iControlID++);
   pControl->SetVisible(true);
-  CGUIControlGroup *group = (CGUIControlGroup *)GetControl(SETTINGS_GROUP_ID);
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
   if (group)
   {
     pControl->AllocResources();
