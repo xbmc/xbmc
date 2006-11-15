@@ -15,7 +15,7 @@ public:
 protected:
 
 
-  typedef std::map<std::string, std::string> STRINGLOOKUPTABLE;
+  typedef std::map<CStdString, CStdString> STRINGLOOKUPTABLE;
   STRINGLOOKUPTABLE m_mapUser;
   
   bool LookupInDb(CStdString& desc, const CStdString& code);
