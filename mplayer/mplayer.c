@@ -2816,16 +2816,6 @@ if(!sh_video) {
 	    }
 	    ++total_frame_cnt;
 	}
-#ifdef _XBOX
-  if( ffrw_speed < 0.0 )
-  {
-      float v_pts = sh_video ? sh_video->pts : d_video->pts;
-      float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + ffrw_startpts;     
-
-      //Check if we are still way of the correct frame
-      if( ( v_pts - newpts > 0.5 ) ) drop_frame = 1;
-  }
-#endif
 
 
 	// decode:
