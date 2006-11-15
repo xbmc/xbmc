@@ -6,6 +6,7 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
+- 15-11-2006 fixed: DVDPlayer would just play mono ac3 in analog mode in a very broken way (this also fixes 3 channel ac3 and 5 channel ac3's)
 - 15-11-2006 changed: langecodeexpander to use 50k mem less while not in use, and 10k less when in use, loaded from section in xbe on demand.
 - 15-11-2006 deleted: various .cvsignore files
 - 15-11-2006 changed: BUILD.BAT to account for svn
