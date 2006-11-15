@@ -67,6 +67,7 @@
 #include "GUIWindowVideoActors.h"
 #include "GUIWindowVideoYear.h"
 #include "GUIWindowVideoTitle.h"
+#include "GUIWindowVideoNav.h"
 #include "GUIWindowFileManager.h"
 #include "GUIWindowVisualisation.h"
 #include "GUIWindowSettings.h"
@@ -980,6 +981,9 @@ HRESULT CApplication::Create()
   if (!g_localizeStrings.Load(strLanguagePath ))
     FatalErrorHandler(false, false, true);
 
+  //Load language translation database
+//  g_LangCodeExpander.LoadStandardCodes();
+
   CLog::Log(LOGINFO, "load keymapping");
   if (!g_buttonTranslator.Load())
     FatalErrorHandler(false, false, true);
@@ -1101,6 +1105,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVideoActors);              // window id = 22
   m_gWindowManager.Add(new CGUIWindowVideoYear);                // window id = 23
   m_gWindowManager.Add(new CGUIWindowVideoTitle);               // window id = 25
+  m_gWindowManager.Add(new CGUIWindowVideoNav);                 // window id = 36
   m_gWindowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
   m_gWindowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   m_gWindowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
@@ -2924,6 +2929,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_VIDEO_GENRE);
     m_gWindowManager.Delete(WINDOW_VIDEO_ACTOR);
     m_gWindowManager.Delete(WINDOW_VIDEO_YEAR);
+    m_gWindowManager.Delete(WINDOW_VIDEO_NAV);
     m_gWindowManager.Delete(WINDOW_FILES);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);

@@ -59,6 +59,16 @@ protected:
   virtual void SaveViewState();
 };
 
+class CGUIViewStateWindowVideoNav : public CGUIViewStateWindowVideo
+{
+public:
+  CGUIViewStateWindowVideoNav(const CFileItemList& items);
+
+protected:
+  virtual void SaveViewState();
+  virtual VECSHARES& GetShares();
+};
+
 class CGUIViewStateWindowVideoPlaylist : public CGUIViewStateWindowVideo
 {
 public:

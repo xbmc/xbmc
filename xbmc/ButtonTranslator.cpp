@@ -383,6 +383,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("myvideoactors")) wWindowID = WINDOW_VIDEO_ACTOR;
   else if (strWindow.Equals("myvideoyears")) wWindowID = WINDOW_VIDEO_YEAR;
   else if (strWindow.Equals("myvideotitles")) wWindowID = WINDOW_VIDEO_TITLE;
+  else if (strWindow.Equals("myvideolibrary")) wWindowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("myvideoplaylist")) wWindowID = WINDOW_VIDEO_PLAYLIST;
   else if (strWindow.Equals("profiles")) wWindowID = WINDOW_SETTINGS_PROFILES;
   else if (strWindow.Equals("yesnodialog")) wWindowID = WINDOW_DIALOG_YES_NO;

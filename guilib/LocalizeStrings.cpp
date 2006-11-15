@@ -292,6 +292,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20211] = ToUTF8(strEncoding, "Furlong/Fortnight");
 
   // new strings for weather localization
+    m_vecStrings[20314] = "My Video - Library";
 /*  m_vecStrings[1411] = "with";
   m_vecStrings[1412] = "windy";
 
@@ -335,10 +336,6 @@ static CStdString szEmptyString = "";
 const CStdString& CLocalizeStrings::Get(DWORD dwCode) const
 {
   ivecStrings i;
-  if (dwCode == 20045)
-  {
-    CLog::DebugLog("fisemannen!");
-  }
   i = m_vecStrings.find(dwCode);
   if (i == m_vecStrings.end())
   {

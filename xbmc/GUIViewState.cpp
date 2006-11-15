@@ -54,6 +54,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_VIDEO_TITLE)
     return new CGUIViewStateWindowVideoTitle(items);
 
+  if (windowId==WINDOW_VIDEO_NAV)
+    return new CGUIViewStateWindowVideoNav(items);
+
   if (windowId==WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);
 

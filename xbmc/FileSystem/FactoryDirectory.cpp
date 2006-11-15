@@ -18,6 +18,7 @@
 #include "VirtualPathDirectory.h"
 #include "MultiPathDirectory.h"
 #include "MusicDatabaseDirectory.h"
+#include "VideoDatabaseDirectory.h"
 #include "StackDirectory.h"
 #include "PlaylistDirectory.h"
 #include "UPnPDirectory.h"
@@ -50,6 +51,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "multipath") return new CMultiPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
   if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
+  if (strProtocol == "videodb") return new CVideoDatabaseDirectory();
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();
   if (strProtocol == "playlistvideo") return new CPlaylistDirectory();
   if (strProtocol.Left(3) == "mem") return new CMemUnitDirectory();

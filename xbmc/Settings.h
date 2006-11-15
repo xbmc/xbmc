@@ -374,6 +374,18 @@ public:
     SORT_METHOD m_MyPicturesRootSortMethod;
     SORT_ORDER m_MyPicturesRootSortOrder;
 
+        // new settings for the Video Nav Window
+    VIEW_METHOD m_MyVideoNavRootViewMethod;
+    VIEW_METHOD m_MyVideoNavGenresViewMethod;
+    VIEW_METHOD m_MyVideoNavPlaylistsViewMethod;
+
+    SORT_METHOD m_MyVideoNavRootSortMethod;
+    SORT_METHOD m_MyVideoNavAlbumsSortMethod;
+    SORT_METHOD m_MyVideoNavPlaylistsSortMethod;
+
+    SORT_ORDER m_MyVideoNavGenresSortOrder;
+    SORT_ORDER m_MyVideoNavPlaylistsSortOrder;
+    
     // for scanning
     bool m_bMyMusicIsScanning;
 

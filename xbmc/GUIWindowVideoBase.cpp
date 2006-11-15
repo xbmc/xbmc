@@ -102,6 +102,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         case 4:  // Titel
           nNewWindow = WINDOW_VIDEO_TITLE;
           break;
+        case 5:  // Library
+          nNewWindow = WINDOW_VIDEO_NAV;
+          break;
         }
 
         if (nNewWindow != GetID())
@@ -208,6 +211,10 @@ void CGUIWindowVideoBase::UpdateButtons()
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
 
+  strItem = g_localizeStrings.Get(14022); // Library
+  msg2.SetLabel(strItem);
+  g_graphicsContext.SendMessage(msg2);
+  
   // Select the current window as default item
   int nWindow = 0;
   if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_GENRE) nWindow = 1;
@@ -1223,7 +1230,7 @@ CStdString CGUIWindowVideoBase::GetnfoFile(CFileItem *item)
   return nfoFile;
 }
 
-void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items)
+void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items, bool bSkipOverlay)
 {
   DWORD time = timeGetTime();
   for (int i = 0; i < (int)movies.size(); ++i)
@@ -1249,7 +1256,8 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       time.wYear = movie.m_iYear;
       pItem->m_musicInfoTag.SetReleaseDate(time);
       pItem->m_strDVDLabel = movie.m_strDVDLabel;
-      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+      if (!bSkipOverlay)
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
 
       // Hack for extra info
       pItem->m_musicInfoTag.SetTitle(movie.m_strTitle);

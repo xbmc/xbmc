@@ -6,6 +6,7 @@
 
 #include "stdafx.h"
 #include "videodatabase.h"
+#include "GUIWindowVideoBase.h"
 #include "utils/fstrcmp.h"
 #include "util.h"
 #include "GUIPassword.h"
@@ -1878,6 +1879,378 @@ void CVideoDatabase::EraseVideoSettings()
   {
     CLog::Log(LOGERROR, "CVideoDatabase::EraseVideoSettings() failed");
   }
+}
+
+bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, long idYear)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    // get primary genres for movies
+    CStdString strSQL="select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor";
+
+    if (idYear != -1)
+      strSQL += FormatSQL(" and movieinfo.iYear=%i",idYear);
+
+    // run query
+    CLog::Log(LOGDEBUG, "CVideoDatabase::GetGenresNav() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    map<long, CStdString> mapGenres;
+    map<long, CStdString>::iterator it;
+    long lLastPathId = -1;
+    while (!m_pDS->eof())
+    {
+      long lGenreId = m_pDS->fv("genre.idgenre").get_asLong();
+      CStdString strGenre = m_pDS->fv("genre.strgenre").get_asString();
+      it = mapGenres.find(lGenreId);
+      // was this genre already found?
+      if (it == mapGenres.end())
+      {
+        // is the current path the same as the previous path?
+        long lPathId = m_pDS->fv("path.idpath").get_asLong();
+        if (lPathId == lLastPathId)
+          mapGenres.insert(pair<long, CStdString>(lGenreId, strGenre));
+        // test path
+        else
+        {
+          CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+          if (g_passwordManager.IsDatabasePathUnlocked(strPath, g_settings.m_vecMyVideoShares))
+          {
+            // the path is unlocked so set last path to current path
+            lLastPathId = lPathId;
+            mapGenres.insert(pair<long, CStdString>(lGenreId, strGenre));
+          }
+        }
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+    
+    for (it=mapGenres.begin();it != mapGenres.end();++it)
+    {
+      CFileItem* pItem=new CFileItem(it->second);
+      CStdString strDir;
+      strDir.Format("%ld/", it->first);
+      pItem->m_strPath=strBaseDir + strDir;
+      pItem->m_bIsFolder=true;
+      items.Add(pItem);
+    }
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase:GetGenresNav() failed");
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+		CStdString strSQL=FormatSQL("select * from actorlinkmovie,actors,movie,movieinfo,path where path.idpath=movie.idpath and actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie order by path.idpath");
+
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    map<long, CStdString> mapActors;
+    map<long, CStdString>::iterator it;
+
+    long lLastPathId = -1;
+    while (!m_pDS->eof())
+    {
+      long lActorId = m_pDS->fv("actors.idactor").get_asLong();
+      CStdString strActor = m_pDS->fv("actors.strActor").get_asString();
+      it = mapActors.find(lActorId);
+      // is this actor already known?
+      if (it == mapActors.end())
+      {
+        // is this the same path as previous path?
+        long lPathId = m_pDS->fv("path.idpath").get_asLong();
+        if (lPathId == lLastPathId)
+          mapActors.insert(pair<long, CStdString>(lActorId, strActor));
+        // test path
+        else
+        {
+          CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+          if (g_passwordManager.IsDatabasePathUnlocked(strPath, g_settings.m_vecMyVideoShares))
+          {
+            // the path is unlocked so set last path to current path
+            lLastPathId = lPathId;
+            mapActors.insert(pair<long, CStdString>(lActorId, strActor));
+          }
+        }
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+    
+    for (it=mapActors.begin();it != mapActors.end();++it)
+    {
+      CFileItem* pItem=new CFileItem(it->second);
+      CStdString strDir;
+      strDir.Format("%ld/", it->first);
+      pItem->m_strPath=strBaseDir + strDir;
+      pItem->m_bIsFolder=true;
+      items.Add(pItem);
+    }
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase:GetActorsNav() failed");
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    // get primary genres for movies
+    //CStdString strSQL="select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor order by path.idpath";
+    CStdString strSQL=FormatSQL("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and NOT(movieinfo.bWatched='true') order by path.idpath");
+
+    // run query
+    CLog::Log(LOGDEBUG, "CVideoDatabase::GetGenresNav() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    map<long, CStdString> mapYears;
+    map<long, CStdString>::iterator it;
+    long lLastPathId = -1;
+    while (!m_pDS->eof())
+    {
+      CStdString strYear = m_pDS->fv("movieinfo.iYear").get_asString();
+      long lYear = atol(strYear.c_str());
+      it = mapYears.find(lYear);
+      if (it == mapYears.end())
+      {
+        // is the path the same as the previous path?
+        long lPathId = m_pDS->fv("path.idpath").get_asLong();
+        if (lPathId == lLastPathId)
+          mapYears.insert(pair<long, CStdString>(lYear, strYear));
+        // test path
+        else
+        {
+          CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+          if (g_passwordManager.IsDatabasePathUnlocked(strPath, g_settings.m_vecMyVideoShares))
+          {
+            // the path is unlocked so set last path to current path
+            lLastPathId = lPathId;
+            mapYears.insert(pair<long, CStdString>(lYear, strYear));
+          }
+        }
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+    
+    for (it=mapYears.begin();it != mapYears.end();++it)
+    {
+      CFileItem* pItem=new CFileItem(it->second);
+      CStdString strDir;
+      strDir.Format("%ld/", it->first);
+      pItem->m_strPath=strBaseDir + strDir;
+      pItem->m_bIsFolder=true;
+      items.Add(pItem);
+    }
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase:GetYearsNav() failed");
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor)
+{
+  try
+  {
+    DWORD time = timeGetTime();
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    //CStdString strSQL="select * from movie,movieinfo,actors,path,files where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movie.idpath=path.idpath and files.idmovie = movie.idmovie";
+
+    CStdString strWhere;
+    //CStdString strSQL=FormatSQL("select * from movie,movieinfo,actors,path,files where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movieinfo.iYear=%i and files.idmovie = movie.idmovie", iYear);
+    CStdString strSQL = FormatSQL("select * from movie,movieinfo,actors,path,files where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movie.idpath=path.idpath and files.idmovie = movie.idmovie");
+
+    if (idGenre != -1)
+    {
+      strSQL=FormatSQL("select * from movie,genre,genrelinkmovie,movieinfo,actors,path,files where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movie.idpath=path.idpath and files.idmovie = movie.idmovie and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and genre.idGenre=%u", idGenre);
+    }
+
+    if (idYear !=-1)
+    {
+      strWhere += FormatSQL(" and movieinfo.iYear=%i", idYear);
+    }
+
+    if (idActor != -1)
+    {
+        strSQL =  FormatSQL("select * from movie,actorlinkmovie,movieinfo,actors,path,files where movieinfo.idmovie=movie.idmovie and movie.idpath=path.idpath and files.idmovie = movie.idmovie and actors.idactor=actorlinkmovie.idActor and actorlinkMovie.idmovie = movie.idmovie and actors.idactor=%i",idActor);
+    }
+
+    if (g_stSettings.m_iMyVideoWatchMode == 1)
+      strSQL += FormatSQL(" and NOT (movieinfo.bWatched='true')");
+
+    if (g_stSettings.m_iMyVideoWatchMode == 2)
+      strSQL += FormatSQL(" and movieinfo.bWatched='true'");
+
+    strSQL += strWhere;
+
+    // get all songs out of the database in fixed size chunks
+    // dont reserve the items ahead of time just in case it fails part way though
+    VECMOVIES movies;
+    if (idGenre == -1 && idYear == -1 && idActor == -1)
+    {
+      int iLIMIT = 5000;    // chunk size
+      int iSONGS = 0;       // number of movies added to items
+      int iITERATIONS = 0;  // number of iterations
+      
+      for (int i=0;;i+=iLIMIT)
+      {
+        CStdString strSQL2=strSQL+FormatSQL(" limit %i offset %i", iLIMIT, i);
+        CLog::Log(LOGDEBUG, "CVideoDatabase::GetTitlesNav() query: %s", strSQL2.c_str());
+        try
+        {
+          if (!m_pDS->query(strSQL2.c_str()))
+            return false;
+
+          // keep going until no rows are left!
+          int iRowsFound = m_pDS->num_rows();
+          if (iRowsFound == 0)
+          {
+            m_pDS->close();
+            if (iITERATIONS == 0)
+              return false; // failed on first iteration, so there's probably no songs in the db
+            else
+            {
+              CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
+              return true; // there no more songs left to process (aborts the unbounded for loop)
+            }
+          }
+
+          // get movies from returned subtable
+          while (!m_pDS->eof())
+          {
+            CIMDBMovie movie = GetDetailsFromDataset(m_pDS);
+            movies.push_back(movie);
+            iSONGS++;
+            m_pDS->next();
+          }
+        }
+        catch (...)
+        {
+          CLog::Log(LOGERROR, "CVideoDatabase::GetTitlesNav() failed at iteration %i, num songs %i", iITERATIONS, iSONGS);
+
+          if (iSONGS > 0)
+          {
+            CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
+            return true; // keep whatever songs we may have gotten before the failure
+          }
+          else
+            return false; // no songs, return false
+        }
+        // next iteration
+        iITERATIONS++;
+        m_pDS->close();
+      }
+      CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
+      return true;
+    }
+
+    // run query
+    CLog::Log(LOGDEBUG, "CVideoDatabase::GetTitlesNav() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+
+    CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+
+    // get data from returned rows
+    items.Reserve(iRowsFound);
+
+    while (!m_pDS->eof())
+    {
+      CIMDBMovie movie = GetDetailsFromDataset(m_pDS);
+      movies.push_back(movie);
+
+      m_pDS->next();
+    }
+
+    CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
+
+    // cleanup
+    m_pDS->close();
+    CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetTitlesNav() failed");
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetGenreById(long lIdGenre, CStdString& strGenre)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select * from genre where genre.idGenre=%u", lIdGenre);
+    m_pDS->query( strSQL.c_str() );
+
+    bool bResult = false;
+    if (!m_pDS->eof())
+    {
+      strGenre  = m_pDS->fv("genre.strGenre").get_asString();
+      bResult = true;
+    }
+    m_pDS->close();
+    return bResult;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetMoviesByGenre(%s) failed", strGenre.c_str());
+  }
+  return false;
 }
 
 void CVideoDatabase::CleanDatabase()

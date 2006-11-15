@@ -15,6 +15,8 @@ public:
   void PlayMovie(const CFileItem *item);
   int  GetResumeItemOffset(const CFileItem *item);
 
+  static void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items, bool bSkipOverlay=false);
+
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:
@@ -37,7 +39,6 @@ protected:
   virtual bool OnPlayMedia(int iItem);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
-  void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items);
 
   void ShowIMDB(CFileItem *item);
   void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);

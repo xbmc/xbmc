@@ -213,6 +213,75 @@ void CGUIViewStateWindowVideoActor::SaveViewState()
   g_settings.Save();
 }
 
+CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
+{
+  if (items.IsVirtualDirectoryRoot())
+  {
+    AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+    SetSortMethod(SORT_METHOD_NONE);
+
+    AddViewAsControl(VIEW_METHOD_LIST, 101);
+    AddViewAsControl(VIEW_METHOD_ICONS, 100);
+    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+    SetViewAsControl(g_stSettings.m_MyVideoNavRootViewMethod);
+
+    SetSortOrder(SORT_ORDER_NONE);
+  }
+  else
+  {
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
+    SetSortMethod(SORT_METHOD_LABEL);
+
+    AddViewAsControl(VIEW_METHOD_LIST, 101);
+    AddViewAsControl(VIEW_METHOD_ICONS, 100);
+    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+
+    if (items.IsPlayList())
+      SetViewAsControl(g_stSettings.m_MyVideoNavPlaylistsViewMethod);
+
+    SetSortOrder(SORT_ORDER_ASC);
+  }
+}
+
+void CGUIViewStateWindowVideoNav::SaveViewState()
+{
+  if (m_items.IsVirtualDirectoryRoot())
+    g_stSettings.m_MyVideoNavRootViewMethod=GetViewAsControl();
+  else if (m_items.IsPlayList())
+    g_stSettings.m_MyVideoNavPlaylistsViewMethod=GetViewAsControl();
+
+  g_settings.Save();
+}
+
+VECSHARES& CGUIViewStateWindowVideoNav::GetShares()
+{
+  //  Setup shares we want to have
+  m_shares.clear();
+  //  Musicdb shares
+  CFileItemList items;
+  CDirectory::GetDirectory("videodb://", items);
+  for (int i=0; i<items.Size(); ++i)
+  {
+    CFileItem* item=items[i];
+    CShare share;
+    share.strName=item->GetLabel();
+    share.strPath = item->m_strPath;
+    share.m_strThumbnailImage="defaultFolderBig.png";
+    share.m_iDriveType = SHARE_TYPE_LOCAL;
+    m_shares.push_back(share);
+  }
+
+  //  Playlists share
+  CShare share;
+  share.strName=g_localizeStrings.Get(136); // Playlists
+  share.strPath = "special://videoplaylists/";
+  share.m_strThumbnailImage="defaultFolderBig.png";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  m_shares.push_back(share);
+
+  return CGUIViewStateWindowVideo::GetShares();
+}
+
 CGUIViewStateWindowVideoYear::CGUIViewStateWindowVideoYear(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (items.IsVirtualDirectoryRoot())
@@ -303,7 +372,7 @@ VECSHARES& CGUIViewStateWindowVideoPlaylist::GetShares()
   //  Playlist share
   CShare share;
   share.strName;
-  share.strPath="playlistvideo://";
+  share.strPath= "playlistvideo://";
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   m_shares.push_back(share);

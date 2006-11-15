@@ -88,6 +88,12 @@ public:
   bool GetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
 
+  bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, long idYear=-1);
+  bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1);
+  bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetGenreById(long lIdGenre, CStdString& strGenre);
+
   void CleanDatabase();
 
 protected:
