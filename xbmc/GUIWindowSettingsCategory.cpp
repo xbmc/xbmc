@@ -36,8 +36,8 @@
 #include "GUIControlGroupList.h"
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#define CATEGORY_GROUP_ID            9000
-#define SETTINGS_GROUP_ID            9001
+#define CATEGORY_GROUP_ID               3
+#define SETTINGS_GROUP_ID               5
 #endif
 
 #define CONTROL_GROUP_BUTTONS           0
@@ -274,18 +274,21 @@ void CGUIWindowSettingsCategory::SetupControls()
   // setup our control groups...
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
-  if (!group)
+  if (!group || group->GetControlType() != CGUIControl::GUICONTROL_GROUPLIST)
   {
     // get the area to use...
-    const CGUIControl *area = GetControl(CONTROL_BUTTON_AREA);
+    CGUIControl *area = (CGUIControl *)GetControl(CONTROL_BUTTON_AREA);
     const CGUIControl *gap = GetControl(CONTROL_BUTTON_GAP);
     if (!area || !gap)
       return;
+    Remove(CONTROL_BUTTON_AREA);
     group = new CGUIControlGroupList(GetID(), CATEGORY_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
                                      area->GetWidth(), area->GetHeight(), gap->GetHeight() - m_pOriginalCategoryButton->GetHeight(),
                                      0, CGUIControl::VERTICAL);
     group->SetNavigation(CATEGORY_GROUP_ID, CATEGORY_GROUP_ID, SETTINGS_GROUP_ID, SETTINGS_GROUP_ID);
-    Insert(group, m_pOriginalCategoryButton);
+    Insert(group, gap);
+    area->FreeResources();
+    delete area;
   }
 #endif
   // get a list of different sections
@@ -322,16 +325,17 @@ void CGUIWindowSettingsCategory::CreateSettings()
 
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (!group)
+  if (!group || group->GetControlType() != CGUIControl::GUICONTROL_GROUPLIST)
   {
-    const CGUIControl *pControlArea = GetControl(CONTROL_AREA);
-    const CGUIControl *pControlGap = GetControl(CONTROL_GAP);
-    group = new CGUIControlGroupList(GetID(), SETTINGS_GROUP_ID, pControlArea->GetXPosition(),
-                                                                 pControlArea->GetYPosition(),
-                                                                 pControlArea->GetWidth(),
-                                                                 pControlArea->GetHeight(), pControlGap->GetHeight() - m_pOriginalButton->GetHeight(), 0, CGUIControl::VERTICAL);
+    CGUIControl *area = (CGUIControl *)GetControl(CONTROL_AREA);
+    const CGUIControl *gap = GetControl(CONTROL_GAP);
+    Remove(CONTROL_AREA);
+    group = new CGUIControlGroupList(GetID(), SETTINGS_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
+                                     area->GetWidth(), area->GetHeight(), gap->GetHeight() - m_pOriginalButton->GetHeight(), 0, CGUIControl::VERTICAL);
     group->SetNavigation(SETTINGS_GROUP_ID, SETTINGS_GROUP_ID, CATEGORY_GROUP_ID, CATEGORY_GROUP_ID);
-    Insert(group, m_pOriginalButton);
+    Insert(group, gap);
+    area->FreeResources();
+    delete area;
   }
 #endif
   if (!group)
@@ -1560,7 +1564,11 @@ void CGUIWindowSettingsCategory::FreeControls()
 {
   // clear the category group
   CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (control && control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
+#else
   if (control)
+#endif
   {
     control->FreeResources();
     control->ClearAll();
@@ -1573,7 +1581,11 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
 {
   // clear the settings group
   CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (control && control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
+#else
   if (control)
+#endif
   {
     control->FreeResources();
     control->ClearAll();
