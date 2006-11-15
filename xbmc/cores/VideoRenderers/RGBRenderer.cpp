@@ -22,25 +22,6 @@
 #include "../../application.h"
 #include "../../util.h"
 
-
-// coefficients used for YUV->RGB coefficient
-#define Y_SCALE 1.164383561643835616438356164383f
-#define UV_SCALE 1.1434977578475336322869955156951f
-#define R_Vp 1.403f
-#define G_Up -0.344f
-#define G_Vp -0.714f
-#define B_Up 1.770f
-
-// formula is:
-
-// y' = (y-16)*y_scale;
-// u' = (u-128)*uv_scale;
-// v' = (v-128)*uv_scale;
-
-// r = y          + 1.403v
-// g = y - 0.344u - 0.714v
-// b = y + 1.770u
-
 #define SURFTOTEX(a) ((a)->Parent ? (a)->Parent : (D3DBaseTexture*)(a))
 
 
@@ -126,11 +107,38 @@ void CRGBRenderer::ManageTextures()
   CXBoxRenderer::ManageTextures();
 }
 
-unsigned int CRGBRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps)
+bool CRGBRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-  CXBoxRenderer::Configure(width, height, d_width, d_height, fps);
+  if(!CXBoxRenderer::Configure(width, height, d_width, d_height, fps, flags))
+    return false;
+  
+  YUVRANGE *range = &yuv_range_full;
+  if(!(flags & CONF_FLAGS_YUV_FULLRANGE))
+    range = &yuv_range_lim;
+
+  YUVCOEF *coef = NULL;
+  switch(CONF_FLAGS_YUVCOEF_MASK(flags))
+  {
+    case CONF_FLAGS_YUVCOEF_240M:
+      coef = &yuv_coef_smtp240m; break;
+    case CONF_FLAGS_YUVCOEF_BT709:
+      coef = &yuv_coef_bt709; break;
+    case CONF_FLAGS_YUVCOEF_BT601:    
+      coef = &yuv_coef_bt601; break;
+    case CONF_FLAGS_YUVCOEF_EBU:
+      coef = &yuv_coef_ebu; break;
+    default:
+      coef = &yuv_coef_bt601; 
+      break;
+  }
+
+
+  // create our lookup textures for yv12->rgb translation,
+  if(!CreateLookupTextures(*coef, *range) )
+    return false;
+
   m_bConfigured = true;
-  return 0;
+  return true;
 }
 
 void CRGBRenderer::Render(DWORD flags)
@@ -513,14 +521,10 @@ unsigned int CRGBRenderer::PreInit()
     m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hInterleavingShader);
     pShader->Release();
 
-    XGBuffer* pShader2;
-    XGAssembleShader("YUV2RGBShader", yuv2rgb, strlen(yuv2rgb), 0, NULL, &pShader2, NULL, NULL, NULL, NULL, NULL);
-    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader2->GetBufferPointer(), &m_hYUVtoRGBLookup);
-    pShader2->Release();
+    XGAssembleShader("YUV2RGBShader", yuv2rgb, strlen(yuv2rgb), 0, NULL, &pShader, NULL, NULL, NULL, NULL, NULL);
+    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hYUVtoRGBLookup);
+    pShader->Release();
 
-    // create our lookup textures for yv12->rgb translation,
-    // with the !m_hInterleavingShader if to make sure it's only done once
-    CreateLookupTextures();
   }
 
   return 0;
@@ -548,6 +552,25 @@ void CRGBRenderer::UnInit()
 }
 
 /*
+
+// coefficients used for YUV->RGB coefficient
+#define Y_SCALE 1.164383561643835616438356164383f
+#define UV_SCALE 1.1434977578475336322869955156951f
+#define R_Vp 1.403f
+#define G_Up -0.344f
+#define G_Vp -0.714f
+#define B_Up 1.770f
+
+// formula is:
+
+// y' = (y-16)*y_scale;
+// u' = (u-128)*uv_scale;
+// v' = (v-128)*uv_scale;
+
+// r = y          + 1.403v
+// g = y - 0.344u - 0.714v
+// b = y + 1.770u
+
 // Actual YUV -> RGB routine using 32 bit floats
 LONG CRGBRenderer::YUV2RGB(BYTE y, BYTE u, BYTE v, float &R, float &G, float &B)
 {
@@ -640,7 +663,6 @@ LONG CRGBRenderer::yuv2rgb_ps2(BYTE Y, BYTE U, BYTE V)
 
 void CRGBRenderer::DeleteLookupTextures()
 {
-  CSingleLock lock(g_graphicsContext);
   if (m_UVLookup)
   {
     m_UVLookup->Release();
@@ -653,8 +675,9 @@ void CRGBRenderer::DeleteLookupTextures()
   }
 }
 
-bool CRGBRenderer::CreateLookupTextures()
+bool CRGBRenderer::CreateLookupTextures(const YUVCOEF &coef, const YUVRANGE &range)
 {
+  DeleteLookupTextures();
   if (
     D3D_OK != m_pD3DDevice->CreateTexture(256, 256, 1, 0, D3DFMT_A8R8G8B8, 0, &m_UVLookup) ||
     D3D_OK != m_pD3DDevice->CreateTexture(256, 256, 1, 0, D3DFMT_A8R8G8B8, 0, &m_UVErrorLookup)
@@ -674,11 +697,10 @@ bool CRGBRenderer::CreateLookupTextures()
     // first column is our luminance data
     for (int y = 0; y < 256; y++)
     {
-      float fY = (float)(y - 16) * Y_SCALE;
-      if (fY < 0.0f)
-        fY = 0.0f;
-      if (fY > 255.0f)
-        fY = 255.0f;
+      float fY = (y - range.y_min) * 255.0f / (range.y_max - range.y_min);
+
+      fY = CLAMP(fY, 0.0f, 255.0f);
+
       float fWhole = floor(fY);
       float fFrac = floor((fY - fWhole) * 85.0f + 0.5f);   // 0 .. 1.0
       for (int i = 0; i < 3; i++)
@@ -693,20 +715,18 @@ bool CRGBRenderer::CreateLookupTextures()
     {
       for (int v = 0; v < 256; v++)
       {
-        // convert to -0.5 .. 0.5
-        float fV = (float)(v - 128) * UV_SCALE;
-        float fU = (float)(u - 128) * UV_SCALE;
-
-        if (fU > 127) fU = 127;
-        if (fU < -128) fU = -128;
-        if (fV > 127) fV = 127;
-        if (fV < -128) fV = -128;
+        // convert to -0.5 .. 0.5 ( -127.5 .. 127.5 )
+        float fV = (v - range.v_min) * 255.f / (range.v_max - range.v_min) - 127.5f;
+        float fU = (u - range.u_min) * 255.f / (range.u_max - range.u_min) - 127.5f;
+        
+        fU = CLAMP(fU, -127.5f, 127.5f);
+        fV = CLAMP(fV, -127.5f, 127.5f);
 
         // have U and V, calculate R, G and B contributions (lie between 0 and 255)
         // -1 is mapped to 0, 1 is mapped to 255
-        float r = R_Vp * fV;
-        float g = G_Up * fU + G_Vp * fV;
-        float b = B_Up * fU;
+        float r = coef.r_up * fU + coef.r_vp * fV;
+        float g = coef.g_up * fU + coef.g_vp * fV;
+        float b = coef.b_up * fU + coef.b_vp * fV;
 
         float r_rnd = floor(r * 0.5f - 0.5f) * 2 + 1;
         float g_rnd = floor(g * 0.5f - 0.5f) * 2 + 1;
@@ -716,18 +736,9 @@ bool CRGBRenderer::CreateLookupTextures()
         float ps_g = (g_rnd - 1) * 0.5f + 128.0f;
         float ps_b = (b_rnd - 1) * 0.5f + 128.0f;
 
-        if (ps_r > 255.0f)
-          ps_r = 255.0f;
-        if (ps_r < 0.0f)
-          ps_r = 0.0f;
-        if (ps_g > 255.0f)
-          ps_g = 255.0f;
-        if (ps_g < 0.0f)
-          ps_g = 0.0f;
-        if (ps_b > 255.0f)
-          ps_b = 255.0f;
-        if (ps_b < 0.0f)
-          ps_b = 0.0f;
+        ps_r = CLAMP(ps_r, 0.0f, 255.0f);
+        ps_g = CLAMP(ps_g, 0.0f, 255.0f);
+        ps_b = CLAMP(ps_b, 0.0f, 255.0f);
 
         float r_frac = floor((r - r_rnd) * 85.0f + 0.5f);
         float b_frac = floor((b - b_rnd) * 85.0f + 0.5f);
