@@ -261,6 +261,12 @@
 				RelativePath=".\GUIControlGroup.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIControlGroupList.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIControlGroupList.h">
+			</File>
+			<File
 				RelativePath=".\GUIDialog.cpp">
 			</File>
 			<File

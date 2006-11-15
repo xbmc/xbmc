@@ -329,7 +329,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     group = new CGUIControlGroupList(GetID(), SETTINGS_GROUP_ID, pControlArea->GetXPosition(),
                                                                  pControlArea->GetYPosition(),
                                                                  pControlArea->GetWidth(),
-                                                                 pControlArea->GetHeight(), pControlGap->GetHeight(), 0, CGUIControl::VERTICAL);
+                                                                 pControlArea->GetHeight(), pControlGap->GetHeight() - m_pOriginalButton->GetHeight(), 0, CGUIControl::VERTICAL);
     group->SetNavigation(SETTINGS_GROUP_ID, SETTINGS_GROUP_ID, CATEGORY_GROUP_ID, CATEGORY_GROUP_ID);
     Insert(group, m_pOriginalButton);
   }

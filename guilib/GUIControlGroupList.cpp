@@ -29,28 +29,26 @@ void CGUIControlGroupList::Render()
       SendWindowMessage(message2);
     }
     // we run through the controls, rendering as we go
-    if (g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height))
+    bool render(g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height, true));
+    float pos = 0;
+    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
     {
-      float pos = 0;
-      for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+      CGUIControl *control = *it;
+      control->UpdateEffectState(m_renderTime);
+      if (control->IsVisible() && render)
       {
-        CGUIControl *control = *it;
-        control->UpdateEffectState(m_renderTime);
-        if (control->IsVisible())
-        {
-          if (pos + Size(control) > m_offset && pos < m_offset + Size())
-          { // we can render
-            if (m_orientation == VERTICAL)
-              control->SetPosition(m_posX, m_posY + pos - m_offset);
-            else
-              control->SetPosition(m_posX + pos - m_offset, m_posY);
-            control->Render();
-          }
-          pos += Size(control) + m_itemGap;
+        if (pos + Size(control) > m_offset && pos < m_offset + Size())
+        { // we can render
+          if (m_orientation == VERTICAL)
+            control->SetPosition(m_posX, m_posY + pos - m_offset);
+          else
+            control->SetPosition(m_posX + pos - m_offset, m_posY);
+          control->Render();
         }
+        pos += Size(control) + m_itemGap;
       }
-      g_graphicsContext.RestoreViewPort();
     }
+    if (render) g_graphicsContext.RestoreViewPort();
     CGUIControl::Render();
   }
   g_graphicsContext.RemoveGroupTransform();
@@ -140,7 +138,7 @@ void CGUIControlGroupList::ValidateOffset()
   {
     CGUIControl *control = *it;
     if (!control->IsVisible()) continue;
-    m_totalSize += Size(control);
+    m_totalSize += Size(control) + m_itemGap;
   }
   // check our m_offset range
   if (m_offset > m_totalSize - Size())
