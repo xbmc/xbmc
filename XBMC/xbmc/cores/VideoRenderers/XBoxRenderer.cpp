@@ -23,6 +23,36 @@
 #include "../../util.h"
 #include "../../XBVideoConfig.h"
 
+// http://www.martinreddy.net/gfx/faqs/colorconv.faq
+
+YUVRANGE yuv_range_lim =  { 16, 235, 16, 240, 16, 240 };
+YUVRANGE yuv_range_full = {  0, 255,  0, 255,  0, 255 };
+
+YUVCOEF yuv_coef_bt601 = {
+     0.0f,   1.403f,
+  -0.344f,  -0.714f,
+   1.773f,     0.0f,
+};
+
+YUVCOEF yuv_coef_bt709 = {
+     0.0f,  1.5701f,
+ -0.1870f, -0.4664f,
+  1.8556f,     0.0f, /* page above have the 1.8556f as negative */
+};
+
+YUVCOEF yuv_coef_ebu = {
+    0.0f,  1.140f,
+ -0.396f, -0.581f,
+  2.029f,    0.0f, 
+};
+
+YUVCOEF yuv_coef_smtp240m = {
+     0.0f,  1.5756f,
+ -0.2253f, -0.5000f, /* page above have the 0.5000f as positive */
+  1.8270f,     0.0f,  
+};
+
+
 CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
 {
   m_pD3DDevice = pDevice;
@@ -694,7 +724,7 @@ void CXBoxRenderer::SetupSubtitles()
   m_iOSDTextureHeight[1] = 0;
 }
 
-unsigned int CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps)
+bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   m_fps = fps;
   m_iSourceWidth = width;
@@ -707,7 +737,7 @@ unsigned int CXBoxRenderer::Configure(unsigned int width, unsigned int height, u
   ManageDisplay();
   SetupSubtitles();
 
-  return 0;
+  return true;
 }
 
 int CXBoxRenderer::NextYV12Texture()

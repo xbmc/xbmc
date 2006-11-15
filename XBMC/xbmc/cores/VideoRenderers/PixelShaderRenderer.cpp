@@ -27,11 +27,13 @@ CPixelShaderRenderer::CPixelShaderRenderer(LPDIRECT3DDEVICE8 pDevice)
 {
 }
 
-unsigned int CPixelShaderRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps)
+bool CPixelShaderRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-  CXBoxRenderer::Configure(width, height, d_width, d_height, fps);
+  if(!CXBoxRenderer::Configure(width, height, d_width, d_height, fps, flags))
+    return false;
+
   m_bConfigured = true;
-  return 0;
+  return true;
 }
 
 

@@ -11,7 +11,7 @@ public:
 
   // Functions called from mplayer
   // virtual void     WaitForFlip();
-  virtual unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
   virtual unsigned int PreInit();
   virtual void UnInit();
 
@@ -21,7 +21,7 @@ protected:
   bool Create444PTexture();
   void Delete444PTexture();
   void Clear444PTexture();
-  bool CreateLookupTextures();
+  bool CreateLookupTextures(const YUVCOEF &coef, const YUVRANGE &range);
   void DeleteLookupTextures();
 
   void InterleaveYUVto444P(
