@@ -21,10 +21,8 @@ CGUIDialogVisualisationSettings::CGUIDialogVisualisationSettings(void)
   m_pOriginalSpin = NULL;
   m_pOriginalRadioButton = NULL;
   m_pOriginalSettingsButton = NULL;
-#ifdef HAS_VISUALISATION
   m_pVisualisation = NULL;
   m_pSettings = NULL;
-#endif
   m_iCurrentPage = 0;
   m_iNumPages = 0;
   m_iNumPerPage = 0;
@@ -58,17 +56,13 @@ bool CGUIDialogVisualisationSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_VISUALISATION_UNLOADING:
     {
       FreeControls();
-#ifdef HAS_VISUALISATION
       m_pVisualisation = NULL;
       m_pSettings = NULL;
-#endif
     }
     break;
   case GUI_MSG_VISUALISATION_LOADED:
     {
-#ifdef HAS_VISUALISATION
       SetVisualisation((CVisualisation *)message.GetLPVOID());
-#endif
       m_iCurrentPage = 0;
       m_iNumPages = 0;
       SetupPage();
@@ -102,7 +96,6 @@ void CGUIDialogVisualisationSettings::SetupPage()
   if (!pControlArea || !pControlGap)
     return;
 
-#ifdef HAS_VISUALISATION
   if (!m_pSettings || !m_pSettings->size())
   { // no settings available
     SET_CONTROL_VISIBLE(CONTROL_NONE_AVAILABLE);
@@ -157,7 +150,6 @@ void CGUIDialogVisualisationSettings::SetupPage()
   if (pControl) pControl->SetNavigation(CONTROL_START + numOnPage - 1, CONTROL_START,
                                           pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   UpdateSettings();
-#endif
 }
 
 
@@ -167,7 +159,6 @@ void CGUIDialogVisualisationSettings::UpdateSettings()
 
 void CGUIDialogVisualisationSettings::OnClick(int iID)
 {
-#ifdef HAS_VISUALISATION
   if (!m_pSettings || !m_pVisualisation) return;
   unsigned int settingNum = iID - CONTROL_START + m_iCurrentPage * m_iNumPerPage;
   if (settingNum >= m_pSettings->size()) return;
@@ -184,7 +175,6 @@ void CGUIDialogVisualisationSettings::OnClick(int iID)
   }
   m_pVisualisation->UpdateSetting(settingNum);
   UpdateSettings();
-#endif
 }
 
 void CGUIDialogVisualisationSettings::FreeControls()
@@ -202,7 +192,6 @@ void CGUIDialogVisualisationSettings::FreeControls()
   }
 }
 
-#ifdef HAS_VISUALISATION
 void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, float posX, float posY, float width, int iControlID)
 {
   CGUIControl *pControl = NULL;
@@ -237,14 +226,12 @@ void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, float posX
   Add(pControl);
   pControl->AllocResources();
 }
-#endif
 
 void CGUIDialogVisualisationSettings::Render()
 {
   CGUIDialog::Render();
 }
 
-#ifdef HAS_VISUALISATION
 void CGUIDialogVisualisationSettings::SetVisualisation(CVisualisation *pVisualisation)
 {
   m_pVisualisation = pVisualisation;
@@ -253,16 +240,13 @@ void CGUIDialogVisualisationSettings::SetVisualisation(CVisualisation *pVisualis
     m_pVisualisation->GetSettings(&m_pSettings);
   }
 }
-#endif
 
 void CGUIDialogVisualisationSettings::OnInitWindow()
 {
   // set our visualisation
   CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
   g_graphicsContext.SendMessage(msg);
-#ifdef HAS_VISUALISATION
   SetVisualisation((CVisualisation *)msg.GetLPVOID());
-#endif
 
   m_iCurrentPage = 0;
   m_iNumPages = 0;

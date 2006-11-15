@@ -596,6 +596,31 @@
 					</Filter>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Visualisations"
+				Filter="">
+				<File
+					RelativePath="..\..\xbmc\visualizations\DllVisualisation.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\visualizations\fft.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\visualizations\fft.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\visualizations\Visualisation.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\visualizations\Visualisation.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\visualizations\VisualisationFactory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\visualizations\VisualisationFactory.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Source Files"

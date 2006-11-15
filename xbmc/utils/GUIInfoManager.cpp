@@ -9,9 +9,7 @@
 #include "Weather.h"
 #include "../playlistplayer.h"
 #include "../PartyModeManager.h"
-#ifdef HAS_VISUALISATION
 #include "../Visualizations/Visualisation.h"
-#endif
 #include "../ButtonTranslator.h"
 #include "../MusicDatabase.h"
 #include "../utils/Alarmclock.h"
@@ -630,7 +628,6 @@ string CGUIInfoManager::GetLabel(int info)
   case AUDIOSCROBBLER_SUBMIT_STATE:
     strLabel=GetAudioScrobblerLabel(info);
     break;
-#ifdef HAS_VISUALISATION
   case VISUALISATION_PRESET:
     {
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
@@ -647,7 +644,6 @@ string CGUIInfoManager::GetLabel(int info)
       }
     }
     break;
-#endif
   case VISUALISATION_NAME:
     {
       strLabel = g_guiSettings.GetString("mymusic.visualisation");
@@ -933,7 +929,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     case PLAYER_HASDURATION:
       bReturn = g_application.GetTotalTime() > 0;
       break;
-#ifdef HAS_VISUALISATION
     case VISUALISATION_LOCKED:
       {
         CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
@@ -945,7 +940,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
         }
       }
     break;
-#endif
     case VISUALISATION_ENABLED:
       bReturn = g_guiSettings.GetString("mymusic.visualisation") != "None";
     break;

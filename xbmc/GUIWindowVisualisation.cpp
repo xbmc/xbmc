@@ -55,7 +55,6 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
       g_graphicsContext.SendMessage(msg);
       if (msg.GetLPVOID())
       {
-#ifdef HAS_VISUALISATION
         CVisualisation *pVis = (CVisualisation *)msg.GetLPVOID();
         char** pPresets=NULL;
         int currpreset=0, numpresets=0;
@@ -64,7 +63,6 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
         pVis->GetPresets(&pPresets,&currpreset,&numpresets,&locked);
         if (numpresets == 1 || !pPresets)
           return true;
-#endif
       }
       if (!m_bShowPreset)
       {
