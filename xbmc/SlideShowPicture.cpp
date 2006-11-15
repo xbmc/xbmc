@@ -613,7 +613,7 @@ void CSlideShowPic::Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWOR
   g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
   // Render the image
 #ifdef HAS_XBOX_D3D
-  g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
+  g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_QUADLIST, 1, vertex, sizeof(VERTEX) );
 #else
   g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
 #endif
