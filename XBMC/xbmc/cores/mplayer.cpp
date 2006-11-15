@@ -1873,7 +1873,7 @@ void CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
   if (slt.language != 0)
   {
     CStdString strName;
-    if (!g_LangCodeExpander.LookupDVDLangCode(strName, slt.language))
+    if (!g_LangCodeExpander.Lookup(strName, slt.language))
     {
       strName = "UNKNOWN:";
       strName += (char)(slt.language >> 8) & 255;

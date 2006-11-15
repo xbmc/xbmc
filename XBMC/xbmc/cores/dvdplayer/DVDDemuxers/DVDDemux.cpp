@@ -117,5 +117,5 @@ void CDemuxStream::GetStreamName( CStdString& strInfo )
   if( language[0] == 0 )
     strInfo = "Unknown";
   else
-    g_LangCodeExpander.Lookup( strInfo, language, CLangCodeExpander::ELangCodeTypes::ELT_ISO639_2 );
+    g_LangCodeExpander.Lookup( strInfo, language );
 }
