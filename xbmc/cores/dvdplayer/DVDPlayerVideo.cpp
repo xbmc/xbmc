@@ -183,7 +183,7 @@ void CDVDPlayerVideo::Process()
       {
         CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", (DVD_TIME_BASE / iFrameTime));
         m_DetectedStill = true;
-        pts = m_pClock->GetClock();
+        pts+= iFrameTime*4;
       }
 
       //Waiting timed out, output last picture
@@ -696,6 +696,10 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       // don't sleep when going backwords, just push frames out
       iSleepTime = 0;
     }
+    else if( m_DetectedStill )
+    { // when we render a still, we can't sync to clock anyway
+      iSleepTime = iFrameSleep;
+    }
     else
     {
       /* try to decide on how to sync framerate */
@@ -706,7 +710,7 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       /* decouple clock and video a while after a discontinuity */
       const __int64 distance = m_pClock->DistanceToDisc();
 
-      if(  abs(distance) < pPicture->iDuration*3 )
+      if( abs(distance) < pPicture->iDuration*3 )
         iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) * 0;
       else if( pPicture->iFlags & DVP_FLAG_NOAUTOSYNC )
         iSleepTime = iClockSleep;
