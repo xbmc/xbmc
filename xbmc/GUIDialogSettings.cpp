@@ -1,10 +1,14 @@
 #include "stdafx.h"
 #include "GUIDialogSettings.h"
+#include "GUIControlGroupList.h"
 
+#define CONTROL_GROUP_LIST          5
 #define CONTROL_SETTINGS_LABEL      2
 #define CONTROL_NONE_AVAILABLE      3
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #define CONTROL_AREA                5
 #define CONTROL_GAP                 6
+#endif
 #define CONTROL_DEFAULT_BUTTON      7
 #define CONTROL_DEFAULT_RADIOBUTTON 8
 #define CONTROL_DEFAULT_SPIN        9
@@ -23,9 +27,6 @@ CGUIDialogSettings::CGUIDialogSettings(DWORD id, const char *xmlFile)
   m_pOriginalSettingsButton = NULL;
   m_pOriginalSlider = NULL;
   m_pOriginalSeparator = NULL;
-  m_iCurrentPage = 0;
-  m_iNumPages = 0;
-  m_iNumPerPage = 0;
 }
 
 CGUIDialogSettings::~CGUIDialogSettings(void)
@@ -39,14 +40,7 @@ bool CGUIDialogSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_CLICKED:
     {
       unsigned int iControl = message.GetSenderId();
-      if (iControl == CONTROL_PAGE)
-      {
-        CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-        OnMessage(msg);
-        m_iCurrentPage = msg.GetParam1() - 1;
-        SetupPage();
-      }
-      else if (iControl >= CONTROL_OKAY_BUTTON && iControl < CONTROL_PAGE)
+      if (iControl >= CONTROL_OKAY_BUTTON && iControl < CONTROL_PAGE)
         OnClick(iControl);
       return true;
     }
@@ -81,114 +75,61 @@ void CGUIDialogSettings::SetupPage()
   // update our settings label
   SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(13395 + GetID() - WINDOW_DIALOG_VIDEO_OSD_SETTINGS));
 
-  // our controls for layout...
-  const CGUIControl *pControlArea = GetControl(CONTROL_AREA);
-  const CGUIControl *pControlGap = GetControl(CONTROL_GAP);
-  if (!pControlArea || !pControlGap)
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_GROUP_LIST);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (!group || group->GetControlType() != CGUIControl::GUICONTROL_GROUPLIST)
+  {
+    // our controls for layout...
+    CGUIControl *pArea = (CGUIControl *)GetControl(CONTROL_AREA);
+    const CGUIControl *pGap = GetControl(CONTROL_GAP);
+    if (!pArea || !pGap)
+      return;
+    Remove(CONTROL_AREA);
+    group = new CGUIControlGroupList(GetID(), CONTROL_GROUP_LIST, pArea->GetXPosition(), pArea->GetYPosition(),
+                                     pArea->GetWidth(), pArea->GetHeight(), pGap->GetHeight() - m_pOriginalSettingsButton->GetHeight(),
+                                     0, CGUIControl::VERTICAL);
+    group->SetNavigation(CONTROL_OKAY_BUTTON, CONTROL_OKAY_BUTTON, CONTROL_GROUP_LIST, CONTROL_GROUP_LIST);
+    Insert(group, pGap);
+    pArea->FreeResources();
+    delete pArea;
+    SET_CONTROL_HIDDEN(CONTROL_PAGE);
+  }
+#endif
+  if (!group)
     return;
 
   if (!m_settings.size())
   { // no settings available
     SET_CONTROL_VISIBLE(CONTROL_NONE_AVAILABLE);
-    SET_CONTROL_HIDDEN(CONTROL_PAGE);
     return;
   }
   else
   {
     SET_CONTROL_HIDDEN(CONTROL_NONE_AVAILABLE);
-    SET_CONTROL_VISIBLE(CONTROL_PAGE);
   }
 
-  float posX = pControlArea->GetXPosition();
-  float width = pControlArea->GetWidth();
-  float posY = pControlArea->GetYPosition();
-  float gapY = pControlGap->GetHeight();
-  int numSettings = 0;
-  for (unsigned int i=0; i < m_settings.size(); i++)
-    if (m_settings[i].type != SettingInfo::SEPARATOR)
-      numSettings++;
-
-  int numPerPage = (int)(pControlArea->GetHeight() / gapY);
-  if (numPerPage < 1) numPerPage = 1;
-  m_iNumPages = (numSettings + numPerPage - 1)/ numPerPage; // round up
-  if (m_iCurrentPage >= m_iNumPages - 1)
-    m_iCurrentPage = m_iNumPages - 1;
-  if (m_iCurrentPage <= 0)
-    m_iCurrentPage = 0;
-  CGUISpinControl *pPage = (CGUISpinControl *)GetControl(CONTROL_PAGE);
-  if (pPage)
-  {
-    pPage->SetRange(1, m_iNumPages);
-    pPage->SetReverse(false);
-    pPage->SetShowRange(true);
-    pPage->SetValue(m_iCurrentPage + 1);
-    pPage->SetVisible(m_iNumPages > 1);
-  }
-
-  // find out page offset
-  m_iPageOffset = 0;
-  for (int i = 0; i < m_iCurrentPage; i++)
-  {
-    int j = 0;
-    while (j < numPerPage)
-    {
-      if (m_settings[m_iPageOffset].type != SettingInfo::SEPARATOR)
-        j++;
-      m_iPageOffset++;
-    }
-  }
   // create our controls
-  int numSettingsOnPage = 0;
-  int numControlsOnPage = 0;
-  for (unsigned int i = m_iPageOffset; i < m_settings.size(); i++)
+  for (unsigned int i = 0; i < m_settings.size(); i++)
   {
     SettingInfo &setting = m_settings.at(i);
-    AddSetting(setting, posX, posY, width, CONTROL_START + i - m_iPageOffset);
-    if (setting.type == SettingInfo::SEPARATOR)
-      posY += m_pOriginalSeparator->GetHeight();
-    else
-    {
-      posY += gapY;
-      numSettingsOnPage++;
-    }
-    numControlsOnPage++;
-    if (numSettingsOnPage == numPerPage)
-      break;
+    AddSetting(setting, group->GetWidth(), CONTROL_START + i);
   }
-  // fix first and last navigation
-  CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START + numControlsOnPage - 1);
-  if (pControl) 
-    if (m_iNumPages > 1)
-        pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_PAGE, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-    else
-      pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  
-  pControl = (CGUIControl *)GetControl(CONTROL_START);
-  if (pControl) 
-    if (m_iNumPages > 1)
-      pControl->SetNavigation(CONTROL_PAGE, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-    else
-      pControl->SetNavigation(CONTROL_START + numControlsOnPage - 1, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-
-  pControl = (CGUIControl *)GetControl(CONTROL_PAGE);
-  if (pControl) pControl->SetNavigation(CONTROL_START + numControlsOnPage - 1, CONTROL_START,
-                                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
 }
 
 
-void CGUIDialogSettings::UpdateSetting(unsigned int num)
+void CGUIDialogSettings::UpdateSetting(unsigned int id)
 {
   unsigned int settingNum = 0;
   for (unsigned int i = 0; i < m_settings.size(); i++)
   {
-    if (m_settings[i].id == num)
+    if (m_settings[i].id == id)
     {
       settingNum = i;
       break;
     }
   }
   SettingInfo &setting = m_settings.at(settingNum);
-  unsigned int controlID = settingNum + CONTROL_START + m_iPageOffset;
+  unsigned int controlID = settingNum + CONTROL_START;
   if (setting.type == SettingInfo::SPIN)
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(controlID);
@@ -252,7 +193,7 @@ void CGUIDialogSettings::OnClick(int iID)
     Close();
     return;
   }
-  unsigned int settingNum = iID - CONTROL_START + m_iPageOffset;
+  unsigned int settingNum = iID - CONTROL_START;
   if (settingNum >= m_settings.size()) return;
   SettingInfo &setting = m_settings.at(settingNum);
   if (setting.type == SettingInfo::SPIN)
@@ -285,20 +226,20 @@ void CGUIDialogSettings::OnClick(int iID)
 
 void CGUIDialogSettings::FreeControls()
 {
-  // free any created controls
-  for (unsigned int i = CONTROL_START; i < CONTROL_PAGE; i++)
+  // just clear our group list
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_GROUP_LIST);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (group && group->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
+#else
+  if (group)
+#endif
   {
-    CGUIControl *pControl = (CGUIControl *)GetControl(i);
-    if (pControl)
-    {
-      Remove(i);
-      pControl->FreeResources();
-      delete pControl;
-    }
+    group->FreeResources();
+    group->ClearAll();
   }
 }
 
-void CGUIDialogSettings::AddSetting(SettingInfo &setting, float posX, float posY, float width, int iControlID)
+void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iControlID)
 {
   CGUIControl *pControl = NULL;
   if (setting.type == SettingInfo::BUTTON && m_pOriginalSettingsButton)
@@ -306,14 +247,12 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float posX, float posY
     pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
     if (!pControl) return ;
     ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
-    pControl->SetPosition(posX, posY);
     pControl->SetWidth(width);
   }
   else if (setting.type == SettingInfo::SEPARATOR && m_pOriginalSeparator)
   {
     pControl = new CGUIImage(*m_pOriginalSeparator);
     if (!pControl) return ;
-    pControl->SetPosition(posX, posY);
     pControl->SetWidth(width);
   }
   else if (setting.type == SettingInfo::CHECK || setting.type == SettingInfo::CHECK_UCHAR)
@@ -322,7 +261,6 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float posX, float posY
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
     ((CGUIRadioButtonControl *)pControl)->SetLabel(setting.name);
-    pControl->SetPosition(posX, posY);
     pControl->SetWidth(width);
     if (setting.data) ((CGUIRadioButtonControl *)pControl)->SetSelected(*(bool *)setting.data == 1);
   }
@@ -330,7 +268,6 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float posX, float posY
   {
     pControl = new CGUISpinControlEx(*m_pOriginalSpin);
     if (!pControl) return ;
-    pControl->SetPosition(posX, posY);
     pControl->SetWidth(width);
     ((CGUISpinControlEx *)pControl)->SetText(setting.name);
     pControl->SetWidth(width);
@@ -343,7 +280,6 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float posX, float posY
     if (!m_pOriginalSlider) return;
     pControl = new CGUISettingsSliderControl(*m_pOriginalSlider);
     if (!pControl) return ;
-    pControl->SetPosition(posX, posY);
     pControl->SetWidth(width);
     ((CGUISettingsSliderControl *)pControl)->SetText(setting.name);
     if (setting.type == SettingInfo::SLIDER)
@@ -362,23 +298,18 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float posX, float posY
     }
   }
   if (!pControl) return;
-  if (GetControl(CONTROL_OKAY_BUTTON) && GetControl(CONTROL_CANCEL_BUTTON))
-  {
-    pControl->SetNavigation(iControlID - 1,
-      iControlID + 1,
-      CONTROL_OKAY_BUTTON,
-      CONTROL_OKAY_BUTTON);
-  }
-  else
-    pControl->SetNavigation(iControlID - 1,
-                            iControlID + 1,
-                            iControlID,
-                            iControlID);
+
   pControl->SetID(iControlID);
   pControl->SetVisible(true);
   pControl->SetEnabled(setting.enabled);
-  Add(pControl);
-  pControl->AllocResources();
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_GROUP_LIST);
+  if (group)
+  {
+    pControl->AllocResources();
+    group->AddControl(pControl);
+  }
+  else
+    delete pControl;
 }
 
 void CGUIDialogSettings::AddButton(unsigned int id, int label,bool bOn)
@@ -472,8 +403,6 @@ void CGUIDialogSettings::AddSeparator(unsigned int id)
 void CGUIDialogSettings::OnInitWindow()
 {
   CreateSettings();
-  m_iCurrentPage = 0;
-  m_iNumPages = 0;
   SetControlVisibility();
   SetupPage();
   // set the default focus control

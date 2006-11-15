@@ -48,7 +48,7 @@ protected:
   void FreeControls();
   void OnClick(int iControlID);
 
-  void AddSetting(SettingInfo &setting, float posX, float posY, float width, int iControlID);
+  void AddSetting(SettingInfo &setting, float width, int iControlID);
 
   void AddButton(unsigned int it, int label, bool bOn=true);
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
@@ -57,11 +57,6 @@ protected:
   void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, const char *format = NULL);
   void AddSlider(unsigned int id, int label, int *current, int min, int max);
   void AddSeparator(unsigned int id);
-
-  int m_iPageOffset;  // offset into the settings list of our current page.
-  int m_iCurrentPage;
-  int m_iNumPages;
-  int m_iNumPerPage;
 
   CGUISpinControlEx *m_pOriginalSpin;
   CGUIRadioButtonControl *m_pOriginalRadioButton;
