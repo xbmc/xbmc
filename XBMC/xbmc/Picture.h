@@ -18,7 +18,7 @@ public:
   unsigned int GetHeight() const { return m_info.height; };
   unsigned int GetOriginalWidth() const { return m_info.originalwidth; };
   unsigned int GetOriginalHeight() const { return m_info.originalheight; };
-  long GetExifOrientation() const { return m_info.rotation; };
+  const EXIFINFO *GetExifInfo() const { return &m_info.exifInfo; };
 
   void CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail);
   bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
