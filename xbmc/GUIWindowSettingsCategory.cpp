@@ -283,7 +283,7 @@ void CGUIWindowSettingsCategory::SetupControls()
       return;
     Remove(CONTROL_BUTTON_AREA);
     group = new CGUIControlGroupList(GetID(), CATEGORY_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
-                                     area->GetWidth(), area->GetHeight(), gap->GetHeight() - m_pOriginalCategoryButton->GetHeight(),
+                                     area->GetWidth(), 1080, gap->GetHeight() - m_pOriginalCategoryButton->GetHeight(),
                                      0, CGUIControl::VERTICAL);
     group->SetNavigation(CATEGORY_GROUP_ID, CATEGORY_GROUP_ID, SETTINGS_GROUP_ID, SETTINGS_GROUP_ID);
     Insert(group, gap);
@@ -331,7 +331,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     const CGUIControl *gap = GetControl(CONTROL_GAP);
     Remove(CONTROL_AREA);
     group = new CGUIControlGroupList(GetID(), SETTINGS_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
-                                     area->GetWidth(), area->GetHeight(), gap->GetHeight() - m_pOriginalButton->GetHeight(), 0, CGUIControl::VERTICAL);
+                                     area->GetWidth(), 1080, gap->GetHeight() - m_pOriginalButton->GetHeight(), 0, CGUIControl::VERTICAL);
     group->SetNavigation(SETTINGS_GROUP_ID, SETTINGS_GROUP_ID, CATEGORY_GROUP_ID, CATEGORY_GROUP_ID);
     Insert(group, gap);
     area->FreeResources();
