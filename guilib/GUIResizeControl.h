@@ -24,8 +24,8 @@ class CGUIResizeControl : public CGUIControl
 {
 public:
   CGUIResizeControl(DWORD dwParentID, DWORD dwControlId,
-                    int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                    const CStdString& strTextureFocus, const CStdString& strTextureNoFocus);
+                    float posX, float posY, float width, float height,
+                    const CImage& textureFocus, const CImage& textureNoFocus);
 
   virtual ~CGUIResizeControl(void);
 
@@ -41,17 +41,15 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetPosition(int iPosX, int iPosY);
+  virtual void SetPosition(float posX, float posY);
   virtual void SetColourDiffuse(D3DCOLOR colour);
-  const CStdString& GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
-  const CStdString& GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
-  void SetLimits(int iX1, int iY1, int iX2, int iY2);
+  void SetLimits(float x1, float y1, float x2, float y2);
 
 protected:
   virtual void Update() ;
   void SetAlpha(DWORD dwAlpha);
   void UpdateSpeed(int nDirection);
-  void Resize(int iX, int iY);
+  void Resize(float x, float y);
   CGUIImage m_imgFocus;
   CGUIImage m_imgNoFocus;
   DWORD m_dwFrameCounter;
@@ -61,6 +59,6 @@ protected:
   float m_fAnalogSpeed;
   float m_fMaxSpeed;
   float m_fAcceleration;
-  int m_iX1, m_iX2, m_iY1, m_iY2;
+  float m_x1, m_x2, m_y1, m_y2;
 };
 #endif

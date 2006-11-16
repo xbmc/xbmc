@@ -10,9 +10,13 @@
 #include "ProgramDatabase.h"
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "Utils/LED.h"
-#include "Utils/LCDFactory.h"
 #include "Utils/FanController.h"
+#endif
+#ifdef HAS_LCD
+#include "Utils/LCDFactory.h"
+#endif
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
 #include "GUIAudioManager.h"
@@ -20,7 +24,6 @@
 #include "lib/libscrobbler/scrobbler.h"
 #include "GUIPassword.h"
 #include "utils/GUIInfoManager.h"
-#include <xfont.h>
 #include "GUIDialogGamepad.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
@@ -30,6 +33,12 @@
 #include "MediaManager.h"
 #include "xbox/network.h"
 #include "lib/libGoAhead/webserver.h"
+#include "GUIControlGroupList.h"
+
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+#define CATEGORY_GROUP_ID               3
+#define SETTINGS_GROUP_ID               5
+#endif
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -41,7 +50,7 @@
 #define CONTROL_DEFAULT_BUTTON          7
 #define CONTROL_DEFAULT_RADIOBUTTON     8
 #define CONTROL_DEFAULT_SPIN            9
-#define CONTROL_DEFAULT_SETTINGS_BUTTON 10
+#define CONTROL_DEFAULT_CATEGORY_BUTTON 10
 #define CONTROL_DEFAULT_SEPARATOR       11
 #define CONTROL_START_BUTTONS           30
 #define CONTROL_START_CONTROL           50
@@ -52,7 +61,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalSpin = NULL;
   m_pOriginalRadioButton = NULL;
   m_pOriginalButton = NULL;
-  m_pOriginalSettingsButton = NULL;
+  m_pOriginalCategoryButton = NULL;
   m_pOriginalImage = NULL;
   // set the correct ID range...
   m_dwIDRange = 8;
@@ -115,7 +124,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       if (CGUIWindow::OnMessage(message))
       {
         // check if our focused control is one of our category buttons
-        unsigned int focusedControl = GetFocusedControl();
+        unsigned int focusedControl = GetFocusedControlID();
         if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < CONTROL_START_BUTTONS + m_vecSections.size())
         {
           // if we have a new category button
@@ -250,26 +259,38 @@ void CGUIWindowSettingsCategory::SetupControls()
 {
   // cleanup first, if necessary
   FreeControls();
-  // get the area to use...
-  const CGUIControl *pButtonArea = GetControl(CONTROL_BUTTON_AREA);
-  const CGUIControl *pControlGap = GetControl(CONTROL_BUTTON_GAP);
   m_pOriginalSpin = (CGUISpinControlEx*)GetControl(CONTROL_DEFAULT_SPIN);
   m_pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
-  m_pOriginalSettingsButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_SETTINGS_BUTTON);
+  m_pOriginalCategoryButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_CATEGORY_BUTTON);
   m_pOriginalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
   m_pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
-  if (!m_pOriginalSpin || !m_pOriginalRadioButton || !m_pOriginalButton || !pButtonArea || !pControlGap)
+  if (!m_pOriginalCategoryButton || !m_pOriginalSpin || !m_pOriginalRadioButton || !m_pOriginalButton)
     return ;
   m_pOriginalSpin->SetVisible(false);
   m_pOriginalRadioButton->SetVisible(false);
   m_pOriginalButton->SetVisible(false);
-  m_pOriginalSettingsButton->SetVisible(false);
+  m_pOriginalCategoryButton->SetVisible(false);
   if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
   // setup our control groups...
-  m_vecGroups.clear();
-  CControlGroup group(0);
-  group.m_lastControl = CONTROL_START_BUTTONS + m_iSection;
-  m_vecGroups.push_back(group);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
+  if (!group || group->GetControlType() != CGUIControl::GUICONTROL_GROUPLIST)
+  {
+    // get the area to use...
+    CGUIControl *area = (CGUIControl *)GetControl(CONTROL_BUTTON_AREA);
+    const CGUIControl *gap = GetControl(CONTROL_BUTTON_GAP);
+    if (!area || !gap)
+      return;
+    Remove(CONTROL_BUTTON_AREA);
+    group = new CGUIControlGroupList(GetID(), CATEGORY_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
+                                     area->GetWidth(), area->GetHeight(), gap->GetHeight() - m_pOriginalCategoryButton->GetHeight(),
+                                     0, CGUIControl::VERTICAL);
+    group->SetNavigation(CATEGORY_GROUP_ID, CATEGORY_GROUP_ID, SETTINGS_GROUP_ID, SETTINGS_GROUP_ID);
+    Insert(group, gap);
+    area->FreeResources();
+    delete area;
+  }
+#endif
   // get a list of different sections
   CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(m_iScreen);
   if (!pSettingsGroup) return ;
@@ -283,24 +304,14 @@ void CGUIWindowSettingsCategory::SetupControls()
   {
     if (m_vecSections[i]->m_dwLabelID == 12360 && g_settings.m_iLastLoadedProfileIndex != 0)
       continue;
-    CGUIButtonControl *pButton = new CGUIButtonControl(*m_pOriginalSettingsButton);
+    CGUIButtonControl *pButton = new CGUIButtonControl(*m_pOriginalCategoryButton);
     pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_dwLabelID));
     pButton->SetID(CONTROL_START_BUTTONS + j);
-    pButton->SetGroup(CONTROL_GROUP_BUTTONS);
-    pButton->SetPosition(pButtonArea->GetXPosition(), pButtonArea->GetYPosition() + j*pControlGap->GetHeight());
-    pButton->SetNavigation(CONTROL_START_BUTTONS + (int)j - 1, CONTROL_START_BUTTONS + j + 1, CONTROL_START_CONTROL, CONTROL_START_CONTROL);
     pButton->SetVisible(true);
     pButton->AllocResources();
-    Insert(pButton, m_pOriginalSettingsButton);
+    group->AddControl(pButton);
     j++;
   }
-  // update the first and last buttons...
-  CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS);
-  pControl->SetNavigation(CONTROL_START_BUTTONS + (int)j - 1, pControl->GetControlIdDown(),
-                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS + (int)j - 1);
-  pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_START_BUTTONS,
-                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   if (m_iSection < 0 || m_iSection >= (int)m_vecSections.size())
     m_iSection = 0;
   CreateSettings();
@@ -311,22 +322,31 @@ void CGUIWindowSettingsCategory::SetupControls()
 void CGUIWindowSettingsCategory::CreateSettings()
 {
   FreeSettingsControls();
-  m_vecGroups.push_back(CControlGroup(1)); // add the control group
-  const CGUIControl *pControlArea = GetControl(CONTROL_AREA);
-  const CGUIControl *pControlGap = GetControl(CONTROL_GAP);
-  if (!pControlArea || !pControlGap)
-    return ;
-  int iPosX = pControlArea->GetXPosition();
-  int iWidth = pControlArea->GetWidth();
-  int iPosY = pControlArea->GetYPosition();
-  int iGapY = pControlGap->GetHeight();
+
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (!group || group->GetControlType() != CGUIControl::GUICONTROL_GROUPLIST)
+  {
+    CGUIControl *area = (CGUIControl *)GetControl(CONTROL_AREA);
+    const CGUIControl *gap = GetControl(CONTROL_GAP);
+    Remove(CONTROL_AREA);
+    group = new CGUIControlGroupList(GetID(), SETTINGS_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
+                                     area->GetWidth(), area->GetHeight(), gap->GetHeight() - m_pOriginalButton->GetHeight(), 0, CGUIControl::VERTICAL);
+    group->SetNavigation(SETTINGS_GROUP_ID, SETTINGS_GROUP_ID, CATEGORY_GROUP_ID, CATEGORY_GROUP_ID);
+    Insert(group, gap);
+    area->FreeResources();
+    delete area;
+  }
+#endif
+  if (!group)
+    return;
   vecSettings settings;
   g_guiSettings.GetSettingsGroup(m_vecSections[m_iSection]->m_strCategory, settings);
   int iControlID = CONTROL_START_CONTROL;
   for (unsigned int i = 0; i < settings.size(); i++)
   {
     CSetting *pSetting = settings[i];
-    AddSetting(pSetting, iPosX, iPosY, iGapY, iWidth, iControlID);
+    AddSetting(pSetting, group->GetWidth(), iControlID);
     CStdString strSetting = pSetting->GetSetting();
     if (strSetting.Equals("myprograms.ntscmode"))
     {
@@ -584,8 +604,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
       //CStdString strXboxNickNameIn = g_guiSettings.GetString("autodetect.nickname");
       CStdString strXboxNickNameOut;
       //if (CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameOut))
+#ifdef HAS_XBOX_HARDWARE
       if (CUtil::GetXBOXNickName(strXboxNickNameOut))
         g_guiSettings.SetString("autodetect.nickname", strXboxNickNameOut.c_str());
+#endif
     }
     else if (strSetting.Equals("videoplayer.externaldvdplayer"))
     {
@@ -599,26 +621,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       FillInRegions(pSetting);
     }
   }
-  // fix first and last navigation
-  CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL + (int)m_vecSettings.size() - 1);
-  if (pControl) pControl->SetNavigation(pControl->GetControlIdUp(), CONTROL_START_CONTROL,
-                                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL);
-  if (pControl) pControl->SetNavigation(CONTROL_START_CONTROL + (int)m_vecSettings.size() - 1, pControl->GetControlIdDown(),
-                                          pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   // update our settings (turns controls on/off as appropriate)
   UpdateSettings();
-  // check and update our control group, in case the first item(s) are disabled (otherwise
-  // we can't navigate to the controls from the buttons on the left)
-  for (int firstControl = CONTROL_START_CONTROL; firstControl < CONTROL_START_CONTROL + (int)m_vecSettings.size(); firstControl++)
-  {
-    const CGUIControl *control = GetControl(firstControl);
-    if (!control->IsDisabled())
-    {
-      m_vecGroups[1].m_lastControl = firstControl;
-      break;
-    }
-  }
 }
 
 void CGUIWindowSettingsCategory::UpdateSettings()
@@ -987,15 +991,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     return;
 
   // ok, now check the various special things we need to do
-  if (strSetting.Equals("MyPrograms.UseDirectoryName"))
-  { // delete the program database.
-    // TODO: Should this actually be done here??
-    CStdString programDatabase = g_settings.GetDatabaseFolder();
-    programDatabase += PROGRAM_DATABASE_NAME;
-    if (CFile::Exists(programDatabase))
-      ::DeleteFile(programDatabase.c_str());
-  }
-  else if (strSetting.Equals("mymusic.visualisation"))
+  if (strSetting.Equals("mymusic.visualisation"))
   { // new visualisation choosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1101,6 +1097,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       g_application.StopKai();
   }
+#ifdef HAS_LCD
   else if (strSetting.Equals("lcd.type"))
   {
     g_lcd->Initialize();
@@ -1121,6 +1118,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     g_lcd->SetContrast(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
+#endif
+#ifdef HAS_XBOX_HARDWARE
   else if (strSetting.Equals("system.targettemperature"))
   {
     CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
@@ -1164,6 +1163,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CStdString strXboxNickNameIn = g_guiSettings.GetString("autodetect.nickname");
     CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameIn);
   }
+#endif
   else if (strSetting.Equals("servers.ftpserver"))
   {
     g_application.StopFtpServer();
@@ -1351,7 +1351,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("system.ledcolour"))
   { // Alter LED Colour immediately
+#ifdef HAS_XBOX_HARDWARE
     ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
+#endif
   }
   else if (strSetting.Equals("locale.language"))
   { // new language choosen...
@@ -1468,7 +1470,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("system.ledcolour"))
   { // Alter LED Colour immediately
+#ifdef HAS_XBOX_HARDWARE
     ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
+#endif
   }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
@@ -1537,10 +1541,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("upnp.autostart"))
   {
-      if (g_guiSettings.GetBool("upnp.autostart"))
-          g_application.StartUPnP();
-      else
-          g_application.StopUPnP();
+#ifdef HAS_UPNP
+    if (g_guiSettings.GetBool("upnp.autostart"))
+      g_application.StartUPnP();
+    else
+      g_application.StopUPnP();
+#endif
   }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
@@ -1556,16 +1562,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 
 void CGUIWindowSettingsCategory::FreeControls()
 {
-  // free any created controls
-  for (unsigned int i = 0; i < m_vecSections.size(); i++)
+  // clear the category group
+  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (control && control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
+#else
+  if (control)
+#endif
   {
-    CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS + i);
-    Remove(CONTROL_START_BUTTONS + i);
-    if (pControl)
-    {
-      pControl->FreeResources();
-      delete pControl;
-    }
+    control->FreeResources();
+    control->ClearAll();
   }
   m_vecSections.clear();
   FreeSettingsControls();
@@ -1573,24 +1579,21 @@ void CGUIWindowSettingsCategory::FreeControls()
 
 void CGUIWindowSettingsCategory::FreeSettingsControls()
 {
-  // remove the settings group
-  if (m_vecGroups.size() > 1)
-    m_vecGroups.erase(m_vecGroups.begin() + 1);
-  for (unsigned int i = 0; i < m_vecSettings.size(); i++)
+  // clear the settings group
+  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (control && control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
+#else
+  if (control)
+#endif
   {
-    CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL + i);
-    Remove(CONTROL_START_CONTROL + i);
-    if (pControl)
-    {
-      pControl->FreeResources();
-      delete pControl;
-    }
-    delete m_vecSettings[i];
+    control->FreeResources();
+    control->ClearAll();
   }
   m_vecSettings.clear();
 }
 
-void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &iPosY, int iGap, int iWidth, int &iControlID)
+void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int &iControlID)
 {
   CBaseSettingControl *pSettingControl = NULL;
   CGUIControl *pControl = NULL;
@@ -1601,56 +1604,46 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
     ((CGUIRadioButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
+    pControl->SetWidth(width);
     pSettingControl = new CRadioButtonSettingControl((CGUIRadioButtonControl *)pControl, iControlID, pSetting);
-    iPosY += iGap;
   }
   else if (pSetting->GetControlType() == SPIN_CONTROL_FLOAT || pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS || pSetting->GetControlType() == SPIN_CONTROL_TEXT || pSetting->GetControlType() == SPIN_CONTROL_INT)
   {
     baseControl = m_pOriginalSpin;
     pControl = new CGUISpinControlEx(*m_pOriginalSpin);
     if (!pControl) return ;
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
+    pControl->SetWidth(width);
     ((CGUISpinControlEx *)pControl)->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
-    pControl->SetWidth(iWidth);
     pSettingControl = new CSpinExSettingControl((CGUISpinControlEx *)pControl, iControlID, pSetting);
-    iPosY += iGap;
   }
   else if (pSetting->GetControlType() == SEPARATOR_CONTROL && m_pOriginalImage)
   {
     baseControl = m_pOriginalImage;
     pControl = new CGUIImage(*m_pOriginalImage);
     if (!pControl) return;
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
+    pControl->SetWidth(width);
     pSettingControl = new CSeparatorSettingControl((CGUIImage *)pControl, iControlID, pSetting);
-    iPosY += pControl->GetHeight();
   }
   else if (pSetting->GetControlType() != SEPARATOR_CONTROL) // button control
   {
     baseControl = m_pOriginalButton;
     pControl = new CGUIButtonControl(*m_pOriginalButton);
     if (!pControl) return ;
-    pControl->SetPosition(iPosX, iPosY);
     ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
     ((CGUIButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
-    pControl->SetWidth(iWidth);
+    pControl->SetWidth(width);
     pSettingControl = new CButtonSettingControl((CGUIButtonControl *)pControl, iControlID, pSetting);
-    iPosY += iGap;
   }
   if (!pControl) return;
-  pControl->SetNavigation(iControlID - 1,
-                          iControlID + 1,
-                          CONTROL_START_BUTTONS,
-                          CONTROL_START_BUTTONS);
   pControl->SetID(iControlID++);
-  pControl->SetGroup(CONTROL_GROUP_SETTINGS);
   pControl->SetVisible(true);
-  Insert(pControl, baseControl);
-  pControl->AllocResources();
-  m_vecSettings.push_back(pSettingControl);
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
+  if (group)
+  {
+    pControl->AllocResources();
+    group->AddControl(pControl);
+    m_vecSettings.push_back(pSettingControl);
+  }
 }
 
 void CGUIWindowSettingsCategory::Render()
@@ -1769,10 +1762,6 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
       CHDDirectory directory;
       CFileItemList items;
       CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
-      /*     if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
-            {
-              strPath = "Q:\\mplayer\\font\\";
-            }*/
       strPath += g_guiSettings.GetString("subtitles.font");
       strPath += "\\";
       directory.GetDirectory(strPath, items);
@@ -1809,10 +1798,6 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
     CHDDirectory directory;
     CFileItemList items;
     CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
-    /*   if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
-        {
-          strPath = "Q:\\mplayer\\font\\";
-        }*/
     directory.GetDirectory(strPath, items);
     for (int i = 0; i < items.Size(); ++i)
     {
@@ -2172,6 +2157,9 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
   CStdString strCurMask = g_guiSettings.GetString(pSetting->GetSetting());
   if (strCurMask.CompareNoCase("None") == 0 || strCurMask.CompareNoCase("Custom") == 0 )
   {
+#ifndef HAS_XBOX_AUDIO
+#define XVOICE_MASK_PARAM_DISABLED (-1.0f)
+#endif
     g_stSettings.m_karaokeVoiceMask[dwPort].energy = XVOICE_MASK_PARAM_DISABLED;
     g_stSettings.m_karaokeVoiceMask[dwPort].pitch = XVOICE_MASK_PARAM_DISABLED;
     g_stSettings.m_karaokeVoiceMask[dwPort].whisper = XVOICE_MASK_PARAM_DISABLED;
@@ -2400,6 +2388,7 @@ void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
   pControl->SetShowRange(true);
   int iDefaultFtpUser = 0;
 
+#ifdef HAS_FTP_SERVER
   CStdString strFtpUser1; int iUserMax;
   // Get FTP XBOX Users and list them !
   if (CUtil::GetFTPServerUserName(0, strFtpUser1, iUserMax))
@@ -2420,30 +2409,33 @@ void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
     pControl->SetValue(0);
     pControl->Update();
   }
+#endif
 }
 bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
 {
+#ifdef HAS_FTP_SERVER
   // TODO: Read the FileZilla Server XML and Set it here!
   // Get GUI USER and pass and set pass to FTP Server
-    CStdString strFtpUserName, strFtpUserPassword;
-    strFtpUserName      = g_guiSettings.GetString("servers.ftpserveruser");
-    strFtpUserPassword  = g_guiSettings.GetString("servers.ftpserverpassword");
-    if(strFtpUserPassword.size()!=0)
+  CStdString strFtpUserName, strFtpUserPassword;
+  strFtpUserName      = g_guiSettings.GetString("servers.ftpserveruser");
+  strFtpUserPassword  = g_guiSettings.GetString("servers.ftpserverpassword");
+  if(strFtpUserPassword.size()!=0)
+  {
+    if (CUtil::SetFTPServerUserPassword(strFtpUserName, strFtpUserPassword))
     {
-      if (CUtil::SetFTPServerUserPassword(strFtpUserName, strFtpUserPassword))
-      {
-        // todo! ERROR check! if something goes wrong on SetPW!
-        // PopUp OK and Display: FTP Server Password was set succesfull!
-        CGUIDialogOK::ShowAndGetInput(728, 0, 1247, 0);
-      }
-      return true;
-    }
-    else
-    {
-      // PopUp OK and Display: FTP Server Password is empty! Try Again!
-      CGUIDialogOK::ShowAndGetInput(728, 0, 12358, 0);
+      // todo! ERROR check! if something goes wrong on SetPW!
+      // PopUp OK and Display: FTP Server Password was set succesfull!
+      CGUIDialogOK::ShowAndGetInput(728, 0, 1247, 0);
     }
     return true;
+  }
+  else
+  {
+    // PopUp OK and Display: FTP Server Password is empty! Try Again!
+    CGUIDialogOK::ShowAndGetInput(728, 0, 12358, 0);
+  }
+#endif
+  return true;
 }
 
 void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)

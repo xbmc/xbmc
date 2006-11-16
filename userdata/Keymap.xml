@@ -92,6 +92,7 @@
       <pagedown>PageDown</pagedown>
       <return>Select</return>
       <backspace>ParentDir</backspace>
+      <m>ActivateWindow(PlayerControls)</m>
       <escape>PreviousMenu</escape>
       <i>Info</i>
       <menu>ContextMenu</menu>
@@ -271,6 +272,7 @@
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
       <return>OSD</return>
+      <m>OSD</m>
       <i>CodecInfo</i>
       <t>Info</t>
       <o>ShowTime</o>
@@ -324,6 +326,20 @@
       <dpadup>NextPreset</dpadup>
       <dpaddown>PreviousPreset</dpaddown>
     </gamepad>
+
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <return>ActivateWindow(MusicOSD)</return>
+      <m>ActivateWindow(MusicOSD)</m>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <p>ActivateWindow(VisualisationPresetList)</p>
+      <v>ActivateWindow(VisualisationSettings)</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+    </keyboard>
   </Visualisation>
 
   <MusicOSD>
@@ -339,6 +355,19 @@
       <title>Info</title>
       <info>ShowPreset</info>
     </remote>
+
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <m>Close</m>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <p>ActivateWindow(VisualisationPresetList)</p>
+      <v>ActivateWindow(VisualisationSettings)</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+    </keyboard>
   </MusicOSD>
 
 
@@ -352,6 +381,20 @@
     <remote>
       <menu>Close</menu>
     </remote>
+
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <m>Close</m>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <p>ActivateWindow(VisualisationPresetList)</p>
+      <v>Close</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+    </keyboard>
+
   </VisualisationSettings>
 
 
@@ -366,6 +409,20 @@
     <remote>
       <menu>Close</menu>
     </remote>
+
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <m>Close</m>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <p>Close</p>
+      <v>Close</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+    </keyboard>
+
   </VisualisationPresetList>
 
 

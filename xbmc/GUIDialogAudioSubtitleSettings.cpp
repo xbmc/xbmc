@@ -6,7 +6,9 @@
 #include "application.h"
 #include "VideoDatabase.h"
 
+#ifdef HAS_VIDEO_PLAYBACK
 extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers); //lowlevel audio
+#endif
 
 CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "VideoOSDSettings.xml")
@@ -183,7 +185,9 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
         g_stSettings.m_currentVideoSettings.m_AudioStream = -1 - m_audioStream;
         // call monkeyh1's code here...
         bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL) && g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers;
+#ifdef HAS_VIDEO_PLAYBACK
         xbox_audio_switch_channel(m_audioStream, bAudioOnAllSpeakers);
+#endif
         return;
       }
     }

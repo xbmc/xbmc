@@ -13,6 +13,7 @@
 #define SPIN_CONTROL_TYPE_INT    1
 #define SPIN_CONTROL_TYPE_FLOAT  2
 #define SPIN_CONTROL_TYPE_TEXT   3
+#define SPIN_CONTROL_TYPE_PAGE   4
 
 class CRect
 {
@@ -20,7 +21,7 @@ public:
   CRect() { top = left = width = height = 0;};
   ~CRect() {};
 
-  void SetRect(int l, int t, int w, int h)
+  void SetRect(float l, float t, float w, float h)
   {
     left = l;
     top = t;
@@ -28,7 +29,7 @@ public:
     height = h;
   };
 
-  bool PtInRect(int x, int y) const
+  bool PtInRect(float x, float y) const
   {
     if (left <= x && x <= left + width && top <= y && y <= top + height)
       return true;
@@ -36,10 +37,10 @@ public:
   };
 
 private:
-  int top;
-  int left;
-  int width;
-  int height;
+  float top;
+  float left;
+  float width;
+  float height;
 };
 /*!
  \ingroup controls
@@ -48,12 +49,13 @@ private:
 class CGUISpinControl : public CGUIControl
 {
 public:
-  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo& labelInfo, int iType);
+  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureUp, const CImage& textureDown, const CImage& textureUpFocus, const CImage& textureDownFocus, const CLabelInfo& labelInfo, int iType);
   virtual ~CGUISpinControl(void);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void OnLeft();
   virtual void OnRight();
+  virtual bool HitTest(float posX, float posY) const;
   virtual bool OnMouseOver();
   virtual bool OnMouseClick(DWORD dwButton);
   virtual bool OnMouseWheel();
@@ -62,9 +64,8 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetPosition(int iPosX, int iPosY);
-  virtual bool HitTest(int iPosX, int iPosY) const;
-  virtual DWORD GetWidth() const;
+  virtual void SetPosition(float posX, float posY);
+  virtual float GetWidth() const;
   void SetRange(int iStart, int iEnd);
   void SetFloatRange(float fStart, float fEnd);
   void SetValue(int iValue);
@@ -73,24 +74,14 @@ public:
   float GetFloatValue() const;
   void AddLabel(const string& strLabel, int iValue);
   const string GetLabel() const;
-  virtual void SetFocus(bool bOnOff);
   void SetReverse(bool bOnOff);
-  bool GetReverse() const { return m_bReverse; };
   int GetMaximum() const;
   int GetMinimum() const;
-  const CStdString& GetTextureUpName() const { return m_imgspinUp.GetFileName(); };
-  const CStdString& GetTextureDownName() const { return m_imgspinDown.GetFileName(); };
-  const CStdString& GetTextureUpFocusName() const { return m_imgspinUpFocus.GetFileName(); };
-  const CStdString& GetTextureDownFocusName() const { return m_imgspinDownFocus.GetFileName(); };
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
-  void SetSpinAlign(DWORD align, int offsetX) { m_label.align = align; m_label.offsetX = offsetX; };
-  int GetType() const { return m_iType;};
+  void SetSpinAlign(DWORD align, float offsetX) { m_label.align = align; m_label.offsetX = offsetX; };
   void SetType(int iType) { m_iType = iType; };
-  DWORD GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
-  DWORD GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
+  float GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
+  float GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
   void SetFloatInterval(float fInterval);
-  float GetFloatInterval() const;
-  bool GetShowRange() const;
   void SetShowRange(bool bOnoff) ;
   void SetBuddyControlID(DWORD dwBuddyControlID);
   void SetNonProportional(bool bOnOff);
@@ -105,6 +96,7 @@ protected:
   bool CanMoveUp(bool bTestReverse = true);
   void MoveUp(bool bTestReverse = true);
   void MoveDown(bool bTestReverse = true);
+  void SendPageChange();
   int m_iStart;
   int m_iEnd;
   float m_fStart;
@@ -125,7 +117,10 @@ protected:
   bool m_bShowRange;
   char m_szTyped[10];
   int m_iTypedPos;
-  float m_fMaxTextWidth;
+  float m_maxTextWidth;
   CRect m_rectHit;   // rect for hit test on the Text
+
+  int m_itemsPerPage;
+  int m_numItems;
 };
 #endif

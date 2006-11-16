@@ -9,7 +9,6 @@
 #include "GUIDialogProfileSettings.h"
 #include "util.h"
 #include "settings.h"
-#include "xbox/xkutils.h"
 
 CGUIPassword g_passwordManager;
 

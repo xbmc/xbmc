@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "MusicInfoTagLoaderNSF.h"
-#include "lib/mikxbox/mikmod.h"
 #include "Util.h"
 
 #include <fstream>

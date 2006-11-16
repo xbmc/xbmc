@@ -16,8 +16,8 @@ public:
   CSlideShowPic();
   ~CSlideShowPic();
 
-  void SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
-  void UpdateTexture(D3DTexture *pTexture, int iWidth, int iHeight);
+  void SetTexture(int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
+  void UpdateTexture(IDirect3DTexture8 *pTexture, int iWidth, int iHeight);
   bool IsLoaded() const { return m_bIsLoaded;};
   void UnLoad() {m_bIsLoaded = false;};
   void Render();
@@ -49,7 +49,7 @@ public:
   bool m_bIsComic;
 private:
   void Process();
-  void Render(float *x, float *y, D3DTexture *pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID );
+  void Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID );
 
   struct VERTEX
   {

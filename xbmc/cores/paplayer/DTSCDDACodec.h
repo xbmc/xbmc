@@ -2,6 +2,7 @@
 
 #include "DTSCodec.h"
 
+#ifdef HAS_DTS_CODEC
 class DTSCDDACodec : public DTSCodec
 {
 public:
@@ -12,3 +13,4 @@ public:
 protected:
   virtual bool CalculateTotalTime();
 };
+#endif

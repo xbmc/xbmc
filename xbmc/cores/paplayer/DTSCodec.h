@@ -5,6 +5,8 @@
 #include "FileReader.h"
 #include "DllDcaCodec.h"
 
+#ifdef HAS_DTS_CODEC
+
 class DTSCodec : public ICodec
 {
 public:
@@ -65,3 +67,4 @@ protected:
 
   DllDCACodec m_dll;
 };
+#endif

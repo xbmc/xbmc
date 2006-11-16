@@ -75,16 +75,20 @@ namespace PYXBMC
     // create textbox
     CLabelInfo label;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.textColor = pControl->dwTextColor;
+    label.textColor = label.focusedColor = pControl->dwTextColor;
     CLabelInfo spinLabel;
     spinLabel.font = g_fontManager.GetFont(pControl->strFont);
-    spinLabel.textColor = pControl->pControlSpin->dwColor;
+    spinLabel.textColor = spinLabel.focusedColor = pControl->pControlSpin->dwColor;
+    CImage up; up.file = pControl->pControlSpin->strTextureUp;
+    CImage down; down.file = pControl->pControlSpin->strTextureDown;
+    CImage upfocus; upfocus.file = pControl->pControlSpin->strTextureUpFocus;
+    CImage downfocus; downfocus.file = pControl->pControlSpin->strTextureDownFocus;
+
     pControl->pGUIControl = new CGUITextBox(pControl->iParentId, pControl->iControlId,
-      pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-      pControl->pControlSpin->dwWidth, pControl->pControlSpin->dwHeight,
-      pControl->pControlSpin->strTextureUp, pControl->pControlSpin->strTextureDown, pControl->pControlSpin->strTextureUpFocus,
-      pControl->pControlSpin->strTextureDownFocus, spinLabel, pControl->pControlSpin->dwPosX,
-      pControl->pControlSpin->dwPosY, label);
+      (float)pControl->dwPosX, (float)pControl->dwPosY, (float)pControl->dwWidth, (float)pControl->dwHeight,
+      (float)pControl->pControlSpin->dwWidth, (float)pControl->pControlSpin->dwHeight,
+      up, down, upfocus, downfocus, spinLabel, (float)pControl->pControlSpin->dwPosX,
+      (float)pControl->pControlSpin->dwPosY, label);
 
     // reset textbox
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);

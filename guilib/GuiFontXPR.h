@@ -2,7 +2,7 @@
 \file GUIFont.h
 \brief 
 */
-
+#ifdef HAS_XPR_FONTS
 #ifndef CGUILIB_GUIFONTXPR_H
 #define CGUILIB_GUIFONTXPR_H
 #pragma once
@@ -49,4 +49,5 @@ protected:
   CXBFont m_font;
 };
 
+#endif
 #endif

@@ -17,6 +17,7 @@ extern "C"
    *       Copyright 2000 Eugene Kuznetsov  (divx@euro.ru)
    *
    ********************************************************/
+#ifdef _XBOX
 #define HKEY_CLASSES_ROOT       ((HKEY) 0x80000000)
 #define HKEY_CURRENT_USER       ((HKEY) 0x80000001)
 #define HKEY_LOCAL_MACHINE      ((HKEY) 0x80000002)
@@ -28,7 +29,7 @@ extern "C"
 #define REG_DWORD                   ( 4 )   // 32-bit number
 #define REG_SZ                      ( 1 )   // null terminated string
 #define REG_CREATED_NEW_KEY 0x00000001
-
+#endif
   /*
    * registry provider structs
    */ 

@@ -10,6 +10,37 @@
 
 #include "GUIControl.h"
 
+struct FRECT
+{
+  float left;
+  float top;
+  float right;
+  float bottom;
+};
+
+class CImage
+{
+public:
+  CImage(const CStdString &fileName)
+  {
+    file = fileName;
+    memset(&border, 0, sizeof(FRECT));
+  };
+
+  CImage()
+  {
+    memset(&border, 0, sizeof(FRECT));
+  };
+
+  void operator=(const CImage &left)
+  {
+    file = left.file;
+    memcpy(&border, &left.border, sizeof(FRECT));
+  };
+  CStdString file;
+  FRECT      border;  // scaled  - unneeded if we get rid of scale on load
+};
+
 /*!
  \ingroup controls
  \brief 
@@ -17,14 +48,13 @@
 class CGUIImage : public CGUIControl
 {
 public:
-  enum GUIIMAGE_ASPECT_RATIO { ASPECT_RATIO_STRETCH = 0, ASPECT_RATIO_SCALE, ASPECT_RATIO_KEEP };
+  enum GUIIMAGE_ASPECT_RATIO { ASPECT_RATIO_STRETCH = 0, ASPECT_RATIO_SCALE, ASPECT_RATIO_KEEP, ASPECT_RATIO_CENTER };
 
-  CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture, DWORD dwColorKey = 0);
+  CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey = 0);
   CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
 
   virtual void Render();
-  virtual void Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();
@@ -35,52 +65,42 @@ public:
   virtual bool CanFocus() const;
   virtual bool IsAllocated() const;
 
-  void Select(int iBitmap);
-  void SetItems(int iItems);
-  void SetTextureWidth(int iWidth);
-  void SetTextureHeight(int iHeight);
-  int GetTextureWidth() const;
-  int GetTextureHeight() const;
-  void GetBottomRight(float &x, float &y) const;
-
   void PythonSetColorKey(DWORD dwColorKey);
   void SetFileName(const CStdString& strFileName);
-  const CStdString& GetFileName() const { return m_strFileName;};
-  DWORD GetColorKey() const { return m_dwColorKey;};
   void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio);
-  GUIIMAGE_ASPECT_RATIO GetAspectRatio() const;
-  int GetRenderWidth() const;
-  int GetRenderHeight() const;
   void SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom);
   void SetAlpha(DWORD dwAlpha);
-
   void SetInfo(int info) { m_Info = info; };
-  int GetInfo() const { return m_Info; };
+
+  void GetBottomRight(float &x, float &y) const;
+  const CStdString& GetFileName() const { return m_strFileName;};
+  float GetRenderWidth() const;
+  float GetRenderHeight() const;
+  int GetTextureWidth() const;
+  int GetTextureHeight() const;
 
   void CalculateSize();
 protected:
   void FreeTextures();
   void Process();
-  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX0;
+  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
+  void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, DWORD baseColor);
 
   DWORD m_dwColorKey;
   DWORD m_dwAlpha;
   CStdString m_strFileName;
-  CStdString m_textureFileName;
   int m_iTextureWidth;
   int m_iTextureHeight;
   int m_iImageWidth;
   int m_iImageHeight;
-  int m_iBitmap;
-  DWORD m_dwItems;
   int m_iCurrentLoop;
   int m_iCurrentImage;
   DWORD m_dwFrameCounter;
   GUIIMAGE_ASPECT_RATIO m_aspectRatio;
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
   LPDIRECT3DPALETTE8 m_pPalette;
-  int m_iRenderWidth;
-  int m_iRenderHeight;
+  float m_renderWidth;
+  float m_renderHeight;
   bool m_bWasVisible;
   DWORD m_cornerAlpha[4];
   bool m_bDynamicResourceAlloc;
@@ -91,7 +111,6 @@ protected:
   //vertex values
   float m_fX;
   float m_fY;
-  float m_fUOffs;
   float m_fU;
   float m_fV;
   float m_fNW;
@@ -100,5 +119,8 @@ protected:
 
   // conditional info
   int m_Info;
+
+  // border
+  CImage m_image;
 };
 #endif

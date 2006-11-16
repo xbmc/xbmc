@@ -2,13 +2,15 @@
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
 #include "Util.h"
+#ifdef HAS_VIDEO_PLAYBACK
 #include "cores/mplayer/mplayer.h"
 #include "cores/mplayer.h"
-#include "VideoDatabase.h"
 #include "cores/mplayer/ASyncDirectSound.h"
+#include "cores/VideoRenderers/RenderManager.h"
+#endif
+#include "VideoDatabase.h"
 #include "PlayListPlayer.h"
 #include "utils/GUIInfoManager.h"
-#include "cores/VideoRenderers/RenderManager.h"
 #include "../guilib/GUIProgressControl.h"
 #include "GUIAudioManager.h"
 #include "../guilib/GUILabelControl.h"
@@ -80,7 +82,6 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   m_dwShowViewModeTimeout = 0;
   m_bShowCurrentTime = false;
   m_subtitleFont = NULL;
-//  m_needsScaling = false;         // we handle all the scaling
   // audio
   //  - language
   //  - volume
@@ -289,7 +290,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     { // toggle the aspect ratio mode (only if the info is onscreen)
       if (m_bShowViewModeInfo)
       {
+#ifdef HAS_VIDEO_PLAYBACK
         g_renderManager.SetViewMode(++g_stSettings.m_currentVideoSettings.m_ViewMode);
+#endif
       }
       m_bShowViewModeInfo = true;
       m_dwShowViewModeTimeout = timeGetTime();
@@ -395,8 +398,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);      
       g_graphicsContext.SetFullScreenVideo( true );
       lock.Leave();
+#ifdef HAS_VIDEO_PLAYBACK
       g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
       g_renderManager.Update(false);
+#endif
 
       // now call the base class to load our windows
       CGUIWindow::OnMessage(message);
@@ -438,7 +443,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetFullScreenVideo(false);
       g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
       lock.Leave();
+#ifdef HAS_VIDEO_PLAYBACK
       g_renderManager.Update(false);      
+#endif
 
       CSingleLock lockFont(m_fontLock);
       if (m_subtitleFont)

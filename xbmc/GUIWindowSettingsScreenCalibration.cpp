@@ -3,7 +3,9 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
+#ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
+#endif
 #include "Application.h"
 #include "Util.h"
 
@@ -92,7 +94,9 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       // reset our screen resolution to what it was initially
       g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
       // Inform the player so we can update the resolution
+#ifdef HAS_VIDEO_PLAYBACK
       g_renderManager.Update(false);
+#endif
     }
     break;
 
@@ -102,8 +106,10 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       m_gWindowManager.ShowOverlay(false);
       g_graphicsContext.SetCalibrating(true);
       
+#ifdef HAS_VIDEO_PLAYBACK
       // Inform the renderer so we can update the resolution
       g_renderManager.Update(false);
+#endif
 
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
@@ -180,8 +186,8 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
                          -g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 4,
                          g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth / 4,
                          g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 4);
-    pControl->SetPosition(g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left,
-                          g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top);
+    pControl->SetPosition((float)g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left,
+                          (float)g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top);
     pControl->SetLocation(g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left,
                           g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top, false);
   }
@@ -192,8 +198,8 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
                         g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*3 / 4,
                         g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*5 / 4,
                         g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*5 / 4);
-    pControl->SetPosition(g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.right - (int)pControl->GetWidth(),
-                          g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.bottom - (int)pControl->GetHeight());
+    pControl->SetPosition((float)g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.right - (int)pControl->GetWidth(),
+                          (float)g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.bottom - (int)pControl->GetHeight());
     pControl->SetLocation(g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.right,
                           g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.bottom, false);
   }
@@ -203,20 +209,20 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   {
     pControl->SetLimits(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*3 / 4,
                         0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*5 / 4);
-    pControl->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pControl->GetWidth()) / 2,
-                          g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles - (int)pControl->GetHeight());
+    pControl->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pControl->GetWidth()) * 0.5f,
+                          g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles - pControl->GetHeight());
     pControl->SetLocation(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles, false);
   }
   // lastly the pixel ratio control...
   CGUIResizeControl *pResize = (CGUIResizeControl*)GetControl(CONTROL_PIXEL_RATIO);
   if (pResize)
   {
-    pResize->SetLimits(g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth / 4, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 2,
-                       g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*3 / 4, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 2);
-    pResize->SetHeight(g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight / 2);
-    pResize->SetWidth((DWORD)(pResize->GetHeight() / g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio));
-    pResize->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - (int)pResize->GetWidth()) / 2,
-                         (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - (int)pResize->GetHeight()) / 2);
+    pResize->SetLimits(g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*0.25f, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*0.5f,
+                       g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*0.75f, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*0.5f);
+    pResize->SetHeight(g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight * 0.5f);
+    pResize->SetWidth(pResize->GetHeight() / g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio);
+    pResize->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pResize->GetWidth()) / 2,
+                         (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - pResize->GetHeight()) / 2);
   }
   // Enable the default control
   EnableControl(m_iControl);
@@ -286,7 +292,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 void CGUIWindowSettingsScreenCalibration::Render()
 {
   //  g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-  m_iControl = GetFocusedControl();
+  m_iControl = GetFocusedControlID();
   if (m_iControl >= 0)
   {
     UpdateFromControl(m_iControl);

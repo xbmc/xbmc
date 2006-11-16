@@ -1,4 +1,5 @@
 #include "include.h"
+#ifdef HAS_RAM_CONTROL
 #include "GUIRAMControl.h"
 #include "GUIWindowManager.h"
 #include "..\xbmc\Util.h"
@@ -20,19 +21,19 @@ extern CApplication g_application;
 #define BUTTON_Y_SPACING   12
 
 CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
-                               int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
+                               float posX, float posY, float width, float height,
                                const CLabelInfo &labelInfo, const CLabelInfo& titleInfo)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_label = labelInfo;
   m_title = titleInfo;
 
-  m_dwThumbnailWidth = 80;
-  m_dwThumbnailHeight = 128;
-  m_dwThumbnailSpaceX = 6;
-  m_dwThumbnailSpaceY = 25;
+  m_thumbnailWidth = 80;
+  m_thumbnailHeight = 128;
+  m_thumbnailSpaceX = 6;
+  m_thumbnailSpaceY = 25;
 
-  m_dwTextSpaceY = BUTTON_Y_SPACING; // space between buttons
+  m_textSpaceY = BUTTON_Y_SPACING; // space between buttons
 
   m_pMonitor = NULL;
 
@@ -90,10 +91,9 @@ void CGUIRAMControl::Render()
       m_pMonitor = CMediaMonitor::GetInstance(this);
     }
 
-    int iImageX;
 
     // current images
-    iImageX = m_iPosX + m_dwWidth + m_dwThumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
+    float imageX = m_posX + m_width + m_thumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
 
     for (int i = RECENT_MOVIES - 1; i >= 0; i--)
     {
@@ -103,7 +103,7 @@ void CGUIRAMControl::Render()
 
       if (movie.bValid && movie.pImage)
       {
-        iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
+        imageX -= m_thumbnailWidth + m_thumbnailSpaceX;
 
         movie.nAlpha += bIsNewTitleAvailable ? -4 : 4;
 
@@ -130,7 +130,7 @@ void CGUIRAMControl::Render()
         if (movie.pImage)
         {
           movie.pImage->SetAlpha((DWORD)movie.nAlpha);
-          movie.pImage->SetPosition(iImageX, m_iPosY);
+          movie.pImage->SetPosition(imageX, m_posY);
           movie.pImage->Render();
         }
       }
@@ -143,7 +143,7 @@ void CGUIRAMControl::Render()
     }
 
     // new images
-    iImageX = m_iPosX + m_dwWidth + m_dwThumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
+    imageX = m_posX + m_width + m_thumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
 
     for (int i = RECENT_MOVIES - 1; i >= 0; i--)
     {
@@ -151,7 +151,7 @@ void CGUIRAMControl::Render()
 
       if (movie.bValid && movie.pImage)
       {
-        iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
+        imageX -= m_thumbnailWidth + m_thumbnailSpaceX;
 
         movie.nAlpha += 4;
 
@@ -161,18 +161,18 @@ void CGUIRAMControl::Render()
         }
 
         movie.pImage->SetAlpha((DWORD)movie.nAlpha);
-        movie.pImage->SetPosition(iImageX, m_iPosY);
+        movie.pImage->SetPosition(imageX, m_posY);
         movie.pImage->Render();
       }
       else if (m_current[i].bValid)
       {
-        iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
+        imageX -= m_thumbnailWidth + m_thumbnailSpaceX;
       }
     }
 
     WCHAR wszText[256];
-    FLOAT fTextX = (FLOAT) m_iPosX + m_dwWidth;
-    FLOAT fTextY = (FLOAT) m_iPosY + m_dwThumbnailHeight + m_dwThumbnailSpaceY;
+    float fTextX = m_posX + m_width;
+    float fTextY = m_posY + m_thumbnailHeight + m_thumbnailSpaceY;
 
     if (m_title.font)
     {
@@ -182,10 +182,10 @@ void CGUIRAMControl::Render()
 
       m_title.font->DrawText( fTextX - CONTROL_POSX_ADJUSTMENT, fTextY, m_title.textColor, m_label.shadowColor, wszText, XBFONT_RIGHT);
 
-      fTextY += m_fFontHeight + (FLOAT) m_dwTextSpaceY;
+      fTextY += m_fFontHeight + m_textSpaceY;
     }
 
-    int iTextX = m_iPosX + m_dwWidth;
+    float textX = m_posX + m_width;
 
     for (int i = 0; i < RECENT_MOVIES; i++)
     {
@@ -200,19 +200,19 @@ void CGUIRAMControl::Render()
         if (m_title.font)
           m_title.font->GetTextExtent(movieTitle.c_str(), &fTextWidth, &fTextHeight);
 
-        int iButtonWidth = (int) (fTextWidth + BUTTON_WIDTH_ADJUSTMENT);
-        int iButtonHeight = (int) (fTextHeight + BUTTON_HEIGHT_ADJUSTMENT);
+        float buttonWidth = fTextWidth + BUTTON_WIDTH_ADJUSTMENT;
+        float buttonHeight = fTextHeight + BUTTON_HEIGHT_ADJUSTMENT;
         bool itemHasFocus = (i == m_iSelection) && HasFocus();
 
         pButton->SetLabel(movie.strTitle);
         pButton->RAMSetTextColor(itemHasFocus ? m_label.selectedColor : m_label.textColor);
-        pButton->SetPosition(iTextX - iButtonWidth, (int)fTextY),
-        pButton->SetWidth(iButtonWidth);
-        pButton->SetHeight(iButtonHeight);
+        pButton->SetPosition(textX - buttonWidth, fTextY),
+        pButton->SetWidth(buttonWidth);
+        pButton->SetHeight(buttonHeight);
         pButton->SetFocus(itemHasFocus);
         pButton->Render();
 
-        fTextY += m_fFont2Height + (FLOAT) m_dwTextSpaceY;
+        fTextY += m_fFont2Height + m_textSpaceY;
       }
     }
   }
@@ -386,12 +386,12 @@ void CGUIRAMControl::OnMediaUpdate( INT nIndex, CStdString& strFilepath,
 
   if (!strImagePath.IsEmpty())
   {
-    movie.pImage = new CGUIImage(0, 0, 0, 0, m_dwThumbnailWidth, m_dwThumbnailHeight, strImagePath);
+    movie.pImage = new CGUIImage(0, 0, 0, 0, m_thumbnailWidth, m_thumbnailHeight, strImagePath);
     movie.pImage->AllocResources();
   }
   else if ((!m_strDefaultThumb.IsEmpty()) && (m_strDefaultThumb[0] != '-'))
   {
-    movie.pImage = new CGUIImage(0, 0, 0, 0, m_dwThumbnailWidth, m_dwThumbnailHeight, m_strDefaultThumb);
+    movie.pImage = new CGUIImage(0, 0, 0, 0, m_thumbnailWidth, m_thumbnailHeight, m_strDefaultThumb);
     movie.pImage->AllocResources();
   }
 
@@ -409,7 +409,7 @@ void CGUIRAMControl::PreAllocResources()
   {
     if (!m_pTextButton[i])
     {
-      m_pTextButton[i] = new CGUIButtonControl(m_dwControlID, 0, 0, 0, 0, 0, "button-focus.png", "", m_label);
+      m_pTextButton[i] = new CGUIButtonControl(m_dwControlID, 0, 0, 0, 0, 0, (CStdString)"button-focus.png", (CStdString)"", m_label);
       m_pTextButton[i]->SetPulseOnSelect(m_pulseOnSelect);
     }
     m_pTextButton[i]->PreAllocResources();
@@ -439,3 +439,5 @@ void CGUIRAMControl::FreeResources()
   }
   CGUIControl::FreeResources();
 }
+
+#endif

@@ -164,9 +164,7 @@ namespace PYXBMC
 		char *cLine;
 		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
 
-		ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
-		tMsg.strParam = cLine;
-		g_applicationMessenger.SendMessage(tMsg);
+    g_applicationMessenger.ExecBuiltIn(cLine);
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -296,10 +294,14 @@ namespace PYXBMC
   PyObject* XBMC_GetIPAddress(PyObject *self, PyObject *args)
 	{
 		char cTitleIP[32];
+#ifdef HAS_XBOX_NETWORK
 		XNADDR xna;
 		XNetGetTitleXnAddr(&xna);
 		XNetInAddrToString(xna.ina, cTitleIP, 32);
-		return PyString_FromString(cTitleIP);
+#else
+    sprintf(cTitleIP, "127.0.0.1");
+#endif
+    return PyString_FromString(cTitleIP);
 	}
 
   // getDVDState() method

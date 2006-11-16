@@ -4,7 +4,6 @@
 
 #include "..\..\settings.h"
 #include "XBMCConfiguration.h"
-#include "..\..\xbox\iosupport.h"
 #include "..\..\util.h"
 #include "includes.h"
 

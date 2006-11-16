@@ -26,8 +26,10 @@ public:
 private:
   __int64 m_iDataPos;
   
+#ifdef HAS_WMA_CODEC
   XWmaFileMediaObject* m_pWMA;                         
   WMAInfo m_info;
+#endif
   char m_buffer[2048*2*6]; // max 5.1
   char* m_startOfBuffer; // not allocated
   DWORD m_iDataInBuffer;

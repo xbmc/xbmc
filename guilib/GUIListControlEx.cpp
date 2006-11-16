@@ -4,40 +4,39 @@
 
 #define CONTROL_LIST  0
 #define CONTROL_UPDOWN 9998
-CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                                     DWORD dwSpinWidth, DWORD dwSpinHeight,
-                                     const CStdString& strUp, const CStdString& strDown,
-                                     const CStdString& strUpFocus, const CStdString& strDownFocus,
-                                     const CLabelInfo& spinInfo, int iSpinX, int iSpinY,
+CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+                                     float spinWidth, float spinHeight,
+                                     const CImage& textureUp, const CImage& textureDown,
+                                     const CImage& textureUpFocus, const CImage& textureDownFocus,
+                                     const CLabelInfo& spinInfo, float spinX, float spinY,
                                      const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
-                                     const CStdString& strButton, const CStdString& strButtonFocus)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
-    , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, labelInfo)
+                                     const CImage& textureButton, const CImage& textureButtonFocus)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
+    , m_imgButton(dwControlId, 0, posX, posY, width, height, textureButtonFocus, textureButton, labelInfo)
 {
   m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_pList = NULL;
   m_iOffset = 0;
   m_iItemsPerPage = 10;
-  m_iItemHeight = 10;
+  m_itemHeight = 10;
   m_label = labelInfo;
   m_label2 = labelInfo2;
   m_iSelect = CONTROL_LIST;
   m_iCursorY = 0;
   m_strSuffix = "|";
-  m_iImageWidth = 16;
-  m_iImageHeight = 16;
-  m_iSpaceBetweenItems = 4;
+  m_imageWidth = 16;
+  m_imageHeight = 16;
+  m_spaceBetweenItems = 4;
   m_bUpDownVisible = true; // show the spin control by default
 
-  m_iSpinPosX = iSpinX;
-  m_iSpinPosY = iSpinY;
+  m_spinPosX = spinX;
+  m_spinPosY = spinY;
   ControlType = GUICONTROL_LISTEX;
 }
 
 CGUIListControlEx::~CGUIListControlEx(void)
 {
-  DeleteCriticalSection(&m_critical_section);
 }
 
 void CGUIListControlEx::Render()
@@ -46,20 +45,20 @@ void CGUIListControlEx::Render()
 
   if ( m_pList && m_label.font )
   {
-    int iPosY = m_iPosY;
+    float posY = m_posY;
     CGUIList::GUILISTITEMS& list = m_pList->Lock();
 
     for (int i = 0; i < m_iItemsPerPage; i++)
     {
-      int iPosX = m_iPosX;
+      float posX = m_posX;
       if (i + m_iOffset < (int)list.size() )
       {
         CGUIItem* pItem = list[i + m_iOffset];
 
         // create a list item rendering context
         CGUIListExItem::RenderContext context;
-        context.m_iPositionX = iPosX;
-        context.m_iPositionY = iPosY;
+        context.m_positionX = posX;
+        context.m_positionY = posY;
         context.m_bFocused = (i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
         context.m_bActive = (i == m_iCursorY);
         context.m_pButton = &m_imgButton;
@@ -68,7 +67,7 @@ void CGUIListControlEx::Render()
         // render the list item
         pItem->OnPaint(&context);
 
-        iPosY += (DWORD)(m_iItemHeight + m_iSpaceBetweenItems);
+        posY += m_itemHeight + m_spaceBetweenItems;
       }
     }
     if (m_bUpDownVisible)
@@ -79,7 +78,7 @@ void CGUIListControlEx::Render()
       {
         iPages++;
       }
-      m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
+      m_upDown.SetPosition(m_posX + m_spinPosX, m_posY + m_spinPosY);
       m_upDown.SetRange(1, iPages);
       m_upDown.SetValue(GetPage(list.size()));
       m_upDown.Render();
@@ -318,8 +317,8 @@ void CGUIListControlEx::AllocResources()
   m_upDown.AllocResources();
 
   m_imgButton.AllocResources();
-  SetWidth(m_dwWidth);
-  SetHeight(m_dwHeight);
+  SetWidth(m_width);
+  SetHeight(m_height);
 }
 
 void CGUIListControlEx::FreeResources()
@@ -524,7 +523,7 @@ void CGUIListControlEx::OnPageDown()
 
   if (m_iOffset + m_iCursorY >= (int)list.size() )
   {
-    m_iCursorY = (list.size() - m_iOffset) - 1;
+    m_iCursorY = (int)(list.size() - m_iOffset) - 1;
   }
 
   m_pList->Release();
@@ -533,19 +532,20 @@ void CGUIListControlEx::OnPageDown()
 
 
 
-void CGUIListControlEx::SetImageDimensions(int iWidth, int iHeight)
+void CGUIListControlEx::SetImageDimensions(float width, float height)
 {
-  m_iImageWidth = iWidth;
-  m_iImageHeight = iHeight;
+  m_imageWidth = width;
+  m_imageHeight = height;
 }
 
-void CGUIListControlEx::SetItemHeight(int iHeight)
+void CGUIListControlEx::SetItemHeight(float height)
 {
-  m_iItemHeight = iHeight;
+  m_itemHeight = height;
 }
-void CGUIListControlEx::SetSpace(int iHeight)
+
+void CGUIListControlEx::SetSpaceBetweenItems(float spaceBetweenItems)
 {
-  m_iSpaceBetweenItems = iHeight;
+  m_spaceBetweenItems = spaceBetweenItems;
 }
 
 CStdString CGUIListControlEx::GetDescription() const
@@ -597,33 +597,33 @@ bool CGUIListControlEx::CanFocus() const
   return CGUIControl::CanFocus();
 }
 
-void CGUIListControlEx::SetPosition(int iPosX, int iPosY)
+void CGUIListControlEx::SetPosition(float posX, float posY)
 {
   // offset our spin control by the appropriate amount
-  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition();
-  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition();
-  CGUIControl::SetPosition(iPosX, iPosY);
-  m_upDown.SetPosition(GetXPosition() + iSpinOffsetX, GetYPosition() + iSpinOffsetY);
+  float spinOffsetX = m_upDown.GetXPosition() - GetXPosition();
+  float spinOffsetY = m_upDown.GetYPosition() - GetYPosition();
+  CGUIControl::SetPosition(posX, posY);
+  m_upDown.SetPosition(GetXPosition() + spinOffsetX, GetYPosition() + spinOffsetY);
 }
 
-void CGUIListControlEx::SetWidth(int iWidth)
+void CGUIListControlEx::SetWidth(float width)
 {
-  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition() - GetWidth();
-  CGUIControl::SetWidth(iWidth);
-  m_upDown.SetPosition(GetXPosition() + GetWidth() + iSpinOffsetX, m_upDown.GetYPosition());
+  float spinOffsetX = m_upDown.GetXPosition() - GetXPosition() - GetWidth();
+  CGUIControl::SetWidth(width);
+  m_upDown.SetPosition(GetXPosition() + GetWidth() + spinOffsetX, m_upDown.GetYPosition());
 
-  m_imgButton.SetWidth(m_dwWidth);
+  m_imgButton.SetWidth(m_width);
 }
 
-void CGUIListControlEx::SetHeight(int iHeight)
+void CGUIListControlEx::SetHeight(float height)
 {
-  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
-  CGUIControl::SetHeight(iHeight);
-  m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + iSpinOffsetY);
+  float spinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
+  CGUIControl::SetHeight(height);
+  m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + spinOffsetY);
 
-  m_imgButton.SetHeight(m_iItemHeight);
-  float fActualItemHeight = (float)m_iItemHeight + (float)m_iSpaceBetweenItems;
-  float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);
+  m_imgButton.SetHeight(m_itemHeight);
+  float fActualItemHeight = m_itemHeight + m_spaceBetweenItems;
+  float fTotalHeight = m_height - m_upDown.GetHeight() - 5;
   m_iItemsPerPage = (int)(fTotalHeight / fActualItemHeight );
   m_upDown.SetRange(1, 1);
   m_upDown.SetValue(1);

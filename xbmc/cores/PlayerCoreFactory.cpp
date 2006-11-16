@@ -1,10 +1,15 @@
 
 #include "../stdafx.h"
 #include "PlayerCoreFactory.h"
+#ifdef HAS_VIDEO_PLAYBACK
 #include "mplayer.h"
-#include "modplayer.h"
-//#include "SidPlayer.h"
 #include "dvdplayer\DVDPlayer.h"
+#else
+#include "DummyVideoPlayer.h"
+#endif
+#ifdef HAS_MODPLAYER
+#include "modplayer.h"
+#endif
 #include "paplayer\paplayer.h"
 #include "paplayer/wmacodec.h"
 #include "..\GUIDialogContextMenu.h"
@@ -40,9 +45,17 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
 {
   switch( eCore )
   {
+#ifdef HAS_VIDEO_PLAYBACK
     case EPC_DVDPLAYER: return new CDVDPlayer(callback);
     case EPC_MPLAYER: return new CMPlayer(callback);
+#else
+    case EPC_DVDPLAYER:
+    case EPC_MPLAYER:
+      return new CDummyVideoPlayer(callback);
+#endif
+#ifdef HAS_MODPLAYER
     case EPC_MODPLAYER: return new ModPlayer(callback);
+#endif
 //    case EPC_SIDPLAYER: return new SidPlayer(callback);
     case EPC_PAPLAYER: return new PAPlayer(callback); // added by dataratt
   }
@@ -150,10 +163,12 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     bool bAdd = true;
     if (item.IsType(".wma"))
     {
+#ifdef HAS_WMA_CODEC
       WMACodec codec;
       if (!codec.Init(item.m_strPath,2048))
         bAdd = false;
       codec.DeInit();        
+#endif
     }
 
     if (bAdd)
@@ -173,11 +188,12 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       }
     }
   }
-  
+#ifdef HAS_MODPLAYER
   if( ModPlayer::IsSupportedFormat(url.GetFileType()) || (url.GetFileType() == "xm") || (url.GetFileType() == "mod") || (url.GetFileType() == "s3m") || (url.GetFileType() == "it") )
   {
     vecCores.push_back(EPC_MODPLAYER);
   }
+#endif
   
 /*  if( url.GetFileType() == "sid" )
   {
@@ -210,7 +226,7 @@ EPLAYERCORES CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item )
   return EPC_NONE;
 }
 
-EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, int iPosX, int iPosY)
+EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX, float posY)
 {
 
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -243,7 +259,7 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, in
   }
 
   // Display menu
-  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
   pMenu->DoModal();
 
   //Check what player we selected
@@ -259,9 +275,9 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, in
   return EPC_NONE;
 }
 
-EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(int iPosX, int iPosY)
+EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(float posX, float posY)
 {
   VECPLAYERCORES vecCores;
   GetPlayers(vecCores);
-  return SelectPlayerDialog(vecCores, iPosX, iPosY);
+  return SelectPlayerDialog(vecCores, posX, posY);
 }

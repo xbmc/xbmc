@@ -2,8 +2,9 @@
 #include "KaiClient.h"
 #include "KaiRequestList.h"
 #include "../Application.h"
+#ifdef HAS_KAI_VOICE
 #include "dsstdfx.h"
-
+#endif
 
 CKaiClient* CKaiClient::client = NULL;
 
@@ -25,11 +26,13 @@ CKaiClient::CKaiClient(void) : CUdpClient()
   m_bContactsSettling = TRUE;
   m_bReachable = FALSE;
   m_nFriendsOnline = 0;
+#ifdef HAS_KAI_VOICE
   m_pDSound = NULL;
 
   // outbound packet queue, collects compressed audio until sufficient to send
   CStdString strEgress = "egress";
   m_pEgress = new CMediaPacketQueue(strEgress);
+#endif
 
   // request list
   m_pRequestList = new CKaiRequestList();
@@ -60,6 +63,7 @@ void CKaiClient::QueryVectorPlayerCount(CStdString& aVector)
 
 void CKaiClient::VoiceChatStart()
 {
+#ifdef HAS_KAI_VOICE
   if (!m_pDSound)
   {
     CLog::Log(LOGINFO, "KAICLIENT: Initializing DirectSound...");
@@ -108,10 +112,12 @@ void CKaiClient::VoiceChatStart()
 #endif
 
   }
+#endif
 }
 
 void CKaiClient::VoiceChatStop()
 {
+#ifdef HAS_KAI_VOICE
   if (m_pDSound)
   {
     CLog::Log(LOGINFO, "KAICLIENT: Releasing DirectSound...");
@@ -123,6 +129,7 @@ void CKaiClient::VoiceChatStop()
     m_pEgress->Flush();
     CLog::Log(LOGINFO, "KAICLIENT: Voice chat disabled.");
   }
+#endif
 }
 
 CKaiClient::~CKaiClient(void)
@@ -130,9 +137,11 @@ CKaiClient::~CKaiClient(void)
   VoiceChatStop();
   Destroy();
 
+#ifdef HAS_KAI_VOICE
   if (m_pEgress)
     delete m_pEgress;
   m_pEgress=NULL;
+#endif
 
   if (m_pRequestList)
     delete m_pRequestList;
@@ -361,7 +370,9 @@ void CKaiClient::Attach(SOCKADDR_IN& aAddress)
   char szIP[32];
   IN_ADDR host;
   memcpy(&host, &aAddress.sin_addr, sizeof(host));
+#ifdef HAS_KAI_VOICE
   XNetInAddrToString(host, szIP, 32);
+#endif
 
   CLog::Log(LOGNOTICE, "KAICLIENT: Attach to Kai engine host at %s", szIP);
 
@@ -450,6 +461,7 @@ void CKaiClient::EnableContactVoice(CStdString& aContactName, BOOL bEnable)
 
 void CKaiClient::QueueContactVoice(CStdString& aContactName, DWORD aPlayerId, LPBYTE pMessage, DWORD dwMessageLength)
 {
+#ifdef HAS_KAI_VOICE
   if (client_state == State::Authenticated)
   {
     CStdString header;
@@ -471,11 +483,13 @@ void CKaiClient::QueueContactVoice(CStdString& aContactName, DWORD aPlayerId, LP
     //sprintf(szDebug,"RX KAI SPEEX %d frames, total: %u bytes.\r\n",frames,dwMessageLength);
     //OutputDebugString(szDebug);
   }
+#endif
 }
 
 
 void CKaiClient::SendVoiceDataToEngine()
 {
+#ifdef HAS_KAI_VOICE
   if (client_state == State::Authenticated)
   {
     if (!m_pEgress->IsEmpty())
@@ -515,6 +529,7 @@ void CKaiClient::SendVoiceDataToEngine()
     }
   }
 
+#endif
   // reset buffer and stopwatch
   m_VoiceTimer.StartZero();
 }
@@ -539,7 +554,9 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
         memcpy(&server, &aRemoteAddress.sin_addr, sizeof(server));
         char strKaiServer[256];
         strcpy(strKaiServer, g_guiSettings.GetString("xlinkkai.server").c_str());
+#ifdef HAS_KAI_VOICE
         XNetInAddrToString(server, strKaiServer, 32);
+#endif
         g_guiSettings.SetString("xlinkkai.server", strKaiServer);
       }
 
@@ -662,6 +679,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
     {
       CStdString strContactName = strtok(NULL, ";");
 
+#ifdef HAS_KAI_VOICE
       if (m_pDSound)
       {
         DWORD playerId = Crc32FromString(strContactName);
@@ -688,6 +706,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
           CLog::Log(LOGERROR, "Failed to queue contact voice.");
         }
       }
+#endif
     }
     else if (strcmp(szMessage, "KAI_CLIENT_SPEEX_STOP") == 0)
     {
@@ -1009,6 +1028,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
   {
     if (!m_bContactsSettling)
     {
+#ifdef HAS_KAI_VOICE
       BOOL bHeadset = CVoiceManager::IsHeadsetConnected();
       if (bHeadset != m_bHeadset)
       {
@@ -1023,6 +1043,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
           Send(server_addr, strRequest);
         }
       }
+#endif
     }
   }
 }
@@ -1040,8 +1061,10 @@ void CKaiClient::DoWork()
       m_bContactsSettling = FALSE;
       observer->OnContactsOnline(m_nFriendsOnline);
 
+#ifdef HAS_KAI_VOICE
       m_bHeadset = CVoiceManager::IsHeadsetConnected();
       SetBearerCaps(m_bHeadset);
+#endif
     }
 
     if (!m_bReachable && (dwCurrentTime - m_dwReachableTimer > KAI_REACHABLE_QUERY_PERIOD) )
@@ -1051,6 +1074,7 @@ void CKaiClient::DoWork()
     }
   }
 
+#ifdef HAS_KAI_VOICE
   if (m_pDSound)
   {
     g_VoiceManager.ProcessVoice();
@@ -1061,16 +1085,20 @@ void CKaiClient::DoWork()
       SendVoiceDataToEngine();
     }
   }
+#endif
 }
+#ifdef HAS_KAI_VOICE
 // Called whenever voice data is produced by the voice system
 void CKaiClient::VoiceDataCallback( DWORD dwPort, DWORD dwSize, VOID* pvData, VOID* pContext )
 {
   CKaiClient* pThis = (CKaiClient*)pContext;
   pThis->OnVoiceData( dwPort, dwSize, pvData );
 }
+#endif
 
 void CKaiClient::OnVoiceData( DWORD dwControllerPort, DWORD dwSize, VOID* pvData )
 {
+#ifdef HAS_KAI_VOICE
   if (m_pDSound)
   {
     m_pEgress->Write((LPBYTE)pvData);
@@ -1084,10 +1112,12 @@ void CKaiClient::OnVoiceData( DWORD dwControllerPort, DWORD dwSize, VOID* pvData
       SendVoiceDataToEngine();
     }
   }
+#endif
 }
 
 
 
+#ifdef HAS_KAI_VOICE
 // Called whenever a voice communicator event occurs e.g. insertions/removals
 void CKaiClient::CommunicatorCallback( DWORD dwPort, VOICE_COMMUNICATOR_EVENT event, VOID* pContext )
 {
@@ -1111,6 +1141,7 @@ void CKaiClient::OnCommunicatorEvent( DWORD dwControllerPort, VOICE_COMMUNICATOR
     break;
   }
 }
+#endif
 
 DWORD CKaiClient::Crc32FromString(CStdString& aString)
 {

@@ -16,13 +16,13 @@ CGUIWindowPointer::~CGUIWindowPointer(void)
 
 void CGUIWindowPointer::Move(int x, int y)
 {
-  int iPosX = m_iPosX + x;
-  int iPosY = m_iPosY + y;
-  if (iPosX < 0) iPosX = 0;
-  if (iPosY < 0) iPosY = 0;
-  if (iPosX > g_graphicsContext.GetWidth()) iPosX = g_graphicsContext.GetWidth();
-  if (iPosY > g_graphicsContext.GetHeight()) iPosY = g_graphicsContext.GetHeight();
-  SetPosition(iPosX, iPosY);
+  float posX = m_posX + x;
+  float posY = m_posY + y;
+  if (posX < 0) posX = 0;
+  if (posY < 0) posY = 0;
+  if (posX > g_graphicsContext.GetWidth()) posX = (float)g_graphicsContext.GetWidth();
+  if (posY > g_graphicsContext.GetHeight()) posY = (float)g_graphicsContext.GetHeight();
+  SetPosition(posX, posY);
 }
 
 void CGUIWindowPointer::SetPointer(DWORD dwPointer)
@@ -54,7 +54,7 @@ void CGUIWindowPointer::OnWindowLoaded()
 
 void CGUIWindowPointer::Render()
 {
-  SetPosition(g_Mouse.iPosX, g_Mouse.iPosY);
+  SetPosition(g_Mouse.posX, g_Mouse.posY);
   SetPointer(g_Mouse.GetState());
   CGUIWindow::Render();
 }

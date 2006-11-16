@@ -704,6 +704,20 @@ const char * TiXmlElement::Attribute( const char * name, double* d ) const
 }
 
 
+const char * TiXmlElement::Attribute( const char * name, float* f ) const
+{
+	const char * s = Attribute( name );
+	if ( f )
+	{
+		if ( s )
+			*f = (float)atof( s );
+		else
+			*f = 0;
+	}
+	return s;
+}
+
+
 int TiXmlElement::QueryIntAttribute( const char* name, int* ival ) const
 {
 	TIXML_STRING str( name );

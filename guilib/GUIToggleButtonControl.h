@@ -17,7 +17,7 @@
 class CGUIToggleButtonControl : public CGUIButtonControl
 {
 public:
-  CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus, const CStdString& strAltTextureNoFocus, const CLabelInfo &labelInfo);
+  CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CImage& altTextureFocus, const CImage& altTextureNoFocus, const CLabelInfo &labelInfo);
   virtual ~CGUIToggleButtonControl(void);
 
   virtual void Render();
@@ -26,17 +26,13 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetPosition(int iPosX, int iPosY);
-  virtual void SetWidth(int iWidth);
-  virtual void SetHeight(int iHeight);
+  virtual void SetPosition(float posX, float posY);
+  virtual void SetWidth(float width);
+  virtual void SetHeight(float height);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   void SetLabel(const string& strLabel);
   void SetAltLabel(const string& label);
-  const string& GetAltLabel() const { return m_selectButton.GetLabel(); };
   virtual const string& GetLabel() const;
-  const CStdString& GetTextureAltFocusName() const { return m_selectButton.GetTextureFocusName(); };
-  const CStdString& GetTextureAltNoFocusName() const { return m_selectButton.GetTextureNoFocusName(); };
-  int GetToggleSelect() const { return m_toggleSelect; };
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
 
 protected:

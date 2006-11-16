@@ -1,6 +1,7 @@
 #ifndef PY_DEFINES_H_
 #define PY_DEFINES_H_
 
+#ifdef _XBOX
 struct hostent {
         char    FAR * h_name;           /* official name of host */
         char    FAR * FAR * h_aliases;  /* alias list */
@@ -30,4 +31,5 @@ typedef struct protoent {
 		short p_proto;
 } protoent;
 
+#endif
 #endif //PY_DEFINES_H_

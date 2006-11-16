@@ -6,11 +6,10 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 
 
-CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus, const CStdString& strAltTextureNoFocus, const CLabelInfo &labelInfo)
-    : CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus, strTextureNoFocus, labelInfo)
-    , m_selectButton(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strAltTextureFocus, strAltTextureNoFocus, labelInfo)
+CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CImage& altTextureFocus, const CImage& altTextureNoFocus, const CLabelInfo &labelInfo)
+    : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
+    , m_selectButton(dwParentID, dwControlId, posX, posY, width, height, altTextureFocus, altTextureNoFocus, labelInfo)
 {
-  m_bSelected = false;
   m_toggleSelect = 0;
   ControlType = GUICONTROL_TOGGLEBUTTON;
 }
@@ -23,22 +22,17 @@ void CGUIToggleButtonControl::Render()
 {
   if (!IsVisible()) return;
 
-  // NOTE: The not here is due to the togglebutton being around the wrong way
-  //       The alt textures are used normally (when !m_bSelected) from the skin,
-  //       though the infomanager stuff <usealttexture> is correctly setup.
-  bool useAltTextures = !m_bSelected;
-
   // ask our infoManager whether we are selected or not...
   if (m_toggleSelect)
-    useAltTextures = m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
+    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
 
-  if (useAltTextures)
+  if (m_bSelected)
   {
     // render our Alternate textures...
     m_selectButton.SetFocus(HasFocus());
     m_selectButton.SetVisible(IsVisible());
     m_selectButton.SetEnabled(!IsDisabled());
-    m_selectButton.SetPulseOnSelect(GetPulseOnSelect());
+    m_selectButton.SetPulseOnSelect(m_pulseOnSelect);
     m_selectButton.Render();
     CGUIControl::Render();
   }
@@ -87,22 +81,22 @@ void CGUIToggleButtonControl::Update()
   m_selectButton.Update();
 }
 
-void CGUIToggleButtonControl::SetPosition(int iPosX, int iPosY)
+void CGUIToggleButtonControl::SetPosition(float posX, float posY)
 {
-  CGUIButtonControl::SetPosition(iPosX, iPosY);
-  m_selectButton.SetPosition(iPosX, iPosY);
+  CGUIButtonControl::SetPosition(posX, posY);
+  m_selectButton.SetPosition(posX, posY);
 }
 
-void CGUIToggleButtonControl::SetWidth(int iWidth)
+void CGUIToggleButtonControl::SetWidth(float width)
 {
-  CGUIButtonControl::SetWidth(iWidth);
-  m_selectButton.SetWidth(iWidth);
+  CGUIButtonControl::SetWidth(width);
+  m_selectButton.SetWidth(width);
 }
 
-void CGUIToggleButtonControl::SetHeight(int iHeight)
+void CGUIToggleButtonControl::SetHeight(float height)
 {
-  CGUIButtonControl::SetHeight(iHeight);
-  m_selectButton.SetHeight(iHeight);
+  CGUIButtonControl::SetHeight(height);
+  m_selectButton.SetHeight(height);
 }
 
 void CGUIToggleButtonControl::SetColourDiffuse(D3DCOLOR colour)

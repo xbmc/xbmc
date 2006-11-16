@@ -14,7 +14,9 @@
 #include "MusicInfoTagLoaderWav.h" 
 #include "MusicInfoTagLoaderAAC.h" 
 #include "MusicInfoTagLoaderWAVPack.h" 
+#ifdef HAS_MOD_PLAYER
 #include "cores/ModPlayer.h" 
+#endif
 #include "MusicInfoTagLoaderNSF.h"
 #include "MusicInfoTagLoaderSPC.h"
 #include "MusicInfoTagLoaderGYM.h"
@@ -101,11 +103,13 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     CMusicInfoTagLoaderSid *pTagLoader = new CMusicInfoTagLoaderSid();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
+#ifdef HAS_MOD_PLAYER
   else if (ModPlayer::IsSupportedFormat(strExtension) || strExtension == "mod" || strExtension == "it" || strExtension == "s3m")
   {
     CMusicInfoTagLoaderMod *pTagLoader = new CMusicInfoTagLoaderMod();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
+#endif
   else if (strExtension == "wav")
   {
     CMusicInfoTagLoaderWAV *pTagLoader = new CMusicInfoTagLoaderWAV();

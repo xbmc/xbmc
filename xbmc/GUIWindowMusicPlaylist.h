@@ -1,6 +1,6 @@
 #pragma once
 #include "GUIWindowMusicBase.h"
-//#include "MusicInfoLoader.h"
+#include "BackgroundInfoLoader.h"
 
 class CGUIWindowMusicPlayList : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
 {

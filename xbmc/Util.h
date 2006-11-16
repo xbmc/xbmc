@@ -2,8 +2,10 @@
 #include <vector>
 #include "playlist.h"
 #include "filesystem/rarmanager.h"
-#include "xbox/custom_launch_params.h"
 #include "Settings.h"
+#ifdef HAS_XBOX_HARDWARE
+#include "xbox/custom_launch_params.h"
+#endif
 
 class CTrainer;
 
@@ -26,6 +28,7 @@ typedef enum
   VIDEO_PAL60
 } F_VIDEO;
 
+#ifdef HAS_XBOX_HARDWARE
 // This are 70 Original Data Bytes because we have to restore 70 patched Bytes, not just 57
 static BYTE rawData[70] =
 {
@@ -199,6 +202,9 @@ static unsigned char lcd_toy_x3[246] =
 	0x04, 0x11, 0x3C, 0x00, 0x74, 0x0B, 0x6A, 0x02, 0x50, 0xE8, 0x26, 0xFF, 0xFF, 0xFF, 0x41, 0xEB, 
 	0xEE, 0x61, 0xC9, 0xC2, 0x08, 0x00, 
 };
+#else
+typedef void CUSTOM_LAUNCH_DATA;
+#endif
 
 using namespace std;
 using namespace PLAYLIST;
@@ -262,8 +268,8 @@ public:
   static bool CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon);
   static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
   static bool SetXBEDescription(const CStdString& strFileName, const CStdString& strDescription);
-  static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static DWORD GetXbeID( const CStdString& strFilePath);
+  static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static void CreateShortcuts(CFileItemList &items);
   static void CreateShortcut(CFileItem* pItem);
   static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
@@ -334,22 +340,23 @@ public:
   static bool IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay);
   static bool SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute);
   static int GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew);
-  static bool XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo );
-  static bool XboxAutoDetection();
-  static bool XboxAutoDetectionGetShare(CShare& share);
   static bool IsFTP(const CStdString& strFile);
   static bool GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax );
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
   static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);
   static bool GetXBOXNickName(CStdString &strXboxNickNameOut);
-  static void GetSkinThemes(std::vector<CStdString>& vecTheme);
-  static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask);
-  static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
-  static void ForceForwardSlashes(CStdString& strPath);
+  static bool XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo );
+  static bool XboxAutoDetection();
+  static bool XboxAutoDetectionGetShare(CShare& share);
   static bool PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strTransition, int iTrTime);
   static bool RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath);
   static void RemoveKernelPatch();
   static bool LookForKernelPatch();
+  static void GetSkinThemes(std::vector<CStdString>& vecTheme);
+  static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask);
+  static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
+  static void WipeDir(const CStdString& strPath);
+  static void ForceForwardSlashes(CStdString& strPath);
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
@@ -358,7 +365,6 @@ public:
 
   static CStdString GetCachedMusicThumb(const CStdString &path);
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &path);
-  static void WipeDir(const CStdString& strPath);
 private:
   static HANDLE m_hCurrentCpuUsage;
 };

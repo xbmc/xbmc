@@ -3,7 +3,7 @@
 
 #include "IFile.h"
 #include "ZipManager.h"
-#include "zlib.h"
+#include "../lib/zlib/zlib.h"
 #include "../utils/log.h"
 #include "../../guilib/GUIWindowManager.h"
 #include "../GUIDialogProgress.h"

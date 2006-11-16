@@ -36,25 +36,21 @@ class CGUILabelControl :
       public CGUIControl
 {
 public:
-  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const string& strLabel, const CLabelInfo& labelInfo, bool bHasPath);
+  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const string& strLabel, const CLabelInfo& labelInfo, bool bHasPath);
   virtual ~CGUILabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
 
   const CLabelInfo& GetLabelInfo() const { return m_label; };
-  const string& GetLabel() const { return m_strLabel; }
   void SetLabel(const string &strLabel);
   void ShowCursor(bool bShow = true);
   void SetCursorPos(int iPos);
   int GetCursorPos() const { return m_iCursorPos;};
   void SetInfo(int singleInfo);
-  int GetInfo() const { return m_singleInfo; };
   void SetWidthControl(bool bScroll);
-  bool GetWidthControl() const { return m_ScrollInsteadOfTruncate; };
   void SetTruncate(bool bTruncate);
   void SetWrapMultiLine(bool wrapMultiLine) { m_wrapMultiLine = wrapMultiLine; };
-  bool GetWrapMultiLine() const { return m_wrapMultiLine; };
   static void WrapText(CStdString &text, CGUIFont *font, float maxWidth);
   static void WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth);
 

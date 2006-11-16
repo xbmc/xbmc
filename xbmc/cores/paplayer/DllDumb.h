@@ -1,6 +1,12 @@
 #pragma once
 #include "../../DynamicDll.h"
 
+#ifndef _XBOX
+#ifdef FreeModule
+#undef FreeModule
+#endif
+#endif
+
 class DllDumbInterface
 {
 public:

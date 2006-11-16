@@ -1,7 +1,9 @@
 
 typedef void ( *PFV)(void);
 
+#ifdef _XBOX
 DECLARE_HANDLE(HDRVR);
+#endif
 typedef INT_PTR (CALLBACK* DLGPROC)(HWND, UINT, WPARAM, LPARAM);
 typedef VOID (CALLBACK* WINEVENTPROC)(
   HWINEVENTHOOK hWinEventHook,
@@ -26,6 +28,7 @@ typedef struct _DMOMediaType
 }
 DMO_MEDIA_TYPE;
 
+#ifdef _XBOX
 typedef struct _COSERVERINFO
 {
   DWORD dwReserved1;
@@ -35,6 +38,7 @@ typedef struct _COSERVERINFO
   DWORD dwReserved2;
 }
 COSERVERINFO;
+#endif
 
 extern "C" HRESULT WINAPI dllMoFreeMediaType(DMO_MEDIA_TYPE* pmedia);  //msdmo.dll
 extern "C" HRESULT WINAPI dllMoCopyMediaType(DMO_MEDIA_TYPE* pdst, const DMO_MEDIA_TYPE* psrc);
@@ -82,9 +86,12 @@ extern "C" int WINAPI dllMonitorFromWindow(HWND win, int flags);
 extern "C" int WINAPI dllMonitorFromRect(RECT *r, int flags);
 extern "C" int WINAPI dllMonitorFromPoint(void *p, int flags);
 
+#ifdef _XBOX
 typedef BOOL (*MONITORENUMPROC)(HMONITOR, HDC, LPRECT, LPARAM);
+#endif
 extern "C" int WINAPI dllEnumDisplayMonitors(HDC hdc, LPRECT lprcClip, MONITORENUMPROC lpfnEnum, LPARAM dwData);
 
+#ifdef _XBOX
 typedef struct tagMONITORINFO
 {
   DWORD cbSize;
@@ -103,6 +110,7 @@ typedef struct tagMONITORINFOEX
   TCHAR szDevice[CCHDEVICENAME];
 }
 MONITORINFOEX, *LPMONITORINFOEX;
+#endif
 extern "C" int WINAPI dllGetMonitorInfoA(void *mon, LPMONITORINFO lpmi);
 
 extern "C" int WINAPI dllEnumDisplayDevicesA(const char *device, int devnum, void *dispdev, int flags);
@@ -110,6 +118,7 @@ extern "C" int WINAPI dllIsWindowVisible(HWND win);
 extern "C" HWND WINAPI dllGetActiveWindow(void);
 
 
+#ifdef _XBOX
 typedef struct tagLOGPALETTE
 {
   WORD palNumEntries;
@@ -117,6 +126,7 @@ typedef struct tagLOGPALETTE
   PALETTEENTRY palPalEntry[1];
 }
 LOGPALETTE;
+#endif
 extern "C" HPALETTE WINAPI dllCreatePalette(CONST LOGPALETTE *lpgpl);
 
 long VobSubPFSeek(unsigned long pf, long offset);
@@ -136,6 +146,7 @@ extern "C" BOOL APIENTRY dllGetFileVersionInfoA(LPCSTR lptstrFilename, DWORD dwH
 //comdlg32.dll
 typedef UINT_PTR (CALLBACK *LPOFNHOOKPROC) (HWND, UINT, WPARAM, LPARAM);
 
+#ifdef _XBOX
 typedef struct tagOFNA
 {
   DWORD lStructSize;
@@ -160,6 +171,7 @@ typedef struct tagOFNA
   LPCSTR lpTemplateName;
 }
 OPENFILENAMEA, *LPOPENFILENAMEA;
+#endif
 
 extern "C" BOOL APIENTRY dllGetOpenFileNameA(LPOPENFILENAMEA lpFileName); //comdlg32.dll
 
@@ -191,12 +203,14 @@ extern "C" HWND WINAPI dllCreateUpDownControl (DWORD style, INT x, INT y, INT cx
 
 ////////////////////////////////////////////////
 //winmm.dll
+#ifdef _XBOX
 typedef struct
 {
   UINT wPeriodMin;
   UINT wPeriodMax;
 }
 TIMECAPS, *LPTIMECAPS;
+#endif
 
 extern "C" MMRESULT WINAPI dlltimeGetDevCaps(LPTIMECAPS lpCaps, UINT wSize);
 extern "C" MMRESULT WINAPI dlltimeBeginPeriod(UINT wPeriod);

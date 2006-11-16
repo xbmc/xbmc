@@ -9,26 +9,27 @@
 
 #define DEBUG_MOUSE
 #define DEBUG_KEYBOARD
-#include <xtl.h>
-#include <xvoice.h>
-#include <xonline.h>
-#include <XGraphics.h>
+#include "system.h"
+#include "gui3d.h"
+
 #include <vector>
 #include <list>
 #include <map>
 #include <set>
 #include <memory>
 #include <queue>
-#include "stdstring.h"
+#include "StdString.h"
 #include "StringUtils.h"
 using namespace std;
 
+#ifdef _XBOX
 #if defined(_DEBUG) && defined(_MEMTRACKING)
 #define _CRTDBG_MAP_ALLOC
 #include <FStream>
 #include <stdlib.h>
 #include <crtdbg.h>
 #define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
 #endif
 
 // guilib internal
@@ -47,9 +48,6 @@ using namespace std;
 #include "langinfo.h"
 
 #include "settings.h"
-#include "MusicInfotag.h"
-using namespace MUSIC_INFO;
-#include "Song.h"
 #include "Url.h"
 #include "FileSystem/Directory.h"
 using namespace DIRECTORY;
@@ -67,17 +65,18 @@ using namespace AUTOPTR;
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogKeyboard.h"
-#include "Settings.h"
 #include "GuiUserMessages.h"
 
+#ifdef _XBOX
 #ifdef QueryPerformanceFrequency
 #undef QueryPerformanceFrequency
 #endif
 WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
 #define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
+#else
+#undef GetFreeSpace
+#endif
 
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
 #define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
-
-// TODO: reference additional headers your program requires here

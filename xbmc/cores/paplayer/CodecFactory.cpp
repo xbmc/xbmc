@@ -44,10 +44,14 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
     return new WAVCodec();
+#ifdef HAS_DTS_CODEC
   else if (strFileType.Equals("dts"))
     return new DTSCodec();
+#endif
+#ifdef HAS_AC3_CODEC
   else if (strFileType.Equals("ac3"))
     return new AC3Codec();
+#endif
   else if (strFileType.Equals("m4a") || strFileType.Equals("aac"))
     return new AACCodec();
   else if (strFileType.Equals("wv"))
@@ -68,8 +72,10 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new CubeCodec();
   else if (strFileType.Equals("ym"))
     return new YMCodec();
+#ifdef HAS_WMA_CODEC
   else if (strFileType.Equals("wma"))
     return new WMACodec();
+#endif
   else if (strFileType.Equals("aiff") || strFileType.Equals("aif"))
     return new AIFFCodec();
 
@@ -91,6 +97,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   }
   if (urlFile.GetFileType().Equals("wav"))
   {
+#ifdef HAS_DTS_CODEC
     //lets see what it contains...
     //this kinda sucks 'cause if it's a plain wav file the file
     //will be opened, sniffed and closed 2 times before it is opened *again* for wav
@@ -101,15 +108,19 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return codec;
     }
     delete codec;
+#endif
+#ifdef HAS_AC3_CODEC
     codec = new AC3Codec();
     if (codec->Init(strFile, filecache))
     {
       return codec;
     }
     delete codec;
+#endif
   }
   if (urlFile.GetFileType().Equals("cdda"))
   {
+#ifdef HAS_DTS_CDDA_CODEC
     //lets see what it contains...
     //this kinda sucks 'cause if it's plain cdda the file
     //will be opened, sniffed and closed 2 times before it is opened *again* for cdda
@@ -120,12 +131,15 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return codec;
     }
     delete codec;
+#endif
+#ifdef HAS_AC3_CDDA_CODEC
     codec = new AC3CDDACodec();
     if (codec->Init(strFile, filecache))
     {
       return codec;
     }
     delete codec;
+#endif
   }
   //default
   return CreateCodec(urlFile.GetFileType());

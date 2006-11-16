@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+- 16-11-2006 added: Initial skin version 2.1 changes and support for building for win32.
  - 15-11-2006 fixed: paplayer would fail to play mono AC3 files properly.
  - 15-11-2006 fixed: mplayer would fail to play sources that had 24bit as xbox audio device doesn't support that
  - 15-11-2006 changed: dvdplayer now uses information present on dvd to consider a dvd as one continuous stream (no discontinuties)

@@ -19,17 +19,14 @@
 class CGUIFadeLabelControl : public CGUIControl
 {
 public:
-  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo);
+  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo);
   virtual ~CGUIFadeLabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
 
   void SetInfo(const vector<int> &vecInfo);
   void SetLabel(const vector<string> &vecLabel);
-  const vector<int> &GetInfo() const { return m_vecInfo; };
-  const vector<string> &GetLabel() const { return m_stringLabels; };
 
 protected:
   void AddLabel(const string &label);

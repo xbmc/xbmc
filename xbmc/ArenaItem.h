@@ -17,7 +17,7 @@ public:
   void GetTier(CArenaItem::Tier aTier, CStdString& aTierName);
 
   static void GetTier(Tier aTier, CStdString aVector, CStdString& aTierName);
-  static void SetIcons(INT aWidth, INT aHeight, const CStdString& aHeadsetTexture);
+  static void SetIcons(float width, float height, const CStdString& aHeadsetTexture);
   static void FreeIcons();
 
   CStdString m_strVector;

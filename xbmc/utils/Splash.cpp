@@ -29,9 +29,9 @@ void CSplash::Process()
 
   g_graphicsContext.Lock();
   g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-  int w = g_graphicsContext.GetWidth() / 2;
-  int h = g_graphicsContext.GetHeight() / 2;
-  CGUIImage* image = new CGUIImage(0, 0, w/2, h/2, w, h, m_ImageName);
+  float w = g_graphicsContext.GetWidth() * 0.5f;
+  float h = g_graphicsContext.GetHeight() * 0.5f;
+  CGUIImage* image = new CGUIImage(0, 0, w*0.5f, h*0.5f, w, h, m_ImageName);
   image->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
   image->AllocResources();
 
@@ -44,14 +44,20 @@ void CSplash::Process()
     newRamp.green[i] = (int)((float)oldRamp.red[i] * fade);
     newRamp.blue[i] = (int)((float)oldRamp.red[i] * fade);
   }
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(D3DSGR_IMMEDIATE, &newRamp);
-
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &newRamp);
   //render splash image
+#ifndef HAS_XBOX_D3D
+  g_graphicsContext.Get3DDevice()->BeginScene();
+#endif
   image->Render();
   image->FreeResources();
   delete image;
   //show it on screen
+#ifdef HAS_XBOX_D3D
   g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+#else
+  g_graphicsContext.Get3DDevice()->EndScene();
+#endif
   g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
   g_graphicsContext.Unlock();
 
@@ -68,7 +74,7 @@ void CSplash::Process()
         newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fade);
       }
       g_graphicsContext.Lock();
-      g_graphicsContext.Get3DDevice()->SetGammaRamp(D3DSGR_IMMEDIATE, &newRamp);
+      g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &newRamp);
       g_graphicsContext.Unlock();
       fade += 0.01f;
     }
@@ -89,7 +95,7 @@ void CSplash::Process()
       newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fadeout);
     }
     Sleep(1);
-    g_graphicsContext.Get3DDevice()->SetGammaRamp(D3DSGR_IMMEDIATE, &newRamp);
+    g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &newRamp);
   }
   //restore original gamma ramp
   g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);

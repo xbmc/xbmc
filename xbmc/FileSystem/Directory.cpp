@@ -38,6 +38,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       //  Should any of the files we read be treated as a directory?
       //  Disable for musicdatabase, it already contains the extracted items
       if (bUseFileDirectories && !items.IsMusicDb())
+      {
         for (int i=0; i< items.Size(); ++i)
         {
           CFileItem* pItem=items[i];
@@ -53,6 +54,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
                 i--; // don't confuse loop
               }
           }
+        }
       }
     }
     return bSuccess;

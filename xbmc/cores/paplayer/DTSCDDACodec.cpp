@@ -1,5 +1,6 @@
 #include "../../stdafx.h"
 #include "DTSCDDACodec.h"
+#ifdef HAS_DTS_CODEC
 #include "../../lib/libcdio/sector.h"
 
 DTSCDDACodec::DTSCDDACodec() : DTSCodec()
@@ -35,3 +36,5 @@ bool DTSCDDACodec::CalculateTotalTime()
   m_TotalTime *= 1000; // ms
   return m_TotalTime > 0;
 }
+
+#endif

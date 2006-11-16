@@ -56,7 +56,7 @@ void CGUIMediaWindow::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-const CFileItem *CGUIMediaWindow::GetCurrentListItem() const
+CFileItem *CGUIMediaWindow::GetCurrentListItem()
 {
   int iItem = m_viewControl.GetSelectedItem();
   if (iItem < 0) return NULL;
@@ -90,7 +90,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_iSelectedItem = m_viewControl.GetSelectedItem();
-      m_iLastControl = GetFocusedControl();
+      m_iLastControl = GetFocusedControlID();
       CGUIWindow::OnMessage(message);
       // Call ClearFileItems() after our window has finished doing any WindowClose
       // animations
@@ -159,15 +159,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       {
         for (int i = 0; i < m_vecItems.Size(); i++)
           m_vecItems[i]->FreeMemory();
-        // and refresh any info images as well
-        for (ivecControls it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
-        {
-          CGUIControl *control = (*it);
-          if (control->GetControlType() == CGUIControl::GUICONTROL_IMAGE && ((CGUIImage *)control)->GetInfo())
-            control->FreeResources();
-          if (control->GetControlType() == CGUIControl::GUICONTROL_MULTI_IMAGE && ((CGUIMultiImage *)control)->GetInfo())
-            control->FreeResources();
-        }
+        break;  // the window will take care of any info images
       }
       if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
       {
@@ -463,7 +455,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     pItem->SetLabelPreformated(true);
     m_vecItems.Add(pItem);
   }
-  m_iLastControl = GetFocusedControl();
+  m_iLastControl = GetFocusedControlID();
 
   //  Ask the derived class if it wants to load additional info
   //  for the fileitems like media info or additional 

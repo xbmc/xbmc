@@ -12,7 +12,6 @@
 
 #include "stdafx.h"
 #include "XBApplicationEx.h"
-#include <D3D8Perf.h>
 #include "XBVideoConfig.h"
 
 
@@ -69,8 +68,10 @@ CXBApplicationEx::CXBApplicationEx()
   // default, you can use 0 and NULL, which triggers XInputDevices() to
   // pre-alloc the default number and types of devices. To use chat or
   // other devices, override these variables in your derived class.
+#ifdef HAS_XBOX_HARDWARE
   m_dwNumInputDeviceTypes = 0;
   m_InputDeviceTypes = NULL;
+#endif
 }
 
 
@@ -80,7 +81,7 @@ CXBApplicationEx::CXBApplicationEx()
 // Name: Create()
 // Desc: Create the app
 //-----------------------------------------------------------------------------
-HRESULT CXBApplicationEx::Create()
+HRESULT CXBApplicationEx::Create(HWND hWnd)
 {
   HRESULT hr;
 
@@ -153,7 +154,9 @@ INT CXBApplicationEx::Run()
     //-----------------------------------------
 
     // Check Start button
+#ifdef HAS_GAMEPAD
     if ( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START )
+#endif
       m_bPaused = !m_bPaused;
 
     // Get the current time (keep in LARGE_INTEGER format for precision)
@@ -256,45 +259,6 @@ INT CXBApplicationEx::Run()
 
 
 
-//-----------------------------------------------------------------------------
-// Name: RenderGradientBackground()
-// Desc: Draws a gradient filled background
-//-----------------------------------------------------------------------------
-HRESULT CXBApplicationEx::RenderGradientBackground( DWORD dwTopColor,
-    DWORD dwBottomColor )
-{
-  // First time around, allocate a vertex buffer
-  static LPDIRECT3DVERTEXBUFFER8 g_pVB = NULL;
-  if ( g_pVB == NULL )
-  {
-    m_pd3dDevice->CreateVertexBuffer( 4*5*sizeof(FLOAT), D3DUSAGE_WRITEONLY,
-                                      0L, D3DPOOL_DEFAULT, &g_pVB );
-    struct BACKGROUNDVERTEX { D3DXVECTOR4 p; D3DCOLOR color; };
-    BACKGROUNDVERTEX* v;
-    g_pVB->Lock( 0, 0, (BYTE**)&v, 0L );
-    v[0].p = D3DXVECTOR4( 0 - 0.5f, 0 - 0.5f, 1.0f, 1.0f ); v[0].color = dwTopColor;
-    v[1].p = D3DXVECTOR4( 640 - 0.5f, 0 - 0.5f, 1.0f, 1.0f ); v[1].color = dwTopColor;
-    v[2].p = D3DXVECTOR4( 0 - 0.5f, 480 - 0.5f, 1.0f, 1.0f ); v[2].color = dwBottomColor;
-    v[3].p = D3DXVECTOR4( 640 - 0.5f, 480 - 0.5f, 1.0f, 1.0f ); v[3].color = dwBottomColor;
-    g_pVB->Unlock();
-  }
-
-  // Set states
-  m_pd3dDevice->SetTexture( 0, NULL );
-  m_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_DISABLE );
-  m_pd3dDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-  m_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-  m_pd3dDevice->SetVertexShader( D3DFVF_XYZRHW | D3DFVF_DIFFUSE );
-  m_pd3dDevice->SetStreamSource( 0, g_pVB, 5*sizeof(FLOAT) );
-
-  m_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 2 );
-
-  // Clear the zbuffer
-  //m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-
-  return S_OK;
-}
-
 inline float DeadZone(float &f)
 {
   if (f > g_advancedSettings.m_controllerDeadzone)
@@ -305,6 +269,7 @@ inline float DeadZone(float &f)
     return 0.0f;
 }
 
+#ifdef HAS_GAMEPAD
 inline float MaxTrigger(XBGAMEPAD &gamepad)
 {
   float max = fabs(gamepad.fX1);
@@ -313,7 +278,7 @@ inline float MaxTrigger(XBGAMEPAD &gamepad)
   if (fabs(gamepad.fY2) > max) max = fabs(gamepad.fY2);
   return max;
 }
-
+#endif
 void CXBApplicationEx::ReadInput()
 {
   //-----------------------------------------
@@ -321,6 +286,7 @@ void CXBApplicationEx::ReadInput()
   //-----------------------------------------
 
   // Read the input from the IR remote
+#ifdef HAS_IR_REMOTE
   XBInput_GetInput( m_IR_Remote );
   ZeroMemory( &m_DefaultIR_Remote, sizeof(m_DefaultIR_Remote) );
 
@@ -331,6 +297,7 @@ void CXBApplicationEx::ReadInput()
       m_DefaultIR_Remote.wButtons = m_IR_Remote[i].wButtons;
     }
   }
+#endif
 
   // Read the input from the mouse
   g_Mouse.Update();
@@ -338,6 +305,7 @@ void CXBApplicationEx::ReadInput()
   // Read the input from the keyboard
   g_Keyboard.Update();
 
+#ifdef HAS_GAMEPAD
   // Read the input for all connected gampads
   XBInput_GetInput( m_Gamepad );
 
@@ -377,7 +345,7 @@ void CXBApplicationEx::ReadInput()
   m_DefaultGamepad.fY1 = DeadZone(m_DefaultGamepad.fY1);
   m_DefaultGamepad.fX2 = DeadZone(m_DefaultGamepad.fX2);
   m_DefaultGamepad.fY2 = DeadZone(m_DefaultGamepad.fY2);
-
+#endif
 }
 
 void CXBApplicationEx::Process()
