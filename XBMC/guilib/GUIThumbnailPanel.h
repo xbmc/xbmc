@@ -21,13 +21,13 @@ class CGUIThumbnailPanel :
 public:
   enum LABEL_STATE { SHOW_ALL = 0, HIDE_FILES, HIDE_FOLDERS, HIDE_ALL };
 
-  CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                     const CStdString& strImageIcon,
-                     const CStdString& strImageIconFocus,
-                     DWORD dwSpinWidth, DWORD dwSpinHeight,
-                     const CStdString& strUp, const CStdString& strDown,
-                     const CStdString& strUpFocus, const CStdString& strDownFocus,
-                     const CLabelInfo& spinInfo, int iSpinX, int iSpinY,
+  CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+                     const CImage& imageIcon,
+                     const CImage& imageIconFocus,
+                     float spinWidth, float spinHeight,
+                     const CImage& textureUp, const CImage& textureDown,
+                     const CImage& textureUpFocus, const CImage& textureDownFocus,
+                     const CLabelInfo& spinInfo, float iSpinX, float iSpinY,
                      const CLabelInfo& labelInfo);
   virtual ~CGUIThumbnailPanel(void);
   virtual void Render();
@@ -41,78 +41,50 @@ public:
   virtual void FreeResources() ;
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
-  virtual void SetPosition(int iPosX, int iPosY);
-  virtual void SetWidth(int iWidth);
-  virtual void SetHeight(int iHeight);
+  virtual void SetPosition(float posX, float posY);
+  virtual void SetWidth(float width);
+  virtual void SetHeight(float height);
   virtual void SetPulseOnSelect(bool pulse);
   void SetScrollySuffix(const CStdString &strSuffix);
   void SetThumbAlign(int align);
-  int GetThumbAlign();
-  void SetThumbDimensions(int iXpos, int iYpos, int iWidth, int iHeight);
-  void GetThumbDimensions(int& iXpos, int& iYpos, int& iWidth, int& iHeight);
-  void GetThumbDimensionsBig(int& iXpos, int& iYpos, int& iWidth, int& iHeight);
-  void GetThumbDimensionsLow(int& iXpos, int& iYpos, int& iWidth, int& iHeight);
-  void SetSelectedItem(int iItem);
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
-  DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
-  DWORD GetSpinHeight() const { return m_upDown.GetHeight(); };
-  const CStdString& GetTextureUpName() const { return m_upDown.GetTextureUpName(); };
-  const CStdString& GetTextureDownName() const { return m_upDown.GetTextureDownName(); };
-  const CStdString& GetTextureUpFocusName() const { return m_upDown.GetTextureUpFocusName(); };
-  const CStdString& GetTextureDownFocusName() const { return m_upDown.GetTextureDownFocusName(); };
-  const CLabelInfo& GetSpinLabelInfo() const { return m_upDown.GetLabelInfo();};
-  int GetSpinX() const { return m_iSpinPosX;};
-  int GetSpinY() const { return m_iSpinPosY;};
-  const CStdString& GetFocusName() const { return m_imgFolderFocus.GetFileName();};
-  const CStdString& GetNoFocusName() const { return m_imgFolder.GetFileName();};
-  void SetItemWidth(DWORD dwWidth);
-  void SetItemHeight(DWORD dwHeight);
-  bool IsTextureShown() const { return m_bShowTexture;};
-  void ShowTexture(bool bOnoff);
-  void SetTextureWidthBig(int textureWidthBig) { m_iTextureWidthBig = textureWidthBig;};
-  void SetTextureHeightBig(int textureHeightBig){ m_iTextureHeightBig = textureHeightBig;};
-  void SetItemWidthBig(int itemWidthBig){ m_iItemWidthBig = itemWidthBig;};
-  void SetItemHeightBig(int itemHeightBig) { m_iItemHeightBig = itemHeightBig;};
+  void SetThumbDimensions(float posX, float posY, float width, float height);
+  void SetItemWidth(float width);
+  void SetItemHeight(float height);
+  void SetTextureWidthBig(float textureWidthBig) { m_textureWidthBig = textureWidthBig;};
+  void SetTextureHeightBig(float textureHeightBig){ m_textureHeightBig = textureHeightBig;};
+  void SetItemWidthBig(float itemWidthBig){ m_itemWidthBig = itemWidthBig;};
+  void SetItemHeightBig(float itemHeightBig) { m_itemHeightBig = itemHeightBig;};
 
-  void SetTextureWidthLow(int textureWidthLow) { m_iTextureWidthLow = textureWidthLow;};
-  void SetTextureHeightLow(int textureHeightLow){ m_iTextureHeightLow = textureHeightLow;};
-  void SetItemWidthLow(int itemWidthLow){ m_iItemWidthLow = itemWidthLow;};
-  void SetItemHeightLow(int itemHeightLow) { m_iItemHeightLow = itemHeightLow;};
+  void SetTextureWidthLow(float textureWidthLow) { m_textureWidthLow = textureWidthLow;};
+  void SetTextureHeightLow(float textureHeightLow){ m_textureHeightLow = textureHeightLow;};
+  void SetItemWidthLow(float itemWidthLow){ m_itemWidthLow = itemWidthLow;};
+  void SetItemHeightLow(float itemHeightLow) { m_itemHeightLow = itemHeightLow;};
 
-  int GetTextureWidthBig() const { return m_iTextureWidthBig;};
-  int GetTextureHeightBig() const { return m_iTextureHeightBig;};
-  int GetItemWidthBig() const { return m_iItemWidthBig;};
-  int GetItemHeightBig() const { return m_iItemHeightBig;};
-
-  int GetTextureWidthLow() const { return m_iTextureWidthLow;};
-  int GetTextureHeightLow() const { return m_iTextureHeightLow;};
-  int GetItemWidthLow() const { return m_iItemWidthLow;};
-  int GetItemHeightLow() const { return m_iItemHeightLow;};
   void ShowBigIcons(bool bOnOff);
-  const string& GetSuffix() const { return m_strSuffix;};
-  void SetThumbDimensionsLow(int iXpos, int iYpos, int iWidth, int iHeight) { m_iThumbXPosLow = iXpos;m_iThumbYPosLow = iYpos;m_iThumbWidthLow = iWidth;m_iThumbHeightLow = iHeight;};
-  void SetThumbDimensionsBig(int iXpos, int iYpos, int iWidth, int iHeight) { m_iThumbXPosBig = iXpos;m_iThumbYPosBig = iYpos;m_iThumbWidthBig = iWidth;m_iThumbHeightBig = iHeight;};
+  void SetThumbDimensionsLow(float posX, float posY, float width, float height) { m_thumbXPosLow = posX; m_thumbYPosLow = posY; m_thumbWidthLow = width; m_thumbHeightLow = height;};
+  void SetThumbDimensionsBig(float posX, float posY, float width, float height) { m_thumbXPosBig = posX; m_thumbYPosBig = posY; m_thumbWidthBig = width; m_thumbHeightBig = height;};
   virtual bool OnMouseOver();
   virtual bool OnMouseClick(DWORD dwButton);
   virtual bool OnMouseDoubleClick(DWORD dwButton);
   virtual bool OnMouseWheel();
-  bool ScrollDown();
-  void ScrollUp();
-  virtual bool HitTest(int iPosX, int iPosY) const;
-  bool SelectItemFromPoint(int iPosX, int iPosY);
-  void GetOffsetFromPage();
+  virtual bool HitTest(float posX, float posY) const;
   virtual CStdString GetDescription() const;
 
   void SetLabelState(LABEL_STATE state) { m_labelState = state; };
-  LABEL_STATE GetLabelState() const { return m_labelState; };
 
   void SetPageControlVisible(bool visible) { m_pageControlVisible = visible; }
+  void SetPageControl(DWORD id);
   void SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio) { m_aspectRatio = ratio; };
-  CGUIImage::GUIIMAGE_ASPECT_RATIO GetAspectRatio() const { return m_aspectRatio; };
+  virtual void SaveStates(vector<CControlState> &states);
 
 protected:
+  bool ScrollDown();
+  void ScrollUp();
+  bool SelectItemFromPoint(float posX, float posY);
+  void GetOffsetFromPage();
+  void SetSelectedItem(int iItem);
   void Calculate(bool resetItem);
-  void RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListItem* pItem, int iStage);
+  void RenderItem(bool bFocus, float posX, float posY, CGUIListItem* pItem, int iStage);
   void RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
   virtual void OnRight();
   virtual void OnLeft();
@@ -121,25 +93,25 @@ protected:
   void OnPageUp();
   void OnPageDown();
   bool ValidItem(int iX, int iY);
+  void UpdatePageControl();
 
-  int m_iSpinPosX;
-  int m_iSpinPosY;
+  float m_spinPosX;
+  float m_spinPosY;
 
-  int m_iItemHeightLow;
-  int m_iItemWidthLow;
-  int m_iTextureHeightLow;
-  int m_iTextureWidthLow;
+  float m_itemHeightLow;
+  float m_itemWidthLow;
+  float m_textureHeightLow;
+  float m_textureWidthLow;
 
-  int m_iItemHeightBig;
-  int m_iItemWidthBig;
-  int m_iTextureHeightBig;
-  int m_iTextureWidthBig;
+  float m_itemHeightBig;
+  float m_itemWidthBig;
+  float m_textureHeightBig;
+  float m_textureWidthBig;
 
-  bool m_bShowTexture;
   int m_iRowOffset;
   float m_fSmoothScrollOffset;
-  int m_iItemHeight;
-  int m_iItemWidth;
+  float m_itemHeight;
+  float m_itemWidth;
   int m_iSelect;
   int m_iCursorX;
   int m_iCursorY;
@@ -151,23 +123,25 @@ protected:
   string m_strSuffix;
 
   int m_iLastItem;
-  int m_iTextureWidth;
-  int m_iTextureHeight;
-  int m_iThumbAlign;
-  int m_iThumbXPos;
-  int m_iThumbYPos;
-  int m_iThumbWidth;
-  int m_iThumbHeight;
+  float m_textureWidth;
+  float m_textureHeight;
 
-  int m_iThumbXPosLow;
-  int m_iThumbYPosLow;
-  int m_iThumbWidthLow;
-  int m_iThumbHeightLow;
+  float m_thumbXPos;
+  float m_thumbYPos;
+  float m_thumbWidth;
+  float m_thumbHeight;
 
-  int m_iThumbXPosBig;
-  int m_iThumbYPosBig;
-  int m_iThumbWidthBig;
-  int m_iThumbHeightBig;
+  float m_thumbXPosLow;
+  float m_thumbYPosLow;
+  float m_thumbWidthLow;
+  float m_thumbHeightLow;
+
+  float m_thumbXPosBig;
+  float m_thumbYPosBig;
+  float m_thumbWidthBig;
+  float m_thumbHeightBig;
+
+  int m_thumbAlign;
 
   LABEL_STATE m_labelState;
   bool m_pageControlVisible;
@@ -182,5 +156,7 @@ protected:
   vector<CGUIListItem*> m_vecItems;
   typedef vector<CGUIListItem*> ::iterator ivecItems;
   CScrollInfo m_scrollInfo;
+
+  DWORD m_pageControl;
 };
 #endif

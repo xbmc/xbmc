@@ -9,6 +9,7 @@
 #include "GUIDialogLockSettings.h"
 #include "MediaManager.h"
 #include "Util.h"
+#include "GUIPassword.h"
 #include "picture.h"
 
 #define CONTROL_PROFILE_IMAGE      2
@@ -50,6 +51,7 @@ bool CGUIDialogProfileSettings::OnMessage(CGUIMessage &message)
 
 void CGUIDialogProfileSettings::OnWindowLoaded()
 {
+  CGUIDialogSettings::OnWindowLoaded();
   CGUIImage *pImage = (CGUIImage*)GetControl(2);
   m_strDefaultImage = pImage->GetFileName();
 }

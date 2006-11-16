@@ -28,7 +28,7 @@ class CGUIButtonScroller :
       public CGUIControl
 {
 public:
-  CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, int iGap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CLabelInfo& labelInfo);
+  CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo);
   virtual ~CGUIButtonScroller(void);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
@@ -44,48 +44,34 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetPosition(int iPosX, int iPosY);
-  virtual void SetWidth(int iWidth);
-  virtual void SetHeight(int iHeight);
   void ClearButtons();
   void AddButton(const string &strLabel, const CStdString &strExecute, const int iIcon);
   void SetActiveButton(int iButton);
   int GetActiveButton() const;
   int GetActiveButtonID() const;
-  CStdString GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
-  CStdString GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
-  int GetButtonGap() const { return m_iButtonGap; };
-  int GetNumSlots() const { return m_iNumSlots; };
-  int GetDefaultSlot() const { return m_iDefaultSlot + 1; };
-  int GetMovementRange() const { return m_iMovementRange; };
-  bool GetHorizontal() const { return m_bHorizontal; };
-  int GetAlpha() const { return m_iAlpha; };
-  bool GetWrapAround() const { return m_bWrapAround; };
-  bool GetSmoothScrolling() const { return m_bSmoothScrolling; };
   virtual CStdString GetDescription() const;
+  virtual void SaveStates(vector<CControlState> &states);
   void LoadButtons(const TiXmlNode *node);
 
 protected:
-  void OnChangeFocus();
   int GetNext(int iCurrent) const;
   int GetPrevious(int iCurrent);
   int GetButton(int iOffset);
   void DoUp();
   void DoDown();
-  void RenderItem(int &iPosX, int &iPosY, int &iOffset, bool bText);
+  void RenderItem(float &posX, float &posY, int &iOffset, bool bText);
   void Update();
   void GetScrollZone(float &fStartAlpha, float &fEndAlpha);
 private:
   // saved variables from the xml (as this control is user editable...)
   int m_iXMLNumSlots;
   int m_iXMLDefaultSlot;
-  int m_iXMLPosX;
-  int m_iXMLPosY;
-  int m_dwXMLWidth;
-  int m_dwXMLHeight;
+  float m_xmlPosX;
+  float m_xmlPosY;
+  float m_xmlWidth;
+  float m_xmlHeight;
 
-  int m_iButtonGap;     // gap between buttons
+  float m_buttonGap;     // gap between buttons
   int m_iNumSlots;     // number of button slots available
   int m_iDefaultSlot;    // default highlight position
   int m_iMovementRange;   // amoung that we can move the highlight
@@ -97,7 +83,7 @@ private:
   int m_iCurrentSlot;    // currently highlighted slot
 
   int m_iOffset;      // first item in the list
-  int m_iScrollOffset;   // offset when scrolling
+  float m_scrollOffset;   // offset when scrolling
   bool m_bScrollUp;     // true if we're scrolling up (or left)
   bool m_bScrollDown;    // true if scrolling down (or right)
   bool m_bMoveUp;      // true if we're scrolling up (or left)

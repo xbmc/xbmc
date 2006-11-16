@@ -7,6 +7,10 @@
 #include "../xbmc/GUIPassword.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+#ifndef _XBOX
+#include "../Tools/Win32/XBMC_PC.h"
+#endif
+
 CGUIWindowManager m_gWindowManager;
 
 CGUIWindowManager::CGUIWindowManager(void)
@@ -452,6 +456,11 @@ void CGUIWindowManager::Process(bool renderOnly /*= false*/)
 	    m_pCallback->FrameMove();
     }
     m_pCallback->Render();
+#ifndef _XBOX
+    extern CXBMC_PC *g_xbmcPC;
+    g_xbmcPC->ProcessMessage(NULL);
+    Sleep(20);
+#endif
   }
 }
 

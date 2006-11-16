@@ -17,10 +17,10 @@ public:
   CAutorun();
   virtual ~CAutorun();
   static bool PlayDisc();
-  void HandleAutorun();
+  bool IsEnabled() const;
   void Enable();
   void Disable();
-  bool IsEnabled();
+  void HandleAutorun();
 protected:
   static void ExecuteXBE(const CStdString &xbeFile);
   static void ExecuteAutorun(bool bypassSettings = false, bool ignoreplaying=false);

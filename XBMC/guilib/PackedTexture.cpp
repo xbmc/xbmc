@@ -1,4 +1,5 @@
 #include "include.h"
+#ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
 #include "PackedTexture.h"
 
@@ -292,3 +293,4 @@ PackedAnimError:
   if (hFile != INVALID_HANDLE_VALUE) CloseHandle(hFile);
   return 0;
 }
+#endif

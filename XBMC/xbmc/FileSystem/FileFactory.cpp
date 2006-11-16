@@ -1,21 +1,23 @@
 
 #include "../stdafx.h"
 #include "FileFactory.h"
-#include "FileShoutcast.h"
-#include "FileISO.h"
 #include "FileHD.h"
+#include "FileCurl.h"
+#include "FileShoutcast.h"
+#include "FileLastFM.h"
+#ifdef HAS_FILESYSTEM
+#include "FileISO.h"
 #include "FileSMB.h"
 #include "FileXBMSP.h"
 #include "FileRTV.h"
 #include "FileSndtrk.h"
-#include "FileDAAP.h"
 #include "FileCDDA.h"
+#include "FileMemUnit.h"
+#include "FileDAAP.h"
+#endif
 #include "FileZip.h"
 #include "FileRar.h"
-#include "FileCurl.h"
 #include "FileMusicDatabase.h"
-#include "FileLastFM.h"
-#include "FileMemUnit.h"
 #include "../xbox/network.h"
 
 using namespace XFILE;
@@ -39,26 +41,29 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.MakeLower();
 
-  if (strProtocol == "iso9660") return new CFileISO();
-  else if (strProtocol == "soundtrack") return new CFileSndtrk();
-  else if (strProtocol == "cdda") return new CFileCDDA();
-  else if (strProtocol == "zip") return new CFileZip();
+  if (strProtocol == "zip") return new CFileZip();
   else if (strProtocol == "rar") return new CFileRar();
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
-  else if (strProtocol.Left(3) == "mem") return new CFileMemUnit();
   else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
-
+#ifdef HAS_FILESYSTEM
+  else if (strProtocol == "iso9660") return new CFileISO();
+  else if (strProtocol == "soundtrack") return new CFileSndtrk();
+  else if (strProtocol == "cdda") return new CFileCDDA();
+  else if (strProtocol.Left(3) == "mem") return new CFileMemUnit();
+#endif
   if( g_network.IsAvailable() )
   {
-    if (strProtocol == "smb") return new CFileSMB();
-    else if (strProtocol == "xbms") return new CFileXBMSP();
-    else if (strProtocol == "shout") return new CFileShoutcast();
-    else if (strProtocol == "lastfm") return new CFileLastFM();
-    else if (strProtocol == "daap") return new CFileDAAP();
-    else if (strProtocol == "http" || strProtocol == "https") return new CFileCurl();
+    if (strProtocol == "http" || strProtocol == "https") return new CFileCurl();
     else if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFileCurl();
     else if (strProtocol == "upnp") return new CFileCurl();
+    else if (strProtocol == "shout") return new CFileShoutcast();
+    else if (strProtocol == "lastfm") return new CFileLastFM();
+#ifdef HAS_FILESYSTEM
+    else if (strProtocol == "smb") return new CFileSMB();
+    else if (strProtocol == "xbms") return new CFileXBMSP();
     else if (strProtocol == "rtv") return new CFileRTV();
+    else if (strProtocol == "daap") return new CFileDAAP();
+#endif
   }
 
   return NULL;

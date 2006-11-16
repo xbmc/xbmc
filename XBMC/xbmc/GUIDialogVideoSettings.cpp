@@ -3,7 +3,9 @@
 #include "GUIPassword.h"
 #include "util.h"
 #include "application.h"
+#ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
+#endif
 #include "VideoDatabase.h"
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
@@ -78,6 +80,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
     g_application.Restart(true);
   else if (setting.id == VIDEO_SETTINGS_FILM_GRAIN)
     g_application.DelayedPlayerRestart();
+#ifdef HAS_VIDEO_PLAYBACK
   else if (setting.id == VIDEO_SETTINGS_CROP)
     g_renderManager.AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
   else if (setting.id == VIDEO_SETTINGS_VIEW_MODE)
@@ -94,6 +97,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
     g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
     UpdateSetting(VIDEO_SETTINGS_VIEW_MODE);
   }
+#endif
   else if (setting.id == VIDEO_SETTINGS_BRIGHTNESS || setting.id == VIDEO_SETTINGS_CONTRAST || setting.id == VIDEO_SETTINGS_GAMMA)
     CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, true);
   else if (setting.id == VIDEO_SETTINGS_FLICKER || setting.id == VIDEO_SETTINGS_SOFTEN)

@@ -11,6 +11,11 @@ public:
 	virtual bool	OnAction(const CAction &action);
 	virtual void	Render();
 
+	void	SetLabelDummy();
+	bool	GetBuildTime(int i_lblp1, int i_lblp2, int i_lblp3);
+	static bool GetResolution(CStdString& strResol);
+	static void GetFreeMemory(CStdString& strFreeMem);
+#ifdef HAS_SYSINFO
 	wchar_t	m_wszMPlayerVersion[50];
 	unsigned short  fanSpeed;
 	DWORD	m_dwlastTime ;
@@ -20,14 +25,12 @@ public:
 	float	mbtemp;
 	
 	void	UpdateButtons();
-	void	SetLabelDummy();
 	void	CreateEEPROMBackup(LPCSTR BackupFilePrefix);
 	void	WriteTXTInfoFile(LPCSTR strFilename);
 	
 	bool	GetUnits(int i_lblp1, int i_lblp2, int i_lblp3);
 	bool	GetATAPIValues(int i_lblp1, int i_lblp2);
 	bool  GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7);
-	bool	GetBuildTime(int i_lblp1, int i_lblp2, int i_lblp3);
 	bool	GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5);
 	bool	GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7, int i_lblp8, int i_lblp9, int i_lblp10);
 	
@@ -36,7 +39,6 @@ public:
 	static bool	GetMACAdress(CStdString& strMacAdress);
 	static bool	GetBIOSInfo(CStdString& strBiosName);
 	static bool GetVideoEncInfo(CStdString& strItemVideoENC);
-	static bool GetResolution(CStdString& strResol);
 	static bool GetXBVerInfo(CStdString& strXBoxVer);
 	static bool GetXBOXSerial(CStdString& strXBOXSerial);
 	static bool GetXBProduceInfo(CStdString& strXBProDate);
@@ -48,14 +50,16 @@ public:
 	static bool GetXBLiveKey(CStdString& strXBLiveKey);
 	static bool GetHDDKey(CStdString& strhddlockey);
 	static bool GetHDDTemp(CStdString& strItemhdd);
-	static void GetFreeMemory(CStdString& strFreeMem);
   static bool GetSystemUpTime(CStdString& strSystemUptime);
   static bool GetSystemTotalUpTime(CStdString& strSystemUptime);
   static bool GetMPlayerVersion (CStdString& strVersion);
-  	
+#endif
 private:
+#ifdef HAS_SYSINFO
   bool GetDiskSpace(const CStdString &drive, ULARGE_INTEGER &total, ULARGE_INTEGER& totalFree, CStdString &string);
-
+	static void	BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString);
+	static void	BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString, UCHAR Seperator);
+#endif
 	bool b_IsHome;
 	
 	#define CONTROL_BT_HDD			92
@@ -66,8 +70,5 @@ private:
 	#define CONTROL_BT_VIDEO		97
 	#define CONTROL_BT_HARDWARE		98
 	#define AddStr(a,b) (pstrOut += wsprintf( pstrOut, a, b ))
-
-	static void	BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString);
-	static void	BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString, UCHAR Seperator);
 };
 

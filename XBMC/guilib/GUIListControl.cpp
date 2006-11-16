@@ -4,34 +4,35 @@
 
 #define CONTROL_LIST  0
 #define CONTROL_UPDOWN 9998
-CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                                 DWORD dwSpinWidth, DWORD dwSpinHeight,
-                                 const CStdString& strUp, const CStdString& strDown,
-                                 const CStdString& strUpFocus, const CStdString& strDownFocus,
-                                 const CLabelInfo & spinInfo, int iSpinX, int iSpinY,
+CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+                                 float spinWidth, float spinHeight,
+                                 const CImage& textureUp, const CImage& textureDown,
+                                 const CImage& textureUpFocus, const CImage& textureDownFocus,
+                                 const CLabelInfo & spinInfo, float spinX, float spinY,
                                  const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
-                                 const CStdString& strButton, const CStdString& strButtonFocus)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
-    , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, labelInfo)
+                                 const CImage& textureButton, const CImage& textureButtonFocus)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
+    , m_imgButton(dwControlId, 0, posX, posY, width, height, textureButtonFocus, textureButton, labelInfo)
 {
   m_label = labelInfo;
   m_label2 = labelInfo2;
   m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_iOffset = 0;
-  m_fSmoothScrollOffset = 0;
+  m_smoothScrollOffset = 0;
   m_iItemsPerPage = 10;
-  m_iItemHeight = 10;
+  m_itemHeight = 10;
   m_iSelect = CONTROL_LIST;
   m_iCursorY = 0;
   m_strSuffix = "|";
-  m_iSpinPosX = iSpinX;
-  m_iSpinPosY = iSpinY;
-  m_iImageWidth = 16;
-  m_iImageHeight = 16;
-  m_iSpaceBetweenItems = 4;
+  m_spinPosX = spinX;
+  m_spinPosY = spinY;
+  m_imageWidth = 16;
+  m_imageHeight = 16;
+  m_spaceBetweenItems = 4;
   m_bUpDownVisible = true;   // show the spin control by default
   m_upDown.SetShowRange(true); // show the range by default
+  m_pageControl = 0;
   ControlType = GUICONTROL_LIST;
 }
 
@@ -75,16 +76,16 @@ void CGUIListControl::Render()
   // This is slightly faster than looping once through the list, render item, render m_pFont, render m_pFont2, render item, render m_pFont... etc
   // Text-rendering is generally slow and batching between Begin() End() makes it a bit faster. (XPR fonts)
   //Render buttons and icons
-  int iPosY = m_iPosY;
+  float posY = m_posY;
   for (int i = 0; i < m_iItemsPerPage; i++)
   {
-    int iPosX = m_iPosX;
+    float posX = m_posX;
     if (i + m_iOffset < (int)m_vecItems.size())
     {
       CGUIListItem *pItem = m_vecItems[i + m_iOffset];
       // focused line
       m_imgButton.SetFocus(i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
-      m_imgButton.SetPosition(m_iPosX, iPosY);
+      m_imgButton.SetPosition(m_posX, posY);
       m_imgButton.Render();
 
       // render the icon
@@ -99,7 +100,7 @@ void CGUIListControl::Render()
       if (pItem->HasIcon())
       {
         CStdString image = pItem->GetIconImage();
-        bool bigImage(m_iImageWidth * m_iImageHeight > 1024); // bigger than 32x32
+        bool bigImage(m_imageWidth * m_imageHeight > 1024); // bigger than 32x32
         if (bigImage && !pItem->HasThumbnail())
           image.Insert(image.Find("."), "Big");
 
@@ -107,7 +108,7 @@ void CGUIListControl::Render()
         CGUIImage* pImage = pItem->GetIcon();
         if (!pImage)
         {
-          pImage = new CGUIImage(0, 0, 0, 0, m_iImageWidth, m_iImageHeight, image, 0x0);
+          pImage = new CGUIImage(0, 0, 0, 0, m_imageWidth, m_imageHeight, image, 0x0);
           pImage->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
           pItem->SetIcon(pImage);
         }
@@ -118,10 +119,10 @@ void CGUIListControl::Render()
           pImage->SetFileName(image);
           if (!pImage->IsAllocated())
             pImage->AllocResources();
-          pImage->SetWidth(m_iImageWidth);
-          pImage->SetHeight(m_iImageHeight);
+          pImage->SetWidth(m_imageWidth);
+          pImage->SetHeight(m_imageHeight);
           // center vertically
-          pImage->SetPosition(iPosX + 8 + (m_iImageWidth - pImage->GetRenderWidth()) / 2, iPosY + (m_iItemHeight - pImage->GetRenderHeight()) / 2);
+          pImage->SetPosition(posX + 8 + (m_imageWidth - pImage->GetRenderWidth()) / 2, posY + (m_itemHeight - pImage->GetRenderHeight()) / 2);
           pImage->Render();
 
           if (bigImage)
@@ -142,18 +143,18 @@ void CGUIListControl::Render()
               // FIXME: fixed scaling to try and get it a similar size on MOST skins as
               //        small thumbs view
               float scale = 0.75f;
-              overlay->SetWidth((int)(overlay->GetTextureWidth() * scale));
-              overlay->SetHeight((int)(overlay->GetTextureHeight() * scale));
+              overlay->SetWidth(overlay->GetTextureWidth() * scale);
+              overlay->SetHeight(overlay->GetTextureHeight() * scale);
               // if we haven't yet rendered, make sure we update our sizing
               if (!overlay->HasRendered())
                 overlay->CalculateSize();
-              overlay->SetPosition((int)x - overlay->GetRenderWidth(), (int)y - overlay->GetRenderHeight());
+              overlay->SetPosition(x - overlay->GetRenderWidth(), y - overlay->GetRenderHeight());
               overlay->Render();
             }
           }
         }
       }
-      iPosY += m_iItemHeight + m_iSpaceBetweenItems;
+      posY += m_itemHeight + m_spaceBetweenItems;
     }
   }
 
@@ -162,7 +163,7 @@ void CGUIListControl::Render()
     // calculate all our positions and sizes
     vector<CListText> labels;
     vector<CListText> labels2;
-    iPosY = m_iPosY;
+    posY = m_posY;
     for (int i = 0; i < m_iItemsPerPage; i++)
     {
       if (i + m_iOffset < (int)m_vecItems.size() )
@@ -173,30 +174,30 @@ void CGUIListControl::Render()
         g_charsetConverter.utf8ToUTF16(item->GetLabel2(), label2.text);
 
         // calculate the position and size of our left label
-        label.x = (float)m_iPosX + m_iImageWidth + m_label.offsetX + 10;
-        label.y = (float)iPosY + m_label.offsetY;
+        label.x = m_posX + m_imageWidth + m_label.offsetX + 10;
+        label.y = posY + m_label.offsetY;
         m_label.font->GetTextExtent(label.text.c_str(), &label.width, &label.height);
         if (m_label.align & XBFONT_CENTER_Y)
-          label.y = (float)iPosY + (m_iItemHeight - label.height) * 0.5f;
+          label.y = posY + (m_itemHeight - label.height) * 0.5f;
         label.selected = item->IsSelected();
         label.highlighted = (i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
 
         // calculate the position and size of our right label
         if (!m_label2.offsetX)
-          label2.x = (float)m_iPosX + m_dwWidth - 16;
+          label2.x = m_posX + m_width - 16;
         else
-          label2.x = (float)m_iPosX + m_label2.offsetX;
-        label2.y = (float)iPosY + m_label2.offsetY;
+          label2.x = m_posX + m_label2.offsetX;
+        label2.y = posY + m_label2.offsetY;
         if ( label2.text.size() > 0 && m_label2.font )
         {
           m_label2.font->GetTextExtent(label2.text.c_str(), &label2.width, &label2.height);
           if (m_label.align & XBFONT_CENTER_Y)
-            label2.y = (float)iPosY + (m_iItemHeight - label2.height) * 0.5f;
+            label2.y = posY + (m_itemHeight - label2.height) * 0.5f;
         }
         label2.selected = item->IsSelected();
         label2.highlighted = (i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
-        label.maxwidth = (float)m_dwWidth - m_iImageWidth - m_label.offsetX - 20;
-        label2.maxwidth = (float)label2.x - m_iPosX - m_iImageWidth - 20;
+        label.maxwidth = m_width - m_imageWidth - m_label.offsetX - 20;
+        label2.maxwidth = label2.x - m_posX - m_imageWidth - 20;
 
         // check whether they are going to overlap or not
         if (label.x + label.width > label2.x - label2.width)
@@ -218,7 +219,7 @@ void CGUIListControl::Render()
         label2.x -= min(label2.width, label2.maxwidth);
         labels.push_back(label);
         labels2.push_back(label2);
-        iPosY += m_iItemHeight + m_iSpaceBetweenItems;
+        posY += m_itemHeight + m_spaceBetweenItems;
       }
     }
 
@@ -245,9 +246,14 @@ void CGUIListControl::Render()
 
   if (m_bUpDownVisible && m_upDown.GetMaximum() > 1)
   {
-    m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
+    m_upDown.SetPosition(m_posX + m_spinPosX, m_posY + m_spinPosY);
     m_upDown.SetValue(GetPage());
     m_upDown.Render();
+  }
+  if (m_pageControl)
+  { // tell our pagecontrol (scrollbar or whatever) to update
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, m_iOffset);
+    SendWindowMessage(msg);
   }
   CGUIControl::Render();
 }
@@ -259,7 +265,7 @@ void CGUIListControl::RenderText(const CListText &text, const CLabelInfo &label,
 
   static int iLastItem = -1;
 
-  DWORD color = text.selected ? label.selectedColor : label.textColor;
+  DWORD color = text.selected ? label.selectedColor : ((text.highlighted && m_label.focusedColor) ? label.focusedColor : label.textColor);
   if (!text.highlighted)
   {
     label.font->DrawTextWidth(text.x, text.y, color, label.shadowColor, text.text, text.maxwidth);
@@ -325,12 +331,12 @@ bool CGUIListControl::OnAction(const CAction &action)
     // smooth scrolling (for analog controls)
   case ACTION_SCROLL_UP:
     {
-      m_fSmoothScrollOffset += action.fAmount1 * action.fAmount1;
+      m_smoothScrollOffset += action.fAmount1 * action.fAmount1;
       bool handled = false;
-      while (m_fSmoothScrollOffset > 0.4)
+      while (m_smoothScrollOffset > 0.4)
       {
         handled = true;
-        m_fSmoothScrollOffset -= 0.4f;
+        m_smoothScrollOffset -= 0.4f;
         if (m_iOffset > 0 && m_iCursorY <= m_iItemsPerPage / 2)
         {
           Scroll( -1);
@@ -345,12 +351,12 @@ bool CGUIListControl::OnAction(const CAction &action)
     break;
   case ACTION_SCROLL_DOWN:
     {
-      m_fSmoothScrollOffset += action.fAmount1 * action.fAmount1;
+      m_smoothScrollOffset += action.fAmount1 * action.fAmount1;
       bool handled = false;
-      while (m_fSmoothScrollOffset > 0.4)
+      while (m_smoothScrollOffset > 0.4)
       {
         handled = true;
-        m_fSmoothScrollOffset -= 0.4f;
+        m_smoothScrollOffset -= 0.4f;
         if (m_iOffset + m_iItemsPerPage < (int)m_vecItems.size() && m_iCursorY >= m_iItemsPerPage / 2)
         {
           Scroll(1);
@@ -419,6 +425,11 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
       if (m_vecItems.size() % m_iItemsPerPage) iPages++;
       m_upDown.SetRange(1, iPages);
       m_upDown.SetValue(1);
+      if (m_pageControl)
+      {
+        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_iItemsPerPage, m_vecItems.size());
+        SendWindowMessage(msg);
+      }
       return true;
     }
 
@@ -430,6 +441,11 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
       m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
       m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
+      if (m_pageControl)
+      {
+        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_iItemsPerPage, m_vecItems.size());
+        SendWindowMessage(msg);
+      }
       return true;
     }
 
@@ -465,11 +481,16 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
       }
       return true;
     }
+    if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
+    {
+      if (message.GetSenderId() == m_pageControl)
+      { // update our page
+        m_iOffset = message.GetParam1();
+        return true;
+      }
+    }
   }
-
-  if ( CGUIControl::OnMessage(message) ) return true;
-
-  return false;
+  return CGUIControl::OnMessage(message);
 }
 
 void CGUIListControl::PreAllocResources()
@@ -488,8 +509,8 @@ void CGUIListControl::AllocResources()
 
   m_imgButton.AllocResources();
 
-  SetWidth(m_dwWidth);
-  SetHeight(m_dwHeight);
+  SetWidth(m_width);
+  SetHeight(m_height);
 }
 
 void CGUIListControl::FreeResources()
@@ -645,19 +666,19 @@ int CGUIListControl::GetPage()
     return m_iOffset / m_iItemsPerPage + 1;
 }
 
-void CGUIListControl::SetImageDimensions(int iWidth, int iHeight)
+void CGUIListControl::SetImageDimensions(float width, float height)
 {
-  m_iImageWidth = iWidth;
-  m_iImageHeight = iHeight;
+  m_imageWidth = width;
+  m_imageHeight = height;
 }
 
-void CGUIListControl::SetItemHeight(int iHeight)
+void CGUIListControl::SetItemHeight(float height)
 {
-  m_iItemHeight = iHeight;
+  m_itemHeight = height;
 }
-void CGUIListControl::SetSpace(int iHeight)
+void CGUIListControl::SetSpaceBetweenItems(float spaceBetweenItems)
 {
-  m_iSpaceBetweenItems = iHeight;
+  m_spaceBetweenItems = spaceBetweenItems;
 }
 
 int CGUIListControl::GetSelectedItem() const
@@ -665,9 +686,9 @@ int CGUIListControl::GetSelectedItem() const
   return m_iCursorY + m_iOffset;
 }
 
-bool CGUIListControl::SelectItemFromPoint(int iPosX, int iPosY)
+bool CGUIListControl::SelectItemFromPoint(float posX, float posY)
 {
-  int iRow = iPosY / (m_iItemHeight + m_iSpaceBetweenItems);
+  int iRow = (int)(posY / (m_itemHeight + m_spaceBetweenItems));
   if (iRow >= 0 && iRow < m_iItemsPerPage && iRow + m_iOffset < (int)m_vecItems.size())
   {
     m_iCursorY = iRow;
@@ -676,37 +697,32 @@ bool CGUIListControl::SelectItemFromPoint(int iPosX, int iPosY)
   return false;
 }
 
-void CGUIListControl::GetPointFromItem(int &iPosX, int &iPosY)
-{
-  iPosY = m_iCursorY * (m_iItemHeight + m_iSpaceBetweenItems) + m_iItemHeight / 2;
-  iPosX = m_dwWidth / 2;
-}
-
 void CGUIListControl::SetPageControlVisible(bool bVisible)
 {
   m_bUpDownVisible = bVisible;
   return ;
 }
 
-bool CGUIListControl::HitTest(int iPosX, int iPosY) const
+bool CGUIListControl::HitTest(float posX, float posY) const
 {
-  if (m_upDown.HitTest(iPosX, iPosY))
+  if (m_upDown.HitTest(posX, posY))
     return true;
-  return CGUIControl::HitTest(iPosX, iPosY);
+  return CGUIControl::HitTest(posX, posY);
 }
 
 bool CGUIListControl::OnMouseOver()
 {
   // check if we are near the spin control
-  if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_upDown.HitTest(g_Mouse.posX, g_Mouse.posY))
   {
-    return m_upDown.OnMouseOver();
+    if (m_upDown.OnMouseOver())
+      m_upDown.SetFocus(true);
   }
   else
   {
     m_upDown.SetFocus(false);
     // select the item under the pointer
-    if (SelectItemFromPoint(g_Mouse.iPosX - m_iPosX, g_Mouse.iPosY - m_iPosY))
+    if (SelectItemFromPoint(g_Mouse.posX - m_posX, g_Mouse.posY - m_posY))
       return CGUIControl::OnMouseOver();
   }
   return false;
@@ -714,13 +730,13 @@ bool CGUIListControl::OnMouseOver()
 
 bool CGUIListControl::OnMouseClick(DWORD dwButton)
 {
-  if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_upDown.HitTest(g_Mouse.posX, g_Mouse.posY))
   {
     return m_upDown.OnMouseClick(dwButton);
   }
   else
   {
-    if (SelectItemFromPoint(g_Mouse.iPosX - m_iPosX, g_Mouse.iPosY - m_iPosY))
+    if (SelectItemFromPoint(g_Mouse.posX - m_posX, g_Mouse.posY - m_posY))
     { // send click message to window
       SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_CLICK + dwButton);
       return true;
@@ -731,13 +747,13 @@ bool CGUIListControl::OnMouseClick(DWORD dwButton)
 
 bool CGUIListControl::OnMouseDoubleClick(DWORD dwButton)
 {
-  if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_upDown.HitTest(g_Mouse.posX, g_Mouse.posY))
   {
     return m_upDown.OnMouseDoubleClick(dwButton);
   }
   else
   {
-    if (SelectItemFromPoint(g_Mouse.iPosX - m_iPosX, g_Mouse.iPosY - m_iPosY))
+    if (SelectItemFromPoint(g_Mouse.posX - m_posX, g_Mouse.posY - m_posY))
     { // send double click message to window
       SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_DOUBLE_CLICK + dwButton);
       return true;
@@ -748,7 +764,7 @@ bool CGUIListControl::OnMouseDoubleClick(DWORD dwButton)
 
 bool CGUIListControl::OnMouseWheel()
 {
-  if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_upDown.HitTest(g_Mouse.posX, g_Mouse.posY))
   {
     return m_upDown.OnMouseWheel();
   }
@@ -773,37 +789,42 @@ void CGUIListControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWOR
   m_upDown.SetNavigation(GetID(), dwDown, GetID(), dwRight);
 }
 
-void CGUIListControl::SetPosition(int iPosX, int iPosY)
+void CGUIListControl::SetPosition(float posX, float posY)
 {
   // offset our spin control by the appropriate amount
-  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition();
-  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition();
-  CGUIControl::SetPosition(iPosX, iPosY);
-  m_upDown.SetPosition(GetXPosition() + iSpinOffsetX, GetYPosition() + iSpinOffsetY);
+  float spinOffsetX = m_upDown.GetXPosition() - GetXPosition();
+  float spinOffsetY = m_upDown.GetYPosition() - GetYPosition();
+  CGUIControl::SetPosition(posX, posY);
+  m_upDown.SetPosition(GetXPosition() + spinOffsetX, GetYPosition() + spinOffsetY);
 }
 
-void CGUIListControl::SetWidth(int iWidth)
+void CGUIListControl::SetWidth(float width)
 {
-  int iSpinOffsetX = m_upDown.GetXPosition() - GetXPosition() - GetWidth();
-  CGUIControl::SetWidth(iWidth);
-  m_imgButton.SetWidth(m_dwWidth);
-  m_upDown.SetPosition(GetXPosition() + GetWidth() + iSpinOffsetX, m_upDown.GetYPosition());
+  float spinOffsetX = m_upDown.GetXPosition() - GetXPosition() - GetWidth();
+  CGUIControl::SetWidth(width);
+  m_imgButton.SetWidth(m_width);
+  m_upDown.SetPosition(GetXPosition() + GetWidth() + spinOffsetX, m_upDown.GetYPosition());
 }
 
-void CGUIListControl::SetHeight(int iHeight)
+void CGUIListControl::SetHeight(float height)
 {
-  int iSpinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
-  CGUIControl::SetHeight(iHeight);
-  m_imgButton.SetHeight(m_iItemHeight);
-  m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + iSpinOffsetY);
+  float spinOffsetY = m_upDown.GetYPosition() - GetYPosition() - GetHeight();
+  CGUIControl::SetHeight(height);
+  m_imgButton.SetHeight(m_itemHeight);
+  m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + spinOffsetY);
 
-  float fHeight = (float)m_iItemHeight + (float)m_iSpaceBetweenItems;
-  float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);
+  float fHeight = m_itemHeight + m_spaceBetweenItems;
+  float fTotalHeight = m_height - m_upDown.GetHeight() - 5;
   m_iItemsPerPage = (int)(fTotalHeight / fHeight );
 
   int iPages = m_vecItems.size() / m_iItemsPerPage;
   if (m_vecItems.size() % m_iItemsPerPage) iPages++;
   m_upDown.SetRange(1, iPages);
+  if (m_pageControl)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_iItemsPerPage, m_vecItems.size());
+    SendWindowMessage(msg);
+  }
 }
 
 void CGUIListControl::SetPulseOnSelect(bool pulse)
@@ -827,4 +848,16 @@ CStdString CGUIListControl::GetDescription() const
     }
   }
   return strLabel;
+}
+
+void CGUIListControl::SaveStates(vector<CControlState> &states)
+{
+  states.push_back(CControlState(GetID(), m_iCursorY + m_iOffset));
+}
+
+void CGUIListControl::SetPageControl(DWORD id)
+{
+  m_pageControl = id;
+  if (m_pageControl)
+    SetPageControlVisible(false);
 }

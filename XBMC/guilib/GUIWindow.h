@@ -9,6 +9,9 @@
 #pragma once
 
 #include "GUIControl.h"
+
+class CGUIControlGroup;
+
 #include "GUICallback.h"  // for GUIEvent
 
 #include <map>
@@ -34,8 +37,8 @@ class CPosition
 {
 public:
   CGUIControl* pControl;
-  int x;
-  int y;
+  float x;
+  float y;
 };
 
 class COrigin
@@ -43,37 +46,12 @@ class COrigin
 public:
   COrigin()
   {
-    x = y = condition = 0;
+    x = y = 0;
+    condition = 0;
   };
-  int x;
-  int y;
+  float x;
+  float y;
   int condition;
-};
-
-class CControlState
-{
-public:
-  CControlState(int id, int data, bool group = false)
-  {
-    m_id = id;
-    m_data = data;
-    m_group = group;
-  }
-  int m_id;
-  int m_data;
-  bool m_group;
-};
-
-class CControlGroup
-{
-public:
-  CControlGroup(int id)
-  {
-    m_id = id;
-    m_lastControl = -1;
-  };
-  int m_lastControl;
-  int m_id;
 };
 
 /*!
@@ -90,8 +68,8 @@ public:
 
   bool Initialize();  // loads the window
   virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
-  virtual bool Load(TiXmlElement* pRootElement, RESOLUTION resToUse);
-  virtual void SetPosition(int iPosX, int iPosY);
+  virtual bool Load(TiXmlElement* pRootElement);
+  virtual void SetPosition(float posX, float posY);
   void CenterWindow();
   virtual void Render();
 
@@ -104,8 +82,8 @@ public:
 
   void OnMouseAction();
   virtual bool OnMouse();
-  bool OnMove(int fromControl, int moveAction);
   bool HandleMouse(CGUIControl *pControl);
+  bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
   void Add(CGUIControl* pControl);
   void Insert(CGUIControl *control, const CGUIControl *insertPoint);
@@ -116,18 +94,21 @@ public:
   virtual bool HasID(DWORD dwID) { return (dwID >= m_dwWindowId && dwID < m_dwWindowId + m_dwIDRange); };
   void SetIDRange(DWORD dwRange) { m_dwIDRange = dwRange; };
   DWORD GetIDRange() const { return m_dwIDRange; };
-  DWORD GetWidth() { return m_dwWidth; };
-  DWORD GetHeight() { return m_dwHeight; };
+  float GetWidth() { return m_width; };
+  float GetHeight() { return m_height; };
   DWORD GetPreviousWindow() { return m_previousWindow; };
-  int GetPosX() { return m_iPosX; };
-  int GetPosY() { return m_iPosY; };
+  float GetPosX() { return m_posX; };
+  float GetPosY() { return m_posY; };
   const CGUIControl* GetControl(int iControl) const;
   void ClearAll();
-  int GetFocusedControl() const;
+  int GetFocusedControlID() const;
+  CGUIControl *GetFocusedControl() const;
   virtual void AllocResources(bool forceLoad = false);
   virtual void FreeResources(bool forceUnLoad = false);
   void DynamicResourceAlloc(bool bOnOff);
+//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   static void FlushReferenceCache();
+//#endif
   virtual bool IsDialog() const { return false;};
   virtual bool IsMediaWindow() const { return false; };
   virtual bool IsActive() const;
@@ -163,12 +144,6 @@ protected:
   void AddControlGroup(int id);
   virtual CGUIControl *GetFirstFocusableControl(int id);
 
-  struct stReferenceControl
-  {
-    char m_szType[128];
-    CGUIControl* m_pControl;
-  };
-
   typedef GUIEvent<CGUIMessage&> CLICK_EVENT;
   typedef std::map<int, CLICK_EVENT> MAPCONTROLCLICKEVENTS;
   MAPCONTROLCLICKEVENTS m_mapClickEvents;
@@ -177,12 +152,12 @@ protected:
   typedef std::map<int, SELECTED_EVENT> MAPCONTROLSELECTEDEVENTS;
   MAPCONTROLSELECTEDEVENTS m_mapSelectedEvents;
 
-  typedef vector<struct stReferenceControl> VECREFERENCECONTOLS;
-  typedef vector<struct stReferenceControl>::iterator IVECREFERENCECONTOLS;
-  bool LoadReference(VECREFERENCECONTOLS& controls);
-  void LoadControl(TiXmlElement* pControl, int iGroup, VECREFERENCECONTOLS& referencecontrols, RESOLUTION& resToUse);
+  void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup);
+
+//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  bool LoadReferences();
   static CStdString CacheFilename;
-  static VECREFERENCECONTOLS ControlsCache;
+//#endif
 
   vector<CGUIControl*> m_vecControls;
   typedef std::vector<CGUIControl*>::iterator ivecControls;
@@ -190,11 +165,10 @@ protected:
   DWORD m_dwIDRange;
   DWORD m_dwDefaultFocusControlID;
   bool m_bRelativeCoords;
-  int m_iPosX;
-  int m_iPosY;
-  DWORD m_dwWidth;
-  DWORD m_dwHeight;
-  vector<CControlGroup> m_vecGroups;
+  float m_posX;
+  float m_posY;
+  float m_width;
+  float m_height;
   OVERLAY_STATE m_overlayState;
   bool m_WindowAllocated;
   RESOLUTION m_coordsRes; // resolution that the window coordinates are in.

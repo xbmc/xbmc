@@ -164,7 +164,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     UINT64 llPos = 0;
     int ipercent = 0;
 
-    CXBStopWatch timer;
+    CStopWatch timer;
     timer.StartZero();
     float start = 0.0f;
     float callback = 0.0f;
@@ -257,7 +257,6 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary)
       if (bPathInCache)
         return false;
     }
-   
     CURL url(strFileName);
 
     m_pFile = CFileFactory::CreateLoader(url);

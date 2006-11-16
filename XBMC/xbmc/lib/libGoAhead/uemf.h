@@ -28,7 +28,7 @@
 #ifdef _XBOX
 	#include	<xtl.h>
 	#include	"socketutil.h"
-#elif
+#else
 	#include	<windows.h>
 	#include	<winnls.h>
 #endif

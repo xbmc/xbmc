@@ -1162,7 +1162,7 @@ int CGUIWindowFileManager::NumSelected(int iList)
 
 int CGUIWindowFileManager::GetFocusedList() const
 {
-  return GetFocusedControl() - CONTROL_LEFT_LIST;
+  return GetFocusedControlID() - CONTROL_LEFT_LIST;
 }
 
 void CGUIWindowFileManager::OnPopupMenu(int list, int item)
@@ -1170,13 +1170,13 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
   if (list < 0 || list > 2) return ;
   bool bDeselect = SelectItem(list, item);
   // calculate the position for our menu
-  int iPosX = 200;
-  int iPosY = 100;
+  float posX = 200;
+  float posY = 100;
   CGUIListControl *pList = (CGUIListControl *)GetControl(list + CONTROL_LEFT_LIST);
   if (pList)
   {
-    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
-    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   if (m_Directory[list].IsVirtualDirectoryRoot())
   {
@@ -1186,7 +1186,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     }
 
     // and do the popup menu
-    if (CGUIDialogContextMenu::BookmarksMenu("files", m_vecItems[list][item], iPosX, iPosY))
+    if (CGUIDialogContextMenu::BookmarksMenu("files", m_vecItems[list][item], posX, posY))
     {
       m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
       if (m_Directory[1 - list].IsVirtualDirectoryRoot())
@@ -1228,7 +1228,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     pMenu->EnableButton(btn_NewFolder, CanNewFolder(list));
     pMenu->EnableButton(btn_Size, item >=0 && m_vecItems[list][item]->m_bIsFolder && !m_vecItems[list][item]->IsParentFolder());
     // position it correctly
-    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
     pMenu->DoModal();
     int btnid = pMenu->GetButton();
     if (btnid == btn_SelectAll)

@@ -508,12 +508,13 @@ bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
   // file browse option?)
   if (m_Movie.m_strPictureURL.IsEmpty())
     return false;
-  CHTTP http;
+
   CStdString strExtension;
   CUtil::GetExtension(m_Movie.m_strPictureURL, strExtension);
   CStdString strTemp = "Z:\\temp";
   strTemp += strExtension;
   ::DeleteFile(strTemp.c_str());
+  CHTTP http;
   http.Download(m_Movie.m_strPictureURL, strTemp);
 
   try

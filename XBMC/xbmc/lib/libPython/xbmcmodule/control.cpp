@@ -119,7 +119,7 @@ namespace PYXBMC
 		if (!PyArg_ParseTuple(args, "ll", &self->dwPosX, &self->dwPosY)) return NULL;
 
 		PyGUILock();
-		if (self->pGUIControl) self->pGUIControl->SetPosition(self->dwPosX, self->dwPosY);
+		if (self->pGUIControl) self->pGUIControl->SetPosition((float)self->dwPosX, (float)self->dwPosY);
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
@@ -140,7 +140,7 @@ namespace PYXBMC
 		if (!PyArg_ParseTuple(args, "l", &self->dwWidth)) return NULL;
 
 		PyGUILock();
-		if (self->pGUIControl) self->pGUIControl->SetWidth(self->dwWidth);
+		if (self->pGUIControl) self->pGUIControl->SetWidth((float)self->dwWidth);
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
@@ -161,7 +161,7 @@ namespace PYXBMC
 		if (!PyArg_ParseTuple(args, "l", &self->dwHeight)) return NULL;
 
 		PyGUILock();
-		if (self->pGUIControl) self->pGUIControl->SetHeight(self->dwHeight);
+		if (self->pGUIControl) self->pGUIControl->SetHeight((float)self->dwHeight);
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);

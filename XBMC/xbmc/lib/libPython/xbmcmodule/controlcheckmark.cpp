@@ -98,20 +98,23 @@ namespace PYXBMC
   {
     CLabelInfo label;
     label.disabledColor = pControl->dwDisabledColor;
-    label.textColor = pControl->dwTextColor;
+    label.textColor = label.focusedColor = pControl->dwTextColor;
     label.font = g_fontManager.GetFont(pControl->strFont);
     label.align = pControl->dwAlign;
+    CImage imageFocus;
+    imageFocus.file = pControl->strTextureFocus;
+    CImage imageNoFocus;
+    imageNoFocus.file = pControl->strTextureNoFocus;
     pControl->pGUIControl = new CGUICheckMarkControl(
       pControl->iParentId,
       pControl->iControlId,
-      pControl->dwPosX,
-      pControl->dwPosY,
-      pControl->dwWidth,
-      pControl->dwHeight,
-      pControl->strTextureFocus,
-      pControl->strTextureNoFocus,
-      pControl->dwCheckWidth,
-      pControl->dwCheckHeight,
+      (float)pControl->dwPosX,
+      (float)pControl->dwPosY,
+      (float)pControl->dwWidth,
+      (float)pControl->dwHeight,
+      imageFocus, imageNoFocus,
+      (float)pControl->dwCheckWidth,
+      (float)pControl->dwCheckHeight,
       label );
 
     CGUICheckMarkControl* pGuiCheckMarkControl = (CGUICheckMarkControl*)pControl->pGUIControl;

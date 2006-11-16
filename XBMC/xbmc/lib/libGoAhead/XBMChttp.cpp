@@ -23,10 +23,10 @@
 #include "..\..\filesystem\HDDirectory.h" 
 #include "..\..\filesystem\CDDADirectory.h"
 #include "..\..\videodatabase.h"
-#include "..\..\guilib\GUIThumbnailPanel.h"
-#include "..\..\guilib\GUIButtonControl.h"
-#include "..\..\guilib\GUISpinControl.h"
-#include "..\..\guilib\GUIListControl.h"
+#include "GUIThumbnailPanel.h"
+#include "GUIButtonControl.h"
+#include "GUISpinControl.h"
+#include "GUIListControl.h"
 #include "..\..\utils\GUIInfoManager.h"
 #include "..\..\picture.h"
 #include "..\..\MusicInfoTagLoaderFactory.h"
@@ -35,7 +35,8 @@
 #include "..\..\GUIWindowSlideShow.h"
 #include "..\..\GUIMediaWindow.h"
 #include "..\..\GUIWindowFileManager.h"
-#include "..\..\guilib\GUIButtonScroller.h"
+#include "GUIButtonScroller.h"
+#include "..\..\FileSystem\FactoryDirectory.h"
 #include "..\..\FileSystem\VirtualDirectory.h"
 
 #define XML_MAX_INNERTEXT_SIZE 256
@@ -1436,8 +1437,7 @@ int CXbmcHttp::xbmcGetGUIStatus()
   if (pWindow)
   {
     output += closeTag+openTag+"ActiveWindowName:" + g_localizeStrings.Get(iWin) ; 
-    int iControl=pWindow->GetFocusedControl();
-    CGUIControl* pControl=(CGUIControl* )pWindow->GetControl(iControl);
+    CGUIControl* pControl=pWindow->GetFocusedControl();
     if (pControl)
     {
       CStdString id;
@@ -1452,25 +1452,6 @@ int CXbmcHttp::xbmcGetGUIStatus()
         CStdStringArray actions = ((CGUIButtonControl *)pControl)->GetClickActions();
         if (actions.size())
           output += closeTag+openTag+"Execution:" + actions[0];
-        long lHyperLinkWindowID = ((CGUIButtonControl *)pControl)->GetHyperLink();
-        if (lHyperLinkWindowID != WINDOW_INVALID)
-        {
-          CGUIWindow *pHyperWindow = m_gWindowManager.GetWindow(lHyperLinkWindowID);
-          if (pHyperWindow)
-          {
-            int iHyperControl=pHyperWindow->GetFocusedControl();
-            CGUIControl* pHyperControl=(CGUIControl* )pHyperWindow->GetControl(iHyperControl);
-            if (pHyperControl)
-            {
-              output += closeTag+openTag+"DescriptionSub:" + (CStdString) ((CGUIButtonControl *)pHyperControl)->GetLabel();
-              strTmp.Format("%d", ((CGUIButtonControl *)pHyperControl)->GetID());
-              output += closeTag+openTag+"ControlIdSub:" + strTmp;
-              CStdStringArray actions = ((CGUIButtonControl *)pControl)->GetClickActions();
-              if (actions.size())
-                output += closeTag+openTag+"ExecutionSub:" + actions[0];
-            }
-          }
-        }
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
       {
@@ -2152,9 +2133,7 @@ int CXbmcHttp::xbmcExecBuiltIn(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
-    ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
-    tMsg.strParam = paras[0];
-    g_applicationMessenger.SendMessage(tMsg);
+    g_applicationMessenger.ExecBuiltIn(paras[0]);
     return SetResponse(openTag+"OK");
   }
 }

@@ -243,8 +243,6 @@ public:
 #define GLYPH_UP_ARROW      L"\616"
 #define GLYPH_DOWN_ARROW    L"\617"
 
-#else
-#include "xbfont32.h"
 #endif
 
 #endif

@@ -17,7 +17,11 @@
 class IMsgSenderCallback;
 class CGUIMessage;
 
-#include "common/mouse.h"     // TODO: this doesn't seem to be required for anything?
+#ifdef _XBOX
+#include "common/XBoxMouse.h"
+#else
+#include "common/DirectInputMouse.h"
+#endif
 
 /*!
  \ingroup graphics
@@ -90,7 +94,7 @@ public:
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
   const RECT& GetViewWindow() const;
-  void SetViewWindow(const RECT& rc) ;
+  void SetViewWindow(float left, float top, float right, float bottom);
   void SetFullScreenViewWindow(RESOLUTION &res);
   void ClipToViewWindow();
   void SetFullScreenVideo(bool bOnOff);
@@ -108,23 +112,13 @@ public:
   void Lock() { EnterCriticalSection(*this); }
   void Unlock() { LeaveCriticalSection(*this); }
   void EnablePreviewWindow(bool bEnable);
-  void ScalePosToScreenResolution(DWORD& x, DWORD& y, RESOLUTION res);
-  void ScaleRectToScreenResolution(DWORD& left, DWORD& top, DWORD& right, DWORD& bottom, RESOLUTION res);
-  void ScaleXCoord(DWORD &x, RESOLUTION res);
-  void ScaleXCoord(int &x, RESOLUTION res);
-  void ScaleXCoord(long &x, RESOLUTION res);
-  void ScaleXCoord(float &x, RESOLUTION res);
-  void ScaleYCoord(DWORD &x, RESOLUTION res);
-  void ScaleYCoord(int &x, RESOLUTION res);
-  void ScaleYCoord(long &x, RESOLUTION res);
-  void ScaleYCoord(float &x, RESOLUTION res);
   float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
   void ApplyStateBlock();
   void Clear();
 
   // output scaling
-  void SetScalingResolution(RESOLUTION res, int posX, int posY, bool needsScaling);  // sets the input skin resolution.
+  void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
   inline RESOLUTION GetScalingResolution() const { return m_windowResolution; };
 
   inline float ScaleFinalXCoord(float x, float y) const;
@@ -134,12 +128,22 @@ public:
   inline float ScaleFinalY() const { return m_windowScaleY; };
   inline DWORD MergeAlpha(DWORD color) const;
   inline void SetWindowTransform(const TransformMatrix &matrix)
-  {
-    m_finalWindowTransform = m_guiTransform * matrix;
-  };
+  { // reset the group transform stack
+    while (m_groupTransform.size())
+      m_groupTransform.pop();
+    m_groupTransform.push(m_guiTransform * matrix);
+  }
   inline void SetControlTransform(const TransformMatrix &matrix)
   {
-    m_finalTransform = m_finalWindowTransform * matrix;
+    m_finalTransform = m_groupTransform.top() * matrix;
+  };
+  inline void AddGroupTransform(const TransformMatrix &matrix)
+  { // add to the stack
+    m_groupTransform.push(m_groupTransform.top() * matrix);
+  };
+  inline void RemoveGroupTransform()
+  { // remove from stack
+    if (m_groupTransform.size()) m_groupTransform.pop();
   };
 
 protected:
@@ -165,9 +169,8 @@ private:
   float m_windowScaleY;
 
   TransformMatrix m_guiTransform;
-  TransformMatrix m_windowTransform;
-  TransformMatrix m_finalWindowTransform;
   TransformMatrix m_finalTransform;
+  stack<TransformMatrix> m_groupTransform;
 };
 
 /*!

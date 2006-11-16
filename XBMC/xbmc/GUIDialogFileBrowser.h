@@ -29,7 +29,7 @@ public:
   void SetShares(VECSHARES &shares);
 
   virtual void OnItemLoaded(CFileItem *item) {};
-  const CFileItem *GetCurrentListItem() const;
+  CFileItem *GetCurrentListItem();
 
   virtual bool IsMediaWindow() const { return true; };
 protected:

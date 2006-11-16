@@ -1,7 +1,10 @@
 #pragma once
 
 #include "GUIWindow.h"
+#ifdef HAS_SCREENSAVER
 #include "screensavers/ScreenSaver.h"
+#endif
+
 #include "Utils/CriticalSection.h"
 
 #define SCREENSAVER_FADE   1
@@ -20,7 +23,9 @@ public:
   virtual void Render();
 
 private:
+#ifdef HAS_SCREENSAVER
   CScreenSaver* m_pScreenSaver;
+#endif
   bool m_bInitialized;
   CCriticalSection m_critSection;
 };

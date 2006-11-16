@@ -12,6 +12,7 @@
 
 #include "stdafx.h"
 #include "StringUtils.h"
+#include <math.h>
 
 /* empty string for use in returns by ref */
 const CStdString StringUtils::EmptyString = "";

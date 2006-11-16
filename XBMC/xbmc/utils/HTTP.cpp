@@ -5,9 +5,7 @@
 
 #include "../stdafx.h"
 #include "HTTP.h"
-#ifdef _XBOX
 #include "../dnsnamecache.h"
-#endif
 
 #include "../util.h"
 #include "../xbox/network.h"
@@ -408,7 +406,13 @@ bool CHTTP::Connect()
     }
     service.sin_port = htons(m_iPort);
   }
+#ifdef _XBOX
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
+#else
+  WSADATA wsaData;
+  WSAStartup(0x0101, &wsaData);
+  m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
+#endif
 
   // attempt to connection
   int nTries = 0;
@@ -587,7 +591,9 @@ bool CHTTP::Send(char* pBuffer, int iLen)
         }
         else
         {
+#ifdef _XBOX
           WSACancelOverlappedIO(m_socket);
+#endif
           WSASetLastError(WSAETIMEDOUT);
           return false;
         }
@@ -641,7 +647,9 @@ bool CHTTP::Recv(int iLen)
         }
         else
         {
+#ifdef _XBOX
           WSACancelOverlappedIO(m_socket);
+#endif
           WSASetLastError(WSAETIMEDOUT);
           return false;
         }
@@ -1019,5 +1027,7 @@ void CHTTP::Close()
 
 void CHTTP::Cancel()
 {
-  WSACancelOverlappedIO((SOCKET)m_socket);
+#ifdef _XBOX
+          WSACancelOverlappedIO(m_socket);
+#endif
 }

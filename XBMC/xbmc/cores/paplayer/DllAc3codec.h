@@ -1,6 +1,7 @@
 #pragma once
 #include "../../DynamicDll.h"
 
+#ifdef HAS_AC3_CODEC
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int8 uint8_t;
 typedef __int16 int16_t;
@@ -46,3 +47,4 @@ class DllAc3Codec : public DllDynamic, DllAc3CodecInterface
     RESOLVE_METHOD(a52_free)
   END_METHOD_RESOLVE()
 };
+#endif

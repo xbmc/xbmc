@@ -79,14 +79,15 @@ GUIBITMAPINFOHEADER;
  \ingroup textures
  \brief 
  */
+#ifdef HAS_XBOX_D3D
 typedef struct tagBITMAPINFO
 {
   GUIBITMAPINFOHEADER bmiHeader;
   GUIRGBQUAD bmiColors[1];
-}
-GUIBITMAPINFO;
-
-
+} GUIBITMAPINFO;
+#else
+typedef tagBITMAPINFO GUIBITMAPINFO;
+#endif
 // ****************************************************************************
 // * CAnimatedGif                                                                  *
 // *    Storage class for single images                                       *

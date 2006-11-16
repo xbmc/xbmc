@@ -18,7 +18,7 @@ class CGUIProgressControl :
       public CGUIControl
 {
 public:
-  CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, CStdString& strBackGroundTexture, CStdString& strLeftTexture, CStdString& strMidTexture, CStdString& strRightTexture, CStdString& strOverlayTexture);
+  CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& leftTexture, const CImage& midTexture, const CImage& rightTexture, const CImage& overlayTexture);
   virtual ~CGUIProgressControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
@@ -27,17 +27,12 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void SetPosition(int iPosX, int iPosY);
+  virtual void SetPosition(float posX, float posY);
   void SetPercentage(float fPercent);
   void SetInfo(int iInfo);
   int GetInfo() const {return m_iInfoCode;};
 
   float GetPercentage() const;
-  const CStdString& GetBackGroundTextureName() const { return m_guiBackground.GetFileName();};
-  const CStdString& GetBackTextureLeftName() const { return m_guiLeft.GetFileName();};
-  const CStdString& GetBackTextureRightName() const { return m_guiRight.GetFileName();};
-  const CStdString& GetBackTextureMidName() const { return m_guiMid.GetFileName();};
-  const CStdString& GetBackTextureOverlayName() const { return m_guiOverlay.GetFileName();};
 protected:
   CGUIImage m_guiBackground;
   CGUIImage m_guiLeft;

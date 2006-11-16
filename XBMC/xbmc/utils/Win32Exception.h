@@ -1,4 +1,8 @@
+#ifdef _XBOX
 #include "xtl.h"
+#else
+#include <windows.h>
+#endif
 #include <exception>
 
 class win32_exception: public std::exception

@@ -5,6 +5,7 @@
 #define MAX_LEADBYTES             12
 #define MAX_DEFAULTCHAR           2
 
+#ifdef _XBOX
 typedef struct _STARTUPINFOA
 {
   DWORD cb;
@@ -62,8 +63,10 @@ typedef struct _SYSTEM_INFO
   WORD wProcessorRevision;
 }
 SYSTEM_INFO, *LPSYSTEM_INFO;
+#endif
 
 typedef DWORD LCTYPE;
+#ifdef _XBOX
 typedef BOOL (*PHANDLER_ROUTINE)(DWORD);
  
 typedef struct _OSVERSIONINFO
@@ -76,12 +79,14 @@ typedef struct _OSVERSIONINFO
   TCHAR szCSDVersion[128];
 }
 OSVERSIONINFO, *LPOSVERSIONINFO;
+#endif
 
 #define ATOM unsigned short
 
 // LOCAL defines from mingw
 #define MAX_LEADBYTES 	12
 #define MAX_DEFAULTCHAR	2
+#ifdef _XBOX
 #define LOCALE_NOUSEROVERRIDE	0x80000000
 #define LOCALE_USE_CP_ACP	0x40000000
 #if (WINVER >= 0x0400)
@@ -492,6 +497,7 @@ OSVERSIONINFO, *LPOSVERSIONINFO;
 #ifndef  _BASETSD_H
 typedef long LONG_PTR;
 #endif 
+#endif
 
 //All kernel32 function should use WINAPI calling convention.
 //When doing emulation or interception, the calling convention should
@@ -616,7 +622,9 @@ extern "C" UINT WINAPI dllGetConsoleCP();
 extern "C" UINT WINAPI dllGetConsoleOutputCP();
 extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine, BOOL Add);
 
+#ifdef _XBOX
 extern "C" HANDLE xboxopendvdrom();
+#endif
 extern "C" void WINAPI dllSleep(DWORD dwTime);
 extern "C" PVOID WINAPI dllEncodePointer(PVOID ptr);
 extern "C" PVOID WINAPI dllDecodePointer(PVOID ptr);

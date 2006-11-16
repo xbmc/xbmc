@@ -9,8 +9,10 @@ extern "C"
 {
 #endif
 
+#ifdef _XBOX
   struct mphostent* __stdcall dllgethostbyname(const char* name);
   extern "C" char* inet_ntoa(in_addr in);
+#endif
   int __stdcall dllconnect( SOCKET s, const struct sockaddr FAR *name, int namelen);
   int __stdcall dllsend(SOCKET s, const char FAR *buf, int len, int flags);
   int __stdcall dllsocket(int af, int type, int protocol);
@@ -37,8 +39,10 @@ extern "C"
   struct protoent* __stdcall dllgetprotobyname(const char* name);
   int __stdcall dllgetpeername(SOCKET s, struct sockaddr FAR *name, int FAR *namelen);
   struct servent* __stdcall dllgetservbyport(int port, const char* proto);
+#ifdef _XBOX
   struct mphostent* __stdcall dllgethostbyaddr(const char* addr, int len, int type);
-  
+#endif
+
   int __stdcall dllgetaddrinfo(const char* nodename, const char* servname, const struct addrinfo* hints, struct addrinfo** res);
   int __stdcall dllgetnameinfo(const struct sockaddr *sa, size_t salen, char *host, size_t hostlen, char *serv, size_t servlen, int flags);
   void __stdcall dllfreeaddrinfo(struct addrinfo *ai);

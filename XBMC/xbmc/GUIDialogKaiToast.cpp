@@ -43,6 +43,7 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
 
 void CGUIDialogKaiToast::OnWindowLoaded()
 {
+  CGUIDialog::OnWindowLoaded();
   CGUIImage *image = (CGUIImage *)GetControl(POPUP_ICON);
   if (image)
     m_defaultIcon = image->GetFileName();

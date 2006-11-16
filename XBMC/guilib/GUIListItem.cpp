@@ -38,7 +38,6 @@ CGUIListItem::CGUIListItem(const CStdString& strLabel)
 CGUIListItem::~CGUIListItem(void)
 {
   FreeMemory();
-  DeleteCriticalSection(&m_critSection);
 }
 
 void CGUIListItem::SetLabel(const CStdString& strLabel)

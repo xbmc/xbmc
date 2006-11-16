@@ -14,7 +14,7 @@
 CApplication g_application;
 void main()
 {
-  g_application.Create();
+  g_application.Create(NULL);
   while (1)
   {
     g_application.Run();

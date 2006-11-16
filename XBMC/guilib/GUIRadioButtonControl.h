@@ -15,10 +15,10 @@ class CGUIRadioButtonControl :
 {
 public:
   CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId,
-                         int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                         const CStdString& strTextureFocus, const CStdString& strTextureNoFocus,
+                         float posX, float posY, float width, float height,
+                         const CImage& textureFocus, const CImage& textureNoFocus,
                          const CLabelInfo& labelInfo,
-                         const CStdString& strRadioFocus, const CStdString& strRadioNoFocus);
+                         const CImage& radioFocus, const CImage& radioNoFocus);
 
   virtual ~CGUIRadioButtonControl(void);
   virtual void Render();
@@ -28,22 +28,18 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetPosition(int iPosX, int iPosY);
-  virtual void SetWidth(int iWidth);
-  virtual void SetHeight(int iHeight);
-  const CStdString& GetTextureRadioFocusName() const { return m_imgRadioFocus.GetFileName(); };
-  const CStdString& GetTextureRadioNoFocusName() const { return m_imgRadioNoFocus.GetFileName(); };
+  virtual void SetPosition(float posX, float posY);
+  virtual void SetWidth(float width);
+  virtual void SetHeight(float height);
   virtual CStdString GetDescription() const;
-  void SetRadioDimensions(int posX, int posY, DWORD width, DWORD height);
-  void GetRadioDimensions(int &posX, int &posY, DWORD &width, DWORD &height);
-  int GetToggleSelect() const { return m_toggleSelect; };
+  void SetRadioDimensions(float posX, float posY, float width, float height);
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
-
+  bool IsSelected() const { return m_bSelected; };
 protected:
   virtual void Update();
   CGUIImage m_imgRadioFocus;
   CGUIImage m_imgRadioNoFocus;
-  int m_radioPosX;
-  int m_radioPosY;
+  float m_radioPosX;
+  float m_radioPosY;
   int m_toggleSelect;
 };

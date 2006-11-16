@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include "VoiceCommunicator.h"
 #include "VoiceManager.h"
+#include <xvoice.h>
 
 
 // Defined in VoiceManager.cpp

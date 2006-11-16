@@ -4,8 +4,8 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 
 
-CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
+CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_label = labelInfo;
   m_iCurrentLabel = 0;
@@ -78,9 +78,9 @@ void CGUIFadeLabelControl::Render()
   if (iLabelCount == 1)
   {
     DWORD iWidth = (DWORD)m_label.font->GetTextWidth(strLabelUnicode.c_str());
-    if (iWidth < m_dwWidth)
+    if (iWidth < m_width)
     {
-      m_label.font->DrawText( (float)m_iPosX, (float)m_iPosY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
+      m_label.font->DrawText(m_posX, m_posY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
       CGUIControl::Render();
       return ;
     }
@@ -90,7 +90,7 @@ void CGUIFadeLabelControl::Render()
     DWORD dwAlpha = 21 * m_iCurrentFrame;
     dwAlpha <<= 24;
     dwAlpha += ( m_label.textColor & 0x00ffffff);
-    m_label.font->DrawTextWidth((float)m_iPosX, (float)m_iPosY, dwAlpha, m_label.shadowColor, strLabelUnicode.c_str(), (float)m_dwWidth);
+    m_label.font->DrawTextWidth(m_posX, m_posY, dwAlpha, m_label.shadowColor, strLabelUnicode.c_str(), m_width);
 
     m_iCurrentFrame++;
     if (m_iCurrentFrame >= 12)
@@ -108,7 +108,7 @@ void CGUIFadeLabelControl::Render()
       m_scrollInfo.Reset();
     }
     else
-      RenderText((float)m_iPosX, (float)m_iPosY, (float) m_dwWidth, m_label.textColor, (WCHAR*) strLabelUnicode.c_str(), true );
+      RenderText(m_posX, m_posY, m_width, m_label.textColor, (WCHAR*) strLabelUnicode.c_str(), true );
   }
   CGUIControl::Render();
 }

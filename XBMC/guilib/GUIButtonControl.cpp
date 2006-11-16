@@ -7,10 +7,10 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 
 
-CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CLabelInfo& labelInfo)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_imgFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus)
-    , m_imgNoFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureNoFocus)
+CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_imgFocus(dwParentID, dwControlId, posX, posY, width, height, textureFocus)
+    , m_imgNoFocus(dwParentID, dwControlId, posX, posY, width, height, textureNoFocus)
 {
   m_bSelected = false;
   m_bTabButton = false;
@@ -21,7 +21,6 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
   m_strLabel = "";
   m_strLabel2 = "";
   m_label = labelInfo;
-  m_lHyperLinkWindowID = WINDOW_INVALID;
   ControlType = GUICONTROL_BUTTON;
 }
 
@@ -76,39 +75,43 @@ void CGUIButtonControl::Render()
 
   if (renderLabel.size() > 0 && bRenderText && m_label.font)
   {
-    float fPosX = (float)m_iPosX + m_label.offsetX;
-    float fPosY = (float)m_iPosY + m_label.offsetY;
+    float fPosX = m_posX + m_label.offsetX;
+    float fPosY = m_posY + m_label.offsetY;
 
     if (m_label.align & XBFONT_RIGHT)
-      fPosX = (float)m_iPosX + m_dwWidth - m_label.offsetX;
+      fPosX = m_posX + m_width - m_label.offsetX;
 
     if (m_label.align & XBFONT_CENTER_X)
-      fPosX = (float)m_iPosX + m_dwWidth / 2;
+      fPosX = m_posX + m_width / 2;
 
     if (m_label.align & XBFONT_CENTER_Y)
-      fPosY = (float)m_iPosY + m_dwHeight / 2;
+      fPosY = m_posY + m_height / 2;
 
     CStdStringW strLabelUnicode;
     g_charsetConverter.utf8ToUTF16(renderLabel, strLabelUnicode);
 
     m_label.font->Begin();
     if (IsDisabled())
-      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align, (float)m_label.width);
+      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align, m_label.width);
+    else if (HasFocus() && m_label.focusedColor)
+      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align, m_label.width);
     else
-      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align, (float)m_label.width);
+      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align, m_label.width);
 
     // render the second label if it exists
     if (m_strLabel2.size() > 0)
     {
-      float width = m_dwWidth - 2 * m_label.offsetX - m_label.font->GetTextWidth(strLabelUnicode.c_str()) - 5;
+      float width = m_width - 2 * m_label.offsetX - m_label.font->GetTextWidth(strLabelUnicode.c_str()) - 5;
       if (width < 0) width = 0;
-      fPosX = (float)m_iPosX + m_dwWidth - m_label.offsetX;
+      fPosX = m_posX + m_width - m_label.offsetX;
       DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y);
 
       g_charsetConverter.utf8ToUTF16(m_strLabel2, strLabelUnicode);
 
       if (IsDisabled() )
         m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign, width);
+      else if (HasFocus() && m_label.focusedColor)
+        m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign, width);
       else
         m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign, width);
     }
@@ -136,6 +139,16 @@ bool CGUIButtonControl::OnMessage(CGUIMessage& message)
       SetLabel(message.GetLabel());
       return true;
     }
+    if (message.GetMessage() == GUI_MSG_SELECTED)
+    {
+      m_bSelected = true;
+      return true;
+    }
+    if (message.GetMessage() == GUI_MSG_DESELECTED)
+    {
+      m_bSelected = false;
+      return true;
+    }
   }
 
   return CGUIControl::OnMessage(message);
@@ -154,8 +167,8 @@ void CGUIButtonControl::AllocResources()
   m_dwFocusCounter = 0;
   m_imgFocus.AllocResources();
   m_imgNoFocus.AllocResources();
-  m_dwWidth = m_imgFocus.GetWidth();
-  m_dwHeight = m_imgFocus.GetHeight();
+  m_width = m_imgFocus.GetWidth();
+  m_height = m_imgFocus.GetHeight();
 }
 
 void CGUIButtonControl::FreeResources()
@@ -187,19 +200,19 @@ void CGUIButtonControl::Update()
 {
   CGUIControl::Update();
 
-  m_imgFocus.SetWidth(m_dwWidth);
-  m_imgFocus.SetHeight(m_dwHeight);
+  m_imgFocus.SetWidth(m_width);
+  m_imgFocus.SetHeight(m_height);
 
-  m_imgNoFocus.SetWidth(m_dwWidth);
-  m_imgNoFocus.SetHeight(m_dwHeight);
+  m_imgNoFocus.SetWidth(m_width);
+  m_imgNoFocus.SetHeight(m_height);
 }
 
-void CGUIButtonControl::SetPosition(int iPosX, int iPosY)
+void CGUIButtonControl::SetPosition(float posX, float posY)
 {
-  CGUIControl::SetPosition(iPosX, iPosY);
+  CGUIControl::SetPosition(posX, posY);
 
-  m_imgFocus.SetPosition(iPosX, iPosY);
-  m_imgNoFocus.SetPosition(iPosX, iPosY);
+  m_imgFocus.SetPosition(posX, posY);
+  m_imgNoFocus.SetPosition(posX, posY);
 }
 
 void CGUIButtonControl::SetAlpha(DWORD dwAlpha)
@@ -215,12 +228,6 @@ void CGUIButtonControl::SetColourDiffuse(D3DCOLOR colour)
 
   m_imgFocus.SetColourDiffuse(colour);
   m_imgNoFocus.SetColourDiffuse(colour);
-}
-
-
-void CGUIButtonControl::SetHyperLink(long dwWindowID)
-{
-  m_lHyperLinkWindowID = dwWindowID;
 }
 
 bool CGUIButtonControl::OnMouseClick(DWORD dwButton)
@@ -251,6 +258,7 @@ void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &
 {
   m_label.font = g_fontManager.GetFont(strFont);
   m_label.textColor = dwTextColor;
+  m_label.focusedColor = dwTextColor;
   m_label.shadowColor = dwShadowColor;
   SetLabel(strText);
 }
@@ -273,7 +281,6 @@ void CGUIButtonControl::SettingsCategorySetTextAlign(DWORD dwAlign)
 void CGUIButtonControl::OnClick()
 {
   // Save values, SEND_CLICK_MESSAGE may deactivate the window
-  long lHyperLinkWindowID = m_lHyperLinkWindowID;
   vector<CStdString> clickActions = m_clickActions;
   DWORD dwControlID = GetID();
   DWORD dwParentID = GetParentID();
@@ -291,11 +298,6 @@ void CGUIButtonControl::OnClick()
     }
     return;
   }
-
-  if (lHyperLinkWindowID != WINDOW_INVALID)
-  {
-    m_gWindowManager.ActivateWindow(lHyperLinkWindowID);
-  }
 }
 
 void CGUIButtonControl::OnFocus()
@@ -305,5 +307,14 @@ void CGUIButtonControl::OnFocus()
     CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
     message.SetStringParam(m_focusAction);
     m_gWindowManager.SendThreadMessage(message);
+  }
+}
+
+void CGUIButtonControl::SetSelected(bool bSelected)
+{
+  if (m_bSelected != bSelected)
+  {
+    m_bSelected = bSelected;
+    m_bInvalidated = true;
   }
 }

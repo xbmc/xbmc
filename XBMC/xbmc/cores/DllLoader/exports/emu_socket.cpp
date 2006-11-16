@@ -93,6 +93,7 @@ extern "C"
   static DWORD hbn_dwList2[] = {0, 0, 0};
   static char hbn_hostname[128];
 
+#ifdef _XBOX
   struct mphostent* __stdcall dllgethostbyname(const char* name)
   {
     CStdString strIpAdres;
@@ -136,6 +137,7 @@ extern "C"
   {
     return (hostent*)dllgethostbyname(name);
   }
+#endif
 
   int __stdcall dllconnect( SOCKET s, const struct sockaddr FAR *name, int namelen)
   {
@@ -376,6 +378,7 @@ extern "C"
   static DWORD hba_dwList2[] = {0, 0, 0};
   static char hba_hostname[128];
 
+#ifdef _XBOX
   struct mphostent* __stdcall dllgethostbyaddr(const char* addr, int len, int type)
   {
     CLog::Log(LOGWARNING, "Untested function dllgethostbyaddr called!");
@@ -410,6 +413,7 @@ extern "C"
     }
     return 0;
   }
+#endif
 
   struct servent* __stdcall dllgetservbyname(const char* name, const char* proto)
   {

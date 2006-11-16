@@ -4,13 +4,13 @@
 
 
 
-CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, CStdString& strBackGroundTexture, CStdString& strLeftTexture, CStdString& strMidTexture, CStdString& strRightTexture, CStdString& strOverlayTexture)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_guiBackground(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strBackGroundTexture)
-    , m_guiLeft(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strLeftTexture)
-    , m_guiMid(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strMidTexture)
-    , m_guiRight(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strRightTexture)
-    , m_guiOverlay(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strOverlayTexture)
+CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& leftTexture, const CImage& midTexture, const CImage& rightTexture, const CImage& overlayTexture)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_guiBackground(dwParentID, dwControlId, posX, posY, width, height, backGroundTexture)
+    , m_guiLeft(dwParentID, dwControlId, posX, posY, width, height, leftTexture)
+    , m_guiMid(dwParentID, dwControlId, posX, posY, width, height, midTexture)
+    , m_guiRight(dwParentID, dwControlId, posX, posY, width, height, rightTexture)
+    , m_guiOverlay(dwParentID, dwControlId, posX, posY, width, height, overlayTexture)
 {
   m_fPercent = 0;
   m_iInfoCode = 0;
@@ -21,11 +21,11 @@ CGUIProgressControl::~CGUIProgressControl(void)
 {
 }
 
-void CGUIProgressControl::SetPosition(int iPosX, int iPosY)
+void CGUIProgressControl::SetPosition(float posX, float posY)
 {
   // everything is positioned based on the background image position
-  CGUIControl::SetPosition(iPosX, iPosY);
-  m_guiBackground.SetPosition(iPosX, iPosY);
+  CGUIControl::SetPosition(posX, posY);
+  m_guiBackground.SetPosition(posX, posY);
 }
 
 void CGUIProgressControl::Render()
@@ -37,58 +37,58 @@ void CGUIProgressControl::Render()
     if (m_iInfoCode) m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode);
 
     float fScaleX, fScaleY;
-    fScaleY = m_dwHeight == 0 ? 1.0f : m_dwHeight/(float)m_guiBackground.GetTextureHeight();
-    fScaleX = m_dwWidth == 0 ? 1.0f : m_dwWidth/(float)m_guiBackground.GetTextureWidth();
+    fScaleY = m_height == 0 ? 1.0f : m_height/(float)m_guiBackground.GetTextureHeight();
+    fScaleX = m_width == 0 ? 1.0f : m_width/(float)m_guiBackground.GetTextureWidth();
 
-    m_guiBackground.SetHeight((int)(fScaleY*m_guiBackground.GetTextureHeight()));
-    m_guiBackground.SetWidth((int)(fScaleX*m_guiBackground.GetTextureWidth()));
+    m_guiBackground.SetHeight(fScaleY*m_guiBackground.GetTextureHeight());
+    m_guiBackground.SetWidth(fScaleX*m_guiBackground.GetTextureWidth());
     m_guiBackground.Render();
 
     float fWidth = m_fPercent;
     fWidth /= 100.0f;
-    fWidth *= (float) (m_guiBackground.GetTextureWidth() - m_guiLeft.GetTextureWidth() - m_guiRight.GetTextureWidth());
+    fWidth *= m_guiBackground.GetTextureWidth() - m_guiLeft.GetTextureWidth() - m_guiRight.GetTextureWidth();
 
-    int iXPos = m_guiBackground.GetXPosition();
-    int iYPos = m_guiBackground.GetYPosition();
-    int iOffset = abs((int)(fScaleY * 0.5f * (m_guiLeft.GetTextureHeight() - m_guiBackground.GetTextureHeight())));
-    if (iOffset > 0)  //  Center texture to the background if necessary
-      m_guiLeft.SetPosition(iXPos, iYPos + iOffset);
+    float posX = m_guiBackground.GetXPosition();
+    float posY = m_guiBackground.GetYPosition();
+    float offset = fabs(fScaleY * 0.5f * (m_guiLeft.GetTextureHeight() - m_guiBackground.GetTextureHeight()));
+    if (offset > 0)  //  Center texture to the background if necessary
+      m_guiLeft.SetPosition(posX, posY + offset);
     else
-      m_guiLeft.SetPosition(iXPos, iYPos);
-    m_guiLeft.SetHeight((int)(fScaleY*m_guiLeft.GetTextureHeight()));
-    m_guiLeft.SetWidth((int)(fScaleX*m_guiLeft.GetTextureWidth()));
+      m_guiLeft.SetPosition(posX, posY);
+    m_guiLeft.SetHeight(fScaleY*m_guiLeft.GetTextureHeight());
+    m_guiLeft.SetWidth(fScaleX*m_guiLeft.GetTextureWidth());
     m_guiLeft.Render();
 
-    iXPos += (int)(fScaleX*m_guiLeft.GetTextureWidth());
+    posX += fScaleX*m_guiLeft.GetTextureWidth();
     if (m_fPercent && (int)fWidth > 1)
     {
-      int iOffset = abs((int)(fScaleY * 0.5f * (m_guiMid.GetTextureHeight() - m_guiBackground.GetTextureHeight())));
-      if (iOffset > 0)  //  Center texture to the background if necessary
-        m_guiMid.SetPosition(iXPos, iYPos + iOffset);
+      float offset = fabs(fScaleY * 0.5f * (m_guiMid.GetTextureHeight() - m_guiBackground.GetTextureHeight()));
+      if (offset > 0)  //  Center texture to the background if necessary
+        m_guiMid.SetPosition(posX, posY + offset);
       else
-        m_guiMid.SetPosition(iXPos, iYPos);
-      m_guiMid.SetHeight((int)(fScaleY * m_guiMid.GetTextureHeight()));
-      m_guiMid.SetWidth((int)(fScaleX * fWidth));
+        m_guiMid.SetPosition(posX, posY);
+      m_guiMid.SetHeight(fScaleY * m_guiMid.GetTextureHeight());
+      m_guiMid.SetWidth(fScaleX * fWidth);
       m_guiMid.Render();
-      iXPos += (int)(fWidth * fScaleX);
+      posX += fWidth * fScaleX;
     }
 
-    iOffset = abs((int)(fScaleY * 0.5f * (m_guiRight.GetTextureHeight() - m_guiBackground.GetTextureHeight())));
-    if (iOffset > 0)  //  Center texture to the background if necessary
-      m_guiRight.SetPosition(iXPos, iYPos + iOffset);
+    offset = fabs(fScaleY * 0.5f * (m_guiRight.GetTextureHeight() - m_guiBackground.GetTextureHeight()));
+    if (offset > 0)  //  Center texture to the background if necessary
+      m_guiRight.SetPosition(posX, posY + offset);
     else
-      m_guiRight.SetPosition(iXPos, iYPos);
-    m_guiRight.SetHeight((int)(fScaleY * m_guiRight.GetTextureHeight()));
-    m_guiRight.SetWidth((int)(fScaleX * m_guiRight.GetTextureWidth()));
+      m_guiRight.SetPosition(posX, posY);
+    m_guiRight.SetHeight(fScaleY * m_guiRight.GetTextureHeight());
+    m_guiRight.SetWidth(fScaleX * m_guiRight.GetTextureWidth());
     m_guiRight.Render();
 
-    iOffset = abs((int)(fScaleY * 0.5f * (m_guiOverlay.GetTextureHeight() - m_guiBackground.GetTextureHeight())));
-    if (iOffset > 0)  //  Center texture to the background if necessary
-      m_guiOverlay.SetPosition(m_guiBackground.GetXPosition(), m_guiBackground.GetYPosition() + iOffset);
+    offset = fabs(fScaleY * 0.5f * (m_guiOverlay.GetTextureHeight() - m_guiBackground.GetTextureHeight()));
+    if (offset > 0)  //  Center texture to the background if necessary
+      m_guiOverlay.SetPosition(m_guiBackground.GetXPosition(), m_guiBackground.GetYPosition() + offset);
     else
       m_guiOverlay.SetPosition(m_guiBackground.GetXPosition(), m_guiBackground.GetYPosition());
-    m_guiOverlay.SetHeight((int)(fScaleY * m_guiOverlay.GetTextureHeight()));
-    m_guiOverlay.SetWidth((int)(fScaleX * m_guiOverlay.GetTextureWidth()));
+    m_guiOverlay.SetHeight(fScaleY * m_guiOverlay.GetTextureHeight());
+    m_guiOverlay.SetWidth(fScaleX * m_guiOverlay.GetTextureWidth());
     m_guiOverlay.Render();
   }
   CGUIControl::Render();

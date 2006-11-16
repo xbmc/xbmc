@@ -4,7 +4,9 @@
 #include "FactoryDirectory.h"
 #include "../util.h"
 #include "directorycache.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "../utils/MemoryUnitManager.h"
+#endif
 #include "../DetectDVDType.h"
 
 CVirtualDirectory::CVirtualDirectory(void) : m_vecShares(NULL)
@@ -239,6 +241,7 @@ void CVirtualDirectory::GetShares(VECSHARES &shares) const
 {
   shares = *m_vecShares;
   // add our plug n play shares
+#ifdef HAS_XBOX_HARDWARE
   if (m_allowNonLocalShares)
   {
     g_memoryUnitManager.GetMemoryUnitShares(shares);
@@ -247,6 +250,7 @@ void CVirtualDirectory::GetShares(VECSHARES &shares) const
     if(CUtil::XboxAutoDetectionGetShare(Share))
       shares.push_back(Share);
   }
+#endif
 
   // and update our dvd share
   for (unsigned int i = 0; i < shares.size(); ++i)
