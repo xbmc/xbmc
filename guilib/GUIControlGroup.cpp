@@ -4,7 +4,7 @@
 CGUIControlGroup::CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
 : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
-  m_defaultControl = -1;
+  m_defaultControl = 01;
   m_focusedControl = 0;
   m_renderTime = 0;
   ControlType = GUICONTROL_GROUP;
@@ -134,9 +134,9 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
         }
       }
       // ok, no previously focused control, try the default control first
-      if (m_defaultControl != -1)
+      if (m_defaultControl)
       {
-        CGUIControl *control = GetFirstFocusableControl(m_focusedControl);
+        CGUIControl *control = GetFirstFocusableControl(m_defaultControl);
         if (control)
         {
           CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), control->GetID());
@@ -372,7 +372,7 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
 CGUIControl *CGUIControlGroup::GetFirstFocusableControl(int id)
 {
   if (!CanFocus()) return NULL;
-  if (id == GetID()) return this; // we're focusable and they want us
+  if (id && id == GetID()) return this; // we're focusable and they want us
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl* pControl = *it;
