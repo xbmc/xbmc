@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "GUIWindowSettings.h"
+#ifdef HAS_CREDITS
 #include "Credits.h"
+#endif
 
-
-//#define CONTROL_CREDITS (10)
 #define CONTROL_CREDITS 12
 
 CGUIWindowSettings::CGUIWindowSettings(void)
@@ -35,7 +35,9 @@ bool CGUIWindowSettings::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_CREDITS)
       {
+#ifdef HAS_CREDITS
         RunCredits();
+#endif
         return true;
       }
     }

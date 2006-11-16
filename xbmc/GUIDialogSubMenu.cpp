@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "GUIDialogSubMenu.h"
 #include "Application.h"
+#ifdef HAS_CREDITS
 #include "Credits.h"
+#endif
 #include "Util.h"
 
 
@@ -43,7 +45,9 @@ void CGUIDialogSubMenu::OnClickShutdown(CGUIMessage& aMessage)
 
 void CGUIDialogSubMenu::OnClickDashboard(CGUIMessage& aMessage)
 {
+#ifdef HAS_XBOX_HARDWARE
   CUtil::RunXBE(g_guiSettings.GetString("myprograms.dashboard").c_str());
+#endif
 }
 
 void CGUIDialogSubMenu::OnClickReboot(CGUIMessage& aMessage)
@@ -61,7 +65,9 @@ void CGUIDialogSubMenu::OnClickReboot(CGUIMessage& aMessage)
 
 void CGUIDialogSubMenu::OnClickCredits(CGUIMessage& aMessage)
 {
+#ifdef HAS_CREDITS
   RunCredits();
+#endif
 }
 
 void CGUIDialogSubMenu::OnClickOnlineGaming(CGUIMessage& aMessage)

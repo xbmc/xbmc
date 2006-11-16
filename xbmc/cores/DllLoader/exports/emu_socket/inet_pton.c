@@ -38,8 +38,12 @@
 
 /* $Id$ */
 
+#ifdef _XBOX
 #include <xtl.h>
 #include <winsockx.h>
+#else
+#include <windows.h>
+#endif
 #include <stddef.h>
 #include "emu_socket.h"
 #include <errno.h>

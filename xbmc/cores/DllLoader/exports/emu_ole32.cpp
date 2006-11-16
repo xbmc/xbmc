@@ -20,7 +20,11 @@ extern "C" HRESULT WINAPI dllCoCreateInstance( REFCLSID rclsid, LPUNKNOWN pUnkOu
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - CLSID_MemoryAllocator");
     /* use the mplayer version if that is available */
+#ifdef HAS_VIDEO_PLAYBACK
     IUnknown *obj = mplayer_MemAllocatorCreate();
+#else
+    IUnknown *obj = NULL;
+#endif
     if( obj == NULL )
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" - MPlayer MemoryAllocator not available");

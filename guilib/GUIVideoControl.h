@@ -18,9 +18,12 @@ class CGUIVideoControl :
       public CGUIControl
 {
 public:
-  CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
+  CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIVideoControl(void);
   virtual void Render();
   virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseOver();
+  virtual bool CanFocus() const;
+  virtual bool CanFocusFromPoint(float posX, float posY, CGUIControl **control) const;
 };
 #endif

@@ -3,47 +3,64 @@
 #include "util.h"
 #include "xbox/iosupport.h"
 #include "xbox/xbeheader.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "xbox/undocumented.h"
 #include "xbresource.h"
+#endif
 #include "DetectDVDType.h"
-#include "ThumbnailCache.h"
+#include "autorun.h"
 #include "filesystem/hddirectory.h"
+#include "FileSystem/StackDirectory.h"
+#include "FileSystem/VirtualPathDirectory.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "filesystem/DirectoryCache.h"
+#include "ThumbnailCache.h"
+#include "FileSystem/ZipManager.h"
+#include "FileSystem/RarManager.h"
+#ifdef HAS_UPNP
+#include "FileSystem/UPnPDirectory.h"
+#endif
+#ifdef HAS_CREDITS
 #include "Credits.h"
+#endif
 #include "shortcut.h"
 #include "playlistplayer.h"
+#include "partymodemanager.h"
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/VideoRenderers/RenderManager.h"
+#endif
 #include "lib/libPython/XBPython.h"
 #include "utils/RegExp.h"
 #include "utils/AlarmClock.h" 
-#include "cores/VideoRenderers/RenderManager.h"
 #include "ButtonTranslator.h"
 #include "Picture.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogMusicScan.h"
-#include "autorun.h"
+#include "GUIDialogFileBrowser.h"
 #include "utils/fstrcmp.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/trainer.h"
-#include "FileSystem/ZipManager.h"
-#include "FileSystem/RarManager.h"
-#include "FileSystem/StackDirectory.h"
-#include "FileSystem/VirtualPathDirectory.h"
-#include "GUIDialogFileBrowser.h"
-#include "MediaManager.h"
-#include <xbdm.h>
-#include "xbox/network.h"
-#include "utils/KaiClient.h"
-#include "GUIPassword.h"
-#include "FileSystem/UPnPDirectory.h"
-#include "lib/libfilezilla/xbfilezilla.h"
-#include "lib/libscrobbler/scrobbler.h"
-#include "partymodemanager.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "utils/LED.h"
-#include "MusicInfoLoader.h"
-#include "utils/FilterFlickerPatch.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
-
+#include "utils/FilterFlickerPatch.h"
+#include "utils/LED.h"
+#endif
+#include "MediaManager.h"
+#ifdef _XBOX
+#include <xbdm.h>
+#endif
+#include "xbox/network.h"
+#include "GUIPassword.h"
+#include "utils/KaiClient.h"
+#ifdef HAS_FTP_SERVER
+#include "lib/libfilezilla/xbfilezilla.h"
+#endif
+#include "lib/libscrobbler/scrobbler.h"
+#include "MusicInfoLoader.h"
+#include "XBVideoConfig.h"
+#ifndef HAS_XBOX_D3D
+#include "DirectXGraphics.h"
+#endif
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -58,10 +75,12 @@ using namespace XFILE;
 using namespace PLAYLIST;
 static D3DGAMMARAMP oldramp, flashramp;
 
+#ifdef HAS_XBOX_HARDWARE
 extern "C"
 {
 	extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
 };
+#endif
 
 CUtil::CUtil(void)
 {
@@ -126,9 +145,11 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   CStdString strFilename = GetFileName(strFileNameAndPath);
 
   // if upnp:// we can ask for the friendlyname
+#ifdef HAS_UPNP
   if (strFileNameAndPath.Left(7).Compare("upnp://") == 0) {
       strFilename = CUPnPDirectory::GetFriendlyName(strFileNameAndPath.c_str());
   }
+#endif
   CURL url(strFileNameAndPath);
   if (strFileNameAndPath.Compare("lastfm://") == 0)
   {
@@ -543,6 +564,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 
 bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
 {
+#ifdef HAS_XBOX_HARDWARE
   BYTE	*Kernel=(BYTE *)0x80010000;
   DWORD	i, j = 0, k;
   DWORD	*CountryPtr;
@@ -656,17 +678,19 @@ bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
 
   MmSetAddressProtect(&Kernel[i], 70, j);
 
+#endif
   // All Done!
   return( true );
 } 
 
 bool CUtil::InstallTrainer(CTrainer& trainer)
 {
+	bool Found = false;
+#ifdef HAS_XBOX_HARDWARE
 	unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
 	unsigned char *hackptr = (unsigned char *)KERNEL_STORE_ADDRESS;
   void *ourmemaddr = NULL; // pointer used to allocated trainer mem
 	unsigned int i = 0;
-	bool Found = false;
 	DWORD memsize;
 
   CLog::Log(LOGDEBUG,"installing trainer %s",trainer.GetPath().c_str());
@@ -949,17 +973,19 @@ cleanup:
       }
     }
   }
+#endif
 
 	return Found;
 }
 
 bool CUtil::RemoveTrainer()
 {
+	bool Found = false;
+#ifdef HAS_XBOX_HARDWARE
   unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
 	unsigned char *hackptr = (unsigned char *)KERNEL_STORE_ADDRESS;
   void *ourmemaddr = NULL; // pointer used to allocated trainer mem
 	unsigned int i = 0;
-	bool Found = false;
   
   unsigned char xbe_entry_point[] = {0xff,0x15,0x80,0x00,0x00,0x0c}; // xbe entry point bytes in kernel
   *((DWORD*)(xbe_entry_point+2)) = KERNEL_STORE_ADDRESS;
@@ -995,7 +1021,7 @@ bool CUtil::RemoveTrainer()
         popad
     }
   }
-  
+#endif
   return Found;
 }
 
@@ -1042,6 +1068,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
     if (bUsa)
       video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCM);
 
+#ifdef HAS_XBOX_HARDWARE
     CUSTOM_LAUNCH_DATA data;
     if (!shortcut.m_strCustomGame.IsEmpty())
     {
@@ -1055,6 +1082,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
     }
     
     CUtil::RunXBE(szPath,strcmp(szParameters,"")?szParameters:NULL,video,COUNTRY_NULL,shortcut.m_strCustomGame.IsEmpty()?NULL:&data);
+#endif
   }
 }
 
@@ -1099,12 +1127,14 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
     CLog::Log(LOGDEBUG, __FUNCTION__" - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.");
     return false;
   }
+#ifdef HAS_XBOX_HARDWARE
   CGFFPatch m_ffp;
   if (!m_ffp.FFPatch(szPath1, szNewPath))
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - ERROR during Filter Flicker Patching. Falling back to the original source.");
     return false;
   }
+#endif
   if(szNewPath.IsEmpty())
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - ERROR NO Patchfile Path is empty! Falling back to the original source.");
@@ -1126,9 +1156,7 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
   {
     szPath1 = szNewPath;
   }
-  char szDevicePath[1024];
   char szPath[1024];
-  char szXbePath[1024];
   strcpy(szPath, szPath1);
   if (strncmp(szPath1, "Q:", 2) == 0)
   { // mayaswell support the virtual drive as well...
@@ -1156,15 +1184,19 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
       char* szDrive = szPath;
       char* szDirectory = &szColon[1];
 
+      char szDevicePath[1024];
+      char szXbePath[1024];
       CIoSupport helper;
       helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
 
       strcat(szDevicePath, szDirectory);
       wsprintf(szXbePath, "d:\\%s", szXbe);
 
+#ifdef HAS_XBOX_HARDWARE
       g_application.Stop();
 
       CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry, pData);
+#endif
     }
   }
   
@@ -1176,6 +1208,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   CLog::Log(LOGINFO, "launch xbe:%s %s", szPath, szXbe);
   CLog::Log(LOGINFO, " mount %s as D:", szPath);
 
+#ifdef HAS_XBOX_HARDWARE
   CIoSupport helper;
   helper.Unmount("D:");
   helper.Mount("D:", const_cast<char*>(szPath));
@@ -1221,6 +1254,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
       XLaunchNewImage(szXbe, &LaunchData );
     }
   }
+#endif
 }
 
 void CUtil::GetHomePath(CStdString& strPath)
@@ -1468,6 +1502,7 @@ void CUtil::URLEncode(CStdString& strURLData)
 
 bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon)
 {
+  bool success(false);
   // extract icon from .xbe
   CStdString localFile;
   g_charsetConverter.utf8ToStringCharset(strFilePath, localFile);
@@ -1478,17 +1513,13 @@ bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIco
   if (!xbeReader.ExtractIcon(localFile, strTempFile.c_str()))
     return false;
 
-  bool success(false);
   CXBPackedResource* pPackedResource = new CXBPackedResource();
   if ( SUCCEEDED( pPackedResource->Create( strTempFile.c_str(), 1, NULL ) ) )
   {
-    LPDIRECT3DTEXTURE8 pTexture;
-    D3DSURFACE_DESC descSurface;
-
-    pTexture = pPackedResource->GetTexture((DWORD)0);
-
+    LPDIRECT3DTEXTURE8 pTexture = pPackedResource->GetTexture((DWORD)0);
     if ( pTexture )
     {
+      D3DSURFACE_DESC descSurface;
       if ( SUCCEEDED( pTexture->GetLevelDesc( 0, &descSurface ) ) )
       {
         int iHeight = descSurface.Height;
@@ -1579,7 +1610,6 @@ bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& s
   wcsncpy(HC.TitleName, shortDescription.c_str(), 40);  // only allow 40 chars*/
   fwrite(&HC,1,sizeof(HC),hFile);
   fclose(hFile);
-  
   return true;
 }
 
@@ -1848,16 +1878,6 @@ bool CUtil::IsHD(const CStdString& strFileName)
 
 void CUtil::RemoveIllegalChars( CStdString& strText)
 {
-  /*CStdString legalChars;
-  g_charsetConverter.stringCharsetToUtf8("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßÅåÄäÖöÜüøéèçàùêÂñáïëìíâãæîðòôóõ÷ú ",legalChars);
-  CStdString utf8Text;
-    if (g_charsetConverter.isValidUtf8(strText))
-    utf8Text = strText;
-  else
-    g_charsetConverter.stringCharsetToUtf8(strText,utf8Text);
-  for (unsigned int i=0;i<utf8Text.size();++i )
-    if (legalChars.find(utf8Text[i]) == -1)
-      strText[i] = '_';*/
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
   static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßÅåÄäÖöÜüøéèçàùêÂñáïëìíâãæîðòôóõ÷ú ";
@@ -1947,8 +1967,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
       g_stSettings.m_szAlternateSubtitleDirectory[0] = '\0';
     }
-    else
-    if (!CDirectory::Exists(g_stSettings.m_szAlternateSubtitleDirectory))
+    else if (!CDirectory::Exists(g_stSettings.m_szAlternateSubtitleDirectory))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
       g_stSettings.m_szAlternateSubtitleDirectory[0] = '\0';
@@ -2524,7 +2543,7 @@ void CUtil::InitGamma()
 void CUtil::RestoreBrightnessContrastGamma()
 {
   g_graphicsContext.Lock();
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(D3DSGR_IMMEDIATE , &oldramp);
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &oldramp);
   g_graphicsContext.Unlock();
 }
 
@@ -2557,7 +2576,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 
   // set ramp next v sync
   g_graphicsContext.Lock();
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? D3DSGR_IMMEDIATE : 0, &ramp);
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
   g_graphicsContext.Unlock();
 }
 
@@ -2597,7 +2616,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
     SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
   }
   else
-    g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? D3DSGR_IMMEDIATE : 0, &flashramp);
+    g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
   g_graphicsContext.Unlock();
 }
 
@@ -2608,7 +2627,9 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     g_graphicsContext.Lock();
     if (g_application.IsPlayingVideo())
     {
+#ifdef HAS_VIDEO_PLAYBACK
       g_renderManager.SetupScreenshot();
+#endif
     }
     if (0)
     { // reset calibration to defaults
@@ -2619,8 +2640,15 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
       memcpy(&g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan, &oscan, sizeof(OVERSCAN));
     }
     // now take screenshot
+#ifdef HAS_XBOX_D3D
     g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+#endif
+#ifdef HAS_XBOX_D3D
     if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( -1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+#else
+    g_application.RenderNoPresent();
+    if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+#endif
     {
       if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
       {
@@ -2635,10 +2663,14 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     g_graphicsContext.Unlock();
     if (flashScreen)
     {
+#ifdef HAS_XBOX_D3D
       g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+#endif
       FlashScreen(true, true);
       Sleep(10);
+#ifdef HAS_XBOX_D3D
       g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+#endif
       FlashScreen(true, false);
     }
 }
@@ -2702,15 +2734,6 @@ void CUtil::TakeScreenshot()
 void CUtil::ClearCache()
 {
   g_directoryCache.ClearDirectory(g_settings.GetMusicThumbFolder());
-/*
-  g_directoryCache.ClearDirectory(g_settings.GetThumbnailsFolder());
-
-  for (unsigned int hex=0; hex < 16; hex++)
-  {
-    CStdString strHex;
-    strHex.Format("\\%x",hex);
-    g_directoryCache.ClearDirectory(g_settings.GetThumbnailsFolder() + strHex);
-  }*/
 }
 
 void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
@@ -2795,11 +2818,11 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // return true if directory already exist
   if (CDirectory::Exists(strPath)) return true;
 
-  /* split strPath up into an array
-   * music\\album\\ will result in
-   * music
-   * music\\album
-   */
+  // split strPath up into an array
+  // music\\album\\ will result in
+  // music
+  // music\\album
+  //
 
   int i;
   CFileItem item(strPath,true);
@@ -2962,7 +2985,8 @@ const BUILT_IN commands[] = {
   "SetVolume","Set the current volume",
   "Dialog.Close","Close a dialog",
   "System.LogOff","Log off current user",
-  "System.PWMControl","Control PWM RGB LEDs"
+  "System.PWMControl","Control PWM RGB LEDs",
+  "Resolution", "Change XBMC's Resolution",
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3057,7 +3081,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("credits"))
   {
+#ifdef HAS_CREDITS
     RunCredits();
+#endif
   }
   else if (execute.Equals("reset")) //Will reset the xbox, aka soft reset
   {
@@ -3138,6 +3164,25 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("runscript"))
   {
     g_pythonParser.evalFile(parameter.c_str());
+  }
+  else if (execute.Equals("resolution"))
+  {
+    RESOLUTION res = PAL_4x3;
+    if (parameter.Equals("pal")) res = PAL_4x3;
+    else if (parameter.Equals("pal16x9")) res = PAL_16x9;
+    else if (parameter.Equals("ntsc")) res = NTSC_4x3;
+    else if (parameter.Equals("ntsc16x9")) res = NTSC_16x9;
+    else if (parameter.Equals("720p")) res = HDTV_720p;
+    else if (parameter.Equals("1080i")) res = HDTV_1080i;
+    if (g_videoConfig.IsValidResolution(res))
+    {
+      g_guiSettings.SetInt("videoscreen.resolution", res);
+      //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
+      g_graphicsContext.SetGUIResolution(res);
+      //set our lookandfeelres to the resolution set in graphiccontext
+      g_guiSettings.m_LookAndFeelResolution = res;
+      g_application.ReloadSkin();
+    }
   }
   else if (execute.Equals("extract"))
   {
@@ -3223,13 +3268,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("reloadskin"))
   {
     //	Reload the skin
-    CGUIWindow* pWindow=m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-    DWORD dwFocusedControlID=pWindow->GetFocusedControl();
-
-    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-
-    CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), dwFocusedControlID, 0);
-    pWindow->OnMessage(msg);
+    g_application.ReloadSkin();
   }
   else if (execute.Equals("playercontrol"))
   {
@@ -3315,7 +3354,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       if( g_application.IsPlaying() && g_application.m_pPlayer )
       {
         CAction action;
-        memset(&action, 0, 0);
+        memset(&action, 0, sizeof(CAction));
         action.wID = ACTION_SHOW_VIDEOMENU;
         g_application.m_pPlayer->OnAction(action);
       }
@@ -3644,7 +3683,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
-    
     g_settings.LoadProfile(0); // login screen always runs as default user
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
@@ -4049,7 +4087,11 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
 	FILETIME stNewTime, stCurTime;
 	SystemTimeToFileTime(&NewTime, &stNewTime);
 	SystemTimeToFileTime(&CurTime, &stCurTime);
-	bool bReturn=NtSetSystemTime(&stNewTime, &stCurTime); //NtSetSystemTime(IN PLARGE_INTEGER SystemTime, OUT PLARGE_INTEGER PreviousTime OPTIONAL );
+#ifdef HAS_XBOX_HARDWARE
+  bool bReturn=NtSetSystemTime(&stNewTime, &stCurTime); //NtSetSystemTime(IN PLARGE_INTEGER SystemTime, OUT PLARGE_INTEGER PreviousTime OPTIONAL );
+#else
+  bool bReturn(false);
+#endif
   return bReturn;
 }
 int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
@@ -4086,6 +4128,8 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
 }
 bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo )
 {
+  bool bState= false;
+#ifdef HAS_XBOX_HARDWARE
   //GeminiServer
   CStdString strWorkTemp;
   CStdString strSendMessage = "ping\0";
@@ -4100,7 +4144,6 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
   XNADDR xna;
 	DWORD dwState;
   fd_set readfds; 
-  bool bState= false;
 	if( ( !inited )  || ( bRefresh ) )
 	{
 		dwState = XNetGetTitleXnAddr(&xna);
@@ -4178,10 +4221,12 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 		FD_SET(udp_server_socket, &readfds);
 		life = select( 0,&readfds, NULL, NULL, &timeout );
 	}
+#endif
   return bState;
 }
 bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
 {
+#ifdef HAS_XBOX_HARDWARE
   if (g_guiSettings.GetBool("autodetect.onoff"))
   {
     static DWORD pingTimer = 0;
@@ -4240,10 +4285,12 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
     strHasClientIP ="", strHasClientInfo = ""; 
     g_infoManager.SetAutodetectedXbox(false);
   }
+#endif
   return true;
 }
 bool CUtil::XboxAutoDetectionGetShare(CShare& share)
 {
+#ifdef HAS_XBOX_HARDWARE
   if( !strNewClientIP.IsEmpty() && !strNewClientInfo.IsEmpty())
   {
     //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
@@ -4265,6 +4312,7 @@ bool CUtil::XboxAutoDetectionGetShare(CShare& share)
     }
     return true;
   }
+#endif
   return false;
 }
 bool CUtil::IsFTP(const CStdString& strFile)
@@ -4276,6 +4324,7 @@ bool CUtil::IsFTP(const CStdString& strFile)
 
 bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax )
 {
+#ifdef HAS_FTP_SERVER
   if( !g_application.m_pFileZilla )
     return false;
 
@@ -4292,10 +4341,12 @@ bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &i
     else return false;
 	}
   else 
+#endif
     return false;
 }
 bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword)
 {
+#ifdef HAS_FTP_SERVER
   if( !g_application.m_pFileZilla )
     return false;
   
@@ -4325,12 +4376,14 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
       i++;
     }
   }
+#endif
   return false;
 }
 //strXboxNickNameIn: New NickName to write
 //strXboxNickNameOut: Same if it is in NICKNAME Cache
 bool CUtil::SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut)
 {
+#ifdef HAS_XBOX_HARDWARE
   WCHAR pszNickName[MAX_NICKNAME];
   unsigned int uiSize = MAX_NICKNAME;
   bool bfound= false;
@@ -4353,11 +4406,13 @@ bool CUtil::SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNic
     CStdStringW wstrName = strXboxNickNameIn.c_str();
     XSetNickname(wstrName.c_str(), false);
   }
+#endif
   return true;
 }
 //strXboxNickNameOut: Will fast receive the last XBOX NICKNAME from Cache
 bool CUtil::GetXBOXNickName(CStdString &strXboxNickNameOut)
 {
+#ifdef HAS_XBOX_HARDWARE
   WCHAR wszXboxNickname[MAX_NICKNAME];
   HANDLE hNickName = XFindFirstNickname( FALSE, wszXboxNickname, MAX_NICKNAME );
 	if ( hNickName != INVALID_HANDLE_VALUE )
@@ -4367,12 +4422,12 @@ bool CUtil::GetXBOXNickName(CStdString &strXboxNickNameOut)
     return true;
 	}
   else
+#endif
   { 
     // it seems to be empty? should we create one? or the user
     strXboxNickNameOut.Format("");
     return false;
   }
-  
 }
 
 void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask)
@@ -4537,24 +4592,23 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
 float CUtil::CurrentCpuUsage()
 {
   return 0.0f;
-/*
-  float fCpuUsage = -1.0;
-  
-  if (!m_hCurrentCpuUsage)
-  {
-    DmOpenPerformanceCounter("% CPU:total", &m_hCurrentCpuUsage);
-  }
-  
-  if (m_hCurrentCpuUsage)
-  {
-    DM_COUNTDATA data;
 
-    DmQueryPerformanceCounterHandle(m_hCurrentCpuUsage, DMCOUNT_PRATIO, &data);
-    fCpuUsage = (float)data.CountValue.LowPart / (float)data.RateValue.LowPart * 100.0f;
-  }
-  
-  return fCpuUsage;
-*/
+//  float fCpuUsage = -1.0;
+// 
+//  if (!m_hCurrentCpuUsage)
+//  {
+//    DmOpenPerformanceCounter("% CPU:total", &m_hCurrentCpuUsage);
+//  }
+//  
+//  if (m_hCurrentCpuUsage)
+//  {
+//    DM_COUNTDATA data;
+//
+//    DmQueryPerformanceCounterHandle(m_hCurrentCpuUsage, DMCOUNT_PRATIO, &data);
+//    fCpuUsage = (float)data.CountValue.LowPart / (float)data.RateValue.LowPart * 100.0f;
+//  }
+//  
+//  return fCpuUsage;
 }
 
 bool CUtil::SupportsFileOperations(const CStdString& strPath)
@@ -4569,8 +4623,10 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     CStackDirectory dir;
     return SupportsFileOperations(dir.GetFirstStackedFile(strPath));
   }
+#ifdef HAS_XBOX_HARDWARE
   if (IsMemCard(strPath) && g_memoryUnitManager.IsDriveWriteable(strPath))
     return true;
+#endif
   return false;
 }
 
@@ -4619,6 +4675,7 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
 
 bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strTransition, int iTrTime)
 {
+#ifdef HAS_XBOX_HARDWARE
   if (strRGBa.IsEmpty() && strRGBb.IsEmpty()) // no color, return false!
     return false;
 
@@ -4628,6 +4685,9 @@ bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, con
   }
   g_iledSmartxxrgb.Start();
   return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
+#else
+  return false;
+#endif
 }
 
 // We check if the MediaCenter-Video-patch is already installed.
@@ -4635,6 +4695,7 @@ bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, con
 // This is done by searching from 0x80011000 to 0x80024000.
 bool CUtil::LookForKernelPatch()
 {
+#ifdef HAS_XBOX_HARDWARE
 	BYTE	*Kernel=(BYTE *)0x80010000;
 	DWORD	i, j = 0;
 
@@ -4650,6 +4711,7 @@ bool CUtil::LookForKernelPatch()
 		if(j==25) 
       return true;
 	}
+#endif
 	return false;
 }
 // This routine removes our patch if it is not used.
@@ -4657,6 +4719,7 @@ bool CUtil::LookForKernelPatch()
 // for a mismatch of eeprom setting and current resolution.
 void CUtil::RemoveKernelPatch()
 {
+#ifdef HAS_XBOX_HARDWARE
 	BYTE	*Kernel=(BYTE *)0x80010000;
 	DWORD	i, j = 0;
 
@@ -4678,6 +4741,7 @@ void CUtil::RemoveKernelPatch()
 			MmSetAddressProtect(&Kernel[i], 70, j);
 		}
   }
+#endif
 }
 
 void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!

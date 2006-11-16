@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "GUIWindowMusicBase.h"
-#include "MusicInfoTagLoaderFactory.h"
 #include "GUIWindowMusicInfo.h"
 #include "FileSystem/ZipManager.h"
+#ifdef HAS_FILESYSTEM
 #include "FileSystem/DAAPDirectory.h"
+#endif
 #include "PlayListFactory.h"
 #include "Util.h"
 #include "PlayListM3U.h"
@@ -11,7 +12,9 @@
 #include "PlayListPlayer.h"
 #include "GUIListControl.h"
 #include "FileSystem/DirectoryCache.h"
+#ifdef HAS_CDDA_RIPPER
 #include "CDRip/CDDARipper.h"
+#endif
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
@@ -1211,12 +1214,12 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   // calculate our position
-  int iPosX = 200, iPosY = 100;
+  float posX = 200, posY = 100;
   CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
   if (pList)
   {
-    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
-    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   
   // mark the item
@@ -1314,7 +1317,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     btn_NowPlaying = pMenu->AddButton(13350);
 
   // position it correctly
-  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
@@ -1341,7 +1344,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
       else
       {
         // Play With...
-        g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
+        g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, posX, posY);
         if( g_application.m_eForcedNextPlayer != EPC_NONE )
           OnClick(iItem);
       }
@@ -1411,8 +1414,10 @@ void CGUIWindowMusicBase::OnRipCD()
   {
     if (!g_application.CurrentFileItem().IsCDDA())
     {
+#ifdef HAS_CDDA_RIPPER
       CCDDARipper ripper;
       ripper.RipCD();
+#endif
     }
     else
     {
@@ -1436,12 +1441,14 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
   // special case for DAAP playlist folders
   bool bIsDAAPplaylist = false;
+#ifdef HAS_FILESYSTEM
   if (pItem->IsDAAP() && pItem->m_bIsFolder)
   {
     CDAAPDirectory dirDAAP;
     if (dirDAAP.GetCurrLevel(pItem->m_strPath) == 0)
       bIsDAAPplaylist = true;
   }
+#endif
   // if its a folder, build a playlist
   if (pItem->m_bIsFolder || (m_gWindowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
   {

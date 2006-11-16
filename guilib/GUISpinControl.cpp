@@ -5,14 +5,14 @@
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
 
-CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo &labelInfo, int iType)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_imgspinUp(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strUp)
-    , m_imgspinDown(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strDown)
-    , m_imgspinUpFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strUpFocus)
-    , m_imgspinDownFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strDownFocus)
+CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureUp, const CImage& textureDown, const CImage& textureUpFocus, const CImage& textureDownFocus, const CLabelInfo &labelInfo, int iType)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_imgspinUp(dwParentID, dwControlId, posX, posY, width, height, textureUp)
+    , m_imgspinDown(dwParentID, dwControlId, posX, posY, width, height, textureDown)
+    , m_imgspinUpFocus(dwParentID, dwControlId, posX, posY, width, height, textureUpFocus)
+    , m_imgspinDownFocus(dwParentID, dwControlId, posX, posY, width, height, textureDownFocus)
 {
-  m_fMaxTextWidth = 0;
+  m_maxTextWidth = 0;
   m_bReverse = false;
   m_iStart = 0;
   m_iEnd = 100;
@@ -29,11 +29,13 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
   m_iTypedPos = 0;
   strcpy(m_szTyped, "");
   ControlType = GUICONTROL_SPIN;
+  m_numItems = 10;
+  m_itemsPerPage = 10;
 }
 
 void CGUISpinControl::SetNonProportional(bool bOnOff)
 {
-  m_fMaxTextWidth = 0;
+  m_maxTextWidth = 0;
 
   if ((bOnOff) && (m_label.font))
   {
@@ -47,9 +49,9 @@ void CGUISpinControl::SetNonProportional(bool bOnOff)
       g_charsetConverter.utf8ToUTF16(m_vecLabels[m_iValue].c_str(), strLabelUnicode);
       m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
 
-      if (fTextWidth > m_fMaxTextWidth)
+      if (fTextWidth > m_maxTextWidth)
       {
-        m_fMaxTextWidth = fTextWidth;
+        m_maxTextWidth = fTextWidth;
       }
     }
   }
@@ -89,6 +91,7 @@ bool CGUISpinControl::OnAction(const CAction &action)
       switch (m_iType)
       {
       case SPIN_CONTROL_TYPE_INT:
+      case SPIN_CONTROL_TYPE_PAGE:
         {
           if (iValue < m_iStart || iValue > m_iEnd)
           {
@@ -222,6 +225,15 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
     switch (message.GetMessage())
     {
     case GUI_MSG_ITEM_SELECT:
+      if (SPIN_CONTROL_TYPE_PAGE == m_iType)
+      {
+        // the page number...
+        int offset = message.GetParam1() / m_itemsPerPage + 1;
+        if ((int)message.GetParam1() >= m_numItems - m_itemsPerPage)
+          offset = m_iEnd;
+        SetValue(offset);
+        return true;
+      }
       SetValue( message.GetParam1());
       if (message.GetParam2() == SPIN_BUTTON_DOWN || message.GetParam2() == SPIN_BUTTON_UP)
         m_iSelect = message.GetParam2();
@@ -229,6 +241,15 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
       break;
 
     case GUI_MSG_LABEL_RESET:
+      if (SPIN_CONTROL_TYPE_PAGE == m_iType)
+      {
+        m_itemsPerPage = message.GetParam1();
+        m_numItems = message.GetParam2();
+        int numPages = (m_numItems + m_itemsPerPage - 1) / m_itemsPerPage;
+        SetRange(1, numPages);
+        m_iValue = 1;
+        return true;
+      }
       {
         Clear();
         return true;
@@ -283,10 +304,10 @@ void CGUISpinControl::AllocResources()
   m_imgspinDown.AllocResources();
   m_imgspinDownFocus.AllocResources();
 
-  m_imgspinDownFocus.SetPosition(m_iPosX, m_iPosY);
-  m_imgspinDown.SetPosition(m_iPosX, m_iPosY);
-  m_imgspinUp.SetPosition(m_iPosX + m_imgspinDown.GetWidth(), m_iPosY);
-  m_imgspinUpFocus.SetPosition(m_iPosX + m_imgspinDownFocus.GetWidth(), m_iPosY);
+  m_imgspinDownFocus.SetPosition(m_posX, m_posY);
+  m_imgspinDown.SetPosition(m_posX, m_posY);
+  m_imgspinUp.SetPosition(m_posX + m_imgspinDown.GetWidth(), m_posY);
+  m_imgspinUpFocus.SetPosition(m_posX + m_imgspinDownFocus.GetWidth(), m_posY);
 }
 
 void CGUISpinControl::FreeResources()
@@ -319,11 +340,11 @@ void CGUISpinControl::Render()
     strcpy(m_szTyped, "");
   }
 
-  int iPosX = m_iPosX;
+  float posX = m_posX;
   CStdString text;
   CStdStringW strTextUnicode;
 
-  if (m_iType == SPIN_CONTROL_TYPE_INT)
+  if (m_iType == SPIN_CONTROL_TYPE_INT || m_iType == SPIN_CONTROL_TYPE_PAGE)
   {
     if (m_bShowRange)
     {
@@ -369,19 +390,19 @@ void CGUISpinControl::Render()
   if (m_label.font)
     m_label.font->GetTextExtent( strTextUnicode.c_str(), &fTextWidth, &fTextHeight);
   // Position the arrows
-  if (m_fMaxTextWidth > 0)
+  if (m_maxTextWidth > 0)
   {
-    m_imgspinUpFocus.SetPosition((int)m_fMaxTextWidth + 5 + iPosX + m_imgspinDown.GetWidth(), m_iPosY);
-    m_imgspinUp.SetPosition((int)m_fMaxTextWidth + 5 + iPosX + m_imgspinDown.GetWidth(), m_iPosY);
-    m_imgspinDownFocus.SetPosition((int)m_fMaxTextWidth + 5 + iPosX, m_iPosY);
-    m_imgspinDown.SetPosition((int)m_fMaxTextWidth + 5 + iPosX, m_iPosY);
+    m_imgspinUpFocus.SetPosition(m_maxTextWidth + 5 + posX + m_imgspinDown.GetWidth(), m_posY);
+    m_imgspinUp.SetPosition(m_maxTextWidth + 5 + posX + m_imgspinDown.GetWidth(), m_posY);
+    m_imgspinDownFocus.SetPosition(m_maxTextWidth + 5 + posX, m_posY);
+    m_imgspinDown.SetPosition(m_maxTextWidth + 5 + posX, m_posY);
   }
   else if ( !(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)) && (m_label.font))
   {
-    m_imgspinUpFocus.SetPosition((int)fTextWidth + 5 + iPosX + m_imgspinDown.GetWidth(), m_iPosY);
-    m_imgspinUp.SetPosition((int)fTextWidth + 5 + iPosX + m_imgspinDown.GetWidth(), m_iPosY);
-    m_imgspinDownFocus.SetPosition((int)fTextWidth + 5 + iPosX, m_iPosY);
-    m_imgspinDown.SetPosition((int)fTextWidth + 5 + iPosX, m_iPosY);
+    m_imgspinUpFocus.SetPosition(fTextWidth + 5 + posX + m_imgspinDown.GetWidth(), m_posY);
+    m_imgspinUp.SetPosition(fTextWidth + 5 + posX + m_imgspinDown.GetWidth(), m_posY);
+    m_imgspinDownFocus.SetPosition(fTextWidth + 5 + posX, m_posY);
+    m_imgspinDown.SetPosition(fTextWidth + 5 + posX, m_posY);
   }
 
   if ( HasFocus() )
@@ -407,17 +428,21 @@ void CGUISpinControl::Render()
     float fPosY;
     if (m_label.align & XBFONT_CENTER_Y)
     {
-      fPosY = (float)m_iPosY + m_dwHeight * 0.5f;
+      fPosY = m_posY + m_height * 0.5f;
     }
     else
     {
-      fPosY = (float)(m_iPosY + m_label.offsetY);
+      fPosY = m_posY + m_label.offsetY;
     }
 
-    float fPosX = (float)(m_iPosX + m_label.offsetX) - 3;
+    float fPosX = m_posX + m_label.offsetX - 3;
     if ( !IsDisabled() /*HasFocus()*/ )
     {
       m_label.font->DrawText(fPosX, fPosY, m_label.textColor, m_label.shadowColor, strTextUnicode.c_str(), m_label.align);
+    }
+    else if (HasFocus() && m_label.focusedColor)
+    {
+      m_label.font->DrawText(fPosX, fPosY, m_label.focusedColor, m_label.shadowColor, strTextUnicode.c_str(), m_label.align);
     }
     else
     {
@@ -425,9 +450,9 @@ void CGUISpinControl::Render()
     }
     // set our hit rectangle for MouseOver events
     if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
-      m_rectHit.SetRect((int)fPosX, (int)fPosY, (int) fTextWidth, (int) fTextHeight);
+      m_rectHit.SetRect(fPosX, fPosY, fTextWidth, fTextHeight);
     else
-      m_rectHit.SetRect((int)(fPosX - fTextWidth), (int)fPosY, (int) fTextWidth, (int) fTextHeight);
+      m_rectHit.SetRect(fPosX - fTextWidth, fPosY, fTextWidth, fTextHeight);
   }
   CGUIControl::Render();
 }
@@ -494,27 +519,21 @@ const string CGUISpinControl::GetLabel() const
   return "";
 }
 
-void CGUISpinControl::SetPosition(int iPosX, int iPosY)
+void CGUISpinControl::SetPosition(float posX, float posY)
 {
-  CGUIControl::SetPosition(iPosX, iPosY);
+  CGUIControl::SetPosition(posX, posY);
 
-  m_imgspinDownFocus.SetPosition(iPosX, iPosY);
-  m_imgspinDown.SetPosition(iPosX, iPosY);
+  m_imgspinDownFocus.SetPosition(posX, posY);
+  m_imgspinDown.SetPosition(posX, posY);
 
-  m_imgspinUp.SetPosition(m_iPosX + m_imgspinDown.GetWidth(), m_iPosY);
-  m_imgspinUpFocus.SetPosition(m_iPosX + m_imgspinDownFocus.GetWidth(), m_iPosY);
+  m_imgspinUp.SetPosition(m_posX + m_imgspinDown.GetWidth(), m_posY);
+  m_imgspinUpFocus.SetPosition(m_posX + m_imgspinDownFocus.GetWidth(), m_posY);
 
 }
 
-DWORD CGUISpinControl::GetWidth() const
+float CGUISpinControl::GetWidth() const
 {
   return m_imgspinDown.GetWidth() * 2 ;
-}
-
-void CGUISpinControl::SetFocus(bool bOnOff)
-{
-  CGUIControl::SetFocus(bOnOff);
-  m_iSelect = SPIN_BUTTON_DOWN;
 }
 
 bool CGUISpinControl::CanMoveUp(bool bTestReverse)
@@ -525,6 +544,7 @@ bool CGUISpinControl::CanMoveUp(bool bTestReverse)
   switch (m_iType)
   {
   case SPIN_CONTROL_TYPE_INT:
+  case SPIN_CONTROL_TYPE_PAGE:
     {
       if (m_iValue - 1 >= m_iStart)
         return true;
@@ -558,6 +578,7 @@ bool CGUISpinControl::CanMoveDown(bool bTestReverse)
   switch (m_iType)
   {
   case SPIN_CONTROL_TYPE_INT:
+  case SPIN_CONTROL_TYPE_PAGE:
     {
       if (m_iValue + 1 <= m_iEnd)
         return true;
@@ -592,15 +613,28 @@ void CGUISpinControl::PageUp()
     {
       if (m_iValue - 10 >= m_iStart)
         m_iValue -= 10;
+      else
+        m_iValue = m_iStart;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
       return ;
+    }
+    break;
+  case SPIN_CONTROL_TYPE_PAGE:
+    {
+      if (m_iValue - 10 >= m_iStart)
+        m_iValue -= 10;
+      else
+        m_iValue = m_iStart;
+      SendPageChange();
     }
     break;
   case SPIN_CONTROL_TYPE_TEXT:
     {
       if (m_iValue - 10 >= 0)
         m_iValue -= 10;
+      else
+        m_iValue = 0;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
       return ;
@@ -618,9 +652,20 @@ void CGUISpinControl::PageDown()
     {
       if (m_iValue + 10 <= m_iEnd)
         m_iValue += 10;
+      else
+        m_iValue = m_iEnd;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
       return ;
+    }
+    break;
+  case SPIN_CONTROL_TYPE_PAGE:
+    {
+      if (m_iValue + 10 <= m_iEnd)
+        m_iValue += 10;
+      else
+        m_iValue = m_iEnd;
+      SendPageChange();
     }
     break;
   case SPIN_CONTROL_TYPE_TEXT:
@@ -629,7 +674,6 @@ void CGUISpinControl::PageDown()
         m_iValue += 10;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
-      return ;
     }
     break;
   }
@@ -652,6 +696,17 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
         m_iValue = m_iEnd;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
+      return ;
+    }
+    break;
+
+  case SPIN_CONTROL_TYPE_PAGE:
+    {
+      if (m_iValue - 1 >= m_iStart)
+        m_iValue--;
+      else if (m_iValue == m_iStart)
+        m_iValue = m_iEnd;
+      SendPageChange();
       return ;
     }
     break;
@@ -703,6 +758,16 @@ void CGUISpinControl::MoveDown(bool bTestReverse)
     }
     break;
 
+  case SPIN_CONTROL_TYPE_PAGE:
+    {
+      if (m_iValue + 1 <= m_iEnd)
+        m_iValue++;
+      else if (m_iValue == m_iEnd)
+        m_iValue = m_iStart;
+      SendPageChange();
+    }
+    break;
+
   case SPIN_CONTROL_TYPE_FLOAT:
     {
       if (m_fValue + m_fInterval <= m_fEnd)
@@ -738,15 +803,6 @@ void CGUISpinControl::SetFloatInterval(float fInterval)
   m_fInterval = fInterval;
 }
 
-float CGUISpinControl::GetFloatInterval() const
-{
-  return m_fInterval;
-}
-
-bool CGUISpinControl::GetShowRange() const
-{
-  return m_bShowRange;
-}
 void CGUISpinControl::SetShowRange(bool bOnoff)
 {
   m_bShowRange = bOnoff;
@@ -757,6 +813,7 @@ int CGUISpinControl::GetMinimum() const
   switch (m_iType)
   {
   case SPIN_CONTROL_TYPE_INT:
+  case SPIN_CONTROL_TYPE_PAGE:
     return m_iStart;
     break;
 
@@ -776,6 +833,7 @@ int CGUISpinControl::GetMaximum() const
   switch (m_iType)
   {
   case SPIN_CONTROL_TYPE_INT:
+  case SPIN_CONTROL_TYPE_PAGE:
     return m_iEnd;
     break;
 
@@ -790,22 +848,22 @@ int CGUISpinControl::GetMaximum() const
   return 100;
 }
 
-bool CGUISpinControl::HitTest(int iPosX, int iPosY) const
+bool CGUISpinControl::HitTest(float posX, float posY) const
 {
-  if (m_imgspinUpFocus.HitTest(iPosX, iPosY) || m_imgspinDownFocus.HitTest(iPosX, iPosY))
+  if (m_imgspinUpFocus.HitTest(posX, posY) || m_imgspinDownFocus.HitTest(posX, posY))
     return true;
   // check if we have the text bit selected...
-  return m_rectHit.PtInRect(iPosX, iPosY);
+  return m_rectHit.PtInRect(posX, posY);
 }
 
 bool CGUISpinControl::OnMouseOver()
 {
-  if (m_imgspinUpFocus.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_imgspinUpFocus.HitTest(g_Mouse.posX, g_Mouse.posY))
   {
     if (CanMoveUp()) CGUIControl::OnMouseOver();
     m_iSelect = SPIN_BUTTON_UP;
   }
-  else if (m_imgspinDownFocus.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  else if (m_imgspinDownFocus.HitTest(g_Mouse.posX, g_Mouse.posY))
   {
     if (CanMoveDown()) CGUIControl::OnMouseOver();
     m_iSelect = SPIN_BUTTON_DOWN;
@@ -821,11 +879,11 @@ bool CGUISpinControl::OnMouseOver()
 bool CGUISpinControl::OnMouseClick(DWORD dwButton)
 { // only left button handled
   if (dwButton != MOUSE_LEFT_BUTTON) return false;
-  if (m_imgspinUpFocus.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_imgspinUpFocus.HitTest(g_Mouse.posX, g_Mouse.posY))
   {
     MoveUp();
   }
-  if (m_imgspinDownFocus.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_imgspinDownFocus.HitTest(g_Mouse.posX, g_Mouse.posY))
   {
     MoveDown();
   }
@@ -858,4 +916,10 @@ CStdString CGUISpinControl::GetDescription() const
 bool CGUISpinControl::IsFocusedOnUp() const
 {
   return (m_iSelect == SPIN_BUTTON_UP);
+}
+
+void CGUISpinControl::SendPageChange()
+{
+  CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, (m_iValue - 1) * m_itemsPerPage);
+  SendWindowMessage(message);
 }

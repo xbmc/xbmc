@@ -4,11 +4,11 @@
 #include "GUIFontManager.h"
 
 
-CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strBackGroundTexture, const CStdString& strMidTexture, const CStdString& strMidTextureFocus, int iType)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_guiBackground(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strBackGroundTexture)
-    , m_guiMid(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strMidTexture)
-    , m_guiMidFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strMidTextureFocus)
+CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& nibTexture, const CImage& nibTextureFocus, int iType)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_guiBackground(dwParentID, dwControlId, posX, posY, width, height, backGroundTexture)
+    , m_guiMid(dwParentID, dwControlId, posX, posY, width, height, nibTexture)
+    , m_guiMidFocus(dwParentID, dwControlId, posX, posY, width, height, nibTextureFocus)
 {
   m_iType = iType;
   m_iPercent = 0;
@@ -19,8 +19,8 @@ CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, int iP
   m_fInterval = 0.1f;
   m_iValue = 0;
   m_fValue = 0.0;
-  m_iControlOffsetX = 60;
-  m_iControlOffsetY = 0;
+  m_controlOffsetX = 60;
+  m_controlOffsetY = 0;
   ControlType = GUICONTROL_SLIDER;
   m_renderText = true;
   m_iInfoCode = 0;
@@ -48,13 +48,12 @@ void CGUISliderControl::Render()
       {
         CStdStringW value;
         value.Format(L"%2.2f", m_fValue);
-        pFont13->DrawText( (float)m_iPosX, (float)m_iPosY, 0xffffffff, 0,
-                                value.c_str(), 0, 0);
+        pFont13->DrawText(m_posX, m_posY, 0xffffffff, 0, value.c_str(), 0, 0);
       }
-      m_guiBackground.SetPosition(m_iPosX + m_iControlOffsetX, m_iPosY + m_iControlOffsetY);
+      m_guiBackground.SetPosition(m_posX + m_controlOffsetX, m_posY + m_controlOffsetY);
 
-      fRange = (float)(m_fEnd - m_fStart);
-      fPos = (float)(m_fValue - m_fStart);
+      fRange = m_fEnd - m_fStart;
+      fPos = m_fValue - m_fStart;
       fPercent = (fPos / fRange) * 100.0f;
       m_iPercent = (int) fPercent;
       break;
@@ -66,10 +65,9 @@ void CGUISliderControl::Render()
       {
         CStdStringW value;
         value.Format(L"%i/%i", m_iValue, m_iEnd);
-        pFont13->DrawText( (float)m_iPosX, (float)m_iPosY, 0xffffffff, 0,
-                                value.c_str(), 0, 0);
+        pFont13->DrawText(m_posX, m_posY, 0xffffffff, 0, value.c_str(), 0, 0);
       }
-      m_guiBackground.SetPosition(m_iPosX + m_iControlOffsetX, m_iPosY + m_iControlOffsetY);
+      m_guiBackground.SetPosition(m_posX + m_controlOffsetX, m_posY + m_controlOffsetY);
 
       fRange = (float)(m_iEnd - m_iStart);
       fPos = (float)(m_iValue - m_iStart);
@@ -80,11 +78,11 @@ void CGUISliderControl::Render()
     }
 
     float fScaleX, fScaleY;
-    fScaleY = m_dwHeight == 0 ? 1.0f : m_dwHeight/(float)m_guiBackground.GetTextureHeight();
-    fScaleX = m_dwWidth == 0 ? 1.0f : m_dwWidth/(float)m_guiBackground.GetTextureWidth();
+    fScaleY = m_height == 0 ? 1.0f : m_height/(float)m_guiBackground.GetTextureHeight();
+    fScaleX = m_width == 0 ? 1.0f : m_width/(float)m_guiBackground.GetTextureWidth();
 
-    m_guiBackground.SetHeight(m_dwHeight);
-    m_guiBackground.SetWidth(m_dwWidth);
+    m_guiBackground.SetHeight(m_height);
+    m_guiBackground.SetWidth(m_width);
     m_guiBackground.Render();
 
     float fWidth = (float)(m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
@@ -92,36 +90,28 @@ void CGUISliderControl::Render()
     fPos = (float)m_iPercent;
     fPos /= 100.0f;
     fPos *= fWidth;
-    fPos += (float) m_guiBackground.GetXPosition();
+    fPos += m_guiBackground.GetXPosition();
     //fPos += 10.0f;
     if ((int)fWidth > 1)
     {
       if (m_bHasFocus)
       {
-        m_guiMidFocus.SetPosition((int)fPos, m_guiBackground.GetYPosition() );
-        m_guiMidFocus.SetWidth((int)(m_guiMidFocus.GetTextureWidth()*fScaleX));
-        m_guiMidFocus.SetHeight((int)(m_guiMidFocus.GetTextureHeight()*fScaleY));
+        m_guiMidFocus.SetPosition(fPos, m_guiBackground.GetYPosition() );
+        m_guiMidFocus.SetWidth(m_guiMidFocus.GetTextureWidth()*fScaleX);
+        m_guiMidFocus.SetHeight(m_guiMidFocus.GetTextureHeight()*fScaleY);
         m_guiMidFocus.Render();
       }
       else
       {
-        m_guiMid.SetPosition((int)fPos, m_guiBackground.GetYPosition() );
-        m_guiMid.SetWidth((int)(m_guiMid.GetTextureWidth()*fScaleX));
-        m_guiMid.SetHeight((int)(m_guiMid.GetTextureHeight()*fScaleY));
+        m_guiMid.SetPosition(fPos, m_guiBackground.GetYPosition() );
+        m_guiMid.SetWidth(m_guiMid.GetTextureWidth()*fScaleX);
+        m_guiMid.SetHeight(m_guiMid.GetTextureHeight()*fScaleY);
         m_guiMid.Render();
       }
     }
   }
   CGUIControl::Render();
 }
-
-/*
-bool CGUISliderControl::CanFocus() const
-{
- //return false;
- return true;
-}
-*/
 
 bool CGUISliderControl::OnMessage(CGUIMessage& message)
 {
@@ -270,11 +260,6 @@ void CGUISliderControl::SetFloatRange(float fStart, float fEnd)
   }
 }
 
-int CGUISliderControl::GetType() const
-{
-  return m_iType;
-}
-
 void CGUISliderControl::FreeResources()
 {
   CGUIControl::FreeResources();
@@ -312,16 +297,16 @@ void CGUISliderControl::Update()
   m_guiBackground.SetPosition( GetXPosition(), GetYPosition());
 }
 
-bool CGUISliderControl::HitTest(int iPosX, int iPosY) const
+bool CGUISliderControl::HitTest(float posX, float posY) const
 {
-  if (m_guiBackground.HitTest(iPosX, iPosY)) return true;
-  if (m_guiMid.HitTest(iPosX, iPosY)) return true;
+  if (m_guiBackground.HitTest(posX, posY)) return true;
+  if (m_guiMid.HitTest(posX, posY)) return true;
   return false;
 }
 
-void CGUISliderControl::SetFromPosition(int iPosX, int iPosY)
+void CGUISliderControl::SetFromPosition(float posX, float posY)
 {
-  float fPercent = (float)(g_Mouse.iPosX - m_guiBackground.GetXPosition()) / ((float)m_guiBackground.GetWidth());
+  float fPercent = (g_Mouse.posX - m_guiBackground.GetXPosition()) / m_guiBackground.GetWidth();
   if (fPercent < 0) fPercent = 0;
   if (fPercent > 1) fPercent = 1;
   switch (m_iType)
@@ -346,9 +331,9 @@ bool CGUISliderControl::OnMouseClick(DWORD dwButton)
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   // turn off any exclusive access, if it's on...
   g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
-  if (m_guiBackground.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_guiBackground.HitTest(g_Mouse.posX, g_Mouse.posY))
   { // set the position
-    SetFromPosition(g_Mouse.iPosX, g_Mouse.iPosY);
+    SetFromPosition(g_Mouse.posX, g_Mouse.posY);
     return true;
   }
   return false;
@@ -360,7 +345,7 @@ bool CGUISliderControl::OnMouseDrag()
   // get exclusive access to the mouse
   g_Mouse.SetExclusiveAccess(GetID(), GetParentID());
   // get the position of the mouse
-  SetFromPosition(g_Mouse.iPosX, g_Mouse.iPosY);
+  SetFromPosition(g_Mouse.posX, g_Mouse.posY);
   return true;
 }
 

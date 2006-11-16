@@ -10,7 +10,7 @@
 #include "../utils/criticalsection.h"
 #include <map>
 #include "../lib/UnrarXLib/UnrarX.hpp"
-#include "xbstopwatch.h"
+#include "../utils/stopwatch.h"
 
 #include "../utils/Thread.h"
 
@@ -39,7 +39,7 @@ public:
     watch.Stop();
     return false;
   }
-  CXBStopWatch watch;
+  CStopWatch watch;
   int m_iIsSeekable;
 };
 

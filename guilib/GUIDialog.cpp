@@ -4,6 +4,7 @@
 #include "GUILabelControl.h"
 #include "GUIAudioManager.h"
 #include "../xbmc/utils/SingleLock.h"
+#include "../xbmc/Application.h"
 
 
 CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
@@ -38,7 +39,7 @@ bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
 
         if (!pLabel->GetWidth())
         {
-          int spacing = (pLabel->GetXPosition() - pBase->GetXPosition()) * 2;
+          float spacing = (pLabel->GetXPosition() - pBase->GetXPosition()) * 2;
           pLabel->SetWidth(pBase->GetWidth() - spacing);
           pLabel->SetTruncate(true);
         }
@@ -150,7 +151,7 @@ void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */)
 //  m_bRunning = true;
 
   lock.Leave();
-  while (m_bRunning)
+  while (m_bRunning && !g_application.m_bStop)
   {
     m_gWindowManager.Process();
   }

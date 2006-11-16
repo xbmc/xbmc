@@ -6,7 +6,6 @@
 #include "IMDB.h"
 #include "../util.h"
 #include "HTMLUtil.h"
-#include "../FileSystem/FileCurl.h"
 #include "XMLUtils.h"
 #include "RegExp.h"
 

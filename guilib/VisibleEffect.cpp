@@ -25,7 +25,7 @@ void CAnimation::Reset()
   reversible = true;
 }
 
-void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
+void CAnimation::Create(const TiXmlElement *node)
 {
   if (!node || !node->FirstChild())
     return;
@@ -95,11 +95,6 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
       if (comma)
         endY = (float)atof(comma + 1);
     }
-    // scale our parameters
-    g_graphicsContext.ScaleXCoord(startX, res);
-    g_graphicsContext.ScaleYCoord(startY, res);
-    g_graphicsContext.ScaleXCoord(endX, res);
-    g_graphicsContext.ScaleYCoord(endY, res);
   }
   else if (effect == EFFECT_TYPE_FADE)
   {  // alpha parameters
@@ -137,8 +132,6 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
       const char *comma = strstr(centerPos, ",");
       if (comma)
         centerY = (float)atof(comma + 1);
-      g_graphicsContext.ScaleXCoord(centerX, res);
-      g_graphicsContext.ScaleYCoord(centerY, res);
     }
   }
   else // if (effect == EFFECT_TYPE_ZOOM)
@@ -170,8 +163,6 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
       const char *comma = strstr(centerPos, ",");
       if (comma)
         centerY = (float)atof(comma + 1);
-      g_graphicsContext.ScaleXCoord(centerX, res);
-      g_graphicsContext.ScaleYCoord(centerY, res);
     }
   }
 }

@@ -166,7 +166,11 @@ uint32 CXBE::ExtractGameRegion(const CStdString& strFilename)
 int CXBE::FilterRegion(int iRegion, bool bForceAllModes)
 {
   int iVideoMode, iPreferred;
+#ifdef HAS_XBOX_D3D
   iVideoMode = iPreferred = XGetVideoStandard();
+#else
+  iVideoMode = iPreferred = 4; // PAL?
+#endif
   if (iPreferred == 3)
     iPreferred = 4;
   int iNTSCMode = 0;

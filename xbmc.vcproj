@@ -912,6 +912,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\Splash.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\Stopwatch.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\Stopwatch.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\StringUtils.cpp">
 				</File>
 				<File
@@ -1800,9 +1806,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\xbox\xbeheader.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\common\xbstopwatch.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\xbox\XKCRC.cpp">

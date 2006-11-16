@@ -9,6 +9,7 @@
 #include "MediaManager.h"
 #include "AutoSwitch.h"
 #include "xbox/network.h"
+#include "GUIPassword.h"
 
 #define CONTROL_LIST          450
 #define CONTROL_THUMBS        451
@@ -652,12 +653,12 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   if (!pMenu)
     return false;
   
-  int iPosX = 200, iPosY = 100;
+  float posX = 200, posY = 100;
   CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
   if (pList)
   {
-    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
-    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
 
   pMenu->Initialize();
@@ -665,7 +666,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   int btn_Edit = pMenu->AddButton(20133);
   int btn_Remove = pMenu->AddButton(20134);
 
-  pMenu->SetPosition(iPosX, iPosY);
+  pMenu->SetPosition(posX, posY);
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
@@ -719,7 +720,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   return true;
 }
 
-const CFileItem *CGUIDialogFileBrowser::GetCurrentListItem() const
+CFileItem *CGUIDialogFileBrowser::GetCurrentListItem()
 {
   int iItem = m_viewControl.GetSelectedItem();
   if (iItem < 0 || iItem >= m_vecItems.Size()) return NULL;

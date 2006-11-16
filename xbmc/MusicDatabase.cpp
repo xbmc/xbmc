@@ -7,6 +7,7 @@
 #include "GUIDialogMusicScan.h"
 #include "filesystem/virtualpathdirectory.h"
 #include "filesystem/multipathdirectory.h"
+#include "DetectDVDType.h"
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 

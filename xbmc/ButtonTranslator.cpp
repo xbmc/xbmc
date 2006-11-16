@@ -3,6 +3,7 @@
 #include "util.h"
 #include "settings.h"
 #include "SkinInfo.h"
+#include "Key.h"
 
 CButtonTranslator g_buttonTranslator;
 extern CStdString g_LoadErrorStr;
@@ -609,9 +610,6 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
     else if (strKey.Equals("backspace")) wButtonCode = 0xF008;
     else if (strKey.Equals("menu")) wButtonCode = 0xF05D;
     else if (strKey.Equals("pause")) wButtonCode = 0xF013;
-    else if (strKey.Equals("home")) wButtonCode = 0xF024;
-    else if (strKey.Equals("end")) wButtonCode = 0xF023;
-    else if (strKey.Equals("insert")) wButtonCode = 0xF02D;
     else if (strKey.Equals("leftshift")) wButtonCode = 0xF0A0;
     else if (strKey.Equals("rightshift")) wButtonCode = 0xF0A1;
     else if (strKey.Equals("leftctrl")) wButtonCode = 0xF0A2;

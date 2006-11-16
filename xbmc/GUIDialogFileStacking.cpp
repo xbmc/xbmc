@@ -77,9 +77,8 @@ void CGUIDialogFileStacking::Render()
         DWORD dwStartPos = dwScreenWidth;
         float fStep = (float)(dwStartPos - dwEndPos);
         fStep /= 25.0f;
-        fStep *= (float)m_iFrames;
-        DWORD dwPosX = (DWORD) ( ((float)dwStartPos) - fStep );
-        pControl->SetPosition( dwPosX, pControl->GetYPosition() );
+        fStep *= m_iFrames;
+        pControl->SetPosition((float)dwStartPos - fStep, pControl->GetYPosition() );
       }
     }
     m_iFrames++;

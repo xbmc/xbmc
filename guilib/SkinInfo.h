@@ -31,7 +31,7 @@ public:
   double GetVersion(){ return m_Version;};
   int GetStartWindow();
 
-  void ResolveIncludes(TiXmlElement *node);
+  void ResolveIncludes(TiXmlElement *node, const CStdString &type = "");
 
   double GetEffectsSlowdown() const { return m_effectsSlowDown; };
 
@@ -44,6 +44,9 @@ public:
   inline const RESOLUTION& GetDefaultWideResolution() { return m_DefaultResolutionWide; };
   inline const RESOLUTION& GetDefaultResolution() { return m_DefaultResolution; };
 
+//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  void LoadIncludes(const TiXmlElement *element);
+//#endif
 protected:
   void LoadIncludes();
   bool LoadStartupWindows(const TiXmlElement *startup);

@@ -63,7 +63,6 @@ bool CGUIDialogVisualisationSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_VISUALISATION_LOADED:
     {
       SetVisualisation((CVisualisation *)message.GetLPVOID());
-
       m_iCurrentPage = 0;
       m_iNumPages = 0;
       SetupPage();
@@ -109,12 +108,12 @@ void CGUIDialogVisualisationSettings::SetupPage()
     SET_CONTROL_VISIBLE(CONTROL_PAGE);
   }
 
-  int iPosX = pControlArea->GetXPosition();
-  int iWidth = pControlArea->GetWidth();
-  int iPosY = pControlArea->GetYPosition();
-  int iGapY = pControlGap->GetHeight();
+  float posX = pControlArea->GetXPosition();
+  float width = pControlArea->GetWidth();
+  float posY = pControlArea->GetYPosition();
+  float gapY = pControlGap->GetHeight();
   int numSettings = m_pSettings->size();
-  m_iNumPerPage = (int)pControlArea->GetHeight() / iGapY;
+  m_iNumPerPage = (int)(pControlArea->GetHeight() / gapY);
   if (m_iNumPerPage < 1) m_iNumPerPage = 1;
   m_iNumPages = (numSettings + m_iNumPerPage - 1)/ m_iNumPerPage; // round up
   if (m_iCurrentPage >= m_iNumPages - 1)
@@ -136,8 +135,8 @@ void CGUIDialogVisualisationSettings::SetupPage()
   for (int i = 0; i < m_iNumPerPage && i + m_iCurrentPage * m_iNumPerPage < numSettings; i++)
   {
     VisSetting &setting = m_pSettings->at(i + m_iCurrentPage * m_iNumPerPage);
-    AddSetting(setting, iPosX, iPosY, iWidth, CONTROL_START + i);
-	  iPosY += iGapY;
+    AddSetting(setting, posX, posY, width, CONTROL_START + i);
+    posY += gapY;
     numOnPage++;
   }
   // fix first and last navigation
@@ -193,7 +192,7 @@ void CGUIDialogVisualisationSettings::FreeControls()
   }
 }
 
-void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, int iPosX, int iPosY, int iWidth, int iControlID)
+void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, float posX, float posY, float width, int iControlID)
 {
   CGUIControl *pControl = NULL;
   if (setting.type == VisSetting::CHECK)
@@ -201,18 +200,18 @@ void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, int iPosX,
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
     ((CGUIRadioButtonControl *)pControl)->SetLabel(setting.name);
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
-    pControl->SetSelected(setting.current == 1);
+    pControl->SetPosition(posX, posY);
+    pControl->SetWidth(width);
+    ((CGUIRadioButtonControl *)pControl)->SetSelected(setting.current == 1);
   }
   else if (setting.type == VisSetting::SPIN && setting.entry.size() > 0)
   {
     pControl = new CGUISpinControlEx(*m_pOriginalSpin);
     if (!pControl) return ;
-    pControl->SetPosition(iPosX, iPosY);
-    pControl->SetWidth(iWidth);
+    pControl->SetPosition(posX, posY);
+    pControl->SetWidth(width);
     ((CGUISpinControlEx *)pControl)->SetText(setting.name);
-    pControl->SetWidth(iWidth);
+    pControl->SetWidth(width);
     for (unsigned int i = 0; i < setting.entry.size(); i++)
       ((CGUISpinControlEx *)pControl)->AddLabel(setting.entry[i], i);
     ((CGUISpinControlEx *)pControl)->SetValue(setting.current);

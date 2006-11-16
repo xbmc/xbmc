@@ -412,7 +412,7 @@ void CAutorun::Disable()
   m_bEnable = false;
 }
 
-bool CAutorun::IsEnabled()
+bool CAutorun::IsEnabled() const
 {
   return m_bEnable;
 }

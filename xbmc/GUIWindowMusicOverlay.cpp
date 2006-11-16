@@ -53,7 +53,7 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
 bool CGUIWindowMusicOverlay::OnMouse()
 {
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_LOGO_PIC);
-  if (pControl && pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (pControl && pControl->HitTest(g_Mouse.posX, g_Mouse.posY))
   {
     // send highlight message
     g_Mouse.SetState(MOUSE_STATE_FOCUS);

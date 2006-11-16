@@ -342,11 +342,11 @@ void CGUIWindowMusicNav::PlayItem(int iItem)
 void CGUIWindowMusicNav::OnWindowLoaded()
 {
   CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
-  int iX = pControl->GetXPosition();
-  int iY = pControl->GetYPosition() + pControl->GetHeight() / 2;
+  float x = pControl->GetXPosition();
+  float y = pControl->GetYPosition() + pControl->GetHeight() / 2;
   CLabelInfo info = pControl->GetLabelInfo();
   info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
-  CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,iX,iY,pControl->GetWidth(),40,"",info,false);
+  CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,x,y,pControl->GetWidth(),40,"",info,false);
   pLabel->SetAnimations(pControl->GetAnimations());
   Add(pLabel);
   
@@ -357,13 +357,13 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   // calculate our position
-  int iPosX = 200;
-  int iPosY = 100;
+  float posX = 200;
+  float posY = 100;
   CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
   if (pList)
   {
-    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
-    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   // mark the item
   bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
@@ -429,7 +429,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     btn_NowPlaying = pMenu->AddButton(13350);
 
   // position it correctly
-  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
   pMenu->DoModal();
 
   int btn = pMenu->GetButton();
@@ -453,7 +453,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
       else
       {
         // Play With...
-        g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
+        g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, posX, posY);
         if( g_application.m_eForcedNextPlayer != EPC_NONE )
           OnClick(iItem);
       }

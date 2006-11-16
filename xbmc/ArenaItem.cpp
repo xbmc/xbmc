@@ -21,11 +21,11 @@ CArenaItem::CArenaItem(CStdString& strLabel) : CKaiItem(strLabel)
 CArenaItem::~CArenaItem(void)
 {}
 
-void CArenaItem::SetIcons(INT aWidth, INT aHeight, const CStdString& aPrivateTexture)
+void CArenaItem::SetIcons(float width, float height, const CStdString& aPrivateTexture)
 {
   if (aPrivateTexture.length() > 0)
   {
-    m_pPrivateIcon = new CGUIImage(0, 0, 0, 0, aWidth, aHeight, aPrivateTexture, 0x0);
+    m_pPrivateIcon = new CGUIImage(0, 0, 0, 0, width, height, aPrivateTexture, 0x0);
     m_pPrivateIcon->AllocResources();
   }
 }
@@ -123,25 +123,25 @@ void CArenaItem::OnPaint(CGUIItem::RenderContext* pContext)
 
   if (pDC)
   {
-    int iBaseLineY = pDC->m_iPositionY;
-    int iBaseLineX = pDC->m_iPositionX + pDC->m_pButton->GetWidth();
+    float baseLineY = pDC->m_positionY;
+    float baseLineX = pDC->m_positionX + pDC->m_pButton->GetWidth();
 
-    iBaseLineX -= 64;
+    baseLineX -= 64;
 
     if (m_pPrivateIcon && m_bIsPrivate)
     {
-      int iIconPosX = iBaseLineX - (m_pPrivateIcon->GetWidth() + 4);
-      int iIconPosY = iBaseLineY;
-      iIconPosY += (pDC->m_pButton->GetHeight() - m_pPrivateIcon->GetHeight()) / 2;
+      float iconPosX = baseLineX - (m_pPrivateIcon->GetWidth() + 4);
+      float iconPosY = baseLineY;
+      iconPosY += (pDC->m_pButton->GetHeight() - m_pPrivateIcon->GetHeight()) / 2;
 
-      m_pPrivateIcon->SetPosition(iIconPosX, iIconPosY);
+      m_pPrivateIcon->SetPosition(iconPosX, iconPosY);
       m_pPrivateIcon->Render();
     }
 
     if (pDC->m_label.font)
     {
-      int iPosX = iBaseLineX;
-      int iPosY = iBaseLineY;
+      float posX = baseLineX;
+      float posY = baseLineY;
 
       // render the text
       DWORD dwColor = pDC->m_bFocused ? pDC->m_label.selectedColor : pDC->m_label.textColor;
@@ -162,13 +162,13 @@ void CArenaItem::OnPaint(CGUIItem::RenderContext* pContext)
 
       // no need for charset conversions here - just rendering numbers
       CStdStringW strInfoUnicode = strInfo;
-      float fPosX = (float)iPosX;
-      float fPosY = (float)iPosY + 2;
+      float fPosX = posX;
+      float fPosY = posY + 2;
       if (pDC->m_pButton->GetLabelInfo().align & XBFONT_CENTER_Y)
       {
         float fTextHeight, fTextWidth;
         pDC->m_label.font->GetTextExtent( strInfoUnicode.c_str(), &fTextWidth, &fTextHeight);
-        fPosY = (float)iPosY + ((float)pDC->m_pButton->GetHeight() - fTextHeight) / 2;
+        fPosY = posY + (pDC->m_pButton->GetHeight() - fTextHeight) * 0.5f;
       }
       RenderText(fPosX, fPosY, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strInfoUnicode.c_str(), pDC->m_label);
     }

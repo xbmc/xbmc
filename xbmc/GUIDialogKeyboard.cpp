@@ -116,8 +116,12 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     BYTE b = action.wID & 0xFF;
-    if (b == 0x25) MoveCursor( -1); // left
-    if (b == 0x27) MoveCursor(1);  // right
+    if (b == 0x25) MoveCursor( -1);     // left
+    else if (b == 0x27) MoveCursor(1);  // right
+    else if (b == 0x0D) OnOK();         // enter
+    else if (b == 0x08) Backspace();    // backspace
+    else if (b == 0x1B) Close();        // escape
+    else if (b == 0x20) Character(b);   // space
     return true;
   }
   else if (action.wID >= KEY_ASCII)
@@ -126,12 +130,9 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     switch (ch)
     {
     case 10:  // enter
-      {
-        m_bIsConfirmed = true;
-        Close();
-      }
+      OnOK();
       break;
-    case 8:   // backspace or delete??
+    case 8:   // backspace
       Backspace();
       break;
     case 27:  // escape

@@ -21,7 +21,7 @@ protected:
   void UpdateSettings();
   virtual void FreeControls();
   void OnClick(int iControl);
-  void AddSetting(VisSetting &setting, int iPosX, int iPosY, int iWidth, int iControlID);
+  void AddSetting(VisSetting &setting, float posX, float posY, float width, int iControlID);
   int m_iCurrentPage;
   int m_iNumPages;
   int m_iNumPerPage;

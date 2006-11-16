@@ -11,18 +11,15 @@ CGUIControl::CGUIControl()
   m_hasRendered = false;
   m_bHasFocus = false;
   m_dwControlID = 0;
-  m_iGroup = -1;
   m_dwParentID = 0;
   m_visible = true;
   m_visibleFromSkinCondition = true;
   m_forceHidden = false;
   m_visibleCondition = 0;
   m_bDisabled = false;
-  m_bSelected = false;
-  m_bCalibration = true;
   m_colDiffuse = 0xFFFFFFFF;
-  m_iPosX = 0;
-  m_iPosY = 0;
+  m_posX = 0;
+  m_posY = 0;
   m_dwControlLeft = 0;
   m_dwControlRight = 0;
   m_dwControlUp = 0;
@@ -30,26 +27,24 @@ CGUIControl::CGUIControl()
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
+  m_parentControl = NULL;
 }
 
-CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
+CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
 {
   m_colDiffuse = 0xFFFFFFFF;
-  m_iPosX = iPosX;
-  m_iPosY = iPosY;
-  m_dwWidth = dwWidth;
-  m_dwHeight = dwHeight;
+  m_posX = posX;
+  m_posY = posY;
+  m_width = width;
+  m_height = height;
   m_bHasFocus = false;
   m_dwControlID = dwControlId;
-  m_iGroup = -1;
   m_dwParentID = dwParentID;
   m_visible = true;
   m_visibleFromSkinCondition = true;
   m_forceHidden = false;
   m_visibleCondition = 0;
   m_bDisabled = false;
-  m_bSelected = false;
-  m_bCalibration = true;
   m_dwControlLeft = 0;
   m_dwControlRight = 0;
   m_dwControlUp = 0;
@@ -58,6 +53,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_bInvalidated = true;
   m_bAllocated=false;
   m_hasRendered = false;
+  m_parentControl = NULL;
 }
 
 
@@ -106,21 +102,25 @@ bool CGUIControl::OnAction(const CAction &action)
   switch (action.wID)
   {
   case ACTION_MOVE_DOWN:
+    if (!HasFocus()) return false;
     OnDown();
     return true;
     break;
 
   case ACTION_MOVE_UP:
+    if (!HasFocus()) return false;
     OnUp();
     return true;
     break;
 
   case ACTION_MOVE_LEFT:
+    if (!HasFocus()) return false;
     OnLeft();
     return true;
     break;
 
   case ACTION_MOVE_RIGHT:
+    if (!HasFocus()) return false;
     OnRight();
     return true;
     break;
@@ -220,6 +220,9 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       {
         // inform our parent window that this has happened
         CGUIMessage message(GUI_MSG_FOCUSED, GetParentID(), GetID());
+        if (m_parentControl)
+          m_parentControl->OnMessage(message);
+        else
         SendWindowMessage(message);
       }
       return true;
@@ -228,6 +231,9 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_LOSTFOCUS:
       {
         SetFocus(false);
+        // and tell our parent so it can unfocus
+        if (m_parentControl)
+          m_parentControl->OnMessage(message);
         return true;
       }
       break;
@@ -259,15 +265,6 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       m_bDisabled = true;
       return true;
       break;
-    case GUI_MSG_SELECTED:
-      m_bSelected = true;
-      return true;
-      break;
-
-    case GUI_MSG_DESELECTED:
-      m_bSelected = false;
-      return true;
-      break;
     }
   }
   return false;
@@ -286,11 +283,6 @@ bool CGUIControl::IsVisible() const
   return m_visible;
 }
 
-bool CGUIControl::IsSelected() const
-{
-  return m_bSelected;
-}
-
 bool CGUIControl::IsDisabled() const
 {
   return m_bDisabled;
@@ -301,12 +293,12 @@ void CGUIControl::SetEnabled(bool bEnable)
   m_bDisabled = !bEnable;
 }
 
-void CGUIControl::SetPosition(int iPosX, int iPosY)
+void CGUIControl::SetPosition(float posX, float posY)
 {
-  if ((m_iPosX != iPosX) || (m_iPosY != iPosY))
+  if ((m_posX != posX) || (m_posY != posY))
   {
-    m_iPosX = iPosX;
-    m_iPosY = iPosY;
+    m_posX = posX;
+    m_posY = posY;
     Update();
   }
 }
@@ -320,24 +312,24 @@ void CGUIControl::SetColourDiffuse(D3DCOLOR colour)
   }
 }
 
-int CGUIControl::GetXPosition() const
+float CGUIControl::GetXPosition() const
 {
-  return m_iPosX;
+  return m_posX;
 }
 
-int CGUIControl::GetYPosition() const
+float CGUIControl::GetYPosition() const
 {
-  return m_iPosY;
+  return m_posY;
 }
 
-DWORD CGUIControl::GetWidth() const
+float CGUIControl::GetWidth() const
 {
-  return m_dwWidth;
+  return m_width;
 }
 
-DWORD CGUIControl::GetHeight() const
+float CGUIControl::GetHeight() const
 {
-  return m_dwHeight;
+  return m_height;
 }
 
 void CGUIControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight)
@@ -348,20 +340,20 @@ void CGUIControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dw
   m_dwControlRight = dwRight;
 }
 
-void CGUIControl::SetWidth(int iWidth)
+void CGUIControl::SetWidth(float width)
 {
-  if (m_dwWidth != iWidth)
+  if (m_width != width)
   {
-    m_dwWidth = iWidth;
+    m_width = width;
     Update();
   }
 }
 
-void CGUIControl::SetHeight(int iHeight)
+void CGUIControl::SetHeight(float height)
 {
-  if (m_dwHeight != iHeight)
+  if (m_height != height)
   {
-    m_dwHeight = iHeight;
+    m_height = height;
     Update();
   }
 }
@@ -381,18 +373,9 @@ void CGUIControl::SetVisible(bool bVisible)
   }*/
 }
 
-void CGUIControl::SetSelected(bool bSelected)
+bool CGUIControl::HitTest(float posX, float posY) const
 {
-  if (m_bSelected != bSelected)
-  {
-    m_bSelected = bSelected;
-    m_bInvalidated = true;
-  }
-}
-
-bool CGUIControl::HitTest(int iPosX, int iPosY) const
-{
-  if (iPosX >= (int)m_iPosX && iPosX <= (int)(m_iPosX + m_dwWidth) && iPosY >= (int)m_iPosY && iPosY <= (int)(m_iPosY + m_dwHeight))
+  if (posX >= (int)m_posX && posX <= (int)(m_posX + m_width) && posY >= (int)m_posY && posY <= (int)(m_posY + m_height))
     return true;
   return false;
 }
@@ -406,16 +389,6 @@ bool CGUIControl::OnMouseOver()
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), GetID());
   SendWindowMessage(msg);
   return true;
-}
-
-void CGUIControl::SetGroup(int iGroup)
-{
-  m_iGroup = iGroup;
-}
-
-int CGUIControl::GetGroup(void) const
-{
-  return m_iGroup;
 }
 
 void CGUIControl::UpdateVisibility()
@@ -436,11 +409,14 @@ void CGUIControl::UpdateVisibility()
 
 void CGUIControl::SetInitialVisibility()
 {
-  m_visibleFromSkinCondition = m_visible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
-//  CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_visible ? "visible" : "hidden");
-  // no need to enquire every frame if we are always visible or always hidden
-  if (m_visibleCondition == SYSTEM_ALWAYS_TRUE || m_visibleCondition == SYSTEM_ALWAYS_FALSE)
-    m_visibleCondition = 0;
+  if (m_visibleCondition)
+  {
+    m_visibleFromSkinCondition = m_visible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+  //  CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_visible ? "visible" : "hidden");
+    // no need to enquire every frame if we are always visible or always hidden
+    if (m_visibleCondition == SYSTEM_ALWAYS_TRUE || m_visibleCondition == SYSTEM_ALWAYS_FALSE)
+      m_visibleCondition = 0;
+  }
 }
 
 void CGUIControl::UpdateEffectState(DWORD currentTime)
@@ -635,4 +611,30 @@ DWORD CGUIControl::GetNextControl(int direction) const
   default:
     return -1;
   }
+}
+
+bool CGUIControl::CanFocusFromPoint(float posX, float posY, CGUIControl **control) const
+{
+  if (CanFocus() && HitTest(posX, posY))
+  {
+    *control = (CGUIControl *)this;
+    return true;
+  }
+  *control = NULL;
+  return false;
+}
+
+bool CGUIControl::HasID(DWORD dwID) const
+{
+  return GetID() == dwID;
+}
+
+bool CGUIControl::HasVisibleID(DWORD dwID) const
+{
+  return GetID() == dwID && IsVisible();
+}
+
+void CGUIControl::SaveStates(vector<CControlState> &states)
+{
+  // empty for now - do nothing with the majority of controls
 }

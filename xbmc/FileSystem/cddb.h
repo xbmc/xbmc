@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <strstream>
-#include "../DetectDVDType.h"
+#include "cdiosupport.h"
 
 namespace CDDB
 {

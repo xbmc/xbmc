@@ -48,6 +48,7 @@ bool CSectionLoader::Load(const CStdString& strSection)
     }
   }
 
+#ifdef HAS_SECTIONS
   if ( NULL == XLoadSection(strSection.c_str() ) )
   {
     CLog::DebugLog("SECTION:LoadSection(%s) load failed!!\n", strSection.c_str());
@@ -56,6 +57,7 @@ bool CSectionLoader::Load(const CStdString& strSection)
   HANDLE hHandle = XGetSectionHandle(strSection.c_str());
 
   CLog::DebugLog("SECTION:Section %s loaded count:1 size:%i\n", strSection.c_str(), XGetSectionSize(hHandle) );
+#endif
 
   CSection newSection;
   newSection.m_strSectionName = strSection;
@@ -163,7 +165,9 @@ void CSectionLoader::UnloadDelayed()
     if( section.m_lReferenceCount == 0 && GetTickCount() - section.m_lUnloadDelayStartTick > UNLOAD_DELAY)
     {
       CLog::DebugLog("SECTION:UnloadDelayed(SECTION: %s)", section.m_strSectionName.c_str());
+#ifdef HAS_SECTIONS
       XFreeSection(section.m_strSectionName.c_str());
+#endif
       i = g_sectionLoader.m_vecLoadedSections.erase(i);
       continue;
     }
@@ -195,7 +199,9 @@ void CSectionLoader::UnloadAll()
     CSection& section = *i;
     //g_sectionLoader.m_vecLoadedSections.erase(i);
     CLog::DebugLog("SECTION:UnloadAll(SECTION: %s)", section.m_strSectionName.c_str());
+#ifdef HAS_SECTIONS
     XFreeSection(section.m_strSectionName.c_str());
+#endif
     i = g_sectionLoader.m_vecLoadedSections.erase(i);
   }
 

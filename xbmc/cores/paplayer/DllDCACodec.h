@@ -1,6 +1,7 @@
 #pragma once
 #include "../../DynamicDll.h"
 
+#ifdef HAS_DTS_CODEC
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int16 uint16_t;
 typedef unsigned __int8  uint8_t;
@@ -52,3 +53,4 @@ class DllDCACodec : public DllDynamic, DllDCACodecInterface
     RESOLVE_METHOD(dts_free)
   END_METHOD_RESOLVE()
 };
+#endif

@@ -19,13 +19,13 @@
 class CGUIListControlEx : public CGUIControl
 {
 public:
-  CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                    DWORD dwSpinWidth, DWORD dwSpinHeight,
-                    const CStdString& strUp, const CStdString& strDown,
-                    const CStdString& strUpFocus, const CStdString& strDownFocus,
-                    const CLabelInfo& spinInfo, int iSpinX, int iSpinY,
+  CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+                    float spinWidth, float spinHeight,
+                    const CImage& textureUp, const CImage& textureDown,
+                    const CImage& textureUpFocus, const CImage& textureDownFocus,
+                    const CLabelInfo& spinInfo, float spinX, float spinY,
                     const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
-                    const CStdString& strButton, const CStdString& strButtonFocus);
+                    const CImage& button, const CImage& buttonFocus);
 
   virtual ~CGUIListControlEx(void);
   virtual void Render();
@@ -40,37 +40,19 @@ public:
   virtual void AllocResources() ;
   virtual void FreeResources() ;
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetPosition(int iPosX, int iPosY);
-  virtual void SetWidth(int iWidth);
-  virtual void SetHeight(int iHeight);
+  virtual void SetPosition(float posX, float posY);
+  virtual void SetWidth(float width);
+  virtual void SetHeight(float height);
   virtual void SetPulseOnSelect(bool pulse);
   virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
 
   void SetScrollySuffix(const CStdString& wstrSuffix);
-  void SetImageDimensions(int iWidth, int iHeight);
-  void SetItemHeight(int iHeight);
-  void SetSpace(int iHeight);
+  void SetImageDimensions(float width, float height);
+  void SetItemHeight(float height);
+  void SetSpaceBetweenItems(float spaceBetweenItems);
   void SetPageControlVisible(bool bVisible);
   virtual CStdString GetDescription() const;
-  const CLabelInfo &GetLabelInfo() const { return m_label; };
-  const CLabelInfo &GetLabelInfo2() const { return m_label2; };
-  DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
-  DWORD GetSpinHeight() const { return m_upDown.GetHeight(); };
-  const CStdString& GetTextureUpName() const { return m_upDown.GetTextureUpName(); };
-  const CStdString& GetTextureDownName() const { return m_upDown.GetTextureDownName(); };
-  const CStdString& GetTextureUpFocusName() const { return m_upDown.GetTextureUpFocusName(); };
-  const CStdString& GetTextureDownFocusName() const { return m_upDown.GetTextureDownFocusName(); };
-  const CLabelInfo& GetSpinLabelInfo() const { return m_upDown.GetLabelInfo();};
-  int GetSpinX() const { return m_iSpinPosX;};
-  int GetSpinY() const { return m_iSpinPosY;};
-  DWORD GetSpace() const { return m_iSpaceBetweenItems;};
-  DWORD GetItemHeight() const { return m_iItemHeight; };
-  DWORD GetImageWidth() const { return m_iImageWidth;};
-  DWORD GetImageHeight() const { return m_iImageHeight;};
 
-  const string& GetSuffix() const { return m_strSuffix;};
-  const CStdString GetButtonFocusName() const { return m_imgButton.GetTextureFocusName();};
-  const CStdString GetButtonNoFocusName() const { return m_imgButton.GetTextureNoFocusName();};
 protected:
 
   virtual void OnRight();
@@ -81,17 +63,17 @@ protected:
   void OnPageDown();
   int GetPage(int listSize);
 
-  int m_iSpinPosX;
-  int m_iSpinPosY;
-  int m_iSpaceBetweenItems;
+  float m_spinPosX;
+  float m_spinPosY;
+  float m_spaceBetweenItems;
+  float m_imageWidth;
+  float m_imageHeight;
+  float m_itemHeight;
+  float m_smoothScrollOffset;
   int m_iOffset;
-  float m_fSmoothScrollOffset;
   int m_iItemsPerPage;
-  int m_iItemHeight;
   int m_iSelect;
   int m_iCursorY;
-  int m_iImageWidth;
-  int m_iImageHeight;
   bool m_bUpDownVisible;
   CLabelInfo m_label;
   CLabelInfo m_label2;

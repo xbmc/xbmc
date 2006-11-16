@@ -10,7 +10,9 @@
 
 
 #include "../stdafx.h"
+#ifdef HAS_GAMEPAD
 #include "../XBInputEx.h"
+#endif
 #include "DelayController.h"
 
 
@@ -220,6 +222,7 @@ WORD CDelayController::DirInput( WORD wDir )
 WORD CDelayController::DpadInput( WORD wDpad, bool bLeftTrigger, bool bRightTrigger )
 {
   WORD wDir = 0;
+#ifdef HAS_GAMEPAD
   if ( wDpad & XINPUT_GAMEPAD_DPAD_UP )
   {
     wDir = DC_UP;
@@ -245,6 +248,7 @@ WORD CDelayController::DpadInput( WORD wDpad, bool bLeftTrigger, bool bRightTrig
     wDir = DC_RIGHTTRIGGER;
   }
 
+#endif
   return DirInput( wDir );
 }
 

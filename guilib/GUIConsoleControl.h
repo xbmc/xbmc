@@ -19,7 +19,7 @@ class CGUIConsoleControl : public CGUIControl
 public:
 
   CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
-                     int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
+                     float posX, float posY, float width, float height,
                      const CLabelInfo &labelInfo,
                      D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4);
 
@@ -30,20 +30,20 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
-
-  DWORD GetPenColor(INT nPaletteIndex)
-  {
-    return nPaletteIndex < (INT)m_palette.size() ? m_palette[nPaletteIndex] : 0xFF808080;
-  };
+  virtual bool CanFocus() const { return false; };
 
   void Clear();
   void Write(CStdString& aString, INT nPaletteIndex = 0);
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
 
 protected:
 
   void AddLine(CStdString& aString, DWORD aColour);
   void WriteString(CStdString& aString, DWORD aColour);
+
+  DWORD GetPenColor(INT nPaletteIndex)
+  {
+    return nPaletteIndex < (INT)m_palette.size() ? m_palette[nPaletteIndex] : 0xFF808080;
+  };
 
 protected:
 

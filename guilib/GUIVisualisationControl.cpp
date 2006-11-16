@@ -2,13 +2,16 @@
 #include "GUIVisualisationControl.h"
 #include "../xbmc/GUIUserMessages.h"
 #include "../xbmc/application.h"
-#include "../xbmc/util.h"
 #include "../xbmc/visualizations/Visualisation.h"
 #include "../xbmc/visualizations/VisualisationFactory.h"
 #include "../xbmc/visualizations/fft.h"
-#include "../xbmc/utils/CriticalSection.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#ifdef HAS_KARAOKE
 #include "../xbmc/CdgParser.h"
+#endif
+#include "../xbmc/util.h"
+#include "../xbmc/utils/CriticalSection.h"
+#include "../xbmc/utils/SingleLock.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -62,8 +65,8 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
   for (int i = iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
 }
 
-CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
+CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_pVisualisation = NULL;
   m_iNumBuffers = 0;
@@ -126,15 +129,15 @@ void CGUIVisualisationControl::LoadVisualisation()
   CLog::Log(LOGDEBUG, "LoadVisualisation() started");
   OutputDebugString("Load Visualisation\n");
   strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
-  m_pVisualisation = factory.LoadVisualisation(strVisz.c_str());
+  m_pVisualisation = factory.LoadVisualisation(strVisz);
   if (m_pVisualisation)
   {
     OutputDebugString("Visualisation::Create()\n");
     g_graphicsContext.CaptureStateBlock();
-    float x = g_graphicsContext.ScaleFinalXCoord((float)GetXPosition(), (float)GetYPosition());
-    float y = g_graphicsContext.ScaleFinalYCoord((float)GetXPosition(), (float)GetYPosition());
-    float w = g_graphicsContext.ScaleFinalXCoord((float)GetXPosition() + GetWidth(), (float)GetYPosition() + GetHeight()) - x;
-    float h = g_graphicsContext.ScaleFinalYCoord((float)GetXPosition() + GetWidth(), (float)GetYPosition() + GetHeight()) - y;
+    float x = g_graphicsContext.ScaleFinalXCoord(GetXPosition(), GetYPosition());
+    float y = g_graphicsContext.ScaleFinalYCoord(GetXPosition(), GetYPosition());
+    float w = g_graphicsContext.ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;
+    float h = g_graphicsContext.ScaleFinalYCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - y;
     if (x < 0) x = 0;
     if (y < 0) y = 0;
     if (x + w > g_graphicsContext.GetWidth()) w = g_graphicsContext.GetWidth() - x;
@@ -173,8 +176,10 @@ void CGUIVisualisationControl::Render()
     }
     CGUIControl::Render();
 
+#ifdef HAS_KARAOKE
     if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
       g_application.m_pCdgParser->Render();
+#endif
 
     return;
   }
@@ -190,8 +195,10 @@ void CGUIVisualisationControl::Render()
     { // vis changed - reload
       LoadVisualisation();
 
+#ifdef HAS_KARAOKE
       if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
         g_application.m_pCdgParser->Render();
+#endif
 
       CGUIControl::Render();
       return;
@@ -203,7 +210,7 @@ void CGUIVisualisationControl::Render()
     if (m_bInitialized)
     {
       // set the viewport
-      g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight);
+      g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
       try
       {
         m_pVisualisation->Render();
@@ -216,8 +223,10 @@ void CGUIVisualisationControl::Render()
       g_graphicsContext.RestoreViewPort();
     }
   }
+#ifdef HAS_KARAOKE
   if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
     g_application.m_pCdgParser->Render();
+#endif
 
   CGUIControl::Render();
 }
@@ -371,7 +380,6 @@ void CGUIVisualisationControl::CreateBuffers()
   m_bWantsFreq = info.bWantsFreq;
   if (m_iNumBuffers > MAX_AUDIO_BUFFERS)
     m_iNumBuffers = MAX_AUDIO_BUFFERS;
-
   if (m_iNumBuffers < 1)
     m_iNumBuffers = 1;
 }
@@ -405,4 +413,27 @@ CVisualisation *CGUIVisualisationControl::GetVisualisation()
 {
   CSingleLock lock (m_critSection);
   return m_pVisualisation;
+}
+
+bool CGUIVisualisationControl::OnMouseOver()
+{
+  // unfocusable, so return true
+  CGUIControl::OnMouseOver();
+  return true;
+}
+
+bool CGUIVisualisationControl::CanFocus() const
+{ // unfocusable
+  return false;
+}
+
+bool CGUIVisualisationControl::CanFocusFromPoint(float posX, float posY, CGUIControl **control) const
+{ // mouse is allowed to focus this control, but it doesn't actually receive focus
+  if (HitTest(posX, posY))
+  {
+    *control = (CGUIControl *)this;
+    return true;
+  }
+  *control = NULL;
+  return false;
 }
