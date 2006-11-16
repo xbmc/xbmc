@@ -53,7 +53,7 @@ void CGUIControlGroupList::Render()
       SendWindowMessage(message2);
     }
     // we run through the controls, rendering as we go
-    bool render(g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height, true));
+    bool render(g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height));
     float pos = 0;
     for (iControls it = m_children.begin(); it != m_children.end(); ++it)
     {

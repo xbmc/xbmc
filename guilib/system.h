@@ -76,8 +76,8 @@
 #include <winsock2.h>
 #include <windows.h>
 #define DIRECTINPUT_VERSION 0x0800
-#include "/Program Files/Microsoft DirectX 9.0 SDK (Summer 2004)/Include/DInput.h"
-#include "/Program Files/Microsoft DirectX 9.0 SDK (Summer 2004)/Include/DSound.h"
+#include "DInput.h"
+#include "DSound.h"
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
 #define LPDIRECTSOUND8 LPDIRECTSOUND
 #undef GetFreeSpace
