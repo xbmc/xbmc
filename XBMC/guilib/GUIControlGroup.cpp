@@ -4,7 +4,7 @@
 CGUIControlGroup::CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
 : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
-  m_defaultControl = 01;
+  m_defaultControl = 0;
   m_focusedControl = 0;
   m_renderTime = 0;
   ControlType = GUICONTROL_GROUP;
