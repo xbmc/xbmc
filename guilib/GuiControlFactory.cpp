@@ -536,6 +536,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   GetTexture(pControlNode, "alttexturenofocus", textureAltNoFocus);
   CStdString strToggleSelect;
   XMLUtils::GetString(pControlNode, "usealttexture", strToggleSelect);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() < 2.1 && strToggleSelect.IsEmpty() && strType == "togglebutton")
+  { // swap them over
+    CImage temp = textureFocus;
+    textureFocus = textureAltFocus;
+    textureAltFocus = temp;
+    temp = textureNoFocus;
+    textureNoFocus = textureAltNoFocus;
+    textureAltNoFocus = temp;
+  }
+#endif
   iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
   XMLUtils::GetString(pControlNode, "selected", strToggleSelect);
   iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
