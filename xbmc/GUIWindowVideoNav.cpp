@@ -1,0 +1,582 @@
+#include "stdafx.h"
+#include "GUIWindowVideoNav.h"
+#include "util.h"
+#include "PlayListM3U.h"
+#include "application.h"
+#include "playlistplayer.h"
+#include "GUIPassword.h"
+#include "GUIListControl.h"
+#include "GUIDialogContextMenu.h"
+#include "GUIDialogFileBrowser.h"
+#include "Picture.h"
+#include "FileSystem/VideoDatabaseDirectory.h"
+#include "PlaylistFactory.h"
+
+using namespace VIDEODATABASEDIRECTORY;
+
+#define CONTROL_BTNVIEWASICONS     2 
+#define CONTROL_BTNSORTBY          3
+#define CONTROL_BTNSORTASC         4
+#define CONTROL_BTNTYPE            5
+#define CONTROL_LIST              50
+#define CONTROL_THUMBS            51
+#define CONTROL_BIGLIST           52
+#define CONTROL_LABELFILES        12
+
+#define CONTROL_FILTER            15
+#define CONTROL_BTNPARTYMODE      16
+#define CONTROL_BTNMANUALINFO     17
+#define CONTROL_LABELEMPTY        18
+
+CGUIWindowVideoNav::CGUIWindowVideoNav(void)
+    : CGUIWindowVideoBase(WINDOW_VIDEO_NAV, "MyVideoNav.xml")
+{
+  m_vecItems.m_strPath = "?";
+  m_bDisplayEmptyDatabaseMessage = false;
+  m_thumbLoader.SetObserver(this);
+}
+
+CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
+{
+}
+
+bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
+{
+  switch (message.GetMessage())
+  {
+  case GUI_MSG_WINDOW_RESET:
+    m_vecItems.m_strPath = "?";
+    break;
+  case GUI_MSG_PLAYLIST_CHANGED:
+    {
+      UpdateButtons();
+    }
+    break;
+  case GUI_MSG_WINDOW_DEINIT:
+    if (m_thumbLoader.IsLoading())
+      m_thumbLoader.StopThread();
+    break;
+  case GUI_MSG_WINDOW_INIT:
+    {
+      if (m_vecItems.m_strPath=="?")
+        m_vecItems.m_strPath = "";
+
+      // check for valid quickpath parameter
+      CStdString strDestination = message.GetStringParam();
+      if (!strDestination.IsEmpty())
+      {
+        message.SetStringParam("");
+        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+
+        if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
+        {
+          m_vecItems.m_strPath = "";
+        }
+        else if (strDestination.Equals("Genres"))
+        {
+          m_vecItems.m_strPath = "videodb://1/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("Titles"))
+        {
+          m_vecItems.m_strPath = "videodb://2/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("Years"))
+        {
+          m_vecItems.m_strPath = "videodb://3/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("Actors"))
+        {
+          m_vecItems.m_strPath = "videodb://4/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else if (strDestination.Equals("Playlists"))
+        {
+          m_vecItems.m_strPath = "special://videoplaylists/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) is not valid!", strDestination.c_str());
+          break;
+        }
+      }
+
+      DisplayEmptyDatabaseMessage(false); // reset message state
+
+      if (!CGUIWindowVideoBase::OnMessage(message))
+        return false;
+
+      //  base class has opened the database, do our check
+      //DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
+
+      if (m_bDisplayEmptyDatabaseMessage)
+      {
+        SET_CONTROL_FOCUS(CONTROL_BTNTYPE, 0);
+        Update(m_vecItems.m_strPath);  // Will remove content from the list/thumb control
+      }
+
+      return true;
+    }
+    break;
+
+  case GUI_MSG_CLICKED:
+    {
+      int iControl = message.GetSenderId();
+    }
+    break;
+  }
+  return CGUIWindowVideoBase::OnMessage(message);
+}
+
+bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+{
+  if (m_bDisplayEmptyDatabaseMessage)
+    return true;
+
+  CFileItem directory(strDirectory, true);
+
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
+  m_rootDir.SetCacheDirectory(false);
+  bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
+  if (bResult)
+  {
+    /*if (directory.IsPlayList())
+      OnRetrieveMusicInfo(items);
+    else*/ if (!items.IsVideoDb())  // don't need to do this for playlist, as OnRetrieveMusicInfo() should ideally set thumbs
+    {
+      items.SetCachedVideoThumbs();
+      m_thumbLoader.Load(m_vecItems);
+    }
+  }
+
+  return bResult;
+}
+
+void CGUIWindowVideoNav::UpdateButtons()
+{
+  CGUIWindowVideoBase::UpdateButtons();
+
+  // Update object count
+  int iItems = m_vecItems.Size();
+  if (iItems)
+  {
+    // check for parent dir and "all" items
+    // should always be the first two items
+    for (int i = 0; i <= (iItems>=2 ? 1 : 0); i++)
+    {
+      CFileItem* pItem = m_vecItems[i];
+      if (pItem->IsParentFolder()) iItems--;
+      if (pItem->m_strPath.Left(4).Equals("/-1/")) iItems--;
+    }
+    // or the last item
+    if (m_vecItems.Size() > 2 && 
+      m_vecItems[m_vecItems.Size()-1]->m_strPath.Left(4).Equals("/-1/"))
+      iItems--;
+  }
+  CStdString items;
+  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
+
+  // set the filter label
+  CStdString strLabel;
+
+  // "Playlists"
+  if (m_vecItems.m_strPath.Equals("special://videoplaylists/"))
+    strLabel = g_localizeStrings.Get(136);
+  // "{Playlist Name}"
+  else if (m_vecItems.IsPlayList())
+  {
+    // get playlist name from path
+    CStdString strDummy;
+    CUtil::Split(m_vecItems.m_strPath, strDummy, strLabel);
+  }
+  // everything else is from a musicdb:// path
+  else
+  {
+    CVideoDatabaseDirectory dir;
+    dir.GetLabel(m_vecItems.m_strPath, strLabel);
+  }
+  
+  SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
+
+  /*CONTROL_DESELECT(CONTROL_BTNPARTYMODE);
+  if (g_partyModeManager.IsEnabled())
+    CONTROL_SELECT(CONTROL_BTNPARTYMODE);*/
+}
+/*
+/// \brief Search for songs, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
+/// \param strSearch The search string
+/// \param items Items Found
+void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
+{
+  // get matching genres
+  VECGENRES genres;
+  m_musicdatabase.GetGenresByName(strSearch, genres);
+
+  if (genres.size())
+  {
+    CStdString strGenre = g_localizeStrings.Get(515); // Genre
+    for (int i = 0; i < (int)genres.size(); i++)
+    {
+      CGenre& genre = genres[i]; 
+      CFileItem* pItem = new CFileItem(genre);
+      pItem->SetLabel("[" + strGenre + "] " + genre.strGenre);
+      pItem->m_strPath.Format("musicdb://1/%ld/", genre.idGenre);
+      items.Add(pItem);
+    }
+  }
+
+  // get matching artists
+  VECARTISTS artists;
+  m_musicdatabase.GetArtistsByName(strSearch, artists);
+
+  if (artists.size())
+  {
+    CStdString strArtist = g_localizeStrings.Get(484); // Artist
+    for (int i = 0; i < (int)artists.size(); i++)
+    {
+      CArtist& artist = artists[i];
+      CFileItem* pItem = new CFileItem(artist);
+      pItem->SetLabel("[" + strArtist + "] " + artist.strArtist);
+      pItem->m_strPath.Format("musicdb://2/%ld/", artist.idArtist);
+      items.Add(pItem);
+    }
+  }
+
+  // get matching albums
+  VECALBUMS albums;
+  m_musicdatabase.GetAlbumsByName(strSearch, albums);
+
+  if (albums.size())
+  {
+    CStdString strAlbum = g_localizeStrings.Get(483); // Album
+    for (int i = 0; i < (int)albums.size(); i++)
+    {
+      CAlbum& album = albums[i];
+      CFileItem* pItem = new CFileItem(album);
+      pItem->SetLabel("[" + strAlbum + "] " + album.strAlbum + " - " + album.strArtist);
+      pItem->m_strPath.Format("musicdb://3/%ld/", album.idAlbum);
+      items.Add(pItem);
+    }
+  }
+
+  // get matching songs
+  VECSONGS songs;
+  m_musicdatabase.FindSongsByName(strSearch, songs, true);
+
+  if (songs.size())
+  {
+    CStdString strSong = g_localizeStrings.Get(179); // Song
+    for (int i = 0; i < (int)songs.size(); i++)
+    {
+      CSong& song = songs[i];
+      CFileItem* pItem = new CFileItem(song);
+      pItem->SetLabel("[" + strSong + "] " + song.strTitle + " (" + song.strAlbum + " - " + song.strArtist + ")");
+      items.Add(pItem);
+    }
+  }
+}
+*/
+void CGUIWindowVideoNav::PlayItem(int iItem)
+{
+  // unlike additemtoplaylist, we need to check the items here
+  // before calling it since the current playlist will be stopped
+  // and cleared!
+
+  // root is not allowed
+  if (m_vecItems.IsVirtualDirectoryRoot())
+    return;
+
+  CGUIWindowVideoBase::PlayItem(iItem);
+}
+
+void CGUIWindowVideoNav::OnWindowLoaded()
+{
+  CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
+  int iX = pControl->GetXPosition();
+  int iY = pControl->GetYPosition() + pControl->GetHeight() / 2;
+  CLabelInfo info = pControl->GetLabelInfo();
+  info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
+  CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,iX,iY,pControl->GetWidth(),40,"",info,false);
+  pLabel->SetAnimations(pControl->GetAnimations());
+  Add(pLabel);
+  
+  CGUIWindowVideoBase::OnWindowLoaded();
+}
+
+void CGUIWindowVideoNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
+{
+/*  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
+  // calculate our position
+  int iPosX = 200;
+  int iPosY = 100;
+  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+  if (pList)
+  {
+    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
+    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+  }
+  // mark the item
+  bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
+  m_vecItems[iItem]->Select(true);
+  // popup the context menu
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  if (!pMenu) return ;
+  // load our menu
+  pMenu->Initialize();
+  // add the needed buttons
+  int btn_Queue       = 0;  // Queue Item
+  int btn_PlayWith    = 0;  // Play using alternate player
+  int btn_Info        = 0;  // Music Information
+  int btn_InfoAll     = 0; // Query Information for all albums
+  int btn_GoToRoot    = 0;
+  int btn_NowPlaying  = 0;  // Now Playing... very bottom of context accessible
+  
+  // directory tests
+  CMusicDatabaseDirectory dir;
+
+  // check what players we have, if we have multiple display play with option
+  VECPLAYERCORES vecCores;
+  CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
+
+  // turn off info/queue/play/set artist thumb if the current item is goto parent ..
+  bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
+  if (!bIsGotoParent && (dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT || m_vecItems.m_strPath.Equals("special://musicplaylists/")))
+  { 
+    // allow queue for anything but root
+    if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList() || m_vecItems[iItem]->IsAudio())
+      btn_Queue = pMenu->AddButton(13347);
+
+    // allow a folder to be ad-hoc queued and played by the default player
+    if (m_vecItems[iItem]->m_bIsFolder || (m_vecItems[iItem]->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
+      btn_PlayWith = pMenu->AddButton(208);
+    else if (vecCores.size() >= 1)
+      btn_PlayWith = pMenu->AddButton(15213);
+    
+    // enable music info button only in album view
+    if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath) && m_vecItems[iItem]->m_bIsFolder)
+      btn_Info = pMenu->AddButton(13351);
+
+    // enable query all albums button only in album view
+    if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath) && m_vecItems[iItem]->m_bIsFolder)
+      btn_InfoAll = pMenu->AddButton(20059);
+  }
+
+  // turn off set artist image if not at artist listing.
+  // (uses file browser to pick an image)
+  int btn_Thumb = 0;  // Set Artist Thumb  
+  if (dir.IsArtistDir(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
+    btn_Thumb = pMenu->AddButton(13359);
+
+  // almost always visible
+  //int btn_Settings = -2;
+  int btn_Settings = pMenu->AddButton(5);     // Settings...
+
+  if (dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT)
+    btn_GoToRoot = pMenu->AddButton(20128);
+
+  // if the Now Playing item is still not in the list, add it here
+  if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
+    btn_NowPlaying = pMenu->AddButton(13350);
+
+  // position it correctly
+  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->DoModal();
+
+  int btn = pMenu->GetButton();
+  if (btn > 0)
+  {
+    if (btn == btn_Info) // Music Information
+    {
+      OnInfo(iItem);
+    }
+    else if (btn == btn_InfoAll) // Music Information
+    {
+      OnInfoAll(iItem);
+    }
+    else if (btn == btn_PlayWith)
+    {
+      // if folder, play with default player
+      if (m_vecItems[iItem]->m_bIsFolder)
+      {
+        PlayItem(iItem);
+      }
+      else
+      {
+        // Play With...
+        g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
+        if( g_application.m_eForcedNextPlayer != EPC_NONE )
+          OnClick(iItem);
+      }
+    }
+    else if (btn == btn_Queue)  // Queue Item
+    {
+      OnQueueItem(iItem);
+    }
+    else if (btn == btn_NowPlaying)  // Now Playing...
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+      return;
+    }
+    else if (btn == btn_Thumb)  // Set Artist Image
+    {
+      SetArtistImage(iItem);
+    }
+    else if (btn == btn_GoToRoot)
+    {
+      Update("");
+      return;
+    }
+    else if (btn == btn_Settings)  // Settings
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+    }
+  }
+  if (iItem < m_vecItems.Size())
+    m_vecItems[iItem]->Select(bSelected);*/
+}
+/*
+void CGUIWindowMusicNav::SetArtistImage(int iItem)
+{
+  CFileItem* pItem = m_vecItems[iItem];
+  CStdString strPicture;
+
+  CStdString strPath = pItem->m_strPath;
+  if (CUtil::HasSlashAtEnd(strPath))
+    strPath.Delete(strPath.size() - 1);
+
+  int nPos=strPath.ReverseFind("/");
+  if (nPos>-1)
+  {
+    //  try to guess where the user should start 
+    //  browsing for the artist thumb
+    VECALBUMS albums;
+    long idArtist=atol(strPath.Right(strPath.size()-nPos-1));
+    m_musicdatabase.GetAlbumsByArtistId(idArtist, albums);
+    if (albums.size())
+    {
+      strPicture = albums[0].strPath;
+      int iPos = -1;
+      int iSlashes=0;
+      char slash='/';
+      if (strPicture.find('\\') != -1)
+        slash = '\\';
+      while ((iPos = strPicture.find(slash,iPos+1)) != -1)
+        iSlashes++;
+
+      for (unsigned int i=1;i<albums.size();++i)
+      {
+        int j=0;
+        while (strPicture[j] == albums[i].strPath[j]) j++;
+        strPicture.Delete(j,strPicture.size()-j);
+      }
+      
+      if (!strPicture.Equals(albums[0].strPath))
+      {
+        iPos = -1;
+        int iSlashes2 = 0;
+        while ((iPos = strPicture.find(slash,iPos+1)) != -1)
+          iSlashes2++;
+        if (iSlashes == iSlashes2 && strPicture[strPicture.size()-1] != slash) // we have a partly match - happens with e.g. f:\foo\disc 1, f:\foo\disc 2 -> strPicture = f:\foo\disc
+        {
+          CStdString strPicture2(strPicture);
+          CUtil::GetParentPath(strPicture2,strPicture);
+        }
+      }
+      if (strPicture.size() > 2)
+      {
+        if ((strPicture[strPicture.size()-1] == '/' && strPicture[strPicture.size()-2] == '/') || (strPicture[1] ==':' && strPicture[2] == '\\' && strPicture.size()==3) || strPicture.IsEmpty())
+          strPicture = ""; // no protocol/drive-only matching
+         // need the slash for the filebrowser
+        else if (!strPicture.Equals(albums[0].strPath))
+          CUtil::AddSlashAtEnd(strPicture);
+      }
+    }
+  }
+
+  // TODO: localize 2.0
+  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, g_localizeStrings.Get(20010), strPicture))
+  {
+    CStdString thumb(pItem->GetCachedArtistThumb());
+    CPicture picture;
+    if (picture.DoCreateThumbnail(strPicture, thumb))
+    {
+      CMusicDatabaseDirectory dir;
+      dir.ClearDirectoryCache(m_vecItems.m_strPath);    
+      Update(m_vecItems.m_strPath);
+    }
+    else
+      CLog::Log(LOGERROR,"  Could not cache artist thumb: %s",strPicture.c_str());
+  }
+}
+
+bool CGUIWindowMusicNav::GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items)
+{
+  CStdString strParentPath=m_history.GetParentPath();
+
+  if (m_guiState.get() && !m_guiState->HideParentDirItems())
+  {
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = strParentPath;
+    items.Add(pItem);
+  }
+
+  items.m_strPath=strPlayList;
+  CLog::Log(LOGDEBUG,"CGUIWindowMusicNav, opening playlist [%s]", strPlayList.c_str());
+  CPlayListFactory factory;
+  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  if ( NULL != pPlayList.get())
+  {
+    // load it
+    if (!pPlayList->Load(strPlayList))
+    {
+      CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+      return false; //hmmm unable to load playlist?
+    }
+    CPlayList playlist = *pPlayList;
+    // convert playlist items to songs
+    for (int i = 0; i < (int)playlist.size(); ++i)
+    {
+      CSong song;
+      song.strFileName = playlist[i].m_strPath;
+      song.strTitle = CUtil::GetFileName(song.strFileName);
+      song.iDuration = playlist[i].GetDuration();
+      CFileItem *item = new CFileItem(song);
+      items.Add(item);
+    }
+
+  }
+
+  return true;
+}
+*/
+void CGUIWindowVideoNav::DisplayEmptyDatabaseMessage(bool bDisplay)
+{
+  m_bDisplayEmptyDatabaseMessage = bDisplay;
+}
+
+void CGUIWindowVideoNav::Render()
+{
+  if (m_bDisplayEmptyDatabaseMessage)
+  {
+    CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(CONTROL_LABELEMPTY);
+    CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
+    float fWidth,fHeight;
+    CStdStringW utf16NoScannedInfo;
+    g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746), utf16NoScannedInfo); // "No scanned information for this view"
+    CLabelInfo info = pLabel->GetLabelInfo();
+    info.font->GetTextExtent(utf16NoScannedInfo.c_str(), &fWidth, &fHeight);
+    pLabel->SetPosition(pLabel->GetXPosition(),pControl->GetYPosition()+pControl->GetHeight()/2-(int)fHeight/2);
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746))
+  }
+  else
+  {
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"")
+  }
+  CGUIWindowVideoBase::Render();
+}
