@@ -63,6 +63,7 @@ void CDummyVideoPlayer::Process()
     {
       g_graphicsContext.Get3DDevice()->BeginScene();
       g_graphicsContext.Clear();
+      g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
       Render();
       if (g_application.NeedRenderFullScreen())
         g_application.RenderFullScreen();
