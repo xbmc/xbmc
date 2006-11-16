@@ -7,13 +7,51 @@
  #endif
 #endif
 
+#define EXIF_MAX_COMMENT 1000
+
+typedef struct tag_ExifInfo {
+	char  Version      [5];
+  char  CameraMake   [32];
+  char  CameraModel  [40];
+  char  DateTime     [20];
+  int   Height, Width;
+  int   Orientation;
+  int   IsColor;
+  int   Process;
+  int   FlashUsed;
+  float FocalLength;
+  float ExposureTime;
+  float ApertureFNumber;
+  float Distance;
+  float CCDWidth;
+  float ExposureBias;
+  int   Whitebalance;
+  int   MeteringMode;
+  int   ExposureProgram;
+  int   ISOequivalent;
+  int   CompressionLevel;
+	float FocalplaneXRes;
+	float FocalplaneYRes;
+	float FocalplaneUnits;
+	float Xresolution;
+	float Yresolution;
+	float ResolutionUnit;
+	float Brightness;
+  char  Comments[EXIF_MAX_COMMENT];
+
+  unsigned char * ThumbnailPointer;  /* Pointer at the thumbnail */
+  unsigned ThumbnailSize;     /* Size of thumbnail. */
+
+	bool  IsExif;
+} EXIFINFO;
+  
 struct ImageInfo
 {
   unsigned int width;
   unsigned int height;
   unsigned int originalwidth;
   unsigned int originalheight;
-  int rotation;
+  EXIFINFO exifInfo;
   LPDIRECT3DTEXTURE8 texture;
 };
 
