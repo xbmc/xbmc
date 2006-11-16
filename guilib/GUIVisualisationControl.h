@@ -26,7 +26,7 @@ class CGUIVisualisationControl :
       public CGUIControl, public IAudioCallback
 {
 public:
-  CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
+  CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIVisualisationControl(void);
   virtual void Render();
   virtual void FreeResources();
@@ -34,6 +34,9 @@ public:
   virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnMouseOver();
+  virtual bool CanFocus() const;
+  virtual bool CanFocusFromPoint(float posX, float posY, CGUIControl **control) const;
 
   CVisualisation *GetVisualisation();
 private:

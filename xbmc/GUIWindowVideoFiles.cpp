@@ -182,7 +182,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         {
           if (pItem->IsDVD())
             return CAutorun::PlayDisc();
-          
+
           if (pItem->m_bIsShareOrDrive)
             return false;
           // if playback is paused or playback speed != 1, return
@@ -263,7 +263,7 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
 
   if (pItem->IsDVD())
     return CAutorun::PlayDisc();
-  
+
   if (pItem->m_bIsShareOrDrive)
   	return false;
 
@@ -661,13 +661,13 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
 void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
 {
   // calculate our position
-  int iPosX = 200;
-  int iPosY = 100;
+  float posX = 200;
+  float posY = 100;
   CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
   if (pList)
   {
-    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
-    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
@@ -679,7 +679,7 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
     m_vecItems[iItem]->Select(true);
 
     // and do the popup menu
-    if (CGUIDialogContextMenu::BookmarksMenu("video", m_vecItems[iItem], iPosX, iPosY))
+    if (CGUIDialogContextMenu::BookmarksMenu("video", m_vecItems[iItem], posX, posY))
     {
       Update(m_vecItems.m_strPath);
       return ;
@@ -710,7 +710,6 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
         return;
       strThumb = pItem->GetCachedVideoThumb();
 
-      CHTTP http;
       CStdString strExtension;
       CUtil::GetExtension(strImage, strExtension);
       CStdString strTemp = "Z:\\temp";
@@ -721,6 +720,7 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
         m_dlgProgress->SetLine(2, 415);
         m_dlgProgress->Progress();
       }
+      CHTTP http;
       http.Download(strImage, strTemp);
 
       try

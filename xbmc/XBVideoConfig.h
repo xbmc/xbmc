@@ -8,6 +8,7 @@ public:
 
   bool HasPAL() const;
   bool HasPAL60() const;
+  bool HasNTSC() const;
   bool HasWidescreen() const;
   bool Has480p() const;
   bool Has720p() const;

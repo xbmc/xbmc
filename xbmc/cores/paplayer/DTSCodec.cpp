@@ -1,4 +1,5 @@
 #include "../../stdafx.h"
+#ifdef HAS_DTS_CODEC
 #include "DTSCodec.h"
 
 static inline int16_t convert(int32_t i)
@@ -528,3 +529,5 @@ void DTSCodec::SetDefault()
   m_readBufferPos     = 0;
   m_iDataStart        = -1;
 }
+
+#endif

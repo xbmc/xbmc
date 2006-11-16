@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "musicinfotagloadercdda.h"
 #include "FileSystem/cddb.h"
-
+#include "DetectDVDType.h"
 
 using namespace MUSIC_INFO;
 using namespace CDDB;

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MusicInfoTagLoaderMod.h"
+#ifdef HAS_MIKMOD
 #include "lib/mikxbox/mikmod.h"
+#endif
 #include "Util.h"
 
 #include <fstream>
@@ -11,7 +13,9 @@ CMusicInfoTagLoaderMod::CMusicInfoTagLoaderMod(void)
 {
   CSectionLoader::Load("MOD_RX");
   CSectionLoader::Load("MOD_RW");
-	MikMod_RegisterAllLoaders();
+#ifdef HAS_MIKMOD
+  MikMod_RegisterAllLoaders();
+#endif
 }
 
 CMusicInfoTagLoaderMod::~CMusicInfoTagLoaderMod()
@@ -64,6 +68,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
     tag.SetLoaded(false);
     if( getFile(strMod,strFileName) ) 
     {
+#ifdef HAS_MIKMOD
       char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(strMod.c_str())));
       
       if( szTitle ) {
@@ -73,6 +78,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
           tag.SetLoaded(true);
         }
       }
+#endif
     }
 	}
     

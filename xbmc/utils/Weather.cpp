@@ -50,25 +50,17 @@ FIXME'S
 >weather.com dev account is mine not a general xbmc one
 */
 
-/*const CStdString strBasePath = "Q:\\weather\\";
-const bool bUseZip = false;
-const bool bUseRar = false;
-const CStdString strZipFile = "";
-const CStdString strRarFile = "";*/
-
-// FOR ZIP
-/*const CStdString strBasePath = "Z:\\weather\\";
-const bool bUseZip = true;
-const bool bUseRar = false;
-const CStdString strZipFile = "Q:\\weather\\weather.zip";
-const CStdString strRarFile = "Q:\\weather\\weather.rar";*/
+// USE THESE FOR ZIP
+//#define WEATHER_BASE_PATH "Z:\\weather\\"
+//#define WEATHER_USE_ZIP 1
+//#define WEATHER_USE_RAR 0
+//#define WEATHER_SOURCE_FILE "Q:\\media\\weather.zip"
 
 // OR THESE FOR RAR
-const CStdString strBasePath = "Z:\\weather\\";
-const bool bUseZip = false;
-const bool bUseRar = true;
-const CStdString strZipFile = "";
-const CStdString strRarFile = "Q:\\media\\weather.rar";
+#define WEATHER_BASE_PATH "Z:\\weather\\"
+#define WEATHER_USE_ZIP 0
+#define WEATHER_USE_RAR 1
+#define WEATHER_SOURCE_FILE "Q:\\media\\weather.rar"
 
 CWeather g_weatherManager;
 
@@ -97,11 +89,11 @@ void CBackgroundWeatherLoader::GetInformation()
     CLog::Log(LOGINFO, "WEATHER: Weather download successful");
     if (!callback->m_bImagesOkay)
     {
-      CDirectory::Create(strBasePath);
-      if (bUseZip)
-        g_ZipManager.ExtractArchive(strZipFile,strBasePath);
-      else if (bUseRar)
-        g_RarManager.ExtractArchive(strRarFile,strBasePath);
+      CDirectory::Create(WEATHER_BASE_PATH);
+      if (WEATHER_USE_ZIP)
+        g_ZipManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
+      else if (WEATHER_USE_RAR)
+        g_RarManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
       callback->m_bImagesOkay = true;
     }
     callback->LoadWeather(xml);
@@ -319,10 +311,10 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
     GetString(pElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
     if (strcmp(iTmpStr, "N/A") == 0)
     {
-      sprintf(m_szCurrentIcon, "%s128x128\\na.png",strBasePath.c_str());
+      sprintf(m_szCurrentIcon, "%s128x128\\na.png", WEATHER_BASE_PATH);
     }
     else
-      sprintf(m_szCurrentIcon, "%s128x128\\%s.png", strBasePath.c_str(),iTmpStr);
+      sprintf(m_szCurrentIcon, "%s128x128\\%s.png", WEATHER_BASE_PATH, iTmpStr);
 
     GetString(pElement, "t", m_szCurrentConditions, "");   //current condition
     LocalizeOverview(m_szCurrentConditions);
@@ -413,9 +405,9 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
         {
           GetString(pDayTimeElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
           if (strcmp(iTmpStr, "N/A") == 0)
-            sprintf(m_dfForcast[i].m_szIcon, "%s64x64\\na.png",strBasePath.c_str());
+            sprintf(m_dfForcast[i].m_szIcon, "%s64x64\\na.png", WEATHER_BASE_PATH);
           else
-            sprintf(m_dfForcast[i].m_szIcon, "%s64x64\\%s.png", strBasePath.c_str(),iTmpStr);
+            sprintf(m_dfForcast[i].m_szIcon, "%s64x64\\%s.png", WEATHER_BASE_PATH, iTmpStr);
 
           GetString(pDayTimeElement, "t", m_dfForcast[i].m_szOverview, "");
           LocalizeOverview(m_dfForcast[i].m_szOverview);
@@ -551,10 +543,9 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
   CGUIDialogProgress *pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   //do the download
-  CHTTP httpUtil;
   CStdString strURL;
-  //  CStdString strResultsFile = "Z:\\searchresults.xml";
   CStdString strXML;
+  CHTTP httpUtil;
 
   if (pDlgProgress)
   {
@@ -635,7 +626,7 @@ const char *CWeather::BusyInfo(DWORD dwInfo)
 {
   if (dwInfo == WEATHER_IMAGE_CURRENT_ICON)
   {
-    sprintf(m_szNAIcon,"%s128x128\\na.png",strBasePath.c_str());
+    sprintf(m_szNAIcon,"%s128x128\\na.png", WEATHER_BASE_PATH);
     return m_szNAIcon;
   }
   return CInfoLoader::BusyInfo(dwInfo);
@@ -715,4 +706,11 @@ void CWeather::Reset()
   {
     strcpy(m_szLocation[i], "");
   }
+}
+
+bool CWeather::IsFetched()
+{
+  // call GetInfo() to make sure that we actually start up
+  GetInfo(0);
+  return (0 != *m_szLastUpdateTime);
 }

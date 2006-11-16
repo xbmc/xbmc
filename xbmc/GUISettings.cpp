@@ -2,12 +2,15 @@
 #include "GUISettings.h"
 #include "application.h"
 #include "util.h"
-#include "GUIWindowMusicBase.h"
+#include "GUIDialogFileBrowser.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "utils/FanController.h"
+#endif
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
+#ifdef HAS_XFONT
 #include <xfont.h>
-#include "GUIDialogFileBrowser.h"
+#endif
 #include "mediamanager.h"
 
 // String id's of the masks
@@ -289,7 +292,9 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "system.ledenableonpaused", 20313, true);
   AddSeparator(9, "system.sep3");
   AddBool(10, "system.fanspeedcontrol", 13302, false);
+#ifdef HAS_XBOX_HARDWARE
   AddInt(11, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
+#endif
   AddSeparator(12, "system.sep4");
   AddBool(13, "system.autotemperature", 13301, false);
   AddInt(14, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
@@ -702,7 +707,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
           result->SetData(strData);
           g_settings.Save();
         }
-        else 
+        else
           return StringUtils::EmptyString;
       }
       else
@@ -814,7 +819,11 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   )
   {
+#ifdef _XBOX
     RESOLUTION newRes = g_videoConfig.GetBestMode();
+#else
+    RESOLUTION newRes = g_videoConfig.GetSafeMode();
+#endif
     if (g_guiSettings.m_LookAndFeelResolution == AUTORES)
     {
       //"videoscreen.resolution" will stay at AUTORES, m_LookAndFeelResolution will be the real mode

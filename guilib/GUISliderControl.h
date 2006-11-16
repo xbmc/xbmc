@@ -22,10 +22,9 @@ class CGUISliderControl :
       public CGUIControl
 {
 public:
-  CGUISliderControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strBackGroundTexture, const CStdString& strMidTexture, const CStdString& strMidTextureFocus, int iType);
+  CGUISliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& mibTexture, const CImage& nibTextureFocus, int iType);
   virtual ~CGUISliderControl(void);
   virtual void Render();
-  // virtual bool CanFocus() const;
   virtual bool OnAction(const CAction &action);
   virtual void PreAllocResources();
   virtual void AllocResources();
@@ -43,14 +42,9 @@ public:
   float GetFloatValue() const;
   void SetFloatInterval(float fInterval);
   void SetType(int iType) { m_iType = iType; };
-  int GetType() const;
-  const CStdString& GetBackGroundTextureName() const { return m_guiBackground.GetFileName();};
-  const CStdString& GetBackTextureMidName() const { return m_guiMid.GetFileName();};
-  int GetControlOffsetX() const { return m_iControlOffsetX;};
-  int GetControlOffsetY() const { return m_iControlOffsetY;};
-  void SetControlOffsetX(int iControlOffsetX) { m_iControlOffsetX = iControlOffsetX;};
-  void SetControlOffsetY(int iControlOffsetY) { m_iControlOffsetY = iControlOffsetY;};
-  virtual bool HitTest(int iPosX, int iPosY) const;
+  void SetControlOffsetX(float controlOffsetX) { m_controlOffsetX = controlOffsetX;};
+  void SetControlOffsetY(float controlOffsetY) { m_controlOffsetY = controlOffsetY;};
+  virtual bool HitTest(float posX, float posY) const;
   virtual bool OnMouseClick(DWORD dwButton);
   virtual bool OnMouseDrag();
   virtual bool OnMouseWheel();
@@ -59,7 +53,8 @@ public:
 protected:
   virtual void Update() ;
   virtual void Move(int iNumSteps);
-  virtual void SetFromPosition(int iPosX, int iPosY);
+  virtual void SetFromPosition(float posX, float posY);
+
   CGUIImage m_guiBackground;
   CGUIImage m_guiMid;
   CGUIImage m_guiMidFocus;
@@ -72,8 +67,8 @@ protected:
   int m_iValue;
   float m_fValue;
   float m_fInterval;
-  int m_iControlOffsetX;
-  int m_iControlOffsetY;
+  float m_controlOffsetX;
+  float m_controlOffsetY;
   int m_iInfoCode;
   bool m_renderText;
   CStdString m_formatString;

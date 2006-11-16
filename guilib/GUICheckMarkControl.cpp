@@ -4,10 +4,10 @@
 #include "GUIFontManager.h"
 
 
-CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark, const CStdString& strTextureCheckMarkNF, DWORD dwCheckWidth, DWORD dwCheckHeight, const CLabelInfo &labelInfo)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_imgCheckMark(dwParentID, dwControlId, iPosX, iPosY, dwCheckWidth, dwCheckHeight, strTextureCheckMark)
-    , m_imgCheckMarkNoFocus(dwParentID, dwControlId, iPosX, iPosY, dwCheckWidth, dwCheckHeight, strTextureCheckMarkNF)
+CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureCheckMark, const CImage& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_imgCheckMark(dwParentID, dwControlId, posX, posY, checkWidth, checkHeight, textureCheckMark)
+    , m_imgCheckMarkNoFocus(dwParentID, dwControlId, posX, posY, checkWidth, checkHeight, textureCheckMarkNF)
 {
   m_strLabel = "";
   m_label = labelInfo;
@@ -22,9 +22,9 @@ void CGUICheckMarkControl::Render()
 {
   if (!IsVisible()) return;
 
-  int iTextPosX = m_iPosX;
-  int iTextPosY = m_iPosY;
-  int iCheckMarkPosX = m_iPosX;
+  float textPosX = m_posX;
+  float textPosY = m_posY;
+  float checkMarkPosX = m_posX;
   if (m_label.font)
   {
     CStdStringW strLabelUnicode;
@@ -32,47 +32,47 @@ void CGUICheckMarkControl::Render()
 
     float fTextHeight, fTextWidth;
     m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
-    m_dwWidth = (DWORD)fTextWidth + 5 + m_imgCheckMark.GetWidth();
-    m_dwHeight = m_imgCheckMark.GetHeight();
+    m_width = (DWORD)fTextWidth + 5 + m_imgCheckMark.GetWidth();
+    m_height = m_imgCheckMark.GetHeight();
 
     if (fTextHeight < m_imgCheckMark.GetHeight())
     {
-      iTextPosY += (m_imgCheckMark.GetHeight() - (int)fTextHeight) / 2;
+      textPosY += (m_imgCheckMark.GetHeight() - fTextHeight) * 0.5f;
     }
 
     if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
     {
-      iCheckMarkPosX += ( (DWORD)(fTextWidth) + 5);
+      checkMarkPosX += fTextWidth + 5;
     }
     else
     {
-      iTextPosX += m_imgCheckMark.GetWidth() + 5;
+      textPosX += m_imgCheckMark.GetWidth() + 5;
     }
 
     if (IsDisabled() )
     {
-      m_label.font->DrawText((float)iTextPosX, (float)iTextPosY, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str());
+      m_label.font->DrawText(textPosX, textPosY, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str());
     }
     else
     {
-      if (HasFocus())
+      if (HasFocus() && m_label.focusedColor)
       {
-        m_label.font->DrawText((float)iTextPosX, (float)iTextPosY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
+        m_label.font->DrawText(textPosX, textPosY, m_label.focusedColor, m_label.shadowColor, strLabelUnicode.c_str());
       }
       else
       {
-        m_label.font->DrawText((float)iTextPosX, (float)iTextPosY, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str());
+        m_label.font->DrawText(textPosX, textPosY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
       }
     }
   }
   if (m_bSelected)
   {
-    m_imgCheckMark.SetPosition(iCheckMarkPosX, m_iPosY);
+    m_imgCheckMark.SetPosition(checkMarkPosX, m_posY);
     m_imgCheckMark.Render();
   }
   else
   {
-    m_imgCheckMarkNoFocus.SetPosition(iCheckMarkPosX, m_iPosY);
+    m_imgCheckMarkNoFocus.SetPosition(checkMarkPosX, m_posY);
     m_imgCheckMarkNoFocus.Render();
   }
   CGUIControl::Render();
@@ -161,6 +161,7 @@ void CGUICheckMarkControl::PythonSetLabel(const CStdString &strFont, const strin
 {
   m_label.font = g_fontManager.GetFont(strFont);
   m_label.textColor = dwTextColor;
+  m_label.focusedColor = dwTextColor;
   m_strLabel = strText;
 }
 

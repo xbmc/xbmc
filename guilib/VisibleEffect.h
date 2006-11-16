@@ -7,7 +7,6 @@ enum ANIMATION_STATE { ANIM_STATE_NONE = 0, ANIM_STATE_DELAYED, ANIM_STATE_IN_PR
 // forward definitions
 
 class TiXmlElement;
-enum RESOLUTION;
 
 #include "TransformMatrix.h"  // needed for the TransformMatrix member
 
@@ -27,7 +26,7 @@ class CAnimation
 public:
   CAnimation();
   void Reset();
-  void Create(const TiXmlElement *node, RESOLUTION &res);
+  void Create(const TiXmlElement *node);
   void CreateReverse(const CAnimation &anim);
   void Animate(unsigned int time, bool hasRendered);
   void ResetAnimation();

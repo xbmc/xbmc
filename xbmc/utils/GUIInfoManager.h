@@ -172,6 +172,7 @@
 #define LISTITEM_ICON               318
 #define LISTITEM_DIRECTOR           319
 #define LISTITEM_OVERLAY            320
+#define LISTITEM_LABEL2             321
 
 #define MUSICPM_ENABLED             350
 #define MUSICPM_SONGSPLAYED         351
@@ -326,11 +327,14 @@ public:
 
   void ResetCache();
 
+  void SetListItem(CGUIListItem *item);
+
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
   int TranslateSingleString(const CStdString &strCondition);
   CStdString GetItemLabel(const CFileItem *item, int info);
+  CStdString GetItemImage(CFileItem *item, int info);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
@@ -344,6 +348,8 @@ protected:
 
   // Array of multiple information mapped to a single integer lookup
   vector<GUIInfo> m_multiInfo;
+
+  CFileItem *m_listItem;
 
   // Current playing stuff
   CFileItem m_currentSong;

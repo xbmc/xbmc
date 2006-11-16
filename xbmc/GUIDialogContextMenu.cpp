@@ -119,7 +119,7 @@ int CGUIDialogContextMenu::GetButton()
   return m_iClickedButton;
 }
 
-DWORD CGUIDialogContextMenu::GetHeight()
+float CGUIDialogContextMenu::GetHeight()
 {
   CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
   if (pControl)
@@ -127,7 +127,8 @@ DWORD CGUIDialogContextMenu::GetHeight()
   else
     return CGUIDialog::GetHeight();
 }
-DWORD CGUIDialogContextMenu::GetWidth()
+
+float CGUIDialogContextMenu::GetWidth()
 {
   CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
   if (pControl)
@@ -145,7 +146,7 @@ void CGUIDialogContextMenu::EnableButton(int iButton, bool bEnable)
   if (pControl) pControl->SetEnabled(bEnable);
 }
 
-bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFileItem *item, int iPosX, int iPosY)
+bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFileItem *item, float posX, float posY)
 {
   // TODO: This should be callable even if we don't have any valid items
   if (!item)
@@ -197,7 +198,6 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     // GeminiServer: DVD Drive Context menu stuff
     int btn_PlayDisc = 0;
     int btn_Eject = 0;
-    CIoSupport TrayIO;
     if (item->IsDVD() || item->IsCDDA())
     {
       // We need to check if there is a detected is inserted!
@@ -269,7 +269,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     int btn_Settings = pMenu->AddButton(5);         // Settings
 
     // set the correct position
-    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
     pMenu->DoModal();
     
     int btn = pMenu->GetButton();
@@ -398,6 +398,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_Eject)
       {
+        CIoSupport TrayIO;
         if (TrayIO.GetTrayState() == TRAY_OPEN)
         {
           TrayIO.CloseTray();
@@ -436,7 +437,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
             pMenu->AddButton(12339); // 3: Full-text Password
 
             // set the correct position
-            pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+            pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
             pMenu->DoModal();
 
             iButton = pMenu->GetButton();

@@ -1,7 +1,9 @@
 #include "../stdafx.h"
 
 #include "network.h"
+#ifdef HAS_XBOX_NETWORK
 #include "Undocumented.h"
+#endif
 #include "../application.h"
 #include "../filesystem/filesmb.h"
 #include "../lib/libscrobbler/scrobbler.h"
@@ -9,13 +11,16 @@
 // global network variable
 CNetwork g_network;
 
+#ifdef _XBOX
 static char* inet_ntoa (struct in_addr in)
 {
   static char _inetaddress[32];
   sprintf(_inetaddress, "%d.%d.%d.%d", in.S_un.S_un_b.s_b1, in.S_un.S_un_b.s_b2, in.S_un.S_un_b.s_b3, in.S_un.S_un_b.s_b4);
   return _inetaddress;
 }
+#endif
 
+#ifdef HAS_XBOX_NETWORK
 /* translator function wich will take our network info and make TXNetConfigParams of it */
 /* returns true if config is different from default */
 static bool TranslateConfig( const struct network_info& networkinfo, TXNetConfigParams &params )
@@ -164,10 +169,11 @@ static bool TranslateConfig( const struct network_info& networkinfo, TXNetConfig
 
   return bDirty;
 }
+#endif
 
 bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
 {
-
+#ifdef HAS_XBOX_NETWORK
   XNetStartupParams xnsp = {};
   WSADATA WsaData = {};
   TXNetConfigParams params = {};
@@ -251,6 +257,7 @@ bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const cha
   }
 
 
+#endif
   return true;
 }
 
@@ -265,6 +272,7 @@ void CNetwork::NetworkDown()
 
 void CNetwork::NetworkUp()
 {
+#ifdef HAS_XBOX_NETWORK
   /* get the current status */
   TXNetConfigStatus status;
   XNetGetConfigStatus(&status);
@@ -278,6 +286,7 @@ void CNetwork::NetworkUp()
   strcpy(m_networkinfo.DNS2, inet_ntoa(status.dns2));
 
   m_networkinfo.DHCP = !(status.dhcp == 0);
+#endif
 
   m_networkup = true;
   
@@ -287,6 +296,7 @@ void CNetwork::NetworkUp()
 /* update network state, call repetedly while return value is XNET_GET_XNADDR_PENDING */
 DWORD CNetwork::UpdateState()
 {
+#ifdef HAS_XBOX_NETWORK
   XNADDR xna;
   DWORD dwState = XNetGetTitleXnAddr(&xna);
   DWORD dwLink = XNetGetEthernetLinkStatus();
@@ -306,12 +316,17 @@ DWORD CNetwork::UpdateState()
   }
 
   return dwState;
+#else
+  return 0;
+#endif
 }
 
 bool CNetwork::IsEthernetConnected()
 {
+#ifdef HAS_XBOX_NETWORK
   if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
     return false;
+#endif
 
   return true;
 }
@@ -323,6 +338,7 @@ bool CNetwork::WaitForSetup(DWORD timeout)
   if( !IsEthernetConnected() )
     return false;
 
+#ifdef HAS_XBOX_NETWORK
   do
   {
     if( UpdateState() != XNET_GET_XNADDR_PENDING )
@@ -332,6 +348,10 @@ bool CNetwork::WaitForSetup(DWORD timeout)
   } while( GetTickCount() < timestamp );
 
   return false;
+#else
+  NetworkUp();
+  return true;
+#endif
 }
 
 CNetwork::CNetwork(void)
@@ -353,7 +373,9 @@ void CNetwork::Deinitialize()
     NetworkDown();
 
   WSACleanup();
+#ifdef HAS_XBOX_NETWORK
   XNetCleanup();
+#endif
 }
 
 void CNetwork::LogState()
@@ -361,7 +383,7 @@ void CNetwork::LogState()
     DWORD dwLink = m_lastlink;
     DWORD dwState = m_laststate;
 
-
+#ifdef HAS_XBOX_NETWORK
     if ( dwLink & XNET_ETHERNET_LINK_FULL_DUPLEX )
       CLog::Log(LOGINFO, __FUNCTION__" - Link: full duplex");
 
@@ -400,7 +422,7 @@ void CNetwork::LogState()
 
     if ( dwState & XNET_GET_XNADDR_DHCP )
       CLog::Log(LOGINFO, __FUNCTION__" - State: dhcp");
-
+#endif
     CLog::Log(LOGINFO,  __FUNCTION__" - ip: %s", m_networkinfo.ip);
     CLog::Log(LOGINFO,  __FUNCTION__" - subnet: %s", m_networkinfo.subnet);
     CLog::Log(LOGINFO,  __FUNCTION__" - gateway: %s", m_networkinfo.gateway);
@@ -415,7 +437,11 @@ bool CNetwork::IsAvailable()
   if( !m_networkup )
     WaitForSetup(5000);
 
+#ifdef HAS_XBOX_NETWORK
   return m_networkup;
+#else
+  return true;
+#endif
 }
 
 void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)

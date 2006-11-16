@@ -2,6 +2,8 @@
 #include "xbapplicationex.h"
 
 #include "MusicInfoTag.h"
+#include "IMsgTargetCallback.h"
+#include "Key.h"
 #include "FileItem.h"
 
 #include "GUIDialogSeekBar.h"
@@ -15,20 +17,20 @@
 #include "utils/delaycontroller.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory.h"
+#include "PlaylistPlayer.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"
 #include "utils/Splash.h"
-#include "PlaylistPlayer.h"
 #include "utils/IMDB.h"
-#include "xbstopwatch.h"
+#include "utils/stopwatch.h"
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
 
 class CWebServer;
 class CXBFileZilla;
-class CCdgParser;
 class CSNTPClient;
+class CCdgParser;
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -38,8 +40,10 @@ public:
   virtual HRESULT Initialize();
   virtual void FrameMove();
   virtual void Render();
-  virtual HRESULT Create();
-
+#ifndef HAS_XBOX_D3D
+  virtual void RenderNoPresent();
+#endif
+  virtual HRESULT Create(HWND hWnd);
   void StartServices();
   void StopServices();
   void StartKai();
@@ -64,10 +68,11 @@ public:
   bool LoadUserWindows(const CStdString& strSkinPath);
   void DelayLoadSkin();
   void CancelDelayLoadSkin();
+  void ReloadSkin();
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
-  const EPLAYERCORES GetCurrentPlayer();
   virtual bool OnMessage(CGUIMessage& message);
+  const EPLAYERCORES GetCurrentPlayer();
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
@@ -79,23 +84,23 @@ public:
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
+  void RenderFullScreen();
+  bool NeedRenderFullScreen();
   bool IsPlaying() const ;
   bool IsPaused() const;
   bool IsPlayingAudio() const ;
   bool IsPlayingVideo() const ;
   bool OnKey(CKey& key);
   bool OnAction(const CAction &action);
-  void RenderFullScreen();
   void RenderMemoryStatus();
-  bool NeedRenderFullScreen();
   bool MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown = true);
   void CheckNetworkHDSpinDown(bool playbackStarted = false);
   void CheckHDSpindown();
+  void CheckShutdown();
   void CheckScreenSaver();   // CB: SCREENSAVER PATCH
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
   void ActivateScreenSaver(bool forceType = false);
-  void CheckShutdown();
   CMusicInfoTag* GetCurrentSong();
   CIMDBMovie* GetCurrentMovie();
 
@@ -130,10 +135,10 @@ public:
   CGUIWindowVideoOverlay m_guiVideoOverlay;
   CGUIWindowPointer m_guiPointer;
 
-  CSNTPClient *m_psntpClient;
-  CDetectDVDMedia m_DetectDVDType;
   CAutorun m_Autorun;
+  CDetectDVDMedia m_DetectDVDType;
   CDelayController m_ctrDpad;
+  CSNTPClient *m_psntpClient;
   CWebServer* m_pWebServer;
   CXBFileZilla* m_pFileZilla;
   IPlayer* m_pPlayer;
@@ -165,18 +170,17 @@ protected:
   D3DGAMMARAMP m_OldRamp;
 
   // timer information
-  CXBStopWatch m_idleTimer;
-  CXBStopWatch m_restartPlayerTimer;
-  CXBStopWatch m_frameTime;
-  CXBStopWatch m_navigationTimer;
-  CXBStopWatch m_slowTimer;
+  CStopWatch m_idleTimer;
+  CStopWatch m_restartPlayerTimer;
+  CStopWatch m_frameTime;
+  CStopWatch m_navigationTimer;
+  CStopWatch m_slowTimer;
 
   CFileItem m_itemCurrentFile;
   CFileItemList m_currentStack;
   CSplash* m_splash;
   DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
   EPLAYERCORES m_eCurrentPlayer;
-  
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
   bool m_switchingToFullScreen;
@@ -193,7 +197,6 @@ protected:
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
   void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
-  void CheckForDebugButtonCombo();
   void InitBasicD3D();
   
   
@@ -204,7 +207,7 @@ protected:
   bool ProcessKeyboard();
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
- 
+  void CheckForDebugButtonCombo();
   
   float NavigationIdleTime();
  

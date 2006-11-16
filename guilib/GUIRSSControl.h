@@ -18,19 +18,15 @@
 class CGUIRSSControl : public CGUIControl, public IRssObserver
 {
 public:
-  CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags);
+  CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags);
   virtual ~CGUIRSSControl(void);
 
   virtual void Render();
   virtual void OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray);
+  virtual bool CanFocus() const { return false; };
 
-  DWORD GetChannelTextColor() const { return m_dwChannelColor;};
-  DWORD GetHeadlineTextColor() const { return m_dwHeadlineColor;};
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
   void SetIntervals(const std::vector<int>& vecIntervals);
   void SetUrls(const std::vector<string>& vecUrl);
-  const std::vector<string>& GetUrls() const { return m_vecUrls; };
-  const CStdString& GetTags() const { return m_strRSSTags; };
 
 protected:
 

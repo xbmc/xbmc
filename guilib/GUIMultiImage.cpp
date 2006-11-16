@@ -5,8 +5,8 @@
 #include "../xbmc/FileSystem/HDDirectory.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
+CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_currentPath = m_texturePath = strTexturePath;
   m_currentImage = 0;
@@ -61,7 +61,7 @@ void CGUIMultiImage::Render()
   if (!m_images.empty())
   {
     // Set a viewport so that we don't render outside the defined area
-    g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight);
+    g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
     m_images[m_currentImage]->Render();
 
     unsigned int nextImage = m_currentImage + 1;
@@ -113,6 +113,17 @@ bool CGUIMultiImage::OnAction(const CAction &action)
   return false;
 }
 
+bool CGUIMultiImage::OnMessage(CGUIMessage &message)
+{
+  if (message.GetMessage() == GUI_MSG_REFRESH_THUMBS)
+  {
+    if (m_Info)
+      FreeResources();
+    return true;
+  }
+  return CGUIControl::OnMessage(message);
+}
+
 void CGUIMultiImage::PreAllocResources()
 {
   FreeResources();
@@ -132,7 +143,7 @@ void CGUIMultiImage::AllocResources()
 
   for (unsigned int i=0; i < m_files.size(); i++)
   {
-    CGUIImage *pImage = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, m_files[i]);
+    CGUIImage *pImage = new CGUIImage(GetParentID(), GetID(), m_posX, m_posY, m_width, m_height, m_files[i]);
     if (pImage)
       m_images.push_back(pImage);
   }
@@ -162,15 +173,15 @@ void CGUIMultiImage::LoadImage(int image)
     float sourceAspectRatio = (float)m_images[image]->GetTextureWidth() / m_images[image]->GetTextureHeight();
     float aspectRatio = sourceAspectRatio / g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution());
 
-    unsigned int newWidth = m_dwWidth;
-    unsigned int newHeight = (unsigned int)((float)newWidth / aspectRatio);
-    if ((m_aspectRatio == CGUIImage::ASPECT_RATIO_SCALE && newHeight < m_dwHeight) ||
-        (m_aspectRatio == CGUIImage::ASPECT_RATIO_KEEP && newHeight > m_dwHeight))
+    float newWidth = m_width;
+    float newHeight = newWidth / aspectRatio;
+    if ((m_aspectRatio == CGUIImage::ASPECT_RATIO_SCALE && newHeight < m_height) ||
+        (m_aspectRatio == CGUIImage::ASPECT_RATIO_KEEP && newHeight > m_height))
     {
-      newHeight = m_dwHeight;
-      newWidth = (unsigned int)((float)newHeight * aspectRatio);
+      newHeight = m_height;
+      newWidth = newHeight * aspectRatio;
     }
-    m_images[image]->SetPosition(m_iPosX - (int)(newWidth - m_dwWidth)/2, m_iPosY - (int)(newHeight - m_dwHeight)/2);
+    m_images[image]->SetPosition(m_posX - (newWidth - m_width)*0.5f, m_posY - (newHeight - m_height)*0.5f);
     m_images[image]->SetWidth(newWidth);
     m_images[image]->SetHeight(newHeight);
   }
@@ -207,11 +218,6 @@ void CGUIMultiImage::SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio)
     m_aspectRatio = ratio;
     m_bInvalidated = true;
   }
-}
-
-CGUIImage::GUIIMAGE_ASPECT_RATIO CGUIMultiImage::GetAspectRatio() const
-{ 
-  return m_aspectRatio;
 }
 
 void CGUIMultiImage::LoadDirectory()

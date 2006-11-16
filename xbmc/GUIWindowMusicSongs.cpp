@@ -222,7 +222,7 @@ void CGUIWindowMusicSongs::OnScan()
   CUtil::DeleteDatabaseDirectoryCache();
 
   // Start background loader
-  int iControl=GetFocusedControl();
+  int iControl=GetFocusedControlID();
   if (musicScan) musicScan->StartScanning(m_vecItems.m_strPath, bUpdateAll);
   SET_CONTROL_FOCUS(iControl, 0);
   UpdateButtons();
@@ -387,13 +387,13 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
   // from a blank starting setup
 
   // calculate our position
-  int iPosX = 200;
-  int iPosY = 100;
+  float posX = 200;
+  float posY = 100;
   const CGUIControl *pList = GetControl(CONTROL_LIST);
   if (pList)
   {
-    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
-    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
@@ -405,7 +405,7 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
     m_vecItems[iItem]->Select(true);
 
     // and do the popup menu
-    if (CGUIDialogContextMenu::BookmarksMenu("music", m_vecItems[iItem], iPosX, iPosY))
+    if (CGUIDialogContextMenu::BookmarksMenu("music", m_vecItems[iItem], posX, posY))
     {
       Update(m_vecItems.m_strPath);
       return ;

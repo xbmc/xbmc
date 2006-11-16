@@ -1,7 +1,14 @@
 #include "include.h"
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"
+#ifdef HAS_XBOX_D3D
 #include <xgraphics.h>
+#define TTF_TEXTURE_FORMAT D3DFMT_LIN_L8
+#define TTF_USE_PIXEL_SHADER
+#else
+#define TTF_TEXTURE_FORMAT D3DFMT_LIN_A8R8G8B8
+#undef  TTF_USE_PIXEL_SHADER
+#endif
 
 // stuff for freetype
 #include "ft2build.h"
@@ -12,10 +19,18 @@
 #define USE_RELEASE_LIBS
 
 // our free type library (debug)
+#ifdef _XBOX
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
   #pragma comment (lib,"guilib/freetype2/freetype221_D.lib")
 #else
   #pragma comment (lib,"guilib/freetype2/freetype221.lib")
+#endif
+#else
+#if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
+  #pragma comment (lib,"../../guilib/freetype2/freetype221_D.lib")
+#else
+  #pragma comment (lib,"../../guilib/freetype2/freetype221.lib")
+#endif
 #endif
 
 class CFreeTypeLibrary
@@ -56,6 +71,7 @@ private:
 CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
 #define ROUND(x) floorf(x + 0.5f)
+#define ROUND_TO_PIXEL(x) floorf(x + 0.5f) - 0.5f
 
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
@@ -285,8 +301,8 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
       }
       bStartingNewLine = FALSE;
       // align to an integer so that aliasing doesn't occur
-      lineX = floorf(lineX + 0.5f);
-      lineY = floorf(lineY + 0.5f);
+      lineX = ROUND_TO_PIXEL(lineX + 0.5f);
+      lineY = ROUND_TO_PIXEL(lineY + 0.5f);
       cursorX = 0; // current position along the line
     }
 
@@ -475,7 +491,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
       FT_Done_Glyph(glyph);
       return false;
     }
-    if (D3D_OK != m_pD3DDevice->CreateTexture(m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_L8, 0, &newTexture))
+    if (D3D_OK != m_pD3DDevice->CreateTexture(m_textureWidth, newHeight, 1, 0, TTF_TEXTURE_FORMAT, D3DPOOL_MANAGED, &newTexture))
     {
       CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
       FT_Done_Glyph(glyph);
@@ -489,7 +505,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 
     if (m_texture)
     { // copy across from our current one using gpu
-      D3DSurface *pTarget, *pSource;
+      LPDIRECT3DSURFACE8 pTarget, pSource;
       newTexture->GetSurfaceLevel(0, &pTarget);
       m_texture->GetSurfaceLevel(0, &pSource);
 
@@ -518,8 +534,8 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   {
     // create a texture to render to, don't use main texture as locking that will
     // wait for gpu needlessly
-    D3DTexture *pTexture;
-    if (D3D_OK != m_pD3DDevice->CreateTexture (bitmap.width, bitmap.rows, 1, 0, D3DFMT_LIN_L8, 0, &pTexture))
+    LPDIRECT3DTEXTURE8 pTexture;
+    if (D3D_OK != m_pD3DDevice->CreateTexture(bitmap.width, bitmap.rows, 1, 0, TTF_TEXTURE_FORMAT, D3DPOOL_MANAGED, &pTexture))
     {
       CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new character texture");
       FT_Done_Glyph(glyph);
@@ -532,12 +548,22 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     {
       BYTE *dest = (BYTE *)rect.pBits + y * rect.Pitch;
       BYTE *source = (BYTE *)bitmap.buffer + y * bitmap.pitch;
+#ifdef TTF_USE_PIXEL_SHADER
       memcpy(dest, source, bitmap.width);
+#else
+      for (int x = 0; x < bitmap.width; x++)
+      {
+        *dest++ = (*source) ? 0xff : 0x00; // B
+        *dest++ = (*source) ? 0xff : 0x00; // G
+        *dest++ = (*source) ? 0xff : 0x00; // R
+        *dest++ = *source++;               // A
+      }
+#endif
     }
     pTexture->UnlockRect(0);
 
     // render this onto our normal texture using gpu
-    D3DSurface *pTarget, *pSource;
+    LPDIRECT3DSURFACE8 pTarget, pSource;
     m_texture->GetSurfaceLevel(0, &pTarget);
     pTexture->GetSurfaceLevel(0, &pSource);
 
@@ -587,13 +613,20 @@ void CGUIFontTTF::Begin()
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
     m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+#ifdef HAS_XBOX_D3D
     m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
     m_pD3DDevice->SetVertexShader(m_vertexShader);
+#else
+    #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+    m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+    m_pD3DDevice->SetVertexShader( D3DFVF_CUSTOMVERTEX );
+#endif
     m_pD3DDevice->SetPixelShader(m_pixelShader);
-    m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f ); // fix texel align
 
+#ifdef HAS_XBOX_D3D
     // Render the image
     m_pD3DDevice->Begin(D3DPT_QUADLIST);
+#endif
   }
   // Keep track of the nested begin/end calls.
   m_dwNestedBeginCount++;
@@ -607,9 +640,9 @@ void CGUIFontTTF::End()
   if (--m_dwNestedBeginCount > 0)
     return;
 
+#ifdef HAS_XBOX_D3D
   m_pD3DDevice->End();
-
-  m_pD3DDevice->SetScreenSpaceOffset( 0, 0 );
+#endif
   m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
 }
@@ -626,20 +659,72 @@ inline void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &a
   posX += ch->offsetX * angle.cosine - ch->offsetY * angle.sine;
   posY += ch->offsetX * angle.sine + ch->offsetY * angle.cosine;
 
+#ifdef HAS_XBOX_D3D
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
 
   m_pD3DDevice->SetVertexData4f( 0, posX, posY, ch->left, ch->top );
   m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width, posY + angle.sine * width, ch->right, ch->top );
   m_pD3DDevice->SetVertexData4f( 0, posX + angle.cosine * width - angle.sine * height, posY + angle.sine * width + angle.cosine * height, ch->right, ch->bottom );
   m_pD3DDevice->SetVertexData4f( 0, posX - angle.sine * height, posY + angle.cosine * height, ch->left, ch->bottom );
+#else
+  struct CUSTOMVERTEX {
+      FLOAT x, y, z;
+      FLOAT rhw;
+      DWORD color;
+      FLOAT tu, tv;   // Texture coordinates
+  };
+
+  // tex coords converted to 0..1 range
+  float tl = ch->left / m_textureWidth;
+  float tr = ch->right / m_textureWidth;
+  float tt = ch->top / (m_textureRows * m_cellHeight);
+  float tb = ch->bottom / (m_textureRows * m_cellHeight);
+
+  CUSTOMVERTEX verts[4];
+  verts[0].x = posX;
+  verts[0].y = posY;
+  verts[0].z = 0.0f;
+  verts[0].rhw = 1.0f;
+  verts[0].tu = tl;
+  verts[0].tv = tt;
+  verts[0].color = dwColor;
+
+  verts[1].x = posX + angle.cosine * width;
+  verts[1].y = posY + angle.sine * width;
+  verts[1].z = 0.0f;
+  verts[1].rhw = 1.0f;
+  verts[1].tu = tr;
+  verts[1].tv = tt;
+  verts[1].color = dwColor;
+
+  verts[2].x = posX + angle.cosine * width - angle.sine * height;
+  verts[2].y = posY + angle.sine * width + angle.cosine * height;
+  verts[2].z = 0.0f;
+  verts[2].rhw = 1.0f;
+  verts[2].tu = tr;
+  verts[2].tv = tb;
+  verts[2].color = dwColor;
+
+  verts[3].x = posX - angle.sine * height;
+  verts[3].y = posY + angle.cosine * height;
+  verts[3].z = 0.0f;
+  verts[3].rhw = 1.0f;
+  verts[3].tu = tl;
+  verts[3].tv = tb;
+  verts[3].color = dwColor;
+
+  m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+#endif
 }
 
 void CGUIFontTTF::CreateShader()
 {
+#ifdef TTF_USE_PIXEL_SHADER
   if (!m_pixelShader)
   {
     // shader from the alpha texture to the full 32bit font.  Basically, anything with
     // alpha > 0 is filled in fully in the colour channels
+#ifdef HAS_XBOX_D3D
     const char *fonts =
       "xps.1.1\n"
       "tex t0\n"
@@ -650,8 +735,24 @@ void CGUIFontTTF::CreateShader()
     XGAssembleShader("FontsShader", fonts, strlen(fonts), 0, NULL, &pShader, NULL, NULL, NULL, NULL, NULL);
     m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_pixelShader);
     pShader->Release();
-  }
+#else
+    const char *fonts =
+      "ps.1.1\n"
+      "tex t0\n"
+      "mov r0.rgb, v0\n"
+      "+ mul r0.a, v0.a, t0.a\n";
 
+    bool m_usePixelShader = false;
+    LPD3DXBUFFER pShader = NULL;
+    D3DXAssembleShader(fonts, strlen(fonts), NULL, NULL, &pShader, NULL);
+    if (D3D_OK == m_pD3DDevice->CreatePixelShader((DWORD*)pShader->GetBufferPointer(), &m_pixelShader))
+      m_usePixelShader = true;
+    pShader->Release();
+#endif
+  }
+#endif
+
+#ifdef HAS_XBOX_D3D
   // Create the vertex shader
   if (!m_vertexShader)
   {
@@ -674,4 +775,5 @@ void CGUIFontTTF::CreateShader()
       };
     m_pD3DDevice->CreateVertexShader(vertexDecl, vertexShader, &m_vertexShader, D3DUSAGE_PERSISTENTDIFFUSE);
   }
+#endif
 }

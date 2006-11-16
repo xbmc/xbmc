@@ -10,18 +10,18 @@
 #define SCROLL_SPEED 6.0f
 #define ANALOG_SCROLL_START 0.8f
 
-CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, int iGap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CLabelInfo& labelInfo)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_imgFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus)
-    , m_imgNoFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureNoFocus)
+CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_imgFocus(dwParentID, dwControlId, posX, posY, width, height, textureFocus)
+    , m_imgNoFocus(dwParentID, dwControlId, posX, posY, width, height, textureNoFocus)
 {
   m_iXMLNumSlots = iSlots;
   m_iXMLDefaultSlot = iDefaultSlot - 1;
-  m_iXMLPosX = iPosX;
-  m_iXMLPosY = iPosY;
-  m_dwXMLWidth = dwWidth;
-  m_dwXMLHeight = dwHeight;
-  m_iButtonGap = iGap;
+  m_xmlPosX = posX;
+  m_xmlPosY = posY;
+  m_xmlWidth = width;
+  m_xmlHeight = height;
+  m_buttonGap = gap;
   m_iNumSlots = iSlots;
   m_bHorizontal = bHorizontal;
   m_iDefaultSlot = iDefaultSlot - 1;
@@ -38,7 +38,7 @@ CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int 
   // reset other variables to the defaults
   m_iCurrentSlot = -1;
   m_iOffset = 0;
-  m_iScrollOffset = 0;
+  m_scrollOffset = 0;
   m_bScrollUp = false;
   m_bScrollDown = false;
   m_bMoveUp = false;
@@ -106,14 +106,7 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
 
 bool CGUIButtonScroller::OnMessage(CGUIMessage &message)
 {
-  if (message.GetMessage() == GUI_MSG_SETFOCUS)
-  {
-    if (message.GetSenderId() == GetParentID())
-    {
-      OnChangeFocus();
-    }
-  }
-  else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
+  if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
   {
     SetActiveButton(message.GetParam1());
   }
@@ -183,10 +176,10 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
     }
     childNode = buttonNode->FirstChild("texturefocus");
     if (childNode && childNode->FirstChild())
-      button->imageFocus = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, childNode->FirstChild()->Value());
+      button->imageFocus = new CGUIImage(GetParentID(), GetID(), m_posX, m_posY, m_width, m_height, (CStdString)childNode->FirstChild()->Value());
     childNode = buttonNode->FirstChild("texturenofocus");
     if (childNode && childNode->FirstChild())
-      button->imageNoFocus = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, childNode->FirstChild()->Value());
+      button->imageNoFocus = new CGUIImage(GetParentID(), GetID(), m_posX, m_posY, m_width, m_height, (CStdString)childNode->FirstChild()->Value());
     m_vecButtons.push_back(button);
     buttonNode = buttonNode->NextSiblingElement("button");
   }
@@ -208,16 +201,16 @@ void CGUIButtonScroller::AllocResources()
   // calculate our correct width and height
   if (m_bHorizontal)
   {
-    m_dwXMLWidth = (DWORD)(m_iXMLNumSlots * (m_imgFocus.GetWidth() + m_iButtonGap) - m_iButtonGap);
-    m_dwXMLHeight = m_imgFocus.GetHeight();
+    m_xmlWidth = (m_iXMLNumSlots * (m_imgFocus.GetWidth() + m_buttonGap) - m_buttonGap);
+    m_xmlHeight = m_imgFocus.GetHeight();
   }
   else
   {
-    m_dwXMLWidth = m_imgFocus.GetWidth();
-    m_dwXMLHeight = (DWORD)(m_iXMLNumSlots * (m_imgFocus.GetHeight() + m_iButtonGap) - m_iButtonGap);
+    m_xmlWidth = m_imgFocus.GetWidth();
+    m_xmlHeight = (m_iXMLNumSlots * (m_imgFocus.GetHeight() + m_buttonGap) - m_buttonGap);
   }
-  m_dwWidth = m_dwXMLWidth;
-  m_dwHeight = m_dwXMLHeight;
+  m_width = m_xmlWidth;
+  m_height = m_xmlHeight;
   // update the number of filled slots etc.
   if ((int)m_vecButtons.size() < m_iXMLNumSlots)
   {
@@ -253,21 +246,21 @@ void CGUIButtonScroller::Render()
 {
   if (!IsVisible()) return;
 
-  int iPosX = m_iPosX;
-  int iPosY = m_iPosY;
+  float posX = m_posX;
+  float posY = m_posY;
   // set our viewport
-  int iPosX2 = iPosX;
-  int iPosY2 = iPosY;
-  g_graphicsContext.SetViewPort( (float)iPosX, (float)iPosY, (float)m_dwWidth, (float)m_dwHeight);
+  float posX2 = posX;
+  float posY2 = posY;
+  g_graphicsContext.SetViewPort(posX, posY, m_width, m_height);
   // if we're scrolling, update our scroll offset
   if (m_bScrollUp || m_bScrollDown)
   {
-    int iMaxScroll = m_bHorizontal ? (int)m_imgFocus.GetWidth() : (int)m_imgFocus.GetHeight();
-    iMaxScroll += m_iButtonGap;
-    m_iScrollOffset += (int)((float)iMaxScroll / m_fScrollSpeed) + 1;
-    if (m_iScrollOffset > iMaxScroll || !m_bSmoothScrolling)
+    float maxScroll = m_bHorizontal ? m_imgFocus.GetWidth() : m_imgFocus.GetHeight();
+    maxScroll += m_buttonGap;
+    m_scrollOffset += (int)(maxScroll / m_fScrollSpeed) + 1;
+    if (m_scrollOffset > maxScroll || !m_bSmoothScrolling)
     {
-      m_iScrollOffset = 0;
+      m_scrollOffset = 0;
       if (m_bScrollUp)
       {
         if (GetNext(m_iOffset) != -1) m_iOffset = GetNext(m_iOffset);
@@ -284,55 +277,54 @@ void CGUIButtonScroller::Render()
       }
       m_bScrollUp = false;
       m_bScrollDown = false;
-      OnChangeFocus();
     }
     else
     {
       if (m_bScrollUp)
       {
         if (m_bHorizontal)
-          iPosX -= m_iScrollOffset;
+          posX -= m_scrollOffset;
         else
-          iPosY -= m_iScrollOffset;
+          posY -= m_scrollOffset;
       }
       else
       {
         if (m_bHorizontal)
-          iPosX += m_iScrollOffset - iMaxScroll;
+          posX += m_scrollOffset - maxScroll;
         else
-          iPosY += m_iScrollOffset - iMaxScroll;
+          posY += m_scrollOffset - maxScroll;
       }
     }
   }
-  int iPosX3 = iPosX;
-  int iPosY3 = iPosY;
+  float posX3 = posX;
+  float posY3 = posY;
   // ok, now check if we're scrolling down
   int iOffset = m_iOffset;
   if (m_bScrollDown)
   {
     iOffset = GetPrevious(iOffset);
-    RenderItem(iPosX, iPosY, iOffset, false);
+    RenderItem(posX, posY, iOffset, false);
   }
   // ok, now render the main block
   for (int i = 0; i < m_iNumSlots; i++)
-    RenderItem(iPosX, iPosY, iOffset, false);
+    RenderItem(posX, posY, iOffset, false);
   // ok, now check if we're scrolling up
   if (m_bScrollUp)
-    RenderItem(iPosX, iPosY, iOffset, false);
+    RenderItem(posX, posY, iOffset, false);
   // ok, now render the background slot...
   if (HasFocus())
   {
-    iPosX = m_iPosX;
-    iPosY = m_iPosY;
+    posX = m_posX;
+    posY = m_posY;
     // check if we're moving up or down
     if (m_bMoveUp || m_bMoveDown)
     {
-      int iMaxScroll = m_bHorizontal ? (int)m_imgFocus.GetWidth() : (int)m_imgFocus.GetHeight();
-      iMaxScroll += m_iButtonGap;
-      m_iScrollOffset += (int)((float)iMaxScroll / SCROLL_SPEED) + 1;
-      if (m_iScrollOffset > iMaxScroll || !m_bSmoothScrolling)
+      float maxScroll = m_bHorizontal ? m_imgFocus.GetWidth() : m_imgFocus.GetHeight();
+      maxScroll += m_buttonGap;
+      m_scrollOffset += maxScroll / SCROLL_SPEED + 1;
+      if (m_scrollOffset > maxScroll || !m_bSmoothScrolling)
       {
-        m_iScrollOffset = 0;
+        m_scrollOffset = 0;
         if (m_bMoveUp)
         {
           if (m_iCurrentSlot > 0)
@@ -345,30 +337,29 @@ void CGUIButtonScroller::Render()
         }
         m_bMoveUp = false;
         m_bMoveDown = false;
-        OnChangeFocus();
       }
       else
       {
         if (m_bMoveUp)
         {
           if (m_bHorizontal)
-            iPosX -= m_iScrollOffset;
+            posX -= m_scrollOffset;
           else
-            iPosY -= m_iScrollOffset;
+            posY -= m_scrollOffset;
         }
         else
         {
           if (m_bHorizontal)
-            iPosX += m_iScrollOffset;
+            posX += m_scrollOffset;
           else
-            iPosY += m_iScrollOffset;
+            posY += m_scrollOffset;
         }
       }
     }
     if (m_bHorizontal)
-      iPosX += m_iCurrentSlot * ((int)m_imgFocus.GetWidth() + m_iButtonGap);
+      posX += m_iCurrentSlot * ((int)m_imgFocus.GetWidth() + m_buttonGap);
     else
-      iPosY += m_iCurrentSlot * ((int)m_imgFocus.GetHeight() + m_iButtonGap);
+      posY += m_iCurrentSlot * ((int)m_imgFocus.GetHeight() + m_buttonGap);
     // check if we have a skinner-defined icon image
     CGUIImage *pImage = m_vecButtons[GetActiveButton()]->imageFocus;
     if (pImage && (m_bScrollUp || m_bScrollDown))
@@ -377,7 +368,7 @@ void CGUIButtonScroller::Render()
       pImage = &m_imgFocus;
     if (pImage)
     {
-      pImage->SetPosition(iPosX, iPosY);
+      pImage->SetPosition(posX, posY);
       pImage->SetVisible(true);
       pImage->SetWidth(m_imgFocus.GetWidth());
       pImage->SetHeight(m_imgFocus.GetHeight());
@@ -386,19 +377,19 @@ void CGUIButtonScroller::Render()
   }
   // Now render the text
   iOffset = m_iOffset;
-  iPosX = iPosX3;
-  iPosY = iPosY3;
+  posX = posX3;
+  posY = posY3;
   if (m_bScrollDown)
   {
     iOffset = GetPrevious(iOffset);
-    RenderItem(iPosX, iPosY, iOffset, true);
+    RenderItem(posX, posY, iOffset, true);
   }
   // ok, now render the main block
   for (int i = 0; i < m_iNumSlots; i++)
-    RenderItem(iPosX, iPosY, iOffset, true);
+    RenderItem(posX, posY, iOffset, true);
   // ok, now check if we're scrolling up
   if (m_bScrollUp)
-    RenderItem(iPosX, iPosY, iOffset, true);
+    RenderItem(posX, posY, iOffset, true);
 
   // reset the viewport
   g_graphicsContext.RestoreViewPort();
@@ -451,7 +442,6 @@ void CGUIButtonScroller::SetActiveButton(int iButton)
     {
       m_iOffset = 0;
       m_iCurrentSlot = iMinButton;
-      OnChangeFocus();
       return ;
     }
     int iMaxButton = m_iDefaultSlot + m_iMovementRange;
@@ -460,7 +450,6 @@ void CGUIButtonScroller::SetActiveButton(int iButton)
     {
       m_iOffset = iButton - iMaxButton;
       m_iCurrentSlot = iMaxButton;
-      OnChangeFocus();
       return ;
     }
     // now change our current slot so that it all fits nicely
@@ -487,7 +476,6 @@ void CGUIButtonScroller::SetActiveButton(int iButton)
       break;
     }
   }
-  OnChangeFocus();
 }
 
 void CGUIButtonScroller::OnUp()
@@ -549,9 +537,8 @@ void CGUIButtonScroller::DoUp()
       if (m_bScrollDown)
       { // finish scroll for higher speed
         m_bScrollDown = false;
-        m_iScrollOffset = 0;
+        m_scrollOffset = 0;
         m_iOffset = GetPrevious(m_iOffset);
-        OnChangeFocus();
       }
       else
       {
@@ -564,9 +551,8 @@ void CGUIButtonScroller::DoUp()
       if (m_bMoveUp)
       {
         m_bMoveUp = false;
-        m_iScrollOffset = 0;
+        m_scrollOffset = 0;
         if (m_iCurrentSlot > 0) m_iCurrentSlot--;
-        OnChangeFocus();
       }
       m_bMoveUp = true;
     }
@@ -581,9 +567,8 @@ void CGUIButtonScroller::DoDown()
       if (m_bScrollUp)
       { // finish scroll for higher speed
         m_bScrollUp = false;
-        m_iScrollOffset = 0;
+        m_scrollOffset = 0;
         if (GetNext(m_iOffset) != -1) m_iOffset = GetNext(m_iOffset);
-        OnChangeFocus();
       }
       else
       {
@@ -595,16 +580,15 @@ void CGUIButtonScroller::DoDown()
       if (m_bMoveDown)
       {
         m_bMoveDown = false;
-        m_iScrollOffset = 0;
+        m_scrollOffset = 0;
         if (m_iCurrentSlot + 1 < m_iNumSlots) m_iCurrentSlot++;
-        OnChangeFocus();
       }
       m_bMoveDown = true;
     }
   }
 }
 
-void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool bText)
+void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool bText)
 {
   if (iOffset < 0) return ;
   float fStartAlpha, fEndAlpha;
@@ -612,14 +596,14 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
   if (bText)
   {
     if (!m_label.font) return ;
-    float fPosX = (float)iPosX + m_label.offsetX;
-    float fPosY = (float)iPosY + m_label.offsetY;
+    float fPosX = posX + m_label.offsetX;
+    float fPosY = posY + m_label.offsetY;
     if (m_label.align & XBFONT_RIGHT)
-      fPosX = (float)iPosX + m_imgFocus.GetWidth() - m_label.offsetX;
+      fPosX = posX + m_imgFocus.GetWidth() - m_label.offsetX;
     if (m_label.align & XBFONT_CENTER_X)
-      fPosX = (float)iPosX + m_imgFocus.GetWidth() / 2;
+      fPosX = posX + m_imgFocus.GetWidth() / 2;
     if (m_label.align & XBFONT_CENTER_Y)
-      fPosY = (float)iPosY + m_imgFocus.GetHeight() / 2;
+      fPosY = posY + m_imgFocus.GetHeight() / 2;
 
     // label is from <info> tag first, and if that's blank,
     // we use the <label> tag
@@ -634,24 +618,25 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
     if (m_bHorizontal)
     {
       if (fPosX < fStartAlpha)
-        fAlpha -= (fStartAlpha - fPosX) / (fStartAlpha - m_iPosX) * m_iAlpha * 2.55f;
+        fAlpha -= (fStartAlpha - fPosX) / (fStartAlpha - m_posX) * m_iAlpha * 2.55f;
       if (fPosX > fEndAlpha)
-        fAlpha -= (fPosX - fEndAlpha) / (m_iPosX + (int)m_dwWidth - fEndAlpha) * m_iAlpha * 2.55f;
+        fAlpha -= (fPosX - fEndAlpha) / (m_posX + m_width - fEndAlpha) * m_iAlpha * 2.55f;
     }
     else
     {
       if (fPosY < fStartAlpha)
-        fAlpha -= (fStartAlpha - fPosY) / (fStartAlpha - m_iPosY) * m_iAlpha * 2.55f;
+        fAlpha -= (fStartAlpha - fPosY) / (fStartAlpha - m_posY) * m_iAlpha * 2.55f;
       if (fPosY > fEndAlpha)
-        fAlpha -= (fPosY - fEndAlpha) / (m_iPosY + (int)m_dwHeight - fEndAlpha) * m_iAlpha * 2.55f;
+        fAlpha -= (fPosY - fEndAlpha) / (m_posY + m_height - fEndAlpha) * m_iAlpha * 2.55f;
     }
     if (fAlpha < 1) fAlpha = 1; // don't quite go all the way transparent,
                                 // as any shadow colour will not be rendered transparent if
                                 // it's defined in the font class
     if (fAlpha > 255) fAlpha = 255.0f;
     DWORD dwAlpha = (DWORD)(fAlpha + 0.5f);
-    DWORD alpha = (dwAlpha * ((m_label.textColor & 0xff000000) >> 24)) / 255;
-    DWORD dwColor = (alpha << 24) | (m_label.textColor & 0xFFFFFF);
+    DWORD color = (m_label.focusedColor && iOffset == GetActiveButton()) ? m_label.focusedColor : m_label.textColor;
+    DWORD alpha = (dwAlpha * ((color & 0xff000000) >> 24)) / 255;
+    DWORD dwColor = (alpha << 24) | (color & 0xFFFFFF);
     alpha = (dwAlpha * ((m_label.shadowColor & 0xff000000) >> 24)) / 255;
     DWORD dwShadowColor = (alpha << 24) | (m_label.shadowColor & 0xFFFFFF);
     m_label.font->DrawText( fPosX, fPosY, dwColor, dwShadowColor, strLabelUnicode.c_str(), m_label.align);
@@ -667,15 +652,15 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
     pImage->SetVisible(true);
     if (m_bHorizontal)
     {
-      if (iPosX < fStartAlpha)
+      if (posX < fStartAlpha)
       {
-        fAlpha -= (fStartAlpha - iPosX) / (fStartAlpha - m_iPosX) * m_iAlpha * 2.55f;
-        fAlpha1 -= (fStartAlpha - (iPosX + m_imgFocus.GetWidth() + m_iButtonGap)) / (fStartAlpha - m_iPosX) * m_iAlpha * 2.55f;
+        fAlpha -= (fStartAlpha - posX) / (fStartAlpha - m_posX) * m_iAlpha * 2.55f;
+        fAlpha1 -= (fStartAlpha - (posX + m_imgFocus.GetWidth() + m_buttonGap)) / (fStartAlpha - m_posX) * m_iAlpha * 2.55f;
       }
-      if (iPosX >= fEndAlpha)
+      if (posX >= fEndAlpha)
       {
-        fAlpha -= ((float)iPosX - fEndAlpha) / (m_iPosX + (int)m_dwWidth - fEndAlpha) * m_iAlpha * 2.55f;
-        fAlpha1 -= ((float)(iPosX + m_imgFocus.GetWidth() + m_iButtonGap) - fEndAlpha) / (m_iPosX + (int)m_dwWidth - fEndAlpha) * m_iAlpha * 2.55f;
+        fAlpha -= (posX - fEndAlpha) / (m_posX + m_width - fEndAlpha) * m_iAlpha * 2.55f;
+        fAlpha1 -= ((posX + m_imgFocus.GetWidth() + m_buttonGap) - fEndAlpha) / (m_posX + m_width - fEndAlpha) * m_iAlpha * 2.55f;
       }
       if (fAlpha < 0) fAlpha = 0;
       if (fAlpha1 < 0) fAlpha1 = 0;
@@ -685,15 +670,15 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
     }
     else
     {
-      if (iPosY < fStartAlpha)
+      if (posY < fStartAlpha)
       {
-        fAlpha -= (fStartAlpha - iPosY) / (fStartAlpha - m_iPosY) * m_iAlpha * 2.55f;
-        fAlpha1 -= (fStartAlpha - (iPosY + m_imgFocus.GetHeight() + m_iButtonGap)) / (fStartAlpha - m_iPosY) * m_iAlpha * 2.55f;
+        fAlpha -= (fStartAlpha - posY) / (fStartAlpha - m_posY) * m_iAlpha * 2.55f;
+        fAlpha1 -= (fStartAlpha - (posY + m_imgFocus.GetHeight() + m_buttonGap)) / (fStartAlpha - m_posY) * m_iAlpha * 2.55f;
       }
-      if (iPosY > fEndAlpha)
+      if (posY > fEndAlpha)
       {
-        fAlpha -= ((float)iPosY - fEndAlpha) / (m_iPosY + (int)m_dwHeight - fEndAlpha) * m_iAlpha * 2.55f;
-        fAlpha1 -= ((float)(iPosY + m_imgFocus.GetHeight() + m_iButtonGap) - fEndAlpha) / (m_iPosY + (int)m_dwHeight - fEndAlpha) * m_iAlpha * 2.55f;
+        fAlpha -= (posY - fEndAlpha) / (m_posY + m_height - fEndAlpha) * m_iAlpha * 2.55f;
+        fAlpha1 -= ((posY + m_imgFocus.GetHeight() + m_buttonGap) - fEndAlpha) / (m_posY + m_height - fEndAlpha) * m_iAlpha * 2.55f;
       }
       if (fAlpha < 0) fAlpha = 0;
       if (fAlpha1 < 0) fAlpha1 = 0;
@@ -701,24 +686,16 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
       if (fAlpha1 > 255) fAlpha1 = 255.0f;
       pImage->SetCornerAlpha((DWORD)(fAlpha + 0.5f), (DWORD)(fAlpha + 0.5f), (DWORD)(fAlpha1 + 0.5f), (DWORD)(fAlpha1 + 0.5f));
     }
-    pImage->SetPosition(iPosX, iPosY);
+    pImage->SetPosition(posX, posY);
     pImage->SetWidth(m_imgNoFocus.GetWidth());
     pImage->SetHeight(m_imgNoFocus.GetHeight());
     pImage->Render();
   }
   iOffset = GetNext(iOffset);
   if (m_bHorizontal)
-    iPosX += m_imgFocus.GetWidth() + m_iButtonGap;
+    posX += m_imgFocus.GetWidth() + m_buttonGap;
   else
-    iPosY += m_imgFocus.GetHeight() + m_iButtonGap;
-}
-
-void CGUIButtonScroller::OnChangeFocus()
-{
-  // send a message to our parent that our focused button has changed...
-  if (!GetActiveButtonID()) return;
-  CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), GetID(), GetActiveButtonID());
-  g_graphicsContext.SendMessage(msg);
+    posY += m_imgFocus.GetHeight() + m_buttonGap;
 }
 
 int CGUIButtonScroller::GetActiveButtonID() const
@@ -741,17 +718,17 @@ void CGUIButtonScroller::Update()
 {
   if (m_bHorizontal)
   {
-    m_dwWidth = m_iNumSlots * ((int)m_imgFocus.GetWidth() + m_iButtonGap) - m_iButtonGap;
-    m_dwHeight = m_imgFocus.GetHeight();
-    m_iPosX = m_iXMLPosX + ((int)m_dwXMLWidth - (int)m_dwWidth) / 2;
-    m_iPosY = m_iXMLPosY;
+    m_width = m_iNumSlots * (m_imgFocus.GetWidth() + m_buttonGap) - m_buttonGap;
+    m_height = m_imgFocus.GetHeight();
+    m_posX = m_xmlPosX + (m_xmlWidth - m_width) * 0.5f;
+    m_posY = m_xmlPosY;
   }
   else
   {
-    m_dwWidth = m_imgFocus.GetWidth();
-    m_dwHeight = m_iNumSlots * ((int)m_imgFocus.GetHeight() + m_iButtonGap) - m_iButtonGap;
-    m_iPosX = m_iXMLPosX;
-    m_iPosY = m_iXMLPosY + ((int)m_dwXMLHeight - (int)m_dwHeight) / 2;
+    m_width = m_imgFocus.GetWidth();
+    m_height = m_iNumSlots * (m_imgFocus.GetHeight() + m_buttonGap) - m_buttonGap;
+    m_posX = m_xmlPosX;
+    m_posY = m_xmlPosY + (m_xmlHeight - m_height) * 0.5f;
   }
 }
 
@@ -766,13 +743,13 @@ void CGUIButtonScroller::GetScrollZone(float &fStartAlpha, float &fEndAlpha)
   // calculate the amount of pixels between 0 and iMinSlot
   if (m_bHorizontal)
   {
-    fStartAlpha = (float)m_iPosX + iMinSlot * (m_imgFocus.GetWidth() + m_iButtonGap);
-    fEndAlpha = (float)m_iPosX + iMaxSlot * (m_imgFocus.GetWidth() + m_iButtonGap) - m_iButtonGap;
+    fStartAlpha = m_posX + iMinSlot * (m_imgFocus.GetWidth() + m_buttonGap);
+    fEndAlpha = m_posX + iMaxSlot * (m_imgFocus.GetWidth() + m_buttonGap) - m_buttonGap;
   }
   else
   {
-    fStartAlpha = (float)m_iPosY + (float)iMinSlot * (m_imgFocus.GetHeight() + m_iButtonGap);
-    fEndAlpha = (float)m_iPosY + (float)iMaxSlot * (m_imgFocus.GetHeight() + m_iButtonGap) - m_iButtonGap;
+    fStartAlpha = m_posY + iMinSlot * (m_imgFocus.GetHeight() + m_buttonGap);
+    fEndAlpha = m_posY + iMaxSlot * (m_imgFocus.GetHeight() + m_buttonGap) - m_buttonGap;
   }
 }
 
@@ -782,7 +759,7 @@ bool CGUIButtonScroller::OnMouseOver()
   GetScrollZone(fStartAlpha, fEndAlpha);
   if (m_bHorizontal)
   {
-    if (g_Mouse.iPosX < fStartAlpha) // scroll down
+    if (g_Mouse.posX < fStartAlpha) // scroll down
     {
       m_bScrollUp = false;
       if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
@@ -791,9 +768,9 @@ bool CGUIButtonScroller::OnMouseOver()
       else
         m_bScrollDown = false;
       m_iSlowScrollCount++;
-      m_fScrollSpeed = 50.0f + SCROLL_SPEED - ((float)g_Mouse.iPosX - fStartAlpha) / ((float)m_iPosX - fStartAlpha) * 50.0f;
+      m_fScrollSpeed = 50.0f + SCROLL_SPEED - (g_Mouse.posX - fStartAlpha) / (m_posX - fStartAlpha) * 50.0f;
     }
-    else if (g_Mouse.iPosX > fEndAlpha - 1) // scroll up
+    else if (g_Mouse.posX > fEndAlpha - 1) // scroll up
     {
       m_bScrollDown = false;
       if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
@@ -801,16 +778,16 @@ bool CGUIButtonScroller::OnMouseOver()
         m_bScrollUp = true;
       else
         m_bScrollUp = false;
-      m_fScrollSpeed = 50.0f + SCROLL_SPEED - ((float)g_Mouse.iPosX - fEndAlpha) / ((float)m_iPosX + (float)m_dwWidth - fEndAlpha) * 50.0f;
+      m_fScrollSpeed = 50.0f + SCROLL_SPEED - (g_Mouse.posX - fEndAlpha) / (m_posX + m_width - fEndAlpha) * 50.0f;
     }
     else // call base class
     { // select the appropriate item, and call the base class (to set focus)
-      m_iCurrentSlot = (g_Mouse.iPosX - m_iPosX) / (m_imgFocus.GetWidth() + m_iButtonGap);
+      m_iCurrentSlot = (int)((g_Mouse.posX - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
     }
   }
   else
   {
-    if (g_Mouse.iPosY < fStartAlpha) // scroll down
+    if (g_Mouse.posY < fStartAlpha) // scroll down
     {
       m_bScrollUp = false;
       if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
@@ -819,9 +796,9 @@ bool CGUIButtonScroller::OnMouseOver()
       else
         m_bScrollDown = false;
       m_iSlowScrollCount++;
-      m_fScrollSpeed = 50.0f + SCROLL_SPEED - ((float)g_Mouse.iPosY - fStartAlpha) / ((float)m_iPosY - fStartAlpha) * 50.0f;
+      m_fScrollSpeed = 50.0f + SCROLL_SPEED - (g_Mouse.posY - fStartAlpha) / (m_posY - fStartAlpha) * 50.0f;
     }
-    else if (g_Mouse.iPosY > fEndAlpha - 1) // scroll up
+    else if (g_Mouse.posY > fEndAlpha - 1) // scroll up
     {
       m_bScrollDown = false;
       if (m_iSlowScrollCount > 10) m_iSlowScrollCount = 0;
@@ -829,11 +806,11 @@ bool CGUIButtonScroller::OnMouseOver()
         m_bScrollUp = true;
       else
         m_bScrollUp = false;
-      m_iSlowScrollCount++; m_fScrollSpeed = 50.0f + SCROLL_SPEED - ((float)g_Mouse.iPosY - fEndAlpha) / ((float)m_iPosY + (float)m_dwHeight - fEndAlpha) * 50.0f;
+      m_iSlowScrollCount++; m_fScrollSpeed = 50.0f + SCROLL_SPEED - (g_Mouse.posY - fEndAlpha) / (m_posY + m_height - fEndAlpha) * 50.0f;
     }
     else
     { // select the appropriate item, and call the base class (to set focus)
-      m_iCurrentSlot = (g_Mouse.iPosY - m_iPosY) / (m_imgFocus.GetHeight() + m_iButtonGap);
+      m_iCurrentSlot = (int)((g_Mouse.posY - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
     }
   }
   return CGUIControl::OnMouseOver();
@@ -847,9 +824,9 @@ bool CGUIButtonScroller::OnMouseClick(DWORD dwButton)
   GetScrollZone(fStartAlpha, fEndAlpha);
   if (m_bHorizontal)
   {
-    if (g_Mouse.iPosX >= fStartAlpha && g_Mouse.iPosX <= fEndAlpha)
+    if (g_Mouse.posX >= fStartAlpha && g_Mouse.posX <= fEndAlpha)
     { // click the appropriate item
-      m_iCurrentSlot = (g_Mouse.iPosX - m_iPosX) / (m_imgFocus.GetWidth() + m_iButtonGap);
+      m_iCurrentSlot = (int)((g_Mouse.posX - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
       CAction action;
       if (dwButton == MOUSE_LEFT_BUTTON)
         action.wID = ACTION_SELECT_ITEM;
@@ -861,9 +838,9 @@ bool CGUIButtonScroller::OnMouseClick(DWORD dwButton)
   }
   else
   {
-    if (g_Mouse.iPosY >= fStartAlpha && g_Mouse.iPosY <= fEndAlpha)
+    if (g_Mouse.posY >= fStartAlpha && g_Mouse.posY <= fEndAlpha)
     {
-      m_iCurrentSlot = (g_Mouse.iPosY - m_iPosY) / (m_imgFocus.GetHeight() + m_iButtonGap);
+      m_iCurrentSlot = (int)((g_Mouse.posY - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
       CAction action;
       if (dwButton == MOUSE_LEFT_BUTTON)
         action.wID = ACTION_SELECT_ITEM;
@@ -881,8 +858,8 @@ bool CGUIButtonScroller::OnMouseWheel()
   // check if we are within the clickable button zone
   float fStartAlpha, fEndAlpha;
   GetScrollZone(fStartAlpha, fEndAlpha);
-  if ((m_bHorizontal && g_Mouse.iPosX >= fStartAlpha && g_Mouse.iPosX <= fEndAlpha) ||
-      (!m_bHorizontal && g_Mouse.iPosY >= fStartAlpha && g_Mouse.iPosY <= fEndAlpha))
+  if ((m_bHorizontal && g_Mouse.posX >= fStartAlpha && g_Mouse.posX <= fEndAlpha) ||
+      (!m_bHorizontal && g_Mouse.posY >= fStartAlpha && g_Mouse.posY <= fEndAlpha))
   {
     if (g_Mouse.cWheel > 0)
       m_bScrollDown = true;
@@ -904,17 +881,7 @@ CStdString CGUIButtonScroller::GetDescription() const
   return "";
 }
 
-void CGUIButtonScroller::SetPosition(int iPosX, int iPosY)
+void CGUIButtonScroller::SaveStates(vector<CControlState> &states)
 {
-  CGUIControl::SetPosition(iPosX, iPosY);
-}
-
-void CGUIButtonScroller::SetWidth(int iWidth)
-{
-  CGUIControl::SetWidth(iWidth);
-}
-
-void CGUIButtonScroller::SetHeight(int iHeight)
-{
-  CGUIControl::SetHeight(iHeight);
+  states.push_back(CControlState(GetID(), GetActiveButton()));
 }

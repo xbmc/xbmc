@@ -4,8 +4,16 @@
 #include "DllLoaderContainer.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
+#ifdef _XBOX
 #include "../../xbox/undocumented.h"
 #include "XbDm.h"
+#else
+typedef struct _UNICODE_STRING {
+  USHORT  Length;
+  USHORT  MaximumLength;
+  PWSTR  Buffer;
+} UNICODE_STRING, *PUNICODE_STRING;
+#endif
 #include <io.h>
 #include "../../utils/win32exception.h"
 
@@ -159,6 +167,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   m_pDlls = NULL;
   
   // Initialize FS segment, important for quicktime dll's
+#ifdef _XBOX
   if (fs_seg == NULL)
   {
     CLog::Log(LOGDEBUG, "Initializing FS_SEG..");
@@ -171,6 +180,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
     }
     CLog::Log(LOGDEBUG, "FS segment @ 0x%x", fs_seg);
   }
+#endif
 
   if (!m_bSystemDll) g_dlls.RegisterDll(this);
   if (m_bTrack) tracker_dll_add(this);

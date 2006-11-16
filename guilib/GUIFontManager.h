@@ -23,7 +23,9 @@ public:
   virtual ~GUIFontManager(void);
   void Unload(const CStdString& strFontName);
   void LoadFonts(const CStdString& strFontSet);
+#ifdef HAS_XPR_FONTS
   CGUIFont* LoadXPR(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor);
+#endif
   CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle);
   CGUIFont* GetFont(const CStdString& strFontName, bool fallback = true);
   void Clear();

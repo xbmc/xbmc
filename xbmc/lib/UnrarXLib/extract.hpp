@@ -35,9 +35,9 @@ class CmdExtract
     bool ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize,
                             bool &Repeat);
     static void UnstoreFile(ComprDataIO &DataIO,Int64 DestUnpSize);
-#ifdef _XBOX
+//#ifdef XBMC
     ComprDataIO &GetDataIO() {return DataIO;}
-#endif
+//#endif
 };
 
 #endif

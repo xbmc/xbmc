@@ -20,6 +20,7 @@ CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVi
   CStdString strName = CUtil::GetFileName(strVisz);
   strName = strName.Left(strName.size() - 4);
 
+#ifdef HAS_VISUALISATION
   // load visualisation
   DllVisualisation* pDll = new DllVisualisation;
   pDll->SetFile(strVisz);
@@ -38,4 +39,7 @@ CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVi
 
   // and pass it to a new instance of CVisualisation() which will hanle the visualisation
   return new CVisualisation(pVisz, pDll, strName);
+#else
+  return NULL;
+#endif
 }

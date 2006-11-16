@@ -7,12 +7,11 @@
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L
 
-CGUIMoverControl::CGUIMoverControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_imgFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus)
-    , m_imgNoFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureNoFocus)
+CGUIMoverControl::CGUIMoverControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_imgFocus(dwParentID, dwControlId, posX, posY, width, height, textureFocus)
+    , m_imgNoFocus(dwParentID, dwControlId, posX, posY, width, height, textureNoFocus)
 {
-  m_bSelected = false;
   m_dwFrameCounter = 0;
   m_dwLastMoveTime = 0;
   m_fSpeed = 1.0;
@@ -157,8 +156,8 @@ void CGUIMoverControl::AllocResources()
   m_dwFrameCounter = 0;
   m_imgFocus.AllocResources();
   m_imgNoFocus.AllocResources();
-  m_dwWidth = m_imgFocus.GetWidth();
-  m_dwHeight = m_imgFocus.GetHeight();
+  m_width = m_imgFocus.GetWidth();
+  m_height = m_imgFocus.GetHeight();
 }
 
 void CGUIMoverControl::FreeResources()
@@ -179,11 +178,11 @@ void CGUIMoverControl::Update()
 {
   CGUIControl::Update();
 
-  m_imgFocus.SetWidth(m_dwWidth);
-  m_imgFocus.SetHeight(m_dwHeight);
+  m_imgFocus.SetWidth(m_width);
+  m_imgFocus.SetHeight(m_height);
 
-  m_imgNoFocus.SetWidth(m_dwWidth);
-  m_imgNoFocus.SetHeight(m_dwHeight);
+  m_imgNoFocus.SetWidth(m_width);
+  m_imgNoFocus.SetHeight(m_height);
 }
 
 void CGUIMoverControl::Move(int iX, int iY)
@@ -206,11 +205,11 @@ void CGUIMoverControl::SetLocation(int iLocX, int iLocY, bool bSetPosition)
   m_iLocationY = iLocY;
 }
 
-void CGUIMoverControl::SetPosition(int iPosX, int iPosY)
+void CGUIMoverControl::SetPosition(float posX, float posY)
 {
-  CGUIControl::SetPosition(iPosX, iPosY);
-  m_imgFocus.SetPosition(iPosX, iPosY);
-  m_imgNoFocus.SetPosition(iPosX, iPosY);
+  CGUIControl::SetPosition(posX, posY);
+  m_imgFocus.SetPosition(posX, posY);
+  m_imgNoFocus.SetPosition(posX, posY);
 }
 
 void CGUIMoverControl::SetAlpha(DWORD dwAlpha)

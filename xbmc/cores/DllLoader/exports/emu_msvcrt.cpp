@@ -31,7 +31,9 @@ struct SDirData
 #define MAX_OPEN_DIRS 10
 static SDirData vecDirsOpen[MAX_OPEN_DIRS];
 bool bVecDirsInited = false;
+#ifdef HAS_VIDEO_PLAYBACK
 extern void update_cache_dialog(const char* tmp);
+#endif
 
 struct _env
 {
@@ -241,7 +243,9 @@ extern "C"
     _vsnprintf(tmp, 2048, format, va);
     va_end(va);
     tmp[2048 - 1] = 0;
+#ifdef HAS_VIDEO_PLAYBACK
     update_cache_dialog(tmp);
+#endif
     CLog::Log(LOGDEBUG, "  msg: %s", tmp);
     
     return strlen(tmp);
@@ -1408,6 +1412,7 @@ extern "C"
   }
 
 
+#ifdef _XBOX
   char *getenv(const char *s)
   {
     // some libs in the solution linked to getenv which was exported in python.lib
@@ -1415,6 +1420,7 @@ extern "C"
     CLog::Log(LOGWARNING, "old getenv from python.lib called, library check needed");
     return NULL;
   }
+#endif
 
   char* dll_getenv(const char* szKey)
   {

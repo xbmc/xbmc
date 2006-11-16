@@ -9,12 +9,18 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#ifdef HAS_GAMEPAD
 #include "XBInput.h"
 #include "XBInputEx.h"
+#endif
 #include "IWindowManagerCallback.h"
-#include "common/mouse.h"
-#include "common/keyboard.h"
-
+#ifdef _XBOX
+#include "common/XBoxMouse.h"
+#include "common/XBoxKeyboard.h"
+#else
+#include "common/DirectInputMouse.h"
+#include "common/DirectInputKeyboard.h"
+#endif
 //-----------------------------------------------------------------------------
 // Global access to common members
 //-----------------------------------------------------------------------------
@@ -60,19 +66,19 @@ public:
   WCHAR m_strFrameRate[20];  // Frame rate written to a CStdString
   HANDLE m_hFrameCounter;     // Handle to frame rate perf counter
   bool m_bStop;
+#ifdef HAS_GAMEPAD
   // Members to init the XINPUT devices.
   XDEVICE_PREALLOC_TYPE* m_InputDeviceTypes;
   DWORD m_dwNumInputDeviceTypes;
   XBGAMEPAD* m_Gamepad;
   XBGAMEPAD m_DefaultGamepad;
-
+#endif
+#ifdef HAS_IR_REMOTE
   // XBMP 6.0 - START
   XBIR_REMOTE m_IR_Remote[4];
   XBIR_REMOTE m_DefaultIR_Remote;
   // XBMP 6.0 - END
-
-  // Helper functions
-  HRESULT RenderGradientBackground( DWORD dwTopColor, DWORD dwBottomColor );
+#endif
 
   // Overridable functions for the 3D scene created by the app
   virtual HRESULT Initialize() { return S_OK; }
@@ -81,7 +87,7 @@ public:
 
 public:
   // Functions to create, run, and clean up the application
-  virtual HRESULT Create();
+  virtual HRESULT Create(HWND hWnd);
   INT Run();
   VOID Destroy();
   virtual void Process();

@@ -7,9 +7,6 @@
 #include "GUIFont.h"
 #include "XMLUtils.h"
 
-#include <xfont.h>
-
-
 GUIFontManager g_fontManager;
 
 GUIFontManager::GUIFontManager(void)
@@ -20,6 +17,7 @@ GUIFontManager::GUIFontManager(void)
 GUIFontManager::~GUIFontManager(void)
 {}
 
+#ifdef HAS_XPR_FONTS
 CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor)
 {
   //check if font already exists
@@ -71,6 +69,7 @@ CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdStrin
   m_vecFonts.push_back(pNewFont);
   return pNewFont;
 }
+#endif
 
 CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle)
 {
@@ -205,6 +204,9 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
   CStdString strValue = pChild->Value();
   if (strValue == "fontset")
   {
+#ifndef HAS_XPR_FONTS
+    CStdString foundTTF;
+#endif
     while (pChild)
     {
       strValue = pChild->Value();
@@ -214,6 +216,10 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
 
         const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
 
+#ifndef HAS_XPR_FONTS
+        if (foundTTF.IsEmpty() && idAttr != NULL && unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
+          foundTTF = idAttr;
+#endif
         // Check if this is the fontset that we want
         if (idAttr != NULL && stricmp(strFontSet.c_str(), idAttr) == 0)
         {
@@ -222,9 +228,17 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
           if (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
             m_fontsetUnicode=true;
 
+#ifndef HAS_XPR_FONTS
+          if (m_fontsetUnicode)
+          {
+            LoadFonts(pChild->FirstChild());
+            break;
+          }
+#else
           LoadFonts(pChild->FirstChild());
 
           break;
+#endif
         }
 
       }
@@ -236,7 +250,12 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
     if (pChild == NULL)
     {
       CLog::Log(LOGWARNING, "file doesnt have <fontset> with name '%s', defaulting to first fontset", strFontSet.c_str());
+#ifndef HAS_XPR_FONTS
+      if (!foundTTF.IsEmpty())
+        LoadFonts(foundTTF);
+#else
       LoadFonts(pRootElement->FirstChild()->FirstChild());
+#endif
     }
   }
   else
@@ -268,7 +287,9 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 
           if (strstr(strFontFileName, ".xpr") != NULL)
           {
+#ifdef HAS_XPR_FONTS
             LoadXPR(strFontName, strFontFileName, textColor, shadowColor);
+#endif
           }
           else if (strstr(strFontFileName, ".ttf") != NULL)
           {
@@ -282,9 +303,8 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
             if (pNode)
             {
               CStdString style = pNode->FirstChild()->Value();
-              if (style == "normal")
-                iStyle = FONT_STYLE_NORMAL;
-              else if (style == "bold")
+              iStyle = FONT_STYLE_NORMAL;
+              if (style == "bold")
                 iStyle = FONT_STYLE_BOLD;
               else if (style == "italics")
                 iStyle = FONT_STYLE_ITALICS;

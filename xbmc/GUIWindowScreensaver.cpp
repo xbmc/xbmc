@@ -1,13 +1,18 @@
 #include "stdafx.h"
 #include "GUIWindowScreensaver.h"
 #include "util.h"
+#ifdef HAS_SCREENSAVER
 #include "screensavers/ScreenSaverFactory.h"
+#endif
 #include "application.h"
+#include "GUIPassword.h"
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
     : CGUIWindow(WINDOW_SCREENSAVER, "")
 {
+#ifdef HAS_SCREENSAVER
   m_pScreenSaver = NULL;
+#endif
 }
 
 CGUIWindowScreensaver::~CGUIWindowScreensaver(void)
@@ -18,6 +23,7 @@ void CGUIWindowScreensaver::Render()
 {
   CSingleLock lock (m_critSection);
 
+#ifdef HAS_SCREENSAVER
   if (m_pScreenSaver)
   {
     if (m_bInitialized)
@@ -48,6 +54,7 @@ void CGUIWindowScreensaver::Render()
       return ;
     }
   }
+#endif
   CGUIWindow::Render();
 }
 
@@ -71,6 +78,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CSingleLock lock (m_critSection);
+#ifdef HAS_SCREENSAVER
       if (m_pScreenSaver)
       {
         OutputDebugString("ScreenSaver::Stop()\n");
@@ -82,6 +90,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
         g_graphicsContext.ApplyStateBlock();
       }
       m_pScreenSaver = NULL;
+#endif
       m_bInitialized = false;
 
       // remove z-buffer
@@ -98,6 +107,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       CSingleLock lock (m_critSection);
 
+#ifdef HAS_SCREENSAVER
       if (m_pScreenSaver)
       {
         m_pScreenSaver->Stop();
@@ -119,7 +129,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
         g_graphicsContext.CaptureStateBlock();
         m_pScreenSaver->Create();
       }
-
+#endif
       // setup a z-buffer
 //      RESOLUTION res = g_graphicsContext.GetVideoResolution();
 //      g_graphicsContext.SetVideoResolution(res, TRUE);

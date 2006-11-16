@@ -3,6 +3,7 @@
 \brief 
 */
 
+#ifdef HAS_RAM_CONTROL
 #ifndef GUILIB_GUIRAMControl_H
 #define GUILIB_GUIRAMControl_H
 
@@ -34,7 +35,7 @@ public:
   };
 
   CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
-                 int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
+                 float posX, float posY, float width, float height,
                  const CLabelInfo& labelInfo, const CLabelInfo& titleInfo);
 
   virtual ~CGUIRAMControl(void);
@@ -49,28 +50,15 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
 
-  const CLabelInfo& GetTitleInfo() const { return m_title; };
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
+  void SetTextSpacing(float textSpaceY) { m_textSpaceY = textSpaceY; };
 
-  void SetTextSpacing(DWORD dwTextSpaceY) { m_dwTextSpaceY = dwTextSpaceY; };
-  DWORD GetTextSpacing() const { return m_dwTextSpaceY; };
-
-  void SetThumbAttributes(DWORD dwThumbWidth, DWORD dwThumbHeight, DWORD dwThumbSpaceX, DWORD dwThumbSpaceY, CStdString& strDefaultThumb)
+  void SetThumbAttributes(float thumbWidth, float thumbHeight, float thumbSpaceX, float thumbSpaceY, CStdString& strDefaultThumb)
   {
-    m_dwThumbnailWidth = dwThumbWidth;
-    m_dwThumbnailHeight = dwThumbHeight;
-    m_dwThumbnailSpaceX = dwThumbSpaceX;
-    m_dwThumbnailSpaceY = dwThumbSpaceY;
+    m_thumbnailWidth = thumbWidth;
+    m_thumbnailHeight = thumbHeight;
+    m_thumbnailSpaceX = thumbSpaceX;
+    m_thumbnailSpaceY = thumbSpaceY;
     m_strDefaultThumb = strDefaultThumb;
-  };
-
-  void GetThumbAttributes(DWORD& dwThumbWidth, DWORD& dwThumbHeight, DWORD& dwThumbSpaceX, DWORD& dwThumbSpaceY, CStdString& strDefaultThumb) const
-  {
-    dwThumbWidth = m_dwThumbnailWidth;
-    dwThumbHeight = m_dwThumbnailHeight;
-    dwThumbSpaceX = m_dwThumbnailSpaceX;
-    dwThumbSpaceY = m_dwThumbnailSpaceY;
-    strDefaultThumb = m_strDefaultThumb;
   };
 
 protected:
@@ -89,14 +77,15 @@ protected:
   FLOAT m_fFontHeight;
   FLOAT m_fFont2Height;
 
-  DWORD m_dwThumbnailWidth;
-  DWORD m_dwThumbnailHeight;
-  DWORD m_dwThumbnailSpaceX;
-  DWORD m_dwThumbnailSpaceY;
-  DWORD m_dwTextSpaceY;
+  float m_thumbnailWidth;
+  float m_thumbnailHeight;
+  float m_thumbnailSpaceX;
+  float m_thumbnailSpaceY;
+  float m_textSpaceY;
   CStdString m_strDefaultThumb;
 
   CLabelInfo m_title;
   CLabelInfo m_label;
 };
+#endif
 #endif

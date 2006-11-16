@@ -28,12 +28,20 @@
 #include "GUIVisualisationControl.h"
 #include "GUISettingsSliderControl.h"
 #include "GUIMultiImage.h"
+#include "GUIControlGroup.h"
+#include "GUIControlGroupList.h"
+#include "GUIScrollBarControl.h"
+#include "GUIListContainer.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/util.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIFontManager.h"
+
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
 
 CGUIControlFactory::CGUIControlFactory(void)
 {}
@@ -67,18 +75,18 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
-  fMinValue = (float) atof(pNode->FirstChild()->Value());
+  fMinValue = (float)atof(pNode->FirstChild()->Value());
   char* maxValue = strchr(pNode->FirstChild()->Value(), ',');
   if (maxValue)
   {
     maxValue++;
-    fMaxValue = (float) atof(maxValue);
+    fMaxValue = (float)atof(maxValue);
 
     char* intervalValue = strchr(maxValue, ',');
     if (intervalValue)
     {
       intervalValue++;
-      fIntervalValue = (float) atoi(intervalValue);
+      fIntervalValue = (float)atof(intervalValue);
     }
   }
 
@@ -110,6 +118,37 @@ bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag,
   if (!pNode) return false;
   strStringPath = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
   strStringPath.Replace('/', '\\');
+  return true;
+}
+
+bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image)
+{
+  const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
+  if (!pNode) return false;
+  const char *border = pNode->Attribute("border");
+  if (border)
+  {
+    // format is border="left,right,top,bottom"
+    CStdStringArray borders;
+    StringUtils::SplitString(border, ",", borders);
+    if (borders.size() == 1)
+    {
+      float left = (float)atof(borders[0].c_str());
+      image.border.left = left;
+      image.border.top = left;
+      image.border.right = left;
+      image.border.bottom = left;
+    }
+    else if (borders.size() == 4)
+    {
+      image.border.left = (float)atof(borders[0].c_str());
+      image.border.top = (float)atof(borders[1].c_str());
+      image.border.right = (float)atof(borders[2].c_str());
+      image.border.bottom = (float)atof(borders[3].c_str());
+    }
+  }
+  image.file = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
+  image.file.Replace('/', '\\');
   return true;
 }
 
@@ -181,7 +220,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, int 
   return GetConditionalVisibility(control, condition, allowHiddenFocus);
 }
 
-bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimation> &animations, RESOLUTION res)
+bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimation> &animations)
 {
   const TiXmlElement* node = control->FirstChildElement("animation");
   bool ret = false;
@@ -193,7 +232,7 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimati
     if (node->FirstChild())
     {
       CAnimation anim;
-      anim.Create(node, res);
+      anim.Create(node);
       animations.push_back(anim);
       if (strcmpi(node->FirstChild()->Value(), "VisibleChange") == 0)
       { // add the hidden one as well
@@ -207,34 +246,53 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimati
   return ret;
 }
 
-CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pControlNode, CGUIControl* pReference, RESOLUTION res)
+CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
 {
-  CStdString strType;
-  XMLUtils::GetString(pControlNode, "type", strType);
+  CStdString type;
+  const char *szType = pControlNode->Attribute("type");
+  if (szType)
+    type = szType;
+  else  // backward compatibility - not desired
+    XMLUtils::GetString(pControlNode, "type", type);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  // check if we are a <controlgroup>
+  if (strcmpi(pControlNode->Value(), "controlgroup") == 0)
+    type = "group";
+#endif
+  return type;
+}
 
-  int iPosX = 0, iPosY = 0;
-  DWORD dwWidth = 0, dwHeight = 0;
-  DWORD dwID = 0, left = 0, right = 0, up = 0, down = 0;
+CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, TiXmlElement* pControlNode)
+{
+  // resolve any <include> tag's in this control
+  g_SkinInfo.ResolveIncludes(pControlNode);
+
+  // get the control type
+  CStdString strType = GetType(pControlNode);
+
+  // resolve again with strType set so that <default> tags are added
+  g_SkinInfo.ResolveIncludes(pControlNode, strType);
+
+  int id = 0;
+  float posX = 0, posY = 0;
+  float width = 0, height = 0;
+
+  DWORD left = 0, right = 0, up = 0, down = 0;
+  DWORD pageControl = 0;
   DWORD dwColorDiffuse = 0xFFFFFFFF;
+  DWORD defaultControl = 0;
   CStdString strTmp;
   vector<int> vecInfo;
   vector<string> vecLabel;
   string strLabel;
   int iUrlSet=0;
-  CStdString strTextureFocus, strTextureNoFocus;
-  CStdString strTextureAltFocus, strTextureAltNoFocus;
   int iToggleSelect;
 
   DWORD dwItems;
-  CStdString strUp, strDown;
-  CStdString strUpFocus, strDownFocus;
-  DWORD dwSpinWidth = 16;
-  DWORD dwSpinHeight = 16;
-  int iSpinPosX, iSpinPosY;
-  CStdString strTextureCheckMark;
-  CStdString strTextureCheckMarkNF;
-  DWORD dwCheckWidth, dwCheckHeight;
-  CStdString strTextureRadioFocus, strTextureRadioNoFocus;
+  float spinWidth = 16;
+  float spinHeight = 16;
+  float spinPosX, spinPosY;
+  float checkWidth, checkHeight;
   CStdString strSubType;
   int iType = SPIN_CONTROL_TYPE_TEXT;
   int iMin = 0;
@@ -244,27 +302,34 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   float fMax = 1.0f;
   float fInterval = 0.1f;
   bool bReverse = false;
-  CStdString strTextureBg, strLeft, strRight, strMid, strMidFocus, strOverlay;
-  CStdString strLeftFocus, strRightFocus;
-  CStdString strTexture;
+  CImage textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
+  CImage textureNib, textureNibFocus, textureBar, textureBarFocus;
+  CImage textureLeftFocus, textureRightFocus;
+  CImage textureUp, textureDown;
+  CImage textureUpFocus, textureDownFocus;
+  CImage texture;
+  CImage textureCheckMark, textureCheckMarkNF;
+  CImage textureFocus, textureNoFocus;
+  CImage textureAltFocus, textureAltNoFocus;
+  CImage textureRadioFocus, textureRadioNoFocus;
+  CImage imageNoFocus, imageFocus;
   DWORD dwColorKey = 0;
   CStdString strSuffix = "";
 
-  int iControlOffsetX = 0;
-  int iControlOffsetY = 0;
+  float controlOffsetX = 0;
+  float controlOffsetY = 0;
 
-  DWORD dwitemWidth = 16, dwitemHeight = 16;
-  DWORD dwSliderWidth = 150, dwSliderHeight = 16;
-  DWORD textureWidthBig = 128;
-  DWORD textureHeightBig = 128;
-  DWORD itemWidthBig = 150;
-  DWORD itemHeightBig = 150;
+  float itemWidth = 16, itemHeight = 16;
+  float sliderWidth = 150, sliderHeight = 16;
+  float textureWidthBig = 128;
+  float textureHeightBig = 128;
+  float textureHeight = 30;
+  float textureWidth = 80;
+  float itemWidthBig = 150;
+  float itemHeightBig = 150;
   DWORD dwDisposition = 0;
 
-  int iSpace = 2;
-  int iTextureHeight = 30;
-  CStdString strImage, strImageFocus;
-  int iTextureWidth = 80;
+  float spaceBetweenItems = 2;
   bool bHasPath = false;
   vector<CStdString> clickActions;
   CStdString focusAction = "";
@@ -272,25 +337,25 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   CStdString strRSSTags = "";
 
   DWORD dwThumbAlign = 0;
-  DWORD dwThumbWidth = 80;
-  DWORD dwThumbHeight = 128;
-  DWORD dwThumbSpaceX = 6;
-  DWORD dwThumbSpaceY = 25;
-  DWORD dwTextSpaceY = 12;
+#ifdef HAS_RAM_CONTROL
+  float thumbSpaceX = 6;
+  float thumbSpaceY = 25;
+  float textSpaceY = 12;
   CStdString strDefaultThumb;
+#endif
 
-  int iThumbXPos = 4;
-  int iThumbYPos = 10;
-  int iThumbWidth = 64;
-  int iThumbHeight = 64;
+  float thumbXPos = 4;
+  float thumbYPos = 10;
+  float thumbWidth = 64;
+  float thumbHeight = 64;
 
-  int iThumbXPosBig = 14;
-  int iThumbYPosBig = 14;
-  int iThumbWidthBig = 100;
-  int iThumbHeightBig = 100;
+  float thumbXPosBig = 14;
+  float thumbYPosBig = 14;
+  float thumbWidthBig = 100;
+  float thumbHeightBig = 100;
   DWORD dwBuddyControlID = 0;
   int iNumSlots = 7;
-  int iButtonGap = 5;
+  float buttonGap = 5;
   int iDefaultSlot = 2;
   int iMovementRange = 2;
   bool bHorizontal = false;
@@ -315,6 +380,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   bool loop = true;
   bool wrapMultiLine = false;
   CGUIThumbnailPanel::LABEL_STATE labelState = CGUIThumbnailPanel::SHOW_ALL;
+  CGUIControl::ORIENTATION orientation = CGUIControl::VERTICAL;
+  bool showOnePage = true;
 
   CLabelInfo labelInfo;
   CLabelInfo labelInfo2;
@@ -322,366 +389,112 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
   DWORD dwTextColor3 = labelInfo.textColor;
 
-  DWORD radioWidth = 0;
-  DWORD radioHeight = 0;
-  int radioPosX = 0;
-  int radioPosY = 0;
+  float radioWidth = 0;
+  float radioHeight = 0;
+  float radioPosX = 0;
+  float radioPosY = 0;
 
   CStdString altLabel;
-  /////////////////////////////////////////////////////////////////////////////
-  // Read default properties from reference controls
-  //
 
-  if (pReference)
-  {
-    dwColorDiffuse = pReference->GetColourDiffuse();
-    iPosX = pReference->GetXPosition();
-    iPosY = pReference->GetYPosition();
-    dwWidth = pReference->GetWidth();
-    dwHeight = pReference->GetHeight();
-    bPulse = pReference->GetPulseOnSelect();
-    iVisibleCondition = pReference->GetVisibleCondition();
-    animations = pReference->GetAnimations();
-    if (strType == "label")
-    {
-      strLabel = ((CGUILabelControl*)pReference)->GetLabel();
-      labelInfo = ((CGUILabelControl*)pReference)->GetLabelInfo();
-      vecInfo.push_back(((CGUILabelControl*)pReference)->GetInfo());
-      bScrollLabel = ((CGUILabelControl*)pReference)->GetWidthControl();
-      wrapMultiLine = ((CGUILabelControl*)pReference)->GetWrapMultiLine();
-    }
-    else if (strType == "edit")
-    {
-      labelInfo = ((CGUIEditControl*)pReference)->GetLabelInfo();
-      strLabel = ((CGUIEditControl*)pReference)->GetLabel();
-    }
-    else if (strType == "fadelabel")
-    {
-      labelInfo = ((CGUIFadeLabelControl*)pReference)->GetLabelInfo();
-      vecInfo = ((CGUIFadeLabelControl*)pReference)->GetInfo();
-      vecLabel = ((CGUIFadeLabelControl*)pReference)->GetLabel();
-    }
-    else if (strType == "rss")
-    {
-      labelInfo = ((CGUIRSSControl*)pReference)->GetLabelInfo();
-      strRSSTags = ((CGUIRSSControl*)pReference)->GetTags();
-      dwTextColor3 = ((CGUIRSSControl*)pReference)->GetChannelTextColor();
-      labelInfo2.textColor = ((CGUIRSSControl*)pReference)->GetHeadlineTextColor();
-    }
-    else if (strType == "ram")
-    {
-      labelInfo = ((CGUIRAMControl*)pReference)->GetLabelInfo();
-      labelInfo2 = ((CGUIRAMControl*)pReference)->GetTitleInfo();
-      dwTextSpaceY = ((CGUIRAMControl*)pReference)->GetTextSpacing();
-
-      ((CGUIRAMControl*)pReference)->GetThumbAttributes(dwThumbWidth, dwThumbHeight, dwThumbSpaceX, dwThumbSpaceY, strDefaultThumb);
-
-    }
-    else if (strType == "console")
-    {
-      labelInfo = ((CGUIConsoleControl*)pReference)->GetLabelInfo();
-      labelInfo.textColor = ((CGUIConsoleControl*)pReference)->GetPenColor(0);
-      labelInfo2.textColor = ((CGUIConsoleControl*)pReference)->GetPenColor(1);
-      dwTextColor3 = ((CGUIConsoleControl*)pReference)->GetPenColor(2);
-      labelInfo.selectedColor = ((CGUIConsoleControl*)pReference)->GetPenColor(3);
-    }
-    else if (strType == "button")
-    {
-      strTextureFocus = ((CGUIButtonControl*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUIButtonControl*)pReference)->GetTextureNoFocusName();
-      strLabel = ((CGUIButtonControl*)pReference)->GetLabel();
-      labelInfo = ((CGUIButtonControl*)pReference)->GetLabelInfo();
-      clickActions = ((CGUIButtonControl*)pReference)->GetClickActions();
-      focusAction = ((CGUIButtonControl*)pReference)->GetFocusAction();
-    }
-    else if (strType == "togglebutton")
-    {
-      strTextureAltFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureAltFocusName();
-      strTextureAltNoFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureAltNoFocusName();
-      strTextureFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureNoFocusName();
-      labelInfo = ((CGUIToggleButtonControl*)pReference)->GetLabelInfo();
-      strLabel = ((CGUIToggleButtonControl*)pReference)->GetLabel();
-      altLabel = ((CGUIToggleButtonControl*)pReference)->GetAltLabel();
-      clickActions = ((CGUIToggleButtonControl*)pReference)->GetClickActions();
-      focusAction = ((CGUIToggleButtonControl*)pReference)->GetFocusAction();
-      iToggleSelect = ((CGUIToggleButtonControl*)pReference)->GetToggleSelect();
-    }
-    else if (strType == "checkmark")
-    {
-      strTextureCheckMark = ((CGUICheckMarkControl*)pReference)->GetCheckMarkTextureName();
-      strTextureCheckMarkNF = ((CGUICheckMarkControl*)pReference)->GetCheckMarkTextureNameNF();
-      dwCheckWidth = ((CGUICheckMarkControl*)pReference)->GetCheckMarkWidth();
-      dwCheckHeight = ((CGUICheckMarkControl*)pReference)->GetCheckMarkHeight();
-      labelInfo = ((CGUICheckMarkControl*)pReference)->GetLabelInfo();
-      strLabel = ((CGUICheckMarkControl*)pReference)->GetLabel();
-    }
-    else if (strType == "radiobutton")
-    {
-      strTextureRadioFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureRadioFocusName();;
-      strTextureRadioNoFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureRadioNoFocusName();;
-      strTextureFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureNoFocusName();
-      labelInfo = ((CGUIRadioButtonControl*)pReference)->GetLabelInfo();
-      ((CGUIRadioButtonControl*)pReference)->GetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
-      iToggleSelect = ((CGUIRadioButtonControl*)pReference)->GetToggleSelect();
-    }
-    else if (strType == "spincontrol")
-    {
-      labelInfo = ((CGUISpinControl*)pReference)->GetLabelInfo();
-      strUp = ((CGUISpinControl*)pReference)->GetTextureUpName();
-      strDown = ((CGUISpinControl*)pReference)->GetTextureDownName();
-      strUpFocus = ((CGUISpinControl*)pReference)->GetTextureUpFocusName();
-      strDownFocus = ((CGUISpinControl*)pReference)->GetTextureDownFocusName();
-      iType = ((CGUISpinControl*)pReference)->GetType();
-      dwWidth = ((CGUISpinControl*)pReference)->GetSpinWidth();
-      dwHeight = ((CGUISpinControl*)pReference)->GetSpinHeight();
-      bReverse = ((CGUISpinControl*)pReference)->GetReverse();
-    }
-    else if (strType == "slider")
-    {
-      strTextureBg = ((CGUISliderControl*)pReference)->GetBackGroundTextureName();
-      strMid = ((CGUISliderControl*)pReference)->GetBackTextureMidName();
-      iControlOffsetX = ((CGUISliderControl*)pReference)->GetControlOffsetX();
-      iControlOffsetY = ((CGUISliderControl*)pReference)->GetControlOffsetY();
-    }
-    else if (strType == "sliderex")
-    {
-      dwSliderWidth = ((CGUISettingsSliderControl*)pReference)->GetSliderWidth();
-      dwSliderHeight = ((CGUISettingsSliderControl*)pReference)->GetSliderHeight();
-      strTextureBg = ((CGUISettingsSliderControl*)pReference)->GetBackGroundTextureName();
-      strMid = ((CGUISettingsSliderControl*)pReference)->GetBackTextureMidName();
-      iControlOffsetX = ((CGUISettingsSliderControl*)pReference)->GetControlOffsetX();
-      iControlOffsetY = ((CGUISettingsSliderControl*)pReference)->GetControlOffsetY();
-      strTextureFocus = ((CGUISettingsSliderControl*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUISettingsSliderControl*)pReference)->GetTextureNoFocusName();
-      labelInfo = ((CGUISettingsSliderControl*)pReference)->GetLabelInfo();
-      strLabel = ((CGUISettingsSliderControl*)pReference)->GetLabel();
-    }
-    else if (strType == "progress")
-    {
-      strTextureBg = ((CGUIProgressControl*)pReference)->GetBackGroundTextureName();
-      strLeft = ((CGUIProgressControl*)pReference)->GetBackTextureLeftName();
-      strMid = ((CGUIProgressControl*)pReference)->GetBackTextureMidName();
-      strRight = ((CGUIProgressControl*)pReference)->GetBackTextureRightName();
-      strOverlay = ((CGUIProgressControl*)pReference)->GetBackTextureOverlayName();
-    }
-    else if (strType == "image")
-    {
-      strTexture = ((CGUIImage *)pReference)->GetFileName();
-      dwColorKey = ((CGUIImage *)pReference)->GetColorKey();
-      aspectRatio = ((CGUIImage *)pReference)->GetAspectRatio();
-      vecInfo.push_back(((CGUIImage *)pReference)->GetInfo());
-    }
-    else if (strType == "multiimage")
-    {
-      texturePath = ((CGUIMultiImage *)pReference)->GetTexturePath();
-      aspectRatio = ((CGUIMultiImage *)pReference)->GetAspectRatio();
-      timePerImage =  ((CGUIMultiImage *)pReference)->GetTimePerImage();
-      fadeTime =  ((CGUIMultiImage *)pReference)->GetFadeTime();
-      loop = ((CGUIMultiImage *)pReference)->GetLoop();
-      randomized = ((CGUIMultiImage *)pReference)->GetRandomized();
-    }
-    else if (strType == "listcontrol")
-    {
-      labelInfo = ((CGUIListControl*)pReference)->GetLabelInfo();
-      labelInfo2 = ((CGUIListControl*)pReference)->GetLabelInfo2();
-      dwSpinWidth = ((CGUIListControl*)pReference)->GetSpinWidth();
-      dwSpinHeight = ((CGUIListControl*)pReference)->GetSpinHeight();
-      strUp = ((CGUIListControl*)pReference)->GetTextureUpName();
-      strDown = ((CGUIListControl*)pReference)->GetTextureDownName();
-      strUpFocus = ((CGUIListControl*)pReference)->GetTextureUpFocusName();
-      strDownFocus = ((CGUIListControl*)pReference)->GetTextureDownFocusName();
-      spinInfo = ((CGUIListControl*)pReference)->GetSpinLabelInfo();
-      iSpinPosX = ((CGUIListControl*)pReference)->GetSpinX();
-      iSpinPosY = ((CGUIListControl*)pReference)->GetSpinY();
-      strTextureNoFocus = ((CGUIListControl*)pReference)->GetButtonNoFocusName();
-      strTextureFocus = ((CGUIListControl*)pReference)->GetButtonFocusName();
-      strSuffix = ((CGUIListControl*)pReference)->GetSuffix();
-      dwitemWidth = ((CGUIListControl*)pReference)->GetImageWidth();
-      dwitemHeight = ((CGUIListControl*)pReference)->GetImageHeight();
-      iTextureHeight = ((CGUIListControl*)pReference)->GetItemHeight();
-      iSpace = ((CGUIListControl*)pReference)->GetSpace();
-    }
-    else if (strType == "listcontrolex")
-    {
-      labelInfo = ((CGUIListControlEx*)pReference)->GetLabelInfo();
-      labelInfo2 = ((CGUIListControlEx*)pReference)->GetLabelInfo2();
-      dwSpinWidth = ((CGUIListControlEx*)pReference)->GetSpinWidth();
-      dwSpinHeight = ((CGUIListControlEx*)pReference)->GetSpinHeight();
-      strUp = ((CGUIListControlEx*)pReference)->GetTextureUpName();
-      strDown = ((CGUIListControlEx*)pReference)->GetTextureDownName();
-      strUpFocus = ((CGUIListControlEx*)pReference)->GetTextureUpFocusName();
-      strDownFocus = ((CGUIListControlEx*)pReference)->GetTextureDownFocusName();
-      spinInfo = ((CGUIListControlEx*)pReference)->GetSpinLabelInfo();
-      iSpinPosX = ((CGUIListControlEx*)pReference)->GetSpinX();
-      iSpinPosY = ((CGUIListControlEx*)pReference)->GetSpinY();
-      strTextureNoFocus = ((CGUIListControlEx*)pReference)->GetButtonNoFocusName();
-      strTextureFocus = ((CGUIListControlEx*)pReference)->GetButtonFocusName();
-      strSuffix = ((CGUIListControlEx*)pReference)->GetSuffix();
-      dwitemWidth = ((CGUIListControlEx*)pReference)->GetImageWidth();
-      dwitemHeight = ((CGUIListControlEx*)pReference)->GetImageHeight();
-      iTextureHeight = ((CGUIListControlEx*)pReference)->GetItemHeight();
-      iSpace = ((CGUIListControlEx*)pReference)->GetSpace();
-    }
-    else if (strType == "textbox")
-    {
-      labelInfo = ((CGUITextBox*)pReference)->GetLabelInfo();
-      dwSpinWidth = ((CGUITextBox*)pReference)->GetSpinWidth();
-      dwSpinHeight = ((CGUITextBox*)pReference)->GetSpinHeight();
-      strUp = ((CGUITextBox*)pReference)->GetTextureUpName();
-      strDown = ((CGUITextBox*)pReference)->GetTextureDownName();
-      strUpFocus = ((CGUITextBox*)pReference)->GetTextureUpFocusName();
-      strDownFocus = ((CGUITextBox*)pReference)->GetTextureDownFocusName();
-      spinInfo = ((CGUITextBox*)pReference)->GetSpinLabelInfo();
-      iSpinPosX = ((CGUITextBox*)pReference)->GetSpinX();
-      iSpinPosY = ((CGUITextBox*)pReference)->GetSpinY();
-      dwSpinWidth = ((CGUITextBox*)pReference)->GetSpinWidth();
-      dwSpinHeight = ((CGUITextBox*)pReference)->GetSpinHeight();
-    }
-    else if (strType == "thumbnailpanel")
-    {
-      textureWidthBig = ((CGUIThumbnailPanel*)pReference)->GetTextureWidthBig();
-      textureHeightBig = ((CGUIThumbnailPanel*)pReference)->GetTextureHeightBig();
-      itemWidthBig = ((CGUIThumbnailPanel*)pReference)->GetItemWidthBig();
-      itemHeightBig = ((CGUIThumbnailPanel*)pReference)->GetItemHeightBig();
-      strImage = ((CGUIThumbnailPanel*)pReference)->GetNoFocusName();
-      strImageFocus = ((CGUIThumbnailPanel*)pReference)->GetFocusName();
-      dwitemWidth = ((CGUIThumbnailPanel*)pReference)->GetItemWidthLow();
-      dwitemHeight = ((CGUIThumbnailPanel*)pReference)->GetItemHeightLow();
-      dwSpinWidth = ((CGUIThumbnailPanel*)pReference)->GetSpinWidth();
-      dwSpinHeight = ((CGUIThumbnailPanel*)pReference)->GetSpinHeight();
-      strUp = ((CGUIThumbnailPanel*)pReference)->GetTextureUpName();
-      strDown = ((CGUIThumbnailPanel*)pReference)->GetTextureDownName();
-      strUpFocus = ((CGUIThumbnailPanel*)pReference)->GetTextureUpFocusName();
-      strDownFocus = ((CGUIThumbnailPanel*)pReference)->GetTextureDownFocusName();
-      spinInfo = ((CGUIThumbnailPanel*)pReference)->GetSpinLabelInfo();
-      iSpinPosX = ((CGUIThumbnailPanel*)pReference)->GetSpinX();
-      iSpinPosY = ((CGUIThumbnailPanel*)pReference)->GetSpinY();
-      labelInfo = ((CGUIThumbnailPanel*)pReference)->GetLabelInfo();
-      iTextureWidth = ((CGUIThumbnailPanel*)pReference)->GetTextureWidthLow();
-      iTextureHeight = ((CGUIThumbnailPanel*)pReference)->GetTextureHeightLow();
-      strSuffix = ((CGUIThumbnailPanel*)pReference)->GetSuffix();
-      dwThumbAlign = ((CGUIThumbnailPanel*)pReference)->GetThumbAlign();
-      aspectRatio = ((CGUIThumbnailPanel*)pReference)->GetAspectRatio();
-      ((CGUIThumbnailPanel*)pReference)->GetThumbDimensions(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
-      ((CGUIThumbnailPanel*)pReference)->GetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig, iThumbWidthBig, iThumbHeightBig);
-      labelState = ((CGUIThumbnailPanel*)pReference)->GetLabelState();
-    }
-    else if (strType == "selectbutton")
-    {
-      strTextureBg = ((CGUISelectButtonControl*)pReference)->GetTextureBackground();
-      strLeft = ((CGUISelectButtonControl*)pReference)->GetTextureLeft();
-      strLeftFocus = ((CGUISelectButtonControl*)pReference)->GetTextureLeftFocus();
-      strRight = ((CGUISelectButtonControl*)pReference)->GetTextureRight();
-      strRightFocus = ((CGUISelectButtonControl*)pReference)->GetTextureRightFocus();
-      strTextureFocus = ((CGUISelectButtonControl*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUISelectButtonControl*)pReference)->GetTextureNoFocusName();
-      strLabel = ((CGUISelectButtonControl*)pReference)->GetLabel();
-      labelInfo = ((CGUISelectButtonControl*)pReference)->GetLabelInfo();
-    }
-    else if (strType == "mover")
-    {
-      strTextureFocus = ((CGUIMoverControl*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUIMoverControl*)pReference)->GetTextureNoFocusName();
-    }
-    else if (strType == "resize")
-    {
-      strTextureFocus = ((CGUIResizeControl*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUIResizeControl*)pReference)->GetTextureNoFocusName();
-    }
-    else if (strType == "buttonscroller")
-    {
-      strTextureFocus = ((CGUIButtonScroller*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUIButtonScroller*)pReference)->GetTextureNoFocusName();
-      labelInfo = ((CGUIButtonScroller*)pReference)->GetLabelInfo();
-      iNumSlots = ((CGUIButtonScroller*)pReference)->GetNumSlots();
-      iButtonGap = ((CGUIButtonScroller*)pReference)->GetButtonGap();
-      iDefaultSlot = ((CGUIButtonScroller*)pReference)->GetDefaultSlot();
-      iMovementRange = ((CGUIButtonScroller*)pReference)->GetMovementRange();
-      bHorizontal = ((CGUIButtonScroller*)pReference)->GetHorizontal();
-      iAlpha = ((CGUIButtonScroller*)pReference)->GetAlpha();
-      bWrapAround = ((CGUIButtonScroller*)pReference)->GetWrapAround();
-      bSmoothScrolling = ((CGUIButtonScroller*)pReference)->GetSmoothScrolling();
-    }
-    else if (strType == "spincontrolex")
-    {
-      labelInfo = ((CGUISpinControlEx*)pReference)->GetLabelInfo();
-      strUp = ((CGUISpinControlEx*)pReference)->GetTextureUpName();
-      strDown = ((CGUISpinControlEx*)pReference)->GetTextureDownName();
-      strUpFocus = ((CGUISpinControlEx*)pReference)->GetTextureUpFocusName();
-      strDownFocus = ((CGUISpinControlEx*)pReference)->GetTextureDownFocusName();
-      iType = ((CGUISpinControlEx*)pReference)->GetType();
-      dwSpinWidth = ((CGUISpinControlEx*)pReference)->GetSpinWidth();
-      dwSpinHeight = ((CGUISpinControlEx*)pReference)->GetSpinHeight();
-      dwWidth = ((CGUISpinControlEx*)pReference)->GetWidth();
-      dwHeight = ((CGUISpinControlEx*)pReference)->GetHeight();
-      strTextureFocus = ((CGUISpinControlEx*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUISpinControlEx*)pReference)->GetTextureNoFocusName();
-      strLabel = ((CGUISpinControlEx*)pReference)->GetLabel();
-      bReverse = ((CGUISpinControlEx*)pReference)->GetReverse();
-    }
-    else if (strType == "visualisation")
-    { // nothing to do here
-    }
-  }
+  float focusedHeight = 30;
+  vector<CGUIControl*> itemLayout;
+  vector<CGUIControl*> focusedLayout;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
   //
 
-  XMLUtils::GetDWORD(pControlNode, "id", dwID);
-  // TODO: Perhaps we should check here whether dwID is valid for focusable controls
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  // check if we are a <controlgroup>
+  if (strcmpi(pControlNode->Value(), "controlgroup") == 0)
+  {
+    if (pControlNode->Attribute("id", &id))
+      id += 9000;       // offset at 9000 for old controlgroups
+                        // NOTE: An old control group with no id means that it can't be focused
+                        //       Which isn't too good :(
+                        //       We check for this in OnWindowLoaded()
+  }
+  else
+#endif
+  if (!pControlNode->Attribute("id", &id))
+    XMLUtils::GetInt(pControlNode, "id", id);       // backward compatibility - not desired
+  // TODO: Perhaps we should check here whether id is valid for focusable controls
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 
-  if (XMLUtils::GetInt(pControlNode, "posx", iPosX)) g_graphicsContext.ScaleXCoord(iPosX, res);
-  if (XMLUtils::GetInt(pControlNode, "posy", iPosY)) g_graphicsContext.ScaleYCoord(iPosY, res);
+  XMLUtils::GetFloat(pControlNode, "posx", posX);
+  XMLUtils::GetFloat(pControlNode, "posy", posY);
+  // Convert these from relative coords
+  CStdString pos;
+  XMLUtils::GetString(pControlNode, "posx", pos);
+  if (pos.Right(1) == "r")
+  {
+    if (group && group->GetWidth())
+      posX = group->GetXPosition() + group->GetWidth() - posX;
+    else
+      posX = g_graphicsContext.GetWidth() - posX;
+  }
+  else if (group)
+    posX += group->GetXPosition();
+  XMLUtils::GetString(pControlNode, "posy", pos);
+  if (pos.Right(1) == "r")
+  {
+    if (group && group->GetHeight())
+      posY = group->GetYPosition() + group->GetHeight() - posY;
+    else
+      posY = g_graphicsContext.GetHeight() - posY;
+  }
+  else if (group)
+    posY += group->GetYPosition();
 
-  if (XMLUtils::GetDWORD(pControlNode, "width", dwWidth)) g_graphicsContext.ScaleXCoord(dwWidth, res);
-  if (XMLUtils::GetDWORD(pControlNode, "height", dwHeight)) g_graphicsContext.ScaleYCoord(dwHeight, res);
-  if (XMLUtils::GetDWORD(pControlNode, "textspacey", dwTextSpaceY)) g_graphicsContext.ScaleYCoord(dwTextSpaceY, res);
-
-  if (XMLUtils::GetInt(pControlNode, "controloffsetx", iControlOffsetX)) g_graphicsContext.ScaleXCoord(iControlOffsetX, res);
-  if (XMLUtils::GetInt(pControlNode, "controloffsety", iControlOffsetY)) g_graphicsContext.ScaleYCoord(iControlOffsetY, res);
-
-  if (XMLUtils::GetDWORD(pControlNode, "gfxthumbwidth", dwThumbWidth)) g_graphicsContext.ScaleXCoord(dwThumbWidth, res);
-  if (XMLUtils::GetDWORD(pControlNode, "gfxthumbheight", dwThumbHeight)) g_graphicsContext.ScaleYCoord(dwThumbHeight, res);
-  if (XMLUtils::GetDWORD(pControlNode, "gfxthumbspacex", dwThumbSpaceX)) g_graphicsContext.ScaleXCoord(dwThumbSpaceX, res);
-  if (XMLUtils::GetDWORD(pControlNode, "gfxthumbspacey", dwThumbSpaceY)) g_graphicsContext.ScaleYCoord(dwThumbSpaceY, res);
+  XMLUtils::GetFloat(pControlNode, "width", width);
+  XMLUtils::GetFloat(pControlNode, "height", height);
+#ifdef HAS_RAM_CONTROL
+  XMLUtils::GetFloat(pControlNode, "textspacey", textSpaceY);
+  XMLUtils::GetFloat(pControlNode, "gfxthumbwidth", thumbWidth);
+  XMLUtils::GetFloat(pControlNode, "gfxthumbheight", thumbHeight);
+  XMLUtils::GetFloat(pControlNode, "gfxthumbspacex", thumbSpaceX);
+  XMLUtils::GetFloat(pControlNode, "gfxthumbspacey", thumbSpaceY);
   XMLUtils::GetString(pControlNode, "gfxthumbdefault", strDefaultThumb);
+#endif
+  XMLUtils::GetFloat(pControlNode, "controloffsetx", controlOffsetX);
+  XMLUtils::GetFloat(pControlNode, "controloffsety", controlOffsetY);
 
   if (!XMLUtils::GetDWORD(pControlNode, "onup" , up ))
   {
-    up = dwID - 1;
+    up = id - 1;
   }
   if (!XMLUtils::GetDWORD(pControlNode, "ondown" , down))
   {
-    down = dwID + 1;
+    down = id + 1;
   }
   if (!XMLUtils::GetDWORD(pControlNode, "onleft" , left ))
   {
-    left = dwID;
+    left = id;
   }
   if (!XMLUtils::GetDWORD(pControlNode, "onright", right))
   {
-    right = dwID;
+    right = id;
   }
+
+  XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl);
+  XMLUtils::GetDWORD(pControlNode, "pagecontrol", pageControl);
 
   XMLUtils::GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
   
   GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
-  GetAnimations(pControlNode, animations, res);
+  GetAnimations(pControlNode, animations);
 
   XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.textColor);
+  XMLUtils::GetHex(pControlNode, "focusedcolor", labelInfo.focusedColor);
   XMLUtils::GetHex(pControlNode, "disabledcolor", labelInfo.disabledColor);
   XMLUtils::GetHex(pControlNode, "shadowcolor", labelInfo.shadowColor);
   XMLUtils::GetHex(pControlNode, "selectedcolor", labelInfo.selectedColor);
-  if (XMLUtils::GetInt(pControlNode, "textoffsetx", labelInfo.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo.offsetX, res);
-  if (XMLUtils::GetInt(pControlNode, "textoffsety", labelInfo.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo.offsetY, res);
-  if (XMLUtils::GetInt(pControlNode, "textxoff", labelInfo.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo.offsetX, res);
-  if (XMLUtils::GetInt(pControlNode, "textyoff", labelInfo.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo.offsetY, res);
-  if (XMLUtils::GetInt(pControlNode, "textxoff2", labelInfo2.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo2.offsetX, res);
-  if (XMLUtils::GetInt(pControlNode, "textyoff2", labelInfo2.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo2.offsetY, res);
+  XMLUtils::GetFloat(pControlNode, "textoffsetx", labelInfo.offsetX);
+  XMLUtils::GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
+  XMLUtils::GetFloat(pControlNode, "textxoff", labelInfo.offsetX);
+  XMLUtils::GetFloat(pControlNode, "textyoff", labelInfo.offsetY);
+  XMLUtils::GetFloat(pControlNode, "textxoff2", labelInfo2.offsetX);
+  XMLUtils::GetFloat(pControlNode, "textyoff2", labelInfo2.offsetY);
   int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
   if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = CAngle(-angle);
   CStdString strFont;
@@ -693,14 +506,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   DWORD alignY = 0;
   if (GetAlignmentY(pControlNode, "aligny", alignY))
     labelInfo.align = alignY | (labelInfo.align & 3);
-  if (XMLUtils::GetInt(pControlNode, "textwidth", labelInfo.width))
-  {
-    g_graphicsContext.ScaleXCoord(labelInfo.width, res);
+  if (XMLUtils::GetFloat(pControlNode, "textwidth", labelInfo.width))
     labelInfo.align |= XBFONT_TRUNCATED;
-  }
   labelInfo2.selectedColor = labelInfo.selectedColor;
   XMLUtils::GetHex(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
   XMLUtils::GetHex(pControlNode, "textcolor2", labelInfo2.textColor);
+  XMLUtils::GetHex(pControlNode, "focusedcolor2", labelInfo2.focusedColor);
   labelInfo2.font = labelInfo.font;
   if (XMLUtils::GetString(pControlNode, "font2", strFont))
     labelInfo2.font = g_fontManager.GetFont(strFont);
@@ -719,10 +530,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
         vecInfo.push_back(info);
     }
   }
-  GetPath(pControlNode, "texturefocus", strTextureFocus);
-  GetPath(pControlNode, "texturenofocus", strTextureNoFocus);
-  GetPath(pControlNode, "alttexturefocus", strTextureAltFocus);
-  GetPath(pControlNode, "alttexturenofocus", strTextureAltNoFocus);
+  GetTexture(pControlNode, "texturefocus", textureFocus);
+  GetTexture(pControlNode, "texturenofocus", textureNoFocus);
+  GetTexture(pControlNode, "alttexturefocus", textureAltFocus);
+  GetTexture(pControlNode, "alttexturenofocus", textureAltNoFocus);
   CStdString strToggleSelect;
   XMLUtils::GetString(pControlNode, "usealttexture", strToggleSelect);
   iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
@@ -732,38 +543,40 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
   XMLUtils::GetBoolean(pControlNode, "haspath", bHasPath);
 
-  GetPath(pControlNode, "textureup", strUp);
-  GetPath(pControlNode, "texturedown", strDown);
-  GetPath(pControlNode, "textureupfocus", strUpFocus);
-  GetPath(pControlNode, "texturedownfocus", strDownFocus);
+  GetTexture(pControlNode, "textureup", textureUp);
+  GetTexture(pControlNode, "texturedown", textureDown);
+  GetTexture(pControlNode, "textureupfocus", textureUpFocus);
+  GetTexture(pControlNode, "texturedownfocus", textureDownFocus);
 
-  GetPath(pControlNode, "textureleft", strLeft);
-  GetPath(pControlNode, "textureright", strRight);
-  GetPath(pControlNode, "textureleftfocus", strLeftFocus);
-  GetPath(pControlNode, "texturerightfocus", strRightFocus);
+  GetTexture(pControlNode, "textureleft", textureLeft);
+  GetTexture(pControlNode, "textureright", textureRight);
+  GetTexture(pControlNode, "textureleftfocus", textureLeftFocus);
+  GetTexture(pControlNode, "texturerightfocus", textureRightFocus);
 
   XMLUtils::GetHex(pControlNode, "spincolor", spinInfo.textColor);
   if (XMLUtils::GetString(pControlNode, "spinfont", strFont))
     spinInfo.font = g_fontManager.GetFont(strFont);
   if (!spinInfo.font) spinInfo.font = labelInfo.font;
 
-  if (XMLUtils::GetDWORD(pControlNode, "spinwidth", dwSpinWidth)) g_graphicsContext.ScaleXCoord(dwSpinWidth, res);
-  if (XMLUtils::GetDWORD(pControlNode, "spinheight", dwSpinHeight)) g_graphicsContext.ScaleYCoord(dwSpinHeight, res);
-  if (XMLUtils::GetInt(pControlNode, "spinposx", iSpinPosX)) g_graphicsContext.ScaleXCoord(iSpinPosX, res);
-  if (XMLUtils::GetInt(pControlNode, "spinposy", iSpinPosY)) g_graphicsContext.ScaleYCoord(iSpinPosY, res);
+  XMLUtils::GetFloat(pControlNode, "spinwidth", spinWidth);
+  XMLUtils::GetFloat(pControlNode, "spinheight", spinHeight);
+  XMLUtils::GetFloat(pControlNode, "spinposx", spinPosX);
+  XMLUtils::GetFloat(pControlNode, "spinposy", spinPosY);
 
-  if (XMLUtils::GetDWORD(pControlNode, "markwidth", dwCheckWidth)) g_graphicsContext.ScaleXCoord(dwCheckWidth, res);
-  if (XMLUtils::GetDWORD(pControlNode, "markheight", dwCheckHeight)) g_graphicsContext.ScaleYCoord(dwCheckHeight, res);
-  if (XMLUtils::GetDWORD(pControlNode, "sliderwidth", dwSliderWidth)) g_graphicsContext.ScaleXCoord(dwSliderWidth, res);
-  if (XMLUtils::GetDWORD(pControlNode, "sliderheight", dwSliderHeight)) g_graphicsContext.ScaleYCoord(dwSliderHeight, res);
-  GetPath(pControlNode, "texturecheckmark", strTextureCheckMark);
-  GetPath(pControlNode, "texturecheckmarknofocus", strTextureCheckMarkNF);
-  GetPath(pControlNode, "textureradiofocus", strTextureRadioFocus);
-  GetPath(pControlNode, "textureradionofocus", strTextureRadioNoFocus);
+  XMLUtils::GetFloat(pControlNode, "markwidth", checkWidth);
+  XMLUtils::GetFloat(pControlNode, "markheight", checkHeight);
+  XMLUtils::GetFloat(pControlNode, "sliderwidth", sliderWidth);
+  XMLUtils::GetFloat(pControlNode, "sliderheight", sliderHeight);
+  GetTexture(pControlNode, "texturecheckmark", textureCheckMark);
+  GetTexture(pControlNode, "texturecheckmarknofocus", textureCheckMarkNF);
+  GetTexture(pControlNode, "textureradiofocus", textureRadioFocus);
+  GetTexture(pControlNode, "textureradionofocus", textureRadioNoFocus);
 
-  GetPath(pControlNode, "texturesliderbar", strTextureBg);
-  GetPath(pControlNode, "textureslidernib", strMid);
-  GetPath(pControlNode, "textureslidernibfocus", strMidFocus);
+  GetTexture(pControlNode, "texturesliderbackground", textureBackground);
+  GetTexture(pControlNode, "texturesliderbar", textureBar);
+  GetTexture(pControlNode, "texturesliderbarfocus", textureBarFocus);
+  GetTexture(pControlNode, "textureslidernib", textureNib);
+  GetTexture(pControlNode, "textureslidernibfocus", textureNibFocus);
   XMLUtils::GetDWORD(pControlNode, "disposition", dwDisposition);
 
   XMLUtils::GetString(pControlNode, "title", strTitle);
@@ -776,17 +589,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     strSubType.ToLower();
 
     if ( strSubType == "int")
-    {
       iType = SPIN_CONTROL_TYPE_INT;
-    }
+    else if ( strSubType == "page")
+      iType = SPIN_CONTROL_TYPE_PAGE;
     else if ( strSubType == "float")
-    {
       iType = SPIN_CONTROL_TYPE_FLOAT;
-    }
     else
-    {
       iType = SPIN_CONTROL_TYPE_TEXT;
-    }
   }
 
   if (!GetIntRange(pControlNode, "range", iMin, iMax, iInterval))
@@ -809,41 +618,68 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       labelState = CGUIThumbnailPanel::SHOW_ALL;
   }
 
-  GetPath(pControlNode, "texturebg", strTextureBg);
-  GetPath(pControlNode, "lefttexture", strLeft);
-  GetPath(pControlNode, "midtexture", strMid);
-  GetPath(pControlNode, "righttexture", strRight);
-  GetPath(pControlNode, "overlaytexture", strOverlay);
-  GetPath(pControlNode, "texture", strTexture);
+  GetTexture(pControlNode, "texturebg", textureBackground);
+  GetTexture(pControlNode, "lefttexture", textureLeft);
+  GetTexture(pControlNode, "midtexture", textureMid);
+  GetTexture(pControlNode, "righttexture", textureRight);
+  GetTexture(pControlNode, "overlaytexture", textureOverlay);
+  GetTexture(pControlNode, "texture", texture);
   XMLUtils::GetHex(pControlNode, "colorkey", dwColorKey);
 
   XMLUtils::GetString(pControlNode, "suffix", strSuffix);
 
-  if (XMLUtils::GetDWORD(pControlNode, "itemwidth", dwitemWidth)) g_graphicsContext.ScaleXCoord(dwitemWidth, res);
-  if (XMLUtils::GetDWORD(pControlNode, "itemheight", dwitemHeight)) g_graphicsContext.ScaleYCoord(dwitemHeight, res);
-  if (XMLUtils::GetInt(pControlNode, "spacebetweenitems", iSpace)) g_graphicsContext.ScaleYCoord(iSpace, res);
+  XMLUtils::GetFloat(pControlNode, "itemwidth", itemWidth);
+  XMLUtils::GetFloat(pControlNode, "itemheight", itemHeight);
+  XMLUtils::GetFloat(pControlNode, "spacebetweenitems", spaceBetweenItems);
 
-  GetPath(pControlNode, "imagefolder", strImage);
-  GetPath(pControlNode, "imagefolderfocus", strImageFocus);
-  if (XMLUtils::GetInt(pControlNode, "texturewidth", iTextureWidth)) g_graphicsContext.ScaleXCoord(iTextureWidth, res);
-  if (XMLUtils::GetInt(pControlNode, "textureheight", iTextureHeight)) g_graphicsContext.ScaleYCoord(iTextureHeight, res);
+  TiXmlElement *itemElement = pControlNode->FirstChildElement("itemlayout");
+  if (itemElement)
+  { // we have a new item layout
+    itemElement->Attribute("height", &itemHeight);
+    TiXmlElement *child = itemElement->FirstChildElement("control");
+    while (child)
+    {
+      CGUIControl *control = Create(dwParentId, group, child);
+      if (control)
+        itemLayout.push_back(control);
+      child = child->NextSiblingElement("control");
+    }
+  }
+  itemElement = pControlNode->FirstChildElement("focusedlayout");
+  if (itemElement)
+  { // we have a new item layout
+    itemElement->Attribute("height", &focusedHeight);
+    TiXmlElement *child = itemElement->FirstChildElement("control");
+    while (child)
+    {
+      CGUIControl *control = Create(dwParentId, group, child);
+      if (control)
+        focusedLayout.push_back(control);
+      child = child->NextSiblingElement("control");
+    }
+  }
 
-  if (XMLUtils::GetInt(pControlNode, "thumbwidth", iThumbWidth)) g_graphicsContext.ScaleXCoord(iThumbWidth, res);
-  if (XMLUtils::GetInt(pControlNode, "thumbheight", iThumbHeight)) g_graphicsContext.ScaleYCoord(iThumbHeight, res);
-  if (XMLUtils::GetInt(pControlNode, "thumbposx", iThumbXPos)) g_graphicsContext.ScaleXCoord(iThumbXPos, res);
-  if (XMLUtils::GetInt(pControlNode, "thumbposy", iThumbYPos)) g_graphicsContext.ScaleYCoord(iThumbYPos, res);
+  GetTexture(pControlNode, "imagefolder", imageNoFocus);
+  GetTexture(pControlNode, "imagefolderfocus", imageFocus);
+  XMLUtils::GetFloat(pControlNode, "texturewidth", textureWidth);
+  XMLUtils::GetFloat(pControlNode, "textureheight", textureHeight);
+
+  XMLUtils::GetFloat(pControlNode, "thumbwidth", thumbWidth);
+  XMLUtils::GetFloat(pControlNode, "thumbheight", thumbHeight);
+  XMLUtils::GetFloat(pControlNode, "thumbposx", thumbXPos);
+  XMLUtils::GetFloat(pControlNode, "thumbposy", thumbYPos);
 
   GetAlignment(pControlNode, "thumbalign", dwThumbAlign);
 
-  if (XMLUtils::GetInt(pControlNode, "thumbwidthbig", iThumbWidthBig)) g_graphicsContext.ScaleXCoord(iThumbWidthBig, res);
-  if (XMLUtils::GetInt(pControlNode, "thumbheightbig", iThumbHeightBig)) g_graphicsContext.ScaleYCoord(iThumbHeightBig, res);
-  if (XMLUtils::GetInt(pControlNode, "thumbposxbig", iThumbXPosBig)) g_graphicsContext.ScaleXCoord(iThumbXPosBig, res);
-  if (XMLUtils::GetInt(pControlNode, "thumbposybig", iThumbYPosBig)) g_graphicsContext.ScaleYCoord(iThumbYPosBig, res);
+  XMLUtils::GetFloat(pControlNode, "thumbwidthbig", thumbWidthBig);
+  XMLUtils::GetFloat(pControlNode, "thumbheightbig", thumbHeightBig);
+  XMLUtils::GetFloat(pControlNode, "thumbposxbig", thumbXPosBig);
+  XMLUtils::GetFloat(pControlNode, "thumbposybig", thumbYPosBig);
 
-  if (XMLUtils::GetDWORD(pControlNode, "texturewidthbig", textureWidthBig)) g_graphicsContext.ScaleXCoord(textureWidthBig, res);
-  if (XMLUtils::GetDWORD(pControlNode, "textureheightbig", textureHeightBig)) g_graphicsContext.ScaleYCoord(textureHeightBig, res);
-  if (XMLUtils::GetDWORD(pControlNode, "itemwidthbig", itemWidthBig)) g_graphicsContext.ScaleXCoord(itemWidthBig, res);
-  if (XMLUtils::GetDWORD(pControlNode, "itemheightbig", itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
+  XMLUtils::GetFloat(pControlNode, "texturewidthbig", textureWidthBig);
+  XMLUtils::GetFloat(pControlNode, "textureheightbig", textureHeightBig);
+  XMLUtils::GetFloat(pControlNode, "itemwidthbig", itemWidthBig);
+  XMLUtils::GetFloat(pControlNode, "itemheightbig", itemHeightBig);
 
   int labelNumber = 0;
   if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
@@ -880,6 +716,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
           strLabel = "";
       }
     }
+    if (vecLabel.size())
+      strLabel = vecLabel[0];
   }
   if (XMLUtils::GetString(pControlNode, "altlabel", altLabel))
   {
@@ -898,15 +736,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
   {
     if (strTmp.ToLower() == "horizontal")
+    {
       bHorizontal = true;
+      orientation = CGUIControl::HORIZONTAL;
+    }
   }
-  if (XMLUtils::GetInt(pControlNode, "buttongap", iButtonGap))
-  {
-    if (bHorizontal)
-      g_graphicsContext.ScaleXCoord(iButtonGap, res);
-    else
-      g_graphicsContext.ScaleYCoord(iButtonGap, res);
-  }
+  XMLUtils::GetFloat(pControlNode, "buttongap", buttonGap);
+  XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
   XMLUtils::GetInt(pControlNode, "numbuttons", iNumSlots);
   XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
   XMLUtils::GetInt(pControlNode, "defaultbutton", iDefaultSlot);
@@ -921,6 +757,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
     else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
+    else if (aspect.CompareNoCase("center") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_CENTER;
   }
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
@@ -931,24 +768,73 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
   XMLUtils::GetBoolean(pControlNode, "loop", loop);
 
-  if (XMLUtils::GetDWORD(pControlNode, "radiowidth", radioWidth)) g_graphicsContext.ScaleXCoord(radioWidth, res);
-  if (XMLUtils::GetDWORD(pControlNode, "radioheight", radioHeight)) g_graphicsContext.ScaleYCoord(radioHeight, res);
-  if (XMLUtils::GetInt(pControlNode, "radioposx", radioPosX)) g_graphicsContext.ScaleXCoord(radioPosX, res);
-  if (XMLUtils::GetInt(pControlNode, "radioposy", radioPosY)) g_graphicsContext.ScaleYCoord(radioPosY, res);
+  XMLUtils::GetFloat(pControlNode, "radiowidth", radioWidth);
+  XMLUtils::GetFloat(pControlNode, "radioheight", radioHeight);
+  XMLUtils::GetFloat(pControlNode, "radioposx", radioPosX);
+  XMLUtils::GetFloat(pControlNode, "radioposy", radioPosY);
+
+  XMLUtils::GetBoolean(pControlNode, "showonepage", showOnePage);
+
+  if (strType == "group" || strType == "grouplist")
+  {
+    if (!width)
+    {
+      if (group)
+        width = max(group->GetWidth() + group->GetXPosition() - posX, 0);
+      else
+        width = max(g_graphicsContext.GetWidth() - posX, 0);
+    }
+    if (!height)
+    {
+      if (group)
+        height = max(group->GetHeight() + group->GetYPosition() - posY, 0);
+      else
+        height = max(g_graphicsContext.GetHeight() - posY, 0);
+    }
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
   //
 
-  if (strType == "label")
+  if (strType == "group")
+  {
+    CGUIControlGroup* pControl = new CGUIControlGroup(
+      dwParentId, id, posX, posY, width, height);
+
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+    if (g_SkinInfo.GetVersion() < 2.1)
+      pControl->SetNavigation(id, id, id, id);
+    else
+#endif
+    pControl->SetNavigation(up, down, left, right);
+    pControl->SetDefaultControl(defaultControl);
+    return pControl;
+  }
+  else if (strType == "grouplist")
+  {
+    CGUIControlGroupList* pControl = new CGUIControlGroupList(
+      dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation);
+
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
+    pControl->SetNavigation(up, down, left, right);
+    return pControl;
+  }
+  else if (strType == "label")
   {
     CGUILabelControl* pControl = new CGUILabelControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      dwParentId, id, posX, posY, width, height,
       strLabel, labelInfo, bHasPath);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetWidthControl(bScrollLabel);
     pControl->SetWrapMultiLine(wrapMultiLine);
@@ -957,31 +843,34 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "edit")
   {
     CGUIEditControl* pControl = new CGUIEditControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      dwParentId, id, posX, posY, width, height,
       labelInfo, strLabel);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     return pControl;
   }
   else if (strType == "videowindow")
   {
     CGUIVideoControl* pControl = new CGUIVideoControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
+      dwParentId, id, posX, posY, width, height);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     return pControl;
   }
   else if (strType == "fadelabel")
   {
     CGUIFadeLabelControl* pControl = new CGUIFadeLabelControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      dwParentId, id, posX, posY, width, height,
       labelInfo);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetLabel(vecLabel);
     pControl->SetInfo(vecInfo);
     return pControl;
@@ -989,12 +878,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "rss")
   {
     CGUIRSSControl* pControl = new CGUIRSSControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      dwParentId, id, posX, posY, width, height,
       labelInfo, dwTextColor3, labelInfo2.textColor, strRSSTags);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
     {
@@ -1005,37 +895,41 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
     return pControl;
   }
+#ifdef HAS_RAM_CONTROL
   else if (strType == "ram")
   {
     CGUIRAMControl* pControl = new CGUIRAMControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      dwParentId, id, posX, posY, width, height,
       labelInfo, labelInfo2);
 
-    pControl->SetTextSpacing(dwTextSpaceY);
-    pControl->SetThumbAttributes(dwThumbWidth, dwThumbHeight, dwThumbSpaceX, dwThumbSpaceY, strDefaultThumb);
+    pControl->SetTextSpacing(textSpaceY);
+    pControl->SetThumbAttributes(thumbWidth, thumbHeight, thumbSpaceX, thumbSpaceY, strDefaultThumb);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
+#endif
   else if (strType == "console")
   {
     CGUIConsoleControl* pControl = new CGUIConsoleControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
+      dwParentId, id, posX, posY, width, height,
       labelInfo, labelInfo.textColor, labelInfo2.textColor, dwTextColor3, labelInfo.selectedColor);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetNavigation(up, down, left, right);
     return pControl;
   }
   else if (strType == "button")
   {
     CGUIButtonControl* pControl = new CGUIButtonControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureFocus, strTextureNoFocus,
+      dwParentId, id, posX, posY, width, height,
+      textureFocus, textureNoFocus,
       labelInfo);
 
     pControl->SetLabel(strLabel);
@@ -1045,15 +939,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetFocusAction(focusAction);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
   else if (strType == "togglebutton")
   {
     CGUIToggleButtonControl* pControl = new CGUIToggleButtonControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureFocus, strTextureNoFocus,
-      strTextureAltFocus, strTextureAltNoFocus, labelInfo);
+      dwParentId, id, posX, posY, width, height,
+      textureFocus, textureNoFocus,
+      textureAltFocus, textureAltNoFocus, labelInfo);
 
     pControl->SetLabel(strLabel);
     pControl->SetAltLabel(altLabel);
@@ -1063,6 +958,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetFocusAction(focusAction);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetToggleSelect(iToggleSelect);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -1070,25 +966,26 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "checkmark")
   {
     CGUICheckMarkControl* pControl = new CGUICheckMarkControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureCheckMark, strTextureCheckMarkNF,
-      dwCheckWidth, dwCheckHeight, labelInfo);
+      dwParentId, id, posX, posY, width, height,
+      textureCheckMark, textureCheckMarkNF,
+      checkWidth, checkHeight, labelInfo);
 
     pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
   else if (strType == "radiobutton")
   {
     CGUIRadioButtonControl* pControl = new CGUIRadioButtonControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureFocus, strTextureNoFocus,
+      dwParentId, id, posX, posY, width, height,
+      textureFocus, textureNoFocus,
       labelInfo,
-      strTextureRadioFocus, strTextureRadioNoFocus);
+      textureRadioFocus, textureRadioNoFocus);
 
     pControl->SetLabel(strLabel);
     pControl->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
@@ -1099,26 +996,34 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetClickActions(clickActions);
     pControl->SetFocusAction(focusAction);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
   else if (strType == "spincontrol")
   {
     CGUISpinControl* pControl = new CGUISpinControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strUp, strDown, strUpFocus, strDownFocus,
+      dwParentId, id, posX, posY, width, height,
+      textureUp, textureDown, textureUpFocus, textureDownFocus,
       labelInfo, iType);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetReverse(bReverse);
     pControl->SetPulseOnSelect(bPulse);
 
     if (iType == SPIN_CONTROL_TYPE_INT)
     {
       pControl->SetRange(iMin, iMax);
+    }
+    else if (iType == SPIN_CONTROL_TYPE_PAGE)
+    {
+      pControl->SetRange(iMin, iMax);
+      pControl->SetShowRange(true);
+      pControl->SetReverse(false);
     }
     else if (iType == SPIN_CONTROL_TYPE_FLOAT)
     {
@@ -1131,15 +1036,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "slider")
   {
     CGUISliderControl* pControl = new CGUISliderControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureBg, strMid, strMidFocus, SPIN_CONTROL_TYPE_TEXT);
+      dwParentId, id, posX, posY, width, height,
+      textureBar, textureNib, textureNibFocus, SPIN_CONTROL_TYPE_TEXT);
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetNavigation(up, down, left, right);
-    pControl->SetControlOffsetX(iControlOffsetX);
-    pControl->SetControlOffsetY(iControlOffsetY);
+    pControl->SetControlOffsetX(controlOffsetX);
+    pControl->SetControlOffsetY(controlOffsetY);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
@@ -1147,123 +1053,159 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     labelInfo.align |= XBFONT_CENTER_Y;    // always center text vertically
     CGUISettingsSliderControl* pControl = new CGUISettingsSliderControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSliderWidth, dwSliderHeight, strTextureFocus, strTextureNoFocus,
-      strTextureBg, strMid, strMidFocus, labelInfo, SPIN_CONTROL_TYPE_TEXT);
+      dwParentId, id, posX, posY, width, height, sliderWidth, sliderHeight, textureFocus, textureNoFocus,
+      textureBar, textureNib, textureNibFocus, labelInfo, SPIN_CONTROL_TYPE_TEXT);
 
     pControl->SetText(strLabel);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetNavigation(up, down, left, right);
+    return pControl;
+  }
+  else if (strType == "scrollbar")
+  {
+    CGUIScrollBar* pControl = new CGUIScrollBar(
+      dwParentId, id, posX, posY, width, height,
+      textureBackground, textureBar, textureBarFocus, textureNib, textureNibFocus, orientation, showOnePage);
+
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
+    pControl->SetNavigation(up, down, left, right);
+    pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
   else if (strType == "progress")
   {
     CGUIProgressControl* pControl = new CGUIProgressControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureBg, strLeft, strMid, strRight, strOverlay);
+      dwParentId, id, posX, posY, width, height,
+      textureBackground, textureLeft, textureMid, textureRight, textureOverlay);
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
   else if (strType == "image")
   {
     CGUIImage* pControl = new CGUIImage(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, strTexture, dwColorKey);
+      dwParentId, id, posX, posY, width, height, texture, dwColorKey);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetAspectRatio(aspectRatio);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
   else if (strType == "multiimage")
   {
     CGUIMultiImage* pControl = new CGUIMultiImage(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, texturePath, timePerImage, fadeTime, randomized, loop);
+      dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetAspectRatio(aspectRatio);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    return pControl;
+  }
+  else if (strType == "list")
+  {
+    CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height);
+    pControl->SetItemHeight(itemHeight, focusedHeight);
+    pControl->SetItemLayout(itemLayout, focusedLayout);
+    pControl->SetNavigation(up, down, left, right);
+    pControl->SetColourDiffuse(dwColorDiffuse);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
+    pControl->SetPulseOnSelect(bPulse);
+    pControl->SetPageControl(pageControl);
     return pControl;
   }
   else if (strType == "listcontrol")
   {
     CGUIListControl* pControl = new CGUIListControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      dwSpinWidth, dwSpinHeight,
-      strUp, strDown,
-      strUpFocus, strDownFocus,
-      spinInfo, iSpinPosX, iSpinPosY,
+      dwParentId, id, posX, posY, width, height,
+      spinWidth, spinHeight,
+      textureUp, textureDown,
+      textureUpFocus, textureDownFocus,
+      spinInfo, spinPosX, spinPosY,
       labelInfo, labelInfo2,
-      strTextureNoFocus, strTextureFocus);
+      textureNoFocus, textureFocus);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
-    pControl->SetItemHeight(iTextureHeight);
-    pControl->SetSpace(iSpace);
+    pControl->SetParentControl(group);
+    pControl->SetImageDimensions(itemWidth, itemHeight);
+    pControl->SetItemHeight(textureHeight);
+    pControl->SetSpaceBetweenItems(spaceBetweenItems);
     pControl->SetPulseOnSelect(bPulse);
+    pControl->SetPageControl(pageControl);
     return pControl;
   }
   else if (strType == "listcontrolex")
   {
     CGUIListControlEx* pControl = new CGUIListControlEx(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      dwSpinWidth, dwSpinHeight,
-      strUp, strDown,
-      strUpFocus, strDownFocus,
-      spinInfo, iSpinPosX, iSpinPosY,
+      dwParentId, id, posX, posY, width, height,
+      spinWidth, spinHeight,
+      textureUp, textureDown,
+      textureUpFocus, textureDownFocus,
+      spinInfo, spinPosX, spinPosY,
       labelInfo, labelInfo2,
-      strTextureNoFocus, strTextureFocus);
+      textureNoFocus, textureFocus);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
-    pControl->SetItemHeight(iTextureHeight);
-    pControl->SetSpace(iSpace);
+    pControl->SetParentControl(group);
+    pControl->SetImageDimensions(itemWidth, itemHeight);
+    pControl->SetItemHeight(textureHeight);
+    pControl->SetSpaceBetweenItems(spaceBetweenItems);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
   else if (strType == "textbox")
   {
     CGUITextBox* pControl = new CGUITextBox(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      dwSpinWidth, dwSpinHeight,
-      strUp, strDown,
-      strUpFocus, strDownFocus,
-      spinInfo, iSpinPosX, iSpinPosY,
+      dwParentId, id, posX, posY, width, height,
+      spinWidth, spinHeight,
+      textureUp, textureDown,
+      textureUpFocus, textureDownFocus,
+      spinInfo, spinPosX, spinPosY,
       labelInfo);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
+    pControl->SetPageControl(pageControl);
     return pControl;
   }
   else if (strType == "thumbnailpanel")
   {
     CGUIThumbnailPanel* pControl = new CGUIThumbnailPanel(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strImage, strImageFocus,
-      dwSpinWidth, dwSpinHeight,
-      strUp, strDown,
-      strUpFocus, strDownFocus,
-      spinInfo, iSpinPosX, iSpinPosY,
+      dwParentId, id, posX, posY, width, height,
+      imageNoFocus, imageFocus,
+      spinWidth, spinHeight,
+      textureUp, textureDown,
+      textureUpFocus, textureDownFocus,
+      spinInfo, spinPosX, spinPosY,
       labelInfo);
 
     pControl->SetNavigation(up, down, left, right);
@@ -1271,73 +1213,77 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetThumbDimensions(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
+    pControl->SetParentControl(group);
+    pControl->SetThumbDimensions(thumbXPos, thumbYPos, thumbWidth, thumbHeight);
     pControl->SetTextureWidthBig(textureWidthBig);
     pControl->SetTextureHeightBig(textureHeightBig);
     pControl->SetItemWidthBig(itemWidthBig);
     pControl->SetItemHeightBig(itemHeightBig);
-    pControl->SetTextureWidthLow(iTextureWidth);
-    pControl->SetTextureHeightLow(iTextureHeight);
-    pControl->SetItemWidthLow(dwitemWidth);
-    pControl->SetItemHeightLow(dwitemHeight);
-    pControl->SetThumbDimensionsLow(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
-    pControl->SetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig, iThumbWidthBig, iThumbHeightBig);
+    pControl->SetTextureWidthLow(textureWidth);
+    pControl->SetTextureHeightLow(textureHeight);
+    pControl->SetItemWidthLow(itemWidth);
+    pControl->SetItemHeightLow(itemHeight);
+    pControl->SetThumbDimensionsLow(thumbXPos, thumbYPos, thumbWidth, thumbHeight);
+    pControl->SetThumbDimensionsBig(thumbXPosBig, thumbYPosBig, thumbWidthBig, thumbHeightBig);
     pControl->SetThumbAlign(dwThumbAlign);
     pControl->SetAspectRatio(aspectRatio);
     pControl->SetPulseOnSelect(bPulse);
     pControl->SetLabelState(labelState);
+    pControl->SetPageControl(pageControl);
     return pControl;
   }
   else if (strType == "selectbutton")
   {
     CGUISelectButtonControl* pControl = new CGUISelectButtonControl(
-      dwParentId, dwID, iPosX, iPosY,
-      dwWidth, dwHeight, strTextureFocus, strTextureNoFocus,
+      dwParentId, id, posX, posY,
+      width, height, textureFocus, textureNoFocus,
       labelInfo,
-      strTextureBg, strLeft, strLeftFocus, strRight, strRightFocus);
+      textureBackground, textureLeft, textureLeftFocus, textureRight, textureRightFocus);
 
     pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
   else if (strType == "mover")
   {
     CGUIMoverControl* pControl = new CGUIMoverControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureFocus, strTextureNoFocus);
+      dwParentId, id, posX, posY, width, height,
+      textureFocus, textureNoFocus);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
   else if (strType == "resize")
   {
     CGUIResizeControl* pControl = new CGUIResizeControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureFocus, strTextureNoFocus);
+      dwParentId, id, posX, posY, width, height,
+      textureFocus, textureNoFocus);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
   else if (strType == "buttonscroller")
   {
     CGUIButtonScroller* pControl = new CGUIButtonScroller(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, iButtonGap, iNumSlots, iDefaultSlot,
+      dwParentId, id, posX, posY, width, height, buttonGap, iNumSlots, iDefaultSlot,
       iMovementRange, bHorizontal, iAlpha, bWrapAround, bSmoothScrolling,
-      strTextureFocus, strTextureNoFocus, labelInfo);
+      textureFocus, textureNoFocus, labelInfo);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetPulseOnSelect(bPulse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->LoadButtons(pControlNode);
     return pControl;
   }
   else if (strType == "spincontrolex")
   {
     CGUISpinControlEx* pControl = new CGUISpinControlEx(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSpinWidth, dwSpinHeight,
-      labelInfo, strTextureFocus, strTextureNoFocus, strUp, strDown, strUpFocus, strDownFocus,
+      dwParentId, id, posX, posY, width, height, spinWidth, spinHeight,
+      labelInfo, textureFocus, textureNoFocus, textureUp, textureDown, textureUpFocus, textureDownFocus,
       labelInfo, iType);
 
     pControl->SetText(strLabel);
@@ -1345,6 +1291,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     pControl->SetReverse(bReverse);
     pControl->SetText(strLabel);
     pControl->SetPulseOnSelect(bPulse);
@@ -1352,10 +1299,85 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   }
   else if (strType == "visualisation")
   {
-    CGUIVisualisationControl* pControl = new CGUIVisualisationControl(dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
+    CGUIVisualisationControl* pControl = new CGUIVisualisationControl(dwParentId, id, posX, posY, width, height);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
     return pControl;
   }
   return NULL;
+}
+
+void CGUIControlFactory::ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes)
+{
+  if (element->FirstChild())
+  {
+    const char *value = element->FirstChild()->Value();
+    if (value)
+    {
+      float v = (float)atof(value);
+      CStdString name = element->Value();
+      if (name == "posx" ||
+          name == "width" ||
+          name == "gfxthumbwidth" ||
+          name == "gfxthumbspacex" ||
+          name == "controloffsetx" ||
+          name == "textoffsetx" ||
+          name == "textxoff" ||
+          name == "textxoff2" ||
+          name == "textwidth" ||
+          name == "spinwidth" ||
+          name == "spinposx" ||
+          name == "markwidth" ||
+          name == "sliderwidth" ||
+          name == "itemwidth" ||
+          name == "texturewidth" ||
+          name == "thumbwidth" ||
+          name == "thumbposx" ||
+          name == "thumbwidthbig" ||
+          name == "thumbposxbig" ||
+          name == "texturewidthbig" ||
+          name == "itemwidthbig" ||
+          name == "radiowidth" ||
+          name == "radioposx")
+      {
+        // scale
+        v *= (float)g_settings.m_ResInfo[destRes].iWidth / g_settings.m_ResInfo[fileRes].iWidth;
+        CStdString floatValue;
+        floatValue.Format("%f", v);
+        element->FirstChild()->SetValue(floatValue);
+      }
+      else if (name == "posy" ||
+          name == "height" ||
+          name == "textspacey" ||
+          name == "gfxthumbheight" ||
+          name == "gfxthumbspacey" ||
+          name == "controloffsety" ||
+          name == "textoffsety" ||
+          name == "textyoff" ||
+          name == "textyoff2" ||
+          name == "spinheight" ||
+          name == "spinposy" ||
+          name == "markheight" ||
+          name == "sliderheight" ||
+          name == "spacebetweenitems" ||
+          name == "textureheight" ||
+          name == "thumbheight" ||
+          name == "thumbposy" ||
+          name == "thumbheightbig" ||
+          name == "thumbposybig" ||
+          name == "textureheightbig" ||
+          name == "itemheightbig" ||
+          name == "buttongap" ||  // should really depend on orientation
+          name == "radioheight" ||
+          name == "radioposy")
+      {
+        // scale
+        v *= (float)g_settings.m_ResInfo[destRes].iHeight / g_settings.m_ResInfo[fileRes].iHeight;
+        CStdString floatValue;
+        floatValue.Format("%f", v);
+        element->FirstChild()->SetValue(floatValue);
+      }
+    }
+  }
 }

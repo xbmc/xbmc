@@ -2,6 +2,9 @@
 #include "FileZip.h"
 #include <sys/stat.h>
 
+#ifndef _XBOX
+#pragma comment (lib,"../../xbmc/lib/zlib/zlib.lib")
+#endif
 
 CFileZip::CFileZip() : m_dlgProgress(NULL), m_bUseProgressBar(false)
 {

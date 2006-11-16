@@ -169,7 +169,6 @@ bool CCdgReader::Start(float fStartTime)
   CSingleLock lock (m_CritSection);
   if (!m_pLoader) return false;
   m_fStartingTime = fStartTime;
-  m_Timer.StartZero();
   SetAVDelay(g_advancedSettings.m_karaokeSyncDelay);
   m_uiNumReadSubCodes = 0;
   m_Cdg.ClearDisplay();
@@ -178,15 +177,6 @@ bool CCdgReader::Start(float fStartTime)
   return true;
 }
 
-
-void CCdgReader::Pause()
-{
-  CSingleLock lock (m_CritSection);
-  if (m_Timer.IsRunning())
-    m_Timer.Stop();
-  else
-    m_Timer.Start();
-}
 void CCdgReader::SetAVDelay(float fDelay)
 {
   m_fAVDelay = fDelay;
@@ -538,13 +528,6 @@ bool CCdgParser::Start(CStdString strSongPath)
   // ... Karaoke patch (114097)
   m_bIsRunning = true;
   return true;
-}
-
-void CCdgParser::Pause()
-{
-  CSingleLock lock (m_CritSection);
-  if (m_pReader)
-    m_pReader->Pause();
 }
 
 void CCdgParser::Stop()

@@ -2,7 +2,7 @@
 #include "ZipDirectory.h"
 #include "../utils/log.h"
 #include "../util.h"
-#include "zlib.h"
+#include "../lib/zlib/zlib.h"
 
 #include <vector>
 

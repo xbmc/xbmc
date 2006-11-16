@@ -154,8 +154,7 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
   CStdString strHomeXML = strGoodPath + "\\home.xml";
   CStdString strReferencesXML = strGoodPath + "\\references.xml";
   if ( CFile::Exists(strFontXML) &&
-       CFile::Exists(strHomeXML) &&
-       CFile::Exists(strReferencesXML) && bVersionOK )
+       CFile::Exists(strHomeXML) && bVersionOK )
   {
     return true;
   }
@@ -244,12 +243,18 @@ void CSkinInfo::LoadIncludes()
   RESOLUTION res;
   CStdString includesPath = GetSkinPath("includes.xml", &res);
   CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
+  m_includes.ClearIncludes();
   m_includes.LoadIncludes(includesPath.c_str());
 }
 
-void CSkinInfo::ResolveIncludes(TiXmlElement *node)
+void CSkinInfo::LoadIncludes(const TiXmlElement *element)
 {
-  m_includes.ResolveIncludes(node);
+  m_includes.LoadIncludesFromXML(element);
+}
+
+void CSkinInfo::ResolveIncludes(TiXmlElement *node, const CStdString &type)
+{
+  m_includes.ResolveIncludes(node, type);
 }
 
 int CSkinInfo::GetStartWindow()

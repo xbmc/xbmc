@@ -53,7 +53,7 @@ CStdString CBuddyItem::GetArena()
   return m_strVector.Mid(arenaDelimiter);
 }
 
-void CBuddyItem::SetIcons(INT aWidth, INT aHeight, const CStdString& aHeadsetTexture,
+void CBuddyItem::SetIcons(float width, float height, const CStdString& aHeadsetTexture,
                           const CStdString& aChatTexture, const CStdString& aPingTexture,
                           const CStdString& aInviteTexture, const CStdString& aBusyTexture,
                           const CStdString& aIdleTexture, const CStdString& aHostTexture,
@@ -61,49 +61,49 @@ void CBuddyItem::SetIcons(INT aWidth, INT aHeight, const CStdString& aHeadsetTex
 {
   if (aChatTexture.length() > 0)
   {
-    m_pTalkingIcon = new CGUIImage(0, 0, 0, 0, aWidth, aHeight, aChatTexture, 0x0);
+    m_pTalkingIcon = new CGUIImage(0, 0, 0, 0, width, height, aChatTexture, 0x0);
     m_pTalkingIcon->AllocResources();
   }
 
   if (aHeadsetTexture.length() > 0)
   {
-    m_pHeadsetIcon = new CGUIImage(0, 0, 0, 0, aWidth, aHeight, aHeadsetTexture, 0x0);
+    m_pHeadsetIcon = new CGUIImage(0, 0, 0, 0, width, height, aHeadsetTexture, 0x0);
     m_pHeadsetIcon->AllocResources();
   }
 
   if (aPingTexture.length())
   {
-    m_pPingIcon = new CGUIImage(0, 0, 0, 0, aWidth, aHeight, aPingTexture, 0x0);
+    m_pPingIcon = new CGUIImage(0, 0, 0, 0, width, height, aPingTexture, 0x0);
     m_pPingIcon->AllocResources();
   }
 
   if (aInviteTexture.length())
   {
-    m_pInviteIcon = new CGUIImage(0, 0, 0, 0, aWidth, aHeight, aInviteTexture, 0x0);
+    m_pInviteIcon = new CGUIImage(0, 0, 0, 0, width, height, aInviteTexture, 0x0);
     m_pInviteIcon->AllocResources();
   }
 
   if (aBusyTexture.length())
   {
-    m_pBusyIcon = new CGUIImage(0, 0, 0, 0, aWidth, aHeight, aBusyTexture, 0x0);
+    m_pBusyIcon = new CGUIImage(0, 0, 0, 0, width, height, aBusyTexture, 0x0);
     m_pBusyIcon->AllocResources();
   }
 
   if (aIdleTexture.length())
   {
-    m_pIdleIcon = new CGUIImage(0, 0, 0, 0, aWidth, aHeight, aIdleTexture, 0x0);
+    m_pIdleIcon = new CGUIImage(0, 0, 0, 0, width, height, aIdleTexture, 0x0);
     m_pIdleIcon->AllocResources();
   }
 
   if (aHostTexture.length())
   {
-    m_pHostIcon = new CGUIImage(0, 0, 0, 0, aWidth, aHeight, aHostTexture, 0x0);
+    m_pHostIcon = new CGUIImage(0, 0, 0, 0, width, height, aHostTexture, 0x0);
     m_pHostIcon->AllocResources();
   }
 
   if (aKeyboardTexture.length())
   {
-    m_pKeyboardIcon = new CGUIImage(0, 0, 0, 0, aWidth, aHeight, aKeyboardTexture, 0x0);
+    m_pKeyboardIcon = new CGUIImage(0, 0, 0, 0, width, height, aKeyboardTexture, 0x0);
     m_pKeyboardIcon->AllocResources();
   }
 }
@@ -175,28 +175,28 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
 
   if (pDC && m_pPingIcon && m_pHeadsetIcon && m_pTalkingIcon && m_pInviteIcon)
   {
-    int iEndButtonPosX = pDC->m_iPositionX + pDC->m_pButton->GetWidth();
-    int iPingPosY = pDC->m_iPositionY;
-    int iPingPosX = iEndButtonPosX;
+    float endButtonPosX = pDC->m_positionX + pDC->m_pButton->GetWidth();
+    float pingPosY = (float)pDC->m_positionY;
+    float pingPosX = endButtonPosX;
 
-    iPingPosY += (pDC->m_pButton->GetHeight() - m_pPingIcon->GetHeight()) / 2;
-    iPingPosX -= ( (m_pPingIcon->GetWidth() + PING_SPACING) * PING_MAX_RATING ) + PING_OFFSETX;
+    pingPosY += (pDC->m_pButton->GetHeight() - m_pPingIcon->GetHeight()) / 2;
+    pingPosX -= ( (m_pPingIcon->GetWidth() + PING_SPACING) * PING_MAX_RATING ) + PING_OFFSETX;
 
-    int iHeadsetIconPosX = iPingPosX - (m_pHeadsetIcon->GetWidth() + 4);
-    int iInviteIconPosX = iHeadsetIconPosX - (m_pInviteIcon->GetWidth() + 2);
+    float headsetIconPosX = pingPosX - (m_pHeadsetIcon->GetWidth() + 4);
+    float inviteIconPosX = headsetIconPosX - (m_pInviteIcon->GetWidth() + 2);
 
     // if buddy has been talking for the last second
     if (m_dwSpeexCounter > 0)
     {
       m_dwSpeexCounter--;
-      m_pTalkingIcon->SetPosition(iHeadsetIconPosX, iPingPosY);
+      m_pTalkingIcon->SetPosition(headsetIconPosX, pingPosY);
       m_pTalkingIcon->Render();
     }
     // if we have enabled voice chat for this buddy
     else if (m_bSpeex)
     {
       m_pHeadsetIcon->SetAlpha(255);
-      m_pHeadsetIcon->SetPosition(iHeadsetIconPosX, iPingPosY);
+      m_pHeadsetIcon->SetPosition(headsetIconPosX, pingPosY);
       m_pHeadsetIcon->Render();
     }
     // if buddy is trying to establish voice chat
@@ -207,7 +207,7 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
       if (m_dwFrameCounter % 60 >= 30)
       {
         m_pHeadsetIcon->SetAlpha(255);
-        m_pHeadsetIcon->SetPosition(iHeadsetIconPosX, iPingPosY);
+        m_pHeadsetIcon->SetPosition(headsetIconPosX, pingPosY);
         m_pHeadsetIcon->Render();
       }
     }
@@ -215,13 +215,13 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
     else if (m_bHeadset)
     {
       m_pHeadsetIcon->SetAlpha(95);
-      m_pHeadsetIcon->SetPosition(iHeadsetIconPosX, iPingPosY);
+      m_pHeadsetIcon->SetPosition(headsetIconPosX, pingPosY);
       m_pHeadsetIcon->Render();
     }
     // if buddy has a headset
     else if (m_bKeyboard && m_pKeyboardIcon)
     {
-      m_pKeyboardIcon->SetPosition(iHeadsetIconPosX, iPingPosY);
+      m_pKeyboardIcon->SetPosition(headsetIconPosX, pingPosY);
       m_pKeyboardIcon->Render();
     }
     // if buddy has sent an invite
@@ -230,7 +230,7 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
       if (m_dwFrameCounter % 60 >= 30)
       {
         // flash invitation icon
-        m_pInviteIcon->SetPosition(iInviteIconPosX, iPingPosY);
+        m_pInviteIcon->SetPosition(inviteIconPosX, pingPosY);
         m_pInviteIcon->Render();
       }
     }
@@ -238,17 +238,17 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
     {
       if (m_nStatus == 0 && m_bBusy && m_pIdleIcon) // idle
       {
-        m_pIdleIcon->SetPosition(iInviteIconPosX, iPingPosY);
+        m_pIdleIcon->SetPosition(inviteIconPosX, pingPosY);
         m_pIdleIcon->Render();
       }
       else if (m_nStatus == 1 && m_pBusyIcon) // joining
       {
-        m_pBusyIcon->SetPosition(iInviteIconPosX, iPingPosY);
+        m_pBusyIcon->SetPosition(inviteIconPosX, pingPosY);
         m_pBusyIcon->Render();
       }
       else if (m_nStatus > 1 && m_pHostIcon)  // hosting
       {
-        m_pHostIcon->SetPosition(iInviteIconPosX, iPingPosY);
+        m_pHostIcon->SetPosition(inviteIconPosX, pingPosY);
         m_pHostIcon->Render();
       }
     }
@@ -258,15 +258,15 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
       DWORD dwPingAlpha = 95;
       DWORD dwStep = PING_MAX_LATENCY / PING_MAX_RATING;
       DWORD dwRating = PING_MAX_RATING - (m_dwPing / dwStep);
-      int iPosX = iPingPosX;
+      float posX = pingPosX;
       for (DWORD dwGraduation = 0; dwGraduation < dwRating; dwGraduation++)
       {
         dwPingAlpha += 40;
-        m_pPingIcon->SetPosition(iPosX, iPingPosY);
+        m_pPingIcon->SetPosition(posX, pingPosY);
         m_pPingIcon->SetAlpha(dwPingAlpha);
         m_pPingIcon->Render();
 
-        iPosX += m_pPingIcon->GetWidth() + PING_SPACING;
+        posX += m_pPingIcon->GetWidth() + PING_SPACING;
       }
     }
   }
