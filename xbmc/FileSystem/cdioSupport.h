@@ -22,7 +22,7 @@ namespace MEDIA_DETECT
 {
 
 #define STRONG "__________________________________\n"
-#define NORMAL ""
+//#define NORMAL ""
 
 #define FS_NO_DATA              0   /* audio only */
 #define FS_HIGH_SIERRA   1

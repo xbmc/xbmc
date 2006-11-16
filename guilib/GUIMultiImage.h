@@ -9,7 +9,7 @@
 #pragma once
 
 #include "GUIImage.h"
-#include "xbstopwatch.h"
+#include "../xbmc/utils/stopwatch.h"
 
 /*!
  \ingroup controls
@@ -18,11 +18,12 @@
 class CGUIMultiImage : public CGUIControl
 {
 public:
-  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop);
+  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop);
   virtual ~CGUIMultiImage(void);
 
   virtual void Render();
-  virtual bool OnAction(const CAction &action) ;
+  virtual bool OnAction(const CAction &action);
+  virtual bool OnMessage(CGUIMessage &message);
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
@@ -31,14 +32,7 @@ public:
   virtual bool CanFocus() const;
 
   void SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio);
-  CGUIImage::GUIIMAGE_ASPECT_RATIO GetAspectRatio() const;
-  const CStdString &GetTexturePath() const { return m_texturePath; };
-  DWORD GetTimePerImage() const { return m_timePerImage; };
-  DWORD GetFadeTime() const { return m_fadeTime; };
-  bool GetRandomized() const { return m_randomized; };
-  bool GetLoop() const { return m_loop; };
   void SetInfo(int info) { m_Info = info; };
-  int GetInfo() const { return m_Info; };
 
 protected:
   void LoadDirectory();
@@ -46,8 +40,8 @@ protected:
   CStdString m_texturePath;
   CStdString m_currentPath;
   int m_currentImage;
-  CXBStopWatch m_imageTimer;
-  CXBStopWatch m_fadeTimer;
+  CStopWatch m_imageTimer;
+  CStopWatch m_fadeTimer;
   DWORD m_timePerImage;
   DWORD m_fadeTime;
   bool m_randomized;

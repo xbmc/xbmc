@@ -3,9 +3,9 @@
 #include "../xbmc/Util.h"
 
 
-CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSpinWidth, DWORD dwSpinHeight, const CLabelInfo& spinInfo, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo& labelInfo, int iType)
-    : CGUISpinControl(dwParentID, dwControlId, iPosX, iPosY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, iType)
-    , m_buttonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strFocus, strNoFocus, labelInfo)
+CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float spinWidth, float spinHeight, const CLabelInfo& spinInfo, const CImage &textureFocus, const CImage &textureNoFocus, const CImage& textureUp, const CImage& textureDown, const CImage& textureUpFocus, const CImage& textureDownFocus, const CLabelInfo& labelInfo, int iType)
+    : CGUISpinControl(dwParentID, dwControlId, posX, posY, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, iType)
+    , m_buttonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
   ControlType = GUICONTROL_SPINEX;
 }
@@ -30,8 +30,8 @@ void CGUISpinControlEx::AllocResources()
   CGUISpinControl::AllocResources();
   m_buttonControl.AllocResources();
   SetPosition(GetXPosition(), GetYPosition());
-  if (m_dwHeight == 0)
-    m_dwHeight = GetSpinHeight();
+  if (m_height == 0)
+    m_height = GetSpinHeight();
 }
 
 void CGUISpinControlEx::FreeResources()
@@ -56,23 +56,23 @@ void CGUISpinControlEx::Render()
   CGUISpinControl::Render();
 }
 
-void CGUISpinControlEx::SetPosition(int iPosX, int iPosY)
+void CGUISpinControlEx::SetPosition(float posX, float posY)
 {
-  m_buttonControl.SetPosition(iPosX, iPosY);
-  int iSpinPosX = iPosX + (int)m_buttonControl.GetWidth() - (int)GetSpinWidth() * 2 - (int)m_buttonControl.GetLabelInfo().offsetX;
-  int iSpinPosY = iPosY + ((int)m_buttonControl.GetHeight() - (int)GetSpinHeight()) / 2;
-  CGUISpinControl::SetPosition(iSpinPosX, iSpinPosY);
+  m_buttonControl.SetPosition(posX, posY);
+  float spinPosX = posX + m_buttonControl.GetWidth() - GetSpinWidth() * 2 - m_buttonControl.GetLabelInfo().offsetX;
+  float spinPosY = posY + (m_buttonControl.GetHeight() - GetSpinHeight()) * 0.5f;
+  CGUISpinControl::SetPosition(spinPosX, spinPosY);
 }
 
-void CGUISpinControlEx::SetWidth(int iWidth)
+void CGUISpinControlEx::SetWidth(float width)
 {
-  m_buttonControl.SetWidth(iWidth);
+  m_buttonControl.SetWidth(width);
   SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
 }
 
-void CGUISpinControlEx::SetHeight(int iHeight)
+void CGUISpinControlEx::SetHeight(float height)
 {
-  m_buttonControl.SetHeight(iHeight);
+  m_buttonControl.SetHeight(height);
   SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
 }
 
@@ -102,11 +102,12 @@ const CStdString CGUISpinControlEx::GetCurrentLabel() const
 CStdString CGUISpinControlEx::GetDescription() const
 {
   CStdString strLabel;
-  strLabel.Format("%s (%s)", m_buttonControl.GetDescription(), GetCurrentLabel());
+  strLabel.Format("%s (%s)", m_buttonControl.GetDescription(), GetLabel());
   return strLabel;
 }
 
 void CGUISpinControlEx::SettingsCategorySetSpinTextColor(D3DCOLOR color)
 {
   m_label.textColor = color;
+  m_label.focusedColor = color;
 }

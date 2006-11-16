@@ -8,7 +8,7 @@ public:
   CBuddyItem(CStdString& strLabel);
   virtual ~CBuddyItem(void);
   virtual void OnPaint(CGUIItem::RenderContext* pContext);
-  static void SetIcons(INT aWidth, INT aHeight, const CStdString& aHeadsetTexture,
+  static void SetIcons(float width, float height, const CStdString& aHeadsetTexture,
                        const CStdString& aChatTexture, const CStdString& aPingTexture,
                        const CStdString& aInviteTexture, const CStdString& aBusyTexture,
                        const CStdString& aIdleTexture, const CStdString& aHostTexture,

@@ -17,7 +17,7 @@
 class CGUICheckMarkControl: public CGUIControl
 {
 public:
-  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark, const CStdString& strTextureCheckMarkNF, DWORD dwCheckWidth, DWORD dwCheckHeight, const CLabelInfo &labelInfo);
+  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureCheckMark, const CImage& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo);
   virtual ~CGUICheckMarkControl(void);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
@@ -30,10 +30,6 @@ public:
   void SetLabel(const string& strLabel);
   const string GetLabel() const { return m_strLabel; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
-  DWORD GetCheckMarkWidth() const { return m_imgCheckMark.GetWidth(); };
-  DWORD GetCheckMarkHeight() const { return m_imgCheckMark.GetHeight(); };
-  const CStdString& GetCheckMarkTextureName() const { return m_imgCheckMark.GetFileName(); };
-  const CStdString& GetCheckMarkTextureNameNF() const { return m_imgCheckMarkNoFocus.GetFileName(); };
   void SetSelected(bool bOnOff);
   bool GetSelected() const;
   bool OnMouseClick(DWORD dwButton);
@@ -47,5 +43,6 @@ protected:
 
   CLabelInfo m_label;
   string m_strLabel;
+  bool m_bSelected;
 };
 #endif

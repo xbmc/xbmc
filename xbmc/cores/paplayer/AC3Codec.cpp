@@ -1,6 +1,7 @@
 #include "../../stdafx.h"
 #include "AC3Codec.h"
 
+#ifdef HAS_AC3_CODEC
 
 static inline int16_t convert(int32_t i)
 {
@@ -404,3 +405,5 @@ void AC3Codec::SetDefault()
   m_readBufferPos     = 0;
   m_iDataStart        = -1;
 }
+
+#endif

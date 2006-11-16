@@ -5,6 +5,8 @@
 #include "FileReader.h"
 #include "DllAC3Codec.h"
 
+#ifdef HAS_AC3_CODEC
+
 class AC3Codec : public ICodec
 {
 public:
@@ -60,3 +62,4 @@ protected:
 
   DllAc3Codec m_dll;
 };
+#endif

@@ -1,6 +1,5 @@
 
 #include "stdafx.h"
-#include "xtl.h"
 #include "flactag.h"
 
 

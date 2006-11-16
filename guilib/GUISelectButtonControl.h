@@ -67,13 +67,13 @@ class CGUISelectButtonControl : public CGUIButtonControl
 {
 public:
   CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
-                          int iPosX, int iPosY,
-                          DWORD dwWidth, DWORD dwHeight,
-                          const CStdString& strButtonFocus, const CStdString& strButton,
+                          float posX, float posY,
+                          float width, float height,
+                          const CImage& buttonFocus, const CImage& button,
                           const CLabelInfo& labelInfo,
-                          const CStdString& strSelectBackground,
-                          const CStdString& strSelectArrowLeft, const CStdString& strSelectArrowLeftFocus,
-                          const CStdString& strSelectArrowRight, const CStdString& strSelectArrowRightFocus);
+                          const CImage& selectBackground,
+                          const CImage& selectArrowLeft, const CImage& selectArrowLeftFocus,
+                          const CImage& selectArrowRight, const CImage& selectArrowRightFocus);
   virtual ~CGUISelectButtonControl(void);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
@@ -88,17 +88,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetPosition(int iPosX, int iPosY);
-  /// \brief Return the texture of the left arrow that is shown, when the control is in select mode
-  const CStdString GetTextureLeft() const { return m_imgLeft.GetFileName();};
-  /// \brief Return the texture of the left arrow focused that is shown, when the control is in select mode
-  const CStdString GetTextureLeftFocus() const { return m_imgLeftFocus.GetFileName();};
-  /// \brief Return the texture of the right arrow that is shown, when the control is in select mode
-  const CStdString GetTextureRight() const { return m_imgRight.GetFileName();};
-  /// \brief Return the texture of the right arrow focused that is shown, when the control is in select mode
-  const CStdString GetTextureRightFocus() const { return m_imgRightFocus.GetFileName();};
-  /// \brief Return the texture of the background that is shown, when the control is in select mode
-  const CStdString GetTextureBackground() const { return m_imgBackground.GetFileName();};
+  virtual void SetPosition(float posX, float posY);
 
 protected:
   virtual void Update();

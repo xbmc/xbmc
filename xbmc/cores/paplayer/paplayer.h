@@ -130,7 +130,11 @@ private:
   void UpdateCacheLevel();
 
   int m_currentStream;
+#ifdef HAS_XBOX_AUDIO
   IDirectSoundStream *m_pStream[2];
+#else
+  LPDIRECTSOUNDBUFFER m_pStream[2];
+#endif
   AudioPacket         m_packet[2][PACKET_COUNT];
 
   __int64                 m_bytesSentOut;

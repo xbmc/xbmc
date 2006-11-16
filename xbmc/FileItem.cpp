@@ -834,7 +834,7 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'J' && m_dateTime.IsValid())
     { // date
-      str = m_dateTime.GetAsLocalizedDateTime();
+      str = m_dateTime.GetAsLocalizedDate();
       bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'R')
@@ -1922,8 +1922,8 @@ CStdString CFileItem::GetTBNFile()
     url.GetURL(thumbFile);
     return thumbFile;
   }
-  if (m_bIsFolder)
-  {    
+  if (m_bIsFolder && !IsFileFolder())
+  {
     CStdString thumbFile(m_strPath);
     CUtil::RemoveSlashAtEnd(thumbFile);
     return thumbFile + ".tbn";
@@ -2115,7 +2115,7 @@ bool CFileItem::LoadMusicTag()
   // load tag from file
   else
   {
-		CLog::Log(LOGDEBUG, __FUNCTION__": loading tag information for file: %s", m_strPath.c_str());
+    CLog::Log(LOGDEBUG, __FUNCTION__": loading tag information for file: %s", m_strPath.c_str());
     CMusicInfoTagLoaderFactory factory;
     CMusicInfoTag tag;
     auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));

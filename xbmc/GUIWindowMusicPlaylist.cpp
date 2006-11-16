@@ -198,7 +198,7 @@ bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
   if ((action.wID == ACTION_MOVE_ITEM_UP) || (action.wID == ACTION_MOVE_ITEM_DOWN))
   {
     int iItem = -1;
-    int iFocusedControl = GetFocusedControl();
+    int iFocusedControl = GetFocusedControlID();
     if (m_viewControl.HasControl(iFocusedControl))
       iItem = m_viewControl.GetSelectedItem();
     OnMove(iItem, action.wID);
@@ -584,13 +584,13 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   // calculate our position
-  int iPosX = 200;
-  int iPosY = 100;
+  float posX = 200;
+  float posY = 100;
   CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
   if (pList)
   {
-    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
-    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   // mark the item
   m_vecItems[iItem]->Select(true);
@@ -662,7 +662,7 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
     btn_PartyMode = pMenu->AddButton(588);      // cancel party mode
 
   // position it correctly
-  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();

@@ -1,32 +1,37 @@
 #include "../stdafx.h"
 #include "../GUIDialogSeekBar.h"
+#include "../GUIMediaWindow.h"
+#include "../GUIDialogFileBrowser.h"
 #include "../Application.h"
 #include "../Util.h"
 #include "../lib/libscrobbler/scrobbler.h"
-#include "../playlistplayer.h"
-#include "../ButtonTranslator.h"
-#include "../Visualizations/Visualisation.h"
-#include "../MusicDatabase.h"
-#include "../utils/Alarmclock.h"
-#include "../utils/lcd.h"
-#include "../GUIMediaWindow.h"
-#include "../GUIDialogFileBrowser.h"
-#include "../PartyModeManager.h"
-#include "../GUIPassword.h"
-#include "FanController.h"
-#include "GUIButtonScroller.h"
-#include "GUIInfoManager.h"
 #include "KaiClient.h"
 #include "Weather.h"
-#include <stack>
-#include "../xbox/network.h"
+#include "../playlistplayer.h"
+#include "../PartyModeManager.h"
+#include "../Visualizations/Visualisation.h"
+#include "../ButtonTranslator.h"
+#include "../MusicDatabase.h"
+#include "../utils/Alarmclock.h"
+#ifdef HAS_LCD
+#include "../utils/lcd.h"
+#endif
+#include "../GUIPassword.h"
+#ifdef HAS_XBOX_HARDWARE
+#include "FanController.h"
 #include "SystemInfo.h"
 #include "HddSmart.h"
+#endif
+#include "GUIButtonScroller.h"
+#include "GUIInfoManager.h"
+#include <stack>
+#include "../xbox/network.h"
 
 // stuff for current song
-#include "../filesystem/CDDADirectory.h"
-#include "../musicInfoTagLoaderFactory.h"
+#ifdef HAS_FILESYSTEM
 #include "../filesystem/SndtrkDirectory.h"
+#endif
+#include "../musicInfoTagLoaderFactory.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
 CGUIInfoManager g_infoManager;
@@ -49,6 +54,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_nextWindowID = WINDOW_INVALID;
   m_prevWindowID = WINDOW_INVALID;
   m_stringParameters.push_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
+  m_listItem = NULL;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -294,7 +300,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("listitem.thumb")) ret = LISTITEM_THUMB;
     else if (strTest.Equals("listitem.icon")) ret = LISTITEM_ICON;
+    else if (strTest.Equals("listitem.overlay")) ret = LISTITEM_OVERLAY;
     else if (strTest.Equals("listitem.label")) ret = LISTITEM_LABEL;
+    else if (strTest.Equals("listitem.label2")) ret = LISTITEM_LABEL2;
     else if (strTest.Equals("listitem.title")) ret = LISTITEM_TITLE;
     else if (strTest.Equals("listitem.tracknumber")) ret = LISTITEM_TRACKNUMBER;
     else if (strTest.Equals("listitem.artist")) ret = LISTITEM_ARTIST;
@@ -550,7 +558,7 @@ string CGUIInfoManager::GetLabel(int info)
       CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
       if (window)
       {
-        CGUIControl *control = (CGUIControl* )window->GetControl(window->GetFocusedControl());
+        CGUIControl *control = window->GetFocusedControl();
         if (control)
           strLabel = control->GetDescription();
       }
@@ -602,9 +610,11 @@ string CGUIInfoManager::GetLabel(int info)
     else
       strLabel = g_guiSettings.GetString("lookandfeel.skintheme");
     break;
+#ifdef HAS_LCD
   case LCD_PROGRESS_BAR:
     if (g_lcd) strLabel = g_lcd->GetProgressBar(g_application.GetTime(), g_application.GetTotalTime());
     break;
+#endif
   case NETWORK_IP_ADDRESS:
     {
       CStdString ip;
@@ -652,6 +662,7 @@ string CGUIInfoManager::GetLabel(int info)
     }
     break;
   case LISTITEM_LABEL:
+  case LISTITEM_LABEL2:
   case LISTITEM_TITLE:
   case LISTITEM_TRACKNUMBER:
   case LISTITEM_ARTIST:
@@ -660,10 +671,15 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_GENRE:
   case LISTITEM_DIRECTOR:
     {
-      CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-      if (pWindow && pWindow->IsMediaWindow())
+      if (m_listItem)
+        strLabel = GetItemLabel(m_listItem, info);
+      else
       {
-        strLabel = GetItemLabel(((CGUIMediaWindow *)pWindow)->GetCurrentListItem(), info);
+        CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+        if (pWindow && pWindow->IsMediaWindow())
+        {
+          strLabel = GetItemLabel(((CGUIMediaWindow *)pWindow)->GetCurrentListItem(), info);
+        }
       }
     }
     break;
@@ -737,7 +753,11 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   else if (condition == SYSTEM_ALWAYS_FALSE)
     bReturn = false;
   else if (condition == SYSTEM_ETHERNET_LINK_ACTIVE)
+#ifdef HAS_XBOX_NETWORK
     bReturn = (XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE);
+#else
+    bReturn = true;
+#endif
   else if (condition > SYSTEM_IDLE_TIME_START && condition <= SYSTEM_IDLE_TIME_FINISH)
     bReturn = (g_application.GlobalIdleTime() >= condition - SYSTEM_IDLE_TIME_START);
   else if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)// check for Window.IsActive(window)
@@ -803,7 +823,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     bReturn = g_weatherManager.IsFetched();
   else if (condition == SYSTEM_INTERNET_STATE)
     bReturn = SystemHasInternet();
-    
   else if (g_application.IsPlaying())
   {
     switch (condition)
@@ -978,7 +997,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
         if (!pWindow) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
         if (pWindow)
-          bReturn = (pWindow->GetFocusedControl() == info.m_data1);
+          bReturn = (pWindow->GetFocusedControlID() == info.m_data1);
       }
       break;
     case BUTTON_SCROLLER_HAS_ICON:
@@ -987,7 +1006,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         if( !pWindow ) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
         if (pWindow)
         {
-          CGUIControl *pControl = (CGUIControl *)pWindow->GetControl(pWindow->GetFocusedControl());
+          CGUIControl *pControl = pWindow->GetFocusedControl();
           if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
             bReturn = ((CGUIButtonScroller *)pControl)->GetActiveButtonID() == info.m_data1;
         }
@@ -1054,27 +1073,24 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
     if (!g_application.IsPlayingVideo()) return "";
     return m_currentMovieThumb;
   }
-  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON)
+  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY)
   {
-    CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
-    if (!window || !window->IsMediaWindow())
-      window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-    if (window && window->IsMediaWindow())
+    if (m_listItem)
+      return GetItemImage(m_listItem, info);
+    else
     {
-      const CFileItem *item = NULL;
-      if (window->IsDialog()) // must be the filebrowser window
-        item = ((CGUIDialogFileBrowser *)window)->GetCurrentListItem();
-      else
-        item = ((CGUIMediaWindow *)window)->GetCurrentListItem();
-      if (item)
+      CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
+      if (!window || !window->IsMediaWindow())
+        window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      if (window && window->IsMediaWindow())
       {
-        if (info == LISTITEM_ICON && item->GetThumbnailImage().IsEmpty())
-        {
-          CStdString strThumb = item->GetIconImage();
-          strThumb.Insert(strThumb.Find("."), "Big");
-          return strThumb;
-        }
-        return item->GetThumbnailImage();
+        CFileItem *item = NULL;
+        if (window->IsDialog()) // must be the filebrowser window
+          item = ((CGUIDialogFileBrowser *)window)->GetCurrentListItem();
+        else
+          item = ((CGUIMediaWindow *)window)->GetCurrentListItem();
+        if (item)
+          return GetItemImage(item, info);
       }
     }
   }
@@ -1496,11 +1512,13 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     if (!tag.GetTitle().size())
     {
       // No title in tag, show filename only
+#ifdef HAS_FILESYSTEM      
       CSndtrkDirectory dir;
       char NameOfSong[64];
       if (dir.FindTrackName(m_currentSong.m_strPath, NameOfSong))
         tag.SetTitle(NameOfSong);
       else
+#endif
         tag.SetTitle( CUtil::GetTitleFromPath(m_currentSong.m_strPath) );
     }
   } // if (tag.Loaded())
@@ -1603,6 +1621,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
 string CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
 {
+#ifdef HAS_XBOX_HARDWARE
   if (timeGetTime() - m_lastSysHeatInfoTime >= 1000)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
@@ -1610,7 +1629,7 @@ string CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
     m_gpuTemp = CFanController::Instance()->GetGPUTemp();
     m_cpuTemp = CFanController::Instance()->GetCPUTemp();
   }
-
+#endif
   CStdString text;
 
   if (strInfo == "cpu")
@@ -1899,6 +1918,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 {
   if (!item) return "";
   if (info == LISTITEM_LABEL) return item->GetLabel();
+  else if (info == LISTITEM_LABEL2) return item->GetLabel2();
   else if (info == LISTITEM_TITLE) return item->m_musicInfoTag.GetTitle();
   else if (info == LISTITEM_TRACKNUMBER)
   {
@@ -2037,6 +2057,7 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
 
 CStdString CGUIInfoManager::GetHDDSmart( int iSmartRequest )
 {
+#ifdef HAS_XBOX_HARDWARE
   CStdString strItemhdd;
   if(!g_hddsmart.IsRunning())
     g_hddsmart.Start();
@@ -2056,6 +2077,9 @@ CStdString CGUIInfoManager::GetHDDSmart( int iSmartRequest )
     strItemhdd.Format("%s", buffer);
   }
   return strItemhdd;
+#else
+  return "";
+#endif
 }
 bool CGUIInfoManager::SystemHasInternet()
 {
@@ -2079,4 +2103,51 @@ CStdString CGUIInfoManager::SystemHasInternet_s()
     StrTemp.Format("%s %s",lbl2.c_str(), lbl4.c_str());
   
   return StrTemp;
+}
+
+CStdString CGUIInfoManager::GetItemImage(CFileItem *item, int info)
+{
+  if (info == LISTITEM_ICON && item->GetThumbnailImage().IsEmpty())
+  {
+    CStdString strThumb = item->GetIconImage();
+    strThumb.Insert(strThumb.Find("."), "Big");
+    if (!item->GetIcon() && item->HasIcon())
+    { // allocate it
+      CGUIImage *image = new CGUIImage(0, 0, 0, 0, 32, 32, strThumb);
+      if (image)
+      {
+        image->AllocResources();
+        item->SetIcon(image);
+      }
+    }
+    return strThumb;
+  }
+  if (info == LISTITEM_OVERLAY)
+  {
+    if (!item->GetOverlay() && item->HasOverlay())
+    { // allocate it
+      CGUIImage *image = new CGUIImage(0, 0, 0, 0, 32, 32, item->GetOverlayImage());
+      if (image)
+      {
+        image->AllocResources();
+        item->SetIcon(image);
+      }
+    }
+    return item->GetOverlayImage();
+  }
+  if (!item->GetThumbnail() && item->HasThumbnail())
+  { // allocate it
+    CGUIImage *image = new CGUIImage(0, 0, 0, 0, 32, 32, item->GetThumbnailImage());
+    if (image)
+    {
+      image->AllocResources();
+      item->SetThumbnail(image);
+    }
+  }
+  return item->GetThumbnailImage();
+}
+
+void CGUIInfoManager::SetListItem(CGUIListItem *item)
+{
+  m_listItem = static_cast<CFileItem *>(item);
 }

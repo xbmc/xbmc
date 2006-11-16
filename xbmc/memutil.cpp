@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "memutil.h"
+#ifdef _XBOX
 #include "xbox/undocumented.h"
-
+#endif
 
 void fast_memcpy(void* d, const void* s, unsigned n)
 {
@@ -175,6 +176,7 @@ void fast_memset(void* d, int c, unsigned n)
     }
   }
 
+#ifdef _XBOX
 void usleep(int t)
 {
   LARGE_INTEGER li;
@@ -185,4 +187,4 @@ void usleep(int t)
   // in order to reduce driver complexity. The principal exception to this is when the wait is a long term wait.
   KeDelayExecutionThread(KernelMode, false, &li);
 }
-
+#endif

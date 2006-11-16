@@ -159,10 +159,10 @@ namespace PYXBMC
 		pControl->pGUIControl = pGUIControl;
 		pControl->iControlId = pGUIControl->GetID();
 		pControl->iParentId = self->iWindowId;
-		pControl->dwHeight = pGUIControl->GetHeight();
-		pControl->dwWidth = pGUIControl->GetWidth();
-		pControl->dwPosX = pGUIControl->GetXPosition();
-		pControl->dwPosY = pGUIControl->GetYPosition();
+		pControl->dwHeight = (int)pGUIControl->GetHeight();
+		pControl->dwWidth = (int)pGUIControl->GetWidth();
+		pControl->dwPosX = (int)pGUIControl->GetXPosition();
+		pControl->dwPosY = (int)pGUIControl->GetYPosition();
 		pControl->iControlUp = pGUIControl->GetControlIdUp();
 		pControl->iControlDown = pGUIControl->GetControlIdDown();
 		pControl->iControlLeft = pGUIControl->GetControlIdLeft();
@@ -519,7 +519,7 @@ namespace PYXBMC
 		
 
 		PyGUILock();
-		iControlId = pWindow->GetFocusedControl();
+		iControlId = pWindow->GetFocusedControlID();
 		PyGUIUnlock();
 
 		if(iControlId == -1)

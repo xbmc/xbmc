@@ -5,23 +5,23 @@
 
 
 CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
-    int iPosX, int iPosY,
-    DWORD dwWidth, DWORD dwHeight,
-    const CStdString& strButtonFocus,
-    const CStdString& strButton,
+    float posX, float posY,
+    float width, float height,
+    const CImage& buttonFocus,
+    const CImage& button,
     const CLabelInfo& labelInfo,
-    const CStdString& strSelectBackground,
-    const CStdString& strSelectArrowLeft,
-    const CStdString& strSelectArrowLeftFocus,
-    const CStdString& strSelectArrowRight,
-    const CStdString& strSelectArrowRightFocus
+    const CImage& selectBackground,
+    const CImage& selectArrowLeft,
+    const CImage& selectArrowLeftFocus,
+    const CImage& selectArrowRight,
+    const CImage& selectArrowRightFocus
                                                 )
-    : CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, labelInfo)
-    , m_imgBackground(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strSelectBackground)
-    , m_imgLeft(dwParentID, dwControlId, iPosX, iPosY, 16, 16, strSelectArrowLeft)
-    , m_imgLeftFocus(dwParentID, dwControlId, iPosX, iPosY, 16, 16, strSelectArrowLeftFocus)
-    , m_imgRight(dwParentID, dwControlId, iPosX, iPosY, 16, 16, strSelectArrowRight)
-    , m_imgRightFocus(dwParentID, dwControlId, iPosX, iPosY, 16, 16, strSelectArrowRightFocus)
+    : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, buttonFocus, button, labelInfo)
+    , m_imgBackground(dwParentID, dwControlId, posX, posY, width, height, selectBackground)
+    , m_imgLeft(dwParentID, dwControlId, posX, posY, 16, 16, selectArrowLeft)
+    , m_imgLeftFocus(dwParentID, dwControlId, posX, posY, 16, 16, selectArrowLeftFocus)
+    , m_imgRight(dwParentID, dwControlId, posX, posY, 16, 16, selectArrowRight)
+    , m_imgRightFocus(dwParentID, dwControlId, posX, posY, 16, 16, selectArrowRightFocus)
 {
   m_bShowSelect = false;
   m_iCurrentItem = -1;
@@ -97,17 +97,17 @@ void CGUISelectButtonControl::Render()
         g_charsetConverter.utf8ToUTF16(m_vecItems[m_iCurrentItem].c_str(), itemStrUnicode);
 
         DWORD dwAlign = m_label.align | XBFONT_CENTER_X;
-        float fPosY = (float)m_iPosY + m_label.offsetY;
+        float fPosY = m_posY + m_label.offsetY;
         if (m_label.align & XBFONT_CENTER_Y)
-          fPosY = (float)m_iPosY + m_imgBackground.GetHeight() / 2;
-        m_label.font->DrawText( (float)m_iPosX + GetWidth()/2, fPosY, dwTextColor, m_label.shadowColor, itemStrUnicode.c_str(), dwAlign, (float)m_label.width);
+          fPosY = m_posY + m_imgBackground.GetHeight()*0.5f;
+        m_label.font->DrawText(m_posX + GetWidth()*0.5f, fPosY, dwTextColor, m_label.shadowColor, itemStrUnicode.c_str(), dwAlign, m_label.width);
       }
     }
 
     // Select current item, if user doesn't
     // move left or right for 1.5 sec.
     DWORD dwTicksSpan = timeGetTime() - m_dwTicks;
-    if ((float)(dwTicksSpan / 1000) > 1.5f)
+    if (dwTicksSpan > 1500)
     {
       // User hasn't moved disable selection mode...
       m_bShowSelect = false;
@@ -139,21 +139,25 @@ bool CGUISelectButtonControl::OnMessage(CGUIMessage& message)
         m_iDefaultItem = 0;
       }
       m_vecItems.push_back(message.GetLabel());
+      return true;
     }
     else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
       m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
       m_iCurrentItem = -1;
       m_iDefaultItem = -1;
+      return true;
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
       message.SetParam1(m_iCurrentItem);
       message.SetLabel(m_vecItems[m_iCurrentItem]);
+      return true;
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
       m_iDefaultItem = m_iCurrentItem = message.GetParam1();
+      return true;
     }
   }
 
@@ -255,23 +259,23 @@ void CGUISelectButtonControl::AllocResources()
   m_imgRightFocus.AllocResources();
 
   // Position right arrow
-  int iPosX = (m_iPosX + m_dwWidth - 8) - 16;
-  int iPosY = m_iPosY + (m_dwHeight - 16) / 2;
-  m_imgRight.SetPosition(iPosX, iPosY);
-  m_imgRightFocus.SetPosition(iPosX, iPosY);
+  float posX = (m_posX + m_width - 8) - 16;
+  float posY = m_posY + (m_height - 16) / 2;
+  m_imgRight.SetPosition(posX, posY);
+  m_imgRightFocus.SetPosition(posX, posY);
 
   // Position left arrow
-  iPosX = m_iPosX + 8;
-  m_imgLeft.SetPosition(iPosX, iPosY);
-  m_imgLeftFocus.SetPosition(iPosX, iPosY);
+  posX = m_posX + 8;
+  m_imgLeft.SetPosition(posX, posY);
+  m_imgLeftFocus.SetPosition(posX, posY);
 }
 
 void CGUISelectButtonControl::Update()
 {
   CGUIButtonControl::Update();
 
-  m_imgBackground.SetWidth(m_dwWidth);
-  m_imgBackground.SetHeight(m_dwHeight);
+  m_imgBackground.SetWidth(m_width);
+  m_imgBackground.SetHeight(m_height);
 }
 
 void CGUISelectButtonControl::OnLeft()
@@ -291,7 +295,7 @@ void CGUISelectButtonControl::OnLeft()
     {
       m_iCurrentItem--;
       if (m_iCurrentItem < 0)
-        m_iCurrentItem = m_vecItems.size() - 1;
+        m_iCurrentItem = (int)m_vecItems.size() - 1;
     }
   }
   else
@@ -331,11 +335,11 @@ bool CGUISelectButtonControl::OnMouseOver()
   bool ret = CGUIControl::OnMouseOver();
   m_bLeftSelected = false;
   m_bRightSelected = false;
-  if (m_imgLeft.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_imgLeft.HitTest(g_Mouse.posX, g_Mouse.posY))
   { // highlight the left control, but don't start moving until we have clicked
     m_bLeftSelected = true;
   }
-  if (m_imgRight.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_imgRight.HitTest(g_Mouse.posX, g_Mouse.posY))
   { // highlight the right control, but don't start moving until we have clicked
     m_bRightSelected = true;
   }
@@ -347,11 +351,11 @@ bool CGUISelectButtonControl::OnMouseOver()
 bool CGUISelectButtonControl::OnMouseClick(DWORD dwButton)
 { // only left click handled
   if (dwButton != MOUSE_LEFT_BUTTON) return false;
-  if (m_bShowSelect && m_imgLeft.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  if (m_bShowSelect && m_imgLeft.HitTest(g_Mouse.posX, g_Mouse.posY))
   { // move left
     OnLeft();
   }
-  else if (m_bShowSelect && m_imgRight.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+  else if (m_bShowSelect && m_imgRight.HitTest(g_Mouse.posX, g_Mouse.posY))
   { // move right
     OnRight();
   }
@@ -371,18 +375,18 @@ bool CGUISelectButtonControl::OnMouseWheel()
   return true;
 }
 
-void CGUISelectButtonControl::SetPosition(int iPosX, int iPosY)
+void CGUISelectButtonControl::SetPosition(float posX, float posY)
 {
-  int iLeftOffX = m_imgLeft.GetXPosition() - m_iPosX;
-  int iLeftOffY = m_imgLeft.GetYPosition() - m_iPosY;
-  int iRightOffX = m_imgRight.GetXPosition() - m_iPosX;
-  int iRightOffY = m_imgRight.GetYPosition() - m_iPosY;
-  int iBackOffX = m_imgBackground.GetXPosition() - m_iPosX;
-  int iBackOffY = m_imgBackground.GetYPosition() - m_iPosY;
-  CGUIButtonControl::SetPosition(iPosX, iPosY);
-  m_imgLeft.SetPosition(iPosX + iLeftOffX, iPosY + iLeftOffY);
-  m_imgLeftFocus.SetPosition(iPosX + iLeftOffX, iPosY + iLeftOffY);
-  m_imgRight.SetPosition(iPosX + iRightOffX, iPosY + iRightOffY);
-  m_imgRightFocus.SetPosition(iPosX + iRightOffX, iPosY + iRightOffY);
-  m_imgBackground.SetPosition(iPosX + iBackOffX, iPosY + iBackOffY);
+  float leftOffX = m_imgLeft.GetXPosition() - m_posX;
+  float leftOffY = m_imgLeft.GetYPosition() - m_posY;
+  float rightOffX = m_imgRight.GetXPosition() - m_posX;
+  float rightOffY = m_imgRight.GetYPosition() - m_posY;
+  float backOffX = m_imgBackground.GetXPosition() - m_posX;
+  float backOffY = m_imgBackground.GetYPosition() - m_posY;
+  CGUIButtonControl::SetPosition(posX, posY);
+  m_imgLeft.SetPosition(posX + leftOffX, posY + leftOffY);
+  m_imgLeftFocus.SetPosition(posX + leftOffX, posY + leftOffY);
+  m_imgRight.SetPosition(posX + rightOffX, posY + rightOffY);
+  m_imgRightFocus.SetPosition(posX + rightOffX, posY + rightOffY);
+  m_imgBackground.SetPosition(posX + backOffX, posY + backOffY);
 }

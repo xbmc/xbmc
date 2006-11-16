@@ -211,6 +211,7 @@ extern "C" void tracker_heapobjects_free_all(DllTrackInfo* pInfo)
   }
 }
 
+#ifdef _XBOX
 WINBASEAPI
 HANDLE
 WINAPI
@@ -262,3 +263,4 @@ track_HeapDestroy(
 
   return HeapDestroy(hHeap);
 }
+#endif

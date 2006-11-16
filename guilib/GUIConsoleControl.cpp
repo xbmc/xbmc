@@ -7,10 +7,10 @@
 #define CONSOLE_LINE_SPACING 1.0f
 
 CGUIConsoleControl::CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
-                                       int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
+                                       float posX, float posY, float width, float height,
                                        const CLabelInfo& labelInfo,
                                        D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4)
-    : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_label = labelInfo;
   m_palette.push_back(dwPenColor1);
@@ -24,7 +24,7 @@ CGUIConsoleControl::CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
     m_label.font->GetTextExtent(L"X", &fTextW, &m_fFontHeight);
   }
 
-  m_nMaxLines = dwHeight / (DWORD)(m_fFontHeight + CONSOLE_LINE_SPACING);
+  m_nMaxLines = (DWORD)(height / (m_fFontHeight + CONSOLE_LINE_SPACING));
   m_dwLineCounter = 0;
   m_dwFrameCounter = 0;
 
@@ -71,8 +71,8 @@ void CGUIConsoleControl::Render()
    Write(strDebug,0xFF00FF00);
   }*/
 
-  FLOAT fTextX = (FLOAT) m_iPosX;
-  FLOAT fTextY = (FLOAT) m_iPosY;
+  FLOAT fTextX = (FLOAT) m_posX;
+  FLOAT fTextY = (FLOAT) m_posY;
 
   CStdStringW strText;
 
@@ -176,7 +176,7 @@ void CGUIConsoleControl::WriteString(CStdString& aString, DWORD aColour)
       m_label.font->GetTextExtent(strLineW.c_str(), &fWidth, &fHeight);
 
       // If we have exceeded the allowable line width
-      if (fWidth > m_dwWidth)
+      if (fWidth > m_width)
       {
         // If we have detected a space separating a previous word
         if (nLastSpace > 0)

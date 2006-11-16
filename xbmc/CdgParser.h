@@ -2,7 +2,6 @@
 #define CDGREADER_H
 
 #include "Cdg.h"
-#include "xbstopwatch.h"
 #include "CdgVoiceManager.h" // Karaoke patch (114097)
 
 //////////////////////
@@ -70,7 +69,6 @@ public:
   bool Attach(CCdgLoader* pLoader);
   void DetachLoader();
   bool Start(float fTime);
-  void Pause();
   void SetAVDelay(float fDelay);
   float GetAVDelay();
   errCode GetFileState();
@@ -81,7 +79,6 @@ protected:
   errCode m_FileState;
   CCdgLoader* m_pLoader;
   CCdg m_Cdg;
-  CXBStopWatch m_Timer;
   float m_fStartingTime;
   float m_fAVDelay;
   UINT m_uiNumReadSubCodes;
@@ -153,7 +150,6 @@ public:
   void FreeGraphics();
   bool Start(CStdString strSongPath);
   void Stop();
-  void Pause();
   void Free();
   void SetAVDelay(float fDelay);
   float GetAVDelay();

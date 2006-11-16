@@ -72,6 +72,7 @@ public:
   CStdString GetResponse();
   int SetResponse(CStdString response);
   void HttpApi(string cmd);
+  void ExecBuiltIn(const CStdString &command);
 
   void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
 private:

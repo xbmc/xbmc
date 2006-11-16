@@ -38,7 +38,7 @@ class RenderContext : public CGUIItem::RenderContext
   virtual void FreeResources();
   virtual void OnPaint(CGUIItem::RenderContext* pContext);
   void SetIcon(CGUIImage* pImage);
-  void SetIcon(INT aWidth, INT aHeight, const CStdString& aTexture);
+  void SetIcon(float width, float height, const CStdString& aTexture);
   DWORD GetFramesFocused() { return m_dwFocusedDuration; };
 
 protected:

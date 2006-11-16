@@ -6,6 +6,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
 #include "utils/guiinfomanager.h"
+#include "GUIPassword.h"
 #include "lib/libPython/XBPython.h"
 #include "lib/libscrobbler/scrobbler.h"
 #include "utils/weather.h"
@@ -149,7 +150,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
 
 void CGUIWindowLoginScreen::Render()
 {
-  if (GetFocusedControl() == CONTROL_BIG_LIST && m_gWindowManager.GetTopMostRoutedWindowID() == WINDOW_INVALID)
+  if (GetFocusedControlID() == CONTROL_BIG_LIST && m_gWindowManager.GetTopMostRoutedWindowID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
   CStdString strLabel;
@@ -208,12 +209,12 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return false;
   // calculate our position
-  int iPosX = 200, iPosY = 100;
+  float posX = 200, posY = 100;
   CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_BIG_LIST);
   if (pList)
   {
-    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
-    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+    posX = pList->GetXPosition() + pList->GetWidth() / 2;
+    posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   
   bool bSelect = m_vecItems[iItem]->IsSelected();
@@ -236,7 +237,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     btn_ResetLock = pMenu->AddButton(12334);
 
   // position it correctly
-  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();

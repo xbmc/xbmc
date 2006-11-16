@@ -7,7 +7,8 @@
 
 #define DEBUG_MOUSE
 #define DEBUG_KEYBOARD
-#include <xtl.h>
+
+#include "system.h"
 #include <vector>
 #include <list>
 #include <map>
@@ -17,7 +18,7 @@
 #include <stdio.h>
 #include "stdstring.h"
 using namespace std;
-
+#ifdef _XBOX
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <FStream>
@@ -25,7 +26,7 @@ using namespace std;
 #include <crtdbg.h>
 #define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
-
+#endif
 #include "../xbmc/utils/log.h"
 
 // guilib internal
@@ -33,11 +34,13 @@ using namespace std;
 #include "tinyxml/tinyxml.h"
 
 
-#ifdef QueryPerformanceFrequency
-#undef QueryPerformanceFrequency
+#ifdef _XBOX
+ #ifdef QueryPerformanceFrequency
+  #undef QueryPerformanceFrequency
+ #endif
+ WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
+ #define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
 #endif
-WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
-#define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
 
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 

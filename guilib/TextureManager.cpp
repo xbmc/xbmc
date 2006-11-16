@@ -6,8 +6,9 @@
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/StringUtils.h"
 #include "../xbmc/utils/charsetconverter.h"
+#ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
-
+#endif
 
 
 extern "C" void dllprintf( const char *format, ... );
@@ -35,9 +36,11 @@ CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, bool bP
   m_iDelay = 2 * iDelay;
   m_iWidth = iWidth;
   m_iHeight = iHeight;
+#ifdef HAS_XBOX_D3D
   m_pPalette = pPalette;
   if (m_pPalette)
     m_pPalette->AddRef();
+#endif
   m_bPacked = bPacked;
   ReadTextureInfo();
 }
@@ -55,16 +58,21 @@ void CTexture::FreeTexture()
   {
     if (m_bPacked)
     {
+#ifdef HAS_XBOX_D3D
       m_pTexture->BlockUntilNotBusy();
       void* Data = (void*)(*(DWORD*)(((char*)m_pTexture) + sizeof(D3DTexture)));
       if (Data)
         XPhysicalFree(Data);
       delete [] m_pTexture;
+#else
+      m_pTexture->Release();
+#endif
     }
     else
       m_pTexture->Release();
     m_pTexture = NULL;
   }
+#ifdef HAS_XBOX_D3D
   if (m_pPalette)
   {
     if (m_bPacked)
@@ -77,6 +85,7 @@ void CTexture::FreeTexture()
     else
       m_pPalette->Release();
   }
+#endif
   m_pPalette = NULL;
 }
 
@@ -294,7 +303,9 @@ DWORD CTextureMap::GetMemoryUsage() const
 //------------------------------------------------------------------------------
 CGUITextureManager::CGUITextureManager(void)
 {
+#ifdef HAS_XBOX_D3D
   D3DXSetDXT3DXT5(TRUE);
+#endif
   for (int bundle = 0; bundle < 2; bundle++)
     m_iNextPreload[bundle] = m_PreLoadNames[bundle].end();
   // we set the theme bundle to be the first bundle (thus prioritising it
@@ -523,8 +534,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       }
       else // packed
       {
+#ifdef HAS_XBOX_D3D
         nImages = LoadPackedAnim(g_graphicsContext.Get3DDevice(), strPackedPath.c_str(), &info, &pTextures, &pPal, nLoops, &Delay);
         if (!nImages)
+#endif
         {
           if (!strnicmp(strPackedPath.c_str(), "q:\\skin", 7))
             CLog::Log(LOGERROR, "Texture manager unable to load packed file: %s", strPackedPath.c_str());
@@ -543,7 +556,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 
       delete [] pTextures;
       delete [] Delay;
+#ifdef HAS_XBOX_D3D
       pPal->Release();
+#endif
     }
     else
     {
@@ -558,25 +573,30 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       int iWidth = AnimatedGifSet.FrameWidth;
       int iHeight = AnimatedGifSet.FrameHeight;
 
-      int iPalletSize = (1 << AnimatedGifSet.m_vecimg[0]->BPP);
+      int iPaletteSize = (1 << AnimatedGifSet.m_vecimg[0]->BPP);
+#ifdef HAS_XBOX_D3D
       g_graphicsContext.Get3DDevice()->CreatePalette(D3DPALETTE_256, &pPal);
       PALETTEENTRY* pal;
       pPal->Lock((D3DCOLOR**)&pal, 0);
 
-      memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*iPalletSize);
-      for (int i = 0; i < iPalletSize; i++)
+      memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*iPaletteSize);
+      for (int i = 0; i < iPaletteSize; i++)
         pal[i].peFlags = 0xff; // alpha
       if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
         pal[AnimatedGifSet.m_vecimg[0]->Transparent].peFlags = 0;
 
       pPal->Unlock();
-
+#endif
       pMap = new CTextureMap(strTextureName);
       for (int iImage = 0; iImage < iImages; iImage++)
       {
         int w = PadPow2(iWidth);
         int h = PadPow2(iHeight);
-        if (g_graphicsContext.Get3DDevice()->CreateTexture(w, h, 1, 0, D3DFMT_P8, 0, &pTexture) == D3D_OK)
+#ifdef HAS_XBOX_D3D
+        if (g_graphicsContext.Get3DDevice()->CreateTexture(w, h, 1, 0, D3DFMT_P8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
+#else
+        if (g_graphicsContext.Get3DDevice()->CreateTexture(w, h, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
+#endif
         {
           D3DLOCKED_RECT lr;
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
@@ -584,8 +604,31 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
           if ( D3D_OK == pTexture->LockRect( 0, &lr, &rc, 0 ))
           {
             POINT pt = { 0, 0 };
+#ifdef HAS_XBOX_D3D
             XGSwizzleRect(pImage->Raster, pImage->BytesPerRow, &rc, lr.pBits, w, h, &pt, 1);
-
+#else
+            COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
+            // set the alpha values to fully opaque
+            for (int i = 0; i < iPaletteSize; i++)
+              palette[i].x = 0xff;
+            // and set the transparent colour
+            if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
+              palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
+            
+            for (int y = 0; y < pImage->Height; y++)
+            {
+              BYTE *dest = (BYTE *)lr.pBits + y * lr.Pitch;
+              BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
+              for (int x = 0; x < pImage->Width; x++)
+              {
+                COLOR col = palette[*source++];
+                *dest++ = col.b;
+                *dest++ = col.g;
+                *dest++ = col.r;
+                *dest++ = col.x;
+              }
+            }
+#endif
             pTexture->UnlockRect( 0 );
 
             CTexture* pclsTexture = new CTexture(pTexture, iWidth, iHeight, false, 100, pPal);
@@ -597,7 +640,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         }
       } // of for (int iImage=0; iImage < iImages; iImage++)
 
+#ifdef HAS_XBOX_D3D
       pPal->Release();
+#endif
     }
 
 #ifdef _DEBUG
@@ -623,7 +668,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   }
   else if (bPacked)
   {
+#ifdef HAS_XBOX_D3D
     if (FAILED(LoadPackedTexture(g_graphicsContext.Get3DDevice(), strPackedPath.c_str(), &info, &pTexture, &pPal)))
+#endif
     {
       if (!strnicmp(strPackedPath.c_str(), "q:\\skin", 7))
         CLog::Log(LOGERROR, "Texture manager unable to load packed file: %s", strPackedPath.c_str());
@@ -674,9 +721,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height, bPacked || bundle >= 0, 100, pPal);
   pMap->Add(pclsTexture);
   m_vecTextures.push_back(pMap);
+#ifdef HAS_XBOX_D3D
   if (pPal)
     pPal->Release();
-
+#endif
 #else
 
   LPDIRECT3DTEXTURE8 pTexture;

@@ -15,12 +15,13 @@ BUG: The XBE Region detection Is wrong! Need to Decyrpt the EEPROM!
 */
 #include "stdafx.h"
 #include "guiwindowsysteminfo.h"
-#include "xbox/xkeeprom.h"
 #include "utils/GUIInfoManager.h"
-#include "utils/SystemInfo.h"
 #include "xbox/network.h"
 #include "application.h"
+#ifdef HAS_SYSINFO
+#include "xbox/xkeeprom.h"
 #include "utils/HddSmart.h"
+#include "utils/SystemInfo.h"
 
 #define DEBUG_KEYBOARD
 #define DEBUG_MOUSE
@@ -37,6 +38,7 @@ XBOX_VERSION  m_XBOX_Version;
 DWORD m_dwlastTime;
 
 char* cTempEEPROMBackUPPath = "Q:\\System\\SystemInfo\\";
+#endif
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
@@ -49,6 +51,7 @@ CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 
 }
 
+#ifdef HAS_SYSINFO
 bool CGUIWindowSystemInfo::GetMPlayerVersion(CStdString& strVersion)
 {
   DllLoader* mplayerDll;
@@ -105,6 +108,7 @@ void CGUIWindowSystemInfo::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR
 { 
   BytesToHexStr(SrcBytes, byteCount, DstString, 0x00); 
 }
+#endif
 
 bool CGUIWindowSystemInfo::OnAction(const CAction &action)
 {
@@ -122,6 +126,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     { 
+#ifdef HAS_SYSINFO
       m_wszMPlayerVersion[0] = 0;     
       //Get SystemInformations on Init
       CGUIWindow::OnMessage(message);
@@ -154,6 +159,9 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       pDlgProgress.SetPercentage(100);
       pDlgProgress.Progress();
       pDlgProgress.Close();
+#else
+      CGUIWindow::OnMessage(message);
+#endif
       SetLabelDummy();
       b_IsHome = TRUE;
       return true;
@@ -176,7 +184,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         b_IsHome = FALSE;
         SetLabelDummy();
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20156));
-
+#ifdef HAS_SYSINFO
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
 		    pDlgProgress.SetHeading(g_localizeStrings.Get(20156));
         pDlgProgress.SetLine(0, g_localizeStrings.Get(20190));
@@ -210,9 +218,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(6,strItemhdd);
 
         pDlgProgress.Close();
+#endif
         if(b_playing) g_application.m_pPlayer->Pause();
-
-        CGUIWindow::Render();
       }
       else if(iControl == CONTROL_BT_DVD)
       {
@@ -228,6 +235,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SetLabelDummy();
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20157));
 
+#ifdef HAS_SYSINFO
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
         pDlgProgress.SetHeading(g_localizeStrings.Get(20157));
         pDlgProgress.SetLine(0, g_localizeStrings.Get(20194));
@@ -245,9 +253,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         GetATAPIValues(2, 3);
 
         pDlgProgress.Close();
-        
+#endif        
         if(b_playing) g_application.m_pPlayer->Pause();
-        CGUIWindow::Render();
       }
       else if(iControl == CONTROL_BT_STORAGE)
       {
@@ -255,23 +262,22 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SetLabelDummy();
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
 
+#ifdef HAS_SYSINFO
         // Label 2-10: Storage Values
         GetStorage(2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
-
-        CGUIWindow::Render();
+#endif
       }
       else if(iControl == CONTROL_BT_DEFAULT)
       { 
         SetLabelDummy();
         b_IsHome = TRUE;
-        Render();
       }
       else if(iControl == CONTROL_BT_NETWORK)
       {
         b_IsHome = FALSE;
         SetLabelDummy();
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
-
+#ifdef HAS_SYSINFO
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
         pDlgProgress.SetHeading(g_localizeStrings.Get(20158));
         pDlgProgress.SetLine(0, g_localizeStrings.Get(20196));
@@ -302,15 +308,14 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         GetINetState(strInetCon);
         SET_CONTROL_LABEL(10,strInetCon);
         pDlgProgress.Close();
-
-        CGUIWindow::Render();
+#endif
       }
       else if(iControl == CONTROL_BT_VIDEO)
       {
         b_IsHome = FALSE;
         SetLabelDummy();
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
-
+#ifdef HAS_SYSINFO
         // Label 2: Video Encoder
         CStdString strVideoEnc;
         GetVideoEncInfo(strVideoEnc);
@@ -335,8 +340,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         CStdString strdvdzone;
         GetDVDZone(strdvdzone);
         SET_CONTROL_LABEL(5,strdvdzone);
-
-        CGUIWindow::Render();
+#endif
       }
       else if(iControl == CONTROL_BT_HARDWARE)
       {
@@ -344,7 +348,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
         SetLabelDummy();
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
-
+#ifdef HAS_SYSINFO
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
         pDlgProgress.SetHeading(g_localizeStrings.Get(20160));
         pDlgProgress.SetLine(0, g_localizeStrings.Get(20300));
@@ -410,8 +414,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         pDlgProgress.Close();
-
-        CGUIWindow::Render();
+#endif
       }
     }
     break;
@@ -449,6 +452,7 @@ void CGUIWindowSystemInfo::Render()
     GetResolution(strResol);
     SET_CONTROL_LABEL(7,strResol);
 
+#ifdef HAS_SYSINFO
     // Label 8: Get Kernel Info
     CStdString strGetKernel;
     GetKernelVersion(strGetKernel);
@@ -463,7 +467,7 @@ void CGUIWindowSystemInfo::Render()
     CStdString strSystemTotalUptime;
     GetSystemTotalUpTime(strSystemTotalUptime);
     SET_CONTROL_LABEL(10,strSystemTotalUptime);
-
+#endif
     /*
     // Label 11: Get System Total Uptime
     CStdString strSmartHDDTemp;
@@ -485,10 +489,15 @@ void CGUIWindowSystemInfo::SetLabelDummy()
   // Set Label Dummy Entry! ""
   for (int i=2; i<12; i++ )
   {
+#ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i,"");
+#else
+    SET_CONTROL_LABEL(i,"PC version");
+#endif
   }
 }
 
+#ifdef HAS_SYSINFO
 bool CGUIWindowSystemInfo::GetKernelVersion(CStdString& strKernel)
 {
   CStdString lblKernel=  g_localizeStrings.Get(13283).c_str();
@@ -520,7 +529,8 @@ bool CGUIWindowSystemInfo::GetMACAdress(CStdString& strMacAdress)
     strMacAdress.Format("%s: %s",lbl1.c_str(), TempString1);
     return true;
   }
-  else return false;  
+  else
+    return false;  
 }
 
 bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
@@ -548,6 +558,7 @@ bool CGUIWindowSystemInfo::GetVideoEncInfo(CStdString& strItemVideoENC)
   strItemVideoENC.Format("%s %s", lblVideoEnc.c_str(),VideoEncoder.c_str());
   return true;
 }
+#endif
 
 bool CGUIWindowSystemInfo::GetResolution(CStdString& strResol)
 {
@@ -562,6 +573,7 @@ bool CGUIWindowSystemInfo::GetResolution(CStdString& strResol)
   return true;
 }
 
+#ifdef HAS_SYSINFO
 bool CGUIWindowSystemInfo::GetXBVerInfo(CStdString& strXBoxVer)
 {
   // XBOX Version Detection
@@ -791,9 +803,13 @@ bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
   strItemhdd.Format("%s %s", lblhdd.c_str(), temp.ToString().c_str()); 
   return true;
 }
+#endif
 
 void CGUIWindowSystemInfo::GetFreeMemory(CStdString& strFreeMem)
 {
+#ifndef HAS_SYSINFO
+#define MB (1024*1024)
+#endif
   // Set FreeMemory Info
   MEMORYSTATUS stat;
   GlobalMemoryStatus(&stat);
@@ -801,6 +817,7 @@ void CGUIWindowSystemInfo::GetFreeMemory(CStdString& strFreeMem)
   strFreeMem.Format("%s %i/%iMB",lblFreeMem.c_str(),stat.dwAvailPhys/MB, stat.dwTotalPhys/MB);
 }
 
+#ifdef HAS_SYSINFO
 bool CGUIWindowSystemInfo::GetATAPIValues(int i_lblp1, int i_lblp2)
 {
   CStdString strDVDModel, strDVDFirmware;
@@ -1143,19 +1160,21 @@ bool CGUIWindowSystemInfo::GetDiskSpace(const CStdString &drive, ULARGE_INTEGER 
   }
   return ret == TRUE;
 }
-
+#endif
 bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
 {
   CStdString version, buildDate, mplayerVersion;
   version.Format("%s %s", g_localizeStrings.Get(144).c_str(), g_infoManager.GetVersion().c_str());
   buildDate.Format("XBMC %s (Compiled :%s)", version, g_infoManager.GetBuild().c_str());
+#ifdef HAS_SYSINFO
   mplayerVersion.Format("%s",strMplayerVersion.c_str());
+#endif
   //SET_CONTROL_LABEL(label1, version);
   SET_CONTROL_LABEL(label2, buildDate);
   SET_CONTROL_LABEL(label3, mplayerVersion);
   return true;
 }
-
+#ifdef HAS_SYSINFO
 bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
 {
   // Get the Connected Units on the Front USB Ports!
@@ -1723,3 +1742,4 @@ bool CGUIWindowSystemInfo::GetSystemTotalUpTime(CStdString& strSystemUptime)
 
   return true;
 }
+#endif

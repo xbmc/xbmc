@@ -422,9 +422,11 @@ extern "C" HANDLE WINAPI dllGetStdHandle(DWORD nStdHandle)
   return INVALID_HANDLE_VALUE;
 }
 
+#ifdef _XBOX
 #define FILE_TYPE_UNKNOWN       0
 #define FILE_TYPE_DISK          1
 #define FILE_TYPE_CHAR          2
+#endif
 
 extern "C" DWORD WINAPI dllGetFileType(HANDLE hFile)
 {
@@ -946,7 +948,9 @@ typedef struct _SFlsSlot
 SFlsSlot, *LPSFlsSlot;
 
 #define FLS_NUM_SLOTS 5
+#ifdef _XBOX
 #define FLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
+#endif
 SFlsSlot flsSlots[FLS_NUM_SLOTS] = { false, NULL, NULL };
 
 extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback)

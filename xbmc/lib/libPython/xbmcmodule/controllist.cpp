@@ -137,11 +137,11 @@ namespace PYXBMC
     CLabelInfo label;
     label.align = pControl->dwAlignmentY;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.textColor = pControl->dwTextColor;
+    label.textColor = label.focusedColor = pControl->dwTextColor;
     //label.shadowColor = pControl->dwShadowColor;
     label.selectedColor = pControl->dwSelectedColor;
-    label.offsetX = pControl->dwItemTextXOffset;
-    label.offsetY = pControl->dwItemTextYOffset;
+    label.offsetX = (float)pControl->dwItemTextXOffset;
+    label.offsetY = (float)pControl->dwItemTextYOffset;
     // Second label should have the same font, alignment, and colours as the first, but
     // the offsets should be 0.
     CLabelInfo label2 = label;
@@ -149,31 +149,33 @@ namespace PYXBMC
     // Spin label
     CLabelInfo spinLabel;
     spinLabel.font = g_fontManager.GetFont(pControl->strFont);
-    spinLabel.textColor = pControl->pControlSpin->dwColor;
+    spinLabel.textColor = spinLabel.focusedColor = pControl->pControlSpin->dwColor;
+    CImage up; up.file = pControl->pControlSpin->strTextureUp;
+    CImage down; down.file = pControl->pControlSpin->strTextureDown;
+    CImage upfocus; upfocus.file = pControl->pControlSpin->strTextureUpFocus;
+    CImage downfocus; downfocus.file = pControl->pControlSpin->strTextureDownFocus;
+
     pControl->pGUIControl = new CGUIListControl(
       pControl->iParentId,
       pControl->iControlId,
-      pControl->dwPosX,
-      pControl->dwPosY,
-      pControl->dwWidth,
-      pControl->dwHeight,
-      pControl->pControlSpin->dwWidth,
-      pControl->pControlSpin->dwHeight,
-      pControl->pControlSpin->strTextureUp,
-      pControl->pControlSpin->strTextureDown,
-      pControl->pControlSpin->strTextureUpFocus,
-      pControl->pControlSpin->strTextureDownFocus,
+      (float)pControl->dwPosX,
+      (float)pControl->dwPosY,
+      (float)pControl->dwWidth,
+      (float)pControl->dwHeight,
+      (float)pControl->pControlSpin->dwWidth,
+      (float)pControl->pControlSpin->dwHeight,
+      up, down, upfocus, downfocus,
       spinLabel,
-      pControl->pControlSpin->dwPosX,
-      pControl->pControlSpin->dwPosY,
+      (float)pControl->pControlSpin->dwPosX,
+      (float)pControl->pControlSpin->dwPosY,
       label, label2,
-      pControl->strTextureButton,
-      pControl->strTextureButtonFocus);
+      (CStdString)pControl->strTextureButton,
+      (CStdString)pControl->strTextureButtonFocus);
 
     CGUIListControl* pListControl = (CGUIListControl*)pControl->pGUIControl;
-    pListControl->SetImageDimensions(pControl->dwImageWidth, pControl->dwImageHeight );
-    pListControl->SetItemHeight(pControl->dwItemHeight);
-    pListControl->SetSpace(pControl->dwSpace);
+    pListControl->SetImageDimensions((float)pControl->dwImageWidth, (float)pControl->dwImageHeight );
+    pListControl->SetItemHeight((float)pControl->dwItemHeight);
+    pListControl->SetSpaceBetweenItems((float)pControl->dwSpace);
 
     // set values for spincontrol
     //CGUIListControl* c = (CGUIListControl*)pControl->pGUIControl;
@@ -337,7 +339,7 @@ PyDoc_STRVAR(addItem__doc__,
     if (self->pGUIControl)
     {
       CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
-      pListControl->SetImageDimensions(self->dwImageWidth, self->dwImageHeight );
+      pListControl->SetImageDimensions((float)self->dwImageWidth, (float)self->dwImageHeight );
     }
     PyGUIUnlock();
 
@@ -362,7 +364,7 @@ PyDoc_STRVAR(addItem__doc__,
     if (self->pGUIControl)
     {
       CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
-      pListControl->SetItemHeight(self->dwItemHeight);
+      pListControl->SetItemHeight((float)self->dwItemHeight);
     }
     PyGUIUnlock();
 
@@ -414,7 +416,7 @@ PyDoc_STRVAR(addItem__doc__,
     if (self->pGUIControl)
     {
       CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
-      pListControl->SetSpace(self->dwSpace);
+      pListControl->SetSpaceBetweenItems((float)self->dwSpace);
     }
     PyGUIUnlock();
 

@@ -1,10 +1,12 @@
 #pragma once
 #include "UdpClient.h"
 
+#ifdef HAS_KAI_VOICE
 #include "KaiVoice.h"
 #include "../Xbox/VoiceManager.h"
 #include "../Xbox/MediaPacketQueue.h"
-#include "xbstopwatch.h"
+#endif
+#include "stopwatch.h"
 
 #define KAI_SYSTEM_PORT  34522
 #define KAI_SYSTEM_ROOT  "Arena"
@@ -89,9 +91,11 @@ public:
   inline BOOL IsHosting() const {return m_bHosting;}
   void DoWork();
 
+#ifdef HAS_KAI_VOICE
   // Public so that CVoiceManager can get to them
   static void VoiceDataCallback( DWORD dwPort, DWORD dwSize, VOID* pvData, VOID* pContext );
   static void CommunicatorCallback( DWORD dwPort, VOICE_COMMUNICATOR_EVENT event, VOID* pContext );
+#endif
 
 protected:
   enum State {Discovering, Attaching, Querying, LoggingIn, Authenticated, Disconnected};
@@ -116,7 +120,9 @@ private:
   void QueryClientMetrics();
   void QueueContactVoice(CStdString& aContactName, DWORD aPlayerId, LPBYTE pMessage, DWORD dwMessageLength);
   void OnVoiceData( DWORD dwPort, DWORD dwSize, VOID* pvData );
+#ifdef HAS_KAI_VOICE
   void OnCommunicatorEvent( DWORD dwPort, VOICE_COMMUNICATOR_EVENT event );
+#endif
   void SendVoiceDataToEngine();
   DWORD Crc32FromString(CStdString& aString);
 
@@ -136,10 +142,12 @@ private:
   DWORD m_dwSettlingTimer;
   DWORD m_dwReachableTimer;
 
+#ifdef HAS_KAI_VOICE
   // KAI Speex support
   LPDIRECTSOUND8 m_pDSound;
   CMediaPacketQueue* m_pEgress;
-  CXBStopWatch m_VoiceTimer;
+#endif
+  CStopWatch m_VoiceTimer;
 
   // KAI Requests
   CKaiRequestList* m_pRequestList;

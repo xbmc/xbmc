@@ -105,22 +105,22 @@ namespace PYXBMC
   {
     CLabelInfo label;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.textColor = pControl->dwTextColor;
+    label.textColor = label.focusedColor = pControl->dwTextColor;
     label.disabledColor = pControl->dwDisabledColor;
     label.shadowColor = pControl->dwShadowColor;
     label.align = pControl->dwAlign;
-    label.offsetX = pControl->dwTextXOffset;
-    label.offsetY = pControl->dwTextYOffset;
+    label.offsetX = (float)pControl->dwTextXOffset;
+    label.offsetY = (float)pControl->dwTextYOffset;
     label.angle = CAngle(-pControl->iAngle);
     pControl->pGUIControl = new CGUIButtonControl(
       pControl->iParentId,
       pControl->iControlId,
-      pControl->dwPosX,
-      pControl->dwPosY,
-      pControl->dwWidth,
-      pControl->dwHeight,
-      pControl->strTextureFocus,
-      pControl->strTextureNoFocus,
+      (float)pControl->dwPosX,
+      (float)pControl->dwPosY,
+      (float)pControl->dwWidth,
+      (float)pControl->dwHeight,
+      (CStdString)pControl->strTextureFocus,
+      (CStdString)pControl->strTextureNoFocus,
       label);
 
     CGUIButtonControl* pGuiButtonControl =

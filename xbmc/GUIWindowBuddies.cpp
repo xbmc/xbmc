@@ -5,7 +5,6 @@
 #include "GUIDialogHost.h"
 #include "GUIConsoleControl.h"
 #include "Util.h"
-#include "xbox/undocumented.h"
 #include "xbox/xbeheader.h"
 #include "programdatabase.h"
 
@@ -675,13 +674,9 @@ CGUIImage* CGUIWindowBuddies::GetCurrentAvatar()
 
         if (m_pOpponentImage)
         {
-          int x = m_pOpponentImage->GetXPosition();
-          int y = m_pOpponentImage->GetYPosition();
-          DWORD w = m_pOpponentImage->GetWidth();
-          DWORD h = m_pOpponentImage->GetHeight();
-          m_pCurrentAvatar->SetPosition(x, y);
-          m_pCurrentAvatar->SetWidth((int)w);
-          m_pCurrentAvatar->SetHeight((int)h);
+          m_pCurrentAvatar->SetPosition(m_pOpponentImage->GetXPosition(), m_pOpponentImage->GetYPosition());
+          m_pCurrentAvatar->SetWidth(m_pOpponentImage->GetWidth());
+          m_pCurrentAvatar->SetHeight(m_pOpponentImage->GetHeight());
         }
       }
     }

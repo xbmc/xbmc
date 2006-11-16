@@ -1,4 +1,5 @@
 #include "include.h"
+#ifdef HAS_XPR_FONTS
 #include "GUIFontXPR.h"
 
 
@@ -79,3 +80,4 @@ void CGUIFontXPR::CreditsGetTextExtent(const WCHAR* strText, FLOAT* pWidth,
 {
   m_font.GetTextExtent(strText, pWidth, pHeight, bFirstLineOnly);
 }
+#endif

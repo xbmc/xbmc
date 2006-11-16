@@ -2,11 +2,9 @@
 #include "settings.h"
 #include "application.h"
 #include "util.h"
-#include "GUIWindowMusicBase.h"
 #include "GUIWindowFileManager.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUIFontManager.h"
-#include "utils/FanController.h"
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
@@ -343,9 +341,11 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   LoadRSSFeeds();
 
+#ifdef HAS_XBOX_HARDWARE
   helper.Unmount("S:");
   CStdString strDir = CUtil::TranslateSpecialSource(g_stSettings.m_szAlternateSubtitleDirectory);
   strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
+#endif
 
   // look for external sources file
   CStdString strCached = "Z:\\remotesources.xml";
@@ -1087,6 +1087,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     {
       CStdString setting;
       setting.Format("karaoke%i", i);
+#ifndef HAS_XBOX_AUDIO
+#define XVOICE_MASK_PARAM_DISABLED (-1.0f)
+#endif
       GetFloat(pElement, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].energy, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
       GetFloat(pElement, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].pitch, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
       GetFloat(pElement, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
@@ -1919,7 +1922,7 @@ bool CSettings::DeleteProfile(int index)
     else
       return false;
   }
-  
+
   SaveProfiles("q:\\system\\profiles.xml");
   return true;
 }
@@ -3089,6 +3092,7 @@ CStdString CSettings::GetAvpackSettingsFile() const
 
 CStdString  CSettings::GetPluggedAvpack() const
 {
+#ifdef HAS_XBOX_HARDWARE
   switch (XGetAVPack())
   {
     case XC_AV_PACK_STANDARD :
@@ -3103,7 +3107,7 @@ CStdString  CSettings::GetPluggedAvpack() const
       return "VGA";
     case XC_AV_PACK_RFU :
       return "RF";
-    default :
-      return "Unknown";
   }
+#endif
+  return "Unknown";
 }

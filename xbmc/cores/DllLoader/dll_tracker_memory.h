@@ -15,6 +15,7 @@ extern "C" void __cdecl track_free(void* p);
 extern "C" char* __cdecl track_strdup(const char* str);
 
 
+#ifdef _XBOX
 WINBASEAPI
 HANDLE
 WINAPI
@@ -30,5 +31,6 @@ WINAPI
 track_HeapDestroy(
     IN OUT HANDLE hHeap
     );
+#endif
 
 #endif // _DLL_TRACKER_MEMORY

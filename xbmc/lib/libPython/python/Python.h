@@ -168,10 +168,7 @@ PyAPI_FUNC(int) _Py_Mangle(char *p, char *name, \
 #define PyDoc_STR(str) ""
 #endif
 
-#ifdef _XBOX
-
 #include "..\XBPythonDll.h"
 
-#endif
 
 #endif /* !Py_PYTHON_H */

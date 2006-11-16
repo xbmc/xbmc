@@ -2,14 +2,16 @@
 #include "../stdafx.h"
 #include "../util.h"
 #include "factoryfiledirectory.h"
+#ifdef HAS_FILESYSTEM
 #include "oggfiledirectory.h"
-#include "rardirectory.h"
-#include "zipdirectory.h"
 #include "nsffiledirectory.h"
 #include "sidfiledirectory.h"
+#endif
+#include "rardirectory.h"
+#include "zipdirectory.h"
 #include "SmartPlaylistDirectory.h"
-#include "PlaylistFileDirectory.h"
 #include "../SmartPlaylist.h"
+#include "PlaylistFileDirectory.h"
 
 CFactoryFileDirectory::CFactoryFileDirectory(void)
 {}
@@ -24,6 +26,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   if (strExtension.size() == 0) return NULL;
   strExtension.MakeLower();
 
+#ifdef HAS_FILESYSTEM
   if (strExtension.Equals(".ogg") && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new COGGFileDirectory;
@@ -56,6 +59,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
+#endif
   if (strExtension.Equals(".zip"))
   {
     CStdString strUrl; 

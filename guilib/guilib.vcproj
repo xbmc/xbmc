@@ -258,6 +258,12 @@
 				RelativePath=".\GuiControlFactory.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIControlGroup.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIControlGroupList.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIDialog.cpp">
 			</File>
 			<File
@@ -297,6 +303,9 @@
 				RelativePath=".\GUIList.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIListContainer.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIListControl.cpp">
 			</File>
 			<File
@@ -331,6 +340,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIRSSControl.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIScrollBarControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUISelectButtonControl.cpp">
@@ -449,6 +461,12 @@
 				RelativePath=".\GuiControlFactory.h">
 			</File>
 			<File
+				RelativePath=".\GUIControlGroup.h">
+			</File>
+			<File
+				RelativePath=".\GUIControlGroupList.h">
+			</File>
+			<File
 				RelativePath=".\GUIDialog.h">
 			</File>
 			<File
@@ -488,6 +506,9 @@
 				RelativePath=".\GUIList.h">
 			</File>
 			<File
+				RelativePath=".\GUIListContainer.h">
+			</File>
+			<File
 				RelativePath=".\GUIListControl.h">
 			</File>
 			<File
@@ -522,6 +543,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIRSSControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIScrollBarControl.h">
 			</File>
 			<File
 				RelativePath=".\GUISelectButtonControl.h">
@@ -596,6 +620,9 @@
 				RelativePath=".\StdString.h">
 			</File>
 			<File
+				RelativePath=".\system.h">
+			</File>
+			<File
 				RelativePath=".\TextureBundle.h">
 			</File>
 			<File
@@ -615,22 +642,22 @@
 			Name="common"
 			Filter="">
 			<File
-				RelativePath=".\common\keyboard.cpp">
-			</File>
-			<File
-				RelativePath=".\common\keyboard.h">
-			</File>
-			<File
-				RelativePath=".\common\mouse.cpp">
-			</File>
-			<File
-				RelativePath=".\common\mouse.h">
-			</File>
-			<File
 				RelativePath=".\common\xbfont.cpp">
 			</File>
 			<File
 				RelativePath=".\common\xbfont.h">
+			</File>
+			<File
+				RelativePath=".\common\XBoxKeyboard.cpp">
+			</File>
+			<File
+				RelativePath=".\common\XBoxKeyboard.h">
+			</File>
+			<File
+				RelativePath=".\common\XBoxMouse.cpp">
+			</File>
+			<File
+				RelativePath=".\common\XBoxMouse.h">
 			</File>
 		</Filter>
 		<Filter

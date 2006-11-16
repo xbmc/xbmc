@@ -24,8 +24,8 @@ public:
 class CGUIEditControl : public CGUILabelControl
 {
 public:
-  CGUIEditControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY,
-                  DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo, const string& strLabel);
+  CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
+                  float width, float height, const CLabelInfo& labelInfo, const string& strLabel);
 
   virtual ~CGUIEditControl(void);
 
@@ -38,6 +38,6 @@ protected:
 
 protected:
   IEditControlObserver* m_pObserver;
-  INT m_iOriginalPosX;
+  float m_originalPosX;
 };
 #endif

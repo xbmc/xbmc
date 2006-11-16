@@ -16,13 +16,13 @@ public:
   public:
     RenderContext()
     {
-      m_iPositionX = m_iPositionY = 0;
+      m_positionX = m_positionY = 0;
       m_bFocused = false;
     };
     virtual ~RenderContext(){};
 
-    int m_iPositionX;
-    int m_iPositionY;
+    float m_positionX;
+    float m_positionY;
     bool m_bFocused;
   };
 

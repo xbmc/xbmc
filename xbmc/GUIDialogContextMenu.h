@@ -16,10 +16,10 @@ public:
   int GetNumButtons();
   void EnableButton(int iButton, bool bEnable);
   int GetButton();
-  DWORD GetWidth();
-  DWORD GetHeight();
+  float GetWidth();
+  float GetHeight();
 
-  static bool BookmarksMenu(const CStdString &strType, const CFileItem *item, int iPosX, int iPosY);
+  static bool BookmarksMenu(const CStdString &strType, const CFileItem *item, float posX, float posY);
 
 protected:
   virtual void OnInitWindow();

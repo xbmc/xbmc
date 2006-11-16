@@ -3,6 +3,7 @@
 
 #include "ICodec.h"
 #include "spc/types.h"
+#include "..\DllLoader\DllLoader.h"
 
 class SPCCodec : public ICodec
 {

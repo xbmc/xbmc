@@ -4,13 +4,19 @@
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBAudioConfig.h"
 
+#ifndef _XBOX
+extern HWND g_hWnd;
+#endif
+
 
 CAudioContext g_audioContext;
 
 CAudioContext::CAudioContext()
 {
   m_iDevice=DEFAULT_DEVICE;
+#ifdef HAS_AUDIO_PASS_THROUGH
   m_pAC97Device=NULL;
+#endif
   m_pDirectSoundDevice=NULL;
 }
 
@@ -53,11 +59,20 @@ void CAudioContext::SetActiveDevice(int iDevice)
       CLog::Log(LOGERROR, "DirectSoundCreate() Failed");
       return;
     }
+#ifndef _XBOX
+    if (FAILED(m_pDirectSoundDevice->SetCooperativeLevel(g_hWnd, DSSCL_PRIORITY)))
+    {
+      CLog::Log(LOGERROR, "DirectSoundDevice::SetCooperativeLevel() Failed");
+      return;
+    }
+#endif
   }
   else if (iDevice==AC97_DEVICE)
   {
+#ifdef HAS_AUDIO_PASS_THROUGH
     // Create AC97 Device
     if (FAILED(Ac97CreateMediaObject(DSAC97_CHANNEL_DIGITAL, NULL, NULL, &m_pAC97Device)))
+#endif
     {
       CLog::Log(LOGERROR, "Failed to create digital Ac97CreateMediaObject()");
       return;
@@ -82,7 +97,9 @@ void CAudioContext::RemoveActiveDevice()
 
   m_iDevice=NONE;
 
+#ifdef HAS_AUDIO_PASS_THROUGH
   SAFE_RELEASE(m_pAC97Device);
+#endif
   SAFE_RELEASE(m_pDirectSoundDevice);
 }
 
@@ -108,12 +125,14 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
           spconfig = DSSPEAKER_MONO;
         else
         { 
+#ifdef HAS_XBOX_AUDIO
           // check if surround mode is allowed, if not then use normal stereo  
           // don't always set it to default as that enabled ac3 encoder if that is allowed in dash
           // ruining quality
           if( XC_AUDIO_FLAGS_BASIC( XGetAudioFlags() ) == XC_AUDIO_FLAGS_SURROUND )
             spconfig = DSSPEAKER_SURROUND;
           else
+#endif
             spconfig = DSSPEAKER_STEREO;
         }
       }        
@@ -140,9 +159,11 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
       // check if surround mode is allowed, if not then use normal stereo  
       // don't always set it to default as that enabled ac3 encoder if that is allowed in dash
       // ruining quality
+#ifdef HAS_XBOX_AUDIO
       if( XC_AUDIO_FLAGS_BASIC( XGetAudioFlags() ) == XC_AUDIO_FLAGS_SURROUND )
         spconfig = DSSPEAKER_SURROUND;
       else
+#endif
         spconfig = DSSPEAKER_STEREO;
     }
   }
@@ -151,8 +172,10 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   if(m_pDirectSoundDevice)
   {
     m_pDirectSoundDevice->GetSpeakerConfig(&spconfig_old);
+#ifdef HAS_XBOX_AUDIO
     DWORD spconfig_default = XGetAudioFlags();
     if (spconfig_old == spconfig_default)
+#endif
       spconfig_old = DSSPEAKER_USE_DEFAULT;
   }
 
@@ -161,7 +184,9 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
 
   /* speaker config has changed, caller need to recreate it */
   RemoveActiveDevice();
+#ifdef HAS_XBOX_AUDIO
   DirectSoundOverrideSpeakerConfig(spconfig);
+#endif
 }
 
 bool CAudioContext::IsAC3EncoderActive() const
@@ -174,6 +199,7 @@ bool CAudioContext::IsPassthroughActive() const
   return (m_iDevice == AC97_DEVICE);
 }
 
+#ifdef HAS_XBOX_AUDIO
 bool CAudioContext::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWORD* dwChannelMask, int Type, int Channels)
 {
   //3, 5, >6 channel are invalid XBOX wav formats thus can not be processed at this stage
@@ -333,3 +359,4 @@ bool CAudioContext::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWOR
   CLog::Log(LOGERROR, "Invalid Mixbin channels specified, get MixBins failed");
   return false;
 }
+#endif
