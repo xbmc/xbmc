@@ -25,14 +25,8 @@ protected:
   virtual void CloseFile();
   virtual void SetDefault();
   
-  static void convert2s16_2(convert_t * _f, int16_t * s16);
-  static void convert2s16_3(convert_t * _f, int16_t * s16);
-  static void convert2s16_4(convert_t * _f, int16_t * s16);
-  static void convert2s16_5(convert_t * _f, int16_t * s16);
-  static void convert2s16_multi(convert_t * _f, int16_t * s16, int flags);
-
   int  Decode(BYTE* pData, int iSize);
-  int  GetNrOfChannels(int flags);
+  void SetupChannels(unsigned flags);
   
   CFileReader m_file;
   a52_state_t* m_pState;
@@ -62,6 +56,7 @@ protected:
   int m_iSourceBitrate;
 
   int m_iOutputChannels;
+  unsigned int m_iOutputMapping;
 
   DllAc3Codec m_dll;
 };

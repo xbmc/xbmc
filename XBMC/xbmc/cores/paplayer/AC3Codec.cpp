@@ -12,133 +12,28 @@ static inline int16_t convert(int32_t i)
     return (i > 32767) ? 32767 : ((i < -32768) ? -32768 : i);
 }
 
-void AC3Codec::convert2s16_2 (sample_t * _f, int16_t * s16)
+/**
+ * \brief Function to convert the "planar" float format used by liba52
+ * into the interleaved int16 format used by us.
+ * \param in the input buffer containing the planar samples.
+ * \param out the output buffer where the interleaved result is stored.
+ */
+static int resample_int16(sample_t * in, int16_t *out, int32_t channel_map)
 {
-  int i;
-  int32_t * f = (int32_t *) _f;
-
-  for (i = 0; i < 256; i++)
-    {
-      s16[2*i] = convert (f[i]);
-      s16[2*i+1] = convert (f[i+256]);
+    unsigned long i;
+    int16_t *p = out;
+    for (i = 0; i != 256; i++) {
+	unsigned long map = channel_map;
+	do {
+	    unsigned long ch = map & 15;
+	    if (ch == 15)
+		*p = 0;
+	    else
+		*p = convert( ((int32_t*)in)[i + ((ch-1)<<8)] );
+	    p++;
+	} while ((map >>= 4));
     }
-}
-
-void AC3Codec::convert2s16_4 (sample_t * _f, int16_t * s16)
-{
-  int i;
-  int32_t * f = (int32_t *) _f;
-
-  for (i = 0; i < 256; i++)
-    {
-      s16[4*i] = convert (f[i]);
-      s16[4*i+1] = convert (f[i+256]);
-      s16[4*i+2] = convert (f[i+512]);
-      s16[4*i+3] = convert (f[i+768]);
-    }
-}
-
-void AC3Codec::convert2s16_5 (sample_t * _f, int16_t * s16)
-{
-  int i;
-  int32_t * f = (int32_t *) _f;
-
-  for (i = 0; i < 256; i++)
-    {
-      s16[5*i] = convert (f[i+256]);
-      s16[5*i+1] = convert (f[i+512]);
-      s16[5*i+2] = convert (f[i+768]);
-      s16[5*i+3] = convert (f[i+1024]);
-      s16[5*i+4] = convert (f[i]);
-    }
-}
-
-void AC3Codec::convert2s16_multi (sample_t * _f, int16_t * s16, int flags)
-{
-  int i;
-  int32_t * f = (int32_t *) _f;
-
-  switch (flags)
-  {
-    case A52_MONO:
-      for (i = 0; i < 256; i++)
-      {
-        s16[5*i] = s16[5*i+1] = s16[5*i+2] = s16[5*i+3] = 0;
-        s16[5*i+4] = convert (f[i]);
-      }
-      break;
-    case A52_CHANNEL:
-    case A52_STEREO:
-    case A52_DOLBY:
-      convert2s16_2 (_f, s16);
-      break;
-    case A52_3F:
-      for (i = 0; i < 256; i++)
-      {
-        s16[5*i] = convert (f[i]);
-        s16[5*i+1] = convert (f[i+512]);
-        s16[5*i+2] = s16[5*i+3] = 0;
-        s16[5*i+4] = convert (f[i+256]);
-      }
-      break;
-    case A52_2F2R:
-      convert2s16_4 (_f, s16);
-      break;
-    case A52_3F2R:
-      convert2s16_5 (_f, s16);
-      break;
-    case A52_MONO | A52_LFE:
-      for (i = 0; i < 256; i++)
-      {
-        s16[6*i] = s16[6*i+1] = s16[6*i+2] = s16[6*i+3] = 0;
-        s16[6*i+4] = convert (f[i+256]);
-        s16[6*i+5] = convert (f[i]);
-      }
-      break;
-    case A52_CHANNEL | A52_LFE:
-    case A52_STEREO | A52_LFE:
-    case A52_DOLBY | A52_LFE:
-      for (i = 0; i < 256; i++)
-      {
-        s16[6*i] = convert (f[i+256]);
-        s16[6*i+1] = convert (f[i+512]);
-        s16[6*i+2] = s16[6*i+3] = s16[6*i+4] = 0;
-        s16[6*i+5] = convert (f[i]);
-      }
-      break;
-    case A52_3F | A52_LFE:
-      for (i = 0; i < 256; i++)
-      {
-        s16[6*i] = convert (f[i+256]);
-        s16[6*i+1] = convert (f[i+768]);
-        s16[6*i+2] = s16[6*i+3] = 0;
-        s16[6*i+4] = convert (f[i+512]);
-        s16[6*i+5] = convert (f[i]);
-      }
-      break;
-    case A52_2F2R | A52_LFE:
-      for (i = 0; i < 256; i++)
-      {
-        s16[6*i] = convert (f[i+256]);
-        s16[6*i+1] = convert (f[i+512]);
-        s16[6*i+2] = convert (f[i+768]);
-        s16[6*i+3] = convert (f[i+1024]);
-        s16[6*i+4] = 0;
-        s16[6*i+5] = convert (f[i]);
-      }
-      break;
-    case A52_3F2R | A52_LFE:
-      for (i = 0; i < 256; i++)
-      {
-        s16[6*i] = convert (f[i+256]);
-        s16[6*i+1] = convert (f[i+768]);
-        s16[6*i+2] = convert (f[i+1024]);
-        s16[6*i+3] = convert (f[i+1280]);
-        s16[6*i+4] = convert (f[i+512]);
-        s16[6*i+5] = convert (f[i]);
-      }
-      break;
-  }
+    return (int16_t*) p - out;
 }
 
 AC3Codec::AC3Codec()
@@ -156,6 +51,7 @@ AC3Codec::AC3Codec()
   m_decodedData       = NULL;
   m_readBufferPos     = 0;
   m_iOutputChannels   = 0;
+  m_iOutputMapping    = 0;
 }
 
 AC3Codec::~AC3Codec()
@@ -272,12 +168,63 @@ void AC3Codec::CloseFile()
   m_file.Close();
 }
 
-int AC3Codec::GetNrOfChannels(int flags)
+void AC3Codec::SetupChannels(unsigned flags)
 {
+  m_iFlags = flags;
+  // setup channel map for how to translate to linear format
+  // standard windows format
+  if(m_iFlags & A52_LFE)
+  {
+    switch (m_iFlags&~A52_LFE) {
+      case A52_MONO   : m_iOutputMapping = 0x12ffff; break;
+	  case A52_CHANNEL:
+	  case A52_STEREO :
+	  case A52_DOLBY  : m_iOutputMapping = 0x1fff32; break;
+      case A52_2F1R   : m_iOutputMapping = 0x1f5542; break;
+	  case A52_2F2R   : m_iOutputMapping = 0x1f5432; break;
+	  case A52_3F     : m_iOutputMapping = 0x13ff42; break;
+      case A52_3F2R   : m_iOutputMapping = 0x136542; break;
+	}
+  }
+  else
+  {
+    switch (m_iFlags) {
+	  case A52_MONO   : m_iOutputMapping =     0x1; break;
+	  case A52_CHANNEL:
+	  case A52_STEREO :
+	  case A52_DOLBY  : m_iOutputMapping =    0x21; break;
+      case A52_2F1R   : m_iOutputMapping =  0x2231; break;
+	  case A52_2F2R   : m_iOutputMapping =  0x4321; break;
+	  case A52_3F     : m_iOutputMapping = 0x2ff31; break;
+      case A52_3F2R   : m_iOutputMapping = 0x25431; break;
+	}
+  }
+
+  int channels = 0;
+  unsigned int m = m_iOutputMapping<<4;
+  while(m>>=4) channels++;  
+
+  // xbox can't handle these
+  if(channels == 5 || channels == 3)
+    channels = 6;
+
+  if(!m_iOutputChannels)
+    m_iOutputChannels = channels;
+  else if(m_iOutputChannels != channels)
+    CLog::Log(LOGWARNING, __FUNCTION__" - Number of channels changed in stream from %d to %d, data might be truncated", m_iOutputChannels, channels);
+
+  // make sure map contains enough channels
+  for(int i=0;i<m_iOutputChannels;i++)
+  {
+    if((m_iOutputMapping & (0xf<<(i*4))) == 0)
+      m_iOutputMapping |= 0xf<<(i*4);
+  }
+  // and nothing more
+  m_iOutputMapping &= ~(0xffffffff<<(m_iOutputChannels*4));
+
   static const int ac3Channels[8] = { 2, 1, 2, 3, 3, 4, 4, 5 };
-  int nr = ac3Channels[m_iFlags & 7];
-  if (m_iFlags & A52_LFE) nr++;
-  return nr;
+  m_iSourceChannels = ac3Channels[m_iFlags & 7];
+  if (m_iFlags & A52_LFE) m_iSourceChannels++;
 }
 
 int AC3Codec::ReadInput()
@@ -359,13 +306,13 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
         // so use m_pInputBuffer to copy the rest of the data. We must rest it after a52_syncinfo though!!
         for (int u = 0; u <= HEADER_SIZEAC3; u++) m_pInputBuffer[u] = pData[u];
 
-        iLen = m_dll.a52_syncinfo(m_pState, m_inputBuffer, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate);
+        int flags;
+        iLen = m_dll.a52_syncinfo(m_pState, m_inputBuffer, &flags, &m_iSourceSampleRate, &m_iSourceBitrate);
         if (iLen > 0)
         {
-          if (m_iSourceChannels == 0)
-          {
-            m_iSourceChannels = GetNrOfChannels(m_iFlags);
-          }
+          if(flags != m_iFlags)
+            SetupChannels(flags);
+
           m_iFrameSize = iLen;
           //start of data in file
           if (m_iDataStart == -1)
@@ -412,14 +359,12 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
     else
     {
       // we have a frame to decode
+      float level = 1.0f;      
       int iFlags = m_iFlags;
-      if (m_iOutputChannels == 1)      iFlags = A52_MONO;
-      else if (m_iOutputChannels == 2) iFlags = A52_STEREO;
-      else
-      {
-        m_iOutputChannels = m_iSourceChannels;
-        iFlags |= A52_ADJUST_LEVEL;
-      }
+
+      /* adjust level should always be set, to keep samples in proper range */
+      /* after any downmixing has been done */
+      iFlags |= A52_ADJUST_LEVEL;
 
       m_dll.a52_frame(m_pState, m_inputBuffer, &iFlags, &level, bias);
 
@@ -438,8 +383,7 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
         }
         
         m_fSamples = m_dll.a52_samples(m_pState);
-        convert2s16_multi(m_fSamples, (short*)(m_decodedData + m_decodedDataSize), iFlags & (A52_CHANNEL_MASK | A52_LFE));
-        m_decodedDataSize += 256 * sizeof(short) * m_iOutputChannels;
+        m_decodedDataSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedDataSize), m_iOutputMapping);
       }
       m_pInputBuffer = m_inputBuffer;
       m_iFrameSize   = 0;
