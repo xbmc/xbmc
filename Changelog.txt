@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-11-2006 fixed: Paths to DSound.h and DInput.h were unnecessary.
  - 16-11-2006 fixed: Grouplist's viewport was an intersection with the previous viewport, when it shouldn't have been.
  - 16-11-2006 added: Initial skin version 2.1 changes and support for building for win32.
  - 15-11-2006 fixed: paplayer would fail to play mono AC3 files properly.
