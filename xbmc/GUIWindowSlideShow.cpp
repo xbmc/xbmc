@@ -78,7 +78,7 @@ void CBackgroundPicLoader::Process()
           if (!bFullSize && pic.GetHeight() == MAX_PICTURE_HEIGHT)
             bFullSize = true;
         }
-        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, pTexture, pic.GetWidth(), pic.GetHeight(), pic.GetOriginalWidth(), pic.GetOriginalHeight(), pic.GetExifOrientation(), bFullSize);
+        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, pTexture, pic.GetWidth(), pic.GetHeight(), pic.GetOriginalWidth(), pic.GetOriginalHeight(), pic.GetExifInfo()->Orientation, bFullSize);
       }
     }
     m_bLoadPic = false;
