@@ -39,7 +39,7 @@ public:
   void SetLabel2(const string & aLabel2);
   void SetClickActions(const vector<CStdString>& clickActions) { m_clickActions = clickActions; };
   const vector<CStdString> &GetClickActions() const { return m_clickActions; };
-  void SetFocusAction(const CStdString& focusAction) { m_focusAction = focusAction; };
+  void SetFocusActions(const vector<CStdString>& focusActions) { m_focusActions = focusActions; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   virtual const string& GetLabel() const { return m_strLabel; };
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
@@ -72,7 +72,7 @@ protected:
   CLabelInfo m_label;
 
   vector<CStdString> m_clickActions;
-  CStdString m_focusAction;
+  vector<CStdString> m_focusActions;
   bool m_bTabButton;
 
   bool m_bSelected;
