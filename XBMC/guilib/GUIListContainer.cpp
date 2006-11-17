@@ -3,17 +3,22 @@
 #include "GUIListItem.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
+#define SCROLL_TIME 200
+
+CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_cursor = 0;
   m_offset = 0;
   m_scrollOffset = 0;
+  m_scrollSpeed = 0;
+  m_scrollTime = 0;
   m_itemsPerPage = 10;
-  m_itemHeight = 10;
-  m_focusedHeight = 10;
+  m_itemSize = 10;
+  m_focusedSize = 10;
   m_pageControl = 0;
   m_renderTime = 0;
+  m_orientation = orientation;
   ControlType = GUICONTAINER_LIST;
 }
 
@@ -34,39 +39,59 @@ void CGUIListContainer::Render()
   if (m_bInvalidated)
     UpdateLayout();
 
-  // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
-  if (m_offset < 30000)
+  m_scrollOffset += m_scrollSpeed * (m_renderTime - m_scrollTime);
+  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_itemSize) ||
+      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_itemSize))
   {
-    for (int i = 0; i < m_offset; ++i)
+    m_scrollOffset = m_offset * m_itemSize;
+    m_scrollSpeed = 0;
+  }
+  m_scrollTime = m_renderTime;
+
+  int offset = (int)(m_scrollOffset / m_itemSize);
+  // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
+  if (offset < 30000)
+  {
+    for (int i = 0; i < offset; ++i)
     {
       CGUIListItem *item = m_items[i];
       if (item)
         item->FreeMemory();
     }
   }
-  for (int i = m_offset + m_itemsPerPage; i < (int)m_items.size(); ++i)
+  for (int i = offset + m_itemsPerPage; i < (int)m_items.size(); ++i)
   {
     CGUIListItem *item = m_items[i];
     if (item)
       item->FreeMemory();
   }
 
+  g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
+  float posX = m_posX;
   float posY = m_posY;
+  if (m_orientation == VERTICAL)
+    posY += (offset * m_itemSize - m_scrollOffset);
+  else
+    posX += (offset * m_itemSize - m_scrollOffset);;
   for (int i = 0; i < m_itemsPerPage; i++)
   {
-    if (i + m_offset < (int)m_items.size())
+    if (i + offset < (int)m_items.size())
     {
-      CGUIListItem *item = m_items[i + m_offset];
+      CGUIListItem *item = m_items[i + offset];
 
-      bool focused = (i == m_cursor) && m_bHasFocus;
+      bool focused = (i + offset == m_offset + m_cursor) && m_bHasFocus;
       // render our item
-      RenderItem(m_posX, posY, item, focused);
+      RenderItem(posX, posY, item, focused);
 
       // increment our position
-      posY += focused ? m_focusedHeight : m_itemHeight;
+      if (m_orientation == VERTICAL)
+        posY += focused ? m_focusedSize : m_itemSize;
+      else
+        posX += focused ? m_focusedSize : m_itemSize;
     }
   }
   g_graphicsContext.RemoveGroupTransform();
+  g_graphicsContext.RestoreViewPort();
 
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
@@ -235,9 +260,7 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
       // Check that m_offset is valid
-      if (m_offset > (int)m_items.size() - m_itemsPerPage)
-        m_offset = m_items.size() - m_itemsPerPage;
-      if (m_offset < 0) m_offset = 0;
+      ValidateOffset();
       // only select an item if it's in a valid range
       if (message.GetParam1() >= 0 && message.GetParam1() < (int)m_items.size())
       {
@@ -251,11 +274,13 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
         { // item is on a previous page - make it the first item on the page
           m_cursor = 0;
           m_offset = item;
+          ScrollToOffset();
         }
         else // (item >= m_offset+m_itemsPerPage)
         { // item is on a later page - make it the last item on the page
           m_cursor = m_itemsPerPage - 1;
           m_offset = item - m_cursor;
+          ScrollToOffset();
         }
       }
       return true;
@@ -265,6 +290,7 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
       if (message.GetSenderId() == m_pageControl)
       { // update our page
         m_offset = message.GetParam1();
+        ScrollToOffset();
         return true;
       }
     }
@@ -314,39 +340,77 @@ void CGUIListContainer::SetPulseOnSelect(bool pulse)
 
 void CGUIListContainer::OnUp()
 {
+  if (m_orientation == VERTICAL && MoveUp(m_dwControlUp))
+    return;
+  CGUIControl::OnUp();
+}
+
+void CGUIListContainer::OnDown()
+{
+  if (m_orientation == VERTICAL && MoveDown(m_dwControlDown))
+    return;
+  CGUIControl::OnDown();
+}
+
+void CGUIListContainer::OnLeft()
+{
+  if (m_orientation == HORIZONTAL && MoveUp(m_dwControlLeft))
+    return;
+  CGUIControl::OnLeft();
+}
+
+void CGUIListContainer::OnRight()
+{
+  if (m_orientation == HORIZONTAL && MoveDown(m_dwControlRight))
+    return;
+  CGUIControl::OnRight();
+}
+
+bool CGUIListContainer::MoveUp(DWORD control)
+{
   if (m_cursor > 0)
     m_cursor--;
   else if (m_cursor == 0 && m_offset)
+  {
     m_offset--;
-  else if ( m_dwControlUp == 0 || m_dwControlUp == GetID() )
+    ScrollToOffset();
+  }
+  else if ( control == 0 || control == GetID() )
   {
     if (m_items.size() > 0)
     { // move 2 last item in list
       m_offset = m_items.size() - m_itemsPerPage;
       if (m_offset < 0) m_offset = 0;
       m_cursor = m_items.size() - m_offset - 1;
+      ScrollToOffset();
     }
   }
   else
-    CGUIControl::OnUp();
+    return false;
+  return true;
 }
 
-void CGUIListContainer::OnDown()
+bool CGUIListContainer::MoveDown(DWORD control)
 {
   if (m_offset + m_cursor + 1 < (int)m_items.size())
   {
     if (m_cursor + 1 < m_itemsPerPage)
       m_cursor++;
     else
+    {
       m_offset++;
+      ScrollToOffset();
+    }
   }
   else if( m_dwControlDown == 0 || m_dwControlDown == GetID() )
   { // move first item in list
     m_offset = 0;
     m_cursor = 0;
+    ScrollToOffset();
   }
   else
-    CGUIControl::OnDown();
+    return false;
+  return true;
 }
 
 // scrolls the said amount
@@ -359,6 +423,7 @@ void CGUIListContainer::Scroll(int amount)
     m_offset = m_items.size() - m_itemsPerPage;
   }
   if (m_offset < 0) m_offset = 0;
+  ScrollToOffset();
 }
 
 int CGUIListContainer::GetSelectedItem() const
@@ -369,16 +434,17 @@ int CGUIListContainer::GetSelectedItem() const
 bool CGUIListContainer::SelectItemFromPoint(float posX, float posY)
 {
   int row = 0;
+  float pos = (m_orientation == VERTICAL) ? posY : posX;
   while (row < m_itemsPerPage)
   {
-    float height = (row == m_offset && m_bHasFocus) ? m_focusedHeight : m_itemHeight;
-    if (posY < height && row + m_offset < (int)m_items.size())
+    float size = (row == m_offset && m_bHasFocus) ? m_focusedSize : m_itemSize;
+    if (pos < Size() && row + m_offset < (int)m_items.size())
     { // found
       m_cursor = row;
       return true;
     }
     row++;
-    posY -= height;
+    pos -= size;
   }
   return false;
 }
@@ -476,10 +542,10 @@ void CGUIListContainer::Animate(DWORD currentTime)
   g_graphicsContext.AddGroupTransform(transform);
 }
 
-void CGUIListContainer::SetItemHeight(float itemHeight, float focusedHeight)
+void CGUIListContainer::SetItemSize(float itemWidth, float itemHeight, float focusedWidth, float focusedHeight)
 {
-  m_itemHeight = itemHeight;
-  m_focusedHeight = focusedHeight;
+  m_itemSize = m_orientation == VERTICAL ? itemHeight : itemWidth;
+  m_focusedSize = m_orientation == VERTICAL ? focusedHeight : focusedWidth;
   Update();
 }
 
@@ -494,9 +560,19 @@ void CGUIListContainer::UpdateLayout()
 {
   // calculate the number of items to display
   if (HasFocus())
-    m_itemsPerPage = (int)((m_height - m_focusedHeight) / m_itemHeight) + 1;
+    m_itemsPerPage = (int)((Size() - m_focusedSize) / m_itemSize) + 1;
   else
-    m_itemsPerPage = (int)(m_height / m_itemHeight);
+    m_itemsPerPage = (int)(Size() / m_itemSize);
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_items.size());
   SendWindowMessage(msg);
+}
+
+inline float CGUIListContainer::Size() const
+{
+  return (m_orientation == HORIZONTAL) ? m_width : m_height;
+}
+
+void CGUIListContainer::ScrollToOffset()
+{
+  m_scrollSpeed = (m_offset * m_itemSize - m_scrollOffset) / SCROLL_TIME;
 }

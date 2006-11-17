@@ -396,6 +396,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
   CStdString altLabel;
 
+  float focusedWidth = 30;
   float focusedHeight = 30;
   vector<CGUIControl*> itemLayout;
   vector<CGUIControl*> focusedLayout;
@@ -646,6 +647,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   TiXmlElement *itemElement = pControlNode->FirstChildElement("itemlayout");
   if (itemElement)
   { // we have a new item layout
+    itemElement->Attribute("width", &itemWidth);
     itemElement->Attribute("height", &itemHeight);
     TiXmlElement *child = itemElement->FirstChildElement("control");
     while (child)
@@ -659,6 +661,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   itemElement = pControlNode->FirstChildElement("focusedlayout");
   if (itemElement)
   { // we have a new item layout
+    itemElement->Attribute("width", &focusedWidth);
     itemElement->Attribute("height", &focusedHeight);
     TiXmlElement *child = itemElement->FirstChildElement("control");
     while (child)
@@ -1130,8 +1133,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   }
   else if (strType == "list")
   {
-    CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height);
-    pControl->SetItemHeight(itemHeight, focusedHeight);
+    CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation);
+    pControl->SetItemSize(itemWidth, itemHeight, focusedWidth, focusedHeight);
     pControl->SetItemLayout(itemLayout, focusedLayout);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
