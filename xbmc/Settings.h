@@ -379,6 +379,8 @@ public:
     VIEW_METHOD m_MyVideoNavGenreViewMethod;
     VIEW_METHOD m_MyVideoNavPlaylistsViewMethod;
     VIEW_METHOD m_MyVideoNavTitleViewMethod;
+    VIEW_METHOD m_MyVideoNavActorViewMethod;
+    VIEW_METHOD m_MyVideoNavYearViewMethod;
 
     SORT_METHOD m_MyVideoNavGenreSortMethod;
     SORT_METHOD m_MyVideoNavPlaylistsSortMethod;
@@ -387,6 +389,8 @@ public:
     SORT_ORDER m_MyVideoNavGenreSortOrder;
     SORT_ORDER m_MyVideoNavPlaylistsSortOrder;
     SORT_ORDER m_MyVideoNavTitleSortOrder;
+    SORT_ORDER m_MyVideoNavYearSortOrder;
+    SORT_ORDER m_MyVideoNavActorSortOrder;
     
     // for scanning
     bool m_bMyMusicIsScanning;

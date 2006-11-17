@@ -124,7 +124,31 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       }
       break;
     case NODE_TYPE_ACTOR:
-    case NODE_TYPE_YEAR: 
+      {
+        AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
+        SetSortMethod(SORT_METHOD_LABEL);
+
+        AddViewAsControl(VIEW_METHOD_LIST, 101);
+        AddViewAsControl(VIEW_METHOD_ICONS, 100);
+        AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+        SetViewAsControl(g_stSettings.m_MyVideoNavActorViewMethod);
+
+        SetSortOrder(g_stSettings.m_MyVideoNavActorSortOrder);
+      }
+      break;
+    case NODE_TYPE_YEAR:
+            {
+        AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
+        SetSortMethod(SORT_METHOD_LABEL);
+
+        AddViewAsControl(VIEW_METHOD_LIST, 101);
+        AddViewAsControl(VIEW_METHOD_ICONS, 100);
+        AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+        SetViewAsControl(g_stSettings.m_MyVideoNavYearViewMethod);
+
+        SetSortOrder(g_stSettings.m_MyVideoNavYearSortOrder);
+      }
+      break;
     case NODE_TYPE_GENRE:
       {
         AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
@@ -195,6 +219,16 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
       g_stSettings.m_MyVideoNavTitleViewMethod=GetViewAsControl();
       g_stSettings.m_MyVideoNavTitleSortMethod=GetSortMethod();
       g_stSettings.m_MyVideoNavTitleSortOrder=GetSortOrder();      
+    }
+    if (type == NODE_TYPE_ACTOR)
+    {
+      g_stSettings.m_MyVideoNavActorViewMethod=GetViewAsControl();
+      g_stSettings.m_MyVideoNavActorSortOrder=GetSortOrder();      
+    }
+    if (type == NODE_TYPE_YEAR)
+    {
+      g_stSettings.m_MyVideoNavYearViewMethod=GetViewAsControl();
+      g_stSettings.m_MyVideoNavYearSortOrder=GetSortOrder();      
     }
   }
 

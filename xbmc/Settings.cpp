@@ -144,6 +144,14 @@ CSettings::CSettings(void)
   g_stSettings.m_MyVideoNavGenreSortOrder = SORT_ORDER_ASC;
   g_stSettings.m_MyVideoNavTitleSortOrder = SORT_ORDER_ASC;
   g_stSettings.m_MyVideoNavPlaylistsSortOrder = SORT_ORDER_ASC;
+  g_stSettings.m_MyVideoNavYearSortOrder = SORT_ORDER_ASC;
+  g_stSettings.m_MyVideoNavActorSortOrder = SORT_ORDER_ASC;
+
+  g_stSettings.m_MyVideoNavGenreViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyVideoNavTitleViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyVideoNavPlaylistsViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyVideoNavYearViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyVideoNavActorViewMethod = VIEW_METHOD_LIST;
   
   g_stSettings.m_MyVideoPlaylistViewMethod = VIEW_METHOD_LIST;
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
@@ -999,12 +1007,14 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
       GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyVideoRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
     }
-    pChild = pElement->FirstChildElement("library");
+    pChild = pElement->FirstChildElement("nav");
     if (pChild)
     { // library
       GetInteger(pChild, "viewmethodtitle", (int&)g_stSettings.m_MyVideoNavTitleViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
       GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyVideoNavRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
       GetInteger(pChild, "viewmethodgenre", (int&)g_stSettings.m_MyVideoNavGenreViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "viewmethodyear", (int&)g_stSettings.m_MyVideoNavYearViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "viewmethodactor", (int&)g_stSettings.m_MyVideoNavActorViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
 
       GetInteger(pChild, "sortmethodgenre", (int&)g_stSettings.m_MyVideoNavGenreSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "sortmethodplaylists", (int&)g_stSettings.m_MyVideoNavPlaylistsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
@@ -1013,6 +1023,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       GetInteger(pChild, "sortordergenre", (int&)g_stSettings.m_MyVideoNavGenreSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
       GetInteger(pChild, "sortorderplaylists", (int&)g_stSettings.m_MyVideoNavPlaylistsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
       GetInteger(pChild, "sortordertitle", (int&)g_stSettings.m_MyVideoNavTitleSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "sortorderyear", (int&)g_stSettings.m_MyVideoNavYearSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "sortorderactor", (int&)g_stSettings.m_MyVideoNavActorSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
     }
   }
   // myscripts settings
@@ -1651,12 +1663,14 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   }
 
   { // library window
-    TiXmlElement childNode("library");
+    TiXmlElement childNode("nav");
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
     if (!pChild) return false;
     SetInteger(pChild, "viewmethodtitle", g_stSettings.m_MyVideoNavTitleViewMethod);
     SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoNavRootViewMethod);
     SetInteger(pChild, "viewmethodgenre", g_stSettings.m_MyVideoNavGenreViewMethod);
+    SetInteger(pChild, "viewmethodyear", g_stSettings.m_MyVideoNavYearViewMethod);
+    SetInteger(pChild, "viewmethodactor", g_stSettings.m_MyVideoNavActorViewMethod);
 
     SetInteger(pChild, "sortmethodgenre", g_stSettings.m_MyVideoNavGenreSortMethod);
     SetInteger(pChild, "sortmethodplaylists", g_stSettings.m_MyVideoNavPlaylistsSortMethod);
@@ -1665,6 +1679,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     SetInteger(pChild, "sortordergenre", g_stSettings.m_MyVideoNavGenreSortOrder);
     SetInteger(pChild, "sortorderplaylists", g_stSettings.m_MyVideoNavPlaylistsSortOrder);
     SetInteger(pChild, "sortordertitle", g_stSettings.m_MyVideoNavTitleSortOrder);
+    SetInteger(pChild, "sortorderyear", g_stSettings.m_MyVideoNavYearSortOrder);
+    SetInteger(pChild, "sortorderactor", g_stSettings.m_MyVideoNavActorSortOrder);
   }
 
   // myscripts settings
