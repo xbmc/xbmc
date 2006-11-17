@@ -381,7 +381,7 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& 
   }
 }
 
-void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
+void CGUIWindowMusicSongs::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
 {
   // We don't check for iItem range here, as we may later support creating shares
   // from a blank starting setup
@@ -413,7 +413,7 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
     m_vecItems[iItem]->Select(false);
     return ;
   }
-  CGUIWindowMusicBase::OnPopupMenu(iItem);
+  CGUIWindowMusicBase::OnPopupMenu(iItem, bContextDriven);
 }
 
 void CGUIWindowMusicSongs::DeleteDirectoryCache()

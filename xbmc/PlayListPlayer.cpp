@@ -437,6 +437,9 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist)
 /// \param bYesNo To Enable shuffle play, set to \e true
 void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
 {
+  // disable randomize button for normal music playlist
+  if (iPlaylist == PLAYLIST_MUSIC) return;
+
   if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO_TEMP)
     return;
 
@@ -461,47 +464,6 @@ bool CPlayListPlayer::IsShuffled(int iPlaylist)
     return m_shuffleState[iPlaylist];
   return false;
 }
-
-/*
-// this is a true randomly picked up unplayed song, 
-// but it must always traverse the entire list
-// and use memory to build the vector of unplayed items
-int CPlayListPlayer::NextShuffleItem()
-{
-  srand( timeGetTime() );
-
-  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-
-  // if theres no more unplayed songs, but the playlist is in repeat mode,
-  // clear the played status
-  if ((playlist.GetUnplayed() <= 0) && (Repeated(m_iCurrentPlayList)))
-    playlist.ClearPlayed();
-  
-  if (playlist.GetUnplayed() <= 0)
-    return -1;
-
-  vector <int> vecUnplayedItems;
-  CStdString strList = "(";
-  for (int i = 0; i < playlist.size(); i++)
-  {
-    if (!playlist[i].WasPlayed())
-    {
-      vecUnplayedItems.push_back(i);
-      CStdString strTemp;
-      strTemp.Format("%i,",i);
-      strList += strTemp;
-    }
-  }
-  strList.TrimRight(",");
-  strList += ")";
-  CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), unplayed list = %s",strList.c_str());
-
-  int nItemCount = vecUnplayedItems.size();
-  int iItem = vecUnplayedItems[rand() % nItemCount];
-  CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), next song = %i",iItem);
-  return iItem;
-}
-*/
 
 // this works reasonably well and uses less processing and memory
 int CPlayListPlayer::NextShuffleItem()

@@ -108,14 +108,23 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
       if (iControl == CONTROL_BTNRANDOMIZE)
       {
+        // disable randomize button
+        /*
         g_stSettings.m_bMyMusicPlaylistShuffle = !g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
         g_settings.Save();
         g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
         UpdateButtons();
+        */
       }
       else if (iControl == CONTROL_BTNSHUFFLE)
       {
+        // shuffle state is now saved, not randomize
         ShufflePlayList();
+        if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).IsShuffled())
+          g_stSettings.m_bMyMusicPlaylistShuffle = true;
+        else
+          g_stSettings.m_bMyMusicPlaylistShuffle = false;
+        g_settings.Save();
         UpdateButtons();
       }
       else if (iControl == CONTROL_BTNSAVE)
@@ -450,6 +459,10 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   CStdString items;
   items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
+
+   // disable the randomize control
+  CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
+  CONTROL_DISABLE(CONTROL_BTNRANDOMIZE);
 }
 
 bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
@@ -580,7 +593,7 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
   return true;
 }
 
-void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
+void CGUIWindowMusicPlayList::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   // calculate our position

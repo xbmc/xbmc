@@ -658,7 +658,7 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
   }
 }
 
-void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
+void CGUIWindowVideoFiles::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
 {
   // calculate our position
   float posX = 200;
@@ -687,7 +687,7 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
     m_vecItems[iItem]->Select(false);
     return ;
   }
-  CGUIWindowVideoBase::OnPopupMenu(iItem);
+  CGUIWindowVideoBase::OnPopupMenu(iItem, bContextDriven);
 }
 
 void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)

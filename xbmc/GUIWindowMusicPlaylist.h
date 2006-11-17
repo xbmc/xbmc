@@ -19,7 +19,7 @@ protected:
   virtual void UpdateButtons();
   virtual void OnItemLoaded(CFileItem* pItem);
   virtual bool Update(const CStdString& strDirectory);
-  virtual void OnPopupMenu(int iItem);
+  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   void OnMove(int iItem, int iAction);
   virtual bool OnPlayMedia(int iItem);
 
