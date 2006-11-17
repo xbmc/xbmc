@@ -332,7 +332,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   float spaceBetweenItems = 2;
   bool bHasPath = false;
   vector<CStdString> clickActions;
-  CStdString focusAction = "";
+  vector<CStdString> focusActions;
   CStdString strTitle = "";
   CStdString strRSSTags = "";
 
@@ -517,7 +517,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     labelInfo2.font = g_fontManager.GetFont(strFont);
 
   GetMultipleString(pControlNode, "onclick", clickActions);
-  XMLUtils::GetString(pControlNode, "onfocus", focusAction);
+  GetMultipleString(pControlNode, "onfocus", focusActions);
 
   vector<CStdString> strVecInfo;
   if (GetMultipleString(pControlNode, "info", strVecInfo))
@@ -947,7 +947,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetClickActions(clickActions);
-    pControl->SetFocusAction(focusAction);
+    pControl->SetFocusActions(focusActions);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetParentControl(group);
@@ -966,7 +966,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetClickActions(clickActions);
-    pControl->SetFocusAction(focusAction);
+    pControl->SetFocusActions(focusActions);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetParentControl(group);
@@ -1005,7 +1005,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetClickActions(clickActions);
-    pControl->SetFocusAction(focusAction);
+    pControl->SetFocusActions(focusActions);
     pControl->SetAnimations(animations);
     pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
