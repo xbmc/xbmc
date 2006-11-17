@@ -5,6 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-11-2006 changed: disabled the Randomize button in My Music Now Playing window.  Shuffle state is now saved.
+	When enabed, new songs get added to the Now Playing window in a shuffled order.
+	If the playlist is being played when new songs are added, the new songs will be shuffled into the playlist
+	two positions below the currently playing song.
+	If the playlist is not being played, the new songs are just added at the bottom in a shuffled order and
+	playback will begin from the first new song.
+	(This is the start of the removal of the _TEMP internal playlists, and the Randomize button.)
+ - 17-11-2006 added: "Switch Media" dialog to the context menu to switch between media windows (files windows only)
  - 16-11-2006 fixed: Paths to DSound.h and DInput.h were unnecessary.
  - 16-11-2006 fixed: Grouplist's viewport was an intersection with the previous viewport, when it shouldn't have been.
  - 16-11-2006 added: Initial skin version 2.1 changes and support for building for win32.

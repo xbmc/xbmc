@@ -3247,7 +3247,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       return -3;
     }
     CFileItem item(parameter, false);
-    if (!g_application.PlayMedia(item, PLAYLIST_MUSIC_TEMP))
+    if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", parameter.c_str());
       return false;

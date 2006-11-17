@@ -3,7 +3,6 @@
 #include "playlist.h"
 #include "util.h"
 
-
 using namespace PLAYLIST;
 
 CPlayList::CPlayListItem::CPlayListItem() : m_lDuration(0)
@@ -12,6 +11,7 @@ CPlayList::CPlayListItem::CPlayListItem() : m_lDuration(0)
   m_lEndOffset = 0;
   m_bPlayed = false;
   m_bUnPlayable = false;
+	m_iprogramCount = 0;
 }
 
 CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration, long lStartOffset, long lEndOffset)
@@ -23,6 +23,7 @@ CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const 
   m_lEndOffset = lEndOffset;
   m_bPlayed = false;
   m_bUnPlayable = false;
+	m_iprogramCount = 0;
 }
 
 CPlayList::CPlayListItem::~CPlayListItem()
@@ -111,12 +112,15 @@ CPlayList::~CPlayList(void)
   Clear();
 }
 
-void CPlayList::Add(CPlayListItem& item)
+void CPlayList::Add(CPlayListItem& item, int iOffset /* = -1 */)
 {
-  // set the order identifier to the size of the vector
-  //CLog::Log(LOGDEBUG,"CPlayList::Add, item: %s. WasPlayed: %s. IsUnPlayable: %s", item.m_strPath.c_str(), item.WasPlayed() ? "true" : "false", item.IsUnPlayable() ? "true" : "false");
+  // when appending a playlist, the ordinals need to be offset
+	if (iOffset < 0)
+    item.m_iprogramCount = m_vecItems.size();
+	else
+		item.m_iprogramCount += iOffset;
 
-  item.m_iOrder = m_vecItems.size();
+	//CLog::Log(LOGDEBUG,"CPlayList::Add, item(%i):%s, order:%i", m_vecItems.size(), item.m_strPath.c_str(), item.m_iprogramCount);
   m_vecItems.push_back(item);
 
   // increment the unplayed song count
@@ -138,13 +142,49 @@ void CPlayList::Add(CPlayListItem& item)
   }
 }
 
+void CPlayList::Add(CFileItem *pItem)
+{
+	CPlayList::CPlayListItem playlistItem;
+  CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+	Add(playlistItem);
+}
+
+void CPlayList::Append(CPlayList& playlist, int iShuffleAt)
+{
+  // when appending a playlist, the ordinals need to be offset
+	int iOffset = size();
+  if (iShuffleAt < 0 || iShuffleAt > iOffset)
+    iShuffleAt = iOffset;
+	for (int i = 0; i < (int)playlist.size(); i++)
+	{
+		Add(playlist[i], iOffset);
+	}
+  // shuffle newly added items
+	if (IsShuffled())
+		Shuffle(iShuffleAt);
+}
+
+void CPlayList::Append(CFileItemList& items, int iShuffleAt)
+{
+  int iOffset = size();
+  if (iShuffleAt < 0 || iShuffleAt > iOffset)
+    iShuffleAt = iOffset;
+	for (int i = 0; i < (int)items.Size(); i++)
+  {
+		Add(items[i]);
+  }
+  // shuffle newly added items
+	if (IsShuffled())
+		Shuffle(iShuffleAt);
+}
+
 void CPlayList::Clear()
 {
   m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
   m_strPlayListName = "";
   m_iUnplayedItems = -1;
   m_iPlayableItems = -1;
-  m_bShuffled = false;
+  //m_bShuffled = false;  // dont reset the shuffled attribute on clear
 }
 
 int CPlayList::size() const
@@ -175,24 +215,34 @@ bool CPlayList::CPlayListItem::IsUnPlayable() const
   return m_bUnPlayable;
 }
 
-void CPlayList::Shuffle()
+void CPlayList::Shuffle(int iPosition)
 {
-  srand( timeGetTime() );
+  srand(timeGetTime());
 
-  int nItemCount = size();
+  if (size() == 0)
+    // nothing to shuffle, just set the flag for later
+    m_bShuffled = true;
+  else
+  {
+    if (iPosition >= size())
+      return;
+    if (iPosition < 0)
+      iPosition = 0;
+    CLog::Log(LOGDEBUG,__FUNCTION__" - shuffling at pos:%i", iPosition);
 
-  // iterate through each catalogue item performing arbitrary swaps
-  random_shuffle(m_vecItems.begin(), m_vecItems.end());
+    ivecItems it = m_vecItems.begin() + iPosition;
+    random_shuffle(it, m_vecItems.end());
 
-  // the list is now shuffled!
-  m_bShuffled = true;
+    // the list is now shuffled!
+    m_bShuffled = true;
+  }
 }
 
 struct SSortPlayListItem
 {
   static bool PlaylistSort(const CPlayList::CPlayListItem &left, const CPlayList::CPlayListItem &right)
   {
-    return (left.m_iOrder <= right.m_iOrder);
+    return (left.m_iprogramCount <= right.m_iprogramCount);
   }
 };
 
@@ -222,7 +272,7 @@ void CPlayList::Remove(const CStdString& strFileName)
       if (!item.WasPlayed())
         m_iUnplayedItems--;
 
-      iOrder = item.m_iOrder;
+      iOrder = item.m_iprogramCount;
       it = m_vecItems.erase(it);
       //CLog::Log(LOGDEBUG,"PLAYLIST, removing item at order %i", iPos);
     }
@@ -245,10 +295,10 @@ void CPlayList::FixOrder(int iOrder)
   while (it != m_vecItems.end() )
   {
     CPlayListItem& item = *it;
-    if (item.m_iOrder > iOrder)
+    if (item.m_iprogramCount > iOrder)
     {
-      //CLog::Log(LOGDEBUG,"  fixing item at order %i", item.m_iOrder);
-      item.m_iOrder--;
+      //CLog::Log(LOGDEBUG,"  fixing item at order %i", item.m_iprogramCount);
+      item.m_iprogramCount--;
     }
     ++it;
   }
@@ -260,7 +310,7 @@ void CPlayList::Remove(int position)
   int iOrder = -1;
   if (position < (int)m_vecItems.size())
   {
-    iOrder = m_vecItems[position].m_iOrder;
+    iOrder = m_vecItems[position].m_iprogramCount;
     if (!m_vecItems[position].WasPlayed())
       m_iUnplayedItems--;
     m_vecItems.erase(m_vecItems.begin() + position);
@@ -318,10 +368,10 @@ bool CPlayList::Swap(int position1, int position2)
   if (!IsShuffled())
   {
     // swap the ordinals before swapping the items!
-    //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1].m_iOrder,m_vecItems[position2].m_iOrder);
-    iOrder = m_vecItems[position1].m_iOrder;
-    m_vecItems[position1].m_iOrder = m_vecItems[position2].m_iOrder;
-    m_vecItems[position2].m_iOrder = iOrder;
+    //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1].m_iprogramCount,m_vecItems[position2].m_iprogramCount);
+    iOrder = m_vecItems[position1].m_iprogramCount;
+    m_vecItems[position1].m_iprogramCount = m_vecItems[position2].m_iprogramCount;
+    m_vecItems[position2].m_iprogramCount = iOrder;
   }
 
   // swap the items

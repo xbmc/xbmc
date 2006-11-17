@@ -169,7 +169,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-bool CGUIWindowPrograms::OnPopupMenu(int iItem)
+bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
 {
   // calculate our position
   float posX = 200;

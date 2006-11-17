@@ -64,7 +64,7 @@ protected:
   bool CanMove(int iList);
   bool CanDelete(int iList);
   bool CanNewFolder(int iList);
-  void OnPopupMenu(int iList, int iItem);
+  void OnPopupMenu(int iList, int iItem, bool bContextDriven = true);
   void ShowShareErrorMessage(CFileItem* pItem);
   void UpdateItemCounts();
 

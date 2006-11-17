@@ -20,6 +20,7 @@ public:
   float GetHeight();
 
   static bool BookmarksMenu(const CStdString &strType, const CFileItem *item, float posX, float posY);
+  static void SwitchMedia(const CStdString& strType, const CStdString& strPath, float posX, float posY);
 
 protected:
   virtual void OnInitWindow();

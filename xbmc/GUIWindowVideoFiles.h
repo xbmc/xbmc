@@ -16,7 +16,7 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void UpdateButtons();
   virtual bool OnClick(int iItem);
-  virtual void OnPopupMenu(int iItem);
+  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   virtual void OnInfo(int iItem);
   virtual void OnQueueItem(int iItem);
   virtual void OnScan();
