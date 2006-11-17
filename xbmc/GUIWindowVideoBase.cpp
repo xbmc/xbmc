@@ -711,7 +711,15 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   {
     // don't show the add to playlist button in playlist window
     if (GetID() != WINDOW_VIDEO_PLAYLIST)
-      btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
+    {
+      if (GetID() == WINDOW_VIDEO_NAV)
+      {
+        if (!m_vecItems.m_strPath.IsEmpty())
+            btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
+      }
+      else
+        btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
+    }
   
     if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
@@ -799,7 +807,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 
   int btn_Settings      = pMenu->AddButton(5);      // Settings
 
-  int btn_GoToRoot = pMenu->AddButton(20128);
+  int btn_GoToRoot = 0;
+  if (!m_vecItems.m_strPath.IsEmpty())
+    btn_GoToRoot = pMenu->AddButton(20128);
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
