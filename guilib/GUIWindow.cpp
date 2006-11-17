@@ -176,6 +176,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
   // now load in the skin file
+  m_renderOrder = 0;
   m_saveLastControl = true;
   m_dwDefaultFocusControlID = 0;
   m_bRelativeCoords = false;
