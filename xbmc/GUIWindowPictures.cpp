@@ -31,6 +31,18 @@ CGUIWindowPictures::~CGUIWindowPictures(void)
 {
 }
 
+bool CGUIWindowPictures::OnAction(const CAction &action)
+{
+	// the non-contextual menu can be called at any time
+  if (action.wID == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
+  {
+    OnPopupMenu(-1, false);
+    return true;
+  }
+
+  return CGUIMediaWindow::OnAction(action);
+}
+
 bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -422,7 +434,7 @@ void CGUIWindowPictures::OnRegenerateThumbs()
   m_thumbLoader.Load(m_vecItems);
 }
 
-void CGUIWindowPictures::OnPopupMenu(int iItem)
+void CGUIWindowPictures::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
 {
   // calculate our position
   float posX = 200, posY = 100;
@@ -448,65 +460,79 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     }
     m_vecItems[iItem]->Select(false);
   }
-  else if (iItem >= 0)
-  {
-    // mark the item
-    m_vecItems[iItem]->Select(true);
-    // popup the context menu
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-    if (!pMenu) return ;
-    // load our menu
+  else
+	{
+		if (m_vecItems.Size() == 0)
+			bContextDriven = false;
+		if (bContextDriven && (iItem < 0 || iItem >= m_vecItems.Size())) return;
+
+		// popup the context menu
+		CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+		if (!pMenu) return ;
+
+		// load our menu
     pMenu->Initialize();
-    // add the needed buttons
-    
-    int btn_Thumbs       = 0; // Create Thumbnails
-    int btn_SlideShow    = 0; // View Slideshow
+
+		// contextual buttons
+    int btn_Thumbs = 0;				// Create Thumbnails
+    int btn_SlideShow = 0;		// View Slideshow
     int btn_RecSlideShow = 0; // Recursive Slideshow
+    int btn_Delete = 0;				// Delete
+		int btn_Rename = 0;				// Rename
 
-    // this could be done like the delete button too
-    if (m_vecItems.GetFileCount() != 0) 
-      btn_SlideShow = pMenu->AddButton(13317);      // View Slideshow
+		// check item boumds
+		if (bContextDriven)
+		{
+			// mark the item
+			m_vecItems[iItem]->Select(true);
     
-    btn_RecSlideShow = pMenu->AddButton(13318);     // Recursive Slideshow
-    
-    if (!m_thumbLoader.IsLoading()) 
-      btn_Thumbs = pMenu->AddButton(13315);         // Create Thumbnails
-    
-    int btn_Delete = 0, btn_Rename = 0;             // Delete and Rename
-    // add delete/rename functions if supported by the protocol
-    if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !m_vecItems[iItem]->IsReadOnly())
-    {
-      btn_Delete = pMenu->AddButton(117);           // Delete
-      btn_Rename = pMenu->AddButton(118);           // Rename
-    }
-    //int btn_Settings = -2;
+			// this could be done like the delete button too
+			if (m_vecItems.GetFileCount() != 0) 
+				btn_SlideShow = pMenu->AddButton(13317);      // View Slideshow
+	    
+			btn_RecSlideShow = pMenu->AddButton(13318);     // Recursive Slideshow
+	    
+			if (!m_thumbLoader.IsLoading()) 
+				btn_Thumbs = pMenu->AddButton(13315);         // Create Thumbnails
+	    
+			// add delete/rename functions if supported by the protocol
+			if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !m_vecItems[iItem]->IsReadOnly())
+			{
+				btn_Delete = pMenu->AddButton(117);           // Delete
+				btn_Rename = pMenu->AddButton(118);           // Rename
+			}
+		} // if (iItem >= 0 && iItem < m_vecItems.Size())
 
-
-    int btn_Settings = pMenu->AddButton(5);         // Settings
-    int btn_GoToRoot = pMenu->AddButton(20128);
+		// non-contextual buttons
+    int btn_Settings = pMenu->AddButton(5);			// Settings
+    int btn_GoToRoot = pMenu->AddButton(20128);	// Go To Root
+		int btn_Switch = pMenu->AddButton(523);     // switch media
 
     // position it correctly
     pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
     pMenu->DoModal();
 
     int btnid = pMenu->GetButton();
-
     if (btnid>0)
     {
+			// slideshow
       if (btnid == btn_SlideShow)
       {
         OnSlideShow(m_vecItems[iItem]->m_strPath);
         return;
       }
+			// recursive slideshow
       else if (btnid == btn_RecSlideShow)
       {
         OnSlideShowRecursive(m_vecItems[iItem]->m_strPath);
         return;
       }
+			// create thumbs
       else if (btnid == btn_Thumbs)
       {
         OnRegenerateThumbs();
       }
+			// delete
       else if (btnid == btn_Delete)
       {
         OnDeleteItem(iItem);
@@ -516,19 +542,27 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       {
         OnRenameItem(iItem);
       }
+      else if (btnid == btn_Settings)
+      { 
+        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
+				return;
+      }
+			// go to root
       else if (btnid == btn_GoToRoot)
       {
         Update("");
         return;
       }
-      else if (btnid == btn_Settings)
-      { 
-        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
-      }
+			// switch media
+			else if (btnid == btn_Switch)
+			{
+				CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems.m_strPath, posX, posY);
+				return;
+			}
     }
     if (iItem < m_vecItems.Size())
       m_vecItems[iItem]->Select(false);
-  }
+	}
 }
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)

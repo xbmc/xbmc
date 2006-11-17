@@ -62,6 +62,12 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
 {
   int item;
   int list = GetFocusedList();
+  // the non-contextual menu can be called at any time
+	if (action.wID == ACTION_CONTEXT_MENU && m_vecItems[list].Size() == 0)
+  {
+    OnPopupMenu(-1, list, false);
+    return true;
+  }
   if (action.wID == ACTION_DELETE_ITEM)
   {
     if (CanDelete(list))
@@ -510,7 +516,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
         return;
       }
     }
-    g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC_TEMP);
+    g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC);
     return;
   }
   if (pItem->IsAudio() || pItem->IsVideo())
@@ -1165,7 +1171,7 @@ int CGUIWindowFileManager::GetFocusedList() const
   return GetFocusedControlID() - CONTROL_LEFT_LIST;
 }
 
-void CGUIWindowFileManager::OnPopupMenu(int list, int item)
+void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven /* = true */)
 {
   if (list < 0 || list > 2) return ;
   bool bDeselect = SelectItem(list, item);
@@ -1216,9 +1222,10 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     int btn_Move = pMenu->AddButton(116); // Move
     int btn_NewFolder = pMenu->AddButton(20309); // New Folder
     int btn_Size = pMenu->AddButton(13393); // Calculate Size
-    //int btn_Settings = -2;
-    int btn_Settings = pMenu->AddButton(5);         // Settings
-    int btn_GoToRoot = pMenu->AddButton(20128);
+
+		int btn_Settings = pMenu->AddButton(5);			// Settings
+    int btn_GoToRoot = pMenu->AddButton(20128);	// Go To Root
+		int btn_Switch = pMenu->AddButton(523);     // switch media
 
     pMenu->EnableButton(btn_SelectAll, item >= 0);
     pMenu->EnableButton(btn_Rename, item >= 0 && CanRename(list) && !m_vecItems[list][item]->IsParentFolder());
@@ -1227,6 +1234,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     pMenu->EnableButton(btn_Move, item >= 0 && CanMove(list) && showEntry);
     pMenu->EnableButton(btn_NewFolder, CanNewFolder(list));
     pMenu->EnableButton(btn_Size, item >=0 && m_vecItems[list][item]->m_bIsFolder && !m_vecItems[list][item]->IsParentFolder());
+
     // position it correctly
     pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
     pMenu->DoModal();
@@ -1275,17 +1283,22 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
           }
         }
       }
-      if (progress) progress->Close();
+    }
+    if (btnid == btn_Settings)
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU); 
+			return;
     }
     if (btnid == btn_GoToRoot)
     {
       Update(list,"");
       return;
     }
-    if (btnid == btn_Settings)
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU); 
-    }
+		if (btnid == btn_Switch)
+		{
+			CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list].m_strPath, posX, posY);
+			return;
+		}
 
     if (bDeselect && item >= 0 && item < m_vecItems[list].Size())
     { // deselect item as we didn't do anything

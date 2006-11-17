@@ -148,6 +148,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
 
   }
 
+  // switch media
+  m_vecStrings[523] = ToUTF8(strEncoding, "Switch Media");
+
   // TODO: localize 2.0
   // Hardcoded strings (starting at 20000)
 /*  m_vecStrings[20000] = "CDDA Rip Folder";
@@ -290,6 +293,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings[20209] = ToUTF8(strEncoding, "inch/s");
   m_vecStrings[20210] = ToUTF8(strEncoding, "yard/s");
   m_vecStrings[20211] = ToUTF8(strEncoding, "Furlong/Fortnight");
+
 
   // new strings for weather localization
 /*  m_vecStrings[1411] = "with";

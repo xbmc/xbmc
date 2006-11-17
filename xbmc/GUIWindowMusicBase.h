@@ -35,7 +35,7 @@ protected:
   \brief Will be called when an popup context menu has been asked for
   \param iItem List/thumb control item that has been clicked on
   */
-  virtual void OnPopupMenu(int iItem);
+  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   /*!
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */

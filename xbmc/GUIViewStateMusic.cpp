@@ -10,7 +10,8 @@ using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
 int CGUIViewStateWindowMusic::GetPlaylist()
 {
-  return PLAYLIST_MUSIC_TEMP;
+  //return PLAYLIST_MUSIC_TEMP;
+  return PLAYLIST_MUSIC;
 }
 
 bool CGUIViewStateWindowMusic::UnrollArchives()

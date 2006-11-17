@@ -24,7 +24,7 @@ protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual void OnPrepareFileItems(CFileItemList &items);
 
-  virtual void OnPopupMenu(int iItem);
+  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   virtual void OnInfo(int iItem);
   virtual void OnScan() {};
   virtual void OnQueueItem(int iItem);
