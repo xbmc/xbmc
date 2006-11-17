@@ -97,7 +97,7 @@ void CRssReader::Process()
     }
 
     CHTTP http;
-    http.SetUserAgent("XBMC/2.0.1 (http://www.xboxmediacenter.com)");
+    http.SetUserAgent("XBMC/pre-2.1 (http://www.xboxmediacenter.com)");
     CStdString strXML;
     CStdString strUrl = m_vecUrls[iFeed];
 
