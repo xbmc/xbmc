@@ -117,7 +117,7 @@ bool CDirectoryNode::GetContent(CFileItemList& items)
   return false;
 }
 
-//  Creates a musicdb url
+//  Creates a videodb url
 CStdString CDirectoryNode::BuildPath()
 {
   CStdStringArray array;

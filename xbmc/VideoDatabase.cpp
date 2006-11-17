@@ -1894,6 +1894,12 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     if (idYear != -1)
       strSQL += FormatSQL(" and movieinfo.iYear=%i",idYear);
 
+    if (g_stSettings.m_iMyVideoWatchMode == 1)
+      strSQL += FormatSQL(" and NOT (movieinfo.bWatched='true')");
+
+    if (g_stSettings.m_iMyVideoWatchMode == 2)
+      strSQL += FormatSQL(" and movieinfo.bWatched='true'");
+
     // run query
     CLog::Log(LOGDEBUG, "CVideoDatabase::GetGenresNav() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -1901,7 +1907,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     map<long, CStdString> mapGenres;
@@ -1961,14 +1967,20 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-		CStdString strSQL=FormatSQL("select * from actorlinkmovie,actors,movie,movieinfo,path where path.idpath=movie.idpath and actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie order by path.idpath");
+		CStdString strSQL=FormatSQL("select * from actorlinkmovie,actors,movie,movieinfo,path where path.idpath=movie.idpath and actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie");
+    if (g_stSettings.m_iMyVideoWatchMode == 1)
+      strSQL += FormatSQL(" and NOT (movieinfo.bWatched='true')");
 
+    if (g_stSettings.m_iMyVideoWatchMode == 2)
+      strSQL += FormatSQL(" and movieinfo.bWatched='true'");
+
+    strSQL += FormatSQL(" order by path.idpath");
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     map<long, CStdString> mapActors;
@@ -2031,7 +2043,15 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
 
     // get primary genres for movies
     //CStdString strSQL="select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor order by path.idpath";
-    CStdString strSQL=FormatSQL("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and NOT(movieinfo.bWatched='true') order by path.idpath");
+    CStdString strSQL=FormatSQL("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor");
+    
+    if (g_stSettings.m_iMyVideoWatchMode == 1)
+      strSQL += FormatSQL(" and NOT (movieinfo.bWatched='true')");
+
+    if (g_stSettings.m_iMyVideoWatchMode == 2)
+      strSQL += FormatSQL(" and movieinfo.bWatched='true'");
+
+    strSQL += FormatSQL(" order by path.idpath");
 
     // run query
     CLog::Log(LOGDEBUG, "CVideoDatabase::GetGenresNav() query: %s", strSQL.c_str());
@@ -2040,7 +2060,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     map<long, CStdString> mapYears;
@@ -2153,7 +2173,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
           {
             m_pDS->close();
             if (iITERATIONS == 0)
-              return false; // failed on first iteration, so there's probably no songs in the db
+              return true; // failed on first iteration, so there's probably no songs in the db
             else
             {
               CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
@@ -2180,7 +2200,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             return true; // keep whatever songs we may have gotten before the failure
           }
           else
-            return false; // no songs, return false
+            return true; // no songs, return false
         }
         // next iteration
         iITERATIONS++;

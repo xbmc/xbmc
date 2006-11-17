@@ -142,6 +142,7 @@ CSettings::CSettings(void)
   g_stSettings.m_MyVideoRootSortOrder = SORT_ORDER_ASC;
 
   g_stSettings.m_MyVideoNavGenreSortOrder = SORT_ORDER_ASC;
+  g_stSettings.m_MyVideoNavTitleSortOrder = SORT_ORDER_ASC;
   g_stSettings.m_MyVideoNavPlaylistsSortOrder = SORT_ORDER_ASC;
   
   g_stSettings.m_MyVideoPlaylistViewMethod = VIEW_METHOD_LIST;
@@ -966,7 +967,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("myvideos");
   if (pElement)
   {
-    GetInteger(pElement, "startwindow", g_stSettings.m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_GENRE, WINDOW_VIDEO_TITLE);
+    GetInteger(pElement, "startwindow", g_stSettings.m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
     GetInteger(pElement, "stackvideomode", g_stSettings.m_iMyVideoStack, STACK_NONE, STACK_NONE, STACK_SIMPLE);
 
     XMLUtils::GetBoolean(pElement, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);

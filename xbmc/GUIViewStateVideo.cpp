@@ -141,6 +141,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       case NODE_TYPE_TITLE:
       {
         AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_VIDEO_RATING, 367, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
         SetSortMethod(g_stSettings.m_MyVideoNavTitleSortMethod);
 
         AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -155,7 +156,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
   }
   else
   {
-    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
     SetSortMethod(g_stSettings.m_MyVideoNavTitleSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);

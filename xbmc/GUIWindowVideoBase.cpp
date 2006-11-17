@@ -159,7 +159,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         {
           // is delete allowed?
           // must be at the title window
-          if (GetID() == WINDOW_VIDEO_TITLE)
+          if (GetID() == WINDOW_VIDEO_NAV)
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled
@@ -785,7 +785,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
         btn_Rename = pMenu->AddButton(118);
       }
     }
-    if (GetID() == WINDOW_VIDEO_TITLE && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+    if (GetID() == WINDOW_VIDEO_NAV && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       btn_Delete = pMenu->AddButton(646);
   }
 
