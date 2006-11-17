@@ -302,11 +302,14 @@ void CGUIButtonControl::OnClick()
 
 void CGUIButtonControl::OnFocus()
 {
-  if (!m_focusAction.IsEmpty())
+  if (m_focusActions.size())
   { // send as a thread message so that the render can finish
-    CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
-    message.SetStringParam(m_focusAction);
-    m_gWindowManager.SendThreadMessage(message);
+    for (unsigned int i = 0; i < m_focusActions.size(); i++)
+    {
+      CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
+      message.SetStringParam(m_focusActions[i]);
+      m_gWindowManager.SendThreadMessage(message);
+    }
   }
 }
 
