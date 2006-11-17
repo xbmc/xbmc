@@ -20,6 +20,8 @@ D3DFORMAT GetD3DFormat(XB_D3DFORMAT format)
     return D3DFMT_LIN_A8R8G8B8;
   case XB_D3DFMT_DXT1:
     return D3DFMT_DXT1;
+  case XB_D3DFMT_DXT2:
+    return D3DFMT_DXT2;
   case XB_D3DFMT_DXT4:
     return D3DFMT_DXT4;
   case XB_D3DFMT_P8:
@@ -38,6 +40,7 @@ DWORD BytesPerPixelFromFormat(XB_D3DFORMAT format)
     return 4;
   case XB_D3DFMT_P8:
   case XB_D3DFMT_DXT1:
+  case XB_D3DFMT_DXT2:
     return 1;
   }
   return 0;
@@ -201,11 +204,14 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppT
     DWORD *color = (DWORD *)texData;
     texDataStart += offset;
     DWORD destPitch = lr.Pitch;
-    // simple case - linear 32 bit texture
     if (fmt == XB_D3DFMT_DXT1)
     {
       //realHeight /= 4;  // is this right??
       pitch /= 2;
+      destPitch /= 4; // ???
+    }
+    else if (fmt == XB_D3DFMT_DXT2)
+    {
       destPitch /= 4; // ???
     }
     if (IsSwizzledFormat(fmt))
