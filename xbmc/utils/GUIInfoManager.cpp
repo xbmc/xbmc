@@ -2111,7 +2111,7 @@ CStdString CGUIInfoManager::GetItemImage(CFileItem *item, int info)
   {
     CStdString strThumb = item->GetIconImage();
     strThumb.Insert(strThumb.Find("."), "Big");
-    if (!item->GetIcon() && item->HasIcon())
+    if (m_listItem && !item->GetIcon() && item->HasIcon())
     { // allocate it
       CGUIImage *image = new CGUIImage(0, 0, 0, 0, 32, 32, strThumb);
       if (image)
@@ -2124,7 +2124,7 @@ CStdString CGUIInfoManager::GetItemImage(CFileItem *item, int info)
   }
   if (info == LISTITEM_OVERLAY)
   {
-    if (!item->GetOverlay() && item->HasOverlay())
+    if (m_listItem && !item->GetOverlay() && item->HasOverlay())
     { // allocate it
       CGUIImage *image = new CGUIImage(0, 0, 0, 0, 32, 32, item->GetOverlayImage());
       if (image)
@@ -2135,7 +2135,7 @@ CStdString CGUIInfoManager::GetItemImage(CFileItem *item, int info)
     }
     return item->GetOverlayImage();
   }
-  if (!item->GetThumbnail() && item->HasThumbnail())
+  if (m_listItem && !item->GetThumbnail() && item->HasThumbnail())
   { // allocate it
     CGUIImage *image = new CGUIImage(0, 0, 0, 0, 32, 32, item->GetThumbnailImage());
     if (image)
