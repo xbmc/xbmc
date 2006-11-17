@@ -20,6 +20,7 @@
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
+#include "FileSystem/VideoDatabaseDirectory.h"
 
 #include "SkinInfo.h"
 
@@ -38,6 +39,8 @@
 #define CONTROL_BTNSCAN           8
 #define CONTROL_IMDB              9
 #define CONTROL_BTNSHOWMODE       10
+
+using namespace VIDEODATABASEDIRECTORY;
 
 CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
@@ -786,7 +789,12 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       }
     }
     if (GetID() == WINDOW_VIDEO_NAV && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-      btn_Delete = pMenu->AddButton(646);
+    {
+      CVideoDatabaseDirectory dir;
+      NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
+      if (node == NODE_TYPE_TITLE)
+        btn_Delete = pMenu->AddButton(646);
+    }
   }
 
   int btn_Settings      = pMenu->AddButton(5);      // Settings
