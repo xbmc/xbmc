@@ -85,7 +85,7 @@ bool CGUIWindow::LoadReferences()
   CLog::Log(LOGINFO, "Loading references file: %s", strReferenceFile.c_str());
   if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
   {
-    CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strReferenceFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+//    CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strReferenceFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 
