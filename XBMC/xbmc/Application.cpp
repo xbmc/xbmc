@@ -1617,12 +1617,19 @@ void CApplication::StartServices()
 
   CLog::Log(LOGNOTICE, "initializing playlistplayer");
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
-  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
+  //g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
+  if (g_stSettings.m_bMyMusicPlaylistShuffle)
+    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Shuffle();
   // The temp music playlist is used for playing from a "folder"
   // eg library, folder on disk, playlists when treated as folders etc.
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC_TEMP, PLAYLIST::REPEAT_NONE);
+
   g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
   g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
+  /*
+  if (g_stSettings.m_bMyVideoPlaylistShuffle)
+    g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Shuffle();
+  */
   g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO_TEMP, PLAYLIST::REPEAT_NONE);
 
 #ifdef HAS_LCD
@@ -4930,6 +4937,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
   // to generate a thumbnail for musicplayer.cover 
   g_application.m_strPlayListFile = strPlayList;
 
+  /*
   CFileItem item(playlist[0]);
 
   // add each item of the playlist to the playlistplayer
@@ -4937,6 +4945,10 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
   {
     g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlist[i]);
   }
+  */
+
+  // add the items to the playlist player
+  g_playlistPlayer.GetPlaylist(iPlaylist).Append(playlist);
 
   // if we have a playlist 
   if (g_playlistPlayer.GetPlaylist(iPlaylist).size())

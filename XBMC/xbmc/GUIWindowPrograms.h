@@ -11,7 +11,7 @@ public:
   CGUIWindowPrograms(void);
   virtual ~CGUIWindowPrograms(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnPopupMenu(int iItem);
+  virtual bool OnPopupMenu(int iItem, bool bContextDriven = true);
 
   void PopulateTrainersList();
 protected:

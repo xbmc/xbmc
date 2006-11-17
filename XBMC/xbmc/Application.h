@@ -77,7 +77,7 @@ public:
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
-  bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC_TEMP);
+  bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
   void StopPlaying();

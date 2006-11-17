@@ -632,3 +632,60 @@ void CGUIDialogContextMenu::ClearDefault(const CStdString &strType)
 {
   SetDefault(strType, "");
 }
+
+void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdString& strPath, float posX, float posY)
+{
+	// what should we display?
+	vector <CStdString> vecTypes;
+	if (!strType.Equals("music"))
+		vecTypes.push_back(g_localizeStrings.Get(2));	// My Music
+	if (!strType.Equals("video"))
+		vecTypes.push_back(g_localizeStrings.Get(3));	// My Videos
+	if (!strType.Equals("pictures"))
+		vecTypes.push_back(g_localizeStrings.Get(1));	// My Pictures
+	if (!strType.Equals("files"))
+		vecTypes.push_back(g_localizeStrings.Get(7));	// My Files
+
+	// something went wrong
+	if (vecTypes.size() != 3)
+		return;
+
+	// create menu
+	CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  pMenu->Initialize();
+
+	// add buttons
+  int btn_Type[3];
+	for (int i=0; i<3; i++)
+	{
+		btn_Type[i] = pMenu->AddButton(vecTypes[i]);
+	}
+
+  // display menu
+  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  pMenu->DoModal();
+
+  // check selection
+  int btn = pMenu->GetButton();
+  for (int i=0; i<3; i++)
+  {
+    if (btn == btn_Type[i])
+    {
+			// map back to correct window
+			int iWindow = WINDOW_INVALID;
+			if (vecTypes[i].Equals(g_localizeStrings.Get(2)))
+				iWindow = WINDOW_MUSIC_FILES;
+			else if (vecTypes[i].Equals(g_localizeStrings.Get(3)))
+				iWindow = WINDOW_VIDEO_FILES;
+			else if (vecTypes[i].Equals(g_localizeStrings.Get(1)))
+				iWindow = WINDOW_PICTURES;
+			else if (vecTypes[i].Equals(g_localizeStrings.Get(7)))
+				iWindow = WINDOW_FILES;
+
+      //m_gWindowManager.ActivateWindow(iWindow, strPath);
+      m_gWindowManager.ChangeActiveWindow(iWindow, strPath);
+			return;
+    }
+  }
+	return;
+}

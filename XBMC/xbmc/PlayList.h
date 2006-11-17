@@ -35,9 +35,6 @@ class CPlayListItem : public CFileItem
     void SetMusicTag(const CMusicInfoTag &tag);
     CMusicInfoTag GetMusicTag() const;
 
-    // keep track of the order items were added to the playlist
-    int m_iOrder;
-
     bool WasPlayed() const;
     void SetPlayed() { m_bPlayed = true; };
     void ClearPlayed() { m_bPlayed = false; };
@@ -51,11 +48,15 @@ class CPlayListItem : public CFileItem
     bool m_bPlayed;
     bool m_bUnPlayable;
   };
+
   CPlayList(void);
   virtual ~CPlayList(void);
   virtual bool Load(const CStdString& strFileName, bool bDeep = true){ return false;};
   virtual void Save(const CStdString& strFileName) const {};
-  void Add(CPlayListItem& item);
+  void Add(CPlayListItem& item, int iOffset = -1);
+	void Add(CFileItem *pItem);
+	void Append(CPlayList& playlist, int iShuffleAt = -1);
+	void Append(CFileItemList& items, int iShuffleAt = -1);
   const CStdString& GetName() const;
   void Remove(const CStdString& strFileName);
   void Remove(int position);
@@ -66,7 +67,7 @@ class CPlayListItem : public CFileItem
   const CPlayList::CPlayListItem& operator[] (int iItem) const;
   CPlayList::CPlayListItem& operator[] (int iItem);
 
-  virtual void Shuffle();
+  virtual void Shuffle(int iPosition = 0);
   virtual void UnShuffle();
   virtual bool IsShuffled() { return m_bShuffled; }
   void FixOrder(int iOrder);

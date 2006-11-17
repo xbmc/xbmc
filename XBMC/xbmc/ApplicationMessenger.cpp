@@ -198,7 +198,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         else
           item.SetVideoThumb();
         item.FillInDefaultIcon();
-        g_application.PlayMedia(item,item.IsAudio()?PLAYLIST_MUSIC_TEMP:PLAYLIST_VIDEO_TEMP); //Note: this will play playlists always in the temp music playlist (default 2nd parameter), maybe needs some tweaking.
+        g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO); //Note: this will play playlists always in the temp music playlist (default 2nd parameter), maybe needs some tweaking.
       }
       break;
 
