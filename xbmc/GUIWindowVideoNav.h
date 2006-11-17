@@ -20,10 +20,7 @@ protected:
 //  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void PlayItem(int iItem);
   virtual void OnWindowLoaded();
-  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
 
-//  void SetArtistImage(int iItem);
- // bool GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
 
   VECSHARES m_shares;

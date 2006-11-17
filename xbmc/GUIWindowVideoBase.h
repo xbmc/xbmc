@@ -15,7 +15,7 @@ public:
   void PlayMovie(const CFileItem *item);
   int  GetResumeItemOffset(const CFileItem *item);
 
-  static void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items, bool bSkipOverlay=false);
+  static void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);

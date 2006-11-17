@@ -1220,7 +1220,7 @@ CStdString CGUIWindowVideoBase::GetnfoFile(CFileItem *item)
   return nfoFile;
 }
 
-void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items, bool bSkipOverlay)
+void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items)
 {
   DWORD time = timeGetTime();
   for (int i = 0; i < (int)movies.size(); ++i)
@@ -1246,8 +1246,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       time.wYear = movie.m_iYear;
       pItem->m_musicInfoTag.SetReleaseDate(time);
       pItem->m_strDVDLabel = movie.m_strDVDLabel;
-      if (!bSkipOverlay)
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
 
       // Hack for extra info
       pItem->m_musicInfoTag.SetTitle(movie.m_strTitle);

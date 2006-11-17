@@ -2176,7 +2176,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
               return true; // failed on first iteration, so there's probably no songs in the db
             else
             {
-              CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
+              CGUIWindowVideoBase::SetDatabaseDirectory(movies,items);
               return true; // there no more songs left to process (aborts the unbounded for loop)
             }
           }
@@ -2196,7 +2196,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
 
           if (iSONGS > 0)
           {
-            CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
+            CGUIWindowVideoBase::SetDatabaseDirectory(movies,items);
             return true; // keep whatever songs we may have gotten before the failure
           }
           else
@@ -2206,7 +2206,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
         iITERATIONS++;
         m_pDS->close();
       }
-      CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
+      CGUIWindowVideoBase::SetDatabaseDirectory(movies,items);
       return true;
     }
 
@@ -2237,7 +2237,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
 
     // cleanup
     m_pDS->close();
-    CGUIWindowVideoBase::SetDatabaseDirectory(movies,items,true);
+    CGUIWindowVideoBase::SetDatabaseDirectory(movies,items);
     return true;
   }
   catch (...)
