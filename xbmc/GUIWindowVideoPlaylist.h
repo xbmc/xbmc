@@ -14,7 +14,7 @@ protected:
   virtual bool OnPlayMedia(int iItem);
   virtual void UpdateButtons();
 
-  virtual void OnPopupMenu(int iItem);
+  virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   void OnMove(int iItem, int iAction);
 
   void ClearPlayList();

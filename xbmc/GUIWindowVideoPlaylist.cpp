@@ -385,7 +385,7 @@ void CGUIWindowVideoPlaylist::SavePlayList()
   }
 }
 
-void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem)
+void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   // calculate our position

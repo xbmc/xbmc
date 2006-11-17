@@ -353,7 +353,7 @@ void CGUIWindowMusicNav::OnWindowLoaded()
   CGUIWindowMusicBase::OnWindowLoaded();
 }
 
-void CGUIWindowMusicNav::OnPopupMenu(int iItem)
+void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   // calculate our position

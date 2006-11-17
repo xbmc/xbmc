@@ -680,9 +680,12 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
   CGUIMediaWindow::OnClick(iItem);
 }
 
-void CGUIWindowVideoBase::OnPopupMenu(int iItem)
+void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true */)
 {
-  if (iItem < 0 || iItem >= m_vecItems.Size()) return ;
+	// empty list in files view?
+	if (GetID() == WINDOW_VIDEO_FILES && m_vecItems.Size() == 0)
+		bContextDriven = false;
+	if (bContextDriven && (iItem < 0 || iItem >= m_vecItems.Size())) return;
   
   // calculate our position
   float posX = 200, posY = 100;
@@ -693,116 +696,115 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
 
-  // mark the item
-  bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
-  m_vecItems[iItem]->Select(true);
-
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return ;
 
   // load our menu
   pMenu->Initialize();
-  bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
 
-  int btn_Queue         = 0; // Add to Playlist
-  int btn_PlayWith      = 0; // Play
-  int btn_Restart       = 0; // Restart Video from Beginning
-  int btn_Resume        = 0; // Resume Video
-  int btn_Show_Info     = 0; // Show Video Information
+	// contextual buttons
+  int btn_Queue = 0;					// Add to Playlist
+  int btn_PlayWith = 0;				// Play
+  int btn_Restart = 0;				// Restart Video from Beginning
+  int btn_Resume = 0;					// Resume Video
+  int btn_Show_Info = 0;			// Show Video Information
+	int btn_Query = 0;					// Query Info
+  int btn_Mark_UnWatched = 0;	// Clear Watched Status (DB)
+  int btn_Mark_Watched = 0;		// Set Watched Status (DB)
+  int btn_Update_Title = 0;		// Change Title (DB)
+	int btn_Delete = 0;					// Delete
+	int btn_Rename = 0;					// Rename
 
-  // check what players we have
-  VECPLAYERCORES vecCores;
-  CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
+	bool bSelected = false;	
+	VECPLAYERCORES vecCores;
 
-  if (!bIsGotoParent)
-  {
-    // don't show the add to playlist button in playlist window
-    if (GetID() != WINDOW_VIDEO_PLAYLIST)
-      btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
-  
-    if (vecCores.size() >= 1)
-      btn_PlayWith = pMenu->AddButton(15213);
-    // allow a folder to be ad-hoc queued and played by the default player
-    else if (GetID() == WINDOW_VIDEO_FILES && (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList()))
-      btn_PlayWith = pMenu->AddButton(208);
+	// contextual items only appear when the list is not empty
+	if (bContextDriven)
+	{
+		// mark the item
+		bSelected = m_vecItems[iItem]->IsSelected(); // item may already be selected (playlistitem)
+		m_vecItems[iItem]->Select(true);
 
-    // if autoresume is enabled then add restart video button
-    // check to see if the Resume Video button is applicable
-    if (GetResumeItemOffset(m_vecItems[iItem]) > 0)               
-      if (g_guiSettings.GetBool("myvideos.autoresume"))
-        btn_Restart = pMenu->AddButton(20132);    // Restart Video
-      else
-        btn_Resume = pMenu->AddButton(13381);     // Resume Video
+		// get players
+		CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
 
-    // turn off the query info button if we are in playlists view
-    if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES) && !(GetID() == WINDOW_VIDEO_FILES && !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser))
-      btn_Show_Info = pMenu->AddButton(13346);
-  }
+		bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
+		if (!bIsGotoParent)
+		{
+			// don't show the add to playlist button in playlist window
+			if (GetID() != WINDOW_VIDEO_PLAYLIST)
+				btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
+	  
+			if (vecCores.size() >= 1)
+				btn_PlayWith = pMenu->AddButton(15213);
+			// allow a folder to be ad-hoc queued and played by the default player
+			else if (GetID() == WINDOW_VIDEO_FILES && (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList()))
+				btn_PlayWith = pMenu->AddButton(208);
 
-  // hide scan button unless we're in files window
-  int btn_Query = 0;
-  if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-    btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
+			// if autoresume is enabled then add restart video button
+			// check to see if the Resume Video button is applicable
+			if (GetResumeItemOffset(m_vecItems[iItem]) > 0)               
+				if (g_guiSettings.GetBool("myvideos.autoresume"))
+					btn_Restart = pMenu->AddButton(20132);    // Restart Video
+				else
+					btn_Resume = pMenu->AddButton(13381);     // Resume Video
 
-  int btn_Mark_UnWatched = 0;
-  int btn_Mark_Watched   = 0;
-  int btn_Update_Title   = 0;
-  //if (GetID() == WINDOW_VIDEO_TITLE || GetID() == WINDOW_VIDEO_GENRE || GetID() == WINDOW_VIDEO_ACTOR || GetID() == WINDOW_VIDEO_YEAR)
-  // is the item a database movie?
-  if (GetID() != WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-  {
-    // uses Loaded to hold Watched/UnWatched status
-    if (m_vecItems[iItem]->m_musicInfoTag.Loaded())
-      btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
-    else
-      btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
+			// turn off the query info button if we are in playlists view
+			if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES) && !(GetID() == WINDOW_VIDEO_FILES && !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser))
+				btn_Show_Info = pMenu->AddButton(13346);
+		}
 
-    /*
-	  if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
-	  {
-      btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
-      btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
-	  }
-	  else if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
-	  {
-      btn_Mark_Watched = pMenu->AddButton(16103); //Mark as Watched
-	  }
-    else if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_WATCHED)
-    {
-      btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
-    }
-    */
+		// hide scan button unless we're in files window
+		if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+			btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
 
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
-      btn_Update_Title = pMenu->AddButton(16105); //Edit Title
-  }
+		// is the item a database movie?
+		if (GetID() != WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+		{
+			// uses Loaded to hold Watched/UnWatched status
+			if (m_vecItems[iItem]->m_musicInfoTag.Loaded())
+				btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
+			else
+				btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
 
-  // turn off the now playing button if playlist is empty or if we are in playlist window
-  int btn_Now_Playing = 0;                          
-  if (GetID() != WINDOW_VIDEO_PLAYLIST && g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
-    btn_Now_Playing = pMenu->AddButton(13350);    // Now Playing...
-  
-  // hide delete button unless enabled, or in title window
-  int btn_Delete = 0;
-  int btn_Rename = 0;
-  if (!bIsGotoParent)
-  {
-    if ((m_vecItems.m_strPath.Equals("special://videoplaylists/")) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion")))
-    {
-      if (!m_vecItems[iItem]->IsReadOnly())
-      { // enable only if writeable
-        btn_Delete = pMenu->AddButton(117);
-        btn_Rename = pMenu->AddButton(118);
-      }
-    }
-    if (GetID() == WINDOW_VIDEO_TITLE && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-      btn_Delete = pMenu->AddButton(646);
-  }
+			if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
+				btn_Update_Title = pMenu->AddButton(16105); //Edit Title
+		}
 
-  int btn_Settings      = pMenu->AddButton(5);      // Settings
+	  // hide delete button unless enabled, or in title window
+		if (!bIsGotoParent)
+		{
+			// video playlists or file operations are allowed
+			if ((m_vecItems.m_strPath.Equals("special://videoplaylists/")) || (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion")))
+			{
+				if (!m_vecItems[iItem]->IsReadOnly())
+				{ // enable only if writeable
+					btn_Delete = pMenu->AddButton(117);
+					btn_Rename = pMenu->AddButton(118);
+				}
+			}
+			// delete titles from database
+			if (GetID() == WINDOW_VIDEO_TITLE && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+				btn_Delete = pMenu->AddButton(646);
+		}
+	} // if (bContextDriven)
 
-  int btn_GoToRoot = pMenu->AddButton(20128);
+	// non-contextual buttons
+  int btn_Settings = pMenu->AddButton(5);			// Settings
+  int btn_GoToRoot = pMenu->AddButton(20128);	// Go To Root
+	int btn_Switch = 0;													// Switch Media
+  int btn_NowPlaying = 0;											// Now Playing
+
+	// Switch Media is only visible in files window
+	if (GetID() == WINDOW_VIDEO_FILES)
+	{
+		btn_Switch = pMenu->AddButton(523); // switch media
+	}
+
+	// Now Playing... at the very bottom of the list for easy access
+	if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
+			btn_NowPlaying = pMenu->AddButton(13350);
 
   // position it correctly
   pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
@@ -811,18 +813,12 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btnid = pMenu->GetButton();
   if (btnid>0)
   {
-    if (btnid == btn_Show_Info)
+		// queue
+    if (btnid == btn_Queue)
     {
-      OnInfo(iItem);
-	}
-	else if (btnid == btn_Restart)
-    {
-      OnRestartItem(iItem);
+      OnQueueItem(iItem);
     }
-    else if (btnid == btn_Resume)
-    {
-      OnResumeItem(iItem);
-    }
+		// play
     else if (btnid == btn_PlayWith)
     {
       // if folder, play with default player
@@ -837,46 +833,73 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
           OnClick(iItem);
       }
     }
-    else if (btnid == btn_Queue)
+		// restart
+		else if (btnid == btn_Restart)
     {
-      OnQueueItem(iItem);
+      OnRestartItem(iItem);
     }
-    else if (btnid ==  btn_Now_Playing)
+		// resume
+    else if (btnid == btn_Resume)
     {
-      m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-      return;
+      OnResumeItem(iItem);
     }
+		// video info
+		else if (btnid == btn_Show_Info)
+    {
+      OnInfo(iItem);
+		}
+		// scan
     else if (btnid == btn_Query)
     {
       OnScan();
     }
+		// unwatched
     else if (btnid == btn_Mark_UnWatched)
 	  {
 		  MarkUnWatched(iItem);
 	  }
+		// watched
 	  else if (btnid == btn_Mark_Watched)
 	  {
 		  MarkWatched(iItem);
 	  }
+		// update title
 	  else if (btnid == btn_Update_Title)
 	  {
 		  UpdateVideoTitle(iItem);
 	  }
-    else if (btnid == btn_Settings)
-    { 
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
-    }
+		// delete
     else if (btnid == btn_Delete)
     {
       OnDeleteItem(iItem);
     }
+		// rename
     else if (btnid == btn_Rename)
     {
       OnRenameItem(iItem);
     }
+		// settings
+		else if (btnid == btn_Settings)
+    { 
+      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
+			return;
+    }
+		// go to root
     else if (btnid == btn_GoToRoot)
     {
       Update("");
+      return;
+    }
+		// switch media
+		else if (btnid == btn_Switch)
+		{
+			CGUIDialogContextMenu::SwitchMedia("video", m_vecItems.m_strPath, posX, posY);
+			return;
+		}
+		// now playing
+		else if (btnid ==  btn_NowPlaying)
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
       return;
     }
   }

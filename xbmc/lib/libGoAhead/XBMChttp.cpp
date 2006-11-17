@@ -1545,7 +1545,7 @@ int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
   {
     // if no playlist, set the playlist to PLAYLIST_MUSIC_TEMP like playmedia
     if (iPlaylist == PLAYLIST_NONE)
-      iPlaylist = PLAYLIST_MUSIC_TEMP;
+      iPlaylist = PLAYLIST_MUSIC;
     LoadPlayList(paras[0], iPlaylist, true, true);
     CStdString strPlaylist;
     strPlaylist.Format("%i", iPlaylist);
