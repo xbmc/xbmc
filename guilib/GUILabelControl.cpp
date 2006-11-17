@@ -51,13 +51,14 @@ void CGUILabelControl::Render()
 	{
     renderLabel = g_infoManager.GetMultiLabel(m_multiInfo);
 	}
-  if (m_wrapMultiLine && m_width > 0)
-    WrapText(renderLabel, m_label.font, m_width);
 
   if (m_label.font)
   {
     CStdStringW strLabelUnicode;
     g_charsetConverter.utf8ToUTF16(renderLabel, strLabelUnicode);
+
+    if (m_wrapMultiLine && m_width > 0)
+      WrapText(strLabelUnicode, m_label.font, m_width);
 
     // check for scrolling
     bool bNormalDraw = true;
