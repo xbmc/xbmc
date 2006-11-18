@@ -38,6 +38,7 @@
 #include "GUIButtonScroller.h"
 #include "..\..\FileSystem\FactoryDirectory.h"
 #include "..\..\FileSystem\VirtualDirectory.h"
+#include "..\..\utils\UdpClient.h"
 
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 20
@@ -47,9 +48,10 @@
 
 CXbmcHttp* pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
+CUdpBroadcast* pUdpBroadcast;
 
 //Response format
-CStdString openTag, closeTag, userHeader, userFooter, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField;
+CStdString openTag, closeTag, userHeader, userFooter, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, openBroadcast, closeBroadcast;
 bool incWebHeader, incWebFooter, closeFinalTag;
 
 bool autoGetPictureThumbs = true;
@@ -224,6 +226,8 @@ void resetTags()
   closeRecord="";
   openField="<li>";
   closeField="";
+  openBroadcast="<b>";
+  closeBroadcast="</b>";
   incWebHeader=true;
   incWebFooter=true;
   closeFinalTag=false;
@@ -301,16 +305,39 @@ int splitParameter(const CStdString &parameter, CStdString& command, CStdString 
   }
 }
 
+bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras)
+{
+  int open, close;
+  open = cmd.Find("(");
+  if (open>0)
+  {
+	close=cmd.length();
+	while (close>open && cmd.Mid(close,1)!=")")
+	  close--;
+	if (close>open)
+	{
+	  paras = cmd.Mid(open + 1, close - open - 1);
+	  cmd = cmd.Left(open);
+	  return (close-open)>1;
+	}
+  }
+  return false;
+}
 bool playableFile(const CStdString &filename)
 {
   CURL url(filename);
+  CFileItem *pItem = new CFileItem(filename);
+  bool playable;
 
-  /* okey this is silly, but don't feel like creating a CFileItem to check for internet stream */
-  return url.GetProtocol().Equals("http")
-      || url.GetProtocol().Equals("https")
-      || url.GetProtocol().Equals("lastfm")
-      || url.GetProtocol().Equals("shout")    
-      || CFile::Exists(filename);
+  ///* okey this is silly, but don't feel like creating a CFileItem to check for internet stream */
+  //return url.GetProtocol().Equals("http")
+  //    || url.GetProtocol().Equals("https")
+  //    || url.GetProtocol().Equals("lastfm")
+  //    || url.GetProtocol().Equals("shout")    
+  //    || CFile::Exists(filename);
+  playable = pItem->IsInternetStream() || CFile::Exists(filename);
+  delete pItem;
+  return playable;
 }
 
 int SetResponse(const CStdString &response)
@@ -337,6 +364,298 @@ CStdString flushResult(int eid, webs_t wp, const CStdString &output)
     else
       return output;
   return "";
+}
+
+int displayDir(int numParas, CStdString paras[]) {
+  //mask = ".mp3|.wma" -> matching files
+  //mask = "*" -> just folders
+  //mask = "" -> all files and folder
+  //option = "1" -> append date&time to file name
+
+  CFileItemList dirItems;
+  CStdString output="";
+
+  CStdString  folder, mask="", option="";
+
+  if (numParas==0)
+  {
+    return SetResponse(openTag+"Error:Missing folder");
+  }
+  folder=paras[0];
+  if (folder.length()<1)
+  {
+    return SetResponse(openTag+"Error:Missing folder");
+  }
+  if (numParas>1)
+    mask=paras[1];
+    if (numParas>2)
+      option=paras[2];
+
+  IDirectory *pDirectory = CFactoryDirectory::Create(folder);
+
+  if (!pDirectory) 
+  {
+    return SetResponse(openTag+"Error");  
+  }
+  pDirectory->SetMask(mask);
+  CStdString tail=folder.Right(folder.length()-1);
+  bool bResult=((pDirectory->Exists(folder))||(tail==":")||(tail==":\\")||(tail==":/"));
+  if (!bResult)
+  {
+    return SetResponse(openTag+"Error:Not folder");
+  }
+  bResult=pDirectory->GetDirectory(folder,dirItems);
+  if (!bResult)
+  {
+    return SetResponse(openTag+"Error:Not folder");
+  }
+
+  dirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  CStdString aLine="";
+  for (int i=0; i<dirItems.Size(); ++i)
+  {
+    CFileItem *itm = dirItems[i];
+    if (mask=="*" || (mask =="" && itm->m_bIsFolder))
+      if (!CUtil::HasSlashAtEnd(itm->m_strPath))
+        aLine=closeTag+openTag + itm->m_strPath + "\\" ;
+      else
+        aLine=closeTag+openTag + itm->m_strPath ;
+    else
+      if (!itm->m_bIsFolder)
+        aLine=closeTag+openTag + itm->m_strPath;
+    if (aLine!="")
+    {
+      if (option=="1") {
+        output+=aLine+"  ;" + itm->m_dateTime.GetAsLocalizedDateTime();
+      }
+      else
+        output+=aLine;
+      aLine="";
+    }
+  }
+  return SetResponse(output);
+}
+
+void SetCurrentMediaItem(CFileItem& newItem)
+{
+  //  No audio file, we are finished here
+  if (!newItem.IsAudio() )
+    return;
+
+  //  Get a reference to the item's tag
+  CMusicInfoTag& tag=newItem.m_musicInfoTag;
+  //  we have a audio file.
+  //  Look if we have this file in database...
+  bool bFound=false;
+  CMusicDatabase musicdatabase;
+  if (musicdatabase.Open())
+  {
+    CSong song;
+    bFound=musicdatabase.GetSongByFileName(newItem.m_strPath, song);
+    tag.SetSong(song);
+    musicdatabase.Close();
+  }
+  if (!bFound && g_guiSettings.GetBool("musicfiles.usetags"))
+  {
+    //  ...no, try to load the tag of the file.
+    auto_ptr<IMusicInfoTagLoader> pLoader(CMusicInfoTagLoaderFactory::CreateLoader(newItem.m_strPath));
+    //  Do we have a tag loader for this file type?
+    if (pLoader.get() != NULL)
+      pLoader->Load(newItem.m_strPath,tag);
+  }
+
+  //  If we have tag information, ...
+  if (tag.Loaded())
+  {
+    g_infoManager.SetCurrentSongTag(tag);
+  }
+}
+
+void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask)
+//if playlist==-1 then use slideshow
+{
+  if (pItem->m_bIsFolder)
+  {
+    // recursive
+    if (pItem->IsParentFolder()) return;
+    CStdString strDirectory=pItem->m_strPath;
+    CFileItemList items;
+    IDirectory *pDirectory = CFactoryDirectory::Create(strDirectory);
+    if (mask!="")
+      pDirectory->SetMask(mask);
+    bool bResult=pDirectory->GetDirectory(strDirectory,items);
+    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    for (int i=0; i < items.Size(); ++i)
+      AddItemToPlayList(items[i], playList, sortMethod, mask);
+  }
+  else
+  {
+    //selected item is a file, add it to playlist
+    if (playList==-1)
+    {
+      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+      if (!pSlideShow)
+        return ;
+      pSlideShow->Add(pItem->m_strPath);
+    }
+    else
+    {
+      PLAYLIST::CPlayList::CPlayListItem playlistItem;
+      CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+      g_playlistPlayer.GetPlaylist(playList).Add(playlistItem);
+    }
+
+  }
+}
+
+void LoadPlayListOld(const CStdString& strPlayList, int playList)
+{
+  // load a playlist like .m3u, .pls
+  // first get correct factory to load playlist
+  CPlayListFactory factory;
+  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  if ( NULL != pPlayList.get())
+  {
+    if (!pPlayList->Load(strPlayList))
+      return; 
+    CPlayList& playlist=g_playlistPlayer.GetPlaylist( playList );
+    playlist.Clear();
+    for (int i=0; i < (int)pPlayList->size(); ++i)
+    {
+      const CPlayList::CPlayListItem& playListItem =(*pPlayList)[i];
+      CStdString strLabel=playListItem.GetDescription();
+      if (strLabel.size()==0) 
+        strLabel=CUtil::GetFileName(playListItem.GetFileName());
+
+      CPlayList::CPlayListItem playlistItem;
+      playlistItem.SetFileName(playListItem.GetFileName());
+      playlistItem.SetDescription(strLabel);
+      playlistItem.SetDuration(playListItem.GetDuration());
+      playlist.Add(playlistItem);
+    }
+
+    g_playlistPlayer.SetCurrentPlaylist(playList);
+    g_applicationMessenger.PlayListPlayerPlay();
+    
+    // set current file item
+    CFileItem item(playlist[0].GetDescription());
+    item.m_strPath = playlist[0].GetFileName();
+    SetCurrentMediaItem(item);
+  }
+}
+
+bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart)
+{
+  //CStdString strPath = item.m_strPath;
+  CFileItem *item = new CFileItem(CUtil::GetFileName(strPath));
+  item->m_strPath=strPath;
+  if (item->IsInternetStream())
+  {
+    //we got an url, create a dummy .strm playlist,
+    //pPlayList->Load will handle loading it from url instead of from a file
+    strPath = "temp.strm";
+  }
+  CPlayListFactory factory;
+  auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
+  if ( NULL == pPlayList.get())
+    return false;
+  if (!pPlayList->Load(item->m_strPath))
+    return false;
+
+  CPlayList& playlist = (*pPlayList);
+
+  if (playlist.size() == 0)
+    return false;
+
+  // first item of the list, used to determine the intent
+  CPlayList::CPlayListItem playlistItem = playlist[0];
+
+  if ((playlist.size() == 1) && (autoStart))
+  {
+    // just 1 song? then play it (no need to have a playlist of 1 song)
+    g_applicationMessenger.MediaPlay(CFileItem(playlistItem).m_strPath);
+    return true;
+  }
+
+  if (clearList)
+    g_playlistPlayer.ClearPlaylist(iPlaylist);
+
+  // add each item of the playlist to the playlistplayer
+  for (int i = 0; i < (int)pPlayList->size(); ++i)
+  {
+    const CPlayList::CPlayListItem& playListItem = playlist[i];
+    CStdString strLabel = playListItem.GetDescription();
+    if (strLabel.size() == 0)
+      strLabel = CUtil::GetTitleFromPath(playListItem.GetFileName());
+
+    CPlayList::CPlayListItem playlistItem;
+    playlistItem.SetDescription(playListItem.GetDescription());
+    playlistItem.SetDuration(playListItem.GetDuration());
+    playlistItem.SetFileName(playListItem.GetFileName());
+    g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
+  }
+
+  /* We don't shuffle playlist on load any more
+       - shuffling is handled globally by the playlist player
+
+  // music option: shuffle playlist on load
+  // dont do this if the first item is a stream
+  if (
+    (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP) &&
+    !playlistItem.IsShoutCast() &&
+    g_guiSettings.GetBool("musicplaylist.shuffleplaylistsonload")
+    )
+  {
+    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
+  }*/
+
+  if (autoStart)
+    if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
+    {
+      CPlayList& playlist = g_playlistPlayer.GetPlaylist( iPlaylist );
+      const CPlayList::CPlayListItem& item = playlist[0];
+      g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+      g_playlistPlayer.Reset();
+      g_applicationMessenger.PlayListPlayerPlay();
+      return true;
+    } 
+    else
+      return false;
+  else
+    return true;
+  return false;
+}
+
+CUdpBroadcast::CUdpBroadcast() : CUdpClient()
+{
+  Create();
+}
+
+CUdpBroadcast::~CUdpBroadcast()
+{
+  Destroy();
+}
+
+bool CUdpBroadcast::broadcast(CStdString message, int port)
+{
+  if (port>0)
+    return Broadcast(port, message);
+  else
+    return false;
+}
+
+CXbmcHttp::CXbmcHttp()
+{
+  resetTags();
+  CKey temp;
+  key = temp;
+}
+
+CXbmcHttp::~CXbmcHttp()
+{
+  if (pUdpBroadcast)
+    delete pUdpBroadcast;
+  CLog::Log(LOGDEBUG, "xbmcHttp ends");
 }
 
 int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
@@ -632,279 +951,6 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
   }
   return SetResponse(strOutput);
 }
-
-int displayDir(int numParas, CStdString paras[]) {
-  //mask = ".mp3|.wma" -> matching files
-  //mask = "*" -> just folders
-  //mask = "" -> all files and folder
-  //option = "1" -> append date&time to file name
-
-  CFileItemList dirItems;
-  CStdString output="";
-
-  CStdString  folder, mask="", option="";
-
-  if (numParas==0)
-  {
-    return SetResponse(openTag+"Error:Missing folder");
-  }
-  folder=paras[0];
-  if (folder.length()<1)
-  {
-    return SetResponse(openTag+"Error:Missing folder");
-  }
-  if (numParas>1)
-    mask=paras[1];
-    if (numParas>2)
-      option=paras[2];
-
-  IDirectory *pDirectory = CFactoryDirectory::Create(folder);
-
-  if (!pDirectory) 
-  {
-    return SetResponse(openTag+"Error");  
-  }
-  pDirectory->SetMask(mask);
-  CStdString tail=folder.Right(folder.length()-1);
-  bool bResult=((pDirectory->Exists(folder))||(tail==":")||(tail==":\\")||(tail==":/"));
-  if (!bResult)
-  {
-    return SetResponse(openTag+"Error:Not folder");
-  }
-  bResult=pDirectory->GetDirectory(folder,dirItems);
-  if (!bResult)
-  {
-    return SetResponse(openTag+"Error:Not folder");
-  }
-
-  dirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-  CStdString aLine="";
-  for (int i=0; i<dirItems.Size(); ++i)
-  {
-    CFileItem *itm = dirItems[i];
-    if (mask=="*" || (mask =="" && itm->m_bIsFolder))
-      if (!CUtil::HasSlashAtEnd(itm->m_strPath))
-        aLine=closeTag+openTag + itm->m_strPath + "\\" ;
-      else
-        aLine=closeTag+openTag + itm->m_strPath ;
-    else
-      if (!itm->m_bIsFolder)
-        aLine=closeTag+openTag + itm->m_strPath;
-    if (aLine!="")
-    {
-      if (option=="1") {
-        output+=aLine+"  ;" + itm->m_dateTime.GetAsLocalizedDateTime();
-      }
-      else
-        output+=aLine;
-      aLine="";
-    }
-  }
-  return SetResponse(output);
-}
-
-void SetCurrentMediaItem(CFileItem& newItem)
-{
-  //  No audio file, we are finished here
-  if (!newItem.IsAudio() )
-    return;
-
-  //  Get a reference to the item's tag
-  CMusicInfoTag& tag=newItem.m_musicInfoTag;
-  //  we have a audio file.
-  //  Look if we have this file in database...
-  bool bFound=false;
-  CMusicDatabase musicdatabase;
-  if (musicdatabase.Open())
-  {
-    CSong song;
-    bFound=musicdatabase.GetSongByFileName(newItem.m_strPath, song);
-    tag.SetSong(song);
-    musicdatabase.Close();
-  }
-  if (!bFound && g_guiSettings.GetBool("musicfiles.usetags"))
-  {
-    //  ...no, try to load the tag of the file.
-    auto_ptr<IMusicInfoTagLoader> pLoader(CMusicInfoTagLoaderFactory::CreateLoader(newItem.m_strPath));
-    //  Do we have a tag loader for this file type?
-    if (pLoader.get() != NULL)
-      pLoader->Load(newItem.m_strPath,tag);
-  }
-
-  //  If we have tag information, ...
-  if (tag.Loaded())
-  {
-    g_infoManager.SetCurrentSongTag(tag);
-  }
-}
-
-void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask)
-//if playlist==-1 then use slideshow
-{
-  if (pItem->m_bIsFolder)
-  {
-    // recursive
-    if (pItem->IsParentFolder()) return;
-    CStdString strDirectory=pItem->m_strPath;
-    CFileItemList items;
-    IDirectory *pDirectory = CFactoryDirectory::Create(strDirectory);
-    if (mask!="")
-      pDirectory->SetMask(mask);
-    bool bResult=pDirectory->GetDirectory(strDirectory,items);
-    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-    for (int i=0; i < items.Size(); ++i)
-      AddItemToPlayList(items[i], playList, sortMethod, mask);
-  }
-  else
-  {
-    //selected item is a file, add it to playlist
-    if (playList==-1)
-    {
-      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
-      if (!pSlideShow)
-        return ;
-      pSlideShow->Add(pItem->m_strPath);
-    }
-    else
-    {
-      PLAYLIST::CPlayList::CPlayListItem playlistItem;
-      CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      g_playlistPlayer.GetPlaylist(playList).Add(playlistItem);
-    }
-
-  }
-}
-
-void LoadPlayListOld(const CStdString& strPlayList, int playList)
-{
-  // load a playlist like .m3u, .pls
-  // first get correct factory to load playlist
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
-  if ( NULL != pPlayList.get())
-  {
-    if (!pPlayList->Load(strPlayList))
-      return; 
-    CPlayList& playlist=g_playlistPlayer.GetPlaylist( playList );
-    playlist.Clear();
-    for (int i=0; i < (int)pPlayList->size(); ++i)
-    {
-      const CPlayList::CPlayListItem& playListItem =(*pPlayList)[i];
-      CStdString strLabel=playListItem.GetDescription();
-      if (strLabel.size()==0) 
-        strLabel=CUtil::GetFileName(playListItem.GetFileName());
-
-      CPlayList::CPlayListItem playlistItem;
-      playlistItem.SetFileName(playListItem.GetFileName());
-      playlistItem.SetDescription(strLabel);
-      playlistItem.SetDuration(playListItem.GetDuration());
-      playlist.Add(playlistItem);
-    }
-
-    g_playlistPlayer.SetCurrentPlaylist(playList);
-    g_applicationMessenger.PlayListPlayerPlay();
-    
-    // set current file item
-    CFileItem item(playlist[0].GetDescription());
-    item.m_strPath = playlist[0].GetFileName();
-    SetCurrentMediaItem(item);
-  }
-}
-
-bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart)
-{
-  //CStdString strPath = item.m_strPath;
-  CFileItem *item = new CFileItem(CUtil::GetFileName(strPath));
-  item->m_strPath=strPath;
-  if (item->IsInternetStream())
-  {
-    //we got an url, create a dummy .strm playlist,
-    //pPlayList->Load will handle loading it from url instead of from a file
-    strPath = "temp.strm";
-  }
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
-  if ( NULL == pPlayList.get())
-    return false;
-  if (!pPlayList->Load(item->m_strPath))
-    return false;
-
-  CPlayList& playlist = (*pPlayList);
-
-  if (playlist.size() == 0)
-    return false;
-
-  // first item of the list, used to determine the intent
-  CPlayList::CPlayListItem playlistItem = playlist[0];
-
-  if ((playlist.size() == 1) && (autoStart))
-  {
-    // just 1 song? then play it (no need to have a playlist of 1 song)
-    g_applicationMessenger.MediaPlay(CFileItem(playlistItem).m_strPath);
-    return true;
-  }
-
-  if (clearList)
-    g_playlistPlayer.ClearPlaylist(iPlaylist);
-
-  // add each item of the playlist to the playlistplayer
-  for (int i = 0; i < (int)pPlayList->size(); ++i)
-  {
-    const CPlayList::CPlayListItem& playListItem = playlist[i];
-    CStdString strLabel = playListItem.GetDescription();
-    if (strLabel.size() == 0)
-      strLabel = CUtil::GetTitleFromPath(playListItem.GetFileName());
-
-    CPlayList::CPlayListItem playlistItem;
-    playlistItem.SetDescription(playListItem.GetDescription());
-    playlistItem.SetDuration(playListItem.GetDuration());
-    playlistItem.SetFileName(playListItem.GetFileName());
-    g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
-  }
-
-  /* We don't shuffle playlist on load any more
-       - shuffling is handled globally by the playlist player
-
-  // music option: shuffle playlist on load
-  // dont do this if the first item is a stream
-  if (
-    (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP) &&
-    !playlistItem.IsShoutCast() &&
-    g_guiSettings.GetBool("musicplaylist.shuffleplaylistsonload")
-    )
-  {
-    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
-  }*/
-
-  if (autoStart)
-    if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
-    {
-      CPlayList& playlist = g_playlistPlayer.GetPlaylist( iPlaylist );
-      const CPlayList::CPlayListItem& item = playlist[0];
-      g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
-      g_playlistPlayer.Reset();
-      g_applicationMessenger.PlayListPlayerPlay();
-      return true;
-    } 
-    else
-      return false;
-  else
-    return true;
-  return false;
-}
-
-CXbmcHttp::CXbmcHttp()
-{
-  resetTags();
-  CKey temp;
-  key = temp;
-}
-
-CXbmcHttp::~CXbmcHttp()
-{
-  CLog::Log(LOGDEBUG, "xbmcHttp ends");
-}
-
 
 int CXbmcHttp::xbmcQueryMusicDataBase(int numParas, CStdString paras[])
 {
@@ -2288,6 +2334,62 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
   }
 }
 
+int CXbmcHttp::xbmcSpinDownHardDisk()
+{
+  if (m_gWindowManager.IsRouted())
+	return SetResponse(openTag+"Error:Can't spin down now");
+  if (g_application.MustBlockHDSpinDown())
+	return SetResponse(openTag+"Error:Can't spin down now");
+  CIoSupport::SpindownHarddisk();
+  return SetResponse(openTag+"OK");
+}
+
+bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
+{
+  if  (g_stSettings.m_HttpApiBroadcastLevel>=level)
+  {
+    if (!pUdpBroadcast)
+	  pUdpBroadcast = new CUdpBroadcast();
+    return pUdpBroadcast->broadcast(openBroadcast+message+closeBroadcast, g_stSettings.m_HttpApiBroadcastPort);
+  }
+  else
+    return true;
+}
+
+int CXbmcHttp::xbmcBroadcast(int numParas, CStdString paras[])
+{
+  if (numParas>0)
+  {
+    if (!pUdpBroadcast)
+		pUdpBroadcast = new CUdpBroadcast();
+	bool succ;
+	if (numParas>1)
+       succ=pUdpBroadcast->broadcast(paras[0], atoi(paras[1]));
+	else
+       succ=pUdpBroadcast->broadcast(paras[0], g_stSettings.m_HttpApiBroadcastPort);
+	if (succ)
+	  return SetResponse(openTag+"OK");
+	else
+	  return SetResponse(openTag+"Error: calling broadcast");
+  }
+  else
+	return SetResponse(openTag+"Error:Wrong number of parameters");
+}
+
+int CXbmcHttp::xbmcSetBroadcast(int numParas, CStdString paras[])
+{
+  if (numParas>0)
+  {
+    g_stSettings.m_HttpApiBroadcastLevel=atoi(paras[0]);
+	if (numParas>1)
+	   g_stSettings.m_HttpApiBroadcastPort=atoi(paras[1]);
+	return SetResponse(openTag+"OK");
+  }
+  else
+    return SetResponse(openTag+"Error:Wrong number of parameters");
+}
+
+
 int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
 //no paras
 //filename, flash, rotation, width, height, quality
@@ -2432,6 +2534,10 @@ int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
         openField=paras[i+1];
 	  else if (para=="closefield")
         closeField=paras[i+1];
+	  else if (para=="openbroadcast")
+        openBroadcast=paras[i+1];
+	  else if (para=="closebroadcast")
+        closeBroadcast=paras[i+1];
 	  else
 		  return SetResponse(openTag+"Error:Unknown parameter:"+para);
 	}
@@ -2532,6 +2638,9 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "setautogetpicturethumbs")  retVal = xbmcAutoGetPictureThumbs(numParas, paras);
       else if (command == "setresponseformat")        retVal = xbmcSetResponseFormat(numParas, paras);
 	  else if (command == "querymusicdatabase")       retVal = xbmcQueryMusicDataBase(numParas, paras);
+	  else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk();
+	  else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
+	  else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
       else if (command == "copyfile")                 retVal = xbmcCopyFile(numParas, paras);
@@ -2600,6 +2709,9 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   if ((wp != NULL) && (eid==NO_EID) && (incWebHeader))
     websHeader(wp);
   if ((*parameter==0) || !strcmp(parameter,XBMC_NONE))
+    if (checkForFunctionTypeParas(cmd, paras))
+	  g_applicationMessenger.HttpApi(cmd+"; "+paras);
+	else
     g_applicationMessenger.HttpApi(cmd);
   else
     g_applicationMessenger.HttpApi(cmd+"; "+paras);
