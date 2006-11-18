@@ -1,3 +1,5 @@
+#include "..\..\utils\UdpClient.h"
+
 #pragma once
 
 /******************************** Description *********************************/
@@ -24,6 +26,14 @@ public:
   CStdString xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter);
   CStdString xbmcExternalCall(char *command);
 
+};
+
+class CUdpBroadcast : public CUdpClient
+{
+public:
+  CUdpBroadcast();
+  ~CUdpBroadcast();
+  bool broadcast(CStdString message, int port);
 };
 
 class CXbmcHttp
@@ -89,11 +99,17 @@ public:
   int xbmcGetGUIDescription();
   int xbmcAutoGetPictureThumbs(int numParas, CStdString paras[]);
   int xbmcSetResponseFormat(int numParas, CStdString paras[]);
+  int xbmcSpinDownHardDisk();
+  int xbmcBroadcast(int numParas, CStdString paras[]);
+  bool xbmcBroadcast(CStdString message, int level=0);
+  int xbmcSetBroadcast(int numParas, CStdString paras[]);
   CKey GetKey();
   void ResetKey();
 
 private:
   CKey key;
+  CUdpClient UdpClient;
+  bool UdpClientInit;
 
 };
 
