@@ -58,6 +58,8 @@ CWebServer::CWebServer()
   pXbmcWebConfig = new CXbmcConfiguration();
   if (!pXbmcHttpShim)
     pXbmcHttpShim = new CXbmcHttpShim();
+  if (!pXbmcHttp)
+    pXbmcHttp = new CXbmcHttp();
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
 
@@ -74,6 +76,11 @@ CWebServer::~CWebServer()
   {
     delete pXbmcHttpShim;
     pXbmcHttpShim=NULL;
+  }
+  if (pXbmcHttp)
+  {
+    delete pXbmcHttp;
+    pXbmcHttp=NULL;
   }
 }
 
