@@ -232,6 +232,7 @@ CApplication::CApplication(void)
   m_pWebServer = NULL;
   pXbmcHttp = NULL;
   m_pFileZilla = NULL;
+  pXbmcHttp = NULL;
   m_pPlayer = NULL;
 #ifdef HAS_XBOX_HARDWARE
   XSetProcessQuantumLength(5); //default=20msec
@@ -3520,6 +3521,9 @@ void CApplication::OnPlayBackEnded()
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackEnded();
+  // Let's tell the outside world as well
+  if (pXbmcHttp)
+    pXbmcHttp->xbmcBroadcast("OnPlayBackEnded", 1);
 
   CLog::Log(LOGDEBUG, "Playback has finished");
   
@@ -3539,6 +3543,10 @@ void CApplication::OnPlayBackStarted()
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted();
+  
+  // Let's tell the outside world as well
+  if (pXbmcHttp)
+    pXbmcHttp->xbmcBroadcast("OnPlayBackStarted", 1);
 
   CLog::Log(LOGDEBUG, "Playback has started");
 
@@ -3556,6 +3564,10 @@ void CApplication::OnQueueNextItem()
   // informs python script currently running that we are requesting the next track
   // (does nothing if python is not loaded)
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
+  
+  // Let's tell the outside world as well
+  if (pXbmcHttp)
+    pXbmcHttp->xbmcBroadcast("OnQueueNextItem", 1);
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
@@ -3568,6 +3580,10 @@ void CApplication::OnPlayBackStopped()
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStopped();
+    
+  // Let's tell the outside world as well
+  if (pXbmcHttp)
+    pXbmcHttp->xbmcBroadcast("OnPlayBackStoped", 1);
 
   OutputDebugString("Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
