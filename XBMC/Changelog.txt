@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-11-2006 added: HttpApi can now be called using the more usual function calling syntax i.e. function(x;y;z)
+ - 18-11-2006 added: HttpApi broadcast capabilities (see wiki help pages (in a day or so)) and broadcasting of PlayBack events
  - 17-11-2006 changed: disabled the Randomize button in My Music Now Playing window.  Shuffle state is now saved.
 	When enabed, new songs get added to the Now Playing window in a shuffled order.
 	If the playlist is being played when new songs are added, the new songs will be shuffled into the playlist
