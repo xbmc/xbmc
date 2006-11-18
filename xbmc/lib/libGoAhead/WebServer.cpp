@@ -31,6 +31,12 @@ static CXbmcConfiguration* pXbmcWebConfig;
 #pragma bss_seg("WEB_BSS")
 #pragma const_seg("WEB_RD")
 
+#pragma comment(linker, "/merge:WEB_TEXT=LIBHTTP")
+#pragma comment(linker, "/merge:WEB_DATA=LIBHTTP")
+#pragma comment(linker, "/merge:WEB_BSS=LIBHTTP")
+#pragma comment(linker, "/merge:WEB_RD=LIBHTTP")
+#pragma comment(linker, "/section:LIBHTTP,RWE")
+
 // this is from a C library so use C style function calls
 #ifdef __cplusplus
 extern "C" {

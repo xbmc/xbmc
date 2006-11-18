@@ -1,8 +1,3 @@
-#pragma comment(linker, "/merge:PY_TEXT=PYTHON")
-#pragma comment(linker, "/merge:PY_DATA=PY_RW")
-#pragma comment(linker, "/merge:PY_BSS=PY_RW")
-#pragma comment(linker, "/merge:PY_RDATA=PYTHON")
-
 #pragma once
 
 #include "XBPyThread.h"

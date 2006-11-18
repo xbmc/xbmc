@@ -9,12 +9,6 @@
  * See the file "license.txt" for usage and redistribution license requirements
  */
 
-#pragma comment(linker, "/merge:WEB_TEXT=LIBHTTP")
-#pragma comment(linker, "/merge:WEB_DATA=LIBHTTP")
-#pragma comment(linker, "/merge:WEB_BSS=LIBHTTP")
-#pragma comment(linker, "/merge:WEB_RD=LIBHTTP")
-#pragma comment(linker, "/section:LIBHTTP,RWE")
-
 #pragma once
 
 #ifdef __cplusplus
