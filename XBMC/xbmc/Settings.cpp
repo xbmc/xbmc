@@ -1059,6 +1059,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp, 0, 0, INT_MAX);
     GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
     GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
+	GetInteger(pElement, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel, 0, 0,5);
+	GetInteger(pElement, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort, 8278, 1, 65535);
   }
   
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
@@ -1738,6 +1740,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
   SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
   SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
+  SetInteger(pNode, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort); 
+  SetInteger(pNode, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel);
     
   // default video settings
   TiXmlElement videoSettingsNode("defaultvideosettings");
