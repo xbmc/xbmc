@@ -1,3 +1,7 @@
+#pragma comment(linker, "/merge:PY_TEXT=PYTHON")
+#pragma comment(linker, "/merge:PY_DATA=PY_RW")
+#pragma comment(linker, "/merge:PY_BSS=PY_RW")
+#pragma comment(linker, "/merge:PY_RDATA=PYTHON")
 
 // python.h should always be included first before any other includes
 #include "../../stdafx.h"
