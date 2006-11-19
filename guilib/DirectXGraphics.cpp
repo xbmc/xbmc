@@ -196,7 +196,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppT
   XB_D3DFORMAT fmt;
   DWORD width, height, pitch, offset;
   ParseTextureHeader(pTex, fmt, width, height, pitch, offset);
-  g_graphicsContext.Get3DDevice()->CreateTexture(width, height, 1, 0, GetD3DFormat(fmt), D3DPOOL_MANAGED, ppTexture);
+  D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, GetD3DFormat(fmt), D3DPOOL_MANAGED, ppTexture);
   D3DLOCKED_RECT lr;
   if (D3D_OK == (*ppTexture)->LockRect(0, &lr, NULL, 0))
   {

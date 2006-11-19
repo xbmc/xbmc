@@ -183,7 +183,7 @@ void CGUIDialogVideoBookmarks::AddBookmark()
   }
   CSingleLock lock(g_graphicsContext);
   LPDIRECT3DTEXTURE8 texture = NULL;
-  if (D3D_OK == g_graphicsContext.Get3DDevice()->CreateTexture(width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &texture))
+  if (D3D_OK == D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &texture))
   {
     LPDIRECT3DSURFACE8 surface = NULL;
     texture->GetSurfaceLevel(0, &surface);

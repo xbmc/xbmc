@@ -17,7 +17,19 @@
  #define GUI_D3D_FMT D3DFMT_LIN_A8R8G8B8
 #endif
 #define GAMMA_RAMP_FLAG  D3DSGR_IMMEDIATE
-#else
+
+#include <xgraphics.h>
+#include <d3d8.h>
+#include <d3dx8.h>
+
+#define LPD3DXBUFFER XGBuffer*
+#define D3DXAssembleShader(str, len, flags, constants, shader, errors) XGAssembleShader("UNKNOWN", str, len, flags, constants, shader, errors, NULL, NULL, NULL, NULL)
+
+// sadly D3DXCreateTexture won't consider linear formats with non power of 2 textures as valid, thus we use standard instead
+#define D3DXCreateTexture(device, width, height, levels, usage, format, pool, texture) (device)->CreateTexture(width, height, levels, usage, format, pool, texture)
+
+#else //_XBOX
+
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 
 #undef HAS_XBOX_D3D
@@ -33,6 +45,9 @@
 #define D3DFMT_LIN_X8R8G8B8 D3DFMT_X8R8G8B8
 #define D3DFMT_LIN_L8       D3DFMT_L8
 #define D3DFMT_LIN_D16      D3DFMT_D16
+#define D3DFMT_LIN_A8       D3DFMT_A8
+
+#define D3DPIXELSHADERDEF DWORD
 
 struct D3DTexture 
 {
