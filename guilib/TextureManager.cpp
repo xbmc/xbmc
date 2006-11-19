@@ -593,9 +593,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         int w = PadPow2(iWidth);
         int h = PadPow2(iHeight);
 #ifdef HAS_XBOX_D3D
-        if (g_graphicsContext.Get3DDevice()->CreateTexture(w, h, 1, 0, D3DFMT_P8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
+        if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_P8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
 #else
-        if (g_graphicsContext.Get3DDevice()->CreateTexture(w, h, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
+        if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
 #endif
         {
           D3DLOCKED_RECT lr;
@@ -755,7 +755,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
     CTextureMap* pMap = new CTextureMap(strTextureName);
     for (int iImage = 0; iImage < iImages; iImage++)
     {
-      if (g_graphicsContext.Get3DDevice()->CreateTexture( iWidth,
+      if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), iWidth,
           iHeight,
           1,  // levels
           0,  //usage
