@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-11-2006 changed: switch to using D3DXCreateTexture to allow gfx that doesn't support non power of 2 textures (they may still display abit wrong)
+ - 20-11-2006 changed: simplified ttf text renderer, and reducing special casing for win32 build
  - 19-11-2006 added: Recommendations radio to last.fm directory.
  - 18-11-2006 added: HttpApi can now be called using the more usual function calling syntax i.e. function(x;y;z)
  - 18-11-2006 added: HttpApi broadcast capabilities (see wiki help pages (in a day or so)) and broadcasting of PlayBack events

@@ -1,14 +1,6 @@
 #include "include.h"
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"
-#ifdef HAS_XBOX_D3D
-#include <xgraphics.h>
-#define TTF_TEXTURE_FORMAT D3DFMT_LIN_L8
-#define TTF_USE_PIXEL_SHADER
-#else
-#define TTF_TEXTURE_FORMAT D3DFMT_LIN_A8R8G8B8
-#undef  TTF_USE_PIXEL_SHADER
-#endif
 
 // stuff for freetype
 #include "ft2build.h"
@@ -32,6 +24,7 @@
   #pragma comment (lib,"../../guilib/freetype2/freetype221.lib")
 #endif
 #endif
+
 
 class CFreeTypeLibrary
 {
@@ -85,7 +78,6 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_dwNestedBeginCount = 0;
   m_pixelShader = NULL;
   m_vertexShader = NULL;
-
   m_face = NULL;
   m_library = NULL;
 }
@@ -105,7 +97,6 @@ void CGUIFontTTF::ClearCharacterCache()
   m_char = new Character[CHAR_CHUNK];
   m_numChars = 0;
   m_maxChars = CHAR_CHUNK;
-  m_textureRows = 0;
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
   m_posY = -(int)m_cellHeight;
@@ -123,7 +114,6 @@ void CGUIFontTTF::Clear()
   m_char = NULL;
   m_maxChars = 0;
   m_numChars = 0;
-  m_textureRows = 0;
   m_posX = 0;
   m_posY = 0;
   m_dwNestedBeginCount = 0;
@@ -140,6 +130,10 @@ void CGUIFontTTF::Clear()
 
 bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 {
+  // create our character texture + font shader
+  m_pD3DDevice = g_graphicsContext.Get3DDevice();
+  CreateShader();
+
   m_library = g_freeTypeLibrary.Get();
   if (!m_library)
     return false;
@@ -182,7 +176,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   m_cellBaseLine++;
   m_lineHeight++;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" Scaled size of font %s (%i): width = %i, height = %i", 
+  CLog::Log(LOGDEBUG, __FUNCTION__" Scaled size of font %s (%i): width = %i, height = %i",
     strFilename.c_str(), iHeight, m_cellWidth, m_cellHeight);
   m_iHeight = iHeight;
   m_iStyle = iStyle;
@@ -196,12 +190,10 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 
   m_maxChars = 0;
   m_numChars = 0;
-  m_textureRows = 0;
-
-  m_pD3DDevice = g_graphicsContext.Get3DDevice();
 
   m_strFilename = strFilename;
 
+  m_textureHeight = 0;
   m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
   if (m_textureWidth > 4096) m_textureWidth = 4096;
 
@@ -222,8 +214,6 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   Character *ellipse = GetCharacter(L'.');
   if (ellipse) m_ellipsesWidth = ROUND(ellipse->advance);
 
-  // create our character texture + font shader
-  CreateShader();
   return true;
 }
 
@@ -474,49 +464,64 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   if (bitGlyph->left < 0)
     m_posX += -bitGlyph->left;
 
+  D3DFORMAT format;
+  if(m_pixelShader)
+    format = D3DFMT_LIN_L8;
+  else
+    format = D3DFMT_LIN_A8;
+
   // check we have enough room for the character
   if (m_posX + bitGlyph->left + bitmap.width > (int)m_textureWidth)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
-    int newHeight = m_cellHeight * (m_textureRows + 1);
     m_posX = 0;
     m_posY += m_cellHeight;
     if (bitGlyph->left < 0)
       m_posX += -bitGlyph->left;
-    // create the new larger texture
-    LPDIRECT3DTEXTURE8 newTexture;
-    // check for max height (can't be more than 4096 texels)
-    if (newHeight > 4096)
+
+    if(m_posY + m_cellHeight >= m_textureHeight)
     {
-      CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%i > 4096 pixels long)", newHeight);
-      FT_Done_Glyph(glyph);
-      return false;
-    }
-    if (D3D_OK != m_pD3DDevice->CreateTexture(m_textureWidth, newHeight, 1, 0, TTF_TEXTURE_FORMAT, D3DPOOL_MANAGED, &newTexture))
-    {
-      CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
-      FT_Done_Glyph(glyph);
-      return false;
-    }
-    // clear texture, doesn't cost much
-    D3DLOCKED_RECT rect;
-    newTexture->LockRect(0, &rect, NULL, 0);
-    memset(rect.pBits, 0, rect.Pitch * newHeight);
-    newTexture->UnlockRect(0);
+      // create the new larger texture
+      unsigned newHeight = m_posY + m_cellHeight;
+      LPDIRECT3DTEXTURE8 newTexture;
+      // check for max height (can't be more than 4096 texels)
+      if (newHeight > 4096)
+      {
+        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%i > 4096 pixels long)", newHeight);
+        FT_Done_Glyph(glyph);
+        return false;
+      }
+      if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, format, D3DPOOL_MANAGED, &newTexture))
+      {
+        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
+        FT_Done_Glyph(glyph);
+        return false;
+      }
+      // correct texture sizes
+      D3DSURFACE_DESC desc;
+      newTexture->GetLevelDesc(0, &desc);
+      m_textureHeight = desc.Height;
+      m_textureWidth = desc.Width;
 
-    if (m_texture)
-    { // copy across from our current one using gpu
-      LPDIRECT3DSURFACE8 pTarget, pSource;
-      newTexture->GetSurfaceLevel(0, &pTarget);
-      m_texture->GetSurfaceLevel(0, &pSource);
+      // clear texture, doesn't cost much
+      D3DLOCKED_RECT rect;
+      newTexture->LockRect(0, &rect, NULL, 0);
+      memset(rect.pBits, 0, rect.Pitch * m_textureHeight);
+      newTexture->UnlockRect(0);
 
-      m_pD3DDevice->CopyRects(pSource, NULL, 0, pTarget, NULL);
+      if (m_texture)
+      { // copy across from our current one using gpu
+        LPDIRECT3DSURFACE8 pTarget, pSource;
+        newTexture->GetSurfaceLevel(0, &pTarget);
+        m_texture->GetSurfaceLevel(0, &pSource);
 
-      SAFE_RELEASE(pTarget);
-      SAFE_RELEASE(pSource);
-      SAFE_RELEASE(m_texture);
+        m_pD3DDevice->CopyRects(pSource, NULL, 0, pTarget, NULL);
+
+        SAFE_RELEASE(pTarget);
+        SAFE_RELEASE(pSource);
+        SAFE_RELEASE(m_texture);
+      }
+      m_texture = newTexture;
     }
-    m_texture = newTexture;
-    m_textureRows++;
   }
 
   // set the character in our table
@@ -532,56 +537,22 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   // we need only render if we actually have some pixels
   if (bitmap.width * bitmap.rows)
   {
-    // create a texture to render to, don't use main texture as locking that will
-    // wait for gpu needlessly
-    LPDIRECT3DTEXTURE8 pTexture;
-    if (D3D_OK != m_pD3DDevice->CreateTexture(bitmap.width, bitmap.rows, 1, 0, TTF_TEXTURE_FORMAT, D3DPOOL_MANAGED, &pTexture))
-    {
-      CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new character texture");
-      FT_Done_Glyph(glyph);
-      return false;
-    }
-
-    D3DLOCKED_RECT rect;
-    pTexture->LockRect(0, &rect, NULL, 0);
-    for (int y = 0; y < bitmap.rows; y++)
-    {
-      BYTE *dest = (BYTE *)rect.pBits + y * rect.Pitch;
-      BYTE *source = (BYTE *)bitmap.buffer + y * bitmap.pitch;
-#ifdef TTF_USE_PIXEL_SHADER
-      memcpy(dest, source, bitmap.width);
-#else
-      for (int x = 0; x < bitmap.width; x++)
-      {
-        *dest++ = (*source) ? 0xff : 0x00; // B
-        *dest++ = (*source) ? 0xff : 0x00; // G
-        *dest++ = (*source) ? 0xff : 0x00; // R
-        *dest++ = *source++;               // A
-      }
-#endif
-    }
-    pTexture->UnlockRect(0);
-
     // render this onto our normal texture using gpu
-    LPDIRECT3DSURFACE8 pTarget, pSource;
-    m_texture->GetSurfaceLevel(0, &pTarget);
-    pTexture->GetSurfaceLevel(0, &pSource);
+    LPDIRECT3DSURFACE8 target;
+    m_texture->GetSurfaceLevel(0, &target);
 
-    RECT sourcerect;
-    sourcerect.top = 0;
-    sourcerect.left = 0;
-    sourcerect.right = bitmap.width;
-    sourcerect.bottom = bitmap.rows;
+    RECT sourcerect = { 0, 0, bitmap.width, bitmap.rows };
+    RECT targetrect;
+    targetrect.top = m_posY + ch->offsetY;
+    targetrect.left = m_posX + bitGlyph->left;
+    targetrect.bottom = targetrect.top + bitmap.rows;
+    targetrect.right = targetrect.left + bitmap.width;
 
-    POINT targetpoint;
-    targetpoint.x = m_posX + bitGlyph->left;
-    targetpoint.y = m_posY + ch->offsetY;
+    D3DXLoadSurfaceFromMemory( target, NULL, &targetrect, 
+      bitmap.buffer, format, bitmap.pitch, NULL, &sourcerect, 
+      D3DX_FILTER_NONE, 0x00000000);
 
-    m_pD3DDevice->CopyRects(pSource, &sourcerect, 1, pTarget, &targetpoint);
-
-    SAFE_RELEASE(pTarget);
-    SAFE_RELEASE(pSource);
-    SAFE_RELEASE(pTexture);
+    SAFE_RELEASE(target);
   }
 
   m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
@@ -589,7 +560,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 
   // free the glyph
   FT_Done_Glyph(glyph);
-  
+
   return true;
 }
 
@@ -604,23 +575,18 @@ void CGUIFontTTF::Begin()
     m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
     m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
     m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG2 ); // only use diffuse
 
     m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-    m_pD3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
     m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
     m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
     m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-#ifdef HAS_XBOX_D3D
-    m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
+    m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
+
     m_pD3DDevice->SetVertexShader(m_vertexShader);
-#else
-    #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
-    m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-    m_pD3DDevice->SetVertexShader( D3DFVF_CUSTOMVERTEX );
-#endif
     m_pD3DDevice->SetPixelShader(m_pixelShader);
 
 #ifdef HAS_XBOX_D3D
@@ -645,6 +611,7 @@ void CGUIFontTTF::End()
 #endif
   m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
+  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 }
 
 inline void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor)
@@ -677,41 +644,15 @@ inline void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &a
   // tex coords converted to 0..1 range
   float tl = ch->left / m_textureWidth;
   float tr = ch->right / m_textureWidth;
-  float tt = ch->top / (m_textureRows * m_cellHeight);
-  float tb = ch->bottom / (m_textureRows * m_cellHeight);
+  float tt = ch->top / m_textureHeight;
+  float tb = ch->bottom / m_textureHeight;
 
-  CUSTOMVERTEX verts[4];
-  verts[0].x = posX;
-  verts[0].y = posY;
-  verts[0].z = 0.0f;
-  verts[0].rhw = 1.0f;
-  verts[0].tu = tl;
-  verts[0].tv = tt;
-  verts[0].color = dwColor;
-
-  verts[1].x = posX + angle.cosine * width;
-  verts[1].y = posY + angle.sine * width;
-  verts[1].z = 0.0f;
-  verts[1].rhw = 1.0f;
-  verts[1].tu = tr;
-  verts[1].tv = tt;
-  verts[1].color = dwColor;
-
-  verts[2].x = posX + angle.cosine * width - angle.sine * height;
-  verts[2].y = posY + angle.sine * width + angle.cosine * height;
-  verts[2].z = 0.0f;
-  verts[2].rhw = 1.0f;
-  verts[2].tu = tr;
-  verts[2].tv = tb;
-  verts[2].color = dwColor;
-
-  verts[3].x = posX - angle.sine * height;
-  verts[3].y = posY + angle.cosine * height;
-  verts[3].z = 0.0f;
-  verts[3].rhw = 1.0f;
-  verts[3].tu = tl;
-  verts[3].tv = tb;
-  verts[3].color = dwColor;
+  CUSTOMVERTEX verts[4] =  {
+    { posX                                         , posY                                         , 0.0f, 1.0f, dwColor, tl, tt},
+    { posX + angle.cosine*width                    , posY + angle.sine*width                      , 0.0f, 1.0f, dwColor, tr, tt},
+    { posX + angle.cosine*width - angle.sine*height, posY + angle.sine*width + angle.cosine*height, 0.0f, 1.0f, dwColor, tr, tb},
+    { posX - angle.sine*height                     , posY + angle.cosine*height                   , 0.0f, 1.0f, dwColor, tl, tb} 
+  };
 
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 #endif
@@ -719,42 +660,38 @@ inline void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &a
 
 void CGUIFontTTF::CreateShader()
 {
-#ifdef TTF_USE_PIXEL_SHADER
   if (!m_pixelShader)
   {
     // shader from the alpha texture to the full 32bit font.  Basically, anything with
     // alpha > 0 is filled in fully in the colour channels
-#ifdef HAS_XBOX_D3D
-    const char *fonts =
-      "xps.1.1\n"
-      "tex t0\n"
-      "mov r0.rgb, v0\n"
-      "+ mul r0.a, v0.a, t0.b\n";
 
-    XGBuffer* pShader;
-    XGAssembleShader("FontsShader", fonts, strlen(fonts), 0, NULL, &pShader, NULL, NULL, NULL, NULL, NULL);
-    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_pixelShader);
-    pShader->Release();
-#else
     const char *fonts =
       "ps.1.1\n"
       "tex t0\n"
       "mov r0.rgb, v0\n"
-      "+ mul r0.a, v0.a, t0.a\n";
+      "+ mul r0.a, v0.a, t0.b\n";
 
-    bool m_usePixelShader = false;
     LPD3DXBUFFER pShader = NULL;
-    D3DXAssembleShader(fonts, strlen(fonts), NULL, NULL, &pShader, NULL);
-    if (D3D_OK == m_pD3DDevice->CreatePixelShader((DWORD*)pShader->GetBufferPointer(), &m_pixelShader))
-      m_usePixelShader = true;
-    pShader->Release();
-#endif
+    if( D3D_OK != D3DXAssembleShader(fonts, strlen(fonts), NULL, NULL, &pShader, NULL) )
+      CLog::Log(LOGERROR, __FUNCTION__" - Failed to assemble pixel shader");
+    else
+    {
+      if (D3D_OK != m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_pixelShader))
+      {
+        CLog::Log(LOGERROR, __FUNCTION__" - Failed to create pixel shader");
+        m_pixelShader = 0;
+      }
+      pShader->Release();
+    }
   }
-#endif
 
 #ifdef HAS_XBOX_D3D
+  // since this vertex declaration is different from
+  // the standard, it can't be used when drawprimitive
+  // is to be used.
+
   // Create the vertex shader
-  if (!m_vertexShader)
+  if (m_pixelShader && !m_vertexShader)
   {
     // our vertex declaration
     DWORD vertexDecl[] =
@@ -765,7 +702,7 @@ void CGUIFontTTF::CreateShader()
         D3DVSD_END()
       };
 
-    // shader for the vertex format we use
+        // shader for the vertex format we use
     static DWORD vertexShader[] =
       {
         0x00032078,
@@ -773,7 +710,12 @@ void CGUIFontTTF::CreateShader()
         0x00000000, 0x002000bf, 0x0836106c, 0x2070c848,  // mov oT0.xy, v0.zw
         0x00000000, 0x0020061b, 0x0836106c, 0x2070f819  // mov oD0, v3
       };
-    m_pD3DDevice->CreateVertexShader(vertexDecl, vertexShader, &m_vertexShader, D3DUSAGE_PERSISTENTDIFFUSE);
+
+    if (D3D_OK != m_pD3DDevice->CreateVertexShader(vertexDecl,vertexShader, &m_vertexShader, D3DUSAGE_PERSISTENTDIFFUSE))
+      CLog::Log(LOGERROR, __FUNCTION__" - Failed to create vertex shader");
   }
 #endif
+
+  if(!m_vertexShader)
+    m_vertexShader = (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 }
