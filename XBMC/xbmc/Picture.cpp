@@ -138,7 +138,7 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
 bool CPicture::CreateThumbnailFromSwizzledTexture(LPDIRECT3DTEXTURE8 &texture, int width, int height, const CStdString &thumb)
 {
   LPDIRECT3DTEXTURE8 linTexture = NULL;
-  if (D3D_OK == g_graphicsContext.Get3DDevice()->CreateTexture(width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &linTexture))
+  if (D3D_OK == D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &linTexture))
   {
     LPDIRECT3DSURFACE8 source;
     LPDIRECT3DSURFACE8 dest;
