@@ -4,7 +4,6 @@
 #include "PlayListM3U.h"
 #include "application.h"
 #include "playlistplayer.h"
-#include "GUIListContainer.h"
 #include "GUIDialogContextMenu.h"
 #include "PartyModeManager.h"
 
@@ -599,7 +598,7 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem, bool bContextDriven /* = tr
   // calculate our position
   float posX = 200;
   float posY = 100;
-  CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_LIST);
+  const CGUIControl *pList = GetControl(CONTROL_LIST);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;
