@@ -53,11 +53,12 @@ namespace PYXBMC
 		}
 	}
 
+  static char defaultImage[1024];
 	/*
 	 * Looks in references.xml for image name
 	 * If none exist return default image name
 	 */
-	const char* PyGetDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
+	const char *PyGetDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
 	{
 		// create an xml block so that we can resolve our defaults
 		// <control type="type">
@@ -76,7 +77,10 @@ namespace PYXBMC
 			// found our textureType
 			TiXmlNode *pNode = pTexture->FirstChild();
 			if (pNode && pNode->Value()[0] != '-')
-				return pNode->Value();
+      {
+				strncpy(defaultImage, pNode->Value(), 1024);
+        return defaultImage;
+      }
 		}
 		return cDefault;
 	}
