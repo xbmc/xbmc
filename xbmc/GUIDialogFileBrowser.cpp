@@ -448,7 +448,7 @@ void CGUIDialogFileBrowser::OnWindowLoaded()
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LIST + 5000);
   if (spin) spin->SetVisible(false);
-  spin = (CGUIControl *)GetControl(CONTROL_THUMBS);
+  spin = (CGUIControl *)GetControl(CONTROL_THUMBS + 5000);
   if (spin) spin->SetVisible(false);
 #endif
 }
