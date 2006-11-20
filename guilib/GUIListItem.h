@@ -12,6 +12,7 @@
 
 //  Forward
 class CGUIImage;
+class CGUIListItemLayout;
 
 /*!
  \ingroup controls
@@ -68,11 +69,20 @@ public:
   void SetOverlay(CGUIImage* pImage);
   CGUIImage* GetOverlay();
 
+  void SetLayout(CGUIListItemLayout *layout);
+  CGUIListItemLayout *GetLayout();
+
+  void SetFocusedLayout(CGUIListItemLayout *layout);
+  CGUIListItemLayout *GetFocusedLayout();
+
   void FreeIcons();
   void FreeMemory();
+  bool Invalidated() const { return m_invalidated; };
+  void SetInvalid(bool invalid = true) { m_invalidated = invalid; };
 
   bool m_bIsFolder;     ///< is item a folder or a file
 protected:
+  bool m_invalidated;         // if one or more of our variables below has changed
   CStdString m_strLabel;      // text of column1
   CStdString m_strLabel2;     // text of column2
   CStdString m_strThumbnailImage; // filename of thumbnail
@@ -81,6 +91,8 @@ protected:
   CGUIImage* m_pThumbnailImage;  // pointer to CImage containing the thumbnail
   CGUIImage* m_pIconImage;     // pointer to CImage containing the icon
   CGUIImage* m_overlayImage;    // CGUIImage containing the transparent overlay icon
+  CGUIListItemLayout *m_layout;
+  CGUIListItemLayout *m_focusedLayout;
   bool m_bSelected;     // item is selected or not
 };
 #endif

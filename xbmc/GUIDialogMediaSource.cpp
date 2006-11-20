@@ -2,7 +2,6 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogFileBrowser.h"
-#include "GUIListControl.h"
 #include "Util.h"
 
 #define CONTROL_HEADING         2
@@ -324,15 +323,21 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
 void CGUIDialogMediaSource::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
+  // disable the spincontrol
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   const CGUIControl *control = GetControl(CONTROL_PATH);
-  if (control && control->GetControlType() == CGUIControl::GUICONTROL_LIST)
+  if (control && control->GetControlType() == CGUIControl::GUICONTAINER_LIST)
   {
-    CGUIListControl *list = (CGUIListControl *)control;
-    list->SetPageControlVisible(false);
+    CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_PATH + 5000);
+    if (spin)
+      spin->SetVisible(false);
     m_hasMultiPath = true;
   }
   else
     m_hasMultiPath = false;
+#else
+  m_hasMultiPath = true;
+#endif
 }
 
 int CGUIDialogMediaSource::GetSelectedItem()

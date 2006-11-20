@@ -11,7 +11,7 @@
 #include "Application.h"
 #include "NFOFile.h"
 #include "PlayListPlayer.h"
-#include "GUIListControl.h"
+#include "GUIListContainer.h"
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMediaSource.h"
@@ -663,7 +663,7 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem, bool bContextDriven /* = true 
   // calculate our position
   float posX = 200;
   float posY = 100;
-  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+  CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_LIST);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;

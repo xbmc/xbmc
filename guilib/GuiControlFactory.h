@@ -25,14 +25,14 @@ public:
   CGUIControl* Create(DWORD dwParentId, CGUIControl *group, TiXmlElement* pControlNode);
   bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
+  bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image);
+  bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
+  bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
 private:
   bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus);
   bool GetAnimations(const TiXmlNode *control, vector<CAnimation> &animation);
   bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue);
   bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);
-  bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image);
-  bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
-  bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
   bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);
 };

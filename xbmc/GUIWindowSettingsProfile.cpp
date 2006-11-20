@@ -2,7 +2,7 @@
 #include "GUIWindowSettingsProfile.h"
 #include "GUIWindowFileManager.h"
 #include "Profile.h"
-#include "../guilib/GUIListControl.h"
+#include "GUIListContainer.h"
 #include "util.h"
 #include "application.h"
 #include "GUIDialogContextMenu.h"
@@ -48,7 +48,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   // calculate our position
   float posX = 200;
   float posY = 100;
-  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_PROFILES);
+  CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_PROFILES);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;

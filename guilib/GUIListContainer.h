@@ -6,9 +6,7 @@
 #pragma once
 
 #include "GUIControl.h"
-
-class CGUIListItem;
-
+#include "GUIListItemLayout.h"
 /*!
  \ingroup controls
  \brief 
@@ -17,6 +15,13 @@ class CGUIListContainer : public CGUIControl
 {
 public:
   CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation);
+//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+                         const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
+                         const CImage& textureButton, const CImage& textureButtonFocus,
+                         float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems, CGUIControl *pSpin);
+  CGUIControl *m_spinControl;
+//#endif
   virtual ~CGUIListContainer(void);
 
   virtual void Render();
@@ -30,18 +35,9 @@ public:
   virtual bool OnMouseDoubleClick(DWORD dwButton);
   virtual bool OnMouseWheel();
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void SetPulseOnSelect(bool pulse);
   virtual void SetFocus(bool bOnOff);
 
-  virtual void PreAllocResources();
-  virtual void AllocResources();
-  virtual void FreeResources();
-  virtual void DynamicResourceAlloc(bool bOnOff);
-
   void SetPageControl(DWORD id);
-
-  void SetItemSize(float itemWidth, float itemHeight, float focusedWidth, float focusedHeight);
-  void SetItemLayout(const vector<CGUIControl*> &itemLayout, const vector<CGUIControl*> &focusedLayout);
 
   virtual CStdString GetDescription() const;
   virtual void SaveStates(vector<CControlState> &states);
@@ -49,6 +45,7 @@ public:
 
   virtual void Animate(DWORD currentTime);
   virtual void UpdateEffectState(DWORD currentTime);
+  void LoadLayout(TiXmlElement *layout);
 
 protected:
   bool SelectItemFromPoint(float posX, float posY);
@@ -63,8 +60,6 @@ protected:
   int m_offset;
   int m_cursor;
 
-  float m_itemSize;
-  float m_focusedSize;
   ORIENTATION m_orientation;
   int m_itemsPerPage;
 
@@ -74,11 +69,10 @@ protected:
 
   DWORD m_pageControl;
 
-  vector<CGUIControl*> m_controls;
-  vector<CGUIControl*> m_focusedControls;
-  typedef vector<CGUIControl*>::iterator iControls;
-
   DWORD m_renderTime;
+
+  CGUIListItemLayout m_layout;
+  CGUIListItemLayout m_focusedLayout;
 
   void ScrollToOffset();
   DWORD m_scrollTime;

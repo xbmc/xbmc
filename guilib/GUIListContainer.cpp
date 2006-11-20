@@ -1,7 +1,6 @@
 #include "include.h"
 #include "GUIListContainer.h"
 #include "GUIListItem.h"
-#include "../xbmc/utils/GUIInfoManager.h"
 
 #define SCROLL_TIME 200
 
@@ -14,20 +13,17 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_scrollSpeed = 0;
   m_scrollTime = 0;
   m_itemsPerPage = 10;
-  m_itemSize = 10;
-  m_focusedSize = 10;
   m_pageControl = 0;
   m_renderTime = 0;
   m_orientation = orientation;
   ControlType = GUICONTAINER_LIST;
+//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  m_spinControl = NULL;
+//#endif
 }
 
 CGUIListContainer::~CGUIListContainer(void)
 {
-  for (iControls it = m_controls.begin(); it != m_controls.end(); ++it)
-    delete *it;
-  for (iControls it = m_focusedControls.begin(); it != m_focusedControls.end(); ++it)
-    delete *it;
 }
 
 void CGUIListContainer::Render()
@@ -40,19 +36,19 @@ void CGUIListContainer::Render()
     UpdateLayout();
 
   m_scrollOffset += m_scrollSpeed * (m_renderTime - m_scrollTime);
-  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_itemSize) ||
-      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_itemSize))
+  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout.Size(m_orientation)) ||
+      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout.Size(m_orientation)))
   {
-    m_scrollOffset = m_offset * m_itemSize;
+    m_scrollOffset = m_offset * m_layout.Size(m_orientation);
     m_scrollSpeed = 0;
   }
   m_scrollTime = m_renderTime;
 
-  int offset = (int)(m_scrollOffset / m_itemSize);
+  int offset = (int)(m_scrollOffset / m_layout.Size(m_orientation));
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   if (offset < 30000)
   {
-    for (int i = 0; i < offset; ++i)
+    for (int i = 0; i < offset && i < (int)m_items.size(); ++i)
     {
       CGUIListItem *item = m_items[i];
       if (item)
@@ -70,32 +66,34 @@ void CGUIListContainer::Render()
   float posX = m_posX;
   float posY = m_posY;
   if (m_orientation == VERTICAL)
-    posY += (offset * m_itemSize - m_scrollOffset);
+    posY += (offset * m_layout.Size(m_orientation) - m_scrollOffset);
   else
-    posX += (offset * m_itemSize - m_scrollOffset);;
-  for (int i = 0; i < m_itemsPerPage; i++)
+    posX += (offset * m_layout.Size(m_orientation) - m_scrollOffset);;
+
+  int current = offset;
+  while (posX < m_posX + m_width && posY < m_posY + m_height)
   {
-    if (i + offset < (int)m_items.size())
-    {
-      CGUIListItem *item = m_items[i + offset];
+    if (current >= (int)m_items.size())
+      break;
+    CGUIListItem *item = m_items[current];
+    bool focused = (current == m_offset + m_cursor) && m_bHasFocus;
+    // render our item
+    RenderItem(posX, posY, item, focused);
 
-      bool focused = (i + offset == m_offset + m_cursor) && m_bHasFocus;
-      // render our item
-      RenderItem(posX, posY, item, focused);
+    // increment our position
+    if (m_orientation == VERTICAL)
+      posY += focused ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
+    else
+      posX += focused ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
 
-      // increment our position
-      if (m_orientation == VERTICAL)
-        posY += focused ? m_focusedSize : m_itemSize;
-      else
-        posX += focused ? m_focusedSize : m_itemSize;
-    }
+    current++;
   }
   g_graphicsContext.RemoveGroupTransform();
   g_graphicsContext.RestoreViewPort();
 
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, m_offset);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
     SendWindowMessage(msg);
   }
   CGUIControl::Render();
@@ -104,34 +102,33 @@ void CGUIListContainer::Render()
 void CGUIListContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
 {
   // set the origin
-  g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(posX, posY));
+  g_graphicsContext.SetControlTransform(TransformMatrix::CreateTranslation(posX, posY));
 
-  // set our item
-  g_infoManager.SetListItem(item);
-
-  // render our items
+  static CGUIListItem *lastItem = NULL;
+  // TODO: Reset focused/unfocused item
   if (focused)
   {
-    for (iControls it = m_focusedControls.begin(); it != m_focusedControls.end(); ++it)
+    if (!item->GetFocusedLayout())
     {
-      CGUIControl *control = *it;
-      control->UpdateEffectState(m_renderTime);
-      control->Render();
+      CGUIListItemLayout *layout = new CGUIListItemLayout(m_focusedLayout);
+      item->SetFocusedLayout(layout);
     }
+    if (item != lastItem)
+      item->GetFocusedLayout()->ResetScrolling();
+    if (item->GetFocusedLayout())
+      item->GetFocusedLayout()->Render(item);
+    lastItem = item;
   }
   else
   {
-    for (iControls it = m_controls.begin(); it != m_controls.end(); ++it)
+    if (!item->GetLayout())
     {
-      CGUIControl *control = *it;
-      control->UpdateEffectState(m_renderTime);
-      control->Render();
+      CGUIListItemLayout *layout = new CGUIListItemLayout(m_layout);
+      item->SetLayout(layout);
     }
+    if (item->GetLayout())
+      item->GetLayout()->Render(item);
   }
-  g_infoManager.SetListItem(NULL);
-
-  // restore origin
-  g_graphicsContext.RemoveGroupTransform();
 }
 
 bool CGUIListContainer::OnAction(const CAction &action)
@@ -298,46 +295,6 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
-void CGUIListContainer::PreAllocResources()
-{
-  for (iControls it = m_controls.begin(); it != m_controls.end(); ++it)
-    (*it)->PreAllocResources();
-  for (iControls it = m_focusedControls.begin(); it != m_focusedControls.end(); ++it)
-    (*it)->PreAllocResources();
-}
-
-void CGUIListContainer::AllocResources()
-{
-  for (iControls it = m_controls.begin(); it != m_controls.end(); ++it)
-    (*it)->AllocResources();
-  for (iControls it = m_focusedControls.begin(); it != m_focusedControls.end(); ++it)
-    (*it)->AllocResources();
-}
-
-void CGUIListContainer::FreeResources()
-{
-  for (iControls it = m_controls.begin(); it != m_controls.end(); ++it)
-    (*it)->FreeResources();
-  for (iControls it = m_focusedControls.begin(); it != m_focusedControls.end(); ++it)
-    (*it)->FreeResources();
-}
-
-void CGUIListContainer::DynamicResourceAlloc(bool bOnOff)
-{
-  for (iControls it = m_controls.begin(); it != m_controls.end(); ++it)
-    (*it)->DynamicResourceAlloc(bOnOff);
-  for (iControls it = m_focusedControls.begin(); it != m_focusedControls.end(); ++it)
-    (*it)->DynamicResourceAlloc(bOnOff);
-}
-
-void CGUIListContainer::SetPulseOnSelect(bool pulse)
-{
-  for (iControls it = m_controls.begin(); it != m_controls.end(); ++it)
-    (*it)->SetPulseOnSelect(pulse);
-  for (iControls it = m_focusedControls.begin(); it != m_focusedControls.end(); ++it)
-    (*it)->SetPulseOnSelect(pulse);
-}
-
 void CGUIListContainer::OnUp()
 {
   if (m_orientation == VERTICAL && MoveUp(m_dwControlUp))
@@ -437,7 +394,7 @@ bool CGUIListContainer::SelectItemFromPoint(float posX, float posY)
   float pos = (m_orientation == VERTICAL) ? posY : posX;
   while (row < m_itemsPerPage)
   {
-    float size = (row == m_offset && m_bHasFocus) ? m_focusedSize : m_itemSize;
+    float size = (row == m_offset && m_bHasFocus) ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
     if (pos < Size() && row + m_offset < (int)m_items.size())
     { // found
       m_cursor = row;
@@ -517,8 +474,16 @@ void CGUIListContainer::SetPageControl(DWORD id)
 
 void CGUIListContainer::ValidateOffset()
 { // first thing is we check the range of m_offset
-  if (m_offset > (int)m_items.size() - m_itemsPerPage) m_offset = m_items.size() - m_itemsPerPage;
-  if (m_offset < 0) m_offset = 0;
+  if (m_offset > (int)m_items.size() - m_itemsPerPage)
+  {
+    m_offset = m_items.size() - m_itemsPerPage;
+    m_scrollOffset = m_offset * m_layout.Size(m_orientation);
+  }
+  if (m_offset < 0)
+  {
+    m_offset = 0;
+    m_scrollOffset = 0;
+  }
 }
 
 void CGUIListContainer::UpdateEffectState(DWORD currentTime)
@@ -542,27 +507,13 @@ void CGUIListContainer::Animate(DWORD currentTime)
   g_graphicsContext.AddGroupTransform(transform);
 }
 
-void CGUIListContainer::SetItemSize(float itemWidth, float itemHeight, float focusedWidth, float focusedHeight)
-{
-  m_itemSize = m_orientation == VERTICAL ? itemHeight : itemWidth;
-  m_focusedSize = m_orientation == VERTICAL ? focusedHeight : focusedWidth;
-  Update();
-}
-
-void CGUIListContainer::SetItemLayout(const vector<CGUIControl*> &itemLayout, const vector<CGUIControl*> &focusedLayout)
-{
-  m_controls = itemLayout;
-  m_focusedControls = focusedLayout;
-  Update();
-}
-
 void CGUIListContainer::UpdateLayout()
 {
   // calculate the number of items to display
   if (HasFocus())
-    m_itemsPerPage = (int)((Size() - m_focusedSize) / m_itemSize) + 1;
+    m_itemsPerPage = (int)((Size() - m_focusedLayout.Size(m_orientation)) / m_layout.Size(m_orientation)) + 1;
   else
-    m_itemsPerPage = (int)(Size() / m_itemSize);
+    m_itemsPerPage = (int)(Size() / m_layout.Size(m_orientation));
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_items.size());
   SendWindowMessage(msg);
 }
@@ -574,5 +525,43 @@ inline float CGUIListContainer::Size() const
 
 void CGUIListContainer::ScrollToOffset()
 {
-  m_scrollSpeed = (m_offset * m_itemSize - m_scrollOffset) / SCROLL_TIME;
+  m_scrollSpeed = (m_offset * m_layout.Size(m_orientation) - m_scrollOffset) / SCROLL_TIME;
 }
+
+void CGUIListContainer::LoadLayout(TiXmlElement *layout)
+{
+  TiXmlElement *itemElement = layout->FirstChildElement("itemlayout");
+  if (itemElement)
+  { // we have a new item layout
+    m_layout.LoadLayout(itemElement, false);
+  }
+  itemElement = layout->FirstChildElement("focusedlayout");
+  if (itemElement)
+  { // we have a new item layout
+    m_focusedLayout.LoadLayout(itemElement, true);
+  }
+}
+
+//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+                                 const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
+                                 const CImage& textureButton, const CImage& textureButtonFocus,
+                                 float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems, CGUIControl *pSpin)
+: CGUIControl(dwParentID, dwControlId, posX, posY, width, height) 
+{
+  m_layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureHeight, itemWidth, itemHeight);
+  m_focusedLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButtonFocus, textureHeight, itemWidth, itemHeight);
+  m_height = floor(m_height / (textureHeight + spaceBetweenItems)) * (textureHeight + spaceBetweenItems);
+  m_spinControl = pSpin;
+  m_cursor = 0;
+  m_offset = 0;
+  m_scrollOffset = 0;
+  m_scrollSpeed = 0;
+  m_scrollTime = 0;
+  m_itemsPerPage = 10;
+  m_pageControl = 0;
+  m_renderTime = 0;
+  m_orientation = VERTICAL;
+  ControlType = GUICONTAINER_LIST;
+}
+//#endif

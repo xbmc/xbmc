@@ -3,8 +3,7 @@
 #include "util.h"
 #include "detectdvdtype.h"
 #include "GUIDialogNetworkSetup.h"
-#include "GUIListControl.h"
-#include "GUIThumbnailPanel.h"
+#include "GUIListContainer.h"
 #include "GUIDialogContextMenu.h"
 #include "MediaManager.h"
 #include "AutoSwitch.h"
@@ -447,10 +446,12 @@ void CGUIDialogFileBrowser::OnWindowLoaded()
   m_viewControl.AddView(VIEW_METHOD_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.SetCurrentView(VIEW_METHOD_LIST);
   // set the page spin controls to hidden
-  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
-  if (pList) pList->SetPageControlVisible(false);
-  CGUIThumbnailPanel *pThumbs = (CGUIThumbnailPanel *)GetControl(CONTROL_THUMBS);
-  if (pThumbs) pThumbs->SetPageControlVisible(false);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LIST + 5000);
+  if (spin) spin->SetVisible(false);
+  spin = (CGUIControl *)GetControl(CONTROL_THUMBS);
+  if (spin) spin->SetVisible(false);
+#endif
 }
 
 void CGUIDialogFileBrowser::OnWindowUnload()
@@ -654,7 +655,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
     return false;
   
   float posX = 200, posY = 100;
-  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+  CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_LIST);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;
