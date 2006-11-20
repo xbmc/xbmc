@@ -7,7 +7,6 @@
 #include "GUIRSSControl.h"
 #include "GUIRAMControl.h"
 #include "GUIConsoleControl.h"
-#include "GUIListControl.h"
 #include "GUIListControlEx.h"
 #include "GUIImage.h"
 #include "GUILabelControl.h"
@@ -380,7 +379,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   bool loop = true;
   bool wrapMultiLine = false;
   CGUIThumbnailPanel::LABEL_STATE labelState = CGUIThumbnailPanel::SHOW_ALL;
-  CGUIControl::ORIENTATION orientation = CGUIControl::VERTICAL;
+  ORIENTATION orientation = VERTICAL;
   bool showOnePage = true;
 
   CLabelInfo labelInfo;
@@ -395,11 +394,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   float radioPosY = 0;
 
   CStdString altLabel;
-
-  float focusedWidth = 30;
-  float focusedHeight = 30;
-  vector<CGUIControl*> itemLayout;
-  vector<CGUIControl*> focusedLayout;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
@@ -501,12 +495,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   CStdString strFont;
   if (XMLUtils::GetString(pControlNode, "font", strFont))
     labelInfo.font = g_fontManager.GetFont(strFont);
-  DWORD align = 0;
-  if (GetAlignment(pControlNode, "align", align))
-    labelInfo.align = align | (labelInfo.align & 4);
+  GetAlignment(pControlNode, "align", labelInfo.align);
   DWORD alignY = 0;
   if (GetAlignmentY(pControlNode, "aligny", alignY))
-    labelInfo.align = alignY | (labelInfo.align & 3);
+    labelInfo.align |= alignY;
   if (XMLUtils::GetFloat(pControlNode, "textwidth", labelInfo.width))
     labelInfo.align |= XBFONT_TRUNCATED;
   labelInfo2.selectedColor = labelInfo.selectedColor;
@@ -644,35 +636,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   XMLUtils::GetFloat(pControlNode, "itemheight", itemHeight);
   XMLUtils::GetFloat(pControlNode, "spacebetweenitems", spaceBetweenItems);
 
-  TiXmlElement *itemElement = pControlNode->FirstChildElement("itemlayout");
-  if (itemElement)
-  { // we have a new item layout
-    itemElement->Attribute("width", &itemWidth);
-    itemElement->Attribute("height", &itemHeight);
-    TiXmlElement *child = itemElement->FirstChildElement("control");
-    while (child)
-    {
-      CGUIControl *control = Create(dwParentId, group, child);
-      if (control)
-        itemLayout.push_back(control);
-      child = child->NextSiblingElement("control");
-    }
-  }
-  itemElement = pControlNode->FirstChildElement("focusedlayout");
-  if (itemElement)
-  { // we have a new item layout
-    itemElement->Attribute("width", &focusedWidth);
-    itemElement->Attribute("height", &focusedHeight);
-    TiXmlElement *child = itemElement->FirstChildElement("control");
-    while (child)
-    {
-      CGUIControl *control = Create(dwParentId, group, child);
-      if (control)
-        focusedLayout.push_back(control);
-      child = child->NextSiblingElement("control");
-    }
-  }
-
   GetTexture(pControlNode, "imagefolder", imageNoFocus);
   GetTexture(pControlNode, "imagefolderfocus", imageFocus);
   XMLUtils::GetFloat(pControlNode, "texturewidth", textureWidth);
@@ -752,7 +715,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     if (strTmp.ToLower() == "horizontal")
     {
       bHorizontal = true;
-      orientation = CGUIControl::HORIZONTAL;
+      orientation = HORIZONTAL;
     }
   }
   XMLUtils::GetFloat(pControlNode, "buttongap", buttonGap);
@@ -1134,8 +1097,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   else if (strType == "list")
   {
     CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation);
-    pControl->SetItemSize(itemWidth, itemHeight, focusedWidth, focusedHeight);
-    pControl->SetItemLayout(itemLayout, focusedLayout);
+    pControl->LoadLayout(pControlNode);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
@@ -1145,30 +1107,40 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetPageControl(pageControl);
     return pControl;
   }
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   else if (strType == "listcontrol")
   {
-    CGUIListControl* pControl = new CGUIListControl(
-      dwParentId, id, posX, posY, width, height,
-      spinWidth, spinHeight,
-      textureUp, textureDown,
-      textureUpFocus, textureDownFocus,
-      spinInfo, spinPosX, spinPosY,
-      labelInfo, labelInfo2,
-      textureNoFocus, textureFocus);
+    // create the spin control
+    CGUISpinControl *pSpin = new CGUISpinControl(dwParentId, id + 5000, posX + spinPosX, posY + spinPosY, spinWidth, spinHeight,
+      textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_PAGE);
+    // spincontrol should be visible when our list is
+    CStdString spinVis;
+    spinVis.Format("control.isvisible(%i)", id);
+    pSpin->SetVisibleCondition(g_infoManager.TranslateString(spinVis), false);
+    pSpin->SetAnimations(animations);
+    pSpin->SetParentControl(group);
+    pSpin->SetNavigation(id, down, id, right);
+    pSpin->SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
 
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetScrollySuffix(strSuffix);
+    labelInfo2.align |= XBFONT_RIGHT;
+    if (labelInfo.align & XBFONT_CENTER_Y)
+      labelInfo2.align |= XBFONT_CENTER_Y;
+    CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height - spinHeight - 5,
+      labelInfo, labelInfo2, textureNoFocus, textureFocus, textureHeight, itemWidth, itemHeight, spaceBetweenItems, pSpin);
+
+    pControl->SetPageControl(id + 5000);
+    pControl->SetNavigation(up, down, left, id + 5000);
+
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetParentControl(group);
-    pControl->SetImageDimensions(itemWidth, itemHeight);
-    pControl->SetItemHeight(textureHeight);
-    pControl->SetSpaceBetweenItems(spaceBetweenItems);
-    pControl->SetPulseOnSelect(bPulse);
-    pControl->SetPageControl(pageControl);
+
+    // do we have a match for this?
+    // pControl->SetScrollySuffix(strSuffix);
+    // pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
+#endif
   else if (strType == "listcontrolex")
   {
     CGUIListControlEx* pControl = new CGUIListControlEx(

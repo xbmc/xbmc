@@ -13,6 +13,8 @@
 #include "GUIFont.h"        // needed for the CAngle member (CLabelInfo) among other stuff
 #include "VisibleEffect.h"  // needed for the CAnimation members
 
+enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
+
 class CLabelInfo
 {
 public:
@@ -60,8 +62,6 @@ public:
 class CGUIControl
 {
 public:
-  enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
-
   CGUIControl();
   CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIControl(void);

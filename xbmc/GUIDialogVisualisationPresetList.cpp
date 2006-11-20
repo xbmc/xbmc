@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GUIDialogVisualisationPresetList.h"
-#include "GUIListControl.h"
+#include "GUIListContainer.h"
 
 
 #define CONTROL_LIST           2
@@ -27,7 +27,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
       if (message.GetSenderId() == CONTROL_LIST && message.GetParam1() == ACTION_SELECT_ITEM)
       {
         //clicked - ask for the preset to be changed to the new one
-        CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+        CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_LIST);
         if (pList)
         {
           int iItem = pList->GetSelectedItem();

@@ -10,7 +10,7 @@
 #include "PlayListM3U.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
-#include "GUIListControl.h"
+#include "GUIListContainer.h"
 #include "FileSystem/DirectoryCache.h"
 #ifdef HAS_CDDA_RIPPER
 #include "CDRip/CDDARipper.h"
@@ -1233,7 +1233,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 
   // calculate our position
   float posX = 200, posY = 100;
-  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+  CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_LIST);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;
