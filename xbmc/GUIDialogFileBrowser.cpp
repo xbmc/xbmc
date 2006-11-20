@@ -3,7 +3,6 @@
 #include "util.h"
 #include "detectdvdtype.h"
 #include "GUIDialogNetworkSetup.h"
-#include "GUIListContainer.h"
 #include "GUIDialogContextMenu.h"
 #include "MediaManager.h"
 #include "AutoSwitch.h"
@@ -655,7 +654,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
     return false;
   
   float posX = 200, posY = 100;
-  CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_LIST);
+  const CGUIControl *pList = GetControl(CONTROL_LIST);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;
