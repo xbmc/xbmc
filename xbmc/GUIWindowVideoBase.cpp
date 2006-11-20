@@ -12,7 +12,6 @@
 #include "utils/fstrcmp.h"
 #include "PlayListPlayer.h"
 #include "GUIThumbnailPanel.h"
-#include "GUIListContainer.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUIFontManager.h"
 #endif
@@ -238,14 +237,14 @@ void CGUIWindowVideoBase::UpdateButtons()
 void CGUIWindowVideoBase::OnWindowLoaded()
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CGUIListContainer *pControl = (CGUIListContainer *)GetControl(CONTROL_LIST);
-  if (pControl && !GetControl(CONTROL_LABELEMPTY))
+  const CGUIControl *pList = GetControl(CONTROL_LIST);
+  if (pList && !GetControl(CONTROL_LABELEMPTY))
   {
     CLabelInfo info;
     info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
     info.font = g_fontManager.GetFont("font13");
-    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pControl->GetXPosition(),pControl->GetYPosition(),pControl->GetWidth(),pControl->GetHeight(),"",info,false);
-    pLabel->SetAnimations(pControl->GetAnimations());
+    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),"",info,false);
+    pLabel->SetAnimations(pList->GetAnimations());
     Add(pLabel);
   }
 #endif
@@ -688,7 +687,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   
   // calculate our position
   float posX = 200, posY = 100;
-  CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_LIST);
+  const CGUIControl *pList = GetControl(CONTROL_LIST);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;
