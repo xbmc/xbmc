@@ -309,6 +309,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("listitem.year")) ret = LISTITEM_YEAR;
     else if (strTest.Equals("listitem.genre")) ret = LISTITEM_GENRE;
     else if (strTest.Equals("listitem.director")) ret = LISTITEM_DIRECTOR;
+    else if (strTest.Equals("listitem.filename")) ret = LISTITEM_FILENAME;
+    else if (strTest.Equals("listitem.date")) ret = LISTITEM_DATE;
+    else if (strTest.Equals("listitem.size")) ret = LISTITEM_SIZE;
+    else if (strTest.Equals("listitem.rating")) ret = LISTITEM_RATING;
+    else if (strTest.Equals("listitem.programcount")) ret = LISTITEM_PROGRAM_COUNT;
+    else if (strTest.Equals("listitem.duration")) ret = LISTITEM_DURATION;
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -669,6 +675,12 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_YEAR:
   case LISTITEM_GENRE:
   case LISTITEM_DIRECTOR:
+  case LISTITEM_FILENAME:
+  case LISTITEM_DATE:
+  case LISTITEM_SIZE:
+  case LISTITEM_RATING:
+  case LISTITEM_PROGRAM_COUNT:
+  case LISTITEM_DURATION:
     {
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
       if (pWindow && pWindow->IsMediaWindow())
@@ -1906,23 +1918,57 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
 CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 {
   if (!item) return "";
-  if (info == LISTITEM_LABEL) return item->GetLabel();
-  else if (info == LISTITEM_LABEL2) return item->GetLabel2();
-  else if (info == LISTITEM_TITLE) return item->m_musicInfoTag.GetTitle();
-  else if (info == LISTITEM_TRACKNUMBER)
+  switch (info)
   {
-    CStdString track;
-    track.Format("%i", item->m_musicInfoTag.GetTrackNumber());
-    return track;
-  }
-  else if (info == LISTITEM_ARTIST || info == LISTITEM_DIRECTOR)
-  {
-    // HACK - director info is injected as the artist tag
+  case LISTITEM_LABEL:
+    return item->GetLabel();
+  case LISTITEM_LABEL2:
+    return item->GetLabel2();
+  case LISTITEM_TITLE:
+    return item->m_musicInfoTag.GetTitle();
+  case LISTITEM_TRACKNUMBER:
+    {
+      CStdString track;
+      track.Format("%i", item->m_musicInfoTag.GetTrackNumber());
+      return track;
+    }
+  case LISTITEM_ARTIST:
+  case LISTITEM_DIRECTOR:// HACK - director info is injected as the artist tag
     return item->m_musicInfoTag.GetArtist();
+  case LISTITEM_ALBUM:
+    return item->m_musicInfoTag.GetAlbum();
+  case LISTITEM_YEAR:
+    return item->m_musicInfoTag.GetYear();
+  case LISTITEM_GENRE:
+    return item->m_musicInfoTag.GetGenre();
+  case LISTITEM_FILENAME:
+    return CUtil::GetFileName(item->m_strPath);
+  case LISTITEM_DATE:
+    if (item->m_dateTime.IsValid())
+      return item->m_dateTime.GetAsLocalizedDate();
+  case LISTITEM_SIZE:
+    if (!item->m_bIsFolder || item->m_dwSize)
+      return StringUtils::SizeToString(item->m_dwSize);
+  case LISTITEM_RATING:
+    {
+      CStdString rating;
+      rating.Format("%2.2f", item->m_fRating);
+      return rating;
+    }
+  case LISTITEM_PROGRAM_COUNT:
+    {
+      CStdString count;
+      count.Format("%i", item->m_iprogramCount);
+      return count;
+    }
+  case LISTITEM_DURATION:
+    {
+      CStdString duration;
+      if (item->m_musicInfoTag.GetDuration() > 0)
+        StringUtils::SecondsToTimeString(item->m_musicInfoTag.GetDuration(), duration);
+      return duration;
+    }
   }
-  else if (info == LISTITEM_ALBUM) return item->m_musicInfoTag.GetAlbum();
-  else if (info == LISTITEM_YEAR) return item->m_musicInfoTag.GetYear();
-  else if (info == LISTITEM_GENRE) return item->m_musicInfoTag.GetGenre();
   return "";
 }
 

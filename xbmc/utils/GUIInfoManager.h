@@ -179,7 +179,8 @@
 #define LISTITEM_SIZE               324
 #define LISTITEM_RATING             325
 #define LISTITEM_PROGRAM_COUNT      326
-#define LISTITEM_END                321
+#define LISTITEM_DURATION           327
+#define LISTITEM_END                327
 
 #define MUSICPM_ENABLED             350
 #define MUSICPM_SONGSPLAYED         351
