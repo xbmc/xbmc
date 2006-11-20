@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIListItem.h"
 #include "GUIImage.h"
-#include "GUIListContainer.h"
+#include "GUIListItemLayout.h"
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
