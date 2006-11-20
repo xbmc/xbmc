@@ -126,13 +126,10 @@ void CGUIVisualisationControl::LoadVisualisation()
   m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
   if (m_currentVis.Equals("None"))
     return;
-  CLog::Log(LOGDEBUG, "LoadVisualisation() started");
-  OutputDebugString("Load Visualisation\n");
   strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
   m_pVisualisation = factory.LoadVisualisation(strVisz);
   if (m_pVisualisation)
   {
-    OutputDebugString("Visualisation::Create()\n");
     g_graphicsContext.CaptureStateBlock();
     float x = g_graphicsContext.ScaleFinalXCoord(GetXPosition(), GetYPosition());
     float y = g_graphicsContext.ScaleFinalYCoord(GetXPosition(), GetYPosition());
@@ -152,7 +149,6 @@ void CGUIVisualisationControl::LoadVisualisation()
 
     m_globalvis = true;
   }
-  CLog::Log(LOGDEBUG, "LoadVisualisation() done");
 
   // tell our app that we're back
   CGUIMessage msg(GUI_MSG_VISUALISATION_LOADED, 0, 0, 0, 0, m_pVisualisation);
