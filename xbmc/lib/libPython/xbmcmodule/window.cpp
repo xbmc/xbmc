@@ -1,10 +1,6 @@
 #include "../../../stdafx.h"
 #include "window.h"
 #include "dialog.h"
-#include "GuiLabelControl.h"
-#include "GuiListControl.h"
-#include "GuiFadeLabelControl.h"
-#include "GuiTextBox.h"
 #include "pyutil.h"
 #include "action.h"
 
