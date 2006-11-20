@@ -225,7 +225,11 @@ void CFileCurl::SetCommonOptions()
   g_curlInterface.easy_reset(m_easyHandle);
   
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_DEBUGFUNCTION, debug_callback);
-  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_VERBOSE, TRUE);
+
+  if( g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG )
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_VERBOSE, TRUE);
+  else
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_VERBOSE, FALSE);
   
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEDATA, this);
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEFUNCTION, write_callback);
@@ -305,12 +309,8 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   m_overflowSize = 0;
 
   CURL url2(url);
-  bool isstream = false;
   if( url2.GetProtocol().Equals("ftpx") )
-  { /* only used by mplayer, and crashes if seeking is allowed */
-    isstream = true;
     url2.SetProtocol("ftp");
-  }
   else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp"))
     url2.SetProtocol("http");    
 
@@ -395,12 +395,9 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
     }
   }
 
-  if( !isstream )
-  {
-    double length;
-    if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
-      m_fileSize = (__int64)length;
-  }
+  double length;
+  if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
+    m_fileSize = (__int64)length;
 
   /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
   if( m_httpheader.GetContentType().IsEmpty() )
@@ -652,7 +649,7 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
   // waittime timeout
   struct timeval timeout;
   timeout.tv_sec = 0;
-  timeout.tv_usec = 200000; //timeout between calls to perform, doesn't timeout FillBuffer
+  timeout.tv_usec = 20000; //timeout between calls to perform, doesn't timeout FillBuffer
   
   // fill timeout
   DWORD timestamp = GetTickCount() + waittime * 1000;
@@ -689,12 +686,26 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
     {
       case CURLM_OK:
       {
-        // get file descriptors from the transfers
-        g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd);
+        // hack for broken curl, that thinks there is data all the time
+        // happens especially on ftp during initial connection
+        SwitchToThread();
 
-        // wait until data is avialable or a timeout occours
-        int rc = dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &timeout);
-        if( rc == SOCKET_ERROR ) return false;
+        // get file descriptors from the transfers
+        if( CURLM_OK != g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd) )
+          return false;
+        
+        if( maxfd < 0 ) // hack for broken curl
+          maxfd = fdread.fd_count + fdwrite.fd_count + fdexcep.fd_count - 1;
+
+        if( maxfd >= 0  )
+        {
+          // wait until data is avialable or a timeout occours
+          if( SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &timeout) )
+            return false;
+        }
+        else
+          Sleep(timeout.tv_sec * 1000 + timeout.tv_usec / 1000);
+
       }
       break;
       case CURLM_CALL_MULTI_PERFORM:
