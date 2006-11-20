@@ -6,7 +6,7 @@
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
   *this = item;
-  m_invalidated = true;
+  SetInvalid();
 }
 
 CGUIListItem::CGUIListItem(void)
@@ -23,7 +23,6 @@ CGUIListItem::CGUIListItem(void)
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_layout = NULL;
   m_focusedLayout = NULL;
-  m_invalidated = true;
 }
 
 CGUIListItem::CGUIListItem(const CStdString& strLabel)
@@ -40,7 +39,6 @@ CGUIListItem::CGUIListItem(const CStdString& strLabel)
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_layout = NULL;
   m_focusedLayout = NULL;
-  m_invalidated = true;
 }
 
 CGUIListItem::~CGUIListItem(void)
@@ -51,7 +49,7 @@ CGUIListItem::~CGUIListItem(void)
 void CGUIListItem::SetLabel(const CStdString& strLabel)
 {
   m_strLabel = strLabel;
-  m_invalidated = true;
+  SetInvalid();
 }
 
 const CStdString& CGUIListItem::GetLabel() const
@@ -63,7 +61,7 @@ const CStdString& CGUIListItem::GetLabel() const
 void CGUIListItem::SetLabel2(const CStdString& strLabel2)
 {
   m_strLabel2 = strLabel2;
-  m_invalidated = true;
+  SetInvalid();
 }
 
 const CStdString& CGUIListItem::GetLabel2() const
@@ -74,7 +72,7 @@ const CStdString& CGUIListItem::GetLabel2() const
 void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
 {
   m_strThumbnailImage = strThumbnail;
-  m_invalidated = true;
+  SetInvalid();
 }
 
 const CStdString& CGUIListItem::GetThumbnailImage() const
@@ -85,7 +83,7 @@ const CStdString& CGUIListItem::GetThumbnailImage() const
 void CGUIListItem::SetIconImage(const CStdString& strIcon)
 {
   m_strIcon = strIcon;
-  m_invalidated = true;
+  SetInvalid();
 }
 
 const CStdString& CGUIListItem::GetIconImage() const
@@ -99,7 +97,7 @@ void CGUIListItem::SetOverlayImage(GUIIconOverlay icon, bool bOnOff)
     m_overlayIcon = GUIIconOverlay((int)(icon)+1);
   else
     m_overlayIcon = icon;
-  m_invalidated = true;
+  SetInvalid();
 }
 
 CStdString CGUIListItem::GetOverlayImage() const
@@ -203,12 +201,14 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_pThumbnailImage = NULL;
   m_pIconImage = NULL;
   m_overlayImage = NULL;
+  m_layout = NULL;
+  m_focusedLayout = NULL;
   m_bSelected = item.m_bSelected;
   m_strIcon = item.m_strIcon;
   m_strThumbnailImage = item.m_strThumbnailImage;
   m_overlayIcon = item.m_overlayIcon;
   m_bIsFolder = item.m_bIsFolder;
-  m_invalidated = true;
+  SetInvalid();
   return *this;
 }
 
@@ -217,7 +217,7 @@ void CGUIListItem::FreeIcons()
   FreeMemory();
   m_strThumbnailImage = "";
   m_strIcon = "";
-  m_invalidated = true;
+  SetInvalid();
 }
 
 void CGUIListItem::FreeMemory()
@@ -274,4 +274,10 @@ void CGUIListItem::SetFocusedLayout(CGUIListItemLayout *layout)
 CGUIListItemLayout *CGUIListItem::GetFocusedLayout()
 {
   return m_focusedLayout;
+}
+
+void CGUIListItem::SetInvalid()
+{
+  if (m_layout) m_layout->SetInvalid();
+  if (m_focusedLayout) m_focusedLayout->SetInvalid();
 }

@@ -77,12 +77,10 @@ public:
 
   void FreeIcons();
   void FreeMemory();
-  bool Invalidated() const { return m_invalidated; };
-  void SetInvalid(bool invalid = true) { m_invalidated = invalid; };
+  void SetInvalid();
 
   bool m_bIsFolder;     ///< is item a folder or a file
 protected:
-  bool m_invalidated;         // if one or more of our variables below has changed
   CStdString m_strLabel;      // text of column1
   CStdString m_strLabel2;     // text of column2
   CStdString m_strThumbnailImage; // filename of thumbnail
