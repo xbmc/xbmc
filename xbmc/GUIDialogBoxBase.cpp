@@ -80,6 +80,14 @@ void CGUIDialogBoxBase::SetChoice(int iButton, int iString) // iButton == 0 for 
   OnMessage(msg);
 }
 
+void CGUIDialogBoxBase::SetChoice(int iButton, const string& strString) // iButton == 0 for no, 1 for yes
+{
+  Initialize();
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 10+iButton);
+  msg.SetLabel(strString);
+  OnMessage(msg);
+}
+
 void CGUIDialogBoxBase::OnInitWindow()
 {
   // set focus to default

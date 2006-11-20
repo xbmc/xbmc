@@ -14,6 +14,7 @@ public:
   void SetHeading(const string& strLine);
   void SetHeading(int iString);
   void SetChoice(int iButton, int iString);
+  void SetChoice(int iButton, const string& strString);
 protected:
   virtual void OnInitWindow();
   bool m_bConfirmed;
