@@ -161,6 +161,7 @@
 #define AUDIOSCROBBLER_FILES_CACHED 303
 #define AUDIOSCROBBLER_SUBMIT_STATE 304
 
+#define LISTITEM_START              310
 #define LISTITEM_THUMB              310
 #define LISTITEM_LABEL              311
 #define LISTITEM_TITLE              312
@@ -173,6 +174,12 @@
 #define LISTITEM_DIRECTOR           319
 #define LISTITEM_OVERLAY            320
 #define LISTITEM_LABEL2             321
+#define LISTITEM_FILENAME           322
+#define LISTITEM_DATE               323
+#define LISTITEM_SIZE               324
+#define LISTITEM_RATING             325
+#define LISTITEM_PROGRAM_COUNT      326
+#define LISTITEM_END                321
 
 #define MUSICPM_ENABLED             350
 #define MUSICPM_SONGSPLAYED         351
@@ -327,14 +334,12 @@ public:
 
   void ResetCache();
 
-  void SetListItem(CGUIListItem *item);
-
+  CStdString GetItemLabel(const CFileItem *item, int info);
+  CStdString GetItemImage(CFileItem *item, int info);
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
   int TranslateSingleString(const CStdString &strCondition);
-  CStdString GetItemLabel(const CFileItem *item, int info);
-  CStdString GetItemImage(CFileItem *item, int info);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
@@ -348,8 +353,6 @@ protected:
 
   // Array of multiple information mapped to a single integer lookup
   vector<GUIInfo> m_multiInfo;
-
-  CFileItem *m_listItem;
 
   // Current playing stuff
   CFileItem m_currentSong;

@@ -5,8 +5,7 @@
 #include "PlayListM3U.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
-#include "GUIThumbnailPanel.h"
-#include "GUIListControl.h"
+#include "GUIListContainer.h"
 #include "GUIDialogContextMenu.h"
 
 #define CONTROL_BTNVIEWASICONS     2 
@@ -391,7 +390,7 @@ void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem, bool bContextDriven /* = tr
   // calculate our position
   float posX = 200;
   float posY = 100;
-  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+  CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_LIST);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;

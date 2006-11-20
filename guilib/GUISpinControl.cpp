@@ -344,7 +344,7 @@ void CGUISpinControl::Render()
   CStdString text;
   CStdStringW strTextUnicode;
 
-  if (m_iType == SPIN_CONTROL_TYPE_INT || m_iType == SPIN_CONTROL_TYPE_PAGE)
+  if (m_iType == SPIN_CONTROL_TYPE_INT)
   {
     if (m_bShowRange)
     {
@@ -354,6 +354,10 @@ void CGUISpinControl::Render()
     {
       text.Format("%i", m_iValue);
     }
+  }
+  else if (m_iType == SPIN_CONTROL_TYPE_PAGE)
+  {
+    text.Format("%i/%i", m_iValue, m_iEnd);
   }
   else if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
   {

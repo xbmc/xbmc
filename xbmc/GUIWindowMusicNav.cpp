@@ -5,7 +5,11 @@
 #include "application.h"
 #include "playlistplayer.h"
 #include "GUIPassword.h"
-#include "GUIListControl.h"
+#include "GUIListContainer.h"
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+#include "GUILabelControl.h"
+#include "GUIFontManager.h"
+#endif
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogFileBrowser.h"
 #include "Picture.h"
@@ -341,14 +345,18 @@ void CGUIWindowMusicNav::PlayItem(int iItem)
 
 void CGUIWindowMusicNav::OnWindowLoaded()
 {
-  CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
-  float x = pControl->GetXPosition();
-  float y = pControl->GetYPosition() + pControl->GetHeight() / 2;
-  CLabelInfo info = pControl->GetLabelInfo();
-  info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
-  CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,x,y,pControl->GetWidth(),40,"",info,false);
-  pLabel->SetAnimations(pControl->GetAnimations());
-  Add(pLabel);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  CGUIListContainer *pControl = (CGUIListContainer *)GetControl(CONTROL_LIST);
+  if (pControl && !GetControl(CONTROL_LABELEMPTY))
+  {
+    CLabelInfo info;
+    info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
+    info.font = g_fontManager.GetFont("font13");
+    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pControl->GetXPosition(),pControl->GetYPosition(),pControl->GetWidth(),pControl->GetHeight(),"",info,false);
+    pLabel->SetAnimations(pControl->GetAnimations());
+    Add(pLabel);
+  }
+#endif
   
   CGUIWindowMusicBase::OnWindowLoaded();
 }
@@ -359,7 +367,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
   // calculate our position
   float posX = 200;
   float posY = 100;
-  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+  CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_LIST);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;
@@ -608,14 +616,6 @@ void CGUIWindowMusicNav::Render()
 {
   if (m_bDisplayEmptyDatabaseMessage)
   {
-    CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(CONTROL_LABELEMPTY);
-    CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
-    float fWidth,fHeight;
-    CStdStringW utf16NoScannedInfo;
-    g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746), utf16NoScannedInfo); // "No scanned information for this view"
-    CLabelInfo info = pLabel->GetLabelInfo();
-    info.font->GetTextExtent(utf16NoScannedInfo.c_str(), &fWidth, &fHeight);
-    pLabel->SetPosition(pLabel->GetXPosition(),pControl->GetYPosition()+pControl->GetHeight()/2-(int)fHeight/2);
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746))
   }
   else

@@ -284,7 +284,7 @@ void CGUIWindowSettingsCategory::SetupControls()
     Remove(CONTROL_BUTTON_AREA);
     group = new CGUIControlGroupList(GetID(), CATEGORY_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
                                      area->GetWidth(), 1080, gap->GetHeight() - m_pOriginalCategoryButton->GetHeight(),
-                                     0, CGUIControl::VERTICAL);
+                                     0, VERTICAL);
     group->SetNavigation(CATEGORY_GROUP_ID, CATEGORY_GROUP_ID, SETTINGS_GROUP_ID, SETTINGS_GROUP_ID);
     Insert(group, gap);
     area->FreeResources();
@@ -331,7 +331,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     const CGUIControl *gap = GetControl(CONTROL_GAP);
     Remove(CONTROL_AREA);
     group = new CGUIControlGroupList(GetID(), SETTINGS_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
-                                     area->GetWidth(), 1080, gap->GetHeight() - m_pOriginalButton->GetHeight(), 0, CGUIControl::VERTICAL);
+                                     area->GetWidth(), 1080, gap->GetHeight() - m_pOriginalButton->GetHeight(), 0, VERTICAL);
     group->SetNavigation(SETTINGS_GROUP_ID, SETTINGS_GROUP_ID, CATEGORY_GROUP_ID, CATEGORY_GROUP_ID);
     Insert(group, gap);
     area->FreeResources();
@@ -1278,7 +1278,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkinFontSet = pControl->GetCurrentLabel();
-    if (strSkinFontSet != "CVS" && strSkinFontSet != g_guiSettings.GetString("lookandfeel.font"))
+    if (strSkinFontSet != ".svn" && strSkinFontSet != g_guiSettings.GetString("lookandfeel.font"))
     {
       m_strNewSkinFontSet = strSkinFontSet;
       g_application.DelayLoadSkin();
@@ -1299,7 +1299,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     {
       m_strErrorMessage.Empty();
       pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().textColor);
-      if (strSkin != "CVS" && strSkin != g_guiSettings.GetString("lookandfeel.skin"))
+      if (strSkin != ".svn" && strSkin != g_guiSettings.GetString("lookandfeel.skin"))
       {
         m_strNewSkin = strSkin;
         g_application.DelayLoadSkin();
@@ -1360,7 +1360,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strLanguage = pControl->GetCurrentLabel();
-    if (strLanguage != "CVS" && strLanguage != pSettingString->GetData())
+    if (strLanguage != ".svn" && strLanguage != pSettingString->GetData())
     {
       m_strNewLanguage = strLanguage;
       g_application.DelayLoadSkin();
@@ -1772,7 +1772,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
         CFileItem* pItem = items[i];
         if (pItem->m_bIsFolder)
         {
-          if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+          if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
           int iSizeTmp = atoi(pItem->GetLabel().c_str());
           if (iSizeTmp == pSettingInt->GetData())
             iCurrentSize = iSize;
@@ -1804,7 +1804,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
       CFileItem* pItem = items[i];
       if (pItem->m_bIsFolder)
       {
-        if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+        if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
         if (strcmpi(pItem->GetLabel().c_str(), pSettingString->GetData().c_str()) == 0)
           iCurrentFont = iFont;
         pControl->AddLabel(pItem->GetLabel(), iFont++);
@@ -1932,7 +1932,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
     CFileItem* pItem = items[i];
     if (pItem->m_bIsFolder)
     {
-      if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
       //   if (g_SkinInfo.Check(pItem->m_strPath))
@@ -1979,7 +1979,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
     CFileItem* pItem = items[i];
     if (pItem->m_bIsFolder)
     {
-      if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
       vecSoundSkins.push_back(pItem->GetLabel());
@@ -2288,7 +2288,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
     CFileItem* pItem = items[i];
     if (pItem->m_bIsFolder)
     {
-      if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+      if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
       vecLanguage.push_back(pItem->GetLabel());
