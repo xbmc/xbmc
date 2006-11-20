@@ -192,6 +192,8 @@ namespace PYXBMC
     "line1          : string or unicode - line #1 text.\n"
     "line2          : [opt] string or unicode - line #2 text.\n"
     "line3          : [opt] string or unicode - line #3 text.\n"
+    "nolabel        : [opt] label to put on the no button.\n"
+    "yeslabel       : [opt] label to put on the yes button.\n"
     "\n"
     "*Note, Returns True if 'Yes' was pressed, else False.\n"
     "\n"
@@ -202,16 +204,16 @@ namespace PYXBMC
   PyObject* Dialog_YesNo(PyObject *self, PyObject *args)
   {
     const DWORD dWindow = WINDOW_DIALOG_YES_NO;
-    PyObject* unicodeLine[4];
-    for (int i = 0; i < 4; i++) unicodeLine[i] = NULL;
+    PyObject* unicodeLine[6];
+    for (int i = 0; i < 6; i++) unicodeLine[i] = NULL;
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(dWindow);
     if (PyWindowIsNull(pDialog)) return NULL;
 
-    // get lines, last 2 lines are optional.
-    string utf8Line[4];
-    if (!PyArg_ParseTuple(args, "OO|OO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3]))  return NULL;
+    // get lines, last 4 lines are optional.
+    string utf8Line[6];
+    if (!PyArg_ParseTuple(args, "OO|OOOO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3],&unicodeLine[4],&unicodeLine[5]))  return NULL;
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 6; ++i)
     {
       if (unicodeLine[i] && !PyGetUnicodeString(utf8Line[i], unicodeLine[i], i+1))
         return NULL;
@@ -220,6 +222,10 @@ namespace PYXBMC
     pDialog->SetLine(0, utf8Line[1]);
     pDialog->SetLine(1, utf8Line[2]);
     pDialog->SetLine(2, utf8Line[3]);
+    if (utf8Line[4] != "")
+      pDialog->SetChoice(0,utf8Line[4]);
+    if (utf8Line[5] != "")
+      pDialog->SetChoice(1,utf8Line[5]);
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};    
