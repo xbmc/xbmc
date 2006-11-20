@@ -132,6 +132,7 @@ public:
     while (m_groupTransform.size())
       m_groupTransform.pop();
     m_groupTransform.push(m_guiTransform * matrix);
+    m_finalTransform = m_groupTransform.top();
   }
   inline void SetControlTransform(const TransformMatrix &matrix)
   {
@@ -140,6 +141,7 @@ public:
   inline void AddGroupTransform(const TransformMatrix &matrix)
   { // add to the stack
     m_groupTransform.push(m_groupTransform.top() * matrix);
+    m_finalTransform = m_groupTransform.top();
   };
   inline void RemoveGroupTransform()
   { // remove from stack
