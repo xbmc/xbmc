@@ -1178,7 +1178,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   // calculate the position for our menu
   float posX = 200;
   float posY = 100;
-  CGUIListContainer *pList = (CGUIListContainer *)GetControl(list + CONTROL_LEFT_LIST);
+  const CGUIControl *pList = GetControl(CONTROL_LEFT_LIST + list);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;
