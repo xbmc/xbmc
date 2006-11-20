@@ -145,7 +145,7 @@ public:
   virtual CStdString GetDescription() const { return ""; };
 
   void SetAnimations(const vector<CAnimation> &animations);
-  const vector<CAnimation> &GetAnimations() { return m_animations; };
+  const vector<CAnimation> &GetAnimations() const { return m_animations; };
 
   virtual void QueueAnimation(ANIMATION_TYPE anim);
   virtual bool IsAnimating(ANIMATION_TYPE anim);
