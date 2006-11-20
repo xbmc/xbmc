@@ -87,7 +87,7 @@ void CGUIDialogSettings::SetupPage()
     Remove(CONTROL_AREA);
     group = new CGUIControlGroupList(GetID(), CONTROL_GROUP_LIST, pArea->GetXPosition(), pArea->GetYPosition(),
                                      pArea->GetWidth(), pArea->GetHeight(), pGap->GetHeight() - m_pOriginalSettingsButton->GetHeight(),
-                                     0, CGUIControl::VERTICAL);
+                                     0, VERTICAL);
     group->SetNavigation(CONTROL_OKAY_BUTTON, CONTROL_OKAY_BUTTON, CONTROL_GROUP_LIST, CONTROL_GROUP_LIST);
     Insert(group, pGap);
     pArea->FreeResources();

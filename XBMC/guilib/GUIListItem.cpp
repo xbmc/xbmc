@@ -1,10 +1,12 @@
 #include "include.h"
 #include "GUIListItem.h"
 #include "GUIImage.h"
+#include "GUIListContainer.h"
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
   *this = item;
+  m_invalidated = true;
 }
 
 CGUIListItem::CGUIListItem(void)
@@ -19,6 +21,9 @@ CGUIListItem::CGUIListItem(void)
   m_strIcon = "";
   m_strThumbnailImage = "";
   m_overlayIcon = ICON_OVERLAY_NONE;
+  m_layout = NULL;
+  m_focusedLayout = NULL;
+  m_invalidated = true;
 }
 
 CGUIListItem::CGUIListItem(const CStdString& strLabel)
@@ -33,6 +38,9 @@ CGUIListItem::CGUIListItem(const CStdString& strLabel)
   m_strIcon = "";
   m_strThumbnailImage = "";
   m_overlayIcon = ICON_OVERLAY_NONE;
+  m_layout = NULL;
+  m_focusedLayout = NULL;
+  m_invalidated = true;
 }
 
 CGUIListItem::~CGUIListItem(void)
@@ -43,6 +51,7 @@ CGUIListItem::~CGUIListItem(void)
 void CGUIListItem::SetLabel(const CStdString& strLabel)
 {
   m_strLabel = strLabel;
+  m_invalidated = true;
 }
 
 const CStdString& CGUIListItem::GetLabel() const
@@ -54,6 +63,7 @@ const CStdString& CGUIListItem::GetLabel() const
 void CGUIListItem::SetLabel2(const CStdString& strLabel2)
 {
   m_strLabel2 = strLabel2;
+  m_invalidated = true;
 }
 
 const CStdString& CGUIListItem::GetLabel2() const
@@ -64,6 +74,7 @@ const CStdString& CGUIListItem::GetLabel2() const
 void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
 {
   m_strThumbnailImage = strThumbnail;
+  m_invalidated = true;
 }
 
 const CStdString& CGUIListItem::GetThumbnailImage() const
@@ -74,6 +85,7 @@ const CStdString& CGUIListItem::GetThumbnailImage() const
 void CGUIListItem::SetIconImage(const CStdString& strIcon)
 {
   m_strIcon = strIcon;
+  m_invalidated = true;
 }
 
 const CStdString& CGUIListItem::GetIconImage() const
@@ -87,7 +99,7 @@ void CGUIListItem::SetOverlayImage(GUIIconOverlay icon, bool bOnOff)
     m_overlayIcon = GUIIconOverlay((int)(icon)+1);
   else
     m_overlayIcon = icon;
-  //m_overlayIcon = (GUIIconOverlay)((int)(icon)+bOnOff?1:0);
+  m_invalidated = true;
 }
 
 CStdString CGUIListItem::GetOverlayImage() const
@@ -196,6 +208,7 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_strThumbnailImage = item.m_strThumbnailImage;
   m_overlayIcon = item.m_overlayIcon;
   m_bIsFolder = item.m_bIsFolder;
+  m_invalidated = true;
   return *this;
 }
 
@@ -204,6 +217,7 @@ void CGUIListItem::FreeIcons()
   FreeMemory();
   m_strThumbnailImage = "";
   m_strIcon = "";
+  m_invalidated = true;
 }
 
 void CGUIListItem::FreeMemory()
@@ -226,4 +240,38 @@ void CGUIListItem::FreeMemory()
     delete m_overlayImage;
     m_overlayImage = NULL;
   }
+  if (m_layout)
+  {
+    delete m_layout;
+    m_layout = NULL;
+  }
+  if (m_focusedLayout)
+  {
+    delete m_focusedLayout;
+    m_focusedLayout = NULL;
+  }
+}
+
+void CGUIListItem::SetLayout(CGUIListItemLayout *layout)
+{
+  if (m_layout)
+    delete m_layout;
+  m_layout = layout;
+}
+
+CGUIListItemLayout *CGUIListItem::GetLayout()
+{
+  return m_layout;
+}
+
+void CGUIListItem::SetFocusedLayout(CGUIListItemLayout *layout)
+{
+  if (m_focusedLayout)
+    delete m_focusedLayout;
+  m_focusedLayout = layout;
+}
+
+CGUIListItemLayout *CGUIListItem::GetFocusedLayout()
+{
+  return m_focusedLayout;
 }

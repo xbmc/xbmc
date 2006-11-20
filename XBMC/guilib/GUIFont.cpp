@@ -2,6 +2,8 @@
 #include "guifont.h"
 #include "graphiccontext.h"
 
+#define ROUND(x) floorf(x + 0.5f)
+
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontBase *font)
 {
   m_strFontName = strFontName;
@@ -28,7 +30,7 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
 {
   if (!m_font) return;
   g_graphicsContext.ScaleFinalCoords(fOriginX, fOriginY);
-  fMaxWidth *= g_graphicsContext.ScaleFinalX();
+  fMaxWidth = ROUND(fMaxWidth * g_graphicsContext.ScaleFinalX());
   if (!dwColor) dwColor = m_textColor;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   if (dwShadowColor)
@@ -76,7 +78,7 @@ void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle 
       pdw256ColorPalette[i] = m_textColor;
     alphaColor[i] = g_graphicsContext.MergeAlpha(pdw256ColorPalette[i]);
   }
-  fMaxWidth *= g_graphicsContext.ScaleFinalX();
+  fMaxWidth = ROUND(fMaxWidth * g_graphicsContext.ScaleFinalX());
   m_font->DrawColourTextWidth(fOriginX, fOriginY, Transform(angle), alphaColor, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
   delete[] alphaColor;
 }
@@ -86,7 +88,7 @@ void CGUIFont::DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor,
   if (!m_font) return;
   float nw = 0.0f, nh = 0.0f;
   g_graphicsContext.ScaleFinalCoords(sx, sy);
-  fMaxPixelWidth *= g_graphicsContext.ScaleFinalX();
+  fMaxPixelWidth = ROUND(fMaxPixelWidth * g_graphicsContext.ScaleFinalX());
   if (!dwColor) dwColor = m_textColor;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   if (dwShadowColor)
@@ -124,7 +126,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
   if (!g_graphicsContext.SetViewPort(x, y, w, h, true))
     return; // nothing to render
   g_graphicsContext.ScaleFinalCoords(x,y);
-  w *= g_graphicsContext.ScaleFinalX();
+  w = ROUND(w * g_graphicsContext.ScaleFinalX());
   // draw at our scroll position
   // we handle the scrolling as follows:
   //   We scroll on a per-pixel basis up until we have scrolled the first character outside
