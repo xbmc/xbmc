@@ -132,7 +132,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_iHasLock = item.m_iHasLock;
   m_iBadPwdCount = item.m_iBadPwdCount;
   m_bCanQueue=item.m_bCanQueue;
-  m_invalidated = true;
+  SetInvalid();
   return *this;
 }
 
@@ -165,7 +165,7 @@ void CFileItem::Reset()
   m_iBadPwdCount = 0;
   m_iHasLock = 0;
   m_bCanQueue=true;
-  m_invalidated = true;
+  SetInvalid();
 }
 
 void CFileItem::Serialize(CArchive& ar)
@@ -233,7 +233,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_bCanQueue;
 
     ar >> m_musicInfoTag;
-    m_invalidated = true;
+    SetInvalid();
   }
 }
 

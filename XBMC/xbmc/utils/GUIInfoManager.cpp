@@ -1915,6 +1915,30 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
   return (int)m_stringParameters.size() - 1;
 }
 
+CStdString CGUIInfoManager::GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo)
+{
+  CStdString label;
+  for (unsigned int i = 0; i < multiInfo.size(); i++)
+  {
+    const CInfoPortion &portion = multiInfo[i];
+    if (portion.m_info)
+    {
+      CStdString infoLabel = g_infoManager.GetItemLabel(item, portion.m_info);
+      if (!infoLabel.IsEmpty())
+      {
+        label += portion.m_prefix;
+        label += infoLabel;
+        label += portion.m_postfix;
+      }
+    }
+    else
+    { // no info, so just append the prefix
+      label += portion.m_prefix;
+    }
+  }
+  return label;
+}
+
 CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 {
   if (!item) return "";
@@ -2140,7 +2164,7 @@ CStdString CGUIInfoManager::SystemHasInternet_s()
   return StrTemp;
 }
 
-CStdString CGUIInfoManager::GetItemImage(CFileItem *item, int info)
+CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 {
   if (info == LISTITEM_ICON && item->GetThumbnailImage().IsEmpty())
   {

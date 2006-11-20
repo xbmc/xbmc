@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GUIImage.h"
+#include "GUILabelControl.h"
 
 class CGUIListItem;
 
@@ -21,9 +22,8 @@ class CGUIListItemLayout
   class CListLabel : public CListBase
   {
   public:
-    CListLabel(float posX, float posY, float width, float height, const CLabelInfo &label, int info);
+    CListLabel(float posX, float posY, float width, float height, const CLabelInfo &label, int info, const CStdString &contents);
     CLabelInfo m_label;
-    int m_info;
     CStdStringW m_text;
     float m_renderX;  // render location
     float m_renderY;
@@ -31,6 +31,9 @@ class CGUIListItemLayout
     float m_renderH;
     float m_textW;    // text width
     CScrollInfo m_scrollInfo;
+
+    int m_info;
+    vector<CInfoPortion> m_multiInfo;
   };
 
   class CListTexture : public CListBase
@@ -58,6 +61,8 @@ public:
   bool Focused() const { return m_focused; };
   void ResetScrolling();
 
+  void SetInvalid() { m_invalidated = true; };
+
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CImage &texture, float texHeight, float iconWidth, float iconHeight);
 //#endif
@@ -72,5 +77,6 @@ protected:
   float m_width;
   float m_height;
   bool m_focused;
+  bool m_invalidated;
 };
 
