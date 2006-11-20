@@ -54,7 +54,6 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_nextWindowID = WINDOW_INVALID;
   m_prevWindowID = WINDOW_INVALID;
   m_stringParameters.push_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
-  m_listItem = NULL;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -671,15 +670,10 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_GENRE:
   case LISTITEM_DIRECTOR:
     {
-      if (m_listItem)
-        strLabel = GetItemLabel(m_listItem, info);
-      else
+      CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      if (pWindow && pWindow->IsMediaWindow())
       {
-        CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-        if (pWindow && pWindow->IsMediaWindow())
-        {
-          strLabel = GetItemLabel(((CGUIMediaWindow *)pWindow)->GetCurrentListItem(), info);
-        }
+        strLabel = GetItemLabel(((CGUIMediaWindow *)pWindow)->GetCurrentListItem(), info);
       }
     }
     break;
@@ -1075,23 +1069,18 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY)
   {
-    if (m_listItem)
-      return GetItemImage(m_listItem, info);
-    else
+    CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
+    if (!window || !window->IsMediaWindow())
+      window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (window && window->IsMediaWindow())
     {
-      CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
-      if (!window || !window->IsMediaWindow())
-        window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-      if (window && window->IsMediaWindow())
-      {
-        CFileItem *item = NULL;
-        if (window->IsDialog()) // must be the filebrowser window
-          item = ((CGUIDialogFileBrowser *)window)->GetCurrentListItem();
-        else
-          item = ((CGUIMediaWindow *)window)->GetCurrentListItem();
-        if (item)
-          return GetItemImage(item, info);
-      }
+      CFileItem *item = NULL;
+      if (window->IsDialog()) // must be the filebrowser window
+        item = ((CGUIDialogFileBrowser *)window)->GetCurrentListItem();
+      else
+        item = ((CGUIMediaWindow *)window)->GetCurrentListItem();
+      if (item)
+        return GetItemImage(item, info);
     }
   }
   return "";
@@ -2111,43 +2100,9 @@ CStdString CGUIInfoManager::GetItemImage(CFileItem *item, int info)
   {
     CStdString strThumb = item->GetIconImage();
     strThumb.Insert(strThumb.Find("."), "Big");
-    if (m_listItem && !item->GetIcon() && item->HasIcon())
-    { // allocate it
-      CGUIImage *image = new CGUIImage(0, 0, 0, 0, 32, 32, strThumb);
-      if (image)
-      {
-        image->AllocResources();
-        item->SetIcon(image);
-      }
-    }
     return strThumb;
   }
   if (info == LISTITEM_OVERLAY)
-  {
-    if (m_listItem && !item->GetOverlay() && item->HasOverlay())
-    { // allocate it
-      CGUIImage *image = new CGUIImage(0, 0, 0, 0, 32, 32, item->GetOverlayImage());
-      if (image)
-      {
-        image->AllocResources();
-        item->SetIcon(image);
-      }
-    }
     return item->GetOverlayImage();
-  }
-  if (m_listItem && !item->GetThumbnail() && item->HasThumbnail())
-  { // allocate it
-    CGUIImage *image = new CGUIImage(0, 0, 0, 0, 32, 32, item->GetThumbnailImage());
-    if (image)
-    {
-      image->AllocResources();
-      item->SetThumbnail(image);
-    }
-  }
   return item->GetThumbnailImage();
-}
-
-void CGUIInfoManager::SetListItem(CGUIListItem *item)
-{
-  m_listItem = static_cast<CFileItem *>(item);
 }

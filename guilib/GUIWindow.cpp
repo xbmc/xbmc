@@ -5,32 +5,11 @@
 #include "TextureManager.h"
 #include "../xbmc/util.h"
 #include "GUIControlFactory.h"
-#include "GUIButtonControl.h"
-#include "GUIRadioButtonControl.h"
-#include "GUISpinControl.h"
-#include "GUISpinControlEx.h"
-#include "GUIRSSControl.h"
-#include "GUIRAMControl.h"
-#include "GUIConsoleControl.h"
-#include "GUIListControl.h"
-#include "GUIListControlEx.h"
-#include "GUIImage.h"
-#include "GUILabelControl.h"
-#include "GUIEditControl.h"
-#include "GUIFadeLabelControl.h"
-#include "GUICheckMarkControl.h"
-#include "GUIThumbnailPanel.h"
-#include "GUIToggleButtonControl.h"
-#include "GUITextBox.h"
-#include "GUIVideoControl.h"
-#include "GUIProgressControl.h"
-#include "GUISliderControl.h"
-#include "GUISelectButtonControl.h"
-#include "GUIMoverControl.h"
-#include "GUIResizeControl.h"
-#include "GUIButtonScroller.h"
-#include "GUIMultiImage.h"
 #include "GUIControlGroup.h"
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+#include "GUIListContainer.h"
+#endif
+
 #include "SkinInfo.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/ButtonTranslator.h"
@@ -314,6 +293,20 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
       pGroup->AddControl(pGUIControl);
     else
       Add(pGUIControl);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+    if (pGUIControl->GetControlType() == CGUIControl::GUICONTAINER_LIST)
+    {
+      CGUIListContainer *list = (CGUIListContainer *)pGUIControl;
+      if (list->m_spinControl)
+      {
+        if (pGroup)
+          pGroup->AddControl(list->m_spinControl);
+        else
+          Add(list->m_spinControl);
+        list->m_spinControl = NULL;
+      }
+    }
+#endif
     // if the new control is a group, then add it's controls
     if (pGUIControl->IsGroup())
     {

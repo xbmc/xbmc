@@ -8,7 +8,7 @@
 #include "FileSystem/FactoryFileDirectory.h"
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
-#include "GUIListControl.h"
+#include "GUIListContainer.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIPassword.h"
 #include "lib/libPython/XBPython.h"
@@ -972,7 +972,7 @@ void CGUIWindowFileManager::Refresh()
 
 int CGUIWindowFileManager::GetSelectedItem(int iControl)
 {
-  CGUIListControl *pControl = (CGUIListControl *)GetControl(iControl + CONTROL_LEFT_LIST);
+  CGUIListContainer *pControl = (CGUIListContainer *)GetControl(iControl + CONTROL_LEFT_LIST);
   if (!pControl || !m_vecItems[iControl].Size()) return -1;
   return pControl->GetSelectedItem();
 }
@@ -1178,7 +1178,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   // calculate the position for our menu
   float posX = 200;
   float posY = 100;
-  CGUIListControl *pList = (CGUIListControl *)GetControl(list + CONTROL_LEFT_LIST);
+  CGUIListContainer *pList = (CGUIListContainer *)GetControl(list + CONTROL_LEFT_LIST);
   if (pList)
   {
     posX = pList->GetXPosition() + pList->GetWidth() / 2;
@@ -1467,10 +1467,13 @@ void CGUIWindowFileManager::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
   // disable the page spin controls
-  CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LEFT_LIST);
-  if (pControl) pControl->SetPageControlVisible(false);
-  pControl = (CGUIListControl *)GetControl(CONTROL_RIGHT_LIST);
-  if (pControl) pControl->SetPageControlVisible(false);
+  // TODO: ListContainer - what to do here?
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LEFT_LIST + 5000);
+  if (spin) spin->SetVisible(false);
+  spin = (CGUIControl *)GetControl(CONTROL_RIGHT_LIST + 5000);
+  if (spin) spin->SetVisible(false);
+#endif
 }
 
 void CGUIWindowFileManager::OnInitWindow()

@@ -318,6 +318,12 @@
 				RelativePath=".\GUIListItem.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIListItemLayout.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIListItemLayout.h">
+			</File>
+			<File
 				RelativePath=".\GUIMessage.cpp">
 			</File>
 			<File
