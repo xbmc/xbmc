@@ -336,7 +336,8 @@ public:
   void ResetCache();
 
   CStdString GetItemLabel(const CFileItem *item, int info);
-  CStdString GetItemImage(CFileItem *item, int info);
+  CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
+  CStdString GetItemImage(const CFileItem *item, int info);
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;

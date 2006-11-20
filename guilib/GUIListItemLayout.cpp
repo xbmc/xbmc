@@ -16,12 +16,13 @@ CGUIListItemLayout::CListBase::CListBase(float posX, float posY, float width, fl
   m_height = height;
 }
 
-CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, const CLabelInfo &label, int info)
+CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, const CLabelInfo &label, int info, const CStdString &content)
 : CGUIListItemLayout::CListBase(posX, posY, width, height)
 {
   m_label = label;
   m_info = info;
   m_type = LIST_LABEL;
+  g_infoManager.ParseLabel(content, m_multiInfo);
 }
 
 CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, const CImage &image)
@@ -49,6 +50,7 @@ CGUIListItemLayout::CGUIListItemLayout()
   m_width = 0;
   m_height = 0;
   m_focused = false;
+  m_invalidated = true;
 }
 
 CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
@@ -67,6 +69,7 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
     else if (item->m_type ==  CListBase::LIST_TEXTURE)
       m_controls.push_back(new CListTexture(*(CListTexture *)item));
   }
+  m_invalidated = true;
 }
 
 CGUIListItemLayout::~CGUIListItemLayout()
@@ -82,7 +85,7 @@ float CGUIListItemLayout::Size(ORIENTATION orientation)
 
 void CGUIListItemLayout::Render(CGUIListItem *item)
 {
-  if (item->Invalidated())
+  if (m_invalidated)
   {
     for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
       UpdateItem(*it, item);
@@ -97,8 +100,8 @@ void CGUIListItemLayout::Render(CGUIListItem *item)
           if (m_controls[j]->m_type == CListBase::LIST_LABEL)
           { // ok, now check if they overlap
             CListLabel *label2 = (CListLabel *)m_controls[j];
-            if ((label1->m_renderY <= label2->m_renderY && label2->m_renderY <= label1->m_renderY + label1->m_renderH) ||
-                (label2->m_renderY <= label1->m_renderY && label1->m_renderY <= label2->m_renderY + label2->m_renderH))
+            if ((label1->m_renderY <= label2->m_renderY + label2->m_renderH*0.5f && label2->m_renderY + label2->m_renderH*0.5f <= label1->m_renderY + label1->m_renderH) ||
+                (label2->m_renderY <= label1->m_renderY + label1->m_renderH*0.5f && label1->m_renderY + label1->m_renderH*0.5f <= label2->m_renderY + label2->m_renderH))
             { // overlap vertically - check horizontal
               CListLabel *left = label1->m_renderX < label2->m_renderX ? label1 : label2;
               CListLabel *right = label1->m_renderX < label2->m_renderX ? label2 : label1;
@@ -124,6 +127,7 @@ void CGUIListItemLayout::Render(CGUIListItem *item)
         }
       }
     }
+    m_invalidated = false;
   }
 
   // and render
@@ -147,7 +151,10 @@ void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CGUI
   else if (control->m_type == CListBase::LIST_LABEL)
   {
     CListLabel *label = (CListLabel *)control;
-    g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemLabel((CFileItem *)item, label->m_info), label->m_text);
+    if (label->m_info)
+      g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemLabel((CFileItem *)item, label->m_info), label->m_text);
+    else
+      g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemMultiLabel((CFileItem *)item, label->m_multiInfo), label->m_text);
     if (label->m_label.font)
     {
       label->m_label.font->GetTextExtent(label->m_text, &label->m_textW, &label->m_renderH);
@@ -226,9 +233,11 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   DWORD alignY = 0;
   if (factory.GetAlignmentY(child, "aligny", alignY))
     label.align |= alignY;
+  CStdString content;
+  XMLUtils::GetString(child, "label", content);
   if (type == "label")
   { // info label
-    return new CListLabel(posX, posY, width, height, label, info);
+    return new CListLabel(posX, posY, width, height, label, info, content);
   }
   else if (type == "image")
   {
@@ -270,10 +279,10 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   CListImage *image = new CListImage(8, 0, iconWidth, texHeight, LISTITEM_ICON);
   m_controls.push_back(image);
   float x = iconWidth + labelInfo.offsetX + 10;
-  CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, labelInfo, LISTITEM_LABEL);
+  CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, labelInfo, LISTITEM_LABEL, "");
   m_controls.push_back(label);
   x = labelInfo2.offsetX ? labelInfo2.offsetX : m_width - 16;
-  label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, labelInfo2, LISTITEM_LABEL2);
+  label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, labelInfo2, LISTITEM_LABEL2, "");
   m_controls.push_back(label);
 }
 //#endif
