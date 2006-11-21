@@ -11,6 +11,7 @@ class CGUIListItemLayout
   {
   public:
     CListBase(float posX, float posY, float width, float height);
+    virtual void Free() {};
     float m_posX;
     float m_posY;
     float m_width;
@@ -40,7 +41,7 @@ class CGUIListItemLayout
   {
   public:
     CListTexture(float posX, float posY, float width, float height, const CImage &image);
-    ~CListTexture();
+    virtual void Free();
     CGUIImage m_image;
   };
 
@@ -48,13 +49,13 @@ class CGUIListItemLayout
   {
   public:
     CListImage(float posX, float posY, float width, float height, int info);
-    ~CListImage();
     int m_info;
   };
 
 public:
   CGUIListItemLayout();
   CGUIListItemLayout(const CGUIListItemLayout &from);
+  ~CGUIListItemLayout();
   void LoadLayout(TiXmlElement *layout, bool focused);
   void Render(CGUIListItem *item);
   float Size(ORIENTATION orientation);
