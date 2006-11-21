@@ -171,6 +171,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddViewAsControl(VIEW_METHOD_LIST, 101);
         AddViewAsControl(VIEW_METHOD_ICONS, 100);
         AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+        AddViewAsControl(VIEW_METHOD_LARGE_LIST, 759);
         SetViewAsControl(g_stSettings.m_MyVideoNavTitleViewMethod);
 
         SetSortOrder(g_stSettings.m_MyVideoNavTitleSortOrder);
