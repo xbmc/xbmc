@@ -34,3 +34,9 @@ void CGUIWindowVideoOverlay::Render()
   }
   CGUIDialog::Render();
 }
+
+void CGUIWindowVideoOverlay::Reset()
+{
+  CGUIDialog::Reset();
+  m_renderOrder = 0;
+}
