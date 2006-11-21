@@ -31,6 +31,7 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX
   ControlType = GUICONTROL_SPIN;
   m_numItems = 10;
   m_itemsPerPage = 10;
+  m_showOnePage = true;
 }
 
 void CGUISpinControl::SetNonProportional(bool bOnOff)
@@ -358,6 +359,8 @@ void CGUISpinControl::Render()
   else if (m_iType == SPIN_CONTROL_TYPE_PAGE)
   {
     text.Format("%i/%i", m_iValue, m_iEnd);
+    if (m_numItems <= m_itemsPerPage && !m_showOnePage)
+      return CGUIControl::Render();
   }
   else if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
   {

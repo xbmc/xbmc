@@ -85,6 +85,7 @@ public:
   void SetShowRange(bool bOnoff) ;
   void SetBuddyControlID(DWORD dwBuddyControlID);
   void SetNonProportional(bool bOnOff);
+  void SetShowOnePage(bool showOnePage) { m_showOnePage = showOnePage; };
   void Clear();
   virtual CStdString GetDescription() const;
   bool IsFocusedOnUp() const;
@@ -122,5 +123,6 @@ protected:
 
   int m_itemsPerPage;
   int m_numItems;
+  bool m_showOnePage;
 };
 #endif
