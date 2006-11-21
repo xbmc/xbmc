@@ -338,3 +338,8 @@ void CGUIWindowVideoNav::Render()
   }
   CGUIWindowVideoBase::Render();
 }
+
+void CGUIWindowVideoNav::OnDeleteItem(int iItem)
+{
+  // TODO: Implement this :)
+}

@@ -19,6 +19,7 @@ protected:
   virtual void UpdateButtons();
 //  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void PlayItem(int iItem);
+  virtual void OnDeleteItem(int iItem);
   virtual void OnWindowLoaded();
 
   void DisplayEmptyDatabaseMessage(bool bDisplay);
