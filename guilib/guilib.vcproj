@@ -321,9 +321,6 @@
 				RelativePath=".\GUIListItemLayout.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIListItemLayout.h">
-			</File>
-			<File
 				RelativePath=".\GUIMessage.cpp">
 			</File>
 			<File
@@ -391,6 +388,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIWindowManager.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIWrappingListContainer.cpp">
 			</File>
 			<File
 				RelativePath=".\include.cpp">
@@ -527,6 +527,9 @@
 				RelativePath=".\GUIListItem.h">
 			</File>
 			<File
+				RelativePath=".\GUIListItemLayout.h">
+			</File>
+			<File
 				RelativePath=".\GUIMessage.h">
 			</File>
 			<File
@@ -594,6 +597,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIWindowManager.h">
+			</File>
+			<File
+				RelativePath=".\GUIWrappingListContainer.h">
 			</File>
 			<File
 				RelativePath=".\IAudioDeviceChangedCallback.h">
