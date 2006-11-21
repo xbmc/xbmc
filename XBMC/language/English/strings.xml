@@ -655,6 +655,7 @@
   <string id="1410">Calm</string>
   <string id="1411">with</string>
   <string id="1412">windy</string>
+  <string id="1413">drizzle</string>
   <string id="2050">Runtime:</string>
 
   <string id="4501">LCD Type</string>
@@ -1442,5 +1443,6 @@
   <string id="20311">Unknown or Onboard (protected)</string>
   <string id="20312">Dim LCD on Paused</string>
   <string id="20313">Switch LED back on if Paused</string>
+  <string id="20314">My Video - Library</string>
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>

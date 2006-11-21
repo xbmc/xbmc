@@ -86,10 +86,7 @@
 #include "GUIWindowMusicInfo.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowVideoFiles.h"
-#include "GUIWindowVideoGenre.h"
-#include "GUIWindowVideoActors.h"
-#include "GUIWindowVideoYear.h"
-#include "GUIWindowVideoTitle.h"
+#include "GUIWindowVideoNav.h"
 #include "GUIWindowSettingsProfile.h"
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowPrograms.h"
@@ -1223,10 +1220,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
-  m_gWindowManager.Add(new CGUIWindowVideoGenre);               // window id = 21
-  m_gWindowManager.Add(new CGUIWindowVideoActors);              // window id = 22
-  m_gWindowManager.Add(new CGUIWindowVideoYear);                // window id = 23
-  m_gWindowManager.Add(new CGUIWindowVideoTitle);               // window id = 25
+  m_gWindowManager.Add(new CGUIWindowVideoNav);                 // window id = 36
   m_gWindowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
   m_gWindowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   m_gWindowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
@@ -3108,10 +3102,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_FILES);
     m_gWindowManager.Delete(WINDOW_VIDEO_PLAYLIST);
-    m_gWindowManager.Delete(WINDOW_VIDEO_TITLE);
-    m_gWindowManager.Delete(WINDOW_VIDEO_GENRE);
-    m_gWindowManager.Delete(WINDOW_VIDEO_ACTOR);
-    m_gWindowManager.Delete(WINDOW_VIDEO_YEAR);
+    m_gWindowManager.Delete(WINDOW_VIDEO_NAV);
     m_gWindowManager.Delete(WINDOW_FILES);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
