@@ -74,6 +74,8 @@ protected:
   CGUIListItemLayout m_layout;
   CGUIListItemLayout m_focusedLayout;
 
+  float m_analogScrollCount;
+
   void ScrollToOffset();
   DWORD m_scrollTime;
   float m_scrollSpeed;

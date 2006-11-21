@@ -11,7 +11,7 @@ class CGUIListItemLayout
   {
   public:
     CListBase(float posX, float posY, float width, float height);
-    virtual void Free() {};
+    virtual ~CListBase();
     float m_posX;
     float m_posY;
     float m_width;
@@ -24,6 +24,7 @@ class CGUIListItemLayout
   {
   public:
     CListLabel(float posX, float posY, float width, float height, const CLabelInfo &label, int info, const CStdString &contents);
+    virtual ~CListLabel();
     CLabelInfo m_label;
     CStdStringW m_text;
     float m_renderX;  // render location
@@ -41,7 +42,7 @@ class CGUIListItemLayout
   {
   public:
     CListTexture(float posX, float posY, float width, float height, const CImage &image);
-    virtual void Free();
+    virtual ~CListTexture();
     CGUIImage m_image;
   };
 
@@ -49,6 +50,7 @@ class CGUIListItemLayout
   {
   public:
     CListImage(float posX, float posY, float width, float height, int info);
+    virtual ~CListImage();
     int m_info;
   };
 
