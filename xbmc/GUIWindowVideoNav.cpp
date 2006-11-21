@@ -312,12 +312,12 @@ void CGUIWindowVideoNav::OnWindowLoaded()
     CLabelInfo info;
     info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
     info.font = g_fontManager.GetFont("font13");
+    info.textColor = 0xffffffff;
     CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),"",info,false);
     pLabel->SetAnimations(pList->GetAnimations());
     Add(pLabel);
   }
 #endif
-  
   CGUIWindowVideoBase::OnWindowLoaded();
 }
 
@@ -330,14 +330,6 @@ void CGUIWindowVideoNav::Render()
 {
   if (m_bDisplayEmptyDatabaseMessage)
   {
-    CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(CONTROL_LABELEMPTY);
-    CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
-    float fWidth,fHeight;
-    CStdStringW utf16NoScannedInfo;
-    g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746), utf16NoScannedInfo); // "No scanned information for this view"
-    CLabelInfo info = pLabel->GetLabelInfo();
-    info.font->GetTextExtent(utf16NoScannedInfo.c_str(), &fWidth, &fHeight);
-    pLabel->SetPosition(pLabel->GetXPosition(),pControl->GetYPosition()+pControl->GetHeight()/2-(int)fHeight/2);
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746))
   }
   else
