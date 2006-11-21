@@ -80,12 +80,19 @@ extern "C"
 {
 #endif
 
+#ifdef _XBOX
   int __stdcall dllgethostname(char* name, int namelen)
   {
     if ((unsigned int)namelen < strlen("xbox") + 1) return -1;
     strcpy(name, "xbox");
     return 0;
   }
+#else
+  int __stdcall dllgethostname(char* name, int namelen)
+  {
+    return gethostname(name, namelen);
+  }
+#endif
 
   static struct mphostent hbn_hostent;
   static char* hbn_cAliases[]= { NULL, NULL }; // only one NULL is needed acutally
@@ -136,6 +143,11 @@ extern "C"
   struct hostent* gethostbyname(const char* name)
   {
     return (hostent*)dllgethostbyname(name);
+  }
+#else
+  struct mphostent* __stdcall dllgethostbyname(const char* name)
+  {
+    return (mphostent*)gethostbyname(name);
   }
 #endif
 

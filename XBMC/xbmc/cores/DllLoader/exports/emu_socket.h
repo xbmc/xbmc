@@ -9,8 +9,8 @@ extern "C"
 {
 #endif
 
-#ifdef _XBOX
   struct mphostent* __stdcall dllgethostbyname(const char* name);
+#ifdef _XBOX
   extern "C" char* inet_ntoa(in_addr in);
 #endif
   int __stdcall dllconnect( SOCKET s, const struct sockaddr FAR *name, int namelen);
