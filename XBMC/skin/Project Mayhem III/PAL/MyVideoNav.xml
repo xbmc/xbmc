@@ -61,7 +61,7 @@
    <posx>660</posx>
    <posy>55</posy>
    <label>3</label>
-   <font>font13/font>
+   <font>font13</font>
   </control>
 
   <controlgroup>
