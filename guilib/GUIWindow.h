@@ -130,6 +130,7 @@ public:
 
   virtual void ResetControlStates();
 protected:
+  virtual void Reset();
   virtual void OnWindowUnload() {}
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();

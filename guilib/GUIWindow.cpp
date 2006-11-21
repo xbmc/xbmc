@@ -155,17 +155,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
   // now load in the skin file
-  m_renderOrder = 0;
-  m_saveLastControl = true;
-  m_dwDefaultFocusControlID = 0;
-  m_bRelativeCoords = false;
-  m_posX = m_posY = m_width = m_height = 0;
-  m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
-  m_visibleCondition = 0;
-  m_previousWindow = WINDOW_INVALID;
-  m_showAnimation.Reset();
-  m_closeAnimation.Reset();
-  m_origins.clear();
+  Reset();
 
   LoadReferences();
   TiXmlElement *pChild = pRootElement->FirstChildElement();
@@ -1155,4 +1145,19 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   // if we get here we have our new control so focus it (and unfocus the current control)
   SET_CONTROL_FOCUS(nextControl, 0);
   return true;
+}
+
+void CGUIWindow::Reset()
+{
+  m_renderOrder = 0;
+  m_saveLastControl = true;
+  m_dwDefaultFocusControlID = 0;
+  m_bRelativeCoords = false;
+  m_posX = m_posY = m_width = m_height = 0;
+  m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
+  m_visibleCondition = 0;
+  m_previousWindow = WINDOW_INVALID;
+  m_showAnimation.Reset();
+  m_closeAnimation.Reset();
+  m_origins.clear();
 }

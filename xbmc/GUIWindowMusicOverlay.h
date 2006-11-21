@@ -9,4 +9,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnMouse();
   virtual void Render();
+protected:
+  virtual void Reset();
 };
