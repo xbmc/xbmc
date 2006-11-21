@@ -63,7 +63,7 @@ void CGUIWrappingListContainer::Render()
 
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset));
     SendWindowMessage(msg);
   }
   CGUIBaseContainer::Render();
