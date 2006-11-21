@@ -292,9 +292,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   {
     iWindowID = g_stSettings.m_iVideoStartWindow;
     // ensure the virtual video window only returns video windows
-    if (iWindowID != WINDOW_VIDEO_FILES && iWindowID != WINDOW_VIDEO_GENRE &&
-        iWindowID != WINDOW_VIDEO_YEAR && iWindowID != WINDOW_VIDEO_TITLE &&
-        iWindowID != WINDOW_VIDEO_ACTOR)
+    if (iWindowID != WINDOW_VIDEO_NAV)
       iWindowID = WINDOW_VIDEO_FILES;
   }
 

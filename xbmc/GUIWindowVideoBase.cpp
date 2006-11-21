@@ -22,6 +22,7 @@
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
+#include "FileSystem/VideoDatabaseDirectory.h"
 
 #include "SkinInfo.h"
 
@@ -40,6 +41,8 @@
 #define CONTROL_BTNSCAN           8
 #define CONTROL_IMDB              9
 #define CONTROL_BTNSHOWMODE       10
+
+using namespace VIDEODATABASEDIRECTORY;
 
 CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
@@ -92,17 +95,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         case 0:  // Movies
           nNewWindow = WINDOW_VIDEO_FILES;
           break;
-        case 1:  // Genre
-          nNewWindow = WINDOW_VIDEO_GENRE;
-          break;
-        case 2:  // Actors
-          nNewWindow = WINDOW_VIDEO_ACTOR;
-          break;
-        case 3:  // Year
-          nNewWindow = WINDOW_VIDEO_YEAR;
-          break;
-        case 4:  // Titel
-          nNewWindow = WINDOW_VIDEO_TITLE;
+        case 1:  // Library
+          nNewWindow = WINDOW_VIDEO_NAV;
           break;
         }
 
@@ -157,7 +151,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         {
           // is delete allowed?
           // must be at the title window
-          if (GetID() == WINDOW_VIDEO_TITLE)
+          if (GetID() == WINDOW_VIDEO_NAV)
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled
@@ -194,28 +188,13 @@ void CGUIWindowVideoBase::UpdateButtons()
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
 
-  strItem = g_localizeStrings.Get(135); // Genre
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-
-  strItem = g_localizeStrings.Get(344); // Actors
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-
-  strItem = g_localizeStrings.Get(345); // Year
-  msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
-
-  strItem = g_localizeStrings.Get(369); // Titel
+  strItem = g_localizeStrings.Get(14022); // Library
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
 
   // Select the current window as default item
   int nWindow = 0;
-  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_GENRE) nWindow = 1;
-  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_ACTOR) nWindow = 2;
-  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_YEAR) nWindow = 3;
-  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_TITLE) nWindow = 4;
+  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_NAV) nWindow = 1;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
   // disable scan and manual imdb controls if internet lookups are disabled
@@ -731,23 +710,30 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 		if (!bIsGotoParent)
 		{
 			// don't show the add to playlist button in playlist window
-			if (GetID() != WINDOW_VIDEO_PLAYLIST)
-				btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
-	  
-			if (vecCores.size() >= 1)
-				btn_PlayWith = pMenu->AddButton(15213);
-			// allow a folder to be ad-hoc queued and played by the default player
-			else if (GetID() == WINDOW_VIDEO_FILES && (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList()))
-				btn_PlayWith = pMenu->AddButton(208);
+      if (GetID() != WINDOW_VIDEO_PLAYLIST)
+      {
+        if (GetID() == WINDOW_VIDEO_NAV)
+        {
+          if (!m_vecItems.m_strPath.IsEmpty())
+            btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
+        }
+        else
+          btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
 
-			// if autoresume is enabled then add restart video button
-			// check to see if the Resume Video button is applicable
-			if (GetResumeItemOffset(m_vecItems[iItem]) > 0)               
+        if (vecCores.size() >= 1)
+          btn_PlayWith = pMenu->AddButton(15213);
+        // allow a folder to be ad-hoc queued and played by the default player
+        else if (GetID() == WINDOW_VIDEO_FILES && (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList()))
+          btn_PlayWith = pMenu->AddButton(208);
+
+        // if autoresume is enabled then add restart video button
+        // check to see if the Resume Video button is applicable
+        if (GetResumeItemOffset(m_vecItems[iItem]) > 0)               
 				if (g_guiSettings.GetBool("myvideos.autoresume"))
 					btn_Restart = pMenu->AddButton(20132);    // Restart Video
 				else
 					btn_Resume = pMenu->AddButton(13381);     // Resume Video
-
+      }
 			// turn off the query info button if we are in playlists view
 			if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES) && !(GetID() == WINDOW_VIDEO_FILES && !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser))
 				btn_Show_Info = pMenu->AddButton(13346);
@@ -783,14 +769,22 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 				}
 			}
 			// delete titles from database
-			if (GetID() == WINDOW_VIDEO_TITLE && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-				btn_Delete = pMenu->AddButton(646);
+			if (GetID() == WINDOW_VIDEO_NAV && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+			{
+		     	CVideoDatabaseDirectory dir;
+      		 	NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
+      			if (node == NODE_TYPE_TITLE)
+        			btn_Delete = pMenu->AddButton(646);
+			}
 		}
 	} // if (bContextDriven)
 
 	// non-contextual buttons
   int btn_Settings = pMenu->AddButton(5);			// Settings
-  int btn_GoToRoot = pMenu->AddButton(20128);	// Go To Root
+  int btn_GoToRoot = 0;
+  if (!m_vecItems.m_strPath.IsEmpty())
+    btn_GoToRoot = pMenu->AddButton(20128);
+
 	int btn_Switch = 0;													// Switch Media
   int btn_NowPlaying = 0;											// Now Playing
 

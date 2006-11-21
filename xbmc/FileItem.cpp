@@ -493,6 +493,12 @@ bool CFileItem::IsMusicDb() const
   return false;
 }
 
+bool CFileItem::IsVideoDb() const
+{
+  if (strstr(m_strPath.c_str(), "videodb:") ) return true;
+  return false;
+}
+
 bool CFileItem::IsVirtualDirectoryRoot() const
 {
   return (m_bIsFolder && m_strPath.IsEmpty());
@@ -1083,12 +1089,18 @@ void CFileItemList::AppendPointer(const CFileItemList& itemlist)
 
 CFileItem* CFileItemList::Get(int iItem)
 {
-  return m_items[iItem];
+  if (iItem > -1)
+    return m_items[iItem];
+
+  return NULL;
 }
 
 const CFileItem* CFileItemList::Get(int iItem) const
 {
-  return m_items[iItem];
+  if (iItem > -1)
+    return m_items[iItem];
+
+  return NULL;
 }
 
 CFileItem* CFileItemList::Get(const CStdString& strPath)
