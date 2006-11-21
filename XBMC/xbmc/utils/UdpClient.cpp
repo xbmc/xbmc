@@ -10,8 +10,6 @@ CUdpClient::CUdpClient(void) : CThread()
 
 CUdpClient::~CUdpClient(void)
 {
-  closesocket(client_socket);
-  DeleteCriticalSection(&critical_section);
 }
 
 bool CUdpClient::Create(void)
@@ -55,6 +53,8 @@ bool CUdpClient::Create(void)
 void CUdpClient::Destroy()
 {
   StopThread();
+  closesocket(client_socket);
+  DeleteCriticalSection(&critical_section);
 }
 
 void CUdpClient::OnStartup()
