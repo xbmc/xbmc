@@ -42,17 +42,8 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_VIDEO_FILES)
     return new CGUIViewStateWindowVideoFiles(items);
 
-  if (windowId==WINDOW_VIDEO_GENRE)
-    return new CGUIViewStateWindowVideoGenre(items);
-
-  if (windowId==WINDOW_VIDEO_ACTOR)
-    return new CGUIViewStateWindowVideoActor(items);
-
-  if (windowId==WINDOW_VIDEO_YEAR)
-    return new CGUIViewStateWindowVideoYear(items);
-
-  if (windowId==WINDOW_VIDEO_TITLE)
-    return new CGUIViewStateWindowVideoTitle(items);
+  if (windowId==WINDOW_VIDEO_NAV)
+    return new CGUIViewStateWindowVideoNav(items);
 
   if (windowId==WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);
