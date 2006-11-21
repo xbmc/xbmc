@@ -213,25 +213,6 @@ void CGUIWindowVideoBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-void CGUIWindowVideoBase::OnWindowLoaded()
-{
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList && !GetControl(CONTROL_LABELEMPTY))
-  {
-    CLabelInfo info;
-    info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
-    info.font = g_fontManager.GetFont("font13");
-    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),"",info,false);
-    pLabel->SetAnimations(pList->GetAnimations());
-    Add(pLabel);
-  }
-#endif
-  
-  CGUIMediaWindow::OnWindowLoaded();
-}
-
-
 void CGUIWindowVideoBase::OnInfo(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
