@@ -31,6 +31,7 @@
 #include "GUIControlGroupList.h"
 #include "GUIScrollBarControl.h"
 #include "GUIListContainer.h"
+#include "GUIWrappingListContainer.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/util.h"
@@ -395,6 +396,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
   CStdString altLabel;
 
+  int focusPosition = 0;
+
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
   //
@@ -751,6 +754,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   XMLUtils::GetFloat(pControlNode, "radioposy", radioPosY);
 
   XMLUtils::GetBoolean(pControlNode, "showonepage", showOnePage);
+  XMLUtils::GetInt(pControlNode, "focusposition", focusPosition);
 
   if (strType == "group" || strType == "grouplist")
   {
@@ -1097,6 +1101,19 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   else if (strType == "list")
   {
     CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation);
+    pControl->LoadLayout(pControlNode);
+    pControl->SetNavigation(up, down, left, right);
+    pControl->SetColourDiffuse(dwColorDiffuse);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
+    pControl->SetPulseOnSelect(bPulse);
+    pControl->SetPageControl(pageControl);
+    return pControl;
+  }
+  else if (strType == "wraplist")
+  {
+    CGUIWrappingListContainer* pControl = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, focusPosition);
     pControl->LoadLayout(pControlNode);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
