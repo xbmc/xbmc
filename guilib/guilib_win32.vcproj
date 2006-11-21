@@ -274,6 +274,9 @@
 				RelativePath=".\GUIWindowManager.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIWrappingListContainer.cpp">
+			</File>
+			<File
 				RelativePath=".\include.cpp">
 			</File>
 			<File
@@ -481,6 +484,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIWindowManager.h">
+			</File>
+			<File
+				RelativePath=".\GUIWrappingListContainer.h">
 			</File>
 			<File
 				RelativePath=".\IAudioDeviceChangedCallback.h">

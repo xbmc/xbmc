@@ -191,6 +191,7 @@ public:
     GUICONTROL_GROUPLIST,
     GUICONTROL_SCROLLBAR,
     GUICONTAINER_LIST,
+    GUICONTAINER_WRAPPINGLIST,
   };
   GUICONTROLTYPES GetControlType() const { return ControlType; }
 
