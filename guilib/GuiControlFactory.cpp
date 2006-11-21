@@ -1007,6 +1007,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
       pControl->SetRange(iMin, iMax);
       pControl->SetShowRange(true);
       pControl->SetReverse(false);
+      pControl->SetShowOnePage(showOnePage);
     }
     else if (iType == SPIN_CONTROL_TYPE_FLOAT)
     {
