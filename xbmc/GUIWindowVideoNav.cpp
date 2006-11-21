@@ -338,8 +338,37 @@ void CGUIWindowVideoNav::Render()
   }
   CGUIWindowVideoBase::Render();
 }
-
 void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 {
-  // TODO: Implement this :)
+  if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
+
+  CFileItem* pItem = m_vecItems[iItem];
+  if (pItem->m_bIsFolder) return;
+
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (!pDialog) return;
+  pDialog->SetHeading(432);
+  pDialog->SetLine(0, 433);
+  pDialog->SetLine(1, 434);
+  pDialog->SetLine(2, "");;
+  pDialog->DoModal();
+  if (!pDialog->IsConfirmed()) return;
+
+  CStdString path;
+  //m_database.GetFilePath(atol(pItem->m_strPath), path);
+  m_database.GetFilePath(atol(pItem->m_musicInfoTag.GetURL()), path);
+  if (path.IsEmpty()) return;
+  m_database.DeleteMovie(path);
+
+  // delete the cached thumb for this item (it will regenerate if it is a user thumb)
+  CStdString thumb(pItem->GetCachedVideoThumb());
+  CFile::Delete(thumb);
+
+  CVideoDatabaseDirectory dir;
+  dir.ClearDirectoryCache(m_vecItems.m_strPath);
+
+  DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0);
+  Update( m_vecItems.m_strPath );
+  m_viewControl.SetSelectedItem(iItem);
+  return;
 }
