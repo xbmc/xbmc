@@ -55,7 +55,8 @@ void CGUIListContainer::Render()
         item->FreeMemory();
     }
   }
-  for (int i = offset + m_itemsPerPage; i < (int)m_items.size(); ++i)
+  // + 1 for the next item in the list
+  for (int i = offset + m_itemsPerPage + 1; i < (int)m_items.size(); ++i)
   {
     CGUIListItem *item = m_items[i];
     if (item)
@@ -105,7 +106,6 @@ void CGUIListContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
   g_graphicsContext.SetControlTransform(TransformMatrix::CreateTranslation(posX, posY));
 
   static CGUIListItem *lastItem = NULL;
-  // TODO: Reset focused/unfocused item
   if (focused)
   {
     if (!item->GetFocusedLayout())
@@ -359,7 +359,7 @@ bool CGUIListContainer::MoveDown(DWORD control)
       ScrollToOffset();
     }
   }
-  else if( m_dwControlDown == 0 || m_dwControlDown == GetID() )
+  else if( control == 0 || control == GetID() )
   { // move first item in list
     m_offset = 0;
     m_cursor = 0;
