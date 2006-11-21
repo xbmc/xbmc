@@ -433,7 +433,7 @@ void CGUIImage::CalculateSize()
   if (m_aspectRatio != ASPECT_RATIO_STRETCH && m_iTextureWidth && m_iTextureHeight)
   {
     // to get the pixel ratio, we must use the SCALED output sizes
-    float pixelRatio = g_graphicsContext.GetPixelRatio(g_graphicsContext.GetScalingResolution());
+    float pixelRatio = g_graphicsContext.GetScalingPixelRatio();
 
     float fSourceFrameRatio = ((float)m_iTextureWidth) / ((float)m_iTextureHeight);
     float fOutputFrameRatio = fSourceFrameRatio / pixelRatio;
