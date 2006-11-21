@@ -45,7 +45,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 
   CStdString strProtocol = url.GetProtocol();
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
-#ifdef HAS_FILE_SYSTEM
+#ifdef HAS_FILESYSTEM
   if (strProtocol == "iso9660") return new CISO9660Directory();
   if (strProtocol == "cdda") return new CCDDADirectory();
   if (strProtocol == "soundtrack") return new CSndtrkDirectory();
