@@ -21,6 +21,7 @@ CGUIDialog::~CGUIDialog(void)
 
 bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
 {
+  m_renderOrder = 1;
   if (!CGUIWindow::Load(strFileName, bContainsPath))
   {
     return false;
@@ -238,4 +239,10 @@ bool CGUIDialog::IsAnimating(ANIMATION_TYPE animType)
   if (animType == ANIM_TYPE_WINDOW_CLOSE)
     return m_dialogClosing;
   return CGUIWindow::IsAnimating(animType);
+}
+
+void CGUIDialog::Reset()
+{
+  CGUIWindow::Reset();
+  m_renderOrder = 1;
 }
