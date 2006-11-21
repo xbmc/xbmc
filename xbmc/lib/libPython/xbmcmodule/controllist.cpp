@@ -1,6 +1,6 @@
 #include "../../../stdafx.h"
 #include "..\python\python.h"
-#include "GuiListControl.h"
+#include "GUIListContainer.h"
 #include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
@@ -103,7 +103,7 @@ namespace PYXBMC
     //if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
 
     self->strTextureButton = cTextureButton ? cTextureButton :
-      PyGetDefaultImage("listcontrol", "textureNoFocus", "list-nofocus.png");    
+      PyGetDefaultImage("listcontrol", "texturenofocus", "list-nofocus.png");    
     self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus :
       PyGetDefaultImage("listcontrol", "texturefocus", "list-focus.png");  
 
@@ -146,42 +146,21 @@ namespace PYXBMC
     // the offsets should be 0.
     CLabelInfo label2 = label;
     label2.offsetX = label2.offsetY = 0;
-    // Spin label
-    CLabelInfo spinLabel;
-    spinLabel.font = g_fontManager.GetFont(pControl->strFont);
-    spinLabel.textColor = spinLabel.focusedColor = pControl->pControlSpin->dwColor;
-    CImage up; up.file = pControl->pControlSpin->strTextureUp;
-    CImage down; down.file = pControl->pControlSpin->strTextureDown;
-    CImage upfocus; upfocus.file = pControl->pControlSpin->strTextureUpFocus;
-    CImage downfocus; downfocus.file = pControl->pControlSpin->strTextureDownFocus;
+    label2.align |= XBFONT_RIGHT;
 
-    pControl->pGUIControl = new CGUIListControl(
+    pControl->pGUIControl = new CGUIListContainer(
       pControl->iParentId,
       pControl->iControlId,
       (float)pControl->dwPosX,
       (float)pControl->dwPosY,
       (float)pControl->dwWidth,
-      (float)pControl->dwHeight,
-      (float)pControl->pControlSpin->dwWidth,
-      (float)pControl->pControlSpin->dwHeight,
-      up, down, upfocus, downfocus,
-      spinLabel,
-      (float)pControl->pControlSpin->dwPosX,
-      (float)pControl->pControlSpin->dwPosY,
+      (float)pControl->dwHeight - pControl->pControlSpin->dwHeight - 5,
       label, label2,
       (CStdString)pControl->strTextureButton,
-      (CStdString)pControl->strTextureButtonFocus);
-
-    CGUIListControl* pListControl = (CGUIListControl*)pControl->pGUIControl;
-    pListControl->SetImageDimensions((float)pControl->dwImageWidth, (float)pControl->dwImageHeight );
-    pListControl->SetItemHeight((float)pControl->dwItemHeight);
-    pListControl->SetSpaceBetweenItems((float)pControl->dwSpace);
-
-    // set values for spincontrol
-    //CGUIListControl* c = (CGUIListControl*)pControl->pGUIControl;
-    pControl->pControlSpin->pGUIControl;// = (CGUIControl*) c->GetSpinControl();
-    pControl->pControlSpin->iControlId = pControl->iControlId;
-    pControl->pControlSpin->iParentId = pControl->iParentId;
+      (CStdString)pControl->strTextureButtonFocus,
+      (float)pControl->dwItemHeight,
+      (float)pControl->dwImageWidth, (float)pControl->dwImageHeight,
+      (float)pControl->dwSpace, NULL);
 
     return pControl->pGUIControl;
   }
@@ -335,6 +314,7 @@ PyDoc_STRVAR(addItem__doc__,
       return NULL;
     }
 
+    /*
     PyGUILock();
     if (self->pGUIControl)
     {
@@ -342,7 +322,7 @@ PyDoc_STRVAR(addItem__doc__,
       pListControl->SetImageDimensions((float)self->dwImageWidth, (float)self->dwImageHeight );
     }
     PyGUIUnlock();
-
+    */
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -360,6 +340,7 @@ PyDoc_STRVAR(addItem__doc__,
   {
     if (!PyArg_ParseTuple(args, "l", &self->dwItemHeight)) return NULL;
 
+    /*
     PyGUILock();
     if (self->pGUIControl)
     {
@@ -367,7 +348,7 @@ PyDoc_STRVAR(addItem__doc__,
       pListControl->SetItemHeight((float)self->dwItemHeight);
     }
     PyGUIUnlock();
-
+    */
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -388,12 +369,14 @@ PyDoc_STRVAR(addItem__doc__,
 
     if (!PyArg_ParseTuple(args, "b", &isOn)) return NULL;
 
+    /*
     PyGUILock();
     if (self->pGUIControl)
     {
       ((CGUIListControl*)self->pGUIControl)->SetPageControlVisible( isOn );
     }
     PyGUIUnlock();
+    */
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -412,6 +395,7 @@ PyDoc_STRVAR(addItem__doc__,
   {
     if (!PyArg_ParseTuple(args, "l", &self->dwSpace)) return NULL;
 
+    /*
     PyGUILock();
     if (self->pGUIControl)
     {
@@ -419,6 +403,7 @@ PyDoc_STRVAR(addItem__doc__,
       pListControl->SetSpaceBetweenItems((float)self->dwSpace);
     }
     PyGUIUnlock();
+    */
 
     Py_INCREF(Py_None);
     return Py_None;
