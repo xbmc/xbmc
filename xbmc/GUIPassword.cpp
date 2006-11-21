@@ -408,12 +408,12 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
     if (m_gWindowManager.GetActiveWindow() == WINDOW_HOME)
       iSwitch = WINDOW_MUSIC_FILES;
 
-  if (iWindowID == WINDOW_VIDEO_TITLE || iWindowID == WINDOW_VIDEO_ACTOR || iWindowID == WINDOW_VIDEO_YEAR || iWindowID == WINDOW_VIDEO_GENRE)      
+  if (iWindowID == WINDOW_VIDEO_NAV)      
     if (m_gWindowManager.GetActiveWindow() == WINDOW_HOME)
       iSwitch = WINDOW_VIDEO_FILES;
 
   if (iWindowID == WINDOW_VIDEO_FILES)
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_TITLE || m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_YEAR || m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_GENRE || m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_ACTOR)
+    if (WINDOW_VIDEO_NAV)
       iSwitch = WINDOW_HOME;
 
   CLog::Log(LOGDEBUG, "Checking if window ID %i is locked.", iSwitch);
