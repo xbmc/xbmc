@@ -1494,6 +1494,18 @@
 					RelativePath="..\..\xbmc\FileSystem\FileZip.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\FTPDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FTPDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FTPParse.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FTPParse.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\HDDirectory.cpp">
 				</File>
 				<File
