@@ -119,7 +119,7 @@ public:
 
   // output scaling
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
-  inline RESOLUTION GetScalingResolution() const { return m_windowResolution; };
+  float GetScalingPixelRatio() const;
 
   inline float ScaleFinalXCoord(float x, float y) const;
   inline float ScaleFinalYCoord(float x, float y) const;
