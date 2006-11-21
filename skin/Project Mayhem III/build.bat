@@ -8,6 +8,7 @@ Echo .svn>exclude.txt
 Echo Thumbs.db>>exclude.txt
 Echo Desktop.ini>>exclude.txt
 Echo dsstdfx.bin>>exclude.txt
+Echo exclude.txt>>exclude.txt
 
 ECHO ----------------------------------------
 ECHO Creating XPR File...
