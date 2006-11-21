@@ -16,6 +16,7 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_pageControl = 0;
   m_renderTime = 0;
   m_orientation = orientation;
+  m_analogScrollCount = 0;
   ControlType = GUICONTAINER_LIST;
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   m_spinControl = NULL;
@@ -165,12 +166,12 @@ bool CGUIListContainer::OnAction(const CAction &action)
     // smooth scrolling (for analog controls)
   case ACTION_SCROLL_UP:
     {
-      m_scrollOffset += action.fAmount1 * action.fAmount1;
+      m_analogScrollCount += action.fAmount1 * action.fAmount1;
       bool handled = false;
-      while (m_scrollOffset > 0.4)
+      while (m_analogScrollCount > 0.4)
       {
         handled = true;
-        m_scrollOffset -= 0.4f;
+        m_analogScrollCount -= 0.4f;
         if (m_offset > 0 && m_cursor <= m_itemsPerPage / 2)
         {
           Scroll(-1);
@@ -185,12 +186,12 @@ bool CGUIListContainer::OnAction(const CAction &action)
     break;
   case ACTION_SCROLL_DOWN:
     {
-      m_scrollOffset += action.fAmount1 * action.fAmount1;
+      m_analogScrollCount += action.fAmount1 * action.fAmount1;
       bool handled = false;
-      while (m_scrollOffset > 0.4)
+      while (m_analogScrollCount > 0.4)
       {
         handled = true;
-        m_scrollOffset -= 0.4f;
+        m_analogScrollCount -= 0.4f;
         if (m_offset + m_itemsPerPage < (int)m_items.size() && m_cursor >= m_itemsPerPage / 2)
         {
           Scroll(1);
@@ -558,6 +559,7 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_scrollOffset = 0;
   m_scrollSpeed = 0;
   m_scrollTime = 0;
+  m_analogScrollCount = 0;
   m_itemsPerPage = 10;
   m_pageControl = 0;
   m_renderTime = 0;

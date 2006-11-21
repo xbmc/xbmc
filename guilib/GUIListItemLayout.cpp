@@ -16,6 +16,10 @@ CGUIListItemLayout::CListBase::CListBase(float posX, float posY, float width, fl
   m_height = height;
 }
 
+CGUIListItemLayout::CListBase::~CListBase()
+{
+}
+
 CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, const CLabelInfo &label, int info, const CStdString &content)
 : CGUIListItemLayout::CListBase(posX, posY, width, height)
 {
@@ -23,6 +27,10 @@ CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, 
   m_info = info;
   m_type = LIST_LABEL;
   g_infoManager.ParseLabel(content, m_multiInfo);
+}
+
+CGUIListItemLayout::CListLabel::~CListLabel()
+{
 }
 
 CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, const CImage &image)
@@ -34,10 +42,6 @@ CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float wid
 
 CGUIListItemLayout::CListTexture::~CListTexture()
 {
-}
-
-void CGUIListItemLayout::CListTexture::Free()
-{
   m_image.FreeResources();
 }
 
@@ -47,6 +51,10 @@ CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, 
   m_info = info;
   m_type = LIST_IMAGE;
   m_image.SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
+}
+
+CGUIListItemLayout::CListImage::~CListImage()
+{
 }
 
 CGUIListItemLayout::CGUIListItemLayout()
@@ -79,10 +87,7 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
 CGUIListItemLayout::~CGUIListItemLayout()
 {
   for (iControls it = m_controls.begin(); it != m_controls.end(); ++it)
-  {
-    (*it)->Free();
     delete *it;
-  }
 }
 
 float CGUIListItemLayout::Size(ORIENTATION orientation)
