@@ -339,10 +339,6 @@ static CStdString szEmptyString = "";
 const CStdString& CLocalizeStrings::Get(DWORD dwCode) const
 {
   ivecStrings i;
-  if (dwCode == 20045)
-  {
-    CLog::DebugLog("fisemannen!");
-  }
   i = m_vecStrings.find(dwCode);
   if (i == m_vecStrings.end())
   {

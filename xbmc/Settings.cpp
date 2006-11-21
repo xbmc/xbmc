@@ -139,17 +139,18 @@ CSettings::CSettings(void)
   g_stSettings.m_MyVideoSortOrder = SORT_ORDER_ASC;
   g_stSettings.m_MyVideoRootSortOrder = SORT_ORDER_ASC;
 
-  g_stSettings.m_MyVideoGenreSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoGenreRootSortOrder = SORT_ORDER_ASC;
+  g_stSettings.m_MyVideoNavGenreSortOrder = SORT_ORDER_ASC;
+  g_stSettings.m_MyVideoNavTitleSortOrder = SORT_ORDER_ASC;
+  g_stSettings.m_MyVideoNavPlaylistsSortOrder = SORT_ORDER_ASC;
+  g_stSettings.m_MyVideoNavYearSortOrder = SORT_ORDER_ASC;
+  g_stSettings.m_MyVideoNavActorSortOrder = SORT_ORDER_ASC;
 
-  g_stSettings.m_MyVideoActorSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoActorRootSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_MyVideoYearSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoYearRootSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_MyVideoTitleSortOrder = SORT_ORDER_ASC;
-
+  g_stSettings.m_MyVideoNavGenreViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyVideoNavTitleViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyVideoNavPlaylistsViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyVideoNavYearViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyVideoNavActorViewMethod = VIEW_METHOD_LIST;
+  
   g_stSettings.m_MyVideoPlaylistViewMethod = VIEW_METHOD_LIST;
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
@@ -974,7 +975,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("myvideos");
   if (pElement)
   {
-    GetInteger(pElement, "startwindow", g_stSettings.m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_GENRE, WINDOW_VIDEO_TITLE);
+    GetInteger(pElement, "startwindow", g_stSettings.m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
     GetInteger(pElement, "stackvideomode", g_stSettings.m_iMyVideoStack, STACK_NONE, STACK_NONE, STACK_SIMPLE);
 
     XMLUtils::GetBoolean(pElement, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
@@ -1006,42 +1007,24 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
       GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyVideoRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
     }
-    pChild = pElement->FirstChildElement("files");
+    pChild = pElement->FirstChildElement("nav");
     if (pChild)
-    { // files
-      GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyVideoGenreViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyVideoGenreRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyVideoGenreSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyVideoGenreRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoGenreSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyVideoGenreRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-    pChild = pElement->FirstChildElement("actor");
-    if (pChild)
-    { // actor
-      GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyVideoActorViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyVideoActorRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyVideoActorSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyVideoActorRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoActorSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyVideoActorRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-    pChild = pElement->FirstChildElement("year");
-    if (pChild)
-    { // year
-      GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyVideoYearViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyVideoYearRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyVideoYearSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyVideoYearRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoYearSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyVideoYearRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-    pChild = pElement->FirstChildElement("title");
-    if (pChild)
-    { // titles
-      GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyVideoTitleViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST,  VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyVideoTitleSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoTitleSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+    { // library
+      GetInteger(pChild, "viewmethodtitle", (int&)g_stSettings.m_MyVideoNavTitleViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyVideoNavRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "viewmethodgenre", (int&)g_stSettings.m_MyVideoNavGenreViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "viewmethodyear", (int&)g_stSettings.m_MyVideoNavYearViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "viewmethodactor", (int&)g_stSettings.m_MyVideoNavActorViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+
+      GetInteger(pChild, "sortmethodgenre", (int&)g_stSettings.m_MyVideoNavGenreSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+      GetInteger(pChild, "sortmethodplaylists", (int&)g_stSettings.m_MyVideoNavPlaylistsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+      GetInteger(pChild, "sortmethodtitle", (int&)g_stSettings.m_MyVideoNavTitleSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+
+      GetInteger(pChild, "sortordergenre", (int&)g_stSettings.m_MyVideoNavGenreSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "sortorderplaylists", (int&)g_stSettings.m_MyVideoNavPlaylistsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "sortordertitle", (int&)g_stSettings.m_MyVideoNavTitleSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "sortorderyear", (int&)g_stSettings.m_MyVideoNavYearSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "sortorderactor", (int&)g_stSettings.m_MyVideoNavActorSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
     }
   }
   // myscripts settings
@@ -1683,46 +1666,26 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoSortOrder);
     SetInteger(pChild, "sortorderroot", g_stSettings.m_MyVideoRootSortOrder);
   }
-  { // genre window
-    TiXmlElement childNode("genre");
+
+  { // library window
+    TiXmlElement childNode("nav");
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
     if (!pChild) return false;
-    SetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoGenreViewMethod);
-    SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoGenreRootViewMethod);
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyVideoGenreSortMethod);
-    SetInteger(pChild, "sortmethodroot", g_stSettings.m_MyVideoGenreRootSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoGenreSortOrder);
-    SetInteger(pChild, "sortorderroot", g_stSettings.m_MyVideoGenreRootSortOrder);
-  }
-  { // actors window
-    TiXmlElement childNode("actor");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoActorViewMethod);
-    SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoActorRootViewMethod);
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyVideoActorSortMethod);
-    SetInteger(pChild, "sortmethodroot", g_stSettings.m_MyVideoActorRootSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoActorSortOrder);
-    SetInteger(pChild, "sortorderroot", g_stSettings.m_MyVideoActorRootSortOrder);
-  }
-  { // year window
-    TiXmlElement childNode("year");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoYearViewMethod);
-    SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoYearRootViewMethod);
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyVideoYearSortMethod);
-    SetInteger(pChild, "sortmethodroot", g_stSettings.m_MyVideoYearRootSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoYearSortOrder);
-    SetInteger(pChild, "sortorderroot", g_stSettings.m_MyVideoYearRootSortOrder);
-  }
-  { // title window
-    TiXmlElement childNode("title");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoTitleViewMethod);
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyVideoTitleSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoTitleSortOrder);
+    SetInteger(pChild, "viewmethodtitle", g_stSettings.m_MyVideoNavTitleViewMethod);
+    SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoNavRootViewMethod);
+    SetInteger(pChild, "viewmethodgenre", g_stSettings.m_MyVideoNavGenreViewMethod);
+    SetInteger(pChild, "viewmethodyear", g_stSettings.m_MyVideoNavYearViewMethod);
+    SetInteger(pChild, "viewmethodactor", g_stSettings.m_MyVideoNavActorViewMethod);
+
+    SetInteger(pChild, "sortmethodgenre", g_stSettings.m_MyVideoNavGenreSortMethod);
+    SetInteger(pChild, "sortmethodplaylists", g_stSettings.m_MyVideoNavPlaylistsSortMethod);
+    SetInteger(pChild, "sortmethodtitle", g_stSettings.m_MyVideoNavTitleSortMethod);
+
+    SetInteger(pChild, "sortordergenre", g_stSettings.m_MyVideoNavGenreSortOrder);
+    SetInteger(pChild, "sortorderplaylists", g_stSettings.m_MyVideoNavPlaylistsSortOrder);
+    SetInteger(pChild, "sortordertitle", g_stSettings.m_MyVideoNavTitleSortOrder);
+    SetInteger(pChild, "sortorderyear", g_stSettings.m_MyVideoNavYearSortOrder);
+    SetInteger(pChild, "sortorderactor", g_stSettings.m_MyVideoNavActorSortOrder);
   }
 
   // myscripts settings

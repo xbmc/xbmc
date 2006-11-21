@@ -23,40 +23,14 @@ protected:
   virtual VECSHARES& GetShares();
 };
 
-class CGUIViewStateWindowVideoGenre : public CGUIViewStateWindowVideo
+class CGUIViewStateWindowVideoNav : public CGUIViewStateWindowVideo
 {
 public:
-  CGUIViewStateWindowVideoGenre(const CFileItemList& items);
+  CGUIViewStateWindowVideoNav(const CFileItemList& items);
 
 protected:
   virtual void SaveViewState();
-};
-
-class CGUIViewStateWindowVideoTitle : public CGUIViewStateWindowVideo
-{
-public:
-  CGUIViewStateWindowVideoTitle(const CFileItemList& items);
-
-protected:
-  virtual void SaveViewState();
-};
-
-class CGUIViewStateWindowVideoYear : public CGUIViewStateWindowVideo
-{
-public:
-  CGUIViewStateWindowVideoYear(const CFileItemList& items);
-
-protected:
-  virtual void SaveViewState();
-};
-
-class CGUIViewStateWindowVideoActor : public CGUIViewStateWindowVideo
-{
-public:
-  CGUIViewStateWindowVideoActor(const CFileItemList& items);
-
-protected:
-  virtual void SaveViewState();
+  virtual VECSHARES& GetShares();
 };
 
 class CGUIViewStateWindowVideoPlaylist : public CGUIViewStateWindowVideo
