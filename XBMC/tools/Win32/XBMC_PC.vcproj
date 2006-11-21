@@ -733,31 +733,25 @@
 					RelativePath="..\..\xbmc\GUIViewStateVideo.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIWindowVideoActors.cpp">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIWindowVideoBase.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowVideoFiles.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIWindowVideoGenre.cpp">
+					RelativePath="..\..\xbmc\GUIWindowVideoInfo.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIWindowVideoInfo.cpp">
+					RelativePath="..\..\xbmc\GUIWindowVideoNav.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowVideoNav.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowVideoOverlay.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowVideoPlaylist.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowVideoTitle.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowVideoYear.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -1578,6 +1572,12 @@
 					RelativePath="..\..\xbmc\FileSystem\StackDirectory.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\VirtualDirectory.cpp">
 				</File>
 				<File
@@ -1708,6 +1708,118 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\QueryParams.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="VideoDatabaseDirectory"
+					Filter="">
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNode.cpp">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNode.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeActor.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeActor.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeGenre.cpp">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeGenre.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeOverview.cpp">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeOverview.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRoot.cpp">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRoot.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitle.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitle.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeYear.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeYear.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\QueryParams.cpp">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\QueryParams.h">
 					</File>
 				</Filter>
 			</Filter>
@@ -1969,16 +2081,10 @@
 				RelativePath="..\..\xbmc\GUIWindowSystemInfo.h">
 			</File>
 			<File
-				RelativePath="..\..\xbmc\GUIWindowVideoActors.h">
-			</File>
-			<File
 				RelativePath="..\..\xbmc\GUIWindowVideoBase.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIWindowVideoFiles.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIWindowVideoGenre.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GuiWindowVideoInfo.h">
@@ -1988,12 +2094,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIWindowVideoPlaylist.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIWindowVideoTitle.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIWindowVideoYear.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIWindowVisualisation.h">
