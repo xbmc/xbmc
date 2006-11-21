@@ -1290,12 +1290,12 @@ void CFileItemList::Serialize(CArchive& ar)
       return ;
 
     if (pParent)
-      iSize++;
-
-    m_items.reserve(iSize);
-
-    if (pParent)
+    {
+      m_items.reserve(iSize + 1);
       m_items.push_back(pParent);
+    }
+    else
+      m_items.reserve(iSize);
 
     bool fastLookup=false;
     ar >> fastLookup;
