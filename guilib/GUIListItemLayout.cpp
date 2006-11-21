@@ -34,6 +34,10 @@ CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float wid
 
 CGUIListItemLayout::CListTexture::~CListTexture()
 {
+}
+
+void CGUIListItemLayout::CListTexture::Free()
+{
   m_image.FreeResources();
 }
 
@@ -75,7 +79,10 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
 CGUIListItemLayout::~CGUIListItemLayout()
 {
   for (iControls it = m_controls.begin(); it != m_controls.end(); ++it)
+  {
+    (*it)->Free();
     delete *it;
+  }
 }
 
 float CGUIListItemLayout::Size(ORIENTATION orientation)
