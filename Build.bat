@@ -51,6 +51,7 @@ Echo .svn>exclude.txt
 Echo Thumbs.db>>exclude.txt
 Echo Desktop.ini>>exclude.txt
 Echo dsstdfx.bin>>exclude.txt
+Echo exclude.txt>>exclude.txt
 
 copy release\default.xbe BUILD
 xcopy UserData BUILD\UserData /E /Q /I /Y /EXCLUDE:exclude.txt
