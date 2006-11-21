@@ -752,10 +752,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 			// delete titles from database
 			if (GetID() == WINDOW_VIDEO_NAV && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
 			{
-		     	CVideoDatabaseDirectory dir;
-      		 	NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
-      			if (node == NODE_TYPE_TITLE)
-        			btn_Delete = pMenu->AddButton(646);
+        CVideoDatabaseDirectory dir;
+        NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
+        if (node == NODE_TYPE_TITLE)
+          btn_Delete = pMenu->AddButton(646);
 			}
 		}
 	} // if (bContextDriven)
