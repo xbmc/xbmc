@@ -10,6 +10,7 @@
 #include "MusicDatabaseDirectory.h"
 #include "shoutcastdirectory.h"
 #include "lastfmdirectory.h"
+#include "FTPDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
 #include "SMBDirectory.h"
@@ -18,7 +19,6 @@
 #include "RTVDirectory.h"
 #include "SndtrkDirectory.h"
 #include "DAAPDirectory.h"
-#include "FTPDirectory.h"
 #include "MemUnitDirectory.h"
 #endif
 #ifdef HAS_UPNP
@@ -66,11 +66,11 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   {
     if (strProtocol == "shout") return new CShoutcastDirectory();
     if (strProtocol == "lastfm") return new CLastFMDirectory();
+    if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFTPDirectory();
 #ifdef HAS_FILESYSTEM
     if (strProtocol == "smb") return new CSMBDirectory();
     if (strProtocol == "daap") return new CDAAPDirectory();
     if (strProtocol == "xbms") return new CXBMSDirectory();
-    if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFTPDirectory();
     if (strProtocol == "rtv") return new CRTVDirectory();
 #endif
 #ifdef HAS_UPNP
