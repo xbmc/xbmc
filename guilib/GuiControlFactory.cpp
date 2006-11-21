@@ -397,6 +397,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   CStdString altLabel;
 
   int focusPosition = 0;
+  int scrollTime = 200;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
@@ -755,6 +756,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
   XMLUtils::GetBoolean(pControlNode, "showonepage", showOnePage);
   XMLUtils::GetInt(pControlNode, "focusposition", focusPosition);
+  XMLUtils::GetInt(pControlNode, "scrolltime", scrollTime);
 
   if (strType == "group" || strType == "grouplist")
   {
@@ -1100,7 +1102,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   }
   else if (strType == "list")
   {
-    CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation);
+    CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
     pControl->LoadLayout(pControlNode);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
@@ -1113,7 +1115,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   }
   else if (strType == "wraplist")
   {
-    CGUIWrappingListContainer* pControl = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, focusPosition);
+    CGUIWrappingListContainer* pControl = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
     pControl->LoadLayout(pControlNode);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
