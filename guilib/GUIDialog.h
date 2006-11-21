@@ -32,6 +32,7 @@ public:
 
 protected:
   virtual bool RenderAnimation(DWORD time);
+  virtual void Reset();
 
   bool m_bRunning;
   bool m_bModal;
