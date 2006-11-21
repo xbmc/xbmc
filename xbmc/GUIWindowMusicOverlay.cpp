@@ -86,3 +86,8 @@ void CGUIWindowMusicOverlay::Render()
   CGUIDialog::Render();
 }
 
+void CGUIWindowMusicOverlay::Reset()
+{
+  CGUIDialog::Reset();
+  m_renderOrder = 0;
+}
