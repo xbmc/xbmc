@@ -22,7 +22,6 @@ private:
 protected:
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
-  virtual void OnWindowLoaded();
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual void OnPrepareFileItems(CFileItemList &items);
 
