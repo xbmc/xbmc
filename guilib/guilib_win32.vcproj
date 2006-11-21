@@ -124,6 +124,9 @@
 				RelativePath=".\GUIAudioManager.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIBaseContainer.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIButtonControl.cpp">
 			</File>
 			<File
@@ -331,6 +334,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIAudioManager.h">
+			</File>
+			<File
+				RelativePath=".\GUIBaseContainer.h">
 			</File>
 			<File
 				RelativePath=".\GUIButtonControl.h">
