@@ -672,33 +672,32 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   vector<CStdString> strVecLabel;
   if (GetMultipleString(pControlNode, "label", strVecLabel))
   {
+    CStdString label;
     vecLabel.clear();
     for (unsigned int i = 0; i < strVecLabel.size(); i++)
     {
-      strTmp = strVecLabel[i];
-      if (strTmp.size() > 0)
+      label = strVecLabel[i];
+      if (label.size() > 0)
       {
-        if (strTmp[0] != '-')
+        if (label[0] != '-')
         {
-          if (StringUtils::IsNaturalNumber(strTmp))
+          if (StringUtils::IsNaturalNumber(label))
           {
-            DWORD dwLabelID = atol(strTmp);
-            strLabel = g_localizeStrings.Get(dwLabelID);
+            DWORD dwLabelID = atol(label.c_str());
+            label = g_localizeStrings.Get(dwLabelID);
           }
           else
           { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
             CStdString utf8String;
-            g_charsetConverter.stringCharsetToUtf8(strTmp, utf8String);
-            strLabel = utf8String;
+            g_charsetConverter.stringCharsetToUtf8(label, utf8String);
+            label = utf8String;
           }
-          vecLabel.push_back(strLabel);
+          vecLabel.push_back(label);
         }
-        else
-          strLabel = "";
       }
+      if (i == 0 && vecLabel.size())
+        strLabel = vecLabel[0];
     }
-    if (vecLabel.size())
-      strLabel = vecLabel[0];
   }
   if (XMLUtils::GetString(pControlNode, "altlabel", altLabel))
   {
