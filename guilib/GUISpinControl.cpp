@@ -333,9 +333,6 @@ void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
 
 void CGUISpinControl::Render()
 {
-  if (m_iType == SPIN_CONTROL_TYPE_PAGE)
-    SetVisible(m_numItems > m_itemsPerPage || m_showOnePage);
-
   if (!IsVisible()) return;
 
   if (!HasFocus())
@@ -930,4 +927,10 @@ void CGUISpinControl::SendPageChange()
 {
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, (m_iValue - 1) * m_itemsPerPage);
   SendWindowMessage(message);
+}
+
+bool CGUISpinControl::IsVisible() const
+{
+  if (m_iType == SPIN_CONTROL_TYPE_PAGE && m_numItems <= m_itemsPerPage && !m_showOnePage) return false;
+  return CGUIControl::IsVisible();
 }
