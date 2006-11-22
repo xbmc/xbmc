@@ -64,6 +64,7 @@ protected:
 
   void OnManualAlbumInfo();
   void OnRipCD();
+  void OnRipTrack(int iItem);
   void OnSearch();
   virtual void LoadPlayList(const CStdString& strPlayList);
   
