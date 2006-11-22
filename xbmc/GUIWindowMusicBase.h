@@ -29,6 +29,7 @@ public:
   virtual ~CGUIWindowMusicBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);
+  static void OnRipCD();
 
 protected:
   /*!
@@ -63,7 +64,6 @@ protected:
   void UpdateThumb(const CMusicAlbumInfo &album, bool bSaveDb, bool bSaveDirThumb);
 
   void OnManualAlbumInfo();
-  void OnRipCD();
   void OnRipTrack(int iItem);
   void OnSearch();
   virtual void LoadPlayList(const CStdString& strPlayList);
