@@ -514,7 +514,11 @@ bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
   strTemp += strExtension;
   ::DeleteFile(strTemp.c_str());
   CHTTP http;
-  http.Download(m_Movie.m_strPictureURL, strTemp);
+  // replace m.jpg with f.jpg for the full image
+  CStdString url = m_Movie.m_strPictureURL;
+  url.Replace("m.jpg", "f.jpg");
+  if (!http.Download(url, strTemp))
+    http.Download(m_Movie.m_strPictureURL, strTemp);
 
   try
   {
