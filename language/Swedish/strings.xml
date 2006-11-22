@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@hotmail.com-->
-<!--Date of translation: 10/09/2006-->
+<!--Date of translation: 11/22/2006-->
 <!--$Revision$-->
-<!--Based on english strings version 1.343-->
+<!--Based on english strings version 7180-->
 <strings>
   <string id="0">Mina Program</string>
   <string id="1">Mina Bilder</string>
@@ -643,6 +643,7 @@
   <string id="1410">Lugnt</string>
   <string id="1411">med</string>
   <string id="1412">blåsigt</string>
+  <string id="1413">duggregn</string>
   <string id="2050">Körtid:</string>
   <string id="4501">LCD typ</string>
   <string id="10000">Hem</string>
@@ -1149,6 +1150,7 @@ den här visualiseringen</string>
   <string id="15281">Skriv ett artistnamn för att hitta besläktade</string>
   <string id="15282">Skriv ett tagnamn för att hitta liknande</string>
   <string id="15283">Nyligen spelade låtar av %name%</string>
+  <string id="15284">Lyssna till %name%'s rekommenderade Last.FM radio</string>
   <string id="15300">Sökväg ej funnen eller ogiltig</string>
   <string id="15301">Uppkoppling misslyckades</string>
   <string id="15302">Inga servrar funna</string>
@@ -1403,5 +1405,6 @@ den här visualiseringen</string>
   <string id="20311">Okänd eller inbyggd (skyddad)</string>
   <string id="20312">Mörka ner LCD vid paus</string>
   <string id="20313">Slå på LED vid paus</string>
+  <string id="20314">Mina Filmer - Bibliotek</string>
   <string id="29999">Auto fladderfilter lagning</string>
 </strings>
