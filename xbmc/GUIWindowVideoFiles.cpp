@@ -479,9 +479,9 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
               if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
               {
                 CIMDBUrl url;
-                url.m_strURL = nfoReader.m_strImDbUrl;
+                url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
-                CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL.c_str());
+                CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
                 GetIMDBDetails(pItem, url);
                 continue;
               }

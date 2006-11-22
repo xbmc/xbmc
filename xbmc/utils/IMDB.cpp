@@ -8,6 +8,7 @@
 #include "HTMLUtil.h"
 #include "XMLUtils.h"
 #include "RegExp.h"
+#include "ScraperParser.h"
 
 using namespace HTML;
 
@@ -31,14 +32,15 @@ CIMDB::~CIMDB()
 
 bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist)
 {
-  // load our dll if need be
-  if (!m_dll.Load())
+  // load our scraper xml
+  if (!m_parser.Load("Q:\\system\\scrapers\\video\\imdb.xml"))
     return false;
 
   CIMDBUrl url;
   movielist.clear();
 
 	CStdString strURL, strHTML, strYear;
+  
 	GetURL(strMovie, strURL, strYear);
 
   if (!m_http.Get(strURL, strHTML) || strHTML.size() == 0)
@@ -47,8 +49,10 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     return false;
   }
   
-  char *szXML = new char[80000];  // should be enough for 500 matches (max returned by IMDb)
-  if (!m_dll.IMDbGetSearchResults(szXML, strHTML.c_str(), m_http.m_redirectedURL.c_str()))
+  m_parser.m_param[0] = strHTML;
+  m_parser.m_param[1] = strURL;
+  CStdString strXML = m_parser.Parse("GetSearchResults");
+  if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
     return false;
@@ -56,7 +60,8 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
   // ok, now parse the xml file
   TiXmlDocument doc;
-  if (!doc.Parse(szXML))
+  doc.Parse(strXML.c_str());
+  if (!doc.RootElement())
   {
     CLog::Log(LOGERROR, "IMDB: Unable to parse xml");
     return false;
@@ -68,14 +73,21 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
   for ( movie; movie; movie = movie->NextSiblingElement() )
   {
+    url.m_strURL.clear();
     TiXmlNode *title = movie->FirstChild("title");
     TiXmlNode *link = movie->FirstChild("url");
     TiXmlNode *year = movie->FirstChild("year");
+    TiXmlNode* id = movie->FirstChild("id");
     if (title && title->FirstChild() && link && link->FirstChild())
     {
       url.m_strTitle = title->FirstChild()->Value();
-      url.m_strURL = link->FirstChild()->Value();
-
+      url.m_strURL.push_back(link->FirstChild()->Value());
+      while ((link = link->NextSibling("url")))
+      {
+        url.m_strURL.push_back(link->FirstChild()->Value());
+      }
+      if (id)
+        url.m_strID = id->FirstChild()->Value();
       // if source contained a distinct year, only allow those
       if(iYear != 0)
       {
@@ -104,12 +116,11 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
 bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 {
-  // load our dll if need be
-  if (!m_dll.Load())
+  // load our scraper xml
+  if (!m_parser.Load("q:\\system\\scrapers\\video\\imdb.xml"))
     return false;
 
-  CStdString strHTML, strPlotHTML;
-  CStdString strURL = url.m_strURL;
+  std::vector<CStdString> strHTML;
 
   // fill in the defaults
   CStdString strLocNotAvail = g_localizeStrings.Get(416); // Not available
@@ -128,62 +139,39 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   movieDetails.m_strVotes = strLocNotAvail;
   movieDetails.m_strCast = strLocNotAvail;
   movieDetails.m_iTop250 = 0;
+  movieDetails.m_strIMDBNumber = url.m_strID;
 
-  if (!m_http.Get(strURL, strHTML) || strHTML.size() == 0)
-    return false;
-
-  char *szBuffer = new char[strHTML.size() + 1];
-  strcpy(szBuffer, strHTML.c_str());
-
-  // get the IMDb number from our URL
-  int idxUrlParams = strURL.Find('?');
-  if (idxUrlParams != -1)
+  for (unsigned int i=0;i<url.m_strURL.size();++i)
   {
-    strURL = strURL.Left(idxUrlParams);
+    CStdString strCurrHTML;
+    CStdString strU = url.m_strURL[i];
+    if (!m_http.Get(strU,strCurrHTML) || strCurrHTML.size() == 0)
+      return false;
+    strHTML.push_back(strCurrHTML);
   }
-  char szURL[1024];
-  strcpy(szURL, strURL.c_str());
-  if (CUtil::HasSlashAtEnd(strURL)) szURL[ strURL.size() - 1 ] = 0;
-  int ipos = strlen(szURL) - 1;
-  while (szURL[ipos] != '/' && ipos > 0) ipos--;
 
-  movieDetails.m_strIMDBNumber = &szURL[ipos + 1];
-  CLog::Log(LOGINFO, "imdb number:%s\n", movieDetails.m_strIMDBNumber.c_str());
+  // now grab our details using the scraper
+  for (int i=0;i<strHTML.size();++i)
+    m_parser.m_param[i] = strHTML[i];
 
-  // grab our plot summary as well (if it's available)
-  // http://www.imdb.com/Title/ttIMDBNUMBER/plotsummary
-  CStdString strPlotURL = "http://www.imdb.com/title/" + movieDetails.m_strIMDBNumber + "/plotsummary";
-  m_http.Get(strPlotURL, strPlotHTML);
+  m_parser.m_param[strHTML.size()] = url.m_strID;
 
-  // now grab our details using the dll
-  CStdString strXML;
-  char *szXML = strXML.GetBuffer(50000);
-  if (!m_dll.IMDbGetDetails(szXML, strHTML.c_str(), strPlotHTML.c_str()))
+  CStdString strXML = m_parser.Parse("GetDetails");
+  if (strXML.IsEmpty())
   {
-    strXML.ReleaseBuffer();
     CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
     return false;
   }
-  strXML.ReleaseBuffer();
 
   // abit uggly, but should work. would have been better if parset
   // set the charset of the xml, and we made use of that
   g_charsetConverter.stringCharsetToUtf8(strXML);
 
-  // save the xml file for later reading...
-  CFile file;
-  CStdString strXMLFile;
-  strXMLFile.Format("%s\\%s.xml", g_settings.GetIMDbFolder().c_str(), movieDetails.m_strIMDBNumber.c_str());
-  if (file.OpenForWrite(strXMLFile))
-  {
-    file.Write(strXML.c_str(), strXML.size());
-    file.Close();
-  }
-
-  // ok, now parse the xml file
+    // ok, now parse the xml file
   TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
-  if (!doc.Parse(szXML))
+  doc.Parse(strXML.c_str());
+  if (!doc.RootElement())
   {
     CLog::Log(LOGERROR, "IMDB: Unable to parse xml");
     return false;
@@ -191,6 +179,20 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
   bool ret = ParseDetails(doc, movieDetails);
   TiXmlBase::SetCondenseWhiteSpace(true);
+  
+  // save the xml file for later reading...
+  CFile file;
+  CStdString strXMLFolder;
+  strXMLFolder = g_settings.GetIMDbFolder();
+  CDirectory::Create(strXMLFolder);
+
+  CStdString strXMLFile;
+  strXMLFile.Format("%s\\%s.xml", g_settings.GetIMDbFolder().c_str(),movieDetails.m_strIMDBNumber.c_str());
+  if (file.OpenForWrite(strXMLFile))
+  {
+    file.Write(strXML.c_str(), strXML.size());
+    file.Close();
+  }
 
   return ret;
 }
@@ -237,13 +239,15 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
   XMLUtils::GetString(details, "plot", movieDetails.m_strPlot);
   XMLUtils::GetString(details, "mpaa", movieDetails.m_strMPAARating);
 
+  CHTMLUtil::RemoveTags(movieDetails.m_strPlot);
+
   return true;
 }
 
 bool CIMDB::LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails)
 {
   CStdString strXMLFile;
-  strXMLFile.Format("%s\\%s.xml", g_settings.GetIMDbFolder().c_str(), strIMDB.c_str());
+  CUtil::AddFileToFolder(g_settings.GetIMDbFolder(), strIMDB+".xml",strXMLFile);
   TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   movieDetails.m_strIMDBNumber = strIMDB;
@@ -264,7 +268,9 @@ bool CIMDB::LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails)
   pDlgProgress->Progress();
   CIMDBUrl url;
   url.m_strTitle = movieDetails.m_strTitle;
-  url.m_strURL.Format("http://%s/title/%s", g_advancedSettings.m_imdbAddress.c_str(), strIMDB.c_str());
+  CStdString strURL;
+  strURL.Format("http://%s/title/%s", g_advancedSettings.m_imdbAddress.c_str(), strIMDB.c_str());
+  url.m_strURL.push_back(strURL);
   bool ret = GetDetails(url, movieDetails, pDlgProgress);
   pDlgProgress->Close();
   return ret;
@@ -322,7 +328,7 @@ void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 }
 
 // TODO: Make this user-configurable?
-void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& strYear)
+const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& strYear)
 {
   char szMovie[1024];
   char szYear[5];
@@ -366,10 +372,13 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& s
     if (pFN) free(pFN);
     }
 
-  strURL.Format("http://%s/find?s=tt;q=%s", g_advancedSettings.m_imdbAddress.c_str(), szMovie);
+    m_parser.m_param[0] = szMovie;
+    strURL = m_parser.Parse("CreateSearchUrl");
+//    strURL.Format("http://%s/find?s=tt;q=%s", g_advancedSettings.m_imdbAddress.c_str(), szMovie);
 
   strYear = szYear;
-  }
+  return szMovie;
+}
 
 
 
@@ -385,7 +394,7 @@ void CIMDB::Process()
   else if (m_state == GET_DETAILS)
   {
     if (!GetDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_strURL.c_str());
+      CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_strURL[0].c_str());
   }
   m_found = true;
 }

@@ -467,7 +467,7 @@ public:
   CStdString GetUserDataFolder() const;
   CStdString GetDatabaseFolder() const;
   CStdString GetCDDBFolder() const;
-  CStdString GetIMDbFolder() const;
+  const CStdString GetIMDbFolder() const;
   CStdString GetThumbnailsFolder() const;
   CStdString GetMusicThumbFolder() const;
   CStdString GetMusicArtistThumbFolder() const;

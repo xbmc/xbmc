@@ -11,7 +11,7 @@
 
 #include "http.h"
 #include "thread.h"
-#include "DllHtmlScraper.h"
+#include "ScraperParser.h"
 
 // forward definitions
 class TiXmlDocument;
@@ -20,8 +20,8 @@ class CGUIDialogProgress;
 class CIMDBUrl
 {
 public:
-  CStdString m_strURL;
-  CStdString m_strTitle;
+  std::vector<CStdString> m_strURL;
+  CStdString m_strID;  CStdString m_strTitle;
 };
 typedef vector<CIMDBUrl> IMDB_MOVIELIST;
 
@@ -69,7 +69,7 @@ public:
   bool ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails);
   bool LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
-  void GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
+  const CStdString GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
 
   // threaded lookup functions
   bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
@@ -79,7 +79,7 @@ protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
   CHTTP m_http;
 
-  DllHtmlScraper m_dll;
+  CScraperParser m_parser;
 
   // threaded stuff
   void Process();

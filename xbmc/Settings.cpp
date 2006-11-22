@@ -2848,7 +2848,7 @@ CStdString CSettings::GetCDDBFolder() const
   return folder;
 }
 
-CStdString CSettings::GetIMDbFolder() const
+const CStdString CSettings::GetIMDbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())

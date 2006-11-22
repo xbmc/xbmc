@@ -198,8 +198,7 @@ void CGUIWindowVideoBase::UpdateButtons()
   g_graphicsContext.SendMessage(msg2);
 
   // Select the current window as default item
-  int nWindow = 0;
-  if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_NAV) nWindow = 1;
+  int nWindow = g_stSettings.m_iVideoStartWindow-WINDOW_VIDEO_FILES;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
   // disable scan and manual imdb controls if internet lookups are disabled
@@ -304,8 +303,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
       CNfoFile nfoReader;
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
       {
-        url.m_strURL = nfoReader.m_strImDbUrl;
-        CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL.c_str());
+	    	url.m_strURL.push_back(nfoReader.m_strImDbUrl);
+        CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
       }
       else
         CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", nfoFile.c_str());
@@ -321,7 +320,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
   {
     // 4. if we don't have a url, or need to refresh the search
     //    then do the web search
-    if (url.m_strURL.IsEmpty() || needsRefresh)
+    if (url.m_strURL.size() == 0 || needsRefresh)
     {
       // 4a. show dialog that we're busy querying www.imdb.com
       pDlgProgress->SetHeading(197);
@@ -360,7 +359,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
     }
     // 4c. Check if url is still empty - occurs if user has selected to do a manual
     //     lookup, or if the IMDb lookup failed or was cancelled.
-    if (url.m_strURL.IsEmpty())
+    if (url.m_strURL.size() == 0)
     {
       // Check for cancel of the progress dialog
       pDlgProgress->Close();
