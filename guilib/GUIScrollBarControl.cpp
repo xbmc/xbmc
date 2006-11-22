@@ -165,10 +165,8 @@ void CGUIScrollBar::AllocResources()
 
 void CGUIScrollBar::UpdateBarSize()
 {
-  if (m_pageSize < m_numItems || m_showOnePage)
-    SetVisible(true);
-  else
-    SetVisible(false);
+  SetVisible(m_numItems > m_pageSize || m_showOnePage);
+
   // scale our textures to suit
   if (m_orientation == VERTICAL)
   {
