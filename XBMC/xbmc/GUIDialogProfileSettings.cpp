@@ -2,7 +2,6 @@
 #include "GUIDialogProfileSettings.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogContextMenu.h"
-#include "GUIListControl.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogGamepad.h"
