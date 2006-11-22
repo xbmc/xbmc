@@ -1318,8 +1318,10 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 			// GeminiServer those cd's can also include Audio Tracks: CDExtra and MixedMode!
 			CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo(); 
 			if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
+			{
 				btn_Rip = pMenu->AddButton(600);
-                                btn_RipTrack = pMenu->AddButton(610);
+                btn_RipTrack = pMenu->AddButton(610);
+			}
 		}
 
 		// enable CDDB lookup if the current dir is CDDA
