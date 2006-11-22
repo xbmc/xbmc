@@ -18,12 +18,13 @@ namespace PYXBMC
 	PyObject* ControlImage_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
 		static char *keywords[] = {	
-			"x", "y", "width", "height", "filename", "colorKey", "aspectRatio", NULL };
+			"x", "y", "width", "height", "filename", "colorKey", "aspectRatio", "colorDiffuse", NULL };
     ControlImage *self;
 		char *cImage = NULL;
 		char *cColorKey = NULL;
-		
-		self = (ControlImage*)type->tp_alloc(type, 0);
+    char *cColorDiffuse = NULL;//"0xFFFFFFFF";
+
+    self = (ControlImage*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
 		
 		//if (!PyArg_ParseTuple(args, "lllls|sl", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
@@ -32,7 +33,7 @@ namespace PYXBMC
 		if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "lllls|sl",
+      "lllls|sls",
       keywords,
       &self->dwPosX,
       &self->dwPosY,
@@ -40,7 +41,8 @@ namespace PYXBMC
       &self->dwHeight,
       &cImage,
       &cColorKey,
-      &self->aspectRatio ))
+      &self->aspectRatio,
+      &cColorDiffuse ))
 		{
 			Py_DECREF( self );
 			return NULL;
@@ -50,6 +52,8 @@ namespace PYXBMC
 		self->strFileName = cImage;
 		if (cColorKey) sscanf(cColorKey, "%x", &self->strColorKey);
 		else self->strColorKey = 0;
+		if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
+		else self->strColorDiffuse = 0;
 
 		return (PyObject*)self;
 	}
@@ -67,12 +71,16 @@ namespace PYXBMC
 
     if (pControl->pGUIControl && pControl->aspectRatio >= CGUIImage::ASPECT_RATIO_STRETCH && pControl->aspectRatio <= CGUIImage::ASPECT_RATIO_KEEP)
       ((CGUIImage *)pControl->pGUIControl)->SetAspectRatio((CGUIImage::GUIIMAGE_ASPECT_RATIO)pControl->aspectRatio);
-		return pControl->pGUIControl;
+    
+    if (pControl->pGUIControl && pControl->strColorDiffuse)
+			((CGUIImage *)pControl->pGUIControl)->SetColourDiffuse(pControl->strColorDiffuse);
+
+    return pControl->pGUIControl;
 	}
 
 
 	PyDoc_STRVAR(setImage__doc__,
-		"setImage(filename, colorkey) -- Changes the image.\n"
+		"setImage(filename, colorKey) -- Changes the image.\n"
 		"\n"
 		"filename       : string - image filename.\n"
     "colorKey       : [opt] hexString - (example, '0xFFFF3300')\n"
@@ -102,10 +110,36 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(setColorDiffuse__doc__,
+		"setColorDiffuse(colorDiffuse) -- Changes the images color.\n"
+		"\n"
+    "colorDiffuse   : hexString - (example, '0xC0FF0000' (red tint))\n"
+		"\n"
+		"example:\n"
+		"  - self.image.setColorDiffuse('0xC0FF0000')\n");
+	
+	PyObject* ControlImage_SetColorDiffuse(ControlImage *self, PyObject *args)
+	{
+		char *cColorDiffuse = NULL;
+
+    if (!PyArg_ParseTuple(args, "s", &cColorDiffuse)) return NULL;
+
+		if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
+		else self->strColorDiffuse = 0;
+
+    PyGUILock();
+		if (self->pGUIControl)
+			((CGUIImage *)self->pGUIControl)->SetColourDiffuse(self->strColorDiffuse);
+		
+    PyGUIUnlock();
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
 
 
 	PyMethodDef ControlImage_methods[] = {
 		{"setImage", (PyCFunction)ControlImage_SetImage, METH_VARARGS, setImage__doc__},
+		{"setColorDiffuse", (PyCFunction)ControlImage_SetColorDiffuse, METH_VARARGS, setColorDiffuse__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
@@ -113,7 +147,7 @@ namespace PYXBMC
 	PyDoc_STRVAR(controlImage__doc__,
 		"ControlImage class.\n"
 		"\n"
-		"ControlImage(x, y, width, height, filename[, colorKey, aspectRatio])\n"
+		"ControlImage(x, y, width, height, filename[, colorKey, aspectRatio, colorDiffuse])\n"
 		"\n"
     "x              : integer - x coordinate of control.\n"
     "y              : integer - y coordinate of control.\n"
@@ -122,6 +156,7 @@ namespace PYXBMC
 		"filename       : string - image filename.\n"
     "colorKey       : [opt] hexString - (example, '0xFFFF3300')\n"
     "aspectRatio    : [opt] integer - (values 0 = stretch (default), 1 = scale up (crops), 2 = scale down (black bars)"
+    "colorDiffuse   : hexString - (example, '0xC0FF0000' (red tint))\n"
 		"\n"
 		"*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
