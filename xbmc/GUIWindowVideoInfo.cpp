@@ -7,7 +7,6 @@
 #include "VideoDatabase.h"
 #include "GUIImage.h"
 #include "StringUtils.h"
-#include "GUIListControl.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
 #include "GUIDialogFileBrowser.h"

@@ -5,7 +5,7 @@
 #include "application.h"
 #include "playlistplayer.h"
 #include "GUIPassword.h"
-#include "GUIListControl.h"
+#include "GUILabelControl.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogFileBrowser.h"
 #include "Picture.h"
