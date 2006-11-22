@@ -447,7 +447,7 @@
   <string id="596">Repeat: One</string>
   <string id="597">Repeat: All</string>
 
-  <string id="600">Rip CD Audio</string>
+  <string id="600">Rip Audio CD</string>
   <string id="601">Medium</string>
   <string id="602">Standard</string>
   <string id="603">Extreme</string>
@@ -457,6 +457,7 @@
   <string id="607">To:</string>
   <string id="608">Could not rip CD or Track</string>
   <string id="609">CDDARipPath is not set.</string>
+  <string id="610">Rip Audio Track</string>
 
   <string id="620">CD Ripping</string>
   <string id="621">Encoder</string>

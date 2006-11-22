@@ -117,7 +117,7 @@ CreditLine_t Credits[] =
     // Testers (8 beats per group - 24 total + 8 beats blank)
     { 50, 25, 4200, 7560 + 7560/2, 60, 840, EFF_IN_FLASH | EFF_OUT_FADE , 42, L"Testers" },
     { 50, 40, 0, 7560/2, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Caldor" },
-    { 50, 50, 0, 7560/2, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"DeanRParry" },
+    { 50, 50, 0, 7560/2, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"C-Quel" },
     { 50, 60, 0, 7560/2, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Donno" },
 
     { 50, 40, 7560/2, 7560/2, 60, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"ModHack" },
@@ -419,8 +419,8 @@ CreditLine_t Credits[] =
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks Pepsi for the Max" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks MString for the XBOX" },
 
-    // section DeanRParry
-    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"DeanRParry" },
+    // section C-Quel
+    { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"C-Quel" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to Spiff for putting up with my" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"lame ass code skills!" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks MS for the superb piece of h/w," },

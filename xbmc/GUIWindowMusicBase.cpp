@@ -1254,6 +1254,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_Scan = 0;			// Scan to library
   int btn_Search = 0;		// Library Search
   int btn_Rip = 0;			// Rip audio cd
+  int btn_RipTrack = 0;			// Rip audio track
   int btn_CDDB = 0;			// CDDB lookup
   int btn_Delete = 0;		// Delete
   int btn_Rename = 0;		// Rename
@@ -1311,13 +1312,14 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 		if (GetID() == WINDOW_MUSIC_NAV)
 			pMenu->AddButton(137);
 	  
-		// enable Rip CD Audio button if we have an audio disc
+		// enable Rip CD Audio or Track button if we have an audio disc
 		if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA())
 		{
 			// GeminiServer those cd's can also include Audio Tracks: CDExtra and MixedMode!
 			CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo(); 
 			if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
 				btn_Rip = pMenu->AddButton(600);
+                                btn_RipTrack = pMenu->AddButton(610);
 		}
 
 		// enable CDDB lookup if the current dir is CDDA
@@ -1408,6 +1410,10 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     {
       OnRipCD();
     }
+    else if (btnid == btn_RipTrack)
+    {
+      OnRipTrack((int) iItem);
+    }
     // CDDB lookup
     else if (btnid == btn_CDDB)
     {
@@ -1465,6 +1471,30 @@ void CGUIWindowMusicBase::OnRipCD()
 #ifdef HAS_CDDA_RIPPER
       CCDDARipper ripper;
       ripper.RipCD();
+#endif
+    }
+    else
+    {
+      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      pDlgOK->SetHeading(257); // Error
+      pDlgOK->SetLine(0, g_localizeStrings.Get(20099)); //
+      pDlgOK->SetLine(1, ""); //
+      pDlgOK->SetLine(2, "");
+      pDlgOK->DoModal();
+    }
+  }
+}
+
+void CGUIWindowMusicBase::OnRipTrack(int iItem)
+{
+  CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
+  if (CDetectDVDMedia::IsDiscInDrive() && pCdInfo && pCdInfo->IsAudio(1))
+  {
+    if (!g_application.CurrentFileItem().IsCDDA())
+    {
+#ifdef HAS_CDDA_RIPPER
+      CCDDARipper ripper;
+      ripper.RipTrack(m_vecItems[iItem]);
 #endif
     }
     else
