@@ -400,7 +400,19 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
 
         // Add to the database if applicable
         if (item->m_strPath && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+        {
           m_database.SetMovieInfo(item->m_strPath, movieDetails);
+          // remove directory caches
+          CFileItemList items;
+          CDirectory::GetDirectory("z:\\",items,".fi",false);
+          for (int i=0;i<items.Size();++i)
+          {
+            if (!items[i]->m_bIsFolder)
+            {
+              CFile::Delete(items[i]->m_strPath);
+            }
+          }
+        }
 
         pDlgInfo->SetMovie(movieDetails, item);
         pDlgInfo->DoModal();
