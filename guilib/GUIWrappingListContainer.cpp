@@ -43,13 +43,23 @@ void CGUIWrappingListContainer::Render()
   else
     posX += (offset * m_layout.Size(m_orientation) - m_scrollOffset);;
 
+  float focusedPosX = 0;
+  float focusedPosY = 0;
+  CGUIListItem *focusedItem = NULL;
   int current = offset;
   while (posX < m_posX + m_width && posY < m_posY + m_height && m_items.size())
   {
     CGUIListItem *item = m_items[CorrectOffset(current)];
     bool focused = (current == m_offset + m_cursor) && m_bHasFocus;
     // render our item
-    RenderItem(posX, posY, item, focused);
+    if (focused)
+    {
+      focusedPosX = posX;
+      focusedPosY = posY;
+      focusedItem = item;
+    }
+    else
+      RenderItem(posX, posY, item, focused);
 
     // increment our position
     if (m_orientation == VERTICAL)
@@ -59,6 +69,10 @@ void CGUIWrappingListContainer::Render()
 
     current++;
   }
+  // render focused item last so it can overlap other items
+  if (focusedItem)
+    RenderItem(focusedPosX, focusedPosY, focusedItem, true);
+
   g_graphicsContext.RestoreViewPort();
 
   if (m_pageControl)
@@ -112,6 +126,16 @@ bool CGUIWrappingListContainer::OnAction(const CAction &action)
 
 bool CGUIWrappingListContainer::OnMessage(CGUIMessage& message)
 {
+  if (message.GetControlId() == GetID() )
+  {
+    if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
+    {
+      int item = message.GetParam1();
+      if (item >= 0 && item < (int)m_items.size())
+        ScrollToOffset(item - m_cursor);
+      return true;
+    }
+  }
   return CGUIBaseContainer::OnMessage(message);
 }
 
