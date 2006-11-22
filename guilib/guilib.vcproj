@@ -309,9 +309,6 @@
 				RelativePath=".\GUIListContainer.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIListControl.cpp">
-			</File>
-			<File
 				RelativePath=".\GUIListControlEx.cpp">
 			</File>
 			<File
@@ -519,9 +516,6 @@
 			</File>
 			<File
 				RelativePath=".\GUIListContainer.h">
-			</File>
-			<File
-				RelativePath=".\GUIListControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIListControlEx.h">
