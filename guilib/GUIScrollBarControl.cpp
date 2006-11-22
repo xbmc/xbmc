@@ -165,8 +165,6 @@ void CGUIScrollBar::AllocResources()
 
 void CGUIScrollBar::UpdateBarSize()
 {
-  SetVisible(m_numItems > m_pageSize || m_showOnePage);
-
   // scale our textures to suit
   if (m_orientation == VERTICAL)
   {
@@ -272,4 +270,10 @@ CStdString CGUIScrollBar::GetDescription() const
   CStdString description;
   description.Format("%i/%i", m_offset, m_numItems);
   return description;
+}
+
+bool CGUIScrollBar::IsVisible() const
+{
+  if (m_numItems <= m_pageSize && !m_showOnePage) return false;
+  return CGUIControl::IsVisible();
 }
