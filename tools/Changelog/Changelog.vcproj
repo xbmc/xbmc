@@ -118,6 +118,9 @@
 				RelativePath=".\Changelog.cpp">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\utils\RegExp.cpp">
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -149,6 +152,9 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath="..\..\xbmc\utils\RegExp.h">
+			</File>
 			<File
 				RelativePath=".\stdafx.h">
 			</File>

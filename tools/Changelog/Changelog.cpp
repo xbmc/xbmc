@@ -4,15 +4,39 @@
 #include "stdafx.h"
 
 #include "tinyxml.h"
+#include "../../xbmc/utils/regexp.h"
 
-char header[] = "*************************************************************************************************************\r\n"
-                "*************************************************************************************************************\r\n"
-                "                                     Xbox Media Center CHANGELOG\r\n"
-                "*************************************************************************************************************\r\n"
-                "*************************************************************************************************************\r\n"
-                "\r\n"
-                "Date        Rev   Message\r\n"
-                "=============================================================================================================\r\n";
+const char header[] = "*************************************************************************************************************\r\n"
+                      "*************************************************************************************************************\r\n"
+                      "                                     Xbox Media Center CHANGELOG\r\n"
+                      "*************************************************************************************************************\r\n"
+                      "*************************************************************************************************************\r\n"
+                      "\r\n"
+                      "Date        Rev   Message\r\n"
+                      "=============================================================================================================\r\n";
+
+const char filter[][100] = {"[- ]*[0-9]+-[0-9]+-[0-9]+ *",
+                             "\\*\\*\\* empty log message \\*\\*\\*",
+                             "no message" };
+
+std::string FilterMessage(std::string message)
+{
+  std::string filteredMessage = message;
+  CRegExp reg;
+  for (int i = 0; i < sizeof(filter) / 100; i++)
+  {
+    reg.RegComp(filter[i]);
+    int findStart = reg.RegFind(message.c_str());
+    while (findStart >= 0)
+    {
+      filteredMessage = message.substr(0, findStart);
+      filteredMessage.append(message.substr(findStart + reg.GetFindLen(), message.length()));
+      message = filteredMessage;
+      findStart = reg.RegFind(message.c_str());
+    }
+  }
+  return filteredMessage;
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -67,7 +91,12 @@ int _tmain(int argc, _TCHAR* argv[])
     TiXmlNode *msg = logitem->FirstChild("msg");
     if (msg && msg->FirstChild())
     {
-      fprintf(file, "%s  %4i  %s\r\n", dateString.substr(0,10).c_str(), revision, msg->FirstChild()->Value());
+      // filter the message a bit
+      std::string message = FilterMessage(msg->FirstChild()->Value());
+      if (message.size())
+        fprintf(file, "%s  %4i  %s\r\n", dateString.substr(0,10).c_str(), revision, message.c_str());
+      else
+        int breakhere = 1;
     }
     logitem = logitem->NextSiblingElement("logentry");
   }
@@ -75,4 +104,3 @@ int _tmain(int argc, _TCHAR* argv[])
   printf("Changelog saved as: %s\n", output.c_str());
 	return 0;
 }
-
