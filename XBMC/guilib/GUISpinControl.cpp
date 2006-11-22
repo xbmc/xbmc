@@ -333,6 +333,9 @@ void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
 
 void CGUISpinControl::Render()
 {
+  if (m_iType == SPIN_CONTROL_TYPE_PAGE)
+    SetVisible(m_numItems > m_itemsPerPage || m_showOnePage);
+
   if (!IsVisible()) return;
 
   if (!HasFocus())
@@ -359,8 +362,6 @@ void CGUISpinControl::Render()
   else if (m_iType == SPIN_CONTROL_TYPE_PAGE)
   {
     text.Format("%i/%i", m_iValue, m_iEnd);
-    if (m_numItems <= m_itemsPerPage && !m_showOnePage)
-      return CGUIControl::Render();
   }
   else if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
   {
