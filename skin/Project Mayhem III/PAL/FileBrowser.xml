@@ -58,6 +58,8 @@
    <height>323</height>
    <texturefocus>input-focus.png</texturefocus>
    <texturenofocus>input-nofocus.png</texturenofocus>
+   <spinposx>350</spinposx>
+   <spinposy>285</spinposy>
    <onleft>413</onleft>
    <onright>413</onright>
    <onup>450</onup>
@@ -68,10 +70,12 @@
    <description>thumbnailpanel</description>
    <type>thumbnailpanel</type>
    <id>451</id>
-   <posx>10</posx>
+   <posx>30</posx>
    <posy>70</posy>
    <width>400</width>
    <height>323</height>
+   <spinposx>330</spinposx>
+   <spinposy>285</spinposy>
    <onleft>413</onleft>
    <onright>413</onright>
    <onup>451</onup>
