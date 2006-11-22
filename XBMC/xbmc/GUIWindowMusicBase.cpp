@@ -1253,7 +1253,6 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_InfoAll = 0;	// Query Information for all albums
   int btn_Scan = 0;			// Scan to library
   int btn_Search = 0;		// Library Search
-  int btn_Rip = 0;			// Rip audio cd
   int btn_RipTrack = 0;			// Rip audio track
   int btn_CDDB = 0;			// CDDB lookup
   int btn_Delete = 0;		// Delete
@@ -1319,8 +1318,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 			CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo(); 
 			if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
 			{
-				btn_Rip = pMenu->AddButton(600);
-                btn_RipTrack = pMenu->AddButton(610);
+		    btn_RipTrack = pMenu->AddButton(610);
 			}
 		}
 
@@ -1407,14 +1405,9 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     {
       OnSearch();
     }
-    // Rip CD...
-    else if (btnid == btn_Rip)
-    {
-      OnRipCD();
-    }
     else if (btnid == btn_RipTrack)
     {
-      OnRipTrack((int) iItem);
+      OnRipTrack(iItem);
     }
     // CDDB lookup
     else if (btnid == btn_CDDB)
