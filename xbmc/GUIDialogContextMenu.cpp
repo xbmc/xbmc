@@ -10,6 +10,7 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogLockSettings.h"
 #include "MediaManager.h"
+#include "GUIWindowMusicBase.h"
 
 #define BACKGROUND_IMAGE 999
 #define BACKGROUND_BOTTOM 998
@@ -198,12 +199,18 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     // GeminiServer: DVD Drive Context menu stuff
     int btn_PlayDisc = 0;
     int btn_Eject = 0;
+    int btn_Rip;
     if (item->IsDVD() || item->IsCDDA())
     {
       // We need to check if there is a detected is inserted!
       if ( CDetectDVDMedia::IsDiscInDrive() )
       {
         btn_PlayDisc = pMenu->AddButton(341); // Play CD/DVD!
+
+        CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo(); 
+        if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
+          btn_Rip = pMenu->AddButton(600);
+
         bIsDVDMediaPresent = true;
       }
       btn_Eject = pMenu->AddButton(13391);  // Eject/Load CD/DVD!
@@ -409,6 +416,11 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           TrayIO.EjectTray();
           return true;
         }
+      }
+      else if (btn == btn_Rip)
+      {
+        CGUIWindowMusicBase::OnRipCD();
+        return true;
       }
       else if (btn == btn_LockShare)
       {
