@@ -104,6 +104,7 @@ namespace PYXBMC
 		string strFileName;
 		DWORD strColorKey;
     DWORD aspectRatio;
+		DWORD strColorDiffuse;
 	} ControlImage;
 
 	typedef struct {
