@@ -30,14 +30,14 @@ namespace PYXBMC
     self->fRepeat = 0.0f;
     self->buttonCode = 0;
     self->strAction = "";
-    
+
 		return (PyObject*)self;
 	}
 
   PyObject* Action_FromAction(const CAction& action)
   {
     Action* pyAction = (Action*)Action_Type.tp_alloc(&Action_Type, 0);
-    
+
     if (pyAction)
     {
       pyAction->id = action.wID;
@@ -47,15 +47,15 @@ namespace PYXBMC
       pyAction->fRepeat = action.fRepeat;
       pyAction->strAction = action.strAction.c_str();
     }
-    
+
     return (PyObject*)pyAction;
   }
-  
+
 	void Action_Dealloc(Action* self)
 	{
 		self->ob_type->tp_free((PyObject*)self);
 	}
-	
+
 	/* For backwards compatability whe have to check the action code
 	 * against an integer
 	 * The first argument is always an Action object
@@ -68,7 +68,7 @@ namespace PYXBMC
 		  {
 		    // both are Action objects
 		    Action* a2 = (Action*)obj2;
-		    
+
 		    if (obj1->id == a2->id &&
 		        obj1->buttonCode == a2->buttonCode &&
 		        obj1->fAmount1 == a2->fAmount1 &&
@@ -103,20 +103,40 @@ namespace PYXBMC
 	{
 		return Py_BuildValue("l", self->id);
 	}
-	
+
 	// getButtonCode() Method
 	PyDoc_STRVAR(getButtonCode__doc__,
 		"getButtonCode() -- Returns the button code for this action.\n"
 		"\n");
-		
+
 	PyObject* Action_GetButtonCode(Action* self, PyObject* args)
 	{
 		return Py_BuildValue("l", self->buttonCode);
 	}
-	
+
+	PyDoc_STRVAR(getAmount1__doc__,
+		"getAmount1() -- Returns the first amount of force applied to the thumbstick n.\n"
+		"\n");
+
+	PyDoc_STRVAR(getAmount2__doc__,
+		"getAmount2() -- Returns the second amount of force applied to the thumbstick n.\n"
+		"\n");
+
+	PyObject* Action_GetAmount1(Action* self, PyObject* args)
+	{
+		return Py_BuildValue("f", self->fAmount1);
+	}
+
+	PyObject* Action_GetAmount2(Action* self, PyObject* args)
+	{
+		return Py_BuildValue("f", self->fAmount2);
+	}
+
 	PyMethodDef Action_methods[] = {
 	  {"getId", (PyCFunction)Action_GetId, METH_VARARGS, getId__doc__},
 	  {"getButtonCode", (PyCFunction)Action_GetButtonCode, METH_VARARGS, getButtonCode__doc__},
+	  {"getAmount1", (PyCFunction)Action_GetAmount1, METH_VARARGS, getAmount1__doc__},
+	  {"getAmount2", (PyCFunction)Action_GetAmount2, METH_VARARGS, getAmount2__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
@@ -135,11 +155,11 @@ namespace PYXBMC
 #pragma const_seg()
 
 	PyTypeObject Action_Type;
-	
+
 	void initAction_Type()
 	{
 	  PyInitializeTypeObject(&Action_Type);
-	  
+
 	  Action_Type.tp_name = "xbmcgui.Action";
 	  Action_Type.tp_basicsize = sizeof(Action);
 	  Action_Type.tp_dealloc = (destructor)Action_Dealloc;
