@@ -37,6 +37,7 @@
 #define HAS_LCD
 #define HAS_UNDOCUMENTED
 #define HAS_SECTIONS
+#define HAS_CDDA_RIPPER
 #else
 #undef HAS_XBOX_D3D
 #undef HAS_RAM_CONTROL
@@ -71,6 +72,7 @@
 #undef HAS_LCD
 #undef HAS_UNDOCUMENTED
 #undef HAS_SECTIONS
+#undef HAS_CDDA_RIPPER
 
 // additional includes and defines
 #include <winsock2.h>
