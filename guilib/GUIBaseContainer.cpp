@@ -112,32 +112,6 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       message.SetParam1(CorrectOffset(m_offset + m_cursor));
       return true;
     }
-    else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
-    {
-      // Check that m_offset is valid
-      ValidateOffset();
-      // only select an item if it's in a valid range
-      if (message.GetParam1() >= 0 && message.GetParam1() < (int)m_items.size())
-      {
-        // Select the item requested
-        int item = message.GetParam1();
-        if (item >= m_offset && item < m_offset + m_itemsPerPage)
-        { // the item is on the current page, so don't change it.
-          m_cursor = item - m_offset;
-        }
-        else if (item < m_offset)
-        { // item is on a previous page - make it the first item on the page
-          m_cursor = 0;
-          ScrollToOffset(item);
-        }
-        else // (item >= m_offset+m_itemsPerPage)
-        { // item is on a later page - make it the last item on the page
-          m_cursor = m_itemsPerPage - 1;
-          ScrollToOffset(item - m_cursor);
-        }
-      }
-      return true;
-    }
     else if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
     {
       if (message.GetSenderId() == m_pageControl)
