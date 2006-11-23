@@ -486,7 +486,7 @@
     <onleft>11</onleft>
     <onright>53</onright>
     <onup>42</onup>
-    <ondown>44</ondown>
+    <ondown>45</ondown>
     <visible>[Control.HasFocus(13) | ControlGroup(4).HasFocus()] + !Skin.HasSetting(bookmarkbuttons)</visible>
     <include>contentpanelslide</include>
    </control>
@@ -519,65 +519,13 @@
     <onleft>43</onleft>
     <onright>63</onright>
     <onup>52</onup>
-    <ondown>54</ondown>
-    <texturefocus>list-focus.png</texturefocus>
-    <texturenofocus>-</texturenofocus>
-    <visible>[Control.HasFocus(13) | ControlGroup(4).HasFocus()] + !Skin.HasSetting(bookmarkbuttons)</visible>
-    <include>contentpanelslide</include>
-   </control>
-
-   <control>
-    <description>Programs Bookmark String Set 4</description>
-    <type>button</type>
-    <id>44</id>
-    <posx>223</posx>
-    <posy>305</posy>
-    <width>150</width>
-    <label>-</label>
-    <label>$INFO[Skin.String(ProgramsBookmark4)]</label>
-    <onclick>Skin.SetString(ProgramsBookmark4)</onclick>
-    <onleft>11</onleft>
-    <onright>54</onright>
-    <onup>43</onup>
-    <ondown>45</ondown>
-    <visible>[Control.HasFocus(13) | ControlGroup(4).HasFocus()] + !Skin.HasSetting(bookmarkbuttons)</visible>
-    <include>contentpanelslide</include>
-   </control>
-
-   <control>
-    <description>Programs Bookmark 4 String NOT SET label</description>
-    <type>button</type>
-    <id>0</id>
-    <posx>223</posx>
-    <posy>305</posy>
-    <width>150</width>
-    <label>20078</label>
-    <texturefocus>-</texturefocus>
-    <texturenofocus>-</texturenofocus>
-    <visible>[Control.HasFocus(13) | ControlGroup(4).HasFocus()] + !Skin.HasSetting(bookmarkbuttons) + !Skin.String(ProgramsBookmark4)</visible>
-    <include>contentpanelslide</include>
-    <include>textcolorgrey</include>
-   </control>
-
-   <control>
-    <description>enable Programs Bookmark 4</description>
-    <type>radiobutton</type>
-    <id>54</id>
-    <posx>378</posx>
-    <posy>305</posy>
-    <width>32</width>
-    <label>-</label>
-    <onclick>Skin.ToggleSetting(ProgramsBM4)</onclick>
-    <selected>Skin.HasSetting(ProgramsBM4)</selected>
-    <onleft>44</onleft>
-    <onright>64</onright>
-    <onup>53</onup>
     <ondown>55</ondown>
     <texturefocus>list-focus.png</texturefocus>
     <texturenofocus>-</texturenofocus>
     <visible>[Control.HasFocus(13) | ControlGroup(4).HasFocus()] + !Skin.HasSetting(bookmarkbuttons)</visible>
     <include>contentpanelslide</include>
    </control>
+
 
 <!-- Video Bookmarks -->
 
@@ -622,7 +570,7 @@
     <onclick>Skin.SetString(VideoBookmark1)</onclick>
     <onleft>11</onleft>
     <onright>55</onright>
-    <onup>44</onup>
+    <onup>43</onup>
     <ondown>46</ondown>
     <visible>[Control.HasFocus(13) | ControlGroup(4).HasFocus()] + !Skin.HasSetting(bookmarkbuttons)</visible>
     <include>contentpanelslide</include>
@@ -655,7 +603,7 @@
     <selected>Skin.HasSetting(VideoBM1)</selected>
     <onleft>45</onleft>
     <onright>65</onright>
-    <onup>54</onup>
+    <onup>53</onup>
     <ondown>56</ondown>
     <texturefocus>list-focus.png</texturefocus>
     <texturenofocus>-</texturenofocus>
