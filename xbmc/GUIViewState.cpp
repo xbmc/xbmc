@@ -24,6 +24,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (url.GetProtocol() == "shout")
     return new CGUIViewStateMusicShoutcast(items);
+
   if (url.GetProtocol() == "lastfm")
     return new CGUIViewStateMusicLastFM(items);
 
@@ -50,6 +51,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId==WINDOW_SCRIPTS)
     return new CGUIViewStateWindowScripts(items);
+
+  if (windowId==WINDOW_GAMESAVES)
+    return new CGUIViewStateWindowGameSaves(items);
 
   if (windowId==WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);
@@ -160,7 +164,7 @@ SORT_METHOD CGUIViewState::GetSortMethod() const
 int CGUIViewState::GetSortMethodLabel() const
 {
   if (m_currentSortMethod>=0 && m_currentSortMethod<(int)m_sortMethods.size())
-    return m_sortMethods[m_currentSortMethod].m_buttonLabel; 
+    return m_sortMethods[m_currentSortMethod].m_buttonLabel;
 
   return 103; // Sort By: Name
 }
@@ -169,7 +173,7 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
 {
   if (m_currentSortMethod>=0 && m_currentSortMethod<(int)m_sortMethods.size())
   {
-    masks=m_sortMethods[m_currentSortMethod].m_labelMasks; 
+    masks=m_sortMethods[m_currentSortMethod].m_labelMasks;
     return;
   }
 

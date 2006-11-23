@@ -148,9 +148,6 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
 
   }
 
-  // switch media
-  m_vecStrings[523] = ToUTF8(strEncoding, "Switch Media");
-
   // TODO: localize 2.0
   // Hardcoded strings (starting at 20000)
 /*  m_vecStrings[20000] = "CDDA Rip Folder";

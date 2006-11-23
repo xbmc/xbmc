@@ -1388,22 +1388,15 @@ bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
   return true;
 }
 
-bool CGUIWindowFileManager::CopyItem(const CFileItem *pItem, const CStdString& strDirectory, CGUIDialogProgress* pProgress)
+bool CGUIWindowFileManager::CopyItem(const CFileItem *pItem, const CStdString& strDirectory, bool bSilent, CGUIDialogProgress* pProgress)
 {
   if (!pItem) return false;
   CLog::Log(LOGDEBUG,"FileManager::CopyItem: %s",pItem->GetLabel().c_str());
 
   // prompt user for confirmation of file/folder deletion
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (pDialog && pProgress)
-  {
-    pDialog->SetHeading(122);
-    pDialog->SetLine(0, 125);
-    pDialog->SetLine(1, CUtil::GetFileName(pItem->m_strPath));
-    pDialog->SetLine(2, "");
-    pDialog->DoModal();
-    if (!pDialog->IsConfirmed()) return false;
-  }
+  if (!bSilent)
+      if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(122),g_localizeStrings.Get(125),  CUtil::GetFileName(pItem->m_strPath), ""))	
+      return false;
 
   // Create a temporary item list containing the file/folder for deletion
   CFileItemList items;
@@ -1572,4 +1565,50 @@ void CGUIWindowFileManager::ResetProgressBar(bool showProgress /*= true */)
     m_dlgProgress->SetPercentage(0);
     m_dlgProgress->ShowProgressBar(showProgress);
   }
+}
+
+bool CGUIWindowFileManager::MoveItem(const CFileItem *pItem, const CStdString& strDirectory, bool bSilent, CGUIDialogProgress* pProgress)
+{
+  if (!pItem) return false;
+  CLog::Log(LOGDEBUG,"FileManager::MoveItem: %s",pItem->GetLabel().c_str());
+
+  // prompt user for confirmation of file/folder moving
+  //if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(121),g_localizeStrings.Get(124),  CUtil::GetFileName(pItem->m_strPath), ""))	return false;
+  if (!bSilent)
+    if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(121),g_localizeStrings.Get(124),  CUtil::GetFileName(pItem->m_strPath), ""))
+      return false;
+
+  // Create a temporary item list containing the file/folder for deletion
+  CFileItemList items;
+
+  if (pItem->m_bIsFolder)
+  {
+    CDirectory::GetDirectory(pItem->m_strPath,items,"",false);
+    for (int i=0;i<items.Size();++i)
+      items[i]->Select(true);
+  }
+  else
+  {
+    CFileItem *pItemTemp = new CFileItem(*pItem);
+    items.Add(pItemTemp);
+  }
+
+  bool bAllocated = false;
+  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES);
+  if (!pFileManager)
+  {
+    pFileManager = new CGUIWindowFileManager();
+    bAllocated = true;
+  }
+  if (pFileManager)
+  {
+    pFileManager->m_dlgProgress = pProgress;
+    pFileManager->ResetProgressBar(false);
+    pFileManager->DoProcess(ACTION_MOVE, items, strDirectory);
+    if (pFileManager->m_dlgProgress) pFileManager->m_dlgProgress->Close();
+  }
+  if (bAllocated)
+    delete pFileManager;
+
+  return true;
 }
