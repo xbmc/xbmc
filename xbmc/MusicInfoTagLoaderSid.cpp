@@ -41,12 +41,21 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
 	CStdString strFileNameLower(strFileToLoad);
 	strFileNameLower.MakeLower();
 	int iHVSC = strFileNameLower.find("hvsc"); // need hvsc in path name since our lookupfile is based on hvsc paths
-	if( iHVSC < 0 ) {
+	if (iHVSC < 0)
+  {
+    iHVSC = strFileNameLower.find("c64music");
+    if (iHVSC >= 0)
+      iHVSC += 8;
+  }
+  else
+    iHVSC += 4;
+  if( iHVSC < 0 ) 
+  {
 		tag.SetLoaded(false);
 		return( false );
 	}
 	
-	CStdString strHVSCpath = strFileToLoad.substr(iHVSC+4,strFileToLoad.length()-1);
+	CStdString strHVSCpath = strFileToLoad.substr(iHVSC,strFileToLoad.length()-1);
 
 	strHVSCpath.Replace('\\','/'); // unix paths
   strHVSCpath.MakeLower();
