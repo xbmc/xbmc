@@ -127,6 +127,7 @@ public:
   CStdString GetCachedPictureThumb();
   CStdString GetCachedArtistThumb();
   CStdString GetCachedProgramThumb();
+  CStdString GetCachedGameSaveThumb();
   CStdString GetCachedProfileThumb();
 
   // Sets the video thumb (cached first, else caches user thumb)
@@ -137,6 +138,7 @@ public:
   void SetCachedPictureThumb();
   void SetCachedArtistThumb();
   void SetCachedProgramThumb();
+  void SetCachedGameSavesThumb();
   void SetCachedMusicThumb();
 
   // Gets the user thumb, if it exists
@@ -274,8 +276,10 @@ public:
 
   void SetCachedVideoThumbs();
   void SetCachedProgramThumbs();
+  void SetCachedGameSavesThumbs();
   void SetCachedMusicThumbs();
   void SetProgramThumbs();
+  void SetGameSavesThumbs();
 
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);

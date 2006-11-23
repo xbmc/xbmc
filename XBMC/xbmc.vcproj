@@ -1161,6 +1161,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowFullScreen.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowGameSaves.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowGameSaves.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowHome.cpp">
 				</File>
 				<File

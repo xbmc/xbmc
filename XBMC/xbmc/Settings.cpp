@@ -161,6 +161,9 @@ CSettings::CSettings(void)
   g_stSettings.m_ScriptsViewMethod = VIEW_METHOD_LIST;
   g_stSettings.m_ScriptsSortOrder = SORT_ORDER_ASC;
 
+  g_stSettings.m_GameSavesViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_GameSavesSortOrder = SORT_ORDER_ASC;
+
   g_stSettings.m_nVolumeLevel = 0;
   g_stSettings.m_dynamicRangeCompressionLevel = 0;
   g_stSettings.m_iPreMuteVolumeLevel = 0;
@@ -1035,6 +1038,16 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_ScriptsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
     GetInteger(pElement, "sortorder", (int&)g_stSettings.m_ScriptsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
   }
+
+    // mygamesaves settings
+  pElement = pRootElement->FirstChildElement("mygamesaves");
+  if (pElement)
+  {
+    GetInteger(pElement, "viewmethod", (int&)g_stSettings.m_GameSavesViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+    GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_GameSavesSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+    GetInteger(pElement, "sortorder", (int&)g_stSettings.m_GameSavesSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+  }
+
   // general settings
   pElement = pRootElement->FirstChildElement("general");
   if (pElement)
@@ -1695,6 +1708,14 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetInteger(pNode, "viewmethod", g_stSettings.m_ScriptsViewMethod);
   SetInteger(pNode, "sortmethod", g_stSettings.m_ScriptsSortMethod);
   SetInteger(pNode, "sortorder", g_stSettings.m_ScriptsSortOrder);
+
+    // mygamesaves settings
+  TiXmlElement gameSaveNode("mygamesaves");
+  pNode = pRoot->InsertEndChild(gameSaveNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "viewmethod", g_stSettings.m_GameSavesViewMethod);
+  SetInteger(pNode, "sortmethod", g_stSettings.m_GameSavesSortMethod);
+  SetInteger(pNode, "sortorder", g_stSettings.m_GameSavesSortOrder);
 
   // general settings
   TiXmlElement generalNode("general");
@@ -2932,6 +2953,17 @@ CStdString CSettings::GetProgramsThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs", folder);
+  
+  return folder;
+}
+
+CStdString CSettings::GetGameSaveThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\GameSaves", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\GameSaves", folder);
   
   return folder;
 }
