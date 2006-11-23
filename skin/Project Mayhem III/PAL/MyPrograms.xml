@@ -64,7 +64,7 @@
     <label>100</label>
     <onleft>50</onleft>
     <onright>50</onright>
-    <onup>34</onup>
+    <onup>33</onup>
     <ondown>3</ondown>
     <include>buttonpanelslide</include>
    </control>
@@ -79,7 +79,7 @@
     <onleft>50</onleft>
     <onright>4</onright>
     <onup>2</onup>
-    <ondown>99</ondown>
+    <ondown>98</ondown>
     <include>buttonpanelslide</include>
    </control>
 
@@ -91,6 +91,21 @@
     <onleft>3</onleft>
     <onright>50</onright>
     <onup>2</onup>
+    <ondown>98</ondown>
+    <include>buttonpanelslide</include>
+   </control>
+
+   <control>
+    <description>Gamesaves Button</description>
+    <type>button</type>
+    <id>98</id>
+    <posx>50</posx>
+    <posy>194</posy>
+    <label>20323</label>
+    <onclick>ActivateWindow(35)</onclick>
+    <onleft>50</onleft>
+    <onright>50</onright>
+    <onup>3</onup>
     <ondown>99</ondown>
     <include>buttonpanelslide</include>
    </control>
@@ -100,12 +115,12 @@
     <type>button</type>
     <id>99</id>
     <posx>50</posx>
-    <posy>194</posy>
+    <posy>231</posy>
     <label>998</label>
     <onclick>ActivateWindow(XLinkKai)</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
-    <onup>3</onup>
+    <onup>98</onup>
     <ondown>31</ondown>
     <visible>System.KaiEnabled</visible>
     <include>buttonpanelslide</include>
@@ -115,7 +130,7 @@
     <description>Kai disconnected icon</description>
     <type>image</type>
     <posx>173</posx>
-    <posy>201</posy>
+    <posy>238</posy>
     <width>19</width>
     <height>19</height>
     <texture>Kai_disconnected.png</texture>
@@ -127,7 +142,7 @@
     <description>Kai connected icon</description>
     <type>image</type>
     <posx>173</posx>
-    <posy>201</posy>
+    <posy>238</posy>
     <width>19</width>
     <height>19</height>
     <texture>Kai_connected.png</texture>
@@ -140,7 +155,7 @@
     <type>button</type>
     <id>31</id>
     <posx>50</posx>
-    <posy>231</posy>
+    <posy>268</posy>
     <label>$INFO[Skin.String(Programsbookmark1)]</label>
     <onclick>ActivateWindow(MyPrograms,$INFO[Skin.String(Programsbookmark1)])</onclick>
     <onleft>50</onleft>
@@ -156,7 +171,7 @@
     <type>button</type>
     <id>0</id>
     <posx>50</posx>
-    <posy>231</posy>
+    <posy>268</posy>
     <width>150</width>
     <label>20078</label>
     <texturefocus>-</texturefocus>
@@ -171,7 +186,7 @@
     <type>button</type>
     <id>32</id>
     <posx>50</posx>
-    <posy>268</posy>
+    <posy>305</posy>
     <label>$INFO[Skin.String(Programsbookmark2)]</label>
     <onclick>ActivateWindow(MyPrograms,$INFO[Skin.String(Programsbookmark2)])</onclick>
     <onleft>50</onleft>
@@ -187,7 +202,7 @@
     <type>button</type>
     <id>0</id>
     <posx>50</posx>
-    <posy>268</posy>
+    <posy>305</posy>
     <width>150</width>
     <label>20078</label>
     <texturefocus>-</texturefocus>
@@ -202,13 +217,13 @@
     <type>button</type>
     <id>33</id>
     <posx>50</posx>
-    <posy>305</posy>
+    <posy>342</posy>
     <label>$INFO[Skin.String(Programsbookmark3)]</label>
     <onclick>ActivateWindow(MyPrograms,$INFO[Skin.String(Programsbookmark3)])</onclick>
     <onleft>50</onleft>
     <onright>50</onright>
     <onup>32</onup>
-    <ondown>34</ondown>
+    <ondown>2</ondown>
     <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(ProgramsBM3)</visible>
     <include>buttonpanelslide</include>
    </control>
@@ -218,43 +233,12 @@
     <type>button</type>
     <id>0</id>
     <posx>50</posx>
-    <posy>305</posy>
+    <posy>342</posy>
     <width>150</width>
     <label>20078</label>
     <texturefocus>-</texturefocus>
     <texturenofocus>-</texturenofocus>
     <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(ProgramsBookmark3)] + Skin.HasSetting(ProgramsBM3)</visible>
-    <include>buttonpanelslide</include>
-    <include>textcolorgrey</include>
-   </control>
-
-   <control>
-    <description>Bookmark button 4</description>
-    <type>button</type>
-    <id>34</id>
-    <posx>50</posx>
-    <posy>342</posy>
-    <label>$INFO[Skin.String(Programsbookmark4)]</label>
-    <onclick>ActivateWindow(MyPrograms,$INFO[Skin.String(Programsbookmark4)])</onclick>
-    <onleft>50</onleft>
-    <onright>50</onright>
-    <onup>33</onup>
-    <ondown>2</ondown>
-    <visible>!Skin.HasSetting(bookmarkbuttons) + Skin.HasSetting(ProgramsBM4)</visible>
-    <include>buttonpanelslide</include>
-   </control>
-
-   <control>
-    <description>Programs Bookmark 4 String NOT SET label</description>
-    <type>button</type>
-    <id>0</id>
-    <posx>50</posx>
-    <posy>342</posy>
-    <width>150</width>
-    <label>20078</label>
-    <texturefocus>-</texturefocus>
-    <texturenofocus>-</texturenofocus>
-    <visible>[!Skin.HasSetting(bookmarkbuttons) + !Skin.String(ProgramsBookmark4)] + Skin.HasSetting(ProgramsBM4)</visible>
     <include>buttonpanelslide</include>
     <include>textcolorgrey</include>
    </control>
