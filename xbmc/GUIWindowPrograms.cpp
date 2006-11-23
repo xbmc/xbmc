@@ -214,6 +214,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     int btn_Rename = -2;
     int btn_LaunchIn = -2;
     int btn_Trainers = -2;
+    int btn_GameSaves = -2;
     if (m_vecItems[iItem]->IsXBE() || m_vecItems[iItem]->IsShortCut())
     {
       CStdString strLaunch = g_localizeStrings.Get(518); // Launch
@@ -231,18 +232,30 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
       }
       btn_Launch = pMenu->AddButton(strLaunch); // launch
 
+      
+      DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
+
+      CStdString strTitleID;
+      CStdString strGameSavepath;
+      strTitleID.Format("%08X",dwTitleId);
+      CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
+      
+      if (CDirectory::Exists(strGameSavepath))
+        btn_GameSaves = pMenu->AddButton(20322);         // Goto GameSaves
+    
       if (g_guiSettings.GetBool("myprograms.gameautoregion"))
         btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
 
       if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
         btn_Rename = pMenu->AddButton(520); // edit xbe title
   
-      DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
+      
       if (m_database.ItemHasTrainer(dwTitleId))
       {
         CStdString strOptions = g_localizeStrings.Get(12015);
         btn_Trainers = pMenu->AddButton(strOptions); // trainer options
       }
+
     }
     int btn_ScanTrainers = pMenu->AddButton(12012);
 
@@ -303,6 +316,15 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     {
       OnClick(iItem);
       return true;
+    }
+    else if (btnid == btn_GameSaves)
+    {
+      CStdString strTitleID;
+      CStdString strGameSavepath;
+      strTitleID.Format("%08X",CUtil::GetXbeID(m_vecItems[iItem]->m_strPath));
+      CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);     
+      m_gWindowManager.ActivateWindow(WINDOW_GAMESAVES,strGameSavepath);
+
     }
     else if (btnid == btn_LaunchIn)
     {

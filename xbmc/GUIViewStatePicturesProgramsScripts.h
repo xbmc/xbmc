@@ -36,3 +36,13 @@ protected:
   virtual CStdString GetExtensions();
   virtual VECSHARES& GetShares();
 };
+class CGUIViewStateWindowGameSaves : public CGUIViewState
+{
+public:
+  CGUIViewStateWindowGameSaves(const CFileItemList& items);
+
+protected:
+  virtual void SaveViewState();
+  //virtual CStdString GetExtensions();
+  virtual VECSHARES& GetShares();
+};

@@ -181,3 +181,42 @@ VECSHARES& CGUIViewStateWindowScripts::GetShares()
   return CGUIViewState::GetShares();
 }
 
+
+CGUIViewStateWindowGameSaves::CGUIViewStateWindowGameSaves(const CFileItemList& items) : CGUIViewState(items)
+{
+  //
+  ///////////////////////////////
+  /// NOTE:  GAME ID is saved to %T  (aka TITLE) and t         // Date is %J     %L is Label1 
+  /////////////
+  AddSortMethod(SORT_METHOD_LABEL, 103,  LABEL_MASKS("%L", "%T", "%L", ""));  // Filename, Size | Foldername, empty
+  AddSortMethod(SORT_METHOD_TITLE, 20316, LABEL_MASKS("%L", "%T", "%L", "%T"));  // Filename, TITLE | Foldername, TITLE
+  AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
+  SetSortMethod(g_stSettings.m_GameSavesSortMethod);
+
+  AddViewAsControl(VIEW_METHOD_LIST, 101);
+  AddViewAsControl(VIEW_METHOD_ICONS, 100);
+  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+  SetViewAsControl(g_stSettings.m_GameSavesViewMethod);
+
+  SetSortOrder(g_stSettings.m_GameSavesSortOrder);
+}
+
+void CGUIViewStateWindowGameSaves::SaveViewState()
+{
+  g_stSettings.m_GameSavesSortMethod=GetSortMethod();
+  g_stSettings.m_GameSavesViewMethod=GetViewAsControl();
+  g_stSettings.m_GameSavesSortOrder=GetSortOrder();
+  g_settings.Save();
+}
+
+
+VECSHARES& CGUIViewStateWindowGameSaves::GetShares()
+{
+  m_shares.clear();
+  CShare share;
+  share.strName = "Local GameSaves";
+  share.strPath = "E:\\udata";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  m_shares.push_back(share);
+  return CGUIViewState::GetShares();
+}
