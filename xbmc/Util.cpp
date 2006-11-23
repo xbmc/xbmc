@@ -1508,10 +1508,19 @@ bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIco
   g_charsetConverter.utf8ToStringCharset(strFilePath, localFile);
   CXBE xbeReader;
   CStdString strTempFile;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"1.xpr",strTempFile);
+  CStdString strExtension;
 
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"1.xpr",strTempFile);
+  CUtil::GetExtension(strFilePath,strExtension);
+  if (strExtension.Equals(".xbx"))
+  {
+	::CopyFile(strFilePath.c_str(), strTempFile.c_str(),FALSE);
+  }
+  else
+  {
   if (!xbeReader.ExtractIcon(localFile, strTempFile.c_str()))
     return false;
+  }
 
   CXBPackedResource* pPackedResource = new CXBPackedResource();
   if ( SUCCEEDED( pPackedResource->Create( strTempFile.c_str(), 1, NULL ) ) )
