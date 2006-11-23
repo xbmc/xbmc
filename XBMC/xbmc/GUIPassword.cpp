@@ -430,6 +430,9 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
     case WINDOW_SCRIPTS:
       bCheckPW = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked();
       break;
+    case WINDOW_GAMESAVES:
+      bCheckPW = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked();
+      break;
     case WINDOW_MUSIC_FILES:    // Music
       bCheckPW = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked();
       break;
