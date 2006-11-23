@@ -435,7 +435,7 @@
   <string id="520">Edit XBE title</string>
   <string id="521">Compilations</string>
   <string id="522">Remove Source</string>
-
+  <string id="523">Switch Media</string>
   <string id="588">Cancel Party Mode</string>
   <string id="589">Party Mode</string>
   <string id="590">Random</string>
@@ -1445,5 +1445,14 @@
   <string id="20312">Dim LCD on Paused</string>
   <string id="20313">Switch LED back on if Paused</string>
   <string id="20314">My Video - Library</string>
+  <string id="20315">My Game Saves</string>
+  <string id="20316">Sort by: ID</string>
+  <string id="20317">Download Saves</string>
+  <string id="20318">Save Game Installed On HDD</string>
+  <string id="20319">Failed to Download Game Save</string>
+  <string id="20320">Select Game Save to Download and Install</string>
+  <string id="20321">No online save found for specified game</string>
+  <string id="20322">Go to Game Save</string>
+
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>

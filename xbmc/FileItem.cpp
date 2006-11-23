@@ -2026,6 +2026,70 @@ CStdString CFileItem::GetCachedProgramThumb()
   return thumb;
 }
 
+CStdString CFileItem::GetCachedGameSaveThumb()
+{
+  CStdString strExt;
+  CStdString fileName, filePath;
+  CUtil::Split(m_strPath, filePath, fileName);
+  CUtil::GetExtension(fileName,strExt);
+  if (strExt.Equals(".xbx")) // savemeta.xbx - cache thumb
+  {
+    Crc32 crc;
+    crc.ComputeFromLowerCase(m_strPath);
+    CStdString thumb;
+    thumb.Format("%s\\%08x.tbn", g_settings.GetGameSaveThumbFolder().c_str(),(unsigned __int32)crc);
+    if (!CFile::Exists(thumb))
+    {
+      CStdString strTitleImage, strParent, strParentSave, strParentTitle;
+      CUtil::GetDirectory(m_strPath,strTitleImage);
+      CUtil::GetParentPath(strTitleImage,strParent);
+      CUtil::AddFileToFolder(strTitleImage,"saveimage.xbx",strTitleImage);
+      CUtil::AddFileToFolder(strParent,"saveimage.xbx",strParentSave);
+      CUtil::AddFileToFolder(strParent,"titleimage.xbx",strParentTitle);
+      //CUtil::AddFileToFolder(strTitleImageCur,"titleimage.xbx",m_strPath);
+      if (CFile::Exists(strTitleImage))
+        CUtil::CacheXBEIcon(strTitleImage, thumb);
+      else if (CFile::Exists(strParentSave))
+        CUtil::CacheXBEIcon(strParentSave,thumb);
+      else if (CFile::Exists(strParentTitle))
+        CUtil::CacheXBEIcon(strParentTitle,thumb);
+      else
+        thumb = "";
+    }
+    return thumb;
+  }
+  else
+  {
+    if (CDirectory::Exists(m_strPath))
+    {
+      CStdString thumb;
+      thumb.Format("%s\\%s.tbn", g_settings.GetGameSaveThumbFolder().c_str(), fileName.c_str());
+      CLog::Log(LOGDEBUG, "Thumb  (%s)",thumb.c_str());
+      if (!CFile::Exists(thumb))
+      {
+        CStdString titleimageXBX;
+        CStdString saveimageXBX;
+
+        CUtil::AddFileToFolder(m_strPath, "titleimage.xbx", titleimageXBX);
+        CUtil::AddFileToFolder(m_strPath,"saveimage.xbx",saveimageXBX);
+        
+        /*if (CFile::Exists(saveimageXBX))
+        {
+          CUtil::CacheXBEIcon(saveimageXBX, thumb);
+          CLog::Log(LOGDEBUG, "saveimageXBX  (%s)",saveimageXBX.c_str());
+        }*/
+       if (CFile::Exists(titleimageXBX))
+        {
+          CLog::Log(LOGDEBUG, "titleimageXBX  (%s)",titleimageXBX.c_str());
+          CUtil::CacheXBEIcon(titleimageXBX, thumb);
+        }
+      }
+      return thumb;
+    }
+  }
+  return "";
+}
+
 void CFileItem::SetCachedProgramThumb()
 {
   // don't set any thumb for programs on DVD, as they're bound to be named the
@@ -2143,3 +2207,33 @@ bool CFileItem::LoadMusicTag()
   return false;
 }
 
+void CFileItem::SetCachedGameSavesThumb()
+{
+  if (IsParentFolder()) return;
+  CStdString thumb(GetCachedGameSaveThumb());
+  if (CFile::Exists(thumb))
+    SetThumbnailImage(thumb);
+}
+
+void CFileItemList::SetCachedGameSavesThumbs()
+{
+  // TODO: Investigate caching time to see if it speeds things up
+  for (unsigned int i = 0; i < m_items.size(); ++i)
+  {
+    CFileItem* pItem = m_items[i];
+    pItem->SetCachedGameSavesThumb();
+  }
+}
+
+void CFileItemList::SetGameSavesThumbs()
+{
+  // No User thumbs
+  // TODO: Is there a speed up if we cache the program thumbs first?
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItem *pItem = m_items[i];
+    if (pItem->IsParentFolder())
+      continue;
+    pItem->SetCachedGameSavesThumb();  // was  pItem->SetCachedProgramThumb(); oringally
+  }
+}

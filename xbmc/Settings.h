@@ -374,6 +374,10 @@ public:
     SORT_METHOD m_MyPicturesRootSortMethod;
     SORT_ORDER m_MyPicturesRootSortOrder;
 
+    VIEW_METHOD m_GameSavesViewMethod;
+    SORT_METHOD m_GameSavesSortMethod;
+    SORT_ORDER m_GameSavesSortOrder;
+
     // new settings for the Video Nav Window
     VIEW_METHOD m_MyVideoNavRootViewMethod;
     VIEW_METHOD m_MyVideoNavGenreViewMethod;
@@ -475,6 +479,7 @@ public:
   CStdString GetBookmarksThumbFolder() const;
   CStdString GetPicturesThumbFolder() const;
   CStdString GetProgramsThumbFolder() const;
+  CStdString GetGameSaveThumbFolder() const;
   CStdString GetXLinkKaiThumbFolder() const;
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
