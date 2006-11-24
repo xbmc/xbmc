@@ -1,29 +1,21 @@
-<window>
-
- <defaultcontrol always="true">10</defaultcontrol>
- <allowoverlay>no</allowoverlay>
-
- <controls>
-
-  <control>
-   <description>trigger</description>
-   <type>button</type>
-   <id>10</id>
-   <onfocus>ReplaceWindow(Home)</onfocus>
-   <texturenofocus>-</texturenofocus>
-   <texturefocus>-</texturefocus>
-  </control>
-
- <control>
-	<description>Background image</description>
-	<type>image</type>
-	<posx>0</posx>
-	<posy>0</posy>
-	<width>720</width>
-	<height>576</height>
-	<texture>background-plain.png</texture>
-	<visible>system.hasloginscreen</visible>
- </control>
-
- </controls>
+﻿<window>
+	<defaultcontrol always="true">10</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="button" id="10">
+			<description>trigger</description>
+			<onfocus>ReplaceWindow(Home)</onfocus>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+		</control>
+		<control type="image">
+			<description>Background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>background-plain.png</texture>
+			<visible>system.hasloginscreen</visible>
+		</control>
+	</controls>
 </window>
