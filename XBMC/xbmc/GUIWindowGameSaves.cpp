@@ -21,7 +21,7 @@
 CGUIWindowGameSaves::CGUIWindowGameSaves()
 : CGUIMediaWindow(WINDOW_GAMESAVES, "MyGameSaves.xml")
 {
- 
+
 }
 
 CGUIWindowGameSaves::~CGUIWindowGameSaves()
@@ -37,7 +37,7 @@ void CGUIWindowGameSaves::GoParentFolder()
   CStdString strPath(m_strParentPath);
   VECSHARES shares;
   bool bIsBookmarkName = false;
-  
+
   SetupShares();
   m_rootDir.GetShares(shares);
 
@@ -182,11 +182,9 @@ bool CGUIWindowGameSaves::Update(const CStdString &strDirectory)
 
 bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItemList& items)
 {
-  //if (!CGUIMediaWindow::GetDirectory(strDirectory,items,false))
   if (!m_rootDir.GetDirectory(strDirectory,items,false))
     return false;
 
-  //CStdString strParentPath=m_history.GetParentPath();
   CLog::Log(LOGDEBUG,"CGUIWindowGameSaves::GetDirectory (%s)", strDirectory.c_str());
   //CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
@@ -234,16 +232,19 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
       CUtil::AddFileToFolder(item->m_strPath, "titlemeta.xbx", titlemetaXBX);
       CUtil::AddFileToFolder(item->m_strPath, "savemeta.xbx", savemetaXBX);
       int domode = 0;
-      if (CFile::Exists(savemetaXBX))
-        domode = 2;
       if (CFile::Exists(titlemetaXBX))
+      {
         domode = 1;
+        newfile=fopen(titlemetaXBX, "r");
+      }
+      else if (CFile::Exists(savemetaXBX))
+      {
+        domode = 2;
+        newfile=fopen(savemetaXBX, "r");
+      }
+
       if (domode != 0)
       {
-        if (domode == 2)
-          newfile=fopen(savemetaXBX, "r");
-        else
-          newfile=fopen(titlemetaXBX, "r");
         WCHAR c[2048];
         int j;
         j = 0;
@@ -267,7 +268,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
         if (domode == 1)
         {
           CLog::Log(LOGDEBUG, "Loading GameSave info from %s,  data is %s, located at poss %i  pose %i ",  savemetaXBX.c_str(),strDescription.c_str(),poss,pose);
-          // check for subfolders with titlemeta.xbx
+          // check for subfolders with savemeta.xbx
           CFileItemList items2;
           m_rootDir.GetDirectory(item->m_strPath,items2,false);
           int j;
@@ -281,11 +282,10 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
                 break;
             }
           }
-          if (j == items2.Size()) // removes them - perhaps not what you want
+          if (j == items2.Size())
           {
-            items.Remove(i);
-            i--;
-            continue;
+            item->m_bIsFolder = false;
+            item->m_strPath = titlemetaXBX;
           }
         }
         else
@@ -317,7 +317,7 @@ bool CGUIWindowGameSaves::DownloadSaves(CFileItem item)
   CStdString strURL;
   string theHtml;
   CHTTP http;
-  
+
   strURL.Format("http://www.xboxmediacenter.com/xbmc.php?gameid=%s",item.m_musicInfoTag.GetTitle()); // donnos little fix the unleashx.php is broken (content lenght is greater then lenght sent)
   if (http.Get(strURL, theHtml))
   {
@@ -361,7 +361,7 @@ bool CGUIWindowGameSaves::DownloadSaves(CFileItem item)
                 {
                   CLog::Log(LOGINFO,"GSM vecSaveUrl[i] : %s",  vecSaveUrl[iSelectedSave].c_str());
                   if (http.Download(vecSaveUrl[iSelectedSave], "Z:\\gamesave.zip"))
-                  {                   
+                  {
                     if (g_ZipManager.ExtractArchive("Z:\\gamesave.zip","E:\\"))
                     {
                       ::DeleteFile("E:\\gameid.ini");   // delete file E:\\gameid.ini artifcat continatin info about the save we got
@@ -418,7 +418,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
   // ONly add if we are on E:\udata\    /
   int btnDownload = pMenu->AddButton(20317);
 
-  pMenu->EnableButton(btnDownload, !strFileName.Equals("savemeta.xbx"));//  should be if GameMeta.xbx
+  pMenu->EnableButton(btnDownload, !strFileName.Equals("savemeta.xbx"));
   // position it correctly
 
   pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
@@ -434,7 +434,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
     if (!CGUIDialogYesNo::ShowAndGetInput(120,123,20022,20022)) // enable me for confirmation
       return;
     CStdString path;
-    if (strFileName.Equals("savemeta.xbx"))
+    if (strFileName.Equals("savemeta.xbx") || strFileName.Equals("titlemeta.xbx") )
     {
       CUtil::GetDirectory(pItem->m_strPath,item.m_strPath);
       item.m_bIsFolder = true;
@@ -468,7 +468,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
   if (iButton == btnDelete)
   {
     CLog::Log(LOGINFO,"GSM: Deletion of folder confirmed for folder %s", pItem->m_strPath.c_str());
-    if (strFileName.Equals("savemeta.xbx"))
+    if (strFileName.Equals("savemeta.xbx") || strFileName.Equals("titlemeta.xbx"))
     {
       CUtil::GetDirectory(pItem->m_strPath,item.m_strPath);
       item.m_bIsFolder = true;
@@ -489,7 +489,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
     if (!CGUIDialogYesNo::ShowAndGetInput(121,124,20022,20022)) // enable me for confirmation
       return;
     CStdString path;
-    if (strFileName.Equals("savemeta.xbx"))
+    if (strFileName.Equals("savemeta.xbx") || strFileName.Equals("titlemeta.xbx"))
     {
       CUtil::GetDirectory(pItem->m_strPath,item.m_strPath);
       item.m_bIsFolder = true;
@@ -535,6 +535,10 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
       {
         CGUIDialogOK::ShowAndGetInput(20317, 0, 20321, 0);  // No Saves found
         CLog::Log(LOGINFO,"GSM: No saves available for game on internet: %s",  item.GetLabel().c_str());
+      }
+      else
+      {
+        Update(m_vecItems.m_strPath);
       }
     }
   }
