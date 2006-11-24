@@ -362,7 +362,7 @@ bool CGUIWindowGameSaves::DownloadSaves(CFileItem item)
                   CLog::Log(LOGINFO,"GSM vecSaveUrl[i] : %s",  vecSaveUrl[iSelectedSave].c_str());
                   if (http.Download(vecSaveUrl[iSelectedSave], "Z:\\gamesave.zip"))
                   {                   
-                    if (g_ZipManager.ExtractArchive("Z:\\gamesave.zip","E:\\UDATA\\"))
+                    if (g_ZipManager.ExtractArchive("Z:\\gamesave.zip","E:\\"))
                     {
                       ::DeleteFile("E:\\gameid.ini");   // delete file E:\\gameid.ini artifcat continatin info about the save we got
                       CGUIDialogOK::ShowAndGetInput(20317, 0, 20318, 0);
