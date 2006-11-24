@@ -1,3 +1,4 @@
+2006-11-24 changed: 	Initial Commit of 2.1 skin version. New List view mode layout.   Lots of changes inside xml code (to many to list)
 2006-11-15 changed: 	BUILD.BAT to account for svn
 2006-11-05 changed:	Layout of Dialog select
 2006-10-14 Fixed:	Some Dialogs didn't obey the skin animation option.
