@@ -595,7 +595,7 @@
 		<control type="thumbnailpanel" id="51">
 			<description>thumbnailpanel</description>
 			<onleft>9000</onleft>
-			<onright>51</onright>
+			<onright>60</onright>
 			<onup>51</onup>
 			<ondown>51</ondown>
 			<include>contentpanelslide</include>
