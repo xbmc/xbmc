@@ -518,29 +518,91 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
 void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  // add item 2 playlist
-  CFileItem movieItem(*m_vecItems[iItem]);
-  if (movieItem.IsRAR() || movieItem.IsZIP())
+
+  int iOldSize=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size();
+
+  CFileItem item(*m_vecItems[iItem]);
+  if (item.IsRAR() || item.IsZIP())
     return;
-  if (movieItem.IsStack())
+
+  //  Allow queuing of unqueueable items
+  //  when we try to queue them directly
+  if (!item.CanQueue())
+    item.SetCanQueue(true);
+
+  CFileItemList queuedItems;
+  AddItemToPlayList(&item, queuedItems);
+  g_playlistPlayer.Add(PLAYLIST_VIDEO, queuedItems);
+  // video does not auto play on queue like music
+  m_viewControl.SetSelectedItem(iItem + 1);
+}
+
+void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems)
+{
+  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
+    return;
+
+  if (pItem->m_bIsFolder)
   {
-    // TODO: Remove this once the main player code is capable of handling the stack:// protocol
-    vector<CStdString> movies;
-    GetStackedFiles(movieItem.m_strPath, movies);
-    if (movies.size() <= 0) return;
-    for (int i = 0; i < (int)movies.size(); ++i)
+    if (pItem->IsParentFolder()) return;
+
+    // Check if we add a locked share
+    if ( pItem->m_bIsShareOrDrive )
     {
-      CFileItem movieFile(movies[i], false);
-      CStdString strFileNum;
-      strFileNum.Format("(%2.2i)",i+1);
-      movieFile.SetLabel(movieItem.GetLabel() + " " + strFileNum);
-      AddItemToPlayList(&movieFile);
+      CFileItem item = *pItem;
+      if ( !g_passwordManager.IsItemUnlocked( &item, "video" ) )
+        return ;
+    }
+
+    // recursive
+    CFileItemList items;
+    GetDirectory(pItem->m_strPath, items);
+    SortItems(items);
+
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      if (items[i]->m_bIsFolder)
+      {
+        CStdString strPath = items[i]->m_strPath;
+        if (CUtil::HasSlashAtEnd(strPath))
+          strPath.erase(strPath.size()-1);
+        strPath.ToLower();
+        if (strPath.size() > 6)
+        {
+          CStdString strSub = strPath.substr(strPath.size()-6);
+          if (strPath.substr(strPath.size()-6) == "sample") // skip sample folders
+            continue;
+        }
+      }
+      AddItemToPlayList(items[i], queuedItems);
     }
   }
   else
-    AddItemToPlayList(&movieItem);
-  //move to next item
-  m_viewControl.SetSelectedItem(iItem + 1);
+  {
+    // just an item
+    if (!pItem->IsNFO() && pItem->IsVideo() && !pItem->IsPlayList())
+    {
+      queuedItems.Add(new CFileItem(*pItem));
+    }
+    if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
+    {
+      CPlayListFactory factory;
+      auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath));
+      if ( NULL != pPlayList.get())
+      {
+        // load it
+        if (!pPlayList->Load(pItem->m_strPath))
+        {
+          CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+          return; //hmmm unable to load playlist?
+        }
+
+        CPlayList playlist = *pPlayList;
+        for (int i = 0; i < (int)playlist.size(); ++i)
+          AddItemToPlayList(&playlist[i], queuedItems);
+      }
+    }
+  }
 }
 
 void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, int iPlaylist /* = PLAYLIST_VIDEO */)
@@ -591,7 +653,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, int iPlaylis
       playlistItem.SetFileName(pItem->m_strPath);
       playlistItem.SetDescription(pItem->GetLabel());
       playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-      g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
+      g_playlistPlayer.Add(iPlaylist, playlistItem);
     }
   }
 }
@@ -1009,8 +1071,8 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   }
 
   g_playlistPlayer.Reset();
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   playlist.Clear();
   for (int i = selectedFile - 1; i < (int)movieList.Size(); ++i)
   {
@@ -1020,9 +1082,8 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
       playlistItem.m_lStartOffset = startoffset;
     playlist.Add(playlistItem);
   }
-
   // play movie...
-  g_playlistPlayer.PlayNext();
+  g_playlistPlayer.Play(0);
 }
 
 void CGUIWindowVideoBase::OnDeleteItem(int iItem)
@@ -1151,24 +1212,26 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
     if (item.IsParentFolder())
       return;
 
-    // clear current temp playlist
-    g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO_TEMP);
+    // recursively add items to list
+    CFileItemList queuedItems;
+    AddItemToPlayList(&item, queuedItems);
+
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
     g_playlistPlayer.Reset();
-
-    // recursively add items to temp playlist
-    AddItemToPlayList(&item, PLAYLIST_VIDEO_TEMP);
-
-    // play!
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+    g_playlistPlayer.Add(PLAYLIST_VIDEO, queuedItems);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
     g_playlistPlayer.Play();
   }
   else if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
   {
-    LoadPlayList(pItem->m_strPath, PLAYLIST_VIDEO_TEMP);
+    // load the playlist the old way
+    LoadPlayList(pItem->m_strPath, PLAYLIST_VIDEO);
   }
-  // otherwise just play the song
   else
+  {
+    // single item, play it
     OnClick(iItem);
+  }
 }
 
 CStdString CGUIWindowVideoBase::GetnfoFile(CFileItem *item)
