@@ -1261,13 +1261,13 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_PLAYLISTLEN:
     {
-      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC_TEMP)
+      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
         return GetPlaylistLabel(PLAYLIST_LENGTH);
   	}
 	  break;
   case MUSICPLAYER_PLAYLISTPOS:
     {
-      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC_TEMP)
+      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
         return GetPlaylistLabel(PLAYLIST_POSITION);
   	}
   	break;
@@ -1384,13 +1384,13 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     break;
   case VIDEOPLAYER_PLAYLISTLEN:
     {
-      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
+      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
         return GetPlaylistLabel(PLAYLIST_LENGTH);
   	}
 	  break;
   case VIDEOPLAYER_PLAYLISTPOS:
     {
-      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
+      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
         return GetPlaylistLabel(PLAYLIST_POSITION);
   	}
   	break;
