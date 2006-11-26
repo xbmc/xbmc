@@ -319,8 +319,8 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
 
   // create a playlist containing the appropriate movie files
   g_playlistPlayer.Reset();
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   playlist.Clear();
   for (int i = iSelectedFile - 1; i < (int)movies.size(); ++i)
   {
@@ -329,13 +329,8 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
     item.SetFileName(strFileName);
     playlist.Add(item);
   }
-
-  // TODO: there is something funny about the way this works - if the
-  // volume we started on was not the first volume in the series, it
-  // is not possible to go backwards to previous volumes before this one.
-
   // play the first file on the playlist
-  g_playlistPlayer.PlayNext();
+  g_playlistPlayer.Play(0);
   return ;
 }
 
