@@ -154,22 +154,8 @@ void CAutorun::RunCdda()
   if ( vecItems.Size() <= 0 )
     return ;
 
-  //int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-
   g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-  for (int i = 0; i < vecItems.Size(); i++)
-  {
-    CFileItem* pItem = vecItems[i];
-    CPlayList::CPlayListItem playlistItem;
-    playlistItem.SetFileName(pItem->m_strPath);
-    playlistItem.SetDescription(pItem->GetLabel());
-    playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
-  }
-
-  //CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-  //m_gWindowManager.SendMessage( msg );
-
+  g_playlistPlayer.Add(PLAYLIST_MUSIC, vecItems);
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
   g_playlistPlayer.Play();
 }
@@ -236,17 +222,10 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
           if (items.Size())
           {
-            g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
             items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-            for (int i=0; i<items.Size(); ++i)
-            {
-              CFileItem* pItem=items[i];
-              CPlayList::CPlayListItem playlistItem;
-              CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
-            }
-
-            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+            g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+            g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
+            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
             g_playlistPlayer.Play(0);
             bPlaying = true;
             return true;
@@ -259,17 +238,10 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
           if (items.Size())
           {
-            g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
             items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-            for (int i=0; i<items.Size(); ++i)
-            {
-              CFileItem* pItem=items[i];
-              CPlayList::CPlayListItem playlistItem;
-              CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
-            }
-
-            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+            g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+            g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
+            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
             g_playlistPlayer.Play(0);
             bPlaying = true;
             return true;
@@ -320,14 +292,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
     if (itemlist.Size())
     {
-      g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
-      for (int i=0;i<itemlist.Size();++i)
-      {
-        CPlayList::CPlayListItem playlistItem;
-        CUtil::ConvertFileItemToPlayListItem(itemlist[i], playlistItem);            
-        g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP).Add(playlistItem);
-      }
-      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+      g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+      g_playlistPlayer.Add(PLAYLIST_VIDEO, itemlist);
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
       g_playlistPlayer.Play(0);
     }
   }
@@ -340,11 +307,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       if (!pItem->m_bIsFolder && pItem->IsAudio())
       {
         nAddedToPlaylist++;
-        CPlayList::CPlayListItem playlistItem;
-        playlistItem.SetFileName(pItem->m_strPath);
-        playlistItem.SetDescription(pItem->GetLabel());
-        playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
-        g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
+        g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);
       }
     }
   }
