@@ -791,17 +791,9 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   if (!item.CanQueue())
     item.SetCanQueue(true);
 
-  int iPlaylist = PLAYLIST_MUSIC;
-  if (g_partyModeManager.IsEnabled())
-  { // we use the temp playlist to queue, as the partymode manager is the one
-    // that actually does the queueing to the real playlist.
-    // make sure we clear it first though
-    iPlaylist = PLAYLIST_MUSIC_TEMP;
-    g_playlistPlayer.ClearPlaylist(iPlaylist);
-  }
-
-  CLog::Log(LOGDEBUG, "Adding file %s%s to %smusic playlist", item.m_strPath.c_str(), item.m_bIsFolder ? " (folder) " : "", iPlaylist == PLAYLIST_MUSIC ? "" : "temp ");
-  AddItemToPlayList(&item, iPlaylist);
+  CLog::Log(LOGDEBUG, "Adding file %s%s to music playlist", item.m_strPath.c_str(), item.m_bIsFolder ? " (folder) " : "");
+  CFileItemList queuedItems;
+  AddItemToPlayList(&item, queuedItems);
 
   // select next item
   m_viewControl.SetSelectedItem(iItem + 1);
@@ -809,10 +801,11 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   // if party mode, add items but DONT start playing
   if (g_partyModeManager.IsEnabled())
   {
-    g_partyModeManager.AddUserSongs(g_playlistPlayer.GetPlaylist(iPlaylist), false);
+    g_partyModeManager.AddUserSongs(queuedItems, false);
     return;
   }
 
+  g_playlistPlayer.Add(PLAYLIST_MUSIC, queuedItems);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() && !g_application.IsPlayingAudio())
   {
     if (m_guiState.get())
@@ -820,10 +813,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    if (g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC))
-      g_playlistPlayer.Play();
-    else
-      g_playlistPlayer.Play(iOldSize);  //  Start playlist with the first new song added
+    g_playlistPlayer.Play(iOldSize); // start playing at the first new item
   }
 }
 
@@ -895,29 +885,6 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
       }
     }
   }
-}
-
-void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem *pItem, int playlist /* = PLAYLIST_MUSIC */)
-{
-  CFileItemList queuedItems;
-  queuedItems.SetFastLookup(true);
-  AddItemToPlayList(pItem, queuedItems);
-  // add these to the playlist player
-	/*
-  for (int i = 0; i < queuedItems.Size(); i++)
-  {
-    CPlayList::CPlayListItem playlistItem;
-    CUtil::ConvertFileItemToPlayListItem(queuedItems[i], playlistItem);
-    if (m_guiState.get() && m_guiState->HideExtensions())
-      playlistItem.RemoveExtension();
-    g_playlistPlayer.GetPlaylist(playlist).Add(playlistItem);
-  }
-	*/
-  // if we're playing music from the playlist, get the current song index
-  int iCurrentSong = -1;
-  if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
-    iCurrentSong = g_playlistPlayer.GetCurrentSong() + 2;
-	g_playlistPlayer.GetPlaylist(playlist).Append(queuedItems, iCurrentSong);
 }
 
 /// \brief Make the actual search for the OnSearch function.
@@ -1536,42 +1503,24 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     if (item.IsParentFolder())
       return;
 
-    // use PLAYLIST_MUSIC_TEMP as a holding location
-    // during party mode
-    int iPlaylist = PLAYLIST_MUSIC;
-    if (g_partyModeManager.IsEnabled())
-      iPlaylist = PLAYLIST_MUSIC_TEMP;
-
-    g_playlistPlayer.ClearPlaylist(iPlaylist);
-
-    // dont reset during party mode
-    if (!g_partyModeManager.IsEnabled())
-      g_playlistPlayer.Reset();
-
-    // recursively add items to playlist
-    AddItemToPlayList(&item, iPlaylist);
-
-    // send the playlist to party mode
+    CFileItemList queuedItems;
+    AddItemToPlayList(&item, queuedItems);
     if (g_partyModeManager.IsEnabled())
     {
-      g_partyModeManager.AddUserSongs(g_playlistPlayer.GetPlaylist(iPlaylist), true);
-      g_playlistPlayer.ClearPlaylist(iPlaylist);
+      g_partyModeManager.AddUserSongs(queuedItems, true);
       return;
     }
 
+    /*
     CStdString strPlayListDirectory = m_vecItems.m_strPath;
     if (CUtil::HasSlashAtEnd(strPlayListDirectory))
       strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
+    */
 
-    g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
-
-    // Don't shuffle on load anymore - any shuffling can be performed by the normal playlist
-    // controls
-    /*
-    // shuffle playlist if folder is daap playlist folder
-    // and shuffle playlist on load is enabled
-    if (bIsDAAPplaylist && g_guiSettings.GetBool("musicplaylist.shuffleplaylistsonload"))
-      g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();*/
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.Add(PLAYLIST_MUSIC, queuedItems);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
 
     // activate the playlist window if its not activated yet
     if (bIsDAAPplaylist && GetID() == m_gWindowManager.GetActiveWindow())
@@ -1582,11 +1531,12 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   }
   else if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
   {
+    // load the playlist the old way
     LoadPlayList(pItem->m_strPath);
   }
-  // otherwise just play the song
   else
   {
+    // just a single item, play it
     OnClick(iItem);
   }
 }
