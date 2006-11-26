@@ -15,20 +15,15 @@ CPlayListPlayer::CPlayListPlayer(void)
   m_bChanged = false;
   m_bPlayedFirstFile = false;
   m_iCurrentPlayList = PLAYLIST_NONE;
-  for (int i = 0; i < 4; i++)
-  {
+  for (int i = 0; i < 2; i++)
     m_repeatState[i] = REPEAT_NONE;
-    m_shuffleState[i] = false;
-  }
   m_iFailedSongs = 0;
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
 {
   m_PlaylistMusic.Clear();
-  m_PlaylistMusicTemp.Clear();
   m_PlaylistVideo.Clear();
-  m_PlaylistVideoTemp.Clear();
   m_PlaylistEmpty.Clear();
 }
 
@@ -64,17 +59,7 @@ int CPlayListPlayer::GetNextSong()
 
   // party mode
   if (g_partyModeManager.IsEnabled() && GetCurrentPlaylist() == PLAYLIST_MUSIC)
-  {
-    if (0 != iSong)
-    {
-      // if we skipped ahead, go back to the top of the list
-      // if it hasn't been played
-      const CPlayList::CPlayListItem &item = playlist[0];
-      if (!item.WasPlayed())
-        return 0;
-    }
     return iSong + 1;
-  }
 
   // if repeat one, keep playing the current song if its valid
   if (RepeatedOne(m_iCurrentPlayList))
@@ -92,25 +77,11 @@ int CPlayListPlayer::GetNextSong()
     return iSong;
   }
 
-  // if random, get the next random song
-  if (IsShuffled(m_iCurrentPlayList) && playlist.size() > 1)
-  {
-    while (iSong == m_iCurrentSong)
-      iSong = NextShuffleItem();
-  }
-  // if not random, increment the song
-  else
-  {
-    iSong++;
-
-    // if we've gone beyond the playlist and repeat all is enabled,
-    // then we clear played status and wrap around
-    if (iSong >= playlist.size() && Repeated(m_iCurrentPlayList))
-    {
-      playlist.ClearPlayed();
-      iSong = 0;
-    }
-  }
+  // if we've gone beyond the playlist and repeat all is enabled,
+  // then we clear played status and wrap around
+  iSong++;
+  if (iSong >= playlist.size() && Repeated(m_iCurrentPlayList))
+    iSong = 0;
 
   return iSong;
 }
@@ -153,22 +124,13 @@ void CPlayListPlayer::PlayPrevious()
   if (playlist.size() <= 0) return ;
   int iSong = m_iCurrentSong;
 
-  if (IsShuffled(m_iCurrentPlayList))
-  {
-    while (iSong == m_iCurrentSong)
-      iSong = PreviousShuffleItem();
-  }
-  else
-  {
-    if (!RepeatedOne(m_iCurrentPlayList))
-      iSong--;
-  }
+  if (!RepeatedOne(m_iCurrentPlayList))
+    iSong--;
 
   if (iSong < 0)
     iSong = playlist.size() - 1;
 
   Play(iSong, false, true);
-
 }
 
 void CPlayListPlayer::Play()
@@ -179,11 +141,7 @@ void CPlayListPlayer::Play()
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
   if (playlist.size() <= 0) return;
 
-  int iSong = 0;
-  if (IsShuffled(m_iCurrentPlayList))
-    iSong = NextShuffleItem();
-
-  Play(iSong);
+  Play(0);
 }
 
 /// \brief Start playing entry \e iSong in current playlist
@@ -202,7 +160,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   int iPreviousSong = m_iCurrentSong;
   m_iCurrentSong = iSong;
   const CPlayList::CPlayListItem& item = playlist[m_iCurrentSong];
-  playlist.SetPlayed(m_iCurrentSong);
+  playlist.SetPlayed(true);
 
   if (!g_application.PlayFile(item, bAutoPlay))
   {
@@ -295,9 +253,7 @@ bool CPlayListPlayer::HasChanged()
 /// Return values can be: \n
 /// - PLAYLIST_NONE \n No playlist active
 /// - PLAYLIST_MUSIC \n Playlist from music playlist window
-/// - PLAYLIST_MUSIC_TEMP \n Playlist started in a normal music window
 /// - PLAYLIST_VIDEO \n Playlist from music playlist window
-/// - PLAYLIST_VIDEO_TEMP \n Playlist started in a normal video window
 int CPlayListPlayer::GetCurrentPlaylist()
 {
   return m_iCurrentPlayList;
@@ -308,12 +264,10 @@ int CPlayListPlayer::GetCurrentPlaylist()
 /// Values can be: \n
 /// - PLAYLIST_NONE \n No playlist active
 /// - PLAYLIST_MUSIC \n Playlist from music playlist window
-/// - PLAYLIST_MUSIC_TEMP \n Playlist started in a normal music window
 /// - PLAYLIST_VIDEO \n Playlist from music playlist window
-/// - PLAYLIST_VIDEO_TEMP \n Playlist started in a normal video window
-void CPlayListPlayer::SetCurrentPlaylist(int iPlayList)
+void CPlayListPlayer::SetCurrentPlaylist(int iPlaylist)
 {
-  if (iPlayList == m_iCurrentPlayList)
+  if (iPlaylist == m_iCurrentPlayList)
     return;
 
   // changing the current playlist while party mode is on
@@ -321,32 +275,18 @@ void CPlayListPlayer::SetCurrentPlaylist(int iPlayList)
   if (g_partyModeManager.IsEnabled())
     g_partyModeManager.Disable();
 
-  m_iCurrentPlayList = iPlayList;
+  m_iCurrentPlayList = iPlaylist;
   m_bPlayedFirstFile = false;
   m_bChanged = true;
-
-  // reset the played items
-  GetPlaylist(m_iCurrentPlayList).ClearPlayed();
 }
 
-void CPlayListPlayer::ClearPlaylist(int iPlayList)
+void CPlayListPlayer::ClearPlaylist(int iPlaylist)
 {
   // clear our applications playlist file
   g_application.m_strPlayListFile.Empty();
 
-  CPlayList& playlist = GetPlaylist(iPlayList);
+  CPlayList& playlist = GetPlaylist(iPlaylist);
   playlist.Clear();
-
-  // if clearing temp playlists, then reset options
-  if (iPlayList == PLAYLIST_MUSIC_TEMP || iPlayList == PLAYLIST_VIDEO_TEMP)
-  {
-    m_shuffleState[iPlayList] = false;
-    m_repeatState[iPlayList] = REPEAT_NONE;
-    
-    // restore repeat for music temp
-    //if (iPlayList == PLAYLIST_MUSIC_TEMP && g_guiSettings.GetBool("musicfiles.repeat"))
-    //  m_repeatState[iPlayList] = REPEAT_ALL;
-  }
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
@@ -356,25 +296,17 @@ void CPlayListPlayer::ClearPlaylist(int iPlayList)
 /// \brief Get the playlist object specified in \e nPlayList
 /// \param nPlayList Values can be: \n
 /// - PLAYLIST_MUSIC \n Playlist from music playlist window
-/// - PLAYLIST_MUSIC_TEMP \n Playlist started in a normal music window
 /// - PLAYLIST_VIDEO \n Playlist from music playlist window
-/// - PLAYLIST_VIDEO_TEMP \n Playlist started in a normal video window
 /// \return A reference to the CPlayList object.
-CPlayList& CPlayListPlayer::GetPlaylist(int nPlayList)
+CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist)
 {
-  switch ( nPlayList )
+  switch ( iPlaylist )
   {
   case PLAYLIST_MUSIC:
     return m_PlaylistMusic;
     break;
-  case PLAYLIST_MUSIC_TEMP:
-    return m_PlaylistMusicTemp;
-    break;
   case PLAYLIST_VIDEO:
     return m_PlaylistVideo;
-    break;
-  case PLAYLIST_VIDEO_TEMP:
-    return m_PlaylistVideoTemp;
     break;
   default:
     m_PlaylistEmpty.Clear();
@@ -388,9 +320,7 @@ CPlayList& CPlayListPlayer::GetPlaylist(int nPlayList)
 int CPlayListPlayer::RemoveDVDItems()
 {
   int nRemovedM = m_PlaylistMusic.RemoveDVDItems();
-  m_PlaylistMusicTemp.RemoveDVDItems();
   int nRemovedV = m_PlaylistVideo.RemoveDVDItems();
-  m_PlaylistVideoTemp.RemoveDVDItems();
 
   return nRemovedM + nRemovedV;
 }
@@ -400,9 +330,6 @@ void CPlayListPlayer::Reset()
 {
   m_iCurrentSong = -1;
   m_bPlayedFirstFile = false;
-
-  // reset the played items
-  GetPlaylist(m_iCurrentPlayList).ClearPlayed();
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
@@ -419,7 +346,7 @@ bool CPlayListPlayer::HasPlayedFirstFile()
 /// \param iPlaylist Playlist to be asked
 bool CPlayListPlayer::Repeated(int iPlaylist)
 {
-  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO_TEMP)
+  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
     return (m_repeatState[iPlaylist] == REPEAT_ALL);
   return false;
 }
@@ -428,7 +355,7 @@ bool CPlayListPlayer::Repeated(int iPlaylist)
 /// \param iPlaylist Playlist to be asked
 bool CPlayListPlayer::RepeatedOne(int iPlaylist)
 {
-  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO_TEMP)
+  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
     return (m_repeatState[iPlaylist] == REPEAT_ONE);
   return false;
 }
@@ -437,111 +364,55 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist)
 /// \param bYesNo To Enable shuffle play, set to \e true
 void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
 {
-  // disable randomize button for normal music playlist
-//  if (iPlaylist == PLAYLIST_MUSIC) return;
-
-  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO_TEMP)
+  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
     return;
 
   // disable shuffle in party mode
   if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
-  {
-    m_shuffleState[iPlaylist] = false;
     return;
+
+  // do we even need to do anything?
+  if (bYesNo != IsShuffled(iPlaylist))
+  {
+    // save the order value of the current song so we can use it find its new location later
+    int iOrder = m_iCurrentSong;
+    if (iOrder >= 0)
+      GetPlaylist(iPlaylist)[m_iCurrentSong].m_iprogramCount;
+
+    // shuffle or unshuffle as necessary
+    if (bYesNo)
+      GetPlaylist(iPlaylist).Shuffle();
+    else
+      GetPlaylist(iPlaylist).UnShuffle();
+
+    // find the previous order value and fix the current song marker
+    if (iOrder >= 0)
+    {
+      int iIndex = GetPlaylist(iPlaylist).FindOrder(iOrder);
+      if (iIndex >= 0)
+        m_iCurrentSong = iIndex;
+      // if iIndex < 0, something unexpected happened
+      // so dont do anything
+    }
   }
-
-  bool bTest = IsShuffled(iPlaylist);
-
-  m_shuffleState[iPlaylist] = bYesNo;
-
-  if (bTest != bYesNo)
-    GetPlaylist(iPlaylist).ClearPlayed();
 }
 
 bool CPlayListPlayer::IsShuffled(int iPlaylist)
 {
-  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO_TEMP)
-    return m_shuffleState[iPlaylist];
+  // even if shuffled, party mode says its not
+  if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
+    return false;
+
+  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
+  {
+    return GetPlaylist(iPlaylist).IsShuffled();
+  }
   return false;
-}
-
-// this works reasonably well and uses less processing and memory
-int CPlayListPlayer::NextShuffleItem()
-{
-  srand( timeGetTime() );
-
-  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-
-  // if theres no more unplayed songs, but the playlist is in repeat mode,
-  // clear the played status
-  if ((playlist.GetUnplayed() <= 0) && (Repeated(m_iCurrentPlayList)))
-    playlist.ClearPlayed();
-  
-  if ((playlist.GetUnplayed() <= 0) || (playlist.GetPlayable() <= 0))
-    return -1;
-
-  // pick random number
-  int iNumIterations = 0;
-  int iRandom = rand() % playlist.GetUnplayed();
-  while (playlist[iRandom].WasPlayed() || playlist[iRandom].IsUnPlayable())
-  {
-    // sanity check
-    if (iNumIterations > playlist.size())
-      return -1;
-
-    //CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), skipping song at %i. WasPlayed: %s. IsUnPlayable: %s", iRandom, playlist[iRandom].WasPlayed() ? "true" : "false", playlist[iRandom].IsUnPlayable() ? "true" : "false");
-    // increment by one until an unplayed song is found
-    iRandom++;
-
-    // circle around if past the last song
-    if (iRandom >= playlist.size())
-      iRandom = 0;
-
-    iNumIterations++;
-  }
-  CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), return = %i",iRandom);
-
-  return iRandom;
-}
-
-int CPlayListPlayer::PreviousShuffleItem()
-{
-  srand( timeGetTime() );
-
-  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-
-  // need more than one played song for previous to work!
-  int iPlayed = playlist.size() - playlist.GetUnplayed();
-  if (iPlayed <= 1)
-    return -1;
-  
-  // pick random number
-  int iNumIterations = 0;
-  int iRandom = rand() % iPlayed;
-  while (iRandom == m_iCurrentSong || !playlist[iRandom].WasPlayed())
-  {
-    // sanity check
-    if (iNumIterations > playlist.size())
-      return -1;
-
-    //CLog::Log(LOGDEBUG,"CPlayListPlayer::PreviousShuffleItem(), skipping unplayed song at %i",iRandom);
-    // increment by one until a played song is found
-    iRandom++;
-
-    // circle around if past the last song
-    if (iRandom >= playlist.size())
-      iRandom = 0;
-
-    iNumIterations++;
-  }
-  //CLog::Log(LOGDEBUG,"CPlayListPlayer::PreviousShuffleItem(), return = %i",iRandom);
-
-  return iRandom;
 }
 
 void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
 {
-  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO_TEMP)
+  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
     return;
 
   // disable repeat in party mode
@@ -553,7 +424,79 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
 
 REPEAT_STATE CPlayListPlayer::GetRepeat(int iPlaylist)
 {
-  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO_TEMP)
+  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
     return m_repeatState[iPlaylist];
   return REPEAT_NONE;
+}
+
+void CPlayListPlayer::ReShuffle(int iPlaylist, int iPosition)
+{
+  // playlist has not played yet so shuffle the entire list
+  // (this only really works for new video playlists)
+  if (!GetPlaylist(iPlaylist).WasPlayed())
+  {
+    GetPlaylist(iPlaylist).Shuffle();
+  }
+  // we're trying to shuffle new items into the curently playing playlist
+  // so we shuffle starting at two positions below the current item
+  else if (iPlaylist == m_iCurrentPlayList)
+  {
+    if (
+      (g_application.IsPlayingAudio() && iPlaylist == PLAYLIST_MUSIC) ||
+      (g_application.IsPlayingVideo() && iPlaylist == PLAYLIST_VIDEO)
+      )
+    {
+	    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle(m_iCurrentSong + 2);
+    }
+  }
+  // otherwise, shuffle from the passed position
+  // which is the position of the first new item added
+  else
+  {
+    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle(iPosition);
+  }
+}
+
+void CPlayListPlayer::Add(int iPlaylist, CPlayList::CPlayListItem& item)
+{
+  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  int iSize = list.size();
+  list.Add(item);
+	if (list.IsShuffled())
+		ReShuffle(iPlaylist, iSize);
+}
+
+void CPlayListPlayer::Add(int iPlaylist, CPlayList& playlist)
+{
+  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  int iSize = list.size();
+  list.Add(playlist);
+	if (list.IsShuffled())
+		ReShuffle(iPlaylist, iSize);
+}
+
+void CPlayListPlayer::Add(int iPlaylist, CFileItem *pItem)
+{
+  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  int iSize = list.size();
+  list.Add(pItem);
+	if (list.IsShuffled())
+		ReShuffle(iPlaylist, iSize);
+}
+
+void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
+{
+  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  int iSize = list.size();
+  list.Add(items);
+	if (list.IsShuffled())
+		ReShuffle(iPlaylist, iSize);
 }
