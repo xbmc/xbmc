@@ -14,7 +14,8 @@ public:
   void Disable();
   void Play(int iPos);
   void OnSongChange(bool bUpdatePlayed = false);
-  void AddUserSongs(CPlayList& playlistTemp, bool bPlay = false);
+  void AddUserSongs(CPlayList& tempList, bool bPlay = false);
+  void AddUserSongs(CFileItemList& tempList, bool bPlay = false);
   bool IsEnabled() { return m_bEnabled; };
   int GetSongsPlayed();
   int GetMatchingSongs();
