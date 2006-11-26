@@ -618,9 +618,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
           }
           if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
           {
-            CPlayList::CPlayListItem playlistItem ;
-            CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-            g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
+            g_playlistPlayer.Add(iPlaylist, pItem);
           }
           else if (i <= iItem)
             iNoSongs++;
@@ -878,9 +876,7 @@ void CGUIMediaWindow::UpdateFileList()
       }
       if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
       {
-        CPlayList::CPlayListItem newPlaylistItem ;
-        CUtil::ConvertFileItemToPlayListItem(pItem, newPlaylistItem);
-        g_playlistPlayer.GetPlaylist(iPlaylist).Add(newPlaylistItem);
+        g_playlistPlayer.Add(iPlaylist, pItem);
       }
       else 
         iNoSongs++;
