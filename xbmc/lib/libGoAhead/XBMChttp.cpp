@@ -496,12 +496,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
       pSlideShow->Add(pItem->m_strPath);
     }
     else
-    {
-      PLAYLIST::CPlayList::CPlayListItem playlistItem;
-      CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      g_playlistPlayer.GetPlaylist(playList).Add(playlistItem);
-    }
-
+      g_playlistPlayer.Add(playList, (CFileItem*)pItem);
   }
 }
 
@@ -515,26 +510,14 @@ void LoadPlayListOld(const CStdString& strPlayList, int playList)
   {
     if (!pPlayList->Load(strPlayList))
       return; 
-    CPlayList& playlist=g_playlistPlayer.GetPlaylist( playList );
-    playlist.Clear();
-    for (int i=0; i < (int)pPlayList->size(); ++i)
-    {
-      const CPlayList::CPlayListItem& playListItem =(*pPlayList)[i];
-      CStdString strLabel=playListItem.GetDescription();
-      if (strLabel.size()==0) 
-        strLabel=CUtil::GetFileName(playListItem.GetFileName());
-
-      CPlayList::CPlayListItem playlistItem;
-      playlistItem.SetFileName(playListItem.GetFileName());
-      playlistItem.SetDescription(strLabel);
-      playlistItem.SetDuration(playListItem.GetDuration());
-      playlist.Add(playlistItem);
-    }
-
+    g_playlistPlayer.ClearPlaylist(playList);
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.Add(playList, *pPlayList);
     g_playlistPlayer.SetCurrentPlaylist(playList);
     g_applicationMessenger.PlayListPlayerPlay();
     
     // set current file item
+    CPlayList& playlist = g_playlistPlayer.GetPlaylist(playList);
     CFileItem item(playlist[0].GetDescription());
     item.m_strPath = playlist[0].GetFileName();
     SetCurrentMediaItem(item);
@@ -577,34 +560,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   if (clearList)
     g_playlistPlayer.ClearPlaylist(iPlaylist);
 
-  // add each item of the playlist to the playlistplayer
-  for (int i = 0; i < (int)pPlayList->size(); ++i)
-  {
-    const CPlayList::CPlayListItem& playListItem = playlist[i];
-    CStdString strLabel = playListItem.GetDescription();
-    if (strLabel.size() == 0)
-      strLabel = CUtil::GetTitleFromPath(playListItem.GetFileName());
-
-    CPlayList::CPlayListItem playlistItem;
-    playlistItem.SetDescription(playListItem.GetDescription());
-    playlistItem.SetDuration(playListItem.GetDuration());
-    playlistItem.SetFileName(playListItem.GetFileName());
-    g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
-  }
-
-  /* We don't shuffle playlist on load any more
-       - shuffling is handled globally by the playlist player
-
-  // music option: shuffle playlist on load
-  // dont do this if the first item is a stream
-  if (
-    (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP) &&
-    !playlistItem.IsShoutCast() &&
-    g_guiSettings.GetBool("musicplaylist.shuffleplaylistsonload")
-    )
-  {
-    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
-  }*/
+  g_playlistPlayer.Add(iPlaylist, *pPlayList);
 
   if (autoStart)
     if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
