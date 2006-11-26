@@ -59,7 +59,7 @@ void CGUIPythonWindowDialog::Close()
 	CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
   OnMessage(msg);
 
-  m_gWindowManager.UnRoute(GetID());
+  m_gWindowManager.RemoveDialog(GetID());
 	m_pParentWindow = NULL;
 	m_bRunning = false;
 }

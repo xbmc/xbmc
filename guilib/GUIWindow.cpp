@@ -555,8 +555,7 @@ void CGUIWindow::OnInitWindow()
   RestoreControlStates();
   SetControlVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
-  if (m_overlayState != OVERLAY_STATE_PARENT_WINDOW) // True, use our own overlay state
-    m_gWindowManager.ShowOverlay(m_overlayState==OVERLAY_STATE_SHOWN ? true : false);
+  m_gWindowManager.ShowOverlay(m_overlayState);
 }
 
 // Called on window close.
