@@ -17,7 +17,7 @@ CGUIListContainer::~CGUIListContainer(void)
 
 void CGUIListContainer::Render()
 {
-  if (!IsVisible()) return;
+  if (!IsVisible()) return CGUIBaseContainer::Render();
 
   ValidateOffset();
 
