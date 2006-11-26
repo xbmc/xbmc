@@ -35,17 +35,12 @@ class CPlayListItem : public CFileItem
     void SetMusicTag(const CMusicInfoTag &tag);
     CMusicInfoTag GetMusicTag() const;
 
-    bool WasPlayed() const;
-    void SetPlayed() { m_bPlayed = true; };
-    void ClearPlayed() { m_bPlayed = false; };
-
     bool IsUnPlayable() const;
     void SetUnPlayable() { m_bUnPlayable = true; };
     void ClearUnPlayable() { m_bUnPlayable = false; };
 
   protected:
     long m_lDuration;
-    bool m_bPlayed;
     bool m_bUnPlayable;
   };
 
@@ -53,10 +48,17 @@ class CPlayListItem : public CFileItem
   virtual ~CPlayList(void);
   virtual bool Load(const CStdString& strFileName, bool bDeep = true){ return false;};
   virtual void Save(const CStdString& strFileName) const {};
-  void Add(CPlayListItem& item, int iOffset = -1);
-	void Add(CFileItem *pItem);
-	void Append(CPlayList& playlist, int iShuffleAt = -1);
-	void Append(CFileItemList& items, int iShuffleAt = -1);
+
+  void Add(CPlayListItem& item);
+  void Add(CPlayList& playlist);
+  void Add(CFileItem *pItem);
+	void Add(CFileItemList& items);
+
+  // for Party Mode
+  void Insert(CPlayList& playlist, int iPosition = -1);
+  void Insert(CFileItemList& items, int iPosition = -1);
+
+  int FindOrder(int iOrder);
   const CStdString& GetName() const;
   void Remove(const CStdString& strFileName);
   void Remove(int position);
@@ -64,26 +66,32 @@ class CPlayListItem : public CFileItem
   void Clear();
   int size() const;
   int RemoveDVDItems();
+
   const CPlayList::CPlayListItem& operator[] (int iItem) const;
   CPlayList::CPlayListItem& operator[] (int iItem);
 
-  virtual void Shuffle(int iPosition = 0);
-  virtual void UnShuffle();
-  virtual bool IsShuffled() { return m_bShuffled; }
-  void FixOrder(int iOrder);
+  // why are these virtual functions? there is no derived child class
+  void Shuffle(int iPosition = 0);
+  void UnShuffle();
+  bool IsShuffled() { return m_bShuffled; }
 
-  void SetPlayed(int iItem);
+  void SetPlayed(bool bPlayed) { m_bWasPlayed = true; };
+  bool WasPlayed() { return m_bWasPlayed; };
+
   void SetUnPlayable(int iItem);
-  void ClearPlayed();
-  int GetUnplayed() { return m_iUnplayedItems; };
   int GetPlayable() { return m_iPlayableItems; };
 
 protected:
   CStdString m_strPlayListName;
-  int m_iUnplayedItems;
   int m_iPlayableItems;
   bool m_bShuffled;
+  bool m_bWasPlayed;
   vector <CPlayListItem> m_vecItems;
   typedef vector <CPlayListItem>::iterator ivecItems;
+
+private:
+  void Add(CPlayListItem& item, int iPosition, int iOrderOffset);
+  void DecrementOrder(int iOrder);
+  void IncrementOrder(int iPosition, int iOrder);
 };
 };
