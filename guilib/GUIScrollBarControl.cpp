@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIScrollBarControl.h"
 
-#define MIN_NIB_SIZE 4
+#define MIN_NIB_SIZE 4.0f
 
 CGUIScrollBar::CGUIScrollBar(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& barTexture, const CImage& barTextureFocus, const CImage& nibTexture, const CImage& nibTextureFocus, ORIENTATION orientation, bool showOnePage)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
@@ -171,7 +171,7 @@ void CGUIScrollBar::UpdateBarSize()
     // calculate the height to display the nib at
     float percent = (float)m_pageSize / m_numItems;
     float nibSize = GetHeight() * percent;
-    if (nibSize < MIN_NIB_SIZE) nibSize = MIN_NIB_SIZE;
+    if (nibSize < m_guiNibFocus.GetTextureHeight() + 2 * MIN_NIB_SIZE) nibSize = m_guiNibFocus.GetTextureHeight() + 2 * MIN_NIB_SIZE;
     if (nibSize > GetHeight()) nibSize = GetHeight();
 
     m_guiBarNoFocus.SetHeight(nibSize);
@@ -194,7 +194,7 @@ void CGUIScrollBar::UpdateBarSize()
     // calculate the height to display the nib at
     float percent = (float)m_pageSize / m_numItems;
     float nibSize = GetWidth() * percent + 0.5f;
-    if (nibSize < MIN_NIB_SIZE) nibSize = MIN_NIB_SIZE;
+    if (nibSize < m_guiNibFocus.GetTextureWidth() + 2 * MIN_NIB_SIZE) nibSize = m_guiNibFocus.GetTextureWidth() + 2 * MIN_NIB_SIZE;
     if (nibSize > GetWidth()) nibSize = GetWidth();
 
     m_guiBarNoFocus.SetWidth(nibSize);
