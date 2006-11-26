@@ -77,9 +77,7 @@ namespace PYXBMC
 
 		// we do not create our own playlist, just using the ones from playlistplayer
 		if (iNr != PLAYLIST_MUSIC &&
-				iNr != PLAYLIST_MUSIC_TEMP &&
-				iNr != PLAYLIST_VIDEO &&
-				iNr != PLAYLIST_VIDEO_TEMP)
+				iNr != PLAYLIST_VIDEO)
 		{
 			PyErr_SetString((PyObject*)self, "PlayList does not exist");
 			return NULL;
@@ -333,9 +331,7 @@ namespace PYXBMC
 		"int playlist can be one of the next values:\n"
 		"\n"
 		"  0 : xbmc.PLAYLIST_MUSIC\n"
-		"  1 : xbmc.PLAYLIST_MUSIC_TEMP\n"
-		"  2 : xbmc.PLAYLIST_VIDEO\n"
-		"  3 : xbmc.PLAYLIST_VIDEO_TEMP\n"
+		"  1 : xbmc.PLAYLIST_VIDEO\n"
 		"\n"
 		"Use PlayList[int position] or __getitem__(int position) to get a PlayListItem.");
 
