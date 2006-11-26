@@ -15,7 +15,7 @@ CGUIWrappingListContainer::~CGUIWrappingListContainer(void)
 
 void CGUIWrappingListContainer::Render()
 {
-  if (!IsVisible()) return;
+  if (!IsVisible()) return CGUIBaseContainer::Render();
 
   ValidateOffset();
 
