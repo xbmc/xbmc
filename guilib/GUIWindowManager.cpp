@@ -47,62 +47,71 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
     }
   }
 
-  //  Send the message to all active modeless windows ..
-  for (int i=0; i < (int) m_vecModelessWindows.size(); i++)
-  {
-    CGUIWindow* pWindow = m_vecModelessWindows[i];
-
-    if (pWindow)
-    {
-      if (pWindow->OnMessage( message )) handled = true;
-    }
-  }
-
   //  A GUI_MSG_NOTIFY_ALL is send to any active modal dialog
   //  and all windows whether they are active or not
   if (message.GetMessage()==GUI_MSG_NOTIFY_ALL)
   {
-    int topWindow = m_vecModalWindows.size();
-    while (topWindow)
-      m_vecModalWindows[--topWindow]->OnMessage(message);
+    for (rDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
+    {
+      CGUIWindow *dialog = *it;
+      dialog->OnMessage(message);
+    }
 
     for (map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
     {
       CGUIWindow *pWindow = (*it).second;
       pWindow->OnMessage(message);
     }
-    handled = true;
+    return true;
   }
-  // Have we routed windows...
-  else if (m_vecModalWindows.size() > 0)
+
+  // Normal messages are sent to:
+  // 1. All active modeless dialogs
+  // 2. The topmost dialog that accepts the message
+  // 3. The underlying window (only if it is the sender or receiver if a modal dialog is active)
+
+  bool hasModalDialog(false);
+  bool modalAcceptedMessage(false);
+  // don't use an iterator for this loop, as some messages mean that m_activeDialogs is altered,
+  // which will invalidate any iterator
+  unsigned int topWindow = m_activeDialogs.size();
+  while (topWindow)
   {
-    // ...send the message to the top most.
-    int topWindow = m_vecModalWindows.size();
-    bool modalHandled = false;
-    while (topWindow && !modalHandled)
-    {
-      if (m_vecModalWindows[--topWindow]->OnMessage(message))
-        modalHandled = true;
+    CGUIWindow* dialog = m_activeDialogs[--topWindow];
+    if (!modalAcceptedMessage && dialog->IsModalDialog())
+    { // modal window
+      hasModalDialog = true;
+      if (!modalAcceptedMessage && dialog->OnMessage( message ))
+      {
+        modalAcceptedMessage = handled = true;
+      }
     }
-    if (modalHandled) handled = true;
-
-    CGUIWindow* pWindow = GetWindow(GetActiveWindow());
-    if (!pWindow)
-      return false;
-
-    // Also send the message to the parent of the routed window, if its the target
-    if ( message.GetSenderId() == pWindow->GetID() ||
-         message.GetControlId() == pWindow->GetID() ||
-         message.GetSenderId() == 0 )
-    {
-      if (pWindow->OnMessage(message)) handled = true;
+    else if (!dialog->IsModalDialog())
+    { // modeless
+      if (dialog->OnMessage( message ))
+        handled = true;
     }
   }
-  else
+
+  // now send to the underlying window
+  CGUIWindow* window = GetWindow(GetActiveWindow());
+  if (window)
   {
-    // ..no, only call message function of the active window
-    CGUIWindow* pWindow = GetWindow(GetActiveWindow());
-    if (pWindow && pWindow->OnMessage(message)) handled = true;
+    if (hasModalDialog)
+    {
+      // only send the message to the underlying window if it's the recipient
+      // or sender (or we have no sender)
+      if (message.GetSenderId() == window->GetID() ||
+          message.GetControlId() == window->GetID() ||
+          message.GetSenderId() == 0 )
+      {
+        if (window->OnMessage(message)) handled = true;
+      }
+    }
+    else
+    {
+      if (window->OnMessage(message)) handled = true;
+    }
   }
   return handled;
 }
@@ -143,12 +152,12 @@ void CGUIWindowManager::AddCustomWindow(CGUIWindow* pWindow)
   m_vecCustomWindows.push_back(pWindow);
 }
 
-void CGUIWindowManager::AddModeless(CGUIWindow* pWindow)
+void CGUIWindowManager::AddModeless(CGUIWindow* dialog)
 {
   // only add the window if it's not already added
-  for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
-    if (m_vecModelessWindows[i] == pWindow) return;
-  m_vecModelessWindows.push_back(pWindow);
+  for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
+    if (*it == dialog) return;
+  m_activeDialogs.push_back(dialog);
 }
 
 void CGUIWindowManager::Remove(DWORD dwID)
@@ -173,21 +182,6 @@ void CGUIWindowManager::Delete(DWORD dwID)
   {
     Remove(dwID);
     delete pWindow;
-  }
-}
-
-void CGUIWindowManager::RemoveModeless(DWORD dwID)
-{
-  vector<CGUIWindow*>::iterator it = m_vecModelessWindows.begin();
-  while (it != m_vecModelessWindows.end())
-  {
-    CGUIWindow* pWindow = *it;
-    if (pWindow->GetID() == dwID)
-    {
-      m_vecModelessWindows.erase(it);
-      it = m_vecModelessWindows.end();
-    }
-    else it++;
   }
 }
 
@@ -238,6 +232,9 @@ void CGUIWindowManager::PreviousWindow()
 
   // tell our info manager which window we are going to
   g_infoManager.SetNextWindow(previousWindow);
+
+  // set our overlay state (enables out animations on window change)
+  HideOverlay(pNewWindow->GetOverlayState());
 
   // deinitialize our window
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
@@ -321,6 +318,10 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   }
 
   g_infoManager.SetNextWindow(iWindowID);
+
+  // set our overlay state
+  HideOverlay(pNewWindow->GetOverlayState());
+
   // deactivate any window
   int currentWindow = GetActiveWindow();
   CGUIWindow *pWindow = GetWindow(currentWindow);
@@ -352,35 +353,28 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
 
 void CGUIWindowManager::CloseDialogs(bool forceClose)
 {
-  while (m_vecModelessWindows.size() > 0)
+  while (m_activeDialogs.size() > 0)
   {
-    CGUIDialog* pDialog = (CGUIDialog*)m_vecModelessWindows[0];
-    pDialog->Close(forceClose);
-  }
-  while (m_vecModalWindows.size() > 0)
-  {
-    CGUIDialog* pDialog = (CGUIDialog*)m_vecModalWindows[0];
-    pDialog->Close(forceClose);
+    CGUIDialog* dialog = (CGUIDialog *)m_activeDialogs[0];
+    dialog->Close(forceClose);
   }
 }
 
 bool CGUIWindowManager::OnAction(const CAction &action)
 {
-  // Have we have routed windows...
-  if (m_vecModalWindows.size() > 0)
+  for (rDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
   {
-    // ...send the action to the top most.
-    CGUIWindow *window = m_vecModalWindows[m_vecModalWindows.size() - 1];
-    if (!window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-      return window->OnAction(action);
-    return true; // don't do anything with this action for now
+    CGUIWindow *dialog = *it;
+    if (dialog->IsModalDialog())
+    { // we have the topmost modal dialog
+      if (!dialog->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+        return dialog->OnAction(action);
+      return true; // do nothing with the action until the anim is finished
+    }
   }
-  else
-  {
-    CGUIWindow* pWindow = GetWindow(GetActiveWindow());
-    if (pWindow)
-      return pWindow->OnAction(action);
-  }
+  CGUIWindow* window = GetWindow(GetActiveWindow());
+  if (window)
+    return window->OnAction(action);
   return false;
 }
 
@@ -391,7 +385,7 @@ void CGUIWindowManager::Render()
     pWindow->Render();
 }
 
-bool RenderOrderSortFunction(CGUIDialog *first, CGUIDialog *second)
+bool RenderOrderSortFunction(CGUIWindow *first, CGUIWindow *second)
 {
   return first->GetRenderOrder() < second->GetRenderOrder();
 }
@@ -399,19 +393,15 @@ bool RenderOrderSortFunction(CGUIDialog *first, CGUIDialog *second)
 void CGUIWindowManager::RenderDialogs()
 {
   // find the window with the lowest render order
-  vector<CGUIDialog *> renderList;
-  for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
-    renderList.push_back((CGUIDialog *)m_vecModalWindows[i]);
-  for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
-    renderList.push_back((CGUIDialog *)m_vecModelessWindows[i]);
+  vector<CGUIWindow *> renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
 
   // iterate through and render if they're running
-  for (unsigned int i = 0; i < renderList.size(); i++)
+  for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
-    CGUIDialog *pDialog = renderList[i];
-    if (pDialog->IsRunning())
-      pDialog->Render();
+    CGUIDialog *dialog = (CGUIDialog *)*it;
+    if (dialog->IsRunning())
+      dialog->Render();
   }
 }
 
@@ -491,72 +481,66 @@ void CGUIWindowManager::DeInitialize()
 
   // clear our vectors of windows
   m_vecCustomWindows.clear();
-  m_vecModalWindows.clear();
-  m_vecModelessWindows.clear();
+  m_activeDialogs.clear();
 }
 
 /// \brief Route to a window
 /// \param pWindow Window to route to
-void CGUIWindowManager::RouteToWindow(CGUIWindow* pWindow)
+void CGUIWindowManager::RouteToWindow(CGUIWindow* dialog)
 {
   // Just to be sure: Unroute this window,
   // #we may have routed to it before
-  UnRoute(pWindow->GetID());
+  RemoveDialog(dialog->GetID());
 
-  m_vecModalWindows.push_back(pWindow);
-
+  m_activeDialogs.push_back(dialog);
 }
 
 /// \brief Unroute window
 /// \param dwID ID of the window routed
-void CGUIWindowManager::UnRoute(DWORD dwID)
+void CGUIWindowManager::RemoveDialog(DWORD dwID)
 {
-  vector<CGUIWindow*>::iterator it = m_vecModalWindows.begin();
-  while (it != m_vecModalWindows.end())
+  for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
-    CGUIWindow* pWindow = *it;
-    if (pWindow->GetID() == dwID)
+    if ((*it)->GetID() == dwID)
     {
-      m_vecModalWindows.erase(it);
-      it = m_vecModalWindows.end();
+      m_activeDialogs.erase(it);
+      return;
     }
-    else it++;
   }
 }
 
-bool CGUIWindowManager::IsRouted(bool includeFadeOuts /*= false */) const
+bool CGUIWindowManager::HasModalDialog() const
 {
-  if (includeFadeOuts)
-    return m_vecModalWindows.size() > 0;
-
-  bool hasActiveDialog = false;
-  for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
+  for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
-    if (!m_vecModalWindows[i]->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-    {
-      hasActiveDialog = true;
-      break;
+    CGUIWindow *window = *it;
+    if (window->IsModalDialog())
+    { // have a modal window
+      if (!window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+        return true;
     }
   }
-  return hasActiveDialog;
-}
-
-bool CGUIWindowManager::IsModelessAvailable() const
-{
-  if (m_vecModelessWindows.size()>0)
-    return true;
-
   return false;
+}
+
+bool CGUIWindowManager::HasDialogOnScreen() const
+{
+  return (m_activeDialogs.size() > 0);
 }
 
 /// \brief Get the ID of the top most routed window
 /// \return dwID ID of the window or WINDOW_INVALID if no routed window available
-int CGUIWindowManager::GetTopMostRoutedWindowID() const
+int CGUIWindowManager::GetTopMostDialogID() const
 {
-  if (m_vecModalWindows.size() <= 0)
-    return WINDOW_INVALID;
-
-  return m_vecModalWindows[m_vecModalWindows.size() - 1]->GetID();
+  for (crDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
+  {
+    CGUIWindow *dialog = *it;
+    if (dialog->IsModalDialog())
+    { // have a modal window
+      return dialog->GetID();
+    }
+  }
+  return WINDOW_INVALID;
 }
 
 void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
@@ -607,17 +591,11 @@ bool CGUIWindowManager::IsWindowActive(DWORD dwID, bool ignoreClosing /* = true 
   // mask out multiple instances of the same window
   dwID &= WINDOW_ID_MASK;
   if ((GetActiveWindow() & WINDOW_ID_MASK) == dwID) return true;
-  // run through the modal + modeless windows
-  for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
+  // run through the dialogs
+  for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
-    CGUIWindow *pWindow = m_vecModalWindows[i];
-    if ((pWindow->GetID() & WINDOW_ID_MASK) == dwID && (!ignoreClosing || !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
-      return true;
-  }
-  for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
-  {
-    CGUIWindow *pWindow = m_vecModelessWindows[i];
-    if ((pWindow->GetID() & WINDOW_ID_MASK) == dwID && (!ignoreClosing || !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
+    CGUIWindow *window = *it;
+    if ((window->GetID() & WINDOW_ID_MASK) == dwID && (!ignoreClosing || !window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
       return true;
   }
   return false; // window isn't active
@@ -635,8 +613,8 @@ void CGUIWindowManager::LoadNotOnDemandWindows()
     CGUIWindow *pWindow = (*it).second;
     if (!pWindow ->GetLoadOnDemand())
     {
-      pWindow ->FreeResources(true);
-      pWindow ->Initialize();
+      pWindow->FreeResources(true);
+      pWindow->Initialize();
     }
   }
 }
@@ -658,9 +636,16 @@ bool CGUIWindowManager::IsOverlayAllowed() const
   return m_bShowOverlay;
 }
 
-void CGUIWindowManager::ShowOverlay(bool bOnOff)
+void CGUIWindowManager::ShowOverlay(CGUIWindow::OVERLAY_STATE state)
 {
-  m_bShowOverlay = bOnOff;
+  if (state != CGUIWindow::OVERLAY_STATE_PARENT_WINDOW)
+    m_bShowOverlay = state == CGUIWindow::OVERLAY_STATE_SHOWN;
+}
+
+void CGUIWindowManager::HideOverlay(CGUIWindow::OVERLAY_STATE state)
+{
+  if (state == CGUIWindow::OVERLAY_STATE_HIDDEN)
+    m_bShowOverlay = false;
 }
 
 void CGUIWindowManager::AddToWindowHistory(DWORD newWindowID)
@@ -689,18 +674,17 @@ void CGUIWindowManager::GetActiveModelessWindows(vector<DWORD> &ids)
 {
   // run through our modeless windows, and construct a vector of them
   // useful for saving and restoring the modeless windows on skin change etc.
-  for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
-    ids.push_back(m_vecModelessWindows[i]->GetID());
+  for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
+  {
+    if (!(*it)->IsModalDialog())
+      ids.push_back((*it)->GetID());
+  }
 }
 
 bool CGUIWindowManager::IsWindowTopMost(DWORD id) const
 {
   // find the window with the lowest render order
-  vector<CGUIDialog *> renderList;
-  for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
-    renderList.push_back((CGUIDialog *)m_vecModalWindows[i]);
-  for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
-    renderList.push_back((CGUIDialog *)m_vecModelessWindows[i]);
+  vector<CGUIWindow *> renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
 
   if (!renderList.size())

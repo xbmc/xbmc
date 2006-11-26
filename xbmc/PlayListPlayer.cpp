@@ -438,7 +438,7 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist)
 void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
 {
   // disable randomize button for normal music playlist
-  if (iPlaylist == PLAYLIST_MUSIC) return;
+//  if (iPlaylist == PLAYLIST_MUSIC) return;
 
   if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO_TEMP)
     return;
