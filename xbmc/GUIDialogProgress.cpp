@@ -29,6 +29,7 @@ void CGUIDialogProgress::StartModal()
   // the main rendering thread (this should really be handled via
   // a thread message though IMO)
   m_bRunning = true;
+  m_bModal = true;
   m_dialogClosing = false;
   m_gWindowManager.RouteToWindow(this);
 

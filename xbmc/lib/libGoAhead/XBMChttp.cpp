@@ -2333,7 +2333,7 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcSpinDownHardDisk()
 {
-  if (m_gWindowManager.IsRouted())
+  if (m_gWindowManager.HasModalDialog())
 	return SetResponse(openTag+"Error:Can't spin down now");
   if (g_application.MustBlockHDSpinDown())
 	return SetResponse(openTag+"Error:Can't spin down now");

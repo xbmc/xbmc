@@ -98,7 +98,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
  //     g_graphicsContext.SetVideoResolution(res, FALSE);
 
       // enable the overlay
-      m_gWindowManager.ShowOverlay(true);
+      m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
     }
     break;
 
@@ -135,7 +135,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 //      g_graphicsContext.SetVideoResolution(res, TRUE);
 
       // disable the overlay
-      m_gWindowManager.ShowOverlay(false);
+      m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       return true;
     }
   case GUI_MSG_CHECK_LOCK:

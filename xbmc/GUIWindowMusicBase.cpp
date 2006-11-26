@@ -1695,7 +1695,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
   m_musicInfoLoader.SetProgressCallback(m_dlgProgress);
   m_musicInfoLoader.Load(items);
 
-  bool bShowProgress=!m_gWindowManager.IsRouted();
+  bool bShowProgress=!m_gWindowManager.HasModalDialog();
   bool bProgressVisible=false;
 
   DWORD dwTick=timeGetTime();
