@@ -25,7 +25,6 @@ protected:
 
   void SavePlayList();
   void ClearPlayList();
-  void ShufflePlayList();
   
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
 
