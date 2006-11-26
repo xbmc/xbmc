@@ -1614,20 +1614,11 @@ void CApplication::StartServices()
 
   CLog::Log(LOGNOTICE, "initializing playlistplayer");
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
-  //g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
-  if (g_stSettings.m_bMyMusicPlaylistShuffle)
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Shuffle();
-  // The temp music playlist is used for playing from a "folder"
-  // eg library, folder on disk, playlists when treated as folders etc.
-  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC_TEMP, PLAYLIST::REPEAT_NONE);
-
+  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle); 
   g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
   g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
-  /*
-  if (g_stSettings.m_bMyVideoPlaylistShuffle)
-    g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Shuffle();
-  */
-  g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO_TEMP, PLAYLIST::REPEAT_NONE);
+  CLog::Log(LOGNOTICE, "DONE initializing playlistplayer");
+
 
 #ifdef HAS_LCD
   CLCDFactory factory;
@@ -3475,7 +3466,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       bool bCanSwitch = true;
       // check whether we are playing from a playlist...
       int playlist = g_playlistPlayer.GetCurrentPlaylist();
-      if (playlist == PLAYLIST_VIDEO || playlist == PLAYLIST_VIDEO_TEMP)
+      if (playlist == PLAYLIST_VIDEO)
       { // playing from a playlist by the looks
         if (g_playlistPlayer.GetPlaylist(playlist).size() > 1 && g_playlistPlayer.HasPlayedFirstFile())
         { // don't switch to fullscreen if we are not playing the first item...
@@ -4144,8 +4135,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), dwParam, (LPVOID)&item);
         m_gWindowManager.SendThreadMessage(msg);
         g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
-        // mark the song in the playlist as played
-        g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).SetPlayed(g_playlistPlayer.GetCurrentSong());
         m_itemCurrentFile = item;
       }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
@@ -4937,7 +4926,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     return false;
 
   // illegal playlist
-  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO_TEMP)
+  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
     return false;
 
   // setup correct playlist
@@ -4947,18 +4936,8 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
   // to generate a thumbnail for musicplayer.cover 
   g_application.m_strPlayListFile = strPlayList;
 
-  /*
-  CFileItem item(playlist[0]);
-
-  // add each item of the playlist to the playlistplayer
-  for (int i = 0; i < (int)playlist.size(); ++i)
-  {
-    g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlist[i]);
-  }
-  */
-
   // add the items to the playlist player
-  g_playlistPlayer.GetPlaylist(iPlaylist).Append(playlist);
+  g_playlistPlayer.Add(iPlaylist, playlist);
 
   // if we have a playlist 
   if (g_playlistPlayer.GetPlaylist(iPlaylist).size())
