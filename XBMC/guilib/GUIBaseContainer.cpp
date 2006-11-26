@@ -25,7 +25,8 @@ CGUIBaseContainer::~CGUIBaseContainer(void)
 void CGUIBaseContainer::Render()
 {
   g_graphicsContext.RemoveGroupTransform();
-  CGUIControl::Render();
+  if (IsVisible())
+    CGUIControl::Render();
 }
 
 void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
