@@ -21,10 +21,7 @@
 #define CONTROL_BTNPLAY      23
 #define CONTROL_BTNNEXT      24
 #define CONTROL_BTNPREVIOUS    25
-
 #define CONTROL_BTNREPEAT     26
-#define CONTROL_BTNRANDOMIZE  28
-
 
 CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST, "MyMusicPlaylist.xml")
@@ -43,16 +40,17 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
   case GUI_MSG_PLAYBACK_STOPPED:
-  case GUI_MSG_PLAYLISTPLAYER_RANDOM:
   case GUI_MSG_PLAYLISTPLAYER_REPEAT:
     {
       UpdateButtons();
     }
     break;
   
+  case GUI_MSG_PLAYLISTPLAYER_RANDOM:
   case GUI_MSG_PLAYLIST_CHANGED:
     {
       // global playlist changed outside playlist window
+      UpdateButtons();
       Update(m_vecItems.m_strPath);
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
@@ -61,6 +59,15 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         SET_CONTROL_FOCUS(m_iLastControl, 0);
       }
 
+    }
+    break;
+
+  case GUI_MSG_WINDOW_DEINIT:
+    {
+      if (m_musicInfoLoader.IsLoading())
+        m_musicInfoLoader.StopThread();
+
+      iPos = -1;
     }
     break;
 
@@ -92,39 +99,19 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      if (m_musicInfoLoader.IsLoading())
-        m_musicInfoLoader.StopThread();
-
-      iPos = -1;
-    }
-    break;
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-
-      if (iControl == CONTROL_BTNRANDOMIZE)
+      if (iControl == CONTROL_BTNSHUFFLE)
       {
-        // disable randomize button
-        /*
-        g_stSettings.m_bMyMusicPlaylistShuffle = !g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
-        g_settings.Save();
-        g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
-        UpdateButtons();
-        */
-      }
-      else if (iControl == CONTROL_BTNSHUFFLE)
-      {
-        // shuffle state is now saved, not randomize
-        ShufflePlayList();
-        if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).IsShuffled())
-          g_stSettings.m_bMyMusicPlaylistShuffle = true;
-        else
-          g_stSettings.m_bMyMusicPlaylistShuffle = false;
-        g_settings.Save();
-        UpdateButtons();
+        if (!g_partyModeManager.IsEnabled())
+        {
+          g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, !(g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC)));
+          g_stSettings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
+          g_settings.Save();
+          UpdateButtons();
+          Update(m_vecItems.m_strPath);
+        }
       }
       else if (iControl == CONTROL_BTNSAVE)
       {
@@ -319,41 +306,6 @@ void CGUIWindowMusicPlayList::ClearPlayList()
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
 
-void CGUIWindowMusicPlayList::ShufflePlayList()
-{
-  // disallow shuffle in party mode
-  if (g_partyModeManager.IsEnabled())
-    return;
-
-  int iPlaylist = PLAYLIST_MUSIC;
-  ClearFileItems();
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
-
-  CStdString strFileName;
-  if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
-  {
-    const CPlayList::CPlayListItem& item = playlist[g_playlistPlayer.GetCurrentSong()];
-    strFileName = item.GetFileName();
-  }
-
-  // shuffle or unshuffle?
-  playlist.IsShuffled() ? playlist.UnShuffle() : playlist.Shuffle();
-  if (g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
-    g_playlistPlayer.Reset();
-
-  if (!strFileName.IsEmpty())
-  {
-    for (int i = 0; i < playlist.size(); i++)
-    {
-      const CPlayList::CPlayListItem& item = playlist[i];
-      if (item.GetFileName() == strFileName)
-        g_playlistPlayer.SetCurrentSong(i);
-    }
-  }
-
-  Update(m_vecItems.m_strPath);
-}
-
 void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 {
   if (iItem < 0 || iItem > m_vecItems.Size()) return;
@@ -399,7 +351,6 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   if (m_vecItems.Size() && !g_partyModeManager.IsEnabled())
   {
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
-    CONTROL_ENABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_ENABLE(CONTROL_BTNSAVE);
     CONTROL_ENABLE(CONTROL_BTNCLEAR);
     CONTROL_ENABLE(CONTROL_BTNREPEAT);
@@ -427,7 +378,6 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   {
     // disable buttons if party mode is enabled too
     CONTROL_DISABLE(CONTROL_BTNSHUFFLE);
-    CONTROL_DISABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_DISABLE(CONTROL_BTNSAVE);
     CONTROL_DISABLE(CONTROL_BTNCLEAR);
     CONTROL_DISABLE(CONTROL_BTNREPEAT);
@@ -438,11 +388,8 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 
   // update buttons
   CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
-  CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
-  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).IsShuffled())
-    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
   if (g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC))
-    CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
+    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
 
   // update repeat button
   int iRepeat = 595 + g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC);
@@ -458,10 +405,6 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   CStdString items;
   items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
-
-   // disable the randomize control
-  CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
-  CONTROL_DISABLE(CONTROL_BTNRANDOMIZE);
 }
 
 bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
@@ -477,10 +420,6 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
         m_guiState->SetPlaylistDirectory(m_vecItems.m_strPath);
 
       g_playlistPlayer.SetCurrentPlaylist( iPlaylist );
-
-      // I don't see why we should be reset'ing here.  The playlist has not
-      // been changed in anyway from what I can see
-//      g_playlistPlayer.Reset();
       g_playlistPlayer.Play( iItem );
     }
     else
