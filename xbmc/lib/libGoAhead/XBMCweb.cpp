@@ -176,11 +176,11 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
     switch(GetNavigatorState())
     {
     case WEB_NAV_VIDEOS:
-      g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Add(playlistItem);
+      g_playlistPlayer.Add(PLAYLIST_VIDEO, playlistItem);
       break;
 
     case WEB_NAV_MUSIC:
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
+      g_playlistPlayer.Add(PLAYLIST_MUSIC, playlistItem);
       break;
     }
   }
