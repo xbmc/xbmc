@@ -534,7 +534,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       {
         m_ImageLib.Unload();
       }
-      m_gWindowManager.ShowOverlay(true);
+      m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
       // set screen filters to video filters so that we
       // get sharper images
       g_graphicsContext.SetScreenFilters(false);
@@ -553,7 +553,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       {
         m_ImageLib.Load();
       }
-      m_gWindowManager.ShowOverlay(false);
+      m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       // set screen filters to video filters so that we
       // get sharper images
       g_graphicsContext.SetScreenFilters(true);
