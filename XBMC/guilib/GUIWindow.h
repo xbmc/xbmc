@@ -110,6 +110,7 @@ public:
   static void FlushReferenceCache();
 //#endif
   virtual bool IsDialog() const { return false;};
+  virtual bool IsModalDialog() const { return false; };
   virtual bool IsMediaWindow() const { return false; };
   virtual bool IsActive() const;
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };

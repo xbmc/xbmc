@@ -68,22 +68,14 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-      if (pWindow && pWindow->GetOverlayState()!=OVERLAY_STATE_PARENT_WINDOW)
-        m_gWindowManager.ShowOverlay(pWindow->GetOverlayState()==OVERLAY_STATE_SHOWN);
+      if (pWindow)
+        m_gWindowManager.ShowOverlay(pWindow->GetOverlayState());
 
       CGUIWindow::OnMessage(message);
       // if we were running, make sure we remove ourselves from the window manager
       if (m_bRunning)
       {
-        if (m_bModal)
-        {
-          m_gWindowManager.UnRoute(GetID());
-        }
-        else
-        {
-          m_gWindowManager.RemoveModeless( GetID() );
-        }
-
+        m_gWindowManager.RemoveDialog(GetID());
         m_bRunning = false;
         m_dialogClosing = false;
       }
@@ -196,12 +188,12 @@ bool CGUIDialog::RenderAnimation(DWORD time)
     if (anim.effect == EFFECT_TYPE_SLIDE)
     {
       if (IsRunning())
-        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s slide effect %s. Amount is %2.1f, visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsRunning() ? "true" : "false");
+        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s slide effect %s. visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", IsRunning() ? "true" : "false");
     }
     else if (anim.effect == EFFECT_TYPE_FADE)
     {
       if (IsRunning())
-        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsRunning() ? "true" : "false");
+        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s fade effect %s. Visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", IsRunning() ? "true" : "false");
     }
   }
   anim = m_closeAnimation;

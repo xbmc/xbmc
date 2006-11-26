@@ -2098,24 +2098,24 @@ void CApplication::RenderNoPresent()
     {
       // then show video overlay window
       m_guiVideoOverlay.Show();
-      m_guiMusicOverlay.Close(true);
+      m_guiMusicOverlay.Close();
     }
     else if ( IsPlayingAudio() )
     {
       // audio show audio overlay window
       m_guiMusicOverlay.Show();
-      m_guiVideoOverlay.Close(true);
+      m_guiVideoOverlay.Close();
     }
     else
     {
-      m_guiMusicOverlay.Close(true);
-      m_guiVideoOverlay.Close(true);
+      m_guiMusicOverlay.Close();
+      m_guiVideoOverlay.Close();
     }
   }
   else
   {
-    m_guiMusicOverlay.Close(true);
-    m_guiVideoOverlay.Close(true);
+    m_guiMusicOverlay.Close();
+    m_guiVideoOverlay.Close();
   }
 
   // draw GUI
@@ -2278,9 +2278,9 @@ bool CApplication::OnKey(CKey& key)
   // get the current active window
   int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
   // change this if we have a dialog up
-  if (m_gWindowManager.IsRouted())
+  if (m_gWindowManager.HasModalDialog())
   {
-    iWin = m_gWindowManager.GetTopMostRoutedWindowID() & WINDOW_ID_MASK;
+    iWin = m_gWindowManager.GetTopMostDialogID() & WINDOW_ID_MASK;
   }
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
@@ -3853,7 +3853,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
-    if (m_gWindowManager.IsRouted() || IsPlayingVideo())
+    if (m_gWindowManager.HasModalDialog() || IsPlayingVideo())
       m_screenSaverMode = "Dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead"))
@@ -3993,7 +3993,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
   int iSpinDown = g_guiSettings.GetInt("system.remoteplayhdspindown");
   if (iSpinDown == SPIN_DOWN_NONE)
     return ;
-  if (m_gWindowManager.IsRouted())
+  if (m_gWindowManager.HasModalDialog())
     return ;
   if (MustBlockHDSpinDown(false))
     return ;
@@ -4077,7 +4077,7 @@ void CApplication::CheckHDSpindown()
 {
   if (!g_guiSettings.GetInt("system.hdspindowntime"))
     return ;
-  if (m_gWindowManager.IsRouted())
+  if (m_gWindowManager.HasModalDialog())
     return ;
   if (MustBlockHDSpinDown())
     return ;
@@ -4802,14 +4802,14 @@ CIMDBMovie* CApplication::GetCurrentMovie()
 bool CApplication::SwitchToFullScreen()
 {
   // if playing from the video info window, close it first!
-  if (m_gWindowManager.IsRouted() && m_gWindowManager.GetTopMostRoutedWindowID() == WINDOW_VIDEO_INFO)
+  if (m_gWindowManager.HasModalDialog() && m_gWindowManager.GetTopMostDialogID() == WINDOW_VIDEO_INFO)
   {
     CGUIWindowVideoInfo* pDialog = (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(WINDOW_VIDEO_INFO);
     if (pDialog) pDialog->Close(true);
   }
 
   // don't switch if there is a dialog on screen or the slideshow is active
-  if (m_gWindowManager.IsRouted() || m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+  if (m_gWindowManager.HasModalDialog() || m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
     return false;
 
   // See if we're playing a video, and are in GUI mode

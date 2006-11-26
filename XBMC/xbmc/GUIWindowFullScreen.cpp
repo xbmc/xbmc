@@ -510,8 +510,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
   if (g_infoManager.GetBool(PLAYER_SEEKBAR), GetID()) return true;
-  if (m_gWindowManager.IsRouted(true)) return true;
-  if (m_gWindowManager.IsModelessAvailable()) return true;
+  if (m_gWindowManager.HasDialogOnScreen()) return true;
   if (g_Mouse.IsActive()) return true;
   if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
     return true;
@@ -671,7 +670,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
   CGUIWindow::Render();
 
-  if (m_gWindowManager.IsRouted(true) || m_gWindowManager.IsModelessAvailable())
+  if (m_gWindowManager.HasDialogOnScreen())
     m_gWindowManager.RenderDialogs();
   // Render the mouse pointer, if visible...
   if (g_Mouse.IsActive())

@@ -13,6 +13,8 @@
 #include "IWindowManagerCallback.h"
 #include "IMsgTargetCallback.h"
 
+class CGUIDialog;
+
 #define WINDOW_ID_MASK 0xffff
 
 /*!
@@ -29,10 +31,8 @@ public:
   void Add(CGUIWindow* pWindow);
   void AddUniqueInstance(CGUIWindow *window);
   void AddCustomWindow(CGUIWindow* pWindow);
-  void AddModeless(CGUIWindow* pWindow);
   void Remove(DWORD dwID);
   void Delete(DWORD dwID);
-  void RemoveModeless(DWORD dwID);
   void ActivateWindow(int iWindowID, const CStdString& strPath = "", bool swappingWindows = false);
   void ChangeActiveWindow(int iNewID, const CStdString& strPath = "");
   void PreviousWindow();
@@ -53,30 +53,37 @@ public:
   void Process(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
-  void RouteToWindow(CGUIWindow* pWindow);
-  void UnRoute(DWORD dwID);
-  int GetTopMostRoutedWindowID() const;
+
+  void RouteToWindow(CGUIWindow* dialog);
+  void AddModeless(CGUIWindow* dialog);
+  void RemoveDialog(DWORD dwID);
+  int GetTopMostDialogID() const;
+
   void SendThreadMessage(CGUIMessage& message);
   void DispatchThreadMessages();
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
-  bool IsRouted(bool includeFadeOuts = false) const;
-  bool IsModelessAvailable() const;
+  bool HasModalDialog() const;
+  bool HasDialogOnScreen() const;
   void UpdateModelessVisibility();
   bool IsWindowActive(DWORD dwID, bool ignoreClosing = true) const;
   bool IsWindowVisible(DWORD id) const;
   bool IsWindowTopMost(DWORD id) const;
   bool IsOverlayAllowed() const;
-  void ShowOverlay(bool bOnOff);
+  void ShowOverlay(CGUIWindow::OVERLAY_STATE state);
   void GetActiveModelessWindows(vector<DWORD> &ids);
 
 private:
+  void HideOverlay(CGUIWindow::OVERLAY_STATE state);
   void AddToWindowHistory(DWORD newWindowID);
   void ClearWindowHistory();
   map<DWORD, CGUIWindow *> m_mapWindows;
-  vector <CGUIWindow*> m_vecModelessWindows;
-  vector <CGUIWindow*> m_vecModalWindows;
   vector <CGUIWindow*> m_vecCustomWindows;
+  vector <CGUIWindow*> m_activeDialogs;
+  typedef vector<CGUIWindow*>::iterator iDialog;
+  typedef vector<CGUIWindow*>::const_iterator ciDialog;
+  typedef vector<CGUIWindow*>::reverse_iterator rDialog;
+  typedef vector<CGUIWindow*>::const_reverse_iterator crDialog;
 
   stack<DWORD> m_windowHistory;
 
