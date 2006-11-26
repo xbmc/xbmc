@@ -1939,6 +1939,17 @@ CStdString CGUIInfoManager::GetItemMultiLabel(const CFileItem *item, const vecto
   return label;
 }
 
+// This is required as in order for the "* All Albums" etc. items to sort
+// correctly, they must have fake artist/album etc. information generated.
+// This looks nasty if we attempt to render it to the GUI, thus this (further)
+// workaround
+const CStdString &CorrectAllItemsSortHack(const CStdString &item)
+{
+  if (item.size() == 1 && item[0] == 0x01 || item[1] == 0xff)
+    return StringUtils::EmptyString;
+  return item;
+}
+
 CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 {
   if (!item) return "";
@@ -1949,7 +1960,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   case LISTITEM_LABEL2:
     return item->GetLabel2();
   case LISTITEM_TITLE:
-    return item->m_musicInfoTag.GetTitle();
+    return CorrectAllItemsSortHack(item->m_musicInfoTag.GetTitle());
   case LISTITEM_TRACKNUMBER:
     {
       CStdString track;
@@ -1958,13 +1969,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     }
   case LISTITEM_ARTIST:
   case LISTITEM_DIRECTOR:// HACK - director info is injected as the artist tag
-    return item->m_musicInfoTag.GetArtist();
+    return CorrectAllItemsSortHack(item->m_musicInfoTag.GetArtist());
   case LISTITEM_ALBUM:
-    return item->m_musicInfoTag.GetAlbum();
+    return CorrectAllItemsSortHack(item->m_musicInfoTag.GetAlbum());
   case LISTITEM_YEAR:
     return item->m_musicInfoTag.GetYear();
   case LISTITEM_GENRE:
-    return item->m_musicInfoTag.GetGenre();
+    return CorrectAllItemsSortHack(item->m_musicInfoTag.GetGenre());
   case LISTITEM_FILENAME:
     return CUtil::GetFileName(item->m_strPath);
   case LISTITEM_DATE:
