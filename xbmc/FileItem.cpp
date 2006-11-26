@@ -681,6 +681,7 @@ void CFileItem::SetLabel(const CStdString &strLabel)
     m_bIsFolder=true;
     SetLabelPreformated(true);
   }
+  SetInvalid();
 }
 
 void CFileItem::SetFileSizeLabel()
