@@ -20,9 +20,7 @@
 #define CONTROL_BTNPLAY      23
 #define CONTROL_BTNNEXT      24
 #define CONTROL_BTNPREVIOUS    25
-
 #define CONTROL_BTNREPEAT     26
-#define CONTROL_BTNRANDOMIZE  28
 
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
 : CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyVideoPlaylist.xml")
@@ -39,10 +37,26 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
 
-  case GUI_MSG_PLAYLISTPLAYER_RANDOM:
+  case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYLISTPLAYER_REPEAT:
     {
       UpdateButtons();
+    }
+    break;
+  
+  case GUI_MSG_PLAYLISTPLAYER_RANDOM:
+  case GUI_MSG_PLAYLIST_CHANGED:
+    {
+      // global playlist changed outside playlist window
+      UpdateButtons();
+      Update(m_vecItems.m_strPath);
+
+      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
+      {
+        m_iLastControl = CONTROL_BTNVIEWASICONS;
+        SET_CONTROL_FOCUS(m_iLastControl, 0);
+      }
+
     }
     break;
 
@@ -81,17 +95,13 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNRANDOMIZE)
+      if (iControl == CONTROL_BTNSHUFFLE)
       {
-        g_stSettings.m_bMyVideoPlaylistShuffle = !g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO);
+        g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, !(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO)));
+        g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO);
         g_settings.Save();
-        g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
         UpdateButtons();
-      }
-      else if (iControl == CONTROL_BTNSHUFFLE)
-      {
-        ShufflePlayList();
-        UpdateButtons();
+        Update(m_vecItems.m_strPath);
       }
       else if (iControl == CONTROL_BTNSAVE)
       {
@@ -236,7 +246,6 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSAVE);
     CONTROL_ENABLE(CONTROL_BTNPLAY);
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
-    CONTROL_ENABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_ENABLE(CONTROL_BTNREPEAT);
 
     if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
@@ -255,7 +264,6 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNCLEAR);
     CONTROL_DISABLE(CONTROL_BTNSAVE);
     CONTROL_DISABLE(CONTROL_BTNSHUFFLE);
-    CONTROL_DISABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_DISABLE(CONTROL_BTNPLAY);
     CONTROL_DISABLE(CONTROL_BTNNEXT);
     CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
@@ -266,11 +274,8 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 
   // update buttons
   CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
-  CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
-  if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).IsShuffled())
-    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
   if (g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO))
-    CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
+    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
 
   // update repeat button
   int iRepeat = 595 + g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO);
@@ -283,7 +288,6 @@ bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strPath = pItem->m_strPath;
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-  g_playlistPlayer.Reset();
   g_playlistPlayer.Play( iItem );
 
   return true;
@@ -320,37 +324,6 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
   {
     m_viewControl.SetSelectedItem(iItem - 1);
   }
-}
-
-void CGUIWindowVideoPlaylist::ShufflePlayList()
-{
-  int iPlaylist = PLAYLIST_VIDEO;
-  ClearFileItems();
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
-
-  CStdString strFileName;
-  if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
-  {
-    const CPlayList::CPlayListItem& item = playlist[g_playlistPlayer.GetCurrentSong()];
-    strFileName = item.GetFileName();
-  }
-
-  // shuffle or unshuffle?
-  playlist.IsShuffled() ? playlist.UnShuffle() : playlist.Shuffle();
-  if (g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
-    g_playlistPlayer.Reset();
-
-  if (!strFileName.IsEmpty())
-  {
-    for (int i = 0; i < playlist.size(); i++)
-    {
-      const CPlayList::CPlayListItem& item = playlist[i];
-      if (item.GetFileName() == strFileName)
-        g_playlistPlayer.SetCurrentSong(i);
-    }
-  }
-
-  Update(m_vecItems.m_strPath);
 }
 
 /// \brief Save current playlist to playlist folder
