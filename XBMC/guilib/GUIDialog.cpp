@@ -233,8 +233,8 @@ bool CGUIDialog::IsAnimating(ANIMATION_TYPE animType)
   return CGUIWindow::IsAnimating(animType);
 }
 
-void CGUIDialog::Reset()
+void CGUIDialog::SetDefaults()
 {
-  CGUIWindow::Reset();
+  CGUIWindow::SetDefaults();
   m_renderOrder = 1;
 }

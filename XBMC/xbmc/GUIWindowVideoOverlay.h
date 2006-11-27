@@ -8,5 +8,5 @@ public:
   virtual ~CGUIWindowVideoOverlay(void);
   virtual void Render();
 protected:
-  virtual void Reset();
+  virtual void SetDefaults();
 };
