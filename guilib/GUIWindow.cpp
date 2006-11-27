@@ -162,7 +162,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
   // now load in the skin file
-  Reset();
+  SetDefaults();
 
   LoadReferences();
   TiXmlElement *pChild = pRootElement->FirstChildElement();
@@ -1153,7 +1153,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   return true;
 }
 
-void CGUIWindow::Reset()
+void CGUIWindow::SetDefaults()
 {
   m_renderOrder = 0;
   m_saveLastControl = true;

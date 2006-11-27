@@ -35,8 +35,8 @@ void CGUIWindowVideoOverlay::Render()
   CGUIDialog::Render();
 }
 
-void CGUIWindowVideoOverlay::Reset()
+void CGUIWindowVideoOverlay::SetDefaults()
 {
-  CGUIDialog::Reset();
+  CGUIDialog::SetDefaults();
   m_renderOrder = 0;
 }
