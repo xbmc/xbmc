@@ -1872,6 +1872,17 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
       }
     }
   }
+  // this adds support for files which inherit a folder.jpg icon which has not been cached yet.
+  // this occurs when queueing a top-level folder which has not been traversed yet.
+  else if (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs"))
+  {
+    CStdString strFolder, strFile;
+    CUtil::Split(m_strPath, strFolder, strFile);
+    CFileItem folderItem(strFolder, true);
+    folderItem.SetMusicThumb(alwaysCheckRemote);
+    if (folderItem.HasThumbnail())
+      return folderItem.GetThumbnailImage();
+  }
   // No thumb found
   return "";
 }
