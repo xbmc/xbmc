@@ -9,6 +9,7 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
+			<scrolltime>1</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -22,7 +23,7 @@
 				<control type="label">
 					<posx>26</posx>
 					<posy>2</posy>
-					<width>370</width>
+					<width>365</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -30,19 +31,20 @@
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
-					<posx>440</posx>
+					<posx>435</posx>
 					<posy>2</posy>
 					<width>100</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
+					<textcolor>60ffffff</textcolor>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
 			</itemlayout>
 			<focusedlayout height="75">
 				<control type="image">
-					<width>450</width>
+					<width>445</width>
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
@@ -65,7 +67,7 @@
 				<control type="label">
 					<posx>62</posx>
 					<posy>7</posy>
-					<width>378</width>
+					<width>373</width>
 					<height>16</height>
 					<font>special13</font>
 					<include>listselectedcolor</include>
@@ -75,7 +77,7 @@
 				<control type="label">
 					<posx>62</posx>
 					<posy>30</posy>
-					<width>378</width>
+					<width>373</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -85,14 +87,14 @@
 				<control type="label">
 					<posx>62</posx>
 					<posy>55</posy>
-					<width>338</width>
+					<width>333</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<label>$INFO[ListItem.Year,, - ]$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
-					<posx>440</posx>
+					<posx>435</posx>
 					<posy>55</posy>
 					<width>350</width>
 					<height>16</height>
@@ -103,7 +105,6 @@
 				</control>
 			</focusedlayout>
 		</control>
-		<include>AllViewCommons</include>
 	</include>
 	<include name="MusicViewCommons_BigList">
 		<control type="list" id="52">
@@ -115,11 +116,12 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
+			<scrolltime>1</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="130">
 				<control type="image">
-					<width>450</width>
+					<width>445</width>
 					<height>120</height>
 					<posx>0</posx>
 					<posy>0</posy>
@@ -142,7 +144,7 @@
 				<control type="label">
 					<posx>110</posx>
 					<posy>7</posy>
-					<width>280</width>
+					<width>275</width>
 					<height>16</height>
 					<font>special13</font>
 					<include>listselectedcolor</include>
@@ -152,7 +154,7 @@
 				<control type="label">
 					<posx>110</posx>
 					<posy>35</posy>
-					<width>280</width>
+					<width>275</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -162,7 +164,7 @@
 				<control type="label">
 					<posx>110</posx>
 					<posy>60</posy>
-					<width>280</width>
+					<width>275</width>
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
@@ -170,7 +172,7 @@
 					<info>ListItem.Genre</info>
 				</control>
 				<control type="label">
-					<posx>440</posx>
+					<posx>435</posx>
 					<posy>95</posy>
 					<width>350</width>
 					<height>16</height>
@@ -182,7 +184,7 @@
 			</itemlayout>
 			<focusedlayout height="130">
 				<control type="image">
-					<width>450</width>
+					<width>445</width>
 					<height>120</height>
 					<posx>0</posx>
 					<posy>0</posy>
@@ -205,7 +207,7 @@
 				<control type="label">
 					<posx>110</posx>
 					<posy>7</posy>
-					<width>280</width>
+					<width>275</width>
 					<height>16</height>
 					<font>special13</font>
 					<include>listselectedcolor</include>
@@ -215,7 +217,7 @@
 				<control type="label">
 					<posx>110</posx>
 					<posy>35</posy>
-					<width>280</width>
+					<width>275</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -225,7 +227,7 @@
 				<control type="label">
 					<posx>110</posx>
 					<posy>60</posy>
-					<width>280</width>
+					<width>275</width>
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
@@ -233,7 +235,7 @@
 					<info>ListItem.Genre</info>
 				</control>
 				<control type="label">
-					<posx>440</posx>
+					<posx>435</posx>
 					<posy>95</posy>
 					<width>350</width>
 					<height>16</height>
@@ -255,6 +257,7 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
+			<scrolltime>1</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -268,7 +271,7 @@
 				<control type="label">
 					<posx>26</posx>
 					<posy>2</posy>
-					<width>370</width>
+					<width>365</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -276,19 +279,20 @@
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
-					<posx>440</posx>
+					<posx>435</posx>
 					<posy>2</posy>
 					<width>100</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<align>right</align>
+					<textcolor>60ffffff</textcolor>
 					<info>ListItem.Label2</info>
 				</control>
 			</itemlayout>
 			<focusedlayout height="75">
 				<control type="image">
-					<width>450</width>
+					<width>445</width>
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
@@ -311,7 +315,7 @@
 				<control type="label">
 					<posx>62</posx>
 					<posy>7</posy>
-					<width>378</width>
+					<width>373</width>
 					<height>16</height>
 					<font>special13</font>
 					<include>listselectedcolor</include>
@@ -321,7 +325,7 @@
 				<control type="label">
 					<posx>62</posx>
 					<posy>32</posy>
-					<width>378</width>
+					<width>373</width>
 					<height>16</height>
 					<font>font12</font>
 					<include>listselectedcolor</include>
@@ -331,14 +335,14 @@
 				<control type="label">
 					<posx>62</posx>
 					<posy>55</posy>
-					<width>338</width>
+					<width>332</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
-					<posx>440</posx>
+					<posx>435</posx>
 					<posy>55</posy>
 					<width>350</width>
 					<height>16</height>
@@ -349,7 +353,6 @@
 				</control>
 			</focusedlayout>
 		</control>
-		<include>AllViewCommons</include>
 	</include>
 	<include name="VideoViewCommons_BigList">
 		<control type="list" id="52">
@@ -361,11 +364,12 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
+			<scrolltime>1</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="130">
 				<control type="image">
-					<width>450</width>
+					<width>445</width>
 					<height>120</height>
 					<posx>0</posx>
 					<posy>0</posy>
@@ -388,7 +392,7 @@
 				<control type="label">
 					<posx>80</posx>
 					<posy>7</posy>
-					<width>360</width>
+					<width>355</width>
 					<height>16</height>
 					<font>special13</font>
 					<include>listselectedcolor</include>
@@ -398,7 +402,7 @@
 				<control type="label">
 					<posx>80</posx>
 					<posy>35</posy>
-					<width>360</width>
+					<width>355</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -408,7 +412,7 @@
 				<control type="label">
 					<posx>80</posx>
 					<posy>60</posy>
-					<width>360</width>
+					<width>355</width>
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
@@ -416,7 +420,7 @@
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
-					<posx>440</posx>
+					<posx>435</posx>
 					<posy>95</posy>
 					<width>350</width>
 					<height>16</height>
@@ -428,7 +432,7 @@
 			</itemlayout>
 			<focusedlayout height="130">
 				<control type="image">
-					<width>450</width>
+					<width>445</width>
 					<height>120</height>
 					<posx>0</posx>
 					<posy>0</posy>
@@ -451,7 +455,7 @@
 				<control type="label">
 					<posx>80</posx>
 					<posy>7</posy>
-					<width>360</width>
+					<width>355</width>
 					<height>16</height>
 					<font>special13</font>
 					<include>listselectedcolor</include>
@@ -461,7 +465,7 @@
 				<control type="label">
 					<posx>80</posx>
 					<posy>35</posy>
-					<width>360</width>
+					<width>355</width>
 					<height>16</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -471,7 +475,7 @@
 				<control type="label">
 					<posx>80</posx>
 					<posy>60</posy>
-					<width>360</width>
+					<width>355</width>
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
@@ -479,7 +483,7 @@
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
-					<posx>440</posx>
+					<posx>435</posx>
 					<posy>95</posy>
 					<width>350</width>
 					<height>16</height>
@@ -501,6 +505,7 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
+			<scrolltime>1</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -514,7 +519,7 @@
 				<control type="label">
 					<posx>26</posx>
 					<posy>2</posy>
-					<width>370</width>
+					<width>365</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -522,19 +527,20 @@
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
-					<posx>440</posx>
+					<posx>435</posx>
 					<posy>2</posy>
 					<width>100</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
+					<textcolor>60ffffff</textcolor>
 					<align>right</align>
 					<info>ListItem.Label2</info>
 				</control>
 			</itemlayout>
 			<focusedlayout height="75">
 				<control type="image">
-					<width>450</width>
+					<width>445</width>
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
@@ -557,7 +563,7 @@
 				<control type="label">
 					<posx>62</posx>
 					<posy>10</posy>
-					<width>378</width>
+					<width>373</width>
 					<height>16</height>
 					<font>special13</font>
 					<include>listselectedcolor</include>
@@ -565,7 +571,7 @@
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
-					<posx>440</posx>
+					<posx>435</posx>
 					<posy>55</posy>
 					<width>350</width>
 					<height>16</height>
@@ -576,12 +582,39 @@
 				</control>
 			</focusedlayout>
 		</control>
-		<include>AllViewCommons</include>
 	</include>
-	<include name="AllViewCommons">
+	<include name="AllViewCommonThumbs">
+		<control type="thumbnailpanel" id="51">
+			<description>thumbnailpanel</description>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>51</onup>
+			<ondown>51</ondown>
+			<include>contentpanelslide</include>
+			<pagecontrol>60</pagecontrol>
+		</control>
+	</include>
+	<include name="AllViewCommonPageControls">
+		<control type="scrollbar" id="60">
+			<posx>659</posx>
+			<posy>125</posy>
+			<width>13</width>
+			<height>375</height>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="3">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="3">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>scrollbar_nib.png</textureslidernib>
+			<textureslidernibfocus>scrollbar_nib_focus.png</textureslidernibfocus>
+			<onleft>50</onleft>
+			<onright>9000</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+			<include>contentpanelslide</include>
+			<visible>!Skin.HasSetting(UseScrollbars)</visible>
+		</control>
 		<control type="spincontrol" id="60">
 			<description>Next page button</description>
-			<posx>620</posx>
+			<posx>615</posx>
 			<posy>526</posy>
 			<subtype>page</subtype>
 			<font>font12</font>
@@ -591,15 +624,7 @@
 			<onup>50</onup>
 			<showonepage>false</showonepage>
 			<include>contentpanelslide</include>
-		</control>
-		<control type="thumbnailpanel" id="51">
-			<description>thumbnailpanel</description>
-			<onleft>9000</onleft>
-			<onright>60</onright>
-			<onup>51</onup>
-			<ondown>51</ondown>
-			<include>contentpanelslide</include>
-			<pagecontrol>60</pagecontrol>
+			<visible>Skin.HasSetting(UseScrollbars)</visible>
 		</control>
 	</include>
 </includes>
