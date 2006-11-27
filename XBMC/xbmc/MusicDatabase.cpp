@@ -11,7 +11,8 @@
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
-#define MUSIC_DATABASE_VERSION 1.6f
+#define MUSIC_DATABASE_OLD_VERSION 1.6f
+#define MUSIC_DATABASE_VERSION        3
 #define MUSIC_DATABASE_NAME "MyMusic6.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -20,7 +21,8 @@ using namespace CDDB;
 
 CMusicDatabase::CMusicDatabase(void)
 {
-  m_fVersion=MUSIC_DATABASE_VERSION;
+  m_preV2version=MUSIC_DATABASE_OLD_VERSION;
+  m_version=MUSIC_DATABASE_VERSION;
   m_strDatabaseFile=MUSIC_DATABASE_NAME;
   m_iSongsBeforeCommit = 0;
 }
@@ -3307,7 +3309,7 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
   return false;
 }
 
-bool CMusicDatabase::UpdateOldVersion(float fVersion)
+bool CMusicDatabase::UpdateOldVersion(int version)
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
@@ -3315,255 +3317,6 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
 
   try
   {
-    if (fVersion < 0.5f)
-    { // Version 0 to 0.5 upgrade - we need to add the version table
-      CLog::Log(LOGINFO, "creating versions table");
-      m_pDS->exec("CREATE TABLE version (idVersion float)\n");
-    }
-    if (fVersion < 1.0f)
-    {
-      // version 0.5 to 1.0 upgrade - we need to add the thumbs table + run SetMusicThumbs()
-      // on all elements and then produce a new songs table
-      // check if we already have a thumbs table (could happen if the code below asserts for whatever reason)
-      m_pDS->query("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'thumb'\n");
-      if (m_pDS->num_rows() > 0)
-      {
-        m_pDS->close();
-      }
-      else
-      { // create it
-        CLog::Log(LOGINFO, "create thumbs table");
-        m_pDS->exec("CREATE TABLE thumb ( idThumb integer primary key, strThumb text )\n");
-      }
-      m_pDS->exec("PRAGMA cache_size=8192\n");
-      m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
-      m_pDS->exec("PRAGMA count_changes='OFF'\n");
-      m_pDS2->exec("PRAGMA cache_size=8192\n");
-      m_pDS2->exec("PRAGMA synchronous='NORMAL'\n");
-      m_pDS2->exec("PRAGMA count_changes='OFF'\n");
-      m_bOpen = true;
-      // ok, now we need to run through our table + fill in all the thumbs we need
-      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dialog)
-      {
-        dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, "");
-        dialog->SetLine(1, "");
-        dialog->SetLine(2, "");
-        dialog->StartModal();
-        dialog->SetLine(1, "Creating newly formatted tables");
-        dialog->Progress();
-      }
-      BeginTransaction();
-      CLog::Log(LOGINFO, "Creating temporary songs table");
-      m_pDS->exec("CREATE TEMPORARY TABLE tempsong ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer)\n");
-      CLog::Log(LOGINFO, "Copying songs into temporary song table");
-      m_pDS->exec("INSERT INTO tempsong SELECT idSong,idAlbum,idPath,idArtist,iNumArtists,idGenre,iNumGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,iTimesPlayed,iStartOffset,iEndOffset FROM song");
-      CLog::Log(LOGINFO, "Destroying old songs table");
-      m_pDS->exec("DROP TABLE song");
-      CLog::Log(LOGINFO, "Creating new songs table");
-      m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer)\n");
-      CLog::Log(LOGINFO, "Copying songs into new songs table");
-      m_pDS->exec("INSERT INTO song(idSong,idAlbum,idPath,idArtist,iNumArtists,idGenre,iNumGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,iTimesPlayed,iStartOffset,iEndOffset) SELECT * FROM tempsong");
-      CLog::Log(LOGINFO, "Deleting temporary songs table");
-      m_pDS->exec("DROP TABLE tempsong");
-      CommitTransaction();
-      BeginTransaction();
-      if (dialog)
-      {
-        dialog->SetLine(0, "Retrieving updated information on songs...");
-        dialog->SetLine(1, "");
-      }
-      CLog::Log(LOGINFO, "Finding thumbs");
-      if (!m_pDS2->query("SELECT * from song join album on song.idAlbum = album.idAlbum join path on path.idPath = song.idPath\n"))
-        return false;
-      if (m_pDS2->num_rows() > 0)
-      {
-        CStdString strProgress;
-        strProgress.Format("Processing %i of %i", 1, m_pDS2->num_rows());
-        if (dialog)
-        {
-          dialog->SetLine(2, strProgress);
-          dialog->Progress();
-        }
-        // turn on thumb caching - mayaswell make it as fast as we can
-        g_directoryCache.InitMusicThumbCache();
-        // get data from returned rows
-        int count = 1;
-        while (!m_pDS2->eof())
-        {
-          if (!(count % 10))
-          {
-            strProgress.Format("Processing %i of %i", count, m_pDS2->num_rows());
-            if (dialog)
-            {
-              dialog->SetLine(2, strProgress);
-              dialog->Progress();
-            }
-          }
-          CSong song;
-          // construct a song to be transferred to a fileitem
-          song.strAlbum = m_pDS2->fv("album.strAlbum").get_asString();
-          song.iTrack = m_pDS2->fv("song.iTrack").get_asLong() ;
-          song.iDuration = m_pDS2->fv("song.iDuration").get_asLong() ;
-          song.iYear = m_pDS2->fv("song.iYear").get_asLong() ;
-          song.strTitle = m_pDS2->fv("song.strTitle").get_asString();
-          song.iTimedPlayed = m_pDS2->fv("song.iTimesPlayed").get_asLong();
-          song.iStartOffset = m_pDS2->fv("song.iStartOffset").get_asLong();
-          song.iEndOffset = m_pDS2->fv("song.iEndOffset").get_asLong();
-          // Get filename with full path
-          song.strFileName = m_pDS2->fv("path.strPath").get_asString();
-          CUtil::AddDirectorySeperator(song.strFileName);
-          song.strFileName += m_pDS2->fv("song.strFileName").get_asString();
-          // ok, now transfer to a file item and obtain the thumb
-          CFileItem item(song);
-          item.SetMusicThumb();
-          long idSong = m_pDS2->fv("song.idSong").get_asLong();
-          // add any found thumb
-          CStdString strThumb = item.GetThumbnailImage();
-          long lThumb = AddThumb(strThumb);
-          CStdString strSQL=FormatSQL("UPDATE song SET idThumb=%i where idSong=%i", lThumb, idSong);
-          m_pDS->exec(strSQL.c_str());
-          m_pDS2->next();
-          count++;
-        }
-      }
-      // cleanup
-      m_pDS2->close();
-      g_directoryCache.ClearMusicThumbCache();
-      CommitTransaction();
-      if (dialog) dialog->Close();
-
-    }
-    if (fVersion < 1.1f)
-    {
-      // version 1.0 to 1.1 upgrade - we need to create an index on the thumb table
-      CLog::Log(LOGINFO, "create thumb index");
-      m_pDS->exec("CREATE INDEX idxThumb ON thumb(strThumb)");
-      CLog::Log(LOGINFO, "create thumb index successfull");
-      fVersion = MUSIC_DATABASE_VERSION;
-    }
-    if (fVersion < 1.2f)
-    {
-      // version 1.1 to 1.2 upgrade - we need to add the musicbrainz columns to the song table
-      CLog::Log(LOGINFO, "Updating song table with musicbrainz columns");
-      BeginTransaction();
-      CLog::Log(LOGINFO, "Creating temporary songs table");
-      m_pDS->exec("CREATE TEMPORARY TABLE tempsong ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer)\n");
-      CLog::Log(LOGINFO, "Copying songs into temporary song table");
-      m_pDS->exec("INSERT INTO tempsong SELECT idSong,idAlbum,idPath,idArtist,iNumArtists,idGenre,iNumGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,iTimesPlayed,iStartOffset,iEndOffset,idThumb FROM song");
-      CLog::Log(LOGINFO, "Destroying old songs table");
-      m_pDS->exec("DROP TABLE song");
-      CLog::Log(LOGINFO, "Creating new songs table");
-      m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer)\n");
-      CLog::Log(LOGINFO, "Copying songs into new songs table");
-      m_pDS->exec("INSERT INTO song(idSong,idAlbum,idPath,idArtist,iNumArtists,idGenre,iNumGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,iTimesPlayed,iStartOffset,iEndOffset,idThumb) SELECT * FROM tempsong");
-      CLog::Log(LOGINFO, "Deleting temporary songs table");
-      m_pDS->exec("DROP TABLE tempsong");
-      CommitTransaction();
-    }
-    if (fVersion < 1.3f)
-    {
-      // version 1.2 to 1.3 upgrade - we need to create a date column when a song was played the last time
-      CLog::Log(LOGINFO, "Updating song table with lastplayed column");
-      BeginTransaction();
-      CLog::Log(LOGINFO, "Creating temporary songs table");
-      m_pDS->exec("CREATE TEMPORARY TABLE tempsong ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer)\n");
-      CLog::Log(LOGINFO, "Copying songs into temporary song table");
-      m_pDS->exec("INSERT INTO tempsong SELECT idSong, idAlbum, idPath, idArtist, iNumArtists, idGenre, iNumGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb FROM song");
-      CLog::Log(LOGINFO, "Destroying old songs table");
-      m_pDS->exec("DROP TABLE song");
-      CLog::Log(LOGINFO, "Creating new songs table");
-      m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed date)\n");
-      CLog::Log(LOGINFO, "Copying songs into new songs table");
-      m_pDS->exec("INSERT INTO song(idSong, idAlbum, idPath, idArtist, iNumArtists, idGenre, iNumGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb) SELECT * FROM tempsong");
-      CLog::Log(LOGINFO, "Deleting temporary songs table");
-      m_pDS->exec("DROP TABLE tempsong");
-      CLog::Log(LOGINFO, "create idxSong1 index");
-      m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
-      CLog::Log(LOGINFO, "create idxSong2 index");
-      m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
-      CLog::Log(LOGINFO, "create song view");
-      m_pDS->exec("create view songview as select idSong, song.iNumArtists as iNumArtists, song.iNumGenres as iNumGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, strAlbum, strPath, strArtist, strGenre, strThumb from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb");
-      CLog::Log(LOGINFO, "create album view");
-      m_pDS->exec("create view albumview as select idAlbum, strAlbum, iNumArtists, strArtist, strPath from album join path on album.idPath=path.idPath join artist on album.idArtist=artist.idArtist");
-      CommitTransaction();
-    }
-    if (fVersion < 1.4f)
-    {
-      // version 1.3 to 1.4 upgrade - we need to add a thumbnail column to the album table and update song and album view
-      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dialog)
-      {
-        dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, "");
-        dialog->SetLine(1, "");
-        dialog->SetLine(2, "This may take a couple of minutes...");
-        dialog->StartModal();
-
-        //  Let the progress dialog fade in, hopefully ;)
-        DWORD dwTicks=GetTickCount();
-        while (GetTickCount()-dwTicks<1000)
-          dialog->Progress();
-      }
-
-      BeginTransaction();
-      
-      dialog->SetLine(1, "Dropping views...");
-      dialog->Progress();
-      CLog::Log(LOGINFO, "Dropping song view");
-      m_pDS->exec("drop view songview");
-      CLog::Log(LOGINFO, "Dropping album view");
-      m_pDS->exec("drop view albumview");
-
-      dialog->SetLine(1, "Creating new album table...");
-      dialog->Progress();
-      CLog::Log(LOGINFO, "Creating temporary album table");
-      m_pDS->exec("CREATE TEMPORARY TABLE tempalbum ( idAlbum integer primary key, strAlbum text, idArtist integer, iNumArtists integer, idPath integer, idThumb integer)\n");
-      CLog::Log(LOGINFO, "Copying albums into temporary album table");
-      m_pDS->exec("INSERT INTO tempalbum SELECT distinct album.idAlbum as idAlbum, strAlbum, album.idArtist as idArtist, album.iNumArtists as iNumArtists, album.idPath as idPath, song.idThumb as idThumb FROM album join song on album.idAlbum=song.idAlbum group by album.idalbum");
-      CLog::Log(LOGINFO, "Dropping old album table");
-      m_pDS->exec("DROP TABLE album");
-      CLog::Log(LOGINFO, "Creating new album table");
-      m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum text, idArtist integer, iNumArtists integer, idPath integer, idThumb integer)\n");
-      CLog::Log(LOGINFO, "Copying albums into new albums table");
-      m_pDS->exec("INSERT INTO album(idAlbum, strAlbum, idArtist, iNumArtists, idPath, idThumb) SELECT * FROM tempalbum");
-      CLog::Log(LOGINFO, "Dropping temporary album table");
-      m_pDS->exec("DROP TABLE tempalbum");
-      CLog::Log(LOGINFO, "create album index");
-      m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
-      
-      dialog->SetLine(1, "Creating new views...");
-      dialog->Progress();
-      CLog::Log(LOGINFO, "create song view");
-      m_pDS->exec("create view songview as select idSong, song.iNumArtists as iNumArtists, song.iNumGenres as iNumGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb");
-      CLog::Log(LOGINFO, "create album view");
-      m_pDS->exec("create view albumview as select idAlbum, strAlbum, iNumArtists, album.idArtist as idArtist, strArtist, strPath, strThumb from album join path on album.idPath=path.idPath join artist on album.idArtist=artist.idArtist join thumb on album.idThumb=thumb.idThumb");
-
-      CommitTransaction();
-
-      dialog->Close();
-    }
-    if (fVersion < 1.5f)
-    { // version 1.4 to 1.5 upgrade - recreate the album view with 
-      // left outer instead of inner joins to get albums without an artist
-      BeginTransaction();
-      
-      CLog::Log(LOGINFO, "Dropping album view");
-      m_pDS->exec("drop view albumview");
-      CLog::Log(LOGINFO, "create album view");
-      m_pDS->exec("create view albumview as select idAlbum, strAlbum, iNumArtists, album.idArtist as idArtist, strArtist, strPath, strThumb from album left outer join path on album.idPath=path.idPath left outer join artist on album.idArtist=artist.idArtist left outer join thumb on album.idThumb=thumb.idThumb");
-
-      CommitTransaction();
-    }
-    if (fVersion < 1.6f)
-    {
-      // upgrade from 1.5 to 1.6 - add partymode table
-      BeginTransaction();
-      CLog::Log(LOGINFO, "Adding partymode table");
-      m_pDS->exec("CREATE TABLE partymode (idRow integer primary key, idSong integer, bRelaxedRestrictions bool)\n");
-      CommitTransaction();
-    }
   }
   catch (...)
   {

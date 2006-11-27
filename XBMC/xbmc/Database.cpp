@@ -99,27 +99,52 @@ bool CDatabase::Open()
   else
   { // Database exists, check the version number
     m_pDS->query("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'version'\n");
-    float fVersion = 0.0f;
+    int version = 0;
     if (m_pDS->num_rows() > 0)
     {
       m_pDS->close();
       m_pDS->query("SELECT idVersion FROM version\n");
       if (m_pDS->num_rows() > 0)
-        fVersion = m_pDS->fv("idVersion").get_asFloat();
+      {
+//#ifdef PRE_2_1_DATABASE_COMPATIBILITY
+        float fVersion = m_pDS->fv("idVersion").get_asFloat();
+        if (fVersion < m_preV2version)
+        { // old version - drop db completely
+          CLog::Log(LOGERROR, "Unable to open %s (old version?)", m_strDatabaseFile.c_str());
+          Close();
+          ::DeleteFile(strDatabase.c_str());
+          return false;
+        }
+        if (fVersion < 3)
+        {
+          // has to be old version - drop the version table
+          m_pDS->close();
+          CLog::Log(LOGINFO, "dropping version table");
+          m_pDS->exec("drop table version");
+          CLog::Log(LOGINFO, "creating version table");
+          version = 3;
+          m_pDS->exec("CREATE TABLE version (idVersion integer)\n");
+          CStdString strSQL=FormatSQL("INSERT INTO version (idVersion) values(%i)\n", version);
+          m_pDS->exec(strSQL.c_str());
+        }
+        else
+//#endif
+        version = m_pDS->fv("idVersion").get_asInteger();
+      }
     }
-    if (fVersion < m_fVersion)
+    if (version < m_version)
     {
-      CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %.2f to %.2f", m_strDatabaseFile.c_str(), fVersion, m_fVersion);
-      if (UpdateOldVersion(fVersion) && UpdateVersionNumber())
-        CLog::Log(LOGINFO, "Update to version %.2f successfull", m_fVersion);
+      CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", m_strDatabaseFile.c_str(), version, m_version);
+      if (UpdateOldVersion(version) && UpdateVersionNumber())
+        CLog::Log(LOGINFO, "Update to version %i successfull", m_version);
       else
       {
-        CLog::Log(LOGERROR, "Can't update the database %s from version %.2f to %.2f", m_strDatabaseFile.c_str(), fVersion, m_fVersion);
+        CLog::Log(LOGERROR, "Can't update the database %s from version %i to %i", m_strDatabaseFile.c_str(), version, m_version);
         Close();
         return false;
       }
     }
-    else if (fVersion > m_fVersion)
+    else if (version > m_version)
     {
       CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting!", m_strDatabaseFile.c_str());
       Close();
@@ -247,14 +272,14 @@ bool CDatabase::CreateTables()
     m_pDS->exec("PRAGMA default_cache_size=16384\n");
 
     CLog::Log(LOGINFO, "creating version table");
-    m_pDS->exec("CREATE TABLE version (idVersion float)\n");
-    CStdString strSQL=FormatSQL("INSERT INTO version (idVersion) values(%f)\n", m_fVersion);
+    m_pDS->exec("CREATE TABLE version (idVersion integer)\n");
+    CStdString strSQL=FormatSQL("INSERT INTO version (idVersion) values(%i)\n", m_version);
     m_pDS->exec(strSQL.c_str());
 
     return true;
 }
 
-bool CDatabase::UpdateOldVersion(float fVersion)
+bool CDatabase::UpdateOldVersion(int version)
 {
   return false;
 }
@@ -263,7 +288,7 @@ bool CDatabase::UpdateVersionNumber()
 {
   try
   {
-    CStdString strSQL=FormatSQL("UPDATE version SET idVersion=%f\n", m_fVersion);
+    CStdString strSQL=FormatSQL("UPDATE version SET idVersion=%i\n", m_version);
     m_pDS->exec(strSQL.c_str());
   }
   catch(...)

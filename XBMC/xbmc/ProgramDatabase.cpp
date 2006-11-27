@@ -5,12 +5,14 @@
 #include "xbox/xbeheader.h"
 #include "GUIWindowFileManager.h"
 
-#define PROGRAM_DATABASE_VERSION 0.9f
+#define PROGRAM_DATABASE_OLD_VERSION 0.9f
+#define PROGRAM_DATABASE_VERSION 3
 
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)
 {
-  m_fVersion=PROGRAM_DATABASE_VERSION;
+  m_preV2version=PROGRAM_DATABASE_OLD_VERSION;
+  m_version=PROGRAM_DATABASE_VERSION;
   m_strDatabaseFile=PROGRAM_DATABASE_NAME;
 }
 
@@ -46,7 +48,7 @@ bool CProgramDatabase::CreateTables()
   return true;
 }
 
-bool CProgramDatabase::UpdateOldVersion(float fVersion)
+bool CProgramDatabase::UpdateOldVersion(int version)
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
@@ -54,127 +56,6 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
 
   try
   {
-    if (fVersion < 0.5f)
-    { // Version 0 to 0.5 upgrade - we need to add the version table
-      CLog::Log(LOGINFO, "creating versions table");
-      m_pDS->exec("CREATE TABLE version (idVersion float)\n");
-    }
-
-    if (fVersion < 0.6f)
-    { // Version 0.5 to 0.6 upgrade - we need to add the region entry
-      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dialog)
-      {
-        dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, "");
-        dialog->SetLine(1, "");
-        dialog->SetLine(2, "");
-        dialog->StartModal();
-        dialog->SetLine(1, "Adding table entries");
-        dialog->Progress();
-      }
-      BeginTransaction();
-      CLog::Log(LOGINFO, "Creating temporary files table");
-      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, idPath integer, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer)\n");
-      CLog::Log(LOGINFO, "Copying files into temporary files table");
-      m_pDS->exec("INSERT INTO tempfiles SELECT idFile,idPath,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed FROM files");
-      CLog::Log(LOGINFO, "Destroying old files table");
-      m_pDS->exec("DROP TABLE files");
-      CLog::Log(LOGINFO, "Creating new files table");
-      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
-      CLog::Log(LOGINFO, "Copying files into new files table");
-      m_pDS->exec("INSERT INTO files(idFile,idPath,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed) SELECT * FROM tempfiles");
-      CLog::Log(LOGINFO, "Deleting temporary files table");
-      m_pDS->exec("DROP TABLE tempfiles");
-
-      CStdString strSQL=FormatSQL("update files set iRegion=%i",-1);
-      m_pDS->exec(strSQL.c_str());
-      
-      CommitTransaction();
-      if (dialog) dialog->Close();
-    }
-    if (fVersion < 0.7f)
-    { // Version 0.6 to 0.7 update - need to create the trainers table
-      CLog::Log(LOGINFO,"Creating trainers table");    
-      m_pDS->exec("CREATE TABLE trainers (idKey integer auto_increment primary key, idCRC integer, idTitle integer, strTrainerPath text, strSettings text, Active integer)\n");
-    }
-    if (fVersion < 0.71f)
-    { // Version 0.7 to 0.71 update - fix the idTitle bug
-      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dialog)
-      {
-        dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, "");
-        dialog->SetLine(1, "Adding table entries");
-        dialog->SetLine(2, "");;
-        dialog->StartModal();
-        dialog->Progress();
-      }
-      BeginTransaction();
-      CLog::Log(LOGINFO, "Creating temporary files table");
-      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, idPath integer, strFilename text, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
-      CLog::Log(LOGINFO, "Copying files into temporary files table");
-      m_pDS->exec("INSERT INTO tempfiles SELECT idFile,idPath,strFilename,xbedescription,iTimesPlayed,lastAccessed,iRegion FROM files");
-      CLog::Log(LOGINFO, "Destroying old files table");
-      m_pDS->exec("DROP TABLE files");
-      CLog::Log(LOGINFO, "Creating new files table");
-      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
-      CLog::Log(LOGINFO, "Copying files into new files table");
-      m_pDS->exec("INSERT INTO files(idFile,idPath,strFilename,xbedescription,iTimesPlayed,lastAccessed,iRegion) SELECT * FROM tempfiles");
-      CLog::Log(LOGINFO, "Deleting temporary files table");
-      m_pDS->exec("DROP TABLE tempfiles");
-
-      CStdString strSQL=FormatSQL("update files set titleId=%i",-1);
-      m_pDS->exec(strSQL.c_str());
-      
-      CommitTransaction();
-      if (dialog) dialog->Close();
-    }
-    if (fVersion < 0.8f)
-    { // Version 0.71 to 0.8 update - drop old tables for single files table
-      CLog::Log(LOGINFO, "dropping old files table");
-      m_pDS->exec("DROP TABLE files");
-      CLog::Log(LOGINFO, "creating new files table");
-      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
-      CLog::Log(LOGINFO, "dropping old program table");
-      m_pDS->exec("DROP TABLE program");
-      CLog::Log(LOGINFO, "dropping bookmark table");
-      m_pDS->exec("DROP TABLE bookmark");
-      CLog::Log(LOGINFO, "dropping path table");
-      m_pDS->exec("DROP TABLE path");
-    }
-    if (fVersion < 0.9f) // 0.81 was mistake ;)
-    { // Version 0.8 to 0.9 update - add size field
-      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dialog)
-      {
-        dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, "");
-        dialog->SetLine(1, "Adding table entries");
-        dialog->SetLine(2, "");;
-        dialog->StartModal();
-        dialog->Progress();
-      }
-      BeginTransaction();
-      CLog::Log(LOGINFO, "Creating temporary files table");
-      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
-      CLog::Log(LOGINFO, "Copying files into temporary files table");
-      m_pDS->exec("INSERT INTO tempfiles SELECT idFile,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed,iRegion FROM files");
-      CLog::Log(LOGINFO, "Destroying old files table");
-      m_pDS->exec("DROP TABLE files");
-      CLog::Log(LOGINFO, "Creating new files table");
-      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer, iSize integer)\n");
-      CLog::Log(LOGINFO, "Copying files into new files table");
-      m_pDS->exec("INSERT INTO files(idFile,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed,iRegion) SELECT * FROM tempfiles");
-      CLog::Log(LOGINFO, "Deleting temporary files table");
-      m_pDS->exec("DROP TABLE tempfiles");
-
-      CStdString strSQL=FormatSQL("update files set iSize=%i",-1);
-      m_pDS->exec(strSQL.c_str());
-      
-      CommitTransaction();
-      if (dialog) dialog->Close();
-    }
   }
   catch (...)
   {
