@@ -28,14 +28,17 @@ protected:
   virtual bool CreateTables();
 
   bool m_bOpen;
-  float m_fVersion;
+  int m_version;
+//#ifdef PRE_2_1_DATABASE_COMPATIBILITY
+  float m_preV2version;
+//#endif
   CStdString m_strDatabaseFile;
   auto_ptr<SqliteDatabase> m_pDB;
   auto_ptr<Dataset> m_pDS;
   auto_ptr<Dataset> m_pDS2;
 
 private:
-  virtual bool UpdateOldVersion(float fVersion);
+  virtual bool UpdateOldVersion(int version);
   bool UpdateVersionNumber();
 
   int m_iRefCount;
