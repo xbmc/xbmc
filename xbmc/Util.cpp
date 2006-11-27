@@ -2996,6 +2996,7 @@ const BUILT_IN commands[] = {
   "System.LogOff","Log off current user",
   "System.PWMControl","Control PWM RGB LEDs",
   "Resolution", "Change XBMC's Resolution",
+  "SetFocus", "Change current focus to a different control id"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3169,6 +3170,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid destination window: %s", strWindow.c_str());
       return false;
     }
+  }
+  else if (execute.Equals("setfocus"))
+  {
+    CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), atol(parameter.c_str()));
+    g_graphicsContext.SendMessage(msg);
   }
   else if (execute.Equals("runscript"))
   {
