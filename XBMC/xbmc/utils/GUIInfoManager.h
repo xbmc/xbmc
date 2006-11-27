@@ -89,6 +89,7 @@
 #define SYSTEM_CURRENT_CONTROL      136
 #define SYSTEM_XBOX_NICKNAME        137
 #define SYSTEM_DVD_LABEL            138
+#define SYSTEM_HAS_DRIVE_F          139
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
 #define SYSTEM_TRAYOPEN	            142
@@ -98,6 +99,8 @@
 #define SYSTEM_PROFILENAME          146
 #define SYSTEM_PROFILETHUMB         147
 #define SYSTEM_HAS_LOGINSCREEN      148
+#define SYSTEM_HAS_DRIVE_G          149
+
 
 // reserved for systeminfo stuff
 #define SYSTEM_HDD_SMART            150
