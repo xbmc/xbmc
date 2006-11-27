@@ -10,5 +10,5 @@ public:
   virtual bool OnMouse();
   virtual void Render();
 protected:
-  virtual void Reset();
+  virtual void SetDefaults();
 };
