@@ -24,10 +24,10 @@
 #define STEPS 25
 
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
-    : CGUIDialog(2004, "MusicOverlay.xml")
+    : CGUIDialog(WINDOW_MUSIC_OVERLAY, "MusicOverlay.xml")
 {
-  m_loadOnDemand = false;
   m_renderOrder = 0;
+  m_visibleCondition = SKIN_HAS_MUSIC_OVERLAY;
 }
 
 CGUIWindowMusicOverlay::~CGUIWindowMusicOverlay()
@@ -90,4 +90,5 @@ void CGUIWindowMusicOverlay::SetDefaults()
 {
   CGUIDialog::SetDefaults();
   m_renderOrder = 0;
+  m_visibleCondition = SKIN_HAS_MUSIC_OVERLAY;
 }

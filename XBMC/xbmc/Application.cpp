@@ -103,6 +103,8 @@
 
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowOSD.h"
+#include "GUIWindowMusicOverlay.h"
+#include "GUIWindowVideoOverlay.h"
 
 // Dialog includes
 #include "GUIDialogMusicOSD.h"
@@ -1279,6 +1281,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
 
   m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
+  m_gWindowManager.Add(new CGUIWindowMusicOverlay);       // window id = 2903
+  m_gWindowManager.Add(new CGUIWindowVideoOverlay);       // window id = 2904
   m_gWindowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
   m_gWindowManager.Add(new CGUIWindowWeather);                // window id = 2600 WEATHER
   m_gWindowManager.Add(new CGUIWindowBuddies);                // window id = 2700 BUDDIES
@@ -1809,8 +1813,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  initialize new skin...");
   m_guiPointer.AllocResources(true);
-  m_guiMusicOverlay.AllocResources(true);
-  m_guiVideoOverlay.AllocResources(true);
   m_guiDialogVolumeBar.AllocResources(true);
   m_guiDialogSeekBar.AllocResources(true);
   m_guiDialogKaiToast.AllocResources(true);
@@ -1869,12 +1871,6 @@ void CApplication::UnloadSkin()
   m_guiDialogMuteBug.OnMessage(msg);
   m_guiDialogMuteBug.ResetControlStates();
   m_guiDialogMuteBug.FreeResources(true);
-  m_guiVideoOverlay.OnMessage(msg);
-  m_guiVideoOverlay.ResetControlStates();
-  m_guiVideoOverlay.FreeResources(true); 	 
-  m_guiMusicOverlay.OnMessage(msg);
-  m_guiMusicOverlay.ResetControlStates();
-  m_guiMusicOverlay.FreeResources(true);
 
   CGUIWindow::FlushReferenceCache(); // flush the cache
 
@@ -2080,35 +2076,7 @@ void CApplication::RenderNoPresent()
 #endif
 
   m_gWindowManager.UpdateModelessVisibility();
-
-  // check if we're playing a file
-  if (!m_bScreenSave && m_gWindowManager.IsOverlayAllowed())
-  {
-    // if we're playing a movie
-    if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-    {
-      // then show video overlay window
-      m_guiVideoOverlay.Show();
-      m_guiMusicOverlay.Close();
-    }
-    else if ( IsPlayingAudio() )
-    {
-      // audio show audio overlay window
-      m_guiMusicOverlay.Show();
-      m_guiVideoOverlay.Close();
-    }
-    else
-    {
-      m_guiMusicOverlay.Close();
-      m_guiVideoOverlay.Close();
-    }
-  }
-  else
-  {
-    m_guiMusicOverlay.Close();
-    m_guiVideoOverlay.Close();
-  }
-
+  
   // draw GUI
   g_graphicsContext.Clear();
   //SWATHWIDTH of 4 improves fillrates (performance investigator)
@@ -2928,12 +2896,16 @@ bool CApplication::ProcessMouse()
     if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
     {
       // then send the action to the video overlay window
-      m_guiVideoOverlay.OnAction(action);
+      CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
+      if (overlay)
+        overlay->OnAction(action);
     }
     else if ( IsPlayingAudio() )
     {
       // send message to the audio overlay window
-      m_guiMusicOverlay.OnAction(action);
+      CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
+      if (overlay)
+        overlay->OnAction(action);
     }
   }
   return m_gWindowManager.OnAction(action);
@@ -2964,16 +2936,19 @@ bool CApplication::ProcessHTTPApiButtons()
         // send mouse event to the music + video overlays, if they're enabled
         if (m_gWindowManager.IsOverlayAllowed())
         {
-          // if we're playing a movie
           if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
           {
             // then send the action to the video overlay window
-            m_guiVideoOverlay.OnAction(action);
+            CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
+            if (overlay)
+              overlay->OnAction(action);
           }
           else if ( IsPlayingAudio() )
           {
             // send message to the audio overlay window
-            m_guiMusicOverlay.OnAction(action);
+            CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
+            if (overlay)
+              overlay->OnAction(action);
           }
         }
         m_gWindowManager.OnAction(action);
@@ -3136,6 +3111,8 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_SYSTEM_INFORMATION);
     m_gWindowManager.Delete(WINDOW_SCREENSAVER);
     m_gWindowManager.Delete(WINDOW_OSD);
+    m_gWindowManager.Delete(WINDOW_MUSIC_OVERLAY);
+    m_gWindowManager.Delete(WINDOW_VIDEO_OVERLAY);
     m_gWindowManager.Delete(WINDOW_SCRIPTS_INFO);
     m_gWindowManager.Delete(WINDOW_SLIDESHOW);
 
@@ -3687,8 +3664,11 @@ void CApplication::RenderFullScreen()
 {
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   {
-    m_guiVideoOverlay.Close(true);
-    m_guiMusicOverlay.Close(true);
+    // make sure our overlays are closed
+    CGUIDialog *overlay = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
+    if (overlay) overlay->Close(true);
+    overlay = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
+    if (overlay) overlay->Close(true);
 
     CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
     if (!pFSWin)
