@@ -12,7 +12,7 @@
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        3
+#define MUSIC_DATABASE_VERSION        4
 #define MUSIC_DATABASE_NAME "MyMusic6.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -41,7 +41,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create artist table");
     m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist text)\n");
     CLog::Log(LOGINFO, "create album table");
-    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum text, idArtist integer, iNumArtists integer, idPath integer, idThumb integer)\n");
+    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum text, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, iYear integer, idPath integer, idThumb integer)\n");
     CLog::Log(LOGINFO, "create genre table");
     m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
     CLog::Log(LOGINFO, "create path table");
@@ -104,9 +104,9 @@ bool CMusicDatabase::CreateTables()
 
     // views
     CLog::Log(LOGINFO, "create song view");
-    m_pDS->exec("create view songview as select idSong, song.iNumArtists as iNumArtists, song.iNumGenres as iNumGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb");
+    m_pDS->exec("create view songview as select idSong, song.iNumArtists as iNumArtists, song.iNumGenres as iNumGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb");
     CLog::Log(LOGINFO, "create album view");
-    m_pDS->exec("create view albumview as select idAlbum, strAlbum, iNumArtists, album.idArtist as idArtist, strArtist, strPath, strThumb from album left outer join path on album.idPath=path.idPath left outer join artist on album.idArtist=artist.idArtist left outer join thumb on album.idThumb=thumb.idThumb");
+    m_pDS->exec("create view albumview as select idAlbum, strAlbum, iNumArtists, album.idArtist as idArtist, iNumGenres, album.idGenre as idGenre, strArtist, strGenre, iYear, strPath, strThumb from album left outer join path on album.idPath=path.idPath left outer join artist on album.idArtist=artist.idArtist left outer join genre on album.idGenre=genre.idGenre left outer join thumb on album.idThumb=thumb.idThumb");
   }
   catch (...)
   {
@@ -146,7 +146,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
     long lPathId = AddPath(strPath);
     long lThumbId = AddThumb(song.strThumb);
-    long lAlbumId = AddAlbum(song.strAlbum, lArtistId, iNumArtists, song.strArtist, lPathId, strPath, lThumbId);
+    long lAlbumId = AddAlbum(song.strAlbum, lArtistId, iNumArtists, song.strArtist, lPathId, strPath, lThumbId, lGenreId, iNumGenres, song.iYear);
 
     DWORD crc = ComputeCRC(song.strFileName);
 
@@ -205,7 +205,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
   }
 }
 
-long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, int iNumArtists, const CStdString &strArtist1, long lPathId, const CStdString& strPath1, long idThumb)
+long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, int iNumArtists, const CStdString &strArtist1, long lPathId, const CStdString& strPath1, long idThumb, long idGenre, int numGenres, long year)
 {
   CStdString strSQL;
   try
@@ -229,6 +229,9 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, int i
       iNumArtists=0;
       strArtist.Empty();
       idThumb=AddThumb("");
+      idGenre=-1;
+      numGenres=0;
+      year=0;
     }
 
     if (NULL == m_pDB.get()) return -1;
@@ -247,7 +250,7 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, int i
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=FormatSQL("insert into album (idAlbum, strAlbum, idArtist, iNumArtists, idPath, idThumb) values( NULL, '%s', %i, %i, %i, %i)", strAlbum.c_str(), lArtistId, iNumArtists, lPathId, idThumb);
+      strSQL=FormatSQL("insert into album (idAlbum, strAlbum, idArtist, iNumArtists, idGenre, iNumGenres, iYear, idPath, idThumb) values( NULL, '%s', %i, %i, %i, %i, %i, %i, %i)", strAlbum.c_str(), lArtistId, iNumArtists, idGenre, numGenres, year, lPathId, idThumb);
       m_pDS->exec(strSQL.c_str());
 
       CAlbumCache album;
@@ -797,7 +800,11 @@ CAlbum CMusicDatabase::GetAlbumFromDataset()
   album.strAlbum = m_pDS->fv(album_strAlbum).get_asString();
   album.strArtist = m_pDS->fv(album_strArtist).get_asString();
   if (m_pDS->fv(album_iNumArtists).get_asLong() > 1)
-    GetExtraArtistsForAlbum(m_pDS->fv(album_idAlbum).get_asLong(), album.strArtist);
+    GetExtraArtistsForAlbum(album.idAlbum, album.strArtist);
+  album.strGenre = m_pDS->fv(album_strGenre).get_asString();
+  if (m_pDS->fv(album_iNumGenres).get_asLong() > 1)
+    GetExtraGenresForAlbum(album.idAlbum, album.strGenre);
+  album.iYear = m_pDS->fv(album_iYear).get_asLong();
   album.strPath = m_pDS->fv(album_strPath).get_asString();
   album.strThumb = m_pDS->fv(album_strThumb).get_asString();
   if (album.strThumb == "NONE")
@@ -1171,7 +1178,7 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album, const VECSONGS& songs)
     long lGenreId = AddGenre(vecGenres[0]);
 
     long lPathId = AddPath(album.strPath);
-    long lAlbumId = AddAlbum(album.strAlbum, lArtistId, iNumArtists, album.strArtist, lPathId, album.strPath, -1);
+    long lAlbumId = AddAlbum(album.strAlbum, lArtistId, iNumArtists, album.strArtist, lPathId, album.strPath, -1, lGenreId, iNumGenres, album.iYear);
 
     AddExtraArtists(vecArtists, 0, lAlbumId);
     AddExtraGenres(vecGenres, 0, lAlbumId);
@@ -1981,7 +1988,7 @@ long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album, const VECSONGS& songs)
     long lArtistId = AddArtist(vecArtists[0]);
     long lGenreId = AddGenre(vecGenres[0]);
     long lPathId = AddPath(album.strPath);
-    long lAlbumId = AddAlbum(album.strAlbum, lArtistId, iNumArtists, album.strArtist, lPathId, album.strPath, -1);
+    long lAlbumId = AddAlbum(album.strAlbum, lArtistId, iNumArtists, album.strArtist, lPathId, album.strPath, -1, lGenreId, iNumGenres, album.iYear);
     // add any extra artists/genres
     AddExtraArtists(vecArtists, 0, lAlbumId);
     AddExtraGenres(vecGenres, 0, lAlbumId);
@@ -3317,6 +3324,57 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
   try
   {
+    if (version < 4)
+    {
+      // version 3 to 4 upgrade - we need to add genre/year info to the album table(s)
+      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (dialog)
+      {
+        dialog->SetHeading("Updating old database version");
+        dialog->SetLine(0, "");
+        dialog->SetLine(1, "");
+        dialog->SetLine(2, "This may take a couple of minutes...");
+        dialog->StartModal();
+
+        //  Let the progress dialog fade in, hopefully ;)
+        DWORD dwTicks=GetTickCount();
+        while (GetTickCount()-dwTicks<1000)
+          dialog->Progress();
+      }
+
+      BeginTransaction();
+      
+      dialog->SetLine(1, "Dropping views...");
+      dialog->Progress();
+      CLog::Log(LOGINFO, "Dropping album view");
+      m_pDS->exec("drop view albumview");
+      CLog::Log(LOGINFO, "Dropping song view");
+      m_pDS->exec("drop view songview");
+
+      dialog->SetLine(1, "Creating new album table...");
+      dialog->Progress();
+      CLog::Log(LOGINFO, "Creating temporary album table");
+      m_pDS->exec("CREATE TEMPORARY TABLE tempalbum ( idAlbum integer primary key, strAlbum text, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, iYear integer, idPath integer, idThumb integer)\n");
+      CLog::Log(LOGINFO, "Copying albums into temporary album table");
+      m_pDS->exec("INSERT INTO tempalbum select album.idAlbum as idAlbum, strAlbum, album.idArtist as idArtist, album.iNumArtists as iNumArtists, idGenre, iNumGenres, iYear, album.idPath as idPath, album.idThumb as idThumb from album join song on song.idAlbum = album.idAlbum group by album.idAlbum");
+      CLog::Log(LOGINFO, "Dropping old album table");
+      m_pDS->exec("DROP TABLE album");
+      CLog::Log(LOGINFO, "Creating new album table");
+      m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum text, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, iYear integer, idPath integer, idThumb integer)\n");
+      CLog::Log(LOGINFO, "Copying albums into new albums table");
+      m_pDS->exec("INSERT INTO album select * from tempalbum");
+      CLog::Log(LOGINFO, "Dropping temporary album table");
+      m_pDS->exec("DROP TABLE tempalbum");
+      CLog::Log(LOGINFO, "create album index");
+      m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
+      CLog::Log(LOGINFO, "create album view");
+      m_pDS->exec("create view albumview as select idAlbum, strAlbum, iNumArtists, album.idArtist as idArtist, iNumGenres, album.idGenre as idGenre, strArtist, strGenre, iYear, strPath, strThumb from album left outer join path on album.idPath=path.idPath left outer join artist on album.idArtist=artist.idArtist left outer join genre on album.idGenre=genre.idGenre left outer join thumb on album.idThumb=thumb.idThumb");
+      CLog::Log(LOGINFO, "create song view");
+      m_pDS->exec("create view songview as select idSong, song.iNumArtists as iNumArtists, song.iNumGenres as iNumGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb");
+      CommitTransaction();
+
+      dialog->Close();
+    }
   }
   catch (...)
   {

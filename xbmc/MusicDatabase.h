@@ -168,7 +168,7 @@ protected:
   map<CStdString, int /*CPathCache*/> m_thumbCache;
   map<CStdString, CAlbumCache> m_albumCache;
   virtual bool CreateTables();
-  long AddAlbum(const CStdString& strAlbum, long lArtistId, int iNumArtists, const CStdString& strArtist, long lPathId, const CStdString& strPath, long idThumb);
+  long AddAlbum(const CStdString& strAlbum, long lArtistId, int iNumArtists, const CStdString& strArtist, long lPathId, const CStdString& strPath, long idThumb, long idGenre, int numGenres, long year);
   long AddGenre(const CStdString& strGenre);
   long AddArtist(const CStdString& strArtist);
   long AddPath(const CStdString& strPath);
@@ -237,7 +237,11 @@ private:
     album_strAlbum, 
     album_iNumArtists, 
     album_idArtist, 
-    album_strArtist, 
+    album_iNumGenres,
+    album_idGenre,
+    album_strArtist,
+    album_strGenre,
+    album_iYear,
     album_strPath, 
     album_strThumb
   } AlbumFields;
