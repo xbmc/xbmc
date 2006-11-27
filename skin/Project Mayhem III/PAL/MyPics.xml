@@ -149,18 +149,11 @@
 				</control>
 			</control>
 		</control>
-		<control type="listcontrol" id="50">
-			<description>listcontrol</description>
-			<onleft>9000</onleft>
-			<onright>50</onright>
-			<onup>50</onup>
-			<ondown>50</ondown>
-			<include>contentpanelslide</include>
-		</control>
+		<include>ProgramsViewCommons</include>
+		<include>AllViewCommonPageControls</include>
 		<control type="thumbnailpanel" id="51">
 			<description>pics thumbnailpanel</description>
 			<itemwidth>112</itemwidth>
-			<itemheight>132</itemheight>
 			<texturewidth>100</texturewidth>
 			<textureheight>110</textureheight>
 			<thumbwidth>90</thumbwidth>
@@ -170,7 +163,6 @@
 			<texturewidthbig>137</texturewidthbig>
 			<textureheightbig>152</textureheightbig>
 			<itemwidthbig>148</itemwidthbig>
-			<itemheightbig>198</itemheightbig>
 			<thumbwidthbig>121</thumbwidthbig>
 			<thumbheightbig>121</thumbheightbig>
 			<thumbposxbig>8</thumbposxbig>
@@ -179,6 +171,7 @@
 			<onright>51</onright>
 			<onup>51</onup>
 			<ondown>51</ondown>
+			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="image" id="0">

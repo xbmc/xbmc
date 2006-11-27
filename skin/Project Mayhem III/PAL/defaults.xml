@@ -94,10 +94,10 @@
 		<aligny>center</aligny>
 	</default>
 	<default type="thumbnailpanel">
-		<posx>215</posx>
-		<posy>120</posy>
+		<posx>210</posx>
+		<posy>125</posy>
 		<width>520</width>
-		<height>430</height>
+		<height>395</height>
 		<spinwidth>18</spinwidth>
 		<spinheight>16</spinheight>
 		<spincolor>ffffffff</spincolor>
@@ -108,7 +108,7 @@
 		<texturedown>scroll-down.png</texturedown>
 		<textureupfocus>scroll-up-focus.png</textureupfocus>
 		<texturedownfocus>scroll-down-focus.png</texturedownfocus>
-		<itemwidth>115</itemwidth>
+		<itemwidth>110</itemwidth>
 		<itemheight>130</itemheight>
 		<texturewidth>92</texturewidth>
 		<textureheight>100</textureheight>
@@ -123,8 +123,8 @@
 		<include>controldefaults</include>
 		<texturewidthbig>134</texturewidthbig>
 		<textureheightbig>144</textureheightbig>
-		<itemwidthbig>151</itemwidthbig>
-		<itemheightbig>197</itemheightbig>
+		<itemwidthbig>148</itemwidthbig>
+		<itemheightbig>195</itemheightbig>
 		<thumbwidthbig>120</thumbwidthbig>
 		<thumbheightbig>133</thumbheightbig>
 		<thumbposxbig>7</thumbposxbig>

@@ -74,6 +74,22 @@
 				<selected>!Skin.HasSetting(animated)</selected>
 				<onleft>9001</onleft>
 				<onright>9001</onright>
+				<onup>21</onup>
+				<ondown>21</ondown>
+				<textoffsetx>7</textoffsetx>
+				<texturefocus>list-focus.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+			</control>
+			<control type="radiobutton" id="21">
+				<description>enable animations</description>
+				<posx>211</posx>
+				<posy>157</posy>
+				<width>445</width>
+				<label>Enable Scrollbars</label>
+				<onclick>Skin.ToggleSetting(UseScrollbars)</onclick>
+				<selected>!Skin.HasSetting(UseScrollbars)</selected>
+				<onleft>9001</onleft>
+				<onright>9001</onright>
 				<onup>20</onup>
 				<ondown>20</ondown>
 				<textoffsetx>7</textoffsetx>

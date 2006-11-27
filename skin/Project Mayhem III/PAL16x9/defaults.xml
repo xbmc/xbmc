@@ -94,10 +94,10 @@
 		<aligny>center</aligny>
 	</default>
 	<default type="thumbnailpanel">
-		<posx>215</posx>
-		<posy>120</posy>
+		<posx>210</posx>
+		<posy>125</posy>
 		<width>520</width>
-		<height>430</height>
+		<height>395</height>
 		<spinwidth>18</spinwidth>
 		<spinheight>16</spinheight>
 		<spincolor>ffffffff</spincolor>
@@ -123,7 +123,7 @@
 		<include>controldefaults</include>
 		<texturewidthbig>118</texturewidthbig>
 		<textureheightbig>169</textureheightbig>
-		<itemwidthbig>152</itemwidthbig>
+		<itemwidthbig>150</itemwidthbig>
 		<itemheightbig>195</itemheightbig>
 		<thumbwidthbig>118</thumbwidthbig>
 		<thumbheightbig>157</thumbheightbig>
