@@ -116,6 +116,6 @@ protected:
 
 private:
   virtual bool CreateTables();
-  virtual bool UpdateOldVersion(float fVersion);
+  virtual bool UpdateOldVersion(int version);
 
 };
