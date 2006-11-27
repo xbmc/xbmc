@@ -151,8 +151,8 @@ namespace PYXBMC
 		DWORD dwItemHeight;
 		DWORD dwSpace;
 
-        DWORD dwItemTextXOffset;
-        DWORD dwItemTextYOffset;
+        int dwItemTextXOffset;
+        int dwItemTextYOffset;
         DWORD dwAlignmentY;
 	} ControlList;
 
