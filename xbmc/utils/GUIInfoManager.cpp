@@ -829,6 +829,16 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     bReturn = g_weatherManager.IsFetched();
   else if (condition == SYSTEM_INTERNET_STATE)
     bReturn = SystemHasInternet();
+  else if (condition == SKIN_HAS_VIDEO_OVERLAY)
+  {
+    bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
+              g_application.IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO;
+  }
+  else if (condition == SKIN_HAS_MUSIC_OVERLAY)
+  {
+    bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
+              g_application.IsPlayingAudio();
+  }
   else if (g_application.IsPlaying())
   {
     switch (condition)

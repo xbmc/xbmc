@@ -290,6 +290,8 @@
 #define WINDOW_OSD                        12901
 
 #define WINDOW_VIDEO_MENU                 12902
+#define WINDOW_MUSIC_OVERLAY              12903
+#define WINDOW_VIDEO_OVERLAY              12904
 
 #define WINDOW_STARTUP                    12999 // for startup animations
 

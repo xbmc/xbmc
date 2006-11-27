@@ -11,8 +11,6 @@
 #include "GUIDialogVolumeBar.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
-#include "GUIWindowMusicOverlay.h"
-#include "GUIWindowVideoOverlay.h"
 
 #include "utils/delaycontroller.h"
 #include "cores/IPlayer.h"
@@ -131,8 +129,6 @@ public:
   CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
   CGUIDialogMuteBug m_guiDialogMuteBug;
-  CGUIWindowMusicOverlay m_guiMusicOverlay;
-  CGUIWindowVideoOverlay m_guiVideoOverlay;
   CGUIWindowPointer m_guiPointer;
 
   CAutorun m_Autorun;

@@ -16,10 +16,10 @@
 
 
 CGUIWindowVideoOverlay::CGUIWindowVideoOverlay()
-    : CGUIDialog(2004, "VideoOverlay.xml")
+    : CGUIDialog(WINDOW_VIDEO_OVERLAY, "VideoOverlay.xml")
 {
-  m_loadOnDemand = false;
   m_renderOrder = 0;
+  m_visibleCondition = SKIN_HAS_VIDEO_OVERLAY;
 }
 
 CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
@@ -39,4 +39,5 @@ void CGUIWindowVideoOverlay::SetDefaults()
 {
   CGUIDialog::SetDefaults();
   m_renderOrder = 0;
+  m_visibleCondition = SKIN_HAS_VIDEO_OVERLAY;
 }
