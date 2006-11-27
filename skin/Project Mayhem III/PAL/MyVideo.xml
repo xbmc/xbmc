@@ -73,6 +73,7 @@
 				<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
 				<font>font13</font>
 				<onclick>ReplaceWindow(myvideolibrary)</onclick>
+				<onclick>SetFocus(99)</onclick>
 				<selected>Window.IsVisible(myvideolibrary)</selected>
 				<onleft>50</onleft>
 				<onright>50</onright>
