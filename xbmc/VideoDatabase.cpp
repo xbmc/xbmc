@@ -13,7 +13,8 @@
 #include "filesystem/VirtualPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 
-#define VIDEO_DATABASE_VERSION 2.0f
+#define VIDEO_DATABASE_OLD_VERSION 2.0f
+#define VIDEO_DATABASE_VERSION 3
 #define VIDEO_DATABASE_NAME "MyVideos31.db"
 
 CBookmark::CBookmark()
@@ -25,7 +26,8 @@ CBookmark::CBookmark()
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
 {
-  m_fVersion=VIDEO_DATABASE_VERSION;
+  m_preV2version=VIDEO_DATABASE_OLD_VERSION;
+  m_version=VIDEO_DATABASE_VERSION;
   m_strDatabaseFile=VIDEO_DATABASE_NAME;
 }
 
@@ -1642,163 +1644,8 @@ void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<long> &tim
   }
 }
 
-bool CVideoDatabase::UpdateOldVersion(float fVersion)
+bool CVideoDatabase::UpdateOldVersion(int version)
 {
-  if (fVersion < 0.5f)
-  { // Version 0 to 0.5 upgrade - we need to add the version table and the settings table
-    CLog::Log(LOGINFO, "creating versions table");
-    m_pDS->exec("CREATE TABLE version (idVersion float)\n");
-
-    CLog::Log(LOGINFO, "create settings table");
-    m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
-                "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
-                "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
-                "AdjustFrameRate integer, AudioDelay float)\n");
-  }
-  // REMOVED: v 1.0 -> 1.2 updates - they just delete the settings table in order
-  // to add new settings - mayaswell just delete all the time.
-  if (fVersion < 1.3f)
-  { // v 1.0 -> 1.3 (new crop settings to video settings table)
-    // Just delete and recreate the settings table is the easiest thing to do
-    // all it means is per-video settings need recreating on playback - not a big deal
-    // and it means the code can be kept reasonably simple.
-    CLog::Log(LOGINFO, "Deleting old settings table");
-    m_pDS->exec("DROP TABLE settings");
-    CLog::Log(LOGINFO, "Creating new settings table");
-    m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
-                "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
-                "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
-                "AdjustFrameRate integer, AudioDelay float, ResumeTime integer, Crop bool, CropLeft integer,"
-                "CropRight integer, CropTop integer, CropBottom integer)\n");
-  }
-  if (fVersion < 1.4f)
-  { // v 1.3 -> 1.4 (new layout for bookmarks table)
-    // Just delete the old bookmarks table and create it fresh
-    CLog::Log(LOGINFO, "Deleting old bookmarks table");
-    m_pDS->exec("DROP TABLE bookmark");
-    CLog::Log(LOGINFO, "Creating new bookmarks table");
-    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text)\n");
-  }
-//*************
-// 2005-10-08
-// MercuryInc
-  if (fVersion < 1.5f)
-  {
-    // v 1.4 -> 1.5 (new layout for Watched tag)
-    // Add watched column to movieinfo
-    try
-    {
-      CLog::Log(LOGINFO, "Adding column to movieinfo");
-      m_pDS->exec("CREATE TABLE TMPmovieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, strRuntime text, fRating text, strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text, IMDBID text, bWatched bool)\n");
-      m_pDS->exec("INSERT INTO TMPmovieinfo SELECT *, 'false' FROM movieinfo\n");
-      m_pDS->exec("DROP TABLE movieinfo\n");
-      m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, strRuntime text, fRating text, strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text, IMDBID text, bWatched bool)\n");
-      m_pDS->exec("INSERT INTO movieinfo SELECT * FROM TMPmovieinfo\n");
-      m_pDS->exec("DROP TABLE TMPmovieinfo\n");      
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "Failed to add bWatched to movieinfo");
-      return false;
-    }
-    
-    //vacuum movieinfo so the db is readable again
-    try
-    {
-      CLog::Log(LOGINFO, "Vacuuming movieinfo");
-      m_pDS->exec("VACUUM movieinfo\n");      
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "Failed to vacuum movieinfo");
-      return false;
-    }
-  }
-//*************
-  if (fVersion < 1.6f)
-  {
-    // dropping of AdjustFrameRate setting, and addition of VolumeAmplification setting
-    CLog::Log(LOGINFO, "Deleting old settings table");
-    m_pDS->exec("DROP TABLE settings");
-    CLog::Log(LOGINFO, "Creating new settings table");
-    m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
-                "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
-                "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
-                "VolumeAmplification float, AudioDelay float, ResumeTime integer, Crop bool, CropLeft integer,"
-                "CropRight integer, CropTop integer, CropBottom integer)\n");
-  }
-
-//*************
-// 2006-02-20
-// dvdplayer state
-  if (fVersion < 1.7f)
-  {
-    try
-    {
-      CLog::Log(LOGINFO, "Adding playerState and type to bookmark");
-      m_pDS->exec("CREATE TABLE TMPbookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text, playerState text, type integer)\n");
-      m_pDS->exec("INSERT INTO TMPbookmark SELECT idBookmark, idFile, timeInSeconds, thumbNailImage, '', 0 FROM bookmark");
-      m_pDS->exec("DROP TABLE bookmark");
-      m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text, playerState text, type integer)\n");
-      m_pDS->exec("INSERT INTO bookmark SELECT * FROM TMPbookmark");
-      m_pDS->exec("DROP TABLE TMPbookmark");
-    }
-    catch(...)
-    {
-      CLog::Log(LOGERROR, "Failed to add playerState and type to bookmark");
-      return false;
-    }
-  }
-  if (fVersion < 1.8f)
-  {
-    // Adding of OutputToAllSpeakers setting
-    CLog::Log(LOGINFO, "Deleting old settings table");
-    m_pDS->exec("DROP TABLE settings");
-    CLog::Log(LOGINFO, "Creating new settings table");
-    m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
-                "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
-                "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
-                "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
-                "CropRight integer, CropTop integer, CropBottom integer)\n");
-  }
-  if (fVersion < 1.9f)
-  { // Add the stacktimes table
-    try
-    {
-    CLog::Log(LOGINFO, "Adding stacktimes table");
-    m_pDS->exec("CREATE TABLE stacktimes (idFile integer, usingConversions bool, times text)\n");
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "Error adding stacktimes table to the database");
-    }
-  }
-
-
-//*************
-// 2006-02-20
-// dvdplayer state
-  if (fVersion < 2.0f)
-  {
-    try
-    {
-      CLog::Log(LOGINFO, "Adding player and changing timeInSeconds to float in bookmark table");
-      m_pDS->exec("CREATE TABLE TMPbookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text, playerState text, type integer)\n");
-      m_pDS->exec("INSERT INTO TMPbookmark SELECT idBookmark, idFile, timeInSeconds, thumbNailImage, playerState, type FROM bookmark");
-      m_pDS->exec("DROP TABLE bookmark");
-      m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
-      m_pDS->exec("INSERT INTO bookmark SELECT idBookmark, idFile, timeInSeconds, thumbNailImage, '', playerState, type FROM TMPbookmark");
-      m_pDS->exec("DROP TABLE TMPbookmark");
-    }
-    catch(...)
-    {
-      CLog::Log(LOGERROR, "Failed to upgrade bookmarks");
-      return false;
-    }
-    
-  }
-
-
   return true;
 }
 

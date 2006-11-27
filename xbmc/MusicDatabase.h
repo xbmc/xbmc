@@ -195,7 +195,7 @@ private:
   bool CleanupArtists();
   bool CleanupGenres();
   bool CleanupAlbumsFromPaths(const CStdString &strPathIds);
-  virtual bool UpdateOldVersion(float fVersion);
+  virtual bool UpdateOldVersion(int version);
 
   // Fields should be ordered as they 
   // appear in the songview
