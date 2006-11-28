@@ -180,8 +180,8 @@ void CGUIScrollBar::UpdateBarSize()
     m_guiNibFocus.SetHeight(nibSize);
 
     // and the position
-    percent = (float)m_offset / m_numItems;
-    float nibPos = GetHeight() * percent;
+    percent = (float)m_offset / (m_numItems - m_pageSize);
+    float nibPos = (GetHeight() - nibSize) * percent;
     if (nibPos < 0) nibPos = 0;
     if (nibPos > GetHeight() - nibSize) nibPos = GetHeight() - nibSize;
     m_guiBarNoFocus.SetPosition(GetXPosition(), GetYPosition() + nibPos);
@@ -203,8 +203,8 @@ void CGUIScrollBar::UpdateBarSize()
     m_guiNibFocus.SetWidth(nibSize);
 
     // and the position
-    percent = (float)m_offset / m_numItems;
-    float nibPos = GetWidth() * percent;
+    percent = (float)m_offset / (m_numItems - m_pageSize);
+    float nibPos = (GetWidth() - nibSize) * percent;
     if (nibPos < 0) nibPos = 0;
     if (nibPos > GetWidth() - nibSize) nibPos = GetWidth() - nibSize;
     m_guiBarNoFocus.SetPosition(GetXPosition() + nibPos, GetYPosition());
