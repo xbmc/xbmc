@@ -80,7 +80,7 @@
 					<width>355</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<info>ListItem.Album</info>
 				</control>
@@ -90,7 +90,7 @@
 					<width>315</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<label>$INFO[ListItem.Year,, - ]$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
@@ -157,7 +157,7 @@
 					<width>295</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
@@ -168,7 +168,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<info>ListItem.Genre</info>
 				</control>
 				<control type="label">
@@ -220,7 +220,7 @@
 					<width>295</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
@@ -231,7 +231,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<info>ListItem.Genre</info>
 				</control>
 				<control type="label">
@@ -328,7 +328,7 @@
 					<width>355</width>
 					<height>16</height>
 					<font>font12</font>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
@@ -338,7 +338,7 @@
 					<width>315</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
@@ -405,7 +405,7 @@
 					<width>335</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
@@ -416,7 +416,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
@@ -468,7 +468,7 @@
 					<width>335</width>
 					<height>16</height>
 					<font>font13</font>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
@@ -479,7 +479,7 @@
 					<height>16</height>
 					<font>font13</font>
 					<scroll>true</scroll>
-					<include>listselectedcolor</include>
+					<include>listselectedcolor2</include>
 					<label>$INFO[ListItem.Genre]</label>
 				</control>
 				<control type="label">
