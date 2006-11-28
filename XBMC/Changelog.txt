@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-11-2006 fixed: httpapi GetSystemInfo bug when passed non valid id
  - 21-11-2006 added: video library window.
  - 21-11-2006 fixed: [ 1599332 ] No DVD Media playing (GetDirectory(iso9660://) failed)
  - 20-11-2006 update: libsmbclient updated to 3.0.23d version ( should contain vista fixes )
