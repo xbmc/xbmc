@@ -18,6 +18,9 @@
 	<include name="listselectedcolor">
 		<selectedcolor>FFe2ff43</selectedcolor>
 	</include>
+	<include name="listselectedcolor2">
+		<selectedcolor>ffffffff</selectedcolor>
+	</include>
 	<include name="homebuttonanimation">
 		<animation effect="fade" time="1000" delay="400">VisibleChange</animation>
 		<animation effect="rotate" time="500" start="-120" end="0" center="-20,-60" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
