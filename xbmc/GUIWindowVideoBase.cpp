@@ -1107,6 +1107,15 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsUnWatched(atol(pItem->m_musicInfoTag.GetURL()));
+  CFileItemList items;
+  CDirectory::GetDirectory("z:\\",items,".fi",false);
+  for (int i=0;i<items.Size();++i)
+  {
+    if (!items[i]->m_bIsFolder)
+    {
+      CFile::Delete(items[i]->m_strPath);
+    }
+  }
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
@@ -1117,6 +1126,15 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()));
+  CFileItemList items;
+  CDirectory::GetDirectory("z:\\",items,".fi",false);
+  for (int i=0;i<items.Size();++i)
+  {
+    if (!items[i]->m_bIsFolder)
+    {
+      CFile::Delete(items[i]->m_strPath);
+    }
+  }
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
