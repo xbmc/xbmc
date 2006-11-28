@@ -93,7 +93,7 @@ public:
 
   // Translator table for supporting unicode ranges
   WCHAR m_cMaxGlyph;
-  SHORT* m_TranslatorTable;
+  WCHAR* m_TranslatorTable;
   BOOL m_bTranslatorTableWasAllocated;
 
   // Glyph data for the font
@@ -122,7 +122,7 @@ public:
   FLOAT GetFontHeight() const { return m_fFontYAdvance; }
 
 private:
-  inline SHORT GetGlyphToUse(SHORT letter) const;
+  inline WCHAR GetGlyphToUse(WCHAR letter) const;
 
 public:
   // Constructor/destructor
