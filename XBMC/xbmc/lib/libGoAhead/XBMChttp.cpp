@@ -2261,7 +2261,7 @@ int CXbmcHttp::xbmcGetSystemInfo(int numParas, CStdString paras[])
     {
       CStdString strTemp = (CStdString) g_infoManager.GetLabel(atoi(paras[i]));
       if (strTemp.IsEmpty())
-        strTemp = "Error:No information retrieved for " + atoi(paras[i]);
+        strTemp = "Error:No information retrieved for " + paras[i];
       strInfo += openTag + strTemp;
     }
     return SetResponse(strInfo);
