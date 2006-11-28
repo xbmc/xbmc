@@ -588,6 +588,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       LoadPlayList(pItem->m_strPath);
       return true;
     }
+    // this is particular to music as only music allows "auto play next item"
     else if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled())
     {
       if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
@@ -603,14 +604,14 @@ bool CGUIMediaWindow::OnClick(int iItem)
       int iPlaylist=m_guiState->GetPlaylist();
       if (iPlaylist!=PLAYLIST_NONE)
       {
-        int nFolderCount = 0;
-        g_playlistPlayer.ClearPlaylist( iPlaylist );
+        g_playlistPlayer.ClearPlaylist(iPlaylist);
         g_playlistPlayer.Reset();
+        int nFolderCount = 0;
         int iNoSongs = 0;
         for ( int i = 0; i < m_vecItems.Size(); i++ )
         {
           CFileItem* pItem = m_vecItems[i];
-          
+
           if (pItem->m_bIsFolder)
           {
             nFolderCount++;
@@ -628,10 +629,19 @@ bool CGUIMediaWindow::OnClick(int iItem)
         if (m_guiState.get())
           m_guiState->SetPlaylistDirectory(m_vecItems.m_strPath);
 
-        g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
-        g_playlistPlayer.Play(iItem - nFolderCount - iNoSongs);
-      }
+        // figure out where we start playback
+        int iOrder = iItem - nFolderCount - iNoSongs;
+        if (g_playlistPlayer.IsShuffled(iPlaylist))
+        {
+          int iIndex = g_playlistPlayer.GetPlaylist(iPlaylist).FindOrder(iOrder);
+          g_playlistPlayer.GetPlaylist(iPlaylist).Swap(0, iIndex);
+          iOrder = 0;
+        }
 
+        // play
+        g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+        g_playlistPlayer.Play(iOrder);
+      }
       return true;
     }
     else
