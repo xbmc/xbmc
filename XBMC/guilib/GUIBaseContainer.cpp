@@ -299,8 +299,19 @@ inline float CGUIBaseContainer::Size() const
   return (m_orientation == HORIZONTAL) ? m_width : m_height;
 }
 
+#define MAX_SCROLL_AMOUNT 0.4f
+
 void CGUIBaseContainer::ScrollToOffset(int offset)
 {
+  float size = m_layout.Size(m_orientation);
+  if (offset * size < m_scrollOffset &&  m_scrollOffset - offset * size > Size() * MAX_SCROLL_AMOUNT)
+  { // scrolling up, and we're jumping more than 0.5 of a screen
+    m_scrollOffset = offset * size + Size() * MAX_SCROLL_AMOUNT;
+  }
+  if (offset * size > m_scrollOffset && offset * size - m_scrollOffset > Size() * MAX_SCROLL_AMOUNT)
+  { // scrolling down, and we're jumping more than 0.5 of a screen
+    m_scrollOffset = offset * size - Size() * MAX_SCROLL_AMOUNT;
+  }
   m_scrollSpeed = (offset * m_layout.Size(m_orientation) - m_scrollOffset) / m_scrollTime;
   m_offset = offset;
 }
