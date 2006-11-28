@@ -384,8 +384,9 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
   // add the needed buttons
   int btn_Queue       = 0;  // Queue Item
   int btn_PlayWith    = 0;  // Play using alternate player
+  int btn_AddToPlaylist = 0;
   int btn_Info        = 0;  // Music Information
-  int btn_InfoAll     = 0; // Query Information for all albums
+  int btn_InfoAll     = 0;  // Query Information for all albums
   int btn_GoToRoot    = 0;
   int btn_NowPlaying  = 0;  // Now Playing... very bottom of context accessible
   
@@ -398,7 +399,8 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
 
   // turn off info/queue/play/set artist thumb if the current item is goto parent ..
   bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
-  if (!bIsGotoParent && (dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT || m_vecItems.m_strPath.Equals("special://musicplaylists/")))
+  bool bPlaylists = m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems.m_strPath.Equals("special://musicplaylists/");
+  if (!bIsGotoParent && (dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT || bPlaylists))
   { 
     // allow queue for anything but root
     if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList() || m_vecItems[iItem]->IsAudio())
@@ -410,6 +412,9 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     else if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
     
+    if (!bPlaylists)
+      btn_AddToPlaylist = pMenu->AddButton(526);  // Add to playlist
+
     // enable music info button only in album view
     if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath) && m_vecItems[iItem]->m_bIsFolder)
       btn_Info = pMenu->AddButton(13351);
@@ -425,8 +430,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
   if (dir.IsArtistDir(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
     btn_Thumb = pMenu->AddButton(13359);
 
-  // almost always visible
-  //int btn_Settings = -2;
+  // noncontextual buttons
   int btn_Settings = pMenu->AddButton(5);     // Settings...
 
   if (dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT)
@@ -469,6 +473,10 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     else if (btn == btn_Queue)  // Queue Item
     {
       OnQueueItem(iItem);
+    }
+    else if (btn == btn_AddToPlaylist)
+    {
+      AddToPlaylist(iItem);
     }
     else if (btn == btn_NowPlaying)  // Now Playing...
     {
