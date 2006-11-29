@@ -234,7 +234,7 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
-  OnSort();
+  m_viewControl.SetItems(m_vecItems);
   UpdateButtons();
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }

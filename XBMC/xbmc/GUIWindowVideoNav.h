@@ -21,6 +21,7 @@ protected:
   virtual void PlayItem(int iItem);
   virtual void OnDeleteItem(int iItem);
   virtual void OnWindowLoaded();
+  virtual void OnFinalizeFileItems(CFileItemList& items);
 
   void DisplayEmptyDatabaseMessage(bool bDisplay);
 
