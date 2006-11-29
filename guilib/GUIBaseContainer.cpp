@@ -121,6 +121,11 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         return true;
       }
     }
+    else if (message.GetMessage() == GUI_MSG_REFRESH_LIST)
+    { // update our list contents
+      for (unsigned int i = 0; i < m_items.size(); ++i)
+        m_items[i]->SetInvalid();
+    }
   }
   return CGUIControl::OnMessage(message);
 }

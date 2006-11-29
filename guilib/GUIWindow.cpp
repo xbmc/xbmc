@@ -714,7 +714,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       if (HasID(message.GetSenderId()))
       {
         if (message.GetParam1() == GUI_MSG_PAGE_CHANGE ||
-            message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
+            message.GetParam1() == GUI_MSG_REFRESH_THUMBS ||
+            message.GetParam1() == GUI_MSG_REFRESH_LIST)
         { // alter the message accordingly, and send to all controls
           for (ivecControls it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
           {

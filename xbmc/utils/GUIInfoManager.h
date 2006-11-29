@@ -183,7 +183,8 @@
 #define LISTITEM_RATING             325
 #define LISTITEM_PROGRAM_COUNT      326
 #define LISTITEM_DURATION           327
-#define LISTITEM_END                327
+#define LISTITEM_ISPLAYING          328
+#define LISTITEM_END                328
 
 #define MUSICPM_ENABLED             350
 #define MUSICPM_SONGSPLAYED         351
@@ -291,8 +292,8 @@ public:
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
   void SetCurrentSong(CFileItem &item);
   void SetCurrentAlbumThumb(const CStdString thumbFileName);
-  void SetCurrentSongTag(const CMusicInfoTag &tag) { m_currentSong.m_musicInfoTag = tag; m_currentSong.m_lStartOffset = 0;};
-  const CMusicInfoTag &GetCurrentSongTag() const { return m_currentSong.m_musicInfoTag; };
+  void SetCurrentSongTag(const CMusicInfoTag &tag) { m_currentFile.m_musicInfoTag = tag; m_currentFile.m_lStartOffset = 0;};
+  const CMusicInfoTag &GetCurrentSongTag() const { return m_currentFile.m_musicInfoTag; };
 
   // Current movie stuff
   void SetCurrentMovie(CFileItem &item);
@@ -343,6 +344,8 @@ public:
   CStdString GetItemLabel(const CFileItem *item, int info);
   CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
   CStdString GetItemImage(const CFileItem *item, int info);
+  bool       GetItemBool(const CFileItem *item, int info);
+
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
@@ -362,7 +365,7 @@ protected:
   vector<GUIInfo> m_multiInfo;
 
   // Current playing stuff
-  CFileItem m_currentSong;
+  CFileItem m_currentFile;
   CIMDBMovie m_currentMovie;
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
