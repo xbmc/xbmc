@@ -557,7 +557,7 @@ void CGUIImage::PythonSetColorKey(DWORD dwColorKey)
 void CGUIImage::SetFileName(const CStdString& strFileName)
 {
   if (strFileName.IsEmpty() && !m_image.file.IsEmpty())
-    SetFileName(m_image.file);
+    return SetFileName(m_image.file);
 
   if (m_strFileName.Equals(strFileName)) return;
   // Don't completely free resources here - we may be just changing
