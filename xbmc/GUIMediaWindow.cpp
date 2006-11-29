@@ -363,7 +363,6 @@ void CGUIMediaWindow::OnSort()
 {
   FormatItemLabels();
   SortItems(m_vecItems);
-  m_viewControl.SetItems(m_vecItems);
 }
 
 /*!
@@ -472,6 +471,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   // Ask the devived class if it wants to do custom list operations,
   // eg. changing the label
   OnFinalizeFileItems(m_vecItems);
+
+  m_viewControl.SetItems(m_vecItems);
 
   strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
 
@@ -861,6 +862,7 @@ void CGUIMediaWindow::UpdateFileList()
   OnSort();
   UpdateButtons();
   
+  m_viewControl.SetItems(m_vecItems);
   m_viewControl.SetSelectedItem(strSelected);
 
   //  set the currently playing item as selected, if its in this directory
