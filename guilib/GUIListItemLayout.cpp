@@ -63,6 +63,7 @@ CGUIListItemLayout::CGUIListItemLayout()
   m_height = 0;
   m_focused = false;
   m_invalidated = true;
+  m_isPlaying = false;
 }
 
 CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
@@ -82,6 +83,7 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
       m_controls.push_back(new CListTexture(*(CListTexture *)item));
   }
   m_invalidated = true;
+  m_isPlaying = false;
 }
 
 CGUIListItemLayout::~CGUIListItemLayout()
@@ -99,6 +101,9 @@ void CGUIListItemLayout::Render(CGUIListItem *item)
 {
   if (m_invalidated)
   {
+    // check for boolean conditions
+    m_isPlaying = g_infoManager.GetItemBool((CFileItem *)item, LISTITEM_ISPLAYING);
+
     for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
       UpdateItem(*it, item);
     // now we have to check our overlapping label pairs
@@ -147,7 +152,7 @@ void CGUIListItemLayout::Render(CGUIListItem *item)
   {
     CListBase *layoutItem = *it;
     if (layoutItem->m_type == CListBase::LIST_LABEL)
-      RenderLabel((CListLabel *)layoutItem, item->IsSelected(), m_focused);
+      RenderLabel((CListLabel *)layoutItem, item->IsSelected() || m_isPlaying, m_focused);
     else
       ((CListTexture *)layoutItem)->m_image.Render();
   }

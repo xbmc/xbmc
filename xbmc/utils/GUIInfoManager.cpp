@@ -1088,7 +1088,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
   else if (info == MUSICPLAYER_COVER)
   {
     if (!g_application.IsPlayingAudio()) return "";
-    return m_currentSong.HasThumbnail() ? m_currentSong.GetThumbnailImage() : "defaultAlbumCover.png";
+    return m_currentFile.HasThumbnail() ? m_currentFile.GetThumbnailImage() : "defaultAlbumCover.png";
   }
   else if (info == VIDEOPLAYER_COVER)
   {
@@ -1217,7 +1217,7 @@ CStdString CGUIInfoManager::GetPlaylistLabel(int item)
 CStdString CGUIInfoManager::GetMusicLabel(int item)
 {
   if (!g_application.IsPlayingAudio()) return "";
-  CMusicInfoTag& tag = m_currentSong.m_musicInfoTag;
+  CMusicInfoTag& tag = m_currentFile.m_musicInfoTag;
   switch (item)
   {
   case MUSICPLAYER_TITLE:
@@ -1463,7 +1463,7 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
 
 void CGUIInfoManager::ResetCurrentItem()
 { 
-  m_currentSong.Reset();
+  m_currentFile.Reset();
   m_currentMovie.Reset();
   m_currentMovieThumb = "";
 }
@@ -1482,21 +1482,21 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
 void CGUIInfoManager::SetCurrentAlbumThumb(const CStdString thumbFileName)
 {
   if (CFile::Exists(thumbFileName))
-    m_currentSong.SetThumbnailImage(thumbFileName);
+    m_currentFile.SetThumbnailImage(thumbFileName);
   else
   {
-    m_currentSong.SetThumbnailImage("");
-    m_currentSong.FillInDefaultIcon();
+    m_currentFile.SetThumbnailImage("");
+    m_currentFile.FillInDefaultIcon();
   }
 }
 
 void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 {
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.m_strPath.c_str());
-  m_currentSong = item;
+  m_currentFile = item;
 
   // Get a reference to the item's tag
-  CMusicInfoTag& tag = m_currentSong.m_musicInfoTag;
+  CMusicInfoTag& tag = m_currentFile.m_musicInfoTag;
   // check if we don't have the tag already loaded
   if (!tag.Loaded())
   {
@@ -1507,8 +1507,8 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     if (musicdatabase.Open())
     {
       CSong song;
-      bFound = musicdatabase.GetSongByFileName(m_currentSong.m_strPath, song);
-      m_currentSong.m_musicInfoTag.SetSong(song);
+      bFound = musicdatabase.GetSongByFileName(m_currentFile.m_strPath, song);
+      m_currentFile.m_musicInfoTag.SetSong(song);
       musicdatabase.Close();
     }
 
@@ -1516,10 +1516,10 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     {
       // always get id3 info for the overlay
       CMusicInfoTagLoaderFactory factory;
-      auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_currentSong.m_strPath));
+      auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_currentFile.m_strPath));
       // Do we have a tag loader for this file type?
       if (NULL != pLoader.get())
-        pLoader->Load(m_currentSong.m_strPath, tag);
+        pLoader->Load(m_currentFile.m_strPath, tag);
     }
   }
 
@@ -1532,17 +1532,17 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 #ifdef HAS_FILESYSTEM      
       CSndtrkDirectory dir;
       char NameOfSong[64];
-      if (dir.FindTrackName(m_currentSong.m_strPath, NameOfSong))
+      if (dir.FindTrackName(m_currentFile.m_strPath, NameOfSong))
         tag.SetTitle(NameOfSong);
       else
 #endif
-        tag.SetTitle( CUtil::GetTitleFromPath(m_currentSong.m_strPath) );
+        tag.SetTitle( CUtil::GetTitleFromPath(m_currentFile.m_strPath) );
     }
   } // if (tag.Loaded())
   else
   {
     // If we have a cdda track without cddb information,...
-    if (m_currentSong.IsCDDA())
+    if (m_currentFile.IsCDDA())
     {
       // we have the tracknumber...
       int iTrack = tag.GetTrackNumber();
@@ -1559,13 +1559,13 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     } // if (!tag.Loaded() && url.GetProtocol()=="cdda" )
     else
     { // at worse, set our title as the filename
-      tag.SetTitle( CUtil::GetTitleFromPath(m_currentSong.m_strPath) );
+      tag.SetTitle( CUtil::GetTitleFromPath(m_currentFile.m_strPath) );
     } // we now have at least the title
     tag.SetLoaded(true);
   }
 
   // find a thumb for this file.
-  if (m_currentSong.IsInternetStream())
+  if (m_currentFile.IsInternetStream())
   {
     if (!g_application.m_strPlayListFile.IsEmpty())
     {
@@ -1574,17 +1574,18 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
       streamingItem.SetMusicThumb();
       CStdString strThumb = streamingItem.GetThumbnailImage();
       if (CFile::Exists(strThumb))
-        m_currentSong.SetThumbnailImage(strThumb);
+        m_currentFile.SetThumbnailImage(strThumb);
     }
   }
   else
-    m_currentSong.SetMusicThumb();
-  m_currentSong.FillInDefaultIcon();
+    m_currentFile.SetMusicThumb();
+  m_currentFile.FillInDefaultIcon();
 }
 
 void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 {
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
+  m_currentFile = item;
 
   CVideoDatabase dbs;
   dbs.Open();
@@ -1891,7 +1892,7 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
 
 void CGUIInfoManager::Clear()
 {
-  m_currentSong.Reset();
+  m_currentFile.Reset();
   m_currentMovie.Reset();
   m_CombinedValues.clear();
 }
@@ -2021,6 +2022,20 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     }
   }
   return "";
+}
+
+bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info)
+{
+  bool ret = false;
+  int absInfo = abs(info);
+  switch (absInfo)
+  {
+  case LISTITEM_ISPLAYING:
+    if (!m_currentFile.m_strPath.IsEmpty())
+      ret = m_currentFile.IsSamePath(item);
+    break;
+  }
+  return (info < 0) ? !ret : ret;
 }
 
 CStdString CGUIInfoManager::GetMultiLabel(const vector<CInfoPortion> &multiInfo)

@@ -170,6 +170,7 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_PAGE_CHANGE:
   case GUI_MSG_REFRESH_THUMBS:
+  case GUI_MSG_REFRESH_LIST:
     { // send to all child controls (make sure the target is the control id)
       for (iControls it = m_children.begin(); it != m_children.end(); ++it)
       {
