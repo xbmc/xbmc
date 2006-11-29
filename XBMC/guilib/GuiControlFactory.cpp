@@ -138,6 +138,7 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
     if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
     else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
     else if (aspect.CompareNoCase("center") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_CENTER;
+    else if (aspect.CompareNoCase("stretch") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;
     return true;
   }
   return false;
