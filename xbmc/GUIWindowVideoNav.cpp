@@ -147,18 +147,6 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
-    int iItem=0;
-    CVideoDatabaseDirectory dir;
-    if (dir.GetDirectoryChildType(strDirectory) == NODE_TYPE_TITLE && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL)
-    {
-      while (iItem < items.Size())
-      {
-        if (items[iItem]->m_musicInfoTag.Loaded() != (bool)(g_stSettings.m_iMyVideoWatchMode-1))
-          items.Remove(iItem);
-        else
-          iItem++;
-      }
-    }
     if (!items.IsVideoDb())  // don't need to do this for playlist, as OnRetrieveMusicInfo() should ideally set thumbs
     {
       items.SetCachedVideoThumbs();
@@ -371,4 +359,20 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   Update( m_vecItems.m_strPath );
   m_viewControl.SetSelectedItem(iItem);
   return;
+}
+
+void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
+{
+  int iItem=0;
+  CVideoDatabaseDirectory dir;
+  if (dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_TITLE && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL)
+  {
+    while (iItem < items.Size())
+    {
+      if (items[iItem]->m_musicInfoTag.Loaded() != (bool)(g_stSettings.m_iMyVideoWatchMode-1))
+        items.Remove(iItem);
+      else
+        iItem++;
+    }
+  }
 }
