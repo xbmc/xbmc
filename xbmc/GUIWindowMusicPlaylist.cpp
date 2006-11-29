@@ -92,7 +92,10 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       {
         int iSong = g_playlistPlayer.GetCurrentSong();
         if (iSong >= 0 && iSong <= m_vecItems.Size())
+        {
           m_viewControl.SetSelectedItem(iSong);
+          m_vecItems[iSong]->Select(true);
+        }
       }
 
       return true;
@@ -169,6 +172,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         if (iAction == ACTION_DELETE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
           RemovePlayListItem(iItem);
+          MarkPlaying();
         }
       }
     }
@@ -405,6 +409,8 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   CStdString items;
   items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
+
+  MarkPlaying();
 }
 
 bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
@@ -527,6 +533,8 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
     return false;
 
   m_musicInfoLoader.Load(m_vecItems);
+
+
 
   return true;
 }
@@ -656,14 +664,7 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem, bool bContextDriven /* = tr
       g_partyModeManager.Disable();
     }
   }
-  m_vecItems[iItem]->Select(false);
-
-  // mark the currently playing item
-  if (bIsPlaying)
-  {
-    int i = g_playlistPlayer.GetCurrentSong();
-    m_vecItems[i]->Select(true);
-  }
+  MarkPlaying();
 }
 
 void CGUIWindowMusicPlayList::OnMove(int iItem, int iAction)
@@ -715,4 +716,19 @@ void CGUIWindowMusicPlayList::MoveItem(int iStart, int iDest)
 
   if (bRestart)
     m_musicInfoLoader.Load(m_vecItems);
+}
+
+void CGUIWindowMusicPlayList::MarkPlaying()
+{
+  // clear markings
+  for (int i = 0; i < m_vecItems.Size(); i++)
+    m_vecItems[i]->Select(false);
+
+  // mark the currently playing item
+  if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) && (g_application.IsPlayingAudio()))
+  {
+    int iSong = g_playlistPlayer.GetCurrentSong();
+    if (iSong >= 0 && iSong <= m_vecItems.Size())
+      m_vecItems[iSong]->Select(true);
+  }
 }
