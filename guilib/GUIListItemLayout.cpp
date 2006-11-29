@@ -33,11 +33,12 @@ CGUIListItemLayout::CListLabel::~CListLabel()
 {
 }
 
-CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, const CImage &image)
+CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio)
 : CGUIListItemLayout::CListBase(posX, posY, width, height),
   m_image(0, 0, posX, posY, width, height, image)
 {
   m_type = LIST_TEXTURE;
+  m_image.SetAspectRatio(aspectRatio);
 }
 
 CGUIListItemLayout::CListTexture::~CListTexture()
@@ -45,12 +46,11 @@ CGUIListItemLayout::CListTexture::~CListTexture()
   m_image.FreeResources();
 }
 
-CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, float height, int info)
-: CGUIListItemLayout::CListTexture(posX, posY, width, height, CImage(""))
+CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, float height, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, int info)
+: CGUIListItemLayout::CListTexture(posX, posY, width, height, image, aspectRatio)
 {
   m_info = info;
   m_type = LIST_IMAGE;
-  m_image.SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
 }
 
 CGUIListItemLayout::CListImage::~CListImage()
@@ -252,6 +252,8 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
     label.align |= alignY;
   CStdString content;
   XMLUtils::GetString(child, "label", content);
+  CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+  factory.GetAspectRatio(child, "aspectratio", aspectRatio);
   if (type == "label")
   { // info label
     return new CListLabel(posX, posY, width, height, label, info, content);
@@ -260,11 +262,11 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   {
     if (info)
     { // info image
-      return new CListImage(posX, posY, width, height, info);
+      return new CListImage(posX, posY, width, height, image, aspectRatio, info);
     }
     else
     { // texture
-      return new CListTexture(posX, posY, width, height, image);
+      return new CListTexture(posX, posY, width, height, image, CGUIImage::ASPECT_RATIO_STRETCH);
     }
   }
   return NULL;
@@ -291,9 +293,9 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   m_width = width;
   m_height = height;
   m_focused = focused;
-  CListTexture *tex = new CListTexture(0, 0, width, texHeight, texture);
+  CListTexture *tex = new CListTexture(0, 0, width, texHeight, texture, CGUIImage::ASPECT_RATIO_STRETCH);
   m_controls.push_back(tex);
-  CListImage *image = new CListImage(8, 0, iconWidth, texHeight, LISTITEM_ICON);
+  CListImage *image = new CListImage(8, 0, iconWidth, texHeight, CImage(""), CGUIImage::ASPECT_RATIO_STRETCH, LISTITEM_ICON);
   m_controls.push_back(image);
   float x = iconWidth + labelInfo.offsetX + 10;
   CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, labelInfo, LISTITEM_LABEL, "");
