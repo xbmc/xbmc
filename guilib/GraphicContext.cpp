@@ -124,7 +124,9 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
     if (newBottom > oldBottom) newBottom = oldBottom;
   }
   // check range against screen size
-  if (newRight <= 0 || newBottom <= 0 || newTop >= m_iScreenHeight || newLeft >= m_iScreenWidth)
+  if (newRight <= 0 || newBottom <= 0 ||
+      newTop >= m_iScreenHeight || newLeft >= m_iScreenWidth ||
+      newLeft >= newRight || newTop >= newBottom)
   { // no intersection with the screen
     delete oldviewport;
     return false;
