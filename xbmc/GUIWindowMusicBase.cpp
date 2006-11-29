@@ -84,13 +84,6 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
  
  On these messages this class reacts.\n
  When retrieving...
-  - #GUI_MSG_PLAYBACK_ENDED\n
-   ...and...
-  - #GUI_MSG_PLAYBACK_STOPPED\n
-   ...it deselects the current playing item in list/thumb control,
-   if we are in a temporary playlist or in playlistwindow
-  - #GUI_MSG_PLAYLIST_PLAY_NEXT_PREV\n
-   ...the next playing item is set in list/thumb control
   - #GUI_MSG_WINDOW_DEINIT\n
    ...the last focused control is saved to m_iLastControl.
   - #GUI_MSG_WINDOW_INIT\n
