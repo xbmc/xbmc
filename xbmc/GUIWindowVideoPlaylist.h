@@ -13,6 +13,7 @@ public:
 protected:
   virtual bool OnPlayMedia(int iItem);
   virtual void UpdateButtons();
+  void MarkPlaying();
 
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   void OnMove(int iItem, int iAction);

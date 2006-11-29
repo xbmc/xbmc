@@ -85,6 +85,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         if (iSong >= 0 && iSong <= (int)m_vecItems.Size())
         {
           m_viewControl.SetSelectedItem(iSong);
+          m_vecItems[iSong]->Select(true);
         }
       }
 
@@ -152,6 +153,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         if (iAction == ACTION_DELETE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
           RemovePlayListItem(iItem);
+          MarkPlaying();
         }
       }
     }
@@ -280,6 +282,8 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   // update repeat button
   int iRepeat = 595 + g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO);
   SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
+
+  MarkPlaying();
 }
 
 bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
@@ -462,14 +466,7 @@ void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem, bool bContextDriven /* = tr
       return;
     }
   }
-  m_vecItems[iItem]->Select(false);
-
-  // mark the currently playing item
-  if (bIsPlaying)
-  {
-    int i = g_playlistPlayer.GetCurrentSong();
-    m_vecItems[i]->Select(true);
-  }
+  MarkPlaying();
 }
 
 void CGUIWindowVideoPlaylist::OnMove(int iItem, int iAction)
@@ -506,4 +503,19 @@ void CGUIWindowVideoPlaylist::MoveItem(int iStart, int iDest)
       break;
   }
   Update(m_vecItems.m_strPath);
+}
+
+void CGUIWindowVideoPlaylist::MarkPlaying()
+{
+  // clear markings
+  for (int i = 0; i < m_vecItems.Size(); i++)
+    m_vecItems[i]->Select(false);
+
+  // mark the currently playing item
+  if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingVideo()))
+  {
+    int iSong = g_playlistPlayer.GetCurrentSong();
+    if (iSong >= 0 && iSong <= m_vecItems.Size())
+      m_vecItems[iSong]->Select(true);
+  }
 }
