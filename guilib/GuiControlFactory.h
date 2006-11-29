@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIControl.h"
+#include "GUIImage.h" // for aspect ratio
 
 class CImage; // forward
 
@@ -25,6 +26,7 @@ public:
   CGUIControl* Create(DWORD dwParentId, CGUIControl *group, TiXmlElement* pControlNode);
   bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
+  bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::GUIIMAGE_ASPECT_RATIO &aspectRatio);
   bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image);
   bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);

@@ -41,7 +41,7 @@ class CGUIListItemLayout
   class CListTexture : public CListBase
   {
   public:
-    CListTexture(float posX, float posY, float width, float height, const CImage &image);
+    CListTexture(float posX, float posY, float width, float height, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio);
     virtual ~CListTexture();
     CGUIImage m_image;
   };
@@ -49,7 +49,7 @@ class CGUIListItemLayout
   class CListImage: public CListTexture
   {
   public:
-    CListImage(float posX, float posY, float width, float height, int info);
+    CListImage(float posX, float posY, float width, float height, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, int info);
     virtual ~CListImage();
     int m_info;
   };

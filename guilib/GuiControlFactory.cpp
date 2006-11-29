@@ -121,6 +121,28 @@ bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag,
   return true;
 }
 
+bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::GUIIMAGE_ASPECT_RATIO &aspectRatio)
+{
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  bool keepAR;
+  // backward compatibility
+  if (XMLUtils::GetBoolean(pRootNode, "keepaspectratio", keepAR))
+  {
+    aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+    return true;
+  }
+#endif
+  CStdString aspect;
+  if (XMLUtils::GetString(pRootNode, strTag, aspect))
+  {
+    if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+    else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
+    else if (aspect.CompareNoCase("center") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_CENTER;
+    return true;
+  }
+  return false;
+}
+
 bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image)
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
@@ -729,16 +751,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
   XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
   XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
-  bool keepAR;
-  if (XMLUtils::GetBoolean(pControlNode, "keepaspectratio", keepAR))
-    aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
-  CStdString aspect;
-  if (XMLUtils::GetString(pControlNode, "aspectratio", aspect))
-  {
-    if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
-    else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
-    else if (aspect.CompareNoCase("center") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_CENTER;
-  }
+  GetAspectRatio(pControlNode, "aspectratio", aspectRatio);
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
