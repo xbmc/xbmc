@@ -2208,7 +2208,7 @@ CStdString CGUIInfoManager::SystemHasInternet_s()
 
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 {
-  if (info == LISTITEM_ICON && item->GetThumbnailImage().IsEmpty())
+  if (info == LISTITEM_ICON && !item->HasThumbnail() && item->HasIcon())
   {
     CStdString strThumb = item->GetIconImage();
     strThumb.Insert(strThumb.Find("."), "Big");
