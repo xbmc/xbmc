@@ -73,11 +73,7 @@ void CGUIImage::Render()
   // alloc as this does free and allocation as well
   if (m_Info)
   {
-    CStdString strImage = g_infoManager.GetImage(m_Info, m_dwParentID);
-    if (strImage != m_strFileName && !strImage.IsEmpty())
-      SetFileName(strImage);
-    else if (strImage.IsEmpty() && m_strFileName != m_image.file)
-      SetFileName(m_image.file);
+    SetFileName(g_infoManager.GetImage(m_Info, m_dwParentID));
   }
 
   if (m_bDynamicResourceAlloc && !bVisible && IsAllocated())
@@ -560,6 +556,9 @@ void CGUIImage::PythonSetColorKey(DWORD dwColorKey)
 
 void CGUIImage::SetFileName(const CStdString& strFileName)
 {
+  if (strFileName.IsEmpty() && !m_image.file.IsEmpty())
+    SetFileName(m_image.file);
+
   if (m_strFileName.Equals(strFileName)) return;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
