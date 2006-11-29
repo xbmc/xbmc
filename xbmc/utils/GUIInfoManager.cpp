@@ -183,8 +183,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.ismaster")) ret = SYSTEM_ISMASTER;
     else if (strTest.Equals("system.internetstate")) ret = SYSTEM_INTERNET_STATE;
     else if (strTest.Equals("system.loggedon")) ret = SYSTEM_LOGGEDON;
-    else if (strTest.Equals("system.hasdrive(f)")) ret = SYSTEM_HAS_DRIVE_F;
-    else if (strTest.Equals("system.hasdrive(g)")) ret = SYSTEM_HAS_DRIVE_G;
+    else if (strTest.Equals("system.hasdrivef")) ret = SYSTEM_HAS_DRIVE_F;
+    else if (strTest.Equals("system.hasdriveg")) ret = SYSTEM_HAS_DRIVE_G;
     else if (strTest.Left(16).Equals("system.idletime("))
     {
       int time = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
@@ -796,9 +796,21 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
       bReturn = false;
   }
   else if (condition == SYSTEM_HAS_DRIVE_F)
-    bReturn = g_advancedSettings.m_useFDrive;
+  {
+    if (g_advancedSettings.m_useFDrive)
+      return true;
+
+    CIoSupport helper;
+    bReturn = helper.IsDrivePresent("F:");
+  }
   else if (condition == SYSTEM_HAS_DRIVE_G)
-    bReturn = g_advancedSettings.m_useGDrive;
+  {
+    if (g_advancedSettings.m_useGDrive)
+      return true;
+
+    CIoSupport helper;   
+    bReturn = helper.IsDrivePresent("G:");
+  }
   else if (condition == SYSTEM_DVDREADY)
 	  bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
