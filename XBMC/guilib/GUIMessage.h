@@ -56,6 +56,8 @@
 
 #define GUI_MSG_PAGE_CHANGE 28  // a page control has changed the page number
 
+#define GUI_MSG_REFRESH_LIST 29 // message sent to all listing controls telling them to refresh their item layouts
+
 #define GUI_MSG_USER         1000
 
 /*!

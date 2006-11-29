@@ -51,11 +51,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_RESET:
     m_vecItems.m_strPath = "?";
     break;
-  case GUI_MSG_PLAYLIST_CHANGED:
-    {
-      UpdateButtons();
-    }
-    break;
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
       m_thumbLoader.StopThread();

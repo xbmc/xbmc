@@ -158,6 +158,7 @@ public:
   /* sets the contenttype if known beforehand */
   void              SetContentType(const CStdString& content) { m_contenttype = content; } ;  
 
+  bool IsSamePath(const CFileItem *item);
 private:
   CStdString ParseFormat(const CStdString& strMask);
 
