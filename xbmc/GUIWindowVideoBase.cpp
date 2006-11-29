@@ -1324,11 +1324,6 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
   {
     CIMDBMovie movie = movies[i];
     // add the appropiate movies to m_vecItems based on the showmode
-    if (
-      (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL) ||
-      (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_WATCHED && movie.m_bWatched == true) ||
-      (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED && movie.m_bWatched == false)
-      )
     {
       // mark watched movies when showing all
       CStdString strTitle = movie.m_strTitle;
