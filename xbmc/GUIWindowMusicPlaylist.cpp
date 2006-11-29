@@ -39,7 +39,6 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYLISTPLAYER_REPEAT:
     {
       UpdateButtons();
@@ -92,10 +91,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       {
         int iSong = g_playlistPlayer.GetCurrentSong();
         if (iSong >= 0 && iSong <= m_vecItems.Size())
-        {
           m_viewControl.SetSelectedItem(iSong);
-          m_vecItems[iSong]->Select(true);
-        }
       }
 
       return true;
@@ -233,7 +229,6 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bo
       else if (iNew == iCurrentSong)
         iCurrentSong = iSelected;
       g_playlistPlayer.SetCurrentSong(iCurrentSong);
-      m_vecItems[iCurrentSong]->Select(true);
     }
 
     if (bUpdate)
@@ -329,7 +324,6 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
     {
       iCurrentSong--;
       g_playlistPlayer.SetCurrentSong(iCurrentSong);
-      m_vecItems[iCurrentSong]->Select(true);
     }
   }
 
@@ -720,7 +714,7 @@ void CGUIWindowMusicPlayList::MoveItem(int iStart, int iDest)
 
 void CGUIWindowMusicPlayList::MarkPlaying()
 {
-  // clear markings
+/*  // clear markings
   for (int i = 0; i < m_vecItems.Size(); i++)
     m_vecItems[i]->Select(false);
 
@@ -730,5 +724,5 @@ void CGUIWindowMusicPlayList::MarkPlaying()
     int iSong = g_playlistPlayer.GetCurrentSong();
     if (iSong >= 0 && iSong <= m_vecItems.Size())
       m_vecItems[iSong]->Select(true);
-  }
+  }*/
 }

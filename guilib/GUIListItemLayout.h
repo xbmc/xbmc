@@ -81,5 +81,7 @@ protected:
   float m_height;
   bool m_focused;
   bool m_invalidated;
+
+  bool m_isPlaying;
 };
 
