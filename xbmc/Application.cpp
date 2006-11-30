@@ -4205,6 +4205,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
         dbs.Close();
       }
 
+      // reset the current playing file
+      m_itemCurrentFile.Reset();
+      g_infoManager.ResetCurrentItem();
+      m_currentStack.Clear();
+
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         // sending true to PlayNext() effectively passes bRestart to PlayFile()
@@ -4218,9 +4223,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         {
           delete m_pPlayer;
           m_pPlayer = 0;
-          m_itemCurrentFile.Reset();
-          m_currentStack.Clear();
-          g_infoManager.ResetCurrentItem();
         }
       }
 
