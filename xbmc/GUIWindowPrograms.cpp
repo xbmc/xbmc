@@ -521,7 +521,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
   std::vector<CStdString> vecTrainerPath;
   m_database.GetAllTrainers(vecTrainerPath);
   CGUIDialogProgress* m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  m_dlgProgress->SetLine(0,"Validating existing trainers");
+  m_dlgProgress->SetLine(0,12023);
   m_dlgProgress->SetLine(1,"");
   m_dlgProgress->SetLine(2,"");
   m_dlgProgress->StartModal();
