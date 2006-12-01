@@ -243,7 +243,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, int 
   return GetConditionalVisibility(control, condition, allowHiddenFocus);
 }
 
-bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimation> &animations)
+bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, const FRECT &rect, vector<CAnimation> &animations)
 {
   const TiXmlElement* node = control->FirstChildElement("animation");
   bool ret = false;
@@ -255,7 +255,7 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimati
     if (node->FirstChild())
     {
       CAnimation anim;
-      anim.Create(node);
+      anim.Create(node, rect);
       animations.push_back(anim);
       if (strcmpi(node->FirstChild()->Value(), "VisibleChange") == 0)
       { // add the hidden one as well
@@ -470,6 +470,28 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
   XMLUtils::GetFloat(pControlNode, "width", width);
   XMLUtils::GetFloat(pControlNode, "height", height);
+
+  // adjust width and height accordingly for groups.  Groups should
+  // take the width/height of the parent (adjusted for positioning)
+  // if none is defined.
+  if (strType == "group" || strType == "grouplist")
+  {
+    if (!width)
+    {
+      if (group)
+        width = max(group->GetWidth() + group->GetXPosition() - posX, 0);
+      else
+        width = max(g_graphicsContext.GetWidth() - posX, 0);
+    }
+    if (!height)
+    {
+      if (group)
+        height = max(group->GetHeight() + group->GetYPosition() - posY, 0);
+      else
+        height = max(g_graphicsContext.GetHeight() - posY, 0);
+    }
+  }
+
 #ifdef HAS_RAM_CONTROL
   XMLUtils::GetFloat(pControlNode, "textspacey", textSpaceY);
   XMLUtils::GetFloat(pControlNode, "gfxthumbwidth", thumbWidth);
@@ -504,7 +526,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   XMLUtils::GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
   
   GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
-  GetAnimations(pControlNode, animations);
+  FRECT rect = { posX, posY, width, height };
+  GetAnimations(pControlNode, rect, animations);
 
   XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.textColor);
   XMLUtils::GetHex(pControlNode, "focusedcolor", labelInfo.focusedColor);
@@ -770,24 +793,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   XMLUtils::GetBoolean(pControlNode, "showonepage", showOnePage);
   XMLUtils::GetInt(pControlNode, "focusposition", focusPosition);
   XMLUtils::GetInt(pControlNode, "scrolltime", scrollTime);
-
-  if (strType == "group" || strType == "grouplist")
-  {
-    if (!width)
-    {
-      if (group)
-        width = max(group->GetWidth() + group->GetXPosition() - posX, 0);
-      else
-        width = max(g_graphicsContext.GetWidth() - posX, 0);
-    }
-    if (!height)
-    {
-      if (group)
-        height = max(group->GetHeight() + group->GetYPosition() - posY, 0);
-      else
-        height = max(g_graphicsContext.GetHeight() - posY, 0);
-    }
-  }
 
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
