@@ -295,7 +295,7 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   m_focused = focused;
   CListTexture *tex = new CListTexture(0, 0, width, texHeight, texture, CGUIImage::ASPECT_RATIO_STRETCH);
   m_controls.push_back(tex);
-  CListImage *image = new CListImage(8, 0, iconWidth, texHeight, CImage(""), CGUIImage::ASPECT_RATIO_STRETCH, LISTITEM_ICON);
+  CListImage *image = new CListImage(8, 0, iconWidth, texHeight, CImage(""), CGUIImage::ASPECT_RATIO_KEEP, LISTITEM_ICON);
   m_controls.push_back(image);
   float x = iconWidth + labelInfo.offsetX + 10;
   CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, labelInfo, LISTITEM_LABEL, "");
