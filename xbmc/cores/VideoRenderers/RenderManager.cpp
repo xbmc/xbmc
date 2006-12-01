@@ -66,18 +66,30 @@ CXBoxRenderManager::~CXBoxRenderManager()
 
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
+  if( flags & CONF_FLAGS_FULLSCREEN )
+  {
+    // this is abit uggly, the call to switch to fullscreen
+    // may call back into the renderer, wich will lock
+    // if we hold an exclusive lock wich is needed for
+    // configure.
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+    {
+      m_pRenderer->ChooseBestResolution(fps);
+      lock.Leave();
+      g_applicationMessenger.SwitchToFullscreen();
+    }
+  }
+
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
 
-  m_iSourceWidth = width;
-  m_iSourceHeight = height;
   m_presentdelay = 5;
   bool result = false;
   if (m_pRenderer)
   {
     result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
-    Update(false);
     m_bIsStarted = true;
   }
   return result;
@@ -223,7 +235,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
 void CXBoxRenderManager::Present()
 {
   EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
-  
+
   /* check for forced fields */
   if( mInt == VS_INTERLACEMETHOD_AUTO && m_presentfield != FS_NONE )
   {
@@ -248,7 +260,7 @@ void CXBoxRenderManager::Present()
     m_presentdelay = 20;
   else
     m_presentdelay = 40;
-  
+
   if( m_presenttime >= m_presentdelay )
     m_presenttime -=  m_presentdelay;
   else
@@ -257,7 +269,7 @@ void CXBoxRenderManager::Present()
   if( mInt == VS_INTERLACEMETHOD_RENDER_BOB || mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
     PresentBob();
   else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
-    PresentWeave(); 
+    PresentWeave();
   else if( mInt == VS_INTERLACEMETHOD_RENDER_BLEND )
     PresentBlend();
   else
@@ -297,7 +309,7 @@ void CXBoxRenderManager::PresentBob()
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOLOCK, 255);
   else
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOLOCK, 255);
-  
+
   D3D__pDevice->Present( NULL, NULL, NULL, NULL );
 }
 
@@ -315,7 +327,7 @@ void CXBoxRenderManager::PresentBlend()
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOOSD, 255);
     m_pRenderer->RenderUpdate(false, RENDER_FLAG_EVEN, 128);
   }
-  
+
 
   /* wait for timestamp */
   while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
