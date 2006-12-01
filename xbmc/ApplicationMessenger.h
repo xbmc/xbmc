@@ -24,6 +24,7 @@
 #define TMSG_RESTART              302
 #define TMSG_RESET                303
 #define TMSG_RESTARTAPP           304
+#define TMSG_SWITCHTOFULLSCREEN   305
 
 #define TMSG_HTTPAPI              400
 
@@ -68,6 +69,7 @@ public:
   void RebootToDashBoard();
   void RestartApp();
   void Reset();
+  void SwitchToFullscreen(); //
 
   CStdString GetResponse();
   int SetResponse(CStdString response);

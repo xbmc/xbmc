@@ -635,6 +635,9 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back(m_demuxer);
   }
 
+  if( m_fullscreen )
+    m_vecOptions.push_back("-fs");
+
   m_vecOptions.push_back("1.avi");
 
   argc = (int)m_vecOptions.size();
@@ -1034,6 +1037,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
       options.SetNoCache(true);
     }
 
+    options.SetFullscreen(initoptions.fullscreen);
 
     options.GetOptions(argc, argv);
 
@@ -1679,28 +1683,23 @@ void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
                       lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
 }
 
-extern void xbox_audio_registercallback(IAudioCallback* pCallback);
-extern void xbox_audio_unregistercallback();
-extern void xbox_video_getRect(RECT& SrcRect, RECT& DestRect);
-extern void xbox_video_getAR(float& fAR);
-extern void xbox_video_update(bool bPauseDrawing);
-//extern void xbox_video_update_subtitle_position();
-//extern void xbox_video_render_subtitles();
-
 void CMPlayer::Update(bool bPauseDrawing)
 {
-  xbox_video_update(bPauseDrawing);
+  g_renderManager.Update(bPauseDrawing);
 }
 
 void CMPlayer::GetVideoRect(RECT& SrcRect, RECT& DestRect)
 {
-  xbox_video_getRect(SrcRect, DestRect);
+  g_renderManager.GetVideoRect(SrcRect, DestRect);
 }
 
 void CMPlayer::GetVideoAspectRatio(float& fAR)
 {
-  xbox_video_getAR(fAR);
+  fAR = g_renderManager.GetAspectRatio();
 }
+
+extern void xbox_audio_registercallback(IAudioCallback* pCallback);
+extern void xbox_audio_unregistercallback();
 
 void CMPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 {
@@ -1714,16 +1713,6 @@ void CMPlayer::UnRegisterAudioCallback()
 void CMPlayer::SwitchToNextAudioLanguage()
 {
 }
-
-//void CMPlayer::UpdateSubtitlePosition()
-//{
-// xbox_video_update_subtitle_position();
-//}
-//
-//void CMPlayer::RenderSubtitles()
-//{
-// xbox_video_render_subtitles();
-//}
 
 bool CMPlayer::CanRecord()
 {

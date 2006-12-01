@@ -39,31 +39,6 @@ static EFIELDSYNC m_iFieldSync = FS_NONE;
 
 void video_uninit(void);
 
-void xbox_video_getAR(float& fAR)
-{
-  fAR = g_renderManager.GetAspectRatio();
-}
-
-void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
-{
-  g_renderManager.GetVideoRect(SrcRect, DestRect);
-}
-
-void xbox_video_wait()
-{
-  g_renderManager.WaitForFlip();
-}
-
-void xbox_video_render_update(bool clear)
-{
-  g_renderManager.RenderUpdate(clear);
-}
-
-void xbox_video_update(bool bPauseDrawing)
-{
-  g_renderManager.Update(bPauseDrawing);
-}
-
 /********************************************************************************************************
   mplayer calls below here
 ********************************************************************************************************/
@@ -181,8 +156,12 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
   if (g_application.m_pPlayer)
     fps = g_application.m_pPlayer->GetActualFPS();
 
+  unsigned flags = 0;
+  if(options & VOFLAG_FULLSCREEN)
+    flags |= CONF_FLAGS_FULLSCREEN;
+
   //TODO, the format parameter, should be able to give a fullrange yuv format
-  if(g_renderManager.Configure(width, height, d_width, d_height, fps, 0))
+  if(g_renderManager.Configure(width, height, d_width, d_height, fps, flags))
     return 0;
 
   return VO_ERROR;
