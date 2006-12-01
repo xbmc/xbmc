@@ -194,10 +194,11 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
+      FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
       if (strcmpi(pChild->FirstChild()->Value(), "windowopen") == 0)
-        m_showAnimation.Create(pChild->ToElement());
+        m_showAnimation.Create(pChild->ToElement(), rect);
       else if (strcmpi(pChild->FirstChild()->Value(), "windowclose") == 0)
-        m_closeAnimation.Create(pChild->ToElement());
+        m_closeAnimation.Create(pChild->ToElement(), rect);
     }
     else if (strValue == "zorder" && pChild->FirstChild())
     {
