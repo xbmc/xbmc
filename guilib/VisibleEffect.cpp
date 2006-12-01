@@ -2,6 +2,7 @@
 #include "VisibleEffect.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "SkinInfo.h" // for the effect time adjustments
+#include "GUIImage.h" // for FRECT
 
 CAnimation::CAnimation()
 {
@@ -25,7 +26,7 @@ void CAnimation::Reset()
   reversible = true;
 }
 
-void CAnimation::Create(const TiXmlElement *node)
+void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
 {
   if (!node || !node->FirstChild())
     return;
@@ -139,22 +140,54 @@ void CAnimation::Create(const TiXmlElement *node)
     // effect defaults
     startX = startY = 100;
     endX = endY = 100;
+    centerX = centerY = 0;
+
+    float startPosX = rect.left;
+    float startPosY = rect.top;
+    float endPosX = rect.left;
+    float endPosY = rect.right;
 
     const char *start = node->Attribute("start");
     if (start)
     {
-      startX = startY = (float)atof(start);
-      const char *comma = strstr(start, ",");
-      if (comma)
-        startY = (float)atof(comma + 1);
+      CStdStringArray params;
+      StringUtils::SplitString(start, ",", params);
+      if (params.size() == 1)
+        startX = startY = (float)atof(start);
+      else if (params.size() == 2)
+      {
+        startX = (float)atof(params[0].c_str());
+        startY = (float)atof(params[1].c_str());
+      }
+      else if (params.size() == 4)
+      { // format is start="x,y,width,height"
+        // use width and height from our rect to calculate our sizing
+        startPosX = (float)atof(params[0].c_str());
+        startPosY = (float)atof(params[1].c_str());
+        startX = (float)atof(params[2].c_str()) / rect.right * 100.0f;
+        startY = (float)atof(params[3].c_str()) / rect.bottom * 100.0f;
+      }
     }
     const char *end = node->Attribute("end");
     if (end)
     {
-      endX = endY = (float)atof(end);
-      const char *comma = strstr(end, ",");
-      if (comma)
-        endY = (float)atof(comma + 1);
+      CStdStringArray params;
+      StringUtils::SplitString(end, ",", params);
+      if (params.size() == 1)
+        endX = endY = (float)atof(end);
+      else if (params.size() == 2)
+      {
+        endX = (float)atof(params[0].c_str());
+        endY = (float)atof(params[1].c_str());
+      }
+      else if (params.size() == 4)
+      { // format is start="x,y,width,height"
+        // use width and height from our rect to calculate our sizing
+        endPosX = (float)atof(params[0].c_str());
+        endPosY = (float)atof(params[1].c_str());
+        endX = (float)atof(params[2].c_str()) / rect.right * 100.0f;
+        endY = (float)atof(params[3].c_str()) / rect.bottom * 100.0f;
+      }
     }
     const char *centerPos = node->Attribute("center");
     if (centerPos)
@@ -163,6 +196,22 @@ void CAnimation::Create(const TiXmlElement *node)
       const char *comma = strstr(centerPos, ",");
       if (comma)
         centerY = (float)atof(comma + 1);
+    }
+    else
+    { // no center specified
+      // calculate the center position...
+      if (startX)
+      {
+        float scale = endX / startX;
+        if (scale != 1)
+          centerX = (endPosX - scale*startPosX) / (1 - scale);
+      }
+      if (startY)
+      {
+        float scale = endY / startY;
+        if (scale != 1)
+          centerY = (endPosY - scale*startPosY) / (1 - scale);
+      }
     }
   }
 }
