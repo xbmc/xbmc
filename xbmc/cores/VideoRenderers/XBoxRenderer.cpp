@@ -58,7 +58,6 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
   m_pD3DDevice = pDevice;
   m_fSourceFrameRatio = 1.0f;
   m_iResolution = PAL_4x3;
-  m_bFlipped = false;
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
     m_pOSDYTexture[i] = NULL;
@@ -857,7 +856,6 @@ void CXBoxRenderer::FlipPage(int source)
     m_OSDWidth = m_OSDHeight = 0;
 
   m_OSDRendered = false;
-  m_bFlipped = true;
 
   return;
 }
@@ -1003,13 +1001,6 @@ void CXBoxRenderer::Render(DWORD flags)
 
     g_application.RenderMemoryStatus();
   }
-}
-
-void CXBoxRenderer::RenderBlank()
-{ // clear the screen
-  CSingleLock lock(g_graphicsContext);
-  m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0L );
-  m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
 }
 
 void CXBoxRenderer::SetViewMode(int iViewMode)
@@ -1342,30 +1333,6 @@ void CXBoxRenderer::ClearYV12Texture(int index)
 
   SetEvent(m_eventTexturesDone[index]);
 }
-#if 0
-void CXBoxRenderer::CopyYV12Texture(int dest)
-{
-  int src = 1-dest;
-  D3DLOCKED_RECT lr_src, lr_dest;
-  m_YTexture[src]->LockRect(0, &lr_src, NULL, 0);
-  m_YTexture[dest]->LockRect(0, &lr_dest, NULL, 0);
-  memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*m_iSourceHeight);
-  m_YTexture[dest]->UnlockRect(0);
-  m_YTexture[src]->UnlockRect(0);
-
-  m_UTexture[src]->LockRect(0, &lr_src, NULL, 0);
-  m_UTexture[dest]->LockRect(0, &lr_dest, NULL, 0);
-  memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*(m_iSourceHeight / 2));
-  m_UTexture[dest]->UnlockRect(0);
-  m_UTexture[src]->UnlockRect(0);
-
-  m_VTexture[src]->LockRect(0, &lr_src, NULL, 0);
-  m_VTexture[dest]->LockRect(0, &lr_dest, NULL, 0);
-  memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*(m_iSourceHeight / 2));
-  m_VTexture[dest]->UnlockRect(0);
-  m_VTexture[src]->UnlockRect(0);
-}
-#endif
 
 bool CXBoxRenderer::CreateYV12Texture(int index)
 {

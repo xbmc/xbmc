@@ -114,7 +114,6 @@ public:
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
 
   // Player functions
-  virtual unsigned int QueryFormat(unsigned int format) { return 0; };
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
@@ -125,10 +124,9 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
 
-
   virtual int GetNormalDisplayWidth() { return m_iNormalDestWidth; }
   virtual int GetNormalDisplayHeight() { return (int)(m_iNormalDestWidth / (m_iSourceWidth / (float)m_iSourceHeight)); }
-  virtual void RenderBlank();
+
   void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   RESOLUTION GetResolution();
@@ -159,7 +157,6 @@ protected:
 
   float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
   RESOLUTION m_iResolution;    // the resolution we're running in
-  bool m_bFlipped;      // true as soon as we've flipped screens
   float m_fps;        // fps of movie
   RECT rd;          // destination rect
   RECT rs;          // source rect
