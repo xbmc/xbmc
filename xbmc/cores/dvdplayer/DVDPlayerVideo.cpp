@@ -44,6 +44,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
   m_fFrameRate = 25;
+  m_bAllowFullscreen = false;
 }
 
 CDVDPlayerVideo::~CDVDPlayerVideo()
@@ -635,6 +636,12 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       case 1: // ITU-R Rec.709 (1990) -- BT.709
       default: 
         flags |= CONF_FLAGS_YUVCOEF_BT709;
+    }
+
+    if(m_bAllowFullscreen)
+    {
+      flags |= CONF_FLAGS_FULLSCREEN;
+      m_bAllowFullscreen = false; // only allow on first configure
     }
 
     g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate, flags);

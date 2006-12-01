@@ -107,7 +107,7 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
 {
   CGUIWindow *pWindow = m_gWindowManager.GetWindow(windowID);
-  if (pWindow) 
+  if (pWindow)
   {
     pWindow->Initialize();
     pWindow->DynamicResourceAlloc(false);
@@ -225,7 +225,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (g_stSettings.m_currentVideoSettings.m_SubtitleStream >= g_application.m_pPlayer->GetSubtitleCount())
         g_stSettings.m_currentVideoSettings.m_SubtitleStream = 0;
       g_application.m_pPlayer->SetSubtitle(g_stSettings.m_currentVideoSettings.m_SubtitleStream);
-      return true;    
+      return true;
     }
     return true;
     break;
@@ -393,16 +393,23 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         g_audioManager.Enable(false);
       }
 
+
       // setup the brightness, contrast and resolution
+      CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);
+
+      // switch resolution
       CSingleLock lock (g_graphicsContext);
-      CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);      
-      g_graphicsContext.SetFullScreenVideo( true );
-      lock.Leave();
+      g_graphicsContext.SetFullScreenVideo(true);
 #ifdef HAS_VIDEO_PLAYBACK
-      g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+      RESOLUTION res = g_renderManager.GetResolution();
+      g_graphicsContext.SetVideoResolution(res, false, false);
+#endif
+      lock.Leave();
+
+#ifdef HAS_VIDEO_PLAYBACK
+      // make sure renderer is uptospeed
       g_renderManager.Update(false);
 #endif
-
       // now call the base class to load our windows
       CGUIWindow::OnMessage(message);
 
@@ -443,8 +450,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetFullScreenVideo(false);
       g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
       lock.Leave();
+
 #ifdef HAS_VIDEO_PLAYBACK
-      g_renderManager.Update(false);      
+      // make sure renderer is uptospeed
+      g_renderManager.Update(false);
 #endif
 
       CSingleLock lockFont(m_fontLock);
@@ -453,7 +462,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         g_fontManager.Unload("__subtitle__");
         m_subtitleFont = NULL;
       }
-          
+
 
       g_audioManager.Enable(true);
       return true;
@@ -769,7 +778,7 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
     bNeedsPause = true;
   }
   g_application.m_pPlayer->Seek(bPlus, bLargeStep);
-  
+
   //Make sure gui items are visible
   g_infoManager.SetDisplayAfterSeek();
 

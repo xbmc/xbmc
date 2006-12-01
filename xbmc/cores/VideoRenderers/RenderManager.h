@@ -23,12 +23,6 @@ public:
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
   // Functions called from mplayer
-  inline void WaitForFlip()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->WaitForFlip();
-  }
   bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
 
   // a call to GetImage must be followed by a call to releaseimage if getimage was successfull
@@ -70,13 +64,20 @@ public:
     if (m_pRenderer)
       m_pRenderer->Reset();
   }
+  RESOLUTION GetResolution()
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->GetResolution();
+    else
+      return INVALID;
+  }
 
   inline int GetOSDWidth() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetNormalDisplayWidth(); else return 0;};
   inline int GetOSDHeight() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetNormalDisplayHeight(); else return 0; };
   inline DWORD GetPresentDelay() { return m_presentdelay;  }
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
-
 
   CXBoxRenderer *m_pRenderer;
 protected:
@@ -86,9 +87,6 @@ protected:
   void PresentBob();
   void PresentBlend();
 
-  float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
-  unsigned int m_iSourceWidth;    // width
-  unsigned int m_iSourceHeight;   // height
   bool m_bPauseDrawing;   // true if we should pause rendering
 
   bool m_bIsStarted;

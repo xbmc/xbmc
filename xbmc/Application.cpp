@@ -250,9 +250,6 @@ CApplication::CApplication(void)
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
 
-  // true while we switch to fullscreen (while video is paused)
-  m_switchingToFullScreen = false;
-
   //true while we in IsPaused mode! Workarround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
 
@@ -2041,11 +2038,7 @@ void CApplication::RenderNoPresent()
         {
           CSingleLock lock(g_graphicsContext);
           m_gWindowManager.UpdateModelessVisibility();
-          extern void xbox_video_render_update(bool);
-          xbox_video_render_update(true);
-#ifdef HAS_XBOX_D3D
-          m_pd3dDevice->BlockUntilVerticalBlank();
-#endif
+          g_renderManager.RenderUpdate(true);
           m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
           return ;
         }
@@ -3397,6 +3390,29 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
   }
 
+  // this really aught to be inside !bRestart, but since PlayStack
+  // uses that to init playback, we have to keep it outside
+  int playlist = g_playlistPlayer.GetCurrentPlaylist();
+  if (playlist == PLAYLIST_VIDEO && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
+  { // playing from a playlist by the looks
+    // don't switch to fullscreen if we are not playing the first item...
+    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile();
+  }
+  else if(m_itemCurrentFile.IsStack())
+  {
+    // TODO - this will fail if user seeks back to first file in stack
+    if(m_currentStackPosition == 0
+    || m_itemCurrentFile.m_lStartOffset == STARTOFFSET_RESUME)
+      options.fullscreen = true;
+    else
+      options.fullscreen = false;
+    // reset this so we don't think we are resuming on seek    
+    m_itemCurrentFile.m_lStartOffset = 0;
+  }
+  else
+    options.fullscreen = true;
+
+
   // reset any forced player
   m_eForcedNextPlayer = EPC_NONE;
 
@@ -3431,45 +3447,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   bool bResult = m_pPlayer->OpenFile(item, options);
-  if (bResult)
-  {
-    // if file happens to contain video stream
-    if ( IsPlayingVideo())
-    {
-      // reset the screensaver
-      ResetScreenSaver();
-      ResetScreenSaverWindow();
 
-      bool bCanSwitch = true;
-      // check whether we are playing from a playlist...
-      int playlist = g_playlistPlayer.GetCurrentPlaylist();
-      if (playlist == PLAYLIST_VIDEO)
-      { // playing from a playlist by the looks
-        if (g_playlistPlayer.GetPlaylist(playlist).size() > 1 && g_playlistPlayer.HasPlayedFirstFile())
-        { // don't switch to fullscreen if we are not playing the first item...
-          bCanSwitch = false;
-        }
-      }
-      // switch to fullscreen video mode if we can
-      if (bCanSwitch)
-      {
-        // wait till the screen is configured before we pause
-        // I'm sure this can be done better than just a sleep...
-#ifdef HAS_VIDEO_PLAYBACK
-        while (!g_renderManager.IsStarted())
-          Sleep(1);
-#endif
-        // pause video until screen is setup
-        m_switchingToFullScreen = true;
-        m_pPlayer->Pause();
-        SwitchToFullScreen();
-        //screen is setup, resume playing
-        m_pPlayer->Pause();
-        m_switchingToFullScreen = false;
-      }
-    }
-
-  }
   if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
     g_audioManager.Enable(false);
   return bResult;
@@ -3573,8 +3551,6 @@ bool CApplication::IsPaused() const
   if (!m_pPlayer)
     return false;
   if (!m_pPlayer->IsPlaying())
-    return false;
-  if (m_pPlayer->HasVideo() && m_switchingToFullScreen)
     return false;
   return m_pPlayer->IsPaused();
 }
@@ -4338,10 +4314,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         else if (item.IsAudio() || item.IsVideo())
         { // an audio or video file
           PlayFile(item);
-          if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-          {
-            SwitchToFullScreen();
-          }
         }
         else
           return false;

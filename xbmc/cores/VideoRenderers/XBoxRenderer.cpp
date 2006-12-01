@@ -435,17 +435,6 @@ RESOLUTION CXBoxRenderer::GetResolution()
   return g_graphicsContext.GetVideoResolution();
 }
 
-void CXBoxRenderer::WaitForFlip()
-{
-  int iTmp = 0;
-  m_bFlipped = false;
-  while (!m_bFlipped && iTmp < 3000)
-  {
-    Sleep(1);
-    iTmp++;
-  }
-}
-
 float CXBoxRenderer::GetAspectRatio()
 {
   float fWidth = (float)m_iSourceWidth - g_stSettings.m_currentVideoSettings.m_CropLeft - g_stSettings.m_currentVideoSettings.m_CropRight;
@@ -707,10 +696,6 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
   CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
 }
 
-void CXBoxRenderer::CreateTextures()
-{
-}
-
 void CXBoxRenderer::SetupSubtitles()
 {
   //set zoomamount to 1 temporary to get the default width of the destination viewwindow
@@ -734,6 +719,7 @@ bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(m_fps);
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+
   ManageDisplay();
   SetupSubtitles();
 
@@ -825,13 +811,9 @@ void CXBoxRenderer::Reset()
 
 void CXBoxRenderer::Update(bool bPauseDrawing)
 {
-  if (m_bConfigured)
-  {
-    CSingleLock lock(g_graphicsContext);
-    bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
-    g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution : g_guiSettings.m_LookAndFeelResolution, !bFullScreen);
-    RenderUpdate(false);
-  }
+  if (!m_bConfigured) return;
+  CSingleLock lock(g_graphicsContext);
+  ManageDisplay();
 }
 
 void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
