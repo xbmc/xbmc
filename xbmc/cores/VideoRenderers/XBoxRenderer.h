@@ -57,6 +57,7 @@ typedef struct YV12Image
 #define CONF_FLAGS_YUVCOEF_EBU   0x04
 
 #define CONF_FLAGS_YUV_FULLRANGE 0x08
+#define CONF_FLAGS_FULLSCREEN    0x10
 
 struct DRAWRECT
 {
@@ -111,7 +112,6 @@ public:
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
-  virtual void WaitForFlip();
 
   // Player functions
   virtual unsigned int QueryFormat(unsigned int format) { return 0; };
@@ -130,17 +130,15 @@ public:
   virtual int GetNormalDisplayHeight() { return (int)(m_iNormalDestWidth / (m_iSourceWidth / (float)m_iSourceHeight)); }
   virtual void RenderBlank();
   void AutoCrop(bool bCrop);
-  int GetBuffersCount() { return m_NumYV12Buffers; };
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  RESOLUTION GetResolution();
+  void ChooseBestResolution(float fps);
 
 protected:
   virtual void Render(DWORD flags);
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
   void CalculateFrameAspectRatio(int desired_width, int desired_height);
   virtual void ManageDisplay();
-  virtual void CreateTextures();
-  void ChooseBestResolution(float fps);
-  RESOLUTION GetResolution();
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void DeleteOSDTextures(int index);
@@ -170,7 +168,7 @@ protected:
   unsigned int m_iNormalDestWidth;  // initial destination width in normal view
 
   bool m_bConfigured;
-  
+
   // OSD stuff
   LPDIRECT3DTEXTURE8 m_pOSDYTexture[NUM_BUFFERS];
   LPDIRECT3DTEXTURE8 m_pOSDATexture[NUM_BUFFERS];
@@ -198,8 +196,8 @@ protected:
   #define FIELD_ODD 1
   #define FIELD_EVEN 2
 
-  // YV12 decoder textures  
-  // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines  
+  // YV12 decoder textures
+  // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   YUVBUFFERS m_YUVTexture;
 
   // render device

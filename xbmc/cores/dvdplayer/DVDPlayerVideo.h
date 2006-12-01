@@ -38,6 +38,9 @@ public:
   void UpdateMenuPicture();
  
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
+  void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
+  void SetAspectRatio(float aspect)                 { m_fForcedAspectRatio = aspect; }
+
   void GetVideoRect(RECT& SrcRect, RECT& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
   float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
 
@@ -97,7 +100,7 @@ protected:
     float framerate;
   } m_output; //holds currently configured output
 
-  
+  bool m_bAllowFullscreen;
   bool m_bRenderSubs;
   
   float m_fForcedAspectRatio;

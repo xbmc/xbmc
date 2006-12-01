@@ -68,6 +68,7 @@ public:
     void SetVideoCodec(const string& codec) { m_audiocodec = codec; }
     void SetDemuxer(const string& demuxer) { m_demuxer = demuxer; }
     void SetSyncSpeed(const float synccomp) { m_synccomp = synccomp; }
+    void SetFullscreen(bool fullscreen) { m_fullscreen = fullscreen; }
 
   private:
     bool m_bDeinterlace;
@@ -100,6 +101,7 @@ public:
     string m_strHexRawAudioFormat;
     float m_synccomp;
     vector<string> m_vecOptions;
+    bool m_fullscreen;
   };
   CMPlayer(IPlayerCallback& callback);
   virtual ~CMPlayer();

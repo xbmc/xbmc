@@ -179,9 +179,14 @@ bool CComboRenderer::Configure(unsigned int width, unsigned int height, unsigned
 
 void CComboRenderer::Update(bool bPauseDrawing)
 {
+  if(!m_bConfigured) return;
   CSingleLock lock(g_graphicsContext);
-  m_pD3DDevice->EnableOverlay(!bPauseDrawing);
-  if (bPauseDrawing) return ;
+
+  if(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
+    m_pD3DDevice->EnableOverlay(!bPauseDrawing);
+  else
+    m_pD3DDevice->EnableOverlay(FALSE);
+
   CXBoxRenderer::Update(bPauseDrawing);
 }
 
@@ -308,7 +313,7 @@ void CComboRenderer::Render(DWORD flags)
     target.y1 = rd.top;
     target.y2 = rd.bottom;
     m_pD3DDevice->Clear( 1L, &target, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
-    
+
     // Don't render if we are waiting an overlay event
     while (!m_pD3DDevice->GetOverlayUpdateStatus()) Sleep(1);
 

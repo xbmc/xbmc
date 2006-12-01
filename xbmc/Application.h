@@ -158,6 +158,7 @@ public:
   bool SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed,int iDuration);
 
 protected:
+  friend CApplicationMessenger;
   // screensaver
   bool m_bInactive;
   bool m_bScreenSave;
@@ -179,7 +180,6 @@ protected:
   EPLAYERCORES m_eCurrentPlayer;
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
-  bool m_switchingToFullScreen;
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
   bool m_playCountUpdated;
