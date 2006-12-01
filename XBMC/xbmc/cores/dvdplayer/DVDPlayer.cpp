@@ -112,32 +112,21 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     /* otherwise player will think we need to be restarted */
     g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
 
+    /* allow renderer to switch to fullscreen if requested */
+    m_dvdPlayerVideo.EnableFullscreen(options.fullscreen);
+
     ResetEvent(m_hReadyEvent);
     Create();
     WaitForSingleObject(m_hReadyEvent, INFINITE);
+
+    // Playback might have been stopped due to some error
+    if (m_bStop) return false;
 
     /* check if we got a full dvd state, then use that */
     if( options.state.size() > 0 && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       SetPlayerState(options.state);
     else if( options.starttime > 0 )
       SeekTime( (__int64)(options.starttime * 1000) );
-
-    // if we are playing a media file with pictures, we should wait for the video output device to be initialized
-    // if we don't wait, the fullscreen window will init with a picture that is 0 pixels width and high
-    // we also have to wait for the player to be initialized so that we can set and access all settings when playing a dvd
-    bool bProcessThreadIsAlive = true;    
-
-    while ((m_CurrentVideo.id >= 0 || m_packetcount < 10)
-      && bProcessThreadIsAlive 
-      && !m_bAbortRequest 
-      && !m_dvdPlayerVideo.InitializedOutputDevice())
-    {
-      bProcessThreadIsAlive = !WaitForThreadExit(0);
-      Sleep(1);
-    }
-
-    // m_bPlaying could be set to false in the meantime, which indicates an error
-    if (!bProcessThreadIsAlive || m_bStop) return false;
     
     // settings that can only be set after the inputstream, demuxer and or codecs are opened
     SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
@@ -1680,7 +1669,12 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         m_messenger.Put(new CDVDMsgDemuxerReset());
 
         //Force an aspect ratio that is set in the dvdheaders if available
-        m_dvdPlayerVideo.m_messageQueue.Put(new CDVDMsgVideoSetAspect(pStream->GetVideoAspectRatio()));
+        CDVDMsgVideoSetAspect *aspect = new CDVDMsgVideoSetAspect(pStream->GetVideoAspectRatio());
+        if( m_dvdPlayerVideo.m_messageQueue.Put(aspect) != MSGQ_OK )
+        {
+          aspect->Release();
+          m_dvdPlayerVideo.SetAspectRatio(pStream->GetVideoAspectRatio());
+        }
 
         return NAVRESULT_HOLD;
       }

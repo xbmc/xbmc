@@ -302,6 +302,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         g_application.m_pPlayer->Pause();
       }
       break;
+    case TMSG_SWITCHTOFULLSCREEN:
+      if( m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
+        g_application.SwitchToFullScreen();
+      break;
 
     case TMSG_HTTPAPI:
       if (!pXbmcHttp)
@@ -528,4 +532,10 @@ void CApplicationMessenger::NetworkMessage(DWORD dwMessage, DWORD dwParam)
 {
   ThreadMessage tMsg = {TMSG_NETWORKMESSAGE, dwMessage, dwParam};
   SendMessage(tMsg);
+}
+
+void CApplicationMessenger::SwitchToFullscreen()
+{
+  ThreadMessage tMsg = {TMSG_SWITCHTOFULLSCREEN};
+  SendMessage(tMsg, true);
 }

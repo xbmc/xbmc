@@ -106,15 +106,18 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       g_graphicsContext.SetCalibrating(true);
       
-#ifdef HAS_VIDEO_PLAYBACK
-      // Inform the renderer so we can update the resolution
-      g_renderManager.Update(false);
-#endif
-
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
       if (g_application.IsPlayingVideo())
       { // don't allow resolution switching if we are playing a video
+
+#ifdef HAS_VIDEO_PLAYBACK
+        RESOLUTION res = g_renderManager.GetResolution();
+        g_graphicsContext.SetVideoResolution(res);
+        // Inform the renderer so we can update the resolution
+        g_renderManager.Update(false);
+#endif
+
         m_iCurRes = 0;
         m_Res.push_back(g_graphicsContext.GetVideoResolution());
         SET_CONTROL_VISIBLE(CONTROL_VIDEO);
