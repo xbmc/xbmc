@@ -16,6 +16,7 @@ public:
   int  GetResumeItemOffset(const CFileItem *item);
 
   static void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items);
+  void AddToDatabase(int iItem);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
