@@ -28,6 +28,7 @@
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
 : CGUIWindowVideoBase(WINDOW_VIDEO_FILES, "MyVideo.xml")
 {
+  m_bIsScanning = false;
 }
 
 CGUIWindowVideoFiles::~CGUIWindowVideoFiles()
@@ -538,10 +539,12 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
 void CGUIWindowVideoFiles::OnScan()
 {
   // GetStackedDirectory() now sets and restores the stack state!
+  m_bIsScanning = true;
   CFileItemList items;
   GetStackedDirectory(m_vecItems.m_strPath, items);
   DoScan(m_vecItems.m_strPath, items);
   Update(m_vecItems.m_strPath);
+  m_bIsScanning = false;
 }
 
 bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items)
