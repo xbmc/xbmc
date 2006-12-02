@@ -35,6 +35,8 @@ void CGUIProgressControl::Render()
   if (!IsDisabled())
   {
     if (m_iInfoCode) m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode);
+    if (m_fPercent < 0.0f) m_fPercent = 0.0f;
+    if (m_fPercent > 100.0f) m_fPercent = 100.0f;
 
     float fScaleX, fScaleY;
     fScaleY = m_height == 0 ? 1.0f : m_height/(float)m_guiBackground.GetTextureHeight();
