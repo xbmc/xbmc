@@ -43,6 +43,7 @@ public:
   virtual ~CVideoDatabase(void);
 
   long AddMovie(const CStdString& strFilenameAndPath, const CStdString& strcdLabel, bool bHassubtitles);
+  long AddGenre(const CStdString& strGenre1);
 
   void MarkAsWatched(const CFileItem &item);
   void MarkAsWatched(long lMovieId);
@@ -101,12 +102,9 @@ protected:
   long GetPath(const CStdString& strPath);
   long AddPath(const CStdString& strPath);
 
+  long GetMovie(const CStdString& strFilenameAndPath);
   long GetFile(const CStdString& strFilenameAndPath, long &lPathId, long& lMovieId, bool bExact = false);
   long AddFile(long lMovieId, long lPathId, const CStdString& strFileName);
-
-  long GetMovie(const CStdString& strFilenameAndPath);
-
-  long AddGenre(const CStdString& strGenre1);
   long AddActor(const CStdString& strActor);
 
   void AddActorToMovie(long lMovieId, long lActorId);

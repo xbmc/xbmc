@@ -251,6 +251,11 @@ bool CIMDB::LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails)
   { // excellent!
     return true;
   }
+
+  // dont try to look up manual additions
+  if (strIMDB.Left(2).Equals("xx"))
+    return true;
+
   TiXmlBase::SetCondenseWhiteSpace(true);
   // oh no - let's try and redownload them.
   CGUIDialogProgress *pDlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
