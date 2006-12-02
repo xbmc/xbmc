@@ -8,6 +8,7 @@ public:
   virtual ~CGUIWindowVideoFiles(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  bool IsScanning() { return m_bIsScanning; };
 
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
@@ -26,4 +27,6 @@ protected:
   virtual void LoadPlayList(const CStdString& strFileName);
   void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url);
   void PlayFolder(const CFileItem* pItem);
+
+  bool m_bIsScanning;
 };

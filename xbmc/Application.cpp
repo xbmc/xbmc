@@ -3848,6 +3848,8 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
 void CApplication::CheckShutdown()
 {
+  CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  CGUIWindowVideoFiles *pVideoFiles = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
 #ifdef HAS_XBOX_HARDWARE
   // Note: if the the screensaver is switched on, the shutdown timeout is
   // counted from when the screensaver activates.
@@ -3867,6 +3869,14 @@ void CApplication::CheckShutdown()
       m_bInactive = false;
     }
 #endif
+    else if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
+    {
+      m_bInactive = false;
+    }
+    else if (pVideoFiles && pVideoFiles->IsScanning()) // video scanning?
+    {
+      m_bInactive = false;
+    }
     else    // nothing doing here, so start the timer going
     {
       m_bInactive = true;
