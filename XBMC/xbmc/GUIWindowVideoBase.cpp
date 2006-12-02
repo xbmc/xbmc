@@ -747,6 +747,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_Resume = 0;					// Resume Video
   int btn_Show_Info = 0;			// Show Video Information
 	int btn_Query = 0;					// Query Info
+  int btn_AddToDatabase = 0;  // Add to Database 
   int btn_Mark_UnWatched = 0;	// Clear Watched Status (DB)
   int btn_Mark_Watched = 0;		// Set Watched Status (DB)
   int btn_Update_Title = 0;		// Change Title (DB)
@@ -801,7 +802,17 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 
 		// hide scan button unless we're in files window
 		if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-			btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
+    {
+			btn_Query = pMenu->AddButton(13349); // Query Info For All Files
+
+      m_database.Open();
+      if (!bIsGotoParent && !m_vecItems[iItem]->m_bIsFolder && !m_vecItems[iItem]->IsPlayList())
+      {
+        if (m_database.GetMovieInfo(m_vecItems[iItem]->m_strPath)<0)
+          btn_AddToDatabase = pMenu->AddButton(527); // Add to Database
+      }
+      m_database.Close();
+    }
 
 		// is the item a database movie?
 		if (GetID() != WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
@@ -954,6 +965,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
       return;
     }
+    else if (btnid == btn_AddToDatabase)
+    {
+      AddToDatabase(iItem);
+    }
   }
   if (iItem < m_vecItems.Size())
     m_vecItems[iItem]->Select(bSelected);
@@ -1095,7 +1110,6 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
-
   if (!CGUIWindowFileManager::DeleteItem(m_vecItems[iItem]))
     return;
   Update(m_vecItems.m_strPath);
@@ -1107,15 +1121,7 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsUnWatched(atol(pItem->m_musicInfoTag.GetURL()));
-  CFileItemList items;
-  CDirectory::GetDirectory("z:\\",items,".fi",false);
-  for (int i=0;i<items.Size();++i)
-  {
-    if (!items[i]->m_bIsFolder)
-    {
-      CFile::Delete(items[i]->m_strPath);
-    }
-  }
+  CUtil::ClearFileItemCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
@@ -1126,15 +1132,7 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()));
-  CFileItemList items;
-  CDirectory::GetDirectory("z:\\",items,".fi",false);
-  for (int i=0;i<items.Size();++i)
-  {
-    if (!items[i]->m_bIsFolder)
-    {
-      CFile::Delete(items[i]->m_strPath);
-    }
-  }
+  CUtil::ClearFileItemCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
@@ -1155,6 +1153,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false)) return ;
   m_database.UpdateMovieTitle(atol(pItem->m_musicInfoTag.GetURL()), strInput);
   UpdateVideoTitleXML(detail.m_strIMDBNumber, strInput);
+  CUtil::ClearFileItemCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
@@ -1382,3 +1381,93 @@ void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
   items.SetCachedVideoThumbs();
 }
 
+void CGUIWindowVideoBase::AddToDatabase(int iItem)
+{
+  if (iItem < 0 || iItem >= m_vecItems.Size()) return;
+  CFileItem* pItem;
+  pItem = m_vecItems[iItem];
+  if (pItem->IsParentFolder()) return;
+
+  // enter a new title
+  CStdString strTitle = CUtil::GetFileName(pItem->m_strPath);
+  if (!CGUIDialogKeyboard::ShowAndGetInput(strTitle, g_localizeStrings.Get(528), false)) // Enter Title
+    return;
+  // double check title is new
+  CFileItemList items;
+  if (!CDirectory::GetDirectory("videodb://1/", items))
+    return;
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    if (items[i]->m_strTitle.Equals(strTitle))
+    {
+      // uh oh, duplicate title
+      CGUIDialogOK *pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (pDialog)
+      {
+        pDialog->SetHeading(529); // Duplicate Title
+        pDialog->SetLine(0, strTitle);
+        pDialog->SetLine(1, "");
+        pDialog->SetLine(2, "");
+        pDialog->SetLine(3, "");
+        pDialog->DoModal();
+      }
+      return; 
+    }
+  }
+
+  // pick genre
+  CGUIDialogSelect* pSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (!pSelect)
+    return;
+  pSelect->SetHeading(530); // Select Genre
+  pSelect->Reset();
+  items.Clear();
+  if (!CDirectory::GetDirectory("videodb://1/", items))
+    return;
+  for (int i = 0; i < items.Size(); ++i)
+    pSelect->Add(items[i]->GetLabel());
+  pSelect->EnableButton(true);
+  pSelect->SetButtonLabel(531); // New Genre
+  pSelect->DoModal();
+  CStdString strGenre;
+  int iSelected = pSelect->GetSelectedLabel();
+  if (iSelected >= 0)
+    strGenre = items[iSelected]->GetLabel();
+  else if (!pSelect->IsButtonPressed())
+    return;
+  // enter new genre string
+  if (strGenre.IsEmpty())
+  {
+    strGenre = g_localizeStrings.Get(532); // Manual Addition
+    if (!CGUIDialogKeyboard::ShowAndGetInput(strGenre, g_localizeStrings.Get(533), false)) // Enter Genre
+      return; // user backed out
+    if (strGenre.IsEmpty())
+      return; // no genre string
+  }
+
+  // ok, add to database
+  m_database.Open();
+  long lMovieId = m_database.AddMovie(pItem->m_strPath, "", false);
+  CIMDBMovie movie;
+  movie.Reset();
+  movie.m_strTitle = strTitle;
+  movie.m_strGenre = strGenre;
+  movie.m_strIMDBNumber.Format("xx%08i", lMovieId);
+  m_database.SetMovieInfo(pItem->m_strPath, movie);
+  m_database.Close();
+
+  // done...
+  CGUIDialogOK *pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+  if (pDialog)
+  {
+    pDialog->SetHeading(20177); // Done
+    pDialog->SetLine(0, strTitle);
+    pDialog->SetLine(1, strGenre);
+    pDialog->SetLine(2, movie.m_strIMDBNumber);
+    pDialog->SetLine(3, "");
+    pDialog->DoModal();
+  }
+
+  // library view cache needs to be cleared
+  CUtil::ClearFileItemCache();
+}
