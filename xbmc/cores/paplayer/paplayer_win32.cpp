@@ -845,7 +845,8 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 
 float PAPlayer::GetPercentage()
 {
-  return (float)GetTime() * 100.0f / GetTotalTime64();
+  float percent = (float)GetTime() * 100.0f / GetTotalTime64();
+  return percent;
 }
 
 void PAPlayer::HandleSeeking()
@@ -993,7 +994,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
   }
 #else
   static DWORD nextPacket = -1;
-  static DWORD prevPlayCursor;
+  static DWORD prevPlayCursor = -1;
   DWORD playCursor, writeCursor;
   if (SUCCEEDED(m_pStream[stream]->GetCurrentPosition(&playCursor, &writeCursor)))
   {
