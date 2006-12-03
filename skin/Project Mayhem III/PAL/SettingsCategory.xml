@@ -56,7 +56,7 @@
 			<width>445</width>
 			<height>380</height>
 			<itemgap>0</itemgap>
-			<pagecontrol>60</pagecontrol>
+			<pagecontrol>90</pagecontrol>
 			<include>contentpanelslide</include>
 			<onleft>3</onleft>
 			<onright>60</onright>
@@ -107,7 +107,7 @@
 			<height>5</height>
 			<texture>separator.png</texture>
 		</control>
-		<control type="spincontrol" id="60">
+		<control type="spincontrol" id="90">
 			<description>Next page button</description>
 			<posx>610</posx>
 			<posy>526</posy>
