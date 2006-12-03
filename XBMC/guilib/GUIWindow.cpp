@@ -8,6 +8,7 @@
 #include "GUIControlGroup.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUIListContainer.h"
+#include "GUIPanelContainer.h"
 #endif
 
 #include "SkinInfo.h"
@@ -302,6 +303,26 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
         else
           Add(list->m_spinControl);
         list->m_spinControl = NULL;
+      }
+    }
+    if (pGUIControl->GetControlType() == CGUIControl::GUICONTAINER_PANEL)
+    {
+      CGUIPanelContainer *panel = (CGUIPanelContainer *)pGUIControl;
+      if (panel->m_spinControl)
+      {
+        if (pGroup)
+          pGroup->AddControl(panel->m_spinControl);
+        else
+          Add(panel->m_spinControl);
+        panel->m_spinControl = NULL;
+      }
+      if (panel->m_largePanel)
+      {
+        if (pGroup)
+          pGroup->AddControl(panel->m_largePanel);
+        else
+          Add(panel->m_largePanel);
+        panel->m_largePanel = NULL;
       }
     }
 #endif

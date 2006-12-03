@@ -49,8 +49,8 @@ protected:
   virtual void MoveToItem(int item);
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset) const;
+  virtual void UpdateLayout();
 
-  void UpdateLayout();
   inline float Size() const;
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);

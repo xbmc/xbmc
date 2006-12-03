@@ -304,4 +304,33 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, labelInfo2, LISTITEM_LABEL2, "");
   m_controls.push_back(label);
 }
+
+void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, bool focused, const CImage &image, float texWidth, float texHeight, float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, CGUIImage::GUIIMAGE_ASPECT_RATIO thumbAspect, const CLabelInfo &labelInfo, bool hideLabels)
+{
+  m_width = width;
+  m_height = height;
+  m_focused = focused;
+  float centeredPosX = (m_width - texWidth)*0.5f;
+  // background texture
+  CListTexture *tex = new CListTexture(centeredPosX, 0, texWidth, texHeight, image, CGUIImage::ASPECT_RATIO_STRETCH);
+  m_controls.push_back(tex);
+  // thumbnail
+  float xOff = 0;
+  float yOff = 0;
+  if (thumbAlign != 0)
+  {
+    xOff += (texWidth - thumbWidth) * 0.5f;
+    yOff += (texHeight - thumbHeight) * 0.5f;
+    //if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
+  }
+  CListImage *thumb = new CListImage(thumbPosX + centeredPosX + xOff, thumbPosY + yOff, thumbWidth, thumbHeight, CImage(""), thumbAspect, LISTITEM_ICON);
+  m_controls.push_back(thumb);
+  // overlay
+  CListImage *overlay = new CListImage(thumbPosX + centeredPosX + xOff + thumbWidth - 32, thumbPosY + yOff + thumbHeight - 32, 32, 32, CImage(""), thumbAspect, LISTITEM_OVERLAY);
+  m_controls.push_back(overlay);
+  // label
+  if (hideLabels) return;
+  CListLabel *label = new CListLabel(width*0.5f, texHeight, width, height, labelInfo, LISTITEM_LABEL, "");
+  m_controls.push_back(label);
+}
 //#endif
