@@ -539,6 +539,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
         g_playlistPlayer.Reset();
         int nFolderCount = 0;
         int iNoSongs = 0;
+        CFileItemList queueItems;
         for ( int i = 0; i < m_vecItems.Size(); i++ )
         {
           CFileItem* pItem = m_vecItems[i];
@@ -549,12 +550,12 @@ bool CGUIMediaWindow::OnClick(int iItem)
             continue;
           }
           if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
-          {
-            g_playlistPlayer.Add(iPlaylist, pItem);
-          }
+            queueItems.Add(pItem);
           else if (i <= iItem)
             iNoSongs++;
         }
+        g_playlistPlayer.Add(iPlaylist, queueItems);
+        queueItems.ClearKeepPointer();
 
         // Save current window and directory to know where the selected item was
         if (m_guiState.get())
