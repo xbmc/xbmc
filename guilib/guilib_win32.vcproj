@@ -214,6 +214,9 @@
 				RelativePath=".\GUIMultiImage.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIPanelContainer.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIProgressControl.cpp">
 			</File>
 			<File
@@ -254,9 +257,6 @@
 			</File>
 			<File
 				RelativePath=".\GUITextBox.cpp">
-			</File>
-			<File
-				RelativePath=".\GUIThumbnailPanel.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIToggleButtonControl.cpp">
@@ -426,6 +426,9 @@
 				RelativePath=".\GUIMultiImage.h">
 			</File>
 			<File
+				RelativePath=".\GUIPanelContainer.h">
+			</File>
+			<File
 				RelativePath=".\GUIProgressControl.h">
 			</File>
 			<File
@@ -466,9 +469,6 @@
 			</File>
 			<File
 				RelativePath=".\GUITextBox.h">
-			</File>
-			<File
-				RelativePath=".\GUIThumbnailPanel.h">
 			</File>
 			<File
 				RelativePath=".\GUIToggleButtonControl.h">
