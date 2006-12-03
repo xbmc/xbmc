@@ -11,7 +11,6 @@
 #include "NFOFile.h"
 #include "utils/fstrcmp.h"
 #include "PlayListPlayer.h"
-#include "GUIThumbnailPanel.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUIFontManager.h"
 #endif
