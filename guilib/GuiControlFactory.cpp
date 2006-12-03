@@ -13,7 +13,6 @@
 #include "GUIEditControl.h"
 #include "GUIFadeLabelControl.h"
 #include "GUICheckMarkControl.h"
-#include "GUIThumbnailPanel.h"
 #include "GUIToggleButtonControl.h"
 #include "GUITextBox.h"
 #include "GUIVideoControl.h"
@@ -32,6 +31,7 @@
 #include "GUIScrollBarControl.h"
 #include "GUIListContainer.h"
 #include "GUIWrappingListContainer.h"
+#include "GUIPanelContainer.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/util.h"
@@ -402,7 +402,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   bool randomized = false;
   bool loop = true;
   bool wrapMultiLine = false;
-  CGUIThumbnailPanel::LABEL_STATE labelState = CGUIThumbnailPanel::SHOW_ALL;
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  bool thumbPanelHideLabels = false;
+#endif
   ORIENTATION orientation = VERTICAL;
   bool showOnePage = true;
 
@@ -659,18 +661,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
   XMLUtils::GetBoolean(pControlNode, "reverse", bReverse);
 
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   CStdString hideLabels;
   if (XMLUtils::GetString(pControlNode, "hidelabels", hideLabels))
   {
     if (hideLabels.Equals("all"))
-      labelState = CGUIThumbnailPanel::HIDE_ALL;
-    else if (hideLabels.Equals("files"))
-      labelState = CGUIThumbnailPanel::HIDE_FILES;
-    else if (hideLabels.Equals("folders"))
-      labelState = CGUIThumbnailPanel::HIDE_FOLDERS;
+      thumbPanelHideLabels = true;
     else
-      labelState = CGUIThumbnailPanel::SHOW_ALL;
+      thumbPanelHideLabels = false;
   }
+#endif
 
   GetTexture(pControlNode, "texturebg", textureBackground);
   GetTexture(pControlNode, "lefttexture", textureLeft);
@@ -1145,6 +1145,19 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetPageControl(pageControl);
     return pControl;
   }
+  else if (strType == "panel")
+  {
+    CGUIPanelContainer* pControl = new CGUIPanelContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
+    pControl->LoadLayout(pControlNode);
+    pControl->SetNavigation(up, down, left, right);
+    pControl->SetColourDiffuse(dwColorDiffuse);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    pControl->SetAnimations(animations);
+    pControl->SetParentControl(group);
+    pControl->SetPulseOnSelect(bPulse);
+    pControl->SetPageControl(pageControl);
+    return pControl;
+  }
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   else if (strType == "listcontrol")
   {
@@ -1172,10 +1185,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetParentControl(group);
-
-    // do we have a match for this?
-    // pControl->SetScrollySuffix(strSuffix);
-    // pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
 #endif
@@ -1221,41 +1230,60 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetPageControl(pageControl);
     return pControl;
   }
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   else if (strType == "thumbnailpanel")
   {
-    CGUIThumbnailPanel* pControl = new CGUIThumbnailPanel(
+    // create the spin control
+    CGUISpinControl *pSpin = NULL;
+    if (!pageControl)
+    {
+      pSpin = new CGUISpinControl(dwParentId, id + 5000, posX + spinPosX, posY + spinPosY, spinWidth, spinHeight,
+        textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_PAGE);
+      // spincontrol should be visible when our list is
+      CStdString spinVis;
+      spinVis.Format("control.isvisible(%i) | control.isvisible(%i)", id, id + 2);
+      pSpin->SetVisibleCondition(g_infoManager.TranslateString(spinVis), false);
+      pSpin->SetAnimations(animations);
+      pSpin->SetParentControl(group);
+      pSpin->SetNavigation(id, down, id, right);
+      pSpin->SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
+    }
+    labelInfo.align |= XBFONT_CENTER_X;
+
+    // large panel
+    CGUIPanelContainer* pPanel = new CGUIPanelContainer(
+      dwParentId, id + 2, posX, posY, width, height,
+      imageNoFocus, imageFocus,
+      itemWidthBig, itemHeightBig,
+      textureWidthBig, textureHeightBig, 
+      thumbXPosBig, thumbYPosBig, thumbWidthBig, thumbHeightBig, dwThumbAlign, aspectRatio,
+      labelInfo, thumbPanelHideLabels, NULL, NULL);
+
+    pPanel->SetPageControl(pageControl ? pageControl : id + 5000);
+    pPanel->SetNavigation(up, down, left, id + 5000);
+
+    pPanel->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    pPanel->SetAnimations(animations);
+    pPanel->SetParentControl(group);
+
+    // small panel
+    CGUIPanelContainer* pControl = new CGUIPanelContainer(
       dwParentId, id, posX, posY, width, height,
       imageNoFocus, imageFocus,
-      spinWidth, spinHeight,
-      textureUp, textureDown,
-      textureUpFocus, textureDownFocus,
-      spinInfo, spinPosX, spinPosY,
-      labelInfo);
+      itemWidth, itemHeight,
+      textureWidth, textureHeight, 
+      thumbXPos, thumbYPos, thumbWidth, thumbHeight, dwThumbAlign, aspectRatio,
+      labelInfo, thumbPanelHideLabels, pSpin, pPanel);
 
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetScrollySuffix(strSuffix);
+    pControl->SetPageControl(pageControl ? pageControl : id + 5000);
+    pControl->SetNavigation(up, down, left, id + 5000);
+
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetParentControl(group);
-    pControl->SetThumbDimensions(thumbXPos, thumbYPos, thumbWidth, thumbHeight);
-    pControl->SetTextureWidthBig(textureWidthBig);
-    pControl->SetTextureHeightBig(textureHeightBig);
-    pControl->SetItemWidthBig(itemWidthBig);
-    pControl->SetItemHeightBig(itemHeightBig);
-    pControl->SetTextureWidthLow(textureWidth);
-    pControl->SetTextureHeightLow(textureHeight);
-    pControl->SetItemWidthLow(itemWidth);
-    pControl->SetItemHeightLow(itemHeight);
-    pControl->SetThumbDimensionsLow(thumbXPos, thumbYPos, thumbWidth, thumbHeight);
-    pControl->SetThumbDimensionsBig(thumbXPosBig, thumbYPosBig, thumbWidthBig, thumbHeightBig);
-    pControl->SetThumbAlign(dwThumbAlign);
-    pControl->SetAspectRatio(aspectRatio);
-    pControl->SetPulseOnSelect(bPulse);
-    pControl->SetLabelState(labelState);
-    pControl->SetPageControl(pageControl);
     return pControl;
   }
+#endif
   else if (strType == "selectbutton")
   {
     CGUISelectButtonControl* pControl = new CGUISelectButtonControl(

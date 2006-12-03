@@ -20,6 +20,7 @@
 #define CONTROL_LIST              50
 #define CONTROL_THUMBS            51
 #define CONTROL_BIG_LIST          52
+#define CONTROL_BIG_THUMBS        53
 #define CONTROL_LABELFILES        12
 
 
@@ -44,7 +45,7 @@ void CGUIMediaWindow::OnWindowLoaded()
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(VIEW_METHOD_LIST, GetControl(CONTROL_LIST));
   m_viewControl.AddView(VIEW_METHOD_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_METHOD_LARGE_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.AddView(VIEW_METHOD_LARGE_ICONS, GetControl(CONTROL_BIG_THUMBS));
   m_viewControl.AddView(VIEW_METHOD_LARGE_LIST, GetControl(CONTROL_BIG_LIST));
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
   SetupShares();

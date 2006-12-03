@@ -1,27 +1,9 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicOverlay.h"
-#include "util.h"
-#include "application.h"
 #include "utils/GUIInfoManager.h"
 
-
-#define CONTROL_LOGO_PIC_BACK    0
 #define CONTROL_LOGO_PIC    1
-#define CONTROL_PLAYTIME  2
-#define CONTROL_PLAY_LOGO   3
-#define CONTROL_PAUSE_LOGO  4
-#define CONTROL_INFO     5
-#define CONTROL_BIG_PLAYTIME 6
-#define CONTROL_FF_LOGO  7
-#define CONTROL_RW_LOGO  8
-
-#define CONTROL_TITLE  51
-#define CONTROL_ALBUM  52
-#define CONTROL_ARTIST 53
-#define CONTROL_YEAR  54
-
-#define STEPS 25
 
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
     : CGUIDialog(WINDOW_MUSIC_OVERLAY, "MusicOverlay.xml")

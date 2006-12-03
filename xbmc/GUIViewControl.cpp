@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GUIViewControl.h"
-#include "GUIThumbnailPanel.h"
 #include "Util.h"
 
 CGUIViewControl::CGUIViewControl(void)
@@ -73,14 +72,7 @@ void CGUIViewControl::SetCurrentView(VIEW_METHOD viewMode)
     CGUIMessage msg(GUI_MSG_SETFOCUS, m_parentWindow, pNewView->GetID(), 0);
     g_graphicsContext.SendMessage(msg);
   }
-  // if we have a thumbs view, make sure we have set the appropriate size...
-  if (pNewView->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
-  {
-    if (viewMode == VIEW_METHOD_LARGE_ICONS)
-      ((CGUIThumbnailPanel *)pNewView)->ShowBigIcons(true);
-    else
-      ((CGUIThumbnailPanel *)pNewView)->ShowBigIcons(false);
-  }
+
   // Update it with the contents
   UpdateContents(pNewView);
   if (item > -1)

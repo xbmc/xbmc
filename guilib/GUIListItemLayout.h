@@ -68,6 +68,7 @@ public:
 
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CImage &texture, float texHeight, float iconWidth, float iconHeight);
+  void CreateThumbnailPanelLayouts(float width, float height, bool focused, const CImage &image, float texWidth, float texHeight, float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, CGUIImage::GUIIMAGE_ASPECT_RATIO thumbAspect, const CLabelInfo &labelInfo, bool hideLabel);
 //#endif
 protected:
   CListBase *CreateItem(TiXmlElement *child);
