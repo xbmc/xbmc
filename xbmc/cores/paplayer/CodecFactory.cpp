@@ -25,6 +25,7 @@
 #include "YMCodec.h"
 #include "WMACodec.h"
 #include "AIFFCodec.h"
+#include "ADPCMCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -78,6 +79,9 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 #endif
   else if (strFileType.Equals("aiff") || strFileType.Equals("aif"))
     return new AIFFCodec();
+  else if (strFileType.Equals("xwav"))
+    return new ADPCMCodec();
+
 
   return NULL;
 }
