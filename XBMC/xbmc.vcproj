@@ -3289,6 +3289,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\AC3Codec.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\ADPCMCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\ADPCMCodec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\AdplugCodec.cpp">
 				</File>
 				<File
@@ -3335,6 +3341,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllAc3codec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllAdpcm.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllAdplug.h">
