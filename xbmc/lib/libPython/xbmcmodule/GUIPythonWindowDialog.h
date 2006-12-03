@@ -10,6 +10,8 @@ public:
 	void            Activate(DWORD dwParentId);
 	virtual void		Close();
 	virtual bool		IsRunning() const { return m_bRunning; }
+  virtual bool    IsDialog() const { return true;};
+  virtual bool    IsModalDialog() const { return true; };
 
 protected:
 	DWORD						m_dwParentWindowID;
