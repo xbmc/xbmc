@@ -90,13 +90,8 @@ bool CCueDocument::Parse(const CStdString &strFile)
       {
         m_Track[m_iTotalTracks].iTrackNumber = m_iTotalTracks + 1;
       }
-      if (m_iTotalTracks < MAX_CUE_TRACKS)
-        m_Track[m_iTotalTracks++].iStartTime = time; // start time of the next track
-      else
-      { // Warning - Max tracks exceeded!
-        CLog::Log(LOGERROR,"Max Cue Tracks (99) obtained!");
-        break;
-      }
+
+      m_Track[m_iTotalTracks++].iStartTime = time; // start time of the next track
     }
     else if (strLine.Left(5) == "TITLE")
     {
@@ -117,6 +112,8 @@ bool CCueDocument::Parse(const CStdString &strFile)
       if (m_iTotalTracks == -1) // No tracks yet
         m_iTotalTracks = 0; // Starting the first track
       iTrackNumber = ExtractNumericInfo(strLine.c_str() + 5);
+      CCueTrack track;
+      m_Track.push_back(track);
     }
     else if (strLine.Left(4) == "FILE")
     {
