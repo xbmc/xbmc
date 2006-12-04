@@ -415,6 +415,8 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
   m_height -= 5;
   m_itemsPerPage = (int)(m_height / itemHeight);
   if (m_itemsPerPage < 1) m_itemsPerPage = 1;
+  m_itemsPerRow = (int)(m_width / itemWidth);
+  if (m_itemsPerRow < 1) m_itemsPerRow = 1;
   m_height = m_itemsPerPage * itemHeight;
   m_spinControl = pSpin;
   m_largePanel = pPanel;
