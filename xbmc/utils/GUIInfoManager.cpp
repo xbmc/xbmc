@@ -2034,6 +2034,8 @@ bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info)
     if (!m_currentFile.m_strPath.IsEmpty())
       ret = m_currentFile.IsSamePath(item);
     break;
+  default:
+    return GetBool(info, m_gWindowManager.GetActiveWindow());
   }
   return (info < 0) ? !ret : ret;
 }
