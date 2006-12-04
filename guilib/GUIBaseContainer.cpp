@@ -35,6 +35,8 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
   g_graphicsContext.SetControlTransform(TransformMatrix::CreateTranslation(posX, posY));
 
   static CGUIListItem *lastItem = NULL;
+  if (m_bInvalidated)
+    item->SetInvalid();
   if (focused)
   {
     if (!item->GetFocusedLayout())
@@ -185,7 +187,7 @@ bool CGUIBaseContainer::SelectItemFromPoint(float posX, float posY)
   float pos = (m_orientation == VERTICAL) ? posY : posX;
   while (row < m_itemsPerPage)
   {
-    float size = (row == m_offset && m_bHasFocus) ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
+    float size = (row == m_offset) ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
     if (pos < Size() && row + m_offset < (int)m_items.size())
     { // found
       MoveToItem(row);
@@ -291,10 +293,7 @@ void CGUIBaseContainer::Animate(DWORD currentTime)
 void CGUIBaseContainer::UpdateLayout()
 {
   // calculate the number of items to display
-  if (HasFocus())
-    m_itemsPerPage = (int)((Size() - m_focusedLayout.Size(m_orientation)) / m_layout.Size(m_orientation)) + 1;
-  else
-    m_itemsPerPage = (int)(Size() / m_layout.Size(m_orientation));
+  m_itemsPerPage = (int)((Size() - m_focusedLayout.Size(m_orientation)) / m_layout.Size(m_orientation)) + 1;
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_items.size());
   SendWindowMessage(msg);
 }
