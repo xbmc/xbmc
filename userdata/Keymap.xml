@@ -666,7 +666,7 @@
   </VideoBookmarks>
   
 
-  <MyVideoTitles>
+  <MyVideoLibrary>
     <gamepad>
       <black>Delete</black>
     </gamepad>
@@ -682,7 +682,7 @@
     <keyboard>
       <delete>Delete</delete>
     </keyboard>
-  </MyVideoTitles>
+  </MyVideoLibrary>
 
 
   <MyVideoFiles>
