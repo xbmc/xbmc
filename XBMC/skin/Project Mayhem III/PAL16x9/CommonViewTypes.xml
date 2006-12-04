@@ -48,7 +48,16 @@
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
+					<visible>Control.HasFocus(50)</visible>
 					<texture border="0,0,0,5">blue-rectangle.png</texture>
+				</control>
+				<control type="image">
+					<width>445</width>
+					<height>73</height>
+					<posx>0</posx>
+					<posy>2</posy>
+					<visible>!Control.HasFocus(50)</visible>
+					<texture border="0,0,0,5">blue-rectanglenf.png</texture>
 				</control>
 				<control type="image">
 					<posx>4</posx>
@@ -189,6 +198,15 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>blue-rectangle.png</texture>
+					<visible>Control.HasFocus(52)</visible>
+				</control>
+				<control type="image">
+					<width>445</width>
+					<height>120</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>blue-rectangleNF.png</texture>
+					<visible>!Control.HasFocus(52)</visible>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -296,7 +314,16 @@
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
+					<visible>Control.HasFocus(50)</visible>
 					<texture border="0,0,0,5">blue-rectangle.png</texture>
+				</control>
+				<control type="image">
+					<width>445</width>
+					<height>73</height>
+					<posx>0</posx>
+					<posy>2</posy>
+					<visible>!Control.HasFocus(50)</visible>
+					<texture border="0,0,0,5">blue-rectanglenf.png</texture>
 				</control>
 				<control type="image">
 					<posx>4</posx>
@@ -437,6 +464,15 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>blue-rectangle.png</texture>
+					<visible>Control.HasFocus(52)</visible>
+				</control>
+				<control type="image">
+					<width>445</width>
+					<height>120</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>blue-rectangleNF.png</texture>
+					<visible>!Control.HasFocus(52)</visible>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -544,7 +580,16 @@
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
+					<visible>Control.HasFocus(50)</visible>
 					<texture border="0,0,0,5">blue-rectangle.png</texture>
+				</control>
+				<control type="image">
+					<width>445</width>
+					<height>73</height>
+					<posx>0</posx>
+					<posy>2</posy>
+					<visible>!Control.HasFocus(50)</visible>
+					<texture border="0,0,0,5">blue-rectanglenf.png</texture>
 				</control>
 				<control type="image">
 					<posx>4</posx>
