@@ -397,6 +397,7 @@ void CGUIPanelContainer::UpdateLayout()
 
 unsigned int CGUIPanelContainer::GetRows()
 {
+  assert(m_itemsPerRow > 0);
   return (m_items.size() + m_itemsPerRow - 1) / m_itemsPerRow;
 }
 
