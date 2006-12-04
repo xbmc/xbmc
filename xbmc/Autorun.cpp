@@ -261,7 +261,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   }
 
   // check video first
-  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video")) && bAllowVideo)
+  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video")))
   {
     // stack video files
     CFileItemList tempItems;
@@ -292,6 +292,15 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
     if (itemlist.Size())
     {
+      if (!bAllowVideo)
+      {
+        if (!bypassSettings)
+          return false;
+        
+        if (m_gWindowManager.GetActiveWindow() != WINDOW_VIDEO_FILES)
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
+      }
       g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
       g_playlistPlayer.Add(PLAYLIST_VIDEO, itemlist);
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);

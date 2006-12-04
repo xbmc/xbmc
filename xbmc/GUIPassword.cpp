@@ -413,7 +413,7 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
       iSwitch = WINDOW_VIDEO_FILES;
 
   if (iWindowID == WINDOW_VIDEO_FILES)
-    if (WINDOW_VIDEO_NAV)
+    if (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)
       iSwitch = WINDOW_HOME;
 
   CLog::Log(LOGDEBUG, "Checking if window ID %i is locked.", iSwitch);
