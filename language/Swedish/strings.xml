@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@hotmail.com-->
-<!--Date of translation: 11/23/2006-->
+<!--Date of translation: 12/02/2006-->
 <!--$Revision$-->
-<!--Based on english strings version 7222-->
+<!--Based on english strings version 7291-->
 <strings>
   <string id="0">Mina Program</string>
   <string id="1">Mina Bilder</string>
@@ -436,6 +436,16 @@
   <string id="521">Kompilering</string>
   <string id="522">Ta bort källa</string>
   <string id="523">Byt media</string>
+  <string id="524">Välj spellista</string>
+  <string id="525">Ny spellista</string>
+  <string id="526">Lägg till i spellista</string>
+  <string id="527">Lägg till manuellt till databas</string>
+  <string id="528">Lägg in Titel</string>
+  <string id="529">Fel: Dublett titel</string>
+  <string id="530">Välj Genre</string>
+  <string id="531">Ny Genre</string>
+  <string id="532">Manuellt tillägg</string>
+  <string id="533">Lägg in Genre</string>
   <string id="588">Avbryt Festläge</string>
   <string id="589">Festläge</string>
   <string id="590">Slumpmässig</string>
@@ -725,6 +735,7 @@
   <string id="12020">Fråga</string>
   <string id="12021">Starta från början</string>
   <string id="12022">Återuppta från senaste position</string>
+  <string id="12023">Validerar existerande tränare...</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
