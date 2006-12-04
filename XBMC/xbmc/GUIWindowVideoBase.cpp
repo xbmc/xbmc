@@ -1388,12 +1388,12 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   if (pItem->IsParentFolder()) return;
 
   // enter a new title
-  CStdString strTitle = CUtil::GetFileName(pItem->m_strPath);
+  CStdString strTitle = pItem->GetLabel();
   if (!CGUIDialogKeyboard::ShowAndGetInput(strTitle, g_localizeStrings.Get(528), false)) // Enter Title
     return;
   // double check title is new
   CFileItemList items;
-  if (!CDirectory::GetDirectory("videodb://1/", items))
+  if (!CDirectory::GetDirectory("videodb://2/", items))
     return;
   for (int i = 0; i < items.Size(); ++i)
   {
