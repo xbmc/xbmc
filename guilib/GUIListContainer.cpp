@@ -2,6 +2,10 @@
 #include "GUIListContainer.h"
 #include "GUIListItem.h"
 
+//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+#include "../xbmc/utils/GUIInfoManager.h"
+//#endif
+
 CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
 {
@@ -54,7 +58,7 @@ void CGUIListContainer::Render()
     if (current >= (int)m_items.size())
       break;
     CGUIListItem *item = m_items[current];
-    bool focused = (current == m_offset + m_cursor) && m_bHasFocus;
+    bool focused = (current == m_offset + m_cursor);
     // render our item
     if (focused)
     {
@@ -279,8 +283,11 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
                                  float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems, CGUIControl *pSpin)
 : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200) 
 {
-  m_layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureHeight, itemWidth, itemHeight);
-  m_focusedLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButtonFocus, textureHeight, itemWidth, itemHeight);
+  m_layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, 0, 0);
+  CStdString condition;
+  condition.Format("control.hasfocus(%i)", dwControlId);
+  CStdString condition2 = "!" + condition;
+  m_focusedLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, g_infoManager.TranslateString(condition2), g_infoManager.TranslateString(condition));
   m_height = floor(m_height / (textureHeight + spaceBetweenItems)) * (textureHeight + spaceBetweenItems);
   m_spinControl = pSpin;
   ControlType = GUICONTAINER_LIST;
