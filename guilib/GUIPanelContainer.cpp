@@ -9,6 +9,7 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   m_spinControl = NULL;
   m_largePanel = NULL;
+  m_itemsPerRow = 1;
 //#endif
 }
 
@@ -388,6 +389,8 @@ void CGUIPanelContainer::UpdateLayout()
     m_itemsPerRow = (int)(m_width / m_layout.Size(HORIZONTAL));
     m_itemsPerPage = (int)(m_height / m_layout.Size(VERTICAL));
   }
+  if (m_itemsPerRow < 1) m_itemsPerRow = 1;
+  if (m_itemsPerPage < 1) m_itemsPerPage = 1;
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
   SendWindowMessage(msg);
 }
@@ -410,8 +413,9 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
   m_layout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, false, imageNoFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);
   m_focusedLayout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, true, imageFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);
   m_height -= 5;
-  int numItems = (int)(m_height / itemHeight);
-  m_height = numItems * itemHeight;
+  m_itemsPerPage = (int)(m_height / itemHeight);
+  if (m_itemsPerPage < 1) m_itemsPerPage = 1;
+  m_height = m_itemsPerPage * itemHeight;
   m_spinControl = pSpin;
   m_largePanel = pPanel;
   ControlType = GUICONTAINER_PANEL;
