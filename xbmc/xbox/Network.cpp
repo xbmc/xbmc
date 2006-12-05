@@ -173,6 +173,9 @@ static bool TranslateConfig( const struct network_info& networkinfo, TXNetConfig
 
 bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
 {
+  if (m_networkup)
+    return true;
+
 #ifdef HAS_XBOX_NETWORK
   XNetStartupParams xnsp = {};
   WSADATA WsaData = {};
