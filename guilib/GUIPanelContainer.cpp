@@ -172,7 +172,7 @@ bool CGUIPanelContainer::OnAction(const CAction &action)
         {
           Scroll(1);
         }
-        else if (m_cursor < m_itemsPerPage - 1 && m_offset * m_itemsPerRow + m_cursor < (int)m_items.size() - 1)
+        else if (m_cursor < m_itemsPerPage * m_itemsPerRow - 1 && m_offset * m_itemsPerRow + m_cursor < (int)m_items.size() - 1)
         {
           m_cursor++;
         }
@@ -313,7 +313,7 @@ bool CGUIPanelContainer::MoveUp(DWORD nextControl)
     int offset = (int)GetRows() - m_itemsPerPage;
     // should check here whether cursor is actually allowed here, and reduce accordingly
     if (offset * m_itemsPerRow + m_cursor >= (int)m_items.size())
-      m_cursor = (int)m_items.size() - offset * m_itemsPerRow;
+      m_cursor = (int)m_items.size() - offset * m_itemsPerRow - 1;
     ScrollToOffset(offset);
   }
   else
