@@ -99,10 +99,11 @@
 		<control type="group">
 			<animation effect="slide" time="500" start="-600,0" end="0,0" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
 			<animation effect="slide" time="300" start="0,0" end="-600,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<visible>System.HasDriveG</visible>
 			<control type="label">
 				<description>free space label</description>
 				<posx>74</posx>
-				<posy>521</posy>
+				<posy>525</posy>
 				<width>142</width>
 				<label>$INFO[System.Freespace(C)]</label>
 				<include>textcolorlightgrey</include>
@@ -112,7 +113,7 @@
 			<control type="label">
 				<description>free space label</description>
 				<posx>207</posx>
-				<posy>521</posy>
+				<posy>525</posy>
 				<width>142</width>
 				<label>$INFO[System.Freespace(E)]</label>
 				<include>textcolorlightgrey</include>
@@ -122,7 +123,7 @@
 			<control type="label">
 				<description>free space label</description>
 				<posx>353</posx>
-				<posy>521</posy>
+				<posy>525</posy>
 				<width>142</width>
 				<label>$INFO[System.Freespace(F)]</label>
 				<include>textcolorlightgrey</include>
@@ -132,12 +133,74 @@
 			<control type="label">
 				<description>free space label</description>
 				<posx>506</posx>
-				<posy>521</posy>
+				<posy>525</posy>
 				<width>142</width>
 				<label>$INFO[System.Freespace(G)]</label>
 				<include>textcolorlightgrey</include>
 				<font>font10</font>
 				<align>left</align>
+			</control>
+		</control>
+		<control type="group">
+			<animation effect="slide" time="500" start="-600,0" end="0,0" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="300" start="0,0" end="-600,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<visible>System.HasDriveF + !System.HasDriveG</visible>
+			<control type="label">
+				<description>free space label</description>
+				<posx>74</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<label>$INFO[System.Freespace(C)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>left</align>
+			</control>
+			<control type="label">
+				<description>free space label</description>
+				<posx>360</posx>
+				<posy>525</posy>
+				<align>center</align>
+				<label>$INFO[System.Freespace(E)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>left</align>
+			</control>
+			<control type="label">
+				<description>free space label</description>
+				<posx>640</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<align>right</align>
+				<label>$INFO[System.Freespace(F)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>left</align>
+			</control>
+		</control>
+		<control type="group">
+			<animation effect="slide" time="500" start="-600,0" end="0,0" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="300" start="0,0" end="-600,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<visible>!System.HasDriveF + !System.HasDriveG</visible>
+			<control type="label">
+				<description>free space label</description>
+				<posx>140</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<label>$INFO[System.Freespace(C)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>center</align>
+			</control>
+			<control type="label">
+				<description>free space label</description>
+				<posx>570</posx>
+				<posy>525</posy>
+				<width>142</width>
+				<align>right</align>
+				<label>$INFO[System.Freespace(E)]</label>
+				<include>textcolorlightgrey</include>
+				<font>font10</font>
+				<align>center</align>
 			</control>
 		</control>
 		<control type="image" id="0">
