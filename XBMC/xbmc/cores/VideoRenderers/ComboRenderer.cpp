@@ -131,8 +131,6 @@ void CComboRenderer::ManageDisplay()
     fPixelRatio *= 2;
   }
 
-  ManageTextures();
-
   // source rect
   rs.left = g_stSettings.m_currentVideoSettings.m_CropLeft;
   rs.top = g_stSettings.m_currentVideoSettings.m_CropTop;
