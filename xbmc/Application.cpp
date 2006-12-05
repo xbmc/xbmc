@@ -3447,6 +3447,19 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   bool bResult = m_pPlayer->OpenFile(item, options);
+  
+  if(bResult)
+  {
+#ifdef HAS_VIDEO_PLAYBACK
+    if( IsPlayingVideo() )
+    {
+      // if player didn't manange to switch to fullscreen by itself do it here 
+      if( options.fullscreen && g_renderManager.IsStarted()
+       && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
+       SwitchToFullScreen();
+    }
+#endif
+  }
 
   if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
     g_audioManager.Enable(false);
