@@ -310,7 +310,7 @@ bool CGUIPanelContainer::MoveUp(DWORD nextControl)
   { // move last item in list in this column
     m_cursor %= m_itemsPerRow;
     m_cursor += (m_itemsPerPage - 1) * m_itemsPerRow;
-    int offset = (int)GetRows() - m_itemsPerPage;
+    int offset = max((int)GetRows() - m_itemsPerPage, 0);
     // should check here whether cursor is actually allowed here, and reduce accordingly
     if (offset * m_itemsPerRow + m_cursor >= (int)m_items.size())
       m_cursor = (int)m_items.size() - offset * m_itemsPerRow - 1;
