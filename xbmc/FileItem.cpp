@@ -918,15 +918,17 @@ const CStdString& CFileItem::GetContentType() const
 
 bool CFileItem::IsSamePath(const CFileItem *item)
 {
-  if (item->m_strPath == m_strPath) return true;
+  if (item->m_strPath == m_strPath && item->m_lStartOffset == m_lStartOffset) return true;
   if (IsMusicDb() || IsVideoDb())
   {
     CFileItem dbItem(m_musicInfoTag.GetURL(), false);
+    dbItem.m_lStartOffset = m_lStartOffset;
     return dbItem.IsSamePath(item);
   }
   if (item->IsMusicDb() || item->IsVideoDb())
   {
     CFileItem dbItem(item->m_musicInfoTag.GetURL(), false);
+    dbItem.m_lStartOffset = item->m_lStartOffset;
     return IsSamePath(&dbItem);
   }
   return false;
