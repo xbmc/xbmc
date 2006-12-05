@@ -47,7 +47,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
     if (item != lastItem)
       item->GetFocusedLayout()->ResetScrolling();
     if (item->GetFocusedLayout())
-      item->GetFocusedLayout()->Render(item);
+      item->GetFocusedLayout()->Render(item, m_dwParentID);
     lastItem = item;
   }
   else
@@ -58,7 +58,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       item->SetLayout(layout);
     }
     if (item->GetLayout())
-      item->GetLayout()->Render(item);
+      item->GetLayout()->Render(item, m_dwParentID);
   }
 }
 
