@@ -62,7 +62,7 @@ public:
   CGUIListItemLayout(const CGUIListItemLayout &from);
   ~CGUIListItemLayout();
   void LoadLayout(TiXmlElement *layout, bool focused);
-  void Render(CGUIListItem *item);
+  void Render(CGUIListItem *item, DWORD parentID);
   float Size(ORIENTATION orientation);
   bool Focused() const { return m_focused; };
   void ResetScrolling();
@@ -75,7 +75,7 @@ public:
 //#endif
 protected:
   CListBase *CreateItem(TiXmlElement *child);
-  void UpdateItem(CListBase *control, CGUIListItem *item);
+  void UpdateItem(CListBase *control, CGUIListItem *item, DWORD parentID);
   void RenderLabel(CListLabel *label, bool selected, bool scroll);
 
   vector<CListBase*> m_controls;
