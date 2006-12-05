@@ -1,5 +1,6 @@
 #include "../../../stdafx.h"
 #include "..\..\..\application.h"
+#include "..\..\..\utils\guiinfomanager.h"
 #include "..\..\..\playlistplayer.h"
 #include "..\..\..\util.h"
 #include "player.h"
@@ -284,7 +285,7 @@ namespace PYXBMC
 			return NULL;
 		}
 
-		return (PyObject*)InfoTagVideo_FromCIMDBMovie(*(g_application.GetCurrentMovie()));
+		return (PyObject*)InfoTagVideo_FromCIMDBMovie(g_infoManager.GetCurrentMovie());
 	}
 
 	// Player_GetMusicInfoTag
@@ -302,7 +303,7 @@ namespace PYXBMC
 			return NULL;
 		}
 
-		return (PyObject*)InfoTagMusic_FromCMusicInfoTag(*(g_application.GetCurrentSong()));
+		return (PyObject*)InfoTagMusic_FromCMusicInfoTag(g_infoManager.GetCurrentSongTag());
 	}
 
 	// Player_GetTotalTime
