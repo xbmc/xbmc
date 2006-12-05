@@ -99,14 +99,14 @@ float CGUIListItemLayout::Size(ORIENTATION orientation)
   return (orientation == HORIZONTAL) ? m_width : m_height;
 }
 
-void CGUIListItemLayout::Render(CGUIListItem *item)
+void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID)
 {
   if (m_invalidated)
   {
     // check for boolean conditions
-    m_isPlaying = g_infoManager.GetItemBool((CFileItem *)item, LISTITEM_ISPLAYING);
+    m_isPlaying = g_infoManager.GetItemBool((CFileItem *)item, LISTITEM_ISPLAYING, parentID);
     for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
-      UpdateItem(*it, item);
+      UpdateItem(*it, item, parentID);
     // now we have to check our overlapping label pairs
     for (unsigned int i = 0; i < m_controls.size(); i++)
     {
@@ -162,11 +162,11 @@ void CGUIListItemLayout::Render(CGUIListItem *item)
   }
 }
 
-void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CGUIListItem *item)
+void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CGUIListItem *item, DWORD parentID)
 {
   // check boolean conditions
   if (control->m_visibleCondition)
-    control->m_visible = g_infoManager.GetItemBool((CFileItem *)item, control->m_visibleCondition);
+    control->m_visible = g_infoManager.GetItemBool((CFileItem *)item, control->m_visibleCondition, parentID);
   if (control->m_type == CListBase::LIST_IMAGE)
   {
     CListImage *image = (CListImage *)control;
@@ -261,7 +261,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   XMLUtils::GetString(child, "label", content);
   CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
   factory.GetAspectRatio(child, "aspectratio", aspectRatio);
-  int visibleCondition;
+  int visibleCondition = 0;
   factory.GetConditionalVisibility(child, visibleCondition);
   if (type == "label")
   { // info label

@@ -344,7 +344,7 @@ public:
   CStdString GetItemLabel(const CFileItem *item, int info);
   CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
   CStdString GetItemImage(const CFileItem *item, int info);
-  bool       GetItemBool(const CFileItem *item, int info);
+  bool       GetItemBool(const CFileItem *item, int info, DWORD contextWindow);
 
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
