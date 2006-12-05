@@ -2024,7 +2024,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   return "";
 }
 
-bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info)
+bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info, DWORD contextWindow)
 {
   bool ret = false;
   int absInfo = abs(info);
@@ -2035,7 +2035,7 @@ bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info)
       ret = m_currentFile.IsSamePath(item);
     break;
   default:
-    return GetBool(info, m_gWindowManager.GetActiveWindow());
+    return GetBool(info, contextWindow);
   }
   return (info < 0) ? !ret : ret;
 }
