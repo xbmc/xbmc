@@ -66,33 +66,30 @@ CXBoxRenderManager::~CXBoxRenderManager()
 
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-  if( flags & CONF_FLAGS_FULLSCREEN )
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);      
+
+  if(!m_pRenderer) 
   {
-    // this is abit uggly, the call to switch to fullscreen
-    // may call back into the renderer, wich will lock
-    // if we hold an exclusive lock wich is needed for
-    // configure.
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
+    RestoreCriticalSection(g_graphicsContext, locks);
+    return false;
+  }
+  
+  m_bIsStarted = false;
+  if( m_pRenderer->Configure(width, height, d_width, d_height, fps, flags) )
+  {
+    if( flags & CONF_FLAGS_FULLSCREEN )
     {
-      m_pRenderer->ChooseBestResolution(fps);
       lock.Leave();
       g_applicationMessenger.SwitchToFullscreen();
+      lock.Enter();
     }
+    m_pRenderer->Update(false);
+    m_bIsStarted = true;    
   }
-
-  DWORD locks = ExitCriticalSection(g_graphicsContext);
-  CExclusiveLock lock(m_sharedSection);
+  
   RestoreCriticalSection(g_graphicsContext, locks);
-
-  m_presentdelay = 5;
-  bool result = false;
-  if (m_pRenderer)
-  {
-    result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
-    m_bIsStarted = true;
-  }
-  return result;
+  return m_bIsStarted;
 }
 
 void CXBoxRenderManager::Update(bool bPauseDrawing)
@@ -126,6 +123,7 @@ unsigned int CXBoxRenderManager::PreInit()
 
   m_bIsStarted = false;
   m_bPauseDrawing = false;
+  m_presentdelay = 5;
   if (!m_pRenderer)
   { // no renderer
     if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_OVERLAYS)

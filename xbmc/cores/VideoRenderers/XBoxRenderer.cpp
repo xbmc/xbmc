@@ -542,8 +542,6 @@ void CXBoxRenderer::ManageDisplay()
   float fOffsetX1 = (float)rv.left;
   float fOffsetY1 = (float)rv.top;
 
-  ManageTextures();
-
   // source rect
   rs.left = g_stSettings.m_currentVideoSettings.m_CropLeft;
   rs.top = g_stSettings.m_currentVideoSettings.m_CropTop;
@@ -697,12 +695,9 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
 
 void CXBoxRenderer::SetupSubtitles()
 {
-  //set zoomamount to 1 temporary to get the default width of the destination viewwindow
-  float zoomAmount = g_stSettings.m_fZoomAmount;
-  g_stSettings.m_fZoomAmount = 1.0;
-  ManageDisplay();
-  g_stSettings.m_fZoomAmount = zoomAmount;
-  m_iNormalDestWidth = rd.right - rd.left;
+  // TODO, this is really broken, this depends on if we are fullscreen or not 
+  // this will just cause odd scaling, should probably get rid of it
+  m_iNormalDestWidth = (unsigned int)((rd.right - rd.left) / g_stSettings.m_fZoomAmount);
   m_iOSDTextureWidth = m_iNormalDestWidth;
   m_iOSDTextureHeight[0] = 0;
   m_iOSDTextureHeight[1] = 0;
@@ -813,6 +808,7 @@ void CXBoxRenderer::Update(bool bPauseDrawing)
   if (!m_bConfigured) return;
   CSingleLock lock(g_graphicsContext);
   ManageDisplay();
+  ManageTextures();
 }
 
 void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
@@ -821,6 +817,7 @@ void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   CSingleLock lock(g_graphicsContext);
   ManageDisplay();
+  ManageTextures();
   if (clear)
     m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
