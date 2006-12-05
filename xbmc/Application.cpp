@@ -4746,24 +4746,6 @@ void CApplication::SeekPercentage(float percent)
   }
 }
 
-// using InterlockedExchangePointer so the python library doesn't have to worry
-// about threads
-CMusicInfoTag* CApplication::GetCurrentSong()
-{
-  CMusicInfoTag* pointer;
-  InterlockedExchangePointer(&pointer, &g_infoManager.GetCurrentSongTag());
-  return pointer;
-}
-
-// using InterlockedExchangePointer so the python library doesn't have to worry
-// about threads
-CIMDBMovie* CApplication::GetCurrentMovie()
-{
-  CIMDBMovie* pointer;
-  InterlockedExchangePointer(&pointer, &g_infoManager.GetCurrentMovie());
-  return pointer;
-}
-
 // SwitchToFullScreen() returns true if a switch is made, else returns false
 bool CApplication::SwitchToFullScreen()
 {
