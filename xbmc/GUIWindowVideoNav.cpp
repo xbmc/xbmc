@@ -365,7 +365,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
   {
     while (iItem < items.Size())
     {
-      if (items[iItem]->m_musicInfoTag.Loaded() != (bool)(g_stSettings.m_iMyVideoWatchMode-1))
+      if (items[iItem]->m_musicInfoTag.Loaded() != (g_stSettings.m_iMyVideoWatchMode==2))
         items.Remove(iItem);
       else
         iItem++;
