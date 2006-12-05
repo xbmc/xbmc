@@ -123,10 +123,14 @@ bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
 bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
 {
   long longcode;
-  if(code.length() == 2)
+  CStdString sCode(code);
+  sCode.MakeLower();
+  sCode.TrimLeft();
+  sCode.TrimRight();
+  if(sCode.length() == 2)
   {
     CSectionLoader::Load("LCODE");
-    longcode = MAKECODE('\0', '\0', code[0], code[1]);
+    longcode = MAKECODE('\0', '\0', sCode[0], sCode[1]);
     for(int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
     {
       if(g_iso639_1[i].code == longcode)
@@ -141,7 +145,7 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   else if(code.length() == 3)
   {
     CSectionLoader::Load("LCODE");
-    longcode = MAKECODE('\0', code[0], code[1], code[2]);
+    longcode = MAKECODE('\0', sCode[0], sCode[1], sCode[2]);
     for(int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
     {
       if(g_iso639_2[i].code == longcode)
