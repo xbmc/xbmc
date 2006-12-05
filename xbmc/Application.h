@@ -99,8 +99,6 @@ public:
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
   void ActivateScreenSaver(bool forceType = false);
-  CMusicInfoTag* GetCurrentSong();
-  CIMDBMovie* GetCurrentMovie();
 
   virtual void Process();
   void ProcessSlow();
