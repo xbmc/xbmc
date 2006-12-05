@@ -3,6 +3,7 @@
 #include "application.h"
 #include "util.h"
 #include "audiocontext.h"
+#include "utils\guiinfomanager.h"
 
 //CdgLoader
 CCdgLoader::CCdgLoader()
@@ -260,7 +261,7 @@ void CCdgReader::Process()
     CSingleLock lock (m_CritSection);
     double fDiff;
     //if (!g_application.IsPlaying())
-    if (g_application.GetCurrentSong()->GetURL().substr(0,strExt.size()) != strExt)
+    if (g_infoManager.GetCurrentSongTag().GetURL().substr(0,strExt.size()) != strExt)
     {
       Sleep(15);
       if (CThread::m_bStop)
