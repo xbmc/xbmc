@@ -740,6 +740,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   pMenu->Initialize();
 
 	// contextual buttons
+  int btn_PlayPart = 0;       // For stacks
   int btn_Queue = 0;					// Add to Playlist
   int btn_PlayWith = 0;				// Play
   int btn_Restart = 0;				// Restart Video from Beginning
@@ -772,6 +773,12 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 			// don't show the add to playlist button in playlist window
       if (GetID() != WINDOW_VIDEO_PLAYLIST)
       {
+        if (m_vecItems[iItem]->IsStack())
+        {
+          vector<long> times;
+          if (m_database.GetStackTimes(m_vecItems[iItem]->m_strPath,times))
+            btn_PlayPart = pMenu->AddButton(20324);
+        }
         if (GetID() == WINDOW_VIDEO_NAV)
         {
           if (!m_vecItems.m_strPath.IsEmpty())
@@ -875,6 +882,37 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btnid = pMenu->GetButton();
   if (btnid>0)
   {
+    // play part
+    if (btnid == btn_PlayPart)
+    {
+      CFileItemList items;
+      CDirectory::GetDirectory(m_vecItems[iItem]->m_strPath,items);
+      pMenu->Initialize();
+      for (int i=0;i<items.Size();++i)
+      {
+        CStdString strLabel;
+        strLabel.Format(g_localizeStrings.Get(20325),i+1,items.Size());
+        pMenu->AddButton(strLabel);
+      }
+      pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+      pMenu->DoModal();
+      int btn2 = pMenu->GetButton();
+      if (btn2 > 0)
+      {
+        if (btn2 > 1)
+        {
+          vector<long> times;
+          if (!m_database.GetStackTimes(m_vecItems[iItem]->m_strPath, times)) // need to calculate them times
+            return;
+        
+          items[btn2-1]->m_lStartOffset = times[btn2-1];
+        }
+
+        // cheat
+        *m_vecItems[iItem] = *items[btn2-1];
+        OnClick(iItem);
+      }
+    }
 		// queue
     if (btnid == btn_Queue)
     {
