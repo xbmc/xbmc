@@ -2799,6 +2799,9 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath=".\xbmc.ico">
+		</File>
 	</Files>
 	<Globals>
 		<Global
