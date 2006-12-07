@@ -161,7 +161,13 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     {
       // We have the real DVD-ROM, set icon on disktype
       if (share.m_iDriveType == SHARE_TYPE_DVD)
+      {
         CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
+        // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as Z:\dvdicon.tbn
+        CStdString strThumb = "Z:\\dvdicon.tbn";
+        if (CFile::Exists(strThumb))
+          pItem->SetThumbnailImage(strThumb);
+      }
       else if (strPathUpper.Left(11) == "SOUNDTRACK:")
         strIcon = "defaultHardDisk.png";
       else if (pItem->IsRemote())
