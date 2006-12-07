@@ -7,6 +7,8 @@
 #include "xbox/undocumented.h"
 #endif
 #include "application.h"
+#include "util.h"
+#include "picture.h"
 
 #ifdef AFTER2_0
 #include "utils/LED.h"
@@ -271,6 +273,31 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
   // store it in case others want it
   m_diskLabel = strDescription;
   m_diskPath = strNewUrl;
+
+  // delete any previously cached disc thumbnail
+  CStdString strCache = "Z:\\dvdicon.tbn";
+  if (CFile::Exists(strCache))
+    CFile::Delete(strCache);
+
+  // find and cache disc thumbnail
+  if (IsDiscInDrive() && !bCDDA)
+  {
+    CStdString strThumb;
+    CStdStringArray thumbs;
+    StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
+    for (unsigned int i = 0; i < thumbs.size(); ++i)
+    {
+      CUtil::AddFileToFolder(m_diskPath, thumbs[i], strThumb);
+      CLog::Log(LOGDEBUG,__FUNCTION__": looking for disc thumb:[%s]", strThumb.c_str());
+      if (CFile::Exists(strThumb))
+      {
+        CLog::Log(LOGDEBUG,__FUNCTION__": found disc thumb:[%s], caching as:[%s]", strThumb.c_str(), strCache.c_str());
+        CPicture pic;
+        pic.DoCreateThumbnail(strThumb, strCache);
+        break;
+      }
+    }
+  }
 }
 
 DWORD CDetectDVDMedia::GetTrayState()

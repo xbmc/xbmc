@@ -249,6 +249,7 @@ CSettings::CSettings(void)
   g_settings.bUseLoginScreen = false;
 
   g_advancedSettings.m_musicThumbs = "folder.jpg";
+  g_advancedSettings.m_dvdThumbs = "folder.jpg";
 
   xbmcXmlLoaded = false;
   bTransaction = false;
@@ -1357,14 +1358,13 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", g_advancedSettings.m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", g_advancedSettings.m_detectAsUdf);
 
+  // music thumbs
   CStdString extraThumbs;
   TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
   if (pThumbs)
   {
-    GetString(pThumbs, "add", extraThumbs,"");
-    if (extraThumbs != "")
-      g_advancedSettings.m_musicThumbs += "|" + extraThumbs;
-
+    // remove before add so that the defaults can be restored after user defined ones
+    // (ie, the list can be:cover.jpg|cover.png|folder.jpg)
     GetString(pThumbs, "remove", extraThumbs, "");
     if (extraThumbs != "")
     {
@@ -1377,7 +1377,42 @@ void CSettings::LoadAdvancedSettings()
           continue;
         g_advancedSettings.m_musicThumbs.erase(iPos, thumbs[i].size() + 1);
       }
-    }    
+    }
+    GetString(pThumbs, "add", extraThumbs,"");
+    if (extraThumbs != "")
+    {
+      if (!g_advancedSettings.m_musicThumbs.IsEmpty())
+        g_advancedSettings.m_musicThumbs += "|";
+      g_advancedSettings.m_musicThumbs += extraThumbs;
+    }
+  }
+
+  // dvd thumbs
+  pThumbs = pRootElement->FirstChildElement("dvdthumbs");
+  if (pThumbs)
+  {
+    // remove before add so that the defaults can be restored after user defined ones
+    // (ie, the list can be:cover.jpg|cover.png|folder.jpg)
+    GetString(pThumbs, "remove", extraThumbs, "");
+    if (extraThumbs != "")
+    {
+      CStdStringArray thumbs;
+      StringUtils::SplitString(extraThumbs, "|", thumbs);
+      for (unsigned int i = 0; i < thumbs.size(); ++i)
+      {
+        int iPos = g_advancedSettings.m_musicThumbs.Find(thumbs[i]);
+        if (iPos == -1)
+          continue;
+        g_advancedSettings.m_musicThumbs.erase(iPos, thumbs[i].size() + 1);
+      }
+    }
+    GetString(pThumbs, "add", extraThumbs,"");
+    if (extraThumbs != "")
+    {
+      if (!g_advancedSettings.m_musicThumbs.IsEmpty())
+        g_advancedSettings.m_musicThumbs += "|";
+      g_advancedSettings.m_musicThumbs += extraThumbs;
+    }
   }
 
   // load in the GUISettings overrides:
