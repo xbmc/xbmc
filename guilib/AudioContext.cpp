@@ -204,7 +204,7 @@ bool CAudioContext::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWOR
 {
   //3, 5, >6 channel are invalid XBOX wav formats thus can not be processed at this stage
 
-  if(Type==0)
+  if(Type == 0 || Type == DSMIXBINTYPE_DMO)
   { // FL, FR, C, LFE, BL, BR, (FLC, FRC, BC, SL, SR, TC, TFL, TFC, TFR, TBL, TBC, TBR)
     // This is the standard windows format, any channel can be left out, the channel mask indicate
     // wich ones are present. Let's use the standard features for this.
@@ -245,20 +245,6 @@ bool CAudioContext::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWOR
 
     switch (Type)
     {
-    case DSMIXBINTYPE_DMO:  //FL, FR, C, LFE, SL, SR
-      {
-        DSMIXBINVOLUMEPAIR dsm[6] =
-          {
-            {DSMIXBIN_FRONT_LEFT , 0},
-            {DSMIXBIN_FRONT_RIGHT, 0},
-            {DSMIXBIN_FRONT_CENTER, 0},
-            {DSMIXBIN_LOW_FREQUENCY, 0},
-            {DSMIXBIN_BACK_LEFT, 0},
-            {DSMIXBIN_BACK_RIGHT, 0}
-          };
-        memcpy(dsmbvp, &dsm, sizeof(DSMIXBINVOLUMEPAIR)*(*MixBinCount));
-        return true;
-      }
     case DSMIXBINTYPE_AAC:  //C, FL, FR, SL, SR, LFE
       {
         DSMIXBINVOLUMEPAIR dsm[6] =
