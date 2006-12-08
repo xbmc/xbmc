@@ -170,7 +170,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
 
   DSMIXBINS dsmb;
 
-  DWORD dwCMask;
+  DWORD dwCMask = 0;
   DSMIXBINVOLUMEPAIR dsmbvp8[8];
   int iMixBinCount;
 
@@ -189,6 +189,8 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
       g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_DMO, iChannels);
     else if (strstr(strAudioCodec, "OggVorbis"))
       g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_OGG, iChannels);
+    else if (strstr(strAudioCodec, "PCM")) // this should potentially be made default as it's standard windows
+      g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_DMO, iChannels);
     else
       g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STANDARD, iChannels);
 
@@ -205,7 +207,9 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   dssd.lpwfxFormat = (WAVEFORMATEX*) & m_wfxex;
   dssd.lpfnCallback = StaticStreamCallback;
   dssd.lpvContext = this;
-  dssd.lpMixBins = &dsmb;
+
+  if(iMixBinCount)
+    dssd.lpMixBins = &dsmb;
 
   if (DirectSoundCreateStream( &dssd, &m_pStream ) != DS_OK)
   {
