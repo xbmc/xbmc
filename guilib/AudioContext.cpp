@@ -204,6 +204,39 @@ bool CAudioContext::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWOR
 {
   //3, 5, >6 channel are invalid XBOX wav formats thus can not be processed at this stage
 
+  if(Type==0)
+  { // FL, FR, C, LFE, BL, BR, (FLC, FRC, BC, SL, SR, TC, TFL, TFC, TFR, TBL, TBC, TBR)
+    // This is the standard windows format, any channel can be left out, the channel mask indicate
+    // wich ones are present. Let's use the standard features for this.
+
+    *MixBinCount = 0;
+    if(*dwChannelMask == 0)
+    { // no channel mask specified, generate one
+      switch(Channels)
+      {
+        case 6:
+          *dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
+          break;
+        case 5:
+          *dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
+          break;
+        case 4:
+          *dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
+          break;
+        case 3:
+          *dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER;
+          break;
+        case 2:
+          *dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
+          break;
+        case 1:
+          *dwChannelMask = SPEAKER_FRONT_CENTER;
+          break;
+      }      
+    }
+    return true;
+  }
+
   *MixBinCount = Channels;
 
   if (Channels == 6) //Handle 6 channels.
