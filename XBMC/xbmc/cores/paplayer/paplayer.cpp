@@ -113,9 +113,14 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   m_decoder[m_currentDecoder].GetDataFormat(&m_Channels, &m_SampleRate, &m_BitsPerSample);
 
+  CStdString codecname;
+  ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
+  if(codec)
+    codecname = codec->m_CodecName;
+
   SetupDirectSound(m_Channels);
 
-  if (!CreateStream(m_currentStream, m_Channels, m_SampleRate, m_BitsPerSample))
+  if (!CreateStream(m_currentStream, m_Channels, m_SampleRate, m_BitsPerSample, codecname))
   {
     m_decoder[m_currentDecoder].Destroy();
     CLog::Log(LOGERROR, "PAPlayer::Unable to create audio stream");
@@ -195,10 +200,15 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
   unsigned int channels, samplerate, bitspersample;
   m_decoder[decoder].GetDataFormat(&channels, &samplerate, &bitspersample);
 
+  CStdString codecname;
+  ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
+  if(codec)
+    codecname = codec->m_CodecName;
+
   // check the number of channels isn't changing (else we can't do crossfading)
   if (m_crossFading && m_decoder[m_currentDecoder].GetChannels() == channels)
   { // crossfading - need to create a new stream
-    if (!CreateStream(1 - m_currentStream, channels, samplerate, bitspersample))
+    if (!CreateStream(1 - m_currentStream, channels, samplerate, bitspersample, codecname))
     {
       m_decoder[decoder].Destroy();
       CLog::Log(LOGERROR, "PAPlayer::Unable to create audio stream");
@@ -276,7 +286,7 @@ void PAPlayer::SetupDirectSound(int channels)
     pDSound->SetMixBinHeadroom(i, DWORD(g_advancedSettings.m_audioHeadRoom / 6));
 }
 
-bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample)
+bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codecname)
 {
   FreeStream(num);
 
@@ -311,13 +321,15 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
   // setup the mixbins
   DSMIXBINS dsmb;
-  DWORD dwCMask;
+  DWORD dwCMask = 0;
   DSMIXBINVOLUMEPAIR dsmbvp8[8];
   int iMixBinCount;
 
   if ((channels == 2) && (g_guiSettings.GetBool("musicplayer.outputtoallspeakers")))
     g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STEREOALL, channels);
-  else
+  else if( codecname.Equals("wav") || codecname.Equals("wma") )
+    g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, 0, channels);
+  else 
     g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STANDARD, channels);
 
   wfxex.dwChannelMask = dwCMask;
@@ -333,7 +345,9 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   dssd.lpwfxFormat            = (WAVEFORMATEX*)&wfxex;
   dssd.lpfnCallback           = StaticStreamCallback;
   dssd.lpvContext             = this;
-  dssd.lpMixBins              = &dsmb;
+
+  if(iMixBinCount)
+    dssd.lpMixBins            = &dsmb;
 
   // Create the streams
   HRESULT hr = DirectSoundCreateStream( &dssd, (LPDIRECTSOUNDSTREAM *)&m_pStream[num] );
@@ -545,13 +559,19 @@ bool PAPlayer::ProcessPAP()
             m_decoder[m_currentDecoder].GetDataFormat(&channels, &samplerate, &bitspersample);
             unsigned int channels2, samplerate2, bitspersample2;
             m_decoder[1 - m_currentDecoder].GetDataFormat(&channels2, &samplerate2, &bitspersample2);
+
+            CStdString codecname;
+            ICodec* codec = m_decoder[1 - m_currentDecoder].GetCodec();
+            if(codec)
+              codecname = codec->m_CodecName;
+
             // change of channels - reinitialize our speaker configuration
             if (channels != channels2)
             {
               CLog::Log(LOGWARNING, "PAPlayer: Channel number has changed - restarting direct sound");
               FreeStream(m_currentStream);
               SetupDirectSound(channels2);
-              if (!CreateStream(m_currentStream, channels2, samplerate2, bitspersample2))
+              if (!CreateStream(m_currentStream, channels2, samplerate2, bitspersample2, codecname))
               {
                 CLog::Log(LOGERROR, "PAPlayer: Error creating stream!");
                 return false;
