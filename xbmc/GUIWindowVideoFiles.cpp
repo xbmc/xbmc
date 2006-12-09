@@ -545,6 +545,7 @@ void CGUIWindowVideoFiles::OnScan()
   DoScan(m_vecItems.m_strPath, items);
   Update(m_vecItems.m_strPath);
   m_bIsScanning = false;
+  CUtil::ClearFileItemCache();
 }
 
 bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items)
