@@ -38,7 +38,10 @@ void CGUIPanelContainer::Render()
   int offset = (int)(m_scrollOffset / m_layout.Size(m_orientation));
 
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
-  FreeMemory(CorrectOffset(offset * m_itemsPerRow), CorrectOffset((offset + m_itemsPerPage) * m_itemsPerRow));
+  if (m_scrollSpeed)
+    FreeMemory(CorrectOffset(offset * m_itemsPerRow), CorrectOffset((offset + m_itemsPerPage + 1) * m_itemsPerRow));
+  else
+    FreeMemory(CorrectOffset(offset * m_itemsPerRow), CorrectOffset((offset + m_itemsPerPage) * m_itemsPerRow));
 
   g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
   float posX = m_posX;
