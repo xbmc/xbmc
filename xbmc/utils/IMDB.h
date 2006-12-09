@@ -68,6 +68,7 @@ public:
   bool InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails);
   bool ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails);
   bool LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails);
+  bool LoadXML(const CStdString& strXMLFile, CIMDBMovie &movieDetails, bool bDownload = true);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
   void GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
 
