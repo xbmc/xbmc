@@ -244,16 +244,22 @@ bool CIMDB::LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails)
 {
   CStdString strXMLFile;
   strXMLFile.Format("%s\\%s.xml", g_settings.GetIMDbFolder().c_str(), strIMDB.c_str());
+  bool bDownload = true;
+  if (strIMDB.Left(2).Equals("xx"))
+    bDownload = false;
+  movieDetails.m_strIMDBNumber = strIMDB;
+  return LoadXML(strXMLFile, movieDetails, bDownload);
+}
+
+bool CIMDB::LoadXML(const CStdString& strXMLFile, CIMDBMovie &movieDetails, bool bDownload /* = true */)
+{
   TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
-  movieDetails.m_strIMDBNumber = strIMDB;
   if (doc.LoadFile(strXMLFile) && ParseDetails(doc, movieDetails))
   { // excellent!
     return true;
   }
-
-  // dont try to look up manual additions
-  if (strIMDB.Left(2).Equals("xx"))
+  if (!bDownload)
     return true;
 
   TiXmlBase::SetCondenseWhiteSpace(true);
@@ -269,7 +275,7 @@ bool CIMDB::LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails)
   pDlgProgress->Progress();
   CIMDBUrl url;
   url.m_strTitle = movieDetails.m_strTitle;
-  url.m_strURL.Format("http://%s/title/%s", g_advancedSettings.m_imdbAddress.c_str(), strIMDB.c_str());
+  url.m_strURL.Format("http://%s/title/%s", g_advancedSettings.m_imdbAddress.c_str(), movieDetails.m_strIMDBNumber.c_str());
   bool ret = GetDetails(url, movieDetails, pDlgProgress);
   pDlgProgress->Close();
   return ret;

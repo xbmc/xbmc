@@ -1424,25 +1424,87 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   CFileItem* pItem;
   pItem = m_vecItems[iItem];
   if (pItem->IsParentFolder()) return;
-
-  // enter a new title
-  CStdString strTitle = pItem->GetLabel();
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strTitle, g_localizeStrings.Get(528), false)) // Enter Title
-    return;
-  // double check title is new
+  if (pItem->m_bIsFolder) return;
+  
+  bool bGotXml = false;
   CFileItemList items;
+  CIMDBMovie movie;
+  movie.Reset();
+
+  // look for matching xml file first
+  CStdString strXml = pItem->m_strPath + ".xml";
+  CStdString strCache = "Z:\\" + CUtil::GetFileName(strXml);
+  if (CFile::Exists(strXml))
+  {
+    bGotXml = true;
+    CLog::Log(LOGDEBUG,__FUNCTION__": found matching xml file:[%s]", strXml.c_str());
+    CFile::Cache(strXml, strCache);
+    CIMDB imdb;
+    if (!imdb.LoadXML(strCache, movie, false))
+    {
+      CLog::Log(LOGERROR,__FUNCTION__": Could not parse info in file:[%s]", strXml.c_str());
+      bGotXml = false;
+    }
+  }
+
+  // prompt for data
+  if (!bGotXml) 
+  {
+    // enter a new title
+    CStdString strTitle = pItem->GetLabel();
+    if (!CGUIDialogKeyboard::ShowAndGetInput(strTitle, g_localizeStrings.Get(528), false)) // Enter Title
+      return;
+
+    // pick genre
+    CGUIDialogSelect* pSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    if (!pSelect)
+      return;
+    pSelect->SetHeading(530); // Select Genre
+    pSelect->Reset();
+    items.ClearKeepPointer();
+    if (!CDirectory::GetDirectory("videodb://1/", items))
+      return;
+    for (int i = 0; i < items.Size(); ++i)
+      pSelect->Add(items[i]->GetLabel());
+    pSelect->EnableButton(true);
+    pSelect->SetButtonLabel(531); // New Genre
+    pSelect->DoModal();
+    CStdString strGenre;
+    int iSelected = pSelect->GetSelectedLabel();
+    if (iSelected >= 0)
+      strGenre = items[iSelected]->GetLabel();
+    else if (!pSelect->IsButtonPressed())
+      return;
+
+    // enter new genre string
+    if (strGenre.IsEmpty())
+    {
+      strGenre = g_localizeStrings.Get(532); // Manual Addition
+      if (!CGUIDialogKeyboard::ShowAndGetInput(strGenre, g_localizeStrings.Get(533), false)) // Enter Genre
+        return; // user backed out
+      if (strGenre.IsEmpty())
+        return; // no genre string
+    }
+
+    // set movie info
+    movie.m_strTitle = strTitle;
+    movie.m_strGenre = strGenre;
+  }
+
+  // double check title for uniqueness
+  items.ClearKeepPointer();
   if (!CDirectory::GetDirectory("videodb://2/", items))
     return;
   for (int i = 0; i < items.Size(); ++i)
   {
-    if (items[i]->m_strTitle.Equals(strTitle))
+    if (items[i]->m_strTitle.Equals(movie.m_strTitle))
     {
       // uh oh, duplicate title
       CGUIDialogOK *pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
       if (pDialog)
       {
         pDialog->SetHeading(529); // Duplicate Title
-        pDialog->SetLine(0, strTitle);
+        pDialog->SetLine(0, movie.m_strTitle);
         pDialog->SetLine(1, "");
         pDialog->SetLine(2, "");
         pDialog->SetLine(3, "");
@@ -1452,54 +1514,28 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     }
   }
 
-  // pick genre
-  CGUIDialogSelect* pSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  if (!pSelect)
-    return;
-  pSelect->SetHeading(530); // Select Genre
-  pSelect->Reset();
-  items.Clear();
-  if (!CDirectory::GetDirectory("videodb://1/", items))
-    return;
-  for (int i = 0; i < items.Size(); ++i)
-    pSelect->Add(items[i]->GetLabel());
-  pSelect->EnableButton(true);
-  pSelect->SetButtonLabel(531); // New Genre
-  pSelect->DoModal();
-  CStdString strGenre;
-  int iSelected = pSelect->GetSelectedLabel();
-  if (iSelected >= 0)
-    strGenre = items[iSelected]->GetLabel();
-  else if (!pSelect->IsButtonPressed())
-    return;
-  // enter new genre string
-  if (strGenre.IsEmpty())
-  {
-    strGenre = g_localizeStrings.Get(532); // Manual Addition
-    if (!CGUIDialogKeyboard::ShowAndGetInput(strGenre, g_localizeStrings.Get(533), false)) // Enter Genre
-      return; // user backed out
-    if (strGenre.IsEmpty())
-      return; // no genre string
-  }
-
-  // ok, add to database
+  // everything is ok, so add to database
   m_database.Open();
   long lMovieId = m_database.AddMovie(pItem->m_strPath, "", false);
-  CIMDBMovie movie;
-  movie.Reset();
-  movie.m_strTitle = strTitle;
-  movie.m_strGenre = strGenre;
   movie.m_strIMDBNumber.Format("xx%08i", lMovieId);
   m_database.SetMovieInfo(pItem->m_strPath, movie);
   m_database.Close();
+
+  if (bGotXml)
+  {
+    CUtil::AddFileToFolder(g_settings.GetIMDbFolder(), movie.m_strIMDBNumber, strXml);
+    strXml += ".xml";
+    CFile::Cache(strCache, strXml);
+    CFile::Delete(strCache);
+  }
 
   // done...
   CGUIDialogOK *pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   if (pDialog)
   {
     pDialog->SetHeading(20177); // Done
-    pDialog->SetLine(0, strTitle);
-    pDialog->SetLine(1, strGenre);
+    pDialog->SetLine(0, movie.m_strTitle);
+    pDialog->SetLine(1, movie.m_strGenre);
     pDialog->SetLine(2, movie.m_strIMDBNumber);
     pDialog->SetLine(3, "");
     pDialog->DoModal();
