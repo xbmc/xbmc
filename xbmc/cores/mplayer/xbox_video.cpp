@@ -144,7 +144,7 @@ static unsigned int video_draw_frame(unsigned char *src[])
 */
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
-  CLog::Log(LOGDEBUG, "mplayer::video_config(%d, %d, %d, %d, %d, %d", width, height, d_width, d_height, options, format);
+  CLog::Log(LOGDEBUG, "mplayer::video_config(%d, %d, %d, %d, %d, %d)", width, height, d_width, d_height, options, format);
 
 #ifdef MP_DIRECTRENDERING
   m_bAllowDR = true;
