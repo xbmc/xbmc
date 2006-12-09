@@ -905,11 +905,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
           if (!m_database.GetStackTimes(m_vecItems[iItem]->m_strPath, times)) // need to calculate them times
             return;
         
-          items[btn2-1]->m_lStartOffset = times[btn2-1];
+          m_vecItems[iItem]->m_lStartOffset = times[btn2-1];
         }
 
-        // cheat
-        *m_vecItems[iItem] = *items[btn2-1];
         OnClick(iItem);
       }
     }
