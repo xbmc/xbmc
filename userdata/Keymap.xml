@@ -340,6 +340,13 @@
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>ActivateWindow(VisualisationSettings)</v>
       <n>ActivateWindow(MusicPlaylist)</n>
+      <left>SkipPrevious</left>
+      <right>SkipNext</right>
+      <up>IncreaseRating</up>
+      <down>PreviousPreset</down>
+      <back>NextPreset</back>
+      <s>ShowPreset</s>
+      <l>LockPreset</l>
     </keyboard>
   </Visualisation>
 

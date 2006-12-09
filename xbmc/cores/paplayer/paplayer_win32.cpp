@@ -298,7 +298,7 @@ void PAPlayer::SetupDirectSound(int channels)
 #endif
 }
 
-bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample)
+bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
 {
   FreeStream(num);
 
