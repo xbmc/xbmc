@@ -119,6 +119,11 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         g_graphicsContext.SendMessage(msgSet);
       }
       Refresh();
+
+      // dont allow refreshing of manual info
+      if (m_Movie.m_strIMDBNumber.Left(2).Equals("xx"))
+        CONTROL_DISABLE(CONTROL_BTN_REFRESH);
+
       return true;
     }
     break;
