@@ -97,6 +97,10 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     }
     break;*/
   }
+  // default action is to send to the visualisation first
+  CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+  if (pVisControl && pVisControl->OnAction(action))
+    return true;
   return CGUIWindow::OnAction(action);
 }
 
