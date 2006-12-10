@@ -19,11 +19,10 @@ public:
   void RollbackTransaction();
   bool InTransaction();
 
+  static CStdString FormatSQL(CStdString strStmt, ...);
 protected:
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   DWORD ComputeCRC(const CStdString &text);
-
-  CStdString FormatSQL(CStdString strStmt, ...);
 
   virtual bool CreateTables();
 
