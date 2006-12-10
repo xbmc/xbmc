@@ -42,8 +42,8 @@ protected:
   virtual bool MoveRight(DWORD nextControl);
   virtual void Scroll(int amount);
   virtual void ValidateOffset();
-  virtual void UpdateLayout();
-  unsigned int GetRows();
+  virtual void CalculateLayout();
+  unsigned int GetRows() const;
 
   int m_itemsPerRow;
 };

@@ -95,7 +95,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       m_items.push_back(item);
       if (m_pageControl)
       {
-        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_items.size());
+        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
         SendWindowMessage(msg);
       }
       return true;
@@ -105,7 +105,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       m_items.clear();
       if (m_pageControl)
       {
-        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_items.size());
+        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
         SendWindowMessage(msg);
       }
       return true;
@@ -290,12 +290,27 @@ void CGUIBaseContainer::Animate(DWORD currentTime)
   g_graphicsContext.AddGroupTransform(transform);
 }
 
+void CGUIBaseContainer::AllocResources()
+{
+  CalculateLayout();
+}
+
 void CGUIBaseContainer::UpdateLayout()
+{
+  CalculateLayout();
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
+  SendWindowMessage(msg);
+}
+
+void CGUIBaseContainer::CalculateLayout()
 {
   // calculate the number of items to display
   m_itemsPerPage = (int)((Size() - m_focusedLayout.Size(m_orientation)) / m_layout.Size(m_orientation)) + 1;
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_items.size());
-  SendWindowMessage(msg);
+}
+
+unsigned int CGUIBaseContainer::GetRows() const
+{
+  return m_items.size();
 }
 
 inline float CGUIBaseContainer::Size() const
