@@ -1431,6 +1431,12 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
 
   // look for matching xml file first
   CStdString strXml = pItem->m_strPath + ".xml";
+  if (pItem->IsStack())
+  {
+    // for a stack, use the first file in the stack
+    CStackDirectory stack;
+    strXml = stack.GetFirstStackedFile(pItem->m_strPath) + ".xml";
+  }
   CStdString strCache = "Z:\\" + CUtil::GetFileName(strXml);
   if (CFile::Exists(strXml))
   {
