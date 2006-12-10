@@ -1260,7 +1260,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
       labelInfo, thumbPanelHideLabels, NULL, NULL);
 
     pPanel->SetPageControl(pageControl ? pageControl : id + 5000);
-    pPanel->SetNavigation(up, down, left, id + 5000);
+    pPanel->SetNavigation(up == id ? id + 2 : up, down == id ? id + 2 : down, left == id ? id + 2 : left, id + 5000);
 
     pPanel->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pPanel->SetAnimations(animations);
