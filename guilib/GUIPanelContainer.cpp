@@ -147,10 +147,10 @@ bool CGUIPanelContainer::OnAction(const CAction &action)
     {
       m_analogScrollCount += action.fAmount1 * action.fAmount1;
       bool handled = false;
-      while (m_analogScrollCount > 0.4)
+      while (m_analogScrollCount > AnalogScrollSpeed())
       {
         handled = true;
-        m_analogScrollCount -= 0.4f;
+        m_analogScrollCount -= AnalogScrollSpeed();
         if (m_offset > 0 && m_cursor <= m_itemsPerPage * m_itemsPerRow / 2)
         {
           Scroll(-1);
@@ -167,10 +167,10 @@ bool CGUIPanelContainer::OnAction(const CAction &action)
     {
       m_analogScrollCount += action.fAmount1 * action.fAmount1;
       bool handled = false;
-      while (m_analogScrollCount > 0.4)
+      while (m_analogScrollCount > AnalogScrollSpeed())
       {
         handled = true;
-        m_analogScrollCount -= 0.4f;
+        m_analogScrollCount -= AnalogScrollSpeed();
         if ((m_offset + m_itemsPerPage) * m_itemsPerRow < (int)m_items.size() && m_cursor >= m_itemsPerPage * m_itemsPerRow / 2)
         {
           Scroll(1);
@@ -381,6 +381,11 @@ unsigned int CGUIPanelContainer::GetRows() const
 {
   assert(m_itemsPerRow > 0);
   return (m_items.size() + m_itemsPerRow - 1) / m_itemsPerRow;
+}
+
+float CGUIPanelContainer::AnalogScrollSpeed() const
+{
+  return 10.0f / m_itemsPerPage;
 }
 
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY

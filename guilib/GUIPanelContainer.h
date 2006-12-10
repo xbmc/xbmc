@@ -41,6 +41,7 @@ protected:
   virtual bool MoveLeft(DWORD nextControl);
   virtual bool MoveRight(DWORD nextControl);
   virtual void Scroll(int amount);
+  float AnalogScrollSpeed() const;
   virtual void ValidateOffset();
   virtual void CalculateLayout();
   unsigned int GetRows() const;
