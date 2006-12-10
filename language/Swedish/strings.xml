@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@hotmail.com-->
-<!--Date of translation: 12/02/2006-->
+<!--Date of translation: 12/07/2006-->
 <!--$Revision$-->
-<!--Based on english strings version 7291-->
+<!--Based on english strings version 7321-->
 <strings>
   <string id="0">Mina Program</string>
   <string id="1">Mina Bilder</string>
@@ -1428,5 +1428,7 @@ den här visualiseringen</string>
   <string id="20321">Inga online sparade spel hittat för det specifika spelet</string>
   <string id="20322">Gå till Sparade spel</string>
   <string id="20323">Sparade Spel</string>
+  <string id="20324">Spela del...</string>
+  <string id="20325">Del %i / %i</string>
   <string id="29999">Auto fladderfilter lagning</string>
 </strings>
