@@ -4,6 +4,7 @@
 #include "FileSystem/SmartPlaylistDirectory.h"
 #include "utils/CharsetConverter.h"
 #include "XMLUtils.h"
+#include "Database.h"
 
 typedef struct
 {
@@ -134,9 +135,7 @@ CStdString CSmartPlaylistRule::GetWhereClause()
   case OPERATOR_LESS_THAN:
     operatorString = " < '%s'"; break;
   }
-  // TODO: This needs to be FormatSQL
-  CStdString parameter;
-  parameter.Format(operatorString.c_str(), m_parameter.c_str());
+  CStdString parameter = CDatabase::FormatSQL(operatorString.c_str(), m_parameter.c_str());
   // now the query parameter
   CStdString query;
   if (m_field == SONG_GENRE)
