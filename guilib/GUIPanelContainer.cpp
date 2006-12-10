@@ -191,29 +191,10 @@ bool CGUIPanelContainer::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetMessage() == GUI_MSG_LABEL_ADD)
-    {
-      // from baseclass
-      CGUIListItem* item = (CGUIListItem*)message.GetLPVOID();
-      m_items.push_back(item);
-      if (m_pageControl)
-      {
-        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-        SendWindowMessage(msg);
-      }
-      return true;
-    }
-    else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
+    if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
       m_cursor = 0;
-      // from baseclass
-      m_items.clear();
-      if (m_pageControl)
-      {
-        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-        SendWindowMessage(msg);
-      }
-      return true;
+      // fall through to base class
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
@@ -379,7 +360,7 @@ void CGUIPanelContainer::ValidateOffset()
   }
 }
 
-void CGUIPanelContainer::UpdateLayout()
+void CGUIPanelContainer::CalculateLayout()
 {
   // calculate the number of items to display
   if (m_orientation == HORIZONTAL)
@@ -394,11 +375,9 @@ void CGUIPanelContainer::UpdateLayout()
   }
   if (m_itemsPerRow < 1) m_itemsPerRow = 1;
   if (m_itemsPerPage < 1) m_itemsPerPage = 1;
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-  SendWindowMessage(msg);
 }
 
-unsigned int CGUIPanelContainer::GetRows()
+unsigned int CGUIPanelContainer::GetRows() const
 {
   assert(m_itemsPerRow > 0);
   return (m_items.size() + m_itemsPerRow - 1) / m_itemsPerRow;
