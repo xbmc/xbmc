@@ -29,6 +29,8 @@ public:
   virtual bool OnMouseWheel();
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
+  virtual void AllocResources();
+  virtual unsigned int GetRows() const;
 
   void SetPageControl(DWORD id);
 
@@ -50,6 +52,7 @@ protected:
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset) const;
   virtual void UpdateLayout();
+  virtual void CalculateLayout();
 
   inline float Size() const;
   void MoveToRow(int row);
