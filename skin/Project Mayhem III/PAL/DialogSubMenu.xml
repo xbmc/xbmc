@@ -204,7 +204,7 @@
 			<texturenofocus>-</texturenofocus>
 		</control>
 		<control type="button" id="1113">
-			<description>Profiles button</description>
+			<description>SubMenu button</description>
 			<visible>no</visible>
 			<onclick>q:\scripts\-.py</onclick>
 			<label>-</label>
@@ -242,7 +242,7 @@
 		<control type="button" id="1111">
 			<description>Scripts button</description>
 			<visible>yes</visible>
-			<onclick>q:\scripts\XBMCScripts\Installer.py</onclick>
+			<onclick>q:\scripts\XBMCScripts\default.py</onclick>
 			<label>XBMCScripts</label>
 			<posx>30</posx>
 			<posy>350</posy>
