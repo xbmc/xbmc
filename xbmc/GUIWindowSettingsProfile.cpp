@@ -195,7 +195,8 @@ void CGUIWindowSettingsProfile::LoadList()
   for (UCHAR i = 0; i < g_settings.m_vecProfiles.size(); i++)
   {
     CProfile& profile = g_settings.m_vecProfiles.at(i);
-    CGUIListItem* item = new CGUIListItem(profile.getName());
+    CFileItem* item = new CFileItem(profile.getName());
+    item->m_strPath.Empty();
     item->SetLabel2(profile.getDate());
     item->SetThumbnailImage(profile.getThumb());
     item->SetOverlayImage(profile.getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
@@ -204,9 +205,10 @@ void CGUIWindowSettingsProfile::LoadList()
     m_vecListItems.push_back(item);
   }
   {
-    CGUIListItem* item = new CGUIListItem(g_localizeStrings.Get(20058));
+    CFileItem* item = new CFileItem(g_localizeStrings.Get(20058));
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, (void*)item);
     g_graphicsContext.SendMessage(msg);
+    item->m_strPath.Empty();
     m_vecListItems.push_back(item);
   }
 
