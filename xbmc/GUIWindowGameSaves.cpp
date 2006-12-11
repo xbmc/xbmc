@@ -312,6 +312,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
   return true;
 }
 
+/*
 bool CGUIWindowGameSaves::DownloadSaves(CFileItem item)
 {
   CStdString strURL;
@@ -373,7 +374,6 @@ bool CGUIWindowGameSaves::DownloadSaves(CFileItem item)
                   CLog::Log(LOGINFO,"GSM: Failed to download: %s",  vecSaveUrl[iSelectedSave].c_str());
                   return true;
                 }
-                CGUIDialogOK::ShowAndGetInput(20317, 0, 16200, 0);  // Aborted
                 CLog::Log(LOGINFO,"GSM: Action Aborted: %s",  vecSaveUrl[iSelectedSave].c_str());
                 return true;
               }
@@ -384,7 +384,7 @@ bool CGUIWindowGameSaves::DownloadSaves(CFileItem item)
     }
   }
   return false;
-}
+}*/
 
 void CGUIWindowGameSaves::OnPopupMenu(int iItem)
 {
@@ -416,9 +416,9 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
   int btnMove = pMenu->AddButton(116);
   int btnDelete = pMenu->AddButton(117);
   // ONly add if we are on E:\udata\    /
-  int btnDownload = pMenu->AddButton(20317);
+  /*int btnDownload = pMenu->AddButton(20317);
 
-  pMenu->EnableButton(btnDownload, !strFileName.Equals("savemeta.xbx"));
+  pMenu->EnableButton(btnDownload, !strFileName.Equals("savemeta.xbx"));*/
   // position it correctly
 
   pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
@@ -523,6 +523,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
     CDirectory::Remove(item.m_strPath);
     Update(m_vecItems.m_strPath);
   }
+  /*
   if (iButton == btnDownload)
   {
     CFileItem item(*pItem);
@@ -541,7 +542,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
         Update(m_vecItems.m_strPath);
       }
     }
-  }
+  }*/
   //CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(),CONTROL_LIST,iItem);
   //OnMessage(msg);
 }
