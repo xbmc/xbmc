@@ -209,7 +209,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       {
         g_guiSettings.SetInt("videoscreen.resolution", m_NewResolution);
         //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
-        g_graphicsContext.SetGUIResolution(m_NewResolution);
+        g_graphicsContext.SetVideoResolution(m_NewResolution, TRUE);
         //set our lookandfeelres to the resolution set in graphiccontext
         g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
       }
@@ -1404,7 +1404,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("videoscreen.flickerfilter") || strSetting.Equals("videoscreen.soften"))
   { // reset display
-    g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
+    g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
   }
   else if (strSetting.Equals("screensaver.mode"))
   {
