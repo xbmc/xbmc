@@ -331,7 +331,7 @@ void CApplication::InitBasicD3D()
   }
   // Transfer the resolution information to our graphics context
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
-  g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
+  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
   // Create the device
   if (m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
@@ -782,7 +782,7 @@ HRESULT CApplication::Create(HWND hWnd)
   RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
   // Transfer the resolution information to our graphics context
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
-  g_graphicsContext.SetGUIResolution(initialResolution);
+  g_graphicsContext.SetVideoResolution(initialResolution, TRUE);
 
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
@@ -1043,7 +1043,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #define D3DCREATE_MULTITHREADED 0
 #endif
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
-  g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
+  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &m_d3dpp, &m_pd3dDevice ) ) )
@@ -1081,7 +1081,7 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   CUtil::InitGamma();
   // set GUI res and force the clear of the screen
-  g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution, true);
+  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
   // initialize our charset converter
   g_charsetConverter.reset();
