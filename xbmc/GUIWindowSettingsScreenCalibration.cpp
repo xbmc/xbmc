@@ -62,7 +62,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
       if (m_iCurRes == m_Res.size())
         m_iCurRes = 0;
       Sleep(1000);
-      g_graphicsContext.SetGUIResolution(m_Res[m_iCurRes]);
+      g_graphicsContext.SetVideoResolution(m_Res[m_iCurRes], TRUE);
       ResetControls();
       return true;
     }
@@ -92,7 +92,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetCalibrating(false);
       m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
       // reset our screen resolution to what it was initially
-      g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
+      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
       // Inform the player so we can update the resolution
 #ifdef HAS_VIDEO_PLAYBACK
       g_renderManager.Update(false);
