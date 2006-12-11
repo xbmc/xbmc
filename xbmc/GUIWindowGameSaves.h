@@ -18,7 +18,7 @@ protected:
   virtual bool GetDirectory(const CStdString& strDirectory, CFileItemList& items);
   virtual bool OnClick(int iItem);
   virtual void OnPopupMenu(int iItem);
-  bool DownloadSaves(CFileItem item);
+  //bool DownloadSaves(CFileItem item);
   bool m_bViewOutput;
   VECSHARES m_shares;
   CStdString m_strParentPath;
