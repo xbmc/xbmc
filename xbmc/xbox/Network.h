@@ -34,6 +34,7 @@ public:
 
   bool IsEthernetConnected();
   bool IsAvailable();
+  bool IsInited() { return m_inited; }
 
   /* updates and returns current network state */
   /* will return pending if network is not up and running */
@@ -48,6 +49,7 @@ public:
   struct network_info m_networkinfo;
 protected:
   bool m_networkup;  /* true if network is available */
+  bool m_inited;     /* true if initalized() has been called */
   DWORD m_laststate; /* will hold the last state, to notice changes */
   DWORD m_lastlink;  /* will hold the last link, to notice changes */
 

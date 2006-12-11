@@ -173,16 +173,12 @@ static bool TranslateConfig( const struct network_info& networkinfo, TXNetConfig
 
 bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
 {
-  if (m_networkup)
-    return true;
-
 #ifdef HAS_XBOX_NETWORK
   XNetStartupParams xnsp = {};
   WSADATA WsaData = {};
   TXNetConfigParams params = {};
   DWORD dwState = 0;
   bool dashconfig = false;
-
 
   memset(&m_networkinfo , 0, sizeof(m_networkinfo ));
 
@@ -259,8 +255,8 @@ bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const cha
     return false;
   }
 
-
 #endif
+  m_inited = true;
   return true;
 }
 
@@ -271,11 +267,13 @@ void CNetwork::NetworkDown()
   m_laststate = 0;
   m_networkup = false;
   g_applicationMessenger.NetworkMessage(SERVICES_DOWN, 0);
+  m_inited = false;
 }
 
 void CNetwork::NetworkUp()
 {
 #ifdef HAS_XBOX_NETWORK
+  
   /* get the current status */
   TXNetConfigStatus status;
   XNetGetConfigStatus(&status);
@@ -309,10 +307,13 @@ DWORD CNetwork::UpdateState()
     if( m_networkup )
       NetworkDown();
 
+    if (!m_inited)
+      return XNET_GET_XNADDR_PENDING;
+
     m_lastlink = dwLink;
     m_laststate = dwState;
 
-    if ( dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC )
+    if (dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC)
       NetworkUp();
     
     LogState();
@@ -344,7 +345,7 @@ bool CNetwork::WaitForSetup(DWORD timeout)
 #ifdef HAS_XBOX_NETWORK
   do
   {
-    if( UpdateState() != XNET_GET_XNADDR_PENDING )
+    if( UpdateState() != XNET_GET_XNADDR_PENDING && g_network.IsInited())
       return true;
     
     Sleep(100);
@@ -363,6 +364,7 @@ CNetwork::CNetwork(void)
   m_lastlink = 0;
   m_laststate = 0;
   m_networkup = false;
+  m_inited = false;
 }
 
 CNetwork::~CNetwork(void)
