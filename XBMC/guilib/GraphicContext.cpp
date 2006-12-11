@@ -6,6 +6,9 @@
 #include "../xbmc/XBVideoConfig.h"
 #ifdef HAS_XBOX_D3D
 #include "xgraphics.h"
+#else
+#define D3DCLEAR_STENCIL 0x0l
+#define D3DPRESENTFLAG_LOCKABLE_BACKBUFFER 0x0l
 #endif
 #include "SkinInfo.h"
 
@@ -276,17 +279,6 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllow
   }
 }
 
-void CGraphicContext::SetGUIResolution(RESOLUTION &res, bool forceClear /* = false */)
-{
-  CLog::Log(LOGDEBUG, "Setting resolution %i", res);
-  SetVideoResolution(res, TRUE, forceClear);
-  CLog::Log(LOGDEBUG, "We set resolution %i", m_Resolution);
-  if (!m_pd3dParams) return ;
-  m_iScreenWidth = m_pd3dParams->BackBufferWidth ;
-  m_iScreenHeight = m_pd3dParams->BackBufferHeight;
-  m_bWidescreen = (m_pd3dParams->Flags & D3DPRESENTFLAG_WIDESCREEN) != 0;
-}
-
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
   if (res == AUTORES)
@@ -335,9 +327,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_pd3dParams->BackBufferWidth = g_settings.m_ResInfo[res].iWidth;
     m_pd3dParams->BackBufferHeight = g_settings.m_ResInfo[res].iHeight;
     m_pd3dParams->Flags = g_settings.m_ResInfo[res].dwFlags;
-#ifndef HAS_XBOX_D3D
     m_pd3dParams->Flags |= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
-#endif
+
     if (res == PAL60_4x3 || res == PAL60_16x9)
     {
       if (m_pd3dParams->BackBufferWidth <= 720 && m_pd3dParams->BackBufferHeight <= 480)
@@ -358,17 +349,21 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   if (m_pd3dDevice)
   {
     if (NeedReset)
+    {
+      CLog::Log(LOGDEBUG, "Setting resolution %i", res);
       m_pd3dDevice->Reset(m_pd3dParams);
+    }
+
     /* need to clear and preset, otherwise flicker filters won't take effect */
     if (NeedReset || forceClear)
     {
-#ifdef HAS_XBOX_D3D
       m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-#else
-      m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
-#endif
       m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
     }
+
+    m_iScreenWidth = m_pd3dParams->BackBufferWidth;
+    m_iScreenHeight = m_pd3dParams->BackBufferHeight;
+    m_bWidescreen = (m_pd3dParams->Flags & D3DPRESENTFLAG_WIDESCREEN) != 0;
   }
   if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
   { // set the mouse resolution
@@ -377,8 +372,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
   SetFullScreenViewWindow(res);
   SetScreenFilters(m_bFullScreenVideo);
-  Unlock();
+  
+  if(NeedReset)
+    CLog::Log(LOGDEBUG, "We set resolution %i", m_Resolution);
+
   m_Resolution = res;
+  Unlock();  
 }
 
 RESOLUTION CGraphicContext::GetVideoResolution() const
@@ -525,17 +524,9 @@ void CGraphicContext::Clear()
 {
   //Not trying to clear the zbuffer when there is none is 7 fps faster (pal resolution)
   if ((!m_pd3dParams) || (m_pd3dParams->EnableAutoDepthStencil == TRUE))
-  {
-#ifdef HAS_XBOX_D3D
     m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-#else
-    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
-#endif
-  }
   else
-  {
     m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
-  }
 }
 
 void CGraphicContext::CaptureStateBlock()
