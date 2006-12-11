@@ -617,10 +617,13 @@ float CGraphicContext::GetScalingPixelRatio() const
   if (m_Resolution == m_windowResolution)
     return GetPixelRatio(m_windowResolution);
 
+  RESOLUTION checkRes = m_windowResolution;
+  if (checkRes == INVALID)
+    checkRes = m_Resolution;
   // resolutions are different - we want to return the aspect ratio of the video resolution
   // but only once it's been corrected for the skin -> screen coordinates scaling
-  float winWidth = (float)g_settings.m_ResInfo[m_windowResolution].iWidth;
-  float winHeight = (float)g_settings.m_ResInfo[m_windowResolution].iHeight;
+  float winWidth = (float)g_settings.m_ResInfo[checkRes].iWidth;
+  float winHeight = (float)g_settings.m_ResInfo[checkRes].iHeight;
   float outWidth = (float)g_settings.m_ResInfo[m_Resolution].iWidth;
   float outHeight = (float)g_settings.m_ResInfo[m_Resolution].iHeight;
   float outPR = GetPixelRatio(m_Resolution);
