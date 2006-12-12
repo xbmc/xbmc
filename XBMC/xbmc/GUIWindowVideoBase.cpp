@@ -887,16 +887,12 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     {
       CFileItemList items;
       CDirectory::GetDirectory(m_vecItems[iItem]->m_strPath,items);
-      pMenu->Initialize();
-      for (int i=0;i<items.Size();++i)
-      {
-        CStdString strLabel;
-        strLabel.Format(g_localizeStrings.Get(20325),i+1,items.Size());
-        pMenu->AddButton(strLabel);
-      }
-      pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
-      pMenu->DoModal();
-      int btn2 = pMenu->GetButton();
+      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
+      if (!dlg)
+        return;
+      dlg->SetNumberOfFiles(items.Size());
+      dlg->DoModal();
+      int btn2 = dlg->GetSelectedFile();
       if (btn2 > 0)
       {
         if (btn2 > 1)
@@ -905,8 +901,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
           if (!m_database.GetStackTimes(m_vecItems[iItem]->m_strPath, times)) // need to calculate them times
             return;
         
-          m_vecItems[iItem]->m_lStartOffset = times[btn2-1];
+          m_vecItems[iItem]->m_lStartOffset = times[btn2-2]*75; // wtf?
         }
+        else
+          m_vecItems[iItem]->m_lStartOffset = 0;
 
         OnClick(iItem);
       }
