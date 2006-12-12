@@ -2031,7 +2031,7 @@ bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info, DWORD context
   switch (absInfo)
   {
   case LISTITEM_ISPLAYING:
-    if (!m_currentFile.m_strPath.IsEmpty())
+    if (item && !m_currentFile.m_strPath.IsEmpty())
       ret = m_currentFile.IsSamePath(item);
     break;
   default:
@@ -2210,6 +2210,7 @@ CStdString CGUIInfoManager::SystemHasInternet_s()
 
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 {
+  if (!item) return "";
   if (info == LISTITEM_ICON && !item->HasThumbnail() && item->HasIcon())
   {
     CStdString strThumb = item->GetIconImage();
