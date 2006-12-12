@@ -3353,6 +3353,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     // have to be set here due to playstack using this for starting the file
     options.starttime = item.m_lStartOffset / 75.0;
+    if (m_itemCurrentFile.IsStack() && m_itemCurrentFile.m_lStartOffset != 0)
+      m_itemCurrentFile.m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
 
     if( m_eCurrentPlayer == EPC_NONE )
       eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
@@ -3362,7 +3364,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   else
   {
     options.starttime = item.m_lStartOffset / 75.0;
-    
+
     if (item.IsVideo())
     {
       // open the d/b and retrieve the bookmarks for the current movie      
