@@ -47,6 +47,7 @@ CXBoxRenderManager::CXBoxRenderManager()
 {
   m_pRenderer = NULL;
   m_bPauseDrawing = false;
+  m_bIsStarted = false;
 
   m_presentdelay = 5; //Just a guess to what delay we have
   m_presentfield = FS_NONE;
@@ -74,9 +75,9 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
     RestoreCriticalSection(g_graphicsContext, locks);
     return false;
   }
-  
-  m_bIsStarted = false;
-  if( m_pRenderer->Configure(width, height, d_width, d_height, fps, flags) )
+
+  bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
+  if(result)
   {
     if( flags & CONF_FLAGS_FULLSCREEN )
     {
@@ -85,11 +86,11 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
       lock.Enter();
     }
     m_pRenderer->Update(false);
-    m_bIsStarted = true;    
+    m_bIsStarted = true;
   }
   
   RestoreCriticalSection(g_graphicsContext, locks);
-  return m_bIsStarted;
+  return result;
 }
 
 void CXBoxRenderManager::Update(bool bPauseDrawing)
@@ -149,6 +150,7 @@ unsigned int CXBoxRenderManager::PreInit()
 void CXBoxRenderManager::UnInit()
 {
   m_bStop = true;
+  m_bIsStarted = false;
   m_eventFrame.Set();
 
   StopThread();
