@@ -2,7 +2,6 @@
 #include "GUIWindowGameSaves.h"
 #include "util.h"
 #include "FileSystem/ZipManager.h"
-#include "GUIWindowScriptsInfo.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogFileBrowser.h"
 //#include "GUIListControl.h"
