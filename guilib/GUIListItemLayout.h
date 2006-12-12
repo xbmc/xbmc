@@ -4,6 +4,7 @@
 #include "GUILabelControl.h"
 
 class CGUIListItem;
+class CFileItem;
 
 class CGUIListItemLayout
 {
@@ -75,7 +76,7 @@ public:
 //#endif
 protected:
   CListBase *CreateItem(TiXmlElement *child);
-  void UpdateItem(CListBase *control, CGUIListItem *item, DWORD parentID);
+  void UpdateItem(CListBase *control, CFileItem *item, DWORD parentID);
   void RenderLabel(CListLabel *label, bool selected, bool scroll);
 
   vector<CListBase*> m_controls;

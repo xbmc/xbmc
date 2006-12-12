@@ -14,9 +14,6 @@ CGUIListItem::CGUIListItem(void)
   m_bIsFolder = false;
   m_strLabel2 = "";
   m_strLabel = "";
-  m_pThumbnailImage = NULL;
-  m_pIconImage = NULL;
-  m_overlayImage = NULL;
   m_bSelected = false;
   m_strIcon = "";
   m_strThumbnailImage = "";
@@ -30,9 +27,6 @@ CGUIListItem::CGUIListItem(const CStdString& strLabel)
   m_bIsFolder = false;
   m_strLabel2 = "";
   m_strLabel = strLabel;
-  m_pThumbnailImage = NULL;
-  m_pIconImage = NULL;
-  m_overlayImage = NULL;
   m_bSelected = false;
   m_strIcon = "";
   m_strThumbnailImage = "";
@@ -148,59 +142,11 @@ bool CGUIListItem::IsSelected() const
   return m_bSelected;
 }
 
-CGUIImage* CGUIListItem::GetThumbnail()
-{
-  return m_pThumbnailImage;
-}
-
-CGUIImage* CGUIListItem::GetIcon()
-{
-  return m_pIconImage;
-}
-
-CGUIImage* CGUIListItem::GetOverlay()
-{
-  return m_overlayImage;
-}
-
-void CGUIListItem::SetThumbnail(CGUIImage* pImage)
-{
-  if (m_pThumbnailImage)
-  {
-    m_pThumbnailImage->FreeResources();
-    delete m_pThumbnailImage;
-  }
-  m_pThumbnailImage = pImage;
-}
-
-void CGUIListItem::SetIcon(CGUIImage* pImage)
-{
-  if (m_pIconImage)
-  {
-    m_pIconImage->FreeResources();
-    delete m_pIconImage;
-  }
-  m_pIconImage = pImage;
-}
-
-void CGUIListItem::SetOverlay(CGUIImage *pImage)
-{
-  if (m_overlayImage)
-  {
-    m_overlayImage->FreeResources();
-    delete m_overlayImage;
-  }
-  m_overlayImage = pImage;
-}
-
 const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
 {
   if (&item == this) return * this;
   m_strLabel2 = item.m_strLabel2;
   m_strLabel = item.m_strLabel;
-  m_pThumbnailImage = NULL;
-  m_pIconImage = NULL;
-  m_overlayImage = NULL;
   m_layout = NULL;
   m_focusedLayout = NULL;
   m_bSelected = item.m_bSelected;
@@ -222,24 +168,6 @@ void CGUIListItem::FreeIcons()
 
 void CGUIListItem::FreeMemory()
 {
-  if (m_pThumbnailImage)
-  {
-    m_pThumbnailImage->FreeResources();
-    delete m_pThumbnailImage;
-    m_pThumbnailImage = NULL;
-  }
-  if (m_pIconImage)
-  {
-    m_pIconImage->FreeResources();
-    delete m_pIconImage;
-    m_pIconImage = NULL;
-  }
-  if (m_overlayImage)
-  {
-    m_overlayImage->FreeResources();
-    delete m_overlayImage;
-    m_overlayImage = NULL;
-  }
   if (m_layout)
   {
     delete m_layout;
