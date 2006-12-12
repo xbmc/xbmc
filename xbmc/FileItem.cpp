@@ -60,6 +60,14 @@ CFileItem::CFileItem(const CFileItem& item)
   *this = item;
 }
 
+CFileItem::CFileItem(const CGUIListItem& item)
+{
+  Reset();
+  // not particularly pretty, but it gets around the issue of Reset() defaulting
+  // parameters in the CGUIListItem base class.
+  *((CGUIListItem *)this) = item;
+}
+
 CFileItem::CFileItem(void)
 {
   Reset();

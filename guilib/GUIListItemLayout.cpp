@@ -103,10 +103,14 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID)
 {
   if (m_invalidated)
   {
+    // could use a dynamic cast here if RTTI was enabled.  As it's not,
+    // let's use a static cast with a virtual base function
+    CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : new CFileItem(*item);
+
     // check for boolean conditions
-    m_isPlaying = g_infoManager.GetItemBool((CFileItem *)item, LISTITEM_ISPLAYING, parentID);
+    m_isPlaying = g_infoManager.GetItemBool(fileItem, LISTITEM_ISPLAYING, parentID);
     for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
-      UpdateItem(*it, item, parentID);
+      UpdateItem(*it, fileItem, parentID);
     // now we have to check our overlapping label pairs
     for (unsigned int i = 0; i < m_controls.size(); i++)
     {
@@ -146,6 +150,9 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID)
       }
     }
     m_invalidated = false;
+    // delete our temporary fileitem
+    if (!item->IsFileItem())
+      delete fileItem;
   }
 
   // and render
@@ -162,23 +169,23 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID)
   }
 }
 
-void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CGUIListItem *item, DWORD parentID)
+void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CFileItem *item, DWORD parentID)
 {
   // check boolean conditions
   if (control->m_visibleCondition)
-    control->m_visible = g_infoManager.GetItemBool((CFileItem *)item, control->m_visibleCondition, parentID);
-  if (control->m_type == CListBase::LIST_IMAGE)
+    control->m_visible = g_infoManager.GetItemBool(item, control->m_visibleCondition, parentID);
+  if (control->m_type == CListBase::LIST_IMAGE && item)
   {
     CListImage *image = (CListImage *)control;
-    image->m_image.SetFileName(g_infoManager.GetItemImage((CFileItem *)item, image->m_info));
+    image->m_image.SetFileName(g_infoManager.GetItemImage(item, image->m_info));
   }
   else if (control->m_type == CListBase::LIST_LABEL)
   {
     CListLabel *label = (CListLabel *)control;
     if (label->m_info)
-      g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemLabel((CFileItem *)item, label->m_info), label->m_text);
+      g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemLabel(item, label->m_info), label->m_text);
     else
-      g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemMultiLabel((CFileItem *)item, label->m_multiInfo), label->m_text);
+      g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemMultiLabel(item, label->m_multiInfo), label->m_text);
     if (label->m_label.font)
     {
       label->m_label.font->GetTextExtent(label->m_text, &label->m_textW, &label->m_renderH);
