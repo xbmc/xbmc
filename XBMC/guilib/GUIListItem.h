@@ -11,7 +11,6 @@
 #include "stdstring.h"
 
 //  Forward
-class CGUIImage;
 class CGUIListItemLayout;
 
 /*!
@@ -59,15 +58,7 @@ public:
   bool HasIcon() const;
   bool HasThumbnail() const;
   bool HasOverlay() const;
-
-  void SetThumbnail(CGUIImage* pImage);
-  CGUIImage* GetThumbnail();
-
-  void SetIcon(CGUIImage* pImage);
-  CGUIImage* GetIcon();
-
-  void SetOverlay(CGUIImage* pImage);
-  CGUIImage* GetOverlay();
+  virtual bool IsFileItem() const { return false; };
 
   void SetLayout(CGUIListItemLayout *layout);
   CGUIListItemLayout *GetLayout();
@@ -86,9 +77,7 @@ protected:
   CStdString m_strThumbnailImage; // filename of thumbnail
   CStdString m_strIcon;      // filename of icon
   GUIIconOverlay m_overlayIcon; // type of overlay icon
-  CGUIImage* m_pThumbnailImage;  // pointer to CImage containing the thumbnail
-  CGUIImage* m_pIconImage;     // pointer to CImage containing the icon
-  CGUIImage* m_overlayImage;    // CGUIImage containing the transparent overlay icon
+
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;
   bool m_bSelected;     // item is selected or not

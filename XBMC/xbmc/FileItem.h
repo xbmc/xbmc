@@ -55,6 +55,7 @@ class CFileItem :
 public:
   CFileItem(void);
   CFileItem(const CFileItem& item);
+  CFileItem(const CGUIListItem& item);
   CFileItem(const CStdString& strLabel);
   CFileItem(const CStdString& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
@@ -67,6 +68,7 @@ public:
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Serialize(CArchive& ar);
+  virtual bool IsFileItem() const { return true; };
 
   bool IsVideo() const;
   bool IsPicture() const;
