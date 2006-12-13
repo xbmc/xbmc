@@ -540,6 +540,11 @@ extern "C"
     while ((vecDirsOpen[iDirSlot].Directory) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
     if (iDirSlot > MAX_OPEN_DIRS)
       return 0xFFFF; // no free slots
+    if (url.GetProtocol().Equals("filereader"))
+    {
+      CURL url2(url.GetFileName());
+      url = url2;
+    }
     CStdString fName = url.GetFileName();
     url.SetFileName("");
     url.GetURL(strURL);
