@@ -1241,12 +1241,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="Filesystem"
 				Filter="">
 				<File
-					RelativePath=".\xbmc\FileSystem\BufferedFile.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\FileSystem\BufferedFile.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\FileSystem\CDDADirectory.cpp">
 				</File>
 				<File
