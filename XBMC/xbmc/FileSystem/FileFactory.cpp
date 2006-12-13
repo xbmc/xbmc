@@ -5,6 +5,7 @@
 #include "FileCurl.h"
 #include "FileShoutcast.h"
 #include "FileLastFM.h"
+#include "FileFileReader.h"
 #ifdef HAS_FILESYSTEM
 #include "FileISO.h"
 #include "FileSMB.h"
@@ -45,6 +46,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "rar") return new CFileRar();
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
   else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
+  else if (strProtocol == "filereader") return new CFileFileReader();
 #ifdef HAS_FILESYSTEM
   else if (strProtocol == "iso9660") return new CFileISO();
   else if (strProtocol == "soundtrack") return new CFileSndtrk();
