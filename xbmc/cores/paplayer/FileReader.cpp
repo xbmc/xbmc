@@ -215,6 +215,11 @@ int CFileReader::BufferChunk()
         return -1;
       }
     }
+    else
+    { // uh oh!
+      m_readError = true;
+      return -1;
+    }
   }
   return 0;
 }

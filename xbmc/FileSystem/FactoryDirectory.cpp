@@ -60,6 +60,8 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "playlistvideo") return new CPlaylistDirectory();
   if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
   if (strProtocol == "videodb") return new CVideoDatabaseDirectory();
+  if (strProtocol == "filereader") 
+    return CFactoryDirectory::Create(url.GetFileName());
 #ifdef HAS_XBOX_HARDWARE
   if (strProtocol.Left(3) == "mem") return new CMemUnitDirectory();
 #endif
