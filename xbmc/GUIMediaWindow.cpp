@@ -415,11 +415,11 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
 
   OnSort();
-  UpdateButtons();
 
   // Ask the devived class if it wants to do custom list operations,
   // eg. changing the label
   OnFinalizeFileItems(m_vecItems);
+  UpdateButtons();
 
   m_viewControl.SetItems(m_vecItems);
 
