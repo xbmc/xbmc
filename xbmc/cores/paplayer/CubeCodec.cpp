@@ -22,6 +22,7 @@ bool CubeCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_dll.Init();
 
   CStdString strFileToLoad = strFile;
+  strFileToLoad = "filereader://"+strFileToLoad;
   
   m_adx = m_dll.LoadADX(strFileToLoad.c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
   if (!m_adx)
@@ -78,7 +79,7 @@ bool CubeCodec::CanInit()
 
 bool CubeCodec::IsSupportedFormat(const CStdString& strExt)
 {
-  if (strExt == "adx" || strExt == "dsp" || strExt == "adp" || strExt == "ymf" || strExt == "ast" || strExt == "afc" || strExt == "hps")
+  if (strExt == "adx" || strExt == "dsp" || strExt == "adp" || strExt == "ymf" || strExt == "ast" || strExt == "afc" || strExt == "hps"  || strExt == "waa" || strExt == "wvs" || strExt == "wam")
     return true;
   
   return false;
