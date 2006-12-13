@@ -164,7 +164,10 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       break;
       case NODE_TYPE_TITLE:
       {
-        AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
+        else
+          AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
         AddSortMethod(SORT_METHOD_VIDEO_RATING, 367, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
         SetSortMethod(g_stSettings.m_MyVideoNavTitleSortMethod);
 
