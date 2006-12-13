@@ -332,8 +332,10 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
     }
   }
   if (currentState == ANIM_STATE_APPLIED)
+  {
     currentProcess = ANIM_PROCESS_NONE;
-
+    queuedProcess = ANIM_PROCESS_NONE;
+  }
   if (currentState != ANIM_STATE_NONE)
     matrix *= m_matrix;
 }
