@@ -6,7 +6,7 @@ CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwC
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
 {
   m_cursor = fixedPosition;
-  ControlType = GUICONTAINER_LIST;
+  ControlType = GUICONTAINER_FIXEDLIST;
 }
 
 CGUIWrappingListContainer::~CGUIWrappingListContainer(void)
