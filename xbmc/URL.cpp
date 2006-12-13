@@ -73,7 +73,8 @@ CURL::CURL(const CStdString& strURL)
   if (
     m_strProtocol.Equals("stack") || 
     m_strProtocol.Equals("virtualpath") ||
-    m_strProtocol.Equals("multipath")
+    m_strProtocol.Equals("multipath") ||
+    m_strProtocol.Equals("filereader")
     )
   {
     m_strFileName = strURL.Mid(iPos);
@@ -463,7 +464,16 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
 
   if (m_strHostName != "")
   {
-    strURL += m_strHostName;
+    if (m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip"))
+    {
+      CURL url2(m_strHostName);
+      CStdString strHost;
+      url2.GetURLWithoutUserDetails(strHost);
+      strURL += strHost;
+    }
+    else
+      strURL += m_strHostName;
+
     if ( HasPort() )
     {
       CStdString strPort;
@@ -524,7 +534,7 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
 
   if (m_strHostName != "")
   {
-    if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") )
+    if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip"))
       strURL += URLEncodeInline(m_strHostName);
     else
       strURL += m_strHostName;
