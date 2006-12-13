@@ -1473,6 +1473,12 @@
 					RelativePath="..\..\xbmc\FileSystem\FileFactory.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\FileFileReader.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileFileReader.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\FileHD.cpp">
 				</File>
 				<File
