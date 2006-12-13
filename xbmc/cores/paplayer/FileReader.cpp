@@ -107,6 +107,7 @@ int CFileReader::Read(void *out, __int64 size)
     if (m_readError)
     { // uh oh
       CLog::Log(LOGERROR, "FileReader::Read - encountered read error");
+      m_readError = false;
       return 0;
     }
     // read data in from our ring buffer
