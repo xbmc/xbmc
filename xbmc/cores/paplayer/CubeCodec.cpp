@@ -79,7 +79,7 @@ bool CubeCodec::CanInit()
 
 bool CubeCodec::IsSupportedFormat(const CStdString& strExt)
 {
-  if (strExt == "adx" || strExt == "dsp" || strExt == "adp" || strExt == "ymf" || strExt == "ast" || strExt == "afc" || strExt == "hps"  || strExt == "waa" || strExt == "wvs" || strExt == "wam")
+  if (strExt == "adx" || strExt == "dsp" || strExt == "adp" || strExt == "ymf" || strExt == "ast" || strExt == "afc" || strExt == "hps"  || strExt == "waa" || strExt == "wvs" || strExt == "wam" || strExt == "gcm" || strExt == "idsp" || strExt == "mpdsp" || strExt == "mss" || strExt == "spt" || strExt == "rsd")
     return true;
   
   return false;
