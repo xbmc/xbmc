@@ -43,7 +43,7 @@
 			<onleft>5</onleft>
 			<onright>28</onright>
 			<ondown>5</ondown>
-			<onup>28</onup>
+			<onup>5</onup>
 			<include>homemisc</include>
 			<showonepage>false</showonepage>
 		</control>
@@ -58,8 +58,8 @@
 			<include>homemisc</include>
 			<onleft>28</onleft>
 			<onright>60</onright>
-			<onup>28</onup>
-			<ondown>28</ondown>
+			<onup>5</onup>
+			<ondown>5</ondown>
 		</control>
 		<control type="button" id="7">
 			<description>Default Button</description>
