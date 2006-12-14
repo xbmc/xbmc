@@ -10,7 +10,7 @@
 			<onup>50</onup>
 			<ondown>50</ondown>
 			<pagecontrol>60</pagecontrol>
-			<scrolltime>1</scrolltime>
+			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
 				<control type="image">
@@ -125,7 +125,7 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
-			<scrolltime>1</scrolltime>
+			<scrolltime>200</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="130">
@@ -275,7 +275,7 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
-			<scrolltime>1</scrolltime>
+			<scrolltime>200</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -391,7 +391,7 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
-			<scrolltime>1</scrolltime>
+			<scrolltime>200</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="130">
@@ -541,7 +541,7 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
-			<scrolltime>1</scrolltime>
+			<scrolltime>200</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
