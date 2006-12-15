@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "playlistpls.h"
+#include "playlistfactory.h"
 #include "util.h"
 #include "utils\HTTP.h"
 
@@ -26,25 +27,23 @@ CPlayListPLS::CPlayListPLS(void)
 CPlayListPLS::~CPlayListPLS(void)
 {}
 
-bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content, bool bDeep)
+bool CPlayListPLS::Load(const CStdString &strFile)
 {
   //read it from the file
   CStdString strBasePath;
+  CStdString strFileName(strFile);
   m_strPlayListName = CUtil::GetFileName(strFileName);
 
   Clear();
 
   bool bShoutCast = false;
-  if ( content.Equals("audio/x-scpls") || content.Equals("playlist")) 
+  if( strFileName.Left(8).Equals("shout://") )
   {
-    bShoutCast = true;
-    if( strFileName.Left(8).Equals("shout://") )
-    {
-      strFileName.Delete(0, 8);
-      strFileName.Insert(0, "http://");
-    }
+    strFileName.Delete(0, 8);
+    strFileName.Insert(0, "http://");
     strBasePath = "";
-  }
+    bShoutCast = true;
+  }    
   else
     CUtil::GetParentPath(strFileName, strBasePath);
 
@@ -79,14 +78,6 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
         strLine.Replace("http:", "shout:");
       }
 
-      if (bDeep && !bShoutCast && strProtocol == "http")
-      {
-        if (LoadFromWeb(strLine))
-        {
-          file.Close();
-          return true;
-        }
-      }
       CPlayListItem newItem(strLine, strLine, 0);
       Add(newItem);
 
@@ -182,187 +173,6 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
   return true;
 }
 
-bool CPlayListPLS::Load(const CStdString& strFileName, bool bDeep)
-{
-  m_vecItems.clear();
-  CFileItem item(strFileName, false);
-  if (bDeep && item.IsInternetStream())
-  {
-    //load it from the url
-    if (item.IsLastFM() || !LoadFromWeb(item.m_strPath))
-    {
-      CPlayListItem newItem(item.m_strPath, item.m_strPath, 0);
-      Add(newItem);
-    }
-    return true;
-  }
-  return LoadPLSInfo(strFileName, "", bDeep);
-}
-
-bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
-{
-  CLog::Log(LOGINFO, "Loading web playlist %s", strURL.c_str());
-
-  CHTTP httpUtil;
-  CStdString strData;
-
-  // Load up the page's header from the internet.  It is necessary to
-  // load the header only, as some HTTP link will be to actual streams
-  if (!httpUtil.Head(strURL))
-  {
-    CLog::Log(LOGNOTICE, "URL %s not found", strURL.c_str());
-    return false;
-  }
-
-  CStdString strContentType;
-  if (!httpUtil.GetHeader("Content-Type", strContentType))
-  {
-    // Unable to deterine Content-Type
-    CLog::Log(LOGNOTICE, "No content type for URL %s", strURL.c_str());
-    return false;
-  }
-
-  CLog::Log(LOGINFO, "Content-Type is %s", strContentType.c_str());
-  if ((strContentType == "video/x-ms-asf") || (strContentType == "video/x-ms-asx"))
-  {
-    httpUtil.Get(strURL, strData);
-    return LoadAsxInfo(strData);
-  }
-  if (strContentType == "audio/x-pn-realaudio")
-  {
-    httpUtil.Get(strURL, strData);
-    return LoadRAMInfo(strData);
-  }
-  if (strContentType == "audio/x-scpls" || strContentType == "playlist")
-  {
-    return LoadPLSInfo(strURL, strContentType, true);
-  }
-  if (strContentType == "text/html")
-  { // most probably a server is b0rking - try pls
-    return LoadPLSInfo(strURL, "playlist", true);
-  }
-  
-  CLog::Log(LOGWARNING, __FUNCTION__" - Unknown playlist contenttype %s", strContentType.c_str());
-  if (strContentType.Left(5) == "text/" && g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL)
-  {
-    httpUtil.Get(strURL, strData);
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Sample %s\n%s", strURL.c_str(), strData.c_str());    
-  }
-
-  // Unknown type
-  return false;
-}
-
-bool CPlayListPLS::LoadAsxInfo(CStdString& strData)
-{
-  CLog::Log(LOGNOTICE, "Parsing ASX");
-
-  // Check for [Reference] format first
-  if (strData[0] == '[')
-  {
-    return LoadAsxIniInfo(strData);
-  }
-  else
-  {
-    // Parse XML format
-    // Now load the XML file
-    TiXmlDocument xmlDoc;
-    xmlDoc.Parse(strData.c_str());
-    if (xmlDoc.Error())
-    {
-      CLog::Log(LOGERROR, "Unable to parse ASX info from XML:\n%s\nError: %s", strData.c_str(), xmlDoc.ErrorDesc());
-      return false;
-    }
-
-    TiXmlElement *pRootElement = xmlDoc.RootElement();
-    //TODO: can timy xml parse case-insensitive?
-    TiXmlElement *pElement = pRootElement->FirstChildElement("entry");
-    if (!pElement) pElement = pRootElement->FirstChildElement("Entry");
-    if (!pElement) pElement = pRootElement->FirstChildElement("ENTRY");
-    if (!pElement)
-    { // no entry, let's see if there's any entryref's
-      pElement = pRootElement->FirstChildElement("entryref");
-      if (!pElement) pElement = pRootElement->FirstChildElement("Entryref");
-      if (!pElement) pElement = pRootElement->FirstChildElement("EntryRef");
-      if (!pElement) pElement = pRootElement->FirstChildElement("ENTRYREF");
-      while (pElement)
-      {
-        CStdString strRef = pElement->Attribute("href");
-        if (strRef == "") strRef = pElement->Attribute("Href");
-        if (strRef == "") strRef = pElement->Attribute("HRef");
-        if (strRef == "") strRef = pElement->Attribute("HREF");
-
-        if (strRef != "")
-        { // found an entryref, let's try loading that url
-          LoadFromWeb(strRef);
-        }
-        pElement = pElement->NextSiblingElement();
-      }
-    }
-    else while (pElement)
-      {
-        TiXmlElement *pRef = pElement->FirstChildElement("ref");
-        if (!pRef) pRef = pElement->FirstChildElement("Ref");
-        if (!pRef) pRef = pElement->FirstChildElement("REF");
-        if (pRef)
-        {
-          CStdString strMMS = pRef->Attribute("href");
-          if (strMMS == "") strMMS = pRef->Attribute("Href");
-          if (strMMS == "") strMMS = pRef->Attribute("HRef");
-          if (strMMS == "") strMMS = pRef->Attribute("HREF");
-
-          if (strMMS != "")
-          {
-            CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
-            CPlayListItem newItem(strMMS, strMMS, 0);
-            Add(newItem);
-          }
-        }
-        pElement = pElement->NextSiblingElement();
-      }
-  }
-
-  return true;
-}
-
-bool CPlayListPLS::LoadAsxIniInfo(CStdString& strData)
-{
-  CLog::Log(LOGINFO, "Parsing INI style ASX");
-  string::size_type equals = 0, end = 0;
-  CStdString strMMS;
-
-  while ((equals = strData.find('=', end)) != string::npos)
-  {
-    end = strData.find('\r', equals);
-    if (end == string::npos)
-    {
-      strMMS = strData.substr(equals + 1);
-    }
-    else
-    {
-      strMMS = strData.substr(equals + 1, end - equals - 1);
-    }
-    CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
-    CPlayListItem newItem(strMMS, strMMS, 0);
-    Add(newItem);
-  }
-  return true;
-}
-
-bool CPlayListPLS::LoadRAMInfo(CStdString& strData)
-{
-  CLog::Log(LOGINFO, "Parsing RAM");
-  CLog::Log(LOGDEBUG, "%s", strData.c_str());
-  CStdString strMMS;
-
-  strMMS = strData.substr(0, strData.Find('\n'));
-  CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
-  CPlayListItem newItem(strMMS, strMMS, 0);
-  Add(newItem);
-
-  return true;
-}
-
 void CPlayListPLS::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
@@ -396,4 +206,155 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
   fprintf(fd, "NumberOfEntries=%i\n", m_vecItems.size());
   fprintf(fd, "Version=2\n");
   fclose(fd);
+}
+
+bool CPlayListASX::LoadAsxIniInfo(const CStdString& strData)
+{
+  CLog::Log(LOGINFO, "Parsing INI style ASX");
+  string::size_type equals = 0, end = 0;
+  CStdString strMMS;
+
+  while ((equals = strData.find('=', end)) != string::npos)
+  {
+    end = strData.find('\r', equals);
+    if (end == string::npos)
+    {
+      strMMS = strData.substr(equals + 1);
+    }
+    else
+    {
+      strMMS = strData.substr(equals + 1, end - equals - 1);
+    }
+    CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
+    CPlayListItem newItem(strMMS, strMMS, 0);
+    Add(newItem);
+  }
+  return true;
+}
+
+bool CPlayListASX::LoadData(const CStdString& strData)
+{
+  CLog::Log(LOGNOTICE, "Parsing ASX");
+
+  // Check for [Reference] format first
+  if (strData[0] == '[')
+  {
+    return LoadAsxIniInfo(strData);
+  }
+  else
+  {
+    // Parse XML format
+    // Now load the XML file
+    TiXmlDocument xmlDoc;
+    xmlDoc.Parse(strData.c_str());
+    if (xmlDoc.Error())
+    {
+      CLog::Log(LOGERROR, "Unable to parse ASX info from XML:\n%s\nError: %s", strData.c_str(), xmlDoc.ErrorDesc());
+      return false;
+    }
+
+    TiXmlElement *pRootElement = xmlDoc.RootElement();    
+
+    // lowercase every element
+    TiXmlNode *pNode = pRootElement;
+    TiXmlNode *pChild = NULL;
+    CStdString value;
+    value = pNode->Value();
+    value.ToLower();
+    pNode->SetValue(value);
+    while(pNode)
+    {
+      pChild = pNode->IterateChildren(pChild);
+      if(pChild)
+      {
+        if (pChild->Type() == TiXmlNode::ELEMENT)
+        {
+          value = pChild->Value();
+          value.ToLower();
+          pChild->SetValue(value);
+
+          TiXmlAttribute* pAttr = pChild->ToElement()->FirstAttribute();
+          while(pAttr)
+          {
+            value = pAttr->Name();
+            value.ToLower();
+            pAttr->SetName(value);
+            pAttr = pAttr->Next();
+          }
+        }
+
+        pNode = pChild;
+        pChild = NULL;
+        continue;
+      }
+
+      pChild = pNode;
+      pNode = pNode->Parent();
+    }    
+    CStdString roottitle = "";
+    TiXmlElement *pElement = pRootElement->FirstChildElement();
+    while (pElement)
+    {
+      value = pElement->Value();
+      if (value == "title")
+      {
+        roottitle = pElement->GetText();
+      }
+      else if (value == "entry")
+      {
+        CStdString title(roottitle);        
+
+        TiXmlElement *pRef = pElement->FirstChildElement("ref");
+        TiXmlElement *pTitle = pElement->FirstChildElement("title");
+        TiXmlElement *pDuration = pElement->FirstChildElement("duration"); /* <DURATION VALUE="hh:mm:ss.fract"/> */
+
+        if(pTitle) 
+          title = pTitle->GetText();
+
+        while (pRef)
+        { // multiple references may apear for one entry
+          // duration may exist on this level too
+          value = pRef->Attribute("href");
+          if (value != "")
+          {
+            if(title.IsEmpty()) 
+              title = value;
+
+            CLog::Log(LOGINFO, "Adding element %s, %s", title.c_str(), value.c_str());
+            CPlayListItem newItem(title, value, 0);
+            Add(newItem);
+          }
+          pRef = pRef->NextSiblingElement("ref");
+        }
+      }
+      else if (value == "entryref") 
+      {
+        value = pElement->Attribute("href");
+        if (value != "")
+        { // found an entryref, let's try loading that url
+          auto_ptr<CPlayList> playlist(CPlayListFactory::Create(value));
+          if (NULL != playlist.get())
+            if (playlist->Load(value))
+              Add(*playlist);
+        }
+      }
+      pElement = pElement->NextSiblingElement();
+    }
+  }
+
+  return true;
+}
+
+
+bool CPlayListRAM::LoadData(const CStdString& strData)
+{
+  CLog::Log(LOGINFO, "Parsing RAM");
+  CLog::Log(LOGDEBUG, "%s", strData.c_str());
+  CStdString strMMS;
+
+  strMMS = strData.substr(0, strData.Find('\n'));
+  CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
+  CPlayListItem newItem(strMMS, strMMS, 0);
+  Add(newItem);
+  return true;
 }

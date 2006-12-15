@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "playlist.h"
 #include "util.h"
+#include "playlistfactory.h"
 
 using namespace PLAYLIST;
 
@@ -422,4 +423,74 @@ void CPlayList::SetUnPlayable(int iItem)
     m_vecItems[iItem].SetUnPlayable();
     m_iPlayableItems--;
   }
+}
+
+bool CPlayList::Load(const CStdString& strFileName)
+{
+  CFile file;
+  if (!file.Open(strFileName, false) )
+  {
+    file.Close();
+    return false;
+  }
+
+  __int64 size = file.GetLength();
+
+  if (size>1024*1024)
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - File is larger than 1 MB, most likely not a playlist");
+    return false;
+  }
+
+
+  int len;
+  CStdString data;
+  char line[4096];
+
+  if (size>0)
+    data.reserve((int)size);
+
+  len = file.Read(line, sizeof(line)-1);
+  while(len>0)
+  {    
+    data.append(line,len);
+    len = file.Read(line, sizeof(line)-1);
+  }
+
+  if(len<0)
+    return false;
+
+  return LoadData(data);
+}
+
+bool CPlayList::LoadData(const CStdString& strData)
+{
+  return false;
+}
+
+bool CPlayList::Expand(int position)
+{
+  auto_ptr<CPlayList> playlist (CPlayListFactory::Create(m_vecItems[position]));
+  if ( NULL == playlist.get())
+    return false;
+
+  if(!playlist->Load(m_vecItems[position].m_strPath))
+    return false;
+
+  // remove any item that points back to itself
+  for(int i = 0;i<playlist->size();i++)
+  {
+    if( (*playlist)[i].m_strPath.Equals( m_vecItems[position].m_strPath ) )
+    {
+      playlist->Remove(i);
+      i--;
+    }
+  }
+
+  if(playlist->size() <= 0)
+    return false;
+
+  Remove(position);
+  Insert(*playlist, position);
+  return true;
 }

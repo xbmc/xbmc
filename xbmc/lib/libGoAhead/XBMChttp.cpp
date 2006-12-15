@@ -504,8 +504,7 @@ void LoadPlayListOld(const CStdString& strPlayList, int playList)
 {
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if ( NULL != pPlayList.get())
   {
     if (!pPlayList->Load(strPlayList))
@@ -535,8 +534,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
     //pPlayList->Load will handle loading it from url instead of from a file
     strPath = "temp.strm";
   }
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPath));
   if ( NULL == pPlayList.get())
     return false;
   if (!pPlayList->Load(item->m_strPath))
@@ -955,9 +953,8 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
     if (pItem->IsPlayList())
       changed=LoadPlayList(pItem->m_strPath, playList, false, false);
     else
-    {
-      IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
-      bool bResult=pDirectory->Exists(pItem->m_strPath);
+    {      
+      bool bResult = CDirectory::Exists(pItem->m_strPath);
       pItem->m_bIsFolder=bResult;
       pItem->m_bIsShareOrDrive=false;
       if (bResult || CFile::Exists(pItem->m_strPath))

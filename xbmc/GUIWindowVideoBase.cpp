@@ -579,14 +579,9 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
   else
   {
     // just an item
-    if (!pItem->IsNFO() && pItem->IsVideo() && !pItem->IsPlayList())
+    if (pItem->IsPlayList())
     {
-      queuedItems.Add(new CFileItem(*pItem));
-    }
-    if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
-    {
-      CPlayListFactory factory;
-      auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath));
+      auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
       if ( NULL != pPlayList.get())
       {
         // load it
@@ -599,61 +594,18 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
         CPlayList playlist = *pPlayList;
         for (int i = 0; i < (int)playlist.size(); ++i)
           AddItemToPlayList(&playlist[i], queuedItems);
+        return;
       }
     }
-  }
-}
-
-void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, int iPlaylist /* = PLAYLIST_VIDEO */)
-{
-  if (pItem->m_bIsFolder)
-  {
-    // Check if we add a locked share
-    if ( pItem->m_bIsShareOrDrive )
+    else if(pItem->IsInternetStream())
+    { // just queue the internet stream, it will be expanded on play
+      queuedItems.Add(new CFileItem(*pItem));
+    }
+    else if (!pItem->IsNFO() && pItem->IsVideo())
     {
-      CFileItem item = *pItem;
-      if ( !g_passwordManager.IsItemUnlocked( &item, "video" ) )
-        return ;
+      queuedItems.Add(new CFileItem(*pItem));
     }
 
-    // recursive
-    if (pItem->IsParentFolder()) return ;
-    CStdString strDirectory = m_vecItems.m_strPath;
-    m_vecItems.m_strPath = pItem->m_strPath;
-    CFileItemList items;
-    GetDirectory(m_vecItems.m_strPath, items);
-
-    SortItems(items);
-
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      if (items[i]->m_bIsFolder)
-      {
-        CStdString strPath = items[i]->m_strPath;
-        if (CUtil::HasSlashAtEnd(strPath))
-          strPath.erase(strPath.size()-1);
-        strPath.ToLower();
-        if (strPath.size() > 6)
-        {
-          CStdString strSub = strPath.substr(strPath.size()-6);
-          if (strPath.substr(strPath.size()-6) == "sample") // skip sample folders
-            continue;
-        }
-      }
-      AddItemToPlayList(items[i], iPlaylist);
-    }
-    m_vecItems.m_strPath = strDirectory;
-  }
-  else
-  {
-    if (!pItem->IsNFO() && pItem->IsVideo() && !pItem->IsPlayList())
-    {
-      CPlayList::CPlayListItem playlistItem ;
-      playlistItem.SetFileName(pItem->m_strPath);
-      playlistItem.SetDescription(pItem->GetLabel());
-      playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-      g_playlistPlayer.Add(iPlaylist, playlistItem);
-    }
   }
 }
 
@@ -1222,8 +1174,7 @@ void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayL
 {
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if ( NULL != pPlayList.get())
   {
     // load it
@@ -1272,7 +1223,7 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
     g_playlistPlayer.Play();
   }
-  else if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
+  else if (pItem->IsPlayList())
   {
     // load the playlist the old way
     LoadPlayList(pItem->m_strPath, PLAYLIST_VIDEO);
