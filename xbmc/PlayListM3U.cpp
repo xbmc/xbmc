@@ -33,7 +33,7 @@ CPlayListM3U::~CPlayListM3U(void)
 {}
 
 
-bool CPlayListM3U::Load(const CStdString& strFileName, bool bDeep)
+bool CPlayListM3U::Load(const CStdString& strFileName)
 {
   char szLine[4096];
   CStdString strLine;

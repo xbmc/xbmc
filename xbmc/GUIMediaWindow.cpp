@@ -508,19 +508,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
   {
     m_iSelectedItem = m_viewControl.GetSelectedItem();
 
-    if (pItem->IsInternetStream())
-    {
-      CFileItem item = (CFileItem)*pItem;
-      return g_application.PlayMedia(item, m_guiState->GetPlaylist());
-    }
-    if (pItem->IsPlayList())
-    {
-      CStdString strPath=pItem->m_strPath;
-      LoadPlayList(pItem->m_strPath);
-      return true;
-    }
     // this is particular to music as only music allows "auto play next item"
-    else if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled())
+    if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled())
     {
       if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
       {
@@ -774,7 +763,12 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   CFileItem* pItem=m_vecItems[iItem];
 
-  bool bResult = g_application.PlayFile(*pItem);
+  bool bResult = false;
+  if (pItem->IsInternetStream() || pItem->IsPlayList())
+    bResult = g_application.PlayMedia(*pItem, m_guiState->GetPlaylist());
+  else
+    bResult = g_application.PlayFile(*pItem);
+
   if (pItem->m_lStartOffset == STARTOFFSET_RESUME)
     pItem->m_lStartOffset = 0;
   

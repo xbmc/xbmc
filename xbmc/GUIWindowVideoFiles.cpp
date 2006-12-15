@@ -636,8 +636,7 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
 {
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if ( NULL != pPlayList.get())
   {
     // load it
