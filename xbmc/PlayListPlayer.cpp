@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "PlayListPlayer.h"
+#include "PlayListFactory.h"
 #include "application.h"
 #include "util.h"
 #include "PartyModeManager.h"
@@ -155,6 +156,16 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   if (playlist.size() <= 0) return ;
   if (iSong < 0) iSong = 0;
   if (iSong >= playlist.size()) iSong = playlist.size() - 1;
+
+
+  // check if the item itself is a playlist, and can be expanded
+  // only allow a few levels, this could end up in a loop 
+  // if they refer to each other in a loop
+  for(int i=0;i<5;i++)
+  {
+    if(!playlist.Expand(iSong))
+      break;
+  }
 
   m_bChanged = true;
   int iPreviousSong = m_iCurrentSong;

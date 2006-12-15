@@ -45,7 +45,6 @@ protected:
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
 
-  void AddItemToPlayList(const CFileItem* pItem, int iPlaylist = PLAYLIST_VIDEO);
   void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
   CStdString GetnfoFile(CFileItem *item);

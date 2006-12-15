@@ -9,14 +9,23 @@ class CPlayListPLS :
 public:
   CPlayListPLS(void);
   virtual ~CPlayListPLS(void);
-  virtual bool Load(const CStdString& strFileName, bool bDeep);
+  virtual bool Load(const CStdString& strFileName);
   virtual void Save(const CStdString& strFileName) const;
-
-protected:
-  bool LoadFromWeb(CStdString& strURL);
-  bool LoadAsxInfo(CStdString& strData);
-  bool LoadAsxIniInfo(CStdString& strData);
-  bool LoadRAMInfo(CStdString& strData);
-  bool LoadPLSInfo(CStdString strFileName, const CStdString &content, bool bDeep);
 };
+
+class CPlayListASX : public CPlayList
+{
+public:
+  virtual bool LoadData(const CStdString& strData);
+protected:
+  bool LoadAsxIniInfo(const CStdString& strData);
+};
+
+class CPlayListRAM : public CPlayList
+{
+public:
+  virtual bool LoadData(const CStdString& strData);
+};
+
+
 };

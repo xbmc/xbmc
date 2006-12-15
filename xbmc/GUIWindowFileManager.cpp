@@ -506,8 +506,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
   if (pItem->IsPlayList())
   {
     CStdString strPlayList = pItem->m_strPath;
-    CPlayListFactory factory;
-    auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+    auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
     if (NULL != pPlayList.get())
     {
       if (!pPlayList->Load(strPlayList))
