@@ -124,6 +124,18 @@ void CGUIVisualisationControl::LoadVisualisation()
   CVisualisationFactory factory;
   CStdString strVisz;
   m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
+
+#ifdef HAS_KARAOKE
+  if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
+  {
+    // if viz == none, then show the cdg backgound
+    if (m_currentVis.Equals("None"))
+      g_application.m_pCdgParser->SetBGTransparent(false);
+    else
+      g_application.m_pCdgParser->SetBGTransparent(true);
+  }
+#endif
+
   if (m_currentVis.Equals("None"))
     return;
   strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
@@ -192,8 +204,8 @@ void CGUIVisualisationControl::Render()
       LoadVisualisation();
 
 #ifdef HAS_KARAOKE
-      if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-        g_application.m_pCdgParser->Render();
+    if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
+      g_application.m_pCdgParser->Render();
 #endif
 
       CGUIControl::Render();

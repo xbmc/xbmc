@@ -387,6 +387,8 @@ bool CCdgRenderer::InitGraphics()
 
   // set the colours
   m_bgAlpha = 0;
+  if (g_guiSettings.GetString("mymusic.visualisation").Equals("None"))
+    m_bgAlpha = 0xff000000;
   m_fgAlpha = 0xff000000;
 
   if (!m_pCdgTexture)
@@ -472,6 +474,12 @@ TEX_COLOR CCdgRenderer::ConvertColor(CDG_COLOR CdgColor)
   alpha = ((TEX_COLOR)(((CdgColor & 0xF000) >> 12) * 17)) << 24;
   return alpha | red | green | blue;
 }
+
+void CCdgRenderer::SetBGalpha(TEX_COLOR alpha)
+{ 
+  m_bgAlpha = alpha;
+}
+
 //CdgParser
 CCdgParser::CCdgParser()
 {
@@ -550,6 +558,17 @@ void CCdgParser::SetAVDelay(float fDelay)
   CSingleLock lock (m_CritSection);
   if (m_pReader)
     m_pReader->SetAVDelay(fDelay);
+}
+
+void CCdgParser::SetBGTransparent(bool bTransparent /* = true */)
+{
+  if (m_pRenderer)
+  {
+    TEX_COLOR alpha = 0;
+    if (!bTransparent)
+      alpha = 0xff000000;
+    m_pRenderer->SetBGalpha(alpha);
+  }
 }
 
 float CCdgParser::GetAVDelay()
