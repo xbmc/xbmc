@@ -1,10 +1,12 @@
 #pragma once
+
+class DllLoader;
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#include "../DllLoader/DllLoader.h"
 
 #define SUB_MAX_TEXT 10
 #define SUB_ALIGNMENT_HLEFT 1

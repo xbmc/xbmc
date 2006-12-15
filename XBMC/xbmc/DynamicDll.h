@@ -224,6 +224,109 @@ public: \
 #define DEFINE_METHOD10(result, name, args) DEFINE_METHOD_LINKAGE10(result, __cdecl, name, args)
 #define DEFINE_METHOD11(result, name, args) DEFINE_METHOD_LINKAGE11(result, __cdecl, name, args)
 
+///////////////////////////////////////////////////////////
+//
+//  DEFINE_FUNC_ALIGNED 0-X
+//
+//  Defines a function for an export from a dll, wich
+//  require a aligned stack on function call
+//  Use DEFINE_FUNC_ALIGNED for each function to be resolved.
+//
+//  result:  Result of the function
+//  linkage: Calling convention of the function
+//  name:    Name of the function
+//  args:    Argument types of the function
+//  
+//  Actual function call will expand to something like this
+//  this will align the stack (esp) at the point of function
+//  entry as required by gcc compiled dlls, it is abit abfuscated
+//  to allow for different sized variables
+//
+//  __int64 test(__int64 p1, char p2, char p3) 
+//  { 
+//    int o,s = ((sizeof(p1)+3)&~3)+((sizeof(p2)+3)&~3)+((sizeof(p3)+3)&~3); 
+//    __asm mov [o],esp;
+//    __asm sub esp, [s];
+//    __asm and esp, ~15;
+//    __asm add esp, [s] 
+//    m_test(p1, p2, p3);  //return value will still be correct aslong as we don't mess with it
+//    __asm mov esp,[o]; 
+//  };
+
+#define ALS(a) ((sizeof(a)+3)&~3)
+#define DEFINE_FUNC_PART1(result, linkage, name, args) \
+  private:                                             \
+    typedef result (linkage * name##_type)##args;      \
+    name##_type m_##name;                              \
+  public:                                              \
+    virtual result name##args
+
+#define DEFINE_FUNC_PART2(size) \
+  {                             \
+    int o,s = size;             \
+    __asm {                     \
+      __asm mov [o], esp        \
+      __asm sub esp, [s]        \
+      __asm and esp, ~15        \
+      __asm add esp, [s]        \
+    }
+
+#define DEFINE_FUNC_PART3(name,args) \
+    m_##name##args;                  \
+    __asm {                          \
+      __asm mov esp,[o]              \
+    }                                \
+  }
+
+#define DEFINE_FUNC_ALIGNED0(result, linkage, name) \
+    DEFINE_FUNC_PART1(result, linkage, name, ()) \
+    DEFINE_FUNC_PART2(0) \
+    DEFINE_FUNC_PART3(name,())
+
+#define DEFINE_FUNC_ALIGNED1(result, linkage, name, t1) \
+    DEFINE_FUNC_PART1(result, linkage, name, (t1 p1)) \
+    DEFINE_FUNC_PART2(ALS(p1)) \
+    DEFINE_FUNC_PART3(name,(p1))
+
+#define DEFINE_FUNC_ALIGNED2(result, linkage, name, t1, t2) \
+    DEFINE_FUNC_PART1(result, linkage, name, (t1 p1, t2 p2)) \
+    DEFINE_FUNC_PART2(ALS(p1)+ALS(p2)) \
+    DEFINE_FUNC_PART3(name,(p1, p2))
+
+#define DEFINE_FUNC_ALIGNED3(result, linkage, name, t1, t2, t3) \
+    DEFINE_FUNC_PART1(result, linkage, name, (t1 p1, t2 p2, t3 p3)) \
+    DEFINE_FUNC_PART2(ALS(p1)+ALS(p2)+ALS(p3)) \
+    DEFINE_FUNC_PART3(name,(p1, p2, p3))
+
+#define DEFINE_FUNC_ALIGNED4(result, linkage, name, t1, t2, t3, t4) \
+    DEFINE_FUNC_PART1(result, linkage, name, (t1 p1, t2 p2, t3 p3, t4 p4)) \
+    DEFINE_FUNC_PART2(ALS(p1)+ALS(p2)+ALS(p3)+ALS(p4)) \
+    DEFINE_FUNC_PART3(name,(p1, p2, p3, p4))
+
+#define DEFINE_FUNC_ALIGNED5(result, linkage, name, t1, t2, t3, t4, t5) \
+    DEFINE_FUNC_PART1(result, linkage, name, (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5)) \
+    DEFINE_FUNC_PART2(ALS(p1)+ALS(p2)+ALS(p3)+ALS(p4)+ALS(p5)) \
+    DEFINE_FUNC_PART3(name,(p1, p2, p3, p4, p5))
+
+#define DEFINE_FUNC_ALIGNED6(result, linkage, name, t1, t2, t3, t4, t5, t6) \
+    DEFINE_FUNC_PART1(result, linkage, name, (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6)) \
+    DEFINE_FUNC_PART2(ALS(p1)+ALS(p2)+ALS(p3)+ALS(p4)+ALS(p5)+ALS(p6)) \
+    DEFINE_FUNC_PART3(name,(p1, p2, p3, p4, p5, p6))
+
+#define DEFINE_FUNC_ALIGNED7(result, linkage, name, t1, t2, t3, t4, t5, t6, t7) \
+    DEFINE_FUNC_PART1(result, linkage, name, (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6, t7 p7)) \
+    DEFINE_FUNC_PART2(ALS(p1)+ALS(p2)+ALS(p3)+ALS(p4)+ALS(p5)+ALS(p6)+ALS(p7)) \
+    DEFINE_FUNC_PART3(name,(p1, p2, p3, p4, p5, p6, p7))
+
+#define DEFINE_FUNC_ALIGNED8(result, linkage, name, t1, t2, t3, t4, t5, t6, t7, t8) \
+    DEFINE_FUNC_PART1(result, linkage, name, (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6, t7 p7, t8 p8)) \
+    DEFINE_FUNC_PART2(ALS(p1)+ALS(p2)+ALS(p3)+ALS(p4)+ALS(p5)+ALS(p6)+ALS(p7)+ALS(p8)) \
+    DEFINE_FUNC_PART3(name,(p1, p2, p3, p4, p5, p6, p7, p8))
+
+#define DEFINE_FUNC_ALIGNED9(result, linkage, name, t1, t2, t3, t4, t5, t6, t7, t8, t9) \
+    DEFINE_FUNC_PART1(result, linkage, name, (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6, t7 p7, t8 p8, t9 p9)) \
+    DEFINE_FUNC_PART2(ALS(p1)+ALS(p2)+ALS(p3)+ALS(p4)+ALS(p5)+ALS(p6)+ALS(p7)+ALS(p8)+ALS(p9)) \
+    DEFINE_FUNC_PART3(name,(p1, p2, p3, p4, p5, p6, p7, p8, p9))
 
 ///////////////////////////////////////////////////////////
 //
