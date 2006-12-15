@@ -3191,23 +3191,14 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
     return false;
   }
   //playlist
-  CStdString strPath = item.m_strPath;
-  if ((!item.IsPlayList()) && (item.IsInternetStream()))
-  {
-    //we got an url, create a dummy .strm playlist,
-    //pPlayList->Load will handle loading it from url instead of from a file
-    strPath = "temp.strm";
-  }
-
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
   if ( NULL == pPlayList.get())
     return false;
   // load it
   if (!pPlayList->Load(item.m_strPath))
     return false;
 
-  return ProcessAndStartPlaylist(strPath, *pPlayList, iPlaylist);
+  return ProcessAndStartPlaylist(item.m_strPath, *pPlayList, iPlaylist);
 }
 
 // PlayStack()

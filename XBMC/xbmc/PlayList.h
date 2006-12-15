@@ -46,7 +46,8 @@ class CPlayListItem : public CFileItem
 
   CPlayList(void);
   virtual ~CPlayList(void);
-  virtual bool Load(const CStdString& strFileName, bool bDeep = true){ return false;};
+  virtual bool Load(const CStdString& strFileName);
+  virtual bool LoadData(const CStdString& strData);
   virtual void Save(const CStdString& strFileName) const {};
 
   void Add(CPlayListItem& item);
@@ -63,6 +64,7 @@ class CPlayListItem : public CFileItem
   void Remove(const CStdString& strFileName);
   void Remove(int position);
   bool Swap(int position1, int position2);
+  bool Expand(int position); // expands any playlist at position into this playlist
   void Clear();
   int size() const;
   int RemoveDVDItems();

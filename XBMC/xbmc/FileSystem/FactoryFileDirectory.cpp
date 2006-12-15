@@ -12,6 +12,7 @@
 #include "SmartPlaylistDirectory.h"
 #include "../SmartPlaylist.h"
 #include "PlaylistFileDirectory.h"
+#include "../PlayListFactory.h"
 
 CFactoryFileDirectory::CFactoryFileDirectory(void)
 {}
@@ -152,19 +153,17 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     IFileDirectory* pDir=new CSmartPlaylistDirectory;
     return pDir; // treat as directory
   }
-  if (g_advancedSettings.m_playlistAsFolders)
-  if (strExtension == ".m3u" || strExtension == ".b4s" || strExtension == ".pls" ||
-      strExtension == ".wpl")
+  if (g_advancedSettings.m_playlistAsFolders && CPlayListFactory::IsPlaylist(strPath))
   { // Playlist file
     // currently we only return the directory if it contains
     // more than one file.  Reason is that .pls and .m3u may be used
     // for links to http streams etc. 
-    IFileDirectory *pDir = new CPlaylistFileDirectory;
+    IFileDirectory *pDir = new CPlaylistFileDirectory();
     CFileItemList items;
     if (pDir->GetDirectory(strPath, items))
     {
       if (items.Size() > 1)
-        return pDir;
+        return new CPlaylistFileDirectory;
     }
     delete pDir;
     return NULL;

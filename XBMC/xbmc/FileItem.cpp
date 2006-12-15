@@ -353,15 +353,7 @@ bool CFileItem::IsSmartPlayList() const
 
 bool CFileItem::IsPlayList() const
 {
-  CStdString strExtension;
-  CUtil::GetExtension(m_strPath, strExtension);
-  strExtension.ToLower();
-  if (strExtension == ".m3u") return true;
-  if (strExtension == ".b4s") return true;
-  if (strExtension == ".pls") return true;
-  if (strExtension == ".strm") return true;
-  if (strExtension == ".wpl") return true;
-  return false;
+  return CPlayListFactory::IsPlaylist(m_strPath);
 }
 
 bool CFileItem::IsPythonScript() const

@@ -8,8 +8,8 @@ namespace PLAYLIST
 class CPlayListFactory
 {
 public:
-  CPlayListFactory(void);
-  virtual ~CPlayListFactory(void);
-  CPlayList* Create(const CStdString& strFileName) const;
+  static CPlayList* Create(const CStdString& filename);
+  static CPlayList* Create(const CFileItem& item);
+  static bool IsPlaylist(const CStdString& filename);
 };
 };
