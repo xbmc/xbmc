@@ -30,7 +30,7 @@ CPlayListWPL::~CPlayListWPL(void)
 {}
 
 
-bool CPlayListWPL::Load(const CStdString& strFileName, bool bDeep)
+bool CPlayListWPL::Load(const CStdString& strFileName)
 {
   CStdString strBasePath;
   CUtil::GetParentPath(strFileName, strBasePath);

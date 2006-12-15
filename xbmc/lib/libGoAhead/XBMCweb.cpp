@@ -772,8 +772,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 
                 // load a playlist like .m3u, .pls
                 // first get correct factory to load playlist
-                CPlayListFactory factory;
-                auto_ptr<CPlayList> pPlayList (factory.Create(itm->m_strPath));
+                auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*itm));
                 if ( NULL != pPlayList.get())
                 {
                   // load it

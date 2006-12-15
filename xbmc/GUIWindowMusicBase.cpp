@@ -850,19 +850,9 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
   }
   else
   {
-    if (!pItem->IsNFO() && pItem->IsAudio() && !pItem->IsPlayList())
+    if (pItem->IsPlayList())
     {
-      CFileItem *itemCheck = queuedItems.Get(pItem->m_strPath);
-      if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
-      { // add item
-        CLog::Log(LOGDEBUG, "Adding item (%s) to playlist", pItem->m_strPath.c_str());
-        queuedItems.Add(new CFileItem(*pItem));
-      }
-    }
-    if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
-    {
-      CPlayListFactory factory;
-      auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath));
+      auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
       if ( NULL != pPlayList.get())
       {
         // load it
@@ -875,6 +865,20 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
         CPlayList playlist = *pPlayList;
         for (int i = 0; i < (int)playlist.size(); ++i)
           AddItemToPlayList(&playlist[i], queuedItems);
+        return;
+      }
+    }
+    else if(pItem->IsInternetStream())
+    { // just queue the internet stream, it will be expanded on play
+      queuedItems.Add(new CFileItem(*pItem));
+    }
+    else if (!pItem->IsNFO() && pItem->IsAudio())
+    {
+      CFileItem *itemCheck = queuedItems.Get(pItem->m_strPath);
+      if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
+      { // add item
+        CLog::Log(LOGDEBUG, "Adding item (%s) to playlist", pItem->m_strPath.c_str());
+        queuedItems.Add(new CFileItem(*pItem));
       }
     }
   }
@@ -1517,7 +1521,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     // play!
     g_playlistPlayer.Play();
   }
-  else if (!g_advancedSettings.m_playlistAsFolders && pItem->IsPlayList())
+  else if (pItem->IsPlayList())
   {
     // load the playlist the old way
     LoadPlayList(pItem->m_strPath);
@@ -1537,8 +1541,7 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
 
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if ( NULL != pPlayList.get())
   {
     // load it
@@ -1713,8 +1716,7 @@ void CGUIWindowMusicBase::AddToPlaylist(int iItem)
       strPlaylist += ".m3u";
   }
 
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlaylist (factory.Create(strPlaylist));
+  auto_ptr<CPlayList> pPlaylist (CPlayListFactory::Create(strPlaylist));
   // load existing playlist
   if (!bNew)
   {
