@@ -64,9 +64,9 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src, unsigne
 static void video_draw_osd(void)
 {
   if (g_renderManager.Paused()) return ;
-  int m_iWidth = g_renderManager.GetOSDWidth();
-  int m_iHeight = g_renderManager.GetOSDHeight();
-  vo_draw_text(g_renderManager.GetOSDWidth(), g_renderManager.GetOSDHeight(), draw_alpha);
+  RECT rs, rd;
+  g_renderManager.GetVideoRect(rs, rd);
+  vo_draw_text(rd.right-rd.left, rd.bottom-rd.top, draw_alpha);
 }
 
 
