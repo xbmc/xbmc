@@ -33,7 +33,7 @@
 				<control type="label">
 					<posx>430</posx>
 					<posy>2</posy>
-					<width>100</width>
+					<width>300</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -299,7 +299,7 @@
 				<control type="label">
 					<posx>430</posx>
 					<posy>2</posy>
-					<width>100</width>
+					<width>300</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -565,7 +565,7 @@
 				<control type="label">
 					<posx>430</posx>
 					<posy>2</posy>
-					<width>100</width>
+					<width>300</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
