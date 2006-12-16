@@ -3177,28 +3177,25 @@ void CApplication::Stop()
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 {
-  if (
-    (!item.IsPlayList()) &&
-    (!item.IsInternetStream())
-  )
+  if (item.IsPlayList() || item.IsInternetStream())
   {
-    //not a playlist, just play the file
-    return g_application.PlayFile(item);
+    //is or could be a playlist
+    auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
+    if (pPlayList.get() && pPlayList->Load(item.m_strPath))
+    {
+      if (iPlaylist != PLAYLIST_NONE)
+        return ProcessAndStartPlaylist(item.m_strPath, *pPlayList, iPlaylist);
+      else
+      {
+        CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.m_strPath.c_str());
+        if(pPlayList->size())
+          return PlayFile((*pPlayList)[0], false);   
+      }
+    }
   }
-  if (iPlaylist == PLAYLIST_NONE)
-  {
-    CLog::Log(LOGERROR, "CApplication::PlayMedia called to play playlist %s but no idea which playlist to use.", item.m_strPath.c_str());
-    return false;
-  }
-  //playlist
-  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
-  if ( NULL == pPlayList.get())
-    return false;
-  // load it
-  if (!pPlayList->Load(item.m_strPath))
-    return false;
 
-  return ProcessAndStartPlaylist(item.m_strPath, *pPlayList, iPlaylist);
+  //nothing special just play
+  return PlayFile(item, false);
 }
 
 // PlayStack()
