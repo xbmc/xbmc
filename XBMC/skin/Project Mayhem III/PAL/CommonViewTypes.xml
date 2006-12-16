@@ -628,15 +628,152 @@
 			</focusedlayout>
 		</control>
 	</include>
-	<include name="AllViewCommonThumbs">
-		<control type="thumbnailpanel" id="51">
-			<description>thumbnailpanel</description>
+	<include name="AllViewCommonThumbSmall">
+		<control type="panel" id="51">
+			<posx>211</posx>
+			<posy>125</posy>
+			<width>455</width>
+			<height>375</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
 			<onup>51</onup>
 			<ondown>51</ondown>
-			<include>contentpanelslide</include>
+			<scrolltime>200</scrolltime>
 			<pagecontrol>60</pagecontrol>
+			<include>contentpanelslide</include>
+			<itemlayout height="125" width="110">
+				<control type="image">
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>90</width>
+					<height>90</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>75</posx>
+					<posy>70</posy>
+					<width>28</width>
+					<height>28</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>55</posx>
+					<posy>100</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout  height="125" width="110">
+				<control type="image">
+					<width>100</width>
+					<height>100</height>
+					<posx>5</posx>
+					<posy>0</posy>
+					<texture>folder-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>90</width>
+					<height>90</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>75</posx>
+					<posy>70</posy>
+					<width>28</width>
+					<height>28</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>55</posx>
+					<posy>100</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	<include name="AllViewCommonThumbLarge">
+		<control type="panel" id="53">
+			<posx>206</posx>
+			<posy>125</posy>
+			<width>450</width>
+			<height>370</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>53</onup>
+			<ondown>53</ondown>
+			<scrolltime>200</scrolltime>
+			<pagecontrol>60</pagecontrol>
+			<include>contentpanelslide</include>
+			<itemlayout height="185" width="150">
+				<control type="image">
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>130</width>
+					<height>130</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>115</posx>
+					<posy>110</posy>
+					<width>30</width>
+					<height>30</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>75</posx>
+					<posy>145</posy>
+					<width>140</width>
+					<height>22</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="185" width="150">
+				<control type="image">
+					<width>140</width>
+					<height>140</height>
+					<posx>5</posx>
+					<posy>0</posy>
+					<texture>folder-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>130</width>
+					<height>130</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>115</posx>
+					<posy>110</posy>
+					<width>30</width>
+					<height>30</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>75</posx>
+					<posy>145</posy>
+					<width>140</width>
+					<height>22</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
 		</control>
 	</include>
 	<include name="AllViewCommonPageControls">
