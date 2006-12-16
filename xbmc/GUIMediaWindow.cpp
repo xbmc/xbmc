@@ -628,14 +628,28 @@ void CGUIMediaWindow::GoParentFolder()
   //m_history.DumpPathHistory();
 
   // remove current directory if its on the stack
-  if (m_history.GetParentPath() == m_vecItems.m_strPath)
+  // there were some issues due some folders having a trailing slash and some not
+  // so just add a trailing slash to all of them for comparison.
+  CStdString strPath = m_vecItems.m_strPath;
+  CUtil::AddSlashAtEnd(strPath);
+  CStdString strParent = m_history.GetParentPath();
+  // in case the path history is messed up and the current folder is on
+  // the stack more than once, keep going until there's nothing left or they
+  // dont match anymore.
+  while (!strParent.IsEmpty())
+  {
+    CUtil::AddSlashAtEnd(strParent);
+    if (strParent.Equals(strPath))
       m_history.RemoveParentPath();
+    else
+      break;
+    strParent = m_history.GetParentPath();
+  }
 
   // if vector is not empty, pop parent
   // if vector is empty, parent is bookmark listing
-  CStdString strParent=m_history.RemoveParentPath();
-
   CStdString strOldPath(m_vecItems.m_strPath);
+  strParent = m_history.RemoveParentPath();
   Update(strParent);
 
   if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
