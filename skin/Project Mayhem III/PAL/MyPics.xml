@@ -151,29 +151,8 @@
 		</control>
 		<include>ProgramsViewCommons</include>
 		<include>AllViewCommonPageControls</include>
-		<control type="thumbnailpanel" id="51">
-			<description>pics thumbnailpanel</description>
-			<itemwidth>112</itemwidth>
-			<texturewidth>100</texturewidth>
-			<textureheight>110</textureheight>
-			<thumbwidth>90</thumbwidth>
-			<thumbheight>90</thumbheight>
-			<thumbposx>5</thumbposx>
-			<thumbposy>10</thumbposy>
-			<texturewidthbig>137</texturewidthbig>
-			<textureheightbig>152</textureheightbig>
-			<itemwidthbig>148</itemwidthbig>
-			<thumbwidthbig>121</thumbwidthbig>
-			<thumbheightbig>121</thumbheightbig>
-			<thumbposxbig>8</thumbposxbig>
-			<thumbposybig>16</thumbposybig>
-			<onleft>9000</onleft>
-			<onright>51</onright>
-			<onup>51</onup>
-			<ondown>51</ondown>
-			<pagecontrol>60</pagecontrol>
-			<include>contentpanelslide</include>
-		</control>
+		<include>AllViewCommonThumbSmall</include>
+		<include>AllViewCommonThumbLarge</include>
 		<control type="image" id="0">
 			<description>bg preview</description>
 			<posx>0</posx>
