@@ -30,12 +30,7 @@ bool CDirectoryNodeArtist::GetContent(CFileItemList& items)
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess = false;
-  
-  if (params.GetGenreId() < 0)
-    bSuccess=musicdatabase.GetAlbumArtists(BuildPath(), items); // this hides artists only found in compilations
-  else
-    bSuccess=musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId());
+  bool bSuccess=musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId());
 
   musicdatabase.Close();
 
