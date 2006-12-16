@@ -2938,6 +2938,49 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
   return false;
 }
 
+bool CMusicDatabase::GetAlbumArtists(const CStdString& strBaseDir, CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = "select distinct idArtist, strArtist from albumview";
+    CLog::Log(LOGDEBUG, "CMusicDatabase::GetAlbumArtists() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    items.Reserve(iRowsFound);
+    while (!m_pDS->eof())
+    {
+      CFileItem* pItem=new CFileItem(m_pDS->fv("strArtist").get_asString());
+      pItem->m_musicInfoTag.SetArtist(m_pDS->fv("strArtist").get_asString());
+      CStdString strDir;
+      strDir.Format("%ld/", m_pDS->fv("idArtist").get_asLong());
+      pItem->m_strPath=strBaseDir + strDir;
+      pItem->m_bIsFolder=true;
+      pItem->SetCachedArtistThumb();
+      items.Add(pItem);
+
+      m_pDS->next();
+    }
+    // cleanup
+    m_pDS->close();
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::GetAlbumArtists() failed");
+  }
+  return false;
+}
+
 bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre)
 {
   try
