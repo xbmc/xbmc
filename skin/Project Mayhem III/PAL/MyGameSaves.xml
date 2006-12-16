@@ -85,7 +85,8 @@
 			</control>
 		</control>
 		<include>ProgramsViewCommons</include>
-		<include>AllViewCommonThumbs</include>
+		<include>AllViewCommonThumbSmall</include>
+		<include>AllViewCommonThumbLarge</include>
 		<include>AllViewCommonPageControls</include>
 		<control type="image">
 			<description>bg preview</description>
