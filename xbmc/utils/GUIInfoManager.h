@@ -13,6 +13,7 @@
 #include "../StringUtils.h"
 #include "../Temperature.h"
 #include "../utils/criticalsection.h"
+#include "../PlaylistPlayer.h"
 
 #define OPERATOR_NOT  3
 #define OPERATOR_AND  2
@@ -142,6 +143,11 @@
 #define MUSICPLAYER_SAMPLERATE      216
 #define MUSICPLAYER_CODEC           217
 #define MUSICPLAYER_DISC_NUMBER     218
+// conditionals
+#define MUSICPLAYER_HASPREV         221
+#define MUSICPLAYER_HASNEXT         222
+#define MUSICPLAYER_EXISTS          223
+#define MUSICPLAYER_PLAYLISTPLAYING 224
 
 #define VIDEOPLAYER_TITLE           250
 #define VIDEOPLAYER_GENRE           251
@@ -303,6 +309,9 @@ public:
   CStdString GetVideoLabel(int item);
   CStdString GetPlaylistLabel(int item);
   CStdString GetMusicPartyModeLabel(int item);
+  CStdString GetMusicInfoTagLabel(int item, const CMusicInfoTag& tag);
+  CStdString GetMusicPlaylistLabel(const GUIInfo& info);
+  CStdString GetMusicPlaylistCover(const GUIInfo& info);
   string GetFreeSpace(int drive, bool shortText = false);
   __int64 GetPlayTime();  // in ms
   CStdString GetCurrentPlayTime();
