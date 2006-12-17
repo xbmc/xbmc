@@ -216,11 +216,16 @@ int CFileReader::BufferChunk()
         return -1;
       }
     }
+    // amountToRead == 0 is not an error
+    // the very last chunk of audio data is already in the buffer
+    // so we dont need to read anymore
+    /*
     else
     { // uh oh!
       m_readError = true;
       return -1;
     }
+    */
   }
   return 0;
 }
