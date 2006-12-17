@@ -64,7 +64,12 @@ private:
 CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
 #define ROUND(x) floorf(x + 0.5f)
+
+#ifdef HAS_XBOX_D3D
+#define ROUND_TO_PIXEL(x) floorf(x + 0.5f)
+#else
 #define ROUND_TO_PIXEL(x) floorf(x + 0.5f) - 0.5f
+#endif
 
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
@@ -591,6 +596,7 @@ void CGUIFontTTF::Begin()
 
 #ifdef HAS_XBOX_D3D
     // Render the image
+    m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
     m_pD3DDevice->Begin(D3DPT_QUADLIST);
 #endif
   }
@@ -608,6 +614,7 @@ void CGUIFontTTF::End()
 
 #ifdef HAS_XBOX_D3D
   m_pD3DDevice->End();
+  m_pD3DDevice->SetScreenSpaceOffset(0, 0);
 #endif
   m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
