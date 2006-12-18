@@ -1467,6 +1467,8 @@
   <string id="20322">Go to Game Save</string>
   <string id="20323">Game Saves</string>
   <string id="20324">Play part...</string>
-
+  <string id="20325">Calibration Reset</string>
+  <string id="20326">This will reset the calibration values for %s</string>
+  <string id="20327">to it's default values.</string>
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>
