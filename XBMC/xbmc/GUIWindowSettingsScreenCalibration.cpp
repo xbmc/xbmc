@@ -49,8 +49,20 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 
   case ACTION_CALIBRATE_RESET:
     {
-      g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
-      ResetControls();
+      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+      pDialog->SetHeading(20325);      
+      CStdString strText;
+      strText.Format(g_localizeStrings.Get(20326).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode);      
+      pDialog->SetLine(0, strText);
+      pDialog->SetLine(1, 20327);
+      pDialog->SetChoice(0, 222);
+      pDialog->SetChoice(1, 186);      
+      pDialog->DoModal();
+      if (pDialog->IsConfirmed())
+      {
+        g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
+        ResetControls();
+      }
       return true;
     }
     break;
@@ -58,10 +70,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
   case ACTION_CHANGE_RESOLUTION:
     // choose the next resolution in our list
     {
-      m_iCurRes++;
-      if (m_iCurRes == m_Res.size())
-        m_iCurRes = 0;
-      Sleep(1000);
+      m_iCurRes = (m_iCurRes+1) % m_Res.size();
       g_graphicsContext.SetVideoResolution(m_Res[m_iCurRes], TRUE);
       ResetControls();
       return true;
