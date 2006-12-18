@@ -525,7 +525,6 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 		buffer->st_mode = _S_IFREG;
     return 0;
   }
-  url.GetURL(m_url);
   
   CURL url2(url);
   if( url2.GetProtocol().Equals("ftpx") )
@@ -536,6 +535,8 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   /* ditch options as it's not supported on ftp */
   if( url2.GetProtocol().Equals("ftp") )
     url2.SetOptions("");
+
+  url2.GetURL(m_url);
 
   if( m_easyHandle == NULL )
     m_easyHandle = g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName());
