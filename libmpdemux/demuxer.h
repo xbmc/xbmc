@@ -59,6 +59,8 @@
 #define DEMUXER_TYPE_PLAYLIST (2<<16)
 
 
+#define MP_NOPTS_VALUE (-1LL<<63) //both int64_t and double should be able to represent this exactly
+
 #define DEMUXER_TIME_NONE 0
 #define DEMUXER_TIME_PTS 1
 #define DEMUXER_TIME_FILE 2
@@ -73,6 +75,9 @@
 #define DEMUXER_CTRL_GET_TIME_LENGTH 10
 #define DEMUXER_CTRL_GET_PERCENT_POS 11
 #define DEMUXER_CTRL_SWITCH_AUDIO 12
+#define DEMUXER_CTRL_RESYNC 13
+#define DEMUXER_CTRL_SWITCH_VIDEO 14
+#define DEMUXER_CTRL_IDENTIFY_PROGRAM 15
 
 // Holds one packet/frame/whatever
 typedef struct demux_packet_st {
@@ -124,6 +129,11 @@ typedef struct demuxer_info_st {
 
 #define MAX_A_STREAMS 256
 #define MAX_V_STREAMS 256
+#define MAX_S_STREAMS 32
+
+struct demuxer_st;
+
+extern int correct_pts;
 
 typedef struct demuxer_st {
   off_t filepos; // input stream current pos.

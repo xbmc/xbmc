@@ -11,7 +11,9 @@
 #include "config.h"
 #include "mp_msg.h"
 #include "help_mp.h"
-#include "../m_config.h"
+#include "m_config.h"
+
+#include "libvo/fastmemcpy.h"
 
 #include "stream.h"
 #include "demuxer.h"
@@ -86,8 +88,7 @@ sh_audio_t* new_sh_audio(demuxer_t *demuxer,int id){
     } else {
         sh_audio_t *sh;
         mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_FoundAudioStream,id);
-        demuxer->a_streams[id]=malloc(sizeof(sh_audio_t));
-        memset(demuxer->a_streams[id],0,sizeof(sh_audio_t));
+        demuxer->a_streams[id]=calloc(1, sizeof(sh_audio_t));
         sh = demuxer->a_streams[id];
         // set some defaults
         sh->samplesize=2;
@@ -656,6 +657,8 @@ extern int demux_aac_probe(demuxer_t *demuxer);
 extern demuxer_t* demux_aac_open(demuxer_t *demuxer);
 
 int extension_parsing=1; // 0=off 1=mixed (used only for unstable formats)
+
+int correct_pts=0;
 
 /*
   NOTE : Several demuxers may be opened at the same time so
