@@ -707,7 +707,7 @@
 			<posx>206</posx>
 			<posy>125</posy>
 			<width>450</width>
-			<height>370</height>
+			<height>380</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
 			<onup>53</onup>
@@ -715,25 +715,25 @@
 			<scrolltime>200</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
-			<itemlayout height="185" width="112">
+			<itemlayout height="190" width="150">
 				<control type="image">
-					<posx>6</posx>
+					<posx>20</posx>
 					<posy>5</posy>
-					<width>100</width>
-					<height>130</height>
+					<width>110</width>
+					<height>150</height>
 					<info>ListItem.Icon</info>
 				</control>
 				<control type="image">
-					<posx>85</posx>
-					<posy>110</posy>
-					<width>24</width>
-					<height>30</height>
+					<posx>108</posx>
+					<posy>125</posy>
+					<width>32</width>
+					<height>32</height>
 					<info>ListItem.Overlay</info>
 				</control>
 				<control type="label">
-					<posx>56</posx>
-					<posy>145</posy>
-					<width>100</width>
+					<posx>75</posx>
+					<posy>163</posy>
+					<width>140</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
@@ -741,32 +741,32 @@
 					<info>ListItem.Label</info>
 				</control>
 			</itemlayout>
-			<focusedlayout height="185" width="112">
+			<focusedlayout height="190" width="150">
 				<control type="image">
-					<width>106</width>
-					<height>140</height>
-					<posx>3</posx>
+					<width>120</width>
+					<height>160</height>
+					<posx>15</posx>
 					<posy>0</posy>
 					<texture>folder-focus.png</texture>
 				</control>
 				<control type="image">
-					<posx>6</posx>
+					<posx>20</posx>
 					<posy>5</posy>
-					<width>100</width>
-					<height>130</height>
+					<width>110</width>
+					<height>150</height>
 					<info>ListItem.Icon</info>
 				</control>
 				<control type="image">
-					<posx>115</posx>
-					<posy>110</posy>
-					<width>30</width>
-					<height>30</height>
+					<posx>108</posx>
+					<posy>125</posy>
+					<width>32</width>
+					<height>32</height>
 					<info>ListItem.Overlay</info>
 				</control>
 				<control type="label">
-					<posx>56</posx>
-					<posy>145</posy>
-					<width>100</width>
+					<posx>75</posx>
+					<posy>163</posy>
+					<width>140</width>
 					<height>22</height>
 					<font>font13</font>
 					<include>listselectedcolor</include>
