@@ -2,19 +2,21 @@
  * XVideo Motion Compensation
  * Copyright (c) 2003 Ivan Kalvachev
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include <limits.h>
@@ -28,7 +30,7 @@
 #include <assert.h>
 
 #ifdef USE_FASTMEMCPY
-#include "fastmemcpy.h"
+#include "libvo/fastmemcpy.h"
 #endif
 
 #ifdef HAVE_XVMC
@@ -65,7 +67,7 @@ const int mb_block_count = 4+(1<<s->chroma_format);
         }else{
            s->pblocks[i] = NULL;
         }
-	cbp+=cbp;
+        cbp+=cbp;
 //        printf("s->pblocks[%d]=%p ,s->block=%p cbp=%d\n",i,s->pblocks[i],s->block,cbp);
     }
 }
@@ -136,7 +138,7 @@ const int mb_xy = s->mb_y * s->mb_stride + s->mb_x;
 
     if(s->encoding){
         av_log(s->avctx, AV_LOG_ERROR, "XVMC doesn't support encoding!!!\n");
-        return -1;
+        return;
     }
 
    //from MPV_decode_mb(),
@@ -162,7 +164,7 @@ const int mb_xy = s->mb_y * s->mb_stride + s->mb_x;
     assert(render->mv_blocks);
 
     //take the next free macroblock
-    mv_block = &render->mv_blocks[render->start_mv_blocks_num + 
+    mv_block = &render->mv_blocks[render->start_mv_blocks_num +
                                    render->filled_mv_blocks_num ];
 
 // memset(mv_block,0,sizeof(XvMCMacroBlock));
@@ -258,7 +260,7 @@ const int mb_xy = s->mb_y * s->mb_stride + s->mb_x;
         if(s->block_last_index[i] >= 0)
             cbp++;
     }
-    
+
     if(s->flags & CODEC_FLAG_GRAY){
         if(s->mb_intra){//intra frames are alwasy full chroma block
             for(i=4; i<blocks_per_mb; i++){
@@ -292,7 +294,7 @@ const int mb_xy = s->mb_y * s->mb_stride + s->mb_x;
 /*              if(s->pblocks[i] != &render->data_blocks[
                         (render->next_free_data_block_num)*64]){
                    printf("ERROR mb(%d,%d) s->pblocks[i]=%p data_block[]=%p\n",
-                   s->mb_x,s->mb_y, s->pblocks[i], 
+                   s->mb_x,s->mb_y, s->pblocks[i],
                    &render->data_blocks[(render->next_free_data_block_num)*64]);
                 }*/
             }

@@ -1,3 +1,23 @@
+/*
+ * copyright (C) 2003 the ffmpeg project
+ *
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
 #ifndef SVQ1_VLC_H
 #define SVQ1_VLC_H
 
@@ -5,7 +25,7 @@
 static const uint8_t svq1_block_type_vlc[4][2] = {
  /* { code, length } */
     { 0x1, 1 },  { 0x1, 2 },  { 0x1, 3 },  { 0x0, 3 }
-    
+
 };
 
 /* values in this table range from -1..6; adjust retrieved value by -1 */

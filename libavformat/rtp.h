@@ -2,19 +2,21 @@
  * RTP definitions
  * Copyright (c) 2002 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef RTP_H
 #define RTP_H
@@ -28,13 +30,13 @@ int rtp_get_payload_type(AVCodecContext *codec);
 
 typedef struct RTPDemuxContext RTPDemuxContext;
 typedef struct rtp_payload_data_s rtp_payload_data_s;
-RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, int payload_type, rtp_payload_data_s *rtp_payload_data);
-int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt, 
+RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *rtpc, int payload_type, rtp_payload_data_s *rtp_payload_data);
+int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
                      const uint8_t *buf, int len);
 void rtp_parse_close(RTPDemuxContext *s);
 
-extern AVOutputFormat rtp_mux;
-extern AVInputFormat rtp_demux;
+extern AVOutputFormat rtp_muxer;
+extern AVInputFormat rtp_demuxer;
 
 int rtp_get_local_port(URLContext *h);
 int rtp_set_remote_url(URLContext *h, const char *uri);
@@ -87,13 +89,6 @@ typedef struct AVRtpPayloadType_s
     int audio_channels;
 } AVRtpPayloadType_t;
 
-typedef struct AVRtpDynamicPayloadType_s /* payload type >= 96 */
-{
-    const char enc_name[50]; /* XXX: still why 50 ? ;-) */
-    enum CodecType codec_type;
-    enum CodecID codec_id;
-} AVRtpDynamicPayloadType_t;
-
 #if 0
 typedef enum {
   RTCP_SR   = 200,
@@ -120,6 +115,4 @@ typedef enum {
 #endif
 
 extern AVRtpPayloadType_t AVRtpPayloadTypes[];
-extern AVRtpDynamicPayloadType_t AVRtpDynamicPayloadTypes[];
-
 #endif /* RTP_H */

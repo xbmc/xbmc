@@ -1645,6 +1645,11 @@ static int mp_input_print_cmd_list(m_option_t* cfg) {
 int
 mp_input_check_interrupt(int time) {
   mp_cmd_t* cmd;
+#ifdef _XBOX
+  extern int xbmc_cancel;
+  if(xbmc_cancel)
+    return 1;
+#endif
   if((cmd = mp_input_get_cmd(time,0,1)) == NULL)
     return 0;
   switch(cmd->id) {

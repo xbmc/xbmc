@@ -2,19 +2,21 @@
  * H.26L/H.264/AVC/JVT/14496-10/... encoder/decoder
  * Copyright (c) 2003 Michael Niedermayer <michaelni@gmx.at>
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
 
@@ -29,7 +31,7 @@
 #include "bitstream.h"
 #include "cabac.h"
 
-const uint8_t ff_h264_lps_range[64][4]= {
+static const uint8_t lps_range[64][4]= {
 {128,176,208,240}, {128,167,197,227}, {128,158,187,216}, {123,150,178,205},
 {116,142,169,195}, {111,135,160,185}, {105,128,152,175}, {100,122,144,166},
 { 95,116,137,158}, { 90,110,130,150}, { 85,104,123,142}, { 81, 99,117,135},
@@ -48,7 +50,12 @@ const uint8_t ff_h264_lps_range[64][4]= {
 {  6,  8,  9, 11}, {  6,  7,  9, 10}, {  6,  7,  8,  9}, {  2,  2,  2,  2},
 };
 
-const uint8_t ff_h264_mps_state[64]= {
+uint8_t ff_h264_mlps_state[4*64];
+uint8_t ff_h264_lps_range[4*2*64];
+uint8_t ff_h264_lps_state[2*64];
+uint8_t ff_h264_mps_state[2*64];
+
+static const uint8_t mps_state[64]= {
   1, 2, 3, 4, 5, 6, 7, 8,
   9,10,11,12,13,14,15,16,
  17,18,19,20,21,22,23,24,
@@ -59,7 +66,7 @@ const uint8_t ff_h264_mps_state[64]= {
  57,58,59,60,61,62,62,63,
 };
 
-const uint8_t ff_h264_lps_state[64]= {
+static const uint8_t lps_state[64]= {
   0, 0, 1, 2, 2, 4, 4, 5,
   6, 7, 8, 9, 9,11,11,12,
  13,13,15,15,16,16,18,18,
@@ -69,24 +76,39 @@ const uint8_t ff_h264_lps_state[64]= {
  33,33,34,34,35,35,35,36,
  36,36,37,37,37,38,38,63,
 };
-
-const uint8_t ff_h264_norm_shift[256]= {
- 8,7,6,6,5,5,5,5,4,4,4,4,4,4,4,4,
+#if 0
+const uint8_t ff_h264_norm_shift_old[128]= {
+ 7,6,5,5,4,4,4,4,3,3,3,3,3,3,3,3,
+ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+};
+#endif
+const uint8_t ff_h264_norm_shift[512]= {
+ 9,8,7,7,6,6,6,6,5,5,5,5,5,5,5,5,
+ 4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,
+ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
  3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
- 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
- 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
- 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
- 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
- 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
- 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
- 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
- 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
- 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 
+ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 };
 
 /**
@@ -102,7 +124,7 @@ void ff_init_cabac_encoder(CABACContext *c, uint8_t *buf, int buf_size){
 #ifdef STRICT_LIMITS
     c->sym_count =0;
 #endif
-    
+
     c->pb.bit_left++; //avoids firstBitFlag
 }
 
@@ -111,7 +133,7 @@ void ff_init_cabac_encoder(CABACContext *c, uint8_t *buf, int buf_size){
  * @param buf_size size of buf in bits
  */
 void ff_init_cabac_decoder(CABACContext *c, const uint8_t *buf, int buf_size){
-    c->bytestream_start= 
+    c->bytestream_start=
     c->bytestream= buf;
     c->bytestream_end= buf + buf_size;
 
@@ -122,28 +144,37 @@ void ff_init_cabac_decoder(CABACContext *c, const uint8_t *buf, int buf_size){
     c->low =  (*c->bytestream++)<<10;
 #endif
     c->low+= ((*c->bytestream++)<<2) + 2;
-    c->range= 0x1FE<<(CABAC_BITS + 1);
+    c->range= 0x1FE;
 }
 
-void ff_init_cabac_states(CABACContext *c, uint8_t const (*lps_range)[4], 
-                          uint8_t const *mps_state, uint8_t const *lps_state, int state_count){
+void ff_init_cabac_states(CABACContext *c){
     int i, j;
-    
-    for(i=0; i<state_count; i++){
+
+    for(i=0; i<64; i++){
         for(j=0; j<4; j++){ //FIXME check if this is worth the 1 shift we save
-            c->lps_range[2*i+0][j+4]=
-            c->lps_range[2*i+1][j+4]= lps_range[i][j];
+            ff_h264_lps_range[j*2*64+2*i+0]=
+            ff_h264_lps_range[j*2*64+2*i+1]= lps_range[i][j];
         }
 
-        c->mps_state[2*i+0]= 2*mps_state[i];
-        c->mps_state[2*i+1]= 2*mps_state[i]+1;
+        ff_h264_mlps_state[128+2*i+0]=
+        ff_h264_mps_state[2*i+0]= 2*mps_state[i]+0;
+        ff_h264_mlps_state[128+2*i+1]=
+        ff_h264_mps_state[2*i+1]= 2*mps_state[i]+1;
 
         if( i ){
-            c->lps_state[2*i+0]= 2*lps_state[i];
-            c->lps_state[2*i+1]= 2*lps_state[i]+1;
+#ifdef BRANCHLESS_CABAC_DECODER
+            ff_h264_mlps_state[128-2*i-1]= 2*lps_state[i]+0;
+            ff_h264_mlps_state[128-2*i-2]= 2*lps_state[i]+1;
         }else{
-            c->lps_state[2*i+0]= 1;
-            c->lps_state[2*i+1]= 0;
+            ff_h264_mlps_state[128-2*i-1]= 1;
+            ff_h264_mlps_state[128-2*i-2]= 0;
+#else
+            ff_h264_lps_state[2*i+0]= 2*lps_state[i]+0;
+            ff_h264_lps_state[2*i+1]= 2*lps_state[i]+1;
+        }else{
+            ff_h264_lps_state[2*i+0]= 1;
+            ff_h264_lps_state[2*i+1]= 0;
+#endif
         }
     }
 }
@@ -159,20 +190,20 @@ int main(){
     uint8_t r[9*SIZE];
     int i;
     uint8_t state[10]= {0};
-    
+
     ff_init_cabac_encoder(&c, b, SIZE);
     ff_init_cabac_states(&c, ff_h264_lps_range, ff_h264_mps_state, ff_h264_lps_state, 64);
-    
+
     for(i=0; i<SIZE; i++){
         r[i]= random()%7;
     }
-    
+
     for(i=0; i<SIZE; i++){
 START_TIMER
         put_cabac_bypass(&c, r[i]&1);
 STOP_TIMER("put_cabac_bypass")
     }
-    
+
     for(i=0; i<SIZE; i++){
 START_TIMER
         put_cabac(&c, state, r[i]&1);
@@ -183,27 +214,27 @@ STOP_TIMER("put_cabac")
 START_TIMER
         put_cabac_u(&c, state, r[i], 6, 3, i&1);
 STOP_TIMER("put_cabac_u")
-    }    
+    }
 
     for(i=0; i<SIZE; i++){
 START_TIMER
         put_cabac_ueg(&c, state, r[i], 3, 0, 1, 2);
 STOP_TIMER("put_cabac_ueg")
-    }    
-   
+    }
+
     put_cabac_terminate(&c, 1);
-    
+
     ff_init_cabac_decoder(&c, b, SIZE);
-    
+
     memset(state, 0, sizeof(state));
-    
+
     for(i=0; i<SIZE; i++){
 START_TIMER
         if( (r[i]&1) != get_cabac_bypass(&c) )
             av_log(NULL, AV_LOG_ERROR, "CABAC bypass failure at %d\n", i);
 STOP_TIMER("get_cabac_bypass")
     }
-    
+
     for(i=0; i<SIZE; i++){
 START_TIMER
         if( (r[i]&1) != get_cabac(&c, state) )
@@ -227,7 +258,7 @@ STOP_TIMER("get_cabac_ueg")
 #endif
     if(!get_cabac_terminate(&c))
         av_log(NULL, AV_LOG_ERROR, "where's the Terminator?\n");
-    
+
     return 0;
 }
 

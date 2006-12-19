@@ -4,19 +4,21 @@
  * Copyright (c) 2003 Romain Dolbeau <romain@dolbeau.org>
  * Based on code Copyright (c) 2002 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "../dsputil.h"
 
@@ -63,92 +65,11 @@
 void ff_fft_calc_altivec(FFTContext *s, FFTComplex *z)
 {
 POWERPC_PERF_DECLARE(altivec_fft_num, s->nbits >= 6);
-#ifdef ALTIVEC_USE_REFERENCE_C_CODE
+    register const vector float vczero = (const vector float)vec_splat_u32(0.);
+
     int ln = s->nbits;
-    int	j, np, np2;
-    int	nblocks, nloops;
-    register FFTComplex *p, *q;
-    FFTComplex *exptab = s->exptab;
-    int l;
-    FFTSample tmp_re, tmp_im;
-    
-POWERPC_PERF_START_COUNT(altivec_fft_num, s->nbits >= 6);
- 
-    np = 1 << ln;
-
-    /* pass 0 */
-
-    p=&z[0];
-    j=(np >> 1);
-    do {
-        BF(p[0].re, p[0].im, p[1].re, p[1].im, 
-           p[0].re, p[0].im, p[1].re, p[1].im);
-        p+=2;
-    } while (--j != 0);
-
-    /* pass 1 */
-
-    
-    p=&z[0];
-    j=np >> 2;
-    if (s->inverse) {
-        do {
-            BF(p[0].re, p[0].im, p[2].re, p[2].im, 
-               p[0].re, p[0].im, p[2].re, p[2].im);
-            BF(p[1].re, p[1].im, p[3].re, p[3].im, 
-               p[1].re, p[1].im, -p[3].im, p[3].re);
-            p+=4;
-        } while (--j != 0);
-    } else {
-        do {
-            BF(p[0].re, p[0].im, p[2].re, p[2].im, 
-               p[0].re, p[0].im, p[2].re, p[2].im);
-            BF(p[1].re, p[1].im, p[3].re, p[3].im, 
-               p[1].re, p[1].im, p[3].im, -p[3].re);
-            p+=4;
-        } while (--j != 0);
-    }
-    /* pass 2 .. ln-1 */
-
-    nblocks = np >> 3;
-    nloops = 1 << 2;
-    np2 = np >> 1;
-    do {
-        p = z;
-        q = z + nloops;
-        for (j = 0; j < nblocks; ++j) {
-            BF(p->re, p->im, q->re, q->im,
-               p->re, p->im, q->re, q->im);
-            
-            p++;
-            q++;
-            for(l = nblocks; l < np2; l += nblocks) {
-                CMUL(tmp_re, tmp_im, exptab[l].re, exptab[l].im, q->re, q->im);
-                BF(p->re, p->im, q->re, q->im,
-                   p->re, p->im, tmp_re, tmp_im);
-                p++;
-                q++;
-            }
-
-            p += nloops;
-            q += nloops;
-        }
-        nblocks = nblocks >> 1;
-        nloops = nloops << 1;
-    } while (nblocks != 0);
-
-POWERPC_PERF_STOP_COUNT(altivec_fft_num, s->nbits >= 6);
-
-#else /* ALTIVEC_USE_REFERENCE_C_CODE */
-#ifdef CONFIG_DARWIN
-    register const vector float vczero = (const vector float)(0.);
-#else
-    register const vector float vczero = (const vector float){0.,0.,0.,0.};
-#endif
-    
-    int ln = s->nbits;
-    int	j, np, np2;
-    int	nblocks, nloops;
+    int j, np, np2;
+    int nblocks, nloops;
     register FFTComplex *p, *q;
     FFTComplex *cptr, *cptr1;
     int k;
@@ -163,7 +84,7 @@ POWERPC_PERF_START_COUNT(altivec_fft_num, s->nbits >= 6);
         r = (vector float *)&z[0];
 
         c1 = vcii(p,p,n,n);
-        
+
         if (s->inverse)
             {
                 c2 = vcii(p,p,n,p);
@@ -172,27 +93,27 @@ POWERPC_PERF_START_COUNT(altivec_fft_num, s->nbits >= 6);
             {
                 c2 = vcii(p,p,p,n);
             }
-        
+
         j = (np >> 2);
         do {
             a = vec_ld(0, r);
             a1 = vec_ld(sizeof(vector float), r);
-            
+
             b = vec_perm(a,a,vcprmle(1,0,3,2));
             a = vec_madd(a,c1,b);
             /* do the pass 0 butterfly */
-            
+
             b = vec_perm(a1,a1,vcprmle(1,0,3,2));
             b = vec_madd(a1,c1,b);
             /* do the pass 0 butterfly */
-            
+
             /* multiply third by -i */
             b = vec_perm(b,b,vcprmle(2,3,1,0));
-            
+
             /* do the pass 1 butterfly */
             vec_st(vec_madd(b,c2,a), 0, r);
             vec_st(vec_nmsub(b,c2,a), sizeof(vector float), r);
-            
+
             r += 2;
         } while (--j != 0);
     }
@@ -215,7 +136,7 @@ POWERPC_PERF_START_COUNT(altivec_fft_num, s->nbits >= 6);
 
                 a = vec_ld(0, (float*)p);
                 b = vec_ld(0, (float*)q);
-                
+
                 /* complex mul */
                 c = vec_ld(0, (float*)cptr);
                 /*  cre*re cim*re */
@@ -223,16 +144,16 @@ POWERPC_PERF_START_COUNT(altivec_fft_num, s->nbits >= 6);
                 c = vec_ld(sizeof(vector float), (float*)cptr);
                 /*  -cim*im cre*im */
                 b = vec_madd(c, vec_perm(b,b,vcprmle(3,3,1,1)),t1);
-                
+
                 /* butterfly */
                 vec_st(vec_add(a,b), 0, (float*)p);
                 vec_st(vec_sub(a,b), 0, (float*)q);
-                
+
                 p += 2;
                 q += 2;
                 cptr += 4;
             } while (--k);
-            
+
             p += nloops;
             q += nloops;
         } while (--j);
@@ -242,6 +163,4 @@ POWERPC_PERF_START_COUNT(altivec_fft_num, s->nbits >= 6);
     } while (nblocks != 0);
 
 POWERPC_PERF_STOP_COUNT(altivec_fft_num, s->nbits >= 6);
-
-#endif /* ALTIVEC_USE_REFERENCE_C_CODE */
 }

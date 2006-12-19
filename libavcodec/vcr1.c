@@ -2,26 +2,28 @@
  * ATI VCR1 codec
  * Copyright (c) 2003 Michael Niedermayer
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
 /**
  * @file vcr1.c
  * ati vcr1 codec.
  */
- 
+
 #include "avcodec.h"
 #include "mpegvideo.h"
 
@@ -35,7 +37,7 @@ typedef struct VCR1Context{
     int offset[4];
 } VCR1Context;
 
-static int decode_frame(AVCodecContext *avctx, 
+static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
                         uint8_t *buf, int buf_size)
 {
@@ -60,7 +62,7 @@ static int decode_frame(AVCodecContext *avctx,
         a->delta[i]= *(bytestream++);
         bytestream++;
     }
-    
+
     for(y=0; y<avctx->height; y++){
         int offset;
         uint8_t *luma= &a->picture.data[0][ y*a->picture.linesize[0] ];
@@ -79,10 +81,10 @@ static int decode_frame(AVCodecContext *avctx,
                 luma[2]=( offset += a->delta[ bytestream[0]&0xF ]);
                 luma[3]=( offset += a->delta[ bytestream[0]>>4  ]);
                 luma += 4;
-                
+
                 *(cb++) = bytestream[3];
                 *(cr++) = bytestream[1];
-                
+
                 bytestream+= 4;
             }
         }else{
@@ -107,7 +109,7 @@ static int decode_frame(AVCodecContext *avctx,
     *data_size = sizeof(AVPicture);
 
     emms_c();
-    
+
     return buf_size;
 }
 
@@ -124,13 +126,13 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
     p->key_frame= 1;
 
     emms_c();
-    
+
     align_put_bits(&a->pb);
     while(get_bit_count(&a->pb)&31)
         put_bits(&a->pb, 8, 0);
-    
+
     size= get_bit_count(&a->pb)/32;
-    
+
     return size*4;
 }
 #endif
@@ -143,9 +145,9 @@ static void common_init(AVCodecContext *avctx){
 }
 
 static int decode_init(AVCodecContext *avctx){
- 
+
     common_init(avctx);
-    
+
     avctx->pix_fmt= PIX_FMT_YUV410P;
 
     return 0;
@@ -153,9 +155,9 @@ static int decode_init(AVCodecContext *avctx){
 
 #if 0
 static int encode_init(AVCodecContext *avctx){
- 
+
     common_init(avctx);
-    
+
     return 0;
 }
 #endif

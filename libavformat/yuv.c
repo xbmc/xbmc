@@ -2,19 +2,21 @@
  * .Y.U.V image format
  * Copyright (c) 2003 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avformat.h"
 
@@ -53,7 +55,7 @@ static int yuv_read(ByteIOContext *f,
     int size;
     URLContext *h;
     AVImageInfo info1, *info = &info1;
-    
+
     img_size = url_fsize(f);
 
     /* XXX: hack hack */
@@ -64,26 +66,26 @@ static int yuv_read(ByteIOContext *f,
         return AVERROR_IO;
     }
     info->pix_fmt = PIX_FMT_YUV420P;
-    
+
     ret = alloc_cb(opaque, info);
     if (ret)
         return ret;
-    
+
     size = info->width * info->height;
-    
+
     p = strrchr(fname, '.');
     if (!p || p[1] != 'Y')
         return AVERROR_IO;
 
     get_buffer(f, info->pict.data[0], size);
-    
+
     p[1] = 'U';
     if (url_fopen(pb, fname, URL_RDONLY) < 0)
         return AVERROR_IO;
 
     get_buffer(pb, info->pict.data[1], size / 4);
     url_fclose(pb);
-    
+
     p[1] = 'V';
     if (url_fopen(pb, fname, URL_RDONLY) < 0)
         return AVERROR_IO;
@@ -101,7 +103,7 @@ static int yuv_write(ByteIOContext *pb2, AVImageInfo *info)
     uint8_t *ptr;
     URLContext *h;
     static const char *ext = "YUV";
-    
+
     /* XXX: hack hack */
     h = url_fileno(pb2);
     url_get_filename(h, fname, sizeof(fname));
@@ -127,7 +129,7 @@ static int yuv_write(ByteIOContext *pb2, AVImageInfo *info)
         } else {
             pb = pb2;
         }
-    
+
         ptr = info->pict.data[i];
         for(j=0;j<height;j++) {
             put_buffer(pb, ptr, width);
@@ -140,7 +142,7 @@ static int yuv_write(ByteIOContext *pb2, AVImageInfo *info)
     }
     return 0;
 }
-    
+
 static int yuv_probe(AVProbeData *pd)
 {
     if (match_ext(pd->filename, "Y"))

@@ -2,19 +2,21 @@
  * Alpha optimized DSP utils
  * Copyright (c) 2002 Falk Hueffner <falk@debian.org>
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include "asm.h"
@@ -28,11 +30,11 @@ void put_pixels_axp_asm(uint8_t *block, const uint8_t *pixels,
                         int line_size, int h);
 void put_pixels_clamped_mvi_asm(const DCTELEM *block, uint8_t *pixels,
                                 int line_size);
-void add_pixels_clamped_mvi_asm(const DCTELEM *block, uint8_t *pixels, 
+void add_pixels_clamped_mvi_asm(const DCTELEM *block, uint8_t *pixels,
                                 int line_size);
 void (*put_pixels_clamped_axp_p)(const DCTELEM *block, uint8_t *pixels,
                                  int line_size);
-void (*add_pixels_clamped_axp_p)(const DCTELEM *block, uint8_t *pixels, 
+void (*add_pixels_clamped_axp_p)(const DCTELEM *block, uint8_t *pixels,
                                  int line_size);
 
 void get_pixels_mvi(DCTELEM *restrict block,
@@ -48,7 +50,7 @@ int pix_abs16x16_xy2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, i
 #if 0
 /* These functions were the base for the optimized assembler routines,
    and remain here for documentation purposes.  */
-static void put_pixels_clamped_mvi(const DCTELEM *block, uint8_t *pixels, 
+static void put_pixels_clamped_mvi(const DCTELEM *block, uint8_t *pixels,
                                    int line_size)
 {
     int i = 8;
@@ -72,7 +74,7 @@ static void put_pixels_clamped_mvi(const DCTELEM *block, uint8_t *pixels,
     } while (--i);
 }
 
-void add_pixels_clamped_mvi(const DCTELEM *block, uint8_t *pixels, 
+void add_pixels_clamped_mvi(const DCTELEM *block, uint8_t *pixels,
                             int line_size)
 {
     int h = 8;
@@ -97,7 +99,7 @@ void add_pixels_clamped_mvi(const DCTELEM *block, uint8_t *pixels,
         shorts0 ^= signs0;
         /* Clamp. */
         shorts0 = maxsw4(shorts0, 0);
-        shorts0 = minsw4(shorts0, clampmask);   
+        shorts0 = minsw4(shorts0, clampmask);
 
         /* Next 4.  */
         pix1    = unpkbw(ldl(pixels + 4));
@@ -142,7 +144,7 @@ static inline uint64_t avg2_no_rnd(uint64_t a, uint64_t b)
 
 static inline uint64_t avg2(uint64_t a, uint64_t b)
 {
-    return (a | b) - (((a ^ b) & BYTE_VEC(0xfe)) >> 1);    
+    return (a | b) - (((a ^ b) & BYTE_VEC(0xfe)) >> 1);
 }
 
 #if 0
@@ -353,7 +355,7 @@ void dsputil_init_alpha(DSPContext* c, AVCodecContext *avctx)
 
     put_pixels_clamped_axp_p = c->put_pixels_clamped;
     add_pixels_clamped_axp_p = c->add_pixels_clamped;
-    
+
     c->idct_put = simple_idct_put_axp;
     c->idct_add = simple_idct_add_axp;
     c->idct = simple_idct_axp;

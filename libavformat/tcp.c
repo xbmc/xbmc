@@ -2,26 +2,28 @@
  * TCP protocol
  * Copyright (c) 2002 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avformat.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#if defined(__BEOS__)
+#if defined(__BEOS__) || defined(__INNOTEK_LIBC__)
 typedef int socklen_t;
 #endif
 #ifndef __BEOS__
@@ -68,15 +70,15 @@ static int tcp_open(URLContext *h, const char *uri, int flags)
       &port, path, sizeof(path), uri);  // PETR: use url_split
     if (strcmp(proto,"tcp")) goto fail; // PETR: check protocol
     if ((q = strchr(hostname,'@'))) { strcpy(tmp,q+1); strcpy(hostname,tmp); } // PETR: take only the part after '@' for tcp protocol
-    
+
     s = av_malloc(sizeof(TCPContext));
     if (!s)
         return -ENOMEM;
     h->priv_data = s;
-    
+
     if (port <= 0 || port >= 65536)
         goto fail;
-    
+
     dest_addr.sin_family = AF_INET;
     dest_addr.sin_port = htons(port);
     if (resolve_host(&dest_addr.sin_addr, hostname) < 0)
@@ -86,9 +88,9 @@ static int tcp_open(URLContext *h, const char *uri, int flags)
     if (fd < 0)
         goto fail;
     fcntl(fd, F_SETFL, O_NONBLOCK);
-    
+
  redo:
-    ret = connect(fd, (struct sockaddr *)&dest_addr, 
+    ret = connect(fd, (struct sockaddr *)&dest_addr,
                   sizeof(dest_addr));
     if (ret < 0) {
         if (errno == EINTR)
@@ -111,7 +113,7 @@ static int tcp_open(URLContext *h, const char *uri, int flags)
             if (ret > 0 && FD_ISSET(fd, &wfds))
                 break;
         }
-        
+
         /* test error */
         optlen = sizeof(ret);
         getsockopt (fd, SOL_SOCKET, SO_ERROR, &ret, &optlen);

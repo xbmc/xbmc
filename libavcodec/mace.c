@@ -2,26 +2,28 @@
  * MACE decoder
  * Copyright (c) 2002 Laszlo Torok <torokl@alpha.dfmk.hu>
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
  * @file mace.c
  * MACE decoder.
  */
- 
+
 #include "avcodec.h"
 
 /*
@@ -410,18 +412,18 @@ static int mace_decode_frame(AVCodecContext *avctx,
 #ifdef DEBUG
 puts("mace_decode_frame[3]()");
 #endif
-        Exp1to3(c, buf, samples, buf_size / 2, avctx->channels, 1);
+        Exp1to3(c, buf, samples, buf_size / 2 / avctx->channels, avctx->channels, 1);
         if (avctx->channels == 2)
-            Exp1to3(c, buf, samples+1, buf_size / 2, 2, 2);
+            Exp1to3(c, buf, samples+1, buf_size / 2 / 2, 2, 2);
         *data_size = 2 * 3 * buf_size;
         break;
     case CODEC_ID_MACE6:
 #ifdef DEBUG
 puts("mace_decode_frame[6]()");
 #endif
-        Exp1to6(c, buf, samples, buf_size, avctx->channels, 1);
+        Exp1to6(c, buf, samples, buf_size / avctx->channels, avctx->channels, 1);
         if (avctx->channels == 2)
-            Exp1to6(c, buf, samples+1, buf_size, 2, 2);
+            Exp1to6(c, buf, samples+1, buf_size / 2, 2, 2);
         *data_size = 2 * 6 * buf_size;
         break;
     default:

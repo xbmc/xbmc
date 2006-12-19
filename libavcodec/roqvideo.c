@@ -1,19 +1,21 @@
 /*
  * Copyright (C) 2003 the ffmpeg project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
 
@@ -255,7 +257,7 @@ static void apply_motion_8x8(RoqContext *ri, int x, int y,
                 pa[2] = avg2(pb[2], pb[3]);
                 pa[3] = avg2(pb[3], pb[4]);
                 break;
- 
+
             case 2:
                 pa[0] = avg2(pb[0], pb[hw]);
                 pa[1] = avg2(pb[1], pb[hw+1]);
@@ -362,7 +364,7 @@ static void roqvideo_decode_frame(RoqContext *ri)
                             apply_motion_4x4(ri, x, y, 0, 8, 8);
                             break;
                         case RoQ_ID_FCC:
-                            apply_motion_4x4(ri, x, y, buf[bpos++], 
+                            apply_motion_4x4(ri, x, y, buf[bpos++],
                                 chunk_arg >> 8, chunk_arg & 0xff);
                             break;
                         case RoQ_ID_SLD:

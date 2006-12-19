@@ -2,32 +2,34 @@
  * PNM image format
  * Copyright (c) 2002, 2003 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avformat.h"
 
-static inline int pnm_space(int c)  
+static inline int pnm_space(int c)
 {
     return (c == ' ' || c == '\n' || c == '\r' || c == '\t');
 }
 
-static void pnm_get(ByteIOContext *f, char *str, int buf_size) 
+static void pnm_get(ByteIOContext *f, char *str, int buf_size)
 {
     char *s;
     int c;
-    
+
     /* skip spaces and comments */
     for(;;) {
         c = url_fgetc(f);
@@ -39,7 +41,7 @@ static void pnm_get(ByteIOContext *f, char *str, int buf_size)
             break;
         }
     }
-    
+
     s = str;
     while (c != URL_EOF && !pnm_space(c)) {
         if ((s - str)  < buf_size - 1)
@@ -49,7 +51,7 @@ static void pnm_get(ByteIOContext *f, char *str, int buf_size)
     *s = '\0';
 }
 
-static int pnm_read1(ByteIOContext *f, 
+static int pnm_read1(ByteIOContext *f,
                      int (*alloc_cb)(void *opaque, AVImageInfo *info), void *opaque,
                      int allow_yuv)
 {
@@ -63,7 +65,7 @@ static int pnm_read1(ByteIOContext *f,
     if (!strcmp(buf1, "P4")) {
         info->pix_fmt = PIX_FMT_MONOWHITE;
     } else if (!strcmp(buf1, "P5")) {
-        if (allow_yuv) 
+        if (allow_yuv)
             info->pix_fmt = PIX_FMT_YUV420P;
         else
             info->pix_fmt = PIX_FMT_GRAY8;
@@ -94,11 +96,11 @@ static int pnm_read1(ByteIOContext *f,
         h /= 3;
         info->height = h;
     }
-    
+
     ret = alloc_cb(opaque, info);
     if (ret)
         return ret;
-    
+
     switch(info->pix_fmt) {
     default:
         return AVERROR_INVALIDDATA;
@@ -145,13 +147,13 @@ static int pnm_read1(ByteIOContext *f,
     return 0;
 }
 
-static int pnm_read(ByteIOContext *f, 
+static int pnm_read(ByteIOContext *f,
                     int (*alloc_cb)(void *opaque, AVImageInfo *info), void *opaque)
 {
     return pnm_read1(f, alloc_cb, opaque, 0);
 }
 
-static int pgmyuv_read(ByteIOContext *f, 
+static int pgmyuv_read(ByteIOContext *f,
                        int (*alloc_cb)(void *opaque, AVImageInfo *info), void *opaque)
 {
     return pnm_read1(f, alloc_cb, opaque, 1);
@@ -186,23 +188,23 @@ static int pnm_write(ByteIOContext *pb, AVImageInfo *info)
     default:
         return AVERROR_INVALIDDATA;
     }
-    snprintf(buf, sizeof(buf), 
+    snprintf(buf, sizeof(buf),
              "P%c\n%d %d\n",
              c, info->width, h1);
     put_buffer(pb, buf, strlen(buf));
     if (info->pix_fmt != PIX_FMT_MONOWHITE) {
-        snprintf(buf, sizeof(buf), 
+        snprintf(buf, sizeof(buf),
                  "%d\n", 255);
         put_buffer(pb, buf, strlen(buf));
     }
-    
+
     ptr = info->pict.data[0];
     linesize = info->pict.linesize[0];
     for(i=0;i<h;i++) {
         put_buffer(pb, ptr, n);
         ptr += linesize;
     }
-    
+
     if (info->pix_fmt == PIX_FMT_YUV420P) {
         h >>= 1;
         n >>= 1;
@@ -219,7 +221,7 @@ static int pnm_write(ByteIOContext *pb, AVImageInfo *info)
     return 0;
 }
 
-static int pam_read(ByteIOContext *f, 
+static int pam_read(ByteIOContext *f,
                     int (*alloc_cb)(void *opaque, AVImageInfo *info), void *opaque)
 {
     int i, n, linesize, h, w, depth, maxval;
@@ -267,7 +269,7 @@ static int pam_read(ByteIOContext *f,
     if (depth == 1) {
         if (maxval == 1)
             info->pix_fmt = PIX_FMT_MONOWHITE;
-        else 
+        else
             info->pix_fmt = PIX_FMT_GRAY8;
     } else if (depth == 3) {
         info->pix_fmt = PIX_FMT_RGB24;
@@ -279,7 +281,7 @@ static int pam_read(ByteIOContext *f,
     ret = alloc_cb(opaque, info);
     if (ret)
         return ret;
-    
+
     switch(info->pix_fmt) {
     default:
         return AVERROR_INVALIDDATA;
@@ -356,14 +358,14 @@ static int pam_write(ByteIOContext *pb, AVImageInfo *info)
     default:
         return AVERROR_INVALIDDATA;
     }
-    snprintf(buf, sizeof(buf), 
+    snprintf(buf, sizeof(buf),
              "P7\nWIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLETYPE %s\nENDHDR\n",
              w, h, depth, maxval, tuple_type);
     put_buffer(pb, buf, strlen(buf));
-    
+
     ptr = info->pict.data[0];
     linesize = info->pict.linesize[0];
-    
+
     if (info->pix_fmt == PIX_FMT_RGBA32) {
         int j;
         unsigned int v;
@@ -461,7 +463,7 @@ AVImageFormat pam_image_format = {
     "pam",
     pam_probe,
     pam_read,
-    (1 << PIX_FMT_MONOWHITE) | (1 << PIX_FMT_GRAY8) | (1 << PIX_FMT_RGB24) | 
+    (1 << PIX_FMT_MONOWHITE) | (1 << PIX_FMT_GRAY8) | (1 << PIX_FMT_RGB24) |
     (1 << PIX_FMT_RGBA32),
     pam_write,
 };

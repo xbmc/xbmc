@@ -2,19 +2,21 @@
  * Interplay MVE File Demuxer
  * Copyright (c) 2003 The ffmpeg Project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -118,7 +120,7 @@ typedef struct IPMVEContext {
 
 } IPMVEContext;
 
-static int load_ipmovie_packet(IPMVEContext *s, ByteIOContext *pb, 
+static int load_ipmovie_packet(IPMVEContext *s, ByteIOContext *pb,
     AVPacket *pkt) {
 
     int chunk_type;
@@ -154,7 +156,7 @@ static int load_ipmovie_packet(IPMVEContext *s, ByteIOContext *pb,
             s->audio_frame_count +=
                 (s->audio_chunk_size - 6) / s->audio_channels;
 
-        debug_ipmovie("sending audio frame with pts %lld (%d audio frames)\n",
+        debug_ipmovie("sending audio frame with pts %"PRId64" (%d audio frames)\n",
             audio_pts, s->audio_frame_count);
 
         chunk_type = CHUNK_VIDEO;
@@ -170,7 +172,7 @@ static int load_ipmovie_packet(IPMVEContext *s, ByteIOContext *pb,
         url_fseek(pb, s->decode_map_chunk_offset, SEEK_SET);
         s->decode_map_chunk_offset = 0;
 
-        if (get_buffer(pb, pkt->data, s->decode_map_chunk_size) != 
+        if (get_buffer(pb, pkt->data, s->decode_map_chunk_size) !=
             s->decode_map_chunk_size) {
             av_free_packet(pkt);
             return CHUNK_EOF;
@@ -188,7 +190,7 @@ static int load_ipmovie_packet(IPMVEContext *s, ByteIOContext *pb,
         pkt->stream_index = s->video_stream_index;
         pkt->pts = s->video_pts;
 
-        debug_ipmovie("sending video frame with pts %lld\n",
+        debug_ipmovie("sending video frame with pts %"PRId64"\n",
             pkt->pts);
 
         s->video_pts += s->frame_pts_inc;
@@ -207,7 +209,7 @@ static int load_ipmovie_packet(IPMVEContext *s, ByteIOContext *pb,
 
 /* This function loads and processes a single chunk in an IP movie file.
  * It returns the type of chunk that was processed. */
-static int process_ipmovie_chunk(IPMVEContext *s, ByteIOContext *pb, 
+static int process_ipmovie_chunk(IPMVEContext *s, ByteIOContext *pb,
     AVPacket *pkt)
 {
     unsigned char chunk_preamble[CHUNK_PREAMBLE_SIZE];
@@ -358,7 +360,7 @@ static int process_ipmovie_chunk(IPMVEContext *s, ByteIOContext *pb,
                 s->audio_bits,
                 s->audio_sample_rate,
                 (s->audio_channels == 2) ? "stereo" : "mono",
-                (s->audio_type == CODEC_ID_INTERPLAY_DPCM) ? 
+                (s->audio_type == CODEC_ID_INTERPLAY_DPCM) ?
                 "Interplay audio" : "PCM");
             break;
 
@@ -612,7 +614,7 @@ static int ipmovie_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat ipmovie_iformat = {
+AVInputFormat ipmovie_demuxer = {
     "ipmovie",
     "Interplay MVE format",
     sizeof(IPMVEContext),
@@ -621,10 +623,3 @@ static AVInputFormat ipmovie_iformat = {
     ipmovie_read_packet,
     ipmovie_read_close,
 };
-
-int ipmovie_init(void)
-{
-    av_register_input_format(&ipmovie_iformat);
-    return 0;
-}
-

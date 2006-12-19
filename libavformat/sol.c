@@ -1,28 +1,31 @@
-/* 
- * Sierra SOL decoder
+/*
+ * Sierra SOL demuxer
  * Copyright Konstantin Shishkov.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* 
+/*
  * Based on documents from Game Audio Player and own research
  */
 
 #include "avformat.h"
-#include "avi.h"
+#include "allformats.h"
+#include "riff.h"
 #include "bswap.h"
 
 /* if we don't know the size in advance */
@@ -81,7 +84,7 @@ static int sol_channels(int magic, int type)
     if (magic == 0x0B8D || !(type & SOL_STEREO)) return 1;
     return 2;
 }
-    
+
 static int sol_read_header(AVFormatContext *s,
                           AVFormatParameters *ap)
 {
@@ -101,14 +104,14 @@ static int sol_read_header(AVFormatContext *s,
     size = get_le32(pb);
     if (magic != 0x0B8D)
         get_byte(pb); /* newer SOLs contain padding byte */
-    
+
     codec = sol_codec_id(magic, type);
     channels = sol_channels(magic, type);
-    
+
     if (codec == CODEC_ID_SOL_DPCM)
         id = sol_codec_type(magic, type);
     else id = 0;
-    
+
     /* now we are ready: build format streams */
     st = av_new_stream(s, 0);
     if (!st)
@@ -117,7 +120,7 @@ static int sol_read_header(AVFormatContext *s,
     st->codec->codec_tag = id;
     st->codec->codec_id = codec;
     st->codec->channels = channels;
-    st->codec->sample_rate = rate;    
+    st->codec->sample_rate = rate;
     av_set_pts_info(st, 64, 1, rate);
     return 0;
 }
@@ -145,7 +148,7 @@ static int sol_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat sol_iformat = {
+AVInputFormat sol_demuxer = {
     "sol",
     "Sierra SOL Format",
     0,
@@ -155,9 +158,3 @@ static AVInputFormat sol_iformat = {
     sol_read_close,
     pcm_read_seek,
 };
-
-int sol_init(void)
-{
-    av_register_input_format(&sol_iformat);
-    return 0;
-}

@@ -1,20 +1,22 @@
-/* 
- * AU encoder and decoder
+/*
+ * AU muxer and demuxer
  * Copyright (c) 2001 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /*
@@ -26,7 +28,8 @@
  */
 
 #include "avformat.h"
-#include "avi.h"
+#include "allformats.h"
+#include "riff.h"
 
 /* if we don't know the size in advance */
 #define AU_UNKOWN_SIZE ((uint32_t)(~0))
@@ -127,11 +130,11 @@ static int au_read_header(AVFormatContext *s,
         return -1;
     size = get_be32(pb); /* header size */
     get_be32(pb); /* data size */
-    
+
     id = get_be32(pb);
     rate = get_be32(pb);
     channels = get_be32(pb);
-    
+
     codec = codec_get_id(codec_au_tags, id);
 
     if (size >= 24) {
@@ -177,7 +180,8 @@ static int au_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat au_iformat = {
+#ifdef CONFIG_AU_DEMUXER
+AVInputFormat au_demuxer = {
     "au",
     "SUN AU Format",
     0,
@@ -187,9 +191,10 @@ static AVInputFormat au_iformat = {
     au_read_close,
     pcm_read_seek,
 };
+#endif
 
-#ifdef CONFIG_MUXERS
-static AVOutputFormat au_oformat = {
+#ifdef CONFIG_AU_MUXER
+AVOutputFormat au_muxer = {
     "au",
     "SUN AU Format",
     "audio/basic",
@@ -201,13 +206,4 @@ static AVOutputFormat au_oformat = {
     au_write_packet,
     au_write_trailer,
 };
-#endif //CONFIG_MUXERS
-
-int au_init(void)
-{
-    av_register_input_format(&au_iformat);
-#ifdef CONFIG_MUXERS
-    av_register_output_format(&au_oformat);
-#endif //CONFIG_MUXERS
-    return 0;
-}
+#endif //CONFIG_AU_MUXER

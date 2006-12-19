@@ -2,19 +2,21 @@
  * Sierra VMD Format Demuxer
  * Copyright (c) 2004 The ffmpeg Project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -43,19 +45,14 @@ typedef struct VmdDemuxContext {
     int video_stream_index;
     int audio_stream_index;
 
-    unsigned int audio_type;
-    unsigned int audio_samplerate;
-    unsigned int audio_bits;
-    unsigned int audio_channels;
-
     unsigned int frame_count;
+    unsigned int frames_per_block;
     vmd_frame_t *frame_table;
     unsigned int current_frame;
 
     int sample_rate;
     int64_t audio_sample_counter;
-    int audio_frame_divisor;
-    int audio_block_align;
+    int skiphdr;
 
     unsigned char vmd_header[VMD_HEADER_SIZE];
 } VmdDemuxContext;
@@ -74,71 +71,43 @@ static int vmd_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX / 2;
 }
 
-/* This is a support function to determine the duration, in sample
- * frames, of a particular audio chunk, taking into account silent
- * encodings. */
-static int vmd_calculate_audio_duration(unsigned char *audio_chunk,
-    int audio_chunk_size, int block_align)
-{
-    unsigned char *p = audio_chunk + 16;
-    unsigned char *p_end = audio_chunk + audio_chunk_size;
-    int total_samples = 0;
-    unsigned int sound_flags;
-
-    if (audio_chunk_size < 16)
-        return 0;
-
-    sound_flags = LE_32(p);
-    p += 4;
-    while (p < p_end) {
-        total_samples += block_align;
-        if ((sound_flags & 0x01) == 0)
-            p += block_align;
-        sound_flags >>= 1;
-    }
-
-    return total_samples;
-}
-
 static int vmd_read_header(AVFormatContext *s,
                            AVFormatParameters *ap)
 {
     VmdDemuxContext *vmd = (VmdDemuxContext *)s->priv_data;
     ByteIOContext *pb = &s->pb;
-    AVStream *st;
+    AVStream *st, *vst;
     unsigned int toc_offset;
     unsigned char *raw_frame_table;
     int raw_frame_table_size;
-    unsigned char *current_frame_record;
     offset_t current_offset;
-    int i;
+    int i, j;
     unsigned int total_frames;
-    int64_t video_pts_inc;
-    int64_t current_video_pts = 0;
+    int64_t pts_inc = 1;
+    int64_t current_video_pts = 0, current_audio_pts = 0;
+    unsigned char chunk[BYTES_PER_FRAME_RECORD];
+    int num, den;
+    int sound_buffers;
 
     /* fetch the main header, including the 2 header length bytes */
     url_fseek(pb, 0, SEEK_SET);
     if (get_buffer(pb, vmd->vmd_header, VMD_HEADER_SIZE) != VMD_HEADER_SIZE)
         return AVERROR_IO;
 
-    vmd->audio_sample_counter = 0;
-    vmd->audio_frame_divisor = 1;
-    vmd->audio_block_align = 1;
-
     /* start up the decoders */
-    st = av_new_stream(s, 0);
-    if (!st)
+    vst = av_new_stream(s, 0);
+    if (!vst)
         return AVERROR_NOMEM;
-    av_set_pts_info(st, 33, 1, 90000);
-    vmd->video_stream_index = st->index;
-    st->codec->codec_type = CODEC_TYPE_VIDEO;
-    st->codec->codec_id = CODEC_ID_VMDVIDEO;
-    st->codec->codec_tag = 0;  /* no fourcc */
-    st->codec->width = LE_16(&vmd->vmd_header[12]);
-    st->codec->height = LE_16(&vmd->vmd_header[14]);
-    st->codec->extradata_size = VMD_HEADER_SIZE;
-    st->codec->extradata = av_malloc(VMD_HEADER_SIZE);
-    memcpy(st->codec->extradata, vmd->vmd_header, VMD_HEADER_SIZE);
+    av_set_pts_info(vst, 33, 1, 10);
+    vmd->video_stream_index = vst->index;
+    vst->codec->codec_type = CODEC_TYPE_VIDEO;
+    vst->codec->codec_id = CODEC_ID_VMDVIDEO;
+    vst->codec->codec_tag = 0;  /* no fourcc */
+    vst->codec->width = LE_16(&vmd->vmd_header[12]);
+    vst->codec->height = LE_16(&vmd->vmd_header[14]);
+    vst->codec->extradata_size = VMD_HEADER_SIZE;
+    vst->codec->extradata = av_mallocz(VMD_HEADER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
+    memcpy(vst->codec->extradata, vmd->vmd_header, VMD_HEADER_SIZE);
 
     /* if sample rate is 0, assume no audio */
     vmd->sample_rate = LE_16(&vmd->vmd_header[804]);
@@ -146,108 +115,131 @@ static int vmd_read_header(AVFormatContext *s,
         st = av_new_stream(s, 0);
         if (!st)
             return AVERROR_NOMEM;
-        av_set_pts_info(st, 33, 1, 90000);
         vmd->audio_stream_index = st->index;
         st->codec->codec_type = CODEC_TYPE_AUDIO;
         st->codec->codec_id = CODEC_ID_VMDAUDIO;
-        st->codec->codec_tag = 0;  /* no codec tag */
+        st->codec->codec_tag = 0;  /* no fourcc */
         st->codec->channels = (vmd->vmd_header[811] & 0x80) ? 2 : 1;
         st->codec->sample_rate = vmd->sample_rate;
-        st->codec->block_align = vmd->audio_block_align = 
-            LE_16(&vmd->vmd_header[806]);
+        st->codec->block_align = LE_16(&vmd->vmd_header[806]);
         if (st->codec->block_align & 0x8000) {
             st->codec->bits_per_sample = 16;
             st->codec->block_align = -(st->codec->block_align - 0x10000);
-        } else
-            st->codec->bits_per_sample = 16;
-//            st->codec->bits_per_sample = 8;
-        st->codec->bit_rate = st->codec->sample_rate * 
+        } else {
+            st->codec->bits_per_sample = 8;
+        }
+        st->codec->bit_rate = st->codec->sample_rate *
             st->codec->bits_per_sample * st->codec->channels;
 
-        /* for calculating pts */
-        vmd->audio_frame_divisor = st->codec->bits_per_sample / 8 / 
-            st->codec->channels;
-
-        video_pts_inc = 90000;
-        video_pts_inc *= st->codec->block_align;
-        video_pts_inc /= st->codec->sample_rate;
-    } else {
-        /* if no audio, assume 10 frames/second */
-        video_pts_inc = 90000 / 10;
+        /* calculate pts */
+        num = st->codec->block_align;
+        den = st->codec->sample_rate * st->codec->channels;
+        av_reduce(&den, &num, den, num, (1UL<<31)-1);
+        av_set_pts_info(vst, 33, num, den);
+        av_set_pts_info(st, 33, num, den);
+        pts_inc = num;
     }
 
-    /* skip over the offset table and load the table of contents; don't 
-     * care about the offset table since demuxer will calculate those 
-     * independently */
     toc_offset = LE_32(&vmd->vmd_header[812]);
     vmd->frame_count = LE_16(&vmd->vmd_header[6]);
-    url_fseek(pb, toc_offset + vmd->frame_count * 6, SEEK_SET);
+    vmd->frames_per_block = LE_16(&vmd->vmd_header[18]);
+    url_fseek(pb, toc_offset, SEEK_SET);
 
-    /* each on-disk VMD frame has an audio part and a video part; demuxer
-     * accounts them separately */
-    if(vmd->sample_rate)
-	vmd->frame_count *= 2;
     raw_frame_table = NULL;
     vmd->frame_table = NULL;
-    raw_frame_table_size = vmd->frame_count * BYTES_PER_FRAME_RECORD;
+    sound_buffers = LE_16(&vmd->vmd_header[808]);
+    raw_frame_table_size = vmd->frame_count * 6;
     raw_frame_table = av_malloc(raw_frame_table_size);
-    vmd->frame_table = av_malloc(vmd->frame_count * sizeof(vmd_frame_t));
+    if(vmd->frame_count * vmd->frames_per_block  >= UINT_MAX / sizeof(vmd_frame_t)){
+        av_log(s, AV_LOG_ERROR, "vmd->frame_count * vmd->frames_per_block too large\n");
+        return -1;
+    }
+    vmd->frame_table = av_malloc((vmd->frame_count * vmd->frames_per_block + sound_buffers) * sizeof(vmd_frame_t));
     if (!raw_frame_table || !vmd->frame_table) {
         av_free(raw_frame_table);
         av_free(vmd->frame_table);
         return AVERROR_NOMEM;
     }
-    if (get_buffer(pb, raw_frame_table, raw_frame_table_size) != 
+    if (get_buffer(pb, raw_frame_table, raw_frame_table_size) !=
         raw_frame_table_size) {
         av_free(raw_frame_table);
         av_free(vmd->frame_table);
         return AVERROR_IO;
     }
 
-    current_offset = LE_32(&vmd->vmd_header[20]);
-    current_frame_record = raw_frame_table;
-    total_frames = vmd->frame_count;
-    i = 0;
-    while (total_frames--) {
+    total_frames = 0;
+    for (i = 0; i < vmd->frame_count; i++) {
 
-        /* if the frame size is 0, do not count the frame and bring the
-         * total frame count down */
-        // note, we limit the size to 1Gb to ensure that we dont end up overflowing the size integer used to allocate the memory
-        vmd->frame_table[i].frame_size = LE_32(&current_frame_record[2]) & 0x3FFFFFFF; 
+        current_offset = LE_32(&raw_frame_table[6 * i + 2]);
 
-        /* this logic is present so that 0-length audio chunks are not
-         * accounted */
-        if (!vmd->frame_table[i].frame_size) {
-            vmd->frame_count--;  /* one less frame to count */
-            current_frame_record += BYTES_PER_FRAME_RECORD;
-            continue;
+        /* handle each entry in index block */
+        for (j = 0; j < vmd->frames_per_block; j++) {
+            int type;
+            uint32_t size;
+
+            get_buffer(pb, chunk, BYTES_PER_FRAME_RECORD);
+            type = chunk[0];
+            size = LE_32(&chunk[2]);
+            if(!size)
+                continue;
+            switch(type) {
+            case 1: /* Audio Chunk */
+                /* first audio chunk contains several audio buffers */
+                if(current_audio_pts){
+                    vmd->frame_table[total_frames].frame_offset = current_offset;
+                    vmd->frame_table[total_frames].stream_index = vmd->audio_stream_index;
+                    vmd->frame_table[total_frames].frame_size = size;
+                    memcpy(vmd->frame_table[total_frames].frame_record, chunk, BYTES_PER_FRAME_RECORD);
+                    vmd->frame_table[total_frames].pts = current_audio_pts;
+                    total_frames++;
+                    current_audio_pts += pts_inc;
+                }else{
+                    uint32_t flags;
+                    int k;
+                    int noff;
+                    int64_t pos;
+
+                    pos = url_ftell(pb);
+                    url_fseek(pb, current_offset, SEEK_SET);
+                    flags = get_le32(pb);
+                    noff = 4;
+                    url_fseek(pb, pos, SEEK_SET);
+                    av_log(s, AV_LOG_DEBUG, "Sound mapping = %08X (%i bufs)\n", flags, sound_buffers);
+                    for(k = 0; k < sound_buffers - 1; k++){
+                        if(flags & 1) { /* silent block */
+                            vmd->frame_table[total_frames].frame_size = 0;
+                        }else{
+                            vmd->frame_table[total_frames].frame_size = st->codec->block_align + (st->codec->block_align & 1);
+                        }
+                        noff += vmd->frame_table[total_frames].frame_size;
+                        vmd->frame_table[total_frames].frame_offset = current_offset + noff;
+                        vmd->frame_table[total_frames].stream_index = vmd->audio_stream_index;
+                        memcpy(vmd->frame_table[total_frames].frame_record, chunk, BYTES_PER_FRAME_RECORD);
+                        vmd->frame_table[total_frames].pts = current_audio_pts;
+                        total_frames++;
+                        current_audio_pts += pts_inc;
+                        flags >>= 1;
+                    }
+                }
+                break;
+            case 2: /* Video Chunk */
+                vmd->frame_table[total_frames].frame_offset = current_offset;
+                vmd->frame_table[total_frames].stream_index = vmd->video_stream_index;
+                vmd->frame_table[total_frames].frame_size = size;
+                memcpy(vmd->frame_table[total_frames].frame_record, chunk, BYTES_PER_FRAME_RECORD);
+                vmd->frame_table[total_frames].pts = current_video_pts;
+                total_frames++;
+                break;
+            }
+            current_offset += size;
         }
-
-        if (current_frame_record[0] == 0x02)
-            vmd->frame_table[i].stream_index = vmd->video_stream_index;
-        else
-            vmd->frame_table[i].stream_index = vmd->audio_stream_index;
-        vmd->frame_table[i].frame_offset = current_offset;
-        current_offset += vmd->frame_table[i].frame_size;
-        memcpy(vmd->frame_table[i].frame_record, current_frame_record,
-            BYTES_PER_FRAME_RECORD);
-
-        /* figure out the pts for this frame */
-        if (current_frame_record[0] == 0x02) {
-            vmd->frame_table[i].pts = current_video_pts;
-            current_video_pts += video_pts_inc;
-        } else if (current_frame_record[0] == 0x01) {
-            /* figure out the pts during the dispatch phase */
-            vmd->frame_table[i].pts = 0;
-        }
-
-        current_frame_record += BYTES_PER_FRAME_RECORD;
-        i++;
+        current_video_pts += pts_inc;
     }
 
     av_free(raw_frame_table);
 
     vmd->current_frame = 0;
+    vmd->frame_count = total_frames;
 
     return 0;
 }
@@ -271,7 +263,7 @@ static int vmd_read_packet(AVFormatContext *s,
         return AVERROR_NOMEM;
     pkt->pos= url_ftell(pb);
     memcpy(pkt->data, frame->frame_record, BYTES_PER_FRAME_RECORD);
-    ret = get_buffer(pb, pkt->data + BYTES_PER_FRAME_RECORD, 
+    ret = get_buffer(pb, pkt->data + BYTES_PER_FRAME_RECORD,
         frame->frame_size);
 
     if (ret != frame->frame_size) {
@@ -279,21 +271,11 @@ static int vmd_read_packet(AVFormatContext *s,
         ret = AVERROR_IO;
     }
     pkt->stream_index = frame->stream_index;
-    if (frame->frame_record[0] == 0x02)
-        pkt->pts = frame->pts;
-    else {
-        pkt->pts = vmd->audio_sample_counter;
-        pkt->pts *= 90000;
-        pkt->pts /= vmd->sample_rate;
-//        pkt->pts /= vmd->audio_frame_divisor;
-        vmd->audio_sample_counter += vmd_calculate_audio_duration(
-            pkt->data, pkt->size, vmd->audio_block_align);
-
-    }
-av_log(NULL, AV_LOG_INFO, " dispatching %s frame with %d bytes and pts %lld (%0.1f sec)\n",
-  (frame->frame_record[0] == 0x02) ? "video" : "audio",
-  frame->frame_size + BYTES_PER_FRAME_RECORD,
-  pkt->pts, (float)(pkt->pts / 90000.0));
+    pkt->pts = frame->pts;
+    av_log(NULL, AV_LOG_INFO, " dispatching %s frame with %d bytes and pts %"PRId64"\n",
+            (frame->frame_record[0] == 0x02) ? "video" : "audio",
+            frame->frame_size + BYTES_PER_FRAME_RECORD,
+            pkt->pts);
 
     vmd->current_frame++;
 
@@ -309,7 +291,7 @@ static int vmd_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat vmd_iformat = {
+AVInputFormat vmd_demuxer = {
     "vmd",
     "Sierra VMD format",
     sizeof(VmdDemuxContext),
@@ -318,9 +300,3 @@ static AVInputFormat vmd_iformat = {
     vmd_read_packet,
     vmd_read_close,
 };
-
-int vmd_init(void)
-{
-    av_register_input_format(&vmd_iformat);
-    return 0;
-}

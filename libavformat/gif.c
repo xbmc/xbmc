@@ -1,20 +1,22 @@
 /*
- * Animated GIF encoder
+ * Animated GIF muxer
  * Copyright (c) 2000 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /*
@@ -56,7 +58,7 @@ typedef struct {
 /* we use the standard 216 color palette */
 
 /* this script was used to create the palette:
- * for r in 00 33 66 99 cc ff; do for g in 00 33 66 99 cc ff; do echo -n "    "; for b in 00 33 66 99 cc ff; do 
+ * for r in 00 33 66 99 cc ff; do for g in 00 33 66 99 cc ff; do echo -n "    "; for b in 00 33 66 99 cc ff; do
  *   echo -n "{ 0x$r, 0x$g, 0x$b }, "; done; echo ""; done; done
  */
 
@@ -113,9 +115,6 @@ static void gif_put_bits_rev(PutBitContext *s, int n, unsigned int value)
     unsigned int bit_buf;
     int bit_cnt;
 
-#ifdef STATS
-    st_out_bit_counts[st_current_index] += n;
-#endif
     //    printf("put_bits=%d %x\n", n, value);
     assert(n == 32 || value < (1U << n));
 
@@ -129,12 +128,12 @@ static void gif_put_bits_rev(PutBitContext *s, int n, unsigned int value)
         bit_cnt+=n;
     } else {
         bit_buf |= value << (bit_cnt);
-        
+
         *s->buf_ptr = bit_buf & 0xff;
         s->buf_ptr[1] = (bit_buf >> 8) & 0xff;
         s->buf_ptr[2] = (bit_buf >> 16) & 0xff;
         s->buf_ptr[3] = (bit_buf >> 24) & 0xff;
-        
+
         //printf("bitbuf = %08x\n", bit_buf);
         s->buf_ptr+=4;
         if (s->buf_ptr >= s->buf_end)
@@ -169,7 +168,7 @@ static void gif_flush_put_bits_rev(PutBitContext *s)
 /* !RevPutBitContext */
 
 /* GIF header */
-static int gif_image_write_header(ByteIOContext *pb, 
+static int gif_image_write_header(ByteIOContext *pb,
                                   int width, int height, int loop_count,
                                   uint32_t *palette)
 {
@@ -187,7 +186,7 @@ static int gif_image_write_header(ByteIOContext *pb,
 
     /* the global palette */
     if (!palette) {
-        put_buffer(pb, (unsigned char *)gif_clut, 216*3);
+        put_buffer(pb, (const unsigned char *)gif_clut, 216*3);
         for(i=0;i<((256-216)*3);i++)
             put_byte(pb, 0);
     } else {
@@ -199,24 +198,24 @@ static int gif_image_write_header(ByteIOContext *pb,
         }
     }
 
-	/*	update: this is the 'NETSCAPE EXTENSION' that allows for looped animated gif
-		see http://members.aol.com/royalef/gifabout.htm#net-extension
+        /*        update: this is the 'NETSCAPE EXTENSION' that allows for looped animated gif
+                see http://members.aol.com/royalef/gifabout.htm#net-extension
 
-		byte   1       : 33 (hex 0x21) GIF Extension code
-		byte   2       : 255 (hex 0xFF) Application Extension Label
-		byte   3       : 11 (hex (0x0B) Length of Application Block 
-					 (eleven bytes of data to follow)
-		bytes  4 to 11 : "NETSCAPE"
-		bytes 12 to 14 : "2.0"
-		byte  15       : 3 (hex 0x03) Length of Data Sub-Block 
-					 (three bytes of data to follow)
-		byte  16       : 1 (hex 0x01)
-		bytes 17 to 18 : 0 to 65535, an unsigned integer in 
-					 lo-hi byte format. This indicate the 
-					 number of iterations the loop should 
-					 be executed.
-		bytes 19       : 0 (hex 0x00) a Data Sub-block Terminator
-	*/
+                byte   1       : 33 (hex 0x21) GIF Extension code
+                byte   2       : 255 (hex 0xFF) Application Extension Label
+                byte   3       : 11 (hex (0x0B) Length of Application Block
+                                         (eleven bytes of data to follow)
+                bytes  4 to 11 : "NETSCAPE"
+                bytes 12 to 14 : "2.0"
+                byte  15       : 3 (hex 0x03) Length of Data Sub-Block
+                                         (three bytes of data to follow)
+                byte  16       : 1 (hex 0x01)
+                bytes 17 to 18 : 0 to 65535, an unsigned integer in
+                                         lo-hi byte format. This indicate the
+                                         number of iterations the loop should
+                                         be executed.
+                bytes 19       : 0 (hex 0x00) a Data Sub-block Terminator
+        */
 
     /* application extension header */
 #ifdef GIF_ADD_APP_HEADER
@@ -241,7 +240,7 @@ static inline unsigned char gif_clut_index(uint8_t r, uint8_t g, uint8_t b)
 }
 
 
-static int gif_image_write_image(ByteIOContext *pb, 
+static int gif_image_write_image(ByteIOContext *pb,
                                  int x1, int y1, int width, int height,
                                  const uint8_t *buf, int linesize, int pix_fmt)
 {
@@ -302,7 +301,7 @@ static int gif_image_write_image(ByteIOContext *pb,
         left-=GIF_CHUNKS;
     }
     put_byte(pb, 0x00); /* end of image block */
-    
+
     return 0;
 }
 
@@ -342,8 +341,10 @@ static int gif_write_header(AVFormatContext *s)
 //        rate = video_enc->time_base.den;
     }
 
-    /* XXX: is it allowed ? seems to work so far... */
-    video_enc->pix_fmt = PIX_FMT_RGB24;
+    if (video_enc->pix_fmt != PIX_FMT_RGB24) {
+        av_log(s, AV_LOG_ERROR, "ERROR: gif only handles the rgb24 pixel format. Use -pix_fmt rgb24.\n");
+        return AVERROR_IO;
+    }
 
     gif_image_write_header(pb, width, height, loop_count, NULL);
 
@@ -351,7 +352,7 @@ static int gif_write_header(AVFormatContext *s)
     return 0;
 }
 
-static int gif_write_video(AVFormatContext *s, 
+static int gif_write_video(AVFormatContext *s,
                            AVCodecContext *enc, const uint8_t *buf, int size)
 {
     ByteIOContext *pb = &s->pb;
@@ -364,7 +365,7 @@ static int gif_write_video(AVFormatContext *s,
     put_byte(pb, 0xf9);
     put_byte(pb, 0x04); /* block size */
     put_byte(pb, 0x04); /* flags */
-    
+
     /* 1 jiffy is 1/70 s */
     /* the delay_time field indicates the number of jiffies - 1 */
     delay = gif->file_time - gif->time;
@@ -404,20 +405,7 @@ static int gif_write_trailer(AVFormatContext *s)
     return 0;
 }
 
-/* better than nothing gif image writer */
-int gif_write(ByteIOContext *pb, AVImageInfo *info)
-{
-    gif_image_write_header(pb, info->width, info->height, AVFMT_NOOUTPUTLOOP, 
-                           (uint32_t *)info->pict.data[1]);
-    gif_image_write_image(pb, 0, 0, info->width, info->height, 
-                          info->pict.data[0], info->pict.linesize[0], 
-                          PIX_FMT_PAL8);
-    put_byte(pb, 0x3b);
-    put_flush_packet(pb);
-    return 0;
-}
-
-static AVOutputFormat gif_oformat = {
+AVOutputFormat gif_muxer = {
     "gif",
     "GIF Animation",
     "image/gif",
@@ -429,12 +417,3 @@ static AVOutputFormat gif_oformat = {
     gif_write_packet,
     gif_write_trailer,
 };
-
-extern AVInputFormat gif_iformat;
-
-int gif_init(void)
-{
-    av_register_output_format(&gif_oformat);
-    av_register_input_format(&gif_iformat);
-    return 0;
-}

@@ -2,33 +2,35 @@
  * H.264 IDCT
  * Copyright (c) 2004 Michael Niedermayer <michaelni@gmx.at>
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
- 
+
 /**
  * @file h264-idct.c
  * H.264 IDCT.
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
- 
+
 #include "dsputil.h"
 
-static always_inline void idct_internal(uint8_t *dst, DCTELEM *block, int stride, int block_stride, int shift, int add){
+static av_always_inline void idct_internal(uint8_t *dst, DCTELEM *block, int stride, int block_stride, int shift, int add){
     int i;
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
 
     block[0] += 1<<(shift-1);
 
@@ -72,7 +74,7 @@ void ff_h264_lowres_idct_put_c(uint8_t *dst, int stride, DCTELEM *block){
 void ff_h264_idct8_add_c(uint8_t *dst, DCTELEM *block, int stride){
     int i;
     DCTELEM (*src)[8] = (DCTELEM(*)[8])block;
-    uint8_t *cm = cropTbl + MAX_NEG_CROP;
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
 
     block[0] += 32;
 
@@ -137,5 +139,30 @@ void ff_h264_idct8_add_c(uint8_t *dst, DCTELEM *block, int stride){
         dst[i + 5*stride] = cm[ dst[i + 5*stride] + ((b4 - b3) >> 6) ];
         dst[i + 6*stride] = cm[ dst[i + 6*stride] + ((b2 - b5) >> 6) ];
         dst[i + 7*stride] = cm[ dst[i + 7*stride] + ((b0 - b7) >> 6) ];
+    }
+}
+
+// assumes all AC coefs are 0
+void ff_h264_idct_dc_add_c(uint8_t *dst, DCTELEM *block, int stride){
+    int i, j;
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
+    int dc = (block[0] + 32) >> 6;
+    for( j = 0; j < 4; j++ )
+    {
+        for( i = 0; i < 4; i++ )
+            dst[i] = cm[ dst[i] + dc ];
+        dst += stride;
+    }
+}
+
+void ff_h264_idct8_dc_add_c(uint8_t *dst, DCTELEM *block, int stride){
+    int i, j;
+    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
+    int dc = (block[0] + 32) >> 6;
+    for( j = 0; j < 8; j++ )
+    {
+        for( i = 0; i < 8; i++ )
+            dst[i] = cm[ dst[i] + dc ];
+        dst += stride;
     }
 }

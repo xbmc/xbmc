@@ -2,19 +2,21 @@
  * JPEG image format
  * Copyright (c) 2003 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avformat.h"
 
@@ -68,7 +70,7 @@ static int jpeg_get_buffer(AVCodecContext *c, AVFrame *picture)
     }
 }
 
-static void jpeg_img_copy(uint8_t *dst, int dst_wrap, 
+static void jpeg_img_copy(uint8_t *dst, int dst_wrap,
                      uint8_t *src, int src_wrap,
                      int width, int height)
 {
@@ -82,7 +84,7 @@ static void jpeg_img_copy(uint8_t *dst, int dst_wrap,
 /* XXX: libavcodec is broken for truncated jpegs! */
 #define IO_BUF_SIZE (1024*1024)
 
-static int jpeg_read(ByteIOContext *f, 
+static int jpeg_read(ByteIOContext *f,
                      int (*alloc_cb)(void *opaque, AVImageInfo *info), void *opaque)
 {
     AVCodecContext *c;
@@ -94,7 +96,7 @@ static int jpeg_read(ByteIOContext *f,
     jctx.alloc_cb = alloc_cb;
     jctx.opaque = opaque;
     jctx.ret_code = -1; /* default return code is error */
-    
+
     c = avcodec_alloc_context();
     if (!c)
         return -1;
@@ -114,7 +116,7 @@ static int jpeg_read(ByteIOContext *f,
             break;
         inbuf_ptr = inbuf;
         while (size > 0) {
-            len = avcodec_decode_video(c, &picture1, &got_picture, 
+            len = avcodec_decode_video(c, &picture1, &got_picture,
                                        inbuf_ptr, size);
             if (len < 0)
                 goto fail;
@@ -160,7 +162,7 @@ static int jpeg_read(ByteIOContext *f,
     return jctx.ret_code;
 }
 
-#ifdef CONFIG_MUXERS
+#if defined(CONFIG_MUXERS) && defined(CONFIG_MJPEG_ENCODER)
 static int jpeg_write(ByteIOContext *pb, AVImageInfo *info)
 {
     AVCodecContext *c;
@@ -198,10 +200,10 @@ static int jpeg_write(ByteIOContext *pb, AVImageInfo *info)
     /* set the quality */
     picture->quality = 3; /* XXX: a parameter should be used */
     c->flags |= CODEC_FLAG_QSCALE;
-    
+
     if (avcodec_open(c, &mjpeg_encoder) < 0)
         goto fail1;
-    
+
     /* XXX: needs to sort out that size problem */
     outbuf_size = 1000000;
     outbuf = av_malloc(outbuf_size);
@@ -230,7 +232,7 @@ AVImageFormat jpeg_image_format = {
     jpeg_probe,
     jpeg_read,
     (1 << PIX_FMT_YUVJ420P) | (1 << PIX_FMT_YUVJ422P) | (1 << PIX_FMT_YUVJ444P),
-#ifdef CONFIG_MUXERS
+#if defined(CONFIG_MUXERS) && defined(CONFIG_MJPEG_ENCODER)
     jpeg_write,
 #else
     NULL,

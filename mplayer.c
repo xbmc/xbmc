@@ -116,7 +116,6 @@ void init_color_conversions()
 #endif //!_XBOX
 
 int slave_mode=0;
-int verbose=0;
 int identify=0;
 int quiet=0;
 

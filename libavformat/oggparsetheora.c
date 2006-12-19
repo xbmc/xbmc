@@ -1,5 +1,5 @@
 /**
-      Copyright (C) 2005  Matthieu CASTET
+      Copyright (C) 2005  Matthieu CASTET, Alex Beregszaszi
 
       Permission is hereby granted, free of charge, to any person
       obtaining a copy of this software and associated documentation
@@ -47,34 +47,50 @@ theora_header (AVFormatContext * s, int idx)
         return 0;
 
     if(!thp){
-	thp = av_mallocz(sizeof(*thp));
-	os->private = thp;
+        thp = av_mallocz(sizeof(*thp));
+        os->private = thp;
     }
 
     if (os->buf[os->pstart] == 0x80) {
         GetBitContext gb;
+        int version;
+
         init_get_bits(&gb, os->buf + os->pstart, os->psize*8);
 
         skip_bits(&gb, 7*8); /* 0x80"theora" */
-        if(get_bits(&gb, 8) != 3) /* major version */
+
+        version = get_bits(&gb, 8) << 16;
+        version |= get_bits(&gb, 8) << 8;
+        version |= get_bits(&gb, 8);
+
+        if (version < 0x030100)
+        {
+            av_log(s, AV_LOG_ERROR,
+                "Too old or unsupported Theora (%x)\n", version);
             return -1;
-        if(get_bits(&gb, 8) != 2) /* minor version */
-            return -1;
-        skip_bits(&gb, 8);      /* revision */
+        }
 
         st->codec->width = get_bits(&gb, 16) << 4;
         st->codec->height = get_bits(&gb, 16) << 4;
 
-        skip_bits(&gb, 64);
+        if (version >= 0x030400)
+            skip_bits(&gb, 164);
+        else if (version >= 0x030200)
+            skip_bits(&gb, 64);
         st->codec->time_base.den = get_bits(&gb, 32);
         st->codec->time_base.num = get_bits(&gb, 32);
-        
+        st->time_base = st->codec->time_base;
+
         st->codec->sample_aspect_ratio.num = get_bits(&gb, 24);
         st->codec->sample_aspect_ratio.den = get_bits(&gb, 24);
 
-        skip_bits(&gb, 38);
+        if (version >= 0x030200)
+            skip_bits(&gb, 38);
+        if (version >= 0x304000)
+            skip_bits(&gb, 2);
+
         thp->gpshift = get_bits(&gb, 5);
-	thp->gpmask = (1 << thp->gpshift) - 1;
+        thp->gpmask = (1 << thp->gpshift) - 1;
 
         st->codec->codec_type = CODEC_TYPE_VIDEO;
         st->codec->codec_id = CODEC_ID_THEORA;
@@ -96,15 +112,13 @@ theora_header (AVFormatContext * s, int idx)
 static uint64_t
 theora_gptopts(AVFormatContext *ctx, int idx, uint64_t gp)
 {
-    AVStream *st = ctx->streams[idx];
     ogg_t *ogg = ctx->priv_data;
     ogg_stream_t *os = ogg->streams + idx;
     theora_params_t *thp = os->private;
     uint64_t iframe = gp >> thp->gpshift;
     uint64_t pframe = gp & thp->gpmask;
 
-    return (iframe + pframe) * AV_TIME_BASE * st->codec->time_base.num /
-        st->codec->time_base.den;
+    return iframe + pframe;
 }
 
 ogg_codec_t theora_codec = {

@@ -42,7 +42,7 @@ OBJS_MPLAYER = $(SRCS_MPLAYER:.c=.o)
 VO_LIBS = $(AA_LIB) $(X_LIB) $(SDL_LIB) $(GGI_LIB) $(MP1E_LIB) $(MLIB_LIB) $(SVGA_LIB) $(DIRECTFB_LIB) $(CACA_LIB)
 AO_LIBS = $(ARTS_LIB) $(ESD_LIB) $(JACK_LIB) $(NAS_LIB) $(SGIAUDIO_LIB) $(POLYP_LIB)
 CODEC_LIBS = $(AV_LIB) $(FAME_LIB) $(MAD_LIB) $(VORBIS_LIB) $(THEORA_LIB) $(FAAD_LIB) $(LIBLZO_LIB) $(DECORE_LIB) $(XVID_LIB) $(DTS_LIB) $(PNG_LIB) $(Z_LIB) $(JPEG_LIB) $(ALSA_LIB) $(XMMS_LIB) $(X264_LIB)
-COMMON_LIBS = libmpcodecs/libmpcodecs.a $(W32_LIB) $(DS_LIB) libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a $(DVDREAD_LIB) $(CODEC_LIBS) $(FREETYPE_LIB) $(TERMCAP_LIB) $(CDPARANOIA_LIB) $(MPLAYER_NETWORK_LIB) $(WIN32_LIB) $(GIF_LIB) $(MACOSX_FRAMEWORKS) $(SMBSUPPORT_LIB) $(FRIBIDI_LIB) $(FONTCONFIG_LIB) $(ENCA_LIB)
+COMMON_LIBS = libmpcodecs/libmpcodecs.a $(W32_LIB) $(DS_LIB) libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a libswscale/libswscale.a osdep/libosdep.a $(DVDREAD_LIB) $(CODEC_LIBS) $(FREETYPE_LIB) $(TERMCAP_LIB) $(CDPARANOIA_LIB) $(MPLAYER_NETWORK_LIB) $(WIN32_LIB) $(GIF_LIB) $(MACOSX_FRAMEWORKS) $(SMBSUPPORT_LIB) $(FRIBIDI_LIB) $(FONTCONFIG_LIB) $(ENCA_LIB)
 
 CFLAGS = $(OPTFLAGS) -I. \
          $(CACA_INC) \
@@ -68,10 +68,11 @@ PARTS = libmpdemux \
         libmpcodecs \
         libavutil \
         libavcodec \
+        libpostproc \
         libavformat \
+        libswscale \
         libao2 \
         osdep \
-        postproc \
         input \
         libvo \
         libaf \
@@ -117,7 +118,7 @@ ifeq ($(MENCODER),yes)
 ALL_PRG += $(PRG_MENCODER)
 endif
 
-COMMON_DEPS = $(W32_DEP) $(DS_DEP) $(MP1E_DEP) $(AV_DEP) libmpdemux/libmpdemux.a libmpcodecs/libmpcodecs.a libao2/libao2.a osdep/libosdep.a postproc/libswscale.a input/libinput.a libvo/libvo.a libaf/libaf.a
+COMMON_DEPS = $(W32_DEP) $(DS_DEP) $(MP1E_DEP) $(AV_DEP) libmpdemux/libmpdemux.a libmpcodecs/libmpcodecs.a libao2/libao2.a osdep/libosdep.a libswscale/libswscale.a input/libinput.a libvo/libvo.a libaf/libaf.a
 
 ifeq ($(MP3LIB),yes)
 COMMON_DEPS += mp3lib/libMP3.a
@@ -200,8 +201,14 @@ libavutil/libavutil.a:
 libavcodec/libavcodec.a:
 	$(MAKE) -C libavcodec LIBPREF=lib LIBSUF=.a
 
+libpostproc/libpostproc.a:
+	$(MAKE) -C libpostproc LIBPREF=lib LIBSUF=.a
+
 libavformat/libavformat.a:
 	$(MAKE) -C libavformat LIBPREF=lib LIBSUF=.a
+
+libswscale/libswscale.a:
+	$(MAKE) -C libswscale LIBPREF=lib LIBSUF=.a
 
 libmpeg2/libmpeg2.a:
 	$(MAKE) -C libmpeg2
@@ -233,17 +240,11 @@ Gui/libgui.a:
 osdep/libosdep.a:
 	$(MAKE) -C osdep
 
-postproc/libswscale.a:
-	$(MAKE) -C postproc
-
 input/libinput.a:
 	$(MAKE) -C input
 
 libmenu/libmenu.a:
 	$(MAKE) -C libmenu
-
-libavcodec/libpostproc/libpostproc.so:
-	$(MAKE) -C libavcodec/libpostproc
 
 MPLAYER_DEP = $(OBJS_MPLAYER) $(COMMON_DEPS)
 

@@ -2,19 +2,21 @@
  * Real Audio 1.0 (14.4K)
  * Copyright (c) 2003 the ffmpeg project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #ifndef RA144TABLES_H
@@ -2302,7 +2304,7 @@ static const signed short etable2[5120]={
 0x0004,0x0016,0xfff6,0xfff0,0x0024,0x0005,0x000b,0xffc8,
 0xffdb,0xfffa,0x000a,0x0005,0x000d,0x0003,0xfffa,0x0005,
 0xfff5,0xfffc,0x0013,0x0005,0x0010,0xffd7,0xffe8,0xfff3};
- 
+
 static const unsigned long ftable1[128]={
 0x4cc9f,0x482af,0x47bd8,0x44700,0x5238b,0x47377,0x4898a,0x411fd,
 0x4f8b7,0x4a7d5,0x4bd1b,0x47feb,0x5554b,0x49414,0x4c9d4,0x4403c,

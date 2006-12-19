@@ -1,4 +1,22 @@
-/* motion test. (c) 2001 Fabrice Bellard. */
+/*
+ * (c) 2001 Fabrice Bellard
+ *
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 
 /**
  * @file motion_test.c
@@ -15,8 +33,11 @@
 
 #include "i386/mmx.h"
 
+#undef printf
+
 int pix_abs16x16_mmx(uint8_t *blk1, uint8_t *blk2, int lx);
 int pix_abs16x16_mmx1(uint8_t *blk1, uint8_t *blk2, int lx);
+int pix_abs16x16_c(uint8_t *blk1, uint8_t *blk2, int lx);
 int pix_abs16x16_x2_mmx(uint8_t *blk1, uint8_t *blk2, int lx);
 int pix_abs16x16_x2_mmx1(uint8_t *blk1, uint8_t *blk2, int lx);
 int pix_abs16x16_x2_c(uint8_t *blk1, uint8_t *blk2, int lx);
@@ -78,10 +99,10 @@ void test_motion(const char *name,
 
         fill_random(img1, WIDTH * HEIGHT);
         fill_random(img2, WIDTH * HEIGHT);
-        
+
         for(y=0;y<HEIGHT-17;y++) {
             for(x=0;x<WIDTH-17;x++) {
-                ptr = img2 + y * WIDTH + x; 
+                ptr = img2 + y * WIDTH + x;
                 d1 = test_func(img1, ptr, WIDTH);
                 d2 = ref_func(img1, ptr, WIDTH);
                 if (d1 != d2) {
@@ -91,14 +112,14 @@ void test_motion(const char *name,
         }
     }
     emms();
-    
+
     /* speed test */
     ti = gettime();
     d1 = 0;
     for(it=0;it<NB_ITS;it++) {
         for(y=0;y<HEIGHT-17;y++) {
             for(x=0;x<WIDTH-17;x++) {
-                ptr = img2 + y * WIDTH + x; 
+                ptr = img2 + y * WIDTH + x;
                 d1 += test_func(img1, ptr, WIDTH);
             }
         }
@@ -106,9 +127,9 @@ void test_motion(const char *name,
     emms();
     dummy = d1; /* avoid optimisation */
     ti = gettime() - ti;
-    
-    printf("  %0.0f kop/s\n", 
-           (double)NB_ITS * (WIDTH - 16) * (HEIGHT - 16) / 
+
+    printf("  %0.0f kop/s\n",
+           (double)NB_ITS * (WIDTH - 16) * (HEIGHT - 16) /
            (double)(ti / 1000.0));
 }
 
@@ -116,7 +137,7 @@ void test_motion(const char *name,
 int main(int argc, char **argv)
 {
     int c;
-    
+
     for(;;) {
         c = getopt(argc, argv, "h");
         if (c == -1)
@@ -127,7 +148,7 @@ int main(int argc, char **argv)
             break;
         }
     }
-               
+
     printf("ffmpeg motion test\n");
 
     test_motion("mmx", pix_abs16x16_mmx, pix_abs16x16_c);

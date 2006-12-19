@@ -2,19 +2,21 @@
  * Id Quake II CIN File Demuxer
  * Copyright (c) 2003 The ffmpeg Project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -255,7 +257,7 @@ static int idcin_read_packet(AVFormatContext *s,
         /* skip the number of decoded bytes (always equal to width * height) */
         url_fseek(pb, 4, SEEK_CUR);
         chunk_size -= 4;
-        ret= av_get_packet(pb, pkt, chunk_size); 
+        ret= av_get_packet(pb, pkt, chunk_size);
         if (ret != chunk_size)
             return AVERROR_IO;
         pkt->stream_index = idcin->video_stream_index;
@@ -288,7 +290,7 @@ static int idcin_read_close(AVFormatContext *s)
     return 0;
 }
 
-static AVInputFormat idcin_iformat = {
+AVInputFormat idcin_demuxer = {
     "idcin",
     "Id CIN format",
     sizeof(IdcinDemuxContext),
@@ -297,9 +299,3 @@ static AVInputFormat idcin_iformat = {
     idcin_read_packet,
     idcin_read_close,
 };
-
-int idcin_init(void)
-{
-    av_register_input_format(&idcin_iformat);
-    return 0;
-}

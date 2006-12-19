@@ -1,20 +1,42 @@
+/*
+ * MPEG1 codec / MPEG2 decoder
+ * copyright (c) 2000,2001 Fabrice Bellard
+ * copyright (c) 2002-2004 Michael Niedermayer <michaelni@gmx.at>
+ *
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
 /**
  * @file mpeg12data.h
  * MPEG1/2 tables.
  */
 
-const int16_t ff_mpeg1_default_intra_matrix[64] = {
-	8, 16, 19, 22, 26, 27, 29, 34,
-	16, 16, 22, 24, 27, 29, 34, 37,
-	19, 22, 26, 27, 29, 34, 34, 38,
-	22, 22, 26, 27, 29, 34, 37, 40,
-	22, 26, 27, 29, 32, 35, 40, 48,
-	26, 27, 29, 32, 35, 40, 48, 58,
-	26, 27, 29, 34, 38, 46, 56, 69,
-	27, 29, 35, 38, 46, 56, 69, 83
+const uint16_t ff_mpeg1_default_intra_matrix[64] = {
+        8, 16, 19, 22, 26, 27, 29, 34,
+        16, 16, 22, 24, 27, 29, 34, 37,
+        19, 22, 26, 27, 29, 34, 34, 38,
+        22, 22, 26, 27, 29, 34, 37, 40,
+        22, 26, 27, 29, 32, 35, 40, 48,
+        26, 27, 29, 32, 35, 40, 48, 58,
+        26, 27, 29, 34, 38, 46, 56, 69,
+        27, 29, 35, 38, 46, 56, 69, 83
 };
 
-const int16_t ff_mpeg1_default_non_intra_matrix[64] = {
+const uint16_t ff_mpeg1_default_non_intra_matrix[64] = {
     16, 16, 16, 16, 16, 16, 16, 16,
     16, 16, 16, 16, 16, 16, 16, 16,
     16, 16, 16, 16, 16, 16, 16, 16,
@@ -32,10 +54,10 @@ static const unsigned char vlc_dc_lum_bits[12] = {
     3, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 9,
 };
 
-const uint16_t vlc_dc_chroma_code[12] = {
+static const uint16_t vlc_dc_chroma_code[12] = {
     0x0, 0x1, 0x2, 0x6, 0xe, 0x1e, 0x3e, 0x7e, 0xfe, 0x1fe, 0x3fe, 0x3ff,
 };
-const unsigned char vlc_dc_chroma_bits[12] = {
+static const unsigned char vlc_dc_chroma_bits[12] = {
     2, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10,
 };
 
@@ -87,20 +109,20 @@ static const uint16_t mpeg2_vlc[113][2] = {
   {0x20, 8}, {0x16,13}, {0x15,13}, {0x1f,15},
   {0x1e,15}, {0x1d,15}, {0x1c,15}, {0x1b,15},
   {0x1a,15}, {0x19,15}, {0x13,16}, {0x12,16},
-  {0x11,16}, {0x10,16}, {0x05, 5}, {0x07, 7}, 
-  {0xfc, 8}, {0x0c,10}, {0x14,13}, {0x07, 5}, 
-  {0x26, 8}, {0x1c,12}, {0x13,13}, {0x06, 6}, 
-  {0xfd, 8}, {0x12,12}, {0x07, 6}, {0x04, 9}, 
-  {0x12,13}, {0x06, 7}, {0x1e,12}, {0x14,16}, 
-  {0x04, 7}, {0x15,12}, {0x05, 7}, {0x11,12}, 
-  {0x78, 7}, {0x11,13}, {0x7a, 7}, {0x10,13}, 
-  {0x21, 8}, {0x1a,16}, {0x25, 8}, {0x19,16}, 
-  {0x24, 8}, {0x18,16}, {0x05, 9}, {0x17,16}, 
-  {0x07, 9}, {0x16,16}, {0x0d,10}, {0x15,16}, 
-  {0x1f,12}, {0x1a,12}, {0x19,12}, {0x17,12}, 
-  {0x16,12}, {0x1f,13}, {0x1e,13}, {0x1d,13}, 
-  {0x1c,13}, {0x1b,13}, {0x1f,16}, {0x1e,16}, 
-  {0x1d,16}, {0x1c,16}, {0x1b,16}, 
+  {0x11,16}, {0x10,16}, {0x05, 5}, {0x07, 7},
+  {0xfc, 8}, {0x0c,10}, {0x14,13}, {0x07, 5},
+  {0x26, 8}, {0x1c,12}, {0x13,13}, {0x06, 6},
+  {0xfd, 8}, {0x12,12}, {0x07, 6}, {0x04, 9},
+  {0x12,13}, {0x06, 7}, {0x1e,12}, {0x14,16},
+  {0x04, 7}, {0x15,12}, {0x05, 7}, {0x11,12},
+  {0x78, 7}, {0x11,13}, {0x7a, 7}, {0x10,13},
+  {0x21, 8}, {0x1a,16}, {0x25, 8}, {0x19,16},
+  {0x24, 8}, {0x18,16}, {0x05, 9}, {0x17,16},
+  {0x07, 9}, {0x16,16}, {0x0d,10}, {0x15,16},
+  {0x1f,12}, {0x1a,12}, {0x19,12}, {0x17,12},
+  {0x16,12}, {0x1f,13}, {0x1e,13}, {0x1d,13},
+  {0x1c,13}, {0x1b,13}, {0x1f,16}, {0x1e,16},
+  {0x1d,16}, {0x1c,16}, {0x1b,16},
   {0x01,6}, /* escape */
   {0x06,4}, /* EOB */
 };
@@ -332,7 +354,7 @@ static const uint8_t mbMotionVectorTable[17][2] = {
 { 0xc, 10 },
 };
 
-static const AVRational frame_rate_tab[] = {
+const AVRational ff_frame_rate_tab[] = {
     {    0,    0},
     {24000, 1001},
     {   24,    1},
@@ -367,7 +389,7 @@ const uint8_t ff_mpeg1_dc_scale_table[128]={
     8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
 };
 
-const static uint8_t mpeg2_dc_scale_table1[128]={
+static const uint8_t mpeg2_dc_scale_table1[128]={
 //  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
@@ -375,7 +397,7 @@ const static uint8_t mpeg2_dc_scale_table1[128]={
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
 };
 
-static const uint8_t mpeg2_dc_scale_table2[128]={ 
+static const uint8_t mpeg2_dc_scale_table2[128]={
 //  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
@@ -383,7 +405,7 @@ static const uint8_t mpeg2_dc_scale_table2[128]={
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 };
 
-static const uint8_t mpeg2_dc_scale_table3[128]={ 
+static const uint8_t mpeg2_dc_scale_table3[128]={
 //  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -395,7 +417,7 @@ static const uint8_t *mpeg2_dc_scale_table[4]={
     ff_mpeg1_dc_scale_table,
     mpeg2_dc_scale_table1,
     mpeg2_dc_scale_table2,
-    mpeg2_dc_scale_table3,    
+    mpeg2_dc_scale_table3,
 };
 
 static const float mpeg1_aspect[16]={
@@ -403,7 +425,7 @@ static const float mpeg1_aspect[16]={
     1.0000,
     0.6735,
     0.7031,
-    
+
     0.7615,
     0.8055,
     0.8437,

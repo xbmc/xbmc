@@ -5,13 +5,29 @@
  * distributed under the GNU GPL. It is redistributed with ffmpeg under the
  * GNU LGPL using the common understanding that data tables necessary for
  * decoding algorithms are not necessarily licensable.
+ *
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef TRUEMOTION1DATA_H
 #define TRUEMOTION1DATA_H
 
 /* Y delta tables, skinny and fat */
 static const int16_t ydt1[8] = { 0, -2, 2, -6, 6, -12, 12, -12 };
-static const int16_t ydt2[8] = { 0, -2, 2, -6, 6, -12, 12, -12 };
+static const int16_t ydt2[8] = { 0, -2, 4, -6, 8, -12, 12, -12 };
 static const int16_t ydt3[8] = { 4, -6, 20, -20, 46, -46, 94, -94 };
 static const int16_t fat_ydt3[8] = { 0, -15, 50, -50, 115, -115, 235, -235 };
 static const int16_t ydt4[8] = { 0, -4, 4, -16, 16, -36, 36, -80 };
@@ -29,7 +45,7 @@ static const int16_t fat_cdt3[8] = { 0, 40, 80, -76, 160, -154, 236, -236 };
 /* all the delta tables to choose from, at all 4 delta levels */
 static const int16_t *ydts[] = { ydt1, ydt2, ydt3, ydt4, NULL };
 static const int16_t *fat_ydts[] = { fat_ydt3, fat_ydt3, fat_ydt3, fat_ydt4, NULL };
-static const int16_t *cdts[] = { cdt1, cdt2, cdt3, cdt3, NULL };
+static const int16_t *cdts[] = { cdt1, cdt1, cdt2, cdt3, NULL };
 static const int16_t *fat_cdts[] = { fat_cdt2, fat_cdt2, fat_cdt2, fat_cdt3, NULL };
 
 static const uint8_t pc_tbl2[] = {

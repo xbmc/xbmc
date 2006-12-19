@@ -1,22 +1,25 @@
-/* 
- * MP3 encoder and decoder
+/*
+ * MP3 muxer and demuxer
  * Copyright (c) 2003 Fabrice Bellard.
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avformat.h"
+#include "mpegaudio.h"
 
 #define ID3_HEADER_SIZE 10
 #define ID3_TAG_SIZE 128
@@ -166,7 +169,7 @@ static int id3_match(const uint8_t *buf)
             (buf[9] & 0x80) == 0);
 }
 
-static void id3_get_string(char *str, int str_size, 
+static void id3_get_string(char *str, int str_size,
                            const uint8_t *buf, int buf_size)
 {
     int i, c;
@@ -189,7 +192,7 @@ static int id3_parse_tag(AVFormatContext *s, const uint8_t *buf)
 {
     char str[5];
     int genre;
-    
+
     if (!(buf[0] == 'T' &&
           buf[1] == 'A' &&
           buf[2] == 'G'))
@@ -240,6 +243,45 @@ static void id3_create_tag(AVFormatContext *s, uint8_t *buf)
 }
 
 /* mp3 read */
+
+static int mp3_read_probe(AVProbeData *p)
+{
+    int max_frames, first_frames;
+    int fsize, frames, sample_rate;
+    uint32_t header;
+    uint8_t *buf, *buf2, *end;
+    AVCodecContext avctx;
+
+    if(p->buf_size < ID3_HEADER_SIZE)
+        return 0;
+
+    if(id3_match(p->buf))
+        return AVPROBE_SCORE_MAX/2+1; // this must be less then mpeg-ps because some retards put id3 tage before mpeg-ps files
+
+    max_frames = 0;
+    buf = p->buf;
+    end = buf + FFMIN(4096, p->buf_size - sizeof(uint32_t));
+
+    for(; buf < end; buf++) {
+        buf2 = buf;
+
+        for(frames = 0; buf2 < end; frames++) {
+            header = (buf2[0] << 24) | (buf2[1] << 16) | (buf2[2] << 8) | buf2[3];
+            fsize = mpa_decode_header(&avctx, header, &sample_rate);
+            if(fsize < 0)
+                break;
+            buf2 += fsize;
+        }
+        max_frames = FFMAX(max_frames, frames);
+        if(buf == p->buf)
+            first_frames= frames;
+    }
+    if   (first_frames>=3) return AVPROBE_SCORE_MAX/2+1;
+    else if(max_frames>=3) return AVPROBE_SCORE_MAX/4;
+    else if(max_frames>=1) return 1;
+    else                   return 0;
+}
+
 static int mp3_read_header(AVFormatContext *s,
                            AVFormatParameters *ap)
 {
@@ -254,7 +296,7 @@ static int mp3_read_header(AVFormatContext *s,
     st->codec->codec_type = CODEC_TYPE_AUDIO;
     st->codec->codec_id = CODEC_ID_MP3;
     st->need_parsing = 1;
-    
+
     /* try to get the TAG */
     if (!url_is_streamed(&s->pb)) {
         /* XXX: change that */
@@ -294,7 +336,7 @@ static int mp3_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     int ret, size;
     //    AVStream *st = s->streams[0];
-    
+
     size= MP3_PACKET_SIZE;
 
     ret= av_get_packet(&s->pb, pkt, size);
@@ -342,19 +384,20 @@ static int mp3_write_trailer(struct AVFormatContext *s)
 }
 #endif //CONFIG_MUXERS
 
-AVInputFormat mp3_iformat = {
+#ifdef CONFIG_MP3_DEMUXER
+AVInputFormat mp3_demuxer = {
     "mp3",
     "MPEG audio",
     0,
-    NULL,
+    mp3_read_probe,
     mp3_read_header,
     mp3_read_packet,
     mp3_read_close,
     .extensions = "mp2,mp3,m2a", /* XXX: use probe */
 };
-
-#ifdef CONFIG_MUXERS
-AVOutputFormat mp2_oformat = {
+#endif
+#ifdef CONFIG_MP2_MUXER
+AVOutputFormat mp2_muxer = {
     "mp2",
     "MPEG audio layer 2",
     "audio/x-mpeg",
@@ -370,9 +413,9 @@ AVOutputFormat mp2_oformat = {
     mp3_write_packet,
     mp3_write_trailer,
 };
-
-#ifdef CONFIG_MP3LAME
-AVOutputFormat mp3_oformat = {
+#endif
+#ifdef CONFIG_MP3_MUXER
+AVOutputFormat mp3_muxer = {
     "mp3",
     "MPEG audio layer 3",
     "audio/x-mpeg",
@@ -385,16 +428,3 @@ AVOutputFormat mp3_oformat = {
     mp3_write_trailer,
 };
 #endif
-#endif //CONFIG_MUXERS
-
-int mp3_init(void)
-{
-    av_register_input_format(&mp3_iformat);
-#ifdef CONFIG_MUXERS
-    av_register_output_format(&mp2_oformat);
-#ifdef CONFIG_MP3LAME
-    av_register_output_format(&mp3_oformat);
-#endif    
-#endif //CONFIG_MUXERS
-    return 0;
-}

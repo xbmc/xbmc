@@ -2,90 +2,92 @@
  * Real Audio 1.0 (14.4K)
  * Copyright (c) 2003 the ffmpeg project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include "avcodec.h"
 #include "ra144.h"
 
-#define DATABLOCK1	20			/* size of 14.4 input block in bytes */
-#define DATACHUNK1	1440			/* size of 14.4 input chunk in bytes */
-#define AUDIOBLOCK	160			/* size of output block in 16-bit words (320 bytes) */
-#define AUDIOBUFFER	12288			/* size of output buffer in 16-bit words (24576 bytes) */
+#define DATABLOCK1      20      /* size of 14.4 input block in bytes */
+#define DATACHUNK1      1440    /* size of 14.4 input chunk in bytes */
+#define AUDIOBLOCK      160     /* size of output block in 16-bit words (320 bytes) */
+#define AUDIOBUFFER     12288   /* size of output buffer in 16-bit words (24576 bytes) */
 /* consts */
-#define NBLOCKS		4				/* number of segments within a block */
-#define BLOCKSIZE	40				/* (quarter) block size in 16-bit words (80 bytes) */
-#define HALFBLOCK	20				/* BLOCKSIZE/2 */
-#define BUFFERSIZE	146				/* for do_output */
+#define NBLOCKS         4       /* number of segments within a block */
+#define BLOCKSIZE       40      /* (quarter) block size in 16-bit words (80 bytes) */
+#define HALFBLOCK       20      /* BLOCKSIZE/2 */
+#define BUFFERSIZE      146     /* for do_output */
 
 
 /* internal globals */
 typedef struct {
-	unsigned int	 resetflag, val, oldval;
-	unsigned int	 unpacked[28];		/* buffer for unpacked input */
-	unsigned int	*iptr;				/* pointer to current input (from unpacked) */
-	unsigned int	 gval;
-	unsigned short	*gsp;
-	unsigned int	 gbuf1[8];
-	unsigned short	 gbuf2[120];
-	signed   short	 output_buffer[40];
-	unsigned int	*decptr;			/* decoder ptr */
-	signed   short	*decsp;
+        unsigned int     resetflag, val, oldval;
+        unsigned int     unpacked[28];          /* buffer for unpacked input */
+        unsigned int    *iptr;                  /* pointer to current input (from unpacked) */
+        unsigned int     gval;
+        unsigned short  *gsp;
+        unsigned int     gbuf1[8];
+        unsigned short   gbuf2[120];
+        signed   short   output_buffer[40];
+        unsigned int    *decptr;                /* decoder ptr */
+        signed   short  *decsp;
 
-	/* the swapped buffers */
-	unsigned int	 swapb1a[10];
-	unsigned int	 swapb2a[10];
-	unsigned int	 swapb1b[10];
-	unsigned int	 swapb2b[10];
-	unsigned int	*swapbuf1;
-	unsigned int	*swapbuf2;
-	unsigned int	*swapbuf1alt;
-	unsigned int	*swapbuf2alt;
+        /* the swapped buffers */
+        unsigned int     swapb1a[10];
+        unsigned int     swapb2a[10];
+        unsigned int     swapb1b[10];
+        unsigned int     swapb2b[10];
+        unsigned int    *swapbuf1;
+        unsigned int    *swapbuf2;
+        unsigned int    *swapbuf1alt;
+        unsigned int    *swapbuf2alt;
 
-	unsigned int buffer[5];
-	unsigned short int buffer_2[148];
-	unsigned short int buffer_a[40];
-	unsigned short int buffer_b[40];
-	unsigned short int buffer_c[40];
-	unsigned short int buffer_d[40];
+        unsigned int buffer[5];
+        unsigned short int buffer_2[148];
+        unsigned short int buffer_a[40];
+        unsigned short int buffer_b[40];
+        unsigned short int buffer_c[40];
+        unsigned short int buffer_d[40];
 
-	unsigned short int work[50];
-	unsigned short *sptr;
+        unsigned short int work[50];
+        unsigned short *sptr;
 
-	int buffer1[10];
-	int buffer2[10];
+        int buffer1[10];
+        int buffer2[10];
 
-	signed short wavtable1[2304];
-	unsigned short wavtable2[2304];
+        signed short wavtable1[2304];
+        unsigned short wavtable2[2304];
 } Real144_internal;
 
 static int ra144_decode_init(AVCodecContext * avctx)
 {
-	Real144_internal *glob=avctx->priv_data;
+        Real144_internal *glob=avctx->priv_data;
 
-	memset(glob,0,sizeof(Real144_internal));
-	glob->resetflag=1;
-	glob->swapbuf1=glob->swapb1a;
-	glob->swapbuf2=glob->swapb2a;
-	glob->swapbuf1alt=glob->swapb1b;
-	glob->swapbuf2alt=glob->swapb2b;
+        memset(glob,0,sizeof(Real144_internal));
+        glob->resetflag=1;
+        glob->swapbuf1=glob->swapb1a;
+        glob->swapbuf2=glob->swapb2a;
+        glob->swapbuf1alt=glob->swapb1b;
+        glob->swapbuf2alt=glob->swapb2b;
 
-	memcpy(glob->wavtable1,wavtable1,sizeof(wavtable1));
-	memcpy(glob->wavtable2,wavtable2,sizeof(wavtable2));
+        memcpy(glob->wavtable1,wavtable1,sizeof(wavtable1));
+        memcpy(glob->wavtable2,wavtable2,sizeof(wavtable2));
 
-	return 0;
+        return 0;
 }
 
 static void final(Real144_internal *glob, short *i1, short *i2, void *out, int *statbuf, int len);
@@ -107,10 +109,10 @@ static void do_voice(int *a1, int *a2)
   int *b1,*b2;
   int x,y;
   int *ptr,*tmp;
-  
+
   b1=buffer;
   b2=a2;
-  
+
   for (x=0;x<10;x++) {
     b1[x]=(*a1)<<4;
 
@@ -123,7 +125,7 @@ static void do_voice(int *a1, int *a2)
     b1=b2;
     b2=tmp;
     a1++;
-  }  
+  }
   ptr=a2+10;
   while (ptr>a2) (*a2++)>>=4;
 }
@@ -190,7 +192,7 @@ static void add_wav(Real144_internal *glob, int n, int f, int m1, int m2, int m3
   ptr=glob->wavtable1+n*9;
   ptr2=glob->wavtable2+n*9;
   if (f!=0) {
-    a=((*ptr)*m1)>>((*ptr2)+1); 
+    a=((*ptr)*m1)>>((*ptr2)+1);
   } else {
     a=0;
   }
@@ -299,7 +301,7 @@ static void unpack_input(unsigned char *input, unsigned int *output)
     *(output++)=ptr[x];
     *(output++)=ptr[x+2];
     *(output++)=ptr[x+3];
-    *(output++)=ptr[x+1];    
+    *(output++)=ptr[x+1];
   }
 }
 
@@ -438,10 +440,10 @@ static int ra144_decode_frame(AVCodecContext * avctx,
 
   if(buf_size==0)
       return 0;
-  
+
   datao = data;
   unpack_input(buf,glob->unpacked);
-  
+
   glob->iptr=glob->unpacked;
   glob->val=decodetable[0][(*(glob->iptr++))<<1];
 

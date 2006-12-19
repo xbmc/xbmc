@@ -2,19 +2,21 @@
  *
  * Copyright (C) 2003 the ffmpeg project
  *
- * This library is free software; you can redistribute it and/or
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * Creative YUV (CYUV) Video Decoder
  *   by Mike Melanson (melanson@pcisys.net)
@@ -24,10 +26,10 @@
  */
 
 /**
- * @file cyuv.c 
+ * @file cyuv.c
  * Creative YUV (CYUV) Video Decoder.
  */
- 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -61,7 +63,7 @@ static int cyuv_decode_init(AVCodecContext *avctx)
     return 0;
 }
 
-static int cyuv_decode_frame(AVCodecContext *avctx, 
+static int cyuv_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
                              uint8_t *buf, int buf_size)
 {
@@ -75,9 +77,9 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
     int v_ptr;
 
     /* prediction error tables (make it clear that they are signed values) */
-    signed char *y_table = buf +  0;
-    signed char *u_table = buf + 16;
-    signed char *v_table = buf + 32;
+    signed char *y_table = (signed char*)buf +  0;
+    signed char *u_table = (signed char*)buf + 16;
+    signed char *v_table = (signed char*)buf + 32;
 
     unsigned char y_pred, u_pred, v_pred;
     int stream_ptr;
@@ -114,7 +116,7 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
 
     /* iterate through each line in the height */
     for (y_ptr = 0, u_ptr = 0, v_ptr = 0;
-         y_ptr < (s->height * s->frame.linesize[0]); 
+         y_ptr < (s->height * s->frame.linesize[0]);
          y_ptr += s->frame.linesize[0] - s->width,
          u_ptr += s->frame.linesize[1] - s->width / 4,
          v_ptr += s->frame.linesize[2] - s->width / 4) {
