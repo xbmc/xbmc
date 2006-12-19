@@ -96,8 +96,12 @@ static struct {
 	{ "application/x-ogg", DEMUXER_TYPE_OGG },
 	// NullSoft Streaming Video
 	{ "video/nsv", DEMUXER_TYPE_NSV},
-	{ "misc/ultravox", DEMUXER_TYPE_NSV}
-
+	{ "misc/ultravox", DEMUXER_TYPE_NSV},
+#ifdef USE_LIBAVFORMAT
+	// Flash Video
+	{ "video/x-flv", DEMUXER_TYPE_LAVF},
+    { "video/flv", DEMUXER_TYPE_LAVF},
+#endif
 };
 
 /*
@@ -1537,7 +1541,8 @@ try_livedotcom:
 		case DEMUXER_TYPE_PLAYLIST:
 		case DEMUXER_TYPE_UNKNOWN:
 		case DEMUXER_TYPE_NSV: 
-    case DEMUXER_TYPE_AAC:
+        case DEMUXER_TYPE_AAC:
+        case DEMUXER_TYPE_LAVF:
 			// Generic start, doesn't need to filter
 			// the network stream, it's a raw stream
 			ret = nop_streaming_start( stream );
