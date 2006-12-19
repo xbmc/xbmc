@@ -263,7 +263,7 @@ static int init(sh_video_t *sh){
 #else
     if(lavc_codec->id == CODEC_ID_MPEG2VIDEO_XVMC){
 #endif
-        mp_msg(MSGT_DECVIDEO, MSGL_INFO, "vd_ffmpeg: XVMC accelerated codec\n");
+        mp_msg(MSGT_DECVIDEO, MSGL_INFO, MSGTR_MPCODECS_XVMCAcceleratedCodec);
         assert(ctx->do_dr1);//these are must to!
         assert(ctx->do_slices); //it is (vo_)ffmpeg bug if this fails
         avctx->flags|= CODEC_FLAG_EMU_EDGE;//do i need that??!!
@@ -423,7 +423,7 @@ static void uninit(sh_video_t *sh){
         for(i=1; i<32; i++){
             mp_msg(MSGT_DECVIDEO, MSGL_INFO,"QP: %d, count: %d\n", i, ctx->qp_stat[i]);
         }
-        mp_msg(MSGT_DECVIDEO, MSGL_INFO,"Arithmetic mean of QP: %2.4f, Harmonic mean of QP: %2.4f\n", 
+        mp_msg(MSGT_DECVIDEO, MSGL_INFO,MSGTR_MPCODECS_ArithmeticMeanOfQP, 
             ctx->qp_sum / avctx->coded_frame->coded_picture_number,
             1.0/(ctx->inv_qp_sum / avctx->coded_frame->coded_picture_number)
             );
@@ -592,7 +592,7 @@ static int get_buffer(AVCodecContext *avctx, AVFrame *pic){
     
   if (!pic->buffer_hints) {
     if(ctx->b_count>1 || ctx->ip_count>2){
-        mp_msg(MSGT_DECVIDEO, MSGL_WARN, "DR1 failure\n");
+        mp_msg(MSGT_DECVIDEO, MSGL_WARN, MSGTR_MPCODECS_DRIFailure);
 
         ctx->do_dr1=0; //FIXME
         avctx->get_buffer= avcodec_default_get_buffer;
@@ -874,7 +874,7 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
     mpi=mpcodecs_get_image(sh, MP_IMGTYPE_EXPORT, MP_IMGFLAG_PRESERVE,
 	avctx->width, avctx->height);
     if(!mpi){	// temporary!
-	mp_msg(MSGT_DECVIDEO, MSGL_WARN, "couldn't allocate image for codec\n");
+	mp_msg(MSGT_DECVIDEO, MSGL_WARN, MSGTR_MPCODECS_CouldntAllocateImageForCodec);
 	return NULL;
     }
     
@@ -928,7 +928,7 @@ int i;
     }
 #endif
     for(i=0;fmt[i]!=-1;i++){
-        mp_msg(MSGT_DECVIDEO, MSGL_INFO, "trying pixfmt=%d\n",i);
+        mp_msg(MSGT_DECVIDEO, MSGL_INFO, MSGTR_MPCODECS_TryingPixfmt,i);
         if( init_vo(sh,fmt[i]) >= 0)
 	    return fmt[i];
     }
