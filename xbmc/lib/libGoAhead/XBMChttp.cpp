@@ -2339,6 +2339,31 @@ int CXbmcHttp::xbmcSetBroadcast(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Wrong number of parameters");
 }
 
+int CXbmcHttp::xbmcGetSkinSetting(int numParas, CStdString paras[])
+//parameter=type;name
+//type: 0=bool, 1=string
+{
+  if (numParas<2)
+    return SetResponse(openTag+"Error:Missing parameters");
+  else
+  {
+    if (atoi(paras[0]) == 0)
+    {
+      int string = g_settings.TranslateSkinBool(paras[1]);
+      bool value = g_settings.GetSkinBool(string);
+      if (value==false)
+        return SetResponse(openTag+"False");
+      else
+        return SetResponse(openTag+"True");
+    }
+    else
+    {
+      int string = g_settings.TranslateSkinString(paras[1]);
+      CStdString value = g_settings.GetSkinString(string);
+      return SetResponse(openTag+value);
+    }
+  }
+}
 
 int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
 //no paras
