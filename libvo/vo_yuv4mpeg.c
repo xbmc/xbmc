@@ -38,7 +38,8 @@
 #include "sub.h"
 
 #include "fastmemcpy.h"
-#include "postproc/rgb2rgb.h"
+#include "libswscale/swscale.h"
+#include "libswscale/rgb2rgb.h"
 #include "libmpcodecs/vf_scale.h"
 
 static vo_info_t info = 

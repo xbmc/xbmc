@@ -57,7 +57,7 @@
 #include "video_out_internal.h"
 #include "fastmemcpy.h"
 #include "sub.h"
-#include "postproc/rgb2rgb.h"
+#include "libswscale/rgb2rgb.h"
 
 #include "aspect.h"
 

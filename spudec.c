@@ -23,7 +23,8 @@
 #include <math.h>
 #include "libvo/video_out.h"
 #include "spudec.h"
-#include "postproc/swscale.h"
+#include "avutil.h"
+#include "libswscale/swscale.h"
 
 #define MIN(a, b)	((a)<(b)?(a):(b))
 
@@ -503,10 +504,12 @@ void spudec_assemble(void *this, unsigned char *packet, unsigned int len, unsign
       mp_msg(MSGT_SPUDEC,MSGL_WARN,"SPUasm: packet too short\n");
       return;
   }
+#if 0
   if ((spu->packet_pts + 10000) < pts100) {
     // [cb] too long since last fragment: force new packet
     spu->packet_offset = 0;
   }
+#endif
   spu->packet_pts = pts100;
   if (spu->packet_offset == 0) {
     unsigned int len2 = get_be16(packet);
@@ -752,7 +755,7 @@ void sws_spu_image(unsigned char *d1, unsigned char *d2, int dw, int dh, int ds,
 		oldvar = spu_gaussvar;
 	}
 	
-	ctx=sws_getContext(sw, sh, IMGFMT_Y800, dw, dh, IMGFMT_Y800, SWS_GAUSS, &filter, NULL, NULL);
+	ctx=sws_getContext(sw, sh, PIX_FMT_GRAY8, dw, dh, PIX_FMT_GRAY8, SWS_GAUSS, &filter, NULL, NULL);
 	sws_scale(ctx,&s1,&ss,0,sh,&d1,&ds);
 	for (i=ss*sh-1; i>=0; i--) if (!s2[i]) s2[i] = 255; //else s2[i] = 1;
 	sws_scale(ctx,&s2,&ss,0,sh,&d2,&ds);
@@ -815,15 +818,6 @@ void spudec_draw_scaled(void *me, unsigned int dxs, unsigned int dys, void (*dra
 	}
 	if (spu->scaled_image) {
 	  unsigned int x, y;
-	  /* Kludge: draw_alpha needs width multiple of 8. */
-	  if (spu->scaled_width < spu->scaled_stride)
-	    for (y = 0; y < spu->scaled_height; ++y) {
-	      memset(spu->scaled_aimage + y * spu->scaled_stride + spu->scaled_width, 0,
-		     spu->scaled_stride - spu->scaled_width);
-	      /* FIXME: Why is this one needed? */
-	      memset(spu->scaled_image + y * spu->scaled_stride + spu->scaled_width, 0,
-		     spu->scaled_stride - spu->scaled_width);
-	    }
 	  if (spu->scaled_width <= 1 || spu->scaled_height <= 1) {
 	    goto nothing_to_do;
 	  }
@@ -1068,6 +1062,12 @@ void spudec_draw_scaled(void *me, unsigned int dxs, unsigned int dys, void (*dra
 	  }
 	  }
 nothing_to_do:
+	  /* Kludge: draw_alpha needs width multiple of 8. */
+	  if (spu->scaled_width < spu->scaled_stride)
+	    for (y = 0; y < spu->scaled_height; ++y) {
+	      memset(spu->scaled_aimage + y * spu->scaled_stride + spu->scaled_width, 0,
+		     spu->scaled_stride - spu->scaled_width);
+	    }
 	  spu->scaled_frame_width = dxs;
 	  spu->scaled_frame_height = dys;
 	}

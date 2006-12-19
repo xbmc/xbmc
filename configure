@@ -5697,15 +5697,15 @@ EOF
       
       if cc_check -I. -I./libavutil; then
         _libavutil_required="no"
-    else
+      else
         _libavutil_required="yes"
-    fi
+      fi
       _res_comment="libavutil availability does not fit libavcodec version"
       if test "$_libavutil_required" = "$_libavutil"; then
         _libavcodec="yes"
         _res_comment=""
-  fi
-fi
+      fi
+    fi
   fi
 fi
 echores "$_libavcodec"
@@ -6009,7 +6009,6 @@ if test "$_zr" = yes ; then
     _def_zr='#define HAVE_ZR 1'
     _vosrc="$_vosrc vo_zr2.c vo_zr.c jpeg_enc.c"
     _vomodules="zr zr2 $_vomodules"
-    echores "$_zr"
   else
     echores "libavcodec (static) is required by zr, sorry"
     _novomodules="zr $_novomodules"
@@ -6018,8 +6017,8 @@ if test "$_zr" = yes ; then
 else
   _def_zr='#undef HAVE_ZR'
   _novomodules="zr zr2 $_novomodules"
-  echores "$_zr"
 fi
+echores "$_zr"
 
 echocheck "bl"
 if test "$_bl" = yes ; then
@@ -7344,7 +7343,7 @@ $_def_libavutil_so
 /* Use libavformat's demuxers */
 #define CONFIG_DEMUXERS 1
 /* Use libavformat's muxers */
-#define CONFIG_MUXERS 1
+$_def_muxers
 
 #define CONFIG_GPL 1
 

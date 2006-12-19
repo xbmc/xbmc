@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
 #include <stdio.h>
@@ -33,11 +33,12 @@
 #include <malloc.h>
 #endif
 
+#include "avutil.h"
 #include "img_format.h"
 #include "mp_image.h"
 #include "vf.h"
-#include "../libvo/fastmemcpy.h"
-#include "../postproc/swscale.h"
+#include "libvo/fastmemcpy.h"
+#include "libswscale/swscale.h"
 #include "vf_scale.h"
 
 //===========================================================================//
@@ -95,7 +96,7 @@ static int allocStuff(FilterParam *f, int width, int height){
 	swsF.lumH= swsF.lumV= vec;
 	swsF.chrH= swsF.chrV= NULL;
 	f->filterContext= sws_getContext(
-		width, height, IMGFMT_Y8, width, height, IMGFMT_Y8, get_sws_cpuflags(), &swsF, NULL, NULL);
+		width, height, PIX_FMT_GRAY8, width, height, PIX_FMT_GRAY8, get_sws_cpuflags(), &swsF, NULL, NULL);
 
 	sws_freeVec(vec);
 
