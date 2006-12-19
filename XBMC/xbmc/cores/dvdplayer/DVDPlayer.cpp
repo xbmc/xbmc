@@ -1319,21 +1319,16 @@ void CDVDPlayer::RenderSubtitles()
 
 bool CDVDPlayer::OpenAudioStream(int iStream)
 {
-  if( m_CurrentAudio.id >= 0 ) CloseAudioStream(true);
-
-  CLog::Log(LOGNOTICE, "Opening audio stream: %i", iStream);
-
   if (!m_pDemuxer)
   {
-    CLog::Log(LOGERROR, "No Demuxer");
+    CLog::Log(LOGERROR, __FUNCTION__": No Demuxer");
     return false;
   }
   
   CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
-
   if (!pStream)
   {
-    CLog::Log(LOGERROR, "Stream doesn't exist");
+    CLog::Log(LOGERROR, __FUNCTION__": Stream %d doesn't exist", iStream);
     return false;
   }
 
@@ -1342,9 +1337,13 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
 
   if (pStream->type != STREAM_AUDIO)
   {
-    CLog::Log(LOGERROR, "Streamtype is not STREAM_AUDIO");
+    CLog::Log(LOGERROR, __FUNCTION__": Streamtype is not STREAM_AUDIO");
     return false;
   }
+
+  if( m_CurrentAudio.id >= 0 ) CloseAudioStream(true);
+
+  CLog::Log(LOGNOTICE, "Opening audio stream: %i", iStream);
 
   if( m_CurrentAudio.id < 0 &&  m_CurrentVideo.id >= 0 )
   {
@@ -1402,21 +1401,16 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
 
 bool CDVDPlayer::OpenVideoStream(int iStream)
 {
-  if ( m_CurrentVideo.id >= 0) CloseVideoStream(true);
-
-  CLog::Log(LOGNOTICE, "Opening video stream: %i", iStream);
-
   if (!m_pDemuxer)
   {
-    CLog::Log(LOGERROR, "No Demuxer");
+    CLog::Log(LOGERROR, __FUNCTION__": No Demuxer avilable");
     return false;
   }
   
   CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
-
   if( !pStream )
   {
-    CLog::Log(LOGERROR, "Stream doesn't exist");
+    CLog::Log(LOGERROR, __FUNCTION__": Stream %d doesn't exist", iStream);
     return false;
   }
 
@@ -1425,9 +1419,13 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
 
   if (pStream->type != STREAM_VIDEO)
   {
-    CLog::Log(LOGERROR, "Streamtype is not STREAM_VIDEO");
+    CLog::Log(LOGERROR, __FUNCTION__": Streamtype is not STREAM_VIDEO");
     return false;
   }
+
+  if ( m_CurrentVideo.id >= 0) CloseVideoStream(true);
+
+  CLog::Log(LOGNOTICE, "Opening video stream: %i", iStream);
 
   CDVDStreamInfo hint(*pStream, true);
 
@@ -1463,22 +1461,31 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
 
 bool CDVDPlayer::OpenSubtitleStream(int iStream)
 {
+  if (!m_pDemuxer)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": No Demuxer avilable");
+    return false;
+  }
+
+  CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
+  if( !pStream )
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Stream %d doesn't exist", iStream);
+    return false;
+  }
+
+  if( pStream->disabled )
+    return false;
+
   if (m_CurrentSubtitle.id >= 0) CloseSubtitleStream(true);
 
-  if (m_pDemuxer)
-  {
-    CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
+  CLog::Log(LOGNOTICE, "Opening Subtitle stream: %i", iStream);
 
-    if (pStream)
-    {
-      m_CurrentSubtitle.id = iStream;
-      m_CurrentSubtitle.hint.Assign(*pStream, true);
-      m_CurrentSubtitle.stream = (void*)pStream;
+  m_CurrentSubtitle.id = iStream;
+  m_CurrentSubtitle.hint.Assign(*pStream, true);
+  m_CurrentSubtitle.stream = (void*)pStream;
 
-      return true;
-    }
-  }
-  return false;
+  return true;
 }
 
 bool CDVDPlayer::CloseAudioStream(bool bWaitForBuffers)
