@@ -250,6 +250,9 @@ CSettings::CSettings(void)
 
   g_advancedSettings.m_musicThumbs = "folder.jpg";
   g_advancedSettings.m_dvdThumbs = "folder.jpg";
+  g_advancedSettings.m_bMusicLibraryHideAllItems = false;
+  g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
+  g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
 
   xbmcXmlLoaded = false;
   bTransaction = false;
@@ -1175,6 +1178,14 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 1, 0, 255);
   }
 
+  pElement = pRootElement->FirstChildElement("musiclibrary");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bMusicLibraryHideAllItems);
+    XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
+    XMLUtils::GetBoolean(pElement, "hidecompilationartists", g_advancedSettings.m_bMusicLibraryHideCompilationArtists);
+  }
+
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
   {
@@ -1208,7 +1219,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 10, 5, 100);
   }
 
-  GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_NORMAL, LOG_LEVEL_MAX);
+  GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
   GetString(pRootElement, "imdbaddress", g_advancedSettings.m_imdbAddress, "akas.imdb.com");
 
