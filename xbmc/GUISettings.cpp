@@ -250,9 +250,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "musicfiles.sep2");
   AddBool(8, "musicfiles.usecddb", 227, true);
   AddBool(9, "musicfiles.findremotethumbs", 14059, true);
-  // advanced library options
-  AddBool(0, "musicfiles.hideallitems", 0, false);
-  AddBool(0, "musicfiles.allitemsonbottom", 0, false);
 
   AddCategory(3, "lastfm", 15200);
   AddBool(1, "lastfm.enable", 15201, false);
