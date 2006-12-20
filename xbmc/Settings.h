@@ -303,6 +303,11 @@ public:
     CStdString m_sambadoscodepage;
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
+
+    bool m_bMusicLibraryHideAllItems;
+    bool m_bMusicLibraryAllItemsOnBottom;
+    bool m_bMusicLibraryHideCompilationArtists;
+
   };
   struct stSettings
   {

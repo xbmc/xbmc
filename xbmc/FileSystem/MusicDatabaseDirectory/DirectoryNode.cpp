@@ -228,7 +228,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   CFileItem* pItem=NULL;
 
   // always hide "all" items
-  if (g_guiSettings.GetBool("musicfiles.hideallitems"))
+  if (g_advancedSettings.m_bMusicLibraryHideAllItems)
     return;
 
   // no need for "all" item when only one item
@@ -285,7 +285,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     CStdString strFake;
     //  HACK: This item will stay on top of a list
     strFake.Format("%c", 0x01);
-    if (g_guiSettings.GetBool("musicfiles.allitemsonbottom"))
+    if (g_advancedSettings.m_bMusicLibraryAllItemsOnBottom)
       //  HACK: This item will stay on bottom of a list
       strFake.Format("%c", 0xff);
     pItem->m_musicInfoTag.SetAlbum(strFake);
