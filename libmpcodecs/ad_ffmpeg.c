@@ -10,7 +10,8 @@
 
 #include "ad_internal.h"
 
-#include "libavutils/bswap.h"
+#include "libavutil/common.h"
+#include "libavutil/bswap.h"
 
 static ad_info_t info = 
 {

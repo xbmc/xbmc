@@ -158,26 +158,35 @@ typedef struct demuxer_st {
   char** info;
 } demuxer_t;
 
+typedef struct {
+  int progid;        //program id
+  int aid, vid, sid; //audio, video and subtitle id
+} demux_program_t;
+
 inline static demux_packet_t* new_demux_packet(int len){
   demux_packet_t* dp=(demux_packet_t*)malloc(sizeof(demux_packet_t));
   dp->len=len;
   dp->next=NULL;
-  dp->pts=0;
+  // still using 0 by default in case there is some code that uses 0 for both
+  // unknown and a valid pts value
+  dp->pts=correct_pts ? MP_NOPTS_VALUE : 0;
   dp->pos=0;
   dp->flags=0;
   dp->refcount=1;
   dp->master=NULL;
-  dp->buffer=len?(unsigned char*)malloc(len+8):NULL;
-  if(len) memset(dp->buffer+len,0,8);
+  dp->buffer=NULL;
+  if (len > 0 && (dp->buffer = (unsigned char *)malloc(len + 8)))
+    memset(dp->buffer + len, 0, 8);
+  else
+    dp->len = 0;
   return dp;
 }
 
 inline static void resize_demux_packet(demux_packet_t* dp, int len)
 {
-  if(len)
+  if(len > 0)
   {
      dp->buffer=(unsigned char *)realloc(dp->buffer,len+8);
-     memset(dp->buffer+len,0,8);
   }
   else
   {
@@ -185,6 +194,10 @@ inline static void resize_demux_packet(demux_packet_t* dp, int len)
      dp->buffer=NULL;
   }
   dp->len=len;
+  if (dp->buffer)
+     memset(dp->buffer + len, 0, 8);
+  else
+     dp->len = 0;
 }
 
 inline static demux_packet_t* clone_demux_packet(demux_packet_t* pack){
@@ -212,6 +225,18 @@ inline static void free_demux_packet(demux_packet_t* dp){
   free(dp);
 }
 
+#ifndef SIZE_MAX
+#define SIZE_MAX ((size_t)-1)
+#endif
+
+static void *realloc_struct(void *ptr, size_t nmemb, size_t size) {
+  if (nmemb > SIZE_MAX / size) {
+    free(ptr);
+    return NULL;
+  }
+  return realloc(ptr, nmemb * size);
+}
+
 demux_stream_t* new_demuxer_stream(struct demuxer_st *demuxer,int id);
 demuxer_t* new_demuxer(stream_t *stream,int type,int a_id,int v_id,int s_id);
 void free_demuxer_stream(demux_stream_t *ds);
@@ -234,10 +259,13 @@ inline static int ds_tell_pts(demux_stream_t *ds){
 int demux_read_data(demux_stream_t *ds,unsigned char* mem,int len);
 int demux_read_data_pack(demux_stream_t *ds,unsigned char* mem,int len);
 
+#define demux_peekc(ds) (\
+     ((ds->buffer_pos<ds->buffer_size)) ? ds->buffer[ds->buffer_pos] \
+     :(((!ds_fill_buffer(ds)))? (-1) : ds->buffer[ds->buffer_pos] ) )
 #if 1
 #define demux_getc(ds) (\
-     (ds->buffer_pos<ds->buffer_size) ? ds->buffer[ds->buffer_pos++] \
-     :((!ds_fill_buffer(ds))? (-1) : ds->buffer[ds->buffer_pos++] ) )
+     ((ds->buffer_pos<ds->buffer_size)) ? ds->buffer[ds->buffer_pos++] \
+     :(((!ds_fill_buffer(ds)))? (-1) : ds->buffer[ds->buffer_pos++] ) )
 #else
 inline static int demux_getc(demux_stream_t *ds){
   if(ds->buffer_pos>=ds->buffer_size){

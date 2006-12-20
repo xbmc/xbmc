@@ -76,7 +76,24 @@ demuxer_t* new_demuxer(stream_t *stream,int type,int a_id,int v_id,int s_id){
   return d;
 }
 
-sh_audio_t* new_sh_audio(demuxer_t *demuxer,int id){
+sh_sub_t *new_sh_sub_sid(demuxer_t *demuxer, int id, int sid) {
+  if (id > MAX_S_STREAMS - 1 || id < 0) {
+    mp_msg(MSGT_DEMUXER,MSGL_WARN,"Requested sub stream id overflow (%d > %d)\n",
+           id, MAX_S_STREAMS);
+    return NULL;
+  }
+  if (demuxer->s_streams[id])
+    mp_msg(MSGT_DEMUXER, MSGL_WARN, "Sub stream %i redefined\n", id);
+  else {
+    sh_sub_t *sh = calloc(1, sizeof(sh_sub_t));
+    demuxer->s_streams[id] = sh;
+    sh->sid = sid;
+    mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_SUBTITLE_ID=%d\n", sid);
+  }
+  return demuxer->s_streams[id];
+}
+
+sh_audio_t* new_sh_audio_aid(demuxer_t *demuxer,int id,int aid){
     if(id > MAX_A_STREAMS-1 || id < 0)
     {
 	mp_msg(MSGT_DEMUXER,MSGL_WARN,"Requested audio stream id overflow (%d > %d)\n",
@@ -94,9 +111,10 @@ sh_audio_t* new_sh_audio(demuxer_t *demuxer,int id){
         sh->samplesize=2;
         sh->sample_format=AFMT_S16_NE;
         sh->audio_out_minsize=8192;/* default size, maybe not enough for Win32/ACM*/
-        if (identify && !demux_aid_vid_mismatch)
-          mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_AUDIO_ID=%d\n", id);
+        sh->pts=MP_NOPTS_VALUE;
+          mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_AUDIO_ID=%d\n", aid);
     }
+    ((sh_audio_t *)demuxer->a_streams[id])->aid = aid;
     return demuxer->a_streams[id];
 }
 
@@ -109,7 +127,7 @@ void free_sh_audio(sh_audio_t* sh){
     free(sh);
 }
 
-sh_video_t* new_sh_video(demuxer_t *demuxer,int id){
+sh_video_t* new_sh_video_vid(demuxer_t *demuxer,int id,int vid){
     if(id > MAX_V_STREAMS-1 || id < 0)
     {
 	mp_msg(MSGT_DEMUXER,MSGL_WARN,"Requested video stream id overflow (%d > %d)\n",
@@ -120,11 +138,10 @@ sh_video_t* new_sh_video(demuxer_t *demuxer,int id){
         mp_msg(MSGT_DEMUXER,MSGL_WARN,MSGTR_VideoStreamRedefined,id);
     } else {
         mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_FoundVideoStream,id);
-        demuxer->v_streams[id]=malloc(sizeof(sh_video_t));
-        memset(demuxer->v_streams[id],0,sizeof(sh_video_t));
-        if (identify && !demux_aid_vid_mismatch)
-          mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_VIDEO_ID=%d\n", id);
+        demuxer->v_streams[id]=calloc(1, sizeof(sh_video_t));
+          mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_VIDEO_ID=%d\n", vid);
     }
+    ((sh_video_t *)demuxer->v_streams[id])->vid = vid;
     return demuxer->v_streams[id];
 }
 
