@@ -1932,6 +1932,9 @@ static char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", 
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
+  DWORD startTimer = timeGetTime();
+  CLog::Log(LOGDEBUG,__FUNCTION__": START");
+
   static bool bAlternateChecked=false;
 
   // new array for commons sub dirs
@@ -1994,6 +1997,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
 
   // checking if any of the common subdirs exist ..
+  CLog::Log(LOGDEBUG,__FUNCTION__": Checking for common subirs...");
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
@@ -2065,11 +2069,15 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     strLookInPaths.push_back(strPath);
   }
 
+  DWORD nextTimer = timeGetTime();
+  CLog::Log(LOGDEBUG,__FUNCTION__": Done (time: %i ms)", (int)(nextTimer - startTimer));
+
   CStdString strLExt;
   CStdString strDest;
   CStdString strItem;
 
   // 2 steps for movie directory and alternate subtitles directory
+  CLog::Log(LOGDEBUG,__FUNCTION__": Searching for subtitles...");
   for (unsigned int step = 0; step < strLookInPaths.size(); step++)
   {
     if (strLookInPaths[step].length() != 0)
@@ -2136,6 +2144,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
+  CLog::Log(LOGDEBUG,__FUNCTION__": Done (time: %i ms)", (int)(timeGetTime() - nextTimer));
 
   // rename any keep subtitles
   CFileItemList items;
@@ -2152,6 +2161,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   // construct string of added exts?
   for (std::vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
     strExtensionCached += *it+" ";
+
+  CLog::Log(LOGDEBUG,__FUNCTION__": END (total time: %i ms)", (int)(timeGetTime() - startTimer));
 }
 
 bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
