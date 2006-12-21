@@ -270,10 +270,19 @@ void CGUIPanelContainer::OnDown()
 
 bool CGUIPanelContainer::MoveDown(DWORD nextControl)
 {
-  if (m_cursor + m_itemsPerRow < m_itemsPerPage * m_itemsPerRow && (m_offset + 1) * m_itemsPerRow + m_cursor < (int)m_items.size())
-    m_cursor += m_itemsPerRow;
-  else if ((m_offset + 1) * m_itemsPerRow + m_cursor < (int)m_items.size())
+  if (m_cursor + m_itemsPerRow < m_itemsPerPage * m_itemsPerRow && (m_offset + 1) * m_itemsPerRow < (int)m_items.size())
+  { // move to last item if necessary
+    if ((m_offset + 1)*m_itemsPerRow + m_cursor >= (int)m_items.size())
+      m_cursor = (int)m_items.size() - 1 - m_offset*m_itemsPerRow;
+    else
+      m_cursor += m_itemsPerRow;
+  }
+  else if ((m_offset + 1 + m_cursor / m_itemsPerRow) * m_itemsPerRow < (int)m_items.size())
+  { // move to last item if necessary
+    if ((m_offset + 1)*m_itemsPerRow + m_cursor >= (int)m_items.size())
+      m_cursor = (int)m_items.size() - 1 - (m_offset + 1)*m_itemsPerRow;
     ScrollToOffset(m_offset + 1);
+  }
   else if (!nextControl || nextControl == GetID())
   { // move first item in list
     m_cursor %= m_itemsPerRow;
