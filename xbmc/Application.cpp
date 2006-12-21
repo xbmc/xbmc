@@ -4265,6 +4265,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION || m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
           m_gWindowManager.PreviousWindow();
 
+      // reset the current playing file
+      m_itemCurrentFile.Reset();
+      g_infoManager.ResetCurrentItem();
+      m_currentStack.Clear();
+
 #ifdef HAS_KARAOKE
       if(m_pCdgParser)
         m_pCdgParser->Free();
