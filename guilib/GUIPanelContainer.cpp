@@ -151,7 +151,7 @@ bool CGUIPanelContainer::OnAction(const CAction &action)
       {
         handled = true;
         m_analogScrollCount -= AnalogScrollSpeed();
-        if (m_offset > 0 && m_cursor <= m_itemsPerPage * m_itemsPerRow / 2)
+        if (m_offset > 0)// && m_cursor <= m_itemsPerPage * m_itemsPerRow / 2)
         {
           Scroll(-1);
         }
@@ -171,7 +171,7 @@ bool CGUIPanelContainer::OnAction(const CAction &action)
       {
         handled = true;
         m_analogScrollCount -= AnalogScrollSpeed();
-        if ((m_offset + m_itemsPerPage) * m_itemsPerRow < (int)m_items.size() && m_cursor >= m_itemsPerPage * m_itemsPerRow / 2)
+        if ((m_offset + m_itemsPerPage) * m_itemsPerRow < (int)m_items.size())// && m_cursor >= m_itemsPerPage * m_itemsPerRow / 2)
         {
           Scroll(1);
         }
