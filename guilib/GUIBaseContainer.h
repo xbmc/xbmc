@@ -67,6 +67,7 @@ protected:
 
   vector<CGUIListItem*> m_items;
   typedef vector<CGUIListItem*> ::iterator iItems;
+  CGUIListItem *m_lastItem;
 
   DWORD m_pageControl;
 
