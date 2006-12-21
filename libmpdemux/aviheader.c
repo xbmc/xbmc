@@ -6,16 +6,14 @@
 
 #include "config.h"
 #include "mp_msg.h"
+#include "help_mp.h"
 
 #include "stream.h"
 #include "demuxer.h"
 #include "stheader.h"
 
-#include "bswap.h"
 #include "aviheader.h"
-
-#define MIN(a,b) (((a)<(b))?(a):(b))
-
+#include "libavutil/common.h"
 
 static MainAVIHeader avih;
 
@@ -44,45 +42,10 @@ static int odml_get_vstream_id(int id, unsigned char res[])
     return 0;
 }
 
-/**
- * Simple quicksort for AVIINDEXENTRYs
- * To avoid too deep recursion, the bigger part is handled iteratively,
- * thus limiting recursion to log2(n) levels.
- * The pivot element is randomized to "even out" otherwise extreme cases.
- */
-static void avi_idx_quicksort(AVIINDEXENTRY *idx, int from, int to)
-{
-    AVIINDEXENTRY temp;
-    int lo;
-    int hi;
-    off_t pivot_ofs;
-    int pivot_idx;
-  while (from < to) {
-    pivot_idx = from;
-    pivot_idx += rand() % (to - from + 1);
-    pivot_ofs = AVI_IDX_OFFSET(&idx[pivot_idx]);
-    lo = to;
-    hi = from;
-    do {
-	while(pivot_ofs < AVI_IDX_OFFSET(&idx[lo])) lo--;
-	while(pivot_ofs > AVI_IDX_OFFSET(&idx[hi])) hi++;
-	if(hi <= lo) {
-	    if (hi != lo) {
-		memcpy(&temp, &idx[lo], sizeof(temp));
-		memcpy(&idx[lo], &idx[hi], sizeof(temp));
-		memcpy(&idx[hi], &temp, sizeof(temp));
-	    }
-	    lo--; hi++;
-	}
-    } while (lo >= hi);
-    if ((lo - from) < (to - hi)) {
-      avi_idx_quicksort(idx, from, lo);
-      from = hi;
-    } else {
-      avi_idx_quicksort(idx, hi, to);
-      to = lo;
-    }
-  }
+int avi_idx_cmp(const void *elem1,const void *elem2) {
+  register off_t a = AVI_IDX_OFFSET((AVIINDEXENTRY *)elem1);
+  register off_t b = AVI_IDX_OFFSET((AVIINDEXENTRY *)elem2);
+  return (a > b) - (b > a);
 }
 
 void read_avi_header(demuxer_t *demuxer,int index_mode){
@@ -116,7 +79,7 @@ while(1){
 	len -= 4;
 	list_end=stream_tell(demuxer->stream)+((len+1)&(~1));
     } else {
-	mp_msg(MSGT_HEADER,MSGL_WARN,"** empty list?!\n");
+	mp_msg(MSGT_HEADER,MSGL_WARN,MSGTR_MPDEMUX_AVIHDR_EmptyList);
 	list_end = 0;
     }
     mp_msg(MSGT_HEADER,MSGL_V,"list_end=0x%X\n",(int)list_end);
@@ -124,7 +87,7 @@ while(1){
       // found MOVI header
       if(!demuxer->movi_start) demuxer->movi_start=stream_tell(demuxer->stream);
       demuxer->movi_end=stream_tell(demuxer->stream)+len;
-      mp_msg(MSGT_HEADER,MSGL_V,"Found movie at 0x%X - 0x%X\n",(int)demuxer->movi_start,(int)demuxer->movi_end);
+      mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_FoundMovieAt,(int)demuxer->movi_start,(int)demuxer->movi_end);
       if(demuxer->stream->end_pos>demuxer->movi_end) demuxer->movi_end=demuxer->stream->end_pos;
       if(index_mode==-2 || index_mode==2 || index_mode==0)
         break; // reading from non-seekable source (stdin) or forced index or no index forced
@@ -216,34 +179,38 @@ while(1){
     case mmioFOURCC('I','D','I','T'): hdr="Digitization Time";break;
 
     case ckidAVIMAINHDR:          // read 'avih'
-      stream_read(demuxer->stream,(char*) &avih,MIN(size2,sizeof(avih)));
+      stream_read(demuxer->stream,(char*) &avih,FFMIN(size2,sizeof(avih)));
       le2me_MainAVIHeader(&avih); // swap to machine endian
-      chunksize-=MIN(size2,sizeof(avih));
-      if(verbose>0) print_avih(&avih); // else print_avih_flags(&avih);
+      chunksize-=FFMIN(size2,sizeof(avih));
+      if( mp_msg_test(MSGT_HEADER,MSGL_V) ) print_avih(&avih); // else print_avih_flags(&avih,MSGL_V);
       break;
     case ckidSTREAMHEADER: {      // read 'strh'
       AVIStreamHeader h;
-      stream_read(demuxer->stream,(char*) &h,MIN(size2,sizeof(h)));
+      stream_read(demuxer->stream,(char*) &h,FFMIN(size2,sizeof(h)));
       le2me_AVIStreamHeader(&h);  // swap to machine endian
-      chunksize-=MIN(size2,sizeof(h));
+      chunksize-=FFMIN(size2,sizeof(h));
       ++stream_id;
       if(h.fccType==streamtypeVIDEO){
         sh_video=new_sh_video(demuxer,stream_id);
         memcpy(&sh_video->video,&h,sizeof(h));
+        sh_video->stream_delay = (float)sh_video->video.dwStart * sh_video->video.dwScale/sh_video->video.dwRate;
       } else
       if(h.fccType==streamtypeAUDIO){
         sh_audio=new_sh_audio(demuxer,stream_id);
         memcpy(&sh_audio->audio,&h,sizeof(h));
+        sh_audio->stream_delay = (float)sh_audio->audio.dwStart * sh_audio->audio.dwScale/sh_audio->audio.dwRate;
       }
       last_fccType=h.fccType;
-      if(verbose>=1) print_strh(&h);
+      if( mp_msg_test(MSGT_HEADER,MSGL_V) ) print_strh(&h);
       break; }
     case mmioFOURCC('i', 'n', 'd', 'x'): {
       uint32_t i;
-      unsigned msize = 0;
       avisuperindex_chunk *s;
+      if(chunksize<=24){
+        break;
+      }
       priv->suidx_size++;
-      priv->suidx = realloc(priv->suidx, priv->suidx_size * sizeof (avisuperindex_chunk));
+      priv->suidx = realloc_struct(priv->suidx, priv->suidx_size, sizeof (avisuperindex_chunk));
       s = &priv->suidx[priv->suidx_size-1];
 
       chunksize-=24;
@@ -258,12 +225,19 @@ while(1){
       memset(s->dwReserved, 0, 3*4);
 	  
       print_avisuperindex_chunk(s);
+      
+      if( ((chunksize/4)/s->wLongsPerEntry) < s->nEntriesInUse){
+        mp_msg (MSGT_HEADER, MSGL_WARN, "Broken super index chunk\n");
+        s->nEntriesInUse = (chunksize/4)/s->wLongsPerEntry;
+      }
 
-      msize = sizeof (uint32_t) * s->wLongsPerEntry * s->nEntriesInUse;
-      s->aIndex = malloc(msize);
-      memset (s->aIndex, 0, msize);
-      s->stdidx = malloc (s->nEntriesInUse * sizeof (avistdindex_chunk));
-      memset (s->stdidx, 0, s->nEntriesInUse * sizeof (avistdindex_chunk));
+      // Check and fix this useless crap
+      if(s->wLongsPerEntry != sizeof (avisuperindex_entry)/4) {
+          mp_msg (MSGT_HEADER, MSGL_WARN, "Broken super index chunk size: %u\n",s->wLongsPerEntry);
+          s->wLongsPerEntry = sizeof(avisuperindex_entry)/4;
+      }
+      s->aIndex = calloc(s->nEntriesInUse, sizeof (avisuperindex_entry));
+      s->stdidx = calloc(s->nEntriesInUse, sizeof (avistdindex_chunk));
 
       // now the real index of indices
       for (i=0; i<s->nEntriesInUse; i++) {
@@ -272,7 +246,7 @@ while(1){
 	  s->aIndex[i].qwOffset |= ((uint64_t)stream_read_dword_le(demuxer->stream) & 0xffffffff)<<32;
 	  s->aIndex[i].dwSize = stream_read_dword_le(demuxer->stream);
 	  s->aIndex[i].dwDuration = stream_read_dword_le(demuxer->stream);
-	  mp_msg (MSGT_HEADER, MSGL_V, "ODML (%.4s): [%d] 0x%016llx 0x%04lx %ld\n", 
+	  mp_msg (MSGT_HEADER, MSGL_V, "ODML (%.4s): [%d] 0x%016"PRIx64" 0x%04x %u\n", 
 		  (s->dwChunkId), i,
 		  (uint64_t)s->aIndex[i].qwOffset, s->aIndex[i].dwSize, s->aIndex[i].dwDuration);
       }
@@ -282,16 +256,16 @@ while(1){
       if(last_fccType==streamtypeVIDEO){
         sh_video->bih=calloc((chunksize<sizeof(BITMAPINFOHEADER))?sizeof(BITMAPINFOHEADER):chunksize,1);
 //        sh_video->bih=malloc(chunksize); memset(sh_video->bih,0,chunksize);
-        mp_msg(MSGT_HEADER,MSGL_V,"found 'bih', %u bytes of %d\n",chunksize,sizeof(BITMAPINFOHEADER));
+        mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_FoundBitmapInfoHeader,chunksize,sizeof(BITMAPINFOHEADER));
         stream_read(demuxer->stream,(char*) sh_video->bih,chunksize);
 	le2me_BITMAPINFOHEADER(sh_video->bih);  // swap to machine endian
 	// fixup MS-RLE header (seems to be broken for <256 color files)
 	if(sh_video->bih->biCompression<=1 && sh_video->bih->biSize==40)
 	    sh_video->bih->biSize=chunksize;
-        if(verbose>=1) print_video_header(sh_video->bih);
+        if( mp_msg_test(MSGT_HEADER,MSGL_V) ) print_video_header(sh_video->bih);
         chunksize=0;
-//        sh_video->fps=(float)sh_video->video.dwRate/(float)sh_video->video.dwScale;
-//        sh_video->frametime=(float)sh_video->video.dwScale/(float)sh_video->video.dwRate;
+        sh_video->fps=(float)sh_video->video.dwRate/(float)sh_video->video.dwScale;
+        sh_video->frametime=(float)sh_video->video.dwScale/(float)sh_video->video.dwRate;
 //        if(demuxer->video->id==-1) demuxer->video->id=stream_id;
         // IdxFix:
         idxfix_videostream=stream_id;
@@ -300,7 +274,7 @@ while(1){
 	case mmioFOURCC('m', 'p', 'g', '4'):
 	case mmioFOURCC('D', 'I', 'V', '1'):
           idxfix_divx=3; // set index recovery mpeg4 flavour: msmpeg4v1
-	  mp_msg(MSGT_HEADER,MSGL_V,"Regenerating keyframe table for M$ mpg4v1 video\n");
+	  mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_RegeneratingKeyfTableForMPG4V1);
 	  break;
         case mmioFOURCC('D', 'I', 'V', '3'):
 	case mmioFOURCC('d', 'i', 'v', '3'):
@@ -317,15 +291,17 @@ while(1){
 	case mmioFOURCC('D', 'I', 'V', '2'):
         case mmioFOURCC('A', 'P', '4', '1'):
           idxfix_divx=1; // set index recovery mpeg4 flavour: msmpeg4v3
-	  mp_msg(MSGT_HEADER,MSGL_V,"Regenerating keyframe table for DIVX3 video\n");
+	  mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_RegeneratingKeyfTableForDIVX3);
 	  break;
         case mmioFOURCC('D', 'I', 'V', 'X'):
         case mmioFOURCC('d', 'i', 'v', 'x'):
         case mmioFOURCC('D', 'X', '5', '0'):
         case mmioFOURCC('X', 'V', 'I', 'D'):
         case mmioFOURCC('x', 'v', 'i', 'd'):
+        case mmioFOURCC('F', 'M', 'P', '4'):
+        case mmioFOURCC('f', 'm', 'p', '4'):
           idxfix_divx=2; // set index recovery mpeg4 flavour: generic mpeg4
-	  mp_msg(MSGT_HEADER,MSGL_V,"Regenerating keyframe table for MPEG4 video\n");
+	  mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_RegeneratingKeyfTableForMPEG4);
 	  break;
         }
       } else
@@ -333,15 +309,17 @@ while(1){
 	unsigned wf_size = chunksize<sizeof(WAVEFORMATEX)?sizeof(WAVEFORMATEX):chunksize;
         sh_audio->wf=calloc(wf_size,1);
 //        sh_audio->wf=malloc(chunksize); memset(sh_audio->wf,0,chunksize);
-        mp_msg(MSGT_HEADER,MSGL_V,"found 'wf', %d bytes of %d\n",chunksize,sizeof(WAVEFORMATEX));
+        mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_FoundWaveFmt,chunksize,sizeof(WAVEFORMATEX));
         stream_read(demuxer->stream,(char*) sh_audio->wf,chunksize);
 	le2me_WAVEFORMATEX(sh_audio->wf);
 	if (sh_audio->wf->cbSize != 0 &&
 	    wf_size < sizeof(WAVEFORMATEX)+sh_audio->wf->cbSize) {
 	    sh_audio->wf=realloc(sh_audio->wf, sizeof(WAVEFORMATEX)+sh_audio->wf->cbSize);
 	}
+	sh_audio->format=sh_audio->wf->wFormatTag;
+	sh_audio->i_bps=sh_audio->wf->nAvgBytesPerSec;
         chunksize=0;
-        if(verbose>=1) print_wave_header(sh_audio->wf);
+        if( mp_msg_test(MSGT_HEADER,MSGL_V) ) print_wave_header(sh_audio->wf);
 	++priv->audio_streams;
 //        if(demuxer->audio->id==-1) demuxer->audio->id=stream_id;
       }
@@ -364,13 +342,14 @@ while(1){
 	if (sh_video) {
 		sh_video->aspect = GET_AVI_ASPECT(vprp->dwFrameAspectRatio);
 	}
-	if(verbose>=1) print_vprp(vprp);
+	if( mp_msg_test(MSGT_HEADER,MSGL_V) ) print_vprp(vprp);
+	free(vprp);
 	break;
     }
     case mmioFOURCC('d', 'm', 'l', 'h'): {
 	// dmlh 00 00 00 04 frms
 	unsigned int total_frames = stream_read_dword_le(demuxer->stream);
-	mp_msg(MSGT_HEADER,MSGL_V,"AVI: dmlh found (size=%d) (total_frames=%d)\n", chunksize, total_frames);
+	mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_FoundAVIV2Header, chunksize, total_frames);
 	stream_skip(demuxer->stream, chunksize-4);
 	chunksize = 0;
     }
@@ -380,11 +359,9 @@ while(1){
 	demuxer->movi_end=stream_tell(demuxer->stream); // fixup movi-end
     if(index_mode && !priv->isodml){
       int i;
-      off_t base = 0;
-      uint32_t last_off = 0;
       priv->idx_size=size2>>4;
-      mp_msg(MSGT_HEADER,MSGL_V,"Reading INDEX block, %d chunks for %ld frames (fpos=%p)\n",
-        priv->idx_size,avih.dwTotalFrames, stream_tell(demuxer->stream));
+      mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_ReadingIndexBlockChunksForFrames,
+        priv->idx_size,avih.dwTotalFrames, (int64_t)stream_tell(demuxer->stream));
       priv->idx=malloc(priv->idx_size<<4);
 //      printf("\nindex to %p !!!!! (priv=%p)\n",priv->idx,priv);
       stream_read(demuxer->stream,(char*)priv->idx,priv->idx_size<<4);
@@ -399,18 +376,17 @@ while(1){
 	entry->dwFlags&=0xffff;
       }
       chunksize-=priv->idx_size<<4;
-      if(verbose>=2) print_index(priv->idx,priv->idx_size);
+      if( mp_msg_test(MSGT_HEADER,MSGL_DBG2) ) print_index(priv->idx,priv->idx_size);
     }
     break;
     /* added May 2002 */
     case mmioFOURCC('R','I','F','F'): {
 	char riff_type[4];
 
-	mp_msg(MSGT_HEADER, MSGL_V, "additional RIFF header...\n");
+	mp_msg(MSGT_HEADER, MSGL_V, MSGTR_MPDEMUX_AVIHDR_AdditionalRIFFHdr);
 	stream_read(demuxer->stream, riff_type, sizeof riff_type);
 	if (strncmp(riff_type, "AVIX", sizeof riff_type))
-	    mp_msg(MSGT_HEADER, MSGL_WARN,
-		   "** warning: this is no extended AVI header..\n");
+	    mp_msg(MSGT_HEADER, MSGL_WARN, MSGTR_MPDEMUX_AVIHDR_WarnNotExtendedAVIHdr);
 	else {
 		/*
 		 * We got an extended AVI header, so we need to switch to
@@ -442,13 +418,13 @@ while(1){
       demux_info_add(demuxer, hdr, buf);
     }
   }
-  mp_msg(MSGT_HEADER,MSGL_DBG2,"list_end=0x%X  pos=0x%X  chunksize=0x%X  next=0x%X\n",
-      (int)list_end, (int)stream_tell(demuxer->stream),
-      chunksize, (int)chunksize+stream_tell(demuxer->stream));
+  mp_msg(MSGT_HEADER,MSGL_DBG2,"list_end=0x%"PRIX64"  pos=0x%"PRIX64"  chunksize=0x%"PRIX64"  next=0x%"PRIX64"\n",
+      (int64_t)list_end, (int64_t)stream_tell(demuxer->stream),
+      (int64_t)chunksize, (int64_t)chunksize+(int64_t)stream_tell(demuxer->stream));
   if(list_end>0 &&
      chunksize+stream_tell(demuxer->stream) == list_end) list_end=0;
   if(list_end>0 && chunksize+stream_tell(demuxer->stream)>list_end){
-      mp_msg(MSGT_HEADER,MSGL_V,"Broken chunk?  chunksize=%d  (id=%.4s)\n",chunksize,(char *) &id);
+      mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_BrokenChunk,chunksize,(char *) &id);
       stream_seek(demuxer->stream,list_end);
       list_end=0;
   } else
@@ -466,7 +442,6 @@ if (priv->suidx_size > 0 && priv->idx_size == 0) {
 
 if (priv->isodml && (index_mode==-1 || index_mode==0 || index_mode==1)) {
     int i, j, k;
-    int safety=1000;
 
     avisuperindex_chunk *cx;
     AVIINDEXENTRY *idx;
@@ -477,8 +452,7 @@ if (priv->isodml && (index_mode==-1 || index_mode==0 || index_mode==1)) {
     priv->idx_offset = 0;
     priv->idx = NULL;
 
-    mp_msg(MSGT_HEADER, MSGL_INFO, 
-	    "AVI: ODML: Building odml index (%d superindexchunks)\n", priv->suidx_size);
+    mp_msg(MSGT_HEADER, MSGL_INFO, MSGTR_MPDEMUX_AVIHDR_BuildingODMLidx, priv->suidx_size);
 
     // read the standard indices
     for (cx = &priv->suidx[0], i=0; i<priv->suidx_size; cx++, i++) {
@@ -493,8 +467,7 @@ if (priv->isodml && (index_mode==-1 || index_mode==0 || index_mode==1)) {
 		// gen_index routine handle this
 		priv->isodml = 0;
 		priv->idx_size = 0;
-		mp_msg(MSGT_HEADER, MSGL_WARN,
-			"AVI: ODML: Broken (incomplete?) file detected. Will use traditional index\n");
+		mp_msg(MSGT_HEADER, MSGL_WARN, MSGTR_MPDEMUX_AVIHDR_BrokenODMLfile);
 		goto freeout;
 	    }
 
@@ -535,7 +508,7 @@ if (priv->isodml && (index_mode==-1 || index_mode==0 || index_mode==1)) {
 	    }
 	}
     }
-    avi_idx_quicksort(priv->idx, 0, priv->idx_size-1);
+    qsort(priv->idx, priv->idx_size, sizeof(AVIINDEXENTRY), avi_idx_cmp);
 
     /*
        Hack to work around a "wrong" index in some divx odml files
@@ -573,7 +546,7 @@ if (priv->isodml && (index_mode==-1 || index_mode==0 || index_mode==1)) {
 	}
     }
 
-    if (verbose>=2) print_index(priv->idx, priv->idx_size);
+    if ( mp_msg_test(MSGT_HEADER,MSGL_DBG2) ) print_index(priv->idx, priv->idx_size);
 
     demuxer->movi_end=demuxer->stream->end_pos;
 
@@ -598,18 +571,18 @@ if (index_file_load) {
   unsigned int i;
 
   if ((fp = fopen(index_file_load, "r")) == NULL) {
-    mp_msg(MSGT_HEADER,MSGL_ERR, "Can't read index file %s: %s\n", index_file_load, strerror(errno));
+    mp_msg(MSGT_HEADER,MSGL_ERR, MSGTR_MPDEMUX_AVIHDR_CantReadIdxFile, index_file_load, strerror(errno));
     goto gen_index;
   }
   fread(&magic, 6, 1, fp);
   if (strncmp(magic, "MPIDX1", 6)) {
-    mp_msg(MSGT_HEADER,MSGL_ERR, "%s is not a valid MPlayer index file\n", index_file_load);
+    mp_msg(MSGT_HEADER,MSGL_ERR, MSGTR_MPDEMUX_AVIHDR_NotValidMPidxFile, index_file_load);
     goto gen_index;
   }
   fread(&priv->idx_size, sizeof(priv->idx_size), 1, fp);
   priv->idx=malloc(priv->idx_size*sizeof(AVIINDEXENTRY));
   if (!priv->idx) {
-    mp_msg(MSGT_HEADER,MSGL_ERR, "Could not allocate memory for index data from %s\n", index_file_load);
+    mp_msg(MSGT_HEADER,MSGL_ERR, MSGTR_MPDEMUX_AVIHDR_FailedMallocForIdxFile, index_file_load);
     priv->idx_size = 0;
     goto gen_index;
   }
@@ -619,14 +592,14 @@ if (index_file_load) {
     idx=&((AVIINDEXENTRY *)priv->idx)[i];
     fread(idx, sizeof(AVIINDEXENTRY), 1, fp);
     if (feof(fp)) {
-      mp_msg(MSGT_HEADER,MSGL_ERR, "Premature end of index file %s\n", index_file_load);
+      mp_msg(MSGT_HEADER,MSGL_ERR, MSGTR_MPDEMUX_AVIHDR_PrematureEOF, index_file_load);
       free(priv->idx);
       priv->idx_size = 0;
       goto gen_index;
     }
   }
   fclose(fp);
-  mp_msg(MSGT_HEADER,MSGL_INFO, "Loaded index file: %s\n", index_file_load);
+  mp_msg(MSGT_HEADER,MSGL_INFO, MSGTR_MPDEMUX_AVIHDR_IdxFileLoaded, index_file_load);
 }
 gen_index:
 if(index_mode>=2 || (priv->idx_size==0 && index_mode==1)){
@@ -670,6 +643,8 @@ if(index_mode>=2 || (priv->idx_size==0 && index_mode==1)){
     
     c=stream_read_dword(demuxer->stream);
 
+    if(!len) idx->dwFlags&=~AVIIF_KEYFRAME;
+
     // Fix keyframes for DivX files:
     if(idxfix_divx)
       if(avi_stream_id(id)==idxfix_videostream){
@@ -691,7 +666,7 @@ if(index_mode>=2 || (priv->idx_size==0 && index_mode==1)){
       }
       if(pos!=lastpos){
           lastpos=pos;
-	  mp_msg(MSGT_HEADER,MSGL_STATUS,"Generating Index: %3lu %s     \r",
+	  mp_msg(MSGT_HEADER,MSGL_STATUS,MSGTR_MPDEMUX_AVIHDR_GeneratingIdx,
 		 (unsigned long)pos, len?"%":"MB");
       }
     }
@@ -710,8 +685,8 @@ skip_chunk:
     stream_seek(demuxer->stream,8+demuxer->filepos+skip);
   }
   priv->idx_size=priv->idx_pos;
-  mp_msg(MSGT_HEADER,MSGL_INFO,"AVI: Generated index table for %d chunks!\n",priv->idx_size);
-  if(verbose>=2) print_index(priv->idx,priv->idx_size);
+  mp_msg(MSGT_HEADER,MSGL_INFO,MSGTR_MPDEMUX_AVIHDR_IdxGeneratedForHowManyChunks,priv->idx_size);
+  if( mp_msg_test(MSGT_HEADER,MSGL_DBG2) ) print_index(priv->idx,priv->idx_size);
 
   /* Write generated index to a file */
   if (index_file_save) {
@@ -719,7 +694,7 @@ skip_chunk:
     unsigned int i;
 
     if ((fp=fopen(index_file_save, "w")) == NULL) {
-      mp_msg(MSGT_HEADER,MSGL_ERR, "Couldn't write index file %s: %s\n", index_file_save, strerror(errno));
+      mp_msg(MSGT_HEADER,MSGL_ERR, MSGTR_MPDEMUX_AVIHDR_Failed2WriteIdxFile, index_file_save, strerror(errno));
       return;
     }
     fwrite("MPIDX1", 6, 1, fp);
@@ -729,7 +704,7 @@ skip_chunk:
       fwrite(idx, sizeof(AVIINDEXENTRY), 1, fp);
     }
     fclose(fp);
-    mp_msg(MSGT_HEADER,MSGL_INFO, "Saved index file: %s\n", index_file_save);
+    mp_msg(MSGT_HEADER,MSGL_INFO, MSGTR_MPDEMUX_AVIHDR_IdxFileSaved, index_file_save);
   }
 }
 }

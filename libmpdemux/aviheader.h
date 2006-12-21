@@ -2,19 +2,8 @@
 #define	_aviheader_h
 
 //#include "config.h"	/* get correct definition WORDS_BIGENDIAN */
-#include "bswap.h"
-
-#ifndef MIN
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#endif
-
-#ifndef min
-#define min(a,b) (((a)<(b))?(a):(b))
-#endif
-
-#ifndef max
-#define max(a,b) (((a)>(b))?(a):(b))
-#endif
+#include "libavutil/common.h"
+#include "libavutil/bswap.h"
 
 #ifndef mmioFOURCC
 #define mmioFOURCC( ch0, ch1, ch2, ch3 )				\
@@ -143,7 +132,7 @@ typedef struct _avistdindex_entry {
 } avistdindex_entry;
 
 // Standard index 
-typedef struct __attribute((packed)) _avistdindex_chunk {
+typedef struct __attribute__((packed)) _avistdindex_chunk {
     char           fcc[4];       // ix##
     uint32_t  dwSize;            // size of this chunk
     uint16_t wLongsPerEntry;     // must be sizeof(aIndex[0])/sizeof(DWORD)

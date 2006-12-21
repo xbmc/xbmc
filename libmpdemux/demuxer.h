@@ -48,6 +48,9 @@
 #define DEMUXER_TYPE_AVS 38
 #define DEMUXER_TYPE_AAC 39
 #define DEMUXER_TYPE_MPC 40
+#define DEMUXER_TYPE_MPEG_PES 41
+#define DEMUXER_TYPE_MPEG_GXF 42
+#define DEMUXER_TYPE_NUT 43
 
 // This should always match the higest demuxer type number.
 // Unless you want to disallow users to force the demuxer to some types
@@ -82,7 +85,7 @@
 // Holds one packet/frame/whatever
 typedef struct demux_packet_st {
   int len;
-  float pts;
+  double pts;
   off_t pos;  // position in index (AVI) or file (MPG)
   unsigned char* buffer;
   int flags; // keyframe, etc
@@ -95,7 +98,7 @@ typedef struct {
   int buffer_pos;          // current buffer position
   int buffer_size;         // current buffer size
   unsigned char* buffer;   // current buffer, never free() it, always use free_demux_packet(buffer_ref);
-  float pts;               // current buffer's pts
+  double pts;              // current buffer's pts
   int pts_bytes;           // number of bytes read after last pts stamp
   int eof;                 // end of demuxed stream? (true if all buffer empty)
   off_t pos;                 // position in the input stream (file)
@@ -135,11 +138,46 @@ struct demuxer_st;
 
 extern int correct_pts;
 
+/**
+ * Demuxer description structure
+ */
+typedef struct demuxers_desc_st {
+  const char *info; ///< What is it (long name and/or description)
+  const char *name; ///< Demuxer name, used with -demuxer switch
+  const char *shortdesc; ///< Description printed at demuxer detection
+  const char *author; ///< Demuxer author(s)
+  const char *comment; ///< Comment, printed with -demuxer help
+
+  int type; ///< DEMUXER_TYPE_xxx
+  int safe_check; ///< If 1 detection is safe and fast, do it before file extension check
+
+  /// Check if can demux the file, return DEMUXER_TYPE_xxx on success
+  int (*check_file)(struct demuxer_st *demuxer); ///< Mandatory if safe_check == 1, else optional 
+  /// Get packets from file, return 0 on eof
+  int (*fill_buffer)(struct demuxer_st *demuxer, demux_stream_t *ds); ///< Mandatory
+  /// Open the demuxer, return demuxer on success, NULL on failure
+  struct demuxer_st* (*open)(struct demuxer_st *demuxer); ///< Optional
+  /// Close the demuxer
+  void (*close)(struct demuxer_st *demuxer); ///< Optional
+  // Seek
+  void (*seek)(struct demuxer_st *demuxer, float rel_seek_secs, float audio_delay, int flags); ///< Optional
+  // Control
+  int (*control)(struct demuxer_st *demuxer, int cmd, void *arg); ///< Optional
+} demuxer_desc_t;
+
+typedef struct demux_chapter_s
+{
+  uint64_t start, end;
+  char* name;
+} demux_chapter_t;
+
 typedef struct demuxer_st {
+  demuxer_desc_t *desc;  ///< Demuxer description structure
   off_t filepos; // input stream current pos.
   off_t movi_start;
   off_t movi_end;
   stream_t *stream;
+  char *filename; ///< Needed by avs_check_file
   int synced;  // stream synced (used by mpeg)
   int type;    // demuxer type: mpeg PS, mpeg ES, avi, avi-ni, avi-nini, asf
   int file_format;  // file format: mpeg/avi/asf
@@ -154,6 +192,9 @@ typedef struct demuxer_st {
   void* v_streams[MAX_V_STREAMS]; // video sterams (sh_video_t)
   char s_streams[32];   // dvd subtitles (flag)
   
+  demux_chapter_t* chapters;
+  int num_chapters;
+
   void* priv;  // fileformat-dependent data
   char** info;
 } demuxer_t;
@@ -260,12 +301,12 @@ int demux_read_data(demux_stream_t *ds,unsigned char* mem,int len);
 int demux_read_data_pack(demux_stream_t *ds,unsigned char* mem,int len);
 
 #define demux_peekc(ds) (\
-     ((ds->buffer_pos<ds->buffer_size)) ? ds->buffer[ds->buffer_pos] \
-     :(((!ds_fill_buffer(ds)))? (-1) : ds->buffer[ds->buffer_pos] ) )
+     (likely(ds->buffer_pos<ds->buffer_size)) ? ds->buffer[ds->buffer_pos] \
+     :((unlikely(!ds_fill_buffer(ds)))? (-1) : ds->buffer[ds->buffer_pos] ) )
 #if 1
 #define demux_getc(ds) (\
-     ((ds->buffer_pos<ds->buffer_size)) ? ds->buffer[ds->buffer_pos++] \
-     :(((!ds_fill_buffer(ds)))? (-1) : ds->buffer[ds->buffer_pos++] ) )
+     (likely(ds->buffer_pos<ds->buffer_size)) ? ds->buffer[ds->buffer_pos++] \
+     :((unlikely(!ds_fill_buffer(ds)))? (-1) : ds->buffer[ds->buffer_pos++] ) )
 #else
 inline static int demux_getc(demux_stream_t *ds){
   if(ds->buffer_pos>=ds->buffer_size){

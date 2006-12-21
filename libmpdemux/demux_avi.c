@@ -74,14 +74,11 @@ demux_stream_t* demux_avi_select_stream(demuxer_t *demux,unsigned int id){
 }
 
 static int valid_fourcc(unsigned int id){
+    static const char valid[] = "0123456789abcdefghijklmnopqrstuvwxyz"
+                                "ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
     unsigned char* fcc=(unsigned char*)(&id);
-#define FCC_CHR_CHECK(x) (x<48 || x>=96)
-    if(FCC_CHR_CHECK(fcc[0])) return 0;
-    if(FCC_CHR_CHECK(fcc[1])) return 0;
-    if(FCC_CHR_CHECK(fcc[2])) return 0;
-    if(FCC_CHR_CHECK(fcc[3])) return 0;
-    return 1;
-#undef FCC_CHR_CHECK
+    return strchr(valid, fcc[0]) && strchr(valid, fcc[1]) &&
+           strchr(valid, fcc[2]) && strchr(valid, fcc[3]);
 }
 
 static int choose_chunk_len(unsigned int len1,unsigned int len2){
@@ -461,8 +458,7 @@ demuxer_t* demux_open_avi(demuxer_t* demuxer){
 	return NULL;
       }
       if(a_pos==-1){
-        mp_msg(MSGT_DEMUX,MSGL_INFO,"AVI_NI: " MSGTR_MissingAudioStream);
-        sh_audio=NULL;
+        d_audio->sh=sh_audio=NULL;
       } else {
         if(force_ni || abs(a_pos-v_pos)>0x100000){  // distance > 1MB
           mp_msg(MSGT_DEMUX,MSGL_INFO,MSGTR_NI_Message,force_ni?MSGTR_NI_Forced:MSGTR_NI_Detected);
@@ -490,15 +486,11 @@ demuxer_t* demux_open_avi(demuxer_t* demuxer){
     mp_msg(MSGT_DEMUX,MSGL_V,"AVI: Searching for audio stream (id:%d)\n",d_audio->id);
     if(!priv->audio_streams || !ds_fill_buffer(d_audio)){
       mp_msg(MSGT_DEMUX,MSGL_INFO,"AVI: " MSGTR_MissingAudioStream);
-      sh_audio=NULL;
+      d_audio->sh=sh_audio=NULL;
     } else {
       sh_audio=d_audio->sh;sh_audio->ds=d_audio;
-      sh_audio->format=sh_audio->wf->wFormatTag;
     }
   }
-  // calc. FPS:
-  sh_video->fps=(float)sh_video->video.dwRate/(float)sh_video->video.dwScale;
-  sh_video->frametime=(float)sh_video->video.dwScale/(float)sh_video->video.dwRate;
 
   // calculating audio/video bitrate:
   if(priv->idx_size>0){
@@ -540,7 +532,6 @@ demuxer_t* demux_open_avi(demuxer_t* demuxer){
     if(sh_audio){
       if(sh_audio->wf->nAvgBytesPerSec && sh_audio->audio.dwSampleSize!=1){
         asize=(float)sh_audio->wf->nAvgBytesPerSec*sh_audio->audio.dwLength*sh_audio->audio.dwScale/sh_audio->audio.dwRate;
-        sh_audio->i_bps=sh_audio->wf->nAvgBytesPerSec;
       } else {
         asize=sh_audio->audio.dwLength;
         sh_audio->i_bps=(float)asize/(sh_video->frametime*priv->numberofframes);
@@ -555,8 +546,6 @@ demuxer_t* demux_open_avi(demuxer_t* demuxer){
   
 }
 
-//extern float initial_pts_delay;
-extern void resync_audio_stream(sh_audio_t *sh_audio);
 
 void demux_seek_avi(demuxer_t *demuxer,float rel_seek_secs,int flags){
     avi_priv_t *priv=demuxer->priv;
@@ -725,7 +714,6 @@ void demux_seek_avi(demuxer_t *demuxer,float rel_seek_secs,int flags){
           if(skip_audio_bytes){
             demux_read_data(d_audio,NULL,skip_audio_bytes);
           }
-	  resync_audio_stream(sh_audio);
 
       }
 	d_video->pts=priv->avi_video_pts; // OSD
@@ -747,9 +735,7 @@ void demux_close_avi(demuxer_t *demuxer) {
 
 int demux_avi_control(demuxer_t *demuxer,int cmd, void *arg){
     avi_priv_t *priv=demuxer->priv;
-/*    demux_stream_t *d_audio=demuxer->audio;*/
     demux_stream_t *d_video=demuxer->video;
-/*    sh_audio_t *sh_audio=d_audio->sh;*/
     sh_video_t *sh_video=d_video->sh;
 
 
@@ -769,7 +755,57 @@ int demux_avi_control(demuxer_t *demuxer,int cmd, void *arg){
 	    if (sh_video->video.dwLength<=1) return DEMUXER_CTRL_GUESS;
 	    return DEMUXER_CTRL_OK;
 
+	case DEMUXER_CTRL_SWITCH_AUDIO:
+	case DEMUXER_CTRL_SWITCH_VIDEO: {
+	    int audio = (cmd == DEMUXER_CTRL_SWITCH_AUDIO);
+	    demux_stream_t *ds = audio ? demuxer->audio : demuxer->video;
+	    void **streams = audio ? demuxer->a_streams : demuxer->v_streams;
+	    int maxid = FFMIN(100, audio ? MAX_A_STREAMS : MAX_V_STREAMS);
+	    int chunkid;
+	    if (ds->id < -1)
+	      return DEMUXER_CTRL_NOTIMPL;
+
+	    if (*(int *)arg >= 0)
+	      ds->id = *(int *)arg;
+	    else {
+	      int i;
+	      for (i = 0; i < maxid; i++) {
+	        if (++ds->id >= maxid) ds->id = 0;
+	        if (streams[ds->id]) break;
+	      }
+	    }
+
+	    chunkid = (ds->id / 10 + '0') | (ds->id % 10 + '0') << 8;
+	    ds->sh = NULL;
+	    if (!streams[ds->id]) // stream not available
+	      ds->id = -1;
+	    else
+	      demux_avi_select_stream(demuxer, chunkid);
+	    *(int *)arg = ds->id;
+	    return DEMUXER_CTRL_OK;
+	}
+
 	default:
 	    return DEMUXER_CTRL_NOTIMPL;
     }
 }
+
+
+static int avi_check_file(demuxer_t *demuxer)
+{
+  int id=stream_read_dword_le(demuxer->stream); // "RIFF"
+
+  if((id==mmioFOURCC('R','I','F','F')) || (id==mmioFOURCC('O','N','2',' '))) {
+    stream_read_dword_le(demuxer->stream); //filesize
+    id=stream_read_dword_le(demuxer->stream); // "AVI "
+    if(id==formtypeAVI)
+      return DEMUXER_TYPE_AVI;
+    if(id==mmioFOURCC('O','N','2','f')){
+      mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_ON2AviFormat);
+      return DEMUXER_TYPE_AVI;
+    }
+  }
+
+  return 0;
+}
+

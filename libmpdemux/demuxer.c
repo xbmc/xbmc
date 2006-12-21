@@ -1653,6 +1653,8 @@ switch(demuxer->file_format){
 
 } // switch(demuxer->file_format)
 
+    if (sh_audio) resync_audio_stream(sh_audio);
+
 return 1;
 }
 
