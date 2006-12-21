@@ -645,7 +645,10 @@ extern void demux_open_nsv(demuxer_t *demuxer);
 extern void demux_open_nuv(demuxer_t *demuxer);
 extern int demux_audio_open(demuxer_t* demuxer);
 extern int demux_ogg_open(demuxer_t* demuxer);
-extern int demux_mpg_open(demuxer_t* demuxer);
+extern int demux_mpg_ps_open(demuxer_t* demuxer);
+extern int demux_mpg_es_open(demuxer_t* demuxer);
+extern int demux_mpg_gxf_open(demuxer_t* demuxer);
+extern int demux_mpg_probe(demuxer_t *demuxer);
 extern int demux_rawaudio_open(demuxer_t* demuxer);
 extern int demux_rawvideo_open(demuxer_t* demuxer);
 extern int smjpeg_check_file(demuxer_t *demuxer);
@@ -980,93 +983,16 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_LMLM4){
 }
 //=============== Try to open as MPEG-PS file: =================
 if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
- int pes=1;
- int tmp;
- off_t tmppos;
- file_format=DEMUXER_TYPE_UNKNOWN;
- while(pes>=0){
   demuxer=new_demuxer(stream,DEMUXER_TYPE_MPEG_PS,audio_id,video_id,dvdsub_id);
-  
-  // try to pre-detect PES:
-  tmppos=stream_tell(demuxer->stream);
-  tmp=stream_read_dword(demuxer->stream);
-  if(tmp==0x1E0 || tmp==0x1C0){
-      tmp=stream_read_word(demuxer->stream);
-      if(tmp>1 && tmp<=2048) pes=0; // demuxer->synced=3; // PES...
-  }
-  stream_seek(demuxer->stream,tmppos);
-  
-  if(!pes) demuxer->synced=3; // hack!
-
-  num_elementary_packets100=0;
-  num_elementary_packets101=0;
-  num_elementary_packets1B6=0;
-  num_elementary_packets12x=0;
-  num_elementary_packetsPES=0;
-  num_h264_slice=0; //combined slice
-  num_h264_dpa=0; //DPA Slice
-  num_h264_dpb=0; //DPB Slice
-  num_h264_dpc=0; //DPC Slice
-  num_h264_idr=0; //IDR Slice
-  num_h264_sps=0;
-  num_h264_pps=0;
-  num_mp3audio_packets=0;
-
-  if(demux_mpg_open(demuxer)){
-    if(!pes)
-      mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"MPEG-PES");
-    else
+  file_format = demux_mpg_probe(demuxer);
+  if(file_format == DEMUXER_TYPE_MPEG_PS)
+  {
       mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"MPEG-PS");
-    file_format=DEMUXER_TYPE_MPEG_PS;
+      file_format=DEMUXER_TYPE_MPEG_PS;
   } else {
-    mp_msg(MSGT_DEMUX,MSGL_V,"MPEG packet stats: p100: %d  p101: %d p1B6: %d p12x: %d sli: %d a: %d b: %d c: %d idr: %d sps: %d pps: %d PES: %d  MP3: %d \n",
-	num_elementary_packets100,num_elementary_packets101,
-	num_elementary_packets1B6,num_elementary_packets12x,
-	num_h264_slice, num_h264_dpa,
-	num_h264_dpb, num_h264_dpc=0,
-	num_h264_idr,  num_h264_sps=0,
-	num_h264_pps,
-	num_elementary_packetsPES,num_mp3audio_packets);
-//MPEG packet stats: p100: 458  p101: 458  PES: 0  MP3: 1103  (.m2v)
-    if(num_mp3audio_packets>50 && num_mp3audio_packets>2*num_elementary_packets100
-	&& abs(num_elementary_packets100-num_elementary_packets101)>2)
-	break; // it's .MP3
-    // some hack to get meaningfull error messages to our unhappy users:
-    if(num_elementary_packets100>=2 && num_elementary_packets101>=2 &&
-       abs(num_elementary_packets101+8-num_elementary_packets100)<16){
-      if(num_elementary_packetsPES>=4 && num_elementary_packetsPES>=num_elementary_packets100-4){
-        --pes;continue; // tricky...
-      }
-      file_format=DEMUXER_TYPE_MPEG_ES; //  <-- hack is here :)
-    } else 
-#if 1
-    // fuzzy mpeg4-es detection. do NOT enable without heavy testing of mpeg formats detection!
-    if(num_elementary_packets1B6>3 && num_elementary_packets12x>=1 &&
-       num_elementary_packetsPES==0 && num_elementary_packets100<=num_elementary_packets12x &&
-       demuxer->synced<2){
-      file_format=DEMUXER_TYPE_MPEG4_ES;
-    } else
-#endif
-#if 1
-    // fuzzy h264-es detection. do NOT enable without heavy testing of mpeg formats detection!
-    if((num_h264_slice>3 || (num_h264_dpa>3 && num_h264_dpb>3 && num_h264_dpc>3)) && 
-       /* FIXME num_h264_sps>=1 && */ num_h264_pps>=1 && num_h264_idr>=1 &&
-       num_elementary_packets1B6==0 && num_elementary_packetsPES==0 &&
-       demuxer->synced<2){
-      file_format=DEMUXER_TYPE_H264_ES;
-    } else
-#endif
-    {
-      if(demuxer->synced==2)
-        mp_msg(MSGT_DEMUXER,MSGL_ERR,"MPEG: " MSGTR_MissingVideoStreamBug);
-      else
-        mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_NotSystemStream);
       free_demuxer(demuxer);
       demuxer = NULL;
-    }
   }
-  break;
- }
 }
 //=============== Try to open as MPEG-ES file: =================
 if(file_format==DEMUXER_TYPE_MPEG_ES || file_format==DEMUXER_TYPE_MPEG4_ES  || file_format==DEMUXER_TYPE_H264_ES){ // little hack, see above!
@@ -1355,9 +1281,7 @@ switch(file_format){
  case DEMUXER_TYPE_H264_ES:
  case DEMUXER_TYPE_MPEG4_ES:
  case DEMUXER_TYPE_MPEG_ES: {
-   sh_audio=NULL;   // ES streams has no audio channel
-   d_video->sh=new_sh_video(demuxer,0); // create dummy video stream header, id=0
-   sh_video=d_video->sh;sh_video->ds=d_video;
+   if (!demux_mpg_es_open(demuxer)) return NULL;
    break;
  }
 
@@ -1382,24 +1306,7 @@ switch(file_format){
   break;
  }
  case DEMUXER_TYPE_MPEG_PS: {
-  sh_video=d_video->sh;sh_video->ds=d_video;
-//  if(demuxer->stream->type!=STREAMTYPE_VCD) demuxer->movi_start=0; // for VCD
-
-  if(audio_id!=-2) {
-   if(!ds_fill_buffer(d_audio)){
-    mp_msg(MSGT_DEMUXER,MSGL_INFO,"MPEG: " MSGTR_MissingAudioStream);
-    sh_audio=NULL;
-   } else {
-    sh_audio=d_audio->sh;sh_audio->ds=d_audio;
-    switch(d_audio->id & 0xE0){  // 1110 0000 b  (high 3 bit: type  low 5: id)
-      case 0x00: sh_audio->format=0x50;break; // mpeg
-      case 0xA0: sh_audio->format=0x10001;break;  // dvd pcm
-      case 0x80: if((d_audio->id & 0xF8) == 0x88) sh_audio->format=0x2001;//dts
-                 else sh_audio->format=0x2000;break; // ac3
-      default: sh_audio=NULL; // unknown type
-    }
-   }
-  }
+  if (!demux_mpg_ps_open(demuxer)) return NULL;
   break;
  }
 #ifdef USE_TV

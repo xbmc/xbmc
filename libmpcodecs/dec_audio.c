@@ -16,7 +16,7 @@
 #include "ad.h"
 #include "../libao2/afmt.h"
 
-#include "../libaf/af.h"
+#include "libaf/af.h"
 
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
@@ -38,6 +38,7 @@ static ad_functions_t* mpadec;
 void afm_help(void){
     int i;
     mp_msg(MSGT_DECAUDIO,MSGL_INFO,MSGTR_AvailableAudioFm);
+    mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_AUDIO_DRIVERS\n");
     mp_msg(MSGT_DECAUDIO,MSGL_INFO,"    afm:    info:  (comment)\n");
     for (i=0; mpcodecs_ad_drivers[i] != NULL; i++)
       if(mpcodecs_ad_drivers[i]->info->comment && mpcodecs_ad_drivers[i]->info->comment[0])
