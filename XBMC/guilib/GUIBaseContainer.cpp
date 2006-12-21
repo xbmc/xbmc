@@ -16,6 +16,7 @@ CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_renderTime = 0;
   m_orientation = orientation;
   m_analogScrollCount = 0;
+  m_lastItem = NULL;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
@@ -34,7 +35,6 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
   // set the origin
   g_graphicsContext.SetControlTransform(TransformMatrix::CreateTranslation(posX, posY));
 
-  static CGUIListItem *lastItem = NULL;
   if (m_bInvalidated)
     item->SetInvalid();
   if (focused)
@@ -44,11 +44,11 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       CGUIListItemLayout *layout = new CGUIListItemLayout(m_focusedLayout);
       item->SetFocusedLayout(layout);
     }
-    if (item != lastItem)
+    if (item != m_lastItem || !HasFocus())
       item->GetFocusedLayout()->ResetScrolling();
     if (item->GetFocusedLayout())
       item->GetFocusedLayout()->Render(item, m_dwParentID);
-    lastItem = item;
+    m_lastItem = item;
   }
   else
   {
