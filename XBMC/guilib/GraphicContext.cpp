@@ -8,7 +8,7 @@
 #include "xgraphics.h"
 #else
 #define D3DCLEAR_STENCIL 0x0l
-#define D3DPRESENTFLAG_LOCKABLE_BACKBUFFER 0x0l
+//#define D3DPRESENTFLAG_LOCKABLE_BACKBUFFER 0x0l
 #endif
 #include "SkinInfo.h"
 
