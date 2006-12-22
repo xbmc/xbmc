@@ -1,0 +1,19 @@
+// SimpleTunnel.vtx
+// Author - MrC
+
+Tunnel tunnel;
+Texture test;
+
+void Init()
+{
+	test.LoadTexture("aqua_ravines.jpg");
+}
+
+void Render()
+{
+
+	gfxSetTexture(test);
+	tunnel.Update((1 + TREBLE) * 8 * TIMEPASS, 1 * TIMEPASS * BASS * 2);
+	tunnel.Render(20, 1, 1, 2);
+
+}

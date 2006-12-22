@@ -1,0 +1,155 @@
+﻿<window id="2006">
+	<defaultcontrol>2</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="visualisation" id="2">
+			<description>visualisation</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+		</control>
+		<!-- codec & viz infos -->
+		<control type="image" id="0">
+			<description>preset background image</description>
+			<posx>-10</posx>
+			<posy>40</posy>
+			<width>740</width>
+			<height>65</height>
+			<texture>osd_menu_bg.png</texture>
+			<visible>Player.ShowCodec</visible>
+			<animation effect="fade" time="300">VisibleChange</animation>
+		</control>
+		<control type="label" id="0">
+			<description>Codecinfo</description>
+			<width>600</width>
+			<posx>75</posx>
+			<posy>50</posy>
+			<label>Audio | $INFO[musicplayer.Codec,Codec: ,]$INFO[musicplayer.Bitrate, - Bitrate: ,kbps]$INFO[musicplayer.bitspersample, - Bits:,bit]$INFO[musicplayer.Samplerate, - Freq.: ,kHz]$INFO[musicplayer.Channels, - Channels: ]</label>
+			<align>left</align>
+			<font>font12</font>
+			<visible>Player.ShowCodec</visible>
+			<animation effect="fade" time="300">VisibleChange</animation>
+		</control>
+		<control type="label" id="0">
+			<description>Presets label</description>
+			<posx>75</posx>
+			<posy>75</posy>
+			<width>560</width>
+			<label>Visual | fps: $INFO[System.FPS] -</label>
+			<font>font12</font>
+			<align>left</align>
+			<visible>Player.ShowCodec</visible>
+			<animation effect="fade" time="300">VisibleChange</animation>
+		</control>
+		<control type="label" id="0">
+			<description>Presets label</description>
+			<posx>225</posx>
+			<posy>75</posy>
+			<width>420</width>
+			<label>$INFO[Visualisation.Name]$INFO[Visualisation.Preset, - ]</label>
+			<font>font12</font>
+			<align>left</align>
+			<visible>Player.ShowCodec</visible>
+			<animation effect="fade" time="300">VisibleChange</animation>
+		</control>
+		<control type="image" id="0">
+			<description>Preset locked image</description>
+			<posx>210</posx>
+			<posy>76</posy>
+			<width>12</width>
+			<height>15</height>
+			<visible>Visualisation.Locked + Player.ShowCodec</visible>
+			<animation effect="fade" time="300">VisibleChange</animation>
+			<texture>arenaitem-private.png</texture>
+		</control>
+		<!-- media infos -->
+		<control type="image" id="1">
+			<description>media info background image</description>
+			<posx>-10</posx>
+			<posy>435</posy>
+			<width>740</width>
+			<height>100</height>
+			<texture>osd_menu_bg.png</texture>
+			<visible>Player.ShowInfo</visible>
+			<animation effect="fade" time="1000">VisibleChange</animation>
+		</control>
+		<control type="image" id="1">
+			<description>cover image</description>
+			<posx>75</posx>
+			<posy>435</posy>
+			<width>75</width>
+			<height>100</height>
+			<info>MusicPlayer.Cover</info>
+			<aspectratio>keep</aspectratio>
+			<visible>Player.ShowInfo</visible>
+			<animation effect="fade" time="1000">VisibleChange</animation>
+		</control>
+		<control type="label" id="1">
+			<description>Artist label</description>
+			<width>445</width>
+			<posx>157</posx>
+			<posy>438</posy>
+			<info>MusicPlayer.Artist</info>
+			<align>left</align>
+			<font>special12</font>
+			<visible>Player.ShowInfo</visible>
+			<animation effect="fade" time="1000">VisibleChange</animation>
+		</control>
+		<control type="label" id="1">
+			<description>Title label</description>
+			<width>430</width>
+			<posx>157</posx>
+			<posy>459</posy>
+			<info>MusicPlayer.Title</info>
+			<align>left</align>
+			<font>special13</font>
+			<visible>Player.ShowInfo</visible>
+			<animation effect="fade" time="1000">VisibleChange</animation>
+		</control>
+		<control type="label" id="1">
+			<description>Album label</description>
+			<width>430</width>
+			<posx>157</posx>
+			<posy>487</posy>
+			<info>MusicPlayer.Album</info>
+			<align>left</align>
+			<font>font10</font>
+			<visible>Player.ShowInfo</visible>
+			<animation effect="fade" time="1000">VisibleChange</animation>
+		</control>
+		<control type="label" id="1">
+			<description>time label</description>
+			<width>430</width>
+			<posx>157</posx>
+			<posy>508</posy>
+			<label>$INFO[musicplayer.Time]$INFO[musicplayer.Duration, / ]</label>
+			<align>left</align>
+			<font>font10</font>
+			<visible>Player.ShowInfo</visible>
+			<animation effect="fade" time="1000">VisibleChange</animation>
+		</control>
+		<control type="label" id="1">
+			<description>Playlist Pos No</description>
+			<width>200</width>
+			<posx>660</posx>
+			<posy>508</posy>
+			<label>$INFO[musicplayer.Playlistposition,$LOCALIZE[435] ]$INFO[musicplayer.Playlistlength, / ]</label>
+			<visible>Player.ShowInfo + !MusicPartyMode.Enabled</visible>
+			<animation effect="fade" time="1000">VisibleChange</animation>
+			<align>right</align>
+			<font>font10</font>
+		</control>
+		<control type="label" id="1">
+			<description>PartyMode Enabled</description>
+			<width>200</width>
+			<posx>660</posx>
+			<posy>508</posy>
+			<label>589</label>
+			<visible>Player.ShowInfo + MusicPartyMode.Enabled</visible>
+			<animation effect="fade" time="1000">VisibleChange</animation>
+			<align>right</align>
+			<font>font10</font>
+		</control>
+	</controls>
+</window>

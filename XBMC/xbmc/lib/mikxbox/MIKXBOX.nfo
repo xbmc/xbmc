@@ -1,0 +1,14 @@
+MIKXBOX 3.1.10
+Brought to you by PeteGabe
+
+Overview:
+This is a port of MikMod/MikWin 3.1.10 to XBOX for all the tracker music fans. It supports like 18 different formats, thats why its 514 KB. I've included full source b/c its GPL. 
+
+Instructions:
+Include MIKXBOX.lib in your libraries. For easiest use just include music.h in your main program. I have a thread system already setup that should work in most cases. For more detailed info, look in the docs in the source directory.
+
+Greets:
+GARP (inspired my love of tracker music), the people who can code in #XFACTOR, NAPALM(PSX)
+
+Notes:
+This took me about an hour to figure out that I needed to convert from C to CPP to even get DirectSound on XBOX. I also had to remove all the old DirectX 6 code that isn't compatible anymore.

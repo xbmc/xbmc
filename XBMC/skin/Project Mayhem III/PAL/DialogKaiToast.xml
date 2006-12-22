@@ -1,0 +1,47 @@
+﻿<window id="107">
+	<animation effect="slide" time="400" start="300,0">WindowOpen</animation>
+	<animation effect="slide" time="400" end="300,0">WindowClose</animation>
+	<coordinates>
+		<system>1</system>
+		<posx>420</posx>
+		<posy>470</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="0">
+			<description>Popup Kai Toast Dialog Background</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>255</width>
+			<height>75</height>
+			<texture>voulume-panel-bg.png</texture>
+		</control>
+		<control type="image" id="400">
+			<description>avatar</description>
+			<posx>30</posx>
+			<posy>15</posy>
+			<width>40</width>
+			<height>40</height>
+			<texture>infoicon.png</texture>
+		</control>
+		<control type="label" id="401">
+			<description>Caption Label</description>
+			<posx>76</posx>
+			<posy>17</posy>
+			<width>160</width>
+			<font>font12</font>
+			<align>center</align>
+			<label>-</label>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="402">
+			<description>Description Button</description>
+			<posx>76</posx>
+			<posy>33</posy>
+			<width>160</width>
+			<label>-</label>
+			<font>font10</font>
+			<align>center</align>
+			<scroll>true</scroll>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,20 @@
+<visualisation>
+	<PresetPackFolder>Milkdrop</PresetPackFolder>
+	<PresetPack>WA51-presets(265).zip</PresetPack>
+	<EnableRating>false</EnableRating>
+	<InstaScan>false</InstaScan>
+	<HardCutsDisabled>false</HardCutsDisabled>
+	<TexSize>1024</TexSize>
+	<MeshSize>32</MeshSize>
+	<BlendTimeAuto>1.000000</BlendTimeAuto>
+	<TimeBetweenPresets>8.000000</TimeBetweenPresets>
+	<TimeBetweenPresetsRand>5.000000</TimeBetweenPresetsRand>
+	<HardCutLoudnessThresh>2.500000</HardCutLoudnessThresh>
+	<HardCutHalflife>60.000000</HardCutHalflife>
+	<MaxFPS>50</MaxFPS>
+	<HoldPreset>0</HoldPreset>
+	<CurrentPreset>213</CurrentPreset>
+	<Stereo3d>false</Stereo3d>
+	<LeftEyeCol>FF000000</LeftEyeCol>
+	<RightEyeCol>00FFFF00</RightEyeCol>
+</visualisation>

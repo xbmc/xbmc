@@ -1,0 +1,540 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<languagecodes>	
+  <code><short>abk</short><long>Abkhazian</long></code>
+	<code><short>ace</short><long>Achinese</long></code>
+	<code><short>ach</short><long>Acoli</long></code>
+	<code><short>ada</short><long>Adangme</long></code>
+	<code><short>ady</short><long>Adygei</long></code>
+	<code><short>ady</short><long>Adyghe</long></code>
+	<code><short>aar</short><long>Afar</long></code>
+	<code><short>afh</short><long>Afrihili</long></code>
+	<code><short>afr</short><long>Afrikaans</long></code>
+	<code><short>afa</short><long>Afro-Asiatic (Other)</long></code>
+	<code><short>aka</short><long>Akan</long></code>
+	<code><short>akk</short><long>Akkadian</long></code>
+	<code><short>alb</short><long>Albanian</long></code>
+	<code><short>sqi</short><long>Albanian</long></code>
+	<code><short>ale</short><long>Aleut</long></code>
+	<code><short>alg</short><long>Algonquian languages</long></code>
+	<code><short>tut</short><long>Altaic (Other)</long></code>
+	<code><short>amh</short><long>Amharic</long></code>
+	<code><short>apa</short><long>Apache languages</long></code>
+	<code><short>ara</short><long>Arabic</long></code>
+	<code><short>arg</short><long>Aragonese</long></code>
+	<code><short>arc</short><long>Aramaic</long></code>
+	<code><short>arp</short><long>Arapaho</long></code>
+	<code><short>arn</short><long>Araucanian</long></code>
+	<code><short>arw</short><long>Arawak</long></code>
+	<code><short>arm</short><long>Armenian</long></code>
+	<code><short>hye</short><long>Armenian</long></code>
+	<code><short>art</short><long>Artificial (Other)</long></code>
+	<code><short>asm</short><long>Assamese</long></code>
+	<code><short>ast</short><long>Asturian</long></code>
+	<code><short>ath</short><long>Athapascan languages</long></code>
+	<code><short>aus</short><long>Australian languages</long></code>
+	<code><short>map</short><long>Austronesian (Other)</long></code>
+	<code><short>ava</short><long>Avaric</long></code>
+	<code><short>ave</short><long>Avestan</long></code>
+	<code><short>awa</short><long>Awadhi</long></code>
+	<code><short>aym</short><long>Aymara</long></code>
+	<code><short>aze</short><long>Azerbaijani</long></code>
+	<code><short>ast</short><long>Bable</long></code>
+	<code><short>ban</short><long>Balinese</long></code>
+	<code><short>bat</short><long>Baltic (Other)</long></code>
+	<code><short>bal</short><long>Baluchi</long></code>
+	<code><short>bam</short><long>Bambara</long></code>
+	<code><short>bai</short><long>Bamileke languages</long></code>
+	<code><short>bad</short><long>Banda</long></code>
+	<code><short>bnt</short><long>Bantu (Other)</long></code>
+	<code><short>bas</short><long>Basa</long></code>
+	<code><short>bak</short><long>Bashkir</long></code>
+	<code><short>baq</short><long>Basque</long></code>
+	<code><short>eus</short><long>Basque</long></code>
+	<code><short>btk</short><long>Batak (Indonesia)</long></code>
+	<code><short>bej</short><long>Beja</long></code>
+	<code><short>bel</short><long>Belarusian</long></code>
+	<code><short>bem</short><long>Bemba</long></code>
+	<code><short>ben</short><long>Bengali</long></code>
+	<code><short>ber</short><long>Berber (Other)</long></code>
+	<code><short>bho</short><long>Bhojpuri</long></code>
+	<code><short>bih</short><long>Bihari</long></code>
+	<code><short>bik</short><long>Bikol</long></code>
+	<code><short>byn</short><long>Bilin</long></code>
+	<code><short>bin</short><long>Bini</long></code>
+	<code><short>bis</short><long>Bislama</long></code>
+	<code><short>byn</short><long>Blin</long></code>
+	<code><short>nob</short><long>Bokmål, Norwegian</long></code>
+	<code><short>bos</short><long>Bosnian</long></code>
+	<code><short>bra</short><long>Braj</long></code>
+	<code><short>bre</short><long>Breton</long></code>
+	<code><short>bug</short><long>Buginese</long></code>
+	<code><short>bul</short><long>Bulgarian</long></code>
+	<code><short>bua</short><long>Buriat</long></code>
+	<code><short>bur</short><long>Burmese</long></code>
+	<code><short>mya</short><long>Burmese</long></code>
+	<code><short>cad</short><long>Caddo</long></code>
+	<code><short>car</short><long>Carib</long></code>
+	<code><short>spa</short><long>Castilian</long></code>
+	<code><short>cat</short><long>Catalan</long></code>
+	<code><short>cau</short><long>Caucasian (Other)</long></code>
+	<code><short>ceb</short><long>Cebuano</long></code>
+	<code><short>cel</short><long>Celtic (Other)</long></code>
+	<code><short>chg</short><long>Chagatai</long></code>
+	<code><short>cmc</short><long>Chamic languages</long></code>
+	<code><short>cha</short><long>Chamorro</long></code>
+	<code><short>che</short><long>Chechen</long></code>
+	<code><short>chr</short><long>Cherokee</long></code>
+	<code><short>nya</short><long>Chewa</long></code>
+	<code><short>chy</short><long>Cheyenne</long></code>
+	<code><short>chb</short><long>Chibcha</long></code>
+	<code><short>nya</short><long>Chichewa</long></code>
+	<code><short>chi</short><long>Chinese</long></code>
+	<code><short>zho</short><long>Chinese</long></code>
+	<code><short>chn</short><long>Chinook jargon</long></code>
+	<code><short>chp</short><long>Chipewyan</long></code>
+	<code><short>cho</short><long>Choctaw</long></code>
+	<code><short>zha</short><long>Chuang</long></code>
+	<code><short>chu</short><long>Church Slavonic</long></code>
+	<code><short>chk</short><long>Chuukese</long></code>
+	<code><short>chv</short><long>Chuvash</long></code>
+	<code><short>nwc</short><long>Classical Nepal Bhasa</long></code>
+	<code><short>nwc</short><long>Classical Newari</long></code>
+	<code><short>cop</short><long>Coptic</long></code>
+	<code><short>cor</short><long>Cornish</long></code>
+	<code><short>cos</short><long>Corsican</long></code>
+	<code><short>cre</short><long>Cree</long></code>
+	<code><short>mus</short><long>Creek</long></code>
+	<code><short>crp</short><long>Creoles and pidgins (Other)</long></code>
+	<code><short>cpe</short><long>English-based (Other)</long></code>
+	<code><short>cpf</short><long>French-based (Other)</long></code>
+	<code><short>cpp</short><long>Portuguese-based (Other)</long></code>
+	<code><short>crh</short><long>Crimean Tatar</long></code>
+	<code><short>crh</short><long>Crimean Turkish</long></code>
+	<code><short>scr</short><long>Croatian</long></code>
+	<code><short>hrv</short><long>Croatian</long></code>
+	<code><short>cus</short><long>Cushitic (Other)</long></code>
+	<code><short>cze</short><long>Czech</long></code>
+	<code><short>ces</short><long>Czech</long></code>
+	<code><short>dak</short><long>Dakota</long></code>
+	<code><short>dan</short><long>Danish</long></code>
+	<code><short>dar</short><long>Dargwa</long></code>
+	<code><short>day</short><long>Dayak</long></code>
+	<code><short>del</short><long>Delaware</long></code>
+	<code><short>din</short><long>Dinka</long></code>
+	<code><short>div</short><long>Divehi</long></code>
+	<code><short>doi</short><long>Dogri</long></code>
+	<code><short>dgr</short><long>Dogrib</long></code>
+	<code><short>dra</short><long>Dravidian (Other)</long></code>
+	<code><short>dua</short><long>Duala</long></code>
+	<code><short>dut</short><long>Dutch</long></code>
+	<code><short>nld</short><long>Dutch</long></code>
+	<code><short>dum</short><long>Dutch, Middle (ca. 1050-1350)</long></code>
+	<code><short>dyu</short><long>Dyula</long></code>
+	<code><short>dzo</short><long>Dzongkha</long></code>
+	<code><short>efi</short><long>Efik</long></code>
+	<code><short>egy</short><long>Egyptian (Ancient)</long></code>
+	<code><short>eka</short><long>Ekajuk</long></code>
+	<code><short>elx</short><long>Elamite</long></code>
+	<code><short>eng</short><long>English</long></code>
+	<code><short>enm</short><long>English, Middle (1100-1500)</long></code>
+	<code><short>ang</short><long>English, Old (ca.450-1100)</long></code>
+	<code><short>myv</short><long>Erzya</long></code>
+	<code><short>epo</short><long>Esperanto</long></code>
+	<code><short>est</short><long>Estonian</long></code>
+	<code><short>ewe</short><long>Ewe</long></code>
+	<code><short>ewo</short><long>Ewondo</long></code>
+	<code><short>fan</short><long>Fang</long></code>
+	<code><short>fat</short><long>Fanti</long></code>
+	<code><short>fao</short><long>Faroese</long></code>
+	<code><short>fij</short><long>Fijian</long></code>
+	<code><short>fil</short><long>Filipino</long></code>
+	<code><short>fin</short><long>Finnish</long></code>
+	<code><short>fiu</short><long>Finno-Ugrian (Other)</long></code>
+	<code><short>dut</short><long>Flemish</long></code>
+	<code><short>nld</short><long>Flemish</long></code>
+	<code><short>fon</short><long>Fon</long></code>
+	<code><short>fre</short><long>French</long></code>
+	<code><short>fra</short><long>French</long></code>
+	<code><short>frm</short><long>French, Middle (ca.1400-1600)</long></code>
+	<code><short>fro</short><long>French, Old (842-ca.1400)</long></code>
+	<code><short>fry</short><long>Frisian</long></code>
+	<code><short>fur</short><long>Friulian</long></code>
+	<code><short>ful</short><long>Fulah</long></code>
+	<code><short>gaa</short><long>Ga</long></code>
+	<code><short>gla</short><long>Gaelic</long></code>
+	<code><short>glg</short><long>Gallegan</long></code>
+	<code><short>lug</short><long>Ganda</long></code>
+	<code><short>gay</short><long>Gayo</long></code>
+	<code><short>gba</short><long>Gbaya</long></code>
+	<code><short>gez</short><long>Geez</long></code>
+	<code><short>geo</short><long>Georgian</long></code>
+	<code><short>kat</short><long>Georgian</long></code>
+	<code><short>ger</short><long>German</long></code>
+	<code><short>deu</short><long>German</long></code>
+	<code><short>nds</short><long>German, Low</long></code>
+	<code><short>gmh</short><long>German, Middle High (ca.1050-1500)</long></code>
+	<code><short>goh</short><long>German, Old High (ca.750-1050)</long></code>
+	<code><short>gem</short><long>Germanic (Other)</long></code>
+	<code><short>kik</short><long>Gikuyu</long></code>
+	<code><short>gil</short><long>Gilbertese</long></code>
+	<code><short>gon</short><long>Gondi</long></code>
+	<code><short>gor</short><long>Gorontalo</long></code>
+	<code><short>got</short><long>Gothic</long></code>
+	<code><short>grb</short><long>Grebo</long></code>
+	<code><short>grc</short><long>Greek, Ancient (to 1453)</long></code>
+	<code><short>gre</short><long>Greek, Modern (1453-)</long></code>
+	<code><short>ell</short><long>Greek, Modern (1453-)</long></code>
+	<code><short>kal</short><long>Greenlandic</long></code>
+	<code><short>grn</short><long>Guarani</long></code>
+	<code><short>guj</short><long>Gujarati</long></code>
+	<code><short>gwi</short><long>Gwich´in</long></code>
+	<code><short>hai</short><long>Haida</long></code>
+	<code><short>hat</short><long>Haitian</long></code>
+	<code><short>hat</short><long>Haitian Creole</long></code>
+	<code><short>hau</short><long>Hausa</long></code>
+	<code><short>haw</short><long>Hawaiian</long></code>
+	<code><short>heb</short><long>Hebrew</long></code>
+	<code><short>her</short><long>Herero</long></code>
+	<code><short>hil</short><long>Hiligaynon</long></code>
+	<code><short>him</short><long>Himachali</long></code>
+	<code><short>hin</short><long>Hindi</long></code>
+	<code><short>hmo</short><long>Hiri Motu</long></code>
+	<code><short>hit</short><long>Hittite</long></code>
+	<code><short>hmn</short><long>Hmong</long></code>
+	<code><short>hun</short><long>Hungarian</long></code>
+	<code><short>hup</short><long>Hupa</long></code>
+	<code><short>iba</short><long>Iban</long></code>
+	<code><short>ice</short><long>Icelandic</long></code>
+	<code><short>isl</short><long>Icelandic</long></code>
+	<code><short>ido</short><long>Ido</long></code>
+	<code><short>ibo</short><long>Igbo</long></code>
+	<code><short>ijo</short><long>Ijo</long></code>
+	<code><short>ilo</short><long>Iloko</long></code>
+	<code><short>smn</short><long>Inari Sami</long></code>
+	<code><short>inc</short><long>Indic (Other)</long></code>
+	<code><short>ine</short><long>Indo-European (Other)</long></code>
+	<code><short>ind</short><long>Indonesian</long></code>
+	<code><short>inh</short><long>Ingush</long></code>
+	<code><short>ina</short><long>Auxiliary Language Association)</long></code>
+	<code><short>ile</short><long>Interlingue</long></code>
+	<code><short>iku</short><long>Inuktitut</long></code>
+	<code><short>ipk</short><long>Inupiaq</long></code>
+	<code><short>ira</short><long>Iranian (Other)</long></code>
+	<code><short>gle</short><long>Irish</long></code>
+	<code><short>mga</short><long>Irish, Middle (900-1200)</long></code>
+	<code><short>sga</short><long>Irish, Old (to 900)</long></code>
+	<code><short>iro</short><long>Iroquoian languages</long></code>
+	<code><short>ita</short><long>Italian</long></code>
+	<code><short>jpn</short><long>Japanese</long></code>
+	<code><short>jav</short><long>Javanese</long></code>
+	<code><short>jrb</short><long>Judeo-Arabic</long></code>
+	<code><short>jpr</short><long>Judeo-Persian</long></code>
+	<code><short>kbd</short><long>Kabardian</long></code>
+	<code><short>kab</short><long>Kabyle</long></code>
+	<code><short>kac</short><long>Kachin</long></code>
+	<code><short>kal</short><long>Kalaallisut</long></code>
+	<code><short>xal</short><long>Kalmyk</long></code>
+	<code><short>kam</short><long>Kamba</long></code>
+	<code><short>kan</short><long>Kannada</long></code>
+	<code><short>kau</short><long>Kanuri</long></code>
+	<code><short>krc</short><long>Karachay-Balkar</long></code>
+	<code><short>kaa</short><long>Kara-Kalpak</long></code>
+	<code><short>kar</short><long>Karen</long></code>
+	<code><short>kas</short><long>Kashmiri</long></code>
+	<code><short>csb</short><long>Kashubian</long></code>
+	<code><short>kaw</short><long>Kawi</long></code>
+	<code><short>kaz</short><long>Kazakh</long></code>
+	<code><short>kha</short><long>Khasi</long></code>
+	<code><short>khm</short><long>Khmer</long></code>
+	<code><short>khi</short><long>Khoisan (Other)</long></code>
+	<code><short>kho</short><long>Khotanese</long></code>
+	<code><short>kik</short><long>Kikuyu</long></code>
+	<code><short>kmb</short><long>Kimbundu</long></code>
+	<code><short>kin</short><long>Kinyarwanda</long></code>
+	<code><short>kir</short><long>Kirghiz</long></code>
+	<code><short>tlh</short><long>Klingon</long></code>
+	<code><short>kom</short><long>Komi</long></code>
+	<code><short>kon</short><long>Kongo</long></code>
+	<code><short>kok</short><long>Konkani</long></code>
+	<code><short>kor</short><long>Korean</long></code>
+	<code><short>kos</short><long>Kosraean</long></code>
+	<code><short>kpe</short><long>Kpelle</long></code>
+	<code><short>kro</short><long>Kru</long></code>
+	<code><short>kua</short><long>Kuanyama</long></code>
+	<code><short>kum</short><long>Kumyk</long></code>
+	<code><short>kur</short><long>Kurdish</long></code>
+	<code><short>kru</short><long>Kurukh</long></code>
+	<code><short>kut</short><long>Kutenai</long></code>
+	<code><short>kua</short><long>Kwanyama, Kuanyama</long></code>
+	<code><short>lad</short><long>Ladino</long></code>
+	<code><short>lah</short><long>Lahnda</long></code>
+	<code><short>lam</short><long>Lamba</long></code>
+	<code><short>lao</short><long>Lao</long></code>
+	<code><short>lat</short><long>Latin</long></code>
+	<code><short>lav</short><long>Latvian</long></code>
+	<code><short>ltz</short><long>Letzeburgesch</long></code>
+	<code><short>lez</short><long>Lezghian</long></code>
+	<code><short>lim</short><long>Limburgan</long></code>
+	<code><short>lim</short><long>Limburger</long></code>
+	<code><short>lim</short><long>Limburgish</long></code>
+	<code><short>lin</short><long>Lingala</long></code>
+	<code><short>lit</short><long>Lithuanian</long></code>
+	<code><short>jbo</short><long>Lojban</long></code>
+	<code><short>nds</short><long>Low German</long></code>
+	<code><short>nds</short><long>Low Saxon</long></code>
+	<code><short>dsb</short><long>Lower Sorbian</long></code>
+	<code><short>loz</short><long>Lozi</long></code>
+	<code><short>lub</short><long>Luba-Katanga</long></code>
+	<code><short>lua</short><long>Luba-Lulua</long></code>
+	<code><short>lui</short><long>Luiseno</long></code>
+	<code><short>smj</short><long>Lule Sami</long></code>
+	<code><short>lun</short><long>Lunda</long></code>
+	<code><short>luo</short><long>Luo (Kenya and Tanzania)</long></code>
+	<code><short>lus</short><long>Lushai</long></code>
+	<code><short>ltz</short><long>Luxembourgish</long></code>
+	<code><short>mac</short><long>Macedonian</long></code>
+	<code><short>mkd</short><long>Macedonian</long></code>
+	<code><short>mad</short><long>Madurese</long></code>
+	<code><short>mag</short><long>Magahi</long></code>
+	<code><short>mai</short><long>Maithili</long></code>
+	<code><short>mak</short><long>Makasar</long></code>
+	<code><short>mlg</short><long>Malagasy</long></code>
+	<code><short>may</short><long>Malay</long></code>
+	<code><short>msa</short><long>Malay</long></code>
+	<code><short>mal</short><long>Malayalam</long></code>
+	<code><short>mlt</short><long>Maltese</long></code>
+	<code><short>mnc</short><long>Manchu</long></code>
+	<code><short>mdr</short><long>Mandar</long></code>
+	<code><short>man</short><long>Mandingo</long></code>
+	<code><short>mni</short><long>Manipuri</long></code>
+	<code><short>mno</short><long>Manobo languages</long></code>
+	<code><short>glv</short><long>Manx</long></code>
+	<code><short>mao</short><long>Maori</long></code>
+	<code><short>mri</short><long>Maori</long></code>
+	<code><short>mar</short><long>Marathi</long></code>
+	<code><short>chm</short><long>Mari</long></code>
+	<code><short>mah</short><long>Marshallese</long></code>
+	<code><short>mwr</short><long>Marwari</long></code>
+	<code><short>mas</short><long>Masai</long></code>
+	<code><short>myn</short><long>Mayan languages</long></code>
+	<code><short>men</short><long>Mende</long></code>
+	<code><short>mic</short><long>Micmac</long></code>
+	<code><short>mic</short><long>Mi'kmaq</long></code>
+	<code><short>min</short><long>Minangkabau</long></code>
+	<code><short>mwl</short><long>Mirandese</long></code>
+	<code><short>mis</short><long>Miscellaneous languages</long></code>
+	<code><short>moh</short><long>Mohawk</long></code>
+	<code><short>mdf</short><long>Moksha</long></code>
+	<code><short>mol</short><long>Moldavian</long></code>
+	<code><short>mkh</short><long>Mon-Khmer (Other)</long></code>
+	<code><short>lol</short><long>Mongo</long></code>
+	<code><short>mon</short><long>Mongolian</long></code>
+	<code><short>mos</short><long>Mossi</long></code>
+	<code><short>mul</short><long>Multiple languages</long></code>
+	<code><short>mun</short><long>Munda languages</long></code>
+	<code><short>nah</short><long>Nahuatl</long></code>
+	<code><short>nau</short><long>Nauru</long></code>
+	<code><short>nav</short><long>Navaho, Navajo</long></code>
+	<code><short>nav</short><long>Navajo</long></code>
+	<code><short>nde</short><long>Ndebele, North</long></code>
+	<code><short>nbl</short><long>Ndebele, South</long></code>
+	<code><short>ndo</short><long>Ndonga</long></code>
+	<code><short>nap</short><long>Neapolitan</long></code>
+	<code><short>new</short><long>Nepal Bhasa</long></code>
+	<code><short>nep</short><long>Nepali</long></code>
+	<code><short>new</short><long>Newari</long></code>
+	<code><short>nia</short><long>Nias</long></code>
+	<code><short>nic</short><long>Niger-Kordofanian (Other)</long></code>
+	<code><short>ssa</short><long>Nilo-Saharan (Other)</long></code>
+	<code><short>niu</short><long>Niuean</long></code>
+	<code><short>nog</short><long>Nogai</long></code>
+	<code><short>non</short><long>Norse, Old</long></code>
+	<code><short>nai</short><long>North American Indian (Other)</long></code>
+	<code><short>sme</short><long>Northern Sami</long></code>
+	<code><short>nso</short><long>Northern Sotho</long></code>
+	<code><short>nde</short><long>North Ndebele</long></code>
+	<code><short>nor</short><long>Norwegian</long></code>
+	<code><short>nob</short><long>Norwegian Bokmål</long></code>
+	<code><short>nno</short><long>Norwegian Nynorsk</long></code>
+	<code><short>nub</short><long>Nubian languages</long></code>
+	<code><short>nym</short><long>Nyamwezi</long></code>
+	<code><short>nya</short><long>Nyanja</long></code>
+	<code><short>nyn</short><long>Nyankole</long></code>
+	<code><short>nno</short><long>Nynorsk, Norwegian</long></code>
+	<code><short>nyo</short><long>Nyoro</long></code>
+	<code><short>nzi</short><long>Nzima</long></code>
+	<code><short>oci</short><long>Occitan (post 1500)</long></code>
+	<code><short>oji</short><long>Ojibwa</long></code>
+	<code><short>chu</short><long>Old Bulgarian</long></code>
+	<code><short>chu</short><long>Old Church Slavonic</long></code>
+	<code><short>nwc</short><long>Old Newari</long></code>
+	<code><short>chu</short><long>Old Slavonic</long></code>
+	<code><short>ori</short><long>Oriya</long></code>
+	<code><short>orm</short><long>Oromo</long></code>
+	<code><short>osa</short><long>Osage</long></code>
+	<code><short>oss</short><long>Ossetian</long></code>
+	<code><short>oss</short><long>Ossetic</long></code>
+	<code><short>oto</short><long>Otomian languages</long></code>
+	<code><short>pal</short><long>Pahlavi</long></code>
+	<code><short>pau</short><long>Palauan</long></code>
+	<code><short>pli</short><long>Pali</long></code>
+	<code><short>pam</short><long>Pampanga</long></code>
+	<code><short>pag</short><long>Pangasinan</long></code>
+	<code><short>pan</short><long>Panjabi</long></code>
+	<code><short>pap</short><long>Papiamento</long></code>
+	<code><short>paa</short><long>Papuan (Other)</long></code>
+	<code><short>nso</short><long>Pedi</long></code>
+	<code><short>per</short><long>Persian</long></code>
+	<code><short>fas</short><long>Persian</long></code>
+	<code><short>peo</short><long>Persian, Old (ca.600-400 B.C.)</long></code>
+	<code><short>phi</short><long>Philippine (Other)</long></code>
+	<code><short>phn</short><long>Phoenician</long></code>
+	<code><short>fil</short><long>Pilipino</long></code>
+	<code><short>pon</short><long>Pohnpeian</long></code>
+	<code><short>pol</short><long>Polish</long></code>
+	<code><short>por</short><long>Portuguese</long></code>
+	<code><short>pra</short><long>Prakrit languages</long></code>
+	<code><short>oci</short><long>Provençal</long></code>
+	<code><short>pro</short><long>Provençal, Old (to 1500)</long></code>
+	<code><short>pan</short><long>Punjabi</long></code>
+	<code><short>pus</short><long>Pushto</long></code>
+	<code><short>que</short><long>Quechua</long></code>
+	<code><short>roh</short><long>Raeto-Romance</long></code>
+	<code><short>raj</short><long>Rajasthani</long></code>
+	<code><short>rap</short><long>Rapanui</long></code>
+	<code><short>rar</short><long>Rarotongan</long></code>
+	<code><short>qaa-qtz</short><long>Reserved for local use</long></code>
+	<code><short>roa</short><long>Romance (Other)</long></code>
+	<code><short>rum</short><long>Romanian</long></code>
+	<code><short>ron</short><long>Romanian</long></code>
+	<code><short>rom</short><long>Romany</long></code>
+	<code><short>run</short><long>Rundi</long></code>
+	<code><short>rus</short><long>Russian</long></code>
+	<code><short>sal</short><long>Salishan languages</long></code>
+	<code><short>sam</short><long>Samaritan Aramaic</long></code>
+	<code><short>smi</short><long>Sami languages (Other)</long></code>
+	<code><short>smo</short><long>Samoan</long></code>
+	<code><short>sad</short><long>Sandawe</long></code>
+	<code><short>sag</short><long>Sango</long></code>
+	<code><short>san</short><long>Sanskrit</long></code>
+	<code><short>sat</short><long>Santali</long></code>
+	<code><short>srd</short><long>Sardinian</long></code>
+	<code><short>sas</short><long>Sasak</long></code>
+	<code><short>nds</short><long>Saxon, Low</long></code>
+	<code><short>sco</short><long>Scots</long></code>
+	<code><short>gla</short><long>Scottish Gaelic</long></code>
+	<code><short>sel</short><long>Selkup</long></code>
+	<code><short>sem</short><long>Semitic (Other)</long></code>
+	<code><short>nso</short><long>Sepedi</long></code>
+	<code><short>scc</short><long>Serbian</long></code>
+	<code><short>srp</short><long>Serbian</long></code>
+	<code><short>srr</short><long>Serer</long></code>
+	<code><short>shn</short><long>Shan</long></code>
+	<code><short>sna</short><long>Shona</long></code>
+	<code><short>iii</short><long>Sichuan Yi</long></code>
+	<code><short>scn</short><long>Sicilian</long></code>
+	<code><short>sid</short><long>Sidamo</long></code>
+	<code><short>sgn</short><long>Sign languages</long></code>
+	<code><short>bla</short><long>Siksika</long></code>
+	<code><short>snd</short><long>Sindhi</long></code>
+	<code><short>sin</short><long>Sinhala</long></code>
+	<code><short>sin</short><long>Sinhalese</long></code>
+	<code><short>sit</short><long>Sino-Tibetan (Other)</long></code>
+	<code><short>sio</short><long>Siouan languages</long></code>
+	<code><short>sms</short><long>Skolt Sami</long></code>
+	<code><short>den</short><long>Slave (Athapascan)</long></code>
+	<code><short>sla</short><long>Slavic (Other)</long></code>
+	<code><short>slo</short><long>Slovak</long></code>
+	<code><short>slk</short><long>Slovak</long></code>
+	<code><short>slv</short><long>Slovenian</long></code>
+	<code><short>sog</short><long>Sogdian</long></code>
+	<code><short>som</short><long>Somali</long></code>
+	<code><short>son</short><long>Songhai</long></code>
+	<code><short>snk</short><long>Soninke</long></code>
+	<code><short>wen</short><long>Sorbian languages</long></code>
+	<code><short>nso</short><long>Sotho, Northern</long></code>
+	<code><short>sot</short><long>Sotho, Southern</long></code>
+	<code><short>sai</short><long>South American Indian (Other)</long></code>
+	<code><short>sma</short><long>Southern Sami</long></code>
+	<code><short>nbl</short><long>South Ndebele</long></code>
+	<code><short>spa</short><long>Spanish</long></code>
+	<code><short>suk</short><long>Sukuma</long></code>
+	<code><short>sux</short><long>Sumerian</long></code>
+	<code><short>sun</short><long>Sundanese</long></code>
+	<code><short>sus</short><long>Susu</long></code>
+	<code><short>swa</short><long>Swahili</long></code>
+	<code><short>ssw</short><long>Swati</long></code>
+	<code><short>swe</short><long>Swedish</long></code>
+	<code><short>syr</short><long>Syriac</long></code>
+	<code><short>tgl</short><long>Tagalog</long></code>
+	<code><short>tah</short><long>Tahitian</long></code>
+	<code><short>tai</short><long>Tai (Other)</long></code>
+	<code><short>tgk</short><long>Tajik</long></code>
+	<code><short>tmh</short><long>Tamashek</long></code>
+	<code><short>tam</short><long>Tamil</long></code>
+	<code><short>tat</short><long>Tatar</long></code>
+	<code><short>tel</short><long>Telugu</long></code>
+	<code><short>ter</short><long>Tereno</long></code>
+	<code><short>tet</short><long>Tetum</long></code>
+	<code><short>tha</short><long>Thai</long></code>
+	<code><short>tib</short><long>Tibetan</long></code>
+	<code><short>bod</short><long>Tibetan</long></code>
+	<code><short>tig</short><long>Tigre</long></code>
+	<code><short>tir</short><long>Tigrinya</long></code>
+	<code><short>tem</short><long>Timne</long></code>
+	<code><short>tiv</short><long>Tiv</long></code>
+	<code><short>tlh</short><long>tlhIngan-Hol</long></code>
+	<code><short>tli</short><long>Tlingit</long></code>
+	<code><short>tpi</short><long>Tok Pisin</long></code>
+	<code><short>tkl</short><long>Tokelau</long></code>
+	<code><short>tog</short><long>Tonga (Nyasa)</long></code>
+	<code><short>ton</short><long>Tonga (Tonga Islands)</long></code>
+	<code><short>tsi</short><long>Tsimshian</long></code>
+	<code><short>tso</short><long>Tsonga</long></code>
+	<code><short>tsn</short><long>Tswana</long></code>
+	<code><short>tum</short><long>Tumbuka</long></code>
+	<code><short>tup</short><long>Tupi languages</long></code>
+	<code><short>tur</short><long>Turkish</long></code>
+	<code><short>ota</short><long>Turkish, Ottoman (1500-1928)</long></code>
+	<code><short>tuk</short><long>Turkmen</long></code>
+	<code><short>tvl</short><long>Tuvalu</long></code>
+	<code><short>tyv</short><long>Tuvinian</long></code>
+	<code><short>twi</short><long>Twi</long></code>
+	<code><short>udm</short><long>Udmurt</long></code>
+	<code><short>uga</short><long>Ugaritic</long></code>
+	<code><short>uig</short><long>Uighur</long></code>
+	<code><short>ukr</short><long>Ukrainian</long></code>
+	<code><short>umb</short><long>Umbundu</long></code>
+	<code><short>und</short><long>Undetermined</long></code>
+	<code><short>hsb</short><long>Upper Sorbian</long></code>
+	<code><short>urd</short><long>Urdu</long></code>
+	<code><short>uig</short><long>Uyghur</long></code>
+	<code><short>uzb</short><long>Uzbek</long></code>
+	<code><short>vai</short><long>Vai</long></code>
+	<code><short>cat</short><long>Valencian</long></code>
+	<code><short>ven</short><long>Venda</long></code>
+	<code><short>vie</short><long>Vietnamese</long></code>
+	<code><short>vol</short><long>Volapük</long></code>
+	<code><short>vot</short><long>Votic</long></code>
+	<code><short>wak</short><long>Wakashan languages</long></code>
+	<code><short>wal</short><long>Walamo</long></code>
+	<code><short>wln</short><long>Walloon</long></code>
+	<code><short>war</short><long>Waray</long></code>
+	<code><short>was</short><long>Washo</long></code>
+	<code><short>wel</short><long>Welsh</long></code>
+	<code><short>cym</short><long>Welsh</long></code>
+	<code><short>wol</short><long>Wolof</long></code>
+	<code><short>xho</short><long>Xhosa</long></code>
+	<code><short>sah</short><long>Yakut</long></code>
+	<code><short>yao</short><long>Yao</long></code>
+	<code><short>yap</short><long>Yapese</long></code>
+	<code><short>yid</short><long>Yiddish</long></code>
+	<code><short>yor</short><long>Yoruba</long></code>
+	<code><short>ypk</short><long>Yupik languages</long></code>
+	<code><short>znd</short><long>Zande</long></code>
+	<code><short>zap</short><long>Zapotec</long></code>
+	<code><short>zen</short><long>Zenaga</long></code>
+	<code><short>zha</short><long>Zhuang</long></code>
+	<code><short>zul</short><long>Zulu</long></code>
+	<code><short>zun</short><long>Zuni</long></code>
+</languagecodes>

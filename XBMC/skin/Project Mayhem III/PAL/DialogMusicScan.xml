@@ -1,0 +1,50 @@
+﻿<window id="112">
+	<defaultcontrol>402</defaultcontrol>
+	<animation effect="fade" time="400">WindowOpen</animation>
+	<animation effect="fade" time="400">WindowClose</animation>
+	<coordinates>
+		<system>1</system>
+		<posx>50</posx>
+		<posy>27</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="1">
+			<description>Popup Music Scan Dialog Background</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>400</width>
+			<height>90</height>
+			<texture>scan-panel-bg.png</texture>
+		</control>
+		<control type="label" id="401">
+			<description>Caption Label</description>
+			<posx>27</posx>
+			<posy>21</posy>
+			<font>font12</font>
+			<align>left</align>
+			<width>291</width>
+			<height>20</height>
+		</control>
+		<control type="label" id="402">
+			<description>Current Directory Label</description>
+			<posx>27</posx>
+			<posy>43</posy>
+			<width>291</width>
+			<haspath>yes</haspath>
+			<font>font10</font>
+			<onleft>402</onleft>
+			<onright>402</onright>
+			<onup>402</onup>
+			<ondown>402</ondown>
+		</control>
+		<control type="progress" id="403">
+			<description>progress control</description>
+			<posx>287</posx>
+			<posy>27</posy>
+			<width>100</width>
+			<height>5</height>
+			<texturebg>blue_rectangle_weather.png</texturebg>
+			<overlaytexture>-</overlaytexture>
+		</control>
+	</controls>
+</window>
