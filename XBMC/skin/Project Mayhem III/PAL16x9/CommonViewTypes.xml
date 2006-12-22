@@ -651,9 +651,9 @@
 				</control>
 				<control type="image">
 					<posx>60</posx>
-					<posy>70</posy>
-					<width>23</width>
-					<height>28</height>
+					<posy>65</posy>
+					<width>26</width>
+					<height>32</height>
 					<info>ListItem.Overlay</info>
 				</control>
 				<control type="label">
@@ -684,9 +684,9 @@
 				</control>
 				<control type="image">
 					<posx>60</posx>
-					<posy>70</posy>
-					<width>23</width>
-					<height>28</height>
+					<posy>65</posy>
+					<width>26</width>
+					<height>32</height>
 					<info>ListItem.Overlay</info>
 				</control>
 				<control type="label">
@@ -724,9 +724,9 @@
 					<info>ListItem.Icon</info>
 				</control>
 				<control type="image">
-					<posx>108</posx>
+					<posx>110</posx>
 					<posy>125</posy>
-					<width>32</width>
+					<width>26</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
 				</control>
@@ -757,9 +757,9 @@
 					<info>ListItem.Icon</info>
 				</control>
 				<control type="image">
-					<posx>108</posx>
+					<posx>110</posx>
 					<posy>125</posy>
-					<width>32</width>
+					<width>26</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
 				</control>
@@ -772,6 +772,206 @@
 					<include>listselectedcolor</include>
 					<align>center</align>
 					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	<include name="WideIcon_Small">
+		<control type="panel" id="54">
+			<posx>209</posx>
+			<posy>125</posy>
+			<width>455</width>
+			<height>380</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>54</onup>
+			<ondown>54</ondown>
+			<scrolltime>1</scrolltime>
+			<pagecontrol>60</pagecontrol>
+			<include>contentpanelslide</include>
+			<itemlayout height="95" width="225">
+				<control type="image">
+					<width>220</width>
+					<height>90</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture border="0,0,0,15">WideIconNF.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>210</width>
+					<height>65</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>68</posy>
+					<width>200</width>
+					<height>16</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<scroll>true</scroll>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<posx>190</posx>
+					<posy>55</posy>
+					<width>26</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="95" width="225">
+				<control type="image">
+					<width>220</width>
+					<height>90</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture border="0,0,0,15">WideIcon.png</texture>
+					<visible>Control.HasFocus(54)</visible>
+				</control>
+				<control type="image">
+					<width>220</width>
+					<height>90</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture border="0,0,0,15">WideIconNF.png</texture>
+					<visible>!Control.HasFocus(54)</visible>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>210</width>
+					<height>65</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>68</posy>
+					<width>200</width>
+					<height>16</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<scroll>true</scroll>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<posx>190</posx>
+					<posy>55</posy>
+					<width>26</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	<include name="WideIcon_Big">
+		<control type="list" id="55">
+			<posx>211</posx>
+			<posy>125</posy>
+			<width>455</width>
+			<height>390</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>55</onup>
+			<ondown>55</ondown>
+			<scrolltime>1</scrolltime>
+			<pagecontrol>60</pagecontrol>
+			<include>contentpanelslide</include>
+			<itemlayout height="130">
+				<control type="image">
+					<width>440</width>
+					<height>120</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>WideIconNF.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>430</width>
+					<height>90</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>405</posx>
+					<posy>65</posy>
+					<width>26</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>98</posy>
+					<width>295</width>
+					<height>16</height>
+					<font>special13</font>
+					<include>listselectedcolor</include>
+					<scroll>true</scroll>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>430</posx>
+					<posy>98</posy>
+					<width>350</width>
+					<height>16</height>
+					<font>font13</font>
+					<align>right</align>
+					<include>listselectedcolor</include>
+					<info>ListItem.Label2</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="130">
+				<control type="image">
+					<width>440</width>
+					<height>120</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>WideIcon.png</texture>
+					<visible>Control.HasFocus(55)</visible>
+				</control>
+				<control type="image">
+					<width>440</width>
+					<height>120</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>WideIconNF.png</texture>
+					<visible>!Control.HasFocus(55)</visible>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>430</width>
+					<height>90</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>405</posx>
+					<posy>65</posy>
+					<width>26</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>98</posy>
+					<width>295</width>
+					<height>16</height>
+					<font>special13</font>
+					<include>listselectedcolor</include>
+					<scroll>true</scroll>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>430</posx>
+					<posy>98</posy>
+					<width>350</width>
+					<height>16</height>
+					<font>font13</font>
+					<align>right</align>
+					<include>listselectedcolor</include>
+					<info>ListItem.Label2</info>
 				</control>
 			</focusedlayout>
 		</control>
