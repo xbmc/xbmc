@@ -17,10 +17,9 @@
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-#define CONTROL_BIG_LIST          52
-#define CONTROL_BIG_THUMBS        53
+#define CONTROL_VIEW_START        50
+#define CONTROL_VIEW_END          59
+
 #define CONTROL_LABELFILES        12
 
 
@@ -43,10 +42,8 @@ void CGUIMediaWindow::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_METHOD_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.AddView(VIEW_METHOD_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_METHOD_LARGE_ICONS, GetControl(CONTROL_BIG_THUMBS));
-  m_viewControl.AddView(VIEW_METHOD_LARGE_LIST, GetControl(CONTROL_BIG_LIST));
+  for (int i = CONTROL_VIEW_START; i <= CONTROL_VIEW_END; i++)
+    m_viewControl.AddView(GetControl(i));
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
   SetupShares();
 }
@@ -106,7 +103,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_BTNVIEWASICONS)
       {
         if (m_guiState.get())
-          while (!m_viewControl.HasViewMode(m_guiState->SetNextViewAsControl()));
+          m_guiState->SaveViewAsControl(m_viewControl.GetNextViewMode());
 
         UpdateButtons();
         return true;
@@ -241,6 +238,7 @@ void CGUIMediaWindow::UpdateButtons()
 
     // Update list/thumb control
     m_viewControl.SetCurrentView(m_guiState->GetViewAsControl());
+    SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, "Cycle Views");
 
     // Update sort by button
     if (m_guiState->GetSortMethod()==SORT_METHOD_NONE)

@@ -29,9 +29,6 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
     AddSortMethod(SORT_METHOD_DRIVE_TYPE, 498, LABEL_MASKS()); // Preformated
     SetSortMethod(g_stSettings.m_MyVideoRootSortMethod);
 
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
     SetViewAsControl(g_stSettings.m_MyVideoRootViewMethod);
 
     SetSortOrder(g_stSettings.m_MyVideoRootSortOrder);
@@ -51,9 +48,6 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
     AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS(strFileMask, "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
     SetSortMethod(g_stSettings.m_MyVideoSortMethod);
 
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
     if (g_guiSettings.GetBool("myvideos.useautoswitching"))
     {
       SetViewAsControl(CAutoSwitch::GetView(items));
@@ -96,9 +90,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
     AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
     SetSortMethod(SORT_METHOD_NONE);
 
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
     SetViewAsControl(g_stSettings.m_MyVideoNavRootViewMethod);
 
     SetSortOrder(SORT_ORDER_NONE);
@@ -115,9 +106,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
         SetSortMethod(SORT_METHOD_NONE);
 
-        AddViewAsControl(VIEW_METHOD_LIST, 101);
-        AddViewAsControl(VIEW_METHOD_ICONS, 100);
-        AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
         SetViewAsControl(g_stSettings.m_MyMusicNavRootViewMethod);
 
         SetSortOrder(SORT_ORDER_NONE);
@@ -128,9 +116,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
         SetSortMethod(SORT_METHOD_LABEL);
 
-        AddViewAsControl(VIEW_METHOD_LIST, 101);
-        AddViewAsControl(VIEW_METHOD_ICONS, 100);
-        AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
         SetViewAsControl(g_stSettings.m_MyVideoNavActorViewMethod);
 
         SetSortOrder(g_stSettings.m_MyVideoNavActorSortOrder);
@@ -141,9 +126,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
         SetSortMethod(SORT_METHOD_LABEL);
 
-        AddViewAsControl(VIEW_METHOD_LIST, 101);
-        AddViewAsControl(VIEW_METHOD_ICONS, 100);
-        AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
         SetViewAsControl(g_stSettings.m_MyVideoNavYearViewMethod);
 
         SetSortOrder(g_stSettings.m_MyVideoNavYearSortOrder);
@@ -154,9 +136,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
         SetSortMethod(g_stSettings.m_MyVideoNavGenreSortMethod);
 
-        AddViewAsControl(VIEW_METHOD_LIST, 101);
-        AddViewAsControl(VIEW_METHOD_ICONS, 100);
-        AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
         SetViewAsControl(g_stSettings.m_MyVideoNavGenreViewMethod);
 
         SetSortOrder(g_stSettings.m_MyVideoNavGenreSortOrder);
@@ -171,10 +150,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddSortMethod(SORT_METHOD_VIDEO_RATING, 367, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
         SetSortMethod(g_stSettings.m_MyVideoNavTitleSortMethod);
 
-        AddViewAsControl(VIEW_METHOD_LIST, 101);
-        AddViewAsControl(VIEW_METHOD_ICONS, 100);
-        AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-        AddViewAsControl(VIEW_METHOD_LARGE_LIST, 759);
         SetViewAsControl(g_stSettings.m_MyVideoNavTitleViewMethod);
 
         SetSortOrder(g_stSettings.m_MyVideoNavTitleSortOrder);
@@ -186,10 +161,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
   {
     AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
     SetSortMethod(g_stSettings.m_MyVideoNavTitleSortMethod);
-
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
 
     SetViewAsControl(g_stSettings.m_MyVideoNavPlaylistsViewMethod);
 
@@ -273,9 +244,6 @@ CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileIt
   AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%L", "", "%L", ""));  // Label, "" | Label, empty
   SetSortMethod(SORT_METHOD_NONE);
 
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
   SetViewAsControl(g_stSettings.m_MyVideoPlaylistViewMethod);
 
   SetSortOrder(SORT_ORDER_NONE);

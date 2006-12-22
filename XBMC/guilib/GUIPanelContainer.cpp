@@ -11,6 +11,7 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
   m_largePanel = NULL;
   m_itemsPerRow = 1;
 //#endif
+  m_type = VIEW_TYPE_PANEL;
 }
 
 CGUIPanelContainer::~CGUIPanelContainer(void)
@@ -418,5 +419,9 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
   m_spinControl = pSpin;
   m_largePanel = pPanel;
   ControlType = GUICONTAINER_PANEL;
+  if (m_largePanel)
+    m_type = VIEW_TYPE_PANEL;
+  else
+    m_type = VIEW_TYPE_BIG_PANEL;
 }
 //#endif

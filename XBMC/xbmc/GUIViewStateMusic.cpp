@@ -3,6 +3,7 @@
 #include "AutoSwitch.h"
 #include "playlistplayer.h"
 #include "util.h"
+#include "GUIBaseContainer.h" // for VIEW_TYPE_*
 
 #include "filesystem/musicdatabasedirectory.h"
 
@@ -54,9 +55,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "", "%L", ""));  // Filename, empty | Foldername, empty
       SetSortMethod(SORT_METHOD_NONE);
 
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
       SetViewAsControl(g_stSettings.m_MyMusicNavRootViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
@@ -67,9 +65,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "", "%L", ""));  // Filename, empty | Foldername, empty
       SetSortMethod(SORT_METHOD_NONE);
 
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
       SetViewAsControl(g_stSettings.m_MyMusicNavTopViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
@@ -80,9 +75,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_GENRE, 103, LABEL_MASKS("%F", "", "%G", ""));  // Filename, empty | Genre, empty
       SetSortMethod(SORT_METHOD_GENRE);
       
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
       SetViewAsControl(g_stSettings.m_MyMusicNavGenresViewMethod);
 
       SetSortOrder(g_stSettings.m_MyMusicNavGenresSortOrder);
@@ -101,9 +93,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
         SetSortMethod(SORT_METHOD_ARTIST);
       }
       
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
       SetViewAsControl(g_stSettings.m_MyMusicNavArtistsViewMethod);
 
       SetSortOrder(g_stSettings.m_MyMusicNavArtistsSortOrder);
@@ -122,10 +111,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
         AddSortMethod(SORT_METHOD_ARTIST, 269, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
       SetSortMethod(g_stSettings.m_MyMusicNavAlbumsSortMethod);
       
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-      AddViewAsControl(VIEW_METHOD_LARGE_LIST, 759);
       SetViewAsControl(g_stSettings.m_MyMusicNavAlbumsViewMethod);
 
       SetSortOrder(g_stSettings.m_MyMusicNavAlbumsSortOrder);
@@ -136,10 +121,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-      AddViewAsControl(VIEW_METHOD_LARGE_LIST, 759);
       SetViewAsControl(g_stSettings.m_MyMusicNavAlbumsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
@@ -150,9 +131,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
       SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
@@ -163,10 +141,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-      AddViewAsControl(VIEW_METHOD_LARGE_LIST, 759);
       SetViewAsControl(g_stSettings.m_MyMusicNavAlbumsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
@@ -177,9 +151,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
       SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
@@ -190,10 +161,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-      AddViewAsControl(VIEW_METHOD_LARGE_LIST, 759);
       SetViewAsControl(g_stSettings.m_MyMusicNavAlbumsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
@@ -218,9 +185,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_DURATION, 267, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
       SetSortMethod(g_stSettings.m_MyMusicNavSongsSortMethod);
       
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
       SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
 
       SetSortOrder(g_stSettings.m_MyMusicNavSongsSortOrder);
@@ -231,9 +195,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 266, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_METHOD_LIST, 101);
-      AddViewAsControl(VIEW_METHOD_ICONS, 100);
-      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
       SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
@@ -356,9 +317,6 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
   AddSortMethod(SORT_METHOD_DURATION, 267, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
   SetSortMethod(g_stSettings.m_MyMusicNavSongsSortMethod);
       
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
   SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
 
   SetSortOrder(g_stSettings.m_MyMusicNavSongsSortOrder);
@@ -394,9 +352,6 @@ CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& item
   AddSortMethod(SORT_METHOD_DURATION, 267, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
   SetSortMethod(g_stSettings.m_MyMusicSongsSortMethod);
       
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
   SetViewAsControl(g_stSettings.m_MyMusicSongsViewMethod);
 
   SetSortOrder(g_stSettings.m_MyMusicSongsSortOrder);
@@ -418,9 +373,6 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
     AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
     SetSortMethod(SORT_METHOD_NONE);
 
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
     SetViewAsControl(g_stSettings.m_MyMusicNavRootViewMethod);
 
     SetSortOrder(SORT_ORDER_NONE);
@@ -429,10 +381,6 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
   {
     AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
     SetSortMethod(SORT_METHOD_LABEL);
-
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
 
     if (items.IsPlayList())
       SetViewAsControl(g_stSettings.m_MyMusicNavPlaylistsViewMethod);
@@ -492,9 +440,6 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
     AddSortMethod(SORT_METHOD_DRIVE_TYPE, 498, LABEL_MASKS()); // Preformated
     SetSortMethod(g_stSettings.m_MyMusicSongsRootSortMethod);
 
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
     SetViewAsControl(g_stSettings.m_MyMusicSongsRootViewMethod);
 
     SetSortOrder(g_stSettings.m_MyMusicSongsRootSortOrder);
@@ -510,9 +455,6 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
     AddSortMethod(SORT_METHOD_FILE, 363, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
     SetSortMethod(g_stSettings.m_MyMusicSongsSortMethod);
 
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
     if (g_guiSettings.GetBool("musicfiles.useautoswitching"))
     {
       SetViewAsControl(CAutoSwitch::GetView(items));
@@ -561,9 +503,6 @@ CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileIt
   AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
   SetSortMethod(SORT_METHOD_NONE);
 
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
   SetViewAsControl(g_stSettings.m_MyMusicPlaylistViewMethod);
 
   SetSortOrder(SORT_ORDER_NONE);
@@ -632,9 +571,7 @@ CGUIViewStateMusicShoutcast::CGUIViewStateMusicShoutcast(const CFileItemList& it
     SetSortOrder(SORT_ORDER_ASC); /* maybe we should have this stored somewhere */
   }
 
-
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  SetViewAsControl(VIEW_METHOD_LIST);
+  SetViewAsControl(DEFAULT_VIEW_LIST);
 }
 
 bool CGUIViewStateMusicShoutcast::AutoPlayNextItem()
@@ -667,8 +604,7 @@ CGUIViewStateMusicLastFM::CGUIViewStateMusicLastFM(const CFileItemList& items) :
   else
     SetSortOrder(g_stSettings.m_MyMusicLastFMSortOrder);
   
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  SetViewAsControl(VIEW_METHOD_LIST);
+  SetViewAsControl(DEFAULT_VIEW_LIST);
 }
 
 bool CGUIViewStateMusicLastFM::AutoPlayNextItem()

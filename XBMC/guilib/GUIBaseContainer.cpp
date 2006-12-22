@@ -344,7 +344,21 @@ int CGUIBaseContainer::CorrectOffset(int offset) const
 
 void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
 {
-  TiXmlElement *itemElement = layout->FirstChildElement("itemlayout");
+  // view type
+  TiXmlElement *itemElement = layout->FirstChildElement("viewtype");
+  if (itemElement && itemElement->FirstChild())
+  {
+    CStdString type = itemElement->FirstChild()->Value();
+    if (type == "list")
+      m_type = VIEW_TYPE_LIST;
+    else if (type == "panel")
+      m_type = VIEW_TYPE_PANEL;
+    else if (type == "biglist")
+      m_type = VIEW_TYPE_BIG_LIST;
+    else if (type == "bigpanel")
+      m_type = VIEW_TYPE_BIG_PANEL;
+  }
+  itemElement = layout->FirstChildElement("itemlayout");
   if (itemElement)
   { // we have a new item layout
     m_layout.LoadLayout(itemElement, false);

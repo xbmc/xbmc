@@ -5,6 +5,7 @@
 #include "GUIViewStatePicturesProgramsScripts.h"
 #include "playlistplayer.h"
 #include "util.h"
+#include "GUIBaseContainer.h" // for VIEW_TYPE_*
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSHARES CGUIViewState::m_shares;
@@ -104,53 +105,20 @@ SORT_ORDER CGUIViewState::SetNextSortOrder()
   return m_sortOrder;
 }
 
-VIEW_METHOD CGUIViewState::GetViewAsControl() const
+int CGUIViewState::GetViewAsControl() const
 {
-  if (m_currentViewAsControl>=0 && m_currentViewAsControl<(int)m_viewAsControls.size())
-    return m_viewAsControls[m_currentViewAsControl].m_viewAsControl;
-
-  return VIEW_METHOD_LIST;
+  return m_currentViewAsControl;
 }
 
-int CGUIViewState::GetViewAsControlButtonLabel() const
+void CGUIViewState::SetViewAsControl(int viewAsControl)
 {
-  if (m_currentViewAsControl>=0 && m_currentViewAsControl<(int)m_viewAsControls.size())
-    return m_viewAsControls[m_currentViewAsControl].m_buttonLabel;
-
-  return 101; // "View As: List" button label
+  m_currentViewAsControl = viewAsControl;
 }
 
-void CGUIViewState::AddViewAsControl(VIEW_METHOD viewAsControl, int buttonLabel)
+void CGUIViewState::SaveViewAsControl(int viewAsControl)
 {
-  VIEW view;
-  view.m_viewAsControl=viewAsControl;
-  view.m_buttonLabel=buttonLabel;
-
-  m_viewAsControls.push_back(view);
-}
-
-void CGUIViewState::SetViewAsControl(VIEW_METHOD viewAsControl)
-{
-  for (int i=0; i<(int)m_viewAsControls.size(); ++i)
-  {
-    if (m_viewAsControls[i].m_viewAsControl==viewAsControl)
-    {
-      m_currentViewAsControl=i;
-      break;
-    }
-  }
-}
-
-VIEW_METHOD CGUIViewState::SetNextViewAsControl()
-{
-  m_currentViewAsControl++;
-
-  if (m_currentViewAsControl>=(int)m_viewAsControls.size())
-    m_currentViewAsControl=0;
-
+  SetViewAsControl(viewAsControl);
   SaveViewState();
-
-  return GetViewAsControl();
 }
 
 SORT_METHOD CGUIViewState::GetSortMethod() const
@@ -288,10 +256,7 @@ CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIVie
   AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, size | Foldername, empty
   SetSortMethod(SORT_METHOD_LABEL);
 
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-  SetViewAsControl(VIEW_METHOD_LIST);
+  SetViewAsControl(VIEW_TYPE_LIST << 16);
 
   SetSortOrder(SORT_ORDER_ASC);
 }

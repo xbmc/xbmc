@@ -7,6 +7,13 @@
 
 #include "GUIControl.h"
 #include "GUIListItemLayout.h"
+
+enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
+                 VIEW_TYPE_LIST,
+                 VIEW_TYPE_PANEL,
+                 VIEW_TYPE_BIG_LIST,
+                 VIEW_TYPE_BIG_PANEL,
+                 VIEW_TYPE_MAX };
 /*!
  \ingroup controls
  \brief 
@@ -41,6 +48,8 @@ public:
   virtual void Animate(DWORD currentTime);
   virtual void UpdateEffectState(DWORD currentTime);
   void LoadLayout(TiXmlElement *layout);
+
+  VIEW_TYPE GetType() const { return m_type; };
 
 protected:
   virtual bool SelectItemFromPoint(float posX, float posY);
@@ -81,5 +90,7 @@ protected:
   int   m_scrollTime;
   float m_scrollSpeed;
   float m_scrollOffset;
+
+  VIEW_TYPE m_type;
 };
 

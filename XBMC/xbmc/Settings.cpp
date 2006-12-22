@@ -14,6 +14,7 @@
 #include "utils/GUIInfoManager.h"
 #include "xbox/Network.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "GUIBaseContainer.h" // for VIEW_TYPE enum
 
 struct CSettings::stSettings g_stSettings;
 struct CSettings::AdvancedSettings g_advancedSettings;
@@ -99,7 +100,7 @@ CSettings::CSettings(void)
   for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
     g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
-  g_stSettings.m_MyProgramsViewMethod = VIEW_METHOD_ICONS;
+  g_stSettings.m_MyProgramsViewMethod = DEFAULT_VIEW_ICONS;
   g_stSettings.m_MyProgramsSortOrder = SORT_ORDER_ASC;
   strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "");
   strcpy(g_stSettings.szOnlineArenaPassword, "");
@@ -129,7 +130,7 @@ CSettings::CSettings(void)
   g_stSettings.m_MyMusicNavSongsSortMethod = SORT_METHOD_TRACKNUM;
   g_stSettings.m_MyMusicNavPlaylistsSortMethod = SORT_METHOD_TRACKNUM;
 
-  g_stSettings.m_MyMusicPlaylistViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyMusicPlaylistViewMethod = DEFAULT_VIEW_LIST;
   g_stSettings.m_bMyMusicPlaylistRepeat = false;
   g_stSettings.m_bMyMusicPlaylistShuffle = false;
 
@@ -145,23 +146,23 @@ CSettings::CSettings(void)
   g_stSettings.m_MyVideoNavYearSortOrder = SORT_ORDER_ASC;
   g_stSettings.m_MyVideoNavActorSortOrder = SORT_ORDER_ASC;
 
-  g_stSettings.m_MyVideoNavGenreViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_MyVideoNavTitleViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_MyVideoNavPlaylistsViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_MyVideoNavYearViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_MyVideoNavActorViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyVideoNavGenreViewMethod = DEFAULT_VIEW_LIST;
+  g_stSettings.m_MyVideoNavTitleViewMethod = DEFAULT_VIEW_LIST;
+  g_stSettings.m_MyVideoNavPlaylistsViewMethod = DEFAULT_VIEW_LIST;
+  g_stSettings.m_MyVideoNavYearViewMethod = DEFAULT_VIEW_LIST;
+  g_stSettings.m_MyVideoNavActorViewMethod = DEFAULT_VIEW_LIST;
   
-  g_stSettings.m_MyVideoPlaylistViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_MyVideoPlaylistViewMethod = DEFAULT_VIEW_LIST;
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
 
   g_stSettings.m_MyPicturesSortOrder = SORT_ORDER_ASC;
   g_stSettings.m_MyPicturesRootSortOrder = SORT_ORDER_ASC;
 
-  g_stSettings.m_ScriptsViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_ScriptsViewMethod = DEFAULT_VIEW_LIST;
   g_stSettings.m_ScriptsSortOrder = SORT_ORDER_ASC;
 
-  g_stSettings.m_GameSavesViewMethod = VIEW_METHOD_LIST;
+  g_stSettings.m_GameSavesViewMethod = DEFAULT_VIEW_LIST;
   g_stSettings.m_GameSavesSortOrder = SORT_ORDER_ASC;
 
   g_stSettings.m_nVolumeLevel = 0;
@@ -902,8 +903,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   TiXmlElement *pElement = pRootElement->FirstChildElement("mypictures");
   if (pElement)
   {
-    GetInteger(pElement, "viewmethod", (int&)g_stSettings.m_MyPicturesViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-    GetInteger(pElement, "viewmethodroot", (int&)g_stSettings.m_MyPicturesRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+    GetInteger(pElement, "viewmethod", g_stSettings.m_MyPicturesViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+    GetInteger(pElement, "viewmethodroot", g_stSettings.m_MyPicturesRootViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
     GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_MyPicturesSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
     GetInteger(pElement, "sortmethodroot", (int&)g_stSettings.m_MyPicturesRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
     GetInteger(pElement, "sortorder", (int&)g_stSettings.m_MyPicturesSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
@@ -917,8 +918,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     TiXmlElement *pChild = pElement->FirstChildElement("songs");
     if (pChild)
     {
-      GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyMusicSongsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyMusicSongsRootViewMethod, VIEW_METHOD_ICONS, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "viewmethod", g_stSettings.m_MyMusicSongsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "viewmethodroot", g_stSettings.m_MyMusicSongsRootViewMethod, DEFAULT_VIEW_ICONS, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
       GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyMusicSongsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyMusicSongsRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyMusicSongsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
@@ -927,13 +928,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     pChild = pElement->FirstChildElement("nav");
     if (pChild)
     {
-      GetInteger(pChild, "rootviewmethod", (int&)g_stSettings.m_MyMusicNavRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "genresviewmethod", (int&)g_stSettings.m_MyMusicNavGenresViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "artistsviewmethod", (int&)g_stSettings.m_MyMusicNavArtistsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "albumsviewmethod", (int&)g_stSettings.m_MyMusicNavAlbumsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "songsviewmethod", (int&)g_stSettings.m_MyMusicNavSongsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "topviewmethod", (int&)g_stSettings.m_MyMusicNavTopViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "playlistsviewmethod", (int&)g_stSettings.m_MyMusicNavPlaylistsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "rootviewmethod", g_stSettings.m_MyMusicNavRootViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "genresviewmethod", g_stSettings.m_MyMusicNavGenresViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "artistsviewmethod", g_stSettings.m_MyMusicNavArtistsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "albumsviewmethod", g_stSettings.m_MyMusicNavAlbumsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "songsviewmethod", g_stSettings.m_MyMusicNavSongsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "topviewmethod", g_stSettings.m_MyMusicNavTopViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "playlistsviewmethod", g_stSettings.m_MyMusicNavPlaylistsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
 
       GetInteger(pChild, "genressortmethod", (int&)g_stSettings.m_MyMusicNavRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "albumssortmethod", (int&)g_stSettings.m_MyMusicNavAlbumsSortMethod, SORT_METHOD_ALBUM, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
@@ -964,7 +965,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     {
-      GetInteger(pChild, "playlistviewmethodroot", (int&)g_stSettings.m_MyMusicPlaylistViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "playlistviewmethodroot", (int&)g_stSettings.m_MyMusicPlaylistViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
       XMLUtils::GetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
     }
@@ -1000,15 +1001,15 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     { // playlist
-      GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyVideoPlaylistViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoPlaylistViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
       XMLUtils::GetBoolean(pChild, "repeat", g_stSettings.m_bMyVideoPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
     }
     pChild = pElement->FirstChildElement("files");
     if (pChild)
     { // files
-      GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyVideoViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyVideoRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoRootViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
       GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyVideoSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyVideoRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
@@ -1017,11 +1018,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     pChild = pElement->FirstChildElement("nav");
     if (pChild)
     { // library
-      GetInteger(pChild, "viewmethodtitle", (int&)g_stSettings.m_MyVideoNavTitleViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyVideoNavRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodgenre", (int&)g_stSettings.m_MyVideoNavGenreViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodyear", (int&)g_stSettings.m_MyVideoNavYearViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodactor", (int&)g_stSettings.m_MyVideoNavActorViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+      GetInteger(pChild, "viewmethodtitle", g_stSettings.m_MyVideoNavTitleViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoNavRootViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "viewmethodgenre", g_stSettings.m_MyVideoNavGenreViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "viewmethodyear", g_stSettings.m_MyVideoNavYearViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
+      GetInteger(pChild, "viewmethodactor", g_stSettings.m_MyVideoNavActorViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
 
       GetInteger(pChild, "sortmethodgenre", (int&)g_stSettings.m_MyVideoNavGenreSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
       GetInteger(pChild, "sortmethodplaylists", (int&)g_stSettings.m_MyVideoNavPlaylistsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
@@ -1038,7 +1039,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("myscripts");
   if (pElement)
   {
-    GetInteger(pElement, "viewmethod", (int&)g_stSettings.m_ScriptsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+    GetInteger(pElement, "viewmethod", g_stSettings.m_ScriptsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
     GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_ScriptsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
     GetInteger(pElement, "sortorder", (int&)g_stSettings.m_ScriptsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
   }
@@ -1047,7 +1048,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("mygamesaves");
   if (pElement)
   {
-    GetInteger(pElement, "viewmethod", (int&)g_stSettings.m_GameSavesViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
+    GetInteger(pElement, "viewmethod", g_stSettings.m_GameSavesViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
     GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_GameSavesSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
     GetInteger(pElement, "sortorder", (int&)g_stSettings.m_GameSavesSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
   }
@@ -2588,109 +2589,6 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
     xmlSetting.InsertEndChild(xmlLabel);
     pSettingsNode->InsertEndChild(xmlSetting);
   }
-}
-
-bool CSettings::LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders)
-{ // load xml file...
-  CStdString strXMLFile;
-  //CUtil::AddFileToFolder(GetUserDataFolder(), strFolderXML, strXMLFile);
-  CUtil::AddFileToFolder(GetProfileUserDataFolder(), strFolderXML, strXMLFile);
-
-  TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
-  {
-    CLog::Log(LOGERROR, "LoadFolderViews - Unable to load XML file %s", strFolderXML.c_str());
-    return false;
-  }
-
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if ( strValue != "folderviews")
-  {
-    g_LoadErrorStr.Format("%s Doesn't contain <folderviews>", strXMLFile.c_str());
-    return false;
-  }
-
-  // cleanup vecFolders if necessary...
-  if (vecFolders.size())
-  {
-    for (unsigned int i = 0; i < vecFolders.size(); i++)
-      delete vecFolders[i];
-    vecFolders.clear();
-  }
-  // parse the view mode for each folder
-  const TiXmlNode *pChild = pRootElement->FirstChild("folder");
-  while (pChild)
-  {
-    CStdString strPath;
-    int iView = VIEW_METHOD_LIST;
-    int iSort = 0;
-    bool bSortUp = true;
-    const TiXmlNode *pPath = pChild->FirstChild("path");
-    if (pPath && pPath->FirstChild())
-      strPath = pPath->FirstChild()->Value();
-    const TiXmlNode *pView = pChild->FirstChild("view");
-    if (pView && pView->FirstChild())
-      iView = atoi(pView->FirstChild()->Value());
-    const TiXmlNode *pSort = pChild->FirstChild("sort");
-    if (pSort && pSort->FirstChild())
-      iSort = atoi(pSort->FirstChild()->Value());
-    const TiXmlNode *pDirection = pChild->FirstChild("direction");
-    if (pDirection && pDirection->FirstChild())
-      bSortUp = pDirection->FirstChild()->Value() == "up";
-    // fill in element
-    if (!strPath.IsEmpty())
-    {
-      CFolderView *pFolderView = new CFolderView(strPath, iView, iSort, bSortUp);
-      if (pFolderView)
-        vecFolders.push_back(pFolderView);
-    }
-    // run to next <folder> element
-    pChild = pChild->NextSibling("folder");
-  }
-  return true;
-}
-
-bool CSettings::SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders)
-{
-  TiXmlDocument xmlDoc;
-  TiXmlElement xmlRootElement("folderviews");
-  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-  if (!pRoot) return false;
-  // write our folders one by one
-  CStdString strView, strSort, strSortUp;
-  for (unsigned int i = 0; i < vecFolders.size(); i++)
-  {
-    CFolderView *pFolderView = vecFolders[i];
-    strView.Format("%i", pFolderView->m_iView);
-    strSort.Format("%i", pFolderView->m_iSort);
-    strSortUp = pFolderView->m_bSortOrder ? "up" : "down";
-
-    TiXmlText xmlPath(pFolderView->m_strPath.IsEmpty() ? "ROOT" : pFolderView->m_strPath);
-
-    TiXmlText xmlView(strView);
-    TiXmlText xmlSort(strSort);
-    TiXmlText xmlSortUp(strSortUp);
-
-    TiXmlElement ePath("path");
-    TiXmlElement eView("view");
-    TiXmlElement eSort("sort");
-    TiXmlElement eSortUp("direction");
-
-    ePath.InsertEndChild(xmlPath);
-    eView.InsertEndChild(xmlView);
-    eSort.InsertEndChild(xmlSort);
-    eSortUp.InsertEndChild(xmlSortUp);
-
-    TiXmlElement folderNode("folder");
-    folderNode.InsertEndChild(ePath);
-    folderNode.InsertEndChild(eView);
-    folderNode.InsertEndChild(eSort);
-    folderNode.InsertEndChild(eSortUp);
-
-    pRoot->InsertEndChild(folderNode);
-  }
-  return xmlDoc.SaveFile(strFolderXML);
 }
 
 void CSettings::Clear()

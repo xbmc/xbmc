@@ -12,6 +12,7 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
   ControlType = GUICONTAINER_LIST;
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   m_spinControl = NULL;
+  m_type = VIEW_TYPE_LIST;
 //#endif
 }
 
@@ -294,5 +295,6 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_height = floor(m_height / (textureHeight + spaceBetweenItems)) * (textureHeight + spaceBetweenItems);
   m_spinControl = pSpin;
   ControlType = GUICONTAINER_LIST;
+  m_type = VIEW_TYPE_LIST;
 }
 //#endif
