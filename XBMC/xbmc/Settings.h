@@ -300,39 +300,6 @@ public:
     bool m_bMyMusicPlaylistShuffle;
     int m_iMyMusicStartWindow;
 
-    int m_MyMusicSongsRootViewMethod;
-    SORT_METHOD m_MyMusicSongsRootSortMethod;
-    SORT_ORDER m_MyMusicSongsRootSortOrder;
-    int m_MyMusicSongsViewMethod;
-    SORT_METHOD m_MyMusicSongsSortMethod;
-    SORT_ORDER m_MyMusicSongsSortOrder;
-
-    int m_MyMusicPlaylistViewMethod;
-    SORT_METHOD m_MyMusicShoutcastSortMethod;
-    SORT_ORDER  m_MyMusicShoutcastSortOrder;
-    SORT_METHOD m_MyMusicLastFMSortMethod;
-    SORT_ORDER  m_MyMusicLastFMSortOrder;
-
-    // new settings for the Music Nav Window
-    int m_MyMusicNavRootViewMethod;
-    int m_MyMusicNavGenresViewMethod;
-    int m_MyMusicNavArtistsViewMethod;
-    int m_MyMusicNavAlbumsViewMethod;
-    int m_MyMusicNavSongsViewMethod;
-    int m_MyMusicNavTopViewMethod;
-    int m_MyMusicNavPlaylistsViewMethod;
-
-    SORT_METHOD m_MyMusicNavRootSortMethod;
-    SORT_METHOD m_MyMusicNavAlbumsSortMethod;
-    SORT_METHOD m_MyMusicNavSongsSortMethod;
-    SORT_METHOD m_MyMusicNavPlaylistsSortMethod;
-
-    SORT_ORDER m_MyMusicNavGenresSortOrder;
-    SORT_ORDER m_MyMusicNavArtistsSortOrder;
-    SORT_ORDER m_MyMusicNavAlbumsSortOrder;
-    SORT_ORDER m_MyMusicNavSongsSortOrder;
-    SORT_ORDER m_MyMusicNavPlaylistsSortOrder;
-
     int m_ScriptsViewMethod;
     SORT_METHOD m_ScriptsSortMethod;
     SORT_ORDER m_ScriptsSortOrder;

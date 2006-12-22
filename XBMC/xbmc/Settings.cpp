@@ -115,28 +115,9 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
-  g_stSettings.m_MyMusicSongsRootSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyMusicSongsSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_MyMusicNavGenresSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyMusicNavArtistsSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyMusicNavAlbumsSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyMusicNavSongsSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyMusicNavPlaylistsSortOrder = SORT_ORDER_ASC;
-
-  // need defaults for these or the display is
-  // incorrect the first time Nav window is used
-  g_stSettings.m_MyMusicNavAlbumsSortMethod = SORT_METHOD_ALBUM;
-  g_stSettings.m_MyMusicNavSongsSortMethod = SORT_METHOD_TRACKNUM;
-  g_stSettings.m_MyMusicNavPlaylistsSortMethod = SORT_METHOD_TRACKNUM;
-
-  g_stSettings.m_MyMusicPlaylistViewMethod = DEFAULT_VIEW_LIST;
   g_stSettings.m_bMyMusicPlaylistRepeat = false;
   g_stSettings.m_bMyMusicPlaylistShuffle = false;
 
-  g_stSettings.m_MyMusicLastFMSortMethod = SORT_METHOD_LABEL;
-  g_stSettings.m_MyMusicLastFMSortOrder = SORT_ORDER_ASC;
- 
   g_stSettings.m_MyVideoSortOrder = SORT_ORDER_ASC;
   g_stSettings.m_MyVideoRootSortOrder = SORT_ORDER_ASC;
 
@@ -915,57 +896,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("mymusic");
   if (pElement)
   {
-    TiXmlElement *pChild = pElement->FirstChildElement("songs");
+    TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     {
-      GetInteger(pChild, "viewmethod", g_stSettings.m_MyMusicSongsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "viewmethodroot", g_stSettings.m_MyMusicSongsRootViewMethod, DEFAULT_VIEW_ICONS, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyMusicSongsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyMusicSongsRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyMusicSongsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyMusicSongsRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-    pChild = pElement->FirstChildElement("nav");
-    if (pChild)
-    {
-      GetInteger(pChild, "rootviewmethod", g_stSettings.m_MyMusicNavRootViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "genresviewmethod", g_stSettings.m_MyMusicNavGenresViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "artistsviewmethod", g_stSettings.m_MyMusicNavArtistsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "albumsviewmethod", g_stSettings.m_MyMusicNavAlbumsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "songsviewmethod", g_stSettings.m_MyMusicNavSongsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "topviewmethod", g_stSettings.m_MyMusicNavTopViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "playlistsviewmethod", g_stSettings.m_MyMusicNavPlaylistsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-
-      GetInteger(pChild, "genressortmethod", (int&)g_stSettings.m_MyMusicNavRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "albumssortmethod", (int&)g_stSettings.m_MyMusicNavAlbumsSortMethod, SORT_METHOD_ALBUM, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "songssortmethod", (int&)g_stSettings.m_MyMusicNavSongsSortMethod, SORT_METHOD_TRACKNUM, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "playlistssortmethod", (int&)g_stSettings.m_MyMusicNavPlaylistsSortMethod, SORT_METHOD_TRACKNUM, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-
-      GetInteger(pChild, "genressortorder", (int&)g_stSettings.m_MyMusicNavGenresSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "artistssortorder", (int&)g_stSettings.m_MyMusicNavArtistsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "albumssortorder", (int&)g_stSettings.m_MyMusicNavAlbumsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "songssortorder", (int&)g_stSettings.m_MyMusicNavSongsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "playlistssortorder", (int&)g_stSettings.m_MyMusicNavPlaylistsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-
-    pChild = pElement->FirstChildElement("shoutcast");
-    if (pChild)
-    {
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyMusicShoutcastSortMethod,SORT_METHOD_VIDEO_RATING,SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyMusicShoutcastSortOrder,SORT_ORDER_DESC,SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-
-    pChild = pElement->FirstChildElement("lastfm");
-    if (pChild)
-    {
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyMusicLastFMSortMethod,SORT_METHOD_VIDEO_RATING,SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyMusicLastFMSortOrder,SORT_ORDER_DESC,SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-
-    pChild = pElement->FirstChildElement("playlist");
-    if (pChild)
-    {
-      GetInteger(pChild, "playlistviewmethodroot", (int&)g_stSettings.m_MyMusicPlaylistViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
       XMLUtils::GetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
     }
@@ -1623,62 +1556,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   pNode = pRoot->InsertEndChild(musicNode);
   if (!pNode) return false;
   {
-    TiXmlElement childNode("songs");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetInteger(pChild, "viewmethod", g_stSettings.m_MyMusicSongsViewMethod);
-    SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyMusicSongsRootViewMethod);
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyMusicSongsSortMethod);
-    SetInteger(pChild, "sortmethodroot", g_stSettings.m_MyMusicSongsRootSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyMusicSongsSortOrder);
-    SetInteger(pChild, "sortorderroot", g_stSettings.m_MyMusicSongsRootSortOrder);
-  }
-  {
-    TiXmlElement childNode("nav");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-
-    SetInteger(pChild, "rootviewmethod", g_stSettings.m_MyMusicNavRootViewMethod);
-    SetInteger(pChild, "genresviewmethod", g_stSettings.m_MyMusicNavGenresViewMethod);
-    SetInteger(pChild, "artistsviewmethod", g_stSettings.m_MyMusicNavArtistsViewMethod);
-    SetInteger(pChild, "albumsviewmethod", g_stSettings.m_MyMusicNavAlbumsViewMethod);
-    SetInteger(pChild, "songsviewmethod", g_stSettings.m_MyMusicNavSongsViewMethod);
-    SetInteger(pChild, "topviewmethod", g_stSettings.m_MyMusicNavTopViewMethod);
-    SetInteger(pChild, "playlistsviewmethod", g_stSettings.m_MyMusicNavPlaylistsViewMethod);
-
-    SetInteger(pChild, "genressortmethod", g_stSettings.m_MyMusicNavRootSortMethod);
-    SetInteger(pChild, "albumssortmethod", g_stSettings.m_MyMusicNavAlbumsSortMethod);
-    SetInteger(pChild, "songssortmethod", g_stSettings.m_MyMusicNavSongsSortMethod);
-    SetInteger(pChild, "playlistssortmethod", g_stSettings.m_MyMusicNavPlaylistsSortMethod);
-
-    SetInteger(pChild, "genressortorder", g_stSettings.m_MyMusicNavGenresSortOrder);
-    SetInteger(pChild, "artistssortorder", g_stSettings.m_MyMusicNavArtistsSortOrder);
-    SetInteger(pChild, "albumssortorder", g_stSettings.m_MyMusicNavAlbumsSortOrder);
-    SetInteger(pChild, "songssortorder", g_stSettings.m_MyMusicNavSongsSortOrder);
-    SetInteger(pChild, "playlistssortorder", g_stSettings.m_MyMusicNavPlaylistsSortOrder);
-  }
-  {
-    TiXmlElement childNode("shoutcast");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyMusicShoutcastSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyMusicShoutcastSortOrder);
-  }
-  {
-    TiXmlElement childNode("lastfm");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyMusicLastFMSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyMusicLastFMSortOrder);
-  }
-  
-  {
     TiXmlElement childNode("playlist");
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
     if (!pChild) return false;
-    SetInteger(pChild, "playlistviewmethodroot", g_stSettings.m_MyMusicPlaylistViewMethod);
     SetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
     SetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
   }

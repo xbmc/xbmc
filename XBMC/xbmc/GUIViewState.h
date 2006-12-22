@@ -1,6 +1,7 @@
 #pragma once
 
 #include "settings.h"
+#include "GUIBaseContainer.h"
 
 class CGUIViewState
 {
@@ -50,6 +51,8 @@ public:
 protected:
   CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
   virtual void SaveViewState()=0;
+  void SaveViewToDb(const CStdString &path, int windowID);
+  void LoadViewState(const CStdString &path, int windowID);
 
   void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks);
   void SetSortMethod(SORT_METHOD sortMethod);

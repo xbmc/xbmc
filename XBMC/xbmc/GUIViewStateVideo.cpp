@@ -106,7 +106,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
         SetSortMethod(SORT_METHOD_NONE);
 
-        SetViewAsControl(g_stSettings.m_MyMusicNavRootViewMethod);
+        SetViewAsControl(DEFAULT_VIEW_LIST);
 
         SetSortOrder(SORT_ORDER_NONE);
       }

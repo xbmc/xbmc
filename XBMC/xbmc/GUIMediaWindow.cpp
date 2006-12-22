@@ -238,7 +238,7 @@ void CGUIMediaWindow::UpdateButtons()
 
     // Update list/thumb control
     m_viewControl.SetCurrentView(m_guiState->GetViewAsControl());
-    SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, "Cycle Views");
+    SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, 457); // Switch View
 
     // Update sort by button
     if (m_guiState->GetSortMethod()==SORT_METHOD_NONE)

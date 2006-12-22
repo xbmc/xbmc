@@ -6,6 +6,7 @@
 #include "playlistplayer.h"
 #include "util.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
+#include "ViewDatabase.h"
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSHARES CGUIViewState::m_shares;
@@ -259,4 +260,31 @@ CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIVie
   SetViewAsControl(VIEW_TYPE_LIST << 16);
 
   SetSortOrder(SORT_ORDER_ASC);
+}
+
+void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
+{ // get our view state from the db
+  CViewDatabase db;
+  if (db.Open())
+  {
+    CViewState state;
+    if (db.GetViewState(path, windowID, state))
+    {
+      SetViewAsControl(state.m_viewMode);
+      SetSortMethod(state.m_sortMethod);
+      SetSortOrder(state.m_sortOrder);
+    }
+    db.Close();
+  }
+}
+
+void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID)
+{
+  CViewDatabase db;
+  if (db.Open())
+  {
+    CViewState state(m_currentViewAsControl, GetSortMethod(), m_sortOrder);
+    db.SetViewState(path, windowID, state);
+    db.Close();
+  }
 }
