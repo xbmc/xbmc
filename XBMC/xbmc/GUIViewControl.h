@@ -35,6 +35,7 @@ protected:
   int GetSelectedItem(const CGUIControl *control) const;
   void UpdateContents(const CGUIControl *control);
   void UpdateView();
+  void UpdateViewAsControl(const CStdString &viewLabel);
   int GetView(VIEW_TYPE type, int id) const;
 
   vector<CGUIControl *> m_vecViews;

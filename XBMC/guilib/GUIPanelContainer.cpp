@@ -6,12 +6,12 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
 {
   ControlType = GUICONTAINER_PANEL;
+  m_type = VIEW_TYPE_ICON;
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   m_spinControl = NULL;
   m_largePanel = NULL;
   m_itemsPerRow = 1;
 //#endif
-  m_type = VIEW_TYPE_PANEL;
 }
 
 CGUIPanelContainer::~CGUIPanelContainer(void)
@@ -419,9 +419,5 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
   m_spinControl = pSpin;
   m_largePanel = pPanel;
   ControlType = GUICONTAINER_PANEL;
-  if (m_largePanel)
-    m_type = VIEW_TYPE_PANEL;
-  else
-    m_type = VIEW_TYPE_BIG_PANEL;
 }
 //#endif

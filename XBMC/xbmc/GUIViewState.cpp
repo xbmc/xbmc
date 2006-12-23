@@ -257,7 +257,7 @@ CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIVie
   AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, size | Foldername, empty
   SetSortMethod(SORT_METHOD_LABEL);
 
-  SetViewAsControl(VIEW_TYPE_LIST << 16);
+  SetViewAsControl(DEFAULT_VIEW_LIST);
 
   SetSortOrder(SORT_ORDER_ASC);
 }

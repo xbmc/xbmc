@@ -9,7 +9,7 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
-			<viewtype>list</viewtype>
+			<viewtype label="535">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
@@ -93,7 +93,7 @@
 			<onright>60</onright>
 			<onup>51</onup>
 			<ondown>51</ondown>
-			<viewtype>list</viewtype>
+			<viewtype label="535">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
@@ -211,7 +211,7 @@
 			<onup>54</onup>
 			<ondown>54</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype>biglist</viewtype>
+			<viewtype label="537">biglist</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="130">
@@ -362,7 +362,7 @@
 			<onup>51</onup>
 			<ondown>51</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype>list</viewtype>
+			<viewtype label="535">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -479,7 +479,7 @@
 			<onup>54</onup>
 			<ondown>54</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype>biglist</viewtype>
+			<viewtype label="537">biglist</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="130">
@@ -630,7 +630,7 @@
 			<onup>51</onup>
 			<ondown>51</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype>list</viewtype>
+			<viewtype label="535">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -728,7 +728,7 @@
 			<onup>52</onup>
 			<ondown>52</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype>panel</viewtype>
+			<viewtype label="536">icon</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="125" width="110">
@@ -803,7 +803,7 @@
 			<onup>53</onup>
 			<ondown>53</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype>bigpanel</viewtype>
+			<viewtype label="538">bigicon</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="185" width="150">
@@ -877,6 +877,7 @@
 			<onright>60</onright>
 			<onup>55</onup>
 			<ondown>55</ondown>
+			<viewtype label="539">wide</viewtype>
 			<scrolltime>1</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
@@ -968,6 +969,7 @@
 			<onup>56</onup>
 			<ondown>56</ondown>
 			<scrolltime>1</scrolltime>
+			<viewtype label="540">bigwide</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="130">

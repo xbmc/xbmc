@@ -87,6 +87,9 @@ void CGUIViewControl::SetCurrentView(int viewMode)
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, m_parentWindow, pNewView->GetID(), item);
     g_graphicsContext.SendMessage(msg);
   }
+
+  // Update our view control
+  UpdateViewAsControl(((CGUIBaseContainer *)pNewView)->GetLabel());
 }
 
 void CGUIViewControl::SetItems(CFileItemList &items)
@@ -242,4 +245,13 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
     }
   }
   return -1;
+}
+
+void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
+{
+  CStdString label;
+  label.Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
+  CGUIMessage msg(GUI_MSG_LABEL_SET, m_parentWindow, m_viewAsControl);
+  msg.SetLabel(label);
+  g_graphicsContext.SendMessage(msg);
 }

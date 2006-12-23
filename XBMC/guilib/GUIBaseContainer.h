@@ -10,9 +10,11 @@
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
-                 VIEW_TYPE_PANEL,
+                 VIEW_TYPE_ICON,
                  VIEW_TYPE_BIG_LIST,
-                 VIEW_TYPE_BIG_PANEL,
+                 VIEW_TYPE_BIG_ICON,
+                 VIEW_TYPE_WIDE,
+                 VIEW_TYPE_BIG_WIDE,
                  VIEW_TYPE_MAX };
 /*!
  \ingroup controls
@@ -50,6 +52,8 @@ public:
   void LoadLayout(TiXmlElement *layout);
 
   VIEW_TYPE GetType() const { return m_type; };
+  const CStdString &GetLabel() const { return m_label; };
+  void SetType(VIEW_TYPE type, const CStdString &label);
 
 protected:
   virtual bool SelectItemFromPoint(float posX, float posY);
@@ -92,5 +96,6 @@ protected:
   float m_scrollOffset;
 
   VIEW_TYPE m_type;
+  CStdString m_label;
 };
 
