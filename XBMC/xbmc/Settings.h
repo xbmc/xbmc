@@ -300,43 +300,6 @@ public:
     bool m_bMyMusicPlaylistShuffle;
     int m_iMyMusicStartWindow;
 
-    int m_ScriptsViewMethod;
-    SORT_METHOD m_ScriptsSortMethod;
-    SORT_ORDER m_ScriptsSortOrder;
-
-    int m_MyProgramsViewMethod;
-    SORT_METHOD m_MyProgramsSortMethod;
-    SORT_ORDER m_MyProgramsSortOrder;
-
-    int m_MyPicturesViewMethod;
-    SORT_METHOD m_MyPicturesSortMethod;
-    SORT_ORDER m_MyPicturesSortOrder;
-    int m_MyPicturesRootViewMethod;
-    SORT_METHOD m_MyPicturesRootSortMethod;
-    SORT_ORDER m_MyPicturesRootSortOrder;
-
-    int m_GameSavesViewMethod;
-    SORT_METHOD m_GameSavesSortMethod;
-    SORT_ORDER m_GameSavesSortOrder;
-
-    // new settings for the Video Nav Window
-    int m_MyVideoNavRootViewMethod;
-    int m_MyVideoNavGenreViewMethod;
-    int m_MyVideoNavPlaylistsViewMethod;
-    int m_MyVideoNavTitleViewMethod;
-    int m_MyVideoNavActorViewMethod;
-    int m_MyVideoNavYearViewMethod;
-
-    SORT_METHOD m_MyVideoNavGenreSortMethod;
-    SORT_METHOD m_MyVideoNavPlaylistsSortMethod;
-    SORT_METHOD m_MyVideoNavTitleSortMethod;
-    
-    SORT_ORDER m_MyVideoNavGenreSortOrder;
-    SORT_ORDER m_MyVideoNavPlaylistsSortOrder;
-    SORT_ORDER m_MyVideoNavTitleSortOrder;
-    SORT_ORDER m_MyVideoNavYearSortOrder;
-    SORT_ORDER m_MyVideoNavActorSortOrder;
-    
     // for scanning
     bool m_bMyMusicIsScanning;
 
@@ -347,15 +310,6 @@ public:
     float m_fPixelRatio;      // current pixel ratio
 
     int m_iMyVideoWatchMode;
-
-    int m_MyVideoViewMethod;
-    int m_MyVideoRootViewMethod;
-    SORT_METHOD m_MyVideoSortMethod;
-    SORT_METHOD m_MyVideoRootSortMethod;
-    SORT_ORDER m_MyVideoSortOrder;
-    SORT_ORDER m_MyVideoRootSortOrder;
-
-    int m_MyVideoPlaylistViewMethod;
 
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;

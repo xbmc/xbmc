@@ -56,6 +56,7 @@ bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState 
 
     CStdString path1(path);
     CUtil::AddSlashAtEnd(path1);
+    if (path1.IsEmpty()) path1 = "root://";
 
     CStdString sql = FormatSQL("select * from view where window = %i and path like '%s'", window, path1.c_str());
     m_pDS->query(sql.c_str());
@@ -86,6 +87,7 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
 
     CStdString path1(path);
     CUtil::AddSlashAtEnd(path1);
+    if (path1.IsEmpty()) path1 = "root://";
 
     CStdString sql = FormatSQL("select idView from view where window = %i and path like '%s'", window, path1.c_str());
     m_pDS->query(sql.c_str());
@@ -99,7 +101,7 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
     else
     { // add the view
       m_pDS->close();
-      sql = FormatSQL("insert into view (idView, path, window, viewMode, sortMethod, sortOrder) values(NULL, '%s', %i, %i, %i, %i)", path.c_str(), window, state.m_viewMode, (int)state.m_sortMethod, (int)state.m_sortOrder);
+      sql = FormatSQL("insert into view (idView, path, window, viewMode, sortMethod, sortOrder) values(NULL, '%s', %i, %i, %i, %i)", path1.c_str(), window, state.m_viewMode, (int)state.m_sortMethod, (int)state.m_sortOrder);
       m_pDS->exec(sql.c_str());
     }
   }

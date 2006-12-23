@@ -100,8 +100,6 @@ CSettings::CSettings(void)
   for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
     g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
-  g_stSettings.m_MyProgramsViewMethod = DEFAULT_VIEW_ICONS;
-  g_stSettings.m_MyProgramsSortOrder = SORT_ORDER_ASC;
   strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "");
   strcpy(g_stSettings.szOnlineArenaPassword, "");
   strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
@@ -118,33 +116,8 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyMusicPlaylistRepeat = false;
   g_stSettings.m_bMyMusicPlaylistShuffle = false;
 
-  g_stSettings.m_MyVideoSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoRootSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_MyVideoNavGenreSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoNavTitleSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoNavPlaylistsSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoNavYearSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoNavActorSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_MyVideoNavGenreViewMethod = DEFAULT_VIEW_LIST;
-  g_stSettings.m_MyVideoNavTitleViewMethod = DEFAULT_VIEW_LIST;
-  g_stSettings.m_MyVideoNavPlaylistsViewMethod = DEFAULT_VIEW_LIST;
-  g_stSettings.m_MyVideoNavYearViewMethod = DEFAULT_VIEW_LIST;
-  g_stSettings.m_MyVideoNavActorViewMethod = DEFAULT_VIEW_LIST;
-  
-  g_stSettings.m_MyVideoPlaylistViewMethod = DEFAULT_VIEW_LIST;
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
-
-  g_stSettings.m_MyPicturesSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyPicturesRootSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_ScriptsViewMethod = DEFAULT_VIEW_LIST;
-  g_stSettings.m_ScriptsSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_GameSavesViewMethod = DEFAULT_VIEW_LIST;
-  g_stSettings.m_GameSavesSortOrder = SORT_ORDER_ASC;
 
   g_stSettings.m_nVolumeLevel = 0;
   g_stSettings.m_dynamicRangeCompressionLevel = 0;
@@ -880,20 +853,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     return false;
   }
 
-  // mypictures
-  TiXmlElement *pElement = pRootElement->FirstChildElement("mypictures");
-  if (pElement)
-  {
-    GetInteger(pElement, "viewmethod", g_stSettings.m_MyPicturesViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-    GetInteger(pElement, "viewmethodroot", g_stSettings.m_MyPicturesRootViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-    GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_MyPicturesSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortmethodroot", (int&)g_stSettings.m_MyPicturesRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortorder", (int&)g_stSettings.m_MyPicturesSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    GetInteger(pElement, "sortorderroot", (int&)g_stSettings.m_MyPicturesRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-  }
-
   // mymusic settings
-  pElement = pRootElement->FirstChildElement("mymusic");
+  TiXmlElement *pElement = pRootElement->FirstChildElement("mymusic");
   if (pElement)
   {
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
@@ -934,56 +895,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     { // playlist
-      GetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoPlaylistViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
       XMLUtils::GetBoolean(pChild, "repeat", g_stSettings.m_bMyVideoPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
     }
-    pChild = pElement->FirstChildElement("files");
-    if (pChild)
-    { // files
-      GetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoRootViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyVideoSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyVideoRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyVideoRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-    pChild = pElement->FirstChildElement("nav");
-    if (pChild)
-    { // library
-      GetInteger(pChild, "viewmethodtitle", g_stSettings.m_MyVideoNavTitleViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoNavRootViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "viewmethodgenre", g_stSettings.m_MyVideoNavGenreViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "viewmethodyear", g_stSettings.m_MyVideoNavYearViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-      GetInteger(pChild, "viewmethodactor", g_stSettings.m_MyVideoNavActorViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-
-      GetInteger(pChild, "sortmethodgenre", (int&)g_stSettings.m_MyVideoNavGenreSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodplaylists", (int&)g_stSettings.m_MyVideoNavPlaylistsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodtitle", (int&)g_stSettings.m_MyVideoNavTitleSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-
-      GetInteger(pChild, "sortordergenre", (int&)g_stSettings.m_MyVideoNavGenreSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderplaylists", (int&)g_stSettings.m_MyVideoNavPlaylistsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortordertitle", (int&)g_stSettings.m_MyVideoNavTitleSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderyear", (int&)g_stSettings.m_MyVideoNavYearSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderactor", (int&)g_stSettings.m_MyVideoNavActorSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-  }
-  // myscripts settings
-  pElement = pRootElement->FirstChildElement("myscripts");
-  if (pElement)
-  {
-    GetInteger(pElement, "viewmethod", g_stSettings.m_ScriptsViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-    GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_ScriptsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortorder", (int&)g_stSettings.m_ScriptsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-  }
-
-    // mygamesaves settings
-  pElement = pRootElement->FirstChildElement("mygamesaves");
-  if (pElement)
-  {
-    GetInteger(pElement, "viewmethod", g_stSettings.m_GameSavesViewMethod, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX-1);
-    GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_GameSavesSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortorder", (int&)g_stSettings.m_GameSavesSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
   }
 
   // general settings
@@ -993,8 +907,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp, 0, 0, INT_MAX);
     GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
     GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
-	GetInteger(pElement, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel, 0, 0,5);
-	GetInteger(pElement, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort, 8278, 1, 65535);
+	  GetInteger(pElement, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel, 0, 0,5);
+	  GetInteger(pElement, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort, 8278, 1, 65535);
   }
   
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
@@ -1032,16 +946,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       GetFloat(pElement, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].robotic, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
     }
   }
-
-  // my programs
-  pElement = pRootElement->FirstChildElement("myprograms");
-  if (pElement)
-  {
-    GetInteger(pElement, "viewmethod", (int&)g_stSettings.m_MyProgramsViewMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_MyProgramsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortorder", (int&)g_stSettings.m_MyProgramsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-  }
-
 
   LoadCalibration(pRootElement, strSettingsFile);
   g_guiSettings.LoadXML(pRootElement);
@@ -1532,28 +1436,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot) return false;
   // write our tags one by one - just a big list for now (can be flashed up later)
-  // myprograms settings
-  TiXmlElement programsNode("myprograms");
-  TiXmlNode *pNode = pRoot->InsertEndChild(programsNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "viewmethod", g_stSettings.m_MyProgramsViewMethod);
-  SetInteger(pNode, "sortmethod", g_stSettings.m_MyProgramsSortMethod);
-  SetInteger(pNode, "sortorder", g_stSettings.m_MyProgramsSortOrder);
-
-  // mypictures settings
-  TiXmlElement picturesNode("mypictures");
-  pNode = pRoot->InsertEndChild(picturesNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "viewmethod", g_stSettings.m_MyPicturesViewMethod);
-  SetInteger(pNode, "viewmethodroot", g_stSettings.m_MyPicturesRootViewMethod);
-  SetInteger(pNode, "sortmethod", g_stSettings.m_MyPicturesSortMethod);
-  SetInteger(pNode, "sortmethodroot", g_stSettings.m_MyPicturesRootSortMethod);
-  SetInteger(pNode, "sortorder", g_stSettings.m_MyPicturesSortOrder);
-  SetInteger(pNode, "sortorderroot", g_stSettings.m_MyPicturesRootSortOrder);
 
   // mymusic settings
   TiXmlElement musicNode("mymusic");
-  pNode = pRoot->InsertEndChild(musicNode);
+  TiXmlNode *pNode = pRoot->InsertEndChild(musicNode);
   if (!pNode) return false;
   {
     TiXmlElement childNode("playlist");
@@ -1591,58 +1477,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     TiXmlElement childNode("playlist");
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
     if (!pChild) return false;
-    SetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoPlaylistViewMethod);
     SetBoolean(pChild, "repeat", g_stSettings.m_bMyVideoPlaylistRepeat);
     SetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
   }
-  { // files window
-    TiXmlElement childNode("files");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoViewMethod);
-    SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoRootViewMethod);
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyVideoSortMethod);
-    SetInteger(pChild, "sortmethodroot", g_stSettings.m_MyVideoRootSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoSortOrder);
-    SetInteger(pChild, "sortorderroot", g_stSettings.m_MyVideoRootSortOrder);
-  }
-
-  { // library window
-    TiXmlElement childNode("nav");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetInteger(pChild, "viewmethodtitle", g_stSettings.m_MyVideoNavTitleViewMethod);
-    SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoNavRootViewMethod);
-    SetInteger(pChild, "viewmethodgenre", g_stSettings.m_MyVideoNavGenreViewMethod);
-    SetInteger(pChild, "viewmethodyear", g_stSettings.m_MyVideoNavYearViewMethod);
-    SetInteger(pChild, "viewmethodactor", g_stSettings.m_MyVideoNavActorViewMethod);
-
-    SetInteger(pChild, "sortmethodgenre", g_stSettings.m_MyVideoNavGenreSortMethod);
-    SetInteger(pChild, "sortmethodplaylists", g_stSettings.m_MyVideoNavPlaylistsSortMethod);
-    SetInteger(pChild, "sortmethodtitle", g_stSettings.m_MyVideoNavTitleSortMethod);
-
-    SetInteger(pChild, "sortordergenre", g_stSettings.m_MyVideoNavGenreSortOrder);
-    SetInteger(pChild, "sortorderplaylists", g_stSettings.m_MyVideoNavPlaylistsSortOrder);
-    SetInteger(pChild, "sortordertitle", g_stSettings.m_MyVideoNavTitleSortOrder);
-    SetInteger(pChild, "sortorderyear", g_stSettings.m_MyVideoNavYearSortOrder);
-    SetInteger(pChild, "sortorderactor", g_stSettings.m_MyVideoNavActorSortOrder);
-  }
-
-  // myscripts settings
-  TiXmlElement scriptsNode("myscripts");
-  pNode = pRoot->InsertEndChild(scriptsNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "viewmethod", g_stSettings.m_ScriptsViewMethod);
-  SetInteger(pNode, "sortmethod", g_stSettings.m_ScriptsSortMethod);
-  SetInteger(pNode, "sortorder", g_stSettings.m_ScriptsSortOrder);
-
-    // mygamesaves settings
-  TiXmlElement gameSaveNode("mygamesaves");
-  pNode = pRoot->InsertEndChild(gameSaveNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "viewmethod", g_stSettings.m_GameSavesViewMethod);
-  SetInteger(pNode, "sortmethod", g_stSettings.m_GameSavesSortMethod);
-  SetInteger(pNode, "sortorder", g_stSettings.m_GameSavesSortOrder);
 
   // general settings
   TiXmlElement generalNode("general");
