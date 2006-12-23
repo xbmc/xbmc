@@ -303,7 +303,6 @@ void CIMDBMovie::Reset()
   m_strSearchString = "";
   m_strFile = "";
   m_strPath = "";
-  m_strDVDLabel = "";
   m_strIMDBNumber = "";
   m_strMPAARating = "";
   m_iTop250 = 0;

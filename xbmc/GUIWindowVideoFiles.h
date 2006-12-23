@@ -20,6 +20,7 @@ protected:
   virtual void OnInfo(int iItem);
   virtual void OnQueueItem(int iItem);
   virtual void OnScan();
+  virtual void OnAssignContent(int iItem);
   bool DoScan(const CStdString& strPath, CFileItemList& items);
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
   void OnRetrieveVideoInfo(CFileItemList& items);

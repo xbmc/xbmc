@@ -335,6 +335,7 @@ public:
   static CStdString MusicPlaylistsLocation();
   static CStdString VideoPlaylistsLocation();
   static CStdString SubstitutePath(const CStdString& strFileName);
+  static void ClearFileItemCache();
 
   //GeminiServer
   static bool IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay);

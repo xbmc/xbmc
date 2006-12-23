@@ -1445,5 +1445,13 @@
   <string id="20312">Dim LCD on Paused</string>
   <string id="20313">Switch LED back on if Paused</string>
   <string id="20314">My Video - Library</string>
+  <string id="20324">Assign content</string>
+  <string id="20325">Select scraper</string>
+  <string id="20326">Choose directory content type</string>
+  <string id="20327">Would you like to recursively scan directory</string>
+  <string id="20328">for several movies, or treat it as one?</string>
+  <string id="20329">Treat as one</string>
+  <string id="20330">Scan several</string>
+  <string id="20331">Folder content</string>
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>

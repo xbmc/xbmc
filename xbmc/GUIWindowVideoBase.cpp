@@ -497,13 +497,13 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
   if (!pDlgOK) return true;
   while (1)
   {
-    if (IsCorrectDiskInDrive(strFileName, movieDetails.m_strDVDLabel))
-    {
+//    if (IsCorrectDiskInDrive(strFileName, movieDetails.m_strDVDLabel))
+ //   {
       return true;
-    }
+ //   }
     pDlgOK->SetHeading( 428);
     pDlgOK->SetLine( 0, 429 );
-    pDlgOK->SetLine( 1, movieDetails.m_strDVDLabel );
+//    pDlgOK->SetLine( 1, movieDetails.m_strDVDLabel );
     pDlgOK->SetLine( 2, "" );
     pDlgOK->DoModal();
     if (!pDlgOK->IsConfirmed())
@@ -683,6 +683,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_Restart = 0;				// Restart Video from Beginning
   int btn_Resume = 0;					// Resume Video
   int btn_Show_Info = 0;			// Show Video Information
+  int btn_Assign = 0;         // Assign content to directory
 	int btn_Query = 0;					// Query Info
   int btn_Mark_UnWatched = 0;	// Clear Watched Status (DB)
   int btn_Mark_Watched = 0;		// Set Watched Status (DB)
@@ -732,8 +733,11 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 					btn_Resume = pMenu->AddButton(13381);     // Resume Video
       }
 			// turn off the query info button if we are in playlists view
-			if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEO_FILES) && !(GetID() == WINDOW_VIDEO_FILES && !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser))
+			if (GetID() == WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_bIsFolder && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      {
 				btn_Show_Info = pMenu->AddButton(13346);
+        btn_Assign = pMenu->AddButton(20324);
+      }
 		}
 
 		// hide scan button unless we're in files window
@@ -741,7 +745,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 			btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
 
 		// is the item a database movie?
-		if (GetID() != WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+		if (GetID() == WINDOW_VIDEO_NAV && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
 		{
 			// uses Loaded to hold Watched/UnWatched status
 			if (m_vecItems[iItem]->m_musicInfoTag.Loaded())
@@ -831,6 +835,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     else if (btnid == btn_Resume)
     {
       OnResumeItem(iItem);
+    }
+    else if (btnid == btn_Assign)
+    {
+      OnAssignContent(iItem);
     }
 		// video info
 		else if (btnid == btn_Show_Info)
@@ -1045,6 +1053,7 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsUnWatched(atol(pItem->m_musicInfoTag.GetURL()));
+  CUtil::ClearFileItemCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
@@ -1055,6 +1064,7 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()));
+  CUtil::ClearFileItemCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
@@ -1242,11 +1252,11 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
   {
     CIMDBMovie movie = movies[i];
     // add the appropiate movies to m_vecItems based on the showmode
-    if (
+/*    if (
       (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL) ||
       (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_WATCHED && movie.m_bWatched == true) ||
       (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED && movie.m_bWatched == false)
-      )
+      )*/
     {
       // mark watched movies when showing all
       CStdString strTitle = movie.m_strTitle;
@@ -1260,7 +1270,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       SYSTEMTIME time;
       time.wYear = movie.m_iYear;
       pItem->m_musicInfoTag.SetReleaseDate(time);
-      pItem->m_strDVDLabel = movie.m_strDVDLabel;
+//      pItem->m_strDVDLabel = movie.m_strDVDLabel;
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
 
       // Hack for extra info

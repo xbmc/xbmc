@@ -4764,3 +4764,14 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   if (!::RemoveDirectory((strPath+"\\").c_str()))
     CLog::Log(LOGDEBUG,"wtf %u",GetLastError());
 }
+
+void CUtil::ClearFileItemCache()
+{
+  CFileItemList items;
+  CDirectory::GetDirectory("z:\\", items, ".fi", false);
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    if (!items[i]->m_bIsFolder)
+	CFile::Delete(items[i]->m_strPath);
+  }
+}

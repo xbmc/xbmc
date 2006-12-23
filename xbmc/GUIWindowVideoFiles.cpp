@@ -15,6 +15,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMediaSource.h"
 #include "FileSystem/StackDirectory.h"
+#include "utils/RegExp.h"
 
 #define CONTROL_LIST              50
 #define CONTROL_THUMBS            51
@@ -390,26 +391,14 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
 
 void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
 {
-  CStdString strCDLabel = "";
-  bool bHassubtitles = false;
-
   if (!pItem->IsVideo()) return ;
   if ( pItem->IsNFO()) return ;
   if ( pItem->IsPlayList()) return ;
-
-  // get disc label for dvd's / iso9660
-  if (pItem->IsOnDVD())
-  {
-    CCdInfo* pinfo = CDetectDVDMedia::GetCdInfo();
-    if (pinfo)
-    {
-      strCDLabel = pinfo->GetDiscLabel();
-    }
-  }
-
+ 
   /* subtitles are assumed not to exist here, if we need it  */
   /* player should update this when it figures out if it has */
-  m_database.AddMovie(pItem->m_strPath, strCDLabel, false);
+  m_database.AddFile(pItem->m_strPath);
+//    AddMovie(pItem->m_strPath, strCDLabel, false);
 }
 
 void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
@@ -542,6 +531,130 @@ void CGUIWindowVideoFiles::OnScan()
   GetStackedDirectory(m_vecItems.m_strPath, items);
   DoScan(m_vecItems.m_strPath, items);
   Update(m_vecItems.m_strPath);
+}
+
+void CGUIWindowVideoFiles::OnAssignContent(int iItem)
+{
+  CFileItemList items;
+  CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
+  CGUIDialogSelect *pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  pDialog->SetHeading(20326);
+  pDialog->Reset();
+  std::map<CStdString,std::vector<std::pair<CStdString,CStdString> > > scrapers; // key = content type, first = name, second = file
+  for (int i=0;i<items.Size();++i)
+  {
+    if (!items[i]->m_bIsFolder)
+    {
+      TiXmlDocument doc;
+      doc.LoadFile(items[i]->m_strPath);
+      if (doc.RootElement())
+      {
+        const char* content = doc.RootElement()->Attribute("content");
+        const char* name = doc.RootElement()->Attribute("name");
+        if (content && name)
+        {
+          std::map<CStdString,std::vector<std::pair<CStdString,CStdString> > >::iterator iter=scrapers.find(content);
+          if (iter != scrapers.end())
+          {
+            iter->second.push_back(std::make_pair<CStdString,CStdString>(name,items[i]->m_strPath));
+          }
+          else
+          {
+            std::vector<std::pair<CStdString,CStdString> > vec;
+            vec.push_back(std::make_pair<CStdString,CStdString>(name,items[i]->m_strPath));
+            scrapers.insert(std::make_pair<CStdString,std::vector<std::pair<CStdString,CStdString> > >(content,vec));
+          }
+          pDialog->Add(CStdString(content));
+        }
+      }
+    }
+  }
+
+  pDialog->EnableButton(false);
+  pDialog->DoModal();
+  int iDummy = pDialog->GetSelectedLabel();
+  if (iDummy < 0)
+    return;
+
+  // okay, we got content - now grab which scraper
+  CFileItem item = pDialog->GetSelectedItem();
+  pDialog->SetHeading(20325);
+  pDialog->Reset();
+  for (std::vector<std::pair<CStdString,CStdString> >::iterator iter = scrapers[item.GetLabel()].begin();iter != scrapers[item.GetLabel()].end();++iter)
+    pDialog->Add(iter->first);
+
+  pDialog->EnableButton(false);
+  pDialog->DoModal();
+  iDummy = pDialog->GetSelectedLabel();
+  if (iDummy < 0) // canceled on scraper screen
+    return;
+
+  // if we do movie content - ask user how to treat this dir
+
+  if (item.GetLabel().Equals("Movies"))
+  {
+    bool bCanceled;
+    if (CGUIDialogYesNo::ShowAndGetInput(20331,20327,20328,-1,20329,20330,bCanceled))
+    {
+      OnScan();
+    }
+    else
+    {
+      if (bCanceled)
+        return;
+      OnInfo(iItem);
+    }
+  }
+  if (item.GetLabel().Equals("TV Shows"))
+  {
+    items.Clear();
+    CUtil::GetRecursiveListing(m_vecItems[iItem]->m_strPath,items,g_stSettings.m_videoExtensions);
+    // enumerate
+    std::vector<CStdString> expression;
+    expression.push_back("[^\\.\\-_ ]*[\\.\\-_\\[ ]*[Ss]?([0-9]*)[^0-9]*[Ee]?([0-9]*)"); // foo.s01.e01, foo.1x09.avi
+    expression.push_back("[^\\.\\-_ ]*[^\\.\\-_ ]([0-9])([0-9]*)"); // foo.103*
+
+    std::map<int,std::vector<std::pair<int,CStdString> > > episodes;
+    for (int i=0;i<items.Size();++i)
+    {
+      if (items[i]->m_bIsFolder)
+        continue;
+      for (unsigned int j=0;j<expression.size();++j)
+      {
+        CRegExp reg;
+        if (!reg.RegComp(expression[j]))
+          break;
+        CLog::DebugLog("label: %s",items[i]->GetLabel().c_str());
+        if (reg.RegFind(items[i]->GetLabel().c_str()) > -1)
+        {
+          char* season = reg.GetReplaceString("\\1");
+          char* episode = reg.GetReplaceString("\\2");
+          if (season && episode)
+          {
+            int iSeason = atoi(season);
+            int iEpisode = atoi(episode);
+            std::map<int,std::vector<std::pair<int,CStdString> > >::iterator iter = episodes.find(iSeason);
+            if (iter == episodes.end()) // none from this season - add to map
+            {
+              std::vector<std::pair<int,CStdString> > vec;
+              vec.push_back(std::make_pair<int,CStdString>(iEpisode,items[i]->m_strPath));
+              episodes.insert(std::make_pair<int,std::vector<std::pair<int,CStdString> > >(iSeason,vec));
+            }
+            else
+            {
+              iter->second.push_back(std::make_pair<int,CStdString>(iEpisode,items[i]->m_strPath));
+            }
+            break;
+          }
+        }
+      }
+    }
+  }
+
+/*  items.Clear();
+  items.Add(new CFileItem(pDialog->GetSelectedItem()));
+  OnRetrieveVideoInfo(items);*/
+
 }
 
 bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items)

@@ -153,7 +153,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       while (iItem < items.Size())
       {
-        if (items[iItem]->m_musicInfoTag.Loaded() != (bool)(g_stSettings.m_iMyVideoWatchMode-1))
+        if (items[iItem]->m_musicInfoTag.Loaded() != (g_stSettings.m_iMyVideoWatchMode-1==1))
           items.Remove(iItem);
         else
           iItem++;

@@ -28,6 +28,7 @@ protected:
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   virtual void OnInfo(int iItem);
   virtual void OnScan() {};
+  virtual void OnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
 

@@ -3665,7 +3665,7 @@ void CApplication::StopPlaying()
           bookmark.timeInSeconds = GetTime();
           bookmark.thumbNailImage.Empty();
 
-          dbs.AddBookMarkToMovie(CurrentFile(),bookmark, CBookmark::RESUME);
+          dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
         }
         dbs.Close();
       }
@@ -4228,7 +4228,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
         {
           dbs.MarkAsWatched(m_itemCurrentFile);
-          dbs.ClearBookMarksOfMovie(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
+          dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
         }
         dbs.Close();
       }

@@ -1,4 +1,4 @@
-<scraper name="imdb" content="movies">
+<scraper name="IMDb" content="Movies">
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://akas.imdb.com/find?s=tt;q=\1" dest="3">
 			<expression noclean="1"></expression>
@@ -51,7 +51,7 @@
 				<expression noclean="1">&lt;a name=&quot;poster&quot;[^&lt;]+&gt;&lt;[^&gt;]+src=&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
-				<expression>(Writing credits.*photogallery)</expression>
+				<expression>(Writing credits[^%]*)%</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="5+">
 				<RegExp input="$$6" output=" / \1" dest="7">
