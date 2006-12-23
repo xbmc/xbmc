@@ -94,7 +94,7 @@
 			<onup>51</onup>
 			<ondown>51</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype label="535">list</viewtype>
+			<viewtype label="$LOCALIZE[535] 2">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -362,7 +362,7 @@
 			<onup>51</onup>
 			<ondown>51</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype label="535">list</viewtype>
+			<viewtype label="$LOCALIZE[535] 2">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -630,7 +630,7 @@
 			<onup>51</onup>
 			<ondown>51</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype label="535">list</viewtype>
+			<viewtype label="$LOCALIZE[535] 2">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -877,7 +877,7 @@
 			<onright>60</onright>
 			<onup>55</onup>
 			<ondown>55</ondown>
-			<scrolltime>1</scrolltime>
+			<scrolltime>200</scrolltime>
 			<viewtype label="539">wide</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
@@ -968,7 +968,7 @@
 			<onright>60</onright>
 			<onup>56</onup>
 			<ondown>56</ondown>
-			<scrolltime>1</scrolltime>
+			<scrolltime>200</scrolltime>
 			<viewtype label="540">bigwide</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
