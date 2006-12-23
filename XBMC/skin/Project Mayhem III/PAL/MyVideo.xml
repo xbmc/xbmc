@@ -160,6 +160,7 @@
 				</control>
 			</control>
 		</control>
+		<include>OldListViewCommons</include>
 		<include>VideoViewCommons</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>

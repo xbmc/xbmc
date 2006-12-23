@@ -1,5 +1,5 @@
 <includes>
-	<include name="MusicViewCommons">
+	<include name="OldListViewCommons">
 		<control type="list" id="50">
 			<posx>211</posx>
 			<posy>125</posy>
@@ -9,6 +9,91 @@
 			<onright>60</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>
+			<viewtype>list</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<include>contentpanelslide</include>
+			<itemlayout height="25">
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>20</width>
+					<height>20</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>2</posy>
+					<width>380</width>
+					<height>22</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>430</posx>
+					<posy>2</posy>
+					<width>300</width>
+					<height>22</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<textcolor>60ffffff</textcolor>
+					<align>right</align>
+					<info>ListItem.Label2</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="25">
+				<control type="image">
+					<width>440</width>
+					<height>25</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(50)</visible>
+					<texture>list-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>20</width>
+					<height>20</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>2</posy>
+					<width>380</width>
+					<height>22</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>430</posx>
+					<posy>2</posy>
+					<width>300</width>
+					<height>22</height>
+					<font>font13</font>
+					<include>listselectedcolor</include>
+					<textcolor>60ffffff</textcolor>
+					<align>right</align>
+					<info>ListItem.Label2</info>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	<include name="MusicViewCommons">
+		<control type="list" id="51">
+			<posx>211</posx>
+			<posy>125</posy>
+			<width>455</width>
+			<height>375</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>51</onup>
+			<ondown>51</ondown>
+			<viewtype>list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
@@ -48,7 +133,7 @@
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
-					<visible>Control.HasFocus(50)</visible>
+					<visible>Control.HasFocus(51)</visible>
 					<texture border="0,0,0,5">blue-rectangle.png</texture>
 				</control>
 				<control type="image">
@@ -56,7 +141,7 @@
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
-					<visible>!Control.HasFocus(50)</visible>
+					<visible>!Control.HasFocus(51)</visible>
 					<texture border="0,0,0,5">blue-rectanglenf.png</texture>
 				</control>
 				<control type="image">
@@ -116,16 +201,17 @@
 		</control>
 	</include>
 	<include name="MusicViewCommons_BigList">
-		<control type="list" id="52">
+		<control type="list" id="54">
 			<posx>211</posx>
 			<posy>125</posy>
 			<width>455</width>
 			<height>390</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>50</onup>
-			<ondown>50</ondown>
+			<onup>54</onup>
+			<ondown>54</ondown>
 			<scrolltime>200</scrolltime>
+			<viewtype>biglist</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="130">
@@ -198,7 +284,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>blue-rectangle.png</texture>
-					<visible>Control.HasFocus(52)</visible>
+					<visible>Control.HasFocus(54)</visible>
 				</control>
 				<control type="image">
 					<width>440</width>
@@ -206,7 +292,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>blue-rectangleNF.png</texture>
-					<visible>!Control.HasFocus(52)</visible>
+					<visible>!Control.HasFocus(54)</visible>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -266,16 +352,17 @@
 		</control>
 	</include>
 	<include name="VideoViewCommons">
-		<control type="list" id="50">
+		<control type="list" id="51">
 			<posx>211</posx>
 			<posy>125</posy>
 			<width>455</width>
 			<height>375</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>50</onup>
-			<ondown>50</ondown>
+			<onup>51</onup>
+			<ondown>51</ondown>
 			<scrolltime>200</scrolltime>
+			<viewtype>list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -314,7 +401,7 @@
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
-					<visible>Control.HasFocus(50)</visible>
+					<visible>Control.HasFocus(51)</visible>
 					<texture border="0,0,0,5">blue-rectangle.png</texture>
 				</control>
 				<control type="image">
@@ -322,7 +409,7 @@
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
-					<visible>!Control.HasFocus(50)</visible>
+					<visible>!Control.HasFocus(51)</visible>
 					<texture border="0,0,0,5">blue-rectanglenf.png</texture>
 				</control>
 				<control type="image">
@@ -382,16 +469,17 @@
 		</control>
 	</include>
 	<include name="VideoViewCommons_BigList">
-		<control type="list" id="52">
+		<control type="list" id="54">
 			<posx>211</posx>
 			<posy>125</posy>
 			<width>455</width>
 			<height>390</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>50</onup>
-			<ondown>50</ondown>
+			<onup>54</onup>
+			<ondown>54</ondown>
 			<scrolltime>200</scrolltime>
+			<viewtype>biglist</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="130">
@@ -424,7 +512,7 @@
 					<font>special13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
-					<info>ListItem.Title</info>
+					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>95</posx>
@@ -464,7 +552,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>blue-rectangle.png</texture>
-					<visible>Control.HasFocus(52)</visible>
+					<visible>Control.HasFocus(54)</visible>
 				</control>
 				<control type="image">
 					<width>440</width>
@@ -472,7 +560,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>blue-rectangleNF.png</texture>
-					<visible>!Control.HasFocus(52)</visible>
+					<visible>!Control.HasFocus(54)</visible>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -496,7 +584,7 @@
 					<font>special13</font>
 					<include>listselectedcolor</include>
 					<scroll>true</scroll>
-					<info>ListItem.Title</info>
+					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>95</posx>
@@ -532,16 +620,17 @@
 		</control>
 	</include>
 	<include name="ProgramsViewCommons">
-		<control type="list" id="50">
+		<control type="list" id="51">
 			<posx>211</posx>
 			<posy>125</posy>
 			<width>455</width>
 			<height>375</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>50</onup>
-			<ondown>50</ondown>
+			<onup>51</onup>
+			<ondown>51</ondown>
 			<scrolltime>200</scrolltime>
+			<viewtype>list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="25">
@@ -580,7 +669,7 @@
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
-					<visible>Control.HasFocus(50)</visible>
+					<visible>Control.HasFocus(51)</visible>
 					<texture border="0,0,0,5">blue-rectangle.png</texture>
 				</control>
 				<control type="image">
@@ -588,7 +677,7 @@
 					<height>73</height>
 					<posx>0</posx>
 					<posy>2</posy>
-					<visible>!Control.HasFocus(50)</visible>
+					<visible>!Control.HasFocus(51)</visible>
 					<texture border="0,0,0,5">blue-rectanglenf.png</texture>
 				</control>
 				<control type="image">
@@ -629,16 +718,17 @@
 		</control>
 	</include>
 	<include name="AllViewCommonThumbSmall">
-		<control type="panel" id="51">
+		<control type="panel" id="52">
 			<posx>211</posx>
 			<posy>125</posy>
 			<width>455</width>
 			<height>375</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>51</onup>
-			<ondown>51</ondown>
+			<onup>52</onup>
+			<ondown>52</ondown>
 			<scrolltime>200</scrolltime>
+			<viewtype>panel</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="125" width="110">
@@ -713,6 +803,7 @@
 			<onup>53</onup>
 			<ondown>53</ondown>
 			<scrolltime>200</scrolltime>
+			<viewtype>bigpanel</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
 			<itemlayout height="185" width="150">
@@ -777,15 +868,15 @@
 		</control>
 	</include>
 	<include name="WideIcon_Small">
-		<control type="panel" id="54">
+		<control type="panel" id="55">
 			<posx>209</posx>
 			<posy>125</posy>
 			<width>455</width>
 			<height>380</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>54</onup>
-			<ondown>54</ondown>
+			<onup>55</onup>
+			<ondown>55</ondown>
 			<scrolltime>1</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
@@ -829,7 +920,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture border="0,0,0,15">WideIcon.png</texture>
-					<visible>Control.HasFocus(54)</visible>
+					<visible>Control.HasFocus(55)</visible>
 				</control>
 				<control type="image">
 					<width>220</width>
@@ -837,7 +928,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture border="0,0,0,15">WideIconNF.png</texture>
-					<visible>!Control.HasFocus(54)</visible>
+					<visible>!Control.HasFocus(55)</visible>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -867,15 +958,15 @@
 		</control>
 	</include>
 	<include name="WideIcon_Big">
-		<control type="list" id="55">
+		<control type="list" id="56">
 			<posx>211</posx>
 			<posy>125</posy>
 			<width>455</width>
 			<height>390</height>
 			<onleft>9000</onleft>
 			<onright>60</onright>
-			<onup>55</onup>
-			<ondown>55</ondown>
+			<onup>56</onup>
+			<ondown>56</ondown>
 			<scrolltime>1</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
@@ -929,7 +1020,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>WideIcon.png</texture>
-					<visible>Control.HasFocus(55)</visible>
+					<visible>Control.HasFocus(56)</visible>
 				</control>
 				<control type="image">
 					<width>440</width>
@@ -937,7 +1028,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>WideIconNF.png</texture>
-					<visible>!Control.HasFocus(55)</visible>
+					<visible>!Control.HasFocus(56)</visible>
 				</control>
 				<control type="image">
 					<posx>5</posx>
