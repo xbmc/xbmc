@@ -52,25 +52,10 @@ class CProfile;
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-class CFolderView
-{
-public:
-  CFolderView(CStdString &strPath, int iView, int iSort, bool bSortOrder)
-  {
-    m_strPath = strPath;
-    m_iView = iView;
-    m_iSort = iSort;
-    m_bSortOrder = bSortOrder;
-  };
-  ~CFolderView() {};
-
-  CStdString m_strPath;
-  int m_iView;
-  int m_iSort;
-  bool m_bSortOrder;
-};
-
-typedef std::vector<CFolderView*> VECFOLDERVIEWS;
+#define DEFAULT_VIEW_LIST (VIEW_TYPE_LIST << 16)
+#define DEFAULT_VIEW_ICONS (VIEW_TYPE_ICON << 16)
+#define DEFAULT_VIEW_BIG_ICONS (VIEW_TYPE_BIG_ICON << 16)
+#define DEFAULT_VIEW_MAX (((VIEW_TYPE_MAX - 1) << 16) | 60)
 
 /*!
 \ingroup windows
@@ -178,26 +163,13 @@ typedef std::vector<CShare>::iterator IVECSHARES;
 
 typedef std::vector<CProfile> VECPROFILES;
 typedef std::vector<CProfile>::iterator IVECPROFILES;
-/*
-class CFileTypeIcon
-{
-public:
-  CFileTypeIcon(){};
-  virtual ~CFileTypeIcon(){};
-  CStdString m_strName;
-  CStdString m_strIcon;
-};
-typedef std::vector<CFileTypeIcon> VECFILETYPEICONS;
-typedef std::vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
-*/
+
 struct VOICE_MASK {
   float energy;
   float pitch;
   float robotic;
   float whisper;
 };
-
-#include "GUIViewState.h" // for the VIEW_METHOD enum type
 
 class CSettings
 {
@@ -224,9 +196,6 @@ public:
   bool DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath);
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share);
   bool AddShare(const CStdString &type, const CShare &share);
-
-  bool LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
-  bool SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
 
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue);
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue);
@@ -331,77 +300,6 @@ public:
     bool m_bMyMusicPlaylistShuffle;
     int m_iMyMusicStartWindow;
 
-    VIEW_METHOD m_MyMusicSongsRootViewMethod;
-    SORT_METHOD m_MyMusicSongsRootSortMethod;
-    SORT_ORDER m_MyMusicSongsRootSortOrder;
-    VIEW_METHOD m_MyMusicSongsViewMethod;
-    SORT_METHOD m_MyMusicSongsSortMethod;
-    SORT_ORDER m_MyMusicSongsSortOrder;
-
-    VIEW_METHOD m_MyMusicPlaylistViewMethod;
-
-    SORT_METHOD m_MyMusicShoutcastSortMethod;
-    SORT_ORDER  m_MyMusicShoutcastSortOrder;
-    SORT_METHOD m_MyMusicLastFMSortMethod;
-    SORT_ORDER  m_MyMusicLastFMSortOrder;
-
-    // new settings for the Music Nav Window
-    VIEW_METHOD m_MyMusicNavRootViewMethod;
-    VIEW_METHOD m_MyMusicNavGenresViewMethod;
-    VIEW_METHOD m_MyMusicNavArtistsViewMethod;
-    VIEW_METHOD m_MyMusicNavAlbumsViewMethod;
-    VIEW_METHOD m_MyMusicNavSongsViewMethod;
-    VIEW_METHOD m_MyMusicNavTopViewMethod;
-    VIEW_METHOD m_MyMusicNavPlaylistsViewMethod;
-
-    SORT_METHOD m_MyMusicNavRootSortMethod;
-    SORT_METHOD m_MyMusicNavAlbumsSortMethod;
-    SORT_METHOD m_MyMusicNavSongsSortMethod;
-    SORT_METHOD m_MyMusicNavPlaylistsSortMethod;
-
-    SORT_ORDER m_MyMusicNavGenresSortOrder;
-    SORT_ORDER m_MyMusicNavArtistsSortOrder;
-    SORT_ORDER m_MyMusicNavAlbumsSortOrder;
-    SORT_ORDER m_MyMusicNavSongsSortOrder;
-    SORT_ORDER m_MyMusicNavPlaylistsSortOrder;
-
-    VIEW_METHOD m_ScriptsViewMethod;
-    SORT_METHOD m_ScriptsSortMethod;
-    SORT_ORDER m_ScriptsSortOrder;
-
-    VIEW_METHOD m_MyProgramsViewMethod;
-    SORT_METHOD m_MyProgramsSortMethod;
-    SORT_ORDER m_MyProgramsSortOrder;
-
-    VIEW_METHOD m_MyPicturesViewMethod;
-    SORT_METHOD m_MyPicturesSortMethod;
-    SORT_ORDER m_MyPicturesSortOrder;
-    VIEW_METHOD m_MyPicturesRootViewMethod;
-    SORT_METHOD m_MyPicturesRootSortMethod;
-    SORT_ORDER m_MyPicturesRootSortOrder;
-
-    VIEW_METHOD m_GameSavesViewMethod;
-    SORT_METHOD m_GameSavesSortMethod;
-    SORT_ORDER m_GameSavesSortOrder;
-
-    // new settings for the Video Nav Window
-    VIEW_METHOD m_MyVideoNavRootViewMethod;
-    VIEW_METHOD m_MyVideoNavGenreViewMethod;
-    VIEW_METHOD m_MyVideoNavPlaylistsViewMethod;
-    VIEW_METHOD m_MyVideoNavTitleViewMethod;
-    VIEW_METHOD m_MyVideoNavActorViewMethod;
-    VIEW_METHOD m_MyVideoNavYearViewMethod;
-
-    SORT_METHOD m_MyVideoNavGenreSortMethod;
-    SORT_METHOD m_MyVideoNavPlaylistsSortMethod;
-    SORT_METHOD m_MyVideoNavTitleSortMethod;
-    
-    SORT_ORDER m_MyVideoNavGenreSortOrder;
-    SORT_ORDER m_MyVideoNavPlaylistsSortOrder;
-    SORT_ORDER m_MyVideoNavTitleSortOrder;
-    SORT_ORDER m_MyVideoNavYearSortOrder;
-    SORT_ORDER m_MyVideoNavActorSortOrder;
-    
     // for scanning
     bool m_bMyMusicIsScanning;
 
@@ -412,15 +310,6 @@ public:
     float m_fPixelRatio;      // current pixel ratio
 
     int m_iMyVideoWatchMode;
-
-    VIEW_METHOD m_MyVideoViewMethod;
-    VIEW_METHOD m_MyVideoRootViewMethod;
-    SORT_METHOD m_MyVideoSortMethod;
-    SORT_METHOD m_MyVideoRootSortMethod;
-    SORT_ORDER m_MyVideoSortOrder;
-    SORT_ORDER m_MyVideoRootSortOrder;
-
-    VIEW_METHOD m_MyVideoPlaylistViewMethod;
 
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
@@ -437,8 +326,8 @@ public:
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
 
-	int m_HttpApiBroadcastPort;
-	int m_HttpApiBroadcastLevel;
+	  int m_HttpApiBroadcastPort;
+	  int m_HttpApiBroadcastLevel;
     int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
     int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore

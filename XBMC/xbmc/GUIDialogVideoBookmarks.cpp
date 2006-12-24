@@ -107,7 +107,7 @@ void CGUIDialogVideoBookmarks::Update()
 
   // lock our display, as this window is rendered from the player thread
   g_graphicsContext.Lock();
-  m_viewControl.SetCurrentView((VIEW_METHOD)1);
+  m_viewControl.SetCurrentView(DEFAULT_VIEW_ICONS);
 
   // empty the list ready for population
   Clear();
@@ -215,7 +215,7 @@ void CGUIDialogVideoBookmarks::OnWindowLoaded()
   CGUIDialog::OnWindowLoaded();
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_METHOD_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.AddView(GetControl(CONTROL_THUMBS));
 }
 
 void CGUIDialogVideoBookmarks::OnWindowUnload()

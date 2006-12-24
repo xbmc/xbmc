@@ -4,6 +4,7 @@
 #include "GUIControlFactory.h"
 #include "GUIFontManager.h"
 #include "XMLUtils.h"
+#include "SkinInfo.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/FileItem.h"
@@ -35,12 +36,13 @@ CGUIListItemLayout::CListLabel::~CListLabel()
 {
 }
 
-CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio)
+CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, const vector<CAnimation> &animations)
 : CGUIListItemLayout::CListBase(posX, posY, width, height, visibleCondition),
   m_image(0, 0, posX, posY, width, height, image)
 {
   m_type = LIST_TEXTURE;
   m_image.SetAspectRatio(aspectRatio);
+  m_image.SetAnimations(animations);
 }
 
 CGUIListItemLayout::CListTexture::~CListTexture()
@@ -48,8 +50,8 @@ CGUIListItemLayout::CListTexture::~CListTexture()
   m_image.FreeResources();
 }
 
-CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, int info)
-: CGUIListItemLayout::CListTexture(posX, posY, width, height, visibleCondition, image, aspectRatio)
+CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, const vector<CAnimation> &animations, int info)
+: CGUIListItemLayout::CListTexture(posX, posY, width, height, visibleCondition, image, aspectRatio, animations)
 {
   m_info = info;
   m_type = LIST_IMAGE;
@@ -99,7 +101,7 @@ float CGUIListItemLayout::Size(ORIENTATION orientation)
   return (orientation == HORIZONTAL) ? m_width : m_height;
 }
 
-void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID)
+void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
 {
   if (m_invalidated)
   {
@@ -164,7 +166,11 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID)
       if (layoutItem->m_type == CListBase::LIST_LABEL)
         RenderLabel((CListLabel *)layoutItem, item->IsSelected() || m_isPlaying, m_focused);
       else
+      {
+        if (time)
+          ((CListTexture *)layoutItem)->m_image.UpdateEffectState(time);
         ((CListTexture *)layoutItem)->m_image.Render();
+      }
     }
   }
 }
@@ -228,13 +234,29 @@ void CGUIListItemLayout::ResetScrolling()
   }
 }
 
+void CGUIListItemLayout::QueueAnimation(ANIMATION_TYPE animType)
+{
+  for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
+  {
+    CListBase *layoutItem = (*it);
+    if (layoutItem->m_type == CListBase::LIST_IMAGE ||
+        layoutItem->m_type == CListBase::LIST_TEXTURE)
+      ((CListTexture *)layoutItem)->m_image.QueueAnimation(animType);
+  }
+}
 
 CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *child)
 {
+  // resolve any <include> tag's in this control
+  g_SkinInfo.ResolveIncludes(child);
+
   // grab the type...
   CGUIControlFactory factory;
   CStdString type = factory.GetType(child);
-  CGUIControl *control = factory.Create(0, NULL, child);
+
+  // resolve again with strType set so that <default> tags are added
+  g_SkinInfo.ResolveIncludes(child, type);
+
   float posX = 0;
   float posY = 0;
   float width = 10;
@@ -261,6 +283,13 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   }
   factory.GetTexture(child, "texture", image);
   factory.GetAlignment(child, "align", label.align);
+  FRECT rect = { posX, posY, width, height };
+  vector<CAnimation> animations;
+  factory.GetAnimations(child, rect, animations);
+  if (animations.size())
+  {
+    int test = 1;
+  }
   DWORD alignY = 0;
   if (factory.GetAlignmentY(child, "aligny", alignY))
     label.align |= alignY;
@@ -278,11 +307,11 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   {
     if (info)
     { // info image
-      return new CListImage(posX, posY, width, height, visibleCondition, image, aspectRatio, info);
+      return new CListImage(posX, posY, width, height, visibleCondition, image, aspectRatio, animations, info);
     }
     else
     { // texture
-      return new CListTexture(posX, posY, width, height, visibleCondition, image, CGUIImage::ASPECT_RATIO_STRETCH);
+      return new CListTexture(posX, posY, width, height, visibleCondition, image, CGUIImage::ASPECT_RATIO_STRETCH, animations);
     }
   }
   return NULL;
@@ -309,14 +338,15 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   m_width = width;
   m_height = height;
   m_focused = focused;
-  CListTexture *tex = new CListTexture(0, 0, width, texHeight, nofocusCondition, texture, CGUIImage::ASPECT_RATIO_STRETCH);
+  vector<CAnimation> blankAnims;
+  CListTexture *tex = new CListTexture(0, 0, width, texHeight, nofocusCondition, texture, CGUIImage::ASPECT_RATIO_STRETCH, blankAnims);
   m_controls.push_back(tex);
   if (focused)
   {
-    CListTexture *tex = new CListTexture(0, 0, width, texHeight, focusCondition, textureFocus, CGUIImage::ASPECT_RATIO_STRETCH);
+    CListTexture *tex = new CListTexture(0, 0, width, texHeight, focusCondition, textureFocus, CGUIImage::ASPECT_RATIO_STRETCH, blankAnims);
     m_controls.push_back(tex);
   }
-  CListImage *image = new CListImage(8, 0, iconWidth, texHeight, 0, CImage(""), CGUIImage::ASPECT_RATIO_KEEP, LISTITEM_ICON);
+  CListImage *image = new CListImage(8, 0, iconWidth, texHeight, 0, CImage(""), CGUIImage::ASPECT_RATIO_KEEP, blankAnims, LISTITEM_ICON);
   m_controls.push_back(image);
   float x = iconWidth + labelInfo.offsetX + 10;
   CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, 0, labelInfo, LISTITEM_LABEL, "");
@@ -333,7 +363,8 @@ void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, 
   m_focused = focused;
   float centeredPosX = (m_width - texWidth)*0.5f;
   // background texture
-  CListTexture *tex = new CListTexture(centeredPosX, 0, texWidth, texHeight, 0, image, CGUIImage::ASPECT_RATIO_STRETCH);
+  vector<CAnimation> blankAnims;
+  CListTexture *tex = new CListTexture(centeredPosX, 0, texWidth, texHeight, 0, image, CGUIImage::ASPECT_RATIO_STRETCH, blankAnims);
   m_controls.push_back(tex);
   // thumbnail
   float xOff = 0;
@@ -344,10 +375,10 @@ void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, 
     yOff += (texHeight - thumbHeight) * 0.5f;
     //if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
   }
-  CListImage *thumb = new CListImage(thumbPosX + centeredPosX + xOff, thumbPosY + yOff, thumbWidth, thumbHeight, 0, CImage(""), thumbAspect, LISTITEM_ICON);
+  CListImage *thumb = new CListImage(thumbPosX + centeredPosX + xOff, thumbPosY + yOff, thumbWidth, thumbHeight, 0, CImage(""), thumbAspect, blankAnims, LISTITEM_ICON);
   m_controls.push_back(thumb);
   // overlay
-  CListImage *overlay = new CListImage(thumbPosX + centeredPosX + xOff + thumbWidth - 32, thumbPosY + yOff + thumbHeight - 32, 32, 32, 0, CImage(""), thumbAspect, LISTITEM_OVERLAY);
+  CListImage *overlay = new CListImage(thumbPosX + centeredPosX + xOff + thumbWidth - 32, thumbPosY + yOff + thumbHeight - 32, 32, 32, 0, CImage(""), thumbAspect, blankAnims, LISTITEM_OVERLAY);
   m_controls.push_back(overlay);
   // label
   if (hideLabels) return;

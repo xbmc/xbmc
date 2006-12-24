@@ -11,7 +11,7 @@ public:
 
 protected:
   void Process();
-  virtual void GetInformation()=0;
+  virtual void GetInformation() {};
   CInfoLoader *m_callback;
 };
 
