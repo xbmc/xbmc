@@ -1174,6 +1174,12 @@
 				<File
 					RelativePath="..\..\xbmc\VideoDatabase.h">
 				</File>
+				<File
+					RelativePath="..\..\xbmc\ViewDatabase.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ViewDatabase.h">
+				</File>
 			</Filter>
 			<Filter
 				Name="GUI Dialog"

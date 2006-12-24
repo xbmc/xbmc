@@ -30,9 +30,9 @@ public:
   bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image);
   bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
+  bool GetAnimations(const TiXmlNode *control, const FRECT &rect, vector<CAnimation> &animation);
 private:
   bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus);
-  bool GetAnimations(const TiXmlNode *control, const FRECT &rect, vector<CAnimation> &animation);
   bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue);
   bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);
   bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);

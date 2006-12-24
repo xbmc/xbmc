@@ -13,6 +13,7 @@
 #include "../SmartPlaylist.h"
 #include "PlaylistFileDirectory.h"
 #include "../PlayListFactory.h"
+#include "../GUIViewState.h"
 
 CFactoryFileDirectory::CFactoryFileDirectory(void)
 {}
