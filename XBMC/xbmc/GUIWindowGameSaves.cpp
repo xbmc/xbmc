@@ -96,6 +96,7 @@ bool CGUIWindowGameSaves::OnMessage(CGUIMessage& message)
       }
       if (m_viewControl.HasControl(message.GetSenderId()))  // list/thumb control
       {
+        
         // get selected item
         int iAction = message.GetParam1();
         if (ACTION_CONTEXT_MENU == iAction)
@@ -185,7 +186,6 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
     return false;
 
   CLog::Log(LOGDEBUG,"CGUIWindowGameSaves::GetDirectory (%s)", strDirectory.c_str());
-  //CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
   CStdString strParentPath;
   bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
@@ -193,7 +193,8 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
     m_strParentPath = strParentPath;
   else
     m_strParentPath = "";
-  FILE *newfile;
+  //FILE *newfile;
+  CFile newfile;
   // flatten any folders with 1 save
   DWORD dwTick=timeGetTime();
   bool bProgressVisible = false;
@@ -234,36 +235,24 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
       if (CFile::Exists(titlemetaXBX))
       {
         domode = 1;
-        newfile=fopen(titlemetaXBX, "r");
+        newfile.Open(titlemetaXBX);
       }
       else if (CFile::Exists(savemetaXBX))
       {
         domode = 2;
-        newfile=fopen(savemetaXBX, "r");
+        newfile.Open(savemetaXBX);
       }
-
       if (domode != 0)
       {
-        WCHAR c[2048];
-        int j;
-        j = 0;
-        while(!feof(newfile) && !ferror(newfile) && j < 127)
-        {
-          c[j]=fgetwc(newfile);
-          if (c[j] != NULL)
-          {
-            j++;
-          }
-        }
-        c[j] = '\n';
-        c[j+1] = L'\0';
+        WCHAR *yo = new WCHAR[(int)newfile.GetLength()+1];
+        newfile.Read(yo,newfile.GetLength());
         CStdString strDescription;
-        g_charsetConverter.utf16toUTF8(c, strDescription);
+        g_charsetConverter.utf16toUTF8(yo, strDescription);
         int poss = strDescription.find("Name=");
         int pose = strDescription.find("\n",poss+1);
         strDescription = strDescription.Mid(poss+5, pose - poss-6);
         strDescription = CUtil::MakeLegalFileName(strDescription,true,false);
-        fclose(newfile);
+        newfile.Close();
         if (domode == 1)
         {
           CLog::Log(LOGDEBUG, "Loading GameSave info from %s,  data is %s, located at poss %i  pose %i ",  savemetaXBX.c_str(),strDescription.c_str(),poss,pose);
