@@ -802,10 +802,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     viewType = VIEW_TYPE_ICON;
     viewLabel = g_localizeStrings.Get(536);
   }
-  else if (strType == "list" || strType == "wraplist")
+  else if (strType == "list")
   {
     viewType = VIEW_TYPE_LIST;
     viewLabel = g_localizeStrings.Get(535);
+  }
+  else if (strType == "wraplist")
+  {
+    viewType = VIEW_TYPE_WRAP;
+    viewLabel = g_localizeStrings.Get(541);
   }
   TiXmlElement *itemElement = pControlNode->FirstChildElement("viewtype");
   if (itemElement && itemElement->FirstChild())
@@ -823,6 +828,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
       viewType = VIEW_TYPE_WIDE;
     else if (type == "bigwide")
       viewType = VIEW_TYPE_BIG_WIDE;
+    else if (type == "wrap")
+      viewType = VIEW_TYPE_WRAP;
+    else if (type == "bigwrap")
+      viewType = VIEW_TYPE_BIG_WRAP;
     const char *label = itemElement->Attribute("label");
     if (label)
     {
