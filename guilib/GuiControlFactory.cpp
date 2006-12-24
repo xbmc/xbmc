@@ -794,6 +794,57 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   XMLUtils::GetInt(pControlNode, "focusposition", focusPosition);
   XMLUtils::GetInt(pControlNode, "scrolltime", scrollTime);
 
+  // view type
+  VIEW_TYPE viewType = VIEW_TYPE_NONE;
+  CStdString viewLabel;
+  if (strType == "panel")
+  {
+    viewType = VIEW_TYPE_ICON;
+    viewLabel = g_localizeStrings.Get(536);
+  }
+  else if (strType == "list")
+  {
+    viewType = VIEW_TYPE_LIST;
+    viewLabel = g_localizeStrings.Get(535);
+  }
+  else if (strType == "wraplist")
+  {
+    viewType = VIEW_TYPE_WRAP;
+    viewLabel = g_localizeStrings.Get(541);
+  }
+  TiXmlElement *itemElement = pControlNode->FirstChildElement("viewtype");
+  if (itemElement && itemElement->FirstChild())
+  {
+    CStdString type = itemElement->FirstChild()->Value();
+    if (type == "list")
+      viewType = VIEW_TYPE_LIST;
+    else if (type == "icon")
+      viewType = VIEW_TYPE_ICON;
+    else if (type == "biglist")
+      viewType = VIEW_TYPE_BIG_LIST;
+    else if (type == "bigicon")
+      viewType = VIEW_TYPE_BIG_ICON;
+    else if (type == "wide")
+      viewType = VIEW_TYPE_WIDE;
+    else if (type == "bigwide")
+      viewType = VIEW_TYPE_BIG_WIDE;
+    else if (type == "wrap")
+      viewType = VIEW_TYPE_WRAP;
+    else if (type == "bigwrap")
+      viewType = VIEW_TYPE_BIG_WRAP;
+    const char *label = itemElement->Attribute("label");
+    if (label)
+    {
+      viewLabel = label;
+      if (StringUtils::IsNaturalNumber(viewLabel))
+        viewLabel = g_localizeStrings.Get(atoi(label));
+      else
+      { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+        g_charsetConverter.stringCharsetToUtf8(viewLabel);
+      }
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
   //
@@ -1123,6 +1174,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   {
     CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
     pControl->LoadLayout(pControlNode);
+    pControl->SetType(viewType, viewLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
@@ -1136,6 +1188,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   {
     CGUIWrappingListContainer* pControl = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
     pControl->LoadLayout(pControlNode);
+    pControl->SetType(viewType, viewLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
@@ -1149,6 +1202,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   {
     CGUIPanelContainer* pControl = new CGUIPanelContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
     pControl->LoadLayout(pControlNode);
+    pControl->SetType(viewType, viewLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
@@ -1178,6 +1232,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
       labelInfo2.align |= XBFONT_CENTER_Y;
     CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height - spinHeight - 5,
       labelInfo, labelInfo2, textureNoFocus, textureFocus, textureHeight, itemWidth, itemHeight, spaceBetweenItems, pSpin);
+
+    if (id == 53) // big list
+      pControl->SetType(VIEW_TYPE_BIG_LIST, g_localizeStrings.Get(537)); // Big List
+    else
+      pControl->SetType(VIEW_TYPE_LIST, g_localizeStrings.Get(535)); // List
 
     pControl->SetPageControl(id + 5000);
     pControl->SetNavigation(up, down, left, id + 5000);
@@ -1259,6 +1318,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
       thumbXPosBig, thumbYPosBig, thumbWidthBig, thumbHeightBig, dwThumbAlign, aspectRatio,
       labelInfo, thumbPanelHideLabels, NULL, NULL);
 
+    pPanel->SetType(VIEW_TYPE_BIG_ICON, g_localizeStrings.Get(538)); // Big Icons
     pPanel->SetPageControl(pageControl ? pageControl : id + 5000);
     pPanel->SetNavigation(up == id ? id + 2 : up, down == id ? id + 2 : down, left == id ? id + 2 : left, pageControl ? pageControl : id + 5000);
 
@@ -1275,6 +1335,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
       thumbXPos, thumbYPos, thumbWidth, thumbHeight, dwThumbAlign, aspectRatio,
       labelInfo, thumbPanelHideLabels, pSpin, pPanel);
 
+    pControl->SetType(VIEW_TYPE_ICON, g_localizeStrings.Get(536)); // Icons
     pControl->SetPageControl(pageControl ? pageControl : id + 5000);
     pControl->SetNavigation(up, down, left, pageControl ? pageControl : id + 5000);
 

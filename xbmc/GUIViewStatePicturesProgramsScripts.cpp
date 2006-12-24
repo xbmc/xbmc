@@ -8,53 +8,36 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
   {
     AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS());
     AddSortMethod(SORT_METHOD_DRIVE_TYPE, 498, LABEL_MASKS());
-    SetSortMethod(g_stSettings.m_MyPicturesRootSortMethod);
+    SetSortMethod(SORT_METHOD_LABEL);
 
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-    SetViewAsControl(g_stSettings.m_MyPicturesRootViewMethod);
+    SetViewAsControl(DEFAULT_VIEW_LIST);
 
-    SetSortOrder(g_stSettings.m_MyPicturesRootSortOrder);
+    SetSortOrder(SORT_ORDER_ASC);
   }
   else
   {
     AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
     AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
     AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
-    SetSortMethod(g_stSettings.m_MyPicturesSortMethod);
+    SetSortMethod(SORT_METHOD_LABEL);
 
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
     if (g_guiSettings.GetBool("pictures.useautoswitching"))
     {
       SetViewAsControl(CAutoSwitch::GetView(items));
     }
     else
     {
-      SetViewAsControl(g_stSettings.m_MyPicturesViewMethod);
+      SetViewAsControl(DEFAULT_VIEW_LIST);
     }
 
-    SetSortOrder(g_stSettings.m_MyPicturesSortOrder);
+    SetSortOrder(SORT_ORDER_ASC);
   }
+  LoadViewState(items.m_strPath, WINDOW_PICTURES);
 }
 
 void CGUIViewStateWindowPictures::SaveViewState()
 {
-  if (m_items.IsVirtualDirectoryRoot())
-  {
-    g_stSettings.m_MyPicturesRootSortMethod=GetSortMethod();
-    g_stSettings.m_MyPicturesRootViewMethod=GetViewAsControl();
-    g_stSettings.m_MyPicturesRootSortOrder=GetSortOrder();
-  }
-  else
-  {
-    g_stSettings.m_MyPicturesSortMethod=GetSortMethod();
-    g_stSettings.m_MyPicturesViewMethod=GetViewAsControl();
-    g_stSettings.m_MyPicturesSortOrder=GetSortOrder();
-  }
-  g_settings.Save();
+  SaveViewToDb(m_items.m_strPath, WINDOW_PICTURES);
 }
 
 CStdString CGUIViewStateWindowPictures::GetLockType()
@@ -86,29 +69,24 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
   AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%K", "%J", "%L", "%J"));  // Titel, Date | Foldername, Date
   AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 507, LABEL_MASKS("%K", "%C", "%L", ""));  // Titel, Count | Foldername, empty
   AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%K", "%I", "%K", "%I"));  // Filename, Size | Foldername, Size
-  SetSortMethod(g_stSettings.m_MyProgramsSortMethod);
+  SetSortMethod(SORT_METHOD_LABEL);
 
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
   if (g_guiSettings.GetBool("programfiles.useautoswitching"))
   {
     SetViewAsControl(CAutoSwitch::GetView(items));
   }
   else
   {
-    SetViewAsControl(g_stSettings.m_MyProgramsViewMethod);
+    SetViewAsControl(DEFAULT_VIEW_ICONS);
   }
 
-  SetSortOrder(g_stSettings.m_MyProgramsSortOrder);
+  SetSortOrder(SORT_ORDER_ASC);
+  LoadViewState(items.m_strPath, WINDOW_PROGRAMS);
 }
 
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
-  g_stSettings.m_MyProgramsSortMethod=GetSortMethod();
-  g_stSettings.m_MyProgramsViewMethod=GetViewAsControl();
-  g_stSettings.m_MyProgramsSortOrder=GetSortOrder();
-  g_settings.Save();
+  SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAMS);
 }
 
 CStdString CGUIViewStateWindowPrograms::GetLockType()
@@ -131,22 +109,17 @@ CGUIViewStateWindowScripts::CGUIViewStateWindowScripts(const CFileItemList& item
   AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
   AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
   AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
-  SetSortMethod(g_stSettings.m_ScriptsSortMethod);
+  SetSortMethod(SORT_METHOD_LABEL);
 
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-  SetViewAsControl(g_stSettings.m_ScriptsViewMethod);
+  SetViewAsControl(DEFAULT_VIEW_LIST);
 
-  SetSortOrder(g_stSettings.m_ScriptsSortOrder);
+  SetSortOrder(SORT_ORDER_ASC);
+  LoadViewState(items.m_strPath, WINDOW_SCRIPTS);
 }
 
 void CGUIViewStateWindowScripts::SaveViewState()
 {
-  g_stSettings.m_ScriptsSortMethod=GetSortMethod();
-  g_stSettings.m_ScriptsViewMethod=GetViewAsControl();
-  g_stSettings.m_ScriptsSortOrder=GetSortOrder();
-  g_settings.Save();
+  SaveViewToDb(m_items.m_strPath, WINDOW_SCRIPTS);
 }
 
 CStdString CGUIViewStateWindowScripts::GetExtensions()
@@ -191,22 +164,17 @@ CGUIViewStateWindowGameSaves::CGUIViewStateWindowGameSaves(const CFileItemList& 
   AddSortMethod(SORT_METHOD_LABEL, 103,  LABEL_MASKS("%L", "%T", "%L", ""));  // Filename, Size | Foldername, empty
   AddSortMethod(SORT_METHOD_TITLE, 20316, LABEL_MASKS("%L", "%T", "%L", "%T"));  // Filename, TITLE | Foldername, TITLE
   AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
-  SetSortMethod(g_stSettings.m_GameSavesSortMethod);
+  SetSortMethod(SORT_METHOD_LABEL);
 
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-  SetViewAsControl(g_stSettings.m_GameSavesViewMethod);
+  SetViewAsControl(DEFAULT_VIEW_LIST);
 
-  SetSortOrder(g_stSettings.m_GameSavesSortOrder);
+  SetSortOrder(SORT_ORDER_ASC);
+  LoadViewState(items.m_strPath, WINDOW_GAMESAVES);
 }
 
 void CGUIViewStateWindowGameSaves::SaveViewState()
 {
-  g_stSettings.m_GameSavesSortMethod=GetSortMethod();
-  g_stSettings.m_GameSavesViewMethod=GetViewAsControl();
-  g_stSettings.m_GameSavesSortOrder=GetSortOrder();
-  g_settings.Save();
+  SaveViewToDb(m_items.m_strPath, WINDOW_GAMESAVES);
 }
 
 

@@ -7,6 +7,7 @@ CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwC
 {
   m_cursor = fixedPosition;
   ControlType = GUICONTAINER_FIXEDLIST;
+  m_type = VIEW_TYPE_LIST;
 }
 
 CGUIWrappingListContainer::~CGUIWrappingListContainer(void)

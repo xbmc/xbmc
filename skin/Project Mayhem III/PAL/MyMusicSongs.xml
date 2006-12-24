@@ -174,6 +174,7 @@
 				</control>
 			</control>
 		</control>
+		<include>OldListViewCommons</include>
 		<include>MusicViewCommons</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
