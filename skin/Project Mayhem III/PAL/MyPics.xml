@@ -149,6 +149,7 @@
 				</control>
 			</control>
 		</control>
+		<include>OldListViewCommons</include>
 		<include>ProgramsViewCommons</include>
 		<include>AllViewCommonPageControls</include>
 		<include>AllViewCommonThumbSmall</include>

@@ -1,5 +1,4 @@
 #pragma once
-#include "GUIViewState.h" // for VIEW_METHOD enum definition
 
 class CAutoSwitch
 {
@@ -8,7 +7,7 @@ public:
   CAutoSwitch(void);
   virtual ~CAutoSwitch(void);
 
-  static VIEW_METHOD GetView(const CFileItemList& vecItems);
+  static int GetView(const CFileItemList& vecItems);
 
   static bool ByFolders(const CFileItemList& vecItems);
   static bool ByFiles(bool bHideParentDirItems, const CFileItemList& vecItems);

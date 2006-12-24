@@ -446,6 +446,13 @@
   <string id="531">New Genre</string>
   <string id="532">Manual Addition</string>
   <string id="533">Enter Genre</string>
+  <string id="534">View: %s</string>
+  <string id="535">List</string>
+  <string id="536">Icons</string>
+  <string id="537">Big List</string>
+  <string id="538">Big Icons</string>
+  <string id="539">Wide</string>
+  <string id="540">Big Wide</string>
 
   <string id="588">Cancel Party Mode</string>
   <string id="589">Party Mode</string>

@@ -307,7 +307,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 
   m_viewControl.SetItems(m_vecItems);
   if (m_browsingForImages)
-    m_viewControl.SetCurrentView(CAutoSwitch::ByFileCount(m_vecItems) ? VIEW_METHOD_ICONS : VIEW_METHOD_LIST);
+    m_viewControl.SetCurrentView(CAutoSwitch::ByFileCount(m_vecItems) ? DEFAULT_VIEW_ICONS : DEFAULT_VIEW_LIST);
 
   CStdString strPath2 = m_Directory.m_strPath;
   CUtil::RemoveSlashAtEnd(strPath2);
@@ -441,9 +441,8 @@ void CGUIDialogFileBrowser::OnWindowLoaded()
   CGUIDialog::OnWindowLoaded();
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_METHOD_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.AddView(VIEW_METHOD_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.SetCurrentView(VIEW_METHOD_LIST);
+  m_viewControl.AddView(GetControl(CONTROL_LIST));
+  m_viewControl.AddView(GetControl(CONTROL_THUMBS));
   // set the page spin controls to hidden
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LIST + 5000);

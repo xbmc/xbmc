@@ -33,7 +33,7 @@ void CGUIBaseContainer::Render()
 void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
 {
   // set the origin
-  g_graphicsContext.SetControlTransform(TransformMatrix::CreateTranslation(posX, posY));
+  g_graphicsContext.AddGroupTransform(TransformMatrix::CreateTranslation(posX, posY));
 
   if (m_bInvalidated)
     item->SetInvalid();
@@ -44,10 +44,14 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       CGUIListItemLayout *layout = new CGUIListItemLayout(m_focusedLayout);
       item->SetFocusedLayout(layout);
     }
-    if (item != m_lastItem || !HasFocus())
-      item->GetFocusedLayout()->ResetScrolling();
     if (item->GetFocusedLayout())
-      item->GetFocusedLayout()->Render(item, m_dwParentID);
+    {
+      if (item != m_lastItem || !HasFocus())
+        item->GetFocusedLayout()->ResetScrolling();
+      if (item != m_lastItem)
+        item->GetFocusedLayout()->QueueAnimation(ANIM_TYPE_FOCUS);
+      item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
+    }
     m_lastItem = item;
   }
   else
@@ -60,6 +64,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
     if (item->GetLayout())
       item->GetLayout()->Render(item, m_dwParentID);
   }
+  g_graphicsContext.RemoveGroupTransform();
 }
 
 bool CGUIBaseContainer::OnAction(const CAction &action)
@@ -356,6 +361,12 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   }
 }
 
+void CGUIBaseContainer::SetType(VIEW_TYPE type, const CStdString &label)
+{
+  m_type = type;
+  m_label = label;
+}
+
 void CGUIBaseContainer::MoveToItem(int item)
 {
   m_offset = item;
@@ -376,4 +387,3 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
       m_items[i]->FreeMemory();
   }
 }
-

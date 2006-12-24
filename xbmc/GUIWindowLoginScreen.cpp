@@ -161,7 +161,7 @@ void CGUIWindowLoginScreen::Render()
 void CGUIWindowLoginScreen::OnInitWindow()
 {
   // Update list/thumb control
-  m_viewControl.SetCurrentView(VIEW_METHOD_LARGE_LIST);
+  m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
   Update();
   m_viewControl.SetFocused();
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER,g_localizeStrings.Get(20115));
@@ -175,7 +175,7 @@ void CGUIWindowLoginScreen::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_METHOD_LARGE_LIST, GetControl(CONTROL_BIG_LIST)); 
+  m_viewControl.AddView(GetControl(CONTROL_BIG_LIST)); 
 }
 
 void CGUIWindowLoginScreen::Update()

@@ -45,7 +45,7 @@ class CGUIListItemLayout
   class CListTexture : public CListBase
   {
   public:
-    CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio);
+    CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, const vector<CAnimation> &animations);
     virtual ~CListTexture();
     CGUIImage m_image;
   };
@@ -53,7 +53,7 @@ class CGUIListItemLayout
   class CListImage: public CListTexture
   {
   public:
-    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, int info);
+    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, const vector<CAnimation> &animations, int info);
     virtual ~CListImage();
     int m_info;
   };
@@ -63,10 +63,11 @@ public:
   CGUIListItemLayout(const CGUIListItemLayout &from);
   ~CGUIListItemLayout();
   void LoadLayout(TiXmlElement *layout, bool focused);
-  void Render(CGUIListItem *item, DWORD parentID);
+  void Render(CGUIListItem *item, DWORD parentID, DWORD time = 0);
   float Size(ORIENTATION orientation);
   bool Focused() const { return m_focused; };
   void ResetScrolling();
+  void QueueAnimation(ANIMATION_TYPE animType);
 
   void SetInvalid() { m_invalidated = true; };
 
