@@ -10,6 +10,7 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
 {
   ControlType = GUICONTAINER_LIST;
+  m_type = VIEW_TYPE_LIST;
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   m_spinControl = NULL;
 //#endif

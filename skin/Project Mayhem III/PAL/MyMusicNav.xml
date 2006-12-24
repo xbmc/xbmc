@@ -124,6 +124,7 @@
 				<ondown>2</ondown>
 			</control>
 		</control>
+		<include>OldListViewCommons</include>
 		<include>ProgramsViewCommons</include>
 		<include>MusicViewCommons_BigList</include>
 		<include>AllViewCommonThumbSmall</include>
