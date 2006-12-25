@@ -65,7 +65,7 @@ protected:
   virtual bool MoveUp(DWORD nextControl);
   virtual void MoveToItem(int item);
   virtual void ValidateOffset();
-  virtual int  CorrectOffset(int offset) const;
+  virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout();
   virtual void CalculateLayout();
 

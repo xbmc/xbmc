@@ -40,9 +40,9 @@ void CGUIPanelContainer::Render()
 
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   if (m_scrollSpeed)
-    FreeMemory(CorrectOffset(offset * m_itemsPerRow), CorrectOffset((offset + m_itemsPerPage + 1) * m_itemsPerRow));
+    FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, (m_itemsPerPage + 1) * m_itemsPerRow));
   else
-    FreeMemory(CorrectOffset(offset * m_itemsPerRow), CorrectOffset((offset + m_itemsPerPage) * m_itemsPerRow));
+    FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage * m_itemsPerRow));
 
   g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
   float posX = m_posX;
@@ -196,12 +196,6 @@ bool CGUIPanelContainer::OnMessage(CGUIMessage& message)
     {
       m_cursor = 0;
       // fall through to base class
-    }
-    else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
-    {
-      // from baseclass
-      message.SetParam1(CorrectOffset(m_offset * m_itemsPerRow + m_cursor));
-      return true;
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
@@ -396,6 +390,11 @@ unsigned int CGUIPanelContainer::GetRows() const
 float CGUIPanelContainer::AnalogScrollSpeed() const
 {
   return 10.0f / m_itemsPerPage;
+}
+
+int CGUIPanelContainer::CorrectOffset(int offset, int cursor) const
+{
+  return offset * m_itemsPerRow + cursor;
 }
 
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
