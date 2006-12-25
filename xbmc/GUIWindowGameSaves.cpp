@@ -246,11 +246,20 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
       {
         WCHAR *yo = new WCHAR[(int)newfile.GetLength()+1];
         newfile.Read(yo,newfile.GetLength());
-        newfile.Close();
 
         CStdString strDescription;
         g_charsetConverter.utf16toUTF8(yo, strDescription);
         int poss = strDescription.find("Name=");
+        if (poss == -1)
+        {
+          char *chrtxt = new char[(int)newfile.GetLength()+2];
+          newfile.Seek(0);
+          newfile.Read(chrtxt,newfile.GetLength());
+          chrtxt[(int)newfile.GetLength()+1] = '\n';
+          g_charsetConverter.utf16toUTF8(chrtxt, strDescription);
+          poss = strDescription.find("Name=");
+        }
+        newfile.Close();
         int pose = strDescription.find("\n",poss+1);
         strDescription = strDescription.Mid(poss+5, pose - poss-6);
         strDescription = CUtil::MakeLegalFileName(strDescription,true,false);
@@ -384,7 +393,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
   // calculate our position
   float posX = 200;
   float posY = 100;
-  //CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+
   const CGUIControl *pList = GetControl(CONTROL_LIST);
   if (pList)
   {
@@ -404,7 +413,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
   int btnCopy = pMenu->AddButton(115);
   int btnMove = pMenu->AddButton(116);
   int btnDelete = pMenu->AddButton(117);
-  // ONly add if we are on E:\udata\    /
+  // Only add if we are on E:\udata\ /
   /*int btnDownload = pMenu->AddButton(20317);
 
   pMenu->EnableButton(btnDownload, !strFileName.Equals("savemeta.xbx"));*/
