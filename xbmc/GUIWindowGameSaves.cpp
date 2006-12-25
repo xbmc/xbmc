@@ -4,11 +4,11 @@
 #include "FileSystem/ZipManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogFileBrowser.h"
-//#include "GUIListControl.h"
 #include "GUIWindowFileManager.h"
 #include "GUIPassword.h"
 #include <fstream>
-#include "Utils\HTTP.h"
+//#include "Utils\HTTP.h"  // For Download Function
+#include "mediamanager.h"
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
@@ -96,7 +96,7 @@ bool CGUIWindowGameSaves::OnMessage(CGUIMessage& message)
       }
       if (m_viewControl.HasControl(message.GetSenderId()))  // list/thumb control
       {
-        
+
         // get selected item
         int iAction = message.GetParam1();
         if (ACTION_CONTEXT_MENU == iAction)
@@ -246,16 +246,18 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
       {
         WCHAR *yo = new WCHAR[(int)newfile.GetLength()+1];
         newfile.Read(yo,newfile.GetLength());
+        newfile.Close();
+
         CStdString strDescription;
         g_charsetConverter.utf16toUTF8(yo, strDescription);
         int poss = strDescription.find("Name=");
         int pose = strDescription.find("\n",poss+1);
         strDescription = strDescription.Mid(poss+5, pose - poss-6);
         strDescription = CUtil::MakeLegalFileName(strDescription,true,false);
-        newfile.Close();
+
         if (domode == 1)
         {
-          CLog::Log(LOGDEBUG, "Loading GameSave info from %s,  data is %s, located at poss %i  pose %i ",  savemetaXBX.c_str(),strDescription.c_str(),poss,pose);
+          CLog::Log(LOGDEBUG, "Loading GameSave info from %s,  data is %s, located at %i to %i",  titlemetaXBX.c_str(),strDescription.c_str(),poss,pose);
           // check for subfolders with savemeta.xbx
           CFileItemList items2;
           m_rootDir.GetDirectory(item->m_strPath,items2,false);
@@ -278,13 +280,13 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
         }
         else
         {
+          CLog::Log(LOGDEBUG, "Loading GameSave info from %s,  data is %s, located at %i to %i", savemetaXBX.c_str(),strDescription.c_str(),poss,pose);
           item->m_bIsFolder = false;
           item->m_strPath = savemetaXBX;
         }
-        CLog::Log(LOGINFO, "Loading GameSave info from %s,  data is %s, located at poss %i  pose %i ", titlemetaXBX.c_str(),strDescription.c_str(),poss,pose);
         item->m_musicInfoTag.SetTitle(item->GetLabel());  // Note we set ID as the TITLE to save code makign a SORT ID and a ID varible to the FileItem
         item->SetLabel(strDescription);
-        item->FillInDefaultIcon();
+        item->SetIconImage("defaultProgram.png");
         CGUIViewState::LABEL_MASKS labelMasks;
         m_guiState->GetSortMethodLabelMasks(labelMasks);
 
@@ -394,8 +396,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
   if (!pMenu) return ;
   CFileItem* pItem=m_vecItems[iItem];
   CFileItem item(*pItem);
-  std::vector<CStdString> token;
-  CUtil::Tokenize(pItem->m_strPath,token,"\\");
+
   CStdString strFileName = CUtil::GetFileName(item.m_strPath);
   // load our menu
   pMenu->Initialize();
@@ -413,11 +414,23 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
   pMenu->DoModal();
   int iButton = pMenu->GetButton();
 
+  VECSHARES m_vecLocalMemShares;
+  CVirtualDirectory dir;
+
+  CShare share;
+  share.strName = "Local GameSaves";
+  share.strPath = "E:\\udata";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  m_vecLocalMemShares.push_back(share);
+
+  g_mediaManager.GetLocalDrives(m_vecLocalMemShares);
+  dir.SetShares(m_vecLocalMemShares);
+  dir.GetShares(m_vecLocalMemShares);
 
   if (iButton == btnCopy)
   {
     CStdString value;
-    if (!CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares, "to copy save to", value,true))
+    if (!CGUIDialogFileBrowser::ShowAndGetDirectory(m_vecLocalMemShares, g_localizeStrings.Get(20328), value,true))
       return;
     if (!CGUIDialogYesNo::ShowAndGetInput(120,123,20022,20022)) // enable me for confirmation
       return;
@@ -449,13 +462,13 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
     }
 
     item.Select(true);
-    CLog::Log(LOGINFO,"GSM: Copy of folder confirmed for folder %s",  item.m_strPath.c_str());
+    CLog::Log(LOGDEBUG,"GSM: Copy of folder confirmed for folder %s",  item.m_strPath.c_str());
     CGUIWindowFileManager::CopyItem(&item,path,true);
   }
 
   if (iButton == btnDelete)
   {
-    CLog::Log(LOGINFO,"GSM: Deletion of folder confirmed for folder %s", pItem->m_strPath.c_str());
+    CLog::Log(LOGDEBUG,"GSM: Deletion of folder confirmed for folder %s", pItem->m_strPath.c_str());
     if (strFileName.Equals("savemeta.xbx") || strFileName.Equals("titlemeta.xbx"))
     {
       CUtil::GetDirectory(pItem->m_strPath,item.m_strPath);
@@ -472,7 +485,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
   if (iButton == btnMove)
   {
     CStdString value;
-    if (!CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares, "to copy save to", value,true))
+    if (!CGUIDialogFileBrowser::ShowAndGetDirectory(m_vecLocalMemShares, g_localizeStrings.Get(20329) , value,true))
       return;
     if (!CGUIDialogYesNo::ShowAndGetInput(121,124,20022,20022)) // enable me for confirmation
       return;
@@ -506,7 +519,7 @@ void CGUIWindowGameSaves::OnPopupMenu(int iItem)
     }
 
     item.Select(true);
-    CLog::Log(LOGINFO,"GSM: Copy of folder confirmed for folder %s",  item.m_strPath.c_str());
+    CLog::Log(LOGDEBUG,"GSM: Copy of folder confirmed for folder %s",  item.m_strPath.c_str());
     CGUIWindowFileManager::MoveItem(&item,path,true);
     CDirectory::Remove(item.m_strPath);
     Update(m_vecItems.m_strPath);
