@@ -117,7 +117,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
-      message.SetParam1(CorrectOffset(m_offset + m_cursor));
+      message.SetParam1(CorrectOffset(m_offset, m_cursor));
       return true;
     }
     else if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
@@ -183,7 +183,7 @@ void CGUIBaseContainer::Scroll(int amount)
 
 int CGUIBaseContainer::GetSelectedItem() const
 {
-  return CorrectOffset(m_cursor + m_offset);
+  return CorrectOffset(m_cursor, m_offset);
 }
 
 bool CGUIBaseContainer::SelectItemFromPoint(float posX, float posY)
@@ -241,7 +241,7 @@ bool CGUIBaseContainer::OnMouseWheel()
 CStdString CGUIBaseContainer::GetDescription() const
 {
   CStdString strLabel;
-  int item = CorrectOffset(m_offset + m_cursor);
+  int item = CorrectOffset(m_offset, m_cursor);
   if (item >= 0 && item < (int)m_items.size())
   {
     CGUIListItem *pItem = m_items[item];
@@ -262,7 +262,7 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
 
 void CGUIBaseContainer::SaveStates(vector<CControlState> &states)
 {
-  states.push_back(CControlState(GetID(), CorrectOffset(m_offset + m_cursor)));
+  states.push_back(CControlState(GetID(), CorrectOffset(m_offset, m_cursor)));
 }
 
 void CGUIBaseContainer::SetPageControl(DWORD id)
@@ -342,9 +342,9 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
   m_offset = offset;
 }
 
-int CGUIBaseContainer::CorrectOffset(int offset) const
+int CGUIBaseContainer::CorrectOffset(int offset, int cursor) const
 {
-  return offset;
+  return offset + cursor;
 }
 
 void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)

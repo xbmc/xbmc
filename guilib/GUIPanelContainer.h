@@ -45,6 +45,7 @@ protected:
   virtual void ValidateOffset();
   virtual void CalculateLayout();
   unsigned int GetRows() const;
+  virtual int  CorrectOffset(int offset, int cursor) const;
 
   int m_itemsPerRow;
 };
