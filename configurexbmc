@@ -39,6 +39,9 @@ chmod +x configure && ./configure \
 --disable-win32waveout \
 --disable-mad \
 --disable-xvid \
+--disable-sdl \
+--disable-xvmc \
+--disable-x11 \
 --enable-iconv \
 --enable-enca \
 --enable-libdts \
