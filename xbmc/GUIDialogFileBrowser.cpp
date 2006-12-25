@@ -306,8 +306,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   }
 
   m_viewControl.SetItems(m_vecItems);
-  if (m_browsingForImages)
-    m_viewControl.SetCurrentView(CAutoSwitch::ByFileCount(m_vecItems) ? DEFAULT_VIEW_ICONS : DEFAULT_VIEW_LIST);
+  m_viewControl.SetCurrentView((m_browsingForImages && CAutoSwitch::ByFileCount(m_vecItems)) ? DEFAULT_VIEW_ICONS : DEFAULT_VIEW_LIST);
 
   CStdString strPath2 = m_Directory.m_strPath;
   CUtil::RemoveSlashAtEnd(strPath2);
