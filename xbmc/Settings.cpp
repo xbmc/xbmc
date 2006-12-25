@@ -194,7 +194,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_controllerDeadzone = 0.2f;
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_thumbSize = 128;
+  g_advancedSettings.m_thumbSize = 192;
 
   g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_sambaclienttimeout = 10;
@@ -1202,7 +1202,7 @@ void CSettings::LoadAdvancedSettings()
 
   GetInteger(pRootElement, "remoterepeat", g_advancedSettings.m_remoteRepeat, 480, 1, INT_MAX);
   GetFloat(pRootElement, "controllerdeadzone", g_advancedSettings.m_controllerDeadzone, 0.2f, 0.0f, 1.0f);
-  GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 128, 64, 512);
+  GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 192, 64, 512);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", g_advancedSettings.m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", g_advancedSettings.m_detectAsUdf);
