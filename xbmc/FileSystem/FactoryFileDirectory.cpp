@@ -117,7 +117,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
         __stat64 stat;
         int digits = token.size()-4;
         CStdString strNumber, strFormat;
-        strFormat.Format("part%%i.%i",digits);
+        strFormat.Format("part%%0%ii",digits);
         strNumber.Format(strFormat.c_str(),1);
         CStdString strPath2=strPath;
         strPath2.Replace(token,strNumber);
