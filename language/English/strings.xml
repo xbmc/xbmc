@@ -1477,6 +1477,8 @@
   <string id="20325">Calibration Reset</string>
   <string id="20326">This will reset the calibration values for %s</string>
   <string id="20327">to it's default values.</string>
+  <string id="20328">a location to copy the save to</string>
+  <string id="20329">a location to move the save to</string>
 
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>
