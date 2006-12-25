@@ -9,7 +9,7 @@
 #endif
 #include "Picture.h"
 
-#define BOOKMARK_THUMB_WIDTH 128
+#define BOOKMARK_THUMB_WIDTH g_advancedSettings.m_thumbSize
 
 #define CONTROL_ADD_BOOKMARK     2
 #define CONTROL_CLEAR_BOOKMARKS  3
