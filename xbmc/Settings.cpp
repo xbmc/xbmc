@@ -704,6 +704,15 @@ void CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, 
   CLog::Log(LOGDEBUG, "  %s: %f", tagName, fValue);
 }
 
+void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState)
+{
+  const TiXmlElement* pNode = pRootElement->FirstChildElement(strTagName);
+  if (!pNode) return;
+  GetInteger(pNode, "viewmode", viewState.m_viewMode, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
+  GetInteger(pNode, "sortmethod", (int&)viewState.m_sortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX);
+  GetInteger(pNode, "sortorder", (int&)viewState.m_sortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+}
+
 void CSettings::SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const
 {
   CStdString strPersistedValue = strValue;
@@ -726,6 +735,18 @@ void CSettings::SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, i
   CStdString strValue;
   strValue.Format("%d", iValue);
   SetString(pRootNode, strTagName, strValue);
+}
+
+void CSettings::SetViewState(TiXmlNode *pRootNode, const CStdString &strTagName, const CViewState &viewState) const
+{
+  TiXmlElement newElement(strTagName);
+  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+  if (pNewNode)
+  {
+    SetInteger(pNewNode, "viewmode", viewState.m_viewMode);
+    SetInteger(pNewNode, "sortmethod", (int)viewState.m_sortMethod);
+    SetInteger(pNewNode, "sortorder", (int)viewState.m_sortOrder);
+  }
 }
 
 void CSettings::SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const
@@ -869,6 +890,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     {
       XMLUtils::GetBoolean(pChild, "isscanning", g_stSettings.m_bMyMusicIsScanning);
     }
+    GetViewState(pElement, "viewstatenavartists", g_stSettings.m_viewStateMusicNavArtists);
+    GetViewState(pElement, "viewstatenavalbums", g_stSettings.m_viewStateMusicNavAlbums);
+    GetViewState(pElement, "viewstatenavsongs", g_stSettings.m_viewStateMusicNavSongs);
+    GetViewState(pElement, "viewstatefiles", g_stSettings.m_viewStateMusicFiles);
+    GetViewState(pElement, "viewstateshoutcast", g_stSettings.m_viewStateMusicShoutcast);
+    GetViewState(pElement, "viewstatelastfm", g_stSettings.m_viewStateMusicLastFM);
     GetInteger(pElement, "startwindow", g_stSettings.m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     XMLUtils::GetBoolean(pElement, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
@@ -1454,6 +1481,12 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     if (!pChild) return false;
     SetBoolean(pChild, "isscanning", g_stSettings.m_bMyMusicIsScanning);
   }
+  SetViewState(pNode, "viewstatenavartists", g_stSettings.m_viewStateMusicNavArtists);
+  SetViewState(pNode, "viewstatenavalbums", g_stSettings.m_viewStateMusicNavAlbums);
+  SetViewState(pNode, "viewstatenavsongs", g_stSettings.m_viewStateMusicNavSongs);
+  SetViewState(pNode, "viewstatefiles", g_stSettings.m_viewStateMusicFiles);
+  SetViewState(pNode, "viewstateshoutcast", g_stSettings.m_viewStateMusicShoutcast);
+  SetViewState(pNode, "viewstatelastfm", g_stSettings.m_viewStateMusicLastFM);
 
   SetInteger(pNode, "startwindow", g_stSettings.m_iMyMusicStartWindow);
   SetBoolean(pNode, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
