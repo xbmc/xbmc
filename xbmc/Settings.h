@@ -57,6 +57,27 @@ class CProfile;
 #define DEFAULT_VIEW_BIG_ICONS (VIEW_TYPE_BIG_ICON << 16)
 #define DEFAULT_VIEW_MAX (((VIEW_TYPE_MAX - 1) << 16) | 60)
 
+class CViewState
+{
+public:
+  CViewState(int viewMode, SORT_METHOD sortMethod, SORT_ORDER sortOrder)
+  {
+    m_viewMode = viewMode;
+    m_sortMethod = sortMethod;
+    m_sortOrder = sortOrder;
+  };
+  CViewState()
+  {
+    m_viewMode = 0;
+    m_sortMethod = SORT_METHOD_LABEL;
+    m_sortOrder = SORT_ORDER_ASC;
+  };
+
+  int m_viewMode;
+  SORT_METHOD m_sortMethod;
+  SORT_ORDER m_sortOrder;
+};
+
 /*!
 \ingroup windows
 \brief Represents a share.
@@ -296,6 +317,13 @@ public:
     bool m_bMyMusicSongInfoInVis;
     bool m_bMyMusicSongThumbInVis;
 
+    CViewState m_viewStateMusicNavArtists;
+    CViewState m_viewStateMusicNavAlbums;
+    CViewState m_viewStateMusicNavSongs;
+    CViewState m_viewStateMusicFiles;
+    CViewState m_viewStateMusicShoutcast;
+    CViewState m_viewStateMusicLastFM;
+
     bool m_bMyMusicPlaylistRepeat;
     bool m_bMyMusicPlaylistShuffle;
     int m_iMyMusicStartWindow;
@@ -396,6 +424,8 @@ protected:
   void GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetShare(const CStdString &category, const TiXmlNode *bookmark, CShare &share);
   void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
+  void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState);
+
   void ConvertHomeVar(CStdString& strText);
   // functions for writing xml files
   void SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const;
@@ -403,6 +433,7 @@ protected:
   void SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const;
   void SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const;
   void SetHex(TiXmlNode* pRootNode, const CStdString& strTagName, DWORD dwHexValue) const;
+  void SetViewState(TiXmlNode* pRootNode, const CStdString& strTagName, const CViewState &viewState) const;
 
   bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);
   bool SaveCalibration(TiXmlNode* pRootNode) const;
