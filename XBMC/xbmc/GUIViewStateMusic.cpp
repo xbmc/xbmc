@@ -93,9 +93,9 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
         SetSortMethod(SORT_METHOD_ARTIST);
       }
       
-      SetViewAsControl(DEFAULT_VIEW_LIST);
+      SetViewAsControl(g_stSettings.m_viewStateMusicNavArtists.m_viewMode);
 
-      SetSortOrder(SORT_ORDER_ASC);
+      SetSortOrder(g_stSettings.m_viewStateMusicNavArtists.m_sortOrder);
     }
     break;
   case NODE_TYPE_ALBUM_COMPILATIONS:
@@ -109,11 +109,11 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
         AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 269, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
       else
         AddSortMethod(SORT_METHOD_ARTIST, 269, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
-      SetSortMethod(SORT_METHOD_ALBUM);
+      SetSortMethod(g_stSettings.m_viewStateMusicNavAlbums.m_sortMethod);
       
-      SetViewAsControl(DEFAULT_VIEW_LIST);
+      SetViewAsControl(g_stSettings.m_viewStateMusicNavAlbums.m_viewMode);
 
-      SetSortOrder(SORT_ORDER_ASC);
+      SetSortOrder(g_stSettings.m_viewStateMusicNavAlbums.m_sortOrder);
     }
     break;
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
@@ -121,7 +121,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
       SetSortMethod(SORT_METHOD_NONE);
       
-      SetViewAsControl(DEFAULT_VIEW_LIST);
+      SetViewAsControl(g_stSettings.m_viewStateMusicNavAlbums.m_viewMode);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -131,7 +131,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
       SetSortMethod(SORT_METHOD_NONE);
       
-      SetViewAsControl(DEFAULT_VIEW_LIST);
+      SetViewAsControl(g_stSettings.m_viewStateMusicNavSongs.m_viewMode);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -141,7 +141,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
       SetSortMethod(SORT_METHOD_NONE);
       
-      SetViewAsControl(DEFAULT_VIEW_LIST);
+      SetViewAsControl(g_stSettings.m_viewStateMusicNavAlbums.m_viewMode);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -151,7 +151,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
       SetSortMethod(SORT_METHOD_NONE);
       
-      SetViewAsControl(DEFAULT_VIEW_LIST);
+      SetViewAsControl(g_stSettings.m_viewStateMusicNavAlbums.m_viewMode);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -183,11 +183,11 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       else
         AddSortMethod(SORT_METHOD_ARTIST, 269, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
       AddSortMethod(SORT_METHOD_DURATION, 267, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
-      SetSortMethod(SORT_METHOD_TRACKNUM);
+      SetSortMethod(g_stSettings.m_viewStateMusicNavSongs.m_sortMethod);
       
-      SetViewAsControl(DEFAULT_VIEW_LIST);
+      SetViewAsControl(g_stSettings.m_viewStateMusicNavSongs.m_viewMode);
 
-      SetSortOrder(SORT_ORDER_ASC);
+      SetSortOrder(g_stSettings.m_viewStateMusicNavSongs.m_sortOrder);
     }
     break;
   case NODE_TYPE_SONG_TOP100:
@@ -195,7 +195,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 266, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
       SetSortMethod(SORT_METHOD_NONE);
       
-      SetViewAsControl(DEFAULT_VIEW_LIST);
+      SetViewAsControl(g_stSettings.m_viewStateMusicNavSongs.m_viewMode);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -207,7 +207,32 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
 void CGUIViewStateMusicDatabase::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
+  CMusicDatabaseDirectory dir; 	 
+	NODE_TYPE NodeType=dir.GetDirectoryChildType(m_items.m_strPath); 	 
+	
+	switch (NodeType) 	 
+	{ 	 
+	  case NODE_TYPE_ARTIST: 	 
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavArtists);
+	    break;
+	  case NODE_TYPE_ALBUM_COMPILATIONS: 	 
+	  case NODE_TYPE_ALBUM: 	 
+	  case NODE_TYPE_ALBUM_RECENTLY_ADDED: 	 
+	  case NODE_TYPE_ALBUM_TOP100: 	 
+	  case NODE_TYPE_ALBUM_RECENTLY_PLAYED: 	 
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavAlbums);
+	    break;
+	  case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS: 	 
+	  case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS: 	 
+	  case NODE_TYPE_ALBUM_COMPILATIONS_SONGS: 	 
+	  case NODE_TYPE_SONG: 	 
+	  case NODE_TYPE_SONG_TOP100: 	 
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavSongs);
+      break;
+    default:
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
+      break;
+	}
 }
 
 
@@ -231,24 +256,24 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
   else
     AddSortMethod(SORT_METHOD_ARTIST, 269, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
   AddSortMethod(SORT_METHOD_DURATION, 267, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
-  SetSortMethod(SORT_METHOD_TRACKNUM);
+  SetSortMethod(g_stSettings.m_viewStateMusicNavSongs.m_sortMethod);
       
-  SetViewAsControl(DEFAULT_VIEW_LIST);
+  SetViewAsControl(g_stSettings.m_viewStateMusicNavSongs.m_viewMode);
 
-  SetSortOrder(SORT_ORDER_ASC);
+  SetSortOrder(g_stSettings.m_viewStateMusicNavSongs.m_sortOrder);
   LoadViewState(items.m_strPath, WINDOW_MUSIC_NAV);
 }
 
 void CGUIViewStateMusicSmartPlaylist::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavSongs);
 }
 
 CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
   CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
   CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
-  // TODO: localize 2.0
+
   AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 20014, LABEL_MASKS(strTrackLeft, strTrackRight));
   AddSortMethod(SORT_METHOD_TRACKNUM, 266, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
@@ -264,17 +289,17 @@ CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& item
   else
     AddSortMethod(SORT_METHOD_ARTIST, 269, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
   AddSortMethod(SORT_METHOD_DURATION, 267, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
-  SetSortMethod(SORT_METHOD_LABEL);
+  SetSortMethod(g_stSettings.m_viewStateMusicFiles.m_sortMethod);
       
-  SetViewAsControl(DEFAULT_VIEW_LIST);
+  SetViewAsControl(g_stSettings.m_viewStateMusicFiles.m_viewMode);
 
-  SetSortOrder(SORT_ORDER_ASC);
-  LoadViewState(items.m_strPath, WINDOW_MUSIC_NAV);
+  SetSortOrder(g_stSettings.m_viewStateMusicFiles.m_sortOrder);
+  LoadViewState(items.m_strPath, WINDOW_MUSIC_FILES);
 }
 
 void CGUIViewStateMusicPlaylist::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, g_stSettings.m_viewStateMusicFiles);
 }
 
 
@@ -356,7 +381,7 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
     AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS(strTrackLeft, "%I", "%L", "%I"));  // Userdefined, Size | FolderName, Size
     AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS(strTrackLeft, "%J", "%L", "%J"));  // Userdefined, Date | FolderName, Date
     AddSortMethod(SORT_METHOD_FILE, 363, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
-    SetSortMethod(SORT_METHOD_LABEL);
+    SetSortMethod(g_stSettings.m_viewStateMusicFiles.m_sortMethod);
 
     if (g_guiSettings.GetBool("musicfiles.useautoswitching"))
     {
@@ -364,17 +389,17 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
     }
     else
     {
-      SetViewAsControl(DEFAULT_VIEW_LIST);
+      SetViewAsControl(g_stSettings.m_viewStateMusicFiles.m_viewMode);
     }
 
-    SetSortOrder(SORT_ORDER_ASC);
+    SetSortOrder(g_stSettings.m_viewStateMusicFiles.m_sortOrder);
   }
   LoadViewState(items.m_strPath, WINDOW_MUSIC_FILES);
 }
 
 void CGUIViewStateWindowMusicSongs::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES);
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, g_stSettings.m_viewStateMusicFiles);
 }
 
 VECSHARES& CGUIViewStateWindowMusicSongs::GetShares()
@@ -401,7 +426,6 @@ CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileIt
 
 void CGUIViewStateWindowMusicPlaylist::SaveViewState()
 {
-  g_settings.Save();
 }
 
 int CGUIViewStateWindowMusicPlaylist::GetPlaylist()
@@ -443,8 +467,8 @@ CGUIViewStateMusicShoutcast::CGUIViewStateMusicShoutcast(const CFileItemList& it
     AddSortMethod(SORT_METHOD_VIDEO_RATING, 507, LABEL_MASKS("%K", "%A listeners", "%K", ""));  // Titel, Listeners | Titel, nothing
     AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%K", "%B kbps", "%K", ""));  // Title, Bitrate | Title, nothing
 
-    SetSortMethod(SORT_METHOD_VIDEO_RATING);
-    SetSortOrder(SORT_ORDER_DESC);
+    SetSortMethod(g_stSettings.m_viewStateMusicShoutcast.m_sortMethod);
+    SetSortOrder(g_stSettings.m_viewStateMusicShoutcast.m_sortOrder);
   }
   else
   { /* genre list */
@@ -464,7 +488,7 @@ bool CGUIViewStateMusicShoutcast::AutoPlayNextItem()
 
 void CGUIViewStateMusicShoutcast::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES);
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, g_stSettings.m_viewStateMusicShoutcast);
 }
 
 CGUIViewStateMusicLastFM::CGUIViewStateMusicLastFM(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
@@ -475,8 +499,8 @@ CGUIViewStateMusicLastFM::CGUIViewStateMusicLastFM(const CFileItemList& items) :
   AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
   AddSortMethod(SORT_METHOD_SIZE, 507, LABEL_MASKS(strTrackLeft, "%I", "%L", "%I"));  // Userdefined, Size | FolderName, Size
 
-  SetSortMethod(SORT_METHOD_LABEL);
-  SetSortOrder(SORT_ORDER_ASC);
+  SetSortMethod(g_stSettings.m_viewStateMusicLastFM.m_sortMethod);
+  SetSortOrder(g_stSettings.m_viewStateMusicLastFM.m_sortOrder);
   
   SetViewAsControl(DEFAULT_VIEW_LIST);
   LoadViewState(items.m_strPath, WINDOW_MUSIC_FILES);
@@ -489,5 +513,5 @@ bool CGUIViewStateMusicLastFM::AutoPlayNextItem()
 
 void CGUIViewStateMusicLastFM::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES);
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, g_stSettings.m_viewStateMusicLastFM);
 }
