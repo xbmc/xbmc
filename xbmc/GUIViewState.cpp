@@ -280,11 +280,21 @@ void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
 
 void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID)
 {
+  CViewState state(m_currentViewAsControl, GetSortMethod(), m_sortOrder);
+  SaveViewToDb(path, windowID, state, false);
+}
+
+void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewState &viewState, bool saveSettings)
+{
   CViewDatabase db;
   if (db.Open())
   {
-    CViewState state(m_currentViewAsControl, GetSortMethod(), m_sortOrder);
-    db.SetViewState(path, windowID, state);
+    viewState.m_viewMode = m_currentViewAsControl;
+    viewState.m_sortMethod = GetSortMethod();
+    viewState.m_sortOrder = m_sortOrder;
+    db.SetViewState(path, windowID, viewState);
     db.Close();
+    if (saveSettings)
+      g_settings.Save();
   }
 }
