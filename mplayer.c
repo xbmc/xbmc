@@ -2090,20 +2090,14 @@ if(!demuxer)
 }
 inited_flags|=INITED_DEMUXER;
 
-#ifdef HAVE_MATROSKA
-if (demuxer->type==DEMUXER_TYPE_MATROSKA) {
+if (stream->type != STREAMTYPE_DVD && stream->type != STREAMTYPE_DVDNAV) {
+  int i;
   // setup global sub numbering
   global_sub_indices[SUB_SOURCE_DEMUX] = global_sub_size; // the global # of the first demux-specific sub.
-  global_sub_size += demux_mkv_num_subs(demuxer);
+  for (i = 0; i < MAX_S_STREAMS; i++)
+    if (demuxer->s_streams[i])
+      global_sub_size++;
 }
-#endif
-#ifdef HAVE_OGGVORBIS
-if (demuxer->type==DEMUXER_TYPE_OGG) {
-  // setup global sub numbering
-  global_sub_indices[SUB_SOURCE_DEMUX] = global_sub_size; // the global # of the first demux-specific sub.
-  global_sub_size += demux_ogg_num_subs(demuxer);
-}
-#endif
 
 current_module="demux_open2";
 
@@ -2260,8 +2254,8 @@ if (vo_spudec==NULL && stream->type==STREAMTYPE_DVD) {
 
 #ifdef HAVE_MATROSKA
 if ((vo_spudec == NULL) && (demuxer->type == DEMUXER_TYPE_MATROSKA) &&
-    (d_dvdsub->sh != NULL) && (((mkv_sh_sub_t *)d_dvdsub->sh)->type == 'v')) {
-  mkv_sh_sub_t *mkv_sh_sub = (mkv_sh_sub_t *)d_dvdsub->sh;
+    (d_dvdsub->sh != NULL) && (((sh_sub_t *)d_dvdsub->sh)->type == 'v')) {
+  sh_sub_t *mkv_sh_sub = (sh_sub_t *)d_dvdsub->sh;
   current_module = "spudec_init_matroska";
   vo_spudec =
     spudec_new_scaled_vobsub(mkv_sh_sub->palette, mkv_sh_sub->colors,
@@ -4159,21 +4153,18 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         } else if (source == SUB_SOURCE_DEMUX) {
           dvdsub_id = global_sub_pos - global_sub_indices[SUB_SOURCE_DEMUX];
           if (d_dvdsub) {
+            if(0) {}
 #ifdef USE_DVDREAD
-            if (vo_spudec && stream->type == STREAMTYPE_DVD) {
+            else if (stream->type == STREAMTYPE_DVD) {
               d_dvdsub->id = dvdsub_id;
-            }
-#endif
-#ifdef HAVE_OGGVORBIS
-            if (demuxer->type == DEMUXER_TYPE_OGG) {
-              d_dvdsub->id = demux_ogg_sub_id(demuxer, dvdsub_id);              
+              spudec_reset(vo_spudec);
             }
 #endif
 #ifdef HAVE_MATROSKA
-            if (demuxer->type == DEMUXER_TYPE_MATROSKA) {
+            else if (demuxer->type == DEMUXER_TYPE_MATROSKA) {
               d_dvdsub->id = demux_mkv_change_subs(demuxer, dvdsub_id);
-              if (d_dvdsub->id >= 0 && ((mkv_sh_sub_t *)d_dvdsub->sh)->type == 'v') {
-                mkv_sh_sub_t *mkv_sh_sub = (mkv_sh_sub_t *)d_dvdsub->sh;
+              if (d_dvdsub->id >= 0 && ((sh_sub_t *)d_dvdsub->sh)->type == 'v') {
+                sh_sub_t *mkv_sh_sub = (sh_sub_t *)d_dvdsub->sh;
                 if (vo_spudec != NULL)
                   spudec_free(vo_spudec);
                 vo_spudec =
@@ -4190,6 +4181,16 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
               }
             }
 #endif
+            else {
+              int i = 0;
+              for (d_dvdsub->id = 0; d_dvdsub->id < MAX_S_STREAMS; d_dvdsub->id++) {
+                if (demuxer->s_streams[d_dvdsub->id]) {
+                  if (i == dvdsub_id) break;
+                  i++;
+                }
+              }
+              d_dvdsub->sh = demuxer->s_streams[d_dvdsub->id];
+            }
           }
           if (!global_sub_quiet_osd_hack) osd_show_vobsub_changed = sh_video->fps;
         } else { // off
@@ -5128,9 +5129,6 @@ int mplayer_getAudioStreamCount()
     int i,c = 0;
     if (!demuxer)
         return 0;
-
-		if(demuxer->type == DEMUXER_TYPE_MATROSKA)
-			return xbmc_mkv_audiocount(demuxer->priv);
 
     for ( i=0;i < MAX_A_STREAMS;i++ )
     {

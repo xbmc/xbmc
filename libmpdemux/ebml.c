@@ -6,13 +6,19 @@
  */
 
 #include "config.h"
-#ifdef HAVE_MATROSKA
 
 #include <stdlib.h>
 
 #include "stream.h"
 #include "ebml.h"
+#include "libavutil/common.h"
+#include "libavutil/bswap.h"
+#include "libavutil/intfloat_readwrite.h"
 
+
+#ifndef SIZE_MAX
+#define SIZE_MAX ((size_t)-1)
+#endif
 
 /*
  * Read: the element content data ID.
@@ -174,49 +180,12 @@ ebml_read_float (stream_t *s, uint64_t *length)
   switch (len)
     {
     case 4:
-      {
-        uint32_t i;
-        float *f;
-#ifndef WORDS_BIGENDIAN
-        i = stream_read_dword (s);
-#else
-        i = stream_read_dword_le (s);
-#endif
-        f = (float *) (void *) &i;
-        value = *f;
+        value = av_int2flt(stream_read_dword(s));
         break;
-      }
 
     case 8:
-      {
-        uint64_t i;
-        double *d;
-#ifndef WORDS_BIGENDIAN
-        i = stream_read_qword (s);
-#else
-        i = stream_read_qword_le (s);
-#endif
-        d = (double *) (void *) &i;
-        value = *d;
+        value = av_int2dbl(stream_read_qword(s));
         break;
-      }
-
-    case 10:
-      {
-        uint8_t data[10];
-#ifdef WORDS_BIGENDIAN
-        int i = 10;
-#endif
-        if (stream_read (s, data, 10) != 10)
-          return EBML_FLOAT_INVALID;
-#ifndef WORDS_BIGENDIAN
-        value = * (long double *) data;
-#else
-        while (i--)
-          ((uint8_t *) &value)[i] = data[9 - i];
-#endif
-        break;
-      }
 
     default:
       return EBML_FLOAT_INVALID;
@@ -240,6 +209,8 @@ ebml_read_ascii (stream_t *s, uint64_t *length)
 
   len = ebml_read_length (s, &l);
   if (len == EBML_UINT_INVALID)
+    return NULL;
+  if (len > SIZE_MAX - 1)
     return NULL;
   if (length)
     *length = len + l;
@@ -383,4 +354,3 @@ ebml_read_header (stream_t *s, int *version)
   return str;
 }
 
-#endif /* HAVE_MATROSKA */

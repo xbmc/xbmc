@@ -59,6 +59,8 @@
 #define MP4OTI_MPEG1Audio                                   0x6B
 /* JPEG visual stream */
 #define MP4OTI_JPEG                                         0x6C
+/* 3GPP2 */
+#define MP4OTI_13kVoice                                     0xE1
 
 /* I define uint24 here for better understanding */
 #ifndef uint24_t
@@ -87,7 +89,7 @@ typedef struct {
   uint32_t avgBitrate;
 
   /* 0x05 DecSpecificDescrTag */
-  uint8_t  decoderConfigLen;
+  uint16_t  decoderConfigLen;
   uint8_t *decoderConfig;
 
   /* 0x06 SLConfigDescrTag */

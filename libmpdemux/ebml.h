@@ -128,6 +128,8 @@
 #define MATROSKA_ID_CHAPTERATOM          0xB6
 #define MATROSKA_ID_CHAPTERTIMESTART     0x91
 #define MATROSKA_ID_CHAPTERTIMEEND       0x92
+#define MATROSKA_ID_CHAPTERDISPLAY       0x80
+#define MATROSKA_ID_CHAPSTRING           0x85
 
 /* IDs in the cluster master */
 #define MATROSKA_ID_CLUSTERTIMECODE      0xE7
@@ -136,8 +138,15 @@
 /* IDs in the blockgroup master */
 #define MATROSKA_ID_BLOCKDURATION        0x9B
 #define MATROSKA_ID_BLOCK                0xA1
+#define MATROSKA_ID_SIMPLEBLOCK          0xA3
 #define MATROSKA_ID_REFERENCEBLOCK       0xFB
 
+/* IDs in the attachments master */
+#define MATROSKA_ID_ATTACHEDFILE	 0x61A7
+#define MATROSKA_ID_FILENAME		 0x466E
+#define MATROSKA_ID_FILEMIMETYPE	 0x4660
+#define MATROSKA_ID_FILEDATA		 0x465C
+#define MATROSKA_ID_FILEUID		 0x46AE
 
 /* matroska track types */
 #define MATROSKA_TRACK_VIDEO    0x01 /* rectangle-shaped pictures aka video */

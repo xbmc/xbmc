@@ -118,6 +118,14 @@ sh_audio_t* new_sh_audio_aid(demuxer_t *demuxer,int id,int aid){
     return demuxer->a_streams[id];
 }
 
+void free_sh_audio2(demuxer_t *demuxer, int id) {
+    sh_audio_t *sh = demuxer->a_streams[id];
+    demuxer->a_streams[id] = NULL;
+    mp_msg(MSGT_DEMUXER,MSGL_DBG2,"DEMUXER: freeing sh_audio at %p\n",sh);
+    if(sh->wf) free(sh->wf);
+    free(sh);
+}
+
 void free_sh_audio(sh_audio_t* sh){
     mp_msg(MSGT_DEMUXER,MSGL_DBG2,"DEMUXER: freeing sh_audio at %p\n",sh);
     if(sh->wf) free(sh->wf);
@@ -1698,5 +1706,32 @@ int demuxer_get_percent_pos(demuxer_t *demuxer){
     if (ans < 0) ans = 0;
     if (ans > 100) ans = 100;
     return ans;
+}
+
+int demuxer_switch_audio(demuxer_t *demuxer, int index){     
+    int res = demux_control(demuxer, DEMUXER_CTRL_SWITCH_AUDIO, &index);
+    if (res == DEMUXER_CTRL_NOTIMPL)
+      index = demuxer->audio->id;
+    return index;
+}
+
+int demuxer_switch_video(demuxer_t *demuxer, int index){
+    int res = demux_control(demuxer, DEMUXER_CTRL_SWITCH_VIDEO, &index);
+    if (res == DEMUXER_CTRL_NOTIMPL)
+      index = demuxer->video->id;
+    return index;
+}
+
+int demuxer_add_chapter(demuxer_t* demuxer, const char* name, uint64_t start, uint64_t end){
+    if (demuxer->chapters == NULL)
+        demuxer->chapters = malloc (32*sizeof(*demuxer->chapters));
+    else if (!(demuxer->num_chapters % 32))
+        demuxer->chapters = realloc (demuxer->chapters, (demuxer->num_chapters + 32) * sizeof(*demuxer->chapters));
+
+    demuxer->chapters[demuxer->num_chapters].start = start;
+    demuxer->chapters[demuxer->num_chapters].end = end;
+    demuxer->chapters[demuxer->num_chapters].name = strdup(name);
+
+    return demuxer->num_chapters ++;
 }
 

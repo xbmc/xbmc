@@ -190,8 +190,8 @@ typedef struct demuxer_st {
   // stream headers:
   void* a_streams[MAX_A_STREAMS]; // audio streams (sh_audio_t)
   void* v_streams[MAX_V_STREAMS]; // video sterams (sh_video_t)
-  char s_streams[32];   // dvd subtitles (flag)
-  
+  void *s_streams[MAX_S_STREAMS];   // dvd subtitles (flag)
+
   demux_chapter_t* chapters;
   int num_chapters;
 
@@ -371,3 +371,7 @@ extern int demuxer_get_percent_pos(demuxer_t *demuxer);
 extern int demuxer_switch_audio(demuxer_t *demuxer, int index);
 
 extern int demuxer_type_by_filename(char* filename);
+
+int demuxer_add_chapter(demuxer_t* demuxer, const char* name, uint64_t start, uint64_t end);
+int demuxer_seek_chapter(demuxer_t *demuxer, int chapter, int mode, float *seek_pts, int *num_chapters, char **chapter_name);
+

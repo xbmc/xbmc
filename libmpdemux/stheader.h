@@ -119,6 +119,7 @@ sh_video_t* new_sh_video_vid(demuxer_t *demuxer,int id,int vid);
 #define new_sh_sub(d, i) new_sh_sub_sid(d, i, i)
 sh_sub_t *new_sh_sub_sid(demuxer_t *demuxer, int id, int sid);
 void free_sh_audio(sh_audio_t *sh);
+void free_sh_audio2(demuxer_t *demuxer, int id);
 void free_sh_video(sh_video_t *sh);
 
 // video.c:
