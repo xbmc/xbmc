@@ -32,9 +32,15 @@ void CGUIWrappingListContainer::Render()
   }
   m_scrollLastTime = m_renderTime;
 
-  int offset = (int)(m_scrollOffset / m_layout.Size(m_orientation));
-  // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
-  FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage));
+  int offset = (int)floorf(m_scrollOffset / m_layout.Size(m_orientation));
+  // Free memory not used on scre  if (m_scrollSpeed)
+  if ((int)m_items.size() > m_itemsPerPage)
+  {
+    if (m_scrollSpeed)
+      FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
+    else
+      FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage));
+  }
 
   g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
   float posX = m_posX;
