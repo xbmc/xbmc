@@ -2040,12 +2040,14 @@ void CApplication::RenderNoPresent()
           m_gWindowManager.UpdateModelessVisibility();
           g_renderManager.RenderUpdate(true);
           m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+          g_infoManager.ResetCache();
           return ;
         }
       }
 #endif
       Sleep(50);
       ResetScreenSaver();
+      g_infoManager.ResetCache();
       return ;
     }
   }
