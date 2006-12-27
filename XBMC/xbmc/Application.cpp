@@ -2172,6 +2172,11 @@ void CApplication::Render()
   // Present the backbuffer contents to the display
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
   g_graphicsContext.Unlock();
+
+  // reset our info cache - we do this at the end of Render so that it is
+  // fresh for the next process(), or after a windowclose animation (where process()
+  // isn't called)
+  g_infoManager.ResetCache();
 }
 #endif
 
@@ -4346,9 +4351,6 @@ void CApplication::Process()
 {
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
   m_Autorun.HandleAutorun();
-
-  // reset our info cache
-  g_infoManager.ResetCache();
 
   // check if we need to load a new skin
   if (m_dwSkinTime && timeGetTime() >= m_dwSkinTime)
