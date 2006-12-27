@@ -256,7 +256,10 @@ CStdString CGUIBaseContainer::GetDescription() const
 void CGUIBaseContainer::SetFocus(bool bOnOff)
 {
   if (bOnOff != HasFocus())
+  {
     Update();
+    m_lastItem = NULL;
+  }
   CGUIControl::SetFocus(bOnOff);
 }
 
