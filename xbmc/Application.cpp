@@ -2162,6 +2162,11 @@ void CApplication::RenderNoPresent()
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif
   g_graphicsContext.Unlock();
+
+  // reset our info cache - we do this at the end of Render so that it is
+  // fresh for the next process(), or after a windowclose animation (where process()
+  // isn't called)
+  g_infoManager.ResetCache();
 }
 
 #ifndef HAS_XBOX_D3D
@@ -2172,11 +2177,6 @@ void CApplication::Render()
   // Present the backbuffer contents to the display
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
   g_graphicsContext.Unlock();
-
-  // reset our info cache - we do this at the end of Render so that it is
-  // fresh for the next process(), or after a windowclose animation (where process()
-  // isn't called)
-  g_infoManager.ResetCache();
 }
 #endif
 
