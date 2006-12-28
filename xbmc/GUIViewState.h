@@ -34,6 +34,7 @@ public:
   SORT_METHOD GetSortMethod() const;
   int GetSortMethodLabel() const;
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
+  void GetSortMethods(vector< pair<int,int> > &sortMethods) const;
 
   SORT_ORDER SetNextSortOrder();
   SORT_ORDER GetSortOrder() const { return m_sortOrder; };

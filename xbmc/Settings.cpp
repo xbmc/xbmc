@@ -890,12 +890,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     {
       XMLUtils::GetBoolean(pChild, "isscanning", g_stSettings.m_bMyMusicIsScanning);
     }
-    GetViewState(pElement, "viewstatenavartists", g_stSettings.m_viewStateMusicNavArtists);
-    GetViewState(pElement, "viewstatenavalbums", g_stSettings.m_viewStateMusicNavAlbums);
-    GetViewState(pElement, "viewstatenavsongs", g_stSettings.m_viewStateMusicNavSongs);
-    GetViewState(pElement, "viewstatefiles", g_stSettings.m_viewStateMusicFiles);
-    GetViewState(pElement, "viewstateshoutcast", g_stSettings.m_viewStateMusicShoutcast);
-    GetViewState(pElement, "viewstatelastfm", g_stSettings.m_viewStateMusicLastFM);
     GetInteger(pElement, "startwindow", g_stSettings.m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     XMLUtils::GetBoolean(pElement, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
@@ -925,6 +919,20 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       XMLUtils::GetBoolean(pChild, "repeat", g_stSettings.m_bMyVideoPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
     }
+  }
+
+  pElement = pRootElement->FirstChildElement("viewstates");
+  if (pElement)
+  {
+    GetViewState(pElement, "musicnavartists", g_stSettings.m_viewStateMusicNavArtists);
+    GetViewState(pElement, "musicnavalbums", g_stSettings.m_viewStateMusicNavAlbums);
+    GetViewState(pElement, "musicnavsongs", g_stSettings.m_viewStateMusicNavSongs);
+    GetViewState(pElement, "musicshoutcast", g_stSettings.m_viewStateMusicShoutcast);
+    GetViewState(pElement, "musiclastfm", g_stSettings.m_viewStateMusicLastFM);
+    GetViewState(pElement, "videonavactors", g_stSettings.m_viewStateVideoNavActors);
+    GetViewState(pElement, "videonavyears", g_stSettings.m_viewStateVideoNavYears);
+    GetViewState(pElement, "videonavgenres", g_stSettings.m_viewStateVideoNavGenres);
+    GetViewState(pElement, "videonavtitles", g_stSettings.m_viewStateVideoNavTitles);
   }
 
   // general settings
@@ -1481,12 +1489,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     if (!pChild) return false;
     SetBoolean(pChild, "isscanning", g_stSettings.m_bMyMusicIsScanning);
   }
-  SetViewState(pNode, "viewstatenavartists", g_stSettings.m_viewStateMusicNavArtists);
-  SetViewState(pNode, "viewstatenavalbums", g_stSettings.m_viewStateMusicNavAlbums);
-  SetViewState(pNode, "viewstatenavsongs", g_stSettings.m_viewStateMusicNavSongs);
-  SetViewState(pNode, "viewstatefiles", g_stSettings.m_viewStateMusicFiles);
-  SetViewState(pNode, "viewstateshoutcast", g_stSettings.m_viewStateMusicShoutcast);
-  SetViewState(pNode, "viewstatelastfm", g_stSettings.m_viewStateMusicLastFM);
 
   SetInteger(pNode, "startwindow", g_stSettings.m_iMyMusicStartWindow);
   SetBoolean(pNode, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
@@ -1512,6 +1514,22 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     if (!pChild) return false;
     SetBoolean(pChild, "repeat", g_stSettings.m_bMyVideoPlaylistRepeat);
     SetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
+  }
+
+  // view states
+  TiXmlElement viewStateNode("viewstates");
+  pNode = pRoot->InsertEndChild(viewStateNode);
+  if (pNode)
+  {
+    SetViewState(pNode, "musicnavartists", g_stSettings.m_viewStateMusicNavArtists);
+    SetViewState(pNode, "musicnavalbums", g_stSettings.m_viewStateMusicNavAlbums);
+    SetViewState(pNode, "musicnavsongs", g_stSettings.m_viewStateMusicNavSongs);
+    SetViewState(pNode, "musicshoutcast", g_stSettings.m_viewStateMusicShoutcast);
+    SetViewState(pNode, "musiclastfm", g_stSettings.m_viewStateMusicLastFM);
+    SetViewState(pNode, "videonavactors", g_stSettings.m_viewStateVideoNavActors);
+    SetViewState(pNode, "videonavyears", g_stSettings.m_viewStateVideoNavYears);
+    SetViewState(pNode, "videonavgenres", g_stSettings.m_viewStateVideoNavGenres);
+    SetViewState(pNode, "videonavtitles", g_stSettings.m_viewStateVideoNavTitles);
   }
 
   // general settings

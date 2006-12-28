@@ -454,6 +454,28 @@
   <string id="539">Wide</string>
   <string id="540">Big Wide</string>
 
+  <string id="550">Sort by: %s</string>
+  <string id="551">Name</string>
+  <string id="552">Date</string>
+  <string id="553">Size</string>
+  <string id="554">Track</string>
+  <string id="555">Time</string>
+  <string id="556">Title</string>
+  <string id="557">Artist</string>
+  <string id="558">Album</string>
+  <string id="559">Playlist</string>
+  <string id="560">ID</string>
+  <string id="561">File</string>
+  <string id="562">Year</string>
+  <string id="563">Rating</string>
+  <string id="564">Type</string>
+  <string id="565">Usage</string>
+
+  <string id="580">Sort Direction</string>
+  <string id="581">Sort Method</string>
+  <string id="582">View Mode</string>
+  <string id="583">Remember views for different folders</string>
+
   <string id="588">Cancel Party Mode</string>
   <string id="589">Party Mode</string>
   <string id="590">Random</string>

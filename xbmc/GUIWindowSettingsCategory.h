@@ -35,6 +35,9 @@ protected:
   void FillInRegions(CSetting *pSetting);
   void FillInFTPServerUser(CSetting *pSetting);
   void FillInStartupWindow(CSetting *pSetting);
+  void FillInViewModes(CSetting *pSetting, int windowID);
+  void FillInSortMethods(CSetting *pSetting, int windowID);
+  void ClearFolderViews(CSetting *pSetting, int windowID);
   bool SetFTPServerUserPass();
 
   void FillInSkinThemes(CSetting *pSetting);

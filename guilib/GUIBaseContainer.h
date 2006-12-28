@@ -17,6 +17,7 @@ enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_BIG_WIDE,
                  VIEW_TYPE_WRAP,
                  VIEW_TYPE_BIG_WRAP,
+                 VIEW_TYPE_AUTO,
                  VIEW_TYPE_MAX };
 /*!
  \ingroup controls

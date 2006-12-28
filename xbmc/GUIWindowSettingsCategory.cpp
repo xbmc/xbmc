@@ -8,6 +8,7 @@
 #include "Utils/Weather.h"
 #include "MusicDatabase.h"
 #include "ProgramDatabase.h"
+#include "ViewDatabase.h"
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
@@ -620,6 +621,49 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInRegions(pSetting);
     }
+    else if (strSetting.Equals("musicfiles.viewmode"))
+    {
+      FillInViewModes(pSetting, WINDOW_MUSIC_FILES);
+    }
+    else if (strSetting.Equals("myvideos.viewmode"))
+    {
+      FillInViewModes(pSetting, WINDOW_VIDEO_FILES);
+    }
+    else if (strSetting.Equals("programfiles.viewmode"))
+    {
+      FillInViewModes(pSetting, WINDOW_PROGRAMS);
+    }
+    else if (strSetting.Equals("pictures.viewmode"))
+    {
+      FillInViewModes(pSetting, WINDOW_PICTURES);
+    }
+    else if (strSetting.Equals("musicfiles.sortmethod"))
+    {
+      FillInSortMethods(pSetting, WINDOW_MUSIC_FILES);
+    }
+    else if (strSetting.Equals("myvideos.sortmethod"))
+    {
+      FillInSortMethods(pSetting, WINDOW_VIDEO_FILES);
+    }
+    else if (strSetting.Equals("programfiles.sortmethod"))
+    {
+      FillInSortMethods(pSetting, WINDOW_PROGRAMS);
+    }
+    else if (strSetting.Equals("pictures.sortmethod"))
+    {
+      FillInSortMethods(pSetting, WINDOW_PICTURES);
+    }
+    else if (strSetting.Equals("musicfiles.sortorder") ||
+             strSetting.Equals("myvideos.sortorder") ||
+             strSetting.Equals("pictures.sortorder") ||
+             strSetting.Equals("programfiles.sortorder"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel("Ascending", SORT_ORDER_ASC);
+      pControl->AddLabel("Descending", SORT_ORDER_DESC);
+      pControl->SetValue(pSettingInt->GetData());
+    }
   }
   // update our settings (turns controls on/off as appropriate)
   UpdateSettings();
@@ -636,16 +680,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
-    }
-    if (strSetting.Equals("pictures.autoswitchuselargethumbs"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pictures.useautoswitching"));
-    }
-    else if (strSetting.Equals("programfiles.autoswitchuselargethumbs"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("programfiles.useautoswitching"));
     }
     else if (strSetting.Equals("myprograms.ntscmode"))
     { // set visibility based on our other setting...
@@ -671,16 +705,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
-    }
-    else if (strSetting.Equals("musicfiles.autoswitchuselargethumbs"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musicfiles.useautoswitching"));
-    }
-    else if (strSetting.Equals("myvideos.autoswitchuselargethumbs"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("myvideos.useautoswitching"));
     }
     else if (strSetting.Equals("mymusic.clearplaylistsonend"))
     { // disable repeat and repeat one if clear playlists is enabled
@@ -1556,6 +1580,22 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       // We asked for the master password and saved the new one!
       // Nothing todo here
     }
+  }
+  else if (strSetting.Equals("musicfiles.savefolderviews"))
+  {
+    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_MUSIC_FILES);
+  }
+  else if (strSetting.Equals("myvideos.savefolderviews"))
+  {
+    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_VIDEO_FILES);
+  }
+  else if (strSetting.Equals("programfiles.savefolderviews"))
+  {
+    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PROGRAMS);
+  }
+  else if (strSetting.Equals("pictures.savefolderviews"))
+  {
+    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PICTURES);
   }
   UpdateSettings();
 }
@@ -2619,4 +2659,74 @@ void CGUIWindowSettingsCategory::RestoreControlStates()
 { // we just restore the focused control - nothing else
   int focusControl = m_lastControlID ? m_lastControlID : m_dwDefaultFocusControlID;
   SET_CONTROL_FOCUS(focusControl, 0);
+}
+
+void CGUIWindowSettingsCategory::FillInViewModes(CSetting *pSetting, int windowID)
+{
+  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->AddLabel("Auto", DEFAULT_VIEW_AUTO);
+  bool found(false);
+  int foundType = 0;
+  CGUIWindow *window = m_gWindowManager.GetWindow(windowID);
+  if (window)
+  {
+    window->Initialize();
+    for (int i = 50; i < 60; i++)
+    {
+      CGUIBaseContainer *control = (CGUIBaseContainer *)window->GetControl(i);
+      if (control)
+      {
+        int type = (control->GetType() << 16) | i;
+        pControl->AddLabel(control->GetLabel(), type);
+        if (type == pSettingInt->GetData())
+          found = true;
+        else if ((type >> 16) == (pSettingInt->GetData() >> 16))
+          foundType = type;
+      }
+    }
+    window->ClearAll();
+  }
+  if (!found)
+    pSettingInt->SetData(foundType ? foundType : (DEFAULT_VIEW_AUTO));
+  pControl->SetValue(pSettingInt->GetData());
+}
+
+void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windowID)
+{
+  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  CFileItemList items("C:");
+  CGUIViewState *state = CGUIViewState::GetViewState(windowID, items);
+  if (state)
+  {
+    bool found(false);
+    vector< pair<int,int> > sortMethods;
+    state->GetSortMethods(sortMethods);
+    for (unsigned int i = 0; i < sortMethods.size(); i++)
+    {
+      pControl->AddLabel(g_localizeStrings.Get(sortMethods[i].second), sortMethods[i].first);
+      if (sortMethods[i].first == pSettingInt->GetData())
+        found = true;
+    }
+    if (!found && sortMethods.size())
+      pSettingInt->SetData(sortMethods[0].first);
+  }
+  pControl->SetValue(pSettingInt->GetData());
+  delete state;
+}
+
+// check and clear our folder views if applicable.
+void CGUIWindowSettingsCategory::ClearFolderViews(CSetting *pSetting, int windowID)
+{
+  CSettingBool *pSettingBool = (CSettingBool*)pSetting;
+  if (!pSettingBool->GetData())
+  { // clear out our db
+    CViewDatabase db;
+    if (db.Open())
+    {
+      db.ClearViewStates(WINDOW_MUSIC_FILES);
+      db.Close();
+    }
+  }
 }

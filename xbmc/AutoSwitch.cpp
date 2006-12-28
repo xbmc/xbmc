@@ -31,7 +31,7 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
   case WINDOW_MUSIC_FILES:
     {
       iSortMethod = METHOD_BYFOLDERTHUMBS;
-      bBigThumbs = g_guiSettings.GetBool("musicfiles.autoswitchuselargethumbs");
+      bBigThumbs = false;
       iPercent = 50;
     }
     break;
@@ -39,7 +39,7 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
   case WINDOW_VIDEO_FILES:
     {
       iSortMethod = METHOD_BYTHUMBPERCENT;
-      bBigThumbs = g_guiSettings.GetBool("myvideos.autoswitchuselargethumbs");
+      bBigThumbs = false;
       iPercent = 50;  // 50% of thumbs -> use thumbs.
     }
     break;
@@ -47,14 +47,14 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
   case WINDOW_PICTURES:
     {
       iSortMethod = METHOD_BYFILECOUNT;
-      bBigThumbs = g_guiSettings.GetBool("pictures.autoswitchuselargethumbs");
+      bBigThumbs = false;
     }
     break;
 
   case WINDOW_PROGRAMS:
     {
       iSortMethod = METHOD_BYTHUMBPERCENT;
-      bBigThumbs = g_guiSettings.GetBool("programfiles.autoswitchuselargethumbs");
+      bBigThumbs = false;
       iPercent = 50;  // 50% of thumbs -> use thumbs.
     }
     break;

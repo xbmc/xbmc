@@ -112,3 +112,19 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
   return true;
 }
 
+bool CViewDatabase::ClearViewStates(int windowID)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString sql = FormatSQL("delete from view where window = %i", windowID);
+    m_pDS->exec(sql.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" failed on window '%i'", windowID);
+  }
+  return true;
+}

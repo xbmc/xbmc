@@ -7,6 +7,7 @@
 #include "util.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "ViewDatabase.h"
+#include "Autoswitch.h"
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSHARES CGUIViewState::m_shares;
@@ -113,7 +114,10 @@ int CGUIViewState::GetViewAsControl() const
 
 void CGUIViewState::SetViewAsControl(int viewAsControl)
 {
-  m_currentViewAsControl = viewAsControl;
+  if (viewAsControl == DEFAULT_VIEW_AUTO)
+    m_currentViewAsControl = CAutoSwitch::GetView(m_items);
+  else
+    m_currentViewAsControl = viewAsControl;
 }
 
 void CGUIViewState::SaveViewAsControl(int viewAsControl)
@@ -136,6 +140,12 @@ int CGUIViewState::GetSortMethodLabel() const
     return m_sortMethods[m_currentSortMethod].m_buttonLabel;
 
   return 103; // Sort By: Name
+}
+
+void CGUIViewState::GetSortMethods(vector< pair<int,int> > &sortMethods) const
+{
+  for (unsigned int i = 0; i < m_sortMethods.size(); i++)
+    sortMethods.push_back(make_pair(m_sortMethods[i].m_sortMethod, m_sortMethods[i].m_buttonLabel));
 }
 
 void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
@@ -254,7 +264,7 @@ VECSHARES& CGUIViewState::GetShares()
 
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)
 {
-  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, size | Foldername, empty
+  AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, size | Foldername, empty
   SetSortMethod(SORT_METHOD_LABEL);
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
