@@ -1,13 +1,12 @@
 #include "stdafx.h"
 #include "GUIViewStatePicturesProgramsScripts.h"
-#include "AutoSwitch.h"
 
 CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items)
 {
   if (items.IsVirtualDirectoryRoot())
   {
-    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS());
-    AddSortMethod(SORT_METHOD_DRIVE_TYPE, 498, LABEL_MASKS());
+    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS());
+    AddSortMethod(SORT_METHOD_DRIVE_TYPE, 564, LABEL_MASKS());
     SetSortMethod(SORT_METHOD_LABEL);
 
     SetViewAsControl(DEFAULT_VIEW_LIST);
@@ -16,21 +15,13 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
   }
   else
   {
-    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
-    AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
-    AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
-    SetSortMethod(SORT_METHOD_LABEL);
+    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+    AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
+    AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
 
-    if (g_guiSettings.GetBool("pictures.useautoswitching"))
-    {
-      SetViewAsControl(CAutoSwitch::GetView(items));
-    }
-    else
-    {
-      SetViewAsControl(DEFAULT_VIEW_LIST);
-    }
-
-    SetSortOrder(SORT_ORDER_ASC);
+    SetSortMethod((SORT_METHOD)g_guiSettings.GetInt("pictures.sortmethod"));
+    SetViewAsControl(g_guiSettings.GetInt("pictures.viewmode"));
+    SetSortOrder((SORT_ORDER)g_guiSettings.GetInt("pictures.sortorder"));
   }
   LoadViewState(items.m_strPath, WINDOW_PICTURES);
 }
@@ -63,24 +54,17 @@ VECSHARES& CGUIViewStateWindowPictures::GetShares()
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
+    AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
   else
-    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
-  AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%K", "%J", "%L", "%J"));  // Titel, Date | Foldername, Date
-  AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 507, LABEL_MASKS("%K", "%C", "%L", ""));  // Titel, Count | Foldername, empty
-  AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%K", "%I", "%K", "%I"));  // Filename, Size | Foldername, Size
-  SetSortMethod(SORT_METHOD_LABEL);
+    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
+  AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%K", "%J", "%L", "%J"));  // Titel, Date | Foldername, Date
+  AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 565, LABEL_MASKS("%K", "%C", "%L", ""));  // Titel, Count | Foldername, empty
+  AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%K", "%I", "%K", "%I"));  // Filename, Size | Foldername, Size
 
-  if (g_guiSettings.GetBool("programfiles.useautoswitching"))
-  {
-    SetViewAsControl(CAutoSwitch::GetView(items));
-  }
-  else
-  {
-    SetViewAsControl(DEFAULT_VIEW_ICONS);
-  }
+  SetSortMethod((SORT_METHOD)g_guiSettings.GetInt("programfiles.sortmethod"));
+  SetViewAsControl(g_guiSettings.GetInt("programfiles.viewmode"));
+  SetSortOrder((SORT_ORDER)g_guiSettings.GetInt("programfiles.sortorder"));
 
-  SetSortOrder(SORT_ORDER_ASC);
   LoadViewState(items.m_strPath, WINDOW_PROGRAMS);
 }
 
@@ -106,9 +90,9 @@ VECSHARES& CGUIViewStateWindowPrograms::GetShares()
 
 CGUIViewStateWindowScripts::CGUIViewStateWindowScripts(const CFileItemList& items) : CGUIViewState(items)
 {
-  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
-  AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
-  AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
+  AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+  AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
+  AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
   SetSortMethod(SORT_METHOD_LABEL);
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
@@ -161,9 +145,9 @@ CGUIViewStateWindowGameSaves::CGUIViewStateWindowGameSaves(const CFileItemList& 
   ///////////////////////////////
   /// NOTE:  GAME ID is saved to %T  (aka TITLE) and t         // Date is %J     %L is Label1 
   /////////////
-  AddSortMethod(SORT_METHOD_LABEL, 103,  LABEL_MASKS("%L", "%T", "%L", ""));  // Filename, Size | Foldername, empty
-  AddSortMethod(SORT_METHOD_TITLE, 20316, LABEL_MASKS("%L", "%T", "%L", "%T"));  // Filename, TITLE | Foldername, TITLE
-  AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
+  AddSortMethod(SORT_METHOD_LABEL, 551,  LABEL_MASKS("%L", "%T", "%L", ""));  // Filename, Size | Foldername, empty
+  AddSortMethod(SORT_METHOD_TITLE, 560, LABEL_MASKS("%L", "%T", "%L", "%T"));  // Filename, TITLE | Foldername, TITLE
+  AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
   SetSortMethod(SORT_METHOD_LABEL);
 
   SetViewAsControl(DEFAULT_VIEW_LIST);

@@ -11,6 +11,7 @@ public:
 
   bool GetViewState(const CStdString &path, int windowID, CViewState &state);
   bool SetViewState(const CStdString &path, int windowID, const CViewState &state);
+  bool ClearViewStates(int windowID);
 
 protected:
   virtual bool CreateTables();
