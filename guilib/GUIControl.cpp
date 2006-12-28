@@ -375,7 +375,10 @@ void CGUIControl::SetVisible(bool bVisible)
 
 bool CGUIControl::HitTest(float posX, float posY) const
 {
-  if (posX >= (int)m_posX && posX <= (int)(m_posX + m_width) && posY >= (int)m_posY && posY <= (int)(m_posY + m_height))
+  if( posX >= g_graphicsContext.ScaleFinalXCoord(m_posX, m_posY)
+   && posX <= g_graphicsContext.ScaleFinalXCoord(m_posX + m_width, m_posY)
+   && posY >= g_graphicsContext.ScaleFinalYCoord(m_posX, m_posY)
+   && posY <= g_graphicsContext.ScaleFinalYCoord(m_posX, m_posY + m_height) )
     return true;
   return false;
 }
