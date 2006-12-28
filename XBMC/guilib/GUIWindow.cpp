@@ -441,27 +441,9 @@ bool CGUIWindow::OnAction(const CAction &action)
 // OnMouseAction - called by OnAction()
 void CGUIWindow::OnMouseAction()
 {
-  // save the mouse coordinates as we will need to change them for
-  // relative coordinates or if the window is scaled
-  float posX = g_Mouse.posX;
-  float posY = g_Mouse.posY;
-  if (m_coordsRes != g_graphicsContext.GetVideoResolution())
-  {
-    // calculate necessary scalings
-    float fFromWidth = (float)g_settings.m_ResInfo[m_coordsRes].iWidth;
-    float fFromHeight = (float)g_settings.m_ResInfo[m_coordsRes].iHeight;
-    float fToWidth = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth;
-    float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
-    float fScaleX = fToWidth / fFromWidth;
-    float fScaleY = fToHeight / fFromHeight;
-    g_Mouse.posX /= fScaleX;
-    g_Mouse.posY /= fScaleY;
-  }
-  if (m_bRelativeCoords)
-  {
-    g_Mouse.posX -= m_posX;
-    g_Mouse.posY -= m_posY;
-  }
+  // hittest will scale cordinates
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
+
   bool bHandled = false;
   // check if we have exclusive access
   if (g_Mouse.GetExclusiveWindowID() == GetID())
@@ -470,7 +452,7 @@ void CGUIWindow::OnMouseAction()
     if (pControl)
     { // this control has exclusive access to the mouse
       HandleMouse(pControl);
-      goto finished;
+      return;
     }
   }
 
@@ -498,11 +480,6 @@ void CGUIWindow::OnMouseAction()
   { // haven't handled this action - call the window message handlers
     OnMouse();
   }
-
-finished:
-  // correct the mouse coordinates back to what they were
-  g_Mouse.posX = posX;
-  g_Mouse.posY = posY;
 }
 
 // Handles any mouse actions that are not handled by a control
