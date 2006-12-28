@@ -248,7 +248,9 @@ void CGUIMediaWindow::UpdateButtons()
     {
       CONTROL_ENABLE(CONTROL_BTNSORTBY);
     }
-    SET_CONTROL_LABEL(CONTROL_BTNSORTBY, m_guiState->GetSortMethodLabel());
+    CStdString sortLabel;
+    sortLabel.Format(g_localizeStrings.Get(550).c_str(), g_localizeStrings.Get(m_guiState->GetSortMethodLabel()).c_str());
+    SET_CONTROL_LABEL(CONTROL_BTNSORTBY, sortLabel);
   }
 
   int iItems = m_vecItems.Size();
