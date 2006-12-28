@@ -2232,9 +2232,18 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
     ret=XbmcWebsHttpAPIConfigSaveConfiguration(response, argc, argv);
   else if (paras[0]=="getoption")
   {
-    ret=XbmcWebsHttpAPIConfigGetOption(response, argc, argv);
-    if (ret!=-1)
-      ret=1;
+    //getoption has been deprecated so the following is just to prevent (my) legacy client code breaking (to be removed later)
+    if (paras[1]=="pictureextensions")
+      response="<li>"+g_stSettings.m_pictureExtensions;
+	else if (paras[1]=="videoextensions")
+      response="<li>"+g_stSettings.m_videoExtensions;
+	else if (paras[1]=="musicextensions")
+      response="<li>"+g_stSettings.m_musicExtensions;
+	else
+	  response="<li>Error:Function is deprecated";
+    //ret=XbmcWebsHttpAPIConfigGetOption(response, argc, argv);
+    //if (ret!=-1)
+    ret=1;
   }
   else if (paras[0]=="setoption")
     ret=XbmcWebsHttpAPIConfigSetOption(response, argc, argv);
@@ -2616,6 +2625,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk();
 	  else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
 	  else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
+
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
       else if (command == "copyfile")                 retVal = xbmcCopyFile(numParas, paras);
