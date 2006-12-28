@@ -163,12 +163,14 @@ CGUISettings::CGUISettings(void)
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
-  AddBool(1, "pictures.useautoswitching", 14011, false);
-  AddBool(2, "pictures.autoswitchuselargethumbs", 14012, false);
-  AddSeparator(3,"pictures.sep1");
-  AddBool(4, "pictures.useexifrotation", 20184, true);
-  AddSeparator(5,"pictures.sep2");
-  AddString(6,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20004);
+  AddInt(1, "pictures.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
+  AddInt(2, "pictures.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
+  AddInt(3, "pictures.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
+  AddBool(4, "pictures.savefolderviews", 583, true);
+  AddSeparator(5,"pictures.sep1");
+  AddBool(6, "pictures.useexifrotation", 20184, true);
+  AddSeparator(7,"pictures.sep2");
+  AddString(8,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20004);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -189,8 +191,10 @@ CGUISettings::CGUISettings(void)
   AddString(8, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
 
   AddCategory(1,"programfiles",744);
-  AddBool(1, "programfiles.useautoswitching", 14011, false);
-  AddBool(2, "programfiles.autoswitchuselargethumbs", 14012, false);
+  AddInt(1, "programfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
+  AddInt(2, "programfiles.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
+  AddInt(3, "programfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
+  AddBool(4, "programfiles.savefolderviews", 583, true);
 
   AddCategory(1, "xlinkkai", 714);
   AddBool(1, "xlinkkai.enabled", 14072, false);
@@ -245,11 +249,13 @@ CGUISettings::CGUISettings(void)
   AddString(0, "musicfiles.librarytrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(0, "musicfiles.librarytrackformatright", 13387, "", BUTTON_CONTROL_INPUT, false, 16016);
   AddSeparator(4, "musicfiles.sep1");
-  AddBool(5, "musicfiles.useautoswitching", 14011, false);
-  AddBool(6, "musicfiles.autoswitchuselargethumbs", 14012, false);
-  AddSeparator(7, "musicfiles.sep2");
-  AddBool(8, "musicfiles.usecddb", 227, true);
-  AddBool(9, "musicfiles.findremotethumbs", 14059, true);
+  AddInt(5, "musicfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
+  AddInt(6, "musicfiles.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
+  AddInt(7, "musicfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
+  AddBool(8, "musicfiles.savefolderviews", 583, true);
+  AddSeparator(9, "musicfiles.sep2");
+  AddBool(10, "musicfiles.usecddb", 227, true);
+  AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
   AddCategory(3, "lastfm", 15200);
   AddBool(1, "lastfm.enable", 15201, false);
@@ -352,10 +358,12 @@ CGUISettings::CGUISettings(void)
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
   AddBool(2, "myvideos.autoresume",12017, false);
   AddSeparator(3, "myvideos.sep1");
-  AddBool(4, "myvideos.useautoswitching", 14011, false);
-  AddBool(5, "myvideos.autoswitchuselargethumbs", 14012, false);
-  AddSeparator(6, "myvideos.sep2");
-  AddString(7, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddInt(4, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
+  AddInt(5, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
+  AddInt(6, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
+  AddBool(7, "myvideos.savefolderviews", 583, true);
+  AddSeparator(8, "myvideos.sep2");
+  AddString(9, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);

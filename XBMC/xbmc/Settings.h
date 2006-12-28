@@ -52,6 +52,7 @@ class CProfile;
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
+#define DEFAULT_VIEW_AUTO (VIEW_TYPE_AUTO << 16)
 #define DEFAULT_VIEW_LIST (VIEW_TYPE_LIST << 16)
 #define DEFAULT_VIEW_ICONS (VIEW_TYPE_ICON << 16)
 #define DEFAULT_VIEW_BIG_ICONS (VIEW_TYPE_BIG_ICON << 16)
@@ -320,9 +321,12 @@ public:
     CViewState m_viewStateMusicNavArtists;
     CViewState m_viewStateMusicNavAlbums;
     CViewState m_viewStateMusicNavSongs;
-    CViewState m_viewStateMusicFiles;
     CViewState m_viewStateMusicShoutcast;
     CViewState m_viewStateMusicLastFM;
+    CViewState m_viewStateVideoNavActors;
+    CViewState m_viewStateVideoNavYears;
+    CViewState m_viewStateVideoNavGenres;
+    CViewState m_viewStateVideoNavTitles;
 
     bool m_bMyMusicPlaylistRepeat;
     bool m_bMyMusicPlaylistShuffle;
