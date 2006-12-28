@@ -9,6 +9,7 @@ CGUIWindowPointer::CGUIWindowPointer(void)
 {
   m_dwPointer = 0;
   m_loadOnDemand = false;
+  m_needsScaling = false;
 }
 
 CGUIWindowPointer::~CGUIWindowPointer(void)
