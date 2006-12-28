@@ -842,6 +842,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
       { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
         g_charsetConverter.stringCharsetToUtf8(viewLabel);
       }
+      // translate the label
+      vector<CInfoPortion> info;
+      g_infoManager.ParseLabel(viewLabel, info);
+      viewLabel = g_infoManager.GetMultiLabel(info);
     }
   }
 
