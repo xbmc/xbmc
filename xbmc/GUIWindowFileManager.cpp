@@ -1282,6 +1282,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
           }
         }
       }
+      if (progress)
+        progress->Close();
     }
     if (btnid == btn_Settings)
     {
