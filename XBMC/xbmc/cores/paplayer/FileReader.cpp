@@ -201,7 +201,7 @@ int CFileReader::BufferChunk()
     // check the range of our valid data
     if (amountToRead)
     {
-      unsigned int amountRead = m_file.Read(m_chunkBuffer, amountToRead);
+      unsigned int amountRead = m_file.Read(m_chunkBuffer, amountToRead, READ_TRUNCATED);
       if (amountRead > 0)
       {
         if (!m_ringBuffer.WriteBinary(m_chunkBuffer, amountRead))
