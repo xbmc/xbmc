@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: MrNice_NL-->
 <!--Email: MrNice_NL@users.sourceforge.net-->
-<!--Date of translation: 10/31/2006-->
+<!--Date of translation: 12/27/2006-->
 <!--$Revision$-->
-<!--Based on english strings version 1.343-->
+<!--Based on english strings version 7426-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -435,6 +435,24 @@
   <string id="520">Bewerk XBE naam</string>
   <string id="521">Compilaties</string>
   <string id="522">Verwijder bron</string>
+  <string id="523">Verander van media</string>
+  <string id="524">Kies playlist</string>
+  <string id="525">Nieuwe playlist</string>
+  <string id="526">Toevoegen aan playlist</string>
+  <string id="527">Handmatig aan database toevoegen</string>
+  <string id="528">Voer titel in</string>
+  <string id="529">Fout : Bestaande titel</string>
+  <string id="530">Kies genre</string>
+  <string id="531">Nieuw genre</string>
+  <string id="532">Handmatig toegevoegd</string>
+  <string id="533">Voer genre in</string>
+  <string id="534">Bekijk: %s</string>
+  <string id="535">Lijst</string>
+  <string id="536">Iconen</string>
+  <string id="537">Grote Lijst</string>
+  <string id="538">Grote Iconen</string>
+  <string id="539">Wijd</string>
+  <string id="540">Groot, wijd</string>
   <string id="588">Party Modus annuleren</string>
   <string id="589">Party Modus</string>
   <string id="590">Willekeurig</string>
@@ -644,6 +662,7 @@
   <string id="1410">Kalm</string>
   <string id="1411">met</string>
   <string id="1412">winderig</string>
+  <string id="1413">miezeren</string>
   <string id="2050">Lengte:</string>
   <string id="4501">LCD Type</string>
   <string id="10000">Home</string>
@@ -723,6 +742,7 @@
   <string id="12020">Vragen</string>
   <string id="12021">Starten vanaf begin</string>
   <string id="12022">Hervatten vanaf laatste positie</string>
+  <string id="12023">Controle bestaande trainers</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -1150,6 +1170,7 @@ voor deze visualisatie</string>
   <string id="15281">Geef een artiest op om gelijksoortige artiesten te vinden</string>
   <string id="15282">Geef een genre op om gelijksoortige te vinden</string>
   <string id="15283">Recent afgespeelde tracks door %name%</string>
+  <string id="15284">Luister naar %name%'s aanbevelingen Last.FM radio</string>
   <string id="15300">Pad niet gevonden of ongeldig</string>
   <string id="15301">Kan niet verbinden met netwerk server</string>
   <string id="15302">Geen servers gevonden</string>
@@ -1401,5 +1422,19 @@ voor deze visualisatie</string>
   <string id="20311">Ongekend of Onboard (beveiligd)</string>
   <string id="20312">Dim LCD tijdens pauze</string>
   <string id="20313">Schakel LED in tijdens pauze</string>
+  <string id="20314">Mijn Films - Bibliotheek</string>
+  <string id="20315">Mijn 'Game Saves'</string>
+  <string id="20316">Sorteer op: ID</string>
+  <string id="20318">Save Game geinstalleerd op HDD</string>
+  <string id="20319">Kan Game Save niet downloaden</string>
+  <string id="20320">Kies Game Save om te downloaden en te installeren</string>
+  <string id="20321">Geen online Game Save gevonden</string>
+  <string id="20322">Ga naar Game Save</string>
+  <string id="20324">Afspelen deel...</string>
+  <string id="20325">kalibratie herstel</string>
+  <string id="20326">Dit herstelt de standaard waardes voor %s</string>
+  <string id="20327">naar de standaard waardes.</string>
+  <string id="20328">een locatie om naar te kopiëren</string>
+  <string id="20329">een locatie om naar te verplaatsen</string>
   <string id="29999">Automatische Flikker Filter Patch</string>
 </strings>
