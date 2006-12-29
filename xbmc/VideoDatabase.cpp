@@ -557,9 +557,9 @@ void CVideoDatabase::GetMoviesByActor(CStdString& strActor, VECMOVIES& movies)
       // just add the movie without retesting
       //long lPathId = m_pDS->fv("path.idPath").get_asLong(); // TODO
       long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();
-      movies.push_back(GetDetailsFromMovie(lMovieId));
+      movies.push_back(GetDetailsForMovie(lMovieId));
       /*      if (lPathId == lLastPathId)
-        movies.push_back(GetDetailsFromMovie());
+        movies.push_back(GetDetailsForMovie());
       // we have a new path so test it.
       else
       {
@@ -591,7 +591,7 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
       lMovieId = GetMovieInfo(strFilenameAndPath);
     if (lMovieId < 0) return ;
 
-    details = GetDetailsFromMovie(lMovieId);
+    details = GetDetailsForMovie(lMovieId);
     if (details.m_strWritingCredits.IsEmpty())
     { // try loading off disk
       CIMDB imdb;
@@ -983,103 +983,49 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
   }
 }
 
-CIMDBMovie CVideoDatabase::GetDetailsFromMovie(long lMovieId)
+CIMDBMovie CVideoDatabase::GetDetailsForMovie(long lMovieId)
 {
   CIMDBMovie details;
   auto_ptr<Dataset> pDS;
   pDS.reset(m_pDB->CreateDataset());
 
-  CStdString strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_RATING);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_fRating = (float)atof(pDS->fv("movie.strValue").get_asString().c_str());
-  
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_DIRECTOR);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
+  CStdString strSQL=FormatSQL("select * from movie where idMovie=%u",lMovieId);
+  m_pDS2->query(strSQL.c_str());
+  if (m_pDS2->eof()) 
+    return details;
+
+  while (!m_pDS2->eof())
   {
-    long lDirectorId = pDS->fv("movie.strValue").get_asLong();
-    strSQL = FormatSQL("select * from actors where idActor=%u",lDirectorId);
-    pDS->query(strSQL.c_str());
-    if (!pDS->eof())
-      details.m_strDirector = pDS->fv("actor.strActor").get_asString();
+    int iType = m_pDS2->fv("movie.idType").get_asInteger();
+    // special case the director one
+    if (iType == VIDEODB_ID_DIRECTOR)
+    {
+      long lDirectorId = m_pDS2->fv("movie.strValue").get_asLong();
+      strSQL = FormatSQL("select * from actors where idActor=%u",lDirectorId);
+      pDS->query(strSQL.c_str());
+      if (!pDS->eof())
+        details.m_strDirector = pDS->fv("actor.strActor").get_asString();
+    }
+    else
+    {
+      switch (DbMovieOffsets[iType].type)
+      {
+        case VIDEODB_TYPE_STRING:
+          *(CStdString*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asString();
+          break;
+        case VIDEODB_TYPE_INT:
+          *(int*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asInteger();
+          break;
+        case VIDEODB_TYPE_BOOL:
+          *(bool*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asBool();
+          break;
+        case VIDEODB_TYPE_FLOAT:
+          *(float*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asFloat();
+          break;
+      }
+    }
+    m_pDS2->next();
   }
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_CREDITS);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strWritingCredits = pDS->fv("movie.strValue").get_asString();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_TAGLINE);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strTagLine = pDS->fv("movie.strValue").get_asString();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_PLOTOUTLINE);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strPlotOutline = pDS->fv("movie.strValue").get_asString();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_PLOT);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strPlot = pDS->fv("movie.strValue").get_asString();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_VOTES);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strVotes = pDS->fv("movie.strValue").get_asString();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_RUNTIME);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strRuntime = pDS->fv("movie.strValue").get_asString();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_YEAR);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_iYear = pDS->fv("movie.strValue").get_asLong();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_GENRE);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strGenre = pDS->fv("movie.strValue").get_asString();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_THUMBURL);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strPictureURL = pDS->fv("movie.strValue").get_asString();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_TITLE);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strTitle = pDS->fv("movie.strValue").get_asString();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_IDENT);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strIMDBNumber = pDS->fv("movie.strValue").get_asString();
-  
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_WATCHED);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_bWatched = pDS->fv("movie.strValue").get_asBool();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_CREDITS);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strWritingCredits = pDS->fv("movie.strValue").get_asString();
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_MPAA);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_strMPAARating = pDS->fv("movie.strValue").get_asString();  
-
-  strSQL=FormatSQL("select * from movie where idMovie=%i and idType=%i",lMovieId,VIDEODB_ID_TOP250);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
-    details.m_iTop250 = pDS->fv("movie.strValue").get_asInteger();
-
 
   strSQL=FormatSQL("select * from files where idMovie=%u",lMovieId);
   pDS->query(strSQL.c_str());
@@ -1097,28 +1043,6 @@ CIMDBMovie CVideoDatabase::GetDetailsFromMovie(long lMovieId)
 
   details.m_strSearchString.Format("%i", lMovieId);
 
-
-  /*details.m_fRating = (float)atof(pDS->fv("movie.fRating").get_asString().c_str()) ;
-  details.m_strDirector = pDS->fv("actors.strActor").get_asString();
-  details.m_strWritingCredits = pDS->fv("movie.strCredits").get_asString();
-  details.m_strTagLine = pDS->fv("movie.strTagLine").get_asString();
-  details.m_strPlotOutline = pDS->fv("movie.strPlotOutline").get_asString();
-  details.m_strPlot = pDS->fv("movie.strPlot").get_asString();
-  details.m_strVotes = pDS->fv("movie.strVotes").get_asString();
-  details.m_strRuntime = pDS->fv("movie.strRuntime").get_asString();
-  details.m_strCast = pDS->fv("movie.strCast").get_asString();
-  details.m_iYear = pDS->fv("movie.iYear").get_asLong();
-  long lMovieId = pDS->fv("movie.idMovie").get_asLong();
-  details.m_strGenre = pDS->fv("movie.strGenre").get_asString();
-  details.m_strPictureURL = pDS->fv("movie.strPictureURL").get_asString();
-  details.m_strTitle = pDS->fv("movie.strTitle").get_asString();
-//  details.m_strPath = pDS->fv("path.strPath").get_asString();
-  //details.m_strDVDLabel = pDS->fv("movie.cdlabel").get_asString();
-  details.m_strIMDBNumber = pDS->fv("movie.strId").get_asString();
-  details.m_bWatched = pDS->fv("movie.bWatched").get_asBool();
-  details.m_strFileNameAndPath = pDS->fv("files.strFileName").get_asString();
-
-  details.m_strSearchString.Format("%i", lMovieId);*/
   return details;
 }
 
@@ -1805,7 +1729,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
           while (!m_pDS->eof())
           {
             long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();
-            CIMDBMovie movie = GetDetailsFromMovie(lMovieId);
+            CIMDBMovie movie = GetDetailsForMovie(lMovieId);
             movies.push_back(movie);
             iSONGS++;
             m_pDS->next();
@@ -1849,7 +1773,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
     while (!m_pDS->eof())
     {
       long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();
-      CIMDBMovie movie = GetDetailsFromMovie(lMovieId);
+      CIMDBMovie movie = GetDetailsForMovie(lMovieId);
       movies.push_back(movie);
 
       m_pDS->next();

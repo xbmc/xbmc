@@ -13,22 +13,56 @@ typedef vector<CStdString> VECMOVIESFILES;
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-#define VIDEODB_ID_TITLE         1
-#define VIDEODB_ID_PLOT          2
-#define VIDEODB_ID_DIRECTOR      3
-#define VIDEODB_ID_PLOTOUTLINE   4
-#define VIDEODB_ID_TAGLINE       5
-#define VIDEODB_ID_VOTES         6
-#define VIDEODB_ID_RATING        7
-#define VIDEODB_ID_CREDITS       8
-#define VIDEODB_ID_YEAR          9
-#define VIDEODB_ID_GENRE         10
-#define VIDEODB_ID_THUMBURL      11
-#define VIDEODB_ID_IDENT         12
-#define VIDEODB_ID_WATCHED       13
-#define VIDEODB_ID_RUNTIME       14
-#define VIDEODB_ID_MPAA          15
-#define VIDEODB_ID_TOP250        16
+typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
+{
+  VIDEODB_ID_MIN = -1,
+  VIDEODB_ID_TITLE = 0,
+  VIDEODB_ID_PLOT = 1,
+  VIDEODB_ID_DIRECTOR = 2,
+  VIDEODB_ID_PLOTOUTLINE = 3,
+  VIDEODB_ID_TAGLINE = 4,
+  VIDEODB_ID_VOTES = 5,
+  VIDEODB_ID_RATING = 6,
+  VIDEODB_ID_CREDITS = 7,
+  VIDEODB_ID_YEAR = 8,
+  VIDEODB_ID_GENRE = 9,
+  VIDEODB_ID_THUMBURL = 10,
+  VIDEODB_ID_IDENT = 11,
+  VIDEODB_ID_WATCHED = 12,
+  VIDEODB_ID_RUNTIME = 13,
+  VIDEODB_ID_MPAA = 14,
+  VIDEODB_ID_TOP250 = 15,
+  VIDEDB_ID_MAX
+} VIDEODB_IDS;
+
+#define VIDEODB_TYPE_STRING 1
+#define VIDEODB_TYPE_INT 2
+#define VIDEODB_TYPE_FLOAT 3
+#define VIDEODB_TYPE_BOOL 4
+
+const struct SDbMovieOffsets
+{
+  int type;
+  size_t offset;
+} DbMovieOffsets[] = 
+{
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strTitle) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPlot) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strDirector) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPlotOutline) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strTagLine) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strVotes) },
+  { VIDEODB_TYPE_FLOAT, offsetof(CIMDBMovie,m_fRating) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strWritingCredits) },
+  { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iYear) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strGenre) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strIMDBNumber) },
+  { VIDEODB_TYPE_BOOL, offsetof(CIMDBMovie,m_bWatched) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strRuntime) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strMPAARating) },
+  { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iTop250) }
+};
 
 class CBookmark
 {
@@ -117,7 +151,7 @@ protected:
   void AddActorToMovie(long lMovieId, long lActorId);
   void AddGenreToMovie(long lMovieId, long lGenreId);
 
-  CIMDBMovie GetDetailsFromMovie(long lMovieId);
+  CIMDBMovie GetDetailsForMovie(long lMovieId);
 
 private:
   virtual bool CreateTables();
