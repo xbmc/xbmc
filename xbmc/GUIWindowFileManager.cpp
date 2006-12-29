@@ -644,6 +644,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 
       if (url.GetProtocol() == "rar")
       {
+        g_RarManager.SetWipeAtWill(false);
         CStdString strOriginalCachePath = g_advancedSettings.m_cachePath;
         CStdString strDestPath;
         CUtil::GetDirectory(strDestFile,strDestPath);
@@ -651,6 +652,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
         bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,1);
         g_advancedSettings.m_cachePath = strOriginalCachePath;
+        g_RarManager.SetWipeAtWill(true);
         return bResult;
       }
       else
