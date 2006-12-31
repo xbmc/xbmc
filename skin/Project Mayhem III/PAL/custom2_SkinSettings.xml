@@ -336,7 +336,6 @@
 					<posx>223</posx>
 					<posy>231</posy>
 					<width>150</width>
-					<label>-</label>
 					<label>$INFO[Skin.String(ProgramsBookmark2)]</label>
 					<onclick>Skin.SetString(ProgramsBookmark2)</onclick>
 					<onleft>9001</onleft>
@@ -374,7 +373,6 @@
 					<posx>223</posx>
 					<posy>268</posy>
 					<width>150</width>
-					<label>-</label>
 					<label>$INFO[Skin.String(ProgramsBookmark3)]</label>
 					<onclick>Skin.SetString(ProgramsBookmark3)</onclick>
 					<onleft>9001</onleft>
@@ -470,7 +468,6 @@
 					<posx>223</posx>
 					<posy>426</posy>
 					<width>150</width>
-					<label>-</label>
 					<label>$INFO[Skin.String(VideoBookmark2)]</label>
 					<onclick>Skin.SetString(VideoBookmark2)</onclick>
 					<onleft>9001</onleft>
@@ -508,7 +505,6 @@
 					<posx>223</posx>
 					<posy>463</posy>
 					<width>150</width>
-					<label>-</label>
 					<label>$INFO[Skin.String(VideoBookmark3)]</label>
 					<onclick>Skin.SetString(VideoBookmark3)</onclick>
 					<onleft>9001</onleft>
@@ -604,7 +600,6 @@
 					<posx>443</posx>
 					<posy>231</posy>
 					<width>150</width>
-					<label>-</label>
 					<label>$INFO[Skin.String(MusicBookmark2)]</label>
 					<onclick>Skin.SetString(MusicBookmark2)</onclick>
 					<onleft>52</onleft>
@@ -642,7 +637,6 @@
 					<posx>443</posx>
 					<posy>268</posy>
 					<width>150</width>
-					<label>-</label>
 					<label>$INFO[Skin.String(MusicBookmark3)]</label>
 					<onclick>Skin.SetString(MusicBookmark3)</onclick>
 					<onleft>53</onleft>
@@ -680,7 +674,6 @@
 					<posx>443</posx>
 					<posy>305</posy>
 					<width>150</width>
-					<label>-</label>
 					<label>$INFO[Skin.String(MusicBookmark4)]</label>
 					<onclick>Skin.SetString(MusicBookmark4)</onclick>
 					<onleft>54</onleft>
@@ -776,7 +769,6 @@
 					<posx>443</posx>
 					<posy>426</posy>
 					<width>150</width>
-					<label>-</label>
 					<label>$INFO[Skin.String(PicturesBookmark2)]</label>
 					<onclick>Skin.SetString(PicturesBookmark2)</onclick>
 					<onleft>56</onleft>
