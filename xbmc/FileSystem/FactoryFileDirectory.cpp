@@ -179,7 +179,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     if (pDir->GetDirectory(strPath, items))
     {
       if (items.Size() > 1)
-        return new CPlaylistFileDirectory;
+        return pDir;
     }
     delete pDir;
     return NULL;
