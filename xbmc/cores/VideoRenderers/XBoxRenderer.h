@@ -124,9 +124,6 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
 
-  virtual int GetNormalDisplayWidth() { return m_iNormalDestWidth; }
-  virtual int GetNormalDisplayHeight() { return (int)(m_iNormalDestWidth / (m_iSourceWidth / (float)m_iSourceHeight)); }
-
   void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   RESOLUTION GetResolution();  
@@ -142,7 +139,6 @@ protected:
   void DeleteOSDTextures(int index);
   void Setup_Y8A8Render();
   void RenderOSD();
-  void SetupSubtitles();
   void DeleteYV12Texture(int index);
   void ClearYV12Texture(int index);
   bool CreateYV12Texture(int index);
@@ -162,7 +158,6 @@ protected:
   RECT rs;          // source rect
   unsigned int m_iSourceWidth;    // width
   unsigned int m_iSourceHeight;   // height
-  unsigned int m_iNormalDestWidth;  // initial destination width in normal view
 
   bool m_bConfigured;
 

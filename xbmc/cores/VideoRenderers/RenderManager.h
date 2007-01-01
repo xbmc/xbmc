@@ -73,8 +73,6 @@ public:
       return INVALID;
   }
 
-  inline int GetOSDWidth() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetNormalDisplayWidth(); else return 0;};
-  inline int GetOSDHeight() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetNormalDisplayHeight(); else return 0; };
   inline DWORD GetPresentDelay() { return m_presentdelay;  }
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
