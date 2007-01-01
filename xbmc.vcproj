@@ -24,7 +24,7 @@
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"
-				MinimalRebuild="TRUE"
+				MinimalRebuild="FALSE"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="TRUE"
@@ -2797,43 +2797,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\mplayer\audio.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\mplayer\DllMPlayer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\DllMPlayer.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\mplayer.cpp">
-					<FileConfiguration
-						Name="Debug|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile_FastCap|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_LTCG|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug Xbox No Memory Tracking|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\MPlayer.h">
@@ -2841,16 +2811,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\cores\mplayer\xbox_video.cpp">
 				</File>
-				<Filter
-					Name="DLL"
-					Filter="">
-					<File
-						RelativePath=".\xbmc\cores\mplayer\mplayer.cpp">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\mplayer\mplayer.h">
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="dvdplayer"
