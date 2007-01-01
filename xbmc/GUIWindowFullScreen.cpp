@@ -4,8 +4,6 @@
 #include "Util.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/mplayer/mplayer.h"
-#include "cores/mplayer.h"
-#include "cores/mplayer/ASyncDirectSound.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "VideoDatabase.h"
