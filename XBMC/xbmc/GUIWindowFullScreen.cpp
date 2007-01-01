@@ -3,15 +3,12 @@
 #include "Application.h"
 #include "Util.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "cores/mplayer/mplayer.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
-#include "VideoDatabase.h"
-#include "PlayListPlayer.h"
 #include "utils/GUIInfoManager.h"
-#include "../guilib/GUIProgressControl.h"
+#include "GUIProgressControl.h"
 #include "GUIAudioManager.h"
-#include "../guilib/GUILabelControl.h"
+#include "GUILabelControl.h"
 #include "GUIWindowOSD.h"
 #include "GUIFontManager.h"
 
