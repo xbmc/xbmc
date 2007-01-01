@@ -2,7 +2,7 @@
 #include "../stdafx.h"
 #include "PlayerCoreFactory.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "mplayer.h"
+#include "mplayer\mplayer.h"
 #include "dvdplayer\DVDPlayer.h"
 #else
 #include "DummyVideoPlayer.h"

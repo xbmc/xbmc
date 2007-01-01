@@ -2,7 +2,7 @@
 #include "audio.h"
 #include "video.h"
 #include "../DllLoader/DllLoader.h"
-#include "mplayer.h"
+#include "DllMPlayer.h"
 
 
 extern void* fs_seg;
