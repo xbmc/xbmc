@@ -23,7 +23,6 @@
 #include "PixelShaderRenderer.h"
 #include "ComboRenderer.h"
 #include "RGBRenderer.h"
-#include "../../xbox/Undocumented.h"
 
 CXBoxRenderManager g_renderManager;
 
@@ -116,7 +115,9 @@ unsigned int CXBoxRenderManager::PreInit()
   {
     //Only do this on first run
     g_eventVBlank = CreateEvent(NULL,FALSE,FALSE,NULL);
+#ifdef HAS_XBOX_HARDWARE
     D3D__pDevice->SetVerticalBlankCallback((D3DVBLANKCALLBACK)VBlankCallback);
+#endif
   }
 
   /* no pedning present */

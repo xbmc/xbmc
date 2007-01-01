@@ -261,7 +261,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   //       as it'll want to render within the pixel width it is outputting.
   float EnlargeFactor = (float)g_settings.m_ResInfo[res].iWidth / 720.0f; //g_guiSettings.GetInt("Subtitles.EnlargePercentage") / 100.0f;
 
-  float xscale = EnlargeFactor * (float)(rv.right - rv.left) / (float)((g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left)) * ((float)m_iNormalDestWidth / (float)m_iOSDTextureWidth);
+  float xscale = EnlargeFactor * (float)(rv.right - rv.left) / (float)((g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left));
   float yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio;
   osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w * xscale) / 2.0f;
   osdRect.right = osdRect.left + (float)w * xscale;
@@ -693,16 +693,6 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
   CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
 }
 
-void CXBoxRenderer::SetupSubtitles()
-{
-  // TODO, this is really broken, this depends on if we are fullscreen or not 
-  // this will just cause odd scaling, should probably get rid of it
-  m_iNormalDestWidth = (unsigned int)((rd.right - rd.left) / g_stSettings.m_fZoomAmount);
-  m_iOSDTextureWidth = m_iNormalDestWidth;
-  m_iOSDTextureHeight[0] = 0;
-  m_iOSDTextureHeight[1] = 0;
-}
-
 bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   m_fps = fps;
@@ -715,7 +705,6 @@ bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 
   ManageDisplay();
-  SetupSubtitles();
 
   return true;
 }
@@ -925,7 +914,11 @@ unsigned int CXBoxRenderer::PreInit()
   m_NumYV12Buffers = 0;
   m_OSDHeight = m_OSDWidth = 0;
   m_OSDRendered = false;
-  
+
+  m_iOSDTextureWidth = 0;
+  m_iOSDTextureHeight[0] = 0;
+  m_iOSDTextureHeight[1] = 0;
+
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
   // low memory pixel shader
