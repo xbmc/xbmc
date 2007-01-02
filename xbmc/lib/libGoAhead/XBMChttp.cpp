@@ -323,7 +323,7 @@ bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras)
 bool playableFile(const CStdString &filename)
 {
   CURL url(filename);
-  CFileItem *pItem = new CFileItem(filename);
+  CFileItem *pItem = new CFileItem(filename, false);
   bool playable;
 
   ///* okey this is silly, but don't feel like creating a CFileItem to check for internet stream */
