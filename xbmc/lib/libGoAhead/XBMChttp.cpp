@@ -322,19 +322,8 @@ bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras)
 }
 bool playableFile(const CStdString &filename)
 {
-  CURL url(filename);
-  CFileItem *pItem = new CFileItem(filename, false);
-  bool playable;
-
-  ///* okey this is silly, but don't feel like creating a CFileItem to check for internet stream */
-  //return url.GetProtocol().Equals("http")
-  //    || url.GetProtocol().Equals("https")
-  //    || url.GetProtocol().Equals("lastfm")
-  //    || url.GetProtocol().Equals("shout")    
-  //    || CFile::Exists(filename);
-  playable = pItem->IsInternetStream() || CFile::Exists(filename);
-  delete pItem;
-  return playable;
+  CFileItem item(filename, false);  
+  return item.IsInternetStream() || CFile::Exists(filename);
 }
 
 int SetResponse(const CStdString &response)
