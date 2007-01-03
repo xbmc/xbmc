@@ -1042,7 +1042,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
     while (!scraper.Completed())
     {
-      if (m_dlgProgress && bShowInfo)
+      if (m_dlgProgress && m_dlgProgress->IsRunning())
       {
         if (m_dlgProgress->IsCanceled())
           scraper.Cancel();
