@@ -2,6 +2,7 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIProgressControl.h"
 #include "application.h"
+#include "util.h"
 
 
 #define CONTROL_LABELSTATUS     401
@@ -107,6 +108,9 @@ void CGUIDialogMusicScan::OnFinished()
   // be sure to restore the settings
   CLog::Log(LOGINFO,"Music scan was stopped or finished ... restoring FindRemoteThumbs");
   g_application.RestoreMusicScanSettings();
+
+  // clear cache after finished
+  CUtil::DeleteDatabaseDirectoryCache();
 
   Close();
 }
