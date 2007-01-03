@@ -192,7 +192,7 @@ bool CMusicInfoScraper::Completed()
 
 bool CMusicInfoScraper::Successfull()
 {
-  return m_bSuccessfull;
+  return !m_bCanceled && m_bSuccessfull;
 }
 
 void CMusicInfoScraper::Cancel()
