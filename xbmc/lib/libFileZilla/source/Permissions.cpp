@@ -25,6 +25,8 @@
 #include "Permissions.h"
 #include "misc\MarkupSTL.h"
 #include "options.h"
+#include "../../GUISettings.h"
+#include "../../Util.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -473,7 +475,7 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 	return 0;
 }
 
-int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString currentdir, int op, CStdString &result)
+int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString currentdir, int op, CStdString &physical, CStdString &logical)
 {
 	//Reformat the directory
 	dirname.Replace("\\", "/");
@@ -502,15 +504,26 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 		}
 		//Split the new path into pieces and add it to the piecelist
 		dirname.TrimLeft("/");
-		while((pos=dirname.Find("/"))!=-1)
+		while((pos=dirname.Find("/"))!=-1 || dirname.size())
 		{
-			piecelist.push_back(dirname.Left(pos));
+      if(pos<0) pos = dirname.size();
+      CStdString tmp = dirname.Left(pos);
+
+      if (g_guiSettings.GetBool("servers.ftpautofatx"))
+			{
+        if(tmp.length() > 42)
+          tmp = tmp.Left(42);
+        tmp.TrimRight(" \\");
+				if( tmp.length() && tmp[tmp.length()-1] != ':') // avoid fuckups with F: etc
+					CUtil::RemoveIllegalChars(tmp);
+      }
+
+      if (tmp!="")
+			  piecelist.push_back(tmp);
 			dirname=dirname.Mid(pos+1);
 		}
-		if (dirname!="")
-			piecelist.push_back(dirname);
-		dirname="";
-		int remove=0; //Number of pieces that will be removed due to dots
+
+    int remove=0; //Number of pieces that will be removed due to dots
 		for (std::list<CStdString>::reverse_iterator iter=piecelist.rbegin(); iter!=piecelist.rend(); iter++)
 		{
 			CStdString tmp=*iter;
@@ -537,7 +550,8 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 	int pos = dirname.ReverseFind('/');
 	if (pos == -1)
 		return PERMISSION_NOTFOUND;
-	dir=dirname.Left(pos);
+  logical = dirname;
+  dir=dirname.Left(pos);
 	if (dir == "")
 		dir = "/";
 	dirname = dirname.Mid(pos+1);
@@ -552,6 +566,8 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 	if (index==m_UsersList.size())
 		return PERMISSION_DENIED; //No user found
 	
+  CStdString realdir, realdirname;
+  CStdString dir2(dir), dirname2(dirname);
 	//Get the physical path, only of dir to get the right permissions
 	t_directory directory;
 	BOOL truematch;
@@ -574,7 +590,8 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 		}
 		else if (res) 
 			return res;
-		dir = directory.dir;
+		realdir = directory.dir;
+    realdirname = dirname;
 		if (!directory.bDirDelete && op&DOP_DELETE)
 			res |= PERMISSION_DENIED;
 		if (!directory.bDirCreate && op&DOP_CREATE)
@@ -584,19 +601,23 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
 		break;
 	} while (TRUE);
 
+  //realdir and realdirname should now be complete, (realdir contains the existing part, realdirname the other
+  realdirname.Replace("/", "\\");
+  physical = realdir + "\\" + realdirname;
+
+  //Restore what we actually want to create
+  dir = dir2;
+  dirname = dirname2;
+
 	//Check if dir+dirname is a valid path
-	int res2 = GetRealDirectory(dir+"//"+dirname, index, directory, truematch);
-	result = directory.dir;
+	int res2 = GetRealDirectory(dir+"/"+dirname, index, directory, truematch);
 	if (!res2 && op&DOP_CREATE)
 		res |= PERMISSION_DOESALREADYEXIST;
 	else if (!(res2 & PERMISSION_NOTFOUND))
 		return res | res2;
-	dirname.Replace("/","\\");
-	result = dir+"\\"+dirname;
 		
 	//dir+dirname could no be found
-	dir.TrimRight("\\");
-	DWORD nAttributes = GetFileAttributes(dir+"\\"+dirname);
+	DWORD nAttributes = GetFileAttributes(physical);
 	if (nAttributes==0xFFFFFFFF && !(op&DOP_CREATE))
 		res |= PERMISSION_NOTFOUND;
 	else if (!(nAttributes&FILE_ATTRIBUTE_DIRECTORY))
