@@ -248,7 +248,7 @@ void CFileItem::Serialize(CArchive& ar)
 bool CFileItem::IsVideo() const
 {
   /* check preset content type */
-  if( m_contenttype.Left(7).Equals("video/") )
+  if( m_contenttype.Left(6).Equals("video/") )
     return true;
 
   CStdString extension;
@@ -281,7 +281,7 @@ bool CFileItem::IsAudio() const
   if (IsLastFM()) return true;
   
   /* check preset content type */
-  if( m_contenttype.Left(7).Equals("audio/") )
+  if( m_contenttype.Left(6).Equals("audio/") )
     return true;
 
   CStdString extension;
@@ -308,7 +308,7 @@ bool CFileItem::IsAudio() const
 
 bool CFileItem::IsPicture() const
 {
-  if( m_contenttype.Left(7).Equals("image/") )
+  if( m_contenttype.Left(6).Equals("image/") )
     return true;
 
   CStdString extension;
