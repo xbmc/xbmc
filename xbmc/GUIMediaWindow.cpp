@@ -508,7 +508,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     m_iSelectedItem = m_viewControl.GetSelectedItem();
 
     // this is particular to music as only music allows "auto play next item"
-    if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled())
+    if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList())
     {
       if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
       {
