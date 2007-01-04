@@ -247,11 +247,28 @@ void CFileItem::Serialize(CArchive& ar)
 
 bool CFileItem::IsVideo() const
 {
-  CStdString strExtension;
-  CUtil::GetExtension(m_strPath, strExtension);
-  if (strExtension.size() < 2) return false;
-  strExtension.ToLower();
-  if (g_stSettings.m_videoExtensions.Find(strExtension) != -1)
+  /* check preset content type */
+  if( m_contenttype.Left(7).Equals("video/") )
+    return true;
+
+  CStdString extension;
+  if( m_contenttype.Left(12).Equals("application/") )
+  { /* check for some standard types */
+    extension = m_contenttype.Mid(12);
+    if( extension.Equals("ogg")
+     || extension.Equals("mp4")
+     || extension.Equals("mxf") )
+     return true;
+  }
+
+  CUtil::GetExtension(m_strPath, extension);
+
+  if (extension.IsEmpty())
+    return false;
+
+  extension.ToLower();
+
+  if (g_stSettings.m_videoExtensions.Find(extension) != -1)
     return true;
 
   return false;
@@ -259,16 +276,31 @@ bool CFileItem::IsVideo() const
 
 bool CFileItem::IsAudio() const
 {
-  if (strstr(m_strPath.c_str(), ".cdda") ) return true;
-  if (IsShoutCast() ) return true;
-  if (strstr(m_strPath.c_str(), "lastfm:") ) return true;
+  if (IsCDDA()) return true;
+  if (IsShoutCast()) return true;
+  if (IsLastFM()) return true;
+  
+  /* check preset content type */
+  if( m_contenttype.Left(7).Equals("audio/") )
+    return true;
 
-  CStdString strExtension;
-  CUtil::GetExtension(m_strPath, strExtension);
-  if (strExtension.size() < 2) return false;
-  strExtension.ToLower();
+  CStdString extension;
+  if( m_contenttype.Left(12).Equals("application/") )
+  { /* check for some standard types */
+    extension = m_contenttype.Mid(12);
+    if( extension.Equals("ogg")
+     || extension.Equals("mp4")
+     || extension.Equals("mxf") )
+     return true;
+  }
 
-  if (g_stSettings.m_musicExtensions.Find(strExtension) != -1)
+  CUtil::GetExtension(m_strPath, extension);
+
+  if (extension.IsEmpty())
+    return false;
+
+  extension.ToLower();
+  if (g_stSettings.m_musicExtensions.Find(extension) != -1)
     return true;
 
   return false;
@@ -276,15 +308,21 @@ bool CFileItem::IsAudio() const
 
 bool CFileItem::IsPicture() const
 {
-  CStdString strExtension;
-  CUtil::GetExtension(m_strPath, strExtension);
-  if (strExtension.size() < 2) return false;
-  strExtension.ToLower();
-
-  if (g_stSettings.m_pictureExtensions.Find(strExtension) != -1)
+  if( m_contenttype.Left(7).Equals("image/") )
     return true;
 
-  if (strExtension == ".tbn") return true;
+  CStdString extension;
+  CUtil::GetExtension(m_strPath, extension);    
+
+  if (extension.IsEmpty())
+    return false;
+
+  extension.ToLower();
+  if (g_stSettings.m_pictureExtensions.Find(extension) != -1)
+    return true;
+
+  if (extension == ".tbn") 
+    return true;
 
   return false;
 }
@@ -895,7 +933,8 @@ const CStdString& CFileItem::GetContentType() const
     if( m_bIsFolder )
       m_ref = "x-directory/normal";
     else if( m_strPath.Left(8).Equals("shout://") 
-     || m_strPath.Left(7).Equals("http://"))
+          || m_strPath.Left(7).Equals("http://")
+          || m_strPath.Left(7).Equals("upnp://"))
     {
       CURL url(m_strPath);
       url.SetProtocol("http");
@@ -1886,6 +1925,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   if (IsMusicDb()) return "";
   CURL url(m_strPath);
   if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
+  if (url.GetProtocol() == "upnp") return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
@@ -2004,6 +2044,7 @@ CStdString CFileItem::GetUserVideoThumb()
   if (IsParentFolder()) return "";
   CURL url(m_strPath);
   if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
+  if (url.GetProtocol() == "upnp") return "";
 
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb;

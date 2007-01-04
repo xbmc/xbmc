@@ -38,4 +38,4 @@ public:
                                                  NPT_HttpResponse* response) = 0;
 };
 
-#endif // _PLT_SSDP_LISTENER_H 
+#endif /* _PLT_SSDP_LISTENER_H_ */

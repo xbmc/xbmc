@@ -17,6 +17,8 @@
 #include "NptTypes.h"
 #include "NptList.h"
 #include "NptBufferedStreams.h"
+#include "NptSockets.h"
+#include "NptMap.h"
 
 /*----------------------------------------------------------------------
 |   constants
@@ -92,8 +94,9 @@ public:
     NPT_List<Field>& GetFields() { return m_Fields; }
 
     // methods
-    NPT_Result AddField(const char* name, const char* value);
-    NPT_String ToString();
+    NPT_Result  AddField(const char* name, const char* value);
+    const char* GetField(const char* name);
+    NPT_String  ToString();
 
 private:
     // members
@@ -107,7 +110,7 @@ class NPT_HttpUrl : public NPT_Uri {
 public:
     // constructors and destructor
     NPT_HttpUrl();
-    NPT_HttpUrl(const char* url);
+    NPT_HttpUrl(const char* url, bool ignore_scheme = false);
     NPT_HttpUrl(const char* host, 
                 NPT_UInt16  port, 
                 const char* path,
@@ -121,12 +124,16 @@ public:
     const NPT_String& GetQuery() const    { return m_Query;    }
     const NPT_String& GetFragment() const { return m_Fragment; }
     bool              IsValid() const;
-    NPT_Result        SetHost(const char*     host);
-    NPT_Result        SetPath(const char*     path);
-    NPT_Result        SetQuery(const char*    query);
+    bool              HasQuery()    const { return m_HasQuery;    } 
+    bool              HasFragment() const { return m_HasFragment; }
+    NPT_Result        SetHost(const char*  host);
+    NPT_Result        SetPort(NPT_UInt16 port);
+    NPT_Result        SetPath(const char*  path);
+    NPT_Result        SetPathPlus(const char* path_plus);
+    NPT_Result        SetQuery(const char* query);
     NPT_Result        SetFragment(const char* fragment);
     NPT_String        ToRequestString(bool with_fragment = false) const;
-    NPT_String        ToString(bool with_fragment = false) const;
+    NPT_String        ToString(bool with_fragment = true) const;
 
 private:
     // members
@@ -196,6 +203,9 @@ public:
     // methods
     NPT_Result SetInputStream(const NPT_InputStreamReference& stream,
                               bool update_content_length = false);
+    NPT_Result SetInputStream(const void* data, NPT_Size size);
+    NPT_Result SetInputStream(const NPT_String& string);
+    NPT_Result SetInputStream(const char* string);
     NPT_Result GetInputStream(NPT_InputStreamReference& stream);
     NPT_Result Load(NPT_DataBuffer& buffer);
     NPT_Result SetHeaders(const NPT_HttpHeaders& headers);
@@ -235,8 +245,7 @@ public:
     NPT_HttpEntity* GetEntity() {
         return m_Entity;
     }
-    virtual NPT_Result ParseHeaders(NPT_BufferedInputStream& stream,
-                                    NPT_Timeout              timeout = NPT_TIMEOUT_INFINITE);
+    virtual NPT_Result ParseHeaders(NPT_BufferedInputStream& stream);
 
 protected:
     // constructors
@@ -255,8 +264,8 @@ class NPT_HttpRequest : public NPT_HttpMessage {
 public:
     // class methods
     static NPT_Result Parse(NPT_BufferedInputStream& stream, 
-                            NPT_HttpRequest*&        request,
-                            NPT_Timeout              timeout = NPT_TIMEOUT_INFINITE);
+                            const NPT_SocketAddress* endpoint,
+                            NPT_HttpRequest*&        request);
 
     // constructors and destructor
     NPT_HttpRequest(const NPT_HttpUrl& url,
@@ -268,8 +277,10 @@ public:
     virtual ~NPT_HttpRequest();
 
     // methods
-    const NPT_HttpUrl& GetUrl() { return m_Url; }
+    const NPT_HttpUrl& GetUrl() const { return m_Url; }
+    NPT_HttpUrl&       GetUrl()       { return m_Url; }
     NPT_Result         SetUrl(const char* url);
+    NPT_Result         SetUrl(const NPT_HttpUrl& url);
     const NPT_String&  GetMethod() const { return m_Method; }
     virtual NPT_Result Emit(NPT_OutputStream& stream, bool use_proxy=false) const;
     
@@ -286,8 +297,7 @@ class NPT_HttpResponse : public NPT_HttpMessage {
 public:
     // class methods
     static NPT_Result Parse(NPT_BufferedInputStream& stream, 
-                            NPT_HttpResponse*&       response,
-                            NPT_Timeout              timeout = NPT_TIMEOUT_INFINITE);
+                            NPT_HttpResponse*&       response);
 
     // constructors and destructor
              NPT_HttpResponse(NPT_HttpStatusCode status_code,
@@ -348,6 +358,79 @@ protected:
 };
 
 /*----------------------------------------------------------------------
+|   NPT_HttpRequestHandler
++---------------------------------------------------------------------*/
+class NPT_HttpRequestHandler 
+{
+public:
+    // destructor
+    virtual ~NPT_HttpRequestHandler() {}
+
+    // methods
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&  request,
+                                     NPT_HttpResponse& response) = 0;
+};
+
+/*----------------------------------------------------------------------
+|   NPT_HttpStaticRequestHandler
++---------------------------------------------------------------------*/
+class NPT_HttpStaticRequestHandler : public NPT_HttpRequestHandler
+{
+public:
+    // constructors
+    NPT_HttpStaticRequestHandler(const char* document, 
+                                 const char* mime_type,
+                                 bool        copy = true);
+    NPT_HttpStaticRequestHandler(const void* data,
+                                 NPT_Size    size,
+                                 const char* mime_type,
+                                 bool        copy = true);
+
+    // NPT_HttpRequetsHandler methods
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&  request, 
+                                     NPT_HttpResponse& response);
+
+private:
+    NPT_String     m_MimeType;
+    NPT_DataBuffer m_Buffer;
+};
+
+/*----------------------------------------------------------------------
+|   NPT_HttpFileRequestHandler
++---------------------------------------------------------------------*/
+class NPT_HttpFileRequestHandler : public NPT_HttpRequestHandler
+{
+public:
+    // constructors
+    NPT_HttpFileRequestHandler(const char* url_root,
+                               const char* file_root);
+
+    // NPT_HttpRequetsHandler methods
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&  request, 
+                                     NPT_HttpResponse& response);
+
+    // accessors
+    NPT_Map<NPT_String,NPT_String>& GetFileTypeMap() { return m_FileTypeMap; }
+    void SetDefaultMimeType(const char* mime_type) {
+        m_DefaultMimeType = mime_type;
+    }
+    void SetUseDefaultFileTypeMap(bool use_default) {
+        m_UseDefaultFileTypeMap = use_default;
+    }
+
+protected:
+    // methods
+    const char* GetContentType(const NPT_String& filename);
+
+private:
+    NPT_String                      m_UrlRoot;
+    NPT_String                      m_FileRoot;
+    NPT_Map<NPT_String, NPT_String> m_FileTypeMap;
+    NPT_String                      m_DefaultMimeType;
+    bool                            m_UseDefaultFileTypeMap;
+};
+
+/*----------------------------------------------------------------------
 |   NPT_HttpServer
 +---------------------------------------------------------------------*/
 class NPT_HttpServer {
@@ -367,13 +450,76 @@ public:
     NPT_Result SetConfig(const Config& config);
     NPT_Result SetListenPort(NPT_UInt16 port);
     NPT_Result SetTimeouts(NPT_Timeout connection_timeout, NPT_Timeout io_timeout);
-    NPT_Result WaitForRequest(NPT_HttpRequest*&          request,
-                              NPT_OutputStreamReference& stream);
-    NPT_Result SendResponse(NPT_HttpResponse& response, NPT_OutputStream& stream);
+    NPT_Result WaitForNewClient(NPT_InputStreamReference&  input,
+                                NPT_OutputStreamReference& output,
+                                NPT_SocketAddress*         local_address  = NULL,
+                                NPT_SocketAddress*         remote_address = NULL);
+    
+    /**
+     *  Add a request handler. The ownership of the handler is NOT transfered to this object,
+     *  so the caller is responsible for the lifetime management of the handler object.
+     */
+    NPT_Result AddRequestHandler(NPT_HttpRequestHandler* handler, const char* path, bool include_children = false);
+    NPT_HttpRequestHandler* FindRequestHandler(NPT_HttpRequest& request);
+
+    /**
+     * Simple 
+     */
+    NPT_Result RespondToClient(NPT_InputStreamReference&  input,
+                               NPT_OutputStreamReference& output,
+                               NPT_SocketAddress*         local_address = NULL);
+
+protected:
+    // types
+    struct HandlerConfig {
+        HandlerConfig(NPT_HttpRequestHandler* handler,
+                      const char*             path,
+                      bool                    include_children);
+        ~HandlerConfig();
+
+        // methods
+        bool WillHandle(NPT_HttpRequest& request);
+
+        // members
+        NPT_HttpRequestHandler* m_Handler;
+        NPT_String              m_Path;
+        bool                    m_IncludeChildren;
+    };
+
+    // members
+    NPT_TcpServerSocket      m_Socket;
+    Config                   m_Config;
+    NPT_List<HandlerConfig*> m_RequestHandlers;
+};
+
+/*----------------------------------------------------------------------
+|   NPT_HttpResponder
++---------------------------------------------------------------------*/
+class NPT_HttpResponder {
+public:
+    // types
+    struct Config {
+        NPT_Timeout m_IoTimeout;
+    };
+
+    // constructors and destructor
+    NPT_HttpResponder(NPT_InputStreamReference&  input,
+                      NPT_OutputStreamReference& output);
+    virtual ~NPT_HttpResponder();
+
+    // methods
+    NPT_Result SetConfig(const Config& config);
+    NPT_Result SetTimeout(NPT_Timeout io_timeout);
+    NPT_Result ParseRequest(NPT_HttpRequest*&  request,
+                            NPT_SocketAddress* local_address = NULL);
+    NPT_Result SendResponse(NPT_HttpResponse& response,
+                            bool              headers_only = false);
 
 protected:
     // members
-    Config m_Config;
+    Config                           m_Config;
+    NPT_BufferedInputStreamReference m_Input;
+    NPT_OutputStreamReference        m_Output;
 };
 
 #endif // _NPT_HTTP_H_

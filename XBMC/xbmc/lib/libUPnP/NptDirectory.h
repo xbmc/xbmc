@@ -46,7 +46,7 @@ public:
 };
 
 /*----------------------------------------------------------------------
-|       NPT_Directory
+|       NPT_DirectoryEntry
 +---------------------------------------------------------------------*/
 class NPT_DirectoryEntry : public NPT_DirectoryEntryInterface
 {

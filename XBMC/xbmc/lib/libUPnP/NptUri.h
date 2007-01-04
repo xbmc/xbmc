@@ -43,6 +43,7 @@ public:
         return m_Scheme;
     }
     void SetScheme(const char* scheme);
+    NPT_Result SetSchemeFromUri(const char* uri);
     SchemeId GetSchemeId() const {
         return m_SchemeId;
     }

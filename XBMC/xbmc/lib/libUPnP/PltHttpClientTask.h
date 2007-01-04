@@ -13,7 +13,6 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-//#include "NptUtils.h"
 #include "PltLog.h"
 #include "NptSockets.h"
 #include "PltHttp.h"
@@ -24,24 +23,18 @@
 +---------------------------------------------------------------------*/
 class PLT_HttpClientSocketTask : public PLT_ThreadTask
 {
+friend class PLT_ThreadTask;
+
 public:
-    PLT_HttpClientSocketTask(NPT_Socket*       socket,
-                             NPT_HttpRequest*  request);
-    virtual ~PLT_HttpClientSocketTask();
-
-    // PLT_ThreadTask methods
-    virtual NPT_Result Abort() { 
-        // abort first PLT_ThreadTask to set the aborted flag
-        NPT_Result res = PLT_ThreadTask::Abort();
-
-        // unblock socket if necessary
-        m_Socket->Disconnect();
-        return res;
-    }
-
-    virtual NPT_Result DoRun();
+    PLT_HttpClientSocketTask(NPT_Socket* socket, NPT_HttpRequest* request);
 
 protected:
+    virtual ~PLT_HttpClientSocketTask();
+
+protected:
+    // PLT_ThreadTask methods
+    virtual void DoAbort() { m_Socket->Disconnect(); }
+    virtual void DoRun();
 
     virtual NPT_Result ProcessResponse(NPT_Result        res, 
                                        NPT_HttpRequest*  request, 
@@ -61,17 +54,19 @@ class PLT_HttpClientTask : public PLT_HttpClientSocketTask
 {
 public:
     PLT_HttpClientTask<T>(const NPT_HttpUrl& url, T* data) : 
-        PLT_HttpClientSocketTask(new NPT_TcpClientSocket, new NPT_HttpRequest(url, "GET")), m_Data(data) {}
+        PLT_HttpClientSocketTask(new NPT_TcpClientSocket, 
+                                 new NPT_HttpRequest(url, "GET")), 
+                                 m_Data(data) {}
+ protected:
     virtual ~PLT_HttpClientTask<T>() {}
 
+protected:
+    // PLT_HttpClientSocketTask method
     NPT_Result ProcessResponse(NPT_Result        res, 
                                NPT_HttpRequest*  request, 
                                NPT_SocketInfo&   info, 
                                NPT_HttpResponse* response) {
-        return m_Data->ProcessResponse(res,
-                                       request,
-                                       info,
-                                       response);
+        return m_Data->ProcessResponse(res, request, info, response);
     }
 
 protected:
@@ -85,9 +80,14 @@ class PLT_FileHttpClientTask : public PLT_HttpClientSocketTask
 {
 public:
     PLT_FileHttpClientTask(const NPT_HttpUrl& url) : 
-        PLT_HttpClientSocketTask(new NPT_TcpClientSocket, new NPT_HttpRequest(url, "GET")) {}
+        PLT_HttpClientSocketTask(new NPT_TcpClientSocket, 
+                                 new NPT_HttpRequest(url, "GET")) {}
+
+protected:
     virtual ~PLT_FileHttpClientTask() {}
 
+protected:
+    // PLT_HttpClientSocketTask method
     NPT_Result ProcessResponse(NPT_Result        res, 
                                NPT_HttpRequest*  request, 
                                NPT_SocketInfo&   info, 
@@ -99,10 +99,6 @@ public:
         PLT_Log(PLT_LOG_LEVEL_3, "PLT_FileHttpClientTask::ProcessResponse (status=%d)\n", res);
         return NPT_SUCCESS;
     }
-
-// members
-private:
-    // body?
 };
 
 #endif /* _PLT_HTTP_CLIENT_TASK_H_ */

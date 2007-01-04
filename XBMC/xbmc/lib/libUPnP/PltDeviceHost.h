@@ -37,7 +37,7 @@ class PLT_DeviceHost : public PLT_DeviceData,
 {
 public:
     PLT_DeviceHost(
-        const char*  url_base = "/", 
+        const char*  description_path = "/",
         const char*  uuid = "",
         const char*  device_type = "",
         const char*  friendly_name = "",
@@ -62,9 +62,9 @@ public:
     virtual NPT_Result ProcessSsdpSearchRequest(NPT_HttpRequest* request, NPT_SocketInfo info);
 
     /* PLT_SsdpDeviceSearchResponseTask */
-    virtual NPT_Result SendSsdpSearchResponse(PLT_DeviceData* device, NPT_SocketAddress& addr, NPT_HttpResponse& response, NPT_UdpSocket& socket, const char* st);
-    virtual NPT_Result SendSsdpSearchResponse(NPT_SocketAddress& addr, NPT_HttpResponse& response, NPT_UdpSocket& socket, const char* ST) {
-        return SendSsdpSearchResponse(this, addr, response, socket, ST);
+    virtual NPT_Result SendSsdpSearchResponse(PLT_DeviceData* device, NPT_HttpResponse& response, NPT_UdpSocket& socket, const char* st);
+    virtual NPT_Result SendSsdpSearchResponse(NPT_HttpResponse& response, NPT_UdpSocket& socket, const char* ST) {
+        return SendSsdpSearchResponse(this, response, socket, ST);
     }
 
     NPT_Result VerifyArgumentInput(PLT_Action* action, NPT_String name, NPT_String value);
@@ -100,12 +100,9 @@ public:
     virtual ~PLT_HttpServerHandler() {}
 
     // PLT_HttpServerListener methods
-    NPT_Result ProcessHttpRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response) {
-        response = new NPT_HttpResponse(200, "OK", "HTTP/1.1");
-        response->GetHeaders().SetHeader("Server", "Platinum");
-
-        return m_Device->ProcessHttpRequest(request, info, response);
-    }
+    NPT_Result ProcessHttpRequest(NPT_HttpRequest*   request, 
+                                  NPT_SocketInfo     info, 
+                                  NPT_HttpResponse*& response);
 
 private:
     PLT_DeviceHost* m_Device;

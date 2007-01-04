@@ -175,28 +175,42 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         // issue a browse request with object id, if id is empty use root id = 0 
         NPT_String root_id = object_id.IsEmpty()?"0":object_id;
 
+        // just a guess as to what types of files we want */
+        bool video = true;
+        bool audio = true;
+        bool image = true;
+        if( !m_strFileMask.IsEmpty() )
+        {
+          video = m_strFileMask.Find(".wmv") >= 0;
+          audio = m_strFileMask.Find(".wma") >= 0;
+          image = m_strFileMask.Find(".jpg") >= 0;
+        }
+
         // special case for Windows Media Connect
         // Since we know it is WMC, we can target which folder we want based on directory mask
-        if (root_id == "0" && (*device)->GetFriendlyName().Find("Windows Media Connect", 0, true) >= 0) {
+        if (root_id == "0" 
+         && ( (*device)->GetFriendlyName().Find("Windows Media Connect", 0, true) >= 0
+           || (*device)->m_ModelName == "Windows Media Player Sharing")) {
+
             // look for a specific type to differentiate which folder we want
-            if (m_strFileMask.Find(".wma") >= 0) {
+            if (audio && !video && !image) {
                 // music
                 root_id = "1";
-            } else if (m_strFileMask.Find(".wmv") >= 0) {
+            } else if (!audio && video && !image) {
                 // video
                 root_id = "2";
-            } else if (m_strFileMask.Find(".jpg") >= 0) {
+            } else if (!audio && !video && image) {
                 // pictures
                 root_id = "3";
             }
         }
 
-        PLT_MediaItemListReference list;
+        PLT_MediaObjectListReference list;
         // if error, the list could be partial and that's ok
         // we still want to process it
         upnp->m_MediaBrowser->Browse(*device, root_id, list);
 
-        NPT_List<PLT_MediaItem*>::Iterator entry = list->GetFirstItem();
+        NPT_List<PLT_MediaObject*>::Iterator entry = list->GetFirstItem();
         while (entry) {
             CFileItem *pItem = new CFileItem((const char*)(*entry)->m_Title);
             pItem->m_bIsFolder = (*entry)->IsContainer();
@@ -205,9 +219,33 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             if (pItem->m_bIsFolder) {
                 pItem->m_strPath = (const char*) NPT_String("upnp://") + uuid + "/" + (*entry)->m_ObjectID;
                 if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
+
             } else {
                 if ((*entry)->m_Resources.GetItemCount()) {
-                    // if http protocol, override url with upnp so that it triggers the use of PAPLAYER instead of MPLAYER
+                  
+                    // look for content type in protocol info
+                    if ((*entry)->m_Resources[0].m_ProtocolInfo.GetLength()) {
+                        char proto[1024];
+                        char dummy1[1024];
+                        char ct[1204];
+                        char dummy2[1024];
+                        int fields = sscanf((*entry)->m_Resources[0].m_ProtocolInfo, "%[^:]:%[^:]:%[^:]:%[^:]", proto, dummy1, ct, dummy2);
+                        if (fields == 4) {
+                            // for now always allow anything else as we can't be sure
+                            if ((!video && strstr(ct, "video/") == ct)
+                             || (!audio && strstr(ct, "audio/") == ct)
+                             || (!image && strstr(ct, "image/") == ct))
+                            {
+                                delete pItem;
+                                ++entry;
+                                continue;
+                            }
+                            pItem->SetContentType(ct);
+                        }
+                    }
+                  
+                  
+                  // if http protocol, override url with upnp so that it triggers the use of PAPLAYER instead of MPLAYER
                     // somehow MPLAYER tries to http stream the wma even though the server doesn't support it.
                     if ((*entry)->m_Resources[0].m_Uri.Left(4).Compare("http", true) == 0) {
                         pItem->m_strPath = (const char*) NPT_String("upnp") + (*entry)->m_Resources[0].m_Uri.SubString(4);
@@ -219,32 +257,34 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                         pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
                     }
                     pItem->m_musicInfoTag.SetDuration((*entry)->m_Resources[0].m_Duration);
-                    pItem->m_musicInfoTag.SetGenre((const char*) (*entry)->m_Genre);
-                    pItem->m_musicInfoTag.SetAlbum((const char*) (*entry)->m_Album);
+                    pItem->m_musicInfoTag.SetGenre((const char*) (*entry)->m_Affiliation.genre);
+                    pItem->m_musicInfoTag.SetAlbum((const char*) (*entry)->m_Affiliation.album);
                     
                     // some servers (like WMC) use upnp:artist instead of dc:creator
                     if ((*entry)->m_Creator.GetLength() == 0) {
-                        pItem->m_musicInfoTag.SetArtist((const char*) (*entry)->m_Artist);
+                        pItem->m_musicInfoTag.SetArtist((const char*) (*entry)->m_People.artist);
                     } else {
                         pItem->m_musicInfoTag.SetArtist((const char*) (*entry)->m_Creator);
                     }
-                    pItem->m_musicInfoTag.SetTitle((const char*) (*entry)->m_Title);
-
-                    // look for content type in protocol info
-                    if ((*entry)->m_Resources[0].m_ProtocolInfo.GetLength()) {
-                        char proto[1024];
-                        char dummy1[1024];
-                        char ct[1204];
-                        char dummy2[1024];
-                        int fields = sscanf((*entry)->m_Resources[0].m_ProtocolInfo, "%s:%s:%s:%s", proto, dummy1, ct, dummy2);
-                        if (fields == 4) {
-                            pItem->SetContentType(ct);
-                        }
-                    }
-                    
+                    pItem->m_musicInfoTag.SetTitle((const char*) (*entry)->m_Title);                    
                     pItem->m_musicInfoTag.SetLoaded();
 
-                    //TODO: figure out howto set the album art
+                    //TODO, current thumbnail and icon of CFileItem is expected to be a local
+                    //      image file in the normal thumbnail directories, we have no way to
+                    //      specify an external filename on the filelayer
+                    //if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
+                    //  pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
+                    //else
+                    //  pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
+
+                    if( (*entry)->m_Description.date.GetLength() )
+                    {
+                      SYSTEMTIME time = {};
+                      int count = sscanf((*entry)->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
+                                          &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
+                      pItem->m_dateTime = time;
+                    }
+                    
                 }
             }
 

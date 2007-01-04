@@ -116,14 +116,27 @@
 typedef __w64 long NPT_PointerLong;
 #define NPT_POINTER_TO_LONG(_p) ((long)(NPT_PointerLong) (_p) )
 #define NPT_CONFIG_HAVE_FOPEN_S
+#define NPT_vsnprintf(s,c,f,a)  _vsnprintf_s(s,c,_TRUNCATE,f,a)
+#define NPT_snprintf(s,c,f,...) _snprintf_s(s,c,_TRUNCATE,f,__VA_ARGS__)
+#define NPT_strncpy(d,s,c)       strncpy_s(d,c,s,_TRUNCATE)
+#else
+#define NPT_vsnprintf  _vsnprintf
+#define NPT_snprintf   _snprintf
 #endif
 #if defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #endif
 #endif
 
+/* Windows CE */
+#if defined(UNDER_CE)
+#if defined(NPT_CONFIG_HAVE_FOPEN_S)
+#undef NPT_CONFIG_HAVE_FOPEN_S
+#endif
+#endif
+
 /* Symbian */
-#if defined(__SYMBIAN32__)
+#if defined(__symbian__)
 #undef NPT_CONFIG_HAVE_NEW_H
 #include "e32std.h"
 #define explicit
