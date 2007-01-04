@@ -64,7 +64,7 @@ public:
     virtual void OnMSStateVariablesChanged(PLT_Service* /* service */, NPT_List<PLT_StateVariable*>* /* vars */) {};
     virtual void OnMSBrowseResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_BrowseInfo* info, void* userdata);
 
-    NPT_Result Browse(PLT_DeviceDataReference& device, const char* id, PLT_MediaItemListReference& list);
+    NPT_Result Browse(PLT_DeviceDataReference& device, const char* id, PLT_MediaObjectListReference& list);
 
     const NPT_Lock<PLT_DeviceMap>& GetMediaServers() const { return m_MediaServers; }
 
