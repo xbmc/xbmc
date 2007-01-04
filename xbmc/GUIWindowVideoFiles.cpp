@@ -138,11 +138,11 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNSCAN)
-      {
-        OnScan();
-      }
-      else if (iControl == CONTROL_STACK)
+      //if (iControl == CONTROL_BTNSCAN)
+      //{
+      //  OnScan();
+     // }
+      /*else*/ if (iControl == CONTROL_STACK)
       {
         // toggle between the following states:
         //   0 : no stacking
@@ -401,7 +401,7 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
 //    AddMovie(pItem->m_strPath, strCDLabel, false);
 }
 
-void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
+void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const CStdString& strScraper, const CStdString& strContent, bool bDirNames)
 {
   // for every file found
   for (int i = 0; i < (int)items.Size(); ++i)
@@ -443,7 +443,10 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
           if (m_dlgProgress->IsCanceled()) return ;
         }
         vector<CStdString> movies;
+        CStdString strPath;
+        CUtil::GetDirectory(pItem->m_strPath,strPath);
         AddFileToDatabase(pItem);
+        m_database.SetScraperForPath(strPath,strScraper,strContent);
         if (pItem->IsStack())
         { // get stacked items
           // TODO: This should be removed as soon as we no longer need the individual
@@ -471,7 +474,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
                 url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
-                GetIMDBDetails(pItem, url);
+                GetIMDBDetails(pItem, url, strScraper);
                 continue;
               }
               else
@@ -482,8 +485,17 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
           }
 
           CStdString strMovieName;
-          strMovieName = CUtil::GetFileName(pItem->GetLabel());
-          CUtil::RemoveExtension(strMovieName);
+          if (bDirNames)
+          {
+            CStdString strPath = items.m_strPath;
+            CUtil::AddSlashAtEnd(strPath);
+            CUtil::GetDirectoryName(strPath,strMovieName);
+          }
+          else
+          {
+            strMovieName = CUtil::GetFileName(pItem->GetLabel());
+            CUtil::RemoveExtension(strMovieName);
+          }
 
           // do IMDB lookup...
           if (m_dlgProgress)
@@ -497,7 +509,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
 
           CIMDB IMDB;
           IMDB_MOVIELIST movielist;
-          if (IMDB.FindMovie(strMovieName, movielist, m_dlgProgress))
+          if (IMDB.FindMovie(strMovieName, movielist, strScraper, m_dlgProgress))
           {
             int iMoviesFound = movielist.size();
             if (iMoviesFound > 0)
@@ -515,7 +527,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
               }
 
               CUtil::ClearCache();
-              GetIMDBDetails(pItem, url);
+              GetIMDBDetails(pItem, url, strScraper);
             }
           }
         }
@@ -524,13 +536,20 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
   }
 }
 
-void CGUIWindowVideoFiles::OnScan()
+void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const CStdString& strScraper, const CStdString& strContent, bool bDirNames)
 {
   // GetStackedDirectory() now sets and restores the stack state!
   CFileItemList items;
-  GetStackedDirectory(m_vecItems.m_strPath, items);
-  DoScan(m_vecItems.m_strPath, items);
+  GetStackedDirectory(strPath, items);
+  m_database.SetScraperForPath(strPath,strScraper,strContent);
+  DoScan(strPath, items, strScraper, strContent, bDirNames);
+  CUtil::ClearFileItemCache();
   Update(m_vecItems.m_strPath);
+}
+
+void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
+{
+  m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,"","");
 }
 
 void CGUIWindowVideoFiles::OnAssignContent(int iItem)
@@ -538,7 +557,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem)
   CFileItemList items;
   CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
   CGUIDialogSelect *pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  pDialog->SetHeading(20326);
+  pDialog->SetHeading(20334);
   pDialog->Reset();
   std::map<CStdString,std::vector<std::pair<CStdString,CStdString> > > scrapers; // key = content type, first = name, second = file
   for (int i=0;i<items.Size();++i)
@@ -564,7 +583,10 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem)
             vec.push_back(std::make_pair<CStdString,CStdString>(name,items[i]->m_strPath));
             scrapers.insert(std::make_pair<CStdString,std::vector<std::pair<CStdString,CStdString> > >(content,vec));
           }
-          pDialog->Add(CStdString(content));
+          CStdString strContent = content;
+          strContent.Replace("movies",g_localizeStrings.Get(20336));
+          strContent.Replace("tvshows",g_localizeStrings.Get(20337));
+          pDialog->Add(strContent);
         }
       }
     }
@@ -578,9 +600,13 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem)
 
   // okay, we got content - now grab which scraper
   CFileItem item = pDialog->GetSelectedItem();
-  pDialog->SetHeading(20325);
+  pDialog->SetHeading(20335);
   pDialog->Reset();
-  for (std::vector<std::pair<CStdString,CStdString> >::iterator iter = scrapers[item.GetLabel()].begin();iter != scrapers[item.GetLabel()].end();++iter)
+  CStdString strLabel = item.GetLabel();
+  strLabel.Replace(g_localizeStrings.Get(20336),"movies");
+  strLabel.Replace(g_localizeStrings.Get(20337),"tvshows");
+  
+  for (std::vector<std::pair<CStdString,CStdString> >::iterator iter = scrapers[strLabel].begin();iter != scrapers[strLabel].end();++iter)
     pDialog->Add(iter->first);
 
   pDialog->EnableButton(false);
@@ -591,21 +617,17 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem)
 
   // if we do movie content - ask user how to treat this dir
 
-  if (item.GetLabel().Equals("Movies"))
+  if (item.GetLabel().Equals(g_localizeStrings.Get(20336)))
   {
     bool bCanceled;
-    if (CGUIDialogYesNo::ShowAndGetInput(20331,20327,20328,-1,20329,20330,bCanceled))
+    if (CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20330,20331,bCanceled))
     {
-      OnScan();
+      OnScan(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel,false);
     }
     else
-    {
-      if (bCanceled)
-        return;
-      OnInfo(iItem);
-    }
+      OnScan(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel,true);
   }
-  if (item.GetLabel().Equals("TV Shows"))
+  if (item.GetLabel().Equals(g_localizeStrings.Get(20337)))
   {
     items.Clear();
     CUtil::GetRecursiveListing(m_vecItems[iItem]->m_strPath,items,g_stSettings.m_videoExtensions);
@@ -657,7 +679,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem)
 
 }
 
-bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items)
+bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items, const CStdString& strScraper, const CStdString& strContent, bool bDirNames)
 {
   // remove username + password from strPath for display in Dialog
   CURL url(strPath);
@@ -673,7 +695,7 @@ bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& item
     m_dlgProgress->StartModal();
   }
 
-  OnRetrieveVideoInfo(items);
+  OnRetrieveVideoInfo(items,strScraper,strContent,bDirNames);
 
   bool bCancel = false;
   if (m_dlgProgress)
@@ -707,7 +729,7 @@ bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& item
           GetStackedDirectory(pItem->m_strPath, subDirItems);
           if (m_dlgProgress)
             m_dlgProgress->Close();
-          if (!DoScan(pItem->m_strPath, subDirItems))
+          if (!DoScan(pItem->m_strPath, subDirItems, strScraper, strContent,bDirNames))
           {
             bCancel = true;
           }
@@ -802,12 +824,12 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem, bool bContextDriven /* = true 
   CGUIWindowVideoBase::OnPopupMenu(iItem, bContextDriven);
 }
 
-void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
+void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const CStdString& strScraper)
 {
   CIMDB IMDB;
   CIMDBMovie movieDetails;
   movieDetails.m_strSearchString = pItem->m_strPath;
-  if ( IMDB.GetDetails(url, movieDetails, m_dlgProgress) )
+  if ( IMDB.GetDetails(url, movieDetails, strScraper, m_dlgProgress) )
   {
     // add to all movies in the stacked set
     m_database.SetMovieInfo(pItem->m_strPath, movieDetails);

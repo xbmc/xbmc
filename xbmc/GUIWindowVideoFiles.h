@@ -19,12 +19,13 @@ protected:
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   virtual void OnInfo(int iItem);
   virtual void OnQueueItem(int iItem);
-  virtual void OnScan();
+  virtual void OnScan(const CStdString& strPath, const CStdString& strScraper, const CStdString& strContent, bool bDirNames);
   virtual void OnAssignContent(int iItem);
-  bool DoScan(const CStdString& strPath, CFileItemList& items);
+  virtual void OnUnAssignContent(int iItem);
+  bool DoScan(const CStdString& strPath, CFileItemList& items, const CStdString& strScraper, const CStdString& strContent, bool bDirNames);
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
-  void OnRetrieveVideoInfo(CFileItemList& items);
+  void OnRetrieveVideoInfo(CFileItemList& items, const CStdString& strScraper, const CStdString& strContent, bool bDirNames);
   virtual void LoadPlayList(const CStdString& strFileName);
-  void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url);
+  void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const CStdString& strScaper);
   void PlayFolder(const CFileItem* pItem);
 };

@@ -331,8 +331,9 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
       pDlgProgress->Progress();
 
       // 4b. do the websearch
+      CStdString strScraper; // TODO
       IMDB_MOVIELIST movielist;
-      if (IMDB.FindMovie(movieName, movielist, pDlgProgress))
+      if (IMDB.FindMovie(movieName, movielist, strScraper, pDlgProgress))
       {
         pDlgProgress->Close();
         if (movielist.size() > 0)
@@ -388,7 +389,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
       pDlgProgress->Progress();
 
       // get the movie info
-      if (IMDB.GetDetails(url, movieDetails, pDlgProgress))
+      CStdString strScraper; // TODO
+      if (IMDB.GetDetails(url, movieDetails, strScraper, pDlgProgress))
       {
         // got all movie details :-)
         OutputDebugString("got details\n");
@@ -684,7 +686,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_Resume = 0;					// Resume Video
   int btn_Show_Info = 0;			// Show Video Information
   int btn_Assign = 0;         // Assign content to directory
-	int btn_Query = 0;					// Query Info
+  int btn_UnAssign = 0;       // Remove content assignment from directory
   int btn_Mark_UnWatched = 0;	// Clear Watched Status (DB)
   int btn_Mark_Watched = 0;		// Set Watched Status (DB)
   int btn_Update_Title = 0;		// Change Title (DB)
@@ -732,17 +734,54 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 				else
 					btn_Resume = pMenu->AddButton(13381);     // Resume Video
       }
-			// turn off the query info button if we are in playlists view
-			if (GetID() == WINDOW_VIDEO_FILES && !m_vecItems[iItem]->m_bIsFolder && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-      {
-				btn_Show_Info = pMenu->AddButton(13346);
-        btn_Assign = pMenu->AddButton(20324);
-      }
-		}
 
-		// hide scan button unless we're in files window
-		if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-			btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
+      if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      {
+        CStdString strContent, strScraper;
+        // nasty eh?
+        bool bBookmark;
+        CStdString strLast;
+        int iShare = CUtil::GetMatchingShare(m_vecItems[iItem]->m_strPath,g_settings.m_vecMyVideoShares,bBookmark);
+        int iFound=0;
+        if (iShare > -1)
+        {
+          CStdString strPath = m_vecItems[iItem]->m_strPath;
+          CStdString strCompare = g_settings.m_vecMyVideoShares[iShare].strPath;
+          while (!strPath.Equals(g_settings.m_vecMyVideoShares[iShare].strPath))
+          {
+            strScraper.Empty();
+            m_database.GetScraperForPath(strPath,strScraper,strContent);
+            if (!strScraper.IsEmpty()) // found a match
+            {
+              strLast = strPath;
+              iFound++;
+            }
+
+            CStdString strPath2=strPath;
+            CUtil::GetParentPath(strPath2,strPath);
+          }
+        }
+        if (m_vecItems[iItem]->m_bIsFolder)
+        {
+          if (iFound==0)
+            btn_Assign = pMenu->AddButton(20333);
+          else
+          {
+            if (iFound == 1 && strLast.Equals(m_vecItems[iItem]->m_strPath))
+              btn_UnAssign = pMenu->AddButton(20338);
+            else
+              btn_Show_Info = pMenu->AddButton(13346);
+          }
+        }
+        else
+        {
+          if (iFound > 0)
+            btn_Show_Info = pMenu->AddButton(13346);
+        }
+      }
+    }
+    if (GetID() == WINDOW_VIDEO_NAV && !m_vecItems[iItem]->m_bIsFolder)
+      btn_Show_Info = pMenu->AddButton(13346);
 
 		// is the item a database movie?
 		if (GetID() == WINDOW_VIDEO_NAV && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
@@ -840,16 +879,15 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     {
       OnAssignContent(iItem);
     }
+    else if (btnid == btn_UnAssign)
+    {
+      OnUnAssignContent(iItem);
+    }
 		// video info
 		else if (btnid == btn_Show_Info)
     {
       OnInfo(iItem);
 		}
-		// scan
-    else if (btnid == btn_Query)
-    {
-      OnScan();
-    }
 		// unwatched
     else if (btnid == btn_Mark_UnWatched)
 	  {

@@ -73,7 +73,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("create table movielinkfile (idMovie integer primary key, idFile integer)\n");  
 
     CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, idContent integer, strScraper text)\n");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text)\n");
 
     CLog::Log(LOGINFO, "create files table");
     m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, idMovie integer, idEpisode integer)\n");
@@ -126,7 +126,7 @@ long CVideoDatabase::AddPath(const CStdString& strPath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    strSQL=FormatSQL("insert into path (idPath, strPath, idContent, strScraper) values (NULL,'%s',-1,'')", strPath.c_str());
+    strSQL=FormatSQL("insert into path (idPath, strPath, strContent, strScraper) values (NULL,'%s','','')", strPath.c_str());
     m_pDS->exec(strSQL.c_str());
     lPathId = (long)sqlite3_last_insert_rowid( m_pDB->getHandle() );
     return lPathId;
@@ -1241,6 +1241,29 @@ void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<long> &tim
   }
 }
 
+void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+    long lPathId = GetPath(filePath);
+    if (lPathId < 0)
+    { // no path found - we have to add one
+      lPathId = AddPath(filePath);
+      if (lPathId < 0) return ;
+    }
+
+    // Update
+    CStdString strSQL =FormatSQL("update path set strContent='%s',strScraper='%s' where idPath=%u", strContent.c_str(), strScraper.c_str(), lPathId);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::SetScraperForPath(%s) failed", filePath.c_str());
+  }
+}
+
 bool CVideoDatabase::UpdateOldVersion(float fVersion)
 {
   if (fVersion < 0.5f)
@@ -1842,6 +1865,32 @@ int CVideoDatabase::GetMovieCount()
     CLog::Log(LOGERROR, "CVideoDatabase::GetMovieCount() failed");
   }
   return 0;
+}
+
+bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+
+    CStdString strSQL=FormatSQL("select * from path where strPath like '%s'",strPath.c_str());
+    m_pDS->query( strSQL.c_str() );
+
+    int iResult = 0;
+    if (!m_pDS->eof())
+    {
+      strContent = m_pDS->fv("strContent").get_asString();
+      strScraper = m_pDS->fv("strScraper").get_asString();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetScraperForPath() failed");
+  }
+  return false;
 }
 
 void CVideoDatabase::CleanDatabase()

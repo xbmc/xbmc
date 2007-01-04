@@ -71,14 +71,15 @@ public:
   const CStdString GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
 
   // threaded lookup functions
-  bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
-  bool GetDetails(const CIMDBUrl& url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress = NULL);
+  bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, const CStdString& strScraper, CGUIDialogProgress *pProgress = NULL);
+  bool GetDetails(const CIMDBUrl& url, CIMDBMovie &movieDetails, const CStdString& strScraper, CGUIDialogProgress *pProgress = NULL);
 
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
   CHTTP m_http;
 
   CScraperParser m_parser;
+  CStdString m_strScraper;
 
   // threaded stuff
   void Process();

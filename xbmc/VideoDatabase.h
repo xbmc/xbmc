@@ -127,6 +127,7 @@ public:
 
   bool GetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
+  void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent);
 
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items);
@@ -134,6 +135,7 @@ public:
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetGenreById(long lIdGenre, CStdString& strGenre);
   int GetMovieCount();
+  bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent);
 
   void CleanDatabase();
   
