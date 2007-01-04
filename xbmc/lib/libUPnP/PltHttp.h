@@ -1,14 +1,14 @@
 /*****************************************************************
 |
-|   Platinum - HTTP Protocol Helper
+|   Platinum - HTTP Helper
 |
 |   Copyright (c) 2004-2006 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
 
-#ifndef _NPT_HTTP_HELPER_H_
-#define _NPT_HTTP_HELPER_H_
+#ifndef _PLT_HTTP_H_
+#define _PLT_HTTP_H_
 
 /*----------------------------------------------------------------------
 |   includes
@@ -46,8 +46,8 @@ class PLT_HttpHelper {
     static NPT_Result   SetBody(NPT_HttpMessage* message, NPT_InputStreamReference& stream, NPT_Size len = 0);
 
 
-    static NPT_Result GetBody(NPT_HttpMessage& message, NPT_String& body);
-    static NPT_Result ParseBody(NPT_HttpMessage& message, NPT_XmlElementNode*& xml);
+    static NPT_Result   GetBody(NPT_HttpMessage& message, NPT_String& body);
+    static NPT_Result   ParseBody(NPT_HttpMessage& message, NPT_XmlElementNode*& xml);
 };
 
 /*----------------------------------------------------------------------
@@ -71,11 +71,10 @@ public:
     NPT_Result WaitForResponse(NPT_InputStreamReference& input_stream,
                                NPT_HttpRequest&          request, 
                                NPT_SocketInfo&           info, 
-                               NPT_HttpResponse*&        response, 
-                               NPT_Timeout               timeout = NPT_TIMEOUT_INFINITE);
+                               NPT_HttpResponse*&        response);
 
 protected:
     // members
 };
 
-#endif // _PLT_HTTP_HELPER_H_
+#endif /* _PLT_HTTP_H_ */

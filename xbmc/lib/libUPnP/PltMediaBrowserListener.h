@@ -1,6 +1,6 @@
 /*****************************************************************
 |
-|   Platinum - AV Media Server Control Point Listener
+|   Platinum - AV Media Browser Listener
 |
 |   Copyright (c) 2004-2006 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
@@ -23,11 +23,11 @@ class PLT_BrowseInfo {
 public:
     PLT_BrowseInfo() : nr(0), tm(0), uid(0) {}
 
-    NPT_String                 object_id;
-    PLT_MediaItemListReference items;
-    unsigned long              nr;
-    unsigned long              tm;
-    unsigned long              uid;
+    NPT_String                   object_id;
+    PLT_MediaObjectListReference items;
+    unsigned long                nr;
+    unsigned long                tm;
+    unsigned long                uid;
 };
 
 /*----------------------------------------------------------------------

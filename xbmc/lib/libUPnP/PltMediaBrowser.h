@@ -1,6 +1,6 @@
 /*****************************************************************
 |
-|   Platinum - AV Media Server Control Point
+|   Platinum - AV Media Browser (Media Server Control Point)
 |
 |   Copyright (c) 2004-2006 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)

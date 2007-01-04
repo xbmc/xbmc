@@ -5,7 +5,7 @@
 |   Copyright (c) 2004-2006 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
- ****************************************************************/
+****************************************************************/
 
 #ifndef _PLT_DEVICE_DATA_H_
 #define _PLT_DEVICE_DATA_H_
@@ -37,7 +37,7 @@ class PLT_DeviceData
 {
 public:
     PLT_DeviceData(
-        const char*      url_description_path = "/", 
+        NPT_HttpUrl      description_url = NPT_HttpUrl(NULL, 0, "/"), 
         const char*      uuid = "",
         NPT_TimeInterval lease_time = NPT_TimeInterval(40, 0),
         const char*      device_type = "",
@@ -52,7 +52,7 @@ public:
     const NPT_String&       GetUUID()         const { return m_UUID;         }
     const NPT_String&       GetFriendlyName() const { return m_FriendlyName; }
     const NPT_String&       GetType()         const { return m_DeviceType;   }
-    
+
 
     NPT_Result FindServiceByType(const char* type, PLT_Service*& service);
     NPT_Result FindServiceById(const char* id, PLT_Service*& service);
@@ -91,14 +91,12 @@ protected:
     friend class PLT_CtrlPoint;
     friend class PLT_DeviceReadyIterator;
     friend class PLT_DeviceHost;
-    
+
     //members
     NPT_AtomicVariable  m_ReferenceCount;
     bool                m_Root;
     NPT_String          m_UUID;
-    NPT_String          m_URLDescriptionPath;
-    NPT_String          m_URLBaseHost;
-    unsigned int        m_Port;
+    NPT_HttpUrl         m_URLDescription;
     NPT_String          m_URLBasePath;
     NPT_String          m_DeviceType;
     NPT_String          m_FriendlyName;

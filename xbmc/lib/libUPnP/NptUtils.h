@@ -61,7 +61,7 @@ NPT_ParseInteger32(const char* str, NPT_Int32& result, bool relaxed = true);
 #endif
 
 #if defined (NPT_CONFIG_HAVE_SNPRINTF)
-#define NPT_FormatString snprintf
+#define NPT_FormatString NPT_snprintf
 #else
 int NPT_FormatString(char* str, NPT_Size size, const char* format, ...);
 #endif
@@ -91,6 +91,18 @@ extern int NPT_StringsEqualN(const char* s1, const char* s2, unsigned long size)
 (NPT_Size)(strlen(s))
 #else
 extern unsigned long NPT_StringLength(const char* s);
+#endif
+
+#if defined(NPT_CONFIG_HAVE_STRCPY)
+#define NPT_CopyString(dst, src) ((void)strcpy((dst), (src)))
+#else
+extern void NPT_CopyString(char* dst, const char* src);
+#endif
+
+#if defined(NPT_CONFIG_HAVE_STRNCPY)
+#define NPT_CopyStringN(dst, src, n) ((void)strncpy((dst), (src), n))
+#else
+extern int NPT_CopyStringN(char* dst, const char* src, unsigned long n);
 #endif
 
 #if defined(NPT_CONFIG_HAVE_MEMSET)

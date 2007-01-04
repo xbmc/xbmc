@@ -21,44 +21,46 @@
 /*----------------------------------------------------------------------
 |   PLT_ThreadTask class
 +---------------------------------------------------------------------*/
-class PLT_ThreadTask : public NPT_Thread
+class PLT_ThreadTask : public NPT_Runnable
 {
 public:
     friend class PLT_TaskManager;
 
     PLT_ThreadTask();
 
-    // NPT_Thread methods 
-    // Do not override in subclasses
-    void Run();
-
-    // must be implemented
-    virtual NPT_Result Abort();
-    virtual NPT_Result DoRun() { return NPT_SUCCESS; }
+    NPT_Result Start(PLT_TaskManager*  task_manager = NULL, 
+                     NPT_TimeInterval* delay = NULL,
+                     bool              auto_destroy = true);
+    NPT_Result Stop();
+    NPT_Result Kill();
 
     virtual bool IsAborting(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) {
         return NPT_SUCCEEDED(m_Abort.WaitUntilEquals(1, timeout));
     }
-    virtual bool IsDone() {
-        return m_Done;
-    }
 
 protected:
+    // overridable
+    virtual void DoAbort()   {}
+    virtual void DoRun()     {}
+    virtual void DoInit()    {}
+
+    // the task manager will destroy the task when finished
+    // if m_AutoDestroy is set otherwise use Kill 
     virtual ~PLT_ThreadTask();
-
-    virtual NPT_Result  Init() { return NPT_SUCCESS; }
     
-    NPT_Result StartTask(PLT_ThreadTask* task, NPT_TimeInterval* delay = NULL);
-
 private:
-    NPT_Result Start(PLT_TaskManager* task_manager, NPT_TimeInterval* delay = NULL);
+    // NPT_Thread methods
+    void Run();
 
-
-private:
-    NPT_Thread*         m_Thread;
+protected:
+    // members
     PLT_TaskManager*    m_TaskManager;
+
+private:
+    // members
     NPT_SharedVariable  m_Abort;
-    bool                m_Done;
+    NPT_Thread*         m_Thread;
+    bool                m_AutoDestroy;
     NPT_TimeInterval    m_Delay;
 };
 

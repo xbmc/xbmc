@@ -18,6 +18,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
+#include "NptConfig.h"
 #include "NptCommon.h"
 #include "NptResults.h"
 #include "NptTypes.h"
@@ -48,6 +49,5 @@
 #include "NptRingBuffer.h"
 #include "NptBase64.h"
 #include "NptVersion.h"
-
 
 #endif // _NEPTUNE_H_

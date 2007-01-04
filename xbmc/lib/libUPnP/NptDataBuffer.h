@@ -25,8 +25,7 @@ class NPT_DataBuffer
     // constructors & destructor
     NPT_DataBuffer();              // size unknown until first set 
     NPT_DataBuffer(NPT_Size size); // initial size specified
-    NPT_DataBuffer(const void* data, NPT_Size size); // initial data and size specified
-    NPT_DataBuffer(void* data, NPT_Size size, bool copy = true); // initial data and size specified
+    NPT_DataBuffer(const void* data, NPT_Size size, bool copy = true); // initial data and size specified
     NPT_DataBuffer(const NPT_DataBuffer& other);
     virtual ~NPT_DataBuffer();
 

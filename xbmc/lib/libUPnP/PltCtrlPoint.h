@@ -25,6 +25,7 @@
 +---------------------------------------------------------------------*/
 class PLT_HttpServer;
 class PLT_CtrlPointHouseKeepingTask;
+class PLT_SsdpSearchTask;
 
 /*----------------------------------------------------------------------
 |   PLT_CtrlPointListener class
@@ -43,77 +44,6 @@ public:
 typedef NPT_List<PLT_CtrlPointListener*> PLT_CtrlPointListenerList;
 
 /*----------------------------------------------------------------------
-|   PLT_CtrlPointListenerOnDeviceAddedIterator class
-+---------------------------------------------------------------------*/
-class PLT_CtrlPointListenerOnDeviceAddedIterator
-{
-public:
-    PLT_CtrlPointListenerOnDeviceAddedIterator(PLT_DeviceDataReference& device) :
-      m_Device(device) {}
-
-    NPT_Result operator()(PLT_CtrlPointListener*& listener) const {
-        return listener->OnDeviceAdded(m_Device);
-    }
-
-private:
-    PLT_DeviceDataReference& m_Device;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_CtrlPointListenerOnDeviceRemovedIterator class
-+---------------------------------------------------------------------*/
-class PLT_CtrlPointListenerOnDeviceRemovedIterator
-{
-public:
-    PLT_CtrlPointListenerOnDeviceRemovedIterator(PLT_DeviceDataReference& device) :
-      m_Device(device) {}
-
-    NPT_Result operator()(PLT_CtrlPointListener*& listener) const {
-        return listener->OnDeviceRemoved(m_Device);
-    }
-
-private:
-    PLT_DeviceDataReference& m_Device;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_CtrlPointListenerOnActionResponseIterator class
-+---------------------------------------------------------------------*/
-class PLT_CtrlPointListenerOnActionResponseIterator
-{
-public:
-    PLT_CtrlPointListenerOnActionResponseIterator(NPT_Result res, PLT_Action* action, void* userdata) :
-      m_Res(res), m_Action(action), m_Userdata(userdata) {}
-
-    NPT_Result operator()(PLT_CtrlPointListener*& listener) const {
-        return listener->OnActionResponse(m_Res, m_Action, m_Userdata);
-    }
-
-private:
-    NPT_Result  m_Res;
-    PLT_Action* m_Action;
-    void*       m_Userdata;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_CtrlPointListenerOnEventNotifyIterator class
-+---------------------------------------------------------------------*/
-class PLT_CtrlPointListenerOnEventNotifyIterator
-{
-public:
-    PLT_CtrlPointListenerOnEventNotifyIterator(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars) :
-      m_Service(service), m_Vars(vars) {}
-
-    NPT_Result operator()(PLT_CtrlPointListener*& listener) const {
-        return listener->OnEventNotify(m_Service, m_Vars);
-    }
-
-private:
-    PLT_Service*                  m_Service;
-    NPT_List<PLT_StateVariable*>* m_Vars;
-};
-
-/*----------------------------------------------------------------------
 |   PLT_CtrlPoint class
 +---------------------------------------------------------------------*/
 class PLT_CtrlPoint : public PLT_HttpServerListener,
@@ -121,7 +51,7 @@ class PLT_CtrlPoint : public PLT_HttpServerListener,
                       public PLT_SsdpSearchResponseListener
 {
 public:
-    PLT_CtrlPoint(const char* autosearch = "upnp:rootdevice");
+    PLT_CtrlPoint(const char* autosearch = "upnp:rootdevice"); // pass NULL to bypass the multicast search
 
     NPT_Result   AddListener(PLT_CtrlPointListener* listener);
     NPT_Result   RemoveListener(PLT_CtrlPointListener* listener);
@@ -137,14 +67,12 @@ public:
     NPT_Result   Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
                         const char*        target = "upnp:rootdevice", 
                         const NPT_Cardinal MX = 5);
-    
     NPT_Result   Discover(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
                           const char*        target = "ssdp:all", 
                           const NPT_Cardinal MX = 5,
                           NPT_Timeout        repeat = 50000);
     
     NPT_Result   InvokeAction(PLT_Action* action, PLT_Arguments& arguments, void* userdata = NULL);
-
     NPT_Result   Subscribe(PLT_Service* service, bool renew = false, void* userdata = NULL);
 
     // PLT_HttpServerListener methods
@@ -213,64 +141,24 @@ private:
 
 private:
     friend class NPT_Reference<PLT_CtrlPoint>;
-    friend class PLT_SsdpCtrlPointSearchTask;
 	friend class PLT_CtrlPointGetDescriptionTask;
     friend class PLT_CtrlPointGetSCPDTask;
     friend class PLT_CtrlPointInvokeActionTask;
     friend class PLT_CtrlPointHouseKeepingTask;
     friend class PLT_CtrlPointSubscribeEventTask;
 
-    NPT_AtomicVariable                      m_ReferenceCount;
-    NPT_String                              m_UUIDToIgnore;
-    PLT_CtrlPointHouseKeepingTask*          m_HouseKeepingTask;
-    NPT_Lock<PLT_CtrlPointListenerList>     m_ListenerList;
-    PLT_HttpServer*                         m_EventHttpServer;
-    PLT_TaskManager*                        m_TaskManager;
-    NPT_Lock<NPT_List<PLT_DeviceDataReference> >       m_Devices;
-    NPT_List<PLT_EventSubscriber*>          m_Subscribers;
-    NPT_String                              m_AutoSearch;
+    NPT_AtomicVariable                              m_ReferenceCount;
+    NPT_String                                      m_UUIDToIgnore;
+    PLT_CtrlPointHouseKeepingTask*                  m_HouseKeepingTask;
+    NPT_List<PLT_SsdpSearchTask*>                   m_SsdpSearchTasks;
+    NPT_Lock<PLT_CtrlPointListenerList>             m_ListenerList;
+    PLT_HttpServer*                                 m_EventHttpServer;
+    PLT_TaskManager*                                m_TaskManager;
+    NPT_Lock<NPT_List<PLT_DeviceDataReference> >    m_Devices;
+    NPT_List<PLT_EventSubscriber*>                  m_Subscribers;
+    NPT_String                                      m_AutoSearch;
 };
 
 typedef NPT_Reference<PLT_CtrlPoint> PLT_CtrlPointReference;
-
-/*----------------------------------------------------------------------
-|   PLT_AddGetSCPDRequestIterator class
-+---------------------------------------------------------------------*/
-class PLT_AddGetSCPDRequestIterator
-{
-public:
-    PLT_AddGetSCPDRequestIterator(PLT_TaskManager*         task_manager, 
-                                  PLT_CtrlPoint*           ctrl_point, 
-                                  PLT_DeviceDataReference& device) :
-        m_TaskManager(task_manager), m_CtrlPoint(ctrl_point), m_Device(device) {}
-
-    NPT_Result operator()(PLT_Service*& service) const;
-    
-private:
-    PLT_TaskManager*        m_TaskManager;
-    PLT_CtrlPoint*          m_CtrlPoint;
-    PLT_DeviceDataReference m_Device;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_ServiceReadyIterator class
-+---------------------------------------------------------------------*/
-class PLT_ServiceReadyIterator
-{
-public:
-    PLT_ServiceReadyIterator() {}
-
-    NPT_Result operator()(PLT_Service*& service) const;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_DeviceReadyIterator class
-+---------------------------------------------------------------------*/
-class PLT_DeviceReadyIterator
-{
-public:
-    PLT_DeviceReadyIterator() {}
-    NPT_Result operator()(PLT_DeviceDataReference& device) const;
-};
 
 #endif /* _PLT_CONTROL_POINT_H_ */
