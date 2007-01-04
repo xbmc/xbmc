@@ -47,8 +47,8 @@ public:
 
 protected:
     PLT_MediaServer(const char*  friendly_name,
-                    bool  show_ip = false,
-                    const char*  udn = NULL,
+                    bool         show_ip = false,
+                    const char*  uuid = NULL,
                     unsigned int port = 0);
     virtual ~PLT_MediaServer();
 
@@ -65,6 +65,7 @@ protected:
     virtual NPT_Result OnGetSearchCapabilities(PLT_Action* action, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnGetSystemUpdateID(PLT_Action* action, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnBrowse(PLT_Action* action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnSearch(PLT_Action* action, NPT_SocketInfo* info = NULL);
 
     // overridable methods
     virtual NPT_Result OnBrowseMetadata(PLT_Action* /*action*/, const char* /*object_id*/) { return NPT_FAILURE; }

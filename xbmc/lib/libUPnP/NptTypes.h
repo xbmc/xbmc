@@ -28,6 +28,8 @@ typedef void          NPT_Interface;
 typedef unsigned char NPT_Byte;
 typedef unsigned int  NPT_Flags;
 typedef int           NPT_Integer;
+typedef void*         NPT_Any;
+typedef const void*   NPT_AnyConst;
 
 /*----------------------------------------------------------------------
 |   sized types

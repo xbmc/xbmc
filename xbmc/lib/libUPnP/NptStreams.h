@@ -150,7 +150,7 @@ class NPT_MemoryStream :
 public:
     // constructor and destructor
     NPT_MemoryStream();
-    NPT_MemoryStream(void* data, NPT_Size size);
+    NPT_MemoryStream(const void* data, NPT_Size size);
     virtual ~NPT_MemoryStream() {}
 
     // accessors

@@ -34,4 +34,4 @@ void PLT_Log(unsigned long level, const char* format, ...);
 void PLT_SetLogLevel(unsigned long level);
 
 
-#endif // _PLT_LOG_H_
+#endif /* _PLT_LOG_H_ */

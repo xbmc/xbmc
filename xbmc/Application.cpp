@@ -156,7 +156,9 @@
   #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
  #endif
  #ifdef HAS_UPNP
-  #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinumd.lib")
+  #pragma comment (lib,"xbmc/lib/libUPnP/Neptuned.lib")
+  #pragma comment (lib,"xbmc/lib/libUPnP/Platinumd.lib")
+  #pragma comment (lib,"xbmc/lib/libUPnP/PltMediaServerd.lib")
  #endif
  #ifdef _XBOX
   #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib") 
@@ -186,7 +188,9 @@
   #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
  #endif
  #ifdef HAS_UPNP
-  #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinum.lib")
+  #pragma comment (lib,"xbmc/lib/libUPnP/Neptune.lib")
+  #pragma comment (lib,"xbmc/lib/libUPnP/Platinum.lib")
+  #pragma comment (lib,"xbmc/lib/libUPnP/PltMediaServer.lib")  
  #endif
  #ifdef _XBOX
   #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib") 
