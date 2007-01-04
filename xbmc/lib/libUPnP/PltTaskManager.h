@@ -16,6 +16,7 @@
 #include "NptThreads.h"
 #include "NptList.h"
 #include "NptTime.h"
+#include "NptQueue.h"
 
 /*----------------------------------------------------------------------
 |   forward declarations
@@ -25,39 +26,37 @@ class PLT_ThreadTask;
 /*----------------------------------------------------------------------
 |   PLT_TaskManager class
 +---------------------------------------------------------------------*/
-class PLT_TaskManager : public NPT_Runnable
+class PLT_TaskManager
 {
-public:
-	PLT_TaskManager();
-	virtual ~PLT_TaskManager();
-
-    // tasks related methods
-    virtual NPT_Result Start();
-    virtual NPT_Result Stop();
-    virtual NPT_Result StartTask(PLT_ThreadTask* task, NPT_TimeInterval* delay = NULL);
-    virtual NPT_Result StopTask(PLT_ThreadTask* task);
-    virtual NPT_Result StopAllTasks();
-    virtual NPT_Result ScheduleStart() { return NPT_SUCCESS; }
-
-private:
     friend class PLT_ThreadTask;
     friend class PLT_ThreadTaskCallback;
 
-    // called by PLT_ThreadTaskCallback
-    NPT_Mutex& GetCallbackMutex() { return m_CallbackLock; }
+public:
+	PLT_TaskManager(NPT_Cardinal max_items = 0);
+	virtual ~PLT_TaskManager();
 
-    // called by PLT_ThreadTask from dtor
-    NPT_Result RemoveTask(PLT_ThreadTask* task);
+    // tasks related methods
+    virtual NPT_Result StartTask(PLT_ThreadTask*   task, 
+                                 NPT_TimeInterval* delay = NULL,
+                                 bool              auto_destroy = true);
+    virtual NPT_Result StopTask(PLT_ThreadTask* task);
 
-    // NPT_Runnable methods
-    void Run();
+    // methods
+    NPT_Result StopAllTasks();
 
 private:
-    NPT_List<PLT_ThreadTask*> m_Tasks;
-    NPT_Mutex                 m_TasksLock;
-    NPT_Mutex                 m_CallbackLock;
-    NPT_SharedVariable        m_Abort;
-    NPT_Thread*               m_HouseKeepingThread;
+    // called by PLT_ThreadTaskCallback
+    NPT_Mutex& GetCallbackLock() { return m_CallbackLock; }
+
+    // called by PLT_ThreadTask
+    NPT_Result AddTask(PLT_ThreadTask* task);
+    NPT_Result RemoveTask(PLT_ThreadTask* task);
+
+private:
+    NPT_List<PLT_ThreadTask*>  m_Tasks;
+    NPT_Mutex                  m_TasksLock;
+    NPT_Mutex                  m_CallbackLock;
+    NPT_Queue<NPT_Integer>*    m_Queue;
 };
 
 #endif /* _PLT_TASKMANAGER_H_ */

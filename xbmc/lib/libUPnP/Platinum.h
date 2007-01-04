@@ -16,9 +16,12 @@
 #include "PltUPnP.h"
 #include "PltCtrlPoint.h"
 #include "PltDeviceData.h"
-//#include "PltMediaServer.h"
-//#include "PltMediaBrowser.h"
-//#include "PltMediaRenderer.h"
-//#include "PltMediaController.h"
+
+#ifdef PLT_DEVICE_HEADERS_INCLUDE
+#include "PltMediaServer.h"
+#include "PltMediaBrowser.h"
+#include "PltMediaRenderer.h"
+#include "PltMediaController.h"
+#endif
 
 #endif /* _PLATINUM_H_ */

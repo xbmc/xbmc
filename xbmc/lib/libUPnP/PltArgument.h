@@ -66,7 +66,7 @@ public:
 
 private:
     // members
-    NPT_String   m_Name;
+    NPT_String m_Name;
 };
 
 #endif /* _PLT_ARGUMENT_H_ */
