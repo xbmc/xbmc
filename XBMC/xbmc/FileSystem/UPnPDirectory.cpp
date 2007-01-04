@@ -212,6 +212,15 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
         NPT_List<PLT_MediaObject*>::Iterator entry = list->GetFirstItem();
         while (entry) {
+
+            if( (!video && (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0)
+             || (!audio && (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0)
+             || (!image && (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0) )
+            {
+                ++entry;
+                continue;
+            }
+
             CFileItem *pItem = new CFileItem((const char*)(*entry)->m_Title);
             pItem->m_bIsFolder = (*entry)->IsContainer();
 
@@ -222,30 +231,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
             } else {
                 if ((*entry)->m_Resources.GetItemCount()) {
-                  
-                    // look for content type in protocol info
-                    if ((*entry)->m_Resources[0].m_ProtocolInfo.GetLength()) {
-                        char proto[1024];
-                        char dummy1[1024];
-                        char ct[1204];
-                        char dummy2[1024];
-                        int fields = sscanf((*entry)->m_Resources[0].m_ProtocolInfo, "%[^:]:%[^:]:%[^:]:%[^:]", proto, dummy1, ct, dummy2);
-                        if (fields == 4) {
-                            // for now always allow anything else as we can't be sure
-                            if ((!video && strstr(ct, "video/") == ct)
-                             || (!audio && strstr(ct, "audio/") == ct)
-                             || (!image && strstr(ct, "image/") == ct))
-                            {
-                                delete pItem;
-                                ++entry;
-                                continue;
-                            }
-                            pItem->SetContentType(ct);
-                        }
-                    }
-                  
-                  
-                  // if http protocol, override url with upnp so that it triggers the use of PAPLAYER instead of MPLAYER
+                    // if http protocol, override url with upnp so that it triggers the use of PAPLAYER instead of MPLAYER
                     // somehow MPLAYER tries to http stream the wma even though the server doesn't support it.
                     if ((*entry)->m_Resources[0].m_Uri.Left(4).Compare("http", true) == 0) {
                         pItem->m_strPath = (const char*) NPT_String("upnp") + (*entry)->m_Resources[0].m_Uri.SubString(4);
@@ -268,6 +254,18 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     }
                     pItem->m_musicInfoTag.SetTitle((const char*) (*entry)->m_Title);                    
                     pItem->m_musicInfoTag.SetLoaded();
+
+                    // look for content type in protocol info
+                    if ((*entry)->m_Resources[0].m_ProtocolInfo.GetLength()) {
+                        char proto[1024];
+                        char dummy1[1024];
+                        char ct[1204];
+                        char dummy2[1024];
+                        int fields = sscanf((*entry)->m_Resources[0].m_ProtocolInfo, "%[^:]:%[^:]:%[^:]:%[^:]", proto, dummy1, ct, dummy2);
+                        if (fields == 4) {
+                            pItem->SetContentType(ct);
+                        }
+                    }
 
                     //TODO, current thumbnail and icon of CFileItem is expected to be a local
                     //      image file in the normal thumbnail directories, we have no way to
