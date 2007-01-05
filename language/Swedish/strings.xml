@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 12/25/2006-->
+<!--Translator: blittan-->
+<!--Email: blittan@hotmail.com-->
+<!--Date of translation: 12/30/2006-->
 <!--$Revision$-->
-<!--Based on english strings version 7426-->
+<!--Based on english strings version 7447-->
 <strings>
   <string id="0">Mina Program</string>
   <string id="1">Mina Bilder</string>
@@ -451,6 +453,26 @@
   <string id="538">Stora ikoner</string>
   <string id="539">Bred</string>
   <string id="540">Stor bred</string>
+  <string id="550">Sortera efter: %s</string>
+  <string id="551">Namn</string>
+  <string id="552">Datum</string>
+  <string id="553">Storlek</string>
+  <string id="554">Spår</string>
+  <string id="555">Tid</string>
+  <string id="556">Titel</string>
+  <string id="557">Artist</string>
+  <string id="558">Album</string>
+  <string id="559">Spellista</string>
+  <string id="560">ID</string>
+  <string id="561">Fil</string>
+  <string id="562">Årtal</string>
+  <string id="563">Betyg</string>
+  <string id="564">Typ</string>
+  <string id="565">Användning</string>
+  <string id="580">Sorteringsriktning</string>
+  <string id="581">Sorteringsmetod</string>
+  <string id="582">Visningsläge</string>
+  <string id="583">Kom ihåg visningslägen för olika mappar</string>
   <string id="588">Avbryt Festläge</string>
   <string id="589">Festläge</string>
   <string id="590">Slumpmässig</string>
