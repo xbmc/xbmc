@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: StompSC-->
-<!--Email: stompsc@yahoo.de-->
-<!--Date of translation: 12/15/2006-->
+<!--Translator: bootsy-->
+<!--Date of translation: 01/02/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7347-->
+<!--Based on english strings version 7447-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -12,8 +10,10 @@
   <string id="3">Videos</string>
   <string id="4">TV-Programm</string>
   <string id="5">Einstellungen</string>
+  <string id="6">Xbox Media Center SVN</string>
   <string id="7">Dateimanager</string>
   <string id="8">Wetter</string>
+
   <string id="11">Montag</string>
   <string id="12">Dienstag</string>
   <string id="13">Mittwoch</string>
@@ -21,6 +21,7 @@
   <string id="15">Freitag</string>
   <string id="16">Samstag</string>
   <string id="17">Sonntag</string>
+
   <string id="21">Januar</string>
   <string id="22">Februar</string>
   <string id="23">März</string>
@@ -33,6 +34,7 @@
   <string id="30">Oktober</string>
   <string id="31">November</string>
   <string id="32">Dezember</string>
+
   <string id="98">Autoansicht</string>
   <string id="99">Große Autoansicht</string>
   <string id="100">Symbolansicht</string>
@@ -329,6 +331,7 @@
   <string id="406">Feuchtigkeit</string>
   <string id="407">von</string>
   <string id="408">mit</string>
+
   <string id="410">Verbinde mit weather.com</string>
   <string id="411">Erhalte Wetter-Informationen für:</string>
   <string id="412">Wetter-Informationen können nicht geladen werden</string>
@@ -446,6 +449,36 @@
   <string id="531">Neues Genre</string>
   <string id="532">Manuell hinzugefügt</string>
   <string id="533">Genre eingeben</string>
+  <string id="534">%s</string>
+  <string id="535">Listenansicht</string>
+  <string id="536">Symbolansicht</string>
+  <string id="537">Große Liste</string>
+  <string id="538">Große Symbole</string>
+  <string id="539">Breite Liste</string>
+  <string id="540">Große Breite Liste</string>
+
+  <string id="550">Nach %s</string>
+  <string id="551">Name</string>
+  <string id="552">Datum</string>
+  <string id="553">Größe</string>
+  <string id="554">Titel-Nr.</string>
+  <string id="555">Zeit</string>
+  <string id="556">Titel</string>
+  <string id="557">Interpret</string>
+  <string id="558">Album</string>
+  <string id="559">Playlist</string>
+  <string id="560">ID</string>
+  <string id="561">Datei</string>
+  <string id="562">Jahr</string>
+  <string id="563">Bewertung</string>
+  <string id="564">Typ</string>
+  <string id="565">Gebrauch</string>
+
+  <string id="580">Sortierungs-Richtung</string>
+  <string id="581">Sortierungs-Methode</string>
+  <string id="582">Ansicht</string>
+  <string id="583">Ansichten von Ordnern merken</string>
+
   <string id="588">Party-Modus verlassen</string>
   <string id="589">Party-Modus</string>
   <string id="590">Zufall</string>
@@ -456,6 +489,7 @@
   <string id="595">Wiederholen Aus</string>
   <string id="596">Wiederholen Eins</string>
   <string id="597">Wiederholen Alle</string>
+
   <string id="600">CD kopieren</string>
   <string id="601">Mittlere Qualität</string>
   <string id="602">Standard Qualität</string>
@@ -467,6 +501,7 @@
   <string id="608">CD oder Titel konnte nicht kopiert werden!</string>
   <string id="609">CD Ziel-Pfad ist nicht konfiguriert.</string>
   <string id="610">Titel kopieren</string>
+
   <string id="620">CD-Kopieren</string>
   <string id="621">Umwandlungs-Algorithmus</string>
   <string id="622">Qualität</string>
@@ -492,6 +527,7 @@
   <string id="645">Eine große Datei muss entpackt werden.
 Möchten Sie fortfahren?</string>
   <string id="646">Titel entfernen</string>
+
   <string id="700">Datenbank aufräumen</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
   <string id="702">Dieser Pfad wurde bereits aktualisiert. Möchten Sie den Pfad
@@ -566,6 +602,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="772">Audio-Hardware</string>
   <string id="773">Positionieren</string>
   <string id="774">Diaschau-Ordner</string>
+
   <string id="998">XLink-Kai</string>
   <string id="999">Online spielen</string>
   <string id="1000">Vorschau</string>
@@ -601,11 +638,14 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="1030">Ein Bild</string>
   <string id="1031">Ein Ordner mit Bildern</string>
   <string id="1032">Netzwerkfreigabe hinzufügen...</string>
+
   <string id="1200">SMB-Client</string>
   <string id="1202">Arbeitsgruppe</string>
   <string id="1203">Standard Benutzername</string>
   <string id="1204">Standard Passwort</string>
+
   <string id="1207">WINS-Server</string>
+
   <string id="1210">Entfernen</string>
   <string id="1211">Musik</string>
   <string id="1212">Video</string>
@@ -630,9 +670,11 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="1233">Programme / Videos / Musik</string>
   <string id="1234">Programme / Bilder / Musik</string>
   <string id="1235">Programme / Bilder / Videos</string>
+
   <string id="1245">FTP-Benutzername</string>
   <string id="1246">FTP-Passwort</string>
   <string id="1247">Das Passwort wurde erfolgreich gesetzt.</string>
+
   <string id="1250">Autom. erkennen</string>
   <string id="1251">Andere Konsolen im Netzwerk suchen</string>
   <string id="1252">Nick-Name der eigenen XBOX</string>
@@ -641,6 +683,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="1255">FTP-Benutzername und Passwort senden</string>
   <string id="1256">Ping-Intervall</string>
   <string id="1257">Soll eine Verbindung zur XBOX aufgebaut werden?</string>
+
   <string id="1396">rutschig</string>
   <string id="1397">und</string>
   <string id="1398">frierend</string>
@@ -658,8 +701,11 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="1410">windstill</string>
   <string id="1411">mit</string>
   <string id="1412">windig</string>
+  <string id="1413">nieslig</string>
   <string id="2050">Spieldauer:</string>
+
   <string id="4501">LCD-Typ</string>
+
   <string id="10000">Hauptmenü</string>
   <string id="10001">Programme</string>
   <string id="10002">Bilder</string>
@@ -687,8 +733,10 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="10025">Videos/Titel</string>
   <string id="10028">Videos/Playlisten</string>
   <string id="10034">Einstellungen-&gt;Profile</string>
+
   <string id="10100">JA/NEIN-Dialog</string>
   <string id="10101">Fortschrittsdialog</string>
+
   <string id="10500">Musik/Playlist</string>
   <string id="10501">Musik/Dateien</string>
   <string id="10502">Musik/Datenbank</string>
@@ -714,6 +762,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="10522">Videos - Playlisten</string>
   <string id="10523">Album-Informationen</string>
   <string id="10524">Film-Informationen</string>
+
   <string id="12000">Auswahl-Dialog</string>
   <string id="12001">Musik/Informationen</string>
   <string id="12002">Dialog OK</string>
@@ -738,6 +787,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="12021">Am Anfang starten</string>
   <string id="12022">An der letzten Positon fortsetzen</string>
   <string id="12023">Vergleiche vorhandene Trainer...</string>
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -801,9 +851,12 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="12392">Stunden</string>
   <string id="12393">Tage</string>
   <string id="12394">Laufzeitzeit gesamt</string>
+
   <string id="12600">Wetter</string>
+
   <string id="12900">Bildschirmschoner</string>
   <string id="12901">Vollbild-OSD</string>
+
   <string id="13000">System</string>
   <string id="13001">Festplatte sofort abschalten</string>
   <string id="13002">nur Video</string>
@@ -811,7 +864,9 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13004">- minimale Dauer der Datei</string>
   <string id="13005">Ausschalten</string>
   <string id="13006">Dashboard</string>
+
   <string id="13100">Videofilter</string>
+
   <string id="13150">Schlüssel:</string>
   <string id="13151">Temperatur:</string>
   <string id="13152">Modell:</string>
@@ -834,6 +889,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13170">Nie</string>
   <string id="13171">Sofort</string>
   <string id="13172">Nach %i Sek</string>
+
   <string id="13200">Profile</string>
   <string id="13201">Soll das Profil '%s' wirklich gelöscht werden?</string>
   <string id="13204">Zuletzt geladenes Profil:</string>
@@ -844,13 +900,16 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13210">Gestartet, Alarm in %im</string>
   <string id="13211">Alarm!</string>
   <string id="13212">Deaktiviert. Restzeit war %im%is.</string>
+
   <string id="13249">Untertitel in RAR-Dateien suchen</string>
   <string id="13250">Untertitel suchen...</string>
   <string id="13251">Verschieben</string>
   <string id="13252">Hierhin verschieben</string>
   <string id="13253">Verschieben abbrechen</string>
+
   <string id="13270">Hardware:</string>
   <string id="13271">CPU-Geschwindigkeit:</string>
+
   <string id="13274">XBOX ist verbunden, aber es ist kein DNS verfügbar!</string>
   <string id="13275">Festplatte</string>
   <string id="13276">DVD-Laufwerk</string>
@@ -969,6 +1028,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13403">Standard entfernen</string>
   <string id="13404">Fortsetzen</string>
   <string id="13405">Cover Download</string>
+
   <string id="14000">Videos Stapeln</string>
   <string id="14001">Stapeln deaktivieren</string>
   <string id="14003">Playlist wird heruntergeladen...</string>
@@ -1040,6 +1100,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="14071">Löschen und Umbenennen von Dateien erlauben</string>
   <string id="14072">XLink-Kai aktivieren</string>
   <string id="14073">XLink-Kai ist nicht aktiv.</string>
+
   <string id="15000">XLink-Kai</string>
   <string id="15001">Es besteht keine Verbindung zu XLink-Kai. Möchten</string>
   <string id="15002">Sie jetzt versuchen eine Verbindung aufzubauen?</string>
@@ -1114,6 +1175,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="15109">Vorgabe des Skins</string>
   <string id="15111">Skin Schema</string>
   <string id="15112">Standard Schema</string>
+
   <string id="15200">Last.fm</string>
   <string id="15201">Abgespielte Musiktitel an Last.fm übermitteln</string>
   <string id="15202">Benutzername</string>
@@ -1130,6 +1192,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="15213">Abspielen mit...</string>
   <string id="15214">Weiche Audio/Video-Synchronisation verwenden</string>
   <string id="15215">Keine Dateinamen in der Symbolansicht anzeigen</string>
+
   <string id="15250">Last.fm Radio an Last.fm übermitteln</string>
   <string id="15251">Verbindung mit Last.fm herstellen...</string>
   <string id="15252">Station wird ausgewählt...</string>
@@ -1165,17 +1228,21 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="15282">Bitte geben Sie einen zu suchenden Tagnamen ein</string>
   <string id="15283">Kürzlich gehörte Titel von %name%</string>
   <string id="15284">%name%'s Last.FM Radio Empfehlung hören</string>
+
   <string id="15300">Der Pfad wurde nicht gefunden oder ist ungültig.</string>
   <string id="15301">Keine Verbindung zum Netzwerkserver.</string>
   <string id="15302">Es wurden keine Server gefunden.</string>
   <string id="15303">Es konnte keine Arbeitsgruppe gefunden werden.</string>
+
   <string id="15310">Multi-Pfad-Freigabe wird geöffnet...</string>
   <string id="15311">Pfad:</string>
+
   <string id="16000">Allgemein</string>
   <string id="16001">Audio-Hardware konfigurieren...</string>
   <string id="16002">CDDB anfragen</string>
   <string id="16003">Wiedergabe</string>
   <string id="16004">Inhalt der CD/DVD abspielen</string>
+
   <string id="16009">Bitte geben Sie den Namen des Films ein</string>
   <string id="16010">Bitte geben Sie einen Namen für das Profil ein</string>
   <string id="16011">Bitte geben Sie den Namen des Albums ein</string>
@@ -1195,11 +1262,13 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="16025">Bitte geben Sie den Namen des Interpreten ein</string>
   <string id="16026">Wiedergabe der Playlist abgebrochen</string>
   <string id="16027">Zu viele Einträge konnten nicht wiedergegeben werden</string>
+
   <string id="16030">Party-Modus wurde beendet.</string>
   <string id="16031">Es befinden sich keine passenden Titel in der Datenbank.</string>
   <string id="16032">Die Datenbank konnte nicht gestartet werden.</string>
   <string id="16033">Die Datenbank konnte nicht geöffnet werden.</string>
   <string id="16034">Es konnten keine Titel aus der Datenbank geladen werden.</string>
+
   <string id="16100">Alle Videos</string>
   <string id="16101">Nicht gesehen</string>
   <string id="16102">Gesehen</string>
@@ -1211,6 +1280,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="16108">Nur NTSC-J verwenden</string>
   <string id="16109">Nur PAL-60 verwenden</string>
   <string id="16110">Bei 60Hz-Spielen</string>
+
   <string id="16200">Der Vorgang wurde abgebrochen.</string>
   <string id="16201">Fehler beim Kopieren</string>
   <string id="16202">Fehler beim Kopieren von mindestens einer Datei.</string>
@@ -1218,6 +1288,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="16204">Fehler beim Verschieben von mindestens einer Datei.</string>
   <string id="16205">Fehler beim Löschen.</string>
   <string id="16206">Fehler beim Löschen von mindestens einer Datei.</string>
+
   <string id="20000">Ordner für CD-Aufnahmen</string>
   <string id="20001">Externen DVD-Player verwenden</string>
   <string id="20002">Externer DVD-Player</string>
@@ -1428,8 +1499,15 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20320">Spielstand zum Herunterladen und Installieren wählen</string>
   <string id="20321">Kein Online Spielstand für das gewählte Spiel gefunden</string>
   <string id="20322">Spielstand wählen</string>
-  <string id="20323">Spielstand</string>
+  <string id="20323">Spielstände</string>
   <string id="20324">Einzelteil spielen...</string>
+  <string id="20325">Kalibrierung zurücksetzen</string>
+  <string id="20326">Dies setzt die Kalibrierungswerte von %s</string>
+  <string id="20327">auf seine Standardwerte zurück.</string>
+  <string id="20328">Der Ort, wohin die Saves kopiert werden, ist zu</string>
+  <string id="20329">Der Ort, wohin die Saves verschoben werden, ist zu</string>
+
   <string id="29999">Automatische Videofilter Korrektur</string>
 </strings>
+
  	  	 
