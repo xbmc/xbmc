@@ -124,3 +124,16 @@ const string& CGUIToggleButtonControl::GetLabel() const
   return CGUIButtonControl::GetLabel();
 }
 
+void CGUIToggleButtonControl::SetAltClickActions(const vector<CStdString> &clickActions)
+{
+  m_selectButton.SetClickActions(clickActions);
+}
+
+void CGUIToggleButtonControl::OnClick()
+{
+  // the ! is here as m_bSelected gets updated before this is called
+  if (!m_bSelected && m_selectButton.HasClickActions())
+    m_selectButton.OnClick();
+  else
+    CGUIButtonControl::OnClick();
+}

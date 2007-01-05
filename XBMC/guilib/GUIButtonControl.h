@@ -55,8 +55,10 @@ public:
   void RAMSetTextColor(DWORD dwTextColor);
   void SettingsCategorySetTextAlign(DWORD dwAlign);
 
+  virtual void OnClick();
+  bool HasClickActions() { return m_clickActions.size() > 0; };
+
 protected:
-  void OnClick();
   void OnFocus();
 
   CGUIImage m_imgFocus;
