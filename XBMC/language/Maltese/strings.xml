@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Michel Bugeja-->
 <!--Email: michelbugeja@rabatmalta.com-->
-<!--Date of translation: 12/13/2006-->
+<!--Date of translation: 12/30/2006-->
 <!--$Revision$-->
-<!--Based on english strings version 7321-->
+<!--Based on english strings version 7426-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Ritratti</string>
@@ -146,17 +146,17 @@
   <string id="208">Ara</string>
   <string id="209">Li jmiss</string>
   <string id="210">Ta' qabel</string>
-  <string id="213">UI Calibration</string>
-  <string id="214">Screen Calibration</string>
+  <string id="213">Ikkalibra UI</string>
+  <string id="214">Ikkalibra Vidjo</string>
   <string id="215">Soften</string>
-  <string id="216">Lenti</string>
+  <string id="216">Saħħa Lenti</string>
   <string id="217">Ġebbed</string>
   <string id="218">Diska DVD</string>
   <string id="219">Daħħal diska</string>
   <string id="220">Remote Share</string>
   <string id="221">Network mhux imqabbad</string>
   <string id="222">Waqqaf</string>
-  <string id="224">Velocita'</string>
+  <string id="224">Veloċita'</string>
   <string id="225">Ħin Tranżitorju</string>
   <string id="227">Uza CDDB</string>
   <string id="228">Ħawwad Playlist meta taqra</string>
@@ -295,7 +295,7 @@
   <string id="372">L-biċċa l-kbira</string>
   <string id="373">Xemxi</string>
   <string id="374">Msaħħab</string>
-  <string id="375">Snow</string>
+  <string id="375">Silġ</string>
   <string id="376">Xita</string>
   <string id="377">Ħafif</string>
   <string id="378">AM</string>
@@ -303,22 +303,22 @@
   <string id="380">Rxiex</string>
   <string id="381">Ftit</string>
   <string id="382">Scattered</string>
-  <string id="383">Rih</string>
+  <string id="383">Riħ</string>
   <string id="384">Qawwi</string>
   <string id="385">Ħafif</string>
-  <string id="386">Car</string>
+  <string id="386">Ċar</string>
   <string id="387">Sħab</string>
-  <string id="388">N/A</string>
-  <string id="389">N/A</string>
-  <string id="390">N/A</string>
-  <string id="391">N/A</string>
-  <string id="392">N/A</string>
-  <string id="393">N/A</string>
-  <string id="394">N/A</string>
-  <string id="395">N/A</string>
+  <string id="388">Kmieni</string>
+  <string id="389">Rxiex</string>
+  <string id="390">Borra</string>
+  <string id="391">Baxx</string>
+  <string id="392">Medju</string>
+  <string id="393">Għoli</string>
+  <string id="394">Ċpar</string>
+  <string id="395">Haze</string>
   <string id="396">Għażel Lokalita'</string>
   <string id="397">Refresh Time</string>
-  <string id="398">Kejl tat-Temperatur</string>
+  <string id="398">Kejl tat-Temperatura</string>
   <string id="399">Kejl tal-Veloċita'</string>
   <string id="400">It-Temp</string>
   <string id="401">Temp</string>
@@ -446,6 +446,13 @@
   <string id="531">Żid Ġeneru</string>
   <string id="532">Żid Manwali</string>
   <string id="533">Daħħal Ġeneru</string>
+  <string id="534">Ara: %s</string>
+  <string id="535">Lista</string>
+  <string id="536">Icons</string>
+  <string id="537">Lista Kbira</string>
+  <string id="538">Icons Kbar</string>
+  <string id="539">Wiegħsa</string>
+  <string id="540">Wiegħsa Kbir</string>
   <string id="588">Cancel Party Mode</string>
   <string id="589">Party Mode</string>
   <string id="590">Random</string>
@@ -1149,8 +1156,8 @@
   <string id="15268">L-aħjar artisti magħżula minn %name%</string>
   <string id="15269">L-aħjar albums magħżula minn %name%</string>
   <string id="15270">L-aħjar diski magħżula minn %name%</string>
-  <string id="15271">Hbieb ta' %name%</string>
-  <string id="15272">Girien ta' %name%</string>
+  <string id="15271">Ħbieb ta' %name%</string>
+  <string id="15272">Ġirien ta' %name%</string>
   <string id="15273">Chart tal-artist tal-ġimgħa għal %name%</string>
   <string id="15274">Chart tal-album tal-ġimgħa għal %name%</string>
   <string id="15275">Chart tad-diska tal-ġimgħa għal %name%</string>
@@ -1184,19 +1191,19 @@
   <string id="16016">Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
   <string id="16017">Daħħal Search String</string>
   <string id="16018">Xejn</string>
-  <string id="16019">Għazel Awtomatikament</string>
+  <string id="16019">Għażel Awtomatikament</string>
   <string id="16020">DeInterlace</string>
-  <string id="16021">Sync Bil-Fart</string>
-  <string id="16022">Sync Biz-zewg</string>
+  <string id="16021">Bob</string>
+  <string id="16022">Bob (Inverted)</string>
   <string id="16023">Interlaced Handling</string>
-  <string id="16024">Qed nikkancella...</string>
+  <string id="16024">Qed nikkanċella...</string>
   <string id="16025">Daħħal l-isem tal-Artist</string>
   <string id="16026">Playlist playback aborted</string>
-  <string id="16027">Too many consecutive failed items</string>
-  <string id="16030">Hrigt minn Party Mode.</string>
+  <string id="16027">Ħafna problemi konsekuttivi</string>
+  <string id="16030">Ħriġt minn Party Mode.</string>
   <string id="16031">Tfittxija fid-database bla riżultat.</string>
   <string id="16032">Ma stajtx ntella d-database.</string>
-  <string id="16033">Ma stajtx niftah id-database.</string>
+  <string id="16033">Ma stajtx niftaħ id-database.</string>
   <string id="16034">Ma stajtx ingib id-diska mid-database.</string>
   <string id="16100">Filmati Kollha</string>
   <string id="16101">Ma Rajtx</string>
@@ -1209,13 +1216,13 @@
   <string id="16108">Uża NTSC-J biss</string>
   <string id="16109">Uża PAL-60 biss</string>
   <string id="16110">Għal Logħob 60hz Biss</string>
-  <string id="16200">Hidma giet ikkancellata</string>
+  <string id="16200">Hidma giet ikkanċellata</string>
   <string id="16201">Problema - Mhux ikkuppjat</string>
-  <string id="16202">Problema - Tal-inqas Fajl wiehed mhux ikkuppjat</string>
-  <string id="16203">Problema - Mhux imcaqlaq.</string>
-  <string id="16204">Problema - Tal-inqas Fajl wiehed mhux imcaqlaq</string>
-  <string id="16205">Problema - Mhux imĦassar.</string>
-  <string id="16206">Problema - Tal-inqas Fajl wiehed mhux iĦassar</string>
+  <string id="16202">Problema - Tal-inqas Fajl wieħed mhux ikkuppjat</string>
+  <string id="16203">Problema - Mhux imċaqlaq.</string>
+  <string id="16204">Problema - Tal-inqas Fajl wieħed mhux imċaqlaq</string>
+  <string id="16205">Problema - Mhux imħassar.</string>
+  <string id="16206">Problema - Tal-inqas Fajl wieħed mhux iħassar</string>
   <string id="20000">CDDA Rip Kannestru</string>
   <string id="20001">Uża DVD Player alternattiv</string>
   <string id="20002">DVD Player alternattiv</string>
@@ -1240,26 +1247,26 @@
   <string id="20021">Għazel lhiema trid tuża</string>
   <string id="20022">
   </string>
-  <string id="20023">Conflict</string>
-  <string id="20024">Tfittxija Gdida</string>
+  <string id="20023">Kunflitt</string>
+  <string id="20024">Tfittxija Ġdida</string>
   <string id="20025">Fittex Kollox</string>
-  <string id="20026">Region</string>
+  <string id="20026">Reġjun</string>
   <string id="20038">Aqfel sezzjoni tal-mużika</string>
   <string id="20039">Aqfel sezzjoni tal-Filmati</string>
   <string id="20040">Aqfel sezzjoni tal-istampi</string>
   <string id="20041">Aqfel sezzjoni tal-programmi u scripts</string>
   <string id="20042">Aqfel filemanager</string>
   <string id="20043">Settings tal-Aċċess</string>
-  <string id="20044">Ibda Gdid</string>
-  <string id="20045">Idhol Master Mode</string>
-  <string id="20046">Ohrog minn Master Mode</string>
+  <string id="20044">Ibda Ġdid</string>
+  <string id="20045">Idħol Master Mode</string>
+  <string id="20046">Oħroġ minn Master Mode</string>
   <string id="20047">Oħloq profil '%s' ?</string>
   <string id="20048">Ibda b'settings godda</string>
   <string id="20049">L-aħjar li jezistu</string>
   <string id="20050">Ibdel bejn16x9 u 4x3 awtomatikament</string>
   <string id="20051">Treat stacked files as single file</string>
   <string id="20052">Attent</string>
-  <string id="20053">Hrigt minn Master Mode</string>
+  <string id="20053">Ħriġt minn Master Mode</string>
   <string id="20054">Dħalt Master Mode</string>
   <string id="20055">Allmusic.com Thumb</string>
   <string id="20056">Source Thumbnail</string>
@@ -1309,7 +1316,7 @@
   <string id="20100">Kowd tal-Master Lock u Settings</string>
   <string id="20101">Tattiva Master Mode kull meta ddaħħal Kowd tal-Master Lock</string>
   <string id="20102">jew ikkopja mid-default?</string>
-  <string id="20103">Zomm it-tibdil tal-profil?</string>
+  <string id="20103">Żomm it-tibdil tal-profil?</string>
   <string id="20104">Settings qodma misjuba.</string>
   <string id="20105">Trid tużahom?</string>
   <string id="20106">Instabu sorsi tal-media antiki.</string>
@@ -1323,10 +1330,10 @@
   <string id="20114">Profil %i / %i</string>
   <string id="20115">User Login / Għazel Profil</string>
   <string id="20116">Uża lock meta tilloggja</string>
-  <string id="20117">Lock Kowd Hazin.</string>
+  <string id="20117">Lock Kowd Ħażin.</string>
   <string id="20118">Hemm bzonn li Master Lock tkun issettjata.</string>
   <string id="20119">Trid tissettja issa?</string>
-  <string id="20120">Jiftah informazzjoni tal-program</string>
+  <string id="20120">Jiftaħ informazzjoni tal-program</string>
   <string id="20121">Party beda!</string>
   <string id="20122">Veru</string>
   <string id="20123">Iħawwad ix-xorb</string>
@@ -1430,6 +1437,10 @@
   <string id="20322">Mur Logħob miżmuma</string>
   <string id="20323">Logħob miżmuma</string>
   <string id="20324">Ara parti...</string>
-  <string id="20325">Parti %i / %i</string>
+  <string id="20325">Kalibbrazzjoni Risetjata</string>
+  <string id="20326">Din tirrisetja l-valuri tal-kalibrazzjoni ta' %s</string>
+  <string id="20327">għad-difolt.</string>
+  <string id="20328">lokazzjoni biex tikkopja ġo</string>
+  <string id="20329">lokazzjoni biex tmexxi ġo</string>
   <string id="29999">Flicker Filter Patch Awtomatiku</string>
 </strings>
