@@ -34,8 +34,10 @@ public:
   void SetAltLabel(const string& label);
   virtual const string& GetLabel() const;
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
+  void SetAltClickActions(const vector<CStdString> &clickActions);
 
 protected:
+  virtual void OnClick();
   virtual void Update();
   CGUIButtonControl m_selectButton;
   int m_toggleSelect;
