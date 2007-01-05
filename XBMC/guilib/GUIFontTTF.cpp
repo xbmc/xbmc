@@ -133,7 +133,7 @@ void CGUIFontTTF::Clear()
   }
 }
 
-bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
+bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, float aspect)
 {
   // create our character texture + font shader
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
@@ -147,8 +147,8 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   if (FT_New_Face( m_library, strFilename.c_str(), 0, &m_face ))
     return false;
 
-  unsigned int xdpi = 72;
   unsigned int ydpi = 72;
+  unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
 
   // we set our screen res currently to 96dpi in both directions (windows default)
   // we cache our characters (for rendering speed) so it's probably

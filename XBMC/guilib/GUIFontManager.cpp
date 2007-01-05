@@ -71,12 +71,18 @@ CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdStrin
 }
 #endif
 
-CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle)
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float aspect)
 {
   //check if font already exists
   CGUIFont* pFont = GetFont(strFontName, false);
   if (pFont)
     return pFont;
+
+  // adjust aspect ratio
+  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  // #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() > 2.0 && res == PAL_16x9 || res == PAL60_16x9 || res == NTSC_16x9 || res == HDTV_480p_16x9)
+    aspect *= 0.75f;
 
   CStdString strPath;
   if (strFilename[1] != ':')
@@ -90,12 +96,12 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
 
   // check if we already have this font file loaded...
   CStdString TTFfontName;
-  TTFfontName.Format("%s_%i_%i", strFilename, iSize, iStyle);
+  TTFfontName.Format("%s_%i_%i_%f", strFilename, iSize, iStyle, aspect);
   CGUIFontBase* pFontFile = GetFontFile(TTFfontName);
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
-    boolean bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(strPath, iSize, iStyle);
+    boolean bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(strPath, iSize, iStyle, aspect);
     if (!bFontLoaded)
     {
       // Now try to load it from media\fonts
@@ -105,7 +111,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
         strPath += strFilename;
       }
 
-      bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(strPath, iSize, iStyle);
+      bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(strPath, iSize, iStyle, aspect);
     }
 
     if (!bFontLoaded)
@@ -295,6 +301,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
           {
             int iSize = 20;
             int iStyle = FONT_STYLE_NORMAL;
+            float aspect = 1.0f;
 
             XMLUtils::GetInt(fontNode, "size", iSize);
             if (iSize <= 0) iSize = 20;
@@ -312,7 +319,9 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
                 iStyle = FONT_STYLE_BOLD_ITALICS;
             }
 
-            LoadTTF(strFontName, strFontFileName, textColor, shadowColor, iSize, iStyle);
+            XMLUtils::GetFloat(fontNode, "aspect", aspect);
+
+            LoadTTF(strFontName, strFontFileName, textColor, shadowColor, iSize, iStyle, aspect);
           }
         }
       }
