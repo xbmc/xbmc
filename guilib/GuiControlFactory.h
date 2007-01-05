@@ -23,7 +23,7 @@ public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
   CStdString GetType(const TiXmlElement *pControlNode);
-  CGUIControl* Create(DWORD dwParentId, CGUIControl *group, TiXmlElement* pControlNode);
+  CGUIControl* Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode);
   bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::GUIIMAGE_ASPECT_RATIO &aspectRatio);
