@@ -355,6 +355,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   float spaceBetweenItems = 2;
   bool bHasPath = false;
   vector<CStdString> clickActions;
+  vector<CStdString> altclickActions;
   vector<CStdString> focusActions;
   CStdString strTitle = "";
   CStdString strRSSTags = "";
@@ -563,6 +564,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
   GetMultipleString(pControlNode, "onclick", clickActions);
   GetMultipleString(pControlNode, "onfocus", focusActions);
+  GetMultipleString(pControlNode, "altclick", altclickActions);
 
   vector<CStdString> strVecInfo;
   if (GetMultipleString(pControlNode, "info", strVecInfo))
@@ -1011,6 +1013,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetClickActions(clickActions);
+    pControl->SetAltClickActions(altclickActions);
     pControl->SetFocusActions(focusActions);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
