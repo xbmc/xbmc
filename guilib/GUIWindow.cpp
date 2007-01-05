@@ -270,7 +270,16 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
 {
   // get control type
   CGUIControlFactory factory;
-  CGUIControl* pGUIControl = factory.Create(m_dwWindowId, pGroup, pControl);
+
+  FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
+  if (pGroup)
+  {
+    rect.left = pGroup->GetXPosition();
+    rect.top = pGroup->GetYPosition();
+    rect.right = rect.left + pGroup->GetWidth();
+    rect.bottom = rect.top + pGroup->GetHeight();
+  }
+  CGUIControl* pGUIControl = factory.Create(m_dwWindowId, rect, pControl);
   if (pGUIControl)
   {
     if (m_bRelativeCoords)
@@ -288,6 +297,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
       }
     }
     // if we are in a group, add to the group, else add to our window
+    pGUIControl->SetParentControl(pGroup);
     if (pGroup)
       pGroup->AddControl(pGUIControl);
     else
@@ -298,6 +308,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
       CGUIListContainer *list = (CGUIListContainer *)pGUIControl;
       if (list->m_spinControl)
       {
+        list->m_spinControl->SetParentControl(pGroup);
         if (pGroup)
           pGroup->AddControl(list->m_spinControl);
         else
@@ -310,6 +321,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
       CGUIPanelContainer *panel = (CGUIPanelContainer *)pGUIControl;
       if (panel->m_spinControl)
       {
+        panel->m_spinControl->SetParentControl(pGroup);
         if (pGroup)
           pGroup->AddControl(panel->m_spinControl);
         else
@@ -318,6 +330,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
       }
       if (panel->m_largePanel)
       {
+        panel->m_largePanel->SetParentControl(pGroup);
         if (pGroup)
           pGroup->AddControl(panel->m_largePanel);
         else
