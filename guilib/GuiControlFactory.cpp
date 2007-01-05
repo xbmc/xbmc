@@ -285,7 +285,7 @@ CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
   return type;
 }
 
-CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, TiXmlElement* pControlNode)
+CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode)
 {
   // resolve any <include> tag's in this control
   g_SkinInfo.ResolveIncludes(pControlNode);
@@ -452,24 +452,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   CStdString pos;
   XMLUtils::GetString(pControlNode, "posx", pos);
   if (pos.Right(1) == "r")
-  {
-    if (group && group->GetWidth())
-      posX = group->GetXPosition() + group->GetWidth() - posX;
-    else
-      posX = g_graphicsContext.GetWidth() - posX;
-  }
-  else if (group)
-    posX += group->GetXPosition();
+    posX = rect.right - posX;
+  else
+    posX += rect.left;
   XMLUtils::GetString(pControlNode, "posy", pos);
   if (pos.Right(1) == "r")
-  {
-    if (group && group->GetHeight())
-      posY = group->GetYPosition() + group->GetHeight() - posY;
-    else
-      posY = g_graphicsContext.GetHeight() - posY;
-  }
-  else if (group)
-    posY += group->GetYPosition();
+    posY = rect.bottom - posY;
+  else
+    posY += rect.top;
 
   XMLUtils::GetFloat(pControlNode, "width", width);
   XMLUtils::GetFloat(pControlNode, "height", height);
@@ -480,19 +470,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   if (strType == "group" || strType == "grouplist")
   {
     if (!width)
-    {
-      if (group)
-        width = max(group->GetWidth() + group->GetXPosition() - posX, 0);
-      else
-        width = max(g_graphicsContext.GetWidth() - posX, 0);
-    }
+      width = max(rect.right - posX, 0);
     if (!height)
-    {
-      if (group)
-        height = max(group->GetHeight() + group->GetYPosition() - posY, 0);
-      else
-        height = max(g_graphicsContext.GetHeight() - posY, 0);
-    }
+      height = max(rect.right - posY, 0);
   }
 
 #ifdef HAS_RAM_CONTROL
@@ -529,8 +509,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
   XMLUtils::GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
   
   GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
-  FRECT rect = { posX, posY, width, height };
-  GetAnimations(pControlNode, rect, animations);
+  // note: animrect here uses .right and .bottom as width and height respectively (nonstandard)
+  FRECT animRect = { posX, posY, width, height };
+  GetAnimations(pControlNode, animRect, animations);
 
   XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.textColor);
   XMLUtils::GetHex(pControlNode, "focusedcolor", labelInfo.focusedColor);
@@ -862,7 +843,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
     if (g_SkinInfo.GetVersion() < 2.1)
       pControl->SetNavigation(id, id, id, id);
@@ -879,7 +859,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetNavigation(up, down, left, right);
     return pControl;
   }
@@ -892,7 +871,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetWidthControl(bScrollLabel);
     pControl->SetWrapMultiLine(wrapMultiLine);
@@ -907,7 +885,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     return pControl;
   }
   else if (strType == "videowindow")
@@ -916,7 +893,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
       dwParentId, id, posX, posY, width, height);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     return pControl;
   }
   else if (strType == "fadelabel")
@@ -928,7 +904,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetLabel(vecLabel);
     pControl->SetInfo(vecInfo);
     return pControl;
@@ -942,7 +917,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
     {
@@ -965,7 +939,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -979,7 +952,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetNavigation(up, down, left, right);
     return pControl;
   }
@@ -997,7 +969,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetFocusActions(focusActions);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
@@ -1017,7 +988,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetFocusActions(focusActions);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetToggleSelect(iToggleSelect);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -1034,7 +1004,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
@@ -1055,7 +1024,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetClickActions(clickActions);
     pControl->SetFocusActions(focusActions);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
@@ -1070,7 +1038,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetReverse(bReverse);
     pControl->SetPulseOnSelect(bPulse);
 
@@ -1101,7 +1068,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetControlOffsetX(controlOffsetX);
@@ -1120,7 +1086,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetNavigation(up, down, left, right);
     return pControl;
@@ -1133,7 +1098,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -1146,7 +1110,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
@@ -1160,7 +1123,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetAspectRatio(aspectRatio);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
@@ -1173,7 +1135,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetAspectRatio(aspectRatio);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
@@ -1186,7 +1147,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     pControl->SetPageControl(pageControl);
     return pControl;
@@ -1200,7 +1160,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     pControl->SetPageControl(pageControl);
     return pControl;
@@ -1214,7 +1173,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     pControl->SetPageControl(pageControl);
     return pControl;
@@ -1230,7 +1188,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     spinVis.Format("control.isvisible(%i)", id);
     pSpin->SetVisibleCondition(g_infoManager.TranslateString(spinVis), false);
     pSpin->SetAnimations(animations);
-    pSpin->SetParentControl(group);
     pSpin->SetNavigation(id, down, id, right);
     pSpin->SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
 
@@ -1250,7 +1207,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     return pControl;
   }
 #endif
@@ -1270,7 +1226,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetImageDimensions(itemWidth, itemHeight);
     pControl->SetItemHeight(textureHeight);
     pControl->SetSpaceBetweenItems(spaceBetweenItems);
@@ -1291,7 +1246,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     pControl->SetPageControl(pageControl);
     return pControl;
@@ -1310,7 +1264,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
       spinVis.Format("control.isvisible(%i) | control.isvisible(%i)", id, id + 2);
       pSpin->SetVisibleCondition(g_infoManager.TranslateString(spinVis), false);
       pSpin->SetAnimations(animations);
-      pSpin->SetParentControl(group);
       pSpin->SetNavigation(id, down, id, right);
       pSpin->SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
     }
@@ -1331,7 +1284,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
     pPanel->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pPanel->SetAnimations(animations);
-    pPanel->SetParentControl(group);
 
     // small panel
     CGUIPanelContainer* pControl = new CGUIPanelContainer(
@@ -1348,7 +1300,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
 
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     return pControl;
   }
 #endif
@@ -1365,7 +1316,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
@@ -1395,7 +1345,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetPulseOnSelect(bPulse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->LoadButtons(pControlNode);
     return pControl;
   }
@@ -1411,7 +1360,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     pControl->SetReverse(bReverse);
     pControl->SetText(strLabel);
     pControl->SetPulseOnSelect(bPulse);
@@ -1422,7 +1370,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, CGUIControl *group, Ti
     CGUIVisualisationControl* pControl = new CGUIVisualisationControl(dwParentId, id, posX, posY, width, height);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetParentControl(group);
     return pControl;
   }
   return NULL;
