@@ -37,7 +37,7 @@ public:
 
   void Clear();
 
-  bool Load(const CStdString& strFilename, int height = 20, int style = FONT_STYLE_NORMAL);
+  bool Load(const CStdString& strFilename, int height = 20, int style = FONT_STYLE_NORMAL, float aspect = 1.0f);
 
   virtual void Begin();
   virtual void End();
