@@ -154,12 +154,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_SCAN_FINISHED:
-    {
-      Update(m_vecItems.m_strPath);
-    }
-    break;
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
