@@ -73,7 +73,8 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     TiXmlNode *year = movie->FirstChild("year");
     if (title && title->FirstChild() && link && link->FirstChild())
     {
-      url.m_strTitle = title->FirstChild()->Value();
+      g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url.m_strTitle);
+
       url.m_strURL = link->FirstChild()->Value();
 
       // if source contained a distinct year, only allow those

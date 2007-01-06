@@ -209,7 +209,7 @@ char *RemoveWhiteSpace(char *string)
 
 void AddTag(char *szXML, const char *url, const char *title, const char *year = NULL)
 {
-  char *ansiTitle = ConvertHTMLToAnsi(title);
+  char *ansiTitle = strdup(title);//ConvertHTMLToAnsi(title);
   if (!ansiTitle || !url || !szXML)
     return;
   // ok - now construct tag
@@ -217,6 +217,7 @@ void AddTag(char *szXML, const char *url, const char *title, const char *year = 
     sprintf(szXML, "%s\t<movie>\n\t\t<title>%s (%s)</title>\n\t\t<url>%s</url>\n\t</movie>\n", szXML, RemoveWhiteSpace(ansiTitle), year, url);
   else
     sprintf(szXML, "%s\t<movie>\n\t\t<title>%s</title>\n\t\t<url>%s</url>\n\t</movie>\n", szXML, RemoveWhiteSpace(ansiTitle), url);
+  
   free(ansiTitle);
 }
 
