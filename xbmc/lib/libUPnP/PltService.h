@@ -41,7 +41,7 @@ public:
     // class methods
     NPT_Result InitURLs(const char* service_name, const char* device_uuid);
     bool IsInitted() {
-        return (m_Actions.GetItemCount() > 0);
+        return (m_ActionDescs.GetItemCount() > 0);
     }
 
     // static methods
@@ -74,7 +74,7 @@ public:
     NPT_Result          NotifySub(PLT_EventSubscriber* sub, PLT_StateVariable* var = NULL);
 
     // Actions
-    PLT_Action* FindAction(const char* name);
+    PLT_ActionDesc*     FindActionDesc(const char* name);
 
 private:    
     void Cleanup();
@@ -112,7 +112,7 @@ protected:
     NPT_String      m_ControlURL;
     NPT_String      m_EventSubURL;
     
-    NPT_Array<PLT_Action*>           m_Actions;
+    NPT_Array<PLT_ActionDesc*>       m_ActionDescs;
     NPT_Array<PLT_StateVariable*>    m_StateVariables;
     NPT_List<PLT_EventSubscriber*>   m_Subscribers;
 };
