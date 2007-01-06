@@ -129,11 +129,13 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
     }
     break;
 
-   case GUI_MSG_REFRESH_THUMBS:
-     {
-       Update(m_vecItems.m_strPath);
-     }
-     break;
+    // update the display
+    case GUI_MSG_SCAN_FINISHED:
+    case GUI_MSG_REFRESH_THUMBS:
+    {
+      Update(m_vecItems.m_strPath);
+    }
+    break;
 
   case GUI_MSG_CLICKED:
     {
