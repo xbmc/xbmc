@@ -179,8 +179,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         bool video = true;
         bool audio = true;
         bool image = true;
-        if( !m_strFileMask.IsEmpty() )
-        {
+        if( !m_strFileMask.IsEmpty() ) {
           video = m_strFileMask.Find(".wmv") >= 0;
           audio = m_strFileMask.Find(".wma") >= 0;
           image = m_strFileMask.Find(".jpg") >= 0;
@@ -205,12 +204,11 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             }
         }
 
-        PLT_MediaObjectListReference list;
         // if error, the list could be partial and that's ok
         // we still want to process it
+        PLT_MediaObjectListReference list;
         upnp->m_MediaBrowser->Browse(*device, root_id, list);
-
-        NPT_List<PLT_MediaObject*>::Iterator entry = list->GetFirstItem();
+        PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
         while (entry) {
 
             if( (!video && (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0)
