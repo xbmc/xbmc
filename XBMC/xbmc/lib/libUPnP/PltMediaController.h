@@ -28,7 +28,7 @@ public:
     // PLT_CtrlPointListener methods
     virtual NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device);
     virtual NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device);
-    virtual NPT_Result OnActionResponse(NPT_Result res, PLT_Action* action, void* userdata);
+    virtual NPT_Result OnActionResponse(NPT_Result res, PLT_ActionReference& action, void* userdata);
     virtual NPT_Result OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars);
 
     // AVTransport
@@ -53,26 +53,30 @@ public:
     NPT_Result GetProtocolInfo(PLT_DeviceDataReference& device, void* userdata);
 
 private:
-    NPT_Result FindAction(PLT_DeviceDataReference& device, 
-                          const char*              service_type,
-                          const char*              action_name,
-                          PLT_Action*&             action);
-    NPT_Result CallAVTransportAction(PLT_DeviceDataReference&    device, 
-                                    const char*                  action_name,
-                                    NPT_UInt32                   instance_id,
-                                    PLT_Arguments*               args = NULL,
-                                    void*                        userdata = NULL);
+    NPT_Result FindActionDesc(PLT_DeviceDataReference& device, 
+        const char*              service_type,
+        const char*              action_name,
+        PLT_ActionDesc*&         action_desc);
 
-    NPT_Result OnGetCurrentTransportActionsResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_Action* action, void* userdata);
-    NPT_Result OnGetDeviceCapabilitiesResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_Action* action, void* userdata);
-    NPT_Result OnGetMediaInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_Action* action, void* userdata);
-    NPT_Result OnGetPositionInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_Action* action, void* userdata);
-    NPT_Result OnGetTransportInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_Action* action, void* userdata);
-    NPT_Result OnGetTransportSettingsResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_Action* action, void* userdata);
+    NPT_Result CreateAction(PLT_DeviceDataReference& device, 
+        const char*              service_type,
+        const char*              action_name,
+        PLT_ActionReference&     action);
 
-    NPT_Result OnGetCurrentConnectionIDsResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_Action* action, void* userdata);
-    NPT_Result OnGetCurrentConnectionInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_Action* action, void* userdata);
-    NPT_Result OnGetProtocolInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_Action* action, void* userdata);
+    NPT_Result CallAVTransportAction(PLT_ActionReference& action,
+        NPT_UInt32               instance_id,
+        void*                    userdata = NULL);
+
+    NPT_Result OnGetCurrentTransportActionsResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
+    NPT_Result OnGetDeviceCapabilitiesResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
+    NPT_Result OnGetMediaInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
+    NPT_Result OnGetPositionInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
+    NPT_Result OnGetTransportInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
+    NPT_Result OnGetTransportSettingsResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
+
+    NPT_Result OnGetCurrentConnectionIDsResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
+    NPT_Result OnGetCurrentConnectionInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
+    NPT_Result OnGetProtocolInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
 
     static void ParseCSV(const char* csv, PLT_StringList& values) {
         const char* start = csv;

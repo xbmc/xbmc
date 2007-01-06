@@ -238,6 +238,10 @@ public:
     const NPT_String& GetProtocol() const { 
         return m_Protocol; 
     }
+    NPT_Result SetProtocol(const char* protocol) {
+        m_Protocol = protocol;
+        return NPT_SUCCESS;
+    }
     NPT_HttpHeaders& GetHeaders() { 
         return m_Headers;  
     }
