@@ -20,11 +20,11 @@
 #include "PltHttpServerListener.h"
 #include "PltSsdpListener.h"
 #include "PltTaskManager.h"
+#include "PltAction.h"
 
 /*----------------------------------------------------------------------
 |   forward declarations
 +---------------------------------------------------------------------*/
-class PLT_Action;
 class PLT_HttpServer;
 class PLT_HttpServerHandler;
 class PLT_SsdpDeviceAnnounceTask;
@@ -43,39 +43,67 @@ public:
         const char*  friendly_name = "",
         unsigned int port = 0);
 
-    /* Overridables */
+    // Overridables
     virtual NPT_Result Start(PLT_TaskManager* task_manager);
+
     virtual NPT_Result Stop();
-    virtual NPT_Result OnAction(PLT_Action* action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse* response);
+
+    virtual NPT_Result OnAction(PLT_ActionReference& action, 
+                                NPT_SocketInfo*      info = NULL);
+
+    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest*  request, 
+                                          NPT_SocketInfo    info, 
+                                          NPT_HttpResponse* response);
     
-    /* PLT_SsdpDeviceAnnounceTask & PLT_SsdpDeviceAnnounceUnicastTask */
-    virtual NPT_Result Announce(PLT_DeviceData* device, NPT_HttpRequest& request, NPT_UdpSocket& socket, bool byebye);
-    virtual NPT_Result Announce(NPT_HttpRequest& request, NPT_UdpSocket& socket, bool byebye) {
+    // PLT_SsdpDeviceAnnounceTask & PLT_SsdpDeviceAnnounceUnicastTask
+    virtual NPT_Result Announce(PLT_DeviceData*  device, 
+                                NPT_HttpRequest& request, 
+                                NPT_UdpSocket&   socket, 
+                                bool             byebye);
+
+    virtual NPT_Result Announce(NPT_HttpRequest& request, 
+                                NPT_UdpSocket&   socket, 
+                                bool             byebye) {
         return Announce(this, request, socket, byebye);
     }
 
     // PLT_SsdpPacketListener method
-    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest* request, NPT_SocketInfo info);
+    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest* request, 
+                                    NPT_SocketInfo   info);
 
-    /* PLT_SsdpDeviceSearchListenTask */
-    virtual NPT_Result ProcessSsdpSearchRequest(NPT_HttpRequest* request, NPT_SocketInfo info);
+    // PLT_SsdpDeviceSearchListenTask
+    virtual NPT_Result ProcessSsdpSearchRequest(NPT_HttpRequest* request, 
+                                                NPT_SocketInfo   info);
 
-    /* PLT_SsdpDeviceSearchResponseTask */
-    virtual NPT_Result SendSsdpSearchResponse(PLT_DeviceData* device, NPT_HttpResponse& response, NPT_UdpSocket& socket, const char* st);
-    virtual NPT_Result SendSsdpSearchResponse(NPT_HttpResponse& response, NPT_UdpSocket& socket, const char* ST) {
+    // PLT_SsdpDeviceSearchResponseTask
+    virtual NPT_Result SendSsdpSearchResponse(PLT_DeviceData*   device, 
+                                              NPT_HttpResponse& response, 
+                                              NPT_UdpSocket&    socket, 
+                                              const char*       st);
+    virtual NPT_Result SendSsdpSearchResponse(NPT_HttpResponse& response, 
+                                              NPT_UdpSocket&    socket, 
+                                              const char*       ST) {
         return SendSsdpSearchResponse(this, response, socket, ST);
     }
-
-    NPT_Result VerifyArgumentInput(PLT_Action* action, NPT_String name, NPT_String value);
     
 protected:
     virtual ~PLT_DeviceHost();
 
-    virtual NPT_Result ProcessHttpGetHeadRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse* response);
-    virtual NPT_Result ProcessHttpPostRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse* response);
-    virtual NPT_Result ProcessHttpSubscriberRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse* response);
-    virtual NPT_Result ProcessHttpEventRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse* response);
+    virtual NPT_Result ProcessHttpGetHeadRequest(NPT_HttpRequest*  request, 
+                                                 NPT_SocketInfo    info, 
+                                                 NPT_HttpResponse* response);
+
+    virtual NPT_Result ProcessHttpPostRequest(NPT_HttpRequest*  request, 
+                                              NPT_SocketInfo    info, 
+                                              NPT_HttpResponse* response);
+
+    virtual NPT_Result ProcessHttpSubscriberRequest(NPT_HttpRequest* request, 
+                                                   NPT_SocketInfo    info, 
+                                                   NPT_HttpResponse* response);
+
+    virtual NPT_Result ProcessHttpEventRequest(NPT_HttpRequest*  request, 
+                                               NPT_SocketInfo    info, 
+                                               NPT_HttpResponse* response);
 
 protected:
     friend class PLT_Service;

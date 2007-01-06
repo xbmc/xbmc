@@ -16,6 +16,7 @@
 #include "PltTaskManager.h"
 #include "PltCtrlPoint.h"
 #include "PltDeviceHost.h"
+#include "PltUPnPHelper.h"
 
 /*----------------------------------------------------------------------
 |   forward definitions
@@ -47,7 +48,7 @@ private:
     // we create it in here and we will attach every control points
     // and devices to it when they're added
     bool                                m_Started;
-    NPT_Socket*                         m_SsdpListensocket;
+    NPT_UInt32                          m_Port;
     bool                                m_Multicast;
     PLT_SsdpListenTask*                 m_SsdpListenTask; 
 };

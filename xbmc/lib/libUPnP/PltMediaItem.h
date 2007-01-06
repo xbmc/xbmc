@@ -138,9 +138,9 @@ public:
 
 public:
     /* common properties */
-    PLT_ObjectClass m_ObjectClass;
-    NPT_String      m_ObjectID;
-    NPT_String      m_ParentID;
+    PLT_ObjectClass     m_ObjectClass;
+    NPT_String          m_ObjectID;
+    NPT_String          m_ParentID;
 
     /* metadata */
     NPT_String          m_Title;
