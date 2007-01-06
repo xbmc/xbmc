@@ -660,8 +660,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel("Ascending", SORT_ORDER_ASC);
-      pControl->AddLabel("Descending", SORT_ORDER_DESC);
+      pControl->AddLabel(g_localizeStrings.Get(584), SORT_ORDER_ASC);
+      pControl->AddLabel(g_localizeStrings.Get(585), SORT_ORDER_DESC);
       pControl->SetValue(pSettingInt->GetData());
     }
   }
