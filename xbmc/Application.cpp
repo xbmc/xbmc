@@ -156,9 +156,11 @@
   #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
  #endif
  #ifdef HAS_UPNP
-  #pragma comment (lib,"xbmc/lib/libUPnP/Neptuned.lib")
-  #pragma comment (lib,"xbmc/lib/libUPnP/Platinumd.lib")
-  #pragma comment (lib,"xbmc/lib/libUPnP/PltMediaServerd.lib")
+  #ifdef _XBOX
+   #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinumd.lib")
+  #else
+   #pragma comment (lib,"../../xbmc/lib/libUPnP/libPlatinum_PCd.lib")
+  #endif
  #endif
  #ifdef _XBOX
   #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib") 
@@ -188,9 +190,11 @@
   #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
  #endif
  #ifdef HAS_UPNP
-  #pragma comment (lib,"xbmc/lib/libUPnP/Neptune.lib")
-  #pragma comment (lib,"xbmc/lib/libUPnP/Platinum.lib")
-  #pragma comment (lib,"xbmc/lib/libUPnP/PltMediaServer.lib")  
+  #ifdef _XBOX
+   #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinum.lib")
+  #else
+   #pragma comment (lib,"../../xbmc/lib/libUPnP/libPlatinum_PC.lib")
+  #endif
  #endif
  #ifdef _XBOX
   #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib") 
@@ -254,7 +258,7 @@ CApplication::CApplication(void)
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
 
-  //true while we in IsPaused mode! Workarround for OnPaused, which must be add. after v2.0
+  //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
 
   /* for now allways keep this around */

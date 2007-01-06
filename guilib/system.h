@@ -68,7 +68,7 @@
 #undef HAS_SCREENSAVER
 #undef HAS_MIKMOD
 #undef HAS_SECTIONS
-#undef HAS_UPNP
+#define HAS_UPNP
 #undef HAS_LCD
 #undef HAS_UNDOCUMENTED
 #undef HAS_SECTIONS

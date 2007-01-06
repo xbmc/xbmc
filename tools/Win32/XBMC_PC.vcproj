@@ -1599,6 +1599,12 @@
 					RelativePath="..\..\xbmc\FileSystem\StackDirectory.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\UPnPDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\UPnPDirectory.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory.cpp">
 				</File>
 				<File
