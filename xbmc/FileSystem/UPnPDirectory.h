@@ -28,6 +28,7 @@
 /* forward declarations */
 class PLT_UPnP;
 class PLT_SyncMediaBrowser;
+class CCtrlPointReferenceHolder;
 
 using namespace DIRECTORY;
 
@@ -41,7 +42,9 @@ public:
     CUPnP();
     ~CUPnP();
 
-    // methods
+    void IgnoreUUID(const char* uuid);
+
+    // class methods
     static CUPnP* GetInstance();
     static void   ReleaseInstance();
     static bool   IsInstantiated() { return upnp != NULL; }
@@ -49,8 +52,9 @@ public:
 private:
     friend class CUPnPDirectory;
 
-    PLT_UPnP*              m_UPnP;
-    PLT_SyncMediaBrowser*  m_MediaBrowser;
+    PLT_UPnP*                   m_UPnP;
+    PLT_SyncMediaBrowser*       m_MediaBrowser;
+    CCtrlPointReferenceHolder*  m_CtrlPointHolder;
 
     static CUPnP* upnp;
 };
