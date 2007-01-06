@@ -33,6 +33,18 @@
 
 CUPnP* CUPnP::upnp = NULL;
 
+/*----------------------------------------------------------------------
+|   CCtrlPointReferenceHolder class
++---------------------------------------------------------------------*/
+class CCtrlPointReferenceHolder
+{
+public:
+    PLT_CtrlPointReference m_CtrlPoint;
+};
+
+/*----------------------------------------------------------------------
+|   CUPnPCleaner class
++---------------------------------------------------------------------*/
 class CUPnPCleaner : public NPT_Thread
 {
 public:
@@ -44,28 +56,40 @@ public:
     CUPnP* m_UPnP;
 };
 
-CUPnP::CUPnP()
+/*----------------------------------------------------------------------
+|   CUPnP::CUPnP
++---------------------------------------------------------------------*/
+CUPnP::CUPnP() :
+    m_CtrlPointHolder(new CCtrlPointReferenceHolder())
 {
     //PLT_SetLogLevel(PLT_LOG_LEVEL_4);
     m_UPnP = new PLT_UPnP(1900, false);
-    PLT_CtrlPointReference ctrl_point(new PLT_CtrlPoint());
-    m_UPnP->AddCtrlPoint(ctrl_point);
+    m_CtrlPointHolder->m_CtrlPoint = new PLT_CtrlPoint();
+    m_UPnP->AddCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
     m_UPnP->Start();
-    m_MediaBrowser = new PLT_SyncMediaBrowser(ctrl_point);
+
+    m_MediaBrowser = new PLT_SyncMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
 
     // Issue a search request on the broadcast address instead of the upnp multicast address 239.255.255.250
     // since the xbox does not support multicast. UPnP devices will still respond to us
     // Repeat every 6 seconds
-    ctrl_point->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
+    m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
 }
 
+/*----------------------------------------------------------------------
+|   CUPnP::~CUPnP
++---------------------------------------------------------------------*/
 CUPnP::~CUPnP()
 {
     m_UPnP->Stop();
     delete m_UPnP;
     delete m_MediaBrowser;
+    delete m_CtrlPointHolder;
 }
 
+/*----------------------------------------------------------------------
+|   CUPnP::GetInstance
++---------------------------------------------------------------------*/
 CUPnP*
 CUPnP::GetInstance()
 {
@@ -76,6 +100,9 @@ CUPnP::GetInstance()
     return upnp;
 }
 
+/*----------------------------------------------------------------------
+|   CUPnP::ReleaseInstance
++---------------------------------------------------------------------*/
 void
 CUPnP::ReleaseInstance()
 {
@@ -88,6 +115,18 @@ CUPnP::ReleaseInstance()
     }
 }
 
+/*----------------------------------------------------------------------
+|   CUPnP::IgnoreUUID
++---------------------------------------------------------------------*/
+void
+CUPnP::IgnoreUUID(const char* uuid)
+{
+    m_CtrlPointHolder->m_CtrlPoint->SetUUIDToIgnore(uuid);
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPDirectory::GetFriendlyName
++---------------------------------------------------------------------*/
 const char* 
 CUPnPDirectory::GetFriendlyName(const char* url)
 {
@@ -117,6 +156,9 @@ CUPnPDirectory::GetFriendlyName(const char* url)
     return (const char*)(*device)->GetFriendlyName();
 }
 
+/*----------------------------------------------------------------------
+|   CUPnPDirectory::GetDirectory
++---------------------------------------------------------------------*/
 bool 
 CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
@@ -231,11 +273,11 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 if ((*entry)->m_Resources.GetItemCount()) {
                     // if http protocol, override url with upnp so that it triggers the use of PAPLAYER instead of MPLAYER
                     // somehow MPLAYER tries to http stream the wma even though the server doesn't support it.
-                    if ((*entry)->m_Resources[0].m_Uri.Left(4).Compare("http", true) == 0) {
-                        pItem->m_strPath = (const char*) NPT_String("upnp") + (*entry)->m_Resources[0].m_Uri.SubString(4);
-                    } else {
+                    //if ((*entry)->m_Resources[0].m_Uri.Left(4).Compare("http", true) == 0) {
+                    //    pItem->m_strPath = (const char*) NPT_String("upnp") + (*entry)->m_Resources[0].m_Uri.SubString(4);
+                    //} else {
                         pItem->m_strPath = (const char*) (*entry)->m_Resources[0].m_Uri;
-                    }
+                    //}
 
                     if ((*entry)->m_Resources[0].m_Size > 0) {
                         pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
