@@ -102,15 +102,16 @@ void CGUIDialogMusicScan::OnDirectoryScanned(const CStdString& strDirectory)
 
 void CGUIDialogMusicScan::OnFinished()
 {
+  // clear cache
+  CUtil::DeleteDatabaseDirectoryCache();
+
+  // send message
   CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
 
   // be sure to restore the settings
   CLog::Log(LOGINFO,"Music scan was stopped or finished ... restoring FindRemoteThumbs");
   g_application.RestoreMusicScanSettings();
-
-  // clear cache after finished
-  CUtil::DeleteDatabaseDirectoryCache();
 
   Close();
 }
