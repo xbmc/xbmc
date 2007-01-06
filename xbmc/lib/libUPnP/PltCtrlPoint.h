@@ -37,7 +37,7 @@ public:
 
     virtual NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device) = 0;
     virtual NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device) = 0;
-    virtual NPT_Result OnActionResponse(NPT_Result res, PLT_Action* action, void* userdata) = 0;
+    virtual NPT_Result OnActionResponse(NPT_Result res, PLT_ActionReference& action, void* userdata) = 0;
     virtual NPT_Result OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars) = 0;
 };
 
@@ -55,15 +55,9 @@ public:
 
     NPT_Result   AddListener(PLT_CtrlPointListener* listener);
     NPT_Result   RemoveListener(PLT_CtrlPointListener* listener);
-
-    NPT_Result   SetUUIDToIgnore(const char* uuid) {
-        m_UUIDToIgnore = uuid;
-        return NPT_SUCCESS;
-    }
-
+    void         SetUUIDToIgnore(const char* uuid) {m_UUIDToIgnore = uuid;}
     NPT_Result   Start(PLT_TaskManager* task_manager);
     NPT_Result   Stop();
-
     NPT_Result   Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
                         const char*        target = "upnp:rootdevice", 
                         const NPT_Cardinal MX = 5);
@@ -71,73 +65,52 @@ public:
                           const char*        target = "ssdp:all", 
                           const NPT_Cardinal MX = 5,
                           NPT_Timeout        repeat = 50000);
-    
-    NPT_Result   InvokeAction(PLT_Action* action, PLT_Arguments& arguments, void* userdata = NULL);
+    NPT_Result   InvokeAction(PLT_ActionReference& action, void* userdata = NULL);
     NPT_Result   Subscribe(PLT_Service* service, bool renew = false, void* userdata = NULL);
 
     // PLT_HttpServerListener methods
-    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response);
-
+    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest*   request, 
+                                          NPT_SocketInfo     info, 
+                                          NPT_HttpResponse*& response);
     // PLT_SsdpSearchResponseListener methods
-    NPT_Result   ProcessSsdpSearchResponse(NPT_Result        res, 
-                                           NPT_SocketInfo&   info, 
-                                           NPT_HttpResponse* response);
-
+    virtual NPT_Result ProcessSsdpSearchResponse(NPT_Result        res, 
+                                                 NPT_SocketInfo&   info, 
+                                                 NPT_HttpResponse* response);
     // PLT_SsdpPacketListener method
     virtual NPT_Result OnSsdpPacket(NPT_HttpRequest* request, NPT_SocketInfo info);
-
+    
     // helper methods
-    NPT_Result FindDevice(NPT_String& uuid, PLT_DeviceDataReference& device) {
-        NPT_AutoLock lock(m_Devices);
-        NPT_List<PLT_DeviceDataReference>::Iterator it = m_Devices.Find(PLT_DeviceDataFinder(uuid));
-        if (it) {
-            device = (*it);
-            return NPT_SUCCESS;
-        }
-        return NPT_FAILURE;
-    }
+    NPT_Result  FindDevice(NPT_String& uuid, PLT_DeviceDataReference& device);
 
 protected:
     virtual ~PLT_CtrlPoint();
 
     // methods
-    NPT_Result   ProcessSsdpNotify(
-        NPT_HttpRequest*   request, 
-        NPT_SocketInfo     info);
-
-    NPT_Result   ProcessSsdpMessage(
-        NPT_HttpMessage*   message, 
-        NPT_SocketInfo&    info, 
-        NPT_String&        uuid);
-
-    NPT_Result   ProcessGetDescriptionResponse(
-        NPT_Result               res, 
-        NPT_HttpResponse*        response,
-        PLT_DeviceDataReference& device);
-
-    NPT_Result   ProcessGetSCPDResponse(
-        NPT_Result               res, 
-        NPT_HttpRequest*         request,
-        NPT_HttpResponse*        response,
-        PLT_DeviceDataReference& device);
-
-    NPT_Result   ProcessActionResponse(
-        NPT_Result         res, 
-        NPT_HttpResponse*  response,
-        PLT_Action*        action,
-        void*              userdata);
-
-    NPT_Result   ProcessSubscribeResponse(
-        NPT_Result         res, 
-        NPT_HttpResponse*  response,
-        PLT_Service*       service,
-        void*              userdata);
-
-    NPT_Result   DoHouseKeeping();
+    NPT_Result   ProcessSsdpNotify(NPT_HttpRequest* request, NPT_SocketInfo info);
+    NPT_Result   ProcessSsdpMessage(NPT_HttpMessage*   message, 
+                                    NPT_SocketInfo&    info, 
+                                    NPT_String&        uuid);
+    NPT_Result   ProcessGetDescriptionResponse(NPT_Result               res, 
+                                               NPT_HttpResponse*        response,
+                                               PLT_DeviceDataReference& device);
+    NPT_Result   ProcessGetSCPDResponse(NPT_Result               res, 
+                                        NPT_HttpRequest*         request,
+                                        NPT_HttpResponse*        response,
+                                        PLT_DeviceDataReference& device);
+    NPT_Result   ProcessActionResponse(NPT_Result               res, 
+                                       NPT_HttpResponse*        response,
+                                       PLT_ActionReference&     action,
+                                       void*                    userdata);
+    NPT_Result   ProcessSubscribeResponse(NPT_Result         res, 
+                                          NPT_HttpResponse*  response,
+                                          PLT_Service*       service,
+                                          void*              userdata);
 
 private:
     // methods
-    NPT_Result   ParseFault(PLT_Action* action, NPT_XmlElementNode* fault);
+    NPT_Result   DoHouseKeeping();
+    NPT_Result   ParseFault(PLT_ActionReference& action, 
+                            NPT_XmlElementNode*  fault);
 
 private:
     friend class NPT_Reference<PLT_CtrlPoint>;

@@ -43,33 +43,34 @@ public:
     // PLT_DeviceHost methods
     virtual NPT_Result Start(PLT_TaskManager* task_manager);
     virtual NPT_Result Stop();
-    virtual NPT_Result OnAction(PLT_Action* action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnAction(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
 protected:
     PLT_MediaServer(const char*  friendly_name,
                     bool         show_ip = false,
                     const char*  uuid = NULL,
-                    unsigned int port = 0);
+                    unsigned int port = 0,
+                    unsigned int fileserver_port = 0);
     virtual ~PLT_MediaServer();
 
     // class methods
     static NPT_Result GetBrowseFlag(const char* str, BrowseFlags& flag);
 
     // ConnectionManager
-    virtual NPT_Result OnGetCurrentConnectionIDs(PLT_Action* action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnGetProtocolInfo(PLT_Action* action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnGetCurrentConnectionInfo(PLT_Action* action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnGetCurrentConnectionIDs(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnGetProtocolInfo(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnGetCurrentConnectionInfo(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
     // ContentDirectory
-    virtual NPT_Result OnGetSortCapabilities(PLT_Action* action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnGetSearchCapabilities(PLT_Action* action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnGetSystemUpdateID(PLT_Action* action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnBrowse(PLT_Action* action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnSearch(PLT_Action* action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnGetSortCapabilities(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnGetSearchCapabilities(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnGetSystemUpdateID(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnBrowse(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnSearch(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
     // overridable methods
-    virtual NPT_Result OnBrowseMetadata(PLT_Action* /*action*/, const char* /*object_id*/) { return NPT_FAILURE; }
-    virtual NPT_Result OnBrowseDirectChildren(PLT_Action* /*action*/, const char* /*object_id*/) { return NPT_FAILURE; }
+    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& /*action*/, const char* /*object_id*/, NPT_SocketInfo* info = NULL) { return NPT_FAILURE; }
+    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& /*action*/, const char* /*object_id*/, NPT_SocketInfo* info = NULL) { return NPT_FAILURE; }
     virtual NPT_Result ProcessFileRequest(NPT_HttpRequest* /*request*/, NPT_SocketInfo /*info*/, NPT_HttpResponse*& /*response*/) { return NPT_FAILURE; }
 
 protected:

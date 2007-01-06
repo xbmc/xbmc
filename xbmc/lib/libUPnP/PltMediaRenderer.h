@@ -46,7 +46,7 @@ public:
     // PLT_DeviceHost methods
     virtual NPT_Result Start(PLT_TaskManager* task_manager);
     virtual NPT_Result Stop();
-    virtual NPT_Result OnAction(PLT_Action* action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnAction(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
     void ReportPlaybackStatus();
 
@@ -55,17 +55,17 @@ protected:
 
 private:
     // ConnectionManager
-    NPT_Result OnGetCurrentConnectionInfo(PLT_Action* action);
+    NPT_Result OnGetCurrentConnectionInfo(PLT_ActionReference& action);
 
     // AVTransport
-    NPT_Result OnNext(PLT_Action* action);
-    NPT_Result OnPause(PLT_Action* action);
-    NPT_Result OnPlay(PLT_Action* action);
-    NPT_Result OnPrevious(PLT_Action* action);
-    NPT_Result OnSeek(PLT_Action* action);
-    NPT_Result OnStop(PLT_Action* action);
-    NPT_Result OnSetAVTransportURI(PLT_Action* action);
-    NPT_Result OnSetPlayMode(PLT_Action* action);
+    NPT_Result OnNext(PLT_ActionReference& action);
+    NPT_Result OnPause(PLT_ActionReference& action);
+    NPT_Result OnPlay(PLT_ActionReference& action);
+    NPT_Result OnPrevious(PLT_ActionReference& action);
+    NPT_Result OnSeek(PLT_ActionReference& action);
+    NPT_Result OnStop(PLT_ActionReference& action);
+    NPT_Result OnSetAVTransportURI(PLT_ActionReference& action);
+    NPT_Result OnSetPlayMode(PLT_ActionReference& action);
 
 protected:
     bool m_ShowIP;

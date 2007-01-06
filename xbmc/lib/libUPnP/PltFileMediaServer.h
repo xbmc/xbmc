@@ -48,13 +48,13 @@ protected:
     virtual ~PLT_FileMediaServer();
     
 protected:
-    NPT_Result OnBrowseMetadata(PLT_Action* action, const char* object_id);
-    NPT_Result OnBrowseDirectChildren(PLT_Action* action, const char* object_id);
+    NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
+    NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
     NPT_Result ProcessFileRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response);
 
 private:
     NPT_Result OnAlbumArtRequest(NPT_String filepath, NPT_HttpResponse* response);
-    PLT_MediaObject* BuildFromFilePath(const NPT_String& filepath, bool with_count = true);
+    PLT_MediaObject* BuildFromFilePath(const NPT_String& filepath, bool with_count = true, NPT_SocketInfo* info = NULL);
     bool       ProceedWithEntry(const NPT_String filepath, NPT_DirectoryEntryType& type);
     NPT_Result GetEntryCount(const char* path, NPT_Cardinal& count); 
     NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);

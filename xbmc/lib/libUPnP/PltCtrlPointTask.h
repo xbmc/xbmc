@@ -78,10 +78,10 @@ protected:
 class PLT_CtrlPointInvokeActionTask : public PLT_HttpClientSocketTask
 {
 public:
-    PLT_CtrlPointInvokeActionTask(NPT_HttpRequest* request,
-                                  PLT_CtrlPoint*   ctrl_point, 
-                                  PLT_Action*      action,
-                                  void*            userdata);
+    PLT_CtrlPointInvokeActionTask(NPT_HttpRequest*     request,
+                                  PLT_CtrlPoint*       ctrl_point, 
+                                  PLT_ActionReference& action,
+                                  void*                userdata);
     virtual ~PLT_CtrlPointInvokeActionTask();
 
 protected:
@@ -92,9 +92,9 @@ protected:
                                NPT_HttpResponse* response);   
 
 protected:
-    PLT_CtrlPoint*  m_CtrlPoint;
-    PLT_Action*     m_Action;
-    void*           m_Userdata;
+    PLT_CtrlPoint*      m_CtrlPoint;
+    PLT_ActionReference m_Action;
+    void*               m_Userdata;
 };
 
 /*----------------------------------------------------------------------
