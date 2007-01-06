@@ -47,13 +47,12 @@ public:
     NPT_Result   SetValue(const char* value, bool publish = true);
     NPT_Result   ValidateValue(const char* value);
 
-    const NPT_String&   GetName()     const  { return m_Name;     }
-    const NPT_String&   GetValue()    const  { return m_Value;    }
-    const NPT_String&   GetDataType() const  { return m_DataType; }
+    const NPT_String& GetName()     const { return m_Name;     }
+    const NPT_String& GetValue()    const { return m_Value;    }
+    const NPT_String& GetDataType() const { return m_DataType; }
 
 protected:
     friend class PLT_Service;
-    friend class PLT_Argument;
 
     //members
     PLT_Service*            m_Service;
