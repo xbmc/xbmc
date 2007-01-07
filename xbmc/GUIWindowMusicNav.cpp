@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIWindowMusicNav.h"
 #include "util.h"
@@ -18,7 +39,7 @@
 
 using namespace MUSICDATABASEDIRECTORY;
 
-#define CONTROL_BTNVIEWASICONS     2 
+#define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
@@ -216,7 +237,7 @@ void CGUIWindowMusicNav::UpdateButtons()
       if (pItem->m_strPath.Left(4).Equals("/-1/")) iItems--;
     }
     // or the last item
-    if (m_vecItems.Size() > 2 && 
+    if (m_vecItems.Size() > 2 &&
       m_vecItems[m_vecItems.Size()-1]->m_strPath.Left(4).Equals("/-1/"))
       iItems--;
   }
@@ -243,7 +264,7 @@ void CGUIWindowMusicNav::UpdateButtons()
     CMusicDatabaseDirectory dir;
     dir.GetLabel(m_vecItems.m_strPath, strLabel);
   }
-  
+
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
   CONTROL_DESELECT(CONTROL_BTNPARTYMODE);
@@ -265,7 +286,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     CStdString strGenre = g_localizeStrings.Get(515); // Genre
     for (int i = 0; i < (int)genres.size(); i++)
     {
-      CGenre& genre = genres[i]; 
+      CGenre& genre = genres[i];
       CFileItem* pItem = new CFileItem(genre);
       pItem->SetLabel("[" + strGenre + "] " + genre.strGenre);
       pItem->m_strPath.Format("musicdb://1/%ld/", genre.idGenre);
@@ -352,7 +373,7 @@ void CGUIWindowMusicNav::OnWindowLoaded()
     Add(pLabel);
   }
 #endif
-  
+
   CGUIWindowMusicBase::OnWindowLoaded();
 }
 
@@ -384,7 +405,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
   int btn_InfoAll     = 0;  // Query Information for all albums
   int btn_GoToRoot    = 0;
   int btn_NowPlaying  = 0;  // Now Playing... very bottom of context accessible
-  
+
   // directory tests
   CMusicDatabaseDirectory dir;
 
@@ -396,7 +417,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
   bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
   bool bPlaylists = m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems.m_strPath.Equals("special://musicplaylists/");
   if (!bIsGotoParent && (dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT || bPlaylists))
-  { 
+  {
     // allow queue for anything but root
     if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList() || m_vecItems[iItem]->IsAudio())
       btn_Queue = pMenu->AddButton(13347);
@@ -406,7 +427,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
       btn_PlayWith = pMenu->AddButton(208);
     else if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
-    
+
     if (!bPlaylists)
       btn_AddToPlaylist = pMenu->AddButton(526);  // Add to playlist
 
@@ -421,7 +442,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem, bool bContextDriven /* = true */
 
   // turn off set artist image if not at artist listing.
   // (uses file browser to pick an image)
-  int btn_Thumb = 0;  // Set Artist Thumb  
+  int btn_Thumb = 0;  // Set Artist Thumb
   if (dir.IsArtistDir(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
     btn_Thumb = pMenu->AddButton(13359);
 
@@ -508,7 +529,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
   int nPos=strPath.ReverseFind("/");
   if (nPos>-1)
   {
-    //  try to guess where the user should start 
+    //  try to guess where the user should start
     //  browsing for the artist thumb
     VECALBUMS albums;
     long idArtist=atol(strPath.Right(strPath.size()-nPos-1));
@@ -530,7 +551,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
         while (strPicture[j] == albums[i].strPath[j]) j++;
         strPicture.Delete(j,strPicture.size()-j);
       }
-      
+
       if (!strPicture.Equals(albums[0].strPath))
       {
         iPos = -1;
@@ -562,7 +583,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     if (picture.DoCreateThumbnail(strPicture, thumb))
     {
       CMusicDatabaseDirectory dir;
-      dir.ClearDirectoryCache(m_vecItems.m_strPath);    
+      dir.ClearDirectoryCache(m_vecItems.m_strPath);
       Update(m_vecItems.m_strPath);
     }
     else

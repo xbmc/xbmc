@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIWindowVideoNav.h"
 #include "util.h"
@@ -15,7 +36,7 @@
 
 using namespace VIDEODATABASEDIRECTORY;
 
-#define CONTROL_BTNVIEWASICONS     2 
+#define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
@@ -169,7 +190,7 @@ void CGUIWindowVideoNav::UpdateButtons()
       if (pItem->m_strPath.Left(4).Equals("/-1/")) iItems--;
     }
     // or the last item
-    if (m_vecItems.Size() > 2 && 
+    if (m_vecItems.Size() > 2 &&
       m_vecItems[m_vecItems.Size()-1]->m_strPath.Left(4).Equals("/-1/"))
       iItems--;
   }
@@ -196,7 +217,7 @@ void CGUIWindowVideoNav::UpdateButtons()
     CVideoDatabaseDirectory dir;
     dir.GetLabel(m_vecItems.m_strPath, strLabel);
   }
-  
+
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 }
 /*
@@ -214,7 +235,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     CStdString strGenre = g_localizeStrings.Get(515); // Genre
     for (int i = 0; i < (int)genres.size(); i++)
     {
-      CGenre& genre = genres[i]; 
+      CGenre& genre = genres[i];
       CFileItem* pItem = new CFileItem(genre);
       pItem->SetLabel("[" + strGenre + "] " + genre.strGenre);
       pItem->m_strPath.Format("musicdb://1/%ld/", genre.idGenre);

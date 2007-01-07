@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIDialogProfileSettings.h"
 #include "GUIDialogFileBrowser.h"
@@ -71,12 +92,12 @@ void CGUIDialogProfileSettings::CreateSettings()
 {
   // clear out any old settings
   m_settings.clear();
-  
+
   AddButton(1,20093);
   AddButton(2,20065);
   if (!m_bIsDefault && m_bShowDetails)
     AddButton(3,20070);
-  
+
   if (m_bShowDetails)
     AddButton(4,20066);
   if (!m_bShowDetails && m_iLockMode == LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
@@ -185,7 +206,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
     {
       m_strDirectory = strDirectory;
       if (!m_bIsDefault)
-        m_strDirectory.erase(0,g_settings.m_vecProfiles[0].getDirectory().size()+1);       
+        m_strDirectory.erase(0,g_settings.m_vecProfiles[0].getDirectory().size()+1);
       m_bNeedSave = true;
       SET_CONTROL_LABEL(1001,m_strDirectory);
     }
@@ -210,7 +231,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
       if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bIsDefault?12360:20068))
         m_bNeedSave = true;
     }
-  } 
+  }
   if (setting.id > 4)
     m_bNeedSave = true;
 }
@@ -230,7 +251,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
     dialog->m_bIsDefault = false;
   if (!bDetails && iProfile > g_settings.m_vecProfiles.size())
     return false;
-  
+
   dialog->m_bShowDetails = bDetails;
 
   if (iProfile >= g_settings.m_vecProfiles.size())
@@ -262,7 +283,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
       dialog->m_iDbMode += 2;
     if (g_settings.m_vecProfiles[iProfile].hasSources())
       dialog->m_iSourcesMode += 2;
-    
+
     dialog->m_iLockMode = g_settings.m_vecProfiles[iProfile].getLockMode();
     dialog->m_strLockCode = g_settings.m_vecProfiles[iProfile].getLockCode();
     dialog->m_bLockFiles = g_settings.m_vecProfiles[iProfile].filesLocked();
@@ -290,7 +311,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
 
       // check for old profile settings
       CProfile profile;
-      g_settings.m_vecProfiles.push_back(profile);      
+      g_settings.m_vecProfiles.push_back(profile);
       bool bExists = CFile::Exists(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
 
       if (bExists)
@@ -336,7 +357,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
             TiXmlElement xmlPicturesElement("pictures");
             pRoot->InsertEndChild(xmlPicturesElement);
             TiXmlElement xmlFilesElement("files");
-            pRoot->InsertEndChild(xmlFilesElement); 
+            pRoot->InsertEndChild(xmlFilesElement);
             xmlDoc.SaveFile(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
           }
       }

@@ -148,8 +148,8 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         //   0 : no stacking
         //   1 : stacking
         g_stSettings.m_iMyVideoStack++;
-        
-        if (g_stSettings.m_iMyVideoStack > STACK_SIMPLE) 
+
+        if (g_stSettings.m_iMyVideoStack > STACK_SIMPLE)
           g_stSettings.m_iMyVideoStack = STACK_NONE;
 
         if (g_stSettings.m_iMyVideoStack != STACK_NONE)
@@ -169,7 +169,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           Update("special://videoplaylists/");
         }
       }
-      // list/thumb panel 
+      // list/thumb panel
       else if (m_viewControl.HasControl(iControl))
       {
         int iItem = m_viewControl.GetSelectedItem();

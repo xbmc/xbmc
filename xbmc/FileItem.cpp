@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "fileitem.h"
 #include "Util.h"
@@ -279,7 +300,7 @@ bool CFileItem::IsAudio() const
   if (IsCDDA()) return true;
   if (IsShoutCast()) return true;
   if (IsLastFM()) return true;
-  
+
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("audio/") )
     return true;
@@ -312,7 +333,7 @@ bool CFileItem::IsPicture() const
     return true;
 
   CStdString extension;
-  CUtil::GetExtension(m_strPath, extension);    
+  CUtil::GetExtension(m_strPath, extension);
 
   if (extension.IsEmpty())
     return false;
@@ -321,7 +342,7 @@ bool CFileItem::IsPicture() const
   if (g_stSettings.m_pictureExtensions.Find(extension) != -1)
     return true;
 
-  if (extension == ".tbn") 
+  if (extension == ".tbn")
     return true;
 
   return false;
@@ -396,34 +417,34 @@ bool CFileItem::IsPlayList() const
 
 bool CFileItem::IsPythonScript() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".py", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".py", false);
 }
 
 bool CFileItem::IsXBE() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".xbe", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".xbe", false);
 }
 
 bool CFileItem::IsType(const char *ext) const
 {
-  return CUtil::GetExtension(m_strPath).Equals(ext, false);  
+  return CUtil::GetExtension(m_strPath).Equals(ext, false);
 }
 
 bool CFileItem::IsDefaultXBE() const
 {
-  CStdString filename = CUtil::GetFileName(m_strPath);  
+  CStdString filename = CUtil::GetFileName(m_strPath);
   if (filename.Equals("default.xbe")) return true;
   return false;
 }
 
 bool CFileItem::IsShortCut() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".cut", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".cut", false);
 }
 
 bool CFileItem::IsNFO() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".nfo", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".nfo", false);
 }
 
 bool CFileItem::IsDVDImage() const
@@ -461,17 +482,17 @@ bool CFileItem::IsRAR() const
 
 bool CFileItem::IsZIP() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".zip", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".zip", false);
 }
 
 bool CFileItem::IsCBZ() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".cbz", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".cbz", false);
 }
 
 bool CFileItem::IsCBR() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".cbr", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".cbr", false);
 }
 
 bool CFileItem::IsStack() const
@@ -685,7 +706,7 @@ void CFileItem::SetCachedArtistThumb()
 
 // set the album thumb for a file or folder
 void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
-{ 
+{
   if (HasThumbnail()) return;
   SetCachedMusicThumb();
   if (!HasThumbnail())
@@ -809,7 +830,7 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     if( (iPos2 > iPos1) && bDoneSomething )
     {
       strLabel += strMask.Mid(iPos1, iPos2 - iPos1);
-      bDoneSomething = false;  
+      bDoneSomething = false;
     }
     CStdString str;
     if (strMask[iPos2 + 1] == 'N' && tag.GetTrackNumber() > 0)
@@ -932,7 +953,7 @@ const CStdString& CFileItem::GetContentType() const
 
     if( m_bIsFolder )
       m_ref = "x-directory/normal";
-    else if( m_strPath.Left(8).Equals("shout://") 
+    else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(7).Equals("upnp://"))
     {
@@ -942,7 +963,7 @@ const CStdString& CFileItem::GetContentType() const
     }
     else if( m_strPath.Left(8).Equals("https://") )
     {
-      CURL url(m_strPath);      
+      CURL url(m_strPath);
       CFileCurl::GetContent(url, m_ref);
     }
 
@@ -1653,9 +1674,9 @@ void CFileItemList::Stack()
         // check for any dvd directories, only on known fast types
         // i'm adding xbms even thou it really isn't fast due to
         // opening file to check for existance
-        if( !item->IsRemote() 
-         || item->IsSmb() 
-         || CUtil::IsInRAR(item->m_strPath) 
+        if( !item->IsRemote()
+         || item->IsSmb()
+         || CUtil::IsInRAR(item->m_strPath)
          || CUtil::IsInZIP(item->m_strPath)
          || item->m_strPath.Left(5).Equals("xbms", false)
          )
@@ -1680,10 +1701,10 @@ void CFileItemList::Stack()
             /* will allways be set on the video_ts.ifo file */
             CStdString thumb(item->GetCachedVideoThumb());
             if(CFile::Exists(thumb))
-              item->SetThumbnailImage(thumb);              
+              item->SetThumbnailImage(thumb);
             else
               item->SetUserVideoThumb();
-              
+
           }
         }
         continue;
@@ -1873,7 +1894,7 @@ void CFileItem::SetCachedMusicThumb()
 }
 
 CStdString CFileItem::GetPreviouslyCachedMusicThumb()
-{ 
+{
   // the highest priority thumb is album name + album path
   CStdString strPath;
   if (!m_bIsFolder)
@@ -1963,7 +1984,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
 
 void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
 {
-  // caches as the local thumb 
+  // caches as the local thumb
   CStdString thumb(GetUserMusicThumb(alwaysCheckRemote));
   if (!thumb.IsEmpty())
   {
@@ -2083,7 +2104,7 @@ void CFileItem::SetUserVideoThumb()
   if (m_bIsShareOrDrive) return;
   if (IsParentFolder()) return;
 
-  // caches as the local thumb 
+  // caches as the local thumb
   CStdString thumb(GetUserVideoThumb());
   if (!thumb.IsEmpty())
   {
@@ -2159,7 +2180,7 @@ CStdString CFileItem::GetCachedGameSaveThumb()
 
         CUtil::AddFileToFolder(m_strPath, "titleimage.xbx", titleimageXBX);
         CUtil::AddFileToFolder(m_strPath,"saveimage.xbx",saveimageXBX);
-        
+
         /*if (CFile::Exists(saveimageXBX))
         {
           CUtil::CacheXBEIcon(saveimageXBX, thumb);

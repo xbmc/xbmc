@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "GUIWindowPictures.h"
@@ -33,7 +53,7 @@ CGUIWindowPictures::~CGUIWindowPictures(void)
 
 bool CGUIWindowPictures::OnAction(const CAction &action)
 {
-	// the non-contextual menu can be called at any time
+  // the non-contextual menu can be called at any time
   if (action.wID == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
   {
     OnPopupMenu(-1, false);
@@ -75,7 +95,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPictures;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
-            
+
       // try to open the destination path
       if (!strDestination.IsEmpty())
       {
@@ -130,7 +150,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
 
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-            
+
       if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
         m_ImageLib.Load();
@@ -288,7 +308,7 @@ bool CGUIWindowPictures::OnPlayMedia(int iItem)
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strPicture = pItem->m_strPath;
-  
+
   if (pItem->m_strPath == "add") // 'add source button' in empty root
   {
     if (CGUIDialogMediaSource::ShowAndAddMediaSource("pictures"))
@@ -348,7 +368,7 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture, CF
   }
   if (!strPicture.IsEmpty())
     pSlideShow->Select(strPicture);
-  
+
   m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
@@ -358,7 +378,7 @@ void CGUIWindowPictures::AddDir(CGUIWindowSlideShow *pSlideShow, const CStdStrin
   CFileItemList items;
   m_rootDir.GetDirectory(strPath, items);
   items.Sort(SORT_METHOD_FILE,SORT_ORDER_ASC); // WARNING: might make sense with the media window sort order but currently used only with comics and there it doesn't.
-  
+
   for (int i = 0; i < (int)items.Size();++i)
   {
     CFileItem* pItem = items[i];
@@ -461,52 +481,52 @@ void CGUIWindowPictures::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     m_vecItems[iItem]->Select(false);
   }
   else
-	{
-		if (m_vecItems.Size() == 0)
-			bContextDriven = false;
-		if (bContextDriven && (iItem < 0 || iItem >= m_vecItems.Size())) return;
+  {
+    if (m_vecItems.Size() == 0)
+      bContextDriven = false;
+    if (bContextDriven && (iItem < 0 || iItem >= m_vecItems.Size())) return;
 
-		// popup the context menu
-		CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-		if (!pMenu) return ;
+    // popup the context menu
+    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+    if (!pMenu) return ;
 
-		// load our menu
+    // load our menu
     pMenu->Initialize();
 
-		// contextual buttons
+    // contextual buttons
     int btn_Thumbs = 0;				// Create Thumbnails
     int btn_SlideShow = 0;		// View Slideshow
     int btn_RecSlideShow = 0; // Recursive Slideshow
     int btn_Delete = 0;				// Delete
-		int btn_Rename = 0;				// Rename
+    int btn_Rename = 0;				// Rename
 
-		// check item boumds
-		if (bContextDriven)
-		{
-			// mark the item
-			m_vecItems[iItem]->Select(true);
-    
-			// this could be done like the delete button too
-			if (m_vecItems.GetFileCount() != 0) 
-				btn_SlideShow = pMenu->AddButton(13317);      // View Slideshow
-	    
-			btn_RecSlideShow = pMenu->AddButton(13318);     // Recursive Slideshow
-	    
-			if (!m_thumbLoader.IsLoading()) 
-				btn_Thumbs = pMenu->AddButton(13315);         // Create Thumbnails
-	    
-			// add delete/rename functions if supported by the protocol
-			if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !m_vecItems[iItem]->IsReadOnly())
-			{
-				btn_Delete = pMenu->AddButton(117);           // Delete
-				btn_Rename = pMenu->AddButton(118);           // Rename
-			}
-		} // if (iItem >= 0 && iItem < m_vecItems.Size())
+    // check item boumds
+    if (bContextDriven)
+    {
+      // mark the item
+      m_vecItems[iItem]->Select(true);
 
-		// non-contextual buttons
+      // this could be done like the delete button too
+      if (m_vecItems.GetFileCount() != 0)
+        btn_SlideShow = pMenu->AddButton(13317);      // View Slideshow
+
+      btn_RecSlideShow = pMenu->AddButton(13318);     // Recursive Slideshow
+
+      if (!m_thumbLoader.IsLoading())
+        btn_Thumbs = pMenu->AddButton(13315);         // Create Thumbnails
+
+      // add delete/rename functions if supported by the protocol
+      if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !m_vecItems[iItem]->IsReadOnly())
+      {
+        btn_Delete = pMenu->AddButton(117);           // Delete
+        btn_Rename = pMenu->AddButton(118);           // Rename
+      }
+    } // if (iItem >= 0 && iItem < m_vecItems.Size())
+
+    // non-contextual buttons
     int btn_Settings = pMenu->AddButton(5);			// Settings
     int btn_GoToRoot = pMenu->AddButton(20128);	// Go To Root
-		int btn_Switch = pMenu->AddButton(523);     // switch media
+    int btn_Switch = pMenu->AddButton(523);     // switch media
 
     // position it correctly
     pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
@@ -515,24 +535,24 @@ void CGUIWindowPictures::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     int btnid = pMenu->GetButton();
     if (btnid>0)
     {
-			// slideshow
+      // slideshow
       if (btnid == btn_SlideShow)
       {
         OnSlideShow(m_vecItems[iItem]->m_strPath);
         return;
       }
-			// recursive slideshow
+      // recursive slideshow
       else if (btnid == btn_RecSlideShow)
       {
         OnSlideShowRecursive(m_vecItems[iItem]->m_strPath);
         return;
       }
-			// create thumbs
+      // create thumbs
       else if (btnid == btn_Thumbs)
       {
         OnRegenerateThumbs();
       }
-			// delete
+      // delete
       else if (btnid == btn_Delete)
       {
         OnDeleteItem(iItem);
@@ -543,26 +563,26 @@ void CGUIWindowPictures::OnPopupMenu(int iItem, bool bContextDriven /* = true */
         OnRenameItem(iItem);
       }
       else if (btnid == btn_Settings)
-      { 
+      {
         m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
-				return;
+        return;
       }
-			// go to root
+      // go to root
       else if (btnid == btn_GoToRoot)
       {
         Update("");
         return;
       }
-			// switch media
-			else if (btnid == btn_Switch)
-			{
-				CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems.m_strPath, posX, posY);
-				return;
-			}
+      // switch media
+      else if (btnid == btn_Switch)
+      {
+        CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems.m_strPath, posX, posY);
+        return;
+      }
     }
     if (iItem < m_vecItems.Size())
       m_vecItems[iItem]->Select(false);
-	}
+  }
 }
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
@@ -603,7 +623,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       // the thumb.
 
       CFileItemList items;
-  
+
       CDirectory::GetDirectory(strPath, items, g_stSettings.m_pictureExtensions, false, false);
 
       // create the folder thumb by choosing 4 random thumbs within the folder and putting

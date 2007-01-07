@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 //********************************************************************************************************************************
 //**
 //** see docs/videodatabase.png for a diagram of the database
@@ -1044,7 +1065,7 @@ void CVideoDatabase::GetYears(VECMOVIEYEARS& years, int iShowMode /* = VIDEO_SHO
 
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    
+
 	  CStdString strSQL;
 	  if (iShowMode == VIDEO_SHOW_WATCHED)
 	  {
@@ -1215,7 +1236,7 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, co
     int idBookmark=-1;
     if( type == CBookmark::RESUME ) // get the same resume mark bookmark each time type
     {
-      strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type=1", lFileId);   
+      strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type=1", lFileId);
     }
     else // get the same bookmark again, and update. not sure here as a dvd can have same time in multiple places, state will differ thou
     {
@@ -1228,7 +1249,7 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, co
     // get current id
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() != 0)
-      idBookmark = m_pDS->get_field_value("idBookmark").get_asInteger();            
+      idBookmark = m_pDS->get_field_value("idBookmark").get_asInteger();
     m_pDS->close();
 
     // update or insert depending if it existed before
@@ -1787,7 +1808,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       m_pDS->next();
     }
     m_pDS->close();
-    
+
     for (it=mapGenres.begin();it != mapGenres.end();++it)
     {
       CFileItem* pItem=new CFileItem(it->second);
@@ -1861,7 +1882,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
       m_pDS->next();
     }
     m_pDS->close();
-    
+
     for (it=mapActors.begin();it != mapActors.end();++it)
     {
       CFileItem* pItem=new CFileItem(it->second);
@@ -1891,7 +1912,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     // get primary genres for movies
     //CStdString strSQL="select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor order by path.idpath";
     CStdString strSQL=FormatSQL("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor");
-    
+
     if (g_stSettings.m_iMyVideoWatchMode == 1)
       strSQL += FormatSQL(" and NOT (movieinfo.bWatched='true')");
 
@@ -1939,7 +1960,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       m_pDS->next();
     }
     m_pDS->close();
-    
+
     for (it=mapYears.begin();it != mapYears.end();++it)
     {
       CFileItem* pItem=new CFileItem(it->second);
@@ -1998,7 +2019,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
       int iLIMIT = 5000;    // chunk size
       int iSONGS = 0;       // number of movies added to items
       int iITERATIONS = 0;  // number of iterations
-      
+
       for (int i=0;;i+=iLIMIT)
       {
         CStdString strSQL2=strSQL+FormatSQL(" limit %i offset %i", iLIMIT, i);
@@ -2263,7 +2284,7 @@ void CVideoDatabase::CleanDatabase()
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
     sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie)";
     m_pDS->exec(sql.c_str());
- 
+
     CommitTransaction();
 
     Compress();

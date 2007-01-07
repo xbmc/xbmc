@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "dnsnamecache.h"
 
@@ -38,73 +59,73 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
   // do a DNS lookup
 #ifndef _XBOX
   {
-	  WSADATA wsaData;		/* Used to open Windows connection */
-	  SOCKET sd;				/* Socket descriptor */
-	  struct sockaddr_in socket_address;
-	  struct hostent *host;
-	  int count = 0;
+    WSADATA wsaData;    /* Used to open Windows connection */
+    SOCKET sd;          /* Socket descriptor */
+    struct sockaddr_in socket_address;
+    struct hostent *host;
+    int count = 0;
 
-	  /* Open a windows connection */
-	  if (WSAStartup(0x0101, &wsaData) != 0)
-	  {
-		  OutputDebugString("Could not open Windows connection\n");
+    /* Open a windows connection */
+    if (WSAStartup(0x0101, &wsaData) != 0)
+    {
+      OutputDebugString("Could not open Windows connection\n");
       return false;
-	  }
+    }
 
-	  /* Open up a socket */
-	  sd = socket(AF_INET, SOCK_STREAM, 0);
+    /* Open up a socket */
+    sd = socket(AF_INET, SOCK_STREAM, 0);
 
-	  /* Make sure the socket was opened */
-	  if (sd == INVALID_SOCKET)
-	  {
-		  OutputDebugString("Could not open socket.\n");
-		  WSACleanup();
-		  return false;
-	  }
+    /* Make sure the socket was opened */
+    if (sd == INVALID_SOCKET)
+    {
+      OutputDebugString("Could not open socket.\n");
+      WSACleanup();
+      return false;
+    }
 
-	  /* Bind with IP address */
-	  memset(&socket_address, '\0', sizeof(struct sockaddr_in));
-	  socket_address.sin_family = AF_INET;
-	  socket_address.sin_port = htons((short)4000);
+    /* Bind with IP address */
+    memset(&socket_address, '\0', sizeof(struct sockaddr_in));
+    socket_address.sin_family = AF_INET;
+    socket_address.sin_port = htons((short)4000);
 
-	  /* Get host by name */
-	  host = gethostbyname(strHostName.c_str());
-  	
-	  /* Print error message if could not find host */
-	  if (host == NULL || host->h_addr_list[0] == NULL)
-	  {
-		  OutputDebugString("Could not find host\n");
-		  closesocket(sd);
-		  WSACleanup();
-		  return false;
-	  }
+    /* Get host by name */
+    host = gethostbyname(strHostName.c_str());
 
-	  /* Print out host name */
+    /* Print error message if could not find host */
+    if (host == NULL || host->h_addr_list[0] == NULL)
+    {
+      OutputDebugString("Could not find host\n");
+      closesocket(sd);
+      WSACleanup();
+      return false;
+    }
+
+    /* Print out host name */
     CLog::Log(LOGDEBUG, "host name = %s\n", host->h_name);
-  	
-	  /* Loop through and print out any aliases */
-	  while(1)
-	  {
-		  if(host->h_aliases[count] == NULL)
-		  {
-			  break;
-		  }
+
+    /* Loop through and print out any aliases */
+    while(1)
+    {
+      if(host->h_aliases[count] == NULL)
+      {
+        break;
+      }
       CLog::Log(LOGDEBUG, "alias %d: %s\n", count + 1, host->h_aliases[count]);
-		  ++count;
-	  }
-  	
-	  /* Print out all IP addresses of name */
-	  if (host->h_addr_list[0])
-	  {
+      ++count;
+    }
+
+    /* Print out all IP addresses of name */
+    if (host->h_addr_list[0])
+    {
       strIpAdres.Format("%d.%d.%d.%d", (unsigned char)host->h_addr_list[0][0], (unsigned char)host->h_addr_list[0][1], (unsigned char)host->h_addr_list[0][2], (unsigned char)host->h_addr_list[0][3]);
       CDNSName dnsName;
       dnsName.m_strHostName = strHostName;
       dnsName.m_strIpAdres = strIpAdres;
       g_DNSCache.m_vecDNSNames.push_back(dnsName);
-	  }
+    }
 
-	  closesocket(sd);
-	  WSACleanup();
+    closesocket(sd);
+    WSACleanup();
 
     return true;
   }

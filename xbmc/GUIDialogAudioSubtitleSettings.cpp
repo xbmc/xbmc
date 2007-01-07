@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIDialogAudioSubtitleSettings.h"
 #include "GUIDialogFileBrowser.h"
@@ -132,10 +153,10 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
 
   // cycle through each subtitle and add it to our entry list
   for (int i = 0; i <= setting.max; ++i)
-  {    
+  {
     CStdString strItem;
     CStdString strName;
-    g_application.m_pPlayer->GetSubtitleName(i, strName);    
+    g_application.m_pPlayer->GetSubtitleName(i, strName);
     if (strName.length() == 0)
       strName = "Unnamed";
 
@@ -231,7 +252,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
 
     const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
     if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(293),strPath,false,true)) // "subtitles"
-    {      
+    {
       CStdString strExt;
       CUtil::GetExtension(strPath,strExt);
       if (strExt.CompareNoCase(".idx") == 0 || strExt.CompareNoCase(".sub") == 0)
@@ -259,7 +280,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
           }
           if (CFile::Exists(strPath2))
             CFile::Cache(strPath2,strPath3);
-          else 
+          else
           {
             CFileItemList items;
             CStdString strDir,strFileNameNoExtNoCase;
@@ -274,7 +295,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
           }
           g_stSettings.m_currentVideoSettings.m_SubtitleCached = false;
           g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
-          
+
           // reopen the file
           if ( g_application.PlayFile(g_application.CurrentFileItem(), true) && g_application.m_pPlayer )
           {
@@ -282,7 +303,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
             g_application.m_pPlayer->SetPlayerState(state);
             g_application.SeekTime(time);
           }
-          
+
           Close();
         }
       }
