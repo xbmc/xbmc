@@ -774,7 +774,7 @@ int asf_http_streaming_start( stream_t *stream, int *demuxer_type ) {
 			}
 			http_response_append( http_hdr, buffer, i );
       ret += i;
-		} while( ret<10 && i>0);
+		} while( ret<sizeof(ASF_obj_header_t) && i>0);
 #endif
 		if( mp_msg_test(MSGT_NETWORK,MSGL_V) ) {
 			http_hdr->buffer[http_hdr->buffer_size]='\0';
