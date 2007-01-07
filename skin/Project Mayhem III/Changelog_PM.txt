@@ -1,3 +1,4 @@
+2007-01-07 changed:	Bookmark-resume texture.
 2007-01-07 changed:	VideoTitle label in Home.xml didn't scroll when too long, added <scroll>true</scroll>.
 2006-11-24 changed: 	Initial Commit of 2.1 skin version. New List view mode layout.   Lots of changes inside xml code (to many to list)
 2006-11-15 changed: 	BUILD.BAT to account for svn
