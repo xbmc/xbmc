@@ -15,7 +15,9 @@
 #include "xbox/Network.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
-
+#ifdef HAS_XBOX_HARDWARE
+#include "utils/MemoryUnitManager.h"
+#endif
 struct CSettings::stSettings g_stSettings;
 struct CSettings::AdvancedSettings g_advancedSettings;
 class CSettings g_settings;
@@ -25,6 +27,24 @@ extern CStdString g_LoadErrorStr;
 //uncomment to use new multipath:// protocol while still in development
 //#define	MULTIPATH 1
 
+bool CShare::isWritable()
+{
+  if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
+    return true; // local disk
+  if (strPath.size() > 4)
+  {
+    if (strPath.substr(0,4) == "smb:")
+      return true; // smb path
+    #ifdef HAS_XBOX_HARDWARE
+    else if (strPath.substr(0,4) == "mem:")
+    {
+      return g_memoryUnitManager.IsDriveWriteable(strPath);
+    }
+    #endif
+  }
+
+  return false;
+}
 void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths)
 {
   vecPaths = paths;
@@ -109,7 +129,7 @@ CSettings::CSettings(void)
   strcpy( g_stSettings.m_szDefaultPictures, "");
   strcpy( g_stSettings.m_szDefaultFiles, "");
   strcpy( g_stSettings.m_szDefaultVideos, "");
-  
+
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
@@ -246,14 +266,14 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   // load settings file...
   bXboxMediacenter = bSettings = false;
 
-  char szDevicePath[1024]; 
+  char szDevicePath[1024];
   CIoSupport helper;
   CStdString strMnt = GetProfileUserDataFolder();
   if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
   {
     CUtil::GetHomePath(strMnt);
     strMnt += GetProfileUserDataFolder().substr(2);
-  }    
+  }
   helper.GetPartition(strMnt, szDevicePath);
   strcat(szDevicePath,strMnt.c_str()+2);
   helper.Unmount("P:");
@@ -546,7 +566,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
     }
     pPathName = pPathName->NextSibling("path");
   }
-  
+
   const TiXmlNode *pCacheNode = bookmark->FirstChild("cache");
   const TiXmlNode *pDepthNode = bookmark->FirstChild("depth");
   const TiXmlNode *pLockMode = bookmark->FirstChild("lockmode");
@@ -591,9 +611,9 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
           else
             bIsInvalid = true;
         }
-        
+
         // error message
-        if (bIsInvalid)   
+        if (bIsInvalid)
           CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath bookmark", vecPaths[j].c_str());
       }
 
@@ -945,7 +965,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	  GetInteger(pElement, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel, 0, 0,5);
 	  GetInteger(pElement, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort, 8278, 1, 65535);
   }
-  
+
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
   if (pElement)
   {
@@ -1084,7 +1104,7 @@ void CSettings::LoadAdvancedSettings()
   }
 
   GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 10.0f, 1.0f, 100.0f);
-  
+
   pElement = pRootElement->FirstChildElement("samba");
   if (pElement)
   {
@@ -1124,7 +1144,7 @@ void CSettings::LoadAdvancedSettings()
           continue;
         g_stSettings.m_pictureExtensions.erase(iPos,exts[i].size()+1);
       }
-    }    
+    }
   }
   pExts = pRootElement->FirstChildElement("musicextensions");
   if (pExts)
@@ -1144,7 +1164,7 @@ void CSettings::LoadAdvancedSettings()
           continue;
         g_stSettings.m_musicExtensions.erase(iPos,exts[i].size()+1);
       }
-    }    
+    }
   }
   pExts = pRootElement->FirstChildElement("videoextensions");
   if (pExts)
@@ -1164,9 +1184,9 @@ void CSettings::LoadAdvancedSettings()
           continue;
         g_stSettings.m_videoExtensions.erase(iPos,exts[i].size()+1);
       }
-    }    
+    }
   }
-  
+
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
 
   // TODO: Should cache path be given in terms of our predefined paths??
@@ -1227,7 +1247,7 @@ void CSettings::LoadAdvancedSettings()
         if (strFrom.IsEmpty())
           CLog::Log(LOGERROR,"  Missing <from> tag");
         else
-          CLog::Log(LOGERROR,"  Missing <to> tag");          
+          CLog::Log(LOGERROR,"  Missing <to> tag");
       }
 
       // get next one
@@ -1381,7 +1401,7 @@ bool CSettings::SaveAvpackXML() const
   }
 
   // Delete the plugged avpack root if it exists, then recreate it
-  // TODO : to support custom avpack settings, the two XMLs should 
+  // TODO : to support custom avpack settings, the two XMLs should
   // be synchronized, not just overwrite the old one
   TiXmlNode *pRoot = pMainElement->FirstChild(GetPluggedAvpack());
   if (pRoot)
@@ -1505,7 +1525,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
-  
+
   SetInteger(pNode, "watchmode", g_stSettings.m_iMyVideoWatchMode);
 
   { // playlist window
@@ -1539,9 +1559,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
   SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
   SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
-  SetInteger(pNode, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort); 
+  SetInteger(pNode, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort);
   SetInteger(pNode, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel);
-    
+
   // default video settings
   TiXmlElement videoSettingsNode("defaultvideosettings");
   pNode = pRoot->InsertEndChild(videoSettingsNode);
@@ -1591,7 +1611,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 }
 
 bool CSettings::LoadProfile(int index)
-{  
+{
   int iOldIndex = m_iLastLoadedProfileIndex;
   m_iLastLoadedProfileIndex = index;
   bool bSourcesXML=true;
@@ -1633,7 +1653,7 @@ bool CSettings::LoadProfile(int index)
     }
     else
     {
-      g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE); // needs to reset 
+      g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE); // needs to reset
       g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
       g_audioManager.Load();
     }
@@ -1684,7 +1704,7 @@ bool CSettings::LoadProfile(int index)
   }
 
   m_iLastLoadedProfileIndex = iOldIndex;
- 
+
   return false;
 }
 
@@ -1775,7 +1795,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     CStdString strName;
     XMLUtils::GetString(pProfile,"name",strName);
     profile.setName(strName);
-    
+
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
     profile.setDirectory(strDirectory);
@@ -1791,11 +1811,11 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     bHas = true;
     XMLUtils::GetBoolean(pProfile, "canwritedatabases", bHas);
     profile.setWriteDatabases(bHas);
-    
+
     bHas = true;
     XMLUtils::GetBoolean(pProfile, "hassources", bHas);
     profile.setSources(bHas);
-    
+
     bHas = true;
     XMLUtils::GetBoolean(pProfile, "canwritesources", bHas);
     profile.setWriteSources(bHas);
@@ -1803,7 +1823,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
     profile.setSettingsLocked(bHas);
-    
+
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "lockfiles", bHas);
     profile.setFilesLocked(bHas);
@@ -1811,7 +1831,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "lockmusic", bHas);
     profile.setMusicLocked(bHas);
-    
+
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "lockvideo", bHas);
     profile.setVideoLocked(bHas);
@@ -1830,7 +1850,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     int iLockMode=LOCK_MODE_EVERYONE;
     XMLUtils::GetInt(pProfile,"lockmode",iLockMode);
     if (iLockMode > LOCK_MODE_QWERTY || iLockMode < 0)
-      iLockMode = LOCK_MODE_EVERYONE; 
+      iLockMode = LOCK_MODE_EVERYONE;
     profile.setLockMode(iLockMode);
 
     CStdString strLockCode;
@@ -1868,7 +1888,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
     SetBoolean(pNode,"useavpacksettings",g_settings.m_vecProfiles[iProfile].useAvpackSettings());
-    
+
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     {
       SetInteger(pNode,"lockmode",g_settings.m_vecProfiles[iProfile].getLockMode());
@@ -1934,7 +1954,7 @@ bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, co
 {
   if (!LoadXml()) return false;
   VECSHARES *pShares = GetSharesFromType(type);
-  
+
   if (!pShares) return false;
 
   // update our current share list
@@ -2025,7 +2045,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
   if (!LoadXml()) return false;
 
   VECSHARES *pShares = GetSharesFromType(strType);
-  
+
   if (!pShares) return false;
 
   // disallow virtual paths
@@ -2063,7 +2083,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
 
   // Update our XML file as well
   TiXmlElement *pRootElement = xbmcXml.RootElement();
-  
+
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
 
@@ -2110,7 +2130,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
             TiXmlNode* pChild2 = pIt->FirstChild("thumbnail");
             if (pChild2)
               pIt->RemoveChild(pChild2);
-          } 
+          }
           break;
         }
       }
@@ -2136,7 +2156,7 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
   if (!LoadXml()) return false;
   //<strFirstChild>
   //    <strChild>strChildValue</strChild>
-  
+
   TiXmlElement *pRootElement = xbmcXml.RootElement();
   if (!pRootElement) return false;
   TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);
@@ -2169,10 +2189,10 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
 bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue)
 {
   if (!LoadXml()) return false;
-  
+
   //
   //<strFirstChild>strFirstChildValue<strFirstChild>
-  
+
   TiXmlElement *pRootElement = xbmcXml.RootElement();
   TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);;
   if (pNode)
@@ -2492,7 +2512,7 @@ void CSettings::ResetSkinSettings()
     CStdString skinName = (*it).second.name;
     if (skinName.Left(currentSkin.size()) == currentSkin)
       (*it).second.value = false;
-    
+
     it++;
   }
   std::map<int, CSkinString>::iterator it2 = m_skinStrings.begin();
@@ -2501,7 +2521,7 @@ void CSettings::ResetSkinSettings()
     CStdString skinName = (*it2).second.name;
     if (skinName.Left(currentSkin.size()) == currentSkin)
       (*it2).second.value = "";
-    
+
     it2++;
   }
   g_infoManager.ResetCache();
@@ -2541,7 +2561,7 @@ CStdString CSettings::GetProfileUserDataFolder() const
     return GetUserDataFolder();
 
   CUtil::AddFileToFolder(GetUserDataFolder(),m_vecProfiles[m_iLastLoadedProfileIndex].getDirectory(),folder);
-  
+
   return folder;
 }
 
@@ -2552,7 +2572,7 @@ CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
   if (!CFile::Exists(folder))
     folder = "T:\\"+strFile;
   return folder;
-} 
+}
 
 CStdString CSettings::GetUserDataFolder() const
 {
@@ -2577,7 +2597,7 @@ CStdString CSettings::GetCDDBFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\CDDB", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Database\\CDDB", folder);
-  
+
   return folder;
 }
 
@@ -2588,7 +2608,7 @@ CStdString CSettings::GetIMDbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\IMDb", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Database\\IMDb", folder);
-  
+
   return folder;
 }
 
@@ -2599,7 +2619,7 @@ CStdString CSettings::GetThumbnailsFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails", folder);
-  
+
   return folder;
 }
 
@@ -2610,7 +2630,7 @@ CStdString CSettings::GetMusicThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music", folder);
-  
+
   return folder;
 }
 
@@ -2621,7 +2641,7 @@ CStdString CSettings::GetMusicArtistThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
-  
+
   return folder;
 }
 
@@ -2632,7 +2652,7 @@ CStdString CSettings::GetVideoThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video", folder);
-  
+
   return folder;
 }
 
@@ -2643,7 +2663,7 @@ CStdString CSettings::GetBookmarksThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
-  
+
   return folder;
 }
 
@@ -2654,7 +2674,7 @@ CStdString CSettings::GetPicturesThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Pictures", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Pictures", folder);
-  
+
   return folder;
 }
 
@@ -2665,7 +2685,7 @@ CStdString CSettings::GetProgramsThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs", folder);
-  
+
   return folder;
 }
 
@@ -2676,7 +2696,7 @@ CStdString CSettings::GetGameSaveThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\GameSaves", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\GameSaves", folder);
-  
+
   return folder;
 }
 
@@ -2684,7 +2704,7 @@ CStdString CSettings::GetProfilesThumbFolder() const
 {
   CStdString folder;
   CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Profiles", folder);
-  
+
   return folder;
 }
 
@@ -2696,7 +2716,7 @@ CStdString CSettings::GetXLinkKaiThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs\\XLinkKai", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs\\XlinkKai", folder);
-  
+
   return folder;
 }
 
@@ -2715,7 +2735,7 @@ CStdString CSettings::GetSkinFolder() const
 {
   CStdString folder;
 
-  // Get the Current Skin Path 
+  // Get the Current Skin Path
   CUtil::AddFileToFolder("Q:\\skin\\",g_guiSettings.GetString("lookandfeel.skin"),folder);
 
   return folder;
@@ -2773,8 +2793,8 @@ void CSettings::LoadRSSFeeds()
         pFeed = pFeed->NextSiblingElement("feed");
       }
       g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<string> > >(iId,std::make_pair<std::vector<int>,std::vector<string> >(vecIntervals,vecSet)));
-    } 
-    else 
+    }
+    else
       CLog::Log(LOGERROR,"found rss url set with no id in RssFeeds.xml, ignored");
 
     pSet = pSet->NextSiblingElement("set");
