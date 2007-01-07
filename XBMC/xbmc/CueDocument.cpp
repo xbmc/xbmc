@@ -109,7 +109,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     {
       iTrackNumber = ExtractNumericInfo(strLine.c_str() + 5);
       m_iTotalTracks++;
-      
+
       CCueTrack track;
       m_Track.push_back(track);
       m_Track[m_iTotalTracks].iTrackNumber = iTrackNumber;

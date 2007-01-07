@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "musicdatabase.h"
 #include "filesystem/cddb.h"
@@ -1110,7 +1131,7 @@ bool CMusicDatabase::GetGenresByName(const CStdString& strGenre, VECGENRES& genr
   return false;
 }
 
-bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
+bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,
 	const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult)
 {
   try
@@ -1151,7 +1172,7 @@ bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
   }
   catch (...)
   {
-    
+
   }
 
   return false;
@@ -1399,7 +1420,7 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
     albums.erase(albums.begin(), albums.end());
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    
+
     CStdString strSQL = "select albumview.*, sum(song.iTimesPlayed) as total from albumview "
                     "join song on albumview.idAlbum=song.idAlbum "
                     "where song.iTimesPlayed>0 "
@@ -1463,7 +1484,7 @@ bool CMusicDatabase::GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItem
     }
 
     // cleanup
-    m_pDS->close();  
+    m_pDS->close();
     return true;
   }
   catch (...)
@@ -1538,7 +1559,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     }
 
     // cleanup
-    m_pDS->close();  
+    m_pDS->close();
     return true;
   }
   catch (...)
@@ -1615,7 +1636,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     }
 
     // cleanup
-    m_pDS->close();  
+    m_pDS->close();
     return true;
   }
   catch (...)
@@ -2190,7 +2211,7 @@ bool CMusicDatabase::CleanupAlbumsFromPaths(const CStdString &strPathIds)
     {
       strAlbumIds += m_pDS->fv("album.idAlbum").get_asString() + ",";
       // delete the thumb
-      
+
       CStdString strThumb(CUtil::GetCachedAlbumThumb(m_pDS->fv("album.strAlbum").get_asString(), m_pDS->fv("path.strPath").get_asString()));
       ::DeleteFile(strThumb);
 
@@ -2245,7 +2266,7 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
       strFileName += m_pDS->fv("song.strFileName").get_asString();
 
       //  Special case for streams inside an ogg file. (oggstream)
-      //  The last dir in the path is the ogg file that 
+      //  The last dir in the path is the ogg file that
       //  contains the stream, so test if its there
       CStdString strExtension=CUtil::GetExtension(strFileName);
       if (strExtension==".oggstream" || strExtension==".nsfstream")
@@ -2255,7 +2276,7 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
         if (CUtil::HasSlashAtEnd(strFileName))
           strFileName.Delete(strFileName.size()-1);
       }
-      
+
       if (!CFile::Exists(strFileName))
       { // file no longer exists, so add to deletion list
         strSongsToDelete += m_pDS->fv("song.idSong").get_asString() + ",";
@@ -2300,7 +2321,7 @@ bool CMusicDatabase::CleanupSongs()
         m_pDS->close();
         return true;
       }
-      CStdString strSongIds = "(";  
+      CStdString strSongIds = "(";
       while (!m_pDS->eof())
       {
         strSongIds += m_pDS->fv("song.idSong").get_asString() + ",";
@@ -3386,7 +3407,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       }
 
       BeginTransaction();
-      
+
       dialog->SetLine(1, "Dropping views...");
       dialog->Progress();
       CLog::Log(LOGINFO, "Dropping album view");
@@ -3710,7 +3731,7 @@ bool CMusicDatabase::RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items
         CFileItem* pItem=items[i];
         if (pItem->IsMusicDb())
         {
-          // ...and update every song with the 
+          // ...and update every song with the
           // thumb where the album matches
           CQueryParams params;
           CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
