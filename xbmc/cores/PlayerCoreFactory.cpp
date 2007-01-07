@@ -114,25 +114,6 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_DVDPLAYER);
   }
 
-  if (url.GetProtocol().Equals("daap"))		// mplayer is better for daap
-  {
-    // due to us not using curl for all url handling, extension checking doesn't work
-    // when there is an option at the end of the url. should eventually be moved over
-    // thou let's hack around it for now
-    if ( g_stSettings.m_videoExtensions.Find(url.GetFileType()) != -1)
-    {
-      vecCores.push_back(EPC_MPLAYER);
-      vecCores.push_back(EPC_DVDPLAYER);
-    }
-
-    if ( g_stSettings.m_musicExtensions.Find(url.GetFileType()) != -1)
-    {
-      vecCores.push_back(EPC_PAPLAYER);
-      vecCores.push_back(EPC_MPLAYER);
-      vecCores.push_back(EPC_DVDPLAYER);
-    }
-  }
-
   if ( item.IsInternetStream() )
   {
     CStdString content = item.GetContentType();
