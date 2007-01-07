@@ -691,6 +691,19 @@ asf_http_streaming_start( stream_t *stream, int *demuxer_type ) {
 			}
 			http_response_append( http_hdr, buffer, i );
 		} while( !http_is_header_entire( http_hdr ) );
+#ifdef _XBOX
+    // make sure we have some additional data after headers
+    ret = 0;
+    do{
+			i = recv( fd, buffer, BUFFER_SIZE, 0 );
+			if( i<0 ) {
+				perror("read");
+				return -1;
+			}
+			http_response_append( http_hdr, buffer, i );
+      ret += i;
+		} while( ret<sizeof(ASF_obj_header_t) && i>0);
+#endif
 		if( verbose>0 ) {
 			http_hdr->buffer[http_hdr->buffer_size]='\0';
 			mp_msg(MSGT_NETWORK,MSGL_DBG2,"Response [%s]\n", http_hdr->buffer );
