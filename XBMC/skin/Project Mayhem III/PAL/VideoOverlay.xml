@@ -1,0 +1,45 @@
+﻿<window id="2004">
+	<defaultcontrol>2</defaultcontrol>
+	<animation effect="fade" time="1000">WindowOpen</animation>
+	<animation effect="fade" time="1000">WindowClose</animation>
+	<controls>
+		<control type="image" id="0">
+			<description>video rectangle</description>
+			<posx>60</posx>
+			<posy>380</posy>
+			<width>140</width>
+			<height>118</height>
+			<texture>blue_rectangle_video.png</texture>
+			<include>mediaoverlay</include>
+		</control>
+		<control type="videowindow" id="1">
+			<description>video preview window</description>
+			<posx>65</posx>
+			<posy>385</posy>
+			<width>130</width>
+			<height>107</height>
+			<visible>!Window.Next(Home)</visible>
+			<animation effect="fade" time="1" delay="500">WindowOpen</animation>
+			<animation effect="fade" time="1" delay="0">VisibleChange</animation>
+		</control>
+		<control type="label" id="0">
+			<description>play time label</description>
+			<posx>65</posx>
+			<posy>500</posy>
+			<label>-</label>
+			<info>VideoPlayer.Time</info>
+			<align>left</align>
+			<font>font13</font>
+			<include>mediaoverlay</include>
+		</control>
+		<control type="fadelabel" id="0">
+			<description>album/artist/genre etc info label</description>
+			<width>130</width>
+			<posx>65</posx>
+			<posy>525</posy>
+			<font>font10</font>
+			<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, | ]$INFO[VideoPlayer.Director, | ]$INFO[VideoPlayer.Genre, | ]</label>
+			<include>mediaoverlay</include>
+		</control>
+	</controls>
+</window>

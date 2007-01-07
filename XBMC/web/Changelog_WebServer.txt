@@ -1,0 +1,62 @@
+Project Mayhem WebServer V1.1
+
+
+= Info ===========================
+
+ The Project Mayhem skin now got it's own webserver 
+ skin / script.
+ 
+ by now only the original asp code is copied, but some very nice
+ features will be added soon ;)
+
+
+= Autors =========================
+
+    Mathias "chokemaniac" Mahling (Design, Idea and the rest ;) )
+        chokemaniac@users.sourceforge.net
+
+    Pascal "pyRAnHa" Reddig (XHTML + CSS) 
+        pyranha@users.sourceforge.net
+
+
+= Todo ==========================
+
+ - arrange settings-screen
+ - finish the PocketPC-CSS (currently in development)
+ - remember the last accesed folder like xbmc does
+ - show info of the current playing item
+ - add some hidden features ;)
+ 
+= Changelog =====================
+
+ 2005/01/15: bobbin007
+    - fixed: [ 1096896 ] Can't remove files from the playlists
+ 
+ 2004/12/10: jmarshall
+    - fixed: [ 1080520 ] web interface: unqueing doesn't work - thanks to re.solve + BombrMan
+
+ 2004/12/09: jmarshall
+    - fixed Saving of XBoxMediaCenter.xml when XBMC is used as dash (thanks to BombrMan)
+
+ 2004/10/24: pyRAnHa
+    - added "Clear Playlist" option
+
+ 2004/10/14: pyRAnHa (version 1.1.1, xbmc relase 1.1.0)
+    - new queue and unqueue Icons added
+    - first handheld / PocketPC version (dev only)
+    - fixed: info layer was not cropped clean
+
+ 2004/10/11: pyRAnHa
+    - made it XHTML 1.0 Transitional valid
+      sorry, no XHTML 1.1 cause of iframe and traget=""
+
+ 2004/09/19: pyRAnHa (version 1a)
+    - first public release
+    - add: banners images for each section
+    - add: background images for each section 
+    - add: file icons for each section
+ 
+ 2004/09/19: pyRAnHa (initial release)
+    - first working version
+
+    

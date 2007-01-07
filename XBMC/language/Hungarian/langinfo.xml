@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<language>
+  <charsets>
+    <gui unicodefont="true">CP1250</gui>
+    <subtitle>CP1250</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>hu</menu>
+    <audio>hu</audio>
+    <subtitle>hu</subtitle>
+  </dvd>
+
+  <regions>
+    <region>
+      <dateshort>YYYY.MM.DD.</dateshort>
+      <datelong>YYYY. MMMM D.</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+  </regions>
+</language>

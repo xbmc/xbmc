@@ -1,0 +1,133 @@
+﻿<window id="2007">
+	<defaultcontrol>2</defaultcontrol>
+	<controls>
+		<control type="image" id="1">
+			<description>bar image</description>
+			<posx>-10</posx>
+			<posy>40</posy>
+			<width>740</width>
+			<height>65</height>
+			<texture>osd_menu_bg.png</texture>
+			<visible>Player.ShowCodec</visible>
+			<animation effect="fade" time="300">VisibleChange</animation>
+		</control>
+		<control type="label" id="10">
+			<description>row 1 label</description>
+			<posx>70</posx>
+			<posy>50</posy>
+			<label>-</label>
+			<align>left</align>
+			<font>font12</font>
+			<visible>Player.ShowCodec</visible>
+			<animation effect="fade" time="300">VisibleChange</animation>
+		</control>
+		<control type="label" id="11">
+			<description>row 2 label</description>
+			<posx>70</posx>
+			<posy>75</posy>
+			<label>-</label>
+			<align>left</align>
+			<font>font12</font>
+			<visible>Player.ShowCodec</visible>
+			<animation effect="fade" time="300">VisibleChange</animation>
+		</control>
+		<control type="label" id="12">
+			<description>row 2 extra label</description>
+			<posx>250</posx>
+			<posy>75</posy>
+			<label>-</label>
+			<align>left</align>
+			<font>font12</font>
+			<visible>Player.ShowCodec</visible>
+			<animation effect="fade" time="300">VisibleChange</animation>
+		</control>
+		<control type="image" id="13">
+			<description>pause image</description>
+			<align>right</align>
+			<posx>580</posx>
+			<posy>25</posy>
+			<height>64</height>
+			<width>128</width>
+			<visible>no</visible>
+			<texture>video-pause.png</texture>
+			<colorkey>0</colorkey>
+		</control>
+		<!-- Media Info controls -->
+		<control type="image" id="1">
+			<description>media info background image</description>
+			<posx>-10</posx>
+			<posy>435</posy>
+			<width>740</width>
+			<height>100</height>
+			<texture>osd_menu_bg.png</texture>
+			<visible>Player.HasMedia + Player.ShowInfo</visible>
+			<animation effect="fade" time="500">VisibleChange</animation>
+		</control>
+		<control type="image" id="1">
+			<description>cover image</description>
+			<posx>75</posx>
+			<posy>435</posy>
+			<width>100</width>
+			<height>100</height>
+			<info>MusicPlayer.Cover</info>
+			<aspectratio>keep</aspectratio>
+			<visible>Player.HasMedia + Player.ShowInfo</visible>
+			<animation effect="fade" time="500">VisibleChange</animation>
+		</control>
+		<control type="label" id="1">
+			<description>Artist label</description>
+			<width>445</width>
+			<posx>180</posx>
+			<posy>438</posy>
+			<info>MusicPlayer.Artist</info>
+			<align>left</align>
+			<font>special12</font>
+			<visible>Player.HasMedia + Player.ShowInfo</visible>
+			<animation effect="fade" time="500">VisibleChange</animation>
+		</control>
+		<control type="label" id="1">
+			<description>Title label</description>
+			<width>430</width>
+			<posx>180</posx>
+			<posy>459</posy>
+			<info>MusicPlayer.Title</info>
+			<align>left</align>
+			<font>special13</font>
+			<visible>Player.HasMedia + Player.ShowInfo</visible>
+			<animation effect="fade" time="500">VisibleChange</animation>
+		</control>
+		<control type="label" id="1">
+			<description>Album label</description>
+			<width>430</width>
+			<posx>180</posx>
+			<posy>487</posy>
+			<info>MusicPlayer.Album</info>
+			<align>left</align>
+			<font>font10</font>
+			<visible>Player.HasMedia + Player.ShowInfo</visible>
+			<animation effect="fade" time="500">VisibleChange</animation>
+		</control>
+		<control type="label" id="1">
+			<description>time label</description>
+			<width>430</width>
+			<posx>180</posx>
+			<posy>508</posy>
+			<label>$INFO[musicplayer.Time]$INFO[musicplayer.Duration, / ]</label>
+			<align>left</align>
+			<font>font10</font>
+			<visible>Player.HasMedia + Player.ShowInfo</visible>
+			<animation effect="fade" time="500">VisibleChange</animation>
+		</control>
+		<control type="label" id="1">
+			<description>Playlist</description>
+			<width>100</width>
+			<posx>660</posx>
+			<posy>508</posy>
+			<label>$INFO[musicplayer.Playlistposition,Track ]$INFO[musicplayer.Playlistlength, / ]</label>
+			<align>right</align>
+			<font>font10</font>
+			<visible>Player.HasMedia + Player.ShowInfo</visible>
+			<animation effect="fade" time="500">VisibleChange</animation>
+		</control>
+	</controls>
+</window>

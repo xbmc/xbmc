@@ -1,0 +1,10 @@
+<visualisation>
+
+ <!-- amount to delay visualisation (range 0..31) -->
+ <syncdelay>0</syncdelay>
+
+ <!-- resolution of Goom -->
+ <width>360</width>
+ <height>288</height>
+
+</visualisation>
