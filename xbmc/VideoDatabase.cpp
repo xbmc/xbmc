@@ -36,6 +36,16 @@ CVideoDatabase::~CVideoDatabase(void)
 //********************************************************************************************************************************
 bool CVideoDatabase::CreateTables()
 {
+  /* indexes should be added on any columns that are used in in  */ 
+  /* a where or a join. primary key on a column is the same as a */ 
+  /* unique index on that column, so there is no need to add any */
+  /* index if no other columns are refered                       */
+
+  /* order of indexes are important, for an index to be considered all  */
+  /* columns up to the column in question have to have been specified   */
+  /* select * from actorlinkmovie where idMovie = 1, can not take       */
+  /* advantage of a index that has been created on ( idGenre, idMovie ) */
+  /*, hower on on ( idMovie, idGenre ) will be considered for use       */
 
   try
   {
@@ -50,33 +60,44 @@ bool CVideoDatabase::CreateTables()
                 "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
                 "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
                 "CropRight integer, CropTop integer, CropBottom integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_settings ON settings ( idFile )\n");
 
     CLog::Log(LOGINFO, "create stacktimes table");
     m_pDS->exec("CREATE TABLE stacktimes (idFile integer, times text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_stacktimes ON stacktimes ( idFile )\n");
 
     CLog::Log(LOGINFO, "create genre table");
     m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
 
     CLog::Log(LOGINFO, "create genrelinkmovie table");
     m_pDS->exec("CREATE TABLE genrelinkmovie ( idGenre integer, idMovie integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkmovie_1 ON genrelinkmovie ( idGenre, idMovie)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkmovie_2 ON genrelinkmovie ( idMovie, idGenre)\n");
 
     CLog::Log(LOGINFO, "create movie table");
     m_pDS->exec("CREATE TABLE movie ( idMovie integer, idType integer, strValue text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_movie ON movie ( idMovie, idType )\n");
 
     CLog::Log(LOGINFO, "create actorlinkmovie table");
     m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkmovie_1 ON actorlinkmovie ( idActor, idMovie )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkmovie_2 ON actorlinkmovie ( idMovie, idActor )\n");
 
     CLog::Log(LOGINFO, "create actors table");
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text )\n");
 
     CLog::Log(LOGINFO, "create movielinkfile table");
-    m_pDS->exec("create table movielinkfile (idMovie integer primary key, idFile integer)\n");  
+    m_pDS->exec("CREATE TABLE movielinkfile (idMovie integer, idFile integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_movielinkfile_1 ON movielinkfile ( idMovie, idFile )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_movielinkfile_2 ON movielinkfile ( idFile, idMovie )\n");
 
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_path ON path ( strPath )\n");
 
     CLog::Log(LOGINFO, "create files table");
     m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, idMovie integer, idEpisode integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_files ON files ( idPath, strFilename )\n");
 
     CLog::Log(LOGINFO, "create tvshow table");
     m_pDS->exec("CREATE TABLE tvshows ( idShow integer primary key, strPlot text, strDirector text, iYear integer, strGenre text, strCast text, strPictureURL text, strId text)\n");
