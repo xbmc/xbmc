@@ -414,7 +414,7 @@
   <string id="496">Calibration</string>
   <string id="497">Hide Media Extensions</string>
   <string id="498">Sort by: Type</string>
-  <string id="499">Unable to connect to www.allmusic.com</string>
+  <string id="499">Unable to connect to www.allmusic.com</string>529
   <string id="500">Downloading album info failed</string>
   <string id="501">Looking for album names...</string>
   <string id="502">Open</string>
@@ -435,6 +435,46 @@
   <string id="520">Edit XBE title</string>
   <string id="521">Compilations</string>
   <string id="522">Remove Source</string>
+  <string id="523">Switch Media</string>
+  <string id="524">Select Playlist</string>
+  <string id="525">New Playlist</string>
+  <string id="526">Add To Playlist</string>
+  <string id="527">Manually Add To Database</string>
+  <string id="528">Enter Title</string>
+  <string id="529">Error: Duplicate title</string>
+  <string id="530">Select Genre</string>
+  <string id="531">New Genre</string>
+  <string id="532">Manual Addition</string>
+  <string id="533">Enter Genre</string>
+  <string id="534">View: %s</string>
+  <string id="535">List</string>
+  <string id="536">Icons</string>
+  <string id="537">Big List</string>
+  <string id="538">Big Icons</string>
+  <string id="539">Wide</string>
+  <string id="540">Big Wide</string>
+
+  <string id="550">Sort by: %s</string>
+  <string id="551">Name</string>
+  <string id="552">Date</string>
+  <string id="553">Size</string>
+  <string id="554">Track</string>
+  <string id="555">Time</string>
+  <string id="556">Title</string>
+  <string id="557">Artist</string>
+  <string id="558">Album</string>
+  <string id="559">Playlist</string>
+  <string id="560">ID</string>
+  <string id="561">File</string>
+  <string id="562">Year</string>
+  <string id="563">Rating</string>
+  <string id="564">Type</string>
+  <string id="565">Usage</string>
+
+  <string id="580">Sort Direction</string>
+  <string id="581">Sort Method</string>
+  <string id="582">View Mode</string>
+  <string id="583">Remember views for different folders</string>
 
   <string id="588">Cancel Party Mode</string>
   <string id="589">Party Mode</string>
@@ -741,6 +781,7 @@
   <string id="12020">Ask</string>
   <string id="12021">Start from beginning</string>
   <string id="12022">Resume from last position</string>
+  <string id="12023">Validating existing trainers...</string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -1272,7 +1313,7 @@
   <string id="20038">Lock music section</string>
   <string id="20039">Lock video section</string>
   <string id="20040">Lock pictures section</string>
-  <string id="20041">Lock programs and scripts sections</string>
+  <string id="20041">Lock programs, saves &amp; scripts sections</string>
   <string id="20042">Lock filemanager</string>
   <string id="20043">Lock settings</string>
   <string id="20044">Start fresh</string>
@@ -1445,13 +1486,30 @@
   <string id="20312">Dim LCD on Paused</string>
   <string id="20313">Switch LED back on if Paused</string>
   <string id="20314">My Video - Library</string>
-  <string id="20324">Assign content</string>
-  <string id="20325">Select scraper</string>
-  <string id="20326">Choose directory content type</string>
-  <string id="20327">Would you like to recursively scan directory</string>
-  <string id="20328">for several movies, or treat it as one?</string>
-  <string id="20329">Treat as one</string>
-  <string id="20330">Scan several</string>
-  <string id="20331">Folder content</string>
+  <string id="20315">My Game Saves</string>
+  <string id="20316">Sort by: ID</string>
+  <string id="20317">Download Saves</string>
+  <string id="20318">Save Game Installed On HDD</string>
+  <string id="20319">Failed to Download Game Save</string>
+  <string id="20320">Select Game Save to Download and Install</string>
+  <string id="20321">No online save found for specified game</string>
+  <string id="20322">Go to Game Save</string>
+  <string id="20323">Game Saves</string>
+  <string id="20324">Play part...</string>
+  <string id="20325">Calibration Reset</string>
+  <string id="20326">This will reset the calibration values for %s</string>
+  <string id="20327">to it's default values.</string>
+  <string id="20328">a location to copy the save to</string>
+  <string id="20329">a location to move the save to</string>
+  <string id="20330">Folder names</string>
+  <string id="20331">File names</string>
+  <string id="20332">Use folder or file names in lookups?</string>
+  <string id="20333">Assign content</string>
+  <string id="20334">Select content type</string>
+  <string id="20335">Select information source</string>
+  <string id="20336">General Movies</string>
+  <string id="20337">TV Shows</string>
+  <string id="20338">Remove assignment</string>
+
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>
