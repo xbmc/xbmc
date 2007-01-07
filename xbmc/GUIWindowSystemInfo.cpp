@@ -8,7 +8,7 @@ Todo/BUG: GeminiServer 10.05.2005
 - TODO: Create EEPROM Backup [CreateEEPROMBackup], like ConfigMagic also cfg and TXT [50% done cur_on pending]
 - TODO: Need Better routine that checks if the XBOX is Connected to the Internet!
 
-- Exlude from System Info: May Fix Later!   
+- Exlude from System Info: May Fix Later!
 BUG: HDD Password is show Wrong!! Print HDD Password... [SomeThing Goes Wrong! Need analizing & Fixing!]
 BUG: The XBE Region detection Is wrong! Need to Decyrpt the EEPROM!
 
@@ -66,7 +66,7 @@ bool CGUIWindowSystemInfo::GetMPlayerVersion(CStdString& strVersion)
   mplayerDll = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll",true);
 
   if( mplayerDll->Parse() )
-  {   
+  {
     if (mplayerDll->ResolveExport("mplayer_getversion", (void**)&pMplayerGetVersion))
       version = pMplayerGetVersion();
     if (mplayerDll->ResolveExport("mplayer_getcompiledate", (void**)&pMplayerGetCompileDate))
@@ -105,8 +105,8 @@ void CGUIWindowSystemInfo::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR
 }
 
 void CGUIWindowSystemInfo::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString)
-{ 
-  BytesToHexStr(SrcBytes, byteCount, DstString, 0x00); 
+{
+  BytesToHexStr(SrcBytes, byteCount, DstString, 0x00);
 }
 #endif
 
@@ -125,9 +125,9 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_INIT:
-    { 
+    {
 #ifdef HAS_SYSINFO
-      m_wszMPlayerVersion[0] = 0;     
+      m_wszMPlayerVersion[0] = 0;
       //Get SystemInformations on Init
       CGUIWindow::OnMessage(message);
 
@@ -142,7 +142,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       pDlgProgress.StartModal();
       pDlgProgress.ShowProgressBar(true);
 
-      // Get Values from EEPROM 
+      // Get Values from EEPROM
       pDlgProgress.SetLine(1, g_localizeStrings.Get(20187));
       pDlgProgress.SetPercentage(50);
       pDlgProgress.Progress();
@@ -173,7 +173,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       unsigned int iControl=message.GetSenderId();
       bool b_playing= false;
       if(iControl == CONTROL_BT_HDD)
-      { 
+      {
         // Pause the Current Playing Media, to prevent corruption during info request
         if (g_application.IsPlaying())
         {
@@ -186,7 +186,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(40,g_localizeStrings.Get(20156));
 #ifdef HAS_SYSINFO
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-		    pDlgProgress.SetHeading(g_localizeStrings.Get(20156));
+        pDlgProgress.SetHeading(g_localizeStrings.Get(20156));
         pDlgProgress.SetLine(0, g_localizeStrings.Get(20190));
         pDlgProgress.SetLine(1, "");
         pDlgProgress.SetLine(2, g_localizeStrings.Get(20186));
@@ -253,7 +253,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         GetATAPIValues(2, 3);
 
         pDlgProgress.Close();
-#endif        
+#endif
         if(b_playing) g_application.m_pPlayer->Pause();
       }
       else if(iControl == CONTROL_BT_STORAGE)
@@ -268,7 +268,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 #endif
       }
       else if(iControl == CONTROL_BT_DEFAULT)
-      { 
+      {
         SetLabelDummy();
         b_IsHome = TRUE;
       }
@@ -321,7 +321,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         GetVideoEncInfo(strVideoEnc);
         SET_CONTROL_LABEL(2,strVideoEnc);
 
-        // Label 3: Resolution 
+        // Label 3: Resolution
         CStdString strResol;
         GetResolution(strResol);
         SET_CONTROL_LABEL(3,strResol);
@@ -334,7 +334,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         // Label 5: XBE Video Region
         //CStdString strVideoXBERegion;
         //GetVideoXBERegion(strVideoXBERegion);
-        //SET_CONTROL_LABEL(5,GetVideoXBERegion()); 
+        //SET_CONTROL_LABEL(5,GetVideoXBERegion());
 
         // Label 6: DVD Zone
         CStdString strdvdzone;
@@ -377,7 +377,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.Progress();
         CStdString strModChip;
         if(GetModChipInfo(strModChip))
-          SET_CONTROL_LABEL(4,strModChip);    
+          SET_CONTROL_LABEL(4,strModChip);
 
         // Label 5: Detested BiosName
         pDlgProgress.SetLine(1, g_localizeStrings.Get(20302));
@@ -392,7 +392,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
         CStdString strCPUFreq;
-        GetCPUFreqInfo(strCPUFreq); 
+        GetCPUFreqInfo(strCPUFreq);
         SET_CONTROL_LABEL(6,strCPUFreq);
 
         // Label 7: XBOX Live Key
@@ -404,7 +404,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.SetLine(1, g_localizeStrings.Get(20304));
         CStdString strXBProDate;
         if (GetXBProduceInfo(strXBProDate))
-          SET_CONTROL_LABEL(8,strXBProDate);  
+          SET_CONTROL_LABEL(8,strXBProDate);
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
 
@@ -424,7 +424,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowSystemInfo::Render()
 {
-  if (b_IsHome) 
+  if (b_IsHome)
   {
     // Default Values
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20154));
@@ -432,7 +432,7 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo("gpu")); // GPU Temperature
     SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo("fan")); // Fan Speed
 
-    // Label 5: Set FreeMemeory Info 
+    // Label 5: Set FreeMemeory Info
     CStdString strFreeMem;
     GetFreeMemory(strFreeMem);
     SET_CONTROL_LABEL(5, strFreeMem);
@@ -446,7 +446,7 @@ void CGUIWindowSystemInfo::Render()
     {
       SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
     }
-    
+
     // Label 7: Set Resolution Info
     CStdString strResol;
     GetResolution(strResol);
@@ -474,7 +474,7 @@ void CGUIWindowSystemInfo::Render()
     strSmartHDDTemp.Format("%s %s",g_localizeStrings.Get(13151).c_str(),g_infoManager.GetHDDTemp(17).c_str());
     SET_CONTROL_LABEL(11,strSmartHDDTemp);
     */
-    
+
   }
 
   // Label 50: Get Current Time
@@ -511,7 +511,7 @@ bool CGUIWindowSystemInfo::GetCPUFreqInfo(CStdString& strCPUFreq)
   double CPUFreq;
   CStdString lblCPUSpeed  = g_localizeStrings.Get(13284).c_str();
   CPUFreq         = g_sysinfo.GetCPUFrequence();
-  
+
   strCPUFreq.Format("%s %4.2f Mhz.",lblCPUSpeed.c_str(), CPUFreq);
   return true;
 }
@@ -530,7 +530,7 @@ bool CGUIWindowSystemInfo::GetMACAdress(CStdString& strMacAdress)
     return true;
   }
   else
-    return false;  
+    return false;
 }
 
 bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
@@ -543,7 +543,7 @@ bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
     strBiosName.Format("%s %s", strlblBios.c_str(),cBIOSName.c_str());
     return true;
   }
-  else 
+  else
   {
     strBiosName.Format("%s %s", strlblBios.c_str(),"File: BiosIDs.ini Not Found!");
     return true;
@@ -604,16 +604,16 @@ bool CGUIWindowSystemInfo::GetXBOXSerial(CStdString& strXBOXSerial)
   else return false;
 }
 
-bool CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate) 
+bool CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate)
 {
-  // Print XBOX Production Place and Date 
+  // Print XBOX Production Place and Date
   CStdString lbl = g_localizeStrings.Get(13290).c_str();
   CStdString lblYear = g_localizeStrings.Get(201).c_str();
   if ( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&m_EEPROMData, 0, 255))
   {
     char *info = (LPSTR)&m_EEPROMData.SerialNumber;
     char *country;
-    switch (atoi(&info[11])) 
+    switch (atoi(&info[11]))
     {
     case 2:
       country = "Mexico";
@@ -621,7 +621,7 @@ bool CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate)
     case 3:
       country = "Hungary";
       break;
-    case 5: 
+    case 5:
       country = "China";
       break;
     case 6:
@@ -646,13 +646,13 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
    // Chech if it is a SmartXX
   CStdString strIsSmartXX = g_sysinfo.SmartXXModCHIP();
   if (!strIsSmartXX.Equals("None"))
-  { 
+  {
     strModChip.Format("%s %s", lblModChip.c_str(),strIsSmartXX.c_str());
     CLog::Log(LOGDEBUG, "- Detected ModChip: %s",strIsSmartXX.c_str());
     return true;
   }
   else
-  { 
+  {
     //CStdString strXBOXVersion;
     //g_sysinfo.GetXBOXVersionDetected(strXBOXVersion);
     if ( ModChip.Equals("Unknown/Onboard TSOP (protected)"))
@@ -661,16 +661,16 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
     }
     else
     {
-      strModChip.Format("%s %s", lblModChip.c_str(),ModChip.c_str()); 
+      strModChip.Format("%s %s", lblModChip.c_str(),ModChip.c_str());
     }
     return true;
   }
-  return false; 
+  return false;
 }
 
 void CGUIWindowSystemInfo::GetAVPackInfo(CStdString& stravpack)
 {
-  //AV-[Cable]Pack Detection 
+  //AV-[Cable]Pack Detection
   CStdString DetectedAVpack = g_sysinfo.GetAVPackInfo();
   CStdString lblAVpack    = g_localizeStrings.Get(13292).c_str();
   stravpack.Format("%s %s",lblAVpack.c_str(), DetectedAVpack.c_str());
@@ -740,7 +740,7 @@ bool CGUIWindowSystemInfo::GetINetState(CStdString& strInetCon)
   CStdString lbl3 = g_localizeStrings.Get(13296);
   CStdString lbl4 = g_localizeStrings.Get(13297);
 
-  if (http.IsInternet()) 
+  if (http.IsInternet())
   { // Connected to the Internet!
     strInetCon.Format("%s %s",lbl2.c_str(), lbl3.c_str());
     return true;
@@ -793,14 +793,14 @@ bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
     g_hddsmart.Start();
   g_hddsmart.SmartREQ = 17;
   */
-  
+
   BYTE bTemp= g_hddsmart.GetSmartValues(17);
   //CTemperature temp= CTemperature::CreateFromCelsius((double)g_hddsmart.m_HddSmarValue);
   CTemperature temp= CTemperature::CreateFromCelsius((double)bTemp);
   if (bTemp ==0 )
     temp.SetState(CTemperature::invalid);
 
-  strItemhdd.Format("%s %s", lblhdd.c_str(), temp.ToString().c_str()); 
+  strItemhdd.Format("%s %s", lblhdd.c_str(), temp.ToString().c_str());
   return true;
 }
 #endif
@@ -838,7 +838,7 @@ bool CGUIWindowSystemInfo::GetATAPIValues(int i_lblp1, int i_lblp2)
 }
 
 bool CGUIWindowSystemInfo::GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5)
-{ 
+{
   /*
   //Get IDE_ATA_COMMAND_READ_SECTORS Data for HDD
   ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
@@ -929,7 +929,7 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
   CStdString ip;
 
   // Set IP Type [DHCP/Fixed]
-  if(XNetGetTitleXnAddr(&net_stat) & XNET_GET_XNADDR_DHCP)  
+  if(XNetGetTitleXnAddr(&net_stat) & XNET_GET_XNADDR_DHCP)
     ip.Format("%s %s", g_localizeStrings.Get(146).c_str(), g_localizeStrings.Get(148).c_str());
   else
     ip.Format("%s %s", g_localizeStrings.Get(146).c_str(), g_localizeStrings.Get(147).c_str());
@@ -949,8 +949,8 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
     if (dwnetstatus & XNET_ETHERNET_LINK_FULL_DUPLEX)
       linkStatus += g_localizeStrings.Get(153);
     if (dwnetstatus & XNET_ETHERNET_LINK_HALF_DUPLEX)
-      linkStatus += g_localizeStrings.Get(152); 
-  } 
+      linkStatus += g_localizeStrings.Get(152);
+  }
   else
     linkStatus += g_localizeStrings.Get(159);
 
@@ -959,22 +959,22 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
   // Get IP/Subnet/Gateway/DHCP Server/DNS1/DNS2
   const char* pszIP=g_localizeStrings.Get(150).c_str();
 
-  CStdString strlblSubnet   = g_localizeStrings.Get(13159); //"Subnet:";      
+  CStdString strlblSubnet   = g_localizeStrings.Get(13159); //"Subnet:";
   CStdString strlblGateway  = g_localizeStrings.Get(13160); //"Gateway:";
   CStdString strlblDNS    = g_localizeStrings.Get(13161); //"DNS:";
   CStdString strlblDNS2    = g_localizeStrings.Get(20307);
   CStdString strlblDHCPServer = g_localizeStrings.Get(20308);
-    
+
   CStdString strItem1, strItem2, strItem3, strItem4;
 
   ip.Format("%s: %s",pszIP, g_network.m_networkinfo.ip);  // IP
   strItem1.Format("%s %s", strlblSubnet.c_str(), g_network.m_networkinfo.subnet); // Subnetmask
   strItem2.Format("%s %s", strlblGateway.c_str(), g_network.m_networkinfo.gateway); //Gateway (Router IP)
   //strItem3.Format("%s %s", strlblDHCPServer.c_str(), g_network.m_networkinfo.dhcpserver); // DHCP-Server IP
-  
+
   strItem3.Format("%s: %s", strlblDNS.c_str(), g_network.m_networkinfo.DNS1 ); // DNS1
   strItem4.Format("%s: %s", strlblDNS2.c_str(), g_network.m_networkinfo.DNS2 ); // DNS2
-  
+
   SET_CONTROL_LABEL(i_lblp2,ip);
   SET_CONTROL_LABEL(i_lblp4,strItem1);
   SET_CONTROL_LABEL(i_lblp5,strItem2);
@@ -986,7 +986,7 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
 
 bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7, int i_lblp8, int i_lblp9, int i_lblp10)
 {
-  // Set HDD Space Informations 
+  // Set HDD Space Informations
   ULARGE_INTEGER lTotalFreeBytesC;  ULARGE_INTEGER lTotalNumberOfBytesC;
   ULARGE_INTEGER lTotalFreeBytesE;  ULARGE_INTEGER lTotalNumberOfBytesE;
   ULARGE_INTEGER lTotalFreeBytesF;  ULARGE_INTEGER lTotalNumberOfBytesF;
@@ -1017,7 +1017,7 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   }
   trayState += pszStatus1;
   SET_CONTROL_LABEL(i_lblp2, trayState);
- 
+
   //For C and E
   CStdString hdC, hdE;
   GetDiskSpace("C", lTotalNumberOfBytesC, lTotalFreeBytesC, hdC);
@@ -1033,20 +1033,20 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
 
   // Total Free Size: Generate from Drives#
   ULARGE_INTEGER lTotalDiscSpace;
-  lTotalDiscSpace.QuadPart = ( 
-    lTotalNumberOfBytesC.QuadPart + 
-    lTotalNumberOfBytesE.QuadPart + 
-    lTotalNumberOfBytesX.QuadPart + 
-    lTotalNumberOfBytesY.QuadPart + 
+  lTotalDiscSpace.QuadPart = (
+    lTotalNumberOfBytesC.QuadPart +
+    lTotalNumberOfBytesE.QuadPart +
+    lTotalNumberOfBytesX.QuadPart +
+    lTotalNumberOfBytesY.QuadPart +
     lTotalNumberOfBytesZ.QuadPart );
 
   // Total Free Size: Generate from Drives#
   ULARGE_INTEGER lTotalDiscFree;
-  lTotalDiscFree.QuadPart = ( 
-    lTotalFreeBytesC.QuadPart + 
-    lTotalFreeBytesE.QuadPart + 
-    lTotalFreeBytesX.QuadPart + 
-    lTotalFreeBytesY.QuadPart + 
+  lTotalDiscFree.QuadPart = (
+    lTotalFreeBytesC.QuadPart +
+    lTotalFreeBytesE.QuadPart +
+    lTotalFreeBytesX.QuadPart +
+    lTotalFreeBytesY.QuadPart +
     lTotalFreeBytesZ.QuadPart );
 
   //For F and G
@@ -1067,7 +1067,7 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   ULARGE_INTEGER lTotalDiscPercent;
 
   lTotalDiscUsed.QuadPart   = lTotalDiscSpace.QuadPart - lTotalDiscFree.QuadPart;
-  lTotalDiscPercent.QuadPart  = lTotalDiscSpace.QuadPart/100;  // => 1%   
+  lTotalDiscPercent.QuadPart  = lTotalDiscSpace.QuadPart/100;  // => 1%
 
   CStdString hdTotalSize, hdTotalUsedPercent, t1,t2,t3;
   t1.Format("%u",lTotalDiscSpace.QuadPart/MB);
@@ -1088,7 +1088,7 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   CLog::Log(LOGDEBUG, "HDD Free Percent: %u%%", lTotalDiscFree.QuadPart/lTotalDiscPercent.QuadPart );
   CLog::Log(LOGDEBUG, "-------------------------------------------------");
 
-  // Detect which to show!! 
+  // Detect which to show!!
   if(bUseDriveF)  // Show if Drive F is availible
   {
     SET_CONTROL_LABEL(i_lblp4,hdF);
@@ -1110,7 +1110,7 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
       SET_CONTROL_LABEL(i_lblp9,hdTotalUsedPercent);
     }
 
-  } 
+  }
   else  // F and G not available
   {
     SET_CONTROL_LABEL(i_lblp4,hdX);
@@ -1178,15 +1178,15 @@ bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
 bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
 {
   // Get the Connected Units on the Front USB Ports!
-  DWORD dwDeviceGamePad   = XGetDevices(XDEVICE_TYPE_GAMEPAD);      char* sclDeviceVle;       
-  DWORD dwDeviceKeyboard    = XGetDevices(XDEVICE_TYPE_DEBUG_KEYBOARD);   char* sclDeviceKeyb;      
-  DWORD dwDeviceMouse     = XGetDevices(XDEVICE_TYPE_DEBUG_MOUSE);    char* sclDeviceMouse;     
-  DWORD dwDeviceHeadPhone   = XGetDevices(XDEVICE_TYPE_VOICE_HEADPHONE);  char* sclDeviceHeadPhone;   
-  DWORD dwDeviceMicroPhone  = XGetDevices(XDEVICE_TYPE_VOICE_MICROPHONE); char* sclDeviceMicroPhone;    
+  DWORD dwDeviceGamePad   = XGetDevices(XDEVICE_TYPE_GAMEPAD);      char* sclDeviceVle;
+  DWORD dwDeviceKeyboard    = XGetDevices(XDEVICE_TYPE_DEBUG_KEYBOARD);   char* sclDeviceKeyb;
+  DWORD dwDeviceMouse     = XGetDevices(XDEVICE_TYPE_DEBUG_MOUSE);    char* sclDeviceMouse;
+  DWORD dwDeviceHeadPhone   = XGetDevices(XDEVICE_TYPE_VOICE_HEADPHONE);  char* sclDeviceHeadPhone;
+  DWORD dwDeviceMicroPhone  = XGetDevices(XDEVICE_TYPE_VOICE_MICROPHONE); char* sclDeviceMicroPhone;
   DWORD dwDeviceMemory    = XGetDevices(XDEVICE_TYPE_MEMORY_UNIT);    char* sclDeviceMemory;
   DWORD dwDeviceIRRemote    = XGetDevices(XDEVICE_TYPE_IR_REMOTE);      char* sclDeviceIRRemote;
 
-  CStdString strlblGamePads = g_localizeStrings.Get(13163); //"GamePads On Port:";      
+  CStdString strlblGamePads = g_localizeStrings.Get(13163); //"GamePads On Port:";
   CStdString strlblKeyboard = g_localizeStrings.Get(13164); //"Keyboard On Port:";
   CStdString strlblMouse    = g_localizeStrings.Get(13165); //"Mouse On Port:";
   CStdString strlblHeadMicro  = g_localizeStrings.Get(13166); //"Head/MicroPhone On Ports:";
@@ -1200,31 +1200,31 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
     case 1:   // Values 1 ->  on Port 1
       sclDeviceVle = "1";
       break;
-    case 2:   // Values 2 ->  on Port 2 
+    case 2:   // Values 2 ->  on Port 2
       sclDeviceVle = "2";
       break;
     case 4:   // Values 4 ->  on Port 3
       sclDeviceVle = "3";
       break;
-    case 8:   // Values 8 ->  on Port 4 
+    case 8:   // Values 8 ->  on Port 4
       sclDeviceVle = "4";
       break;
-    case 3:   // Values 3 ->  on Port 1&2 
+    case 3:   // Values 3 ->  on Port 1&2
       sclDeviceVle = "1, 2";
       break;
-    case 5:   // Values 5 ->  on Port 1&3 
+    case 5:   // Values 5 ->  on Port 1&3
       sclDeviceVle = "1, 3";
       break;
-    case 6:   // Values 6 ->  on Port 2&3 
+    case 6:   // Values 6 ->  on Port 2&3
       sclDeviceVle = "2, 3";
       break;
     case 7:   // Values 7 ->  on Port 1&2&3
       sclDeviceVle = "1, 2, 3";
       break;
-    case 9:   // Values 9  -> on Port 1&4 
+    case 9:   // Values 9  -> on Port 1&4
       sclDeviceVle = "1, 4";
       break;
-    case 10:  // Values 10 -> on Port 2&4 
+    case 10:  // Values 10 -> on Port 2&4
       sclDeviceVle = "2, 4";
       break;
     case 11:  // Values 11 -> on Port 1&2&4
@@ -1250,14 +1250,14 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
   if (dwDeviceKeyboard > 0)
   {
     switch (dwDeviceKeyboard)
-    { 
+    {
     case 1:   // Values 1 ->  on Port 1
       sclDeviceKeyb = "1";
       break;
-    case 2:   // Values 2 ->  on Port 2 
+    case 2:   // Values 2 ->  on Port 2
       sclDeviceKeyb = "2";
       break;
-    case 4:   // Values 4 ->  on Port 3 
+    case 4:   // Values 4 ->  on Port 3
       sclDeviceKeyb = "3";
       break;
     case 8:   // Values 8 ->  on Port 4
@@ -1272,13 +1272,13 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
   {
     switch (dwDeviceMouse)
     {
-    case 1:   // Values 1 ->  on Port 1 
+    case 1:   // Values 1 ->  on Port 1
       sclDeviceMouse = "1";
       break;
-    case 2:   // Values 2 ->  on Port 2 
+    case 2:   // Values 2 ->  on Port 2
       sclDeviceMouse = "2";
       break;
-    case 4:   // Values 4 ->  on Port 3 
+    case 4:   // Values 4 ->  on Port 3
       sclDeviceMouse = "3";
       break;
     case 8:   // Values 8 ->  on Port 4
@@ -1296,10 +1296,10 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
     case 1:   // Values 1 ->  on Port 1
       sclDeviceHeadPhone = "1";
       break;
-    case 2:   // Values 2 ->  on Port 2 
+    case 2:   // Values 2 ->  on Port 2
       sclDeviceHeadPhone = "2";
       break;
-    case 4:   // Values 4 ->  on Port 3 
+    case 4:   // Values 4 ->  on Port 3
       sclDeviceHeadPhone = "3";
       break;
     case 8:   // Values 8 ->  on Port 4
@@ -1314,13 +1314,13 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
   {
     switch (dwDeviceMicroPhone)
     {
-    case 1:   // Values 1 ->  on Port 1 
+    case 1:   // Values 1 ->  on Port 1
       sclDeviceMicroPhone = "1";
       break;
-    case 2:   // Values 2 ->  on Port 2 
+    case 2:   // Values 2 ->  on Port 2
       sclDeviceMicroPhone = "2";
       break;
-    case 4:   // Values 4 ->  on Port 3 
+    case 4:   // Values 4 ->  on Port 3
       sclDeviceMicroPhone = "3";
       break;
     case 8:   // Values 8 ->  on Port 4
@@ -1335,34 +1335,34 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
   {
     switch (dwDeviceMemory)
     {
-    case 1:   // Values 1 ->  on Port 1 
+    case 1:   // Values 1 ->  on Port 1
       sclDeviceMemory = "1";
       break;
     case 2:   // Values 2 ->  on Port 2
       sclDeviceMemory = "2";
       break;
-    case 4:   // Values 4 ->  on Port 3 
+    case 4:   // Values 4 ->  on Port 3
       sclDeviceMemory = "3";
       break;
     case 8:   // Values 8 ->  on Port 4
       sclDeviceMemory = "4";
       break;
-    case 3:   // Values 3 ->  on Port 1&2 
+    case 3:   // Values 3 ->  on Port 1&2
       sclDeviceMemory = "1, 2";
       break;
-    case 5:   // Values 5 ->  on Port 1&3 
+    case 5:   // Values 5 ->  on Port 1&3
       sclDeviceMemory = "1, 3";
       break;
-    case 6:   // Values 6 ->  on Port 2&3 
+    case 6:   // Values 6 ->  on Port 2&3
       sclDeviceMemory = "2, 3";
       break;
     case 7:   // Values 7 ->  on Port 1&2&3
       sclDeviceMemory = "1, 2, 3";
       break;
-    case 9:   // Values 9  -> on Port 1&4 
+    case 9:   // Values 9  -> on Port 1&4
       sclDeviceMemory = "1, 4";
       break;
-    case 10:  // Values 10 -> on Port 2&4 
+    case 10:  // Values 10 -> on Port 2&4
       sclDeviceMemory = "2, 4";
       break;
     case 11:  // Values 11 -> on Port 1&2&4
@@ -1389,13 +1389,13 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2, int i_lblp3 )
   {
     switch (dwDeviceIRRemote)
     {
-    case 1:   // Values 1 ->  on Port 1 
+    case 1:   // Values 1 ->  on Port 1
       sclDeviceIRRemote = "1";
       break;
-    case 2:   // Values 2 ->  on Port 2 
+    case 2:   // Values 2 ->  on Port 2
       sclDeviceIRRemote = "2";
       break;
-    case 4:   // Values 4 ->  on Port 3 
+    case 4:   // Values 4 ->  on Port 3
       sclDeviceIRRemote = "3";
       break;
     case 8:   // Values 8 ->  on Port 4
@@ -1456,7 +1456,7 @@ void CGUIWindowSystemInfo::CreateEEPROMBackup(LPCSTR BackupFilePrefix)
     //Write EEPROM File
     WriteFile(hf , &m_EEPROMData, EEPROM_SIZE, &dwBytesWrote, NULL);
   }
-  CloseHandle(hf); 
+  CloseHandle(hf);
 
 
   //Create Current EEPROM CFG File
@@ -1550,7 +1550,7 @@ void CGUIWindowSystemInfo::CreateEEPROMBackup(LPCSTR BackupFilePrefix)
     fHeaderInfo = "\"\r\n";
     WriteFile(hfa, fHeaderInfo, (DWORD)strlen(fHeaderInfo), &dwBytesWrote, NULL);
   }
-  CloseHandle(hfa); 
+  CloseHandle(hfa);
 
   //Create Full path for TXT File..
   //ZeroMemory(tmpFileName, FILENAME_MAX  );
@@ -1565,7 +1565,7 @@ void CGUIWindowSystemInfo::CreateEEPROMBackup(LPCSTR BackupFilePrefix)
   //switch eeprom context Back to previous
   //if (EncryptedState)
   //  m_pXKEEPROM->SetEncryptedEEPROMData(&currentEEPROM);
-  //else 
+  //else
   //  m_pXKEEPROM->SetDecryptedEEPROMData(m_XBOX_Version, &currentEEPROM);
 }
 
@@ -1588,7 +1588,7 @@ void CGUIWindowSystemInfo::WriteTXTInfoFile(LPCSTR strFilename)
       strcat(tmpFileStr, "\r\nXBOX Version = \t\tV1.0");
     else if (m_XBOX_Version == m_pXKEEPROM->V1_1)
       strcat(tmpFileStr, "\r\nXBOX Version = \t\tV1.1");
-    else if (m_XBOX_Version == m_pXKEEPROM->V1_6) 
+    else if (m_XBOX_Version == m_pXKEEPROM->V1_6)
       strcat(tmpFileStr,  "\r\nXBOX Version = \t\tV1.6");
     //Get Kernel Version
     tmpSize = 256;ZeroMemory(tmpData, tmpSize);
