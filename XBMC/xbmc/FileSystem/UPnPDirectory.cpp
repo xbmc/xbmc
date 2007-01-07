@@ -192,6 +192,10 @@ public:
             SetMask(g_stSettings.m_pictureExtensions);
         }
 
+        // dont allow prompting, this is a background task
+        // although I don't think it matters here
+        SetAllowPrompting(false);
+
         // it's a virtual path, get all items
         return CVirtualPathDirectory::GetDirectory(strPath, items);
     }
