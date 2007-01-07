@@ -32,7 +32,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_RUNTIME = 13,
   VIDEODB_ID_MPAA = 14,
   VIDEODB_ID_TOP250 = 15,
-  VIDEDB_ID_MAX
+  VIDEODB_ID_MAX
 } VIDEODB_IDS;
 
 #define VIDEODB_TYPE_STRING 1

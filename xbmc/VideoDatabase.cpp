@@ -675,43 +675,34 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
       AddActorToMovie(lMovieId, vecActors[i]);
     }
     
-    CStdString strValue; strValue.Format("%i",lDirector);
-    CStdString strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",strValue.c_str(),lMovieId,VIDEODB_ID_DIRECTOR);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strRuntime.c_str(),lMovieId, VIDEODB_ID_RUNTIME);
-    m_pDS->exec(strSQL.c_str());
-    strValue.Format("%3.3f",details.m_fRating);
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",strValue.c_str(),lMovieId,VIDEODB_ID_RATING);
-    m_pDS->exec(strSQL.c_str());
-    strValue.Format("%i",details.m_iYear);
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",strValue.c_str(),lMovieId,VIDEODB_ID_YEAR);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strTitle.c_str(),lMovieId,VIDEODB_ID_TITLE);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strGenre.c_str(),lMovieId,VIDEODB_ID_GENRE);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strIMDBNumber.c_str(),lMovieId,VIDEODB_ID_IDENT);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i","false",lMovieId,VIDEODB_ID_WATCHED);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strWritingCredits.c_str(),lMovieId,VIDEODB_ID_CREDITS);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strPictureURL.c_str(),lMovieId,VIDEODB_ID_THUMBURL);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strPlot.c_str(),lMovieId,VIDEODB_ID_PLOT);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strPlotOutline.c_str(),lMovieId,VIDEODB_ID_PLOTOUTLINE);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strTagLine.c_str(),lMovieId,VIDEODB_ID_TAGLINE);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strVotes.c_str(),lMovieId,VIDEODB_ID_VOTES);
-    m_pDS->exec(strSQL.c_str());
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",details.m_strMPAARating.c_str(),lMovieId,VIDEODB_ID_MPAA);
-    m_pDS->exec(strSQL.c_str());
-    strValue.Format("%i",details.m_iTop250);
-    strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",strValue.c_str(),lMovieId,VIDEODB_ID_TOP250);
-    m_pDS->exec(strSQL.c_str());
-
+    CStdString strValue;
+    for (int iType=VIDEODB_ID_MIN+1;iType<VIDEODB_ID_MAX;++iType)
+    {
+      if (iType == VIDEODB_ID_DIRECTOR)
+      {
+        strValue.Format("%u",lDirector);
+      }
+      else
+      {
+        switch (DbMovieOffsets[iType].type)
+        {
+        case VIDEODB_TYPE_STRING:
+          strValue = *(CStdString*)(((char*)&details)+DbMovieOffsets[iType].offset);
+          break;
+        case VIDEODB_TYPE_INT:
+          strValue.Format("%i",*(int*)(((char*)&details)+DbMovieOffsets[iType].offset));
+          break;
+        case VIDEODB_TYPE_BOOL:
+          strValue = *(bool*)(((char*)&details)+DbMovieOffsets[iType].offset)?"true":"false";
+          break;
+        case VIDEODB_TYPE_FLOAT:
+          strValue.Format("%f",*(float*)(((char*)&details)+DbMovieOffsets[iType].offset));
+          break;
+        }
+      }
+      CStdString strSQL=FormatSQL("update movie set strValue='%s' where idMovie=%i and idType=%i",strValue.c_str(),lMovieId,iType);
+      m_pDS->exec(strSQL.c_str());
+    }
     CommitTransaction();
   }
   catch (...)
