@@ -397,7 +397,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     CStdString strLabel = g_localizeStrings.Get(1026);
     CFileItem *pItem = new CFileItem(strLabel);
     pItem->m_strPath = "add";
-    pItem->SetThumbnailImage("settings-network-focus.png");
+    pItem->SetThumbnailImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
     m_vecItems.Add(pItem);
