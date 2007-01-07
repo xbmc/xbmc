@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIPassword.h"
 #include "Application.h"
@@ -42,7 +63,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
     int iRetries = 0;
     if(g_passwordManager.bMasterUser)// Check if we are the MasterUser!
     {
-      iResult = 0; 
+      iResult = 0;
     }
     else
     {
@@ -59,7 +80,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
         strHeading = g_localizeStrings.Get(12325);
       else
         strHeading = g_localizeStrings.Get(12348);
-      
+
       switch (iMode)
       {
       case LOCK_MODE_NUMERIC:
@@ -81,7 +102,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
     {
     case -1:
       { // user canceled out
-        return false; 
+        return false;
         break;
       }
     case 0:
@@ -117,8 +138,8 @@ void CGUIPassword::SetSMBShare(const CStdString &strPath)
 }
 
 CStdString CGUIPassword::GetSMBShare()
-{ 
-  return m_SMBShare;  
+{
+  return m_SMBShare;
 }
 
 bool CGUIPassword::GetSMBShareUserPassword()
@@ -169,7 +190,7 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
       strLabel1 = g_localizeStrings.Get(12343);
       int iLeft = g_passwordManager.iMasterLockRetriesLeft-i;
       strLabel.Format("%i %s",iLeft,strLabel1.c_str());
-      
+
       // PopUp OK and Display: MasterLock mode has changed but no no Mastercode has been set!
       CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
       if (!dlg) return false;
@@ -179,7 +200,7 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
       dlg->SetLine( 2, strLabel);
       dlg->DoModal();
     }
-    else 
+    else
       i=g_passwordManager.iMasterLockRetriesLeft;
   }
 
@@ -188,7 +209,7 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
     g_passwordManager.iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
     return true;  // OK The MasterCode Accepted! XBMC Can Run!
   }
-  else 
+  else
   {
     g_applicationMessenger.Shutdown(); // Turn off the box
     return false;
@@ -229,14 +250,14 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled)
   {
     if (g_settings.m_vecProfiles[iProfileToCheck].getDate().IsEmpty() && (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_settings.m_vecProfiles[iProfileToCheck].getLockMode() == LOCK_MODE_EVERYONE))
     {
-      if (CGUIDialogProfileSettings::ShowForProfile(iProfileToCheck,false))    
+      if (CGUIDialogProfileSettings::ShowForProfile(iProfileToCheck,false))
         return true;
     }
     else
        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
         return CheckLock(g_settings.m_vecProfiles[iProfileToCheck].getLockMode(),g_settings.m_vecProfiles[iProfileToCheck].getLockCode(),20095,bCanceled);
   }
-  
+
   return true;
 }
 
@@ -285,7 +306,7 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
   }
   if (1 == iVerifyPasswordResult)
     UpdateMasterLockRetryCount(false);
-  
+
   if (0 != iVerifyPasswordResult)
   {
     bCanceled = true;
@@ -338,7 +359,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     if (0 < g_passwordManager.iMasterLockRetriesLeft)
       dlgLine1.Format("%d %s", g_passwordManager.iMasterLockRetriesLeft, g_localizeStrings.Get(12343));
     CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK); // Tell user they entered a bad password
-    if (dialog) 
+    if (dialog)
     {
       dialog->SetHeading(20075);
       dialog->SetLine(0, 12345);
@@ -347,7 +368,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
       dialog->DoModal();
     }
   }
-  else 
+  else
     g_passwordManager.iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries"); // user entered correct mastercode, reset retries to max allowed
 }
 
@@ -380,7 +401,7 @@ bool CGUIPassword::CheckLock(int btnType, const CStdString& strPassword, int iHe
     iVerifyPasswordResult = 0;
     break;
   }
-  
+
   if (iVerifyPasswordResult == -1)
     bCanceled = true;
 
@@ -391,7 +412,7 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
 {
   bool bCheckPW         = false;
   int iSwitch = iWindowID;
-  
+
   // check if a settings subcategory was called from other than settings window
   if (iWindowID >= WINDOW_SCREEN_CALIBRATION && iWindowID <= WINDOW_SETTINGS_APPEARANCE)
   {
@@ -399,16 +420,16 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
     if (iCWindowID != WINDOW_SETTINGS_MENU && (iCWindowID < WINDOW_SCREEN_CALIBRATION || iCWindowID > WINDOW_SETTINGS_APPEARANCE))
       iSwitch = WINDOW_SETTINGS_MENU;
   }
-  
+
   if (iWindowID == WINDOW_MUSIC_FILES)
     if (m_gWindowManager.GetActiveWindow() == WINDOW_MUSIC_NAV)
       iSwitch = WINDOW_HOME;
-  
+
   if (iWindowID == WINDOW_MUSIC_NAV)
     if (m_gWindowManager.GetActiveWindow() == WINDOW_HOME)
       iSwitch = WINDOW_MUSIC_FILES;
 
-  if (iWindowID == WINDOW_VIDEO_NAV)      
+  if (iWindowID == WINDOW_VIDEO_NAV)
     if (m_gWindowManager.GetActiveWindow() == WINDOW_HOME)
       iSwitch = WINDOW_VIDEO_FILES;
 
@@ -420,7 +441,7 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
 
   switch (iSwitch)
   {
-    case WINDOW_SETTINGS_MENU:  // Settings 
+    case WINDOW_SETTINGS_MENU:  // Settings
       bCheckPW = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked();
       break;
     case WINDOW_FILES:          // Files
@@ -449,9 +470,9 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
       bCheckPW = false;
       break;
   }
-  if (bCheckPW) 
+  if (bCheckPW)
     return IsMasterLockUnlocked(true); //Now let's check the PW if we need!
-  else 
+  else
     return true;
 }
 CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
@@ -462,7 +483,7 @@ CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
   CURL urlIn(strAuth);
   CStdString strPath(strAuth);
 
-  CStdString strShare;  // it's only the server\share we're interested in authenticating 
+  CStdString strShare;  // it's only the server\share we're interested in authenticating
   strShare  = urlIn.GetHostName();
   strShare += "/";
   strShare += urlIn.GetShareName();
@@ -473,12 +494,12 @@ CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
     // if share found in cache use it to supply username and password
     CURL url(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
     CStdString strPassword = url.GetPassWord();
-   
+
     CStdString strUserName = url.GetUserName();
     urlIn.SetPassword(strPassword);
     urlIn.SetUserName(strUserName);
     urlIn.GetURL(strPath);
-  }  
+  }
   return strPath;
 }
 
@@ -492,14 +513,14 @@ bool CGUIPassword::LockBookmark(const CStdString& strType, const CStdString& str
     {
       if (it->m_iHasLock > 0)
       {
-        it->m_iHasLock = bState?2:1;      
+        it->m_iHasLock = bState?2:1;
         bResult = true;
       }
       break;
     }
   }
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-  m_gWindowManager.SendThreadMessage(msg);        
+  m_gWindowManager.SendThreadMessage(msg);
 
   return bResult;
 }
@@ -516,7 +537,7 @@ void CGUIPassword::LockBookmarks()
   pShares[4] = g_settings.GetSharesFromType("files");
   for (int i=0;i<5;++i)
   {
-    for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)    
+    for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
         it->m_iHasLock = 2;
   }
@@ -536,7 +557,7 @@ void CGUIPassword::UnlockBookmarks()
   pShares[4] = g_settings.GetSharesFromType("files");
   for (int i=0;i<5;++i)
   {
-    for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)    
+    for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
         it->m_iHasLock = 1;
   }
@@ -557,7 +578,7 @@ void CGUIPassword::RemoveBookmarkLocks()
   g_settings.BeginBookmarkTransaction();
   for (int i=0;i<5;++i)
   {
-    for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)    
+    for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE) // remove old info
       {
         it->m_iHasLock = 0;

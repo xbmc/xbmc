@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #define _WCTYPE_INLINE_DEFINED
 #include <process.h>
@@ -97,12 +118,12 @@ CreditLine_t Credits[] =
     { 50, 62, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"MrC" },
     { 50, 72, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"c0diq" },
     { 50, 82, 0, 5400, 420, 1920, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Ysbox" },
-    
+
     // Project management (16 beats)
     { 50, 30, 7740, 6360, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 42, L"Project Managers" },
     { 50, 45, 0, 6360, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Gamester17" },
     { 50, 55, 0, 6360, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Pike" },
-    
+
     // Tech support (8 beats per group - 16 total)
     { 50, 25, 6960+420, 7200, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Technical Support" },
     { 50, 40, 0, 3840, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"DDay (a.k.a. JayDee on Xbox-Scene.com)" },
@@ -113,7 +134,7 @@ CreditLine_t Credits[] =
     { 50, 40, 3840, 3360, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"MattAaron (IRC)" },
     { 50, 50, 0, 3360, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"No1CaNTeL (IRC)" },
     { 50, 60, 0, 3360, 420, 420, EFF_IN_FADE | EFF_OUT_FADE , 24, L"xLoial (IRC)" },
-    
+
     // Testers (8 beats per group - 24 total + 8 beats blank)
     { 50, 25, 4200, 7560 + 7560/2, 60, 840, EFF_IN_FLASH | EFF_OUT_FADE , 42, L"Testers" },
     { 50, 40, 0, 7560/2, 60, 420, EFF_IN_FLASH | EFF_OUT_FADE , 24, L"Caldor" },
@@ -180,13 +201,13 @@ CreditLine_t Credits[] =
     { 50, 65, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"djoens (Indonesian)" },
     { 50, 75, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"napek (Polish)" },
     { 50, 85, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"smuto (Polish)" },
-    
+
     { 50, 35, 7320/2, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"mvbm (Portuguese (Brazil))" },
     { 50, 45, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"que_ (Russian)" },
     { 50, 55, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"xsiluro (Slovenian)" },
     { 50, 65, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"jose_t (Spanish)" },
     { 50, 75, 0, 7320/2, 360, 960, EFF_IN_FADE | EFF_OUT_FADE , 24, L"blittan (Swedish)" },
- 
+
     // note pause here of 8 beats as more translators pop up
 
     // Skin credits (16 beats)
@@ -338,13 +359,13 @@ CreditLine_t Credits[] =
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"DDay" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Special thanks to:" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for putting up with me." },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for understanding that it" }, 
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for understanding that it" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"sometimes is normal to have five" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"xbox's hooked up at home." },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Liza, for giving me Emil" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Pike, for doing a great job" },
 
-    // section bobbin007    
+    // section bobbin007
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Bobbin007" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Mr. Lucas for the Arts," },
@@ -372,7 +393,7 @@ CreditLine_t Credits[] =
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"chadoe" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to whoever invented the internet" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"thus making this kind of team work possible" },
-    
+
     // section geminiserver
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"GeminiServer" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to everybody involved in this Project" },
@@ -403,7 +424,7 @@ CreditLine_t Credits[] =
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to all of Team-XBMC for" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"their hard work. Thanks to Pike" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for his cool chats and support." },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"And thanks to Mumbles for his" }, 
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"And thanks to Mumbles for his" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Vortex textures." },
 
     // section c0diq
@@ -439,13 +460,13 @@ CreditLine_t Credits[] =
 
     // section modhack
     { 50, 50, 4000, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 36, L"Modhack" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to my job for giving me" }, 
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to my job for giving me" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"free time to play with XBMC" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to gueux.be community" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"for the french support" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks Mathias for your mighty skin!" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Big thanks to Alexsolex for the script MyCine" },
-    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to Thibaud, Greg (Mgt1275)" }, 
+    { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"Thanks to Thibaud, Greg (Mgt1275)" },
     { 50, 50, 800, 0, 4000, 4000, EFF_IN_ASCEND | EFF_OUT_ASCEND , 22, L"and Mathieu (Sergent M@B)" },
 
     // section scape
