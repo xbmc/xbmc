@@ -197,7 +197,12 @@ public:
         SetAllowPrompting(false);
 
         // it's a virtual path, get all items
-        return CVirtualPathDirectory::GetDirectory(strPath, items);
+        CVirtualPathDirectory::GetDirectory(strPath, items);
+
+        // always return true
+        // this will make sure that even if nothing is found in a share
+        // it doesn't fail upnp
+        return true;
     }
 
     bool GetMatchingShare(const CStdString &strPath, CShare& share) {
@@ -283,12 +288,12 @@ CUPnPServer::Build(CFileItem*        item,
     NPT_String       file_path;
 
     bool ret = CUPnPVirtualPathDirectory::SplitPath(path, share_name, file_path);
-    if (!ret && path != "0") return NULL;
+    if (!ret && path != "0") goto failure;
 
     if (file_path.GetLength()) {
         // this is not a virtual directory
         object = BuildFromFilePath(file_path, with_count, info, true);
-        if (!object) return NULL;
+        if (!object) goto failure;
 
         // prepend back the share name in front
         object->m_ObjectID = share_name + "/" + file_path;
@@ -318,11 +323,8 @@ CUPnPServer::Build(CFileItem*        item,
             // we didn't find the path, so it means the parent id is
             // the parent folder of the file_path
             int index = file_path.ReverseFind("\\");
-            if (index == -1) {
-                // weird!
-                delete object;
-                return NULL;
-            }
+            if (index == -1) goto failure;
+
             object->m_ParentID = share_name + "/" + file_path.Left(index);
         }
     } else {
@@ -334,25 +336,77 @@ CUPnPServer::Build(CFileItem*        item,
         if (path == "0") {
             // root
             object->m_ParentID = "-1";
+            // root has 3 children
+            if (with_count) ((PLT_MediaContainer*)object)->m_ChildrenCount = 3;
         } else if (share_name.GetLength() == 0) {
             // no share_name means it's virtualpath://X where X=music, video or pictures
             object->m_ParentID = "0";
-        } else if (share_name.StartsWith("virtualpath://music")) {
-            object->m_ParentID = "virtualpath://music";
-        } else if (share_name.StartsWith("virtualpath://video")) {
-            object->m_ParentID = "virtualpath://video";
-        } else if (share_name.StartsWith("virtualpath://pictures")) {
-            object->m_ParentID = "virtualpath://pictures";
-        } else {
-            // weird!
-            delete object;
-            return NULL;
-        }
+            if (with_count) {
+                ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
 
-        // how to get children count?
+                // look up number of shares
+                VECSHARES *shares = NULL;
+                if (path == "virtualpath://music") {
+                    shares = g_settings.GetSharesFromType("music");
+                } else if (path == "virtualpath://video") {
+                    shares = g_settings.GetSharesFromType("video");
+                } else if (path == "virtualpath://pictures") {
+                    shares = g_settings.GetSharesFromType("pictures");
+                }
+
+                // use only shares that would some path with local files
+                if (shares) {
+                    CUPnPVirtualPathDirectory dir;
+                    for (unsigned int i = 0; i < shares->size(); i++) {
+                        // Does this share contains any local paths?
+                        CShare &share = shares->at(i);
+                        if (dir.GetMatchingShare(share.strPath, share) && share.vecPaths.size()) {
+                            ((PLT_MediaContainer*)object)->m_ChildrenCount++;
+                        }
+                    }
+                }
+            }
+        } else {
+            CStdString mask;
+            // this is a share name
+            if (share_name.StartsWith("virtualpath://music")) {
+                object->m_ParentID = "virtualpath://music";
+                mask = g_stSettings.m_musicExtensions;
+            } else if (share_name.StartsWith("virtualpath://video")) {
+                object->m_ParentID = "virtualpath://video";
+                mask = g_stSettings.m_videoExtensions;
+            } else if (share_name.StartsWith("virtualpath://pictures")) {
+                object->m_ParentID = "virtualpath://pictures";
+                mask = g_stSettings.m_pictureExtensions;
+            } else {
+                // weird!
+                goto failure;
+            }
+
+            if (with_count) {
+                ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
+
+                // get all the paths for a given share
+                CShare share;
+                CUPnPVirtualPathDirectory dir;
+                if (!dir.GetMatchingShare((const char*)share_name, share)) goto failure;
+                for (unsigned int i=0; i<share.vecPaths.size(); i++) {
+                    // retrieve all the files for a given path
+                    CFileItemList items;
+                    if (CDirectory::GetDirectory(share.vecPaths[i], items, mask)) {
+                        // update childcount
+                        ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
+                    }
+                }
+            }
+        }
     }
 
     return object;
+
+failure:
+    delete object;
+    return NULL;
 }
 
 /*----------------------------------------------------------------------
