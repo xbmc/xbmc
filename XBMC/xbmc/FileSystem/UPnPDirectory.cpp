@@ -700,7 +700,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
 
         // special case for Xbox Media Center
-        if (root_id == "0" && ( (*device)->m_ModelName.Find("Xbox Media Center", 0, true))) {
+        if (root_id == "0" && ( (*device)->m_ModelName.Find("Xbox Media Center", 0, true) >= 0)) {
 
             // look for a specific type to differentiate which folder we want
             if (audio && !video && !image) {
@@ -719,6 +719,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         // we still want to process it
         PLT_MediaObjectListReference list;
         upnp->m_MediaBrowser->Browse(*device, root_id, list);
+        if (list.IsNull()) return false;
+
         PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
         while (entry) {
 
