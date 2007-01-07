@@ -89,20 +89,9 @@ class CShare
 public:
   CShare() { m_iBufferSize=0; m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; };
   virtual ~CShare() {};
-  bool isWritable()
-  {
-    if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
-      return true; // local disk
-    if (strPath.size() > 4)
-    {
-      if (strPath.substr(0,4) == "smb:")
-        return true; // smb path
-    }
 
-    return false;
-  }
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths);
-
+  bool isWritable();
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
@@ -232,7 +221,7 @@ public:
 
   void ResetSkinSetting(const CStdString &setting);
   void ResetSkinSettings();
-  
+
   struct AdvancedSettings
   {
 public:
@@ -420,7 +409,7 @@ public:
 
   bool SaveSettings(const CStdString& strSettingsFile) const;
   TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
-  
+
 protected:
   void GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   void GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
