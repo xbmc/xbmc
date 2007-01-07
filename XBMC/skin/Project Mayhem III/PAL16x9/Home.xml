@@ -147,6 +147,7 @@
 			<info>VideoPlayer.Title</info>
 			<align>right</align>
 			<font>special13</font>
+			<scroll>true</scroll>
 			<include>homevideoinfo</include>
 		</control>
 		<control type="label" id="1">
