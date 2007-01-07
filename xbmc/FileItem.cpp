@@ -1925,7 +1925,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   if (IsMusicDb()) return "";
   CURL url(m_strPath);
   if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
-  if (url.GetProtocol() == "upnp") return "";
+  if (url.GetProtocol() == "upnp" || url.GetProtocol() == "ftp") return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
@@ -2044,7 +2044,7 @@ CStdString CFileItem::GetUserVideoThumb()
   if (IsParentFolder()) return "";
   CURL url(m_strPath);
   if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
-  if (url.GetProtocol() == "upnp") return "";
+  if (url.GetProtocol() == "upnp" || url.GetProtocol() == "ftp") return "";
 
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb;
