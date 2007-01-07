@@ -93,11 +93,16 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
         if (ACTION_SELECT_ITEM == iAction)
         {
-          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
-          g_graphicsContext.SendMessage(msg);
           m_iSelected = msg.GetParam1();
-          m_selectedItem = *m_vecList[m_iSelected];
-          Close();
+          if(m_iSelected > 0 && m_iSelected < m_vecList.size())
+          {
+            CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
+            g_graphicsContext.SendMessage(msg);            
+            m_selectedItem = *m_vecList[m_iSelected];
+            Close();
+          }
+          else
+            m_iSelected = -1;
         }
       }
       if (CONTROL_BUTTON == iControl)
