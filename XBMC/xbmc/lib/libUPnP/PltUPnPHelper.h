@@ -29,6 +29,9 @@ public:
     bool operator()(const NPT_String* const & value) const {
         return value->Compare(m_Value) ? false : true;
     }
+    bool operator()(const NPT_String& value) const {
+        return value.Compare(m_Value) ? false : true;
+    }
 
 private:
     // members

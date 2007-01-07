@@ -55,7 +55,7 @@ public:
 
     NPT_Result   AddListener(PLT_CtrlPointListener* listener);
     NPT_Result   RemoveListener(PLT_CtrlPointListener* listener);
-    void         SetUUIDToIgnore(const char* uuid) {m_UUIDToIgnore = uuid;}
+    void         IgnoreUUID(const char* uuid);
     NPT_Result   Start(PLT_TaskManager* task_manager);
     NPT_Result   Stop();
     NPT_Result   Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
@@ -111,6 +111,11 @@ private:
     NPT_Result   DoHouseKeeping();
     NPT_Result   ParseFault(PLT_ActionReference& action, 
                             NPT_XmlElementNode*  fault);
+    PLT_SsdpSearchTask* CreateSearchTask(
+        const NPT_HttpUrl&   url, 
+        const char*          target, 
+        const NPT_Cardinal   MX, 
+        const NPT_IpAddress& address);
 
 private:
     friend class NPT_Reference<PLT_CtrlPoint>;
@@ -121,7 +126,7 @@ private:
     friend class PLT_CtrlPointSubscribeEventTask;
 
     NPT_AtomicVariable                              m_ReferenceCount;
-    NPT_String                                      m_UUIDToIgnore;
+    NPT_List<NPT_String>                            m_UUIDsToIgnore;
     PLT_CtrlPointHouseKeepingTask*                  m_HouseKeepingTask;
     NPT_List<PLT_SsdpSearchTask*>                   m_SsdpSearchTasks;
     NPT_Lock<PLT_CtrlPointListenerList>             m_ListenerList;

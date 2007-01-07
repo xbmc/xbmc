@@ -43,9 +43,10 @@ public:
         const char*  friendly_name = "",
         unsigned int port = 0);
 
+    virtual void SetBroadcast(bool broadcast) { m_Broadcast = broadcast; }
+
     // Overridables
     virtual NPT_Result Start(PLT_TaskManager* task_manager);
-
     virtual NPT_Result Stop();
 
     virtual NPT_Result OnAction(PLT_ActionReference& action, 
@@ -110,6 +111,7 @@ protected:
     friend class NPT_Reference<PLT_DeviceHost>;
 
 private:
+    bool                        m_Broadcast;
     PLT_TaskManager*            m_TaskManager;
     PLT_HttpServerHandler*      m_HttpServerHandler;
     PLT_HttpServer*             m_HttpServer;

@@ -69,9 +69,9 @@ protected:
     virtual NPT_Result OnSearch(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
     // overridable methods
-    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& /*action*/, const char* /*object_id*/, NPT_SocketInfo* info = NULL) { return NPT_FAILURE; }
-    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& /*action*/, const char* /*object_id*/, NPT_SocketInfo* info = NULL) { return NPT_FAILURE; }
-    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest* /*request*/, NPT_SocketInfo /*info*/, NPT_HttpResponse*& /*response*/) { return NPT_FAILURE; }
+    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response);
 
 protected:
     friend class PLT_HttpFileServerHandler;
