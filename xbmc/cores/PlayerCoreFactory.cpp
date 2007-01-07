@@ -114,7 +114,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_DVDPLAYER);
   }
 
-  if (url.GetProtocol().Equals("daap") || url.GetProtocol().Equals("upnp"))		// mplayer is better for daap and upnp
+  if (url.GetProtocol().Equals("daap"))		// mplayer is better for daap
   {
     // due to us not using curl for all url handling, extension checking doesn't work
     // when there is an option at the end of the url. should eventually be moved over
