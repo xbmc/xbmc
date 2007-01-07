@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIWindowMusicPlayList.h"
 #include "util.h"
@@ -7,7 +28,7 @@
 #include "GUIDialogContextMenu.h"
 #include "PartyModeManager.h"
 
-#define CONTROL_BTNVIEWASICONS     2 
+#define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_LIST              50
@@ -44,7 +65,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       UpdateButtons();
     }
     break;
-  
+
   case GUI_MSG_PLAYLISTPLAYER_RANDOM:
   case GUI_MSG_PLAYLIST_CHANGED:
     {
@@ -480,8 +501,8 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   {
     CPlayList& playlist=g_playlistPlayer.GetPlaylist(m_guiState->GetPlaylist());
     CPlayList::CPlayListItem& item=playlist[pItem->m_iprogramCount];
-    if (item.m_strPath==pItem->m_strPath && 
-        item.m_lStartOffset==pItem->m_lStartOffset && 
+    if (item.m_strPath==pItem->m_strPath &&
+        item.m_lStartOffset==pItem->m_lStartOffset &&
         item.m_lEndOffset==pItem->m_lEndOffset)
     {
       item.SetDescription(pItem->GetLabel());
@@ -489,17 +510,17 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     else
     { // for some reason the order is wrong - do it the incredibly slow way
       // FIXME: Highly inefficient. :)
-      // Since we can't directly use the items 
+      // Since we can't directly use the items
       // of the playlistplayer, we need to set each
       // label of the playlist items or else the label
-      // is reset to the filename each time Update() 
+      // is reset to the filename each time Update()
       // is called and this is annoying. ;)
       for (int i=0; i<playlist.size(); ++i)
       {
         CPlayList::CPlayListItem& item=playlist[i];
 
-        if (item.m_strPath==pItem->m_strPath && 
-            item.m_lStartOffset==pItem->m_lStartOffset && 
+        if (item.m_strPath==pItem->m_strPath &&
+            item.m_lStartOffset==pItem->m_lStartOffset &&
             item.m_lEndOffset==pItem->m_lEndOffset)
         {
           item.SetDescription(pItem->GetLabel());

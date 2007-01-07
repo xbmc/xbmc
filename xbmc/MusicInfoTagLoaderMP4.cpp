@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "musicinfotagloadermp4.h"
@@ -17,10 +37,10 @@ static const unsigned int	g_MetaAtomName			=	MAKE_ATOM_NAME(	 'm', 'e', 't', 'a'
 static const unsigned int	g_IlstAtomName			=	MAKE_ATOM_NAME(  'i', 'l', 's', 't' );	// 'ilst'
 static const unsigned int	g_MdhdAtomName			=	MAKE_ATOM_NAME(  'm', 'd', 'h', 'd' );	// 'mdhd'
 
-static const unsigned int	g_TitleAtomName			=	MAKE_ATOM_NAME( 0xa9, 'n', 'a', 'm' ); 	// '©nam'	
+static const unsigned int	g_TitleAtomName			=	MAKE_ATOM_NAME( 0xa9, 'n', 'a', 'm' ); 	// '©nam'
 static const unsigned int	g_ArtistAtomName		=	MAKE_ATOM_NAME( 0xa9, 'A', 'R', 'T' );	// '©ART'
 static const unsigned int	g_AlbumAtomName			=	MAKE_ATOM_NAME( 0xa9, 'a', 'l', 'b' );	// '©alb'
-static const unsigned int	g_DayAtomName			=	MAKE_ATOM_NAME( 0xa9, 'd', 'a', 'y' );	// '©day'	
+static const unsigned int	g_DayAtomName			=	MAKE_ATOM_NAME( 0xa9, 'd', 'a', 'y' );	// '©day'
 static const unsigned int	g_CustomGenreAtomName	=	MAKE_ATOM_NAME( 0xa9, 'g', 'e', 'n' );	// '©gnr'
 static const unsigned int	g_GenreAtomName			=	MAKE_ATOM_NAME(  'g', 'n', 'r', 'e' );	// 'gnre'
 static const unsigned int	g_TrackNumberAtomName	=	MAKE_ATOM_NAME(  't', 'r', 'k', 'n' );	// 'trkn'
@@ -74,7 +94,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
   {
   case	g_TitleAtomName:
     {
-      // We need to zero-terminate the string, which needs workspace.. 
+      // We need to zero-terminate the string, which needs workspace..
       auto_aptr<char>	dataWorkspace( new char[ metaSize + 1 ] );
       memcpy( dataWorkspace.get(), pMetaData, metaSize );
       dataWorkspace[ metaSize ] = '\0';
@@ -88,7 +108,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
 
   case	g_ArtistAtomName:
     {
-      // We need to zero-terminate the string, which needs workspace.. 
+      // We need to zero-terminate the string, which needs workspace..
       auto_aptr<char>	dataWorkspace( new char[ metaSize + 1 ] );
       memcpy( dataWorkspace.get(), pMetaData, metaSize );
       dataWorkspace[ metaSize ] = '\0';
@@ -100,7 +120,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
 
   case	g_AlbumAtomName:
     {
-      // We need to zero-terminate the string, which needs workspace.. 
+      // We need to zero-terminate the string, which needs workspace..
       auto_aptr<char>	dataWorkspace( new char[ metaSize + 1 ] );
       memcpy( dataWorkspace.get(), pMetaData, metaSize );
       dataWorkspace[ metaSize ] = '\0';
@@ -112,7 +132,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
 
   case	g_DayAtomName:
     {
-      // We need to zero-terminate the string, which needs workspace.. 
+      // We need to zero-terminate the string, which needs workspace..
       auto_aptr<char>	dataWorkspace( new char[ metaSize + 1 ] );
       memcpy( dataWorkspace.get(), pMetaData, metaSize );
       dataWorkspace[ metaSize ] = '\0';
@@ -139,7 +159,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
 
   case	g_CustomGenreAtomName:
     {
-      // We need to zero-terminate the string, which needs workspace.. 
+      // We need to zero-terminate the string, which needs workspace..
       auto_aptr<char>	dataWorkspace( new char[ metaSize + 1 ] );
       memcpy( dataWorkspace.get(), pMetaData, metaSize );
       dataWorkspace[ metaSize ] = '\0';
@@ -173,13 +193,13 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
       {
         CLog::Log(LOGERROR, "Tag loader mp4: Unable to create album art for %s (size=%d)", tag.GetURL().c_str(), metaSize );
       }
-      
+
       break;
     }
   default:
     break;
   }
-} 
+}
 
 // Used to locate 'ilst' area within 'meta' atom in a really quick and dirty way. Ideally should
 // parse 'ilst' atom list, but this method seems to be reliable.
@@ -198,9 +218,9 @@ int GetILSTOffset( const char* pBuffer, int bufferSize )
 // Parses an atom. Note that this function can recurse a little if it encounters an container atom.
 // Apologies for the relatively wired nature of the code (with offset adjustments and so on). The
 // basis of the parser was taken from code obtained via this thread at HydrogenAudio Forums..
-// http://www.hydrogenaudio.org/forums/lofiversion/index.php/t12075.html, just to get something 
+// http://www.hydrogenaudio.org/forums/lofiversion/index.php/t12075.html, just to get something
 // working quickly. The code in that thread seems to be somewhat derived from work at www.getid3.org,
-// although it fails to credit them. 
+// although it fails to credit them.
 //
 // I hope to make this particular function more readable/structured when time permits.
 
@@ -247,7 +267,7 @@ int ParseAtom( CFile& file, __int64 startOffset, __int64 stopOffset, CMusicInfoT
       // Look for the 'ilst' atom, and turn it into an offset within atomBuffer.
       int nextTagPosition = GetILSTOffset( atomBuffer.get(), atomSize - 4 ) + 8;
 
-      // Now go through all of the tags we find.. processing is pretty much taken from source at http://www.getid3.org.. 
+      // Now go through all of the tags we find.. processing is pretty much taken from source at http://www.getid3.org..
       while ( ( nextTagPosition < ( atomSize - 4 ) ) && ( nextTagPosition > 8 ) )
       {
         int				metaSize	= ReadUnsignedInt( atomBuffer.get() + ( nextTagPosition - 4 ) ) - 4;
@@ -276,7 +296,7 @@ int ParseAtom( CFile& file, __int64 startOffset, __int64 stopOffset, CMusicInfoT
       if ( atomSize == 0 )
         currentOffset = stopOffset;
       else
-        currentOffset += atomSize;	
+        currentOffset += atomSize;
   }
 
   // Everything seems to have gone ok...
@@ -300,7 +320,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
     // Initially we say that we've not loaded any tag information
     tag.SetLoaded(false);
 
-    // Attempt to open the file.. 
+    // Attempt to open the file..
     CFile file;
     if ( !file.Open( strFileName ) )
     {

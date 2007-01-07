@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "GUIDialogKeyboard.h"
@@ -554,7 +574,7 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
 
   CStdString strUserInput = "";
   if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true))  //bool hiddenInput = false/true ? TODO: GUI Setting to enable disable this feature y/n?
-	  return -1; // user canceled out
+    return -1; // user canceled out
 
   if (!strPassword.IsEmpty())
   {
@@ -569,13 +589,13 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
     md5_close(&md5state, md5pword);
     XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
     if (strPassword == md5pword2)
-		  return 0;		// user entered correct password
-	  else return 1;	// user must have entered an incorrect password
+      return 0;		// user entered correct password
+    else return 1;	// user must have entered an incorrect password
   }
-  else 
+  else
   {
-	  if (!strUserInput.IsEmpty())
-	  {
+    if (!strUserInput.IsEmpty())
+    {
       md5_state_t md5state;
       unsigned char md5pword[16];
       char md5pword2[64];
@@ -585,9 +605,9 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
       XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
 
       strPassword = md5pword2;
-		  return 0; // user entered correct password
-	  }
-	  else return 1;
+      return 0; // user entered correct password
+    }
+    else return 1;
   }
 }
 

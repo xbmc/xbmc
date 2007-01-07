@@ -140,7 +140,7 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
 {
   if (!CGUIMediaWindow::GetDirectory(strDirectory,items))
     return false;
-  
+
   // flatten any folders
   for (int i = 0; i < items.Size(); i++)
   {

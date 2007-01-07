@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "autorun.h"
 #include "application.h"
@@ -215,7 +236,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           bPlaying = true;
           return true;
         }
-        else if (pItem->m_strPath.Find("MPEGAV") != -1 && bAllowVideo 
+        else if (pItem->m_strPath.Find("MPEGAV") != -1 && bAllowVideo
              && (bypassSettings || g_guiSettings.GetBool("autorun.vcd")))
         {
           CFileItemList items;
@@ -245,7 +266,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             g_playlistPlayer.Play(0);
             bPlaying = true;
             return true;
-          }          
+          }
         }
         else if (pItem->m_strPath.Find("PICTURES") != -1 && bAllowPictures
               && (bypassSettings || g_guiSettings.GetBool("autorun.pictures")))
@@ -296,7 +317,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       {
         if (!bypassSettings)
           return false;
-        
+
         if (m_gWindowManager.GetActiveWindow() != WINDOW_VIDEO_FILES)
           if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;

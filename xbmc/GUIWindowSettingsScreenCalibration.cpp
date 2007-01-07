@@ -50,13 +50,13 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
   case ACTION_CALIBRATE_RESET:
     {
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-      pDialog->SetHeading(20325);      
+      pDialog->SetHeading(20325);
       CStdString strText;
-      strText.Format(g_localizeStrings.Get(20326).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode);      
+      strText.Format(g_localizeStrings.Get(20326).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode);
       pDialog->SetLine(0, strText);
       pDialog->SetLine(1, 20327);
       pDialog->SetChoice(0, 222);
-      pDialog->SetChoice(1, 186);      
+      pDialog->SetChoice(1, 186);
       pDialog->DoModal();
       if (pDialog->IsConfirmed())
       {
@@ -114,7 +114,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       g_graphicsContext.SetCalibrating(true);
-      
+
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
       if (g_application.IsPlayingVideo())

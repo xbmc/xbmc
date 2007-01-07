@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "playlistpls.h"
@@ -43,7 +63,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
     strFileName.Insert(0, "http://");
     strBasePath = "";
     bShoutCast = true;
-  }    
+  }
   else
     CUtil::GetParentPath(strFileName, strBasePath);
 
@@ -253,7 +273,7 @@ bool CPlayListASX::LoadData(const CStdString& strData)
       return false;
     }
 
-    TiXmlElement *pRootElement = xmlDoc.RootElement();    
+    TiXmlElement *pRootElement = xmlDoc.RootElement();
 
     // lowercase every element
     TiXmlNode *pNode = pRootElement;
@@ -290,7 +310,7 @@ bool CPlayListASX::LoadData(const CStdString& strData)
 
       pChild = pNode;
       pNode = pNode->Parent();
-    }    
+    }
     CStdString roottitle = "";
     TiXmlElement *pElement = pRootElement->FirstChildElement();
     while (pElement)
@@ -302,13 +322,13 @@ bool CPlayListASX::LoadData(const CStdString& strData)
       }
       else if (value == "entry")
       {
-        CStdString title(roottitle);        
+        CStdString title(roottitle);
 
         TiXmlElement *pRef = pElement->FirstChildElement("ref");
         TiXmlElement *pTitle = pElement->FirstChildElement("title");
         TiXmlElement *pDuration = pElement->FirstChildElement("duration"); /* <DURATION VALUE="hh:mm:ss.fract"/> */
 
-        if(pTitle) 
+        if(pTitle)
           title = pTitle->GetText();
 
         while (pRef)
@@ -317,7 +337,7 @@ bool CPlayListASX::LoadData(const CStdString& strData)
           value = pRef->Attribute("href");
           if (value != "")
           {
-            if(title.IsEmpty()) 
+            if(title.IsEmpty())
               title = value;
 
             CLog::Log(LOGINFO, "Adding element %s, %s", title.c_str(), value.c_str());
@@ -327,7 +347,7 @@ bool CPlayListASX::LoadData(const CStdString& strData)
           pRef = pRef->NextSiblingElement("ref");
         }
       }
-      else if (value == "entryref") 
+      else if (value == "entryref")
       {
         value = pElement->Attribute("href");
         if (value != "")
