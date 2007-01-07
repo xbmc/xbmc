@@ -1563,7 +1563,6 @@ if (edl_check_mode() == EDL_ERROR && edl_filename)
       mp_msg(MSGT_FIXME, MSGL_FIXME, "\n");
     }
 
-    mp_msg_set_level(verbose+MSGL_STATUS);
 
 //------ load global data first ------
 
