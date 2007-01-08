@@ -131,29 +131,9 @@ void CRssReader::Process()
 
     if ((!strXML.IsEmpty()) && m_pObserver)
     {
-      // remove CDATA sections from our buffer (timyXML is not able to parse these)
-      CStdString strCDATAElement;
-      int iStart = strXML.Find("<![CDATA[");
-      int iEnd = 0;
-      while (iStart > 0)
-      {
-        // get CDATA end position
-        iEnd = strXML.Find("]]>", iStart) + 3;
-
-        // get data in CDATA section
-        strCDATAElement = strXML.substr(iStart + 9, iEnd - iStart - 12);
-
-        // replace CDATA section with new string
-        // Problem: CDATA sections don't contain valid XML - this will screw up the
-        // parsing of elements.
-        strXML = strXML.erase(iStart, iEnd - iStart);//.insert(iStart, strCDATAElement);
-
-        iStart = strXML.Find("<![CDATA[");
-      }
-
       // erase any <content:encoded> tags (also unsupported by tinyxml)
-      iStart = strXML.Find("<content:encoded>");
-      iEnd = 0;
+      int iStart = strXML.Find("<content:encoded>");
+      int iEnd = 0;
       while (iStart > 0)
       {
         // get <content:encoded> end position
