@@ -121,6 +121,12 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     }
     delete codec;
 #endif
+    codec = new ADPCMCodec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
   }
   if (urlFile.GetFileType().Equals("cdda"))
   {
