@@ -1,0 +1,55 @@
+﻿<window id="2004">
+	<defaultcontrol>5</defaultcontrol>
+	<controls>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>background-apps.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice</description>
+			<posx>160</posx>
+			<posy>108</posy>
+			<width>64</width>
+			<height>468</height>
+			<texture>contentpanel_left.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice</description>
+			<posx>224</posx>
+			<posy>108</posy>
+			<width>500</width>
+			<height>468</height>
+			<texture>contentpanel.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>xbox media center label</description>
+			<posx>200</posx>
+			<posy>63</posy>
+			<align>right</align>
+			<label>xbox media center</label>
+			<font>special12</font>
+		</control>
+		<control type="label" id="1">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>63</posy>
+			<align>left</align>
+			<label>262</label>
+			<font>special13</font>
+		</control>
+		<control type="textbox" id="5">
+			<description>textarea</description>
+			<posx>220</posx>
+			<posy>120</posy>
+			<width>445</width>
+			<height>425</height>
+			<font>font12</font>
+			<spinposx>410</spinposx>
+			<spinposy>405</spinposy>
+		</control>
+	</controls>
+</window>

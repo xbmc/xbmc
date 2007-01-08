@@ -1,0 +1,438 @@
+2007-01-07 changed:	"Add source" texture to defaultAddSource.png and made it transperant.
+2007-01-07 changed:	Bookmark-resume texture.
+2007-01-07 changed:	VideoTitle label in Home.xml didn't scroll when too long, added <scroll>true</scroll>.
+2006-11-24 changed: 	Initial Commit of 2.1 skin version. New List view mode layout.   Lots of changes inside xml code (to many to list)
+2006-11-15 changed: 	BUILD.BAT to account for svn
+2006-11-05 changed:	Layout of Dialog select
+2006-10-14 Fixed:	Some Dialogs didn't obey the skin animation option.
+2006-10-11 removed:	Unused XPR font matrix8.xpr (just took up 130k of memory unnecessarily)
+2006-10-09 added:	Pointer Click/Drag textures.
+2006-10-09 changed:	Removed large texture usage from Pointer.xml - saves 300k.  Should really have dedicated drag + click pointer images.
+2006-10-06 changed:	Included Contentpanel stuff to save some lines of code.
+2006-10-04 fixed:	Defaultcontrol is always the first button in submenu.
+2006-10-04 fixed:	Labels around the wrong way on the mastermode button (buttonmenu).
+2006-09-25 fixed:	Keep aspect ratio for profile image in profile settings.
+2006-09-17 fixed:	Text offset of path list in dialogmediasource was off in 720p
+2006-09-17 fixed:	Login screen power button still didn't show, created new textures.xpr
+2006-09-16 fixed:	Login screen power button didn't show. Thx to Jezz_X!
+2006-09-16 fixed:	Notification dialogs didn't scroll.
+2006-09-14 fixed:	Wrong onup/down in settings button 
+2006-09-14 fixed:       Skin Settings reversed radio buttons. Thx to Jezz_X!
+2006-09-13 added:	Ok and Cancel buttons to TrainerSettings.xml
+2006-09-11 changed: 	New filemanager. Thanks to Jezz-X!
+2006-09-07 fixed: 	One of spiffs screwups, something to do with fishy :)
+2006-09-02 fixed:	Label spacing in SettingsSystemInfo.xml.
+2006-09-01 added:	Reload Skin button to Settings.xml.
+2006-09-01 fixed:	Overlapping text in SettingsSystemInfo.xml.
+2006-09-01 changed:	a bunch of string labels for localization.
+2006-08-31 changed:	Logging off close all dialogs to get a proper window transition.
+2006-08-30 changed:	FreeSpace labels : $LOCALIZE[155] $LOCALIZE[154] $LOCALIZE[156] TO --> $LOCALIZE[20089] in home.xml
+2006-08-29 added:	OK and Cancel button to ProfileSettings.xml.
+2006-08-27 added:	OK and Cancel button to LockSettings.xml, also reverted back to the old layout for locks in loginscreen.
+2006-08-25 added:	Custom shutdown timer button to shutdownmenu, for users who prefer other times then the default ones.
+2006-08-25 changed:	Visible conditions of LockSettings.xml layouts
+2006-08-25 added:	Shutdown timer to shutdownmenu, accesable by onup/down on shutdown button, times are 30,60 or 120 minutes
+2006-08-22 fixed:	Unable to go to cancel button if OK button was greyed out in the filebrowser.
+
+2006-08-21 fixed:	onup/ondown on listcontrol were not set correctly to wraparound in DialogSelect.xml, MyMusicNav.xml and MyVideoTitle.xml
+2006-08-18 fixed:	Onright wasn't working correct in SettingsProfile.xml, also changed dialogyesno.xml back to old behavior (for now).
+2006-08-18 changed:	Turned back Some earlier changes/mistakes (search button in MusicNav) it's not in contextmenu, so it's back now.
+2006-08-18 changed:	Startup.xml wasn't using any textures, so the login to home transition didn't look very smooth.
+2006-08-18 added:	ProfileSettings.xml to PAL16x9 folder since the user image was not 16x9.
+2006-08-18 changed:	included the most used animation in includes.xml, better for quick tweaking them all at once.
+2006-08-18 fixed:	SettingsProfile.xml wasn't using the windowswitchtransition stuff, so it didn't fade the top image when windowopen/close.
+
+2006-08-16 fixed:	Restart label wasn't multi-language in some layouts + onleft of dashboard button was wrong.
+2006-08-16 changed:	Switched "Restart XBMC" button in shutdownmenu to onup restart instead of onup shutdown button.
+2006-08-16 changed:	Use "Yes" as default in DialogYesNo.xml (old change, but never comitted!!).
+2006-08-16 removed:	search button from library view, since the option is in contextmenu.
+2006-08-16 fixed:	Skin Settings onleft/right wasn't working (not consistant with other window behavior).
+2006-08-16 fixed:	Several onup were wrong/not working (My Programs, VideoInfo)
+
+2006-08-13 fixed:	onup/ondown on listcontrol were not set correctly to wraparound in FileBrowser.xml
+2006-07-21 fixed:	MPPA Rating was not displayed in 16x9 and label was incorrect
+2006-07-19 added:	profiles / login screen support
+2006-07-10 changed:	onright in mediasource dialog's name fields now move to cancel, otherwise no way to select cancel if ok is disabled
+2006-07-10 changed:	listcontrols now have same onup/ondown setting as thumbpanel. (ie same id as itself if it should wrap around), preparation for potential skin engine change
+2006-07-09 changed:	Kai button in programs is now only visible if kai is enabled.
+
+2006-07-04 fixed:	Wrong slide in profile window.
+2006-07-03 fixed:	Default Album image was shown even if no music was playing on the Movie Information screen.
+
+2006-06-30 changed:	visible condition for weather on homescreen from system.hasnetwork to weather.isfetched
+
+2006-06-27 fixed:	my pictures homescreen texture was there twice - wtf!?
+2006-06-27 changed:	homescreen infos
+2006-06-27 changed:	some new icons 
+2006-06-27 fixed:	navigation bugs in filebrowser and settings
+
+2006-06-26 fixed:	Music Infos in the homescreen didnt hide when the "Show Music Info" Setting was disabled
+2006-06-26 changed:	trainer icons retouched
+2006-06-26 fixed:	listcontrol in the filebrowser was too wide
+2006-06-26 changed:	all new filemanager
+
+2006-06-25 added:	various infos to the homescreen - can be hidden in skin settings (Special Thanks to Jezz_X for the idea and for help with the code)
+2006-06-25 added:	Setting to hide the RSS in the homescreen when music is playing
+2006-06-25 added:	Bookmarks section in skin settings - to customize the bookmark buttons
+2006-06-25 changed:	skin animations switch moved to skin settings
+2006-06-25 added:	skin settings screen (its found in the settings overview left panel)
+2006-06-25 removed:	<texture> tag from default image controls in References.xml
+
+2006-06-22 added: 	create folder button in filebrowser.
+2006-06-22 changed: 	Settings & Refresh buttons look more consistent with other windows now.
+2006-06-22 added:	Settings button to Weather screen
+
+2006-06-21 removed:	startup fade effect - it was annoying
+
+2006-06-20 fixed:	startup sound
+2006-06-20 changed:	custom*.xml naming
+2006-06-20 changed:	shutdown menu wont animate any more if skin animations are OFF (makes sense for 1080i)
+
+2006-06-18 added:	missing bookkmark buttons in My Pictures
+2006-06-18 changed:	moved the media infos up 20px during slideshow and fullscreen viz
+2006-06-18 fixed:	the custom fonts arrived (thanks font guru ;) 720p and 1080i fully supported now
+
+2006-06-17 fixed:	HDTV font sizes (not yet finished - waiting for a custom made font)
+2006-06-17 changed:     reverted trainer overlays
+
+2006-06-15 added:	switchable bookmark buttons for every main category screen
+2006-06-15 fixed:	various alignment issues to match HD standard -- all resolutions are better now --
+			(all OSDs, Sort Asc/Desc buttons, home buttons, thumbnailpanels, etc)
+2006-06-15 fixed:	general xml cleanup
+
+2006-06-14 changed:	home screen backgrounds
+
+2006-06-12 changed:	animate skin button changed to a radiobutton (cleans up the code), thanks to Smokehead.
+
+2006-06-07 changed:	dialogbuttonmenu alignment when no locks are available.
+
+2006-06-05 added:       masterlock in dialogsubmenu
+
+2006-06-01 fixed:	navigation in dialogmediasource
+
+2006-05-27 fixed:	Unable to select Cancel on Filebrowser if Ok was greyed out.
+
+2006-05-08 added:	KAI connection indicator to the KAI button in My Programs
+
+2006-05-08 added:	OFF texture for radiobuttons
+2006-05-08 added:	new overlays for "Watched", "Unwatched", "ZIP", "RAR" and "Locked"
+2006-05-08 changed:	Trainer Overlays
+2006-05-08 changed:	weather location selection
+
+2006-05-06 fixed:	Removed references to common-font64.xpr in font.xml files.
+
+2006-05-01 fixed:       DialogScriptInfo window - Spincontrols were not positioned correctly.
+
+2006-04-28 changed:	Stack button to a radio button.  Plus more cleanup of playlist and duration info.
+2006-04-28 fixed:	Minor cleanup of playlist info and duration info on visualisation if they are unknown.
+
+2006-04-27 fixed:	Removed Playlists button from Music and Video Files views (it's now a bookmark)
+
+2006-04-26 fixed:	[ 1476193 ] XBMC keyboard and default key behavior
+
+2006-04-24 fixed:	Same thing in Album and Movie Info screens.
+2006-04-24 fixed:	Music and Video overlay fadelabels could display " |  |  | " when no information was present.
+
+2006-04-21 fixed:	Album and Video info dialogs didn't have the content panel background.
+2006-04-21 fixed:	[ 1474061 ] Browse subtitle (cosmetic problem)
+
+2006-04-20 fixed:	Label in MusicVisualisation.xml showed extra " - " if the visualisation had no presets.
+
+2006-04-19 fixed:	Animation of last button on left in My Programs.
+2006-04-19 fixed:	small visualistion bug in the homescreen
+
+2006-04-17 fixed:	DialogScriptInfo.xml didn't have the content panel.
+
+2006-04-14 fixed:	[ 1469714 ] Music OSD play button problem.
+
+2006-04-06 fixed:	DialogGamepad.xml and DialogNumeric.xml were the only dialog XMLs with a lower case D as first letter 
+2006-04-06 removed:	custom3.xml is no longer used (PY skin builder)
+2006-04-06 added:	function to toggle visualisation and video in the homescreen with the BLACK button (new keymap.xml needed!)
+2006-04-06 added:	skin animation (BETA); effects switchable in settings
+ 
+2006-03-30 changed:	new shutdownmenu effects
+
+2006-03-28 fixed:	Some issues with the new dialogs
+2006-03-28 fixed:	Big Listview in Music Library and Video (Title)
+
+2006-03-27 changed:	new OSD dialogs and trainer settings dialog
+
+2006-03-26 fixed:	IP input button on the virtual keyboard used wrong textures
+2006-03-26 changed:	cosmetical and logical dialogs update
+
+2006-03-09 changed:	Py Skin builder button is set to invisible.
+
+2006-03-07 changed:	Updated to v2.0 compatibility.
+
+2006-03-06 fixed:	DialogVideoInfo.xml, movieimage was overlapping text in 16x9.
+
+2006-03-02 changed:	List selectedcolor is now a different colour defined in includes.xml
+
+2006-02-28 changed:	Removed all instances of <hyperlink> (2.0 compatible)
+
+2006-02-26 added:       Trainer overlays, thx to BPairs for gfx!
+
+2006-02-21 changed:     Changed VideoOSD so it skips to Previous & Next file instead of Seek action.
+
+2006-02-20 fixed:	Weather.xml still wasn't quite right in 16x9.
+
+2006-02-15 fixed:	Home.xml visibility on the buttons was Player.HasMedia rather than Player.HasAudio.  Also added allowhiddenfocus="true" to the non conditional buttons that hide.
+2006-02-15 fixed:	Weather now uses labels instead of buttons.
+
+2006-02-13 added:	New dialogs for Add Share function.
+
+2006-02-09 fixed:	Very wide album images could overlap the text in MusicVisualisation.
+2006-02-09 changed:	Added an "IP Address" button to the keyboard.
+2006-02-09 fixed:	base texture for the settings button in home.xml disappeared when anything but My Programs had focus (changed ID from 102 to 0)
+
+2006-02-08 changed:	PlayerControls.xml only shows when media is playing.
+
+2006-02-06 changed:	Updated to v1.99 compatible.
+
+2006-02-05 changed:	Used <spinfont> and it now uses font10.
+
+2006-02-04 changed:	Notifications dialog should scroll if text is too long.
+2006-02-04 changed:     Home.xml now uses the ControlGroup().HasFocus() rather than relying on the home code (v2.0 ready).
+2006-02-04 removed:	Custom4.xml no longer needed (controls moved to Slideshow.xml)
+2006-02-04 changed:	All occurences of <execute> replaced with <onclick>
+2006-02-04 changed:	Player.ShowInfo -> Player.ShowCodec in Slideshow.xml.
+
+2006-02-01 changed:	Using <wrapmultiline> in MyWeather.xml.
+
+2006-01-25 fixed:	Fullscreen showed progressbar below real progressbar.
+
+2006-01-20 fixed:	Credits ran twice when run from Settings.
+
+2006-01-17 fixed:	DialogKaiToast.xml animations (thanks deanrparry)
+
+2006-01-16 fixed:	Incorrect animation tags in some Dialogs.
+
+2006-01-10 fixed:	Invalid control tags in Slideshow.xml
+2006-01-10 fixed:	Missing <disabledcolor> on DialogNumeric.xml
+
+2006-01-09 fixed:	MusicVisualisation.xml was invalid.
+
+2006-01-08 changed:	Moved to version 1.90 compatible.
+2006-01-08 fixed:	Listcontrol in DialogVideoInfo.xml couldn't be focused.
+
+2005-12-29 changed:     Moved to version 1.86 compatible.
+2005-12-29 changed:     simplified the conditionals on home
+2005-12-29 changed:     volumebar now uses info labels
+
+2005-12-24 fixed:	spincontrol positions in album & video info windows
+2005-12-24 fixed:	navigation from cast button to spin control in video info window
+
+2005-12-16 changed:     Moved to version 1.85 compatible.
+
+2005-12-11 changed:     Moved to version 1.8 compatible.
+
+2005-12-04 fixed:       Small navigation problem in DialogVideoInfo (16x9).
+2005-12-04 changed:     Play button shows Play when FastForwarding or Rewinding.
+
+2005-12-01 added:       FileBrowser.xml - initial skinning by BritneysPAIRS
+
+2005-11-30 fixed:	DialogKaiToast background control id to 0 (1 could cause crashes)
+
+2005-11-24 fixed:	music.jpg replaced with defaultAlbumCover.png
+
+2005-11-23 fixed:	SongInfo overlay during slideshow didnt work properly in 16:9 resolutions
+2005-11-23 fixed:	localized the "Track" label in the fullscreen viz music infos
+2005-11-23 changed:	matched the My Videos button order with My Music (Playlists button)
+2005-11-23 fixed:	order of the home images
+2005-11-23 fixed:	the 16:9 homescreen used 4:3 images
+
+2005-11-21 changed:	added use of new multiimage control in home page.
+
+2005-10-25 changed:	made the pics overlay (back button) available only when music is playing
+
+2005-10-25 added:	hidden bookmark buttons to My Videos Files view (unlock and configure in \PAL\MyVideo.xml)
+2005-10-25 removed:	Play Disc button from all My Videos views (its in the context menu now)
+2005-10-25 added:	hidden bookmark buttons to My Music Files view (unlock and configure in \PAL\MyMusicSongs.xml)
+2005-10-25 removed:	Record button from My Music Files view (its on the fullscreen OSD now)
+
+2005-10-09 fixed:	solved the floating button problem on the OSD without !Control.Hasfocus() tags
+
+2005-10-09 added:	conditional OSD buttons to record web radio / go to DVD menu
+2005-10-09 changed:	the topmost button in both fullscreen OSDs leads to the Now Playing window now
+2005-10-09 removed:	xmls for Music Top 100 view as this is included in the library view anyways
+
+2005-10-09 fixed:	some alignment issues in the OSD subscreens
+
+2005-10-03 fixed:	new dvd button all good now (lil mofo :P )
+2005-10-03 fixed:	xbmctex.exe couldnt handle the no-focus textures of the new dvd buttons - made them *.png
+
+2005-10-02 fixed:	my music keeps its settings.  (buttons need to reference ID 5, not 500)
+2005-10-02 changed:	removed no-focus textures from thumbnailpanels and lists
+2005-10-02 changed:	some other minor homescreen changes
+2005-10-02 changed:	made the DVD launcher in the homescreen a button since there were no good buttons free on the remote control
+
+2005-09-30 changed:	new homescreen pictures incl slideshow
+2005-09-30 added:	label to support direct DVD start 
+
+2005-09-23 fixed:	SF bug [ 1254394 ] PM3 skin, weather; unable to view city in 1080i
+2005-09-23 fixed:	SF bug [ 1295196 ] Unable to view IMDb info cast in 16:9 skin
+
+2005-09-23 added:       common-font18.xpr font, needed for 1080i
+
+2005-09-18 fixed:	SF bug [ 1290635 ] PM Skin 1080i Screen Adjustment
+2005-09-18 fixed:	SF bug [ 1267376 ] Restart XBMC Button Stretched
+
+2005-09-07 fixed:	navigation in the Video Info dialog wasnt working properly
+
+2005-08-30 fixed:	playlist indicaors in fullscreen viz media infos coulnt display all numbers (eg 1005/29..)
+2005-08-30 fixed:	some sttings items didnt fit on the panel properly
+
+2005-08-29 removed:	removed buttons from the left panel in My Music and My Videos as the functions are in the context menu anyways
+
+2005-08-25 fixed: 	Visualisation Select Button was not visible as it was set to visibility false
+2005-08-25 fixed: 	progressbar was not visible as it was set to visibility no
+2005-08-25 fixed: 	third line in fullscreen info was not visible as it was set to visibility no
+
+2005-08-23 changed:	KAI button in the homescreen now completly relying on visible tags (also hiding properly now)
+2005-08-23 fixed:	hidden Restart Application button had the wrong size in 4:3 resolutions 
+
+2005-08-20 fixed:	the 16:9 homescreen background pictures did not have any fading tags
+
+2005-08-16 fixed:	at the end of a thumbpanel the focus jumped to the left buttonpanel
+
+2005-08-10 changed:	top button in videoosd is now used for entering dvdmenu
+
+2005-08-07 changed:	added another font class for the shutdown menu (fontBL) because this certain label was hard to read in PAL
+
+2005-08-06 changed:	home background pictures now disabled on any media instead of just on video (to avoid viz stuttering)
+2005-08-06 added:	hidden functions for developers - press up/down on the shutdown menu to reload skin/restart the app
+2005-08-06 fixed:	media infos in fs visualisation could not be hidden in 16:9 mode
+2005-08-06 fixed:	minor fix on the shutdown menu
+2005-08-06 changed:	new video OSD dialogs (bookmarks menu with thumbs now too)
+
+2005-08-05 changed:     Updated the format of the fading of controls to latest CVS format.
+
+2005-08-03 fixed:	toast dialog disappears to quick in PAL resolution
+
+2005-08-01 added:	fading effects to various dialogs
+
+2005-07-30 changed:	format of sounds.xml
+2005-07-30 changed:	info label tags
+
+2005-07-28 fixed:	Overlays in the Album- and VideoInfo screens
+
+2005-07-26 added:	Calibration window for Gui Calibration
+2005-07-26 removed:	reverted the posibilty to hide controls in the homescreen with the black button
+2005-07-26 changed:	Controls now automaticly hiding in the homescreen when Music is Playing and no button pressed for 60 seconds
+
+2005-07-24 changed:	hid the music/videooverlay in the kai client
+2005-07-24 changed:	Kai Host dialog radiobutton color now matching the rest of the skin
+2005-07-24 fixed:	cleaned up commenting
+2005-07-24 fixed:	cleaned up bg textures
+2005-07-24 changed:	the RSS is now hidden in the homescreen when music is playing (could stutter on certain visualisations)
+
+2005-07-23 added:	fps info to the fullscreen visualisation infos
+2005-07-23 added:	Next / Previous buttons to the virtual keyboard
+
+2005-07-22 changed:	bg fadeout on shutdownmenu, numpad and keyboard
+2005-07-22 changed:	mousepointer color now matching with the rest of the skin
+2005-07-22 changed:	new virtual keyboard
+2005-07-22 fixed:	homescreen textures had one button darker than the others
+
+2005-07-21 changed:	finished the numeric keyboard
+2005-07-21 fixed:	shutdownmenu aspect ratio in 4:3
+2005-07-21 fixed:	bad button textures in the 4:3 homescreen
+2005-07-21 changed:	made the logo in the 4:3 homescreen a little bit smaller (like in the 16:9 homescreen)
+2005-07-21 fixed:	music cover aspect ratio in the 4:3 homescreen
+
+2005-07-18 added:       separator texture for settings
+
+2005-07-11 added:	textures for numerical keyboard
+2005-07-11 changed:	new placeholder cover when music without thumb is playing 
+
+2005-07-10 changed:	shortened the codec infos in fullscreen viz
+2005-07-10 added:	extra slideshow overlay including song infos (optional)
+2005-07-10 added:	music infos now available during slideshow
+
+2005-07-08 changed:	made the infos on the music and video overlay one-liners
+2005-07-08 added:	function to hide controls in the homescreen if media is playing (black button)
+
+2005-07-06 changed:     Added use of Player.Time and Player.Duration to reduce number of controls in some windows.
+
+2005-07-05 changed:	new home pics
+2005-07-05 fixed:	Video and Music Overlays were not visible on AlbumInfo and VideoInfo dialogs
+2005-07-05 fixed:	new seekbar fully working now
+2005-07-05 fixed:	buttons on the new shutdownmenu not pulsing anymore
+
+2005-07-04 added:	more progressbar tweaks
+2005-07-04 removed:	Create Thumbnails button in My Pictures
+2005-07-04 fixed:	problems with the new seekbar
+
+2005-07-03 added:	default Icons for scripts
+2005-07-03 changed:	made the Music and Video OSD more consistent
+2005-07-03 changed:	added new progress indicators in fullscreen video and fullscreen visualisation mode
+2005-07-03 changed:	progressbar gfx 
+
+2005-07-02 added:	drivespace labels in filemanager
+2005-07-02 changed:	slimmer fullscreen viz infos
+2005-07-02 changed:	replaced kai icon on kai toast dialog with info icon to make the dialog more versatile
+2005-07-02 changed:	removed eject button from submenu since its in the shutdownmenu now
+2005-07-02 changed:     moved profiles button from shutdownmenu to settings screen
+2005-07-02 changed:	new shutdown menu (right thumbstick button)
+
+2005-06-25 changed:	Moved weather logo into the skin.
+
+2005-06-20 fixed:	some minor font placement issues
+
+2005-06-13 added:       Music OSD during fullscreen visualisation
+
+2005-06-13 fixed:	720p font.xml still refered to unused fonts. 1080i yet to test
+2005-06-13 added:	eject funktion to SubMenu
+
+2005-06-06 changed:     Updated rss controls to new scheme (zero based <urlset> references to XBoxMediaCenter.xml)
+
+2005-05-14 changed:     swapped play/pause button textures in video osd and playercontrol
+
+2005-05-11 changed:     somemore ttf size tweaks
+
+2005-05-10 fixed:       context menu size (some labels barely fit)
+2005-05-10 fixed:       some ttf font issues/sizes
+2005-05-10 changed:     Default control in scripts + programs is now the list/thumb view.
+
+2005-05-06 added:       new system info
+2005-05-06 added:       Volume in OSD audio options
+
+2005-05-05 fixed:       id in seekbar was wrong.
+
+2005-05-04 added:       inital xml and gfx for the new seekbar
+2005-05-04 changed:     new Video OSD
+
+2005-04-16 added:	New Script Skin Builder - see custom3.xml
+2005-04-16 fixed:	weather icons now display correct in 16:9
+2005-04-16 added:	nofocus textures for the Settings and My Files button
+2005-04-16 fixed:       finally fixed made the homescreen 4:3 compatible (was just quick n dirty from 16:9)
+
+2005-04-15 fixed:       FileManager.xml had an unused image control.
+2005-04-15 fixed:	<width> tag in My Weather current conditions label.
+2005-04-15 fixed:       possible fix for the flickering homescreen during viz
+
+2005-04-14 changed:     made the homescreen txtures visible again when viz is disabled
+2005-04-14 changed:     Updated <version> to 1.3
+2005-04-14 fixed:	Commented controls now use correct xml comment format.
+
+2005-04-13 added:	shutter sound when taking a screenshot
+2005-04-13 fixed:	time and buffering label positions during fullscreen video
+2005-04-13 fixed:	Music infolabel width in homescreen and fullscreen viz
+2005-04-13 changed:     Updated for v1.3 compatibility.
+
+2005-04-12 added:	GUI sound effects
+
+2005-04-11 changed:	Changed buttons->labels in VideoFullScreen.xml
+2005-04-11 changed:	VideoOSD v1.3 compliance
+2005-04-11 changed:	Updated everything to use <info> and <visible> tags where appropriate (v1.3 compliance)
+
+2005-04-10 changed:	moved the new timedisplay below the progressbar
+2005-04-10 fixed:       filstacking discs didnt display in the correct aspectratio in 16:9
+2005-04-10 changed:     some more things to match the overall color feel (like rss and sliders)
+2005-04-10 fixed:	removed test covershot from 16:9 videoOSD
+2005-04-10 changed:     homescreen facelift
+2005-04-10 added:       custom progressbar and time display in fullscreen video after seek and during ff/rw
+2005-04-10 changed:     set id of biglist to 52 instead of 51 in MyMusicTop100.xml
+
+2005-04-09 changed:	set all the onleft/onright for all listscontrols and thumbnailpanels to 2
+2005-04-09 fixed:	Minor Submenu typo - also changed the Movie Trailers link to use QuickTimeBroweser.py now

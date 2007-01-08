@@ -1,0 +1,367 @@
+<window id="2003">
+	<defaultcontrol>5</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<animation effect="fade" time="1000" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+	<animation effect="fade" time="1000" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+	<controls>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>background-videos.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice</description>
+			<posx>160</posx>
+			<posy>108</posy>
+			<width>64</width>
+			<height>468</height>
+			<texture>contentpanel_left.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice</description>
+			<posx>224</posx>
+			<posy>108</posy>
+			<width>500</width>
+			<height>468</height>
+			<texture>contentpanel.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>xbox media center label</description>
+			<posx>200</posx>
+			<posy>63</posy>
+			<align>right</align>
+			<label>xbox media center</label>
+			<font>special12</font>
+		</control>
+		<control type="label" id="1">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>63</posy>
+			<align>left</align>
+			<label>10524</label>
+			<font>special13</font>
+		</control>
+		<control type="fadelabel" id="20">
+			<description>Movie Title value</description>
+			<posx>365</posx>
+			<posy>120</posy>
+			<width>290</width>
+			<label>-</label>
+			<font>special13</font>
+		</control>
+		<control type="label" id="1">
+			<description>Director txt</description>
+			<posx>365</posx>
+			<posy>153</posy>
+			<width>90</width>
+			<label>199</label>
+			<font>font12</font>
+		</control>
+		<control type="label" id="1">
+			<description>Writing Credits txt</description>
+			<posx>365</posx>
+			<posy>173</posy>
+			<width>90</width>
+			<label>200</label>
+			<font>font12</font>
+		</control>
+		<control type="label" id="1">
+			<description>Genre txt</description>
+			<posx>365</posx>
+			<posy>193</posy>
+			<width>90</width>
+			<label>174</label>
+			<font>font12</font>
+		</control>
+		<control type="label" id="1">
+			<description>Year</description>
+			<posx>365</posx>
+			<posy>213</posy>
+			<width>90</width>
+			<label>201</label>
+			<font>font12</font>
+		</control>
+		<control type="label" id="1">
+			<description>TagLine txt</description>
+			<posx>365</posx>
+			<posy>233</posy>
+			<width>90</width>
+			<label>202</label>
+			<font>font12</font>
+		</control>
+		<control type="label" id="1">
+			<description>PlotOutline txt</description>
+			<posx>365</posx>
+			<posy>253</posy>
+			<width>90</width>
+			<label>203</label>
+			<font>font12</font>
+		</control>
+		<control type="label" id="1">
+			<description>Rating txt</description>
+			<posx>365</posx>
+			<posy>273</posy>
+			<width>90</width>
+			<label>204</label>
+			<font>font12</font>
+		</control>
+		<control type="label" id="1">
+			<description>Runtime txt</description>
+			<posx>365</posx>
+			<posy>293</posy>
+			<width>90</width>
+			<label>2050</label>
+			<font>font12</font>
+		</control>
+		<control type="label" id="1">
+			<description>MPPA Rating txt</description>
+			<posx>365</posx>
+			<posy>313</posy>
+			<width>90</width>
+			<label>20074</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel" id="21">
+			<description>Director value</description>
+			<posx>465</posx>
+			<posy>153</posy>
+			<width>190</width>
+			<label>-</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel" id="22">
+			<description>Writing Credits value</description>
+			<posx>465</posx>
+			<posy>173</posy>
+			<width>190</width>
+			<label>-</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel" id="23">
+			<description>Genre value</description>
+			<posx>465</posx>
+			<posy>193</posy>
+			<width>190</width>
+			<label>-</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel" id="24">
+			<description>Year value</description>
+			<posx>465</posx>
+			<posy>213</posy>
+			<width>190</width>
+			<label>-</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel" id="25">
+			<description>TagLine value</description>
+			<posx>465</posx>
+			<posy>233</posy>
+			<width>190</width>
+			<label>-</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel" id="26">
+			<description>PlotOutline value</description>
+			<posx>465</posx>
+			<posy>253</posy>
+			<width>190</width>
+			<label>-</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel" id="30">
+			<description>Rating and votes value</description>
+			<posx>465</posx>
+			<posy>273</posy>
+			<width>190</width>
+			<label>-</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel" id="31">
+			<description>Runtime value</description>
+			<posx>465</posx>
+			<posy>293</posy>
+			<width>190</width>
+			<label>-</label>
+			<font>font12</font>
+		</control>
+		<control type="fadelabel" id="32">
+			<description>MPPA Rating value</description>
+			<posx>465</posx>
+			<posy>313</posy>
+			<width>190</width>
+			<label>-</label>
+			<font>font12</font>
+		</control>
+		<control type="image" id="3">
+			<description>Cover image</description>
+			<posx>220</posx>
+			<posy>120</posy>
+			<width>145</width>
+			<height>205</height>
+			<texture>-</texture>
+			<aspectratio>keep</aspectratio>
+		</control>
+		<control type="textbox" id="4">
+			<description>textarea</description>
+			<posx>220</posx>
+			<posy>335</posy>
+			<width>410</width>
+			<height>200</height>
+			<onleft>5</onleft>
+			<onright>50</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+			<spinposx>410</spinposx>
+			<spinposy>190</spinposy>
+		</control>
+		<control type="listcontrol" id="50">
+			<description>cast listcontrol</description>
+			<posx>220</posx>
+			<posy>335</posy>
+			<width>410</width>
+			<height>200</height>
+			<onleft>5</onleft>
+			<onright>4</onright>
+			<onup>5</onup>
+			<ondown>8</ondown>
+			<spinposx>410</spinposx>
+			<spinposy>190</spinposy>
+		</control>
+		<control type="button" id="5">
+			<description>Tracks/Review</description>
+			<posx>50</posx>
+			<posy>120</posy>
+			<label>206</label>
+			<onleft>50</onleft>
+			<onright>4</onright>
+			<onup>10</onup>
+			<ondown>8</ondown>
+		</control>
+		<control type="button" id="8">
+			<description>Play</description>
+			<posx>50</posx>
+			<posy>158</posy>
+			<label>208</label>
+			<onleft>4</onleft>
+			<onright>4</onright>
+			<onup>5</onup>
+			<ondown>9</ondown>
+		</control>
+		<control type="button" id="9">
+			<description>Resume</description>
+			<posx>50</posx>
+			<posy>196</posy>
+			<label>13404</label>
+			<onleft>4</onleft>
+			<onright>4</onright>
+			<onup>8</onup>
+			<ondown>6</ondown>
+		</control>
+		<control type="button" id="6">
+			<description>Refresh</description>
+			<posx>50</posx>
+			<posy>234</posy>
+			<label>184</label>
+			<onleft>4</onleft>
+			<onright>4</onright>
+			<onup>9</onup>
+			<ondown>10</ondown>
+		</control>
+		<control type="button" id="10">
+			<description>Get Thumb</description>
+			<posx>50</posx>
+			<posy>272</posy>
+			<label>13405</label>
+			<onleft>4</onleft>
+			<onright>4</onright>
+			<onup>6</onup>
+			<ondown>5</ondown>
+		</control>
+		<control type="group">
+		<visible>Player.HasAudio</visible>
+			<control type="image" id="0">
+				<description>music rectangle</description>
+				<posx>60</posx>
+				<posy>381</posy>
+				<width>110</width>
+				<height>120</height>
+				<texture>blue_rectangle_music.png</texture>
+				<include>mediaoverlay</include>
+			</control>
+			<control type="image" id="0">
+				<description>music logo</description>
+				<posx>65</posx>
+				<posy>387</posy>
+				<width>100</width>
+				<height>109</height>
+				<texture>defaultAlbumCover.png</texture>
+				<info>MusicPlayer.Cover</info>
+				<include>mediaoverlay</include>
+			</control>
+			<control type="label" id="0">
+				<description>play time label</description>
+				<posx>65</posx>
+				<posy>500</posy>
+				<label>-</label>
+				<info>MusicPlayer.Time</info>
+				<align>left</align>
+				<font>font13</font>
+				<include>mediaoverlay</include>
+			</control>
+			<control type="fadelabel" id="0">
+				<description>album/artist/genre etc info label</description>
+				<width>130</width>
+				<posx>65</posx>
+				<posy>525</posy>
+				<font>font10</font>
+				<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Title, | ]$INFO[MusicPlayer.Album, | ]$INFO[MusicPlayer.Year, | ]</label>
+				<include>mediaoverlay</include>
+			</control>
+		</control>
+		<control type="group">
+		<visible>Player.HasVideo</visible>
+			<control type="image" id="0">
+				<description>video rectangle</description>
+				<posx>60</posx>
+				<posy>380</posy>
+				<width>140</width>
+				<height>118</height>
+				<texture>blue_rectangle_video.png</texture>
+				<include>mediaoverlay</include>
+			</control>
+			<control type="videowindow" id="1">
+				<description>video preview window</description>
+				<posx>65</posx>
+				<posy>385</posy>
+				<width>130</width>
+				<height>107</height>
+				<visible>!Window.Next(Home)</visible>
+				<animation effect="fade" time="1" delay="500">WindowOpen</animation>
+				<animation effect="fade" time="1" delay="0">VisibleChange</animation>
+			</control>
+			<control type="label" id="0">
+				<description>play time label</description>
+				<posx>65</posx>
+				<posy>500</posy>
+				<label>-</label>
+				<info>VideoPlayer.Time</info>
+				<align>left</align>
+				<font>font13</font>
+				<include>mediaoverlay</include>
+			</control>
+			<control type="fadelabel" id="0">
+				<description>album/artist/genre etc info label</description>
+				<width>130</width>
+				<posx>65</posx>
+				<posy>525</posy>
+				<font>font10</font>
+				<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, | ]$INFO[VideoPlayer.Director, | ]$INFO[VideoPlayer.Genre, | ]</label>
+				<include>mediaoverlay</include>
+			</control>
+		</control>
+	</controls>
+</window>

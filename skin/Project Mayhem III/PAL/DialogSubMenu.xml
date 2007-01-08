@@ -1,0 +1,297 @@
+﻿<window type="buttonMenu" id="105">
+	<include>dialogeffect</include>
+	<!--  Change the defaultcontrol ID to have another button focussed when  !-->
+	<!--  you bring the panel up.                                            !-->
+	<!--  (look for this tag: <id>1123</id> on the button u want to focus)   !-->
+	<defaultcontrol always="true">1109</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>500</posx>
+		<posy>70</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="0">
+			<posx>10</posx>
+			<posy>15</posy>
+			<width>160</width>
+			<height>440</height>
+			<texture>subpanel.png</texture>
+		</control>
+		<!--  To add another button to the submenu, just put in your hyperlink,  !-->
+		<!--  give it the desired label and set visible to YES!                  !-->
+		<!--  To link direct to a script,xbe/audio/video file use (eg):          !-->
+		<!--  <onclick>F:\Emulators\ScummVMx\default.xbe</onclick>               !-->
+		<!--  To link to a XBMC screen use                                       !-->
+		<!--  <onclick>XBMC.ActivateWindow('ID here')</onclick>                  !-->
+		<control type="button" id="1123">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>110</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1123</onleft>
+			<onright>1123</onright>
+			<onup>1109</onup>
+			<ondown>1122</ondown>
+			<align>center</align>
+			<textoffsety>-1</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1122">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>130</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1122</onleft>
+			<onright>1122</onright>
+			<onup>1123</onup>
+			<ondown>1121</ondown>
+			<align>center</align>
+			<textoffsety>-1</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1121">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>150</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1121</onleft>
+			<onright>1121</onright>
+			<onup>1122</onup>
+			<ondown>1120</ondown>
+			<align>center</align>
+			<textoffsety>-1</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1120">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>170</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1120</onleft>
+			<onright>1120</onright>
+			<onup>1121</onup>
+			<ondown>1119</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1119">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>190</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1119</onleft>
+			<onright>1119</onright>
+			<onup>1120</onup>
+			<ondown>1118</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1118">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>210</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1118</onleft>
+			<onright>1118</onright>
+			<onup>1119</onup>
+			<ondown>1117</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1117">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>230</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1117</onleft>
+			<onright>1117</onright>
+			<onup>1118</onup>
+			<ondown>1116</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1116">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>250</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1116</onleft>
+			<onright>1116</onright>
+			<onup>1117</onup>
+			<ondown>1115</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1115">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>270</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1115</onleft>
+			<onright>1115</onright>
+			<onup>1116</onup>
+			<ondown>1114</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1114">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>290</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1114</onleft>
+			<onright>1114</onright>
+			<onup>1115</onup>
+			<ondown>1113</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1113">
+			<description>SubMenu button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>310</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1113</onleft>
+			<onright>1113</onright>
+			<onup>1114</onup>
+			<ondown>1112</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1112">
+			<description>scripts button</description>
+			<visible>no</visible>
+			<onclick>q:\scripts\-.py</onclick>
+			<label>-</label>
+			<posx>30</posx>
+			<posy>330</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1112</onleft>
+			<onright>1112</onright>
+			<onup>1113</onup>
+			<ondown>1111</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1111">
+			<description>Scripts button</description>
+			<visible>yes</visible>
+			<onclick>q:\scripts\XBMCScripts\default.py</onclick>
+			<label>XBMCScripts</label>
+			<posx>30</posx>
+			<posy>350</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1111</onleft>
+			<onright>1111</onright>
+			<onup>1112</onup>
+			<ondown>1110</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1110">
+			<description>Scripts button</description>
+			<visible>yes</visible>
+			<onclick>q:\scripts\Apple Movie Trailers\default.py</onclick>
+			<label>Movie Trailers</label>
+			<posx>30</posx>
+			<posy>370</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1110</onleft>
+			<onright>1110</onright>
+			<onup>1111</onup>
+			<ondown>1109</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="button" id="1109">
+			<description>Scripts button</description>
+			<visible>yes</visible>
+			<onclick>XBMC.ActivateWindow(20)</onclick>
+			<label>247</label>
+			<posx>30</posx>
+			<posy>390</posy>
+			<width>110</width>
+			<height>20</height>
+			<font>font101</font>
+			<onleft>1109</onleft>
+			<onright>1109</onright>
+			<onup>1110</onup>
+			<ondown>1123</ondown>
+			<align>center</align>
+			<textoffsety>0</textoffsety>
+			<texturenofocus>-</texturenofocus>
+		</control>
+	</controls>
+</window>

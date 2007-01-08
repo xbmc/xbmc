@@ -1,0 +1,56 @@
+// Tunnel.tra
+// Author - MrC
+// Based on FadeTunnel.r4 by Gordon Williams
+
+const int strips = 64;
+
+int x,y;
+float dx,dy,sx,sy,tx,a,b,mytime;
+
+void Init()
+{
+}
+
+void Render()
+{
+	mytime = mytime + (TIMEPASS * 0.25);
+	FINISHED = (mytime>1);
+
+	gfxSetTexture(TEXTURE_NEXTPRESET);
+	gfxSetAspect(0);
+	gfxTranslate(0, 0, 2.414);
+	gfxColour(1, 1, 1, 1);
+	gfxTexRect(-1, 1, 1, -1);
+	gfxTranslate(0, 0, -2.414);
+
+	a = mytime*2;
+	if (a>1.0) a=1.0;
+	a = (1.0-Cos(a*3.14159))/2.0;
+
+	b = (mytime*2)-1.0;
+	if (b<0.0) b=0.0;
+	b = (1.0-Cos(b*3.14159))/2.0;
+
+	gfxTranslate(0,0,2.414+(a*3.0)-(b*8));
+
+	gfxRotate((1.0-Cos(a*3.14159))*180,1,1,1);   
+	gfxRotate(a*90,1,0,0);   
+	gfxRotate((1.0-Cos(b*3.14159))*180,0,1,0);   
+
+	gfxSetTexture(TEXTURE_CURRPRESET);
+
+	gfxColour(1,1,1,1);
+	gfxBegin(PRIM_QUADSTRIP);
+
+	for (x=0;x<=strips;x=x+1)
+	{
+		dx = (1.0*x)/strips;
+		tx = dx*2;
+		if (tx>1) tx=2.0-tx;
+		gfxTexCoord(tx,1.0);
+		gfxVertex(((dx*4.0)-1.0)*(1.0-a)+(-Cos(3.14159*2.0*dx)*a),-1-a,(-Sin(3.14159*2.0*dx)*a));
+		gfxTexCoord(tx,0.0);
+		gfxVertex(((dx*4.0)-1.0)*(1.0-a)+(-Cos(3.14159*2.0*dx)*a),1+a,(-Sin(3.14159*2.0*dx)*a));
+	}
+	gfxEnd();
+}

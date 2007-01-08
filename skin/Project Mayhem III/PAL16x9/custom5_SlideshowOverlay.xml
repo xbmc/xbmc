@@ -1,0 +1,51 @@
+﻿<window type="dialog" id="59">
+	<defaultcontrol>2</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<visible>Window.IsActive(59) + Player.HasMedia</visible>
+	<controls>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>16x9home.png</texture>
+		</control>
+		<control type="image" id="1">
+			<description>image</description>
+			<posx>105</posx>
+			<posy>338</posy>
+			<width>75</width>
+			<height>99</height>
+			<info>MusicPlayer.Cover</info>
+			<visible>Player.HasAudio</visible>
+		</control>
+		<control type="label" id="1">
+			<description>Artist label</description>
+			<width>430</width>
+			<posx>195</posx>
+			<posy>340</posy>
+			<info>MusicPlayer.Artist</info>
+			<align>left</align>
+			<font>special12</font>
+		</control>
+		<control type="label" id="1">
+			<description>Title label</description>
+			<width>430</width>
+			<posx>195</posx>
+			<posy>367</posy>
+			<info>MusicPlayer.Title</info>
+			<align>left</align>
+			<font>special13</font>
+		</control>
+		<control type="label" id="1">
+			<description>Album label</description>
+			<width>430</width>
+			<posx>195</posx>
+			<posy>405</posy>
+			<info>MusicPlayer.Album</info>
+			<align>left</align>
+			<font>font10</font>
+		</control>
+	</controls>
+</window>

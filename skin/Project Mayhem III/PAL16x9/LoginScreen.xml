@@ -1,0 +1,167 @@
+<window id="29">
+	<defaultcontrol always="true">52</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<visible>!Window.IsActive(130)</visible>
+	<controls>
+		<control type="image">
+			<description>Background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>background-settings.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>Xbox media center label</description>
+			<posx>200</posx>
+			<posy>63</posy>
+			<align>right</align>
+			<label>xbox media center</label>
+			<font>special12</font>
+			<include>homemisc</include>
+		</control>
+		<control type="label" id="1">
+			<description>Login label</description>
+			<posx>207</posx>
+			<posy>63</posy>
+			<align>left</align>
+			<label>20096</label>
+			<font>special13</font>
+			<include>homemisc</include>
+		</control>
+		<control type="group">
+			<posx>410</posx>
+			<posy>113</posy>
+			<include>homemisc</include>
+			<control type="label" id="0">
+				<description>Date label</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<label>date</label>
+				<info>System.Date</info>
+				<align>right</align>
+				<font>special12</font>
+			</control>
+			<control type="label" id="1">
+				<description>Suffix label</description>
+				<posx>10</posx>
+				<posy>-2</posy>
+				<label>|</label>
+				<align>left</align>
+				<font>special12</font>
+				<include>textcolorgrey</include>
+			</control>
+			<control type="label" id="0">
+				<description>Time label</description>
+				<posx>20</posx>
+				<posy>0</posy>
+				<label>time</label>
+				<info>System.Time</info>
+				<align>left</align>
+				<font>special12</font>
+				<include>textcolorgrey</include>
+			</control>
+		</control>
+		<control type="group">
+			<posy>20</posy>
+			<include>contentpanelslide</include>
+			<control type="image" id="1">
+				<description>Profile background</description>
+				<posx>137</posx>
+				<posy>121</posy>
+				<width>446</width>
+				<height>406</height>
+				<texture>dialog-panelprofile.png</texture>
+			</control>
+			<control type="label" id="2">
+				<description>Heading Label</description>
+				<posx>165</posx>
+				<posy>148</posy>
+				<width>420</width>
+				<align>left</align>
+				<label>-</label>
+				<font>special13</font>
+				<textcolor>DDced8da</textcolor>
+			</control>
+			<control type="label" id="3">
+				<description>Profile Count Label</description>
+				<posx>565</posx>
+				<posy>148</posy>
+				<width>420</width>
+				<align>right</align>
+				<label>-</label>
+				<font>special13</font>
+				<textcolor>DDced8da</textcolor>
+			</control>
+			<control type="listcontrol" id="52">
+				<description>Big listcontrol</description>
+				<posx>165</posx>
+				<posy>190</posy>
+				<width>400</width>
+				<height>300</height>
+				<spinwidth>16</spinwidth>
+				<spinheight>16</spinheight>
+				<spincolor>ffffffff</spincolor>
+				<spinfont>font10</spinfont>
+				<spinposx>365</spinposx>
+				<spinposy>275</spinposy>
+				<textureup>scroll-up.png</textureup>
+				<texturedown>scroll-down.png</texturedown>
+				<textureupfocus>scroll-up-focus.png</textureupfocus>
+				<texturedownfocus>scroll-down-focus.png</texturedownfocus>
+				<texturefocus border="0,0,0,20">blue-rectangle.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<font>special13</font>
+				<font2>font13</font2>
+				<include>listselectedcolor</include>
+				<include>textcolorlightgrey</include>
+				<selectedcolor2>FFFFffff</selectedcolor2>
+				<textcolor2>d0ffffff</textcolor2>
+				<suffix>|</suffix>
+				<textxoff>10</textxoff>
+				<textyoff>5</textyoff>
+				<textxoff2>390</textxoff2>
+				<textyoff2>55</textyoff2>
+				<aligny>top</aligny>
+				<itemwidth>70</itemwidth>
+				<itemheight>70</itemheight>
+				<spacebetweenitems>10</spacebetweenitems>
+				<textureheight>80</textureheight>
+				<texturewidth>80</texturewidth>
+				<onleft>98</onleft>
+				<onright>98</onright>
+				<onup>52</onup>
+				<ondown>52</ondown>
+			</control>
+		</control>
+		<control type="button" id="98">
+			<description>Submenu button</description>
+			<posx>610</posx>
+			<posy>503</posy>
+			<width>26</width>
+			<height>35</height>
+			<onclick>ActivateWindow(ShutdownMenu)</onclick>
+			<texturefocus>login-power.gif</texturefocus>
+			<texturenofocus>login-power.png</texturenofocus>
+			<label>-</label>
+			<onleft>52</onleft>
+			<onright>52</onright>
+			<onup>52</onup>
+			<ondown>52</ondown>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="image" id="0">
+			<description>bg preview</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<include>windowswitchtransition</include>
+		</control>
+	</controls>
+</window>
