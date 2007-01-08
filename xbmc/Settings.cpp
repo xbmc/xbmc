@@ -1153,6 +1153,20 @@ void CSettings::LoadAdvancedSettings()
 
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
 
+<<<<<<< .mine
+  //Tuxbox
+  pElement = pRootElement->FirstChildElement("tuxbox");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "audiochannelselection", g_advancedSettings.m_bAudioChannelSelection);
+    XMLUtils::GetBoolean(pElement, "submenuselection", g_advancedSettings.m_bSubMenuSelection);
+    XMLUtils::GetBoolean(pElement, "pictureicon", g_advancedSettings.m_bPictureIcon);
+    GetInteger(pElement, "epgrequesttime", g_advancedSettings.m_iEpgRequestTime, 10, 0, 3600);
+    GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iDefaultSubMenu, 4, 1, 4);
+    GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iDefaultRootMenu, 0, 0, 4);
+  }
+
+=======
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
   if (pElement)
@@ -1165,6 +1179,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iDefaultRootMenu, 0, 0, 4);
   }
 
+>>>>>>> .r7544
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
   if (pExts)
