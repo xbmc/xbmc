@@ -44,18 +44,20 @@ class CUPnPVirtualPathDirectory : public CVirtualPathDirectory
 public:
 
     static bool FindSharePath(const char* share_name, const char* path, bool begin = false) {
-        CFileItemList items;
+        // look for all the paths given a share name
+        CShare share;
+        vector<CStdString> paths;
         CUPnPVirtualPathDirectory dir;
-        if (!dir.GetDirectory((const char*)share_name, items)) {
+        if (!dir.GetMatchingShare((const char*)share_name, share, paths)) 
             return false;
-        }
 
-        for (int i = 0; i < items.Size(); i++) {
+        for (unsigned int i = 0; i < paths.size(); i++) {
             if (begin) {
-                if (NPT_StringsEqualN(path, items[i]->m_strPath.c_str(), NPT_StringLength(items[i]->m_strPath.c_str()))) {
-                    return true;
+                if (NPT_StringsEqualN(path, paths[i].c_str(), NPT_StringLength(paths[i].c_str()))) {
+                    if (NPT_StringLength(path) <= NPT_StringLength(paths[i].c_str()) || path[NPT_StringLength(paths[i].c_str())] == '\\')
+                        return true;
                 }
-            } else if (NPT_StringsEqual(path, items[i]->m_strPath.c_str())) {
+            } else if (NPT_StringsEqual(path, paths[i].c_str())) {
                 return true;
             }
         }
@@ -276,7 +278,8 @@ private:
     PLT_MediaObject* Build(
         CFileItem*      item, 
         bool            with_count = true, 
-        NPT_SocketInfo* info = NULL);
+        NPT_SocketInfo* info = NULL,
+        const char*     object_id = NULL);
 };
 
 /*----------------------------------------------------------------------
@@ -285,7 +288,8 @@ private:
 PLT_MediaObject* 
 CUPnPServer::Build(CFileItem*        item, 
                    bool              with_count /* = true */, 
-                   NPT_SocketInfo*   info /* = NULL */)
+                   NPT_SocketInfo*   info /* = NULL */,
+                   const char*       parent_id /* = NULL */)
 {
     PLT_MediaObject* object = NULL;
     NPT_String       path = item->m_strPath;
@@ -296,6 +300,9 @@ CUPnPServer::Build(CFileItem*        item,
     if (!ret && path != "0") goto failure;
 
     if (file_path.GetLength()) {
+        // make sure the path starts with something that is shared given the share
+        if (!CUPnPVirtualPathDirectory::FindSharePath(share_name, file_path, true)) goto failure;
+        
         // this is not a virtual directory
         object = BuildFromFilePath(file_path, with_count, info, true);
         if (!object) goto failure;
@@ -319,18 +326,22 @@ CUPnPServer::Build(CFileItem*        item,
             }
         }
 
-        // populate parentid
-        if (CUPnPVirtualPathDirectory::FindSharePath(share_name, file_path)) {
-            // found the file_path as one of the path of the share
-            // this means the parent id is the share
-            object->m_ParentID = share_name;
+        if (parent_id) {
+            object->m_ParentID = parent_id;
         } else {
-            // we didn't find the path, so it means the parent id is
-            // the parent folder of the file_path
-            int index = file_path.ReverseFind("\\");
-            if (index == -1) goto failure;
+            // populate parentid manually
+            if (CUPnPVirtualPathDirectory::FindSharePath(share_name, file_path)) {
+                // found the file_path as one of the path of the share
+                // this means the parent id is the share
+                object->m_ParentID = share_name;
+            } else {
+                // we didn't find the path, so it means the parent id is
+                // the parent folder of the file_path
+                int index = file_path.ReverseFind("\\");
+                if (index == -1) goto failure;
 
-            object->m_ParentID = share_name + "/" + file_path.Left(index);
+                object->m_ParentID = share_name + "/" + file_path.Left(index);
+            }
         }
     } else {
         object = new PLT_MediaContainer;
@@ -403,12 +414,15 @@ CUPnPServer::Build(CFileItem*        item,
                 vector<CStdString> paths;
                 if (!dir.GetMatchingShare((const char*)share_name, share, paths)) goto failure;
                 for (unsigned int i=0; i<paths.size(); i++) {
+                    // FIXME: this is not efficient, we only need the number of items given a mask
+                    // temporary disabling it
+
                     // retrieve all the files for a given path
-                    CFileItemList items;
-                    if (CDirectory::GetDirectory(paths[i], items, mask)) {
-                        // update childcount
-                        ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
-                    }
+//                    CFileItemList items;
+//                    if (CDirectory::GetDirectory(paths[i], items, mask)) {
+//                        // update childcount
+//                        ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
+//                    }
                 }
             }
         }
@@ -533,7 +547,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
             if (share_name.GetLength() == 0) return NPT_FAILURE; // weird!
             items[i]->m_strPath = (const char*) NPT_String(share_name + "/" + items[i]->m_strPath.c_str());
         }
-        item = Build(items[i], true, info);
+        item = Build(items[i], true, info, object_id);
         if (!item.IsNull()) {
             if ((cur_index >= start_index) && ((num_returned < req_count) || (req_count == 0))) {
                 NPT_String tmp;
