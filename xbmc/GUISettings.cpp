@@ -461,6 +461,8 @@ CGUISettings::CGUISettings(void)
   AddString(2, "smb.password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "smb.winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
+  AddSeparator(6, "smb.sep1");
+  AddBool(7,   "smb.showhidden", 21330, false);
 
   AddCategory(6, "upnp", 20110);
   AddBool(1,    "upnp.autostart", 20111, false);
