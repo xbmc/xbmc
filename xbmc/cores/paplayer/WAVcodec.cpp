@@ -23,7 +23,6 @@ WAVCodec::WAVCodec()
   m_iDataLen=0;
   m_Bitrate = 0;
   m_CodecName = "WAV";
-  m_codec = NULL;
 }
 
 WAVCodec::~WAVCodec()
@@ -64,21 +63,6 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
       WAVEFORMATEX wfx;
       memset(&wfx, 0, sizeof(WAVEFORMATEX));
       m_file.Read(&wfx, 16);
-
-      if (wfx.wFormatTag == 0x0069) // we have a xwav - use the adpcm codec
-      {
-        DeInit();
-        m_codec = new ADPCMCodec();
-        if (!m_codec->Init(strFile,filecache))
-          return false;
-        
-        m_SampleRate = m_codec->m_SampleRate;
-        m_Channels = m_codec->m_Channels;
-        m_BitsPerSample = m_codec->m_BitsPerSample;
-        m_TotalTime = m_codec->m_TotalTime;
-        m_CodecName = "XBADPCM";
-        return true;
-      }
 
       //  Get file info
       m_SampleRate = wfx.nSamplesPerSec;
@@ -124,18 +108,10 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
 void WAVCodec::DeInit()
 {
   m_file.Close();
-  if (m_codec)
-  {
-    m_codec->DeInit();
-    delete m_codec;
-    m_codec = false;
-  }
 }
 
 __int64 WAVCodec::Seek(__int64 iSeekTime)
 {
-  if (m_codec)
-    return m_codec->Seek(iSeekTime);
   //  Calculate size of a single sample of the file
   int iSampleSize=m_SampleRate*m_Channels*(m_BitsPerSample/8);
 
@@ -147,8 +123,6 @@ __int64 WAVCodec::Seek(__int64 iSeekTime)
 
 int WAVCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
-  if (m_codec)
-    return m_codec->ReadPCM(pBuffer,size,actualsize);
   *actualsize=0;
   int iPos=(int)m_file.GetPosition();
   if (iPos >= m_iDataStart+m_iDataLen)
