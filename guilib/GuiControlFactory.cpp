@@ -472,7 +472,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     if (!width)
       width = max(rect.right - posX, 0);
     if (!height)
-      height = max(rect.right - posY, 0);
+      height = max(rect.bottom - posY, 0);
   }
 
 #ifdef HAS_RAM_CONTROL
