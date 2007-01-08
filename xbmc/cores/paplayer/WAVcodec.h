@@ -19,5 +19,4 @@ private:
   CFileReader m_file;
   long m_iDataStart;
   long m_iDataLen;
-  ADPCMCodec* m_codec;
 };
