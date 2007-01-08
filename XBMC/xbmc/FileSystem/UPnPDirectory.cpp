@@ -106,6 +106,7 @@ public:
         NPT_String path = strPath.c_str();
         CShare     share;
         CFileItem* item;
+        vector<CStdString> paths;
 
         if (path == "0") {
             // music
@@ -140,8 +141,12 @@ public:
                 for (unsigned int i = 0; i < shares->size(); i++) {
                     // Does this share contains any local paths?
                     CShare &share = shares->at(i);
-                    if (GetMatchingShare(share.strPath, share) && share.vecPaths.size()) {
-                        item = new CFileItem(share.strPath, true);
+                    // reconstruct share name as it could have been replaced by
+                    // a path if there was just one entry
+                    NPT_String share_name = path + "/";
+                    share_name += share.strName;
+                    if (GetMatchingShare((const char*)share_name, share, paths) && paths.size()) {
+                        item = new CFileItem((const char*)share_name, true);
                         item->SetLabel(share.strName);
                         items.Add(item);
                     }
@@ -149,7 +154,7 @@ public:
             }
             
             return true;
-        } else if (!GetMatchingShare((const char*)path, share)) {
+        } else if (!GetMatchingShare((const char*)path, share, paths)) {
             // split to remove share name from path
             NPT_String share_name;
             NPT_String file_path;
@@ -205,18 +210,18 @@ public:
         return true;
     }
 
-    bool GetMatchingShare(const CStdString &strPath, CShare& share) {
+    bool GetMatchingShare(const CStdString &strPath, CShare& share, vector<CStdString>& paths) {
+        paths.clear();
+
         if (!CVirtualPathDirectory::GetMatchingShare(strPath, share))
             return false;
 
         // filter out non local shares
-        vector<CStdString> paths;
         for (unsigned int i = 0; i < share.vecPaths.size(); i++) {
             if (!CUtil::IsRemote(share.vecPaths[i])) {
                 paths.push_back(share.vecPaths[i]);
             }
         }
-        share.vecPaths = paths;
         return true;
     }
 };
@@ -360,7 +365,13 @@ CUPnPServer::Build(CFileItem*        item,
                     for (unsigned int i = 0; i < shares->size(); i++) {
                         // Does this share contains any local paths?
                         CShare &share = shares->at(i);
-                        if (dir.GetMatchingShare(share.strPath, share) && share.vecPaths.size()) {
+                        vector<CStdString> paths;
+
+                        // reconstruct share name as it could have been replaced by
+                        // a path if there was just one entry
+                        NPT_String share_name = path + "/";
+                        share_name += share.strName;
+                        if (dir.GetMatchingShare((const char*)share_name, share, paths) && paths.size()) {
                             ((PLT_MediaContainer*)object)->m_ChildrenCount++;
                         }
                     }
@@ -389,11 +400,12 @@ CUPnPServer::Build(CFileItem*        item,
                 // get all the paths for a given share
                 CShare share;
                 CUPnPVirtualPathDirectory dir;
-                if (!dir.GetMatchingShare((const char*)share_name, share)) goto failure;
-                for (unsigned int i=0; i<share.vecPaths.size(); i++) {
+                vector<CStdString> paths;
+                if (!dir.GetMatchingShare((const char*)share_name, share, paths)) goto failure;
+                for (unsigned int i=0; i<paths.size(); i++) {
                     // retrieve all the files for a given path
                     CFileItemList items;
-                    if (CDirectory::GetDirectory(share.vecPaths[i], items, mask)) {
+                    if (CDirectory::GetDirectory(paths[i], items, mask)) {
                         // update childcount
                         ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
                     }
@@ -421,6 +433,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
     NPT_String id = object_id;
     CShare share;
     CUPnPVirtualPathDirectory dir;
+    vector<CStdString> paths;
 
     CFileItem* item = NULL;
 
@@ -440,7 +453,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
         item = new CFileItem((const char*)id, true);
         item->SetLabel("Pictures");
         object = Build(item, true, info);
-    } else if (dir.GetMatchingShare((const char*)id, share)) {
+    } else if (dir.GetMatchingShare((const char*)id, share, paths)) {
         item = new CFileItem((const char*)id, true);
         item->SetLabel(share.strName);
         object = Build(item, true, info);
