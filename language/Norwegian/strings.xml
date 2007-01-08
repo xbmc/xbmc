@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on English rev. 1.343-->
+<!--Based on English rev. 7486-->
 <strings>
   <string id="0">Mine Programmer</string>
   <string id="1">Mine Bilder</string>
@@ -8,7 +8,7 @@
   <string id="3">Mine Filmer</string>
   <string id="4">TV-Guide</string>
   <string id="5">Innstillinger</string>
-  <string id="6">Xbox Media Center CVS</string>
+  <string id="6">Xbox Media Center SVN</string>
   <string id="7">Mine Filer</string>
   <string id="8">Været</string>
 
@@ -436,6 +436,48 @@
   <string id="520">Rediger XBE-tittel</string>
   <string id="521">Samlinger</string>
   <string id="522">Fjern kilde</string>
+  <string id="523">Bytt media</string>
+  <string id="524">Velg spilleliste</string>
+  <string id="525">Ny spilleliste</string>
+  <string id="526">Legg til i spilleliste</string>
+  <string id="527">Legg manuelt til i database</string>
+  <string id="528">Skriv inn tittel</string>
+  <string id="529">Feil: Ekstisterende tittel</string>
+  <string id="530">Velg sjanger</string>
+  <string id="531">Ny sjanger</string>
+  <string id="532">Manuellt tillegg</string>
+  <string id="533">Skriv inn sjanger</string>
+  <string id="534">Vis: %s</string>
+  <string id="535">Liste</string>
+  <string id="536">Ikoner</string>
+  <string id="537">Stor list</string>
+  <string id="538">Store ikoner</string>
+  <string id="539">Bred</string>
+  <string id="540">Stor bred</string>
+
+  <string id="550">Sorter etter: %s</string>
+  <string id="551">Navn</string>
+  <string id="552">Dato</string>
+  <string id="553">Størrelse</string>
+  <string id="554">Spor</string>
+  <string id="555">Tid</string>
+  <string id="556">Tittel</string>
+  <string id="557">Artist</string>
+  <string id="558">Album</string>
+  <string id="559">Spilleliste</string>
+  <string id="560">ID</string>
+  <string id="561">Fil</string>
+  <string id="562">År</string>
+  <string id="563">Karakter</string>
+  <string id="564">Type</string>
+  <string id="565">Bruk</string>
+
+  <string id="580">Sorteringsrettning</string>
+  <string id="581">Sorteringsmetode</string>
+  <string id="582">Visningsmodus</string>
+  <string id="583">Husk visninger for forskjellige mapper</string>
+  <string id="584">Stigende</string>
+  <string id="585">Synkende</string>
   <string id="588">Avbryt partymodus</string>
 
   <string id="589">Partymodus</string>
@@ -458,6 +500,7 @@
   <string id="607">Til:</string>
   <string id="608">Kunne ikke rippe CD eller spor</string>
   <string id="609">CDDARipPath er ikke satt</string>
+  <string id="610">Ripp musikkspor</string>
 
   <string id="620">CD-ripping</string>
   <string id="621">Enkoder</string>
@@ -656,6 +699,7 @@
   <string id="1410">Stille</string>
   <string id="1411">med</string>
   <string id="1412">vind</string>
+  <string id="1413">yr</string>
   <string id="2050">Spilletid:</string>
 
   <string id="4501">LCD-type</string>
@@ -740,6 +784,7 @@
   <string id="12020">Spør</string>
   <string id="12021">Start fra begynnelsen</string>
   <string id="12022">Fortsett fra siste posisjon</string>
+  <string id="12023">Validerer eksisterende trainere...</string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -1179,6 +1224,7 @@
   <string id="15281">Skriv inn et artistnavn for å finne relaterte</string>
   <string id="15282">Skriv inn ent tag-navn for å finne liknende</string>
   <string id="15283">Spor nylig lyttet til av %name%</string>
+  <string id="15284">Hør på %name%'s anbefalinger på Last.FM radio</string>
 
   <string id="15300">Bane ikke funnet eller ugyldig</string>
   <string id="15301">Kunne ikke koble til nettverksserver</string>
@@ -1270,7 +1316,7 @@
   <string id="20038">Lås musikksekjson</string>
   <string id="20039">Lås videoseksjon</string>
   <string id="20040">Lås bildeseksjon</string>
-  <string id="20041">Lås programmer og skriptseksjoner</string>
+  <string id="20041">Lås programmer, lagrede spill &amp; skriptseksjoner</string>
   <string id="20042">Lås filbehandler</string>
   <string id="20043">Lås innsillinger</string>
   <string id="20044">Start på nytt</string>
@@ -1442,5 +1488,24 @@
   <string id="20311">Ukjent eller integrert (beskyttet)</string>
   <string id="20312">Dim LCD ved pause</string>
   <string id="20313">Skru LED på ved pause</string>
+  <string id="20314">Min video - Bibliotek</string>
+  <string id="20315">Mine lagrede spill</string>
+  <string id="20316">Sorter etter: ID</string>
+  <string id="20317">Last ned lagret spill</string>
+  <string id="20318">Lagret spill installert på HDD</string>
+  <string id="20319">Klarte ikke å laste ned lagret spill</string>
+  <string id="20320">Velg lagret spill for nedlasting og installering</string>
+  <string id="20321">Ingen lagrede spill funnet for det angitte spillet</string>
+  <string id="20322">Gå til lagret spill</string>
+  <string id="20323">Lagrede spill</string>
+  <string id="20324">Spill del...</string>
+  <string id="20325">Nullstill kalibrering</string>
+  <string id="20326">Dette vil sette kalibreringen for %s</string>
+  <string id="20327">til dets standardverdier.</string>
+  <string id="20328">en bane å kopiere det lagrede spillet til</string>
+  <string id="20329">en bane å flytte det lagrede spillet til</string>
+
   <string id="29999">Automatisk flimmerfilter-patch</string>
 </strings>
+
+ 	  	 
