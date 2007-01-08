@@ -54,6 +54,7 @@
 #ifdef USE_LANGINFO
 #include <langinfo.h>
 #endif
+#include <locale.h>
 #endif
 
 #include "url.h"
@@ -572,10 +573,11 @@ int asf_mmst_streaming_start(stream_t *stream)
 
   /* prepare for the url encoding conversion */
 #ifdef USE_ICONV
+  setlocale(LC_CTYPE, "");
 #ifdef USE_LANGINFO
   url_conv = iconv_open("UTF-16LE",nl_langinfo(CODESET));
 #else
-  url_conv = iconv_open("UTF-16LE", NULL);
+  url_conv = iconv_open("UTF-16LE",setlocale(LC_CTYPE, NULL));
 #endif
 #endif
 
