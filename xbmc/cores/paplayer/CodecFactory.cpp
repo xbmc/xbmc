@@ -101,12 +101,13 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   }
   if (urlFile.GetFileType().Equals("wav"))
   {
+    ICodec* codec;
 #ifdef HAS_DTS_CODEC
     //lets see what it contains...
     //this kinda sucks 'cause if it's a plain wav file the file
     //will be opened, sniffed and closed 2 times before it is opened *again* for wav
     //would be better if the papcodecs could work with bitstreams instead of filenames.
-    ICodec* codec = new DTSCodec();
+    codec = new DTSCodec();
     if (codec->Init(strFile, filecache))
     {
       return codec;
