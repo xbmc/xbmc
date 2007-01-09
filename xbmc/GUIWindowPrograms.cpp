@@ -268,8 +268,12 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
         btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
 
       if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
-        btn_Rename = pMenu->AddButton(520); // edit xbe title
-
+      {
+        if (m_vecItems[iItem]->IsShortCut())
+          btn_Rename = pMenu->AddButton(16105);
+        else
+          btn_Rename = pMenu->AddButton(520); // edit xbe title
+      }
 
       if (m_database.ItemHasTrainer(dwTitleId))
       {
@@ -297,12 +301,29 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
 
     if (btnid == btn_Rename)
     {
-      CStdString strDescription = m_vecItems[iItem]->GetLabel();
-      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(16013), false))
+      CStdString strDescription;
+      CShortcut cut;
+      if (m_vecItems[iItem]->IsShortCut())
       {
-        // SetXBEDescription will truncate to 40 characters.
-        CUtil::SetXBEDescription(m_vecItems[iItem]->m_strPath,strDescription);
-        m_database.SetDescription(m_vecItems[iItem]->m_strPath,strDescription);
+        cut.Create(m_vecItems[iItem]->m_strPath);
+        strDescription = cut.m_strLabel;
+      }
+      else
+        strDescription = m_vecItems[iItem]->GetLabel();
+
+      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(16008), false))
+      {
+        if (m_vecItems[iItem]->IsShortCut())
+        {
+          cut.m_strLabel = strDescription;
+          cut.Save(m_vecItems[iItem]->m_strPath);
+        }
+        else
+        {
+          // SetXBEDescription will truncate to 40 characters.
+          CUtil::SetXBEDescription(m_vecItems[iItem]->m_strPath,strDescription);
+          m_database.SetDescription(m_vecItems[iItem]->m_strPath,strDescription);
+        }
         Update(m_vecItems.m_strPath);
       }
     }
@@ -312,23 +333,17 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
       if (CGUIDialogTrainerSettings::ShowForTitle(dwTitleId,&m_database))
       {
         Update(m_vecItems.m_strPath);
-//        m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-//        OnSort();
-//        UpdateButtons();
       }
     }
     if (btnid == btn_ScanTrainers)
     {
       PopulateTrainersList();
       Update(m_vecItems.m_strPath);
-
-//      SetOverlayIcons();
-//      m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-//      OnSort();
-//      UpdateButtons();
     }
     if (btnid == btn_Settings)
+    {
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+    }
     else if (btnid == btn_GoToRoot)
     {
       return Update("");
