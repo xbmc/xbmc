@@ -223,6 +223,7 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
 
   CStdString strTemp;
   XMLUtils::GetString(details, "title", movieDetails.m_strTitle);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTitle);
   if (XMLUtils::GetString(details, "rating", strTemp)) movieDetails.m_fRating = (float)atof(strTemp);
   if (XMLUtils::GetString(details, "year", strTemp)) movieDetails.m_iYear = atoi(strTemp);
   if (XMLUtils::GetString(details, "top250", strTemp)) movieDetails.m_iTop250 = atoi(strTemp);
