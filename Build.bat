@@ -94,7 +94,6 @@ goto COMPILE
   cd ..\..
   xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
 
-  xcopy skin\PictureIcon BUILD\skin\PictureIcon /E /Q /I /Y /EXCLUDE:exclude.txt
   xcopy credits BUILD\credits /Q /I /Y /EXCLUDE:exclude.txt
   xcopy language BUILD\language /E /Q /I /Y /EXCLUDE:exclude.txt
   xcopy screensavers BUILD\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt
