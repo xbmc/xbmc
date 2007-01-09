@@ -123,5 +123,51 @@ bool CShortcut::Save(const CStdString& strFileName)
   TiXmlText value(m_strPath);
   pNewNode->InsertEndChild(value);
 
+  if (!m_strThumb.IsEmpty())
+  {
+    TiXmlElement newElement("thumb");
+    TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+    if (!pNewNode) return false;
+
+    TiXmlText thumbValue(m_strThumb);
+    pNewNode->InsertEndChild(thumbValue);
+  }
+  if (!m_strLabel.IsEmpty())
+  {
+    TiXmlElement newElement("label");
+    TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+    if (!pNewNode) return false;
+
+    TiXmlText labelValue(m_strLabel);
+    pNewNode->InsertEndChild(labelValue);
+  }
+  if (!m_strVideo.IsEmpty())
+  {
+    TiXmlElement newElement("video");
+    TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+    if (!pNewNode) return false;
+
+    TiXmlText labelValue(m_strVideo);
+    pNewNode->InsertEndChild(labelValue);
+  }
+  if (!m_strParameters.IsEmpty())
+  {
+    TiXmlElement newElement("parameters");
+    TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+    if (!pNewNode) return false;
+
+    TiXmlText labelValue(m_strParameters);
+    pNewNode->InsertEndChild(labelValue);
+  }
+  if (!m_strCustomGame.IsEmpty())
+  {
+    TiXmlElement customElement("custom");
+    TiXmlNode* pCustomNode = pRootNode->InsertEndChild(customElement);
+    TiXmlText game(m_strCustomGame);
+    TiXmlElement gameElement("game");
+    TiXmlNode* pGameNode = pCustomNode->InsertEndChild(gameElement);
+    pGameNode->InsertEndChild(game);
+  }
+
   return xmlDoc.SaveFile(strTotalPath);
 }
