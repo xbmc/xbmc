@@ -3358,7 +3358,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     CLog::Log(LOGDEBUG, __FUNCTION__" - TuxBox URL Detected %s",item.m_strPath.c_str());
     CFileItem item_new;
     if(g_tuxbox.CreateNewItem(item, item_new))
-      return PlayFile(item_new,true);
+      return PlayFile(item_new,false); //for tuxbox restart must be false, else i loose m_currentFile informations
   }
   
   if (!bRestart)
