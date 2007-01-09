@@ -846,9 +846,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MediaManager.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\utils\MediaMonitor.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\utils\MemoryUnitManager.cpp">
 				</File>
 				<File
@@ -2479,9 +2476,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\MediaManager.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\MediaMonitor.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\xbox\MediaPacketQueue.h">

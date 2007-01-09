@@ -80,7 +80,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     TiXmlNode* id = movie->FirstChild("id");
     if (title && title->FirstChild() && link && link->FirstChild())
     {
-      url.m_strTitle = title->FirstChild()->Value();
+      g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url.m_strTitle);
       url.m_strURL.push_back(link->FirstChild()->Value());
       while ((link = link->NextSibling("url")))
       {
@@ -343,6 +343,10 @@ const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, C
   // lowercase
   strMovieNoExtension = strMovieNoExtension.ToLower();
 
+  // strip off 'the' from start of title - confuses the searches
+  if (strMovieNoExtension.Mid(0,4).Equals("the+"))
+    strMovieNoExtension = strMovieNoExtension.Mid(4);
+
   // default to movie name begin complete filename, no year
   strcpy(szMovie, strMovieNoExtension.c_str());
   strcpy(szYear,"");
@@ -358,7 +362,7 @@ const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, C
 
     if (pMovie) free(pMovie);
     if (pYear) free(pYear);
-          }
+  }
 
   CRegExp reTags;
   reTags.RegComp("(.*)\\+(ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|se|svcd|swedish|unrated|ws|xvid|cd[1-9]|\\[.*\\])(\\+.*)?");

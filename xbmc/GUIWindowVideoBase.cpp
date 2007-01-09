@@ -1252,6 +1252,16 @@ CStdString CGUIWindowVideoBase::GetnfoFile(CFileItem *item)
   CStdString strExtension;
   CUtil::GetExtension(item->m_strPath, strExtension);
 
+  if (CUtil::IsInRAR(item->m_strPath)) // we have a rarred item - we want to check outside the rars
+  {
+    CFileItem item2(*item);
+    CURL url(item->m_strPath);
+    CStdString strPath;
+    CUtil::GetDirectory(url.GetHostName(),strPath);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(item->m_strPath),item2.m_strPath);
+    return GetnfoFile(&item2);
+  }
+
   // already an .nfo file?
   if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
     nfoFile = item->m_strPath;
@@ -1269,14 +1279,28 @@ CStdString CGUIWindowVideoBase::GetnfoFile(CFileItem *item)
     // first try .nfo file matching first file in stack
     CStackDirectory dir;
     CStdString firstFile = dir.GetFirstStackedFile(item->m_strPath);
-    CUtil::ReplaceExtension(firstFile, ".nfo", nfoFile);
+    CFileItem item2;
+    item2.m_strPath = firstFile;
+    nfoFile = GetnfoFile(&item2);
     // else try .nfo file matching stacked title
-    if (!CFile::Exists(nfoFile))
+    if (nfoFile.IsEmpty())
     {
       CStdString stackedTitlePath = dir.GetStackedTitlePath(item->m_strPath);
-      CUtil::ReplaceExtension(stackedTitlePath, ".nfo", nfoFile);
-      if (!CFile::Exists(nfoFile))
-        nfoFile.Empty();
+      item2.m_strPath = stackedTitlePath;
+      nfoFile = GetnfoFile(&item2);
+    }
+  }
+
+  if (nfoFile.IsEmpty()) // final attempt - strip off any cd1 folders
+  {
+    CStdString strPath;
+    CUtil::GetDirectory(item->m_strPath,strPath);
+    CFileItem item2;
+    if (strPath.Mid(strPath.size()-3).Equals("cd1"))
+    {
+      strPath = strPath.Mid(0,strPath.size()-3);
+      CUtil::AddFileToFolder(strPath,CUtil::GetFileName(item->m_strPath),item2.m_strPath);
+      return GetnfoFile(&item2);
     }
   }
 

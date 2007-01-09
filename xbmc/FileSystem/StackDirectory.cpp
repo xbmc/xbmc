@@ -4,6 +4,7 @@
 #include "../utils/log.h"
 #include "../Util.h"
 
+#define PRE_2_1_STACK_COMPATIBILITY
 
 namespace DIRECTORY
 {
@@ -19,24 +20,35 @@ namespace DIRECTORY
   {
     items.Clear();
     // format is:
-    // stack://<path>/file1 , file2 , file3 , file4
+    // stack://file1 , file2 , file3 , file4
     // filenames with commas are double escaped (ie replaced with ,,), thus the " , " separator used.
-    CStdString folder, file;
-    CUtil::Split(strPath, folder, file);
+    //CStdString folder, file;
+    //CUtil::Split(strPath, folder, file);
     // split files on the single comma
     CStdStringArray files;
-    StringUtils::SplitString(file, " , ", files);
+    StringUtils::SplitString(strPath, " , ", files);
     if (files.empty())
       return false;   // error in path
     // remove "stack://" from the folder
-    folder = folder.Mid(8);
     for (unsigned int i = 0; i < files.size(); i++)
     {
       CStdString file = files[i];
+      if (i == 0)
+        file = file.Mid(8);
+#ifdef PRE_2_1_STACK_COMPATIBILITY
+      if (i > 0 && file.Find("\\") == -1 && file.Find('/') == -1)
+      {
+        CStdString strPath;
+        CUtil::GetDirectory(items[0]->m_strPath,strPath);
+        CStdString strFile = file;
+        CUtil::AddFileToFolder(strPath,strFile,file);
+      }
+#endif
       // replace double comma's with single ones.
       file.Replace(",,", ",");
       CFileItem *item = new CFileItem(file);
-      CUtil::AddFileToFolder(folder, file, item->m_strPath);
+      //CUtil::AddFileToFolder(folder, file, item->m_strPath);
+      item->m_strPath = file;
       item->m_bIsFolder = false;
       items.Add(item);
     }
@@ -46,14 +58,13 @@ namespace DIRECTORY
   CStdString CStackDirectory::GetStackedTitlePath(const CStdString &strPath)
   {
     CStdString path, file, folder;
-    CUtil::Split(strPath, folder, file);
-    int pos = file.Find(" , ");
+    int pos = strPath.Find(" , ");
     // remove "stack://" from the folder
-    folder = folder.Mid(8);
     if (pos > 0)
     {
-      file = file.Left(pos);
+      CUtil::Split(strPath.Left(pos), folder, file);
       file.Replace(",,", ",");
+      folder = folder.Mid(8);
       CStdString title, volume;
       CUtil::GetVolumeFromFileName(file, title, volume);
       CUtil::AddFileToFolder(folder, title, path);
@@ -66,16 +77,17 @@ namespace DIRECTORY
     // the stacked files are always in volume order, so just get up to the first filename
     // occurence of " , "
     CStdString path, file, folder;
-    CUtil::Split(strPath, folder, file);
-    int pos = file.Find(" , ");
-    // remove "stack://" from the folder
-    folder = folder.Mid(8);
+    int pos = strPath.Find(" , ");
     if (pos > 0)
-    {
-      file = file.Left(pos);
-      file.Replace(",,", ",");
-      CUtil::AddFileToFolder(folder, file, path);
-    }
+      CUtil::Split(strPath.Left(pos), folder, file);
+    else
+      CUtil::Split(strPath, folder, file); // single filed stacks - should really not happen
+
+    // remove "stack://" from the folder    
+    folder = folder.Mid(8);
+    file.Replace(",,", ",");
+    CUtil::AddFileToFolder(folder, file, path);
+    
     return path;
   }
 
@@ -94,7 +106,8 @@ namespace DIRECTORY
     for (unsigned int i = 1; i < stack.size(); ++i)
     {
       stackedPath += " , ";
-      file = CUtil::GetFileName(items[stack[i]]->m_strPath);
+      file = items[stack[i]]->m_strPath;
+      
       // double escape any occurence of commas
       file.Replace(",", ",,");
       stackedPath += file;

@@ -1551,6 +1551,19 @@ void CFileItemList::Stack()
         isDVDFolder = true;
         break;
       }
+      if (item->m_bIsFolder && (item->GetLabel().Mid(0,2).Equals("CD") && item->GetLabel().size() == 3))
+      {
+        if (atoi(item->GetLabel().c_str()+2) > 0)
+        {
+          CFileItemList items;
+          CDirectory::GetDirectory(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
+          if (items.Size() == 1)
+          {
+            if (items[0]->IsVideo())
+              *item = *items[0];
+          }
+        }
+      }
     }
     if (isDVDFolder)
     { // remove any other ifo files in this folder
@@ -1636,7 +1649,7 @@ void CFileItemList::Stack()
           //if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
           if (CUtil::GetVolumeFromFileName(Get(j)->GetLabel(), fileTitle2, volumeNumber2))
           {
-            if (fileTitle2.Equals(fileTitle, false) && filePath2.Equals(filePath, false))
+            if (fileTitle2.Equals(fileTitle, false))
             {
               //CLog::Log(LOGDEBUG,"  adding item: [%03i] %s", j, Get(j)->GetLabel().c_str());
               stack.push_back(j);
