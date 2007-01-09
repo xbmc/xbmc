@@ -1237,12 +1237,13 @@
   <string id="16003">Player</string>
   <string id="16004">Play media from disc</string>
 
+  <strind id="16008">Enter New Title</string>
   <string id="16009">Enter the Movie Name</string>
   <string id="16010">Enter the Profile Name</string>
   <string id="16011">Enter the Album Name</string>
   <string id="16012">Enter the Playlist Name</string>
-  <string id="16013">Enter new filename</string>
-  <string id="16014">Enter folder name</string>
+  <string id="16013">Enter New Filename</string>
+  <string id="16014">Enter Folder Name</string>
   <string id="16015">Enter directory</string>
   <string id="16016">Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
   <string id="16017">Enter Search String</string>
