@@ -32,7 +32,7 @@ CTuxBoxUtil::~CTuxBoxUtil(void)
 }
 bool CTuxBoxService::Start()
 {
-  if(g_advancedSettings.m_iEpgRequestTime != 0)
+  if(g_advancedSettings.m_iTuxBoxEpgRequestTime != 0)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__"Starting CTuxBoxService thread");
     StopThread();
@@ -71,7 +71,7 @@ void CTuxBoxService::Process()
   {
     if (strURL.Find("31339") > 0)
     {
-      int iRequestTimer = g_advancedSettings.m_iEpgRequestTime *1000; //seconds
+      int iRequestTimer = g_advancedSettings.m_iTuxBoxEpgRequestTime *1000; //seconds
       CURL url(strURL);
       if(iPort >0) url.SetPort(iPort); // returned HTTP Port -> m_iDriveType
       if(g_tuxbox.GetHttpXML(url,"currentservicedata"))
@@ -1161,7 +1161,7 @@ bool CTuxBoxUtil::ServiceEPG(TiXmlElement *pRootElement)
 bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& strAudioChannelPid)
 {
   // Audio Selection is Disabled! Return false to use default values!
-  if(!g_advancedSettings.m_bAudioChannelSelection)
+  if(!g_advancedSettings.m_bTuxBoxAudioChannelSelection)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" Audio Channel Selection is Disabled! Returning False to use the default values!");
     return false;
@@ -1227,7 +1227,7 @@ bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& 
 //Output: picon url (on ERROR the delfault icon path will be returned)
 CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
 {
-  if(!g_advancedSettings.m_bPictureIcon)
+  if(!g_advancedSettings.m_bTuxBoxPictureIcon)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" PictureIcon Detection is Disabled! Using default icon");
     return "";

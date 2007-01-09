@@ -22,23 +22,23 @@ bool CDreamboxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
   CStdString strXMLChildString;
   
   //Advanced Settings: RootMode! Movies: 
-  if(g_advancedSettings.m_iDefaultRootMenu == 3) //Movies! Fixed-> mode=3&submode=4
+  if(g_advancedSettings.m_iTuxBoxDefaultRootMenu == 3) //Movies! Fixed-> mode=3&submode=4
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Default defined RootMenu : (3) Movies");
     strBQRequest = "xml/services?mode=3&submode=4"; 
     strXMLRootString.Format("movies");
     strXMLChildString.Format("service");
   }
-  else if(g_advancedSettings.m_iDefaultRootMenu <= 0 || g_advancedSettings.m_iDefaultRootMenu == 1 || g_advancedSettings.m_iDefaultRootMenu > 4 )
+  else if(g_advancedSettings.m_iTuxBoxDefaultRootMenu <= 0 || g_advancedSettings.m_iTuxBoxDefaultRootMenu == 1 || g_advancedSettings.m_iTuxBoxDefaultRootMenu > 4 )
   {
     //Falling Back to the Default RootMenu => 0 Bouquets
-    if(g_advancedSettings.m_iDefaultRootMenu < 0 || g_advancedSettings.m_iDefaultRootMenu > 4)
+    if(g_advancedSettings.m_iTuxBoxDefaultRootMenu < 0 || g_advancedSettings.m_iTuxBoxDefaultRootMenu > 4)
     {
-      g_advancedSettings.m_iDefaultRootMenu = 0;
+      g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0;
     }
 
     //Advanced Settings: SubMenu!
-    if(g_advancedSettings.m_bSubMenuSelection)
+    if(g_advancedSettings.m_bTuxBoxSubMenuSelection)
     {
       CLog::Log(LOGDEBUG, __FUNCTION__" SubMenu Channel Selection is Enabled! Requesting Submenu!");
       // DeActivated: Timing Problems, bug in TuxBox.. etc.!
@@ -53,7 +53,7 @@ bool CDreamboxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
       if(bReqMoRe)
       {
         //PopUp Context and Request SubMode with root and child string
-        strBQRequest = g_tuxbox.GetSubMode(g_advancedSettings.m_iDefaultRootMenu, strXMLRootString, strXMLChildString);
+        strBQRequest = g_tuxbox.GetSubMode(g_advancedSettings.m_iTuxBoxDefaultRootMenu, strXMLRootString, strXMLChildString);
         if(strBQRequest.IsEmpty())
         {
           strBQRequest = "xml/services?mode=0&submode=4"; //Bouquets
@@ -65,21 +65,21 @@ bool CDreamboxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
     else
     {
       //Advanced Settings: Set Default Subemnu
-      if(g_advancedSettings.m_iDefaultSubMenu == 1)
+      if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 1)
       {
         CLog::Log(LOGERROR, __FUNCTION__" - Default defined SubMenu : (1) Services");
         strBQRequest = "xml/services?mode=0&submode=1"; //Services
         strXMLRootString.Format("services");
         strXMLChildString.Format("service");
       }
-      else if(g_advancedSettings.m_iDefaultSubMenu == 2)
+      else if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 2)
       {
         CLog::Log(LOGERROR, __FUNCTION__" - Default defined SubMenu : (2) Satellites");
         strBQRequest = "xml/services?mode=0&submode=2"; //Satellites
         strXMLRootString.Format("satellites");
         strXMLChildString.Format("satellite");
       }
-      else if(g_advancedSettings.m_iDefaultSubMenu == 3)
+      else if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 3)
       {
         CLog::Log(LOGERROR, __FUNCTION__" - Default defined SubMenu : (3) Providers");
         strBQRequest = "xml/services?mode=0&submode=3"; //Providers
@@ -177,7 +177,7 @@ bool CDreamboxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
   }
   //
 
-  while (iTryConnect <= 1)
+  while (iTryConnect <= 1 && !dlgProgress->IsCanceled())
   {
     //DLG: Update Progress
     iProgressPercent=iProgressPercent+5;

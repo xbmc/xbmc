@@ -272,7 +272,7 @@ bool CFileItem::IsVideo() const
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
-  //Little tuxbox hack!
+  
   if (m_strPath.Left(7).Equals("tuxbox:")) 
     return true;
 

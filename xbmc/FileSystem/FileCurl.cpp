@@ -378,7 +378,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary, int iTimeOut)
 
   // read some data in to try and obtain the length
   // maybe there's a better way to get this info??
-  if (!FillBuffer(m_bufferSize, iTimeOut)) //GeminiServer
+  if (!FillBuffer(m_bufferSize, iTimeOut))
   {
     CLog::Log(LOGERROR, "CFileCurl:Open, didn't get any data from stream.");    
     Close();

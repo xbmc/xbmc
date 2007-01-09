@@ -250,12 +250,12 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
 
-  g_advancedSettings.m_bAudioChannelSelection = false;
-  g_advancedSettings.m_bSubMenuSelection = false;
-  g_advancedSettings.m_bPictureIcon= true;
-  g_advancedSettings.m_iEpgRequestTime = 10; //seconds
-  g_advancedSettings.m_iDefaultSubMenu = 4;
-  g_advancedSettings.m_iDefaultRootMenu = 0; //default TV Mode
+  g_advancedSettings.m_bTuxBoxAudioChannelSelection = false;
+  g_advancedSettings.m_bTuxBoxSubMenuSelection = false;
+  g_advancedSettings.m_bTuxBoxPictureIcon= true;
+  g_advancedSettings.m_iTuxBoxEpgRequestTime = 10; //seconds
+  g_advancedSettings.m_iTuxBoxDefaultSubMenu = 4;
+  g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
 
   xbmcXmlLoaded = false;
   bTransaction = false;
@@ -1153,33 +1153,18 @@ void CSettings::LoadAdvancedSettings()
 
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
 
-<<<<<<< .mine
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
   if (pElement)
   {
-    XMLUtils::GetBoolean(pElement, "audiochannelselection", g_advancedSettings.m_bAudioChannelSelection);
-    XMLUtils::GetBoolean(pElement, "submenuselection", g_advancedSettings.m_bSubMenuSelection);
-    XMLUtils::GetBoolean(pElement, "pictureicon", g_advancedSettings.m_bPictureIcon);
-    GetInteger(pElement, "epgrequesttime", g_advancedSettings.m_iEpgRequestTime, 10, 0, 3600);
-    GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iDefaultSubMenu, 4, 1, 4);
-    GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iDefaultRootMenu, 0, 0, 4);
+    XMLUtils::GetBoolean(pElement, "audiochannelselection", g_advancedSettings.m_bTuxBoxAudioChannelSelection);
+    XMLUtils::GetBoolean(pElement, "submenuselection", g_advancedSettings.m_bTuxBoxSubMenuSelection);
+    XMLUtils::GetBoolean(pElement, "pictureicon", g_advancedSettings.m_bTuxBoxPictureIcon);
+    GetInteger(pElement, "epgrequesttime", g_advancedSettings.m_iTuxBoxEpgRequestTime, 10, 0, 3600);
+    GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iTuxBoxDefaultSubMenu, 4, 1, 4);
+    GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 0, 4);
   }
 
-=======
-  //Tuxbox
-  pElement = pRootElement->FirstChildElement("tuxbox");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "audiochannelselection", g_advancedSettings.m_bAudioChannelSelection);
-    XMLUtils::GetBoolean(pElement, "submenuselection", g_advancedSettings.m_bSubMenuSelection);
-    XMLUtils::GetBoolean(pElement, "pictureicon", g_advancedSettings.m_bPictureIcon);
-    GetInteger(pElement, "epgrequesttime", g_advancedSettings.m_iEpgRequestTime, 10, 1, 3600);
-    GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iDefaultSubMenu, 4, 1, 4);
-    GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iDefaultRootMenu, 0, 0, 4);
-  }
-
->>>>>>> .r7544
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
   if (pExts)

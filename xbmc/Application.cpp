@@ -3352,13 +3352,13 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
-  //TuxBox?
-  if(item.IsVideo() && item.IsTuxBox())
+  //Is TuxBox
+  if(item.IsTuxBox())
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - TuxBox URL Detected %s",item.m_strPath.c_str());
     CFileItem item_new;
     if(g_tuxbox.CreateNewItem(item, item_new))
-      return PlayFile(item_new,false);
+      return PlayFile(item_new,true);
   }
   
   if (!bRestart)

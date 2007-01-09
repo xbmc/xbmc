@@ -1239,8 +1239,8 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
   {
     e.writelog(__FUNCTION__);
     iRet=-1;
-//    CloseFile();
-//    Unload(); //Unhandled exception at 0x003e8aed (xbmc.exe) in xbmcd.xbe: 0xC0000005: Access violation reading location 0xdddddf09.
+    CloseFile();
+    Unload(); //Unhandled exception at 0x003e8aed (xbmc.exe) in xbmcd.xbe: 0xC0000005: Access violation reading location 0xdddddf09.
   }
 
   if( m_dlgCache )

@@ -289,12 +289,12 @@ public:
     bool m_bMusicLibraryHideCompilationArtists;
 
     //TuxBox
-    bool m_bSubMenuSelection;
-    int m_iDefaultSubMenu;
-    int m_iDefaultRootMenu;
-    bool m_bAudioChannelSelection;
-    bool m_bPictureIcon;
-    int m_iEpgRequestTime;
+    bool m_bTuxBoxSubMenuSelection;
+    int m_iTuxBoxDefaultSubMenu;
+    int m_iTuxBoxDefaultRootMenu;
+    bool m_bTuxBoxAudioChannelSelection;
+    bool m_bTuxBoxPictureIcon;
+    int m_iTuxBoxEpgRequestTime;
 
   };
   struct stSettings
