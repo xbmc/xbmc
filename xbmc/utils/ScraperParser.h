@@ -23,7 +23,7 @@ private:
 	void ParseExpression(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend);
 	void ParseNext(TiXmlElement* element);
   void Clean(CStdString& strDirty);
-  char* RemoveWhiteSpace(char *string);
+  char* RemoveWhiteSpace(const char *string);
 
 	TiXmlDocument* m_document;
 	TiXmlElement* m_pRootElement;

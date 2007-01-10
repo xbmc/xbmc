@@ -140,6 +140,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   movieDetails.m_strCast = strLocNotAvail;
   movieDetails.m_iTop250 = 0;
   movieDetails.m_strIMDBNumber = url.m_strID;
+  movieDetails.m_bWatched = false;
 
   for (unsigned int i=0;i<url.m_strURL.size();++i)
   {
@@ -231,6 +232,8 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
   XMLUtils::GetString(details, "votes", movieDetails.m_strVotes);
   XMLUtils::GetString(details, "cast", movieDetails.m_strCast);
   XMLUtils::GetString(details, "outline", movieDetails.m_strPlotOutline);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlotOutline);
+  
   XMLUtils::GetString(details, "runtime", movieDetails.m_strRuntime);
   XMLUtils::GetString(details, "thumb", movieDetails.m_strPictureURL);
   XMLUtils::GetString(details, "tagline", movieDetails.m_strTagLine);
@@ -238,8 +241,11 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
   XMLUtils::GetString(details, "credits", movieDetails.m_strWritingCredits);
   XMLUtils::GetString(details, "director", movieDetails.m_strDirector);
   XMLUtils::GetString(details, "plot", movieDetails.m_strPlot);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlot);
+  
   XMLUtils::GetString(details, "mpaa", movieDetails.m_strMPAARating);
-
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strMPAARating);
+  
   CHTMLUtil::RemoveTags(movieDetails.m_strPlot);
 
   return true;

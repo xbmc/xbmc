@@ -123,8 +123,11 @@ long CVideoDatabase::GetPath(const CStdString& strPath)
     long lPathId=-1;
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
+    
+    CStdString strPath1(strPath);
+    CUtil::RemoveSlashAtEnd(strPath1);
 
-    strSQL=FormatSQL("select idPath from path where strPath like '%s'",strPath.c_str());
+    strSQL=FormatSQL("select idPath from path where strPath like '%s'",strPath1.c_str());
     m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
       lPathId = m_pDS->fv("path.idPath").get_asLong();
@@ -147,7 +150,10 @@ long CVideoDatabase::AddPath(const CStdString& strPath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    strSQL=FormatSQL("insert into path (idPath, strPath, strContent, strScraper) values (NULL,'%s','','')", strPath.c_str());
+    CStdString strPath1(strPath);
+    CUtil::RemoveSlashAtEnd(strPath1);
+
+    strSQL=FormatSQL("insert into path (idPath, strPath, strContent, strScraper) values (NULL,'%s','','')", strPath1.c_str());
     m_pDS->exec(strSQL.c_str());
     lPathId = (long)sqlite3_last_insert_rowid( m_pDB->getHandle() );
     return lPathId;
@@ -258,6 +264,9 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
     CStdString strPath, strFile;
     CUtil::Split(strFilenameAndPath, strPath, strFile);
 
+    if (strPath == strFilenameAndPath) // i.e. we where handed a path
+      CUtil::RemoveSlashAtEnd(strPath);
+
     // have to join movieinfo table for correct results
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
@@ -353,7 +362,7 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
       m_pDS->exec(strSQL.c_str());
       strSQL=FormatSQL("insert into movie (idMovie,idType,strValue) values (%u,%u,'')",lMovieId,VIDEODB_ID_IDENT);
       m_pDS->exec(strSQL.c_str());
-      strSQL=FormatSQL("insert into movie (idMovie,idType,strValue) values (%u,%u,'')",lMovieId,VIDEODB_ID_WATCHED);
+      strSQL=FormatSQL("insert into movie (idMovie,idType,strValue) values (%u,%u,'false')",lMovieId,VIDEODB_ID_WATCHED);
       m_pDS->exec(strSQL.c_str());
       strSQL=FormatSQL("insert into movie (idMovie,idType,strValue) values (%u,%u,'')",lMovieId,VIDEODB_ID_RUNTIME);
       m_pDS->exec(strSQL.c_str());
@@ -510,7 +519,7 @@ bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
     long lMovieId = GetMovieInfo(strFilenameAndPath);
     if ( lMovieId < 0) return false;
 
-    CStdString strSQL=FormatSQL("select * from movie where movie.idmovie=%i", lMovieId);
+    CStdString strSQL=FormatSQL("select idType from movie where movie.idmovie=%i", lMovieId);
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
     {
@@ -796,8 +805,7 @@ void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath)
     m_pDS->query( strSQL.c_str() );
     if (!m_pDS->eof())
     {
-      filePath = m_pDS->fv("path.strPath").get_asString();
-      filePath += m_pDS->fv("files.strFilename").get_asString();
+      CUtil::AddFileToFolder(m_pDS->fv("path.strPath").get_asString(),m_pDS->fv("files.strFilename").get_asString(),filePath);
     }
     m_pDS->close();
   }
@@ -973,7 +981,7 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
     ClearBookMarksOfFile(strFilenameAndPath);
 
     CStdString strSQL;
-    strSQL=FormatSQL("delete from files where idmovie=%i", lMovieId);
+    strSQL=FormatSQL("update files set idMovie=-1 where idmovie=%i",lMovieId);
     m_pDS->exec(strSQL.c_str());
 
     strSQL=FormatSQL("delete from genrelinkmovie where idmovie=%i", lMovieId);
@@ -1246,6 +1254,60 @@ void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<long> &tim
   catch (...)
   {
     CLog::Log(LOGERROR, "CVideoDatabase::SetStackTimes(%s) failed", filePath.c_str());
+  }
+}
+
+void CVideoDatabase::RemoveContentForPath(const CStdString& strPath)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+
+    std::auto_ptr<Dataset> pDS(m_pDB->CreateDataset());
+    CStdString strPath1(strPath);
+    CUtil::RemoveSlashAtEnd(strPath1);
+
+    CStdString strSQL = FormatSQL("select idPath,strContent,strPath from path where strPath like '%%%s%%'",strPath1.c_str());
+    pDS->query(strSQL.c_str());
+    bool bEncodedChecked=false;
+    while (!pDS->eof())
+    {
+      long lPathId = pDS->fv("path.idPath").get_asLong();
+      CStdString strCurrPath = pDS->fv("path.strPath").get_asString();
+      if (pDS->fv("path.strContent").get_asString() == "movies")
+      {
+        strSQL=FormatSQL("select strFilename from files where files.idPath=%u and NOT (files.idMovie=-1)",lPathId);
+        m_pDS2->query(strSQL.c_str());
+        while (!m_pDS2->eof())
+        {
+          CStdString strMoviePath;
+          CUtil::AddFileToFolder(strCurrPath,m_pDS2->fv("files.strFilename").get_asString(),strMoviePath);
+          DeleteMovie(strMoviePath);
+          m_pDS2->next();
+        }
+      }
+      pDS->next();
+      if (pDS->eof() && !bEncodedChecked) // rarred titles needs this
+      {
+        CStdString strEncoded(strPath);
+        CUtil::URLEncode(strEncoded);
+        CStdString strSQL = FormatSQL("select idPath,strContent,strPath from path where strPath like '%%%s%%'",strEncoded.c_str());
+        pDS->query(strSQL.c_str());
+        bEncodedChecked = true;
+      }
+    }
+    strSQL = FormatSQL("update path set strContent = '', strScraper='' where strPath like '%%%s%%'",strPath1.c_str());
+    pDS->exec(strSQL);
+
+    CStdString strEncoded(strPath);
+    CUtil::URLEncode(strEncoded);
+    strSQL = FormatSQL("update path set strContent = '', strScraper='' where strPath like '%%%s%%'",strEncoded.c_str());
+    pDS->exec(strSQL);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::RemoveContentFromPath(%s) failed", strPath.c_str());
   }
 }
 
@@ -1882,7 +1944,9 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
     if (NULL == m_pDB.get()) return 0;
     if (NULL == m_pDS.get()) return 0;
 
-    CStdString strSQL=FormatSQL("select path.strContent,path.strScraper from path where strPath like '%s'",strPath.c_str());
+    CStdString strPath1(strPath);
+    CUtil::RemoveSlashAtEnd(strPath1);
+    CStdString strSQL=FormatSQL("select path.strContent,path.strScraper from path where strPath like '%s'",strPath1.c_str());
     m_pDS->query( strSQL.c_str() );
 
     int iResult = 0;

@@ -154,6 +154,41 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       }
     }
 
+    const char* szTrim = pExpression->Attribute("trim");
+    bool bTrim[10];
+    for (int iBuf=0;iBuf<10;++iBuf)
+      bTrim[iBuf] = false;
+    if (szTrim)
+    {
+      int iChar=0;
+      while (iChar > -1 && iChar < (int)strlen(szTrim))
+      {   
+        char temp[3];
+        if (szTrim[iChar] <= '9' && szTrim[iChar] >= '0')
+        {
+          temp[0] = szTrim[iChar++];
+          int j=1;
+          if (szTrim[iChar] <= '9' && szTrim[iChar] >= '0')
+            temp[j++] = szTrim[iChar++];
+
+          temp[j] = '\0';
+        }
+        else
+          break;
+
+        int param=atoi(temp);
+        if (!param--)
+        {
+          iChar = -1;
+          break;
+        }
+        //CLog::Log(LOGDEBUG,"not cleaning %i",param+1);
+        bTrim[param] = true;
+        if (szTrim[iChar++]!= ',')
+          iChar = -1;
+      }
+    }
+
     int iOptional = -1;
     pExpression->QueryIntAttribute("optional",&iOptional);
 
@@ -163,6 +198,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       m_param[iCompare-1].ToLower();
     CStdString curInput = input;
     for (int iBuf=0;iBuf<9;++iBuf)
+    {
       if (bClean[iBuf])
       {
         char temp[4];
@@ -176,73 +212,87 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
           i2 += 2;
         }
       }
-      int i = reg.RegFind(curInput.c_str());
-      int iPos=0;
-      while (i > -1 && i < (int)curInput.size())
+      if (bTrim[iBuf])
       {
-        if (!bAppend)
+        char temp[4];
+        sprintf(temp,"\\%i",iBuf+1);
+        int i2=0;
+        while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
         {
-          dest = "";
-          bAppend = true;
+          strOutput.Insert(i2,"!!!TRIM!!!");
+          i2 += 10;
+          strOutput.Insert(i2+2,"!!!TRIM!!!");
+          i2 += 2;
         }
-        CStdString strCurOutput=strOutput;
+      }
+    }
+    int i = reg.RegFind(curInput.c_str());
+    int iPos=0;
+    while (i > -1 && i < (int)curInput.size())
+    {
+      if (!bAppend)
+      {
+        dest = "";
+        bAppend = true;
+      }
+      CStdString strCurOutput=strOutput;
 
-        if (iOptional > -1) // check that required param is there
+      if (iOptional > -1) // check that required param is there
+      {
+        char temp[4];
+        sprintf(temp,"\\%i",iOptional);
+        char* szParam = reg.GetReplaceString(temp);
+        CRegExp reg2;
+        reg2.RegComp("(.*)(\\\\\\(.*\\\\2.*)\\\\\\)(.*)");
+        int i2=reg2.RegFind(strCurOutput.c_str());
+        while (i2 > -1)
         {
-          char temp[4];
-          sprintf(temp,"\\%i",iOptional);
-          char* szParam = reg.GetReplaceString(temp);
-          CRegExp reg2;
-          reg2.RegComp("(.*)(\\\\\\(.*\\\\2.*)\\\\\\)(.*)");
-          int i2=reg2.RegFind(strCurOutput.c_str());
-          while (i2 > -1)
+          char* szRemove = reg2.GetReplaceString("\\2");
+          int iRemove = strlen(szRemove);
+          int i3 = strCurOutput.find(szRemove);
+          if (szParam && strcmp(szParam,""))
           {
-            char* szRemove = reg2.GetReplaceString("\\2");
-            int iRemove = strlen(szRemove);
-            int i3 = strCurOutput.find(szRemove);
-            if (szParam && strcmp(szParam,""))
-            {
-              strCurOutput.erase(i3+iRemove,2);
-              strCurOutput.erase(i3,2);
-            }
-            else
-              strCurOutput.replace(strCurOutput.begin()+i3,strCurOutput.begin()+i3+iRemove+2,"");
-
-            free(szRemove);
-
-            i2 = reg2.RegFind(strCurOutput.c_str());
-          }
-          if (szParam)
-            free(szParam);
-        }
-
-        int iLen = reg.GetFindLen();
-        char* result = reg.GetReplaceString(strCurOutput.c_str());
-        if (result && strlen(result))
-        {
-          CStdString strResult(result);
-          Clean(strResult);
-          ReplaceBuffers(strResult);
-          if (iCompare > -1)
-          {
-            CStdString strResultNoCase = strResult;
-            strResultNoCase.ToLower();
-            if (strResultNoCase.Find(m_param[iCompare-1]) != CStdString::npos)
-              dest += strResult;
+            strCurOutput.erase(i3+iRemove,2);
+            strCurOutput.erase(i3,2);
           }
           else
-            dest += strResult;
+            strCurOutput.replace(strCurOutput.begin()+i3,strCurOutput.begin()+i3+iRemove+2,"");
 
-          free(result);
+          free(szRemove);
+
+          i2 = reg2.RegFind(strCurOutput.c_str());
         }
-        if (bRepeat)
+        if (szParam)
+          free(szParam);
+      }
+
+      int iLen = reg.GetFindLen();
+      char* result = reg.GetReplaceString(strCurOutput.c_str());
+      if (result && strlen(result))
+      {
+        CStdString strResult(result);
+        Clean(strResult);
+        ReplaceBuffers(strResult);
+        if (iCompare > -1)
         {
-          curInput.erase(0,i+iLen>(int)curInput.size()?curInput.size():i+iLen);
-          i = reg.RegFind(curInput.c_str());
+          CStdString strResultNoCase = strResult;
+          strResultNoCase.ToLower();
+          if (strResultNoCase.Find(m_param[iCompare-1]) != CStdString::npos)
+            dest += strResult;
         }
         else
-          i = -1;
+          dest += strResult;
+
+        free(result);
       }
+      if (bRepeat)
+      {
+        curInput.erase(0,i+iLen>(int)curInput.size()?curInput.size():i+iLen);
+        i = reg.RegFind(curInput.c_str());
+      }
+      else
+        i = -1;
+    }
   }
 }
 
@@ -319,6 +369,20 @@ void CScraperParser::Clean(CStdString& strDirty)
       strDirty.Replace("!!!CLEAN!!!"+strBuffer+"!!!CLEAN!!!",CStdString(szTrimmed));
       i += strlen(szTrimmed);
       free(szConverted);
+    }
+    else
+      break;
+  }
+  i=0;
+  while ((i=strDirty.Find("!!!TRIM!!!",i)) != CStdString::npos)
+  {
+    int i2;
+    if ((i2=strDirty.Find("!!!TRIM!!!",i+10)) != CStdString::npos)
+    {
+      strBuffer = strDirty.substr(i+10,i2-i-10);
+      const char* szTrimmed = RemoveWhiteSpace(strBuffer.c_str());
+      strDirty.Replace("!!!TRIM!!!"+strBuffer+"!!!TRIM!!!",CStdString(szTrimmed));
+      i += strlen(szTrimmed);
     }
     else
       break;
@@ -499,9 +563,10 @@ char* CScraperParser::ConvertHTMLToAnsi(const char *szHTML)
   return szAnsi;
 }
 
-char* CScraperParser::RemoveWhiteSpace(char *string)
+char* CScraperParser::RemoveWhiteSpace(const char *string2)
 {
-  if (!string) return "";
+  if (!string2) return "";
+  char* string = (char*)string2;
   size_t pos = strlen(string)-1;
   while ((string[pos] == ' ' || string[pos] == '\n') && string[pos] && pos)
     string[pos--] = '\0';

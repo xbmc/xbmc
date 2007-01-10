@@ -2375,6 +2375,9 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
     if (ch == ':' || ch == '/' || ch == '\\') break;
     else i--;
   }
+  if (i == 0)
+    i--;
+
   strPath = strFileNameAndPath.Left(i + 1);
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }

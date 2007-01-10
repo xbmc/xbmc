@@ -686,6 +686,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_Resume = 0;					// Resume Video
   int btn_Show_Info = 0;			// Show Video Information
   int btn_Assign = 0;         // Assign content to directory
+  int btn_Update = 0;         // Update content information
   int btn_UnAssign = 0;       // Remove content assignment from directory
   int btn_Mark_UnWatched = 0;	// Clear Watched Status (DB)
   int btn_Mark_Watched = 0;		// Set Watched Status (DB)
@@ -743,11 +744,13 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
         CStdString strLast;
         int iShare = CUtil::GetMatchingShare(m_vecItems[iItem]->m_strPath,g_settings.m_vecMyVideoShares,bBookmark);
         int iFound=0;
+        CStdString strCompare = g_settings.m_vecMyVideoShares[iShare].strPath;
+        CUtil::RemoveSlashAtEnd(strCompare);
         if (iShare > -1)
         {
           CStdString strPath = m_vecItems[iItem]->m_strPath;
-          CStdString strCompare = g_settings.m_vecMyVideoShares[iShare].strPath;
-          while (!strPath.Equals(g_settings.m_vecMyVideoShares[iShare].strPath))
+          CUtil::RemoveSlashAtEnd(strPath);
+          while (!strPath.Equals(strCompare))
           {
             strScraper.Empty();
             m_database.GetScraperForPath(strPath,strScraper,strContent);
@@ -759,18 +762,24 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 
             CStdString strPath2=strPath;
             CUtil::GetParentPath(strPath2,strPath);
+            CUtil::RemoveSlashAtEnd(strPath);
           }
         }
         if (m_vecItems[iItem]->m_bIsFolder)
         {
           if (iFound==0)
-            btn_Assign = pMenu->AddButton(20333);
+          {
+              btn_Assign = pMenu->AddButton(20333);
+          }
           else
           {
-            if (iFound == 1 && strLast.Equals(m_vecItems[iItem]->m_strPath))
+            btn_Show_Info = pMenu->AddButton(13346);
+            btn_Update = pMenu->AddButton(13349);
+            
+            CStdString strPath(m_vecItems[iItem]->m_strPath);
+            CUtil::RemoveSlashAtEnd(strPath);
+            if (iFound == 1 && strLast.Equals(strPath))
               btn_UnAssign = pMenu->AddButton(20338);
-            else
-              btn_Show_Info = pMenu->AddButton(13346);
           }
         }
         else
@@ -878,6 +887,12 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     else if (btnid == btn_Assign)
     {
       OnAssignContent(iItem);
+    }
+    else if (btnid  == btn_Update) // update content 
+    {
+      CStdString strScraper, strContent;
+      m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,strScraper,strContent);
+      OnScan(m_vecItems[iItem]->m_strPath,strScraper,strContent);
     }
     else if (btnid == btn_UnAssign)
     {

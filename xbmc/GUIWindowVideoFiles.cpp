@@ -536,9 +536,19 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const CStdS
   }
 }
 
-void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const CStdString& strScraper, const CStdString& strContent, bool bDirNames)
+void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const CStdString& strScraper, const CStdString& strContent)
 {
   // GetStackedDirectory() now sets and restores the stack state!
+  bool bDirNames=true;
+  if (strContent.Equals("movies"))
+  {
+    bool bCanceled;
+    if (CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20330,20331,bCanceled))
+      bDirNames = false;
+    
+    if (bCanceled)
+      return;
+  }
   CFileItemList items;
   GetStackedDirectory(strPath, items);
   m_database.SetScraperForPath(strPath,strScraper,strContent);
@@ -549,7 +559,11 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const CStdString& s
 
 void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
 {
-  m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,"","");
+  if (CGUIDialogYesNo::ShowAndGetInput(20339,20340,20341,20022))
+  {
+    m_database.RemoveContentForPath(m_vecItems[iItem]->m_strPath);
+    CUtil::ClearFileItemCache();
+  }
 }
 
 void CGUIWindowVideoFiles::OnAssignContent(int iItem)
@@ -615,19 +629,14 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem)
   if (iDummy < 0) // canceled on scraper screen
     return;
 
-  // if we do movie content - ask user how to treat this dir
-
   if (item.GetLabel().Equals(g_localizeStrings.Get(20336)))
   {
-    bool bCanceled;
-    if (CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20330,20331,bCanceled))
-    {
-      OnScan(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel,false);
-    }
+    if (CGUIDialogYesNo::ShowAndGetInput(13346,20342,20343,-1))
+      OnScan(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel);
     else
-      OnScan(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel,true);
+      m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel);
   }
-  if (item.GetLabel().Equals(g_localizeStrings.Get(20337)))
+  else if (item.GetLabel().Equals(g_localizeStrings.Get(20337)))
   {
     items.Clear();
     CUtil::GetRecursiveListing(m_vecItems[iItem]->m_strPath,items,g_stSettings.m_videoExtensions);
@@ -672,11 +681,6 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem)
       }
     }
   }
-
-/*  items.Clear();
-  items.Add(new CFileItem(pDialog->GetSelectedItem()));
-  OnRetrieveVideoInfo(items);*/
-
 }
 
 bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items, const CStdString& strScraper, const CStdString& strContent, bool bDirNames)

@@ -19,7 +19,7 @@ protected:
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   virtual void OnInfo(int iItem);
   virtual void OnQueueItem(int iItem);
-  virtual void OnScan(const CStdString& strPath, const CStdString& strScraper, const CStdString& strContent, bool bDirNames);
+  virtual void OnScan(const CStdString& strPath, const CStdString& strScraper, const CStdString& strContent);
   virtual void OnAssignContent(int iItem);
   virtual void OnUnAssignContent(int iItem);
   bool DoScan(const CStdString& strPath, CFileItemList& items, const CStdString& strScraper, const CStdString& strContent, bool bDirNames);

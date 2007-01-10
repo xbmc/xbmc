@@ -364,8 +364,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   CStdString thumb(pItem->GetCachedVideoThumb());
   CFile::Delete(thumb);
 
-  CVideoDatabaseDirectory dir;
-  dir.ClearDirectoryCache(m_vecItems.m_strPath);
+  CUtil::ClearFileItemCache();
 
   DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0);
   Update( m_vecItems.m_strPath );
