@@ -23,7 +23,8 @@ namespace PYXBMC
 
 		PyObject *line = NULL;
 		PyObject *heading = NULL;
-    if (!PyArg_ParseTuple(args, "|OO", &line, &heading)) return NULL;
+    bool bHidden = false;
+    if (!PyArg_ParseTuple(args, "|OOb", &line, &heading, &bHidden)) return NULL;
 
     string utf8Line;
     if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
@@ -32,6 +33,7 @@ namespace PYXBMC
 
 		self->strDefault = utf8Line;
     self->strHeading = utf8Heading;
+    self->bHidden = bHidden;
 
 		return (PyObject*)self;
 	}
@@ -61,6 +63,7 @@ namespace PYXBMC
 		pKeyboard->CenterWindow();
     pKeyboard->SetHeading(self->strHeading);
 		pKeyboard->SetText(CStdString(self->strDefault));
+    pKeyboard->SetHiddenInput(self->bHidden);
 
 		// do modal of dialog
 		ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
@@ -101,7 +104,34 @@ namespace PYXBMC
 		return Py_None;
 	}
 
-	// setHeading() Method
+	// setHiddenInput() Method
+  PyDoc_STRVAR(setHiddenInput__doc__,
+    "setHiddenInput(hidden) -- Allows hidden text entry.\n"
+		"\n"
+    "hidden        : boolean - True for hidden text entry.\n"
+    "example:\n"
+		"  - kb.setHiddenInput(True)");
+
+  PyObject* Keyboard_SetHiddenInput(Keyboard *self, PyObject *args)
+	{
+		bool bHidden = false;
+		if (!PyArg_ParseTuple(args, "|b", &bHidden))	return NULL;
+		self->bHidden = bHidden;
+
+		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+		if(!pKeyboard)
+		{
+			PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
+			return NULL;
+		}
+
+		pKeyboard->SetHiddenInput(self->bHidden);
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+  // setHeading() Method
   PyDoc_STRVAR(setHeading__doc__,
 		"setHeading(heading) -- Set the keyboard heading.\n"
 		"\n"
@@ -177,6 +207,7 @@ namespace PYXBMC
 		{"doModal", (PyCFunction)Keyboard_DoModal, METH_VARARGS, doModal__doc__},
 		{"setDefault", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, setDefault__doc__},
 		{"setHeading", (PyCFunction)Keyboard_SetHeading, METH_VARARGS, setHeading__doc__},
+    {"setHiddenInput", (PyCFunction)Keyboard_SetHiddenInput, METH_VARARGS, setHiddenInput__doc__},
 		{"getText", (PyCFunction)Keyboard_GetText, METH_VARARGS, getText__doc__},
 		{"isConfirmed", (PyCFunction)Keyboard_IsConfirmed, METH_VARARGS, isConfirmed__doc__},
 		{NULL, NULL, 0, NULL}
@@ -185,16 +216,18 @@ namespace PYXBMC
 	PyDoc_STRVAR(keyboard__doc__,
 		"Keyboard class.\n"
 		"\n"
-    "Keyboard([default, heading]) -- Creates a new Keyboard object with default text\n"
-		"                                and heading if supplied.\n"
+    "Keyboard([default, heading, hidden]) -- Creates a new Keyboard object with default text\n"
+		"                                heading and hidden input flag if supplied.\n"
 		"\n"
     "default        : [opt] string - default text entry.\n"
 		"heading        : [opt] string - keyboard heading.\n"
+    "hidden         : [opt] boolean - True for hidden text entry.\n"
 		"\n"
 		"example:\n"
-		"  - kb = xbmc.Keyboard('default', 'heading')\n"
+		"  - kb = xbmc.Keyboard('default', 'heading', True)\n"
     "  - kb.setDefault('password') # optional\n"
     "  - kb.setHeading('Enter password') # optional\n"
+    "  - kb.setHiddenInput(True) # optional\n"
 		"  - kb.doModal()\n"
     "  - if (kb.isConfirmed()):\n"
     "  -   text = kb.getText()");
