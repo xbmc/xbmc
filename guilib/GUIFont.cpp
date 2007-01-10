@@ -96,14 +96,24 @@ void CGUIFont::DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor,
   m_font->DrawTextImpl( sx, sy, Transform(angle), g_graphicsContext.MergeAlpha(dwColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth );
 }
 
-FLOAT CGUIFont::GetTextWidth(const WCHAR* strText)
+float CGUIFont::GetTextWidth(const WCHAR* strText)
 {
-  FLOAT fTextWidth = 0.0f;
-  FLOAT fTextHeight = 0.0f;
+  float fTextWidth = 0.0f;
+  float fTextHeight = 0.0f;
 
   GetTextExtent( strText, &fTextWidth, &fTextHeight );
 
   return fTextWidth;
+}
+
+float CGUIFont::GetTextHeight(const WCHAR *strText)
+{
+  float fTextWidth = 0.0f;
+  float fTextHeight = 0.0f;
+
+  GetTextExtent( strText, &fTextWidth, &fTextHeight );
+
+  return fTextHeight;
 }
 
 inline void CGUIFont::GetTextExtent(const WCHAR *strText, FLOAT *pWidth, FLOAT *pHeight, BOOL bFirstLineOnly /* = 0 */)

@@ -3,6 +3,7 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
+#include "GUILabelControl.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -236,6 +237,24 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
     pResize->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pResize->GetWidth()) / 2,
                          (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - pResize->GetHeight()) / 2);
   }
+  // center the labels
+  CGUILabelControl *pLabel = (CGUILabelControl*)GetControl(CONTROL_LABEL_ROW1);
+  if (pLabel)
+  {
+    float height = pLabel->GetLabelInfo().font ? pLabel->GetLabelInfo().font->GetTextHeight(L"W") + 5 : 20;
+    pLabel->SetPosition(0, (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - height) * 0.5f);
+    pLabel->SetWidth((float)g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth);
+    pLabel->SetAlignment(XBFONT_CENTER_X | XBFONT_CENTER_Y);
+  }
+  pLabel = (CGUILabelControl*)GetControl(CONTROL_LABEL_ROW2);
+  if (pLabel)
+  {
+    float height = pLabel->GetLabelInfo().font ? pLabel->GetLabelInfo().font->GetTextHeight(L"W") + 5 : 20;
+    pLabel->SetPosition(0, (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + height) * 0.5f);
+    pLabel->SetWidth((float)g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth);
+    pLabel->SetAlignment(XBFONT_CENTER_X | XBFONT_CENTER_Y);
+  }
+
   // Enable the default control
   EnableControl(m_iControl);
 }
