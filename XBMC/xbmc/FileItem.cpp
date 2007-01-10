@@ -1777,6 +1777,10 @@ bool CFileItemList::Load()
   CStdString strFileName;
   if (IsCDDA() || IsOnDVD())
     strFileName.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
+  else if (IsMusicDb())
+    strFileName.Format("Z:\\mdb-%08x.fi", (unsigned __int32)crc);
+  else if (IsVideoDb())
+    strFileName.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
   else
     strFileName.Format("Z:\\%08x.fi", (unsigned __int32)crc);
 
@@ -1814,6 +1818,10 @@ bool CFileItemList::Save()
   CStdString strFileName;
   if (IsCDDA() || IsOnDVD())
     strFileName.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
+  else if (IsMusicDb())
+    strFileName.Format("Z:\\mdb-%08x.fi", (unsigned __int32)crc);
+  else if (IsVideoDb())
+    strFileName.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
   else
     strFileName.Format("Z:\\%08x.fi", (unsigned __int32)crc);
 
