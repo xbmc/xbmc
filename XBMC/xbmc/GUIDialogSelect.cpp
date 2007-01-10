@@ -96,7 +96,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
           g_graphicsContext.SendMessage(msg);            
           m_iSelected = msg.GetParam1();
-          if(m_iSelected > 0 && m_iSelected < (int)m_vecList.size())
+          if(m_iSelected >= 0 && m_iSelected < (int)m_vecList.size())
           {
             m_selectedItem = *m_vecList[m_iSelected];
             Close();
