@@ -909,7 +909,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       if (m_strOldTrackFormat != g_guiSettings.GetString("musicfiles.trackformat"))
       {
-        CUtil::DeleteDatabaseDirectoryCache();
+        CUtil::DeleteMusicDatabaseDirectoryCache();
         m_strOldTrackFormat = g_guiSettings.GetString("musicfiles.trackformat");
       }
     }
@@ -917,7 +917,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       if (m_strOldTrackFormatRight != g_guiSettings.GetString("musicfiles.trackformatright"))
       {
-        CUtil::DeleteDatabaseDirectoryCache();
+        CUtil::DeleteMusicDatabaseDirectoryCache();
         m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");
       }
     }
@@ -1081,7 +1081,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CMusicDatabase musicdatabase;
     musicdatabase.Clean();
-    CUtil::DeleteDatabaseDirectoryCache();
+    CUtil::DeleteMusicDatabaseDirectoryCache();
   }
   else if (strSetting.Equals("myvideos.cleanupvideolibrary"))
   {

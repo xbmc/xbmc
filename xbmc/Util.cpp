@@ -3987,12 +3987,31 @@ CStdString CUtil::VideoPlaylistsLocation()
   return strReturn;
 }
 
-void CUtil::DeleteDatabaseDirectoryCache()
+void CUtil::DeleteMusicDatabaseDirectoryCache()
+{
+  CUtil::DeleteDirectoryCache("mdb");
+}
+
+void CUtil::DeleteVideoDatabaseDirectoryCache()
+{
+  CUtil::DeleteDirectoryCache("vdb");
+}
+
+void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
 {
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CAutoPtrFind hFind( FindFirstFile("Z:\\db-*.fi", &wfd));
+  CStdString strFile = "Z:\\";
+  if (!strType.IsEmpty())
+  {
+    strFile += strType;
+    if (!strFile.Right(1).Equals("-"))
+      strFile += "-";
+  }
+  strFile += "*.fi";
+
+  CAutoPtrFind hFind(FindFirstFile(strFile.c_str(), &wfd));
   if (!hFind.isValid())
     return;
   do
@@ -4006,6 +4025,7 @@ void CUtil::DeleteDatabaseDirectoryCache()
   }
   while (FindNextFile(hFind, &wfd));
 }
+
 bool CUtil::IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay)  // GeminiServer
 {
   // Rückgabewert: FALSE, wenn kein Schaltjahr,   TRUE, wenn Schaltjahr
@@ -4819,6 +4839,6 @@ void CUtil::ClearFileItemCache()
   for (int i = 0; i < items.Size(); ++i)
   {
     if (!items[i]->m_bIsFolder)
-  CFile::Delete(items[i]->m_strPath);
+      CFile::Delete(items[i]->m_strPath);
   }
 }
