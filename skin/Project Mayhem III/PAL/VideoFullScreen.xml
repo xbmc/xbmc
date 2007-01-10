@@ -47,16 +47,16 @@
 		</control>
 
 		<!-- media infos -->
-		<control type="image" id="0">
+		<control type="image" id="1">
 			<description>media info background image</description>
 			<posx>-10</posx>
 			<posy>435</posy>
 			<width>740</width>
 			<height>100</height>
 			<texture>osd_menu_bg.png</texture>
-			<visible>Player.CodecInfo</visible>
+			<visible>Player.ShowInfo + Player.HasMedia</visible>
 		</control>
-		<control type="image" id="0">
+		<control type="image" id="1">
 			<description>cover image</description>
 			<posx>75</posx>
 			<posy>435</posy>
@@ -64,9 +64,9 @@
 			<height>100</height>
 			<info>videoplayer.cover</info>
 			<aspectratio>keep</aspectratio>
-			<visible>player.CodecInfo</visible>
+			<visible>player.ShowInfo</visible>
 		</control>
-		<control type="label">
+  	<control type="label" id="1">
 			<description>current_event_name</description>
 			<width>445</width>
 			<posx>180</posx>
@@ -74,10 +74,10 @@
 			<info>videoplayer.title</info>
 			<align>left</align>
 			<scroll>true</scroll>
-			<font>font12</font>
-			<visible>Player.CodecInfo</visible>
+			<font>special13</font>
+			<visible>Player.ShowInfo + Player.HasMedia</visible>
 		</control>
-		<control type="label">
+  	<control type="label" id="3">
 			<description>current_event_description</description>
 			<width>430</width>
 			<posx>180</posx>
@@ -86,9 +86,9 @@
 			<align>left</align>
 			<scroll>true</scroll>
 			<font>font12</font>
-			<visible>Player.CodecInfo</visible>
+			<visible>Player.ShowInfo + Player.HasMedia</visible>
 		</control>
-		<control type="label">
+  	<control type="label" id="4">
 			<description>current_event_details</description>
 			<width>430</width>
 			<posx>180</posx>
@@ -97,9 +97,9 @@
 			<align>left</align>
 			<scroll>true</scroll>
 			<font>font12</font>
-			<visible>Player.CodecInfo</visible>
+			<visible>Player.ShowInfo + Player.HasMedia</visible>
 		</control>
-		<control type="label">
+	<control type="label" id="5">
 			<description>current_event_duration</description>
 			<width>430</width>
 			<posx>180</posx>
@@ -108,7 +108,17 @@
 			<align>left</align>
 			<scroll>true</scroll>
 			<font>font12</font>
-			<visible>Player.CodecInfo</visible>
+			<visible>Player.ShowInfo + Player.HasMedia</visible>
 		</control>
+		<control type="label" id="6">
+      <description>Time Label</description>
+		  <width>200</width>
+		  <posx>610</posx>
+		  <posy>438</posy>
+		  <align>right</align>
+		  <font>special13</font>
+      <info>System.Time</info>
+      <visible>Player.ShowInfo</visible>
+   </control>
 	</controls>
 </window>

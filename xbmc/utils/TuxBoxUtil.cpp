@@ -69,7 +69,7 @@ void CTuxBoxService::Process()
 {
   while(!m_bStop && !bStop)
   {
-    if (strURL.Find("31339") > 0)
+    if (strURL.Find(":31339") > 0)
     {
       int iRequestTimer = g_advancedSettings.m_iTuxBoxEpgRequestTime *1000; //seconds
       Sleep(iRequestTimer);
