@@ -1,3 +1,4 @@
+2007-01-10 Removed:	Unused "osd y offset mover" control in SettingsScreenCalibration.xml.
 2007-01-07 changed:	"Add source" texture to defaultAddSource.png and made it transperant.
 2007-01-07 changed:	Bookmark-resume texture.
 2007-01-07 changed:	VideoTitle label in Home.xml didn't scroll when too long, added <scroll>true</scroll>.
