@@ -12,6 +12,7 @@ namespace PYXBMC
     PyObject_HEAD
 		std::string strDefault;
     std::string strHeading;
+    bool bHidden;
 	} Keyboard;
 
 	extern PyTypeObject Keyboard_Type;
