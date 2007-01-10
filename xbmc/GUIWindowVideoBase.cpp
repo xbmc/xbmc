@@ -1125,7 +1125,8 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsUnWatched(atol(pItem->m_musicInfoTag.GetURL()));
-  CUtil::ClearFileItemCache();
+  //CUtil::ClearFileItemCache();
+  CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
@@ -1136,7 +1137,8 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()));
-  CUtil::ClearFileItemCache();
+  //CUtil::ClearFileItemCache();
+  CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
@@ -1157,7 +1159,8 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false)) return ;
   m_database.UpdateMovieTitle(atol(pItem->m_musicInfoTag.GetURL()), strInput);
   UpdateVideoTitleXML(detail.m_strIMDBNumber, strInput);
-  CUtil::ClearFileItemCache();
+  //CUtil::ClearFileItemCache();
+  CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
 }
@@ -1514,5 +1517,6 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   }
 
   // library view cache needs to be cleared
-  CUtil::ClearFileItemCache();
+  //CUtil::ClearFileItemCache();
+  CUtil::DeleteVideoDatabaseDirectoryCache();
 }

@@ -124,7 +124,7 @@ void CGUIDialogMusicScan::OnDirectoryScanned(const CStdString& strDirectory)
 void CGUIDialogMusicScan::OnFinished()
 {
   // clear cache
-  CUtil::DeleteDatabaseDirectoryCache();
+  CUtil::DeleteMusicDatabaseDirectoryCache();
 
   // send message
   CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
