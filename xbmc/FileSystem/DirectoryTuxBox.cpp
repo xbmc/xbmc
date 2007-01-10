@@ -1,6 +1,6 @@
 
 #include "../stdafx.h"
-#include "DreamboxDirectory.h"
+#include "DirectoryTuxBox.h"
 #include "directorycache.h"
 #include "../util.h"
 #include "FileCurl.h"
@@ -8,14 +8,14 @@
 #include "../utils/Http.h"
 #include "../utils/TuxBoxUtil.h"
 
-CDreamboxDirectory::CDreamboxDirectory(void)
+CDirectoryTuxBox::CDirectoryTuxBox(void)
 {
 }
 
-CDreamboxDirectory::~CDreamboxDirectory(void)
+CDirectoryTuxBox::~CDirectoryTuxBox(void)
 {
 }
-bool CDreamboxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString strBQRequest;
   CStdString strXMLRootString;

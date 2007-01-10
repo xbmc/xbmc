@@ -7,11 +7,11 @@ class TiXmlElement;
 using namespace DIRECTORY;
 namespace DIRECTORY
 {
-  class CDreamboxDirectory : public IDirectory
+  class CDirectoryTuxBox : public IDirectory
   {
     public:
-      CDreamboxDirectory(void);
-      virtual ~CDreamboxDirectory(void);
+      CDirectoryTuxBox(void);
+      virtual ~CDirectoryTuxBox(void);
       virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   };
 }

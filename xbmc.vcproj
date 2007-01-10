@@ -1280,16 +1280,16 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\DirectoryHistory.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\DirectoryTuxBox.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\DirectoryTuxBox.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\DllLibCurl.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\DllLibCurl.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\FileSystem\DreamboxDirectory.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\FileSystem\DreamboxDirectory.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\FactoryDirectory.cpp">

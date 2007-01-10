@@ -1357,34 +1357,22 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
 
 CStdString CGUIInfoManager::GetVideoLabel(int item)
 {
-  if (!g_application.IsPlayingVideo()) return "";
+  if (!g_application.IsPlayingVideo()) 
+    return "";
   
-  // TuxBox Part!
-  bool bIsTuxBox=false;
-  if (m_currentFile.m_strPath.Find("31339") > 0)
-  {
-    // Set Thread Informations
-    t_tuxbox.strURL = m_currentFile.m_strPath;
-    if(m_currentFile.m_iDriveType >0)
-      t_tuxbox.iPort = m_currentFile.m_iDriveType;
-    
-    // Start Thread
-    if(!t_tuxbox.IsRunning())
-      t_tuxbox.Start();
-    
-    //Set TuxboxMode
-    bIsTuxBox=true;
-  }
+  bool bIsTuxBox = IsPlayingTuxBox();
+  
   switch (item)
   {
   case VIDEOPLAYER_DURATION:
     {
       CStdString strDuration = "";
-      if (bIsTuxBox) 
+      if (bIsTuxBox && !g_tuxbox.sCurSrvData.current_event_duration.Equals("-") && !g_tuxbox.sCurSrvData.current_event_duration.Equals("-")) 
       {
         g_tuxbox.sCurSrvData.current_event_duration.Replace("(","");
         g_tuxbox.sCurSrvData.current_event_duration.Replace(")","");
-        strDuration.Format("%s: %s %s (%s - %s)",g_localizeStrings.Get(180),g_tuxbox.sCurSrvData.current_event_duration, g_localizeStrings.Get(12391),g_tuxbox.sCurSrvData.current_event_time, g_tuxbox.sCurSrvData.next_event_time);
+        strDuration.Format("%s: %s %s (%s - %s)",g_localizeStrings.Get(180),g_tuxbox.sCurSrvData.current_event_duration,
+          g_localizeStrings.Get(12391),g_tuxbox.sCurSrvData.current_event_time, g_tuxbox.sCurSrvData.next_event_time);
       }
       return strDuration;
     }
@@ -1397,10 +1385,11 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     {
       if(m_currentMovie.m_strGenre.IsEmpty())
       {
-        if (bIsTuxBox)
+        if (bIsTuxBox && !g_tuxbox.sCurSrvData.current_event_description.Equals("-") && !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
         {
           CStdString strGenre;
-          strGenre.Format("%s %s  -  (%s: %s)",g_localizeStrings.Get(143),g_tuxbox.sCurSrvData.current_event_description, g_localizeStrings.Get(209),g_tuxbox.sCurSrvData.next_event_description);
+          strGenre.Format("%s %s  -  (%s: %s)",g_localizeStrings.Get(143),g_tuxbox.sCurSrvData.current_event_description,
+            g_localizeStrings.Get(209),g_tuxbox.sCurSrvData.next_event_description);
           return strGenre;
         }
       }
@@ -1411,11 +1400,9 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     {
       if(m_currentMovie.m_strDirector.IsEmpty())
       {
-        if (bIsTuxBox)
+        if (bIsTuxBox && !g_tuxbox.sCurSrvData.current_event_details.Equals("-"))
         {
-          CStdString strTitle;
-          strTitle.Format("%s",g_tuxbox.sCurSrvData.current_event_details);
-          return strTitle;
+          return g_tuxbox.sCurSrvData.current_event_details;
         }
       }
       else 
@@ -2275,4 +2262,25 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
   if (info == LISTITEM_OVERLAY)
     return item->GetOverlayImage();
   return item->GetThumbnailImage();
+}
+
+bool CGUIInfoManager::IsPlayingTuxBox()
+{
+  // TuxBox Part!
+  if (m_currentFile.m_strPath.Find("31339") > 0)
+  {
+    // Set Thread Informations
+    t_tuxbox.strURL = m_currentFile.m_strPath;
+    if(m_currentFile.m_iDriveType >0)
+      t_tuxbox.iPort = m_currentFile.m_iDriveType;
+    
+    // Start Thread
+    if(!t_tuxbox.IsRunning())
+      t_tuxbox.Start();
+    
+    //Set TuxboxMode
+    return true;
+  }
+  return false;
+
 }
