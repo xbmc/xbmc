@@ -72,8 +72,13 @@ void CTuxBoxService::Process()
     if (strURL.Find("31339") > 0)
     {
       int iRequestTimer = g_advancedSettings.m_iTuxBoxEpgRequestTime *1000; //seconds
+      Sleep(iRequestTimer);
       CURL url(strURL);
-      if(iPort >0) url.SetPort(iPort); // returned HTTP Port -> m_iDriveType
+      if(iPort >0 && iPort!=31339 ) 
+        url.SetPort(iPort); // returned HTTP Port -> m_iDriveType
+      else 
+        url.SetPort(80); // we asume that the port 80 will used!
+
       if(g_tuxbox.GetHttpXML(url,"currentservicedata"))
       {
         CLog::Log(LOGDEBUG, __FUNCTION__" - receive current service data was successful");
@@ -94,7 +99,6 @@ void CTuxBoxService::Process()
       {
         CLog::Log(LOGDEBUG, __FUNCTION__" - Could not receive current service data");
       }
-      Sleep(iRequestTimer);
       bStop = !g_application.IsPlaying();
     }
     else
@@ -495,7 +499,7 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
       // read response from server into string buffer
       strTmp.reserve(size_total);
       char buffer[16384];
-      while( (size_read = http.Read(buffer, sizeof(buffer)-1)) > 0 )
+      while( (size_read = http.Read( buffer, sizeof(buffer)-1, 20) ) > 0 )
       {
         buffer[size_read] = 0;
         strTmp += buffer;

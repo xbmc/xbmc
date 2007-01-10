@@ -365,8 +365,9 @@ protected:
   // Array of multiple information mapped to a single integer lookup
   vector<GUIInfo> m_multiInfo;
 
-  bool IsPlayingTuxBox();
-
+  bool GetTuxBoxEvents();
+  CStdString m_currentMovieDuration;
+  
   // Current playing stuff
   CFileItem m_currentFile;
   CIMDBMovie m_currentMovie;
