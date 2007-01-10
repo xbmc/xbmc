@@ -716,7 +716,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 
         if (pDlgAlbumInfo->NeedRefresh())
         {
-          ShowAlbumInfo(strAlbum, strArtist, strPath, bSaveDb, bSaveDirThumb, bShowInfo);
+          ShowAlbumInfo(strAlbum, strArtist, strPath, bSaveDb, bSaveDirThumb, true, bShowInfo);
           return ;
         }
       }

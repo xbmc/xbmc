@@ -233,9 +233,6 @@ void CGUIWindowMusicSongs::OnScan()
       return;
   }
 
-  // the scanner clears the cache when complete
-  //CUtil::DeleteDatabaseDirectoryCache();
-
   // Start background loader
   int iControl=GetFocusedControlID();
   if (musicScan) musicScan->StartScanning(m_vecItems.m_strPath, bUpdateAll);
