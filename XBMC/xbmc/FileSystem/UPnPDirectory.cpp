@@ -275,12 +275,104 @@ public:
         NPT_SocketInfo*      info = NULL);
 
 private:
+    PLT_MediaObject* BuildObject(
+        CFileItem*      item,
+        NPT_String&     file_path,
+        bool            with_count = false,
+        NPT_SocketInfo* info = NULL);
+
     PLT_MediaObject* Build(
         CFileItem*      item, 
-        bool            with_count = true, 
+        bool            with_count = false, 
         NPT_SocketInfo* info = NULL,
-        const char*     object_id = NULL);
+        const char*     parent_id = NULL);
+
+    static NPT_String GetParentFolder(NPT_String file_path) {       
+        int index = file_path.ReverseFind("\\");
+        if (index == -1) return "";
+
+        return file_path.Left(index);
+    }
 };
+
+/*----------------------------------------------------------------------
+|   PLT_FileMediaServer::BuildObject
++---------------------------------------------------------------------*/
+PLT_MediaObject*
+CUPnPServer::BuildObject(CFileItem*      item,
+                         NPT_String&     file_path,
+                         bool            with_count /* = false */,
+                         NPT_SocketInfo* info /* = NULL */)
+{
+    PLT_MediaItemResource resource;
+    PLT_MediaObject*      object = NULL;
+
+    if (!item->m_bIsFolder) {
+        object = new PLT_MediaItem();
+
+        /* Set the title using the filename for now */
+        object->m_Title = item->GetLabel();
+        if (object->m_Title.GetLength() == 0) goto failure;
+
+        /* we need a valid extension to retrieve the mimetype for the protocol info */
+        CStdString ext = CUtil::GetExtension((const char*)file_path);
+
+        /* Set the protocol Info from the extension */
+        resource.m_ProtocolInfo = PLT_MediaItem::GetProtInfoFromExt(ext);
+        if (resource.m_ProtocolInfo.GetLength() == 0)  goto failure;
+
+        /* Set the resource file size */
+        resource.m_Size = (NPT_Integer)item->m_dwSize;
+
+        // get list of ip addresses
+        NPT_List<NPT_String> ips;
+        NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
+
+        // if we're passed an interface where we received the request from
+        // move the ip to the top
+        if (info && info->local_address.GetIpAddress().ToString() != "0.0.0.0") {
+            ips.Remove(info->local_address.GetIpAddress().ToString());
+            ips.Insert(ips.GetFirstItem(), info->local_address.GetIpAddress().ToString());
+        }
+
+        // iterate through list and build list of resources
+        NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
+        while (ip) {
+            NPT_HttpUrl uri = m_FileBaseUri;
+            NPT_HttpUrlQuery query;
+            query.AddField("path", file_path);
+            uri.SetHost(*ip);
+            uri.SetQuery(query.ToString());
+            resource.m_Uri = uri.ToString();
+
+            object->m_ObjectClass.type = PLT_MediaItem::GetUPnPClassFromExt(ext);
+            object->m_Resources.Add(resource);
+
+            ++ip;
+        }
+    } else {
+        object = new PLT_MediaContainer;
+
+        /* Assign a title for this container */
+        object->m_Title = item->GetLabel();
+        if (object->m_Title.GetLength() == 0) goto failure;
+       
+        /* Get the number of children for this container */
+        if (with_count) {
+            NPT_Cardinal count = 0;
+            NPT_CHECK_LABEL(GetEntryCount(file_path, count), failure);
+            ((PLT_MediaContainer*)object)->m_ChildrenCount = count;
+        }
+
+        object->m_ObjectClass.type = "object.container";
+    }
+
+    return object;
+
+failure:
+    delete object;
+    return NULL;
+}
 
 /*----------------------------------------------------------------------
 |   CUPnPServer::Build
@@ -296,6 +388,9 @@ CUPnPServer::Build(CFileItem*        item,
     NPT_String       share_name;
     NPT_String       file_path;
 
+    //HACK: temporary disabling count as it thrashes HDD
+    with_count = false;
+
     bool ret = CUPnPVirtualPathDirectory::SplitPath(path, share_name, file_path);
     if (!ret && path != "0") goto failure;
 
@@ -304,7 +399,7 @@ CUPnPServer::Build(CFileItem*        item,
         if (!CUPnPVirtualPathDirectory::FindSharePath(share_name, file_path, true)) goto failure;
         
         // this is not a virtual directory
-        object = BuildFromFilePath(file_path, with_count, info, true);
+        object = BuildObject(item, file_path, with_count, info);
         if (!object) goto failure;
 
         // prepend back the share name in front
@@ -335,12 +430,18 @@ CUPnPServer::Build(CFileItem*        item,
                 // this means the parent id is the share
                 object->m_ParentID = share_name;
             } else {
-                // we didn't find the path, so it means the parent id is
-                // the parent folder of the file_path
-                int index = file_path.ReverseFind("\\");
-                if (index == -1) goto failure;
+                // we didn't find the path, find the parent path
+                NPT_String parent_path = GetParentFolder(file_path);
+                if (parent_path.IsEmpty()) goto failure;
 
-                object->m_ParentID = share_name + "/" + file_path.Left(index);
+                // try again with parent
+                if (CUPnPVirtualPathDirectory::FindSharePath(share_name, parent_path)) {
+                    // found the file_path parent folder as one of the path of the share
+                    // this means the parent id is the share
+                    object->m_ParentID = share_name;
+                } else {
+                    object->m_ParentID = share_name + "/" + parent_path;
+                }
             }
         }
     } else {
@@ -415,14 +516,14 @@ CUPnPServer::Build(CFileItem*        item,
                 if (!dir.GetMatchingShare((const char*)share_name, share, paths)) goto failure;
                 for (unsigned int i=0; i<paths.size(); i++) {
                     // FIXME: this is not efficient, we only need the number of items given a mask
-                    // temporary disabling it
+                    // and not the list of items
 
                     // retrieve all the files for a given path
-//                    CFileItemList items;
-//                    if (CDirectory::GetDirectory(paths[i], items, mask)) {
-//                        // update childcount
-//                        ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
-//                    }
+                   CFileItemList items;
+                   if (CDirectory::GetDirectory(paths[i], items, mask)) {
+                       // update childcount
+                       ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
+                   }
                 }
             }
         }
@@ -438,6 +539,7 @@ failure:
 /*----------------------------------------------------------------------
 |   CUPnPServer::OnBrowseMetadata
 +---------------------------------------------------------------------*/
+NPT_Result
 CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action, 
                               const char*          object_id, 
                               NPT_SocketInfo*      info /* = NULL */)
@@ -472,8 +574,26 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
         item->SetLabel(share.strName);
         object = Build(item, true, info);
     } else {
-        item = new CFileItem((const char*)id, true);
-        item->SetLabel((const char*)id);
+        NPT_String share_name, file_path;
+        if (!CUPnPVirtualPathDirectory::SplitPath(id, share_name, file_path)) 
+            return NPT_FAILURE;
+
+        NPT_String parent_path = GetParentFolder(file_path);
+        if (parent_path.IsEmpty()) return NPT_FAILURE;
+
+        NPT_DirectoryEntryType type;
+        NPT_CHECK(NPT_DirectoryEntry::GetType(file_path, type));
+
+        item = new CFileItem((const char*)id, (type==NPT_DIRECTORY_TYPE)?true:false);
+        item->SetLabel((const char*)file_path.SubString(parent_path.GetLength()+1));
+
+        // get file size
+        if (type == NPT_FILE_TYPE) {
+            NPT_Size size;
+            NPT_CHECK(NPT_DirectoryEntry::GetSize(file_path, size));
+            item->m_dwSize = size;
+        }
+
         object = Build(item, true, info);
         if (!object.IsNull()) object->m_ObjectID = id;
     }
@@ -503,6 +623,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
 /*----------------------------------------------------------------------
 |   CUPnPServer::OnBrowseDirectChildren
 +---------------------------------------------------------------------*/
+NPT_Result
 CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action, 
                                     const char*          object_id, 
                                     NPT_SocketInfo*      info /* = NULL */)
