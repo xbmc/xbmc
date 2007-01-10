@@ -1919,7 +1919,7 @@ int CVideoDatabase::GetMovieCount()
     if (NULL == m_pDB.get()) return 0;
     if (NULL == m_pDS.get()) return 0;
 
-    CStdString strSQL=FormatSQL("select count (idMovie) as nummovies from movie");
+    CStdString strSQL=FormatSQL("select count (idMovie) as nummovies from movie where idType=%i", VIDEODB_ID_TITLE);
     m_pDS->query( strSQL.c_str() );
 
     int iResult = 0;
