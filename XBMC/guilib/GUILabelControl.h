@@ -51,6 +51,8 @@ public:
   void SetWidthControl(bool bScroll);
   void SetTruncate(bool bTruncate);
   void SetWrapMultiLine(bool wrapMultiLine) { m_wrapMultiLine = wrapMultiLine; };
+  void SetAlignment(DWORD align);
+
   static void WrapText(CStdString &text, CGUIFont *font, float maxWidth);
   static void WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth);
 
