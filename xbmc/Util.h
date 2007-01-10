@@ -331,7 +331,9 @@ public:
   static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName);
   static CStdString TranslateSpecialPath(const CStdString &strSpecial);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
-  static void DeleteDatabaseDirectoryCache();
+  static void DeleteDirectoryCache(const CStdString strType = "");
+  static void DeleteMusicDatabaseDirectoryCache();
+  static void DeleteVideoDatabaseDirectoryCache();
   static CStdString MusicPlaylistsLocation();
   static CStdString VideoPlaylistsLocation();
   static CStdString SubstitutePath(const CStdString& strFileName);
