@@ -66,8 +66,8 @@
 			<width>21</width>
 			<height>22</height>
 			<label>-</label>
-			<texturefocus>music-skipplus-focus2.png</texturefocus>
-			<texturenofocus>music-skipplus-nofocus2.png</texturenofocus>
+			<texturefocus>music-skipplus-focus.png</texturefocus>
+			<texturenofocus>music-skipplus-nofocus.png</texturenofocus>
 			<onleft>402</onleft>
 			<onright>405</onright>
 			<onup>403</onup>
