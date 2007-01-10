@@ -1,5 +1,5 @@
-﻿<window type="dialog" id="114">
-	<defaultcontrol always="true">403</defaultcontrol>
+<window type="dialog" id="114">
+	<defaultcontrol always="true">402</defaultcontrol>
 	<include>dialogeffect</include>
 	<visible>Player.HasMedia + Window.IsActive(PlayerControls) + !Window.IsActive(FullscreenVideo)</visible>
 	<coordinates>
@@ -8,7 +8,7 @@
 		<posy>470</posy>
 	</coordinates>
 	<controls>
-		<control type="image" id="1">
+		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>128</width>
@@ -23,7 +23,7 @@
 			<label>-</label>
 			<texturefocus>music-skipminus-focus.png</texturefocus>
 			<texturenofocus>music-skipminus-nofocus.png</texturenofocus>
-			<onleft>405</onleft>
+			<onleft>404</onleft>
 			<onright>401</onright>
 			<onup>400</onup>
 			<ondown>400</ondown>
@@ -35,30 +35,16 @@
 			<width>21</width>
 			<height>22</height>
 			<label>-</label>
-			<texturefocus>music-rw-focus.png</texturefocus>
-			<texturenofocus>music-rw-nofocus.png</texturenofocus>
+			<texturefocus>music-stop-focus.png</texturefocus>
+			<texturenofocus>music-stop-nofocus.png</texturenofocus>
 			<onleft>400</onleft>
 			<onright>402</onright>
 			<onup>401</onup>
 			<ondown>401</ondown>
-			<onclick>XBMC.PlayerControl(Rewind)</onclick>
-		</control>
-		<control type="button" id="402">
-			<posx>43</posx>
-			<posy>0</posy>
-			<width>21</width>
-			<height>22</height>
-			<label>-</label>
-			<texturefocus>music-stop-focus.png</texturefocus>
-			<texturenofocus>music-stop-nofocus.png</texturenofocus>
-			<onleft>401</onleft>
-			<onright>403</onright>
-			<onup>402</onup>
-			<ondown>402</ondown>
 			<onclick>XBMC.PlayerControl(Stop)</onclick>
 		</control>
-		<control type="togglebutton" id="403">
-			<posx>64</posx>
+		<control type="togglebutton" id="402">
+			<posx>43</posx>
 			<posy>0</posy>
 			<width>21</width>
 			<height>22</height>
@@ -68,39 +54,110 @@
 			<usealttexture>Player.Paused</usealttexture>
 			<alttexturefocus>music-play-focus.png</alttexturefocus>
 			<alttexturenofocus>music-play-nofocus.png</alttexturenofocus>
-			<onleft>402</onleft>
-			<onright>404</onright>
-			<onup>403</onup>
-			<ondown>403</ondown>
+			<onleft>401</onleft>
+			<onright>403</onright>
+			<onup>402</onup>
+			<ondown>402</ondown>
 			<onclick>XBMC.PlayerControl(Play)</onclick>
 		</control>
-		<control type="button" id="404">
+		<control type="button" id="403">
+			<posx>64</posx>
+			<posy>0</posy>
+			<width>21</width>
+			<height>22</height>
+			<label>-</label>
+			<texturefocus>music-skipplus-focus2.png</texturefocus>
+			<texturenofocus>music-skipplus-nofocus2.png</texturenofocus>
+			<onleft>402</onleft>
+			<onright>405</onright>
+			<onup>403</onup>
+			<ondown>403</ondown>
+			<onclick>XBMC.PlayerControl(Next)</onclick>
+		</control>
+		<control type="button" id="405">
 			<posx>85</posx>
 			<posy>0</posy>
 			<width>21</width>
 			<height>22</height>
 			<label>-</label>
-			<texturefocus>music-ff-focus.png</texturefocus>
-			<texturenofocus>music-ff-nofocus.png</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onclick>XBMC.PlayerControl(Repeat)</onclick>
 			<onleft>403</onleft>
-			<onright>405</onright>
-			<onup>404</onup>
-			<ondown>404</ondown>
-			<onclick>XBMC.PlayerControl(Forward)</onclick>
+			<onright>404</onright>
+			<onup>405</onup>
+			<ondown>405</ondown>
 		</control>
-		<control type="button" id="405">
+		<control type="image">
+			<posx>85</posx>
+			<posy>0</posy>
+			<width>21</width>
+			<height>22</height>
+			<texture>music-repeat-off-nofocus.png</texture>
+			<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+			<visible>!Control.HasFocus(405)</visible>
+		</control>
+		<control type="image">
+			<posx>85</posx>
+			<posy>0</posy>
+			<width>21</width>
+			<height>22</height>
+			<texture>music-repeat-off-focus.png</texture>
+			<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+			<visible>Control.HasFocus(405)</visible>
+		</control>
+		<control type="image">
+			<posx>85</posx>
+			<posy>0</posy>
+			<width>21</width>
+			<height>22</height>
+			<texture>music-repeat-one-nofocus.png</texture>
+			<visible>Playlist.IsRepeatOne</visible>
+			<visible>!Control.HasFocus(405)</visible>
+		</control>
+		<control type="image">
+			<posx>85</posx>
+			<posy>0</posy>
+			<width>21</width>
+			<height>22</height>
+			<texture>music-repeat-one-focus.png</texture>
+			<visible>Playlist.IsRepeatOne</visible>
+			<visible>Control.HasFocus(405)</visible>
+		</control>
+		<control type="image">
+			<posx>85</posx>
+			<posy>0</posy>
+			<width>21</width>
+			<height>22</height>
+			<texture>music-repeat-all-nofocus.png</texture>
+			<visible>Playlist.IsRepeat</visible>
+			<visible>!Control.HasFocus(405)</visible>
+		</control>
+		<control type="image">
+			<posx>85</posx>
+			<posy>0</posy>
+			<width>21</width>
+			<height>22</height>
+			<texture>music-repeat-all-focus.png</texture>
+			<visible>Playlist.IsRepeat</visible>
+			<visible>Control.HasFocus(405)</visible>
+		</control>
+		<control type="togglebutton" id="404">
 			<posx>106</posx>
 			<posy>0</posy>
 			<width>22</width>
 			<height>22</height>
 			<label>-</label>
-			<texturefocus>music-skipplus-focus.png</texturefocus>
-			<texturenofocus>music-skipplus-nofocus.png</texturenofocus>
-			<onleft>404</onleft>
+			<texturefocus>music-random-off-focus.png</texturefocus>
+			<texturenofocus>music-random-off-nofocus.png</texturenofocus>
+			<usealttexture>Playlist.IsRandom</usealttexture>
+			<alttexturefocus>music-random-on-focus.png</alttexturefocus>
+			<alttexturenofocus>music-random-on-nofocus.png</alttexturenofocus>
+			<onclick>XBMC.PlayerControl(Random)</onclick>
+			<onleft>405</onleft>
 			<onright>400</onright>
-			<onup>405</onup>
-			<ondown>405</ondown>
-			<onclick>XBMC.PlayerControl(Next)</onclick>
+			<onup>404</onup>
+			<ondown>404</ondown>
 		</control>
 	</controls>
 </window>
