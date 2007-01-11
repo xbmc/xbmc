@@ -2092,10 +2092,13 @@ inited_flags|=INITED_DEMUXER;
 if (stream->type != STREAMTYPE_DVD && stream->type != STREAMTYPE_DVDNAV) {
   int i;
   // setup global sub numbering
-  global_sub_indices[SUB_SOURCE_DEMUX] = global_sub_size; // the global # of the first demux-specific sub.
+  int size = global_sub_size;  
   for (i = 0; i < MAX_S_STREAMS; i++)
     if (demuxer->s_streams[i])
       global_sub_size++;
+  
+  if (size != global_sub_size) 
+    global_sub_indices[SUB_SOURCE_DEMUX] = size; // the global # of the first demux-specific sub.
 }
 
 current_module="demux_open2";
