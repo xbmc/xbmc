@@ -127,12 +127,11 @@ void CXBoxRenderer::Setup_Y8A8Render()
 
   m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
   m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
   m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_ONE );
-  m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
+  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_INVSRCALPHA );
+  m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
   m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
   m_pD3DDevice->SetVertexShader( FVF_Y8A8VERTEX );
 }
@@ -262,7 +261,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   float EnlargeFactor = (float)g_settings.m_ResInfo[res].iWidth / 720.0f; //g_guiSettings.GetInt("Subtitles.EnlargePercentage") / 100.0f;
 
   float xscale = EnlargeFactor * (float)(rv.right - rv.left) / (float)((g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left));
-  float yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio;
+  float yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio / m_fSourceFrameRatio;
   osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w * xscale) / 2.0f;
   osdRect.right = osdRect.left + (float)w * xscale;
   float relbottom = ((float)(g_settings.m_ResInfo[res].iSubtitles - g_settings.m_ResInfo[res].Overscan.top)) / (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
