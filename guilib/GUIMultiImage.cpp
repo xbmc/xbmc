@@ -163,7 +163,7 @@ void CGUIMultiImage::LoadImage(int image)
     return;
 
   m_images[image]->AllocResources();
-  m_images[image]->SetColourDiffuse(GetColourDiffuse());
+  m_images[image]->SetColorDiffuse(m_diffuse);
 
   // Scale image so that it will fill our render area
   if (m_aspectRatio != CGUIImage::ASPECT_RATIO_STRETCH)

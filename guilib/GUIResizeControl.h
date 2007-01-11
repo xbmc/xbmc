@@ -42,12 +42,12 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColourDiffuse(D3DCOLOR colour);
+  virtual void SetColorDiffuse(const CColorDiffuse &color);
   void SetLimits(float x1, float y1, float x2, float y2);
 
 protected:
   virtual void Update() ;
-  void SetAlpha(DWORD dwAlpha);
+  void SetAlpha(const CColorDiffuse &alpha);
   void UpdateSpeed(int nDirection);
   void Resize(float x, float y);
   CGUIImage m_imgFocus;

@@ -73,7 +73,7 @@ namespace PYXBMC
       ((CGUIImage *)pControl->pGUIControl)->SetAspectRatio((CGUIImage::GUIIMAGE_ASPECT_RATIO)pControl->aspectRatio);
     
     if (pControl->pGUIControl && pControl->strColorDiffuse)
-			((CGUIImage *)pControl->pGUIControl)->SetColourDiffuse(pControl->strColorDiffuse);
+			((CGUIImage *)pControl->pGUIControl)->SetColorDiffuse(pControl->strColorDiffuse);
 
     return pControl->pGUIControl;
 	}
@@ -129,7 +129,7 @@ namespace PYXBMC
 
     PyGUILock();
 		if (self->pGUIControl)
-			((CGUIImage *)self->pGUIControl)->SetColourDiffuse(self->strColorDiffuse);
+			((CGUIImage *)self->pGUIControl)->SetColorDiffuse(self->strColorDiffuse);
 		
     PyGUIUnlock();
 		Py_INCREF(Py_None);
