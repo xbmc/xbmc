@@ -249,6 +249,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
+  g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear = false;
 
   xbmcXmlLoaded = false;
   bTransaction = false;
@@ -1098,6 +1099,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bMusicLibraryHideAllItems);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "hidecompilationartists", g_advancedSettings.m_bMusicLibraryHideCompilationArtists);
+    XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");
