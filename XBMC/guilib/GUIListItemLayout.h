@@ -45,7 +45,7 @@ class CGUIListItemLayout
   class CListTexture : public CListBase
   {
   public:
-    CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, const CColorDiffuse &colorDiffuse, const vector<CAnimation> &animations);
+    CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, const CColorDiffuse &colorDiffuse, const vector<CAnimation> &animations);
     virtual ~CListTexture();
     CGUIImage m_image;
   };
@@ -53,7 +53,7 @@ class CGUIListItemLayout
   class CListImage: public CListTexture
   {
   public:
-    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, const CColorDiffuse &colorDiffuse, const vector<CAnimation> &animations, int info);
+    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, const CColorDiffuse &colorDiffuse, const vector<CAnimation> &animations, int info);
     virtual ~CListImage();
     int m_info;
   };
