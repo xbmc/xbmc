@@ -297,7 +297,7 @@ void CAnimation::Animate(unsigned int time, bool hasRendered)
   }
 }
 
-#define DEGREE_TO_RADIAN 0.01745329f
+#define DEGREE_TO_RADIAN 0.01745329252f
 
 void CAnimation::RenderAnimation(TransformMatrix &matrix)
 {
