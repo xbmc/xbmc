@@ -237,24 +237,6 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
     pResize->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pResize->GetWidth()) / 2,
                          (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - pResize->GetHeight()) / 2);
   }
-  // center the labels
-  CGUILabelControl *pLabel = (CGUILabelControl*)GetControl(CONTROL_LABEL_ROW1);
-  if (pLabel)
-  {
-    float height = pLabel->GetLabelInfo().font ? pLabel->GetLabelInfo().font->GetTextHeight(L"W") + 5 : 20;
-    pLabel->SetPosition(0, (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - height) * 0.5f);
-    pLabel->SetWidth((float)g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth);
-    pLabel->SetAlignment(XBFONT_CENTER_X | XBFONT_CENTER_Y);
-  }
-  pLabel = (CGUILabelControl*)GetControl(CONTROL_LABEL_ROW2);
-  if (pLabel)
-  {
-    float height = pLabel->GetLabelInfo().font ? pLabel->GetLabelInfo().font->GetTextHeight(L"W") + 5 : 20;
-    pLabel->SetPosition(0, (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + height) * 0.5f);
-    pLabel->SetWidth((float)g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth);
-    pLabel->SetAlignment(XBFONT_CENTER_X | XBFONT_CENTER_Y);
-  }
-
   // Enable the default control
   EnableControl(m_iControl);
 }
@@ -334,7 +316,27 @@ void CGUIWindowSettingsScreenCalibration::Render()
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, "");
   }
 
+  SET_CONTROL_HIDDEN(CONTROL_TOP_LEFT);
+  SET_CONTROL_HIDDEN(CONTROL_BOTTOM_RIGHT);
+  SET_CONTROL_HIDDEN(CONTROL_SUBTITLES);
+  SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
+
+  m_needsScaling = true;
   CGUIWindow::Render();
+  g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, false);
+
+  SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
+  SET_CONTROL_VISIBLE(CONTROL_BOTTOM_RIGHT);
+  SET_CONTROL_VISIBLE(CONTROL_SUBTITLES);
+  SET_CONTROL_VISIBLE(CONTROL_PIXEL_RATIO);
+
+  // render the movers etc.
+  for (int i = CONTROL_TOP_LEFT; i <= CONTROL_PIXEL_RATIO; i++)
+  {
+    CGUIControl *control = (CGUIControl *)GetControl(i);
+    if (control)
+      control->Render();
+  }
 
   // render the subtitles
   if (g_application.m_pPlayer)
