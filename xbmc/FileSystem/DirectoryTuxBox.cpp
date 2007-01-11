@@ -17,22 +17,22 @@ CDirectoryTuxBox::~CDirectoryTuxBox(void)
 }
 bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CStdString strBQRequest;
-  CStdString strXMLRootString;
-  CStdString strXMLChildString;
-  //calc the request strings
-  if(!GetRootAndChildString(strPath, strBQRequest, strXMLRootString, strXMLChildString))
-    return false;
-  
   // Detect and delete slash at end
   CStdString strRoot = strPath;
   if (CUtil::HasSlashAtEnd(strRoot))
-    strRoot.Delete(strRoot.size() - 1);
+  strRoot.Delete(strRoot.size() - 1);
 
-  // init Directory
+  // Is our Directory Cached? 
   if (g_directoryCache.GetDirectory(strRoot, items))
     return true;
 
+  //Get the request strings
+  CStdString strBQRequest;
+  CStdString strXMLRootString;
+  CStdString strXMLChildString;
+  if(!GetRootAndChildString(strRoot, strBQRequest, strXMLRootString, strXMLChildString))
+    return false;
+  
   // display progress dialog after 1 seconds
   DWORD dwTimeStamp = GetTickCount();//+ 1000;
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -176,11 +176,11 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
 
       if (url.GetPort()!=0 && url.GetPort()!=80)
       {
-        strRoot.Format("tuxbox://%s:%s@%s:%i",url.GetUserName(),url.GetPassWord(),url.GetHostName(),url.GetPort());
+        //strRoot.Format("tuxbox://%s:%s@%s:%i",url.GetUserName(),url.GetPassWord(),url.GetHostName(),url.GetPort());
       }
       else 
       {
-        strRoot.Format("tuxbox://%s:%s@%s",url.GetUserName(),url.GetPassWord(),url.GetHostName());
+        //strRoot.Format("tuxbox://%s:%s@%s",url.GetUserName(),url.GetPassWord(),url.GetHostName());
       }
 
       //Build Directory
