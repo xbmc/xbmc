@@ -118,6 +118,7 @@
 #include "GUIDialogVideoBookmarks.h"
 #include "GUIDialogProfileSettings.h"
 #include "GUIDialogLockSettings.h"
+#include "GUIDialogContentSettings.h"
 
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
@@ -1261,6 +1262,8 @@ HRESULT CApplication::Initialize()
   
   if (pDialog)
     m_gWindowManager.Add(pDialog); // window id = 131
+
+  m_gWindowManager.Add(new CGUIDialogContentSettings);        // window id = 132
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501

@@ -1,4 +1,4 @@
-<scraper name="IMDb" content="movies">
+<scraper name="IMDb" content="movies" thumb="imdb.gif">
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://akas.imdb.com/find?s=tt;q=\1" dest="3">
 			<expression noclean="1"></expression>

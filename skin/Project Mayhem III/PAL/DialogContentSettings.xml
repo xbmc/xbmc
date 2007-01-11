@@ -1,0 +1,276 @@
+<window>
+ <id>132</id>
+ <defaultcontrol>28</defaultcontrol>
+ <coordinates>
+   <system>1</system>
+   <posx>161</posx>
+   <posy>132</posy>
+ </coordinates>
+ <visible>Window.IsActive(132)</visible>
+ <controls>
+
+ <control>
+	<type>image</type>
+	<id>0</id>
+	<posx>-300</posx>
+	<posy>-300</posy>
+	<width>1300</width>
+	<height>1300</height>
+	<texture>black.png</texture>
+	<animation effect="fade" time="2000">WindowOpen</animation>
+	<animation effect="fade" time="200">WindowClose</animation>
+ </control>
+
+ <control>
+	<description>background image</description>
+	<type>image</type>
+	<id>1</id>
+	<posx>-25</posx>
+	<posy>-11</posy>
+	<width>446</width>
+	<height>406</height>
+	<texture>dialog-panelprofile.png</texture>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>scraper image</description>
+	<type>image</type>
+	<id>2</id>
+	<posx>20</posx>
+	<posy>40</posy>
+	<width>120</width>
+	<height>120</height>
+	<align>left</align>
+    	<aspectratio>keep</aspectratio>
+	<texture>-</texture>
+	<include>homemisc</include>
+ </control>
+
+  <control>
+   <description>directory content select spincontrol</description>
+   <type>spincontrol</type>
+   <align>left</align>
+   <width>17</width>
+   <height>17</height>
+   <id>1343</id>
+   <posx>340</posx>
+   <posy>8</posy>
+   <font>-</font>
+   <reverse>yes</reverse>
+   <onup>2</onup>
+   <ondown>2</ondown>
+   <onleft>2</onleft>
+   <onright>2</onright>
+   <disabledcolor>ffffffff</disabledcolor>
+   <textoffsetx>0</textoffsetx>
+   <textoffsety>0</textoffsety>
+   <aligny>center</aligny>
+   <include>contentpanelslide</include>
+   <subtype>text</subtype>
+  </control>
+  
+ <control>
+	<description>directory contains label</description>
+	<type>label</type>
+	<id>1000</id>
+	<posx>20</posx>
+	<posy>8</posy>
+	<width>280</width>
+	<align>left</align>
+	<font>special13</font>
+	<textcolor>FFFFFFFF</textcolor>
+	<label>$LOCALIZE[ 20344 ]</label>
+        <include>homemisc</include>
+ </control>
+
+ <control>
+   <description>Path List Control</description>
+   <type>listcontrol</type>
+   <id>4</id>
+   <posx>180</posx>
+   <posy>40</posy>
+   <width>200</width>
+   <height>160</height>
+   <font>font12</font>
+   <textoffsetx>8</textoffsetx>
+   <aligny>center</aligny>
+   <texturefocus>input-focus.png</texturefocus>
+   <texturenofocus>input-nofocus.png</texturenofocus>
+   <textureheight>32</textureheight>
+   <spacebetweenitems>8</spacebetweenitems>
+   <itemwidth>0</itemwidth>
+   <textxoff>0</textxoff>
+   <font2>-</font2>
+   <onup>18</onup>
+   <onleft>11</onleft>
+   <onright>11</onright>
+   <ondown>12</ondown>
+  </control>
+
+
+ <control>
+	<description>Next page button</description>
+	<type>spincontrol</type>
+	<id>60</id>
+	<posx>371</posx>
+	<posy>8</posy>
+	<subtype>int</subtype>
+	<font>font12</font>
+	<onleft>60</onleft>
+	<onright>60</onright>
+	<ondown>2</ondown>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>control area</description>
+	<type>image</type>
+	<id>5</id>
+	<posx>-1</posx>
+	<posy>180</posy>
+	<width>408</width>
+	<height>125</height>
+	<texture>-</texture>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>control gap</description>
+	<type>image</type>
+	<id>6</id>
+	<width>350</width>
+	<height>31</height>
+	<texture>-</texture>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>Default Button</description>
+	<type>button</type>
+	<id>7</id>
+	<posx>530</posx>
+	<posy>150</posy>
+	<height>29</height>
+	<font>font12</font>
+	<textoffsetx>12</textoffsetx>
+	<aligny>center</aligny>
+	<texturefocus>input-focus.png</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>Default RadioButton</description>
+	<type>radiobutton</type>
+	<id>8</id>
+	<posx>530</posx>
+	<posy>150</posy>
+	<height>31</height>
+	<font>font12</font>
+	<texturefocus>input-focus.png</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<textoffsetx>12</textoffsetx>
+	<aligny>center</aligny>
+	<textureradiofocus>settings-check-box.png</textureradiofocus>
+	<textureradionofocus>settings-check-boxNF.png</textureradionofocus>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>Default SpinControlex</description>
+	<type>spincontrolex</type>
+	<id>9</id>
+	<posx>530</posx>
+	<posy>150</posy>
+	<height>31</height>
+	<width>300</width>
+	<texturefocus>input-focus.png</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<textureup>scroll-up.png</textureup>
+	<texturedown>scroll-down.png</texturedown>
+	<textureupfocus>scroll-up-focus.png</textureupfocus>
+	<texturedownfocus>scroll-down-focus.png</texturedownfocus>
+	<font>font12</font>
+	<include>textcolorwhite</include>
+	<disabledcolor>60d0d0d0</disabledcolor>
+	<textoffsetx>12</textoffsetx>
+	<aligny>center</aligny>
+	<reverse>yes</reverse>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>Default Slider</description>
+	<type>sliderex</type>
+	<id>10</id>
+	<posx>1530</posx>
+	<posy>150</posy>
+	<height>31</height>
+	<width>300</width>
+	<texturefocus>input-focus.png</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<sliderwidth>100</sliderwidth>
+	<sliderheight>20</sliderheight>
+	<texturesliderbar>osd_slider_bg.png</texturesliderbar>
+	<textureslidernib>osd_slider_nibNF.png</textureslidernib>
+	<textureslidernibfocus>osd_slider_nibFO.png</textureslidernibfocus>
+	<font>font12</font>
+	<include>textcolorwhite</include>
+	<disabledcolor>60d0d0d0</disabledcolor>
+	<textoffsetx>12</textoffsetx>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>separator image</description>
+	<type>image</type>
+	<id>11</id>
+	<width>350</width>
+	<height>5</height>
+	<texture>separatorOSD.png</texture>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>OK button</description>
+	<type>button</type>
+	<id>28</id>
+	<posx>223</posx>
+	<posy>325</posy>
+	<width>90</width>
+	<height>32</height>
+	<align>center</align>
+	<label>186</label>
+	<font>font10</font>
+	<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+	<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+	<onleft>30</onleft>
+	<onright>29</onright>
+	<onup>1343</onup>
+	<ondown>30</ondown>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>Cancel button</description>
+	<type>button</type>
+	<id>29</id>
+	<posx>318</posx>
+	<posy>325</posy>
+	<width>90</width>
+	<height>32</height>
+	<align>center</align>
+	<label>222</label>
+	<font>font10</font>
+	<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+	<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+	<onleft>28</onleft>
+	<onright>30</onright>
+	<onup>3</onup>
+	<ondown>30</ondown>
+	<include>homemisc</include>
+ </control>
+
+ </controls>
+</window>

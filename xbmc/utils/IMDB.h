@@ -17,6 +17,14 @@
 class TiXmlDocument;
 class CGUIDialogProgress;
 
+struct SScraperInfo
+{
+  CStdString strTitle;
+  CStdString strPath;
+  CStdString strThumb;
+  CStdString strContent; // dupe, whatever
+};
+
 class CIMDBUrl
 {
 public:

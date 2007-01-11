@@ -1,5 +1,3 @@
-//
-
 #include "stdafx.h"
 #include "GUIWindowVideoFiles.h"
 #include "Util.h"
@@ -14,6 +12,7 @@
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMediaSource.h"
+#include "GUIDialogContentSettings.h"
 #include "FileSystem/StackDirectory.h"
 #include "utils/RegExp.h"
 
@@ -570,68 +569,33 @@ void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
 
 void CGUIWindowVideoFiles::OnAssignContent(int iItem)
 {
-  CFileItemList items;
-  CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
-  CGUIDialogSelect *pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  pDialog->SetHeading(20334);
-  pDialog->Reset();
-  std::map<CStdString,std::vector<std::pair<CStdString,CStdString> > > scrapers; // key = content type, first = name, second = file
-  for (int i=0;i<items.Size();++i)
+  SScraperInfo info;
+  bool bScan, bScanRecursive, bScanSeveral, bUseDirNames;
+  m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent);
+  SScraperInfo info2 = info;
+  if (CGUIDialogContentSettings::ShowForDirectory(m_vecItems[iItem]->m_strPath,info,bScan,bScanRecursive,bScanSeveral,bUseDirNames))
   {
-    if (!items[i]->m_bIsFolder)
+    if (info.strContent.IsEmpty())
     {
-      TiXmlDocument doc;
-      doc.LoadFile(items[i]->m_strPath);
-      if (doc.RootElement())
+      if (!info2.strContent.IsEmpty())
+        OnUnAssignContent(iItem);
+      return;
+    }
+    
+    if (bScan)
+    {
+      if (bScanSeveral)
       {
-        const char* content = doc.RootElement()->Attribute("content");
-        const char* name = doc.RootElement()->Attribute("name");
-        if (content && name)
-        {
-          std::map<CStdString,std::vector<std::pair<CStdString,CStdString> > >::iterator iter=scrapers.find(content);
-          if (iter != scrapers.end())
-          {
-            iter->second.push_back(std::make_pair<CStdString,CStdString>(name,items[i]->m_strPath));
-          }
-          else
-          {
-            std::vector<std::pair<CStdString,CStdString> > vec;
-            vec.push_back(std::make_pair<CStdString,CStdString>(name,items[i]->m_strPath));
-            scrapers.insert(std::make_pair<CStdString,std::vector<std::pair<CStdString,CStdString> > >(content,vec));
-          }
-          CStdString strContent = content;
-          strContent.Replace("movies",g_localizeStrings.Get(20336));
-          strContent.Replace("tvshows",g_localizeStrings.Get(20337));
-          pDialog->Add(strContent);
-        }
+        OnScan(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent);
+      }
+      else
+      {
+        m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent);
+        OnInfo(iItem);
       }
     }
   }
-
-  pDialog->EnableButton(false);
-  pDialog->DoModal();
-  int iDummy = pDialog->GetSelectedLabel();
-  if (iDummy < 0)
-    return;
-
-  // okay, we got content - now grab which scraper
-  CFileItem item = pDialog->GetSelectedItem();
-  pDialog->SetHeading(20335);
-  pDialog->Reset();
-  CStdString strLabel = item.GetLabel();
-  strLabel.Replace(g_localizeStrings.Get(20336),"movies");
-  strLabel.Replace(g_localizeStrings.Get(20337),"tvshows");
-  
-  for (std::vector<std::pair<CStdString,CStdString> >::iterator iter = scrapers[strLabel].begin();iter != scrapers[strLabel].end();++iter)
-    pDialog->Add(iter->first);
-
-  pDialog->EnableButton(false);
-  pDialog->DoModal();
-  iDummy = pDialog->GetSelectedLabel();
-  if (iDummy < 0) // canceled on scraper screen
-    return;
-
-  if (item.GetLabel().Equals(g_localizeStrings.Get(20336)))
+/*  if (item.GetLabel().Equals(g_localizeStrings.Get(20336)))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(13346,20342,20343,-1))
       OnScan(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel);
@@ -682,7 +646,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem)
         }
       }
     }
-  }
+  }*/
 }
 
 bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items, const CStdString& strScraper, const CStdString& strContent, bool bDirNames)

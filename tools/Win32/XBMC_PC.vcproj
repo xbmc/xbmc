@@ -1187,6 +1187,12 @@
 					RelativePath="..\..\xbmc\GUIDialogButtonMenu.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogContentSettings.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogContentSettings.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogContextMenu.cpp">
 				</File>
 				<File
