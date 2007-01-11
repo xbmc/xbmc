@@ -29,7 +29,7 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
-  virtual void SetColourDiffuse(D3DCOLOR colour);
+  virtual void SetColorDiffuse(const CColorDiffuse &color);
   void SetLabel(const string& strLabel);
   void SetAltLabel(const string& label);
   virtual const string& GetLabel() const;

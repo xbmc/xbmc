@@ -6,7 +6,7 @@
 #include "../xbmc/Util.h"
 #include "GUIWindowManager.h"
 
-CGUIControl::CGUIControl()
+CGUIControl::CGUIControl() : m_diffuse(0xffffffff)
 {
   m_hasRendered = false;
   m_bHasFocus = false;
@@ -17,7 +17,7 @@ CGUIControl::CGUIControl()
   m_forceHidden = false;
   m_visibleCondition = 0;
   m_bDisabled = false;
-  m_colDiffuse = 0xFFFFFFFF;
+  m_diffuse = CColorDiffuse(0xffffffff);
   m_posX = 0;
   m_posY = 0;
   m_dwControlLeft = 0;
@@ -31,8 +31,8 @@ CGUIControl::CGUIControl()
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
+: m_diffuse(0xffffffff)
 {
-  m_colDiffuse = 0xFFFFFFFF;
   m_posX = posX;
   m_posY = posY;
   m_width = width;
@@ -303,13 +303,9 @@ void CGUIControl::SetPosition(float posX, float posY)
   }
 }
 
-void CGUIControl::SetColourDiffuse(D3DCOLOR colour)
+void CGUIControl::SetColorDiffuse(const CColorDiffuse &color)
 {
-  if (colour != m_colDiffuse)
-  {
-    m_colDiffuse = colour;
-    Update();
-  }
+  m_diffuse = color;
 }
 
 float CGUIControl::GetXPosition() const

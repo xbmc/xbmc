@@ -36,13 +36,14 @@ CGUIListItemLayout::CListLabel::~CListLabel()
 {
 }
 
-CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, const vector<CAnimation> &animations)
+CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, const CColorDiffuse &colorDiffuse, const vector<CAnimation> &animations)
 : CGUIListItemLayout::CListBase(posX, posY, width, height, visibleCondition),
   m_image(0, 0, posX, posY, width, height, image)
 {
   m_type = LIST_TEXTURE;
   m_image.SetAspectRatio(aspectRatio);
   m_image.SetAnimations(animations);
+  m_image.SetColorDiffuse(colorDiffuse);
 }
 
 CGUIListItemLayout::CListTexture::~CListTexture()
@@ -50,8 +51,8 @@ CGUIListItemLayout::CListTexture::~CListTexture()
   m_image.FreeResources();
 }
 
-CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, const vector<CAnimation> &animations, int info)
-: CGUIListItemLayout::CListTexture(posX, posY, width, height, visibleCondition, image, aspectRatio, animations)
+CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, const CColorDiffuse &colorDiffuse, const vector<CAnimation> &animations, int info)
+: CGUIListItemLayout::CListTexture(posX, posY, width, height, visibleCondition, image, aspectRatio, colorDiffuse, animations)
 {
   m_info = info;
   m_type = LIST_IMAGE;
@@ -286,10 +287,8 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   FRECT rect = { posX, posY, width, height };
   vector<CAnimation> animations;
   factory.GetAnimations(child, rect, animations);
-  if (animations.size())
-  {
-    int test = 1;
-  }
+  CColorDiffuse colorDiffuse(0xffffffff);
+  factory.GetColorDiffuse(child, colorDiffuse);
   DWORD alignY = 0;
   if (factory.GetAlignmentY(child, "aligny", alignY))
     label.align |= alignY;
@@ -307,11 +306,11 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   {
     if (info)
     { // info image
-      return new CListImage(posX, posY, width, height, visibleCondition, image, aspectRatio, animations, info);
+      return new CListImage(posX, posY, width, height, visibleCondition, image, aspectRatio, colorDiffuse, animations, info);
     }
     else
     { // texture
-      return new CListTexture(posX, posY, width, height, visibleCondition, image, CGUIImage::ASPECT_RATIO_STRETCH, animations);
+      return new CListTexture(posX, posY, width, height, visibleCondition, image, CGUIImage::ASPECT_RATIO_STRETCH, colorDiffuse, animations);
     }
   }
   return NULL;
@@ -339,14 +338,14 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   m_height = height;
   m_focused = focused;
   vector<CAnimation> blankAnims;
-  CListTexture *tex = new CListTexture(0, 0, width, texHeight, nofocusCondition, texture, CGUIImage::ASPECT_RATIO_STRETCH, blankAnims);
+  CListTexture *tex = new CListTexture(0, 0, width, texHeight, nofocusCondition, texture, CGUIImage::ASPECT_RATIO_STRETCH, 0xffffffff, blankAnims);
   m_controls.push_back(tex);
   if (focused)
   {
-    CListTexture *tex = new CListTexture(0, 0, width, texHeight, focusCondition, textureFocus, CGUIImage::ASPECT_RATIO_STRETCH, blankAnims);
+    CListTexture *tex = new CListTexture(0, 0, width, texHeight, focusCondition, textureFocus, CGUIImage::ASPECT_RATIO_STRETCH, 0xffffffff, blankAnims);
     m_controls.push_back(tex);
   }
-  CListImage *image = new CListImage(8, 0, iconWidth, texHeight, 0, CImage(""), CGUIImage::ASPECT_RATIO_KEEP, blankAnims, LISTITEM_ICON);
+  CListImage *image = new CListImage(8, 0, iconWidth, texHeight, 0, CImage(""), CGUIImage::ASPECT_RATIO_KEEP, 0xffffffff, blankAnims, LISTITEM_ICON);
   m_controls.push_back(image);
   float x = iconWidth + labelInfo.offsetX + 10;
   CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, 0, labelInfo, LISTITEM_LABEL, "");
@@ -364,7 +363,7 @@ void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, 
   float centeredPosX = (m_width - texWidth)*0.5f;
   // background texture
   vector<CAnimation> blankAnims;
-  CListTexture *tex = new CListTexture(centeredPosX, 0, texWidth, texHeight, 0, image, CGUIImage::ASPECT_RATIO_STRETCH, blankAnims);
+  CListTexture *tex = new CListTexture(centeredPosX, 0, texWidth, texHeight, 0, image, CGUIImage::ASPECT_RATIO_STRETCH, 0xffffffff, blankAnims);
   m_controls.push_back(tex);
   // thumbnail
   float xOff = 0;
@@ -375,10 +374,10 @@ void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, 
     yOff += (texHeight - thumbHeight) * 0.5f;
     //if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
   }
-  CListImage *thumb = new CListImage(thumbPosX + centeredPosX + xOff, thumbPosY + yOff, thumbWidth, thumbHeight, 0, CImage(""), thumbAspect, blankAnims, LISTITEM_ICON);
+  CListImage *thumb = new CListImage(thumbPosX + centeredPosX + xOff, thumbPosY + yOff, thumbWidth, thumbHeight, 0, CImage(""), thumbAspect, 0xffffffff, blankAnims, LISTITEM_ICON);
   m_controls.push_back(thumb);
   // overlay
-  CListImage *overlay = new CListImage(thumbPosX + centeredPosX + xOff + thumbWidth - 32, thumbPosY + yOff + thumbHeight - 32, 32, 32, 0, CImage(""), thumbAspect, blankAnims, LISTITEM_OVERLAY);
+  CListImage *overlay = new CListImage(thumbPosX + centeredPosX + xOff + thumbWidth - 32, thumbPosY + yOff + thumbHeight - 32, 32, 32, 0, CImage(""), thumbAspect, 0xffffffff, blankAnims, LISTITEM_OVERLAY);
   m_controls.push_back(overlay);
   // label
   if (hideLabels) return;

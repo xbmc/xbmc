@@ -34,7 +34,7 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColourDiffuse(D3DCOLOR colour);
+  virtual void SetColorDiffuse(const CColorDiffuse &color);
   void SetLabel(const string & aLabel);
   void SetLabel2(const string & aLabel2);
   void SetClickActions(const vector<CStdString>& clickActions) { m_clickActions = clickActions; };

@@ -194,17 +194,17 @@ void CGUIResizeControl::SetPosition(float posX, float posY)
   m_imgNoFocus.SetPosition(posX, posY);
 }
 
-void CGUIResizeControl::SetAlpha(DWORD dwAlpha)
+void CGUIResizeControl::SetAlpha(const CColorDiffuse &alpha)
 {
-  m_imgFocus.SetAlpha(dwAlpha);
-  m_imgNoFocus.SetAlpha(dwAlpha);
+  m_imgFocus.SetAlpha(alpha);
+  m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIResizeControl::SetColourDiffuse(D3DCOLOR colour)
+void CGUIResizeControl::SetColorDiffuse(const CColorDiffuse &color)
 {
-  CGUIControl::SetColourDiffuse(colour);
-  m_imgFocus.SetColourDiffuse(colour);
-  m_imgNoFocus.SetColourDiffuse(colour);
+  CGUIControl::SetColorDiffuse(color);
+  m_imgFocus.SetColorDiffuse(color);
+  m_imgNoFocus.SetColorDiffuse(color);
 }
 
 void CGUIResizeControl::SetLimits(float x1, float y1, float x2, float y2)
