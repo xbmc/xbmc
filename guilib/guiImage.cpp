@@ -16,9 +16,8 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_iCurrentImage = 0;
   m_dwFrameCounter = -1;
   m_aspectRatio = ASPECT_RATIO_STRETCH;
+  m_aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
   m_iCurrentLoop = 0;
-  m_renderWidth = width;
-  m_renderHeight = height;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
   m_bWasVisible = m_visible;
@@ -37,8 +36,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_strFileName = left.m_strFileName;
   m_dwColorKey = left.m_dwColorKey;
   m_aspectRatio = left.m_aspectRatio;
-  m_renderWidth = left.m_renderWidth;
-  m_renderHeight = left.m_renderHeight;
+  m_aspectAlign = left.m_aspectAlign;
   // defaults
   m_iCurrentImage = 0;
   m_dwFrameCounter = -1;
@@ -165,8 +163,9 @@ void CGUIImage::Render()
     }
 #endif
 
-    // TODO: This should really be calculated based on where we are in the image
-    //       so that it works with borders
+    // TODO: The diffuse coloring applies to all vertices, which will
+    //       look weird for stuff with borders, as will the -ve height/width
+    //       for flipping
 
     // left segment
     if (m_image.border.left)
@@ -447,14 +446,21 @@ void CGUIImage::CalculateSize()
     }
     m_fNW = (m_width < 0) ? -fNewWidth : fNewWidth;
     m_fNH = (m_height < 0) ? -fNewHeight : fNewHeight;
-    m_fX = m_posX - (m_fNW - m_width) * 0.5f;
-    m_fY = m_posY - (m_fNH - m_height) * 0.5f;
-  }
 
-  m_renderWidth = fabs(m_fNW);
-  if (fabs(m_width) < m_renderWidth) m_renderWidth = m_width;
-  m_renderHeight = fabs(m_fNH);
-  if (fabs(m_height) < m_renderHeight) m_renderHeight = m_height;
+    // calculate placement
+    if (m_aspectAlign & ASPECT_ALIGN_LEFT)
+      m_fX = m_posX;
+    else if (m_aspectAlign & ASPECT_ALIGN_RIGHT)
+      m_fX = m_posX + m_width - m_fNW;
+    else
+      m_fX = m_posX + (m_width - m_fNW) * 0.5f;
+    if (m_aspectAlign & ASPECT_ALIGNY_TOP)
+      m_fY = m_posY;
+    else if (m_aspectAlign & ASPECT_ALIGNY_BOTTOM)
+      m_fY = m_posY + m_height - m_fNH;
+    else
+      m_fY = m_posY + (m_height - m_fNH) * 0.5f;
+  }
 
   if (!m_linearTexture)
   {
@@ -527,23 +533,14 @@ int CGUIImage::GetTextureHeight() const
   return m_iTextureHeight;
 }
 
-void CGUIImage::SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio)
+void CGUIImage::SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align)
 {
-  if (m_aspectRatio != ratio)
+  if (m_aspectRatio != ratio || m_aspectAlign != align)
   {
     m_aspectRatio = ratio;
+    m_aspectAlign = align;
     Update();
   }
-}
-
-float CGUIImage::GetRenderWidth() const
-{
-  return m_renderWidth;
-}
-
-float CGUIImage::GetRenderHeight() const
-{
-  return m_renderHeight;
 }
 
 void CGUIImage::PythonSetColorKey(DWORD dwColorKey)
@@ -567,16 +564,6 @@ void CGUIImage::SetFileName(const CStdString& strFileName)
 void CGUIImage::SetAlpha(const CColorDiffuse &alpha)
 {
   m_alpha = alpha;
-}
-
-void CGUIImage::GetBottomRight(float &x, float &y) const
-{
-  x = m_fX + m_fNW;
-  y = m_fY + m_fNH;
-  if (m_fNW > m_width)
-    x = m_posX + m_width;
-  if (m_fNH > m_height)
-    y = m_posY + m_height;
 }
 
 bool CGUIImage::IsAllocated() const
