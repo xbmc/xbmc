@@ -131,7 +131,7 @@ void CGUIImage::Render()
     p3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
     p3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
     p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-    p3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
+    p3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
     p3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
     p3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
     p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
@@ -435,13 +435,13 @@ void CGUIImage::CalculateSize()
     float fOutputFrameRatio = fSourceFrameRatio / pixelRatio;
 
     // maximize the thumbnails width
-    float fNewWidth = m_width;
+    float fNewWidth = fabs(m_width);
     float fNewHeight = fNewWidth / fOutputFrameRatio;
 
-    if ((m_aspectRatio == CGUIImage::ASPECT_RATIO_SCALE && fNewHeight < m_height) ||
-        (m_aspectRatio == CGUIImage::ASPECT_RATIO_KEEP && fNewHeight > m_height))
+    if ((m_aspectRatio == CGUIImage::ASPECT_RATIO_SCALE && fNewHeight < fabs(m_height)) ||
+        (m_aspectRatio == CGUIImage::ASPECT_RATIO_KEEP && fNewHeight > fabs(m_height)))
     {
-      fNewHeight = m_height;
+      fNewHeight = fabs(m_height);
       fNewWidth = fNewHeight * fOutputFrameRatio;
     }
     if (m_aspectRatio == CGUIImage::ASPECT_RATIO_CENTER)
@@ -449,15 +449,16 @@ void CGUIImage::CalculateSize()
       fNewWidth = (float)m_iTextureWidth;
       fNewHeight = (float)m_iTextureHeight;
     }
-    m_fNW = fNewWidth;
-    m_fNH = fNewHeight;
-    m_fX = m_posX - (fNewWidth - m_width) * 0.5f;
-    m_fY = m_posY - (fNewHeight - m_height) * 0.5f;
+    m_fNW = (m_width < 0) ? -fNewWidth : fNewWidth;
+    m_fNH = (m_height < 0) ? -fNewHeight : fNewHeight;
+    m_fX = m_posX - (m_fNW - m_width) * 0.5f;
+    m_fY = m_posY - (m_fNH - m_height) * 0.5f;
   }
 
-
-  m_renderWidth = (m_fNW > m_width) ? m_width : m_fNW;
-  m_renderHeight = (m_fNH > m_height) ? m_height : m_fNH;
+  m_renderWidth = fabs(m_fNW);
+  if (fabs(m_width) < m_renderWidth) m_renderWidth = m_width;
+  m_renderHeight = fabs(m_fNH);
+  if (fabs(m_height) < m_renderHeight) m_renderHeight = m_height;
 
   if (!m_linearTexture)
   {
