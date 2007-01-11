@@ -67,6 +67,24 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
     OnOK();
   else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
     OnNumber(action.wID - REMOTE_0);
+  else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
+  { // input from the keyboard (vkey, not ascii)
+    BYTE b = action.wID & 0xFF;
+    if (b == 0x25) OnPrevious();     // left
+    else if (b == 0x27) OnNext();  // right
+    else if (b == 0x0D) OnOK();         // enter
+    else if (b == 0x08) OnBackSpace();    // backspace
+    else if (b == 0x1B) OnCancel();        // escape
+  }
+  else if (action.wID >= KEY_ASCII)
+  { // input from the keyboard
+    char ch = action.wID & 0xFF;
+    if (ch == 10) OnOK(); // enter
+    else if (ch == 8) OnBackSpace(); // backspace
+    else if (ch == 27) OnCancel(); // escape
+    else if (ch >= 48 && ch < 58)  // number
+      OnNumber(ch - 48);
+  }
   else
     return CGUIDialog::OnAction(action);
   return true;
