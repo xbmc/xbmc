@@ -7,8 +7,8 @@
 
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , m_alpha(0xff)
 {
-  m_colDiffuse = 0xFFFFFFFF;
   m_strFileName = texture.file;
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
@@ -22,9 +22,6 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_iImageWidth = 0;
   m_iImageHeight = 0;
   m_bWasVisible = m_visible;
-  m_dwAlpha = 0xFF;
-  for (int i = 0; i < 4; i++)
-    m_cornerAlpha[i] = 0xFF;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_texturesAllocated = false;
@@ -34,8 +31,9 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
 
 CGUIImage::CGUIImage(const CGUIImage &left)
     : CGUIControl(left)
+    , m_alpha(left.m_alpha)
 {
-  m_colDiffuse = left.m_colDiffuse;
+  m_diffuse = left.m_diffuse;
   m_strFileName = left.m_strFileName;
   m_dwColorKey = left.m_dwColorKey;
   m_aspectRatio = left.m_aspectRatio;
@@ -49,9 +47,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_iImageHeight = 0;
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
-  m_dwAlpha = left.m_dwAlpha;
-  for (int i = 0; i < 4; i++)
-    m_cornerAlpha[i] = left.m_cornerAlpha[i];
+  m_alpha = left.m_alpha;
   m_pPalette = NULL;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
@@ -141,10 +137,6 @@ void CGUIImage::Render()
 
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
-    // set the base colour based on our alpha level and diffuse color
-    D3DCOLOR baseColor = m_colDiffuse;
-    if (m_dwAlpha != 0xFF) baseColor = MIX_ALPHA(m_dwAlpha, m_colDiffuse);
-
     p3DDevice->SetVertexShader( FVF_VERTEX );
 #ifdef HAS_XBOX_D3D
     p3DDevice->Begin(D3DPT_QUADLIST);
@@ -172,29 +164,33 @@ void CGUIImage::Render()
 #ifdef ALLOW_TEXTURE_COMPRESSION
     }
 #endif
+
+    // TODO: This should really be calculated based on where we are in the image
+    //       so that it works with borders
+
     // left segment
     if (m_image.border.left)
     {
       if (m_image.border.top)
-        Render(m_fX, m_fY, m_fX + m_image.border.left, m_fY + m_image.border.top, 0, 0, uLeft, vTop, baseColor);
-      Render(m_fX, m_fY + m_image.border.top, m_fX + m_image.border.left, m_fY + m_fNH - m_image.border.bottom, 0, vTop, uLeft, vBottom, baseColor);
+       Render(m_fX, m_fY, m_fX + m_image.border.left, m_fY + m_image.border.top, 0, 0, uLeft, vTop);
+      Render(m_fX, m_fY + m_image.border.top, m_fX + m_image.border.left, m_fY + m_fNH - m_image.border.bottom, 0, vTop, uLeft, vBottom);
       if (m_image.border.bottom)
-        Render(m_fX, m_fY + m_fNH - m_image.border.bottom, m_fX + m_image.border.left, m_fY + m_fNH, 0, vBottom, uLeft, m_fV, baseColor); 
+        Render(m_fX, m_fY + m_fNH - m_image.border.bottom, m_fX + m_image.border.left, m_fY + m_fNH, 0, vBottom, uLeft, m_fV); 
     }
     // middle segment
     if (m_image.border.top)
-      Render(m_fX + m_image.border.left, m_fY, m_fX + m_fNW - m_image.border.right, m_fY + m_image.border.top, uLeft, 0, uRight, vTop, baseColor);
-    Render(m_fX + m_image.border.left, m_fY + m_image.border.top, m_fX + m_fNW - m_image.border.right, m_fY + m_fNH - m_image.border.bottom, uLeft, vTop, uRight, vBottom, baseColor);
+      Render(m_fX + m_image.border.left, m_fY, m_fX + m_fNW - m_image.border.right, m_fY + m_image.border.top, uLeft, 0, uRight, vTop);
+    Render(m_fX + m_image.border.left, m_fY + m_image.border.top, m_fX + m_fNW - m_image.border.right, m_fY + m_fNH - m_image.border.bottom, uLeft, vTop, uRight, vBottom);
     if (m_image.border.bottom)
-      Render(m_fX + m_image.border.left, m_fY + m_fNH - m_image.border.bottom, m_fX + m_fNW - m_image.border.right, m_fY + m_fNH, uLeft, vBottom, uRight, m_fV, baseColor); 
+      Render(m_fX + m_image.border.left, m_fY + m_fNH - m_image.border.bottom, m_fX + m_fNW - m_image.border.right, m_fY + m_fNH, uLeft, vBottom, uRight, m_fV); 
     // right segment
     if (m_image.border.right)
     { // have a left border
       if (m_image.border.top)
-        Render(m_fX + m_fNW - m_image.border.right, m_fY, m_fX + m_fNW, m_fY + m_image.border.top, uRight, 0, m_fU, vTop, baseColor);
-      Render(m_fX + m_fNW - m_image.border.right, m_fY + m_image.border.top, m_fX + m_fNW, m_fY + m_fNH - m_image.border.bottom, uRight, vTop, m_fU, vBottom, baseColor);
+        Render(m_fX + m_fNW - m_image.border.right, m_fY, m_fX + m_fNW, m_fY + m_image.border.top, uRight, 0, m_fU, vTop);
+      Render(m_fX + m_fNW - m_image.border.right, m_fY + m_image.border.top, m_fX + m_fNW, m_fY + m_fNH - m_image.border.bottom, uRight, vTop, m_fU, vBottom);
       if (m_image.border.bottom)
-        Render(m_fX + m_fNW - m_image.border.right, m_fY + m_fNH - m_image.border.bottom, m_fX + m_fNW, m_fY + m_fNH, uRight, vBottom, m_fU, m_fV, baseColor); 
+        Render(m_fX + m_fNW - m_image.border.right, m_fY + m_fNH - m_image.border.bottom, m_fX + m_fNW, m_fY + m_fNH, uRight, vBottom, m_fU, m_fV); 
     } 
 #ifdef ALLOW_TEXTURE_COMPRESSION
 #ifdef HAS_XBOX_D3D
@@ -211,7 +207,7 @@ void CGUIImage::Render()
   CGUIControl::Render();
 }
 
-void CGUIImage::Render(float left, float top, float right, float bottom, float u1, float v1, float u2, float v2, DWORD baseColor)
+void CGUIImage::Render(float left, float top, float right, float bottom, float u1, float v1, float u2, float v2)
 {
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
 
@@ -231,26 +227,26 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 
 #ifdef HAS_XBOX_D3D
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
-  D3DCOLOR color = baseColor;
-  if (m_cornerAlpha[0] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[0],baseColor);
+  D3DCOLOR color = m_diffuse.color[0];
+  if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuse.color[0]);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
-  color = baseColor;
-  if (m_cornerAlpha[1] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[1],baseColor);
+  color = m_diffuse.color[1];
+  if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuse.color[1]);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v2);
-  color = baseColor;
-  if (m_cornerAlpha[2] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[2],baseColor);
+  color =  m_diffuse.color[2];
+  if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2], m_diffuse.color[2]);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
-  color = baseColor;
-  if (m_cornerAlpha[3] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[3],baseColor);
+  color =  m_diffuse.color[3];
+  if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3], m_diffuse.color[3]);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, 0, 0 );
 
@@ -265,26 +261,26 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   CUSTOMVERTEX verts[4];
   verts[0].x = x1; verts[0].y = y1; verts[0].z = 0.0f; verts[0].rhw = 1.0f;
   verts[0].tu = u1;   verts[0].tv = v1;
-  DWORD color = baseColor;
-  if (m_cornerAlpha[0] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[0],baseColor);
+  DWORD color = m_diffuse.color[0];
+  if (m_alpha.color[0] != 0xFF) color = MIX_ALPHA(m_alpha.color[0],m_diffuse.color[0]);
   verts[0].color = g_graphicsContext.MergeAlpha(color);
 
   verts[1].x = x2; verts[1].y = y2; verts[1].z = 0.0f;verts[1].rhw = 1.0f;
   verts[1].tu = u2;   verts[1].tv = v1;
-  color = baseColor;
-  if (m_cornerAlpha[1] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[1],baseColor);
+  color = m_diffuse.color[1];
+  if (m_alpha.color[1] != 0xFF) color = MIX_ALPHA(m_alpha.color[1],m_diffuse.color[1]);
   verts[1].color = g_graphicsContext.MergeAlpha(color);
 
   verts[2].x = x3; verts[2].y = y3; verts[2].z = 0.0f; verts[2].rhw = 1.0f;
   verts[2].tu = u2;   verts[2].tv = v2;
-  color = baseColor;
-  if (m_cornerAlpha[2] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[2],baseColor);
+  color = m_diffuse.color[2];
+  if (m_alpha.color[2] != 0xFF) color = MIX_ALPHA(m_alpha.color[2],m_diffuse.color[2]);
   verts[2].color = g_graphicsContext.MergeAlpha(color);
 
   verts[3].x = x4; verts[3].y = y4; verts[3].z = 0.0f; verts[3].rhw = 1.0f;
   verts[3].tu = u1;   verts[3].tv = v2;
-  color = baseColor;
-  if (m_cornerAlpha[3] != 0xFF) color = MIX_ALPHA(m_cornerAlpha[3],baseColor);
+  color = m_diffuse.color[3];
+  if (m_alpha.color[3] != 0xFF) color = MIX_ALPHA(m_alpha.color[3],m_diffuse.color[3]);
   verts[3].color = g_graphicsContext.MergeAlpha(color);
 
   p3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
@@ -568,26 +564,9 @@ void CGUIImage::SetFileName(const CStdString& strFileName)
   // Don't allocate resources here as this is done at render time
 }
 
-void CGUIImage::SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom)
+void CGUIImage::SetAlpha(const CColorDiffuse &alpha)
 {
-  if (
-    m_cornerAlpha[0] != dwLeftTop ||
-    m_cornerAlpha[1] != dwRightTop ||
-    m_cornerAlpha[2] != dwLeftBottom ||
-    m_cornerAlpha[3] != dwRightBottom
-  )
-  {
-    m_cornerAlpha[0] = dwLeftTop;
-    m_cornerAlpha[1] = dwRightTop;
-    m_cornerAlpha[2] = dwLeftBottom;
-    m_cornerAlpha[3] = dwRightBottom;
-    Update();
-  }
-}
-
-void CGUIImage::SetAlpha(DWORD dwAlpha)
-{
-  m_dwAlpha = dwAlpha;
+  m_alpha = alpha;
 }
 
 void CGUIImage::GetBottomRight(float &x, float &y) const

@@ -68,8 +68,7 @@ public:
   void PythonSetColorKey(DWORD dwColorKey);
   void SetFileName(const CStdString& strFileName);
   void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio);
-  void SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom);
-  void SetAlpha(DWORD dwAlpha);
+  void SetAlpha(const CColorDiffuse &alpha);
   void SetInfo(int info) { m_Info = info; };
 
   void GetBottomRight(float &x, float &y) const;
@@ -84,10 +83,10 @@ protected:
   void FreeTextures();
   void Process();
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-  void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, DWORD baseColor);
+  void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
 
   DWORD m_dwColorKey;
-  DWORD m_dwAlpha;
+  CColorDiffuse m_alpha;
   CStdString m_strFileName;
   int m_iTextureWidth;
   int m_iTextureHeight;
@@ -102,7 +101,6 @@ protected:
   float m_renderWidth;
   float m_renderHeight;
   bool m_bWasVisible;
-  DWORD m_cornerAlpha[4];
   bool m_bDynamicResourceAlloc;
 
   // for when we are changing textures
