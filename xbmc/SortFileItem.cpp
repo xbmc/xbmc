@@ -318,6 +318,15 @@ bool SSortFileItem::SongArtistAscending(CFileItem *left, CFileItem *right)
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return true;
     if (result > 0) return false;
+    // test year
+    if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
+    {
+      l = (char *)left->m_musicInfoTag.GetYear().c_str();
+      r = (char *)right->m_musicInfoTag.GetYear().c_str();
+      result = StringUtils::AlphaNumericCompare(l, r);
+      if (result < 0) return true;
+      if (result > 0) return false;
+    }
     // artists agree, test the album
     l = (char *)left->m_musicInfoTag.GetAlbum().c_str();
     r = (char *)right->m_musicInfoTag.GetAlbum().c_str();
@@ -343,6 +352,15 @@ bool SSortFileItem::SongArtistDescending(CFileItem *left, CFileItem *right)
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return false;
     if (result > 0) return true;
+    // test year
+    if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
+    {
+      l = (char *)left->m_musicInfoTag.GetYear().c_str();
+      r = (char *)right->m_musicInfoTag.GetYear().c_str();
+      result = StringUtils::AlphaNumericCompare(l, r);
+      if (result < 0) return false;
+      if (result > 0) return true;
+    }
     // artists agree, test the album
     l = (char *)left->m_musicInfoTag.GetAlbum().c_str();
     r = (char *)right->m_musicInfoTag.GetAlbum().c_str();
