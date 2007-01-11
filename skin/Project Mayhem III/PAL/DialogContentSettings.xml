@@ -1,12 +1,11 @@
 <window>
  <id>132</id>
- <defaultcontrol>28</defaultcontrol>
+ <defaultcontrol>1343</defaultcontrol>
  <coordinates>
    <system>1</system>
    <posx>161</posx>
    <posy>132</posy>
  </coordinates>
- <visible>Window.IsActive(132)</visible>
  <controls>
 
  <control>
@@ -29,7 +28,7 @@
 	<posy>-11</posy>
 	<width>446</width>
 	<height>406</height>
-	<texture>dialog-panelprofile.png</texture>
+	<texture>dialog-panel2.png</texture>
 	<include>homemisc</include>
  </control>
 
@@ -37,8 +36,8 @@
 	<description>scraper image</description>
 	<type>image</type>
 	<id>2</id>
-	<posx>20</posx>
-	<posy>40</posy>
+	<posx>10</posx>
+	<posy>45</posy>
 	<width>120</width>
 	<height>120</height>
 	<align>left</align>
@@ -47,34 +46,11 @@
 	<include>homemisc</include>
  </control>
 
-  <control>
-   <description>directory content select spincontrol</description>
-   <type>spincontrol</type>
-   <align>left</align>
-   <width>17</width>
-   <height>17</height>
-   <id>1343</id>
-   <posx>340</posx>
-   <posy>8</posy>
-   <font>-</font>
-   <reverse>yes</reverse>
-   <onup>2</onup>
-   <ondown>2</ondown>
-   <onleft>2</onleft>
-   <onright>2</onright>
-   <disabledcolor>ffffffff</disabledcolor>
-   <textoffsetx>0</textoffsetx>
-   <textoffsety>0</textoffsety>
-   <aligny>center</aligny>
-   <include>contentpanelslide</include>
-   <subtype>text</subtype>
-  </control>
-  
  <control>
 	<description>directory contains label</description>
 	<type>label</type>
 	<id>1000</id>
-	<posx>20</posx>
+	<posx>10</posx>
 	<posy>8</posy>
 	<width>280</width>
 	<align>left</align>
@@ -84,64 +60,70 @@
         <include>homemisc</include>
  </control>
 
+  <control>
+   <description>directory content select spincontrol</description>
+   <id>1343</id>
+   <type>spincontrolex</type>
+   <align>left</align>
+   <width>200</width>
+   <height>17</height>
+   <posx>200</posx>
+   <posy>10</posy>
+   <font>special13</font>
+   <reverse>yes</reverse>
+   <texturefocus>-</texturefocus>
+   <texturenofocus>-</texturenofocus>
+   <onup>28</onup>
+   <ondown>4</ondown>
+   <onleft>1343</onleft>
+   <onright>1343</onright>
+   <disabledcolor>ffffffff</disabledcolor>
+   <textoffsetx>0</textoffsetx>
+   <textoffsety>0</textoffsety>
+   <aligny>center</aligny>
+   <subtype>text</subtype>
+   <include>homemisc</include>
+  </control>
+  
+
  <control>
-   <description>Path List Control</description>
+   <description>Scrapper List Control</description>
    <type>listcontrol</type>
    <id>4</id>
-   <posx>180</posx>
-   <posy>40</posy>
-   <width>200</width>
-   <height>160</height>
+   <posx>140</posx>
+   <posy>45</posy>
+   <width>260</width>
+   <height>120</height>
    <font>font12</font>
    <textoffsetx>8</textoffsetx>
    <aligny>center</aligny>
    <texturefocus>input-focus.png</texturefocus>
    <texturenofocus>input-nofocus.png</texturenofocus>
    <textureheight>32</textureheight>
-   <spacebetweenitems>8</spacebetweenitems>
+   <spacebetweenitems>4</spacebetweenitems>
    <itemwidth>0</itemwidth>
    <textxoff>0</textxoff>
    <font2>-</font2>
-   <onup>18</onup>
-   <onleft>11</onleft>
-   <onright>11</onright>
-   <ondown>12</ondown>
+   <include>homemisc</include>
+   <onup>1343</onup>
+   <ondown>30</ondown>
+   <onleft>4</onleft>
+   <onright>4</onright>
   </control>
-
-
- <control>
-	<description>Next page button</description>
-	<type>spincontrol</type>
-	<id>60</id>
-	<posx>371</posx>
-	<posy>8</posy>
-	<subtype>int</subtype>
-	<font>font12</font>
-	<onleft>60</onleft>
-	<onright>60</onright>
-	<ondown>2</ondown>
-	<include>homemisc</include>
- </control>
 
  <control>
 	<description>control area</description>
-	<type>image</type>
+	<type>grouplist</type>
 	<id>5</id>
 	<posx>-1</posx>
 	<posy>180</posy>
 	<width>408</width>
 	<height>125</height>
-	<texture>-</texture>
-	<include>homemisc</include>
- </control>
-
- <control>
-	<description>control gap</description>
-	<type>image</type>
-	<id>6</id>
-	<width>350</width>
-	<height>31</height>
-	<texture>-</texture>
+	<itemgap>2</itemgap>
+	<onup>4</onup>
+	<ondown>28</ondown>
+	<onleft>5</onleft>
+	<onright>5</onright>
 	<include>homemisc</include>
  </control>
 
@@ -178,51 +160,6 @@
  </control>
 
  <control>
-	<description>Default SpinControlex</description>
-	<type>spincontrolex</type>
-	<id>9</id>
-	<posx>530</posx>
-	<posy>150</posy>
-	<height>31</height>
-	<width>300</width>
-	<texturefocus>input-focus.png</texturefocus>
-	<texturenofocus>-</texturenofocus>
-	<textureup>scroll-up.png</textureup>
-	<texturedown>scroll-down.png</texturedown>
-	<textureupfocus>scroll-up-focus.png</textureupfocus>
-	<texturedownfocus>scroll-down-focus.png</texturedownfocus>
-	<font>font12</font>
-	<include>textcolorwhite</include>
-	<disabledcolor>60d0d0d0</disabledcolor>
-	<textoffsetx>12</textoffsetx>
-	<aligny>center</aligny>
-	<reverse>yes</reverse>
-	<include>homemisc</include>
- </control>
-
- <control>
-	<description>Default Slider</description>
-	<type>sliderex</type>
-	<id>10</id>
-	<posx>1530</posx>
-	<posy>150</posy>
-	<height>31</height>
-	<width>300</width>
-	<texturefocus>input-focus.png</texturefocus>
-	<texturenofocus>-</texturenofocus>
-	<sliderwidth>100</sliderwidth>
-	<sliderheight>20</sliderheight>
-	<texturesliderbar>osd_slider_bg.png</texturesliderbar>
-	<textureslidernib>osd_slider_nibNF.png</textureslidernib>
-	<textureslidernibfocus>osd_slider_nibFO.png</textureslidernibfocus>
-	<font>font12</font>
-	<include>textcolorwhite</include>
-	<disabledcolor>60d0d0d0</disabledcolor>
-	<textoffsetx>12</textoffsetx>
-	<include>homemisc</include>
- </control>
-
- <control>
 	<description>separator image</description>
 	<type>image</type>
 	<id>11</id>
@@ -245,10 +182,10 @@
 	<font>font10</font>
 	<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
 	<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-	<onleft>30</onleft>
+	<onleft>29</onleft>
 	<onright>29</onright>
-	<onup>1343</onup>
-	<ondown>30</ondown>
+	<onup>30</onup>
+	<ondown>1343</ondown>
 	<include>homemisc</include>
  </control>
 
@@ -266,9 +203,9 @@
 	<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
 	<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 	<onleft>28</onleft>
-	<onright>30</onright>
-	<onup>3</onup>
-	<ondown>30</ondown>
+	<onright>28</onright>
+	<onup>30</onup>
+	<ondown>1343</ondown>
 	<include>homemisc</include>
  </control>
 
