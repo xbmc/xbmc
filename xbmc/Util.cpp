@@ -446,6 +446,12 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
   }
+  else if (url.GetProtocol() == "stack")
+  {
+    // TODO: get the first parent path common to all stack items
+    CStackDirectory dir;
+    return GetParentPath(dir.GetFirstStackedFile(strPath), strParent);
+  }
   else if (strFile.size() == 0)
   {
     if (url.GetProtocol() == "smb" && (url.GetHostName().size() > 0))
