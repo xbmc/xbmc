@@ -121,7 +121,7 @@ bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag,
   return true;
 }
 
-bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::GUIIMAGE_ASPECT_RATIO &aspectRatio)
+bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::GUIIMAGE_ASPECT_RATIO &aspectRatio, DWORD &aspectAlign)
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   bool keepAR;
@@ -133,13 +133,31 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
   }
 #endif
   CStdString aspect;
-  if (XMLUtils::GetString(pRootNode, strTag, aspect))
+  const TiXmlElement *node = pRootNode->FirstChildElement(strTag);
+  if (!node || !node->FirstChild())
+    return false;
+
+  aspect = node->FirstChild()->Value();
+  if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+  else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
+  else if (aspect.CompareNoCase("center") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_CENTER;
+  else if (aspect.CompareNoCase("stretch") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;
+
+  const char *attribute = node->Attribute("align");
+  if (attribute)
   {
-    if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
-    else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
-    else if (aspect.CompareNoCase("center") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_CENTER;
-    else if (aspect.CompareNoCase("stretch") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;
-    return true;
+    CStdString align(attribute);
+    if (align.CompareNoCase("center") == 0) aspectAlign = ASPECT_ALIGN_CENTER | (aspectAlign & ASPECT_ALIGNY_MASK);
+    else if (align.CompareNoCase("right") == 0) aspectAlign = ASPECT_ALIGN_RIGHT | (aspectAlign & ASPECT_ALIGNY_MASK);
+    else if (align.CompareNoCase("left") == 0) aspectAlign = ASPECT_ALIGN_LEFT | (aspectAlign & ASPECT_ALIGNY_MASK);
+  }
+  attribute = node->Attribute("aligny");
+  if (attribute)
+  {
+    CStdString align(attribute);
+    if (align.CompareNoCase("center") == 0) aspectAlign = ASPECT_ALIGNY_CENTER | (aspectAlign & ASPECT_ALIGN_MASK);
+    else if (align.CompareNoCase("bottom") == 0) aspectAlign = ASPECT_ALIGNY_BOTTOM | (aspectAlign & ASPECT_ALIGN_MASK);
+    else if (align.CompareNoCase("top") == 0) aspectAlign = ASPECT_ALIGNY_TOP | (aspectAlign & ASPECT_ALIGN_MASK);
   }
   return false;
 }
@@ -415,6 +433,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;
   if (strType == "thumbnailpanel")  // default for thumbpanel is keep
     aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+  DWORD aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
 
   int iVisibleCondition = 0;
   bool allowHiddenFocus = false;
@@ -784,7 +803,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
   XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
   XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
-  GetAspectRatio(pControlNode, "aspectratio", aspectRatio);
+  GetAspectRatio(pControlNode, "aspectratio", aspectRatio, aspectAlign);
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
@@ -1146,7 +1165,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetAspectRatio(aspectRatio);
+    pControl->SetAspectRatio(aspectRatio, aspectAlign);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);

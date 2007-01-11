@@ -18,6 +18,16 @@ struct FRECT
   float bottom;
 };
 
+// image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
+#define ASPECT_ALIGN_CENTER  0
+#define ASPECT_ALIGN_LEFT    1
+#define ASPECT_ALIGN_RIGHT   2
+#define ASPECT_ALIGNY_CENTER 0
+#define ASPECT_ALIGNY_TOP    4
+#define ASPECT_ALIGNY_BOTTOM 8
+#define ASPECT_ALIGN_MASK    3
+#define ASPECT_ALIGNY_MASK  ~3
+
 class CImage
 {
 public:
@@ -67,14 +77,11 @@ public:
 
   void PythonSetColorKey(DWORD dwColorKey);
   void SetFileName(const CStdString& strFileName);
-  void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio);
+  void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
   void SetAlpha(const CColorDiffuse &alpha);
   void SetInfo(int info) { m_Info = info; };
 
-  void GetBottomRight(float &x, float &y) const;
   const CStdString& GetFileName() const { return m_strFileName;};
-  float GetRenderWidth() const;
-  float GetRenderHeight() const;
   int GetTextureWidth() const;
   int GetTextureHeight() const;
 
@@ -96,10 +103,9 @@ protected:
   int m_iCurrentImage;
   DWORD m_dwFrameCounter;
   GUIIMAGE_ASPECT_RATIO m_aspectRatio;
+  DWORD                 m_aspectAlign;
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
   LPDIRECT3DPALETTE8 m_pPalette;
-  float m_renderWidth;
-  float m_renderHeight;
   bool m_bWasVisible;
   bool m_bDynamicResourceAlloc;
 
