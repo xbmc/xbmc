@@ -10,6 +10,7 @@
 #include "../util.h"
 #include "../GUIDialogContextMenu.h"
 #include "../application.h"
+#include "../applicationmessenger.h"
 
 CTuxBoxUtil g_tuxbox;
 CTuxBoxService t_tuxbox;
@@ -90,7 +91,7 @@ void CTuxBoxService::Process()
           if (strCurrentServiceName != g_tuxbox.sCurSrvData.service_name && g_application.IsPlaying())
           {
             CLog::Log(LOGDEBUG," - ERROR: Non controlled channel change detected! Stopping current playing stream!");
-            g_application.StopPlaying();
+            g_applicationMessenger.MediaStop();
             bStop = true;
           }
         }

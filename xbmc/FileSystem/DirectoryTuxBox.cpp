@@ -149,7 +149,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
         dlgProgress->Close();
         return false;
       }
-      if( (strcmp(root->Value(), strXMLRootString.c_str()) == 0) && bIsBouquet)
+      if( strXMLRootString.Equals(root->Value()) && bIsBouquet)
       {
         //Update Progressbar
         iProgressPercent=iProgressPercent+5;
@@ -158,7 +158,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
         data.Empty();
         result = g_tuxbox.ParseBouquets(root, items, url, strFilter, strXMLChildString);
       }
-      else if( (strcmp(root->Value(), strXMLRootString.c_str()) == 0) && !strFilter.IsEmpty())
+      else if( strXMLRootString.Equals(root->Value()) && !strFilter.IsEmpty() )
       {
         //Update Progressbar
         iProgressPercent=iProgressPercent+5;
