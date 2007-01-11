@@ -222,12 +222,11 @@ void CGUIButtonControl::SetAlpha(DWORD dwAlpha)
   m_imgNoFocus.SetAlpha(dwAlpha);
 }
 
-void CGUIButtonControl::SetColourDiffuse(D3DCOLOR colour)
+void CGUIButtonControl::SetColorDiffuse(const CColorDiffuse &color)
 {
-  CGUIControl::SetColourDiffuse(colour);
-
-  m_imgFocus.SetColourDiffuse(colour);
-  m_imgNoFocus.SetColourDiffuse(colour);
+  CGUIControl::SetColorDiffuse(color);
+  m_imgFocus.SetColorDiffuse(color);
+  m_imgNoFocus.SetColorDiffuse(color);
 }
 
 bool CGUIButtonControl::OnMouseClick(DWORD dwButton)

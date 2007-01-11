@@ -648,7 +648,7 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
     // check if we have a skinner-defined texture...
     CGUIImage *pImage = m_vecButtons[iOffset]->imageNoFocus;
     if (!pImage) pImage = &m_imgNoFocus;
-    pImage->SetCornerAlpha(0xFF, 0xFF, 0xFF, 0xFF);
+    pImage->SetAlpha(0xFF);
     pImage->SetVisible(true);
     if (m_bHorizontal)
     {
@@ -666,7 +666,9 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
       if (fAlpha1 < 0) fAlpha1 = 0;
       if (fAlpha > 255) fAlpha = 255.0f;
       if (fAlpha1 > 255) fAlpha1 = 255.0f;
-      pImage->SetCornerAlpha((DWORD)(fAlpha + 0.5f), (DWORD)(fAlpha1 + 0.5f), (DWORD)(fAlpha + 0.5f), (DWORD)(fAlpha1 + 0.5f));
+      CColorDiffuse alpha((DWORD)(fAlpha + 0.5f));
+      alpha.color[1] = alpha.color[2] = (DWORD)(fAlpha1 + 0.5f);
+      pImage->SetAlpha(alpha);
     }
     else
     {
@@ -684,7 +686,9 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
       if (fAlpha1 < 0) fAlpha1 = 0;
       if (fAlpha > 255) fAlpha = 255.0f;
       if (fAlpha1 > 255) fAlpha1 = 255.0f;
-      pImage->SetCornerAlpha((DWORD)(fAlpha + 0.5f), (DWORD)(fAlpha + 0.5f), (DWORD)(fAlpha1 + 0.5f), (DWORD)(fAlpha1 + 0.5f));
+      CColorDiffuse alpha((DWORD)(fAlpha + 0.5f));
+      alpha.color[2] = alpha.color[3] = (DWORD)(fAlpha1 + 0.5f);
+      pImage->SetAlpha(alpha);
     }
     pImage->SetPosition(posX, posY);
     pImage->SetWidth(m_imgNoFocus.GetWidth());

@@ -212,17 +212,17 @@ void CGUIMoverControl::SetPosition(float posX, float posY)
   m_imgNoFocus.SetPosition(posX, posY);
 }
 
-void CGUIMoverControl::SetAlpha(DWORD dwAlpha)
+void CGUIMoverControl::SetAlpha(const CColorDiffuse &alpha)
 {
-  m_imgFocus.SetAlpha(dwAlpha);
-  m_imgNoFocus.SetAlpha(dwAlpha);
+  m_imgFocus.SetAlpha(alpha);
+  m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIMoverControl::SetColourDiffuse(D3DCOLOR colour)
+void CGUIMoverControl::SetColorDiffuse(const CColorDiffuse &color)
 {
-  CGUIControl::SetColourDiffuse(colour);
-  m_imgFocus.SetColourDiffuse(colour);
-  m_imgNoFocus.SetColourDiffuse(colour);
+  CGUIControl::SetColorDiffuse(color);
+  m_imgFocus.SetColorDiffuse(color);
+  m_imgNoFocus.SetColorDiffuse(color);
 }
 
 void CGUIMoverControl::SetLimits(int iX1, int iY1, int iX2, int iY2)
