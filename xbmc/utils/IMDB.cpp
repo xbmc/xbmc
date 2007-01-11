@@ -340,7 +340,8 @@ const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, C
   char szYear[5];
 
   CStdString strMovieNoExtension = strMovie;
-  CUtil::RemoveExtension(strMovieNoExtension);
+  //don't assume movie name is a file with an extension
+  //CUtil::RemoveExtension(strMovieNoExtension);
 
   // replace whitespace with +
   strMovieNoExtension.Replace(".","+");

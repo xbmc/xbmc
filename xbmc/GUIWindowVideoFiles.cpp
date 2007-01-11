@@ -357,8 +357,13 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
   }
 
   // setup our item with the label and thumb information
-  CFileItem item(strFile, false);
+  CFileItem item(strFile, pItem->m_bIsFolder);
   item.SetLabel(pItem->GetLabel());
+
+  // hack since our label sometimes contains extensions
+  if(!pItem->m_bIsFolder && !g_guiSettings.GetBool("filelists.hideextensions") && !pItem->IsLabelPreformated())
+    item.RemoveExtension();
+  
   item.SetCachedVideoThumb();
   if (!item.HasThumbnail()) // inherit from the original item if it exists
     item.SetThumbnailImage(pItem->GetThumbnailImage());
@@ -379,13 +384,10 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
     }
   }
 
-  // save our old item, as ShowIMDB() may cause this item to vanish
-  CFileItem oldItem(*pItem);
-
   ShowIMDB(&item);
   // apply any IMDb icon to our item
-  if (oldItem.m_bIsFolder)
-    ApplyIMDBThumbToFolder(oldItem.m_strPath, item.GetThumbnailImage());
+  if (item.m_bIsFolder)
+    ApplyIMDBThumbToFolder(item.m_strPath, item.GetThumbnailImage());
   Update(m_vecItems.m_strPath);
 }
 
