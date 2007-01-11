@@ -40,10 +40,7 @@ void CGUIListContainer::Render()
 
   int offset = (int)(m_scrollOffset / m_layout.Size(m_orientation));
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
-  if (m_scrollSpeed)
-    FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
-  else
-    FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage));
+  FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
 
   g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
   float posX = m_posX;
