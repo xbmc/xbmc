@@ -121,14 +121,20 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM:
     {
+      CStdString strLabel = "%B";
       if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-        AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE, 558, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
+        AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE, 558, LABEL_MASKS("%F", "", strLabel, "%A"));  // Filename, empty | Album, Artist
       else
-        AddSortMethod(SORT_METHOD_ALBUM, 558, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
+        AddSortMethod(SORT_METHOD_ALBUM, 558, LABEL_MASKS("%F", "", strLabel, "%A"));  // Filename, empty | Album, Artist
+
+      // only displayed when sorting by artist + year
+      if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
+        strLabel += " (%Y)";
       if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-        AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 557, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
+        AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 557, LABEL_MASKS("%F", "", strLabel, "%A"));  // Filename, empty | Album, Artist
       else
-        AddSortMethod(SORT_METHOD_ARTIST, 557, LABEL_MASKS("%F", "", "%B", "%A"));  // Filename, empty | Album, Artist
+        AddSortMethod(SORT_METHOD_ARTIST, 557, LABEL_MASKS("%F", "", strLabel, "%A"));  // Filename, empty | Album, Artist
+
       SetSortMethod(g_stSettings.m_viewStateMusicNavAlbums.m_sortMethod);
 
       SetViewAsControl(g_stSettings.m_viewStateMusicNavAlbums.m_viewMode);

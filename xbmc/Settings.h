@@ -287,6 +287,7 @@ public:
     bool m_bMusicLibraryHideAllItems;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryHideCompilationArtists;
+    bool m_bMusicLibraryAlbumsSortByArtistThenYear;
 
   };
   struct stSettings
