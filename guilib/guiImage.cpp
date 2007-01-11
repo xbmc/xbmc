@@ -220,8 +220,8 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   float x4 = floor(g_graphicsContext.ScaleFinalXCoord(left, bottom) + 0.5f) - 0.5f;
   float y4 = floor(g_graphicsContext.ScaleFinalYCoord(left, bottom) + 0.5f) - 0.5f;
 
-  if (y3 == y1) y3 += 1.0f; if (x2 == x1) x2 += 1.0f;
-  if (y4 == y2) y4 += 1.0f; if (x3 == x4) x3 += 1.0f;
+  if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
+  if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
 
   // Render the image
 
