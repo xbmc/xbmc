@@ -228,25 +228,25 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 #ifdef HAS_XBOX_D3D
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
   D3DCOLOR color = m_diffuse.color[0];
-  if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuse.color[0]);
+  if (m_alpha.color[0] != 0xFF) color = MIX_ALPHA(m_alpha.color[0],m_diffuse.color[0]);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
   color = m_diffuse.color[1];
-  if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuse.color[1]);
+  if (m_alpha.color[1] != 0xFF) color = MIX_ALPHA(m_alpha.color[1],m_diffuse.color[1]);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v2);
   color =  m_diffuse.color[2];
-  if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2], m_diffuse.color[2]);
+  if (m_alpha.color[2] != 0xFF) color = MIX_ALPHA(m_alpha.color[2], m_diffuse.color[2]);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
   color =  m_diffuse.color[3];
-  if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3], m_diffuse.color[3]);
+  if (m_alpha.color[3] != 0xFF) color = MIX_ALPHA(m_alpha.color[3], m_diffuse.color[3]);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, 0, 0 );
 
