@@ -1941,8 +1941,9 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
 {
   try
   {
-    if (NULL == m_pDB.get()) return 0;
-    if (NULL == m_pDS.get()) return 0;
+    if (strPath.IsEmpty()) return false;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
 
     CStdString strPath1(strPath);
     CUtil::RemoveSlashAtEnd(strPath1);
@@ -1956,7 +1957,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
       strScraper = m_pDS->fv("path.strScraper").get_asString();
     }
     m_pDS->close();
-    return true;
+    return !strScraper.IsEmpty();
   }
   catch (...)
   {

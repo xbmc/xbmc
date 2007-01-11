@@ -739,30 +739,23 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CStdString strContent, strScraper;
-        // nasty eh?
-        bool bBookmark;
-        CStdString strLast;
-        int iShare = CUtil::GetMatchingShare(m_vecItems[iItem]->m_strPath,g_settings.m_vecMyVideoShares,bBookmark);
-        int iFound=0;
-        CStdString strCompare = g_settings.m_vecMyVideoShares[iShare].strPath;
-        CUtil::RemoveSlashAtEnd(strCompare);
-        if (iShare > -1)
+        CStdString strPath = m_vecItems[iItem]->m_strPath;
+        CUtil::RemoveSlashAtEnd(strPath);
+        int iFound = 0;
+        if (m_vecItems[iItem]->m_bIsFolder && m_database.GetScraperForPath(strPath, strScraper, strContent))
+          iFound = 1;
+        else
         {
-          CStdString strPath = m_vecItems[iItem]->m_strPath;
-          CUtil::RemoveSlashAtEnd(strPath);
-          while (!strPath.Equals(strCompare))
+          CStdString strParent;
+          while (CUtil::GetParentPath(strPath, strParent))
           {
-            strScraper.Empty();
-            m_database.GetScraperForPath(strPath,strScraper,strContent);
-            if (!strScraper.IsEmpty()) // found a match
+            CUtil::RemoveSlashAtEnd(strParent);
+            if (m_database.GetScraperForPath(strParent, strScraper, strContent))
             {
-              strLast = strPath;
-              iFound++;
+              iFound = 2;
+              break;
             }
-
-            CStdString strPath2=strPath;
-            CUtil::GetParentPath(strPath2,strPath);
-            CUtil::RemoveSlashAtEnd(strPath);
+            strPath = strParent;
           }
         }
         if (m_vecItems[iItem]->m_bIsFolder)
@@ -776,16 +769,18 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
             btn_Show_Info = pMenu->AddButton(13346);
             btn_Update = pMenu->AddButton(13349);
             
-            CStdString strPath(m_vecItems[iItem]->m_strPath);
-            CUtil::RemoveSlashAtEnd(strPath);
-            if (iFound == 1 && strLast.Equals(strPath))
+            //CStdString strPath(m_vecItems[iItem]->m_strPath);
+            //CUtil::RemoveSlashAtEnd(strPath);
+            //if (iFound == 1 && strLast.Equals(strPath))
+            if (iFound == 1)
               btn_UnAssign = pMenu->AddButton(20338);
           }
         }
         else
         {
-          if (iFound > 0)
-            btn_Show_Info = pMenu->AddButton(13346);
+          btn_Show_Info = pMenu->AddButton(13346);
+          if(!iFound)
+            pMenu->EnableButton(btn_Show_Info, false);
         }
       }
     }
