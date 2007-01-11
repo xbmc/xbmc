@@ -694,7 +694,7 @@ void CGUIDialogKeyboard::SetControlLabel(int id, const CStdString &label)
   message.SetLabel(label);
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
   {
-    if (m_vecControls[i]->GetID() == id)
+    if (m_vecControls[i]->GetID() == id || m_vecControls[i]->IsGroup())
       m_vecControls[i]->OnMessage(message);
   }
 }
