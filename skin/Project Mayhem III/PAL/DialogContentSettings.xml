@@ -1,6 +1,6 @@
 <window>
  <id>132</id>
- <defaultcontrol>1343</defaultcontrol>
+ <defaultcontrol>3</defaultcontrol>
  <coordinates>
    <system>1</system>
    <posx>161</posx>
@@ -60,7 +60,7 @@
 
   <control>
    <description>directory content select spincontrol</description>
-   <id>1343</id>
+   <id>3</id>
    <type>spincontrolex</type>
    <align>left</align>
    <width>200</width>
@@ -73,8 +73,8 @@
    <texturenofocus>-</texturenofocus>
    <onup>28</onup>
    <ondown>4</ondown>
-   <onleft>1343</onleft>
-   <onright>1343</onright>
+   <onleft>3</onleft>
+   <onright>3</onright>
    <disabledcolor>ffffffff</disabledcolor>
    <textoffsetx>0</textoffsetx>
    <textoffsety>0</textoffsety>
@@ -89,10 +89,10 @@
 		<posy>45</posy>
 		<width>390</width>
 		<height>120</height>
-		<onup>1343</onup>
+		<onup>3</onup>
 		<ondown>30</ondown>
-		<onleft>4</onleft>
-		<onright>4</onright>
+		<onleft>3</onleft>
+		<onright>30</onright>
 		<scrolltime>200</scrolltime>
 		<itemlayout height="35">
 			<control type="image">
@@ -221,7 +221,7 @@
 	<onleft>29</onleft>
 	<onright>29</onright>
 	<onup>30</onup>
-	<ondown>1343</ondown>
+	<ondown>3</ondown>
 	<include>homemisc</include>
  </control>
 
@@ -241,7 +241,7 @@
 	<onleft>28</onleft>
 	<onright>28</onright>
 	<onup>30</onup>
-	<ondown>1343</ondown>
+	<ondown>3</ondown>
 	<include>homemisc</include>
  </control>
 

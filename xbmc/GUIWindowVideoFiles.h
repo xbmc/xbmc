@@ -9,6 +9,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
 
+  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames=-1, int iScanRecursively=-1);
+
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool OnPlayMedia(int iItem);
@@ -17,15 +19,14 @@ protected:
   virtual void UpdateButtons();
   virtual bool OnClick(int iItem);
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
-  virtual void OnInfo(int iItem);
+  virtual void OnInfo(int iItem, const SScraperInfo& info);
   virtual void OnQueueItem(int iItem);
-  virtual void OnScan(const CStdString& strPath, const CStdString& strScraper, const CStdString& strContent);
-  virtual void OnAssignContent(int iItem);
+  virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info);
   virtual void OnUnAssignContent(int iItem);
-  bool DoScan(const CStdString& strPath, CFileItemList& items, const CStdString& strScraper, const CStdString& strContent, bool bDirNames);
+  bool DoScan(const CStdString& strPath, CFileItemList& items, const SScraperInfo& info, bool bDirNames, bool bRecursively=true);
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
-  void OnRetrieveVideoInfo(CFileItemList& items, const CStdString& strScraper, const CStdString& strContent, bool bDirNames);
+  void OnRetrieveVideoInfo(CFileItemList& items, const SScraperInfo& info, bool bDirNames);
   virtual void LoadPlayList(const CStdString& strFileName);
-  void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const CStdString& strScaper);
+  void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info);
   void PlayFolder(const CFileItem* pItem);
 };

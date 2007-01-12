@@ -26,9 +26,9 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
 
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
-  virtual void OnInfo(int iItem);
-  virtual void OnScan(const CStdString& strPath, const CStdString& strScraper, const CStdString& strContent) {};
-  virtual void OnAssignContent(int iItem) {};
+  virtual void OnInfo(int iItem, const SScraperInfo& info);
+  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively) {};
+  virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info) {};
   virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
@@ -41,7 +41,7 @@ protected:
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
 
-  void ShowIMDB(CFileItem *item);
+  void ShowIMDB(CFileItem *item, const SScraperInfo& info);
   void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);

@@ -33,7 +33,7 @@ CIMDB::~CIMDB()
 bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist)
 {
   // load our scraper xml
-  if (!m_parser.Load("Q:\\system\\scrapers\\video\\imdb.xml"))
+  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
     return false;
 
   CIMDBUrl url;
@@ -117,7 +117,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 {
   // load our scraper xml
-  if (!m_parser.Load("q:\\system\\scrapers\\video\\imdb.xml"))
+  if (!m_parser.Load("q:\\system\\scrapers\\video\\"+m_info.strPath))
     return false;
 
   std::vector<CStdString> strHTML;
@@ -399,22 +399,21 @@ void CIMDB::Process()
   m_found = false;
   if (m_state == FIND_MOVIE)
   {
-    if (!FindMovie(m_strMovie, m_movieList, m_strScraper))
+    if (!FindMovie(m_strMovie, m_movieList))
       CLog::Log(LOGERROR, "IMDb::Error looking up movie %s", m_strMovie.c_str());
   }
   else if (m_state == GET_DETAILS)
   {
-    if (!GetDetails(m_url, m_movieDetails, m_strScraper))
+    if (!GetDetails(m_url, m_movieDetails))
       CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_strURL[0].c_str());
   }
   m_found = true;
 }
 
-bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, const CStdString& strScraper, CGUIDialogProgress *pProgress /* = NULL */)
+bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUIDialogProgress *pProgress /* = NULL */)
 {
   //CLog::Log(LOGDEBUG,"CIMDB::FindMovie(%s)", strMovie.c_str());
   m_strMovie = strMovie;
-  m_strScraper = strScraper;
   if (pProgress)
   { // threaded version
     m_state = FIND_MOVIE;
@@ -444,12 +443,11 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, con
     return InternalFindMovie(strMovie, movieList);
 }
 
-bool CIMDB::GetDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, const CStdString& strScraper, CGUIDialogProgress *pProgress /* = NULL */)
+bool CIMDB::GetDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress /* = NULL */)
 {
   //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
   m_url = url;
   m_movieDetails = movieDetails;
-  m_strScraper = strScraper;
   if (pProgress)
   { // threaded version
     m_state = GET_DETAILS;

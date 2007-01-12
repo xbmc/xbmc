@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "GUIDialogContentSettings.h"
 #include "Util.h"
-#include "picture.h"
+#include "VideoDatabase.h"
 
-#define CONTROL_CONTENT_TYPE        1343
+#define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
 #define CONTROL_START              30
 
@@ -24,7 +24,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_scrapers.clear();
-      items.Clear();
+      m_vecItems.Clear();
       CGUIDialogSettings::OnMessage(message);
     }
     break;
@@ -47,6 +47,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       m_bNeedSave = false;
       Close();
     }
+    
     if (iControl == CONTROL_CONTENT_TYPE)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_CONTENT_TYPE);
@@ -63,22 +64,27 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
               m_info.strTitle.Empty();
               OnSettingChanged(0);
               SetupPage();
-//              CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 0);
               break;
       case 1: strLabel = g_localizeStrings.Get(20342);
-              m_info = m_scrapers.find("movies")->second[0];
+              m_info = m_scrapers["movies"][0];
               CreateSettings();
               SetupPage();
-//              CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 1);
               break;
       case 2: strLabel = g_localizeStrings.Get(20343);
               m_info = m_scrapers["tvshows"][0];
               CreateSettings();
               SetupPage();
- //             CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 2);
               break;
-      }
-      
+      }  
+    }
+    if (iControl == CONTROL_SCRAPER_LIST)
+    {
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SCRAPER_LIST);
+      m_gWindowManager.SendMessage(msg);
+      int iSelected = msg.GetParam1();
+      m_info = m_scrapers[m_info.strContent][iSelected];
+      FillListControl();
+      SET_CONTROL_FOCUS(30,0);
     }
     break;
   }
@@ -198,12 +204,11 @@ void CGUIDialogContentSettings::CreateSettings()
   m_settings.clear();
 
   AddBool(1,20345,&m_bRunScan);  
-  AddBool(2,20336,&m_bScanSeveral,m_bRunScan);
-  AddBool(3,20346,&m_bScanRecursive,m_bRunScan);
+  AddBool(2,20346,&m_bScanRecursive,m_bRunScan);
 
   if (m_info.strContent.Equals("movies"))
   {
-    AddBool(4,20330,&m_bUseDirNames,m_bRunScan);
+    AddBool(3,20330,&m_bUseDirNames,m_bRunScan);
   }
 }
 
@@ -217,29 +222,25 @@ void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
   {
     if (m_info.strContent.IsEmpty())
     {
-      m_settings[0].enabled = m_settings[1].enabled = m_settings[2].enabled = false;
-      if (m_settings.size() > 3)
-        m_settings[3].enabled = false;
+      m_settings[0].enabled = m_settings[1].enabled = false;
+      if (m_settings.size() > 2)
+        m_settings[2].enabled = false;
       
       UpdateSetting(1);
       UpdateSetting(2);
       UpdateSetting(3);
-      UpdateSetting(4);
     }
     if (m_info.strContent.Equals("movies"))
     {
       m_settings[1].enabled = *((bool*)setting.data);
       m_settings[2].enabled = *((bool*)setting.data);
-      m_settings[3].enabled = *((bool*)setting.data);
       UpdateSetting(2);
       UpdateSetting(3);
-      UpdateSetting(4);
     }
     if (m_info.strContent.Equals("tvshows"))
     {
-      m_settings[1].enabled = m_settings[2].enabled = *((bool*)setting.data);
+      m_settings[1].enabled = *((bool*)setting.data);
       UpdateSetting(2);
-      UpdateSetting(3);
     }
   }
 
@@ -264,34 +265,57 @@ void CGUIDialogContentSettings::FillListControl()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
   OnMessage(msgReset); 
   int iIndex=0;
-  items.Clear();
+  m_vecItems.Clear();
   for (std::vector<SScraperInfo>::iterator iter=m_scrapers.find(m_info.strContent)->second.begin();iter!=m_scrapers.find(m_info.strContent)->second.end();++iter)
   {
     CFileItem* item = new CFileItem(iter->strTitle);
     item->m_strPath = iter->strPath;
     item->SetThumbnailImage("Q:\\system\\scrapers\\video\\"+iter->strThumb);
-    items.Add(item);
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_SCRAPER_LIST, 0, 0, (void*)item);
-    OnMessage(msg);
-    if (iter->strTitle.Equals(m_info.strTitle))
+    if (iter->strPath.Equals(m_info.strPath))
     {
       CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, iIndex);
       OnMessage(msg2);
+      item->Select(true);
     }
+    m_vecItems.Add(item);
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_SCRAPER_LIST, 0, 0, (void*)item);
+    OnMessage(msg);
     iIndex++;
   }
 }
 
-bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, bool& bRunScan, bool& bScanRecursive, bool& bScanSeveral, bool &bUseDirNames)
+CFileItem* CGUIDialogContentSettings::GetCurrentListItem()
+{
+  for (int i=0;i<m_vecItems.Size();++i )
+  {
+    if (m_vecItems[i]->IsSelected())
+      return m_vecItems[i];
+  }
+
+  return NULL;
+}
+
+bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, bool& bRunScan, bool& bScanRecursive, bool &bUseDirNames)
+{
+  CVideoDatabase database;
+  database.Open();
+  database.GetScraperForPath(strDirectory,scraper.strPath,scraper.strContent);
+  bool bResult = Show(scraper,bRunScan,bScanRecursive,bUseDirNames);
+  if (bResult)
+    database.SetScraperForPath(strDirectory,scraper.strPath,scraper.strContent);
+
+  return bResult;
+}
+
+bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, bool& bScanRecursive, bool &bUseDirNames)
 {
   CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
   if (!dialog) return false;
 
   dialog->m_info = scraper;
-  dialog->m_bRunScan = false;
-  dialog->m_bScanRecursive = true;
-  dialog->m_bScanSeveral = false;
-  dialog->m_bUseDirNames = false;
+  dialog->m_bRunScan = bRunScan;
+  dialog->m_bScanRecursive = bScanRecursive;
+  dialog->m_bUseDirNames = bUseDirNames;
   dialog->m_bNeedSave = false;
   dialog->DoModal();
   if (dialog->m_bNeedSave)
@@ -299,7 +323,6 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
     scraper = dialog->m_info;
     bRunScan = dialog->m_bRunScan;
     bScanRecursive = dialog->m_bScanRecursive;
-    bScanSeveral = dialog->m_bScanSeveral;
     bUseDirNames = dialog->m_bUseDirNames;
     return true;
   }

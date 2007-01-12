@@ -139,7 +139,11 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
-          OnInfo(iItem);
+          SScraperInfo info;
+          CStdString strDir;
+          CUtil::GetDirectory(m_vecItems[iItem]->m_strPath,strDir);
+          m_database.GetScraperForPath(strDir,info.strPath,info.strContent);
+          OnInfo(iItem,info);
           return true;
         }
         else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
@@ -217,7 +221,7 @@ void CGUIWindowVideoBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-void CGUIWindowVideoBase::OnInfo(int iItem)
+void CGUIWindowVideoBase::OnInfo(int iItem, const SScraperInfo& info)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
@@ -225,7 +229,7 @@ void CGUIWindowVideoBase::OnInfo(int iItem)
   // ShowIMDB can kill the item as this window can be closed while we do it,
   // so take a copy of the item now
   CFileItem item(*pItem);
-  ShowIMDB(&item);
+  ShowIMDB(&item, info);
   Update(m_vecItems.m_strPath);
 }
 
@@ -250,7 +254,7 @@ void CGUIWindowVideoBase::OnInfo(int iItem)
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
 
-void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
+void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
@@ -331,9 +335,9 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
       pDlgProgress->Progress();
 
       // 4b. do the websearch
-      CStdString strScraper; // TODO
+      IMDB.SetScraperInfo(info);
       IMDB_MOVIELIST movielist;
-      if (IMDB.FindMovie(movieName, movielist, strScraper, pDlgProgress))
+      if (IMDB.FindMovie(movieName, movielist, pDlgProgress))
       {
         pDlgProgress->Close();
         if (movielist.size() > 0)
@@ -389,8 +393,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
       pDlgProgress->Progress();
 
       // get the movie info
-      CStdString strScraper; // TODO
-      if (IMDB.GetDetails(url, movieDetails, strScraper, pDlgProgress))
+      if (IMDB.GetDetails(url, movieDetails, pDlgProgress))
       {
         // got all movie details :-)
         OutputDebugString("got details\n");
@@ -469,7 +472,11 @@ void CGUIWindowVideoBase::OnManualIMDB()
   item.m_strPath = "Z:\\";
   ::DeleteFile(item.GetCachedVideoThumb().c_str());
 
-  ShowIMDB(&item);
+  SScraperInfo info;
+  info.strContent = "movies";
+  info.strPath = "imdb.xml";
+  ShowIMDB(&item,info);
+  
   return ;
 }
 
@@ -687,7 +694,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
   int btn_Show_Info = 0;			// Show Video Information
   int btn_Assign = 0;         // Assign content to directory
   int btn_Update = 0;         // Update content information
-  int btn_UnAssign = 0;       // Remove content assignment from directory
   int btn_Mark_UnWatched = 0;	// Clear Watched Status (DB)
   int btn_Mark_Watched = 0;		// Set Watched Status (DB)
   int btn_Update_Title = 0;		// Change Title (DB)
@@ -696,6 +702,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 
 	bool bSelected = false;	
 	VECPLAYERCORES vecCores;
+  int iFound = 0;
+  SScraperInfo info;
 
 	// contextual items only appear when the list is not empty
 	if (bContextDriven)
@@ -738,11 +746,9 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
 
       if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
-        CStdString strContent, strScraper;
         CStdString strPath = m_vecItems[iItem]->m_strPath;
         CUtil::RemoveSlashAtEnd(strPath);
-        int iFound = 0;
-        if (m_vecItems[iItem]->m_bIsFolder && m_database.GetScraperForPath(strPath, strScraper, strContent))
+        if (m_vecItems[iItem]->m_bIsFolder && m_database.GetScraperForPath(strPath, info.strPath, info.strContent))
           iFound = 1;
         else
         {
@@ -750,7 +756,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
           while (CUtil::GetParentPath(strPath, strParent))
           {
             CUtil::RemoveSlashAtEnd(strParent);
-            if (m_database.GetScraperForPath(strParent, strScraper, strContent))
+            if (m_database.GetScraperForPath(strParent, info.strPath, info.strContent))
             {
               iFound = 2;
               break;
@@ -768,12 +774,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
           {
             btn_Show_Info = pMenu->AddButton(13346);
             btn_Update = pMenu->AddButton(13349);
-            
-            //CStdString strPath(m_vecItems[iItem]->m_strPath);
-            //CUtil::RemoveSlashAtEnd(strPath);
-            //if (iFound == 1 && strLast.Equals(strPath))
-            if (iFound == 1)
-              btn_UnAssign = pMenu->AddButton(20338);
+            btn_Assign = pMenu->AddButton(20333);
           }
         }
         else
@@ -881,22 +882,16 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     }
     else if (btnid == btn_Assign)
     {
-      OnAssignContent(iItem);
+      OnAssignContent(iItem,iFound,info);
     }
     else if (btnid  == btn_Update) // update content 
     {
-      CStdString strScraper, strContent;
-      m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,strScraper,strContent);
-      OnScan(m_vecItems[iItem]->m_strPath,strScraper,strContent);
-    }
-    else if (btnid == btn_UnAssign)
-    {
-      OnUnAssignContent(iItem);
+      OnScan(m_vecItems[iItem]->m_strPath,info,-1,-1);
     }
 		// video info
 		else if (btnid == btn_Show_Info)
     {
-      OnInfo(iItem);
+      OnInfo(iItem,info);
 		}
 		// unwatched
     else if (btnid == btn_Mark_UnWatched)

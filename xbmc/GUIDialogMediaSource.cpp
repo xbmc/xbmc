@@ -2,6 +2,8 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIDialogContentSettings.h"
+#include "GUIWindowVideoFiles.h"
 #include "Util.h"
 
 #define CONTROL_HEADING         2
@@ -12,6 +14,7 @@
 #define CONTROL_PATH_REMOVE     14
 #define CONTROL_OK              18
 #define CONTROL_CANCEL          19
+#define CONTROL_CONTENT         20
 
 CGUIDialogMediaSource::CGUIDialogMediaSource(void)
     : CGUIDialog(WINDOW_DIALOG_MEDIA_SOURCE, "DialogMediaSource.xml")
@@ -51,11 +54,19 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
         OnCancel();
+      else if (iControl == CONTROL_CONTENT)
+      {
+        CShare share;
+        share.FromNameAndPaths("video", m_name, GetPaths());
+        
+        CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_bRunScan,m_bScanRecursively,m_bUseDirNames);
+      }
       return true;
     }
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+      m_bRunScan = m_bScanRecursively = m_bUseDirNames = false;
       UpdateButtons();
     }
     break;
@@ -92,6 +103,15 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     CShare share;
     share.FromNameAndPaths(type, dialog->m_name, dialog->GetPaths());
     g_settings.AddShare(type, share);
+
+    if (type == "video")
+    {
+      if (dialog->m_bRunScan)
+      {
+        CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+        pWindow->OnScan(share.strPath,dialog->m_info,dialog->m_bUseDirNames?1:0,dialog->m_bScanRecursively?1:0);
+      }
+    }
   }
   dialog->m_paths.Clear();
   return confirmed;
@@ -244,22 +264,22 @@ void CGUIDialogMediaSource::UpdateButtons()
 {
   if (m_paths[0]->m_strPath.IsEmpty() || m_name.IsEmpty())
   {
-    CONTROL_DISABLE(CONTROL_OK);
+    CONTROL_DISABLE(CONTROL_OK)
   }
   else
   {
-    CONTROL_ENABLE(CONTROL_OK);
+    CONTROL_ENABLE(CONTROL_OK)
   }
   if (m_paths.Size() <= 1)
   {
-    CONTROL_DISABLE(CONTROL_PATH_REMOVE);
+    CONTROL_DISABLE(CONTROL_PATH_REMOVE)
   }
   else
   {
-    CONTROL_ENABLE(CONTROL_PATH_REMOVE);
+    CONTROL_ENABLE(CONTROL_PATH_REMOVE)
   }
   // name
-  SET_CONTROL_LABEL(CONTROL_NAME, m_name);
+  SET_CONTROL_LABEL(CONTROL_NAME, m_name)
 
   if (m_hasMultiPath)
   {
@@ -286,7 +306,24 @@ void CGUIDialogMediaSource::UpdateButtons()
     CURL url(m_paths[0]->m_strPath);
     url.GetURLWithoutUserDetails(path);
     if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
-    SET_CONTROL_LABEL(CONTROL_PATH, path);
+    SET_CONTROL_LABEL(CONTROL_PATH, path)
+  }
+
+  if (m_type.Equals("video"))
+  {
+    SET_CONTROL_VISIBLE(CONTROL_CONTENT)
+    if (m_paths[0]->m_strPath.IsEmpty() || m_name.IsEmpty())
+    {
+      CONTROL_DISABLE(CONTROL_CONTENT)
+    }
+    else
+    {
+      CONTROL_ENABLE(CONTROL_CONTENT)
+    }
+  }
+  else
+  {
+    SET_CONTROL_HIDDEN(CONTROL_CONTENT)
   }
 }
 

@@ -4,6 +4,8 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIDialogContentSettings.h"
+#include "GUIWindowVideoFiles.h"
 #include "application.h"
 #include "GUIPassword.h"
 #include "util.h"
@@ -227,6 +229,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     int btn_setThumb=0;
     int btn_RemoveThumb=0;
     int btn_ClearDefault=0;
+    int btn_SetContent=0;
     if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
     {
       if (share)
@@ -241,6 +244,9 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       if (!strDefault.IsEmpty())
         btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
+
+      if (strType == "video")
+        btn_SetContent = pMenu->AddButton(20333);
 
       btn_AddShare = pMenu->AddButton(1026); // Add Source
     }
@@ -397,6 +403,19 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
         m_gWindowManager.SendThreadMessage(msg);        
         return true;
+      }
+      else if (btn == btn_SetContent)
+      {
+        bool bRunScan=false, bScanRecursively=true, bUseDirNames=false;
+        SScraperInfo info;
+        if (CGUIDialogContentSettings::ShowForDirectory(share->strPath,info,bRunScan,bScanRecursively,bUseDirNames))
+        {
+          if (bRunScan)
+          {
+            CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+            pWindow->OnScan(share->strPath,info,bUseDirNames?1:0,bScanRecursively?1:0);
+          }
+        }
       }
       else if (btn == btn_PlayDisc)
       {

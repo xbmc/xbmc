@@ -79,15 +79,15 @@ public:
   const CStdString GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
 
   // threaded lookup functions
-  bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, const CStdString& strScraper, CGUIDialogProgress *pProgress = NULL);
-  bool GetDetails(const CIMDBUrl& url, CIMDBMovie &movieDetails, const CStdString& strScraper, CGUIDialogProgress *pProgress = NULL);
+  bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
+  bool GetDetails(const CIMDBUrl& url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress = NULL);
 
+  void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
   CHTTP m_http;
 
   CScraperParser m_parser;
-  CStdString m_strScraper;
 
   // threaded stuff
   void Process();
@@ -102,6 +102,7 @@ protected:
   CIMDBUrl        m_url;
   LOOKUP_STATE    m_state;
   bool            m_found;
+  SScraperInfo m_info;
 };
 
 #endif // !defined(AFX_IMDB1_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)

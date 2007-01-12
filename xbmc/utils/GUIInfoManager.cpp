@@ -2,6 +2,7 @@
 #include "../GUIDialogSeekBar.h"
 #include "../GUIMediaWindow.h"
 #include "../GUIDialogFileBrowser.h"
+#include "../GUIDialogContentSettings.h"
 #include "../Application.h"
 #include "../Util.h"
 #include "../lib/libscrobbler/scrobbler.h"
@@ -1087,8 +1088,13 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
     if (window && window->IsMediaWindow())
     {
       CFileItem *item = NULL;
-      if (window->IsDialog()) // must be the filebrowser window
-        item = ((CGUIDialogFileBrowser *)window)->GetCurrentListItem();
+      if (window->IsDialog()) // must be the filebrowser window or the content settings window
+      {
+        if (window->GetID() == WINDOW_DIALOG_FILE_BROWSER)
+          item = ((CGUIDialogFileBrowser *)window)->GetCurrentListItem();
+        else
+          item = ((CGUIDialogContentSettings*)window)->GetCurrentListItem();
+      }
       else
         item = ((CGUIMediaWindow *)window)->GetCurrentListItem();
       if (item)
