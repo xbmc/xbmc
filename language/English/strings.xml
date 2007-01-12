@@ -1502,11 +1502,11 @@
   <string id="20328">a location to copy the save to</string>
   <string id="20329">a location to move the save to</string>
   <string id="20330">Use Folder Names For Lookups</string>
-  <string id="20331">Files</string>
+  <string id="20331">File</string>
   <string id="20332">Use folder or file names in lookups?</string>
-  <string id="20333">Set content</string>
-  <string id="20334">Select content type</string>
-  <string id="20335">Select information source</string>
+  <string id="20333">Set Content</string>
+  <string id="20334">Folder</string>
+  <string id="20335">Look for content recursively?</string>
   <string id="20336">Scan for several items</string>
   <string id="20337">&lt;No Media Type Set&gt;</string>
   <string id="20338">Remove assignment</string>

@@ -548,7 +548,7 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
   if (info.strContent.Equals("movies") && iDirNames == -1)
   {
     bool bCanceled;
-    if (CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20330,20331,bCanceled))
+    if (CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20334,20331,bCanceled))
       bDirNames = false;
     
     if (bCanceled)
@@ -556,9 +556,18 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
   }
   else
     bDirNames = iDirNames>0;
-
-  // TODO: What todo
-  bool bRecursively=iScanRecursively>0;
+  
+  bool bRecursively;
+  if (iScanRecursively == -1)
+  {
+    bool bCanceled;
+    bRecursively = CGUIDialogYesNo::ShowAndGetInput(13346,20335,-1,-1,bCanceled);
+    
+    if (bCanceled)
+      return;
+  }
+  else
+    bRecursively=iScanRecursively>0;
 
   CFileItemList items;
   GetStackedDirectory(strPath, items);

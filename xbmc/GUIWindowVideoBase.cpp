@@ -1335,7 +1335,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
 
       pItem->m_fRating = movie.m_fRating;
       SYSTEMTIME time;
-      time.wYear = movie.m_iYear;
+      time.wYear = (WORD)movie.m_iYear;
       pItem->m_musicInfoTag.SetReleaseDate(time);
 //      pItem->m_strDVDLabel = movie.m_strDVDLabel;
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);

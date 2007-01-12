@@ -245,7 +245,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       if (!strDefault.IsEmpty())
         btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
 
-      if (strType == "video")
+      if (strType == "video" && !CUtil::IsDVD(share->strPath))
         btn_SetContent = pMenu->AddButton(20333);
 
       btn_AddShare = pMenu->AddButton(1026); // Add Source
