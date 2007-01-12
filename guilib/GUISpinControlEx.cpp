@@ -82,7 +82,7 @@ void CGUISpinControlEx::SetVisible(bool bVisible)
   CGUISpinControl::SetVisible(bVisible);
 }
 
-void CGUISpinControlEx::SetColorDiffuse(const CColorDiffuse &color)
+void CGUISpinControlEx::SetColorDiffuse(D3DCOLOR color)
 {
   m_buttonControl.SetColorDiffuse(color);
   CGUISpinControl::SetColorDiffuse(color);
