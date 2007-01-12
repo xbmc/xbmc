@@ -7,8 +7,8 @@
 
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_alpha(0xff)
 {
+  memset(m_alpha, 0xff, 4);
   m_strFileName = texture.file;
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
@@ -26,13 +26,12 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_texturesAllocated = false;
   m_Info = 0;
   m_image = texture;
+  m_diffuseTexture = NULL;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
     : CGUIControl(left)
-    , m_alpha(left.m_alpha)
 {
-  m_diffuse = left.m_diffuse;
   m_strFileName = left.m_strFileName;
   m_dwColorKey = left.m_dwColorKey;
   m_aspectRatio = left.m_aspectRatio;
@@ -45,13 +44,14 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_iImageHeight = 0;
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
-  m_alpha = left.m_alpha;
+  memcpy(m_alpha, left.m_alpha, 4);
   m_pPalette = NULL;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_texturesAllocated = false;
   m_Info = left.m_Info;
   m_image = left.m_image;
+  m_diffuseTexture = NULL;
 }
 
 CGUIImage::~CGUIImage(void)
@@ -117,6 +117,18 @@ void CGUIImage::Render()
     p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
     p3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
     p3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+    if (m_diffuseTexture)
+    {
+      p3DDevice->SetTexture( 1, m_diffuseTexture );
+      p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+      p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
+      p3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_MODULATE );
+      p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+      p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG2, D3DTA_CURRENT );
+      p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+      p3DDevice->SetTextureStageState( 1, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
+      p3DDevice->SetTextureStageState( 1, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+    }
 
     p3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
     p3DDevice->SetRenderState( D3DRS_ALPHAREF, 0 );
@@ -135,7 +147,7 @@ void CGUIImage::Render()
 
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
-    p3DDevice->SetVertexShader( FVF_VERTEX );
+    p3DDevice->SetVertexShader( FVF_VERTEX2 );
 #ifdef HAS_XBOX_D3D
     p3DDevice->Begin(D3DPT_QUADLIST);
 #else
@@ -199,7 +211,9 @@ void CGUIImage::Render()
 #endif
 #endif
     // unset the texture and palette or the texture caching crashes because the runtime still has a reference
-    p3DDevice->SetTexture( 0, NULL);
+    p3DDevice->SetTexture( 0, NULL );
+    if (m_diffuseTexture)
+      p3DDevice->SetTexture( 1, NULL );
     if (m_fNW > m_width || m_fNH > m_height)
       g_graphicsContext.RestoreViewPort();
   }
@@ -223,29 +237,43 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
 
   // Render the image
+  if (m_image.flipX)
+  {
+    u1 = m_fU - u1;
+    u2 = m_fU - u2;
+  }
+  if (m_image.flipY)
+  {
+    v1 = m_fV - v1;
+    v2 = m_fV - v2;
+  }
 
 #ifdef HAS_XBOX_D3D
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v1);
-  D3DCOLOR color = m_diffuse.color[0];
-  if (m_alpha.color[0] != 0xFF) color = MIX_ALPHA(m_alpha.color[0],m_diffuse.color[0]);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  D3DCOLOR color = m_diffuseColor;
+  if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v1);
-  color = m_diffuse.color[1];
-  if (m_alpha.color[1] != 0xFF) color = MIX_ALPHA(m_alpha.color[1],m_diffuse.color[1]);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v1 * m_diffuseScaleV);
+  color = m_diffuseColor;
+  if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u2, v2);
-  color =  m_diffuse.color[2];
-  if (m_alpha.color[2] != 0xFF) color = MIX_ALPHA(m_alpha.color[2], m_diffuse.color[2]);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u2 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  color =  m_diffuseColor;
+  if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, u1, v2);
-  color =  m_diffuse.color[3];
-  if (m_alpha.color[3] != 0xFF) color = MIX_ALPHA(m_alpha.color[3], m_diffuse.color[3]);
+  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, u1 * m_diffuseScaleU, v2 * m_diffuseScaleV);
+  color =  m_diffuseColor;
+  if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3], m_diffuseColor);
   p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, 0, 0 );
 
@@ -255,31 +283,32 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
       FLOAT rhw;
       DWORD color;
       FLOAT tu, tv;   // Texture coordinates
+      FLOAT tu2, tv2;
   };
 
   CUSTOMVERTEX verts[4];
   verts[0].x = x1; verts[0].y = y1; verts[0].z = 0.0f; verts[0].rhw = 1.0f;
-  verts[0].tu = u1;   verts[0].tv = v1;
-  DWORD color = m_diffuse.color[0];
-  if (m_alpha.color[0] != 0xFF) color = MIX_ALPHA(m_alpha.color[0],m_diffuse.color[0]);
+  verts[0].tu = u1;   verts[0].tv = v1; verts[0].tu2 = u1*m_diffuseScaleU; verts[0].tv2 = v1*m_diffuseScaleV;
+  DWORD color = m_diffuseColor;
+  if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
   verts[0].color = g_graphicsContext.MergeAlpha(color);
 
   verts[1].x = x2; verts[1].y = y2; verts[1].z = 0.0f;verts[1].rhw = 1.0f;
-  verts[1].tu = u2;   verts[1].tv = v1;
-  color = m_diffuse.color[1];
-  if (m_alpha.color[1] != 0xFF) color = MIX_ALPHA(m_alpha.color[1],m_diffuse.color[1]);
+  verts[1].tu = u2;   verts[1].tv = v1; verts[1].tu2 = u2*m_diffuseScaleU; verts[1].tv2 = v1*m_diffuseScaleV;
+  color = m_diffuseColor;
+  if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
   verts[1].color = g_graphicsContext.MergeAlpha(color);
 
   verts[2].x = x3; verts[2].y = y3; verts[2].z = 0.0f; verts[2].rhw = 1.0f;
-  verts[2].tu = u2;   verts[2].tv = v2;
-  color = m_diffuse.color[2];
-  if (m_alpha.color[2] != 0xFF) color = MIX_ALPHA(m_alpha.color[2],m_diffuse.color[2]);
+  verts[2].tu = u2;   verts[2].tv = v2; verts[2].tu2 = u2*m_diffuseScaleU; verts[2].tv2 = v2*m_diffuseScaleV;
+  color = m_diffuseColor;
+  if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2],m_diffuseColor);
   verts[2].color = g_graphicsContext.MergeAlpha(color);
 
   verts[3].x = x4; verts[3].y = y4; verts[3].z = 0.0f; verts[3].rhw = 1.0f;
-  verts[3].tu = u1;   verts[3].tv = v2;
-  color = m_diffuse.color[3];
-  if (m_alpha.color[3] != 0xFF) color = MIX_ALPHA(m_alpha.color[3],m_diffuse.color[3]);
+  verts[3].tu = u1;   verts[3].tv = v2; verts[3].tu2 = u1*m_diffuseScaleU; verts[3].tv2 = v2*m_diffuseScaleV;
+  color = m_diffuseColor;
+  if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3],m_diffuseColor);
   verts[3].color = g_graphicsContext.MergeAlpha(color);
 
   p3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
@@ -306,6 +335,8 @@ void CGUIImage::PreAllocResources()
 {
   FreeResources();
   g_TextureManager.PreLoad(m_strFileName);
+  if (!m_image.diffuse.IsEmpty())
+    g_TextureManager.PreLoad(m_image.diffuse);
 }
 
 void CGUIImage::AllocResources()
@@ -334,8 +365,36 @@ void CGUIImage::AllocResources()
     m_vecTextures.push_back(pTexture);
   }
 
-  // Set state to render the image
   CalculateSize();
+
+  m_diffuseScaleU = m_diffuseScaleV = 1.0f;
+  // load the diffuse texture (if necessary)
+  if (!m_image.diffuse.IsEmpty())
+  {
+    int width, height;
+    bool linearTexture;
+    LPDIRECT3DPALETTE8 palette;
+    int iImages = g_TextureManager.Load(m_image.diffuse, 0);
+    m_diffuseTexture = g_TextureManager.GetTexture(m_image.diffuse, 0, width, height, palette, linearTexture);
+
+    if (m_diffuseTexture)
+    { // calculate scaling for the texcoords (vs texcoords of main texture)
+#ifdef HAS_XBOX_D3D
+      if (linearTexture)
+      {
+        m_diffuseScaleU = float(width) / m_fU;
+        m_diffuseScaleV = float(height) / m_fV;
+      }
+      else
+#endif
+      {
+        D3DSURFACE_DESC desc;
+        m_diffuseTexture->GetLevelDesc(0, &desc);
+        m_diffuseScaleU = float(width) / float(desc.Width) / m_fU;
+        m_diffuseScaleV = float(height) / float(desc.Height) / m_fV;
+      }
+    }
+  }
 }
 
 void CGUIImage::FreeTextures()
@@ -344,6 +403,10 @@ void CGUIImage::FreeTextures()
   {
     g_TextureManager.ReleaseTexture(m_strFileName, i);
   }
+
+  if (m_diffuseTexture)
+    g_TextureManager.ReleaseTexture(m_image.diffuse);
+  m_diffuseTexture = NULL;
 
   m_vecTextures.erase(m_vecTextures.begin(), m_vecTextures.end());
   m_iCurrentImage = 0;
@@ -430,22 +493,20 @@ void CGUIImage::CalculateSize()
     float fOutputFrameRatio = fSourceFrameRatio / pixelRatio;
 
     // maximize the thumbnails width
-    float fNewWidth = fabs(m_width);
-    float fNewHeight = fNewWidth / fOutputFrameRatio;
+    m_fNW = m_width;
+    m_fNH = m_fNW / fOutputFrameRatio;
 
-    if ((m_aspectRatio == CGUIImage::ASPECT_RATIO_SCALE && fNewHeight < fabs(m_height)) ||
-        (m_aspectRatio == CGUIImage::ASPECT_RATIO_KEEP && fNewHeight > fabs(m_height)))
+    if ((m_aspectRatio == CGUIImage::ASPECT_RATIO_SCALE && m_fNH < m_height) ||
+        (m_aspectRatio == CGUIImage::ASPECT_RATIO_KEEP && m_fNH > m_height))
     {
-      fNewHeight = fabs(m_height);
-      fNewWidth = fNewHeight * fOutputFrameRatio;
+      m_fNH = m_height;
+      m_fNW = m_fNH * fOutputFrameRatio;
     }
     if (m_aspectRatio == CGUIImage::ASPECT_RATIO_CENTER)
     { // keep original size + center
-      fNewWidth = (float)m_iTextureWidth;
-      fNewHeight = (float)m_iTextureHeight;
+      m_fNW = (float)m_iTextureWidth;
+      m_fNH = (float)m_iTextureHeight;
     }
-    m_fNW = (m_width < 0) ? -fNewWidth : fNewWidth;
-    m_fNH = (m_height < 0) ? -fNewHeight : fNewHeight;
 
     // calculate placement
     if (m_aspectAlign & ASPECT_ALIGN_LEFT)
@@ -561,9 +622,17 @@ void CGUIImage::SetFileName(const CStdString& strFileName)
   // Don't allocate resources here as this is done at render time
 }
 
-void CGUIImage::SetAlpha(const CColorDiffuse &alpha)
+void CGUIImage::SetAlpha(unsigned char alpha)
 {
-  m_alpha = alpha;
+  SetAlpha(alpha, alpha, alpha, alpha);
+}
+
+void CGUIImage::SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3)
+{
+  m_alpha[0] = a0;
+  m_alpha[1] = a1;
+  m_alpha[2] = a2;
+  m_alpha[3] = a3;
 }
 
 bool CGUIImage::IsAllocated() const
