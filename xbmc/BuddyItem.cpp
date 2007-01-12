@@ -283,7 +283,7 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
       {
         dwPingAlpha += 40;
         m_pPingIcon->SetPosition(posX, pingPosY);
-        m_pPingIcon->SetAlpha(dwPingAlpha);
+        m_pPingIcon->SetAlpha((unsigned char)dwPingAlpha);
         m_pPingIcon->Render();
 
         posX += m_pPingIcon->GetWidth() + PING_SPACING;

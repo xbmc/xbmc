@@ -15,14 +15,6 @@
 
 enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
 
-class CColorDiffuse
-{
-public:
-  CColorDiffuse(D3DCOLOR col) { for (int i = 0; i < 4; i++) color[i] = col; };
-
-  D3DCOLOR color[4];
-};
-
 class CLabelInfo
 {
 public:
@@ -123,7 +115,7 @@ public:
   virtual bool IsDisabled() const;
   bool HasRendered() const { return m_hasRendered; };
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColorDiffuse(const CColorDiffuse &colour);
+  virtual void SetColorDiffuse(D3DCOLOR color);
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
@@ -215,7 +207,7 @@ protected:
   float m_posY;
   float m_height;
   float m_width;
-  CColorDiffuse m_diffuse;
+  D3DCOLOR m_diffuseColor;
   DWORD m_dwControlID;
   DWORD m_dwParentID;
   bool m_bHasFocus;

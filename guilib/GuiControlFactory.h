@@ -31,7 +31,6 @@ public:
   bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   bool GetAnimations(const TiXmlNode *control, const FRECT &rect, vector<CAnimation> &animation);
-  bool GetColorDiffuse(const TiXmlNode *control, CColorDiffuse &colorDiffuse);
 private:
   bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus);
   bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue);

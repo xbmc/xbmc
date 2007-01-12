@@ -188,6 +188,12 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
       image.border.bottom = (float)atof(borders[3].c_str());
     }
   }
+  const char *flipX = pNode->Attribute("flipx");
+  if (flipX && strcmpi(flipX, "true") == 0) image.flipX = true;
+  const char *flipY = pNode->Attribute("flipy");
+  if (flipY && strcmpi(flipY, "true") == 0) image.flipY = true;
+  const char *diffuse = pNode->Attribute("diffuse");
+  if (diffuse) image.diffuse = diffuse;
   image.file = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
   image.file.Replace('/', '\\');
   return true;
@@ -287,32 +293,6 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, const FRECT &re
   return ret;
 }
 
-bool CGUIControlFactory::GetColorDiffuse(const TiXmlNode *control, CColorDiffuse &colorDiffuse)
-{
-  const TiXmlElement* node = control->FirstChildElement("colordiffuse");
-  if (!node) return false;
-  if (node->FirstChild())
-  { // default tag
-    DWORD hexValue;
-    sscanf(node->FirstChild()->Value(), "%x", &hexValue );
-    colorDiffuse = CColorDiffuse(hexValue);
-  }
-  // now grab individual attributes
-  const char *corner = node->Attribute("topleft");
-  if (corner)
-    sscanf(corner, "%x", &colorDiffuse.color[0]);
-  corner = node->Attribute("topright");
-  if (corner)
-    sscanf(corner, "%x", &colorDiffuse.color[1]);
-  corner = node->Attribute("bottomright");
-  if (corner)
-    sscanf(corner, "%x", &colorDiffuse.color[2]);
-  corner = node->Attribute("bottomleft");
-  if (corner)
-    sscanf(corner, "%x", &colorDiffuse.color[3]);
-  return true;
-}
-
 CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
 {
   CStdString type;
@@ -346,7 +326,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   DWORD left = 0, right = 0, up = 0, down = 0;
   DWORD pageControl = 0;
-  CColorDiffuse colorDiffuse(0xFFFFFFFF);
+  D3DCOLOR colorDiffuse = 0xFFFFFFFF;
   DWORD defaultControl = 0;
   CStdString strTmp;
   vector<int> vecInfo;
@@ -551,7 +531,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl);
   XMLUtils::GetDWORD(pControlNode, "pagecontrol", pageControl);
 
-  GetColorDiffuse(pControlNode, colorDiffuse);
+  XMLUtils::GetHex(pControlNode, "colordiffuse", colorDiffuse);
 
   GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
   // note: animrect here uses .right and .bottom as width and height respectively (nonstandard)
