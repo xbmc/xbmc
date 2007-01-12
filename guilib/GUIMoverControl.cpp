@@ -40,7 +40,7 @@ void CGUIMoverControl::Render()
       dwAlphaChannel = 63 - (dwAlphaCounter % 64);
 
     dwAlphaChannel += 192;
-    SetAlpha(dwAlphaChannel );
+    SetAlpha( (unsigned char)dwAlphaChannel );
     m_imgFocus.SetVisible(true);
     m_imgNoFocus.SetVisible(false);
     m_dwFrameCounter++;
@@ -212,13 +212,13 @@ void CGUIMoverControl::SetPosition(float posX, float posY)
   m_imgNoFocus.SetPosition(posX, posY);
 }
 
-void CGUIMoverControl::SetAlpha(const CColorDiffuse &alpha)
+void CGUIMoverControl::SetAlpha(unsigned char alpha)
 {
   m_imgFocus.SetAlpha(alpha);
   m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIMoverControl::SetColorDiffuse(const CColorDiffuse &color)
+void CGUIMoverControl::SetColorDiffuse(D3DCOLOR color)
 {
   CGUIControl::SetColorDiffuse(color);
   m_imgFocus.SetColorDiffuse(color);

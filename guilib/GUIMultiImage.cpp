@@ -98,7 +98,7 @@ void CGUIMultiImage::Render()
         else
         { // perform the fade
           float fadeAmount = timeFading / m_fadeTime;
-          m_images[nextImage]->SetAlpha((DWORD)(255 * fadeAmount));
+          m_images[nextImage]->SetAlpha((unsigned char)(255 * fadeAmount));
         }
         m_images[nextImage]->Render();
       }
@@ -163,7 +163,7 @@ void CGUIMultiImage::LoadImage(int image)
     return;
 
   m_images[image]->AllocResources();
-  m_images[image]->SetColorDiffuse(m_diffuse);
+  m_images[image]->SetColorDiffuse(m_diffuseColor);
 
   // Scale image so that it will fill our render area
   if (m_aspectRatio != CGUIImage::ASPECT_RATIO_STRETCH)
