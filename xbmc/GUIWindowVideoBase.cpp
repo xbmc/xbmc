@@ -269,6 +269,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   CGUIWindowVideoInfo* pDlgInfo = (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(WINDOW_VIDEO_INFO);
 
   CIMDB IMDB;
+  IMDB.SetScraperInfo(info);
+
   bool bUpdate = false;
   bool bFound = false;
 
@@ -335,7 +337,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       pDlgProgress->Progress();
 
       // 4b. do the websearch
-      IMDB.SetScraperInfo(info);
       IMDB_MOVIELIST movielist;
       if (IMDB.FindMovie(movieName, movielist, pDlgProgress))
       {

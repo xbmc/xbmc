@@ -478,6 +478,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
                 url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
+                url.m_strID  = nfoReader.m_strImdbNr;
                 GetIMDBDetails(pItem, url, info);
                 continue;
               }

@@ -47,9 +47,15 @@
 			<RegExp input="$$1" output="&lt;runtime&gt;\1 min&lt;/runtime&gt;" dest="5+">
 				<expression>Runtime:&lt;/b&gt;[^0-9]*([0-9a-zA-Z]*)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
-				<expression noclean="1">&lt;a name=&quot;poster&quot;[^&lt;]+&gt;&lt;[^&gt;]+src=&quot;([^&quot;]*)&quot;</expression>
-			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+	                        <expression noclean="1">&lt;a name=&quot;poster&quot;[^&lt;]+&gt;&lt;[^&gt;]+src=&quot;([^&quot;]*)&quot;</expression>
+ 			</RegExp>
+                        <RegExp input="$$6" output="\1f.jpg" dest="7">
+				<expression noclean="1">(.*)m\.jpg</expression>
+                        </RegExp>
+			<RegExp input="$$7" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1"></expression>
+                        </RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression>(Writing credits[^%]*)%</expression>
 			</RegExp>
