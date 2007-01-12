@@ -3,7 +3,6 @@
 #include "Util.h"
 #include "picture.h"
 
-#define CONTROL_IMAGE               2
 #define CONTROL_CONTENT_TYPE        1343
 #define CONTROL_SCRAPER_LIST        4
 #define CONTROL_START              30
@@ -30,6 +29,15 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     }
     break;
 
+  case GUI_MSG_ITEM_SELECT:
+    {
+      if (message.GetControlId() == CONTROL_SCRAPER_LIST)
+      {
+        if (!m_info.strContent.IsEmpty())
+          m_info = m_scrapers[m_info.strContent][message.GetParam1()];
+      }
+    }
+
   case GUI_MSG_CLICKED:
     int iControl = message.GetSenderId();
     if (iControl == 500)
@@ -45,6 +53,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       m_gWindowManager.SendMessage(msg);
       int iSelected = msg.GetParam1();
 
+      m_bNeedSave = true;
       CStdString strLabel;
       switch (iSelected)
       {
@@ -52,24 +61,24 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
               m_info.strPath.Empty();
               m_info.strThumb.Empty();
               m_info.strTitle.Empty();
-              ((CGUIImage*)GetControl(CONTROL_IMAGE))->SetFileName("");
               OnSettingChanged(0);
               SetupPage();
+//              CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 0);
               break;
       case 1: strLabel = g_localizeStrings.Get(20342);
               m_info = m_scrapers.find("movies")->second[0];
               CreateSettings();
               SetupPage();
+//              CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 1);
               break;
       case 2: strLabel = g_localizeStrings.Get(20343);
               m_info = m_scrapers["tvshows"][0];
               CreateSettings();
               SetupPage();
+ //             CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 2);
               break;
       }
-      //SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,strLabel);
-      CreateSettings();
-      SetupPage();
+      
     }
     break;
   }
@@ -115,8 +124,6 @@ void CGUIDialogContentSettings::OnWindowLoaded()
     }
   }
   // now select the correct scraper
-  m_info.strContent = "movies";
-  m_info.strPath = "imdb.xml";
   if (!m_info.strContent.IsEmpty())
   {
     std::map<CStdString,std::vector<SScraperInfo> >::iterator iter = m_scrapers.find(m_info.strContent);
@@ -127,7 +134,6 @@ void CGUIDialogContentSettings::OnWindowLoaded()
         if (iter2->strPath == m_info.strPath)
         {
           m_info = *iter2;
-          m_info.strContent = iter->first;
           break;
         }
       }
@@ -138,14 +144,12 @@ void CGUIDialogContentSettings::OnWindowLoaded()
 void CGUIDialogContentSettings::SetupPage()
 {
   CGUIDialogSettings::SetupPage();
-  CGUIImage *pImage = (CGUIImage*)GetControl(CONTROL_IMAGE);
-  pImage->SetFileName("q:\\system\\scrapers\\video\\"+m_info.strThumb);
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_CONTENT_TYPE);
   g_graphicsContext.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_CONTENT_TYPE);
 
-  msg2.SetLabel(g_localizeStrings.Get(20337));
+  msg2.SetLabel("<"+g_localizeStrings.Get(231)+">");
   msg2.SetParam1(0);
   g_graphicsContext.SendMessage(msg2);
 
@@ -156,8 +160,8 @@ void CGUIDialogContentSettings::SetupPage()
     g_graphicsContext.SendMessage(msg2);
     if (m_info.strContent.Equals("movies"))
     {
-//      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20342));
-      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 0);
+      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20342));
+      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 1);
     }
   }
 
@@ -168,13 +172,24 @@ void CGUIDialogContentSettings::SetupPage()
     g_graphicsContext.SendMessage(msg2);
     if (m_info.strContent.Equals("tvshows"))
     {
-  //    SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20343));
-      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 1);
+      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 2);
     }
   }
   SET_CONTROL_VISIBLE(CONTROL_CONTENT_TYPE);
   // now add them scrapers to the list control
-  FillListControl();
+  if (m_info.strContent.IsEmpty())
+  {
+    CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
+    OnMessage(msgReset); 
+    CONTROL_DISABLE(CONTROL_SCRAPER_LIST);
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_SCRAPER_LIST);
+    FillListControl();
+  }
+
+  OnSettingChanged(0);
 }
 
 void CGUIDialogContentSettings::CreateSettings()
@@ -241,6 +256,7 @@ void CGUIDialogContentSettings::OnInitWindow()
   m_bNeedSave = false;
 
   CGUIDialogSettings::OnInitWindow();
+  SET_CONTROL_FOCUS(CONTROL_CONTENT_TYPE,0);
 }
 
 void CGUIDialogContentSettings::FillListControl()
@@ -253,6 +269,7 @@ void CGUIDialogContentSettings::FillListControl()
   {
     CFileItem* item = new CFileItem(iter->strTitle);
     item->m_strPath = iter->strPath;
+    item->SetThumbnailImage("Q:\\system\\scrapers\\video\\"+iter->strThumb);
     items.Add(item);
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_SCRAPER_LIST, 0, 0, (void*)item);
     OnMessage(msg);
@@ -260,8 +277,6 @@ void CGUIDialogContentSettings::FillListControl()
     {
       CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, iIndex);
       OnMessage(msg2);
-      CGUIImage *pImage = (CGUIImage*)GetControl(2);
-      pImage->SetFileName("q:\\system\\scrapers\\video\\"+m_info.strThumb);      
     }
     iIndex++;
   }

@@ -581,6 +581,8 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem)
         OnUnAssignContent(iItem);
       return;
     }
+
+    m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent);
     
     if (bScan)
     {
