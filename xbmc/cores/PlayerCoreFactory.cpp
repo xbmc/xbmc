@@ -103,6 +103,12 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s)",item.m_strPath.c_str());
 
+  // uggly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuevdo DVArchive)
+  // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
+  // we are often forced to do small reads to fill up the full buffer size wich seems gives garbage back
+  if (url.GetProtocol().Equals("rtv"))
+    vecCores.push_back(EPC_DVDPLAYER);    
+
   if (url.GetProtocol().Equals("lastfm"))
   {
     vecCores.push_back(EPC_PAPLAYER);    
