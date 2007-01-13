@@ -401,7 +401,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       
       if (GetAudioChannels(strAudioChannelName, strAudioChannelPid))
       {
-        strVideoStream.Format("0,%s,%s,%s,,,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Right(4).c_str(),sStrmInfo.pcrpid.Left(4).c_str());
+        strVideoStream.Format("0,%s,%s,%s,,,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str(),sStrmInfo.pcrpid.Left(4).c_str());
       }
       else
       {
