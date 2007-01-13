@@ -388,8 +388,8 @@ void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
 
   ShowIMDB(&item,info);
   // apply any IMDb icon to our item
-  if (item.m_bIsFolder)
-    ApplyIMDBThumbToFolder(item.m_strPath, item.GetThumbnailImage());
+  if (pItem->m_bIsFolder)
+    ApplyIMDBThumbToFolder(pItem->m_strPath, item.GetThumbnailImage());
   Update(m_vecItems.m_strPath);
 }
 
@@ -478,7 +478,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
                 url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
-                url.m_strID  = nfoReader.m_strImdbNr;
+                url.m_strID  = nfoReader.m_strImDbNr;
                 GetIMDBDetails(pItem, url, info);
                 continue;
               }

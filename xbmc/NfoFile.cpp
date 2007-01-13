@@ -30,8 +30,8 @@ HRESULT CNfoFile::Create(LPSTR szPath)
     char *src = reg.GetReplaceString("\\1");
     m_strImDbUrl = "http://www.imdb.com/title/tt";
     m_strImDbUrl += src;
-    m_strImdbNr = "tt";
-    m_strImdbNr += src;
+    m_strImDbNr = "tt";
+    m_strImDbNr += src;
     free(src);
   }
   reg.RegComp("imdb.com/title/tt[0-9]*");
@@ -40,6 +40,7 @@ HRESULT CNfoFile::Create(LPSTR szPath)
     char *src = reg.GetReplaceString("\\0");
     m_strImDbUrl = "http://www.";
     m_strImDbUrl += src;
+    m_strImDbNr = m_strImDbUrl.Mid(m_strImDbUrl.Find("/tt")+1);
     free(src);
   }
   Close();

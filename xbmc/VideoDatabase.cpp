@@ -8,6 +8,7 @@
 #include "videodatabase.h"
 #include "GUIWindowVideoBase.h"
 #include "utils/fstrcmp.h"
+#include "utils/RegExp.h"
 #include "util.h"
 #include "GUIPassword.h"
 #include "filesystem/VirtualPathDirectory.h"
@@ -79,7 +80,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_movie ON movie ( idMovie, idType )\n");
 
     CLog::Log(LOGINFO, "create actorlinkmovie table");
-    m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer )\n");
+    m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer, strRole text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkmovie_1 ON actorlinkmovie ( idActor, idMovie )\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkmovie_2 ON actorlinkmovie ( idMovie, idActor )\n");
 
@@ -486,19 +487,19 @@ void CVideoDatabase::AddGenreToMovie(long lMovieId, long lGenreId)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::AddActorToMovie(long lMovieId, long lActorId)
+void CVideoDatabase::AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=FormatSQL("select * from actorlinkmovie where idActor=%i and idMovie=%i", lActorId, lMovieId);
+    CStdString strSQL=FormatSQL("select * from actorlinkmovie where idActor=%u and idMovie=%u", lActorId, lMovieId);
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
     {
       // doesnt exists, add it
-      strSQL=FormatSQL("insert into actorlinkmovie (idActor, idMovie) values( %i,%i)", lActorId, lMovieId);
+      strSQL=FormatSQL("insert into actorlinkmovie (idActor, idMovie, strRole) values( %i,%i,'%s')", lActorId, lMovieId, strRole.c_str());
       m_pDS->exec(strSQL.c_str());
     }
     m_pDS->close();
@@ -573,7 +574,7 @@ void CVideoDatabase::GetMoviesByActor(CStdString& strActor, VECMOVIES& movies)
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=FormatSQL("select movid.idMovie from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and actors.stractor='%s' ", strActor.c_str());
+    CStdString strSQL=FormatSQL("select movie.idMovie from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movie.idType=1 and actors.stractor='%s'", strActor.c_str());
     m_pDS->query( strSQL.c_str() );
 
     long lLastPathId = -1;
@@ -667,28 +668,22 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     }
   
     // add cast...
-    vector<long> vecActors;
+    vector<std::pair<long,CStdString> > vecActors;
     CStdString strCast;
     int ipos = 0;
     strCast = details.m_strCast.c_str();
-    ipos = strCast.Find(" as ");
-    while (ipos > 0)
+    CRegExp reg;
+    reg.RegComp("([^\n]*) as ([^\n]*)\n");
+    const char* szFoo=strCast.c_str();
+    while ((ipos = reg.RegFind(szFoo)) > -1)
     {
-      CStdString strActor;
-      int x = ipos;
-      while (x > 0)
-      {
-        if (strCast[x] != '\r' && strCast[x] != '\n') x--;
-        else
-        {
-          x++;
-          break;
-        }
-      }
-      strActor = strCast.Mid(x, ipos - x);
-      long lActorId = AddActor(strActor);
-      vecActors.push_back(lActorId);
-      ipos = strCast.Find(" as ", ipos + 3);
+      char* actor = reg.GetReplaceString("\\1");
+      char* role = reg.GetReplaceString("\\2");
+      long lActor = AddActor(actor);
+      vecActors.push_back(std::make_pair<long,CStdString>(lActor,role));
+      free(actor);
+      free(role);
+      szFoo += ipos+reg.GetFindLen();
     }
     
     for (int i = 0; i < (int)vecGenres.size(); ++i)
@@ -698,7 +693,7 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
 
     for (i = 0; i < (int)vecActors.size(); ++i)
     {
-      AddActorToMovie(lMovieId, vecActors[i]);
+      AddActorToMovie(lMovieId, vecActors[i].first, vecActors[i].second);
     }
     
     CStdString strValue;
@@ -1017,10 +1012,10 @@ CIMDBMovie CVideoDatabase::GetDetailsForMovie(long lMovieId)
     if (iType == VIDEODB_ID_DIRECTOR)
     {
       long lDirectorId = m_pDS2->fv("movie.strValue").get_asLong();
-      strSQL = FormatSQL("select * from actors where idActor=%u",lDirectorId);
+      strSQL = FormatSQL("select strActor from actors where idActor=%u",lDirectorId);
       pDS->query(strSQL.c_str());
       if (!pDS->eof())
-        details.m_strDirector = pDS->fv("actor.strActor").get_asString();
+        details.m_strDirector = pDS->fv("actors.strActor").get_asString();
     }
     else
     {
@@ -1041,6 +1036,16 @@ CIMDBMovie CVideoDatabase::GetDetailsForMovie(long lMovieId)
       }
     }
     m_pDS2->next();
+  }
+
+  // create cast string
+  strSQL = FormatSQL("select actors.strActor,actorlinkmovie.strRole from actorlinkmovie,actors where actorlinkmovie.idMovie=%u and actorlinkmovie.idActor = actors.idActor",lMovieId);
+  pDS->query(strSQL.c_str());
+  int iActor = 0;
+  while (!pDS->eof())
+  {
+    details.m_strCast += pDS->fv("actors.strActor").get_asString()+" as "+pDS->fv("actorlinkmovie.strRole").get_asString()+'\n';
+    pDS->next();
   }
 
   strSQL=FormatSQL("select files.strFileName,files.idPath from files where idMovie=%u",lMovieId);

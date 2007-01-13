@@ -151,7 +151,7 @@ protected:
   long AddGenre(const CStdString& strGenre1);
   long AddActor(const CStdString& strActor);
 
-  void AddActorToMovie(long lMovieId, long lActorId);
+  void AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole);
   void AddGenreToMovie(long lMovieId, long lGenreId);
 
   CIMDBMovie GetDetailsForMovie(long lMovieId);

@@ -310,6 +310,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
       {
 	    	url.m_strURL.push_back(nfoReader.m_strImDbUrl);
+        url.m_strID = nfoReader.m_strImDbNr;
         CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
       }
       else
@@ -343,22 +344,29 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         pDlgProgress->Close();
         if (movielist.size() > 0)
         {
-          // 4c. found movies - allow selection of the movie we found
-          pDlgSelect->SetHeading(196);
-          pDlgSelect->Reset();
-          for (unsigned int i = 0; i < movielist.size(); ++i)
-            pDlgSelect->Add(movielist[i].m_strTitle);
-          pDlgSelect->EnableButton(true);
-          pDlgSelect->SetButtonLabel(413); // manual
-          pDlgSelect->DoModal();
-
-          // and wait till user selects one
-          int iSelectedMovie = pDlgSelect->GetSelectedLabel();
-          if (iSelectedMovie >= 0)
-            url = movielist[iSelectedMovie];
-          else if (!pDlgSelect->IsButtonPressed())
+          // 4c. found movies - allow selection of the movie we found if several
+          if (movielist.size() == 1)
           {
-            return; // user backed out
+            url = movielist[0];
+          }
+          else
+          {
+            pDlgSelect->SetHeading(196);
+            pDlgSelect->Reset();
+            for (unsigned int i = 0; i < movielist.size(); ++i)
+              pDlgSelect->Add(movielist[i].m_strTitle);
+            pDlgSelect->EnableButton(true);
+            pDlgSelect->SetButtonLabel(413); // manual
+            pDlgSelect->DoModal();
+
+            // and wait till user selects one
+            int iSelectedMovie = pDlgSelect->GetSelectedLabel();
+            if (iSelectedMovie >= 0)
+              url = movielist[iSelectedMovie];
+            else if (!pDlgSelect->IsButtonPressed())
+            {
+              return; // user backed out
+            }
           }
         }
       }
