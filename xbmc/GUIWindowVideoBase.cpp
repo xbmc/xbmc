@@ -895,7 +895,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
     }
     else if (btnid  == btn_Update) // update content 
     {
-      OnScan(m_vecItems[iItem]->m_strPath,info,-1,-1);
+      OnScan(m_vecItems[iItem]->m_strPath,info);
     }
 		// video info
 		else if (btnid == btn_Show_Info)

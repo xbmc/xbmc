@@ -372,20 +372,6 @@ void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
 
   AddFileToDatabase(&item);
 
-  /* uncommented stack code for consistency with OnRetrieveVideoInfo */
-  vector<CStdString> movies;
-  if (pItem->IsStack())
-  { // add the individual files as well at this point
-    // TODO: This should be removed as soon as we no longer need the individual
-    // files for saving settings etc.
-    GetStackedFiles(strFile, movies);
-    for (unsigned int i = 0; i < movies.size(); i++)
-    {
-      CFileItem item(movies[i], false);
-      AddFileToDatabase(&item);
-    }
-  }
-
   ShowIMDB(&item,info);
   // apply any IMDb icon to our item
   if (pItem->m_bIsFolder)
@@ -402,11 +388,39 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
   /* subtitles are assumed not to exist here, if we need it  */
   /* player should update this when it figures out if it has */
   m_database.AddFile(pItem->m_strPath);
-//    AddMovie(pItem->m_strPath, strCDLabel, false);
+
+  if (pItem->IsStack())
+  { // get stacked items
+    // TODO: This should be removed as soon as we no longer need the individual
+    // files for saving settings etc.
+    vector<CStdString> movies;
+    GetStackedFiles(pItem->m_strPath, movies);
+    for (unsigned int i = 0; i < movies.size(); i++)
+    {
+      CFileItem item(movies[i], false);
+      m_database.AddFile(item.m_strPath);
+    }
+  }
+
 }
 
 void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScraperInfo& info, bool bDirNames)
 {
+
+  CStdString strMovieName;
+  if (bDirNames)
+  {
+    strMovieName = items.m_strPath;
+    CUtil::RemoveSlashAtEnd(strMovieName);
+    strMovieName = CUtil::GetFileName(strMovieName);
+  }
+
+  if(m_dlgProgress)
+  {
+    m_dlgProgress->ShowProgressBar(true);
+    m_dlgProgress->SetPercentage(0);
+  }
+
   // for every file found
   for (int i = 0; i < (int)items.Size(); ++i)
   {
@@ -437,31 +451,31 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
     {
       if (pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList() )
       {
-        CStdString strItem;
-        strItem.Format("%i/%i", i + 1, items.Size());
+
+        if (!bDirNames)
+        {
+          strMovieName = pItem->GetLabel();
+          if(!g_guiSettings.GetBool("filelists.hideextensions") && !pItem->IsLabelPreformated())
+            CUtil::RemoveExtension(strMovieName);
+
+          if(strMovieName.IsEmpty())
+          {
+            strMovieName = CUtil::GetFileName(pItem->m_strPath);
+            CUtil::RemoveExtension(strMovieName);
+          }
+        }
+
         if (m_dlgProgress)
         {
-          m_dlgProgress->SetLine(0, strItem);
-          m_dlgProgress->SetLine(1, CUtil::GetFileName(pItem->m_strPath) );
+          m_dlgProgress->SetHeading(189);
+          m_dlgProgress->SetLine(0, strMovieName);
+          m_dlgProgress->SetLine(1, "");
+          m_dlgProgress->SetPercentage(100*i / items.Size());
           m_dlgProgress->Progress();
           if (m_dlgProgress->IsCanceled()) return ;
         }
-        vector<CStdString> movies;
-        CStdString strPath;
-        CUtil::GetDirectory(pItem->m_strPath,strPath);
         AddFileToDatabase(pItem);
-        m_database.SetScraperForPath(strPath,info.strPath,info.strContent);
-        if (pItem->IsStack())
-        { // get stacked items
-          // TODO: This should be removed as soon as we no longer need the individual
-          // files for saving settings etc.
-          GetStackedFiles(pItem->m_strPath, movies);
-          for (unsigned int i = 0; i < movies.size(); i++)
-          {
-            CFileItem item(movies[i], false);
-            AddFileToDatabase(&item);
-          }
-        }
+
         if (!m_database.HasMovieInfo(pItem->m_strPath))
         {
           // handle .nfo files
@@ -489,26 +503,12 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
               CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
           }
 
-          CStdString strMovieName;
-          if (bDirNames)
-          {
-            CStdString strPath = items.m_strPath;
-            CUtil::AddSlashAtEnd(strPath);
-            CUtil::GetDirectoryName(strPath,strMovieName);
-          }
-          else
-          {
-            strMovieName = CUtil::GetFileName(pItem->GetLabel());
-            CUtil::RemoveExtension(strMovieName);
-          }
-
           // do IMDB lookup...
           if (m_dlgProgress)
           {
             m_dlgProgress->SetHeading(197);
             m_dlgProgress->SetLine(0, strMovieName);
             m_dlgProgress->SetLine(1, "");
-            m_dlgProgress->SetLine(2, "");
             m_dlgProgress->Progress();
           }
 
@@ -528,7 +528,6 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
                 m_dlgProgress->SetHeading(198);
                 m_dlgProgress->SetLine(0, strMovieName);
                 m_dlgProgress->SetLine(1, url.m_strTitle);
-                m_dlgProgress->SetLine(2, "");
                 m_dlgProgress->Progress();
               }
 
@@ -540,41 +539,64 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
       }
     }
   }
+
+  if(m_dlgProgress)
+    m_dlgProgress->ShowProgressBar(false);
 }
 
 void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively)
 {
   // GetStackedDirectory() now sets and restores the stack state!
-  bool bDirNames=true;
-  if (info.strContent.Equals("movies") && iDirNames == -1)
+  SScanSettings settings = {};
+
+  if(iDirNames>0)
+  {
+    settings.parent_name = true;
+    settings.recurse = 1; /* atleast one, otherwise this makes no sence */
+  }
+  else if (info.strContent.Equals("movies") && iDirNames == -1)
   {
     bool bCanceled;
-    if (CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20334,20331,bCanceled))
-      bDirNames = false;
-    
+    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20332,-1,-1,20334,20331,bCanceled))
+    {
+      settings.parent_name = true;
+      settings.recurse = 1; /* atleast one, otherwise this makes no sence */
+    }
+
     if (bCanceled)
       return;
   }
-  else
-    bDirNames = iDirNames>0;
-  
-  bool bRecursively;
-  if (iScanRecursively == -1)
+
+  if(iScanRecursively > 0)
+    settings.recurse = INT_MAX;
+  else if (iScanRecursively == -1)
   {
     bool bCanceled;
-    bRecursively = CGUIDialogYesNo::ShowAndGetInput(13346,20335,-1,-1,bCanceled);
-    
+    if( CGUIDialogYesNo::ShowAndGetInput(13346,20335,-1,-1,bCanceled) )
+      settings.recurse = INT_MAX;
+
     if (bCanceled)
       return;
   }
-  else
-    bRecursively=iScanRecursively>0;
+
+  if (m_dlgProgress)
+  {
+    m_dlgProgress->SetHeading(189);
+    m_dlgProgress->SetLine(0, "");
+    m_dlgProgress->SetLine(1, "");
+    m_dlgProgress->SetLine(2, "" );
+    m_dlgProgress->StartModal();
+  }
 
   CFileItemList items;
   GetStackedDirectory(strPath, items);
   m_database.SetScraperForPath(strPath,info.strPath,info.strContent);
-  DoScan(strPath, items, info, bDirNames, bRecursively);
+  DoScan(items, info, settings);
   CUtil::ClearFileItemCache();
+
+  if (m_dlgProgress)
+    m_dlgProgress->Close();
+
   Update(m_vecItems.m_strPath);
 }
 
@@ -664,23 +686,12 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
   }*/
 }
 
-bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items, const SScraperInfo& info, bool bDirNames, bool bScanRecursively)
+bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, const SScraperInfo& info, const SScanSettings &settings, int depth)
 {
   // remove username + password from strPath for display in Dialog
-  CURL url(strPath);
+  CURL url(items.m_strPath);
   CStdString strStrippedPath;
   url.GetURLWithoutUserDetails(strStrippedPath);
-
-  if (m_dlgProgress)
-  {
-    m_dlgProgress->SetHeading(189);
-    m_dlgProgress->SetLine(0, "");
-    m_dlgProgress->SetLine(1, "");
-    m_dlgProgress->SetLine(2, strStrippedPath );
-    m_dlgProgress->StartModal();
-  }
-
-  OnRetrieveVideoInfo(items,info,bDirNames);
 
   bool bCancel = false;
   if (m_dlgProgress)
@@ -692,7 +703,12 @@ bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& item
     }
   }
 
-  if (!bCancel)
+  if(depth > 0)
+    OnRetrieveVideoInfo(items,info,settings.parent_name);
+  else
+    OnRetrieveVideoInfo(items,info,settings.parent_name_root);
+
+  if (!bCancel && settings.recurse > depth)
   {
     for (int i = 0; i < (int)items.Size(); ++i)
     {
@@ -705,7 +721,7 @@ bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& item
           break;
         }
       }
-      if ( pItem->m_bIsFolder && bScanRecursively)
+      if ( pItem->m_bIsFolder )
       {
         if (!pItem->IsParentFolder() && pItem->GetLabel().CompareNoCase("sample") != 0)
         {
@@ -714,7 +730,7 @@ bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& item
           GetStackedDirectory(pItem->m_strPath, subDirItems);
           if (m_dlgProgress)
             m_dlgProgress->Close();
-          if (!DoScan(pItem->m_strPath, subDirItems, info, bDirNames))
+          if (!DoScan(subDirItems, info, settings, depth+1))
           {
             bCancel = true;
           }
@@ -724,7 +740,6 @@ bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& item
     }
   }
 
-  if (m_dlgProgress) m_dlgProgress->Close();
   return !bCancel;
 }
 

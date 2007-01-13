@@ -1,16 +1,24 @@
 #pragma once
 #include "GUIWindowVideoBase.h"
 
+typedef struct SScanSettings
+{
+  bool parent_name;       /* use the parent dirname as name of lookup */
+  bool parent_name_root;  /* use the name of directory where scan started as name for files in that dir */
+  int  recurse;           /* recurse into sub folders (indicate levels) */
+} SScanSettings;
+
 class CGUIWindowVideoFiles : public CGUIWindowVideoBase
 {
 public:
   CGUIWindowVideoFiles(void);
   virtual ~CGUIWindowVideoFiles(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);  
 
-  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames=-1, int iScanRecursively=-1);
+  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info) { OnScan(strPath, info, -1, -1); }  
 
+  void OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively);
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool OnPlayMedia(int iItem);
@@ -23,7 +31,8 @@ protected:
   virtual void OnQueueItem(int iItem);
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info);
   virtual void OnUnAssignContent(int iItem);
-  bool DoScan(const CStdString& strPath, CFileItemList& items, const SScraperInfo& info, bool bDirNames, bool bRecursively=true);
+  
+  bool DoScan(CFileItemList& items, const SScraperInfo& info, const SScanSettings &settings, int depth = 0);
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
   void OnRetrieveVideoInfo(CFileItemList& items, const SScraperInfo& info, bool bDirNames);
   virtual void LoadPlayList(const CStdString& strFileName);

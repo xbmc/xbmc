@@ -27,7 +27,7 @@ protected:
 
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   virtual void OnInfo(int iItem, const SScraperInfo& info);
-  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively) {};
+  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info) {};
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info) {};
   virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
