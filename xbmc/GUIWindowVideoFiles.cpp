@@ -730,8 +730,6 @@ bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, SScraperInfo& info, cons
           // load subfolder
           CFileItemList subDirItems;
           GetStackedDirectory(pItem->m_strPath, subDirItems);
-          if (m_dlgProgress)
-            m_dlgProgress->Close();
           if (!DoScan(subDirItems, info, settings, depth+1))
           {
             bCancel = true;
