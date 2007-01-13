@@ -7,7 +7,7 @@
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="\1" dest="7">
-				<expression>&lt;a href=&quot;/rg/title-tease/plotsummary/title/([t0-9]*)/plotsummary</expression>
+				<expression>usercomments/title/([t0-9]*)/usercomments</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;movie&gt;&lt;title&gt;\1 (\2)&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/$$7/&lt;/url&gt;&lt;url&gt;http://akas.imdb.com/title/$$7/plotsummary&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/movie&gt;" dest="5">
 				<expression noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^&quot;]*) \(([0-9]*)\)</expression>
