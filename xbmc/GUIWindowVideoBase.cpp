@@ -221,7 +221,7 @@ void CGUIWindowVideoBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-void CGUIWindowVideoBase::OnInfo(int iItem, const SScraperInfo& info)
+void CGUIWindowVideoBase::OnInfo(int iItem, SScraperInfo& info)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
@@ -254,7 +254,7 @@ void CGUIWindowVideoBase::OnInfo(int iItem, const SScraperInfo& info)
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
 
-void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
+void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, SScraperInfo& info)
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
@@ -301,7 +301,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
 
   // 2. Look for a nfo File to get the search URL
   CStdString nfoFile = GetnfoFile(item);
-  if ( !nfoFile.IsEmpty() )
+  if ( !nfoFile.IsEmpty() && info.strContent.Equals("movies") )
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", nfoFile.c_str());
     if ( CFile::Cache(nfoFile, "Z:\\movie.nfo", NULL, NULL))
@@ -310,7 +310,9 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
       {
 	    	url.m_strURL.push_back(nfoReader.m_strImDbUrl);
+        url.m_strURL.push_back(nfoReader.m_strImDbUrl+"/plotsummary");
         url.m_strID = nfoReader.m_strImDbNr;
+        info.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
         CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
       }
       else
@@ -1136,36 +1138,8 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false)) return ;
   m_database.UpdateMovieTitle(atol(pItem->m_musicInfoTag.GetURL()), strInput);
-  UpdateVideoTitleXML(detail.m_strIMDBNumber, strInput);
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
-}
-
-bool CGUIWindowVideoBase::UpdateVideoTitleXML(const CStdString strIMDBNumber, CStdString& strTitle)
-{
-  CStdString strXMLFile;
-  CUtil::AddFileToFolder(g_settings.GetIMDbFolder(), strIMDBNumber + ".xml", strXMLFile);
-  TiXmlBase::SetCondenseWhiteSpace(false);
-  TiXmlDocument doc;
-  if (!doc.LoadFile(strXMLFile))
-    return false;
-
-  TiXmlNode *details = doc.FirstChild("details");
-  if (!details)
-  {
-    CLog::Log(LOGERROR, "IMDB: Invalid xml file");
-    return false;
-  }
-
-  TiXmlNode* pNode = details->FirstChild("title");
-  if (!pNode)
-    return false;
-  if (pNode->FirstChild())
-      pNode->FirstChild()->SetValue(strTitle);
-  else
-    return false;
-
-  return doc.SaveFile();
 }
 
 void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)

@@ -1163,7 +1163,6 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetProfileUserDataFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetDatabaseFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetIMDbFolder().c_str(), NULL);
 
   // Thumbnails/
   CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);

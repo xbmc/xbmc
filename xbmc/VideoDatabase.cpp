@@ -619,11 +619,6 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     if (lMovieId < 0) return ;
 
     details = GetDetailsForMovie(lMovieId);
-    if (details.m_strWritingCredits.IsEmpty())
-    { // try loading off disk
-      CIMDB imdb;
-      imdb.LoadDetails(details.m_strIMDBNumber, details);
-    }
     m_pDS->close();
   }
   catch (...)

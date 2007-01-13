@@ -181,20 +181,6 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   bool ret = ParseDetails(doc, movieDetails);
   TiXmlBase::SetCondenseWhiteSpace(true);
   
-  // save the xml file for later reading...
-  CFile file;
-  CStdString strXMLFolder;
-  strXMLFolder = g_settings.GetIMDbFolder();
-  CDirectory::Create(strXMLFolder);
-
-  CStdString strXMLFile;
-  strXMLFile.Format("%s\\%s.xml", g_settings.GetIMDbFolder().c_str(),movieDetails.m_strIMDBNumber.c_str());
-  if (file.OpenForWrite(strXMLFile))
-  {
-    file.Write(strXML.c_str(), strXML.size());
-    file.Close();
-  }
-
   return ret;
 }
 
@@ -249,38 +235,6 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
   CHTMLUtil::RemoveTags(movieDetails.m_strPlot);
 
   return true;
-}
-
-bool CIMDB::LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails)
-{
-  CStdString strXMLFile;
-  CUtil::AddFileToFolder(g_settings.GetIMDbFolder(), strIMDB+".xml",strXMLFile);
-  TiXmlBase::SetCondenseWhiteSpace(false);
-  TiXmlDocument doc;
-  movieDetails.m_strIMDBNumber = strIMDB;
-  if (doc.LoadFile(strXMLFile) && ParseDetails(doc, movieDetails))
-  { // excellent!
-    return true;
-  }
-  TiXmlBase::SetCondenseWhiteSpace(true);
-/*  // oh no - let's try and redownload them.
-  CGUIDialogProgress *pDlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (!pDlgProgress)
-    return false;
-  pDlgProgress->SetHeading(198);
-  pDlgProgress->SetLine(0, "");
-  pDlgProgress->SetLine(1, movieDetails.m_strTitle);
-  pDlgProgress->SetLine(2, "");
-  pDlgProgress->StartModal();
-  pDlgProgress->Progress();
-  CIMDBUrl url;
-  url.m_strTitle = movieDetails.m_strTitle;
-  CStdString strURL;
-  strURL.Format("http://%s/title/%s", g_advancedSettings.m_imdbAddress.c_str(), strIMDB.c_str());
-  url.m_strURL.push_back(strURL);
-  bool ret = GetDetails(url, movieDetails, pDlgProgress);
-  pDlgProgress->Close();*/
-  return false;
 }
 
 bool CIMDB::Download(const CStdString &strURL, const CStdString &strFileName)
@@ -385,7 +339,6 @@ const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, C
 
     m_parser.m_param[0] = szMovie;
     strURL = m_parser.Parse("CreateSearchUrl");
-//    strURL.Format("http://%s/find?s=tt;q=%s", g_advancedSettings.m_imdbAddress.c_str(), szMovie);
 
   strYear = szYear;
   return szMovie;

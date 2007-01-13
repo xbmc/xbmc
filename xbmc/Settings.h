@@ -282,7 +282,6 @@ public:
     int m_songInfoDuration;
     int m_logLevel;
     CStdString m_cddbAddress;
-    CStdString m_imdbAddress;
     bool m_autoDetectFG;
     bool m_useFDrive;
     bool m_useGDrive;
@@ -467,7 +466,6 @@ public:
   CStdString GetUserDataFolder() const;
   CStdString GetDatabaseFolder() const;
   CStdString GetCDDBFolder() const;
-  const CStdString GetIMDbFolder() const;
   CStdString GetThumbnailsFolder() const;
   CStdString GetMusicThumbFolder() const;
   CStdString GetMusicArtistThumbFolder() const;

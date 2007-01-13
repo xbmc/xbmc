@@ -286,7 +286,7 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   }
 }
 
-void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
+void CGUIWindowVideoFiles::OnInfo(int iItem, SScraperInfo& info)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
   bool bFolder(false);
@@ -404,7 +404,7 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
 
 }
 
-void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScraperInfo& info, bool bDirNames)
+void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, SScraperInfo& info, bool bDirNames)
 {
 
   CStdString strMovieName;
@@ -490,9 +490,11 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
               {
                 CIMDBUrl url;
                 url.m_strURL.push_back(nfoReader.m_strImDbUrl);
+                url.m_strURL.push_back(nfoReader.m_strImDbUrl+"/plotsummary");
                 //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
                 url.m_strID  = nfoReader.m_strImDbNr;
+                info.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
                 GetIMDBDetails(pItem, url, info);
                 continue;
               }
@@ -544,7 +546,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
     m_dlgProgress->ShowProgressBar(false);
 }
 
-void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively)
+void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, SScraperInfo& info, int iDirNames, int iScanRecursively)
 {
   // GetStackedDirectory() now sets and restores the stack state!
   SScanSettings settings = {};
@@ -686,7 +688,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
   }*/
 }
 
-bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, const SScraperInfo& info, const SScanSettings &settings, int depth)
+bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, SScraperInfo& info, const SScanSettings &settings, int depth)
 {
   // remove username + password from strPath for display in Dialog
   CURL url(items.m_strPath);
