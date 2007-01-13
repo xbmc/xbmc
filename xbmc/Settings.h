@@ -295,6 +295,7 @@ public:
     bool m_bTuxBoxAudioChannelSelection;
     bool m_bTuxBoxPictureIcon;
     int m_iTuxBoxEpgRequestTime;
+    int m_iTuxBoxZapWaitTime;
 
   };
   struct stSettings

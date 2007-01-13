@@ -256,6 +256,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_iTuxBoxEpgRequestTime = 10; //seconds
   g_advancedSettings.m_iTuxBoxDefaultSubMenu = 4;
   g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
+  g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
   xbmcXmlLoaded = false;
   bTransaction = false;
@@ -1163,6 +1164,8 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "epgrequesttime", g_advancedSettings.m_iTuxBoxEpgRequestTime, 10, 0, 3600);
     GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iTuxBoxDefaultSubMenu, 4, 1, 4);
     GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 0, 4);
+    GetInteger(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 0, 120);
+    
   }
 
   CStdString extraExtensions;

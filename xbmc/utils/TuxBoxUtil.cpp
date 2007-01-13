@@ -362,14 +362,35 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
       GetHttpXML(urlx,"streaminfo");
       iRetry=iRetry+1;
     }
+    
+    // PMT Not Valid? Try Time 10 reached, checking for advancedSettings m_iTuxBoxZapWaitTime
+    if(sStrmInfo.pmt.Equals("ffffffffh") && g_advancedSettings.m_iTuxBoxZapWaitTime > 0 )
+    {
+      iRetry = 0;
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Starting TuxBox ZapWaitTimer!");
+      while(sStrmInfo.pmt.Equals("ffffffffh") && iRetry!=10) //try 10 Times
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Requesting STREAMINFO! TryCount: %i!",iRetry);
+        GetHttpXML(urlx,"streaminfo");
+        iRetry=iRetry+1;
+        if(sStrmInfo.pmt.Equals("ffffffffh"))
+        {
+          CLog::Log(LOGERROR, __FUNCTION__" - STREAMINFO ERROR! Could not receive all data, TryCount: %i!",iRetry);
+          CLog::Log(LOGERROR, __FUNCTION__" - PMT is: %s (not a Valid Value)! Waiting %i sec.",sStrmInfo.pmt.c_str(), g_advancedSettings.m_iTuxBoxZapWaitTime);
+          Sleep(g_advancedSettings.m_iTuxBoxZapWaitTime*1000);
+        }
+      }
+    }
+    
+    //PMT Failed! No StreamInformations availible.. closing stream 
     if (sStrmInfo.pmt.Equals("ffffffffh"))
     {
       CLog::Log(LOGERROR, __FUNCTION__"-------------------------------------------------------------");
       CLog::Log(LOGERROR, __FUNCTION__" - STREAMINFO ERROR! Could not receive all data, TryCount: %i!",iRetry);
-      CLog::Log(LOGERROR, __FUNCTION__" - PMT is: %s (not a Valid Value)! There nothing to Stream!",sStrmInfo.pmt.c_str());
+      CLog::Log(LOGERROR, __FUNCTION__" - PMT is: %s (not a Valid Value)! There is nothing to Stream!",sStrmInfo.pmt.c_str());
+      CLog::Log(LOGERROR, __FUNCTION__" - The Stream will stopped!");
       CLog::Log(LOGERROR, __FUNCTION__"-------------------------------------------------------------");
-      // Send a WakUP then try again ?
-      // Or check are we wackedUP ?
+      return false;
     }
     //Currentservicedata
     GetHttpXML(urlx,"currentservicedata");
