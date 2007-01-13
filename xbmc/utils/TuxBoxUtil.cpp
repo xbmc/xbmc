@@ -436,7 +436,10 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         if(sCurSrvData.audio_channel_2_pid.Left(2).Equals("0x"))
           sCurSrvData.audio_channel_2_pid.Replace("0x","");
 
-        strVideoStream.Format("0,%s,%s,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str(), sCurSrvData.audio_channel_2_pid.Left(4).c_str(), sStrmInfo.pcrpid.Left(4).c_str());
+        if(g_application.m_eForcedNextPlayer == EPC_DVDPLAYER)
+          strVideoStream.Format("0,%s,%s,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str(), sCurSrvData.audio_channel_2_pid.Left(4).c_str(), sStrmInfo.pcrpid.Left(4).c_str());
+        else 
+          strVideoStream.Format("0,%s,%s,%s,,,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sStrmInfo.pcrpid.Left(4).c_str());
       }
       
       //strStreamURL.Format("http://%s:%i/%s",url.GetHostName().c_str(),TS_STREAM_PORT,strVideoStream.c_str());
@@ -463,13 +466,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       items.SetContentType("video/x-ms-asf");
       
       //Set Channel Change Detection ServiceName
-      //t_tuxbox.Start();
       t_tuxbox.strCurrentServiceName = sCurSrvData.service_name;
-      //
-
-      //Set Picon Image
-      //items.SetThumbnailImage(GetPicon(items.GetLabel()));
-      // Todo: Need to cach the icon to speed up the listing!
 
       return true;
     }
@@ -1196,10 +1193,16 @@ bool CTuxBoxUtil::ServiceEPG(TiXmlElement *pRootElement)
 //No PopUp: On 1x detected AudioChannel
 bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& strAudioChannelPid)
 {
+  //DVDPlayer Can play all AudioStreams! No need to popup the AudioChannel selector!
+  if(g_application.m_eForcedNextPlayer == EPC_DVDPLAYER)
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - DVDPlayer is used to play the Stream! Disabling Audio Channel Selection! Returning False to use All Possible Audio channels!");
+    return false;
+  }
   // Audio Selection is Disabled! Return false to use default values!
   if(!g_advancedSettings.m_bTuxBoxAudioChannelSelection)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" Audio Channel Selection is Disabled! Returning False to use the default values!");
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Audio Channel Selection is Disabled! Returning False to use the default values!");
     return false;
   }
   // We have only one Audio Channel return false to use default values!
