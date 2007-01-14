@@ -1,4 +1,4 @@
-﻿<window id="129">
+<window id="129">
 	<defaultcontrol>10</defaultcontrol>
 	<animation effect="fade" time="400">WindowOpen</animation>
 	<animation effect="fade" time="400">WindowClose</animation>
@@ -160,7 +160,7 @@
 			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 			<label>186</label>
 			<onup>12</onup>
-			<onleft>19</onleft>
+			<onleft>20</onleft>
 			<onright>19</onright>
 			<ondown>10</ondown>
 		</control>
@@ -179,6 +179,24 @@
 			<label>222</label>
 			<onup>12</onup>
 			<onleft>18</onleft>
+			<onright>20</onright>
+			<ondown>10</ondown>
+		</control>`
+		<control type="button" id="20">
+			<description>Set Content Button</description>
+			<posx>153</posx>
+			<posy>255</posy>
+			<width>97</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<label>20333</label>
+			<onup>12</onup>
+			<onleft>19</onleft>
 			<onright>18</onright>
 			<ondown>10</ondown>
 		</control>

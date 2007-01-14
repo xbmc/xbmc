@@ -17,7 +17,8 @@ public:
 
   HRESULT Create(LPSTR szPath);
 
-  string m_strImDbUrl;
+  CStdString m_strImDbUrl;
+  CStdString m_strImDbNr;
 private:
   HRESULT Load(char* szFile);
   void Close();

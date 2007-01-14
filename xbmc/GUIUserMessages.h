@@ -83,3 +83,6 @@
 
 // Message is sent to the screensaver window to tell that it should check the lock
 #define GUI_MSG_CHECK_LOCK            GUI_MSG_USER + 25
+
+// Message is sent to media windows to force a refresh
+#define GUI_MSG_UPDATE                GUI_MSG_USER + 26

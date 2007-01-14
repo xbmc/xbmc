@@ -1,0 +1,247 @@
+<window>
+ <id>132</id>
+ <defaultcontrol>3</defaultcontrol>
+ <coordinates>
+   <system>1</system>
+   <posx>161</posx>
+   <posy>132</posy>
+ </coordinates>
+ <controls>
+
+ <control>
+	<type>image</type>
+	<id>0</id>
+	<posx>-300</posx>
+	<posy>-300</posy>
+	<width>1300</width>
+	<height>1300</height>
+	<texture>black.png</texture>
+	<animation effect="fade" time="2000">WindowOpen</animation>
+	<animation effect="fade" time="200">WindowClose</animation>
+ </control>
+
+ <control>
+	<description>background image</description>
+	<type>image</type>
+	<id>1</id>
+	<posx>-25</posx>
+	<posy>-11</posy>
+	<width>446</width>
+	<height>406</height>
+	<texture>dialog-panel2.png</texture>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>scraper image</description>
+	<type>image</type>
+	<posx>10</posx>
+	<posy>45</posy>
+	<width>120</width>
+	<height>120</height>
+    	<aspectratio>keep</aspectratio>
+	<info>ListItem.Icon</info>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>directory contains label</description>
+	<type>label</type>
+	<id>1000</id>
+	<posx>10</posx>
+	<posy>8</posy>
+	<width>280</width>
+	<align>left</align>
+	<font>special13</font>
+	<textcolor>FFFFFFFF</textcolor>
+	<label>$LOCALIZE[ 20344 ]</label>
+        <include>homemisc</include>
+ </control>
+
+  <control>
+   <description>directory content select spincontrol</description>
+   <id>3</id>
+   <type>spincontrolex</type>
+   <align>left</align>
+   <width>200</width>
+   <height>17</height>
+   <posx>200</posx>
+   <posy>10</posy>
+   <font>special13</font>
+   <reverse>yes</reverse>
+   <texturefocus>-</texturefocus>
+   <texturenofocus>-</texturenofocus>
+   <onup>28</onup>
+   <ondown>4</ondown>
+   <onleft>3</onleft>
+   <onright>3</onright>
+   <disabledcolor>ffffffff</disabledcolor>
+   <textoffsetx>0</textoffsetx>
+   <textoffsety>0</textoffsety>
+   <aligny>center</aligny>
+   <subtype>text</subtype>
+   <include>homemisc</include>
+  </control>
+	<control type="list" id="4">
+		<posx>150</posx>
+		<posy>45</posy>
+		<width>390</width>
+		<height>120</height>
+		<onup>3</onup>
+		<ondown>30</ondown>
+		<onleft>3</onleft>
+		<onright>30</onright>
+		<scrolltime>200</scrolltime>
+		<itemlayout height="35">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>250</width>
+				<height>29</height>
+				<texture>input-nofocus.png</texture>
+			</control>
+			<control type="image">
+				<posx>3</posx>
+				<posy>3</posy>
+				<width>23</width>
+				<height>23</height>
+				<info>ListItem.Icon</info>
+			</control>
+			<control type="label">
+				<posx>32</posx>
+				<posy>5</posy>
+				<width>210</width>
+				<height>23</height>
+				<font>font13</font>
+				<include>listselectedcolor</include>
+				<align>left</align>
+				<info>ListItem.Label</info>
+			</control>
+		</itemlayout>
+		<focusedlayout height="35">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>250</width>
+				<height>29</height>
+				<texture>input-focus.png</texture>
+			</control>
+			<control type="image">
+				<posx>3</posx>
+				<posy>3</posy>
+				<width>23</width>
+				<height>23</height>
+				<info>ListItem.Icon</info>
+			</control>
+			<control type="label">
+				<posx>32</posx>
+				<posy>5</posy>
+				<width>210</width>
+				<height>23</height>
+				<font>font13</font>
+				<include>listselectedcolor</include>
+				<align>left</align>
+				<info>ListItem.Label</info>
+			</control>
+		</focusedlayout>
+	</control>
+ <control>
+	<description>control area</description>
+	<type>grouplist</type>
+	<id>5</id>
+	<posx>-1</posx>
+	<posy>180</posy>
+	<width>408</width>
+	<height>125</height>
+	<itemgap>2</itemgap>
+	<onup>4</onup>
+	<ondown>28</ondown>
+	<onleft>5</onleft>
+	<onright>5</onright>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>Default Button</description>
+	<type>button</type>
+	<id>7</id>
+	<posx>530</posx>
+	<posy>150</posy>
+	<height>29</height>
+	<font>font12</font>
+	<textoffsetx>12</textoffsetx>
+	<aligny>center</aligny>
+	<texturefocus>input-focus.png</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>Default RadioButton</description>
+	<type>radiobutton</type>
+	<id>8</id>
+	<posx>530</posx>
+	<posy>150</posy>
+	<height>31</height>
+	<font>font12</font>
+	<texturefocus>input-focus.png</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<textoffsetx>12</textoffsetx>
+	<aligny>center</aligny>
+	<textureradiofocus>settings-check-box.png</textureradiofocus>
+	<textureradionofocus>settings-check-boxNF.png</textureradionofocus>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>separator image</description>
+	<type>image</type>
+	<id>11</id>
+	<width>350</width>
+	<height>5</height>
+	<texture>separatorOSD.png</texture>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>OK button</description>
+	<type>button</type>
+	<id>28</id>
+	<posx>223</posx>
+	<posy>325</posy>
+	<width>90</width>
+	<height>32</height>
+	<align>center</align>
+	<label>186</label>
+	<font>font10</font>
+	<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+	<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+	<onleft>29</onleft>
+	<onright>29</onright>
+	<onup>30</onup>
+	<ondown>3</ondown>
+	<include>homemisc</include>
+ </control>
+
+ <control>
+	<description>Cancel button</description>
+	<type>button</type>
+	<id>29</id>
+	<posx>318</posx>
+	<posy>325</posy>
+	<width>90</width>
+	<height>32</height>
+	<align>center</align>
+	<label>222</label>
+	<font>font10</font>
+	<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+	<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+	<onleft>28</onleft>
+	<onright>28</onright>
+	<onup>30</onup>
+	<ondown>3</ondown>
+	<include>homemisc</include>
+ </control>
+
+ </controls>
+</window>

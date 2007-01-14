@@ -95,7 +95,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       }
 
       SET_CONTROL_HIDDEN(CONTROL_DISC);
-      CONTROL_DISABLE(CONTROL_DISC);
+/*      CONTROL_DISABLE(CONTROL_DISC);
       int iItem = 0;
       CFileItem movie(m_Movie.m_strFileNameAndPath, false);
       if ( movie.IsOnDVD() )
@@ -137,7 +137,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
         CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_DISC, iItem, 0, NULL);
         g_graphicsContext.SendMessage(msgSet);
-      }
+      }*/
       Refresh();
 
       // dont allow refreshing of manual info
@@ -175,7 +175,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       {
         OnGetThumb();
       }
-      else if (iControl == CONTROL_DISC)
+/*      else if (iControl == CONTROL_DISC)
       {
         int iItem = 0;
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
@@ -188,7 +188,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           if (lMovieId > 0)
           {
             CStdString label;
-            m_database.GetDVDLabel(lMovieId, label);
+            //m_database.GetDVDLabel(lMovieId, label);
             int iPos = label.Find("DVD#");
             if (iPos >= 0)
             {
@@ -197,10 +197,10 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
             label = label.TrimRight(" ");
             label += " ";
             label += strItem;
-            m_database.SetDVDLabel( lMovieId, label);
+            //m_database.SetDVDLabel( lMovieId, label);
           }
         }
-      }
+      }*/
       else if (iControl == CONTROL_LIST)
       {
         int iAction = message.GetParam1();

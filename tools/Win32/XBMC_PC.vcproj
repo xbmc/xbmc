@@ -407,10 +407,6 @@
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\YMCodec.h">
 				</File>
-				<Filter
-					Name="aac"
-					Filter="">
-				</Filter>
 			</Filter>
 			<Filter
 				Name="DllLoader"
@@ -1081,6 +1077,12 @@
 					RelativePath="..\..\xbmc\utils\RssReader.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\ScraperParser.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\ScraperParser.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\SectionLoader.cpp">
 				</File>
 				<File
@@ -1198,6 +1200,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogButtonMenu.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogContentSettings.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogContentSettings.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogContextMenu.cpp">
