@@ -58,6 +58,42 @@ namespace PYXBMC
 		return Py_BuildValue("i", self->iControlId);
 	}
 
+  // getPosition() Method
+	PyDoc_STRVAR(getPosition__doc__,
+		"getPosition() -- Returns the control's current position as a x,y integer tuple.\n"
+		"\n"
+		"example:\n"
+		"  - pos = self.button.getPosition()\n");
+
+	PyObject* Control_GetPosition(Control* self, PyObject* args)
+	{
+		return Py_BuildValue("(ll)", self->dwPosX, self->dwPosY);
+	}
+
+  // getHeight() Method
+	PyDoc_STRVAR(getHeight__doc__,
+		"getHeight() -- Returns the control's current height as an integer.\n"
+		"\n"
+		"example:\n"
+		"  - height = self.button.getHeight()\n");
+
+	PyObject* Control_GetHeight(Control* self, PyObject* args)
+	{
+		return Py_BuildValue("l", self->dwHeight);
+	}
+
+  // getWidth() Method
+	PyDoc_STRVAR(getWidth__doc__,
+		"getWidth() -- Returns the control's current width as an integer.\n"
+		"\n"
+		"example:\n"
+		"  - width = self.button.getWidth()\n");
+
+	PyObject* Control_GetWidth(Control* self, PyObject* args)
+	{
+		return Py_BuildValue("l", self->dwWidth);
+	}	
+
 	// setEnabled() Method
   PyDoc_STRVAR(setEnabled__doc__,
 		"setEnabled(enabled) -- Set's the control's enabled/disabled state.\n"
@@ -384,6 +420,9 @@ namespace PYXBMC
 
 	PyMethodDef Control_methods[] = {
 		{"getId", (PyCFunction)Control_GetId, METH_VARARGS, getId__doc__},
+		{"getPosition", (PyCFunction)Control_GetPosition, METH_VARARGS, getPosition__doc__},
+		{"getHeight", (PyCFunction)Control_GetHeight, METH_VARARGS, getHeight__doc__},
+		{"getWidth", (PyCFunction)Control_GetWidth, METH_VARARGS, getWidth__doc__},
 		{"setEnabled", (PyCFunction)Control_SetEnabled, METH_VARARGS, setEnabled__doc__},
 		{"setVisible", (PyCFunction)Control_SetVisible, METH_VARARGS, setVisible__doc__},
 		{"setPosition", (PyCFunction)Control_SetPosition, METH_VARARGS, setPosition__doc__},
