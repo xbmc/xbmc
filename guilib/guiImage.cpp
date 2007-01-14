@@ -27,6 +27,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_Info = 0;
   m_image = texture;
   m_diffuseTexture = NULL;
+  m_diffusePalette = NULL;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
@@ -52,6 +53,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_Info = left.m_Info;
   m_image = left.m_image;
   m_diffuseTexture = NULL;
+  m_diffusePalette = NULL;
 }
 
 CGUIImage::~CGUIImage(void)
@@ -106,6 +108,8 @@ void CGUIImage::Render()
 #ifdef HAS_XBOX_D3D
     if (!m_linearTexture)
       p3DDevice->SetPalette( 0, m_pPalette);
+    if (m_diffusePalette)
+      p3DDevice->SetPalette( 1, m_diffusePalette);
 #endif
 #endif
     p3DDevice->SetTexture( 0, m_vecTextures[m_iCurrentImage] );
@@ -208,6 +212,8 @@ void CGUIImage::Render()
     p3DDevice->End();
     if (!m_linearTexture)
       p3DDevice->SetPalette( 0, NULL);
+    if (m_diffusePalette)
+      p3DDevice->SetPalette( 1, NULL);
 #endif
 #endif
     // unset the texture and palette or the texture caching crashes because the runtime still has a reference
@@ -373,9 +379,8 @@ void CGUIImage::AllocResources()
   {
     int width, height;
     bool linearTexture;
-    LPDIRECT3DPALETTE8 palette;
     int iImages = g_TextureManager.Load(m_image.diffuse, 0);
-    m_diffuseTexture = g_TextureManager.GetTexture(m_image.diffuse, 0, width, height, palette, linearTexture);
+    m_diffuseTexture = g_TextureManager.GetTexture(m_image.diffuse, 0, width, height, m_diffusePalette, linearTexture);
 
     if (m_diffuseTexture)
     { // calculate scaling for the texcoords (vs texcoords of main texture)
@@ -407,6 +412,7 @@ void CGUIImage::FreeTextures()
   if (m_diffuseTexture)
     g_TextureManager.ReleaseTexture(m_image.diffuse);
   m_diffuseTexture = NULL;
+  m_diffusePalette = NULL;
 
   m_vecTextures.erase(m_vecTextures.begin(), m_vecTextures.end());
   m_iCurrentImage = 0;
