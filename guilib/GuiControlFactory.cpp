@@ -5,7 +5,6 @@
 #include "GUIRadiobuttoncontrol.h"
 #include "GUISpinControl.h"
 #include "GUIRSSControl.h"
-//#include "GUIRAMControl.h"
 #include "GUIConsoleControl.h"
 #include "GUIListControlEx.h"
 #include "GUIImage.h"
@@ -385,12 +384,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CStdString strRSSTags = "";
 
   DWORD dwThumbAlign = 0;
-#ifdef HAS_RAM_CONTROL
-  float thumbSpaceX = 6;
-  float thumbSpaceY = 25;
-  float textSpaceY = 12;
-  CStdString strDefaultThumb;
-#endif
 
   float thumbXPos = 4;
   float thumbYPos = 10;
@@ -500,14 +493,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       height = max(rect.bottom - posY, 0);
   }
 
-#ifdef HAS_RAM_CONTROL
-  XMLUtils::GetFloat(pControlNode, "textspacey", textSpaceY);
-  XMLUtils::GetFloat(pControlNode, "gfxthumbwidth", thumbWidth);
-  XMLUtils::GetFloat(pControlNode, "gfxthumbheight", thumbHeight);
-  XMLUtils::GetFloat(pControlNode, "gfxthumbspacex", thumbSpaceX);
-  XMLUtils::GetFloat(pControlNode, "gfxthumbspacey", thumbSpaceY);
-  XMLUtils::GetString(pControlNode, "gfxthumbdefault", strDefaultThumb);
-#endif
   XMLUtils::GetFloat(pControlNode, "controloffsetx", controlOffsetX);
   XMLUtils::GetFloat(pControlNode, "controloffsety", controlOffsetY);
 
@@ -952,23 +937,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
     return pControl;
   }
-#if 0 //def HAS_RAM_CONTROL
-  else if (strType == "ram")
-  {
-    CGUIRAMControl* pControl = new CGUIRAMControl(
-      dwParentId, id, posX, posY, width, height,
-      labelInfo, labelInfo2);
-
-    pControl->SetTextSpacing(textSpaceY);
-    pControl->SetThumbAttributes(thumbWidth, thumbHeight, thumbSpaceX, thumbSpaceY, strDefaultThumb);
-    pControl->SetColorDiffuse(colorDiffuse);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
-  }
-#endif
   else if (strType == "console")
   {
     CGUIConsoleControl* pControl = new CGUIConsoleControl(
