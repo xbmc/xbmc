@@ -58,13 +58,13 @@ namespace DIRECTORY
   CStdString CStackDirectory::GetStackedTitlePath(const CStdString &strPath)
   {
     CStdString path, file, folder;
-    int pos = file.Find(" , ");
+    int pos = strPath.Find(" , ");
     // remove "stack://" from the folder
-    folder = folder.Mid(8);
     if (pos > 0)
     {
       CUtil::Split(strPath.Left(pos), folder, file);
       file.Replace(",,", ",");
+      folder = folder.Mid(8);
       CStdString title, volume;
       CUtil::GetVolumeFromFileName(file, title, volume);
       CUtil::AddFileToFolder(folder, title, path);

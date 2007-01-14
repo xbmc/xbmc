@@ -1,5 +1,6 @@
 #include "../../stdafx.h"
 #include "mplayer.h"
+#include "../DllLoader/DllLoader.h"
 #include "DllMPlayer.h"
 #include "../dlgcache.h"
 #include "../../util.h"

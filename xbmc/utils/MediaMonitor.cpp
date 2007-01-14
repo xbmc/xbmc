@@ -289,11 +289,11 @@ bool CMediaMonitor::GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieReco
   CLog::Log(LOGDEBUG, debug);
 
   // Query IMDB and populate the record
-  if (imdb_GetMovieInfo(strName, aMovieRecord))
+  if (imdb_GetMovieInfo(strName, aMovieRecord, strName))
   {
     // Store the record in the internal database
     CStdString strCDLabel;
-    if (m_database.AddMovie(strFilepath, strCDLabel, false))
+    if (m_database.AddMovie (strFilepath))
     {
       m_database.SetMovieInfo(strFilepath, aMovieRecord);
     }
@@ -308,16 +308,16 @@ bool CMediaMonitor::GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieReco
 }
 
 /// This method queries imdb for movie information associated with a title
-bool CMediaMonitor::imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRecord)
+bool CMediaMonitor::imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRecord, const CStdString& strScraper)
 {
   CIMDB imdb;
   IMDB_MOVIELIST results;
 
-  if (imdb.FindMovie(strTitle, results) )
+  if (imdb.FindMovie(strTitle, results, strScraper) )
   {
     if (results.size() > 0)
     {
-      if (! imdb.GetDetails(results[0], aMovieRecord) )
+      if (! imdb.GetDetails(results[0], aMovieRecord, strScraper) )
       {
         aMovieRecord.m_strTitle = results[0].m_strTitle;
       }
@@ -395,7 +395,7 @@ void CMediaMonitor::UpdateTitle(INT nIndex, CStdString& strTitle, CStdString& st
   }
 
   // Query IMDB and populate the record
-  if (imdb_GetMovieInfo(strTitle, details))
+  if (imdb_GetMovieInfo(strTitle, details, strTitle))
   {
     if (!details.m_strPictureURL.IsEmpty())
     {

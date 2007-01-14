@@ -212,6 +212,13 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         }
         return true;
       }
+      else if (message.GetParam1()==GUI_MSG_UPDATE)
+      {
+        int iItem = m_viewControl.GetSelectedItem();
+        Update(m_vecItems.m_strPath);
+        m_viewControl.SetSelectedItem(iItem);        
+      }
+      return true;
     }
     break;
   case GUI_MSG_PLAYBACK_STARTED:

@@ -85,7 +85,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
           {
             CVideoDatabase videoDatabase;
             videoDatabase.Open();
-            videoDatabase.ClearBookMarkOfVideo(g_application.CurrentFile(),m_bookmarks[iItem]);
+            videoDatabase.ClearBookMarkOfFile(g_application.CurrentFile(),m_bookmarks[iItem]);
             videoDatabase.Close();
           }
           Update();
@@ -117,7 +117,7 @@ void CGUIDialogVideoBookmarks::Update()
   // open the d/b and retrieve the bookmarks for the current movie
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.GetBookMarksForMovie(g_application.CurrentFile(), m_bookmarks);
+  videoDatabase.GetBookMarksForFile(g_application.CurrentFile(), m_bookmarks);
 
   /* push in the resume mark first */
   if( videoDatabase.GetResumeBookMark(g_application.CurrentFile(), resumemark) )
@@ -169,8 +169,8 @@ void CGUIDialogVideoBookmarks::ClearBookmarks()
 {
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.ClearBookMarksOfMovie(g_application.CurrentFile(), CBookmark::STANDARD);
-  videoDatabase.ClearBookMarksOfMovie(g_application.CurrentFile(), CBookmark::RESUME);
+  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::STANDARD);
+  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::RESUME);
   videoDatabase.Close();
   Update();
 }
@@ -225,7 +225,7 @@ void CGUIDialogVideoBookmarks::AddBookmark()
   }
   lock.Leave();
   videoDatabase.Open();
-  videoDatabase.AddBookMarkToMovie(g_application.CurrentFile(), bookmark, CBookmark::STANDARD);
+  videoDatabase.AddBookMarkToFile(g_application.CurrentFile(), bookmark, CBookmark::STANDARD);
   videoDatabase.Close();
   Update();
 }
