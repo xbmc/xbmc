@@ -1510,9 +1510,9 @@
   <string id="20336">Scan for several items</string>
   <string id="20337">&lt;No Media Type Set&gt;</string>
   <string id="20338">Remove assignment</string>
-  <string id="20339">Are you sure you want to unassign?</string>
-  <string id="20340">This will remove all items within</string>
-  <string id="20341">this path from the database.</string>
+
+  <string id="20340">Do you want to remove all items within</string>
+  <string id="20341">this path from the database?</string>
   <string id="20342">Movies</string>
   <string id="20343">TV Shows</string>
   <string id="20344">This directory contains</string>

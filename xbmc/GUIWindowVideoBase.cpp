@@ -221,7 +221,7 @@ void CGUIWindowVideoBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-void CGUIWindowVideoBase::OnInfo(int iItem, SScraperInfo& info)
+void CGUIWindowVideoBase::OnInfo(int iItem, const SScraperInfo& info)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
@@ -254,7 +254,7 @@ void CGUIWindowVideoBase::OnInfo(int iItem, SScraperInfo& info)
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
 
-void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, SScraperInfo& info)
+void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
@@ -312,7 +312,9 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, SScraperInfo& info)
 	    	url.m_strURL.push_back(nfoReader.m_strImDbUrl);
         url.m_strURL.push_back(nfoReader.m_strImDbUrl+"/plotsummary");
         url.m_strID = nfoReader.m_strImDbNr;
-        info.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
+        SScraperInfo info2(info);
+        info2.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
+        IMDB.SetScraperInfo(info2);
         CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
       }
       else
@@ -779,7 +781,13 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
         {
           if (iFound==0)
           {
-              btn_Assign = pMenu->AddButton(20333);
+            CStdString strPath(m_vecItems[iItem]->m_strPath);
+            CUtil::AddSlashAtEnd(strPath);
+            if (m_database.HasMovieInfo(strPath))
+              btn_Show_Info = pMenu->AddButton(13346);
+
+            btn_Assign = pMenu->AddButton(20333);
+            
           }
           else
           {
@@ -790,9 +798,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
         }
         else
         {
-          btn_Show_Info = pMenu->AddButton(13346);
-          if(!iFound)
-            pMenu->EnableButton(btn_Show_Info, false);
+          if (iFound > 0 || m_database.HasMovieInfo(m_vecItems[iItem]->m_strPath))
+            btn_Show_Info = pMenu->AddButton(13346);
         }
       }
     }

@@ -265,15 +265,45 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
     CStdString strPath, strFile;
     CUtil::Split(strFilenameAndPath, strPath, strFile);
 
-    if (strPath == strFilenameAndPath) // i.e. we where handed a path
-      CUtil::RemoveSlashAtEnd(strPath);
-
     // have to join movieinfo table for correct results
     long lPathId = GetPath(strPath);
-    if (lPathId < 0)
+    if (lPathId < 0 && strPath != strFilenameAndPath)
       return -1;
 
-    CStdString strSQL=FormatSQL("select idMovie from files where strFileName like '%s' and idPath=%i", strFile.c_str(),lPathId);
+    CStdString strSQL;
+    if (strPath == strFilenameAndPath) // i.e. we where handed a path, we may have rarred items in it
+    {
+      if (lPathId == -1)
+      {
+        strSQL=FormatSQL("select files.idMovie from files, path where files.idpath = path.idpath and path.strPath like '%%%s%%'",strPath.c_str());
+        m_pDS->query(strSQL.c_str());
+        if (m_pDS->eof())
+        {
+          CUtil::URLEncode(strPath);
+          strSQL=FormatSQL("select files.idMovie from files, path where files.idpath = path.idpath and path.strPath like '%%%s%%'",strPath.c_str());
+        }
+      }
+      else
+      {
+        strSQL=FormatSQL("select idMovie from files where files.idpath = %u",lPathId);
+        m_pDS->query(strSQL.c_str());
+        if (m_pDS->num_rows() > 0)
+          lMovieId = m_pDS->fv("files.idMovie").get_asLong();  
+        if (m_pDS->eof() || lMovieId == -1)
+        {
+          strSQL=FormatSQL("select files.idMovie from files, path where files.idpath = path.idpath and path.strPath like '%%%s%%'",strPath.c_str());
+          m_pDS->query(strSQL.c_str());
+          if (m_pDS->eof())
+          {
+            CUtil::URLEncode(strPath);
+            strSQL=FormatSQL("select files.idMovie from files, path where files.idpath = path.idpath and path.strPath like '%%%s%%'",strPath.c_str());
+          }
+        }
+      }
+    }
+    else
+      strSQL=FormatSQL("select idMovie from files where strFileName like '%s' and idPath=%i", strFile.c_str(),lPathId);
+    
     CLog::Log(LOGDEBUG,"CVideoDatabase::GetMovieInfo(%s), query = %s", strFilenameAndPath.c_str(), strSQL.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
@@ -1268,6 +1298,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath)
     CStdString strPath1(strPath);
     CUtil::RemoveSlashAtEnd(strPath1);
 
+    
     CStdString strSQL = FormatSQL("select idPath,strContent,strPath from path where strPath like '%%%s%%'",strPath1.c_str());
     pDS->query(strSQL.c_str());
     bool bEncodedChecked=false;
@@ -1275,7 +1306,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath)
     {
       long lPathId = pDS->fv("path.idPath").get_asLong();
       CStdString strCurrPath = pDS->fv("path.strPath").get_asString();
-      if (pDS->fv("path.strContent").get_asString() == "movies")
+//      if (pDS->fv("path.strContent").get_asString() == "movies")
       {
         strSQL=FormatSQL("select strFilename from files where files.idPath=%u and NOT (files.idMovie=-1)",lPathId);
         m_pDS2->query(strSQL.c_str());

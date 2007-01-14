@@ -286,7 +286,7 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   }
 }
 
-void CGUIWindowVideoFiles::OnInfo(int iItem, SScraperInfo& info)
+void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
   bool bFolder(false);
@@ -404,7 +404,7 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
 
 }
 
-void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, SScraperInfo& info, bool bDirNames)
+void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScraperInfo& info, bool bDirNames)
 {
 
   CStdString strMovieName;
@@ -494,8 +494,9 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, SScraperInf
                 //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
                 url.m_strID  = nfoReader.m_strImDbNr;
-                info.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
-                GetIMDBDetails(pItem, url, info);
+                SScraperInfo info2(info);
+                info2.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
+                GetIMDBDetails(pItem, url, info2);
                 continue;
               }
               else
@@ -546,7 +547,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, SScraperInf
     m_dlgProgress->ShowProgressBar(false);
 }
 
-void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, SScraperInfo& info, int iDirNames, int iScanRecursively)
+void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively)
 {
   // GetStackedDirectory() now sets and restores the stack state!
   SScanSettings settings = {};
@@ -604,10 +605,18 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, SScraperInfo& info,
 
 void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
 {
-  if (CGUIDialogYesNo::ShowAndGetInput(20339,20340,20341,20022))
+  bool bCanceled;
+  if (CGUIDialogYesNo::ShowAndGetInput(20338,20340,20341,20022,bCanceled))
   {
     m_database.RemoveContentForPath(m_vecItems[iItem]->m_strPath);
     CUtil::ClearFileItemCache();
+  }
+  else
+  {
+    if (!bCanceled)
+    {
+      m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,"","");
+    }
   }
 }
 
@@ -688,7 +697,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
   }*/
 }
 
-bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, SScraperInfo& info, const SScanSettings &settings, int depth)
+bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, const SScraperInfo& info, const SScanSettings &settings, int depth)
 {
   // remove username + password from strPath for display in Dialog
   CURL url(items.m_strPath);
