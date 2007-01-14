@@ -41,7 +41,6 @@ CAutoSwitch::~CAutoSwitch(void)
 int CAutoSwitch::GetView(const CFileItemList &vecItems)
 {
   int iSortMethod = -1;
-  bool bBigThumbs = false;
   int iPercent = 0;
   int iCurrentWindow = m_gWindowManager.GetActiveWindow();
   bool bHideParentFolderItems = g_guiSettings.GetBool("filelists.hideparentdiritems");
@@ -51,7 +50,6 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
   case WINDOW_MUSIC_FILES:
     {
       iSortMethod = METHOD_BYFOLDERTHUMBS;
-      bBigThumbs = false;
       iPercent = 50;
     }
     break;
@@ -59,7 +57,6 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
   case WINDOW_VIDEO_FILES:
     {
       iSortMethod = METHOD_BYTHUMBPERCENT;
-      bBigThumbs = false;
       iPercent = 50;  // 50% of thumbs -> use thumbs.
     }
     break;
@@ -67,14 +64,12 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
   case WINDOW_PICTURES:
     {
       iSortMethod = METHOD_BYFILECOUNT;
-      bBigThumbs = false;
     }
     break;
 
   case WINDOW_PROGRAMS:
     {
       iSortMethod = METHOD_BYTHUMBPERCENT;
-      bBigThumbs = false;
       iPercent = 50;  // 50% of thumbs -> use thumbs.
     }
     break;
@@ -105,13 +100,9 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
     break;
   }
 
-  if (bThumbs)
-  {
-    if (bBigThumbs)
-      return DEFAULT_VIEW_BIG_ICONS;
-    return DEFAULT_VIEW_ICONS;
-  }
-  return DEFAULT_VIEW_LIST;
+  // the GUIViewControl object will default down to small icons if a big icon
+  // view is not available.
+  return bThumbs ? DEFAULT_VIEW_BIG_ICONS : DEFAULT_VIEW_LIST;
 }
 
 /// \brief Auto Switch method based on the current directory \e containing ALL folders and \e atleast one non-default thumb

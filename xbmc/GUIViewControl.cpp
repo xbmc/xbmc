@@ -67,6 +67,8 @@ void CGUIViewControl::SetCurrentView(int viewMode)
   int newView = GetView(type, id);
   if (newView < 0) // no suitable view that matches both id and type, so try just type
     newView = GetView(type, 0);
+  if (newView < 0 && type == VIEW_TYPE_BIG_ICON) // try icon view if they want big icon
+    newView = GetView(VIEW_TYPE_ICON, 0);
   if (newView < 0) // try a list view
     newView = GetView(VIEW_TYPE_LIST, 0);
   if (newView < 0) // try anything!
