@@ -79,7 +79,7 @@ private:
   void UpdateTitle(INT nIndex, CStdString& strTitle, CStdString& strFilepath);
   void UpdateObserver(Movie& aMovie, INT nIndex, bool bForceUpdate, bool bUpdateObserver);
   bool GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieRecord, bool bRefresh);
-  bool imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRecord);
+  bool imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRecord, const CStdString& strScraper);
   bool imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictureUrl, CStdString& strImagePath);
 
   static bool SortMoviesByDateAndTime(Movie aMovie1, Movie aMovie2);

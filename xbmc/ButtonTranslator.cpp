@@ -430,6 +430,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("trainersettings")) wWindowID = WINDOW_DIALOG_TRAINER_SETTINGS;
   else if (strWindow.Equals("profilesettings")) wWindowID = WINDOW_DIALOG_PROFILE_SETTINGS;
   else if (strWindow.Equals("locksettings")) wWindowID = WINDOW_DIALOG_LOCK_SETTINGS;
+  else if (strWindow.Equals("contentsettings")) wWindowID = WINDOW_DIALOG_CONTENT_SETTINGS;
   else if (strWindow.Equals("networksetup")) wWindowID = WINDOW_DIALOG_NETWORK_SETUP;
   else if (strWindow.Equals("mediasource")) wWindowID = WINDOW_DIALOG_MEDIA_SOURCE;
   else if (strWindow.Equals("mymusicplaylist")) wWindowID = WINDOW_MUSIC_PLAYLIST;

@@ -217,7 +217,6 @@ CSettings::CSettings(void)
   g_advancedSettings.m_songInfoDuration = 2;
   g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
-  g_advancedSettings.m_imdbAddress = "akas.imdb.com";
   g_advancedSettings.m_autoDetectFG = true;
   g_advancedSettings.m_useFDrive = true;
   g_advancedSettings.m_useGDrive = false;
@@ -1137,7 +1136,6 @@ void CSettings::LoadAdvancedSettings()
 
   GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
-  GetString(pRootElement, "imdbaddress", g_advancedSettings.m_imdbAddress, "akas.imdb.com");
 
   XMLUtils::GetBoolean(pRootElement, "autodetectfg", g_advancedSettings.m_autoDetectFG);
   XMLUtils::GetBoolean(pRootElement, "usefdrive", g_advancedSettings.m_useFDrive);
@@ -1646,7 +1644,6 @@ bool CSettings::LoadProfile(int index)
   {
     CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
     CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
-    CreateDirectory(g_settings.GetIMDbFolder().c_str(), NULL);
 
     // Thumbnails/
     CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
@@ -2620,17 +2617,6 @@ CStdString CSettings::GetCDDBFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\CDDB", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Database\\CDDB", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetIMDbFolder() const
-{
-  CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\IMDb", folder);
-  else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Database\\IMDb", folder);
 
   return folder;
 }

@@ -30,7 +30,7 @@ bool CDirectoryNodeGenre::GetContent(CFileItemList& items)
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=videodatabase.GetGenresNav(BuildPath(), items,params.GetYear());
+  bool bSuccess=videodatabase.GetGenresNav(BuildPath(), items);
 
   videodatabase.Close();
 

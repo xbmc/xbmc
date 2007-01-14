@@ -11,17 +11,25 @@
 
 #include "http.h"
 #include "thread.h"
-#include "DllHtmlScraper.h"
+#include "ScraperParser.h"
 
 // forward definitions
 class TiXmlDocument;
 class CGUIDialogProgress;
 
+struct SScraperInfo
+{
+  CStdString strTitle;
+  CStdString strPath;
+  CStdString strThumb;
+  CStdString strContent; // dupe, whatever
+};
+
 class CIMDBUrl
 {
 public:
-  CStdString m_strURL;
-  CStdString m_strTitle;
+  std::vector<CStdString> m_strURL;
+  CStdString m_strID;  CStdString m_strTitle;
 };
 typedef vector<CIMDBUrl> IMDB_MOVIELIST;
 
@@ -45,7 +53,6 @@ public:
   CStdString m_strRuntime;
   CStdString m_strFile;
   CStdString m_strPath;
-  CStdString m_strDVDLabel;
   CStdString m_strIMDBNumber;
   CStdString m_strMPAARating;
   CStdString m_strFileNameAndPath;
@@ -67,20 +74,20 @@ public:
   bool InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist);
   bool InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails);
   bool ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails);
-  bool LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails);
   bool LoadXML(const CStdString& strXMLFile, CIMDBMovie &movieDetails, bool bDownload = true);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
-  void GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
+  const CStdString GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
 
   // threaded lookup functions
   bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
   bool GetDetails(const CIMDBUrl& url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress = NULL);
 
+  void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
   CHTTP m_http;
 
-  DllHtmlScraper m_dll;
+  CScraperParser m_parser;
 
   // threaded stuff
   void Process();
@@ -95,6 +102,7 @@ protected:
   CIMDBUrl        m_url;
   LOOKUP_STATE    m_state;
   bool            m_found;
+  SScraperInfo m_info;
 };
 
 #endif // !defined(AFX_IMDB1_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)
