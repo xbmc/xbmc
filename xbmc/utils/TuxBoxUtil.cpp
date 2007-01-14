@@ -124,19 +124,22 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
   }
   else
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" ---------------------------------------------------------");
-    CLog::Log(LOGDEBUG, __FUNCTION__" - WARNING: Zaping Failed no Zap Point found!");
-    CLog::Log(LOGDEBUG, __FUNCTION__" ---------------------------------------------------------");
-    CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dialog)
+    if(!sBoxStatus.recording.Equals("1")) //Don't Show this Dialog, if the Box is in Recording mode! A previos YN Dialog was send to user!
     {
-      CStdString strText;
-      strText.Format(g_localizeStrings.Get(20333).c_str(), item.GetLabel());
-      dialog->SetHeading( 20330 );
-      dialog->SetLine( 0, strText);
-      dialog->SetLine( 1, 20332 );
-      dialog->SetLine( 2, "" );
-      dialog->DoModal();
+      CLog::Log(LOGDEBUG, __FUNCTION__" ---------------------------------------------------------");
+      CLog::Log(LOGDEBUG, __FUNCTION__" - WARNING: Zaping Failed no Zap Point found!");
+      CLog::Log(LOGDEBUG, __FUNCTION__" ---------------------------------------------------------");
+      CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (dialog)
+      {
+        CStdString strText;
+        strText.Format(g_localizeStrings.Get(20333).c_str(), item.GetLabel());
+        dialog->SetHeading( 20330 );
+        dialog->SetLine( 0, strText);
+        dialog->SetLine( 1, 20332 );
+        dialog->SetLine( 2, "" );
+        dialog->DoModal();
+      }
     }
   }
   return false;
