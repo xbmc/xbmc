@@ -142,6 +142,7 @@
 #include "GUIDialogVideoBookmarks.h"
 #include "GUIDialogProfileSettings.h"
 #include "GUIDialogLockSettings.h"
+#include "GUIDialogContentSettings.h"
 
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
@@ -1191,7 +1192,6 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetProfileUserDataFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetDatabaseFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetIMDbFolder().c_str(), NULL);
 
   // Thumbnails/
   CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
@@ -1291,6 +1291,8 @@ HRESULT CApplication::Initialize()
 
   if (pDialog)
     m_gWindowManager.Add(pDialog); // window id = 131
+
+  m_gWindowManager.Add(new CGUIDialogContentSettings);        // window id = 132
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
@@ -3651,7 +3653,7 @@ void CApplication::StopPlaying()
           bookmark.timeInSeconds = GetTime();
           bookmark.thumbNailImage.Empty();
 
-          dbs.AddBookMarkToMovie(CurrentFile(),bookmark, CBookmark::RESUME);
+          dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
         }
         dbs.Close();
       }
@@ -4225,7 +4227,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
         {
           dbs.MarkAsWatched(m_itemCurrentFile);
-          dbs.ClearBookMarksOfMovie(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
+          dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
         }
         dbs.Close();
       }

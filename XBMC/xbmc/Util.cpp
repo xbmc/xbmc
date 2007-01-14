@@ -467,6 +467,12 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
   }
+  else if (url.GetProtocol() == "stack")
+  {
+    // TODO: get the first parent path common to all stack items
+    CStackDirectory dir;
+    return GetParentPath(dir.GetFirstStackedFile(strPath), strParent);
+  }
   else if (strFile.size() == 0)
   {
     if (url.GetProtocol() == "smb" && (url.GetHostName().size() > 0))
@@ -2416,6 +2422,9 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
     if (ch == ':' || ch == '/' || ch == '\\') break;
     else i--;
   }
+  if (i == 0)
+    i--;
+
   strPath = strFileNameAndPath.Left(i + 1);
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
@@ -3116,6 +3125,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_passwordManager.bMasterUser = true;
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
     }
+
+    DeleteVideoDatabaseDirectoryCache();
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+    g_graphicsContext.SendMessage(msg);
   }
   else if (execute.Equals("takescreenshot"))
   {

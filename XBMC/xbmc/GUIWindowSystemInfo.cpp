@@ -22,6 +22,7 @@ BUG: The XBE Region detection Is wrong! Need to Decyrpt the EEPROM!
 #include "xbox/xkeeprom.h"
 #include "utils/HddSmart.h"
 #include "utils/SystemInfo.h"
+#include "cores/dllloader/dllloader.h"
 
 #define DEBUG_KEYBOARD
 #define DEBUG_MOUSE

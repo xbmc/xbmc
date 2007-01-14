@@ -1,5 +1,6 @@
 #pragma once
 #include "GUIDialog.h"
+#include "utils/IMDB.h"
 
 class CGUIDialogMediaSource :
       public CGUIDialog
@@ -35,6 +36,10 @@ protected:
   CStdString m_name;
   CFileItemList m_paths;
   bool m_confirmed;
+  SScraperInfo m_info;
+  bool m_bRunScan;
+  bool m_bScanRecursively;
+  bool m_bUseDirNames;
 
   bool m_hasMultiPath;
 };
