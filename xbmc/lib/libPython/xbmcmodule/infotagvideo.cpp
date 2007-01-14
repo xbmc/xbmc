@@ -140,7 +140,7 @@ namespace PYXBMC
 		return Py_BuildValue("s", self->infoTag.m_strPath.c_str());
 	}
 
-	// InfoTagVideo_GetDVDLabel
+/*	// InfoTagVideo_GetDVDLabel
 	PyDoc_STRVAR(getDVDLabel__doc__,
 		"getDVDLabel() -- returns a string.\n");
 
@@ -148,7 +148,7 @@ namespace PYXBMC
 	{
 		return Py_BuildValue("s", self->infoTag.m_strDVDLabel.c_str());
 	}
-
+*/
 	// InfoTagVideo_GetIMDBNumber
 	PyDoc_STRVAR(getIMDBNumber__doc__,
 		"getIMDBNumber() -- returns a string.\n");
@@ -188,7 +188,7 @@ namespace PYXBMC
 		{"getVotes", (PyCFunction)InfoTagVideo_GetVotes, METH_VARARGS, getVotes__doc__},
 		{"getCast", (PyCFunction)InfoTagVideo_GetCast, METH_VARARGS, getCast__doc__},
 		{"getFile", (PyCFunction)InfoTagVideo_GetFile, METH_VARARGS, getFile__doc__},
-		{"getDVDLabel", (PyCFunction)InfoTagVideo_GetDVDLabel, METH_VARARGS, getDVDLabel__doc__},
+		//{"getDVDLabel", (PyCFunction)InfoTagVideo_GetDVDLabel, METH_VARARGS, getDVDLabel__doc__},
 		{"getIMDBNumber", (PyCFunction)InfoTagVideo_GetIMDBNumber, METH_VARARGS, getIMDBNumber__doc__},
 		{"getYear", (PyCFunction)InfoTagVideo_GetYear, METH_VARARGS, getYear__doc__},
 		{"getRating", (PyCFunction)InfoTagVideo_GetRating, METH_VARARGS, getRating__doc__},

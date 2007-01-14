@@ -980,7 +980,7 @@
   <string id="13346">Movie Information</string>
   <string id="13347">Queue Item</string>
   <string id="13348">Search IMDb...</string>
-  <string id="13349">Query Info For All Files</string>
+  <string id="13349">Scan For New Content</string>
   <string id="13350">Now Playing...</string>
   <string id="13351">Album Information</string>
   <string id="13352">Scan All to Database</string>
@@ -1504,7 +1504,24 @@
   <string id="20327">to it's default values.</string>
   <string id="20328">a location to copy the save to</string>
   <string id="20329">a location to move the save to</string>
- 
+  <string id="20330">Use Folder Names For Lookups</string>
+  <string id="20331">File</string>
+  <string id="20332">Use folder or file names in lookups?</string>
+  <string id="20333">Set Content</string>
+  <string id="20334">Folder</string>
+  <string id="20335">Look for content recursively?</string>
+  <string id="20336">Unlock Sources</string>
+
+  <string id="20338">Remove assignment</string>
+
+  <string id="20340">Do you want to remove all items within</string>
+  <string id="20341">this path from the database?</string>
+  <string id="20342">Movies</string>
+  <string id="20343">TV Shows</string>
+  <string id="20344">This directory contains</string>
+  <string id="20345">Run Automated Scan</string>
+  <string id="20346">Scan Recursively</string>
+
   <!-- up to 21329 is reserved for the video db !! !-->
   
   <string id="21330">Show hidden files and directories</string>

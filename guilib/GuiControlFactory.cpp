@@ -5,7 +5,7 @@
 #include "GUIRadiobuttoncontrol.h"
 #include "GUISpinControl.h"
 #include "GUIRSSControl.h"
-#include "GUIRAMControl.h"
+//#include "GUIRAMControl.h"
 #include "GUIConsoleControl.h"
 #include "GUIListControlEx.h"
 #include "GUIImage.h"
@@ -952,7 +952,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
     return pControl;
   }
-#ifdef HAS_RAM_CONTROL
+#if 0 //def HAS_RAM_CONTROL
   else if (strType == "ram")
   {
     CGUIRAMControl* pControl = new CGUIRAMControl(

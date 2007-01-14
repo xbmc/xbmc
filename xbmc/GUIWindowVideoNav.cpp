@@ -45,8 +45,9 @@ using namespace VIDEODATABASEDIRECTORY;
 #define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
+#define CONTROL_UNLOCK            11
+
 #define CONTROL_FILTER            15
-#define CONTROL_BTNPARTYMODE      16
 #define CONTROL_BTNMANUALINFO     17
 #define CONTROL_LABELEMPTY        18
 
@@ -120,7 +121,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           break;
         }
       }
-
+      
       DisplayEmptyDatabaseMessage(false); // reset message state
 
       if (!CGUIWindowVideoBase::OnMessage(message))
@@ -342,6 +343,16 @@ void CGUIWindowVideoNav::Render()
   }
   CGUIWindowVideoBase::Render();
 }
+
+void CGUIWindowVideoNav::OnInfo(int iItem, const SScraperInfo& info)
+{
+  SScraperInfo info2(info);
+  CStdString strPath,strFile;
+  CUtil::Split(m_vecItems[iItem]->m_strPath,strPath,strFile);
+  m_database.GetScraperForPath(strPath,info2.strPath,info2.strContent);
+  CGUIWindowVideoBase::OnInfo(iItem,info2);
+}
+
 void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 {
   if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
@@ -368,7 +379,6 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   CStdString thumb(pItem->GetCachedVideoThumb());
   CFile::Delete(thumb);
 
-  //CUtil::ClearFileItemCache();
   CUtil::DeleteVideoDatabaseDirectoryCache();
 
   DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0);

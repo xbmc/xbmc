@@ -11,7 +11,7 @@ public:
   int FindClosingTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos) const;
   void getValueOfTag(const CStdString& strTagAndValue, CStdString& strValue);
   void getAttributeOfTag(const CStdString& strTagAndValue, const CStdString& strTag, CStdString& strValue);
-  void RemoveTags(CStdString& strHTML);
+  static void RemoveTags(CStdString& strHTML);
   void ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped);
   void ConvertHTMLToUTF8(const CStdString& strHTML, string& strStripped);
 };
