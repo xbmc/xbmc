@@ -78,21 +78,21 @@
 			<onright>30</onright>
 			<scrolltime>200</scrolltime>
 			<itemlayout height="35">
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>29</height>
-				<texture>input-nofocus.png</texture>
-			</control>
-			<control type="image">
-				<posx>3</posx>
-				<posy>3</posy>
-				<width>23</width>
-				<height>23</height>
-				<info>ListItem.Icon</info>
-			</control>
-			<control type="label">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>250</width>
+					<height>29</height>
+					<texture>input-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>3</posx>
+					<posy>3</posy>
+					<width>23</width>
+					<height>23</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
 					<posx>32</posx>
 					<posy>5</posy>
 					<width>210</width>
