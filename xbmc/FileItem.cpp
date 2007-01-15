@@ -813,8 +813,8 @@ void CFileItem::FormatLabel2(const CStdString& strMask)
   if (!strMask.IsEmpty())
   {
     const CStdString& strLabel2=ParseFormat(strMask);
-    if (!strLabel2.IsEmpty())
-      SetLabel2(strLabel2);
+    //if (!strLabel2.IsEmpty()) // allow label2 to be empty
+    SetLabel2(strLabel2);
   }
   else
     SetLabel2(strMask);
@@ -829,56 +829,49 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
   CMusicInfoTag& tag = m_musicInfoTag;
   int iPos1 = 0;
   int iPos2 = strMask.Find('%', iPos1);
+  if (iPos2 > iPos1)
+    strLabel += strMask.Mid(iPos1, iPos2 - iPos1);
+
+  /*
   bool bDoneSomething = !(iPos1 == iPos2); // stuff in front should be applied - everything using this bool is added by spiff
                                            // when true, it should add in anything extra in the mask (ie the content before the next %)
+  */
+
   bool hasContent = false; // when true, we've actually added some content
   while (iPos2 >= 0)
-  {
-    if( (iPos2 > iPos1) && bDoneSomething )
-    {
-      strLabel += strMask.Mid(iPos1, iPos2 - iPos1);
-      bDoneSomething = false;
-    }
+  { 
     CStdString str;
     if (strMask[iPos2 + 1] == 'N' && tag.GetTrackNumber() > 0)
     { // track number
       str.Format("%02.2i", tag.GetTrackNumber());
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'S' && tag.GetDiscNumber() > 0)
     { // disc number
       str.Format("%02.2i", tag.GetDiscNumber());
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'A' && tag.GetArtist().size())
     { // artist
       str = tag.GetArtist();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'T' && tag.GetTitle().size())
     { // title
       str = tag.GetTitle();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'B' && tag.GetAlbum().size())
     { // album
       str = tag.GetAlbum();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'G' && tag.GetGenre().size())
     { // genre
       str = tag.GetGenre();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'Y')
     { // year
       str = tag.GetYear();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'F')
     { // filename
       str = CUtil::GetTitleFromPath(m_strPath, m_bIsFolder && !IsFileFolder());
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'L')
     { // pre-existing label
@@ -888,17 +881,14 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
       { // label is the same as filename, clean it up as appropriate
         str = CUtil::GetTitleFromPath(m_strPath, m_bIsFolder && !IsFileFolder());
       }
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'D')
     { // duration
       int nDuration = tag.GetDuration();
-
       if (nDuration > 0)
         StringUtils::SecondsToTimeString(nDuration, str);
       else if (m_dwSize > 0)
         str = StringUtils::SizeToString(m_dwSize);
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'I')
     { // size
@@ -906,39 +896,41 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
         str="";
       else
         str=StringUtils::SizeToString(m_dwSize);
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'J' && m_dateTime.IsValid())
     { // date
       str = m_dateTime.GetAsLocalizedDate();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'R')
     { // movie rating
       str.Format("%2.2f", m_fRating);
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'Q')
     { // movie Year
       str=m_musicInfoTag.GetYear();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'C')
     { // programs count
       str.Format("%i", m_iprogramCount);
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'K')
     { // moview/game title
       str=m_strTitle;
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == '%')
     { // %% to print %
-      str = '%';
-      bDoneSomething = hasContent = true;
+      // not actual content so just add it directly to the output string
+      strLabel += '%';
     }
-    strLabel += str;
+    // did we translate anything?
+    if (str.size())
+    {
+      hasContent = true;
+      if (iPos2 > iPos1)
+        strLabel += strMask.Mid(iPos1, iPos2 - iPos1);
+      strLabel += str;
+    }
+    // advance to the next position
     iPos1 = iPos2 + 2;
     iPos2 = strMask.Find('%', iPos1);
   }
