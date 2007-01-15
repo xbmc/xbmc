@@ -249,6 +249,8 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
   g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear = false;
+  g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
+  g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
 
   g_advancedSettings.m_bTuxBoxAudioChannelSelection = false;
   g_advancedSettings.m_bTuxBoxSubMenuSelection = false;
@@ -1107,6 +1109,8 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "hidecompilationartists", g_advancedSettings.m_bMusicLibraryHideCompilationArtists);
     XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
+    GetString(pElement, "albumformat", g_advancedSettings.m_strMusicLibraryAlbumFormat, "");
+    GetString(pElement, "albumformatright", g_advancedSettings.m_strMusicLibraryAlbumFormatRight, "");
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");
