@@ -11,6 +11,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
+  virtual bool IsMediaWindow() const { return true; };
+  CFileItem* GetCurrentListItem();
 
 protected:
   virtual void OnInitWindow();
