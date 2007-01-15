@@ -111,6 +111,8 @@ public:
   bool IsFileFolder() const;
   bool IsMemoryUnit() const;
   bool IsRemovable() const;
+  bool IsTuxBox() const;
+
 
   void RemoveExtension();
   void CleanFileName();

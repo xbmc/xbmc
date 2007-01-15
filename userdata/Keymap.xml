@@ -253,7 +253,7 @@
       <B>Stop</B>
       <Y>AspectRatio</Y>
       <black>CodecInfo</black>
-      <white>ShowTime</white>
+      <white>Info</white>
       <back>SmallStepBack</back>
       <start>OSD</start>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
