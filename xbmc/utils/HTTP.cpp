@@ -1031,3 +1031,67 @@ void CHTTP::Cancel()
           WSACancelOverlappedIO(m_socket);
 #endif
 }
+
+
+//------------------------------------------------------------------------------------------------------------------
+//Thread Detection if we are online or not! Very Simple and Dirty!
+CHTTPD g_httpd;
+CHTTPD::CHTTPD()
+{}
+CHTTPD::~CHTTPD()
+{}
+bool CHTTPD::Start()
+{
+  CLog::Log(LOGDEBUG, __FUNCTION__"Starting CHTTPD thread");
+  StopThread();
+  bIsConnected = false;
+  Create(true);
+  return true;
+}
+void CHTTPD::Stop()
+{
+  StopThread();
+}
+bool CHTTPD::IsRunning()
+{
+  return (m_ThreadHandle != NULL);
+}
+void CHTTPD::OnExit()
+{
+  CLog::Log(LOGDEBUG, __FUNCTION__"Stopping CHTTPD thread");
+}
+void CHTTPD::OnStartup()
+{
+  CLog::Log(LOGDEBUG,"Starting CHTTPD thread");
+  SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
+}
+void CHTTPD::Process()
+{
+  CStdString strURL = "http://www.google.com";
+  CStdString strURLNoDNS = "http://66.102.7.99"; // www.google.com
+  CHTTP chttp;
+  while(!m_bStop)
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__"Connecting to the Internet:!");
+    CLog::Log(LOGDEBUG, __FUNCTION__"	- Sending Ping to: http://www.google.com");
+    int status = chttp.Open(strURL, "HEAD", NULL);
+    int statusNoDNS = chttp.Open(strURLNoDNS, "HEAD", NULL);
+    chttp.Close();
+    if (status != 302 && status != 200 && statusNoDNS !=302 && statusNoDNS !=200)
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__"ERROR Connecting to the Internet Failed!");
+      bIsConnected = false;
+    }
+    else if (statusNoDNS ==302 && statusNoDNS ==200)
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__"Connecting to the Internet Succesfull! No DNS!)");
+      bIsConnected = true;
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__"Connecting to the Internet Succesfull!");
+      bIsConnected = true;
+    }
+    Sleep(30000); //30 sec.
+  }
+}
