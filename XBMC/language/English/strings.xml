@@ -1511,9 +1511,7 @@
   <string id="20334">Folder</string>
   <string id="20335">Look for content recursively?</string>
   <string id="20336">Unlock Sources</string>
-
   <string id="20338">Remove assignment</string>
-
   <string id="20340">Do you want to remove all items within</string>
   <string id="20341">this path from the database?</string>
   <string id="20342">Movies</string>
@@ -1521,10 +1519,18 @@
   <string id="20344">This directory contains</string>
   <string id="20345">Run Automated Scan</string>
   <string id="20346">Scan Recursively</string>
-
   <!-- up to 21329 is reserved for the video db !! !-->
-  
   <string id="21330">Show hidden files and directories</string>
-
+  
+  <string id="21331">TuxBox Client</string>
+  <string id="21332">WARNING: Target TuxBox device is in Recording-Mode!</string>
+  <string id="21333">The Stream will be Stopped!</string>
+  <string id="21334">Zap to Channel: %s Failed!</string>
+  <string id="21335">Are you sure to start the stream?</string>
+  <string id="21336">Connecting to: %s</string>
+  <string id="21337">TuxBox Device</string>
+  <!-- up to 21355 is reserved for the TuxBox Client!! !-->
+  
+  
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>

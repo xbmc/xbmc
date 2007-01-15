@@ -35,6 +35,7 @@
 #include "videodatabase.h"
 #include "musicdatabase.h"
 #include "SortFileItem.h"
+#include "Utils/TuxBoxUtil.h"
 
 CFileItem::CFileItem(const CSong& song)
 {
@@ -271,6 +272,9 @@ bool CFileItem::IsVideo() const
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
+  
+  if (m_strPath.Left(7).Equals("tuxbox:")) 
+    return true;
 
   CStdString extension;
   if( m_contenttype.Left(12).Equals("application/") )
@@ -360,7 +364,6 @@ bool CFileItem::IsShoutCast() const
   if (strstr(m_strPath.c_str(), "shout:") ) return true;
   return false;
 }
-
 bool CFileItem::IsLastFM() const
 {
   if (strstr(m_strPath.c_str(), "lastfm:") ) return true;
@@ -539,6 +542,10 @@ bool CFileItem::IsSmb() const
 bool CFileItem::IsDAAP() const
 {
   return CUtil::IsDAAP(m_strPath);
+}
+bool CFileItem::IsTuxBox() const
+{
+  return CUtil::IsTuxBox(m_strPath);
 }
 
 bool CFileItem::IsHD() const
@@ -2074,6 +2081,12 @@ CStdString CFileItem::GetUserVideoThumb()
   CURL url(m_strPath);
   if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
   if (url.GetProtocol() == "upnp" || url.GetProtocol() == "ftp") return "";
+  if (url.GetProtocol() == "tuxbox")
+  {
+    if (!m_bIsFolder)
+      return g_tuxbox.GetPicon(GetLabel());
+    else return "";
+  }
 
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb;

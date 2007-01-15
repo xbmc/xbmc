@@ -288,6 +288,15 @@ public:
     bool m_bMusicLibraryHideCompilationArtists;
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
 
+    //TuxBox
+    bool m_bTuxBoxSubMenuSelection;
+    int m_iTuxBoxDefaultSubMenu;
+    int m_iTuxBoxDefaultRootMenu;
+    bool m_bTuxBoxAudioChannelSelection;
+    bool m_bTuxBoxPictureIcon;
+    int m_iTuxBoxEpgRequestTime;
+    int m_iTuxBoxZapWaitTime;
+
   };
   struct stSettings
   {

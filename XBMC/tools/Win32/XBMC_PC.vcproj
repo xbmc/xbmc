@@ -1122,6 +1122,12 @@
 					RelativePath="..\..\xbmc\utils\Trainer.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\TuxBoxUtil.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TuxBoxUtil.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\UdpClient.cpp">
 				</File>
 				<File
@@ -1460,6 +1466,12 @@
 					RelativePath="..\..\xbmc\FileSystem\DirectoryHistory.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\DirectoryTuxBox.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\DirectoryTuxBox.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\DllLibCurl.cpp">
 				</File>
 				<File
@@ -1515,6 +1527,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileShoutcast.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileZip.cpp">

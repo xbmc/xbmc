@@ -102,6 +102,13 @@
             <path>smb://DOMAIN;username:pwd@MyWindowsServer/movies/</path>
         </bookmark>
         <bookmark>
+            <name>TuxBox Client</name>
+            <!--    You can use one of these following formats: 		!-->
+            <!-- tuxbox://user:password@ip_tuxbox:port/             !-->
+            <!-- tuxbox://ip_tuxbox:port/                           !-->
+            <path>tuxbox://root:dreambox@192.168.0.110:80/</path>
+        </bookmark>
+        <bookmark>
             <name>WORKGROUP (SMB) Network</name>
             <path>smb://</path>
         </bookmark>

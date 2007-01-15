@@ -66,6 +66,8 @@
 #include "filesystem/directoryCache.h"
 #include "filesystem/StackDirectory.h"
 #include "FileSystem/DllLibCurl.h"
+#include "utils/TuxBoxUtil.h"
+
 #ifdef HAS_FILESYSTEM
 #include "filesystem/filedaap.h"
 #endif
@@ -3352,6 +3354,16 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
+  //Is TuxBox
+  if(item.IsTuxBox())
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - TuxBox URL Detected %s",item.m_strPath.c_str());
+    CFileItem item_new;
+    if(g_tuxbox.CreateNewItem(item, item_new))
+      return PlayFile(item_new,false); //for tuxbox restart must be false, else i loose m_currentFile informations
+    else return false;
+  }
+  
   if (!bRestart)
   {
     OutputDebugString("new file set audiostream:0\n");
@@ -3474,8 +3486,16 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return false;
   }
 
-  bool bResult = m_pPlayer->OpenFile(item, options);
+  bool bResult;
+  bResult = m_pPlayer->OpenFile(item, options);
+  /*
+  if(bTuxBox)
+    bResult = m_pPlayer->OpenFile(item_new, options);
+  else
+    bResult = m_pPlayer->OpenFile(item, options);
+  */
 
+  
   if(bResult)
   {
 #ifdef HAS_VIDEO_PLAYBACK
@@ -3658,6 +3678,8 @@ void CApplication::StopPlaying()
         dbs.Close();
       }
     }
+
+
     m_pPlayer->CloseFile();
     g_partyModeManager.Disable();
   }
