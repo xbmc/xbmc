@@ -318,6 +318,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("listitem.rating")) ret = LISTITEM_RATING;
     else if (strTest.Equals("listitem.programcount")) ret = LISTITEM_PROGRAM_COUNT;
     else if (strTest.Equals("listitem.duration")) ret = LISTITEM_DURATION;
+    else if (strTest.Equals("listitem.isselected")) ret = LISTITEM_ISSELECTED;
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -845,6 +846,12 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   {
     bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
               g_application.IsPlayingAudio();
+  }
+  else if (condition == LISTITEM_ISSELECTED)
+  {
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (pWindow && pWindow->IsMediaWindow())
+      bReturn = GetItemBool(((CGUIMediaWindow *)pWindow)->GetCurrentListItem(), condition, dwContextWindow);
   }
   else if (g_application.IsPlaying())
   {
@@ -2040,6 +2047,9 @@ bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info, DWORD context
     if (item && !m_currentFile.m_strPath.IsEmpty())
       ret = m_currentFile.IsSamePath(item);
     break;
+  case LISTITEM_ISSELECTED:
+    if (item)
+      ret = item->IsSelected();
   default:
     return GetBool(info, contextWindow);
   }
