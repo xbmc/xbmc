@@ -285,7 +285,7 @@ bool CGUIWindowPictures::OnClick(int iItem)
     if (CGUIMediaWindow::GetDirectory(strComicPath, vecItems))
     {
       vecItems.Sort(SORT_METHOD_FILE,SORT_ORDER_ASC);
-      if (m_vecItems.Size() > 0)
+      if (vecItems.Size() > 0)
       {
         OnShowPictureRecursive("",&vecItems);
         return true;
@@ -361,6 +361,8 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture, CF
   for (int i = 0; i < (int)vecItems.Size();++i)
   {
     CFileItem* pItem = vecItems[i];
+    if (pItem->IsParentFolder())
+      continue;
     if (pItem->m_bIsFolder)
       AddDir(pSlideShow, pItem->m_strPath);
     else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)) && !CUtil::GetFileName(pItem->m_strPath).Equals("folder.jpg"))
