@@ -272,7 +272,7 @@ bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdStrin
       //Advanced Settings: Set Default Subemnu
       if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 1)
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Default defined SubMenu : (1) Services");
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Default defined SubMenu : (1) Services");
         strBQRequest = "xml/services?mode=0&submode=1"; //Services
         strXMLRootString.Format("services");
         strXMLChildString.Format("service");
