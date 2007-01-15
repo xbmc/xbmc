@@ -86,8 +86,8 @@ goto COMPILE
 
   copy %XBE% BUILD
   xcopy UserData BUILD\UserData /E /Q /I /Y /EXCLUDE:exclude.txt
-  rem copy *.xml BUILD\
-  copy *.txt BUILD\
+  xcopy *.txt BUILD /EXCLUDE:exclude.txt
+  rem xcopy *.xml BUILD\
 
   cd "skin\Project Mayhem III"
   CALL build.bat
@@ -104,7 +104,6 @@ goto COMPILE
   xcopy sounds BUILD\sounds /E /Q /I /Y /EXCLUDE:exclude.txt
 
   del exclude.txt
-
   ECHO ------------------------------
   IF NOT EXIST %RAR% (
   	ECHO WinRAR not installed!  Skipping .rar compression...
@@ -115,8 +114,8 @@ goto COMPILE
 
   ECHO ------------------------------
   ECHO Build Succeeded!
-  GOTO VIEWLOG
 
+  GOTO VIEWLOG
 :DIE
   ECHO !-!-!-!-!-!-!-!-!-!-!-!-!-!-!-
   set DIETEXT=ERROR: %DIETEXT%
