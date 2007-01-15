@@ -822,6 +822,11 @@ CAlbum CMusicDatabase::GetAlbumFromDataset()
   album.strArtist = m_pDS->fv(album_strArtist).get_asString();
   if (m_pDS->fv(album_iNumArtists).get_asLong() > 1)
     GetExtraArtistsForAlbum(album.idAlbum, album.strArtist);
+  // workaround... the fake "Unknown" album usually has a NULL artist.
+  // since it can contain songs from lots of different artists, lets set
+  // it to "Various Artists" instead
+  if (m_pDS->fv("artist.idArtist").get_asLong() == -1)
+    album.strArtist = g_localizeStrings.Get(340);
   album.strGenre = m_pDS->fv(album_strGenre).get_asString();
   if (m_pDS->fv(album_iNumGenres).get_asLong() > 1)
     GetExtraGenresForAlbum(album.idAlbum, album.strGenre);
@@ -2966,7 +2971,7 @@ bool CMusicDatabase::GetAlbumArtists(const CStdString& strBaseDir, CFileItemList
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = "select distinct idArtist, strArtist from albumview";
+    CStdString strSQL = "select distinct idArtist, strArtist from albumview where idArtist <> -1";
     CLog::Log(LOGDEBUG, "CMusicDatabase::GetAlbumArtists() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
