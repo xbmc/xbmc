@@ -3486,16 +3486,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return false;
   }
 
-  bool bResult;
-  bResult = m_pPlayer->OpenFile(item, options);
-  /*
-  if(bTuxBox)
-    bResult = m_pPlayer->OpenFile(item_new, options);
-  else
-    bResult = m_pPlayer->OpenFile(item, options);
-  */
+  bool bResult = m_pPlayer->OpenFile(item, options);
 
-  
   if(bResult)
   {
 #ifdef HAS_VIDEO_PLAYBACK
@@ -3678,8 +3670,6 @@ void CApplication::StopPlaying()
         dbs.Close();
       }
     }
-
-
     m_pPlayer->CloseFile();
     g_partyModeManager.Disable();
   }
