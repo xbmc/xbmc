@@ -344,7 +344,7 @@
       <right>SkipNext</right>
       <up>IncreaseRating</up>
       <down>PreviousPreset</down>
-      <back>NextPreset</back>
+      <!--<back>NextPreset</back>!-->
       <s>ShowPreset</s>
       <l>LockPreset</l>
     </keyboard>

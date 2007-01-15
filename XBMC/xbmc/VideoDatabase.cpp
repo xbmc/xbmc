@@ -1104,7 +1104,7 @@ bool CVideoDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CVid
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
     // ok, now obtain the settings for this file
-    CStdString strSQL=FormatSQL("select settings.* settings where settings.idFile = '%i'", lFileId);
+    CStdString strSQL=FormatSQL("select * from settings where settings.idFile = '%i'", lFileId);
 #endif
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
