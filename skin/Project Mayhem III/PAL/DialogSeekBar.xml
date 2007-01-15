@@ -1,7 +1,7 @@
-﻿<window id="115">
+<window id="115">
 	<defaultcontrol>1</defaultcontrol>
 	<include>dialogeffect</include>
-	<visible>Player.Seeking | Player.DisplayAfterSeek | [Player.ShowInfo + Window.IsActive(FullScreenVideo)] | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
+	<visible>Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
 	<controls>
 		<!-- playstate images -->
 		<control type="image" id="0">
@@ -166,7 +166,8 @@
 			<width>100</width>
 			<height>16</height>
 		</control>
-		<control type="progress" id="23">
+		<!--
+    <control type="progress" id="23">
 			<description>Progressbar</description>
 			<posx>506</posx>
 			<posy>83</posy>
@@ -180,6 +181,7 @@
 			<overlaytexture>-</overlaytexture>
 			<visible>true</visible>
 		</control>
+		!-->
 		<control type="slider" id="401">
 			<description>Seek Slider</description>
 			<posx>506</posx>

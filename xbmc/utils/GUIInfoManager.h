@@ -157,6 +157,7 @@
 #define VIDEOPLAYER_HASMENU         261
 #define VIDEOPLAYER_PLAYLISTLEN     262
 #define VIDEOPLAYER_PLAYLISTPOS     263
+#define VIDEOPLAYER_EVENT           264
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -365,6 +366,9 @@ protected:
   // Array of multiple information mapped to a single integer lookup
   vector<GUIInfo> m_multiInfo;
 
+  bool GetTuxBoxEvents();
+  CStdString m_currentMovieDuration;
+  
   // Current playing stuff
   CFileItem m_currentFile;
   CIMDBMovie m_currentMovie;
