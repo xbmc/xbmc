@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 01/10/2007-->
+<!--Date of translation: 01/15/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7557-->
+<!--Based on english strings version 7618-->
 <strings>
   <string id="0">Mina Program</string>
   <string id="1">Mina Bilder</string>
@@ -453,7 +453,7 @@
   <string id="538">Stora ikoner</string>
   <string id="539">Bred</string>
   <string id="540">Stor bred</string>
-  <string id="550">Sortera efter: %s</string>
+  <string id="550">Sort: %s</string>
   <string id="551">Namn</string>
   <string id="552">Datum</string>
   <string id="553">Storlek</string>
@@ -473,6 +473,8 @@
   <string id="581">Sorteringsmetod</string>
   <string id="582">Visningsläge</string>
   <string id="583">Kom ihåg visningslägen för olika mappar</string>
+  <string id="584">Stigande</string>
+  <string id="585">Fallande</string>
   <string id="588">Avbryt Festläge</string>
   <string id="589">Festläge</string>
   <string id="590">Slumpmässig</string>
@@ -949,7 +951,7 @@
   <string id="13346">Filminformation</string>
   <string id="13347">Lägg till i spellistan</string>
   <string id="13348">Sök på IMDb...</string>
-  <string id="13349">Fråga för alla filer</string>
+  <string id="13349">Skanna efter nytt innehåll</string>
   <string id="13350">Nu spelas...</string>
   <string id="13351">Album Information</string>
   <string id="13352">Skanna mapp &gt; databas</string>
@@ -1462,6 +1464,21 @@ den här visualiseringen</string>
   <string id="20327">till dess usprungliga värden.</string>
   <string id="20328">en plats att kopiera sparat spel till</string>
   <string id="20329">en plats att flytta sparat spel till</string>
+  <string id="20330">Använd mappnamn för sökningar</string>
+  <string id="20331">Fil</string>
+  <string id="20332">Använd mapp eller filnamn i förfrågningar</string>
+  <string id="20333">Sätt innehåll</string>
+  <string id="20334">Mapp</string>
+  <string id="20335">Förfråga rekursivt för innehåll?</string>
+  <string id="20336">Lås upp källor</string>
+  <string id="20338">Ta bort tilldelning</string>
+  <string id="20340">Vill du ta bort alla objekt i</string>
+  <string id="20341">denna mapp från databasen?</string>
+  <string id="20342">Filmer</string>
+  <string id="20343">TV Serier</string>
+  <string id="20344">Denna mapp innehåller</string>
+  <string id="20345">Kör automatisk skanning</string>
+  <string id="20346">Skanna rekursivt</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="29999">Auto fladderfilter lagning</string>
 </strings>
