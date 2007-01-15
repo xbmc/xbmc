@@ -169,7 +169,7 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
 
   if (!pRootElement)
   {    
-    CLog::Log(LOGWARNING, __FUNCTION__" - No %ss found",strChild.c_str());
+    CLog::Log(LOGWARNING, __FUNCTION__" - No %s found",strChild.c_str());
     return false;
   }
   if (strFilter.IsEmpty())
