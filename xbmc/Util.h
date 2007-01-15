@@ -261,6 +261,7 @@ public:
   static bool IsInZIP(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsMemCard(const CStdString& strFile);
+  static bool IsTuxBox(const CStdString& strFile);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
   static void UrlDecode(CStdString& strURLData);
@@ -350,15 +351,15 @@ public:
   static bool XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo );
   static bool XboxAutoDetection();
   static bool XboxAutoDetectionGetShare(CShare& share);
-  static bool PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strTransition, int iTrTime);
-  static bool RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath);
-  static void RemoveKernelPatch();
-  static bool LookForKernelPatch();
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
   static void WipeDir(const CStdString& strPath);
   static void ForceForwardSlashes(CStdString& strPath);
+  static bool PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, const CStdString &strTransition, int iTrTime);
+  static bool RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath);
+  static void RemoveKernelPatch();
+  static bool LookForKernelPatch();
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);

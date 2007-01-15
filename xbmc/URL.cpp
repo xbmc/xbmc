@@ -148,6 +148,7 @@ CURL::CURL(const CStdString& strURL)
     || m_strProtocol.Equals("ftp")
     || m_strProtocol.Equals("ftpx")
     || m_strProtocol.Equals("shout")
+    || m_strProtocol.Equals("tuxbox")
     || m_strProtocol.Equals("daap"))
   {
     int iOptions = strURL.find_first_of("?;#", iPos);
@@ -354,8 +355,10 @@ void CURL::SetOptions(const CStdString& strOptions)
 {
   m_strOptions.Empty();
   if( strOptions.length() > 0)
-    if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' )
+    if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' || strOptions.Find("xml") >=0 )
+    {
       m_strOptions = strOptions;
+    }
     else
       CLog::Log(LOGWARNING, __FUNCTION__" - Invalid options specified for url %s", strOptions.c_str());
 }
