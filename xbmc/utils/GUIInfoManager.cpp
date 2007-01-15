@@ -1498,7 +1498,10 @@ void CGUIInfoManager::ResetCurrentItem()
 { 
   m_currentFile.Reset();
   m_currentMovie.Reset();
+  m_currentMovie.m_strFileNameAndPath = "";
   m_currentMovieThumb = "";
+  m_currentMovieDuration = "";
+  
 }
 
 void CGUIInfoManager::SetCurrentItem(CFileItem &item)
@@ -1638,10 +1641,13 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     else
       m_currentMovie.m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
   }
+  
+  //Don't check for a Empty NameAndPath Set it! Or is there a reason?
   if (m_currentMovie.m_strFileNameAndPath.IsEmpty())
   {
     m_currentMovie.m_strFileNameAndPath = item.m_strPath;
   }
+
   // Find a thumb for this file.
   item.SetVideoThumb();
 
