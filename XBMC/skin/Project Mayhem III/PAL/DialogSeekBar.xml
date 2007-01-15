@@ -166,8 +166,7 @@
 			<width>100</width>
 			<height>16</height>
 		</control>
-		<!--
-    <control type="progress" id="23">
+		<control type="progress" id="23">
 			<description>Progressbar</description>
 			<posx>506</posx>
 			<posy>83</posy>
@@ -181,7 +180,6 @@
 			<overlaytexture>-</overlaytexture>
 			<visible>true</visible>
 		</control>
-		!-->
 		<control type="slider" id="401">
 			<description>Seek Slider</description>
 			<posx>506</posx>

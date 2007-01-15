@@ -83,7 +83,7 @@
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
 			<textureradiofocus>settings-check-box.png</textureradiofocus>
-			<textureradionofocus>&amp;#13;&amp;#10;   settings-check-boxNF.png</textureradionofocus>
+			<textureradionofocus>settings-check-boxNF.png</textureradionofocus>
 		</control>
 		<control type="spincontrolex" id="9">
 			<description>Default SpinControlex</description>
