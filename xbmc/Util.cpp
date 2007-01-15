@@ -1134,7 +1134,9 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
 
   CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is ON. Starting Filter Flicker Patching.");
 
-  // Do the test if we already have a patched _ffp XBE
+  // Test if we already have a patched _ffp XBE
+  // Since the FF can be changed in XBMC, we will not check for a pre patched _ffp xbe!
+  /* // May we can add. a changed FF detection.. then we can actived this!
   CFile	xbe;
 	if (xbe.Exists(szPath1))
   {
@@ -1145,7 +1147,8 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
 		szNewPath.ReleaseBuffer();
 		if (xbe.Exists(szNewPath))
 			return true;
-	}
+	} */
+
 
   CXBE m_xbe;
   if((int)m_xbe.ExtractGameRegion(szPath1.c_str()) <= 0) // Reading the GameRegion is enought to detect a Patchable xbe!
@@ -1455,6 +1458,10 @@ bool CUtil::IsDAAP(const CStdString& strFile)
 bool CUtil::IsMemCard(const CStdString& strFile)
 {
   return strFile.Left(3).Equals("mem");
+}
+bool CUtil::IsTuxBox(const CStdString& strFile)
+{
+  return strFile.Left(7).Equals("tuxbox:");
 }
 
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
@@ -3755,8 +3762,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Left(18).Equals("system.pwmcontrol"))
   {
-    CStdString strTemp ,strRgbA, strRgbB, strTran;
-    CStdStringArray arSplit;
+    CStdString strTemp ,strRgbA, strRgbB, strWhiteA, strWhiteB, strTran; 
+    CStdStringArray arSplit; 
     int iTrTime = 0;
     StringUtils::SplitString(parameter,",", arSplit);
 
@@ -3764,15 +3771,17 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       strRgbA  = arSplit[0].c_str();
       strRgbB  = arSplit[1].c_str();
-      strTran  = arSplit[2].c_str();
-      iTrTime  = atoi(arSplit[3].c_str());
+      strWhiteA= arSplit[2].c_str();
+      strWhiteB= arSplit[3].c_str();
+      strTran  = arSplit[4].c_str();
+      iTrTime  = atoi(arSplit[5].c_str());
     }
     else if(parameter.size() > 6)
     {
       strRgbA = strRgbB = parameter;
       strTran = "none";
     }
-    CUtil::PWMControl(strRgbA,strRgbB,strTran, iTrTime);
+    CUtil::PWMControl(strRgbA,strRgbB,strWhiteA,strWhiteB,strTran, iTrTime);
   }
   else
     return -1;
@@ -3797,6 +3806,8 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
   if (checkURL.GetProtocol() == "shout")
     strPath = checkURL.GetHostName();
+  if (checkURL.GetProtocol() == "tuxbox")
+    return 1;
 
   if (checkURL.GetProtocol() == "multipath")
   {
@@ -4753,18 +4764,17 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
   sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
 
-bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strTransition, int iTrTime)
+bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, const CStdString &strTransition, int iTrTime)
 {
 #ifdef HAS_XBOX_HARDWARE
-  if (strRGBa.IsEmpty() && strRGBb.IsEmpty()) // no color, return false!
-    return false;
-
+    if (strRGBa.IsEmpty() && strRGBb.IsEmpty() && strWhiteA.IsEmpty() && strWhiteB.IsEmpty()) // no color, return false!
+      return false;
   if(g_iledSmartxxrgb.IsRunning())
   {
-    return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
+    return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strWhiteA, strWhiteB, strTransition, iTrTime);
   }
   g_iledSmartxxrgb.Start();
-  return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
+  return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strWhiteA, strWhiteB, strTransition, iTrTime);
 #else
   return false;
 #endif

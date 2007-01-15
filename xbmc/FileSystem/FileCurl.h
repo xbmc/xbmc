@@ -38,6 +38,10 @@ namespace XFILE
 	    virtual void Close();
       virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
       virtual CStdString GetContent()                            { return m_httpheader.GetContentType(); }
+      
+      bool Open(const CURL& url, bool bBinary, int iTimeOut);
+      bool ReadString(char *szLine, int iLineLength, int iTimeOut);
+      unsigned int Read(void* lpBuf, __int64 uiBufSize, int iTimeOut);
 
       size_t WriteCallback(char *buffer, size_t size, size_t nitems);
       size_t HeaderCallback(void *ptr, size_t size, size_t nmemb);
@@ -67,6 +71,7 @@ namespace XFILE
       bool FillBuffer(unsigned int want, int waittime);
 
     private:
+      
       XCURL::CURL_HANDLE*    m_easyHandle;
       XCURL::CURLM*          m_multiHandle;
       CStdString      m_url;

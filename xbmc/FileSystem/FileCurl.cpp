@@ -300,10 +300,14 @@ void CFileCurl::SetRequestHeaders()
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTPHEADER, m_curlHeaderList); 
 
 }
-
 bool CFileCurl::Open(const CURL& url, bool bBinary)
 {
-
+  return Open(url, bBinary , 10);
+}
+bool CFileCurl::Open(const CURL& url, bool bBinary, int iTimeOut)
+{
+  if (iTimeOut <=0)
+    iTimeOut = 10; //default!
   m_buffer.Create(m_bufferSize * 3, m_bufferSize);  // 3 times our buffer size (2 in front, 1 behind)
   m_overflowBuffer = 0;
   m_overflowSize = 0;
@@ -374,7 +378,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   // read some data in to try and obtain the length
   // maybe there's a better way to get this info??
-  if (!FillBuffer(m_bufferSize, 10))
+  if (!FillBuffer(m_bufferSize, iTimeOut))
   {
     CLog::Log(LOGERROR, "CFileCurl:Open, didn't get any data from stream.");    
     Close();
@@ -407,14 +411,20 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
      || !m_httpheader.GetValue("icy-br").IsEmpty() )
      m_httpheader.Parse("Content-Type: audio/mpeg\r\n");
   }
-
   return true;
 }
 bool CFileCurl::ReadString(char *szLine, int iLineLength)
 {
+  return ReadString(szLine, iLineLength, 10);
+}
+bool CFileCurl::ReadString(char *szLine, int iLineLength, int iTimeOut)
+{
+  if (iTimeOut <=0)
+    iTimeOut = 10; //default!
+
   unsigned int want = (unsigned int)iLineLength;
 
-  if(!FillBuffer(want,10))
+  if(!FillBuffer(want,iTimeOut)) //GeminiServer
     return false;
 
   if (!m_stillRunning && !m_buffer.GetMaxReadSize() && m_filePos != m_fileSize)
@@ -605,6 +615,13 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
 unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
 {
+  return Read(lpBuf, uiBufSize, 10);
+}
+unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize, int iTimeOut)
+{
+  if (iTimeOut <=0)
+    iTimeOut = 10; //default!
+
   /* only allow caller to read buffersize at a time */
   unsigned int want;
   if(uiBufSize > m_bufferSize)
@@ -612,7 +629,7 @@ unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
   else
     want = (unsigned int)uiBufSize;
 
-  if(!FillBuffer(want,10))
+  if(!FillBuffer(want,iTimeOut)) //GeminiServer
     return -1;
 
   if (!m_stillRunning && !m_buffer.GetMaxReadSize() && m_filePos != m_fileSize)

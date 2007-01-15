@@ -6,6 +6,7 @@
 #include "../Application.h"
 #include "../Util.h"
 #include "../lib/libscrobbler/scrobbler.h"
+#include "../utils/TuxBoxUtil.h"
 #include "KaiClient.h"
 #include "Weather.h"
 #include "../playlistplayer.h"
@@ -1101,7 +1102,9 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
   else if (info == VIDEOPLAYER_COVER)
   {
     if (!g_application.IsPlayingVideo()) return "";
-    return m_currentMovieThumb;
+    if(m_currentMovieThumb.IsEmpty())
+      return m_currentFile.HasThumbnail() ? m_currentFile.GetThumbnailImage() : "defaultVideoCover.png";
+    else return m_currentMovieThumb;
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY)
   {
@@ -1367,17 +1370,35 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
 
 CStdString CGUIInfoManager::GetVideoLabel(int item)
 {
-  if (!g_application.IsPlayingVideo()) return "";
+  if (!g_application.IsPlayingVideo()) 
+    return "";
+
+  bool bIsTuxBox = GetTuxBoxEvents();
+  
   switch (item)
   {
+  case VIDEOPLAYER_DURATION:
+    {
+      if (!bIsTuxBox && m_currentMovieDuration.IsEmpty())
+        m_currentMovieDuration = "";
+      return m_currentMovieDuration;
+    }
   case VIDEOPLAYER_TITLE:
-    return m_currentMovie.m_strTitle;
+    {
+      return m_currentMovie.m_strTitle;
+    }
     break;
   case VIDEOPLAYER_GENRE:
-    return m_currentMovie.m_strGenre;
+    {
+      if (!bIsTuxBox && m_currentMovie.m_strGenre.IsEmpty())
+        m_currentMovie.m_strGenre = "";
+      return m_currentMovie.m_strGenre;
+    }
     break;
   case VIDEOPLAYER_DIRECTOR:
-    return m_currentMovie.m_strDirector;
+    {
+      return m_currentMovie.m_strDirector;
+    }
     break;
   case VIDEOPLAYER_YEAR:
     if (m_currentMovie.m_iYear > 0)
@@ -1401,7 +1422,6 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return strTime;
     }
     break;
-  case VIDEOPLAYER_DURATION:
   case PLAYER_DURATION:
     {
       CStdString strDuration = "00:00:00";
@@ -2236,4 +2256,48 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
   if (info == LISTITEM_OVERLAY)
     return item->GetOverlayImage();
   return item->GetThumbnailImage();
+}
+
+bool CGUIInfoManager::GetTuxBoxEvents()
+{
+  //Return TuxBox Mode
+  if (m_currentFile.m_strPath.Find(":31339") > 0)
+  {
+    // Set Thread Informations
+    t_tuxbox.strURL = m_currentFile.m_strPath;
+    if(m_currentFile.m_iDriveType >0)
+      t_tuxbox.iPort = m_currentFile.m_iDriveType;
+    
+    // Start Thread
+    if(!t_tuxbox.IsRunning())
+      t_tuxbox.Start();
+    
+    // Set m_currentMovieDuration
+    if(!g_tuxbox.sCurSrvData.current_event_duration.IsEmpty() && !g_tuxbox.sCurSrvData.current_event_duration.IsEmpty() && 
+      !g_tuxbox.sCurSrvData.current_event_duration.Equals("-") && !g_tuxbox.sCurSrvData.current_event_duration.Equals("-"))
+    {
+      g_tuxbox.sCurSrvData.current_event_duration.Replace("(","");
+      g_tuxbox.sCurSrvData.current_event_duration.Replace(")","");
+    
+      m_currentMovieDuration.Format("%s: %s %s (%s - %s)",g_localizeStrings.Get(180),g_tuxbox.sCurSrvData.current_event_duration,
+        g_localizeStrings.Get(12391),g_tuxbox.sCurSrvData.current_event_time, g_tuxbox.sCurSrvData.next_event_time);
+    }
+
+    //Set strVideoGenre
+    if (!g_tuxbox.sCurSrvData.current_event_description.IsEmpty() && !g_tuxbox.sCurSrvData.next_event_description.IsEmpty() &&
+      !g_tuxbox.sCurSrvData.current_event_description.Equals("-") && !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
+    {
+      m_currentMovie.m_strGenre.Format("%s %s  -  (%s: %s)",g_localizeStrings.Get(143),g_tuxbox.sCurSrvData.current_event_description,
+        g_localizeStrings.Get(209),g_tuxbox.sCurSrvData.next_event_description);
+    }
+
+    //Set m_currentMovie.m_strDirector
+    if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") && !g_tuxbox.sCurSrvData.current_event_details.IsEmpty())
+    {
+      m_currentMovie.m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
+    }
+    
+    return true;
+  }
+  return false;
 }
