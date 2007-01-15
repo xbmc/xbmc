@@ -321,9 +321,7 @@ bool SSortFileItem::SongArtistAscending(CFileItem *left, CFileItem *right)
     // test year
     if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
     {
-      l = (char *)left->m_musicInfoTag.GetYear().c_str();
-      r = (char *)right->m_musicInfoTag.GetYear().c_str();
-      result = StringUtils::AlphaNumericCompare(l, r);
+      result = StringUtils::AlphaNumericCompare(left->m_musicInfoTag.GetYear().c_str(), right->m_musicInfoTag.GetYear().c_str());
       if (result < 0) return true;
       if (result > 0) return false;
     }
@@ -355,9 +353,7 @@ bool SSortFileItem::SongArtistDescending(CFileItem *left, CFileItem *right)
     // test year
     if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
     {
-      l = (char *)left->m_musicInfoTag.GetYear().c_str();
-      r = (char *)right->m_musicInfoTag.GetYear().c_str();
-      result = StringUtils::AlphaNumericCompare(l, r);
+      result = StringUtils::AlphaNumericCompare(left->m_musicInfoTag.GetYear().c_str(), right->m_musicInfoTag.GetYear().c_str());
       if (result < 0) return false;
       if (result > 0) return true;
     }
@@ -388,6 +384,13 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return true;
     if (result > 0) return false;
+    // test year
+    if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
+    {
+      result = StringUtils::AlphaNumericCompare(left->m_musicInfoTag.GetYear().c_str(), right->m_musicInfoTag.GetYear().c_str());
+      if (result < 0) return true;
+      if (result > 0) return false;
+    }
     // artists agree, test the album
     l = (char *)left->m_musicInfoTag.GetAlbum().c_str();
     r = (char *)right->m_musicInfoTag.GetAlbum().c_str();
@@ -417,6 +420,13 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return false;
     if (result > 0) return true;
+    // test year
+    if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
+    {
+      result = StringUtils::AlphaNumericCompare(left->m_musicInfoTag.GetYear().c_str(), right->m_musicInfoTag.GetYear().c_str());
+      if (result < 0) return false;
+      if (result > 0) return true;
+    }
     // artists agree, test the album
     l = (char *)left->m_musicInfoTag.GetAlbum().c_str();
     r = (char *)right->m_musicInfoTag.GetAlbum().c_str();
