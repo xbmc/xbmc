@@ -1378,27 +1378,15 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   switch (item)
   {
   case VIDEOPLAYER_DURATION:
-    {
-      if (!bIsTuxBox && m_currentMovieDuration.IsEmpty())
-        m_currentMovieDuration = "";
       return m_currentMovieDuration;
-    }
   case VIDEOPLAYER_TITLE:
-    {
-      return m_currentMovie.m_strTitle;
-    }
+    return m_currentMovie.m_strTitle;
     break;
   case VIDEOPLAYER_GENRE:
-    {
-      if (!bIsTuxBox && m_currentMovie.m_strGenre.IsEmpty())
-        m_currentMovie.m_strGenre = "";
-      return m_currentMovie.m_strGenre;
-    }
+    return m_currentMovie.m_strGenre;
     break;
   case VIDEOPLAYER_DIRECTOR:
-    {
-      return m_currentMovie.m_strDirector;
-    }
+    return m_currentMovie.m_strDirector;
     break;
   case VIDEOPLAYER_YEAR:
     if (m_currentMovie.m_iYear > 0)
