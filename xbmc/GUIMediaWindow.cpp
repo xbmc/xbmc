@@ -173,14 +173,13 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         m_vecItems.m_strPath = "?";
         return true;
       }
-
-      if ( message.GetParam1() == GUI_MSG_REFRESH_THUMBS )
+      else if ( message.GetParam1() == GUI_MSG_REFRESH_THUMBS )
       {
         for (int i = 0; i < m_vecItems.Size(); i++)
           m_vecItems[i]->FreeMemory();
         break;  // the window will take care of any info images
       }
-      if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
+      else if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
       {
         if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
         {
@@ -200,6 +199,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
             }
           }
         }
+
         return true;
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_BOOKMARKS)
@@ -218,6 +218,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         Update(m_vecItems.m_strPath);
         m_viewControl.SetSelectedItem(iItem);        
       }
+      else
+        return CGUIWindow::OnMessage(message);
+
       return true;
     }
     break;
