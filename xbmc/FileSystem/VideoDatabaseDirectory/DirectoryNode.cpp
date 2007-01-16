@@ -8,6 +8,7 @@
 #include "DirectoryNodeTitle.h"
 #include "DirectoryNodeYear.h"
 #include "DirectoryNodeActor.h"
+#include "DirectoryNodeDirector.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
@@ -79,6 +80,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeYear(strName, pParent);
   case NODE_TYPE_ACTOR:
     return new CDirectoryNodeActor(strName, pParent);
+  case NODE_TYPE_DIRECTOR:
+    return new CDirectoryNodeDirector(strName, pParent);
   case NODE_TYPE_TITLE:
     return new CDirectoryNodeTitle(strName, pParent);
   }
@@ -223,6 +226,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   case NODE_TYPE_YEAR:
   case NODE_TYPE_TITLE:
   case NODE_TYPE_ACTOR:
+  case NODE_TYPE_DIRECTOR:
 /*    pItem = new CFileItem(g_localizeStrings.Get(15103));  // "All Artists"
     pItem->m_strPath = BuildPath() + "-1/";*/
     break;
