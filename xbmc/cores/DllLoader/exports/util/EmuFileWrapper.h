@@ -8,7 +8,7 @@ typedef struct stEmuFileObject
 {
   bool    used;
   FILE    file_emu;
-  CFile*  file_xbmc;
+  XFILE::CFile*  file_xbmc;
 } EmuFileObject;
   
 class CEmuFileWrapper
@@ -53,7 +53,7 @@ public:
     LeaveCriticalSection(&m_criticalSection);
   }
   
-  EmuFileObject* RegisterFileObject(CFile* pFile)
+  EmuFileObject* RegisterFileObject(XFILE::CFile* pFile)
   {
     EmuFileObject* object = NULL;
     
@@ -128,7 +128,7 @@ public:
     }
   }
   
-  CFile* GetFileXbmcByDescriptor(int fd)
+  XFILE::CFile* GetFileXbmcByDescriptor(int fd)
   {
     EmuFileObject* object = GetFileObjectByDescriptor(fd);
     if (object != NULL && object->used)
@@ -138,7 +138,7 @@ public:
     return NULL;
   }
 
-  CFile* GetFileXbmcByStream(FILE* stream)
+  XFILE::CFile* GetFileXbmcByStream(FILE* stream)
   {
     if (stream != NULL)
     {

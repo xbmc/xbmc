@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "GUIViewStatePicturesProgramsScripts.h"
 
+using namespace DIRECTORY;
+
 CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items)
 {
   if (items.IsVirtualDirectoryRoot())

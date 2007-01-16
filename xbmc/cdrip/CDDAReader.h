@@ -40,7 +40,7 @@ protected:
 
   bool m_iInitialized;
 
-  CFile m_fileCdda;
+  XFILE::CFile m_fileCdda;
 };
 
 #endif // _CCDDAREADER_H

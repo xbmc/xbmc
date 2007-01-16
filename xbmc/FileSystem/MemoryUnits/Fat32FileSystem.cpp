@@ -23,6 +23,9 @@
 #include "Fat32Device.h"
 #include "../../utils/MemoryUnitManager.h"
 
+namespace XFILE
+{
+
 CFat32FileSystem::CFat32FileSystem(unsigned char unit) : IFileSystem(unit)
 {
   m_opened = CLOSED;
@@ -315,4 +318,5 @@ bool CFat32FileSystem::GetDirectoryWithShortPaths(const CStdString &directory, C
     }
 	}
   return true;
+}
 }

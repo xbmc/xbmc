@@ -27,6 +27,8 @@
 #include "GUIWindowVideoFiles.h"
 #include "Util.h"
 
+using namespace DIRECTORY;
+
 #define CONTROL_HEADING         2
 #define CONTROL_PATH            10
 #define CONTROL_PATH_BROWSE     11

@@ -24,6 +24,9 @@
 #include "../util.h"
 #include "directorycache.h"
 
+namespace DIRECTORY
+{
+
 // these are the different request urls that exist.. i think the first one would always work, but take safe route
 #define REQUEST42 "daap://%s/databases/%i/items/%i.%s?session-id=%i&revision-id=%i"
 #define REQUEST45 "daap://%s/databases/%i/items/%i.%s?session-id=%i"
@@ -464,4 +467,6 @@ int CDAAPDirectory::GetCurrLevel(CStdString strPath)
   }
 
   return intLevel;
+}
+
 }

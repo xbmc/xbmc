@@ -22,6 +22,7 @@
 #include "FileISO.h"
 #include <sys/stat.h>
 
+using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

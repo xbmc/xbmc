@@ -4,7 +4,6 @@
 class CURL;
 class TiXmlElement;
 
-using namespace DIRECTORY;
 namespace DIRECTORY
 {
 class CShoutcastDirectory :

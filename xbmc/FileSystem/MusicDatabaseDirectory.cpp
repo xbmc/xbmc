@@ -4,8 +4,8 @@
 #include "musicdatabasedirectory/QueryParams.h"
 #include "../MusicDatabase.h"
 
+using namespace XFILE;
 using namespace DIRECTORY;
-
 using namespace MUSICDATABASEDIRECTORY;
 
 CMusicDatabaseDirectory::CMusicDatabaseDirectory(void)

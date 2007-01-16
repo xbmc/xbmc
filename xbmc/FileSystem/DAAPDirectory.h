@@ -7,8 +7,6 @@ extern "C"
  #include "../lib/libXDAAP/private.h"
 }
 
-using namespace DIRECTORY;
-
 namespace DIRECTORY
 {
 class CDAAPDirectory :

@@ -10,8 +10,6 @@ public:
   virtual void ParseHeaderData(CStdString strData) = 0;
 };
 
-using namespace XFILE;
-
 namespace XCURL
 {
   typedef void CURL_HANDLE;

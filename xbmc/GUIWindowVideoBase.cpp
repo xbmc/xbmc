@@ -44,6 +44,11 @@
 
 #include "SkinInfo.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
+using namespace VIDEODATABASEDIRECTORY;
+
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
@@ -59,8 +64,6 @@
 #define CONTROL_BTNSCAN           8
 #define CONTROL_IMDB              9
 #define CONTROL_BTNSHOWMODE       10
-
-using namespace VIDEODATABASEDIRECTORY;
 
 CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)

@@ -23,6 +23,8 @@
 #include "playlistwpl.h"
 #include "util.h"
 
+using namespace XFILE;
+using namespace PLAYLIST;
 
 /* ------------------------ example wpl playlist file ---------------------------------
   <?wpl version="1.0"?>

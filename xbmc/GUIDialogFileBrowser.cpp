@@ -30,6 +30,9 @@
 #include "xbox/network.h"
 #include "GUIPassword.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+
 #define CONTROL_LIST          450
 #define CONTROL_THUMBS        451
 #define CONTROL_HEADING_LABEL 411

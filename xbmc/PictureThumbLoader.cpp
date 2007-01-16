@@ -23,6 +23,7 @@
 #include "PictureThumbLoader.h"
 #include "Picture.h"
 
+using namespace XFILE;
 
 CPictureThumbLoader::CPictureThumbLoader()
 {

@@ -5,6 +5,8 @@
 #include "ringbuffer.h"
 #include "..\cores\paplayer\RingHoldBuffer.h"
 
+namespace XFILE
+{
 
 class CFileLastFM : public IFile, public CThread
 {
@@ -34,7 +36,7 @@ protected:
   
   virtual void Process();
 
-  CFileCurl* m_pFile;
+  XFILE::CFileCurl* m_pFile;
   char* m_pSyncBuffer;
   HANDLE m_hWorkerEvent;
 
@@ -52,3 +54,5 @@ protected:
   CStdString m_Banned;
 
 };
+
+}

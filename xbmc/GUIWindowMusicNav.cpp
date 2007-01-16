@@ -37,6 +37,8 @@
 #include "PartyModeManager.h"
 #include "PlaylistFactory.h"
 
+using namespace DIRECTORY;
+using namespace PLAYLIST;
 using namespace MUSICDATABASEDIRECTORY;
 
 #define CONTROL_BTNVIEWASICONS     2

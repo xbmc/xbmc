@@ -33,6 +33,8 @@
 #include "xbox/network.h"
 #include "skininfo.h"
 
+using namespace XFILE;
+
 #define CONTROL_BIG_LIST 52
 #define CONTROL_LABEL_HEADER 2
 #define CONTROL_LABEL_SELECTED_PROFILE 3

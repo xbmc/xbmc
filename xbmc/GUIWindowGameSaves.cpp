@@ -30,13 +30,16 @@
 #include <fstream>
 //#include "Utils\HTTP.h"  // For Download Function
 #include "mediamanager.h"
+
+using namespace XFILE;
+using namespace DIRECTORY;
+
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_LIST              50
 #define CONTROL_THUMBS            51
 #define CONTROL_LABELFILES        12
-
 
 CGUIWindowGameSaves::CGUIWindowGameSaves()
 : CGUIMediaWindow(WINDOW_GAMESAVES, "MyGameSaves.xml")

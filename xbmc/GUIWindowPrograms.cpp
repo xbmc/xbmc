@@ -33,6 +33,7 @@
 #include "utils/kaiclient.h"
 #include "autorun.h"
 
+using namespace XFILE;
 using namespace DIRECTORY;
 
 #define CONTROL_BTNVIEWASICONS 2

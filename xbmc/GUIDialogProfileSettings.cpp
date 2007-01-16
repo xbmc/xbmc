@@ -32,6 +32,9 @@
 #include "GUIPassword.h"
 #include "picture.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+
 #define CONTROL_PROFILE_IMAGE      2
 #define CONTROL_START              30
 

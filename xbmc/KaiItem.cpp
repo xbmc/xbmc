@@ -26,6 +26,7 @@
 #include "Util.h"
 #include "Picture.h"
 
+using namespace XFILE;
 
 CKaiItem::CKaiItem(CStdString& strLabel) : CGUIListExItem(strLabel)
 {

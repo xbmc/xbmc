@@ -13,7 +13,6 @@
 #include "RarManager.h"
 #include "../lib/UnrarXLib/rar.hpp"
 #include "../utils/thread.h"
-using namespace XFILE;
 
 namespace XFILE
 {	

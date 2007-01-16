@@ -11,8 +11,6 @@
 
 #include "IFile.h"
 
-using namespace XFILE;
-
 namespace XFILE
 {
 class CFileHD : public IFile

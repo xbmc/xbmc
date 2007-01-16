@@ -39,6 +39,8 @@
 #include "xbox/network.h"
 
 using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
 
 #define ACTION_COPY   1
 #define ACTION_MOVE   2

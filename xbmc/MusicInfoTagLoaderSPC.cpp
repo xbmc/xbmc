@@ -23,6 +23,7 @@
 #include "MusicInfoTagLoaderSPC.h"
 #include "cores/paplayer/spc/types.h"
 
+using namespace XFILE;
 using namespace MUSIC_INFO;
 
 // copied from libspc, then modified. thanks :)

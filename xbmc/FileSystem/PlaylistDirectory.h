@@ -2,8 +2,6 @@
 
 #include "idirectory.h"
 
-using namespace DIRECTORY;
-
 namespace DIRECTORY
 {
   class CPlaylistDirectory : public IDirectory
