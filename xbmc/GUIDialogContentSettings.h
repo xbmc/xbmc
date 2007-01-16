@@ -13,7 +13,7 @@ public:
   static bool Show(SScraperInfo& scraper, bool& bRunScan, bool& bScanRecursive, bool& bUseDirNames);
   static bool ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, bool& bRunScan, bool& bScanRecursive, bool& bUseDirNames);
   virtual bool IsMediaWindow() const { return true; };
-  CFileItem* GetCurrentListItem();
+  virtual CFileItem* GetCurrentListItem();
 protected:
   virtual void OnCancel();
   virtual void OnWindowLoaded();

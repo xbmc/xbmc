@@ -16,7 +16,7 @@ public:
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   virtual void OnInitWindow();
-  CFileItem *GetCurrentListItem();
+  virtual CFileItem *GetCurrentListItem();
   const CFileItem &CurrentDirectory() const { return m_vecItems;};
 
 protected:
