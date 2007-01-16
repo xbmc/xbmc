@@ -778,6 +778,28 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   return SetResponse(strOutput);
 }
 
+int CXbmcHttp::xbmcGetXBEID(int numParas, CStdString paras[])
+{
+  if (numParas==0) {
+    return SetResponse(openTag+"Error:Missing Parameter");
+  }
+  CStdString tmp;
+  tmp.Format("%09x",CUtil::GetXbeID(paras[0]));
+  return SetResponse(openTag + tmp);
+}
+
+int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
+{
+  CStdString xbeinfo;
+  if (numParas==0) {
+    return SetResponse(openTag+"Error:Missing Parameter");
+  }
+  CStdString tmp;
+  CUtil::GetXBEDescription(paras[0],xbeinfo);
+  tmp.Format("%s",xbeinfo);
+  return SetResponse(openTag + tmp);
+}
+
 int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
 {
   // returns the share listing in this format:
@@ -2559,6 +2581,8 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "reset")                    retVal = xbmcExit(4);
       else if (command == "restartapp")               retVal = xbmcExit(5);
       else if (command == "getcurrentlyplaying")      retVal = xbmcGetCurrentlyPlaying(); 
+      else if (command == "getxbeid")                 retVal = xbmcGetXBEID(numParas, paras); 
+      else if (command == "getxbetitle")              retVal = xbmcGetXBETitle(numParas, paras); 
       else if (command == "getshares")                retVal = xbmcGetShares(numParas, paras); 
       else if (command == "getdirectory")             retVal = xbmcGetDirectory(numParas, paras); 
       else if (command == "getmedialocation")         retVal = xbmcGetMediaLocation(numParas, paras); 
