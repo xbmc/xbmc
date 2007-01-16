@@ -68,8 +68,6 @@
 			<posy>50</posy>
 			<width>400</width>
 			<height>300</height>
-			<spinposx>350</spinposx>
-			<spinposy>230</spinposy>
 			<itemwidth>100</itemwidth>
 			<itemheight>110</itemheight>
 			<texturewidth>90</texturewidth>

@@ -18,20 +18,18 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MIN = -1,
   VIDEODB_ID_TITLE = 0,
   VIDEODB_ID_PLOT = 1,
-  VIDEODB_ID_DIRECTOR = 2,
-  VIDEODB_ID_PLOTOUTLINE = 3,
-  VIDEODB_ID_TAGLINE = 4,
-  VIDEODB_ID_VOTES = 5,
-  VIDEODB_ID_RATING = 6,
-  VIDEODB_ID_CREDITS = 7,
-  VIDEODB_ID_YEAR = 8,
-  VIDEODB_ID_GENRE = 9,
-  VIDEODB_ID_THUMBURL = 10,
-  VIDEODB_ID_IDENT = 11,
-  VIDEODB_ID_WATCHED = 12,
-  VIDEODB_ID_RUNTIME = 13,
-  VIDEODB_ID_MPAA = 14,
-  VIDEODB_ID_TOP250 = 15,
+  VIDEODB_ID_PLOTOUTLINE = 2,
+  VIDEODB_ID_TAGLINE = 3,
+  VIDEODB_ID_VOTES = 4,
+  VIDEODB_ID_RATING = 5,
+  VIDEODB_ID_CREDITS = 6,
+  VIDEODB_ID_YEAR = 7,
+  VIDEODB_ID_THUMBURL = 8,
+  VIDEODB_ID_IDENT = 9,
+  VIDEODB_ID_WATCHED = 10,
+  VIDEODB_ID_RUNTIME = 11,
+  VIDEODB_ID_MPAA = 12,
+  VIDEODB_ID_TOP250 = 13,
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
 
@@ -48,14 +46,12 @@ const struct SDbMovieOffsets
 {
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strTitle) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPlot) },
-  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strDirector) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPlotOutline) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strTagLine) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strVotes) },
   { VIDEODB_TYPE_FLOAT, offsetof(CIMDBMovie,m_fRating) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strWritingCredits) },
   { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iYear) },
-  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strGenre) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strIMDBNumber) },
   { VIDEODB_TYPE_BOOL, offsetof(CIMDBMovie,m_bWatched) },
@@ -100,8 +96,6 @@ public:
   void MarkAsUnWatched(long lMovieId);
   void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle);
 
-  void GetMoviesByActor(CStdString& strActor, VECMOVIES& movies);
-
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
   bool HasSubtitle(const CStdString& strFilenameAndPath);
   void DeleteMovieInfo(const CStdString& strFileNameAndPath);
@@ -110,7 +104,14 @@ public:
   void GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lMovieId = -1);
   long GetMovieInfo(const CStdString& strFilenameAndPath);
   void SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details);
-  void GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
+
+  void GetMoviesByPath(const CStdString& strPath1, VECMOVIES& movies);
+  void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
+
+  void GetGenresByName(const CStdString& strSearch, CFileItemList& items);
+  void GetActorsByName(const CStdString& strSearch, CFileItemList& items);
+  void GetDirectorsByName(const CStdString& strSearch, CFileItemList& items);
+  void GetTitlesByName(const CStdString& strSearch, CFileItemList& items);
 
   void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD);
   void AddBookMarkToFile(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
@@ -132,7 +133,8 @@ public:
 
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1);
+  bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetGenreById(long lIdGenre, CStdString& strGenre);
   int GetMovieCount();
@@ -153,6 +155,7 @@ protected:
   long AddActor(const CStdString& strActor);
 
   void AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole);
+  void AddDirectorToMovie(long lMovieId, long lDirectorId);
   void AddGenreToMovie(long lMovieId, long lGenreId);
 
   CIMDBMovie GetDetailsForMovie(long lMovieId);

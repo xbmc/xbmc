@@ -104,6 +104,11 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkmovie_1 ON actorlinkmovie ( idActor, idMovie )\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkmovie_2 ON actorlinkmovie ( idMovie, idActor )\n");
 
+    CLog::Log(LOGINFO, "create directorlinkmovie table");
+    m_pDS->exec("CREATE TABLE directorlinkmovie ( idDirector integer, idMovie integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmovie_1 ON directorlinkmovie ( idDirector, idMovie )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmovie_2 ON directorlinkmovie ( idMovie, idDirector )\n");
+
     CLog::Log(LOGINFO, "create actors table");
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text )\n");
 
@@ -529,6 +534,31 @@ void CVideoDatabase::AddActorToMovie(long lMovieId, long lActorId, const CStdStr
 }
 
 //********************************************************************************************************************************
+void CVideoDatabase::AddDirectorToMovie(long lMovieId, long lDirectorId)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+
+    CStdString strSQL=FormatSQL("select * from directorlinkmovie where idDirector=%u and idMovie=%u", lDirectorId, lMovieId);
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() == 0)
+    {
+      // doesnt exists, add it
+      strSQL=FormatSQL("insert into directorlinkmovie (idDirector, idMovie) values( %i,%i)", lDirectorId, lMovieId);
+      m_pDS->exec(strSQL.c_str());
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::AddDirectorToMovie() failed");
+  }
+}
+
+
+//********************************************************************************************************************************
 bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
 {
   try
@@ -584,7 +614,7 @@ void CVideoDatabase::DeleteMovieInfo(const CStdString& strFileNameAndPath)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetMoviesByActor(CStdString& strActor, VECMOVIES& movies)
+void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies)
 {
   try
   {
@@ -655,7 +685,30 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
       lMovieId = AddMovie(strFilenameAndPath);
 
     BeginTransaction();
-    long lDirector = AddActor(details.m_strDirector);
+    // add all directors
+    char szDirector[1024];
+    strcpy(szDirector, details.m_strDirector.c_str());
+    vector<long> vecDirectors;
+    if (strstr(szDirector, "/"))
+    {
+      char *pToken = strtok(szDirector, "/");
+      while ( pToken != NULL )
+      {
+        CStdString strDirector = pToken;
+        strDirector.Trim();
+        long lDirectorId = AddActor(strDirector);
+        vecDirectors.push_back(lDirectorId);
+        pToken = strtok( NULL, "/" );
+      }
+    }
+    else
+    {
+      CStdString strDirector = details.m_strDirector;
+      strDirector.Trim();
+      long lDirectorId = AddActor(strDirector);
+      vecDirectors.push_back(lDirectorId);
+    }
+
     // add all genres
     char szGenres[1024];
     strcpy(szGenres, details.m_strGenre.c_str());
@@ -708,31 +761,29 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     {
       AddActorToMovie(lMovieId, vecActors[i].first, vecActors[i].second);
     }
+
+    for (i = 0; i < (int)vecDirectors.size(); ++i)
+    {
+      AddDirectorToMovie(lMovieId, vecDirectors[i]);
+    }
     
     CStdString strValue;
     for (int iType=VIDEODB_ID_MIN+1;iType<VIDEODB_ID_MAX;++iType)
     {
-      if (iType == VIDEODB_ID_DIRECTOR)
+      switch (DbMovieOffsets[iType].type)
       {
-        strValue.Format("%u",lDirector);
-      }
-      else
-      {
-        switch (DbMovieOffsets[iType].type)
-        {
-        case VIDEODB_TYPE_STRING:
-          strValue = *(CStdString*)(((char*)&details)+DbMovieOffsets[iType].offset);
-          break;
-        case VIDEODB_TYPE_INT:
-          strValue.Format("%i",*(int*)(((char*)&details)+DbMovieOffsets[iType].offset));
-          break;
-        case VIDEODB_TYPE_BOOL:
-          strValue = *(bool*)(((char*)&details)+DbMovieOffsets[iType].offset)?"true":"false";
-          break;
-        case VIDEODB_TYPE_FLOAT:
-          strValue.Format("%f",*(float*)(((char*)&details)+DbMovieOffsets[iType].offset));
-          break;
-        }
+      case VIDEODB_TYPE_STRING:
+        strValue = *(CStdString*)(((char*)&details)+DbMovieOffsets[iType].offset);
+        break;
+      case VIDEODB_TYPE_INT:
+        strValue.Format("%i",*(int*)(((char*)&details)+DbMovieOffsets[iType].offset));
+        break;
+      case VIDEODB_TYPE_BOOL:
+        strValue = *(bool*)(((char*)&details)+DbMovieOffsets[iType].offset)?"true":"false";
+        break;
+      case VIDEODB_TYPE_FLOAT:
+        strValue.Format("%f",*(float*)(((char*)&details)+DbMovieOffsets[iType].offset));
+        break;
       }
       CStdString strSQL;
       if (iType == VIDEODB_ID_TITLE)
@@ -754,7 +805,7 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
 
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies)
+void CVideoDatabase::GetMoviesByPath(const CStdString& strPath1, VECMOVIES& movies)
 {
   try
   {
@@ -1028,32 +1079,20 @@ CIMDBMovie CVideoDatabase::GetDetailsForMovie(long lMovieId)
   while (!m_pDS2->eof())
   {
     int iType = m_pDS2->fv("movie.idType").get_asInteger();
-    // special case the director one
-    if (iType == VIDEODB_ID_DIRECTOR)
+    switch (DbMovieOffsets[iType].type)
     {
-      long lDirectorId = m_pDS2->fv("movie.strValue").get_asLong();
-      strSQL = FormatSQL("select strActor from actors where idActor=%u",lDirectorId);
-      pDS->query(strSQL.c_str());
-      if (!pDS->eof())
-        details.m_strDirector = pDS->fv("actors.strActor").get_asString();
-    }
-    else
-    {
-      switch (DbMovieOffsets[iType].type)
-      {
-        case VIDEODB_TYPE_STRING:
-          *(CStdString*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asString();
-          break;
-        case VIDEODB_TYPE_INT:
-          *(int*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asInteger();
-          break;
-        case VIDEODB_TYPE_BOOL:
-          *(bool*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asBool();
-          break;
-        case VIDEODB_TYPE_FLOAT:
-          *(float*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asFloat();
-          break;
-      }
+    case VIDEODB_TYPE_STRING:
+      *(CStdString*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asString();
+      break;
+    case VIDEODB_TYPE_INT:
+      *(int*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asInteger();
+      break;
+    case VIDEODB_TYPE_BOOL:
+      *(bool*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asBool();
+      break;
+    case VIDEODB_TYPE_FLOAT:
+      *(float*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asFloat();
+      break;
     }
     m_pDS2->next();
   }
@@ -1061,12 +1100,32 @@ CIMDBMovie CVideoDatabase::GetDetailsForMovie(long lMovieId)
   // create cast string
   strSQL = FormatSQL("select actors.strActor,actorlinkmovie.strRole from actorlinkmovie,actors where actorlinkmovie.idMovie=%u and actorlinkmovie.idActor = actors.idActor",lMovieId);
   pDS->query(strSQL.c_str());
-  int iActor = 0;
   while (!pDS->eof())
   {
-    details.m_strCast += pDS->fv("actors.strActor").get_asString()+" as "+pDS->fv("actorlinkmovie.strRole").get_asString()+'\n';
+    details.m_strCast += pDS->fv("actors.strActor").get_asString()+" "+g_localizeStrings.Get(20347)+" "+pDS->fv("actorlinkmovie.strRole").get_asString()+'\n';
     pDS->next();
   }
+
+  // create genre string
+  strSQL = FormatSQL("select genre.strGenre from genrelinkmovie,genre where genrelinkmovie.idMovie=%u and genrelinkmovie.idGenre = genre.idGenre",lMovieId);
+  pDS->query(strSQL.c_str());
+  while (!pDS->eof())
+  {
+    details.m_strGenre += pDS->fv("genre.strGenre").get_asString()+" / ";
+    pDS->next();
+  }
+  details.m_strGenre = details.m_strGenre.Mid(0,details.m_strGenre.size()-3);
+
+  // create directors string
+  strSQL = FormatSQL("select actors.strActor from directorlinkmovie,actors where directorlinkmovie.idMovie=%u and directorlinkmovie.idDirector = actors.idActor",lMovieId);
+  pDS->query(strSQL.c_str());
+  while (!pDS->eof())
+  {
+    details.m_strDirector += pDS->fv("actors.strActor").get_asString()+" / ";
+    pDS->next();
+  }
+  details.m_strDirector = details.m_strDirector.Mid(0,details.m_strDirector.size()-3);
+
 
   strSQL=FormatSQL("select files.strFileName,files.idPath from files where idMovie=%u",lMovieId);
   pDS->query(strSQL.c_str());
@@ -1508,6 +1567,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       strDir.Format("%ld/", it->first);
       pItem->m_strPath=strBaseDir + strDir;
       pItem->m_bIsFolder=true;
+      pItem->SetLabelPreformated(true);
       items.Add(pItem);
     }
     
@@ -1516,6 +1576,83 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
   catch (...)
   {
     CLog::Log(LOGERROR, "CVideoDatabase:GetGenresNav() failed");
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    // get primary genres for movies
+    CStdString strSQL;
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath from actors,directorlinkmovie,movie,path,files where actor.idActor=directorlinkMovie.idDirector and directorlinkMovie.idMovie = movie.idMovie and movie.idType=%i and files.idMovie=movie.idMovie and path.idPath = files.idPath",VIDEODB_ID_WATCHED);
+    else
+      strSQL=FormatSQL("select actors.idActor,actors.strActor from actors,directorlinkmovie,movie where actors.idActor=directorlinkMovie.idDirector and directorlinkMovie.idMovie = movie.idMovie and movie.idType=%i",VIDEODB_ID_WATCHED);
+
+    if (g_stSettings.m_iMyVideoWatchMode == 1)
+      strSQL += FormatSQL(" and NOT (movie.strValue='true')");
+
+    if (g_stSettings.m_iMyVideoWatchMode == 2)
+      strSQL += FormatSQL(" and movie.strValue='true'");
+
+    // run query
+    CLog::Log(LOGDEBUG, "CVideoDatabase::GetDirectorsNav() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+
+    map<long, CStdString> mapDirector;
+    map<long, CStdString>::iterator it;
+    while (!m_pDS->eof())
+    {
+      long lDirectorId = m_pDS->fv("actors.idactor").get_asLong();
+      CStdString strDirector = m_pDS->fv("actors.strActor").get_asString();
+      it = mapDirector.find(lDirectorId);
+      // was this genre already found?
+      if (it == mapDirector.end())
+      {
+        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        {
+          // check path
+          CStdString strPath;
+          if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+          {
+            m_pDS->next();
+            continue;
+          }
+        }
+        mapDirector.insert(pair<long, CStdString>(lDirectorId, strDirector));
+      }
+
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    for (it=mapDirector.begin();it != mapDirector.end();++it)
+    {
+      CFileItem* pItem=new CFileItem(it->second);
+      CStdString strDir;
+      strDir.Format("%ld/", it->first);
+      pItem->m_strPath=strBaseDir + strDir;
+      pItem->m_bIsFolder=true;
+      pItem->SetLabelPreformated(true);
+      items.Add(pItem);
+    }
+    
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase:GetDirectorsNav() failed");
   }
   return false;
 }
@@ -1677,7 +1814,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
   return false;
 }
 
-bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor)
+bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector)
 {
   try
   {
@@ -1692,6 +1829,11 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
     if (idGenre != -1)
     {
       strSQL=FormatSQL("select movie.idmovie from movie, genrelinkmovie where genrelinkmovie.idGenre=%u and genrelinkmovie.idmovie=movie.idmovie and movie.idType=%i", idGenre, VIDEODB_ID_TITLE);
+    }
+
+    if (idDirector != -1)
+    {
+      strSQL=FormatSQL("select movie.idmovie from movie, directorlinkmovie where directorlinkmovie.idDirector=%u and directorlinkmovie.idmovie=movie.idmovie and movie.idType=%i", idDirector, VIDEODB_ID_TITLE);
     }
 
     if (idYear !=-1)
@@ -1909,6 +2051,171 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
     CLog::Log(LOGERROR, "CVideoDatabase::GetScraperForPath() failed");
   }
   return false;
+}
+
+void CVideoDatabase::GetGenresByName(const CStdString& strSearch, CFileItemList& items)
+{
+  CStdString strSQL;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinkmovie,movie,path,files where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and movie.idType=%i and files.idMovie=movie.idMovie and path.idPath = files.idPath and genre.strGenre like '%%%s%%'",VIDEODB_ID_TITLE,strSearch.c_str());
+    else
+      strSQL=FormatSQL("select genre.idgenre,genre.strgenre from genre where strGenre like '%%%s%%'", strSearch.c_str());
+    m_pDS->query( strSQL.c_str() );
+
+    while (!m_pDS->eof())
+    {
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        {
+          m_pDS->next();
+          continue;
+        }
+
+      CFileItem* pItem=new CFileItem(m_pDS->fv("genre.strGenre").get_asString());
+      CStdString strDir;
+      strDir.Format("%ld/", m_pDS->fv("genre.idGenre").get_asLong());
+      pItem->m_strPath="videodb://1/"+ strDir;
+      pItem->m_bIsFolder=true;
+      items.Add(pItem);
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetGenresByName(%s) failed",strSQL.c_str());
+  }
+}
+
+void CVideoDatabase::GetActorsByName(const CStdString& strSearch, CFileItemList& items)
+{
+  CStdString strSQL;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath from actorlinkmovie,actors,movie,files,path where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and files.idMovie = movie.idMovie and files.idPath = path.idPath and movie.idType=%i and actors.strActor like '%%%s%%'",VIDEODB_ID_TITLE,strSearch.c_str());
+    else
+      strSQL=FormatSQL("select actors.idactor,actors.strActor from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movie.idType=%i and actors.strActor like '%%%s%%'",VIDEODB_ID_TITLE,strSearch.c_str());
+    m_pDS->query( strSQL.c_str() );
+
+    while (!m_pDS->eof())
+    {
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        {
+          m_pDS->next();
+          continue;
+        }
+
+      CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+      CStdString strDir;
+      strDir.Format("%ld/", m_pDS->fv("actors.idActor").get_asLong());
+      pItem->m_strPath="videodb://4/"+ strDir;
+      pItem->m_bIsFolder=true;
+      items.Add(pItem);
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetGenresByName(%s) failed",strSQL.c_str());
+  }
+}
+
+void CVideoDatabase::GetTitlesByName(const CStdString& strSearch, CFileItemList& items)
+{
+  CStdString strSQL;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      strSQL = FormatSQL("select movie.idmovie,movie.strValue,path.strPath from movie,file,path where movie.idType=%i and file.idMovie=movie.idMovie and file.idPath=path.idPath and movie.strValue like '%%%s%%'",VIDEODB_ID_TITLE,strSearch.c_str());
+    else
+      strSQL = FormatSQL("select movie.idmovie,movie.strValue from movie where idType=%i and movie.strValue like '%%%s%%'",VIDEODB_ID_TITLE,strSearch.c_str());
+    m_pDS->query( strSQL.c_str() );
+
+    while (!m_pDS->eof())
+    {
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        {
+          m_pDS->next();
+          continue;
+        }
+
+      CFileItem* pItem=new CFileItem(m_pDS->fv("movie.strValue").get_asString());
+      CStdString strDir;
+      strSQL = FormatSQL("select * from genrelinkmovie where genrelinkmovie.idMovie=%u",m_pDS->fv("movie.idMovie").get_asLong());
+      m_pDS2->query(strSQL);
+      strDir.Format("1/%ld/%ld", m_pDS2->fv("genre.idGenre").get_asLong(),m_pDS->fv("movie.idMovie").get_asLong());
+      
+      pItem->m_strPath="videodb://"+ strDir;
+      pItem->m_bIsFolder=true;
+      items.Add(pItem);
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetTitlesByName(%s) failed",strSQL.c_str());
+  }
+}
+
+void CVideoDatabase::GetDirectorsByName(const CStdString& strSearch, CFileItemList& items)
+{
+  CStdString strSQL;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      strSQL = FormatSQL("select directorlinkmovie.idDirector,actors.strActor,path.strPath from movie,file,path,actors,directorlinkmovie where movie.idType=%i and file.idMovie=movie.idMovie and file.idPath=path.idPath and directorlinkmovie.idmovie = movie.idMovie and directorlinkmovie.idDirector = actors.idActor and actors.strActor like '%%%s%%'",VIDEODB_ID_TITLE,strSearch.c_str());
+    else
+      strSQL = FormatSQL("select directorlinkmovie.idDirector,actors.strActor from movie,actors,directorlinkmovie where movie.idType=%i and directorlinkmovie.idmovie = movie.idMovie and directorlinkmovie.idDirector = actors.idActor and actors.strActor like '%%%s%%'",VIDEODB_ID_TITLE,strSearch.c_str());
+
+    m_pDS->query( strSQL.c_str() );
+
+    while (!m_pDS->eof())
+    {
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        {
+          m_pDS->next();
+          continue;
+        }
+
+      CStdString strDir;
+      strDir.Format("%ld/", m_pDS->fv("directorlinkmovie.idDirector").get_asLong());
+      CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+      
+      pItem->m_strPath="videodb://5/"+ strDir;
+      pItem->m_bIsFolder=true;
+      items.Add(pItem);
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetGenresByName(%s) failed",strSQL.c_str());
+  }
 }
 
 void CVideoDatabase::CleanDatabase()
