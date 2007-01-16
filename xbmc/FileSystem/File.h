@@ -10,7 +10,6 @@
 #endif // _MSC_VER > 1000
 
 #include "ifile.h"
-using namespace XFILE;
 
 namespace XFILE
 {

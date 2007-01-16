@@ -26,6 +26,9 @@
 #include "..\..\MusicInfoTagLoaderFactory.h"
 #include "..\..\MusicDatabase.h"
 
+using namespace DIRECTORY;
+using namespace PLAYLIST;
+
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")

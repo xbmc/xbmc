@@ -41,7 +41,6 @@ extern CDaapClient g_DaapClient;
 
 #include "IFile.h"
 #include "../cores/paplayer/RingHoldBuffer.h"
-using namespace XFILE;
 
 namespace XFILE
 {

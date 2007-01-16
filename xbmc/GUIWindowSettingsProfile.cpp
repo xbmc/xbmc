@@ -32,6 +32,8 @@
 #include "utils/weather.h"
 #include "GUIPassword.h"
 
+using namespace DIRECTORY;
+
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
 #define CONTROL_LOGINSCREEN 4

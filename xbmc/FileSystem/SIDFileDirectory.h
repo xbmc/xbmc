@@ -3,8 +3,6 @@
 #include "ifiledirectory.h"
 #include "../cores/paplayer/dllsidplay2.h"
 
-using namespace DIRECTORY;
-
 namespace DIRECTORY
 {
   class CSIDFileDirectory : public IFileDirectory

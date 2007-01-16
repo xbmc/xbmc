@@ -6,6 +6,7 @@
 #include "directorycache.h"
 #include "iso9660.h"
 
+using namespace DIRECTORY;
 
 CHDDirectory::CHDDirectory(void)
 {}

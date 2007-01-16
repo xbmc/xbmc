@@ -29,6 +29,8 @@
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/FactoryDirectory.h"
 
+using namespace DIRECTORY;
+
 #define MAX_RENDER_METHODS 9
 #define MAX_ZOOM_FACTOR    10
 #define MAX_PICTURE_WIDTH  4096

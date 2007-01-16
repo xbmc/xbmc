@@ -8,6 +8,8 @@
 #include "../FileSystem/MemoryUnits/Fat32FileSystem.h"
 #include "../application.h"
 
+using namespace XFILE;
+
 // Undocumented stuff
 
 typedef STRING OBJECT_STRING;

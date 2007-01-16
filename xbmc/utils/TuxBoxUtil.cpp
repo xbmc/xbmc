@@ -12,6 +12,8 @@
 #include "../application.h"
 #include "../applicationmessenger.h"
 
+using namespace XFILE;
+
 CTuxBoxUtil g_tuxbox;
 CTuxBoxService t_tuxbox;
 
@@ -307,7 +309,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
   //Remove the ".ts"
   strFilter = strFilter.Left(strFilter.size()-3);
   //Get the Service Name
-  strZapName = url.GetFileNameWithoutPath().c_str();
+  strZapName = url.GetFileNameWithoutPath();
 
   // Detect Port and Create ZAP URL
   if (url.GetPort()!=0 && url.GetPort()!=80)
@@ -317,7 +319,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
   strPostUrl.Format("/cgi-bin/zapTo?path=%s",strFilter.c_str());
 
   //Set Zap URL
-  CURL urlx(strZapUrl.c_str());
+  CURL urlx(strZapUrl);
 
   //Check Recording State!
   if(GetHttpXML(urlx,"boxstatus"))
@@ -461,7 +463,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       items.m_musicInfoTag.SetDuration(iDuration); //VIDEOPLAYER_DURATION: current_event_duration (laufzeit in sec.)
       
       //
-      items.m_strPath = strStreamURL.c_str();
+      items.m_strPath = strStreamURL;
       items.m_iDriveType = url.GetPort(); // Dirty Hack! But i need to hold the Port ;)
       items.SetLabel(items.GetLabel()); // VIDEOPLAYER_DIRECTOR: service_name (Program Name)
       items.SetLabel2(sCurSrvData.current_event_description); // current_event_description (Film Name)
@@ -1224,20 +1226,17 @@ bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& 
     // load Audio context menu
     pMenu->Initialize();
     // add the needed Audio buttons
-    int btn_AudioChannel_0;
+    int btn_AudioChannel_0=-1;
     if(!sCurSrvData.audio_channel_0_name.IsEmpty())
-      btn_AudioChannel_0 = pMenu->AddButton(sCurSrvData.audio_channel_0_name.c_str()); // A0
-    else btn_AudioChannel_0 = -1;
+      btn_AudioChannel_0 = pMenu->AddButton(sCurSrvData.audio_channel_0_name); // A0
 
-    int btn_AudioChannel_1;
+    int btn_AudioChannel_1=-1;
     if(!sCurSrvData.audio_channel_1_name.IsEmpty())
-      btn_AudioChannel_1 = pMenu->AddButton(sCurSrvData.audio_channel_1_name.c_str()); // A1
-    else btn_AudioChannel_1 = -1;
+      btn_AudioChannel_1 = pMenu->AddButton(sCurSrvData.audio_channel_1_name); // A1
 
-    int btn_AudioChannel_2;
+    int btn_AudioChannel_2=-1;
     if(!sCurSrvData.audio_channel_2_name.IsEmpty())
-      btn_AudioChannel_2 = pMenu->AddButton(sCurSrvData.audio_channel_2_name.c_str()); // A2
-    else btn_AudioChannel_2 = -1;
+      btn_AudioChannel_2 = pMenu->AddButton(sCurSrvData.audio_channel_2_name); // A2
 
     // position it correctly
     pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
@@ -1265,7 +1264,7 @@ bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& 
   return false;
 }
 //Input: Service Name (Channel Namne)
-//Output: picon url (on ERROR the delfault icon path will be returned)
+//Output: picon url (on ERROR the default icon path will be returned)
 CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
 {
   if(!g_advancedSettings.m_bTuxBoxPictureIcon)
@@ -1291,7 +1290,7 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
     { 
       return defaultPng;
     }
-    if (!piconDoc.LoadFile(piconXML.c_str()))
+    if (!piconDoc.LoadFile(piconXML))
     {
       CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", piconXML.c_str(), piconDoc.ErrorRow(), piconDoc.ErrorDesc());
       return defaultPng;
@@ -1318,7 +1317,7 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
         strPng.Format("%s",pService->Attribute("png"));
       }
       
-      if(strName.Equals(strServiceName.c_str()))
+      if(strName.Equals(strServiceName))
       {
         strPng.Format("%s%s",piconPath.c_str(), strPng.c_str());
         strPng.ToLower();
@@ -1363,14 +1362,10 @@ CStdString CTuxBoxUtil::GetSubMode(int iMode, CStdString& strXMLRootString, CStd
     // load Audio context menu
     pMenu->Initialize();
     // add the needed Audio buttons
-    int iSubmode_1;
-    int iSubmode_2;
-    int iSubmode_3;
-    int iSubmode_4;
-    iSubmode_1 = pMenu->AddButton("All"); //
-    iSubmode_2 = pMenu->AddButton("Satellites"); //
-    iSubmode_3 = pMenu->AddButton("Providers"); //
-    iSubmode_4 = pMenu->AddButton("Bouquets"); //
+    int iSubmode_1 = pMenu->AddButton("All"); //;
+    int iSubmode_2 = pMenu->AddButton("Satellites"); //;
+    int iSubmode_3 = pMenu->AddButton("Providers");
+    int iSubmode_4 = pMenu->AddButton("Bouquets");
     
     // position it correctly
     pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);

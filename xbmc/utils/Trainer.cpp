@@ -4,6 +4,8 @@
 #include "../Util.h"
 #include "log.h"
 
+using namespace XFILE;
+
 // header offsets etm
 #define ETM_SELECTIONS_OFFSET 0x0A // option states (0 or 1)
 #define ETM_SELECTIONS_TEXT_OFFSET 0x0E // option labels

@@ -3,7 +3,6 @@
 #include "IFileSystem.h"
 #include "dosfs.h"
 
-using namespace XFILE;
 namespace XFILE
 {
   class CFat32FileSystem : public IFileSystem

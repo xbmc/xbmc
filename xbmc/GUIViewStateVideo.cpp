@@ -24,7 +24,8 @@
 #include "playlistplayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 
-using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
+using namespace DIRECTORY;
+using namespace VIDEODATABASEDIRECTORY;
 
 CStdString CGUIViewStateWindowVideo::GetLockType()
 {

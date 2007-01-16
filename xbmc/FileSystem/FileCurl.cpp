@@ -4,6 +4,8 @@
 #include <sys/Stat.h>
 
 #include "DllLibCurl.h"
+
+using namespace XFILE;
 using namespace XCURL;
 
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);

@@ -4,8 +4,8 @@
 #include "videodatabasedirectory/QueryParams.h"
 #include "../VideoDatabase.h"
 
+using namespace XFILE;
 using namespace DIRECTORY;
-
 using namespace VIDEODATABASEDIRECTORY;
 
 CVideoDatabaseDirectory::CVideoDatabaseDirectory(void)

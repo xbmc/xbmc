@@ -31,7 +31,9 @@
 #include "../lib/libUPnP/PltMediaBrowser.h"
 #include "../lib/libUPnP/PltSyncMediaBrowser.h"
 
-CUPnP* CUPnP::upnp = NULL;
+DIRECTORY::CUPnP* DIRECTORY::CUPnP::upnp = NULL;
+
+using namespace DIRECTORY;
 
 /*----------------------------------------------------------------------
 |   CCtrlPointReferenceHolder class

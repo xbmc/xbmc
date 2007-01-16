@@ -9,6 +9,11 @@
 #endif
 #include "../DetectDVDType.h"
 
+using namespace XFILE;
+
+namespace DIRECTORY
+{
+
 CVirtualDirectory::CVirtualDirectory(void) : m_vecShares(NULL)
 {
   m_allowPrompting = true;  // by default, prompting is allowed.
@@ -269,4 +274,5 @@ void CVirtualDirectory::GetShares(VECSHARES &shares) const
       share.strPath = MEDIA_DETECT::CDetectDVDMedia::GetDVDPath();
     }
   }
+}
 }

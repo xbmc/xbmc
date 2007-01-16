@@ -27,7 +27,7 @@
 #include "util.h"
 #include "picture.h"
 
-
+using namespace XFILE;
 using namespace MUSIC_INFO;
 
 CStdString fixString(CStdString &ansiString)

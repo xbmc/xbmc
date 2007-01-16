@@ -27,6 +27,7 @@
 #include "../utils/win32exception.h"
 
 using namespace XFILE;
+using namespace DIRECTORY;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

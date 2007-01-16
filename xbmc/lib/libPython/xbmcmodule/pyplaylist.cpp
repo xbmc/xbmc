@@ -6,6 +6,8 @@
 #include "..\..\..\playlistfactory.h"
 #include "pyutil.h"
 
+using namespace PLAYLIST;
+
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")

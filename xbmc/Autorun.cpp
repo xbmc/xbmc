@@ -32,6 +32,8 @@
 #include "programdatabase.h"
 #include "utils/trainer.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
 

@@ -18,6 +18,9 @@
 #include "emu_dummy.h"
 #include "util\EmuFileWrapper.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+
 struct SDirData
 {
   DIRECTORY::IDirectory* Directory;

@@ -4,8 +4,6 @@
 #include "filesystem/DirectoryHistory.h"
 #include "utils/CriticalSection.h"
 
-using namespace DIRECTORY;
-
 class CGUIWindowFileManager :
       public CGUIWindow,
       public XFILE::IFileCallback
@@ -74,7 +72,7 @@ protected:
   CStdString strCheckSharePath;
 
 
-  CVirtualDirectory m_rootDir;
+  DIRECTORY::CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems[2];
   typedef vector <CFileItem*> ::iterator ivecItems;
   CFileItem m_Directory[2];

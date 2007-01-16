@@ -1,8 +1,6 @@
 #pragma once
 #include "../filesystem/file.h"
 
-using namespace XFILE;
-
 class CArchive;
 
 class ISerializable
@@ -14,7 +12,7 @@ public:
 class CArchive
 {
 public:
-  CArchive(CFile* pFile, int mode);
+  CArchive(XFILE::CFile* pFile, int mode);
   ~CArchive();
   // storing
   CArchive& operator<<(float f);
@@ -49,7 +47,7 @@ public:
 
 protected:
   void FlushBuffer();
-  CFile* m_pFile;
+  XFILE::CFile* m_pFile;
   int m_iMode;
   LPBYTE m_pBuffer;
   int m_BufferPos;
