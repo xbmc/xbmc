@@ -634,7 +634,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
         /* error */
         PLT_Log(PLT_LOG_LEVEL_1, "CUPnPServer::OnBrowseDirectChildren - ObjectID not found.");
         action->SetError(701, "No Such Object.");
-        return NPT_FAILURE;
+        return NPT_SUCCESS;
     }
 
     NPT_String share_name;

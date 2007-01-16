@@ -158,7 +158,7 @@ public:
         }
         return temp.SubString(7).ToInteger(len);
     }
-
+    
     static NPT_Result GetIPAddresses(NPT_List<NPT_String>& ips) {
         NPT_List<NPT_NetworkInterface*> if_list;
         NPT_CHECK(NPT_NetworkInterface::GetNetworkInterfaces(if_list));
