@@ -4,6 +4,8 @@
 #include "../PlaylistFactory.h"
 #include "../Util.h"
 
+using namespace PLAYLIST;
+
 namespace DIRECTORY
 {
   CPlaylistFileDirectory::CPlaylistFileDirectory()

@@ -12,9 +12,6 @@
 #include "playlistplayer.h"
 #include "musicinfoloader.h"
 
-using namespace DIRECTORY;
-using namespace PLAYLIST;
-
 /*!
  \ingroup windows 
  \brief The base class for music windows

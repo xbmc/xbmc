@@ -29,6 +29,9 @@
 #include "filesystem/VirtualPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+
 #define VIDEO_DATABASE_VERSION 3
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos32.db"

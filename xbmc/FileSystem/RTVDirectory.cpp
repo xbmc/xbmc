@@ -6,6 +6,7 @@
 #include "RTVDirectory.h"
 #include "../util.h"
 
+using namespace DIRECTORY;
 
 extern "C"
 {

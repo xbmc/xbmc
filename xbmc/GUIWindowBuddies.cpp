@@ -29,6 +29,7 @@
 #include "xbox/xbeheader.h"
 #include "programdatabase.h"
 
+using namespace XFILE;
 
 #define KAI_CONSOLE_PEN_NORMAL 0
 #define KAI_CONSOLE_PEN_ACTION 1

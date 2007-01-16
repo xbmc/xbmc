@@ -27,6 +27,7 @@
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
 
+using namespace XFILE;
 
 #define CONTROL_ALBUM  20
 #define CONTROL_ARTIST 21

@@ -43,6 +43,11 @@
 #include "utils/GUIInfoManager.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
+using namespace MUSIC_GRABBER;
+
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
 #define CONTROL_BTNSORTASC      4
@@ -52,11 +57,6 @@
 #define CONTROL_BIGLIST         52
 
 #define CONTROL_BTNSEARCH       8
-
-
-using namespace MUSIC_GRABBER;
-using namespace DIRECTORY;
-using namespace PLAYLIST;
 
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)

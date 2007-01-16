@@ -5,8 +5,6 @@
 #include "GUIViewControl.h"
 #include "PictureThumbLoader.h"
 
-using namespace DIRECTORY;
-
 class CGUIDialogFileBrowser : public CGUIDialog, public IBackgroundLoaderObserver
 {
 public:
@@ -44,7 +42,7 @@ protected:
   CGUIControl *GetFirstFocusableControl(int id);
 
   VECSHARES m_shares;
-  CVirtualDirectory m_rootDir;
+  DIRECTORY::CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems;
   CFileItem m_Directory;
   CStdString m_strParentPath;

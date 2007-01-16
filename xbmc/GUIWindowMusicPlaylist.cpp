@@ -28,6 +28,8 @@
 #include "GUIDialogContextMenu.h"
 #include "PartyModeManager.h"
 
+using namespace PLAYLIST;
+
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4

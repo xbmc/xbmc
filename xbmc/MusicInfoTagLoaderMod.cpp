@@ -28,6 +28,7 @@
 
 #include <fstream>
 
+using namespace XFILE;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderMod::CMusicInfoTagLoaderMod(void)

@@ -36,10 +36,13 @@
 #define CONTROL_THUMBS             51
 #define CONTROL_LABELFILES         12
 
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
+
 #define CONTROL_BTNSLIDESHOW   6
 #define CONTROL_BTNSLIDESHOW_RECURSIVE   7
 #define CONTROL_SHUFFLE      9
-
 
 CGUIWindowPictures::CGUIWindowPictures(void)
     : CGUIMediaWindow(WINDOW_PICTURES, "MyPics.xml")

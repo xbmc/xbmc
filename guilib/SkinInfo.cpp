@@ -4,6 +4,7 @@
 #include "../xbmc/Settings.h"
 #include "GUIWindowManager.h"
 
+using namespace XFILE;
 
 #define SKIN_MIN_VERSION 2.0
 

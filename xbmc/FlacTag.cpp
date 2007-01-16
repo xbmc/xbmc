@@ -24,6 +24,7 @@
 
 #define BYTES_TO_CHECK_FOR_BAD_TAGS 8192
 
+using namespace XFILE;
 using namespace MUSIC_INFO;
 
 #define CHUNK_SIZE 8192  // should suffice for most tags

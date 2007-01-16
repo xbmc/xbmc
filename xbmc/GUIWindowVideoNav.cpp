@@ -34,6 +34,8 @@
 #include "PlaylistFactory.h"
 #include "GUIFontManager.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
 
 #define CONTROL_BTNVIEWASICONS     2

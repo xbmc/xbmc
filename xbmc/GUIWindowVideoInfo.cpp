@@ -31,6 +31,8 @@
 #include "GUIWindowVideoFiles.h"
 #include "GUIDialogFileBrowser.h"
 
+using namespace XFILE;
+
 #define CONTROL_TITLE    20
 #define CONTROL_DIRECTOR   21
 #define CONTROL_CREDITS    22

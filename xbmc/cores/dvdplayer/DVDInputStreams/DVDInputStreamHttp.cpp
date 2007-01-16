@@ -4,6 +4,8 @@
 
 #include "..\..\..\util.h"
 
+using namespace XFILE;
+
 CDVDInputStreamHttp::CDVDInputStreamHttp() : CDVDInputStream(DVDSTREAM_TYPE_HTTP)
 {
   m_pFile = NULL;

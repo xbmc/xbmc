@@ -4,6 +4,8 @@
 
 //Reserved for TuxBox Recording!
 
+using namespace XFILE;
+
 CFileTuxBox::CFileTuxBox()
 {}
 

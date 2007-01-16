@@ -27,7 +27,8 @@
 
 #include "filesystem/musicdatabasedirectory.h"
 
-using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
+using namespace DIRECTORY;
+using namespace MUSICDATABASEDIRECTORY;
 
 int CGUIViewStateWindowMusic::GetPlaylist()
 {

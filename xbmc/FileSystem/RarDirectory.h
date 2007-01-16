@@ -3,8 +3,6 @@
 #include "ifiledirectory.h"
 #include "rarmanager.h"
 
-using namespace DIRECTORY;
-
 namespace DIRECTORY 
 {
   class CRarDirectory : public IFileDirectory

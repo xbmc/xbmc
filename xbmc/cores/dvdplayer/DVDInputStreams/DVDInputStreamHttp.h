@@ -22,7 +22,7 @@ public:
   CHttpHeader* GetHttpHeader() { return &m_httpHeader; }
   
 protected:
-  CFileCurl* m_pFile;
+  XFILE::CFileCurl* m_pFile;
   CHttpHeader m_httpHeader;
   bool m_eof;
 };

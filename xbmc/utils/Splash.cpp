@@ -4,6 +4,7 @@
 #include "guiImage.h"
 #include "..\util.h"
 
+using namespace XFILE;
 
 CSplash::CSplash(const CStdString& imageName)
 {

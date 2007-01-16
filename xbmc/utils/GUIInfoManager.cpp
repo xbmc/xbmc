@@ -36,6 +36,10 @@
 #include "../musicInfoTagLoaderFactory.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
+
+using namespace XFILE;
+using namespace DIRECTORY;
+
 CGUIInfoManager g_infoManager;
 
 void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)

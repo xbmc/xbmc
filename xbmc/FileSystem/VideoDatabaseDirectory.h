@@ -3,8 +3,6 @@
 #include "videodatabasedirectory/DirectoryNode.h"
 #include "videodatabasedirectory/QueryParams.h"
 
-using namespace DIRECTORY;
-
 namespace DIRECTORY
 {
   class CVideoDatabaseDirectory : public IDirectory

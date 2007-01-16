@@ -5,6 +5,8 @@
 #include "../xbmc/FileSystem/HDDirectory.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+using namespace DIRECTORY;
+
 CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {

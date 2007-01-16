@@ -3,8 +3,6 @@
 #include "IFile.h"
 #include "../cores/paplayer/filereader.h"
 
-using namespace XFILE;
-
 namespace XFILE
 {
 class CFileFileReader : public IFile

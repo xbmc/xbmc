@@ -39,6 +39,10 @@
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
+
+using namespace XFILE;
+using namespace DIRECTORY;
+
 struct CSettings::stSettings g_stSettings;
 struct CSettings::AdvancedSettings g_advancedSettings;
 class CSettings g_settings;

@@ -30,10 +30,10 @@ class PLT_UPnP;
 class PLT_SyncMediaBrowser;
 class CCtrlPointReferenceHolder;
 
-using namespace DIRECTORY;
 
 namespace DIRECTORY
 {
+
 class CUPnPDirectory;
 
 class CUPnP
