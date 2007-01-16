@@ -1511,7 +1511,9 @@
   <string id="20334">Folder</string>
   <string id="20335">Look for content recursively?</string>
   <string id="20336">Unlock Sources</string>
-  <string id="20338">Remove assignment</string>
+  <string id="20337">Actor</string>
+  <string id="20338">Movie</string>
+  <string id="20339">Director</string>
   <string id="20340">Do you want to remove all items within</string>
   <string id="20341">this path from the database?</string>
   <string id="20342">Movies</string>
@@ -1519,7 +1521,10 @@
   <string id="20344">This directory contains</string>
   <string id="20345">Run Automated Scan</string>
   <string id="20346">Scan Recursively</string>
+  <string id="20347">as</string>
+  <string id="20348">Directors</string>
   <!-- up to 21329 is reserved for the video db !! !-->
+
   <string id="21330">Show hidden files and directories</string>
   
   <string id="21331">TuxBox Client</string>

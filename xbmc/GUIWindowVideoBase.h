@@ -34,6 +34,8 @@ protected:
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
 
+  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
+
   bool OnClick(int iItem);
   void OnRestartItem(int iItem);
   void OnResumeItem(int iItem);
@@ -54,6 +56,8 @@ protected:
   void MarkUnWatched(int iItem);
   void MarkWatched(int iItem);
   void UpdateVideoTitle(int iItem);
+  void OnSearch();
+  void OnSearchItemFound(const CFileItem* pSelItem);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
