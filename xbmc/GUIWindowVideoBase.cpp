@@ -193,6 +193,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             OnDeleteItem(iItem);
           else
             return false;
+          
           return true;
         }
       }
