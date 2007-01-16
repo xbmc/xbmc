@@ -4,7 +4,7 @@
 <!--Email: blittan@xbmcscripts.com-->
 <!--Date of translation: 01/15/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7618-->
+<!--Based on english strings version 7634-->
 <strings>
   <string id="0">Mina Program</string>
   <string id="1">Mina Bilder</string>
@@ -1480,5 +1480,12 @@ den här visualiseringen</string>
   <string id="20345">Kör automatisk skanning</string>
   <string id="20346">Skanna rekursivt</string>
   <string id="21330">Visa dolda filer och mappar</string>
+  <string id="21331">TuxBox klient</string>
+  <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
+  <string id="21333">Strömmen kommer att stoppas!</string>
+  <string id="21334">Byte till kanal: %s misslyckades!</string>
+  <string id="21335">Är du säker att du vill starta strömmen?</string>
+  <string id="21336">Ansluter till: %s</string>
+  <string id="21337">TuxBox enhet</string>
   <string id="29999">Auto fladderfilter lagning</string>
 </strings>
