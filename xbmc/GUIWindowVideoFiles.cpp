@@ -445,6 +445,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
         // note that the label is the foldername (good to lookup on)
         pItem->m_strPath = dvdFile;
         pItem->m_bIsFolder = false;
+        pItem->SetLabelPreformated(true);
       }
     }
 
@@ -455,11 +456,9 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
 
         if (!bDirNames)
         {
-          strMovieName = pItem->GetLabel();
-          if(!g_guiSettings.GetBool("filelists.hideextensions") && !pItem->IsLabelPreformated())
-            CUtil::RemoveExtension(strMovieName);
-
-          if(strMovieName.IsEmpty())
+          if(pItem->IsLabelPreformated())
+            strMovieName = pItem->GetLabel();
+          else
           {
             strMovieName = CUtil::GetFileName(pItem->m_strPath);
             CUtil::RemoveExtension(strMovieName);
