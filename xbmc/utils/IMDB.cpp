@@ -318,10 +318,6 @@ const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, C
   // lowercase
   strMovieNoExtension = strMovieNoExtension.ToLower();
 
-  // strip off 'the' from start of title - confuses the searches
-  if (strMovieNoExtension.Mid(0,4).Equals("the+"))
-    strMovieNoExtension = strMovieNoExtension.Mid(4);
-
   // default to movie name begin complete filename, no year
   strcpy(szMovie, strMovieNoExtension.c_str());
   strcpy(szYear,"");
