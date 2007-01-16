@@ -23,6 +23,8 @@
 #include "playlistb4s.h"
 #include "util.h"
 
+using namespace XFILE;
+using namespace PLAYLIST;
 
 /* ------------------------ example b4s playlist file ---------------------------------
  <?xml version="1.0" encoding='UTF-8' standalone="yes"?>

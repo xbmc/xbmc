@@ -11,6 +11,9 @@
 #include "../xbox/network.h"
 #include "../utils/win32exception.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+
 void xb_smbc_log(const char* msg)
 {
   CLog::Log(LOGINFO, "%s%s", "smb: ", msg);

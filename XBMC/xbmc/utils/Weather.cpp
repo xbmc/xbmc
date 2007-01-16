@@ -8,6 +8,8 @@
 #include "../temperature.h"
 #include "../xbox/network.h"
 
+using namespace DIRECTORY;
+
 #define CONTROL_BTNREFRESH  2
 #define CONTROL_SELECTLOCATION 3
 #define CONTROL_LABELLOCATION 10

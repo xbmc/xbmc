@@ -30,6 +30,8 @@
 #include "SmartPlaylist.h"
 #include "GUIDialogProgress.h"
 
+using namespace PLAYLIST;
+
 #define QUEUE_DEPTH       10
 
 CPartyModeManager g_partyModeManager;

@@ -37,7 +37,7 @@ private:
   int BufferChunk();
   void OnClearEvent();
 
-  CFile   m_file;
+  XFILE::CFile   m_file;
   __int64 m_bufferedDataPos;      // the position our client thinks we're at
 
   bool    m_readError;

@@ -14,6 +14,8 @@
 #include "../VideoRenderers/RenderManager.h"
 #include "../../utils/win32exception.h"
 
+using namespace XFILE;
+
 #define KEY_ENTER 13
 #define KEY_TAB 9
 

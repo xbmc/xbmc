@@ -7,8 +7,6 @@
 #define PLAYLIST_MUSIC   0
 #define PLAYLIST_VIDEO   1
 
-using namespace PLAYLIST;
-
 namespace PLAYLIST
 {
 /*!
@@ -72,4 +70,4 @@ protected:
  \ingroup windows 
  \brief Global instance of playlist player
  */
-extern CPlayListPlayer g_playlistPlayer;
+extern PLAYLIST::CPlayListPlayer g_playlistPlayer;

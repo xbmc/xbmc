@@ -24,6 +24,7 @@
 #include "util.h"
 #include "TextureManager.h"
 
+using namespace XFILE;
 
 CPicture::CPicture(void)
 {

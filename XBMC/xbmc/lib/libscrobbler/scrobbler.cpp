@@ -27,6 +27,8 @@
 #include "../../util.h"
 #include "../../application.h"
 
+using namespace XFILE;
+
 #define LS_VER    "1.4"
 #define MINLENGTH 30
 #define MAXLENGTH 10800

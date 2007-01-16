@@ -5,6 +5,8 @@
 #include "../MusicDatabase.h"
 #include "../Util.h"
 
+using namespace PLAYLIST;
+
 namespace DIRECTORY
 {
   CSmartPlaylistDirectory::CSmartPlaylistDirectory()

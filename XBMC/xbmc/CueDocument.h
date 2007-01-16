@@ -38,7 +38,7 @@ public:
 private:
 
   // USED for file access
-  CFile m_file;
+  XFILE::CFile m_file;
   char m_szBuffer[1024];
 
   // Member variables

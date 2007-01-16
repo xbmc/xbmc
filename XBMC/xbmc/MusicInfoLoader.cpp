@@ -26,9 +26,9 @@
 #include "Filesystem/DirectoryCache.h"
 #include "Util.h"
 
-
-using namespace MUSIC_INFO;
+using namespace XFILE;
 using namespace DIRECTORY;
+using namespace MUSIC_INFO;
 
 CMusicInfoLoader::CMusicInfoLoader()
 {

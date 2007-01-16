@@ -8,6 +8,9 @@
 #include "../utils/Http.h"
 #include "../utils/TuxBoxUtil.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+
 CDirectoryTuxBox::CDirectoryTuxBox(void)
 {
 }

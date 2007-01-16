@@ -1,7 +1,6 @@
 #pragma once
 #include "IFile.h"
 
-using namespace XFILE;
 namespace XFILE
 {
   class CFileTuxBox : public IFile

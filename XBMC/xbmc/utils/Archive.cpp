@@ -2,6 +2,7 @@
 #include "..\stdafx.h"
 #include "Archive.h"
 
+using namespace XFILE;
 
 #define BUFFER_MAX 4096
 

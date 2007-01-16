@@ -5,10 +5,9 @@
 #include "../util.h"
 #include "../musicdatabase.h"
 
-
+using namespace DIRECTORY;
 
 #define AUDIOSCROBBLER_BASE_URL      "http://ws.audioscrobbler.com/1.0/"
-
 
 CLastFMDirectory::CLastFMDirectory()
 {

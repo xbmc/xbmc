@@ -25,10 +25,12 @@
 #include "util.h"
 #include "utils\HTTP.h"
 
+using namespace XFILE;
+using namespace PLAYLIST;
 
 #define START_PLAYLIST_MARKER "[playlist]"
 #define PLAYLIST_NAME     "PlaylistName"
-using namespace PLAYLIST;
+
 /*----------------------------------------------------------------------
 [playlist]
 PlaylistName=Playlist 001

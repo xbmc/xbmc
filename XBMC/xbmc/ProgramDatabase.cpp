@@ -26,6 +26,8 @@
 #include "xbox/xbeheader.h"
 #include "GUIWindowFileManager.h"
 
+using namespace XFILE;
+
 #define PROGRAM_DATABASE_OLD_VERSION 0.9f
 #define PROGRAM_DATABASE_VERSION 3
 

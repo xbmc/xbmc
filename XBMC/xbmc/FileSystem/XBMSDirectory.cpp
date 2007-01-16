@@ -4,6 +4,8 @@
 #include "../util.h"
 #include "directorycache.h"
 
+using namespace DIRECTORY;
+
 extern "C"
 {
 #include "../lib/libxbms/ccincludes.h"

@@ -26,6 +26,8 @@
 #include "audiocontext.h"
 #include "utils\guiinfomanager.h"
 
+using namespace XFILE;
+
 //CdgLoader
 CCdgLoader::CCdgLoader()
 {

@@ -207,7 +207,6 @@ typedef void CUSTOM_LAUNCH_DATA;
 #endif
 
 using namespace std;
-using namespace PLAYLIST;
 
 struct sortstringbyname
 {
@@ -323,7 +322,7 @@ public:
   static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
   static bool CreateDirectoryEx(const CStdString& strPath);
   static CStdString MakeLegalFileName(const char* strFile, bool bKeepExtension, bool isFATX = true);
-  static void ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem);
+  static void ConvertFileItemToPlayListItem(const CFileItem *pItem, PLAYLIST::CPlayList::CPlayListItem &playlistitem);
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 

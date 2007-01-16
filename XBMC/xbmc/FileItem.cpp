@@ -37,6 +37,10 @@
 #include "SortFileItem.h"
 #include "Utils/TuxBoxUtil.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
+
 CFileItem::CFileItem(const CSong& song)
 {
   Reset();
