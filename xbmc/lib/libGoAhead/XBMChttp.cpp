@@ -784,8 +784,16 @@ int CXbmcHttp::xbmcGetXBEID(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing Parameter");
   }
   CStdString tmp;
-  tmp.Format("%09x",CUtil::GetXbeID(paras[0]));
-  return SetResponse(openTag + tmp);
+  if (CFile::Exists(paras[0].c_str()))
+  {
+    tmp.Format("%09x",CUtil::GetXbeID(paras[0]));
+    return SetResponse(openTag + tmp);
+  }
+  else
+  {
+     return SetResponse(openTag+"Error:xbe doesn't exist");
+  }
+
 }
 
 int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
@@ -795,9 +803,15 @@ int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing Parameter");
   }
   CStdString tmp;
-  CUtil::GetXBEDescription(paras[0],xbeinfo);
-  tmp.Format("%s",xbeinfo);
-  return SetResponse(openTag + tmp);
+  if (CUtil::GetXBEDescription(paras[0],xbeinfo))
+  {
+    tmp.Format("%s",xbeinfo);
+    return SetResponse(openTag + tmp);
+  }
+  else
+  {
+     return SetResponse(openTag+"Error:Failed to getxbetitle");
+  }
 }
 
 int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
