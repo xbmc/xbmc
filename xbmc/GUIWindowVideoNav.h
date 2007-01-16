@@ -17,7 +17,7 @@ protected:
   // override base class methods
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
-//  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
+  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void OnInfo(int iItem, const SScraperInfo&info);
   virtual void PlayItem(int iItem);
   virtual void OnDeleteItem(int iItem);

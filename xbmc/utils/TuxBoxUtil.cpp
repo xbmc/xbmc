@@ -122,6 +122,7 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
   {
     if(t_tuxbox.IsRunning())
       t_tuxbox.bStop = true; // We need to stop the service to reset also the thread
+
     return true;
   }
   else
@@ -200,7 +201,7 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
             url.SetOptions("/"+strOptions+"&reference="+strItemPath);
             pItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+url.GetOptions();  
             items.Add(pItem);
-            //DEGUB Log
+            //DEBUG Log
             CLog::Log(LOGDEBUG, __FUNCTION__" - Name:    %s",strItemName.c_str());
             CLog::Log(LOGDEBUG, __FUNCTION__" - Adress:  %s",pItem->m_strPath.c_str());
           }
