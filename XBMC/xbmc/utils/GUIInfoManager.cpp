@@ -694,7 +694,7 @@ string CGUIInfoManager::GetLabel(int info)
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
       if (pWindow && pWindow->IsMediaWindow())
       {
-        strLabel = GetItemLabel(((CGUIMediaWindow *)pWindow)->GetCurrentListItem(), info);
+        strLabel = GetItemLabel(pWindow->GetCurrentListItem(), info);
       }
     }
     break;
@@ -856,7 +856,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   {
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (pWindow && pWindow->IsMediaWindow())
-      bReturn = GetItemBool(((CGUIMediaWindow *)pWindow)->GetCurrentListItem(), condition, dwContextWindow);
+      bReturn = GetItemBool(pWindow->GetCurrentListItem(), condition, dwContextWindow);
   }
   else if (g_application.IsPlaying())
   {
@@ -1117,16 +1117,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
       window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (window && window->IsMediaWindow())
     {
-      CFileItem *item = NULL;
-      if (window->IsDialog()) // must be the filebrowser window or the content settings window
-      {
-        if (window->GetID() == WINDOW_DIALOG_FILE_BROWSER)
-          item = ((CGUIDialogFileBrowser *)window)->GetCurrentListItem();
-        else
-          item = ((CGUIDialogContentSettings*)window)->GetCurrentListItem();
-      }
-      else
-        item = ((CGUIMediaWindow *)window)->GetCurrentListItem();
+      CFileItem *item = window->GetCurrentListItem();
       if (item)
         return GetItemImage(item, info);
     }
@@ -2068,6 +2059,7 @@ bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info, DWORD context
   case LISTITEM_ISSELECTED:
     if (item)
       ret = item->IsSelected();
+    break;
   default:
     return GetBool(info, contextWindow);
   }

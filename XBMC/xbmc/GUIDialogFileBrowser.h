@@ -27,7 +27,7 @@ public:
   void SetShares(VECSHARES &shares);
 
   virtual void OnItemLoaded(CFileItem *item) {};
-  CFileItem *GetCurrentListItem();
+  virtual CFileItem *GetCurrentListItem();
 
   virtual bool IsMediaWindow() const { return true; };
 protected:
