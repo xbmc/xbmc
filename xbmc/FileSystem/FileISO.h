@@ -14,8 +14,6 @@
 #include "../xbox/iosupport.h"
 #include "ringbuffer.h"
 
-
-using namespace XFILE;
 namespace XFILE
 {
 

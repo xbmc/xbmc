@@ -2,8 +2,6 @@
 
 #include "ifiledirectory.h"
 
-using namespace DIRECTORY;
-
 namespace DIRECTORY
 {
   class COGGFileDirectory : public IFileDirectory

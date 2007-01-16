@@ -5,6 +5,9 @@
 #include "../lib/libscrobbler/md5.h"
 #include "../Application.h"
 
+namespace XFILE
+{
+
 enum ACTION
 {
   ACTION_Idle,
@@ -22,7 +25,6 @@ typedef struct FileStateSt
 } FileState;
 
 static FileState m_fileState;
-
 
 CFileLastFM::CFileLastFM() : CThread()
 {
@@ -529,3 +531,4 @@ void CFileLastFM::Process()
   }
 }
 
+}

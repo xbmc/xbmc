@@ -37,6 +37,10 @@
 #include "..\..\FileSystem\VirtualDirectory.h"
 #include "..\..\utils\UdpClient.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
+
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 20
 #define NO_EID -1

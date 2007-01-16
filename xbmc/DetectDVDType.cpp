@@ -34,7 +34,7 @@
 #include "utils/LED.h"
 #endif
 
-
+using namespace XFILE;
 using namespace MEDIA_DETECT;
 
 CCriticalSection CDetectDVDMedia::m_muReadingMedia;

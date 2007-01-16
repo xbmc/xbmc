@@ -24,6 +24,9 @@
 #include "../../utils/MemoryUnitManager.h"
 #include "../HDDirectory.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+
 CFatXFileSystem::CFatXFileSystem(unsigned char unit) : IFileSystem(unit)
 {
 }

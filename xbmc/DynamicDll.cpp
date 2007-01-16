@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "DynamicDll.h"
 
+using namespace XFILE;
+
 DllDynamic::DllDynamic()
 {
   m_dll=NULL;

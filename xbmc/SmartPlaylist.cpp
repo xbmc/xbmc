@@ -27,6 +27,11 @@
 #include "XMLUtils.h"
 #include "Database.h"
 
+using namespace DIRECTORY;
+
+namespace PLAYLIST
+{
+
 typedef struct
 {
   char string[13];
@@ -359,4 +364,6 @@ CStdString CSmartPlaylist::GetOrderClause()
     order += limit;
   }
   return order;
+}
+
 }

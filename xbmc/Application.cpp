@@ -160,6 +160,9 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogPlayerControls.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory

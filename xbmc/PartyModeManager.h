@@ -2,8 +2,6 @@
 #include "FileItem.h"
 #include "playlist.h"
 
-using namespace PLAYLIST;
-
 class CPartyModeManager
 {
 public:
@@ -14,7 +12,7 @@ public:
   void Disable();
   void Play(int iPos);
   void OnSongChange(bool bUpdatePlayed = false);
-  void AddUserSongs(CPlayList& tempList, bool bPlay = false);
+  void AddUserSongs(PLAYLIST::CPlayList& tempList, bool bPlay = false);
   void AddUserSongs(CFileItemList& tempList, bool bPlay = false);
   bool IsEnabled() { return m_bEnabled; };
   int GetSongsPlayed();

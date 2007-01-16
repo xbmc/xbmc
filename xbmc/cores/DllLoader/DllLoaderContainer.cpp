@@ -6,9 +6,10 @@
 
 #define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\;Q:\\system\\python\\"
 
-
 //Define this to get loggin on all calls to load/unload of dlls
 //#define LOGALL
+
+using namespace XFILE;
 
 DllLoaderContainer g_dlls;
 

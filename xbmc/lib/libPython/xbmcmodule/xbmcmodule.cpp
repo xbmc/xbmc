@@ -16,6 +16,8 @@
 #include "pyutil.h"
 #include "..\..\..\playlistplayer.h"
 
+using namespace XFILE;
+
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")

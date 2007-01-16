@@ -9,6 +9,7 @@
 #include "..\detectdvdtype.h"
 #include "../MusicInfoTagLoaderFactory.h"
 
+using namespace XFILE;
 
 CCDDARipper::CCDDARipper()
 {

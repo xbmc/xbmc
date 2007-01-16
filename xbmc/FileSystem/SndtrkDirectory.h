@@ -18,8 +18,6 @@ typedef map<UINT, CSoundtrack> SOUNDTRACK;
 typedef map<UINT, CSoundtrack>::iterator ISOUNDTRACK;
 typedef pair<UINT, CSoundtrack> SOUNDTRACK_PAIR;
 
-
-using namespace DIRECTORY;
 namespace DIRECTORY
 {
 

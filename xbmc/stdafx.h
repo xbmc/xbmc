@@ -50,9 +50,7 @@ using namespace std;
 #include "settings.h"
 #include "Url.h"
 #include "FileSystem/Directory.h"
-using namespace DIRECTORY;
 #include "FileSystem/File.h"
-using namespace XFILE;
 #include "SectionLoader.h"
 #include "ApplicationMessenger.h"
 #include "crc32.h"

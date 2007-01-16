@@ -2,6 +2,8 @@
 #include "../../util.h"
 #include "ModuleCodec.h"
 
+using namespace XFILE;
+
 bool ModuleCodec::IsSupportedFormat(const CStdString& strExt)
 {
   if (strExt == "mod" || strExt == "it" || strExt == "s3m" || strExt == "duh" || strExt == "xm")

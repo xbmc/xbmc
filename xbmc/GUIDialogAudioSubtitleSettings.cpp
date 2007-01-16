@@ -27,6 +27,9 @@
 #include "application.h"
 #include "VideoDatabase.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+
 #ifdef HAS_VIDEO_PLAYBACK
 extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers); //lowlevel audio
 #endif

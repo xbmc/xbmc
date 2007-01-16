@@ -57,6 +57,8 @@
 #include "lib/libGoAhead/webserver.h"
 #include "GUIControlGroupList.h"
 
+using namespace DIRECTORY;
+
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #define CATEGORY_GROUP_ID               3
 #define SETTINGS_GROUP_ID               5

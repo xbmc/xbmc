@@ -23,6 +23,11 @@
 #include "../util.h"
 #include <sys/stat.h>
 
+using namespace DIRECTORY;
+
+namespace XFILE
+{
+
 static UINT64 strtouint64(const char *s)
 {
   UINT64 r = 0;
@@ -382,3 +387,4 @@ __int64 CFileXBMSP::GetPosition()
   return m_filePos;
 }
 
+}

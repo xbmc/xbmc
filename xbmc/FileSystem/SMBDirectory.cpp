@@ -17,6 +17,8 @@
 #include "../GUIPassword.h"
 #include "../lib/libsmb/xbLibSmb.h"
 
+using namespace DIRECTORY;
+
 CSMBDirectory::CSMBDirectory(void)
 {
 } 

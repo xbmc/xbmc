@@ -7,6 +7,8 @@
 #define CONTROL_SCRAPER_LIST        4
 #define CONTROL_START              30
 
+using namespace DIRECTORY;
+
 CGUIDialogContentSettings::CGUIDialogContentSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml")
 {

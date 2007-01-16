@@ -2,7 +2,6 @@
 #include "idirectory.h"
 #include "../utils/http.h"
 
-using namespace DIRECTORY;
 namespace DIRECTORY
 {
 class CLastFMDirectory :

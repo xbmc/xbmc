@@ -23,5 +23,5 @@ public:
   virtual bool RemoveDir(const CStdString &path);
 protected:
   CStdString GetLocal(const CStdString &file);
-  CFileHD m_file;
+  XFILE::CFileHD m_file;
 };

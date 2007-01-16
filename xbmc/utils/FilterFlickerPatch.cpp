@@ -13,6 +13,8 @@
 #include "../GUISettings.h"
 #include "log.h"
 
+using namespace XFILE;
+
 int patchCount=0;
 UINT patches[50][2];
 

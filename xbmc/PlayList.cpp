@@ -24,6 +24,7 @@
 #include "util.h"
 #include "playlistfactory.h"
 
+using namespace XFILE;
 using namespace PLAYLIST;
 
 CPlayList::CPlayListItem::CPlayListItem() : m_lDuration(0)

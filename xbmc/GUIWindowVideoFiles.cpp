@@ -16,6 +16,9 @@
 #include "FileSystem/StackDirectory.h"
 #include "utils/RegExp.h"
 
+using namespace XFILE;
+using namespace PLAYLIST;
+
 #define CONTROL_LIST              50
 #define CONTROL_THUMBS            51
 
@@ -453,7 +456,6 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
     {
       if (pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList() )
       {
-
         if (!bDirNames)
         {
           if(pItem->IsLabelPreformated())
@@ -523,7 +525,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
             int iMoviesFound = movielist.size();
             if (iMoviesFound > 0)
             {
-              CIMDBUrl& url = movielist[0];
+              CIMDBUrl url = movielist[0];
 
               // show dialog that we're downloading the movie info
               if (m_dlgProgress)
