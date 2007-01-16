@@ -42,6 +42,7 @@ using namespace VIDEODATABASEDIRECTORY;
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
+#define CONTROL_BTNSEARCH          8
 #define CONTROL_LIST              50
 #define CONTROL_THUMBS            51
 #define CONTROL_BIGLIST           52
@@ -146,6 +147,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
+      if (iControl == CONTROL_BTNSEARCH)
+      {
+        OnSearch();
+      }
     }
     break;
   }
@@ -223,80 +228,66 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 }
-/*
-/// \brief Search for songs, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
+
+/// \brief Search for genres, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
 /// \param strSearch The search string
 /// \param items Items Found
-void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
+void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
 {
   // get matching genres
-  VECGENRES genres;
-  m_musicdatabase.GetGenresByName(strSearch, genres);
+  CFileItemList tempItems;
+  m_database.GetGenresByName(strSearch, tempItems);
 
-  if (genres.size())
+  if (tempItems.Size())
   {
     CStdString strGenre = g_localizeStrings.Get(515); // Genre
-    for (int i = 0; i < (int)genres.size(); i++)
+    for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      CGenre& genre = genres[i];
-      CFileItem* pItem = new CFileItem(genre);
-      pItem->SetLabel("[" + strGenre + "] " + genre.strGenre);
-      pItem->m_strPath.Format("musicdb://1/%ld/", genre.idGenre);
-      items.Add(pItem);
+      tempItems[i]->SetLabel("[" + strGenre + "] " + tempItems[i]->GetLabel());
     }
+    items.Append(tempItems);
   }
 
-  // get matching artists
-  VECARTISTS artists;
-  m_musicdatabase.GetArtistsByName(strSearch, artists);
+  tempItems.Clear();
+  m_database.GetActorsByName(strSearch, tempItems);
 
-  if (artists.size())
+  if (tempItems.Size())
   {
-    CStdString strArtist = g_localizeStrings.Get(484); // Artist
-    for (int i = 0; i < (int)artists.size(); i++)
+    CStdString strActor = g_localizeStrings.Get(20337); // Actor
+    for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      CArtist& artist = artists[i];
-      CFileItem* pItem = new CFileItem(artist);
-      pItem->SetLabel("[" + strArtist + "] " + artist.strArtist);
-      pItem->m_strPath.Format("musicdb://2/%ld/", artist.idArtist);
-      items.Add(pItem);
+      tempItems[i]->SetLabel("[" + strActor + "] " + tempItems[i]->GetLabel());
     }
+    items.Append(tempItems);
   }
 
-  // get matching albums
-  VECALBUMS albums;
-  m_musicdatabase.GetAlbumsByName(strSearch, albums);
+  tempItems.Clear();
+  m_database.GetDirectorsByName(strSearch, tempItems);
 
-  if (albums.size())
+  if (tempItems.Size())
   {
-    CStdString strAlbum = g_localizeStrings.Get(483); // Album
-    for (int i = 0; i < (int)albums.size(); i++)
+    CStdString strMovie = g_localizeStrings.Get(20339); // Director
+    for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      CAlbum& album = albums[i];
-      CFileItem* pItem = new CFileItem(album);
-      pItem->SetLabel("[" + strAlbum + "] " + album.strAlbum + " - " + album.strArtist);
-      pItem->m_strPath.Format("musicdb://3/%ld/", album.idAlbum);
-      items.Add(pItem);
+      tempItems[i]->SetLabel("[" + strMovie + "] " + tempItems[i]->GetLabel());
     }
+    items.Append(tempItems);
   }
 
-  // get matching songs
-  VECSONGS songs;
-  m_musicdatabase.FindSongsByName(strSearch, songs, true);
+  tempItems.Clear();
+  m_database.GetTitlesByName(strSearch, tempItems);
 
-  if (songs.size())
+  if (tempItems.Size())
   {
-    CStdString strSong = g_localizeStrings.Get(179); // Song
-    for (int i = 0; i < (int)songs.size(); i++)
+    CStdString strMovie = g_localizeStrings.Get(20338); // Movie
+    for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      CSong& song = songs[i];
-      CFileItem* pItem = new CFileItem(song);
-      pItem->SetLabel("[" + strSong + "] " + song.strTitle + " (" + song.strAlbum + " - " + song.strArtist + ")");
-      items.Add(pItem);
+      tempItems[i]->SetLabel("[" + strMovie + "] " + tempItems[i]->GetLabel());
     }
+    items.Append(tempItems);
   }
 }
-*/
+
 void CGUIWindowVideoNav::PlayItem(int iItem)
 {
   // unlike additemtoplaylist, we need to check the items here
