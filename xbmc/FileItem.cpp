@@ -1646,7 +1646,7 @@ void CFileItemList::Stack()
             if (items.Size()-vids == 1)
             {
               if (items[vids]->IsVideo())
-                *item = *items[0];
+                *item = *items[vids];
             }
           }
         }
