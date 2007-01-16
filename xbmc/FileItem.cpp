@@ -1638,10 +1638,16 @@ void CFileItemList::Stack()
         {
           CFileItemList items;
           CDirectory::GetDirectory(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
-          if (items.Size() == 1)
+          int vids=0;
+          if (items.Size())
           {
-            if (items[0]->IsVideo())
-              *item = *items[0];
+            while (items[vids]->m_bIsFolder &&  vids < items.Size()) 
+              vids++;
+            if (items.Size()-vids == 1)
+            {
+              if (items[vids]->IsVideo())
+                *item = *items[0];
+            }
           }
         }
       }
