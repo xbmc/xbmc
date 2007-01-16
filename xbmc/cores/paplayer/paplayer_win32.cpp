@@ -20,7 +20,7 @@
 #define TIME_TO_CACHE_NEXT_FILE 5000L         // 5 seconds
 #define TIME_TO_CROSS_FADE      10000L        // 10 seconds
 
-extern CFileShoutcast* m_pShoutCastRipper;
+extern XFILE::CFileShoutcast* m_pShoutCastRipper;
 
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
