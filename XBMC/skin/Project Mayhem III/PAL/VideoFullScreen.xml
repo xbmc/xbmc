@@ -69,7 +69,7 @@
 		</control>
   	<control type="label" id="1">
 			<description>current_event_name</description>
-			<width>445</width>
+			<width>385</width>
 			<posx>180</posx>
 			<posy>438</posy>
 			<info>videoplayer.title</info>
