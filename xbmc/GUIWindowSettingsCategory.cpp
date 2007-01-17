@@ -985,10 +985,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       // X3 can't controll the Contrast via software graying out!
       if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
-      { if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_XECUTER3); }
-      else { if (pControl) pControl->SetEnabled(false); }
-
-
+      {
+        if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_XECUTER3);
+      }
+      else 
+      { 
+        if (pControl) pControl->SetEnabled(false); 
+      }
+    }
+    else if (strSetting.Equals("lookandfeel.soundsduringplayback"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
     }
   }
 }
@@ -1376,6 +1384,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_guiSettings.SetString("lookandfeel.soundskin", pControl->GetCurrentLabel());
 
     g_audioManager.Load();
+  }
+  else if (strSetting.Equals("lookandfeel.soundsduringplayback"))
+  {
+    if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+      g_audioManager.Enable(true);
+    else
+      g_audioManager.Enable(!g_application.IsPlaying() || g_application.IsPaused());
   }
   else if (strSetting.Equals("videoscreen.resolution"))
   { // new resolution choosen... - update if necessary
