@@ -58,6 +58,10 @@ ifeq ($(CONFIG_LIBAVUTIL),yes)
   OBJECTS += libavutil/libavutil.a
 endif
 
+ifeq ($(CONFIG_LIBPOSTPROC),yes)
+  NAMES += LIBPOSTPROC
+  OBJECTS += libpostproc/libpostproc.a
+endif
 
 LIBS += xbmcsys/xbmc_vobsub/xbmc_vobsub.lib xbmcsys/xbmc_vobsub/xbmc.o
 

@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
 /*
@@ -30,20 +30,13 @@
 #include <inttypes.h>
 #include <math.h>
 
-#include "../config.h"
+#include "config.h"
 
-#ifdef USE_LIBAVCODEC
+#include "mp_msg.h"
+#include "cpudetect.h"
 
-#include "../mp_msg.h"
-#include "../cpudetect.h"
-
-#ifdef USE_LIBAVCODEC_SO
-#include <ffmpeg/avcodec.h>
-#include <ffmpeg/dsputil.h>
-#else
-#include "../libavcodec/avcodec.h"
-#include "../libavcodec/dsputil.h"
-#endif
+#include "libavcodec/avcodec.h"
+#include "libavcodec/dsputil.h"
 
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
@@ -52,7 +45,7 @@
 #include "img_format.h"
 #include "mp_image.h"
 #include "vf.h"
-#include "../libvo/fastmemcpy.h"
+#include "libvo/fastmemcpy.h"
 
 #define XMIN(a,b) ((a) < (b) ? (a) : (b))
 
@@ -102,6 +95,7 @@ struct vf_priv_s {
 	int16_t *temp;
 	AVCodecContext *avctx;
 	DSPContext dsp;
+        char *non_b_qp;
 };
 
 #define SHIFT 22
@@ -379,7 +373,7 @@ static void filter(struct vf_priv_s *p, uint8_t *dst, uint8_t *src, int dst_stri
 	int x, y, i;
 	const int count= 1<<p->log2_count;
 	const int stride= is_luma ? p->temp_stride : ((width+16+15)&(~15));
-	uint64_t block_align[32];
+	uint64_t __attribute__((aligned(16))) block_align[32];
 	DCTELEM *block = (DCTELEM *)block_align;
 	DCTELEM *block2= (DCTELEM *)(block_align+16);
 
@@ -453,7 +447,7 @@ static void get_image(struct vf_instance_s* vf, mp_image_t *mpi){
     if(mpi->flags&MP_IMGFLAG_PRESERVE) return; // don't change
     // ok, we can do pp in-place (or pp disabled):
     vf->dmpi=vf_get_image(vf->next,mpi->imgfmt,
-        mpi->type, mpi->flags, mpi->w, mpi->h);
+        mpi->type, mpi->flags | MP_IMGFLAG_READABLE, mpi->width, mpi->height);
     mpi->planes[0]=vf->dmpi->planes[0];
     mpi->stride[0]=vf->dmpi->stride[0];
     mpi->width=vf->dmpi->width;
@@ -474,18 +468,27 @@ static int put_image(struct vf_instance_s* vf, mp_image_t *mpi){
                 dmpi=vf_get_image(vf->next,mpi->imgfmt,
                     MP_IMGTYPE_TEMP,
                     MP_IMGFLAG_ACCEPT_STRIDE|MP_IMGFLAG_PREFER_ALIGNED_STRIDE,
-                    mpi->w,mpi->h);
+                    mpi->width,mpi->height);
                 vf_clone_mpi_attributes(dmpi, mpi);
         }else{
            dmpi=vf->dmpi;
         }
 
         vf->priv->mpeg2= mpi->qscale_type;
+        if(mpi->pict_type != 3 && mpi->qscale && !vf->priv->qp){
+            if(!vf->priv->non_b_qp)
+                vf->priv->non_b_qp= malloc(mpi->qstride * ((mpi->h + 15) >> 4));
+            memcpy(vf->priv->non_b_qp, mpi->qscale, mpi->qstride * ((mpi->h + 15) >> 4));
+        }
 	if(vf->priv->log2_count || !(mpi->flags&MP_IMGFLAG_DIRECT)){
-	    if(mpi->qscale || vf->priv->qp){
-		filter(vf->priv, dmpi->planes[0], mpi->planes[0], dmpi->stride[0], mpi->stride[0], mpi->w, mpi->h, mpi->qscale, mpi->qstride, 1);
-		filter(vf->priv, dmpi->planes[1], mpi->planes[1], dmpi->stride[1], mpi->stride[1], mpi->w>>mpi->chroma_x_shift, mpi->h>>mpi->chroma_y_shift, mpi->qscale, mpi->qstride, 0);
-		filter(vf->priv, dmpi->planes[2], mpi->planes[2], dmpi->stride[2], mpi->stride[2], mpi->w>>mpi->chroma_x_shift, mpi->h>>mpi->chroma_y_shift, mpi->qscale, mpi->qstride, 0);
+            char *qp_tab= vf->priv->non_b_qp;
+            if((vf->priv->mode&4) || !qp_tab)
+                qp_tab= mpi->qscale;
+
+	    if(qp_tab || vf->priv->qp){
+		filter(vf->priv, dmpi->planes[0], mpi->planes[0], dmpi->stride[0], mpi->stride[0], mpi->w, mpi->h, qp_tab, mpi->qstride, 1);
+		filter(vf->priv, dmpi->planes[1], mpi->planes[1], dmpi->stride[1], mpi->stride[1], mpi->w>>mpi->chroma_x_shift, mpi->h>>mpi->chroma_y_shift, qp_tab, mpi->qstride, 0);
+		filter(vf->priv, dmpi->planes[2], mpi->planes[2], dmpi->stride[2], mpi->stride[2], mpi->w>>mpi->chroma_x_shift, mpi->h>>mpi->chroma_y_shift, qp_tab, mpi->qstride, 0);
 	    }else{
 		memcpy_pic(dmpi->planes[0], mpi->planes[0], mpi->w, mpi->h, dmpi->stride[0], mpi->stride[0]);
 		memcpy_pic(dmpi->planes[1], mpi->planes[1], mpi->w>>mpi->chroma_x_shift, mpi->h>>mpi->chroma_y_shift, dmpi->stride[1], mpi->stride[1]);
@@ -512,6 +515,8 @@ static void uninit(struct vf_instance_s* vf){
 	vf->priv->src= NULL;
         if(vf->priv->avctx) free(vf->priv->avctx);
         vf->priv->avctx= NULL;
+        if(vf->priv->non_b_qp) free(vf->priv->non_b_qp);
+        vf->priv->non_b_qp= NULL;
 	
 	free(vf->priv);
 	vf->priv=NULL;
@@ -528,7 +533,6 @@ static int query_format(struct vf_instance_s* vf, unsigned int fmt){
 	case IMGFMT_CLPL:
 	case IMGFMT_Y800:
 	case IMGFMT_Y8:
-	case IMGFMT_NV12:
 	case IMGFMT_444P:
 	case IMGFMT_422P:
 	case IMGFMT_411P:
@@ -546,7 +550,6 @@ static unsigned int fmt_list[]={
 	IMGFMT_CLPL,
 	IMGFMT_Y800,
 	IMGFMT_Y8,
-	IMGFMT_NV12,
 	IMGFMT_444P,
 	IMGFMT_422P,
 	IMGFMT_411P,
@@ -592,7 +595,7 @@ static int open(vf_instance_t *vf, char* args){
     if(vf->priv->qp < 0)
         vf->priv->qp = 0;
 
-    switch(vf->priv->mode){
+    switch(vf->priv->mode&3){
         default:
 	case 0: requantize= hardthresh_c; break;
 	case 1: requantize= softthresh_c; break;
@@ -601,7 +604,7 @@ static int open(vf_instance_t *vf, char* args){
 #ifdef HAVE_MMX
     if(gCpuCaps.hasMMX){
 	store_slice= store_slice_mmx;
-	switch(vf->priv->mode){
+	switch(vf->priv->mode&3){
 	    case 0: requantize= hardthresh_mmx; break;
 	    case 1: requantize= softthresh_mmx; break;
 	}
@@ -619,5 +622,3 @@ vf_info_t vf_info_spp = {
     open,
     NULL
 };
-
-#endif //USE_LIBAVCODEC

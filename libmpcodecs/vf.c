@@ -25,18 +25,12 @@
 
 extern vf_info_t vf_info_vo;
 extern vf_info_t vf_info_rectangle;
-#ifndef HAVE_NO_POSIX_SELECT
 extern vf_info_t vf_info_bmovl;
-#endif
 extern vf_info_t vf_info_crop;
 extern vf_info_t vf_info_expand;
-#ifdef FF_POSTPROCESS
 extern vf_info_t vf_info_pp;
-#endif
 extern vf_info_t vf_info_scale;
-#ifdef USE_LIBFAME
 extern vf_info_t vf_info_fame;
-#endif
 extern vf_info_t vf_info_format;
 extern vf_info_t vf_info_noformat;
 extern vf_info_t vf_info_yuy2;
@@ -99,7 +93,7 @@ extern vf_info_t vf_info_softskip;
 // list of available filters:
 static vf_info_t* filter_list[]={
 #ifdef _XBOX
-#ifdef FF_POSTPROCESS
+#if defined(USE_LIBPOSTPROC) || defined(USE_LIBPOSTPROC_SO)
     &vf_info_pp,
 #endif
     &vf_info_scale,
@@ -128,8 +122,6 @@ static vf_info_t* filter_list[]={
 #endif
     &vf_info_kerndeint,
     &vf_info_noise,
-    &vf_info_format,
-    &vf_info_noformat,
     &vf_info_field,
     &vf_info_delogo,
 #else //!XBOX.....
@@ -139,7 +131,7 @@ static vf_info_t* filter_list[]={
 #endif
     &vf_info_crop,
     &vf_info_expand,
-#ifdef FF_POSTPROCESS
+#if defined(USE_LIBPOSTPROC) || defined(USE_LIBPOSTPROC_SO)
     &vf_info_pp,
 #endif
     &vf_info_scale,
@@ -201,7 +193,7 @@ static vf_info_t* filter_list[]={
     &vf_info_tile,
     &vf_info_delogo,
     &vf_info_hue,
-#ifdef USE_LIBAVCODEC
+#ifdef USE_LIBAVCODEC_DSPUTIL
     &vf_info_spp,
     &vf_info_yuvcsp,
 #endif
@@ -392,6 +384,7 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
 	      //if(!mpi->stride[0]) 
 	      mpi->stride[0]=mpi->width;
 	      //if(!mpi->stride[1]) 
+	      if(mpi->num_planes > 2){
 	      mpi->stride[1]=mpi->stride[2]=mpi->chroma_width;
 	      if(mpi->flags&MP_IMGFLAG_SWAPPED){
 	          // I420/IYUV  (Y,U,V)
@@ -401,6 +394,11 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
 	          // YV12,YVU9,IF09  (Y,V,U)
 	          mpi->planes[2]=mpi->planes[0]+mpi->width*mpi->height;
 	          mpi->planes[1]=mpi->planes[2]+mpi->chroma_width*mpi->chroma_height;
+	      }
+	      } else {
+	          // NV12/NV21
+	          mpi->stride[1]=mpi->chroma_width;
+	          mpi->planes[1]=mpi->planes[0]+mpi->width*mpi->height;
 	      }
 	  } else {
 	      //if(!mpi->stride[0]) 
@@ -423,13 +421,14 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
 		  (mpi->flags&MP_IMGFLAG_YUV)?"YUV":((mpi->flags&MP_IMGFLAG_SWAPPED)?"BGR":"RGB"),
 		  (mpi->flags&MP_IMGFLAG_PLANAR)?"planar":"packed",
 	          mpi->bpp*mpi->width*mpi->height/8);
-	    mp_msg(MSGT_DECVIDEO,MSGL_DBG2,"(imgfmt: %x, planes: %x,%x,%x strides: %d,%d,%d, chroma: %dx%d, shift: h:%d,v:%d)\n",
+	    mp_msg(MSGT_DECVIDEO,MSGL_DBG2,"(imgfmt: %x, planes: %p,%p,%p strides: %d,%d,%d, chroma: %dx%d, shift: h:%d,v:%d)\n",
 		mpi->imgfmt, mpi->planes[0], mpi->planes[1], mpi->planes[2],
 		mpi->stride[0], mpi->stride[1], mpi->stride[2],
 		mpi->chroma_width, mpi->chroma_height, mpi->chroma_x_shift, mpi->chroma_y_shift);
 	    mpi->flags|=MP_IMGFLAG_TYPE_DISPLAYED;
     }
 
+  mpi->qscale = NULL;
   }
 //    printf("\rVF_MPI: %p %p %p %d %d %d    \n",
 //	mpi->planes[0],mpi->planes[1],mpi->planes[2],
