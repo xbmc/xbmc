@@ -114,6 +114,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(SORT_ORDER_NONE);
       }
       break;
+    case NODE_TYPE_DIRECTOR:
     case NODE_TYPE_ACTOR:
       {
         AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
