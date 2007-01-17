@@ -822,9 +822,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     CUPnP* upnp = CUPnP::GetInstance();
                      
     CFileItemList vecCacheItems;
-    g_directoryCache.ClearDirectory(strPath);
 
-    // We accept upnp://devuuid[/path[/file]]]]
+    // We accept upnp://devuuid[/item_id]
     // make sure we have a slash to look for at the end
     CStdString strRoot = strPath;
     if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
@@ -833,7 +832,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
     if (path.Left(7).Compare("upnp://", true) != 0) {
         return false;
-    } else if (path.Compare("upnp://", true) == 0) {
+    } 
+    
+    if (path.Compare("upnp://", true) == 0) {
         // root -> get list of devices 
         const NPT_Lock<PLT_DeviceMap>& devices = upnp->m_MediaBrowser->GetMediaServers();
         const NPT_List<PLT_DeviceMapEntry*>& entries = devices.GetEntries();
@@ -846,8 +847,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             CFileItem *pItem = new CFileItem((const char*)name);
             pItem->m_strPath = (const char*) path + uuid;
             pItem->m_bIsFolder = true;
-            //pItem->m_bIsShareOrDrive = true;
-            //pItem->m_iDriveType = SHARE_TYPE_REMOTE;
 
             if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
 
@@ -871,7 +870,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         if (NPT_FAILED(devices.Get(uuid, device)) || device == NULL) 
             return false;
 
-        // issue a browse request with object id, if id is empty use root id = 0 
+        // issue a browse request with object_id
+        // if object_id is empty use "0" for root 
         NPT_String root_id = object_id.IsEmpty()?"0":object_id;
 
         // just a guess as to what types of files we want */
@@ -884,11 +884,11 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
           image = m_strFileMask.Find(".jpg") >= 0;
         }
 
-        // special case for Windows Media Connect
-        // Since we know it is WMC, we can target which folder we want based on directory mask
+        // special case for Windows Media Connect and WMP11 when looking for root
+        // We can target which root subfolder we want based on directory mask
         if (root_id == "0" 
-         && ( (*device)->GetFriendlyName().Find("Windows Media Connect", 0, true) >= 0
-           || (*device)->m_ModelName == "Windows Media Player Sharing")) {
+         && ((*device)->GetFriendlyName().Find("Windows Media Connect", 0, true) >= 0
+           ||(*device)->m_ModelName == "Windows Media Player Sharing")) {
 
             // look for a specific type to differentiate which folder we want
             if (audio && !video && !image) {
@@ -903,8 +903,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             }
         }
 
-        // special case for Xbox Media Center
-        if (root_id == "0" && ( (*device)->m_ModelName.Find("Xbox Media Center", 0, true) >= 0)) {
+        // same thing but special case for Xbox Media Center
+        if (root_id == "0" && ((*device)->m_ModelName.Find("Xbox Media Center", 0, true) >= 0)) {
 
             // look for a specific type to differentiate which folder we want
             if (audio && !video && !image) {
@@ -927,7 +927,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
         PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
         while (entry) {
-
+            // disregard items with wrong class/type
             if( (!video && (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0)
              || (!audio && (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0)
              || (!image && (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0) )
@@ -939,21 +939,19 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             CFileItem *pItem = new CFileItem((const char*)(*entry)->m_Title);
             pItem->m_bIsFolder = (*entry)->IsContainer();
 
-            // if it's a container, format a string as upnp://host/uuid/object_id/ 
+            // if it's a container, format a string as upnp://uuid/object_id/ 
             if (pItem->m_bIsFolder) {
                 pItem->m_strPath = (const char*) NPT_String("upnp://") + uuid + "/" + (*entry)->m_ObjectID;
                 if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
 
             } else {
                 if ((*entry)->m_Resources.GetItemCount()) {
-                    // if http protocol, override url with upnp so that it triggers the use of PAPLAYER instead of MPLAYER
-                    // somehow MPLAYER tries to http stream the wma even though the server doesn't support it.
-                    //if ((*entry)->m_Resources[0].m_Uri.Left(4).Compare("http", true) == 0) {
-                    //    pItem->m_strPath = (const char*) NPT_String("upnp") + (*entry)->m_Resources[0].m_Uri.SubString(4);
-                    //} else {
-                        pItem->m_strPath = (const char*) (*entry)->m_Resources[0].m_Uri;
-                    //}
+                    // if it's an item, path is the first url to the item
+                    // we hope the server made the first one reachable for us
+                    // (it could be a format we dont know how to play however)
+                    pItem->m_strPath = (const char*) (*entry)->m_Resources[0].m_Uri;
 
+                    // set metadata
                     if ((*entry)->m_Resources[0].m_Size > 0) {
                         pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
                     }
@@ -990,8 +988,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     //else
                     //  pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
 
-                    if( (*entry)->m_Description.date.GetLength() )
-                    {
+                    // look for date?
+                    if((*entry)->m_Description.date.GetLength()) {
                       SYSTEMTIME time = {};
                       int count = sscanf((*entry)->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
                                           &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
@@ -1008,9 +1006,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             ++entry;
         }
     }
-
-    if (m_cacheDirectory)
-        g_directoryCache.SetDirectory(strPath, vecCacheItems);
 
     return true;
 }
