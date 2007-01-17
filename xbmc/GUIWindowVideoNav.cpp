@@ -113,6 +113,11 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "videodb://4/";
           SetHistoryForPath(m_vecItems.m_strPath);
         }
+        else if (strDestination.Equals("Directors"))
+        {
+          m_vecItems.m_strPath = "videodb://5/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
         else if (strDestination.Equals("Playlists"))
         {
           m_vecItems.m_strPath = "special://videoplaylists/";
