@@ -164,7 +164,12 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           CStdString strDir;
           CUtil::GetDirectory(m_vecItems[iItem]->m_strPath,strDir);
           m_database.GetScraperForPath(strDir,info.strPath,info.strContent);
-          OnInfo(iItem,info);
+          strDir = m_vecItems[iItem]->m_strPath;
+          if (m_vecItems[iItem]->m_bIsFolder)
+            CUtil::AddSlashAtEnd(strDir);
+          if (!info.strContent.IsEmpty() || m_database.HasMovieInfo(strDir))
+            OnInfo(iItem,info);
+          
           return true;
         }
         else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
