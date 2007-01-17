@@ -148,7 +148,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   // Browse is called.  Open the filebrowser dialog.
   // Ignore current path is best at this stage??
   CStdString path;
-  bool allowNetworkShares(m_type != "myprograms");
+  bool allowNetworkShares(m_type != "myprograms" && m_type.Left(4) != "upnp");
   VECSHARES extraShares;
   
   if (m_type == "music" || m_type == "upnpmusic")
@@ -202,7 +202,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share2.strName = "ReplayTV";
     extraShares.push_back(share2);
   }
-  if ((m_type == "pictures" || m_type == "upnpictures") && g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
+  else if ((m_type == "pictures" || m_type == "upnpictures") && g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
   {
     CShare share1;
     share1.strPath = "special://screenshots/";

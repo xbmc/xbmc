@@ -442,7 +442,7 @@ CGUISettings::CGUISettings(void)
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
 
   AddCategory(6, "upnp", 20110);
-  AddBool(1,    "upnp.autostart", 20111, false);
+  AddBool(1,    "upnp.client", 20111, false);
   AddBool(2, "upnp.server", 21360, false);
   AddString(3, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
   AddString(4, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);

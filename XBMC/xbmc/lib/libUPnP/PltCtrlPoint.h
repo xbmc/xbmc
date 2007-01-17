@@ -56,8 +56,7 @@ public:
     NPT_Result   AddListener(PLT_CtrlPointListener* listener);
     NPT_Result   RemoveListener(PLT_CtrlPointListener* listener);
     void         IgnoreUUID(const char* uuid);
-    NPT_Result   Start(PLT_TaskManager* task_manager);
-    NPT_Result   Stop();
+
     NPT_Result   Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
                         const char*        target = "upnp:rootdevice", 
                         const NPT_Cardinal MX = 5);
@@ -85,7 +84,9 @@ public:
 protected:
     virtual ~PLT_CtrlPoint();
 
-    // methods
+    NPT_Result   Start(PLT_TaskManager* task_manager);
+    NPT_Result   Stop();
+
     NPT_Result   ProcessSsdpNotify(NPT_HttpRequest* request, NPT_SocketInfo info);
     NPT_Result   ProcessSsdpMessage(NPT_HttpMessage*   message, 
                                     NPT_SocketInfo&    info, 
@@ -119,6 +120,9 @@ private:
 
 private:
     friend class NPT_Reference<PLT_CtrlPoint>;
+    friend class PLT_UPnP;
+    friend class PLT_UPnP_CtrlPointStartIterator;
+    friend class PLT_UPnP_CtrlPointStopIterator;
 	friend class PLT_CtrlPointGetDescriptionTask;
     friend class PLT_CtrlPointGetSCPDTask;
     friend class PLT_CtrlPointInvokeActionTask;

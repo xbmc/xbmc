@@ -1568,13 +1568,22 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_applicationMessenger.RestartApp();
     }
   }
-  else if (strSetting.Equals("upnp.autostart"))
+  else if (strSetting.Equals("upnp.client"))
   {
 #ifdef HAS_UPNP
-    if (g_guiSettings.GetBool("upnp.autostart"))
-      g_application.StartUPnP();
+    if (g_guiSettings.GetBool("upnp.client"))
+      g_application.StartUPnPClient();
     else
-      g_application.StopUPnP();
+      g_application.StopUPnPClient();
+#endif
+  }
+  else if (strSetting.Equals("upnp.server"))
+  {
+#ifdef HAS_UPNP
+    if (g_guiSettings.GetBool("upnp.server"))
+      g_application.StartUPnPServer();
+    else
+      g_application.StopUPnPServer();
 #endif
   }
   else if (strSetting.Equals("upnp.musicshares"))
