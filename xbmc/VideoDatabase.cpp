@@ -604,6 +604,9 @@ void CVideoDatabase::DeleteMovieInfo(const CStdString& strFileNameAndPath)
     strSQL=FormatSQL("delete from actorlinkmovie where idmovie=%i", lMovieId);
     m_pDS->exec(strSQL.c_str());
 
+    strSQL=FormatSQL("delete from directorlinkmovie where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
+
     strSQL=FormatSQL("delete from movie where idmovie=%i and NOT (idType=%u)", lMovieId, VIDEODB_ID_TITLE);
     m_pDS->exec(strSQL.c_str());
   }
@@ -1054,6 +1057,9 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
     m_pDS->exec(strSQL.c_str());
 
     strSQL=FormatSQL("delete from actorlinkmovie where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
+
+    strSQL=FormatSQL("delete from directorlinkmovie where idmovie=%i", lMovieId);
     m_pDS->exec(strSQL.c_str());
 
     strSQL=FormatSQL("delete from movie where idmovie=%i", lMovieId);
