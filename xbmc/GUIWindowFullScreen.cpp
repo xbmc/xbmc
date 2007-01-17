@@ -406,7 +406,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         (g_guiSettings.GetInt("system.remoteplayhdspindown") || g_guiSettings.GetInt("system.hdspindowntime"))
       )
       {
-        g_audioManager.Enable(false);
+        if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+          g_audioManager.Enable(false);
       }
 
 
@@ -479,8 +480,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         m_subtitleFont = NULL;
       }
 
-
-      g_audioManager.Enable(true);
+      if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+        g_audioManager.Enable(true);
       return true;
     }
   case GUI_MSG_SETFOCUS:
