@@ -97,6 +97,29 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
   return confirmed;
 }
 
+bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CStdString&share)
+{
+  VECSHARES* pShares=NULL;
+  
+  if (type.Equals("upnpmusic"))
+    pShares = &g_settings.m_vecUPnPMusicShares;
+  if (type.Equals("upnpvideo"))
+    pShares = &g_settings.m_vecUPnPVideoShares;
+  if (type.Equals("upnppictures"))
+    pShares = &g_settings.m_vecUPnPPictureShares;
+
+  if (pShares)
+  {
+    for (unsigned int i=0;i<pShares->size();++i)
+    {
+      if ((*pShares)[i].strName.Equals(share))
+        return ShowAndEditMediaSource(type,(*pShares)[i]);
+    }
+  }
+
+  return false;
+}
+
 bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CShare &share)
 {
   CStdString strOldName = share.strName;
@@ -128,7 +151,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   bool allowNetworkShares(m_type != "myprograms");
   VECSHARES extraShares;
   
-  if (m_type == "music")
+  if (m_type == "music" || m_type == "upnpmusic")
   { // add the music playlist location
     CShare share1;
     share1.strPath = "special://musicplaylists/";
@@ -167,7 +190,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       }
     }
   }
-  else if (m_type == "video")
+  else if (m_type == "video" || m_type == "upnpvideo")
   { // add the music playlist location
     CShare share1;
     share1.strPath = "special://videoplaylists/";
@@ -179,7 +202,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share2.strName = "ReplayTV";
     extraShares.push_back(share2);
   }
-  if (m_type == "pictures" && g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
+  if ((m_type == "pictures" || m_type == "upnpictures") && g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
   {
     CShare share1;
     share1.strPath = "special://screenshots/";
@@ -313,6 +336,12 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
     typeStringID = 350;  // "Programs"
   else if (type == "pictures")
     typeStringID = 1213;  // "Pictures"
+  else if (type == "upnpmusic")
+    typeStringID = 20356;
+  else if (type == "upnpvideo")
+    typeStringID = 20357;
+  else if (type == "upnppictures")
+    typeStringID = 20358;
   else // if (type == "files");
     typeStringID = 744;  // "Files"
   CStdString format;

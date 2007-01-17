@@ -706,6 +706,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
     }
+    else if (strSetting.Equals("upnp.musicshares") || strSetting.Equals("upnp.videoshares") || strSetting.Equals("upnp.pictureshares"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
+    }
     else if (strSetting.Equals("mymusic.clearplaylistsonend"))
     { // disable repeat and repeat one if clear playlists is enabled
       if (g_guiSettings.GetBool("mymusic.clearplaylistsonend"))
@@ -1571,6 +1576,33 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       g_application.StopUPnP();
 #endif
+  }
+  else if (strSetting.Equals("upnp.musicshares"))
+  {
+    CStdString strDummy;
+    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_vecUPnPMusicShares,"upnpmusic"))
+      g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
+    else
+      g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+  }
+  else if (strSetting.Equals("upnp.videoshares"))
+  {
+    CStdString strDummy;
+    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_vecUPnPVideoShares,"upnpvideo"))
+      g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
+    else
+      g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+  }
+  else if (strSetting.Equals("upnp.pictureshares"))
+  {
+    CStdString strDummy;
+    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_vecUPnPPictureShares,"upnppictures"))
+      g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
+    else
+      g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
   }
   else if (strSetting.Equals("masterlock.lockcode"))
   {

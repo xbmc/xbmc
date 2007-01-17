@@ -458,6 +458,13 @@ VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
     return &g_settings.m_vecMyVideoShares;
   else if (type == "pictures")
     return &g_settings.m_vecMyPictureShares;
+  else if (type == "upnpmusic")
+    return &g_settings.m_vecUPnPMusicShares;
+  else if (type == "upnpvideo")
+    return &g_settings.m_vecUPnPVideoShares;
+  else if (type == "upnppictures")
+    return &g_settings.m_vecUPnPPictureShares;
+
   return NULL;
 }
 
@@ -1927,6 +1934,87 @@ bool CSettings::LoadXml()
   return true;
 }
 
+bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
+{
+  TiXmlDocument UPnPDoc;
+  CIoSupport helper;
+  if (!CFile::Exists(strSettingsFile))
+  { // set defaults, or assume no rss feeds??
+    return false;
+  }
+  if (!UPnPDoc.LoadFile(strSettingsFile.c_str()))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), UPnPDoc.ErrorRow(), UPnPDoc.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *pRootElement = UPnPDoc.RootElement();
+  if (!pRootElement || strcmpi(pRootElement->Value(),"upnpserver") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <upnpserver> node", strSettingsFile.c_str());
+    return false;
+  }
+
+  CStdString strDefault;
+  GetShares(pRootElement,"music",g_settings.m_vecUPnPMusicShares,strDefault);
+  GetShares(pRootElement,"video",g_settings.m_vecUPnPVideoShares,strDefault);
+  GetShares(pRootElement,"pictures",g_settings.m_vecUPnPPictureShares,strDefault);
+
+  return true;
+}
+
+bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
+{
+  TiXmlDocument xmlDoc;
+  TiXmlElement xmlRootElement("upnpserver");
+  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+  if (!pRoot) return false;
+
+  VECSHARES* pShares[3];
+  pShares[0] = &g_settings.m_vecUPnPMusicShares;
+  pShares[1] = &g_settings.m_vecUPnPVideoShares;
+  pShares[2] = &g_settings.m_vecUPnPPictureShares;
+  for (int k=0;k<3;++k)
+  {
+    if ((*pShares)[k].size()==0)
+      continue;
+
+    TiXmlElement xmlType("");
+    if (k==0)
+      xmlType = TiXmlElement("music");
+    if (k==1)
+      xmlType = TiXmlElement("video");
+    if (k==2)
+      xmlType = TiXmlElement("pictures");
+    
+    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);  
+
+    for (unsigned int j=0;j<(*pShares)[k].size();++j)
+    {
+      // create a new Element
+      TiXmlText xmlName((*pShares)[k][j].strName);
+      TiXmlElement eName("name");
+      eName.InsertEndChild(xmlName);
+
+      TiXmlElement bookmark("bookmark");
+      bookmark.InsertEndChild(eName);
+
+      for (unsigned int i = 0; i < (*pShares)[k][j].vecPaths.size(); i++)
+      {
+        TiXmlText xmlPath((*pShares)[k][j].vecPaths[i]);
+        TiXmlElement ePath("path");
+        ePath.InsertEndChild(xmlPath);
+        bookmark.InsertEndChild(ePath);
+      }
+
+      if (pNode)
+        pNode->ToElement()->InsertEndChild(bookmark);
+    }
+  }
+  // save the file
+  return xmlDoc.SaveFile(strSettingsFile);
+}
+
 void CSettings::CloseXml()
 {
   xbmcXmlLoaded = false;
@@ -2211,7 +2299,10 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
 
 bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath)
 {
-  if (!LoadXml()) return false;
+  if (strType.Find("upnp") < 0)
+  {
+    if (!LoadXml()) return false; 
+  }
 
   VECSHARES *pShares = GetSharesFromType(strType);
   if (!pShares) return false;
@@ -2228,6 +2319,10 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
       break;
     }
   }
+
+  if (strType.Find("upnp") > -1)
+    return found;
+
   // Return bookmark of
   if (found)
   {
@@ -2268,37 +2363,45 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
 
 bool CSettings::AddShare(const CStdString &type, const CShare &share)
 {
-  if (!LoadXml()) return false;
+  bool success;
+  if (type.Find("upnp") < 0)
+  {
+    if (!LoadXml()) 
+      return false;
+    // Add to the xml file
+    TiXmlElement *pRootElement = xbmcXml.RootElement();
+    TiXmlNode *pNode = NULL;
+
+    pNode = pRootElement->FirstChild(type);
+
+    // create a new Element
+    TiXmlText xmlName(share.strName);
+    TiXmlElement eName("name");
+    eName.InsertEndChild(xmlName);
+
+    TiXmlElement bookmark("bookmark");
+    bookmark.InsertEndChild(eName);
+
+    for (unsigned int i = 0; i < share.vecPaths.size(); i++)
+    {
+      TiXmlText xmlPath(share.vecPaths[i]);
+      TiXmlElement ePath("path");
+      ePath.InsertEndChild(xmlPath);
+      bookmark.InsertEndChild(ePath);
+    }
+
+    if (pNode)
+      pNode->ToElement()->InsertEndChild(bookmark);
+
+    success = xbmcXml.SaveFile();
+  }
+  else
+  {
+    success = true;
+  }
 
   VECSHARES *pShares = GetSharesFromType(type);
   if (!pShares) return false;
-
-  // Add to the xml file
-  TiXmlElement *pRootElement = xbmcXml.RootElement();
-  TiXmlNode *pNode = NULL;
-
-  pNode = pRootElement->FirstChild(type);
-
-  // create a new Element
-  TiXmlText xmlName(share.strName);
-  TiXmlElement eName("name");
-  eName.InsertEndChild(xmlName);
-
-  TiXmlElement bookmark("bookmark");
-  bookmark.InsertEndChild(eName);
-
-  for (unsigned int i = 0; i < share.vecPaths.size(); i++)
-  {
-    TiXmlText xmlPath(share.vecPaths[i]);
-    TiXmlElement ePath("path");
-    ePath.InsertEndChild(xmlPath);
-    bookmark.InsertEndChild(ePath);
-  }
-
-  if (pNode)
-    pNode->ToElement()->InsertEndChild(bookmark);
-
-  bool success(xbmcXml.SaveFile());
 
   // translate dir and add to our current shares
   CStdString strPath1 = share.strPath;
@@ -2317,6 +2420,7 @@ bool CSettings::AddShare(const CStdString &type, const CShare &share)
     }
   }
   pShares->push_back(shareToAdd);
+
   return success;
 }
 
@@ -2386,7 +2490,6 @@ void CSettings::Clear()
   m_vecMyFilesShares.clear();
   m_vecMyMusicShares.clear();
   m_vecMyVideoShares.clear();
-  m_vecSambeShres.clear();
 //  m_vecIcons.clear();
   m_vecProfiles.clear();
   m_szMyVideoStackTokensArray.clear();

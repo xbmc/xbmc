@@ -373,7 +373,11 @@ public:
   VECSHARES m_vecMyFilesShares;
   VECSHARES m_vecMyMusicShares;
   VECSHARES m_vecMyVideoShares;
-  VECSHARES m_vecSambeShres;
+
+  VECSHARES m_vecUPnPMusicShares;
+  VECSHARES m_vecUPnPVideoShares;
+  VECSHARES m_vecUPnPPictureShares;
+
   //VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;
   int m_iLastLoadedProfileIndex;
@@ -404,6 +408,9 @@ public:
   CStdString GetSettingsFile() const;
   CStdString GetAvpackSettingsFile() const;
 
+  bool LoadUPnPXml(const CStdString& strSettingsFile);
+  bool SaveUPnPXml(const CStdString& strSettingsFile) const;
+  
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 
@@ -436,6 +443,7 @@ protected:
 
   bool LoadXml();
   void CloseXml();
+
 
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
