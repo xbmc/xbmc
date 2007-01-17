@@ -1537,6 +1537,7 @@
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
   
   <!-- up to 21370 is reserved for the upnp branch !-->
-  
+  <string id="21370">Play Navigation Sounds During Media Playback</string>  
+
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>
