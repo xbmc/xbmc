@@ -88,7 +88,7 @@ void CGUIDialogFileStacking::Render()
   if (m_iFrames <= 25)
   {
     // slide in...
-    int dwScreenWidth = g_graphicsContext.GetWidth();
+    int dwScreenWidth = g_settings.m_ResInfo[m_coordsRes].iWidth;
     for (int i = 1; i <= m_iNumberOfFiles; ++i)
     {
       CGUIControl* pControl = (CGUIControl*)GetControl(i);
