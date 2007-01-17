@@ -247,7 +247,6 @@ typedef struct {
 #define IS_AUDIO(x) (((x) == AUDIO_MP2) || ((x) == AUDIO_A52) || ((x) == AUDIO_LPCM_BE) || ((x) == AUDIO_AAC) || ((x) == AUDIO_DTS))
 #define IS_VIDEO(x) (((x) == VIDEO_MPEG1) || ((x) == VIDEO_MPEG2) || ((x) == VIDEO_MPEG4) || ((x) == VIDEO_H264) || ((x) == VIDEO_AVC))
 
-static int parse_avc_sps(uint8_t *buf, int len, int *w, int *h);
 static int ts_parse(demuxer_t *demuxer, ES_stream_t *es, unsigned char *packet, int probe);
 extern void resync_audio_stream( sh_audio_t *sh_audio );
 
@@ -287,70 +286,71 @@ try_fec:
 	return TS_PH_PACKET_SIZE;
 }
 
-void ts_add_stream(demuxer_t * demuxer, ES_stream_t *tss)
+static int parse_avc_sps(uint8_t *buf, int len, int *w, int *h);
+
+static void ts_add_stream(demuxer_t * demuxer, ES_stream_t *es)
 {
 	int i;
 	ts_priv_t *priv = (ts_priv_t*) demuxer->priv;
 
-	if(priv->ts.streams[tss->pid].sh)
+	if(priv->ts.streams[es->pid].sh)
 		return;
 
-	if((IS_AUDIO(tss->type) || IS_AUDIO(tss->subtype)))
+	if((IS_AUDIO(es->type) || IS_AUDIO(es->subtype)) && priv->last_aid+1 < MAX_A_STREAMS)
 	{
-		sh_audio_t *sh = new_sh_audio_aid(demuxer, priv->last_aid+1, tss->pid);
+		sh_audio_t *sh = new_sh_audio_aid(demuxer, priv->last_aid, es->pid);
 		if(sh)
 		{
-			sh->format = IS_AUDIO(tss->type) ? tss->type : tss->subtype;
+			sh->format = IS_AUDIO(es->type) ? es->type : es->subtype;
 			sh->ds = demuxer->audio;
 
+			priv->ts.streams[es->pid].id = priv->last_aid;
+			priv->ts.streams[es->pid].sh = sh;
+			priv->ts.streams[es->pid].type = TYPE_AUDIO;
+			mp_msg(MSGT_DEMUX, MSGL_V, "\r\nADDED AUDIO PID %d, type: %x stream n. %d\r\n", es->pid, sh->format, priv->last_aid);
 			priv->last_aid++;
-			priv->ts.streams[tss->pid].id = priv->last_aid;
-			priv->ts.streams[tss->pid].sh = sh;
-			priv->ts.streams[tss->pid].type = TYPE_AUDIO;
-			mp_msg(MSGT_DEMUX, MSGL_V, "\r\nADDED AUDIO PID %d, type: %x stream n. %d\r\n", tss->pid, sh->format, priv->last_aid);
 		}
 
-		if(tss->extradata && tss->extradata_len)
-		{      
-			sh->wf = (WAVEFORMATEX *) malloc(sizeof (WAVEFORMATEX) + tss->extradata_len);
-			sh->wf->cbSize = tss->extradata_len;
-			memcpy(sh->wf + 1, tss->extradata, tss->extradata_len);
+		if(es->extradata && es->extradata_len)
+		{
+			sh->wf = (WAVEFORMATEX *) malloc(sizeof (WAVEFORMATEX) + es->extradata_len);
+			sh->wf->cbSize = es->extradata_len;
+			memcpy(sh->wf + 1, es->extradata, es->extradata_len);
 		}
 	}
 
-	if((IS_VIDEO(tss->type) || IS_VIDEO(tss->subtype)))
+	if((IS_VIDEO(es->type) || IS_VIDEO(es->subtype)) && priv->last_vid+1 < MAX_V_STREAMS)
 	{
-		sh_video_t *sh = new_sh_video_vid(demuxer, priv->last_vid+1, tss->pid);
+		sh_video_t *sh = new_sh_video_vid(demuxer, priv->last_vid, es->pid);
 		if(sh)
 		{
-			sh->format = IS_VIDEO(tss->type) ? tss->type : tss->subtype;;
+			sh->format = IS_VIDEO(es->type) ? es->type : es->subtype;;
 			sh->ds = demuxer->video;
 
+			priv->ts.streams[es->pid].id = priv->last_vid;
+			priv->ts.streams[es->pid].sh = sh;
+			priv->ts.streams[es->pid].type = TYPE_VIDEO;
+			mp_msg(MSGT_DEMUX, MSGL_V, "\r\nADDED VIDEO PID %d, type: %x stream n. %d\r\n", es->pid, sh->format, priv->last_vid);
 			priv->last_vid++;
-			priv->ts.streams[tss->pid].id = priv->last_vid;
-			priv->ts.streams[tss->pid].sh = sh;
-			priv->ts.streams[tss->pid].type = TYPE_VIDEO;
-			mp_msg(MSGT_DEMUX, MSGL_V, "\r\nADDED VIDEO PID %d, type: %x stream n. %d\r\n", tss->pid, sh->format, priv->last_vid);
 
 
-			if(sh->format == VIDEO_AVC && tss->extradata && tss->extradata_len)
+			if(sh->format == VIDEO_AVC && es->extradata && es->extradata_len)
 			{
 				int w = 0, h = 0;
-				sh->bih = (BITMAPINFOHEADER *) calloc(1, sizeof(BITMAPINFOHEADER) + tss->extradata_len);
-				sh->bih->biSize= sizeof(BITMAPINFOHEADER) + tss->extradata_len;
+				sh->bih = (BITMAPINFOHEADER *) calloc(1, sizeof(BITMAPINFOHEADER) + es->extradata_len);
+				sh->bih->biSize= sizeof(BITMAPINFOHEADER) + es->extradata_len;
 				sh->bih->biCompression = sh->format;
-				memcpy(sh->bih + 1, tss->extradata, tss->extradata_len);
-				mp_msg(MSGT_DEMUXER,MSGL_DBG2, "EXTRADATA(%d BYTES): \n", tss->extradata_len);
-				for(i = 0;i < tss->extradata_len; i++)
-					mp_msg(MSGT_DEMUXER,MSGL_DBG2, "%02x ", (int) tss->extradata[i]);
+				memcpy(sh->bih + 1, es->extradata, es->extradata_len);
+				mp_msg(MSGT_DEMUXER,MSGL_DBG2, "EXTRADATA(%d BYTES): \n", es->extradata_len);
+				for(i = 0;i < es->extradata_len; i++)
+					mp_msg(MSGT_DEMUXER,MSGL_DBG2, "%02x ", (int) es->extradata[i]);
 				mp_msg(MSGT_DEMUXER,MSGL_DBG2,"\n");
-				if(parse_avc_sps(tss->extradata, tss->extradata_len, &w, &h))
+				if(parse_avc_sps(es->extradata, es->extradata_len, &w, &h))
 				{
 					sh->bih->biWidth = w;
 					sh->bih->biHeight = h;
 				}
 			}
-
 		}
 	}
 }
@@ -681,8 +681,10 @@ static off_t ts_detect_streams(demuxer_t *demuxer, tsdemux_init_t *param)
 			if(is_audio && req_apid==-2)
 				continue;
 
+#ifdef _XBOX
 			if(!priv->ts.streams[es.pid].sh && !is_sub)
 				ts_add_stream(demuxer, &es);
+#endif
 
 			if(is_video)
 			{
@@ -1004,6 +1006,7 @@ demuxer_t *demux_open_ts(demuxer_t * demuxer)
 
 	if(params.vtype != UNKNOWN)
 	{
+		ts_add_stream(demuxer, priv->ts.pids[params.vpid]);
 		sh_video = priv->ts.streams[params.vpid].sh;
 		demuxer->video->id = priv->ts.streams[params.vpid].id;
 		sh_video->ds = demuxer->video;
@@ -1013,6 +1016,7 @@ demuxer_t *demux_open_ts(demuxer_t * demuxer)
 
 	if(params.atype != UNKNOWN)
 	{
+		ts_add_stream(demuxer, priv->ts.pids[params.apid]);
 		sh_audio = priv->ts.streams[params.apid].sh;
 		demuxer->audio->id = priv->ts.streams[params.apid].id;
 		sh_audio->ds = demuxer->audio;
@@ -2719,13 +2723,14 @@ static int ts_parse(demuxer_t *demuxer , ES_stream_t *es, unsigned char *packet,
 				tss->subtype = mp4_dec->object_type;
 			}
 		}
-
+#ifdef _XBOX
 		// ts_detect_stream uses this to add it's streams, and thus needs the extradata
 		if(probe)
 		{
 			es->extradata = tss->extradata;
 			es->extradata_len = tss->extradata_len;
 		}
+#endif
 		
 		
 		//TABLE PARSING
@@ -3130,7 +3135,6 @@ void demux_seek_ts(demuxer_t *demuxer, float rel_seek_secs, int flags)
 	if(sh_audio != NULL)
 	{
 		ds_fill_buffer(d_audio);
-		resync_audio_stream(sh_audio);
 	}
 
 	while(sh_video != NULL)
