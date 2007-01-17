@@ -477,9 +477,9 @@ CGUISettings::CGUISettings(void)
   AddInt(5, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddSeparator(6, "lookandfeel.sep1");
   AddString(7, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddSeparator(8, "lookandfeel.sep2");
-  AddBool(9, "lookandfeel.enablerssfeeds",13305,  true);
-  AddBool(0,"lookandfeel.soundsduringplayback",0,false); // POST 2.0.1: localize me and make me visible
+  AddBool(8,"lookandfeel.soundsduringplayback",21370,false);
+  AddSeparator(9, "lookandfeel.sep2");
+  AddBool(10, "lookandfeel.enablerssfeeds",13305,  true);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "", SPIN_CONTROL_TEXT);
