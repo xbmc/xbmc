@@ -52,7 +52,7 @@ protected:
     virtual NPT_Result ProcessFileRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response);
 
     virtual NPT_Result OnAlbumArtRequest(NPT_String filepath, NPT_HttpResponse* response);
-    virtual bool       ProceedWithEntry(const NPT_String filepath, NPT_DirectoryEntryType& type);
+    virtual bool       ProceedWithEntry(const NPT_String filepath, NPT_DirectoryEntryInfo& info);
     virtual NPT_Result GetEntryCount(const char* path, NPT_Cardinal& count); 
     virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
 

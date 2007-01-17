@@ -15,6 +15,7 @@
 +---------------------------------------------------------------------*/
 #include "NptTypes.h"
 #include "NptStrings.h"
+#include "NptTime.h"
 
 /*----------------------------------------------------------------------
 |       defines
@@ -32,6 +33,13 @@ typedef enum {
     NPT_DIRECTORY_TYPE
 } NPT_DirectoryEntryType;
 
+typedef struct {
+    NPT_DirectoryEntryType type;
+    NPT_Size               size;
+    NPT_TimeStamp          created;
+    NPT_TimeStamp          modified;
+} NPT_DirectoryEntryInfo;
+
 /*----------------------------------------------------------------------
 |       NPT_DirectoryEntryInterface
 +---------------------------------------------------------------------*/
@@ -41,8 +49,7 @@ public:
     virtual ~NPT_DirectoryEntryInterface() {}
 
     // class methods
-    virtual NPT_Result GetType(NPT_DirectoryEntryType& type) = 0;
-    virtual NPT_Result GetSize(NPT_Size& size) = 0;
+    virtual NPT_Result GetInfo(NPT_DirectoryEntryInfo& info) = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -59,21 +66,14 @@ public:
         delete m_Delegate;
     }
 
-    NPT_Result GetType(NPT_DirectoryEntryType& type) {
-        return m_Delegate->GetType(type);
-    }
-    NPT_Result GetSize(NPT_Size& size) {
-        return m_Delegate->GetSize(size);
+    NPT_Result GetInfo(NPT_DirectoryEntryInfo& info) {
+        return m_Delegate->GetInfo(info);
     }
 
     // static helper methods
-    static NPT_Result GetType(const char* path, NPT_DirectoryEntryType& type) {
+    static NPT_Result GetInfo(const char* path, NPT_DirectoryEntryInfo& info) {
         NPT_DirectoryEntry entry(path);
-        return entry.GetType(type);
-    }
-    static NPT_Result GetSize(const char* path, NPT_Size& size) {
-        NPT_DirectoryEntry entry(path);
-        return entry.GetSize(size);
+        return entry.GetInfo(info);
     }
 
 private:
@@ -90,7 +90,7 @@ public:
     virtual ~NPT_DirectoryInterface() {}
 
     // class methods
-    virtual NPT_Result GetNextEntry(NPT_String& name, NPT_Size* size = NULL, NPT_DirectoryEntryType* type = NULL) = 0;
+    virtual NPT_Result GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info = NULL) = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -107,8 +107,8 @@ public:
         delete m_Delegate;
     }
 
-    NPT_Result GetNextEntry(NPT_String& name, NPT_Size* size = NULL, NPT_DirectoryEntryType* type = NULL) {
-        return m_Delegate->GetNextEntry(name, size, type);
+    NPT_Result GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info = NULL) {
+        return m_Delegate->GetNextEntry(name, info);
     }
 
 private:

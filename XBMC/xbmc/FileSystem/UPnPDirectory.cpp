@@ -581,17 +581,15 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
         NPT_String parent_path = GetParentFolder(file_path);
         if (parent_path.IsEmpty()) return NPT_FAILURE;
 
-        NPT_DirectoryEntryType type;
-        NPT_CHECK(NPT_DirectoryEntry::GetType(file_path, type));
+        NPT_DirectoryEntryInfo entry_info;
+        NPT_CHECK(NPT_DirectoryEntry::GetInfo(file_path, entry_info));
 
-        item = new CFileItem((const char*)id, (type==NPT_DIRECTORY_TYPE)?true:false);
+        item = new CFileItem((const char*)id, (entry_info.type==NPT_DIRECTORY_TYPE)?true:false);
         item->SetLabel((const char*)file_path.SubString(parent_path.GetLength()+1));
 
         // get file size
-        if (type == NPT_FILE_TYPE) {
-            NPT_Size size;
-            NPT_CHECK(NPT_DirectoryEntry::GetSize(file_path, size));
-            item->m_dwSize = size;
+        if (entry_info.type == NPT_FILE_TYPE) {
+            item->m_dwSize = entry_info.size;
         }
 
         object = Build(item, true, info);
@@ -723,7 +721,7 @@ CUPnP::CUPnP() :
     m_UPnP->AddCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
 
     // start browser
-    m_MediaBrowser = new PLT_SyncMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
+    m_MediaBrowser = new PLT_SyncMediaBrowser(m_CtrlPointHolder->m_CtrlPoint, true);
 
     // start upnp monitoring
     m_UPnP->Start();

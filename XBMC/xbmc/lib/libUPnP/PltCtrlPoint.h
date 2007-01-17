@@ -66,7 +66,7 @@ public:
                           const NPT_Cardinal MX = 5,
                           NPT_Timeout        repeat = 50000);
     NPT_Result   InvokeAction(PLT_ActionReference& action, void* userdata = NULL);
-    NPT_Result   Subscribe(PLT_Service* service, bool renew = false, void* userdata = NULL);
+    NPT_Result   Subscribe(PLT_Service* service, bool cancel = false, void* userdata = NULL);
 
     // PLT_HttpServerListener methods
     virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest*   request, 
@@ -133,7 +133,7 @@ private:
     PLT_HttpServer*                                 m_EventHttpServer;
     PLT_TaskManager*                                m_TaskManager;
     NPT_Lock<NPT_List<PLT_DeviceDataReference> >    m_Devices;
-    NPT_List<PLT_EventSubscriber*>                  m_Subscribers;
+    NPT_Lock<NPT_List<PLT_EventSubscriber*> >       m_Subscribers;
     NPT_String                                      m_AutoSearch;
 };
 
