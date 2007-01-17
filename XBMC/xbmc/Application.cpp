@@ -1577,9 +1577,6 @@ void CApplication::StartUPnPServer()
 #ifdef HAS_UPNP
   if (g_guiSettings.GetBool("upnp.server"))
   {
-    // load upnpserver.xml so that g_settings.m_vecUPnPMusicShares, etc.. are loaded
-    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
-
     CLog::Log(LOGNOTICE, "starting upnp server");
     CUPnP::GetInstance()->StartServer();
   }

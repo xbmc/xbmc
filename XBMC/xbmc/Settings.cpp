@@ -1955,6 +1955,18 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
     return false;
   }
 
+  // load UUID
+  TiXmlElement* eUUID = pRootElement->FirstChildElement("UUID");
+  if (eUUID && eUUID->FirstChild()) {
+      g_settings.m_UPnPUUID = eUUID->FirstChild()->Value();
+  }
+
+  // load FriendlyName
+  TiXmlElement* eFN = pRootElement->FirstChildElement("FriendlyName");
+  if (eFN && eFN->FirstChild()) {
+      g_settings.m_UPnPServerFriendlyName = eFN->FirstChild()->Value();
+  }
+
   CStdString strDefault;
   GetShares(pRootElement,"music",g_settings.m_vecUPnPMusicShares,strDefault);
   GetShares(pRootElement,"video",g_settings.m_vecUPnPVideoShares,strDefault);
@@ -1970,6 +1982,18 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot) return false;
 
+  // create a new Element for UUID
+  TiXmlText xmlUUID(g_settings.m_UPnPUUID);
+  TiXmlElement eUUID("UUID");
+  eUUID.InsertEndChild(xmlUUID);
+  pRoot->ToElement()->InsertEndChild(eUUID);
+
+  // create a new Element for Server friendly name
+  TiXmlText xmlFriendlyName(g_settings.m_UPnPServerFriendlyName);
+  TiXmlElement eFN("FriendlyName");
+  eFN.InsertEndChild(xmlFriendlyName);
+  pRoot->ToElement()->InsertEndChild(eFN);
+  
   VECSHARES* pShares[3];
   pShares[0] = &g_settings.m_vecUPnPMusicShares;
   pShares[1] = &g_settings.m_vecUPnPVideoShares;

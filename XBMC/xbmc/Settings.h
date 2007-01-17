@@ -378,6 +378,9 @@ public:
   VECSHARES m_vecUPnPVideoShares;
   VECSHARES m_vecUPnPPictureShares;
 
+  CStdString m_UPnPUUID;
+  CStdString m_UPnPServerFriendlyName;
+
   //VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;
   int m_iLastLoadedProfileIndex;

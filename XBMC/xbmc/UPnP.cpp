@@ -614,9 +614,15 @@ CUPnP::StartServer()
 {
     if (!m_ServerHolder->m_Device.IsNull()) return;
 
+    // load upnpserver.xml so that g_settings.m_vecUPnPMusicShares, etc.. are loaded
+    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+
     // TODO: specify a unique UUID we save somewhere
     //       also, let the user set the friendlyname
-    m_ServerHolder->m_Device = new CUPnPServer("Xbox Media Center");
+    m_ServerHolder->m_Device = new CUPnPServer(
+        g_settings.m_UPnPServerFriendlyName.length()?g_settings.m_UPnPServerFriendlyName.c_str():"Xbox Media Center",
+        g_settings.m_UPnPUUID.length()?g_settings.m_UPnPUUID.c_str():NULL
+        );
     m_ServerHolder->m_Device->m_ModelName = "Xbox Media Center";
 
     // since the xbox doesn't support multicast
@@ -630,6 +636,10 @@ CUPnP::StartServer()
 
     // start server
     m_UPnP->AddDevice(m_ServerHolder->m_Device);
+
+    // save UUID
+    g_settings.m_UPnPUUID = m_ServerHolder->m_Device->GetUUID();
+    g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
 }
 
 /*----------------------------------------------------------------------
