@@ -13,6 +13,7 @@ public:
   virtual void OnWindowLoaded();
   static bool ShowAndAddMediaSource(const CStdString &type);
   static bool ShowAndEditMediaSource(const CStdString &type, const CShare &share);
+  static bool ShowAndEditMediaSource(const CStdString &type, const CStdString &share);
 
   bool IsConfirmed() const { return m_confirmed; };
 

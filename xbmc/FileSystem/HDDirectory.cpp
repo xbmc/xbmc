@@ -46,8 +46,11 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
   FILETIME localTime;
   CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
-  // Causing: Empty Folder not openable!
-  //if (!hFind.isValid()) return false;
+  
+  // on error, check if path exists at all, this will return true if empty folder
+  if (!hFind.isValid()) 
+      return Exists(strPath1);
+
   if (hFind.isValid())
   {
     do
