@@ -13,6 +13,52 @@ typedef vector<CStdString> VECMOVIESFILES;
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
+typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
+{
+  VIDEODB_ID_MIN = -1,
+  VIDEODB_ID_TITLE = 0,
+  VIDEODB_ID_PLOT = 1,
+  VIDEODB_ID_PLOTOUTLINE = 2,
+  VIDEODB_ID_TAGLINE = 3,
+  VIDEODB_ID_VOTES = 4,
+  VIDEODB_ID_RATING = 5,
+  VIDEODB_ID_CREDITS = 6,
+  VIDEODB_ID_YEAR = 7,
+  VIDEODB_ID_THUMBURL = 8,
+  VIDEODB_ID_IDENT = 9,
+  VIDEODB_ID_WATCHED = 10,
+  VIDEODB_ID_RUNTIME = 11,
+  VIDEODB_ID_MPAA = 12,
+  VIDEODB_ID_TOP250 = 13,
+  VIDEODB_ID_MAX
+} VIDEODB_IDS;
+
+#define VIDEODB_TYPE_STRING 1
+#define VIDEODB_TYPE_INT 2
+#define VIDEODB_TYPE_FLOAT 3
+#define VIDEODB_TYPE_BOOL 4
+
+const struct SDbMovieOffsets
+{
+  int type;
+  size_t offset;
+} DbMovieOffsets[] = 
+{
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strTitle) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPlot) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPlotOutline) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strTagLine) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strVotes) },
+  { VIDEODB_TYPE_FLOAT, offsetof(CIMDBMovie,m_fRating) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strWritingCredits) },
+  { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iYear) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strPictureURL) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strIMDBNumber) },
+  { VIDEODB_TYPE_BOOL, offsetof(CIMDBMovie,m_bWatched) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strRuntime) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strMPAARating) },
+  { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iTop250) }
+};
 
 class CBookmark
 {
@@ -42,8 +88,7 @@ public:
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
-  long AddMovie(const CStdString& strFilenameAndPath, const CStdString& strcdLabel, bool bHassubtitles);
-  long AddGenre(const CStdString& strGenre1);
+  long AddMovie(const CStdString& strFilenameAndPath);
 
   void MarkAsWatched(const CFileItem &item);
   void MarkAsWatched(long lMovieId);
@@ -51,35 +96,31 @@ public:
   void MarkAsUnWatched(long lMovieId);
   void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle);
 
-  void GetGenres(VECMOVIEGENRES& genres, int iShowMode = VIDEO_SHOW_ALL);
-  void GetMoviesByGenre(CStdString& strGenre, VECMOVIES& movies);
-
-  void GetActors(VECMOVIEACTORS& actors, int iShowMode = VIDEO_SHOW_ALL);
-  void GetMoviesByActor(CStdString& strActor, VECMOVIES& movies);
-
-  void GetYears(VECMOVIEYEARS& years, int iShowMode = VIDEO_SHOW_ALL);
-  void GetMoviesByYear(CStdString& strYear, VECMOVIES& movies);
-
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
   bool HasSubtitle(const CStdString& strFilenameAndPath);
   void DeleteMovieInfo(const CStdString& strFileNameAndPath);
 
-  void GetMovies(VECMOVIES& movies);
   void GetFilePath(long lMovieId, CStdString &filePath);
   void GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lMovieId = -1);
   long GetMovieInfo(const CStdString& strFilenameAndPath);
   void SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details);
-  void GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
 
-  void GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD);
-  void AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
+  void GetMoviesByPath(const CStdString& strPath1, VECMOVIES& movies);
+  void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
+
+  void GetGenresByName(const CStdString& strSearch, CFileItemList& items);
+  void GetActorsByName(const CStdString& strSearch, CFileItemList& items);
+  void GetDirectorsByName(const CStdString& strSearch, CFileItemList& items);
+  void GetTitlesByName(const CStdString& strSearch, CFileItemList& items);
+
+  void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD);
+  void AddBookMarkToFile(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
   bool GetResumeBookMark(const CStdString& strFilenameAndPath, CBookmark &bookmark);
-  void ClearBookMarkOfVideo(const CStdString& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
-  void ClearBookMarksOfMovie(const CStdString& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
+  void ClearBookMarkOfFile(const CStdString& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
+  void ClearBookMarksOfFile(const CStdString& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
 
+  void RemoveContentForPath(const CStdString& strPath);
   void DeleteMovie(const CStdString& strFilenameAndPath);
-  void GetDVDLabel(long lMovieId, CStdString& strDVDLabel);
-  void SetDVDLabel(long lMovieId, const CStdString& strDVDLabel1);
   int GetRecentMovies(long* pMovieIdArray, int nSize);
 
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
@@ -88,29 +129,36 @@ public:
 
   bool GetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
+  void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent);
 
-  bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, long idYear=-1);
+  bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1);
+  bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetGenreById(long lIdGenre, CStdString& strGenre);
   int GetMovieCount();
+  bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent);
+  bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, int& iFound);
 
   void CleanDatabase();
-
+  
+  long AddFile(const CStdString& strFileName);
 protected:
   long GetPath(const CStdString& strPath);
-  long AddPath(const CStdString& strPath);
+  long GetFile(const CStdString& strFilenameAndPath, long& lMovieId, long& lEpisodeId, bool bExact = false);
 
   long GetMovie(const CStdString& strFilenameAndPath);
-  long GetFile(const CStdString& strFilenameAndPath, long &lPathId, long& lMovieId, bool bExact = false);
-  long AddFile(long lMovieId, long lPathId, const CStdString& strFileName);
+
+  long AddPath(const CStdString& strPath);
+  long AddGenre(const CStdString& strGenre1);
   long AddActor(const CStdString& strActor);
 
-  void AddActorToMovie(long lMovieId, long lActorId);
+  void AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole);
+  void AddDirectorToMovie(long lMovieId, long lDirectorId);
   void AddGenreToMovie(long lMovieId, long lGenreId);
 
-  CIMDBMovie GetDetailsFromDataset(auto_ptr<Dataset> &pDS);
+  CIMDBMovie GetDetailsForMovie(long lMovieId);
 
 private:
   virtual bool CreateTables();

@@ -1,9 +1,31 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIViewStateVideo.h"
 #include "playlistplayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 
-using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
+using namespace DIRECTORY;
+using namespace VIDEODATABASEDIRECTORY;
 
 CStdString CGUIViewStateWindowVideo::GetLockType()
 {
@@ -38,7 +60,7 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
     CStdString strFileMask = "%L";
     // when stacking is enabled, filenames are already cleaned so use the existing label
     if (g_stSettings.m_iMyVideoStack != STACK_NONE)
-      strFileMask = "%L"; 
+      strFileMask = "%L";
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
       AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS(strFileMask, "%I", "%L", ""));  // FileName, Size | Foldername, empty
     else
@@ -92,6 +114,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(SORT_ORDER_NONE);
       }
       break;
+    case NODE_TYPE_DIRECTOR:
     case NODE_TYPE_ACTOR:
       {
         AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty

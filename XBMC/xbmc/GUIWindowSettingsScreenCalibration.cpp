@@ -3,6 +3,7 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
+#include "GUILabelControl.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -50,13 +51,13 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
   case ACTION_CALIBRATE_RESET:
     {
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-      pDialog->SetHeading(20325);      
+      pDialog->SetHeading(20325);
       CStdString strText;
-      strText.Format(g_localizeStrings.Get(20326).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode);      
+      strText.Format(g_localizeStrings.Get(20326).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode);
       pDialog->SetLine(0, strText);
       pDialog->SetLine(1, 20327);
       pDialog->SetChoice(0, 222);
-      pDialog->SetChoice(1, 186);      
+      pDialog->SetChoice(1, 186);
       pDialog->DoModal();
       if (pDialog->IsConfirmed())
       {
@@ -114,7 +115,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       g_graphicsContext.SetCalibrating(true);
-      
+
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
       if (g_application.IsPlayingVideo())
@@ -315,7 +316,27 @@ void CGUIWindowSettingsScreenCalibration::Render()
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, "");
   }
 
+  SET_CONTROL_HIDDEN(CONTROL_TOP_LEFT);
+  SET_CONTROL_HIDDEN(CONTROL_BOTTOM_RIGHT);
+  SET_CONTROL_HIDDEN(CONTROL_SUBTITLES);
+  SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
+
+  m_needsScaling = true;
   CGUIWindow::Render();
+  g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, false);
+
+  SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
+  SET_CONTROL_VISIBLE(CONTROL_BOTTOM_RIGHT);
+  SET_CONTROL_VISIBLE(CONTROL_SUBTITLES);
+  SET_CONTROL_VISIBLE(CONTROL_PIXEL_RATIO);
+
+  // render the movers etc.
+  for (int i = CONTROL_TOP_LEFT; i <= CONTROL_PIXEL_RATIO; i++)
+  {
+    CGUIControl *control = (CGUIControl *)GetControl(i);
+    if (control)
+      control->Render();
+  }
 
   // render the subtitles
   if (g_application.m_pPlayer)

@@ -16,5 +16,5 @@ public:
   virtual __int64 GetLength();
   
 protected:
-  CFile* m_pFile;
+  XFILE::CFile* m_pFile;
 };

@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
-<!--Email: blittan@hotmail.com-->
-<!--Date of translation: 01/06/2007-->
+<!--Email: blittan@xbmcscripts.com-->
+<!--Date of translation: 01/15/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7486-->
+<!--Based on english strings version 7634-->
 <strings>
   <string id="0">Mina Program</string>
   <string id="1">Mina Bilder</string>
@@ -453,7 +453,7 @@
   <string id="538">Stora ikoner</string>
   <string id="539">Bred</string>
   <string id="540">Stor bred</string>
-  <string id="550">Sortera efter: %s</string>
+  <string id="550">Sort: %s</string>
   <string id="551">Namn</string>
   <string id="552">Datum</string>
   <string id="553">Storlek</string>
@@ -951,7 +951,7 @@
   <string id="13346">Filminformation</string>
   <string id="13347">Lägg till i spellistan</string>
   <string id="13348">Sök på IMDb...</string>
-  <string id="13349">Fråga för alla filer</string>
+  <string id="13349">Skanna efter nytt innehåll</string>
   <string id="13350">Nu spelas...</string>
   <string id="13351">Album Information</string>
   <string id="13352">Skanna mapp &gt; databas</string>
@@ -1204,6 +1204,7 @@ den här visualiseringen</string>
   <string id="16002">CDDB sök</string>
   <string id="16003">Spelare</string>
   <string id="16004">Spela media från skiva</string>
+  <string id="16008">Lägg in ny titel</string>
   <string id="16009">Ange filmtitel</string>
   <string id="16010">Ange profilnamn</string>
   <string id="16011">Ange albumtitel</string>
@@ -1463,5 +1464,28 @@ den här visualiseringen</string>
   <string id="20327">till dess usprungliga värden.</string>
   <string id="20328">en plats att kopiera sparat spel till</string>
   <string id="20329">en plats att flytta sparat spel till</string>
+  <string id="20330">Använd mappnamn för sökningar</string>
+  <string id="20331">Fil</string>
+  <string id="20332">Använd mapp eller filnamn i förfrågningar</string>
+  <string id="20333">Sätt innehåll</string>
+  <string id="20334">Mapp</string>
+  <string id="20335">Förfråga rekursivt för innehåll?</string>
+  <string id="20336">Lås upp källor</string>
+  <string id="20338">Ta bort tilldelning</string>
+  <string id="20340">Vill du ta bort alla objekt i</string>
+  <string id="20341">denna mapp från databasen?</string>
+  <string id="20342">Filmer</string>
+  <string id="20343">TV Serier</string>
+  <string id="20344">Denna mapp innehåller</string>
+  <string id="20345">Kör automatisk skanning</string>
+  <string id="20346">Skanna rekursivt</string>
+  <string id="21330">Visa dolda filer och mappar</string>
+  <string id="21331">TuxBox klient</string>
+  <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
+  <string id="21333">Strömmen kommer att stoppas!</string>
+  <string id="21334">Byte till kanal: %s misslyckades!</string>
+  <string id="21335">Är du säker att du vill starta strömmen?</string>
+  <string id="21336">Ansluter till: %s</string>
+  <string id="21337">TuxBox enhet</string>
   <string id="29999">Auto fladderfilter lagning</string>
 </strings>

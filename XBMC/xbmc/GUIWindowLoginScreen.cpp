@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "application.h"
 #include "GUIWindowLoginScreen.h"
@@ -12,11 +33,13 @@
 #include "xbox/network.h"
 #include "skininfo.h"
 
+using namespace XFILE;
+
 #define CONTROL_BIG_LIST 52
 #define CONTROL_LABEL_HEADER 2
 #define CONTROL_LABEL_SELECTED_PROFILE 3
 
-CGUIWindowLoginScreen::CGUIWindowLoginScreen(void) 
+CGUIWindowLoginScreen::CGUIWindowLoginScreen(void)
 : CGUIWindow(WINDOW_LOGIN_SCREEN, "LoginScreen.xml")
 {
   watch.StartZero();
@@ -49,7 +72,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
         {
           int iItem = m_viewControl.GetSelectedItem();
           bool bResult = OnPopupMenu(m_viewControl.GetSelectedItem());
-          if (bResult) 
+          if (bResult)
           {
             Update();
             CGUIMessage msg(GUI_MSG_ITEM_SELECT,GetID(),CONTROL_BIG_LIST,iItem);
@@ -67,7 +90,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           bool bCanceled;
           if (!bOkay)
             bOkay = g_passwordManager.IsProfileLockUnlocked(m_viewControl.GetSelectedItem(), bCanceled);
-          
+
           if (bOkay)
           {
             if (CFile::Exists("q:\\scripts\\autoexec.py") && watch.GetElapsedMilliseconds() < 5000.f)
@@ -89,10 +112,10 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
               if (pWindow)
                 pWindow->ResetControlStates();
             }
-            
+
             g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
             g_settings.SaveProfiles("q:\\system\\profiles.xml");
-            
+
             g_weatherManager.Refresh();
             g_pythonParser.bLogin = true;
             RESOLUTION res=INVALID;
@@ -116,7 +139,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           else
           {
             if (!bCanceled && iItem != 0)
-              CGUIDialogOK::ShowAndGetInput(20068,20117,20022,20022); 
+              CGUIDialogOK::ShowAndGetInput(20068,20117,20022,20022);
           }
         }
       }
@@ -130,7 +153,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
         return true;
       }
     }
-    default:  
+    default:
     break;
 
   }
@@ -171,11 +194,11 @@ void CGUIWindowLoginScreen::OnInitWindow()
 }
 
 void CGUIWindowLoginScreen::OnWindowLoaded()
-{  
+{
   CGUIWindow::OnWindowLoaded();
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(GetControl(CONTROL_BIG_LIST)); 
+  m_viewControl.AddView(GetControl(CONTROL_BIG_LIST));
 }
 
 void CGUIWindowLoginScreen::Update()
@@ -215,15 +238,15 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     posX = pList->GetXPosition() + pList->GetWidth() / 2;
     posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
-  
+
   bool bSelect = m_vecItems[iItem]->IsSelected();
   // mark the item
   m_vecItems[iItem]->Select(true);
-  
+
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return false;
-  
+
   // initialize the menu (loaded on demand)
   pMenu->Initialize();
 
@@ -248,7 +271,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
         g_passwordManager.iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
       else // be inconvenient
         g_applicationMessenger.Shutdown();
-      
+
       return true;
     }
     if (!g_passwordManager.IsMasterLockUnlocked(true))
@@ -268,6 +291,13 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
   if (iItem < (int)g_settings.m_vecProfiles.size())
     m_vecItems[iItem]->Select(bSelect);
-  
+
   return (btnid > 0);
-} 
+}
+
+CFileItem* CGUIWindowLoginScreen::GetCurrentListItem()
+{
+  int iItem = m_viewControl.GetSelectedItem();
+  if (iItem < 0) return NULL;
+  return m_vecItems[iItem];
+}

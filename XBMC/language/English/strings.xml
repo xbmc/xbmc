@@ -980,7 +980,7 @@
   <string id="13346">Movie Information</string>
   <string id="13347">Queue Item</string>
   <string id="13348">Search IMDb...</string>
-  <string id="13349">Query Info For All Files</string>
+  <string id="13349">Scan For New Content</string>
   <string id="13350">Now Playing...</string>
   <string id="13351">Album Information</string>
   <string id="13352">Scan All to Database</string>
@@ -1239,12 +1239,13 @@
   <string id="16003">Player</string>
   <string id="16004">Play media from disc</string>
 
+  <string id="16008">Enter New Title</string>
   <string id="16009">Enter the Movie Name</string>
   <string id="16010">Enter the Profile Name</string>
   <string id="16011">Enter the Album Name</string>
   <string id="16012">Enter the Playlist Name</string>
-  <string id="16013">Enter new filename</string>
-  <string id="16014">Enter folder name</string>
+  <string id="16013">Enter New Filename</string>
+  <string id="16014">Enter Folder Name</string>
   <string id="16015">Enter directory</string>
   <string id="16016">Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
   <string id="16017">Enter Search String</string>
@@ -1503,7 +1504,38 @@
   <string id="20327">to it's default values.</string>
   <string id="20328">a location to copy the save to</string>
   <string id="20329">a location to move the save to</string>
+  <string id="20330">Use Folder Names For Lookups</string>
+  <string id="20331">File</string>
+  <string id="20332">Use folder or file names in lookups?</string>
+  <string id="20333">Set Content</string>
+  <string id="20334">Folder</string>
+  <string id="20335">Look for content recursively?</string>
+  <string id="20336">Unlock Sources</string>
+  <string id="20337">Actor</string>
+  <string id="20338">Movie</string>
+  <string id="20339">Director</string>
+  <string id="20340">Do you want to remove all items within</string>
+  <string id="20341">this path from the database?</string>
+  <string id="20342">Movies</string>
+  <string id="20343">TV Shows</string>
+  <string id="20344">This directory contains</string>
+  <string id="20345">Run Automated Scan</string>
+  <string id="20346">Scan Recursively</string>
+  <string id="20347">as</string>
+  <string id="20348">Directors</string>
+  <!-- up to 21329 is reserved for the video db !! !-->
 
+  <string id="21330">Show hidden files and directories</string>
+  
+  <string id="21331">TuxBox Client</string>
+  <string id="21332">WARNING: Target TuxBox device is in Recording-Mode!</string>
+  <string id="21333">The Stream will be Stopped!</string>
+  <string id="21334">Zap to Channel: %s Failed!</string>
+  <string id="21335">Are you sure to start the stream?</string>
+  <string id="21336">Connecting to: %s</string>
+  <string id="21337">TuxBox Device</string>
+  <!-- up to 21355 is reserved for the TuxBox Client!! !-->
+  
   <string id="21356">UPnP Music</string>
   <string id="21357">UPnP Video</string>
   <string id="21358">UPnP Pictures</string>
@@ -1514,6 +1546,9 @@
   <string id="21363">Manage UPnP Picture Shares</string>
   <string id="21364">Edit Media Share</string>
   <string id="21365">Remove Media Share</string>  
+  
+  <!-- up to 21370 is reserved for the upnp branch !-->
+  <string id="21370">Play Navigation Sounds During Media Playback</string>  
 
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>

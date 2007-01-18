@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: StompSC-->
-<!--Email: stompsc@yahoo.de-->
-<!--Date of translation: 01/05/2007-->
+<!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
+<!--Email: Bobbin007@xboxmediacenter.com-->
+<!--Date of translation: 01/17/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7447-->
+<!--Based on english strings version 7662-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -12,6 +12,7 @@
   <string id="3">Videos</string>
   <string id="4">TV-Programm</string>
   <string id="5">Einstellungen</string>
+  <string id="6">XBOX Media Center SVN</string>
   <string id="7">Dateimanager</string>
   <string id="8">Wetter</string>
   <string id="11">Montag</string>
@@ -237,28 +238,28 @@
   <string id="310">- Auto-Helligkeit/-Kontrast</string>
   <string id="311">- Dering</string>
   <string id="312">(0=auto)</string>
-  <string id="313">Datenbank wird geordnet</string>
+  <string id="313">Datenbank wird aktualisiert</string>
   <string id="314">Vorbereitung...</string>
   <string id="315">Datenbank-Fehler</string>
   <string id="316">Durchsuche Titel...</string>
-  <string id="317">Datenbank erfolgreich geordnet</string>
-  <string id="318">ordne Titel...</string>
-  <string id="319">Fehler beim Titel ordnen</string>
-  <string id="320">ordne Interpreten...</string>
-  <string id="321">Fehler beim Interpreten ordnen</string>
-  <string id="322">ordne Genres...</string>
-  <string id="323">Fehler beim Genres ordnen</string>
-  <string id="324">ordne Pfade...</string>
-  <string id="325">Fehler beim Pfade ordnen </string>
-  <string id="326">ordne Alben...</string>
-  <string id="327">Fehler beim Alben ordnen</string>
-  <string id="328">Schreibe Änderungen...</string>
-  <string id="329">Fehler beim Schreiben der Änderungen</string>
-  <string id="330">Bitte einen Moment Geduld...</string>
-  <string id="331">Komprimiere Datenbank...</string>
+  <string id="317">Die Datenbank wurde erfolgreich aktualisiert</string>
+  <string id="318">Titel werden aktualisiert...</string>
+  <string id="319">Fehler beim aktualisieren der Titel</string>
+  <string id="320">Interpreten werden aktualisiert...</string>
+  <string id="321">Fehler beim aktualisieren der Interpreten</string>
+  <string id="322">Genres werden aktualisiert...</string>
+  <string id="323">Fehler beim aktualisieren der Genres</string>
+  <string id="324">Pfade werden aktualisiert...</string>
+  <string id="325">Fehler beim aktualisieren der Pfade</string>
+  <string id="326">Alben werden aktualisiert...</string>
+  <string id="327">Fehler beim aktualisieren der Alben</string>
+  <string id="328">Änderungen werden gespeichert...</string>
+  <string id="329">Fehler beim speichern der Änderungen</string>
+  <string id="330">Bitte haben Sie einen Moment Geduld...</string>
+  <string id="331">Datenbank wird komprimiert...</string>
   <string id="332">Fehler beim komprimieren der Datenbank</string>
-  <string id="333">Möchten Sie die Datenbank ordnen?</string>
-  <string id="334">Datenbank ordnen...</string>
+  <string id="333">Ihre Datenbank wird nach ungültigen Einträgen&#10;durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
+  <string id="334">Ungültige Datenbank-Einträge entfernen...</string>
   <string id="335">Start</string>
   <string id="336">Bildrate konvertieren</string>
   <string id="337">Audio-Ausgabe</string>
@@ -287,7 +288,7 @@
   <string id="364">- Receiver unterstützt AC3</string>
   <string id="365">Nach Namen</string>
   <string id="366">Nach Jahr</string>
-  <string id="367">Nach Beurteilung</string>
+  <string id="367">Nach Bewertung</string>
   <string id="368">IMDb-Suche</string>
   <string id="369">Titel</string>
   <string id="370">Gewitter</string>
@@ -375,7 +376,7 @@
   <string id="453">Reihe 3</string>
   <string id="454">Reihe 4</string>
   <string id="455">Reihen</string>
-  <string id="456">Mode</string>
+  <string id="456">Modus</string>
   <string id="457">Ansicht ändern</string>
   <string id="459">Untertitel</string>
   <string id="460">Audiospur</string>
@@ -438,7 +439,7 @@
   <string id="523">Medium wechseln</string>
   <string id="524">Playlist wählen</string>
   <string id="525">Neue Playlist</string>
-  <string id="526">Zur Playliste hinzufügen</string>
+  <string id="526">Zur Playlist hinzufügen</string>
   <string id="527">Manuell zur Datenbank hinzufügen</string>
   <string id="528">Titel eingeben</string>
   <string id="529">Fehler: Titel doppelt</string>
@@ -448,12 +449,12 @@
   <string id="533">Genre eingeben</string>
   <string id="534">Ansicht: %s</string>
   <string id="535">Liste</string>
-  <string id="536">Icons</string>
-  <string id="537">gr. Liste</string>
-  <string id="538">gr. Icons</string>
+  <string id="536">Symbole</string>
+  <string id="537">Liste 2</string>
+  <string id="538">Symbole 2</string>
   <string id="539">Wide</string>
-  <string id="540">gr. Wide</string>
-  <string id="550">nach: %s</string>
+  <string id="540">Wide 2</string>
+  <string id="550">Nach: %s</string>
   <string id="551">Name</string>
   <string id="552">Datum</string>
   <string id="553">Größe</string>
@@ -472,7 +473,9 @@
   <string id="580">Sortierrichtung</string>
   <string id="581">Sortiermethode</string>
   <string id="582">Ansicht</string>
-  <string id="583">Ansicht für einzelne Ordner merken</string>
+  <string id="583">Ansicht für einzelne Ordner speichern</string>
+  <string id="584">Aufsteigend</string>
+  <string id="585">Absteigend</string>
   <string id="588">Party-Modus verlassen</string>
   <string id="589">Party-Modus</string>
   <string id="590">Zufall</string>
@@ -483,7 +486,7 @@
   <string id="595">Wiederholen Aus</string>
   <string id="596">Wiederholen Eins</string>
   <string id="597">Wiederholen Alle</string>
-  <string id="600">CD kopieren</string>
+  <string id="600">Audio-CD kopieren</string>
   <string id="601">Mittlere Qualität</string>
   <string id="602">Standard Qualität</string>
   <string id="603">Höchste Qualität</string>
@@ -494,7 +497,7 @@
   <string id="608">CD oder Titel konnte nicht kopiert werden!</string>
   <string id="609">CD Ziel-Pfad ist nicht konfiguriert.</string>
   <string id="610">Titel kopieren</string>
-  <string id="620">CD-Kopieren</string>
+  <string id="620">CD-Kopien</string>
   <string id="621">Umwandlungs-Algorithmus</string>
   <string id="622">Qualität</string>
   <string id="623">Bitrate</string>
@@ -509,28 +512,26 @@
   <string id="635">Original-Größe</string>
   <string id="636">Benutzerdefiniert</string>
   <string id="637">Wiedergabeverstärkung</string>
-  <string id="638">Modus Wiedergabeverstärkung</string>
-  <string id="639">Titel Niveau</string>
-  <string id="640">Album Niveau</string>
+  <string id="638">Modus für Wiedergabeverstärkung</string>
+  <string id="639">Titel-Niveau</string>
+  <string id="640">Album-Niveau</string>
   <string id="641">PreAmp Level bei Wiedergabeverstärkung</string>
   <string id="642">PreAmp Level ohne Wiedergabeverstärkung</string>
   <string id="643">Übersteuerung bei Wiedergabeverstärkung vermeiden</string>
   <string id="644">Schwarze Balken entfernen</string>
-  <string id="645">Eine große Datei muss entpackt werden.
-Möchten Sie fortfahren?</string>
+  <string id="645">Eine große Datei muss entpackt werden.&#10;Möchten Sie fortfahren?</string>
   <string id="646">Titel entfernen</string>
-  <string id="700">Datenbank aufräumen</string>
+  <string id="700">Datenbank wird aktualisiert</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
-  <string id="702">Dieser Pfad wurde bereits aktualisiert. Möchten Sie den Pfad
-komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
+  <string id="702">Dieser Pfad wurde bereits aktualisiert. Möchten Sie den Pfad&#10;komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="705">Netzwerk</string>
   <string id="706">HTTP-Proxy-Host</string>
   <string id="707">HTTP-Proxy-Port</string>
   <string id="708">HTTP-Proxy verwenden</string>
-  <string id="709">XLink KaiXTag</string>
-  <string id="710">XLink Kai Passwort</string>
+  <string id="709">XTag</string>
+  <string id="710">Passwort</string>
   <string id="711">Internet-Protokoll (IP)</string>
-  <string id="712">Es wurde ein ungültiger Port festgelegt. Der Wert muß zwischen 1 und 65535 liegen.</string>
+  <string id="712">Es wurde ein ungültiger Port festgelegt. Der Port muß zwischen 1 und 65535 liegen.</string>
   <string id="713">HTTP-Proxy</string>
   <string id="714">XLink-Kai</string>
   <string id="715">Zuweisung der IP-Adresse</string>
@@ -542,7 +543,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="721">- Standard-Gateway</string>
   <string id="722">- DNS-Server</string>
   <string id="723">Speichern &amp; Neustarten</string>
-  <string id="724">Ungültige Adresse eingegeben. Wert muß AAA.BBB.CCC.DDD entsprechen</string>
+  <string id="724">Ungültige Adresse. Das Format muß AAA.BBB.CCC.DDD entsprechen</string>
   <string id="725">mit Zahlen zwischen 0 und 255 sein.</string>
   <string id="726">Änderungen nicht gespeichert. Weiter ohne Speichern?</string>
   <string id="727">Web-Server</string>
@@ -563,8 +564,8 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="742">Weiß</string>
   <string id="743">Gelb</string>
   <string id="744">Dateien</string>
-  <string id="745">Keine Informationen für diese Ansicht verfügbar.</string>
-  <string id="746">Bitte wechseln Sie wieder zur Ansicht 'Dateien'.</string>
+  <string id="745">Es sind keine Informationen für diese Ansicht verfügbar.</string>
+  <string id="746">Bitte wechseln Sie wieder zur Datei-Ansicht.</string>
   <string id="747">Fehler beim Laden des Bildes!</string>
   <string id="748">Pfad bearbeiten</string>
   <string id="749">Quelle hinzufügen</string>
@@ -758,7 +759,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="12013">Trainer</string>
   <string id="12014">Es wurden keine Trainer gefunden.</string>
   <string id="12015">Trainer-Einstellungen</string>
-  <string id="12016">Registrierte Trainer fehlen. Bitte aktualisieren Sie die Liste.</string>
+  <string id="12016">Registrierte Trainer fehlen. Bitte aktualisieren Sie Ihre Liste.</string>
   <string id="12017">Wiedergabe immer an der letzten Position fortsetzen</string>
   <string id="12018">Nein</string>
   <string id="12019">Ja</string>
@@ -785,8 +786,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="12328">Bitte geben Sie das Passwort zum Entsperren ein</string>
   <string id="12329">oder mit C abbrechen</string>
   <string id="12330">Geben Sie bitte die Gamepad-Tastenkombination ein</string>
-  <string id="12331">und bestätigen Sie diese mit der 'Start'-Taste.
-Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
+  <string id="12331">und bestätigen Sie diese mit der 'Start'-Taste.&#10;Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="12332">Sperren</string>
   <string id="12333">Entsperren</string>
   <string id="12334">Sperre zurücksetzen</string>
@@ -824,11 +824,11 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="12385">Tag/Monat</string>
   <string id="12386">Monat/Tag</string>
   <string id="12387">Datenbank aktualisieren</string>
-  <string id="12390">Laufzeit</string>
+  <string id="12390">Betriebszeit</string>
   <string id="12391">Minuten</string>
   <string id="12392">Stunden</string>
   <string id="12393">Tage</string>
-  <string id="12394">Laufzeitzeit gesamt</string>
+  <string id="12394">Betriebszeit gesamt</string>
   <string id="12600">Wetter</string>
   <string id="12900">Bildschirmschoner</string>
   <string id="12901">Vollbild-OSD</string>
@@ -928,7 +928,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13320">Stereo</string>
   <string id="13321">Nur links</string>
   <string id="13322">Nur rechts</string>
-  <string id="13323">CD+G aktivieren</string>
+  <string id="13323">Karaoke CD+G aktivieren</string>
   <string id="13324">Hintergrundtransparenz</string>
   <string id="13325">Vordergrundtransparenz</string>
   <string id="13326">A/V-Verzögerung</string>
@@ -1192,7 +1192,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="15281">Bitte geben Sie einen zu suchenden Interpreten ein</string>
   <string id="15282">Bitte geben Sie einen zu suchenden Tagnamen ein</string>
   <string id="15283">Kürzlich gehörte Titel von %name%</string>
-  <string id="15284">%name%'s Last.FM Radio Empfehlung hören</string>
+  <string id="15284">%name%'s Last.fm Radio Empfehlung anhören</string>
   <string id="15300">Der Pfad wurde nicht gefunden oder ist ungültig.</string>
   <string id="15301">Keine Verbindung zum Netzwerkserver.</string>
   <string id="15302">Es wurden keine Server gefunden.</string>
@@ -1204,6 +1204,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="16002">CDDB anfragen</string>
   <string id="16003">Wiedergabe</string>
   <string id="16004">Inhalt der CD/DVD abspielen</string>
+  <string id="16008">Bitte geben Sie einen neuen Titel ein</string>
   <string id="16009">Bitte geben Sie den Namen des Films ein</string>
   <string id="16010">Bitte geben Sie einen Namen für das Profil ein</string>
   <string id="16011">Bitte geben Sie den Namen des Albums ein</string>
@@ -1224,7 +1225,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="16026">Wiedergabe der Playlist abgebrochen</string>
   <string id="16027">Zu viele Einträge konnten nicht wiedergegeben werden</string>
   <string id="16030">Party-Modus wurde beendet.</string>
-  <string id="16031">Es befinden sich keine passenden Titel in der Datenbank.</string>
+  <string id="16031">Es sind keine passenden Titel in der Datenbank.</string>
   <string id="16032">Die Datenbank konnte nicht gestartet werden.</string>
   <string id="16033">Die Datenbank konnte nicht geöffnet werden.</string>
   <string id="16034">Es konnten keine Titel aus der Datenbank geladen werden.</string>
@@ -1246,7 +1247,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="16204">Fehler beim Verschieben von mindestens einer Datei.</string>
   <string id="16205">Fehler beim Löschen.</string>
   <string id="16206">Fehler beim Löschen von mindestens einer Datei.</string>
-  <string id="20000">Ordner für CD-Aufnahmen</string>
+  <string id="20000">Ordner für CD-Kopien</string>
   <string id="20001">Externen DVD-Player verwenden</string>
   <string id="20002">Externer DVD-Player</string>
   <string id="20003">Ordner für Trainer</string>
@@ -1268,6 +1269,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20019">Thumbnail wählen</string>
   <string id="20020">Trainer können nicht zusammen mit XLink verwendet werden!</string>
   <string id="20021">Wählen Sie bitte was Sie verwenden möchten.</string>
+  <string id="20022"></string>
   <string id="20023">Konflikt</string>
   <string id="20024">Nur neue</string>
   <string id="20025">Komplett</string>
@@ -1306,7 +1308,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20069">Der Ordner konnte nicht erstellt werden!</string>
   <string id="20070">Profil-Ordner</string>
   <string id="20071">Möchten Sie mit neuen Medien-Quellen beginnen</string>
-  <string id="20072">Bitte stellen Sie sicher das der selektierte Ordner beschreibbar</string>
+  <string id="20072">Bitte stellen Sie sicher, dass der selektierte Ordner beschreibbar</string>
   <string id="20073">und der neue Ordner-Name gültig ist.</string>
   <string id="20074">MPAA Stufe:</string>
   <string id="20075">Bitte geben Sie das Master-Passwort ein</string>
@@ -1445,24 +1447,52 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20309">Neuer Ordner</string>
   <string id="20310">LCD während der Wiedergabe ausschalten</string>
   <string id="20311">Unbekannt oder OnBoard (geschützt)</string>
-  <string id="20312">LCD während 'Pause' verdunkeln</string>
-  <string id="20313">Bei 'Pause' die LED wieder einschalten</string>
+  <string id="20312">Während 'Pause' das LCD wieder einschalten</string>
+  <string id="20313">Während 'Pause' die LED wieder einschalten</string>
   <string id="20314">Video-Datenbank</string>
   <string id="20315">Spielstände</string>
-  <string id="20316">Sortiert nach ID </string>
+  <string id="20316">Sortiert nach ID</string>
   <string id="20317">Spielstände herunterladen</string>
   <string id="20318">Spielstände auf der Festplatte</string>
-  <string id="20319">Fehler beim Spielstand herunterladen</string>
+  <string id="20319">Fehler beim Herunterladen des Spielstandes</string>
   <string id="20320">Spielstand zum Herunterladen und Installieren wählen</string>
-  <string id="20321">Kein Online Spielstand für das gewählte Spiel gefunden</string>
+  <string id="20321">Kein Online-Spielstand für das gewählte Spiel gefunden</string>
   <string id="20322">Spielstand wählen</string>
-  <string id="20323">Spielstand</string>
+  <string id="20323">Spielstände</string>
   <string id="20324">Einzelteil spielen...</string>
-  <string id="20325">Kalibration rücksetzen</string>
+  <string id="20325">Kalibrierung zurücksetzen</string>
   <string id="20326">Dies setzt den Kalibrierwert für %s</string>
-  <string id="20327">auf den Defaultwert zurück</string>
+  <string id="20327">auf den Standardwert zurück</string>
   <string id="20328">Ziel für 'Spielstand kopieren'</string>
   <string id="20329">Ziel für 'Spielstand verschieben'</string>
+  <string id="20330">Odnernamen für Anfragen verwenden</string>
+  <string id="20331">Datei</string>
+  <string id="20332">Möchten Sie Ordner- oder Dateinamen für Anfragen verwenden?</string>
+  <string id="20333">Inhalt verwenden</string>
+  <string id="20334">Ordner</string>
+  <string id="20335">Möchten Sie rekursiv nach Inhalten suchen?</string>
+  <string id="20336">Quellen freigeben</string>
+  <string id="20337">Darsteller</string>
+  <string id="20338">Aufgabe entfernen</string>
+  <string id="20339">Regisseur</string>
+  <string id="20340">Möchten Sie alle Elemente innerhalb dieses Pfades</string>
+  <string id="20341">aus der Datenbank entfernen?</string>
+  <string id="20342">Filme</string>
+  <string id="20343">TV-Serien</string>
+  <string id="20344">Dieser Ordner beinhaltet</string>
+  <string id="20345">Automatisierten Scan verwenden</string>
+  <string id="20346">Rekursives Scannen</string>
+  <string id="20347">als</string>
+  <string id="20348">Regisseure</string>
+  <!-- up to 21329 is reserved for the video db !! !-->
+  <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
+  <string id="21331">TuxBox Client</string>
+  <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
+  <string id="21333">Der Stream wird gestoppt!</string>
+  <string id="21334">Umschalten auf Kanal: %s fehlgeschlagen!</string>
+  <string id="21335">Möchten Sie nun den Stream starten?</string>
+  <string id="21336">Verbinden zu: %s</string>
+  <string id="21337">TuxBox-Laufwerk</string>
+  <!-- up to 21355 is reserved for the TuxBox Client !! !-->
   <string id="29999">Automatische Videofilter Korrektur</string>
 </strings>
- 	  	 
