@@ -448,10 +448,13 @@ CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileIt
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
   SetSortOrder(SORT_ORDER_NONE);
+
+  LoadViewState(items.m_strPath, WINDOW_MUSIC_PLAYLIST);
 }
 
 void CGUIViewStateWindowMusicPlaylist::SaveViewState()
 {
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_PLAYLIST);
 }
 
 int CGUIViewStateWindowMusicPlaylist::GetPlaylist()
