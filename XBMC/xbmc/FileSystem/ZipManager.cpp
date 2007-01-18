@@ -2,6 +2,8 @@
 #include "ZipManager.h"
 #include "../util.h"
 
+using namespace XFILE;
+
 CZipManager g_ZipManager;
 
 CZipManager::CZipManager()

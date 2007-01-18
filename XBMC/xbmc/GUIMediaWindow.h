@@ -4,8 +4,6 @@
 #include "FileSystem/DirectoryHistory.h"
 #include "GUIViewControl.h"
 
-using namespace DIRECTORY;
-
 // base class for all media windows
 class CGUIMediaWindow : public CGUIWindow
 {
@@ -18,7 +16,7 @@ public:
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   virtual void OnInitWindow();
-  CFileItem *GetCurrentListItem();
+  virtual CFileItem *GetCurrentListItem();
   const CFileItem &CurrentDirectory() const { return m_vecItems;};
 
 protected:
@@ -50,7 +48,7 @@ protected:
   void OnRenameItem(int iItem);
 
 protected:
-  CVirtualDirectory m_rootDir;
+  DIRECTORY::CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
 
   // current path and history

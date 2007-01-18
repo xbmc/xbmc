@@ -25,8 +25,6 @@
 
 #include "idirectory.h"
 
-using namespace DIRECTORY;
-
 namespace DIRECTORY
 {
 class CUPnPDirectory :  public IDirectory

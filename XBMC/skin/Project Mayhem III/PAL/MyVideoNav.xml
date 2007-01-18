@@ -45,7 +45,7 @@
 				<label>100</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
-				<onup>9</onup>
+				<onup>11</onup>
 				<ondown>3</ondown>
 			</control>
 			<control type="button" id="3">
@@ -88,16 +88,41 @@
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>99</onup>
-				<ondown>9</ondown>
+				<ondown>8</ondown>
 			</control>
-			<control type="button" id="9">
-				<description>IMDB</description>
+			<control type="button" id="8">
+				<description>Search</description>
 				<posx>50</posx>
 				<posy>268</posy>
-				<label>368</label>
+				<label>137</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>10</onup>
+				<ondown>9</ondown>
+			</control>
+
+			<control type="button" id="9">
+				<description>IMDB</description>
+				<posx>50</posx>
+				<posy>305</posy>
+				<label>368</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>8</onup>
+				<ondown>11</ondown>
+			</control>
+
+                        <control type="radiobutton" id="11">
+				<description>Unlock Shares</description>
+				<posx>50</posx>
+				<posy>342</posy>
+				<label>20336</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onclick>xbmc.mastermode</onclick>
+				<selected>system.ismaster</selected>
+				<visible>system.haslocks</visible>
+				<onup>9</onup>
 				<ondown>2</ondown>
 			</control>
 		</control>

@@ -9,6 +9,11 @@
 #endif
 #include "../DetectDVDType.h"
 
+using namespace XFILE;
+
+namespace DIRECTORY
+{
+
 CVirtualDirectory::CVirtualDirectory(void) : m_vecShares(NULL)
 {
   m_allowPrompting = true;  // by default, prompting is allowed.
@@ -128,11 +133,12 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       || strPath.Left(8).Equals("shout://") 
       || strPath.Left(8).Equals("https://") 
       || strPath.Left(7).Equals("http://") 
-      || strPath.Left(7).Equals("daap://") 
+      || strPath.Left(7).Equals("daap://")
+      || strPath.Left(9).Equals("tuxbox://")
       || strPath.Left(7).Equals("upnp://"))
     {
       // Only cache directory we are getting now
-      if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://"))
+      if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(9).Equals("tuxbox://"))
         g_directoryCache.Clear();
       return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory);
     }
@@ -268,4 +274,5 @@ void CVirtualDirectory::GetShares(VECSHARES &shares) const
       share.strPath = MEDIA_DETECT::CDetectDVDMedia::GetDVDPath();
     }
   }
+}
 }

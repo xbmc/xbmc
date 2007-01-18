@@ -15,6 +15,10 @@
 #include "../PlayListFactory.h"
 #include "../GUIViewState.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
+
 CFactoryFileDirectory::CFactoryFileDirectory(void)
 {}
 

@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUISpinControlEx.h"
@@ -98,6 +119,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   pSpin->AddLabel(g_localizeStrings.Get(20173), NET_PROTOCOL_FTP);
   pSpin->AddLabel(g_localizeStrings.Get(20174), NET_PROTOCOL_DAAP);
   pSpin->AddLabel(g_localizeStrings.Get(20175), NET_PROTOCOL_UPNP);
+  pSpin->AddLabel(g_localizeStrings.Get(21331), NET_PROTOCOL_TUXBOX);
 
   pSpin->SetValue(m_protocol);
   OnProtocolChange();
@@ -180,6 +202,8 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
   // set defaults for the port
   if (m_protocol == NET_PROTOCOL_FTP)
     m_port = "21";
+  if (m_protocol == NET_PROTOCOL_TUXBOX)
+    m_port = "80";
   else if (m_protocol == NET_PROTOCOL_XBMSP)
     m_port = "1400";
   else if (m_protocol == NET_PROTOCOL_DAAP)
@@ -215,7 +239,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   }
   // TODO: FIX BETTER DAAP SUPPORT
   // server browse should be disabled if we are in FTP
-  if (m_server.IsEmpty() && (m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_DAAP))
+  if (m_server.IsEmpty() && (m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_DAAP || m_protocol == NET_PROTOCOL_TUXBOX))
   {
     CONTROL_DISABLE(CONTROL_SERVER_BROWSE);
   }
@@ -227,14 +251,14 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   CGUIButtonControl *path = (CGUIButtonControl *)GetControl(CONTROL_REMOTE_PATH);
   if (path)
   {
-    path->SetLabel2(m_path);
-    path->SetEnabled(m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP);
+     path->SetLabel2(m_path);
+     path->SetEnabled(m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP && m_protocol != NET_PROTOCOL_TUXBOX);
   }
   // port
   CGUIButtonControl *port = (CGUIButtonControl *)GetControl(CONTROL_PORT_NUMBER);
   if (port)
   {
-    port->SetEnabled(m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_FTP);
+    port->SetEnabled(m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_TUXBOX);
     port->SetLabel2(m_port);
   }
   // username
@@ -243,8 +267,8 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   {
     username->SetEnabled(m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP);
     username->SetLabel2(m_username);
+
   }
-  
   // password
   CGUIButtonControl *password = (CGUIButtonControl *)GetControl(CONTROL_PASSWORD);
   if (password)
@@ -269,6 +293,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     path = "daap://";
   else if (m_protocol == NET_PROTOCOL_UPNP)
     path = "upnp://";
+  else if (m_protocol == NET_PROTOCOL_TUXBOX)
+    path = "tuxbox://";
   if (!m_username.IsEmpty())
   {
     path += m_username;
@@ -282,7 +308,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   path += m_server;
   if ((m_protocol == NET_PROTOCOL_FTP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
    || (m_protocol == NET_PROTOCOL_XBMSP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
-   || (m_protocol == NET_PROTOCOL_DAAP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty()))
+   || (m_protocol == NET_PROTOCOL_DAAP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
+   || (m_protocol == NET_PROTOCOL_TUXBOX && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0))
   {
     path += ":";
     path += m_port;
@@ -307,6 +334,8 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_DAAP;
   else if (protocol == "upnp")
     m_protocol = NET_PROTOCOL_UPNP;
+  else if (protocol == "tuxbox")
+    m_protocol = NET_PROTOCOL_TUXBOX;
   else
     m_protocol = NET_PROTOCOL_SMB;  // default to smb
   m_username = url.GetUserName();

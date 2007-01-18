@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "url.h"
 #include "utils/RegExp.h"
@@ -71,7 +92,7 @@ CURL::CURL(const CStdString& strURL)
   // they are all local protocols and have no server part, port number, special options, etc.
   // this removes the need for special handling below.
   if (
-    m_strProtocol.Equals("stack") || 
+    m_strProtocol.Equals("stack") ||
     m_strProtocol.Equals("virtualpath") ||
     m_strProtocol.Equals("multipath") ||
     m_strProtocol.Equals("filereader")
@@ -97,13 +118,13 @@ CURL::CURL(const CStdString& strURL)
       char* szPassword = reg.GetReplaceString("\\3");
       char* szArchive = reg.GetReplaceString("\\4");
       char* szFileName = reg.GetReplaceString("\\5");
-      
+
       m_strHostName = szArchive;
       m_strPassword = szPassword;
       if (szFileName)
         SetFileName(szFileName);
 
-      // currently neither zip nor rar code cares for the 
+      // currently neither zip nor rar code cares for the
       // flags or cache dir, so just ignore them for now
 
       if (szCache) free(szCache);
@@ -114,11 +135,11 @@ CURL::CURL(const CStdString& strURL)
 
       return;
     }
-  }  
-  
-  // check for username/password - should occur before first /  
+  }
+
+  // check for username/password - should occur before first /
   if (iPos == -1) iPos = 0;
-  
+
 
   // for protocols supporting options, chop that part off here
   int iEnd = strURL.length();
@@ -127,6 +148,7 @@ CURL::CURL(const CStdString& strURL)
     || m_strProtocol.Equals("ftp")
     || m_strProtocol.Equals("ftpx")
     || m_strProtocol.Equals("shout")
+    || m_strProtocol.Equals("tuxbox")
     || m_strProtocol.Equals("daap"))
   {
     int iOptions = strURL.find_first_of("?;#", iPos);
@@ -143,7 +165,7 @@ CURL::CURL(const CStdString& strURL)
     iSlash = -1; // was an invalid slash as it was contained in options
 
   if( !m_strProtocol.Equals("iso9660") )
-  {    
+  {
     int iAlphaSign = strURL.Find("@", iPos);
     if (iAlphaSign >= 0 && iAlphaSign < iEnd && (iAlphaSign < iSlash || iSlash < 0))
     {
@@ -154,7 +176,7 @@ CURL::CURL(const CStdString& strURL)
       if (m_strProtocol.Equals("smb"))
       {
         int iSemiColon = strUserNamePassword.Find(";");
-        
+
         if (iSemiColon >= 0)
         {
           m_strDomain = strUserNamePassword.Left(iSemiColon);
@@ -222,7 +244,7 @@ CURL::CURL(const CStdString& strURL)
     {
       m_strFileName = strURL.Mid(iPos, iEnd - iPos);
 
-      iSlash = m_strFileName.Find("/"); 
+      iSlash = m_strFileName.Find("/");
       if(iSlash < 0)
         m_strShareName = m_strFileName;
       else
@@ -231,9 +253,9 @@ CURL::CURL(const CStdString& strURL)
   }
 
   // iso9960 doesnt have an hostname;-)
-  if (m_strProtocol.CompareNoCase("iso9660") == 0 
-    || m_strProtocol.CompareNoCase("musicdb") == 0 
-    || m_strProtocol.CompareNoCase("videodb") == 0 
+  if (m_strProtocol.CompareNoCase("iso9660") == 0
+    || m_strProtocol.CompareNoCase("musicdb") == 0
+    || m_strProtocol.CompareNoCase("videodb") == 0
     || m_strProtocol.CompareNoCase("lastfm") == 0
     || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
   {
@@ -252,7 +274,7 @@ CURL::CURL(const CStdString& strURL)
       m_strHostName = "";
     }
   }
-  
+
   m_strFileName.Replace("\\", "/");
 
   /* update extension */
@@ -333,10 +355,12 @@ void CURL::SetOptions(const CStdString& strOptions)
 {
   m_strOptions.Empty();
   if( strOptions.length() > 0)
-    if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' )
+    if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' || strOptions.Find("xml") >=0 )
+    {
       m_strOptions = strOptions;
+    }
     else
-      CLog::Log(LOGWARNING, __FUNCTION__" - Invalid options specified for url %s", strOptions.c_str());  
+      CLog::Log(LOGWARNING, __FUNCTION__" - Invalid options specified for url %s", strOptions.c_str());
 }
 
 void CURL::SetPort(int port)
@@ -402,13 +426,13 @@ const CStdString& CURL::GetOptions() const
 }
 
 const CStdString CURL::GetFileNameWithoutPath() const
-{  
+{
   return CUtil::GetFileName(m_strFileName);
 }
 
 const char CURL::GetDirectorySeparator() const
 {
-  if ( IsLocal() ) 
+  if ( IsLocal() )
     return '\\';
   else
     return '/';
@@ -421,7 +445,7 @@ void CURL::GetURL(CStdString& strURL) const
                         + m_strUserName.length()
                         + m_strPassword.length()
                         + m_strHostName.length()
-                        + m_strFileName.length() 
+                        + m_strFileName.length()
                         + m_strOptions.length();
                         + 10;
 
@@ -445,7 +469,7 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
   unsigned int sizeneed = m_strProtocol.length()
                         + m_strDomain.length()
                         + m_strHostName.length()
-                        + m_strFileName.length() 
+                        + m_strFileName.length()
                         + m_strOptions.length();
                         + 10;
 

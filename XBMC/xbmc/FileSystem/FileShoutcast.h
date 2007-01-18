@@ -11,7 +11,6 @@
 
 #include "IFile.h"
 
-using namespace XFILE;
 namespace XFILE
 {
 typedef struct FileStateSt

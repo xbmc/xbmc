@@ -2,9 +2,11 @@
 #include "../GUIDialogSeekBar.h"
 #include "../GUIMediaWindow.h"
 #include "../GUIDialogFileBrowser.h"
+#include "../GUIDialogContentSettings.h"
 #include "../Application.h"
 #include "../Util.h"
 #include "../lib/libscrobbler/scrobbler.h"
+#include "../utils/TuxBoxUtil.h"
 #include "KaiClient.h"
 #include "Weather.h"
 #include "../playlistplayer.h"
@@ -34,6 +36,10 @@
 #include "../musicInfoTagLoaderFactory.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
+
+using namespace XFILE;
+using namespace DIRECTORY;
+
 CGUIInfoManager g_infoManager;
 
 void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
@@ -317,6 +323,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("listitem.rating")) ret = LISTITEM_RATING;
     else if (strTest.Equals("listitem.programcount")) ret = LISTITEM_PROGRAM_COUNT;
     else if (strTest.Equals("listitem.duration")) ret = LISTITEM_DURATION;
+    else if (strTest.Equals("listitem.isselected")) ret = LISTITEM_ISSELECTED;
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -687,7 +694,7 @@ string CGUIInfoManager::GetLabel(int info)
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
       if (pWindow && pWindow->IsMediaWindow())
       {
-        strLabel = GetItemLabel(((CGUIMediaWindow *)pWindow)->GetCurrentListItem(), info);
+        strLabel = GetItemLabel(pWindow->GetCurrentListItem(), info);
       }
     }
     break;
@@ -796,9 +803,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
       bReturn = false;
   }
   else if (condition == SYSTEM_HAS_DRIVE_F)
-    return g_advancedSettings.m_useFDrive;
+    bReturn = g_advancedSettings.m_useFDrive;
   else if (condition == SYSTEM_HAS_DRIVE_G)
-    return g_advancedSettings.m_useGDrive;
+    bReturn = g_advancedSettings.m_useGDrive;
   else if (condition == SYSTEM_DVDREADY)
 	  bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
@@ -844,6 +851,12 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   {
     bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
               g_application.IsPlayingAudio();
+  }
+  else if (condition == LISTITEM_ISSELECTED)
+  {
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (pWindow && pWindow->IsMediaWindow())
+      bReturn = GetItemBool(pWindow->GetCurrentListItem(), condition, dwContextWindow);
   }
   else if (g_application.IsPlaying())
   {
@@ -1093,7 +1106,9 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
   else if (info == VIDEOPLAYER_COVER)
   {
     if (!g_application.IsPlayingVideo()) return "";
-    return m_currentMovieThumb;
+    if(m_currentMovieThumb.IsEmpty())
+      return m_currentFile.HasThumbnail() ? m_currentFile.GetThumbnailImage() : "defaultVideoCover.png";
+    else return m_currentMovieThumb;
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY)
   {
@@ -1102,11 +1117,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
       window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (window && window->IsMediaWindow())
     {
-      CFileItem *item = NULL;
-      if (window->IsDialog()) // must be the filebrowser window
-        item = ((CGUIDialogFileBrowser *)window)->GetCurrentListItem();
-      else
-        item = ((CGUIMediaWindow *)window)->GetCurrentListItem();
+      CFileItem *item = window->GetCurrentListItem();
       if (item)
         return GetItemImage(item, info);
     }
@@ -1354,9 +1365,15 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
 
 CStdString CGUIInfoManager::GetVideoLabel(int item)
 {
-  if (!g_application.IsPlayingVideo()) return "";
+  if (!g_application.IsPlayingVideo()) 
+    return "";
+
+  bool bIsTuxBox = GetTuxBoxEvents();
+  
   switch (item)
   {
+  case VIDEOPLAYER_DURATION:
+      return m_currentMovieDuration;
   case VIDEOPLAYER_TITLE:
     return m_currentMovie.m_strTitle;
     break;
@@ -1388,7 +1405,6 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return strTime;
     }
     break;
-  case VIDEOPLAYER_DURATION:
   case PLAYER_DURATION:
     {
       CStdString strDuration = "00:00:00";
@@ -1465,7 +1481,10 @@ void CGUIInfoManager::ResetCurrentItem()
 { 
   m_currentFile.Reset();
   m_currentMovie.Reset();
+  m_currentMovie.m_strFileNameAndPath = "";
   m_currentMovieThumb = "";
+  m_currentMovieDuration = "";
+  
 }
 
 void CGUIInfoManager::SetCurrentItem(CFileItem &item)
@@ -1605,10 +1624,13 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     else
       m_currentMovie.m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
   }
+  
+  //Don't check for a Empty NameAndPath Set it! Or is there a reason?
   if (m_currentMovie.m_strFileNameAndPath.IsEmpty())
   {
     m_currentMovie.m_strFileNameAndPath = item.m_strPath;
   }
+
   // Find a thumb for this file.
   item.SetVideoThumb();
 
@@ -2034,6 +2056,10 @@ bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info, DWORD context
     if (item && !m_currentFile.m_strPath.IsEmpty())
       ret = m_currentFile.IsSamePath(item);
     break;
+  case LISTITEM_ISSELECTED:
+    if (item)
+      ret = item->IsSelected();
+    break;
   default:
     return GetBool(info, contextWindow);
   }
@@ -2220,4 +2246,48 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
   if (info == LISTITEM_OVERLAY)
     return item->GetOverlayImage();
   return item->GetThumbnailImage();
+}
+
+bool CGUIInfoManager::GetTuxBoxEvents()
+{
+  //Return TuxBox Mode
+  if (m_currentFile.m_strPath.Find(":31339") > 0)
+  {
+    // Set Thread Informations
+    t_tuxbox.strURL = m_currentFile.m_strPath;
+    if(m_currentFile.m_iDriveType >0)
+      t_tuxbox.iPort = m_currentFile.m_iDriveType;
+    
+    // Start Thread
+    if(!t_tuxbox.IsRunning())
+      t_tuxbox.Start();
+    
+    // Set m_currentMovieDuration
+    if(!g_tuxbox.sCurSrvData.current_event_duration.IsEmpty() && !g_tuxbox.sCurSrvData.current_event_duration.IsEmpty() && 
+      !g_tuxbox.sCurSrvData.current_event_duration.Equals("-") && !g_tuxbox.sCurSrvData.current_event_duration.Equals("-"))
+    {
+      g_tuxbox.sCurSrvData.current_event_duration.Replace("(","");
+      g_tuxbox.sCurSrvData.current_event_duration.Replace(")","");
+    
+      m_currentMovieDuration.Format("%s: %s %s (%s - %s)",g_localizeStrings.Get(180),g_tuxbox.sCurSrvData.current_event_duration,
+        g_localizeStrings.Get(12391),g_tuxbox.sCurSrvData.current_event_time, g_tuxbox.sCurSrvData.next_event_time);
+    }
+
+    //Set strVideoGenre
+    if (!g_tuxbox.sCurSrvData.current_event_description.IsEmpty() && !g_tuxbox.sCurSrvData.next_event_description.IsEmpty() &&
+      !g_tuxbox.sCurSrvData.current_event_description.Equals("-") && !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
+    {
+      m_currentMovie.m_strGenre.Format("%s %s  -  (%s: %s)",g_localizeStrings.Get(143),g_tuxbox.sCurSrvData.current_event_description,
+        g_localizeStrings.Get(209),g_tuxbox.sCurSrvData.next_event_description);
+    }
+
+    //Set m_currentMovie.m_strDirector
+    if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") && !g_tuxbox.sCurSrvData.current_event_details.IsEmpty())
+    {
+      m_currentMovie.m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
+    }
+    
+    return true;
+  }
+  return false;
 }

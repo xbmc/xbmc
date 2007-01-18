@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIDialogFileBrowser.h"
 #include "util.h"
@@ -9,6 +30,9 @@
 #include "AutoSwitch.h"
 #include "xbox/network.h"
 #include "GUIPassword.h"
+
+using namespace XFILE;
+using namespace DIRECTORY;
 
 #define CONTROL_LIST          450
 #define CONTROL_THUMBS        451
@@ -43,13 +67,13 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
   }
   if ((action.wID == ACTION_CONTEXT_MENU || action.wID == ACTION_MOUSE_RIGHT_CLICK) && m_Directory.m_strPath.IsEmpty())
   {
-    int iItem = m_viewControl.GetSelectedItem();  
+    int iItem = m_viewControl.GetSelectedItem();
     if ((!m_addSourceType.IsEmpty() && iItem != m_vecItems.Size()-1) || (m_addNetworkShareEnabled && g_mediaManager.HasLocation(m_selectedPath)))
-        return OnPopupMenu(iItem);
+      return OnPopupMenu(iItem);
 
     return false;
   }
-  
+
   return CGUIDialog::OnAction(action);
 }
 
@@ -185,7 +209,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
           if (!m_rootDir.IsInShare(m_Directory.m_strPath))
           { // don't have this share any more
             if (IsActive()) Update("");
-            else 
+            else
             {
               m_history.ClearPathHistory();
               m_Directory.m_strPath="";
@@ -703,7 +727,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu)
     return false;
-  
+
   float posX = 200, posY = 100;
   const CGUIControl *pList = GetControl(CONTROL_LIST);
   if (pList)
@@ -713,7 +737,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   }
 
   pMenu->Initialize();
-  
+
   int iEditLabel = 20133;
   int iRemoveLabel = 20134;
   if (!m_addSourceType.IsEmpty())
@@ -788,7 +812,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
       Update("");
     }
   }
-  
+
   return true;
 }
 

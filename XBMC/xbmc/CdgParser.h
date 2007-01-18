@@ -32,7 +32,7 @@ public:
   errCode GetFileState();
   CStdString GetFileName();
 protected:
-  CFile m_File;
+  XFILE::CFile m_File;
   CStdString m_strFileName;
   BYTE *m_pBuffer;
   SubCode *m_pSubCode;

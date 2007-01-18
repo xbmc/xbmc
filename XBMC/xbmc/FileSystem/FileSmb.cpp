@@ -11,6 +11,9 @@
 #include "../xbox/network.h"
 #include "../utils/win32exception.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+
 void xb_smbc_log(const char* msg)
 {
   CLog::Log(LOGINFO, "%s%s", "smb: ", msg);
@@ -67,6 +70,7 @@ void CSMB::Init()
     m_context = smbc_new_context();
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
     m_context->callbacks.auth_fn = xb_smbc_auth;
+    m_context->options.one_share_per_server = true;
 
     /* set connection timeout. since samba always tries two ports, divide this by two the correct value */
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;    
@@ -253,7 +257,6 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 
   if (m_fd == -1)
   {
-    smb.PurgeEx(url);    
     // write error to logfile
     int nt_error = map_nt_error_from_unix(errno);
     CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
@@ -265,7 +268,6 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   if ( ret < 0 )
   {
     smbc_close(m_fd);
-    smb.PurgeEx(url);
     m_fd = -1;    
     return false;
   }
@@ -275,7 +277,6 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   if ( ret < 0 )
   {
     smbc_close(m_fd);
-    smb.PurgeEx(url);
     m_fd = -1;    
     return false;
   }
@@ -370,7 +371,6 @@ bool CFileSMB::Exists(const CURL& url)
 
   CSingleLock lock(smb);
   int iResult = smbc_stat(strFileName, &info);
-  smb.PurgeEx(url);
 
   if (iResult < 0) return false;
   return true;
@@ -383,7 +383,6 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 
   CSingleLock lock(smb);
   int iResult = smbc_stat(strFileName, buffer);
-  smb.PurgeEx(url);
 
   return iResult;
 }
@@ -432,8 +431,6 @@ void CFileSMB::Close()
   {
     CSingleLock lock(smb);
     smbc_close(m_fd);
-    
-    smb.PurgeEx(m_url);
   }
   m_fd = -1;
 }
@@ -507,7 +504,6 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 
   if (m_fd == -1)
   {
-    smb.PurgeEx(url);
     // write error to logfile
     int nt_error = map_nt_error_from_unix(errno);
     CLog::Log(LOGERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",

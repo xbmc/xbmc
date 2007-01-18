@@ -17,7 +17,7 @@ CGUIControl::CGUIControl()
   m_forceHidden = false;
   m_visibleCondition = 0;
   m_bDisabled = false;
-  m_colDiffuse = 0xFFFFFFFF;
+  m_diffuseColor = 0xffffffff;
   m_posX = 0;
   m_posY = 0;
   m_dwControlLeft = 0;
@@ -32,7 +32,6 @@ CGUIControl::CGUIControl()
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
 {
-  m_colDiffuse = 0xFFFFFFFF;
   m_posX = posX;
   m_posY = posY;
   m_width = width;
@@ -42,6 +41,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_dwParentID = dwParentID;
   m_visible = true;
   m_visibleFromSkinCondition = true;
+  m_diffuseColor = 0xffffffff;
   m_forceHidden = false;
   m_visibleCondition = 0;
   m_bDisabled = false;
@@ -303,13 +303,9 @@ void CGUIControl::SetPosition(float posX, float posY)
   }
 }
 
-void CGUIControl::SetColourDiffuse(D3DCOLOR colour)
+void CGUIControl::SetColorDiffuse(D3DCOLOR color)
 {
-  if (colour != m_colDiffuse)
-  {
-    m_colDiffuse = colour;
-    Update();
-  }
+  m_diffuseColor = color;
 }
 
 float CGUIControl::GetXPosition() const

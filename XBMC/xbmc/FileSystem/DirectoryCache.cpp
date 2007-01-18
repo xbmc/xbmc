@@ -3,6 +3,7 @@
 #include "DirectoryCache.h"
 #include "../util.h"
 
+using namespace DIRECTORY;
 
 CDirectoryCache g_directoryCache;
 CCriticalSection CDirectoryCache::m_cs;

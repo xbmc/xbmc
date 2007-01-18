@@ -48,12 +48,11 @@ public:
     static void   ReleaseInstance();
     static bool   IsInstantiated() { return upnp != NULL; }
 
-private:
-    friend class CUPnPDirectory;
-
-    PLT_UPnP*                   m_UPnP;
+public:
     PLT_SyncMediaBrowser*       m_MediaBrowser;
 
+private:
+    PLT_UPnP*                   m_UPnP;
     CDeviceHostReferenceHolder* m_ServerHolder;
     CCtrlPointReferenceHolder*  m_CtrlPointHolder;
 

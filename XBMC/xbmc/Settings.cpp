@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "settings.h"
 #include "application.h"
@@ -18,6 +39,10 @@
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
+
+using namespace XFILE;
+using namespace DIRECTORY;
+
 struct CSettings::stSettings g_stSettings;
 struct CSettings::AdvancedSettings g_advancedSettings;
 class CSettings g_settings;
@@ -196,13 +221,12 @@ CSettings::CSettings(void)
   g_advancedSettings.m_songInfoDuration = 2;
   g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
-  g_advancedSettings.m_imdbAddress = "akas.imdb.com";
   g_advancedSettings.m_autoDetectFG = true;
   g_advancedSettings.m_useFDrive = true;
   g_advancedSettings.m_useGDrive = false;
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
-
+  
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
@@ -228,6 +252,17 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
+  g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear = false;
+  g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
+  g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
+
+  g_advancedSettings.m_bTuxBoxAudioChannelSelection = false;
+  g_advancedSettings.m_bTuxBoxSubMenuSelection = false;
+  g_advancedSettings.m_bTuxBoxPictureIcon= true;
+  g_advancedSettings.m_iTuxBoxEpgRequestTime = 10; //seconds
+  g_advancedSettings.m_iTuxBoxDefaultSubMenu = 4;
+  g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
+  g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
   xbmcXmlLoaded = false;
   bTransaction = false;
@@ -1084,6 +1119,9 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bMusicLibraryHideAllItems);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "hidecompilationartists", g_advancedSettings.m_bMusicLibraryHideCompilationArtists);
+    XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
+    GetString(pElement, "albumformat", g_advancedSettings.m_strMusicLibraryAlbumFormat, "");
+    GetString(pElement, "albumformatright", g_advancedSettings.m_strMusicLibraryAlbumFormatRight, "");
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");
@@ -1121,7 +1159,6 @@ void CSettings::LoadAdvancedSettings()
 
   GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
-  GetString(pRootElement, "imdbaddress", g_advancedSettings.m_imdbAddress, "akas.imdb.com");
 
   XMLUtils::GetBoolean(pRootElement, "autodetectfg", g_advancedSettings.m_autoDetectFG);
   XMLUtils::GetBoolean(pRootElement, "usefdrive", g_advancedSettings.m_useFDrive);
@@ -1131,6 +1168,20 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
 
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
+
+  //Tuxbox
+  pElement = pRootElement->FirstChildElement("tuxbox");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "audiochannelselection", g_advancedSettings.m_bTuxBoxAudioChannelSelection);
+    XMLUtils::GetBoolean(pElement, "submenuselection", g_advancedSettings.m_bTuxBoxSubMenuSelection);
+    XMLUtils::GetBoolean(pElement, "pictureicon", g_advancedSettings.m_bTuxBoxPictureIcon);
+    GetInteger(pElement, "epgrequesttime", g_advancedSettings.m_iTuxBoxEpgRequestTime, 10, 0, 3600);
+    GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iTuxBoxDefaultSubMenu, 4, 1, 4);
+    GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 0, 4);
+    GetInteger(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 0, 120);
+    
+  }
 
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
@@ -1630,7 +1681,6 @@ bool CSettings::LoadProfile(int index)
   {
     CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
     CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
-    CreateDirectory(g_settings.GetIMDbFolder().c_str(), NULL);
 
     // Thumbnails/
     CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
@@ -2724,17 +2774,6 @@ CStdString CSettings::GetCDDBFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\CDDB", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Database\\CDDB", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetIMDbFolder() const
-{
-  CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\IMDb", folder);
-  else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Database\\IMDb", folder);
 
   return folder;
 }

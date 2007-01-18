@@ -407,10 +407,6 @@
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\YMCodec.h">
 				</File>
-				<Filter
-					Name="aac"
-					Filter="">
-				</Filter>
 			</Filter>
 			<Filter
 				Name="DllLoader"
@@ -1081,6 +1077,12 @@
 					RelativePath="..\..\xbmc\utils\RssReader.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\ScraperParser.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\ScraperParser.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\SectionLoader.cpp">
 				</File>
 				<File
@@ -1118,6 +1120,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\Trainer.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TuxBoxUtil.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TuxBoxUtil.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\UdpClient.cpp">
@@ -1198,6 +1206,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogButtonMenu.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogContentSettings.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogContentSettings.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogContextMenu.cpp">
@@ -1452,6 +1466,12 @@
 					RelativePath="..\..\xbmc\FileSystem\DirectoryHistory.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\DirectoryTuxBox.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\DirectoryTuxBox.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\DllLibCurl.cpp">
 				</File>
 				<File
@@ -1507,6 +1527,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileShoutcast.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileZip.cpp">
@@ -1775,6 +1801,12 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeActor.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeDirector.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeDirector.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeGenre.cpp">

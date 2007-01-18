@@ -1,9 +1,32 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include ".\programdatabase.h"
 #include "utils/fstrcmp.h"
 #include "util.h"
 #include "xbox/xbeheader.h"
 #include "GUIWindowFileManager.h"
+
+using namespace XFILE;
 
 #define PROGRAM_DATABASE_OLD_VERSION 0.9f
 #define PROGRAM_DATABASE_VERSION 3
@@ -73,7 +96,7 @@ int CProgramDatabase::GetRegion(const CStdString& strFilenameAndPath)
   try
   {
     CStdString strSQL = FormatSQL("select * from files where files.strFileName like '%s'", strFilenameAndPath.c_str());
-    if (!m_pDS->query(strSQL.c_str())) 
+    if (!m_pDS->query(strSQL.c_str()))
       return 0;
 
     int iRowsFound = m_pDS->num_rows();
@@ -102,7 +125,7 @@ DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
   try
   {
     CStdString strSQL = FormatSQL("select * from files where files.strFileName like '%s'", strFilenameAndPath.c_str());
-    if (!m_pDS->query(strSQL.c_str())) 
+    if (!m_pDS->query(strSQL.c_str()))
       return 0;
 
     int iRowsFound = m_pDS->num_rows();
@@ -303,18 +326,18 @@ bool CProgramDatabase::GetTrainers(unsigned int iTitleId, std::vector<CStdString
 {
   vecTrainers.clear();
   CStdString strSQL;
-  try 
+  try
   {
     strSQL = FormatSQL("select * from trainers where idTitle=%u",iTitleId);
     if (!m_pDS->query(strSQL.c_str()))
       return false;
-    
+
     while (!m_pDS->eof())
     {
       vecTrainers.push_back(m_pDS->fv("strTrainerPath").get_asString());
       m_pDS->next();
     }
-    
+
     return true;
   }
   catch (...)
@@ -329,18 +352,18 @@ bool CProgramDatabase::GetAllTrainers(std::vector<CStdString>& vecTrainers)
 {
   vecTrainers.clear();
   CStdString strSQL;
-  try 
+  try
   {
     strSQL = FormatSQL("select distinct strTrainerPath from trainers");//FormatSQL("select * from trainers");
     if (!m_pDS->query(strSQL.c_str()))
       return false;
-    
+
     while (!m_pDS->eof())
     {
-      vecTrainers.push_back(m_pDS->fv("strTrainerPath").get_asString());      
+      vecTrainers.push_back(m_pDS->fv("strTrainerPath").get_asString());
       m_pDS->next();
     }
-    
+
     return true;
   }
   catch (...)
@@ -377,7 +400,7 @@ bool CProgramDatabase::SetTrainerOptions(const CStdString& strTrainerPath, unsig
   {
     CLog::Log(LOGERROR,"CProgramDatabase::SetTrainerOptions failed (%s)",strSQL);
   }
-  
+
   return false;
 }
 
@@ -399,12 +422,12 @@ void CProgramDatabase::SetTrainerActive(const CStdString& strTrainerPath, unsign
 CStdString CProgramDatabase::GetActiveTrainer(unsigned int iTitleId)
 {
   CStdString strSQL;
-  try 
+  try
   {
     strSQL = FormatSQL("select * from trainers where idTitle=%u and Active=1",iTitleId);
     if (!m_pDS->query(strSQL.c_str()))
       return "";
-    
+
     if (!m_pDS->eof())
       return m_pDS->fv("strTrainerPath").get_asString();
   }
@@ -412,7 +435,7 @@ CStdString CProgramDatabase::GetActiveTrainer(unsigned int iTitleId)
   {
     CLog::Log(LOGERROR,"programdatabase: error finding active trainer for %i (%s)",iTitleId,strSQL.c_str());
   }
-  
+
   return "";
 }
 
@@ -431,14 +454,14 @@ bool CProgramDatabase::GetTrainerOptions(const CStdString& strTrainerPath, unsig
 
       return true;
     }
-    
+
     return false;
   }
   catch (...)
   {
     CLog::Log(LOGERROR,"CProgramDatabase::GetTrainerOptions failed (%s)",strSQL.c_str());
   }
-  
+
   return false;
 }
 

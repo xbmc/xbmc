@@ -37,6 +37,10 @@
 #include "..\..\FileSystem\VirtualDirectory.h"
 #include "..\..\utils\UdpClient.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
+
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 20
 #define NO_EID -1
@@ -776,6 +780,42 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     strOutput += strLine;
   }
   return SetResponse(strOutput);
+}
+
+int CXbmcHttp::xbmcGetXBEID(int numParas, CStdString paras[])
+{
+  if (numParas==0) {
+    return SetResponse(openTag+"Error:Missing Parameter");
+  }
+  CStdString tmp;
+  if (CFile::Exists(paras[0].c_str()))
+  {
+    tmp.Format("%09x",CUtil::GetXbeID(paras[0]));
+    return SetResponse(openTag + tmp);
+  }
+  else
+  {
+     return SetResponse(openTag+"Error:xbe doesn't exist");
+  }
+
+}
+
+int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
+{
+  CStdString xbeinfo;
+  if (numParas==0) {
+    return SetResponse(openTag+"Error:Missing Parameter");
+  }
+  CStdString tmp;
+  if (CUtil::GetXBEDescription(paras[0],xbeinfo))
+  {
+    tmp.Format("%s",xbeinfo);
+    return SetResponse(openTag + tmp);
+  }
+  else
+  {
+     return SetResponse(openTag+"Error:Failed to getxbetitle");
+  }
 }
 
 int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
@@ -2559,6 +2599,8 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "reset")                    retVal = xbmcExit(4);
       else if (command == "restartapp")               retVal = xbmcExit(5);
       else if (command == "getcurrentlyplaying")      retVal = xbmcGetCurrentlyPlaying(); 
+      else if (command == "getxbeid")                 retVal = xbmcGetXBEID(numParas, paras); 
+      else if (command == "getxbetitle")              retVal = xbmcGetXBETitle(numParas, paras); 
       else if (command == "getshares")                retVal = xbmcGetShares(numParas, paras); 
       else if (command == "getdirectory")             retVal = xbmcGetDirectory(numParas, paras); 
       else if (command == "getmedialocation")         retVal = xbmcGetMediaLocation(numParas, paras); 

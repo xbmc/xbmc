@@ -24,6 +24,8 @@
 
 #include "../lib/libXDAAP/private.h"
 
+using namespace XFILE;
+
 #define HEDAER_VERSION       "Client-DAAP-Version"
 #define HEADER_REQUESTID     "Client-DAAP-Request-ID"
 #define HEADER_VALIDATE      "Client-DAAP-Validation"

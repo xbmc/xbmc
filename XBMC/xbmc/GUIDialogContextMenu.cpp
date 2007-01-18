@@ -1,9 +1,32 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIButtonControl.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIDialogContentSettings.h"
+#include "GUIWindowVideoFiles.h"
 #include "application.h"
 #include "GUIPassword.h"
 #include "util.h"
@@ -192,14 +215,14 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     // For DVD Drive Context menu stuff, we can also check where we are, so playin dvd can be dependet to the section!
     bool bIsDVDContextMenu  = false;
     bool bIsDVDMediaPresent = false;
-    
+
     // load our menu
     pMenu->Initialize();
 
     // GeminiServer: DVD Drive Context menu stuff
     int btn_PlayDisc = 0;
     int btn_Eject = 0;
-    int btn_Rip;
+    int btn_Rip=0;
     if (item->IsDVD() || item->IsCDDA())
     {
       // We need to check if there is a detected is inserted!
@@ -207,7 +230,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       {
         btn_PlayDisc = pMenu->AddButton(341); // Play CD/DVD!
 
-        CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo(); 
+        CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
         if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
           btn_Rip = pMenu->AddButton(600);
 
@@ -218,7 +241,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     }
 
     CStdString strDefault = GetDefaultShareNameByType(strType);
-    
+
     // add the needed buttons
     int btn_AddShare=0;
     int btn_EditPath=0;
@@ -227,6 +250,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     int btn_setThumb=0;
     int btn_RemoveThumb=0;
     int btn_ClearDefault=0;
+    int btn_SetContent=0;
     if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
     {
       if (share)
@@ -241,6 +265,9 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       if (!strDefault.IsEmpty())
         btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
+
+      if (strType == "video" && !CUtil::IsDVD(share->strPath))
+        btn_SetContent = pMenu->AddButton(20333);
 
       btn_AddShare = pMenu->AddButton(1026); // Add Source
     }
@@ -278,7 +305,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     // set the correct position
     pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
     pMenu->DoModal();
-    
+
     int btn = pMenu->GetButton();
     if (btn > 0)
     {
@@ -292,7 +319,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         else
           if (!g_passwordManager.IsProfileLockUnlocked())
             return false;
-        
+
         return CGUIDialogMediaSource::ShowAndEditMediaSource(strType, *share);
       }
       else if (btn == btn_Delete)
@@ -313,7 +340,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
             if (share->strName.Equals(strDefault))
               ClearDefault(strType);
           }
-          
+
           // delete this share
           g_settings.DeleteBookmark(strType, share->strName, share->strPath);
           return true;
@@ -328,7 +355,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         }
         else if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
-        
+
         return CGUIDialogMediaSource::ShowAndAddMediaSource(strType);
       }
       else if (btn == btn_Default)
@@ -340,7 +367,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         }
         else if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
-        
+
         // make share default
         SetDefault(strType, share->strName);
         return true;
@@ -375,9 +402,9 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(20056),strThumb))
         {
           g_settings.UpdateBookmark(strType,share->strName,"thumbnail",strThumb);
-          
+
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-          m_gWindowManager.SendThreadMessage(msg);        
+          m_gWindowManager.SendThreadMessage(msg);
           return true;
         }
 
@@ -395,8 +422,21 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 
         g_settings.UpdateBookmark(strType,share->strName,"thumbnail","");
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-        m_gWindowManager.SendThreadMessage(msg);        
+        m_gWindowManager.SendThreadMessage(msg);
         return true;
+      }
+      else if (btn == btn_SetContent)
+      {
+        bool bRunScan=false, bScanRecursively=true, bUseDirNames=false;
+        SScraperInfo info;
+        if (CGUIDialogContentSettings::ShowForDirectory(share->strPath,info,bRunScan,bScanRecursively,bUseDirNames))
+        {
+          if (bRunScan)
+          {
+            CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+            pWindow->OnScan(share->strPath,info,bUseDirNames?1:0,bScanRecursively?1:0);
+          }
+        }
       }
       else if (btn == btn_PlayDisc)
       {
@@ -428,7 +468,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         CStdString strNewPassword = "";
         int iButton=0;
         // prompt user for mastercode when changing lock settings) only for default user
-        if (!g_passwordManager.IsMasterLockUnlocked(true))    
+        if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
 
         CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
@@ -487,7 +527,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         g_settings.CommitBookmarkTransaction();
 
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-        m_gWindowManager.SendThreadMessage(msg);        
+        m_gWindowManager.SendThreadMessage(msg);
         return true;
 
       }
@@ -499,7 +539,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-        m_gWindowManager.SendThreadMessage(msg);        
+        m_gWindowManager.SendThreadMessage(msg);
         return true;
       }
       else if (btn == btn_RemoveLock)
@@ -509,7 +549,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 
         if (!CGUIDialogYesNo::ShowAndGetInput(12335, 0, 750, 0))
           return false;
-        
+
         share->m_iHasLock = 0;
         g_settings.BeginBookmarkTransaction();
         g_settings.UpdateBookmark(strType, share->strName, "lockmode", "0");
@@ -517,7 +557,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
         g_settings.CommitBookmarkTransaction();
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
-        m_gWindowManager.SendThreadMessage(msg);        
+        m_gWindowManager.SendThreadMessage(msg);
 
         return true;
       }
@@ -534,12 +574,12 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_ChangeLock)
       {
-        if (!g_passwordManager.IsMasterLockUnlocked(true))    
+        if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
 
         CStdString strNewPW;
 	      CStdString strNewLockMode;
-        bool bResult=false;		    
+        bool bResult=false;
         CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
         if (pDialog)
         {
@@ -574,18 +614,18 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         }
         if (!bResult)
           return false;
-		    // password ReSet and re-entry succeeded, write out the lock data
+        // password ReSet and re-entry succeeded, write out the lock data
         g_settings.BeginBookmarkTransaction();
-		    g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPW);
-		    g_settings.UpdateBookmark(strType, share->strName, "lockmode", strNewLockMode);
-		    g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
+        g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPW);
+        g_settings.UpdateBookmark(strType, share->strName, "lockmode", strNewLockMode);
+        g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
         g_settings.CommitBookmarkTransaction();
-		    return true;
+        return true;
       }
       else if (btn == btn_Settings)
-      { 
+      {
         if (strType == "video")
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS); 
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
         else if (strType == "music")
           m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
         else if (strType == "myprograms")
@@ -647,31 +687,31 @@ void CGUIDialogContextMenu::ClearDefault(const CStdString &strType)
 
 void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdString& strPath, float posX, float posY)
 {
-	// what should we display?
-	vector <CStdString> vecTypes;
-	if (!strType.Equals("music"))
-		vecTypes.push_back(g_localizeStrings.Get(2));	// My Music
-	if (!strType.Equals("video"))
-		vecTypes.push_back(g_localizeStrings.Get(3));	// My Videos
-	if (!strType.Equals("pictures"))
-		vecTypes.push_back(g_localizeStrings.Get(1));	// My Pictures
-	if (!strType.Equals("files"))
-		vecTypes.push_back(g_localizeStrings.Get(7));	// My Files
+  // what should we display?
+  vector <CStdString> vecTypes;
+  if (!strType.Equals("music"))
+    vecTypes.push_back(g_localizeStrings.Get(2));	// My Music
+  if (!strType.Equals("video"))
+    vecTypes.push_back(g_localizeStrings.Get(3));	// My Videos
+  if (!strType.Equals("pictures"))
+    vecTypes.push_back(g_localizeStrings.Get(1));	// My Pictures
+  if (!strType.Equals("files"))
+    vecTypes.push_back(g_localizeStrings.Get(7));	// My Files
 
-	// something went wrong
-	if (vecTypes.size() != 3)
-		return;
+  // something went wrong
+  if (vecTypes.size() != 3)
+    return;
 
-	// create menu
-	CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  // create menu
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   pMenu->Initialize();
 
-	// add buttons
+  // add buttons
   int btn_Type[3];
-	for (int i=0; i<3; i++)
-	{
-		btn_Type[i] = pMenu->AddButton(vecTypes[i]);
-	}
+  for (int i=0; i<3; i++)
+  {
+    btn_Type[i] = pMenu->AddButton(vecTypes[i]);
+  }
 
   // display menu
   pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
@@ -683,21 +723,21 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
   {
     if (btn == btn_Type[i])
     {
-			// map back to correct window
-			int iWindow = WINDOW_INVALID;
-			if (vecTypes[i].Equals(g_localizeStrings.Get(2)))
-				iWindow = WINDOW_MUSIC_FILES;
-			else if (vecTypes[i].Equals(g_localizeStrings.Get(3)))
-				iWindow = WINDOW_VIDEO_FILES;
-			else if (vecTypes[i].Equals(g_localizeStrings.Get(1)))
-				iWindow = WINDOW_PICTURES;
-			else if (vecTypes[i].Equals(g_localizeStrings.Get(7)))
-				iWindow = WINDOW_FILES;
+      // map back to correct window
+      int iWindow = WINDOW_INVALID;
+      if (vecTypes[i].Equals(g_localizeStrings.Get(2)))
+        iWindow = WINDOW_MUSIC_FILES;
+      else if (vecTypes[i].Equals(g_localizeStrings.Get(3)))
+        iWindow = WINDOW_VIDEO_FILES;
+      else if (vecTypes[i].Equals(g_localizeStrings.Get(1)))
+        iWindow = WINDOW_PICTURES;
+      else if (vecTypes[i].Equals(g_localizeStrings.Get(7)))
+        iWindow = WINDOW_FILES;
 
       //m_gWindowManager.ActivateWindow(iWindow, strPath);
       m_gWindowManager.ChangeActiveWindow(iWindow, strPath);
-			return;
+      return;
     }
   }
-	return;
+  return;
 }

@@ -17,6 +17,8 @@
 #include "../GUIPassword.h"
 #include "../lib/libsmb/xbLibSmb.h"
 
+using namespace DIRECTORY;
+
 CSMBDirectory::CSMBDirectory(void)
 {
 } 
@@ -52,41 +54,43 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   struct smbc_dirent* dirEnt;
   CStdString strFile;
 
-  dirEnt = smbc_readdir(fd);
-
-  while (dirEnt)
+  while (dirEnt = smbc_readdir(fd))
   {
     // We use UTF-8 internally, as does SMB
     strFile = dirEnt->name;
 
-    if (!strFile.Equals(".") && !strFile.Equals("..") && !strFile.Right(1).Equals("$")
+    if (!strFile.Equals(".") && !strFile.Equals("..")
       && dirEnt->smbc_type != SMBC_PRINTER_SHARE && dirEnt->smbc_type != SMBC_IPC_SHARE)
     {
-     unsigned __int64 iSize = 0;
+     __int64 iSize = 0;
       bool bIsDir = true;
       __int64 lTimeDate = 0;
 
-      // doing stat on one of these types of shares leaves an open session
-      // so just skip them and only stat real dirs / files.
-      if ( dirEnt->smbc_type != SMBC_IPC_SHARE &&
-           dirEnt->smbc_type != SMBC_FILE_SHARE &&
-           dirEnt->smbc_type != SMBC_PRINTER_SHARE &&
-           dirEnt->smbc_type != SMBC_COMMS_SHARE &&
-           dirEnt->smbc_type != SMBC_WORKGROUP &&
-           dirEnt->smbc_type != SMBC_SERVER)
+      if(strFile.Right(1).Equals("$") && dirEnt->smbc_type == SMBC_FILE_SHARE )
+        continue;
+
+      // only stat files that can give proper responses
+      if ( dirEnt->smbc_type == SMBC_FILE ||
+           dirEnt->smbc_type == SMBC_DIR )
       {
+        // set this here to if the stat should fail
+        bIsDir = (dirEnt->smbc_type == SMBC_DIR);
+        
         struct __stat64 info = {0};
 
-        //Make sure we use the authenticated path wich contains any default username
+        // make sure we use the authenticated path wich contains any default username
         CStdString strFullName = strAuth + smb.URLEncode(strFile);
 
         if( smbc_stat(strFullName.c_str(), &info) == 0 )
         {
+          if((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("smb.showhidden"))
+            continue;
+
           bIsDir = (info.st_mode & S_IFDIR) ? true : false;
           lTimeDate = info.st_mtime;
           if(lTimeDate == 0) /* if modification date is missing, use create date */
             lTimeDate = info.st_ctime;
-          iSize = info.st_size;
+          iSize = info.st_size;          
         }
         else
           CLog::Log(LOGERROR, __FUNCTION__" - Failed to stat file %s", strFullName.c_str());
@@ -133,11 +137,9 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if (IsAllowed(dirEnt->name)) items.Add(new CFileItem(*pItem));
       }
     }
-    dirEnt = smbc_readdir(fd);
   }
 
   smbc_closedir(fd);
-  smb.PurgeEx(CURL(strAuth));
 
   if (m_cacheDirectory)
     g_directoryCache.SetDirectory(strPath, vecCacheItems);

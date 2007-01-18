@@ -3,8 +3,6 @@
 #include "musicdatabasedirectory/DirectoryNode.h"
 #include "musicdatabasedirectory/QueryParams.h"
 
-using namespace DIRECTORY;
-
 namespace DIRECTORY
 {
   class CMusicDatabaseDirectory : public IDirectory

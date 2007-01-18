@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIWindowVideoNav.h"
 #include "util.h"
@@ -13,19 +34,23 @@
 #include "PlaylistFactory.h"
 #include "GUIFontManager.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
 
-#define CONTROL_BTNVIEWASICONS     2 
+#define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
+#define CONTROL_BTNSEARCH          8
 #define CONTROL_LIST              50
 #define CONTROL_THUMBS            51
 #define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
+#define CONTROL_UNLOCK            11
+
 #define CONTROL_FILTER            15
-#define CONTROL_BTNPARTYMODE      16
 #define CONTROL_BTNMANUALINFO     17
 #define CONTROL_LABELEMPTY        18
 
@@ -88,6 +113,11 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "videodb://4/";
           SetHistoryForPath(m_vecItems.m_strPath);
         }
+        else if (strDestination.Equals("Directors"))
+        {
+          m_vecItems.m_strPath = "videodb://5/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
         else if (strDestination.Equals("Playlists"))
         {
           m_vecItems.m_strPath = "special://videoplaylists/";
@@ -99,7 +129,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           break;
         }
       }
-
+      
       DisplayEmptyDatabaseMessage(false); // reset message state
 
       if (!CGUIWindowVideoBase::OnMessage(message))
@@ -122,6 +152,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
+      if (iControl == CONTROL_BTNSEARCH)
+      {
+        OnSearch();
+      }
     }
     break;
   }
@@ -169,7 +203,7 @@ void CGUIWindowVideoNav::UpdateButtons()
       if (pItem->m_strPath.Left(4).Equals("/-1/")) iItems--;
     }
     // or the last item
-    if (m_vecItems.Size() > 2 && 
+    if (m_vecItems.Size() > 2 &&
       m_vecItems[m_vecItems.Size()-1]->m_strPath.Left(4).Equals("/-1/"))
       iItems--;
   }
@@ -196,83 +230,69 @@ void CGUIWindowVideoNav::UpdateButtons()
     CVideoDatabaseDirectory dir;
     dir.GetLabel(m_vecItems.m_strPath, strLabel);
   }
-  
+
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 }
-/*
-/// \brief Search for songs, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
+
+/// \brief Search for genres, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
 /// \param strSearch The search string
 /// \param items Items Found
-void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
+void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
 {
   // get matching genres
-  VECGENRES genres;
-  m_musicdatabase.GetGenresByName(strSearch, genres);
+  CFileItemList tempItems;
+  m_database.GetGenresByName(strSearch, tempItems);
 
-  if (genres.size())
+  if (tempItems.Size())
   {
     CStdString strGenre = g_localizeStrings.Get(515); // Genre
-    for (int i = 0; i < (int)genres.size(); i++)
+    for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      CGenre& genre = genres[i]; 
-      CFileItem* pItem = new CFileItem(genre);
-      pItem->SetLabel("[" + strGenre + "] " + genre.strGenre);
-      pItem->m_strPath.Format("musicdb://1/%ld/", genre.idGenre);
-      items.Add(pItem);
+      tempItems[i]->SetLabel("[" + strGenre + "] " + tempItems[i]->GetLabel());
     }
+    items.Append(tempItems);
   }
 
-  // get matching artists
-  VECARTISTS artists;
-  m_musicdatabase.GetArtistsByName(strSearch, artists);
+  tempItems.Clear();
+  m_database.GetActorsByName(strSearch, tempItems);
 
-  if (artists.size())
+  if (tempItems.Size())
   {
-    CStdString strArtist = g_localizeStrings.Get(484); // Artist
-    for (int i = 0; i < (int)artists.size(); i++)
+    CStdString strActor = g_localizeStrings.Get(20337); // Actor
+    for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      CArtist& artist = artists[i];
-      CFileItem* pItem = new CFileItem(artist);
-      pItem->SetLabel("[" + strArtist + "] " + artist.strArtist);
-      pItem->m_strPath.Format("musicdb://2/%ld/", artist.idArtist);
-      items.Add(pItem);
+      tempItems[i]->SetLabel("[" + strActor + "] " + tempItems[i]->GetLabel());
     }
+    items.Append(tempItems);
   }
 
-  // get matching albums
-  VECALBUMS albums;
-  m_musicdatabase.GetAlbumsByName(strSearch, albums);
+  tempItems.Clear();
+  m_database.GetDirectorsByName(strSearch, tempItems);
 
-  if (albums.size())
+  if (tempItems.Size())
   {
-    CStdString strAlbum = g_localizeStrings.Get(483); // Album
-    for (int i = 0; i < (int)albums.size(); i++)
+    CStdString strMovie = g_localizeStrings.Get(20339); // Director
+    for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      CAlbum& album = albums[i];
-      CFileItem* pItem = new CFileItem(album);
-      pItem->SetLabel("[" + strAlbum + "] " + album.strAlbum + " - " + album.strArtist);
-      pItem->m_strPath.Format("musicdb://3/%ld/", album.idAlbum);
-      items.Add(pItem);
+      tempItems[i]->SetLabel("[" + strMovie + "] " + tempItems[i]->GetLabel());
     }
+    items.Append(tempItems);
   }
 
-  // get matching songs
-  VECSONGS songs;
-  m_musicdatabase.FindSongsByName(strSearch, songs, true);
+  tempItems.Clear();
+  m_database.GetTitlesByName(strSearch, tempItems);
 
-  if (songs.size())
+  if (tempItems.Size())
   {
-    CStdString strSong = g_localizeStrings.Get(179); // Song
-    for (int i = 0; i < (int)songs.size(); i++)
+    CStdString strMovie = g_localizeStrings.Get(20338); // Movie
+    for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      CSong& song = songs[i];
-      CFileItem* pItem = new CFileItem(song);
-      pItem->SetLabel("[" + strSong + "] " + song.strTitle + " (" + song.strAlbum + " - " + song.strArtist + ")");
-      items.Add(pItem);
+      tempItems[i]->SetLabel("[" + strMovie + "] " + tempItems[i]->GetLabel());
     }
+    items.Append(tempItems);
   }
 }
-*/
+
 void CGUIWindowVideoNav::PlayItem(int iItem)
 {
   // unlike additemtoplaylist, we need to check the items here
@@ -321,6 +341,16 @@ void CGUIWindowVideoNav::Render()
   }
   CGUIWindowVideoBase::Render();
 }
+
+void CGUIWindowVideoNav::OnInfo(int iItem, const SScraperInfo& info)
+{
+  SScraperInfo info2(info);
+  CStdString strPath,strFile;
+  CUtil::Split(m_vecItems[iItem]->m_strPath,strPath,strFile);
+  m_database.GetScraperForPath(strPath,info2.strPath,info2.strContent);
+  CGUIWindowVideoBase::OnInfo(iItem,info2);
+}
+
 void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 {
   if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
@@ -347,10 +377,8 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   CStdString thumb(pItem->GetCachedVideoThumb());
   CFile::Delete(thumb);
 
-  //CVideoDatabaseDirectory dir;
-  //dir.ClearDirectoryCache(m_vecItems.m_strPath);
+  CUtil::DeleteVideoDatabaseDirectoryCache();
 
-  CUtil::ClearFileItemCache();
   DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0);
   Update( m_vecItems.m_strPath );
   m_viewControl.SetSelectedItem(iItem);

@@ -33,7 +33,7 @@ class File
     void AddFileToList();
 
     //FileHandle hFile;
-    CFile m_File;
+    XFILE::CFile m_File;
 
     bool LastWrite;
     FILE_HANDLETYPE HandleType;

@@ -262,7 +262,6 @@ public:
     int m_songInfoDuration;
     int m_logLevel;
     CStdString m_cddbAddress;
-    CStdString m_imdbAddress;
     bool m_autoDetectFG;
     bool m_useFDrive;
     bool m_useGDrive;
@@ -287,6 +286,18 @@ public:
     bool m_bMusicLibraryHideAllItems;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryHideCompilationArtists;
+    bool m_bMusicLibraryAlbumsSortByArtistThenYear;
+    CStdString m_strMusicLibraryAlbumFormat;
+    CStdString m_strMusicLibraryAlbumFormatRight;
+
+    //TuxBox
+    bool m_bTuxBoxSubMenuSelection;
+    int m_iTuxBoxDefaultSubMenu;
+    int m_iTuxBoxDefaultRootMenu;
+    bool m_bTuxBoxAudioChannelSelection;
+    bool m_bTuxBoxPictureIcon;
+    int m_iTuxBoxEpgRequestTime;
+    int m_iTuxBoxZapWaitTime;
 
   };
   struct stSettings
@@ -394,7 +405,6 @@ public:
   CStdString GetUserDataFolder() const;
   CStdString GetDatabaseFolder() const;
   CStdString GetCDDBFolder() const;
-  CStdString GetIMDbFolder() const;
   CStdString GetThumbnailsFolder() const;
   CStdString GetMusicThumbFolder() const;
   CStdString GetMusicArtistThumbFolder() const;

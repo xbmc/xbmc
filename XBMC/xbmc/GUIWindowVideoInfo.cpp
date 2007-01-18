@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "GUIWindow.h"
@@ -10,6 +30,8 @@
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
 #include "GUIDialogFileBrowser.h"
+
+using namespace XFILE;
 
 #define CONTROL_TITLE    20
 #define CONTROL_DIRECTOR   21
@@ -75,7 +97,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       }
 
       SET_CONTROL_HIDDEN(CONTROL_DISC);
-      CONTROL_DISABLE(CONTROL_DISC);
+/*      CONTROL_DISABLE(CONTROL_DISC);
       int iItem = 0;
       CFileItem movie(m_Movie.m_strFileNameAndPath, false);
       if ( movie.IsOnDVD() )
@@ -117,7 +139,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
         CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_DISC, iItem, 0, NULL);
         g_graphicsContext.SendMessage(msgSet);
-      }
+      }*/
       Refresh();
 
       // dont allow refreshing of manual info
@@ -155,7 +177,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       {
         OnGetThumb();
       }
-      else if (iControl == CONTROL_DISC)
+/*      else if (iControl == CONTROL_DISC)
       {
         int iItem = 0;
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
@@ -168,7 +190,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           if (lMovieId > 0)
           {
             CStdString label;
-            m_database.GetDVDLabel(lMovieId, label);
+            //m_database.GetDVDLabel(lMovieId, label);
             int iPos = label.Find("DVD#");
             if (iPos >= 0)
             {
@@ -177,10 +199,10 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
             label = label.TrimRight(" ");
             label += " ";
             label += strItem;
-            m_database.SetDVDLabel( lMovieId, label);
+            //m_database.SetDVDLabel( lMovieId, label);
           }
         }
-      }
+      }*/
       else if (iControl == CONTROL_LIST)
       {
         int iAction = message.GetParam1();
@@ -244,12 +266,12 @@ void CGUIWindowVideoInfo::Update()
     OnMessage(msg1);
   }
   {
-    CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_MPAARATING); 
+    CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_MPAARATING);
     OnMessage(msg1);
   }
   {
     strTmp = m_Movie.m_strMPAARating; strTmp.Trim();
-    CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_MPAARATING); 
+    CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_MPAARATING);
     msg1.SetLabel( strTmp );
     OnMessage(msg1);
   }
@@ -296,7 +318,7 @@ void CGUIWindowVideoInfo::Update()
   if (m_bViewReview)
   {
     SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 206);
-    
+
     SET_CONTROL_HIDDEN(CONTROL_LIST);
     SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
   }

@@ -55,6 +55,7 @@ ILEDSmartxxRGB::ILEDSmartxxRGB()
 	s_CurRGB.red = 0;
 	s_CurRGB.green = 0;
 	s_CurRGB.blue = 0;
+  s_CurRGB.white = 0;
 	
   dwLastTime = 0;
 	iSleepTime = 0;
@@ -69,8 +70,7 @@ void ILEDSmartxxRGB::OnStartup()
   {
 	  SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
 	  CLog::Log(LOGDEBUG,"Starting SmartXX RGB LED thread");
-    outb(SMARTXX_PWM_STATUS, 0x0);  // Status LED OFF
-	  SetRGBStatus("general");
+    SetRGBStatus("general");
   }
 }
 void ILEDSmartxxRGB::Process()
@@ -87,7 +87,9 @@ void ILEDSmartxxRGB::Process()
       s_CurRGB.red = s_RGBs.red1;
 			s_CurRGB.green = s_RGBs.green1;
       s_CurRGB.blue = s_RGBs.blue1;
-			SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue);
+      s_CurRGB.white = s_RGBs.white1;
+
+			SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue, s_CurRGB.white);
 		}
     else if(s_RGBs.strTransition.Equals("switch") && !strLastTransition.Equals("switch"))
 		{
@@ -96,15 +98,17 @@ void ILEDSmartxxRGB::Process()
 				s_CurRGB.red = s_RGBs.red2;
 				s_CurRGB.green = s_RGBs.green2;
         s_CurRGB.blue = s_RGBs.blue2;	
+        s_CurRGB.white = s_RGBs.white2;
         strLastTransition = "switch";
-        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue);
+        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
 			}
 			else
       {
         s_CurRGB.red = s_RGBs.red1;
 			  s_CurRGB.green = s_RGBs.green1;
         s_CurRGB.blue = s_RGBs.blue1;
-        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue);
+        s_CurRGB.white = s_RGBs.white1;
+        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
       }
 				
 		}
@@ -116,8 +120,9 @@ void ILEDSmartxxRGB::Process()
 				s_CurRGB.red = (s_CurRGB.red != s_RGBs.red1) ? s_RGBs.red1 : s_RGBs.red2;
 				s_CurRGB.green = (s_CurRGB.green != s_RGBs.green1) ? s_RGBs.green1 : s_RGBs.green2;
         s_CurRGB.blue = (s_CurRGB.blue != s_RGBs.blue1) ? s_RGBs.blue1 : s_RGBs.blue2;	
+        s_CurRGB.white= (s_CurRGB.white != s_RGBs.white1) ? s_RGBs.white1 : s_RGBs.white2;	
 				dwLastTime = timeGetTime();
-				SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue);
+        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
 			}
 			else
 				iSleepTime = s_RGBs.iTime - dwFrameTime;
@@ -130,6 +135,7 @@ void ILEDSmartxxRGB::Process()
 				s_CurRGB.red = s_RGBs.red1;
 				s_CurRGB.green = s_RGBs.green1;
 				s_CurRGB.blue = s_RGBs.blue1;
+        s_CurRGB.white = s_RGBs.white1;
 				strLastTransition = "fade";
 			}
 
@@ -149,9 +155,14 @@ void ILEDSmartxxRGB::Process()
 					s_CurRGB.blue--;
 				else if(s_CurRGB.blue < s_RGBs.blue2)
 					s_CurRGB.blue++;
+
+        if(s_CurRGB.white > s_RGBs.white2)
+          s_CurRGB.white--;
+        else if(s_CurRGB.white < s_RGBs.white2)
+          s_CurRGB.white++;
         
 				dwLastTime = timeGetTime();
-				SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue);
+        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
 			}
 			else
 				iSleepTime = s_RGBs.iTime - dwFrameTime;
@@ -164,6 +175,7 @@ void ILEDSmartxxRGB::Process()
 				s_CurRGB.red = s_RGBs.red1;
 				s_CurRGB.green = s_RGBs.green1;
 				s_CurRGB.blue = s_RGBs.blue1;
+        s_CurRGB.white = s_RGBs.white1;
 				strLastTransition = "fadeloop";
 			}
 
@@ -184,13 +196,18 @@ void ILEDSmartxxRGB::Process()
 				else if(s_CurRGB.blue < s_RGBs.blue2)
 					s_CurRGB.blue++;
 
-        if (s_CurRGB.red == s_RGBs.red2 && s_CurRGB.green == s_RGBs.green2 && s_CurRGB.blue == s_RGBs.blue2)
+        if(s_CurRGB.white > s_RGBs.white2)
+          s_CurRGB.white--;
+        else if(s_CurRGB.white < s_RGBs.white2)
+          s_CurRGB.white++;
+
+        if (s_CurRGB.red == s_RGBs.red2 && s_CurRGB.green == s_RGBs.green2 && s_CurRGB.blue == s_RGBs.blue2 && s_CurRGB.white == s_RGBs.white2)
         { 
           strLastTransition.clear();
         }
         
 				dwLastTime = timeGetTime();
-				SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue);
+        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
 			}
 			else
 				iSleepTime = s_RGBs.iTime - dwFrameTime;
@@ -204,15 +221,17 @@ void ILEDSmartxxRGB::Process()
 				s_CurRGB.red = (bRepeat) ? s_RGBs.red1 : s_RGBs.red2;
 				s_CurRGB.green = (bRepeat) ? s_RGBs.green1 : s_RGBs.green2;
         s_CurRGB.blue = (bRepeat) ? s_RGBs.blue1 : s_RGBs.blue2;
+        s_CurRGB.white = (bRepeat) ? s_RGBs.white1 : s_RGBs.white2;
 				strLastTransition = "faderepeat";
 			}
 
 			if(dwFrameTime >= s_RGBs.iTime )
 			{
-        int i_RGB_R=0,i_RGB_G=0,i_RGB_B=0;
+        int i_RGB_R=0,i_RGB_G=0,i_RGB_B=0,i_RGB_W=0;
         i_RGB_R = (!bRepeat) ? s_RGBs.red1 : s_RGBs.red2;
         i_RGB_G = (!bRepeat) ? s_RGBs.green1 : s_RGBs.green2;
         i_RGB_B = (!bRepeat) ? s_RGBs.blue1 : s_RGBs.blue2;
+        i_RGB_W = (!bRepeat) ? s_RGBs.white1 : s_RGBs.white2;
 
 				if(s_CurRGB.red > i_RGB_R )
 					s_CurRGB.red--;
@@ -229,13 +248,18 @@ void ILEDSmartxxRGB::Process()
 				else if(s_CurRGB.blue < i_RGB_B)
 					s_CurRGB.blue++;
 
-        if (s_CurRGB.red == i_RGB_R && s_CurRGB.green == i_RGB_G && s_CurRGB.blue == i_RGB_B)
+        if(s_CurRGB.white > i_RGB_W)
+          s_CurRGB.white--;
+        else if(s_CurRGB.white < i_RGB_W)
+          s_CurRGB.white++;
+
+        if (s_CurRGB.red == i_RGB_R && s_CurRGB.green == i_RGB_G && s_CurRGB.blue == i_RGB_B && s_CurRGB.white == i_RGB_W)
         { //reset for loop
           strLastTransition.clear();
           bRepeat = !bRepeat;
         }
-				dwLastTime = timeGetTime();
-				SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue);
+        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
+        dwLastTime = timeGetTime();
 			}
 		}
 		if(iSleepTime < 0)
@@ -246,8 +270,7 @@ void ILEDSmartxxRGB::Process()
 
 void ILEDSmartxxRGB::OnExit()
 {
-	SetRGBLed(0,0,0);
-  outb(SMARTXX_PWM_STATUS, 0xb);  // Status LED ON
+	SetRGBLed(0,0,0,0xb); //r=0,g=0,b=0  w=0xb (Status LED ON)
 	CLog::Log(LOGDEBUG,"Stopping SmartXX RGB LED thread");
 }
 
@@ -283,10 +306,11 @@ void ILEDSmartxxRGB::outb(unsigned short port, unsigned char data)
       nop
     }
   }
-void ILEDSmartxxRGB::getRGBValues(const CStdString &strRGBa, const CStdString &strRGBb, RGBVALUES* s_rgb)
+void ILEDSmartxxRGB::getRGBValues(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, RGBVALUES* s_rgb)
 {
-	DWORD red=0,green=0,blue=0;
-	int ret = sscanf(strRGBa,"#%2X%2X%2X",&red,&green,&blue); 
+	DWORD red=0,green=0,blue=0,white=0;
+	
+  int ret = sscanf(strRGBa,"#%2X%2X%2X",&red,&green,&blue); 
 	if(ret == 3)
 	{
 		s_rgb->red1 = int(red/2);
@@ -313,6 +337,26 @@ void ILEDSmartxxRGB::getRGBValues(const CStdString &strRGBa, const CStdString &s
 		s_rgb->green2 = 0;
 		s_rgb->blue2 = 0;
 	}
+  
+  ret = sscanf(strWhiteA,"#%2X",&white);
+	if(ret == 1)
+	{
+    s_rgb->white1 = int(white/2);
+	}
+	else
+	{
+    s_rgb->white1 = 0;
+	}
+
+  ret = sscanf(strWhiteB,"#%2X",&white);
+	if(ret == 1)
+	{
+    s_rgb->white2 = int(white/2);
+	}
+	else
+	{
+    s_rgb->white2 = 0;
+	}
 }
 
 bool ILEDSmartxxRGB::SetRGBStatus(const CStdString &strStatus)
@@ -322,19 +366,22 @@ bool ILEDSmartxxRGB::SetRGBStatus(const CStdString &strStatus)
 	return true;
 }
 
-bool ILEDSmartxxRGB::SetRGBLed(int red, int green, int blue)
+bool ILEDSmartxxRGB::SetRGBLed(int red, int green, int blue, int white)
 {
 	outb(SMARTXX_PWD_RED,red);
 	outb(SMARTXX_PWD_GREEN,green); 
 	outb(SMARTXX_PWD_BLUE,blue);
+  outb(SMARTXX_PWM_STATUS,white);
   return true;
 }
 
 //strRGB1: from rgb state in form: #rrggbb
 //strRGB2: to rgb state in form: #rrggbb
+//strWhiteA: from state in form: #00 //
+//strWhiteB: to state in form: #FF  //I Hope this LED port can handle this ;)
 //strTransition: "none", "blink", "fade", "fadeloop", "faderepeat"
 //iTranTime: Transition time in ms between transitions e.g. 50
-bool ILEDSmartxxRGB::SetRGBState(const CStdString &strRGB1, const CStdString &strRGB2, const CStdString &strTransition, int iTranTime)
+bool ILEDSmartxxRGB::SetRGBState(const CStdString &strRGB1, const CStdString &strRGB2, const CStdString &strWhiteA, const CStdString &strWhiteB, const CStdString &strTransition, int iTranTime)
 {
   // we have a new request: start reset
   strCurrentStatus = "NULL";
@@ -344,12 +391,13 @@ bool ILEDSmartxxRGB::SetRGBState(const CStdString &strRGB1, const CStdString &st
 	s_CurRGB.red = 0;
 	s_CurRGB.green = 0;
 	s_CurRGB.blue = 0;
+  s_CurRGB.white = 0;
 	iSleepTime = 0;
   dwFrameTime = 0;
   dwLastTime = timeGetTime();
   // end reset
 
-  getRGBValues(strRGB1,strRGB2,&s_RGBs);
+  getRGBValues(strRGB1,strRGB2,strWhiteA,strWhiteB,&s_RGBs);
 	if(!strTransition.Equals("none") || !strTransition.IsEmpty())
     s_RGBs.strTransition = strTransition;
 	else

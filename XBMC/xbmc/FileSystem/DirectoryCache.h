@@ -2,8 +2,6 @@
 
 #include "directory.h"
 
-using namespace DIRECTORY;
-
 namespace DIRECTORY
 {
 
@@ -43,4 +41,4 @@ protected:
 };
 
 };
-extern CDirectoryCache g_directoryCache;
+extern DIRECTORY::CDirectoryCache g_directoryCache;

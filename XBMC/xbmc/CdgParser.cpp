@@ -1,9 +1,32 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "CdgParser.h"
 #include "application.h"
 #include "util.h"
 #include "audiocontext.h"
 #include "utils\guiinfomanager.h"
+
+using namespace XFILE;
 
 //CdgLoader
 CCdgLoader::CCdgLoader()
@@ -266,7 +289,7 @@ void CCdgReader::Process()
       Sleep(15);
       if (CThread::m_bStop)
         return;
-      
+
       CUtil::GetExtension(m_pLoader->GetFileName(),strExt);
       strExt = m_pLoader->GetFileName().substr(0,m_pLoader->GetFileName().size()-strExt.size());
 
@@ -290,7 +313,7 @@ void CCdgReader::Process()
     }
     else
       ReadUpToTime((float)fNewTime-m_fAVDelay);
-    
+
     fCurTime = fNewTime;
     lock.Leave();
     Sleep(15);
@@ -476,7 +499,7 @@ TEX_COLOR CCdgRenderer::ConvertColor(CDG_COLOR CdgColor)
 }
 
 void CCdgRenderer::SetBGalpha(TEX_COLOR alpha)
-{ 
+{
   m_bgAlpha = alpha;
 }
 
@@ -611,7 +634,7 @@ bool CCdgParser::StartLoader(CStdString strSongPath)
 {
   CSingleLock lock (m_CritSection);
   if (!AllocLoader()) return false;
-  
+
   CUtil::RemoveExtension(strSongPath);
   strSongPath += ".cdg";
   if (CFile::Exists(strSongPath))

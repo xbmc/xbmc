@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "playlistfactory.h"
@@ -18,7 +38,7 @@ CPlayList* CPlayListFactory::Create(const CStdString& filename)
 }
 
 CPlayList* CPlayListFactory::Create(const CFileItem& item)
-{  
+{
   if(item.IsLastFM()) //lastfm is always a stream, and just silly to check content
     return NULL;
 
@@ -27,14 +47,14 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
     CStdString strContentType = item.GetContentType();
     strContentType.MakeLower();
 
-    if (strContentType == "video/x-ms-asf" 
+    if (strContentType == "video/x-ms-asf"
     || strContentType == "video/x-ms-asx")
       return new CPlayListASX();
 
     if (strContentType == "audio/x-pn-realaudio")
       return new CPlayListRAM();
 
-    if (strContentType == "audio/x-scpls" 
+    if (strContentType == "audio/x-scpls"
     || strContentType == "playlist"
     || strContentType == "text/html")
       return new CPlayListPLS();

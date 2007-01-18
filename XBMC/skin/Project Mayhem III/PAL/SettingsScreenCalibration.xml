@@ -38,14 +38,6 @@
 			<texturefocus>calibrate-pixelratio-focus.png</texturefocus>
 			<texturenofocus>calibrate-pixelratio.png</texturenofocus>
 		</control>
-		<control type="mover" id="12">
-			<description>OSD Y Offset mover</description>
-			<posx>200</posx>
-			<posy>500</posy>
-			<texturefocus>calibrate-subtitles-focus.png</texturefocus>
-			<texturenofocus>calibrate-subtitles.png</texturenofocus>
-			<colorkey>FFFF00FF</colorkey>
-		</control>
 		<control type="image" id="1">
 			<description>rectangle image</description>
 			<posx>0</posx>

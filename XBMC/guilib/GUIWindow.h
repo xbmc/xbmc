@@ -11,6 +11,7 @@
 #include "GUIControl.h"
 
 class CGUIControlGroup;
+class CFileItem;
 
 #include "GUICallback.h"  // for GUIEvent
 
@@ -112,6 +113,7 @@ public:
   virtual bool IsDialog() const { return false;};
   virtual bool IsModalDialog() const { return false; };
   virtual bool IsMediaWindow() const { return false; };
+  virtual CFileItem *GetCurrentListItem() { return NULL; };
   virtual bool IsActive() const;
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };

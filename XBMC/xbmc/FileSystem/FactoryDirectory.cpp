@@ -28,6 +28,9 @@
 #include "../xbox/network.h"
 #include "zipdirectory.h"
 #include "rardirectory.h"
+#include "DirectoryTuxBox.h"
+
+using namespace DIRECTORY;
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
@@ -70,6 +73,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   {
     if (strProtocol == "shout") return new CShoutcastDirectory();
     if (strProtocol == "lastfm") return new CLastFMDirectory();
+    if (strProtocol == "tuxbox") return new CDirectoryTuxBox();
     if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFTPDirectory();
 #ifdef HAS_FILESYSTEM
     if (strProtocol == "smb") return new CSMBDirectory();

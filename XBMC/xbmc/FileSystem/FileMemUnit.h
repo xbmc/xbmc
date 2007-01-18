@@ -4,7 +4,6 @@
 
 class IFileSystem;
 
-using namespace XFILE;
 namespace XFILE
 {
   class CFileMemUnit : public IFile

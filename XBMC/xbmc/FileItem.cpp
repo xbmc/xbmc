@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "fileitem.h"
 #include "Util.h"
@@ -14,6 +35,11 @@
 #include "videodatabase.h"
 #include "musicdatabase.h"
 #include "SortFileItem.h"
+#include "Utils/TuxBoxUtil.h"
+
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
 
 CFileItem::CFileItem(const CSong& song)
 {
@@ -250,6 +276,9 @@ bool CFileItem::IsVideo() const
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
+  
+  if (m_strPath.Left(7).Equals("tuxbox:")) 
+    return true;
 
   CStdString extension;
   if( m_contenttype.Left(12).Equals("application/") )
@@ -279,7 +308,7 @@ bool CFileItem::IsAudio() const
   if (IsCDDA()) return true;
   if (IsShoutCast()) return true;
   if (IsLastFM()) return true;
-  
+
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("audio/") )
     return true;
@@ -312,7 +341,7 @@ bool CFileItem::IsPicture() const
     return true;
 
   CStdString extension;
-  CUtil::GetExtension(m_strPath, extension);    
+  CUtil::GetExtension(m_strPath, extension);
 
   if (extension.IsEmpty())
     return false;
@@ -321,7 +350,7 @@ bool CFileItem::IsPicture() const
   if (g_stSettings.m_pictureExtensions.Find(extension) != -1)
     return true;
 
-  if (extension == ".tbn") 
+  if (extension == ".tbn")
     return true;
 
   return false;
@@ -339,7 +368,6 @@ bool CFileItem::IsShoutCast() const
   if (strstr(m_strPath.c_str(), "shout:") ) return true;
   return false;
 }
-
 bool CFileItem::IsLastFM() const
 {
   if (strstr(m_strPath.c_str(), "lastfm:") ) return true;
@@ -396,34 +424,34 @@ bool CFileItem::IsPlayList() const
 
 bool CFileItem::IsPythonScript() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".py", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".py", false);
 }
 
 bool CFileItem::IsXBE() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".xbe", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".xbe", false);
 }
 
 bool CFileItem::IsType(const char *ext) const
 {
-  return CUtil::GetExtension(m_strPath).Equals(ext, false);  
+  return CUtil::GetExtension(m_strPath).Equals(ext, false);
 }
 
 bool CFileItem::IsDefaultXBE() const
 {
-  CStdString filename = CUtil::GetFileName(m_strPath);  
+  CStdString filename = CUtil::GetFileName(m_strPath);
   if (filename.Equals("default.xbe")) return true;
   return false;
 }
 
 bool CFileItem::IsShortCut() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".cut", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".cut", false);
 }
 
 bool CFileItem::IsNFO() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".nfo", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".nfo", false);
 }
 
 bool CFileItem::IsDVDImage() const
@@ -461,17 +489,17 @@ bool CFileItem::IsRAR() const
 
 bool CFileItem::IsZIP() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".zip", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".zip", false);
 }
 
 bool CFileItem::IsCBZ() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".cbz", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".cbz", false);
 }
 
 bool CFileItem::IsCBR() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".cbr", false);  
+  return CUtil::GetExtension(m_strPath).Equals(".cbr", false);
 }
 
 bool CFileItem::IsStack() const
@@ -518,6 +546,10 @@ bool CFileItem::IsSmb() const
 bool CFileItem::IsDAAP() const
 {
   return CUtil::IsDAAP(m_strPath);
+}
+bool CFileItem::IsTuxBox() const
+{
+  return CUtil::IsTuxBox(m_strPath);
 }
 
 bool CFileItem::IsHD() const
@@ -685,7 +717,7 @@ void CFileItem::SetCachedArtistThumb()
 
 // set the album thumb for a file or folder
 void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
-{ 
+{
   if (HasThumbnail()) return;
   SetCachedMusicThumb();
   if (!HasThumbnail())
@@ -785,8 +817,8 @@ void CFileItem::FormatLabel2(const CStdString& strMask)
   if (!strMask.IsEmpty())
   {
     const CStdString& strLabel2=ParseFormat(strMask);
-    if (!strLabel2.IsEmpty())
-      SetLabel2(strLabel2);
+    //if (!strLabel2.IsEmpty()) // allow label2 to be empty
+    SetLabel2(strLabel2);
   }
   else
     SetLabel2(strMask);
@@ -801,56 +833,49 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
   CMusicInfoTag& tag = m_musicInfoTag;
   int iPos1 = 0;
   int iPos2 = strMask.Find('%', iPos1);
+  if (iPos2 > iPos1)
+    strLabel += strMask.Mid(iPos1, iPos2 - iPos1);
+
+  /*
   bool bDoneSomething = !(iPos1 == iPos2); // stuff in front should be applied - everything using this bool is added by spiff
                                            // when true, it should add in anything extra in the mask (ie the content before the next %)
+  */
+
   bool hasContent = false; // when true, we've actually added some content
   while (iPos2 >= 0)
-  {
-    if( (iPos2 > iPos1) && bDoneSomething )
-    {
-      strLabel += strMask.Mid(iPos1, iPos2 - iPos1);
-      bDoneSomething = false;  
-    }
+  { 
     CStdString str;
     if (strMask[iPos2 + 1] == 'N' && tag.GetTrackNumber() > 0)
     { // track number
       str.Format("%02.2i", tag.GetTrackNumber());
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'S' && tag.GetDiscNumber() > 0)
     { // disc number
       str.Format("%02.2i", tag.GetDiscNumber());
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'A' && tag.GetArtist().size())
     { // artist
       str = tag.GetArtist();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'T' && tag.GetTitle().size())
     { // title
       str = tag.GetTitle();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'B' && tag.GetAlbum().size())
     { // album
       str = tag.GetAlbum();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'G' && tag.GetGenre().size())
     { // genre
       str = tag.GetGenre();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'Y')
     { // year
       str = tag.GetYear();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'F')
     { // filename
       str = CUtil::GetTitleFromPath(m_strPath, m_bIsFolder && !IsFileFolder());
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'L')
     { // pre-existing label
@@ -860,17 +885,14 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
       { // label is the same as filename, clean it up as appropriate
         str = CUtil::GetTitleFromPath(m_strPath, m_bIsFolder && !IsFileFolder());
       }
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'D')
     { // duration
       int nDuration = tag.GetDuration();
-
       if (nDuration > 0)
         StringUtils::SecondsToTimeString(nDuration, str);
       else if (m_dwSize > 0)
         str = StringUtils::SizeToString(m_dwSize);
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'I')
     { // size
@@ -878,39 +900,41 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
         str="";
       else
         str=StringUtils::SizeToString(m_dwSize);
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'J' && m_dateTime.IsValid())
     { // date
       str = m_dateTime.GetAsLocalizedDate();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'R')
     { // movie rating
       str.Format("%2.2f", m_fRating);
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'Q')
     { // movie Year
       str=m_musicInfoTag.GetYear();
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'C')
     { // programs count
       str.Format("%i", m_iprogramCount);
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == 'K')
     { // moview/game title
       str=m_strTitle;
-      bDoneSomething = hasContent = true;
     }
     else if (strMask[iPos2 + 1] == '%')
     { // %% to print %
-      str = '%';
-      bDoneSomething = hasContent = true;
+      // not actual content so just add it directly to the output string
+      strLabel += '%';
     }
-    strLabel += str;
+    // did we translate anything?
+    if (str.size())
+    {
+      hasContent = true;
+      if (iPos2 > iPos1)
+        strLabel += strMask.Mid(iPos1, iPos2 - iPos1);
+      strLabel += str;
+    }
+    // advance to the next position
     iPos1 = iPos2 + 2;
     iPos2 = strMask.Find('%', iPos1);
   }
@@ -932,7 +956,7 @@ const CStdString& CFileItem::GetContentType() const
 
     if( m_bIsFolder )
       m_ref = "x-directory/normal";
-    else if( m_strPath.Left(8).Equals("shout://") 
+    else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(7).Equals("upnp://"))
     {
@@ -942,7 +966,7 @@ const CStdString& CFileItem::GetContentType() const
     }
     else if( m_strPath.Left(8).Equals("https://") )
     {
-      CURL url(m_strPath);      
+      CURL url(m_strPath);
       CFileCurl::GetContent(url, m_ref);
     }
 
@@ -1618,10 +1642,16 @@ void CFileItemList::Stack()
         {
           CFileItemList items;
           CDirectory::GetDirectory(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
-          if (items.Size() == 1)
+          int vids=0;
+          if (items.Size())
           {
-            if (items[0]->IsVideo())
-              *item = *items[0];
+            while (items[vids]->m_bIsFolder &&  vids < items.Size()) 
+              vids++;
+            if (items.Size()-vids == 1)
+            {
+              if (items[vids]->IsVideo())
+                *item = *items[vids];
+            }
           }
         }
       }
@@ -1653,9 +1683,9 @@ void CFileItemList::Stack()
         // check for any dvd directories, only on known fast types
         // i'm adding xbms even thou it really isn't fast due to
         // opening file to check for existance
-        if( !item->IsRemote() 
-         || item->IsSmb() 
-         || CUtil::IsInRAR(item->m_strPath) 
+        if( !item->IsRemote()
+         || item->IsSmb()
+         || CUtil::IsInRAR(item->m_strPath)
          || CUtil::IsInZIP(item->m_strPath)
          || item->m_strPath.Left(5).Equals("xbms", false)
          )
@@ -1680,10 +1710,10 @@ void CFileItemList::Stack()
             /* will allways be set on the video_ts.ifo file */
             CStdString thumb(item->GetCachedVideoThumb());
             if(CFile::Exists(thumb))
-              item->SetThumbnailImage(thumb);              
+              item->SetThumbnailImage(thumb);
             else
               item->SetUserVideoThumb();
-              
+
           }
         }
         continue;
@@ -1756,6 +1786,10 @@ bool CFileItemList::Load()
   CStdString strFileName;
   if (IsCDDA() || IsOnDVD())
     strFileName.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
+  else if (IsMusicDb())
+    strFileName.Format("Z:\\mdb-%08x.fi", (unsigned __int32)crc);
+  else if (IsVideoDb())
+    strFileName.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
   else
     strFileName.Format("Z:\\%08x.fi", (unsigned __int32)crc);
 
@@ -1793,6 +1827,10 @@ bool CFileItemList::Save()
   CStdString strFileName;
   if (IsCDDA() || IsOnDVD())
     strFileName.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
+  else if (IsMusicDb())
+    strFileName.Format("Z:\\mdb-%08x.fi", (unsigned __int32)crc);
+  else if (IsVideoDb())
+    strFileName.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
   else
     strFileName.Format("Z:\\%08x.fi", (unsigned __int32)crc);
 
@@ -1873,7 +1911,7 @@ void CFileItem::SetCachedMusicThumb()
 }
 
 CStdString CFileItem::GetPreviouslyCachedMusicThumb()
-{ 
+{
   // the highest priority thumb is album name + album path
   CStdString strPath;
   if (!m_bIsFolder)
@@ -1963,7 +2001,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
 
 void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
 {
-  // caches as the local thumb 
+  // caches as the local thumb
   CStdString thumb(GetUserMusicThumb(alwaysCheckRemote));
   if (!thumb.IsEmpty())
   {
@@ -2045,6 +2083,12 @@ CStdString CFileItem::GetUserVideoThumb()
   CURL url(m_strPath);
   if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
   if (url.GetProtocol() == "upnp" || url.GetProtocol() == "ftp") return "";
+  if (url.GetProtocol() == "tuxbox")
+  {
+    if (!m_bIsFolder)
+      return g_tuxbox.GetPicon(GetLabel());
+    else return "";
+  }
 
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb;
@@ -2083,7 +2127,7 @@ void CFileItem::SetUserVideoThumb()
   if (m_bIsShareOrDrive) return;
   if (IsParentFolder()) return;
 
-  // caches as the local thumb 
+  // caches as the local thumb
   CStdString thumb(GetUserVideoThumb());
   if (!thumb.IsEmpty())
   {
@@ -2159,7 +2203,7 @@ CStdString CFileItem::GetCachedGameSaveThumb()
 
         CUtil::AddFileToFolder(m_strPath, "titleimage.xbx", titleimageXBX);
         CUtil::AddFileToFolder(m_strPath,"saveimage.xbx",saveimageXBX);
-        
+
         /*if (CFile::Exists(saveimageXBX))
         {
           CUtil::CacheXBEIcon(saveimageXBX, thumb);

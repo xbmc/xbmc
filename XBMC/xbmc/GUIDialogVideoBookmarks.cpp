@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "GUIDialogVideoBookmarks.h"
@@ -65,7 +85,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
           {
             CVideoDatabase videoDatabase;
             videoDatabase.Open();
-            videoDatabase.ClearBookMarkOfVideo(g_application.CurrentFile(),m_bookmarks[iItem]);
+            videoDatabase.ClearBookMarkOfFile(g_application.CurrentFile(),m_bookmarks[iItem]);
             videoDatabase.Close();
           }
           Update();
@@ -97,8 +117,8 @@ void CGUIDialogVideoBookmarks::Update()
   // open the d/b and retrieve the bookmarks for the current movie
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.GetBookMarksForMovie(g_application.CurrentFile(), m_bookmarks);
-  
+  videoDatabase.GetBookMarksForFile(g_application.CurrentFile(), m_bookmarks);
+
   /* push in the resume mark first */
   if( videoDatabase.GetResumeBookMark(g_application.CurrentFile(), resumemark) )
     m_bookmarks.insert(m_bookmarks.begin(), resumemark);
@@ -122,7 +142,7 @@ void CGUIDialogVideoBookmarks::Update()
     StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, bookmarkTime, true);
 
     CFileItem *item = new CFileItem(bookmarkTime);
-    item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);   
+    item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);
     m_vecItems.Add(item);
   }
   m_viewControl.SetItems(m_vecItems);
@@ -149,8 +169,8 @@ void CGUIDialogVideoBookmarks::ClearBookmarks()
 {
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.ClearBookMarksOfMovie(g_application.CurrentFile(), CBookmark::STANDARD);
-  videoDatabase.ClearBookMarksOfMovie(g_application.CurrentFile(), CBookmark::RESUME);
+  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::STANDARD);
+  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::RESUME);
   videoDatabase.Close();
   Update();
 }
@@ -205,7 +225,7 @@ void CGUIDialogVideoBookmarks::AddBookmark()
   }
   lock.Leave();
   videoDatabase.Open();
-  videoDatabase.AddBookMarkToMovie(g_application.CurrentFile(), bookmark, CBookmark::STANDARD);
+  videoDatabase.AddBookMarkToFile(g_application.CurrentFile(), bookmark, CBookmark::STANDARD);
   videoDatabase.Close();
   Update();
 }

@@ -5,6 +5,7 @@
 #include "iso9660.h"
 #include "../util.h"
 
+using namespace DIRECTORY;
 
 CISO9660Directory::CISO9660Directory(void)
 {}

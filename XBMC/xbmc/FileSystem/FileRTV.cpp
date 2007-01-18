@@ -7,6 +7,7 @@
 #include "../util.h"
 #include <sys/stat.h>
 
+using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

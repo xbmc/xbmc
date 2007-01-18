@@ -1,5 +1,6 @@
 @ECHO OFF
 cls
+COLOR 1B
 
 rem ----PURPOSE----
 rem - Create a working XBMC build with a single click
@@ -27,77 +28,106 @@ rem	CONFIG START
 	) 
 	set OPTS=xbmc.sln /build release
 	set CLEAN=xbmc.sln /clean release
-	set XBE=xbepatch.exe
+	set XBE=release\default.xbe
+	rem set XBE=Debug\default.xbe
+	set XBE_PATCH=xbepatch.exe
 	set RAR="%ProgramFiles%\Winrar\rar.exe"
 	set RAROPS=a -r -idp -inul -m5 XBMC.rar BUILD
 rem	CONFIG END
 rem ---------------------------------------------
-ECHO Compiling Solution...
-%NET% %CLEAN%
-del release\xbmc.map
-%NET% %OPTS%
-IF NOT EXIST release\default.xbe (
-	set DIETEXT=Default.xbe failed to build!  See .\Release\BuildLog.htm for details.
-	goto DIE
-) 
-ECHO Done!
-ECHO ------------------------------
-ECHO Copying files...
-%XBE% release\default.xbe
-rmdir BUILD /S /Q
-md BUILD
 
-Echo .svn>exclude.txt
-Echo Thumbs.db>>exclude.txt
-Echo Desktop.ini>>exclude.txt
-Echo dsstdfx.bin>>exclude.txt
-Echo exclude.txt>>exclude.txt
-
-copy release\default.xbe BUILD
-xcopy UserData BUILD\UserData /E /Q /I /Y /EXCLUDE:exclude.txt
-rem copy *.xml BUILD\
-copy *.txt BUILD\
-
-cd "skin\Project Mayhem III"
-CALL build.bat
-cd ..\..
-xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
-
-xcopy credits BUILD\credits /Q /I /Y /EXCLUDE:exclude.txt
-xcopy language BUILD\language /E /Q /I /Y /EXCLUDE:exclude.txt
-xcopy screensavers BUILD\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt
-xcopy visualisations BUILD\visualisations /E /Q /I /Y /EXCLUDE:exclude.txt
-xcopy system BUILD\system /E /Q /I /Y /EXCLUDE:exclude.txt
-rem %rar% x web\Project_Mayhem_webserver*.rar build\web\
-xcopy media BUILD\media /E /Q /I /Y /EXCLUDE:exclude.txt
-xcopy sounds BUILD\sounds /E /Q /I /Y /EXCLUDE:exclude.txt
-
-del exclude.txt
-
-ECHO ------------------------------
-IF NOT EXIST %RAR% (
-	ECHO WinRAR not installed!  Skipping .rar compression...
-) ELSE (
-	ECHO Compressing build to XBMC.rar file...
-	%RAR% %RAROPS%
+rem	check for existing xbe
+rem ---------------------------------------------
+IF EXIST release\default.xbe (
+  goto XBE_EXIST
 )
+goto COMPILE
 
-ECHO ------------------------------
-ECHO Build Succeeded! 
-GOTO VIEWLOG
+:XBE_EXIST
+  ECHO ------------------------------
+  ECHO Found a previous Compiled XBE!
+  ECHO [Y] a new XBE will be compiled for the BUILD 
+  ECHO [N] the existing XBE will be used for the BUILD 
+  ECHO ------------------------------
+  set /P XBMC_COMPILE_ANSWER=Compile a new XBE? [y/n]
+  if /I %XBMC_COMPILE_ANSWER% NEQ y goto MAKE_BUILD
+  if /I %XBMC_COMPILE_ANSWER% NEQ n goto COMPILE
 
+:COMPILE
+  ECHO Compiling Solution...
+  %NET% %CLEAN%
+  del release\xbmc.map
+  %NET% %OPTS%
+  IF NOT EXIST %XBE% (
+  	set DIETEXT=Default.xbe failed to build!  See .\Release\BuildLog.htm for details.
+  	goto DIE
+  )
+  ECHO Done!
+  ECHO ------------------------------
+  GOTO MAKE_BUILD
+
+:MAKE_BUILD
+  ECHO Copying files...
+  IF EXIST %XBE_PATCH% (
+  ECHO - %XBE_PATCH% Found! Patching %XBE% 
+  %XBE_PATCH% %XBE%
+  ) ELSE (
+  ECHO %XBE_PATCH% not Found! Skipping Patch %XBE%!
+  )
+  
+  rmdir BUILD /S /Q
+  md BUILD
+  
+  Echo .svn>exclude.txt
+  Echo Thumbs.db>>exclude.txt
+  Echo Desktop.ini>>exclude.txt
+  Echo dsstdfx.bin>>exclude.txt
+  Echo exclude.txt>>exclude.txt
+
+  copy %XBE% BUILD
+  xcopy UserData BUILD\UserData /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy *.txt BUILD /EXCLUDE:exclude.txt
+  rem xcopy *.xml BUILD\
+
+  cd "skin\Project Mayhem III"
+  CALL build.bat
+  cd ..\..
+  xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
+
+  xcopy credits BUILD\credits /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy language BUILD\language /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy screensavers BUILD\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy visualisations BUILD\visualisations /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy system BUILD\system /E /Q /I /Y /EXCLUDE:exclude.txt
+  rem %rar% x web\Project_Mayhem_webserver*.rar build\web\
+  xcopy media BUILD\media /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy sounds BUILD\sounds /E /Q /I /Y /EXCLUDE:exclude.txt
+
+  del exclude.txt
+  ECHO ------------------------------
+  IF NOT EXIST %RAR% (
+  	ECHO WinRAR not installed!  Skipping .rar compression...
+  ) ELSE (
+  	ECHO Compressing build to XBMC.rar file...
+  	%RAR% %RAROPS%
+  )
+
+  ECHO ------------------------------
+  ECHO Build Succeeded!
+
+  GOTO VIEWLOG
 :DIE
-ECHO !-!-!-!-!-!-!-!-!-!-!-!-!-!-!-
-set DIETEXT=ERROR: %DIETEXT%
-echo %DIETEXT%
+  ECHO !-!-!-!-!-!-!-!-!-!-!-!-!-!-!-
+  set DIETEXT=ERROR: %DIETEXT%
+  echo %DIETEXT%
 
 :VIEWLOG
-set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
-if /I %XBMC_BUILD_ANSWER% NEQ y goto END
-start /D"%~dp0Release" BuildLog.htm"
-goto END
+  set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
+  if /I %XBMC_BUILD_ANSWER% NEQ y goto END
+  start /D"%~dp0Release" BuildLog.htm"
+  goto END
 
 :END
-set XBMC_BUILD_ANSWER=
-ECHO Press any key to exit...
-pause > NUL
+  set XBMC_BUILD_ANSWER=
+  ECHO Press any key to exit...
+  pause > NUL

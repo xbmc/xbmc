@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "DateTime.h"
 
@@ -61,13 +82,13 @@ bool CDateTimeSpan::operator !=(const CDateTimeSpan& right) const
 CDateTimeSpan CDateTimeSpan::operator +(const CDateTimeSpan& right) const
 {
   CDateTimeSpan left(*this);
-  
+
   ULARGE_INTEGER timeLeft;
   left.ToULargeInt(timeLeft);
 
   ULARGE_INTEGER timeRight;
   right.ToULargeInt(timeRight);
-  
+
   timeLeft.QuadPart+=timeRight.QuadPart;
 
   left.FromULargeInt(timeLeft);
@@ -78,13 +99,13 @@ CDateTimeSpan CDateTimeSpan::operator +(const CDateTimeSpan& right) const
 CDateTimeSpan CDateTimeSpan::operator -(const CDateTimeSpan& right) const
 {
   CDateTimeSpan left(*this);
-  
+
   ULARGE_INTEGER timeLeft;
   left.ToULargeInt(timeLeft);
 
   ULARGE_INTEGER timeRight;
   right.ToULargeInt(timeRight);
-  
+
   timeLeft.QuadPart-=timeRight.QuadPart;
 
   left.FromULargeInt(timeLeft);
@@ -99,7 +120,7 @@ const CDateTimeSpan& CDateTimeSpan::operator +=(const CDateTimeSpan& right)
 
   ULARGE_INTEGER timeRight;
   right.ToULargeInt(timeRight);
-  
+
   timeThis.QuadPart+=timeRight.QuadPart;
 
   FromULargeInt(timeThis);
@@ -114,7 +135,7 @@ const CDateTimeSpan& CDateTimeSpan::operator -=(const CDateTimeSpan& right)
 
   ULARGE_INTEGER timeRight;
   right.ToULargeInt(timeRight);
-  
+
   timeThis.QuadPart-=timeRight.QuadPart;
 
   FromULargeInt(timeThis);
@@ -458,13 +479,13 @@ bool CDateTime::operator !=(const tm& right) const
 CDateTime CDateTime::operator +(const CDateTimeSpan& right) const
 {
   CDateTime left(*this);
-  
+
   ULARGE_INTEGER timeLeft;
   left.ToULargeInt(timeLeft);
 
   ULARGE_INTEGER timeRight;
   right.ToULargeInt(timeRight);
-  
+
   timeLeft.QuadPart+=timeRight.QuadPart;
 
   left.FromULargeInt(timeLeft);
@@ -475,13 +496,13 @@ CDateTime CDateTime::operator +(const CDateTimeSpan& right) const
 CDateTime CDateTime::operator -(const CDateTimeSpan& right) const
 {
   CDateTime left(*this);
-  
+
   ULARGE_INTEGER timeLeft;
   left.ToULargeInt(timeLeft);
 
   ULARGE_INTEGER timeRight;
   right.ToULargeInt(timeRight);
-  
+
   timeLeft.QuadPart-=timeRight.QuadPart;
 
   left.FromULargeInt(timeLeft);
@@ -496,7 +517,7 @@ const CDateTime& CDateTime::operator +=(const CDateTimeSpan& right)
 
   ULARGE_INTEGER timeRight;
   right.ToULargeInt(timeRight);
-  
+
   timeThis.QuadPart+=timeRight.QuadPart;
 
   FromULargeInt(timeThis);
@@ -511,7 +532,7 @@ const CDateTime& CDateTime::operator -=(const CDateTimeSpan& right)
 
   ULARGE_INTEGER timeRight;
   right.ToULargeInt(timeRight);
-  
+
   timeThis.QuadPart-=timeRight.QuadPart;
 
   FromULargeInt(timeThis);
@@ -522,10 +543,10 @@ const CDateTime& CDateTime::operator -=(const CDateTimeSpan& right)
 CDateTimeSpan CDateTime::operator -(const CDateTime& right) const
 {
   CDateTimeSpan left;
-  
+
   ULARGE_INTEGER timeLeft;
   left.ToULargeInt(timeLeft);
-  
+
   ULARGE_INTEGER timeThis;
   ToULargeInt(timeThis);
 
@@ -592,10 +613,10 @@ bool CDateTime::ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const
 
 bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
 {
-	LONGLONG ll = Int32x32To64(time, 10000000)+0x19DB1DED53E8000;
+  LONGLONG ll = Int32x32To64(time, 10000000)+0x19DB1DED53E8000;
 
-	fileTime.dwLowDateTime  = (DWORD)&ll;
-	fileTime.dwHighDateTime = (DWORD)(ll >> 32);
+  fileTime.dwLowDateTime  = (DWORD)&ll;
+  fileTime.dwHighDateTime = (DWORD)(ll >> 32);
 
   return true;
 }
@@ -686,15 +707,15 @@ int CDateTime::GetDayOfWeek() const
 
 void CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, int second)
 {
-	SYSTEMTIME st;
+  SYSTEMTIME st;
   ZeroMemory(&st, sizeof(SYSTEMTIME));
 
-	st.wYear=year;
-	st.wMonth=month;
-	st.wDay=day;
+  st.wYear=year;
+  st.wMonth=month;
+  st.wDay=day;
   st.wHour=hour;
-	st.wMinute=minute;
-	st.wSecond=second;
+  st.wMinute=minute;
+  st.wSecond=second;
 
   m_state = ToFileTime(st, m_time) ? valid : invalid;
 }
@@ -720,7 +741,7 @@ void CDateTime::GetAsTime(time_t& time) const
   ULARGE_INTEGER filetime;
   ToULargeInt(filetime);
 
-  time=(time_t)(filetime.QuadPart-0x19DB1DED53E8000UL)/10000000UL; 
+  time=(time_t)(filetime.QuadPart-0x19DB1DED53E8000UL)/10000000UL;
 }
 
 void CDateTime::GetAsTm(tm& time) const
@@ -772,7 +793,7 @@ CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
     char c=strFormat[i];
     if (c=='\'')
     {
-      // To be able to display a "'" in the string, 
+      // To be able to display a "'" in the string,
       // find the last "'" that doesn't follow a "'"
       int pos=i+1;
       while(((pos=strFormat.Find(c,pos+1))>-1 && pos<strFormat.GetLength()) && strFormat[pos+1]=='\'');
@@ -780,7 +801,7 @@ CStdString CDateTime::GetAsLocalizedTime(bool withSeconds/*=true*/) const
       CStdString strPart;
       if (pos>-1)
       {
-        // Extract string between ' ' 
+        // Extract string between ' '
         strPart=strFormat.Mid(i+1, pos-i-1);
         i=pos;
       }
@@ -932,7 +953,7 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
     char c=strFormat[i];
     if (c=='\'')
     {
-      // To be able to display a "'" in the string, 
+      // To be able to display a "'" in the string,
       // find the last "'" that doesn't follow a "'"
       int pos=i+1;
       while(((pos=strFormat.Find(c,pos+1))>-1 && pos<strFormat.GetLength()) && strFormat[pos+1]=='\'');
@@ -940,7 +961,7 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
       CStdString strPart;
       if (pos>-1)
       {
-        // Extract string between ' ' 
+        // Extract string between ' '
         strPart=strFormat.Mid(i+1, pos-i-1);
         i=pos;
       }
@@ -980,13 +1001,13 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
       {
         switch (dateTime.wDayOfWeek)
         {
-        case 1 : str = g_localizeStrings.Get(11); break;
-        case 2 : str = g_localizeStrings.Get(12); break;
-        case 3 : str = g_localizeStrings.Get(13); break;
-        case 4 : str = g_localizeStrings.Get(14); break;
-        case 5 : str = g_localizeStrings.Get(15); break;
-        case 6 : str = g_localizeStrings.Get(16); break;
-        default: str = g_localizeStrings.Get(17); break;
+          case 1 : str = g_localizeStrings.Get(11); break;
+          case 2 : str = g_localizeStrings.Get(12); break;
+          case 3 : str = g_localizeStrings.Get(13); break;
+          case 4 : str = g_localizeStrings.Get(14); break;
+          case 5 : str = g_localizeStrings.Get(15); break;
+          case 6 : str = g_localizeStrings.Get(16); break;
+          default: str = g_localizeStrings.Get(17); break;
         }
       }
       strOut+=str;
@@ -1019,18 +1040,18 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
       {
         switch (dateTime.wMonth)
         {
-        case 1 : str = g_localizeStrings.Get(21); break;
-        case 2 : str = g_localizeStrings.Get(22); break;
-        case 3 : str = g_localizeStrings.Get(23); break;
-        case 4 : str = g_localizeStrings.Get(24); break;
-        case 5 : str = g_localizeStrings.Get(25); break;
-        case 6 : str = g_localizeStrings.Get(26); break;
-        case 7 : str = g_localizeStrings.Get(27); break;
-        case 8 : str = g_localizeStrings.Get(28); break;
-        case 9 : str = g_localizeStrings.Get(29); break;
-        case 10: str = g_localizeStrings.Get(30); break;
-        case 11: str = g_localizeStrings.Get(31); break;
-        default: str = g_localizeStrings.Get(32); break;
+          case 1 : str = g_localizeStrings.Get(21); break;
+          case 2 : str = g_localizeStrings.Get(22); break;
+          case 3 : str = g_localizeStrings.Get(23); break;
+          case 4 : str = g_localizeStrings.Get(24); break;
+          case 5 : str = g_localizeStrings.Get(25); break;
+          case 6 : str = g_localizeStrings.Get(26); break;
+          case 7 : str = g_localizeStrings.Get(27); break;
+          case 8 : str = g_localizeStrings.Get(28); break;
+          case 9 : str = g_localizeStrings.Get(29); break;
+          case 10: str = g_localizeStrings.Get(30); break;
+          case 11: str = g_localizeStrings.Get(31); break;
+          default: str = g_localizeStrings.Get(32); break;
         }
       }
       strOut+=str;

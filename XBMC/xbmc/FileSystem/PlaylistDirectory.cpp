@@ -2,6 +2,8 @@
 #include "playlistdirectory.h"
 #include "../playlistplayer.h"
 
+using namespace PLAYLIST;
+using namespace DIRECTORY;
 
 CPlaylistDirectory::CPlaylistDirectory()
 {

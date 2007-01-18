@@ -3,7 +3,6 @@
 #include "idirectory.h"
 #include "MemoryUnits/IFileSystem.h"
 
-using namespace DIRECTORY;
 namespace DIRECTORY
 {
   class CMemUnitDirectory : public IDirectory

@@ -28,6 +28,10 @@
 #include "../lib/libUPnP/Platinum.h"
 #include "../lib/libUPnP/PltSyncMediaBrowser.h"
 
+using namespace DIRECTORY;
+
+namespace DIRECTORY
+{
 /*----------------------------------------------------------------------
 |   CUPnPDirectory::GetFriendlyName
 +---------------------------------------------------------------------*/
@@ -258,4 +262,5 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     }
 
     return true;
+}
 }

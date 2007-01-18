@@ -846,9 +846,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MediaManager.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\utils\MediaMonitor.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\utils\MemoryUnitManager.cpp">
 				</File>
 				<File
@@ -883,6 +880,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\RssReader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\ScraperParser.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\ScraperParser.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\SectionLoader.cpp">
@@ -928,6 +931,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\Trainer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\TuxBoxUtil.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\TuxBoxUtil.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\UdpClient.cpp">
@@ -1011,6 +1020,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogButtonMenu.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogContentSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogContentSettings.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogContextMenu.cpp">
@@ -1274,6 +1289,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\DirectoryHistory.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\DirectoryTuxBox.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\DirectoryTuxBox.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\DllLibCurl.cpp">
 				</File>
 				<File
@@ -1359,6 +1380,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\FileSndtrk.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\FileTuxBox.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\FileTuxBox.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\FileXBMSP.cpp">
@@ -1742,6 +1769,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeActor.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeDirector.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeDirector.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeGenre.cpp">
@@ -2507,9 +2540,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\MediaManager.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\MediaMonitor.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\xbox\MediaPacketQueue.h">

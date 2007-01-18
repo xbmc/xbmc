@@ -6,6 +6,9 @@
 #include "FileCurl.h"
 #include "../utils/HttpHeader.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+
 CShoutcastDirectory::CShoutcastDirectory(void)
 {
 }

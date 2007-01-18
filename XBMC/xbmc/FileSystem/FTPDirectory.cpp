@@ -6,6 +6,8 @@
 #include "DirectoryCache.h"
 #include "FileCurl.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
 
 CFTPDirectory::CFTPDirectory(void){}
 CFTPDirectory::~CFTPDirectory(void){}

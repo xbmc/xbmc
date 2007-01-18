@@ -27,10 +27,14 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
 
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
-  virtual void OnInfo(int iItem);
-  virtual void OnScan() {};
+  virtual void OnInfo(int iItem, const SScraperInfo& info);
+  virtual void OnScan(const CStdString& strPath, const SScraperInfo& info) {};
+  virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info) {};
+  virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
+
+  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
 
   bool OnClick(int iItem);
   void OnRestartItem(int iItem);
@@ -40,7 +44,7 @@ protected:
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
 
-  void ShowIMDB(CFileItem *item);
+  void ShowIMDB(CFileItem *item, const SScraperInfo& info);
   void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
@@ -52,7 +56,8 @@ protected:
   void MarkUnWatched(int iItem);
   void MarkWatched(int iItem);
   void UpdateVideoTitle(int iItem);
-  bool UpdateVideoTitleXML(const CStdString strIMDBNumber, CStdString& strTitle);
+  void OnSearch();
+  void OnSearchItemFound(const CFileItem* pSelItem);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
