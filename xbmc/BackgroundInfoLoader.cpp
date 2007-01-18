@@ -35,6 +35,7 @@ CBackgroundInfoLoader::~CBackgroundInfoLoader()
 
 void CBackgroundInfoLoader::OnStartup()
 {
+  SetPriority( THREAD_PRIORITY_LOWEST );
   m_bRunning = true;
 }
 
