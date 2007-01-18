@@ -65,6 +65,7 @@
 #include "utils/MemoryUnitManager.h"
 #include "utils/FilterFlickerPatch.h"
 #include "utils/LED.h"
+#include "utils/fancontroller.h"
 #endif
 #include "MediaManager.h"
 #ifdef _XBOX
@@ -3752,6 +3753,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
+#ifdef HAS_XBOX_HARDWARE
+    if (g_guiSettings.GetBool("system.autotemperature"))
+    {
+      CLog::Log(LOGNOTICE, "stop fancontroller");
+      CFanController::Instance()->Stop();
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "set fanspeed to default");
+      CFanController::Instance()->RestoreStartupSpeed();
+    }
+#endif
     g_settings.LoadProfile(0); // login screen always runs as default user
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
