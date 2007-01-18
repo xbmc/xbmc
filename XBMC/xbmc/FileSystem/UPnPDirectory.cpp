@@ -163,13 +163,13 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             // look for a specific type to differentiate which folder we want
             if (audio && !video && !image) {
                 // music
-                root_id = "virtualpath://music";
+                root_id = "virtualpath://upnpmusic";
             } else if (!audio && video && !image) {
                 // video
-                root_id = "virtualpath://video";
+                root_id = "virtualpath://upnpvideo";
             } else if (!audio && !video && image) {
                 // pictures
-                root_id = "virtualpath://pictures";
+                root_id = "virtualpath://upnppictures";
             }
         }
 
