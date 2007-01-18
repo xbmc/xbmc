@@ -1385,8 +1385,8 @@
   <string id="20107">Separate (locked)</string>
   <string id="20108">Root</string>
   <string id="20109">Skin Zoom</string>
-  <string id="20110">UPnP Client</string>
-  <string id="20111">Autostart</string>
+  <string id="20110">UPnP Settings</string>
+  <string id="20111">Autostart UPnP Client</string>
   <string id="20112">Last login: %s</string>
   <string id="20113">Never logged on</string>
   <string id="20114">Profile %i / %i</string>
@@ -1535,6 +1535,17 @@
   <string id="21336">Connecting to: %s</string>
   <string id="21337">TuxBox Device</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
+  
+  <string id="21356">UPnP Music</string>
+  <string id="21357">UPnP Video</string>
+  <string id="21358">UPnP Pictures</string>
+  <string id="21359">Add Media Share...</string>
+  <string id="21360">Autostart UPnP Server</string>
+  <string id="21361">Manage UPnP Music Shares</string>
+  <string id="21362">Manage UPnP Video Shares</string>
+  <string id="21363">Manage UPnP Picture Shares</string>
+  <string id="21364">Edit Media Share</string>
+  <string id="21365">Remove Media Share</string>  
   
   <!-- up to 21370 is reserved for the upnp branch !-->
   <string id="21370">Play Navigation Sounds During Media Playback</string>  

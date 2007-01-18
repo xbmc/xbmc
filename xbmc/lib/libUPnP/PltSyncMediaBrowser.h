@@ -16,6 +16,7 @@
 #include "Neptune.h"
 #include "PltCtrlPoint.h"
 #include "PltMediaBrowser.h"
+#include "PltMediaCache.h"
 
 /*----------------------------------------------------------------------
 |   types
@@ -51,17 +52,46 @@ private:
 };
 
 /*----------------------------------------------------------------------
+|   PLT_DeviceFinderByUUID
++---------------------------------------------------------------------*/
+class PLT_DeviceFinderByUUID
+{
+public:
+    // methods
+    PLT_DeviceFinderByUUID(const char* uuid) : m_UUID(uuid) {}
+
+    bool operator()(const PLT_DeviceMapEntry* const& entry) const {
+        PLT_DeviceDataReference device = entry->GetValue();
+        return device->GetUUID() == m_UUID;
+    }
+
+private:
+    // members
+    NPT_String m_UUID;
+};
+
+
+/*----------------------------------------------------------------------
+|   PLT_MediaContainerListener
++---------------------------------------------------------------------*/
+class PLT_MediaContainerChangesListener
+{
+public:
+    virtual void OnContainerChanged(PLT_DeviceDataReference& device, const char* item_id, const char* update_id) = 0;
+};
+
+/*----------------------------------------------------------------------
 |   PLT_SyncMediaBrowser
 +---------------------------------------------------------------------*/
 class PLT_SyncMediaBrowser : public PLT_MediaBrowserListener
 {
 public:
-    PLT_SyncMediaBrowser(PLT_CtrlPointReference& ctrlPoint);
+    PLT_SyncMediaBrowser(PLT_CtrlPointReference& ctrlPoint, bool use_cache = false, PLT_MediaContainerChangesListener* listener = NULL);
     virtual ~PLT_SyncMediaBrowser();
 
     // PLT_MediaBrowserListener
     virtual void OnMSAddedRemoved(PLT_DeviceDataReference& device, int added);
-    virtual void OnMSStateVariablesChanged(PLT_Service* /* service */, NPT_List<PLT_StateVariable*>* /* vars */) {};
+    virtual void OnMSStateVariablesChanged(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars);
     virtual void OnMSBrowseResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_BrowseInfo* info, void* userdata);
 
     NPT_Result Browse(PLT_DeviceDataReference& device, const char* id, PLT_MediaObjectListReference& list);
@@ -82,9 +112,11 @@ private:
     NPT_Result WaitForResponse(NPT_SharedVariable& shared_var);
 
 private:
-    NPT_Lock<PLT_DeviceMap>         m_MediaServers;
-    PLT_MediaBrowser*               m_MediaBrowser;
-
+    NPT_Lock<PLT_DeviceMap>              m_MediaServers;
+    PLT_MediaBrowser*                    m_MediaBrowser;
+    PLT_MediaContainerChangesListener*   m_ContainerListener;
+    bool                                 m_UseCache;
+    PLT_MediaCache                       m_Cache;
 };
 
 #endif /* _PLT_SYNC_MEDIA_BROWSER_ */
