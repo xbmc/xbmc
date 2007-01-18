@@ -66,12 +66,12 @@ CUPnPVirtualPathDirectory::SplitPath(const char* object_id, NPT_String& share_na
     share_name = "";
     path = "";
 
-    if (id.StartsWith("virtualpath://music")) {
-        index = 19;
-    } else if (id.StartsWith("virtualpath://video")) {
-        index = 19;
-    } else if (id.StartsWith("virtualpath://pictures")) {
-        index = 22;
+    if (id.StartsWith("virtualpath://upnpmusic")) {
+        index = 23;
+    } else if (id.StartsWith("virtualpath://upnpvideo")) {
+        index = 23;
+    } else if (id.StartsWith("virtualpath://upnppictures")) {
+        index = 26;
     } else {
         return false;
     }
@@ -110,32 +110,32 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
 
     if (path == "0") {
         // music
-        item = new CFileItem("virtualpath://music", true);
+        item = new CFileItem("virtualpath://upnpmusic", true);
         item->SetLabel("Music");
         items.Add(item);
 
         // video
-        item = new CFileItem("virtualpath://video", true);
+        item = new CFileItem("virtualpath://upnpvideo", true);
         item->SetLabel("Video");
         items.Add(item);
 
         // pictures
-        item = new CFileItem("virtualpath://pictures", true);
+        item = new CFileItem("virtualpath://upnppictures", true);
         item->SetLabel("Pictures");
         items.Add(item);
 
         return true;
-    } else if (path == "virtualpath://music" || 
-               path == "virtualpath://video" || 
-               path == "virtualpath://pictures") {
+    } else if (path == "virtualpath://upnpmusic" || 
+               path == "virtualpath://upnpvideo" || 
+               path == "virtualpath://upnppictures") {
         // look for all shares given a container
         VECSHARES *shares = NULL;
-        if (path == "virtualpath://music") {
-            shares = &g_settings.m_vecUPnPMusicShares;
-        } else if (path == "virtualpath://video") {
-            shares = &g_settings.m_vecUPnPVideoShares;
-        } else if (path == "virtualpath://pictures") {
-            shares = &g_settings.m_vecUPnPPictureShares;
+        if (path == "virtualpath://upnpmusic") {
+            shares = g_settings.GetSharesFromType("upnpmusic");
+        } else if (path == "virtualpath://upnpvideo") {
+            shares = g_settings.GetSharesFromType("upnpvideo");
+        } else if (path == "virtualpath://upnppictures") {
+            shares = g_settings.GetSharesFromType("upnppictures");
         }
         if (shares) {
             for (unsigned int i = 0; i < shares->size(); i++) {
@@ -167,17 +167,17 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
         if (!FindSharePath(share_name, file_path, true)) return false;
 
         // use the share name to figure out what extensions to use
-        if (share_name.StartsWith("virtualpath://music")) {
+        if (share_name.StartsWith("virtualpath://upnpmusic")) {
             return CDirectory::GetDirectory(
                 (const char*)file_path, 
                 items, 
                 g_stSettings.m_musicExtensions);
-        } else if (share_name.StartsWith("virtualpath://video")) {
+        } else if (share_name.StartsWith("virtualpath://upnpvideo")) {
             return CDirectory::GetDirectory(
                 (const char*)file_path, 
                 items, 
                 g_stSettings.m_videoExtensions);
-        } else if (share_name.StartsWith("virtualpath://pictures")) {
+        } else if (share_name.StartsWith("virtualpath://upnppictures")) {
             return CDirectory::GetDirectory(
                 (const char*)file_path, 
                 items, 
@@ -189,11 +189,11 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
     }
 
     // use the path to figure out what extensions to use
-    if (path.StartsWith("virtualpath://music")) {
+    if (path.StartsWith("virtualpath://upnpmusic")) {
         SetMask(g_stSettings.m_musicExtensions);
-    } else if (path.StartsWith("virtualpath://video")) {
+    } else if (path.StartsWith("virtualpath://upnpvideo")) {
         SetMask(g_stSettings.m_videoExtensions);
-    } else if (path.StartsWith("virtualpath://pictures")) {
+    } else if (path.StartsWith("virtualpath://upnppictures")) {
         SetMask(g_stSettings.m_pictureExtensions);
     }
 
@@ -218,7 +218,7 @@ CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& s
 {
     paths.clear();
 
-    if (!GetMatchingShare(strPath, share))
+    if (!CVirtualPathDirectory::GetMatchingShare(strPath, share))
         return false;
 
     // filter out non local shares
@@ -230,39 +230,3 @@ CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& s
     return true;
 }
 
-/*----------------------------------------------------------------------
-|   CUPnPVirtualPathDirectory::GetMatchingShare
-+---------------------------------------------------------------------*/
-bool 
-CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& share)
-{
-    CStdString strType, strBookmark;
-    if (!GetTypeAndBookmark(strPath, strType, strBookmark))
-        return false;
-
-    // no support for "files" operation
-    if (strType == "files") 
-        return false;
-
-    VECSHARES *vecShares;
-    if (strType == "music") {
-        vecShares = &g_settings.m_vecUPnPMusicShares;
-    } else if (strType == "video") {
-        vecShares = &g_settings.m_vecUPnPVideoShares;
-    } else if (strType == "pictures") {
-        vecShares = &g_settings.m_vecUPnPPictureShares;
-    } else {
-        return false;
-    }
-
-    bool bIsBookmarkName = false;
-    int iIndex = CUtil::GetMatchingShare(strBookmark, *vecShares, bIsBookmarkName);
-    if (!bIsBookmarkName)
-        return false;
-
-    if (iIndex < 0)
-        return false;
-
-    share = (*vecShares)[iIndex];
-    return true;
-}

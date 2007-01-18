@@ -223,15 +223,15 @@ CUPnPServer::Build(CFileItem*        item,
 
         // override object id & change the class if it's an item
         // and it's not been set previously
-        if (object->m_ObjectID.StartsWith("virtualpath://music")) {
+        if (object->m_ObjectID.StartsWith("virtualpath://upnpmusic")) {
             if (object->m_ObjectClass.type == "object.item") {
                 object->m_ObjectClass.type = "object.item.audioitem";
             }
-        } else if (object->m_ObjectID.StartsWith("virtualpath://video")) {
+        } else if (object->m_ObjectID.StartsWith("virtualpath://upnpvideo")) {
             if (object->m_ObjectClass.type == "object.item") {
                 object->m_ObjectClass.type = "object.item.videoitem";
             }
-        } else if (object->m_ObjectID.StartsWith("virtualpath://pictures")) {
+        } else if (object->m_ObjectID.StartsWith("virtualpath://upnppictures")) {
             if (object->m_ObjectClass.type == "object.item") {
                 object->m_ObjectClass.type = "object.item.imageitem";
             }
@@ -279,12 +279,12 @@ CUPnPServer::Build(CFileItem*        item,
 
                 // look up number of shares
                 VECSHARES *shares = NULL;
-                if (path == "virtualpath://music") {
-                    shares = &g_settings.m_vecUPnPMusicShares;
-                } else if (path == "virtualpath://video") {
-                    shares = &g_settings.m_vecUPnPVideoShares;
-                } else if (path == "virtualpath://pictures") {
-                    shares = &g_settings.m_vecUPnPPictureShares;
+                if (path == "virtualpath://upnpmusic") {
+                    shares = g_settings.GetSharesFromType("upnpmusic");
+                } else if (path == "virtualpath://upnpvideo") {
+                    shares = g_settings.GetSharesFromType("upnpvideo");
+                } else if (path == "virtualpath://upnppictures") {
+                    shares = g_settings.GetSharesFromType("upnppictures");
                 }
 
                 // use only shares that would some path with local files
@@ -308,14 +308,14 @@ CUPnPServer::Build(CFileItem*        item,
         } else {
             CStdString mask;
             // this is a share name
-            if (share_name.StartsWith("virtualpath://music")) {
-                object->m_ParentID = "virtualpath://music";
+            if (share_name.StartsWith("virtualpath://upnpmusic")) {
+                object->m_ParentID = "virtualpath://upnpmusic";
                 mask = g_stSettings.m_musicExtensions;
-            } else if (share_name.StartsWith("virtualpath://video")) {
-                object->m_ParentID = "virtualpath://video";
+            } else if (share_name.StartsWith("virtualpath://upnpvideo")) {
+                object->m_ParentID = "virtualpath://upnpvideo";
                 mask = g_stSettings.m_videoExtensions;
-            } else if (share_name.StartsWith("virtualpath://pictures")) {
-                object->m_ParentID = "virtualpath://pictures";
+            } else if (share_name.StartsWith("virtualpath://upnppictures")) {
+                object->m_ParentID = "virtualpath://upnppictures";
                 mask = g_stSettings.m_pictureExtensions;
             } else {
                 // weird!
@@ -373,15 +373,15 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
         item = new CFileItem("0", true);
         item->SetLabel("Root");
         object = Build(item, true, info);
-    } else if (id == "virtualpath://music") {
+    } else if (id == "virtualpath://upnpmusic") {
         item = new CFileItem((const char*)id, true);
         item->SetLabel("Music");
         object = Build(item, true, info);
-    } else if (id == "virtualpath://video") {
+    } else if (id == "virtualpath://upnpvideo") {
         item = new CFileItem((const char*)id, true);
         item->SetLabel("Video");
         object = Build(item, true, info);
-    } else if (id == "virtualpath://pictures") {
+    } else if (id == "virtualpath://upnppictures") {
         item = new CFileItem((const char*)id, true);
         item->SetLabel("Pictures");
         object = Build(item, true, info);
@@ -617,8 +617,7 @@ CUPnP::StartServer()
     // load upnpserver.xml so that g_settings.m_vecUPnPMusicShares, etc.. are loaded
     g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
 
-    // TODO: specify a unique UUID we save somewhere
-    //       also, let the user set the friendlyname
+    // create the server with the friendlyname and UUID from upnpserver.xml if found
     m_ServerHolder->m_Device = new CUPnPServer(
         g_settings.m_UPnPServerFriendlyName.length()?g_settings.m_UPnPServerFriendlyName.c_str():"Xbox Media Center",
         g_settings.m_UPnPUUID.length()?g_settings.m_UPnPUUID.c_str():NULL

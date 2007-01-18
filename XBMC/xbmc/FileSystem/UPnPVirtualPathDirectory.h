@@ -44,7 +44,7 @@ public:
 
     // CVirtualPathDirectory overrides
     bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    bool GetMatchingShare(const CStdString &strPath, CShare& share);
+    //bool GetMatchingShare(const CStdString &strPath, CShare& share);
     
     bool GetMatchingShare(const CStdString &strPath, CShare& share, vector<CStdString>& paths);
 };
