@@ -36,6 +36,7 @@
 #include "xbox/Network.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
+#include "utils/fancontroller.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
@@ -1750,6 +1751,19 @@ bool CSettings::LoadProfile(int index)
       if (doc.LoadFile(GetUserDataFolder()+"\\guisettings.xml"))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
+
+#ifdef HAS_XBOX_HARDWARE
+    if (g_guiSettings.GetBool("system.autotemperature"))
+    {
+      CLog::Log(LOGNOTICE, "start fancontroller");
+      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"));
+    }
+    else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
+    {
+      CLog::Log(LOGNOTICE, "setting fanspeed");
+      CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
+    }
+#endif
 
     // to set labels - shares are reloaded
     CDetectDVDMedia::UpdateState();
