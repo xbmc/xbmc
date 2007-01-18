@@ -55,7 +55,7 @@ protected:
     NPT_Ordinal            m_EventKey;
     NPT_String             m_SID;
     NPT_SocketAddress      m_LocalIf;
-    NPT_Array<NPT_String*> m_CallbackURLs;
+    NPT_Array<NPT_String>  m_CallbackURLs;
     NPT_TimeStamp          m_ExpirationTime;
 };
 

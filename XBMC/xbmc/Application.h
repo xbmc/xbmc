@@ -54,6 +54,10 @@ public:
   void StopTimeServer();
   void StartUPnP();
   void StopUPnP();
+  void StartUPnPClient();
+  void StopUPnPClient();
+  void StartUPnPServer();
+  void StopUPnPServer();
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);

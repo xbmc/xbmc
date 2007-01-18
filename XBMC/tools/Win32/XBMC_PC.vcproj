@@ -1631,6 +1631,12 @@
 					RelativePath="..\..\xbmc\FileSystem\UPnPDirectory.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\UPnPVirtualPathDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\UPnPVirtualPathDirectory.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory.cpp">
 				</File>
 				<File
@@ -1908,6 +1914,16 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\xbox\XKGeneral.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="UPnP"
+				Filter="">
+				<File
+					RelativePath="..\..\xbmc\UPnP.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\UPnP.h">
 				</File>
 			</Filter>
 		</Filter>

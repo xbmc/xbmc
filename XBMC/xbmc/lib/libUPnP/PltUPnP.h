@@ -35,6 +35,9 @@ public:
     NPT_Result AddDevice(PLT_DeviceHostReference& device);
     NPT_Result AddCtrlPoint(PLT_CtrlPointReference& ctrlpoint);
 
+    NPT_Result RemoveDevice(PLT_DeviceHostReference& device);
+    NPT_Result RemoveCtrlPoint(PLT_CtrlPointReference& ctrlpoint);
+
     NPT_Result Start();
     NPT_Result Stop();
 
