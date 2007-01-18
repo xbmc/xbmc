@@ -25,50 +25,18 @@
 
 #include "idirectory.h"
 
-/* forward declarations */
-class PLT_UPnP;
-class PLT_SyncMediaBrowser;
-class CCtrlPointReferenceHolder;
-
-
 namespace DIRECTORY
 {
-
-class CUPnPDirectory;
-
-class CUPnP
-{
-public:
-    CUPnP();
-    ~CUPnP();
-
-    void IgnoreUUID(const char* uuid);
-
-    // class methods
-    static CUPnP* GetInstance();
-    static void   ReleaseInstance();
-    static bool   IsInstantiated() { return upnp != NULL; }
-
-private:
-    friend class CUPnPDirectory;
-
-    PLT_UPnP*                   m_UPnP;
-    PLT_SyncMediaBrowser*       m_MediaBrowser;
-    CCtrlPointReferenceHolder*  m_CtrlPointHolder;
-
-    static CUPnP* upnp;
-};
-
 class CUPnPDirectory :  public IDirectory
 {
 public:
     CUPnPDirectory(void) {}
     virtual ~CUPnPDirectory(void) {}
 
+    // IDirectory methods
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
 
+    // class methods
     static const char* GetFriendlyName(const char* url);
-
-private:
 };
 }

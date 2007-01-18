@@ -72,6 +72,7 @@
 #include "filesystem/filedaap.h"
 #endif
 #ifdef HAS_UPNP
+#include "UPnP.h"
 #include "FileSystem/UPnPDirectory.h"
 #endif
 #include "PartyModeManager.h"
@@ -1557,13 +1558,10 @@ void CApplication::StopKai()
 
 void CApplication::StartUPnP()
 {
-  if (g_guiSettings.GetBool("upnp.autostart"))
-  {
-    CLog::Log(LOGNOTICE, "starting upnp");
 #ifdef HAS_UPNP
-    CUPnP::GetInstance();
+    StartUPnPClient();
+    StartUPnPServer();
 #endif
-  }
 }
 
 void CApplication::StopUPnP()
@@ -1571,8 +1569,55 @@ void CApplication::StopUPnP()
 #ifdef HAS_UPNP
   if (CUPnP::IsInstantiated())
   {
+    StopUPnPClient();
+    StopUPnPServer();
+
     CLog::Log(LOGNOTICE, "stopping upnp");
     CUPnP::ReleaseInstance();
+  }
+#endif
+}
+
+void CApplication::StartUPnPClient()
+{
+#ifdef HAS_UPNP
+  if (g_guiSettings.GetBool("upnp.client"))
+  {
+    CLog::Log(LOGNOTICE, "starting upnp client");
+    CUPnP::GetInstance()->StartClient();
+  }
+#endif
+}
+
+void CApplication::StopUPnPClient()
+{
+#ifdef HAS_UPNP
+  if (CUPnP::IsInstantiated())
+  {
+    CLog::Log(LOGNOTICE, "stopping upnp client");
+    CUPnP::GetInstance()->StopClient();
+  }
+#endif
+}
+
+void CApplication::StartUPnPServer()
+{
+#ifdef HAS_UPNP
+  if (g_guiSettings.GetBool("upnp.server"))
+  {
+    CLog::Log(LOGNOTICE, "starting upnp server");
+    CUPnP::GetInstance()->StartServer();
+  }
+#endif
+}
+
+void CApplication::StopUPnPServer()
+{
+#ifdef HAS_UPNP
+  if (CUPnP::IsInstantiated())
+  {
+    CLog::Log(LOGNOTICE, "stopping upnp server");
+    CUPnP::GetInstance()->StopServer();
   }
 #endif
 }

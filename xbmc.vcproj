@@ -1526,6 +1526,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\UPnPDirectory.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\UPnPVirtualPathDirectory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\UPnPVirtualPathDirectory.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory.cpp">
 				</File>
 				<File
@@ -2110,6 +2116,16 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\xbox\XKUtils.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="UPnP"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\UPnP.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\UPnP.h">
 				</File>
 			</Filter>
 		</Filter>
