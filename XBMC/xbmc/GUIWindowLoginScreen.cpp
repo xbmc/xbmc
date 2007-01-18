@@ -30,6 +30,7 @@
 #include "lib/libPython/XBPython.h"
 #include "lib/libscrobbler/scrobbler.h"
 #include "utils/weather.h"
+#include "utils/fancontroller.h"
 #include "xbox/network.h"
 #include "skininfo.h"
 
@@ -99,6 +100,19 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             {
               g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
               g_network.Deinitialize();
+              #ifdef HAS_XBOX_HARDWARE
+              if (g_guiSettings.GetBool("system.autotemperature"))
+              {
+                CLog::Log(LOGNOTICE, "stop fancontroller");
+                CFanController::Instance()->Stop();
+              }
+              else
+              {
+                CLog::Log(LOGNOTICE, "set fanspeed to default");
+                CFanController::Instance()->RestoreStartupSpeed();
+              }
+              #endif
+              
               g_settings.LoadProfile(m_viewControl.GetSelectedItem());
               g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
                 g_guiSettings.GetString("network.ipaddress").c_str(),
