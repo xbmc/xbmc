@@ -2048,7 +2048,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
             iBookMark = CUtil::GetMatchingShare(strParent,g_settings.m_vecMyVideoShares,bIsBookMark);
             bIsBookMark = g_settings.m_vecMyVideoShares[iBookMark].vecPaths.size() > 1;
           }
-          if (iBookMark > -1 && bIsBookmark)
+          if (iBookMark > -1 && bIsBookMark)
           {
             for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iBookMark].vecPaths.size();++i)
             {
