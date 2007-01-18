@@ -29,6 +29,9 @@ public:
     bool operator()(const NPT_String* const & value) const {
         return value->Compare(m_Value) ? false : true;
     }
+    bool operator()(const NPT_String& value) const {
+        return value.Compare(m_Value) ? false : true;
+    }
 
 private:
     // members
@@ -154,6 +157,28 @@ public:
             return NPT_SUCCESS;
         }
         return temp.SubString(7).ToInteger(len);
+    }
+    
+    static NPT_Result GetIPAddresses(NPT_List<NPT_String>& ips) {
+        NPT_List<NPT_NetworkInterface*> if_list;
+        NPT_CHECK(NPT_NetworkInterface::GetNetworkInterfaces(if_list));
+
+        NPT_String ip;
+        NPT_List<NPT_NetworkInterface*>::Iterator iface = if_list.GetFirstItem();
+
+        while (iface) {
+            ip = (*(*iface)->GetAddresses().GetFirstItem()).GetPrimaryAddress().ToString();
+            if (ip.Compare("0.0.0.0") && ip.Compare("127.0.0.1")) {
+                ips.Add(ip);
+            }
+            ++iface;
+        }
+
+        if (ips.GetItemCount() == 0) {
+            ips.Add("127.0.0.1");
+        }
+
+        return NPT_SUCCESS;
     }
 };
 

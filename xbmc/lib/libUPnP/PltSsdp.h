@@ -101,32 +101,15 @@ protected:
 class PLT_SsdpAnnounceInterfaceIterator
 {
 public:
-    PLT_SsdpAnnounceInterfaceIterator(NPT_UdpMulticastSocket* socket, PLT_DeviceHost* device, bool is_byebye = false) :
-        m_Socket(socket), m_Device(device), m_IsByeBye(is_byebye)  {}
+    PLT_SsdpAnnounceInterfaceIterator(PLT_DeviceHost* device, bool is_byebye = false, bool broadcast = false) :
+        m_Device(device), m_IsByeBye(is_byebye), m_Broadcast(broadcast) {}
       
     NPT_Result operator()(NPT_NetworkInterface*& if_addr) const;
     
 private:
-    NPT_UdpMulticastSocket* m_Socket;
-    PLT_DeviceHost*         m_Device;
-    bool                    m_IsByeBye;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_SsdpAnnounceSocketIterator class
-+---------------------------------------------------------------------*/
-class PLT_SsdpAnnounceSocketIterator
-{
-public:
-    PLT_SsdpAnnounceSocketIterator(PLT_DeviceHost* device, bool is_byebye = false) :
-        m_Device(device), m_IsByeBye(is_byebye)  {}
-      
-    NPT_Result operator()(NPT_UdpSocket*& socket) const;
-    
-private:
     PLT_DeviceHost* m_Device;
     bool            m_IsByeBye;
-    bool            m_IsMulticast;
+    bool            m_Broadcast;
 };
 
 /*----------------------------------------------------------------------
@@ -160,21 +143,23 @@ private:
 class PLT_SsdpDeviceAnnounceTask : public PLT_ThreadTask
 {
 public:
-    PLT_SsdpDeviceAnnounceTask(PLT_DeviceHost* device, bool is_byebye_first = false) : 
-        m_Device(device), m_IsByeByeFirst(is_byebye_first) {}
+    PLT_SsdpDeviceAnnounceTask(PLT_DeviceHost*  device, 
+                               NPT_TimeInterval repeat,
+                               bool             is_byebye_first = false,
+                               bool             broadcast = false) : 
+        m_Repeat(repeat), m_Device(device), m_IsByeByeFirst(is_byebye_first), m_IsBroadcast(broadcast) {}
 
 protected:
-    virtual ~PLT_SsdpDeviceAnnounceTask() {
-        m_Sockets.Apply(NPT_ObjectDeleter<NPT_UdpSocket>());
-    }
+    virtual ~PLT_SsdpDeviceAnnounceTask() {}
 
     // PLT_ThreadTask methods
     virtual void DoRun();
 
 protected:
     PLT_DeviceHost*             m_Device;
+    NPT_TimeInterval            m_Repeat;
     bool                        m_IsByeByeFirst;
-    NPT_List<NPT_UdpSocket*>    m_Sockets;
+    bool                        m_IsBroadcast;
 };
 
 /*----------------------------------------------------------------------

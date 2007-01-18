@@ -47,25 +47,28 @@ public:
 protected:
     virtual ~PLT_FileMediaServer();
     
-protected:
-    NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
-    NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
-    NPT_Result ProcessFileRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response);
+    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response);
 
-private:
-    NPT_Result OnAlbumArtRequest(NPT_String filepath, NPT_HttpResponse* response);
-    PLT_MediaObject* BuildFromFilePath(const NPT_String& filepath, bool with_count = true, NPT_SocketInfo* info = NULL);
-    bool       ProceedWithEntry(const NPT_String filepath, NPT_DirectoryEntryType& type);
-    NPT_Result GetEntryCount(const char* path, NPT_Cardinal& count); 
-    NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
+    virtual NPT_Result OnAlbumArtRequest(NPT_String filepath, NPT_HttpResponse* response);
+    virtual bool       ProceedWithEntry(const NPT_String filepath, NPT_DirectoryEntryInfo& info);
+    virtual NPT_Result GetEntryCount(const char* path, NPT_Cardinal& count); 
+    virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
+
+    virtual PLT_MediaObject* BuildFromFilePath(
+        const NPT_String&   filepath, 
+        bool                with_count = true, 
+        NPT_SocketInfo*     info = NULL, 
+        bool                keep_extension_in_title = false);
 
 protected:
     friend class PLT_MediaItem;
 
     NPT_String    m_Path;
     NPT_String    m_DirDelimiter;
-    NPT_String    m_FileBaseUri;
-    NPT_String    m_AlbumArtBaseUri;
+    NPT_HttpUrl   m_FileBaseUri;
+    NPT_HttpUrl   m_AlbumArtBaseUri;
 
     NPT_List<PLT_MetadataHandler*> m_MetadataHandlers;
 };

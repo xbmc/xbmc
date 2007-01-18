@@ -55,9 +55,8 @@ public:
 
     NPT_Result   AddListener(PLT_CtrlPointListener* listener);
     NPT_Result   RemoveListener(PLT_CtrlPointListener* listener);
-    void         SetUUIDToIgnore(const char* uuid) {m_UUIDToIgnore = uuid;}
-    NPT_Result   Start(PLT_TaskManager* task_manager);
-    NPT_Result   Stop();
+    void         IgnoreUUID(const char* uuid);
+
     NPT_Result   Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
                         const char*        target = "upnp:rootdevice", 
                         const NPT_Cardinal MX = 5);
@@ -66,7 +65,7 @@ public:
                           const NPT_Cardinal MX = 5,
                           NPT_Timeout        repeat = 50000);
     NPT_Result   InvokeAction(PLT_ActionReference& action, void* userdata = NULL);
-    NPT_Result   Subscribe(PLT_Service* service, bool renew = false, void* userdata = NULL);
+    NPT_Result   Subscribe(PLT_Service* service, bool cancel = false, void* userdata = NULL);
 
     // PLT_HttpServerListener methods
     virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest*   request, 
@@ -85,7 +84,9 @@ public:
 protected:
     virtual ~PLT_CtrlPoint();
 
-    // methods
+    NPT_Result   Start(PLT_TaskManager* task_manager);
+    NPT_Result   Stop();
+
     NPT_Result   ProcessSsdpNotify(NPT_HttpRequest* request, NPT_SocketInfo info);
     NPT_Result   ProcessSsdpMessage(NPT_HttpMessage*   message, 
                                     NPT_SocketInfo&    info, 
@@ -111,9 +112,17 @@ private:
     NPT_Result   DoHouseKeeping();
     NPT_Result   ParseFault(PLT_ActionReference& action, 
                             NPT_XmlElementNode*  fault);
+    PLT_SsdpSearchTask* CreateSearchTask(
+        const NPT_HttpUrl&   url, 
+        const char*          target, 
+        const NPT_Cardinal   MX, 
+        const NPT_IpAddress& address);
 
 private:
     friend class NPT_Reference<PLT_CtrlPoint>;
+    friend class PLT_UPnP;
+    friend class PLT_UPnP_CtrlPointStartIterator;
+    friend class PLT_UPnP_CtrlPointStopIterator;
 	friend class PLT_CtrlPointGetDescriptionTask;
     friend class PLT_CtrlPointGetSCPDTask;
     friend class PLT_CtrlPointInvokeActionTask;
@@ -121,14 +130,14 @@ private:
     friend class PLT_CtrlPointSubscribeEventTask;
 
     NPT_AtomicVariable                              m_ReferenceCount;
-    NPT_String                                      m_UUIDToIgnore;
+    NPT_List<NPT_String>                            m_UUIDsToIgnore;
     PLT_CtrlPointHouseKeepingTask*                  m_HouseKeepingTask;
     NPT_List<PLT_SsdpSearchTask*>                   m_SsdpSearchTasks;
     NPT_Lock<PLT_CtrlPointListenerList>             m_ListenerList;
     PLT_HttpServer*                                 m_EventHttpServer;
     PLT_TaskManager*                                m_TaskManager;
     NPT_Lock<NPT_List<PLT_DeviceDataReference> >    m_Devices;
-    NPT_List<PLT_EventSubscriber*>                  m_Subscribers;
+    NPT_Lock<NPT_List<PLT_EventSubscriber*> >       m_Subscribers;
     NPT_String                                      m_AutoSearch;
 };
 
