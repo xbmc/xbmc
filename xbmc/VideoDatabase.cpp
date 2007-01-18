@@ -2034,11 +2034,33 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
     if (iFound == 0)
     {
       CStdString strParent;
+      bool bIsBookMark=false;
+      int iBookMark=-2;
       while (iFound == 0 && CUtil::GetParentPath(strPath1, strParent))
       {
         CUtil::RemoveSlashAtEnd(strParent);
         strSQL=FormatSQL("select path.strContent,path.strScraper from path where strPath like '%s'",strParent.c_str());
         m_pDS->query(strSQL.c_str());
+        if (m_pDS->eof())
+        {
+          if (iBookMark == -2)
+          {
+            iBookMark = CUtil::GetMatchingShare(strParent,g_settings.m_vecMyVideoShares,bIsBookMark);
+            bIsBookMark = g_settings.m_vecMyVideoShares[iBookMark].vecPaths.size() > 1;
+          }
+          if (iBookMark > -1 && bIsBookmark)
+          {
+            for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iBookMark].vecPaths.size();++i)
+            {
+              if (g_settings.m_vecMyVideoShares[iBookMark].vecPaths[i].Equals(strParent))
+              {
+                strSQL=strSQL=FormatSQL("select path.strContent,path.strScraper from path where strPath like '%s'",g_settings.m_vecMyVideoShares[iBookMark].strPath.c_str());
+                m_pDS->query(strSQL.c_str());
+                break;
+              }
+            }
+          }
+        }
         if (!m_pDS->eof())
         {
           strContent = m_pDS->fv("path.strContent").get_asString();
@@ -2046,6 +2068,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CStdString& st
           if (!strScraper.IsEmpty())
             iFound = 2;
         }
+
         strPath1 = strParent;
       }
     }
