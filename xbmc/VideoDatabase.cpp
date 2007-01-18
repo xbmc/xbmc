@@ -2233,7 +2233,8 @@ void CVideoDatabase::CleanDatabase()
     if (NULL == m_pDS.get()) return;
 
     // find all the files
-    CStdString sql = "select * from files";;
+    CStdString sql = "select * from files, path where files.idPath = path.idPath";
+ 
     m_pDS->query(sql.c_str());
     if (m_pDS->num_rows() == 0) return;
 
@@ -2255,7 +2256,10 @@ void CVideoDatabase::CleanDatabase()
     int current = 0;
     while (!m_pDS->eof())
     {
-      CStdString fullPath = m_pDS->fv("files.strFileName").get_asString();
+      CStdString path = m_pDS->fv("path.strPath").get_asString();
+      CStdString fileName = m_pDS->fv("files.strFileName").get_asString();
+      CStdString fullPath;
+      CUtil::AddFileToFolder(path, fileName, fullPath);
 
       if (CUtil::IsStack(fullPath))
       { // do something?
@@ -2326,20 +2330,24 @@ void CVideoDatabase::CleanDatabase()
     sql = "delete from movie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning movieinfo table");
-    sql = "delete from movieinfo where idMovie in " + moviesToDelete;
-    m_pDS->exec(sql.c_str());
-
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actorlinkmovie table");
     sql = "delete from actorlinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinkmovie table");
+    sql = "delete from directorlinkmovie where idMovie in " + moviesToDelete;
+    m_pDS->exec(sql.c_str());
+
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of actors and directors");
-    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from movieinfo)";
+    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genrelinkmovie table");
     sql = "delete from genrelinkmovie where idMovie in " + moviesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
+    sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
@@ -2350,9 +2358,11 @@ void CVideoDatabase::CleanDatabase()
 
     Compress();
 
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+
     if (progress)
-      progress->Close();
-  }
+      progress->Close(); 
+ }
   catch (...)
   {
     CLog::Log(LOGERROR, "CVideoDatabase::CleanDatabase() failed");
