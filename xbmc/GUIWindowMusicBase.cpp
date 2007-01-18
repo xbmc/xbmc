@@ -143,8 +143,11 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         return false;
 
       // save current window, unless the current window is the music playlist window
-      if (GetID() != WINDOW_MUSIC_PLAYLIST)
+      if (GetID() != WINDOW_MUSIC_PLAYLIST && g_stSettings.m_iMyMusicStartWindow != GetID())
+      {
         g_stSettings.m_iMyMusicStartWindow = GetID();
+        g_settings.Save();
+      }
 
       return true;
     }

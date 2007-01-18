@@ -93,9 +93,11 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // save current window, unless the current window is the video playlist window
-      if (GetID() != WINDOW_VIDEO_PLAYLIST)
+      if (GetID() != WINDOW_VIDEO_PLAYLIST && g_stSettings.m_iVideoStartWindow != GetID())
+      {
         g_stSettings.m_iVideoStartWindow = GetID();
-
+        g_settings.Save();
+      }
 
       return CGUIMediaWindow::OnMessage(message);
     }
