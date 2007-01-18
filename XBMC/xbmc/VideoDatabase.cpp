@@ -1132,19 +1132,13 @@ CIMDBMovie CVideoDatabase::GetDetailsForMovie(long lMovieId)
   }
   details.m_strDirector = details.m_strDirector.Mid(0,details.m_strDirector.size()-3);
 
-
-  strSQL=FormatSQL("select files.strFileName,files.idPath from files where idMovie=%u",lMovieId);
+  // file and path (only draw 2 items from the db, so we can lookup based on offset)
+  strSQL=FormatSQL("select files.strFileName,path.strPath from files join path on files.idPath=path.idPath where files.idMovie=%u",lMovieId);
   pDS->query(strSQL.c_str());
   if (!pDS->eof())
   {
-    CStdString strFileName = pDS->fv("files.strFileName").get_asString();
-    strSQL=FormatSQL("select path.strPath from path where idPath=%u",pDS->fv("files.idPath").get_asLong());
-    pDS->query(strSQL.c_str());
-    if (!pDS->eof())
-    {
-      CUtil::AddFileToFolder(pDS->fv("path.strPath").get_asString(),strFileName,details.m_strFileNameAndPath);
-      details.m_strPath = pDS->fv("path.strPath").get_asString();
-    }
+    details.m_strPath = pDS->fv(1).get_asString();
+    CUtil::AddFileToFolder(details.m_strPath, pDS->fv(0).get_asString(),details.m_strFileNameAndPath);
   }
 
   details.m_strSearchString.Format("%i", lMovieId);
@@ -1884,6 +1878,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             }
           }
 
+          CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
           // get movies from returned subtable
           while (!m_pDS->eof())
           {
@@ -1894,6 +1889,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             iSONGS++;
             m_pDS->next();
           }
+          CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
         }
         catch (...)
         {
