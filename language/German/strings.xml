@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 01/17/2007-->
+<!--Date of translation: 01/19/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7662-->
+<!--Based on english strings version 7686-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -1494,5 +1494,16 @@
   <string id="21336">Verbinden zu: %s</string>
   <string id="21337">TuxBox-Laufwerk</string>
   <!-- up to 21355 is reserved for the TuxBox Client !! !-->
+  <string id="21356">UPnP Musik</string>
+  <string id="21357">UPnP Videos</string>
+  <string id="21358">UPnP Bilder</string>
+  <string id="21359">Quelle hinzufügen</string>
+  <string id="21360">UPnP-Server aktivieren</string>
+  <string id="21361">UPnP Musik-Freigaben verwalten</string>
+  <string id="21362">UPnP Video-Freigaben verwalten</string>
+  <string id="21363">UPnP Bilder-Freigaben verwalten</string>
+  <string id="21364">Quelle bearbeiten</string>
+  <string id="21365">Quelle entfernen</string>
+  <string id="21370">Navigations-Sounds während Medien-Wiedergabe aktivieren</string>
   <string id="29999">Automatische Videofilter Korrektur</string>
 </strings>
