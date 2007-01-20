@@ -83,6 +83,7 @@ public:
     NPT_String m_ModelURL;
     NPT_String m_SerialNumber;
     NPT_String m_UPC;
+    NPT_String m_PresentationURL;
 
 protected:
     virtual ~PLT_DeviceData();
@@ -103,7 +104,6 @@ protected:
 
     NPT_TimeInterval    m_LeaseTime;
     NPT_TimeStamp       m_LeaseTimeLastUpdate;
-    NPT_String          m_PresentationURL;
 
     NPT_Array<PLT_Service*>             m_Services;
     NPT_Array<PLT_DeviceDataReference>  m_EmbeddedDevices;
