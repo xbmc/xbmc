@@ -109,7 +109,16 @@
 					<posy>0</posy>
 					<width>250</width>
 					<height>29</height>
-					<texture>input-focus.png</texture>
+					<visible>Control.HasFocus(4)</visible>
+					<texture border="3">input-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>250</width>
+					<height>29</height>
+					<visible>!Control.HasFocus(4)</visible>
+					<texture border="3">input-nofocus.png</texture>
 				</control>
 				<control type="image">
 					<posx>3</posx>
