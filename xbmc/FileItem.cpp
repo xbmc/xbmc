@@ -1642,6 +1642,7 @@ void CFileItemList::Stack()
         {
           CFileItemList items;
           CDirectory::GetDirectory(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
+          items.Sort(SORT_METHOD_LABEL,SORT_ORDER_ASC);
           int vids=0;
           if (items.Size())
           {
