@@ -623,9 +623,18 @@ CUPnP::StartServer()
         g_settings.m_UPnPServerFriendlyName.length()?g_settings.m_UPnPServerFriendlyName.c_str():"Xbox Media Center",
         g_settings.m_UPnPUUID.length()?g_settings.m_UPnPUUID.c_str():NULL
         );
+
+    // trying to set optional upnp values for XP UPnP UI Icons to detect us
+    // but it doesn't work anyways as it requires multicast for XP to detect us
     m_ServerHolder->m_Device->m_ModelName = "Xbox Media Center";
-    //m_ServerHolder->m_Device->m_PresentationURL = NPT_HttpUrl(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
-    m_ServerHolder->m_Device->m_PresentationURL = "/";
+    NPT_String ip = g_network.m_networkinfo.ip;
+#ifndef HAS_XBOX_NETWORK
+    NPT_List<NPT_String> list;
+    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
+        ip = *(list.GetFirstItem());
+    }
+#endif
+    m_ServerHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
     m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center";
     m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
     m_ServerHolder->m_Device->m_ModelNumber = "2.0";
