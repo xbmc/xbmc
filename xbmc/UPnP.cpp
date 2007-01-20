@@ -34,7 +34,16 @@
 #include "lib/libUPnP/PltSyncMediaBrowser.h"
 #include "lib/libUPnP/PltDidl.h"
 
+
+/*----------------------------------------------------------------------
+|   static
++---------------------------------------------------------------------*/
 CUPnP* CUPnP::upnp = NULL;
+
+// change to false for XBMC_PC if you want real UPnP functionality
+// otherwise keep to true for xbmc as it doesn't support multicast
+// don't change unless you know what you're doing!
+bool CUPnP::broadcast = true; 
 
 /*----------------------------------------------------------------------
 |   CDeviceHostReferenceHolder class
@@ -515,8 +524,8 @@ CUPnP::CUPnP() :
 {
     //PLT_SetLogLevel(PLT_LOG_LEVEL_4);
 
-    // initialize upnp in broadcast listening mode
-    m_UPnP = new PLT_UPnP(1900, false);
+    // initialize upnp in broadcast listening mode for xbmc
+    m_UPnP = new PLT_UPnP(1900, !broadcast);
 
     // start upnp monitoring
     m_UPnP->Start();
@@ -590,7 +599,7 @@ CUPnP::StartClient()
     // since the xbox does not support multicast. UPnP devices will still receive our request and respond to us
     // since they're listening on port 1900 in multicast
     // Repeat every 6 seconds
-    m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
+    if (broadcast) m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
 }
 
 /*----------------------------------------------------------------------
@@ -644,7 +653,7 @@ CUPnP::StartServer()
 
     // since the xbox doesn't support multicast
     // we use broadcast but we advertise more often
-    m_ServerHolder->m_Device->SetBroadcast(true);
+    if (broadcast) m_ServerHolder->m_Device->SetBroadcast(true);
 
     // tell controller to ignore ourselves from list of upnp servers
     if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
