@@ -24,6 +24,7 @@
 #include "stdafx.h"
 #include "util.h"
 
+#include "xbox/Network.h"
 #include "UPnP.h"
 #include "FileSystem/UPnPVirtualPathDirectory.h"
 #include "lib/libUPnP/Platinum.h"
@@ -514,7 +515,7 @@ CUPnP::CUPnP() :
 {
     //PLT_SetLogLevel(PLT_LOG_LEVEL_4);
 
-    // initialize upnp in non multicast listening mode
+    // initialize upnp in broadcast listening mode
     m_UPnP = new PLT_UPnP(1900, false);
 
     // start upnp monitoring
@@ -623,6 +624,14 @@ CUPnP::StartServer()
         g_settings.m_UPnPUUID.length()?g_settings.m_UPnPUUID.c_str():NULL
         );
     m_ServerHolder->m_Device->m_ModelName = "Xbox Media Center";
+    //m_ServerHolder->m_Device->m_PresentationURL = NPT_HttpUrl(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
+    m_ServerHolder->m_Device->m_PresentationURL = "/";
+    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center";
+    m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
+    m_ServerHolder->m_Device->m_ModelNumber = "2.0";
+    m_ServerHolder->m_Device->m_ModelName = "XBMC";
+    m_ServerHolder->m_Device->m_Manufacturer = "Xbox Team";
+    m_ServerHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
 
     // since the xbox doesn't support multicast
     // we use broadcast but we advertise more often
