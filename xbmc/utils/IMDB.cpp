@@ -301,7 +301,7 @@ void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 }
 
 // TODO: Make this user-configurable?
-const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& strYear)
+void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& strYear)
 {
   char szMovie[1024];
   char szYear[5];
@@ -336,21 +336,21 @@ const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, C
   }
 
   CRegExp reTags;
-  reTags.RegComp("(.*)\\+(ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|se|svcd|swedish|unrated|ws|xvid|cd[1-9]|\\[.*\\])(\\+.*)?");
+  reTags.RegComp("\\+(ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|se|svcd|swedish|unrated|ws|xvid|cd[1-9]|\\[.*\\])(\\+|$)");
 
   CStdString strTemp;
-  while (reTags.RegFind(szMovie) >= 0)
-    {
-    char *pFN = reTags.GetReplaceString("\\1");
-    strcpy(szMovie,pFN);
-    if (pFN) free(pFN);
-    }
-
+  int i=0;
+  CStdString strSearch = szMovie;
+  if ((i=reTags.RegFind(strSearch.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
+  {
+    m_parser.m_param[0] = strSearch.Mid(0,i);
+ }
+  else
     m_parser.m_param[0] = szMovie;
-    strURL = m_parser.Parse("CreateSearchUrl");
+
+  strURL = m_parser.Parse("CreateSearchUrl");
 
   strYear = szYear;
-  return szMovie;
 }
 
 
