@@ -57,4 +57,5 @@ private:
     CCtrlPointReferenceHolder*  m_CtrlPointHolder;
 
     static CUPnP* upnp;
+    static bool   broadcast;
 };
