@@ -76,7 +76,7 @@ public:
   bool ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails);
   bool LoadXML(const CStdString& strXMLFile, CIMDBMovie &movieDetails, bool bDownload = true);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
-  const CStdString GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
+  void GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
 
   // threaded lookup functions
   bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
