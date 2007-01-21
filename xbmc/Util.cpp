@@ -1972,8 +1972,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   DWORD startTimer = timeGetTime();
   CLog::Log(LOGDEBUG,__FUNCTION__": START");
 
-  static bool bAlternateChecked=false;
-
   // new array for commons sub dirs
   char * common_sub_dirs[] = {"subs",
                               "Subs",
@@ -2009,20 +2007,20 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   ReplaceExtension(strFileName, "", strFileNameNoExt);
   strLookInPaths.push_back(strPath);
 
-  if (!bAlternateChecked && strlen(g_stSettings.m_szAlternateSubtitleDirectory)) // to avoid checking non-existent directories (network) every time..
+  if (!g_stSettings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
   {
-    if (!g_network.IsAvailable() && !IsHD(g_stSettings.m_szAlternateSubtitleDirectory))
+    if (!g_network.IsAvailable() && !IsHD(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
-      g_stSettings.m_szAlternateSubtitleDirectory[0] = '\0';
+      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
     }
-    else if (!CDirectory::Exists(g_stSettings.m_szAlternateSubtitleDirectory))
+    else if (!CDirectory::Exists(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
-      g_stSettings.m_szAlternateSubtitleDirectory[0] = '\0';
+      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
     }
 
-    bAlternateChecked = true;
+    g_stSettings.iAdditionalSubtitleDirectoryChecked = 1;
   }
 
   if (strMovie.substr(0,6) == "rar://") // <--- if this is found in main path then ignore it!
@@ -2098,9 +2096,9 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   // .. done checking for cd-dirs
 
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
-  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory) != 0)
+  if (g_stSettings.iAdditionalSubtitleDirectoryChecked == 1)
   {
-    strPath = g_stSettings.m_szAlternateSubtitleDirectory;
+    strPath = g_guiSettings.GetString("subtitles.custompath");
     if (!HasSlashAtEnd(strPath))
       strPath += "/"; //Should work for both remote and local files
     strLookInPaths.push_back(strPath);
@@ -3960,7 +3958,7 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &specialPath)
   if (specialPath.Left(15).Equals("special://home/"))
     CUtil::AddFileToFolder("Q:", specialPath.Mid(15), translatedPath);
   else if (specialPath.Left(20).Equals("special://subtitles/"))
-    CUtil::AddFileToFolder(g_stSettings.m_szAlternateSubtitleDirectory, specialPath.Mid(20), translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), specialPath.Mid(20), translatedPath);
   else if (specialPath.Left(19).Equals("special://userdata/"))
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), specialPath.Mid(19), translatedPath);
   else if (specialPath.Left(19).Equals("special://database/"))
