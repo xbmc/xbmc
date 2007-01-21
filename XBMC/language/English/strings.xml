@@ -1546,8 +1546,8 @@
   <string id="21363">Manage UPnP Picture Shares</string>
   <string id="21364">Edit Media Share</string>
   <string id="21365">Remove Media Share</string>  
+  <string id="21366">Custom Subtitle Directory</string>
   
-  <!-- up to 21370 is reserved for the upnp branch !-->
   <string id="21370">Play Navigation Sounds During Media Playback</string>  
 
   <string id="29999">Auto Flicker Filter Patch</string>
