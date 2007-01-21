@@ -146,7 +146,6 @@ CSettings::CSettings(void)
   for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
     g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
-  strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "");
   strcpy(g_stSettings.szOnlineArenaPassword, "");
   strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
 
@@ -184,6 +183,8 @@ CSettings::CSettings(void)
 
   // defaults for scanning
   g_stSettings.m_bMyMusicIsScanning = false;
+
+  g_stSettings.iAdditionalSubtitleDirectoryChecked = 0;
 
   // Advanced settings
   g_advancedSettings.m_audioHeadRoom = 0;
@@ -362,8 +363,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
 #ifdef HAS_XBOX_HARDWARE
   helper.Unmount("S:");
-  CStdString strDir = CUtil::TranslateSpecialSource(g_stSettings.m_szAlternateSubtitleDirectory);
-  strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
 #endif
 
   // look for external sources file
@@ -1167,8 +1166,6 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
 
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
-
-  GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
