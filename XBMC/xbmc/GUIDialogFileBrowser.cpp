@@ -98,16 +98,26 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       bool bIsDir = false;
       // this code allows two different selection modes for directories
       // end the path with a slash to start inside the directory
-      if (m_selectedPath[m_selectedPath.size()-1] == '\\' || m_selectedPath[m_selectedPath.size()-1] == '/' ) // assume directory
+      if (CUtil::HasSlashAtEnd(m_selectedPath))
       {
         bIsDir = true;
-        if (!CDirectory::Exists(m_selectedPath))
+        bool bFool;
+        int iBookmark = CUtil::GetMatchingShare(m_selectedPath,m_shares,bFool);
+        bFool = true;
+        if (iBookmark > -1)
+        {
+          CUtil::RemoveSlashAtEnd(m_selectedPath);
+          if (m_shares[iBookmark].strPath.Equals(m_selectedPath))
+            bFool = false;
+        }
+      
+        if (bFool && !CDirectory::Exists(m_selectedPath))
           m_selectedPath.Empty();
       }
       else
       {
         if (!CFile::Exists(m_selectedPath) && !CDirectory::Exists(m_selectedPath))
-          m_selectedPath.Empty();
+            m_selectedPath.Empty();
       }
 
       // find the parent folder if we are a file browser (don't do this for folders)
