@@ -67,7 +67,7 @@
 			<aspectratio>keep</aspectratio>
 			<visible>player.ShowInfo</visible>
 		</control>
-  	<control type="label" id="1">
+	  	<control type="label" id="1">
 			<description>current_event_name</description>
 			<width>385</width>
 			<posx>180</posx>
@@ -78,18 +78,18 @@
 			<font>special13</font>
 			<visible>Player.ShowInfo</visible>
 		</control>
-  	<control type="label" id="2">
+	  	<control type="label" id="2">
 			<description>current_event_description</description>
 			<width>430</width>
 			<posx>180</posx>
-			<posy>459</posy>
+			<posy>465</posy>
 			<info>videoplayer.genre</info>
 			<align>left</align>
 			<scroll>true</scroll>
 			<font>font12</font>
 			<visible>Player.ShowInfo</visible>
 		</control>
-  	<control type="label" id="3">
+	  	<control type="label" id="3">
 			<description>current_event_details</description>
 			<width>430</width>
 			<posx>180</posx>
@@ -100,7 +100,7 @@
 			<font>font12</font>
 			<visible>Player.ShowInfo</visible>
 		</control>
-	<control type="label" id="4">
+		<control type="label" id="4">
 			<description>current_event_duration</description>
 			<width>430</width>
 			<posx>180</posx>
@@ -112,14 +112,14 @@
 			<visible>Player.ShowInfo</visible>
 		</control>
 		<control type="label" id="5">
-      <description>Time Label</description>
-		  <width>200</width>
-		  <posx>610</posx>
-		  <posy>438</posy>
-		  <align>right</align>
-		  <font>special13</font>
-      <info>System.Time</info>
-      <visible>Player.ShowInfo</visible>
-   </control>
+			<description>Time Label</description>
+			<width>200</width>
+			<posx>610</posx>
+			<posy>438</posy>
+			<align>right</align>
+			<font>special13</font>
+			<info>System.Time</info>
+			<visible>Player.ShowInfo</visible>
+		</control>
 	</controls>
 </window>
