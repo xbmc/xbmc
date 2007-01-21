@@ -1511,7 +1511,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-  else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path"))
+  else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
@@ -1521,9 +1521,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     bool bWriteOnly = true;
     if (strSetting.Equals("myprograms.trainerpath"))
       bWriteOnly = false;
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path,bWriteOnly))
+
+    if (strSetting.Equals("subtitles.custompath"))
+    {
+      bWriteOnly = false;
+      shares = g_settings.m_vecMyVideoShares;
+    }
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path, bWriteOnly))
     {
       pSettingString->SetData(path);
+      if (strSetting.Equals("subtitles.custompath"))
+        iAdditionalChecked = -1; // force recheck
+
       if (strSetting.Equals("myprograms.trainerpath"))
       {
         if (CGUIDialogYesNo::ShowAndGetInput(12012,20135,20022,20022))

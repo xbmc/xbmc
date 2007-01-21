@@ -353,7 +353,7 @@ public:
     char m_szMyVideoCleanTokens[256];
     char m_szMyVideoCleanSeparators[32];
 
-    char m_szAlternateSubtitleDirectory[128];
+    int iAdditionalSubtitleDirectoryChecked;
 
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
