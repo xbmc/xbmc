@@ -77,13 +77,14 @@
 			<onleft>3</onleft>
 			<onright>30</onright>
 			<scrolltime>200</scrolltime>
+			<include>homemisc</include>
 			<itemlayout height="35">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>250</width>
 					<height>29</height>
-					<texture>input-nofocus.png</texture>
+					<texture border="3">input-nofocus.png</texture>
 				</control>
 				<control type="image">
 					<posx>3</posx>
