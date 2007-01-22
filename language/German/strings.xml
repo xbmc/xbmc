@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 01/19/2007-->
+<!--Date of translation: 01/22/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7686-->
+<!--Based on english strings version 7708-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -1504,6 +1504,8 @@
   <string id="21363">UPnP Bilder-Freigaben verwalten</string>
   <string id="21364">Quelle bearbeiten</string>
   <string id="21365">Quelle entfernen</string>
+  <string id="21366">Alternatives Untertitel-Verzeichnis</string>
+  <string id="21367">Video &amp; Alternatives Untertitel-Verzeichnis</string>
   <string id="21370">Navigations-Sounds während Medien-Wiedergabe aktivieren</string>
   <string id="29999">Automatische Videofilter Korrektur</string>
 </strings>
