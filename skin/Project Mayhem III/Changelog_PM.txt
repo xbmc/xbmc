@@ -1,3 +1,4 @@
+2007-01-23 Changed:	Scripts label from Extension to Scripts.
 2007-01-16 Changed:	defaultVideoCover texture.
 2007-01-10 Removed:	Unused "osd y offset mover" control in SettingsScreenCalibration.xml.
 2007-01-07 changed:	"Add source" texture to defaultAddSource.png and made it transperant.
