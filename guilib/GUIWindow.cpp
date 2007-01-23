@@ -62,13 +62,13 @@ bool CGUIWindow::LoadReferences()
     return true;
 
   // nope - time to load it in
-  CLog::Log(LOGINFO, "Loading references file: %s", strReferenceFile.c_str());
   if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
   {
 //    CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strReferenceFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 
+  CLog::Log(LOGINFO, "Loading references file: %s", strReferenceFile.c_str());
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if (strValue != CStdString("controls"))
