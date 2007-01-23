@@ -680,12 +680,12 @@ void CGUIFontTTF::CreateShader()
 
     LPD3DXBUFFER pShader = NULL;
     if( D3D_OK != D3DXAssembleShader(fonts, strlen(fonts), NULL, NULL, &pShader, NULL) )
-      CLog::Log(LOGERROR, __FUNCTION__" - Failed to assemble pixel shader");
+      CLog::Log(LOGINFO, __FUNCTION__" - Failed to assemble pixel shader");
     else
     {
       if (D3D_OK != m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_pixelShader))
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Failed to create pixel shader");
+        CLog::Log(LOGINFO, __FUNCTION__" - Failed to create pixel shader");
         m_pixelShader = 0;
       }
       pShader->Release();
