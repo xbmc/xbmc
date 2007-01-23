@@ -86,7 +86,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
       {
         url.m_strURL.push_back(link->FirstChild()->Value());
       }
-      if (id)
+      if (id && id->FirstChild())
         url.m_strID = id->FirstChild()->Value();
       // if source contained a distinct year, only allow those
       if(iYear != 0)
