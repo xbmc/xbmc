@@ -218,8 +218,24 @@ CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& s
 {
     paths.clear();
 
-    if (!CVirtualPathDirectory::GetMatchingShare(strPath, share))
+    CStdString strType, strBookmark;
+    if (!GetTypeAndBookmark(strPath, strType, strBookmark))
         return false;
+
+    VECSHARES *vecShares = g_settings.GetSharesFromType(strType);
+    if (!vecShares) return false;
+
+    // look for share
+    for (int i = 0; i < (int)vecShares->size(); ++i) {
+        CShare share = vecShares->at(i);
+        CStdString strName = share.strName;
+        if (strBookmark.Equals(strName))
+            break;
+    }
+
+    if (i == vecShares->size()) return false;
+
+    share = (*vecShares)[i];
 
     // filter out non local shares
     for (unsigned int i = 0; i < share.vecPaths.size(); i++) {
