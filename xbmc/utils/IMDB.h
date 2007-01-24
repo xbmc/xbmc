@@ -37,8 +37,9 @@ class CIMDBMovie
 {
 public:
   void Reset();
-  bool Load(const CStdString& strFileName);
-  void Save(const CStdString& strFileName);
+  bool Load(const TiXmlNode *node);
+  bool Save(TiXmlNode *node);
+
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
   CStdString m_strGenre;
