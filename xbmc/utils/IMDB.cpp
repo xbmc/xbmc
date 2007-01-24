@@ -137,7 +137,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   movieDetails.m_iYear = 0;
   movieDetails.m_fRating = 0.0;
   movieDetails.m_strVotes = strLocNotAvail;
-  movieDetails.m_strCast = strLocNotAvail;
+  movieDetails.m_cast.clear();
   movieDetails.m_iTop250 = 0;
   movieDetails.m_strIMDBNumber = url.m_strID;
   movieDetails.m_bWatched = false;
@@ -196,7 +196,7 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
   movieDetails.m_strPlot = strLocNotAvail;
   movieDetails.m_strPictureURL = "";
   movieDetails.m_strVotes = strLocNotAvail;
-  movieDetails.m_strCast = strLocNotAvail;
+  movieDetails.m_cast.clear();
   movieDetails.m_strMPAARating = strLocNotAvail;
   movieDetails.m_iTop250 = 0;
 
@@ -208,28 +208,11 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
     return false;
   }
 
-  CStdString strTemp;
-  XMLUtils::GetString(details, "title", movieDetails.m_strTitle);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTitle);
-  if (XMLUtils::GetString(details, "rating", strTemp)) movieDetails.m_fRating = (float)atof(strTemp);
-  if (XMLUtils::GetString(details, "year", strTemp)) movieDetails.m_iYear = atoi(strTemp);
-  if (XMLUtils::GetString(details, "top250", strTemp)) movieDetails.m_iTop250 = atoi(strTemp);
+  movieDetails.Load(details);
 
-  XMLUtils::GetString(details, "votes", movieDetails.m_strVotes);
-  XMLUtils::GetString(details, "cast", movieDetails.m_strCast);
-  XMLUtils::GetString(details, "outline", movieDetails.m_strPlotOutline);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTitle);
   g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlotOutline);
-  
-  XMLUtils::GetString(details, "runtime", movieDetails.m_strRuntime);
-  XMLUtils::GetString(details, "thumb", movieDetails.m_strPictureURL);
-  XMLUtils::GetString(details, "tagline", movieDetails.m_strTagLine);
-  XMLUtils::GetString(details, "genre", movieDetails.m_strGenre);
-  XMLUtils::GetString(details, "credits", movieDetails.m_strWritingCredits);
-  XMLUtils::GetString(details, "director", movieDetails.m_strDirector);
-  XMLUtils::GetString(details, "plot", movieDetails.m_strPlot);
   g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlot);
-  
-  XMLUtils::GetString(details, "mpaa", movieDetails.m_strMPAARating);
   g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strMPAARating);
   
   CHTMLUtil::RemoveTags(movieDetails.m_strPlot);
@@ -260,7 +243,7 @@ void CIMDBMovie::Reset()
   m_strPictureURL = "";
   m_strTitle = "";
   m_strVotes = "";
-  m_strCast = "";
+  m_cast.clear();
   m_strSearchString = "";
   m_strFile = "";
   m_strPath = "";
@@ -299,12 +282,25 @@ bool CIMDBMovie::Save(TiXmlNode *node)
   XMLUtils::SetString(movie, "path", m_strPath);
   XMLUtils::SetString(movie, "imdbnumber", m_strIMDBNumber);
   XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
-  // TODO: each of these should be xml-ized
-  XMLUtils::SetString(movie, "cast", m_strCast);
   XMLUtils::SetString(movie, "genre", m_strGenre);
   XMLUtils::SetString(movie, "credits", m_strWritingCredits);
   XMLUtils::SetString(movie, "director", m_strDirector);
 
+  // cast
+  for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
+  {
+    // add a <cast> tag
+    TiXmlElement cast("cast");
+    TiXmlNode *node = movie->InsertEndChild(cast);
+    TiXmlElement actor("actor");
+    TiXmlNode *actorNode = node->InsertEndChild(actor);
+    TiXmlText name(it->first);
+    actorNode->InsertEndChild(name);
+    TiXmlElement role("role");
+    TiXmlNode *roleNode = node->InsertEndChild(role);
+    TiXmlText character(it->second);
+    roleNode->InsertEndChild(character);
+  }
   return true;
 }
 
@@ -328,11 +324,40 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "imdbnumber", m_strIMDBNumber);
   XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
-  // TODO: each of these should be xml-ized
-  XMLUtils::GetString(movie, "cast", m_strCast);
+
   XMLUtils::GetString(movie, "genre", m_strGenre);
   XMLUtils::GetString(movie, "credits", m_strWritingCredits);
   XMLUtils::GetString(movie, "director", m_strDirector);
+
+  // cast
+  const TiXmlNode *node = movie->FirstChild("cast");
+  while (node)
+  {
+    const TiXmlNode *actor = node->FirstChild("actor");
+    if (actor && actor->FirstChild())
+    {
+      CStdString name = actor->FirstChild()->Value();
+      CStdString role;
+      const TiXmlNode *roleNode = node->FirstChild("role");
+      if (roleNode && roleNode->FirstChild())
+        role = roleNode->FirstChild()->Value();
+      m_cast.push_back(make_pair(name, role));
+    }
+    node = node->NextSibling("cast");
+  }
+  if (m_cast.empty())
+  { // old method for back-compatibility
+    CStdString cast;
+    XMLUtils::GetString(movie, "cast", cast);
+    vector<CStdString> vecCast;
+    int iNumItems = StringUtils::SplitString(cast, "\n", vecCast);
+    for (unsigned int i = 0; i < vecCast.size(); i++)
+    {
+      int iPos = vecCast[i].Find(" as ");
+      if (iPos > 0)
+        m_cast.push_back(make_pair(vecCast[i].Left(iPos), vecCast[i].Mid(iPos + 4)));
+    }
+  }
   return true;
 }
 

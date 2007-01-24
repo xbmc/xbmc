@@ -737,32 +737,15 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     }
   
     // add cast...
-    vector<std::pair<long,CStdString> > vecActors;
-    CStdString strCast;
-    int ipos = 0;
-    strCast = details.m_strCast.c_str();
-    CRegExp reg;
-    reg.RegComp("([^\n]*) as ([^\n]*)\n");
-    const char* szFoo=strCast.c_str();
-    while ((ipos = reg.RegFind(szFoo)) > -1)
+    for (CIMDBMovie::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
-      char* actor = reg.GetReplaceString("\\1");
-      char* role = reg.GetReplaceString("\\2");
-      long lActor = AddActor(actor);
-      vecActors.push_back(std::make_pair<long,CStdString>(lActor,role));
-      free(actor);
-      free(role);
-      szFoo += ipos+reg.GetFindLen();
+      long lActor = AddActor(it->first);
+      AddActorToMovie(lMovieId, lActor, it->second);
     }
     
     for (int i = 0; i < (int)vecGenres.size(); ++i)
     {
       AddGenreToMovie(lMovieId, vecGenres[i]);
-    }
-
-    for (i = 0; i < (int)vecActors.size(); ++i)
-    {
-      AddActorToMovie(lMovieId, vecActors[i].first, vecActors[i].second);
     }
 
     for (i = 0; i < (int)vecDirectors.size(); ++i)
@@ -1113,7 +1096,7 @@ CIMDBMovie CVideoDatabase::GetDetailsForMovie(long lMovieId)
   m_pDS2->query(strSQL.c_str());
   while (!m_pDS2->eof())
   {
-    details.m_strCast += m_pDS2->fv("actors.strActor").get_asString()+" "+g_localizeStrings.Get(20347)+" "+m_pDS2->fv("actorlinkmovie.strRole").get_asString()+'\n';
+    details.m_cast.push_back(make_pair(m_pDS2->fv("actors.strActor").get_asString(), m_pDS2->fv("actorlinkmovie.strRole").get_asString()));
     m_pDS2->next();
   }
   castTime += timeGetTime() - time; time = timeGetTime();
@@ -2497,6 +2480,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     {
       CIMDBMovie info;
       info.Load(movie);
+      DeleteMovieInfo(info.m_strFileNameAndPath);
       SetMovieInfo(info.m_strFileNameAndPath, info);
       movie = movie->NextSibling("movie");
       if (/*(current % 50) == 0 && */ progress)

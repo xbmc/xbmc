@@ -303,15 +303,12 @@ void CGUIWindowVideoInfo::Update()
   SET_CONTROL_LABEL(CONTROL_TEXTAREA, strTmp.c_str() );
 
   // setup cast list
-  strTmp = m_Movie.m_strCast; strTmp.Trim();
   m_vecStrCast.clear();
-  vector<CStdString> vecCast;
-  int iNumItems = StringUtils::SplitString(strTmp, "\n", vecCast);
-  for (int i = 0; i < (int)vecCast.size(); i++)
+  for (CIMDBMovie::iCast it = m_Movie.m_cast.begin(); it != m_Movie.m_cast.end(); ++it)
   {
-    int iPos = vecCast[i].Find(" as ");
-    if (iPos > 0)
-      m_vecStrCast.push_back(vecCast[i]);
+    CStdString character;
+    character.Format("%s %s %s", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
+    m_vecStrCast.push_back(character);
   }
   AddItemsToList(m_vecStrCast);
 
