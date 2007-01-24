@@ -61,7 +61,7 @@ NPT_ParseInteger32(const char* str, NPT_Int32& result, bool relaxed = true);
 #endif
 
 #if defined (NPT_CONFIG_HAVE_SNPRINTF)
-#define NPT_FormatString _snprintf
+#define NPT_FormatString NPT_snprintf
 #else
 int NPT_FormatString(char* str, NPT_Size size, const char* format, ...);
 #endif

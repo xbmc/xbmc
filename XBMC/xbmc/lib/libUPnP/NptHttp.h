@@ -372,8 +372,7 @@ public:
 
     // methods
     virtual NPT_Result SetupResponse(NPT_HttpRequest&  request,
-                                     NPT_HttpResponse& response,
-                                     NPT_SocketInfo&   client_info) = 0;
+                                     NPT_HttpResponse& response) = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -393,8 +392,7 @@ public:
 
     // NPT_HttpRequetsHandler methods
     virtual NPT_Result SetupResponse(NPT_HttpRequest&  request, 
-                                     NPT_HttpResponse& response,
-                                     NPT_SocketInfo&   client_info);
+                                     NPT_HttpResponse& response);
 
 private:
     NPT_String     m_MimeType;
@@ -413,8 +411,7 @@ public:
 
     // NPT_HttpRequetsHandler methods
     virtual NPT_Result SetupResponse(NPT_HttpRequest&  request, 
-                                     NPT_HttpResponse& response,
-                                     NPT_SocketInfo&   client_info);
+                                     NPT_HttpResponse& response);
 
     // accessors
     NPT_Map<NPT_String,NPT_String>& GetFileTypeMap() { return m_FileTypeMap; }
@@ -459,7 +456,8 @@ public:
     NPT_Result SetTimeouts(NPT_Timeout connection_timeout, NPT_Timeout io_timeout);
     NPT_Result WaitForNewClient(NPT_InputStreamReference&  input,
                                 NPT_OutputStreamReference& output,
-                                NPT_SocketInfo&            client_info);
+                                NPT_SocketAddress*         local_address  = NULL,
+                                NPT_SocketAddress*         remote_address = NULL);
     
     /**
      *  Add a request handler. The ownership of the handler is NOT transfered to this object,
@@ -473,7 +471,7 @@ public:
      */
     NPT_Result RespondToClient(NPT_InputStreamReference&  input,
                                NPT_OutputStreamReference& output,
-                               NPT_SocketInfo&            client_info);
+                               NPT_SocketAddress*         local_address = NULL);
 
 protected:
     // types
@@ -495,7 +493,6 @@ protected:
     // members
     NPT_TcpServerSocket      m_Socket;
     Config                   m_Config;
-    bool                     m_Bound;
     NPT_List<HandlerConfig*> m_RequestHandlers;
 };
 
