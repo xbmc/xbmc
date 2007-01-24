@@ -2400,10 +2400,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
     CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
-      progress->SetHeading(700);
-      progress->SetLine(0, "");
-      progress->SetLine(1, 313);
-      progress->SetLine(2, 330);
+      progress->SetHeading(647);
+      progress->SetLine(0, 650);
+      progress->SetLine(1, "");
+      progress->SetLine(2, "");
       progress->SetPercentage(0);
       progress->StartModal();
       progress->ShowProgressBar(true);
@@ -2422,6 +2422,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
       movie.Save(pMain);
       if ((current % 50) == 0 && progress)
       {
+        progress->SetLine(1, movie.m_strTitle);
         progress->SetPercentage(current * 100 / total);
         progress->Progress();
         if (progress->IsCanceled())
@@ -2464,10 +2465,10 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
-      progress->SetHeading(700);
-      progress->SetLine(0, "");
-      progress->SetLine(1, 313);
-      progress->SetLine(2, 330);
+      progress->SetHeading(648);
+      progress->SetLine(0, 649);
+      progress->SetLine(1, 330);
+      progress->SetLine(2, "");
       progress->SetPercentage(0);
       progress->StartModal();
       progress->ShowProgressBar(true);
@@ -2476,6 +2477,14 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     BeginTransaction();
     TiXmlNode *movie = root->FirstChild("movie");
     int current = 0;
+    int total = 0;
+    // first count the number of items...
+    while (movie)
+    {
+      total++;
+      movie = movie->NextSibling("movie");
+    }
+    movie = root->FirstChild("movie");
     while (movie)
     {
       CIMDBMovie info;
@@ -2483,9 +2492,9 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       DeleteMovieInfo(info.m_strFileNameAndPath);
       SetMovieInfo(info.m_strFileNameAndPath, info);
       movie = movie->NextSibling("movie");
-      if (/*(current % 50) == 0 && */ progress)
+      if (progress)
       {
-        //progress->SetPercentage(current * 100 / total);
+        progress->SetPercentage(current * 100 / total);
         progress->SetLine(2, info.m_strTitle);
         progress->Progress();
         if (progress->IsCanceled())

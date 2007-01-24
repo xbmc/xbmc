@@ -524,7 +524,12 @@
   <string id="643">Avoid Clipping on Replay Gained Files</string>
   <string id="644">Crop Black Bars</string>
   <string id="645">Need to unpack a big file. Continue?</string>
-  <string id="646">Remove From Database</string>
+  <string id="646">Remove From Library</string>
+  <string id="647">Export Video Library</string>
+  <string id="648">Import Video Library</string>
+  <string id="649">Importing</string>
+  <string id="650">Exporting</string>
+  <string id="651">Video Library</string>
 
   <string id="700">Cleaning up Library</string>
   <string id="701">Removing old songs from the Library</string>
