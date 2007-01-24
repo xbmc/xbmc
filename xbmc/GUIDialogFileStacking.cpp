@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIDialogFileStacking.h"
 
+#define STACK_LIST 450
 
 CGUIDialogFileStacking::CGUIDialogFileStacking(void)
     : CGUIDialog(WINDOW_DIALOG_FILESTACKING, "DialogFileStacking.xml")
@@ -37,10 +38,15 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  case GUI_MSG_WINDOW_DEINIT:
+    CGUIDialog::OnMessage(message);
+    m_stackItems.Clear();
+    return true;
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIDialog::OnMessage(message);
       m_iSelectedFile = -1;
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
       m_iFrames = 0;
 
       // enable the CD's
@@ -56,14 +62,38 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
         SET_CONTROL_HIDDEN(i);
         CONTROL_DISABLE(i);
       }
-
+#endif
+      if (GetControl(STACK_LIST))
+      { // have the new stack list instead - fill it up
+        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), STACK_LIST);
+        OnMessage(msg);
+        for (int i = 0; i < m_iNumberOfFiles; i++)
+        {
+          CStdString label;
+          label.Format("Part %i", i+1);
+          CFileItem *item = new CFileItem(label);
+          m_stackItems.Add(item);
+          CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), STACK_LIST, 0, 0, item);
+          OnMessage(msg);
+        }
+      }
       return true;
     }
     break;
 
   case GUI_MSG_CLICKED:
     {
-      m_iSelectedFile = message.GetSenderId();
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+      if (message.GetSenderId() != STACK_LIST)
+        m_iSelectedFile = message.GetSenderId();
+      else if (message.GetParam1() == ACTION_SELECT_ITEM)
+      {
+        // grab the selected item
+        CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), STACK_LIST);
+        OnMessage(msg);
+        m_iSelectedFile = msg.GetParam1() + 1;
+      }
+#endif
       Close();
       return true;
     }
@@ -79,12 +109,17 @@ int CGUIDialogFileStacking::GetSelectedFile() const
 
 void CGUIDialogFileStacking::SetNumberOfFiles(int iFiles)
 {
-  // maximum number of files is 20 (as we have 20 cd images)
-  m_iNumberOfFiles = min(iFiles,20);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (!GetControl(STACK_LIST))  // maximum number of files is 20 in the old system
+    m_iNumberOfFiles = min(iFiles,20);
+  else
+    m_iNumberOfFiles = iFiles;
+#endif
 }
 
 void CGUIDialogFileStacking::Render()
 {
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   if (m_iFrames <= 25)
   {
     // slide in...
@@ -104,5 +139,6 @@ void CGUIDialogFileStacking::Render()
     }
     m_iFrames++;
   }
+#endif
   CGUIDialog::Render();
 }
