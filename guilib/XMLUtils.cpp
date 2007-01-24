@@ -89,3 +89,34 @@ bool XMLUtils::GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding)
   strEncoding.MakeUpper();
   return !strEncoding.IsEmpty(); // Other encoding then UTF8?
 }
+
+void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
+{
+  TiXmlElement newElement(strTag);
+  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+  if (pNewNode)
+  {
+    TiXmlText value(strValue);
+    pNewNode->InsertEndChild(value);
+  }
+}
+
+void XMLUtils::SetInt(TiXmlNode* pRootNode, const char *strTag, int value)
+{
+  CStdString strValue;
+  strValue.Format("%i", value);
+  SetString(pRootNode, strTag, strValue);
+}
+
+void XMLUtils::SetFloat(TiXmlNode* pRootNode, const char *strTag, float value)
+{
+  CStdString strValue;
+  strValue.Format("%f", value);
+  SetString(pRootNode, strTag, strValue);
+}
+
+void XMLUtils::SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value)
+{
+  SetString(pRootNode, strTag, value ? "true" : "false");
+}
+

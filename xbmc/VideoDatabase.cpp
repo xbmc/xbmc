@@ -1071,12 +1071,16 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
   }
 }
 
+DWORD movieTime = 0;
+DWORD genreTime = 0;
+DWORD directorTime = 0;
+DWORD castTime = 0;
+
 CIMDBMovie CVideoDatabase::GetDetailsForMovie(long lMovieId)
 {
   CIMDBMovie details;
-  auto_ptr<Dataset> pDS;
-  pDS.reset(m_pDB->CreateDataset());
 
+  DWORD time = timeGetTime();
   CStdString strSQL=FormatSQL("select * from movie where idMovie=%u",lMovieId);
   m_pDS2->query(strSQL.c_str());
   if (m_pDS2->eof()) 
@@ -1084,61 +1088,65 @@ CIMDBMovie CVideoDatabase::GetDetailsForMovie(long lMovieId)
 
   while (!m_pDS2->eof())
   {
-    int iType = m_pDS2->fv("movie.idType").get_asInteger();
+    int iType = m_pDS2->fv(1).get_asInteger();
     switch (DbMovieOffsets[iType].type)
     {
     case VIDEODB_TYPE_STRING:
-      *(CStdString*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asString();
+      *(CStdString*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv(2).get_asString();
       break;
     case VIDEODB_TYPE_INT:
-      *(int*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asInteger();
+      *(int*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv(2).get_asInteger();
       break;
     case VIDEODB_TYPE_BOOL:
-      *(bool*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asBool();
+      *(bool*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv(2).get_asBool();
       break;
     case VIDEODB_TYPE_FLOAT:
-      *(float*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv("movie.strValue").get_asFloat();
+      *(float*)(((char*)&details)+DbMovieOffsets[iType].offset) = m_pDS2->fv(2).get_asFloat();
       break;
     }
     m_pDS2->next();
   }
+  movieTime += timeGetTime() - time; time = timeGetTime();
 
   // create cast string
   strSQL = FormatSQL("select actors.strActor,actorlinkmovie.strRole from actorlinkmovie,actors where actorlinkmovie.idMovie=%u and actorlinkmovie.idActor = actors.idActor",lMovieId);
-  pDS->query(strSQL.c_str());
-  while (!pDS->eof())
+  m_pDS2->query(strSQL.c_str());
+  while (!m_pDS2->eof())
   {
-    details.m_strCast += pDS->fv("actors.strActor").get_asString()+" "+g_localizeStrings.Get(20347)+" "+pDS->fv("actorlinkmovie.strRole").get_asString()+'\n';
-    pDS->next();
+    details.m_strCast += m_pDS2->fv("actors.strActor").get_asString()+" "+g_localizeStrings.Get(20347)+" "+m_pDS2->fv("actorlinkmovie.strRole").get_asString()+'\n';
+    m_pDS2->next();
   }
+  castTime += timeGetTime() - time; time = timeGetTime();
 
   // create genre string
   strSQL = FormatSQL("select genre.strGenre from genrelinkmovie,genre where genrelinkmovie.idMovie=%u and genrelinkmovie.idGenre = genre.idGenre",lMovieId);
-  pDS->query(strSQL.c_str());
-  while (!pDS->eof())
+  m_pDS2->query(strSQL.c_str());
+  while (!m_pDS2->eof())
   {
-    details.m_strGenre += pDS->fv("genre.strGenre").get_asString()+" / ";
-    pDS->next();
+    details.m_strGenre += m_pDS2->fv("genre.strGenre").get_asString()+" / ";
+    m_pDS2->next();
   }
   details.m_strGenre = details.m_strGenre.Mid(0,details.m_strGenre.size()-3);
+  genreTime += timeGetTime() - time; time = timeGetTime();
 
   // create directors string
   strSQL = FormatSQL("select actors.strActor from directorlinkmovie,actors where directorlinkmovie.idMovie=%u and directorlinkmovie.idDirector = actors.idActor",lMovieId);
-  pDS->query(strSQL.c_str());
-  while (!pDS->eof())
+  m_pDS2->query(strSQL.c_str());
+  while (!m_pDS2->eof())
   {
-    details.m_strDirector += pDS->fv("actors.strActor").get_asString()+" / ";
-    pDS->next();
+    details.m_strDirector += m_pDS2->fv("actors.strActor").get_asString()+" / ";
+    m_pDS2->next();
   }
   details.m_strDirector = details.m_strDirector.Mid(0,details.m_strDirector.size()-3);
+  directorTime += timeGetTime() - time; time = timeGetTime();
 
   // file and path (only draw 2 items from the db, so we can lookup based on offset)
   strSQL=FormatSQL("select files.strFileName,path.strPath from files join path on files.idPath=path.idPath where files.idMovie=%u",lMovieId);
-  pDS->query(strSQL.c_str());
-  if (!pDS->eof())
+  m_pDS2->query(strSQL.c_str());
+  if (!m_pDS2->eof())
   {
-    details.m_strPath = pDS->fv(1).get_asString();
-    CUtil::AddFileToFolder(details.m_strPath, pDS->fv(0).get_asString(),details.m_strFileNameAndPath);
+    details.m_strPath = m_pDS2->fv(1).get_asString();
+    CUtil::AddFileToFolder(details.m_strPath, m_pDS2->fv(0).get_asString(),details.m_strFileNameAndPath);
   }
 
   details.m_strSearchString.Format("%i", lMovieId);
@@ -1819,7 +1827,11 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
   try
   {
     DWORD time = timeGetTime();
-
+	movieTime = 0;
+	castTime = 0;
+	directorTime = 0;
+	genreTime = 0;
+	
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
     //CStdString strSQL="select * from movie,movieinfo,actors,path,files where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movie.idpath=path.idpath and files.idmovie = movie.idmovie";
@@ -1890,6 +1902,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             m_pDS->next();
           }
           CLog::DebugLog("Time to retrieve movies from dataset = %d", timeGetTime() - time);
+		  CLog::Log(LOGDEBUG, __FUNCTION__" times: Info %d, Cast %d, Genres %d, Director %d", movieTime, castTime, genreTime, directorTime);
         }
         catch (...)
         {
@@ -2385,5 +2398,128 @@ void CVideoDatabase::CleanDatabase()
   catch (...)
   {
     CLog::Log(LOGERROR, "CVideoDatabase::CleanDatabase() failed");
+  }
+}
+
+void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    // find all movies
+    CStdString sql = FormatSQL("select idMovie from movie where idType=%i", VIDEODB_ID_TITLE);
+ 
+    m_pDS->query(sql.c_str());
+    if (m_pDS->num_rows() == 0) return;
+
+    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (progress)
+    {
+      progress->SetHeading(700);
+      progress->SetLine(0, "");
+      progress->SetLine(1, 313);
+      progress->SetLine(2, 330);
+      progress->SetPercentage(0);
+      progress->StartModal();
+      progress->ShowProgressBar(true);
+    }
+
+    int total = m_pDS->num_rows();
+    int current = 0;
+
+    // create our xml document
+    TiXmlDocument xmlDoc;
+    TiXmlElement xmlMainElement("videodb");
+    TiXmlNode *pMain = xmlDoc.InsertEndChild(xmlMainElement);
+    while (!m_pDS->eof())
+    {
+      CIMDBMovie movie = GetDetailsForMovie(m_pDS->fv("idMovie").get_asLong());
+      movie.Save(pMain);
+      if ((current % 50) == 0 && progress)
+      {
+        progress->SetPercentage(current * 100 / total);
+        progress->Progress();
+        if (progress->IsCanceled())
+        {
+          progress->Close();
+          m_pDS->close();
+          return;
+        }
+      }
+      m_pDS->next();
+      current++;
+    }
+    m_pDS->close();
+
+    if (progress)
+      progress->Close();
+
+    xmlDoc.SaveFile(xmlFile.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" failed");
+  }
+}
+
+void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    TiXmlDocument xmlDoc;
+    if (!xmlDoc.LoadFile(xmlFile))
+      return;
+
+    TiXmlElement *root = xmlDoc.RootElement();
+    if (!root) return;
+
+    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (progress)
+    {
+      progress->SetHeading(700);
+      progress->SetLine(0, "");
+      progress->SetLine(1, 313);
+      progress->SetLine(2, 330);
+      progress->SetPercentage(0);
+      progress->StartModal();
+      progress->ShowProgressBar(true);
+    }
+
+    BeginTransaction();
+    TiXmlNode *movie = root->FirstChild("movie");
+    int current = 0;
+    while (movie)
+    {
+      CIMDBMovie info;
+      info.Load(movie);
+      SetMovieInfo(info.m_strFileNameAndPath, info);
+      movie = movie->NextSibling("movie");
+      if (/*(current % 50) == 0 && */ progress)
+      {
+        //progress->SetPercentage(current * 100 / total);
+        progress->SetLine(2, info.m_strTitle);
+        progress->Progress();
+        if (progress->IsCanceled())
+        {
+          progress->Close();
+          RollbackTransaction();
+          return;
+        }
+      }
+      current++;
+    }
+    CommitTransaction();
+
+    if (progress)
+      progress->Close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" failed");
   }
 }
