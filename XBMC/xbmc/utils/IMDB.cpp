@@ -272,11 +272,67 @@ void CIMDBMovie::Reset()
   m_bWatched = false;
 }
 
-void CIMDBMovie::Save(const CStdString &strFileName)
-{}
-
-bool CIMDBMovie::Load(const CStdString& strFileName)
+bool CIMDBMovie::Save(TiXmlNode *node)
 {
+  if (!node) return false;
+
+  // we start with a <movie> tag
+  TiXmlElement movieElement("movie");
+  TiXmlNode *movie = node->InsertEndChild(movieElement);
+
+  if (!movie) return false;
+
+  XMLUtils::SetString(movie, "title", m_strTitle);
+  XMLUtils::SetFloat(movie, "rating", m_fRating);
+  XMLUtils::SetInt(movie, "year", m_iYear);
+  XMLUtils::SetInt(movie, "top250", m_iTop250);
+  XMLUtils::SetString(movie, "votes", m_strVotes);
+  XMLUtils::SetString(movie, "outline", m_strPlotOutline);
+  XMLUtils::SetString(movie, "plot", m_strPlot);
+  XMLUtils::SetString(movie, "tagline", m_strTagLine);
+  XMLUtils::SetString(movie, "runtime", m_strRuntime);
+  XMLUtils::SetString(movie, "thumb", m_strPictureURL);
+  XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
+  XMLUtils::SetBoolean(movie, "watched", m_bWatched);
+  XMLUtils::SetString(movie, "searchstring", m_strSearchString);
+  XMLUtils::SetString(movie, "file", m_strFile);
+  XMLUtils::SetString(movie, "path", m_strPath);
+  XMLUtils::SetString(movie, "imdbnumber", m_strIMDBNumber);
+  XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
+  // TODO: each of these should be xml-ized
+  XMLUtils::SetString(movie, "cast", m_strCast);
+  XMLUtils::SetString(movie, "genre", m_strGenre);
+  XMLUtils::SetString(movie, "credits", m_strWritingCredits);
+  XMLUtils::SetString(movie, "director", m_strDirector);
+
+  return true;
+}
+
+bool CIMDBMovie::Load(const TiXmlNode *movie)
+{
+  if (!movie) return false;
+  XMLUtils::GetString(movie, "title", m_strTitle);
+  XMLUtils::GetFloat(movie, "rating", m_fRating);
+  XMLUtils::GetInt(movie, "year", m_iYear);
+  XMLUtils::GetInt(movie, "top250", m_iTop250);
+  XMLUtils::GetString(movie, "votes", m_strVotes);
+  XMLUtils::GetString(movie, "outline", m_strPlotOutline);
+  XMLUtils::GetString(movie, "plot", m_strPlot);
+  XMLUtils::GetString(movie, "tagline", m_strTagLine);
+  XMLUtils::GetString(movie, "runtime", m_strRuntime);
+  XMLUtils::GetString(movie, "thumb", m_strPictureURL);
+  XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
+  XMLUtils::GetBoolean(movie, "watched", m_bWatched);
+  XMLUtils::GetString(movie, "searchstring", m_strSearchString);
+  XMLUtils::GetString(movie, "file", m_strFile);
+  XMLUtils::GetString(movie, "path", m_strPath);
+  XMLUtils::GetString(movie, "imdbnumber", m_strIMDBNumber);
+  XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
+  // TODO: each of these should be xml-ized
+  XMLUtils::GetString(movie, "cast", m_strCast);
+  XMLUtils::GetString(movie, "genre", m_strGenre);
+  XMLUtils::GetString(movie, "credits", m_strWritingCredits);
+  XMLUtils::GetString(movie, "director", m_strDirector);
   return true;
 }
 
