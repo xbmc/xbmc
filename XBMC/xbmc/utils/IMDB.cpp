@@ -289,10 +289,10 @@ bool CIMDBMovie::Save(TiXmlNode *node)
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
   {
-    // add a <cast> tag
-    TiXmlElement cast("cast");
+    // add a <actor> tag
+    TiXmlElement cast("actor");
     TiXmlNode *node = movie->InsertEndChild(cast);
-    TiXmlElement actor("actor");
+    TiXmlElement actor("name");
     TiXmlNode *actorNode = node->InsertEndChild(actor);
     TiXmlText name(it->first);
     actorNode->InsertEndChild(name);
@@ -330,10 +330,10 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   XMLUtils::GetString(movie, "director", m_strDirector);
 
   // cast
-  const TiXmlNode *node = movie->FirstChild("cast");
+  const TiXmlNode *node = movie->FirstChild("actor");
   while (node)
   {
-    const TiXmlNode *actor = node->FirstChild("actor");
+    const TiXmlNode *actor = node->FirstChild("name");
     if (actor && actor->FirstChild())
     {
       CStdString name = actor->FirstChild()->Value();
@@ -343,7 +343,7 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
         role = roleNode->FirstChild()->Value();
       m_cast.push_back(make_pair(name, role));
     }
-    node = node->NextSibling("cast");
+    node = node->NextSibling("actor");
   }
   if (m_cast.empty())
   { // old method for back-compatibility

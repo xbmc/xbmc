@@ -1108,6 +1108,29 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       videodatabase.Close();
     }
   }
+  else if (strSetting.Equals("myvideos.exportvideolibrary"))
+  {
+    CStdString path(g_settings.GetDatabaseFolder());
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares, g_localizeStrings.Get(651), path, true))
+    {
+      CUtil::AddFileToFolder(path, "videodb.xml", path);
+      CVideoDatabase videodatabase;
+      videodatabase.Open();
+      videodatabase.ExportToXML(path);
+      videodatabase.Close();
+    }
+  }
+  else if (strSetting.Equals("myvideos.importvideolibrary"))
+  {
+    CStdString path(g_settings.GetDatabaseFolder());
+    if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyFilesShares, "videodb.xml", g_localizeStrings.Get(651) , path))
+    {
+      CVideoDatabase videodatabase;
+      videodatabase.Open();
+      videodatabase.ImportFromXML(path);
+      videodatabase.Close();
+    }
+  }
   else if (strSetting.Equals("musicplayer.jumptoaudiohardware") || strSetting.Equals("videoplayer.jumptoaudiohardware"))
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, "audiooutput");
