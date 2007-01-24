@@ -33,17 +33,100 @@
 #include "lib/libUPnP/PltMediaBrowser.h"
 #include "lib/libUPnP/PltSyncMediaBrowser.h"
 #include "lib/libUPnP/PltDidl.h"
-
+#include "lib/libUPnP/NptNetwork.h"
+#include "lib/libUPnP/NptXboxNetwork.h"
 
 /*----------------------------------------------------------------------
 |   static
 +---------------------------------------------------------------------*/
 CUPnP* CUPnP::upnp = NULL;
-
 // change to false for XBMC_PC if you want real UPnP functionality
 // otherwise keep to true for xbmc as it doesn't support multicast
 // don't change unless you know what you're doing!
 bool CUPnP::broadcast = true; 
+
+#ifdef HAS_XBOX_NETWORK
+#include <xtl.h>
+#include <winsockx.h>
+
+/*----------------------------------------------------------------------
+|   static initializer
++---------------------------------------------------------------------*/
+NPT_WinsockSystem::NPT_WinsockSystem() 
+{
+}
+
+NPT_WinsockSystem::~NPT_WinsockSystem() 
+{
+}
+
+NPT_WinsockSystem NPT_WinsockSystem::Initializer;
+
+/*----------------------------------------------------------------------
+|       NPT_NetworkInterface::GetNetworkInterfaces
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& interfaces)
+{
+    XNADDR xna;
+    DWORD  state;
+    do {
+        state = XNetGetTitleXnAddr(&xna);
+        Sleep(100);
+    } while (state == XNET_GET_XNADDR_PENDING);
+
+    if (state & XNET_GET_XNADDR_STATIC || state & XNET_GET_XNADDR_DHCP) {
+        NPT_IpAddress primary_address;
+        primary_address.ResolveName(g_network.m_networkinfo.ip);
+
+        NPT_IpAddress netmask;
+        netmask.ResolveName(g_network.m_networkinfo.subnet);
+
+        NPT_IpAddress broadcast_address;        
+        broadcast_address.ResolveName("255.255.255.255");
+
+//        {
+//            // broadcast address is incorrect
+//            unsigned char addr[4];
+//            for(int i=0; i<4; i++) {
+//                addr[i] = (primary_address.AsBytes()[i] & netmask.AsBytes()[i]) | 
+//                    ~netmask.AsBytes()[i];
+//            }
+//            broadcast_address.Set(addr);
+//        }
+
+
+        NPT_Flags     flags = NPT_NETWORK_INTERFACE_FLAG_BROADCAST;
+
+        NPT_MacAddress mac;
+        if (state & XNET_GET_XNADDR_ETHERNET) {
+            mac.SetAddress(NPT_MacAddress::TYPE_ETHERNET, xna.abEnet, 6);
+        }
+
+        // create an interface object
+        char iface_name[5];
+        iface_name[0] = 'i';
+        iface_name[1] = 'f';
+        iface_name[2] = '0';
+        iface_name[3] = '0';
+        iface_name[4] = '\0';
+        NPT_NetworkInterface* iface = new NPT_NetworkInterface(iface_name, mac, flags);
+
+        // set the interface address
+        NPT_NetworkInterfaceAddress iface_address(
+            primary_address,
+            broadcast_address,
+            NPT_IpAddress::Any,
+            netmask);
+        iface->AddAddress(iface_address);  
+
+        // add the interface to the list
+        interfaces.Add(iface);  
+    }
+
+    return NPT_SUCCESS;
+}
+#endif
 
 /*----------------------------------------------------------------------
 |   CDeviceHostReferenceHolder class
@@ -599,7 +682,9 @@ CUPnP::StartClient()
     // since the xbox does not support multicast. UPnP devices will still receive our request and respond to us
     // since they're listening on port 1900 in multicast
     // Repeat every 6 seconds
-    if (broadcast) m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
+    if (broadcast) {
+        m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
+    }
 }
 
 /*----------------------------------------------------------------------
@@ -630,12 +715,10 @@ CUPnP::StartServer()
     // create the server with the friendlyname and UUID from upnpserver.xml if found
     m_ServerHolder->m_Device = new CUPnPServer(
         g_settings.m_UPnPServerFriendlyName.length()?g_settings.m_UPnPServerFriendlyName.c_str():"Xbox Media Center",
-        g_settings.m_UPnPUUID.length()?g_settings.m_UPnPUUID.c_str():NULL
-        );
+        g_settings.m_UPnPUUID.length()?g_settings.m_UPnPUUID.c_str():NULL);
 
     // trying to set optional upnp values for XP UPnP UI Icons to detect us
     // but it doesn't work anyways as it requires multicast for XP to detect us
-    m_ServerHolder->m_Device->m_ModelName = "Xbox Media Center";
     NPT_String ip = g_network.m_networkinfo.ip;
 #ifndef HAS_XBOX_NETWORK
     NPT_List<NPT_String> list;
@@ -644,6 +727,7 @@ CUPnP::StartServer()
     }
 #endif
     m_ServerHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
+    m_ServerHolder->m_Device->m_ModelName = "Xbox Media Center";
     m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center";
     m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
     m_ServerHolder->m_Device->m_ModelNumber = "2.0";
@@ -653,7 +737,7 @@ CUPnP::StartServer()
 
     // since the xbox doesn't support multicast
     // we use broadcast but we advertise more often
-    if (broadcast) m_ServerHolder->m_Device->SetBroadcast(true);
+    m_ServerHolder->m_Device->SetBroadcast(broadcast);
 
     // tell controller to ignore ourselves from list of upnp servers
     if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
