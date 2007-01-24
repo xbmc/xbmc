@@ -119,7 +119,14 @@ namespace PYXBMC
 
 	PyObject* InfoTagVideo_GetCast(InfoTagVideo *self, PyObject *args)
 	{
-		return Py_BuildValue("s", self->infoTag.m_strCast.c_str());
+    CStdString cast;
+    for (CIMDBMovie::iCast it = self->infoTag.m_cast.begin(); it != self->infoTag.m_cast.end(); ++it)
+    {
+      CStdString character;
+      character.Format("%s %s %s\n", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
+      cast += character;
+    }
+		return Py_BuildValue("s", cast.c_str());
 	}
 
 	// InfoTagVideo_GetFile
