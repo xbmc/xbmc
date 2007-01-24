@@ -144,6 +144,9 @@ public:
   void CleanDatabase();
   
   long AddFile(const CStdString& strFileName);
+  void ExportToXML(const CStdString &xmlFile);
+  void ImportFromXML(const CStdString &xmlFile);
+
 protected:
   long GetPath(const CStdString& strPath);
   long GetFile(const CStdString& strFilenameAndPath, long& lMovieId, long& lEpisodeId, bool bExact = false);
