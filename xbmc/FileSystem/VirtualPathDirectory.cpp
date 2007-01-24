@@ -129,7 +129,7 @@ bool CVirtualPathDirectory::GetTypeAndBookmark(const CStdString& strPath, CStdSt
       return false;
     strType = strTemp.Mid(0, iPos);
     strBookmark = strTemp.Mid(iPos + 1);
-    CLog::Log(LOGDEBUG,"CVirtualPathDirectory::GetTypeAndBookmark(%s) = [%s],[%s]", strPath.c_str(), strType.c_str(), strBookmark.c_str());
+    //CLog::Log(LOGDEBUG,"CVirtualPathDirectory::GetTypeAndBookmark(%s) = [%s],[%s]", strPath.c_str(), strType.c_str(), strBookmark.c_str());
     return true;
   }
   return false;
