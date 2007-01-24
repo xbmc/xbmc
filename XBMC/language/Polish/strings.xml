@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="Windows-1250" standalone="yes"?>
-<!--$Revision$-->
+<!--$Revision 7708$-->
 
 <!-- Translated by NaPeK | xzone.pl -->
 <!-- Wszelkie modyfikacje tłumaczenia powinny zawierać informacje -->
@@ -451,6 +451,37 @@
   <string id="531">Nowy gadtnek</string>
   <string id="532">Dodawanie ręczne</string>
   <string id="533">Podaj gatunek</string>
+  <string id="534">Widok: %s</string>
+  <string id="535">Lista</string>
+  <string id="536">Ikony</string>
+  <string id="537">Duża lista</string>
+  <string id="538">Duże ikony</string>
+  <string id="539">Szeroki</string>
+  <string id="540">Duży szeroki</string>
+
+  <string id="550">Sortuj: %s</string>
+  <string id="551">Nazwa</string>
+  <string id="552">Data</string>
+  <string id="553">Rozmiar</string>
+  <string id="554">Ścieżka</string>
+  <string id="555">Czas</string>
+  <string id="556">Tytuł</string>
+  <string id="557">Artysta</string>
+  <string id="558">Album</string>
+  <string id="559">Playlista</string>
+  <string id="560">ID</string>
+  <string id="561">Plik</string>
+  <string id="562">Rok</string>
+  <string id="563">Ocena</string>
+  <string id="564">Typ</string>
+  <string id="565">Używanie</string>
+
+  <string id="580">Kierunek sortowania</string>
+  <string id="581">Metoda sortowania</string>
+  <string id="582">Tryb widoku</string>
+  <string id="583">Zapamiętuj widoki dla różnych folderów</string>
+  <string id="584">Rosnąco</string>
+  <string id="585">Malejąco</string>
 
   <string id="588">Anuluj Tryb Przyjęcia</string>
   <string id="589">Tryb Przyjęcia</string>
@@ -775,7 +806,7 @@
   <string id="12325">Dostęp zablokowany! Wpisz kod...</string>
   <string id="12326">Wpisz hasło</string>
   <string id="12327">Wpisz hasło właściciela</string>
-  <string id="12328">Wpisz kod odblokowujący</string> 
+  <string id="12328">Wpisz kod odblokowujący</string>
   <string id="12329">lub wciśnij C aby anulować</string>
   <string id="12330">Wciśnij kombinację przycisków na padzie</string>
   <string id="12331">a następnie Start, Back aby anulować</string>
@@ -821,7 +852,7 @@
   <string id="12392">Godzin</string>
   <string id="12393">Dni</string>
   <string id="12394">Całkowity czas pracy</string>
-  
+
   <string id="12600">Pogoda</string>
 
   <string id="12900">Wygaszacz</string>
@@ -1212,7 +1243,8 @@
   <string id="16002">Przeszukuję CDDB</string>
   <string id="16003">Odtwarzacz</string>
   <string id="16004">Odtwarzaj media z płyty</string>
-  
+
+  <string id="16008">Wpisz nowy tytuł</string>
   <string id="16009">Wpisz nazwę filmu</string>
   <string id="16010">Wpisz nazwę profilu</string>
   <string id="16011">Wpisz nazwę albumu</string>
@@ -1255,7 +1287,7 @@
   <string id="16201">Błąd podczas kopiowania</string>
   <string id="16202">Nie udało się skopiować conajmniej jednego pliku</string>
   <string id="16203">Błąd podczas przenoszenia</string>
-  <string id="16204">Nie udało się przenieść conajmniej jednego pliku</string>  
+  <string id="16204">Nie udało się przenieść conajmniej jednego pliku</string>
   <string id="16205">Błąd podczas kasowania</string>
   <string id="16206">Nie udało się skasować conajmniej jednego pliku</string>
 
@@ -1348,7 +1380,7 @@
   <string id="20097">Pozyskuję informacje o albumie</string>
   <string id="20098">Pozyskuję informacje dla albumu</string>
   <string id="20099">Nie można zgrać CD lub ścieżki dopóki odtwarzany jest CD</string>
-  <string id="20100">Hasło właściciela i blokady</string> 
+  <string id="20100">Hasło właściciela i blokady</string>
   <string id="20101">Wpisanie hasła właściciela zawsze uruchamia tryb właściciela</string>
   <string id="20102">czy skopiować z domyślnego?</string>
   <string id="20103">Zapisać zmiany w profilu?</string>
@@ -1471,8 +1503,58 @@
   <string id="20321">Nie znaleziono stanu gry do wybranej gry</string>
   <string id="20322">Idź do stanu gry</string>
   <string id="20323">Stany gier</string>
+  <string id="20324">Odtwarzaj część...</string>
+  <string id="20325">Resetuj kalibrację</string>
+  <string id="20326">Zostaną zresetowane ustawienia kalibracji dla %s</string>
+  <string id="20327">do ich domyślnych wartości.</string>
+  <string id="20328">lokacja do skopiowania stanu gry</string>
+  <string id="20329">lokacja do przeniesienia stanu gry</string>
+  <string id="20330">Użyj nazw folderów do przeszukiwania</string>
+  <string id="20331">Plik</string>
+  <string id="20332">Użyc nazw folderów lub plików do przeszukiwania?</string>
+  <string id="20333">Ustaw zawartość</string>
+  <string id="20334">Folder</string>
+  <string id="20335">Szukać zawrtości rekurencyjnie?</string>
+  <string id="20336">Odblokuj źródła</string>
+  <string id="20337">Aktor</string>
+  <string id="20338">Film</string>
+  <string id="20339">Reżyser</string>
+  <string id="20340">Czy chcesz usunąć wszystkie pozycje wewnątrz</string>
+  <string id="20341">tej ścieżki z bazy danych?</string>
+  <string id="20342">Filmy</string>
+  <string id="20343">Seriale</string>
+  <string id="20344">ten katalog zawiera</string>
+  <string id="20345">Uruchom automatyczne skanowanie</string>
+  <string id="20346">Skanuj rekurencyjnie</string>
+  <string id="20347">jako</string>
+  <string id="20348">Katalogi</string>
+  <!-- up to 21329 is reserved for the video db !! !-->
+
+  <string id="21330">Pokazuj ukryte pliki i katalogi</string>
+
+  <string id="21331">Klient TuxBox</string>
+  <string id="21332">UWAGA: Urządzenie TuxBox jest w trybie nagrywania!</string>
+  <string id="21333">Strumień zostanie zatrzymany!</string>
+  <string id="21334">Dołączenie do kanału: %s nie powiodło się!</string>
+  <string id="21335">Czy napewno wystartowac strumień?</string>
+  <string id="21336">Łączę do: %s</string>
+  <string id="21337">Urządzenie TuxBox</string>
+  <!-- up to 21355 is reserved for the TuxBox Client!! !-->
+
+  <string id="21356">UPnP Muzyka</string>
+  <string id="21357">UPnP Filmy</string>
+  <string id="21358">UPnP Obrazy</string>
+  <string id="21359">Dodaj udział mediów...</string>
+  <string id="21360">Włącz serwer UPnP</string>
+  <string id="21361">Zarządzaj udziałami z muzyką UPnP</string>
+  <string id="21362">Zarządzaj udziałami z filmami UPnP</string>
+  <string id="21363">Zarządzaj udziałami z obrazami UPnP</string>
+  <string id="21364">Edytuj udział mediów</string>
+  <string id="21365">Usuń udział mediów</string>
+  <string id="21366">Własny katalog z napisami</string>
+  <string id="21367">Film &amp; Alternatywny katalog z napisami</string>
+
+  <string id="21370">Włącz dźwięki nawigacyjne podczas odtwarzania mediów</string>
 
   <string id="29999">Automatyczna łatka filtru migotania</string>
 </strings>
-
- 	  	 
