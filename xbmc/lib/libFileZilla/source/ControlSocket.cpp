@@ -1072,9 +1072,9 @@ void CControlSocket::ParseCommand()
 						if (isalpha(iter->dir[0]) && iter->dir[1] == ':')
 						{
 							char drive = tolower(iter->dir[0]);
-							if (drive >= 'f' && drive != 'q')
+							if (drive >= 'f' && drive < 'q')
 							{
-								// check it's available
+								// extended partitions and memory units - check if the drive is available
 								if (drive > 'g' ||
 									(drive == 'f' && !g_advancedSettings.m_useFDrive) ||
 									(drive == 'g' && !g_advancedSettings.m_useGDrive))
@@ -1083,6 +1083,11 @@ void CControlSocket::ParseCommand()
 										continue;
 								}
 							}
+              // don't show x, y, z in the listing as users shouldn't really be
+              // stuffing around with these drives (power users can always go
+              // to these folders by specifying the path directly)
+              if (drive >= 'x')
+                continue;
 
               if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)
               {
