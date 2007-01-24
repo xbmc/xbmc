@@ -296,7 +296,7 @@ public:
         return m_TcpServerSocketDelegate->Listen(max_clients);
     }
     NPT_Result WaitForNewClient(NPT_Socket*& client, 
-                                NPT_Timeout  timeout = NPT_TIMEOUT_INFINITE) {
+                                NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) {
         return m_TcpServerSocketDelegate->WaitForNewClient(client, timeout);
     }
 
