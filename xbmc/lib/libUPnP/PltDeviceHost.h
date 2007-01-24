@@ -77,13 +77,11 @@ public:
     virtual NPT_Result SendSsdpSearchResponse(PLT_DeviceData*   device, 
                                               NPT_HttpResponse& response, 
                                               NPT_UdpSocket&    socket, 
-                                              const char*       st,
-                                              NPT_SocketAddress* addr  = NULL);
+                                              const char*       st);
     virtual NPT_Result SendSsdpSearchResponse(NPT_HttpResponse& response, 
                                               NPT_UdpSocket&    socket, 
-                                              const char*       ST,
-                                              NPT_SocketAddress* addr = NULL) {
-        return SendSsdpSearchResponse(this, response, socket, ST, addr);
+                                              const char*       ST) {
+        return SendSsdpSearchResponse(this, response, socket, ST);
     }
     
 protected:
@@ -116,11 +114,11 @@ protected:
     friend class NPT_Reference<PLT_DeviceHost>;
 
 private:
+    bool                        m_Broadcast;
     PLT_TaskManager*            m_TaskManager;
     PLT_HttpServerHandler*      m_HttpServerHandler;
     PLT_HttpServer*             m_HttpServer;
     PLT_SsdpDeviceAnnounceTask* m_SsdpAnnounceTask;
-    bool                        m_Broadcast;
 };
 
 typedef NPT_Reference<PLT_DeviceHost> PLT_DeviceHostReference;

@@ -114,7 +114,6 @@ bool CVirtualPathDirectory::GetPathes(const CStdString& strPath, vector<CStdStri
   return true;
 }
 
-
 bool CVirtualPathDirectory::GetTypeAndBookmark(const CStdString& strPath, CStdString& strType, CStdString& strBookmark)
 {
   // format: virtualpath://type/bookmarkname
