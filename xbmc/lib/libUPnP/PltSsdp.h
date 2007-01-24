@@ -147,7 +147,7 @@ public:
                                NPT_TimeInterval repeat,
                                bool             is_byebye_first = false,
                                bool             broadcast = false) : 
-        m_Device(device), m_Repeat(repeat), m_IsByeByeFirst(is_byebye_first), m_IsBroadcast(broadcast) {}
+        m_Repeat(repeat), m_Device(device), m_IsByeByeFirst(is_byebye_first), m_IsBroadcast(broadcast) {}
 
 protected:
     virtual ~PLT_SsdpDeviceAnnounceTask() {}
