@@ -385,6 +385,8 @@ CGUISettings::CGUISettings(void)
   AddBool(7, "myvideos.savefolderviews", 583, true);
   AddSeparator(8, "myvideos.sep2");
   AddString(9, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "myvideos.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "myvideos.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
