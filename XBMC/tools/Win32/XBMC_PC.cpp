@@ -398,9 +398,8 @@ BOOL CXBMC_PC::ProcessMessage(MSG *msg)
     bGotMsg = GetMessage( msg, NULL, 0U, 0U );
 
   if (msg->message == WM_QUIT)
-  {
-    int breakhere = 1;
-  }
+    PostQuitMessage( 0 );   // we can get called from a dialog within our app - this is to make sure we die.
+
   if( bGotMsg )
   {
     // Translate and dispatch the message

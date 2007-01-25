@@ -65,11 +65,9 @@ private:
   // output buffer (for transferring data from the Pcm Buffer to the rest of the audio chain)
   float m_outputBuffer[OUTPUT_SAMPLES];
 
-  unsigned int m_outputBufferSize;    // generally zero unless we feed data in
-                                      // for gapless playback purposes, as the
-                                      // rest of the audio chain takes data
-                                      // away in chunks, so we might have a little
-                                      // left over to prefix to the next track.
+  // gapless buffer (left over samples from the previous audio decoder)
+  float m_gaplessBuffer[OUTPUT_SAMPLES];
+  unsigned int m_gaplessBufferSize;
 
   // input buffer (for transferring data from the Codecs to our Pcm Ringbuffer
   BYTE m_pcmInputBuffer[INPUT_SIZE];
