@@ -166,6 +166,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           CStdString strDir;
           CUtil::GetDirectory(m_vecItems[iItem]->m_strPath,strDir);
           m_database.GetScraperForPath(strDir,info.strPath,info.strContent);
+          CScraperParser parser;
+          if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
+            info.strTitle = parser.GetName();
+
           strDir = m_vecItems[iItem]->m_strPath;
           if (m_vecItems[iItem]->m_bIsFolder)
             CUtil::AddSlashAtEnd(strDir);
@@ -342,7 +346,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
       {
 	    	url.m_strURL.push_back(nfoReader.m_strImDbUrl);
-        url.m_strURL.push_back(nfoReader.m_strImDbUrl+"/plotsummary");
+        url.m_strURL.push_back(nfoReader.m_strImDbUrl+"plotsummary");
         url.m_strID = nfoReader.m_strImDbNr;
         SScraperInfo info2(info);
         info2.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
@@ -366,7 +370,9 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     if (url.m_strURL.size() == 0 || needsRefresh)
     {
       // 4a. show dialog that we're busy querying www.imdb.com
-      pDlgProgress->SetHeading(197);
+      CStdString strHeading;
+      strHeading.Format(g_localizeStrings.Get(197),info.strTitle.c_str());
+      pDlgProgress->SetHeading(strHeading);
       pDlgProgress->SetLine(0, movieName);
       pDlgProgress->SetLine(1, "");
       pDlgProgress->SetLine(2, "");
@@ -520,6 +526,8 @@ void CGUIWindowVideoBase::OnManualIMDB()
   SScraperInfo info;
   info.strContent = "movies";
   info.strPath = "imdb.xml";
+  info.strTitle = "IMDb";
+
   ShowIMDB(&item,info);
   
   return ;
@@ -814,6 +822,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
       if (GetID() == WINDOW_VIDEO_FILES && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent,iFound);
+        CScraperParser parser;
+        if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
+          info.strTitle = parser.GetName();
+
         if (m_vecItems[iItem]->m_bIsFolder)
         {
           if (iFound==0)

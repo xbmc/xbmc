@@ -129,9 +129,9 @@
   <string id="192">Clear</string>
   <string id="193">Scan</string>
   <string id="194">Searching...</string>
-  <string id="195">No IMDb info found!</string>
+  <string id="195">No info found!</string>
   <string id="196">Select movie:</string>
-  <string id="197">Querying IMDb info</string>
+  <string id="197">Querying %s info</string>
   <string id="198">Loading Movie details</string>
   <string id="199">Director:</string>
   <string id="200">Writer:</string>
