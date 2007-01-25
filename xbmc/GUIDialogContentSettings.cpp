@@ -228,6 +228,7 @@ void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
       if (m_settings.size() > 2)
         m_settings[2].enabled = false;
       
+      m_vecItems.Clear();
       UpdateSetting(1);
       UpdateSetting(2);
       UpdateSetting(3);
