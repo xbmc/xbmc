@@ -554,7 +554,7 @@ bool PAPlayer::ProcessPAP()
           if (!m_crossFading || m_decoder[0].GetChannels() != m_decoder[1].GetChannels())
           { // playing gapless (we use only the 1 output stream in this case)
             int prefixAmount = m_decoder[m_currentDecoder].GetDataSize();
-            CLog::Log(LOGDEBUG, "PAPlayer::Prefixing %i bytes of old data to new track for gapless playback", prefixAmount);
+            CLog::Log(LOGDEBUG, "PAPlayer::Prefixing %i samples of old data to new track for gapless playback", prefixAmount);
             m_decoder[1 - m_currentDecoder].PrefixData(m_decoder[m_currentDecoder].GetData(prefixAmount), prefixAmount);
             // check if we need to change the resampler (due to format change)
             unsigned int channels, samplerate, bitspersample;
