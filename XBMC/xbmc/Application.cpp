@@ -1173,7 +1173,6 @@ HRESULT CApplication::Initialize()
   // UserData/
   //   Database/
   //     CDDb/
-  //     IMDb/
   //   Thumbnails/
   //     Music/
   //       temp/
