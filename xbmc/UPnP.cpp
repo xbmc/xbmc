@@ -27,14 +27,13 @@
 #include "xbox/Network.h"
 #include "UPnP.h"
 #include "FileSystem/UPnPVirtualPathDirectory.h"
-#include "lib/libUPnP/Platinum.h"
-#include "lib/libUPnP/PltFileMediaServer.h"
-#include "lib/libUPnP/PltMediaServer.h"
-#include "lib/libUPnP/PltMediaBrowser.h"
-#include "lib/libUPnP/PltSyncMediaBrowser.h"
-#include "lib/libUPnP/PltDidl.h"
-#include "lib/libUPnP/NptNetwork.h"
-#include "lib/libUPnP/NptXboxNetwork.h"
+#include "Platinum.h"
+#include "PltFileMediaServer.h"
+#include "PltMediaServer.h"
+#include "PltMediaBrowser.h"
+#include "PltSyncMediaBrowser.h"
+#include "PltDidl.h"
+#include "NptNetwork.h"
 
 /*----------------------------------------------------------------------
 |   static
@@ -48,6 +47,7 @@ bool CUPnP::broadcast = true;
 #ifdef HAS_XBOX_NETWORK
 #include <xtl.h>
 #include <winsockx.h>
+#include "NptXboxNetwork.h"
 
 /*----------------------------------------------------------------------
 |   static initializer

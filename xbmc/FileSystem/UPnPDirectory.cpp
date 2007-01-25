@@ -25,8 +25,8 @@
 #include "../util.h"
 #include "UPnPDirectory.h"
 #include "../UPnP.h"
-#include "../lib/libUPnP/Platinum.h"
-#include "../lib/libUPnP/PltSyncMediaBrowser.h"
+#include "Platinum.h"
+#include "PltSyncMediaBrowser.h"
 
 using namespace DIRECTORY;
 
