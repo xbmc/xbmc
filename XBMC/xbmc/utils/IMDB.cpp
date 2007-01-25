@@ -305,24 +305,29 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
 
   CStdString strTemp;
-  XMLUtils::GetString(movie, "genre", strTemp);
-  if (m_strGenre.Equals(g_localizeStrings.Get(416)))
-    m_strGenre = strTemp;
-  else
-    m_strGenre += " / "+strTemp;
+  if (XMLUtils::GetString(movie, "genre", strTemp))
+  {
+    if (m_strGenre.Equals(g_localizeStrings.Get(416)))
+      m_strGenre = strTemp;
+    else
+      m_strGenre += " / "+strTemp;
+  }
 
-  XMLUtils::GetString(movie, "credits", strTemp);
-  if (m_strWritingCredits.Equals(g_localizeStrings.Get(416)))
-    m_strWritingCredits = strTemp;
-  else
-    m_strWritingCredits += " / "+strTemp;
-
-  XMLUtils::GetString(movie, "director", strTemp);
-  if (m_strDirector.Equals(g_localizeStrings.Get(416)))
-    m_strDirector = strTemp;
-  else
-    m_strDirector += " / "+strTemp;
-
+  if (XMLUtils::GetString(movie, "credits", strTemp))
+  {
+    if (m_strWritingCredits.Equals(g_localizeStrings.Get(416)))
+      m_strWritingCredits = strTemp;
+    else
+      m_strWritingCredits += " / "+strTemp;
+  }
+  
+  if (XMLUtils::GetString(movie, "director", strTemp))
+  {
+    if (m_strDirector.Equals(g_localizeStrings.Get(416)))
+      m_strDirector = strTemp;
+    else
+      m_strDirector += " / "+strTemp;
+  }
   // cast
   const TiXmlNode *node = movie->FirstChild("actor");
   while (node)
@@ -425,7 +430,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& s
   }
 
   CRegExp reTags;
-  reTags.RegComp("\\+(ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|se|svcd|swedish|unrated|ws|xvid|cd[1-9]|\\[.*\\])(\\+|$)");
+  reTags.RegComp("\\+(ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|se|svcd|swedish|unrated|ws|xvid|xxx|cd[1-9]|\\[.*\\])(\\+|$)");
 
   CStdString strTemp;
   int i=0;

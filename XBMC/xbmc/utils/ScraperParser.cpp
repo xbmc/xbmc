@@ -384,7 +384,8 @@ void CScraperParser::Clean(CStdString& strDirty)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
       const char* szTrimmed = RemoveWhiteSpace(strBuffer.c_str());
-      strDirty.Replace("!!!TRIM!!!"+strBuffer+"!!!TRIM!!!",CStdString(szTrimmed));
+      strDirty.erase(i,i2-i+10);
+      strDirty.Insert(i,szTrimmed);
       i += strlen(szTrimmed);
     }
     else
