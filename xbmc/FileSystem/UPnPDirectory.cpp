@@ -76,14 +76,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     // start client if it hasn't been done yet
     upnp->StartClient();
                      
-
     // We accept upnp://devuuid[/item_id]
-    // make sure we have a slash to look for at the end
-    CStdString strRoot = strPath;
-    if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
-
     NPT_String path = strPath.c_str();
-
     if (path.Left(7).Compare("upnp://", true) != 0) {
         return false;
     } 
@@ -112,11 +106,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     } else {
         // look for nextslash 
         int next_slash = path.Find('/', 7);
-        if (next_slash == -1) 
-            return false;
 
-        NPT_String uuid = path.SubString(7, next_slash-7);
-        NPT_String object_id = path.SubString(next_slash+1, path.GetLength()-next_slash-2);
+        NPT_String uuid = (next_slash==-1)?path.SubString(7):path.SubString(7, next_slash-7);
+        NPT_String object_id = (next_slash==-1)?"":path.SubString(next_slash+1);
 
         // look for device 
         PLT_DeviceDataReference* device;
@@ -196,8 +188,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             // if it's a container, format a string as upnp://uuid/object_id/ 
             if (pItem->m_bIsFolder) {
                 pItem->m_strPath = (const char*) NPT_String("upnp://") + uuid + "/" + (*entry)->m_ObjectID;
-                if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
-
             } else {
                 if ((*entry)->m_Resources.GetItemCount()) {
                     // if it's an item, path is the first url to the item

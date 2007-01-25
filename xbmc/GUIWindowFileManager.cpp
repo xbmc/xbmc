@@ -807,13 +807,35 @@ bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const 
     if (pItem->IsSelected())
     {
       CStdString strCorrectedPath = pItem->m_strPath;
-      if (CUtil::HasSlashAtEnd(strCorrectedPath))
+      // remove trailing slash only if it's not a upnp path (upnp folder)
+      if (!CUtil::IsUPnP(strCorrectedPath) && CUtil::HasSlashAtEnd(strCorrectedPath))
       {
         strCorrectedPath = strCorrectedPath.Left(strCorrectedPath.size() - 1);
       }
       CStdString strFileName = CUtil::GetFileName(strCorrectedPath);
       CStdString strnewDestFile;
-      CUtil::AddFileToFolder(strDestFile, strFileName.c_str(), strnewDestFile);
+      
+      // special case for upnp
+      if (CUtil::IsUPnP(items.m_strPath))
+      {
+        // get filename from label instead of path
+        strFileName = CUtil::GetFileName(pItem->GetLabel());
+        // FIXME: for now we only work well if the url has the extension
+        // we should map the content type to the extension otherwise
+        CStdString strExtension = CUtil::GetExtension(pItem->m_strPath);
+        if (CUtil::GetExtension(strFileName).length() == 0 && strExtension.length() > 0) 
+        {
+          strFileName += strExtension;
+        }
+        CUtil::AddFileToFolder(strDestFile, strFileName.c_str(), strnewDestFile);
+        // make sure the path is qualified
+        CUtil::GetFatXQualifiedPath(strnewDestFile);
+      } 
+      else 
+      {
+        CUtil::AddFileToFolder(strDestFile, strFileName.c_str(), strnewDestFile);
+      }
+
       if (pItem->m_bIsFolder)
       {
         // create folder on dest. drive
