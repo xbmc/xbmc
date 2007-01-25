@@ -255,6 +255,7 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
     SScraperInfo info;
     info.strPath = "imdb.xml";
     info.strContent = "movies";
+    info.strTitle = "IMDb";
     OnInfo(iItem,info);
     return true;
   }
@@ -492,8 +493,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
               {
                 CIMDBUrl url;
                 url.m_strURL.push_back(nfoReader.m_strImDbUrl);
-                url.m_strURL.push_back(nfoReader.m_strImDbUrl+"/plotsummary");
-                //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
+                url.m_strURL.push_back(nfoReader.m_strImDbUrl+"plotsummary");
                 CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
                 url.m_strID  = nfoReader.m_strImDbNr;
                 SScraperInfo info2(info);
@@ -511,7 +511,9 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
           // do IMDB lookup...
           if (m_dlgProgress)
           {
-            m_dlgProgress->SetHeading(197);
+            CStdString strHeading;
+            strHeading.Format(g_localizeStrings.Get(197),info.strTitle);
+            m_dlgProgress->SetHeading(strHeading);
             m_dlgProgress->SetLine(0, strMovieName);
             m_dlgProgress->SetLine(1, "");
             m_dlgProgress->Progress();
