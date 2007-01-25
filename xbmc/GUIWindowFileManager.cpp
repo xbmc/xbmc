@@ -1091,7 +1091,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
     {
       // Other items in virual directory
       CStdString strPath = pItem->m_strPath;
-      while (CUtil::HasSlashAtEnd(strPath))
+      while (!CUtil::IsUPnP(strPath) && CUtil::HasSlashAtEnd(strPath))
         strPath.Delete(strPath.size() - 1);
 
       strHistoryString = pItem->GetLabel() + strPath;
@@ -1102,7 +1102,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
     // Normal directory items
     strHistoryString = pItem->m_strPath;
 
-    if (CUtil::HasSlashAtEnd(strHistoryString))
+    if (!CUtil::IsUPnP(strHistoryString) && CUtil::HasSlashAtEnd(strHistoryString))
       strHistoryString.Delete(strHistoryString.size() - 1);
   }
 }
