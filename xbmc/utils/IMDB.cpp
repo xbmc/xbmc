@@ -345,19 +345,7 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
     }
     node = node->NextSibling("actor");
   }
-  if (m_cast.empty())
-  { // old method for back-compatibility
-    CStdString cast;
-    XMLUtils::GetString(movie, "cast", cast);
-    vector<CStdString> vecCast;
-    int iNumItems = StringUtils::SplitString(cast, "\n", vecCast);
-    for (unsigned int i = 0; i < vecCast.size(); i++)
-    {
-      int iPos = vecCast[i].Find(" as ");
-      if (iPos > 0)
-        m_cast.push_back(make_pair(vecCast[i].Left(iPos), vecCast[i].Mid(iPos + 4)));
-    }
-  }
+
   return true;
 }
 
