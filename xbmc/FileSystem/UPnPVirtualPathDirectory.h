@@ -25,7 +25,7 @@
 
 #include "idirectory.h"
 #include "virtualpathdirectory.h"
-#include "../lib/libUPnP/NptStrings.h"
+#include "NptStrings.h"
 
 using namespace DIRECTORY;
 
