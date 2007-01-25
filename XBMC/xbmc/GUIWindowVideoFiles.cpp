@@ -356,8 +356,9 @@ void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
     if (!bFoundFile)
     {
       // no video file in this folder?
-      // then just lookup IMDB info and show it
-      ShowIMDB(pItem,info);
+      if (info.strContent.Equals("movies"))
+        CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
+
       m_viewControl.SetSelectedItem(iSelectedItem);
       return ;
     }
