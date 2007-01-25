@@ -1458,6 +1458,11 @@ bool CUtil::IsDAAP(const CStdString& strFile)
   return strFile.Left(5).Equals("daap:");
 }
 
+bool CUtil::IsUPnP(const CStdString& strFile)
+{
+    return strFile.Left(5).Equals("upnp:");
+}
+
 bool CUtil::IsMemCard(const CStdString& strFile)
 {
   return strFile.Left(3).Equals("mem");
