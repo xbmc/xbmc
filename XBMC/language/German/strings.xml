@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 01/22/2007-->
+<!--Date of translation: 01/25/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7708-->
+<!--Based on english strings version 7723-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -521,6 +521,11 @@
   <string id="644">Schwarze Balken entfernen</string>
   <string id="645">Eine große Datei muss entpackt werden.&#10;Möchten Sie fortfahren?</string>
   <string id="646">Titel entfernen</string>
+  <string id="647">Video-Datenbank exportieren...</string>
+  <string id="648">Video-Datenbank importieren...</string>
+  <string id="649">Datenbank wird importiert...</string>
+  <string id="650">Datenbank wird exportiert...</string>
+  <string id="651">Video-Datenbank</string>
   <string id="700">Datenbank wird aktualisiert</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
   <string id="702">Dieser Pfad wurde bereits aktualisiert. Möchten Sie den Pfad&#10;komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
@@ -564,7 +569,7 @@
   <string id="742">Weiß</string>
   <string id="743">Gelb</string>
   <string id="744">Dateien</string>
-  <string id="745">Es sind keine Informationen für diese Ansicht verfügbar.</string>
+  <string id="745">Es sind keine Informationen in der Datenbank verfügbar.</string>
   <string id="746">Bitte wechseln Sie wieder zur Datei-Ansicht.</string>
   <string id="747">Fehler beim Laden des Bildes!</string>
   <string id="748">Pfad bearbeiten</string>
@@ -661,9 +666,9 @@
   <string id="1245">FTP-Benutzername</string>
   <string id="1246">FTP-Passwort</string>
   <string id="1247">Das Passwort wurde erfolgreich gesetzt.</string>
-  <string id="1250">Autom. erkennen</string>
-  <string id="1251">Andere Konsolen im Netzwerk suchen</string>
-  <string id="1252">Nick-Name der eigenen XBOX</string>
+  <string id="1250">XBOX erkennen</string>
+  <string id="1251">Andere Konsolen im Netzwerk erkennen</string>
+  <string id="1252">Name der eigenen XBOX</string>
   <string id="1253">Automatisch eine FTP-Freigabe im Dateimanager erstellen</string>
   <string id="1254">Nachfragen ob eine Verbindung aufgebaut werden soll</string>
   <string id="1255">FTP-Benutzername und Passwort senden</string>
@@ -1347,7 +1352,7 @@
   <string id="20108">Haupt-Ordner</string>
   <string id="20109">Skin-Zoom</string>
   <string id="20110">UPnP-Client</string>
-  <string id="20111">UPnP-Client automatisch starten</string>
+  <string id="20111">UPnP-Client aktivieren</string>
   <string id="20112">Letzte Anmeldung: %s</string>
   <string id="20113">Bisher noch nicht angemeldet</string>
   <string id="20114">Profil %i / %i</string>
@@ -1419,7 +1424,7 @@
   <string id="20181">Löschen</string>
   <string id="20182">Leertaste</string>
   <string id="20183">Skin aktualisieren</string>
-  <string id="20184">Bilder anhand von EXIF-Informationen drehen</string>
+  <string id="20184">Bilder anhand der EXIF-Informationen drehen</string>
   <string id="20185">Hardware-Informationen werden geprüft</string>
   <string id="20186">Bitte warten...</string>
   <string id="20187">EEPROM-Werte werden geprüft</string>
