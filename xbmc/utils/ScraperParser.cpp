@@ -54,7 +54,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
       return false;
     }
     // check for known content
-    if (stricmp(m_content,"tv") && stricmp(m_content,"movies") && stricmp(m_content,"porn") && stricmp(m_content,"anime"))
+    if (stricmp(m_content,"tv") && stricmp(m_content,"movies"))
     {
       delete m_document;
       m_document = NULL;
@@ -267,10 +267,13 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       }
 
       int iLen = reg.GetFindLen();
+      // nasty hack #1 - & means \0 in a replace string
+      strCurOutput.Replace("&","!!!AMPAMP!!!");
       char* result = reg.GetReplaceString(strCurOutput.c_str());
       if (result && strlen(result))
       {
         CStdString strResult(result);
+        strResult.Replace("!!!AMPAMP!!!","&");
         Clean(strResult);
         ReplaceBuffers(strResult);
         if (iCompare > -1)
@@ -306,7 +309,7 @@ void CScraperParser::ParseNext(TiXmlElement* element)
       ParseNext(pChildReg);
     else
     {
-      TiXmlElement* pChildReg = pReg->FirstChildElement("Clear");
+      TiXmlElement* pChildReg = pReg->FirstChildElement("clear");
       if (pChildReg)
         ParseNext(pChildReg);
     }	
