@@ -3206,6 +3206,9 @@ void CApplication::Stop()
 
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
+    // reset our d3d params before we destroy
+    g_graphicsContext.SetD3DDevice(NULL);
+    g_graphicsContext.SetD3DParameters(NULL);
     CLog::Log(LOGNOTICE, "destroy");
     Destroy();
 
