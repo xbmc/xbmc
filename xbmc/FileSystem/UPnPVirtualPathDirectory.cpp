@@ -23,7 +23,7 @@
 
 #include "../stdafx.h"
 #include "../util.h"
-#include "../lib/libUPnP/NptUtils.h"
+#include "NptUtils.h"
 #include "UPnPVirtualPathDirectory.h"
 
 /*----------------------------------------------------------------------
