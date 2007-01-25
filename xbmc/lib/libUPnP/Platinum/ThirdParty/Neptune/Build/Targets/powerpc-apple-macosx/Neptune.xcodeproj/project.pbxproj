@@ -1,0 +1,1728 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CA3043BC09C2BE7800B49383 /* NptConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043BB09C2BE7800B49383 /* NptConfig.h */; };
+		CA30443F09C2BEC900B49383 /* NptArray.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043CB09C2BEC900B49383 /* NptArray.h */; };
+		CA30444009C2BEC900B49383 /* NptBase64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043CC09C2BEC900B49383 /* NptBase64.cpp */; };
+		CA30444109C2BEC900B49383 /* NptBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043CD09C2BEC900B49383 /* NptBase64.h */; };
+		CA30444209C2BEC900B49383 /* NptBufferedStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043CE09C2BEC900B49383 /* NptBufferedStreams.cpp */; };
+		CA30444309C2BEC900B49383 /* NptBufferedStreams.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043CF09C2BEC900B49383 /* NptBufferedStreams.h */; };
+		CA30444409C2BEC900B49383 /* NptCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043D009C2BEC900B49383 /* NptCommon.cpp */; };
+		CA30444509C2BEC900B49383 /* NptCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043D109C2BEC900B49383 /* NptCommon.h */; };
+		CA30444609C2BEC900B49383 /* NptConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043D209C2BEC900B49383 /* NptConstants.h */; };
+		CA30444709C2BEC900B49383 /* NptDataBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043D309C2BEC900B49383 /* NptDataBuffer.cpp */; };
+		CA30444809C2BEC900B49383 /* NptDataBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043D409C2BEC900B49383 /* NptDataBuffer.h */; };
+		CA30444909C2BEC900B49383 /* NptDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043D509C2BEC900B49383 /* NptDebug.cpp */; };
+		CA30444A09C2BEC900B49383 /* NptDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043D609C2BEC900B49383 /* NptDebug.h */; };
+		CA30444B09C2BEC900B49383 /* NptDefs.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043D709C2BEC900B49383 /* NptDefs.h */; };
+		CA30444C09C2BEC900B49383 /* NptFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043D809C2BEC900B49383 /* NptFile.cpp */; };
+		CA30444D09C2BEC900B49383 /* NptFile.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043D909C2BEC900B49383 /* NptFile.h */; };
+		CA30444E09C2BEC900B49383 /* NptHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043DA09C2BEC900B49383 /* NptHttp.cpp */; };
+		CA30444F09C2BEC900B49383 /* NptHttp.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043DB09C2BEC900B49383 /* NptHttp.h */; };
+		CA30445009C2BEC900B49383 /* NptInterfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043DC09C2BEC900B49383 /* NptInterfaces.h */; };
+		CA30445109C2BEC900B49383 /* NptList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043DD09C2BEC900B49383 /* NptList.cpp */; };
+		CA30445209C2BEC900B49383 /* NptList.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043DE09C2BEC900B49383 /* NptList.h */; };
+		CA30445309C2BEC900B49383 /* NptMap.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043DF09C2BEC900B49383 /* NptMap.h */; };
+		CA30445409C2BEC900B49383 /* NptMessaging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043E009C2BEC900B49383 /* NptMessaging.cpp */; };
+		CA30445509C2BEC900B49383 /* NptMessaging.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043E109C2BEC900B49383 /* NptMessaging.h */; };
+		CA30445609C2BEC900B49383 /* NptNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043E209C2BEC900B49383 /* NptNetwork.cpp */; };
+		CA30445709C2BEC900B49383 /* NptNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043E309C2BEC900B49383 /* NptNetwork.h */; };
+		CA30445809C2BEC900B49383 /* NptQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043E409C2BEC900B49383 /* NptQueue.cpp */; };
+		CA30445909C2BEC900B49383 /* NptQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043E509C2BEC900B49383 /* NptQueue.h */; };
+		CA30445A09C2BEC900B49383 /* NptReferences.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043E609C2BEC900B49383 /* NptReferences.h */; };
+		CA30445B09C2BEC900B49383 /* NptResults.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043E709C2BEC900B49383 /* NptResults.h */; };
+		CA30445C09C2BEC900B49383 /* NptRingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043E809C2BEC900B49383 /* NptRingBuffer.cpp */; };
+		CA30445D09C2BEC900B49383 /* NptRingBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043E909C2BEC900B49383 /* NptRingBuffer.h */; };
+		CA30445E09C2BEC900B49383 /* NptSelectableMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043EA09C2BEC900B49383 /* NptSelectableMessageQueue.h */; };
+		CA30445F09C2BEC900B49383 /* NptSimpleMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043EB09C2BEC900B49383 /* NptSimpleMessageQueue.cpp */; };
+		CA30446009C2BEC900B49383 /* NptSimpleMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043EC09C2BEC900B49383 /* NptSimpleMessageQueue.h */; };
+		CA30446109C2BEC900B49383 /* NptSockets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043ED09C2BEC900B49383 /* NptSockets.cpp */; };
+		CA30446209C2BEC900B49383 /* NptSockets.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043EE09C2BEC900B49383 /* NptSockets.h */; };
+		CA30446309C2BEC900B49383 /* NptStack.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043EF09C2BEC900B49383 /* NptStack.h */; };
+		CA30446409C2BEC900B49383 /* NptStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043F009C2BEC900B49383 /* NptStreams.cpp */; };
+		CA30446509C2BEC900B49383 /* NptStreams.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043F109C2BEC900B49383 /* NptStreams.h */; };
+		CA30446609C2BEC900B49383 /* NptStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043F209C2BEC900B49383 /* NptStrings.cpp */; };
+		CA30446709C2BEC900B49383 /* NptStrings.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043F309C2BEC900B49383 /* NptStrings.h */; };
+		CA30446809C2BEC900B49383 /* NptSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043F409C2BEC900B49383 /* NptSystem.cpp */; };
+		CA30446909C2BEC900B49383 /* NptSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043F509C2BEC900B49383 /* NptSystem.h */; };
+		CA30446A09C2BEC900B49383 /* NptThreads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043F609C2BEC900B49383 /* NptThreads.cpp */; };
+		CA30446B09C2BEC900B49383 /* NptThreads.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043F709C2BEC900B49383 /* NptThreads.h */; };
+		CA30446C09C2BEC900B49383 /* NptTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043F809C2BEC900B49383 /* NptTime.cpp */; };
+		CA30446D09C2BEC900B49383 /* NptTime.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043F909C2BEC900B49383 /* NptTime.h */; };
+		CA30446E09C2BEC900B49383 /* NptTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043FA09C2BEC900B49383 /* NptTypes.h */; };
+		CA30446F09C2BEC900B49383 /* NptUri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043FB09C2BEC900B49383 /* NptUri.cpp */; };
+		CA30447009C2BEC900B49383 /* NptUri.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043FC09C2BEC900B49383 /* NptUri.h */; };
+		CA30447109C2BEC900B49383 /* NptUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043FD09C2BEC900B49383 /* NptUtils.cpp */; };
+		CA30447209C2BEC900B49383 /* NptUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = CA3043FE09C2BEC900B49383 /* NptUtils.h */; };
+		CA30447309C2BEC900B49383 /* NptXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043FF09C2BEC900B49383 /* NptXml.cpp */; };
+		CA30447409C2BEC900B49383 /* NptXml.h in Headers */ = {isa = PBXBuildFile; fileRef = CA30440009C2BEC900B49383 /* NptXml.h */; };
+		CA30447509C2BEC900B49383 /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30440209C2BEC900B49383 /* Neptune.cpp */; };
+		CA30447609C2BEC900B49383 /* Neptune.h in Headers */ = {isa = PBXBuildFile; fileRef = CA30440309C2BEC900B49383 /* Neptune.h */; };
+		CA30447709C2BEC900B49383 /* NptVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = CA30440409C2BEC900B49383 /* NptVersion.h */; };
+		CA30447809C2BEC900B49383 /* NptBsdNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30440709C2BEC900B49383 /* NptBsdNetwork.cpp */; };
+		CA30447909C2BEC900B49383 /* NptBsdSockets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30440809C2BEC900B49383 /* NptBsdSockets.cpp */; };
+		CA30447D09C2BEC900B49383 /* NptPosixQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30440E09C2BEC900B49383 /* NptPosixQueue.cpp */; };
+		CA30447E09C2BEC900B49383 /* NptPosixSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30440F09C2BEC900B49383 /* NptPosixSystem.cpp */; };
+		CA30447F09C2BEC900B49383 /* NptPosixThreads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30441009C2BEC900B49383 /* NptPosixThreads.cpp */; };
+		CA30448009C2BEC900B49383 /* NptSelectableMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30441109C2BEC900B49383 /* NptSelectableMessageQueue.cpp */; };
+		CA30448109C2BEC900B49383 /* NptStdcDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30441309C2BEC900B49383 /* NptStdcDebug.cpp */; };
+		CA30448209C2BEC900B49383 /* NptStdcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30441409C2BEC900B49383 /* NptStdcFile.cpp */; };
+		CA3044CB09C2C10800B49383 /* NetPump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043C509C2BEA000B49383 /* NetPump.cpp */; };
+		CA30450909C2C3F600B49383 /* NetPing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043C309C2BEA000B49383 /* NetPing.cpp */; };
+		CA30451109C2C41C00B49383 /* NetEcho.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043C109C2BEA000B49383 /* NetEcho.cpp */; };
+		CA30451909C2C44300B49383 /* NetConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA3043BF09C2BEA000B49383 /* NetConfig.cpp */; };
+		CA30454A09C2C5D000B49383 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libNeptune.a */; };
+		CA30454B09C2C5D600B49383 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libNeptune.a */; };
+		CA30454C09C2C5D900B49383 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libNeptune.a */; };
+		CA30454D09C2C5DC00B49383 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libNeptune.a */; };
+		CA30457209C2C83400B49383 /* XmlTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30443E09C2BEC900B49383 /* XmlTest1.cpp */; };
+		CA30457B09C2C86700B49383 /* StringsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30443509C2BEC900B49383 /* StringsTest1.cpp */; };
+		CA30458609C2C8AB00B49383 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libNeptune.a */; };
+		CA30458709C2C8AF00B49383 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libNeptune.a */; };
+		CA30459109C2C8EE00B49383 /* ArraysTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30442109C2BEC900B49383 /* ArraysTest1.cpp */; };
+		CA30459209C2C8F700B49383 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libNeptune.a */; };
+		CA30459E09C2C93D00B49383 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libNeptune.a */; };
+		CA30459F09C2C94000B49383 /* ThreadsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30443709C2BEC900B49383 /* ThreadsTest1.cpp */; };
+		CA3045AE09C2C9BF00B49383 /* MapsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30442B09C2BEC900B49383 /* MapsTest1.cpp */; };
+		CA3045AF09C2C9DD00B49383 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libNeptune.a */; };
+		CA3045B809C2CA0E00B49383 /* HttpClientTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA30442509C2BEC900B49383 /* HttpClientTest1.cpp */; };
+		CA3045B909C2CA1300B49383 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libNeptune.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		014CEA520018CE5811CA2923 /* Debug */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		014CEA530018CE5811CA2923 /* Release */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXContainerItemProxy section */
+		CA3044C609C2C0D600B49383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Neptune;
+		};
+		CA30450709C2C3EA00B49383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Neptune;
+		};
+		CA30450F09C2C41200B49383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Neptune;
+		};
+		CA30451709C2C43700B49383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Neptune;
+		};
+		CA30457009C2C82600B49383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Neptune;
+		};
+		CA30457909C2C85C00B49383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Neptune;
+		};
+		CA30458F09C2C8E300B49383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Neptune;
+		};
+		CA30459C09C2C93000B49383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Neptune;
+		};
+		CA3045A909C2C98000B49383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Neptune;
+		};
+		CA3045B609C2CA0300B49383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Neptune;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CA3043BB09C2BE7800B49383 /* NptConfig.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NptConfig.h; path = ../../../../Source/Config/NptConfig.h; sourceTree = SOURCE_ROOT; };
+		CA3043BF09C2BEA000B49383 /* NetConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NetConfig.cpp; sourceTree = "<group>"; };
+		CA3043C109C2BEA000B49383 /* NetEcho.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NetEcho.cpp; sourceTree = "<group>"; };
+		CA3043C309C2BEA000B49383 /* NetPing.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NetPing.cpp; sourceTree = "<group>"; };
+		CA3043C509C2BEA000B49383 /* NetPump.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NetPump.cpp; sourceTree = "<group>"; };
+		CA3043CB09C2BEC900B49383 /* NptArray.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptArray.h; sourceTree = "<group>"; };
+		CA3043CC09C2BEC900B49383 /* NptBase64.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptBase64.cpp; sourceTree = "<group>"; };
+		CA3043CD09C2BEC900B49383 /* NptBase64.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptBase64.h; sourceTree = "<group>"; };
+		CA3043CE09C2BEC900B49383 /* NptBufferedStreams.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptBufferedStreams.cpp; sourceTree = "<group>"; };
+		CA3043CF09C2BEC900B49383 /* NptBufferedStreams.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptBufferedStreams.h; sourceTree = "<group>"; };
+		CA3043D009C2BEC900B49383 /* NptCommon.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptCommon.cpp; sourceTree = "<group>"; };
+		CA3043D109C2BEC900B49383 /* NptCommon.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptCommon.h; sourceTree = "<group>"; };
+		CA3043D209C2BEC900B49383 /* NptConstants.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptConstants.h; sourceTree = "<group>"; };
+		CA3043D309C2BEC900B49383 /* NptDataBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptDataBuffer.cpp; sourceTree = "<group>"; };
+		CA3043D409C2BEC900B49383 /* NptDataBuffer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptDataBuffer.h; sourceTree = "<group>"; };
+		CA3043D509C2BEC900B49383 /* NptDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptDebug.cpp; sourceTree = "<group>"; };
+		CA3043D609C2BEC900B49383 /* NptDebug.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptDebug.h; sourceTree = "<group>"; };
+		CA3043D709C2BEC900B49383 /* NptDefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptDefs.h; sourceTree = "<group>"; };
+		CA3043D809C2BEC900B49383 /* NptFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptFile.cpp; sourceTree = "<group>"; };
+		CA3043D909C2BEC900B49383 /* NptFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptFile.h; sourceTree = "<group>"; };
+		CA3043DA09C2BEC900B49383 /* NptHttp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptHttp.cpp; sourceTree = "<group>"; };
+		CA3043DB09C2BEC900B49383 /* NptHttp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptHttp.h; sourceTree = "<group>"; };
+		CA3043DC09C2BEC900B49383 /* NptInterfaces.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptInterfaces.h; sourceTree = "<group>"; };
+		CA3043DD09C2BEC900B49383 /* NptList.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptList.cpp; sourceTree = "<group>"; };
+		CA3043DE09C2BEC900B49383 /* NptList.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptList.h; sourceTree = "<group>"; };
+		CA3043DF09C2BEC900B49383 /* NptMap.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptMap.h; sourceTree = "<group>"; };
+		CA3043E009C2BEC900B49383 /* NptMessaging.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptMessaging.cpp; sourceTree = "<group>"; };
+		CA3043E109C2BEC900B49383 /* NptMessaging.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptMessaging.h; sourceTree = "<group>"; };
+		CA3043E209C2BEC900B49383 /* NptNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptNetwork.cpp; sourceTree = "<group>"; };
+		CA3043E309C2BEC900B49383 /* NptNetwork.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptNetwork.h; sourceTree = "<group>"; };
+		CA3043E409C2BEC900B49383 /* NptQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptQueue.cpp; sourceTree = "<group>"; };
+		CA3043E509C2BEC900B49383 /* NptQueue.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptQueue.h; sourceTree = "<group>"; };
+		CA3043E609C2BEC900B49383 /* NptReferences.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptReferences.h; sourceTree = "<group>"; };
+		CA3043E709C2BEC900B49383 /* NptResults.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptResults.h; sourceTree = "<group>"; };
+		CA3043E809C2BEC900B49383 /* NptRingBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptRingBuffer.cpp; sourceTree = "<group>"; };
+		CA3043E909C2BEC900B49383 /* NptRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptRingBuffer.h; sourceTree = "<group>"; };
+		CA3043EA09C2BEC900B49383 /* NptSelectableMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptSelectableMessageQueue.h; sourceTree = "<group>"; };
+		CA3043EB09C2BEC900B49383 /* NptSimpleMessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptSimpleMessageQueue.cpp; sourceTree = "<group>"; };
+		CA3043EC09C2BEC900B49383 /* NptSimpleMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptSimpleMessageQueue.h; sourceTree = "<group>"; };
+		CA3043ED09C2BEC900B49383 /* NptSockets.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptSockets.cpp; sourceTree = "<group>"; };
+		CA3043EE09C2BEC900B49383 /* NptSockets.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptSockets.h; sourceTree = "<group>"; };
+		CA3043EF09C2BEC900B49383 /* NptStack.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptStack.h; sourceTree = "<group>"; };
+		CA3043F009C2BEC900B49383 /* NptStreams.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptStreams.cpp; sourceTree = "<group>"; };
+		CA3043F109C2BEC900B49383 /* NptStreams.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptStreams.h; sourceTree = "<group>"; };
+		CA3043F209C2BEC900B49383 /* NptStrings.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptStrings.cpp; sourceTree = "<group>"; };
+		CA3043F309C2BEC900B49383 /* NptStrings.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptStrings.h; sourceTree = "<group>"; };
+		CA3043F409C2BEC900B49383 /* NptSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptSystem.cpp; sourceTree = "<group>"; };
+		CA3043F509C2BEC900B49383 /* NptSystem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptSystem.h; sourceTree = "<group>"; };
+		CA3043F609C2BEC900B49383 /* NptThreads.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptThreads.cpp; sourceTree = "<group>"; };
+		CA3043F709C2BEC900B49383 /* NptThreads.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptThreads.h; sourceTree = "<group>"; };
+		CA3043F809C2BEC900B49383 /* NptTime.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptTime.cpp; sourceTree = "<group>"; };
+		CA3043F909C2BEC900B49383 /* NptTime.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptTime.h; sourceTree = "<group>"; };
+		CA3043FA09C2BEC900B49383 /* NptTypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptTypes.h; sourceTree = "<group>"; };
+		CA3043FB09C2BEC900B49383 /* NptUri.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptUri.cpp; sourceTree = "<group>"; };
+		CA3043FC09C2BEC900B49383 /* NptUri.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptUri.h; sourceTree = "<group>"; };
+		CA3043FD09C2BEC900B49383 /* NptUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptUtils.cpp; sourceTree = "<group>"; };
+		CA3043FE09C2BEC900B49383 /* NptUtils.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptUtils.h; sourceTree = "<group>"; };
+		CA3043FF09C2BEC900B49383 /* NptXml.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptXml.cpp; sourceTree = "<group>"; };
+		CA30440009C2BEC900B49383 /* NptXml.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptXml.h; sourceTree = "<group>"; };
+		CA30440209C2BEC900B49383 /* Neptune.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Neptune.cpp; sourceTree = "<group>"; };
+		CA30440309C2BEC900B49383 /* Neptune.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Neptune.h; sourceTree = "<group>"; };
+		CA30440409C2BEC900B49383 /* NptVersion.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NptVersion.h; sourceTree = "<group>"; };
+		CA30440709C2BEC900B49383 /* NptBsdNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptBsdNetwork.cpp; sourceTree = "<group>"; };
+		CA30440809C2BEC900B49383 /* NptBsdSockets.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptBsdSockets.cpp; sourceTree = "<group>"; };
+		CA30440E09C2BEC900B49383 /* NptPosixQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixQueue.cpp; sourceTree = "<group>"; };
+		CA30440F09C2BEC900B49383 /* NptPosixSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixSystem.cpp; sourceTree = "<group>"; };
+		CA30441009C2BEC900B49383 /* NptPosixThreads.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixThreads.cpp; sourceTree = "<group>"; };
+		CA30441109C2BEC900B49383 /* NptSelectableMessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptSelectableMessageQueue.cpp; sourceTree = "<group>"; };
+		CA30441309C2BEC900B49383 /* NptStdcDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcDebug.cpp; sourceTree = "<group>"; };
+		CA30441409C2BEC900B49383 /* NptStdcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcFile.cpp; sourceTree = "<group>"; };
+		CA30442109C2BEC900B49383 /* ArraysTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ArraysTest1.cpp; sourceTree = "<group>"; };
+		CA30442309C2BEC900B49383 /* BufferedStreamsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = BufferedStreamsTest1.cpp; sourceTree = "<group>"; };
+		CA30442509C2BEC900B49383 /* HttpClientTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = HttpClientTest1.cpp; sourceTree = "<group>"; };
+		CA30442709C2BEC900B49383 /* HttpServerTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = HttpServerTest1.cpp; sourceTree = "<group>"; };
+		CA30442909C2BEC900B49383 /* ListsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ListsTest1.cpp; sourceTree = "<group>"; };
+		CA30442B09C2BEC900B49383 /* MapsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MapsTest1.cpp; sourceTree = "<group>"; };
+		CA30442D09C2BEC900B49383 /* MessagesTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MessagesTest1.cpp; sourceTree = "<group>"; };
+		CA30442F09C2BEC900B49383 /* MessagesTest2.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MessagesTest2.cpp; sourceTree = "<group>"; };
+		CA30443109C2BEC900B49383 /* MiscTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MiscTest1.cpp; sourceTree = "<group>"; };
+		CA30443309C2BEC900B49383 /* RingBufferTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RingBufferTest1.cpp; sourceTree = "<group>"; };
+		CA30443509C2BEC900B49383 /* StringsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = StringsTest1.cpp; sourceTree = "<group>"; };
+		CA30443709C2BEC900B49383 /* ThreadsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadsTest1.cpp; sourceTree = "<group>"; };
+		CA30443909C2BEC900B49383 /* UdpTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = UdpTest1.cpp; sourceTree = "<group>"; };
+		CA30443E09C2BEC900B49383 /* XmlTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = XmlTest1.cpp; sourceTree = "<group>"; };
+		CA3044C409C2C0CF00B49383 /* NetPump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetPump; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA30450509C2C3E400B49383 /* NetPing */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetPing; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA30450D09C2C40B00B49383 /* NetEcho */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetEcho; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA30451509C2C43200B49383 /* NetConfig */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetConfig; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA30456E09C2C82100B49383 /* XmlTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XmlTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA30457709C2C85700B49383 /* StringsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = StringsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA30458D09C2C8DF00B49383 /* ArraysTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ArraysTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA30459A09C2C92B00B49383 /* ThreadsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ThreadsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA3045A709C2C97C00B49383 /* MapsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MapsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA3045B409C2C9FF00B49383 /* HttpClientTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HttpClientTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2AAC046055464E500DB518D /* libNeptune.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNeptune.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CA3044C209C2C0CF00B49383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30454A09C2C5D000B49383 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30450309C2C3E400B49383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30454B09C2C5D600B49383 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30450B09C2C40B00B49383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30454C09C2C5D900B49383 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30451309C2C43200B49383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30454D09C2C5DC00B49383 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30456C09C2C82100B49383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30458709C2C8AF00B49383 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30457509C2C85700B49383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30458609C2C8AB00B49383 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30458B09C2C8DF00B49383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30459209C2C8F700B49383 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30459809C2C92B00B49383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30459E09C2C93D00B49383 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA3045A509C2C97C00B49383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA3045AF09C2C9DD00B49383 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA3045B209C2C9FF00B49383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA3045B909C2CA1300B49383 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D289987405E68DCB004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* Neptune */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = Neptune;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				CA3043CA09C2BEC900B49383 /* Core */,
+				CA30440109C2BEC900B49383 /* Neptune */,
+				CA30440509C2BEC900B49383 /* System */,
+				CA30441F09C2BEC900B49383 /* Tests */,
+				CA3043BD09C2BEA000B49383 /* Apps */,
+				CA3043BA09C2BE4D00B49383 /* Config */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC046055464E500DB518D /* libNeptune.a */,
+				CA3044C409C2C0CF00B49383 /* NetPump */,
+				CA30450509C2C3E400B49383 /* NetPing */,
+				CA30450D09C2C40B00B49383 /* NetEcho */,
+				CA30451509C2C43200B49383 /* NetConfig */,
+				CA30456E09C2C82100B49383 /* XmlTest1 */,
+				CA30457709C2C85700B49383 /* StringsTest1 */,
+				CA30458D09C2C8DF00B49383 /* ArraysTest1 */,
+				CA30459A09C2C92B00B49383 /* ThreadsTest1 */,
+				CA3045A709C2C97C00B49383 /* MapsTest1 */,
+				CA3045B409C2C9FF00B49383 /* HttpClientTest1 */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+		CA3043BA09C2BE4D00B49383 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				CA3043BB09C2BE7800B49383 /* NptConfig.h */,
+			);
+			name = Config;
+			sourceTree = "<group>";
+		};
+		CA3043BD09C2BEA000B49383 /* Apps */ = {
+			isa = PBXGroup;
+			children = (
+				CA3043BE09C2BEA000B49383 /* NetConfig */,
+				CA3043C009C2BEA000B49383 /* NetEcho */,
+				CA3043C209C2BEA000B49383 /* NetPing */,
+				CA3043C409C2BEA000B49383 /* NetPump */,
+			);
+			name = Apps;
+			path = ../../../../Source/Apps;
+			sourceTree = SOURCE_ROOT;
+		};
+		CA3043BE09C2BEA000B49383 /* NetConfig */ = {
+			isa = PBXGroup;
+			children = (
+				CA3043BF09C2BEA000B49383 /* NetConfig.cpp */,
+			);
+			path = NetConfig;
+			sourceTree = "<group>";
+		};
+		CA3043C009C2BEA000B49383 /* NetEcho */ = {
+			isa = PBXGroup;
+			children = (
+				CA3043C109C2BEA000B49383 /* NetEcho.cpp */,
+			);
+			path = NetEcho;
+			sourceTree = "<group>";
+		};
+		CA3043C209C2BEA000B49383 /* NetPing */ = {
+			isa = PBXGroup;
+			children = (
+				CA3043C309C2BEA000B49383 /* NetPing.cpp */,
+			);
+			path = NetPing;
+			sourceTree = "<group>";
+		};
+		CA3043C409C2BEA000B49383 /* NetPump */ = {
+			isa = PBXGroup;
+			children = (
+				CA3043C509C2BEA000B49383 /* NetPump.cpp */,
+			);
+			path = NetPump;
+			sourceTree = "<group>";
+		};
+		CA3043CA09C2BEC900B49383 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				CA3043CB09C2BEC900B49383 /* NptArray.h */,
+				CA3043CC09C2BEC900B49383 /* NptBase64.cpp */,
+				CA3043CD09C2BEC900B49383 /* NptBase64.h */,
+				CA3043CE09C2BEC900B49383 /* NptBufferedStreams.cpp */,
+				CA3043CF09C2BEC900B49383 /* NptBufferedStreams.h */,
+				CA3043D009C2BEC900B49383 /* NptCommon.cpp */,
+				CA3043D109C2BEC900B49383 /* NptCommon.h */,
+				CA3043D209C2BEC900B49383 /* NptConstants.h */,
+				CA3043D309C2BEC900B49383 /* NptDataBuffer.cpp */,
+				CA3043D409C2BEC900B49383 /* NptDataBuffer.h */,
+				CA3043D509C2BEC900B49383 /* NptDebug.cpp */,
+				CA3043D609C2BEC900B49383 /* NptDebug.h */,
+				CA3043D709C2BEC900B49383 /* NptDefs.h */,
+				CA3043D809C2BEC900B49383 /* NptFile.cpp */,
+				CA3043D909C2BEC900B49383 /* NptFile.h */,
+				CA3043DA09C2BEC900B49383 /* NptHttp.cpp */,
+				CA3043DB09C2BEC900B49383 /* NptHttp.h */,
+				CA3043DC09C2BEC900B49383 /* NptInterfaces.h */,
+				CA3043DD09C2BEC900B49383 /* NptList.cpp */,
+				CA3043DE09C2BEC900B49383 /* NptList.h */,
+				CA3043DF09C2BEC900B49383 /* NptMap.h */,
+				CA3043E009C2BEC900B49383 /* NptMessaging.cpp */,
+				CA3043E109C2BEC900B49383 /* NptMessaging.h */,
+				CA3043E209C2BEC900B49383 /* NptNetwork.cpp */,
+				CA3043E309C2BEC900B49383 /* NptNetwork.h */,
+				CA3043E409C2BEC900B49383 /* NptQueue.cpp */,
+				CA3043E509C2BEC900B49383 /* NptQueue.h */,
+				CA3043E609C2BEC900B49383 /* NptReferences.h */,
+				CA3043E709C2BEC900B49383 /* NptResults.h */,
+				CA3043E809C2BEC900B49383 /* NptRingBuffer.cpp */,
+				CA3043E909C2BEC900B49383 /* NptRingBuffer.h */,
+				CA3043EA09C2BEC900B49383 /* NptSelectableMessageQueue.h */,
+				CA3043EB09C2BEC900B49383 /* NptSimpleMessageQueue.cpp */,
+				CA3043EC09C2BEC900B49383 /* NptSimpleMessageQueue.h */,
+				CA3043ED09C2BEC900B49383 /* NptSockets.cpp */,
+				CA3043EE09C2BEC900B49383 /* NptSockets.h */,
+				CA3043EF09C2BEC900B49383 /* NptStack.h */,
+				CA3043F009C2BEC900B49383 /* NptStreams.cpp */,
+				CA3043F109C2BEC900B49383 /* NptStreams.h */,
+				CA3043F209C2BEC900B49383 /* NptStrings.cpp */,
+				CA3043F309C2BEC900B49383 /* NptStrings.h */,
+				CA3043F409C2BEC900B49383 /* NptSystem.cpp */,
+				CA3043F509C2BEC900B49383 /* NptSystem.h */,
+				CA3043F609C2BEC900B49383 /* NptThreads.cpp */,
+				CA3043F709C2BEC900B49383 /* NptThreads.h */,
+				CA3043F809C2BEC900B49383 /* NptTime.cpp */,
+				CA3043F909C2BEC900B49383 /* NptTime.h */,
+				CA3043FA09C2BEC900B49383 /* NptTypes.h */,
+				CA3043FB09C2BEC900B49383 /* NptUri.cpp */,
+				CA3043FC09C2BEC900B49383 /* NptUri.h */,
+				CA3043FD09C2BEC900B49383 /* NptUtils.cpp */,
+				CA3043FE09C2BEC900B49383 /* NptUtils.h */,
+				CA3043FF09C2BEC900B49383 /* NptXml.cpp */,
+				CA30440009C2BEC900B49383 /* NptXml.h */,
+			);
+			name = Core;
+			path = ../../../../Source/Core;
+			sourceTree = SOURCE_ROOT;
+		};
+		CA30440109C2BEC900B49383 /* Neptune */ = {
+			isa = PBXGroup;
+			children = (
+				CA30440209C2BEC900B49383 /* Neptune.cpp */,
+				CA30440309C2BEC900B49383 /* Neptune.h */,
+				CA30440409C2BEC900B49383 /* NptVersion.h */,
+			);
+			name = Neptune;
+			path = ../../../../Source/Neptune;
+			sourceTree = SOURCE_ROOT;
+		};
+		CA30440509C2BEC900B49383 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				CA30440609C2BEC900B49383 /* Bsd */,
+				CA30440D09C2BEC900B49383 /* Posix */,
+				CA30441209C2BEC900B49383 /* StdC */,
+			);
+			name = System;
+			path = ../../../../Source/System;
+			sourceTree = SOURCE_ROOT;
+		};
+		CA30440609C2BEC900B49383 /* Bsd */ = {
+			isa = PBXGroup;
+			children = (
+				CA30440709C2BEC900B49383 /* NptBsdNetwork.cpp */,
+				CA30440809C2BEC900B49383 /* NptBsdSockets.cpp */,
+			);
+			path = Bsd;
+			sourceTree = "<group>";
+		};
+		CA30440D09C2BEC900B49383 /* Posix */ = {
+			isa = PBXGroup;
+			children = (
+				CA30440E09C2BEC900B49383 /* NptPosixQueue.cpp */,
+				CA30440F09C2BEC900B49383 /* NptPosixSystem.cpp */,
+				CA30441009C2BEC900B49383 /* NptPosixThreads.cpp */,
+				CA30441109C2BEC900B49383 /* NptSelectableMessageQueue.cpp */,
+			);
+			path = Posix;
+			sourceTree = "<group>";
+		};
+		CA30441209C2BEC900B49383 /* StdC */ = {
+			isa = PBXGroup;
+			children = (
+				CA30441309C2BEC900B49383 /* NptStdcDebug.cpp */,
+				CA30441409C2BEC900B49383 /* NptStdcFile.cpp */,
+			);
+			path = StdC;
+			sourceTree = "<group>";
+		};
+		CA30441F09C2BEC900B49383 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				CA30442009C2BEC900B49383 /* Arrays1 */,
+				CA30442209C2BEC900B49383 /* BufferedStreams1 */,
+				CA30442409C2BEC900B49383 /* HttpClient1 */,
+				CA30442609C2BEC900B49383 /* HttpServer1 */,
+				CA30442809C2BEC900B49383 /* Lists1 */,
+				CA30442A09C2BEC900B49383 /* Maps1 */,
+				CA30442C09C2BEC900B49383 /* Messages1 */,
+				CA30442E09C2BEC900B49383 /* Messages2 */,
+				CA30443009C2BEC900B49383 /* Misc1 */,
+				CA30443209C2BEC900B49383 /* RingBuffer1 */,
+				CA30443409C2BEC900B49383 /* Strings1 */,
+				CA30443609C2BEC900B49383 /* Threads1 */,
+				CA30443809C2BEC900B49383 /* Udp1 */,
+				CA30443A09C2BEC900B49383 /* Xml1 */,
+			);
+			name = Tests;
+			path = ../../../../Source/Tests;
+			sourceTree = SOURCE_ROOT;
+		};
+		CA30442009C2BEC900B49383 /* Arrays1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30442109C2BEC900B49383 /* ArraysTest1.cpp */,
+			);
+			path = Arrays1;
+			sourceTree = "<group>";
+		};
+		CA30442209C2BEC900B49383 /* BufferedStreams1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30442309C2BEC900B49383 /* BufferedStreamsTest1.cpp */,
+			);
+			path = BufferedStreams1;
+			sourceTree = "<group>";
+		};
+		CA30442409C2BEC900B49383 /* HttpClient1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30442509C2BEC900B49383 /* HttpClientTest1.cpp */,
+			);
+			path = HttpClient1;
+			sourceTree = "<group>";
+		};
+		CA30442609C2BEC900B49383 /* HttpServer1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30442709C2BEC900B49383 /* HttpServerTest1.cpp */,
+			);
+			path = HttpServer1;
+			sourceTree = "<group>";
+		};
+		CA30442809C2BEC900B49383 /* Lists1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30442909C2BEC900B49383 /* ListsTest1.cpp */,
+			);
+			path = Lists1;
+			sourceTree = "<group>";
+		};
+		CA30442A09C2BEC900B49383 /* Maps1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30442B09C2BEC900B49383 /* MapsTest1.cpp */,
+			);
+			path = Maps1;
+			sourceTree = "<group>";
+		};
+		CA30442C09C2BEC900B49383 /* Messages1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30442D09C2BEC900B49383 /* MessagesTest1.cpp */,
+			);
+			path = Messages1;
+			sourceTree = "<group>";
+		};
+		CA30442E09C2BEC900B49383 /* Messages2 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30442F09C2BEC900B49383 /* MessagesTest2.cpp */,
+			);
+			path = Messages2;
+			sourceTree = "<group>";
+		};
+		CA30443009C2BEC900B49383 /* Misc1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30443109C2BEC900B49383 /* MiscTest1.cpp */,
+			);
+			path = Misc1;
+			sourceTree = "<group>";
+		};
+		CA30443209C2BEC900B49383 /* RingBuffer1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30443309C2BEC900B49383 /* RingBufferTest1.cpp */,
+			);
+			path = RingBuffer1;
+			sourceTree = "<group>";
+		};
+		CA30443409C2BEC900B49383 /* Strings1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30443509C2BEC900B49383 /* StringsTest1.cpp */,
+			);
+			path = Strings1;
+			sourceTree = "<group>";
+		};
+		CA30443609C2BEC900B49383 /* Threads1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30443709C2BEC900B49383 /* ThreadsTest1.cpp */,
+			);
+			path = Threads1;
+			sourceTree = "<group>";
+		};
+		CA30443809C2BEC900B49383 /* Udp1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30443909C2BEC900B49383 /* UdpTest1.cpp */,
+			);
+			path = Udp1;
+			sourceTree = "<group>";
+		};
+		CA30443A09C2BEC900B49383 /* Xml1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA30443E09C2BEC900B49383 /* XmlTest1.cpp */,
+			);
+			path = Xml1;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC043055464E500DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA3043BC09C2BE7800B49383 /* NptConfig.h in Headers */,
+				CA30443F09C2BEC900B49383 /* NptArray.h in Headers */,
+				CA30444109C2BEC900B49383 /* NptBase64.h in Headers */,
+				CA30444309C2BEC900B49383 /* NptBufferedStreams.h in Headers */,
+				CA30444509C2BEC900B49383 /* NptCommon.h in Headers */,
+				CA30444609C2BEC900B49383 /* NptConstants.h in Headers */,
+				CA30444809C2BEC900B49383 /* NptDataBuffer.h in Headers */,
+				CA30444A09C2BEC900B49383 /* NptDebug.h in Headers */,
+				CA30444B09C2BEC900B49383 /* NptDefs.h in Headers */,
+				CA30444D09C2BEC900B49383 /* NptFile.h in Headers */,
+				CA30444F09C2BEC900B49383 /* NptHttp.h in Headers */,
+				CA30445009C2BEC900B49383 /* NptInterfaces.h in Headers */,
+				CA30445209C2BEC900B49383 /* NptList.h in Headers */,
+				CA30445309C2BEC900B49383 /* NptMap.h in Headers */,
+				CA30445509C2BEC900B49383 /* NptMessaging.h in Headers */,
+				CA30445709C2BEC900B49383 /* NptNetwork.h in Headers */,
+				CA30445909C2BEC900B49383 /* NptQueue.h in Headers */,
+				CA30445A09C2BEC900B49383 /* NptReferences.h in Headers */,
+				CA30445B09C2BEC900B49383 /* NptResults.h in Headers */,
+				CA30445D09C2BEC900B49383 /* NptRingBuffer.h in Headers */,
+				CA30445E09C2BEC900B49383 /* NptSelectableMessageQueue.h in Headers */,
+				CA30446009C2BEC900B49383 /* NptSimpleMessageQueue.h in Headers */,
+				CA30446209C2BEC900B49383 /* NptSockets.h in Headers */,
+				CA30446309C2BEC900B49383 /* NptStack.h in Headers */,
+				CA30446509C2BEC900B49383 /* NptStreams.h in Headers */,
+				CA30446709C2BEC900B49383 /* NptStrings.h in Headers */,
+				CA30446909C2BEC900B49383 /* NptSystem.h in Headers */,
+				CA30446B09C2BEC900B49383 /* NptThreads.h in Headers */,
+				CA30446D09C2BEC900B49383 /* NptTime.h in Headers */,
+				CA30446E09C2BEC900B49383 /* NptTypes.h in Headers */,
+				CA30447009C2BEC900B49383 /* NptUri.h in Headers */,
+				CA30447209C2BEC900B49383 /* NptUtils.h in Headers */,
+				CA30447409C2BEC900B49383 /* NptXml.h in Headers */,
+				CA30447609C2BEC900B49383 /* Neptune.h in Headers */,
+				CA30447709C2BEC900B49383 /* NptVersion.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		CA3044C309C2C0CF00B49383 /* NetPump */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA3044C809C2C0F400B49383 /* Build configuration list for PBXNativeTarget "NetPump" */;
+			buildPhases = (
+				CA3044C109C2C0CF00B49383 /* Sources */,
+				CA3044C209C2C0CF00B49383 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetPump;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+				CA3044C709C2C0D600B49383 /* PBXTargetDependency */,
+			);
+			name = NetPump;
+			productName = NetPump;
+			productReference = CA3044C409C2C0CF00B49383 /* NetPump */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA30450409C2C3E400B49383 /* NetPing */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA30451B09C2C46100B49383 /* Build configuration list for PBXNativeTarget "NetPing" */;
+			buildPhases = (
+				CA30450209C2C3E400B49383 /* Sources */,
+				CA30450309C2C3E400B49383 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetPing;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+				CA30450809C2C3EA00B49383 /* PBXTargetDependency */,
+			);
+			name = NetPing;
+			productName = NetPing;
+			productReference = CA30450509C2C3E400B49383 /* NetPing */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA30450C09C2C40B00B49383 /* NetEcho */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA30451E09C2C46100B49383 /* Build configuration list for PBXNativeTarget "NetEcho" */;
+			buildPhases = (
+				CA30450A09C2C40B00B49383 /* Sources */,
+				CA30450B09C2C40B00B49383 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetEcho;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+				CA30451009C2C41200B49383 /* PBXTargetDependency */,
+			);
+			name = NetEcho;
+			productName = NetEcho;
+			productReference = CA30450D09C2C40B00B49383 /* NetEcho */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA30451409C2C43200B49383 /* NetConfig */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA30452109C2C46100B49383 /* Build configuration list for PBXNativeTarget "NetConfig" */;
+			buildPhases = (
+				CA30451209C2C43200B49383 /* Sources */,
+				CA30451309C2C43200B49383 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetConfig;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+				CA30451809C2C43700B49383 /* PBXTargetDependency */,
+			);
+			name = NetConfig;
+			productName = NetConfig;
+			productReference = CA30451509C2C43200B49383 /* NetConfig */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA30456D09C2C82100B49383 /* XmlTest1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA30457C09C2C87100B49383 /* Build configuration list for PBXNativeTarget "XmlTest1" */;
+			buildPhases = (
+				CA30456B09C2C82100B49383 /* Sources */,
+				CA30456C09C2C82100B49383 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = XmlTest1;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+				CA30457109C2C82600B49383 /* PBXTargetDependency */,
+			);
+			name = XmlTest1;
+			productName = XmlTest1;
+			productReference = CA30456E09C2C82100B49383 /* XmlTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA30457609C2C85700B49383 /* StringsTest1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA30457F09C2C87100B49383 /* Build configuration list for PBXNativeTarget "StringsTest1" */;
+			buildPhases = (
+				CA30457409C2C85700B49383 /* Sources */,
+				CA30457509C2C85700B49383 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = StringsTest1;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+				CA30457A09C2C85C00B49383 /* PBXTargetDependency */,
+			);
+			name = StringsTest1;
+			productName = StringsTest1;
+			productReference = CA30457709C2C85700B49383 /* StringsTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA30458C09C2C8DF00B49383 /* ArraysTest1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA30459409C2C90600B49383 /* Build configuration list for PBXNativeTarget "ArraysTest1" */;
+			buildPhases = (
+				CA30458A09C2C8DF00B49383 /* Sources */,
+				CA30458B09C2C8DF00B49383 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = ArraysTest1;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+				CA30459009C2C8E300B49383 /* PBXTargetDependency */,
+			);
+			name = ArraysTest1;
+			productName = ArraysTest1;
+			productReference = CA30458D09C2C8DF00B49383 /* ArraysTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA30459909C2C92B00B49383 /* ThreadsTest1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA3045A109C2C94500B49383 /* Build configuration list for PBXNativeTarget "ThreadsTest1" */;
+			buildPhases = (
+				CA30459709C2C92B00B49383 /* Sources */,
+				CA30459809C2C92B00B49383 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = ThreadsTest1;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+				CA30459D09C2C93000B49383 /* PBXTargetDependency */,
+			);
+			name = ThreadsTest1;
+			productName = ThreadsTest1;
+			productReference = CA30459A09C2C92B00B49383 /* ThreadsTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA3045A609C2C97C00B49383 /* MapsTest1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA3045AB09C2C99F00B49383 /* Build configuration list for PBXNativeTarget "MapsTest1" */;
+			buildPhases = (
+				CA3045A409C2C97C00B49383 /* Sources */,
+				CA3045A509C2C97C00B49383 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MapsTest1;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+				CA3045AA09C2C98000B49383 /* PBXTargetDependency */,
+			);
+			name = MapsTest1;
+			productName = MapsTest1;
+			productReference = CA3045A709C2C97C00B49383 /* MapsTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA3045B309C2C9FF00B49383 /* HttpClientTest1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA3045BB09C2CA1900B49383 /* Build configuration list for PBXNativeTarget "HttpClientTest1" */;
+			buildPhases = (
+				CA3045B109C2C9FF00B49383 /* Sources */,
+				CA3045B209C2C9FF00B49383 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = HttpClientTest1;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+				CA3045B709C2CA0300B49383 /* PBXTargetDependency */,
+			);
+			name = HttpClientTest1;
+			productName = HttpClientTest1;
+			productReference = CA3045B409C2C9FF00B49383 /* HttpClientTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		D2AAC045055464E500DB518D /* Neptune */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "Neptune" */;
+			buildPhases = (
+				D2AAC043055464E500DB518D /* Headers */,
+				D2AAC044055464E500DB518D /* Sources */,
+				D289987405E68DCB004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+			};
+			dependencies = (
+			);
+			name = Neptune;
+			productName = Neptune;
+			productReference = D2AAC046055464E500DB518D /* libNeptune.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "Neptune" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				014CEA520018CE5811CA2923 /* Debug */,
+				014CEA530018CE5811CA2923 /* Release */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* Neptune */;
+			projectDirPath = "";
+			targets = (
+				D2AAC045055464E500DB518D /* Neptune */,
+				CA3044C309C2C0CF00B49383 /* NetPump */,
+				CA30450409C2C3E400B49383 /* NetPing */,
+				CA30450C09C2C40B00B49383 /* NetEcho */,
+				CA30451409C2C43200B49383 /* NetConfig */,
+				CA30456D09C2C82100B49383 /* XmlTest1 */,
+				CA30457609C2C85700B49383 /* StringsTest1 */,
+				CA30458C09C2C8DF00B49383 /* ArraysTest1 */,
+				CA30459909C2C92B00B49383 /* ThreadsTest1 */,
+				CA3045A609C2C97C00B49383 /* MapsTest1 */,
+				CA3045B309C2C9FF00B49383 /* HttpClientTest1 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CA3044C109C2C0CF00B49383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA3044CB09C2C10800B49383 /* NetPump.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30450209C2C3E400B49383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30450909C2C3F600B49383 /* NetPing.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30450A09C2C40B00B49383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30451109C2C41C00B49383 /* NetEcho.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30451209C2C43200B49383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30451909C2C44300B49383 /* NetConfig.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30456B09C2C82100B49383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30457209C2C83400B49383 /* XmlTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30457409C2C85700B49383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30457B09C2C86700B49383 /* StringsTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30458A09C2C8DF00B49383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30459109C2C8EE00B49383 /* ArraysTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA30459709C2C92B00B49383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30459F09C2C94000B49383 /* ThreadsTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA3045A409C2C97C00B49383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA3045AE09C2C9BF00B49383 /* MapsTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA3045B109C2C9FF00B49383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA3045B809C2CA0E00B49383 /* HttpClientTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2AAC044055464E500DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30444009C2BEC900B49383 /* NptBase64.cpp in Sources */,
+				CA30444209C2BEC900B49383 /* NptBufferedStreams.cpp in Sources */,
+				CA30444409C2BEC900B49383 /* NptCommon.cpp in Sources */,
+				CA30444709C2BEC900B49383 /* NptDataBuffer.cpp in Sources */,
+				CA30444909C2BEC900B49383 /* NptDebug.cpp in Sources */,
+				CA30444C09C2BEC900B49383 /* NptFile.cpp in Sources */,
+				CA30444E09C2BEC900B49383 /* NptHttp.cpp in Sources */,
+				CA30445109C2BEC900B49383 /* NptList.cpp in Sources */,
+				CA30445409C2BEC900B49383 /* NptMessaging.cpp in Sources */,
+				CA30445609C2BEC900B49383 /* NptNetwork.cpp in Sources */,
+				CA30445809C2BEC900B49383 /* NptQueue.cpp in Sources */,
+				CA30445C09C2BEC900B49383 /* NptRingBuffer.cpp in Sources */,
+				CA30445F09C2BEC900B49383 /* NptSimpleMessageQueue.cpp in Sources */,
+				CA30446109C2BEC900B49383 /* NptSockets.cpp in Sources */,
+				CA30446409C2BEC900B49383 /* NptStreams.cpp in Sources */,
+				CA30446609C2BEC900B49383 /* NptStrings.cpp in Sources */,
+				CA30446809C2BEC900B49383 /* NptSystem.cpp in Sources */,
+				CA30446A09C2BEC900B49383 /* NptThreads.cpp in Sources */,
+				CA30446C09C2BEC900B49383 /* NptTime.cpp in Sources */,
+				CA30446F09C2BEC900B49383 /* NptUri.cpp in Sources */,
+				CA30447109C2BEC900B49383 /* NptUtils.cpp in Sources */,
+				CA30447309C2BEC900B49383 /* NptXml.cpp in Sources */,
+				CA30447509C2BEC900B49383 /* Neptune.cpp in Sources */,
+				CA30447809C2BEC900B49383 /* NptBsdNetwork.cpp in Sources */,
+				CA30447909C2BEC900B49383 /* NptBsdSockets.cpp in Sources */,
+				CA30447D09C2BEC900B49383 /* NptPosixQueue.cpp in Sources */,
+				CA30447E09C2BEC900B49383 /* NptPosixSystem.cpp in Sources */,
+				CA30447F09C2BEC900B49383 /* NptPosixThreads.cpp in Sources */,
+				CA30448009C2BEC900B49383 /* NptSelectableMessageQueue.cpp in Sources */,
+				CA30448109C2BEC900B49383 /* NptStdcDebug.cpp in Sources */,
+				CA30448209C2BEC900B49383 /* NptStdcFile.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CA3044C709C2C0D600B49383 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* Neptune */;
+			targetProxy = CA3044C609C2C0D600B49383 /* PBXContainerItemProxy */;
+		};
+		CA30450809C2C3EA00B49383 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* Neptune */;
+			targetProxy = CA30450709C2C3EA00B49383 /* PBXContainerItemProxy */;
+		};
+		CA30451009C2C41200B49383 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* Neptune */;
+			targetProxy = CA30450F09C2C41200B49383 /* PBXContainerItemProxy */;
+		};
+		CA30451809C2C43700B49383 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* Neptune */;
+			targetProxy = CA30451709C2C43700B49383 /* PBXContainerItemProxy */;
+		};
+		CA30457109C2C82600B49383 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* Neptune */;
+			targetProxy = CA30457009C2C82600B49383 /* PBXContainerItemProxy */;
+		};
+		CA30457A09C2C85C00B49383 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* Neptune */;
+			targetProxy = CA30457909C2C85C00B49383 /* PBXContainerItemProxy */;
+		};
+		CA30459009C2C8E300B49383 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* Neptune */;
+			targetProxy = CA30458F09C2C8E300B49383 /* PBXContainerItemProxy */;
+		};
+		CA30459D09C2C93000B49383 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* Neptune */;
+			targetProxy = CA30459C09C2C93000B49383 /* PBXContainerItemProxy */;
+		};
+		CA3045AA09C2C98000B49383 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* Neptune */;
+			targetProxy = CA3045A909C2C98000B49383 /* PBXContainerItemProxy */;
+		};
+		CA3045B709C2CA0300B49383 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* Neptune */;
+			targetProxy = CA3045B609C2CA0300B49383 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91EC08733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = ansi;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = Neptune;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB91ED08733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_C_LANGUAGE_STANDARD = ansi;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = Neptune;
+			};
+			name = Release;
+		};
+		1DEB91F008733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_DEBUG;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB91F108733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+		CA3044C909C2C0F400B49383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetPump;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CA3044CA09C2C0F400B49383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetPump;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA30451C09C2C46100B49383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetPing;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CA30451D09C2C46100B49383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetPing;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA30451F09C2C46100B49383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetEcho;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CA30452009C2C46100B49383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetEcho;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA30452209C2C46100B49383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetConfig;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CA30452309C2C46100B49383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = NetConfig;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA30457D09C2C87100B49383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = XmlTest1;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CA30457E09C2C87100B49383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = XmlTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA30458009C2C87100B49383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = StringsTest1;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CA30458109C2C87100B49383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = StringsTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA30459509C2C90600B49383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = ArraysTest1;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CA30459609C2C90600B49383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = ArraysTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA3045A209C2C94500B49383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = ThreadsTest1;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CA3045A309C2C94500B49383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = ThreadsTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA3045AC09C2C99F00B49383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MapsTest1;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CA3045AD09C2C99F00B49383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MapsTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA3045BC09C2CA1900B49383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = HttpClientTest1;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CA3045BD09C2CA1900B49383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = HttpClientTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "Neptune" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91EC08733DB70010E9CD /* Debug */,
+				1DEB91ED08733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "Neptune" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91F008733DB70010E9CD /* Debug */,
+				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA3044C809C2C0F400B49383 /* Build configuration list for PBXNativeTarget "NetPump" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA3044C909C2C0F400B49383 /* Debug */,
+				CA3044CA09C2C0F400B49383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA30451B09C2C46100B49383 /* Build configuration list for PBXNativeTarget "NetPing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA30451C09C2C46100B49383 /* Debug */,
+				CA30451D09C2C46100B49383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA30451E09C2C46100B49383 /* Build configuration list for PBXNativeTarget "NetEcho" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA30451F09C2C46100B49383 /* Debug */,
+				CA30452009C2C46100B49383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA30452109C2C46100B49383 /* Build configuration list for PBXNativeTarget "NetConfig" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA30452209C2C46100B49383 /* Debug */,
+				CA30452309C2C46100B49383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA30457C09C2C87100B49383 /* Build configuration list for PBXNativeTarget "XmlTest1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA30457D09C2C87100B49383 /* Debug */,
+				CA30457E09C2C87100B49383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA30457F09C2C87100B49383 /* Build configuration list for PBXNativeTarget "StringsTest1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA30458009C2C87100B49383 /* Debug */,
+				CA30458109C2C87100B49383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA30459409C2C90600B49383 /* Build configuration list for PBXNativeTarget "ArraysTest1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA30459509C2C90600B49383 /* Debug */,
+				CA30459609C2C90600B49383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA3045A109C2C94500B49383 /* Build configuration list for PBXNativeTarget "ThreadsTest1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA3045A209C2C94500B49383 /* Debug */,
+				CA3045A309C2C94500B49383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA3045AB09C2C99F00B49383 /* Build configuration list for PBXNativeTarget "MapsTest1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA3045AC09C2C99F00B49383 /* Debug */,
+				CA3045AD09C2C99F00B49383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA3045BB09C2CA1900B49383 /* Build configuration list for PBXNativeTarget "HttpClientTest1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA3045BC09C2CA1900B49383 /* Debug */,
+				CA3045BD09C2CA1900B49383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
