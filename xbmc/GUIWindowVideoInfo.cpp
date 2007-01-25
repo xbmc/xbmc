@@ -212,9 +212,12 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           g_graphicsContext.SendMessage(msg);
           int iItem = msg.GetParam1();
           CStdString strItem = m_vecStrCast[iItem];
-          int iPos = strItem.Find(" as ");
-          if (iPos > 0)
-            OnSearch(strItem.Left(iPos));
+          CStdString strFind; 
+          strFind.Format(" %s ",g_localizeStrings.Get(20347));
+          int iPos = strItem.Find(strFind);
+          if (iPos == -1)
+            iPos = strItem.size();
+          OnSearch(strItem.Left(iPos));
         }
       }
     }
@@ -307,7 +310,10 @@ void CGUIWindowVideoInfo::Update()
   for (CIMDBMovie::iCast it = m_Movie.m_cast.begin(); it != m_Movie.m_cast.end(); ++it)
   {
     CStdString character;
-    character.Format("%s %s %s", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
+    if (it->second.IsEmpty())
+      character = it->first;
+    else
+      character.Format("%s %s %s", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
     m_vecStrCast.push_back(character);
   }
   AddItemsToList(m_vecStrCast);
