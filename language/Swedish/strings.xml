@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 01/22/2007-->
+<!--Date of translation: 01/25/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7708-->
+<!--Based on english strings version 7723-->
 <strings>
   <string id="0">Mina Program</string>
   <string id="1">Mina Bilder</string>
@@ -519,7 +519,12 @@
   <string id="643">Undvik klippning på Replay Gain filer</string>
   <string id="644">Klipp bort svarta ramar</string>
   <string id="645">Måste packa upp en stor fil. Fortsätta?</string>
-  <string id="646">Ta bort från databas</string>
+  <string id="646">Ta bort från bibliotek</string>
+  <string id="647">Exportera Filmbibliotek</string>
+  <string id="648">Importera Filmbibliotek</string>
+  <string id="649">Importerar</string>
+  <string id="650">Exporterar</string>
+  <string id="651">Filmbibliotek</string>
   <string id="700">Rensar bibliotek</string>
   <string id="701">Radera gamla låtar från databasen</string>
   <string id="702">Denna sökväg har skannats tidigare.</string>
