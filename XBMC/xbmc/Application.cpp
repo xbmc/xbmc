@@ -183,13 +183,6 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
   #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
  #endif
- #ifdef HAS_UPNP
-  #ifdef _XBOX
-   #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinumd.lib")
-  #else
-   #pragma comment (lib,"../../xbmc/lib/libUPnP/libPlatinum_PCd.lib")
-  #endif
- #endif
  #ifdef _XBOX
   #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlibd.lib")
   #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
@@ -216,13 +209,6 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
   #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
   #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
- #endif
- #ifdef HAS_UPNP
-  #ifdef _XBOX
-   #pragma comment (lib,"xbmc/lib/libUPnP/libPlatinum.lib")
-  #else
-   #pragma comment (lib,"../../xbmc/lib/libUPnP/libPlatinum_PC.lib")
-  #endif
  #endif
  #ifdef _XBOX
   #pragma comment (lib,"xbmc/lib/unrarXlib/unrarxlib.lib")
