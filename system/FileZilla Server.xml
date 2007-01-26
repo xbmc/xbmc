@@ -187,6 +187,18 @@ http://sourceforge.net/projects/xbfilezilla</Item>
 <Option Name="IsHome">0</Option>
 <Option Name="AutoCreate">0</Option>
 </Permission>
+<Permission Dir="Q:\">
+<Option Name="FileRead">1</Option>
+<Option Name="FileWrite">1</Option>
+<Option Name="FileDelete">1</Option>
+<Option Name="FileAppend">1</Option>
+<Option Name="DirCreate">1</Option>
+<Option Name="DirDelete">1</Option>
+<Option Name="DirList">1</Option>
+<Option Name="DirSubdirs">1</Option>
+<Option Name="IsHome">0</Option>
+<Option Name="AutoCreate">0</Option>
+</Permission>
 <Permission Dir="X:\">
 <Option Name="FileRead">1</Option>
 <Option Name="FileWrite">1</Option>
