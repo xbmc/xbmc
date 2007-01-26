@@ -664,8 +664,8 @@ CUPnP::StartClient()
 {
     if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) return;
 
-    // create controlpoint
-    m_CtrlPointHolder->m_CtrlPoint = new PLT_CtrlPoint();
+    // create controlpoint, pass NULL to avoid sending a multicast search
+    m_CtrlPointHolder->m_CtrlPoint = new PLT_CtrlPoint(broadcast?NULL:"upnp:rootdevice");
 
     // ignore our own server
     if (!m_ServerHolder->m_Device.IsNull()) {
