@@ -40,8 +40,6 @@ using namespace XFILE;
 #define CONTROL_YEAR    24
 #define CONTROL_TAGLINE    25
 #define CONTROL_PLOTOUTLINE   26
-#define CONTROL_RATING    27
-#define CONTROL_VOTES     28
 #define CONTROL_CAST     29
 #define CONTROL_RATING_AND_VOTES  30
 #define CONTROL_RUNTIME    31
@@ -237,73 +235,41 @@ void CGUIWindowVideoInfo::Update()
 {
   CStdString strTmp;
   strTmp = m_Movie.m_strTitle; strTmp.Trim();
-  SetLabel(CONTROL_TITLE, strTmp.c_str() );
+  SetLabel(CONTROL_TITLE, strTmp);
 
   strTmp = m_Movie.m_strDirector; strTmp.Trim();
-  SetLabel(CONTROL_DIRECTOR, strTmp.c_str() );
+  SetLabel(CONTROL_DIRECTOR, strTmp);
 
   strTmp = m_Movie.m_strWritingCredits; strTmp.Trim();
-  SetLabel(CONTROL_CREDITS, strTmp.c_str() );
+  SetLabel(CONTROL_CREDITS, strTmp);
 
   strTmp = m_Movie.m_strGenre; strTmp.Trim();
-  SetLabel(CONTROL_GENRE, strTmp.c_str() );
+  SetLabel(CONTROL_GENRE, strTmp);
 
-  {
-    CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_TAGLINE);
-    OnMessage(msg1);
-  }
-  {
-    strTmp = m_Movie.m_strTagLine; strTmp.Trim();
-    CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TAGLINE);
-    msg1.SetLabel( strTmp );
-    OnMessage(msg1);
-  }
-  {
-    CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PLOTOUTLINE);
-    OnMessage(msg1);
-  }
-  {
-    strTmp = m_Movie.m_strPlotOutline; strTmp.Trim();
-    CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PLOTOUTLINE);
-    msg1.SetLabel( strTmp );
-    OnMessage(msg1);
-  }
-  {
-    CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_MPAARATING);
-    OnMessage(msg1);
-  }
-  {
-    strTmp = m_Movie.m_strMPAARating; strTmp.Trim();
-    CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_MPAARATING);
-    msg1.SetLabel( strTmp );
-    OnMessage(msg1);
-  }
+  strTmp = m_Movie.m_strTagLine; strTmp.Trim();
+  SetLabel(CONTROL_TAGLINE, strTmp);
+
+  strTmp = m_Movie.m_strPlotOutline; strTmp.Trim();
+  SetLabel(CONTROL_PLOTOUTLINE, strTmp);
+
+  strTmp = m_Movie.m_strMPAARating; strTmp.Trim();
+  SetLabel(CONTROL_MPAARATING, strTmp);
+
   CStdString strYear;
   strYear.Format("%i", m_Movie.m_iYear);
-  SetLabel(CONTROL_YEAR, strYear );
-
-  CStdString strRating;
-  strRating.Format("%03.1f", m_Movie.m_fRating);
-  SetLabel(CONTROL_RATING, strRating );
-
-  strTmp = m_Movie.m_strVotes; strTmp.Trim();
-  SetLabel(CONTROL_VOTES, strTmp.c_str() );
+  SetLabel(CONTROL_YEAR, strYear);
 
   CStdString strRating_And_Votes;
-  if (strRating.Equals("0.0")) {strRating_And_Votes = m_Movie.m_strVotes;}
-  else
-    // if rating is 0 there are no votes so display not available message already set in Votes string
-  {
-    strRating_And_Votes.Format("%s (%s votes)", strRating, strTmp);
-    SetLabel(CONTROL_RATING_AND_VOTES, strRating_And_Votes);
-  }
+  if (m_Movie.m_fRating != 0.0f)  // only non-zero ratings are of interest
+    strRating_And_Votes.Format("%03.1f (%i votes)", m_Movie.m_fRating, m_Movie.m_strVotes);
+  SetLabel(CONTROL_RATING_AND_VOTES, strRating_And_Votes);
 
   strTmp = m_Movie.m_strRuntime; strTmp.Trim();
-  SetLabel(CONTROL_RUNTIME, strTmp.c_str() );
+  SetLabel(CONTROL_RUNTIME, strTmp);
 
   // setup plot text area
   strTmp = m_Movie.m_strPlot; strTmp.Trim();
-  SET_CONTROL_LABEL(CONTROL_TEXTAREA, strTmp.c_str() );
+  SetLabel(CONTROL_TEXTAREA, strTmp);
 
   // setup cast list
   m_vecStrCast.clear();
@@ -352,16 +318,6 @@ void CGUIWindowVideoInfo::Update()
     pImageControl->FreeResources();
     pImageControl->SetFileName(m_movieItem.GetThumbnailImage());
   }
-}
-
-void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString& strLabel)
-{
-  if (strLabel.size() == 0) return ;
-
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iControl);
-  msg.SetLabel(strLabel);
-  OnMessage(msg);
-
 }
 
 void CGUIWindowVideoInfo::Render()
@@ -655,4 +611,16 @@ void CGUIWindowVideoInfo::OnGetThumb()
   g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
+}
+
+void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString &strLabel)
+{
+  if (strLabel.IsEmpty())
+  {
+    SET_CONTROL_LABEL(iControl, 416);  // "Not available"
+  }
+  else
+  {
+    SET_CONTROL_LABEL(iControl, strLabel);
+  }
 }
