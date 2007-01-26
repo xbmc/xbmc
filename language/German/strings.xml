@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 01/25/2007-->
+<!--Date of translation: 01/26/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7723-->
+<!--Based on english strings version 7738-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -133,7 +133,7 @@
   <string id="194">Durchsuche...</string>
   <string id="195">Es wurde kein IMDb-Eintrag gefunden!</string>
   <string id="196">Video auswählen:</string>
-  <string id="197">IMDb-Informationen abfragen</string>
+  <string id="197">IMDb-Informationen werden abgefragt...</string>
   <string id="198">Lade Video-Informationen</string>
   <string id="199">Regisseur:</string>
   <string id="200">Verfasser:</string>
@@ -1489,6 +1489,7 @@
   <string id="20346">Rekursives Scannen</string>
   <string id="20347">als</string>
   <string id="20348">Regisseure</string>
+  <string id="20349">Es wurden keine Videos in diesem Pfad gefunden!</string>
   <!-- up to 21329 is reserved for the video db !! !-->
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
