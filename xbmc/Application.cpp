@@ -1554,9 +1554,6 @@ void CApplication::StopUPnP()
 #ifdef HAS_UPNP
   if (CUPnP::IsInstantiated())
   {
-    StopUPnPClient();
-    StopUPnPServer();
-
     CLog::Log(LOGNOTICE, "stopping upnp");
     CUPnP::ReleaseInstance();
   }
