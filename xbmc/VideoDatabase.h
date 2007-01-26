@@ -30,8 +30,16 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_RUNTIME = 11,
   VIDEODB_ID_MPAA = 12,
   VIDEODB_ID_TOP250 = 13,
+  VIDEODB_ID_GENRE = 14,
+  VIDEODB_ID_DIRECTOR = 15,
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
+
+// these defines are based on how many columns we have and which column certain data is going to be in
+// when we do GetDetailsForMovie()
+#define VIDEODB_MAX_COLUMNS 21
+#define VIDEODB_DETAILS_FILE VIDEODB_MAX_COLUMNS + 1
+#define VIDEODB_DETAILS_PATH VIDEODB_MAX_COLUMNS + 2
 
 #define VIDEODB_TYPE_STRING 1
 #define VIDEODB_TYPE_INT 2
@@ -57,7 +65,9 @@ const struct SDbMovieOffsets
   { VIDEODB_TYPE_BOOL, offsetof(CIMDBMovie,m_bWatched) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strRuntime) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strMPAARating) },
-  { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iTop250) }
+  { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iTop250) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strGenre) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strDirector) }
 };
 
 class CBookmark
@@ -161,7 +171,7 @@ protected:
   void AddDirectorToMovie(long lMovieId, long lDirectorId);
   void AddGenreToMovie(long lMovieId, long lGenreId);
 
-  CIMDBMovie GetDetailsForMovie(long lMovieId);
+  CIMDBMovie GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast = false);
 
 private:
   virtual bool CreateTables();
