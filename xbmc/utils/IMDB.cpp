@@ -304,10 +304,13 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   XMLUtils::GetString(movie, "imdbnumber", m_strIMDBNumber);
   XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
 
+  // Are these here for chaining purposes?  If so, why not allow multiple <genre> tags
+  // at the same time, and check for empty and assign "Not Available" at the display level
+  // rather than the db level?
   CStdString strTemp;
   if (XMLUtils::GetString(movie, "genre", strTemp))
   {
-    if (m_strGenre.Equals(g_localizeStrings.Get(416)))
+    if (m_strGenre.Equals(g_localizeStrings.Get(416)) || m_strGenre.IsEmpty())
       m_strGenre = strTemp;
     else
       m_strGenre += " / "+strTemp;
@@ -315,7 +318,7 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
 
   if (XMLUtils::GetString(movie, "credits", strTemp))
   {
-    if (m_strWritingCredits.Equals(g_localizeStrings.Get(416)))
+    if (m_strWritingCredits.Equals(g_localizeStrings.Get(416)) || m_strWritingCredits.IsEmpty())
       m_strWritingCredits = strTemp;
     else
       m_strWritingCredits += " / "+strTemp;
@@ -323,7 +326,7 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   
   if (XMLUtils::GetString(movie, "director", strTemp))
   {
-    if (m_strDirector.Equals(g_localizeStrings.Get(416)))
+    if (m_strDirector.Equals(g_localizeStrings.Get(416)) || m_strDirector.IsEmpty())
       m_strDirector = strTemp;
     else
       m_strDirector += " / "+strTemp;
