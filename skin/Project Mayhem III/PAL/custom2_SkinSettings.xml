@@ -74,14 +74,14 @@
 				<selected>!Skin.HasSetting(animated)</selected>
 				<onleft>9001</onleft>
 				<onright>9001</onright>
-				<onup>21</onup>
+				<onup>22</onup>
 				<ondown>21</ondown>
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
 			</control>
 			<control type="radiobutton" id="21">
-				<description>enable animations</description>
+				<description>enable scrollbars</description>
 				<posx>211</posx>
 				<posy>157</posy>
 				<width>445</width>
@@ -91,6 +91,22 @@
 				<onleft>9001</onleft>
 				<onright>9001</onright>
 				<onup>20</onup>
+				<ondown>22</ondown>
+				<textoffsetx>7</textoffsetx>
+				<texturefocus>list-focus.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+			</control>
+			<control type="radiobutton" id="22">
+				<description>QWERTY Keyboard Button</description>
+				<posx>211</posx>
+				<posy>194</posy>
+				<width>445</width>
+				<label>QWERTY $LOCALIZE[15028]</label>
+				<onclick>Skin.ToggleSetting(QWERTYKeys)</onclick>
+				<selected>Skin.HasSetting(QWERTYKeys)</selected>
+				<onleft>9001</onleft>
+				<onright>9001</onright>
+				<onup>21</onup>
 				<ondown>20</ondown>
 				<textoffsetx>7</textoffsetx>
 				<texturefocus>list-focus.png</texturefocus>
