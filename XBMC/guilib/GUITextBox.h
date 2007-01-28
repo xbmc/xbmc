@@ -44,6 +44,7 @@ public:
   void SetPageControl(DWORD pageControl);
   void SetText(const string &strText);
   virtual bool HitTest(float posX, float posY) const;
+  virtual bool CanFocus() const;
   virtual bool OnMouseOver();
   virtual bool OnMouseClick(DWORD dwButton);
   virtual bool OnMouseWheel();
