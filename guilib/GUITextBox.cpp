@@ -43,7 +43,9 @@ void CGUITextBox::Render()
     float fWidth, fHeight;
     m_label.font->GetTextExtent( L"y", &fWidth, &fHeight);
     m_itemHeight = fHeight;
-    float fTotalHeight = m_height - m_upDown.GetHeight() - 5;
+    float fTotalHeight = m_height;
+    if (!m_pageControl)
+      fTotalHeight -=  m_upDown.GetHeight() + 5;
     m_iItemsPerPage = (int)(fTotalHeight / fHeight);
 
     // we have all the sizing correct so do any wordwrapping
@@ -311,6 +313,12 @@ bool CGUITextBox::HitTest(float posX, float posY) const
 {
   if (m_upDown.HitTest(posX, posY)) return true;
   return CGUIControl::HitTest(posX, posY);
+}
+
+bool CGUITextBox::CanFocus() const
+{
+  if (m_pageControl) return false;
+  return CGUIControl::CanFocus();
 }
 
 bool CGUITextBox::OnMouseOver()
