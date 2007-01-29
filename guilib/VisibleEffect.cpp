@@ -24,6 +24,7 @@ void CAnimation::Reset()
   acceleration = 0;
   condition = 0;
   reversible = true;
+  lastCondition = false;
 }
 
 void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
@@ -45,6 +46,8 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     type = ANIM_TYPE_WINDOW_OPEN;
   else if (strcmpi(animType, "windowclose") == 0)
     type = ANIM_TYPE_WINDOW_CLOSE;
+  else if (strcmpi(animType, "conditional") == 0)
+    type = ANIM_TYPE_CONDITIONAL;
   if (type == ANIM_TYPE_NONE)
   {
     CLog::Log(LOGERROR, "Control has invalid animation type");
