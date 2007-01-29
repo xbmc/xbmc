@@ -392,17 +392,39 @@ bool CGUIControl::OnMouseOver()
 
 void CGUIControl::UpdateVisibility()
 {
-  bool bWasVisible = m_visibleFromSkinCondition;
-  m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
-  if (!bWasVisible && m_visibleFromSkinCondition)
-  { // automatic change of visibility - queue the in effect
-//    CLog::DebugLog("Visibility changed to visible for control id %i", m_dwControlID);
-    QueueAnimation(ANIM_TYPE_VISIBLE);
+  if (m_visibleCondition)
+  {
+    bool bWasVisible = m_visibleFromSkinCondition;
+    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+    if (!bWasVisible && m_visibleFromSkinCondition)
+    { // automatic change of visibility - queue the in effect
+  //    CLog::DebugLog("Visibility changed to visible for control id %i", m_dwControlID);
+      QueueAnimation(ANIM_TYPE_VISIBLE);
+    }
+    else if (bWasVisible && !m_visibleFromSkinCondition)
+    { // automatic change of visibility - do the out effect
+  //    CLog::DebugLog("Visibility changed to hidden for control id %i", m_dwControlID);
+      QueueAnimation(ANIM_TYPE_HIDDEN);
+    }
   }
-  else if (bWasVisible && !m_visibleFromSkinCondition)
-  { // automatic change of visibility - do the out effect
-//    CLog::DebugLog("Visibility changed to hidden for control id %i", m_dwControlID);
-    QueueAnimation(ANIM_TYPE_HIDDEN);
+  // check for conditional animations
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+  {
+    CAnimation &anim = m_animations[i];
+    if (anim.type == ANIM_TYPE_CONDITIONAL)
+    {
+      bool condition = g_infoManager.GetBool(anim.condition);
+      if (condition && !anim.lastCondition)
+        anim.queuedProcess = ANIM_PROCESS_NORMAL;
+      else if (!condition && anim.lastCondition)
+      {
+        if (anim.IsReversible())
+          anim.queuedProcess = ANIM_PROCESS_REVERSE;
+        else
+          anim.Reset();
+      }
+      anim.lastCondition = condition;
+    }
   }
 }
 
@@ -420,7 +442,7 @@ void CGUIControl::SetInitialVisibility()
 
 void CGUIControl::UpdateEffectState(DWORD currentTime)
 {
-  if (m_visibleCondition)
+  //if (m_visibleCondition)
     UpdateVisibility();
   Animate(currentTime);
 }
