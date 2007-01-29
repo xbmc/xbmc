@@ -20,6 +20,7 @@ enum ANIMATION_TYPE
   ANIM_TYPE_WINDOW_OPEN,
   ANIM_TYPE_VISIBLE,
   ANIM_TYPE_FOCUS,
+  ANIM_TYPE_CONDITIONAL       // for animations triggered by a condition change
 };
 
 class CAnimation
@@ -42,6 +43,7 @@ public:
 
   int condition;      // conditions that must be satisfied in order for this
                       // animation to be performed
+  bool lastCondition; // last state of our conditional
 
   inline bool IsReversible() const { return reversible; };
 
