@@ -421,7 +421,7 @@ void CGUIControl::UpdateVisibility()
         if (anim.IsReversible())
           anim.queuedProcess = ANIM_PROCESS_REVERSE;
         else
-          anim.Reset();
+          anim.ResetAnimation();
       }
       anim.lastCondition = condition;
     }
@@ -442,8 +442,7 @@ void CGUIControl::SetInitialVisibility()
 
 void CGUIControl::UpdateEffectState(DWORD currentTime)
 {
-  //if (m_visibleCondition)
-    UpdateVisibility();
+  UpdateVisibility();
   Animate(currentTime);
 }
 
