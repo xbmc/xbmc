@@ -27,6 +27,7 @@ protected:
   bool m_active;
   bool m_closing;
   bool m_inDialog;
+  bool m_fullscreen;
   HWND m_hWnd;
   HINSTANCE m_hInstance;
   HACCEL m_hAccel;
