@@ -39,6 +39,7 @@ CXBMC_PC::CXBMC_PC()
   m_closing = false;
   m_mouseEnabled = true;
   m_inDialog = false;
+  m_fullscreen = false;
 }
 
 CXBMC_PC::~CXBMC_PC()
@@ -400,6 +401,21 @@ BOOL CXBMC_PC::ProcessMessage(MSG *msg)
   if (msg->message == WM_QUIT)
     PostQuitMessage( 0 );   // we can get called from a dialog within our app - this is to make sure we die.
 
+  if(msg->message == WM_KEYDOWN && msg->wParam == VK_F11)
+  {
+    m_fullscreen = !m_fullscreen;
+    if (m_fullscreen)
+    {
+       SetWindowLong (m_hWnd, GWL_STYLE, WS_POPUP|WS_VISIBLE);
+       OnResizeToPixel();
+    }
+    else
+    {
+      SetWindowLong( m_hWnd, GWL_STYLE, WS_POPUPWINDOW|WS_CAPTION| WS_THICKFRAME|WS_VISIBLE|WS_MINIMIZEBOX|WS_MAXIMIZEBOX);
+      OnResizeToAspectRatio();
+    }
+  }
+
   if( bGotMsg )
   {
     // Translate and dispatch the message
@@ -440,6 +456,7 @@ void CXBMC_PC::OnResizeToAspectRatio()
   float frameRatio = (pixelRatio * g_graphicsContext.GetWidth()) / g_graphicsContext.GetHeight();
   // resize so that it fits within the window the user has
   RECT rect;
+  
   GetClientRect(m_hWnd, &rect);
   if (rect.bottom * frameRatio > rect.right)
     rect.bottom = (int)(rect.right / frameRatio);
@@ -460,10 +477,20 @@ void CXBMC_PC::OnResizeToPixel()
   RECT window;
   GetWindowRect(m_hWnd, &window);
   RECT client = { 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight() };
-  AdjustWindowRect(&client, m_dwWindowStyle, TRUE);
-  SetWindowPos( m_hWnd, HWND_NOTOPMOST,
+
+  if (m_fullscreen)
+  {
+    RECT client2 = { 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN)};
+    AdjustWindowRect(&client2, WS_POPUP | WS_MAXIMIZE, TRUE);
+    SetWindowPos( m_hWnd, HWND_NOTOPMOST,0,0,client2.right, client2.bottom, SWP_SHOWWINDOW );
+  }
+  else 
+  {
+    AdjustWindowRect(&client, m_dwWindowStyle, TRUE);
+    SetWindowPos( m_hWnd, HWND_NOTOPMOST,
               window.left, window.top,
               client.right - client.left, client.bottom - client.top, SWP_SHOWWINDOW );
+  }
 }
 
 //-----------------------------------------------------------------------------
