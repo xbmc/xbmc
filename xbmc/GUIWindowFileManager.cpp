@@ -807,34 +807,32 @@ bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const 
     if (pItem->IsSelected())
     {
       CStdString strCorrectedPath = pItem->m_strPath;
-      // remove trailing slash only if it's not a upnp path (upnp folder)
-      if (!CUtil::IsUPnP(strCorrectedPath) && CUtil::HasSlashAtEnd(strCorrectedPath))
-      {
-        strCorrectedPath = strCorrectedPath.Left(strCorrectedPath.size() - 1);
-      }
-      CStdString strFileName = CUtil::GetFileName(strCorrectedPath);
-      CStdString strnewDestFile;
-      
+      CUtil::RemoveSlashAtEnd(strCorrectedPath);
+
+      CStdString strFileName;
+
       // special case for upnp
-      if (CUtil::IsUPnP(items.m_strPath))
+      if (CUtil::IsUPnP(items.m_strPath) || CUtil::IsUPnP(pItem->m_strPath))
       {
         // get filename from label instead of path
-        strFileName = CUtil::GetFileName(pItem->GetLabel());
-        // FIXME: for now we only work well if the url has the extension
-        // we should map the content type to the extension otherwise
-        CStdString strExtension = CUtil::GetExtension(pItem->m_strPath);
-        if (CUtil::GetExtension(strFileName).length() == 0 && strExtension.length() > 0) 
+        strFileName = pItem->GetLabel();
+
+        if(!pItem->m_bIsFolder && CUtil::GetExtension(strFileName).length() == 0)
         {
-          strFileName += strExtension;
+          // FIXME: for now we only work well if the url has the extension
+          // we should map the content type to the extension otherwise
+          strFileName += CUtil::GetExtension(pItem->m_strPath);
         }
-        CUtil::AddFileToFolder(strDestFile, strFileName.c_str(), strnewDestFile);
-        // make sure the path is qualified
-        CUtil::GetFatXQualifiedPath(strnewDestFile);
-      } 
-      else 
-      {
-        CUtil::AddFileToFolder(strDestFile, strFileName.c_str(), strnewDestFile);
+
+        CUtil::RemoveIllegalChars(strFileName);
+        CUtil::ShortenFileName(strFileName);
       }
+      else
+        strFileName = CUtil::GetFileName(strCorrectedPath);
+
+      CStdString strnewDestFile;
+      if(!strDestFile.IsEmpty()) // only do this if we have a destination
+        CUtil::AddFileToFolder(strDestFile, strFileName, strnewDestFile);
 
       if (pItem->m_bIsFolder)
       {
@@ -1090,20 +1088,15 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
     else
     {
       // Other items in virual directory
-      CStdString strPath = pItem->m_strPath;
-      while (!CUtil::IsUPnP(strPath) && CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
-
-      strHistoryString = pItem->GetLabel() + strPath;
+      strHistoryString = pItem->GetLabel() + pItem->m_strPath;
+      CUtil::RemoveSlashAtEnd(strHistoryString);
     }
   }
   else
   {
     // Normal directory items
     strHistoryString = pItem->m_strPath;
-
-    if (!CUtil::IsUPnP(strHistoryString) && CUtil::HasSlashAtEnd(strHistoryString))
-      strHistoryString.Delete(strHistoryString.size() - 1);
+    CUtil::RemoveSlashAtEnd(strHistoryString);
   }
 }
 
