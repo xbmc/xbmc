@@ -258,10 +258,29 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   // Vobsubs are defined to be 720 wide.
   // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
   //       as it'll want to render within the pixel width it is outputting.
-  float EnlargeFactor = (float)g_settings.m_ResInfo[res].iWidth / 720.0f; //g_guiSettings.GetInt("Subtitles.EnlargePercentage") / 100.0f;
 
-  float xscale = EnlargeFactor * (float)(rv.right - rv.left) / (float)((g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left));
-  float yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio / m_fSourceFrameRatio;
+  float xscale;
+  float yscale;
+
+  if(true /*isvobsub*/) // xbox_video.cpp is fixed to 720x576 osd, so this should be fine
+  { // vobsubs are given to us unscaled
+    // scale them up to the full output, assuming vobsubs have same 
+    // pixel aspect ratio as the movie, and are 720 pixels wide
+
+    float pixelaspect = m_fSourceFrameRatio * m_iSourceHeight / m_iSourceWidth;
+    xscale = (rv.right - rv.left) / 720.0f;
+    yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio / pixelaspect;
+  }
+  else
+  { // text subs/osd assume square pixels, but will render to full size of view window
+    // if mplayer could be fixed to use monitorpixelaspect when rendering it's osd
+    // this would give perfect output, however monitorpixelaspect currently doesn't work
+    // that way
+    xscale = 1.0f;
+    yscale = 1.0f;
+  }
+  
+  // horizontal centering, and align to bottom of subtitles line
   osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w * xscale) / 2.0f;
   osdRect.right = osdRect.left + (float)w * xscale;
   float relbottom = ((float)(g_settings.m_ResInfo[res].iSubtitles - g_settings.m_ResInfo[res].Overscan.top)) / (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);

@@ -64,9 +64,12 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src, unsigne
 static void video_draw_osd(void)
 {
   if (g_renderManager.Paused()) return ;
-  RECT rs, rd;
-  g_renderManager.GetVideoRect(rs, rd);
-  vo_draw_text(rd.right-rd.left, rd.bottom-rd.top, draw_alpha);
+  //RECT rs, rd;
+  //g_renderManager.GetVideoRect(rs, rd);
+  //vo_draw_text(rd.right-rd.left, rd.bottom-rd.top, draw_alpha);
+  // for now use fixed vobsub size, so scaling workes ok for 
+  // mplayer text subs size we force the scaling based on fixes size
+  vo_draw_text(720, 480, draw_alpha);
 }
 
 
