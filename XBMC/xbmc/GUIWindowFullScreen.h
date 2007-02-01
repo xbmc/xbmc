@@ -20,7 +20,9 @@ public:
   void RenderFullScreen();
   bool NeedRenderFullScreen();
   void ChangetheTimeCode(DWORD remote);
-  virtual void OnWindowCloseAnimation() {}; // no out window animation for fullscreen video
+
+protected:
+  virtual void OnDeinitWindow(int nextWindow) {}; // no out window animation for fullscreen video
 
 private:
   void ShowOSD();
