@@ -44,6 +44,7 @@ protected:
   virtual void SetupPage();
   virtual void CreateSettings() {};
   void UpdateSetting(unsigned int setting);
+  void EnableSettings(unsigned int setting, bool enabled);
   virtual void OnSettingChanged(unsigned int setting) {};
   void FreeControls();
   void OnClick(int iControlID);
