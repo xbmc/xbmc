@@ -65,20 +65,20 @@
  \brief 
  */
 #define CONTROL_SELECT(dwControlID) \
-{ \
+do { \
  CGUIMessage msg(GUI_MSG_SELECTED, GetID(), dwControlID); \
  OnMessage(msg); \
-}
+} while(0);
 
 /*!
  \ingroup winmsg
  \brief 
  */
 #define CONTROL_DESELECT(dwControlID) \
-{ \
+do { \
  CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), dwControlID); \
  OnMessage(msg); \
-}
+} while(0);
 
 
 /*!
@@ -86,20 +86,20 @@
  \brief 
  */
 #define CONTROL_ENABLE(dwControlID) \
-{ \
+do { \
  CGUIMessage msg(GUI_MSG_ENABLED, GetID(), dwControlID); \
  OnMessage(msg); \
-}
+} while(0);
 
 /*!
  \ingroup winmsg
  \brief 
  */
 #define CONTROL_DISABLE(dwControlID) \
-{ \
+do { \
  CGUIMessage msg(GUI_MSG_DISABLED, GetID(), dwControlID); \
  OnMessage(msg); \
-}
+} while(0);
 
 
 /*!
@@ -107,10 +107,10 @@
  \brief 
  */
 #define CONTROL_ENABLE_ON_CONDITION(dwControlID, bCondition) \
-{ \
+do { \
  CGUIMessage msg(bCondition ? GUI_MSG_ENABLED:GUI_MSG_DISABLED, GetID(), dwControlID); \
  OnMessage(msg); \
-}
+} while(0);
 
 
 /*!
@@ -118,72 +118,72 @@
  \brief 
  */
 #define CONTROL_SELECT_ITEM(dwControlID,iItem) \
-{ \
+do { \
  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), dwControlID,iItem); \
  OnMessage(msg); \
-}
+} while(0);
 
 /*!
  \ingroup winmsg
  \brief 
  */
 #define SET_CONTROL_LABEL(dwControlID,label) \
-{ \
+do { \
  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), dwControlID); \
  msg.SetLabel(label); \
  OnMessage(msg); \
-}
+} while(0);
 
 /*!
  \ingroup winmsg
  \brief 
  */
 #define SET_CONTROL_HIDDEN(dwControlID) \
-{ \
+do { \
  CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), dwControlID); \
  OnMessage(msg); \
-}
+} while(0);
 
 /*!
  \ingroup winmsg
  \brief 
  */
 #define SET_CONTROL_FOCUS(dwControlID, dwParam) \
-{ \
+do { \
  CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), dwControlID, dwParam); \
  OnMessage(msg); \
-}
+} while(0);
 
 /*!
  \ingroup winmsg
  \brief 
  */
 #define SET_CONTROL_VISIBLE(dwControlID) \
-{ \
+do { \
  CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), dwControlID); \
  OnMessage(msg); \
-}
+} while(0);
 
 #define SET_CONTROL_SELECTED(dwSenderId, dwControlID, bSelect) \
-{ \
+do { \
  CGUIMessage msg(bSelect?GUI_MSG_SELECTED:GUI_MSG_DESELECTED, dwSenderId, dwControlID); \
  OnMessage(msg); \
-}
+} while(0);
 
 #define BIND_CONTROL(i,c,pv) \
-{ \
+do { \
  pv = ((c*)GetControl(i));\
-} \
+} while(0);
 
 /*!
 \ingroup winmsg
 \brief Click message sent from controls to windows.
  */
 #define SEND_CLICK_MESSAGE(dwID, dwParentID, dwAction) \
-{ \
+do { \
  CGUIMessage msg(GUI_MSG_CLICKED, dwID, dwParentID, dwAction); \
  g_graphicsContext.SendMessage(msg); \
-}
+} while(0);
 
 /*!
  \ingroup winmsg
