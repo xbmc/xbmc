@@ -806,10 +806,9 @@ bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const 
     CFileItem* pItem = items[iItem];
     if (pItem->IsSelected())
     {
-      CStdString strCorrectedPath = pItem->m_strPath;
-      CUtil::RemoveSlashAtEnd(strCorrectedPath);
-
-      CStdString strFileName;
+      CStdString strNoSlash = pItem->m_strPath;
+      CUtil::RemoveSlashAtEnd(strNoSlash);
+      CStdString strFileName = CUtil::GetFileName(strNoSlash);
 
       // special case for upnp
       if (CUtil::IsUPnP(items.m_strPath) || CUtil::IsUPnP(pItem->m_strPath))
@@ -827,8 +826,6 @@ bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const 
         CUtil::RemoveIllegalChars(strFileName);
         CUtil::ShortenFileName(strFileName);
       }
-      else
-        strFileName = CUtil::GetFileName(strCorrectedPath);
 
       CStdString strnewDestFile;
       if(!strDestFile.IsEmpty()) // only do this if we have a destination
@@ -840,17 +837,17 @@ bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const 
         if (iAction != ACTION_DELETE)
         {
           CLog::Log(LOGDEBUG, "Create folder with strDestFile=%s, strnewDestFile=%s, pFileName=%s", strDestFile.c_str(), strnewDestFile.c_str(), strFileName.c_str());
-          if (!DoProcessFile(ACTION_CREATEFOLDER, strnewDestFile, strnewDestFile)) return false;
+          if (!DoProcessFile(ACTION_CREATEFOLDER, strnewDestFile, "")) return false;
         }
-        if (!DoProcessFolder(iAction, strCorrectedPath, strnewDestFile)) return false;
+        if (!DoProcessFolder(iAction, pItem->m_strPath, strnewDestFile)) return false;
         if (iAction == ACTION_DELETE)
         {
-          if (!DoProcessFile(ACTION_DELETEFOLDER, strCorrectedPath, pItem->m_strPath)) return false;
+          if (!DoProcessFile(ACTION_DELETEFOLDER, pItem->m_strPath, "")) return false;
         }
       }
       else
       {
-        if (!DoProcessFile(iAction, strCorrectedPath, strnewDestFile)) return false;
+        if (!DoProcessFile(iAction, pItem->m_strPath, strnewDestFile)) return false;
       }
     }
   }
