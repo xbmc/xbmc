@@ -163,8 +163,6 @@ static bool TranslateConfig( const struct network_info& networkinfo, TXNetConfig
     if( memcmp(&oldconfig, &params, sizeof(TXNetConfigParams)) != 0 ) 
       bDirty = true;
 #endif
-
-    CLog::Log(LOGINFO, "requesting DHCP");
   }
 
   return bDirty;
@@ -298,6 +296,10 @@ void CNetwork::NetworkUp()
 DWORD CNetwork::UpdateState()
 {
 #ifdef HAS_XBOX_NETWORK
+
+  if (!m_inited)
+    return XNET_GET_XNADDR_NONE;
+
   XNADDR xna;
   DWORD dwState = XNetGetTitleXnAddr(&xna);
   DWORD dwLink = XNetGetEthernetLinkStatus();
@@ -306,9 +308,6 @@ DWORD CNetwork::UpdateState()
   {
     if( m_networkup )
       NetworkDown();
-
-    if (!m_inited)
-      return XNET_GET_XNADDR_PENDING;
 
     m_lastlink = dwLink;
     m_laststate = dwState;
@@ -345,7 +344,7 @@ bool CNetwork::WaitForSetup(DWORD timeout)
 #ifdef HAS_XBOX_NETWORK
   do
   {
-    if( UpdateState() != XNET_GET_XNADDR_PENDING && g_network.IsInited())
+    if( UpdateState() != XNET_GET_XNADDR_PENDING && m_inited)
       return true;
     
     Sleep(100);
