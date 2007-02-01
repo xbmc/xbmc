@@ -1248,7 +1248,7 @@ bool CVideoDatabase::GetStackTimes(const CStdString &filePath, vector<long> &tim
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
     // ok, now obtain the settings for this file
-    CStdString strSQL=FormatSQL("select times from stacktimes where idFile='%i'\n", lFileId);
+    CStdString strSQL=FormatSQL("select times from stacktimes where idFile=%i\n", lFileId);
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
     { // get the video settings info
@@ -1290,9 +1290,7 @@ void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<long> &tim
     }
 
     // delete any existing items
-    CStdString strSQL;
-    strSQL.Format("delete from stacktimes where idFile=%i", lFileId);
-    m_pDS->exec( strSQL.c_str() );
+    m_pDS->exec( FormatSQL("delete from stacktimes where idFile=%i", lFileId) );
 
     // add the items
     CStdString timeString;
@@ -1303,8 +1301,7 @@ void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<long> &tim
       time.Format(",%i", times[i]);
       timeString += time;
     }
-    strSQL.Format("insert into stacktimes (idFile,usingConversions,times) values (%i,%i,'%s')\n", lFileId, false, timeString.c_str());
-    m_pDS->exec(strSQL.c_str());
+    m_pDS->exec( FormatSQL("insert into stacktimes (idFile,times) values (%i,'%s')\n", lFileId, timeString.c_str()) );
   }
   catch (...)
   {
