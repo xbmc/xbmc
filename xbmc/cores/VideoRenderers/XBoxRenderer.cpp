@@ -129,7 +129,9 @@ void CXBoxRenderer::Setup_Y8A8Render()
   m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
   m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  //disable alpha blending for now, it causes an odd halo, if osd is scaled
+  //alpha get's scaled linary so a 0 close to a 255, leads to something non transparent
+  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_INVSRCALPHA );
   m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
   m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
