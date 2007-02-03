@@ -480,6 +480,29 @@ PyDoc_STRVAR(addItem__doc__,
     return Py_BuildValue("l", self->vecItems.size());
   }
 
+  // getItemHeight() Method
+	PyDoc_STRVAR(getItemHeight__doc__,
+		"getItemHeight() -- Returns the control's current item height as an integer.\n"
+		"\n"
+		"example:\n"
+		"  - item_height = self.cList.getItemHeight()\n");
+
+  PyObject* ControlList_GetItemHeight(ControlList *self)
+	{
+		return Py_BuildValue("l", self->dwItemHeight);
+	}
+
+  // getSpace() Method
+	PyDoc_STRVAR(getSpace__doc__,
+		"getSpace() -- Returns the control's space between items as an integer.\n"
+		"\n"
+		"example:\n"
+		"  - gap = self.cList.getSpace()\n");
+
+  PyObject* ControlList_GetSpace(ControlList *self)
+	{
+		return Py_BuildValue("l", self->dwSpace);
+	}
   
   PyMethodDef ControlList_methods[] = {
     {"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
@@ -493,6 +516,8 @@ PyDoc_STRVAR(addItem__doc__,
     {"setSpace", (PyCFunction)ControlList_SetSpace, METH_VARARGS, setSpace__doc__},
     {"setPageControlVisible", (PyCFunction)ControlList_SetPageControlVisible, METH_VARARGS, setPageControlVisible__doc__},
     {"size", (PyCFunction)ControlList_Size, METH_VARARGS, size__doc__},
+    {"getItemHeight", (PyCFunction)ControlList_GetItemHeight, METH_VARARGS, getItemHeight__doc__},
+    {"getSpace", (PyCFunction)ControlList_GetSpace, METH_VARARGS, getSpace__doc__},
     {NULL, NULL, 0, NULL}
   };
 
