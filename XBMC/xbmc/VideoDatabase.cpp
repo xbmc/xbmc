@@ -1478,12 +1478,13 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
+//    DWORD time = timeGetTime();
     // get primary genres for movies
     CStdString strSQL;
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
       strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinkmovie,movie,path,files where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and files.idMovie=movie.idMovie and path.idPath = files.idPath");
     else
-      strSQL=FormatSQL("select genre.idgenre,genre.strgenre from genre,genrelinkmovie,movie where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie");
+      strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinkmovie,movie where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie");
 
     if (g_stSettings.m_iMyVideoWatchMode == 1)
       strSQL += FormatSQL(" and movie.c%02d='false'", VIDEODB_ID_WATCHED);
@@ -1501,44 +1502,55 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       return true;
     }
 
-    map<long, CStdString> mapGenres;
-    map<long, CStdString>::iterator it;
-    while (!m_pDS->eof())
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      long lGenreId = m_pDS->fv("genre.idgenre").get_asLong();
-      CStdString strGenre = m_pDS->fv("genre.strgenre").get_asString();
-      it = mapGenres.find(lGenreId);
-      // was this genre already found?
-      if (it == mapGenres.end())
+      map<long, CStdString> mapGenres;
+      map<long, CStdString>::iterator it;
+      while (!m_pDS->eof())
       {
-        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        long lGenreId = m_pDS->fv("genre.idgenre").get_asLong();
+        CStdString strGenre = m_pDS->fv("genre.strgenre").get_asString();
+        it = mapGenres.find(lGenreId);
+        // was this genre already found?
+        if (it == mapGenres.end())
         {
           // check path
           CStdString strPath;
-          if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
-          {
-            m_pDS->next();
-            continue;
-          }
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+            mapGenres.insert(pair<long, CStdString>(lGenreId, strGenre));
         }
-        mapGenres.insert(pair<long, CStdString>(lGenreId, strGenre));
+        m_pDS->next();
       }
+      m_pDS->close();
 
-      m_pDS->next();
+      for (it=mapGenres.begin();it != mapGenres.end();++it)
+      {
+        CFileItem* pItem=new CFileItem(it->second);
+        CStdString strDir;
+        strDir.Format("%ld/", it->first);
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        pItem->SetLabelPreformated(true);
+        items.Add(pItem);
+      }
     }
-    m_pDS->close();
-
-    for (it=mapGenres.begin();it != mapGenres.end();++it)
+    else
     {
-      CFileItem* pItem=new CFileItem(it->second);
-      CStdString strDir;
-      strDir.Format("%ld/", it->first);
-      pItem->m_strPath=strBaseDir + strDir;
-      pItem->m_bIsFolder=true;
-      pItem->SetLabelPreformated(true);
-      items.Add(pItem);
+      while (!m_pDS->eof())
+      {
+        CFileItem* pItem=new CFileItem(m_pDS->fv("genre.strgenre").get_asString());
+        CStdString strDir;
+        strDir.Format("%ld/", m_pDS->fv("genre.idgenre").get_asLong());
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        pItem->SetLabelPreformated(true);
+        items.Add(pItem);
+        m_pDS->next();
+      }
+      m_pDS->close();
     }
-    
+
+//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
     return true;
   }
   catch (...)
@@ -1560,7 +1572,7 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
       strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath from actors,directorlinkmovie,movie,path,files where actor.idActor=directorlinkMovie.idDirector and directorlinkMovie.idMovie = movie.idMovie and files.idMovie=movie.idMovie and path.idPath = files.idPath");
     else
-      strSQL=FormatSQL("select actors.idActor,actors.strActor from actors,directorlinkmovie,movie where actors.idActor=directorlinkMovie.idDirector and directorlinkMovie.idMovie = movie.idMovie");
+      strSQL=FormatSQL("select distinct actors.idActor,actors.strActor from actors,directorlinkmovie,movie where actors.idActor=directorlinkMovie.idDirector and directorlinkMovie.idMovie = movie.idMovie");
 
     if (g_stSettings.m_iMyVideoWatchMode == 1)
       strSQL += FormatSQL(" and movie.c%02d='true')", VIDEODB_ID_WATCHED);
@@ -1578,44 +1590,54 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
       return true;
     }
 
-    map<long, CStdString> mapDirector;
-    map<long, CStdString>::iterator it;
-    while (!m_pDS->eof())
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      long lDirectorId = m_pDS->fv("actors.idactor").get_asLong();
-      CStdString strDirector = m_pDS->fv("actors.strActor").get_asString();
-      it = mapDirector.find(lDirectorId);
-      // was this genre already found?
-      if (it == mapDirector.end())
+      map<long, CStdString> mapDirector;
+      map<long, CStdString>::iterator it;
+      while (!m_pDS->eof())
       {
-        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        long lDirectorId = m_pDS->fv("actors.idactor").get_asLong();
+        CStdString strDirector = m_pDS->fv("actors.strActor").get_asString();
+        it = mapDirector.find(lDirectorId);
+        // was this genre already found?
+        if (it == mapDirector.end())
         {
           // check path
           CStdString strPath;
-          if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
-          {
-            m_pDS->next();
-            continue;
-          }
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+            mapDirector.insert(pair<long, CStdString>(lDirectorId, strDirector));
         }
-        mapDirector.insert(pair<long, CStdString>(lDirectorId, strDirector));
+        m_pDS->next();
       }
+      m_pDS->close();
 
-      m_pDS->next();
+      for (it=mapDirector.begin();it != mapDirector.end();++it)
+      {
+        CFileItem* pItem=new CFileItem(it->second);
+        CStdString strDir;
+        strDir.Format("%ld/", it->first);
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        pItem->SetLabelPreformated(true);
+        items.Add(pItem);
+      }
     }
-    m_pDS->close();
-
-    for (it=mapDirector.begin();it != mapDirector.end();++it)
+    else
     {
-      CFileItem* pItem=new CFileItem(it->second);
-      CStdString strDir;
-      strDir.Format("%ld/", it->first);
-      pItem->m_strPath=strBaseDir + strDir;
-      pItem->m_bIsFolder=true;
-      pItem->SetLabelPreformated(true);
-      items.Add(pItem);
+      while (!m_pDS->eof())
+      {
+        CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+        CStdString strDir;
+        strDir.Format("%ld/", m_pDS->fv("actors.idactor").get_asLong());
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        pItem->SetLabelPreformated(true);
+        items.Add(pItem);
+        m_pDS->next();
+      }
+      m_pDS->close();
     }
-    
+      
     return true;
   }
   catch (...)
@@ -1632,12 +1654,13 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
+//    DWORD time = timeGetTime();
     CStdString strSQL;
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
       strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath from actorlinkmovie,actors,movie,files,path where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and files.idMovie = movie.idMovie and files.idPath = path.idPath");
     else
-      strSQL=FormatSQL("select actors.idactor,actors.strActor from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie");
-    
+      strSQL=FormatSQL("select distinct actors.idactor,actors.strActor from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie");
+
     if (g_stSettings.m_iMyVideoWatchMode == 1)
       strSQL += FormatSQL(" and movie.c%02d='false'", VIDEODB_ID_WATCHED);
 
@@ -1652,46 +1675,54 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
       return true;
     }
 
-    map<long, CStdString> mapActors;
-    map<long, CStdString>::iterator it;
-
-    long lLastPathId = -1;
-    while (!m_pDS->eof())
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      long lActorId = m_pDS->fv("actors.idactor").get_asLong();
-      CStdString strActor = m_pDS->fv("actors.strActor").get_asString();
-      it = mapActors.find(lActorId);
-      // is this actor already known?
-      if (it == mapActors.end())
+      map<long, CStdString> mapActors;
+      map<long, CStdString>::iterator it;
+      long lLastPathId = -1;
+
+      while (!m_pDS->eof())
       {
-        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        long lActorId = m_pDS->fv("actors.idactor").get_asLong();
+        CStdString strActor = m_pDS->fv("actors.strActor").get_asString();
+        it = mapActors.find(lActorId);
+        // is this actor already known?
+        if (it == mapActors.end())
         {
           // check path
-          CStdString strPath;
-          if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
-          {
-            m_pDS->next();
-            continue;
-          }
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+            mapActors.insert(pair<long, CStdString>(lActorId, strActor));
         }
-
-        mapActors.insert(pair<long, CStdString>(lActorId, strActor));
+        m_pDS->next();
       }
-      m_pDS->next();
-    }
-    m_pDS->close();
+      m_pDS->close();
 
-    for (it=mapActors.begin();it != mapActors.end();++it)
+      for (it=mapActors.begin();it != mapActors.end();++it)
+      {
+        CFileItem* pItem=new CFileItem(it->second);
+        CStdString strDir;
+        strDir.Format("%ld/", it->first);
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        items.Add(pItem);
+      }
+    }
+    else
     {
-      CFileItem* pItem=new CFileItem(it->second);
-      CStdString strDir;
-      strDir.Format("%ld/", it->first);
-      pItem->m_strPath=strBaseDir + strDir;
-      pItem->m_bIsFolder=true;
-      items.Add(pItem);
+      while (!m_pDS->eof())
+      {
+        CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+        CStdString strDir;
+        strDir.Format("%ld/", m_pDS->fv("actors.idactor").get_asLong());
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        items.Add(pItem);
+        m_pDS->next();
+      }
+      m_pDS->close();
     }
 
-
+//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
     return true;
   }
   catch (...)
