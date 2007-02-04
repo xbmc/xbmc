@@ -101,6 +101,9 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 
   CLog::DebugLog("Dialog::Close called");
 
+  //  Play the window specific deinit sound
+  g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
+
   // don't close if we should be animating
   if (!forceClose && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
   {
@@ -111,9 +114,6 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
     }
     return;
   }
-
-  //  Play the window specific deinit sound
-  g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
 
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
   OnMessage(msg);
