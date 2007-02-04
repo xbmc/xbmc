@@ -237,6 +237,7 @@ void CGUIWindowManager::PreviousWindow()
   HideOverlay(pNewWindow->GetOverlayState());
 
   // deinitialize our window
+  g_audioManager.PlayWindowSound(pCurrentWindow->GetID(), SOUND_DEINIT);
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
   pCurrentWindow->OnMessage(msg);
 
@@ -248,6 +249,7 @@ void CGUIWindowManager::PreviousWindow()
 
   // ok, initialize the new window
   CLog::DebugLog("CGUIWindowManager::PreviousWindow: Activate new");
+  g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
   CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, GetActiveWindow());
   pNewWindow->OnMessage(msg2);
 
