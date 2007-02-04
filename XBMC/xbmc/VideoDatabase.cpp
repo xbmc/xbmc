@@ -1742,9 +1742,9 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     // get primary genres for movies
     CStdString strSQL;
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL = FormatSQL("select movie.idmovie,path.strPath from movie,files,path where movie.idMovie = files.idMovie and files.idPath = path.idPath");
+      strSQL = FormatSQL("select movie.c%02d,path.strPath from movie,files,path where movie.idMovie = files.idMovie and files.idPath = path.idPath", VIDEODB_ID_YEAR);
     else    
-      strSQL = FormatSQL("select movie.idmovie from movie");
+      strSQL = FormatSQL("select distinct movie.c%02d from movie", VIDEODB_ID_YEAR);
     CStdString addParam;
 
     if (g_stSettings.m_iMyVideoWatchMode == 1)
@@ -1763,45 +1763,53 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       return true;
     }
 
-    map<long, CStdString> mapYears;
-    map<long, CStdString>::iterator it;
-    long lLastPathId = -1;
-    while (!m_pDS->eof())
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      strSQL=FormatSQL("select movie.c%02d from movie where idMovie=%u",VIDEODB_ID_YEAR,m_pDS->fv("movie.idMovie").get_asLong());
-      m_pDS2->query(strSQL.c_str());
-      if (m_pDS2->eof())
-        continue;
-
-      CStdString strYear = m_pDS2->fv(0).get_asString();
-      long lYear = atol(strYear.c_str());
-      it = mapYears.find(lYear);
-      if (it == mapYears.end())
+      map<long, CStdString> mapYears;
+      map<long, CStdString>::iterator it;
+      long lLastPathId = -1;
+      while (!m_pDS->eof())
       {
-        if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        long lYear = m_pDS->fv(0).get_asLong();
+        it = mapYears.find(lYear);
+        if (it == mapYears.end())
         {
           // check path
-          CStdString strPath;
-          if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
           {
-            m_pDS->next();
-            continue;
+            CStdString year;
+            year.Format("%d", lYear);
+            mapYears.insert(pair<long, CStdString>(lYear, year));
           }
         }
-        mapYears.insert(pair<long, CStdString>(lYear, strYear));
+        m_pDS->next();
       }
-      m_pDS->next();
-    }
-    m_pDS->close();
+      m_pDS->close();
     
-    for (it=mapYears.begin();it != mapYears.end();++it)
+      for (it=mapYears.begin();it != mapYears.end();++it)
+      {
+        CFileItem* pItem=new CFileItem(it->second);
+        CStdString strDir;
+        strDir.Format("%ld/", it->first);
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        items.Add(pItem);
+      }
+    }
+    else
     {
-      CFileItem* pItem=new CFileItem(it->second);
-      CStdString strDir;
-      strDir.Format("%ld/", it->first);
-      pItem->m_strPath=strBaseDir + strDir;
-      pItem->m_bIsFolder=true;
-      items.Add(pItem);
+      while (!m_pDS->eof())
+      {
+        long lYear = m_pDS->fv(0).get_asLong();
+        CFileItem* pItem=new CFileItem(m_pDS->fv(0).get_asString());
+        CStdString strDir;
+        strDir.Format("%ld/", lYear);
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        items.Add(pItem);
+        m_pDS->next();
+      }
+      m_pDS->close();
     }
 
     return true;
