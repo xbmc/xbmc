@@ -24,6 +24,7 @@ private:
 	void ParseNext(TiXmlElement* element);
   void Clean(CStdString& strDirty);
   char* RemoveWhiteSpace(const char *string);
+  void ClearBuffers();
 
 	TiXmlDocument* m_document;
 	TiXmlElement* m_pRootElement;
