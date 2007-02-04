@@ -20,7 +20,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_iCurrentLoop = 0;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
-  m_bWasVisible = m_visible;
+  m_bWasVisible = m_visible == VISIBLE;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_texturesAllocated = false;
@@ -63,7 +63,7 @@ CGUIImage::~CGUIImage(void)
 
 void CGUIImage::Render()
 {
-  bool bVisible = IsVisible();
+  GUIVISIBLE visible = m_forceHidden ? HIDDEN : m_visible;
 
   // check for conditional information before we free and
   // alloc as this does free and allocation as well
@@ -72,21 +72,21 @@ void CGUIImage::Render()
     SetFileName(g_infoManager.GetImage(m_Info, m_dwParentID));
   }
 
-  if (m_bDynamicResourceAlloc && !bVisible && IsAllocated())
-    FreeResources();
-
-  if (!bVisible)
+  // if we're hidden, we can free our resources and return
+  if (visible == HIDDEN)
   {
+    if (m_bDynamicResourceAlloc && IsAllocated())
+      FreeResources();
     m_bWasVisible = false;
     return;
   }
 
-  // only check m_texturesAllocated if we are dynamicm, as we only want to check
-  // for unavailable textures once
-  if (m_bDynamicResourceAlloc && !m_texturesAllocated)
+  if (!m_texturesAllocated)
     AllocResources();
-  else if (!m_bDynamicResourceAlloc && !m_texturesAllocated)
-    AllocResources();  // not dynamic, make sure we allocate!
+
+  // if we're delayed, there's no requirement to actually render
+  if (m_visible == DELAYED)
+    return CGUIControl::Render();
 
   if (m_vecTextures.size())
   {
