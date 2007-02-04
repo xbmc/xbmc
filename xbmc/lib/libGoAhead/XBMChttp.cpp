@@ -2384,6 +2384,13 @@ int CXbmcHttp::xbmcSetBroadcast(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Wrong number of parameters");
 }
 
+int CXbmcHttp::xbmcGetBroadcast()
+{
+  CStdString tmp;
+  tmp.Format("%i;%i", g_stSettings.m_HttpApiBroadcastLevel,g_stSettings.m_HttpApiBroadcastPort);
+  return SetResponse(openTag+tmp);
+}
+
 int CXbmcHttp::xbmcGetSkinSetting(int numParas, CStdString paras[])
 //parameter=type;name
 //type: 0=bool, 1=string
@@ -2663,6 +2670,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk();
 	  else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
 	  else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
+	  else if (command == "getbroadcast")             retVal = xbmcGetBroadcast();
 
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
