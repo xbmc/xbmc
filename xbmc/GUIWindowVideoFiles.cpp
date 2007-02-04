@@ -412,7 +412,6 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
 
 void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScraperInfo& info, bool bDirNames)
 {
-
   CStdString strMovieName;
   if (bDirNames)
   {
@@ -648,58 +647,6 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
     if (bScan)
       OnScan(m_vecItems[iItem]->m_strPath,info2,bUseDirNames?1:0,bScanRecursive?1:0);
   }
-/*  if (item.GetLabel().Equals(g_localizeStrings.Get(20336)))
-  {
-    if (CGUIDialogYesNo::ShowAndGetInput(13346,20342,20343,-1))
-      OnScan(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel);
-    else
-      m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel);
-  }
-  else if (item.GetLabel().Equals(g_localizeStrings.Get(20337)))
-  {
-    items.Clear();
-    CUtil::GetRecursiveListing(m_vecItems[iItem]->m_strPath,items,g_stSettings.m_videoExtensions);
-    // enumerate
-    std::vector<CStdString> expression;
-    expression.push_back("[^\\.\\-_ ]*[\\.\\-_\\[ ]*[Ss]?([0-9]*)[^0-9]*[Ee]?([0-9]*)"); // foo.s01.e01, foo.1x09.avi
-    expression.push_back("[^\\.\\-_ ]*[^\\.\\-_ ]([0-9])([0-9]*)"); // foo.103*
-
-    std::map<int,std::vector<std::pair<int,CStdString> > > episodes;
-    for (int i=0;i<items.Size();++i)
-    {
-      if (items[i]->m_bIsFolder)
-        continue;
-      for (unsigned int j=0;j<expression.size();++j)
-      {
-        CRegExp reg;
-        if (!reg.RegComp(expression[j]))
-          break;
-        CLog::DebugLog("label: %s",items[i]->GetLabel().c_str());
-        if (reg.RegFind(items[i]->GetLabel().c_str()) > -1)
-        {
-          char* season = reg.GetReplaceString("\\1");
-          char* episode = reg.GetReplaceString("\\2");
-          if (season && episode)
-          {
-            int iSeason = atoi(season);
-            int iEpisode = atoi(episode);
-            std::map<int,std::vector<std::pair<int,CStdString> > >::iterator iter = episodes.find(iSeason);
-            if (iter == episodes.end()) // none from this season - add to map
-            {
-              std::vector<std::pair<int,CStdString> > vec;
-              vec.push_back(std::make_pair<int,CStdString>(iEpisode,items[i]->m_strPath));
-              episodes.insert(std::make_pair<int,std::vector<std::pair<int,CStdString> > >(iSeason,vec));
-            }
-            else
-            {
-              iter->second.push_back(std::make_pair<int,CStdString>(iEpisode,items[i]->m_strPath));
-            }
-            break;
-          }
-        }
-      }
-    }
-  }*/
 }
 
 bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, const SScraperInfo& info, const SScanSettings &settings, int depth)
@@ -720,7 +667,11 @@ bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, const SScraperInfo& info
   }
 
   if(depth > 0)
+  {
     OnRetrieveVideoInfo(items,info,settings.parent_name);
+    if (settings.parent_name && items.Size())
+      ApplyIMDBThumbToFolder(items.m_strPath, items[0]->GetThumbnailImage());
+  }
   else
     OnRetrieveVideoInfo(items,info,settings.parent_name_root);
 
