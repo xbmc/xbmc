@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 01/26/2007-->
+<!--Date of translation: 02/04/2007-->
 <!--$Revision$-->
 <!--Based on english strings version 7738-->
 <strings>
@@ -125,7 +125,7 @@
   <string id="186">OK</string>
   <string id="187">Kein Album gefunden!</string>
   <string id="188">Alle auswählen</string>
-  <string id="189">Datenbank wird aktualisiert</string>
+  <string id="189">Datenbank wird aktualisiert...</string>
   <string id="190">Speichern</string>
   <string id="191">Shuffle</string>
   <string id="192">Löschen</string>
@@ -134,7 +134,7 @@
   <string id="195">Es wurde kein IMDb-Eintrag gefunden!</string>
   <string id="196">Video auswählen:</string>
   <string id="197">IMDb-Informationen werden abgefragt...</string>
-  <string id="198">Lade Video-Informationen</string>
+  <string id="198">Lade Video-Informationen...</string>
   <string id="199">Regisseur:</string>
   <string id="200">Verfasser:</string>
   <string id="201">Jahr:</string>
@@ -352,7 +352,7 @@
   <string id="429">Bitte legen Sie folgenden Datenträger ein:</string>
   <string id="430">Nach DVD#</string>
   <string id="431">Keinen Cache verwenden</string>
-  <string id="432">Entferne Film aus der Datenbank</string>
+  <string id="432">Film aus der Datenbank entfernen</string>
   <string id="433">Möchten Sie den Film wirklich aus der Datenbank</string>
   <string id="434">entfernen?</string>
   <string id="435">Titel</string>
@@ -526,7 +526,7 @@
   <string id="649">Datenbank wird importiert...</string>
   <string id="650">Datenbank wird exportiert...</string>
   <string id="651">Video-Datenbank</string>
-  <string id="700">Datenbank wird aktualisiert</string>
+  <string id="700">Datenbank wird aktualisiert...</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
   <string id="702">Dieser Pfad wurde bereits aktualisiert. Möchten Sie den Pfad&#10;komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="705">Netzwerk</string>
@@ -1470,12 +1470,12 @@
   <string id="20327">auf den Standardwert zurück</string>
   <string id="20328">Ziel für 'Spielstand kopieren'</string>
   <string id="20329">Ziel für 'Spielstand verschieben'</string>
-  <string id="20330">Odnernamen für Anfragen verwenden</string>
-  <string id="20331">Datei</string>
-  <string id="20332">Möchten Sie Ordner- oder Dateinamen für Anfragen verwenden?</string>
-  <string id="20333">Inhalt verwenden</string>
-  <string id="20334">Ordner</string>
-  <string id="20335">Möchten Sie rekursiv nach Inhalten suchen?</string>
+  <string id="20330">Ordnernamen für Anfragen verwenden</string>
+  <string id="20331">Dateinamen</string>
+  <string id="20332">Möchten Sie Datei- oder Ordnernamen für Anfragen verwenden?</string>
+  <string id="20333">Inhalt definieren</string>
+  <string id="20334">Ordnernamen</string>
+  <string id="20335">Möchten Sie im Ordner rekursiv nach Inhalten suchen?</string>
   <string id="20336">Quellen freigeben</string>
   <string id="20337">Darsteller</string>
   <string id="20338">Aufgabe entfernen</string>
