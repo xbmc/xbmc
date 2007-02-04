@@ -324,7 +324,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     pDlgInfo->DoModal();
     item->SetThumbnailImage(pDlgInfo->GetThumbnail());
     if ( !pDlgInfo->NeedRefresh() ) return ;
-    m_database.DeleteMovieInfo(item->m_strPath);
   }
 
   // quietly return if Internet lookups are disabled
@@ -456,6 +455,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         // Add to the database if applicable
         if (item->m_strPath && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
         {
+          m_database.DeleteMovieInfo(item->m_strPath);
           m_database.SetMovieInfo(item->m_strPath, movieDetails);
           // remove directory caches
           CFileItemList items;
