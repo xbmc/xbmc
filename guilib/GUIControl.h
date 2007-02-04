@@ -195,6 +195,8 @@ public:
   };
   GUICONTROLTYPES GetControlType() const { return ControlType; }
 
+  enum GUIVISIBLE { HIDDEN = 0, DELAYED, VISIBLE };
+
 protected:
   virtual void Animate(DWORD currentTime);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
@@ -221,7 +223,7 @@ protected:
 
   // visibility condition/state
   int m_visibleCondition;
-  bool m_visible;
+  GUIVISIBLE m_visible;
   bool m_visibleFromSkinCondition;
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   bool m_allowHiddenFocus;
