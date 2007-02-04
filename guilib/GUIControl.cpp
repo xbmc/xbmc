@@ -12,7 +12,7 @@ CGUIControl::CGUIControl()
   m_bHasFocus = false;
   m_dwControlID = 0;
   m_dwParentID = 0;
-  m_visible = true;
+  m_visible = VISIBLE;
   m_visibleFromSkinCondition = true;
   m_forceHidden = false;
   m_visibleCondition = 0;
@@ -39,7 +39,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_bHasFocus = false;
   m_dwControlID = dwControlId;
   m_dwParentID = dwParentID;
-  m_visible = true;
+  m_visible = VISIBLE;
   m_visibleFromSkinCondition = true;
   m_diffuseColor = 0xffffffff;
   m_forceHidden = false;
@@ -239,7 +239,10 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       break;
 
     case GUI_MSG_VISIBLE:
-      m_visible = m_visibleCondition ? g_infoManager.GetBool(m_visibleCondition, m_dwParentID) : true;
+      if (m_visibleCondition)
+        m_visible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID) ? VISIBLE : HIDDEN;
+      else
+        m_visible = VISIBLE;
       m_forceHidden = false;
       return true;
       break;
@@ -280,7 +283,7 @@ bool CGUIControl::CanFocus() const
 bool CGUIControl::IsVisible() const
 {
   if (m_forceHidden) return false;
-  return m_visible;
+  return m_visible == VISIBLE;
 }
 
 bool CGUIControl::IsDisabled() const
@@ -423,6 +426,8 @@ void CGUIControl::UpdateVisibility()
         else
           anim.ResetAnimation();
       }
+      if (condition != anim.lastCondition)
+        CLog::DebugLog("Queuing conditional anim for control %i, new state %s", GetID(), condition ? "true" : "false");
       anim.lastCondition = condition;
     }
   }
@@ -432,11 +437,25 @@ void CGUIControl::SetInitialVisibility()
 {
   if (m_visibleCondition)
   {
-    m_visibleFromSkinCondition = m_visible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
-  //  CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_visible ? "visible" : "hidden");
+    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+    m_visible = m_visibleFromSkinCondition ? VISIBLE : HIDDEN;
+  //  CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_visible == VISIBLE ? "visible" : "hidden");
     // no need to enquire every frame if we are always visible or always hidden
     if (m_visibleCondition == SYSTEM_ALWAYS_TRUE || m_visibleCondition == SYSTEM_ALWAYS_FALSE)
       m_visibleCondition = 0;
+  }
+  // and handle animation conditions as well
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+  {
+    CAnimation &anim = m_animations[i];
+    if (anim.type == ANIM_TYPE_CONDITIONAL)
+    {
+      anim.lastCondition = g_infoManager.GetBool(anim.condition);
+      if (anim.lastCondition)
+        anim.ApplyAnimation();
+      else
+        anim.ResetAnimation();
+    }
   }
 }
 
@@ -509,7 +528,7 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
 
 void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)
 {
-  bool visible = m_visible;
+  GUIVISIBLE visible = m_visible;
   // Make sure control is hidden or visible at the appropriate times
   // while processing a visible or hidden animation it needs to be visible,
   // but when finished a hidden operation it needs to be hidden
@@ -518,14 +537,14 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     if (currentProcess == ANIM_PROCESS_REVERSE)
     {
       if (currentState == ANIM_STATE_APPLIED)
-        m_visible = false;
+        m_visible = HIDDEN;
     }
     else if (currentProcess == ANIM_PROCESS_NORMAL)
     {
       if (currentState == ANIM_STATE_DELAYED)
-        m_visible = false;
+        m_visible = DELAYED;
       else
-        m_visible = m_visibleFromSkinCondition;
+        m_visible = m_visibleFromSkinCondition ? VISIBLE : HIDDEN;
     }
   }
   else if (type == ANIM_TYPE_HIDDEN)
@@ -533,13 +552,13 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     if (currentProcess == ANIM_PROCESS_NORMAL)  // a hide animation
     {
       if (currentState == ANIM_STATE_APPLIED)
-        m_visible = false; // finished
+        m_visible = HIDDEN; // finished
       else
-        m_visible = true; // have to be visible until we are finished
+        m_visible = VISIBLE; // have to be visible until we are finished
     }
     else if (currentProcess == ANIM_PROCESS_REVERSE)  // a visible animation
     { // no delay involved here - just make sure it's visible
-      m_visible = m_visibleFromSkinCondition;
+      m_visible = m_visibleFromSkinCondition ? VISIBLE : HIDDEN;
     }
   }
   else if (type == ANIM_TYPE_WINDOW_OPEN)
@@ -547,9 +566,9 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     if (currentProcess == ANIM_PROCESS_NORMAL)
     {
       if (currentState == ANIM_STATE_DELAYED)
-        m_visible = false; // delayed
+        m_visible = DELAYED; // delayed
       else
-        m_visible = m_visibleFromSkinCondition;
+        m_visible = m_visibleFromSkinCondition ? VISIBLE : HIDDEN;
     }
   }
   else if (type == ANIM_TYPE_FOCUS)
@@ -560,33 +579,35 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
       OnFocus();
   }
 //  if (visible != m_visible)
-//    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_visible ? "visible" : "hidden", type, currentProcess, currentState);
+//    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_visible == VISIBLE ? "visible" : (m_visible == DELAYED ? "delayed" : "hidden"), type, currentProcess, currentState);
 }
 
 void CGUIControl::Animate(DWORD currentTime)
 {
+  // check visible state outside the loop, as it could change
+  GUIVISIBLE visible = m_visible;
   TransformMatrix transform;
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
-    anim.Animate(currentTime, HasRendered());
+    anim.Animate(currentTime, HasRendered() || visible == DELAYED);
     // Update the control states (such as visibility)
     UpdateStates(anim.type, anim.currentProcess, anim.currentState);
     // and render the animation effect
     anim.RenderAnimation(transform);
-/*
-    // debug stuff
+
+/*    // debug stuff
     if (anim.currentProcess != ANIM_PROCESS_NONE)
     {
-      if (anim.effect == EFFECT_TYPE_SLIDE)
+      if (anim.effect == EFFECT_TYPE_ZOOM)
       {
         if (IsVisible())
-          CLog::DebugLog("Animating control %d with a %s slide effect %s. Amount is %2.1f, visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
+          CLog::DebugLog("Animating control %d with a %s zoom effect %s. Amount is %2.1f, visible=%s", m_dwControlID, anim.type == ANIM_TYPE_CONDITIONAL ? (anim.lastCondition ? "conditional_on" : "conditional_off") : (anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden"), anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
       }
       else if (anim.effect == EFFECT_TYPE_FADE)
       {
         if (IsVisible())
-          CLog::DebugLog("Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
+          CLog::DebugLog("Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_dwControlID, anim.type == ANIM_TYPE_CONDITIONAL ? (anim.lastCondition ? "conditional_on" : "conditional_off") : (anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden"), anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
       }
     }*/
   }

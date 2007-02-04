@@ -30,8 +30,9 @@ public:
   void Reset();
   void Create(const TiXmlElement *node, const FRECT &rect);
   void CreateReverse(const CAnimation &anim);
-  void Animate(unsigned int time, bool hasRendered);
+  void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
+  void ApplyAnimation();
   void RenderAnimation(TransformMatrix &matrix);
 
   ANIMATION_TYPE type;
@@ -47,6 +48,7 @@ public:
 
   inline bool IsReversible() const { return reversible; };
 
+  float amount;
 private:
   // animation variables
   float acceleration;
@@ -60,11 +62,12 @@ private:
   int endAlpha;
 
   // timing variables
-  float amount;
   unsigned int start;
   unsigned int length;
   unsigned int delay;
 
   bool reversible;    // whether the animation is reversible or not
+
+  void Calculate();
   TransformMatrix m_matrix;
 };

@@ -285,11 +285,12 @@ void CGUIBaseContainer::UpdateEffectState(DWORD currentTime)
 
 void CGUIBaseContainer::Animate(DWORD currentTime)
 {
+  GUIVISIBLE visible = m_visible;
   TransformMatrix transform;
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
-    anim.Animate(currentTime, HasRendered());
+    anim.Animate(currentTime, HasRendered() || visible == DELAYED);
     // Update the control states (such as visibility)
     UpdateStates(anim.type, anim.currentProcess, anim.currentState);
     // and render the animation effect

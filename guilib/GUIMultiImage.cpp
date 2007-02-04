@@ -29,7 +29,8 @@ CGUIMultiImage::~CGUIMultiImage(void)
 
 void CGUIMultiImage::Render()
 {
-  if (!IsVisible())
+  // check if we're hidden, and deallocate + return
+  if (!IsVisible() && m_visible != DELAYED)
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
       FreeResources();
@@ -55,10 +56,12 @@ void CGUIMultiImage::Render()
     }
   }
 
-  if (m_bDynamicResourceAlloc && !IsAllocated())
+  if (!IsAllocated())
     AllocResources();
-  else if (!m_bDynamicResourceAlloc && !IsAllocated())
-    AllocResources();  // not dynamic, make sure we allocate!
+
+  // if we're delayed, we allocate (above) but there's no need to render.
+  if (m_visible == DELAYED)
+    return CGUIControl::Render();
 
   if (!m_images.empty())
   {
