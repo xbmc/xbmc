@@ -2352,6 +2352,14 @@ bool CApplication::OnKey(CKey& key)
 
 bool CApplication::OnAction(const CAction &action)
 {
+  // Let's tell the outside world about this action
+  if (pXbmcHttp)
+  {
+    CStdString tmp;
+    tmp.Format("%i",action.wID);
+    pXbmcHttp->xbmcBroadcast("OnAction:"+tmp, 2);
+  }
+
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
   { // Switch to fullscreen mode if we can
