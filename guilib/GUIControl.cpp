@@ -426,8 +426,8 @@ void CGUIControl::UpdateVisibility()
         else
           anim.ResetAnimation();
       }
-      if (condition != anim.lastCondition)
-        CLog::DebugLog("Queuing conditional anim for control %i, new state %s", GetID(), condition ? "true" : "false");
+//      if (condition != anim.lastCondition)
+//        CLog::DebugLog("Queuing conditional anim for control %i, new state %s", GetID(), condition ? "true" : "false");
       anim.lastCondition = condition;
     }
   }
