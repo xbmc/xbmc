@@ -310,7 +310,7 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   CStdString strTemp;
   if (XMLUtils::GetString(movie, "genre", strTemp))
   {
-    if (m_strGenre.Equals(g_localizeStrings.Get(416)) || m_strGenre.IsEmpty())
+    if (m_strGenre.IsEmpty())
       m_strGenre = strTemp;
     else
       m_strGenre += " / "+strTemp;
@@ -318,7 +318,7 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
 
   if (XMLUtils::GetString(movie, "credits", strTemp))
   {
-    if (m_strWritingCredits.Equals(g_localizeStrings.Get(416)) || m_strWritingCredits.IsEmpty())
+    if (m_strWritingCredits.IsEmpty())
       m_strWritingCredits = strTemp;
     else
       m_strWritingCredits += " / "+strTemp;
@@ -326,7 +326,7 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   
   if (XMLUtils::GetString(movie, "director", strTemp))
   {
-    if (m_strDirector.Equals(g_localizeStrings.Get(416)) || m_strDirector.IsEmpty())
+    if (m_strDirector.IsEmpty())
       m_strDirector = strTemp;
     else
       m_strDirector += " / "+strTemp;
@@ -356,19 +356,8 @@ bool CIMDB::LoadXML(const CStdString& strXMLFile, CIMDBMovie &movieDetails, bool
 {
   TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
-    // fill in the defaults
-  CStdString strLocNotAvail = g_localizeStrings.Get(416); // Not available
-  movieDetails.m_strDirector = strLocNotAvail;
-  movieDetails.m_strWritingCredits = strLocNotAvail;
-  movieDetails.m_strGenre = strLocNotAvail;
-  movieDetails.m_strTagLine = strLocNotAvail;
-  movieDetails.m_strPlotOutline = strLocNotAvail;
-  movieDetails.m_strPlot = strLocNotAvail;
-  movieDetails.m_strPictureURL = "";
-  movieDetails.m_strVotes = strLocNotAvail;
-  movieDetails.m_cast.clear();
-  movieDetails.m_strMPAARating = strLocNotAvail;
-  movieDetails.m_iTop250 = 0;
+
+  movieDetails.Reset();
   if (doc.LoadFile(strXMLFile) && ParseDetails(doc, movieDetails))
   { // excellent!
     return true;
@@ -495,26 +484,9 @@ bool CIMDB::GetDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, CGUIDialog
   //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
   m_url = url;
   m_movieDetails = movieDetails;
-  // fill in the defaults
-  CStdString strLocNotAvail = g_localizeStrings.Get(416); // Not available
-  movieDetails.m_strTitle = url.m_strTitle;
-  movieDetails.m_strDirector = strLocNotAvail;
-  movieDetails.m_strWritingCredits = strLocNotAvail;
-  movieDetails.m_strGenre = strLocNotAvail;
-  movieDetails.m_strTagLine = strLocNotAvail;
-  movieDetails.m_strPlotOutline = strLocNotAvail;
-  movieDetails.m_strPlot = strLocNotAvail;
-  movieDetails.m_strPictureURL = "";
-  movieDetails.m_strRuntime = strLocNotAvail;
-  movieDetails.m_strMPAARating = strLocNotAvail;
-  movieDetails.m_iYear = 0;
-  movieDetails.m_fRating = 0.0;
-  movieDetails.m_strVotes = strLocNotAvail;
-  movieDetails.m_cast.clear();
-  movieDetails.m_iTop250 = 0;
-  movieDetails.m_strIMDBNumber = url.m_strID;
-  movieDetails.m_bWatched = false;
 
+  // fill in the defaults
+  movieDetails.Reset();
   if (pProgress)
   { // threaded version
     m_state = GET_DETAILS;
