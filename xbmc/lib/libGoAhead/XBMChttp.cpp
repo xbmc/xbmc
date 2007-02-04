@@ -2345,7 +2345,11 @@ bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
   {
     if (!pUdpBroadcast)
 	  pUdpBroadcast = new CUdpBroadcast();
-    return pUdpBroadcast->broadcast(openBroadcast+message+closeBroadcast, g_stSettings.m_HttpApiBroadcastPort);
+	CStdString msg;
+    msg.Format(openBroadcast+message+";%i"+closeBroadcast, level);
+
+    //return pUdpBroadcast->broadcast(openBroadcast+message+";"+closeBroadcast, g_stSettings.m_HttpApiBroadcastPort);
+	return pUdpBroadcast->broadcast(msg, g_stSettings.m_HttpApiBroadcastPort);
   }
   else
     return true;
