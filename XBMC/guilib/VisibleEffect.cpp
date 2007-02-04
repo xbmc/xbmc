@@ -237,7 +237,7 @@ void CAnimation::CreateReverse(const CAnimation &anim)
   reversible = anim.reversible;
 }
 
-void CAnimation::Animate(unsigned int time, bool hasRendered)
+void CAnimation::Animate(unsigned int time, bool startAnim)
 {
   // First start any queued animations
   if (queuedProcess == ANIM_PROCESS_NORMAL)
@@ -256,16 +256,10 @@ void CAnimation::Animate(unsigned int time, bool hasRendered)
       start = time;
     currentProcess = ANIM_PROCESS_REVERSE;
   }
-  // reset the queued state once we've rendered
-  // Note that if we are delayed, then the resource may not have been allocated as yet
-  // as it hasn't been rendered (is still invisible).  Ideally, the resource should
-  // be allocated based on a visible state, rather than a bool on/off, then only rendered
-  // if it's in the appropriate state (ie allow visible = NO, DELAYED, VISIBLE, and allocate
-  // if it's not NO, render if it's VISIBLE)  The alternative, is to just always render
-  // the control while it's in the DELAYED state (comes down to the definition of the states)
-  if (hasRendered || queuedProcess == ANIM_PROCESS_REVERSE
-      || (currentState == ANIM_STATE_DELAYED && type > 0))
+  // reset the queued state once we've rendered to ensure allocation has occured
+  if (startAnim || queuedProcess == ANIM_PROCESS_REVERSE)// || (currentState == ANIM_STATE_DELAYED && type > 0))
     queuedProcess = ANIM_PROCESS_NONE;
+
   // Update our animation process
   if (currentProcess == ANIM_PROCESS_NORMAL)
   {
@@ -311,29 +305,7 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
 
   // Now do the real animation
   if (currentProcess != ANIM_PROCESS_NONE)
-  {
-    float offset = amount * (acceleration * amount + 1.0f - acceleration);
-    if (effect == EFFECT_TYPE_FADE)
-      m_matrix.SetFader(((float)(endAlpha - startAlpha) * amount + startAlpha) * 0.01f);
-    else if (effect == EFFECT_TYPE_SLIDE)
-    {
-      m_matrix.SetTranslation((endX - startX)*offset + startX, (endY - startY)*offset + startY);
-    }
-    else if (effect == EFFECT_TYPE_ROTATE)
-    {
-      m_matrix.SetTranslation(centerX, centerY);
-      m_matrix *= TransformMatrix::CreateRotation(((endX - startX)*offset + startX) * DEGREE_TO_RADIAN);
-      m_matrix *= TransformMatrix::CreateTranslation(-centerX, -centerY);
-    }
-    else if (effect == EFFECT_TYPE_ZOOM)
-    {
-      float scaleX = ((endX - startX)*offset + startX) * 0.01f;
-      float scaleY = ((endY - startY)*offset + startY) * 0.01f;
-      m_matrix.SetTranslation(centerX, centerY);
-      m_matrix *= TransformMatrix::CreateScaler(scaleX, scaleY);
-      m_matrix *= TransformMatrix::CreateTranslation(-centerX, -centerY);
-    }
-  }
+    Calculate();
   if (currentState == ANIM_STATE_APPLIED)
   {
     currentProcess = ANIM_PROCESS_NONE;
@@ -343,9 +315,42 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
     matrix *= m_matrix;
 }
 
+void CAnimation::Calculate()
+{
+  float offset = amount * (acceleration * amount + 1.0f - acceleration);
+  if (effect == EFFECT_TYPE_FADE)
+    m_matrix.SetFader(((float)(endAlpha - startAlpha) * amount + startAlpha) * 0.01f);
+  else if (effect == EFFECT_TYPE_SLIDE)
+  {
+    m_matrix.SetTranslation((endX - startX)*offset + startX, (endY - startY)*offset + startY);
+  }
+  else if (effect == EFFECT_TYPE_ROTATE)
+  {
+    m_matrix.SetTranslation(centerX, centerY);
+    m_matrix *= TransformMatrix::CreateRotation(((endX - startX)*offset + startX) * DEGREE_TO_RADIAN);
+    m_matrix *= TransformMatrix::CreateTranslation(-centerX, -centerY);
+  }
+  else if (effect == EFFECT_TYPE_ZOOM)
+  {
+    float scaleX = ((endX - startX)*offset + startX) * 0.01f;
+    float scaleY = ((endY - startY)*offset + startY) * 0.01f;
+    m_matrix.SetTranslation(centerX, centerY);
+    m_matrix *= TransformMatrix::CreateScaler(scaleX, scaleY);
+    m_matrix *= TransformMatrix::CreateTranslation(-centerX, -centerY);
+  }
+}
 void CAnimation::ResetAnimation()
 {
   currentProcess = ANIM_PROCESS_NONE;
   queuedProcess = ANIM_PROCESS_NONE;
   currentState = ANIM_STATE_NONE;
+}
+
+void CAnimation::ApplyAnimation()
+{
+  currentProcess = ANIM_PROCESS_NONE;
+  queuedProcess = ANIM_PROCESS_NONE;
+  currentState = ANIM_STATE_APPLIED;
+  amount = 1.0f;
+  Calculate();
 }
