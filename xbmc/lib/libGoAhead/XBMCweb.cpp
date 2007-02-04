@@ -26,6 +26,9 @@
 #include "..\..\MusicInfoTagLoaderFactory.h"
 #include "..\..\MusicDatabase.h"
 
+using namespace DIRECTORY;
+using namespace PLAYLIST;
+
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")
@@ -176,11 +179,11 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
     switch(GetNavigatorState())
     {
     case WEB_NAV_VIDEOS:
-      g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Add(playlistItem);
+      g_playlistPlayer.Add(PLAYLIST_VIDEO, playlistItem);
       break;
 
     case WEB_NAV_MUSIC:
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
+      g_playlistPlayer.Add(PLAYLIST_MUSIC, playlistItem);
       break;
     }
   }
@@ -772,8 +775,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 
                 // load a playlist like .m3u, .pls
                 // first get correct factory to load playlist
-                CPlayListFactory factory;
-                auto_ptr<CPlayList> pPlayList (factory.Create(itm->m_strPath));
+                auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*itm));
                 if ( NULL != pPlayList.get())
                 {
                   // load it

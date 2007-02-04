@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "GUIWindow.h"
@@ -11,6 +31,8 @@
 #include "GUIWindowVideoFiles.h"
 #include "GUIDialogFileBrowser.h"
 
+using namespace XFILE;
+
 #define CONTROL_TITLE    20
 #define CONTROL_DIRECTOR   21
 #define CONTROL_CREDITS    22
@@ -18,8 +40,6 @@
 #define CONTROL_YEAR    24
 #define CONTROL_TAGLINE    25
 #define CONTROL_PLOTOUTLINE   26
-#define CONTROL_RATING    27
-#define CONTROL_VOTES     28
 #define CONTROL_CAST     29
 #define CONTROL_RATING_AND_VOTES  30
 #define CONTROL_RUNTIME    31
@@ -119,6 +139,11 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         g_graphicsContext.SendMessage(msgSet);
       }*/
       Refresh();
+
+      // dont allow refreshing of manual info
+      if (m_Movie.m_strIMDBNumber.Left(2).Equals("xx"))
+        CONTROL_DISABLE(CONTROL_BTN_REFRESH);
+
       return true;
     }
     break;
@@ -185,9 +210,12 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           g_graphicsContext.SendMessage(msg);
           int iItem = msg.GetParam1();
           CStdString strItem = m_vecStrCast[iItem];
-          int iPos = strItem.Find(" as ");
-          if (iPos > 0)
-            OnSearch(strItem.Left(iPos));
+          CStdString strFind; 
+          strFind.Format(" %s ",g_localizeStrings.Get(20347));
+          int iPos = strItem.Find(strFind);
+          if (iPos == -1)
+            iPos = strItem.size();
+          OnSearch(strItem.Left(iPos));
         }
       }
     }
@@ -207,91 +235,59 @@ void CGUIWindowVideoInfo::Update()
 {
   CStdString strTmp;
   strTmp = m_Movie.m_strTitle; strTmp.Trim();
-  SetLabel(CONTROL_TITLE, strTmp.c_str() );
+  SetLabel(CONTROL_TITLE, strTmp);
 
   strTmp = m_Movie.m_strDirector; strTmp.Trim();
-  SetLabel(CONTROL_DIRECTOR, strTmp.c_str() );
+  SetLabel(CONTROL_DIRECTOR, strTmp);
 
   strTmp = m_Movie.m_strWritingCredits; strTmp.Trim();
-  SetLabel(CONTROL_CREDITS, strTmp.c_str() );
+  SetLabel(CONTROL_CREDITS, strTmp);
 
   strTmp = m_Movie.m_strGenre; strTmp.Trim();
-  SetLabel(CONTROL_GENRE, strTmp.c_str() );
+  SetLabel(CONTROL_GENRE, strTmp);
 
-  {
-    CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_TAGLINE);
-    OnMessage(msg1);
-  }
-  {
-    strTmp = m_Movie.m_strTagLine; strTmp.Trim();
-    CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TAGLINE);
-    msg1.SetLabel( strTmp );
-    OnMessage(msg1);
-  }
-  {
-    CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PLOTOUTLINE);
-    OnMessage(msg1);
-  }
-  {
-    strTmp = m_Movie.m_strPlotOutline; strTmp.Trim();
-    CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PLOTOUTLINE);
-    msg1.SetLabel( strTmp );
-    OnMessage(msg1);
-  }
-  {
-    CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_MPAARATING); 
-    OnMessage(msg1);
-  }
-  {
-    strTmp = m_Movie.m_strMPAARating; strTmp.Trim();
-    CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_MPAARATING); 
-    msg1.SetLabel( strTmp );
-    OnMessage(msg1);
-  }
+  strTmp = m_Movie.m_strTagLine; strTmp.Trim();
+  SetLabel(CONTROL_TAGLINE, strTmp);
+
+  strTmp = m_Movie.m_strPlotOutline; strTmp.Trim();
+  SetLabel(CONTROL_PLOTOUTLINE, strTmp);
+
+  strTmp = m_Movie.m_strMPAARating; strTmp.Trim();
+  SetLabel(CONTROL_MPAARATING, strTmp);
+
   CStdString strYear;
   strYear.Format("%i", m_Movie.m_iYear);
-  SetLabel(CONTROL_YEAR, strYear );
-
-  CStdString strRating;
-  strRating.Format("%03.1f", m_Movie.m_fRating);
-  SetLabel(CONTROL_RATING, strRating );
-
-  strTmp = m_Movie.m_strVotes; strTmp.Trim();
-  SetLabel(CONTROL_VOTES, strTmp.c_str() );
+  SetLabel(CONTROL_YEAR, strYear);
 
   CStdString strRating_And_Votes;
-  if (strRating.Equals("0.0")) {strRating_And_Votes = m_Movie.m_strVotes;}
-  else
-    // if rating is 0 there are no votes so display not available message already set in Votes string
-  {
-    strRating_And_Votes.Format("%s (%s votes)", strRating, strTmp);
-    SetLabel(CONTROL_RATING_AND_VOTES, strRating_And_Votes);
-  }
+  if (m_Movie.m_fRating != 0.0f)  // only non-zero ratings are of interest
+    strRating_And_Votes.Format("%03.1f (%i votes)", m_Movie.m_fRating, m_Movie.m_strVotes);
+  SetLabel(CONTROL_RATING_AND_VOTES, strRating_And_Votes);
 
   strTmp = m_Movie.m_strRuntime; strTmp.Trim();
-  SetLabel(CONTROL_RUNTIME, strTmp.c_str() );
+  SetLabel(CONTROL_RUNTIME, strTmp);
 
   // setup plot text area
   strTmp = m_Movie.m_strPlot; strTmp.Trim();
-  SET_CONTROL_LABEL(CONTROL_TEXTAREA, strTmp.c_str() );
+  SetLabel(CONTROL_TEXTAREA, strTmp);
 
   // setup cast list
-  strTmp = m_Movie.m_strCast; strTmp.Trim();
   m_vecStrCast.clear();
-  vector<CStdString> vecCast;
-  int iNumItems = StringUtils::SplitString(strTmp, "\n", vecCast);
-  for (int i = 0; i < (int)vecCast.size(); i++)
+  for (CIMDBMovie::iCast it = m_Movie.m_cast.begin(); it != m_Movie.m_cast.end(); ++it)
   {
-    int iPos = vecCast[i].Find(" as ");
-    if (iPos > 0)
-      m_vecStrCast.push_back(vecCast[i]);
+    CStdString character;
+    if (it->second.IsEmpty())
+      character = it->first;
+    else
+      character.Format("%s %s %s", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
+    m_vecStrCast.push_back(character);
   }
   AddItemsToList(m_vecStrCast);
 
   if (m_bViewReview)
   {
     SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 206);
-    
+
     SET_CONTROL_HIDDEN(CONTROL_LIST);
     SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
   }
@@ -322,16 +318,6 @@ void CGUIWindowVideoInfo::Update()
     pImageControl->FreeResources();
     pImageControl->SetFileName(m_movieItem.GetThumbnailImage());
   }
-}
-
-void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString& strLabel)
-{
-  if (strLabel.size() == 0) return ;
-
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iControl);
-  msg.SetLabel(strLabel);
-  OnMessage(msg);
-
 }
 
 void CGUIWindowVideoInfo::Render()
@@ -625,4 +611,16 @@ void CGUIWindowVideoInfo::OnGetThumb()
   g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
+}
+
+void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString &strLabel)
+{
+  if (strLabel.IsEmpty())
+  {
+    SET_CONTROL_LABEL(iControl, 416);  // "Not available"
+  }
+  else
+  {
+    SET_CONTROL_LABEL(iControl, strLabel);
+  }
 }

@@ -14,7 +14,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float 
 {
   m_bSelected = false;
   m_bTabButton = false;
-  m_dwAlpha = 255;
+  m_alpha = 255;
   m_dwFocusCounter = 0;
   m_dwFlickerCounter = 0;
   m_dwFrameCounter = 0;
@@ -51,8 +51,8 @@ void CGUIButtonControl::Render()
         dwAlphaChannel = 63 - (dwAlphaCounter % 64);
 
       dwAlphaChannel += 192;
-      dwAlphaChannel = (DWORD)((float)m_dwAlpha * (float)dwAlphaChannel / 255.0f);
-      m_imgFocus.SetAlpha(dwAlphaChannel);
+      dwAlphaChannel = (DWORD)((float)m_alpha * (float)dwAlphaChannel / 255.0f);
+      m_imgFocus.SetAlpha((unsigned char)dwAlphaChannel);
     }
     m_imgFocus.SetVisible(true);
     m_imgNoFocus.SetVisible(false);
@@ -215,19 +215,18 @@ void CGUIButtonControl::SetPosition(float posX, float posY)
   m_imgNoFocus.SetPosition(posX, posY);
 }
 
-void CGUIButtonControl::SetAlpha(DWORD dwAlpha)
+void CGUIButtonControl::SetAlpha(unsigned char alpha)
 {
-  m_dwAlpha = dwAlpha;
-  m_imgFocus.SetAlpha(dwAlpha);
-  m_imgNoFocus.SetAlpha(dwAlpha);
+  m_alpha = alpha;
+  m_imgFocus.SetAlpha(alpha);
+  m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIButtonControl::SetColourDiffuse(D3DCOLOR colour)
+void CGUIButtonControl::SetColorDiffuse(D3DCOLOR color)
 {
-  CGUIControl::SetColourDiffuse(colour);
-
-  m_imgFocus.SetColourDiffuse(colour);
-  m_imgNoFocus.SetColourDiffuse(colour);
+  CGUIControl::SetColorDiffuse(color);
+  m_imgFocus.SetColorDiffuse(color);
+  m_imgNoFocus.SetColorDiffuse(color);
 }
 
 bool CGUIButtonControl::OnMouseClick(DWORD dwButton)

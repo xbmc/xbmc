@@ -45,7 +45,7 @@ void CDlgCache::OpenDialog()
   if(m_pDlg == NULL) return;
 
   /* if any other modal dialog is open, don't open this one */
-  if (m_gWindowManager.IsRouted(true) && !m_pDlg->IsRunning() )
+  if (m_gWindowManager.HasModalDialog() && !m_pDlg->IsRunning())
   {
     m_pDlg = NULL;
     return;

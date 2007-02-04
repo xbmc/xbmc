@@ -149,6 +149,11 @@ void CGUILabelControl::SetWidthControl(bool bScroll)
   m_ScrollInfo.Reset();
 }
 
+void CGUILabelControl::SetAlignment(DWORD align)
+{
+  m_label.align = align;
+}
+
 bool CGUILabelControl::OnMessage(CGUIMessage& message)
 {
   if ( message.GetControlId() == GetID() )

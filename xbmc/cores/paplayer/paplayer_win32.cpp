@@ -20,7 +20,7 @@
 #define TIME_TO_CACHE_NEXT_FILE 5000L         // 5 seconds
 #define TIME_TO_CROSS_FADE      10000L        // 10 seconds
 
-extern CFileShoutcast* m_pShoutCastRipper;
+extern XFILE::CFileShoutcast* m_pShoutCastRipper;
 
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
@@ -298,7 +298,7 @@ void PAPlayer::SetupDirectSound(int channels)
 #endif
 }
 
-bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample)
+bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
 {
   FreeStream(num);
 
@@ -608,7 +608,7 @@ bool PAPlayer::ProcessPAP()
           if (!m_crossFading || m_decoder[0].GetChannels() != m_decoder[1].GetChannels())
           { // playing gapless (we use only the 1 output stream in this case)
             int prefixAmount = m_decoder[m_currentDecoder].GetDataSize();
-            CLog::Log(LOGDEBUG, "PAPlayer::Prefixing %i bytes of old data to new track for gapless playback", prefixAmount);
+            CLog::Log(LOGDEBUG, "PAPlayer::Prefixing %i samples of old data to new track for gapless playback", prefixAmount);
             m_decoder[1 - m_currentDecoder].PrefixData(m_decoder[m_currentDecoder].GetData(prefixAmount), prefixAmount);
             // check if we need to change the resampler (due to format change)
             unsigned int channels, samplerate, bitspersample;
@@ -845,7 +845,8 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 
 float PAPlayer::GetPercentage()
 {
-  return (float)GetTime() * 100.0f / GetTotalTime64();
+  float percent = (float)GetTime() * 100.0f / GetTotalTime64();
+  return percent;
 }
 
 void PAPlayer::HandleSeeking()
@@ -993,7 +994,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
   }
 #else
   static DWORD nextPacket = -1;
-  static DWORD prevPlayCursor;
+  static DWORD prevPlayCursor = -1;
   DWORD playCursor, writeCursor;
   if (SUCCEEDED(m_pStream[stream]->GetCurrentPosition(&playCursor, &writeCursor)))
   {

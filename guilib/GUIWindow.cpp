@@ -8,6 +8,7 @@
 #include "GUIControlGroup.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUIListContainer.h"
+#include "GUIPanelContainer.h"
 #endif
 
 #include "SkinInfo.h"
@@ -61,13 +62,13 @@ bool CGUIWindow::LoadReferences()
     return true;
 
   // nope - time to load it in
-  CLog::Log(LOGINFO, "Loading references file: %s", strReferenceFile.c_str());
   if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
   {
 //    CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strReferenceFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 
+  CLog::Log(LOGINFO, "Loading references file: %s", strReferenceFile.c_str());
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if (strValue != CStdString("controls"))
@@ -162,7 +163,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
   // now load in the skin file
-  Reset();
+  SetDefaults();
 
   LoadReferences();
   TiXmlElement *pChild = pRootElement->FirstChildElement();
@@ -194,10 +195,11 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
+      FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
       if (strcmpi(pChild->FirstChild()->Value(), "windowopen") == 0)
-        m_showAnimation.Create(pChild->ToElement());
+        m_showAnimation.Create(pChild->ToElement(), rect);
       else if (strcmpi(pChild->FirstChild()->Value(), "windowclose") == 0)
-        m_closeAnimation.Create(pChild->ToElement());
+        m_closeAnimation.Create(pChild->ToElement(), rect);
     }
     else if (strValue == "zorder" && pChild->FirstChild())
     {
@@ -268,7 +270,16 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
 {
   // get control type
   CGUIControlFactory factory;
-  CGUIControl* pGUIControl = factory.Create(m_dwWindowId, pGroup, pControl);
+
+  FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
+  if (pGroup)
+  {
+    rect.left = pGroup->GetXPosition();
+    rect.top = pGroup->GetYPosition();
+    rect.right = rect.left + pGroup->GetWidth();
+    rect.bottom = rect.top + pGroup->GetHeight();
+  }
+  CGUIControl* pGUIControl = factory.Create(m_dwWindowId, rect, pControl);
   if (pGUIControl)
   {
     if (m_bRelativeCoords)
@@ -286,6 +297,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
       }
     }
     // if we are in a group, add to the group, else add to our window
+    pGUIControl->SetParentControl(pGroup);
     if (pGroup)
       pGroup->AddControl(pGUIControl);
     else
@@ -296,11 +308,34 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
       CGUIListContainer *list = (CGUIListContainer *)pGUIControl;
       if (list->m_spinControl)
       {
+        list->m_spinControl->SetParentControl(pGroup);
         if (pGroup)
           pGroup->AddControl(list->m_spinControl);
         else
           Add(list->m_spinControl);
         list->m_spinControl = NULL;
+      }
+    }
+    if (pGUIControl->GetControlType() == CGUIControl::GUICONTAINER_PANEL)
+    {
+      CGUIPanelContainer *panel = (CGUIPanelContainer *)pGUIControl;
+      if (panel->m_spinControl)
+      {
+        panel->m_spinControl->SetParentControl(pGroup);
+        if (pGroup)
+          pGroup->AddControl(panel->m_spinControl);
+        else
+          Add(panel->m_spinControl);
+        panel->m_spinControl = NULL;
+      }
+      if (panel->m_largePanel)
+      {
+        panel->m_largePanel->SetParentControl(pGroup);
+        if (pGroup)
+          pGroup->AddControl(panel->m_largePanel);
+        else
+          Add(panel->m_largePanel);
+        panel->m_largePanel = NULL;
       }
     }
 #endif
@@ -419,27 +454,9 @@ bool CGUIWindow::OnAction(const CAction &action)
 // OnMouseAction - called by OnAction()
 void CGUIWindow::OnMouseAction()
 {
-  // save the mouse coordinates as we will need to change them for
-  // relative coordinates or if the window is scaled
-  float posX = g_Mouse.posX;
-  float posY = g_Mouse.posY;
-  if (m_coordsRes != g_graphicsContext.GetVideoResolution())
-  {
-    // calculate necessary scalings
-    float fFromWidth = (float)g_settings.m_ResInfo[m_coordsRes].iWidth;
-    float fFromHeight = (float)g_settings.m_ResInfo[m_coordsRes].iHeight;
-    float fToWidth = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth;
-    float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
-    float fScaleX = fToWidth / fFromWidth;
-    float fScaleY = fToHeight / fFromHeight;
-    g_Mouse.posX /= fScaleX;
-    g_Mouse.posY /= fScaleY;
-  }
-  if (m_bRelativeCoords)
-  {
-    g_Mouse.posX -= m_posX;
-    g_Mouse.posY -= m_posY;
-  }
+  // hittest will scale cordinates
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
+
   bool bHandled = false;
   // check if we have exclusive access
   if (g_Mouse.GetExclusiveWindowID() == GetID())
@@ -448,7 +465,7 @@ void CGUIWindow::OnMouseAction()
     if (pControl)
     { // this control has exclusive access to the mouse
       HandleMouse(pControl);
-      goto finished;
+      return;
     }
   }
 
@@ -476,11 +493,6 @@ void CGUIWindow::OnMouseAction()
   { // haven't handled this action - call the window message handlers
     OnMouse();
   }
-
-finished:
-  // correct the mouse coordinates back to what they were
-  g_Mouse.posX = posX;
-  g_Mouse.posY = posY;
 }
 
 // Handles any mouse actions that are not handled by a control
@@ -555,8 +567,7 @@ void CGUIWindow::OnInitWindow()
   RestoreControlStates();
   SetControlVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
-  if (m_overlayState != OVERLAY_STATE_PARENT_WINDOW) // True, use our own overlay state
-    m_gWindowManager.ShowOverlay(m_overlayState==OVERLAY_STATE_SHOWN ? true : false);
+  m_gWindowManager.ShowOverlay(m_overlayState);
 }
 
 // Called on window close.
@@ -715,7 +726,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       if (HasID(message.GetSenderId()))
       {
         if (message.GetParam1() == GUI_MSG_PAGE_CHANGE ||
-            message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
+            message.GetParam1() == GUI_MSG_REFRESH_THUMBS ||
+            message.GetParam1() == GUI_MSG_REFRESH_LIST)
         { // alter the message accordingly, and send to all controls
           for (ivecControls it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
           {
@@ -1154,7 +1166,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   return true;
 }
 
-void CGUIWindow::Reset()
+void CGUIWindow::SetDefaults()
 {
   m_renderOrder = 0;
   m_saveLastControl = true;

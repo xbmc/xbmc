@@ -15,6 +15,7 @@ namespace DIRECTORY
       NODE_TYPE_TITLE,
       NODE_TYPE_YEAR,
       NODE_TYPE_ACTOR,
+      NODE_TYPE_DIRECTOR,
     } NODE_TYPE;
 
     class CDirectoryNode

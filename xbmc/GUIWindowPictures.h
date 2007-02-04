@@ -6,8 +6,6 @@
 #include "PictureThumbLoader.h"
 #include "DllImageLib.h"
 
-using namespace DIRECTORY;
-
 class CGUIWindowPictures : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:

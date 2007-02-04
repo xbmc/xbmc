@@ -1,19 +1,35 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
 #include "Util.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "cores/mplayer/mplayer.h"
-#include "cores/mplayer.h"
-#include "cores/mplayer/ASyncDirectSound.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
-#include "VideoDatabase.h"
-#include "PlayListPlayer.h"
 #include "utils/GUIInfoManager.h"
-#include "../guilib/GUIProgressControl.h"
+#include "GUIProgressControl.h"
 #include "GUIAudioManager.h"
-#include "../guilib/GUILabelControl.h"
+#include "GUILabelControl.h"
 #include "GUIWindowOSD.h"
 #include "GUIFontManager.h"
 
@@ -107,7 +123,7 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
 {
   CGUIWindow *pWindow = m_gWindowManager.GetWindow(windowID);
-  if (pWindow) 
+  if (pWindow)
   {
     pWindow->Initialize();
     pWindow->DynamicResourceAlloc(false);
@@ -225,7 +241,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (g_stSettings.m_currentVideoSettings.m_SubtitleStream >= g_application.m_pPlayer->GetSubtitleCount())
         g_stSettings.m_currentVideoSettings.m_SubtitleStream = 0;
       g_application.m_pPlayer->SetSubtitle(g_stSettings.m_currentVideoSettings.m_SubtitleStream);
-      return true;    
+      return true;
     }
     return true;
     break;
@@ -390,19 +406,27 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         (g_guiSettings.GetInt("system.remoteplayhdspindown") || g_guiSettings.GetInt("system.hdspindowntime"))
       )
       {
-        g_audioManager.Enable(false);
+        if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+          g_audioManager.Enable(false);
       }
 
+
       // setup the brightness, contrast and resolution
+      CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);
+
+      // switch resolution
       CSingleLock lock (g_graphicsContext);
-      CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);      
-      g_graphicsContext.SetFullScreenVideo( true );
-      lock.Leave();
+      g_graphicsContext.SetFullScreenVideo(true);
 #ifdef HAS_VIDEO_PLAYBACK
-      g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+      RESOLUTION res = g_renderManager.GetResolution();
+      g_graphicsContext.SetVideoResolution(res, false, false);
+#endif
+      lock.Leave();
+
+#ifdef HAS_VIDEO_PLAYBACK
+      // make sure renderer is uptospeed
       g_renderManager.Update(false);
 #endif
-
       // now call the base class to load our windows
       CGUIWindow::OnMessage(message);
 
@@ -441,10 +465,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CSingleLock lock (g_graphicsContext);
       CUtil::RestoreBrightnessContrastGamma();
       g_graphicsContext.SetFullScreenVideo(false);
-      g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
+      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
       lock.Leave();
+
 #ifdef HAS_VIDEO_PLAYBACK
-      g_renderManager.Update(false);      
+      // make sure renderer is uptospeed
+      g_renderManager.Update(false);
 #endif
 
       CSingleLock lockFont(m_fontLock);
@@ -453,9 +479,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         g_fontManager.Unload("__subtitle__");
         m_subtitleFont = NULL;
       }
-          
 
-      g_audioManager.Enable(true);
+      if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+        g_audioManager.Enable(true);
       return true;
     }
   case GUI_MSG_SETFOCUS:
@@ -510,8 +536,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
   if (g_infoManager.GetBool(PLAYER_SEEKBAR), GetID()) return true;
-  if (m_gWindowManager.IsRouted(true)) return true;
-  if (m_gWindowManager.IsModelessAvailable()) return true;
+  if (m_gWindowManager.HasDialogOnScreen()) return true;
   if (g_Mouse.IsActive()) return true;
   if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
     return true;
@@ -671,7 +696,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
   CGUIWindow::Render();
 
-  if (m_gWindowManager.IsRouted(true) || m_gWindowManager.IsModelessAvailable())
+  if (m_gWindowManager.HasDialogOnScreen())
     m_gWindowManager.RenderDialogs();
   // Render the mouse pointer, if visible...
   if (g_Mouse.IsActive())
@@ -703,9 +728,9 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       m_subtitleFont->GetTextExtent(utf16Sub.c_str(), &w, &h);
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
-      if (maxWidth < w)
+      if (maxWidth*0.9f < w)
       {
-        CGUILabelControl::WrapText(utf16Sub, m_subtitleFont, maxWidth);
+        CGUILabelControl::WrapText(utf16Sub, m_subtitleFont, maxWidth*0.9f);
         m_subtitleFont->GetTextExtent(utf16Sub.c_str(), &w, &h);
       }
       float x = (float) maxWidth / 2 + g_settings.m_ResInfo[res].Overscan.left;
@@ -770,7 +795,7 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
     bNeedsPause = true;
   }
   g_application.m_pPlayer->Seek(bPlus, bLargeStep);
-  
+
   //Make sure gui items are visible
   g_infoManager.SetDisplayAfterSeek();
 

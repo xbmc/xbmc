@@ -5,6 +5,7 @@
 #include <process.h>
 
 using namespace XFILE;
+using namespace DIRECTORY;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

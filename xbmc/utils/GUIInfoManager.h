@@ -89,6 +89,7 @@
 #define SYSTEM_CURRENT_CONTROL      136
 #define SYSTEM_XBOX_NICKNAME        137
 #define SYSTEM_DVD_LABEL            138
+#define SYSTEM_HAS_DRIVE_F          139
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
 #define SYSTEM_TRAYOPEN	            142
@@ -98,6 +99,8 @@
 #define SYSTEM_PROFILENAME          146
 #define SYSTEM_PROFILETHUMB         147
 #define SYSTEM_HAS_LOGINSCREEN      148
+#define SYSTEM_HAS_DRIVE_G          149
+
 
 // reserved for systeminfo stuff
 #define SYSTEM_HDD_SMART            150
@@ -154,6 +157,7 @@
 #define VIDEOPLAYER_HASMENU         261
 #define VIDEOPLAYER_PLAYLISTLEN     262
 #define VIDEOPLAYER_PLAYLISTPOS     263
+#define VIDEOPLAYER_EVENT           264
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -180,7 +184,9 @@
 #define LISTITEM_RATING             325
 #define LISTITEM_PROGRAM_COUNT      326
 #define LISTITEM_DURATION           327
-#define LISTITEM_END                327
+#define LISTITEM_ISPLAYING          328
+#define LISTITEM_ISSELECTED         329
+#define LISTITEM_END                329
 
 #define MUSICPM_ENABLED             350
 #define MUSICPM_SONGSPLAYED         351
@@ -208,6 +214,8 @@
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
+#define SKIN_HAS_MUSIC_OVERLAY      602
+#define SKIN_HAS_VIDEO_OVERLAY      603
 
 #define XLINK_KAI_USERNAME          701
 #define SKIN_THEME                  702
@@ -286,8 +294,8 @@ public:
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
   void SetCurrentSong(CFileItem &item);
   void SetCurrentAlbumThumb(const CStdString thumbFileName);
-  void SetCurrentSongTag(const CMusicInfoTag &tag) { m_currentSong.m_musicInfoTag = tag; m_currentSong.m_lStartOffset = 0;};
-  const CMusicInfoTag &GetCurrentSongTag() const { return m_currentSong.m_musicInfoTag; };
+  void SetCurrentSongTag(const CMusicInfoTag &tag) { m_currentFile.m_musicInfoTag = tag; m_currentFile.m_lStartOffset = 0;};
+  const CMusicInfoTag &GetCurrentSongTag() const { return m_currentFile.m_musicInfoTag; };
 
   // Current movie stuff
   void SetCurrentMovie(CFileItem &item);
@@ -338,6 +346,8 @@ public:
   CStdString GetItemLabel(const CFileItem *item, int info);
   CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
   CStdString GetItemImage(const CFileItem *item, int info);
+  bool       GetItemBool(const CFileItem *item, int info, DWORD contextWindow);
+
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   const CStdString &GetMultiInfoLabel(const GUIInfo &info) const;
@@ -356,8 +366,11 @@ protected:
   // Array of multiple information mapped to a single integer lookup
   vector<GUIInfo> m_multiInfo;
 
+  bool GetTuxBoxEvents();
+  CStdString m_currentMovieDuration;
+  
   // Current playing stuff
-  CFileItem m_currentSong;
+  CFileItem m_currentFile;
   CIMDBMovie m_currentMovie;
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;

@@ -11,6 +11,7 @@
 #include "GUIControl.h"
 
 class CGUIControlGroup;
+class CFileItem;
 
 #include "GUICallback.h"  // for GUIEvent
 
@@ -110,7 +111,9 @@ public:
   static void FlushReferenceCache();
 //#endif
   virtual bool IsDialog() const { return false;};
+  virtual bool IsModalDialog() const { return false; };
   virtual bool IsMediaWindow() const { return false; };
+  virtual CFileItem *GetCurrentListItem() { return NULL; };
   virtual bool IsActive() const;
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
@@ -130,7 +133,7 @@ public:
 
   virtual void ResetControlStates();
 protected:
-  virtual void Reset();
+  virtual void SetDefaults();
   virtual void OnWindowUnload() {}
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();

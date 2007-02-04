@@ -20,4 +20,5 @@ protected:
   float m_volume;
   int m_audioStream;
   int m_subtitleStream;
+  int m_outputmode;
 };

@@ -13,6 +13,7 @@ public:
 protected:
   virtual bool OnPlayMedia(int iItem);
   virtual void UpdateButtons();
+  void MarkPlaying();
 
   virtual void OnPopupMenu(int iItem, bool bContextDriven = true);
   void OnMove(int iItem, int iAction);
@@ -22,7 +23,6 @@ protected:
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
   void MoveItem(int iStart, int iDest);
 
-  void ShufflePlayList();
   void SavePlayList();
 
   int iPos;

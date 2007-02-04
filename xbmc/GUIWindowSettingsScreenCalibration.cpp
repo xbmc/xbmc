@@ -3,6 +3,7 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
+#include "GUILabelControl.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -49,8 +50,20 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 
   case ACTION_CALIBRATE_RESET:
     {
-      g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
-      ResetControls();
+      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+      pDialog->SetHeading(20325);
+      CStdString strText;
+      strText.Format(g_localizeStrings.Get(20326).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode);
+      pDialog->SetLine(0, strText);
+      pDialog->SetLine(1, 20327);
+      pDialog->SetChoice(0, 222);
+      pDialog->SetChoice(1, 186);
+      pDialog->DoModal();
+      if (pDialog->IsConfirmed())
+      {
+        g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
+        ResetControls();
+      }
       return true;
     }
     break;
@@ -58,11 +71,8 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
   case ACTION_CHANGE_RESOLUTION:
     // choose the next resolution in our list
     {
-      m_iCurRes++;
-      if (m_iCurRes == m_Res.size())
-        m_iCurRes = 0;
-      Sleep(1000);
-      g_graphicsContext.SetGUIResolution(m_Res[m_iCurRes]);
+      m_iCurRes = (m_iCurRes+1) % m_Res.size();
+      g_graphicsContext.SetVideoResolution(m_Res[m_iCurRes], TRUE);
       ResetControls();
       return true;
     }
@@ -90,9 +100,9 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
     {
       g_settings.Save();
       g_graphicsContext.SetCalibrating(false);
-      m_gWindowManager.ShowOverlay(true);
+      m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
       // reset our screen resolution to what it was initially
-      g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
+      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
       // Inform the player so we can update the resolution
 #ifdef HAS_VIDEO_PLAYBACK
       g_renderManager.Update(false);
@@ -103,18 +113,21 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      m_gWindowManager.ShowOverlay(false);
+      m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       g_graphicsContext.SetCalibrating(true);
-      
-#ifdef HAS_VIDEO_PLAYBACK
-      // Inform the renderer so we can update the resolution
-      g_renderManager.Update(false);
-#endif
 
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
       if (g_application.IsPlayingVideo())
       { // don't allow resolution switching if we are playing a video
+
+#ifdef HAS_VIDEO_PLAYBACK
+        RESOLUTION res = g_renderManager.GetResolution();
+        g_graphicsContext.SetVideoResolution(res);
+        // Inform the renderer so we can update the resolution
+        g_renderManager.Update(false);
+#endif
+
         m_iCurRes = 0;
         m_Res.push_back(g_graphicsContext.GetVideoResolution());
         SET_CONTROL_VISIBLE(CONTROL_VIDEO);
@@ -303,7 +316,27 @@ void CGUIWindowSettingsScreenCalibration::Render()
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, "");
   }
 
+  SET_CONTROL_HIDDEN(CONTROL_TOP_LEFT);
+  SET_CONTROL_HIDDEN(CONTROL_BOTTOM_RIGHT);
+  SET_CONTROL_HIDDEN(CONTROL_SUBTITLES);
+  SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
+
+  m_needsScaling = true;
   CGUIWindow::Render();
+  g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, false);
+
+  SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
+  SET_CONTROL_VISIBLE(CONTROL_BOTTOM_RIGHT);
+  SET_CONTROL_VISIBLE(CONTROL_SUBTITLES);
+  SET_CONTROL_VISIBLE(CONTROL_PIXEL_RATIO);
+
+  // render the movers etc.
+  for (int i = CONTROL_TOP_LEFT; i <= CONTROL_PIXEL_RATIO; i++)
+  {
+    CGUIControl *control = (CGUIControl *)GetControl(i);
+    if (control)
+      control->Render();
+  }
 
   // render the subtitles
   if (g_application.m_pPlayer)

@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "autorun.h"
 #include "application.h"
@@ -11,6 +32,8 @@
 #include "programdatabase.h"
 #include "utils/trainer.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
 
@@ -24,7 +47,7 @@ CAutorun::~CAutorun()
 
 void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 {
-  if ( (!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.IsRouted()) || m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN))
+  if ( (!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.HasModalDialog()) || m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN))
     return ;
 
   CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
@@ -154,22 +177,8 @@ void CAutorun::RunCdda()
   if ( vecItems.Size() <= 0 )
     return ;
 
-  //int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-
   g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-  for (int i = 0; i < vecItems.Size(); i++)
-  {
-    CFileItem* pItem = vecItems[i];
-    CPlayList::CPlayListItem playlistItem;
-    playlistItem.SetFileName(pItem->m_strPath);
-    playlistItem.SetDescription(pItem->GetLabel());
-    playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
-  }
-
-  //CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-  //m_gWindowManager.SendMessage( msg );
-
+  g_playlistPlayer.Add(PLAYLIST_MUSIC, vecItems);
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
   g_playlistPlayer.Play();
 }
@@ -229,24 +238,17 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           bPlaying = true;
           return true;
         }
-        else if (pItem->m_strPath.Find("MPEGAV") != -1 && bAllowVideo 
+        else if (pItem->m_strPath.Find("MPEGAV") != -1 && bAllowVideo
              && (bypassSettings || g_guiSettings.GetBool("autorun.vcd")))
         {
           CFileItemList items;
           CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
           if (items.Size())
           {
-            g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
             items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-            for (int i=0; i<items.Size(); ++i)
-            {
-              CFileItem* pItem=items[i];
-              CPlayList::CPlayListItem playlistItem;
-              CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
-            }
-
-            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+            g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+            g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
+            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
             g_playlistPlayer.Play(0);
             bPlaying = true;
             return true;
@@ -259,21 +261,14 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
           if (items.Size())
           {
-            g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
             items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-            for (int i=0; i<items.Size(); ++i)
-            {
-              CFileItem* pItem=items[i];
-              CPlayList::CPlayListItem playlistItem;
-              CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
-            }
-
-            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+            g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+            g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
+            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
             g_playlistPlayer.Play(0);
             bPlaying = true;
             return true;
-          }          
+          }
         }
         else if (pItem->m_strPath.Find("PICTURES") != -1 && bAllowPictures
               && (bypassSettings || g_guiSettings.GetBool("autorun.pictures")))
@@ -289,7 +284,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   }
 
   // check video first
-  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video")) && bAllowVideo)
+  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video")))
   {
     // stack video files
     CFileItemList tempItems;
@@ -320,14 +315,18 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
     if (itemlist.Size())
     {
-      g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
-      for (int i=0;i<itemlist.Size();++i)
+      if (!bAllowVideo)
       {
-        CPlayList::CPlayListItem playlistItem;
-        CUtil::ConvertFileItemToPlayListItem(itemlist[i], playlistItem);            
-        g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP).Add(playlistItem);
+        if (!bypassSettings)
+          return false;
+
+        if (m_gWindowManager.GetActiveWindow() != WINDOW_VIDEO_FILES)
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
       }
-      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+      g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+      g_playlistPlayer.Add(PLAYLIST_VIDEO, itemlist);
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
       g_playlistPlayer.Play(0);
     }
   }
@@ -340,11 +339,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       if (!pItem->m_bIsFolder && pItem->IsAudio())
       {
         nAddedToPlaylist++;
-        CPlayList::CPlayListItem playlistItem;
-        playlistItem.SetFileName(pItem->m_strPath);
-        playlistItem.SetDescription(pItem->GetLabel());
-        playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
-        g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
+        g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);
       }
     }
   }

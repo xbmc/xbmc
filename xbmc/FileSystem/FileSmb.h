@@ -49,8 +49,6 @@ private:
 
 extern CSMB smb;
 
-using namespace XFILE;
-
 namespace XFILE
 {
 class CFileSMB : public IFile

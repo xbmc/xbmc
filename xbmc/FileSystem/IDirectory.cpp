@@ -3,7 +3,6 @@
 #include "IDirectory.h"
 #include "../util.h"
 
-
 using namespace DIRECTORY;
 
 IDirectory::IDirectory(void)

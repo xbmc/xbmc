@@ -12,9 +12,6 @@
 #include "playlistplayer.h"
 #include "musicinfoloader.h"
 
-using namespace DIRECTORY;
-using namespace PLAYLIST;
-
 /*!
  \ingroup windows 
  \brief The base class for music windows
@@ -44,7 +41,6 @@ protected:
 
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
-  void AddItemToPlayList(const CFileItem* pItem, int playlist = PLAYLIST_MUSIC);
   virtual void OnSearchItemFound(const CFileItem* pItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void OnScan() {};
@@ -52,6 +48,7 @@ protected:
   // new methods
   virtual void PlayItem(int iItem);
   virtual bool OnPlayMedia(int iItem);
+  virtual void AddToPlaylist(int iItem);
 
   void RetrieveMusicInfo();
   void OnInfo(int iItem, bool bShowInfo = true);

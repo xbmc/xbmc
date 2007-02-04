@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIWindowPrograms.h"
 #include "util.h"
@@ -12,6 +33,7 @@
 #include "utils/kaiclient.h"
 #include "autorun.h"
 
+using namespace XFILE;
 using namespace DIRECTORY;
 
 #define CONTROL_BTNVIEWASICONS 2
@@ -119,7 +141,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         }
         SetHistoryForPath(m_vecItems.m_strPath);
       }
-      
+
       return CGUIMediaWindow::OnMessage(message);
     }
   break;
@@ -193,7 +215,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     if (CGUIDialogContextMenu::BookmarksMenu("myprograms", m_vecItems[iItem], posX, posY))
     {
       m_rootDir.SetShares(g_settings.m_vecMyProgramsShares);
-	    Update("");
+      Update("");
       return true;
     }
     m_vecItems[iItem]->Select(false);
@@ -209,11 +231,12 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     // load our menu
     pMenu->Initialize();
     // add the needed buttons
-    
+
     int btn_Launch = -2;
     int btn_Rename = -2;
     int btn_LaunchIn = -2;
     int btn_Trainers = -2;
+    int btn_GameSaves = -2;
     if (m_vecItems[iItem]->IsXBE() || m_vecItems[iItem]->IsShortCut())
     {
       CStdString strLaunch = g_localizeStrings.Get(518); // Launch
@@ -231,18 +254,34 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
       }
       btn_Launch = pMenu->AddButton(strLaunch); // launch
 
+
+      DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
+
+      CStdString strTitleID;
+      CStdString strGameSavepath;
+      strTitleID.Format("%08X",dwTitleId);
+      CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
+
+      if (CDirectory::Exists(strGameSavepath))
+        btn_GameSaves = pMenu->AddButton(20322);         // Goto GameSaves
+
       if (g_guiSettings.GetBool("myprograms.gameautoregion"))
         btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
 
       if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
-        btn_Rename = pMenu->AddButton(520); // edit xbe title
-  
-      DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
+      {
+        if (m_vecItems[iItem]->IsShortCut())
+          btn_Rename = pMenu->AddButton(16105);
+        else
+          btn_Rename = pMenu->AddButton(520); // edit xbe title
+      }
+
       if (m_database.ItemHasTrainer(dwTitleId))
       {
         CStdString strOptions = g_localizeStrings.Get(12015);
         btn_Trainers = pMenu->AddButton(strOptions); // trainer options
       }
+
     }
     int btn_ScanTrainers = pMenu->AddButton(12012);
 
@@ -263,12 +302,29 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
 
     if (btnid == btn_Rename)
     {
-      CStdString strDescription = m_vecItems[iItem]->GetLabel();
-      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(16013), false))
+      CStdString strDescription;
+      CShortcut cut;
+      if (m_vecItems[iItem]->IsShortCut())
       {
-        // SetXBEDescription will truncate to 40 characters.
-        CUtil::SetXBEDescription(m_vecItems[iItem]->m_strPath,strDescription);
-        m_database.SetDescription(m_vecItems[iItem]->m_strPath,strDescription);
+        cut.Create(m_vecItems[iItem]->m_strPath);
+        strDescription = cut.m_strLabel;
+      }
+      else
+        strDescription = m_vecItems[iItem]->GetLabel();
+
+      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(16008), false))
+      {
+        if (m_vecItems[iItem]->IsShortCut())
+        {
+          cut.m_strLabel = strDescription;
+          cut.Save(m_vecItems[iItem]->m_strPath);
+        }
+        else
+        {
+          // SetXBEDescription will truncate to 40 characters.
+          CUtil::SetXBEDescription(m_vecItems[iItem]->m_strPath,strDescription);
+          m_database.SetDescription(m_vecItems[iItem]->m_strPath,strDescription);
+        }
         Update(m_vecItems.m_strPath);
       }
     }
@@ -278,23 +334,17 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
       if (CGUIDialogTrainerSettings::ShowForTitle(dwTitleId,&m_database))
       {
         Update(m_vecItems.m_strPath);
-//        m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-//        OnSort();
-//        UpdateButtons();
       }
     }
     if (btnid == btn_ScanTrainers)
     {
       PopulateTrainersList();
       Update(m_vecItems.m_strPath);
-
-//      SetOverlayIcons();
-//      m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-//      OnSort();
-//      UpdateButtons();
     }
     if (btnid == btn_Settings)
+    {
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+    }
     else if (btnid == btn_GoToRoot)
     {
       return Update("");
@@ -303,6 +353,15 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
     {
       OnClick(iItem);
       return true;
+    }
+    else if (btnid == btn_GameSaves)
+    {
+      CStdString strTitleID;
+      CStdString strGameSavepath;
+      strTitleID.Format("%08X",CUtil::GetXbeID(m_vecItems[iItem]->m_strPath));
+      CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
+      m_gWindowManager.ActivateWindow(WINDOW_GAMESAVES,strGameSavepath);
+
     }
     else if (btnid == btn_LaunchIn)
     {
@@ -329,11 +388,11 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem, bool bContextDriven /* = true */
       btn_NTSCM = pMenu->AddButton(strNTSCM);
       btn_NTSCJ = pMenu->AddButton(strNTSCJ);
       btn_PAL60 = pMenu->AddButton(strPAL60);
-      
+
       pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
       pMenu->DoModal();
       int btnid = pMenu->GetButton();
-      
+
       if (btnid == btn_NTSCM)
       {
         m_iRegionSet = VIDEO_NTSCM;
@@ -406,7 +465,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
   m_database.IncTimesPlayed(pItem->m_strPath);
 
   int iRegion = m_iRegionSet?m_iRegionSet:GetRegion(iItem);
-  
+
   DWORD dwTitleId = 0;
   if (!pItem->IsOnDVD())
     dwTitleId = m_database.GetTitleId(pItem->m_strPath);
@@ -444,7 +503,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
     CUtil::RunShortcut(pItem->m_strPath.c_str());
     return false;
   }
-  
+
   if (strlen(szParameters))
     CUtil::RunXBE(szPath, szParameters,F_VIDEO(iRegion));
   else
@@ -461,7 +520,7 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
   if (bReload || m_vecItems[iItem]->IsOnDVD())
   {
     CXBE xbe;
-    iRegion = xbe.ExtractGameRegion(m_vecItems[iItem]->m_strPath); 
+    iRegion = xbe.ExtractGameRegion(m_vecItems[iItem]->m_strPath);
   }
   else
   {
@@ -482,7 +541,7 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
     else
       iRegion = 0;
   }
-  
+
   if (bReload)
     return CXBE::FilterRegion(iRegion,true);
   else
@@ -499,14 +558,14 @@ void CGUIWindowPrograms::PopulateTrainersList()
   std::vector<CStdString> vecTrainerPath;
   m_database.GetAllTrainers(vecTrainerPath);
   CGUIDialogProgress* m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  m_dlgProgress->SetLine(0,"Validating existing trainers");
+  m_dlgProgress->SetLine(0,12023);
   m_dlgProgress->SetLine(1,"");
   m_dlgProgress->SetLine(2,"");
   m_dlgProgress->StartModal();
   m_dlgProgress->SetHeading(12012);
   m_dlgProgress->ShowProgressBar(true);
   m_dlgProgress->Progress();
-  
+
   bool bBreak=false;
   bool bDatabaseState = m_database.IsOpen();
   if (!bDatabaseState)
@@ -572,7 +631,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     m_dlgProgress->SetPercentage(0);
     m_dlgProgress->ShowProgressBar(true);
-  
+
     CLog::Log(LOGDEBUG,"# trainers %i",trainers.Size());
     m_dlgProgress->SetLine(1,"");
     int j=0;
@@ -597,7 +656,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
 
       CTrainer trainer;
       if (trainer.Load(trainers[i]->m_strPath))
-      { 
+      {
         m_dlgProgress->SetLine(1,trainer.GetName());
         m_dlgProgress->SetLine(2,"");
         m_dlgProgress->Progress();
@@ -720,7 +779,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
         CStdString description;
         if (CUtil::GetXBEDescription(item->m_strPath, description) && (!item->IsLabelPreformated() && !item->GetLabel().IsEmpty()))
           item->SetLabel(description);
-   
+
         dwTitleID = CUtil::GetXbeID(item->m_strPath);
         if (!item->IsOnDVD())
           m_database.AddProgramInfo(item, dwTitleID);

@@ -237,7 +237,7 @@ HRESULT CXBFont::Create( D3DTexture* pFontTexture, VOID* pFontData )
     m_Glyphs = (GLYPH_ATTR*)(pData + 4);
 
     m_cMaxGlyph = cHighChar;
-    m_TranslatorTable = new SHORT[m_cMaxGlyph + 1];
+    m_TranslatorTable = new WCHAR[m_cMaxGlyph + 1];
     m_bTranslatorTableWasAllocated = TRUE;
 
     for ( WORD i = 0; i <= m_cMaxGlyph; i++ )
@@ -273,7 +273,7 @@ HRESULT CXBFont::Create( D3DTexture* pFontTexture, VOID* pFontData )
     // Point to the translator CStdString
     m_cMaxGlyph = ((WORD*)pData)[0];
     pData += sizeof(WORD);
-    m_TranslatorTable = (SHORT*)pData;
+    m_TranslatorTable = (WCHAR*)pData;
     pData += sizeof(WCHAR) * (m_cMaxGlyph + 1);
     m_bTranslatorTableWasAllocated = FALSE;
 
@@ -1051,7 +1051,7 @@ STDMETHODIMP CXBFont::GetTextSize(
   return hr;
 }
 
-inline SHORT CXBFont::GetGlyphToUse(SHORT letter) const
+inline WCHAR CXBFont::GetGlyphToUse(WCHAR letter) const
 {
   if (letter > m_cMaxGlyph || m_TranslatorTable[letter] == 0)
   { // remap our glyph

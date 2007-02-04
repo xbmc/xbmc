@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include ".\programdatabase.h"
 #include "utils/fstrcmp.h"
@@ -5,12 +26,16 @@
 #include "xbox/xbeheader.h"
 #include "GUIWindowFileManager.h"
 
-#define PROGRAM_DATABASE_VERSION 0.9f
+using namespace XFILE;
+
+#define PROGRAM_DATABASE_OLD_VERSION 0.9f
+#define PROGRAM_DATABASE_VERSION 3
 
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)
 {
-  m_fVersion=PROGRAM_DATABASE_VERSION;
+  m_preV2version=PROGRAM_DATABASE_OLD_VERSION;
+  m_version=PROGRAM_DATABASE_VERSION;
   m_strDatabaseFile=PROGRAM_DATABASE_NAME;
 }
 
@@ -46,7 +71,7 @@ bool CProgramDatabase::CreateTables()
   return true;
 }
 
-bool CProgramDatabase::UpdateOldVersion(float fVersion)
+bool CProgramDatabase::UpdateOldVersion(int version)
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
@@ -54,127 +79,6 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
 
   try
   {
-    if (fVersion < 0.5f)
-    { // Version 0 to 0.5 upgrade - we need to add the version table
-      CLog::Log(LOGINFO, "creating versions table");
-      m_pDS->exec("CREATE TABLE version (idVersion float)\n");
-    }
-
-    if (fVersion < 0.6f)
-    { // Version 0.5 to 0.6 upgrade - we need to add the region entry
-      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dialog)
-      {
-        dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, "");
-        dialog->SetLine(1, "");
-        dialog->SetLine(2, "");
-        dialog->StartModal();
-        dialog->SetLine(1, "Adding table entries");
-        dialog->Progress();
-      }
-      BeginTransaction();
-      CLog::Log(LOGINFO, "Creating temporary files table");
-      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, idPath integer, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer)\n");
-      CLog::Log(LOGINFO, "Copying files into temporary files table");
-      m_pDS->exec("INSERT INTO tempfiles SELECT idFile,idPath,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed FROM files");
-      CLog::Log(LOGINFO, "Destroying old files table");
-      m_pDS->exec("DROP TABLE files");
-      CLog::Log(LOGINFO, "Creating new files table");
-      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
-      CLog::Log(LOGINFO, "Copying files into new files table");
-      m_pDS->exec("INSERT INTO files(idFile,idPath,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed) SELECT * FROM tempfiles");
-      CLog::Log(LOGINFO, "Deleting temporary files table");
-      m_pDS->exec("DROP TABLE tempfiles");
-
-      CStdString strSQL=FormatSQL("update files set iRegion=%i",-1);
-      m_pDS->exec(strSQL.c_str());
-      
-      CommitTransaction();
-      if (dialog) dialog->Close();
-    }
-    if (fVersion < 0.7f)
-    { // Version 0.6 to 0.7 update - need to create the trainers table
-      CLog::Log(LOGINFO,"Creating trainers table");    
-      m_pDS->exec("CREATE TABLE trainers (idKey integer auto_increment primary key, idCRC integer, idTitle integer, strTrainerPath text, strSettings text, Active integer)\n");
-    }
-    if (fVersion < 0.71f)
-    { // Version 0.7 to 0.71 update - fix the idTitle bug
-      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dialog)
-      {
-        dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, "");
-        dialog->SetLine(1, "Adding table entries");
-        dialog->SetLine(2, "");;
-        dialog->StartModal();
-        dialog->Progress();
-      }
-      BeginTransaction();
-      CLog::Log(LOGINFO, "Creating temporary files table");
-      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, idPath integer, strFilename text, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
-      CLog::Log(LOGINFO, "Copying files into temporary files table");
-      m_pDS->exec("INSERT INTO tempfiles SELECT idFile,idPath,strFilename,xbedescription,iTimesPlayed,lastAccessed,iRegion FROM files");
-      CLog::Log(LOGINFO, "Destroying old files table");
-      m_pDS->exec("DROP TABLE files");
-      CLog::Log(LOGINFO, "Creating new files table");
-      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
-      CLog::Log(LOGINFO, "Copying files into new files table");
-      m_pDS->exec("INSERT INTO files(idFile,idPath,strFilename,xbedescription,iTimesPlayed,lastAccessed,iRegion) SELECT * FROM tempfiles");
-      CLog::Log(LOGINFO, "Deleting temporary files table");
-      m_pDS->exec("DROP TABLE tempfiles");
-
-      CStdString strSQL=FormatSQL("update files set titleId=%i",-1);
-      m_pDS->exec(strSQL.c_str());
-      
-      CommitTransaction();
-      if (dialog) dialog->Close();
-    }
-    if (fVersion < 0.8f)
-    { // Version 0.71 to 0.8 update - drop old tables for single files table
-      CLog::Log(LOGINFO, "dropping old files table");
-      m_pDS->exec("DROP TABLE files");
-      CLog::Log(LOGINFO, "creating new files table");
-      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
-      CLog::Log(LOGINFO, "dropping old program table");
-      m_pDS->exec("DROP TABLE program");
-      CLog::Log(LOGINFO, "dropping bookmark table");
-      m_pDS->exec("DROP TABLE bookmark");
-      CLog::Log(LOGINFO, "dropping path table");
-      m_pDS->exec("DROP TABLE path");
-    }
-    if (fVersion < 0.9f) // 0.81 was mistake ;)
-    { // Version 0.8 to 0.9 update - add size field
-      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dialog)
-      {
-        dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, "");
-        dialog->SetLine(1, "Adding table entries");
-        dialog->SetLine(2, "");;
-        dialog->StartModal();
-        dialog->Progress();
-      }
-      BeginTransaction();
-      CLog::Log(LOGINFO, "Creating temporary files table");
-      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
-      CLog::Log(LOGINFO, "Copying files into temporary files table");
-      m_pDS->exec("INSERT INTO tempfiles SELECT idFile,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed,iRegion FROM files");
-      CLog::Log(LOGINFO, "Destroying old files table");
-      m_pDS->exec("DROP TABLE files");
-      CLog::Log(LOGINFO, "Creating new files table");
-      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer, iSize integer)\n");
-      CLog::Log(LOGINFO, "Copying files into new files table");
-      m_pDS->exec("INSERT INTO files(idFile,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed,iRegion) SELECT * FROM tempfiles");
-      CLog::Log(LOGINFO, "Deleting temporary files table");
-      m_pDS->exec("DROP TABLE tempfiles");
-
-      CStdString strSQL=FormatSQL("update files set iSize=%i",-1);
-      m_pDS->exec(strSQL.c_str());
-      
-      CommitTransaction();
-      if (dialog) dialog->Close();
-    }
   }
   catch (...)
   {
@@ -192,7 +96,7 @@ int CProgramDatabase::GetRegion(const CStdString& strFilenameAndPath)
   try
   {
     CStdString strSQL = FormatSQL("select * from files where files.strFileName like '%s'", strFilenameAndPath.c_str());
-    if (!m_pDS->query(strSQL.c_str())) 
+    if (!m_pDS->query(strSQL.c_str()))
       return 0;
 
     int iRowsFound = m_pDS->num_rows();
@@ -221,7 +125,7 @@ DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
   try
   {
     CStdString strSQL = FormatSQL("select * from files where files.strFileName like '%s'", strFilenameAndPath.c_str());
-    if (!m_pDS->query(strSQL.c_str())) 
+    if (!m_pDS->query(strSQL.c_str()))
       return 0;
 
     int iRowsFound = m_pDS->num_rows();
@@ -422,18 +326,18 @@ bool CProgramDatabase::GetTrainers(unsigned int iTitleId, std::vector<CStdString
 {
   vecTrainers.clear();
   CStdString strSQL;
-  try 
+  try
   {
     strSQL = FormatSQL("select * from trainers where idTitle=%u",iTitleId);
     if (!m_pDS->query(strSQL.c_str()))
       return false;
-    
+
     while (!m_pDS->eof())
     {
       vecTrainers.push_back(m_pDS->fv("strTrainerPath").get_asString());
       m_pDS->next();
     }
-    
+
     return true;
   }
   catch (...)
@@ -448,18 +352,18 @@ bool CProgramDatabase::GetAllTrainers(std::vector<CStdString>& vecTrainers)
 {
   vecTrainers.clear();
   CStdString strSQL;
-  try 
+  try
   {
     strSQL = FormatSQL("select distinct strTrainerPath from trainers");//FormatSQL("select * from trainers");
     if (!m_pDS->query(strSQL.c_str()))
       return false;
-    
+
     while (!m_pDS->eof())
     {
-      vecTrainers.push_back(m_pDS->fv("strTrainerPath").get_asString());      
+      vecTrainers.push_back(m_pDS->fv("strTrainerPath").get_asString());
       m_pDS->next();
     }
-    
+
     return true;
   }
   catch (...)
@@ -496,7 +400,7 @@ bool CProgramDatabase::SetTrainerOptions(const CStdString& strTrainerPath, unsig
   {
     CLog::Log(LOGERROR,"CProgramDatabase::SetTrainerOptions failed (%s)",strSQL);
   }
-  
+
   return false;
 }
 
@@ -518,12 +422,12 @@ void CProgramDatabase::SetTrainerActive(const CStdString& strTrainerPath, unsign
 CStdString CProgramDatabase::GetActiveTrainer(unsigned int iTitleId)
 {
   CStdString strSQL;
-  try 
+  try
   {
     strSQL = FormatSQL("select * from trainers where idTitle=%u and Active=1",iTitleId);
     if (!m_pDS->query(strSQL.c_str()))
       return "";
-    
+
     if (!m_pDS->eof())
       return m_pDS->fv("strTrainerPath").get_asString();
   }
@@ -531,7 +435,7 @@ CStdString CProgramDatabase::GetActiveTrainer(unsigned int iTitleId)
   {
     CLog::Log(LOGERROR,"programdatabase: error finding active trainer for %i (%s)",iTitleId,strSQL.c_str());
   }
-  
+
   return "";
 }
 
@@ -550,14 +454,14 @@ bool CProgramDatabase::GetTrainerOptions(const CStdString& strTrainerPath, unsig
 
       return true;
     }
-    
+
     return false;
   }
   catch (...)
   {
     CLog::Log(LOGERROR,"CProgramDatabase::GetTrainerOptions failed (%s)",strSQL.c_str());
   }
-  
+
   return false;
 }
 

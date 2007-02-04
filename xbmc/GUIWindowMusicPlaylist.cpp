@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIWindowMusicPlayList.h"
 #include "util.h"
@@ -7,7 +28,9 @@
 #include "GUIDialogContextMenu.h"
 #include "PartyModeManager.h"
 
-#define CONTROL_BTNVIEWASICONS     2 
+using namespace PLAYLIST;
+
+#define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_LIST              50
@@ -21,10 +44,7 @@
 #define CONTROL_BTNPLAY      23
 #define CONTROL_BTNNEXT      24
 #define CONTROL_BTNPREVIOUS    25
-
 #define CONTROL_BTNREPEAT     26
-#define CONTROL_BTNRANDOMIZE  28
-
 
 CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST, "MyMusicPlaylist.xml")
@@ -42,17 +62,17 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_PLAYBACK_STOPPED:
-  case GUI_MSG_PLAYLISTPLAYER_RANDOM:
   case GUI_MSG_PLAYLISTPLAYER_REPEAT:
     {
       UpdateButtons();
     }
     break;
-  
+
+  case GUI_MSG_PLAYLISTPLAYER_RANDOM:
   case GUI_MSG_PLAYLIST_CHANGED:
     {
       // global playlist changed outside playlist window
+      UpdateButtons();
       Update(m_vecItems.m_strPath);
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
@@ -61,6 +81,15 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         SET_CONTROL_FOCUS(m_iLastControl, 0);
       }
 
+    }
+    break;
+
+  case GUI_MSG_WINDOW_DEINIT:
+    {
+      if (m_musicInfoLoader.IsLoading())
+        m_musicInfoLoader.StopThread();
+
+      iPos = -1;
     }
     break;
 
@@ -92,39 +121,19 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      if (m_musicInfoLoader.IsLoading())
-        m_musicInfoLoader.StopThread();
-
-      iPos = -1;
-    }
-    break;
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-
-      if (iControl == CONTROL_BTNRANDOMIZE)
+      if (iControl == CONTROL_BTNSHUFFLE)
       {
-        // disable randomize button
-        /*
-        g_stSettings.m_bMyMusicPlaylistShuffle = !g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
-        g_settings.Save();
-        g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
-        UpdateButtons();
-        */
-      }
-      else if (iControl == CONTROL_BTNSHUFFLE)
-      {
-        // shuffle state is now saved, not randomize
-        ShufflePlayList();
-        if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).IsShuffled())
-          g_stSettings.m_bMyMusicPlaylistShuffle = true;
-        else
-          g_stSettings.m_bMyMusicPlaylistShuffle = false;
-        g_settings.Save();
-        UpdateButtons();
+        if (!g_partyModeManager.IsEnabled())
+        {
+          g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, !(g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC)));
+          g_stSettings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
+          g_settings.Save();
+          UpdateButtons();
+          Update(m_vecItems.m_strPath);
+        }
       }
       else if (iControl == CONTROL_BTNSAVE)
       {
@@ -182,6 +191,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         if (iAction == ACTION_DELETE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
           RemovePlayListItem(iItem);
+          MarkPlaying();
         }
       }
     }
@@ -242,7 +252,6 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bo
       else if (iNew == iCurrentSong)
         iCurrentSong = iSelected;
       g_playlistPlayer.SetCurrentSong(iCurrentSong);
-      m_vecItems[iCurrentSong]->Select(true);
     }
 
     if (bUpdate)
@@ -319,41 +328,6 @@ void CGUIWindowMusicPlayList::ClearPlayList()
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
 
-void CGUIWindowMusicPlayList::ShufflePlayList()
-{
-  // disallow shuffle in party mode
-  if (g_partyModeManager.IsEnabled())
-    return;
-
-  int iPlaylist = PLAYLIST_MUSIC;
-  ClearFileItems();
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
-
-  CStdString strFileName;
-  if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
-  {
-    const CPlayList::CPlayListItem& item = playlist[g_playlistPlayer.GetCurrentSong()];
-    strFileName = item.GetFileName();
-  }
-
-  // shuffle or unshuffle?
-  playlist.IsShuffled() ? playlist.UnShuffle() : playlist.Shuffle();
-  if (g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
-    g_playlistPlayer.Reset();
-
-  if (!strFileName.IsEmpty())
-  {
-    for (int i = 0; i < playlist.size(); i++)
-    {
-      const CPlayList::CPlayListItem& item = playlist[i];
-      if (item.GetFileName() == strFileName)
-        g_playlistPlayer.SetCurrentSong(i);
-    }
-  }
-
-  Update(m_vecItems.m_strPath);
-}
-
 void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 {
   if (iItem < 0 || iItem > m_vecItems.Size()) return;
@@ -373,7 +347,6 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
     {
       iCurrentSong--;
       g_playlistPlayer.SetCurrentSong(iCurrentSong);
-      m_vecItems[iCurrentSong]->Select(true);
     }
   }
 
@@ -399,7 +372,6 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   if (m_vecItems.Size() && !g_partyModeManager.IsEnabled())
   {
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
-    CONTROL_ENABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_ENABLE(CONTROL_BTNSAVE);
     CONTROL_ENABLE(CONTROL_BTNCLEAR);
     CONTROL_ENABLE(CONTROL_BTNREPEAT);
@@ -427,7 +399,6 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   {
     // disable buttons if party mode is enabled too
     CONTROL_DISABLE(CONTROL_BTNSHUFFLE);
-    CONTROL_DISABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_DISABLE(CONTROL_BTNSAVE);
     CONTROL_DISABLE(CONTROL_BTNCLEAR);
     CONTROL_DISABLE(CONTROL_BTNREPEAT);
@@ -438,11 +409,8 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 
   // update buttons
   CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
-  CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
-  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).IsShuffled())
-    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
   if (g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC))
-    CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
+    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
 
   // update repeat button
   int iRepeat = 595 + g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC);
@@ -459,9 +427,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
-   // disable the randomize control
-  CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
-  CONTROL_DISABLE(CONTROL_BTNRANDOMIZE);
+  MarkPlaying();
 }
 
 bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
@@ -477,10 +443,6 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
         m_guiState->SetPlaylistDirectory(m_vecItems.m_strPath);
 
       g_playlistPlayer.SetCurrentPlaylist( iPlaylist );
-
-      // I don't see why we should be reset'ing here.  The playlist has not
-      // been changed in anyway from what I can see
-//      g_playlistPlayer.Reset();
       g_playlistPlayer.Play( iItem );
     }
     else
@@ -541,8 +503,8 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   {
     CPlayList& playlist=g_playlistPlayer.GetPlaylist(m_guiState->GetPlaylist());
     CPlayList::CPlayListItem& item=playlist[pItem->m_iprogramCount];
-    if (item.m_strPath==pItem->m_strPath && 
-        item.m_lStartOffset==pItem->m_lStartOffset && 
+    if (item.m_strPath==pItem->m_strPath &&
+        item.m_lStartOffset==pItem->m_lStartOffset &&
         item.m_lEndOffset==pItem->m_lEndOffset)
     {
       item.SetDescription(pItem->GetLabel());
@@ -550,17 +512,17 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     else
     { // for some reason the order is wrong - do it the incredibly slow way
       // FIXME: Highly inefficient. :)
-      // Since we can't directly use the items 
+      // Since we can't directly use the items
       // of the playlistplayer, we need to set each
       // label of the playlist items or else the label
-      // is reset to the filename each time Update() 
+      // is reset to the filename each time Update()
       // is called and this is annoying. ;)
       for (int i=0; i<playlist.size(); ++i)
       {
         CPlayList::CPlayListItem& item=playlist[i];
 
-        if (item.m_strPath==pItem->m_strPath && 
-            item.m_lStartOffset==pItem->m_lStartOffset && 
+        if (item.m_strPath==pItem->m_strPath &&
+            item.m_lStartOffset==pItem->m_lStartOffset &&
             item.m_lEndOffset==pItem->m_lEndOffset)
         {
           item.SetDescription(pItem->GetLabel());
@@ -588,6 +550,8 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
     return false;
 
   m_musicInfoLoader.Load(m_vecItems);
+
+
 
   return true;
 }
@@ -717,14 +681,7 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem, bool bContextDriven /* = tr
       g_partyModeManager.Disable();
     }
   }
-  m_vecItems[iItem]->Select(false);
-
-  // mark the currently playing item
-  if (bIsPlaying)
-  {
-    int i = g_playlistPlayer.GetCurrentSong();
-    m_vecItems[i]->Select(true);
-  }
+  MarkPlaying();
 }
 
 void CGUIWindowMusicPlayList::OnMove(int iItem, int iAction)
@@ -776,4 +733,19 @@ void CGUIWindowMusicPlayList::MoveItem(int iStart, int iDest)
 
   if (bRestart)
     m_musicInfoLoader.Load(m_vecItems);
+}
+
+void CGUIWindowMusicPlayList::MarkPlaying()
+{
+/*  // clear markings
+  for (int i = 0; i < m_vecItems.Size(); i++)
+    m_vecItems[i]->Select(false);
+
+  // mark the currently playing item
+  if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) && (g_application.IsPlayingAudio()))
+  {
+    int iSong = g_playlistPlayer.GetCurrentSong();
+    if (iSong >= 0 && iSong <= m_vecItems.Size())
+      m_vecItems[iSong]->Select(true);
+  }*/
 }

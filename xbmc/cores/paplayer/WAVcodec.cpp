@@ -1,7 +1,6 @@
 #include "../../stdafx.h"
 #include "WAVCodec.h"
 
-
 typedef struct
 {
   char chunk_id[4];

@@ -2,6 +2,7 @@
 #ifdef HAS_WMA_CODEC
 #include "WMACodec.h"
 #include "../../Util.h"
+#include "../../utils/Win32Exception.h"
 
 DWORD CALLBACK WMAStreamCallback( VOID* pContext, ULONG offset, ULONG num_bytes,
                                   VOID** ppData )
@@ -38,21 +39,30 @@ bool WMACodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   
   m_info.iStartOfBuffer = -1;
-  HRESULT hr = WmaCreateInMemoryDecoder( WMAStreamCallback, &m_info, 0,
-                                  &wfxSourceFormat, (LPXMEDIAOBJECT*)&m_pWMA);
+
+  try
+  {
+    HRESULT hr = WmaCreateInMemoryDecoder( WMAStreamCallback, &m_info, 0,
+                                    &wfxSourceFormat, (LPXMEDIAOBJECT*)&m_pWMA);
   
-  if (FAILED(hr))
+    if (FAILED(hr))
+      return false;
+  
+    WMAXMOFileHeader info;
+    m_pWMA->GetFileHeader(&info);
+    m_Channels = info.dwNumChannels;
+    m_SampleRate = info.dwSampleRate;
+    m_BitsPerSample = 16;
+    m_TotalTime = info.dwDuration; // fixme?
+    m_iDataPos = 0;
+    m_iDataInBuffer = 0;    
+  }
+  catch(win32_exception e)
+  {
+    e.writelog(__FUNCTION__);
     return false;
-  
-  WMAXMOFileHeader info;
-  m_pWMA->GetFileHeader(&info);
-  m_Channels = info.dwNumChannels;
-  m_SampleRate = info.dwSampleRate;
-  m_BitsPerSample = 16;
-  m_TotalTime = info.dwDuration; // fixme?
-  m_iDataPos = 0;
-  m_iDataInBuffer = 0;
-   
+  }
+
   return true;
 }
 

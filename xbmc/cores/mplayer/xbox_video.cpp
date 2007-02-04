@@ -39,31 +39,6 @@ static EFIELDSYNC m_iFieldSync = FS_NONE;
 
 void video_uninit(void);
 
-void xbox_video_getAR(float& fAR)
-{
-  fAR = g_renderManager.GetAspectRatio();
-}
-
-void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
-{
-  g_renderManager.GetVideoRect(SrcRect, DestRect);
-}
-
-void xbox_video_wait()
-{
-  g_renderManager.WaitForFlip();
-}
-
-void xbox_video_render_update(bool clear)
-{
-  g_renderManager.RenderUpdate(clear);
-}
-
-void xbox_video_update(bool bPauseDrawing)
-{
-  g_renderManager.Update(bPauseDrawing);
-}
-
 /********************************************************************************************************
   mplayer calls below here
 ********************************************************************************************************/
@@ -89,9 +64,12 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src, unsigne
 static void video_draw_osd(void)
 {
   if (g_renderManager.Paused()) return ;
-  int m_iWidth = g_renderManager.GetOSDWidth();
-  int m_iHeight = g_renderManager.GetOSDHeight();
-  vo_draw_text(g_renderManager.GetOSDWidth(), g_renderManager.GetOSDHeight(), draw_alpha);
+  //RECT rs, rd;
+  //g_renderManager.GetVideoRect(rs, rd);
+  //vo_draw_text(rd.right-rd.left, rd.bottom-rd.top, draw_alpha);
+  // for now use fixed vobsub size, so scaling workes ok for 
+  // mplayer text subs size we force the scaling based on fixes size
+  vo_draw_text(720, 480, draw_alpha);
 }
 
 
@@ -169,7 +147,7 @@ static unsigned int video_draw_frame(unsigned char *src[])
 */
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
-  CLog::Log(LOGDEBUG, "mplayer::video_config(%d, %d, %d, %d, %d, %d", width, height, d_width, d_height, options, format);
+  CLog::Log(LOGDEBUG, "mplayer::video_config(%d, %d, %d, %d, %d, %d)", width, height, d_width, d_height, options, format);
 
 #ifdef MP_DIRECTRENDERING
   m_bAllowDR = true;
@@ -181,8 +159,12 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
   if (g_application.m_pPlayer)
     fps = g_application.m_pPlayer->GetActualFPS();
 
+  unsigned flags = 0;
+  if(options & VOFLAG_FULLSCREEN)
+    flags |= CONF_FLAGS_FULLSCREEN;
+
   //TODO, the format parameter, should be able to give a fullrange yuv format
-  if(g_renderManager.Configure(width, height, d_width, d_height, fps, 0))
+  if(g_renderManager.Configure(width, height, d_width, d_height, fps, flags))
     return 0;
 
   return VO_ERROR;

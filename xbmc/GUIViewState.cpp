@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIViewState.h"
 #include "GUIViewStateMusic.h"
@@ -5,6 +26,9 @@
 #include "GUIViewStatePicturesProgramsScripts.h"
 #include "playlistplayer.h"
 #include "util.h"
+#include "GUIBaseContainer.h" // for VIEW_TYPE_*
+#include "ViewDatabase.h"
+#include "Autoswitch.h"
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSHARES CGUIViewState::m_shares;
@@ -24,6 +48,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (url.GetProtocol() == "shout")
     return new CGUIViewStateMusicShoutcast(items);
+
   if (url.GetProtocol() == "lastfm")
     return new CGUIViewStateMusicLastFM(items);
 
@@ -50,6 +75,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId==WINDOW_SCRIPTS)
     return new CGUIViewStateWindowScripts(items);
+
+  if (windowId==WINDOW_GAMESAVES)
+    return new CGUIViewStateWindowGameSaves(items);
 
   if (windowId==WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);
@@ -100,53 +128,23 @@ SORT_ORDER CGUIViewState::SetNextSortOrder()
   return m_sortOrder;
 }
 
-VIEW_METHOD CGUIViewState::GetViewAsControl() const
+int CGUIViewState::GetViewAsControl() const
 {
-  if (m_currentViewAsControl>=0 && m_currentViewAsControl<(int)m_viewAsControls.size())
-    return m_viewAsControls[m_currentViewAsControl].m_viewAsControl;
-
-  return VIEW_METHOD_LIST;
+  return m_currentViewAsControl;
 }
 
-int CGUIViewState::GetViewAsControlButtonLabel() const
+void CGUIViewState::SetViewAsControl(int viewAsControl)
 {
-  if (m_currentViewAsControl>=0 && m_currentViewAsControl<(int)m_viewAsControls.size())
-    return m_viewAsControls[m_currentViewAsControl].m_buttonLabel;
-
-  return 101; // "View As: List" button label
+  if (viewAsControl == DEFAULT_VIEW_AUTO)
+    m_currentViewAsControl = CAutoSwitch::GetView(m_items);
+  else
+    m_currentViewAsControl = viewAsControl;
 }
 
-void CGUIViewState::AddViewAsControl(VIEW_METHOD viewAsControl, int buttonLabel)
+void CGUIViewState::SaveViewAsControl(int viewAsControl)
 {
-  VIEW view;
-  view.m_viewAsControl=viewAsControl;
-  view.m_buttonLabel=buttonLabel;
-
-  m_viewAsControls.push_back(view);
-}
-
-void CGUIViewState::SetViewAsControl(VIEW_METHOD viewAsControl)
-{
-  for (int i=0; i<(int)m_viewAsControls.size(); ++i)
-  {
-    if (m_viewAsControls[i].m_viewAsControl==viewAsControl)
-    {
-      m_currentViewAsControl=i;
-      break;
-    }
-  }
-}
-
-VIEW_METHOD CGUIViewState::SetNextViewAsControl()
-{
-  m_currentViewAsControl++;
-
-  if (m_currentViewAsControl>=(int)m_viewAsControls.size())
-    m_currentViewAsControl=0;
-
+  SetViewAsControl(viewAsControl);
   SaveViewState();
-
-  return GetViewAsControl();
 }
 
 SORT_METHOD CGUIViewState::GetSortMethod() const
@@ -160,16 +158,22 @@ SORT_METHOD CGUIViewState::GetSortMethod() const
 int CGUIViewState::GetSortMethodLabel() const
 {
   if (m_currentSortMethod>=0 && m_currentSortMethod<(int)m_sortMethods.size())
-    return m_sortMethods[m_currentSortMethod].m_buttonLabel; 
+    return m_sortMethods[m_currentSortMethod].m_buttonLabel;
 
   return 103; // Sort By: Name
+}
+
+void CGUIViewState::GetSortMethods(vector< pair<int,int> > &sortMethods) const
+{
+  for (unsigned int i = 0; i < m_sortMethods.size(); i++)
+    sortMethods.push_back(make_pair(m_sortMethods[i].m_sortMethod, m_sortMethods[i].m_buttonLabel));
 }
 
 void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
 {
   if (m_currentSortMethod>=0 && m_currentSortMethod<(int)m_sortMethods.size())
   {
-    masks=m_sortMethods[m_currentSortMethod].m_labelMasks; 
+    masks=m_sortMethods[m_currentSortMethod].m_labelMasks;
     return;
   }
 
@@ -281,13 +285,47 @@ VECSHARES& CGUIViewState::GetShares()
 
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)
 {
-  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, size | Foldername, empty
+  AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, size | Foldername, empty
   SetSortMethod(SORT_METHOD_LABEL);
 
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-  SetViewAsControl(VIEW_METHOD_LIST);
+  SetViewAsControl(DEFAULT_VIEW_LIST);
 
   SetSortOrder(SORT_ORDER_ASC);
+}
+
+void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
+{ // get our view state from the db
+  CViewDatabase db;
+  if (db.Open())
+  {
+    CViewState state;
+    if (db.GetViewState(path, windowID, state))
+    {
+      SetViewAsControl(state.m_viewMode);
+      SetSortMethod(state.m_sortMethod);
+      SetSortOrder(state.m_sortOrder);
+    }
+    db.Close();
+  }
+}
+
+void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID)
+{
+  CViewState state(m_currentViewAsControl, GetSortMethod(), m_sortOrder);
+  SaveViewToDb(path, windowID, state, false);
+}
+
+void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewState &viewState, bool saveSettings)
+{
+  CViewDatabase db;
+  if (db.Open())
+  {
+    viewState.m_viewMode = m_currentViewAsControl;
+    viewState.m_sortMethod = GetSortMethod();
+    viewState.m_sortOrder = m_sortOrder;
+    db.SetViewState(path, windowID, viewState);
+    db.Close();
+    if (saveSettings)
+      g_settings.Save();
+  }
 }

@@ -29,13 +29,15 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
-  virtual void SetColourDiffuse(D3DCOLOR colour);
+  virtual void SetColorDiffuse(D3DCOLOR color);
   void SetLabel(const string& strLabel);
   void SetAltLabel(const string& label);
   virtual const string& GetLabel() const;
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
+  void SetAltClickActions(const vector<CStdString> &clickActions);
 
 protected:
+  virtual void OnClick();
   virtual void Update();
   CGUIButtonControl m_selectButton;
   int m_toggleSelect;

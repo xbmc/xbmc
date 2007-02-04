@@ -18,6 +18,16 @@ struct FRECT
   float bottom;
 };
 
+// image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
+#define ASPECT_ALIGN_CENTER  0
+#define ASPECT_ALIGN_LEFT    1
+#define ASPECT_ALIGN_RIGHT   2
+#define ASPECT_ALIGNY_CENTER 0
+#define ASPECT_ALIGNY_TOP    4
+#define ASPECT_ALIGNY_BOTTOM 8
+#define ASPECT_ALIGN_MASK    3
+#define ASPECT_ALIGNY_MASK  ~3
+
 class CImage
 {
 public:
@@ -25,26 +35,35 @@ public:
   {
     file = fileName;
     memset(&border, 0, sizeof(FRECT));
+    flipX = flipY = false;
   };
 
   CImage()
   {
     memset(&border, 0, sizeof(FRECT));
+    flipX = flipY = false;
   };
 
   void operator=(const CImage &left)
   {
     file = left.file;
     memcpy(&border, &left.border, sizeof(FRECT));
+    flipX = left.flipX;
+    flipY = left.flipY;
+    diffuse = left.diffuse;
   };
   CStdString file;
   FRECT      border;  // scaled  - unneeded if we get rid of scale on load
+  bool       flipX;   // flip horizontally
+  bool       flipY;   // flip vertically
+  CStdString diffuse; // diffuse overlay texture (unimplemented)
 };
 
 /*!
  \ingroup controls
  \brief 
  */
+
 class CGUIImage : public CGUIControl
 {
 public:
@@ -67,15 +86,12 @@ public:
 
   void PythonSetColorKey(DWORD dwColorKey);
   void SetFileName(const CStdString& strFileName);
-  void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio);
-  void SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom);
-  void SetAlpha(DWORD dwAlpha);
+  void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
+  void SetAlpha(unsigned char alpha);
+  void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
   void SetInfo(int info) { m_Info = info; };
 
-  void GetBottomRight(float &x, float &y) const;
   const CStdString& GetFileName() const { return m_strFileName;};
-  float GetRenderWidth() const;
-  float GetRenderHeight() const;
   int GetTextureWidth() const;
   int GetTextureHeight() const;
 
@@ -84,10 +100,11 @@ protected:
   void FreeTextures();
   void Process();
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-  void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, DWORD baseColor);
+  static const DWORD FVF_VERTEX2 = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX2;
+  void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
 
   DWORD m_dwColorKey;
-  DWORD m_dwAlpha;
+  unsigned char m_alpha[4];
   CStdString m_strFileName;
   int m_iTextureWidth;
   int m_iTextureHeight;
@@ -97,12 +114,13 @@ protected:
   int m_iCurrentImage;
   DWORD m_dwFrameCounter;
   GUIIMAGE_ASPECT_RATIO m_aspectRatio;
+  DWORD                 m_aspectAlign;
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
+  LPDIRECT3DTEXTURE8 m_diffuseTexture;
+  LPDIRECT3DPALETTE8 m_diffusePalette;
+  float m_diffuseScaleU, m_diffuseScaleV;
   LPDIRECT3DPALETTE8 m_pPalette;
-  float m_renderWidth;
-  float m_renderHeight;
   bool m_bWasVisible;
-  DWORD m_cornerAlpha[4];
   bool m_bDynamicResourceAlloc;
 
   // for when we are changing textures

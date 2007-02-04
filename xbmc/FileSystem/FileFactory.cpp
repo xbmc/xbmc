@@ -5,6 +5,7 @@
 #include "FileCurl.h"
 #include "FileShoutcast.h"
 #include "FileLastFM.h"
+#include "FileFileReader.h"
 #ifdef HAS_FILESYSTEM
 #include "FileISO.h"
 #include "FileSMB.h"
@@ -19,6 +20,7 @@
 #include "FileRar.h"
 #include "FileMusicDatabase.h"
 #include "../xbox/network.h"
+#include "FileTuxBox.h"
 
 using namespace XFILE;
 
@@ -45,6 +47,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "rar") return new CFileRar();
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
   else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
+  else if (strProtocol == "filereader") return new CFileFileReader();
 #ifdef HAS_FILESYSTEM
   else if (strProtocol == "iso9660") return new CFileISO();
   else if (strProtocol == "soundtrack") return new CFileSndtrk();
@@ -58,6 +61,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "upnp") return new CFileCurl();
     else if (strProtocol == "shout") return new CFileShoutcast();
     else if (strProtocol == "lastfm") return new CFileLastFM();
+    else if (strProtocol == "tuxbox") return new CFileTuxBox();
 #ifdef HAS_FILESYSTEM
     else if (strProtocol == "smb") return new CFileSMB();
     else if (strProtocol == "xbms") return new CFileXBMSP();

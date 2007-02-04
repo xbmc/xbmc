@@ -2,6 +2,7 @@
 #include "VisibleEffect.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "SkinInfo.h" // for the effect time adjustments
+#include "GUIImage.h" // for FRECT
 
 CAnimation::CAnimation()
 {
@@ -23,9 +24,10 @@ void CAnimation::Reset()
   acceleration = 0;
   condition = 0;
   reversible = true;
+  lastCondition = false;
 }
 
-void CAnimation::Create(const TiXmlElement *node)
+void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
 {
   if (!node || !node->FirstChild())
     return;
@@ -44,6 +46,8 @@ void CAnimation::Create(const TiXmlElement *node)
     type = ANIM_TYPE_WINDOW_OPEN;
   else if (strcmpi(animType, "windowclose") == 0)
     type = ANIM_TYPE_WINDOW_CLOSE;
+  else if (strcmpi(animType, "conditional") == 0)
+    type = ANIM_TYPE_CONDITIONAL;
   if (type == ANIM_TYPE_NONE)
   {
     CLog::Log(LOGERROR, "Control has invalid animation type");
@@ -139,22 +143,54 @@ void CAnimation::Create(const TiXmlElement *node)
     // effect defaults
     startX = startY = 100;
     endX = endY = 100;
+    centerX = centerY = 0;
+
+    float startPosX = rect.left;
+    float startPosY = rect.top;
+    float endPosX = rect.left;
+    float endPosY = rect.right;
 
     const char *start = node->Attribute("start");
     if (start)
     {
-      startX = startY = (float)atof(start);
-      const char *comma = strstr(start, ",");
-      if (comma)
-        startY = (float)atof(comma + 1);
+      CStdStringArray params;
+      StringUtils::SplitString(start, ",", params);
+      if (params.size() == 1)
+        startX = startY = (float)atof(start);
+      else if (params.size() == 2)
+      {
+        startX = (float)atof(params[0].c_str());
+        startY = (float)atof(params[1].c_str());
+      }
+      else if (params.size() == 4)
+      { // format is start="x,y,width,height"
+        // use width and height from our rect to calculate our sizing
+        startPosX = (float)atof(params[0].c_str());
+        startPosY = (float)atof(params[1].c_str());
+        startX = (float)atof(params[2].c_str()) / rect.right * 100.0f;
+        startY = (float)atof(params[3].c_str()) / rect.bottom * 100.0f;
+      }
     }
     const char *end = node->Attribute("end");
     if (end)
     {
-      endX = endY = (float)atof(end);
-      const char *comma = strstr(end, ",");
-      if (comma)
-        endY = (float)atof(comma + 1);
+      CStdStringArray params;
+      StringUtils::SplitString(end, ",", params);
+      if (params.size() == 1)
+        endX = endY = (float)atof(end);
+      else if (params.size() == 2)
+      {
+        endX = (float)atof(params[0].c_str());
+        endY = (float)atof(params[1].c_str());
+      }
+      else if (params.size() == 4)
+      { // format is start="x,y,width,height"
+        // use width and height from our rect to calculate our sizing
+        endPosX = (float)atof(params[0].c_str());
+        endPosY = (float)atof(params[1].c_str());
+        endX = (float)atof(params[2].c_str()) / rect.right * 100.0f;
+        endY = (float)atof(params[3].c_str()) / rect.bottom * 100.0f;
+      }
     }
     const char *centerPos = node->Attribute("center");
     if (centerPos)
@@ -163,6 +199,22 @@ void CAnimation::Create(const TiXmlElement *node)
       const char *comma = strstr(centerPos, ",");
       if (comma)
         centerY = (float)atof(comma + 1);
+    }
+    else
+    { // no center specified
+      // calculate the center position...
+      if (startX)
+      {
+        float scale = endX / startX;
+        if (scale != 1)
+          centerX = (endPosX - scale*startPosX) / (1 - scale);
+      }
+      if (startY)
+      {
+        float scale = endY / startY;
+        if (scale != 1)
+          centerY = (endPosY - scale*startPosY) / (1 - scale);
+      }
     }
   }
 }
@@ -185,7 +237,7 @@ void CAnimation::CreateReverse(const CAnimation &anim)
   reversible = anim.reversible;
 }
 
-void CAnimation::Animate(unsigned int time, bool hasRendered)
+void CAnimation::Animate(unsigned int time, bool startAnim)
 {
   // First start any queued animations
   if (queuedProcess == ANIM_PROCESS_NORMAL)
@@ -204,16 +256,10 @@ void CAnimation::Animate(unsigned int time, bool hasRendered)
       start = time;
     currentProcess = ANIM_PROCESS_REVERSE;
   }
-  // reset the queued state once we've rendered
-  // Note that if we are delayed, then the resource may not have been allocated as yet
-  // as it hasn't been rendered (is still invisible).  Ideally, the resource should
-  // be allocated based on a visible state, rather than a bool on/off, then only rendered
-  // if it's in the appropriate state (ie allow visible = NO, DELAYED, VISIBLE, and allocate
-  // if it's not NO, render if it's VISIBLE)  The alternative, is to just always render
-  // the control while it's in the DELAYED state (comes down to the definition of the states)
-  if (hasRendered || queuedProcess == ANIM_PROCESS_REVERSE
-      || (currentState == ANIM_STATE_DELAYED && type > 0))
+  // reset the queued state once we've rendered to ensure allocation has occured
+  if (startAnim || queuedProcess == ANIM_PROCESS_REVERSE)// || (currentState == ANIM_STATE_DELAYED && type > 0))
     queuedProcess = ANIM_PROCESS_NONE;
+
   // Update our animation process
   if (currentProcess == ANIM_PROCESS_NORMAL)
   {
@@ -248,7 +294,7 @@ void CAnimation::Animate(unsigned int time, bool hasRendered)
   }
 }
 
-#define DEGREE_TO_RADIAN 0.01745329f
+#define DEGREE_TO_RADIAN 0.01745329252f
 
 void CAnimation::RenderAnimation(TransformMatrix &matrix)
 {
@@ -259,39 +305,52 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
 
   // Now do the real animation
   if (currentProcess != ANIM_PROCESS_NONE)
-  {
-    float offset = amount * (acceleration * amount + 1.0f - acceleration);
-    if (effect == EFFECT_TYPE_FADE)
-      m_matrix.SetFader(((float)(endAlpha - startAlpha) * amount + startAlpha) * 0.01f);
-    else if (effect == EFFECT_TYPE_SLIDE)
-    {
-      m_matrix.SetTranslation((endX - startX)*offset + startX, (endY - startY)*offset + startY);
-    }
-    else if (effect == EFFECT_TYPE_ROTATE)
-    {
-      m_matrix.SetTranslation(centerX, centerY);
-      m_matrix *= TransformMatrix::CreateRotation(((endX - startX)*offset + startX) * DEGREE_TO_RADIAN);
-      m_matrix *= TransformMatrix::CreateTranslation(-centerX, -centerY);
-    }
-    else if (effect == EFFECT_TYPE_ZOOM)
-    {
-      float scaleX = ((endX - startX)*offset + startX) * 0.01f;
-      float scaleY = ((endY - startY)*offset + startY) * 0.01f;
-      m_matrix.SetTranslation(centerX, centerY);
-      m_matrix *= TransformMatrix::CreateScaler(scaleX, scaleY);
-      m_matrix *= TransformMatrix::CreateTranslation(-centerX, -centerY);
-    }
-  }
+    Calculate();
   if (currentState == ANIM_STATE_APPLIED)
+  {
     currentProcess = ANIM_PROCESS_NONE;
-
+    queuedProcess = ANIM_PROCESS_NONE;
+  }
   if (currentState != ANIM_STATE_NONE)
     matrix *= m_matrix;
 }
 
+void CAnimation::Calculate()
+{
+  float offset = amount * (acceleration * amount + 1.0f - acceleration);
+  if (effect == EFFECT_TYPE_FADE)
+    m_matrix.SetFader(((float)(endAlpha - startAlpha) * amount + startAlpha) * 0.01f);
+  else if (effect == EFFECT_TYPE_SLIDE)
+  {
+    m_matrix.SetTranslation((endX - startX)*offset + startX, (endY - startY)*offset + startY);
+  }
+  else if (effect == EFFECT_TYPE_ROTATE)
+  {
+    m_matrix.SetTranslation(centerX, centerY);
+    m_matrix *= TransformMatrix::CreateRotation(((endX - startX)*offset + startX) * DEGREE_TO_RADIAN);
+    m_matrix *= TransformMatrix::CreateTranslation(-centerX, -centerY);
+  }
+  else if (effect == EFFECT_TYPE_ZOOM)
+  {
+    float scaleX = ((endX - startX)*offset + startX) * 0.01f;
+    float scaleY = ((endY - startY)*offset + startY) * 0.01f;
+    m_matrix.SetTranslation(centerX, centerY);
+    m_matrix *= TransformMatrix::CreateScaler(scaleX, scaleY);
+    m_matrix *= TransformMatrix::CreateTranslation(-centerX, -centerY);
+  }
+}
 void CAnimation::ResetAnimation()
 {
   currentProcess = ANIM_PROCESS_NONE;
   queuedProcess = ANIM_PROCESS_NONE;
   currentState = ANIM_STATE_NONE;
+}
+
+void CAnimation::ApplyAnimation()
+{
+  currentProcess = ANIM_PROCESS_NONE;
+  queuedProcess = ANIM_PROCESS_NONE;
+  currentState = ANIM_STATE_APPLIED;
+  amount = 1.0f;
+  Calculate();
 }

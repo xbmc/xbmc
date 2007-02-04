@@ -76,8 +76,6 @@ bool CCueDocument::Parse(const CStdString &strFile)
         OutputDebugString("Mangled Time in INDEX 01 tag in CUE file!\n");
         return false;
       }
-      if (m_iTotalTracks == -1) // This is the first track (Can't have had a TRACK tag yet)
-        m_iTotalTracks++;
       if (m_iTotalTracks > 0)  // Set the end time of the last track
         m_Track[m_iTotalTracks - 1].iEndTime = time;
       // we have had a TRACK marker since the last INDEX marker, so note it down.
@@ -90,13 +88,8 @@ bool CCueDocument::Parse(const CStdString &strFile)
       {
         m_Track[m_iTotalTracks].iTrackNumber = m_iTotalTracks + 1;
       }
-      if (m_iTotalTracks < MAX_CUE_TRACKS)
-        m_Track[m_iTotalTracks++].iStartTime = time; // start time of the next track
-      else
-      { // Warning - Max tracks exceeded!
-        CLog::Log(LOGERROR,"Max Cue Tracks (99) obtained!");
-        break;
-      }
+
+      m_Track[m_iTotalTracks].iStartTime = time; // start time of the next track
     }
     else if (strLine.Left(5) == "TITLE")
     {
@@ -114,9 +107,12 @@ bool CCueDocument::Parse(const CStdString &strFile)
     }
     else if (strLine.Left(5) == "TRACK")
     {
-      if (m_iTotalTracks == -1) // No tracks yet
-        m_iTotalTracks = 0; // Starting the first track
       iTrackNumber = ExtractNumericInfo(strLine.c_str() + 5);
+      m_iTotalTracks++;
+
+      CCueTrack track;
+      m_Track.push_back(track);
+      m_Track[m_iTotalTracks].iTrackNumber = iTrackNumber;
     }
     else if (strLine.Left(4) == "FILE")
     {
@@ -141,10 +137,14 @@ bool CCueDocument::Parse(const CStdString &strFile)
   // reset track counter to 0, and fill in the last tracks end time
   m_iTrack = 0;
   if (m_iTotalTracks > 0)
-    m_Track[m_iTotalTracks - 1].iEndTime = 0;
+    m_Track[m_iTotalTracks].iEndTime = 0;
   else
     OutputDebugString("No INDEX 01 tags in CUE file!\n");
   m_file.Close();
+  if (m_iTotalTracks > 0)
+  {
+    m_iTotalTracks++;
+  }
   return (m_iTotalTracks > 0);
 }
 

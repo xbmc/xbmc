@@ -16,6 +16,8 @@
 #include "pyutil.h"
 #include "..\..\..\playlistplayer.h"
 
+using namespace XFILE;
+
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
@@ -574,9 +576,9 @@ namespace PYXBMC
 
 		// playlist constants
 		PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_MUSIC", PLAYLIST_MUSIC);
-		PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_MUSIC_TEMP", PLAYLIST_MUSIC_TEMP);
+		//PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_MUSIC_TEMP", PLAYLIST_MUSIC_TEMP);
 		PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_VIDEO", PLAYLIST_VIDEO);
-		PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_VIDEO_TEMP", PLAYLIST_VIDEO_TEMP);
+		//PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_VIDEO_TEMP", PLAYLIST_VIDEO_TEMP);
 
     // player constants
     PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_AUTO", EPC_NONE);

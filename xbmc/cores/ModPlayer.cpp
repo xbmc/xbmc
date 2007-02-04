@@ -3,6 +3,8 @@
 #include "modplayer.h"
 #include "../util.h"
 
+using namespace XFILE;
+
 #pragma comment(linker,"/merge:MOD_RD=MOD_RX")
 #pragma comment(linker,"/section:MOD_RX,REN")
 #pragma comment(linker,"/section:MOD_RW,RWN")

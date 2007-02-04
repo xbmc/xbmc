@@ -7,6 +7,18 @@
 
 #include "GUIControl.h"
 #include "GUIListItemLayout.h"
+
+enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
+                 VIEW_TYPE_LIST,
+                 VIEW_TYPE_ICON,
+                 VIEW_TYPE_BIG_LIST,
+                 VIEW_TYPE_BIG_ICON,
+                 VIEW_TYPE_WIDE,
+                 VIEW_TYPE_BIG_WIDE,
+                 VIEW_TYPE_WRAP,
+                 VIEW_TYPE_BIG_WRAP,
+                 VIEW_TYPE_AUTO,
+                 VIEW_TYPE_MAX };
 /*!
  \ingroup controls
  \brief 
@@ -29,6 +41,8 @@ public:
   virtual bool OnMouseWheel();
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
+  virtual void AllocResources();
+  virtual unsigned int GetRows() const;
 
   void SetPageControl(DWORD id);
 
@@ -40,6 +54,10 @@ public:
   virtual void UpdateEffectState(DWORD currentTime);
   void LoadLayout(TiXmlElement *layout);
 
+  VIEW_TYPE GetType() const { return m_type; };
+  const CStdString &GetLabel() const { return m_label; };
+  void SetType(VIEW_TYPE type, const CStdString &label);
+
 protected:
   virtual bool SelectItemFromPoint(float posX, float posY);
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
@@ -48,9 +66,10 @@ protected:
   virtual bool MoveUp(DWORD nextControl);
   virtual void MoveToItem(int item);
   virtual void ValidateOffset();
-  virtual int  CorrectOffset(int offset) const;
+  virtual int  CorrectOffset(int offset, int cursor) const;
+  virtual void UpdateLayout();
+  virtual void CalculateLayout();
 
-  void UpdateLayout();
   inline float Size() const;
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);
@@ -64,6 +83,7 @@ protected:
 
   vector<CGUIListItem*> m_items;
   typedef vector<CGUIListItem*> ::iterator iItems;
+  CGUIListItem *m_lastItem;
 
   DWORD m_pageControl;
 
@@ -77,5 +97,8 @@ protected:
   int   m_scrollTime;
   float m_scrollSpeed;
   float m_scrollOffset;
+
+  VIEW_TYPE m_type;
+  CStdString m_label;
 };
 

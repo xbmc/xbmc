@@ -4,6 +4,9 @@
 #include "tinyxml/tinyxml.h"
 #include <vector>
 
+namespace PLAYLIST
+{
+
 class CSmartPlaylistRule
 {
 public:
@@ -78,3 +81,5 @@ private:
 
   TiXmlDocument m_xmlDoc;
 };
+
+}

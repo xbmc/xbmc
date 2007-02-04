@@ -62,7 +62,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
   {
     m_bConfirmed = false;
     m_bCanceled = false;
-    
+
     md5_state_t md5state;
     unsigned char md5pword[16];
     char md5pword2[64];
@@ -70,7 +70,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     md5_append(&md5state, (unsigned const char *)m_strUserInput.c_str(), (int)m_strUserInput.size());
     md5_close(&md5state, md5pword);
     XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
-    
+
     if (m_strPassword != md5pword2)
     {
       // incorrect password entered
@@ -164,8 +164,8 @@ bool CGUIDialogGamepad::ShowAndVerifyNewPassword(CStdString& strNewPassword)
   if (ShowAndVerifyInput(strUserInput, "12340", "12330", "12331", "", true, true))
   {
     // TODO: Show error to user saying the password entry was blank
-	  CGUIDialogOK::ShowAndGetInput(12357, 12358, 0, 0); // Password is empty/blank
-	  return false;
+    CGUIDialogOK::ShowAndGetInput(12357, 12358, 0, 0); // Password is empty/blank
+    return false;
   }
 
   if (strUserInput.IsEmpty())
@@ -176,7 +176,7 @@ bool CGUIDialogGamepad::ShowAndVerifyNewPassword(CStdString& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, "12341", "12330", "12331", "", false, true))
   {
     // TODO: Show error to user saying the password re-entry failed
-	  CGUIDialogOK::ShowAndGetInput(12357, 12344, 0, 0); // Password do not match
+    CGUIDialogOK::ShowAndGetInput(12357, 12344, 0, 0); // Password do not match
     return false;
   }
 
@@ -284,4 +284,3 @@ bool CGUIDialogGamepad::IsCanceled() const
 {
   return m_bCanceled;
 }
-

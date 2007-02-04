@@ -107,6 +107,7 @@ int CFileReader::Read(void *out, __int64 size)
     if (m_readError)
     { // uh oh
       CLog::Log(LOGERROR, "FileReader::Read - encountered read error");
+      m_readError = false;
       return 0;
     }
     // read data in from our ring buffer
@@ -200,7 +201,7 @@ int CFileReader::BufferChunk()
     // check the range of our valid data
     if (amountToRead)
     {
-      unsigned int amountRead = m_file.Read(m_chunkBuffer, amountToRead);
+      unsigned int amountRead = m_file.Read(m_chunkBuffer, amountToRead, READ_TRUNCATED);
       if (amountRead > 0)
       {
         if (!m_ringBuffer.WriteBinary(m_chunkBuffer, amountRead))
@@ -215,6 +216,16 @@ int CFileReader::BufferChunk()
         return -1;
       }
     }
+    // amountToRead == 0 is not an error
+    // the very last chunk of audio data is already in the buffer
+    // so we dont need to read anymore
+    /*
+    else
+    { // uh oh!
+      m_readError = true;
+      return -1;
+    }
+    */
   }
   return 0;
 }

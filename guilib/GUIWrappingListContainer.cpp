@@ -6,7 +6,8 @@ CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwC
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
 {
   m_cursor = fixedPosition;
-  ControlType = GUICONTAINER_WRAPPINGLIST;
+  ControlType = GUICONTAINER_FIXEDLIST;
+  m_type = VIEW_TYPE_LIST;
 }
 
 CGUIWrappingListContainer::~CGUIWrappingListContainer(void)
@@ -15,7 +16,7 @@ CGUIWrappingListContainer::~CGUIWrappingListContainer(void)
 
 void CGUIWrappingListContainer::Render()
 {
-  if (!IsVisible()) return;
+  if (!IsVisible()) return CGUIBaseContainer::Render();
 
   ValidateOffset();
 
@@ -31,9 +32,10 @@ void CGUIWrappingListContainer::Render()
   }
   m_scrollLastTime = m_renderTime;
 
-  int offset = (int)(m_scrollOffset / m_layout.Size(m_orientation));
-  // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
-  FreeMemory(CorrectOffset(offset), CorrectOffset(offset + m_itemsPerPage));
+  int offset = (int)floorf(m_scrollOffset / m_layout.Size(m_orientation));
+  // Free memory not used on scre  if (m_scrollSpeed)
+  if ((int)m_items.size() > m_itemsPerPage)
+    FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
 
   g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
   float posX = m_posX;
@@ -49,7 +51,7 @@ void CGUIWrappingListContainer::Render()
   int current = offset;
   while (posX < m_posX + m_width && posY < m_posY + m_height && m_items.size())
   {
-    CGUIListItem *item = m_items[CorrectOffset(current)];
+    CGUIListItem *item = m_items[CorrectOffset(current, 0)];
     bool focused = (current == m_offset + m_cursor) && m_bHasFocus;
     // render our item
     if (focused)
@@ -77,7 +79,7 @@ void CGUIWrappingListContainer::Render()
 
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset));
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset, 0));
     SendWindowMessage(msg);
   }
   CGUIBaseContainer::Render();
@@ -162,11 +164,11 @@ void CGUIWrappingListContainer::ValidateOffset()
   // no need to check the range here
 }
 
-int CGUIWrappingListContainer::CorrectOffset(int offset) const
+int CGUIWrappingListContainer::CorrectOffset(int offset, int cursor) const
 {
   if (m_items.size())
   {
-    int correctOffset = offset % (int)m_items.size();
+    int correctOffset = (offset + cursor) % (int)m_items.size();
     if (correctOffset < 0) correctOffset += m_items.size();
     return correctOffset;
   }

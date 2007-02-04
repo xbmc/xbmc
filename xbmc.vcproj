@@ -22,9 +22,9 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"
-				MinimalRebuild="TRUE"
+				MinimalRebuild="FALSE"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="TRUE"
@@ -58,7 +58,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\xbmc\video.xbe"
+				RemotePath="xe:\xbmc\xbmcd.xbe"
 				Progress="FALSE"/>
 			<Tool
 				Name="XboxImageTool"
@@ -214,7 +214,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox"
 				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"
 				StringPooling="FALSE"
 				MinimalRebuild="FALSE"
@@ -933,6 +933,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\Trainer.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\TuxBoxUtil.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\TuxBoxUtil.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\UdpClient.cpp">
 				</File>
 				<File
@@ -989,6 +995,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\VideoDatabase.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\ViewDatabase.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\ViewDatabase.h">
 				</File>
 			</Filter>
 			<Filter
@@ -1170,6 +1182,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowFullScreen.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowGameSaves.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowGameSaves.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowHome.cpp">
 				</File>
 				<File
@@ -1271,6 +1289,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\DirectoryHistory.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\DirectoryTuxBox.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\DirectoryTuxBox.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\DllLibCurl.cpp">
 				</File>
 				<File
@@ -1305,6 +1329,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\FileFactory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\FileFileReader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\FileFileReader.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\FileHD.cpp">
@@ -1350,6 +1380,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\FileSndtrk.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\FileTuxBox.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\FileTuxBox.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\FileXBMSP.cpp">
@@ -1488,6 +1524,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\UPnPDirectory.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\UPnPVirtualPathDirectory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\UPnPVirtualPathDirectory.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory.cpp">
@@ -1727,6 +1769,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeActor.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeDirector.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeDirector.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeGenre.cpp">
@@ -2068,6 +2116,16 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\xbox\XKUtils.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="UPnP"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\UPnP.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\UPnP.h">
 				</File>
 			</Filter>
 		</Filter>
@@ -2785,60 +2843,20 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\mplayer\audio.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\mplayer.cpp">
-					<FileConfiguration
-						Name="Debug|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile_FastCap|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_LTCG|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug Xbox No Memory Tracking|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
+					RelativePath=".\xbmc\cores\mplayer\DllMPlayer.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\MPlayer.h">
+					RelativePath=".\xbmc\cores\mplayer\DllMPlayer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\mplayer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\MPlayer.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\mplayer\xbox_video.cpp">
 				</File>
-				<Filter
-					Name="DLL"
-					Filter="">
-					<File
-						RelativePath=".\xbmc\cores\mplayer\mplayer.cpp">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\mplayer\mplayer.h">
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="dvdplayer"
@@ -3289,6 +3307,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\AC3Codec.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\ADPCMCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\ADPCMCodec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\AdplugCodec.cpp">
 				</File>
 				<File
@@ -3335,6 +3359,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllAc3codec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllAdpcm.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllAdplug.h">

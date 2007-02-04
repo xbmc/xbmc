@@ -1072,9 +1072,9 @@ void CControlSocket::ParseCommand()
 						if (isalpha(iter->dir[0]) && iter->dir[1] == ':')
 						{
 							char drive = tolower(iter->dir[0]);
-							if (drive >= 'f' && drive != 'q')
+							if (drive >= 'f' && drive < 'q')
 							{
-								// check it's available
+								// extended partitions and memory units - check if the drive is available
 								if (drive > 'g' ||
 									(drive == 'f' && !g_advancedSettings.m_useFDrive) ||
 									(drive == 'g' && !g_advancedSettings.m_useGDrive))
@@ -1083,6 +1083,11 @@ void CControlSocket::ParseCommand()
 										continue;
 								}
 							}
+              // don't show x, y, z in the listing as users shouldn't really be
+              // stuffing around with these drives (power users can always go
+              // to these folders by specifying the path directly)
+              if (drive >= 'x')
+                continue;
 
               if (1 /*g_stSettings.m_bFTPSingleCharDrives*/)
               {
@@ -1438,8 +1443,8 @@ void CControlSocket::ParseCommand()
 				break;
 			}
 #endif
-			CStdString result;
-			int error = m_pOwner->m_pPermissions->GetDirName(m_status.user,args,m_CurrentDir,DOP_DELETE,result);
+			CStdString result, logical;
+			int error = m_pOwner->m_pPermissions->GetDirName(m_status.user,args,m_CurrentDir,DOP_DELETE,result,logical);
 			if (error & 1)
 				Send("550 Permission denied");
 			else if (error)
@@ -1477,8 +1482,8 @@ void CControlSocket::ParseCommand()
 				break;
 			}
 #endif
-			CStdString result;
-			int error=m_pOwner->m_pPermissions->GetDirName(m_status.user, args,m_CurrentDir, DOP_CREATE, result);
+			CStdString result, logical;
+			int error=m_pOwner->m_pPermissions->GetDirName(m_status.user, args,m_CurrentDir, DOP_CREATE, result, logical);
 			if (error & PERMISSION_DOESALREADYEXIST && (error & PERMISSION_FILENOTDIR)!=PERMISSION_FILENOTDIR)
 				Send("550 Directory already exists");
 			else if (error & PERMISSION_DENIED)
@@ -1494,43 +1499,22 @@ void CControlSocket::ParseCommand()
 				while (result!="")
 				{
 					CStdString piece = result.Left(result.Find("\\")+1);
-#if defined(_XBOX)
-					if (piece == ".\\")
-						continue;
-					if (piece == "..\\")
-					{
-					str = str.Left(str.rfind("\\"));
-					continue;
-					}
-					if (g_guiSettings.GetBool("servers.ftpautofatx"))
-					{
-					if (piece.size() > 42)
-					  piece = piece.Left(42);
-					while (piece.size() && (piece[piece.size()-1] == '\\' || piece[piece.size()-1] == ' '))
-					  piece.erase(piece.size()-1);
-					if( piece[piece.size()-1] != ':') // avoid fuckups with F: etc
-					  CUtil::RemoveIllegalChars(piece);
-					piece += '\\';
-					}
-#else
 					if (piece.Right(2) == ".\\")
 					{
 						Send("550 Directoryname not valid");
 						bReplySent = TRUE;
 						break;
 					}
-#endif
-					str += piece;
+
+          str += piece;
 					result = result.Mid(result.Find("\\")+1);
 					res = CreateDirectory(str,0);
 				}
 				if (!bReplySent)
-					if (!res)//CreateDirectory(result+"\\",0))
-					{
+					if (!res)
 						Send("450 Internal error creating the directory.");
-					}
 					else
-						Send("250 Directory created successfully");
+            SendDir("257",logical, " Was created");
 			}
 		}
 		break;
@@ -1554,7 +1538,7 @@ void CControlSocket::ParseCommand()
 #endif
 			RenName = "";
 
-			CStdString result;
+			CStdString result, logical;
 			int error = m_pOwner->m_pPermissions->GetFileName(m_status.user, args, m_CurrentDir, FOP_DELETE, result);
 			if (!error)
 			{
@@ -1567,7 +1551,7 @@ void CControlSocket::ParseCommand()
 				Send("550 Permission denied");
 			else
 			{
-				int error2 = m_pOwner->m_pPermissions->GetDirName(m_status.user, args,m_CurrentDir, DOP_DELETE, result);
+				int error2 = m_pOwner->m_pPermissions->GetDirName(m_status.user, args,m_CurrentDir, DOP_DELETE, result, logical);
 				if (!error2)
 				{
 					RenName=result;
@@ -1632,8 +1616,8 @@ void CControlSocket::ParseCommand()
 			}
 			else
 			{
-				CStdString result;
-				int error = m_pOwner->m_pPermissions->GetDirName(m_status.user, args, m_CurrentDir, DOP_CREATE, result);
+				CStdString result, logical;
+				int error = m_pOwner->m_pPermissions->GetDirName(m_status.user, args, m_CurrentDir, DOP_CREATE, result, logical);
 #if defined(_XBOX)
 				if (g_guiSettings.GetBool("servers.ftpautofatx"))
 					CUtil::GetFatXQualifiedPath(result);

@@ -37,8 +37,9 @@ class CIMDBMovie
 {
 public:
   void Reset();
-  bool Load(const CStdString& strFileName);
-  void Save(const CStdString& strFileName);
+  bool Load(const TiXmlNode *node);
+  bool Save(TiXmlNode *node);
+
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
   CStdString m_strGenre;
@@ -48,7 +49,8 @@ public:
   CStdString m_strPictureURL;
   CStdString m_strTitle;
   CStdString m_strVotes;
-  CStdString m_strCast;
+  vector< pair<CStdString, CStdString> > m_cast;
+  typedef vector< pair<CStdString, CStdString> >::iterator iCast;
   CStdString m_strSearchString;
   CStdString m_strRuntime;
   CStdString m_strFile;
@@ -72,10 +74,11 @@ public:
 
   bool LoadDLL();
   bool InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist);
-  bool InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails);
+  bool InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails, const CStdString& strFunction="GetDetails");
   bool ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails);
+  bool LoadXML(const CStdString& strXMLFile, CIMDBMovie &movieDetails, bool bDownload = true);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
-  const CStdString GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
+  void GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
 
   // threaded lookup functions
   bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);

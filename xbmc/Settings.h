@@ -52,25 +52,32 @@ class CProfile;
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-class CFolderView
+#define DEFAULT_VIEW_AUTO (VIEW_TYPE_AUTO << 16)
+#define DEFAULT_VIEW_LIST (VIEW_TYPE_LIST << 16)
+#define DEFAULT_VIEW_ICONS (VIEW_TYPE_ICON << 16)
+#define DEFAULT_VIEW_BIG_ICONS (VIEW_TYPE_BIG_ICON << 16)
+#define DEFAULT_VIEW_MAX (((VIEW_TYPE_MAX - 1) << 16) | 60)
+
+class CViewState
 {
 public:
-  CFolderView(CStdString &strPath, int iView, int iSort, bool bSortOrder)
+  CViewState(int viewMode, SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   {
-    m_strPath = strPath;
-    m_iView = iView;
-    m_iSort = iSort;
-    m_bSortOrder = bSortOrder;
+    m_viewMode = viewMode;
+    m_sortMethod = sortMethod;
+    m_sortOrder = sortOrder;
   };
-  ~CFolderView() {};
+  CViewState()
+  {
+    m_viewMode = 0;
+    m_sortMethod = SORT_METHOD_LABEL;
+    m_sortOrder = SORT_ORDER_ASC;
+  };
 
-  CStdString m_strPath;
-  int m_iView;
-  int m_iSort;
-  bool m_bSortOrder;
+  int m_viewMode;
+  SORT_METHOD m_sortMethod;
+  SORT_ORDER m_sortOrder;
 };
-
-typedef std::vector<CFolderView*> VECFOLDERVIEWS;
 
 /*!
 \ingroup windows
@@ -82,20 +89,9 @@ class CShare
 public:
   CShare() { m_iBufferSize=0; m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; };
   virtual ~CShare() {};
-  bool isWritable()
-  {
-    if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
-      return true; // local disk
-    if (strPath.size() > 4)
-    {
-      if (strPath.substr(0,4) == "smb:")
-        return true; // smb path
-    }
 
-    return false;
-  }
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths);
-
+  bool isWritable();
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
@@ -178,26 +174,13 @@ typedef std::vector<CShare>::iterator IVECSHARES;
 
 typedef std::vector<CProfile> VECPROFILES;
 typedef std::vector<CProfile>::iterator IVECPROFILES;
-/*
-class CFileTypeIcon
-{
-public:
-  CFileTypeIcon(){};
-  virtual ~CFileTypeIcon(){};
-  CStdString m_strName;
-  CStdString m_strIcon;
-};
-typedef std::vector<CFileTypeIcon> VECFILETYPEICONS;
-typedef std::vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
-*/
+
 struct VOICE_MASK {
   float energy;
   float pitch;
   float robotic;
   float whisper;
 };
-
-#include "GUIViewState.h" // for the VIEW_METHOD enum type
 
 class CSettings
 {
@@ -225,9 +208,6 @@ public:
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share);
   bool AddShare(const CStdString &type, const CShare &share);
 
-  bool LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
-  bool SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
-
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue);
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue);
 
@@ -241,7 +221,7 @@ public:
 
   void ResetSkinSetting(const CStdString &setting);
   void ResetSkinSettings();
-  
+
   struct AdvancedSettings
   {
 public:
@@ -301,6 +281,24 @@ public:
     int m_sambaclienttimeout;
     CStdString m_sambadoscodepage;
     CStdString m_musicThumbs;
+    CStdString m_dvdThumbs;
+
+    bool m_bMusicLibraryHideAllItems;
+    bool m_bMusicLibraryAllItemsOnBottom;
+    bool m_bMusicLibraryHideCompilationArtists;
+    bool m_bMusicLibraryAlbumsSortByArtistThenYear;
+    CStdString m_strMusicLibraryAlbumFormat;
+    CStdString m_strMusicLibraryAlbumFormatRight;
+
+    //TuxBox
+    bool m_bTuxBoxSubMenuSelection;
+    int m_iTuxBoxDefaultSubMenu;
+    int m_iTuxBoxDefaultRootMenu;
+    bool m_bTuxBoxAudioChannelSelection;
+    bool m_bTuxBoxPictureIcon;
+    int m_iTuxBoxEpgRequestTime;
+    int m_iTuxBoxZapWaitTime;
+
   };
   struct stSettings
   {
@@ -320,77 +318,20 @@ public:
     bool m_bMyMusicSongInfoInVis;
     bool m_bMyMusicSongThumbInVis;
 
+    CViewState m_viewStateMusicNavArtists;
+    CViewState m_viewStateMusicNavAlbums;
+    CViewState m_viewStateMusicNavSongs;
+    CViewState m_viewStateMusicShoutcast;
+    CViewState m_viewStateMusicLastFM;
+    CViewState m_viewStateVideoNavActors;
+    CViewState m_viewStateVideoNavYears;
+    CViewState m_viewStateVideoNavGenres;
+    CViewState m_viewStateVideoNavTitles;
+
     bool m_bMyMusicPlaylistRepeat;
     bool m_bMyMusicPlaylistShuffle;
     int m_iMyMusicStartWindow;
 
-    VIEW_METHOD m_MyMusicSongsRootViewMethod;
-    SORT_METHOD m_MyMusicSongsRootSortMethod;
-    SORT_ORDER m_MyMusicSongsRootSortOrder;
-    VIEW_METHOD m_MyMusicSongsViewMethod;
-    SORT_METHOD m_MyMusicSongsSortMethod;
-    SORT_ORDER m_MyMusicSongsSortOrder;
-
-    VIEW_METHOD m_MyMusicPlaylistViewMethod;
-
-    SORT_METHOD m_MyMusicShoutcastSortMethod;
-    SORT_ORDER  m_MyMusicShoutcastSortOrder;
-    SORT_METHOD m_MyMusicLastFMSortMethod;
-    SORT_ORDER  m_MyMusicLastFMSortOrder;
-
-    // new settings for the Music Nav Window
-    VIEW_METHOD m_MyMusicNavRootViewMethod;
-    VIEW_METHOD m_MyMusicNavGenresViewMethod;
-    VIEW_METHOD m_MyMusicNavArtistsViewMethod;
-    VIEW_METHOD m_MyMusicNavAlbumsViewMethod;
-    VIEW_METHOD m_MyMusicNavSongsViewMethod;
-    VIEW_METHOD m_MyMusicNavTopViewMethod;
-    VIEW_METHOD m_MyMusicNavPlaylistsViewMethod;
-
-    SORT_METHOD m_MyMusicNavRootSortMethod;
-    SORT_METHOD m_MyMusicNavAlbumsSortMethod;
-    SORT_METHOD m_MyMusicNavSongsSortMethod;
-    SORT_METHOD m_MyMusicNavPlaylistsSortMethod;
-
-    SORT_ORDER m_MyMusicNavGenresSortOrder;
-    SORT_ORDER m_MyMusicNavArtistsSortOrder;
-    SORT_ORDER m_MyMusicNavAlbumsSortOrder;
-    SORT_ORDER m_MyMusicNavSongsSortOrder;
-    SORT_ORDER m_MyMusicNavPlaylistsSortOrder;
-
-    VIEW_METHOD m_ScriptsViewMethod;
-    SORT_METHOD m_ScriptsSortMethod;
-    SORT_ORDER m_ScriptsSortOrder;
-
-    VIEW_METHOD m_MyProgramsViewMethod;
-    SORT_METHOD m_MyProgramsSortMethod;
-    SORT_ORDER m_MyProgramsSortOrder;
-
-    VIEW_METHOD m_MyPicturesViewMethod;
-    SORT_METHOD m_MyPicturesSortMethod;
-    SORT_ORDER m_MyPicturesSortOrder;
-    VIEW_METHOD m_MyPicturesRootViewMethod;
-    SORT_METHOD m_MyPicturesRootSortMethod;
-    SORT_ORDER m_MyPicturesRootSortOrder;
-
-    // new settings for the Video Nav Window
-    VIEW_METHOD m_MyVideoNavRootViewMethod;
-    VIEW_METHOD m_MyVideoNavGenreViewMethod;
-    VIEW_METHOD m_MyVideoNavPlaylistsViewMethod;
-    VIEW_METHOD m_MyVideoNavTitleViewMethod;
-    VIEW_METHOD m_MyVideoNavActorViewMethod;
-    VIEW_METHOD m_MyVideoNavYearViewMethod;
-
-    SORT_METHOD m_MyVideoNavGenreSortMethod;
-    SORT_METHOD m_MyVideoNavPlaylistsSortMethod;
-    SORT_METHOD m_MyVideoNavTitleSortMethod;
-    
-    SORT_ORDER m_MyVideoNavGenreSortOrder;
-    SORT_ORDER m_MyVideoNavPlaylistsSortOrder;
-    SORT_ORDER m_MyVideoNavTitleSortOrder;
-    SORT_ORDER m_MyVideoNavYearSortOrder;
-    SORT_ORDER m_MyVideoNavActorSortOrder;
-    
     // for scanning
     bool m_bMyMusicIsScanning;
 
@@ -402,15 +343,6 @@ public:
 
     int m_iMyVideoWatchMode;
 
-    VIEW_METHOD m_MyVideoViewMethod;
-    VIEW_METHOD m_MyVideoRootViewMethod;
-    SORT_METHOD m_MyVideoSortMethod;
-    SORT_METHOD m_MyVideoRootSortMethod;
-    SORT_ORDER m_MyVideoSortOrder;
-    SORT_ORDER m_MyVideoRootSortOrder;
-
-    VIEW_METHOD m_MyVideoPlaylistViewMethod;
-
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
 
@@ -421,13 +353,13 @@ public:
     char m_szMyVideoCleanTokens[256];
     char m_szMyVideoCleanSeparators[32];
 
-    char m_szAlternateSubtitleDirectory[128];
+    int iAdditionalSubtitleDirectoryChecked;
 
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
 
-	int m_HttpApiBroadcastPort;
-	int m_HttpApiBroadcastLevel;
+	  int m_HttpApiBroadcastPort;
+	  int m_HttpApiBroadcastLevel;
     int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
     int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
@@ -452,7 +384,14 @@ public:
   VECSHARES m_vecMyFilesShares;
   VECSHARES m_vecMyMusicShares;
   VECSHARES m_vecMyVideoShares;
-  VECSHARES m_vecSambeShres;
+
+  VECSHARES m_vecUPnPMusicShares;
+  VECSHARES m_vecUPnPVideoShares;
+  VECSHARES m_vecUPnPPictureShares;
+
+  CStdString m_UPnPUUID;
+  CStdString m_UPnPServerFriendlyName;
+
   //VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;
   int m_iLastLoadedProfileIndex;
@@ -473,6 +412,7 @@ public:
   CStdString GetBookmarksThumbFolder() const;
   CStdString GetPicturesThumbFolder() const;
   CStdString GetProgramsThumbFolder() const;
+  CStdString GetGameSaveThumbFolder() const;
   CStdString GetXLinkKaiThumbFolder() const;
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
@@ -481,12 +421,15 @@ public:
   CStdString GetSettingsFile() const;
   CStdString GetAvpackSettingsFile() const;
 
+  bool LoadUPnPXml(const CStdString& strSettingsFile);
+  bool SaveUPnPXml(const CStdString& strSettingsFile) const;
+  
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 
   bool SaveSettings(const CStdString& strSettingsFile) const;
   TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
-  
+
 protected:
   void GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   void GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
@@ -494,6 +437,8 @@ protected:
   void GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetShare(const CStdString &category, const TiXmlNode *bookmark, CShare &share);
   void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
+  void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState);
+
   void ConvertHomeVar(CStdString& strText);
   // functions for writing xml files
   void SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const;
@@ -501,6 +446,7 @@ protected:
   void SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const;
   void SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const;
   void SetHex(TiXmlNode* pRootNode, const CStdString& strTagName, DWORD dwHexValue) const;
+  void SetViewState(TiXmlNode* pRootNode, const CStdString& strTagName, const CViewState &viewState) const;
 
   bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);
   bool SaveCalibration(TiXmlNode* pRootNode) const;
@@ -510,6 +456,7 @@ protected:
 
   bool LoadXml();
   void CloseXml();
+
 
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);

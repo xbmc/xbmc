@@ -170,9 +170,13 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_PAGE_CHANGE:
   case GUI_MSG_REFRESH_THUMBS:
-    { // send to all child controls
+  case GUI_MSG_REFRESH_LIST:
+    { // send to all child controls (make sure the target is the control id)
       for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-        (*it)->OnMessage(message);
+      {
+        CGUIMessage msg(message.GetMessage(), message.GetSenderId(), (*it)->GetID(), message.GetParam1());
+        (*it)->OnMessage(msg);
+      }
       return true;
     }
     break;
@@ -259,11 +263,12 @@ bool CGUIControlGroup::IsAnimating(ANIMATION_TYPE animType)
 
 void CGUIControlGroup::Animate(DWORD currentTime)
 {
+  GUIVISIBLE visible = m_visible;
   TransformMatrix transform;
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
-    anim.Animate(currentTime, HasRendered());
+    anim.Animate(currentTime, HasRendered() || visible == DELAYED);
     // Update the control states (such as visibility)
     UpdateStates(anim.type, anim.currentProcess, anim.currentState);
     // and render the animation effect

@@ -67,7 +67,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     return false;
   }
   TiXmlHandle docHandle( &doc );
-  TiXmlElement *movie = docHandle.FirstChild( "results" ).FirstChild( "movie" ).Element();
+  TiXmlElement *movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
 
   int iYear = atoi(strYear);
 
@@ -86,7 +86,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
       {
         url.m_strURL.push_back(link->FirstChild()->Value());
       }
-      if (id)
+      if (id && id->FirstChild())
         url.m_strID = id->FirstChild()->Value();
       // if source contained a distinct year, only allow those
       if(iYear != 0)
@@ -114,33 +114,13 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   return true;
 }
 
-bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
+bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails, const CStdString& strFunction)
 {
   // load our scraper xml
   if (!m_parser.Load("q:\\system\\scrapers\\video\\"+m_info.strPath))
     return false;
 
   std::vector<CStdString> strHTML;
-
-  // fill in the defaults
-  CStdString strLocNotAvail = g_localizeStrings.Get(416); // Not available
-  movieDetails.m_strTitle = url.m_strTitle;
-  movieDetails.m_strDirector = strLocNotAvail;
-  movieDetails.m_strWritingCredits = strLocNotAvail;
-  movieDetails.m_strGenre = strLocNotAvail;
-  movieDetails.m_strTagLine = strLocNotAvail;
-  movieDetails.m_strPlotOutline = strLocNotAvail;
-  movieDetails.m_strPlot = strLocNotAvail;
-  movieDetails.m_strPictureURL = "";
-  movieDetails.m_strRuntime = strLocNotAvail;
-  movieDetails.m_strMPAARating = strLocNotAvail;
-  movieDetails.m_iYear = 0;
-  movieDetails.m_fRating = 0.0;
-  movieDetails.m_strVotes = strLocNotAvail;
-  movieDetails.m_strCast = strLocNotAvail;
-  movieDetails.m_iTop250 = 0;
-  movieDetails.m_strIMDBNumber = url.m_strID;
-  movieDetails.m_bWatched = false;
 
   for (unsigned int i=0;i<url.m_strURL.size();++i)
   {
@@ -157,7 +137,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
   m_parser.m_param[strHTML.size()] = url.m_strID;
 
-  CStdString strXML = m_parser.Parse("GetDetails");
+  CStdString strXML = m_parser.Parse(strFunction);
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
@@ -179,6 +159,19 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   }
 
   bool ret = ParseDetails(doc, movieDetails);
+  TiXmlElement* pRoot = doc.RootElement();
+  TiXmlElement* url = pRoot->FirstChildElement("url");
+  while (url && url->FirstChild())
+  {
+    const char* szFunction = url->Attribute("function");
+    if (szFunction)
+    {
+      CIMDBUrl url2;
+      url2.m_strURL.push_back(url->FirstChild()->Value());
+      InternalGetDetails(url2,movieDetails,szFunction);
+    }
+    url = url->NextSiblingElement("url");
+  }
   TiXmlBase::SetCondenseWhiteSpace(true);
   
   return ret;
@@ -186,20 +179,6 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
 bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
 {
-  // fill in the defaults
-  CStdString strLocNotAvail = g_localizeStrings.Get(416); // Not available
-  movieDetails.m_strDirector = strLocNotAvail;
-  movieDetails.m_strWritingCredits = strLocNotAvail;
-  movieDetails.m_strGenre = strLocNotAvail;
-  movieDetails.m_strTagLine = strLocNotAvail;
-  movieDetails.m_strPlotOutline = strLocNotAvail;
-  movieDetails.m_strPlot = strLocNotAvail;
-  movieDetails.m_strPictureURL = "";
-  movieDetails.m_strVotes = strLocNotAvail;
-  movieDetails.m_strCast = strLocNotAvail;
-  movieDetails.m_strMPAARating = strLocNotAvail;
-  movieDetails.m_iTop250 = 0;
-
   TiXmlNode *details = doc.FirstChild( "details" );
 
   if (!details)
@@ -208,28 +187,11 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
     return false;
   }
 
-  CStdString strTemp;
-  XMLUtils::GetString(details, "title", movieDetails.m_strTitle);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTitle);
-  if (XMLUtils::GetString(details, "rating", strTemp)) movieDetails.m_fRating = (float)atof(strTemp);
-  if (XMLUtils::GetString(details, "year", strTemp)) movieDetails.m_iYear = atoi(strTemp);
-  if (XMLUtils::GetString(details, "top250", strTemp)) movieDetails.m_iTop250 = atoi(strTemp);
+  movieDetails.Load(details);
 
-  XMLUtils::GetString(details, "votes", movieDetails.m_strVotes);
-  XMLUtils::GetString(details, "cast", movieDetails.m_strCast);
-  XMLUtils::GetString(details, "outline", movieDetails.m_strPlotOutline);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTitle);
   g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlotOutline);
-  
-  XMLUtils::GetString(details, "runtime", movieDetails.m_strRuntime);
-  XMLUtils::GetString(details, "thumb", movieDetails.m_strPictureURL);
-  XMLUtils::GetString(details, "tagline", movieDetails.m_strTagLine);
-  XMLUtils::GetString(details, "genre", movieDetails.m_strGenre);
-  XMLUtils::GetString(details, "credits", movieDetails.m_strWritingCredits);
-  XMLUtils::GetString(details, "director", movieDetails.m_strDirector);
-  XMLUtils::GetString(details, "plot", movieDetails.m_strPlot);
   g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlot);
-  
-  XMLUtils::GetString(details, "mpaa", movieDetails.m_strMPAARating);
   g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strMPAARating);
   
   CHTMLUtil::RemoveTags(movieDetails.m_strPlot);
@@ -260,7 +222,7 @@ void CIMDBMovie::Reset()
   m_strPictureURL = "";
   m_strTitle = "";
   m_strVotes = "";
-  m_strCast = "";
+  m_cast.clear();
   m_strSearchString = "";
   m_strFile = "";
   m_strPath = "";
@@ -272,14 +234,139 @@ void CIMDBMovie::Reset()
   m_bWatched = false;
 }
 
-void CIMDBMovie::Save(const CStdString &strFileName)
-{}
-
-bool CIMDBMovie::Load(const CStdString& strFileName)
+bool CIMDBMovie::Save(TiXmlNode *node)
 {
+  if (!node) return false;
+
+  // we start with a <movie> tag
+  TiXmlElement movieElement("movie");
+  TiXmlNode *movie = node->InsertEndChild(movieElement);
+
+  if (!movie) return false;
+
+  XMLUtils::SetString(movie, "title", m_strTitle);
+  XMLUtils::SetFloat(movie, "rating", m_fRating);
+  XMLUtils::SetInt(movie, "year", m_iYear);
+  XMLUtils::SetInt(movie, "top250", m_iTop250);
+  XMLUtils::SetString(movie, "votes", m_strVotes);
+  XMLUtils::SetString(movie, "outline", m_strPlotOutline);
+  XMLUtils::SetString(movie, "plot", m_strPlot);
+  XMLUtils::SetString(movie, "tagline", m_strTagLine);
+  XMLUtils::SetString(movie, "runtime", m_strRuntime);
+  XMLUtils::SetString(movie, "thumb", m_strPictureURL);
+  XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
+  XMLUtils::SetBoolean(movie, "watched", m_bWatched);
+  XMLUtils::SetString(movie, "searchstring", m_strSearchString);
+  XMLUtils::SetString(movie, "file", m_strFile);
+  XMLUtils::SetString(movie, "path", m_strPath);
+  XMLUtils::SetString(movie, "imdbnumber", m_strIMDBNumber);
+  XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
+  XMLUtils::SetString(movie, "genre", m_strGenre);
+  XMLUtils::SetString(movie, "credits", m_strWritingCredits);
+  XMLUtils::SetString(movie, "director", m_strDirector);
+
+  // cast
+  for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
+  {
+    // add a <actor> tag
+    TiXmlElement cast("actor");
+    TiXmlNode *node = movie->InsertEndChild(cast);
+    TiXmlElement actor("name");
+    TiXmlNode *actorNode = node->InsertEndChild(actor);
+    TiXmlText name(it->first);
+    actorNode->InsertEndChild(name);
+    TiXmlElement role("role");
+    TiXmlNode *roleNode = node->InsertEndChild(role);
+    TiXmlText character(it->second);
+    roleNode->InsertEndChild(character);
+  }
   return true;
 }
 
+bool CIMDBMovie::Load(const TiXmlNode *movie)
+{
+  if (!movie) return false;
+  XMLUtils::GetString(movie, "title", m_strTitle);
+  XMLUtils::GetFloat(movie, "rating", m_fRating);
+  XMLUtils::GetInt(movie, "year", m_iYear);
+  XMLUtils::GetInt(movie, "top250", m_iTop250);
+  XMLUtils::GetString(movie, "votes", m_strVotes);
+  XMLUtils::GetString(movie, "outline", m_strPlotOutline);
+  XMLUtils::GetString(movie, "plot", m_strPlot);
+  XMLUtils::GetString(movie, "tagline", m_strTagLine);
+  XMLUtils::GetString(movie, "runtime", m_strRuntime);
+  XMLUtils::GetString(movie, "thumb", m_strPictureURL);
+  XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
+  XMLUtils::GetBoolean(movie, "watched", m_bWatched);
+  XMLUtils::GetString(movie, "searchstring", m_strSearchString);
+  XMLUtils::GetString(movie, "file", m_strFile);
+  XMLUtils::GetString(movie, "path", m_strPath);
+  XMLUtils::GetString(movie, "imdbnumber", m_strIMDBNumber);
+  XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
+
+  // Are these here for chaining purposes?  If so, why not allow multiple <genre> tags
+  // at the same time, and check for empty and assign "Not Available" at the display level
+  // rather than the db level?
+  CStdString strTemp;
+  if (XMLUtils::GetString(movie, "genre", strTemp))
+  {
+    if (m_strGenre.IsEmpty())
+      m_strGenre = strTemp;
+    else
+      m_strGenre += " / "+strTemp;
+  }
+
+  if (XMLUtils::GetString(movie, "credits", strTemp))
+  {
+    if (m_strWritingCredits.IsEmpty())
+      m_strWritingCredits = strTemp;
+    else
+      m_strWritingCredits += " / "+strTemp;
+  }
+  
+  if (XMLUtils::GetString(movie, "director", strTemp))
+  {
+    if (m_strDirector.IsEmpty())
+      m_strDirector = strTemp;
+    else
+      m_strDirector += " / "+strTemp;
+  }
+  // cast
+  const TiXmlNode *node = movie->FirstChild("actor");
+  while (node)
+  {
+    const TiXmlNode *actor = node->FirstChild("name");
+    if (actor && actor->FirstChild())
+    {
+      CStdString name = actor->FirstChild()->Value();
+      CStdString role;
+      const TiXmlNode *roleNode = node->FirstChild("role");
+      if (roleNode && roleNode->FirstChild())
+        role = roleNode->FirstChild()->Value();
+
+      m_cast.push_back(make_pair(name, role));
+    }
+    node = node->NextSibling("actor");
+  }
+
+  return true;
+}
+
+bool CIMDB::LoadXML(const CStdString& strXMLFile, CIMDBMovie &movieDetails, bool bDownload /* = true */)
+{
+  TiXmlBase::SetCondenseWhiteSpace(false);
+  TiXmlDocument doc;
+
+  movieDetails.Reset();
+  if (doc.LoadFile(strXMLFile) && ParseDetails(doc, movieDetails))
+  { // excellent!
+    return true;
+  }
+  if (!bDownload)
+    return true;
+
+  return false;
+}
 
 void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 {
@@ -288,7 +375,7 @@ void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 }
 
 // TODO: Make this user-configurable?
-const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& strYear)
+void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& strYear)
 {
   char szMovie[1024];
   char szYear[5];
@@ -304,10 +391,6 @@ const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, C
 
   // lowercase
   strMovieNoExtension = strMovieNoExtension.ToLower();
-
-  // strip off 'the' from start of title - confuses the searches
-  if (strMovieNoExtension.Mid(0,4).Equals("the+"))
-    strMovieNoExtension = strMovieNoExtension.Mid(4);
 
   // default to movie name begin complete filename, no year
   strcpy(szMovie, strMovieNoExtension.c_str());
@@ -327,21 +410,21 @@ const CStdString CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, C
   }
 
   CRegExp reTags;
-  reTags.RegComp("(.*)\\+(ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|se|svcd|swedish|unrated|ws|xvid|cd[1-9]|\\[.*\\])(\\+.*)?");
+  reTags.RegComp("\\+(ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|se|svcd|swedish|unrated|ws|xvid|xxx|cd[1-9]|\\[.*\\])(\\+|$)");
 
   CStdString strTemp;
-  while (reTags.RegFind(szMovie) >= 0)
-    {
-    char *pFN = reTags.GetReplaceString("\\1");
-    strcpy(szMovie,pFN);
-    if (pFN) free(pFN);
-    }
-
+  int i=0;
+  CStdString strSearch = szMovie;
+  if ((i=reTags.RegFind(strSearch.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
+  {
+    m_parser.m_param[0] = strSearch.Mid(0,i);
+ }
+  else
     m_parser.m_param[0] = szMovie;
-    strURL = m_parser.Parse("CreateSearchUrl");
+
+  strURL = m_parser.Parse("CreateSearchUrl");
 
   strYear = szYear;
-  return szMovie;
 }
 
 
@@ -401,6 +484,9 @@ bool CIMDB::GetDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, CGUIDialog
   //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
   m_url = url;
   m_movieDetails = movieDetails;
+
+  // fill in the defaults
+  movieDetails.Reset();
   if (pProgress)
   { // threaded version
     m_state = GET_DETAILS;

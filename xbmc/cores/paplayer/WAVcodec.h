@@ -1,6 +1,7 @@
 #pragma once
 #include "ICodec.h"
 #include "FileReader.h"
+#include "ADPCMCodec.h"
 
 class WAVCodec : public ICodec
 {

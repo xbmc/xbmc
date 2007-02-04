@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIDialogNumeric.h"
 #include "util.h"
@@ -46,6 +67,24 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
     OnOK();
   else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
     OnNumber(action.wID - REMOTE_0);
+  else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
+  { // input from the keyboard (vkey, not ascii)
+    BYTE b = action.wID & 0xFF;
+    if (b == 0x25) OnPrevious();     // left
+    else if (b == 0x27) OnNext();  // right
+    else if (b == 0x0D) OnOK();         // enter
+    else if (b == 0x08) OnBackSpace();    // backspace
+    else if (b == 0x1B) OnCancel();        // escape
+  }
+  else if (action.wID >= KEY_ASCII)
+  { // input from the keyboard
+    char ch = action.wID & 0xFF;
+    if (ch == 10) OnOK(); // enter
+    else if (ch == 8) OnBackSpace(); // backspace
+    else if (ch == 27) OnCancel(); // escape
+    else if (ch >= 48 && ch < 58)  // number
+      OnNumber(ch - 48);
+  }
   else
     return CGUIDialog::OnAction(action);
   return true;
@@ -513,8 +552,8 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(CStdString& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12340), false))
   {
     // Show error to user saying the password entry was blank
-	  CGUIDialogOK::ShowAndGetInput(12357, 12358, 0, 0); // Password is empty/blank
-	  return false;
+    CGUIDialogOK::ShowAndGetInput(12357, 12358, 0, 0); // Password is empty/blank
+    return false;
   }
 
   if (strUserInput.IsEmpty())
@@ -525,7 +564,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(CStdString& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12341), true))
   {
     // Show error to user saying the password re-entry failed
-	  CGUIDialogOK::ShowAndGetInput(12357, 12344, 0, 0); // Password do not match
+    CGUIDialogOK::ShowAndGetInput(12357, 12344, 0, 0); // Password do not match
     return false;
   }
 
@@ -580,7 +619,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
     strToVerify ="";
     return false;
   }
-  
+
   md5_state_t md5state;
   unsigned char md5pword[16];
   char md5pword2[64];

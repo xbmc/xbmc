@@ -37,6 +37,10 @@
 #include "..\..\FileSystem\VirtualDirectory.h"
 #include "..\..\utils\UdpClient.h"
 
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
+
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 20
 #define NO_EID -1
@@ -322,19 +326,8 @@ bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras)
 }
 bool playableFile(const CStdString &filename)
 {
-  CURL url(filename);
-  CFileItem *pItem = new CFileItem(filename);
-  bool playable;
-
-  ///* okey this is silly, but don't feel like creating a CFileItem to check for internet stream */
-  //return url.GetProtocol().Equals("http")
-  //    || url.GetProtocol().Equals("https")
-  //    || url.GetProtocol().Equals("lastfm")
-  //    || url.GetProtocol().Equals("shout")    
-  //    || CFile::Exists(filename);
-  playable = pItem->IsInternetStream() || CFile::Exists(filename);
-  delete pItem;
-  return playable;
+  CFileItem item(filename, false);  
+  return item.IsInternetStream() || CFile::Exists(filename);
 }
 
 int SetResponse(const CStdString &response)
@@ -496,12 +489,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
       pSlideShow->Add(pItem->m_strPath);
     }
     else
-    {
-      PLAYLIST::CPlayList::CPlayListItem playlistItem;
-      CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      g_playlistPlayer.GetPlaylist(playList).Add(playlistItem);
-    }
-
+      g_playlistPlayer.Add(playList, (CFileItem*)pItem);
   }
 }
 
@@ -509,32 +497,19 @@ void LoadPlayListOld(const CStdString& strPlayList, int playList)
 {
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if ( NULL != pPlayList.get())
   {
     if (!pPlayList->Load(strPlayList))
       return; 
-    CPlayList& playlist=g_playlistPlayer.GetPlaylist( playList );
-    playlist.Clear();
-    for (int i=0; i < (int)pPlayList->size(); ++i)
-    {
-      const CPlayList::CPlayListItem& playListItem =(*pPlayList)[i];
-      CStdString strLabel=playListItem.GetDescription();
-      if (strLabel.size()==0) 
-        strLabel=CUtil::GetFileName(playListItem.GetFileName());
-
-      CPlayList::CPlayListItem playlistItem;
-      playlistItem.SetFileName(playListItem.GetFileName());
-      playlistItem.SetDescription(strLabel);
-      playlistItem.SetDuration(playListItem.GetDuration());
-      playlist.Add(playlistItem);
-    }
-
+    g_playlistPlayer.ClearPlaylist(playList);
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.Add(playList, *pPlayList);
     g_playlistPlayer.SetCurrentPlaylist(playList);
     g_applicationMessenger.PlayListPlayerPlay();
     
     // set current file item
+    CPlayList& playlist = g_playlistPlayer.GetPlaylist(playList);
     CFileItem item(playlist[0].GetDescription());
     item.m_strPath = playlist[0].GetFileName();
     SetCurrentMediaItem(item);
@@ -552,8 +527,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
     //pPlayList->Load will handle loading it from url instead of from a file
     strPath = "temp.strm";
   }
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPath));
   if ( NULL == pPlayList.get())
     return false;
   if (!pPlayList->Load(item->m_strPath))
@@ -577,34 +551,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   if (clearList)
     g_playlistPlayer.ClearPlaylist(iPlaylist);
 
-  // add each item of the playlist to the playlistplayer
-  for (int i = 0; i < (int)pPlayList->size(); ++i)
-  {
-    const CPlayList::CPlayListItem& playListItem = playlist[i];
-    CStdString strLabel = playListItem.GetDescription();
-    if (strLabel.size() == 0)
-      strLabel = CUtil::GetTitleFromPath(playListItem.GetFileName());
-
-    CPlayList::CPlayListItem playlistItem;
-    playlistItem.SetDescription(playListItem.GetDescription());
-    playlistItem.SetDuration(playListItem.GetDuration());
-    playlistItem.SetFileName(playListItem.GetFileName());
-    g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
-  }
-
-  /* We don't shuffle playlist on load any more
-       - shuffling is handled globally by the playlist player
-
-  // music option: shuffle playlist on load
-  // dont do this if the first item is a stream
-  if (
-    (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP) &&
-    !playlistItem.IsShoutCast() &&
-    g_guiSettings.GetBool("musicplaylist.shuffleplaylistsonload")
-    )
-  {
-    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
-  }*/
+  g_playlistPlayer.Add(iPlaylist, *pPlayList);
 
   if (autoStart)
     if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
@@ -835,6 +782,42 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   return SetResponse(strOutput);
 }
 
+int CXbmcHttp::xbmcGetXBEID(int numParas, CStdString paras[])
+{
+  if (numParas==0) {
+    return SetResponse(openTag+"Error:Missing Parameter");
+  }
+  CStdString tmp;
+  if (CFile::Exists(paras[0].c_str()))
+  {
+    tmp.Format("%09x",CUtil::GetXbeID(paras[0]));
+    return SetResponse(openTag + tmp);
+  }
+  else
+  {
+     return SetResponse(openTag+"Error:xbe doesn't exist");
+  }
+
+}
+
+int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
+{
+  CStdString xbeinfo;
+  if (numParas==0) {
+    return SetResponse(openTag+"Error:Missing Parameter");
+  }
+  CStdString tmp;
+  if (CUtil::GetXBEDescription(paras[0],xbeinfo))
+  {
+    tmp.Format("%s",xbeinfo);
+    return SetResponse(openTag + tmp);
+  }
+  else
+  {
+     return SetResponse(openTag+"Error:Failed to getxbetitle");
+  }
+}
+
 int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
 {
   // returns the share listing in this format:
@@ -999,9 +982,8 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
     if (pItem->IsPlayList())
       changed=LoadPlayList(pItem->m_strPath, playList, false, false);
     else
-    {
-      IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
-      bool bResult=pDirectory->Exists(pItem->m_strPath);
+    {      
+      bool bResult = CDirectory::Exists(pItem->m_strPath);
       pItem->m_bIsFolder=bResult;
       pItem->m_bIsShareOrDrive=false;
       if (bResult || CFile::Exists(pItem->m_strPath))
@@ -1154,7 +1136,14 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
         strRating.Format("%3.3f", aMovieRec.m_fRating);
         if (strRating=="") strRating="0.0";
         output += closeTag+openTag+"Rating:" + strRating;
-        output += closeTag+openTag+"Cast:" + aMovieRec.m_strCast;
+        CStdString cast;
+        for (CIMDBMovie::iCast it = aMovieRec.m_cast.begin(); it != aMovieRec.m_cast.end(); ++it)
+        {
+          CStdString character;
+          character.Format("%s %s %s\n", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
+          cast += character;
+        }
+        output += closeTag+openTag+"Cast:" + cast;
         item->SetVideoThumb();
         if (!item->HasThumbnail())
           thumb = "[None]";
@@ -2279,9 +2268,18 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
     ret=XbmcWebsHttpAPIConfigSaveConfiguration(response, argc, argv);
   else if (paras[0]=="getoption")
   {
-    ret=XbmcWebsHttpAPIConfigGetOption(response, argc, argv);
-    if (ret!=-1)
-      ret=1;
+    //getoption has been deprecated so the following is just to prevent (my) legacy client code breaking (to be removed later)
+    if (paras[1]=="pictureextensions")
+      response="<li>"+g_stSettings.m_pictureExtensions;
+	else if (paras[1]=="videoextensions")
+      response="<li>"+g_stSettings.m_videoExtensions;
+	else if (paras[1]=="musicextensions")
+      response="<li>"+g_stSettings.m_musicExtensions;
+	else
+	  response="<li>Error:Function is deprecated";
+    //ret=XbmcWebsHttpAPIConfigGetOption(response, argc, argv);
+    //if (ret!=-1)
+    ret=1;
   }
   else if (paras[0]=="setoption")
     ret=XbmcWebsHttpAPIConfigSetOption(response, argc, argv);
@@ -2305,7 +2303,7 @@ int CXbmcHttp::xbmcGetSystemInfo(int numParas, CStdString paras[])
     {
       CStdString strTemp = (CStdString) g_infoManager.GetLabel(atoi(paras[i]));
       if (strTemp.IsEmpty())
-        strTemp = "Error:No information retrieved for " + atoi(paras[i]);
+        strTemp = "Error:No information retrieved for " + paras[i];
       strInfo += openTag + strTemp;
     }
     return SetResponse(strInfo);
@@ -2333,7 +2331,7 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcSpinDownHardDisk()
 {
-  if (m_gWindowManager.IsRouted())
+  if (m_gWindowManager.HasModalDialog())
 	return SetResponse(openTag+"Error:Can't spin down now");
   if (g_application.MustBlockHDSpinDown())
 	return SetResponse(openTag+"Error:Can't spin down now");
@@ -2347,7 +2345,11 @@ bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
   {
     if (!pUdpBroadcast)
 	  pUdpBroadcast = new CUdpBroadcast();
-    return pUdpBroadcast->broadcast(openBroadcast+message+closeBroadcast, g_stSettings.m_HttpApiBroadcastPort);
+	CStdString msg;
+    msg.Format(openBroadcast+message+";%i"+closeBroadcast, level);
+
+    //return pUdpBroadcast->broadcast(openBroadcast+message+";"+closeBroadcast, g_stSettings.m_HttpApiBroadcastPort);
+	return pUdpBroadcast->broadcast(msg, g_stSettings.m_HttpApiBroadcastPort);
   }
   else
     return true;
@@ -2386,6 +2388,38 @@ int CXbmcHttp::xbmcSetBroadcast(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Wrong number of parameters");
 }
 
+int CXbmcHttp::xbmcGetBroadcast()
+{
+  CStdString tmp;
+  tmp.Format("%i;%i", g_stSettings.m_HttpApiBroadcastLevel,g_stSettings.m_HttpApiBroadcastPort);
+  return SetResponse(openTag+tmp);
+}
+
+int CXbmcHttp::xbmcGetSkinSetting(int numParas, CStdString paras[])
+//parameter=type;name
+//type: 0=bool, 1=string
+{
+  if (numParas<2)
+    return SetResponse(openTag+"Error:Missing parameters");
+  else
+  {
+    if (atoi(paras[0]) == 0)
+    {
+      int string = g_settings.TranslateSkinBool(paras[1]);
+      bool value = g_settings.GetSkinBool(string);
+      if (value==false)
+        return SetResponse(openTag+"False");
+      else
+        return SetResponse(openTag+"True");
+    }
+    else
+    {
+      int string = g_settings.TranslateSkinString(paras[1]);
+      CStdString value = g_settings.GetSkinString(string);
+      return SetResponse(openTag+value);
+    }
+  }
+}
 
 int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
 //no paras
@@ -2583,6 +2617,8 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "reset")                    retVal = xbmcExit(4);
       else if (command == "restartapp")               retVal = xbmcExit(5);
       else if (command == "getcurrentlyplaying")      retVal = xbmcGetCurrentlyPlaying(); 
+      else if (command == "getxbeid")                 retVal = xbmcGetXBEID(numParas, paras); 
+      else if (command == "getxbetitle")              retVal = xbmcGetXBETitle(numParas, paras); 
       else if (command == "getshares")                retVal = xbmcGetShares(numParas, paras); 
       else if (command == "getdirectory")             retVal = xbmcGetDirectory(numParas, paras); 
       else if (command == "getmedialocation")         retVal = xbmcGetMediaLocation(numParas, paras); 
@@ -2638,6 +2674,8 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk();
 	  else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
 	  else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
+	  else if (command == "getbroadcast")             retVal = xbmcGetBroadcast();
+
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
       else if (command == "copyfile")                 retVal = xbmcCopyFile(numParas, paras);

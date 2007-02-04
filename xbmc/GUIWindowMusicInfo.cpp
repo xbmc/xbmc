@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIWindowMusicInfo.h"
 #include "Utils/HTTP.h"
@@ -6,6 +27,7 @@
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
 
+using namespace XFILE;
 
 #define CONTROL_ALBUM  20
 #define CONTROL_ARTIST 21
@@ -90,7 +112,6 @@ void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
 
 void CGUIWindowMusicInfo::Update()
 {
-  CStdString strTmp;
   SetLabel(CONTROL_ALBUM, m_album.GetTitle() );
   SetLabel(CONTROL_ARTIST, m_album.GetArtist() );
   SetLabel(CONTROL_DATE, m_album.GetDateOfRelease() );
@@ -100,17 +121,8 @@ void CGUIWindowMusicInfo::Update()
     strRating.Format("%i/9", m_album.GetRating());
   SetLabel(CONTROL_RATING, strRating );
 
-  SetLabel(CONTROL_GENRE, m_album.GetGenre() );
-  {
-    CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_TONE);
-    OnMessage(msg1);
-  }
-  {
-    strTmp = m_album.GetTones(); strTmp.Trim();
-    CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TONE);
-    msg1.SetLabel( strTmp );
-    OnMessage(msg1);
-  }
+  SetLabel(CONTROL_GENRE, m_album.GetGenre());
+  SetLabel(CONTROL_TONE, m_album.GetTones());
   SetLabel(CONTROL_STYLES, m_album.GetStyles() );
 
   if (m_bViewReview)
@@ -151,14 +163,14 @@ void CGUIWindowMusicInfo::Update()
 
 void CGUIWindowMusicInfo::SetLabel(int iControl, const CStdString& strLabel)
 {
-  CStdString strLabel1 = strLabel;
-  if (strLabel1.size() == 0)
-    strLabel1 = g_localizeStrings.Get(416);
-
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iControl);
-  msg.SetLabel(strLabel1);
-  OnMessage(msg);
-
+  if (strLabel.IsEmpty())
+  {
+    SET_CONTROL_LABEL(iControl, 416);
+  }
+  else
+  {
+    SET_CONTROL_LABEL(iControl, strLabel);
+  }
 }
 
 void CGUIWindowMusicInfo::Render()
@@ -195,7 +207,7 @@ bool CGUIWindowMusicInfo::DownloadThumbnail(const CStdString &thumbFile)
   // Download image and save as thumbFile
   if (m_album.GetImageURL().IsEmpty())
     return false;
-  
+
   CHTTP http;
   http.Download(m_album.GetImageURL(), thumbFile);
   return true;

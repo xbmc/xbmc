@@ -33,6 +33,7 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetRange(int pageSize, int numItems);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool IsVisible() const;
   void SetValue(int value);
   int GetValue() const;
   virtual bool HitTest(float posX, float posY) const;

@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "application.h"
 #include "util.h"
@@ -31,7 +52,7 @@
 #endif
 #include "lib/libPython/XBPython.h"
 #include "utils/RegExp.h"
-#include "utils/AlarmClock.h" 
+#include "utils/AlarmClock.h"
 #include "ButtonTranslator.h"
 #include "Picture.h"
 #include "GUIDialogNumeric.h"
@@ -44,6 +65,7 @@
 #include "utils/MemoryUnitManager.h"
 #include "utils/FilterFlickerPatch.h"
 #include "utils/LED.h"
+#include "utils/fancontroller.h"
 #endif
 #include "MediaManager.h"
 #ifdef _XBOX
@@ -62,13 +84,15 @@
 #include "DirectXGraphics.h"
 #endif
 
+using namespace DIRECTORY;
+
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
 static const __int64 SECS_TO_100NS = 10000000;
 
 HANDLE CUtil::m_hCurrentCpuUsage = NULL;
 
-CStdString strHasClientIP="",strHasClientInfo="",strNewClientIP,strNewClientInfo; 
+CStdString strHasClientIP="",strHasClientInfo="",strNewClientIP,strNewClientInfo;
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
@@ -78,7 +102,7 @@ static D3DGAMMARAMP oldramp, flashramp;
 #ifdef HAS_XBOX_HARDWARE
 extern "C"
 {
-	extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
+  extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
 };
 #endif
 
@@ -92,7 +116,7 @@ CUtil::~CUtil(void)
 
 /* returns filename extension including period of filename */
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
-{   
+{
   int period = strFileName.find_last_of('.');
   if(period >= 0)
   {
@@ -163,7 +187,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   /*else if (strFileNameAndPath.Compare("soundtrack://") == 0)
   {
     strFilename = "MS Soundtracks";  // Would need localizing
-  }*/ 
+  }*/
 
   else if (strFileNameAndPath.Compare("shout://") == 0)
   {
@@ -231,8 +255,8 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
           // remove the extension (if any).  We do this on the base filename, as the regexp
           // match may include some of the extension (eg the "." in particular).
 
-          // the extension will then be added back on at the end - there is no reason 
-          // to clean it off here. It will be cleaned off during the display routine, if 
+          // the extension will then be added back on at the end - there is no reason
+          // to clean it off here. It will be cleaned off during the display routine, if
           // the settings to hide extensions are turned on.
           CStdString strFileNoExt = strFileNameTemp;
           RemoveExtension(strFileNoExt);
@@ -245,7 +269,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 
       }
       else if( iCount > 1 )
-      {        
+      {
         //Second Sub value contains the stacking
         strVolumeNumber = strFileName.Mid(iFoundToken + reg.GetSubStart(2), reg.GetSubLenght(2));
 
@@ -403,7 +427,7 @@ void CUtil::CleanFileName(CStdString& strFileName)
   // if the file contains no spaces, all '.' tokens should be replaced by
   // spaces - one possibility of a mistake here could be something like:
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
-  // if the extension is shown, the '.' before the extension should be 
+  // if the extension is shown, the '.' before the extension should be
   // left as is.
 
   strFileName = strFileName.Trim();
@@ -442,7 +466,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   CURL url(strPath);
   CStdString strFile = url.GetFileName();
   if ( ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) && strFile.IsEmpty())
-  { 
+  {
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
   }
@@ -454,18 +478,10 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
   else if (strFile.size() == 0)
   {
-    if (url.GetProtocol() == "smb" && (url.GetHostName().size() > 0))
+    if (url.GetHostName().size() > 0)
     {
-      // we have an smb share with only server or workgroup name
-      // set hostname to "" and return true.
-      url.SetHostName("");
-      url.GetURL(strParent);
-      return true;
-    }
-    else if (url.GetProtocol() == "xbms" && (url.GetHostName().size() > 0))
-    {
-      // we have an xbms share with only server name
-      // set hostname to "" and return true.
+      // we have an share with only server or workgroup name
+      // set hostname to "" and return true to get back to root
       url.SetHostName("");
       url.GetURL(strParent);
       return true;
@@ -489,7 +505,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     url.GetURL(strParent);
     return true;
   }
-  
+
   strFile = strFile.Left(iPos);
 
   if (strFile.size() == 2 && strFile[1] == ':') // we need f:\, not f:
@@ -571,12 +587,12 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
 {
 #ifdef HAS_XBOX_HARDWARE
-  BYTE	*Kernel=(BYTE *)0x80010000;
-  DWORD	i, j = 0, k;
-  DWORD	*CountryPtr;
-  BYTE	CountryValues[4]={0, 1, 2, 4};
-  BYTE	VideoTyValues[5]={0, 1, 2, 3, 3};
-  BYTE	VideoFrValues[5]={0x00, 0x40, 0x40, 0x80, 0x40};
+  BYTE  *Kernel=(BYTE *)0x80010000;
+  DWORD i, j = 0, k;
+  DWORD *CountryPtr;
+  BYTE  CountryValues[4]={0, 1, 2, 4};
+  BYTE  VideoTyValues[5]={0, 1, 2, 3, 3};
+  BYTE  VideoFrValues[5]={0x00, 0x40, 0x40, 0x80, 0x40};
 
   // Skip if no change is necessary...
   // That is to avoid a situation in which our Patch *and* the EvoX patch are installed
@@ -584,23 +600,23 @@ bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
   if(Video == XGetVideoStandard())
     return true;
 
-  switch (Country) 
+  switch (Country)
   {
-	  case COUNTRY_EUR:
-		  if (!Video)
-		    Video = VIDEO_PAL50;
-		  break;
-	  case COUNTRY_USA:
-	    Video = VIDEO_NTSCM;
-	  Country = COUNTRY_USA;
-		  break;
-	  case COUNTRY_JAP:
-	    Video = VIDEO_NTSCJ;
-	  Country = COUNTRY_JAP;
-		  break;
-	  default:
-	  Country = COUNTRY_EUR;
-	    Video = VIDEO_PAL50;
+    case COUNTRY_EUR:
+      if (!Video)
+          Video = VIDEO_PAL50;
+        break;
+      case COUNTRY_USA:
+        Video = VIDEO_NTSCM;
+      Country = COUNTRY_USA;
+        break;
+      case COUNTRY_JAP:
+        Video = VIDEO_NTSCJ;
+      Country = COUNTRY_JAP;
+        break;
+      default:
+      Country = COUNTRY_EUR;
+        Video = VIDEO_PAL50;
   };
 
   // Search for the original code in the Kernel.
@@ -609,15 +625,15 @@ bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
 
   for(i=0x1000; i<0x14000; i++)
   {
-    if(Kernel[i]!=OriginalData[0])	
+    if(Kernel[i]!=OriginalData[0])
 	    continue;
 
     for(j=0; j<57; j++)
     {
-	    if(Kernel[i+j]!=OriginalData[j])	
+	    if(Kernel[i+j]!=OriginalData[j])
 		    break;
     }
-    if(j==57)	
+    if(j==57)
 	    break;
   }
 
@@ -635,30 +651,30 @@ bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
 
     for(i=0x1000; i<0x14000; i++)
     {
-	    if(Kernel[i]!=PatchData[0])	
-		    continue;
+      if(Kernel[i]!=PatchData[0])
+        continue;
 
-	    for(j=0; j<25; j++)
-	    {
-		    if(Kernel[i+j]!=PatchData[j])	
-			    break;
-	    }
-	    if(j==25)	
-		    break;
+      for(j=0; j<25; j++)
+      {
+        if(Kernel[i+j]!=PatchData[j])
+          break;
+      }
+      if(j==25)
+        break;
     }
 
     if(j==25)
     {
-	    // Ok, found my patch. Get pointer to original Country setting.
-	    // This may not be strictly neccessary, but lets do it anyway for completeness.
+      // Ok, found my patch. Get pointer to original Country setting.
+      // This may not be strictly neccessary, but lets do it anyway for completeness.
 
-	    j=(Kernel[i+66])+(Kernel[i+67]<<8)+(Kernel[i+68]<<16)+(Kernel[i+69]<<24);
-	    CountryPtr=(DWORD *)j;
+      j=(Kernel[i+66])+(Kernel[i+67]<<8)+(Kernel[i+68]<<16)+(Kernel[i+69]<<24);
+      CountryPtr=(DWORD *)j;
     }
     else
     {
-	    // Did not find my patch - so I can't work with this BIOS. Exit.
-	    return( false );
+      // Did not find my patch - so I can't work with this BIOS. Exit.
+      return( false );
     }
   }
 
@@ -687,108 +703,108 @@ bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
 #endif
   // All Done!
   return( true );
-} 
+}
 
 bool CUtil::InstallTrainer(CTrainer& trainer)
 {
-	bool Found = false;
+  bool Found = false;
 #ifdef HAS_XBOX_HARDWARE
-	unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
-	unsigned char *hackptr = (unsigned char *)KERNEL_STORE_ADDRESS;
+  unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
+  unsigned char *hackptr = (unsigned char *)KERNEL_STORE_ADDRESS;
   void *ourmemaddr = NULL; // pointer used to allocated trainer mem
-	unsigned int i = 0;
-	DWORD memsize;
+  unsigned int i = 0;
+  DWORD memsize;
 
   CLog::Log(LOGDEBUG,"installing trainer %s",trainer.GetPath().c_str());
-	
+
   if (trainer.IsXBTF()) // size of our allocation buffer for trainer
-		memsize = XBTF_HEAP_SIZE;
-	else
-		memsize = ETM_HEAP_SIZE;
+    memsize = XBTF_HEAP_SIZE;
+  else
+    memsize = ETM_HEAP_SIZE;
 
-	unsigned char xbe_entry_point[] = {0xff,0x15,0x28,0x01,0x01,0x00}; // xbe entry point bytes in kernel
-	unsigned char evox_tsr_hook[] = {0xff,0x15,0x10,0x00,0x00,0x80}; // check for evox's evil tsr hook
+  unsigned char xbe_entry_point[] = {0xff,0x15,0x28,0x01,0x01,0x00}; // xbe entry point bytes in kernel
+  unsigned char evox_tsr_hook[] = {0xff,0x15,0x10,0x00,0x00,0x80}; // check for evox's evil tsr hook
 
-	for(i = 0; i < KERNEL_SEARCH_RANGE; i++)
-	{
-		if (memcmp(&xboxkrnl[i], xbe_entry_point, sizeof(xbe_entry_point)) == 0 ||
-			memcmp(&xboxkrnl[i], evox_tsr_hook, sizeof(evox_tsr_hook)) == 0)
-		{
-			Found = true;
-			break;
-		}
-	}
+  for(i = 0; i < KERNEL_SEARCH_RANGE; i++)
+  {
+    if (memcmp(&xboxkrnl[i], xbe_entry_point, sizeof(xbe_entry_point)) == 0 ||
+      memcmp(&xboxkrnl[i], evox_tsr_hook, sizeof(evox_tsr_hook)) == 0)
+    {
+      Found = true;
+      break;
+    }
+  }
 
-	if(Found)
-	{
-		unsigned char *patchlocation = xboxkrnl;
+  if(Found)
+  {
+    unsigned char *patchlocation = xboxkrnl;
 
-		patchlocation += i + 2; // adjust to xbe entry point bytes in kernel (skipping actual call opcodes)
-		_asm
-		{
-			pushad
+    patchlocation += i + 2; // adjust to xbe entry point bytes in kernel (skipping actual call opcodes)
+    _asm
+    {
+      pushad
 
-			mov eax, cr0
-			push eax
-			and eax, 0FFFEFFFFh
-			mov cr0, eax // disable memory write prot
+      mov eax, cr0
+      push eax
+      and eax, 0FFFEFFFFh
+      mov cr0, eax // disable memory write prot
 
-			mov	edi, patchlocation // address of call to xbe entry point in kernel
-			mov	dword ptr [edi], KERNEL_STORE_ADDRESS // patch with address of where we store loaderdata+trainer buffer address
+      mov	edi, patchlocation // address of call to xbe entry point in kernel
+      mov	dword ptr [edi], KERNEL_STORE_ADDRESS // patch with address of where we store loaderdata+trainer buffer address
 
-			pop eax
-			mov cr0, eax // restore memory write prot
+      pop eax
+      mov cr0, eax // restore memory write prot
 
-			popad
-		}
-	}
-	else
-	{
-		__asm // recycle check
-		{
-			pushad
+      popad
+    }
+  }
+  else
+  {
+    __asm // recycle check
+    {
+      pushad
 
-			mov edx, KERNEL_STORE_ADDRESS
-			mov ecx, DWORD ptr [edx]
-			cmp ecx, 0 // just in case :)
-			jz cleanup
+      mov edx, KERNEL_STORE_ADDRESS
+      mov ecx, DWORD ptr [edx]
+      cmp ecx, 0 // just in case :)
+      jz cleanup
 
-			cmp word ptr [ecx], 0BA60h // address point to valid loaderdata?
-			jnz cleanup
+      cmp word ptr [ecx], 0BA60h // address point to valid loaderdata?
+      jnz cleanup
 
-			mov Found, 1 // yes! flag it found
+      mov Found, 1 // yes! flag it found
 
-			push ecx
-			call MmFreeContiguousMemory // release old memory
+      push ecx
+      call MmFreeContiguousMemory // release old memory
 cleanup:
-			popad
-		}
-	}
+      popad
+    }
+  }
 
-	// allocate our memory space BELOW the kernel (so we can access buffer from game's scope)
-	// if you allocate above kernel our buffer is out of scope and only debug bio will allow
-	// game to access it
-	ourmemaddr = MmAllocateContiguousMemoryEx(memsize, 0, -1, KERNEL_ALLOCATE_ADDRESS, PAGE_NOCACHE | PAGE_READWRITE);
-	if ((DWORD)ourmemaddr > 0)
-	{
-		MmPersistContiguousMemory(ourmemaddr, memsize, true); // so we survive soft boots
-		memcpy(hackptr, &ourmemaddr, 4); // store location of ourmemaddr in kernel
+  // allocate our memory space BELOW the kernel (so we can access buffer from game's scope)
+  // if you allocate above kernel our buffer is out of scope and only debug bio will allow
+  // game to access it
+  ourmemaddr = MmAllocateContiguousMemoryEx(memsize, 0, -1, KERNEL_ALLOCATE_ADDRESS, PAGE_NOCACHE | PAGE_READWRITE);
+  if ((DWORD)ourmemaddr > 0)
+  {
+    MmPersistContiguousMemory(ourmemaddr, memsize, true); // so we survive soft boots
+    memcpy(hackptr, &ourmemaddr, 4); // store location of ourmemaddr in kernel
 
-		memset(ourmemaddr, 0xFF, memsize); // init trainer buffer
-		memcpy(ourmemaddr, trainerloaderdata, sizeof(trainerloaderdata)); // copy loader data (actual kernel hack)
+    memset(ourmemaddr, 0xFF, memsize); // init trainer buffer
+    memcpy(ourmemaddr, trainerloaderdata, sizeof(trainerloaderdata)); // copy loader data (actual kernel hack)
 
-		// patch loaderdata with trainer base address
-		_asm
-		{
-			pushad
+    // patch loaderdata with trainer base address
+    _asm
+    {
+      pushad
 
-			mov eax, ourmemaddr
-			mov ebx, eax
-			add ebx, SIZEOFLOADERDATA
-			mov dword ptr [eax+2], ebx
+      mov eax, ourmemaddr
+      mov ebx, eax
+      add ebx, SIZEOFLOADERDATA
+      mov dword ptr [eax+2], ebx
 
-			popad
-		}
+      popad
+    }
 
 		// adjust ourmemaddr pointer past loaderdata
 		ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(trainerloaderdata));
@@ -817,7 +833,7 @@ cleanup:
         pop	eax
         add eax, ecx
         mov dwSection, eax // get address of xbtf_section
-      
+
       converted_etm:
         popad
       }
@@ -992,7 +1008,7 @@ bool CUtil::RemoveTrainer()
 	unsigned char *hackptr = (unsigned char *)KERNEL_STORE_ADDRESS;
   void *ourmemaddr = NULL; // pointer used to allocated trainer mem
 	unsigned int i = 0;
-  
+
   unsigned char xbe_entry_point[] = {0xff,0x15,0x80,0x00,0x00,0x0c}; // xbe entry point bytes in kernel
   *((DWORD*)(xbe_entry_point+2)) = KERNEL_STORE_ADDRESS;
 
@@ -1086,7 +1102,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
       data.executionType = 0;
       data.magic = GetXbeID(szPath);
     }
-    
+
     CUtil::RunXBE(szPath,strcmp(szParameters,"")?szParameters:NULL,video,COUNTRY_NULL,shortcut.m_strCustomGame.IsEmpty()?NULL:&data);
 #endif
   }
@@ -1112,10 +1128,12 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
   }
 
   CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is ON. Starting Filter Flicker Patching.");
-  
-  // Do the test if we already have a patched _ffp XBE
+
+  // Test if we already have a patched _ffp XBE
+  // Since the FF can be changed in XBMC, we will not check for a pre patched _ffp xbe!
+  /* // May we can add. a changed FF detection.. then we can actived this!
   CFile	xbe;
-	if (xbe.Exists(szPath1)) 
+	if (xbe.Exists(szPath1))
   {
     char szDrive[_MAX_DRIVE], szDir[_MAX_DIR], szFname[_MAX_FNAME], szExt[_MAX_EXT];
 		_splitpath(szPath1, szDrive, szDir, szFname, szExt);
@@ -1124,7 +1142,8 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
 		szNewPath.ReleaseBuffer();
 		if (xbe.Exists(szNewPath))
 			return true;
-	}
+	} */
+
 
   CXBE m_xbe;
   if((int)m_xbe.ExtractGameRegion(szPath1.c_str()) <= 0) // Reading the GameRegion is enought to detect a Patchable xbe!
@@ -1149,7 +1168,7 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
   CLog::Log(LOGDEBUG, __FUNCTION__" - Filter Flicker Patching done. Starting %s.",szNewPath.c_str());
   return true;
 }
-void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData) 
+void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
 {
   /// \brief Runs an executable file
   /// \param szPath1 Path of executeable to run
@@ -1205,7 +1224,7 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
 #endif
     }
   }
-  
+
   CLog::Log(LOGERROR, "Unable to run xbe : %s", szPath);
 }
 
@@ -1294,7 +1313,7 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
   if (strFile.size() == 0) return false;
   char kar = strFile.c_str()[strFile.size() - 1];
-  if (kar == '/' || kar == '\\') 
+  if (kar == '/' || kar == '\\')
     return true;
 
   return false;
@@ -1428,12 +1447,21 @@ bool CUtil::IsSmb(const CStdString& strFile)
 
 bool CUtil::IsDAAP(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("daap:");  
+  return strFile.Left(5).Equals("daap:");
+}
+
+bool CUtil::IsUPnP(const CStdString& strFile)
+{
+    return strFile.Left(5).Equals("upnp:");
 }
 
 bool CUtil::IsMemCard(const CStdString& strFile)
 {
   return strFile.Left(3).Equals("mem");
+}
+bool CUtil::IsTuxBox(const CStdString& strFile)
+{
+  return strFile.Left(7).Equals("tuxbox:");
 }
 
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
@@ -1457,7 +1485,7 @@ int CUtil::GetDVDIfoTitle(const CStdString& strFile)
 void CUtil::UrlDecode(CStdString& strURLData)
 {
   CStdString strResult;
-  
+
   /* resulet will always be less than source */
   strResult.reserve( strURLData.length() );
 
@@ -1488,7 +1516,7 @@ void CUtil::URLEncode(CStdString& strURLData)
 {
   CStdString strResult;
 
-  /* wonder what a good value is here is, depends on how often it occurs */  
+  /* wonder what a good value is here is, depends on how often it occurs */
   strResult.reserve( strURLData.length() * 2 );
 
   for (int i = 0; i < (int)strURLData.size(); ++i)
@@ -1514,10 +1542,19 @@ bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIco
   g_charsetConverter.utf8ToStringCharset(strFilePath, localFile);
   CXBE xbeReader;
   CStdString strTempFile;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"1.xpr",strTempFile);
+  CStdString strExtension;
 
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"1.xpr",strTempFile);
+  CUtil::GetExtension(strFilePath,strExtension);
+  if (strExtension.Equals(".xbx"))
+  {
+  ::CopyFile(strFilePath.c_str(), strTempFile.c_str(),FALSE);
+  }
+  else
+  {
   if (!xbeReader.ExtractIcon(localFile, strTempFile.c_str()))
     return false;
+  }
 
   CXBPackedResource* pPackedResource = new CXBPackedResource();
   if ( SUCCEEDED( pPackedResource->Create( strTempFile.c_str(), 1, NULL ) ) )
@@ -1559,7 +1596,7 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
     CStdString strTmp = strDescription.Right(strDescription.size()-iPos-1);
     strDescription = strTmp;//strDescription.Right(strDescription.size() - iPos - 1);
   }
-  else if (strDescription.size() <= 0)    
+  else if (strDescription.size() <= 0)
     strDescription = strFName;
   return true;
 }
@@ -1612,7 +1649,7 @@ bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& s
   CStdStringW shortDescription;
   g_charsetConverter.utf8ToUTF16(strDescription, shortDescription);
   if (shortDescription.size() > 40)
-    shortDescription = shortDescription.Left(40); 
+    shortDescription = shortDescription.Left(40);
   wcsncpy(HC.TitleName, shortDescription.c_str(), 40);  // only allow 40 chars*/
   fwrite(&HC,1,sizeof(HC),hFile);
   fclose(hFile);
@@ -1730,7 +1767,7 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   if (strFileName != "")
   {
     CUtil::ShortenFileName(strFileName);
-    if (strFileName[0] == '\\') 
+    if (strFileName[0] == '\\')
       strFileName.erase(0,1);
     CUtil::RemoveIllegalChars(strFileName);
     CStdString strExtension;
@@ -1929,7 +1966,8 @@ static char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", 
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
-  static bool bAlternateChecked=false;
+  DWORD startTimer = timeGetTime();
+  CLog::Log(LOGDEBUG,__FUNCTION__": START");
 
   // new array for commons sub dirs
   char * common_sub_dirs[] = {"subs",
@@ -1966,20 +2004,20 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   ReplaceExtension(strFileName, "", strFileNameNoExt);
   strLookInPaths.push_back(strPath);
 
-  if (!bAlternateChecked && strlen(g_stSettings.m_szAlternateSubtitleDirectory)) // to avoid checking non-existent directories (network) every time..
+  if (!g_stSettings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
   {
-    if (!g_network.IsAvailable() && !IsHD(g_stSettings.m_szAlternateSubtitleDirectory))
+    if (!g_network.IsAvailable() && !IsHD(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
-      g_stSettings.m_szAlternateSubtitleDirectory[0] = '\0';
+      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
     }
-    else if (!CDirectory::Exists(g_stSettings.m_szAlternateSubtitleDirectory))
+    else if (!CDirectory::Exists(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
-      g_stSettings.m_szAlternateSubtitleDirectory[0] = '\0';
+      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
     }
 
-    bAlternateChecked = true;
+    g_stSettings.iAdditionalSubtitleDirectoryChecked = 1;
   }
 
   if (strMovie.substr(0,6) == "rar://") // <--- if this is found in main path then ignore it!
@@ -1991,6 +2029,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
 
   // checking if any of the common subdirs exist ..
+  CLog::Log(LOGDEBUG,__FUNCTION__": Checking for common subirs...");
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
@@ -2014,7 +2053,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             strLookInPaths.push_back(strPath2);
         }
       }
-        
+
       // ../common dirs aswell
       if (strParent != "")
       {
@@ -2054,19 +2093,23 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   // .. done checking for cd-dirs
 
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
-  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory) != 0)
+  if (g_stSettings.iAdditionalSubtitleDirectoryChecked == 1)
   {
-    strPath = g_stSettings.m_szAlternateSubtitleDirectory;
+    strPath = g_guiSettings.GetString("subtitles.custompath");
     if (!HasSlashAtEnd(strPath))
       strPath += "/"; //Should work for both remote and local files
     strLookInPaths.push_back(strPath);
   }
+
+  DWORD nextTimer = timeGetTime();
+  CLog::Log(LOGDEBUG,__FUNCTION__": Done (time: %i ms)", (int)(nextTimer - startTimer));
 
   CStdString strLExt;
   CStdString strDest;
   CStdString strItem;
 
   // 2 steps for movie directory and alternate subtitles directory
+  CLog::Log(LOGDEBUG,__FUNCTION__": Searching for subtitles...");
   for (unsigned int step = 0; step < strLookInPaths.size(); step++)
   {
     if (strLookInPaths[step].length() != 0)
@@ -2082,13 +2125,13 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       {
         Split(items[j]->m_strPath, strPath, strItem);
 
-        // is this a rar-file .. 
+        // is this a rar-file ..
         if ((CUtil::IsRAR(strItem) || CUtil::IsZIP(strItem)) && g_guiSettings.GetBool("subtitles.searchrars"))
         {
           CStdString strRar, strItemWithPath;
           CUtil::AddFileToFolder(strLookInPaths[step],strFileNameNoExt+CUtil::GetExtension(strItem),strRar);
           CUtil::AddFileToFolder(strLookInPaths[step],strItem,strItemWithPath);
-          
+
           int iPos = strMovie.substr(0,6)=="rar://"?1:0;
           iPos = strMovie.substr(0,6)=="zip://"?1:0;
           if ((step != iPos) || (strFileNameNoExtNoCase+".rar").Equals(strItem) || (strFileNameNoExtNoCase+".zip").Equals(strItem))
@@ -2133,6 +2176,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
+  CLog::Log(LOGDEBUG,__FUNCTION__": Done (time: %i ms)", (int)(timeGetTime() - nextTimer));
 
   // rename any keep subtitles
   CFileItemList items;
@@ -2145,10 +2189,12 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       CFile::Rename(items[i]->m_strPath,items[i]->m_strPath.Left(items[i]->m_strPath.size()-5));
     }
   }
-  
+
   // construct string of added exts?
   for (std::vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
     strExtensionCached += *it+" ";
+
+  CLog::Log(LOGDEBUG,__FUNCTION__": END (total time: %i ms)", (int)(timeGetTime() - startTimer));
 }
 
 bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
@@ -2168,7 +2214,7 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
   {
     // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
     // so now we dont have to find any subdirs anymore, all files in the rar is checked.
-    if( !g_RarManager.GetFilesInRar(ItemList, strRarPath, false, "") ) 
+    if( !g_RarManager.GetFilesInRar(ItemList, strRarPath, false, "") )
       return false;
   }
   for (int it= 0 ; it <ItemList.Size();++it)
@@ -2196,7 +2242,7 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
     strFileNameNoCase.MakeLower();
     if (strFileNameNoCase.Find(strCompare) >= 0)
       while (sub_exts[iPos])
-      {      
+      {
         if (strExt.CompareNoCase(sub_exts[iPos]) == 0)
         {
           CStdString strSourceUrl, strDestUrl;
@@ -2227,8 +2273,8 @@ void CUtil::PrepareSubtitleFonts()
 {
   CStdString strFontPath = "Q:\\system\\players\\mplayer\\font";
 
-  if( IsUsingTTFSubtitles() 
-    || g_guiSettings.GetInt("subtitles.height") == 0 
+  if( IsUsingTTFSubtitles()
+    || g_guiSettings.GetInt("subtitles.height") == 0
     || g_guiSettings.GetString("subtitles.font").size() == 0)
   {
     /* delete all files in the font dir, so mplayer doesn't try to load them */
@@ -2255,7 +2301,7 @@ void CUtil::PrepareSubtitleFonts()
     CStdString strPath;
     strPath.Format("%s\\%s\\%i",
                   strFontPath.c_str(),
-                  g_guiSettings.GetString("Subtitles.Font").c_str(), 
+                  g_guiSettings.GetString("Subtitles.Font").c_str(),
                   g_guiSettings.GetInt("Subtitles.Height"));
 
     CStdString strSearchMask = strPath + "\\*.*";
@@ -2308,7 +2354,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
     strResult += strFile.Mid(1);
   else
     strResult += strFile;
-	// re-add the stack:// protocol
+  // re-add the stack:// protocol
   if (IsStack(strFolder))
     strResult = "stack://" + strResult;
 }
@@ -2405,7 +2451,7 @@ void CUtil::CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, 
     CUtil::URLEncode(strBuffer);
     strUrlPath += strBuffer;
     strUrlPath += "@";
-  }    
+  }
 
   strBuffer = strRarPath;
   CUtil::URLEncode(strBuffer);
@@ -2450,7 +2496,7 @@ void CUtil::CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, 
     CUtil::URLEncode(strBuffer);
     strUrlPath += strBuffer;
     strUrlPath += "@";
-  }    
+  }
 
   strBuffer = strRarPath;
   CUtil::URLEncode(strBuffer);
@@ -2943,7 +2989,7 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
 }
 
 bool CUtil::IsUsingTTFSubtitles()
-{  
+{
   return CUtil::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
 }
 
@@ -2996,6 +3042,7 @@ const BUILT_IN commands[] = {
   "System.LogOff","Log off current user",
   "System.PWMControl","Control PWM RGB LEDs",
   "Resolution", "Change XBMC's Resolution",
+  "SetFocus", "Change current focus to a different control id"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3083,6 +3130,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_passwordManager.bMasterUser = true;
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
     }
+
+    DeleteVideoDatabaseDirectoryCache();
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+    g_graphicsContext.SendMessage(msg);
   }
   else if (execute.Equals("takescreenshot"))
   {
@@ -3133,7 +3184,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       {
         //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
         CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-        CStdStringArray arSplit; 
+        CStdStringArray arSplit;
         StringUtils::SplitString(strNewClientInfo,";", arSplit);
         if ((int)arSplit.size() > 1)
         {
@@ -3143,7 +3194,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           strFtpPort      = arSplit[3].c_str();
           strBoosMode     = arSplit[4].c_str();
           strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
-          
+
           strPath  = strFTPPath;
         }else{
           CLog::Log(LOGERROR, "ActivateWindow: Autodetection returned with invalid parameter : %s", strNewClientInfo.c_str());
@@ -3170,6 +3221,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       return false;
     }
   }
+  else if (execute.Equals("setfocus"))
+  {
+    CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), atol(parameter.c_str()));
+    g_graphicsContext.SendMessage(msg);
+  }
   else if (execute.Equals("runscript"))
   {
     g_pythonParser.evalFile(parameter.c_str());
@@ -3187,7 +3243,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       g_guiSettings.SetInt("videoscreen.resolution", res);
       //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
-      g_graphicsContext.SetGUIResolution(res);
+      g_graphicsContext.SetVideoResolution(res, TRUE);
       //set our lookandfeelres to the resolution set in graphiccontext
       g_guiSettings.m_LookAndFeelResolution = res;
       g_application.ReloadSkin();
@@ -3203,19 +3259,19 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CUtil::GetDirectory(params[0],strDestDirect);
     else
       strDestDirect = params[1];
-  
+
     if (!HasSlashAtEnd(strDestDirect))
         strDestDirect += "\\";
-        
+
     if (params.size() < 1)
       return -1; // No File Selected
-    
+
     if (CUtil::IsZIP(params[0]))
-      g_ZipManager.ExtractArchive(params[0],strDestDirect);     
+      g_ZipManager.ExtractArchive(params[0],strDestDirect);
     else if (CUtil::IsRAR(params[0]))
       g_RarManager.ExtractArchive(params[0],strDestDirect);
     else
-      CLog::Log(LOGERROR, "CUtil::ExecuteBuiltin: No archive given");     
+      CLog::Log(LOGERROR, "CUtil::ExecuteBuiltin: No archive given");
   }
   else if (execute.Equals("runxbe"))
   {
@@ -3276,7 +3332,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("reloadskin"))
   {
-    //	Reload the skin
+    //  Reload the skin
     g_application.ReloadSkin();
   }
   else if (execute.Equals("playercontrol"))
@@ -3295,10 +3351,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       {
         if (g_application.GetPlaySpeed() != 1)
           g_application.SetPlaySpeed(1);
-        else          
+        else
           g_application.m_pPlayer->Pause();
       }
-    } 
+    }
     else if (parameter.Equals("stop"))
     {
       g_application.StopPlaying();
@@ -3461,7 +3517,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       io.EjectTray();
   }
-  else if( execute.Equals("alarmclock") ) 
+  else if( execute.Equals("alarmclock") )
   {
     float fSecs = -1.f;
     CStdString strCommand;
@@ -3494,7 +3550,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         }
       }
     }
-    
+
     if (fSecs == -1.f)
     {
       CStdString strTime;
@@ -3510,7 +3566,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     if( g_alarmClock.isRunning() )
       g_alarmClock.stop(strName);
-    
+
     g_alarmClock.start(strName,fSecs,strCommand);
   }
   else if (execute.Equals("notification"))
@@ -3532,7 +3588,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("kaiconnection"))
   {
-    if (CKaiClient::GetInstance())	
+    if (CKaiClient::GetInstance())
     {
       if (!CKaiClient::GetInstance()->IsEngineConnected())
       {
@@ -3612,13 +3668,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (iTheme > (int)vecTheme.size()-1)
       iTheme = -1;
     if (iTheme < -1)
-      iTheme = vecTheme.size()-1; 
+      iTheme = vecTheme.size()-1;
 
     if (iTheme==-1)
       g_guiSettings.SetString("lookandfeel.skintheme","skindefault");
     else
       g_guiSettings.SetString("lookandfeel.skintheme",vecTheme[iTheme]);
-    
+
     g_application.DelayLoadSkin();
   }
   else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric"))
@@ -3661,7 +3717,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("dialog.close"))
   {
-    CStdStringArray arSplit; 
+    CStdStringArray arSplit;
     StringUtils::SplitString(parameter,",", arSplit);
     bool bForce = false;
     if (arSplit.size() > 1)
@@ -3692,6 +3748,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
+#ifdef HAS_XBOX_HARDWARE
+    if (g_guiSettings.GetBool("system.autotemperature"))
+    {
+      CLog::Log(LOGNOTICE, "stop fancontroller");
+      CFanController::Instance()->Stop();
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "set fanspeed to default");
+      CFanController::Instance()->RestoreStartupSpeed();
+    }
+#endif
     g_settings.LoadProfile(0); // login screen always runs as default user
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
@@ -3704,24 +3772,26 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Left(18).Equals("system.pwmcontrol"))
   {
-    CStdString strTemp ,strRgbA, strRgbB, strTran; 
+    CStdString strTemp ,strRgbA, strRgbB, strWhiteA, strWhiteB, strTran; 
     CStdStringArray arSplit; 
     int iTrTime = 0;
     StringUtils::SplitString(parameter,",", arSplit);
-    
+
     if ((int)arSplit.size() > 1)
     {
       strRgbA  = arSplit[0].c_str();
       strRgbB  = arSplit[1].c_str();
-      strTran  = arSplit[2].c_str();
-      iTrTime  = atoi(arSplit[3].c_str());
+      strWhiteA= arSplit[2].c_str();
+      strWhiteB= arSplit[3].c_str();
+      strTran  = arSplit[4].c_str();
+      iTrTime  = atoi(arSplit[5].c_str());
     }
     else if(parameter.size() > 6)
     {
       strRgbA = strRgbB = parameter;
       strTran = "none";
     }
-    CUtil::PWMControl(strRgbA,strRgbB,strTran, iTrTime);
+    CUtil::PWMControl(strRgbA,strRgbB,strWhiteA,strWhiteB,strTran, iTrTime);
   }
   else
     return -1;
@@ -3735,7 +3805,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing original path/name [%s]", strPath1.c_str());
 
   // copy as we may change strPath
-  CStdString strPath = strPath1;  
+  CStdString strPath = strPath1;
 
   // Check for special protocols
   CURL checkURL(strPath);
@@ -3746,6 +3816,8 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
   if (checkURL.GetProtocol() == "shout")
     strPath = checkURL.GetHostName();
+  if (checkURL.GetProtocol() == "tuxbox")
+    return 1;
 
   if (checkURL.GetProtocol() == "multipath")
   {
@@ -3811,7 +3883,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       if (strPath.Equals(url.GetHostName()))
         return i;
     }
-    
+
     // doesnt match a name, so try the bookmark path
     vector<CStdString> vecPaths;
 
@@ -3821,7 +3893,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
     // add the actual share path at the front of the vector
     vecPaths.insert(vecPaths.begin(), share.strPath);
-    
+
     // test each path
     for (int j = 0; j < (int)vecPaths.size(); ++j)
     {
@@ -3844,7 +3916,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
         if (iLenPath == iLenShare)
         {
           // if the path EXACTLY matches an item in a concatentated path
-          // set bookmark name to true to load the full virtualpath 
+          // set bookmark name to true to load the full virtualpath
           bIsBookmarkName = false;
           if (vecPaths.size() > 1)
             bIsBookmarkName = true;
@@ -3861,12 +3933,12 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   {
 
     // rar:// and zip://
-    // if archive wasn't mounted, look for a matching share for the archive instead    
+    // if archive wasn't mounted, look for a matching share for the archive instead
     if( strPath.Left(6).Equals("rar://") || strPath.Left(6).Equals("zip://") )
     {
-      // get the hostname portion of the url since it contains the archive file 
+      // get the hostname portion of the url since it contains the archive file
       strPath = checkURL.GetHostName();
-      
+
       bIsBookmarkName = false;
       bool bDummy;
       return GetMatchingShare(strPath, vecShares, bDummy);
@@ -3883,7 +3955,7 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &specialPath)
   if (specialPath.Left(15).Equals("special://home/"))
     CUtil::AddFileToFolder("Q:", specialPath.Mid(15), translatedPath);
   else if (specialPath.Left(20).Equals("special://subtitles/"))
-    CUtil::AddFileToFolder(g_stSettings.m_szAlternateSubtitleDirectory, specialPath.Mid(20), translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), specialPath.Mid(20), translatedPath);
   else if (specialPath.Left(19).Equals("special://userdata/"))
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), specialPath.Mid(19), translatedPath);
   else if (specialPath.Left(19).Equals("special://database/"))
@@ -3949,12 +4021,31 @@ CStdString CUtil::VideoPlaylistsLocation()
   return strReturn;
 }
 
-void CUtil::DeleteDatabaseDirectoryCache()
+void CUtil::DeleteMusicDatabaseDirectoryCache()
+{
+  CUtil::DeleteDirectoryCache("mdb");
+}
+
+void CUtil::DeleteVideoDatabaseDirectoryCache()
+{
+  CUtil::DeleteDirectoryCache("vdb");
+}
+
+void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
 {
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CAutoPtrFind hFind( FindFirstFile("Z:\\db-*.fi", &wfd));
+  CStdString strFile = "Z:\\";
+  if (!strType.IsEmpty())
+  {
+    strFile += strType;
+    if (!strFile.Right(1).Equals("-"))
+      strFile += "-";
+  }
+  strFile += "*.fi";
+
+  CAutoPtrFind hFind(FindFirstFile(strFile.c_str(), &wfd));
   if (!hFind.isValid())
     return;
   do
@@ -3968,79 +4059,80 @@ void CUtil::DeleteDatabaseDirectoryCache()
   }
   while (FindNextFile(hFind, &wfd));
 }
+
 bool CUtil::IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay)  // GeminiServer
 {
-	// Rückgabewert: FALSE, wenn kein Schaltjahr,   TRUE, wenn Schaltjahr
-	bool ret_value;
-	int iIsLeapYear;
-	if(iLYear%4 == 0 && (iLYear%100 != 0 || iLYear %400 == 0))
-	{
-		ret_value=TRUE;
-		iIsLeapYear = 1;
-	}
-	else
-	{
-		ret_value=FALSE;
-		iIsLeapYear = 0;
-	}
-	switch(iLMonth)
-		{
-			case 1:	iMonMax = 31 ;	
-				break;
-			case 2:	iMonMax = 28+iIsLeapYear; 
-				break;
-			case 3:	iMonMax = 31;
-				break;
-			case 4:	iMonMax = 30;
-				break;
-			case 5:	iMonMax = 31;
-				break;
-			case 6:	iMonMax = 30;
-				break;
-			case 7:	iMonMax = 31;
-				break;
-			case 8:	iMonMax = 31;
-				break;
-			case 9:	iMonMax = 30;
-				break;
-			case 10: iMonMax = 31;
-				break;
-			case 11: iMonMax = 30;
-				break;
-			case 12: iMonMax = 31;
-				break;
-			default: iMonMax = 31;
-		}
-	// monat: von 1... 12, tag von 1... 31.
-	if(iLMonth <= 2)
-	{
-		iLMonth += 10;
-		--iLYear;
-	}
-	else iLMonth -= 2;
-	iWeekDay = (iLTag+(13*iLMonth-1)/5+iLYear+iLYear/4-iLYear/100+iLYear/400)%7;
-	return(ret_value);
+  // Rückgabewert: FALSE, wenn kein Schaltjahr,   TRUE, wenn Schaltjahr
+  bool ret_value;
+  int iIsLeapYear;
+  if(iLYear%4 == 0 && (iLYear%100 != 0 || iLYear %400 == 0))
+  {
+    ret_value=TRUE;
+    iIsLeapYear = 1;
+  }
+  else
+  {
+    ret_value=FALSE;
+    iIsLeapYear = 0;
+  }
+  switch(iLMonth)
+    {
+      case 1:	iMonMax = 31 ;
+        break;
+      case 2:	iMonMax = 28+iIsLeapYear;
+        break;
+      case 3:	iMonMax = 31;
+        break;
+      case 4:	iMonMax = 30;
+        break;
+      case 5:	iMonMax = 31;
+        break;
+      case 6:	iMonMax = 30;
+        break;
+      case 7:	iMonMax = 31;
+        break;
+      case 8:	iMonMax = 31;
+        break;
+      case 9:	iMonMax = 30;
+        break;
+      case 10: iMonMax = 31;
+        break;
+      case 11: iMonMax = 30;
+        break;
+      case 12: iMonMax = 31;
+        break;
+      default: iMonMax = 31;
+    }
+  // monat: von 1... 12, tag von 1... 31.
+  if(iLMonth <= 2)
+  {
+    iLMonth += 10;
+    --iLYear;
+  }
+  else iLMonth -= 2;
+  iWeekDay = (iLTag+(13*iLMonth-1)/5+iLYear+iLYear/4-iLYear/100+iLYear/400)%7;
+  return(ret_value);
 }
 
 bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute)
 {
- 	TIME_ZONE_INFORMATION tziNew;
-	SYSTEMTIME CurTime;
-	SYSTEMTIME NewTime;
-	GetLocalTime(&CurTime);
-	GetLocalTime(&NewTime);
-	int iRescBiases, iHourUTC;
+  TIME_ZONE_INFORMATION tziNew;
+  SYSTEMTIME CurTime;
+  SYSTEMTIME NewTime;
+  GetLocalTime(&CurTime);
+  GetLocalTime(&NewTime);
+  int iRescBiases, iHourUTC;
   int iMinuteNew;
-	
-  DWORD dwRet = GetTimeZoneInformation(&tziNew);  // Get TimeZone Informations 
-	float iGMTZone = (float(tziNew.Bias)/(60));     // Calc's the GMT Time
-  
+
+  DWORD dwRet = GetTimeZoneInformation(&tziNew);  // Get TimeZone Informations
+  float iGMTZone = (float(tziNew.Bias)/(60));     // Calc's the GMT Time
+
   CLog::Log(LOGDEBUG, "------------ TimeZone -------------");
   CLog::Log(LOGDEBUG, "-      GMT Zone: GMT %.1f",iGMTZone);
-	CLog::Log(LOGDEBUG, "-          Bias: %i minutes",tziNew.Bias);
+  CLog::Log(LOGDEBUG, "-          Bias: %i minutes",tziNew.Bias);
   CLog::Log(LOGDEBUG, "-  DaylightBias: %i",tziNew.DaylightBias);
-	CLog::Log(LOGDEBUG, "-  StandardBias: %i",tziNew.StandardBias);
-  
+  CLog::Log(LOGDEBUG, "-  StandardBias: %i",tziNew.StandardBias);
+
   switch (dwRet)
   {
     case TIME_ZONE_ID_STANDARD:
@@ -4067,11 +4159,11 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
         CLog::Log(LOGDEBUG, "-   Timezone ID: Invalid");
       }
       break;
-    default: 
+    default:
       iRescBiases   = tziNew.Bias + tziNew.StandardBias;
   }
     CLog::Log(LOGDEBUG, "--------------- END ---------------");
-	
+
   // Calculation
   iHourUTC = GMTZoneCalc(iRescBiases, iHour, iMinute, iMinuteNew);
   iMinute = iMinuteNew;
@@ -4085,17 +4177,17 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
     iDay = iDay + 1;
     iHourUTC =iHourUTC - 24;
   }
-  
+
   // Set the New-,Detected Time Values to System Time!
-  NewTime.wYear		= (WORD)iYear;    
-	NewTime.wMonth	= (WORD)iMonth;
-	NewTime.wDay		= (WORD)iDay;	
-	NewTime.wHour		= (WORD)iHourUTC;
+  NewTime.wYear		= (WORD)iYear;
+  NewTime.wMonth	= (WORD)iMonth;
+  NewTime.wDay		= (WORD)iDay;
+  NewTime.wHour		= (WORD)iHourUTC;
   NewTime.wMinute	= (WORD)iMinute;
 
-	FILETIME stNewTime, stCurTime;
-	SystemTimeToFileTime(&NewTime, &stNewTime);
-	SystemTimeToFileTime(&CurTime, &stCurTime);
+  FILETIME stNewTime, stCurTime;
+  SystemTimeToFileTime(&NewTime, &stNewTime);
+  SystemTimeToFileTime(&CurTime, &stCurTime);
 #ifdef HAS_XBOX_HARDWARE
   bool bReturn=NtSetSystemTime(&stNewTime, &stCurTime); //NtSetSystemTime(IN PLARGE_INTEGER SystemTime, OUT PLARGE_INTEGER PreviousTime OPTIONAL );
 #else
@@ -4108,20 +4200,20 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
   int iHourUTC, iTemp;
   iMinuteNew = iMinute;
   iTemp = iRescBiases/60;
-  
+
   if (iRescBiases == 0 )return iHour;   // GMT Zone 0, no need calculate
   if (iRescBiases > 0)
     iHourUTC = iHour + abs(iTemp);
-  else 
+  else
     iHourUTC = iHour - abs(iTemp);
 
   if ((iTemp*60) != iRescBiases)
-  { 
+  {
     if (iRescBiases > 0)
       iMinuteNew = iMinute + abs(iTemp*60 - iRescBiases);
     else
       iMinuteNew = iMinute - abs(iTemp*60 - iRescBiases);
-    
+
     if (iMinuteNew >= 60)
     {
       iMinuteNew = iMinuteNew -60;
@@ -4152,7 +4244,7 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
   struct timeval timeout={0,500};
   XNADDR xna;
 	DWORD dwState;
-  fd_set readfds; 
+  fd_set readfds;
 	if( ( !inited )  || ( bRefresh ) )
 	{
 		dwState = XNetGetTitleXnAddr(&xna);
@@ -4162,14 +4254,14 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 		sscanf( (char *)strWorkTemp.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
     if( !t1 ) return false;
     cliLen = sizeof( cliAddr);
-    if( !inited ) 
+    if( !inited )
     {
       int tUDPsocket  = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	    char value      = 1;
 	    setsockopt( tUDPsocket, SOL_SOCKET, SO_BROADCAST, &value, value );
 	    struct sockaddr_in addr;
 	    memset(&(addr),0,sizeof(addr));
-	    addr.sin_family       = AF_INET; 
+	    addr.sin_family       = AF_INET;
 	    addr.sin_addr.s_addr  = INADDR_ANY;
 	    addr.sin_port         = htons(iUDPPort);
 	    bind(tUDPsocket,(struct sockaddr *)(&addr),sizeof(addr));
@@ -4178,12 +4270,12 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
     }
     FD_ZERO(&readfds);
 		FD_SET(udp_server_socket, &readfds);
-		life = select( 0,&readfds, NULL, NULL, &timeout ); 
+		life = select( 0,&readfds, NULL, NULL, &timeout );
 		if (life == -1 )  return false;
     memset(&(server),0,sizeof(server));
 		server.sin_family           = AF_INET;
 		server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
-		server.sin_port             = htons(iUDPPort);	
+		server.sin_port             = htons(iUDPPort);
     sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
 	}
 	FD_ZERO(&readfds);
@@ -4191,13 +4283,13 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 	life = select( 0,&readfds, NULL, NULL, &timeout );
   if (life == 0 ) // Do we have a Ping able xbox ? 0:no 1:yes
   {
-    strNewClientIP =""; 
+    strNewClientIP ="";
     strNewClientInfo ="";
     g_infoManager.SetAutodetectedXbox(false);
   }
   while( life )
 	{
-    recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen); 
+    recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen);
     strWorkTemp.Format("%s",sztmp);
     if( strWorkTemp == strReceiveMessage )
 		{
@@ -4206,7 +4298,7 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
       strWorkTemp.Format("%d.%d.%d.%d",cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
 
 			bool bPing = ( bool )false; // Check if we have this client in our list already, and if not respond with a ping // todo: a code to check the list of other clients
-			if( bPing ) sendto(udp_server_socket,strSendMessage.c_str(),5,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));  
+			if( bPing ) sendto(udp_server_socket,strSendMessage.c_str(),5,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
 		}
 		else
 		{
@@ -4223,13 +4315,13 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
       }
       else
         g_infoManager.SetAutodetectedXbox(true);
-		}
-		timeout.tv_sec=0;
-		timeout.tv_usec = 5000;
-		FD_ZERO(&readfds);
-		FD_SET(udp_server_socket, &readfds);
-		life = select( 0,&readfds, NULL, NULL, &timeout );
-	}
+    }
+    timeout.tv_sec=0;
+    timeout.tv_usec = 5000;
+    FD_ZERO(&readfds);
+    FD_SET(udp_server_socket, &readfds);
+    life = select( 0,&readfds, NULL, NULL, &timeout );
+  }
 #endif
   return bState;
 }
@@ -4257,7 +4349,7 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
     {
       //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
       CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-      CStdStringArray arSplit; 
+      CStdStringArray arSplit;
       StringUtils::SplitString(strNewClientInfo,";", arSplit);
       if ((int)arSplit.size() > 1)
       {
@@ -4273,7 +4365,7 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
         strtemplbl.Format("%s %s",strNickName, strNewClientIP);
         g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);
         CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", strLabel.c_str(), strNickName.c_str(), strFTPPath.c_str());
-        
+
         if (g_guiSettings.GetBool("autodetect.popupinfo")) //PopUP Ask window to connect to the detected XBOX via Filemanger!
         {
           if (CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
@@ -4291,7 +4383,7 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
   }
   else
   {
-    strHasClientIP ="", strHasClientInfo = ""; 
+    strHasClientIP ="", strHasClientInfo = "";
     g_infoManager.SetAutodetectedXbox(false);
   }
 #endif
@@ -4304,7 +4396,7 @@ bool CUtil::XboxAutoDetectionGetShare(CShare& share)
   {
     //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
     CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-    CStdStringArray arSplit; 
+    CStdStringArray arSplit;
     StringUtils::SplitString(strNewClientInfo,";", arSplit);
     if ((int)arSplit.size() > 1)
     {
@@ -4349,7 +4441,7 @@ bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &i
     if (strFtpUser1.size() != 0) return true;
     else return false;
 	}
-  else 
+  else
 #endif
     return false;
 }
@@ -4358,7 +4450,7 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
 #ifdef HAS_FTP_SERVER
   if( !g_application.m_pFileZilla )
     return false;
-  
+
   CStdString strTempUserName;
   class CXFUser*	p_ftpUser;
   std::vector<CXFUser*> v_ftpusers;
@@ -4373,7 +4465,7 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
       p_ftpUser = v_ftpusers[i-1];
       strTempUserName = p_ftpUser->GetName();
       if (strTempUserName.Equals(strFtpUserName.c_str()) )
-      { 
+      {
         if (p_ftpUser->SetPassword(strFtpUserPassword.c_str()) != XFS_INVALID_PARAMETERS)
         {
           p_ftpUser->CommitChanges();
@@ -4402,15 +4494,15 @@ bool CUtil::SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNic
       {
         strXboxNickNameOut.Format("%ls",pszNickName );
         if (strXboxNickNameIn.Equals(strXboxNickNameOut))
-        { 
-          bfound = true; 
-          break; 
+        {
+          bfound = true;
+          break;
         }
         else if (strXboxNickNameIn.IsEmpty()) strXboxNickNameOut.Format("GeminiServer");
       }while(XFindNextNickname(hNickName,pszNickName,uiSize) != false);
     XFindClose(hNickName);
   }
-  if(!bfound) 
+  if(!bfound)
   {
     CStdStringW wstrName = strXboxNickNameIn.c_str();
     XSetNickname(wstrName.c_str(), false);
@@ -4427,12 +4519,12 @@ bool CUtil::GetXBOXNickName(CStdString &strXboxNickNameOut)
 	if ( hNickName != INVALID_HANDLE_VALUE )
 	{
     strXboxNickNameOut.Format("%ls",wszXboxNickname);
-		XFindClose( hNickName ); 
+		XFindClose( hNickName );
     return true;
 	}
   else
 #endif
-  { 
+  {
     // it seems to be empty? should we create one? or the user
     strXboxNickNameOut.Format("");
     return false;
@@ -4463,7 +4555,7 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
       CFileItem* pItem = new CFileItem(*myItems[i]);
       item.Add(pItem);
       CUtil::GetRecursiveDirsListing(myItems[i]->m_strPath,item);
-    }   
+    }
   }
   CLog::Log(LOGDEBUG,"done listing!");
 }
@@ -4471,7 +4563,7 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
 void CUtil::ForceForwardSlashes(CStdString& strPath)
 {
   int iPos = strPath.ReverseFind('\\');
-  while (iPos > 0) 
+  while (iPos > 0)
   {
     strPath.at(iPos) = '/';
     iPos = strPath.ReverseFind('\\');
@@ -4544,15 +4636,15 @@ CStdString CUtil::SubstitutePath(const CStdString& strFileName)
 
 bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength)
 {
-  int iStrInputSize = StrInput.size(); 
-  if((iStrInputSize <= 0) || (iTextMaxLength >= iStrInputSize)) 
+  int iStrInputSize = StrInput.size();
+  if((iStrInputSize <= 0) || (iTextMaxLength >= iStrInputSize))
     return false;
-  
+
   char cDelim = '\0';
   int nGreaterDelim, nPos;
 
   nPos = StrInput.find_last_of( '\\' );
-  if ( nPos >= 0 ) 
+  if ( nPos >= 0 )
     cDelim = '\\';
   else
   {
@@ -4562,7 +4654,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   }
   if ( cDelim == '\0' )
     return false;
-  
+
   if (nPos == StrInput.size() - 1)
   {
     StrInput.erase(StrInput.size() - 1);
@@ -4603,12 +4695,12 @@ float CUtil::CurrentCpuUsage()
   return 0.0f;
 
 //  float fCpuUsage = -1.0;
-// 
+//
 //  if (!m_hCurrentCpuUsage)
 //  {
 //    DmOpenPerformanceCounter("% CPU:total", &m_hCurrentCpuUsage);
 //  }
-//  
+//
 //  if (m_hCurrentCpuUsage)
 //  {
 //    DM_COUNTDATA data;
@@ -4616,7 +4708,7 @@ float CUtil::CurrentCpuUsage()
 //    DmQueryPerformanceCounterHandle(m_hCurrentCpuUsage, DMCOUNT_PRATIO, &data);
 //    fCpuUsage = (float)data.CountValue.LowPart / (float)data.RateValue.LowPart * 100.0f;
 //  }
-//  
+//
 //  return fCpuUsage;
 }
 
@@ -4658,7 +4750,7 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
 }
 
 void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
-{ 
+{
   CStdString strPath;
   CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(),"media",strPath);
   CHDDirectory directory;
@@ -4682,18 +4774,17 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
   sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
 
-bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strTransition, int iTrTime)
+bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, const CStdString &strTransition, int iTrTime)
 {
 #ifdef HAS_XBOX_HARDWARE
-  if (strRGBa.IsEmpty() && strRGBb.IsEmpty()) // no color, return false!
-    return false;
-
+    if (strRGBa.IsEmpty() && strRGBb.IsEmpty() && strWhiteA.IsEmpty() && strWhiteB.IsEmpty()) // no color, return false!
+      return false;
   if(g_iledSmartxxrgb.IsRunning())
   {
-    return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
+    return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strWhiteA, strWhiteB, strTransition, iTrTime);
   }
   g_iledSmartxxrgb.Start();
-  return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strTransition, iTrTime);
+  return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strWhiteA, strWhiteB, strTransition, iTrTime);
 #else
   return false;
 #endif
@@ -4705,23 +4796,23 @@ bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, con
 bool CUtil::LookForKernelPatch()
 {
 #ifdef HAS_XBOX_HARDWARE
-	BYTE	*Kernel=(BYTE *)0x80010000;
-	DWORD	i, j = 0;
+  BYTE	*Kernel=(BYTE *)0x80010000;
+  DWORD	i, j = 0;
 
-	for(i=0x1000; i<0x14000; i++)
+  for(i=0x1000; i<0x14000; i++)
   {
-		if(Kernel[i]!=PatchData[0])
+    if(Kernel[i]!=PatchData[0])
       continue;
-		for(j=0; j<25; j++) 
+    for(j=0; j<25; j++)
     {
-			if(Kernel[i+j]!=PatchData[j])
+      if(Kernel[i+j]!=PatchData[j])
         break;
-	  }
-		if(j==25) 
+    }
+    if(j==25)
       return true;
-	}
+  }
 #endif
-	return false;
+  return false;
 }
 // This routine removes our patch if it is not used.
 // This is to ensure proper testing whether we are responsible
@@ -4729,26 +4820,26 @@ bool CUtil::LookForKernelPatch()
 void CUtil::RemoveKernelPatch()
 {
 #ifdef HAS_XBOX_HARDWARE
-	BYTE	*Kernel=(BYTE *)0x80010000;
-	DWORD	i, j = 0;
+  BYTE  *Kernel=(BYTE *)0x80010000;
+  DWORD i, j = 0;
 
-	for(i=0x1000; i<0x14000; i++)
+  for(i=0x1000; i<0x14000; i++)
   {
-		if(Kernel[i]!=PatchData[0])
+    if(Kernel[i]!=PatchData[0])
       continue;
 
-		for(j=0; j<25; j++) 
+    for(j=0; j<25; j++)
     {
-			if(Kernel[i+j]!=PatchData[j])
+      if(Kernel[i+j]!=PatchData[j])
         break;
     }
-		if(j==25) 
+    if(j==25)
     {
-			j=MmQueryAddressProtect(&Kernel[i]);
-			MmSetAddressProtect(&Kernel[i], 70, PAGE_READWRITE);
-			memcpy(&Kernel[i], &rawData[0], 70); // Reset Kernel
-			MmSetAddressProtect(&Kernel[i], 70, j);
-		}
+      j=MmQueryAddressProtect(&Kernel[i]);
+      MmSetAddressProtect(&Kernel[i], 70, PAGE_READWRITE);
+      memcpy(&Kernel[i], &rawData[0], 70); // Reset Kernel
+      MmSetAddressProtect(&Kernel[i], 70, j);
+    }
   }
 #endif
 }
@@ -4781,6 +4872,6 @@ void CUtil::ClearFileItemCache()
   for (int i = 0; i < items.Size(); ++i)
   {
     if (!items[i]->m_bIsFolder)
-	CFile::Delete(items[i]->m_strPath);
+      CFile::Delete(items[i]->m_strPath);
   }
 }

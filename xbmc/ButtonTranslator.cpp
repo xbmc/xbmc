@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "ButtonTranslator.h"
 #include "util.h"
@@ -158,7 +179,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     while (pButton)
     {
       WORD wButtonCode = TranslateGamepadString(pButton->Value());
-      if (pButton->FirstChild()) 
+      if (pButton->FirstChild())
         MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
     }
@@ -169,7 +190,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     while (pButton)
     {
       WORD wButtonCode = TranslateRemoteString(pButton->Value());
-      if (pButton->FirstChild()) 
+      if (pButton->FirstChild())
         MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
     }
@@ -180,7 +201,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     while (pButton)
     {
       WORD wButtonCode = TranslateUniversalRemoteString(pButton->Value());
-      if (pButton->FirstChild()) 
+      if (pButton->FirstChild())
         MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
     }
@@ -191,7 +212,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     while (pButton)
     {
       WORD wButtonCode = TranslateKeyboardString(pButton->Value());
-      if (pButton->FirstChild()) 
+      if (pButton->FirstChild())
         MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
     }
@@ -354,9 +375,9 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   {
     // allow a full window id or a delta id
     int iWindow = atoi(strWindow.c_str());
-    if (iWindow > WINDOW_INVALID) 
+    if (iWindow > WINDOW_INVALID)
       wWindowID = iWindow;
-    else 
+    else
       wWindowID = WINDOW_HOME + iWindow;
   }
   else if (strWindow.Equals("home")) wWindowID = WINDOW_HOME;
@@ -379,6 +400,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("networksettings")) wWindowID = WINDOW_SETTINGS_NETWORK;
   else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
   else if (strWindow.Equals("scripts")) wWindowID = WINDOW_SCRIPTS;
+  else if (strWindow.Equals("gamesaves")) wWindowID = WINDOW_GAMESAVES;
   else if (strWindow.Equals("myvideofiles")) wWindowID = WINDOW_VIDEO_FILES;
   else if (strWindow.Equals("myvideolibrary")) wWindowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("myvideoplaylist")) wWindowID = WINDOW_VIDEO_PLAYLIST;
@@ -433,7 +455,9 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("filebrowser")) wWindowID = WINDOW_DIALOG_FILE_BROWSER;
   else if (strWindow.Equals("startup")) wWindowID = WINDOW_STARTUP;
   else if (strWindow.Equals("startwindow")) wWindowID = g_SkinInfo.GetStartWindow();
-  else if(strWindow.Equals("loginscreen")) wWindowID = WINDOW_LOGIN_SCREEN;
+  else if (strWindow.Equals("loginscreen")) wWindowID = WINDOW_LOGIN_SCREEN;
+  else if (strWindow.Equals("musicoverlay")) wWindowID = WINDOW_MUSIC_OVERLAY;
+  else if (strWindow.Equals("videooverlay")) wWindowID = WINDOW_VIDEO_OVERLAY;
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 
@@ -640,4 +664,3 @@ void CButtonTranslator::Clear()
   translatorMap.clear();
 
 }
-

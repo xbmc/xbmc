@@ -1,15 +1,9 @@
 #pragma once
 
 #include "settings.h"
+#include "GUIBaseContainer.h"
 
-typedef enum {
-  VIEW_METHOD_NONE=-1,
-  VIEW_METHOD_LIST,
-  VIEW_METHOD_ICONS,
-  VIEW_METHOD_LARGE_ICONS,
-  VIEW_METHOD_LARGE_LIST,
-  VIEW_METHOD_MAX
-} VIEW_METHOD;
+class CViewState; // forward
 
 class CGUIViewState
 {
@@ -32,15 +26,15 @@ public:
     CStdString m_strLabel2Folder;
   } LABEL_MASKS;
 
-
-  VIEW_METHOD SetNextViewAsControl();
-  VIEW_METHOD GetViewAsControl() const;
-  int GetViewAsControlButtonLabel() const;
+  void SetViewAsControl(int viewAsControl);
+  void SaveViewAsControl(int viewAsControl);
+  int GetViewAsControl() const;
 
   SORT_METHOD SetNextSortMethod();
   SORT_METHOD GetSortMethod() const;
   int GetSortMethodLabel() const;
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
+  void GetSortMethods(vector< pair<int,int> > &sortMethods) const;
 
   SORT_ORDER SetNextSortOrder();
   SORT_ORDER GetSortOrder() const { return m_sortOrder; };
@@ -60,9 +54,10 @@ public:
 protected:
   CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
   virtual void SaveViewState()=0;
+  void SaveViewToDb(const CStdString &path, int windowID);
+  void SaveViewToDb(const CStdString &path, int windowID, CViewState &viewState, bool saveSettings = true);
+  void LoadViewState(const CStdString &path, int windowID);
 
-  void AddViewAsControl(VIEW_METHOD viewAsControl, int buttonLabel);
-  void SetViewAsControl(VIEW_METHOD viewAsControl);
   void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks);
   void SetSortMethod(SORT_METHOD sortMethod);
   void SetSortOrder(SORT_ORDER sortOrder) { m_sortOrder=sortOrder; }
@@ -71,12 +66,6 @@ protected:
   static VECSHARES m_shares;
 
 private:
-  typedef struct _VIEW
-  {
-    VIEW_METHOD m_viewAsControl;
-    int m_buttonLabel;
-  } VIEW;
-  vector<VIEW> m_viewAsControls;
   int m_currentViewAsControl;
 
   typedef struct _SORT

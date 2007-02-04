@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogKeyboard.h"
@@ -5,6 +26,8 @@
 #include "GUIDialogContentSettings.h"
 #include "GUIWindowVideoFiles.h"
 #include "Util.h"
+
+using namespace DIRECTORY;
 
 #define CONTROL_HEADING         2
 #define CONTROL_PATH            10
@@ -117,6 +140,29 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
   return confirmed;
 }
 
+bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CStdString&share)
+{
+  VECSHARES* pShares=NULL;
+  
+  if (type.Equals("upnpmusic"))
+    pShares = &g_settings.m_vecUPnPMusicShares;
+  if (type.Equals("upnpvideo"))
+    pShares = &g_settings.m_vecUPnPVideoShares;
+  if (type.Equals("upnppictures"))
+    pShares = &g_settings.m_vecUPnPPictureShares;
+
+  if (pShares)
+  {
+    for (unsigned int i=0;i<pShares->size();++i)
+    {
+      if ((*pShares)[i].strName.Equals(share))
+        return ShowAndEditMediaSource(type,(*pShares)[i]);
+    }
+  }
+
+  return false;
+}
+
 bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CShare &share)
 {
   CStdString strOldName = share.strName;
@@ -145,10 +191,10 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   // Browse is called.  Open the filebrowser dialog.
   // Ignore current path is best at this stage??
   CStdString path;
-  bool allowNetworkShares(m_type != "myprograms");
+  bool allowNetworkShares(m_type != "myprograms" && m_type.Left(4) != "upnp");
   VECSHARES extraShares;
-  
-  if (m_type == "music")
+
+  if (m_type == "music" || m_type == "upnpmusic")
   { // add the music playlist location
     CShare share1;
     share1.strPath = "special://musicplaylists/";
@@ -187,19 +233,19 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       }
     }
   }
-  else if (m_type == "video")
+  else if (m_type == "video" || m_type == "upnpvideo")
   { // add the music playlist location
     CShare share1;
     share1.strPath = "special://videoplaylists/";
     share1.strName = g_localizeStrings.Get(20012);       // TODO: localize 2.0
     extraShares.push_back(share1);
-    
+
     CShare share2;
     share2.strPath = "rtv://*/";
     share2.strName = "ReplayTV";
     extraShares.push_back(share2);
   }
-  if (m_type == "pictures" && g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
+  else if ((m_type == "pictures" || m_type == "upnpictures") && g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
   {
     CShare share1;
     share1.strPath = "special://screenshots/";
@@ -350,6 +396,12 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
     typeStringID = 350;  // "Programs"
   else if (type == "pictures")
     typeStringID = 1213;  // "Pictures"
+  else if (type == "upnpmusic")
+    typeStringID = 20356;
+  else if (type == "upnpvideo")
+    typeStringID = 20357;
+  else if (type == "upnppictures")
+    typeStringID = 20358;
   else // if (type == "files");
     typeStringID = 744;  // "Files"
   CStdString format;

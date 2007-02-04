@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "PartyModeManager.h"
 #include "Application.h"
@@ -8,6 +29,8 @@
 #include "GUIWindowMusicPlayList.h"
 #include "SmartPlaylist.h"
 #include "GUIDialogProgress.h"
+
+using namespace PLAYLIST;
 
 #define QUEUE_DEPTH       10
 
@@ -120,7 +143,7 @@ void CPartyModeManager::OnSongChange(bool bUpdatePlayed /* = false */)
     m_iSongsPlayed++;
 }
 
-void CPartyModeManager::AddUserSongs(CPlayList& playlistTemp, bool bPlay /* = false */)
+void CPartyModeManager::AddUserSongs(CPlayList& tempList, bool bPlay /* = false */)
 {
   if (!IsEnabled())
     return;
@@ -132,24 +155,36 @@ void CPartyModeManager::AddUserSongs(CPlayList& playlistTemp, bool bPlay /* = fa
   else
     iAddAt = m_iLastUserSong + 1; // under the last user added song
 
-  int iNewUserSongs = playlistTemp.size();
+  int iNewUserSongs = tempList.size();
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding %i user selected songs at %i", iNewUserSongs, iAddAt);
 
-  // get songs starting at the AddAt location move them to the temp playlist
-  // TODO: find a better way to do this
-  // maybe something like playlist.Add(CPlayList& playlistTemp, int iPos)?
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
-  while (playlist.size() > iAddAt)
-  {
-    playlistTemp.Add(playlist[iAddAt]);
-    playlist.Remove(iAddAt);
-  }
+  g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Insert(tempList, iAddAt);
 
-  // now add temp playlist to back real playlist
-  for (int i=0; i<playlistTemp.size(); i++)
-  {
-    playlist.Add(playlistTemp[i]);
-  }
+  // update last user added song location
+  if (m_iLastUserSong < 0)
+    m_iLastUserSong = 0;
+  m_iLastUserSong += iNewUserSongs;
+
+  if (bPlay)
+    Play(1);
+}
+
+void CPartyModeManager::AddUserSongs(CFileItemList& tempList, bool bPlay /* = false */)
+{
+  if (!IsEnabled())
+    return;
+
+  // where do we add?
+  int iAddAt = -1;
+  if (m_iLastUserSong < 0 || bPlay)
+    iAddAt = 1; // under the currently playing song
+  else
+    iAddAt = m_iLastUserSong + 1; // under the last user added song
+
+  int iNewUserSongs = tempList.Size();
+  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding %i user selected songs at %i", iNewUserSongs, iAddAt);
+
+  g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Insert(tempList, iAddAt);
 
   // update last user added song location
   if (m_iLastUserSong < 0)
@@ -245,40 +280,14 @@ bool CPartyModeManager::ReapSongs()
 
   // reap any played songs
   int iCurrentSong = g_playlistPlayer.GetCurrentSong();
-  /*vector<int> vecPlayed;
-  for (int i=0; i<playlist.size(); i++)
-  {
-    // get played song list
-    if ((playlist[i].WasPlayed() && i != iCurrentSong)
-      vecPlayed.push_back(i);
-    else if (i < iCurrentSong)
-      vecPlayed.push_back(0);
-  }
-  // dont remove them while traversing the playlist!
-  for (int i=0; i<(int)vecPlayed.size(); i++)
-  {
-    int iSong = vecPlayed[i];
-    CLog::Log(LOGINFO,"PARTY MODE MANAGER: Reaping played song at %i", iSong);
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(iSong);
-    if (iSong < iCurrentSong) iCurrentSong--;
-    if (iSong <= m_iLastUserSong) m_iLastUserSong--;
-  }*/
   int i=0;
   while (i < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size())
   {
-    if (playlist[i].WasPlayed() && i != iCurrentSong)
-    {
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(i);
-      if (i < iCurrentSong)
-        iCurrentSong--;
-      if (i <= m_iLastUserSong) 
-        m_iLastUserSong--;
-    }
-    else if (i < iCurrentSong)
+    if (i < iCurrentSong)
     {
       g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(i);
       iCurrentSong--;
-      if (i <= m_iLastUserSong) 
+      if (i <= m_iLastUserSong)
         m_iLastUserSong--;
     }
     else

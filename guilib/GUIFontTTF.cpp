@@ -64,7 +64,12 @@ private:
 CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
 #define ROUND(x) floorf(x + 0.5f)
+
+#ifdef HAS_XBOX_D3D
+#define ROUND_TO_PIXEL(x) floorf(x + 0.5f)
+#else
 #define ROUND_TO_PIXEL(x) floorf(x + 0.5f) - 0.5f
+#endif
 
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
@@ -128,7 +133,7 @@ void CGUIFontTTF::Clear()
   }
 }
 
-bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
+bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, float aspect)
 {
   // create our character texture + font shader
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
@@ -142,8 +147,8 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   if (FT_New_Face( m_library, strFilename.c_str(), 0, &m_face ))
     return false;
 
-  unsigned int xdpi = 72;
   unsigned int ydpi = 72;
+  unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
 
   // we set our screen res currently to 96dpi in both directions (windows default)
   // we cache our characters (for rendering speed) so it's probably
@@ -591,6 +596,7 @@ void CGUIFontTTF::Begin()
 
 #ifdef HAS_XBOX_D3D
     // Render the image
+    m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
     m_pD3DDevice->Begin(D3DPT_QUADLIST);
 #endif
   }
@@ -608,6 +614,7 @@ void CGUIFontTTF::End()
 
 #ifdef HAS_XBOX_D3D
   m_pD3DDevice->End();
+  m_pD3DDevice->SetScreenSpaceOffset(0, 0);
 #endif
   m_pD3DDevice->SetPixelShader(NULL);
   m_pD3DDevice->SetTexture(0, NULL);
@@ -673,12 +680,12 @@ void CGUIFontTTF::CreateShader()
 
     LPD3DXBUFFER pShader = NULL;
     if( D3D_OK != D3DXAssembleShader(fonts, strlen(fonts), NULL, NULL, &pShader, NULL) )
-      CLog::Log(LOGERROR, __FUNCTION__" - Failed to assemble pixel shader");
+      CLog::Log(LOGINFO, __FUNCTION__" - Failed to assemble pixel shader");
     else
     {
       if (D3D_OK != m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_pixelShader))
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Failed to create pixel shader");
+        CLog::Log(LOGINFO, __FUNCTION__" - Failed to create pixel shader");
         m_pixelShader = 0;
       }
       pShader->Release();

@@ -1,13 +1,38 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIDialogFileBrowser.h"
 #include "util.h"
 #include "detectdvdtype.h"
 #include "GUIDialogNetworkSetup.h"
+#include "GUIDialogMediaSource.h"
 #include "GUIDialogContextMenu.h"
 #include "MediaManager.h"
 #include "AutoSwitch.h"
 #include "xbox/network.h"
 #include "GUIPassword.h"
+
+using namespace XFILE;
+using namespace DIRECTORY;
 
 #define CONTROL_LIST          450
 #define CONTROL_THUMBS        451
@@ -42,13 +67,13 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
   }
   if ((action.wID == ACTION_CONTEXT_MENU || action.wID == ACTION_MOUSE_RIGHT_CLICK) && m_Directory.m_strPath.IsEmpty())
   {
-    int iItem = m_viewControl.GetSelectedItem();  
-    if (g_mediaManager.HasLocation(m_selectedPath))
+    int iItem = m_viewControl.GetSelectedItem();
+    if ((!m_addSourceType.IsEmpty() && iItem != m_vecItems.Size()-1) || (m_addNetworkShareEnabled && g_mediaManager.HasLocation(m_selectedPath)))
       return OnPopupMenu(iItem);
-    
+
     return false;
   }
-  
+
   return CGUIDialog::OnAction(action);
 }
 
@@ -73,16 +98,26 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       bool bIsDir = false;
       // this code allows two different selection modes for directories
       // end the path with a slash to start inside the directory
-      if (m_selectedPath[m_selectedPath.size()-1] == '\\' || m_selectedPath[m_selectedPath.size()-1] == '/' ) // assume directory
+      if (CUtil::HasSlashAtEnd(m_selectedPath))
       {
         bIsDir = true;
-        if (!CDirectory::Exists(m_selectedPath))
+        bool bFool;
+        int iBookmark = CUtil::GetMatchingShare(m_selectedPath,m_shares,bFool);
+        bFool = true;
+        if (iBookmark > -1)
+        {
+          CUtil::RemoveSlashAtEnd(m_selectedPath);
+          if (m_shares[iBookmark].strPath.Equals(m_selectedPath))
+            bFool = false;
+        }
+      
+        if (bFool && !CDirectory::Exists(m_selectedPath))
           m_selectedPath.Empty();
       }
       else
       {
         if (!CFile::Exists(m_selectedPath) && !CDirectory::Exists(m_selectedPath))
-          m_selectedPath.Empty();
+            m_selectedPath.Empty();
       }
 
       // find the parent folder if we are a file browser (don't do this for folders)
@@ -184,7 +219,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
           if (!m_rootDir.IsInShare(m_Directory.m_strPath))
           { // don't have this share any more
             if (IsActive()) Update("");
-            else 
+            else
             {
               m_history.ClearPathHistory();
               m_Directory.m_strPath="";
@@ -304,10 +339,16 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     pItem->m_bIsFolder = true;
     m_vecItems.Add(pItem);
   }
+  if (m_Directory.m_strPath.IsEmpty() && !m_addSourceType.IsEmpty())
+  {
+    CFileItem *pItem = new CFileItem(g_localizeStrings.Get(21359));
+    pItem->m_strPath = "source://";
+    pItem->m_bIsFolder = true;
+    m_vecItems.Add(pItem);
+  }
 
   m_viewControl.SetItems(m_vecItems);
-  if (m_browsingForImages)
-    m_viewControl.SetCurrentView(CAutoSwitch::ByFileCount(m_vecItems) ? VIEW_METHOD_ICONS : VIEW_METHOD_LIST);
+  m_viewControl.SetCurrentView((m_browsingForImages && CAutoSwitch::ByFileCount(m_vecItems)) ? DEFAULT_VIEW_ICONS : DEFAULT_VIEW_LIST);
 
   CStdString strPath2 = m_Directory.m_strPath;
   CUtil::RemoveSlashAtEnd(strPath2);
@@ -384,6 +425,16 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
       OnAddNetworkLocation();
       return;
     }
+    if (pItem->m_strPath == "source://")
+    { // special "Add Source" item
+      OnAddMediaSource();
+      return;
+    }
+    if (!m_addSourceType.IsEmpty())
+    {
+      OnEditMediaSource(pItem);
+      return;
+    }
     if ( pItem->m_bIsShareOrDrive )
     {
       if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
@@ -441,9 +492,8 @@ void CGUIDialogFileBrowser::OnWindowLoaded()
   CGUIDialog::OnWindowLoaded();
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_METHOD_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.AddView(VIEW_METHOD_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.SetCurrentView(VIEW_METHOD_LIST);
+  m_viewControl.AddView(GetControl(CONTROL_LIST));
+  m_viewControl.AddView(GetControl(CONTROL_THUMBS));
   // set the page spin controls to hidden
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LIST + 5000);
@@ -564,19 +614,21 @@ void CGUIDialogFileBrowser::SetHeading(const CStdString &heading)
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, heading);
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkShares, VECSHARES* additionalShare /* = NULL */)
+bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkShares, VECSHARES* additionalShare /* = NULL */, const CStdString& strType /* = "" */)
 {
   // Technique is
   // 1.  Show Filebrowser with currently defined local, and optionally the network locations.
   // 2.  Have the "Add Network Location" option in addition.
-  // 3.  If the "Add Network Location" is pressed, then:
+  // 3a. If the "Add Network Location" is pressed, then:
   //     a) Fire up the network location dialog to grab the new location
   //     b) Check the location by doing a GetDirectory() - if it fails, prompt the user
   //        to allow them to add currently disconnected network shares.
   //     c) Save this location to our xml file (network.xml)
   //     d) Return to 1.
-  // 4.  Allow user to browse the local and network locations for their share.
-  // 5.  On OK, return to the Add share dialog.
+  // 3b. If the "Add Source" is pressed, then:
+  //     a) Fire up the media source dialog to add the new location
+  // 4.  Optionally allow user to browse the local and network locations for their share.
+  // 5.  On OK, return.
 
   // Create a new filebrowser window
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
@@ -585,23 +637,38 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
   // Add it to our window manager
   m_gWindowManager.AddUniqueInstance(browser);
 
-  browser->SetHeading(g_localizeStrings.Get(1023));
-
   VECSHARES shares;
-  g_mediaManager.GetLocalDrives(shares);
-
-  // Now the additional share if appropriate
-  if (additionalShare)
+  if (!strType.IsEmpty())
   {
-    for (unsigned int i=0;i<additionalShare->size();++i)
-    shares.push_back((*additionalShare)[i]);
+    if (strType.Equals("upnpmusic"))
+      browser->SetHeading(g_localizeStrings.Get(21361));
+    if (strType.Equals("upnpvideo"))
+      browser->SetHeading(g_localizeStrings.Get(21362));
+    if (strType.Equals("upnppictures"))
+      browser->SetHeading(g_localizeStrings.Get(21363));
+    shares = *additionalShare;
+    browser->m_addSourceType = strType;
   }
-
-  // Now add the network shares...
-  if (allowNetworkShares)
+  else
   {
-    g_mediaManager.GetNetworkLocations(shares);
+    browser->SetHeading(g_localizeStrings.Get(1023));
+
+    g_mediaManager.GetLocalDrives(shares);
+
+    // Now the additional share if appropriate
+    if (additionalShare)
+    {
+      for (unsigned int i=0;i<additionalShare->size();++i)
+      shares.push_back((*additionalShare)[i]);
+    }
+
+    // Now add the network shares...
+    if (allowNetworkShares)
+    {
+      g_mediaManager.GetNetworkLocations(shares);
+    }
   }
+  
   browser->SetShares(shares);
   browser->m_rootDir.SetMask("/");
   browser->m_rootDir.AllowNonLocalShares(false);  // don't allow plug n play shares
@@ -647,12 +714,30 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
   Update(m_vecItems.m_strPath);
 }
 
+void CGUIDialogFileBrowser::OnAddMediaSource()
+{
+  if (CGUIDialogMediaSource::ShowAndAddMediaSource(m_addSourceType))
+  {
+    SetShares(*g_settings.GetSharesFromType(m_addSourceType));
+    Update("");
+  }
+}
+
+void CGUIDialogFileBrowser::OnEditMediaSource(CFileItem* pItem)
+{
+  if (CGUIDialogMediaSource::ShowAndEditMediaSource(m_addSourceType,pItem->GetLabel()))
+  {
+    SetShares(*g_settings.GetSharesFromType(m_addSourceType));
+    Update("");
+  }
+}
+
 bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 {
   CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu)
     return false;
-  
+
   float posX = 200, posY = 100;
   const CGUIControl *pList = GetControl(CONTROL_LIST);
   if (pList)
@@ -662,9 +747,16 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   }
 
   pMenu->Initialize();
-  
-  int btn_Edit = pMenu->AddButton(20133);
-  int btn_Remove = pMenu->AddButton(20134);
+
+  int iEditLabel = 20133;
+  int iRemoveLabel = 20134;
+  if (!m_addSourceType.IsEmpty())
+  {
+    iEditLabel = 21364;
+    iRemoveLabel = 21365;
+  }
+  int btn_Edit = pMenu->AddButton(iEditLabel);
+  int btn_Remove = pMenu->AddButton(iRemoveLabel);
 
   pMenu->SetPosition(posX, posY);
   pMenu->DoModal();
@@ -672,51 +764,65 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   int btnid = pMenu->GetButton();
   if (btnid == btn_Edit)
   {
-    CStdString strOldPath=m_selectedPath,newPath=m_selectedPath;
-    VECSHARES shares=m_shares;
-    if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(newPath))
+    if (m_addNetworkShareEnabled)
     {
-      g_mediaManager.SetLocationPath(strOldPath,newPath);
-      for (unsigned int i=0;i<shares.size();++i)
+      CStdString strOldPath=m_selectedPath,newPath=m_selectedPath;
+      VECSHARES shares=m_shares;
+      if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(newPath))
       {
-        if (shares[i].strPath.Equals(strOldPath))//getPath().Equals(strOldPath))
+        g_mediaManager.SetLocationPath(strOldPath,newPath);
+        for (unsigned int i=0;i<shares.size();++i)
         {
-          shares[i].strName = newPath;
-          shares[i].strPath = newPath;//setPath(newPath);
-          break;
+          if (shares[i].strPath.Equals(strOldPath))//getPath().Equals(strOldPath))
+          {
+            shares[i].strName = newPath;
+            shares[i].strPath = newPath;//setPath(newPath);
+            break;
+          }
         }
+        // re-open our dialog
+        SetShares(shares);
+        m_rootDir.SetMask("/");
+        m_browsingForFolders = true;
+        m_addNetworkShareEnabled = true;
+        m_selectedPath = newPath;
+        DoModal();    
       }
-      // re-open our dialog
-      SetShares(shares);
-      m_rootDir.SetMask("/");
-      m_browsingForFolders = true;
-      m_addNetworkShareEnabled = true;
-      m_selectedPath = newPath;
-      DoModal();    
     }
+    else
+      OnEditMediaSource(m_vecItems[iItem]);
   }
   if (btnid == btn_Remove)
   {
-    g_mediaManager.RemoveLocation(m_selectedPath);
-    
-    for (unsigned int i=0;i<m_shares.size();++i)
+    if (m_addNetworkShareEnabled)
     {
-      if (m_shares[i].strPath.Equals(m_selectedPath)) // getPath().Equals(m_selectedPath))
+      g_mediaManager.RemoveLocation(m_selectedPath);
+
+      for (unsigned int i=0;i<m_shares.size();++i)
       {
-        m_shares.erase(m_shares.begin()+i);
-        break;
+        if (m_shares[i].strPath.Equals(m_selectedPath)) // getPath().Equals(m_selectedPath))
+        {
+          m_shares.erase(m_shares.begin()+i);
+          break;
+        }
       }
+      m_rootDir.SetShares(m_shares);
+      m_rootDir.SetMask("/");
+
+      m_browsingForFolders = true;
+      m_addNetworkShareEnabled = true;
+      m_selectedPath = "";
+
+      Update(m_Directory.m_strPath);
     }
-    m_rootDir.SetShares(m_shares);
-    m_rootDir.SetMask("/");
-
-    m_browsingForFolders = true;
-    m_addNetworkShareEnabled = true;
-    m_selectedPath = "";
-
-    Update(m_Directory.m_strPath);
+    else
+    {
+      g_settings.DeleteBookmark(m_addSourceType,m_vecItems[iItem]->GetLabel(),m_vecItems[iItem]->m_strPath);
+      SetShares(*g_settings.GetSharesFromType(m_addSourceType));
+      Update("");
+    }
   }
-  
+
   return true;
 }
 

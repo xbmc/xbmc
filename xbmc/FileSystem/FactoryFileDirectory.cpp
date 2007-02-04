@@ -12,6 +12,12 @@
 #include "SmartPlaylistDirectory.h"
 #include "../SmartPlaylist.h"
 #include "PlaylistFileDirectory.h"
+#include "../PlayListFactory.h"
+#include "../GUIViewState.h"
+
+using namespace XFILE;
+using namespace DIRECTORY;
+using namespace PLAYLIST;
 
 CFactoryFileDirectory::CFactoryFileDirectory(void)
 {}
@@ -103,13 +109,28 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     CUtil::Tokenize(strPath,tokens,".");
     if (tokens.size() > 2)
     {
+      if (strExtension.Equals(".001"))
+      {
+        if (tokens[tokens.size()-2].Equals("ts")) // .ts.001 - treat as a movie file to scratch some users itch
+          return NULL;
+      }
       CStdString token = tokens[tokens.size()-2];
       if (token.Left(4).CompareNoCase("part") == 0) // only list '.part01.rar'
-        if (atoi(token.substr(4).c_str()) > 1)
+      {
+        // need this crap to avoid making mistakes - yeyh for the new rar naming scheme :/
+        __stat64 stat;
+        int digits = token.size()-4;
+        CStdString strNumber, strFormat;
+        strFormat.Format("part%%0%ii",digits);
+        strNumber.Format(strFormat.c_str(),1);
+        CStdString strPath2=strPath;
+        strPath2.Replace(token,strNumber);
+        if (atoi(token.substr(4).c_str()) > 1 && CFile::Stat(strPath2,&stat) == 0)
         {
           pItem->m_bIsFolder = true;
           return NULL;
         }
+      }
     }
 
     CFileItemList item;
@@ -152,14 +173,12 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     IFileDirectory* pDir=new CSmartPlaylistDirectory;
     return pDir; // treat as directory
   }
-  if (g_advancedSettings.m_playlistAsFolders)
-  if (strExtension == ".m3u" || strExtension == ".b4s" || strExtension == ".pls" ||
-      strExtension == ".wpl")
+  if (g_advancedSettings.m_playlistAsFolders && CPlayListFactory::IsPlaylist(strPath))
   { // Playlist file
     // currently we only return the directory if it contains
     // more than one file.  Reason is that .pls and .m3u may be used
     // for links to http streams etc. 
-    IFileDirectory *pDir = new CPlaylistFileDirectory;
+    IFileDirectory *pDir = new CPlaylistFileDirectory();
     CFileItemList items;
     if (pDir->GetDirectory(strPath, items))
     {

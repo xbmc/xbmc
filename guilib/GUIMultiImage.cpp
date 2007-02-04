@@ -5,6 +5,8 @@
 #include "../xbmc/FileSystem/HDDirectory.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+using namespace DIRECTORY;
+
 CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
@@ -27,7 +29,8 @@ CGUIMultiImage::~CGUIMultiImage(void)
 
 void CGUIMultiImage::Render()
 {
-  if (!IsVisible())
+  // check if we're hidden, and deallocate + return
+  if (!IsVisible() && m_visible != DELAYED)
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
       FreeResources();
@@ -53,10 +56,12 @@ void CGUIMultiImage::Render()
     }
   }
 
-  if (m_bDynamicResourceAlloc && !IsAllocated())
+  if (!IsAllocated())
     AllocResources();
-  else if (!m_bDynamicResourceAlloc && !IsAllocated())
-    AllocResources();  // not dynamic, make sure we allocate!
+
+  // if we're delayed, we allocate (above) but there's no need to render.
+  if (m_visible == DELAYED)
+    return CGUIControl::Render();
 
   if (!m_images.empty())
   {
@@ -98,7 +103,7 @@ void CGUIMultiImage::Render()
         else
         { // perform the fade
           float fadeAmount = timeFading / m_fadeTime;
-          m_images[nextImage]->SetAlpha((DWORD)(255 * fadeAmount));
+          m_images[nextImage]->SetAlpha((unsigned char)(255 * fadeAmount));
         }
         m_images[nextImage]->Render();
       }
@@ -163,7 +168,7 @@ void CGUIMultiImage::LoadImage(int image)
     return;
 
   m_images[image]->AllocResources();
-  m_images[image]->SetColourDiffuse(GetColourDiffuse());
+  m_images[image]->SetColorDiffuse(m_diffuseColor);
 
   // Scale image so that it will fill our render area
   if (m_aspectRatio != CGUIImage::ASPECT_RATIO_STRETCH)

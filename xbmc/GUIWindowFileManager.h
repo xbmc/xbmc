@@ -4,8 +4,6 @@
 #include "filesystem/DirectoryHistory.h"
 #include "utils/CriticalSection.h"
 
-using namespace DIRECTORY;
-
 class CGUIWindowFileManager :
       public CGUIWindow,
       public XFILE::IFileCallback
@@ -23,7 +21,8 @@ public:
   // static members for all windows to use
   static bool DeleteItem(const CFileItem *pItem);
   static bool RenameFile(const CStdString &strFile);
-  static bool CopyItem(const CFileItem *pItem, const CStdString& strDest, CGUIDialogProgress* pProgress = NULL);
+  static bool CopyItem(const CFileItem *pItem, const CStdString& strDest, bool bSilent=false, CGUIDialogProgress* pProgress = NULL);
+  static bool MoveItem(const CFileItem *pItem, const CStdString& strDest, bool bSilent=false, CGUIDialogProgress* pProgress = NULL);
 
   void ResetProgressBar(bool showProgress = true);
   static __int64 CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
@@ -73,7 +72,7 @@ protected:
   CStdString strCheckSharePath;
 
 
-  CVirtualDirectory m_rootDir;
+  DIRECTORY::CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems[2];
   typedef vector <CFileItem*> ::iterator ivecItems;
   CFileItem m_Directory[2];

@@ -1,7 +1,6 @@
 #pragma once
 #include "IDirectory.h"
 
-using namespace DIRECTORY;
 namespace DIRECTORY
 {
 class CMultiPathDirectory :

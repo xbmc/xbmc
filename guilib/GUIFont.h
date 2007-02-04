@@ -67,7 +67,9 @@ public:
 
   inline void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
 
-  FLOAT GetTextWidth( const WCHAR* strText );
+  float GetTextWidth( const WCHAR* strText );
+  float GetTextHeight( const WCHAR* strText );
+
   inline void Begin() { if (m_font) m_font->Begin(); };
   inline void End() { if (m_font) m_font->End(); };
 

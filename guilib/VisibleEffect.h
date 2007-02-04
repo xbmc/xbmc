@@ -7,6 +7,7 @@ enum ANIMATION_STATE { ANIM_STATE_NONE = 0, ANIM_STATE_DELAYED, ANIM_STATE_IN_PR
 // forward definitions
 
 class TiXmlElement;
+struct FRECT;
 
 #include "TransformMatrix.h"  // needed for the TransformMatrix member
 
@@ -19,6 +20,7 @@ enum ANIMATION_TYPE
   ANIM_TYPE_WINDOW_OPEN,
   ANIM_TYPE_VISIBLE,
   ANIM_TYPE_FOCUS,
+  ANIM_TYPE_CONDITIONAL       // for animations triggered by a condition change
 };
 
 class CAnimation
@@ -26,10 +28,11 @@ class CAnimation
 public:
   CAnimation();
   void Reset();
-  void Create(const TiXmlElement *node);
+  void Create(const TiXmlElement *node, const FRECT &rect);
   void CreateReverse(const CAnimation &anim);
-  void Animate(unsigned int time, bool hasRendered);
+  void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
+  void ApplyAnimation();
   void RenderAnimation(TransformMatrix &matrix);
 
   ANIMATION_TYPE type;
@@ -41,9 +44,11 @@ public:
 
   int condition;      // conditions that must be satisfied in order for this
                       // animation to be performed
+  bool lastCondition; // last state of our conditional
 
   inline bool IsReversible() const { return reversible; };
 
+  float amount;
 private:
   // animation variables
   float acceleration;
@@ -57,11 +62,12 @@ private:
   int endAlpha;
 
   // timing variables
-  float amount;
   unsigned int start;
   unsigned int length;
   unsigned int delay;
 
   bool reversible;    // whether the animation is reversible or not
+
+  void Calculate();
   TransformMatrix m_matrix;
 };

@@ -3,6 +3,8 @@
 #include "../DllLoader/DllLoader.h"
 #include "../../MusicInfoTagLoaderSPC.h"
 
+using namespace XFILE;
+
 SPCCodec::SPCCodec()
 {
   m_CodecName = "SPC";

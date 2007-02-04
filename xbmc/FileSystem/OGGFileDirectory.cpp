@@ -5,6 +5,7 @@
 #include "../OGGtag.h"
 #include "directorycache.h"
 
+using namespace DIRECTORY;
 
 COGGFileDirectory::COGGFileDirectory(void)
 {}

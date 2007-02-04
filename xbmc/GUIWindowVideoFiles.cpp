@@ -16,6 +16,9 @@
 #include "FileSystem/StackDirectory.h"
 #include "utils/RegExp.h"
 
+using namespace XFILE;
+using namespace PLAYLIST;
+
 #define CONTROL_LIST              50
 #define CONTROL_THUMBS            51
 
@@ -28,6 +31,7 @@
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
 : CGUIWindowVideoBase(WINDOW_VIDEO_FILES, "MyVideo.xml")
 {
+  m_bIsScanning = false;
 }
 
 CGUIWindowVideoFiles::~CGUIWindowVideoFiles()
@@ -147,8 +151,8 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         //   0 : no stacking
         //   1 : stacking
         g_stSettings.m_iMyVideoStack++;
-        
-        if (g_stSettings.m_iMyVideoStack > STACK_SIMPLE) 
+
+        if (g_stSettings.m_iMyVideoStack > STACK_SIMPLE)
           g_stSettings.m_iMyVideoStack = STACK_NONE;
 
         if (g_stSettings.m_iMyVideoStack != STACK_NONE)
@@ -168,7 +172,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           Update("special://videoplaylists/");
         }
       }
-      // list/thumb panel 
+      // list/thumb panel
       else if (m_viewControl.HasControl(iControl))
       {
         int iItem = m_viewControl.GetSelectedItem();
@@ -251,6 +255,7 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
     SScraperInfo info;
     info.strPath = "imdb.xml";
     info.strContent = "movies";
+    info.strTitle = "IMDb";
     OnInfo(iItem,info);
     return true;
   }
@@ -351,8 +356,9 @@ void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
     if (!bFoundFile)
     {
       // no video file in this folder?
-      // then just lookup IMDB info and show it
-      ShowIMDB(pItem,info);
+      if (info.strContent.Equals("movies"))
+        CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
+
       m_viewControl.SetSelectedItem(iSelectedItem);
       return ;
     }
@@ -406,7 +412,6 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
 
 void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScraperInfo& info, bool bDirNames)
 {
-
   CStdString strMovieName;
   if (bDirNames)
   {
@@ -444,6 +449,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
         // note that the label is the foldername (good to lookup on)
         pItem->m_strPath = dvdFile;
         pItem->m_bIsFolder = false;
+        pItem->SetLabelPreformated(true);
       }
     }
 
@@ -451,14 +457,11 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
     {
       if (pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList() )
       {
-
         if (!bDirNames)
         {
-          strMovieName = pItem->GetLabel();
-          if(!g_guiSettings.GetBool("filelists.hideextensions") && !pItem->IsLabelPreformated())
-            CUtil::RemoveExtension(strMovieName);
-
-          if(strMovieName.IsEmpty())
+          if(pItem->IsLabelPreformated())
+            strMovieName = pItem->GetLabel();
+          else
           {
             strMovieName = CUtil::GetFileName(pItem->m_strPath);
             CUtil::RemoveExtension(strMovieName);
@@ -490,8 +493,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
               {
                 CIMDBUrl url;
                 url.m_strURL.push_back(nfoReader.m_strImDbUrl);
-                url.m_strURL.push_back(nfoReader.m_strImDbUrl+"/plotsummary");
-                //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
+                url.m_strURL.push_back(nfoReader.m_strImDbUrl+"plotsummary");
                 CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
                 url.m_strID  = nfoReader.m_strImDbNr;
                 SScraperInfo info2(info);
@@ -509,7 +511,9 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
           // do IMDB lookup...
           if (m_dlgProgress)
           {
-            m_dlgProgress->SetHeading(197);
+            CStdString strHeading;
+            strHeading.Format(g_localizeStrings.Get(197),info.strTitle);
+            m_dlgProgress->SetHeading(strHeading);
             m_dlgProgress->SetLine(0, strMovieName);
             m_dlgProgress->SetLine(1, "");
             m_dlgProgress->Progress();
@@ -523,7 +527,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
             int iMoviesFound = movielist.size();
             if (iMoviesFound > 0)
             {
-              CIMDBUrl& url = movielist[0];
+              CIMDBUrl url = movielist[0];
 
               // show dialog that we're downloading the movie info
               if (m_dlgProgress)
@@ -595,7 +599,7 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
   GetStackedDirectory(strPath, items);
   m_database.SetScraperForPath(strPath,info.strPath,info.strContent);
   DoScan(items, info, settings);
-  CUtil::ClearFileItemCache();
+  CUtil::DeleteVideoDatabaseDirectoryCache();
 
   if (m_dlgProgress)
     m_dlgProgress->Close();
@@ -609,7 +613,7 @@ void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
   if (CGUIDialogYesNo::ShowAndGetInput(20338,20340,20341,20022,bCanceled))
   {
     m_database.RemoveContentForPath(m_vecItems[iItem]->m_strPath);
-    CUtil::ClearFileItemCache();
+    CUtil::DeleteVideoDatabaseDirectoryCache();
   }
   else
   {
@@ -643,58 +647,6 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
     if (bScan)
       OnScan(m_vecItems[iItem]->m_strPath,info2,bUseDirNames?1:0,bScanRecursive?1:0);
   }
-/*  if (item.GetLabel().Equals(g_localizeStrings.Get(20336)))
-  {
-    if (CGUIDialogYesNo::ShowAndGetInput(13346,20342,20343,-1))
-      OnScan(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel);
-    else
-      m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,scrapers[strLabel][iDummy].second,strLabel);
-  }
-  else if (item.GetLabel().Equals(g_localizeStrings.Get(20337)))
-  {
-    items.Clear();
-    CUtil::GetRecursiveListing(m_vecItems[iItem]->m_strPath,items,g_stSettings.m_videoExtensions);
-    // enumerate
-    std::vector<CStdString> expression;
-    expression.push_back("[^\\.\\-_ ]*[\\.\\-_\\[ ]*[Ss]?([0-9]*)[^0-9]*[Ee]?([0-9]*)"); // foo.s01.e01, foo.1x09.avi
-    expression.push_back("[^\\.\\-_ ]*[^\\.\\-_ ]([0-9])([0-9]*)"); // foo.103*
-
-    std::map<int,std::vector<std::pair<int,CStdString> > > episodes;
-    for (int i=0;i<items.Size();++i)
-    {
-      if (items[i]->m_bIsFolder)
-        continue;
-      for (unsigned int j=0;j<expression.size();++j)
-      {
-        CRegExp reg;
-        if (!reg.RegComp(expression[j]))
-          break;
-        CLog::DebugLog("label: %s",items[i]->GetLabel().c_str());
-        if (reg.RegFind(items[i]->GetLabel().c_str()) > -1)
-        {
-          char* season = reg.GetReplaceString("\\1");
-          char* episode = reg.GetReplaceString("\\2");
-          if (season && episode)
-          {
-            int iSeason = atoi(season);
-            int iEpisode = atoi(episode);
-            std::map<int,std::vector<std::pair<int,CStdString> > >::iterator iter = episodes.find(iSeason);
-            if (iter == episodes.end()) // none from this season - add to map
-            {
-              std::vector<std::pair<int,CStdString> > vec;
-              vec.push_back(std::make_pair<int,CStdString>(iEpisode,items[i]->m_strPath));
-              episodes.insert(std::make_pair<int,std::vector<std::pair<int,CStdString> > >(iSeason,vec));
-            }
-            else
-            {
-              iter->second.push_back(std::make_pair<int,CStdString>(iEpisode,items[i]->m_strPath));
-            }
-            break;
-          }
-        }
-      }
-    }
-  }*/
 }
 
 bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, const SScraperInfo& info, const SScanSettings &settings, int depth)
@@ -715,7 +667,11 @@ bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, const SScraperInfo& info
   }
 
   if(depth > 0)
+  {
     OnRetrieveVideoInfo(items,info,settings.parent_name);
+    if (settings.parent_name && items.Size())
+      ApplyIMDBThumbToFolder(items.m_strPath, items[0]->GetThumbnailImage());
+  }
   else
     OnRetrieveVideoInfo(items,info,settings.parent_name_root);
 
@@ -776,8 +732,7 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
 {
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if ( NULL != pPlayList.get())
   {
     // load it

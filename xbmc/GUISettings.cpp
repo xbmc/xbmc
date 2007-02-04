@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUISettings.h"
 #include "application.h"
@@ -163,12 +184,14 @@ CGUISettings::CGUISettings(void)
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
-  AddBool(1, "pictures.useautoswitching", 14011, false);
-  AddBool(2, "pictures.autoswitchuselargethumbs", 14012, false);
-  AddSeparator(3,"pictures.sep1");
-  AddBool(4, "pictures.useexifrotation", 20184, true);
-  AddSeparator(5,"pictures.sep2");
-  AddString(6,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20004);
+  AddInt(1, "pictures.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
+  AddInt(2, "pictures.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
+  AddInt(3, "pictures.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
+  AddBool(4, "pictures.savefolderviews", 583, true);
+  AddSeparator(5,"pictures.sep1");
+  AddBool(6, "pictures.useexifrotation", 20184, true);
+  AddSeparator(7,"pictures.sep2");
+  AddString(8,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,20004);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -189,8 +212,10 @@ CGUISettings::CGUISettings(void)
   AddString(8, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
 
   AddCategory(1,"programfiles",744);
-  AddBool(1, "programfiles.useautoswitching", 14011, false);
-  AddBool(2, "programfiles.autoswitchuselargethumbs", 14012, false);
+  AddInt(1, "programfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
+  AddInt(2, "programfiles.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
+  AddInt(3, "programfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
+  AddBool(4, "programfiles.savefolderviews", 583, true);
 
   AddCategory(1, "xlinkkai", 714);
   AddBool(1, "xlinkkai.enabled", 14072, false);
@@ -245,20 +270,19 @@ CGUISettings::CGUISettings(void)
   AddString(0, "musicfiles.librarytrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(0, "musicfiles.librarytrackformatright", 13387, "", BUTTON_CONTROL_INPUT, false, 16016);
   AddSeparator(4, "musicfiles.sep1");
-  AddBool(5, "musicfiles.useautoswitching", 14011, false);
-  AddBool(6, "musicfiles.autoswitchuselargethumbs", 14012, false);
-  AddSeparator(7, "musicfiles.sep2");
-  AddBool(8, "musicfiles.usecddb", 227, true);
-  AddBool(9, "musicfiles.findremotethumbs", 14059, true);
-  // advanced library options
-  AddBool(0, "musicfiles.hideallitems", 0, false);
-  AddBool(0, "musicfiles.allitemsonbottom", 0, false);
+  AddInt(5, "musicfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
+  AddInt(6, "musicfiles.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
+  AddInt(7, "musicfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
+  AddBool(8, "musicfiles.savefolderviews", 583, true);
+  AddSeparator(9, "musicfiles.sep2");
+  AddBool(10, "musicfiles.usecddb", 227, true);
+  AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
   AddCategory(3, "lastfm", 15200);
   AddBool(1, "lastfm.enable", 15201, false);
   AddBool(2, "lastfm.recordtoprofile", 15250, false);
   AddString(3,"lastfm.username", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
-  AddString(4,"lastfm.password", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
+  AddString(4,"lastfm.password", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203);
 
   AddCategory(3, "cddaripper", 620);
   AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 20000);
@@ -266,7 +290,7 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
-  
+
   AddCategory(3, "karaoke", 13327);
   AddBool(1, "karaoke.enabled", 13323, false);
   AddBool(2, "karaoke.voiceenabled", 13361, false);
@@ -347,18 +371,22 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7,"masterlock.sep2" );
   AddBool(8, "masterlock.loginlock",20116,true);
   // hidden masterlock settings
-  AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT); 
-  
+  AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
+
   // video settings
   AddGroup(5, 3);
   AddCategory(5, "myvideos", 16000);
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
   AddBool(2, "myvideos.autoresume",12017, false);
   AddSeparator(3, "myvideos.sep1");
-  AddBool(4, "myvideos.useautoswitching", 14011, false);
-  AddBool(5, "myvideos.autoswitchuselargethumbs", 14012, false);
-  AddSeparator(6, "myvideos.sep2");
-  AddString(7, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddInt(4, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
+  AddInt(5, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
+  AddInt(6, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
+  AddBool(7, "myvideos.savefolderviews", 583, true);
+  AddSeparator(8, "myvideos.sep2");
+  AddString(9, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "myvideos.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "myvideos.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
@@ -384,6 +412,8 @@ CGUISettings::CGUISettings(void)
   AddBool(6, "subtitles.flipbidicharset", 13304, false);
   AddSeparator(7, "subtitles.sep1");
   AddBool(9, "subtitles.searchrars", 13249, false);
+  AddSeparator(10,"subtitles.sep2");
+  AddString(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 21366);
 
   // Don't add the category - makes them hidden in the GUI
   //AddCategory(5, "postprocessing", 14041);
@@ -429,15 +459,21 @@ CGUISettings::CGUISettings(void)
   AddString(3,  "autodetect.nickname",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
   AddSeparator(4, "autodetect.sep1");
   AddBool(5,    "autodetect.senduserpw",1255, true); // can be in advanced.xml! default:true
-  
+
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "smb.winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
+  AddSeparator(6, "smb.sep1");
+  AddBool(7,   "smb.showhidden", 21330, false);
 
   AddCategory(6, "upnp", 20110);
-  AddBool(1,    "upnp.autostart", 20111, false);
+  AddBool(1,    "upnp.client", 20111, false);
+  AddBool(2, "upnp.server", 21360, false);
+  AddString(3, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
+  AddString(4, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
 
   // appearance settings
   AddGroup(7, 480);
@@ -449,9 +485,9 @@ CGUISettings::CGUISettings(void)
   AddInt(5, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddSeparator(6, "lookandfeel.sep1");
   AddString(7, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddSeparator(8, "lookandfeel.sep2");
-  AddBool(9, "lookandfeel.enablerssfeeds",13305,  true);
-  AddBool(0,"lookandfeel.soundsduringplayback",0,false); // POST 2.0.1: localize me and make me visible
+  AddBool(8,"lookandfeel.soundsduringplayback",21370,false);
+  AddSeparator(9, "lookandfeel.sep2");
+  AddBool(10, "lookandfeel.enablerssfeeds",13305,  true);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "", SPIN_CONTROL_TEXT);
@@ -465,7 +501,7 @@ CGUISettings::CGUISettings(void)
   AddString(9, "locale.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
 
   AddCategory(7, "videoscreen", 131);
-  AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);  
+  AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddString(2, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
   AddInt(3, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(4, "videoscreen.soften", 215, false);
@@ -486,7 +522,7 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(5, "screensaver.uselock",20140,false);
   AddSeparator(6, "screensaver.sep1");
-  AddInt(7, "screensaver.dimlevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 774); // GeminiServer: PictureSlideShow
   AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 

@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "DetectDVDType.h"
@@ -7,12 +27,14 @@
 #include "xbox/undocumented.h"
 #endif
 #include "application.h"
+#include "util.h"
+#include "picture.h"
 
 #ifdef AFTER2_0
 #include "utils/LED.h"
 #endif
 
-
+using namespace XFILE;
 using namespace MEDIA_DETECT;
 
 CCriticalSection CDetectDVDMedia::m_muReadingMedia;
@@ -271,6 +293,31 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
   // store it in case others want it
   m_diskLabel = strDescription;
   m_diskPath = strNewUrl;
+
+  // delete any previously cached disc thumbnail
+  CStdString strCache = "Z:\\dvdicon.tbn";
+  if (CFile::Exists(strCache))
+    CFile::Delete(strCache);
+
+  // find and cache disc thumbnail
+  if (IsDiscInDrive() && !bCDDA)
+  {
+    CStdString strThumb;
+    CStdStringArray thumbs;
+    StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
+    for (unsigned int i = 0; i < thumbs.size(); ++i)
+    {
+      CUtil::AddFileToFolder(m_diskPath, thumbs[i], strThumb);
+      CLog::Log(LOGDEBUG,__FUNCTION__": looking for disc thumb:[%s]", strThumb.c_str());
+      if (CFile::Exists(strThumb))
+      {
+        CLog::Log(LOGDEBUG,__FUNCTION__": found disc thumb:[%s], caching as:[%s]", strThumb.c_str(), strCache.c_str());
+        CPicture pic;
+        pic.DoCreateThumbnail(strThumb, strCache);
+        break;
+      }
+    }
+  }
 }
 
 DWORD CDetectDVDMedia::GetTrayState()

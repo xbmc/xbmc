@@ -16,6 +16,7 @@ public:
   int  GetResumeItemOffset(const CFileItem *item);
 
   static void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items);
+  void AddToDatabase(int iItem);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
@@ -33,6 +34,8 @@ protected:
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
 
+  virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
+
   bool OnClick(int iItem);
   void OnRestartItem(int iItem);
   void OnResumeItem(int iItem);
@@ -46,13 +49,15 @@ protected:
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
 
-  void AddItemToPlayList(const CFileItem* pItem, int iPlaylist = PLAYLIST_VIDEO);
+  void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
   CStdString GetnfoFile(CFileItem *item);
 
   void MarkUnWatched(int iItem);
   void MarkWatched(int iItem);
   void UpdateVideoTitle(int iItem);
+  void OnSearch();
+  void OnSearchItemFound(const CFileItem* pSelItem);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;

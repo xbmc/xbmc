@@ -6,6 +6,8 @@
 #pragma comment (lib,"../../xbmc/lib/zlib/zlib.lib")
 #endif
 
+using namespace XFILE;
+
 CFileZip::CFileZip() : m_dlgProgress(NULL), m_bUseProgressBar(false)
 {
   m_szStringBuffer = NULL;

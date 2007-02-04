@@ -214,13 +214,13 @@
 				RelativePath=".\GUIMultiImage.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIPanelContainer.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIProgressControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIRadioButtonControl.cpp">
-			</File>
-			<File
-				RelativePath=".\GUIRAMControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIResizeControl.cpp">
@@ -254,9 +254,6 @@
 			</File>
 			<File
 				RelativePath=".\GUITextBox.cpp">
-			</File>
-			<File
-				RelativePath=".\GUIThumbnailPanel.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIToggleButtonControl.cpp">
@@ -426,13 +423,13 @@
 				RelativePath=".\GUIMultiImage.h">
 			</File>
 			<File
+				RelativePath=".\GUIPanelContainer.h">
+			</File>
+			<File
 				RelativePath=".\GUIProgressControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIRadioButtonControl.h">
-			</File>
-			<File
-				RelativePath=".\GUIRAMControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIResizeControl.h">
@@ -466,9 +463,6 @@
 			</File>
 			<File
 				RelativePath=".\GUITextBox.h">
-			</File>
-			<File
-				RelativePath=".\GUIThumbnailPanel.h">
 			</File>
 			<File
 				RelativePath=".\GUIToggleButtonControl.h">

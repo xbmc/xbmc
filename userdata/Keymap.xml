@@ -93,6 +93,7 @@
       <return>Select</return>
       <backspace>ParentDir</backspace>
       <m>ActivateWindow(PlayerControls)</m>
+      <s>ActivateWindow(shutdownmenu)</s>
       <escape>PreviousMenu</escape>
       <i>Info</i>
       <menu>ContextMenu</menu>
@@ -252,7 +253,7 @@
       <B>Stop</B>
       <Y>AspectRatio</Y>
       <black>CodecInfo</black>
-      <white>ShowTime</white>
+      <white>Info</white>
       <back>SmallStepBack</back>
       <start>OSD</start>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
@@ -339,6 +340,13 @@
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>ActivateWindow(VisualisationSettings)</v>
       <n>ActivateWindow(MusicPlaylist)</n>
+      <left>SkipPrevious</left>
+      <right>SkipNext</right>
+      <up>IncreaseRating</up>
+      <down>PreviousPreset</down>
+      <!--<back>NextPreset</back>!-->
+      <s>ShowPreset</s>
+      <l>LockPreset</l>
     </keyboard>
   </Visualisation>
 
@@ -665,7 +673,7 @@
   </VideoBookmarks>
   
 
-  <MyVideoTitles>
+  <MyVideoLibrary>
     <gamepad>
       <black>Delete</black>
     </gamepad>
@@ -681,7 +689,7 @@
     <keyboard>
       <delete>Delete</delete>
     </keyboard>
-  </MyVideoTitles>
+  </MyVideoLibrary>
 
 
   <MyVideoFiles>

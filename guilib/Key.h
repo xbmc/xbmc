@@ -239,6 +239,7 @@
 
 #define WINDOW_LOGIN_SCREEN               10029
 #define WINDOW_SETTINGS_PROFILES          10034
+#define WINDOW_GAMESAVES                  10035
 
 #define WINDOW_DIALOG_YES_NO              10100
 #define WINDOW_DIALOG_PROGRESS            10101
@@ -290,6 +291,8 @@
 #define WINDOW_OSD                        12901
 
 #define WINDOW_VIDEO_MENU                 12902
+#define WINDOW_MUSIC_OVERLAY              12903
+#define WINDOW_VIDEO_OVERLAY              12904
 
 #define WINDOW_STARTUP                    12999 // for startup animations
 

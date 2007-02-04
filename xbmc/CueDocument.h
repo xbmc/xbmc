@@ -3,7 +3,6 @@
 #include "musicdatabase.h"
 
 #define MAX_PATH_SIZE 1024
-#define MAX_CUE_TRACKS 99
 
 class CCueDocument
 {
@@ -39,7 +38,7 @@ public:
 private:
 
   // USED for file access
-  CFile m_file;
+  XFILE::CFile m_file;
   char m_szBuffer[1024];
 
   // Member variables
@@ -52,7 +51,7 @@ private:
   float m_replayGainAlbumPeak;
 
   // cuetrack array
-  CCueTrack m_Track[MAX_CUE_TRACKS];
+  std::vector<CCueTrack> m_Track;
 
   bool ReadNextLine(CStdString &strLine);
   bool ExtractQuoteInfo(CStdString &szData, const char *szLine);

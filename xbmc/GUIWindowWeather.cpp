@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIWindowWeather.h"
 #include "GUIImage.h"
@@ -28,7 +49,7 @@
 
 #define MAX_LOCATION   3
 #define LOCALIZED_TOKEN_FIRSTID 370
-#define LOCALIZED_TOKEN_LASTID 395 
+#define LOCALIZED_TOKEN_LASTID 395
 /*
 FIXME'S
 >strings are not centered
@@ -40,7 +61,7 @@ CGUIWindowWeather::CGUIWindowWeather(void)
 {
   m_iCurWeather = 0;
 #ifdef _USE_ZIP_
-  
+
 
 #endif
   srand(timeGetTime());
@@ -78,7 +99,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 
         CStdString strLabel=g_weatherManager.GetLocation(m_iCurWeather);
         int iPos = strLabel.ReverseFind(", ");
-        if (iPos) 
+        if (iPos)
         {
           CStdString strLabel2(strLabel);
           strLabel = strLabel2.substr(0,iPos);
@@ -94,9 +115,8 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     {
       g_weatherManager.Reset();
       return true;
-    }    
-    break;
-  case GUI_MSG_WEATHER_FETCHED:
+    }
+    else if (message.GetParam1() == GUI_MSG_WEATHER_FETCHED)
     {
       UpdateLocations();
     }
@@ -128,7 +148,7 @@ void CGUIWindowWeather::UpdateLocations()
     if (strlen(szLocation) > 1) //got the location string yet?
     {
       int iPos = strLabel.ReverseFind(", ");
-      if (iPos) 
+      if (iPos)
       {
         CStdString strLabel2(strLabel);
         strLabel = strLabel2.substr(0,iPos);

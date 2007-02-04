@@ -4,6 +4,8 @@
 #include "../PlaylistFactory.h"
 #include "../Util.h"
 
+using namespace PLAYLIST;
+
 namespace DIRECTORY
 {
   CPlaylistFileDirectory::CPlaylistFileDirectory()
@@ -16,12 +18,11 @@ namespace DIRECTORY
 
   bool CPlaylistFileDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
   {
-    CPlayListFactory factory;
-    auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
+    auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPath));
     if ( NULL != pPlayList.get())
     {
       // load it
-      if (!pPlayList->Load(strPath, false))
+      if (!pPlayList->Load(strPath))
         return false; //hmmm unable to load playlist?
 
       CPlayList playlist = *pPlayList;
@@ -39,12 +40,11 @@ namespace DIRECTORY
 
   bool CPlaylistFileDirectory::ContainsFiles(const CStdString& strPath)
   {
-    CPlayListFactory factory;
-    auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
+    auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPath));
     if ( NULL != pPlayList.get())
     {
       // load it
-      if (!pPlayList->Load(strPath, false))
+      if (!pPlayList->Load(strPath))
         return false; //hmmm unable to load playlist?
 
       return (pPlayList->size() > 1);

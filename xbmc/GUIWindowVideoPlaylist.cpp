@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIWindowVideoPlayList.h"
 #include "PlayListFactory.h"
@@ -7,7 +28,9 @@
 #include "PlayListPlayer.h"
 #include "GUIDialogContextMenu.h"
 
-#define CONTROL_BTNVIEWASICONS     2 
+using namespace PLAYLIST;
+
+#define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_LIST              50
@@ -20,9 +43,7 @@
 #define CONTROL_BTNPLAY      23
 #define CONTROL_BTNNEXT      24
 #define CONTROL_BTNPREVIOUS    25
-
 #define CONTROL_BTNREPEAT     26
-#define CONTROL_BTNRANDOMIZE  28
 
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
 : CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyVideoPlaylist.xml")
@@ -38,11 +59,25 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-
-  case GUI_MSG_PLAYLISTPLAYER_RANDOM:
   case GUI_MSG_PLAYLISTPLAYER_REPEAT:
     {
       UpdateButtons();
+    }
+    break;
+
+  case GUI_MSG_PLAYLISTPLAYER_RANDOM:
+  case GUI_MSG_PLAYLIST_CHANGED:
+    {
+      // global playlist changed outside playlist window
+      UpdateButtons();
+      Update(m_vecItems.m_strPath);
+
+      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
+      {
+        m_iLastControl = CONTROL_BTNVIEWASICONS;
+        SET_CONTROL_FOCUS(m_iLastControl, 0);
+      }
+
     }
     break;
 
@@ -69,9 +104,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       {
         int iSong = g_playlistPlayer.GetCurrentSong();
         if (iSong >= 0 && iSong <= (int)m_vecItems.Size())
-        {
           m_viewControl.SetSelectedItem(iSong);
-        }
       }
 
       return true;
@@ -81,17 +114,13 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNRANDOMIZE)
+      if (iControl == CONTROL_BTNSHUFFLE)
       {
-        g_stSettings.m_bMyVideoPlaylistShuffle = !g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO);
+        g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, !(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO)));
+        g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO);
         g_settings.Save();
-        g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
         UpdateButtons();
-      }
-      else if (iControl == CONTROL_BTNSHUFFLE)
-      {
-        ShufflePlayList();
-        UpdateButtons();
+        Update(m_vecItems.m_strPath);
       }
       else if (iControl == CONTROL_BTNSAVE)
       {
@@ -142,6 +171,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         if (iAction == ACTION_DELETE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
           RemovePlayListItem(iItem);
+          MarkPlaying();
         }
       }
     }
@@ -201,7 +231,6 @@ bool CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iItem, int iAction, bo
       else if (iNew == iCurrentSong)
         iCurrentSong = iSelected;
       g_playlistPlayer.SetCurrentSong(iCurrentSong);
-      m_vecItems[iCurrentSong]->Select(true);
     }
 
     if (bUpdate)
@@ -222,7 +251,7 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
-  OnSort();
+  m_viewControl.SetItems(m_vecItems);
   UpdateButtons();
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
@@ -236,7 +265,6 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSAVE);
     CONTROL_ENABLE(CONTROL_BTNPLAY);
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
-    CONTROL_ENABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_ENABLE(CONTROL_BTNREPEAT);
 
     if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
@@ -255,7 +283,6 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNCLEAR);
     CONTROL_DISABLE(CONTROL_BTNSAVE);
     CONTROL_DISABLE(CONTROL_BTNSHUFFLE);
-    CONTROL_DISABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_DISABLE(CONTROL_BTNPLAY);
     CONTROL_DISABLE(CONTROL_BTNNEXT);
     CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
@@ -266,15 +293,14 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 
   // update buttons
   CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
-  CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
-  if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).IsShuffled())
-    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
   if (g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO))
-    CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
+    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
 
   // update repeat button
   int iRepeat = 595 + g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO);
   SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
+
+  MarkPlaying();
 }
 
 bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
@@ -283,7 +309,6 @@ bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strPath = pItem->m_strPath;
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-  g_playlistPlayer.Reset();
   g_playlistPlayer.Play( iItem );
 
   return true;
@@ -306,7 +331,6 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
     {
       iCurrentSong--;
       g_playlistPlayer.SetCurrentSong(iCurrentSong);
-      m_vecItems[iCurrentSong]->Select(true);
     }
   }
 
@@ -320,37 +344,6 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
   {
     m_viewControl.SetSelectedItem(iItem - 1);
   }
-}
-
-void CGUIWindowVideoPlaylist::ShufflePlayList()
-{
-  int iPlaylist = PLAYLIST_VIDEO;
-  ClearFileItems();
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
-
-  CStdString strFileName;
-  if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
-  {
-    const CPlayList::CPlayListItem& item = playlist[g_playlistPlayer.GetCurrentSong()];
-    strFileName = item.GetFileName();
-  }
-
-  // shuffle or unshuffle?
-  playlist.IsShuffled() ? playlist.UnShuffle() : playlist.Shuffle();
-  if (g_playlistPlayer.GetCurrentPlaylist() == iPlaylist)
-    g_playlistPlayer.Reset();
-
-  if (!strFileName.IsEmpty())
-  {
-    for (int i = 0; i < playlist.size(); i++)
-    {
-      const CPlayList::CPlayListItem& item = playlist[i];
-      if (item.GetFileName() == strFileName)
-        g_playlistPlayer.SetCurrentSong(i);
-    }
-  }
-
-  Update(m_vecItems.m_strPath);
 }
 
 /// \brief Save current playlist to playlist folder
@@ -489,14 +482,7 @@ void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem, bool bContextDriven /* = tr
       return;
     }
   }
-  m_vecItems[iItem]->Select(false);
-
-  // mark the currently playing item
-  if (bIsPlaying)
-  {
-    int i = g_playlistPlayer.GetCurrentSong();
-    m_vecItems[i]->Select(true);
-  }
+  MarkPlaying();
 }
 
 void CGUIWindowVideoPlaylist::OnMove(int iItem, int iAction)
@@ -533,4 +519,19 @@ void CGUIWindowVideoPlaylist::MoveItem(int iStart, int iDest)
       break;
   }
   Update(m_vecItems.m_strPath);
+}
+
+void CGUIWindowVideoPlaylist::MarkPlaying()
+{
+  /*  // clear markings
+  for (int i = 0; i < m_vecItems.Size(); i++)
+    m_vecItems[i]->Select(false);
+
+  // mark the currently playing item
+  if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingVideo()))
+  {
+    int iSong = g_playlistPlayer.GetCurrentSong();
+    if (iSong >= 0 && iSong <= m_vecItems.Size())
+      m_vecItems[iSong]->Select(true);
+  }*/
 }

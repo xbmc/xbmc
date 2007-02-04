@@ -19,7 +19,8 @@
 #define FONT_STYLE_ITALICS      2
 #define FONT_STYLE_BOLD_ITALICS 3
 
-#define DEGREE_TO_RADIAN 0.01745329f
+#define DEGREE_TO_RADIAN 0.01745329252f
+
 class CAngle
 {
 public:

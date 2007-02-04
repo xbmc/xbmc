@@ -32,7 +32,7 @@ public:
   errCode GetFileState();
   CStdString GetFileName();
 protected:
-  CFile m_File;
+  XFILE::CFile m_File;
   CStdString m_strFileName;
   BYTE *m_pBuffer;
   SubCode *m_pSubCode;
@@ -120,6 +120,7 @@ public:
   bool InitGraphics();
   void ReleaseGraphics();
   void Render();
+  void SetBGalpha(TEX_COLOR alpha);
 
 protected:
   LPDIRECT3DDEVICE8 m_pd3dDevice;
@@ -154,6 +155,7 @@ public:
   void SetAVDelay(float fDelay);
   float GetAVDelay();
   void Render();
+  void SetBGTransparent(bool bTransparent = true);
   // Karaoke patch (114097) ...
   bool StartVoice(CDG_VOICE_MANAGER_CONFIG* pConfig);
   void StopVoice();

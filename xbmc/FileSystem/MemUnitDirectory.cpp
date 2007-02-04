@@ -5,6 +5,8 @@
 #include "MemoryUnits/IFileSystem.h"
 #include "MemoryUnits/IDevice.h"
 
+using namespace DIRECTORY;
+
 CMemUnitDirectory::CMemUnitDirectory(void)
 {}
 

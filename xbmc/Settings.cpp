@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "settings.h"
 #include "application.h"
@@ -14,6 +35,14 @@
 #include "utils/GUIInfoManager.h"
 #include "xbox/Network.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "GUIBaseContainer.h" // for VIEW_TYPE enum
+#include "utils/fancontroller.h"
+#ifdef HAS_XBOX_HARDWARE
+#include "utils/MemoryUnitManager.h"
+#endif
+
+using namespace XFILE;
+using namespace DIRECTORY;
 
 struct CSettings::stSettings g_stSettings;
 struct CSettings::AdvancedSettings g_advancedSettings;
@@ -24,6 +53,24 @@ extern CStdString g_LoadErrorStr;
 //uncomment to use new multipath:// protocol while still in development
 //#define	MULTIPATH 1
 
+bool CShare::isWritable()
+{
+  if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
+    return true; // local disk
+  if (strPath.size() > 4)
+  {
+    if (strPath.substr(0,4) == "smb:")
+      return true; // smb path
+    #ifdef HAS_XBOX_HARDWARE
+    else if (strPath.substr(0,4) == "mem:")
+    {
+      return g_memoryUnitManager.IsDriveWriteable(strPath);
+    }
+    #endif
+  }
+
+  return false;
+}
 void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths)
 {
   vecPaths = paths;
@@ -99,9 +146,6 @@ CSettings::CSettings(void)
   for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
     g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
-  g_stSettings.m_MyProgramsViewMethod = VIEW_METHOD_ICONS;
-  g_stSettings.m_MyProgramsSortOrder = SORT_ORDER_ASC;
-  strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "");
   strcpy(g_stSettings.szOnlineArenaPassword, "");
   strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
 
@@ -110,56 +154,15 @@ CSettings::CSettings(void)
   strcpy( g_stSettings.m_szDefaultPictures, "");
   strcpy( g_stSettings.m_szDefaultFiles, "");
   strcpy( g_stSettings.m_szDefaultVideos, "");
-  
+
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
-  g_stSettings.m_MyMusicSongsRootSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyMusicSongsSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_MyMusicNavGenresSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyMusicNavArtistsSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyMusicNavAlbumsSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyMusicNavSongsSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyMusicNavPlaylistsSortOrder = SORT_ORDER_ASC;
-
-  // need defaults for these or the display is
-  // incorrect the first time Nav window is used
-  g_stSettings.m_MyMusicNavAlbumsSortMethod = SORT_METHOD_ALBUM;
-  g_stSettings.m_MyMusicNavSongsSortMethod = SORT_METHOD_TRACKNUM;
-  g_stSettings.m_MyMusicNavPlaylistsSortMethod = SORT_METHOD_TRACKNUM;
-
-  g_stSettings.m_MyMusicPlaylistViewMethod = VIEW_METHOD_LIST;
   g_stSettings.m_bMyMusicPlaylistRepeat = false;
   g_stSettings.m_bMyMusicPlaylistShuffle = false;
 
-  g_stSettings.m_MyMusicLastFMSortMethod = SORT_METHOD_LABEL;
-  g_stSettings.m_MyMusicLastFMSortOrder = SORT_ORDER_ASC;
- 
-  g_stSettings.m_MyVideoSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoRootSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_MyVideoNavGenreSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoNavTitleSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoNavPlaylistsSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoNavYearSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyVideoNavActorSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_MyVideoNavGenreViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_MyVideoNavTitleViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_MyVideoNavPlaylistsViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_MyVideoNavYearViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_MyVideoNavActorViewMethod = VIEW_METHOD_LIST;
-  
-  g_stSettings.m_MyVideoPlaylistViewMethod = VIEW_METHOD_LIST;
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
-
-  g_stSettings.m_MyPicturesSortOrder = SORT_ORDER_ASC;
-  g_stSettings.m_MyPicturesRootSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_ScriptsViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_ScriptsSortOrder = SORT_ORDER_ASC;
 
   g_stSettings.m_nVolumeLevel = 0;
   g_stSettings.m_dynamicRangeCompressionLevel = 0;
@@ -169,8 +172,8 @@ CSettings::CSettings(void)
   g_stSettings.m_fPixelRatio = 1.0f;
 
   g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u";
-  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp";
-  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms";
+  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd";
+  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms";
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.cdda";
 
@@ -180,6 +183,8 @@ CSettings::CSettings(void)
 
   // defaults for scanning
   g_stSettings.m_bMyMusicIsScanning = false;
+
+  g_stSettings.iAdditionalSubtitleDirectoryChecked = 0;
 
   // Advanced settings
   g_advancedSettings.m_audioHeadRoom = 0;
@@ -223,7 +228,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_useGDrive = false;
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
-
+  
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
@@ -235,7 +240,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_controllerDeadzone = 0.2f;
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_thumbSize = 128;
+  g_advancedSettings.m_thumbSize = 192;
 
   g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_sambaclienttimeout = 10;
@@ -245,6 +250,21 @@ CSettings::CSettings(void)
   g_settings.bUseLoginScreen = false;
 
   g_advancedSettings.m_musicThumbs = "folder.jpg";
+  g_advancedSettings.m_dvdThumbs = "folder.jpg";
+  g_advancedSettings.m_bMusicLibraryHideAllItems = false;
+  g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
+  g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
+  g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear = false;
+  g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
+  g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
+
+  g_advancedSettings.m_bTuxBoxAudioChannelSelection = false;
+  g_advancedSettings.m_bTuxBoxSubMenuSelection = false;
+  g_advancedSettings.m_bTuxBoxPictureIcon= true;
+  g_advancedSettings.m_iTuxBoxEpgRequestTime = 10; //seconds
+  g_advancedSettings.m_iTuxBoxDefaultSubMenu = 4;
+  g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
+  g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
   xbmcXmlLoaded = false;
   bTransaction = false;
@@ -283,14 +303,14 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   // load settings file...
   bXboxMediacenter = bSettings = false;
 
-  char szDevicePath[1024]; 
+  char szDevicePath[1024];
   CIoSupport helper;
   CStdString strMnt = GetProfileUserDataFolder();
   if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
   {
     CUtil::GetHomePath(strMnt);
     strMnt += GetProfileUserDataFolder().substr(2);
-  }    
+  }
   helper.GetPartition(strMnt, szDevicePath);
   strcat(szDevicePath,strMnt.c_str()+2);
   helper.Unmount("P:");
@@ -343,8 +363,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
 #ifdef HAS_XBOX_HARDWARE
   helper.Unmount("S:");
-  CStdString strDir = CUtil::TranslateSpecialSource(g_stSettings.m_szAlternateSubtitleDirectory);
-  strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
 #endif
 
   // look for external sources file
@@ -475,6 +493,13 @@ VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
     return &g_settings.m_vecMyVideoShares;
   else if (type == "pictures")
     return &g_settings.m_vecMyPictureShares;
+  else if (type == "upnpmusic")
+    return &g_settings.m_vecUPnPMusicShares;
+  else if (type == "upnpvideo")
+    return &g_settings.m_vecUPnPVideoShares;
+  else if (type == "upnppictures")
+    return &g_settings.m_vecUPnPPictureShares;
+
   return NULL;
 }
 
@@ -583,7 +608,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
     }
     pPathName = pPathName->NextSibling("path");
   }
-  
+
   const TiXmlNode *pCacheNode = bookmark->FirstChild("cache");
   const TiXmlNode *pDepthNode = bookmark->FirstChild("depth");
   const TiXmlNode *pLockMode = bookmark->FirstChild("lockmode");
@@ -628,9 +653,9 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
           else
             bIsInvalid = true;
         }
-        
+
         // error message
-        if (bIsInvalid)   
+        if (bIsInvalid)
           CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath bookmark", vecPaths[j].c_str());
       }
 
@@ -741,6 +766,15 @@ void CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, 
   CLog::Log(LOGDEBUG, "  %s: %f", tagName, fValue);
 }
 
+void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState)
+{
+  const TiXmlElement* pNode = pRootElement->FirstChildElement(strTagName);
+  if (!pNode) return;
+  GetInteger(pNode, "viewmode", viewState.m_viewMode, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
+  GetInteger(pNode, "sortmethod", (int&)viewState.m_sortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX);
+  GetInteger(pNode, "sortorder", (int&)viewState.m_sortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+}
+
 void CSettings::SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const
 {
   CStdString strPersistedValue = strValue;
@@ -763,6 +797,18 @@ void CSettings::SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, i
   CStdString strValue;
   strValue.Format("%d", iValue);
   SetString(pRootNode, strTagName, strValue);
+}
+
+void CSettings::SetViewState(TiXmlNode *pRootNode, const CStdString &strTagName, const CViewState &viewState) const
+{
+  TiXmlElement newElement(strTagName);
+  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+  if (pNewNode)
+  {
+    SetInteger(pNewNode, "viewmode", viewState.m_viewMode);
+    SetInteger(pNewNode, "sortmethod", (int)viewState.m_sortMethod);
+    SetInteger(pNewNode, "sortorder", (int)viewState.m_sortOrder);
+  }
 }
 
 void CSettings::SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const
@@ -890,73 +936,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     return false;
   }
 
-  // mypictures
-  TiXmlElement *pElement = pRootElement->FirstChildElement("mypictures");
-  if (pElement)
-  {
-    GetInteger(pElement, "viewmethod", (int&)g_stSettings.m_MyPicturesViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-    GetInteger(pElement, "viewmethodroot", (int&)g_stSettings.m_MyPicturesRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-    GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_MyPicturesSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortmethodroot", (int&)g_stSettings.m_MyPicturesRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortorder", (int&)g_stSettings.m_MyPicturesSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    GetInteger(pElement, "sortorderroot", (int&)g_stSettings.m_MyPicturesRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-  }
-
   // mymusic settings
-  pElement = pRootElement->FirstChildElement("mymusic");
+  TiXmlElement *pElement = pRootElement->FirstChildElement("mymusic");
   if (pElement)
   {
-    TiXmlElement *pChild = pElement->FirstChildElement("songs");
+    TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     {
-      GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyMusicSongsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyMusicSongsRootViewMethod, VIEW_METHOD_ICONS, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyMusicSongsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyMusicSongsRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyMusicSongsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyMusicSongsRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-    pChild = pElement->FirstChildElement("nav");
-    if (pChild)
-    {
-      GetInteger(pChild, "rootviewmethod", (int&)g_stSettings.m_MyMusicNavRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "genresviewmethod", (int&)g_stSettings.m_MyMusicNavGenresViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "artistsviewmethod", (int&)g_stSettings.m_MyMusicNavArtistsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "albumsviewmethod", (int&)g_stSettings.m_MyMusicNavAlbumsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "songsviewmethod", (int&)g_stSettings.m_MyMusicNavSongsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "topviewmethod", (int&)g_stSettings.m_MyMusicNavTopViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "playlistsviewmethod", (int&)g_stSettings.m_MyMusicNavPlaylistsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-
-      GetInteger(pChild, "genressortmethod", (int&)g_stSettings.m_MyMusicNavRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "albumssortmethod", (int&)g_stSettings.m_MyMusicNavAlbumsSortMethod, SORT_METHOD_ALBUM, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "songssortmethod", (int&)g_stSettings.m_MyMusicNavSongsSortMethod, SORT_METHOD_TRACKNUM, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "playlistssortmethod", (int&)g_stSettings.m_MyMusicNavPlaylistsSortMethod, SORT_METHOD_TRACKNUM, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-
-      GetInteger(pChild, "genressortorder", (int&)g_stSettings.m_MyMusicNavGenresSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "artistssortorder", (int&)g_stSettings.m_MyMusicNavArtistsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "albumssortorder", (int&)g_stSettings.m_MyMusicNavAlbumsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "songssortorder", (int&)g_stSettings.m_MyMusicNavSongsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "playlistssortorder", (int&)g_stSettings.m_MyMusicNavPlaylistsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-
-    pChild = pElement->FirstChildElement("shoutcast");
-    if (pChild)
-    {
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyMusicShoutcastSortMethod,SORT_METHOD_VIDEO_RATING,SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyMusicShoutcastSortOrder,SORT_ORDER_DESC,SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-
-    pChild = pElement->FirstChildElement("lastfm");
-    if (pChild)
-    {
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyMusicLastFMSortMethod,SORT_METHOD_VIDEO_RATING,SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyMusicLastFMSortOrder,SORT_ORDER_DESC,SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-
-    pChild = pElement->FirstChildElement("playlist");
-    if (pChild)
-    {
-      GetInteger(pChild, "playlistviewmethodroot", (int&)g_stSettings.m_MyMusicPlaylistViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
       XMLUtils::GetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
     }
@@ -992,48 +978,25 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     { // playlist
-      GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyVideoPlaylistViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
       XMLUtils::GetBoolean(pChild, "repeat", g_stSettings.m_bMyVideoPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
     }
-    pChild = pElement->FirstChildElement("files");
-    if (pChild)
-    { // files
-      GetInteger(pChild, "viewmethod", (int&)g_stSettings.m_MyVideoViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyVideoRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_MyVideoSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_MyVideoRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderroot", (int&)g_stSettings.m_MyVideoRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
-    pChild = pElement->FirstChildElement("nav");
-    if (pChild)
-    { // library
-      GetInteger(pChild, "viewmethodtitle", (int&)g_stSettings.m_MyVideoNavTitleViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodroot", (int&)g_stSettings.m_MyVideoNavRootViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodgenre", (int&)g_stSettings.m_MyVideoNavGenreViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodyear", (int&)g_stSettings.m_MyVideoNavYearViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-      GetInteger(pChild, "viewmethodactor", (int&)g_stSettings.m_MyVideoNavActorViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-
-      GetInteger(pChild, "sortmethodgenre", (int&)g_stSettings.m_MyVideoNavGenreSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodplaylists", (int&)g_stSettings.m_MyVideoNavPlaylistsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-      GetInteger(pChild, "sortmethodtitle", (int&)g_stSettings.m_MyVideoNavTitleSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-
-      GetInteger(pChild, "sortordergenre", (int&)g_stSettings.m_MyVideoNavGenreSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderplaylists", (int&)g_stSettings.m_MyVideoNavPlaylistsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortordertitle", (int&)g_stSettings.m_MyVideoNavTitleSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderyear", (int&)g_stSettings.m_MyVideoNavYearSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-      GetInteger(pChild, "sortorderactor", (int&)g_stSettings.m_MyVideoNavActorSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-    }
   }
-  // myscripts settings
-  pElement = pRootElement->FirstChildElement("myscripts");
+
+  pElement = pRootElement->FirstChildElement("viewstates");
   if (pElement)
   {
-    GetInteger(pElement, "viewmethod", (int&)g_stSettings.m_ScriptsViewMethod, VIEW_METHOD_LIST, VIEW_METHOD_LIST, VIEW_METHOD_MAX-1);
-    GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_ScriptsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortorder", (int&)g_stSettings.m_ScriptsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+    GetViewState(pElement, "musicnavartists", g_stSettings.m_viewStateMusicNavArtists);
+    GetViewState(pElement, "musicnavalbums", g_stSettings.m_viewStateMusicNavAlbums);
+    GetViewState(pElement, "musicnavsongs", g_stSettings.m_viewStateMusicNavSongs);
+    GetViewState(pElement, "musicshoutcast", g_stSettings.m_viewStateMusicShoutcast);
+    GetViewState(pElement, "musiclastfm", g_stSettings.m_viewStateMusicLastFM);
+    GetViewState(pElement, "videonavactors", g_stSettings.m_viewStateVideoNavActors);
+    GetViewState(pElement, "videonavyears", g_stSettings.m_viewStateVideoNavYears);
+    GetViewState(pElement, "videonavgenres", g_stSettings.m_viewStateVideoNavGenres);
+    GetViewState(pElement, "videonavtitles", g_stSettings.m_viewStateVideoNavTitles);
   }
+
   // general settings
   pElement = pRootElement->FirstChildElement("general");
   if (pElement)
@@ -1044,7 +1007,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	GetInteger(pElement, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel, 0, 0,5);
 	GetInteger(pElement, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort, 8278, 1, 65535);
   }
-  
+
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
   if (pElement)
   {
@@ -1080,16 +1043,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       GetFloat(pElement, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].robotic, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
     }
   }
-
-  // my programs
-  pElement = pRootElement->FirstChildElement("myprograms");
-  if (pElement)
-  {
-    GetInteger(pElement, "viewmethod", (int&)g_stSettings.m_MyProgramsViewMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_MyProgramsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
-    GetInteger(pElement, "sortorder", (int&)g_stSettings.m_MyProgramsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-  }
-
 
   LoadCalibration(pRootElement, strSettingsFile);
   g_guiSettings.LoadXML(pRootElement);
@@ -1160,6 +1113,17 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 1, 0, 255);
   }
 
+  pElement = pRootElement->FirstChildElement("musiclibrary");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bMusicLibraryHideAllItems);
+    XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
+    XMLUtils::GetBoolean(pElement, "hidecompilationartists", g_advancedSettings.m_bMusicLibraryHideCompilationArtists);
+    XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
+    GetString(pElement, "albumformat", g_advancedSettings.m_strMusicLibraryAlbumFormat, "");
+    GetString(pElement, "albumformatright", g_advancedSettings.m_strMusicLibraryAlbumFormatRight, "");
+  }
+
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
   {
@@ -1185,7 +1149,7 @@ void CSettings::LoadAdvancedSettings()
   }
 
   GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 10.0f, 1.0f, 100.0f);
-  
+
   pElement = pRootElement->FirstChildElement("samba");
   if (pElement)
   {
@@ -1193,7 +1157,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 10, 5, 100);
   }
 
-  GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_NORMAL, LOG_LEVEL_MAX);
+  GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
 
   XMLUtils::GetBoolean(pRootElement, "autodetectfg", g_advancedSettings.m_autoDetectFG);
@@ -1203,7 +1167,19 @@ void CSettings::LoadAdvancedSettings()
 
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
 
-  GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
+  //Tuxbox
+  pElement = pRootElement->FirstChildElement("tuxbox");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "audiochannelselection", g_advancedSettings.m_bTuxBoxAudioChannelSelection);
+    XMLUtils::GetBoolean(pElement, "submenuselection", g_advancedSettings.m_bTuxBoxSubMenuSelection);
+    XMLUtils::GetBoolean(pElement, "pictureicon", g_advancedSettings.m_bTuxBoxPictureIcon);
+    GetInteger(pElement, "epgrequesttime", g_advancedSettings.m_iTuxBoxEpgRequestTime, 10, 0, 3600);
+    GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iTuxBoxDefaultSubMenu, 4, 1, 4);
+    GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 0, 4);
+    GetInteger(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 0, 120);
+    
+  }
 
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
@@ -1224,7 +1200,7 @@ void CSettings::LoadAdvancedSettings()
           continue;
         g_stSettings.m_pictureExtensions.erase(iPos,exts[i].size()+1);
       }
-    }    
+    }
   }
   pExts = pRootElement->FirstChildElement("musicextensions");
   if (pExts)
@@ -1244,7 +1220,7 @@ void CSettings::LoadAdvancedSettings()
           continue;
         g_stSettings.m_musicExtensions.erase(iPos,exts[i].size()+1);
       }
-    }    
+    }
   }
   pExts = pRootElement->FirstChildElement("videoextensions");
   if (pExts)
@@ -1264,9 +1240,9 @@ void CSettings::LoadAdvancedSettings()
           continue;
         g_stSettings.m_videoExtensions.erase(iPos,exts[i].size()+1);
       }
-    }    
+    }
   }
-  
+
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
 
   // TODO: Should cache path be given in terms of our predefined paths??
@@ -1327,7 +1303,7 @@ void CSettings::LoadAdvancedSettings()
         if (strFrom.IsEmpty())
           CLog::Log(LOGERROR,"  Missing <from> tag");
         else
-          CLog::Log(LOGERROR,"  Missing <to> tag");          
+          CLog::Log(LOGERROR,"  Missing <to> tag");
       }
 
       // get next one
@@ -1337,19 +1313,18 @@ void CSettings::LoadAdvancedSettings()
 
   GetInteger(pRootElement, "remoterepeat", g_advancedSettings.m_remoteRepeat, 480, 1, INT_MAX);
   GetFloat(pRootElement, "controllerdeadzone", g_advancedSettings.m_controllerDeadzone, 0.2f, 0.0f, 1.0f);
-  GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 128, 64, 512);
+  GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 192, 64, 512);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", g_advancedSettings.m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", g_advancedSettings.m_detectAsUdf);
 
+  // music thumbs
   CStdString extraThumbs;
   TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
   if (pThumbs)
   {
-    GetString(pThumbs, "add", extraThumbs,"");
-    if (extraThumbs != "")
-      g_advancedSettings.m_musicThumbs += "|" + extraThumbs;
-
+    // remove before add so that the defaults can be restored after user defined ones
+    // (ie, the list can be:cover.jpg|cover.png|folder.jpg)
     GetString(pThumbs, "remove", extraThumbs, "");
     if (extraThumbs != "")
     {
@@ -1362,7 +1337,42 @@ void CSettings::LoadAdvancedSettings()
           continue;
         g_advancedSettings.m_musicThumbs.erase(iPos, thumbs[i].size() + 1);
       }
-    }    
+    }
+    GetString(pThumbs, "add", extraThumbs,"");
+    if (extraThumbs != "")
+    {
+      if (!g_advancedSettings.m_musicThumbs.IsEmpty())
+        g_advancedSettings.m_musicThumbs += "|";
+      g_advancedSettings.m_musicThumbs += extraThumbs;
+    }
+  }
+
+  // dvd thumbs
+  pThumbs = pRootElement->FirstChildElement("dvdthumbs");
+  if (pThumbs)
+  {
+    // remove before add so that the defaults can be restored after user defined ones
+    // (ie, the list can be:cover.jpg|cover.png|folder.jpg)
+    GetString(pThumbs, "remove", extraThumbs, "");
+    if (extraThumbs != "")
+    {
+      CStdStringArray thumbs;
+      StringUtils::SplitString(extraThumbs, "|", thumbs);
+      for (unsigned int i = 0; i < thumbs.size(); ++i)
+      {
+        int iPos = g_advancedSettings.m_musicThumbs.Find(thumbs[i]);
+        if (iPos == -1)
+          continue;
+        g_advancedSettings.m_musicThumbs.erase(iPos, thumbs[i].size() + 1);
+      }
+    }
+    GetString(pThumbs, "add", extraThumbs,"");
+    if (extraThumbs != "")
+    {
+      if (!g_advancedSettings.m_musicThumbs.IsEmpty())
+        g_advancedSettings.m_musicThumbs += "|";
+      g_advancedSettings.m_musicThumbs += extraThumbs;
+    }
   }
 
   // load in the GUISettings overrides:
@@ -1447,7 +1457,7 @@ bool CSettings::SaveAvpackXML() const
   }
 
   // Delete the plugged avpack root if it exists, then recreate it
-  // TODO : to support custom avpack settings, the two XMLs should 
+  // TODO : to support custom avpack settings, the two XMLs should
   // be synchronized, not just overwrite the old one
   TiXmlNode *pRoot = pMainElement->FirstChild(GetPluggedAvpack());
   if (pRoot)
@@ -1537,86 +1547,15 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot) return false;
   // write our tags one by one - just a big list for now (can be flashed up later)
-  // myprograms settings
-  TiXmlElement programsNode("myprograms");
-  TiXmlNode *pNode = pRoot->InsertEndChild(programsNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "viewmethod", g_stSettings.m_MyProgramsViewMethod);
-  SetInteger(pNode, "sortmethod", g_stSettings.m_MyProgramsSortMethod);
-  SetInteger(pNode, "sortorder", g_stSettings.m_MyProgramsSortOrder);
-
-  // mypictures settings
-  TiXmlElement picturesNode("mypictures");
-  pNode = pRoot->InsertEndChild(picturesNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "viewmethod", g_stSettings.m_MyPicturesViewMethod);
-  SetInteger(pNode, "viewmethodroot", g_stSettings.m_MyPicturesRootViewMethod);
-  SetInteger(pNode, "sortmethod", g_stSettings.m_MyPicturesSortMethod);
-  SetInteger(pNode, "sortmethodroot", g_stSettings.m_MyPicturesRootSortMethod);
-  SetInteger(pNode, "sortorder", g_stSettings.m_MyPicturesSortOrder);
-  SetInteger(pNode, "sortorderroot", g_stSettings.m_MyPicturesRootSortOrder);
 
   // mymusic settings
   TiXmlElement musicNode("mymusic");
-  pNode = pRoot->InsertEndChild(musicNode);
+  TiXmlNode *pNode = pRoot->InsertEndChild(musicNode);
   if (!pNode) return false;
-  {
-    TiXmlElement childNode("songs");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetInteger(pChild, "viewmethod", g_stSettings.m_MyMusicSongsViewMethod);
-    SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyMusicSongsRootViewMethod);
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyMusicSongsSortMethod);
-    SetInteger(pChild, "sortmethodroot", g_stSettings.m_MyMusicSongsRootSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyMusicSongsSortOrder);
-    SetInteger(pChild, "sortorderroot", g_stSettings.m_MyMusicSongsRootSortOrder);
-  }
-  {
-    TiXmlElement childNode("nav");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-
-    SetInteger(pChild, "rootviewmethod", g_stSettings.m_MyMusicNavRootViewMethod);
-    SetInteger(pChild, "genresviewmethod", g_stSettings.m_MyMusicNavGenresViewMethod);
-    SetInteger(pChild, "artistsviewmethod", g_stSettings.m_MyMusicNavArtistsViewMethod);
-    SetInteger(pChild, "albumsviewmethod", g_stSettings.m_MyMusicNavAlbumsViewMethod);
-    SetInteger(pChild, "songsviewmethod", g_stSettings.m_MyMusicNavSongsViewMethod);
-    SetInteger(pChild, "topviewmethod", g_stSettings.m_MyMusicNavTopViewMethod);
-    SetInteger(pChild, "playlistsviewmethod", g_stSettings.m_MyMusicNavPlaylistsViewMethod);
-
-    SetInteger(pChild, "genressortmethod", g_stSettings.m_MyMusicNavRootSortMethod);
-    SetInteger(pChild, "albumssortmethod", g_stSettings.m_MyMusicNavAlbumsSortMethod);
-    SetInteger(pChild, "songssortmethod", g_stSettings.m_MyMusicNavSongsSortMethod);
-    SetInteger(pChild, "playlistssortmethod", g_stSettings.m_MyMusicNavPlaylistsSortMethod);
-
-    SetInteger(pChild, "genressortorder", g_stSettings.m_MyMusicNavGenresSortOrder);
-    SetInteger(pChild, "artistssortorder", g_stSettings.m_MyMusicNavArtistsSortOrder);
-    SetInteger(pChild, "albumssortorder", g_stSettings.m_MyMusicNavAlbumsSortOrder);
-    SetInteger(pChild, "songssortorder", g_stSettings.m_MyMusicNavSongsSortOrder);
-    SetInteger(pChild, "playlistssortorder", g_stSettings.m_MyMusicNavPlaylistsSortOrder);
-  }
-  {
-    TiXmlElement childNode("shoutcast");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyMusicShoutcastSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyMusicShoutcastSortOrder);
-  }
-  {
-    TiXmlElement childNode("lastfm");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyMusicLastFMSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyMusicLastFMSortOrder);
-  }
-  
   {
     TiXmlElement childNode("playlist");
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
     if (!pChild) return false;
-    SetInteger(pChild, "playlistviewmethodroot", g_stSettings.m_MyMusicPlaylistViewMethod);
     SetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
     SetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
   }
@@ -1642,57 +1581,32 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
-  
+
   SetInteger(pNode, "watchmode", g_stSettings.m_iMyVideoWatchMode);
 
   { // playlist window
     TiXmlElement childNode("playlist");
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
     if (!pChild) return false;
-    SetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoPlaylistViewMethod);
     SetBoolean(pChild, "repeat", g_stSettings.m_bMyVideoPlaylistRepeat);
     SetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
   }
-  { // files window
-    TiXmlElement childNode("files");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetInteger(pChild, "viewmethod", g_stSettings.m_MyVideoViewMethod);
-    SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoRootViewMethod);
-    SetInteger(pChild, "sortmethod", g_stSettings.m_MyVideoSortMethod);
-    SetInteger(pChild, "sortmethodroot", g_stSettings.m_MyVideoRootSortMethod);
-    SetInteger(pChild, "sortorder", g_stSettings.m_MyVideoSortOrder);
-    SetInteger(pChild, "sortorderroot", g_stSettings.m_MyVideoRootSortOrder);
+
+  // view states
+  TiXmlElement viewStateNode("viewstates");
+  pNode = pRoot->InsertEndChild(viewStateNode);
+  if (pNode)
+  {
+    SetViewState(pNode, "musicnavartists", g_stSettings.m_viewStateMusicNavArtists);
+    SetViewState(pNode, "musicnavalbums", g_stSettings.m_viewStateMusicNavAlbums);
+    SetViewState(pNode, "musicnavsongs", g_stSettings.m_viewStateMusicNavSongs);
+    SetViewState(pNode, "musicshoutcast", g_stSettings.m_viewStateMusicShoutcast);
+    SetViewState(pNode, "musiclastfm", g_stSettings.m_viewStateMusicLastFM);
+    SetViewState(pNode, "videonavactors", g_stSettings.m_viewStateVideoNavActors);
+    SetViewState(pNode, "videonavyears", g_stSettings.m_viewStateVideoNavYears);
+    SetViewState(pNode, "videonavgenres", g_stSettings.m_viewStateVideoNavGenres);
+    SetViewState(pNode, "videonavtitles", g_stSettings.m_viewStateVideoNavTitles);
   }
-
-  { // library window
-    TiXmlElement childNode("nav");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetInteger(pChild, "viewmethodtitle", g_stSettings.m_MyVideoNavTitleViewMethod);
-    SetInteger(pChild, "viewmethodroot", g_stSettings.m_MyVideoNavRootViewMethod);
-    SetInteger(pChild, "viewmethodgenre", g_stSettings.m_MyVideoNavGenreViewMethod);
-    SetInteger(pChild, "viewmethodyear", g_stSettings.m_MyVideoNavYearViewMethod);
-    SetInteger(pChild, "viewmethodactor", g_stSettings.m_MyVideoNavActorViewMethod);
-
-    SetInteger(pChild, "sortmethodgenre", g_stSettings.m_MyVideoNavGenreSortMethod);
-    SetInteger(pChild, "sortmethodplaylists", g_stSettings.m_MyVideoNavPlaylistsSortMethod);
-    SetInteger(pChild, "sortmethodtitle", g_stSettings.m_MyVideoNavTitleSortMethod);
-
-    SetInteger(pChild, "sortordergenre", g_stSettings.m_MyVideoNavGenreSortOrder);
-    SetInteger(pChild, "sortorderplaylists", g_stSettings.m_MyVideoNavPlaylistsSortOrder);
-    SetInteger(pChild, "sortordertitle", g_stSettings.m_MyVideoNavTitleSortOrder);
-    SetInteger(pChild, "sortorderyear", g_stSettings.m_MyVideoNavYearSortOrder);
-    SetInteger(pChild, "sortorderactor", g_stSettings.m_MyVideoNavActorSortOrder);
-  }
-
-  // myscripts settings
-  TiXmlElement scriptsNode("myscripts");
-  pNode = pRoot->InsertEndChild(scriptsNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "viewmethod", g_stSettings.m_ScriptsViewMethod);
-  SetInteger(pNode, "sortmethod", g_stSettings.m_ScriptsSortMethod);
-  SetInteger(pNode, "sortorder", g_stSettings.m_ScriptsSortOrder);
 
   // general settings
   TiXmlElement generalNode("general");
@@ -1701,9 +1615,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
   SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
   SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
-  SetInteger(pNode, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort); 
+  SetInteger(pNode, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort);
   SetInteger(pNode, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel);
-    
+
   // default video settings
   TiXmlElement videoSettingsNode("defaultvideosettings");
   pNode = pRoot->InsertEndChild(videoSettingsNode);
@@ -1753,7 +1667,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 }
 
 bool CSettings::LoadProfile(int index)
-{  
+{
   int iOldIndex = m_iLastLoadedProfileIndex;
   m_iLastLoadedProfileIndex = index;
   bool bSourcesXML=true;
@@ -1794,7 +1708,7 @@ bool CSettings::LoadProfile(int index)
     }
     else
     {
-      g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE); // needs to reset 
+      g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE); // needs to reset
       g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
       g_audioManager.Load();
     }
@@ -1835,6 +1749,19 @@ bool CSettings::LoadProfile(int index)
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
 
+#ifdef HAS_XBOX_HARDWARE
+    if (g_guiSettings.GetBool("system.autotemperature"))
+    {
+      CLog::Log(LOGNOTICE, "start fancontroller");
+      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"));
+    }
+    else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
+    {
+      CLog::Log(LOGNOTICE, "setting fanspeed");
+      CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
+    }
+#endif
+
     // to set labels - shares are reloaded
     CDetectDVDMedia::UpdateState();
     // init windows
@@ -1845,7 +1772,7 @@ bool CSettings::LoadProfile(int index)
   }
 
   m_iLastLoadedProfileIndex = iOldIndex;
- 
+
   return false;
 }
 
@@ -1936,7 +1863,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     CStdString strName;
     XMLUtils::GetString(pProfile,"name",strName);
     profile.setName(strName);
-    
+
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
     profile.setDirectory(strDirectory);
@@ -1952,11 +1879,11 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     bHas = true;
     XMLUtils::GetBoolean(pProfile, "canwritedatabases", bHas);
     profile.setWriteDatabases(bHas);
-    
+
     bHas = true;
     XMLUtils::GetBoolean(pProfile, "hassources", bHas);
     profile.setSources(bHas);
-    
+
     bHas = true;
     XMLUtils::GetBoolean(pProfile, "canwritesources", bHas);
     profile.setWriteSources(bHas);
@@ -1964,7 +1891,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
     profile.setSettingsLocked(bHas);
-    
+
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "lockfiles", bHas);
     profile.setFilesLocked(bHas);
@@ -1972,7 +1899,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "lockmusic", bHas);
     profile.setMusicLocked(bHas);
-    
+
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "lockvideo", bHas);
     profile.setVideoLocked(bHas);
@@ -1991,7 +1918,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     int iLockMode=LOCK_MODE_EVERYONE;
     XMLUtils::GetInt(pProfile,"lockmode",iLockMode);
     if (iLockMode > LOCK_MODE_QWERTY || iLockMode < 0)
-      iLockMode = LOCK_MODE_EVERYONE; 
+      iLockMode = LOCK_MODE_EVERYONE;
     profile.setLockMode(iLockMode);
 
     CStdString strLockCode;
@@ -2029,7 +1956,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
     SetBoolean(pNode,"useavpacksettings",g_settings.m_vecProfiles[iProfile].useAvpackSettings());
-    
+
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     {
       SetInteger(pNode,"lockmode",g_settings.m_vecProfiles[iProfile].getLockMode());
@@ -2068,6 +1995,111 @@ bool CSettings::LoadXml()
   return true;
 }
 
+bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
+{
+  TiXmlDocument UPnPDoc;
+  CIoSupport helper;
+  if (!CFile::Exists(strSettingsFile))
+  { // set defaults, or assume no rss feeds??
+    return false;
+  }
+  if (!UPnPDoc.LoadFile(strSettingsFile.c_str()))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), UPnPDoc.ErrorRow(), UPnPDoc.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *pRootElement = UPnPDoc.RootElement();
+  if (!pRootElement || strcmpi(pRootElement->Value(),"upnpserver") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <upnpserver> node", strSettingsFile.c_str());
+    return false;
+  }
+
+  // load UUID
+  TiXmlElement* eUUID = pRootElement->FirstChildElement("UUID");
+  if (eUUID && eUUID->FirstChild()) {
+      g_settings.m_UPnPUUID = eUUID->FirstChild()->Value();
+  }
+
+  // load FriendlyName
+  TiXmlElement* eFN = pRootElement->FirstChildElement("FriendlyName");
+  if (eFN && eFN->FirstChild()) {
+      g_settings.m_UPnPServerFriendlyName = eFN->FirstChild()->Value();
+  }
+
+  CStdString strDefault;
+  GetShares(pRootElement,"music",g_settings.m_vecUPnPMusicShares,strDefault);
+  GetShares(pRootElement,"video",g_settings.m_vecUPnPVideoShares,strDefault);
+  GetShares(pRootElement,"pictures",g_settings.m_vecUPnPPictureShares,strDefault);
+
+  return true;
+}
+
+bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
+{
+  TiXmlDocument xmlDoc;
+  TiXmlElement xmlRootElement("upnpserver");
+  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+  if (!pRoot) return false;
+
+  // create a new Element for UUID
+  TiXmlText xmlUUID(g_settings.m_UPnPUUID);
+  TiXmlElement eUUID("UUID");
+  eUUID.InsertEndChild(xmlUUID);
+  pRoot->ToElement()->InsertEndChild(eUUID);
+
+  // create a new Element for Server friendly name
+  TiXmlText xmlFriendlyName(g_settings.m_UPnPServerFriendlyName);
+  TiXmlElement eFN("FriendlyName");
+  eFN.InsertEndChild(xmlFriendlyName);
+  pRoot->ToElement()->InsertEndChild(eFN);
+  
+  VECSHARES* pShares[3];
+  pShares[0] = &g_settings.m_vecUPnPMusicShares;
+  pShares[1] = &g_settings.m_vecUPnPVideoShares;
+  pShares[2] = &g_settings.m_vecUPnPPictureShares;
+  for (int k=0;k<3;++k)
+  {
+    if ((*pShares)[k].size()==0)
+      continue;
+
+    TiXmlElement xmlType("");
+    if (k==0)
+      xmlType = TiXmlElement("music");
+    if (k==1)
+      xmlType = TiXmlElement("video");
+    if (k==2)
+      xmlType = TiXmlElement("pictures");
+    
+    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);  
+
+    for (unsigned int j=0;j<(*pShares)[k].size();++j)
+    {
+      // create a new Element
+      TiXmlText xmlName((*pShares)[k][j].strName);
+      TiXmlElement eName("name");
+      eName.InsertEndChild(xmlName);
+
+      TiXmlElement bookmark("bookmark");
+      bookmark.InsertEndChild(eName);
+
+      for (unsigned int i = 0; i < (*pShares)[k][j].vecPaths.size(); i++)
+      {
+        TiXmlText xmlPath((*pShares)[k][j].vecPaths[i]);
+        TiXmlElement ePath("path");
+        ePath.InsertEndChild(xmlPath);
+        bookmark.InsertEndChild(ePath);
+      }
+
+      if (pNode)
+        pNode->ToElement()->InsertEndChild(bookmark);
+    }
+  }
+  // save the file
+  return xmlDoc.SaveFile(strSettingsFile);
+}
+
 void CSettings::CloseXml()
 {
   xbmcXmlLoaded = false;
@@ -2095,7 +2127,7 @@ bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, co
 {
   if (!LoadXml()) return false;
   VECSHARES *pShares = GetSharesFromType(type);
-  
+
   if (!pShares) return false;
 
   // update our current share list
@@ -2186,7 +2218,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
   if (!LoadXml()) return false;
 
   VECSHARES *pShares = GetSharesFromType(strType);
-  
+
   if (!pShares) return false;
 
   // disallow virtual paths
@@ -2224,7 +2256,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
 
   // Update our XML file as well
   TiXmlElement *pRootElement = xbmcXml.RootElement();
-  
+
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
 
@@ -2271,7 +2303,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
             TiXmlNode* pChild2 = pIt->FirstChild("thumbnail");
             if (pChild2)
               pIt->RemoveChild(pChild2);
-          } 
+          }
           break;
         }
       }
@@ -2297,7 +2329,7 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
   if (!LoadXml()) return false;
   //<strFirstChild>
   //    <strChild>strChildValue</strChild>
-  
+
   TiXmlElement *pRootElement = xbmcXml.RootElement();
   if (!pRootElement) return false;
   TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);
@@ -2330,10 +2362,10 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
 bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue)
 {
   if (!LoadXml()) return false;
-  
+
   //
   //<strFirstChild>strFirstChildValue<strFirstChild>
-  
+
   TiXmlElement *pRootElement = xbmcXml.RootElement();
   TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);;
   if (pNode)
@@ -2352,7 +2384,10 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
 
 bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath)
 {
-  if (!LoadXml()) return false;
+  if (strType.Find("upnp") < 0)
+  {
+    if (!LoadXml()) return false; 
+  }
 
   VECSHARES *pShares = GetSharesFromType(strType);
   if (!pShares) return false;
@@ -2369,6 +2404,10 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
       break;
     }
   }
+
+  if (strType.Find("upnp") > -1)
+    return found;
+
   // Return bookmark of
   if (found)
   {
@@ -2409,37 +2448,45 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
 
 bool CSettings::AddShare(const CStdString &type, const CShare &share)
 {
-  if (!LoadXml()) return false;
+  bool success;
+  if (type.Find("upnp") < 0)
+  {
+    if (!LoadXml()) 
+      return false;
+    // Add to the xml file
+    TiXmlElement *pRootElement = xbmcXml.RootElement();
+    TiXmlNode *pNode = NULL;
+
+    pNode = pRootElement->FirstChild(type);
+
+    // create a new Element
+    TiXmlText xmlName(share.strName);
+    TiXmlElement eName("name");
+    eName.InsertEndChild(xmlName);
+
+    TiXmlElement bookmark("bookmark");
+    bookmark.InsertEndChild(eName);
+
+    for (unsigned int i = 0; i < share.vecPaths.size(); i++)
+    {
+      TiXmlText xmlPath(share.vecPaths[i]);
+      TiXmlElement ePath("path");
+      ePath.InsertEndChild(xmlPath);
+      bookmark.InsertEndChild(ePath);
+    }
+
+    if (pNode)
+      pNode->ToElement()->InsertEndChild(bookmark);
+
+    success = xbmcXml.SaveFile();
+  }
+  else
+  {
+    success = true;
+  }
 
   VECSHARES *pShares = GetSharesFromType(type);
   if (!pShares) return false;
-
-  // Add to the xml file
-  TiXmlElement *pRootElement = xbmcXml.RootElement();
-  TiXmlNode *pNode = NULL;
-
-  pNode = pRootElement->FirstChild(type);
-
-  // create a new Element
-  TiXmlText xmlName(share.strName);
-  TiXmlElement eName("name");
-  eName.InsertEndChild(xmlName);
-
-  TiXmlElement bookmark("bookmark");
-  bookmark.InsertEndChild(eName);
-
-  for (unsigned int i = 0; i < share.vecPaths.size(); i++)
-  {
-    TiXmlText xmlPath(share.vecPaths[i]);
-    TiXmlElement ePath("path");
-    ePath.InsertEndChild(xmlPath);
-    bookmark.InsertEndChild(ePath);
-  }
-
-  if (pNode)
-    pNode->ToElement()->InsertEndChild(bookmark);
-
-  bool success(xbmcXml.SaveFile());
 
   // translate dir and add to our current shares
   CStdString strPath1 = share.strPath;
@@ -2458,6 +2505,7 @@ bool CSettings::AddShare(const CStdString &type, const CShare &share)
     }
   }
   pShares->push_back(shareToAdd);
+
   return success;
 }
 
@@ -2520,109 +2568,6 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
   }
 }
 
-bool CSettings::LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders)
-{ // load xml file...
-  CStdString strXMLFile;
-  //CUtil::AddFileToFolder(GetUserDataFolder(), strFolderXML, strXMLFile);
-  CUtil::AddFileToFolder(GetProfileUserDataFolder(), strFolderXML, strXMLFile);
-
-  TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
-  {
-    CLog::Log(LOGERROR, "LoadFolderViews - Unable to load XML file %s", strFolderXML.c_str());
-    return false;
-  }
-
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if ( strValue != "folderviews")
-  {
-    g_LoadErrorStr.Format("%s Doesn't contain <folderviews>", strXMLFile.c_str());
-    return false;
-  }
-
-  // cleanup vecFolders if necessary...
-  if (vecFolders.size())
-  {
-    for (unsigned int i = 0; i < vecFolders.size(); i++)
-      delete vecFolders[i];
-    vecFolders.clear();
-  }
-  // parse the view mode for each folder
-  const TiXmlNode *pChild = pRootElement->FirstChild("folder");
-  while (pChild)
-  {
-    CStdString strPath;
-    int iView = VIEW_METHOD_LIST;
-    int iSort = 0;
-    bool bSortUp = true;
-    const TiXmlNode *pPath = pChild->FirstChild("path");
-    if (pPath && pPath->FirstChild())
-      strPath = pPath->FirstChild()->Value();
-    const TiXmlNode *pView = pChild->FirstChild("view");
-    if (pView && pView->FirstChild())
-      iView = atoi(pView->FirstChild()->Value());
-    const TiXmlNode *pSort = pChild->FirstChild("sort");
-    if (pSort && pSort->FirstChild())
-      iSort = atoi(pSort->FirstChild()->Value());
-    const TiXmlNode *pDirection = pChild->FirstChild("direction");
-    if (pDirection && pDirection->FirstChild())
-      bSortUp = pDirection->FirstChild()->Value() == "up";
-    // fill in element
-    if (!strPath.IsEmpty())
-    {
-      CFolderView *pFolderView = new CFolderView(strPath, iView, iSort, bSortUp);
-      if (pFolderView)
-        vecFolders.push_back(pFolderView);
-    }
-    // run to next <folder> element
-    pChild = pChild->NextSibling("folder");
-  }
-  return true;
-}
-
-bool CSettings::SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders)
-{
-  TiXmlDocument xmlDoc;
-  TiXmlElement xmlRootElement("folderviews");
-  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-  if (!pRoot) return false;
-  // write our folders one by one
-  CStdString strView, strSort, strSortUp;
-  for (unsigned int i = 0; i < vecFolders.size(); i++)
-  {
-    CFolderView *pFolderView = vecFolders[i];
-    strView.Format("%i", pFolderView->m_iView);
-    strSort.Format("%i", pFolderView->m_iSort);
-    strSortUp = pFolderView->m_bSortOrder ? "up" : "down";
-
-    TiXmlText xmlPath(pFolderView->m_strPath.IsEmpty() ? "ROOT" : pFolderView->m_strPath);
-
-    TiXmlText xmlView(strView);
-    TiXmlText xmlSort(strSort);
-    TiXmlText xmlSortUp(strSortUp);
-
-    TiXmlElement ePath("path");
-    TiXmlElement eView("view");
-    TiXmlElement eSort("sort");
-    TiXmlElement eSortUp("direction");
-
-    ePath.InsertEndChild(xmlPath);
-    eView.InsertEndChild(xmlView);
-    eSort.InsertEndChild(xmlSort);
-    eSortUp.InsertEndChild(xmlSortUp);
-
-    TiXmlElement folderNode("folder");
-    folderNode.InsertEndChild(ePath);
-    folderNode.InsertEndChild(eView);
-    folderNode.InsertEndChild(eSort);
-    folderNode.InsertEndChild(eSortUp);
-
-    pRoot->InsertEndChild(folderNode);
-  }
-  return xmlDoc.SaveFile(strFolderXML);
-}
-
 void CSettings::Clear()
 {
   m_vecMyProgramsShares.clear();
@@ -2630,7 +2575,6 @@ void CSettings::Clear()
   m_vecMyFilesShares.clear();
   m_vecMyMusicShares.clear();
   m_vecMyVideoShares.clear();
-  m_vecSambeShres.clear();
 //  m_vecIcons.clear();
   m_vecProfiles.clear();
   m_szMyVideoStackTokensArray.clear();
@@ -2756,7 +2700,7 @@ void CSettings::ResetSkinSettings()
     CStdString skinName = (*it).second.name;
     if (skinName.Left(currentSkin.size()) == currentSkin)
       (*it).second.value = false;
-    
+
     it++;
   }
   std::map<int, CSkinString>::iterator it2 = m_skinStrings.begin();
@@ -2765,7 +2709,7 @@ void CSettings::ResetSkinSettings()
     CStdString skinName = (*it2).second.name;
     if (skinName.Left(currentSkin.size()) == currentSkin)
       (*it2).second.value = "";
-    
+
     it2++;
   }
   g_infoManager.ResetCache();
@@ -2805,7 +2749,7 @@ CStdString CSettings::GetProfileUserDataFolder() const
     return GetUserDataFolder();
 
   CUtil::AddFileToFolder(GetUserDataFolder(),m_vecProfiles[m_iLastLoadedProfileIndex].getDirectory(),folder);
-  
+
   return folder;
 }
 
@@ -2816,7 +2760,7 @@ CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
   if (!CFile::Exists(folder))
     folder = "T:\\"+strFile;
   return folder;
-} 
+}
 
 CStdString CSettings::GetUserDataFolder() const
 {
@@ -2841,7 +2785,7 @@ CStdString CSettings::GetCDDBFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database\\CDDB", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Database\\CDDB", folder);
-  
+
   return folder;
 }
 
@@ -2852,7 +2796,7 @@ CStdString CSettings::GetThumbnailsFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails", folder);
-  
+
   return folder;
 }
 
@@ -2863,7 +2807,7 @@ CStdString CSettings::GetMusicThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music", folder);
-  
+
   return folder;
 }
 
@@ -2874,7 +2818,7 @@ CStdString CSettings::GetMusicArtistThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\Artists", folder);
-  
+
   return folder;
 }
 
@@ -2885,7 +2829,7 @@ CStdString CSettings::GetVideoThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video", folder);
-  
+
   return folder;
 }
 
@@ -2896,7 +2840,7 @@ CStdString CSettings::GetBookmarksThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video\\Bookmarks", folder);
-  
+
   return folder;
 }
 
@@ -2907,7 +2851,7 @@ CStdString CSettings::GetPicturesThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Pictures", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Pictures", folder);
-  
+
   return folder;
 }
 
@@ -2918,7 +2862,18 @@ CStdString CSettings::GetProgramsThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs", folder);
-  
+
+  return folder;
+}
+
+CStdString CSettings::GetGameSaveThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\GameSaves", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\GameSaves", folder);
+
   return folder;
 }
 
@@ -2926,7 +2881,7 @@ CStdString CSettings::GetProfilesThumbFolder() const
 {
   CStdString folder;
   CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Profiles", folder);
-  
+
   return folder;
 }
 
@@ -2938,7 +2893,7 @@ CStdString CSettings::GetXLinkKaiThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Programs\\XLinkKai", folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Programs\\XlinkKai", folder);
-  
+
   return folder;
 }
 
@@ -2957,7 +2912,7 @@ CStdString CSettings::GetSkinFolder() const
 {
   CStdString folder;
 
-  // Get the Current Skin Path 
+  // Get the Current Skin Path
   CUtil::AddFileToFolder("Q:\\skin\\",g_guiSettings.GetString("lookandfeel.skin"),folder);
 
   return folder;
@@ -3015,8 +2970,8 @@ void CSettings::LoadRSSFeeds()
         pFeed = pFeed->NextSiblingElement("feed");
       }
       g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<string> > >(iId,std::make_pair<std::vector<int>,std::vector<string> >(vecIntervals,vecSet)));
-    } 
-    else 
+    }
+    else
       CLog::Log(LOGERROR,"found rss url set with no id in RssFeeds.xml, ignored");
 
     pSet = pSet->NextSiblingElement("set");

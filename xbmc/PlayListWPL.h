@@ -1,6 +1,6 @@
 #pragma once
 #include "playlist.h"
-using namespace PLAYLIST;
+
 namespace PLAYLIST
 {
 
@@ -10,7 +10,7 @@ class CPlayListWPL :
 public:
   CPlayListWPL(void);
   virtual ~CPlayListWPL(void);
-  virtual bool Load(const CStdString& strFileName, bool bDeep);
+  virtual bool Load(const CStdString& strFileName);
   virtual void Save(const CStdString& strFileName) const;
 };
 };

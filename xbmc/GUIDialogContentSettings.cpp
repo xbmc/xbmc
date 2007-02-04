@@ -7,6 +7,8 @@
 #define CONTROL_SCRAPER_LIST        4
 #define CONTROL_START              30
 
+using namespace DIRECTORY;
+
 CGUIDialogContentSettings::CGUIDialogContentSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml")
 {
@@ -226,6 +228,7 @@ void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
       if (m_settings.size() > 2)
         m_settings[2].enabled = false;
       
+      m_vecItems.Clear();
       UpdateSetting(1);
       UpdateSetting(2);
       UpdateSetting(3);
@@ -302,7 +305,19 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
   database.GetScraperForPath(strDirectory,scraper.strPath,scraper.strContent);
   bool bResult = Show(scraper,bRunScan,bScanRecursive,bUseDirNames);
   if (bResult)
+  {
+    bool bName;
+    int iBookmark = CUtil::GetMatchingShare(strDirectory,g_settings.m_vecMyVideoShares,bName);
+    if (iBookmark > -1)
+    {
+      if (g_settings.m_vecMyVideoShares[iBookmark].vecPaths.size() > 1 && bName)
+      {
+        for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iBookmark].vecPaths.size();++i)
+          database.SetScraperForPath(g_settings.m_vecMyVideoShares[iBookmark].vecPaths[i],scraper.strPath,scraper.strContent);
+      }
+    }
     database.SetScraperForPath(strDirectory,scraper.strPath,scraper.strContent);
+  }
 
   return bResult;
 }

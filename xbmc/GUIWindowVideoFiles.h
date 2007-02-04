@@ -15,6 +15,7 @@ public:
   virtual ~CGUIWindowVideoFiles(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);  
+  bool IsScanning() { return m_bIsScanning; };
 
   virtual void OnScan(const CStdString& strPath, const SScraperInfo& info) { OnScan(strPath, info, -1, -1); }  
 
@@ -38,4 +39,6 @@ protected:
   virtual void LoadPlayList(const CStdString& strFileName);
   void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info);
   void PlayFolder(const CFileItem* pItem);
+
+  bool m_bIsScanning;
 };

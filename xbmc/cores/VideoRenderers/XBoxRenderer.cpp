@@ -58,7 +58,6 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
   m_pD3DDevice = pDevice;
   m_fSourceFrameRatio = 1.0f;
   m_iResolution = PAL_4x3;
-  m_bFlipped = false;
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
     m_pOSDYTexture[i] = NULL;
@@ -123,17 +122,16 @@ void CXBoxRenderer::Setup_Y8A8Render()
 
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_POINT /*g_stSettings.m_maxFilter*/ );
+  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_POINT /*g_stSettings.m_minFilter*/ );
 
   m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
   m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
   m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_ONE );
-  m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
+  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_INVSRCALPHA );
+  m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
   m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
   m_pD3DDevice->SetVertexShader( FVF_Y8A8VERTEX );
 }
@@ -260,10 +258,29 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   // Vobsubs are defined to be 720 wide.
   // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
   //       as it'll want to render within the pixel width it is outputting.
-  float EnlargeFactor = (float)g_settings.m_ResInfo[res].iWidth / 720.0f; //g_guiSettings.GetInt("Subtitles.EnlargePercentage") / 100.0f;
 
-  float xscale = EnlargeFactor * (float)(rv.right - rv.left) / (float)((g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left)) * ((float)m_iNormalDestWidth / (float)m_iOSDTextureWidth);
-  float yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio;
+  float xscale;
+  float yscale;
+
+  if(true /*isvobsub*/) // xbox_video.cpp is fixed to 720x576 osd, so this should be fine
+  { // vobsubs are given to us unscaled
+    // scale them up to the full output, assuming vobsubs have same 
+    // pixel aspect ratio as the movie, and are 720 pixels wide
+
+    float pixelaspect = m_fSourceFrameRatio * m_iSourceHeight / m_iSourceWidth;
+    xscale = (rv.right - rv.left) / 720.0f;
+    yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio / pixelaspect;
+  }
+  else
+  { // text subs/osd assume square pixels, but will render to full size of view window
+    // if mplayer could be fixed to use monitorpixelaspect when rendering it's osd
+    // this would give perfect output, however monitorpixelaspect currently doesn't work
+    // that way
+    xscale = 1.0f;
+    yscale = 1.0f;
+  }
+  
+  // horizontal centering, and align to bottom of subtitles line
   osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w * xscale) / 2.0f;
   osdRect.right = osdRect.left + (float)w * xscale;
   float relbottom = ((float)(g_settings.m_ResInfo[res].iSubtitles - g_settings.m_ResInfo[res].Overscan.top)) / (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
@@ -384,10 +401,10 @@ void CXBoxRenderer::RenderOSD()
   */
 
   // Set texture filters
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+  //m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
+  //m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+  //m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
+  //m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
 
   // clip the output if we are not in FSV so that zoomed subs don't go all over the GUI
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
@@ -433,17 +450,6 @@ RESOLUTION CXBoxRenderer::GetResolution()
     return m_iResolution;
   }
   return g_graphicsContext.GetVideoResolution();
-}
-
-void CXBoxRenderer::WaitForFlip()
-{
-  int iTmp = 0;
-  m_bFlipped = false;
-  while (!m_bFlipped && iTmp < 3000)
-  {
-    Sleep(1);
-    iTmp++;
-  }
 }
 
 float CXBoxRenderer::GetAspectRatio()
@@ -553,8 +559,6 @@ void CXBoxRenderer::ManageDisplay()
   float fScreenHeight = (float)rv.bottom - rv.top;
   float fOffsetX1 = (float)rv.left;
   float fOffsetY1 = (float)rv.top;
-
-  ManageTextures();
 
   // source rect
   rs.left = g_stSettings.m_currentVideoSettings.m_CropLeft;
@@ -707,23 +711,6 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
   CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
 }
 
-void CXBoxRenderer::CreateTextures()
-{
-}
-
-void CXBoxRenderer::SetupSubtitles()
-{
-  //set zoomamount to 1 temporary to get the default width of the destination viewwindow
-  float zoomAmount = g_stSettings.m_fZoomAmount;
-  g_stSettings.m_fZoomAmount = 1.0;
-  ManageDisplay();
-  g_stSettings.m_fZoomAmount = zoomAmount;
-  m_iNormalDestWidth = rd.right - rd.left;
-  m_iOSDTextureWidth = m_iNormalDestWidth;
-  m_iOSDTextureHeight[0] = 0;
-  m_iOSDTextureHeight[1] = 0;
-}
-
 bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   m_fps = fps;
@@ -734,8 +721,8 @@ bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(m_fps);
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+
   ManageDisplay();
-  SetupSubtitles();
 
   return true;
 }
@@ -825,13 +812,10 @@ void CXBoxRenderer::Reset()
 
 void CXBoxRenderer::Update(bool bPauseDrawing)
 {
-  if (m_bConfigured)
-  {
-    CSingleLock lock(g_graphicsContext);
-    bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
-    g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution : g_guiSettings.m_LookAndFeelResolution, !bFullScreen);
-    RenderUpdate(false);
-  }
+  if (!m_bConfigured) return;
+  CSingleLock lock(g_graphicsContext);
+  ManageDisplay();
+  ManageTextures();
 }
 
 void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
@@ -840,6 +824,7 @@ void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   CSingleLock lock(g_graphicsContext);
   ManageDisplay();
+  ManageTextures();
   if (clear)
     m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
@@ -875,7 +860,6 @@ void CXBoxRenderer::FlipPage(int source)
     m_OSDWidth = m_OSDHeight = 0;
 
   m_OSDRendered = false;
-  m_bFlipped = true;
 
   return;
 }
@@ -948,7 +932,11 @@ unsigned int CXBoxRenderer::PreInit()
   m_NumYV12Buffers = 0;
   m_OSDHeight = m_OSDWidth = 0;
   m_OSDRendered = false;
-  
+
+  m_iOSDTextureWidth = 0;
+  m_iOSDTextureHeight[0] = 0;
+  m_iOSDTextureHeight[1] = 0;
+
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
   // low memory pixel shader
@@ -1021,13 +1009,6 @@ void CXBoxRenderer::Render(DWORD flags)
 
     g_application.RenderMemoryStatus();
   }
-}
-
-void CXBoxRenderer::RenderBlank()
-{ // clear the screen
-  CSingleLock lock(g_graphicsContext);
-  m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0L );
-  m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
 }
 
 void CXBoxRenderer::SetViewMode(int iViewMode)
@@ -1360,30 +1341,6 @@ void CXBoxRenderer::ClearYV12Texture(int index)
 
   SetEvent(m_eventTexturesDone[index]);
 }
-#if 0
-void CXBoxRenderer::CopyYV12Texture(int dest)
-{
-  int src = 1-dest;
-  D3DLOCKED_RECT lr_src, lr_dest;
-  m_YTexture[src]->LockRect(0, &lr_src, NULL, 0);
-  m_YTexture[dest]->LockRect(0, &lr_dest, NULL, 0);
-  memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*m_iSourceHeight);
-  m_YTexture[dest]->UnlockRect(0);
-  m_YTexture[src]->UnlockRect(0);
-
-  m_UTexture[src]->LockRect(0, &lr_src, NULL, 0);
-  m_UTexture[dest]->LockRect(0, &lr_dest, NULL, 0);
-  memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*(m_iSourceHeight / 2));
-  m_UTexture[dest]->UnlockRect(0);
-  m_UTexture[src]->UnlockRect(0);
-
-  m_VTexture[src]->LockRect(0, &lr_src, NULL, 0);
-  m_VTexture[dest]->LockRect(0, &lr_dest, NULL, 0);
-  memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*(m_iSourceHeight / 2));
-  m_VTexture[dest]->UnlockRect(0);
-  m_VTexture[src]->UnlockRect(0);
-}
-#endif
 
 bool CXBoxRenderer::CreateYV12Texture(int index)
 {

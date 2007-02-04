@@ -11,8 +11,6 @@
 #include "GUIDialogVolumeBar.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
-#include "GUIWindowMusicOverlay.h"
-#include "GUIWindowVideoOverlay.h"
 
 #include "utils/delaycontroller.h"
 #include "cores/IPlayer.h"
@@ -56,6 +54,10 @@ public:
   void StopTimeServer();
   void StartUPnP();
   void StopUPnP();
+  void StartUPnPClient();
+  void StopUPnPClient();
+  void StartUPnPServer();
+  void StopUPnPServer();
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);
@@ -78,7 +80,7 @@ public:
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
-  bool ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist);
+  bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
   void StopPlaying();
   void Restart(bool bSamePosition = true);
@@ -101,8 +103,6 @@ public:
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
   void ActivateScreenSaver(bool forceType = false);
-  CMusicInfoTag* GetCurrentSong();
-  CIMDBMovie* GetCurrentMovie();
 
   virtual void Process();
   void ProcessSlow();
@@ -131,8 +131,6 @@ public:
   CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
   CGUIDialogMuteBug m_guiDialogMuteBug;
-  CGUIWindowMusicOverlay m_guiMusicOverlay;
-  CGUIWindowVideoOverlay m_guiVideoOverlay;
   CGUIWindowPointer m_guiPointer;
 
   CAutorun m_Autorun;
@@ -162,6 +160,7 @@ public:
   bool SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed,int iDuration);
 
 protected:
+  friend CApplicationMessenger;
   // screensaver
   bool m_bInactive;
   bool m_bScreenSave;
@@ -183,7 +182,6 @@ protected:
   EPLAYERCORES m_eCurrentPlayer;
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
-  bool m_switchingToFullScreen;
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
   bool m_playCountUpdated;

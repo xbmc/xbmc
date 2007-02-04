@@ -6,6 +6,8 @@
 #include "..\..\..\playlistfactory.h"
 #include "pyutil.h"
 
+using namespace PLAYLIST;
+
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
@@ -77,9 +79,7 @@ namespace PYXBMC
 
 		// we do not create our own playlist, just using the ones from playlistplayer
 		if (iNr != PLAYLIST_MUSIC &&
-				iNr != PLAYLIST_MUSIC_TEMP &&
-				iNr != PLAYLIST_VIDEO &&
-				iNr != PLAYLIST_VIDEO_TEMP)
+				iNr != PLAYLIST_VIDEO)
 		{
 			PyErr_SetString((PyObject*)self, "PlayList does not exist");
 			return NULL;
@@ -144,8 +144,7 @@ namespace PYXBMC
 
 			// load a playlist like .m3u, .pls
 			// first get correct factory to load playlist
-			CPlayListFactory factory;
-			auto_ptr<CPlayList> pPlayList (factory.Create(item.m_strPath));
+            auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
 			if ( NULL != pPlayList.get())
 			{
 				// load it
@@ -333,9 +332,7 @@ namespace PYXBMC
 		"int playlist can be one of the next values:\n"
 		"\n"
 		"  0 : xbmc.PLAYLIST_MUSIC\n"
-		"  1 : xbmc.PLAYLIST_MUSIC_TEMP\n"
-		"  2 : xbmc.PLAYLIST_VIDEO\n"
-		"  3 : xbmc.PLAYLIST_VIDEO_TEMP\n"
+		"  1 : xbmc.PLAYLIST_VIDEO\n"
 		"\n"
 		"Use PlayList[int position] or __getitem__(int position) to get a PlayListItem.");
 

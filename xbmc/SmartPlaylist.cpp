@@ -1,9 +1,36 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "SmartPlaylist.h"
 #include "utils/log.h"
 #include "StringUtils.h"
 #include "FileSystem/SmartPlaylistDirectory.h"
 #include "utils/CharsetConverter.h"
 #include "XMLUtils.h"
+#include "Database.h"
+
+using namespace DIRECTORY;
+
+namespace PLAYLIST
+{
 
 typedef struct
 {
@@ -44,7 +71,7 @@ void CSmartPlaylistRule::TranslateStrings(const char *field, const char *oper, c
     m_parameter.Format("%i", StringUtils::TimeStringToSeconds(m_parameter));
   }
   if (m_field == SONG_LASTPLAYED)
-  { 
+  {
     if (m_operator == OPERATOR_IN_THE_LAST || m_operator == OPERATOR_NOT_IN_THE_LAST)
     { // translate time period
       CDateTime date=CDateTime::GetCurrentDateTime();
@@ -134,9 +161,7 @@ CStdString CSmartPlaylistRule::GetWhereClause()
   case OPERATOR_LESS_THAN:
     operatorString = " < '%s'"; break;
   }
-  // TODO: This needs to be FormatSQL
-  CStdString parameter;
-  parameter.Format(operatorString.c_str(), m_parameter.c_str());
+  CStdString parameter = CDatabase::FormatSQL(operatorString.c_str(), m_parameter.c_str());
   // now the query parameter
   CStdString query;
   if (m_field == SONG_GENRE)
@@ -339,4 +364,6 @@ CStdString CSmartPlaylist::GetOrderClause()
     order += limit;
   }
   return order;
+}
+
 }

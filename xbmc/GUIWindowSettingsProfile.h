@@ -12,7 +12,7 @@ public:
 
 protected:
   virtual void OnInitWindow();
-  vector<CGUIListItem*> m_vecListItems;
+  vector<CFileItem*> m_vecListItems;
 
   void OnPopupMenu(int iItem);
   void DoRename(int iItem);

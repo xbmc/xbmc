@@ -1,6 +1,5 @@
 #pragma once
 #include "idirectory.h"
-using namespace DIRECTORY;
 
 namespace DIRECTORY
 {

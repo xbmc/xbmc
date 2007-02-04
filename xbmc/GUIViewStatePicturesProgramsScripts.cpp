@@ -1,60 +1,57 @@
+/*
+ *      Copyright (C) 2005-2007 Team XboxMediaCenter
+ *      http://www.xboxmediacenter.com
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with GNU Make; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "GUIViewStatePicturesProgramsScripts.h"
-#include "AutoSwitch.h"
+
+using namespace DIRECTORY;
 
 CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items)
 {
   if (items.IsVirtualDirectoryRoot())
   {
-    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS());
-    AddSortMethod(SORT_METHOD_DRIVE_TYPE, 498, LABEL_MASKS());
-    SetSortMethod(g_stSettings.m_MyPicturesRootSortMethod);
+    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS());
+    AddSortMethod(SORT_METHOD_DRIVE_TYPE, 564, LABEL_MASKS());
+    SetSortMethod(SORT_METHOD_LABEL);
 
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-    SetViewAsControl(g_stSettings.m_MyPicturesRootViewMethod);
+    SetViewAsControl(DEFAULT_VIEW_LIST);
 
-    SetSortOrder(g_stSettings.m_MyPicturesRootSortOrder);
+    SetSortOrder(SORT_ORDER_ASC);
   }
   else
   {
-    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
-    AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
-    AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
-    SetSortMethod(g_stSettings.m_MyPicturesSortMethod);
+    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+    AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
+    AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
 
-    AddViewAsControl(VIEW_METHOD_LIST, 101);
-    AddViewAsControl(VIEW_METHOD_ICONS, 100);
-    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-    if (g_guiSettings.GetBool("pictures.useautoswitching"))
-    {
-      SetViewAsControl(CAutoSwitch::GetView(items));
-    }
-    else
-    {
-      SetViewAsControl(g_stSettings.m_MyPicturesViewMethod);
-    }
-
-    SetSortOrder(g_stSettings.m_MyPicturesSortOrder);
+    SetSortMethod((SORT_METHOD)g_guiSettings.GetInt("pictures.sortmethod"));
+    SetViewAsControl(g_guiSettings.GetInt("pictures.viewmode"));
+    SetSortOrder((SORT_ORDER)g_guiSettings.GetInt("pictures.sortorder"));
   }
+  LoadViewState(items.m_strPath, WINDOW_PICTURES);
 }
 
 void CGUIViewStateWindowPictures::SaveViewState()
 {
-  if (m_items.IsVirtualDirectoryRoot())
-  {
-    g_stSettings.m_MyPicturesRootSortMethod=GetSortMethod();
-    g_stSettings.m_MyPicturesRootViewMethod=GetViewAsControl();
-    g_stSettings.m_MyPicturesRootSortOrder=GetSortOrder();
-  }
-  else
-  {
-    g_stSettings.m_MyPicturesSortMethod=GetSortMethod();
-    g_stSettings.m_MyPicturesViewMethod=GetViewAsControl();
-    g_stSettings.m_MyPicturesSortOrder=GetSortOrder();
-  }
-  g_settings.Save();
+  SaveViewToDb(m_items.m_strPath, WINDOW_PICTURES);
 }
 
 CStdString CGUIViewStateWindowPictures::GetLockType()
@@ -80,35 +77,23 @@ VECSHARES& CGUIViewStateWindowPictures::GetShares()
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
+    AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
   else
-    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
-  AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%K", "%J", "%L", "%J"));  // Titel, Date | Foldername, Date
-  AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 507, LABEL_MASKS("%K", "%C", "%L", ""));  // Titel, Count | Foldername, empty
-  AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%K", "%I", "%K", "%I"));  // Filename, Size | Foldername, Size
-  SetSortMethod(g_stSettings.m_MyProgramsSortMethod);
+    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
+  AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%K", "%J", "%L", "%J"));  // Titel, Date | Foldername, Date
+  AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 565, LABEL_MASKS("%K", "%C", "%L", ""));  // Titel, Count | Foldername, empty
+  AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%K", "%I", "%K", "%I"));  // Filename, Size | Foldername, Size
 
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-  if (g_guiSettings.GetBool("programfiles.useautoswitching"))
-  {
-    SetViewAsControl(CAutoSwitch::GetView(items));
-  }
-  else
-  {
-    SetViewAsControl(g_stSettings.m_MyProgramsViewMethod);
-  }
+  SetSortMethod((SORT_METHOD)g_guiSettings.GetInt("programfiles.sortmethod"));
+  SetViewAsControl(g_guiSettings.GetInt("programfiles.viewmode"));
+  SetSortOrder((SORT_ORDER)g_guiSettings.GetInt("programfiles.sortorder"));
 
-  SetSortOrder(g_stSettings.m_MyProgramsSortOrder);
+  LoadViewState(items.m_strPath, WINDOW_PROGRAMS);
 }
 
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
-  g_stSettings.m_MyProgramsSortMethod=GetSortMethod();
-  g_stSettings.m_MyProgramsViewMethod=GetViewAsControl();
-  g_stSettings.m_MyProgramsSortOrder=GetSortOrder();
-  g_settings.Save();
+  SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAMS);
 }
 
 CStdString CGUIViewStateWindowPrograms::GetLockType()
@@ -128,25 +113,20 @@ VECSHARES& CGUIViewStateWindowPrograms::GetShares()
 
 CGUIViewStateWindowScripts::CGUIViewStateWindowScripts(const CFileItemList& items) : CGUIViewState(items)
 {
-  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
-  AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
-  AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
-  SetSortMethod(g_stSettings.m_ScriptsSortMethod);
+  AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+  AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
+  AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
+  SetSortMethod(SORT_METHOD_LABEL);
 
-  AddViewAsControl(VIEW_METHOD_LIST, 101);
-  AddViewAsControl(VIEW_METHOD_ICONS, 100);
-  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-  SetViewAsControl(g_stSettings.m_ScriptsViewMethod);
+  SetViewAsControl(DEFAULT_VIEW_LIST);
 
-  SetSortOrder(g_stSettings.m_ScriptsSortOrder);
+  SetSortOrder(SORT_ORDER_ASC);
+  LoadViewState(items.m_strPath, WINDOW_SCRIPTS);
 }
 
 void CGUIViewStateWindowScripts::SaveViewState()
 {
-  g_stSettings.m_ScriptsSortMethod=GetSortMethod();
-  g_stSettings.m_ScriptsViewMethod=GetViewAsControl();
-  g_stSettings.m_ScriptsSortOrder=GetSortOrder();
-  g_settings.Save();
+  SaveViewToDb(m_items.m_strPath, WINDOW_SCRIPTS);
 }
 
 CStdString CGUIViewStateWindowScripts::GetExtensions()
@@ -171,7 +151,7 @@ VECSHARES& CGUIViewStateWindowScripts::GetShares()
     }
     share.strName = "Shared Scripts";
   }
-  else 
+  else
     share.strName = "Scripts";
 
   share.strPath = "Q:\\scripts";
@@ -181,3 +161,37 @@ VECSHARES& CGUIViewStateWindowScripts::GetShares()
   return CGUIViewState::GetShares();
 }
 
+
+CGUIViewStateWindowGameSaves::CGUIViewStateWindowGameSaves(const CFileItemList& items) : CGUIViewState(items)
+{
+  //
+  ///////////////////////////////
+  /// NOTE:  GAME ID is saved to %T  (aka TITLE) and t         // Date is %J     %L is Label1
+  /////////////
+  AddSortMethod(SORT_METHOD_LABEL, 551,  LABEL_MASKS("%L", "%T", "%L", ""));  // Filename, Size | Foldername, empty
+  AddSortMethod(SORT_METHOD_TITLE, 560, LABEL_MASKS("%L", "%T", "%L", "%T"));  // Filename, TITLE | Foldername, TITLE
+  AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
+  SetSortMethod(SORT_METHOD_LABEL);
+
+  SetViewAsControl(DEFAULT_VIEW_LIST);
+
+  SetSortOrder(SORT_ORDER_ASC);
+  LoadViewState(items.m_strPath, WINDOW_GAMESAVES);
+}
+
+void CGUIViewStateWindowGameSaves::SaveViewState()
+{
+  SaveViewToDb(m_items.m_strPath, WINDOW_GAMESAVES);
+}
+
+
+VECSHARES& CGUIViewStateWindowGameSaves::GetShares()
+{
+  m_shares.clear();
+  CShare share;
+  share.strName = "Local GameSaves";
+  share.strPath = "E:\\udata";
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  m_shares.push_back(share);
+  return CGUIViewState::GetShares();
+}

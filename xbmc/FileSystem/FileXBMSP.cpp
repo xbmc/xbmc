@@ -23,6 +23,11 @@
 #include "../util.h"
 #include <sys/stat.h>
 
+using namespace DIRECTORY;
+
+namespace XFILE
+{
+
 static UINT64 strtouint64(const char *s)
 {
   UINT64 r = 0;
@@ -263,7 +268,7 @@ unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
     CLog::Log(LOGERROR, "xbms:cc_xstream_client_file_read reported error on read");
     if(buf) 
       free(buf);
-    return -1;
+    return 0;
   }
   memcpy(lpBuf, buf, buflen);
   m_filePos += buflen;
@@ -382,3 +387,4 @@ __int64 CFileXBMSP::GetPosition()
   return m_filePos;
 }
 
+}

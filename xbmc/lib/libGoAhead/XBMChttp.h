@@ -47,6 +47,8 @@ public:
   int xbmcPlayerPlayFile(int numParas, CStdString paras[]); 
   int xbmcClearPlayList(int numParas, CStdString paras[]); 
   int xbmcGetCurrentlyPlaying(); 
+  int xbmcGetXBEID(int numParas, CStdString paras[]); 
+  int xbmcGetXBETitle(int numParas, CStdString paras[]); 
   int xbmcGetShares(int numParas, CStdString paras[]);
   int xbmcGetMediaLocation(int numParas, CStdString paras[]);
   int xbmcGetDirectory(int numParas, CStdString paras[]);
@@ -103,6 +105,9 @@ public:
   int xbmcBroadcast(int numParas, CStdString paras[]);
   bool xbmcBroadcast(CStdString message, int level=0);
   int xbmcSetBroadcast(int numParas, CStdString paras[]);
+  int xbmcGetBroadcast();
+
+  int xbmcGetSkinSetting(int numParas, CStdString paras[]);
   CKey GetKey();
   void ResetKey();
 

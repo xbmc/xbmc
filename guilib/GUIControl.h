@@ -115,8 +115,7 @@ public:
   virtual bool IsDisabled() const;
   bool HasRendered() const { return m_hasRendered; };
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColourDiffuse(D3DCOLOR colour);
-  virtual DWORD GetColourDiffuse() const { return m_colDiffuse;};
+  virtual void SetColorDiffuse(D3DCOLOR color);
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
@@ -191,9 +190,12 @@ public:
     GUICONTROL_GROUPLIST,
     GUICONTROL_SCROLLBAR,
     GUICONTAINER_LIST,
-    GUICONTAINER_WRAPPINGLIST,
+    GUICONTAINER_FIXEDLIST,
+    GUICONTAINER_PANEL
   };
   GUICONTROLTYPES GetControlType() const { return ControlType; }
+
+  enum GUIVISIBLE { HIDDEN = 0, DELAYED, VISIBLE };
 
 protected:
   virtual void Animate(DWORD currentTime);
@@ -207,7 +209,7 @@ protected:
   float m_posY;
   float m_height;
   float m_width;
-  D3DCOLOR m_colDiffuse;
+  D3DCOLOR m_diffuseColor;
   DWORD m_dwControlID;
   DWORD m_dwParentID;
   bool m_bHasFocus;
@@ -221,7 +223,7 @@ protected:
 
   // visibility condition/state
   int m_visibleCondition;
-  bool m_visible;
+  GUIVISIBLE m_visible;
   bool m_visibleFromSkinCondition;
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   bool m_allowHiddenFocus;

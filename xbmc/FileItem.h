@@ -55,6 +55,7 @@ class CFileItem :
 public:
   CFileItem(void);
   CFileItem(const CFileItem& item);
+  CFileItem(const CGUIListItem& item);
   CFileItem(const CStdString& strLabel);
   CFileItem(const CStdString& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
@@ -67,6 +68,7 @@ public:
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Serialize(CArchive& ar);
+  virtual bool IsFileItem() const { return true; };
 
   bool IsVideo() const;
   bool IsPicture() const;
@@ -109,6 +111,8 @@ public:
   bool IsFileFolder() const;
   bool IsMemoryUnit() const;
   bool IsRemovable() const;
+  bool IsTuxBox() const;
+
 
   void RemoveExtension();
   void CleanFileName();
@@ -127,6 +131,7 @@ public:
   CStdString GetCachedPictureThumb();
   CStdString GetCachedArtistThumb();
   CStdString GetCachedProgramThumb();
+  CStdString GetCachedGameSaveThumb();
   CStdString GetCachedProfileThumb();
 
   // Sets the video thumb (cached first, else caches user thumb)
@@ -137,6 +142,7 @@ public:
   void SetCachedPictureThumb();
   void SetCachedArtistThumb();
   void SetCachedProgramThumb();
+  void SetCachedGameSavesThumb();
   void SetCachedMusicThumb();
 
   // Gets the user thumb, if it exists
@@ -156,6 +162,7 @@ public:
   /* sets the contenttype if known beforehand */
   void              SetContentType(const CStdString& content) { m_contenttype = content; } ;  
 
+  bool IsSamePath(const CFileItem *item);
 private:
   CStdString ParseFormat(const CStdString& strMask);
 
@@ -274,8 +281,10 @@ public:
 
   void SetCachedVideoThumbs();
   void SetCachedProgramThumbs();
+  void SetCachedGameSavesThumbs();
   void SetCachedMusicThumbs();
   void SetProgramThumbs();
+  void SetGameSavesThumbs();
 
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
