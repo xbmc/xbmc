@@ -305,7 +305,19 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
   database.GetScraperForPath(strDirectory,scraper.strPath,scraper.strContent);
   bool bResult = Show(scraper,bRunScan,bScanRecursive,bUseDirNames);
   if (bResult)
+  {
+    bool bName;
+    int iBookmark = CUtil::GetMatchingShare(strDirectory,g_settings.m_vecMyVideoShares,bName);
+    if (iBookmark > -1)
+    {
+      if (g_settings.m_vecMyVideoShares[iBookmark].vecPaths.size() > 1 && bName)
+      {
+        for (unsigned int i=0;i<g_settings.m_vecMyVideoShares[iBookmark].vecPaths.size();++i)
+          database.SetScraperForPath(g_settings.m_vecMyVideoShares[iBookmark].vecPaths[i],scraper.strPath,scraper.strContent);
+      }
+    }
     database.SetScraperForPath(strDirectory,scraper.strPath,scraper.strContent);
+  }
 
   return bResult;
 }
