@@ -96,7 +96,7 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
 //        }
 
 
-        NPT_Flags     flags = NPT_NETWORK_INTERFACE_FLAG_BROADCAST;
+        NPT_Flags     flags = NPT_NETWORK_INTERFACE_FLAG_BROADCAST | NPT_NETWORK_INTERFACE_FLAG_MULTICAST;
 
         NPT_MacAddress mac;
         if (state & XNET_GET_XNADDR_ETHERNET) {
