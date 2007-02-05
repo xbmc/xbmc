@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 02/04/2007-->
+<!--Date of translation: 02/05/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7738-->
+<!--Based on english strings version 7788-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -49,8 +49,6 @@
   <string id="110">Abbild wird erstellt</string>
   <string id="111">Verknüpfungen</string>
   <string id="112">PAUSE</string>
-  <string id="113">Dateien: Quelle</string>
-  <string id="114">Dateien: Ziel</string>
   <string id="115">Kopieren</string>
   <string id="116">Verschieben</string>
   <string id="117">Löschen</string>
@@ -338,10 +336,6 @@
   <string id="415">Lade Abbild...</string>
   <string id="416">Nicht verfügbar</string>
   <string id="417">Große Symbole</string>
-  <string id="418">Videos/Genre</string>
-  <string id="419">Videos/Darsteller</string>
-  <string id="420">Videos/Jahr</string>
-  <string id="421">Videos/Titel</string>
   <string id="422">Album-Informationen löschen...</string>
   <string id="423">CDDB-Informationen löschen...</string>
   <string id="424">Auswählen</string>
@@ -440,7 +434,7 @@
   <string id="524">Playlist wählen</string>
   <string id="525">Neue Playlist</string>
   <string id="526">Zur Playlist hinzufügen</string>
-  <string id="527">Manuell zur Datenbank hinzufügen</string>
+  <string id="527">Zur Datenbank hinzufügen</string>
   <string id="528">Titel eingeben</string>
   <string id="529">Fehler: Titel doppelt</string>
   <string id="530">Genre wählen</string>
@@ -669,7 +663,6 @@
   <string id="1250">XBOX erkennen</string>
   <string id="1251">Andere Konsolen im Netzwerk erkennen</string>
   <string id="1252">Name der eigenen XBOX</string>
-  <string id="1253">Automatisch eine FTP-Freigabe im Dateimanager erstellen</string>
   <string id="1254">Nachfragen ob eine Verbindung aufgebaut werden soll</string>
   <string id="1255">FTP-Benutzername und Passwort senden</string>
   <string id="1256">Ping-Intervall</string>
@@ -697,7 +690,7 @@
   <string id="10000">Hauptmenü</string>
   <string id="10001">Programme</string>
   <string id="10002">Bilder</string>
-  <string id="10003">Dateien</string>
+  <string id="10003">Dateimanager</string>
   <string id="10004">Einstellungen</string>
   <string id="10005">Musik</string>
   <string id="10006">Videos</string>
@@ -715,37 +708,24 @@
   <string id="10018">Einstellungen-&gt;Netzwerk</string>
   <string id="10019">Einstellungen-&gt;Darstellung</string>
   <string id="10020">Skripte</string>
-  <string id="10021">Videos/Genre</string>
-  <string id="10022">Videos/Darsteller</string>
-  <string id="10023">Videos/Jahr</string>
-  <string id="10025">Videos/Titel</string>
   <string id="10028">Videos/Playlisten</string>
   <string id="10034">Einstellungen-&gt;Profile</string>
   <string id="10100">JA/NEIN-Dialog</string>
   <string id="10101">Fortschrittsdialog</string>
-  <string id="10500">Musik/Playlist</string>
+  <string id="10500">Musik/Playlisten</string>
   <string id="10501">Musik/Dateien</string>
   <string id="10502">Musik/Datenbank</string>
-  <string id="10503">Musik/Top100</string>
   <string id="10504">Top 100 Titel</string>
   <string id="10505">Top 100 Alben</string>
-  <string id="10506">Anwendungen</string>
+  <string id="10506">Programme</string>
   <string id="10507">Einstellungen</string>
   <string id="10508">Wetterbericht</string>
   <string id="10509">Netzwerk-Spiele</string>
   <string id="10510">Erweiterungen</string>
   <string id="10511">System-Informationen</string>
-  <string id="10512">Musik - Alben</string>
-  <string id="10513">Musik - Künstler</string>
-  <string id="10514">Musik - Genre</string>
-  <string id="10515">Musik - Top 100</string>
   <string id="10516">Musik - Datenbank</string>
-  <string id="10517">Musik - Playlisten</string>
-  <string id="10518">Videos - Darsteller</string>
-  <string id="10519">Videos - Genre</string>
-  <string id="10520">Videos - Titel</string>
-  <string id="10521">Videos - Jahr</string>
-  <string id="10522">Videos - Playlisten</string>
+  <string id="10517">Musik - Playlist</string>
+  <string id="10522">Videos - Playlist</string>
   <string id="10523">Album-Informationen</string>
   <string id="10524">Film-Informationen</string>
   <string id="12000">Auswahl-Dialog</string>
@@ -755,7 +735,6 @@
   <string id="12004">Skripte/Informationen</string>
   <string id="12005">Vollbild-Video</string>
   <string id="12006">Audio-Visualisierung</string>
-  <string id="12007">Bilder/Diaschau</string>
   <string id="12008">Datei-Stapeln-Dialog</string>
   <string id="12009">Index neu erstellen...</string>
   <string id="12010">Zurück zu Musik</string>
@@ -1271,7 +1250,7 @@
   <string id="20016">Aktuelles Cover</string>
   <string id="20017">Lokales Cover</string>
   <string id="20018">Kein Cover</string>
-  <string id="20019">Thumbnail wählen</string>
+  <string id="20019">Thumbnail</string>
   <string id="20020">Trainer können nicht zusammen mit XLink verwendet werden!</string>
   <string id="20021">Wählen Sie bitte was Sie verwenden möchten.</string>
   <string id="20022"></string>
@@ -1473,7 +1452,7 @@
   <string id="20330">Ordnernamen für Anfragen verwenden</string>
   <string id="20331">Dateinamen</string>
   <string id="20332">Möchten Sie Datei- oder Ordnernamen für Anfragen verwenden?</string>
-  <string id="20333">Inhalt definieren</string>
+  <string id="20333">Inhalt festlegen</string>
   <string id="20334">Ordnernamen</string>
   <string id="20335">Möchten Sie im Ordner rekursiv nach Inhalten suchen?</string>
   <string id="20336">Quellen freigeben</string>
