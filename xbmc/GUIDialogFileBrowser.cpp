@@ -538,7 +538,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSHARE
     { // "Browse for thumb"
       m_gWindowManager.Remove(browser->GetID());
       delete browser;
-      return ShowAndGetImage(shares, heading, result);
+      return ShowAndGetImage(shares, g_localizeStrings.Get(21371), result);
     }
   }
 
