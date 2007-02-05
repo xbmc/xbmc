@@ -1872,12 +1872,18 @@ void CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
       strName += (char)(slt.language & 255);
     }
 
-    strStreamName.Format("%s - %s(%s)", strName.c_str(), dvd_audio_stream_types[slt.type], dvd_audio_stream_channels[slt.channels]);
+    strStreamName.Format("%s", strName.c_str());
   }
-  else
+
+  if(slt.type>=0)
   {
-    strStreamName = "";
+    if(!strStreamName.IsEmpty())
+      strStreamName += " - ";
+    strStreamName += dvd_audio_stream_types[slt.type];
   }
+
+  if(slt.channels>0)
+    strStreamName += CStdString("(") +  dvd_audio_stream_channels[slt.channels-1] + CStdString(")");
 }
 
 void CMPlayer::SetAudioStream(int iStream)
