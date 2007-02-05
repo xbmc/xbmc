@@ -556,7 +556,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   {
     m_dvd.iFlagSentStart |= DVDPLAYER_VIDEO;
     
-    if (m_CurrentAudio.id <= 0)
+    if (m_CurrentAudio.id < 0)
       m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralSetClock(pPacket->pts, pPacket->dts));
     else
       m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralResync(pPacket->pts, pPacket->dts));
@@ -875,13 +875,7 @@ void CDVDPlayer::HandleMessages()
 
 void CDVDPlayer::SetPlaySpeed(int speed)
 {
-  m_playSpeed = speed;
-
-  // the clock needs to be paused or unpaused by seperate calls
-  // audio and video part do not
-  if (speed == DVD_PLAYSPEED_NORMAL) m_clock.Resume();
-  else if (speed == DVD_PLAYSPEED_PAUSE) m_clock.Pause();
-  else m_clock.SetSpeed(speed); // XXX
+  m_playSpeed = speed;  
 
   // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
   // audioplayer, stops outputing audio to audiorendere, but still tries to
@@ -889,6 +883,7 @@ void CDVDPlayer::SetPlaySpeed(int speed)
   // videoplayer just plays faster after the clock speed has been increased
   // 1. disable audio
   // 2. skip frames and adjust their pts or the clock
+  m_clock.SetSpeed(speed); 
   m_dvdPlayerAudio.SetSpeed(speed);
   m_dvdPlayerVideo.SetSpeed(speed);
 }
@@ -1250,6 +1245,8 @@ void CDVDPlayer::SetAudioStream(int iStream)
 
 void CDVDPlayer::SeekTime(__int64 iTime)
 {
+  if(iTime<0) 
+    iTime = 0;
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime));
 }
 
@@ -1546,9 +1543,6 @@ void CDVDPlayer::FlushBuffers()
   m_overlayContainer.Clear();
 
   m_dvd.iFlagSentStart = 0; //We will have a discontinuity here
-
-  //m_bReadAgain = true; // XXX
-  // this makes sure a new packet is read
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is

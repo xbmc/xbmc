@@ -26,8 +26,6 @@ public:
   ~CDVDClock();
 
   __int64 GetClock();
-  __int64 GetAbsoluteClock();
-  __int64 GetFrequency() { return (__int64)m_systemFrequency.QuadPart ; }
 
   /* delay should say how long in the future we expect to display this frame */
   void Discontinuity(ClockDiscontinuityType type, __int64 currentPts = 0LL, __int64 delay = 0LL);
@@ -38,14 +36,16 @@ public:
   void Pause();
   void Resume();
   void SetSpeed(int iSpeed);
+
+  static __int64 GetAbsoluteClock();
+  static __int64 GetFrequency() { return (__int64)m_systemFrequency.QuadPart ; }
 protected:
   CSharedSection m_critSection;
-  LARGE_INTEGER m_systemUsed;
-  LARGE_INTEGER m_systemFrequency;
+  LARGE_INTEGER m_systemUsed;  
   LARGE_INTEGER m_startClock;
   LARGE_INTEGER m_pauseClock;
   __int64 m_iDisc;
   bool m_bReset;
-
-  __int64 m_lastPts;
+  
+  static LARGE_INTEGER m_systemFrequency;
 };
