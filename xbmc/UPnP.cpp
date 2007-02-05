@@ -42,7 +42,7 @@ CUPnP* CUPnP::upnp = NULL;
 // change to false for XBMC_PC if you want real UPnP functionality
 // otherwise keep to true for xbmc as it doesn't support multicast
 // don't change unless you know what you're doing!
-bool CUPnP::broadcast = true; 
+bool CUPnP::broadcast = false; 
 
 #ifdef HAS_XBOX_NETWORK
 #include <xtl.h>

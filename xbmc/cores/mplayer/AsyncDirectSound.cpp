@@ -185,7 +185,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   {
     if (strstr(strAudioCodec, "AAC"))
       g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_AAC, iChannels);
-    else if (strstr(strAudioCodec, "DMO"))
+    else if (strstr(strAudioCodec, "DMO") || strstr(strAudioCodec, "FLAC"))
       g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_DMO, iChannels);
     else if (strstr(strAudioCodec, "OggVorbis"))
       g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_OGG, iChannels);
