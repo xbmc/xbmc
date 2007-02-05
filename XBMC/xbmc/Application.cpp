@@ -3531,6 +3531,13 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if(bResult)
   {
+    if (m_iPlaySpeed != 1)
+    {
+      int iSpeed = m_iPlaySpeed;
+      m_iPlaySpeed = 1;
+      SetPlaySpeed(iSpeed);
+    }
+
 #ifdef HAS_VIDEO_PLAYBACK
     if( IsPlayingVideo() )
     {
