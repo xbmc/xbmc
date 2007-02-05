@@ -361,15 +361,16 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
             pBuffer->color_matrix = m_pInfo->sequence->matrix_coefficients;
             pBuffer->color_range = 0; // mpeg2 always have th 16->235/229 color range
         
-            m_pCurrentBuffer = pBuffer;
-
-            return VC_PICTURE;
+            // only return this if it's not first image or an I frame
+            if(m_pCurrentBuffer || pBuffer->iFrameType == FRAME_TYPE_I || pBuffer->iFrameType == FRAME_TYPE_UNDEF )              
+            {
+              m_pCurrentBuffer = pBuffer;
+              return VC_PICTURE;
+            }
           }
           else
             CLog::Log(LOGWARNING, "CDVDVideoCodecLibMpeg2::Decode - libmpeg2 trying to display it's own buffer, skipping...");
         }
-        else
-
         break;
       }
     case STATE_INVALID:
