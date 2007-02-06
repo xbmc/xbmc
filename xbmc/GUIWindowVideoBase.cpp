@@ -848,16 +848,13 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
         {
           if (iFound > 0 || m_database.HasMovieInfo(m_vecItems[iItem]->m_strPath))
             btn_Show_Info = pMenu->AddButton(13346);
-          else
+          m_database.Open();
+          if (!bIsGotoParent)
           {
-            m_database.Open();
-            if (!bIsGotoParent)
-            {
-              if (m_database.GetMovieInfo(m_vecItems[iItem]->m_strPath)<0)
-                btn_AddToDatabase = pMenu->AddButton(527); // Add to Database
-            }
-            m_database.Close();
+            if (m_database.GetMovieInfo(m_vecItems[iItem]->m_strPath)<0)
+              btn_AddToDatabase = pMenu->AddButton(527); // Add to Database
           }
+          m_database.Close();
         }
       }
     }
