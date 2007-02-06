@@ -2,8 +2,8 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 02/05/2007-->
-<!--$Revision$-->
+<!--Date of translation: 02/06/2007-->
+<!--$Revision:$-->
 <!--Based on english strings version 7788-->
 <strings>
   <string id="0">Programme</string>
@@ -1250,7 +1250,7 @@
   <string id="20016">Aktuelles Cover</string>
   <string id="20017">Lokales Cover</string>
   <string id="20018">Kein Cover</string>
-  <string id="20019">Thumbnail</string>
+  <string id="20019">Thumbnail wählen</string>
   <string id="20020">Trainer können nicht zusammen mit XLink verwendet werden!</string>
   <string id="20021">Wählen Sie bitte was Sie verwenden möchten.</string>
   <string id="20022"></string>
@@ -1492,5 +1492,6 @@
   <string id="21366">Alternatives Untertitel-Verzeichnis</string>
   <string id="21367">Video &amp; Alternatives Untertitel-Verzeichnis</string>
   <string id="21370">Navigations-Sounds während Medien-Wiedergabe aktivieren</string>
+  <string id="21371">Thumbnail</string>
   <string id="29999">Automatische Videofilter Korrektur</string>
 </strings>
