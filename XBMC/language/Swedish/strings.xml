@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 02/05/2007-->
+<!--Date of translation: 02/06/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7788-->
+<!--Based on english strings version 7802-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1489,5 +1489,6 @@ den här visualiseringen</string>
   <string id="21366">Egen undertextsmapp</string>
   <string id="21367">Film &amp; alternativ undertextmapp</string>
   <string id="21370">Spela navigationsljud under mediauppspelning</string>
+  <string id="21371">Miniatyrbild</string>
   <string id="29999">Auto fladderfilter lagning</string>
 </strings>
