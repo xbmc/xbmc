@@ -2734,6 +2734,7 @@ void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
   }
   else
   {
+    CDirectory::Create(g_guiSettings.GetString("system.playlistspath"));
     CStdString strDir2;
     CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"music",strDir2);
     CDirectory::Create(strDir2);
