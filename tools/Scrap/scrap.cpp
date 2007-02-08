@@ -52,6 +52,4 @@ int _tmain(int argc, _TCHAR* argv[])
   //Let the parser do its job
   if(!scrap.Parse(argv[3])) return -1;
   return 0;
-
-} 
-
+}

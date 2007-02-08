@@ -117,16 +117,30 @@ int Scraper::CustomFunctions(const CStdString& strFilename)
   }
   return 0;
 }
-bool Scraper::PrepareBuffer(const CStdString& function)
+bool Scraper::PrepareParsing(const CStdString& function)
 {
   if(strcmp(function.c_str(),"CreateSearchUrl") == 0)
   {
     //modify content of buffer 1 
-    cout << PrepareSearchString(s_parser.m_param[0]) << endl;
+    cout << "Searching for: " << PrepareSearchString(s_parser.m_param[0]) << endl;
     SetBuffer(1,PrepareSearchString(s_parser.m_param[0]));
   }
   else if(strcmp(function.c_str(),"GetSearchResults") == 0)
   {
+    /*TiXmlDocument doc("url.xml");
+    doc.LoadFile();
+	  if (!doc.RootElement())
+    {
+      cout << "Error: Unable to parse url.xml" <<  endl;
+      return false;
+    }
+    TiXmlHandle docHandle( &doc );
+    TiXmlElement *link = docHandle.FirstChild("url").Element();
+    cout << "Downloading: " << link->FirstChild()->Value() <<  endl;
+    get_url("results.html", link->FirstChild()->Value() );*/
+    
+    cout << "Downloading: " << s_result.c_str()  <<  endl;
+    get_url("results.html", s_result.c_str() );
     SetBuffer(1,readFile("results.html"));
     SetBuffer(2,s_result.c_str());
   }
@@ -166,16 +180,15 @@ bool Scraper::PrepareBuffer(const CStdString& function)
 int Scraper::Parse(const CStdString& function)
 {
   CStdString strFilename;
-  if(!Load()) return -1;
-  PrepareBuffer(function);
+  if(!(Load() && PrepareParsing(function))) return -1;
+
   s_result = s_parser.Parse(function.c_str());
 
-  cout << function.c_str()  << " returned " << s_result.c_str() << endl;
+  cout << function.c_str()  << " returned : " << s_result.c_str() << endl;
   //what's the next step?
   if(strcmp(function.c_str(),"CreateSearchUrl") == 0)
   {
     WriteResult("url.xml");
-    get_url("results.html",s_result.c_str());
     Scraper::Parse("GetSearchResults");
   }
   else if(strcmp(function.c_str(),"GetSearchResults") == 0)
