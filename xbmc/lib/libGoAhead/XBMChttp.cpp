@@ -1882,6 +1882,9 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
 
 int CXbmcHttp::xbmcExit(int theAction)
 {
+  g_application.ResetScreenSaver();
+  g_application.ResetScreenSaverWindow();
+  Sleep(1000);
   switch(theAction)
   {
   case 1:
