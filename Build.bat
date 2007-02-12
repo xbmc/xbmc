@@ -1,7 +1,7 @@
 @ECHO OFF
 cls
 COLOR 1B
-
+f
 rem ----PURPOSE----
 rem - Create a working XBMC build with a single click
 rem ---------------------------------------------
