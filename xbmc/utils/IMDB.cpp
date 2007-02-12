@@ -303,35 +303,50 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   XMLUtils::GetString(movie, "imdbnumber", m_strIMDBNumber);
   XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
 
-  // Are these here for chaining purposes?  If so, why not allow multiple <genre> tags
-  // at the same time, and check for empty and assign "Not Available" at the display level
-  // rather than the db level?
   CStdString strTemp;
-  if (XMLUtils::GetString(movie, "genre", strTemp))
+  const TiXmlNode *node = movie->FirstChild("genre");
+  while (node)
   {
-    if (m_strGenre.IsEmpty())
-      m_strGenre = strTemp;
-    else
-      m_strGenre += " / "+strTemp;
+    if (node->FirstChild())
+    {
+      strTemp = node->FirstChild()->Value();
+      if (m_strGenre.IsEmpty())
+        m_strGenre = strTemp;
+      else
+        m_strGenre += " / "+strTemp;
+    }
+    node = node->NextSibling("genre");
   }
 
-  if (XMLUtils::GetString(movie, "credits", strTemp))
+  node = movie->FirstChild("credits");
+  while (node)
   {
-    if (m_strWritingCredits.IsEmpty())
-      m_strWritingCredits = strTemp;
-    else
-      m_strWritingCredits += " / "+strTemp;
+    if (node->FirstChild())
+    {
+      strTemp = node->FirstChild()->Value();
+      if (m_strWritingCredits.IsEmpty())
+        m_strWritingCredits = strTemp;
+      else
+        m_strWritingCredits += " / "+strTemp;
+    }
+    node = node->NextSibling("credits");
   }
   
-  if (XMLUtils::GetString(movie, "director", strTemp))
+  node = movie->FirstChild("director");
+  while (node)
   {
-    if (m_strDirector.IsEmpty())
-      m_strDirector = strTemp;
-    else
-      m_strDirector += " / "+strTemp;
+    if (node->FirstChild())
+    {
+      strTemp = node->FirstChild()->Value();
+      if (m_strDirector.IsEmpty())
+        m_strDirector = strTemp;
+      else
+        m_strDirector += " / "+strTemp;
+    }
+    node = node->NextSibling("director");
   }
   // cast
-  const TiXmlNode *node = movie->FirstChild("actor");
+  node = movie->FirstChild("actor");
   while (node)
   {
     const TiXmlNode *actor = node->FirstChild("name");
