@@ -240,6 +240,8 @@ bool CIMDBMovie::Save(TiXmlNode *node)
   if (!movie) return false;
 
   XMLUtils::SetString(movie, "title", m_strTitle);
+  if (!m_strOriginalTitle.IsEmpty())
+    XMLUtils::SetString(movie, "originaltitle", m_strOriginalTitle);
   XMLUtils::SetFloat(movie, "rating", m_fRating);
   XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
@@ -282,6 +284,7 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
 {
   if (!movie) return false;
   XMLUtils::GetString(movie, "title", m_strTitle);
+  XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
   XMLUtils::GetFloat(movie, "rating", m_fRating);
   XMLUtils::GetInt(movie, "year", m_iYear);
   XMLUtils::GetInt(movie, "top250", m_iTop250);
