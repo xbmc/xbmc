@@ -216,6 +216,7 @@ void CIMDBMovie::Reset()
   m_strPlot = "";
   m_strPictureURL = "";
   m_strTitle = "";
+  m_strOriginalTitle = "";
   m_strVotes = "";
   m_cast.clear();
   m_strSearchString = "";
