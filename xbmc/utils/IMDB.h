@@ -58,6 +58,7 @@ public:
   CStdString m_strIMDBNumber;
   CStdString m_strMPAARating;
   CStdString m_strFileNameAndPath;
+  CStdString m_strOriginalTitle;
   bool m_bWatched;
   int m_iTop250;
   int m_iYear;
