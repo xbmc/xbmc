@@ -49,7 +49,7 @@ public:
   virtual CStdString GetDescription() const;
   void SetAlpha(unsigned char alpha);
 
-  void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor, DWORD dwShadowColor);
+  void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor);
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
   void RAMSetTextColor(DWORD dwTextColor);
