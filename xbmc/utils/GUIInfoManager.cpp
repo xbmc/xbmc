@@ -262,6 +262,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("videoplayer.title")) ret = VIDEOPLAYER_TITLE;
     else if (strTest.Equals("videoplayer.genre")) ret = VIDEOPLAYER_GENRE;
+    else if (strTest.Equals("videoplayer.originaltitle")) ret = VIDEOPLAYER_ORIGINALTITLE;
     else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
     else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
     else if (strTest.Equals("videoplayer.time")) ret = VIDEOPLAYER_TIME;
@@ -487,6 +488,7 @@ string CGUIInfoManager::GetLabel(int info)
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
+  case VIDEOPLAYER_ORIGINALTITLE:
   case VIDEOPLAYER_GENRE:
   case VIDEOPLAYER_DIRECTOR:
   case VIDEOPLAYER_YEAR:
@@ -1376,6 +1378,9 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return m_currentMovieDuration;
   case VIDEOPLAYER_TITLE:
     return m_currentMovie.m_strTitle;
+    break;
+  case VIDEOPLAYER_ORIGINALTITLE:
+    return m_currentMovie.m_strOriginalTitle;
     break;
   case VIDEOPLAYER_GENRE:
     return m_currentMovie.m_strGenre;
