@@ -151,7 +151,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails, co
     // ok, now parse the xml file
   TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
-  doc.Parse(strXML.c_str());
+  doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())
   {
     CLog::Log(LOGERROR, "IMDB: Unable to parse xml");
@@ -188,11 +188,6 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
   }
 
   movieDetails.Load(details);
-
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTitle);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlotOutline);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlot);
-  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strMPAARating);
   
   CHTMLUtil::RemoveTags(movieDetails.m_strPlot);
 
@@ -449,7 +444,7 @@ void CIMDB::Process()
 bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUIDialogProgress *pProgress /* = NULL */)
 {
   //CLog::Log(LOGDEBUG,"CIMDB::FindMovie(%s)", strMovie.c_str());
-  m_strMovie = strMovie;
+  g_charsetConverter.utf8ToStringCharset(strMovie,m_strMovie); // make sure searches is done using string chars
   if (pProgress)
   { // threaded version
     m_state = FIND_MOVIE;
