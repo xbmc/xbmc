@@ -120,6 +120,7 @@ namespace PYXBMC
     DWORD dwAlign;
     int iAngle;
 		DWORD dwShadowColor;
+		DWORD dwFocusedColor;
   } ControlButton;
 
 	typedef struct {
