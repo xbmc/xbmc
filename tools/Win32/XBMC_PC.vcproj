@@ -1466,6 +1466,12 @@
 					RelativePath="..\..\xbmc\FileSystem\DirectoryHistory.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMovies.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMovies.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\DirectoryTuxBox.cpp">
 				</File>
 				<File
@@ -1867,6 +1873,12 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTitle.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTvShows.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeTvShows.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeYear.cpp">
