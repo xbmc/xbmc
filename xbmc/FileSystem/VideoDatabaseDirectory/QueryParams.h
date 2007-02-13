@@ -9,6 +9,7 @@ namespace DIRECTORY
     {
     public:
       CQueryParams();
+      long GetContentType() { return m_idContent; }
       long GetMovieId() { return m_idMovie; }
       long GetYear() { return m_idYear; }
       long GetGenreId() { return m_idGenre; }
@@ -20,6 +21,7 @@ namespace DIRECTORY
 
       friend CDirectoryNode;
     private:
+      long m_idContent;
       long m_idMovie;
       long m_idGenre;
       long m_idYear;

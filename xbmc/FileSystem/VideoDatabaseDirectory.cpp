@@ -119,6 +119,9 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   {
     switch (pNode->GetChildType())
     {
+    case NODE_TYPE_MOVIES:
+    case NODE_TYPE_TVSHOWS:
+    
     case NODE_TYPE_GENRE:
       strLabel = g_localizeStrings.Get(135); // Genres
       break;

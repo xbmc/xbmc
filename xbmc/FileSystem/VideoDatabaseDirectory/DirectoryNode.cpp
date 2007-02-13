@@ -9,6 +9,8 @@
 #include "DirectoryNodeYear.h"
 #include "DirectoryNodeActor.h"
 #include "DirectoryNodeDirector.h"
+#include "DirectoryNodeMovies.h"
+#include "DirectoryNodeTvShows.H"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
@@ -84,6 +86,10 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeDirector(strName, pParent);
   case NODE_TYPE_TITLE:
     return new CDirectoryNodeTitle(strName, pParent);
+  case NODE_TYPE_MOVIES:
+    return new CDirectoryNodeMovies(strName, pParent);
+  case NODE_TYPE_TVSHOWS:
+    return new CDirectoryNodeTvShows(strName, pParent);
   }
 
   return NULL;

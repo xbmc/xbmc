@@ -141,10 +141,10 @@ public:
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent);
 
-  bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
+  bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
+  bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idContent=-1);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetGenreById(long lIdGenre, CStdString& strGenre);
   int GetMovieCount();

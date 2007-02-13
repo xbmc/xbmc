@@ -10,6 +10,7 @@ CQueryParams::CQueryParams()
   m_idYear = -1;
   m_idActor = -1;
   m_idDirector = -1;
+  m_idContent = -1;
 }
 
 void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName)
@@ -18,6 +19,10 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
 
   switch (NodeType)
   {
+  case NODE_TYPE_OVERVIEW:
+    if (idDb < 3)
+      m_idContent = idDb;
+    break;
   case NODE_TYPE_GENRE:
     m_idGenre = idDb;
     break;

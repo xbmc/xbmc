@@ -224,7 +224,7 @@ void CGUIWindowVideoNav::UpdateButtons()
     CStdString strDummy;
     CUtil::Split(m_vecItems.m_strPath, strDummy, strLabel);
   }
-  // everything else is from a musicdb:// path
+  // everything else is from a videodb:// path
   else
   {
     CVideoDatabaseDirectory dir;

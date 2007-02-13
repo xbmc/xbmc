@@ -104,6 +104,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
     NODE_TYPE ParentNodeType=dir.GetDirectoryType(items.m_strPath);
     switch (NodeType)
     {
+    case NODE_TYPE_MOVIES:
+    case NODE_TYPE_TVSHOWS:
     case NODE_TYPE_OVERVIEW:
       {
         AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty

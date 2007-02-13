@@ -1,22 +1,22 @@
 #include "../../stdafx.h"
-#include "DirectoryNodeOverview.h"
+#include "DirectoryNodeMovies.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_OVERVIEW, strName, pParent)
+CDirectoryNodeMovies::CDirectoryNodeMovies(const CStdString& strName, CDirectoryNode* pParent)
+  : CDirectoryNode(NODE_TYPE_MOVIES, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeOverview::GetChildType()
+NODE_TYPE CDirectoryNodeMovies::GetChildType()
 {
   if (GetName()=="1")
-    return NODE_TYPE_MOVIES;
-  else if (GetName()=="2")
-    return NODE_TYPE_TVSHOWS;
-  else if (GetName()=="3")
     return NODE_TYPE_GENRE;
+  else if (GetName()=="2")
+    return NODE_TYPE_TITLE;
+  else if (GetName()=="3")
+    return NODE_TYPE_YEAR;
   else if (GetName()=="4")
     return NODE_TYPE_ACTOR;
   else if (GetName()=="5")
@@ -25,14 +25,12 @@ NODE_TYPE CDirectoryNodeOverview::GetChildType()
   return NODE_TYPE_NONE;
 }
 
-bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
+bool CDirectoryNodeMovies::GetContent(CFileItemList& items)
 {
   CStdStringArray vecRoot;
-  vecRoot.push_back(g_localizeStrings.Get(342));   // Movies
-  vecRoot.push_back(g_localizeStrings.Get(20343)); // TV Shows
   vecRoot.push_back(g_localizeStrings.Get(135));  // Genres
-//  vecRoot.push_back(g_localizeStrings.Get(369));  // Title
-//  vecRoot.push_back(g_localizeStrings.Get(345));  // Year
+  vecRoot.push_back(g_localizeStrings.Get(369));  // Title
+  vecRoot.push_back(g_localizeStrings.Get(345));  // Year
   vecRoot.push_back(g_localizeStrings.Get(344));  // Actors
   vecRoot.push_back(g_localizeStrings.Get(20348));  // Directors
 

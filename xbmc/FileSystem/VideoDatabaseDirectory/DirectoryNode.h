@@ -9,13 +9,16 @@ namespace DIRECTORY
     typedef enum _NODE_TYPE
     {
       NODE_TYPE_NONE=0,
+      NODE_TYPE_MOVIES,
+      NODE_TYPE_TVSHOWS,
+      NODE_TYPE_GENRE,
+      NODE_TYPE_ACTOR,
       NODE_TYPE_ROOT,
       NODE_TYPE_OVERVIEW,
-      NODE_TYPE_GENRE,
       NODE_TYPE_TITLE,
       NODE_TYPE_YEAR,
-      NODE_TYPE_ACTOR,
       NODE_TYPE_DIRECTOR,
+      NODE_TYPE_SEASONS,
     } NODE_TYPE;
 
     class CDirectoryNode
@@ -56,4 +59,3 @@ namespace DIRECTORY
     };
   };
 };
-
