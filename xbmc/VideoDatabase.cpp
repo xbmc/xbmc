@@ -1512,7 +1512,35 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     // get primary genres for movies
     CStdString strSQL;
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinkmovie,movie,path,files where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and files.idMovie=movie.idMovie and path.idPath = files.idPath");
+    {
+      if (idContent == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_MOVIES)
+      {
+        strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinkmovie,movie,path,files where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and files.idMovie=movie.idMovie and path.idPath = files.idPath");
+        if (g_stSettings.m_iMyVideoWatchMode == 1)
+          strSQL += FormatSQL(" and movie.c%02d='false'", VIDEODB_ID_WATCHED);
+
+        if (g_stSettings.m_iMyVideoWatchMode == 2)
+          strSQL += FormatSQL(" and movie.c%02d='true'", VIDEODB_ID_WATCHED);
+      }
+      else if (idContent == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_TVSHOWS)
+      {
+        strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinktvshow,tvshow,showlinkepisode,files,path where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow and files.idEpisode=showlinkepisode.idEpisode and showlinkepisode.idShow=tvshow.idShow and path.idPath = files.idPath");
+        if (g_stSettings.m_iMyVideoWatchMode == 1)
+          strSQL += FormatSQL(" and tvshow.c%02d='false'", VIDEODB_ID_WATCHED);
+
+        if (g_stSettings.m_iMyVideoWatchMode == 2)
+          strSQL += FormatSQL(" and tvshow.c%02d='true'", VIDEODB_ID_WATCHED);
+      }
+      else
+      {
+        if (g_stSettings.m_iMyVideoWatchMode == 1)
+          strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinkmovie,movie,files,path where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and movie.c10='false' and files.idMovie=movie.idMovie and path.idPath = files.idPath union select genre.idGenre, genre.strGenre,path.strPath from genre, genrelinktvshow,showlinkepisode,tvshow,files,path where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow and tvshow.c10='false' and files.idEpisode=showlinkepisode.idEpisode and showlinkepisode.idShow=tvshow.idShow and path.idPath = files.idPath");
+        else if (g_stSettings.m_iMyVideoWatchMode == 2)
+          strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinkmovie,movie,files,path where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and movie.c10='true' and files.idMovie=movie.idMovie and path.idPath = files.idPath union select genre.idGenre, genre.strGenre,path.strPath from genre, genrelinktvshow,showlinkepisode,tvshow,files,path where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow and tvshow.c10='true' and files.idEpisode=showlinkepisode.idEpisode and showlinkepisode.idShow=tvshow.idShow and path.idPath = files.idPath");
+        else
+          strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinkmovie,movie,files,path where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and files.idMovie=movie.idMovie and path.idPath = files.idPath union select genre.idGenre, genre.strGenre,path.strPath from genre, genrelinktvshow,showlinkepisode,tvshow,files,path where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow and files.idEpisode=showlinkepisode.idEpisode and showlinkepisode.idShow=tvshow.idShow and path.idPath = files.idPath");
+      }
+    }
     else
     {
       if (idContent == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_MOVIES)
@@ -1536,12 +1564,11 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       else
       {
         if (g_stSettings.m_iMyVideoWatchMode == 1)
-          //strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinktvshow,genrelinkmovie,movie,tvshow where (genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow and tvshow.c%02d='false') or (genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and movie.c%02d='false')",VIDEODB_ID_WATCHED,VIDEODB_ID_WATCHED);
-          strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinkmovie,movie where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and movie.c%02d='false'",VIDEODB_ID_WATCHED);
+          strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinkmovie,movie where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and movie.c10='false' union select genre.idGenre, genre.strGenre from genre, genrelinktvshow,tvshow where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow and tvshow.c10='false'");
         else if (g_stSettings.m_iMyVideoWatchMode == 2)
-          strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinktvshow,genrelinkmovie,movie,tvshow where (genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow and tvshow.c%02d='true') or (genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and movie.c%02d='true')",VIDEODB_ID_WATCHED,VIDEODB_ID_WATCHED);
+          strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinkmovie,movie where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie and movie.c10='true' union select genre.idGenre, genre.strGenre from genre, genrelinktvshow,tvshow where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow and tvshow.c10='true'");
         else
-          strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinktvshow,genrelinkmovie,movie,tvshow where (genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow) or (genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie)");
+          strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinkmovie,movie where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie union select genre.idGenre, genre.strGenre from genre, genrelinktvshow,tvshow where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow");
       }
     }
 
@@ -1824,29 +1851,69 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
   return false;
 }
 
-bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& items)
+bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    // get primary genres for movies
     CStdString strSQL;
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL = FormatSQL("select movie.c%02d,path.strPath from movie,files,path where movie.idMovie = files.idMovie and files.idPath = path.idPath", VIDEODB_ID_YEAR);
-    else    
-      strSQL = FormatSQL("select distinct movie.c%02d from movie", VIDEODB_ID_YEAR);
     CStdString addParam;
+    if (idContent == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_MOVIES)
+    {
+      if (g_stSettings.m_iMyVideoWatchMode == 1)
+        addParam = FormatSQL("movie.c%02d='false'", VIDEODB_ID_WATCHED);
 
-    if (g_stSettings.m_iMyVideoWatchMode == 1)
-      strSQL += FormatSQL(" and movie.c%02d='false'", VIDEODB_ID_WATCHED);
+      if (g_stSettings.m_iMyVideoWatchMode == 2)
+        addParam = FormatSQL("movie.c%02d='true'", VIDEODB_ID_WATCHED);
 
-    if (g_stSettings.m_iMyVideoWatchMode == 2)
-      strSQL += FormatSQL(" and movie.c%02d='true'", VIDEODB_ID_WATCHED);
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      {
+        if (!addParam.IsEmpty())
+          addParam = " and "+addParam;
+        strSQL = FormatSQL("select movie.c%02d,path.strPath from movie,files,path where movie.idMovie = files.idMovie and files.idPath = path.idPath", VIDEODB_ID_YEAR);
+      }
+      else
+      {
+        if (!addParam.IsEmpty())
+          addParam = " where "+addParam;
+        strSQL = FormatSQL("select distinct movie.c%02d from movie", VIDEODB_ID_YEAR);
+      }
+    }
+    else if (idContent == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_TVSHOWS)
+    {
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        strSQL = FormatSQL("select tvshow.c%02d,path.strPath from tvshow,files,path,showlinkepisode where tvshow.idShow = showlinkepisode.idShow and files.idEpisode = showlinkepisode.idEpisode and files.idPath = path.idPath", VIDEODB_ID_YEAR);
+      else
+        strSQL = FormatSQL("select distinct tvshow.c%02d from tvshow", VIDEODB_ID_YEAR);
+    }     
+    else
+    {
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      {
+        if (g_stSettings.m_iMyVideoWatchMode == 1)
+          strSQL = FormatSQL("select movie.c%02d,path.strPath from movie,files,path where movie.idMovie = files.idMovie and files.idPath = path.idPath and movie.c%02d='false' union select tvshow.c%02d,path.strPath from tvshow,files,path,showlinkepisode where tvshow.idShow = showlinkepisode.idShow and files.idEpisode = showlinkepisode.idEpisode and files.idPath = path.idPath", VIDEODB_ID_YEAR, VIDEODB_ID_WATCHED, VIDEODB_ID_YEAR);
+        else if (g_stSettings.m_iMyVideoWatchMode == 2)
+          strSQL = FormatSQL("select movie.c%02d,path.strPath from movie,files,path where movie.idMovie = files.idMovie and files.idPath = path.idPath and movie.c%02d='true' union select tvshow.c%02d,path.strPath from tvshow,files,path,showlinkepisode where tvshow.idShow = showlinkepisode.idShow and files.idEpisode = showlinkepisode.idEpisode and files.idPath = path.idPath", VIDEODB_ID_YEAR, VIDEODB_ID_WATCHED, VIDEODB_ID_YEAR);
+        else
+          strSQL = FormatSQL("select movie.c%02d,path.strPath from movie,files,path where movie.idMovie = files.idMovie and files.idPath = path.idPath union select tvshow.c%02d,path.strPath from tvshow,files,path,showlinkepisode where tvshow.idShow = showlinkepisode.idShow and files.idEpisode = showlinkepisode.idEpisode and files.idPath = path.idPath", VIDEODB_ID_YEAR, VIDEODB_ID_YEAR);
+      }
+      else
+      {
+        if (g_stSettings.m_iMyVideoWatchMode == 1)
+          strSQL = FormatSQL("select distinct tvshow.c%02d from tvshow union select distinct movie.c%02d from movie where movie.c%02d='false'", VIDEODB_ID_YEAR, VIDEODB_ID_YEAR, VIDEODB_ID_WATCHED);
+        else if (g_stSettings.m_iMyVideoWatchMode == 2)
+          strSQL = FormatSQL("select distinct tvshow.c%02d from tvshow union select distinct movie.c%02d from movie where movie.c%02d='true'", VIDEODB_ID_YEAR, VIDEODB_ID_YEAR, VIDEODB_ID_WATCHED);
+        else
+          strSQL = FormatSQL("select distinct tvshow.c%02d from tvshow union select distinct movie.c%02d from movie", VIDEODB_ID_YEAR, VIDEODB_ID_YEAR);
+      }
+    }
+
+    strSQL += addParam;
 
     // run query
-    CLog::Log(LOGDEBUG, "CVideoDatabase::GetGenresNav() query: %s", strSQL.c_str());
+    CLog::Log(LOGDEBUG, "CVideoDatabase::GetYearsNav() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)

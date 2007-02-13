@@ -21,7 +21,7 @@ bool CDirectoryNodeYear::GetContent(CFileItemList& items)
   CollectQueryParams(params);
 
   CStdString strBaseDir=BuildPath();
-  bool bSuccess=videodatabase.GetYearsNav(strBaseDir, items);
+  bool bSuccess=videodatabase.GetYearsNav(strBaseDir, items, params.GetContentType());
 
   videodatabase.Close();
 
