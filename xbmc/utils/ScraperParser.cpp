@@ -1,6 +1,7 @@
 #include "ScraperParser.h"
 
 #include "RegExp.h"
+#include "htmlutil.h"
 
 #include <cstring>
 
@@ -54,7 +55,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
       return false;
     }
     // check for known content
-    if (stricmp(m_content,"tv") && stricmp(m_content,"movies"))
+    if (stricmp(m_content,"tvshows") && stricmp(m_content,"movies"))
     {
       delete m_document;
       m_document = NULL;
@@ -350,7 +351,7 @@ const CStdString CScraperParser::Parse(const CStdString& strTag)
   ParseNext(pChildStart);
 
   CStdString tmp = m_param[iResult-1];
-  ClearBuffers();
+  ClearBuffers(); 
   return tmp;
 }
 
@@ -364,11 +365,15 @@ void CScraperParser::Clean(CStdString& strDirty)
     if ((i2=strDirty.Find("!!!CLEAN!!!",i+11)) != CStdString::npos)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
-      char* szConverted = ConvertHTMLToAnsi(strBuffer.c_str());
-      const char* szTrimmed = RemoveWhiteSpace(szConverted);
-      strDirty.Replace("!!!CLEAN!!!"+strBuffer+"!!!CLEAN!!!",CStdString(szTrimmed));
+      //char* szConverted = ConvertHTMLToAnsi(strBuffer.c_str());
+      //const char* szTrimmed = RemoveWhiteSpace(szConverted);
+      CStdString strConverted(strBuffer);
+      HTML::CHTMLUtil::RemoveTags(strConverted);
+      const char* szTrimmed = RemoveWhiteSpace(strConverted.c_str());
+      strDirty.erase(i,i2-i+11);
+      strDirty.Insert(i,szTrimmed);
       i += strlen(szTrimmed);
-      free(szConverted);
+      //free(szConverted);
     }
     else
       break;
