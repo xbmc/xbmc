@@ -345,7 +345,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
       {
 	    	url.m_strURL.push_back(nfoReader.m_strImDbUrl);
-        url.m_strURL.push_back(nfoReader.m_strImDbUrl+"plotsummary");
         url.m_strID = nfoReader.m_strImDbNr;
         SScraperInfo info2(info);
         info2.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
