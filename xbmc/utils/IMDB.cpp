@@ -146,7 +146,8 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails, co
 
   // abit uggly, but should work. would have been better if parset
   // set the charset of the xml, and we made use of that
-  g_charsetConverter.stringCharsetToUtf8(strXML);
+  if (strXML.Find("encoding=\"utf-8\"") < 0)
+    g_charsetConverter.stringCharsetToUtf8(strXML);
 
     // ok, now parse the xml file
   TiXmlBase::SetCondenseWhiteSpace(false);
