@@ -337,8 +337,9 @@ int demux_mf_fill_buffer( demuxer_t *demux);
 int demux_roq_fill_buffer(demuxer_t *demux);
 int demux_film_fill_buffer(demuxer_t *demux);
 int demux_fli_fill_buffer(demuxer_t *demux);
-int demux_mpg_es_fill_buffer(demuxer_t *demux);
-int demux_mpg_fill_buffer(demuxer_t *demux);
+int demux_mpg_es_fill_buffer(demuxer_t *demux,demux_stream_t *ds);
+int demux_mpg_fill_buffer(demuxer_t *demux,demux_stream_t *ds);
+int demux_mpg_gxf_fill_buffer(demuxer_t *demux,demux_stream_t *ds);
 int demux_ty_fill_buffer(demuxer_t *demux);
 int demux_avi_fill_buffer(demuxer_t *demux);
 int demux_avi_fill_buffer_ni(demuxer_t *demux,demux_stream_t *ds);
@@ -380,8 +381,9 @@ int demux_fill_buffer(demuxer_t *demux,demux_stream_t *ds){
     case DEMUXER_TYPE_MPEG_TY: return demux_ty_fill_buffer( demux );
     case DEMUXER_TYPE_MPEG4_ES:
     case DEMUXER_TYPE_H264_ES:
-    case DEMUXER_TYPE_MPEG_ES: return demux_mpg_es_fill_buffer(demux);
-    case DEMUXER_TYPE_MPEG_PS: return demux_mpg_fill_buffer(demux);
+    case DEMUXER_TYPE_MPEG_ES: return demux_mpg_es_fill_buffer(demux,ds);
+    case DEMUXER_TYPE_MPEG_PS: return demux_mpg_fill_buffer(demux,ds);
+    case DEMUXER_TYPE_MPEG_GXF: return demux_mpg_gxf_fill_buffer(demux,ds);
     case DEMUXER_TYPE_AVI: return demux_avi_fill_buffer(demux);
     case DEMUXER_TYPE_AVI_NI: return demux_avi_fill_buffer_ni(demux,ds);
     case DEMUXER_TYPE_AVI_NINI: return demux_avi_fill_buffer_nini(demux,ds);

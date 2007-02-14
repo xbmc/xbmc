@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 
 #include "config.h"
 #include "mp_msg.h"
@@ -29,9 +30,10 @@
 
 typedef struct mpg_demuxer {
   float last_pts;
-  float final_pts;
-  float first_pts;
-  int has_valid_timestamps;
+  float first_pts;              // first pts found in stream
+  float first_to_final_pts_len; // difference between final pts and first pts
+  int has_valid_timestamps;     // !=0 iff time stamps look linear
+                                // (not necessarily starting with 0)
   unsigned int es_map[0x40];	//es map of stream types (associated to the pes id) from 0xb0 to 0xef
   int num_a_streams;
   int a_stream_ids[MAX_A_STREAMS];
@@ -39,6 +41,7 @@ typedef struct mpg_demuxer {
 
 extern char* dvdsub_lang;
 static int mpeg_pts_error=0;
+off_t ps_probe = 0;
 
 #ifdef _XBOX
 float demux_mpg_get_first_pts(demuxer_t* demuxer)
@@ -115,76 +118,123 @@ static int parse_psm(demuxer_t *demux, int len) {
 // 500000 is a wild guess
 #define TIMESTAMP_PROBE_LEN 500000
 
+//MAX_PTS_DIFF_FOR_CONSECUTIVE denotes the maximum difference
+//between two pts to consider them consecutive
+//1.0 is a wild guess
+#define MAX_PTS_DIFF_FOR_CONSECUTIVE 1.0
+
+//returns the first pts found within TIME_STAMP_PROBE_LEN bytes after stream_pos in demuxer's stream.
+//if no pts is found or an error occurs, -1.0 is returned.
+//Packs are freed.
+static float read_first_mpeg_pts_at_position(demuxer_t* demuxer, off_t stream_pos)
+{
+  stream_t *s = demuxer->stream;
+  mpg_demuxer_t *mpg_d = demuxer->priv;
+  float pts = -1.0; //the pts to return;
+  float found_pts1; //the most recently found pts
+  float found_pts2; //the pts found before found_pts1
+  float found_pts3; //the pts found before found_pts2
+  int found = 0;
+
+  if(!mpg_d || stream_pos < 0)
+    return pts;
+
+  found_pts3 = found_pts2 = found_pts1 = mpg_d->last_pts;
+  stream_seek(s, stream_pos);
+
+  //We look for pts.
+  //However, we do not stop at the first found one, as timestamps may reset
+  //Therefore, we seek until we found three consecutive
+  //pts within MAX_PTS_DIFF_FOR_CONSECUTIVE.
+
+  while(found<3 && !s->eof
+   && (fabsf(found_pts2-found_pts1) < MAX_PTS_DIFF_FOR_CONSECUTIVE)
+   && (fabsf(found_pts3-found_pts2) < MAX_PTS_DIFF_FOR_CONSECUTIVE)
+   && (stream_tell(s) < stream_pos + TIMESTAMP_PROBE_LEN)
+   && ds_fill_buffer(demuxer->video))
+  {
+    if(mpg_d->last_pts != found_pts1)
+    {
+      if(!found)
+        found_pts3 = found_pts2 = found_pts1 = mpg_d->last_pts; //the most recently found pts
+      else
+      {
+        found_pts3 = found_pts2;
+        found_pts2 = found_pts1;
+        found_pts1 = mpg_d->last_pts;
+      }
+      found++;
+    }
+  }
+
+  if(found == 3) pts = found_pts3;
+
+  //clean up from searching of first pts;
+  ds_free_packs(demuxer->audio);
+  ds_free_packs(demuxer->video);
+  ds_free_packs(demuxer->sub);
+
+  return pts;
+}
+
 /// Open an mpg physical stream
 int demux_mpg_open(demuxer_t* demuxer) {
   stream_t *s = demuxer->stream;
-  off_t pos = stream_tell(s);
-  off_t end_seq_start;
-  float half_pts = 0.0;
   mpg_demuxer_t* mpg_d;
 
-#ifdef _XBOX
-  int has_first_pts = 0;
-
-  mpg_d = (mpg_demuxer_t*)calloc(1,sizeof(mpg_demuxer_t));
-  demuxer->priv = mpg_d;
-  mpg_d->final_pts = 0.0f;
-  mpg_d->first_pts = 0.0f;
-  mpg_d->has_valid_timestamps = 1;
-
-  if (!ds_fill_buffer(demuxer->video)) 
-  {
-    free(mpg_d);
-    mpg_d=NULL;
-    return 0;
-  }
-  end_seq_start = demuxer->movi_end-TIMESTAMP_PROBE_LEN;
-  has_first_pts = mpg_d->first_pts!= 0.0f;
-#else
   if (!ds_fill_buffer(demuxer->video)) return 0;
-  end_seq_start = demuxer->movi_end-TIMESTAMP_PROBE_LEN;
   mpg_d = calloc(1,sizeof(mpg_demuxer_t));
-  demuxer->priv = mpg_d;
-  mpg_d->final_pts = 0.0;
-  mpg_d->has_valid_timestamps = 1;
-#endif
-  mpg_d->num_a_streams = 0;
-  if (demuxer->seekable && stream_tell(demuxer->stream) < end_seq_start) {
-    off_t half_pos = pos + end_seq_start / 2;
-    stream_seek(s, half_pos);
-    while ((!s->eof) && ds_fill_buffer(demuxer->video) && half_pts == 0.0) {
-      half_pts = mpg_d->last_pts;
-      if (stream_tell(s) > half_pos + TIMESTAMP_PROBE_LEN)
-        break;
-    }
-    stream_seek(s,end_seq_start);
-    while ((!s->eof) && ds_fill_buffer(demuxer->video)) {
-      if (mpg_d->final_pts < mpg_d->last_pts) mpg_d->final_pts = mpg_d->last_pts;
-      if (stream_tell(s) > demuxer->movi_end)
-        break;
-    }
-#ifdef _XBOX
-    // educated guess about validity of timestamps
-    if(!has_first_pts) mpg_d->first_pts = 0.0f;
-    if ((mpg_d->final_pts-mpg_d->first_pts) > 3 * (half_pts-mpg_d->first_pts) ||(mpg_d->final_pts-mpg_d->first_pts) < 1.5 * (half_pts-mpg_d->first_pts)) {
-      mpg_d->has_valid_timestamps = 0;
-    }
-#else
-    // educated guess about validity of timestamps
-    if (mpg_d->final_pts > 3 * half_pts || mpg_d->final_pts < 1.5 * half_pts) {
-      mpg_d->has_valid_timestamps = 0;
-    }
-#endif
-    ds_free_packs(demuxer->audio);
-    ds_free_packs(demuxer->video);
-    ds_free_packs(demuxer->sub);
-    demuxer->stream->eof=0; // clear eof flag
-    demuxer->video->eof=0;
-    demuxer->audio->eof=0;
-    
-    stream_seek(s,pos);
-    ds_fill_buffer(demuxer->video);
-  }
+  if(mpg_d)
+  {
+    demuxer->priv = mpg_d;
+    mpg_d->last_pts = -1.0;
+    mpg_d->first_pts = -1.0;
+
+    //if seeking is allowed set has_valid_timestamps if appropriate
+    if(demuxer->seekable
+       && demuxer->stream->type == STREAMTYPE_FILE 
+       && demuxer->movi_start != demuxer-> movi_end
+    )
+    {
+      //We seek to the beginning of the stream, to somewhere in the
+      //middle, and to the end of the stream, while remembering the pts
+      //at each of the three positions. With these pts, we check whether
+      //or not the pts are "linear enough" to justify seeking by the pts
+      //of the stream
+
+      //The position where the stream is now
+      off_t pos = stream_tell(s);
+      float first_pts = read_first_mpeg_pts_at_position(demuxer, demuxer->movi_start);
+      if(first_pts != -1.0)
+      {
+        float middle_pts = read_first_mpeg_pts_at_position(demuxer, (demuxer->movi_end - demuxer->movi_start)/2);
+        if(middle_pts != -1.0)
+        {
+          float final_pts = read_first_mpeg_pts_at_position(demuxer, demuxer->movi_end - TIMESTAMP_PROBE_LEN);
+          if(final_pts != -1.0)
+          {
+            // found proper first, middle, and final pts.
+            float proportion = (middle_pts-first_pts==0) ? -1 : (final_pts-middle_pts)/(middle_pts-first_pts);
+            // if they are linear enough set has_valid_timestamps
+            if((0.5 < proportion) && (proportion < 2))
+            {
+              mpg_d->first_pts = first_pts;
+              mpg_d->first_to_final_pts_len = final_pts - first_pts;
+              mpg_d->has_valid_timestamps = 1;
+            }
+          }
+        }
+      }
+
+      //Cleaning up from seeking in stream
+      demuxer->stream->eof=0;
+      demuxer->video->eof=0;
+      demuxer->audio->eof=0;
+
+      stream_seek(s,pos);
+      ds_fill_buffer(demuxer->video);
+    } // if ( demuxer->seekable )
+  } // if ( mpg_d )
   return 1;
 }
 
@@ -220,6 +270,9 @@ static void new_audio_stream(demuxer_t *demux, int aid){
       case 0x80: if((aid & 0xF8) == 0x88) sh_a->format=0x2001;//dts
                   else sh_a->format=0x2000;break; // ac3
     }
+    //evo files
+    if((aid & 0xC0) == 0xC0) sh_a->format=0x2000;
+    else if(aid >= 0x98 && aid <= 0x9f) sh_a->format=0x2001;
     if (mpg_d) mpg_d->a_stream_ids[mpg_d->num_a_streams++] = aid;
   }
   if(demux->audio->id==-1) demux->audio->id=aid;
@@ -228,10 +281,15 @@ static void new_audio_stream(demuxer_t *demux, int aid){
 static int demux_mpg_read_packet(demuxer_t *demux,int id){
   int d;
   int len;
+  int set_pts=0; // !=0 iff pts has been set to a proper value
   unsigned char c=0;
   unsigned long long pts=0;
   unsigned long long dts=0;
+  int l;
+  int pes_ext2_subid=-1;
+  double stream_pts = MP_NOPTS_VALUE;
   demux_stream_t *ds=NULL;
+  demux_packet_t* dp;
   mpg_demuxer_t *priv = (mpg_demuxer_t *) demux->priv;
   
   mp_dbg(MSGT_DEMUX,MSGL_DBG3,"demux_read_packet: %X\n",id);
@@ -242,7 +300,7 @@ static int demux_mpg_read_packet(demuxer_t *demux,int id){
 //}
 
 //  if(id==0x1BA) packet_start_pos=stream_tell(demux->stream);
-  if(id<0x1BC || id>=0x1F0) return -1;
+  if((id<0x1BC || id>=0x1F0) && id != 0x1FD) return -1;
   if(id==0x1BE) return -1; // padding stream
   if(id==0x1BF) return -1; // private2
 
@@ -275,20 +333,24 @@ static int demux_mpg_read_packet(demuxer_t *demux,int id){
   // Read System-1 stream timestamps:
   if((c>>4)==2){
     pts=read_mpeg_timestamp(demux->stream,c);
+    set_pts=1;
     len-=4;
   } else
   if((c>>4)==3){
     pts=read_mpeg_timestamp(demux->stream,c);
     c=stream_read_char(demux->stream);
     if((c>>4)!=1) pts=0; //printf("{ERROR4}");
+    else set_pts = 1;
     dts=read_mpeg_timestamp(demux->stream,c);
     len-=4+1+4;
   } else
   if((c>>6)==2){
     int pts_flags;
     int hdrlen;
+    int parse_ext2;
     // System-2 (.VOB) stream:
     c=stream_read_char(demux->stream); pts_flags=c>>6;
+    parse_ext2 = (id == 0x1FD) && ((c & 0x3F) == 1);
     c=stream_read_char(demux->stream); hdrlen=c;
     len-=2;
     mp_dbg(MSGT_DEMUX,MSGL_DBG3,"  hdrlen=%d  (len=%d)",hdrlen,len);
@@ -296,18 +358,52 @@ static int demux_mpg_read_packet(demuxer_t *demux,int id){
     if(pts_flags==2 && hdrlen>=5){
       c=stream_read_char(demux->stream);
       pts=read_mpeg_timestamp(demux->stream,c);
+      set_pts=1;
       len-=5;hdrlen-=5;
     } else
     if(pts_flags==3 && hdrlen>=10){
       c=stream_read_char(demux->stream);
       pts=read_mpeg_timestamp(demux->stream,c);
+      set_pts=1;
       c=stream_read_char(demux->stream);
       dts=read_mpeg_timestamp(demux->stream,c);
       len-=10;hdrlen-=10;
     }
     len-=hdrlen;
-    if(hdrlen>0) stream_skip(demux->stream,hdrlen); // skip header bytes
+    if(hdrlen>0) {
+      if(!parse_ext2)
+        stream_skip(demux->stream,hdrlen); // skip header bytes
+      else if(hdrlen>=3) {
+        c=stream_read_char(demux->stream);
+        hdrlen--;
+        if(c != 0x1F && c!= 0x0F) { mp_msg(MSGT_DEMUX,MSGL_V,"demux_mpg: invalid pes_extension field  \n"); return -1;}
+        if(c == 0x1F) {
+          //STD
+          stream_skip(demux->stream, 2);
+          hdrlen-=2;
+        }
+        c=stream_read_char(demux->stream); //pes_extension2 flag
+        hdrlen--;
+        if(c!=0x81)  { mp_msg(MSGT_DEMUX,MSGL_V,"demux_mpg: unknown pes_extension2 format, len is > 1  \n"); return -1;}
+        c=stream_read_char(demux->stream); //pes_extension2 payload === substream id
+        if(c<0x55 || c>0x5F)   { mp_msg(MSGT_DEMUX,MSGL_V,"demux_mpg: unknown vc1 substream_id: 0x%x  \n", c); return -1;}
+        pes_ext2_subid=c;
+      }
+    }
     
+    if(id==0x1FD && pes_ext2_subid!=-1) {
+      //==== EVO VC1 STREAMS ===//
+      if(!demux->v_streams[pes_ext2_subid]) new_sh_video(demux,pes_ext2_subid);
+      if(demux->video->id==-1) demux->video->id=pes_ext2_subid;
+      if(demux->video->id==pes_ext2_subid){
+        ds=demux->video;
+        if(!ds->sh) ds->sh=demux->v_streams[pes_ext2_subid];
+        if(priv && ds->sh) {
+          sh_video_t *sh = (sh_video_t *)ds->sh;
+          sh->format = mmioFOURCC('W', 'V', 'C', '1');
+        }
+      }
+    }
     //============== DVD Audio sub-stream ======================
     if(id==0x1BD){
       int aid, rawa52 = 0;
@@ -338,14 +434,18 @@ static int demux_mpg_read_packet(demuxer_t *demux,int id){
 
         if(!demux->s_streams[aid]){
             mp_msg(MSGT_DEMUX,MSGL_V,"==> Found subtitle: %d\n",aid);
-            demux->s_streams[aid]=1;
+            new_sh_sub(demux, aid);
         }
 
+        if(demux->sub->id > -1)
+          demux->sub->id &= 0x1F;
+        if(!dvdsub_lang && demux->sub->id == -1)
+          demux->sub->id = aid;
         if(demux->sub->id==aid){
             ds=demux->sub;
         }
           
-      } else if((aid & 0xC0) == 0x80 || (aid & 0xE0) == 0x00) {
+      } else if((aid & 0xC0) == 0x80 || (aid & 0xE0) == 0x00 || (aid & 0xC0) == 0xC0) {
 
 //        aid=128+(aid&0x7F);
         // aid=0x80..0xBF
@@ -441,16 +541,31 @@ static int demux_mpg_read_packet(demuxer_t *demux,int id){
   if(ds){
     mp_dbg(MSGT_DEMUX,MSGL_DBG2,"DEMUX_MPG: Read %d data bytes from packet %04X\n",len,id);
 //    printf("packet start = 0x%X  \n",stream_tell(demux->stream)-packet_start_pos);
-    ds_read_packet(ds,demux->stream,len,pts/90000.0f,demux->filepos,0);
-    if (demux->priv) ((mpg_demuxer_t*)demux->priv)->last_pts = pts/90000.0f;
-#ifdef _XBOX
-    if (demux->priv)
-    {
-      mpg_demuxer_t* mpg_d = ((mpg_demuxer_t*)demux->priv);
-      if( mpg_d->first_pts == 0.0f || (pts !=0 && mpg_d->first_pts > pts/90000.0f))
-        mpg_d->first_pts = pts/90000.0f;
+
+    dp=new_demux_packet(len);
+    if(!dp) {
+      mp_dbg(MSGT_DEMUX,MSGL_ERR,"DEMUX_MPG ERROR: couldn't create demux_packet(%d bytes)\n",len);
+      stream_skip(demux->stream,len);
+      return 0;
     }
+    l = stream_read(demux->stream,dp->buffer,len);
+    if(l<len)
+      resize_demux_packet(dp, l);
+    len = l;
+    dp->pts=pts/90000.0f;
+    dp->pos=demux->filepos;
+    /*
+      workaround:
+      set dp->stream_pts only when feeding the video stream, or strangely interleaved files
+      (such as SWIII) will show strange alternations in the stream time, wildly going
+      back and forth
+    */
+#ifndef _XBOX
+    if(ds == demux->video && stream_control(demux->stream, STREAM_CTRL_GET_CURRENT_TIME,(void *)&stream_pts)!=STREAM_UNSUPORTED)
+      dp->stream_pts = stream_pts;
 #endif
+    ds_add_packet(ds,dp);
+    if (demux->priv && set_pts) ((mpg_demuxer_t*)demux->priv)->last_pts = pts/90000.0f;
 //    if(ds==demux->sub) parse_dvdsub(ds->last->buffer,ds->last->len);
     return 1;
   }
@@ -474,6 +589,44 @@ static int num_h264_pps=0;
 
 static int num_mp3audio_packets=0;
 
+static void clear_stats()
+{
+  num_elementary_packets100=0;
+  num_elementary_packets101=0;
+  num_elementary_packets1B6=0;
+  num_elementary_packets12x=0;
+  num_elementary_packetsPES=0;
+  num_h264_slice=0; //combined slice
+  num_h264_dpa=0; //DPA Slice
+  num_h264_dpb=0; //DPB Slice
+  num_h264_dpc=0; //DPC Slice
+  num_h264_idr=0; //IDR Slice
+  num_h264_sps=0;
+  num_h264_pps=0;
+  num_mp3audio_packets=0;
+}
+
+//assumes demuxer->synced < 2
+static inline void update_stats(int head)
+{
+  if(head==0x1B6) ++num_elementary_packets1B6;
+  else if(head==0x100) ++num_elementary_packets100;
+  else if(head==0x101) ++num_elementary_packets101;
+  else if(head==0x1BD || (0x1C0<=head && head<=0x1EF))
+    num_elementary_packetsPES++;
+  else if(head>=0x120 && head<=0x12F) ++num_elementary_packets12x;
+  else if(head>=0x100 && head<0x1B0)
+  {
+    if((head&~0x60) == 0x101) ++num_h264_slice;
+    else if((head&~0x60) == 0x102) ++num_h264_dpa;
+    else if((head&~0x60) == 0x103) ++num_h264_dpb;
+    else if((head&~0x60) == 0x104) ++num_h264_dpc;
+    else if((head&~0x60) == 0x105 && head != 0x105) ++num_h264_idr;
+    else if((head&~0x60) == 0x107 && head != 0x107) ++num_h264_sps;
+    else if((head&~0x60) == 0x108 && head != 0x108) ++num_h264_pps;
+  }
+}
+
 int demux_mpg_probe(demuxer_t *demuxer) {
   int pes=1;
   int tmp;
@@ -488,19 +641,7 @@ int demux_mpg_probe(demuxer_t *demuxer) {
   }
   stream_seek(demuxer->stream,tmppos);
 
-  num_elementary_packets100=0;
-  num_elementary_packets101=0;
-  num_elementary_packets1B6=0;
-  num_elementary_packets12x=0;
-  num_elementary_packetsPES=0;
-  num_h264_slice=0; //combined slice
-  num_h264_dpa=0; //DPA Slice
-  num_h264_dpb=0; //DPB Slice
-  num_h264_dpc=0; //DPC Slice
-  num_h264_idr=0; //IDR Slice
-  num_h264_sps=0;
-  num_h264_pps=0;
-  num_mp3audio_packets=0;
+  clear_stats();
 
   if(demux_mpg_open(demuxer))
     file_format=DEMUXER_TYPE_MPEG_PS;
@@ -527,15 +668,12 @@ int demux_mpg_probe(demuxer_t *demuxer) {
          }
          file_format=DEMUXER_TYPE_MPEG_ES; //  <-- hack is here :)
       } else
-#if 1
           // fuzzy mpeg4-es detection. do NOT enable without heavy testing of mpeg formats detection!
         if(num_elementary_packets1B6>3 && num_elementary_packets12x>=1 &&
            num_elementary_packetsPES==0 && num_elementary_packets100<=num_elementary_packets12x &&
            demuxer->synced<2) {
              file_format=DEMUXER_TYPE_MPEG4_ES;
         } else
-#endif
-#if 1
          // fuzzy h264-es detection. do NOT enable without heavy testing of mpeg formats detection!
         if((num_h264_slice>3 || (num_h264_dpa>3 && num_h264_dpb>3 && num_h264_dpc>3)) && 
           /* FIXME num_h264_sps>=1 && */ num_h264_pps>=1 && num_h264_idr>=1 &&
@@ -543,7 +681,6 @@ int demux_mpg_probe(demuxer_t *demuxer) {
           demuxer->synced<2) {
             file_format=DEMUXER_TYPE_H264_ES;
         } else
-#endif
         {
           if(demuxer->synced==2)
             mp_msg(MSGT_DEMUXER,MSGL_ERR,"MPEG: " MSGTR_MissingVideoStreamBug);
@@ -551,6 +688,8 @@ int demux_mpg_probe(demuxer_t *demuxer) {
             mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_NotSystemStream);
         }
   }
+  //FIXME this shouldn't be necessary
+  stream_seek(demuxer->stream,tmppos);
   return file_format;
 }
 
@@ -690,29 +829,14 @@ do{
         }
       if(demux->synced==3) demux->synced=(ret==1)?2:0; // PES detect
   } else {
-    if(head>=0x100 && head<0x1B0){
-      if(head==0x100) ++num_elementary_packets100; else
-      if(head==0x101) ++num_elementary_packets101; else
-      if(head>=0x120 && head<=0x12F) ++num_elementary_packets12x;
-      
-      if((head&~0x60) == 0x101) ++num_h264_slice; else
-      if((head&~0x60) == 0x102) ++num_h264_dpa; else
-      if((head&~0x60) == 0x103) ++num_h264_dpb; else
-      if((head&~0x60) == 0x104) ++num_h264_dpc; else
-      if((head&~0x60) == 0x105 && head != 0x105) ++num_h264_idr; else
-      if((head&~0x60) == 0x107 && head != 0x107) ++num_h264_sps; else
-      if((head&~0x60) == 0x108 && head != 0x108) ++num_h264_pps;
-      
+    update_stats(head);
+    if(head>=0x100 && head<0x1B0)
       mp_msg(MSGT_DEMUX,MSGL_DBG3,"Opps... elementary video packet found: %03X\n",head);
-    } else
-    if((head>=0x1C0 && head<0x1F0) || head==0x1BD){
-      ++num_elementary_packetsPES;
+    else if((head>=0x1C0 && head<0x1F0) || head==0x1BD)
       mp_msg(MSGT_DEMUX,MSGL_DBG3,"Opps... PES packet found: %03X\n",head);
-    } else
-      if(head==0x1B6) ++num_elementary_packets1B6;
-#if 1
-    if( ( (num_elementary_packets100>50 && num_elementary_packets101>50) ||
-          (num_elementary_packetsPES>50) ) && skipped>4000000){
+
+    if(((num_elementary_packets100>50 && num_elementary_packets101>50) ||
+        (num_elementary_packetsPES>50)) && skipped>4000000){
         mp_msg(MSGT_DEMUX,MSGL_V,"sync_mpeg_ps: seems to be ES/PES stream...\n");
         demux->stream->eof=1;
         break;
@@ -722,7 +846,6 @@ do{
         demux->stream->eof=1;
         break;
     }
-#endif
   }
 } while(ret!=1);
   mp_dbg(MSGT_DEMUX,MSGL_DBG2,"demux: %d bad bytes skipped\n",skipped);
@@ -733,7 +856,6 @@ do{
   return 1;
 }
 
-extern void resync_audio_stream(sh_audio_t *sh_audio);
 extern void skip_audio_frame(sh_audio_t *sh_audio);
 
 void demux_seek_mpg(demuxer_t *demuxer,float rel_seek_secs,int flags){
@@ -747,28 +869,22 @@ void demux_seek_mpg(demuxer_t *demuxer,float rel_seek_secs,int flags){
     off_t oldpos = demuxer->filepos;
     float newpts = 0; 
     off_t newpos = (flags & 1) ? demuxer->movi_start : oldpos;
+
     if(mpg_d)
       oldpts = mpg_d->last_pts;
 #ifdef _XBOX
     newpts = (flags & 1) ? mpg_d->first_pts : oldpts;
 #else
-    newpts = (flags & 1) ? 0.0f : oldpts;
+    newpts = (flags & 1) ? 0.0 : oldpts;
 #endif    
 
   //================= seek in MPEG ==========================
   //calculate the pts to seek to
     if(flags & 2) {
-#ifdef _XBOX
-      if (mpg_d && mpg_d->has_valid_timestamps && mpg_d->final_pts > 0.0)
-        newpts += (mpg_d->final_pts - mpg_d->first_pts) * rel_seek_secs;
-      else
-        newpts += rel_seek_secs * (demuxer->movi_end - demuxer->movi_start) * (oldpts - mpg_d->first_pts) / oldpos;
-#else
-      if (mpg_d && mpg_d->final_pts > 0.0)
-        newpts += mpg_d->final_pts * rel_seek_secs;
+      if (mpg_d && mpg_d->first_to_final_pts_len > 0.0)
+        newpts += mpg_d->first_to_final_pts_len * rel_seek_secs;
       else
         newpts += rel_seek_secs * (demuxer->movi_end - demuxer->movi_start) * oldpts / oldpos;
-#endif
     } else
       newpts += rel_seek_secs;
     if (newpts < 0) newpts = 0;
@@ -779,17 +895,10 @@ void demux_seek_mpg(demuxer_t *demuxer,float rel_seek_secs,int flags){
     } else {
 	// time seek (secs)
         if (mpg_d && mpg_d->has_valid_timestamps) {
-#ifdef _XBOX
-          if (mpg_d->final_pts > 0.0)
-            newpos += rel_seek_secs * (demuxer->movi_end - demuxer->movi_start) / (mpg_d->final_pts - mpg_d->first_pts);
-          else if (oldpts > 0.0)
-            newpos += rel_seek_secs * (oldpos - demuxer->movi_start) / (oldpts - mpg_d->first_pts);
-#else
-          if (mpg_d->final_pts > 0.0)
-            newpos += rel_seek_secs * (demuxer->movi_end - demuxer->movi_start) / mpg_d->final_pts;
+          if (mpg_d->first_to_final_pts_len > 0.0)
+            newpos += rel_seek_secs * (demuxer->movi_end - demuxer->movi_start) / mpg_d->first_to_final_pts_len;
           else if (oldpts > 0.0)
             newpos += rel_seek_secs * (oldpos - demuxer->movi_start) / oldpts;
-#endif
         } else if(!sh_video || !sh_video->i_bps) // unspecified or VBR
           newpos+=2324*75*rel_seek_secs; // 174.3 kbyte/sec
         else
@@ -829,6 +938,10 @@ void demux_seek_mpg(demuxer_t *demuxer,float rel_seek_secs,int flags){
           }
 	  if(!sh_video) break;
           i=sync_video_packet(d_video);
+          if(sh_video->format == mmioFOURCC('W', 'V', 'C', '1')) {
+            if(i==0x10E || i==0x10F) //entry point or sequence header
+              break;
+          } else
           if(sh_video->format == 0x10000004) {	//mpeg4
             if(i==0x1B6) {			//vop (frame) startcode
 	      int pos = videobuf_len;
@@ -864,41 +977,61 @@ void demux_seek_mpg(demuxer_t *demuxer,float rel_seek_secs,int flags){
 }
 
 int demux_mpg_control(demuxer_t *demuxer,int cmd, void *arg){
-/*    demux_stream_t *d_audio=demuxer->audio;*/
-    demux_stream_t *d_video=demuxer->video;
-/*    sh_audio_t *sh_audio=d_audio->sh;*/
-    sh_video_t *sh_video=d_video->sh;
     mpg_demuxer_t *mpg_d=(mpg_demuxer_t*)demuxer->priv;
 
     switch(cmd) {
 	case DEMUXER_CTRL_GET_TIME_LENGTH:
-#ifdef _XBOX
-            if (mpg_d && mpg_d->has_valid_timestamps && mpg_d->final_pts > 0.0) {
-              *((unsigned long *)arg)=(long)(mpg_d->final_pts-mpg_d->first_pts);
-#else
-            if (mpg_d && mpg_d->has_valid_timestamps) {
-              *((unsigned long *)arg)=(long)mpg_d->final_pts;
-#endif
+#ifndef _XBOX
+            if(stream_control(demuxer->stream, STREAM_CTRL_GET_TIME_LENGTH, arg) != STREAM_UNSUPORTED) {
+              mp_msg(MSGT_DEMUXER,MSGL_DBG2,"\r\nDEMUX_MPG_CTRL, (%.3lf)\r\n", *((double*)arg));
               return DEMUXER_CTRL_GUESS;
             }
-	    if(!sh_video || !sh_video->i_bps)  // unspecified or VBR 
-    		return DEMUXER_CTRL_DONTKNOW;
-	    *((unsigned long *)arg)=(demuxer->movi_end-demuxer->movi_start)/sh_video->i_bps;
-	    return DEMUXER_CTRL_GUESS;
-
-	case DEMUXER_CTRL_GET_PERCENT_POS:
-	    if (demuxer->movi_end==demuxer->movi_start) 
-    		return DEMUXER_CTRL_DONTKNOW;
-#ifdef _XBOX //Seeking sometimes ends up at a position with an invalid timestamp
-        if (mpg_d && mpg_d->has_valid_timestamps && mpg_d->final_pts > 0.0 && mpg_d->last_pts > 0.0) {
-#else
-        if (mpg_d && mpg_d->has_valid_timestamps && mpg_d->final_pts > 0.0) {
 #endif
-              *((int *)arg)=(int)(100 * mpg_d->last_pts / mpg_d->final_pts);
+            if (mpg_d && mpg_d->has_valid_timestamps) {
+              *((unsigned long *)arg)=(unsigned long)mpg_d->first_to_final_pts_len;
               return DEMUXER_CTRL_OK;
             }
-    	    *((int *)arg)=(int)((demuxer->filepos-demuxer->movi_start)/((demuxer->movi_end-demuxer->movi_start)/100));
-	    return DEMUXER_CTRL_OK;
+    		return DEMUXER_CTRL_DONTKNOW;
+
+	case DEMUXER_CTRL_GET_PERCENT_POS:
+            if (mpg_d && mpg_d->has_valid_timestamps && mpg_d->first_to_final_pts_len > 0.0) {
+              *((int *)arg)=(int)(100 * (mpg_d->last_pts-mpg_d->first_pts) / mpg_d->first_to_final_pts_len);
+              return DEMUXER_CTRL_OK;
+            }
+	    return DEMUXER_CTRL_DONTKNOW;
+
+	case DEMUXER_CTRL_SWITCH_AUDIO:
+            if(! (mpg_d && mpg_d->num_a_streams > 1 && demuxer->audio && demuxer->audio->sh))
+	      return DEMUXER_CTRL_NOTIMPL; 
+	    else {
+              demux_stream_t *d_audio = demuxer->audio;
+              sh_audio_t *sh_audio = d_audio->sh;
+              sh_audio_t *sh_a = sh_audio;
+              int i;
+	      if(!sh_audio)
+	        return DEMUXER_CTRL_NOTIMPL;
+              if (*((int*)arg) < 0)
+              {
+              for (i = 0; i < mpg_d->num_a_streams; i++) {
+                if (d_audio->id == mpg_d->a_stream_ids[i]) break;
+              }
+                i = (i+1) % mpg_d->num_a_streams;
+                sh_a = (sh_audio_t*)demuxer->a_streams[mpg_d->a_stream_ids[i]];
+              }
+              else {
+                for (i = 0; i < mpg_d->num_a_streams; i++)
+                  if (*((int*)arg) == mpg_d->a_stream_ids[i]) break;
+                if (i < mpg_d->num_a_streams)
+                  sh_a = (sh_audio_t*)demuxer->a_streams[*((int*)arg)];
+              }
+              if (i < mpg_d->num_a_streams && d_audio->id != mpg_d->a_stream_ids[i]) {
+                d_audio->id = mpg_d->a_stream_ids[i];
+                d_audio->sh = sh_a;
+                ds_free_packs(d_audio);
+              }
+            }
+            *((int*)arg) = demuxer->audio->id;
+            return DEMUXER_CTRL_OK;
 
 	default:
 	    return DEMUXER_CTRL_NOTIMPL;
@@ -945,6 +1078,37 @@ int demux_mpg_ps_open(demuxer_t* demuxer)
         } else {
             sh_audio=demuxer->audio->sh;sh_audio->ds=demuxer->audio;
         }
+    }
+
+    if(!sh_video->format && ps_probe > 0) {
+        int head;
+        off_t pos = stream_tell(demuxer->stream);
+
+        clear_stats();
+        do {
+            head=sync_video_packet(demuxer->video);
+            if(!head) break;
+            update_stats(head);
+            skip_video_packet(demuxer->video);
+        } while(stream_tell(demuxer->stream) < pos + ps_probe && !demuxer->stream->eof);
+
+        ds_free_packs(demuxer->video);
+        demuxer->stream->eof=0;
+        stream_seek(demuxer->stream, pos);
+        mp_msg(MSGT_DEMUX,MSGL_INFO,"MPEG packet stats: p100: %d  p101: %d p1B6: %d p12x: %d sli: %d a: %d b: %d c: %d idr: %d sps: %d pps: %d\n",
+            num_elementary_packets100, num_elementary_packets101,
+            num_elementary_packets1B6, num_elementary_packets12x,
+            num_h264_slice, num_h264_dpa, num_h264_dpb, num_h264_dpc,
+            num_h264_idr, num_h264_sps, num_h264_pps);
+
+        if(num_elementary_packets1B6>3 && num_elementary_packets12x>=1 &&
+            num_elementary_packets100<=num_elementary_packets12x)
+            sh_video->format = 0x10000004;
+        else if((num_h264_slice>3 || (num_h264_dpa>3 && num_h264_dpb>3 && num_h264_dpc>3)) &&
+            num_h264_sps>=1 && num_h264_pps>=1 && num_h264_idr>=1 &&
+            num_elementary_packets1B6==0)
+                sh_video->format = 0x10000005;
+        else sh_video->format = 0x10000002;
     }
 
     return 1;
