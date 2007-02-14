@@ -58,9 +58,12 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     return false;
   }
 
+  if (strXML.Find("encoding=\"utf-8\"") < 0)
+    g_charsetConverter.stringCharsetToUtf8(strXML);
+
   // ok, now parse the xml file
   TiXmlDocument doc;
-  doc.Parse(strXML.c_str());
+  doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())
   {
     CLog::Log(LOGERROR, "IMDB: Unable to parse xml");
@@ -80,7 +83,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     TiXmlNode* id = movie->FirstChild("id");
     if (title && title->FirstChild() && link && link->FirstChild())
     {
-      g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url.m_strTitle);
+      url.m_strTitle = title->FirstChild()->Value();
       url.m_strURL.push_back(link->FirstChild()->Value());
       while ((link = link->NextSibling("url")))
       {
