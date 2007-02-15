@@ -304,6 +304,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
     else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
   }
+  else if (strCategory.Equals("container"))
+  {
+    if (strTest.Equals("container.folderthumb")) ret = CONTAINER_FOLDERTHUMB;
+    else if (strTest.Equals("container.folderpath")) ret = CONTAINER_FOLDERPATH;
+  }
   else if (strCategory.Equals("listitem"))
   {
     if (strTest.Equals("listitem.thumb")) ret = LISTITEM_THUMB;
@@ -544,6 +549,13 @@ string CGUIInfoManager::GetLabel(int info)
   case LCD_FAN_SPEED:
     return GetSystemHeatInfo("lcdfan");
     break;
+  case CONTAINER_FOLDERPATH:
+    {
+      CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      if (window && window->IsMediaWindow())
+        strLabel = ((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath;
+      break;
+    }
   case SYSTEM_BUILD_VERSION:
     strLabel = GetVersion();
     break;
@@ -1112,14 +1124,19 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
       return m_currentFile.HasThumbnail() ? m_currentFile.GetThumbnailImage() : "defaultVideoCover.png";
     else return m_currentMovieThumb;
   }
-  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY)
+  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY || info == CONTAINER_FOLDERTHUMB)
   {
     CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
     if (!window || !window->IsMediaWindow())
       window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (window && window->IsMediaWindow())
     {
-      CFileItem *item = window->GetCurrentListItem();
+      CFileItem* item;
+
+      if (info == CONTAINER_FOLDERTHUMB)
+        item = &const_cast<CFileItem&>(((CGUIMediaWindow*)window)->CurrentDirectory());
+      else
+        item = window->GetCurrentListItem();
       if (item)
         return GetItemImage(item, info);
     }
