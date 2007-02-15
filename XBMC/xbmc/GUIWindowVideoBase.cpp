@@ -1476,6 +1476,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     strXml = stack.GetFirstStackedFile(pItem->m_strPath) + ".xml";
   }
   CStdString strCache = "Z:\\" + CUtil::GetFileName(strXml);
+  CUtil::GetFatXQualifiedPath(strCache);
   if (CFile::Exists(strXml))
   {
     bGotXml = true;
