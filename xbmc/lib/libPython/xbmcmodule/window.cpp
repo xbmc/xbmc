@@ -1,6 +1,7 @@
 #include "../../../stdafx.h"
 #include "window.h"
 #include "dialog.h"
+#include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
 
@@ -58,7 +59,8 @@ namespace PYXBMC
 			pWindow->bModal = false;
 			pWindow->bIsPythonWindow = true;
 
-			if (!bAsDialog) pWindow->pWindow = new CGUIPythonWindow(id);
+			if (!bAsDialog && !pWindow->bUsingXML) pWindow->pWindow = new CGUIPythonWindow(id);
+			else if (pWindow->bUsingXML) pWindow->pWindow = new CGUIPythonWindowXML(id,pWindow->sXMLFileName);
 			else pWindow->pWindow = new CGUIPythonWindowDialog(id);
 
 			if (pWindow->bIsPythonWindow)

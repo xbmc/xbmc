@@ -4,6 +4,7 @@
 #include "control.h"
 #include "window.h"
 #include "dialog.h"
+#include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
 
@@ -85,6 +86,7 @@ namespace PYXBMC
     
     initWindow_Type();
     initWindowDialog_Type();
+    initWindowXML_Type();
     initListItem_Type();
     initControl_Type();
     initControlSpin_Type();
@@ -104,6 +106,7 @@ namespace PYXBMC
 		
 		if (PyType_Ready(&Window_Type) < 0 ||
 				PyType_Ready(&WindowDialog_Type) < 0 ||
+        PyType_Ready(&WindowXML_Type) < 0 ||
 				PyType_Ready(&ListItem_Type) < 0 ||
 				PyType_Ready(&Control_Type) < 0 ||
 				PyType_Ready(&ControlSpin_Type) < 0 ||
@@ -121,6 +124,7 @@ namespace PYXBMC
 
 		Py_INCREF(&Window_Type);
 		Py_INCREF(&WindowDialog_Type);
+		Py_INCREF(&WindowXML_Type);
 		Py_INCREF(&ListItem_Type);
 		Py_INCREF(&Control_Type);
 		Py_INCREF(&ControlSpin_Type);
@@ -141,6 +145,7 @@ namespace PYXBMC
 
     PyModule_AddObject(pXbmcGuiModule, "Window", (PyObject*)&Window_Type);
 		PyModule_AddObject(pXbmcGuiModule, "WindowDialog", (PyObject*)&WindowDialog_Type);
+		PyModule_AddObject(pXbmcGuiModule, "WindowXML", (PyObject*)&WindowXML_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ListItem", (PyObject*)&ListItem_Type);
 		//PyModule_AddObject(pXbmcGuiModule, "Control", (PyObject*)&Control_Type);
 		//PyModule_AddObject(pXbmcGuiModule, "ControlSpin", (PyObject*)&ControlSpin_Type);

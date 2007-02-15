@@ -1,5 +1,6 @@
 #include "..\python\python.h"
 #include "GUIPythonWindow.h"
+#include "GUIPythonWindowXML.h"
 #include "GUIPythonWindowDialog.h"
 #include "control.h"
 
@@ -18,6 +19,8 @@
 		int iCurrentControlId; \
 		bool bIsPythonWindow; \
 		bool bModal; \
+		bool bUsingXML; \
+		string sXMLFileName; \
 		CGUIWindow* pWindow; \
 		std::vector<Control*> vecControls;
 

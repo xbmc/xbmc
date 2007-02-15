@@ -8,6 +8,7 @@ public:
 	DWORD dwParam;
 	PyObject* pCallbackWindow;
 	PyObject* pObject;
+	int controlId; // for XML window
 };
 
 int Py_XBMC_Event_OnAction(void* arg);
