@@ -1464,7 +1464,6 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   if (pItem->m_bIsFolder) return;
 
   bool bGotXml = false;
-  CFileItemList items;
   CIMDBMovie movie;
   movie.Reset();
 
@@ -1504,7 +1503,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
       return;
     pSelect->SetHeading(530); // Select Genre
     pSelect->Reset();
-    items.ClearKeepPointer();
+    CFileItemList items;
     if (!CDirectory::GetDirectory("videodb://1/", items))
       return;
     for (int i = 0; i < items.Size(); ++i)
@@ -1534,6 +1533,10 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     movie.m_strGenre = strGenre;
   }
 
+  // Why should we double check title for uniqueness?  Who cares if 2 movies
+  // have the same name in the db?
+
+  /*
   // double check title for uniqueness
   items.ClearKeepPointer();
   if (!CDirectory::GetDirectory("videodb://2/", items))
@@ -1555,7 +1558,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
       }
       return;
     }
-  }
+  }*/
 
   // everything is ok, so add to database
   m_database.Open();
