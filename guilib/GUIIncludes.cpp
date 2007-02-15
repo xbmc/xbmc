@@ -128,12 +128,12 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
       }
       // remove the <include>tagName</include> element
       node->RemoveChild(include);
+      include = node->FirstChildElement("include");
     }
     else
     { // invalid include
       CLog::Log(LOGWARNING, "Skin has invalid include: %s", tagName.c_str());
-      return;
+      include = include->NextSiblingElement("include");
     }
-    include = node->FirstChildElement("include");
   }
 }
