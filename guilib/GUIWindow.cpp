@@ -772,7 +772,12 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   QueryPerformanceCounter(&start);
 
   // load skin xml file
-  if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded)) Load(m_xmlFile);
+  bool bHasPath=false; 
+  if (m_xmlFile.Find("\\") > -1 || m_xmlFile.Find("/") > -1 ) 
+    bHasPath = true; 
+  if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
+    Load(m_xmlFile,bHasPath);
+
   LARGE_INTEGER slend;
   QueryPerformanceCounter(&slend);
 

@@ -3,7 +3,8 @@
 #include "..\python\python.h"
 #include "pyutil.h"
 #include "..\..\..\application.h"
-
+#include "../../../../guilib/SkinInfo.h"
+#include "../../../Util.h"
 
 #define ACTIVE_WINDOW  m_gWindowManager.GetActiveWindow()
 
@@ -24,13 +25,23 @@ namespace PYXBMC
 
     self = (WindowXML*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-
     self->iWindowId = -1;
-    PyObject* pyOXMLname = 0;
-    string strXMLname;
-    if (!PyArg_ParseTuple(args, "O", &pyOXMLname, &self->iWindowId)) return NULL;
-    PyGetUnicodeString( strXMLname, pyOXMLname);
-    CLog::Log(LOGFATAL, "WindowXML Xml File: %s.", strXMLname.c_str());
+    PyObject* pyOXMLname, * pyOname;
+    //bool
+    string strXMLname, strFallbackPath;
+
+    if (!PyArg_ParseTuple(args, "OO", &pyOXMLname, &pyOname)) return NULL;
+    PyGetUnicodeString(strXMLname, pyOXMLname);
+    PyGetUnicodeString(strFallbackPath, pyOname);
+
+    // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
+    RESOLUTION res;
+    CStdString strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res);
+    if (!XFILE::CFile::Exists(strSkinPath))
+    {
+      strXMLname = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath);
+    }
+
     self->sXMLFileName = strXMLname;
     self->bUsingXML = true;
     // create new GUIWindow
