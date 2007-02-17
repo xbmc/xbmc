@@ -46,7 +46,7 @@
 				<expression>od lat: ([0-9]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
-				<expression>recenzje&quot;[^ ]+&gt;([^&lt;]+)</expression>
+				<expression>recenzje&quot;[^ ]+&gt;([^&lt;]+)&lt;/b&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;runtime&gt;\1 min&lt;/runtime&gt;" dest="5+">
 				<expression>czas trwania: ([0-9]*)</expression>
@@ -67,7 +67,7 @@
 				<expression> / (.*)</expression>
 			</RegExp>
 			<RegExp input="$$2" output="\1\2" dest="6">
-				<expression noclean="1,2">(rolesLabel&quot;&gt;re[^#]*)scenar|(rolesLabel&quot;&gt;re[^#]*)aktorzy</expression>
+				<expression noclean="1,2">(rolesLabel&quot;&gt;re[^~]*)scenar|(rolesLabel&quot;&gt;re[^~]*)aktorzy</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
 				<RegExp input="$$6" output=" / \1" dest="7">
@@ -76,11 +76,11 @@
 				<expression> / (.*)</expression>
 			</RegExp>
 			<RegExp input="$$2" output="\1\2" dest="6">
-				<expression noclean="1,2">(rolesLabel&quot;&gt;scenar[^#]*)Forum|(rolesLabel&quot;&gt;aktorzy[^#]*)Forum</expression>
+				<expression noclean="1,2">(rolesLabel&quot;&gt;scenar[^~]*)Forum|(rolesLabel&quot;&gt;aktorzy[^~]*)Forum</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="5+">
 				<RegExp input="$$6" output=" / \1" dest="7">
-					<expression repeat="yes">href[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;[^&gt;]*[^&lt;]*&lt;br/&gt;</expression>
+					<expression repeat="yes">filmActor&quot; href[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;[^&gt;]*[^&lt;]*&lt;br/&gt;</expression>
 				</RegExp>
 				<expression> / (.*)</expression>
 			</RegExp>
@@ -89,7 +89,7 @@
 			</RegExp>
 			<RegExp input="$$8" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
 				<RegExp input="$$3" output="\1\2" dest="9">
-					<expression>alt=&quot;opisy&quot;.[^\[]*&quot;&gt;(.+)\[|div align=&quot;justify&quot;&gt;(.[^=]*)&lt;/div&gt;&lt;/li&gt;</expression>
+					<expression>alt=&quot;opisy&quot;.[^\[]*justify&quot;&gt;(.[^=]*)&lt;/div&gt;&lt;/li&gt;|div align=&quot;justify&quot;&gt;(.[^=]*)&lt;/div&gt;&lt;/li&gt;</expression>
 				</RegExp>
 				<RegExp input="$$9" output="\1" dest="8">
 					<expression>([^&lt;]+)</expression>
