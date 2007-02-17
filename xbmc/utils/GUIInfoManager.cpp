@@ -1392,7 +1392,9 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   switch (item)
   {
   case VIDEOPLAYER_DURATION:
-      return m_currentMovieDuration;
+    if (m_currentMovieDuration.IsEmpty())
+      return GetVideoLabel(PLAYER_DURATION);
+    return m_currentMovieDuration;
   case VIDEOPLAYER_TITLE:
     return m_currentMovie.m_strTitle;
     break;
