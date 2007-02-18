@@ -1765,3 +1765,13 @@ void CGUIWindowMusicBase::AddToPlaylist(int iItem)
   // save
   pPlaylist->Save(strPlaylist);
 }
+
+bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+{
+  items.SetThumbnailImage("");
+  bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
+  if (bResult)
+    items.SetMusicThumb();
+
+  return bResult;
+}
