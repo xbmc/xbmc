@@ -73,6 +73,9 @@ protected:
   // Members for access some of the Data
 
   int RVA2Section(unsigned long RVA);
+  void* RVA2Data(unsigned long RVA);
+  unsigned long Data2RVA(void* address);
+
   char *GetStringTblIndex(int index);
   char *GetStringTblOff(int Offset);
   char *GetSymbolName(SymbolTable_t *sym);

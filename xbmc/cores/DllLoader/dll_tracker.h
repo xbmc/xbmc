@@ -46,6 +46,9 @@ typedef std::list<SOCKET>::iterator SocketListIter;
 typedef std::list<HANDLE> HeapObjectList;
 typedef std::list<HANDLE>::iterator HeapObjectListIter;
 
+typedef std::map<unsigned, AllocLenCaller> VAllocList;
+typedef std::map<unsigned, AllocLenCaller>::iterator  VAllocListIter;
+
 typedef struct _DllTrackInfo
 {
   DllLoader* pDll;
@@ -66,6 +69,7 @@ typedef struct _DllTrackInfo
 
   HeapObjectList heapobjectList;
   
+  VAllocList virtualList;
 } DllTrackInfo;
 
 typedef std::list<DllTrackInfo*> TrackedDllList;

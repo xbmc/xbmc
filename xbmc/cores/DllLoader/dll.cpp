@@ -178,23 +178,23 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
     {
       CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), '%s') => 0x%x", hModule, dll->GetName(), function, address);
     }
-#ifdef API_DEBUG /* apperently not a good idea to create dummy functions for missing functions */
-    else if( dll->IsSystemDll() )
-    {
-      address = (void*)create_dummy_function(dll->GetName(), function);
-
-      /* add to tracklist if we are tracking this source dll */
-      DllTrackInfo* track = tracker_get_dlltrackinfo(loc);
-      if( track )
-        tracker_dll_data_track(track->pDll, (unsigned long)address);
-
-      CLog::Log(LOGDEBUG, __FUNCTION__" - created dummy function %s!%s", dll->GetName(), function);
-    }
-#endif
     else
-    {      
-      address = NULL;
-      CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), '%s') => 0x%x", hModule, dll->GetName(), function, address);
+    {
+      DllTrackInfo* track = tracker_get_dlltrackinfo(loc);
+      /* some dll's require us to always return a function or it will fail, other's  */
+      /* decide functionallity depending on if the functions exist and may fail      */
+      if( dll->IsSystemDll() && track 
+       && stricmp(track->pDll->GetName(), "CoreAVCDecoder.ax") == 0 )
+      {
+        address = (void*)create_dummy_function(dll->GetName(), function);
+        tracker_dll_data_track(track->pDll, (unsigned long)address);
+        CLog::Log(LOGDEBUG, __FUNCTION__" - created dummy function %s!%s", dll->GetName(), function);
+      }
+      else
+      {      
+        address = NULL;
+        CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), '%s') => 0x%x", hModule, dll->GetName(), function, address);
+      }
     }
   }
   

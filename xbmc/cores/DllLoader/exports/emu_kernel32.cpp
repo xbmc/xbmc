@@ -8,7 +8,7 @@ vector<string> m_vecAtoms;
 
 extern char* tracker_getdllname(unsigned long caller);
 
-//#define API_DEBUG
+#define API_DEBUG
 
 extern "C" HANDLE xboxopendvdrom()
 {
@@ -321,7 +321,7 @@ extern "C" DWORD WINAPI dllGetVersion()
 extern "C" BOOL WINAPI dllGetVersionExA(LPOSVERSIONINFO lpVersionInfo)
 {
 #ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "GetVersionExA(0x%x) => 1\n");
+  CLog::Log(LOGDEBUG, "GetVersionExA()\n");
 #endif
   lpVersionInfo->dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   lpVersionInfo->dwMajorVersion = 4;
@@ -329,12 +329,27 @@ extern "C" BOOL WINAPI dllGetVersionExA(LPOSVERSIONINFO lpVersionInfo)
   lpVersionInfo->dwBuildNumber = 0x4000457;
   // leave it here for testing win9x-only codecs
   lpVersionInfo->dwPlatformId = 1; //VER_PLATFORM_WIN32_WINDOWS
-  strcpy(lpVersionInfo->szCSDVersion, " B");
+  lpVersionInfo->szCSDVersion[0] = 0;
 #ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "  Major version: 4\n  Minor version: 0\n  Build number: 0x4000457\n"
-            "  Platform Id: VER_PLATFORM_WIN32_NT\n Version string: 'Service Pack 3'\n");
+  CLog::Log(LOGDEBUG, "  Major version: %d\n  Minor version: %d\n  Build number: %x\n"
+            "  Platform Id: %d\n Version string: '%s'\n", 
+            lpVersionInfo->dwMajorVersion, lpVersionInfo->dwMinorVersion, 
+            lpVersionInfo->dwBuildNumber, lpVersionInfo->dwPlatformId, lpVersionInfo->szCSDVersion);
 #endif
-  return 1;
+  return TRUE;
+}
+
+extern "C" BOOL WINAPI dllGetVersionExW(LPOSVERSIONINFOW lpVersionInfo)
+{
+#ifdef API_DEBUG
+  CLog::Log(LOGDEBUG, "GetVersionExW()\n");
+#endif
+  if(!dllGetVersionExA((LPOSVERSIONINFO)lpVersionInfo))
+    return FALSE;
+  
+  lpVersionInfo->szCSDVersion[0] = 0;
+  lpVersionInfo->szCSDVersion[1] = 0;
+  return TRUE;
 }
 
 extern "C" UINT WINAPI dllGetProfileIntA(LPCTSTR lpAppName, LPCTSTR lpKeyName, INT nDefault)
@@ -693,23 +708,9 @@ extern "C" BOOL WINAPI dllTlsFree(DWORD dwTlsIndex)
 
 extern "C" BOOL WINAPI dllTlsSetValue(int dwTlsIndex, LPVOID lpTlsValue)
 {
+  if(dwTlsIndex == (DWORD)(-1)) 
+    return FALSE;
   BOOL retval = TlsSetValue(dwTlsIndex, lpTlsValue);
-
-#if 0
-  /* this seem to be a way to emulate tlsget/set value on systems that doesn't have those */
-  /* however the 0x88 offset is taken from mplayer wich is compiled using gcc instead */
-  /* and i really don't know if it is correct */
-
-  if (retval)
-  {
-    __asm {
-      mov ecx, dwTlsIndex;
-      mov ebx, lpTlsValue
-      mov eax, fs: [0x18]
-      mov [eax + 0x88 + ecx*4], ebx
-    }
-  }
-#endif
 
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "KERNEL32!TlsSetValue(%d, 0x%x) => %d", dwTlsIndex, lpTlsValue, retval);
@@ -719,19 +720,9 @@ extern "C" BOOL WINAPI dllTlsSetValue(int dwTlsIndex, LPVOID lpTlsValue)
 
 extern "C" LPVOID WINAPI dllTlsGetValue(DWORD dwTlsIndex)
 {
+  if(dwTlsIndex == (DWORD)(-1)) 
+    return NULL;
   LPVOID retval = TlsGetValue(dwTlsIndex);
-
-#if 0  
-  if (retval)
-  {
-    __asm {
-      mov ecx, dwTlsIndex;
-  mov eax, fs: [0x18]
-      mov eax, [eax + 0x88 + ecx*4]
-      mov retval, eax
-    }
-  }
-#endif
 
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "KERNEL32!TlsGetValue(%d) => 0x%x", dwTlsIndex, retval);
