@@ -38,7 +38,8 @@ protected:
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */
   virtual void UpdateButtons();
-
+  
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
   virtual void OnSearchItemFound(const CFileItem* pItem);
