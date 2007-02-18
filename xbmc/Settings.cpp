@@ -1243,6 +1243,18 @@ void CSettings::LoadAdvancedSettings()
     }
   }
 
+  const TiXmlNode *pTokens = pRootElement->FirstChild("sorttokens");
+  if (pTokens && !pTokens->NoChildren())
+  {
+    const TiXmlNode *pToken = pTokens->FirstChild("token");
+    while (pToken)
+    {
+      if (pToken->FirstChild() && pToken->FirstChild()->Value())
+        g_advancedSettings.m_vecTokens.push_back(pToken->FirstChild()->Value());
+      pToken = pToken->NextSibling();
+    }
+  }
+
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
 
   // TODO: Should cache path be given in terms of our predefined paths??
