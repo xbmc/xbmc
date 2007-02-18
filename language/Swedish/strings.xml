@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 02/06/2007-->
+<!--Date of translation: 02/18/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7802-->
+<!--Based on english strings version 7851-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1468,6 +1468,7 @@ den här visualiseringen</string>
   <string id="20347">som</string>
   <string id="20348">Regissörer</string>
   <string id="20349">Inga filmfiler hittades i denna sökväg!</string>
+  <string id="20350">röster</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
