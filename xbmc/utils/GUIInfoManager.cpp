@@ -553,7 +553,10 @@ string CGUIInfoManager::GetLabel(int info)
     {
       CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
       if (window && window->IsMediaWindow())
-        strLabel = ((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath;
+      {
+        CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
+        url.GetURLWithoutUserDetails(strLabel);
+      }
       break;
     }
   case SYSTEM_BUILD_VERSION:
