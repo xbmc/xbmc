@@ -69,13 +69,9 @@ void tracker_dll_set_addr(DllLoader* pDll, unsigned int min, unsigned int max)
 
 char* tracker_getdllname(unsigned long caller)
 {
-  for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
-  {
-    if (caller >= (*it)->lMinAddr && caller <= (*it)->lMaxAddr)
-    {
-      return (*it)->pDll->GetFileName();
-    }
-  }
+  DllTrackInfo *track = tracker_get_dlltrackinfo(caller);
+  if(track)
+    return track->pDll->GetFileName();
   return "";
 }
 
@@ -88,6 +84,18 @@ DllTrackInfo* tracker_get_dlltrackinfo(unsigned long caller)
       return *it;
     }
   }
+
+  // crap not in any base address, check if it may be in virtual spaces
+  for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
+  {
+    for(VAllocListIter it2 = (*it)->virtualList.begin(); it2 != (*it)->virtualList.end(); ++it2)
+    {
+      if( it2->first <= caller && caller < it2->first + it2->second.size )
+        return *it;
+
+    }
+  }
+
   return NULL;
 }
 
