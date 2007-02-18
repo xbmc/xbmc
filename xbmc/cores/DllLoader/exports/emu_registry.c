@@ -418,13 +418,13 @@ LONG WINAPI dllRegOpenKeyA(HKEY hKey, LPCSTR lpSubKey, PHKEY phkResult)
   return result;
 }
 
-LONG WINAPI dllRegQueryValueA(HKEY hKey, LPCTSTR lpSubKey, LPTSTR lpValue, PLONG lpcbValue)
+LONG WINAPI dllRegQueryValueA(HKEY hKey, LPCSTR lpSubKey, LPTSTR lpValue, PLONG lpcbValue)
 {
   //not_implement("advapi32.dll fake function RegQueryValueA called\n");  //warning
   return ERROR_INVALID_FUNCTION;
 }
 
-LONG WINAPI dllRegQueryValueExA (HKEY key, LPCTSTR value, LPDWORD reserved,
+LONG WINAPI dllRegQueryValueExA (HKEY key, LPCSTR value, LPDWORD reserved,
                                  LPDWORD type, LPBYTE data, LPDWORD count)
 {
   struct reg_value* t;
@@ -480,7 +480,49 @@ LONG WINAPI dllRegQueryValueExA (HKEY key, LPCTSTR value, LPDWORD reserved,
   return 0;
 }
 
-LONG WINAPI dllRegCreateKeyExA (HKEY key, LPCTSTR name, DWORD reserved,
+LONG WINAPI dllRegQueryValueExW (HKEY key, LPCWSTR value, LPDWORD reserved,
+                                 LPDWORD type, LPBYTE data, LPDWORD count)
+{  
+  SIZE_T count2;
+  PCHAR value2;
+  DWORD type2;  
+
+  if(!value) return ERROR_INVALID_PARAMETER;
+  if(!type) type = &type2;
+  if(!count) count = &count2;
+  
+  count2 = WideCharToMultiByte(65001, 0x0, value, -1, NULL, 0, NULL, NULL);
+  value2 = malloc(count2);
+  count2 = WideCharToMultiByte(65001, 0x0, value, -1, value2, count2, NULL, NULL);
+  
+  
+  count2 = dllRegQueryValueExA(key, value2, reserved, type, data, count);
+  if(count2 != ERROR_SUCCESS )
+  {
+    free(value2);
+    return count2;
+  }
+
+  if(data && (*type == REG_SZ || *type == REG_MULTI_SZ))
+  {
+    PWCHAR data2 = malloc(*count);
+    count2 = MultiByteToWideChar(65001, 0x0, data, *count, data2, *count);
+    
+    if(count2 == 0)
+    {
+      free(data2);
+      free(value2);
+      return ERROR_MORE_DATA;
+    }
+    memmove(data, data2, count2);
+    free(data2);
+  }
+  free(value2);
+  return ERROR_SUCCESS;
+}
+
+
+LONG WINAPI dllRegCreateKeyExA (HKEY key, LPCSTR name, DWORD reserved,
                                 LPTSTR classs, DWORD options, REGSAM security,
                                 LPSECURITY_ATTRIBUTES sec_attr,
                                 PHKEY newkey, LPDWORD status)

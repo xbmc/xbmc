@@ -69,6 +69,9 @@ extern "C"
   LONG WINAPI dllRegQueryValueExA (HKEY hKey, LPCTSTR lpValueName, LPDWORD lpReserved,
                                    LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData);
 
+  LONG WINAPI dllRegQueryValueExW (HKEY hKey, LPCWSTR lpValueName, LPDWORD lpReserved,
+                                   LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData);
+
   LONG WINAPI dllRegCreateKeyA (HKEY hKey, LPCTSTR lpSubKey, PHKEY phkResult);
 
   LONG WINAPI dllRegSetValueExA (HKEY hKey, LPCTSTR lpValueName, DWORD Reserved,
@@ -89,6 +92,7 @@ extern "C"
                                    LPDWORD security, FILETIME *modif );
                                    
   LONG WINAPI dllRegQueryValueA (HKEY hKey, LPCTSTR lpSubKey, LPTSTR lpValue, PLONG lpcbValue);
+
 
   void free_registry(void);
   void save_registry(void);

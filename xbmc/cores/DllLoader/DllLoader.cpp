@@ -235,16 +235,23 @@ int DllLoader::Parse()
   {
     if (CoffLoader::ParseCoff(fp))
     {
-      // dll is loaded now, this means we also know the base address of it and its size
-      // we use this for tracking (".text" is the first section in a dll)
-      for (int i = 0; i < NumOfSections; ++i)
+      if(WindowsHeader)
+        tracker_dll_set_addr(this, (unsigned)hModule, (unsigned)hModule + WindowsHeader->SizeOfImage - 1);
+      else
       {
-        if (!memcmp(SectionHeader[i].Name, ".text", 6))
+        unsigned int iMinAddr = UINT_MAX;
+        unsigned int iMaxAddr = 0;
+        // dll is loaded now, this means we also know the base address of it and its size
+        for (int i = 0; i < NumOfSections; ++i)
         {
-          unsigned int iMinAddr = (unsigned)hModule + SectionHeader[i].VirtualAddress;
-          unsigned int iMaxAddr = iMinAddr + SectionHeader[i].VirtualSize;
-          tracker_dll_set_addr(this, iMinAddr, iMaxAddr);
-          break;
+          iMinAddr = min(iMinAddr, SectionHeader[i].VirtualAddress);
+          iMaxAddr = max(iMaxAddr, SectionHeader[i].VirtualAddress +SectionHeader[i].VirtualSize);
+        }
+        if(iMaxAddr > iMinAddr)
+        {
+          iMinAddr += (unsigned)hModule;
+          iMaxAddr += (unsigned)hModule;
+          tracker_dll_set_addr(this, iMinAddr, iMaxAddr - 1);
         }
       }
       LoadExports();
@@ -261,9 +268,7 @@ int DllLoader::Parse()
 
 void DllLoader::PrintImportLookupTable(unsigned long ImportLookupTable_RVA)
 {
-  int Sctn = RVA2Section(ImportLookupTable_RVA);
-  unsigned long *Table = (unsigned long*)
-      (SectionData[Sctn] + (ImportLookupTable_RVA - SectionHeader[Sctn].VirtualAddress));
+  unsigned long *Table = (unsigned long*)RVA2Data(ImportLookupTable_RVA);
 
   while (*Table)
   {
@@ -292,11 +297,10 @@ void DllLoader::PrintImportTable(ImportDirTable_t *ImportDirTable)
           Imp->Name_RVA != 0 ||
           Imp->ImportAddressTable_RVA != 0)
   {
-    char *Name; int Sctn;
+    char *Name;
     HavePrinted = 1;
 
-    Sctn = RVA2Section(Imp->Name_RVA);
-    Name = SectionData[Sctn] + (Imp->Name_RVA - SectionHeader[Sctn].VirtualAddress);
+    Name = (char*)RVA2Data(Imp->Name_RVA);
     
     CLog::Log(LOGDEBUG, "    %s:\n", Name);
     CLog::Log(LOGDEBUG, "        ImportAddressTable:     %04X\n", Imp->ImportAddressTable_RVA);
@@ -313,20 +317,11 @@ void DllLoader::PrintImportTable(ImportDirTable_t *ImportDirTable)
 
 void DllLoader::PrintExportTable(ExportDirTable_t *ExportDirTable)
 {
-  int Sctn = RVA2Section(ExportDirTable->Name_RVA);
-  char *Name = SectionData[Sctn] + (ExportDirTable->Name_RVA - SectionHeader[Sctn].VirtualAddress);
+  char *Name = (char*)RVA2Data(ExportDirTable->Name_RVA);
 
-  Sctn = RVA2Section(ExportDirTable->ExportAddressTable_RVA);
-  unsigned long *ExportAddressTable = (unsigned long*)
-                                      (SectionData[Sctn] + (ExportDirTable->ExportAddressTable_RVA - SectionHeader[Sctn].VirtualAddress));
-
-  Sctn = RVA2Section(ExportDirTable->NamePointerTable_RVA);
-  unsigned long *NamePointerTable = (unsigned long*)
-                                    (SectionData[Sctn] + (ExportDirTable->NamePointerTable_RVA - SectionHeader[Sctn].VirtualAddress));
-
-  Sctn = RVA2Section(ExportDirTable->OrdinalTable_RVA);
-  unsigned short *OrdinalTable = (unsigned short*)
-                                 (SectionData[Sctn] + (ExportDirTable->OrdinalTable_RVA - SectionHeader[Sctn].VirtualAddress));
+  unsigned long *ExportAddressTable = (unsigned long*)RVA2Data(ExportDirTable->ExportAddressTable_RVA);
+  unsigned long *NamePointerTable = (unsigned long*)RVA2Data(ExportDirTable->NamePointerTable_RVA);
+  unsigned short *OrdinalTable = (unsigned short*)RVA2Data(ExportDirTable->OrdinalTable_RVA);
 
 
   CLog::Log(LOGDEBUG, "Export Table for %s:\n", Name);
@@ -347,8 +342,7 @@ void DllLoader::PrintExportTable(ExportDirTable_t *ExportDirTable)
   CLog::Log(LOGDEBUG, "    ordinal hint RVA      name\n");
   for (unsigned int i = 0; i < ExportDirTable->NumNamePtrs; i++)
   {
-    int Sctn = RVA2Section(NamePointerTable[i]);
-    char *Name = SectionData[Sctn] + (NamePointerTable[i] - SectionHeader[Sctn].VirtualAddress);
+    char *Name = (char*)RVA2Data(NamePointerTable[i]);
 
     CLog::Log(LOGDEBUG, "          %d", OrdinalTable[i] + ExportDirTable->OrdinalBase);
     CLog::Log(LOGDEBUG, "    %d", OrdinalTable[i]);
@@ -362,9 +356,7 @@ int DllLoader::ResolveImports(void)
   int bResult = 1;
   if ( NumOfDirectories >= 2 && Directory[IMPORT_TABLE].Size > 0 )
   {
-    int Sctn = RVA2Section(Directory[IMPORT_TABLE].RVA);
-    ImportDirTable = (ImportDirTable_t*)
-                     (SectionData[Sctn] + (Directory[IMPORT_TABLE].RVA - SectionHeader[Sctn].VirtualAddress));
+    ImportDirTable = (ImportDirTable_t*)RVA2Data(Directory[IMPORT_TABLE].RVA);
                      
 #ifdef DUMPING_DATA
     PrintImportTable(ImportDirTable);
@@ -378,23 +370,15 @@ int DllLoader::ResolveImports(void)
             Imp->Name_RVA != 0 ||
             Imp->ImportAddressTable_RVA != 0)
     {
-      char *Name; int Sctn;
-
-      Sctn = RVA2Section(Imp->Name_RVA);
-      Name = SectionData[Sctn] + (Imp->Name_RVA - SectionHeader[Sctn].VirtualAddress);
+      char *Name = (char*)RVA2Data(Imp->Name_RVA);
 
       char* FileName=ResolveReferencedDll(Name);
       //  If possible use the dll name WITH path to resolve exports. We could have loaded 
       //  a dll with the same name as another dll but from a different directory
       if (FileName) Name=FileName;
 
-      int SctnTbl = RVA2Section(Imp->ImportLookupTable_RVA);
-      unsigned long *Table = (unsigned long*)
-                             (SectionData[SctnTbl] + (Imp->ImportLookupTable_RVA - SectionHeader[SctnTbl].VirtualAddress));
-
-      int SctnAddr = RVA2Section(Imp->ImportAddressTable_RVA);
-      unsigned long *Addr = (unsigned long*)
-                            (SectionData[SctnTbl] + (Imp->ImportAddressTable_RVA - SectionHeader[SctnTbl].VirtualAddress));
+      unsigned long *Table = (unsigned long*)RVA2Data(Imp->ImportLookupTable_RVA);
+      unsigned long *Addr = (unsigned long*)RVA2Data(Imp->ImportAddressTable_RVA);
 
       while (*Table)
       {
@@ -418,8 +402,7 @@ int DllLoader::ResolveImports(void)
         else
         {
           // We don't handle Hint/Name tables yet!!!
-          int ScnName = RVA2Section(*Table + 2);
-          char *ImpName = SectionData[ScnName] + (*Table + 2 - SectionHeader[ScnName].VirtualAddress);
+          char *ImpName = (char*)RVA2Data(*Table + 2);
 
           void *Fixup;
           if ( !ResolveName(Name, ImpName, &Fixup) )
@@ -465,40 +448,26 @@ char* DllLoader::ResolveReferencedDll(char* dll)
 
 int DllLoader::LoadExports()
 {
-  if ( NumOfDirectories >= 1 )
+  if ( NumOfDirectories > EXPORT_TABLE && Directory[EXPORT_TABLE].Size > 0 )
   {
-    int Sctn = RVA2Section(Directory[EXPORT_TABLE].RVA);
-    ExportDirTable = (ExportDirTable_t*)
-                     (SectionData[Sctn] + (Directory[EXPORT_TABLE].RVA - SectionHeader[Sctn].VirtualAddress));
+    ExportDirTable = (ExportDirTable_t*)RVA2Data(Directory[EXPORT_TABLE].RVA);
+
 #ifdef DUMPING_DATA
     PrintExportTable(ExportDirTable);
 #endif
-    Sctn = RVA2Section(ExportDirTable->Name_RVA);
-    char *Name = SectionData[Sctn] + (ExportDirTable->Name_RVA - SectionHeader[Sctn].VirtualAddress);
 
-    Sctn = RVA2Section(ExportDirTable->ExportAddressTable_RVA);
-    unsigned long *ExportAddressTable = (unsigned long*)
-                                        (SectionData[Sctn] + (ExportDirTable->ExportAddressTable_RVA - SectionHeader[Sctn].VirtualAddress));
+    // TODO - Validate all pointers are valid. Is a zero RVA valid or not? I'd guess not as it would
+    // point to the coff file header, thus not right.
 
-    Sctn = RVA2Section(ExportDirTable->NamePointerTable_RVA);
-    unsigned long *NamePointerTable = (unsigned long*)
-                                      (SectionData[Sctn] + (ExportDirTable->NamePointerTable_RVA - SectionHeader[Sctn].VirtualAddress));
-
-    Sctn = RVA2Section(ExportDirTable->OrdinalTable_RVA);
-    unsigned short *OrdinalTable = (unsigned short*)
-                                   (SectionData[Sctn] + (ExportDirTable->OrdinalTable_RVA - SectionHeader[Sctn].VirtualAddress));
+    unsigned long *ExportAddressTable = (unsigned long*)RVA2Data(ExportDirTable->ExportAddressTable_RVA);
+    unsigned long *NamePointerTable = (unsigned long*)RVA2Data(ExportDirTable->NamePointerTable_RVA);
+    unsigned short *OrdinalTable = (unsigned short*)RVA2Data(ExportDirTable->OrdinalTable_RVA);
 
     for (unsigned int i = 0; i < ExportDirTable->NumNamePtrs; i++)
     {
-      int Sctn = RVA2Section(NamePointerTable[i]);
-      char *Name = SectionData[Sctn] + (NamePointerTable[i] - SectionHeader[Sctn].VirtualAddress);
-
-      unsigned long RVA = ExportAddressTable[OrdinalTable[i]];
-      int FSctn = RVA2Section(RVA);
-      unsigned long Addr = (unsigned long)
-                           (SectionData[FSctn] + (RVA - SectionHeader[FSctn].VirtualAddress));
-    
-      AddExport(Name, OrdinalTable[i], Addr);
+      char *Name = (char*)RVA2Data(NamePointerTable[i]);
+      unsigned long Addr = (unsigned long)RVA2Data(ExportAddressTable[OrdinalTable[i]]);
+      AddExport(Name, OrdinalTable[i]+ExportDirTable->OrdinalBase, Addr);
     }
   }
   return 0;
@@ -707,16 +676,11 @@ bool DllLoader::Load()
   }
   
   ResolveImports();
-
-  LoadSymbols();
+  LoadSymbols();  
 
   // only execute DllMain if no EntryPoint is found
   if (!EntryAddress)
-  {
-    void* address = NULL;
-    ResolveExport("DllMain", &address);
-    if (address) EntryAddress = (unsigned long)address;
-  }
+    ResolveExport("DllMain", (void**)&EntryAddress);
 
   // patch some unwanted calls in memory
   if (strstr(GetName(), "QuickTime.qts"))
@@ -774,27 +738,36 @@ bool DllLoader::Load()
 #ifdef LOGALL
   CLog::Log(LOGDEBUG, "Executing EntryPoint with DLL_PROCESS_ATTACH at: 0x%x - Dll: %s", pLoader->EntryAddress, sName);
 #endif
-
-  EntryFunc* initdll = (EntryFunc *)EntryAddress;
-
-  /* since we are handing execution over to unknown code, safeguard here */
-  try 
+  
+  if(EntryAddress)
   {
-    (*initdll)((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
+    EntryFunc* initdll = (EntryFunc *)EntryAddress;
+    /* since we are handing execution over to unknown code, safeguard here */
+    try 
+    {
+      (*initdll)((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
 
 #ifdef LOGALL
-    CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_ATTACH called - Dll: %s", sName);
+      CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_ATTACH called - Dll: %s", sName);
 #endif
-  }
-  catch(win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-    return false;
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception during DLL_PROCESS_ATTACH");
-    return false;
+
+    }
+    catch(win32_exception &e)
+    {
+      e.writelog(__FUNCTION__);
+      return false;
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception during DLL_PROCESS_ATTACH");
+      return false;
+    }
+
+    // init function may have fixed up the export table
+    // this is what I expect should happens on PECompact2 
+    // dll's if export table is compressed.
+    if(!m_pExportHead)
+      LoadExports();
   }
 
   return true;
@@ -807,8 +780,11 @@ void DllLoader::Unload()
 #endif
 
     //call "DllMain" with DLL_PROCESS_DETACH
-    EntryFunc* initdll = (EntryFunc *)EntryAddress;
-    (*initdll)((HINSTANCE)hModule, DLL_PROCESS_DETACH , 0);
+    if(EntryAddress)
+    {
+      EntryFunc* initdll = (EntryFunc *)EntryAddress;
+      (*initdll)((HINSTANCE)hModule, DLL_PROCESS_DETACH , 0);
+    }
 
 #ifdef LOGALL
   CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_DETACH called - Dll: %s", pDll->GetFileName());
