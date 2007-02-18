@@ -290,6 +290,7 @@ public:
     CStdString m_strMusicLibraryAlbumFormat;
     CStdString m_strMusicLibraryAlbumFormatRight;
 
+    std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
     bool m_bTuxBoxSubMenuSelection;
     int m_iTuxBoxDefaultSubMenu;
@@ -298,7 +299,6 @@ public:
     bool m_bTuxBoxPictureIcon;
     int m_iTuxBoxEpgRequestTime;
     int m_iTuxBoxZapWaitTime;
-
   };
   struct stSettings
   {
