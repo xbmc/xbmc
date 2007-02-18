@@ -1529,6 +1529,7 @@
   <string id="20347">as</string>
   <string id="20348">Directors</string>
   <string id="20349">No video files found in this path!</string>
+  <string id="20350">votes</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
