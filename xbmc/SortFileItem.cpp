@@ -22,18 +22,14 @@
 #include "stdafx.h"
 #include "SortFileItem.h"
 
-int StartsWithToken(const CStdString& strLabel)
+inline int StartsWithToken(const CStdString& strLabel)
 {
   for (unsigned int i=0;i<g_advancedSettings.m_vecTokens.size();++i)
   {
-    if (g_advancedSettings.m_vecTokens[i].size()+1 >= strLabel.size())
-      continue;
-
-    CStdString strCutLabel=strLabel.Left(g_advancedSettings.m_vecTokens[i].size()+1);
-    if ((strCutLabel).Equals(g_advancedSettings.m_vecTokens[i]+" "))
-      return strCutLabel.size();
+    if (g_advancedSettings.m_vecTokens[i].size() < strLabel.size() && 
+        strnicmp(g_advancedSettings.m_vecTokens[i].c_str(), strLabel.c_str(), g_advancedSettings.m_vecTokens[i].size()) == 0)
+      return g_advancedSettings.m_vecTokens[i].size();
   }
-
   return 0;
 }
 
