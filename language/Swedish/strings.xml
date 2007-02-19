@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 02/18/2007-->
+<!--Date of translation: 02/19/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 7851-->
+<!--Based on english strings version 7860-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -974,7 +974,7 @@ den här visualiseringen</string>
   <string id="13396">Ljud- och text-inställningar</string>
   <string id="13397">Aktivera undertexter</string>
   <string id="13398">Bokmärken</string>
-  <string id="13399">Ignorera "The" vid sortering</string>
+  <string id="13399">Ignorera "tokens" vid sortering</string>
   <string id="13400">Använd crossfade på albumspår</string>
   <string id="13401">Bläddra efter %s</string>
   <string id="13402">Visa spårposition</string>
