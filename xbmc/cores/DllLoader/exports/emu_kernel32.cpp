@@ -8,7 +8,7 @@ vector<string> m_vecAtoms;
 
 extern char* tracker_getdllname(unsigned long caller);
 
-#define API_DEBUG
+//#define API_DEBUG
 
 extern "C" HANDLE xboxopendvdrom()
 {
