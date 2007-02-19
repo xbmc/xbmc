@@ -112,6 +112,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
         pItem->m_iHasLock = 1;
         g_passwordManager.LockBookmark(strType,strLabel,false);
         g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
+        g_settings.SaveSources();
         break;
       }
     case 1:
@@ -120,6 +121,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
         if (0 != g_guiSettings.GetInt("masterlock.maxretries"))
           pItem->m_iBadPwdCount++;
         g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
+        g_settings.SaveSources();
         break;
       }
     default:
@@ -575,7 +577,6 @@ void CGUIPassword::RemoveBookmarkLocks()
   pShares[2] = g_settings.GetSharesFromType("video");
   pShares[3] = g_settings.GetSharesFromType("pictures");
   pShares[4] = g_settings.GetSharesFromType("files");
-  g_settings.BeginBookmarkTransaction();
   for (int i=0;i<5;++i)
   {
     for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)
@@ -586,7 +587,7 @@ void CGUIPassword::RemoveBookmarkLocks()
         g_settings.UpdateBookmark(strType[i],it->strName,"lockmode","0"); // removes locks from xml
       }
   }
-  g_settings.CommitBookmarkTransaction();
+  g_settings.SaveSources();
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_BOOKMARKS);
   m_gWindowManager.SendThreadMessage(msg);
 }

@@ -191,7 +191,6 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
   bool confirmed(dialog->IsConfirmed());
   if (confirmed)
   { // yay, add this share
-    g_settings.BeginBookmarkTransaction();
     unsigned int i,j=2;
     bool bConfirmed=false;
     VECSHARES* pShares = g_settings.GetSharesFromType(type);
@@ -212,7 +211,6 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
     CShare newShare;
     newShare.FromNameAndPaths(type, strName, dialog->GetPaths());
     g_settings.UpdateShare(type, strOldName, newShare);
-    g_settings.CommitBookmarkTransaction();
   }
   dialog->m_paths.Clear();
   return confirmed;
