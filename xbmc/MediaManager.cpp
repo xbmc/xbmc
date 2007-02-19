@@ -90,7 +90,7 @@ bool CMediaManager::SaveSources()
   return xmlDoc.SaveFile(MEDIA_SOURCES_XML);
 }
 
-void CMediaManager::GetLocalDrives(VECSHARES &localDrives)
+void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
 {
   // Local shares
   CShare share;
@@ -115,6 +115,13 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives)
     CShare share;
     share.strPath = "G:\\";
     share.strName = "G Drive";
+    localDrives.push_back(share);
+  }
+  if (includeQ)
+  {
+    CShare share;
+    share.strPath = "Q:\\";
+    share.strName = "Q Drive";
     localDrives.push_back(share);
   }
 }
