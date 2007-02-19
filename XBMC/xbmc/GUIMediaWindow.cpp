@@ -423,7 +423,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   int iWindow = GetID();
   bool bOkay = (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_VIDEO_FILES || iWindow == WINDOW_FILES || iWindow == WINDOW_PICTURES || iWindow == WINDOW_PROGRAMS);
-  if (strDirectory.IsEmpty() && m_vecItems.IsEmpty() && bOkay) // add 'add source button'
+  if (strDirectory.IsEmpty() && bOkay) // add 'add source button'
   {
     CStdString strLabel = g_localizeStrings.Get(1026);
     CFileItem *pItem = new CFileItem(strLabel);
