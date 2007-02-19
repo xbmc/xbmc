@@ -516,7 +516,9 @@ bool CGUIWindowFullScreen::OnMouse()
 // as player thread will handle rendering, and call this itself. 
 void CGUIWindowFullScreen::Render()
 {
+#ifdef HAS_VIDEO_PLAYBACK
   g_renderManager.RenderUpdate(true);
+#endif
 }
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()
