@@ -1037,7 +1037,9 @@ extension=NULL;
 					return seekable; // for streaming_start
 				// Redirect
 				case 301: // Permanently
-				case 302: // Temporarily
+				case 302: // Found
+        case 303: // See Other
+        case 307: // Temporary Redirect
 					// TODO: RFC 2616, recommand to detect infinite redirection loops
 					next_url = http_get_field( http_hdr, "Location" );
 					if( next_url!=NULL ) {
