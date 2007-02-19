@@ -402,6 +402,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(20056),strThumb))
         {
           g_settings.UpdateBookmark(strType,share->strName,"thumbnail",strThumb);
+          g_settings.SaveSources();
 
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
           m_gWindowManager.SendThreadMessage(msg);
@@ -421,6 +422,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           return false;
 
         g_settings.UpdateBookmark(strType,share->strName,"thumbnail","");
+        g_settings.SaveSources();
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
         m_gWindowManager.SendThreadMessage(msg);
         return true;
@@ -519,12 +521,11 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           return false;
         // password entry and re-entry succeeded, write out the lock data
         share->m_iHasLock = 2;
-        g_settings.BeginBookmarkTransaction();
         g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPassword);
         strNewPassword.Format("%i",share->m_iLockMode);
         g_settings.UpdateBookmark(strType, share->strName, "lockmode", strNewPassword);
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
-        g_settings.CommitBookmarkTransaction();
+        g_settings.SaveSources();
 
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
         m_gWindowManager.SendThreadMessage(msg);
@@ -538,6 +539,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           return false;
 
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
+        g_settings.SaveSources();
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
         m_gWindowManager.SendThreadMessage(msg);
         return true;
@@ -551,11 +553,10 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
           return false;
 
         share->m_iHasLock = 0;
-        g_settings.BeginBookmarkTransaction();
         g_settings.UpdateBookmark(strType, share->strName, "lockmode", "0");
         g_settings.UpdateBookmark(strType, share->strName, "lockcode", "0");
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
-        g_settings.CommitBookmarkTransaction();
+        g_settings.SaveSources();
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_BOOKMARKS);
         m_gWindowManager.SendThreadMessage(msg);
 
@@ -615,11 +616,10 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         if (!bResult)
           return false;
         // password ReSet and re-entry succeeded, write out the lock data
-        g_settings.BeginBookmarkTransaction();
         g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPW);
         g_settings.UpdateBookmark(strType, share->strName, "lockmode", strNewLockMode);
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
-        g_settings.CommitBookmarkTransaction();
+        g_settings.SaveSources();
         return true;
       }
       else if (btn == btn_Settings)
@@ -663,21 +663,17 @@ CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &st
 
 void CGUIDialogContextMenu::SetDefault(const CStdString &strType, const CStdString &strDefault)
 {
-  if (g_settings.UpDateXbmcXML(strType, "default", strDefault))
-  {
-    if (strType == "myprograms")
-      strcpy(g_stSettings.m_szDefaultPrograms, strDefault.c_str());
-    else if (strType == "files")
-      strcpy(g_stSettings.m_szDefaultFiles, strDefault.c_str());
-    else if (strType == "music")
-      strcpy(g_stSettings.m_szDefaultMusic, strDefault.c_str());
-    else if (strType == "video")
-      strcpy(g_stSettings.m_szDefaultVideos, strDefault.c_str());
-    else if (strType == "pictures")
-      strcpy(g_stSettings.m_szDefaultPictures, strDefault.c_str());
-  }
-  else
-    CLog::Log(LOGERROR, "Could not change default bookmark for %s", strType.c_str());
+  if (strType == "myprograms")
+    strcpy(g_stSettings.m_szDefaultPrograms, strDefault.c_str());
+  else if (strType == "files")
+    strcpy(g_stSettings.m_szDefaultFiles, strDefault.c_str());
+  else if (strType == "music")
+    strcpy(g_stSettings.m_szDefaultMusic, strDefault.c_str());
+  else if (strType == "video")
+    strcpy(g_stSettings.m_szDefaultVideos, strDefault.c_str());
+  else if (strType == "pictures")
+    strcpy(g_stSettings.m_szDefaultPictures, strDefault.c_str());
+  g_settings.SaveSources();
 }
 
 void CGUIDialogContextMenu::ClearDefault(const CStdString &strType)

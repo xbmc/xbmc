@@ -688,7 +688,9 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
 void CGUIDialogFileBrowser::SetShares(VECSHARES &shares)
 {
   m_shares = shares;
-  m_rootDir.SetShares(shares);
+  if (!m_shares.size())
+    g_mediaManager.GetLocalDrives(m_shares);
+  m_rootDir.SetShares(m_shares);
 }
 
 void CGUIDialogFileBrowser::OnAddNetworkLocation()

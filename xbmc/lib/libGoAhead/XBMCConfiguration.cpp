@@ -365,10 +365,9 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
   if (nr > 0 && nr <= (int)pShares->size()) // update share
   {
     const CShare& share = (*pShares)[nr-1];
-    g_settings.BeginBookmarkTransaction();
     g_settings.UpdateBookmark(type, share.strName, "path", path);
     g_settings.UpdateBookmark(type, share.strName, "name", name);
-    g_settings.CommitBookmarkTransaction();
+    g_settings.SaveSources();
     return 0;
   }
   

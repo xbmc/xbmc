@@ -87,7 +87,7 @@ public:
 class CShare
 {
 public:
-  CShare() { m_iBufferSize=0; m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; };
+  CShare() { m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; };
   virtual ~CShare() {};
 
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths);
@@ -96,7 +96,6 @@ public:
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
   CStdString strEntryPoint; ///< entry point of shares, used with archives
-  int m_iBufferSize;   ///< Cachesize of the share
 
   /*!
   \brief The type of the share.
@@ -201,15 +200,10 @@ public:
   VECSHARES *GetSharesFromType(const CStdString &type);
   CStdString GetDefaultShareFromType(const CStdString &type);
 
-  void BeginBookmarkTransaction();
   bool UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
-  bool CommitBookmarkTransaction();
   bool DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath);
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share);
   bool AddShare(const CStdString &type, const CShare &share);
-
-  bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue);
-  bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue);
 
   int TranslateSkinString(const CStdString &setting);
   const CStdString &GetSkinString(int setting) const;
@@ -428,7 +422,8 @@ public:
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 
   bool SaveSettings(const CStdString& strSettingsFile) const;
-  TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
+
+  bool SaveSources();
 
 protected:
   void GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
@@ -437,6 +432,7 @@ protected:
   void GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetShare(const CStdString &category, const TiXmlNode *bookmark, CShare &share);
   void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
+  bool SetShares(TiXmlNode *root, const char *section, const VECSHARES &shares, const char *defaultPath);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState);
 
   void ConvertHomeVar(CStdString& strText);
@@ -454,10 +450,6 @@ protected:
   bool LoadSettings(const CStdString& strSettingsFile);
 //  bool SaveSettings(const CStdString& strSettingsFile) const;
 
-  bool LoadXml();
-  void CloseXml();
-
-
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;
@@ -465,7 +457,7 @@ protected:
   // Advanced settings
   void LoadAdvancedSettings();
 
-  void LoadUserFolderLayout(const TiXmlElement *pRootElement);
+  void LoadUserFolderLayout();
 
   void LoadRSSFeeds();
 
@@ -475,10 +467,6 @@ protected:
   bool SaveAvpackSettings(TiXmlNode *io_pRoot) const;
   bool LoadAvpackXML();
 
-  //TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
-  bool xbmcXmlLoaded;
-  bool bTransaction;
-  bool bChangedDuringTransaction;
 };
 
 extern class CSettings g_settings;
