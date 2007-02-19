@@ -346,23 +346,6 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
         if ((dialog->m_iSourcesMode & 2) == 2)
           if (CGUIDialogYesNo::ShowAndGetInput(20058,20071,20102,20022,20044,20064))
             CFile::Cache(g_settings.GetUserDataFolder()+"\\sources.xml",g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
-          else
-          {
-            TiXmlDocument xmlDoc;
-            TiXmlElement xmlRootElement("sources");
-            TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-            TiXmlElement xmlProgramElement("myprograms");
-            pRoot->InsertEndChild(xmlProgramElement);
-            TiXmlElement xmlVideoElement("video");
-            pRoot->InsertEndChild(xmlVideoElement);
-            TiXmlElement xmlMusicElement("music");
-            pRoot->InsertEndChild(xmlMusicElement);
-            TiXmlElement xmlPicturesElement("pictures");
-            pRoot->InsertEndChild(xmlPicturesElement);
-            TiXmlElement xmlFilesElement("files");
-            pRoot->InsertEndChild(xmlFilesElement);
-            xmlDoc.SaveFile(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
-          }
       }
     }
 
