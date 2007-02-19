@@ -115,14 +115,14 @@ void export_kernel32()
 #ifdef _XBOX
   g_dlls.kernel32.AddExport("HeapDestroy", (unsigned long) HeapDestroy, (void*)track_HeapDestroy );
   g_dlls.kernel32.AddExport("HeapCreate", (unsigned long) HeapCreate, (void*)track_HeapCreate );
-#endif
   g_dlls.kernel32.AddExport("VirtualFree", (unsigned long) VirtualFree, (unsigned long)track_VirtualFree);
   g_dlls.kernel32.AddExport("VirtualFreeEx", (unsigned long) VirtualFreeEx, (unsigned long)track_VirtualFreeEx);
+  g_dlls.kernel32.AddExport("VirtualAlloc", (unsigned long) VirtualAlloc, (unsigned long)track_VirtualAlloc);
+  g_dlls.kernel32.AddExport("VirtualAllocEx", (unsigned long) VirtualAllocEx, (unsigned long)track_VirtualAllocEx);
+#endif
   g_dlls.kernel32.AddExport("MultiByteToWideChar", (unsigned long) dllMultiByteToWideChar);
   g_dlls.kernel32.AddExport("LCMapStringA", (unsigned long) dllLCMapStringA);
   g_dlls.kernel32.AddExport("LCMapStringW", (unsigned long) dllLCMapStringW);
-  g_dlls.kernel32.AddExport("VirtualAlloc", (unsigned long) VirtualAlloc, (unsigned long)track_VirtualAlloc);
-  g_dlls.kernel32.AddExport("VirtualAllocEx", (unsigned long) VirtualAllocEx, (unsigned long)track_VirtualAllocEx);
   g_dlls.kernel32.AddExport("IsBadWritePtr", (unsigned long) IsBadWritePtr);
   g_dlls.kernel32.AddExport("SetStdHandle", (unsigned long) dllSetStdHandle);
   g_dlls.kernel32.AddExport("FlushFileBuffers", (unsigned long) FlushFileBuffers);
