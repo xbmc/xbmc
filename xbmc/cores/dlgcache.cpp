@@ -43,13 +43,6 @@ void CDlgCache::OpenDialog()
 {
   m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if(m_pDlg == NULL) return;
-
-  /* if any other modal dialog is open, don't open this one */
-  if (m_gWindowManager.HasModalDialog() && !m_pDlg->IsRunning())
-  {
-    m_pDlg = NULL;
-    return;
-  }
   
   m_pDlg->SetHeading(438);
   m_pDlg->SetLine(0, m_strLinePrev);
@@ -63,9 +56,6 @@ void CDlgCache::OpenDialog()
 
 void CDlgCache::Update()
 {
-  if( g_graphicsContext.IsFullScreenVideo() )
-    return;
-
   if (m_pDlg)
   {
     m_pDlg->Progress();

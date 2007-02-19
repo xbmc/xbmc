@@ -2090,30 +2090,15 @@ void CApplication::RenderNoPresent()
   // that stuff should go into renderfullscreen instead as that is called from the renderin thread
 
   // dont show GUI when playing full screen video
-  if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-  {
-    if ( g_graphicsContext.IsFullScreenVideo() )
-    {
 #ifdef HAS_VIDEO_PLAYBACK
-      if (m_pPlayer)
-      {
-        if (m_pPlayer->IsPaused())
-        {
-          CSingleLock lock(g_graphicsContext);
-          m_gWindowManager.UpdateModelessVisibility();
-          g_renderManager.RenderUpdate(true);
-          m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-          g_infoManager.ResetCache();
-          return ;
-        }
-      }
-#endif
-      Sleep(50);
-      ResetScreenSaver();
-      g_infoManager.ResetCache();
-      return ;
-    }
+  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
+  {
+    Sleep(50);
+    ResetScreenSaver();
+    g_infoManager.ResetCache();
+    return;
   }
+#endif
 
   // enable/disable video overlay window
   if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
@@ -3730,6 +3715,10 @@ bool CApplication::NeedRenderFullScreen()
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   {
     m_gWindowManager.UpdateModelessVisibility();
+
+    if (m_gWindowManager.HasDialogOnScreen()) return true;
+    if (g_Mouse.IsActive()) return true;
+
     CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
     if (!pFSWin)
       return false;
@@ -3751,6 +3740,19 @@ void CApplication::RenderFullScreen()
     if (!pFSWin)
       return ;
     pFSWin->RenderFullScreen();
+
+    // aslong as player is handling rendering, we update
+    // this stuff here, otherwise it will happen in main render
+    if( IsPlaying() && !IsPaused() )
+    {
+      if (m_gWindowManager.HasDialogOnScreen())
+        m_gWindowManager.RenderDialogs();
+      // Render the mouse pointer, if visible...
+      if (g_Mouse.IsActive())
+        g_application.m_guiPointer.Render();
+
+      g_infoManager.UpdateFPS();
+    }
   }
 }
 
