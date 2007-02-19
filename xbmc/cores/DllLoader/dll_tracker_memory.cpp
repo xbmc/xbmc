@@ -230,8 +230,6 @@ extern "C" void tracker_heapobjects_free_all(DllTrackInfo* pInfo)
   }
 }
 
-#ifdef _XBOX
-WINBASEAPI
 HANDLE
 WINAPI
 track_HeapCreate(
@@ -255,7 +253,6 @@ track_HeapCreate(
   return hHeap;
 }
 
-WINBASEAPI
 BOOL
 WINAPI
 track_HeapDestroy(
@@ -284,7 +281,7 @@ track_HeapDestroy(
 }
 
 
-WINBASEAPI BOOL WINAPI track_VirtualFreeEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
+BOOL WINAPI track_VirtualFreeEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 {
   unsigned loc;
   __asm mov eax, [ebp + 4]
@@ -300,7 +297,7 @@ WINBASEAPI BOOL WINAPI track_VirtualFreeEx(HANDLE hProcess, LPVOID lpAddress, SI
 }
 
 
-WINBASEAPI LPVOID WINAPI track_VirtualAllocEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
+LPVOID WINAPI track_VirtualAllocEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
 {
   unsigned loc;
   __asm mov eax, [ebp + 4]
@@ -323,7 +320,7 @@ WINBASEAPI LPVOID WINAPI track_VirtualAllocEx(HANDLE hProcess, LPVOID lpAddress,
   }
 }
 
-WINBASEAPI LPVOID WINAPI track_VirtualAlloc( LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
+LPVOID WINAPI track_VirtualAlloc( LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
 {
   unsigned loc;
   __asm mov eax, [ebp + 4]
@@ -347,7 +344,7 @@ WINBASEAPI LPVOID WINAPI track_VirtualAlloc( LPVOID lpAddress, SIZE_T dwSize, DW
   return address;
 }
 
-WINBASEAPI BOOL WINAPI track_VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
+BOOL WINAPI track_VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 {
   unsigned loc;
   __asm mov eax, [ebp + 4]
@@ -361,4 +358,3 @@ WINBASEAPI BOOL WINAPI track_VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD 
   }
   return VirtualFree(lpAddress, dwSize, dwFreeType);
 }
-#endif
