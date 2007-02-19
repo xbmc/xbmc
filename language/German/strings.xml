@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: Bobbin007@xboxmediacenter.com-->
-<!--Date of translation: 02/06/2007-->
-<!--$Revision:$-->
-<!--Based on english strings version 7788-->
+<!--Date of translation: 02/19/2007-->
+<!--$Revision$-->
+<!--Based on english strings version 7860-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -1469,6 +1469,7 @@
   <string id="20347">als</string>
   <string id="20348">Regisseure</string>
   <string id="20349">Es wurden keine Videos in diesem Pfad gefunden!</string>
+  <string id="20350">Stimmen</string>
   <!-- up to 21329 is reserved for the video db !! !-->
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
