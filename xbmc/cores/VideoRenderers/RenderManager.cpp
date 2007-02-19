@@ -105,6 +105,16 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
   }
 }
 
+void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+{
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CSharedLock lock(m_sharedSection); 
+  RestoreCriticalSection(g_graphicsContext, locks);
+
+  if (m_pRenderer)
+    m_pRenderer->RenderUpdate(clear, flags, alpha);
+}
+
 unsigned int CXBoxRenderManager::PreInit()
 {
   DWORD locks = ExitCriticalSection(g_graphicsContext);
@@ -150,16 +160,16 @@ unsigned int CXBoxRenderManager::PreInit()
 
 void CXBoxRenderManager::UnInit()
 {
-  m_bStop = true;
-  m_bIsStarted = false;
-  m_eventFrame.Set();
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
 
+  m_bStop = true;
+  m_eventFrame.Set();
   StopThread();
 
-  DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
 
+  m_bIsStarted = false;
   if (m_pRenderer)
   {
     m_pRenderer->UnInit();
