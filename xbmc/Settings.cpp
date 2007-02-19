@@ -1244,6 +1244,7 @@ void CSettings::LoadAdvancedSettings()
   }
 
   const TiXmlNode *pTokens = pRootElement->FirstChild("sorttokens");
+  g_advancedSettings.m_vecTokens.clear();
   if (pTokens && !pTokens->NoChildren())
   {
     const TiXmlNode *pToken = pTokens->FirstChild("token");
