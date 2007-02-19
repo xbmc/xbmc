@@ -282,7 +282,7 @@ track_HeapDestroy(
 
   return HeapDestroy(hHeap);
 }
-#endif
+
 
 WINBASEAPI BOOL WINAPI track_VirtualFreeEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 {
@@ -361,3 +361,4 @@ WINBASEAPI BOOL WINAPI track_VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD 
   }
   return VirtualFree(lpAddress, dwSize, dwFreeType);
 }
+#endif
