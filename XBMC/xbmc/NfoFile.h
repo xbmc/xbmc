@@ -12,19 +12,21 @@
 class CNfoFile
 {
 public:
-  CNfoFile();
+  CNfoFile(const CStdString&);
   virtual ~CNfoFile();
 
-  HRESULT Create(LPSTR szPath);
-
+  HRESULT Create(const CStdString&);
+  CStdString m_strScraper;
   CStdString m_strImDbUrl;
   CStdString m_strImDbNr;
 private:
-  HRESULT Load(char* szFile);
+  HRESULT Load(const CStdString&);
+  HRESULT Scrape(const CStdString&);
   void Close();
 private:
   char* m_doc;
   int m_size;
+  CStdString strContent;
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

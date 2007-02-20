@@ -4,62 +4,74 @@
 
 #include "stdafx.h"
 #include "NfoFile.h"
-#include "utils/RegExp.h"
+#include "utils/ScraperParser.h"
+#include "FileSystem/Directory.h"
+#include "util.h"
 
+
+using namespace DIRECTORY;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CNfoFile::CNfoFile()
+CNfoFile::CNfoFile(const CStdString& strContent)
 {
+  CNfoFile::strContent = strContent;
 }
 
 CNfoFile::~CNfoFile()
 {
 }
 
-HRESULT CNfoFile::Create(LPSTR szPath)
+HRESULT CNfoFile::Create(const CStdString& strPath)
 {
-  if (FAILED(Load(szPath)))
+  if (FAILED(Load(strPath.c_str())))
     return E_FAIL;
 
-  CRegExp reg;
-  reg.RegComp("imdb.com/Title\\?([0-9]*)");
-  if (reg.RegFind(m_doc) > -1)
+  CDirectory dir;
+  CFileItemList items;
+  dir.GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
+  for (int i=0;i<items.Size();++i)
   {
-    char *src = reg.GetReplaceString("\\1");
-    m_strImDbUrl = "http://www.imdb.com/title/tt";
-    m_strImDbUrl += src;
-    m_strImDbUrl += "/";
-
-    m_strImDbNr = "tt";
-    m_strImDbNr += src;
-    free(src);
-  }
-  reg.RegComp("imdb.com/title/tt[0-9]*");
-  if (reg.RegFind(m_doc) > -1)
-  {
-    char *src = reg.GetReplaceString("\\0");
-    m_strImDbUrl = "http://www.";
-    m_strImDbUrl += src;
-    m_strImDbNr = m_strImDbUrl.Mid(m_strImDbUrl.Find("/tt")+1);
-    m_strImDbUrl += "/";
-    free(src);
+    if (!items[i]->m_bIsFolder)
+    {
+      
+      if(!FAILED(Scrape(CUtil::GetFileName(items[i]->m_strPath).c_str()))) break;
+    }
   }
   Close();
 
   return (m_strImDbUrl.size() > 0) ? S_OK : E_FAIL;
 }
+HRESULT CNfoFile::Scrape(const CStdString& strScraperPath)
+{
+  CScraperParser m_parser;
+  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+strScraperPath))
+    return E_FAIL;
 
-HRESULT CNfoFile::Load(char* szFile)
+  if(m_parser.GetContent() !=  strContent.c_str() )
+    return E_FAIL;
+  m_parser.m_param[0] = m_doc;
+  m_strImDbUrl = m_parser.Parse("NfoUrl");
+  if(m_strImDbUrl.size() > 0)
+  {
+    m_strScraper = strScraperPath;
+    return S_OK;
+  }
+  else
+  {
+    return E_FAIL;
+  }
+}
+HRESULT CNfoFile::Load(const CStdString& strFile)
 {
   FILE* hFile;
 
-  hFile = fopen(szFile, "rb");
+  hFile = fopen(strFile.c_str(), "rb");
   if (hFile == NULL)
   {
     OutputDebugString("No such file: ");
-    OutputDebugString(szFile);
+    OutputDebugString(strFile.c_str());
     OutputDebugString("\n");
     return E_FAIL;
   }
