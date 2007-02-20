@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
 <scraper name="OFDb" content="movies" thumb="ofdb.png">
 	<NfoUrl dest="3">
+    <RegExp input="$$1" output="http://www.ofdb.de/view.php?page=film&amp;fid=\1"  dest="3">
+      <expression noclean="1">ofdb.de/view.php\?page=film&amp;fid=([0-9]+)</expression>
+    </RegExp>
 	</NfoUrl>  
   <CreateSearchUrl dest="3">
     <RegExp input="$$1" output="http://www.ofdb.de/view.php?SText=\1&amp;Kat=Titel&amp;page=suchergebnis&amp;sourceid=mozilla-search" dest="3">
