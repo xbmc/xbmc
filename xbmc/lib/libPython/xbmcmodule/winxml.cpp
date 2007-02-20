@@ -39,7 +39,10 @@ namespace PYXBMC
     CStdString strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res);
     if (!XFILE::CFile::Exists(strSkinPath))
     {
-      strXMLname = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath);
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath);
+      if (!XFILE::CFile::Exists(strSkinPath))
+        strSkinPath = strFallbackPath + "\\pal\\" + strXMLname;
+      strXMLname = strSkinPath;
     }
 
     self->sXMLFileName = strXMLname;
