@@ -95,7 +95,7 @@ extern "C"
 
 
   void free_registry(void);
-  void save_registry(void);
+  int save_registry(char* filename);
 
   BOOL WINAPI dllCryptAcquireContextA(HCRYPTPROV* phProv, LPCTSTR pszContainer, LPCTSTR pszProvider, DWORD dwProvType, DWORD dwFlags);
   BOOL WINAPI dllCryptGenRandom(HCRYPTPROV hProv, DWORD dwLen, BYTE* pbBuffer);

@@ -13,6 +13,7 @@
 #include "../../utils/GUIInfoManager.h"
 #include "../VideoRenderers/RenderManager.h"
 #include "../../utils/win32exception.h"
+#include "../DllLoader/exports/emu_registry.h"
 
 using namespace XFILE;
 
@@ -83,8 +84,6 @@ void audio_pause();
 void audio_resume();
 
 extern void tracker_free_mplayer_dlls(void);
-extern "C" void save_registry(void);
-extern "C" void free_registry(void);
 extern CFileShoutcast* m_pShoutCastRipper;
 extern "C" void dllReleaseAll( );
 
@@ -678,7 +677,7 @@ CMPlayer::~CMPlayer()
 
   Unload();
   
-  save_registry(); // save registry to disk
+  //save_registry(); //save registry to disk
   free_registry(); //free memory take by registry structures
 }
 bool CMPlayer::load()
