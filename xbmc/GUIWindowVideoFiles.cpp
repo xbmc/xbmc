@@ -483,20 +483,21 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
         {
           // handle .nfo files
           CStdString strNfoFile = GetnfoFile(pItem);
-          if ( !strNfoFile.IsEmpty() && info.strContent.Equals("movies") )
+          if ( !strNfoFile.IsEmpty() )
           {
             CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
             if ( CFile::Cache(strNfoFile, "Z:\\movie.nfo", NULL, NULL))
             {
-              CNfoFile nfoReader;
+              CNfoFile nfoReader(info.strContent.c_str());
               if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
               {
                 CIMDBUrl url;
                 url.m_strURL.push_back(nfoReader.m_strImDbUrl);
-                CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
+                CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReader.m_strScraper.c_str());
+                CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_strURL[0].c_str());
                 url.m_strID  = nfoReader.m_strImDbNr;
                 SScraperInfo info2(info);
-                info2.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
+                info2.strPath = nfoReader.m_strScraper;
                 GetIMDBDetails(pItem, url, info2);
                 continue;
               }

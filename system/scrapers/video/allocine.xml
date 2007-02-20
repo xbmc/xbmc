@@ -1,4 +1,6 @@
 <scraper name="allocine.fr" content="movies" thumb="allocine.jpg">
+	<NfoUrl dest="3">
+	</NfoUrl>
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://www.allocine.fr/recherche/?motcle=\1&amp;" dest="3">
 			<expression></expression>
