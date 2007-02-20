@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "NfoFile.h"
 #include "utils/ScraperParser.h"
+#include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "util.h"
 
@@ -17,6 +18,7 @@ using namespace DIRECTORY;
 CNfoFile::CNfoFile(const CStdString& strContent)
 {
   CNfoFile::strContent = strContent;
+  m_doc = NULL;
 }
 
 CNfoFile::~CNfoFile()
@@ -25,7 +27,7 @@ CNfoFile::~CNfoFile()
 
 HRESULT CNfoFile::Create(const CStdString& strPath)
 {
-  if (FAILED(Load(strPath.c_str())))
+  if (FAILED(Load(strPath)))
     return E_FAIL;
 
   CDirectory dir;
@@ -36,26 +38,27 @@ HRESULT CNfoFile::Create(const CStdString& strPath)
     if (!items[i]->m_bIsFolder)
     {
       
-      if(!FAILED(Scrape(CUtil::GetFileName(items[i]->m_strPath).c_str()))) break;
+      if(!FAILED(Scrape(items[i]->m_strPath))) break;
     }
   }
   Close();
 
   return (m_strImDbUrl.size() > 0) ? S_OK : E_FAIL;
 }
+
 HRESULT CNfoFile::Scrape(const CStdString& strScraperPath)
 {
   CScraperParser m_parser;
-  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+strScraperPath))
+  if (!m_parser.Load(strScraperPath))
     return E_FAIL;
 
-  if(m_parser.GetContent() !=  strContent.c_str() )
+  if(m_parser.GetContent() !=  strContent )
     return E_FAIL;
   m_parser.m_param[0] = m_doc;
   m_strImDbUrl = m_parser.Parse("NfoUrl");
   if(m_strImDbUrl.size() > 0)
   {
-    m_strScraper = strScraperPath;
+    m_strScraper = CUtil::GetFileName(strScraperPath);
     return S_OK;
   }
   else
@@ -65,42 +68,23 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath)
 }
 HRESULT CNfoFile::Load(const CStdString& strFile)
 {
-  FILE* hFile;
-
-  hFile = fopen(strFile.c_str(), "rb");
-  if (hFile == NULL)
+  Close();
+  XFILE::CFile file;
+  if (file.Open(strFile, true))
   {
-    OutputDebugString("No such file: ");
-    OutputDebugString(strFile.c_str());
-    OutputDebugString("\n");
-    return E_FAIL;
+    m_size = (int)file.GetLength();
+    m_doc = (char*) malloc(m_size + 1);
+    if (!m_doc)
+    {
+      file.Close();
+      return E_FAIL;
+    }
+    file.Read(m_doc, m_size);
+    m_doc[m_size] = 0;
+    file.Close();
+    return S_OK;
   }
-
-  fseek(hFile, 0, SEEK_END);
-  m_size = ftell(hFile);
-
-  fseek(hFile, 0, SEEK_SET);
-
-  m_doc = (char*) malloc(m_size + 1);
-  if (!m_doc)
-  {
-    m_size = 0;
-    fclose(hFile);
-    return E_FAIL;
-  }
-
-  if (fread(m_doc, m_size, 1, hFile) <= 0)
-  {
-    delete m_doc;
-    m_doc = 0;
-    m_size = 0;
-    fclose(hFile);
-    return E_FAIL;
-  }
-
-  m_doc[m_size] = 0;
-  fclose(hFile);
-  return S_OK;
+  return E_FAIL;
 }
 
 void CNfoFile::Close()
