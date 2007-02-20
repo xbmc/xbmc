@@ -50,8 +50,7 @@ static reg_handle_t* head = NULL;
 #define DIR -25
 
 static void create_registry(void);
-static void open_registry(void);
-//static void save_registry(void);
+static int open_registry(char* filename);
 static void init_registry(void);
 
 
@@ -60,9 +59,9 @@ static void create_registry(void)
   if(regs)
   {
     OutputDebugString("Logic error: create_registry() called with existing registry\n");
-    save_registry();
     return;
   }
+
   regs=(struct reg_value*)malloc(3*sizeof(struct reg_value));
   regs[0].type=regs[1].type=DIR;
   regs[0].name=(char*)malloc(5);
@@ -73,10 +72,9 @@ static void create_registry(void)
   regs[0].len=regs[1].len=0;
   reg_size=2;
   head = 0;
-  //save_registry();
 }
 
-static void open_registry(void)
+static int open_registry(char* filename)
 {
   int fd;
   int i;
@@ -84,15 +82,12 @@ static void open_registry(void)
   if(regs)
   {
     OutputDebugString("Multiple open_registry()\n");
-    return;
+    return 0;
   }
-  fd = open(localregpathname, O_RDONLY|O_BINARY);
+  fd = open(filename, O_RDONLY|O_BINARY);
   if (fd == -1)
-  {
-    OutputDebugString("Creating new registry\n");
-    create_registry();
-    return;
-  }
+    return 0;
+
   read(fd, &reg_size, 4);
   regs=(struct reg_value*)malloc(reg_size*sizeof(struct reg_value));
   head = 0;
@@ -119,20 +114,24 @@ static void open_registry(void)
     read(fd, regs[i].value, regs[i].len);
     regs[i].value[regs[i].len]=0;
   }
+  close(fd);
+  return 1;
 error:
   close(fd);
-  return;
+  return 0;
 }
 
-void save_registry(void)
+int save_registry(char* filename)
 {
   int fd, i;
-  if (!regs) return;
-  fd = open(localregpathname, O_WRONLY | O_CREAT|O_BINARY, 00666);
+  if (!regs) 
+    return 0;
+
+  fd = open(filename, O_WRONLY | O_CREAT|O_BINARY, 00666);
   if (fd == -1)
   {
     OutputDebugString("Failed to open registry file for writing.\n");
-    return;
+    return 0;
   }
   write(fd, &reg_size, 4);
   for(i=0; i<reg_size; i++)
@@ -145,6 +144,7 @@ void save_registry(void)
     write(fd, regs[i].value, regs[i].len);
   }
   close(fd);
+  return 1;
 }
 
 void free_registry(void)
@@ -178,7 +178,7 @@ static reg_handle_t* find_handle_by_name(const char* name)
   reg_handle_t* t;
   for(t=head; t; t=t->prev)
   {
-    if(!strcmp(t->name, name))
+    if(!_stricmp(t->name, name))
     {
       return t;
     }
@@ -189,7 +189,7 @@ static struct reg_value* find_value_by_name(const char* name)
 {
   int i;
   for(i=0; i<reg_size; i++)
-    if(!strcmp(regs[i].name, name))
+    if(!_stricmp(regs[i].name, name))
       return regs+i;
   return 0;
 }
@@ -234,6 +234,22 @@ static reg_handle_t* insert_handle(long handle, const char* name)
   head=t;
   return t;
 }
+
+static void remove_handle(reg_handle_t *handle)
+{
+  if(handle==0)
+    return;
+  if(handle->prev)
+    handle->prev->next=handle->next;
+  if(handle->next)
+    handle->next->prev=handle->prev;
+  if(handle->name)
+    free(handle->name);
+  if(handle==head)
+    head=head->prev;
+  free(handle);
+}
+
 static char* build_keyname(long key, const char* subkey)
 {
   char* full_name;
@@ -265,9 +281,6 @@ static struct reg_value* insert_reg_value(int handle, const char* name, int type
   if((v=find_value_by_name(fullname))==0)
     //creating new value in registry
   {
-    if(regs==0)
-      create_registry
-      ();
     regs=(struct reg_value*)realloc(regs, sizeof(struct reg_value)*(reg_size+1));
     //regs=(struct reg_value*)my_realloc(regs, sizeof(struct reg_value)*(reg_size+1));
     v=regs+reg_size;
@@ -287,7 +300,6 @@ static struct reg_value* insert_reg_value(int handle, const char* name, int type
   v->name=(char*)malloc(strlen(fullname)+1);
   strcpy(v->name, fullname);
   free(fullname);
-  //save_registry ();
   return v;
 }
 
@@ -296,25 +308,33 @@ static void init_registry(void)
   // can't be free-ed - it's static and probably thread
   // unsafe structure which is stored in glibc
 
-  char corekey[] = "ABCD-ABCD-ABCD-ABCD-ABCD-ABCD-ABCD-ABCD";
-  char corename[] = "john doe";
-
-  reg_handle_t* handle;
-
-
   if( regpathname != NULL )
     localregpathname = regpathname;
 
-  open_registry();
+  if(!open_registry(localregpathname))
+    create_registry();
+
+  // required base handles
   insert_handle((long)HKEY_LOCAL_MACHINE, "HKLM");
   insert_handle((long)HKEY_CURRENT_USER, "HKCU");
 
-  handle = insert_handle(generate_handle(), "HKCU\\SOFTWARE");
-  handle = insert_handle(generate_handle(), "HKCU\\SOFTWARE\\Licenturion GmbH");
-  handle = insert_handle(generate_handle(), "HKCU\\SOFTWARE\\Licenturion GmbH\\0000032D");
+#if 0
+  char corekey[] = "ABCD-ABCD-ABCD-ABCD-ABCD-ABCD-ABCD-ABCD";
+  char corename[] = "john doe";
 
-  insert_reg_value(handle->handle, "Product Key", REG_SZ, corekey, sizeof(corekey));
-  insert_reg_value(handle->handle, "User ID", REG_SZ, corename, sizeof(corename));
+  char winprodkey[] = "12345-123-1234567-12345";
+  char corekey2[] = "ABCDEF-ABCDEF-ABCDEF-ABCDEF-ABCDEF";
+  char corename2[] = "john doe";
+
+  //0.0.0.4 -> 1.1.0.X
+  insert_reg_value((long)HKEY_LOCAL_MACHINE, "SOFTWARE\\Licenturion GmbH\\0000032D\\Product Key", REG_SZ, corekey, strlen(corekey)+1);
+  insert_reg_value((long)HKEY_LOCAL_MACHINE, "SOFTWARE\\Licenturion GmbH\\0000032D\\User ID", REG_SZ, corename, strlen(corename)+1);
+
+  //1.2.0.0 -> ??????
+  insert_reg_value((long)HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ProductID", REG_SZ, winprodkey, strlen(winprodkey)+1);
+  insert_reg_value((long)HKEY_CURRENT_USER, "SOFTWARE\\CoreCodec\\CoreAVC Pro\\User", REG_SZ, corename2, strlen(corename2)+1);
+  insert_reg_value((long)HKEY_CURRENT_USER, "SOFTWARE\\CoreCodec\\CoreAVC Pro\\Serial", REG_SZ, corekey2, strlen(corekey2)+1);
+#endif
 }
 
 static reg_handle_t* find_handle_2(long key, const char* subkey)
@@ -381,41 +401,17 @@ LONG WINAPI dllRegOpenKeyExA(HKEY key, LPCSTR subkey, DWORD reserved, REGSAM acc
 
 LONG WINAPI dllRegCloseKey(HKEY key)
 {
-  reg_handle_t *handle;
   if(key==HKEY_LOCAL_MACHINE)
     return 0;
   if(key==HKEY_CURRENT_USER)
     return 0;
-  handle=find_handle((int)key);
-  if(handle==0)
-    return 0;
-  if(handle->prev)
-    handle->prev->next=handle->next;
-  if(handle->next)
-    handle->next->prev=handle->prev;
-  if(handle->name)
-    free(handle->name);
-  if(handle==head)
-    head=head->prev;
-  free(handle);
+  remove_handle(find_handle((int)key));
   return 1;
 }
 
 LONG WINAPI dllRegOpenKeyA(HKEY hKey, LPCSTR lpSubKey, PHKEY phkResult)
 {
-  LONG result;
-
-  // DWORD rtn_addr;
-  // char szBuf[256];
-  // __asm { mov eax, [ebp+4] }
-  // __asm { mov rtn_addr, eax }
-
-  result=dllRegOpenKeyExA(hKey, lpSubKey, 0, 0/*KEY_ALL_ACCESS*/, phkResult);
-
-  // sprintf(szBuf,"called from 0x%08X RegOpenKeyA(DWORD:0x%08X, SubKey:%s, [phkResult]=0x%08X)\n",rtn_addr,hKey,lpSubKey,*phkResult);
-  // OutputDebugString(szBuf);
-
-  return result;
+  return dllRegOpenKeyExA(hKey, lpSubKey, 0, 0/*KEY_ALL_ACCESS*/, phkResult);
 }
 
 LONG WINAPI dllRegQueryValueA(HKEY hKey, LPCSTR lpSubKey, LPTSTR lpValue, PLONG lpcbValue)
@@ -485,36 +481,38 @@ LONG WINAPI dllRegQueryValueExW (HKEY key, LPCWSTR value, LPDWORD reserved,
 {  
   SIZE_T count2;
   PCHAR value2;
-  DWORD type2;  
+  DWORD type2;
+  DWORD ret;
 
   if(!value) return ERROR_INVALID_PARAMETER;
   if(!type) type = &type2;
   if(!count) count = &count2;
   
-  count2 = WideCharToMultiByte(65001, 0x0, value, -1, NULL, 0, NULL, NULL);
-  value2 = malloc(count2);
-  count2 = WideCharToMultiByte(65001, 0x0, value, -1, value2, count2, NULL, NULL);
-  
-  
-  count2 = dllRegQueryValueExA(key, value2, reserved, type, data, count);
-  if(count2 != ERROR_SUCCESS )
+  ret = WideCharToMultiByte(65001, 0x0, value, -1, NULL, 0, NULL, NULL);
+  value2 = malloc(ret);
+  ret = WideCharToMultiByte(65001, 0x0, value, -1, value2, ret, NULL, NULL);
+
+  count2 = *count * 2;
+  ret = dllRegQueryValueExA(key, value2, reserved, type, data, &count2);
+  if(ERROR_SUCCESS != ret)
   {
     free(value2);
-    return count2;
+    return ret;
   }
 
-  if(data && (*type == REG_SZ || *type == REG_MULTI_SZ))
+  if(data && count2 && (*type == REG_SZ || *type == REG_MULTI_SZ))
   {
-    PWCHAR data2 = malloc(*count);
-    count2 = MultiByteToWideChar(65001, 0x0, data, *count, data2, *count);
+    PCHAR data2 = malloc(count2);
+    memcpy(data2, data, count2);
+
+    *count = MultiByteToWideChar(65001, 0x0, data2, count2, (LPWSTR)data, *count);
     
-    if(count2 == 0)
+    if(*count == 0)
     {
       free(data2);
       free(value2);
       return ERROR_MORE_DATA;
     }
-    memmove(data, data2, count2);
     free(data2);
   }
   free(value2);
