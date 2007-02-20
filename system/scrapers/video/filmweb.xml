@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <scraper name="filmweb.pl" content="movies" thumb="filmweb.jpg">
+	<NfoUrl dest="3">
+	</NfoUrl>
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://www.filmweb.pl/szukaj/film?sort=COUNT&amp;q=\1" dest="3">
 			<expression noclean="1"></expression>

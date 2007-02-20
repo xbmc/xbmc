@@ -336,20 +336,21 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
 
   // 2. Look for a nfo File to get the search URL
   CStdString nfoFile = GetnfoFile(item);
-  if ( !nfoFile.IsEmpty() && info.strContent.Equals("movies") )
+  if ( !nfoFile.IsEmpty() )
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", nfoFile.c_str());
     if ( CFile::Cache(nfoFile, "Z:\\movie.nfo", NULL, NULL))
     {
-      CNfoFile nfoReader;
+      CNfoFile nfoReader(info.strContent.c_str());
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
       {
 	    	url.m_strURL.push_back(nfoReader.m_strImDbUrl);
         url.m_strID = nfoReader.m_strImDbNr;
         SScraperInfo info2(info);
-        info2.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
+        info2.strPath = nfoReader.m_strScraper; // fallback to imdb scraper no matter what is configured
         IMDB.SetScraperInfo(info2);
-        CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
+        CLog::Log(LOGDEBUG,"-- nfo scraper: %s", nfoReader.m_strScraper.c_str());
+        CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_strURL[0].c_str());
       }
       else
         CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", nfoFile.c_str());

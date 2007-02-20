@@ -262,8 +262,6 @@ bool CTemperature::operator <=(double right) const
 
 bool CTemperature::operator ==(double right) const
 {
-  ASSERT(IsValid());
-
   if (!IsValid())
     return false;
 
