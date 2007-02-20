@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <io.h>
+#include "../../../../guilib/tinyXML/tinyxml.cpp"
+#include "../../../utils/log.h"
 
 #include "emu_registry.h"
 #include "emu_dummy.h"
@@ -16,6 +18,17 @@ char* regpathname = NULL;
 
 //carry default regisrty.dat path+filename
 static char* localregpathname = "Q:\\system\\players\\mplayer\\codecs\\registry.dat";
+
+//will trim away any traling ch
+static void strrtrim(char* s, char ch)
+{  
+  int i = strlen(s)-1;
+  while(i>0 && s[i]==ch)
+  {
+    s[i]=0;
+    i--;
+  }
+}
 
 static void dbgprintf(char* fmt, ...)
 {
@@ -52,6 +65,7 @@ static reg_handle_t* head = NULL;
 static void create_registry(void);
 static int open_registry(char* filename);
 static void init_registry(void);
+static bool load_registry_xml(char* filename);
 
 
 static void create_registry(void)
@@ -264,7 +278,10 @@ static char* build_keyname(long key, const char* subkey)
   full_name=(char*)malloc(strlen(t->name)+strlen(subkey)+10);
   strcpy(full_name, t->name);
   strcat(full_name, "\\");
+  
+  while(*subkey == '\\') subkey++;
   strcat(full_name, subkey);
+  strrtrim(full_name, '\\');
   return full_name;
 }
 static struct reg_value* insert_reg_value(int handle, const char* name, int type, const void* value, int len)
@@ -318,43 +335,8 @@ static void init_registry(void)
   insert_handle((long)HKEY_LOCAL_MACHINE, "HKLM");
   insert_handle((long)HKEY_CURRENT_USER, "HKCU");
 
-#if 0
-  char corekey[] = "ABCD-ABCD-ABCD-ABCD-ABCD-ABCD-ABCD-ABCD";
-  char corename[] = "john doe";
-
-  char winprodkey[] = "12345-123-1234567-12345";
-  char corekey2[] = "ABCDEF-ABCDEF-ABCDEF-ABCDEF-ABCDEF";
-  char corename2[] = "john doe";
-
-  //0.0.0.4 -> 1.1.0.X
-  insert_reg_value((long)HKEY_LOCAL_MACHINE, "SOFTWARE\\Licenturion GmbH\\0000032D\\Product Key", REG_SZ, corekey, strlen(corekey)+1);
-  insert_reg_value((long)HKEY_LOCAL_MACHINE, "SOFTWARE\\Licenturion GmbH\\0000032D\\User ID", REG_SZ, corename, strlen(corename)+1);
-
-  //1.2.0.0 -> ??????
-  insert_reg_value((long)HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ProductID", REG_SZ, winprodkey, strlen(winprodkey)+1);
-  insert_reg_value((long)HKEY_CURRENT_USER, "SOFTWARE\\CoreCodec\\CoreAVC Pro\\User", REG_SZ, corename2, strlen(corename2)+1);
-  insert_reg_value((long)HKEY_CURRENT_USER, "SOFTWARE\\CoreCodec\\CoreAVC Pro\\Serial", REG_SZ, corekey2, strlen(corekey2)+1);
-#endif
-}
-
-static reg_handle_t* find_handle_2(long key, const char* subkey)
-{
-  char* full_name;
-  reg_handle_t* t;
-  if((t=find_handle(key))==0)
-  {
-    OutputDebugString("Registery:Invalid key\n");
-    return (reg_handle_t*)-1;
-  }
-  if(subkey==NULL)
-    return t;
-  full_name=(char*)malloc(strlen(t->name)+strlen(subkey)+10);
-  strcpy(full_name, t->name);
-  strcat(full_name, "\\");
-  strcat(full_name, subkey);
-  t=find_handle_by_name(full_name);
-  free(full_name);
-  return t;
+  load_registry_xml("Q:\\system\\registry.xml");
+  load_registry_xml("T:\\registry.xml");
 }
 
 /////////////////////////////////////////////////////////////
@@ -364,36 +346,23 @@ LONG WINAPI dllRegOpenKeyExA(HKEY key, LPCSTR subkey, DWORD reserved, REGSAM acc
   reg_handle_t* t;
   struct reg_value* v;
 
-  //char szBuf[256]; //debug varibabe
-
   if(!regs)
-    init_registry
-    ()
-    ;
-  /* t=find_handle_2(key, subkey);
+    init_registry();
 
-  if(t==0)
-  return -1;
-
-  if(t==(reg_handle_t*)-1)
-  return -1;
-  */
   full_name=build_keyname((long)key, subkey);
   if(!full_name)
     return -1;
 
-  //for debuging purpose
-  //sprintf(szBuf,"RegOpenKey Full Name %s\n",full_name);
-  //OutputDebugString(szBuf);
   dbgprintf("RegOpenKeyExA(key 0x%x, subkey %s, reserved %d, access 0x%x, pnewkey 0x%x) => 0\n",
     key, subkey, reserved, access, newkey);
-  if(newkey)dbgprintf(" New key: 0x%x\n", *newkey);
 
-
-  v=find_value_by_name(full_name);
-
-  t=insert_handle(generate_handle(), full_name);
-  *newkey=(HKEY)t->handle;
+  if(newkey)
+  {
+    v=find_value_by_name(full_name);
+    t=insert_handle(generate_handle(), full_name);
+    *newkey=(HKEY)t->handle;
+    dbgprintf(" New key: 0x%x\n", *newkey);
+  }
   free(full_name);
 
   return 0;
@@ -425,17 +394,12 @@ LONG WINAPI dllRegQueryValueExA (HKEY key, LPCSTR value, LPDWORD reserved,
 {
   struct reg_value* t;
   char* c;
-  //char szBuf[256]; //debug strings
 
-  //mp_msg(0,0,"Querying value %s\n", value);
   if(!regs)
-    init_registry
-    ();
+    init_registry();
 
   c=build_keyname((long)key, value);
 
-  //sprintf(szBuf,"RegOpenKey Full Name %s\n",c); //debug output
-  //OutputDebugString(szBuf);
 
   if (!c)
     return 1;
@@ -445,7 +409,6 @@ LONG WINAPI dllRegQueryValueExA (HKEY key, LPCSTR value, LPDWORD reserved,
     dbgprintf("RegQueryValueExA(key 0x%x, value %s, reserved 0x%x, data 0x%x, count 0x%x)"
       " => 0x%x\n", key, value, reserved, data, count, 2);
     memset(data, 0, *count);
-    if(data && count)dbgprintf(" read %d bytes: '%s'\n", *count, data);
     return 2;
   }
   if (type)
@@ -489,7 +452,7 @@ LONG WINAPI dllRegQueryValueExW (HKEY key, LPCWSTR value, LPDWORD reserved,
   if(!count) count = &count2;
   
   ret = WideCharToMultiByte(65001, 0x0, value, -1, NULL, 0, NULL, NULL);
-  value2 = malloc(ret);
+  value2 = (PCHAR)malloc(ret);
   ret = WideCharToMultiByte(65001, 0x0, value, -1, value2, ret, NULL, NULL);
 
   count2 = *count * 2;
@@ -502,7 +465,7 @@ LONG WINAPI dllRegQueryValueExW (HKEY key, LPCWSTR value, LPDWORD reserved,
 
   if(data && count2 && (*type == REG_SZ || *type == REG_MULTI_SZ))
   {
-    PCHAR data2 = malloc(count2);
+    PCHAR data2 = (PCHAR)malloc(count2);
     memcpy(data2, data, count2);
 
     *count = MultiByteToWideChar(65001, 0x0, data2, count2, (LPWSTR)data, *count);
@@ -726,4 +689,102 @@ BOOL WINAPI dllCryptReleaseContext(HCRYPTPROV hProv, DWORD dwFlags)
 {
   not_implement("advapi32.dll fake function dllCryptReleaseContext() called\n");
   return 1;
+}
+
+static bool load_registry_key(long handle, TiXmlElement *key)
+{
+  if(!key)
+    return false;
+
+  const char* path = key->Attribute("path");
+  if(!path)
+  {
+    reg_handle_t* t = find_handle(handle);
+    CLog::Log(LOGERROR, __FUNCTION__" - key element is missing path, parent %s", t ? t->name : "");
+    return false;
+  }
+
+  if(!handle)
+  {
+    int span = strcspn(path, "\\");
+    if(strncmp(path, "HKCU",span) == 0 || strncmp(path, "HKEY_CURRENT_USER", span) == 0)
+    {
+      handle = (long)HKEY_CURRENT_USER;
+      path+=span;
+    }
+    else if(strncmp(path, "HKLM",span) == 0 || strncmp(path, "HKEY_LOCAL_MACHINE", span) == 0)
+    {
+      handle = (long)HKEY_LOCAL_MACHINE;
+      path+=span;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, __FUNCTION__" - invalid root element %s", path);
+      return false;
+    }
+  }
+
+  char * fullname = build_keyname(handle, path);
+  reg_handle_t *t = insert_handle(generate_handle(), fullname);
+  free(fullname);
+
+  TiXmlNode *node = NULL;
+  while(node = key->IterateChildren(node))
+  {
+    TiXmlElement *element = node->ToElement();
+    if(!element)
+      continue;
+
+    if(strcmp("value", element->Value()) == 0)
+    {
+      const char* type = element->Attribute("type");
+      const char* id = element->Attribute("id");
+
+      if(!type) type = "string";
+      if(!id || !id[0]) id = "<default>";
+      
+      if(strcmp(type, "string") == 0)
+      {
+        const char* str = element->GetText();
+        if(!str) 
+          continue;
+        insert_reg_value(t->handle, id, REG_SZ, str, strlen(str)+1);
+      }
+      else if(strcmp(type, "dword") == 0)
+      {
+        DWORD val = atol(element->GetText());
+        insert_reg_value(t->handle, id, REG_DWORD, &val, sizeof(DWORD));
+      }
+      else
+        CLog::Log(LOGERROR, __FUNCTION__" - Unsupported value type");
+    }
+    else if(strcmp("key", element->Value()) == 0)
+      load_registry_key(t->handle, element);
+  }
+  remove_handle(t);
+
+  return true;
+}
+
+static bool load_registry_xml(char* filename)
+{
+  TiXmlDocument doc;
+  if(!doc.LoadFile(filename))
+  {
+    if(doc.ErrorId() != TiXmlBase::TIXML_ERROR_OPENING_FILE)
+      CLog::Log(LOGERROR, __FUNCTION__"(%s) - %s on row %d and col %d", filename, doc.ErrorDesc(), doc.ErrorRow(), doc.ErrorCol());
+    return false;
+  }
+
+  if(strcmp("registry", doc.RootElement()->Value()))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) - Invalid root element expected ""registry""", doc.RootElement()->Value());
+    return false;
+  }
+
+  TiXmlNode *node = NULL;
+  while(node = doc.RootElement()->IterateChildren("key", node))
+    load_registry_key(0, node->ToElement());
+
+  return true;
 }
