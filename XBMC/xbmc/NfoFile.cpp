@@ -17,7 +17,7 @@ using namespace DIRECTORY;
 
 CNfoFile::CNfoFile(const CStdString& strContent)
 {
-  CNfoFile::strContent = strContent;
+  m_strContent = strContent;
   m_doc = NULL;
 }
 
@@ -52,7 +52,7 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath)
   if (!m_parser.Load(strScraperPath))
     return E_FAIL;
 
-  if(m_parser.GetContent() !=  strContent )
+  if(m_parser.GetContent() !=  m_strContent )
     return E_FAIL;
   m_parser.m_param[0] = m_doc;
   m_strImDbUrl = m_parser.Parse("NfoUrl");

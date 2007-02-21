@@ -28,7 +28,7 @@ struct SScraperInfo
 class CIMDBUrl
 {
 public:
-  std::vector<CStdString> m_strURL;
+  std::vector<CScraperUrl> m_scrURL;
   CStdString m_strID;  CStdString m_strTitle;
 };
 typedef vector<CIMDBUrl> IMDB_MOVIELIST;
@@ -79,7 +79,7 @@ public:
   bool ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails);
   bool LoadXML(const CStdString& strXMLFile, CIMDBMovie &movieDetails, bool bDownload = true);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
-  void GetURL(const CStdString& strMovie, CStdString& strURL, CStdString& strYear);
+  void GetURL(const CStdString& strMovie, CScraperUrl& strURL, CStdString& strYear);
 
   // threaded lookup functions
   bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
@@ -87,6 +87,7 @@ public:
 
   void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
 protected:
+  bool Get(CScraperUrl& , string& );
   void RemoveAllAfter(char* szMovie, const char* szSearch);
   CHTTP m_http;
 
