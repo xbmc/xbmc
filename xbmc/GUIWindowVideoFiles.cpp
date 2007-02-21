@@ -490,9 +490,10 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
             if ( nfoReader.Create(strNfoFile) == S_OK)
             {
               CIMDBUrl url;
-              url.m_strURL.push_back(nfoReader.m_strImDbUrl);
+              CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+	            url.m_scrURL.push_back(scrUrl);
               CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReader.m_strScraper.c_str());
-              CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_strURL[0].c_str());
+              CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
               url.m_strID  = nfoReader.m_strImDbNr;
               SScraperInfo info2(info);
               info2.strPath = nfoReader.m_strScraper;
