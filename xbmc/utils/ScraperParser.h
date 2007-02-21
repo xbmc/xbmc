@@ -4,6 +4,19 @@
 #include "tinyxml/tinyxml.h"
 #include "stdstring.h"
 
+class CScraperUrl
+{
+public:
+  CScraperUrl(const CStdString&);
+  CScraperUrl(const TiXmlElement*);
+  CScraperUrl();
+	~CScraperUrl();
+  void ParseString(CStdString);
+  void ParseElement(const TiXmlElement*);
+  CStdString m_spoof;
+  CStdString m_url;
+  bool m_post;
+};
 class CScraperParser
 {
 public:

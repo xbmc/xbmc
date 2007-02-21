@@ -2,9 +2,58 @@
 
 #include "RegExp.h"
 #include "htmlutil.h"
-
+#include "../stdafx.h"
 #include <cstring>
 
+CScraperUrl::CScraperUrl(const CStdString& strUrl)
+{
+  m_post = false;
+  ParseString(strUrl);
+
+}
+CScraperUrl::CScraperUrl(const TiXmlElement* element)
+{
+  m_post = false;
+  ParseElement(element);
+
+}
+CScraperUrl::CScraperUrl()
+{
+   m_post = false;
+}
+CScraperUrl::~CScraperUrl()
+{
+
+}
+void CScraperUrl::ParseElement(const TiXmlElement* element)
+{
+  m_url = element->FirstChild()->Value();
+  m_spoof = element->Attribute("spoof");
+  if(element->Attribute("post")) 
+    m_post = true;
+}
+void CScraperUrl::ParseString(CStdString strUrl)
+{
+  if (strUrl.IsEmpty())
+    return ;
+  
+  // ok, now parse the xml file
+  if (strUrl.Find("encoding=\"utf-8\"") < 0)
+    g_charsetConverter.stringCharsetToUtf8(strUrl);
+  
+  TiXmlDocument doc;
+  doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
+
+  if (doc.RootElement())
+  {
+    m_url = doc.RootElement()->FirstChild()->Value();
+    m_spoof = doc.RootElement()->Attribute("spoof");
+    if(doc.RootElement()->Attribute("post")) 
+      m_post = true;
+  } 
+  else
+    m_url = strUrl;
+}
 CScraperParser::CScraperParser()
 {
   m_pRootElement = NULL;
