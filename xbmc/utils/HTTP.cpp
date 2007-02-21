@@ -691,6 +691,11 @@ void CHTTP::SetCookie(const string &strCookie)
   m_strCookie = strCookie;
 }
 
+void CHTTP::SetReferer(const string &strReferer)
+{
+  m_strReferer = strReferer;
+}
+
 void CHTTP::SetUserAgent(string strUserAgent)
 {
   m_strUserAgent = strUserAgent;
@@ -733,6 +738,12 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   strcat(szHTTPHEADER, "User-Agent: ");
   strcat(szHTTPHEADER, m_strUserAgent.c_str());
   strcat(szHTTPHEADER, "\r\n");
+  if (m_strReferer.size())
+  {
+    strcat(szHTTPHEADER, "Referer: ");
+    strcat(szHTTPHEADER, m_strReferer.c_str());
+    strcat(szHTTPHEADER, "\r\n");
+  }
   if (m_strCookie.size())
   {
     // is this even valid in http?

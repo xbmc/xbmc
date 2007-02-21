@@ -29,7 +29,28 @@ CIMDB::CIMDB(const CStdString& strProxyServer, int iProxyPort)
 CIMDB::~CIMDB()
 {
 }
+bool CIMDB::Get(CScraperUrl& scrURL, string& strHTML)
+{
+  CURL url(scrURL.m_url);
+  m_http.SetReferer(scrURL.m_url);
 
+  if(scrURL.m_post)
+  {
+    CStdString strOptions = url.GetOptions();
+    url.SetOptions("");
+    CStdString strUrl;
+    url.GetURL(strUrl);
+    //CUtil::URLEncode(strOptions);
+
+    if (!m_http.Post(strUrl, strOptions, strHTML))
+      return false;
+  }
+
+  if (!m_http.Get(scrURL.m_url, strHTML))
+    return false;
+  
+  return true;
+}
 bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist)
 {
   // load our scraper xml
@@ -39,18 +60,19 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   CIMDBUrl url;
   movielist.clear();
 
-	CStdString strURL, strHTML, strYear;
+	CStdString strHTML, strYear;
+  CScraperUrl scrURL;
   
-	GetURL(strMovie, strURL, strYear);
+	GetURL(strMovie, scrURL, strYear);
 
-  if (!m_http.Get(strURL, strHTML) || strHTML.size() == 0)
+  if (!Get(scrURL, strHTML) || strHTML.size() == 0)
   {
     CLog::Log(LOGERROR, "IMDB: Unable to retrieve web site");
     return false;
   }
   
   m_parser.m_param[0] = strHTML;
-  m_parser.m_param[1] = strURL;
+  m_parser.m_param[1] = scrURL.m_url;
   CStdString strXML = m_parser.Parse("GetSearchResults");
   if (strXML.IsEmpty())
   {
@@ -76,18 +98,22 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
   for ( movie; movie; movie = movie->NextSiblingElement() )
   {
-    url.m_strURL.clear();
+    url.m_scrURL.clear();
     TiXmlNode *title = movie->FirstChild("title");
-    TiXmlNode *link = movie->FirstChild("url");
+    TiXmlElement *link = movie->FirstChildElement("url");
     TiXmlNode *year = movie->FirstChild("year");
     TiXmlNode* id = movie->FirstChild("id");
     if (title && title->FirstChild() && link && link->FirstChild())
     {
       url.m_strTitle = title->FirstChild()->Value();
-      url.m_strURL.push_back(link->FirstChild()->Value());
-      while ((link = link->NextSibling("url")))
+      CScraperUrl scrURL(link);
+      url.m_scrURL.push_back(scrURL);
+      //url.m_strURL.push_back(link->FirstChild()->Value());
+      while ((link = link->NextSiblingElement("url")))
       {
-        url.m_strURL.push_back(link->FirstChild()->Value());
+        CScraperUrl scrURL(link);
+        //url.m_strURL.push_back(link->FirstChild()->Value());
+        url.m_scrURL.push_back(scrURL);
       }
       if (id && id->FirstChild())
         url.m_strID = id->FirstChild()->Value();
@@ -125,11 +151,11 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails, co
 
   std::vector<CStdString> strHTML;
 
-  for (unsigned int i=0;i<url.m_strURL.size();++i)
+  for (unsigned int i=0;i<url.m_scrURL.size();++i)
   {
     CStdString strCurrHTML;
-    CStdString strU = url.m_strURL[i];
-    if (!m_http.Get(strU,strCurrHTML) || strCurrHTML.size() == 0)
+    CScraperUrl strU = url.m_scrURL[i];
+    if (!Get( strU,strCurrHTML) || strCurrHTML.size() == 0)
       return false;
     strHTML.push_back(strCurrHTML);
   }
@@ -171,7 +197,9 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails, co
     if (szFunction)
     {
       CIMDBUrl url2;
-      url2.m_strURL.push_back(url->FirstChild()->Value());
+      
+      CScraperUrl scrURL(url);
+      url2.m_scrURL.push_back(scrURL);
       InternalGetDetails(url2,movieDetails,szFunction);
     }
     url = url->NextSiblingElement("url");
@@ -393,7 +421,7 @@ void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 }
 
 // TODO: Make this user-configurable?
-void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& strYear)
+void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& strYear)
 {
   char szMovie[1024];
   char szYear[5];
@@ -440,8 +468,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL, CStdString& s
   else
     m_parser.m_param[0] = szMovie;
 
-  strURL = m_parser.Parse("CreateSearchUrl");
-
+  scrURL.ParseString(m_parser.Parse("CreateSearchUrl"));
   strYear = szYear;
 }
 
@@ -459,7 +486,7 @@ void CIMDB::Process()
   else if (m_state == GET_DETAILS)
   {
     if (!GetDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_strURL[0].c_str());
+      CLog::Log(LOGERROR, "IMDb::Error getting movie details from %s", m_url.m_scrURL[0].m_url.c_str());
   }
   m_found = true;
 }

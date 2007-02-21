@@ -21,6 +21,7 @@ public:
 
   bool Post(const string& strURL, const string& strPostData, string& strHTML);
   void SetCookie(const string& strCookie);
+  void SetReferer(const string& strCookie);
   bool Get(string& strURL, string& strHTML);
   bool Head(string& strURL);
   bool Download(const string &strURL, const string &strFileName, LPDWORD pdwSize = NULL);
@@ -50,6 +51,7 @@ private:
   string m_strProxyServer;
   string m_strHostName;
   string m_strCookie;
+  string m_strReferer;
   string m_strHeaders;
   string m_strUsername;
   string m_strPassword;

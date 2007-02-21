@@ -26,7 +26,7 @@ private:
 private:
   char* m_doc;
   int m_size;
-  CStdString strContent;
+  CStdString m_strContent;
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)
