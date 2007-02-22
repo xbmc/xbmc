@@ -140,6 +140,9 @@ namespace PYXBMC
 		case CGUIControl::GUICONTROL_LIST:
 			pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
 			break;
+		case CGUIControl::GUICONTROL_PROGRESS:
+			pControl = (Control*)ControlProgress_Type.tp_alloc(&ControlProgress_Type, 0);
+			break;
 		}
 
 		if (!pControl)
@@ -414,6 +417,10 @@ namespace PYXBMC
 		// Control List
 		else if (ControlList_Check(pControl))
 			ControlList_Create((ControlList*)pControl);
+
+		// Control Progress
+		else if (ControlProgress_Check(pControl))
+			ControlProgress_Create((ControlProgress*)pControl);
 
 		//unknown control type to add, should not happen
 		else
