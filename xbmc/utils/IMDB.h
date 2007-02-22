@@ -29,9 +29,11 @@ class CIMDBUrl
 {
 public:
   std::vector<CStdString> m_strURL;
-  CStdString m_strID;  CStdString m_strTitle;
+  CStdString m_strID;  
+  CStdString m_strTitle;
 };
 typedef vector<CIMDBUrl> IMDB_MOVIELIST;
+typedef std::map<std::pair<int,int>,CIMDBUrl> IMDB_EPISODELIST;
 
 class CIMDBMovie
 {
@@ -58,11 +60,11 @@ public:
   CStdString m_strIMDBNumber;
   CStdString m_strMPAARating;
   CStdString m_strFileNameAndPath;
+  CStdString m_strEpisodeGuide;
   bool m_bWatched;
   int m_iTop250;
   int m_iYear;
   float m_fRating;
-private:
 };
 
 class CIMDB : public CThread
@@ -75,6 +77,7 @@ public:
   bool LoadDLL();
   bool InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist);
   bool InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails, const CStdString& strFunction="GetDetails");
+  bool InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& details);
   bool ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails);
   bool LoadXML(const CStdString& strXMLFile, CIMDBMovie &movieDetails, bool bDownload = true);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
@@ -83,6 +86,8 @@ public:
   // threaded lookup functions
   bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
   bool GetDetails(const CIMDBUrl& url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress = NULL);
+  bool GetEpisodeDetails(const CIMDBUrl& url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress = NULL);
+  bool GetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
 
   void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
 protected:
@@ -97,14 +102,16 @@ protected:
 
   enum LOOKUP_STATE { DO_NOTHING = 0,
                       FIND_MOVIE = 1,
-                      GET_DETAILS = 2 };
-  CStdString      m_strMovie;
-  IMDB_MOVIELIST  m_movieList;
-  CIMDBMovie      m_movieDetails;
-  CIMDBUrl        m_url;
-  LOOKUP_STATE    m_state;
-  bool            m_found;
-  SScraperInfo m_info;
+                      GET_DETAILS = 2,
+                      GET_EPISODE_LIST = 3 };
+  CStdString        m_strMovie;
+  IMDB_MOVIELIST    m_movieList;
+  CIMDBMovie        m_movieDetails;
+  CIMDBUrl          m_url;
+  IMDB_EPISODELIST  m_episode;
+  LOOKUP_STATE      m_state;
+  bool              m_found;
+  SScraperInfo      m_info;
 };
 
 #endif // !defined(AFX_IMDB1_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)

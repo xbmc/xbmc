@@ -1022,7 +1022,7 @@
   <string id="13396">Audio and Subtitle Settings</string>
   <string id="13397">Enable Subtitles</string>
   <string id="13398">Bookmarks</string>
-  <string id="13399">Ignore "The" when sorting</string>
+  <string id="13399">Ignore tokens when sorting</string>
   <string id="13400">Crossfade albumtracks</string>
   <string id="13401">Browse for %s</string>
   <string id="13402">Show track position</string>
@@ -1529,6 +1529,13 @@
   <string id="20347">as</string>
   <string id="20348">Directors</string>
   <string id="20349">No video files found in this path!</string>
+  <string id="20350">votes</string>
+  <string id="20351">TV Show Information</string>
+  <string id="20352">Episode Information</string>
+  <string id="20353">Loading TV Show details</string>
+  <string id="20354">Fetching Episode Guide</string>
+  <string id="20355">Locating Episodes In Directory</string>
+  <string id="20356">Select TV Show:</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1553,9 +1560,10 @@
   <string id="21364">Edit Media Share</string>
   <string id="21365">Remove Media Share</string>  
   <string id="21366">Custom Subtitle Directory</string>
-  <string id="21367">Movie &amp; Alternate Subitle Directory</string>
+  <string id="21367">Movie &amp; Alternate Subtitle Directory</string>
   
   <string id="21370">Play Navigation Sounds During Media Playback</string>  
+  <string id="21371">Thumbnail</string>
 
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>

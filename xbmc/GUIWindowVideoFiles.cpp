@@ -295,6 +295,11 @@ void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
   bool bFolder(false);
+  if (info.strContent.Equals("tvshows"))
+  {
+    CGUIWindowVideoBase::OnInfo(iItem,info);
+    return;
+  }
   CStdString strFolder = "";
   int iSelectedItem = m_viewControl.GetSelectedItem();
   CFileItem* pItem = m_vecItems[iItem];

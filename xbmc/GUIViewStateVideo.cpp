@@ -108,7 +108,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
     case NODE_TYPE_TVSHOWS:
     case NODE_TYPE_OVERVIEW:
       {
-        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+
         SetSortMethod(SORT_METHOD_NONE);
 
         SetViewAsControl(DEFAULT_VIEW_LIST);

@@ -20,8 +20,7 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
   switch (NodeType)
   {
   case NODE_TYPE_OVERVIEW:
-    if (idDb < 3)
-      m_idContent = idDb;
+    m_idContent = idDb;
     break;
   case NODE_TYPE_GENRE:
     m_idGenre = idDb;

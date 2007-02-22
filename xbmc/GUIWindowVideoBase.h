@@ -58,6 +58,7 @@ protected:
   void UpdateVideoTitle(int iItem);
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
+  void OnProcessSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
