@@ -1425,6 +1425,8 @@ void CApplication::StartWebServer()
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
+	if (pXbmcHttp)
+      pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
 }
 
@@ -3088,6 +3090,9 @@ void CApplication::Stop()
 
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
+
+	if (pXbmcHttp)
+      pXbmcHttp->xbmcBroadcast("ShutDown", 1);
 
     StopServices();
     //Sleep(5000);
