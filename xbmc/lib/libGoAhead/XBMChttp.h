@@ -75,6 +75,7 @@ public:
   int xbmcLookupAlbum(int numParas, CStdString paras[]);
   int xbmcChooseAlbum(int numParas, CStdString paras[]);
   int xbmcQueryMusicDataBase(int numParas, CStdString paras[]);
+  int xbmcQueryVideoDataBase(int numParas, CStdString paras[]);
   int xbmcDownloadInternetFile(int numParas, CStdString paras[]);
   int xbmcSetKey(int numParas, CStdString paras[]);
   int xbmcGetMovieDetails(int numParas, CStdString paras[]);
