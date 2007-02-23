@@ -143,6 +143,9 @@ public:
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent);
 
+  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
+	const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
+
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items);
