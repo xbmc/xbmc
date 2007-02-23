@@ -5,6 +5,7 @@
 
 #include "../lib/libiconv/iconv.h"
 #include "../lib/libfribidi/fribidi.h"
+#include <vector>
 
 class CCharsetConverter
 {
@@ -40,7 +41,7 @@ public:
 
   void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
 
-  vector<CStdString> getCharsetLabels();
+  std::vector<CStdString> getCharsetLabels();
   CStdString& getCharsetLabelByName(const CStdString& charsetName);
   CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
   boolean isBidiCharset(const CStdString& charset);
@@ -49,10 +50,10 @@ public:
   void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base = FRIBIDI_TYPE_LTR);
 
 private:
-  vector<CStdString> m_vecCharsetNames;
-  vector<CStdString> m_vecCharsetLabels;
-  vector<CStdString> m_vecBidiCharsetNames;
-  vector<FriBidiCharSet> m_vecBidiCharsets;
+  std::vector<CStdString> m_vecCharsetNames;
+  std::vector<CStdString> m_vecCharsetLabels;
+  std::vector<CStdString> m_vecBidiCharsetNames;
+  std::vector<FriBidiCharSet> m_vecBidiCharsets;
 
   iconv_t m_iconvStringCharsetToFontCharset;
   iconv_t m_iconvSubtitleCharsetToUtf16;
