@@ -1,9 +1,60 @@
 #include "ScraperParser.h"
 
 #include "RegExp.h"
-
+#include "htmlutil.h"
+//#include "../stdafx.h"
+ #include "charsetconverter.h"
 #include <cstring>
 
+CScraperUrl::CScraperUrl(const CStdString& strUrl)
+{
+  m_post = false;
+  ParseString(strUrl);
+
+}
+CScraperUrl::CScraperUrl(const TiXmlElement* element)
+{
+  m_post = false;
+  ParseElement(element);
+
+}
+CScraperUrl::CScraperUrl()
+{
+   m_post = false;
+}
+CScraperUrl::~CScraperUrl()
+{
+
+}
+void CScraperUrl::ParseElement(const TiXmlElement* element)
+{
+  m_url = element->FirstChild()->Value();
+  m_spoof = element->Attribute("spoof");
+  if(element->Attribute("post")) 
+    m_post = true;
+}
+void CScraperUrl::ParseString(CStdString strUrl)
+{
+  if (strUrl.IsEmpty())
+    return ;
+  
+  // ok, now parse the xml file
+  if (strUrl.Find("encoding=\"utf-8\"") < 0)
+    g_charsetConverter.stringCharsetToUtf8(strUrl);
+  
+  TiXmlDocument doc;
+  doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
+
+  if (doc.RootElement())
+  {
+    m_url = doc.RootElement()->FirstChild()->Value();
+    m_spoof = doc.RootElement()->Attribute("spoof");
+    if(doc.RootElement()->Attribute("post")) 
+      m_post = true;
+  } 
+  else
+    m_url = strUrl;
+}
 CScraperParser::CScraperParser()
 {
   m_pRootElement = NULL;
@@ -344,17 +395,15 @@ void CScraperParser::ParseNext(TiXmlElement* element)
 const CStdString CScraperParser::Parse(const CStdString& strTag)
 {
   TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
+  if(pChildElement == NULL) return "";
   int iResult = 1; // default to param 1
   pChildElement->QueryIntAttribute("dest",&iResult);
   TiXmlElement* pChildStart = pChildElement->FirstChildElement("RegExp");
   ParseNext(pChildStart);
 
-  for (int i=0;i<9;++i) // clear all buffers but the answer
-  {
-    if (i != iResult-1)
-      m_param[i].clear();
-  }
-  return m_param[iResult-1];
+  CStdString tmp = m_param[iResult-1];
+  ClearBuffers(); 
+  return tmp;
 }
 
 void CScraperParser::Clean(CStdString& strDirty)
@@ -367,11 +416,15 @@ void CScraperParser::Clean(CStdString& strDirty)
     if ((i2=strDirty.Find("!!!CLEAN!!!",i+11)) != CStdString::npos)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
-      char* szConverted = ConvertHTMLToAnsi(strBuffer.c_str());
-      const char* szTrimmed = RemoveWhiteSpace(szConverted);
-      strDirty.Replace("!!!CLEAN!!!"+strBuffer+"!!!CLEAN!!!",CStdString(szTrimmed));
+      //char* szConverted = ConvertHTMLToAnsi(strBuffer.c_str());
+      //const char* szTrimmed = RemoveWhiteSpace(szConverted);
+      CStdString strConverted(strBuffer);
+      HTML::CHTMLUtil::RemoveTags(strConverted);
+      const char* szTrimmed = RemoveWhiteSpace(strConverted.c_str());
+      strDirty.erase(i,i2-i+11);
+      strDirty.Insert(i,szTrimmed);
       i += strlen(szTrimmed);
-      free(szConverted);
+      //free(szConverted);
     }
     else
       break;
@@ -577,4 +630,12 @@ char* CScraperParser::RemoveWhiteSpace(const char *string2)
   while ((*string == ' ' || *string == '\n') && *string != '\0')
     string++;
   return string;
+}
+void CScraperParser::ClearBuffers()
+{
+	//clear all m_param strings
+	for (int i=0;i<9;++i)
+	{
+		m_param[i].clear();
+	}
 }

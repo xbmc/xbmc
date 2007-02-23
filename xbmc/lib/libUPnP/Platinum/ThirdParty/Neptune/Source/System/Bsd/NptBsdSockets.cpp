@@ -1193,6 +1193,12 @@ NPT_BsdUdpSocket::NPT_BsdUdpSocket() :
                SO_BROADCAST, 
                (SocketOption)&option, 
                sizeof(option));
+
+#ifdef _XBOX
+    // set flag on the socket the allows sending of multicast
+    *(DWORD*)((char*)m_SocketFdReference->GetSocketFd()+0xc) |= 0x02000000;
+#endif
+
 }
 
 /*----------------------------------------------------------------------
@@ -1405,7 +1411,7 @@ NPT_Result
 NPT_BsdUdpMulticastSocket::JoinGroup(const NPT_IpAddress& group,
                                      const NPT_IpAddress& iface)
 {
-    return NPT_ERROR_NOT_IMPLEMENTED;
+    return NPT_SUCCESS;
 }
 #else
 /*----------------------------------------------------------------------
@@ -1443,7 +1449,7 @@ NPT_Result
 NPT_BsdUdpMulticastSocket::LeaveGroup(const NPT_IpAddress& group,
                                       const NPT_IpAddress& iface)
 {
-    return NPT_ERROR_NOT_IMPLEMENTED;
+    return NPT_SUCCESS;
 }
 #else
 /*----------------------------------------------------------------------
@@ -1480,7 +1486,7 @@ NPT_BsdUdpMulticastSocket::LeaveGroup(const NPT_IpAddress& group,
 NPT_Result
 NPT_BsdUdpMulticastSocket::SetInterface(const NPT_IpAddress& iface)
 {
-    return NPT_ERROR_NOT_IMPLEMENTED;
+    return NPT_SUCCESS;
 }
 #else
 /*----------------------------------------------------------------------

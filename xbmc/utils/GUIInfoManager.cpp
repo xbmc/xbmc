@@ -262,6 +262,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("videoplayer.title")) ret = VIDEOPLAYER_TITLE;
     else if (strTest.Equals("videoplayer.genre")) ret = VIDEOPLAYER_GENRE;
+    else if (strTest.Equals("videoplayer.originaltitle")) ret = VIDEOPLAYER_ORIGINALTITLE;
     else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
     else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
     else if (strTest.Equals("videoplayer.time")) ret = VIDEOPLAYER_TIME;
@@ -302,6 +303,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
     else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
     else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
+  }
+  else if (strCategory.Equals("container"))
+  {
+    if (strTest.Equals("container.folderthumb")) ret = CONTAINER_FOLDERTHUMB;
+    else if (strTest.Equals("container.folderpath")) ret = CONTAINER_FOLDERPATH;
   }
   else if (strCategory.Equals("listitem"))
   {
@@ -487,6 +493,7 @@ string CGUIInfoManager::GetLabel(int info)
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
+  case VIDEOPLAYER_ORIGINALTITLE:
   case VIDEOPLAYER_GENRE:
   case VIDEOPLAYER_DIRECTOR:
   case VIDEOPLAYER_YEAR:
@@ -542,6 +549,16 @@ string CGUIInfoManager::GetLabel(int info)
   case LCD_FAN_SPEED:
     return GetSystemHeatInfo("lcdfan");
     break;
+  case CONTAINER_FOLDERPATH:
+    {
+      CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      if (window && window->IsMediaWindow())
+      {
+        CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
+        url.GetURLWithoutUserDetails(strLabel);
+      }
+      break;
+    }
   case SYSTEM_BUILD_VERSION:
     strLabel = GetVersion();
     break;
@@ -1110,14 +1127,19 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
       return m_currentFile.HasThumbnail() ? m_currentFile.GetThumbnailImage() : "defaultVideoCover.png";
     else return m_currentMovieThumb;
   }
-  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY)
+  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_OVERLAY || info == CONTAINER_FOLDERTHUMB)
   {
     CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
     if (!window || !window->IsMediaWindow())
       window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (window && window->IsMediaWindow())
     {
-      CFileItem *item = window->GetCurrentListItem();
+      CFileItem* item;
+
+      if (info == CONTAINER_FOLDERTHUMB)
+        item = &const_cast<CFileItem&>(((CGUIMediaWindow*)window)->CurrentDirectory());
+      else
+        item = window->GetCurrentListItem();
       if (item)
         return GetItemImage(item, info);
     }
@@ -1373,9 +1395,14 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   switch (item)
   {
   case VIDEOPLAYER_DURATION:
-      return m_currentMovieDuration;
+    if (m_currentMovieDuration.IsEmpty())
+      return GetVideoLabel(PLAYER_DURATION);
+    return m_currentMovieDuration;
   case VIDEOPLAYER_TITLE:
     return m_currentMovie.m_strTitle;
+    break;
+  case VIDEOPLAYER_ORIGINALTITLE:
+    return m_currentMovie.m_strOriginalTitle;
     break;
   case VIDEOPLAYER_GENRE:
     return m_currentMovie.m_strGenre;

@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Ofri Avraham Okladek-->
-<!--Email: OOkladek@gmail.com-->
-<!--Date of translation: 10/01/2006-->
+<!--Translator: OOkladek-->
+<!--Email: ookladek@gmail.com-->
+<!--Date of translation: 02/19/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 1.343-->
 <strings>
   <string id="0">התוכניות שלי</string>
   <string id="1">התמונות שלי</string>
@@ -404,7 +403,7 @@
   <string id="485">מחק אלבום</string>
   <string id="486">חזור</string>
   <string id="487">חזור פעם אחת</string>
-  <string id="488">חזור רשימת השמעה לספריה</string>
+  <string id="488">חזור רשימת השמעה לתיקיה</string>
   <string id="489">השתמש ברשימת השמעה בשירים</string>
   <string id="491">- השתמש בצלמיות גדולות</string>
   <string id="492">הגדל כתוביות</string>
@@ -423,7 +422,7 @@
   <string id="505">טוען פרטי מדיה מהקבצים</string>
   <string id="507">מיין לפי : שימוש</string>
   <string id="510">אפשר תצוגות</string>
-  <string id="511">אפשר החלפת מוד וידאו</string>
+  <string id="511">אפשר החלפת מצב וידאו</string>
   <string id="512">חלון ראשוני</string>
   <string id="513">חלון הבית</string>
   <string id="514">הגדרות ידניות</string>
@@ -435,6 +434,46 @@
   <string id="520">XBE ערוך כותרת</string>
   <string id="521">אוספים</string>
   <string id="522">הסר מקור</string>
+  <string id="523">החלף מדיה</string>
+  <string id="524">בחר רשימת השמעה</string>
+  <string id="525">רשימת השמעה חדשה</string>
+  <string id="526">הוסף לרשימת השמעה</string>
+  <string id="527">הוסף ידנתי למסד הנתונים</string>
+  <string id="528">הכנס כותרת</string>
+  <string id="529">שגיאה: כותברת כפולה</string>
+  <string id="530">בחר סגנון</string>
+  <string id="531">סגנון חדש</string>
+  <string id="532">הוספה ידנית</string>
+  <string id="533">הכנס סגנון</string>
+  <string id="534">הצג: %s</string>
+  <string id="535">רשימה</string>
+  <string id="536">צלמיות</string>
+  <string id="537">רשימה גדולה</string>
+  <string id="538">צלמיות גדולות</string>
+  <string id="539">רחב</string>
+  <string id="540">רחב גדול</string>
+  <string id="550">מיין לפי: %s</string>
+  <string id="551">שם</string>
+  <string id="552">תאריך</string>
+  <string id="553">גודל</string>
+  <string id="554">רצועה</string>
+  <string id="555">זמן</string>
+  <string id="556">כותרת</string>
+  <string id="557">אמן</string>
+  <string id="558">אלבום</string>
+  <string id="559">רשימת השמעה</string>
+  <string id="560">ID</string>
+  <string id="561">קובץ</string>
+  <string id="562">שנה</string>
+  <string id="563">דירוג</string>
+  <string id="564">סוג</string>
+  <string id="565">שימוש</string>
+  <string id="580">כיוון מיון</string>
+  <string id="581">שיטת מיון</string>
+  <string id="582">מצב תצוגה</string>
+  <string id="583">זכור תצוגות לתיקיות שונות</string>
+  <string id="584">עולה</string>
+  <string id="585">יורד</string>
   <string id="588">בטל מצב מסיבה</string>
   <string id="589">מצב מסיבה</string>
   <string id="590">אקראי</string>
@@ -455,6 +494,7 @@
   <string id="607">אל:</string>
   <string id="608">לא יכול להעתיק דיסק או רצועה</string>
   <string id="609">XboxMediaCenter.xml אינו מוגדר ב CDDARipPath</string>
+  <string id="610">העתק רצועת דיסק</string>
   <string id="620">העתקת דיסק</string>
   <string id="621">מקודד</string>
   <string id="622">איכות</string>
@@ -479,6 +519,11 @@
   <string id="644">קצץ פסים שחורים</string>
   <string id="645">שומר במטמון קובץ גדול. להמשיך?</string>
   <string id="646">הסר כותרת</string>
+  <string id="647">יצא ספרית וידאו</string>
+  <string id="648">יבא ספרית וידאו</string>
+  <string id="649">מיבא</string>
+  <string id="650">מיצא</string>
+  <string id="651">ספריית וידאו</string>
   <string id="700">מנקה מסד נתונים</string>
   <string id="701">מוחק שירים ישנים ממסד הנתונים</string>
   <string id="702">הספריה נסרקה בעבר.</string>
@@ -644,6 +689,7 @@
   <string id="1410">רגוע</string>
   <string id="1411">עם</string>
   <string id="1412">סוער</string>
+  <string id="1413">טפטוף</string>
   <string id="2050">זמן ריצה:</string>
   <string id="4501">LCD סוג</string>
   <string id="10000">דף הבית</string>
@@ -723,6 +769,7 @@
   <string id="12020">שאל</string>
   <string id="12021">התחל בהתחלה</string>
   <string id="12022">המשך מהמיקום האחרון</string>
+  <string id="12023">מוודא טרינרים קימים</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -1150,6 +1197,7 @@ for this visualisation</string>
   <string id="15281">הכנס שם אומן למציאת אומנים דומים</string>
   <string id="15282">הכנס תגית למציאת שירים דומים</string>
   <string id="15283">%name% רצועות שנשמעו לאחרונה ע"י</string>
+  <string id="15284">האזן להמלצות %name%'s  רדיו  Last.FM</string>
   <string id="15300">נתיב לא נמצא או לא חוקי</string>
   <string id="15301">חיבור לשרת נכשל</string>
   <string id="15302">שרתים לא נמצאו</string>
@@ -1161,6 +1209,7 @@ for this visualisation</string>
   <string id="16002">CDDB חיפוש</string>
   <string id="16003">נגן</string>
   <string id="16004">נגן מדיה מהדיסק</string>
+  <string id="16008">הכנס כותרת חדשה</string>
   <string id="16009">הכנס שם סרט</string>
   <string id="16010">הכנס שם פרופיל</string>
   <string id="16011">הכנס שם אלבום</string>
@@ -1404,5 +1453,64 @@ for this visualisation</string>
   <string id="20311">לא ידוע או על הלוח (מוגן)</string>
   <string id="20312">אמעם LCD בזמן הפסקה</string>
   <string id="20313">אם בהפסקה הפעל LED בחזרה</string>
+  <string id="20314">וידאו - ספריה</string>
+  <string id="20315">שמירות משחקים</string>
+  <string id="20316">מיין לפי: ID</string>
+  <string id="20317">הורד שמירות</string>
+  <string id="20318">שמירת משחק הותקנה על ה HDD</string>
+  <string id="20319">נכשל בהורדת שמירת משחק</string>
+  <string id="20320">בחר שמירת משחק להורדה והתקנה</string>
+  <string id="20321">לא נמצא שמירת משחק למשחק הספציפי</string>
+  <string id="20322">לך לשמירת משחק</string>
+  <string id="20323">שמירות משחק</string>
+  <string id="20324">נגן חלק...</string>
+  <string id="20325">אפס כיול</string>
+  <string id="20326">זה יאפס את ערכי הכיול ל %s</string>
+  <string id="20327">לערכי ברירת המחדל שלו</string>
+  <string id="20328">מיקום להעתקת השמירה</string>
+  <string id="20329">מיקום להעברת השמירה</string>
+  <string id="20330">השתמש בשמות תיקיות לחיפוש</string>
+  <string id="20331">קובץ</string>
+  <string id="20332">השתמש בשמות תיקיה או קובץ בחיפוש?</string>
+  <string id="20333">קבע תוכן</string>
+  <string id="20334">תיקיה</string>
+  <string id="20335">לחפש תוכן בצורה רקורסיבית?</string>
+  <string id="20336">בטל נעילת מקורות</string>
+  <string id="20337">שחקן</string>
+  <string id="20338">סרט</string>
+  <string id="20339">במאי</string>
+  <string id="20340">האם ברצונך להסיר את כל הפרטים בתוך</string>
+  <string id="20341">הנתיב הזה ממסד הנתונים?</string>
+  <string id="20342">סרטים</string>
+  <string id="20343">תוכניות טלוויזיה</string>
+  <string id="20344">ספריה זו מכילה</string>
+  <string id="20345">הרץ סריקה אוטומטית</string>
+  <string id="20346">סרוק בצורה רקורסיבית</string>
+  <string id="20347">בתור</string>
+  <string id="20348">במאים</string>
+  <string id="20349">לא נמצאו קובצי וידאו בנתיב זה!</string>
+  <string id="20350">קולות</string>
+  <string id="21330">הצג קבצים וספריות מוחבאים</string>
+  <string id="21331">קלינט TuxBox</string>
+  <string id="21332">אזהרה: מכשיר ה TuxBox במטרה נמצא במצב הקלטה</string>
+  <string id="21333">הזרם יופסק!</string>
+  <string id="21334">זפזופ לערוץ: %s נכשל</string>
+  <string id="21335">האם אתה בטוח להתחיל את הזרם?</string>
+  <string id="21336">מתחבר אל: %s</string>
+  <string id="21337">מכשיר TuxBox</string>
+  <string id="21356">מוסיקה: UPnP</string>
+  <string id="21357">וידאו: UPnP</string>
+  <string id="21358">תמונות UPnP</string>
+  <string id="21359">הוסף שיתוף מדיה</string>
+  <string id="21360">אפשר שרת UPnP</string>
+  <string id="21361">נהל שיתופי מוסיקה UPnP</string>
+  <string id="21362">נהל שיתופי וידאו UPnP</string>
+  <string id="21363">נהל שיתופי תמונות UPnP</string>
+  <string id="21364">ערוך שיתוף מדיה</string>
+  <string id="21365">הסר סיתוף מדיה</string>
+  <string id="21366">ספרית תרגום בהתאמה אישית</string>
+  <string id="21367">ספרית סרט ותרגום חלופי</string>
+  <string id="21370">בזמן ניגון המדיה נגן צלילי ניווט</string>
+  <string id="21371">צלמית</string>
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>

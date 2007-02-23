@@ -12,6 +12,7 @@ void export_reg()
   g_dlls.advapi32.AddExport("RegEnumKeyExA", (unsigned long)dllRegEnumKeyExA);
   g_dlls.advapi32.AddExport("RegDeleteKeyA", (unsigned long)dllRegDeleteKeyA);
   g_dlls.advapi32.AddExport("RegQueryValueExA", (unsigned long)dllRegQueryValueExA);
+  g_dlls.advapi32.AddExport("RegQueryValueExW", (unsigned long)dllRegQueryValueExW);
   g_dlls.advapi32.AddExport("RegCreateKeyA", (unsigned long)dllRegCreateKeyA);
   g_dlls.advapi32.AddExport("RegSetValueExA", (unsigned long)dllRegSetValueExA);
   g_dlls.advapi32.AddExport("RegCreateKeyExA", (unsigned long)dllRegCreateKeyExA);

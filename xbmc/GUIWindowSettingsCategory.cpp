@@ -1111,7 +1111,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("myvideos.exportvideolibrary"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares, g_localizeStrings.Get(651), path, true))
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651), path, true))
     {
       CUtil::AddFileToFolder(path, "videodb.xml", path);
       CVideoDatabase videodatabase;
@@ -1123,7 +1125,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("myvideos.importvideolibrary"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
-    if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyFilesShares, "videodb.xml", g_localizeStrings.Get(651) , path))
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "videodb.xml", g_localizeStrings.Get(651) , path))
     {
       CVideoDatabase videodatabase;
       videodatabase.Open();

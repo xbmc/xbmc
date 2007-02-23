@@ -45,9 +45,9 @@ extern "C" inline bool tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
 
 extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
 {
-  if (!pInfo->dataList.empty())
+  if (!pInfo->dataList.empty() || !pInfo->virtualList.empty())
   {
-    CLog::DebugLog("%s: Detected memory leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->dataList.size());
+    CLog::DebugLog("%s (base %8x): Detected memory leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->pDll->hModule, pInfo->dataList.size() + pInfo->virtualList.size());
     unsigned total = 0;
     CallerMap tempMap;
     CallerMapIter itt;
@@ -76,6 +76,24 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
       }
 
     }
+    for (VAllocListIter p = pInfo->virtualList.begin(); p != pInfo->virtualList.end(); ++p)
+    {
+      total += (p->second).size;
+      VirtualFree((void*)p->first, 0, MEM_RELEASE);
+      if ( ( itt = tempMap.find((p->second).calleraddr) ) != tempMap.end() )
+      {
+        (itt->second).size += (p->second).size;
+        (itt->second).count++;
+      }
+      else
+      {
+        MSizeCount temp;
+        temp.size = (p->second).size;
+        temp.count = 1;
+        tempMap.insert(std::make_pair( (p->second).calleraddr, temp ) );
+      }
+    }
+
     for ( itt = tempMap.begin(); itt != tempMap.end();++itt )
     {
       CLog::DebugLog("leak caller address %8x, size %8i, counter %4i", itt->first, (itt->second).size, (itt->second).count);
@@ -84,6 +102,7 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
     tempMap.erase(tempMap.begin(), tempMap.end());
   }
   pInfo->dataList.erase(pInfo->dataList.begin(), pInfo->dataList.end());
+  pInfo->virtualList.erase(pInfo->virtualList.begin(), pInfo->virtualList.end());
 }
 
 extern "C" void* __cdecl track_malloc(size_t s)
@@ -211,8 +230,6 @@ extern "C" void tracker_heapobjects_free_all(DllTrackInfo* pInfo)
   }
 }
 
-#ifdef _XBOX
-WINBASEAPI
 HANDLE
 WINAPI
 track_HeapCreate(
@@ -236,7 +253,6 @@ track_HeapCreate(
   return hHeap;
 }
 
-WINBASEAPI
 BOOL
 WINAPI
 track_HeapDestroy(
@@ -263,4 +279,82 @@ track_HeapDestroy(
 
   return HeapDestroy(hHeap);
 }
-#endif
+
+
+BOOL WINAPI track_VirtualFreeEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
+{
+  unsigned loc;
+  __asm mov eax, [ebp + 4]
+  __asm mov loc, eax
+
+  if(dwFreeType == MEM_RELEASE)
+  {    
+    DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
+    if (pInfo)
+      pInfo->virtualList.erase((unsigned)lpAddress);
+  }
+  return VirtualFreeEx(hProcess, lpAddress, dwSize, dwFreeType);
+}
+
+
+LPVOID WINAPI track_VirtualAllocEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
+{
+  unsigned loc;
+  __asm mov eax, [ebp + 4]
+  __asm mov loc, eax
+
+  LPVOID address = VirtualAllocEx(hProcess, lpAddress, dwSize, flAllocationType, flProtect);
+  
+  DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
+  if(pInfo)
+  {
+    // make sure we get the base address for this allocation
+    MEMORY_BASIC_INFORMATION info;
+    if(VirtualQueryEx(hProcess, address, &info, sizeof(info)))
+    {
+      AllocLenCaller temp;
+      temp.size = (unsigned int)info.AllocationBase;
+      temp.calleraddr = loc;    
+      pInfo->virtualList[(unsigned)address] = temp;
+    }
+  }
+}
+
+LPVOID WINAPI track_VirtualAlloc( LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
+{
+  unsigned loc;
+  __asm mov eax, [ebp + 4]
+  __asm mov loc, eax
+
+  LPVOID address = VirtualAlloc(lpAddress, dwSize, flAllocationType, flProtect);
+  
+  DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
+  if(pInfo)
+  {
+    // make sure we get the base address for this allocation
+    MEMORY_BASIC_INFORMATION info;
+    if(VirtualQuery(address, &info, sizeof(info)))
+    {
+      AllocLenCaller temp;
+      temp.size = (unsigned int)dwSize;
+      temp.calleraddr = loc;    
+      pInfo->virtualList[(unsigned)info.AllocationBase] = temp;
+    }
+  }
+  return address;
+}
+
+BOOL WINAPI track_VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
+{
+  unsigned loc;
+  __asm mov eax, [ebp + 4]
+  __asm mov loc, eax
+
+  if(dwFreeType == MEM_RELEASE)
+  {    
+    DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
+    if (pInfo)
+      pInfo->virtualList.erase((unsigned)lpAddress);
+  }
+  return VirtualFree(lpAddress, dwSize, dwFreeType);
+}

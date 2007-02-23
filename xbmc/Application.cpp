@@ -1425,6 +1425,8 @@ void CApplication::StartWebServer()
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
+	if (pXbmcHttp)
+      pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
 }
 
@@ -2090,30 +2092,15 @@ void CApplication::RenderNoPresent()
   // that stuff should go into renderfullscreen instead as that is called from the renderin thread
 
   // dont show GUI when playing full screen video
-  if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-  {
-    if ( g_graphicsContext.IsFullScreenVideo() )
-    {
 #ifdef HAS_VIDEO_PLAYBACK
-      if (m_pPlayer)
-      {
-        if (m_pPlayer->IsPaused())
-        {
-          CSingleLock lock(g_graphicsContext);
-          m_gWindowManager.UpdateModelessVisibility();
-          g_renderManager.RenderUpdate(true);
-          m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-          g_infoManager.ResetCache();
-          return ;
-        }
-      }
-#endif
-      Sleep(50);
-      ResetScreenSaver();
-      g_infoManager.ResetCache();
-      return ;
-    }
+  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
+  {
+    Sleep(50);
+    ResetScreenSaver();
+    g_infoManager.ResetCache();
+    return;
   }
+#endif
 
   // enable/disable video overlay window
   if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
@@ -3104,6 +3091,9 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
+	if (pXbmcHttp)
+      pXbmcHttp->xbmcBroadcast("ShutDown", 1);
+
     StopServices();
     //Sleep(5000);
 
@@ -3385,7 +3375,8 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
         long start = (i > 0) ? m_currentStack[i-1]->m_lEndOffset : 0;
         item.m_lStartOffset = (long)(seconds - start) * 75;
         m_currentStackPosition = i;
-        return PlayFile(item, true);
+        return 
+          PlayFile(item, true);
       }
     }
   }
@@ -3528,9 +3519,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   bool bResult = m_pPlayer->OpenFile(item, options);
+  if (m_iPlaySpeed != 1)
+    SetPlaySpeed(m_iPlaySpeed);
 
   if(bResult)
   {
+    if (m_iPlaySpeed != 1)
+    {
+      int iSpeed = m_iPlaySpeed;
+      m_iPlaySpeed = 1;
+      SetPlaySpeed(iSpeed);
+    }
+
 #ifdef HAS_VIDEO_PLAYBACK
     if( IsPlayingVideo() )
     {
@@ -3723,6 +3723,10 @@ bool CApplication::NeedRenderFullScreen()
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   {
     m_gWindowManager.UpdateModelessVisibility();
+
+    if (m_gWindowManager.HasDialogOnScreen()) return true;
+    if (g_Mouse.IsActive()) return true;
+
     CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
     if (!pFSWin)
       return false;
@@ -3744,6 +3748,19 @@ void CApplication::RenderFullScreen()
     if (!pFSWin)
       return ;
     pFSWin->RenderFullScreen();
+
+    // aslong as player is handling rendering, we update
+    // this stuff here, otherwise it will happen in main render
+    if( IsPlaying() && !IsPaused() )
+    {
+      if (m_gWindowManager.HasDialogOnScreen())
+        m_gWindowManager.RenderDialogs();
+      // Render the mouse pointer, if visible...
+      if (g_Mouse.IsActive())
+        g_application.m_guiPointer.Render();
+
+      g_infoManager.UpdateFPS();
+    }
   }
 }
 

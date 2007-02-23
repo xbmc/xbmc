@@ -17,7 +17,7 @@ public:
   float GetAspectRatio() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetAspectRatio(); else return 1.0f; };
   void AutoCrop(bool bCrop = true) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->AutoCrop(bCrop); };
   void Update(bool bPauseDrawing);
-  void RenderUpdate(bool clear) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->RenderUpdate(clear); };
+  void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };

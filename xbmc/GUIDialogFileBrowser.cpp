@@ -538,7 +538,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSHARE
     { // "Browse for thumb"
       m_gWindowManager.Remove(browser->GetID());
       delete browser;
-      return ShowAndGetImage(shares, heading, result);
+      return ShowAndGetImage(shares, g_localizeStrings.Get(21371), result);
     }
   }
 
@@ -688,7 +688,9 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
 void CGUIDialogFileBrowser::SetShares(VECSHARES &shares)
 {
   m_shares = shares;
-  m_rootDir.SetShares(shares);
+  if (!m_shares.size())
+    g_mediaManager.GetLocalDrives(m_shares);
+  m_rootDir.SetShares(m_shares);
 }
 
 void CGUIDialogFileBrowser::OnAddNetworkLocation()

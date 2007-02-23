@@ -413,6 +413,20 @@ bool CFileCurl::Open(const CURL& url, bool bBinary, int iTimeOut)
      || !m_httpheader.GetValue("icy-br").IsEmpty() )
      m_httpheader.Parse("Content-Type: audio/mpeg\r\n");
   }
+
+  m_seekable = false;
+  if(m_fileSize > 0)
+  {
+    if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+    {
+      // only assume server is seekable if it provides Accept-Ranges
+      if(!m_httpheader.GetValue("Accept-Ranges").IsEmpty())
+        m_seekable = true;
+    }
+    else
+      m_seekable = true;
+  }
+
   return true;
 }
 bool CFileCurl::ReadString(char *szLine, int iLineLength)
@@ -460,7 +474,7 @@ bool CFileCurl::Exists(const CURL& url)
 __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 {
   /* if we don't have a filesize this is most likely unseekable */
-  if( m_fileSize == 0 ) return -1;
+  if( !m_seekable ) return -1;
 
   __int64 nextPos = m_filePos;
 	switch(iWhence) 

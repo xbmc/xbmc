@@ -37,6 +37,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
 #include "utils/fancontroller.h"
+#include "MediaManager.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
@@ -95,7 +96,6 @@ void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name
   }
 
   strName = name;
-  m_iBufferSize = 0;
   m_iLockMode = LOCK_MODE_EVERYONE;
   m_strLockCode = "0";
   m_iBadPwdCount = 0;
@@ -265,9 +265,6 @@ CSettings::CSettings(void)
   g_advancedSettings.m_iTuxBoxDefaultSubMenu = 4;
   g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
-
-  xbmcXmlLoaded = false;
-  bTransaction = false;
 }
 
 CSettings::~CSettings(void)
@@ -329,46 +326,23 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   CStdString strXMLFile = GetSourcesFile();
   CLog::Log(LOGNOTICE, "%s",strXMLFile.c_str());
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
+  TiXmlElement *pRootElement = NULL;
+  if ( xmlDoc.LoadFile( strXMLFile.c_str() ) )
   {
-    g_LoadErrorStr.Format("%s, Line %d\n%s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return false;
+    pRootElement = xmlDoc.RootElement();
+    CStdString strValue;
+    if (pRootElement)
+      strValue = pRootElement->Value();
+    if ( strValue != "sources")
+      CLog::Log(LOGERROR, __FUNCTION__" sources.xml file does not contain <sources>");
   }
-
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue;
-  if (pRootElement)
-    strValue = pRootElement->Value();
-  if ( strValue != "sources")
-  {
-    g_LoadErrorStr.Format("%s Doesn't contain <sources>", strXMLFile.c_str());
-    return false;
-  }
-  /*
-  TiXmlElement* pFileTypeIcons = pRootElement->FirstChildElement("filetypeicons");
-  TiXmlNode* pFileType = pFileTypeIcons->FirstChild();
-  while (pFileType)
-  {
-    CFileTypeIcon icon;
-    icon.m_strName = ".";
-    icon.m_strName += pFileType->Value();
-    icon.m_strIcon = pFileType->FirstChild()->Value();
-    m_vecIcons.push_back(icon);
-    pFileType = pFileType->NextSibling();
-  }*/
-
-  LoadUserFolderLayout(pRootElement);
-
-  LoadRSSFeeds();
-
-#ifdef HAS_XBOX_HARDWARE
-  helper.Unmount("S:");
-#endif
+  else
+    CLog::Log(LOGERROR, __FUNCTION__" Error loading %s: Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 
   // look for external sources file
   CStdString strCached = "Z:\\remotesources.xml";
   bool bRemoteSourceFile = false;
-  TiXmlNode *pInclude = pRootElement->FirstChild("remote");
+  TiXmlNode *pInclude = pRootElement ? pRootElement->FirstChild("remote") : NULL;
   if (pInclude)
   {
     CStdString strRemoteFile = pInclude->FirstChild()->Value();
@@ -401,40 +375,50 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   if (bRemoteSourceFile)
   {
     strXMLFile = strCached;
-    if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
+    if ( xmlDoc.LoadFile( strXMLFile.c_str() ) )
     {
-      g_LoadErrorStr.Format("%s, Line %d\n%s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-      return false;
+      pRootElement = xmlDoc.RootElement();
+      CStdString strValue;
+      if (pRootElement)
+        strValue = pRootElement->Value();
+      if ( strValue != "sources")
+        CLog::Log(LOGERROR, __FUNCTION__" remote_sources.xml file does not contain <sources>");
     }
-
-    pRootElement = xmlDoc.RootElement();
-    if (pRootElement)
-      strValue = pRootElement->Value();
-    if ( strValue != "sources")
-    {
-      g_LoadErrorStr.Format("%s Doesn't contain <sources>", strXMLFile.c_str());
-      return false;
-    }
+    else
+      CLog::Log(LOGERROR, __FUNCTION__" unable to load file: %s, Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
   }
 
-  // parse my programs bookmarks...
-  CStdString strDefault;
-  GetShares(pRootElement, "myprograms", m_vecMyProgramsShares, strDefault);
-  strcpy( g_stSettings.m_szDefaultPrograms, strDefault.c_str());
+  if (pRootElement)
+  {
+    // parse my programs bookmarks...
+    CStdString strDefault;
+    GetShares(pRootElement, "myprograms", m_vecMyProgramsShares, strDefault);
+    strcpy( g_stSettings.m_szDefaultPrograms, strDefault.c_str());
 
-  GetShares(pRootElement, "pictures", m_vecMyPictureShares, strDefault);
-  strcpy( g_stSettings.m_szDefaultPictures, strDefault.c_str());
+    GetShares(pRootElement, "pictures", m_vecMyPictureShares, strDefault);
+    strcpy( g_stSettings.m_szDefaultPictures, strDefault.c_str());
 
-  GetShares(pRootElement, "files", m_vecMyFilesShares, strDefault);
-  strcpy( g_stSettings.m_szDefaultFiles, strDefault.c_str());
+    // TODO: Get rid of filemanager sources eventually?
+    GetShares(pRootElement, "files", m_vecMyFilesShares, strDefault);
+    strcpy( g_stSettings.m_szDefaultFiles, strDefault.c_str());
 
-  GetShares(pRootElement, "music", m_vecMyMusicShares, strDefault);
-  strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());
+    GetShares(pRootElement, "music", m_vecMyMusicShares, strDefault);
+    strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());
 
-  GetShares(pRootElement, "video", m_vecMyVideoShares, strDefault);
-  strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
+    GetShares(pRootElement, "video", m_vecMyVideoShares, strDefault);
+    strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
+  }
+  if (!m_vecMyFilesShares.size())
+    g_mediaManager.GetLocalDrives(m_vecMyFilesShares, true);  // true to include Q
 
   bXboxMediacenter = true;
+
+  LoadRSSFeeds();
+  LoadUserFolderLayout();
+
+#ifdef HAS_XBOX_HARDWARE
+  helper.Unmount("S:");
+#endif
   return true;
 }
 
@@ -609,8 +593,6 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
     pPathName = pPathName->NextSibling("path");
   }
 
-  const TiXmlNode *pCacheNode = bookmark->FirstChild("cache");
-  const TiXmlNode *pDepthNode = bookmark->FirstChild("depth");
   const TiXmlNode *pLockMode = bookmark->FirstChild("lockmode");
   const TiXmlNode *pLockCode = bookmark->FirstChild("lockcode");
   const TiXmlNode *pBadPwdCount = bookmark->FirstChild("badpwdcount");
@@ -680,11 +662,6 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
       CLog::Log(LOGDEBUG,"        Path: %s", share.strPath.c_str());
 
     share.m_iBadPwdCount = 0;
-    if (pCacheNode)
-    {
-      share.m_iBufferSize = atoi( pCacheNode->FirstChild()->Value() );
-    }
-
     if (pLockMode)
     {
       share.m_iLockMode = atoi( pLockMode->FirstChild()->Value() );
@@ -1240,6 +1217,19 @@ void CSettings::LoadAdvancedSettings()
           continue;
         g_stSettings.m_videoExtensions.erase(iPos,exts[i].size()+1);
       }
+    }
+  }
+
+  const TiXmlNode *pTokens = pRootElement->FirstChild("sorttokens");
+  g_advancedSettings.m_vecTokens.clear();
+  if (pTokens && !pTokens->NoChildren())
+  {
+    const TiXmlNode *pToken = pTokens->FirstChild("token");
+    while (pToken)
+    {
+      if (pToken->FirstChild() && pToken->FirstChild()->Value())
+        g_advancedSettings.m_vecTokens.push_back(CStdString(pToken->FirstChild()->Value()) + " ");
+      pToken = pToken->NextSibling();
     }
   }
 
@@ -1981,20 +1971,6 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
   return xmlDoc.SaveFile(strSettingsFile);
 }
 
-bool CSettings::LoadXml()
-{
-  // load xml file - we use the xbe path in case we were loaded as dash
-  if (!xbmcXmlLoaded)
-  {
-    if ( !xbmcXml.LoadFile( g_settings.GetSourcesFile() ) )
-    {
-      return false;
-    }
-    xbmcXmlLoaded = true;
-  }
-  return true;
-}
-
 bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
 {
   TiXmlDocument UPnPDoc;
@@ -2100,32 +2076,8 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   return xmlDoc.SaveFile(strSettingsFile);
 }
 
-void CSettings::CloseXml()
-{
-  xbmcXmlLoaded = false;
-  xbmcXml.Clear();
-}
-
-void CSettings::BeginBookmarkTransaction()
-{
-  bTransaction = true;
-  bChangedDuringTransaction = false;
-}
-
-bool CSettings::CommitBookmarkTransaction()
-{
-  bool bResult=true;
-  if (bChangedDuringTransaction)
-    bResult = xbmcXml.SaveFile();
-  if (bResult)
-    bTransaction = false;
-
-  return bResult;
-}
-
 bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share)
 {
-  if (!LoadXml()) return false;
   VECSHARES *pShares = GetSharesFromType(type);
 
   if (!pShares) return false;
@@ -2148,75 +2100,12 @@ bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, co
     return false;
 
   // Update our XML file as well
-  TiXmlElement *pRootElement = xbmcXml.RootElement();
-  TiXmlNode *pNode = NULL;
-  TiXmlNode *pIt = NULL;
-
-  pNode = pRootElement->FirstChild(type);
-  if (pNode)
-  {
-    bool foundXML(false);
-    pIt = pNode->FirstChild("bookmark");
-    while (pIt)
-    {
-      CShare oldShare;
-      if (GetShare(type, pIt, oldShare))
-      {
-        if (oldShare.strName == oldName) // TODO: Should we be checking path here?
-        {
-          foundXML = true;
-          // remove all the old paths and add the new ones
-          TiXmlNode *pChild = pIt->FirstChild("path");
-          while (pChild)
-          {
-            pIt->RemoveChild(pChild);
-            pChild = pIt->FirstChild("path");
-          }
-          // and add the new ones
-          for (unsigned int i = 0; i < share.vecPaths.size(); i++)
-          {
-            TiXmlText xmlText(share.vecPaths[i]);
-            TiXmlElement eElement("path");
-            eElement.InsertEndChild(xmlText);
-            pIt->InsertEndChild(eElement);
-          }
-          // and modify the <name> element
-          pChild = pIt->FirstChild("name");
-          if (pChild)
-          { // update it
-            pIt->FirstChild("name")->FirstChild()->SetValue(share.strName);
-          }
-          else
-          { // we don't, so make a new one
-            TiXmlText xmlText(share.strName);
-            TiXmlElement eElement("name");
-            eElement.InsertEndChild(xmlText);
-            pIt->ToElement()->InsertEndChild(eElement);
-          }
-          break;
-        }
-      }
-      pIt = pIt->NextSibling("bookmark");
-    }
-    if (!foundXML)
-      CLog::Log(LOGERROR, "Unable to find bookmark with name %s to update", oldName.c_str());
-
-    if (bTransaction)
-    {
-      bChangedDuringTransaction = true;
-      return true;
-    }
-
-    return xbmcXml.SaveFile();
-  }
-  return false;
+  return SaveSources();
 }
 
+// NOTE: This function does NOT save the sources.xml file - you need to call SaveSources() separately.
 bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
 {
-  bool breturn(false);
-  if (!LoadXml()) return false;
-
   VECSHARES *pShares = GetSharesFromType(strType);
 
   if (!pShares) return false;
@@ -2225,12 +2114,10 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
   if (strUpdateElement.Equals("path") && CUtil::IsVirtualPath(strUpdateText))
     return false;
 
-  CShare* pShare;
   for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
   {
     if ((*it).strName == strOldName)
     {
-      breturn = true;
       if ("name" == strUpdateElement)
         (*it).strName = strUpdateText;
       else if ("lockmode" == strUpdateElement)
@@ -2249,146 +2136,14 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
       }
       else
         return false;
-      pShare = &(*it);
-      break;
-    }
-  }
-
-  // Update our XML file as well
-  TiXmlElement *pRootElement = xbmcXml.RootElement();
-
-  TiXmlNode *pNode = NULL;
-  TiXmlNode *pIt = NULL;
-
-  pNode = pRootElement->FirstChild(strType);
-  bool foundXML(false);
-  if (pNode && breturn)
-  {
-    pIt = pNode->FirstChild("bookmark");
-    while (pIt)
-    {
-      CShare share;
-      if (GetShare(strType, pIt, share))
-      {
-        if (share.strName == strOldName) // TODO: Should we be checking path here?
-        {
-          foundXML = true;
-          // check we have strUpdateElement ("name" etc.)
-          const TiXmlNode *pChild = pIt->FirstChild(strUpdateElement);
-          if (pChild)
-          { // we do, so update it
-            pIt->FirstChild(strUpdateElement)->FirstChild()->SetValue(strUpdateText);
-          }
-          else
-          { // we don't, so make a new one
-            TiXmlText xmlText(strUpdateText);
-            TiXmlElement eElement(strUpdateElement);
-            eElement.InsertEndChild(xmlText);
-            pIt->ToElement()->InsertEndChild(eElement);
-          }
-          if (pShare->m_iHasLock == 0) // remove lock entries
-          {
-            TiXmlNode* pChild2 = pIt->FirstChild("lockmode");
-            if (pChild2)
-              pIt->RemoveChild(pChild2);
-            pChild2 = pIt->FirstChild("lockcode");
-            if (pChild2)
-              pIt->RemoveChild(pChild2);
-            pChild2 = pIt->FirstChild("badpwdcount");
-            if (pChild2)
-              pIt->RemoveChild(pChild2);
-          }
-          if (pShare->m_strThumbnailImage == "")
-          {
-            TiXmlNode* pChild2 = pIt->FirstChild("thumbnail");
-            if (pChild2)
-              pIt->RemoveChild(pChild2);
-          }
-          break;
-        }
-      }
-      pIt = pIt->NextSibling("bookmark");
-    }
-    if (!foundXML)
-      CLog::Log(LOGERROR, "Unable to find bookmark with name %s to update the %s", strOldName.c_str(), strUpdateElement.c_str());
-
-    if (bTransaction)
-    {
-      bChangedDuringTransaction = true;
       return true;
     }
-
-    return xbmcXml.SaveFile();
   }
   return false;
 }
 
-bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue)
-{
-  bool breturn; breturn = false;
-  if (!LoadXml()) return false;
-  //<strFirstChild>
-  //    <strChild>strChildValue</strChild>
-
-  TiXmlElement *pRootElement = xbmcXml.RootElement();
-  if (!pRootElement) return false;
-  TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);
-  if (!pNode) return false;
-  TiXmlNode *pIt = pNode->FirstChild(strChild);;
-  if (pIt)
-  {
-    if (pIt->FirstChild())
-      pIt->FirstChild()->SetValue(strChildValue);
-    else
-    {
-      TiXmlText xmlText(strChildValue);
-      pIt->InsertEndChild(xmlText);
-    }
-    breturn = true;
-  }
-  else
-  {
-    TiXmlText xmlText(strChildValue);
-    TiXmlElement eElement(strChild);
-    eElement.InsertEndChild(xmlText);
-    pNode->ToElement()->InsertEndChild(eElement);
-    breturn = true;
-  }
-  if(breturn)
-    return xbmcXml.SaveFile();
-  else return false;
-}
-
-bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue)
-{
-  if (!LoadXml()) return false;
-
-  //
-  //<strFirstChild>strFirstChildValue<strFirstChild>
-
-  TiXmlElement *pRootElement = xbmcXml.RootElement();
-  TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);;
-  if (pNode)
-  {
-    if (pNode->FirstChild())
-      pNode->FirstChild()->SetValue(strFirstChildValue);
-    else
-    {
-      TiXmlText xmlText(strFirstChildValue);
-      pNode->InsertEndChild(xmlText);
-    }
-    return xbmcXml.SaveFile();
-  }
-  else return false;
-}
-
 bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath)
 {
-  if (strType.Find("upnp") < 0)
-  {
-    if (!LoadXml()) return false; 
-  }
-
   VECSHARES *pShares = GetSharesFromType(strType);
   if (!pShares) return false;
 
@@ -2408,83 +2163,11 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
   if (strType.Find("upnp") > -1)
     return found;
 
-  // Return bookmark of
-  if (found)
-  {
-    bool foundXML(false);  // for debugging
-    TiXmlElement *pRootElement = xbmcXml.RootElement();
-    TiXmlNode *pNode = NULL;
-    TiXmlNode *pIt = NULL;
-
-    pNode = pRootElement->FirstChild(strType);
-
-    // if valid bookmark, find child at pos (id)
-    if (pNode)
-    {
-      pIt = pNode->FirstChild("bookmark");
-      while (pIt)
-      {
-        CShare share;
-        if (GetShare(strType, pIt, share))
-        {
-          if (share.strName == strName && share.strPath == strPath)
-          {
-            foundXML = true;
-            pNode->RemoveChild(pIt);
-            break;
-          }
-        }
-        pIt = pIt->NextSibling("bookmark");
-      }
-    }
-    if (!foundXML)
-      CLog::Log(LOGERROR, "Unable to find the bookmark %s with path %s for deletion from sources.xml", strName.c_str(), strPath.c_str());
-    return xbmcXml.SaveFile();
-  }
-  else
-    CLog::Log(LOGERROR, "Unable to find the bookmark %s with path %s for deletion from our shares list", strName.c_str(), strPath.c_str());
-  return false;
+  return SaveSources();
 }
 
 bool CSettings::AddShare(const CStdString &type, const CShare &share)
 {
-  bool success;
-  if (type.Find("upnp") < 0)
-  {
-    if (!LoadXml()) 
-      return false;
-    // Add to the xml file
-    TiXmlElement *pRootElement = xbmcXml.RootElement();
-    TiXmlNode *pNode = NULL;
-
-    pNode = pRootElement->FirstChild(type);
-
-    // create a new Element
-    TiXmlText xmlName(share.strName);
-    TiXmlElement eName("name");
-    eName.InsertEndChild(xmlName);
-
-    TiXmlElement bookmark("bookmark");
-    bookmark.InsertEndChild(eName);
-
-    for (unsigned int i = 0; i < share.vecPaths.size(); i++)
-    {
-      TiXmlText xmlPath(share.vecPaths[i]);
-      TiXmlElement ePath("path");
-      ePath.InsertEndChild(xmlPath);
-      bookmark.InsertEndChild(ePath);
-    }
-
-    if (pNode)
-      pNode->ToElement()->InsertEndChild(bookmark);
-
-    success = xbmcXml.SaveFile();
-  }
-  else
-  {
-    success = true;
-  }
-
   VECSHARES *pShares = GetSharesFromType(type);
   if (!pShares) return false;
 
@@ -2506,7 +2189,61 @@ bool CSettings::AddShare(const CStdString &type, const CShare &share)
   }
   pShares->push_back(shareToAdd);
 
-  return success;
+  if (type.Find("upnp") < 0)
+  {
+    return SaveSources();
+  }
+  return true;
+}
+
+bool CSettings::SaveSources()
+{
+  // TODO: Should we be specifying utf8 here??
+  TiXmlDocument doc;
+  TiXmlElement xmlRootElement("sources");
+  TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
+  if (!pRoot) return false;
+
+  // ok, now run through and save each sources section
+  SetShares(pRoot, "myprograms", g_settings.m_vecMyProgramsShares, g_stSettings.m_szDefaultPrograms);
+  SetShares(pRoot, "video", g_settings.m_vecMyVideoShares, g_stSettings.m_szDefaultVideos);
+  SetShares(pRoot, "music", g_settings.m_vecMyMusicShares, g_stSettings.m_szDefaultMusic);
+  SetShares(pRoot, "pictures", g_settings.m_vecMyPictureShares, g_stSettings.m_szDefaultPictures);
+  SetShares(pRoot, "files", g_settings.m_vecMyFilesShares, g_stSettings.m_szDefaultFiles);
+
+  return doc.SaveFile(g_settings.GetSourcesFile());
+}
+
+bool CSettings::SetShares(TiXmlNode *root, const char *section, const VECSHARES &shares, const char *defaultPath)
+{
+  TiXmlElement sectionElement(section);
+  TiXmlNode *sectionNode = root->InsertEndChild(sectionElement);
+  if (sectionNode)
+  {
+    SetString(sectionNode, "default", defaultPath);
+    for (unsigned int i = 0; i < shares.size(); i++)
+    {
+      const CShare &share = shares[i];
+      TiXmlElement bookmark("bookmark");
+
+      SetString(&bookmark, "name", share.strName);
+
+      for (unsigned int i = 0; i < share.vecPaths.size(); i++)
+        SetString(&bookmark, "path", share.vecPaths[i]);
+
+      if (share.m_iHasLock)
+      {
+        SetInteger(&bookmark, "lockmode", share.m_iLockMode);
+        SetString(&bookmark, "lockcode", share.m_strLockCode);
+        SetInteger(&bookmark, "badpwdcount", share.m_iBadPwdCount);
+      }
+      if (!share.m_strThumbnailImage.IsEmpty())
+        SetString(&bookmark, "thumbnail", share.m_strThumbnailImage);
+
+      sectionNode->InsertEndChild(bookmark);
+    } 
+  }
+  return true;
 }
 
 void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
@@ -2581,7 +2318,6 @@ void CSettings::Clear()
   m_szMyVideoCleanTokensArray.clear();
   g_advancedSettings.m_videoStackRegExps.clear();
   m_mapRssUrls.clear();
-  xbmcXml.Clear();
   m_skinBools.clear();
   m_skinStrings.clear();
 }
@@ -2715,7 +2451,7 @@ void CSettings::ResetSkinSettings()
   g_infoManager.ResetCache();
 }
 
-void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
+void CSettings::LoadUserFolderLayout()
 {
   // check them all
   if (g_guiSettings.GetString("system.playlistspath") == "set default")
@@ -2734,6 +2470,7 @@ void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
   }
   else
   {
+    CDirectory::Create(g_guiSettings.GetString("system.playlistspath"));
     CStdString strDir2;
     CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"music",strDir2);
     CDirectory::Create(strDir2);

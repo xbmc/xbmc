@@ -1374,8 +1374,7 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
     long lFileId = GetFile(strFilenameAndPath, lMovieId, lEpisodeId, true);
     if (lFileId < 0)
     { // no files found - we have to add one
-      lMovieId = AddMovie(strFilenameAndPath);
-      lFileId = GetFile(strFilenameAndPath, lMovieId, lEpisodeId, true);
+      lFileId = AddFile(strFilenameAndPath);
       if (lFileId < 0) return ;
     }
     CStdString strSQL;

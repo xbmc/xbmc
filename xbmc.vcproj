@@ -3627,7 +3627,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\cores\DllLoader\exports\emu_ole32.cpp">
 					</File>
 					<File
-						RelativePath=".\xbmc\cores\DllLoader\exports\emu_registry.c">
+						RelativePath=".\xbmc\cores\DllLoader\exports\emu_registry.cpp">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket.cpp">
@@ -3818,6 +3818,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controllist.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlprogress.cpp">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlspin.cpp">

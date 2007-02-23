@@ -264,6 +264,7 @@ void CDVDPlayerVideo::Process()
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
       LeaveCriticalSection(&m_critCodecSection);
+      m_iCurrentPts = DVD_NOPTS_VALUE;
     }
     
     if (m_DetectedStill)

@@ -520,7 +520,7 @@
 						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_ole32.h">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_registry.c">
+						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_registry.cpp">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_registry.h">
@@ -2479,6 +2479,9 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controllist.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlprogress.cpp">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlspin.cpp">

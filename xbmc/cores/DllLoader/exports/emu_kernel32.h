@@ -79,6 +79,18 @@ typedef struct _OSVERSIONINFO
   TCHAR szCSDVersion[128];
 }
 OSVERSIONINFO, *LPOSVERSIONINFO;
+
+typedef struct _OSVERSIONINFOW
+{
+  DWORD dwOSVersionInfoSize;
+  DWORD dwMajorVersion;
+  DWORD dwMinorVersion;
+  DWORD dwBuildNumber;
+  DWORD dwPlatformId;
+  WCHAR szCSDVersion[128];
+}
+OSVERSIONINFOW, *LPOSVERSIONINFOW;
+
 #endif
 
 #define ATOM unsigned short
@@ -535,6 +547,7 @@ extern "C" void WINAPI dllLeaveCriticalSection(LPCRITICAL_SECTION cs);
 extern "C" void WINAPI dllEnterCriticalSection(LPCRITICAL_SECTION cs);
 
 extern "C" BOOL WINAPI dllGetVersionExA(LPOSVERSIONINFO lpVersionInfo);
+extern "C" BOOL WINAPI dllGetVersionExW(LPOSVERSIONINFOW lpVersionInfo);
 extern "C" DWORD WINAPI dllGetVersion();
 extern "C" UINT WINAPI dllGetProfileIntA(LPCTSTR lpAppName, LPCTSTR lpKeyName, INT nDefault);
 
@@ -657,5 +670,7 @@ extern "C" DWORD WINAPI dllGetTempPathA(DWORD nBufferLength, LPTSTR lpBuffer);
 
 
 extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped);
+
+
 
 #endif // _EMU_KERNEL32_H_

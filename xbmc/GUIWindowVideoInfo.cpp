@@ -261,7 +261,7 @@ void CGUIWindowVideoInfo::Update()
 
   CStdString strRating_And_Votes;
   if (m_Movie.m_fRating != 0.0f)  // only non-zero ratings are of interest
-    strRating_And_Votes.Format("%03.1f (%i votes)", m_Movie.m_fRating, m_Movie.m_strVotes);
+    strRating_And_Votes.Format("%03.1f (%s %s)", m_Movie.m_fRating, m_Movie.m_strVotes, g_localizeStrings.Get(20350));
   SetLabel(CONTROL_RATING_AND_VOTES, strRating_And_Votes);
 
   strTmp = m_Movie.m_strRuntime; strTmp.Trim();

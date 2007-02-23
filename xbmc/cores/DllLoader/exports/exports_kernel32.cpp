@@ -67,6 +67,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetModuleHandleA", (unsigned long) dllGetModuleHandleA);
   g_dlls.kernel32.AddExport("InterlockedCompareExchange", (unsigned long) InterlockedCompareExchange);
   g_dlls.kernel32.AddExport("GetVersionExA", (unsigned long) dllGetVersionExA);
+  g_dlls.kernel32.AddExport("GetVersionExW", (unsigned long) dllGetVersionExW);
   g_dlls.kernel32.AddExport("GetProfileIntA", (unsigned long) dllGetProfileIntA);
   g_dlls.kernel32.AddExport("CreateFileA", (unsigned long) dllCreateFileA);
   g_dlls.kernel32.AddExport("DeviceIoControl", (unsigned long) DeviceIoControl);
@@ -79,6 +80,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetVersion", (unsigned long) dllGetVersion);
   g_dlls.kernel32.AddExport("MulDiv", (unsigned long) MulDiv);
   g_dlls.kernel32.AddExport("lstrlenA", (unsigned long) lstrlenA);
+  g_dlls.kernel32.AddExport("lstrlenW", (unsigned long) lstrlenW);
   g_dlls.kernel32.AddExport("LoadLibraryExA", (unsigned long)dllLoadLibraryExA, (void*)track_LoadLibraryExA);
 
   g_dlls.kernel32.AddExport("DeleteFileA", (unsigned long) DeleteFileA);
@@ -88,6 +90,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GlobalUnlock", (unsigned long) GlobalUnlock);
   g_dlls.kernel32.AddExport("FreeEnvironmentStringsW", (unsigned long) dllFreeEnvironmentStringsW);
   g_dlls.kernel32.AddExport("SetLastError", (unsigned long) SetLastError);
+  g_dlls.kernel32.AddExport("RestoreLastError", (unsigned long) SetLastError);
   g_dlls.kernel32.AddExport("GetOEMCP", (unsigned long) dllGetOEMCP);
   g_dlls.kernel32.AddExport("SetEndOfFile", (unsigned long) SetEndOfFile);
   g_dlls.kernel32.AddExport("RtlUnwind", (unsigned long) dllRtlUnwind);
@@ -109,15 +112,15 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetEnvironmentStrings", (unsigned long) dllGetEnvironmentStrings);
   g_dlls.kernel32.AddExport("GetEnvironmentStringsW", (unsigned long) dllGetEnvironmentStringsW);
   g_dlls.kernel32.AddExport("GetEnvironmentVariableA", (unsigned long) dllGetEnvironmentVariableA);
-#ifdef _XBOX
   g_dlls.kernel32.AddExport("HeapDestroy", (unsigned long) HeapDestroy, (void*)track_HeapDestroy );
   g_dlls.kernel32.AddExport("HeapCreate", (unsigned long) HeapCreate, (void*)track_HeapCreate );
-#endif
-  g_dlls.kernel32.AddExport("VirtualFree", (unsigned long) VirtualFree);
+  g_dlls.kernel32.AddExport("VirtualFree", (unsigned long) VirtualFree, (unsigned long)track_VirtualFree);
+  g_dlls.kernel32.AddExport("VirtualFreeEx", (unsigned long) VirtualFreeEx, (unsigned long)track_VirtualFreeEx);
+  g_dlls.kernel32.AddExport("VirtualAlloc", (unsigned long) VirtualAlloc, (unsigned long)track_VirtualAlloc);
+  g_dlls.kernel32.AddExport("VirtualAllocEx", (unsigned long) VirtualAllocEx, (unsigned long)track_VirtualAllocEx);
   g_dlls.kernel32.AddExport("MultiByteToWideChar", (unsigned long) dllMultiByteToWideChar);
   g_dlls.kernel32.AddExport("LCMapStringA", (unsigned long) dllLCMapStringA);
   g_dlls.kernel32.AddExport("LCMapStringW", (unsigned long) dllLCMapStringW);
-  g_dlls.kernel32.AddExport("VirtualAlloc", (unsigned long) VirtualAlloc);
   g_dlls.kernel32.AddExport("IsBadWritePtr", (unsigned long) IsBadWritePtr);
   g_dlls.kernel32.AddExport("SetStdHandle", (unsigned long) dllSetStdHandle);
   g_dlls.kernel32.AddExport("FlushFileBuffers", (unsigned long) FlushFileBuffers);
@@ -172,7 +175,9 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("ResumeThread", (unsigned long)ResumeThread);
   g_dlls.kernel32.AddExport("ExitThread", (unsigned long)ExitThread);
   g_dlls.kernel32.AddExport("VirtualQuery", (unsigned long)VirtualQuery);
+  g_dlls.kernel32.AddExport("VirtualQueryEx", (unsigned long)VirtualQueryEx);
   g_dlls.kernel32.AddExport("VirtualProtect", (unsigned long)VirtualProtect);
+  g_dlls.kernel32.AddExport("VirtualProtectEx", (unsigned long)VirtualProtectEx);
   g_dlls.kernel32.AddExport("UnhandledExceptionFilter", (unsigned long)UnhandledExceptionFilter);
   g_dlls.kernel32.AddExport("RaiseException", (unsigned long)RaiseException);
   g_dlls.kernel32.AddExport("FlsAlloc", (unsigned long)dllFlsAlloc);

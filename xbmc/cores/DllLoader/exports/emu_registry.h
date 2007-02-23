@@ -69,6 +69,9 @@ extern "C"
   LONG WINAPI dllRegQueryValueExA (HKEY hKey, LPCTSTR lpValueName, LPDWORD lpReserved,
                                    LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData);
 
+  LONG WINAPI dllRegQueryValueExW (HKEY hKey, LPCWSTR lpValueName, LPDWORD lpReserved,
+                                   LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData);
+
   LONG WINAPI dllRegCreateKeyA (HKEY hKey, LPCTSTR lpSubKey, PHKEY phkResult);
 
   LONG WINAPI dllRegSetValueExA (HKEY hKey, LPCTSTR lpValueName, DWORD Reserved,
@@ -90,8 +93,9 @@ extern "C"
                                    
   LONG WINAPI dllRegQueryValueA (HKEY hKey, LPCTSTR lpSubKey, LPTSTR lpValue, PLONG lpcbValue);
 
+
   void free_registry(void);
-  void save_registry(void);
+  int save_registry(char* filename);
 
   BOOL WINAPI dllCryptAcquireContextA(HCRYPTPROV* phProv, LPCTSTR pszContainer, LPCTSTR pszProvider, DWORD dwProvType, DWORD dwFlags);
   BOOL WINAPI dllCryptGenRandom(HCRYPTPROV hProv, DWORD dwLen, BYTE* pbBuffer);

@@ -357,27 +357,23 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
 
   // 2. Look for a nfo File to get the search URL
   CStdString nfoFile = GetnfoFile(item);
-  if ( !nfoFile.IsEmpty() && info.strContent.Equals("movies") )
+  if ( !nfoFile.IsEmpty() )
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", nfoFile.c_str());
-    if ( CFile::Cache(nfoFile, "Z:\\movie.nfo", NULL, NULL))
+    CNfoFile nfoReader(info.strContent);
+    if ( nfoReader.Create(nfoFile) == S_OK)
     {
-      CNfoFile nfoReader;
-      if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
-      {
-	    	url.m_strURL.push_back(nfoReader.m_strImDbUrl);
-        url.m_strURL.push_back(nfoReader.m_strImDbUrl+"plotsummary");
-        url.m_strID = nfoReader.m_strImDbNr;
-        SScraperInfo info2(info);
-        info2.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
-        IMDB.SetScraperInfo(info2);
-        CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
-      }
-      else
-        CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", nfoFile.c_str());
+      CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+	    url.m_scrURL.push_back(scrUrl);
+      url.m_strID = nfoReader.m_strImDbNr;
+      SScraperInfo info2(info);
+      info2.strPath = nfoReader.m_strScraper;
+      IMDB.SetScraperInfo(info2);
+      CLog::Log(LOGDEBUG,"-- nfo scraper: %s", nfoReader.m_strScraper.c_str());
+      CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
     }
     else
-      CLog::Log(LOGERROR,"Unable to cache nfo file: %s", nfoFile.c_str());
+      CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", nfoFile.c_str());
   }
 
   CStdString movieName = item->GetLabel();
@@ -387,7 +383,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   {
     // 4. if we don't have a url, or need to refresh the search
     //    then do the web search
-    if (url.m_strURL.size() == 0 || needsRefresh)
+    if (url.m_scrURL.size() == 0 || needsRefresh)
     {
       // 4a. show dialog that we're busy querying www.imdb.com
       CStdString strHeading;
@@ -415,7 +411,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
           {
             int iString = 196;
             if (info.strContent.Equals("tvshows"))
-              iString = 20355;
+              iString = 20356;
             pDlgSelect->SetHeading(iString);
             pDlgSelect->Reset();
             for (unsigned int i = 0; i < movielist.size(); ++i)
@@ -438,7 +434,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     }
     // 4c. Check if url is still empty - occurs if user has selected to do a manual
     //     lookup, or if the IMDb lookup failed or was cancelled.
-    if (url.m_strURL.size() == 0)
+    if (url.m_scrURL.size() == 0)
     {
       // Check for cancel of the progress dialog
       pDlgProgress->Close();
@@ -479,7 +475,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
           pDlgProgress->Progress();
           IMDB_EPISODELIST episodes;
           CIMDBUrl url;
-          url.m_strURL.push_back(movieDetails.m_strEpisodeGuide);
+          url.m_scrURL.push_back(CScraperUrl(movieDetails.m_strEpisodeGuide));
           if (IMDB.GetEpisodeList(url,episodes))
           {
             pDlgProgress->SetLine(2, 20355);
@@ -907,16 +903,13 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem, bool bContextDriven /* = true *
         {
           if (iFound > 0 || m_database.HasMovieInfo(m_vecItems[iItem]->m_strPath))
             btn_Show_Info = pMenu->AddButton(iString);
-          else
+          m_database.Open();
+          if (!bIsGotoParent)
           {
-            m_database.Open();
-            if (!bIsGotoParent)
-            {
-              if (m_database.GetMovieInfo(m_vecItems[iItem]->m_strPath)<0)
-                btn_AddToDatabase = pMenu->AddButton(527); // Add to Database
-            }
-            m_database.Close();
+            if (m_database.GetMovieInfo(m_vecItems[iItem]->m_strPath)<0)
+              btn_AddToDatabase = pMenu->AddButton(527); // Add to Database
           }
+          m_database.Close();
         }
       }
     }
@@ -1509,7 +1502,9 @@ bool CGUIWindowVideoBase::Update(const CStdString &strDirectory)
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
 
+  m_vecItems.SetThumbnailImage("");
   m_thumbLoader.Load(m_vecItems);
+  m_vecItems.SetVideoThumb();
   return true;
 }
 
@@ -1527,7 +1522,6 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   if (pItem->m_bIsFolder) return;
 
   bool bGotXml = false;
-  CFileItemList items;
   CIMDBMovie movie;
   movie.Reset();
 
@@ -1540,6 +1534,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     strXml = stack.GetFirstStackedFile(pItem->m_strPath) + ".xml";
   }
   CStdString strCache = "Z:\\" + CUtil::GetFileName(strXml);
+  CUtil::GetFatXQualifiedPath(strCache);
   if (CFile::Exists(strXml))
   {
     bGotXml = true;
@@ -1567,7 +1562,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
       return;
     pSelect->SetHeading(530); // Select Genre
     pSelect->Reset();
-    items.ClearKeepPointer();
+    CFileItemList items;
     if (!CDirectory::GetDirectory("videodb://1/", items))
       return;
     for (int i = 0; i < items.Size(); ++i)
@@ -1597,6 +1592,10 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     movie.m_strGenre = strGenre;
   }
 
+  // Why should we double check title for uniqueness?  Who cares if 2 movies
+  // have the same name in the db?
+
+  /*
   // double check title for uniqueness
   items.ClearKeepPointer();
   if (!CDirectory::GetDirectory("videodb://2/", items))
@@ -1618,7 +1617,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
       }
       return;
     }
-  }
+  }*/
 
   // everything is ok, so add to database
   m_database.Open();
@@ -1779,7 +1778,7 @@ void CGUIWindowVideoBase::OnProcessSeriesFolder(const CFileItem* item, IMDB_EPIS
           int iEpisode = atoi(episode);
           std::pair<int,int> key(iSeason,iEpisode);
           CIMDBUrl url;
-          url.m_strURL.push_back(items[i]->m_strPath);
+          url.m_scrURL.push_back(CScraperUrl(items[i]->m_strPath));
           episodeList.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url));
           break;
         }

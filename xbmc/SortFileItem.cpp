@@ -22,6 +22,17 @@
 #include "stdafx.h"
 #include "SortFileItem.h"
 
+inline int StartsWithToken(const CStdString& strLabel)
+{
+  for (unsigned int i=0;i<g_advancedSettings.m_vecTokens.size();++i)
+  {
+    if (g_advancedSettings.m_vecTokens[i].size() < strLabel.size() && 
+        strnicmp(g_advancedSettings.m_vecTokens[i].c_str(), strLabel.c_str(), g_advancedSettings.m_vecTokens[i].size()) == 0)
+      return g_advancedSettings.m_vecTokens[i].size();
+  }
+  return 0;
+}
+
 // TODO:
 // 1. See if the special case stuff can be moved out.  Problems are that you
 //    have to keep the parent folder item separate from all other items in order
@@ -173,8 +184,9 @@ bool SSortFileItem::LabelAscendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetLabel().c_str();
     char *r = (char *)right->GetLabel().c_str();
-    if (left->GetLabel().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->GetLabel().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+
     return StringUtils::AlphaNumericCompare(l, r) <= 0;
   }
   return left->m_bIsFolder;
@@ -190,8 +202,9 @@ bool SSortFileItem::LabelDescendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetLabel().c_str();
     char *r = (char *)right->GetLabel().c_str();
-    if (left->GetLabel().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->GetLabel().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+
     return StringUtils::AlphaNumericCompare(l, r) >= 0;
   }
   return left->m_bIsFolder;
@@ -281,8 +294,9 @@ bool SSortFileItem::SongTitleAscendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->m_musicInfoTag.GetTitle().c_str();
     char *r = (char *)right->m_musicInfoTag.GetTitle().c_str();
-    if (left->m_musicInfoTag.GetTitle().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->m_musicInfoTag.GetTitle().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+    
     return StringUtils::AlphaNumericCompare(l, r) <= 0;
   }
   return left->m_bIsFolder;
@@ -298,8 +312,9 @@ bool SSortFileItem::SongTitleDescendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->m_musicInfoTag.GetTitle().c_str();
     char *r = (char *)right->m_musicInfoTag.GetTitle().c_str();
-    if (left->m_musicInfoTag.GetTitle().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->m_musicInfoTag.GetTitle().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+    
     return StringUtils::AlphaNumericCompare(l, r) >= 0;
   }
   return left->m_bIsFolder;
@@ -379,8 +394,9 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->m_musicInfoTag.GetArtist().c_str();
     char *r = (char *)right->m_musicInfoTag.GetArtist().c_str();
-    if (left->m_musicInfoTag.GetArtist().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->m_musicInfoTag.GetArtist().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return true;
     if (result > 0) return false;
@@ -394,8 +410,9 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
     // artists agree, test the album
     l = (char *)left->m_musicInfoTag.GetAlbum().c_str();
     r = (char *)right->m_musicInfoTag.GetAlbum().c_str();
-    if (left->m_musicInfoTag.GetAlbum().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->m_musicInfoTag.GetAlbum().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+
     result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return true;
     if (result > 0) return false;
@@ -415,8 +432,9 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->m_musicInfoTag.GetArtist().c_str();
     char *r = (char *)right->m_musicInfoTag.GetArtist().c_str();
-    if (left->m_musicInfoTag.GetArtist().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->m_musicInfoTag.GetArtist().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return false;
     if (result > 0) return true;
@@ -430,8 +448,9 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
     // artists agree, test the album
     l = (char *)left->m_musicInfoTag.GetAlbum().c_str();
     r = (char *)right->m_musicInfoTag.GetAlbum().c_str();
-    if (left->m_musicInfoTag.GetAlbum().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->m_musicInfoTag.GetAlbum().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+
     result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return false;
     if (result > 0) return true;
@@ -501,16 +520,18 @@ bool SSortFileItem::SongAlbumAscendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->m_musicInfoTag.GetAlbum().c_str();
     char *r = (char *)right->m_musicInfoTag.GetAlbum().c_str();
-    if (left->m_musicInfoTag.GetAlbum().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->m_musicInfoTag.GetAlbum().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return true;
     if (result > 0) return false;
     // album names match, try the artist
     l = (char *)left->m_musicInfoTag.GetArtist().c_str();
     r = (char *)right->m_musicInfoTag.GetArtist().c_str();
-    if (left->m_musicInfoTag.GetArtist().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->m_musicInfoTag.GetArtist().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+
     result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return true;
     if (result > 0) return false;
@@ -530,16 +551,18 @@ bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->m_musicInfoTag.GetAlbum().c_str();
     char *r = (char *)right->m_musicInfoTag.GetAlbum().c_str();
-    if (left->m_musicInfoTag.GetAlbum().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->m_musicInfoTag.GetAlbum().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+
     int result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return false;
     if (result > 0) return true;
     // album names match, try the artist
     l = (char *)left->m_musicInfoTag.GetArtist().c_str();
     r = (char *)right->m_musicInfoTag.GetArtist().c_str();
-    if (left->m_musicInfoTag.GetArtist().GetLength() > 3 && strnicmp(l, "the ", 4)==0) l+=4;
-    if (right->m_musicInfoTag.GetArtist().GetLength() > 3 && strnicmp(r, "the ", 4)==0) r+=4;
+    l += StartsWithToken(left->GetLabel());
+    r += StartsWithToken(right->GetLabel());
+
     result = StringUtils::AlphaNumericCompare(l, r);
     if (result < 0) return false;
     if (result > 0) return true;

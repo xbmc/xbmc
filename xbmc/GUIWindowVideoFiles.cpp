@@ -488,29 +488,25 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
         {
           // handle .nfo files
           CStdString strNfoFile = GetnfoFile(pItem);
-          if ( !strNfoFile.IsEmpty() && info.strContent.Equals("movies") )
+          if ( !strNfoFile.IsEmpty() )
           {
             CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
-            if ( CFile::Cache(strNfoFile, "Z:\\movie.nfo", NULL, NULL))
+            CNfoFile nfoReader(info.strContent);
+            if ( nfoReader.Create(strNfoFile) == S_OK)
             {
-              CNfoFile nfoReader;
-              if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
-              {
-                CIMDBUrl url;
-                url.m_strURL.push_back(nfoReader.m_strImDbUrl);
-                url.m_strURL.push_back(nfoReader.m_strImDbUrl+"plotsummary");
-                CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());
-                url.m_strID  = nfoReader.m_strImDbNr;
-                SScraperInfo info2(info);
-                info2.strPath = "imdb.xml"; // fallback to imdb scraper no matter what is configured
-                GetIMDBDetails(pItem, url, info2);
-                continue;
-              }
-              else
-                CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfoFile.c_str());
+              CIMDBUrl url;
+              CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+	            url.m_scrURL.push_back(scrUrl);
+              CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReader.m_strScraper.c_str());
+              CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
+              url.m_strID  = nfoReader.m_strImDbNr;
+              SScraperInfo info2(info);
+              info2.strPath = nfoReader.m_strScraper;
+              GetIMDBDetails(pItem, url, info2);
+              continue;
             }
             else
-              CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
+              CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfoFile.c_str());
           }
 
           // do IMDB lookup...
@@ -807,7 +803,7 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const
     // get & save thumbnail
     CStdString strThumb = "";
     CStdString strImage = movieDetails.m_strPictureURL;
-    if (strImage.size() > 0 && movieDetails.m_strSearchString.size() > 0)
+    if (strImage.size() > 0)
     {
       // check for a cached thumb or user thumb
       pItem->SetVideoThumb();

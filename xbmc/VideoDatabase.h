@@ -32,6 +32,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TOP250 = 13,
   VIDEODB_ID_GENRE = 14,
   VIDEODB_ID_DIRECTOR = 15,
+  VIDEODB_ID_ORIGINALTITLE = 16,
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
 
@@ -67,7 +68,8 @@ const struct SDbMovieOffsets
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strMPAARating) },
   { VIDEODB_TYPE_INT, offsetof(CIMDBMovie,m_iTop250) },
   { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strGenre) },
-  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strDirector) }
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strDirector) },
+  { VIDEODB_TYPE_STRING, offsetof(CIMDBMovie,m_strOriginalTitle)}
 };
 
 const struct SDbTvShowOffsets

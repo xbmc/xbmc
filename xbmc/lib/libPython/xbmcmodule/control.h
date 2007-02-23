@@ -14,6 +14,9 @@
 #define ControlCheckMark_Check(op) PyObject_TypeCheck(op, &ControlCheckMark_Type)
 #define ControlCheckMark_CheckExact(op) ((op)->ob_type == &ControlCheckMark_Type)
 
+#define ControlProgress_Check(op) PyObject_TypeCheck(op, &ControlProgress_Type)
+#define ControlProgress__CheckExact(op) ((op)->ob_type == &ControlProgress_Type)
+
 #define ControlList_Check(op) PyObject_TypeCheck(op, &ControlList_Type)
 #define ControlList_CheckExact(op) ((op)->ob_type == &ControlList_Type)
 
@@ -108,6 +111,18 @@ namespace PYXBMC
 	} ControlImage;
 
 	typedef struct {
+	PyObject_HEAD_XBMC_CONTROL
+		string strTextureLeft;
+		string strTextureMid;
+		string strTextureRight;
+		string strTextureBg;
+		string strTextureOverlay;
+		DWORD strColorKey;
+    	DWORD aspectRatio;
+		DWORD strColorDiffuse;
+	} ControlProgress;
+
+	typedef struct {
     PyObject_HEAD_XBMC_CONTROL
 		string strFont;
 		string strText;
@@ -120,6 +135,7 @@ namespace PYXBMC
     DWORD dwAlign;
     int iAngle;
 		DWORD dwShadowColor;
+		DWORD dwFocusedColor;
   } ControlButton;
 
 	typedef struct {
@@ -169,6 +185,7 @@ namespace PYXBMC
 	extern PyTypeObject ControlButton_Type;
 	extern PyTypeObject ControlCheckMark_Type;
 	extern PyTypeObject ControlList_Type;
+  extern PyTypeObject ControlProgress_Type;
 
 	CGUIControl* ControlLabel_Create(ControlLabel* pControl);
 	CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl);
@@ -177,6 +194,7 @@ namespace PYXBMC
 	CGUIControl* ControlCheckMark_Create(ControlCheckMark* pControl);
 	CGUIControl* ControlImage_Create(ControlImage* pControl);
 	CGUIControl* ControlList_Create(ControlList* pControl);
+  CGUIControl* ControlProgress_Create(ControlProgress* pControl);
 	
 	void initControl_Type();
   void initControlSpin_Type();
@@ -187,6 +205,7 @@ namespace PYXBMC
   void initControlCheckMark_Type();
   void initControlList_Type();
   void initControlImage_Type();
+  void initControlProgress_Type();
 }
 
 #ifdef __cplusplus

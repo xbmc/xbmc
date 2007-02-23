@@ -13,6 +13,7 @@
 #include "../../utils/GUIInfoManager.h"
 #include "../VideoRenderers/RenderManager.h"
 #include "../../utils/win32exception.h"
+#include "../DllLoader/exports/emu_registry.h"
 
 using namespace XFILE;
 
@@ -83,8 +84,6 @@ void audio_pause();
 void audio_resume();
 
 extern void tracker_free_mplayer_dlls(void);
-extern "C" void save_registry(void);
-extern "C" void free_registry(void);
 extern CFileShoutcast* m_pShoutCastRipper;
 extern "C" void dllReleaseAll( );
 
@@ -678,7 +677,7 @@ CMPlayer::~CMPlayer()
 
   Unload();
   
-  save_registry(); // save registry to disk
+  //save_registry(); //save registry to disk
   free_registry(); //free memory take by registry structures
 }
 bool CMPlayer::load()
@@ -1872,12 +1871,18 @@ void CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
       strName += (char)(slt.language & 255);
     }
 
-    strStreamName.Format("%s - %s(%s)", strName.c_str(), dvd_audio_stream_types[slt.type], dvd_audio_stream_channels[slt.channels]);
+    strStreamName.Format("%s", strName.c_str());
   }
-  else
+
+  if(slt.type>=0)
   {
-    strStreamName = "";
+    if(!strStreamName.IsEmpty())
+      strStreamName += " - ";
+    strStreamName += dvd_audio_stream_types[slt.type];
   }
+
+  if(slt.channels>0)
+    strStreamName += CStdString("(") +  dvd_audio_stream_channels[slt.channels-1] + CStdString(")");
 }
 
 void CMPlayer::SetAudioStream(int iStream)

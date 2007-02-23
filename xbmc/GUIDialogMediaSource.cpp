@@ -124,7 +124,23 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
   if (confirmed)
   { // yay, add this share
     CShare share;
-    share.FromNameAndPaths(type, dialog->m_name, dialog->GetPaths());
+    unsigned int i,j=2;
+    bool bConfirmed=false;
+    VECSHARES* pShares = g_settings.GetSharesFromType(type);
+    CStdString strName = dialog->m_name;
+    while (!bConfirmed)
+    {
+      for (i=0;i<pShares->size();++i)
+      {
+        if ((*pShares)[i].strName.Equals(strName))
+          break;
+      }
+      if (i < pShares->size()) // found a match -  try next
+        strName.Format("%s (%i)",dialog->m_name,j++);
+      else
+        bConfirmed = true;
+    }
+    share.FromNameAndPaths(type, strName, dialog->GetPaths());
     g_settings.AddShare(type, share);
 
     if (type == "video")
@@ -175,11 +191,26 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
   bool confirmed(dialog->IsConfirmed());
   if (confirmed)
   { // yay, add this share
-    g_settings.BeginBookmarkTransaction();
+    unsigned int i,j=2;
+    bool bConfirmed=false;
+    VECSHARES* pShares = g_settings.GetSharesFromType(type);
+    CStdString strName = dialog->m_name;
+    while (!bConfirmed)
+    {
+      for (i=0;i<pShares->size();++i)
+      {
+        if ((*pShares)[i].strName.Equals(strName))
+          break;
+      }
+      if (i < pShares->size() && (*pShares)[i].strName != strOldName) // found a match -  try next
+        strName.Format("%s (%i)",dialog->m_name,j++);
+      else
+        bConfirmed = true;
+    }
+
     CShare newShare;
-    newShare.FromNameAndPaths(type, dialog->m_name, dialog->GetPaths());
+    newShare.FromNameAndPaths(type, strName, dialog->GetPaths());
     g_settings.UpdateShare(type, strOldName, newShare);
-    g_settings.CommitBookmarkTransaction();
   }
   dialog->m_paths.Clear();
   return confirmed;

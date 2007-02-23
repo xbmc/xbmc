@@ -314,7 +314,10 @@ bool CGUIControlGroup::HasID(DWORD dwID) const
 
 bool CGUIControlGroup::HasVisibleID(DWORD dwID) const
 {
+  // call base class first as the group may be the requested control
   if (CGUIControl::HasVisibleID(dwID)) return true;
+  // if the group isn't visible, then none of it's children can be
+  if (!IsVisible()) return false;
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;

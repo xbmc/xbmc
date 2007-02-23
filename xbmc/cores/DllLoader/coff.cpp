@@ -391,6 +391,31 @@ int CoffLoader::RVA2Section(unsigned long RVA)
   return 0;
 }
 
+void* CoffLoader::RVA2Data(unsigned long RVA)
+{
+  int Sctn = RVA2Section(RVA);
+
+  if( RVA < SectionHeader[Sctn].VirtualAddress 
+   || RVA >= SectionHeader[Sctn].VirtualAddress + SectionHeader[Sctn].VirtualSize)
+  {
+    // RVA2Section is lying, let's use base address of dll instead, only works if
+    // DLL has been loaded fully into memory, wich we normally do
+    return (void*)(RVA + (unsigned long)hModule);
+  }
+  return SectionData[Sctn] + RVA - SectionHeader[Sctn].VirtualAddress;
+}
+
+unsigned long CoffLoader::Data2RVA(void* address)
+{
+  for ( int i = 0; i < CoffFileHeader->NumberOfSections; i++)
+  {
+    if(address >= SectionData[i] && address < SectionData[i] + SectionHeader[i].VirtualSize)
+      return (unsigned long)address - (unsigned long)SectionData[i] + SectionHeader[i].VirtualAddress;
+  }
+
+  // Section wasn't found, so use relative to main load of dll
+  return (unsigned long)address - (unsigned long)hModule;
+}
 
 char *CoffLoader::GetStringTblIndex(int index)
 {
@@ -877,22 +902,22 @@ int CoffLoader::ParseCoff(FILE *fp)
 void CoffLoader::PerformFixups(void)
 {
   int FixupDataSize;
-  int Sctn;
   char *FixupData;
   char *EndData;
 
-  Sctn = RVA2Section( EntryAddress );   //get the real entry point address
-  EntryAddress += ( (unsigned long)(SectionData[Sctn]) - SectionHeader[Sctn].VirtualAddress );
+  EntryAddress = (unsigned long)RVA2Data(EntryAddress);
 
   if ( !Directory )
     return ;
 
-  if ( NumOfDirectories < 6 )
+  if ( NumOfDirectories <= BASE_RELOCATION_TABLE )
+    return ;
+
+  if ( !Directory[BASE_RELOCATION_TABLE].Size )
     return ;
 
   FixupDataSize = Directory[BASE_RELOCATION_TABLE].Size;
-  Sctn = RVA2Section(Directory[BASE_RELOCATION_TABLE].RVA);
-  FixupData = (char*)(SectionData[Sctn] + (Directory[BASE_RELOCATION_TABLE].RVA - SectionHeader[Sctn].VirtualAddress));
+  FixupData = (char*)RVA2Data(Directory[BASE_RELOCATION_TABLE].RVA);
   EndData = FixupData + FixupDataSize;
 
   while (FixupData < EndData)
@@ -912,15 +937,8 @@ void CoffLoader::PerformFixups(void)
       Fixup &= 0xfff;
       if (Type == IMAGE_REL_BASED_HIGHLOW)
       {
-        unsigned long RVA = Fixup + PageRVA;
-        unsigned int Sctn = RVA2Section(RVA);
-        unsigned long *Off = (unsigned long*)(SectionData[Sctn] +
-                                              (RVA - SectionHeader[Sctn].VirtualAddress));
-        unsigned int FxSctn = RVA2Section(*Off - WindowsHeader->ImageBase);
-        unsigned long Delta =
-          (WindowsHeader->ImageBase + SectionHeader[FxSctn].VirtualAddress) -
-          (unsigned long)SectionData[FxSctn];
-        *Off -= Delta;
+        unsigned long *Off = (unsigned long*)RVA2Data(Fixup + PageRVA);
+        *Off = (unsigned long)RVA2Data(*Off - WindowsHeader->ImageBase);
       }
       else if (Type == IMAGE_REL_BASED_ABSOLUTE)
       {}

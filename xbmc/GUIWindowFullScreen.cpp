@@ -511,12 +511,14 @@ bool CGUIWindowFullScreen::OnMouse()
   return true;
 }
 
-// Dummy override of Render() - RenderFullScreen() is where the action takes place
-// this is called via mplayer when the video window is flipped (indicating a frame
-// change) so that we get smooth video playback
+// Override of Render() - RenderFullScreen() is where the action takes place
+// this is called from the rendermanager, normally we won't come this way
+// as player thread will handle rendering, and call this itself. 
 void CGUIWindowFullScreen::Render()
 {
-  return ;
+#ifdef HAS_VIDEO_PLAYBACK
+  g_renderManager.RenderUpdate(true);
+#endif
 }
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()
@@ -526,6 +528,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   {
     if (g_application.m_pPlayer->IsPaused() ) return true;
     if (g_application.m_pPlayer->IsCaching() ) return true;
+    if (!g_application.m_pPlayer->IsPlaying() ) return true;
   }
   if (g_application.GetPlaySpeed() != 1) return true;
   if (m_timeCodeShow) return true;
@@ -536,8 +539,6 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
   if (g_infoManager.GetBool(PLAYER_SEEKBAR), GetID()) return true;
-  if (m_gWindowManager.HasDialogOnScreen()) return true;
-  if (g_Mouse.IsActive()) return true;
   if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
     return true;
   if (m_bLastRender)
@@ -557,8 +558,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
   m_bLastRender = true;
   if (!g_application.m_pPlayer) return ;
-
-  g_infoManager.UpdateFPS();
 
   if( g_application.m_pPlayer->IsCaching() )
   {
@@ -695,12 +694,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
     SET_CONTROL_HIDDEN(BLUE_BAR);
   }
   CGUIWindow::Render();
-
-  if (m_gWindowManager.HasDialogOnScreen())
-    m_gWindowManager.RenderDialogs();
-  // Render the mouse pointer, if visible...
-  if (g_Mouse.IsActive())
-    g_application.m_guiPointer.Render();
 }
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()

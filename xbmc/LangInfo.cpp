@@ -229,6 +229,18 @@ bool CLangInfo::Load(const CStdString& strFileName)
     const CStdString& strName=g_guiSettings.GetString("locale.country");
     SetCurrentRegion(strName);
   }
+
+  const TiXmlNode *pTokens = pRootElement->FirstChild("sorttokens");
+  if (pTokens && !pTokens->NoChildren())
+  {
+    const TiXmlNode *pToken = pTokens->FirstChild("token");
+    while (pToken)
+    {
+      if (pToken->FirstChild() && pToken->FirstChild()->Value())
+        g_advancedSettings.m_vecTokens.push_back(CStdString(pToken->FirstChild()->Value()) + " ");
+      pToken = pToken->NextSibling();
+    }
+  }
   return true;
 }
 

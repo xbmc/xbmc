@@ -11,13 +11,13 @@
 	<!-- 	returns: results in xml format <results><movie><title>*</title><url>*</url>*#urls<extra>*</extra></movie>*</results> -->
 	<GetSearchResults dest="1">
 		<RegExp output="\1" dest="3">
-			<expression>&lt;Items&gt;(.*)&lt;/Items&gt;</expression>
+			<expression noclean="1">&lt;Items&gt;(.*)&lt;/Items&gt;</expression>
 		</RegExp>
 		<RegExp input="$$4" output="&lt;results&gt;\1&lt;/results&gt;" dest="1">
 			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;$$2&lt;/url&gt;&lt;url&gt;http://tvdb.zsori.com/interfaces/GetBanners.php?seriesid=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
 				<expression repeat="yes">&lt;id&gt;([0-9]*)&lt;/id&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
 			</RegExp>
-			<expression></expression>
+			<expression noclean="1"></expression>
 		</RegExp>
 	</GetSearchResults>
 	<!-- 	input: $1..#urls=html -->
@@ -59,7 +59,7 @@
 			<RegExp input="$$3" output="&lt;episodeguide&gt;http://tvdb.zsori.com/interfaces/GetEpisodes.php?seriesid=\1&lt;/episodeguide&gt;" dest="4+">
 				<expression></expression>
 			</RegExp>
-			<expression></expression>
+			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDetails>
 	<!-- 	input: $1=html  !-->
@@ -70,13 +70,13 @@
  		<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://tvdb.zsori.com/interfaces/EpisodeUpdates.php?idlist=\1&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\2&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
  			<expression repeat="yes">&lt;id&gt;([0-9]*)&lt;/id&gt;[^&lt;]*&lt;SeasonNumber&gt;([0-9]*)&lt;/SeasonNumber&gt;[^&lt;]*&lt;EpisodeNumber&gt;([0-9]*)&lt;/EpisodeNumber&gt;[^&lt;]*&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;</expression>
  		</RegExp>
- 	    <expression></expression>
+ 	    <expression noclean="1"></expression>
  	  </RegExp>
 	</GetEpisodeList>
 	<!-- 	input: $1=html -->
-	<!-- 	returns: results in xml format <episodedetails><writer>*</writer><director>*</director><cast>*</cast><rating>*</rating><rank>*</rank><plot>*</plot> -->
+	<!-- 	returns: results in xml format <details><writer>*</writer><director>*</director><cast>*</cast><rating>*</rating><rank>*</rank><plot>*</plot> -->
 	<GetEpisodeDetails dest="3">
-		<RegExp input="$$4" output="&lt;episodedetails&gt;\1&lt;/episodedetails&gt;" dest="3">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4">
 				<expression>&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
 			</RegExp>
@@ -89,7 +89,7 @@
 			<RegExp input="$$1" output="&lt;cast&gt;\1&lt;/cast&gt;" dest="4+">
 				<expression>&lt;GuestStars&gt;([^&lt;]*)&lt;/GuestStars&gt;</expression>
 			</RegExp>
-			<expression></expression>
+			<expression noclean="1"></expression>
 		</RegExp>
 	</GetEpisodeDetails>
 </scraper>
