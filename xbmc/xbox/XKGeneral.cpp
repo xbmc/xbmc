@@ -2,14 +2,14 @@
 /*
 **********************************
 **********************************
-**      BROUGHT TO YOU BY:  **
+**      BROUGHT TO YOU BY:      **
 **********************************
 **********************************
-**        **
-**    [TEAM ASSEMBLY]  **
-**        **
-**  www.team-assembly.com **
-**        **
+**                              **
+**       [TEAM ASSEMBLY]        **
+**                              **
+**     www.team-assembly.com    **
+**                              **
 ******************************************************************************************************
 * This is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -77,17 +77,22 @@ void XKGeneral::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString,
 
   for (ULONG i = 0; i < byteCount; i++)
   {
-    if ((UCHAR)*(SrcBytes + i) > 0x0F)
-    {
-      itoa((UCHAR)*(SrcBytes + i), DstString + (i*Inc), 16);
-    }
+    BYTE nybble = (SrcBytes[i] >> 4) & 0x0f;
+    if (nybble > 9)
+      nybble += ('A'-0x0A); // change for lowercase 'a' to make lowercase
     else
-    {
-      *(DstString + i*Inc) = '0';
-      itoa((UCHAR)*(SrcBytes + i), DstString + (i*Inc + 1), 16);
+      nybble += '0';
+    DstString[i*Inc] = nybble;
 
-    }
+    nybble = (SrcBytes[i]) & 0x0f;
+    if (nybble > 9)
+      nybble += ('A'-0x0A); // change for lowercase 'a' to make lowercase
+    else
+      nybble += '0';
+    DstString[i*Inc + 1] = nybble;
   }
+
+  DstString[i*Inc] = 0;
 
   if (Seperator != 0x00)
   {

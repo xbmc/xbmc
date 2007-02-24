@@ -4,37 +4,9 @@
 #include "conio.h"
 #include "../../util.h"
 
+#include <conio.h>
 
 char X3LcdAnimIndex=0;
-
-//*************************************************************************************************************
-static void outb(unsigned short port, unsigned char data)
-{
-	__asm
-	{
-		nop
-			mov dx, port
-			nop
-			mov al, data
-			nop
-			out dx,al
-			nop
-			nop
-	}
-}
-
-//*************************************************************************************************************
-static unsigned char inb(unsigned short port)
-{
-	unsigned char data;
-	__asm
-	{
-		mov dx, port
-			in al, dx
-			mov data,al
-	}
-	return data;
-}
 
 //*************************************************************************************************************
 CX3LCD::CX3LCD()
@@ -140,19 +112,19 @@ void CX3LCD::DisplayOut(unsigned char data, unsigned char command)
 
 	//outbut higher nibble
 	
-	outb(DISP_O_DAT, data & 0xF0);			// set Data high nibble
-	outb(DISP_O_CMD, cmd);					// set RS if needed
-	outb(DISP_O_CMD, DISPCON_E | cmd);		// set E
-	outb(DISP_O_CMD, cmd);					// reset E
+	_outp(DISP_O_DAT, data & 0xF0);			// set Data high nibble
+	_outp(DISP_O_CMD, cmd);					// set RS if needed
+	_outp(DISP_O_CMD, DISPCON_E | cmd);		// set E
+	_outp(DISP_O_CMD, cmd);					// reset E
 
 	if ((command & INI) == 0) 
 	{							
 		// if it's not the init command, do second nibble
 		//outbut lower nibble
-		outb(DISP_O_DAT, (data << 4) & 0xF0);		// set Data low nibble
-		outb(DISP_O_CMD, cmd);				// set RS if needed
-		outb(DISP_O_CMD, DISPCON_E | cmd);	// set E
-		outb(DISP_O_CMD, cmd);				// reset E
+		_outp(DISP_O_DAT, (data << 4) & 0xF0);		// set Data low nibble
+		_outp(DISP_O_CMD, cmd);				// set RS if needed
+		_outp(DISP_O_CMD, DISPCON_E | cmd);	// set E
+		_outp(DISP_O_CMD, cmd);				// reset E
 		if ((data & 0xFC) == 0) 
 		{						                          
 			// if command was a Clear Display
@@ -336,16 +308,16 @@ void CX3LCD::DisplayProgressBar(unsigned char percent, unsigned char charcnt)
 //************************************************************************************************************************
 void CX3LCD::DisplaySetBacklight(unsigned char level) 
 {
-	outb(DISP_O_LIGHT, (int)(2.55*(double)level) );
+	_outp(DISP_O_LIGHT, (int)(2.55*(double)level) );
 }
 //************************************************************************************************************************
 void CX3LCD::DisplayInit()
 {
 	//initialize GP/IO
-	outb(DISP_O_DAT, 0);
-	outb(DISP_O_CMD, 0);
-	outb(DISP_O_DIR_DAT, 0xFF);
-	outb(DISP_O_DIR_CMD, 0x07);
+	_outp(DISP_O_DAT, 0);
+	_outp(DISP_O_CMD, 0);
+	_outp(DISP_O_DIR_DAT, 0xFF);
+	_outp(DISP_O_DIR_CMD, 0x07);
 
 	DisplayOut(DISP_FUNCTION_SET | DISP_DL_FLAG, INI);	// 8-Bit Datalength if display is already initialized to 4 bit
 	Sleep(5);

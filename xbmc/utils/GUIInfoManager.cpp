@@ -22,7 +22,6 @@
 #ifdef HAS_XBOX_HARDWARE
 #include "FanController.h"
 #include "SystemInfo.h"
-#include "HddSmart.h"
 #endif
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
@@ -716,15 +715,6 @@ string CGUIInfoManager::GetLabel(int info)
     }
     break;
 
-  case SYSTEM_HDD_SMART:
-    {
-      if (i_SmartRequest == 17)
-        strLabel.Format("%s %s", g_localizeStrings.Get(13151).c_str(), GetHDDSmart(i_SmartRequest).c_str());
-      else
-        strLabel.Format("%s", GetHDDSmart(i_SmartRequest).c_str());
-    }
-    break;
-
   case SYSTEM_INTERNET_STATE:
     strLabel.Format("%s", SystemHasInternet_s().c_str());
     break;
@@ -812,8 +802,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     // we must: 1.  Check tray state.
     //          2.  Check that we actually have a disc in the drive (detection
     //              of disk type takes a while from a separate thread).
-    CIoSupport TrayIO;
-    int iTrayState = TrayIO.GetTrayState();
+
+    int iTrayState = CIoSupport::GetTrayState();
     if ( iTrayState == DRIVE_CLOSED_MEDIA_PRESENT || iTrayState == TRAY_CLOSED_MEDIA_PRESENT )
       bReturn = CDetectDVDMedia::IsDiscInDrive();
     else 
@@ -2211,32 +2201,6 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
 }
 
 
-CStdString CGUIInfoManager::GetHDDSmart( int iSmartRequest )
-{
-#ifdef HAS_XBOX_HARDWARE
-  CStdString strItemhdd;
-  if(!g_hddsmart.IsRunning())
-    g_hddsmart.Start();
-  g_hddsmart.SmartREQ = iSmartRequest;
-
-  if (iSmartRequest == 17 )
-  {
-    CTemperature HddTemp = CTemperature::CreateFromCelsius((double)g_hddsmart.m_HddSmarValue);
-    if (g_hddsmart.m_HddSmarValue<=0 || g_hddsmart.m_HddSmarValue>=100)
-      HddTemp.SetState(CTemperature::invalid);
-    strItemhdd.Format("%s", HddTemp.ToString().c_str());
-  }
-  else
-  {
-    char buffer[10];
-    itoa(g_hddsmart.m_HddSmarValue, buffer, 10);
-    strItemhdd.Format("%s", buffer);
-  }
-  return strItemhdd;
-#else
-  return "";
-#endif
-}
 bool CGUIInfoManager::SystemHasInternet()
 {
   CHTTP http;
