@@ -4,16 +4,29 @@
 #include "tinyxml/tinyxml.h"
 #include "stdstring.h"
 
+class CScraperUrl
+{
+public:
+  CScraperUrl(const CStdString&);
+  CScraperUrl(const TiXmlElement*);
+  CScraperUrl();
+	~CScraperUrl();
+  void ParseString(CStdString);
+  void ParseElement(const TiXmlElement*);
+  CStdString m_spoof;
+  CStdString m_url;
+  bool m_post;
+};
 class CScraperParser
 {
 public:
 	CScraperParser();
 	~CScraperParser();
 
-	bool Load(const CStdStringA& strXMLFile);
+	bool Load(const CStdString& strXMLFile);
   const CStdString GetName() { return m_name; }
-	
-	const CStdString Parse(const CStdStringA& strTag);
+	const CStdString GetContent() { return m_content; }
+	const CStdString Parse(const CStdString& strTag);
 
 	CStdString m_param[9];
   static char* ConvertHTMLToAnsi(const char *szHTML);
