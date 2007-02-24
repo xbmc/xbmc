@@ -5,10 +5,10 @@ namespace DIRECTORY
 {
   namespace VIDEODATABASEDIRECTORY
   {
-    class CDirectoryNodeMovies : public CDirectoryNode
+    class CDirectoryNodeTvShowsOverview : public CDirectoryNode
     {
     public:
-      CDirectoryNodeMovies(const CStdString& strName, CDirectoryNode* pParent);
+      CDirectoryNodeTvShowsOverview(const CStdString& strName, CDirectoryNode* pParent);
     protected:
       virtual NODE_TYPE GetChildType();
       virtual bool GetContent(CFileItemList& items);

@@ -9,7 +9,13 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class CEvent
+#ifdef _XBOX
+#include <xtl.h>
+#else
+#include <windows.h>
+#endif
+
+class CEvent  
 {
 public:
   void PulseEvent();

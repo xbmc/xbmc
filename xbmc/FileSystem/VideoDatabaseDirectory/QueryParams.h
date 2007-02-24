@@ -15,6 +15,8 @@ namespace DIRECTORY
       long GetGenreId() { return m_idGenre; }
       long GetActorId() { return m_idActor; }
       long GetDirectorId() { return m_idDirector; }
+      long GetTvShowId() { return m_idShow; }
+      long GetSeason() { return m_idSeason; }
 
     protected:
       void SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName);
@@ -27,6 +29,8 @@ namespace DIRECTORY
       long m_idYear;
       long m_idActor;
       long m_idDirector;
+      long m_idShow;
+      long m_idSeason;
     };
   };
 };

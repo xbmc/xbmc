@@ -104,8 +104,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
     NODE_TYPE ParentNodeType=dir.GetDirectoryType(items.m_strPath);
     switch (NodeType)
     {
-    case NODE_TYPE_MOVIES:
-    case NODE_TYPE_TVSHOWS:
+    case NODE_TYPE_MOVIES_OVERVIEW:
+    case NODE_TYPE_TVSHOWS_OVERVIEW:
     case NODE_TYPE_OVERVIEW:
       {
         AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
@@ -138,6 +138,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(g_stSettings.m_viewStateVideoNavYears.m_sortOrder);
       }
       break;
+    case NODE_TYPE_SEASONS:
+    case NODE_TYPE_TITLE_TVSHOWS:
     case NODE_TYPE_GENRE:
       {
         AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
@@ -148,7 +150,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(g_stSettings.m_viewStateVideoNavGenres.m_sortOrder);
       }
       break;
-      case NODE_TYPE_TITLE:
+    case NODE_TYPE_EPISODES:
+    case NODE_TYPE_TITLE_MOVIES:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
           AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
@@ -190,7 +193,7 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
   case NODE_TYPE_GENRE:
     SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavGenres);
     break;
-  case NODE_TYPE_TITLE:
+  case NODE_TYPE_TITLE_MOVIES:
     SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavTitles);
     break;
   default:

@@ -12,9 +12,9 @@ CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirec
 NODE_TYPE CDirectoryNodeOverview::GetChildType()
 {
   if (GetName()=="1")
-    return NODE_TYPE_MOVIES;
+    return NODE_TYPE_MOVIES_OVERVIEW;
   else if (GetName()=="2")
-    return NODE_TYPE_TVSHOWS;
+    return NODE_TYPE_TVSHOWS_OVERVIEW;
 
   return NODE_TYPE_NONE;
 }

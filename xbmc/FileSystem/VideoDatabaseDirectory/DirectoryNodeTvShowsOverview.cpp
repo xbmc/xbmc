@@ -1,20 +1,20 @@
 #include "../../stdafx.h"
-#include "DirectoryNodeMovies.h"
+#include "DirectoryNodeTvShowsOverview.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeMovies::CDirectoryNodeMovies(const CStdString& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_MOVIES, strName, pParent)
+CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const CStdString& strName, CDirectoryNode* pParent)
+  : CDirectoryNode(NODE_TYPE_TVSHOWS_OVERVIEW, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeMovies::GetChildType()
+NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType()
 {
   if (GetName()=="1")
     return NODE_TYPE_GENRE;
   else if (GetName()=="2")
-    return NODE_TYPE_TITLE;
+    return NODE_TYPE_TITLE_TVSHOWS;
   else if (GetName()=="3")
     return NODE_TYPE_YEAR;
   else if (GetName()=="4")
@@ -25,7 +25,7 @@ NODE_TYPE CDirectoryNodeMovies::GetChildType()
   return NODE_TYPE_NONE;
 }
 
-bool CDirectoryNodeMovies::GetContent(CFileItemList& items)
+bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items)
 {
   CStdStringArray vecRoot;
   vecRoot.push_back(g_localizeStrings.Get(135));  // Genres

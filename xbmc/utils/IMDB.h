@@ -65,6 +65,8 @@ public:
   bool m_bWatched;
   int m_iTop250;
   int m_iYear;
+  int m_iSeason;
+  int m_iEpisode;
   float m_fRating;
 };
 

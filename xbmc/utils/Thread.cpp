@@ -18,11 +18,10 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "../stdafx.h"
 #include "Thread.h"
 #include <process.h>
 #include "win32exception.h"
-
+#include "log.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

@@ -71,9 +71,10 @@ private:
 //------------------------------------------------------------------------------------------------------------------
 //Thread Detection if we are online or not! Very Simple and Dirty!
 #include "HTTP.h"
-#include "../util.h"
+#include "thread.h"
+
 class CHTTPD : public CThread
-  {
+{
   public:
       CHTTPD();
       ~CHTTPD();

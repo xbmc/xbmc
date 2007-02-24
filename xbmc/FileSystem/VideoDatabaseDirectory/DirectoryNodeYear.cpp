@@ -11,6 +11,16 @@ CDirectoryNodeYear::CDirectoryNodeYear(const CStdString& strName, CDirectoryNode
 
 }
 
+NODE_TYPE CDirectoryNodeYear::GetChildType()
+{
+  CQueryParams params;
+  CollectQueryParams(params);
+  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
+    return NODE_TYPE_TITLE_MOVIES;
+
+  return NODE_TYPE_TITLE_TVSHOWS;
+}
+
 bool CDirectoryNodeYear::GetContent(CFileItemList& items)
 {
   CVideoDatabase videodatabase;

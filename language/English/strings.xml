@@ -1536,6 +1536,8 @@
   <string id="20354">Fetching Episode Guide</string>
   <string id="20355">Locating Episodes In Directory</string>
   <string id="20356">Select TV Show:</string>
+  <string id="20357">Enter the TV Show Name</string>
+  <string id="20358">Season %i</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

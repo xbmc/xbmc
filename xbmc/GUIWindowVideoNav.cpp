@@ -137,7 +137,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       //  base class has opened the database, do our check
       m_database.Open();
-      DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0);
+      DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0 && m_database.GetTvShowCount() <= 0);
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
@@ -389,7 +389,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
 {
   int iItem=0;
   CVideoDatabaseDirectory dir;
-  if (dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_TITLE && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL)
+  if (dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_TITLE_MOVIES && g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL)
   {
     while (iItem < items.Size())
     {

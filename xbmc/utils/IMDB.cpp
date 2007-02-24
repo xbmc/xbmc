@@ -320,6 +320,8 @@ void CIMDBMovie::Reset()
   m_strMPAARating = "";
   m_iTop250 = 0;
   m_iYear = 0;
+  m_iSeason = 0;
+  m_iEpisode = 0;
   m_fRating = 0.0f;
   m_bWatched = false;
 }
@@ -340,6 +342,8 @@ bool CIMDBMovie::Save(TiXmlNode *node)
   XMLUtils::SetFloat(movie, "rating", m_fRating);
   XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
+  XMLUtils::SetInt(movie, "season", m_iSeason);
+  XMLUtils::SetInt(movie, "episode", m_iEpisode);
   XMLUtils::SetString(movie, "votes", m_strVotes);
   XMLUtils::SetString(movie, "outline", m_strPlotOutline);
   XMLUtils::SetString(movie, "plot", m_strPlot);
@@ -383,6 +387,8 @@ bool CIMDBMovie::Load(const TiXmlNode *movie)
   XMLUtils::GetFloat(movie, "rating", m_fRating);
   XMLUtils::GetInt(movie, "year", m_iYear);
   XMLUtils::GetInt(movie, "top250", m_iTop250);
+  XMLUtils::GetInt(movie, "season", m_iSeason);
+  XMLUtils::GetInt(movie, "episode", m_iEpisode);
   XMLUtils::GetString(movie, "votes", m_strVotes);
   XMLUtils::GetString(movie, "outline", m_strPlotOutline);
   XMLUtils::GetString(movie, "plot", m_strPlot);

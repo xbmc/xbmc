@@ -395,7 +395,7 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
   if (!pItem->IsVideo()) return ;
   if ( pItem->IsNFO()) return ;
   if ( pItem->IsPlayList()) return ;
- 
+
   /* subtitles are assumed not to exist here, if we need it  */
   /* player should update this when it figures out if it has */
   m_database.AddFile(pItem->m_strPath);
@@ -412,12 +412,14 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
       m_database.AddFile(item.m_strPath);
     }
   }
-
 }
 
 void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScraperInfo& info, bool bDirNames)
 {
   CStdString strMovieName;
+  CIMDB IMDB;
+  IMDB.SetScraperInfo(info);
+
   if (bDirNames)
   {
     strMovieName = items.m_strPath;
@@ -425,17 +427,62 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
     strMovieName = CUtil::GetFileName(strMovieName);
   }
 
-  if(m_dlgProgress)
+  if (m_dlgProgress)
   {
     m_dlgProgress->ShowProgressBar(true);
     m_dlgProgress->SetPercentage(0);
   }
 
   // for every file found
+  IMDB_EPISODELIST episodes;
+  long lTvShowId = -1;
   for (int i = 0; i < (int)items.Size(); ++i)
   {
     g_application.ResetScreenSaver();
     CFileItem* pItem = items[i];
+    if (info.strContent.Equals("tvshows"))
+    {
+      if (!pItem->m_bIsFolder) 
+        continue;
+
+      CStdString strPath(pItem->m_strPath);
+      CUtil::AddSlashAtEnd(strPath);
+      long lTvShowId2 = m_database.GetTvShowInfo(strPath);
+      if (lTvShowId2 > -1)
+      {
+        if (lTvShowId2 != lTvShowId)
+        {
+          lTvShowId = lTvShowId2;
+          // fetch episode guide
+          CIMDBMovie details;
+          m_database.GetTvShowInfo(pItem->m_strPath,details,lTvShowId);
+          CIMDBUrl url;
+          CScraperUrl Url;
+          Url.m_url = details.m_strEpisodeGuide;
+          url.m_scrURL.push_back(Url);
+          IMDB.GetEpisodeList(url,episodes);
+          m_dlgProgress->SetLine(1, details.m_strTitle);
+        }
+        if (m_dlgProgress)
+        {
+          m_dlgProgress->SetHeading(189);
+          m_dlgProgress->SetLine(0, pItem->GetLabel());
+          m_dlgProgress->SetPercentage(100*i / items.Size());
+          m_dlgProgress->Progress();
+          if (m_dlgProgress->IsCanceled()) return ;
+        }
+
+        OnProcessSeriesFolder(episodes,pItem,lTvShowId2,IMDB,m_dlgProgress);
+        continue;
+      }
+      else
+      {
+        strMovieName = pItem->m_strPath;
+        CUtil::RemoveSlashAtEnd(strMovieName);
+        strMovieName = CUtil::GetFileName(strMovieName);
+        *pItem = items;
+      }
+    }
 
     // This code tests if we have a DVD folder
     if (pItem->m_bIsFolder)
@@ -458,11 +505,11 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
       }
     }
 
-    if (!pItem->m_bIsFolder)
+    if (!pItem->m_bIsFolder || info.strContent.Equals("tvshows"))
     {
-      if (pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList() )
+      if ((pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList()) || info.strContent.Equals("tvshows") )
       {
-        if (!bDirNames)
+        if (!bDirNames && !info.strContent.Equals("tvshows"))
         {
           if(pItem->IsLabelPreformated())
             strMovieName = pItem->GetLabel();
@@ -478,78 +525,92 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items, const SScra
           m_dlgProgress->SetHeading(189);
           m_dlgProgress->SetLine(0, strMovieName);
           m_dlgProgress->SetLine(1, "");
-          m_dlgProgress->SetPercentage(100*i / items.Size());
           m_dlgProgress->Progress();
           if (m_dlgProgress->IsCanceled()) return ;
         }
-        AddFileToDatabase(pItem);
-
-        if (!m_database.HasMovieInfo(pItem->m_strPath))
+        if (info.strContent.Equals("movies"))
         {
-          // handle .nfo files
-          CStdString strNfoFile = GetnfoFile(pItem);
-          if ( !strNfoFile.IsEmpty() )
+          AddFileToDatabase(pItem);
+
+          if (!m_database.HasMovieInfo(pItem->m_strPath))
           {
-            CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
-            CNfoFile nfoReader(info.strContent);
-            if ( nfoReader.Create(strNfoFile) == S_OK)
+            // handle .nfo files
+            CStdString strNfoFile = GetnfoFile(pItem);
+            if ( !strNfoFile.IsEmpty() )
             {
-              CIMDBUrl url;
-              CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
-	            url.m_scrURL.push_back(scrUrl);
-              CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReader.m_strScraper.c_str());
-              CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
-              url.m_strID  = nfoReader.m_strImDbNr;
-              SScraperInfo info2(info);
-              info2.strPath = nfoReader.m_strScraper;
-              GetIMDBDetails(pItem, url, info2);
-              continue;
-            }
-            else
-              CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfoFile.c_str());
-          }
-
-          // do IMDB lookup...
-          if (m_dlgProgress)
-          {
-            CStdString strHeading;
-            strHeading.Format(g_localizeStrings.Get(197),info.strTitle);
-            m_dlgProgress->SetHeading(strHeading);
-            m_dlgProgress->SetLine(0, strMovieName);
-            m_dlgProgress->SetLine(1, "");
-            m_dlgProgress->Progress();
-          }
-
-          CIMDB IMDB;
-          IMDB_MOVIELIST movielist;
-          IMDB.SetScraperInfo(info);
-          if (IMDB.FindMovie(strMovieName, movielist, m_dlgProgress))
-          {
-            int iMoviesFound = movielist.size();
-            if (iMoviesFound > 0)
-            {
-              CIMDBUrl url = movielist[0];
-
-              // show dialog that we're downloading the movie info
-              if (m_dlgProgress)
+              CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
+              CNfoFile nfoReader(info.strContent);
+              if ( nfoReader.Create(strNfoFile) == S_OK)
               {
-                m_dlgProgress->SetHeading(198);
-                m_dlgProgress->SetLine(0, strMovieName);
-                m_dlgProgress->SetLine(1, url.m_strTitle);
-                m_dlgProgress->Progress();
+                CIMDBUrl url;
+                CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+                url.m_scrURL.push_back(scrUrl);
+                CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReader.m_strScraper.c_str());
+                CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url.c_str());
+                url.m_strID  = nfoReader.m_strImDbNr;
+                SScraperInfo info2(info);
+                info2.strPath = nfoReader.m_strScraper;
+                GetIMDBDetails(pItem, url, info2);
+                continue;
               }
+              else
+                CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfoFile.c_str());
+            }
+          }
+        }
+        // do IMDB lookup...
+        if (m_dlgProgress)
+        {
+          CStdString strHeading;
+          strHeading.Format(g_localizeStrings.Get(197),info.strTitle);
+          m_dlgProgress->SetHeading(strHeading);
+          m_dlgProgress->SetLine(0, strMovieName);
+          m_dlgProgress->SetLine(1, "");
+          m_dlgProgress->Progress();
+        }
 
-              CUtil::ClearCache();
-              GetIMDBDetails(pItem, url, info);
+        IMDB_MOVIELIST movielist;
+        if (IMDB.FindMovie(strMovieName, movielist, m_dlgProgress))
+        {
+          int iMoviesFound = movielist.size();
+          if (iMoviesFound > 0)
+          {
+            CIMDBUrl url = movielist[0];
+
+            // show dialog that we're downloading the movie info
+            if (m_dlgProgress)
+            {
+              int iString=198;
+              if (info.strContent.Equals("tvshows"))
+                iString = 20353;
+              m_dlgProgress->SetHeading(iString);
+              m_dlgProgress->SetLine(0, strMovieName);
+              m_dlgProgress->SetLine(1, url.m_strTitle);
+              m_dlgProgress->Progress();
+            }
+
+            CUtil::ClearCache();
+            long lResult=GetIMDBDetails(pItem, url, info);
+            if (info.strContent.Equals("tvshows"))
+            {
+              // fetch episode guide
+              CIMDBMovie details;
+              m_database.GetTvShowInfo(pItem->m_strPath,details,lResult);
+              CIMDBUrl url;
+              CScraperUrl Url;
+              Url.m_url = details.m_strEpisodeGuide;
+              url.m_scrURL.push_back(Url);
+              IMDB_EPISODELIST episodes;
+              if (IMDB.GetEpisodeList(url,episodes))
+                OnProcessSeriesFolder(episodes,pItem,lResult,IMDB,m_dlgProgress);
             }
           }
         }
       }
     }
   }
-
   if(m_dlgProgress)
-    m_dlgProgress->ShowProgressBar(false);
+    m_dlgProgress->ShowProgressBar(false);  
 }
 
 void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo& info, int iDirNames, int iScanRecursively)
@@ -577,7 +638,7 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
 
   if(iScanRecursively > 0)
     settings.recurse = INT_MAX;
-  else if (iScanRecursively == -1)
+  else if (iScanRecursively == -1 && info.strContent.Equals("movies"))
   {
     bool bCanceled;
     if( CGUIDialogYesNo::ShowAndGetInput(13346,20335,-1,-1,bCanceled) )
@@ -585,6 +646,13 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
 
     if (bCanceled)
       return;
+  }
+
+  if (info.strContent.Equals("tvshows"))
+  {
+    settings.recurse = 1;
+    settings.parent_name = true;
+    settings.parent_name_root = true;
   }
 
   if (m_dlgProgress)
@@ -597,8 +665,12 @@ void CGUIWindowVideoFiles::OnScan(const CStdString& strPath, const SScraperInfo&
   }
 
   CFileItemList items;
-  GetStackedDirectory(strPath, items);
   m_database.SetScraperForPath(strPath,info.strPath,info.strContent);
+  if (info.strContent.Equals("movies"))
+    GetStackedDirectory(strPath, items);
+  else
+    m_rootDir.GetDirectory(strPath,items);
+
   DoScan(items, info, settings);
   CUtil::DeleteVideoDatabaseDirectoryCache();
 
@@ -643,6 +715,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
       return;
     }
 
+    m_database.Open();
     m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info2.strPath,info2.strContent);
     
     if (bScan)
@@ -674,7 +747,9 @@ bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, const SScraperInfo& info
       ApplyIMDBThumbToFolder(items.m_strPath, items[0]->GetThumbnailImage());
   }
   else
+  {
     OnRetrieveVideoInfo(items,info,settings.parent_name_root);
+  }
 
   if (!bCancel && settings.recurse > depth)
   {
@@ -689,13 +764,14 @@ bool CGUIWindowVideoFiles::DoScan(CFileItemList& items, const SScraperInfo& info
           break;
         }
       }
-      if ( pItem->m_bIsFolder )
+      if ( pItem->m_bIsFolder && !info.strContent.Equals("tvshows"))
       {
         if (!pItem->IsParentFolder() && pItem->GetLabel().CompareNoCase("sample") != 0)
         {
           // load subfolder
           CFileItemList subDirItems;
           GetStackedDirectory(pItem->m_strPath, subDirItems);
+
           if (!DoScan(subDirItems, info, settings, depth+1))
           {
             bCancel = true;
@@ -789,17 +865,25 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem, bool bContextDriven /* = true 
   CGUIWindowVideoBase::OnPopupMenu(iItem, bContextDriven);
 }
 
-void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info)
+long CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info)
 {
   CIMDB IMDB;
   CIMDBMovie movieDetails;
   IMDB.SetScraperInfo(info);
 
   movieDetails.m_strSearchString = pItem->m_strPath;
+  long lResult=-1;
   if ( IMDB.GetDetails(url, movieDetails, m_dlgProgress) )
   {
     // add to all movies in the stacked set
-    m_database.SetMovieInfo(pItem->m_strPath, movieDetails);
+    if (info.strContent.Equals("movies"))
+      m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+    else if (info.strContent.Equals("tvshows"))
+    {
+      CStdString strPath(pItem->m_strPath);
+      CUtil::AddSlashAtEnd(strPath);
+      lResult=m_database.SetDetailsForTvShow(strPath, movieDetails);
+    }
     // get & save thumbnail
     CStdString strThumb = "";
     CStdString strImage = movieDetails.m_strPictureURL;
@@ -808,7 +892,7 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const
       // check for a cached thumb or user thumb
       pItem->SetVideoThumb();
       if (pItem->HasThumbnail())
-        return;
+        return lResult;
       strThumb = pItem->GetCachedVideoThumb();
 
       CStdString strExtension;
@@ -837,6 +921,8 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const
       ::DeleteFile(strTemp.c_str());
     }
   }
+  
+  return lResult;
 }
 
 void CGUIWindowVideoFiles::OnQueueItem(int iItem)
